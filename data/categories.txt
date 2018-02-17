@@ -43,7 +43,7 @@ nl:Eten
 fi:Ruoka
 fr:Nourriture
 de:Essen
-hu:Élelmiszer
+hu:Étkezés
 id:Makanan
 it:Cibo
 ja:飲食
@@ -309,7 +309,7 @@ nl:3^Geldautomaat
 fi:^Pankkiautomaatti
 fr:^GAB
 de:3^Geldautomat
-hu:4^Pénzautomata
+hu:4^Bankautomata|ATM
 id:2^ATM
 it:3^Bancomat
 ja:1^ATM
@@ -343,7 +343,7 @@ nl:geld
 fi:2Raha
 fr:DAB|argent
 de:Bankomat|Geld
-hu:pénz|ATM
+hu:bankautomata|ATM|pénz
 id:uang
 it:soldi
 ja:atm|お金|マネー|金|引き出し|預金|振り込み
@@ -536,7 +536,7 @@ nl:3^Tearoom|3brasserie|3café|3restaurant
 fi:2^Kahvila
 fr:3^Café|3restaurant|3resto
 de:3^Café|3Restaurant|Kaffee
-hu:3^Kávézó|3étterem|3élelmiszer
+hu:3^Kávézó|cukrászda|3étterem|3élelmiszer
 id:3^Kafe|3restoran
 it:3^Caffè|3ristorante|pasto|mangiare
 ja:1^カフェ|喫茶|食べ物|コーヒー|珈琲|お茶|茶|紅茶|食事|軽食
@@ -569,7 +569,7 @@ nl:4^Fast food|3frituur|fritkot|3restaurant|afhaaleten
 fi:3^Pikaruokala
 fr:4^Restauration rapide|3restaurant|3café|à emporter|3resto
 de:4^Fast-Food|Takeaway|Restaurant|Café|Pizzeria
-hu:4^Gyorsétterem|3étterem|3kávézó|3élelmiszer
+hu:4^Gyorsétterem|büfé|3étterem|3kávézó|3élelmiszer
 id:^Cepat saji|3restoran
 it:4^Fast food|takeaway|caffè|ristorante|pasto|mangiare
 ja:1^ファストフード|レストラン|テイクアウト|持ち帰り|軽食|食事
@@ -601,7 +601,7 @@ nl:3^Restaurant|3café
 fi:3^Ravintola
 fr:3^Restaurant|3café|3resto
 de:3^Restaurant|3Café|Gasthaus|Gaststube
-hu:3^Étterem|3kávézó|3élelmiszer
+hu:3^Étterem|vendéglő|3kávézó|3élelmiszer
 id:^Restoran|3kafe
 it:3^Ristorante|3caffè|mangiare
 ja:1^レストラン|食べ物|食事|2ファミレス
@@ -713,7 +713,7 @@ nl:4^Schoonheidsmiddelen
 fi:^Kosmetiikka|kauneudenhoito
 fr:4^Produits de beauté|soins de beauté
 de:4^Kosmetik|Schönheitspflege
-hu:4^Kozmetikum|házi gondozás
+hu:4^Kozmetikum|szépségápolás
 id:4^Kosmetik
 it:^Cosmetici|materiale per la casa
 ja:^化粧品|ホームケア
@@ -747,7 +747,7 @@ nl:^Buurtwinkel|kruidenier
 fi:^Lähikauppa
 fr:^Supérette
 de:^Gemischtwarenladen
-hu:^Csemegebolt|ábécé
+hu:^Kis élelmiszerbolt|vegyesbolt
 id:^Mini market
 it:^Minimarket
 ja:^コンビニエンスストア|コンビニ
@@ -780,7 +780,7 @@ nl:^Tuincentrum
 fi:^Taimitarha
 fr:^Crèche|garderie d'enfants
 de:^Gärtnerei|Garten-Center
-hu:^Faiskola|kertészeti üzlet
+hu:^Kertészet
 id:^Penitipan anak
 it:^Vivaio|articoli da giardinaggio
 ja:^保育園|託児所
@@ -812,7 +812,7 @@ nl:^Mobiele telefoonwinkel|elektronicawinkel
 fi:^Elektroniikkakauppa
 fr:^Magasin de téléphonie|magasin d'électronique
 de:^Handyladen|Eletronikgeschäft
-hu:^Mobiltelefon üzlet|elektronikai szaküzlet
+hu:^Mobiltelefon-szaküzlet|elektronikai szaküzlet
 id:^Toko telepon
 it:^Negozio di telefonia mobile|negozio di elettronica
 ja:^携帯ショップ
@@ -845,7 +845,7 @@ nl:^Bloemist|bloemenwinkel
 fi:^Floristi|kukkakauppa
 fr:^Fleuriste
 de:^Florist|Blumengeschäft|Blumenladen|2Laden
-hu:^Virágos|virágbolt
+hu:^Virágbolt|virágárus
 id:^Tukang bunga|toko bunga
 it:^Fiorista|fioraio
 ja:^フローリスト/花屋|お買い物|ショップ|商店|雑貨
@@ -909,7 +909,7 @@ nl:^Meubelzaak
 fi:^Huonekalukauppa
 fr:^Magasin de meubles
 de:^Möbelgeschäft|2Laden
-hu:^Bútoráruház
+hu:^Bútorbolt
 id:^Toko mebel
 it:^Negozio di mobili
 ja:^家具店|お買い物|ショップ|商店|雑貨
@@ -941,7 +941,7 @@ nl:^Slijterij|drankhandel
 fi:^Alkoholikauppa|alkoholi
 fr:^Magasin de vins et spiritueux|vins et spiritueux
 de:^Spirituosengeschäft|Spirituosen|2Laden
-hu:^Italbolt|ital
+hu:^Italbolt|ital|alkohol|szesz
 id:^Toko alkohol|minuman keras
 it:^Enoteca
 ja:^酒屋|お買い物|ショップ|商店|雑貨
@@ -1037,7 +1037,7 @@ nl:^Elektronicazaak
 fi:^Elektroniikka
 fr:^Magasin d'électroménager
 de:^Elektronik|2Laden
-hu:^Elektronika
+hu:^Elektronikai bolt
 id:^Elektronik
 it:^Negozio di elettronica
 ja:^電気店|お買い物|ショップ|商店|雑貨
@@ -1069,7 +1069,7 @@ nl:^Ijzerhandel|Bouwmarkt
 fi:^Rautakauppa|Työkalukauppa
 fr:^Quincaillerie|bricolage
 de:^Eisenwarengeschäft|Baumarkt|Heimwerkermarkt|Eisenwarenhandlung|Laden
-hu:^Vaskereskedés|Barkácsüzlet|ezermester
+hu:^Vaskereskedés|vas-műszaki bolt|barkácsbolt|ezermesterbolt
 id:^Toko perangkat keras|bahan bangunan
 it:^Ferramenta|bricolage
 ja:^工具店|お買い物|ショップ|商店|雑貨
@@ -1101,7 +1101,7 @@ nl:^Juwelier
 fi:^Korukauppa
 fr:^Bijouterie
 de:^Juweliergeschäft|Juwelier|Schmuck|2Laden
-hu:^Ékszer
+hu:^Ékszerbolt
 id:^Perhiasan
 it:^Gioielleria
 ja:^宝石店|お買い物|ショップ|商店|雑貨
@@ -1133,7 +1133,7 @@ nl:^Opticien
 fi:^Optikko
 fr:^Opticien
 de:^Optiker|Brillengeschäft|2Laden
-hu:^Optika
+hu:^Optikus|látszerész
 id:^Toko kacamata
 it:^Ottico
 ja:^眼鏡店|お買い物|ショップ|商店|雑貨
@@ -1165,7 +1165,7 @@ nl:^Cadeauwinkel
 fi:^Lahjatavaraliike
 fr:^Boutique de souvenirs
 de:^Geschenkladen|Geschenke|2Laden
-hu:^Ajándékbolt
+hu:^Ajándékbolt|souvenir
 id:^Toko hadiah
 it:^Negozio di regali
 ja:^ギフトショップ|お買い物|ショップ|商店|雑貨
@@ -1263,7 +1263,7 @@ nl:^Sportartikelen
 fi:^Urheilukauppa
 fr:^Articles de sport
 de:^Sportartikel|Fitnessgeschäft|2Laden
-hu:^Sporteszközök
+hu:^Sporteszközbolt
 id:^Barang olahraga
 it:^Negozio sportivo|negozio articoli sportivi
 ja:^スポーツ用品店|お買い物|ショップ|商店|雑貨
@@ -1295,7 +1295,7 @@ nl:3^Supermarkt
 fi:3^Supermarketti
 fr:3^Supermarché
 de:3^Supermarkt|Laden
-hu:3^Bevásárlóközpont
+hu:3^Szupermarket|élelmiszerbolt
 id:3^Supermarket
 it:3^Supermercato
 ja:1^スーパーマーケット|ショップ|お買い物|商店
@@ -1328,7 +1328,7 @@ nl:^Het winkelcentrum
 fi:^Ostoskeskus
 fr:^Le centre commercial
 de:^Das Einkaufszentrum
-hu:^A pláza
+hu:^Bevásárlóközpont|pláza
 id:^Mall
 it:^Il centro commerciale
 ja:^モール
@@ -1362,7 +1362,7 @@ nl:^Warenhuis
 fi:^Tavaratalo
 fr:^Grand magasin
 de:^Kaufhaus
-hu:^Áruház
+hu:^Nagyáruház
 id:^Toko serba ada
 it:^Grandi magazzini|centro commerciale
 ja:^デパート
@@ -1426,7 +1426,7 @@ nl:^Computerwinkel
 fi:^Tietokonekauppa
 fr:^Magasin d'informatique
 de:^Computergeschäft
-hu:^Számítógép üzlet
+hu:^Számítógépüzlet
 id:^Toko komputer
 it:^Negozio di computer|negozio di articoli informatici
 ja:^コンピュータショップ
@@ -1458,7 +1458,7 @@ nl:^Banketbakker|snoepwinkel
 fi:^Makeiskauppa
 fr:^Pâtisserie|confiserie
 de:^Süßwarengeschäft
-hu:^Cukrászüzlet|édességbolt
+hu:^Édességbolt
 id:^Penganan|manisan
 it:^Pasticceria|drogheria
 ja:^菓子類|菓子屋
@@ -1554,7 +1554,7 @@ nl:3^Markt
 fi:3^Kauppatori
 fr:3^Marché
 de:3^Marktplatz|Markt|Laden
-hu:2^Piac|vásárlás
+hu:2^Piac
 it:3^Mercato
 ja:1^市場|お買い物|食料品
 ko:1^시장
@@ -1584,7 +1584,7 @@ nl:^Kledingwinkel|4kleding
 fi:^Vaatekauppa
 fr:^Boutique de vêtements|4vêtements
 de:^Bekleidungsgeschäft|Kleidung|Laden
-hu:^Ruhabolt|4ruhák
+hu:^Ruházati bolt|3ruhák
 id:^Toko baju
 it:^Negozio di abbigliamento
 ja:1^洋服|洋服屋さん|ショッピング|衣類|服
@@ -1617,7 +1617,7 @@ nl:^Autohandelaar
 fi:^Autokauppa
 fr:^Réparation auto|voitures|auto
 de:^Autohaus|Laden
-hu:^Gépkocsi bolt|kocsi
+hu:^Autókereskedés|gépkocsi-kereskedés
 id:^Toko mobil
 it:^Car negozio
 ja:^カーディーラー|車|車販売|ディーラー
@@ -1650,7 +1650,7 @@ nl:4^Fietsenwinkel
 fi:3^Polkupyöräliike
 fr:4^Magasin de vélos|vélo|bicyclette
 de:3^Fahrradladen|Fahrrad|Velo|Laden
-hu:4^Kerékpár üzlet|kerékpár|kocsi
+hu:4^Kerékpárbolt|kerékpár|bicikli
 id:3^Toko sepeda
 it:^Negozio di biciclette|bicicletta|bici
 ja:^自転車屋|レンタサイクル|自転車
@@ -1683,7 +1683,7 @@ nl:^Kiosk
 fi:^Kioski
 fr:^Kiosque
 de:^Kiosk|Laden
-hu:^Trafik
+hu:^Trafik|kioszk
 it:^Chiosco
 ja:1^キオスク|売店
 ko:1^정자
@@ -1809,7 +1809,7 @@ nl:4^Station|4spoorwegen|spoor|3trein
 fi:^Rautatieasema
 fr:3^Gare|4chemin de fer|3train
 de:4^Bahnhof|3Haltepunkt|3Station|Zug|Bahn|ÖPNV
-hu:3^Vonatmegálló|4vonat|4megálló
+hu:3^Vasútállomás|vasúti megálló|vonatmegálló|4vonat|4megálló
 id:^Rel kereta api
 it:3^Stazione ferroviaria|3treno
 ja:1^鉄道駅|鉄道|電車|交通|駅|鉄|電
@@ -1842,7 +1842,7 @@ nl:3^Metro
 fi:3^Metro
 fr:3^Métro
 de:2^U-Bahn|Metro|ÖPNV
-hu:3^Földalatti|3metro
+hu:3^Metróállomás|metrólejáró|földalatti|3metró
 id:3^Stasiun bawah tanah
 it:3^Metrò
 ja:1^地下鉄|地下鉄駅|電車|鉄道|交通|交通|鉄|電
@@ -1879,7 +1879,7 @@ cs:^Železniční přejezd
 nl:^Overweg
 da:^Jernbaneoverskæring
 fi:^Tasoristeys
-hu:^Útátjáró
+hu:^Vasúti átjáró
 fa:تقاطع هم سطح با راه اهن
 
 amenity-ferry_terminal|@transport
@@ -1892,7 +1892,7 @@ nl:3^Veerpont|veerboot|veer|pont|overzetboot
 fi:3^Lautta|terminaali|kuljetus
 fr:3^Traversier|terminal
 de:2^Fähre|Terminal
-hu:2^Komp
+hu:2^Komp|terminál
 id:3^Terminal|feri
 it:3^Traghetto
 ja:1^フェリー
@@ -1925,7 +1925,7 @@ nl:3^Taxi
 fi:3^Taksi
 fr:3^Taxi
 de:3^Taxi|Taxe|ÖPNV
-hu:3^Taxi|szállítás
+hu:3^Taxiállomás|személyszállítás
 id:3^Taksi
 it:3^Taxi|3tassì
 ja:1^タクシー
@@ -1958,7 +1958,7 @@ nl:3^Gemeentehuis
 fi:^Kaupungintalo
 fr:3^Mairie|3tourisme
 de:3^Rathaus
-hu:3^Városháza
+hu:3^Városháza|községháza|polgármesteri hivatal
 id:3^Balai kota
 it:3^Municipio
 ja:1^役場|1公会堂|1町役場
@@ -1991,7 +1991,7 @@ nl:3^Attractie|3toerisme
 fi:3^Nähtävyys
 fr:3^Attraction|3tourisme|3site touristique
 de:3^Attraktion|3Sehenswürdigkeit
-hu:3^Látnivaló|3kirándulás|3látványosság
+hu:3^Látnivaló|3látványosság|3turizmus
 id:3^Atraksi|pemandangan
 it:3^Attrattiva|3turistico
 ja:1^アトラクション|観光スポット|観光|名所|観光名所
@@ -2024,7 +2024,7 @@ nl:3^Kunstwerk
 fi:^Taideteos
 fr:3^Œuvre|3oeuvre|3art|3tourisme
 de:3^Kunstwerk
-hu:3^Szobor|Műalkotás
+hu:3^Műalkotás|3turizmus
 id:3^Pariwisata
 it:3^Opere d'arte
 ja:1^イラスト|1芸術作品
@@ -2057,7 +2057,7 @@ nl:4^Uitzicht|panorama
 fi:3^Näköalatasanne
 fr:4^Belvédère|4point de vue|4panorama|tourisme
 de:3^Panorama|Ausblick|Aussichtspunkt
-hu:4^Kilátó|kirándulás|látványosság|túrizmus
+hu:4^Kilátóhely|panoráma|3turizmus
 id:^Titik pandang
 it:3^Panorama
 ja:1^観光スポット|見どころ|名所|観光名所
@@ -2090,7 +2090,7 @@ nl:4^Toeristische informatie|3VVV|4informatie
 fi:3^Turisti-informaatio
 fr:4^Informations touristiques|4informations
 de:4^Tourist-Information|Information
-hu:4^Túrista információ|4információ|látványosság
+hu:4^Turistainformáció|4információ|4tájékoztatás
 id:3^Informasi turis
 it:4^Informazione
 ja:1^インフォメーション|観光情報|情報|案内
@@ -2123,7 +2123,7 @@ nl:3^Picnicplaats|3picnicweide|3picnictafel
 fi:3^Piknikpaikat
 fr:3^Terrain de pique-nique|3aire de pique-nique
 de:3^Picknickplatz|Grillplatz
-hu:3^Piknikező hely|látványosság
+hu:3^Piknikezőhely
 id:3^Lokasi piknik
 it:3^Picnic
 ja:1^ピクニック|ピクニックサイト|ハイキング
@@ -2156,7 +2156,7 @@ nl:3^Gebedsplaats|3gebedshuis|3tempel
 fi:4^Uskonnollinen kohde|3temppeli
 fr:4^Lieu de culte|3temple
 de:3^Anbetungsstätte|Tempel|Gotteshaus
-hu:3^Templom
+hu:3^Istentiszteleti hely|templom|szentély
 id:4^Tempat ibadah
 it:3^Tempio
 ja:1^礼拝|1寺院|1神社|仏閣|神殿|お寺
@@ -2189,7 +2189,7 @@ nl:^Kerk|tempel|kathedraal|gebedsplaats|gebedshuis
 fi:^Kirkko|uskonnollinen kohde
 fr:^Église|lieu de culte|temple
 de:^Kirche|Dom|3Kathedrale|4Münster|Anbetungsstätte|Tempel
-hu:^Templom
+hu:^Templom|keresztény templom|dóm|székesegyház|katedrális|szentély
 id:^Gereja|tempat ibadah
 it:^Chiesa|duomo|cattedrale|tempio
 ja:^教会|寺院|神社|仏閣|神殿|お寺
@@ -2221,7 +2221,7 @@ nl:^Moskee|tempel|gebedsplaats|gebedshuis
 fi:^Moskeija|uskonnollinen kohde
 fr:^Mosquée|lieu de culte|temple
 de:^Moschee|Tekke|Anbetungsstätte|Tempel
-hu:^Mecset|templom
+hu:^Mecset|dzsámi|szentély|templom
 id:^Masjid|tempat ibadah
 it:^Moschea|duomo|tempio
 ja:^モスク|寺院|神社|仏閣|神殿|お寺
@@ -2253,7 +2253,7 @@ nl:^Tempel|gebedsplaats|gebedshuis
 fi:^Temppeli|uskonnollinen kohde
 fr:^Temple|lieu de culte
 de:^Tempel|Anbetungsstätte
-hu:^Templom
+hu:^Szentély|templom
 id:^Kuil|tempat ibadah
 it:^Tempio|duomo
 ja:^寺|寺院|神社|仏閣|神殿|お寺
@@ -2285,7 +2285,7 @@ nl:^Tempel|gebedsplaats|gebedshuis
 fi:^Temppeli|uskonnollinen kohde
 fr:^Temple|lieu de culte
 de:^Tempel|Anbetungsstätte
-hu:^Templom
+hu:^Szentély|templom
 id:^Kuil|tempat ibadah
 it:^Tempio|duomo
 ja:^寺|寺院|神社|仏閣|神殿|お寺
@@ -2317,7 +2317,7 @@ nl:^Heiligdom|tempel|gebedsplaats|gebedshuis
 fi:^Pyhäkkö|uskonnollinen kohde
 fr:^Sanctuaire|lieu de culte|temple
 de:^Schrein|Anbetungsstätte|Tempel
-hu:^Kegyhely|templom
+hu:^Kegyhely|szentély|templom
 id:^Kuil|tempat ibadah
 it:^Santuario|tempio
 ja:^神社|寺院|神社|仏閣|神殿|お寺
@@ -2349,7 +2349,7 @@ nl:^Synagoge|tempel|gebedsplaats|gebedshuis
 fi:^Synagoga|uskonnollinen kohde
 fr:^Synagogue|lieu de culte|temple
 de:^Synagoge|Anbetungsstätte|Tempel
-hu:^Zsinagóga|templom
+hu:^Zsinagóga|imaház
 id:^Sinagoge|tempat ibadah
 it:^Sinagoga|tempio
 ja:^ユダヤ教会|シナゴーグ|寺院|神社|仏閣|神殿|お寺
@@ -2381,7 +2381,7 @@ nl:^Tempel|gebedsplaats|gebedshuis
 fi:^Temppeli|uskonnollinen kohde
 fr:^Temple|lieu de culte
 de:^Tempel|Anbetungsstätte
-hu:^Templom
+hu:^Szentély|templom
 id:^Kuil|tempat ibadah
 it:^Tempio
 ja:^寺|寺院|神社|仏閣|神殿|お寺
@@ -2413,7 +2413,7 @@ nl:2^Museum|attractie
 fi:3^Museo
 fr:2^Musée|attraction|tourisme
 de:2^Museum
-hu:2^Múzeum|túrizmus|látványosság
+hu:2^Múzeum|3turizmus|3látványosság
 id:3^Museum
 it:2^Museo
 ja:1^博物館|美術館
@@ -2479,7 +2479,7 @@ nl:^Gedenkteken|monument|attractie
 fi:3^Muistomerkki
 fr:^Mémorial|monument|attraction|tourisme
 de:^Denkmal|Gedenkstätte
-hu:3^Emlékmű|túrizmus|látványosság
+hu:3^Emlékmű|monumentális emlékmű|3turizmus|3látványosság
 id:3^Tugu peringatan
 it:^Memoriale|monumento
 ja:^追悼|1記念碑|追悼碑
@@ -2512,7 +2512,7 @@ nl:^Monument|attractie
 fi:^Monumentti
 fr:^Monument|attraction|tourisme
 de:^Monument|Denkmal
-hu:^Műemlék|Szobor|túrizmus|látványosság
+hu:^Épületszerű, monumentális emlékmű|monumentális emlékmű|3turizmus|3látványosság
 id:^Monumen
 it:^Monumento
 ja:1^記念碑
@@ -2545,7 +2545,7 @@ nl:^Ruïne|attractie
 fi:^Rauniot
 fr:^Ruines|attraction|tourisme
 de:^Ruinen
-hu:^Romok|túrizmus|látványosság
+hu:^Rom|turizmus|látványosság
 id:^Reruntuhan
 it:^Rovine
 ja:1^古跡|古蹟|廃墟|城址|城跡
@@ -2578,7 +2578,7 @@ nl:^Kasteel|burcht|attractie
 fi:^Linna
 fr:^Château|attraction|tourisme
 de:^Burg|Schloss|Festung
-hu:^Kastély|túrizmus|látványosság
+hu:^Váe|kastély|erőd|turizmus|látványosság
 id:^Kastel
 it:^Castello
 ja:^城|お城|砦|城砦
@@ -2611,7 +2611,7 @@ nl:^Archeologische site|opgravingen|attractie
 fi:^Arkeologinen kohde
 fr:^Site archéologique|attraction|tourisme
 de:^Ausgrabungen
-hu:^Ásatás|túrizmus|látványosság
+hu:^Régészeti lelőhely|ásatás|turizmus|látványosság
 id:^Situs arkeologi
 it:^Sito archeologico
 ja:1^考古遺跡|発掘|発掘現場|考古学|遺跡
@@ -2710,7 +2710,7 @@ nl:4^Fietsverhuur|2huur
 fi:^Polkupyöränvuokraus
 fr:^Location de vélos|vélo|bicyclette|3location
 de:3^Fahrradverleih|Fahrrad|Velo|3Verleih
-hu:4^Kerékpárkölcsönző|kerékpár|3bérlet
+hu:4^Kerékpárkölcsönző|kerékpár|bicikli|3bérlés
 id:^Penyewaan Sepeda
 it:^Noleggio biciclette|4bicicletta|bici|3noleggio
 ja:^レンタサイクル|自転車|自転車レンタル|貸し自転車|貸自転車|1レンタル
@@ -2744,7 +2744,7 @@ el:^Κοινή χρήση αυτοκινήτου
 es:^Compartir coche
 fi:^Autojen yhteiskäyttö
 fr:^Car Sharing
-hu:^Gépjármű megosztása
+hu:^Autómegosztás|gépkocsimegosztás
 id:^Berbagi mobil
 it:^Car Sharing
 ja:^カーシェアリング
@@ -2775,7 +2775,7 @@ nl:3^Autoverhuur|autodelen|auto|huur
 fi:^Autovuokraamo
 fr:4^Location de voitures|auto|loueur|location|partage
 de:3^Autoverleih|Mietauto|Auto|Fahrzeug Mieten|Verleih
-hu:3^Gépkocsi-kölcsönző|kocsi|bérlet
+hu:3^Autókölcsönző|gépkocsikölcsönző|kocsi|bérlés
 id:^Rental mobil
 it:3^Noleggio di automobili|noleggio
 ja:1^カーシェアリング|車|レンタカー|レンタル
@@ -2808,7 +2808,7 @@ nl:3^Bioscoop|cinema
 fi:^Elokuvateatteri
 fr:3^Cinéma
 de:3^Kino|Cinema|Filmtheater|Lichtspielhaus
-hu:3^Mozi
+hu:3^Mozi|filmszínház
 id:^Bioskop
 it:3^Cinema|teatro
 ja:1^映画館|シネマ|映画
@@ -2841,7 +2841,7 @@ nl:3^Theater|schouwburg
 fi:^Teatteri
 fr:3^Théâtre
 de:3^Theater
-hu:3^Színház
+hu:3^Színház/teátrum
 id:^Teater
 it:3^Teatro
 ja:1^劇場|シアター
@@ -2874,7 +2874,7 @@ nl:3^Discotheek|3disco|dansen
 fi:^Yökerho
 fr:3^Discothèque|3boîte de nuit|danse
 de:3^Nachtclub|Nachtklub
-hu:3^Éjszakai mulató|3diszkó|tánc
+hu:3^Éjszakai mulató|night club|3diszkó|tánc
 id:^Kelab malam
 it:3^Night club
 ja:1^ナイトクラブ|クラブ|ダンス
@@ -2907,7 +2907,7 @@ nl:^Bordeel
 fi:^Bordelli
 fr:^Maison de prostitution
 de:^Bordell
-hu:^Bordélyház
+hu:^Bordély
 it:^Bordello
 ja:^売春宿
 ko:^유곽
@@ -2967,7 +2967,7 @@ nl:^Hogeschool|hoger beroepsonderwijs|hbo
 fi:^College
 fr:^Enseignement post-secondaire
 de:^Hochschule|Fachschule|Kolleg
-hu:^Kollégium
+hu:^Főiskola|egyetem|felsőoktatás
 id:^Kampus
 it:^Collegio
 ja:1^大学|カレッジ
@@ -3164,7 +3164,7 @@ da:sygehus
 nl:kliniek|hospitaal|tandarts|3dokter
 fr:clinique|3médecin|3docteur
 de:Spital|3Arzt|Doktor|medizinische Einrichtung|Gesundheitswesen
-hu:klinika|3orvos
+hu:Kórház|klinika|3orvos
 ja:クリニック|医師|医者|ドクター|救急|診療
 ko:의사|의사가
 pl:klinika|lekarz|doktor|leczenie
@@ -3191,7 +3191,7 @@ nl:^Kliniek|ziekenhuis
 fi:^Klinikka|sairaala
 fr:^Clinique|hôpital
 de:^Klinik|Krankenhaus
-hu:^Klinika|kórház|szanatórium
+hu:^Rendelőintézet|kórház
 id:^Klinik|rumah sakit
 it:^Clinica|ospedale
 ja:^クリニック|病院、診療所|病院
@@ -3223,7 +3223,7 @@ nl:^Huisartsenpost|Kliniek|huisarts|ziekenhuis
 fi:^Lääkärin vastaanotto|Klinikka|sairaala
 fr:^Cabinet médical|hôpital
 de:^Arztpraxis|Klinik|Krankenhaus
-hu:^Rendelő|Klinika|orvosi rendelő|kórház
+hu:^Orvosi rendelő|rendelő|rendelőintézet
 id:^Praktik dokter|Klinik|rumah sakit
 it:^Studio medico|Clinica|ambulatorio|ospedale
 ja:^医者のオフィス|クリニック|病院
@@ -3286,7 +3286,7 @@ nl:^Jaagplek
 fi:^Metsästyspaikka
 fr:^Mirador
 de:^Hochsitz|Anstand
-hu:^Vadászles
+hu:^Magasles
 id:^Lokasi berburu
 it:^Torre di caccio
 ja:1^狩猟スタンド
@@ -3383,6 +3383,7 @@ da:3Parkeringsplads
 nl:parking
 fr:3parking
 de:Parking
+hu:Parkoló
 ja:パーキング|コインパーキング
 pt:3Parking
 pt-BR:3^Estacionamento
@@ -3435,6 +3436,7 @@ ar:^متجر أدوية|صيدلية
 nl:verdeelstation
 fi:3Farmasia
 fr:dispensaire
+hu:Gyógyszertár
 ja:ドラッグストア|薬剤師|調剤|薬屋
 ko:약물 매장|약종상
 pt:3Farmacêutico
@@ -3459,7 +3461,7 @@ nl:3^Brievenbus|post
 fi:^Postilaatikko
 fr:3^Boîte aux lettres|courrier
 de:3^Briefkasten|3Postfach
-hu:3^Levelesláda|posta
+hu:3^Postaláda|levelesláda
 id:^Kotak pos
 it:3^Casella
 ja:1^郵便ポスト|ポスト|郵便局
@@ -3523,6 +3525,7 @@ da:3Postkontor|posthus
 nl:3Postkantoor
 fr:3comptoir postal
 de:Postamt
+hu:Posta|postahivatal
 id:Kantor pos
 pl:listy
 pt-BR:3Correios
@@ -3545,7 +3548,7 @@ nl:^Uitschot|afval|prullenbak|vuilnis
 fi:^Roska
 fr:^Déchets|poubelle|déchet
 de:^Müllcontainer|Mülltonne|Abfälle|Müll
-hu:^Szemét
+hu:^Szemeteskonténer
 id:^Sampah
 it:^Spazzatura
 ja:^ゴミ|ごみ|リサイクル|再利用|ダストボックス
@@ -3578,7 +3581,7 @@ nl:^Milieustraat
 fi:^Kierrätyskeskus
 fr:^Centre de recyclage
 de:^Recyclinghof
-hu:^Újrahasznosító központ|hulladékgyűjtő központ
+hu:^Újrahasznosító központ|hulladékgyűjtő központ|hulladékudvar
 id:^TPA
 it:^Centro di riciclaggio
 ja:^リサクルセンター
@@ -3643,7 +3646,7 @@ nl:^Beschutting
 fi:^Turvapaikka
 fr:^Refuge
 de:^Schutzhütte|Schutzraum|Zivilschutz
-hu:^Menedék
+hu:^Esőbeálló|menedék
 id:^Tempat penampungan
 it:^Riparo
 ja:1^避難所|シェルター
@@ -3709,7 +3712,7 @@ nl:3^Toilet
 fi:^WC
 fr:3^Toilettes
 de:3^Toilette
-hu:3^Mosdó
+hu:^WC
 id:^Toilet
 it:3^Toilette
 ja:1^トイレ
@@ -3740,7 +3743,7 @@ cs:wc|toalety
 nl:wc
 fr:wc
 de:WC
-hu:WC
+hu:WC|mosdó|toalett|mellékhelyiség
 it:WC
 ja:お手洗い|便所|厠
 pl:wc|ubikacja|wychodek
@@ -3763,7 +3766,7 @@ nl:4^Universiteit
 fi:^Yliopisto
 fr:4^Université|école supérieure
 de:4^Universität|Uni|Hochschule|Institut
-hu:4^Egyetem
+hu:4^Egyetem|főiskola|felsőoktatás
 id:^Universitas
 it:4^Università|istituto
 ja:1^大学
@@ -3796,7 +3799,7 @@ nl:^Continent
 fi:^Maanosa
 fr:^Continent
 de:^Kontinent|Festland
-hu:^Kontinens
+hu:^Kontinens|földrész
 id:^Benua
 it:^Continente|terraferma
 ja:1^大陸
@@ -3895,7 +3898,7 @@ nl:^Stad
 fi:^Kaupunki
 fr:^Ville
 de:^Stadt
-hu:^Város
+hu:^Kisváros
 id:^Kota
 it:^Città
 ja:^町|村
@@ -3961,7 +3964,7 @@ nl:^Graafschap
 fi:^Lääni
 fr:^Comté
 de:^Kreis|Bezirk
-hu:^Kerület
+hu:^Megye|grófság|körzet|járás
 id:^Kabupaten
 it:^Contea
 ja:^郡
@@ -3993,7 +3996,7 @@ nl:^Deelstaat|regio|provincie
 fi:^Lääni
 fr:^État|province
 de:^Land|Staat|Kanton|Provinz
-hu:^Állam
+hu:^Állam|szövetségi állam|tartomány
 id:^Negara bagian
 it:^Provincia|stato
 ja:^州
@@ -4026,7 +4029,7 @@ nl:^Regio
 fi:^Alue
 fr:^Région
 de:^Region
-hu:^Régió
+hu:^Régió|tartomány
 id:^Wilayah
 it:^Regione
 ja:1^地方|地域
@@ -4092,7 +4095,7 @@ nl:^Buitenwijken|voorstad|wijk
 fi:^Esikaupunki
 fr:^Banlieue|arrondissement|quartier
 de:^Stadtteil|Kreis|Wohnbezirk|Wohnviertel
-hu:^Kerület
+hu:^Jelentős városrész
 id:^Pinggiran kota
 it:^Quartiere
 ja:1^区|地区
@@ -4125,7 +4128,7 @@ nl:^Gehucht|buurschap|dorpje|dorp
 fi:^Pieni kylä
 fr:^Hameau|village
 de:^Weiler|Dorf
-hu:^Tanya
+hu:^Falucska
 id:^Dusun
 it:^Piccolo villaggio
 ja:^村
@@ -4158,7 +4161,7 @@ nl:^Dorp|dorpje
 fi:^Kylä
 fr:^Village|hameau
 de:^Dorf|Weiler
-hu:^Falu
+hu:^Falu|község
 id:^Desa
 it:^Villaggio
 ja:^村
@@ -4191,7 +4194,7 @@ nl:^Plaats|localiteit
 fi:^Paikkakunta
 fr:^Localité
 de:^Örtlichkeit|Lokalität|Region|Ort
-hu:^Falu
+hu:^Dűlő|lakatlan hely
 id:^Wilayah
 it:^Località|luogo|regione|area
 ja:1^地域|僻地
@@ -4224,7 +4227,7 @@ nl:^Boerderij
 fi:^Maatila
 fr:^Ferme
 de:^Bauernhof|Farm
-hu:^Tanya
+hu:^Tanya|farm|ranch
 id:^Ladang
 it:^Fattoria|allevamento
 ja:1^農場
@@ -4355,7 +4358,7 @@ nl:^Pad|voetweg|trappen
 fi:^Polku
 fr:^Chemin
 de:^Weg|Fußweg|Pfad
-hu:^Ösvény
+hu:^Ösvény|gyalogút
 id:^Jalur
 it:^Sentiero|viottolo
 ja:1^歩道|小道|小路|小径|階段|獣道|遊歩道|パス
@@ -4388,7 +4391,7 @@ nl:^Straat|st|str|laan|weg
 fi:^Katu
 fr:^Rue|avenue|av|boul|boulevard|route
 de:^Straße|Boulevard|Avenue|Weg|Gasse
-hu:^Utca|út|u
+hu:^Utca|út|u.|sugárút|sgt.|körút|krt.
 id:^Jalan
 it:^Via|strada|corso|vicolo
 ja:1^ストリート|通り|道路|辻|筋
@@ -4421,7 +4424,7 @@ nl:3^Afrit|3uitgang|3kruising
 fi:^Poistumistie|liittymä
 fr:3^Sortie|3bifurcation
 de:4^Ausfahrt|Abfahrt
-hu:4^Kijárat|4csatlakozás
+hu:4^Kijárat|4csomópont
 id:^Keluar
 ja:1^ジャンクション|料金所|高速道路|インターチェンジ
 nb:^Utgang|kryss
@@ -4452,7 +4455,7 @@ nl:^Top|berg|bergtop|heuvel|heuveltop
 fi:^Huippu|vuori
 fr:^Sommet|montagne|mont|pic
 de:^Berg|Gebirge|Gipfel|Spitze|Pik
-hu:^Csúcs|hegy
+hu:^Hegycsúcs|hegy|csúcs
 id:^Puncak
 it:^Monte|montagna|cima|picco
 ja:1^山頂|山|頂|頂上|峰
@@ -4518,7 +4521,7 @@ nl:^Plas|water
 fi:^Lampi|vesi
 fr:^Étang|bassin|eau
 de:^Teich|Wasserbecken
-hu:^Tavacska|víz
+hu:^Tavacska|medence|víz
 id:^Kolam
 it:^Stagno|bacino
 ja:1^池
@@ -4584,7 +4587,7 @@ nl:^Bos|woud
 fi:^Metsä
 fr:^Forêt|bois
 de:^Wald|Urwald
-hu:^Erdő
+hu:^Erdő|őserdő
 id:^Hutan
 it:^Foresta
 ja:1^森林|森|林|人工林|自然林
@@ -4650,7 +4653,7 @@ nl:3^Hostel|jeugdherberg|motel
 fi:^Hostelli
 fr:3^Auberge de jeunesse|motel
 de:3^Herberge|Hostel|Gasthaus|Unterkunft
-hu:3^Hostel|szállás
+hu:3^Ifjúsági szálló|hostel|motel
 id:^Hostel
 it:3^Ostello
 ja:1^ホステル|宿泊|宿|民宿
@@ -4682,7 +4685,7 @@ da:motel
 nl:motel
 fr:motel
 de:Gasthaus
-hu:hotel|szállás
+hu:Szálloda|szálló|hotel|motel
 it:albergo
 ja:宿|宿泊|旅館
 pl:motel
@@ -4710,7 +4713,7 @@ nl:^Gasthuis|B&B|bed and breakfast|hostel
 fi:^Majatalo
 fr:^Maison d'hôtes|auberge de jeunesse
 de:^Gästehaus|Wohnheim|Unterkunft
-hu:^Vendégház|hotel
+hu:^Vendégház|panzió|szállás
 id:^Wisma tamu
 it:^Guest house|albergo|ostello
 ja:1^ゲストハウス|ホステル|民宿
@@ -4743,7 +4746,7 @@ nl:3^Motel|hostel
 fi:^Motelli
 fr:3^Motel|auberge de jeunesse
 de:3^Motel|Gasthaus|Wohnheim
-hu:3^Motel|szállás
+hu:3^Motel|ifjúsági szálló|szállás
 id:^Motel
 it:3^Motel|albergo|ostello
 ja:1^モーテル
@@ -4775,7 +4778,7 @@ nl:3^Berghut|alpenhut|hotel
 fi:^Vuorimajoitus|hotelli
 fr:^Hôtel de montagne|hôtel|auberge de jeunesse|cabane alpine
 de:4^Berghütte|Almhütte|Berghotel|Hotel|Unterkunft
-hu:^Hegyi menedék|kabin|hotel|szálloda
+hu:^Menedékház (személyzettel)|alpesi menedékház|szálloda|ifjúsági szálló|hostel
 id:^Penginapan di pegunungan|hotel
 it:^Hotel di montagna|baita|capanna|capanna di montagna|capanna alpina|hotel
 ja:1^山小屋|高山小屋|ヒュッテ|山の宿泊施設
@@ -4806,7 +4809,7 @@ nl:3^Kapper
 fi:^Kampaamo
 fr:3^Coiffeur|salon de coiffure
 de:3^Friseur|Frisiersalon|Frisör|Coiffeur
-hu:3^Fodrász
+hu:3^Fodrász|borbély
 id:^Penata rambut
 it:4^Parrucchiera
 ja:1^美容師|床屋|髪|パーマ|散髪|理髪
@@ -4839,7 +4842,7 @@ nl:3^Vliegveld|3vliegtuig
 fi:^Lentokenttä
 fr:3^Aéroport|3aérodrome|3avion
 de:3^Flughafen|4Flugzeug|Flugplatz
-hu:3^Repülőtér|3repülő
+hu:3^Repülőtér|3repülőgép|3repülő
 id:^Bandar udara
 it:3^Aeroporto|4aeroplano
 ja:1^空港
@@ -5037,7 +5040,7 @@ nl:4^Zwembad|sport
 fi:^Uima-allas
 fr:4^Piscine|sport
 de:4^Schwimmbecken|Sport
-hu:4^Úszómedence|sport
+hu:4^Úszómedence|uszoda|sport
 id:^Kolam renang
 it:4^Piscina|sport
 ja:1^プール|スイミング|スイミングプール|水泳場|水泳
@@ -5169,6 +5172,7 @@ ru:4милиция
 ar:الشرطة
 cs:4bezpečnost
 de:Polizeiwache|Polizei
+hu:Rendőrség
 it:Posto di polizia
 ja:1屯所|ポリス|交番|お巡りさん|おまわりさん|通報
 ko:보안대|경찰
@@ -5191,7 +5195,7 @@ nl:4^Ambassade
 fi:^Suurlähetystö
 fr:4^Ambassade
 de:4^Botschaft
-hu:4^Nagykövetség
+hu:4^Nagykövetség|külképviselet|konzulátus|főkonzulátus
 id:^Kedutaan
 it:4^Ambasciata
 ja:1^大使館
@@ -5289,7 +5293,7 @@ nl:3^Auto reparatie|auto|wagen
 fi:^Autokorjaamo
 fr:3^Réparation d'automobiles|3garage|4station service|voiture|auto
 de:3^Autowerkstatt|Kfz|Auto
-hu:3^Gépkocsi szervíz|4javítóműhely|kocsi
+hu:3^Autószerelő|szerviz|gépkocsiszervíz|4javítóműhely|szerelőműhely|kocsi
 id:^Bengkel mobil
 it:3^Riparazione auto|auto|macchina|3automobile|vettura
 ja:1^自動車修理|車|自動車|カー|リペア|修理|カーリペア
@@ -5355,7 +5359,7 @@ nl:^Caravan site|camping
 fi:^Asuntovaunupaikka|Retkeily
 fr:4^Parc caravanier|VR|caravane|camping-car
 de:4^Wohnwagenstellplatz|Campingplatz|Wohnwagenplatz|Wohnmobilpark
-hu:4^Karaván pihenő|kemping
+hu:4^Lakókocsihely|kemping
 id:^Lokasi perkemahan
 it:^Area per campeggiatori
 ja:1^キャラバンサイト
@@ -5386,7 +5390,7 @@ nl:^Kantoor|ambt
 fi:^Toimisto
 fr:^Bureau|compagnie
 de:^Büro|Amt
-hu:^Hivatal|cég
+hu:^Iroda|hivatal|cég|vállalat
 id:^Kantor
 it:^Ufficio
 ja:^オフィス|1事務所
@@ -5451,7 +5455,7 @@ nl:^Overheidskantoor|overheidspand
 fi:^Viranomaistoimito
 fr:^Administration publique
 de:^Regierungsstelle
-hu:^Állami iroda
+hu:^Kormányzati iroda
 id:^Kantor pemerintah
 it:^Ufficio governativo|ufficio amministrativo
 ja:^官庁
@@ -5483,7 +5487,7 @@ nl:^Advocatenkantoor
 fi:^Lakitoimisto
 fr:^Cabinet d'avocat
 de:^Anwaltsbüro|Anwaltskanzlei
-hu:^Ügyvédi iroda
+hu:^Ügyvéd
 id:^Kantor pengacara
 it:^Studio legale
 ja:^弁護士事務所
@@ -5514,7 +5518,7 @@ nl:^Mobiele provider
 fi:^Matkapuhelinoperaattori
 fr:^Opérateur mobile
 de:^Mobilbetreiber|Mobilfunkanbieter
-hu:^Mobilüzemeltető
+hu:^Távközlési vállalat irodája|mobiltelefonszolgáltató|telefonszolgáltató
 id:^Operator seluler
 it:^Operatore di telefonia mobile
 ja:^携帯電話事業者|キャリア
@@ -5669,7 +5673,7 @@ nl:^Airconditioning|luchtbehandeling
 fi:^Ilmastointilaite
 fr:^Climatiseur
 de:^Heizung|Lüftung|Klima|Installateur
-hu:^Hűtés-fűtés szerelő|légkondicionáló
+hu:^Fűtés-, szellőztetés- és légkondicionálás-szerelő|hűtés- és fűtésszerelő|fűtésszerelő|légkondicionálás-szerelő
 id:^Hvac
 it:^Impianti HVAC|aria condizionata
 ja:^冷暖房空調|エアコン
@@ -5700,7 +5704,7 @@ nl:^Metaalarbeider
 fi:^Metallimies
 fr:^Métallo|métallurgiste
 de:^Schlosser
-hu:^Lakatos|szerelő
+hu:^Fémiparos|lakatos
 id:^Tukang besi
 it:^Fabbro
 ja:^金属工
@@ -5731,7 +5735,7 @@ nl:^Schilder
 fi:^Maalari
 fr:^Peintre
 de:^Maler
-hu:^Festő
+hu:^Szobafestő|festő|mázoló
 id:^Tukang cat
 it:^Imbianchino|pittore
 ja:^塗装工
@@ -5762,7 +5766,7 @@ nl:^Fotograaf
 fi:^Valokuvaaja
 fr:^Photographe|studio photographique
 de:^Fotograf|Fotostudio
-hu:^Fényképész|fényképész stúdió
+hu:^Fényképész|fényképészstúdió|fotográfus
 id:^Juru foto
 it:^Fotografo|studio di fotografia
 ja:^写真家|写真撮影スタジオ
@@ -5825,7 +5829,7 @@ nl:^Schoenmaker|schoenmakerij
 fi:^Suutari
 fr:^Cordonnier
 de:^Schuhreparatur
-hu:^Cipész
+hu:^Cipész|suszter
 id:^Tukang sepatu
 it:^Calzolaio|Riparazione di calzature
 ja:^靴修理
@@ -5887,7 +5891,7 @@ nl:^Plein
 fi:^Aukio
 fr:^Place
 de:^Platz|Fußgängerzone
-hu:^Tér
+hu:^Tér|sétálóutca
 id:^Alun-alun
 it:^Piazza
 ja:^広場
@@ -5985,7 +5989,7 @@ nl:WiFi|Wi-Fi
 fi:WiFi|Wi-Fi
 fr:WiFi|Wi-Fi
 de:WLAN|WiFi|Wi-Fi
-hu:WiFi|Wi-Fi
+hu:WiFi|Wi-Fi|WLAN
 id:WiFi|Wi-Fi
 it:WiFi|Wi-Fi
 ja:無線LAN
@@ -6050,7 +6054,7 @@ nl:^Strand
 fi:^Ranta
 fr:^Plage
 de:^Strand
-hu:^Strand
+hu:^Természetes strand|strand
 id:^Pantai
 it:^Spiaggia
 ja:^ビーチ
@@ -6082,7 +6086,7 @@ nl:^Flitspaal
 fi:^Nopeusvalvontakamera
 fr:^Radar de vitesse
 de:^Blitzer
-hu:^Traffipax
+hu:^Traffipax|4sebességmérő kamera
 id:^Kamera Kecepatan
 it:^Autovelox
 ja:^オービス
@@ -6177,7 +6181,7 @@ nl:^Fotowinkel|kaders
 fi:^Valokuvakauppa|kehykset
 fr:^Matériel de photographie|Cadres|Boutique
 de:^Fotofachgeschäft|Rahmen
-hu:^Fénykép üzlet|keretek|üzlet
+hu:^Fotósbolt|fényképkeret|képkeret|keret
 id:^Studio Foto|bingkai
 it:^Negozio di fotografia|cornici
 ja:^写真屋|フレーム|店
@@ -6240,7 +6244,7 @@ nl:^Outdooruitrusting|trekking|klimmen|kamperen
 fi:^Ulkoiluvarusteet|vaellus|kiipeily|retkeily
 fr:^Matériel de loisirs de plein air|Randonnée|Escalade|Camping
 de:^Outdoor-Ausrüstung|Trekking|Klettern|Camping
-hu:^Kültéri felszerelés|trekking|mászás|kemping|üzlet
+hu:^Túrabolt|hegymászóbolt|trekking|mászás|táborozás
 id:^Peralatan Outdoor|lintas alam|mendaki|kemah
 it:^Attrezzatura sportiva|trekking|arrampicata|campeggio
 ja:^アウトドア用品|トレッキング|クライミング|店
@@ -6271,7 +6275,7 @@ nl:^Droogkuis|wassen
 fi:^Kuivapesula|pesula
 fr:^Nettoyage à sec|Lavage
 de:^Chemische Reinigung|Reinigung
-hu:^Ruhatisztító|tisztító
+hu:^Ruhatisztító|vegytisztító|2patyolat|2tisztító
 id:^Cuci Kering|kering
 it:^Lavaggio a secco|lavanderia
 ja:^クリーニング屋|クリーニング
@@ -6303,7 +6307,7 @@ nl:^Bandenwinkel
 fi:^Rengasliike
 fr:^Magasin de pneus
 de:^Reifen-Shop
-hu:^Gumi szaküzlet|üzlet
+hu:^Autógumi-szaküzlet
 id:^Toko Ban
 it:^Gommista
 ja:^タイヤ専門店|ショップ
@@ -6399,7 +6403,7 @@ nl:^Oplaadstation|opladen
 fi:^Latausasema|lataus
 fr:^Station de recharge|Recharge
 de:^Ladestation|Laden
-hu:^Töltő állomás|töltés
+hu:^Elektromos töltőállomás|töltőállomás
 id:^Pusat Pengisian Daya|pengisian daya
 it:^Stazione di ricarica|ricarica
 ja:^充電ステーション|充電
@@ -6431,7 +6435,7 @@ nl:^Crèche|kinderzorg
 fi:^Päivähoito|Lastenhoito
 fr:^Garderie|Garde d'enfant
 de:^Kindertagesstätte|Kinderzimmer|Kindergarten|Kinderbetreuung
-hu:^Bölcsőde|Gyermekfelügyelet
+hu:^Bölcsőde|gyermekfelügyelet|gyermekgondozás
 id:^Penitipan Anak|Perawatan Anak
 it:^Asilo|cura dell'infanzia
 ja:^託児所|保育園
@@ -6463,7 +6467,7 @@ nl:^Fietsenstalling
 fi:^Polkupyöräpysäköinti
 fr:^Parking à vélo
 de:^Fahrradständer
-hu:^Kerékpárparkoló
+hu:^Kerékpártároló
 id:^Parkir Sepeda
 it:^Parcheggio biciclette
 ja:^駐輪場
@@ -6527,7 +6531,7 @@ nl:^Praatpaal
 fi:^Hätäpuhelin
 fr:^Téléphone d'urgence
 de:^Notruftelefon|Nottelefon
-hu:^Sürgősségi telefon
+hu:^Segélyhívó telefon
 id:^Telepon darurat
 it:^Telefono di emergenza
 ja:^緊急電話
@@ -6561,7 +6565,7 @@ nl:^Fitnesscentrum|sportschool
 fi:^Kuntosali
 fr:^Centre fitness|salle de gym
 de:^Fitnessstudio
-hu:^Fitnesz-terem
+hu:^Fitneszterem|fitneszklub|tornaterem|konditerem
 id:^Pusat kebugaran|senam
 it:^Centro benessere|palestra
 ja:^フィットネスセンター、ジム
@@ -6625,7 +6629,7 @@ nl:^Waterbron
 fi:^Kaivo
 fr:^Puits à eau
 de:^Brunnen
-hu:^Ivókút
+hu:^Kút|kerekes kút
 id:^Sumur air
 it:^Pozzo d'acqua
 ja:^井戸
@@ -6722,7 +6726,7 @@ nl:^Dierenwinkel
 fi:^Eläinkauppa
 fr:^Animalerie
 de:^Tierhandlung
-hu:^Házikedvenc-üzlet
+hu:^Kisállat-kereskedés
 id:^Toko hewan
 it:^Negozio di animali
 ja:^ペットショップ
@@ -6754,7 +6758,7 @@ nl:^Dierentuin
 fi:^Eläintarha
 fr:^Zoo
 de:^Zoo
-hu:^Állatkert
+hu:^Állatkert|vadaspark
 id:^Kebun binatang
 it:^Zoo
 ja:^動物園
@@ -6788,7 +6792,7 @@ nl:^Toeristische informatie
 fi:^Turistitoimisto
 fr:^Office de tourisme
 de:^Fremdenverkehrsamt
-hu:^Idegenforgalmi iroda
+hu:^Tourinform iroda|idegenforgalmi iroda|turistainformáció
 id:^Kantor wisata
 it:^Ufficio turistico
 ja:^観光案内所
@@ -6820,7 +6824,7 @@ nl:^Wijkcentrum
 fi:^Monitoimitalo
 fr:^Centre communautaire
 de:^Bürgerhaus
-hu:^Közösségi központ
+hu:^Közösségi ház|művelődési ház|kultúrház
 id:^Pusat komunitas
 it:^Centro ricreativo
 ja:^コミュニティセンター
@@ -6852,7 +6856,7 @@ nl:^Rechtbank
 fi:^Oikeustalo
 fr:^Palais de justice
 de:^Justizgebäude
-hu:^Bíróság
+hu:^Bíróság|törvényszék
 id:^Gedung pengadilan
 it:^Tribunale
 ja:^裁判所
@@ -6980,7 +6984,7 @@ nl:^Parkeerplaats
 fi:^Levähdyspaikka
 fr:^Aire de repos
 de:^Rastplatz
-hu:^Pihenőzóna
+hu:^Pihenőhely
 id:^Tempat istirahat
 it:^Area di sosta
 ja:^休憩所
@@ -7011,7 +7015,7 @@ nl:^Verkeerslichten
 fi:^Liikennevalot
 fr:^Feux de circulation
 de:^Verkehrsampel
-hu:^Közlekedési lámpák
+hu:^Jelzőlámpa|közlekedési lámpa
 id:^Lampu lalu lintas
 it:^Semaforo
 ja:^交通信号
@@ -7043,7 +7047,7 @@ nl:^Fabrieksschoorsteen
 fi:^Tehtaan piippu
 fr:^Cheminée d'usine
 de:^Fabrikschornstein
-hu:^Gyárkémény
+hu:^Gyárkémény|kémény
 id:^Cerobong asap pabrik
 it:^Ciminiera industriale
 ja:^工場煙突
@@ -7106,7 +7110,7 @@ nl:^Substation
 fi:^Muuntoasema
 fr:^Sous-station
 de:^Umspannwerk
-hu:^Kapcsolószekrény
+hu:^Elektromos alállomás|alállomás
 id:^Stasiun bawah tanah
 it:^Sottostazione elettrica
 ja:^変電所
@@ -7169,7 +7173,7 @@ nl:^Visboer
 fi:^Kalakauppias
 fr:^Poissonnier
 de:^Fischhändler
-hu:^Halüzlet
+hu:^Tengerihalbolt|halbolt|halüzlet
 id:^Penjual Ikan
 it:^Pescivendolo
 ja:^魚屋
@@ -7233,7 +7237,7 @@ nl:^Wijn|Slijterij
 fi:^Alkoholimyymälä
 fr:^Hors licence
 de:^Wein- und Spirituosengeschäft
-hu:^Szeszesital-üzlet
+hu:^Borkereskedés
 id:^Toko anggur
 it:^Negozio di alcolici
 ja:^ワイン|酒屋|ワインショップ
@@ -7265,7 +7269,7 @@ nl:^Auto onderdelen
 fi:^Auton osat
 fr:^Pièces de voiture
 de:^Autoteile
-hu:^Autó alkatrészek
+hu:^Autóalkatrész|gépkocsialkatrész
 id:^Bagian mobil
 it:^Ricambi auto
 ja:^車両部品
@@ -7299,7 +7303,7 @@ nl:^Chalet
 fi:^Alppimaja
 fr:^Chalet
 de:^Hütte
-hu:^Turistaház
+hu:^Nyaralóház|kulcsosház|turistaház
 id:^Chalet
 it:^Chalet
 ja:^シャレー|山小屋
@@ -7458,7 +7462,7 @@ nl:^Betaalautomaat parkeergarage
 fi:^Pysäköintimaksuautomaatti
 fr:^Horodateur
 de:^Parkautomat
-hu:^Parkolóautomata
+hu:^Parkolójegy-automata
 id:^Mesin pembayaran tiket parkir
 it:^Parcometro
 ja:^駐車券支払機
@@ -7490,7 +7494,7 @@ nl:^Blok
 fi:^Este
 fr:^Bloc
 de:^Block
-hu:^Blokk
+hu:^Tömb
 id:^Blok
 it:^Blocco
 ja:^ブロック
@@ -7522,7 +7526,7 @@ nl:^Pilaar
 fi:^Tolppa
 fr:^Pilier
 de:^Poller
-hu:^Oszlop
+hu:^Terelőoszlop|oszlop
 id:^Pilar
 it:^Pilastro
 ja:^柱
@@ -7554,7 +7558,7 @@ nl:^Grenscontrole
 fi:^Rajavalvonta
 fr:^Contrôle aux frontières
 de:^Grenzkontrolle
-hu:^Határállomás
+hu:^Határátkelő
 id:^Gerbang perbatasan
 it:^Controllo di frontiera
 ja:^国境管理
@@ -7650,7 +7654,7 @@ nl:^Slagboom
 fi:^Puomi
 fr:^Barrière levante
 de:^Schranke
-hu:^Sorompó
+hu:^Emelkedő sorompó|sorompó
 id:^Polisi tidur
 it:^Barriera ferroviaria
 ja:^ブームバリア
@@ -7682,7 +7686,7 @@ nl:^Tourniquet
 fi:^Portaat
 fr:^Échalier
 de:^Zaunübertritt
-hu:^Átjáró
+hu:^Kerítésátjáró|átjáró
 id:^Undakan
 it:^Scaletta per recinzioni
 ja:^回転扉
@@ -7714,7 +7718,7 @@ nl:^Tolhokje
 fi:^Tietulliasema
 fr:^Poste de péage
 de:^Mautstelle
-hu:^Díjfizető kapu
+hu:^Fizetőkapu|díjfizetőkapu|útdíjfizető-kapu
 id:^Gerbang tol
 it:^Casello di pedaggio
 ja:^料金所
@@ -7778,7 +7782,7 @@ nl:^Waterpark
 fi:^Vesipuisto
 fr:^Centre aquatique
 de:^Freizeitbad
-hu:^Aquapark
+hu:^Aquapark|strand|fürdő
 id:^Taman air
 it:^Parco acquatico
 ja:^ウォーターパーク
@@ -7970,7 +7974,7 @@ nl:^Vulkaan
 fi:^Tulivuori
 fr:^Volcan
 de:^Vulkan
-hu:^Tűzhányó
+hu:^Tűzhányó|vulkán
 id:^Gunung berapi
 it:^Vulcano
 ja:^火山
@@ -8002,7 +8006,7 @@ nl:^Makelaar
 fi:^Kiinteistönvälittäjä
 fr:^Agent immobilier
 de:^Immobilienmakler
-hu:^Ingatlanügynök
+hu:^Ingatlaniroda
 id:^Agen ril estat
 it:^Agenzia immobiliare
 ja:^不動産業者
@@ -8034,7 +8038,7 @@ nl:^Elektriciteitspaal
 fi:^Sähköpylväs
 fr:^Poteau électrique
 de:^Freileitungsmast|Strommast
-hu:^Villanyoszlop
+hu:^Villanyoszlop|távvezetékoszlop
 id:^Menara listrik
 it:^Palo elettrico
 ja:^電柱
@@ -8128,7 +8132,7 @@ nl:^Klimhal
 fi:^Kiipeilykeskus
 fr:^Centre d'escalade
 de:^Kletterzentrum
-hu:^Hegymászó központ
+hu:^Hegymászóközpont
 id:^Pusat Peralatan Mendaki
 it:^Centro di arrampicata
 ja:^クライミングセンター
@@ -8288,7 +8292,7 @@ nl:^Complex
 fi:^Lomakohteet
 fr:^Complexe touristique
 de:^Resort
-hu:^Resort hotel
+hu:^Üdülőhely|resort
 id:^Sanggraloka
 it:^Resort
 ja:^リゾート
@@ -8385,7 +8389,7 @@ el:^Παγωτατζίδικο
 es:^Heladería
 fi:^Jäätelökioski
 fr:^Stand de crème glacée
-hu:^Fagylaltárus
+hu:^Fagylaltozó
 id:^Kios Es Krim
 it:^Chiosco gelati
 ja:^アイスクリーム屋
@@ -8418,7 +8422,7 @@ el:^Καφετέρια με Ίντερνετ
 es:^Cibercafé
 fi:^Internetkahvila
 fr:^Internet café
-hu:^Internet kávézó
+hu:^Internetkávézó
 id:^Kafe Internet
 it:^Internet Cafe
 ja:^インターネットカフェ
@@ -8451,7 +8455,7 @@ el:^Χώρος στάθμευσης μοτοσικλετών
 es:^Aparcamiento de motos
 fi:^Moottoripyörien pysäköinti
 fr:^Parking moto
-hu:^Motorbicikli parkoló
+hu:^Motorkerékpár-parkoló
 id:^Tempat Parkir Sepeda Motor
 it:^Parcheggio moto
 ja:^バイク駐輪場
@@ -8484,7 +8488,7 @@ el:^Γηροκομείο
 es:^Residencia de ancianos
 fi:^Hoitokoti
 fr:^Maison de retraite
-hu:^Idősek otthona
+hu:^Ápolóotthon|idősek otthona
 id:^Panti Jompo
 it:^Casa di riposo
 ja:^養護施設
@@ -8517,7 +8521,7 @@ el:^Τερματικό πληρωμών
 es:^Terminal de pago
 fi:^Maksupääte
 fr:^Terminal de paiement
-hu:^Fizető terminál
+hu:^Fizetőterminál
 id:^Terminal Pembayaran
 it:^Terminale di pagamento
 ja:^決済端末
@@ -8549,7 +8553,7 @@ el:^Ντους
 es:^Ducha
 fi:^Suihku
 fr:^Douche
-hu:^Tusoló
+hu:^Zuhanyzó|tusoló
 id:^Pancuran
 it:^Doccia
 ja:^シャワー
@@ -8582,7 +8586,7 @@ el:^Παροχή νερού
 es:^Fuente de agua potable
 fi:^Vesipiste
 fr:^Point d’eau
-hu:^Vízvételi pont
+hu:^Vízcsatlakozás|vízvételi pont
 id:^Titik Air
 it:^Distributore acqua
 ja:^給水所
@@ -8680,7 +8684,7 @@ el:^Γυμναστήριο
 es:^Gimnasio
 fi:^Kuntokeskus
 fr:^Station de fitness
-hu:^Fitness állomás
+hu:^Fitneszpark
 id:^Stasiun Kebugaran
 it:^Centro fitness
 ja:^フィットネスステーション
@@ -8779,7 +8783,7 @@ el:^Ασφαλιστικό γραφείο
 es:^Oficina de seguros
 fi:^Vakuutuslaitos
 fr:^Bureau d’assurance
-hu:^Biztosító iroda
+hu:^Biztosítóiroda
 id:^Kantor Asuransi
 it:^Ufficio assicurazioni
 ja:^保険会社
@@ -8845,7 +8849,7 @@ el:^Κατάστημα ερωτικών ειδών
 es:^Sex Shop
 fi:^Erotiikkaliike
 fr:^Boutique érotique
-hu:^Erotikus bolt
+hu:^Erotikus bolt|szexbolt
 id:^Toko Erotik
 it:^Sexy Shop
 ja:^アダルトショップ
@@ -8878,7 +8882,7 @@ el:^Γραφεία τελετών
 es:^Funeraria
 fi:^Hautaustoimisto
 fr:^Pompes funèbres
-hu:^Temetkezési vállalkozó
+hu:^Temetkezési iroda
 id:^Direktur Pemakaman
 it:^Pompe funebri
 ja:^葬儀屋
@@ -8910,7 +8914,7 @@ el:^Αίθουσα μασάζ
 es:^Salón de masajes
 fi:^Hierontahuone
 fr:^Salon de massage
-hu:^Masszázs szalon
+hu:^Masszázsszalon
 id:^Tempat Pijat
 it:^Centro massaggi
 ja:^マッサージパーラー
@@ -9041,7 +9045,7 @@ el:^Κατάστημα γραφικής ύλης
 es:^Papelería
 fi:^Kirjoitustarvikekauppa
 fr:^Papeterie
-hu:^Írószer bolt
+hu:^Papírbolt|írószerbolt
 id:^Toko Alat Tulis
 it:^Cartoleria
 ja:^文房具店
@@ -9074,7 +9078,7 @@ el:^Τατουάζ
 es:^Tatuajes
 fi:^Tatuointiliike
 fr:^Salon de tatouage
-hu:^Tetováló szalon
+hu:^Tetoválószalon
 id:^Tempat Tato
 it:^Studio tatuaggi
 ja:^タトゥーパーラー
@@ -9107,7 +9111,7 @@ el:^Ψιλικατζίδικο
 es:^«Todo a cien»
 fi:^Halpakauppa
 fr:^Bazar
-hu:^Vegyeskereskedés
+hu:^100 forintos bolt|olcsóbolt
 id:^Toko Kelontong
 it:^Negozio di accessori
 ja:^雑貨店
@@ -9140,7 +9144,7 @@ el:^Καλύβα
 es:^Cabaña
 fi:^Autiotupa
 fr:^Cabane sauvage
-hu:^Kunyhó a vadonban
+hu:^Menedékház (személyzet nélkü)|hegyi menedékház
 id:^Pondok Alam Liar
 it:^Rifugio
 ja:^無人小屋
@@ -9164,6 +9168,7 @@ zh-Hant:^山屋
 sponsored-holiday
 en:^Christmas or New Year Celebrations
 ru:^Празднование Рождества или Нового года
+hu:^Gyűjtsd össze az összes tételt, és nyerj!
 
 sponsored-partner2
 en:^Luggage Hero|3luggagehero
