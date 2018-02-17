@@ -12,7 +12,7 @@
     fi = Tietoja
     fr = À propos de
     de = Über Karten
-    hu = A programról
+    hu = Az alkalmazásról
     id = Tentang
     it = Informazioni
     ja = 情報
@@ -340,7 +340,7 @@
     fi = Lataus epäonnistui, yritä uudelleen koskettamalla
     fr = Échec lors du téléchargement. Toucher de nouveau pour un essai de plus.
     de = Herunterladen fehlgeschlagen. Antippen für einen neuen Versuch.
-    hu = Letöltés sikertelen. Kérjük próbálja újra!
+    hu = A letöltés sikertelen. Érintse meg a képernyőt egy újabb kísérlethez.
     id = Pengunduhan gagal, sentuh untuk mencoba sekali lagi
     it = Download fallito, tocca di nuovo per un altro tentativo
     ja = ダウンロードが失敗しました。もう一度試すには画面をタッチしてください。
@@ -501,7 +501,7 @@
     fi = Kiitos kun käytät MAPS.ME:tä! Pidätkö sovelluksesta? Kerro kavereillesi siitä! Se on meille paras mahdollinen kiitos.
     fr = Merci d’avoir utilisé MAPS.ME ! Vous aimez cette application ? Parlez-en à vos amis ! Ce serait la meilleure preuve de gratitude à notre égard.
     de = Danke, dass Sie MAPS.ME nutzen! Gefällt Ihnen die App? Erzählen Sie Ihren Freunden davon! Das ist der beste Dank für uns.
-    hu = Köszönjük, hogy a MAPS.ME-t használja! Kedveli az appot? Akkor számoljon be a barátainak róla. Ez lenne a legnagyobb hála, amit adhat nekünk.
+    hu = Köszönjük, hogy a MAPS.ME-t használja! Kedveli az alkalmazást? Akkor mesélje el barátainak is. Ez a legnagyobb köszönet, amit adhat.
     id = Terima kasih karena menggunakan MAPS.ME! Apakah Anda suka aplikasi ini? Beri tahukan kepada teman-teman Anda! Ini akan menjadi ungkapan terima kasih yang terbaik bagi kami.
     it = Grazie per aver utilizzato MAPS.ME! Ti piace l’app? Dillo ai tuoi amici! Questo è il miglior segno di gratitudine.
     ja = MAPS.MEをご利用いただきありがとうございます! このアプリが好きですか? お友達にも教えてあげてください! アプリを広めていただければ大変嬉しく思います。
@@ -586,7 +586,7 @@
     fi = Jätä arviointi
     fr = Laisser une critique
     de = Bericht abgeben
-    hu = Ajánlás írása
+    hu = Vélemény írása
     id = Tulis Ulasan
     it = Lascia una recensione
     ja = 評価する
@@ -731,6 +731,7 @@
     ru = ГБ
     uk = ГБ
     el = GB
+    hu = GB
 
   [miles]
     comment = Choose measurement on first launch alert - choose imperial system button
@@ -777,7 +778,7 @@
     fi = Sijaintini
     fr = Ma position
     de = Mein Standort
-    hu = Saját helyzet
+    hu = Pozícióm
     id = Posisi Saya
     it = La mia posizione
     ja = 現在地
@@ -829,7 +830,7 @@
     fi = Vapauta tilaa laitteellasi ladataksesi tiedoston %@
     fr = Veuillez d'abord libérer de l'espace sur votre appareil afin de télécharger %@
     de = Kein Speicherplatz vorhanden. Löschen Sie bitte unnötige Karten oder Apps, um %@ herunterzuladen.
-    hu = Kérjük szabadítson fel helyet az eszközön, hogy le tudja tölteni %@-t
+    hu = Kérjük, szabadítson fel helyet az eszközön, hogy le tudja tölteni %@-t
     id = Mohon bebaskan ruang pada perangkat Anda terlebih dahulu untuk mengunduh %@
     it = Cortesemente libera spazio sul tuo dispositivo prima per poter scaricare %@
     ja = %@をダウンロードするため、デバイスの空き容量を確認してください
@@ -1185,7 +1186,7 @@
     fi = Laitteen tai sovelluksen kaikki sijaintipalvelut ovat tällä hetkellä poissa käytöstä. Ota ne käyttöön Asetukset-valikossa.
     fr = Tous les services de localisation de cet appareil sont désactivés, ou ils le sont pour cette application. Veuillez les activer dans les paramètres.
     de = Ortungsdienste sind für dieses Gerät oder die App deaktiviert. Bitte aktivieren Sie diese in den Einstellungen.
-    hu = Ezen az eszközön jelenleg minden helyzetmeghatározó szolgáltatás ki van kapcsolva. Kérjük kapcsolja be ezeket a Beállítások között.
+    hu = Ezen az eszközön jelenleg minden helyzetmeghatározó szolgáltatás ki van kapcsolva. Kérjük, kapcsolja be ezeket a Beállítások között.
     id = Saat ini semua Layanan Lokasi untuk perangkat atau aplikasi ini non-aktif. Mohon aktifkan lewat Setelan.
     it = Attualmente hai disattivati tutti i servizi di locazione per questo dispositivo o applicazione. Cortesemente abilitali nelle Impostazioni.
     ja = 端末の位置情報サービスが無効になっているか、このアプリケーションからの位置情報利用が制限されています。端末の設定を有効化してください。
@@ -1282,7 +1283,7 @@
     fi = ^\non lisätty latausjonoon.
     fr = ^\nest ajouté à la file de téléchargement
     de = ^\nwird zur Herunterladen-Warteschleife hinzugefügt
-    hu = ^\n-t hozzáadtuk a letöltési sorhoz
+    hu = ^\n hozzáadva a letöltési sorhoz
     id = ^\ntelah ditambahkan ke antrean pengunduhan.
     it = ^\naggiunto alla coda di download
     ja = ^\nをダウンロードキューに追加しました
@@ -1610,7 +1611,7 @@
     fi = Yhteysasetukset
     fr = Paramètres de connexion
     de = Verbindungseinstellungen
-    hu = Kapcsolat beállítások
+    hu = Kapcsolatbeállítások
     id = Pengaturan Koneksi
     it = Impostazioni di connessione
     ja = 接続設定
@@ -1800,7 +1801,7 @@
     fi = Irrota USB-kaapeli tai syötä muistikortti käyttääksesi MAPS.ME -sovellusta
     fr = Veuillez débrancher le câble USB ou insérer la carte SD pour utiliser MAPS.ME
     de = Bitte USB-Kabel entfernen oder Speicherkarte einsetzen, um MAPS.ME zu verwenden
-    hu = Kérjük bontsa az USB kapcsolatot vagy helyezzen be memóriakártyát a MAPS.ME használatához
+    hu = Kérjük, bontsa az USB kapcsolatot vagy helyezzen be egy memóriakártyát a MAPS.ME használatához
     id = Mohon lepas kabel USB atau masukkan kartu memori untuk menggunakan MAPS.ME
     it = Coortesemente scollega il cavo USB oppure inserisci la scheda di memoria per l'usco dell'app
     ja = MAPS.MEを利用するにはUSBケーブルを抜くかメモリーカードを挿入してください
@@ -1832,7 +1833,7 @@
     fi = Vapauta ensin tilaa SD-kortilta/USB-massamuistilta käyttääksesi sovellusta
     fr = Veuillez d'abord libérer de l'espace sur la carte SD/le stockage USB afin d'utiliser l'appli
     de = Bitte zuerst Speicherplatz auf SD-Karte/USB-Speicher freigeben, um die Anwendung zu nutzen
-    hu = Kérjük szabadítson fel helyet az SD kártyán / USB tárolón az alkalmazás használatához!
+    hu = Kérjük, szabadítson fel helyet az SD kártyán / USB tárolón az alkalmazás használatához!
     id = Mohon bebaskan sejumlah ruang pada kartu SD/penyimpanan USB terlebih dahulu untuk menggunakan aplikasi
     it = Libera prima dello spazio sulla scheda Sd/ memoria USB per usare l'app
     ja = アプリを起動するにはSDカード/USBストレージの空き容量を確保する必要があります
@@ -1896,7 +1897,7 @@
     fi = Ole hyvä ja vapauta ensin %1$@ laitteeltasi ladataksesi %2$@
     fr = Veuillez d'abord libérer %1$@ sur votre appareil avant de télécharger %2$@
     de = Bitte zuerst %1$@ Platz schaffen, um %2$@ herunterzuladen
-    hu = Kérjük szabadítson fel %1$@-t az eszközön %2$@ letöltéséhez!
+    hu = Kérjük, szabadítson fel %1$@-t az eszközön %2$@ letöltéséhez!
     id = Mohon bebaskan %1$@ pada perangkat Anda terlebih dahulu untuk mengunduh %2$@
     it = Libera %1$@ sul dispositivo prima per poter scaricare %2$@
     ja = %2$@をダウンロードするにはデバイスに%1$@の空き容量が必要です
@@ -2023,7 +2024,7 @@
     fi = Ladataan %@. Voit nyt jatkaa kartalle.
     fr = %@ en téléchargement. Vous pouvez\nmaintenant aller sur la carte.
     de = %@ wird heruntergeladen. Sie können jetzt\nzur Karte weitergehen.
-    hu = %@ letöltése. Mos továbbléphet\na térképhez.
+    hu = %@ letöltése. Most már továbbléphet\na térképhez.
     id = Sedang mengunduh %@. Sekarang Anda dapat melanjutkan ke peta.
     it = Sto scaricando %@. Puoi ora\nprocedere con la mappa.
     ja = %@をダウンロードしました\nマップを表示可能です
@@ -2055,7 +2056,7 @@
     fi = Ladataanko %@?
     fr = Télécharger %@ ?
     de = %@ herunterladen?
-    hu = Letöltsem %@-t?
+    hu = Letöltsük-e ezt: %@?
     id = Unduh %@?
     it = Vuoi scaricare %@?
     ja = %@をダウンロードしますか？
@@ -2087,7 +2088,7 @@
     fi = Päivitetäänkö %@?
     fr = Mettre %@ à jour ?
     de = %@ aktualisieren?
-    hu = Frissítsem %@-t?
+    hu = Frissítsük-e ezt: %@?
     id = Perbarui %@?
     it = Vuoi aggiornare %@?
     ja = %@を更新しますか？
@@ -2922,7 +2923,7 @@
     fi = Sinulla ei vielä ole kirjanmerkkejä.\nLisää kirjanmerkki napsauttamalla mitä tahansa paikkaa kartalla.\nVoit myös tuoda kirjanmerkkejä muista lähteistä MAPS.ME:ssä käytettäviksi avaamalla KML/KMZ-kirjanmerkkitiedoston sähköpostistasi, Dropbox-tililtäsi tai verkko-osoitteesta.
     fr = Vous n'avez encore aucun signet.\nTouchez n'importe où sur la carte pour en ajouter un.\nLes signets provenant d'autres sources peuvent aussi être importés et affichés dans MAPS.ME. Ouvrez des fichiers KML/KMZ contenant des signets enregistrés, à partir d'un courriel, de Dropbox ou d'un lien Web.
     de = Sie haben bislang noch keine Lesezeichen gesetzt.\nTippen Sie auf der Karte auf irgendeinen Punkt, um ein Lesezeichen hinzuzufügen.\nLesezeichen von anderen Quellen können ebenfalls importiert und in der MAPS.ME-App angezeigt werden. KML-/KMZ-Datei mit gespeicherten Stecknadeln aus einer Email, Dropbox oder einem Weblink öffnen.
-    hu = Nincsenek megjelölt helyeid.\nHely megjelöléséhez koppints a térkép bármelyik pontjára.\nSzintén más forrásokból származó könyvjelzőket is beolvashat a MAPS.ME programba. Nyisson meg KML/KMZ fájlt egy levélből, Dropbox-ból vagy internetről.
+    hu = Nincsenek megjelölt helyei.\nHely megjelöléséhez koppintson a térkép bármelyik pontjára.\nA MAPS.ME programba más forrásokból származó könyvjelzőket is beolvashat. Nyisson meg egy KML/KMZ fájlt egy e-mailből, a Dropboxból vagy internetről.
     id = Belum ada yang ditandai.\nSentuh lokasi apa pun pada peta untuk menandai.\nPenanda dari sumber lainnya juga dapat di impor dan ditampilkan pada MAPS.ME. Buka berkas KML/KMZ tersebut dengan penanda yang disimpan dari surel, Dropbox atau tautan jaringan.
     it = Non hai ancora nessun segnalibro.\nTocca qualsiasi luogo sulla cartina per aggiungere un segnalibro.\nPossono essere anche importati Preferiti da altre fonti e visualizzate nell'app MAPS.ME. Apri il file KML/KMZ con i pin salvati da una casella di posta, Dropbox o un link web.
     ja = 未だブックマークがありません。\nマップ上をタップすればブックマークを追加できます。\nMAPS.ME以外のアプリで作成したブックマークの表示も可能です。KML/KMZ形式のピン情報をメールやDropbox、URLから取得してください。
@@ -3125,7 +3126,7 @@
     fi = Tämä voi kestää useita minuutteja.\nOdota hetki…
     fr = Ceci peut prendre plusieurs minutes.\nVeuillez patienter…
     de = Dies kann einige Minuten in Anspruch nehmen.\nBitte warten…
-    hu = Ez több percig is eltarthat.\nKérjük várjon…
+    hu = Ez percekig is eltarthat.\nKérjük, várjon türelemmel…
     id = Ini akan memakan waktu beberapa menit.\nMohon tunggu…
     it = Questo può richiedere diversi minuti.\ncortesemente attendi…
     ja = 数分かかる場合があります。\nしばらくお待ち下さい…
@@ -3159,7 +3160,7 @@
     fi = Näkyvä
     fr = Visible
     de = Sichtbar
-    hu = látható
+    hu = Látható
     id = Tampak
     it = Visibile
     ja = マップに表示
@@ -3192,7 +3193,7 @@
     fi = GPS on pois käytöstä. Voit ottaa sen käyttöön asetusvalikosta.
     fr = Le GPS est désactivé. Veuillez l'activer dans les Paramètres.
     de = GPS ist deaktiviert. Bitte aktivieren Sie es in den Einstellungen.
-    hu = GPS kikapcsolva. Kérjük kapcsolja be a Beállítások között.
+    hu = GPS kikapcsolva. Kérjük, kapcsolja be a Beállítások között.
     id = GPS dinon-aktifkan. Mohon aktifkan lewat Pengaturan.
     it = Il GPS è disabilitato. Cortesemente abilitalo nelle Impostazioni.
     ja = GPS機能が無効です。端末の設定画面から有効にしてください。
@@ -3378,7 +3379,7 @@
     fi = Ruoka
     fr = Nourriture
     de = Essen
-    hu = Élelmiszer
+    hu = Étkezés
     id = Makanan
     it = Cibo
     ja = 飲食
@@ -3652,7 +3653,7 @@
     fi = Pankkiautomaatti
     fr = GAB
     de = Geldautomat
-    hu = Pénzautomata
+    hu = Bankautomata
     id = ATM
     it = Bancomat
     ja = ATM
@@ -3789,7 +3790,7 @@
     fi = WC
     fr = Toilettes
     de = Toilette
-    hu = Mosdó
+    hu = WC
     id = Toilet
     it = Toilette
     ja = トイレ
@@ -3924,7 +3925,7 @@
     fi = Muistiinpanot
     fr = Notes
     de = Notizen
-    hu = Jegyzetek
+    hu = Megjegyzések
     id = Catatan
     it = Note
     ja = メモ
@@ -3991,7 +3992,7 @@
     fi = Jaetut MAPS.ME-kirjanmerkit
     fr = Signets MAPS.ME partagés
     de = MAPS.ME-Lesezeichen mit Ihnen geteilt
-    hu = Egy MAPS.ME könyvjelzőt osztottak meg Önnel
+    hu = Megosztottak Önnel egy MAPS.ME könyvjelzőt
     id = Bagikan penanda MAPS.ME
     it = Il segnalibri MAPS.ME è stato condiviso con te
     ja = MAPS.MEの位置情報シェア
@@ -4025,7 +4026,7 @@
     fi = Hei,\n\nLiitteenä ovat kirjanmerkkini MAPS.ME:n offline-kartoista. Voit avata liitteen mikäli olet jo asentanut MAPS.ME -sovelluksen. Mikäli et ole vielä asentanut sitä, voit ladata sen iOS- tai Android-laitteellesi oheisen linkin kautta: http://maps.me/get?kmz\n\nNauti reissailusta MAPS.ME:n kanssa!
     fr = Bonjour,\n\nVous trouverez ci-joints mes signets de MAPS.ME - cartes hors ligne. Veuillez ouvrir le fichier si vous avez MAPS.ME d'installé. Sinon, téléchargez l'appli pour votre appareil iOS ou Android en suivant ce lien http://maps.me/get?kmz\n\nAppréciez vos voyages avec MAPS.ME !
     de = Hallo,\n\nIn der angefügten „%@.KMZ“-Datei befinden sich die Lesezeichen meiner Offline-Karten von MAPS.ME. Falls Sie MAPS.ME bereits installiert haben, müssen Sie die App nur noch öffnen. Sollte dies nicht der Fall sein, müssen Sie zuerst die App für Ihr iOS- oder Androidgerät unter der Adresse http://maps.me/get?kmz herunterladen.\n\nViel Spaß unterwegs mit MAPS.ME!
-    hu = Üdvözlöm!\n\nA mellékelt "%@.kmz" fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérem nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!
+    hu = Üdvözlöm!\n\nA mellékelt „%@.kmz” fájl tartalmazza a MAPS.ME könyvjelzőimet. Kérjük, nyissa meg, ha a MAPS.ME már telepítve van. Ha még nincs, akkor innen töltheti le: http://maps.me/get?kmz\n\nSok sikert a program használatához!
     id = Salam,\n\nTerlampir penanda lokasi saya dari peta offline MAPS.ME. Mohon dibuka jika Anda memasang MAPS.ME. Jika tidak, unduhlah aplikasinya untuk perangkat iOS atau Android Anda melalui tautan ini: http://maps.me/get?kmz\n\nNikmatilah bepergian menggunakan MAPS.ME!
     it = Ciao,\n\nQuesti sono i miei "preferiti" fra le mappe offline di MAPS.ME, che si trovano nel file allegato "%@.kmz". Il file può essere aperto se l'app MAPS.ME è già stata installata. In caso contrario, occorre scaricare l'app per il tuo iOS o dispositivo Android dal link http://maps.me/get?kmz\n\nBuon divertimento con MAPS.ME!
     ja = MAPS.MEで作成したブックマークを添付ファイル"%@.kmz"で送付します。MAPS.ME がインストールされている端末でファイルを開いてみてください。インストールはこちらから http://maps.me/get?kmz iOSまたはAndroidデバイスで利用可能です。\n\nMAPS.MEで楽しい時間をお過ごしください！
@@ -4059,7 +4060,7 @@
     fi = Ladataan kirjanmerkkejä
     fr = Chargement des signets
     de = Lesezeichen werden geladen
-    hu = Könyvjelzők letöltése
+    hu = Könyvjelzők betöltése
     id = Memuat Penanda
     it = Caricamento segnalibri in corso
     ja = ブックマークの読み込み中
@@ -4093,7 +4094,7 @@
     fi = Kirjanmerkkien lataaminen onnistui! Löydät ne joko kartalta tai kirjanmerkkien hallinnasta.
     fr = Les signets ont été chargés avec succès ! Vous pouvez les trouver sur la carte ou sur l'écran du Gestionnaire de signets.
     de = Lesezeichen erfolgreich geladen! Sie können diese nun auf Ihrer Karte oder im Lesezeichen-Manager anzeigen.
-    hu = Könyvjelzők letöltése sikeres! Megtalálja őket a térképen vagy a Könyvjelzők kezelése menüben.
+    hu = Könyvjelzők betöltése sikeres! Megtalálja őket a térképen vagy a Könyvjelzők kezelése menüben.
     id = Penanda berhasil dimuat! Anda dapat menemukannya pada peta atau pada layar Pengelola Penanda Lokasi.
     it = Segnalibri caricati con successo! Puoi trovare i segnalibri direttamente sulla mappa, oppure aprendo la schermata dedicata alla Gestione dei segnalibri.
     ja = ブックマークが読み込まれました! ブックマークはマップ上、またはブックマーク管理画面に表示されます。
@@ -4161,7 +4162,7 @@
     fi = Muokkaa
     fr = Modifier
     de = Bearbeiten
-    hu = Szerkeszt
+    hu = Szerkesztés
     id = Edit
     it = Copia link
     ko = 편집
@@ -4362,7 +4363,7 @@
     fi = Toivottavasti nautit MAPS.ME -sovelluksen käyttämisestä! Olisimme tyytyväisiä, jos voisit arvioida sovelluksen App Storessa. Se kesää alle minuutin, ja auttaa meitä todella paljon. Kiitos tuestasi!
     fr = Nous espérons que vous appréciez l'utilisation de MAPS.ME ! Si oui, veuillez évaluer l'appli ou laisser une critique sur l'App Store. Cela prend moins d'une minute, mais peut vraiment nous aider. Merci pour votre soutien !
     de = Wir hoffen, dass Ihnen die Verwendung von MAPS.ME Freude bereitet! Wenn ja, geben Sie bitte eine Bewertung oder einen Bericht für die App im App Store ab. Es dauert weniger als eine Minute, kann uns aber wirklich helfen. Danke für Ihre Unterstützung!
-    hu = Reméljük élvezi a MAPS.ME használatát. Ha igen, kérjük írjon ajánlást az App Store-ban! Kevesebb mint egy perc, és valóban segít nekünk. Köszönjük!
+    hu = Reméljük élvezi a MAPS.ME használatát. Ha igen, kérjük, írjon ajánlást az App Store-ban! Kevesebb mint egy perc, és valóban segít nekünk. Köszönjük!
     id = Kami harap Anda senang menggunakan MAPS.ME! Jika ya, mohon beri nilai atau ulasan untuk aplikasi ini di App Store. Hanya memakan waktu kurang dari satu menit tetapi hal itu dapat benar-benar membantu kami. Terima kasih atas dukungan Anda!
     it = Confidiamo nel fatto che sia piacevole utilizzare MAPS.ME! In caso positivo, ti preghiamo di valutare o recensire l'app all'interno dell'app store. Ti porterà via meno di un minuto e la cosa ci aiuterebbe tantissimo. Grazie per il tuo sostegno!
     ja = MAPS.MEの使い心地はいかがでしょうか。もしよろしければ、App Storeでレビューや評価をお知らせください。皆様からいただく一言が開発の励みになります。ご支援をよろしくお願いいたします！
@@ -4426,7 +4427,7 @@
     fi = Hei, katso merkintäni MAPS.ME-sovelluksessa! %1$@ tai %2$@ Eikö sinulla ole offline-karttoja? Lataa ne täältä: http://maps.me/get
     fr = Hé, regarde mon épingle sur MAPS.ME ! %1$@ ou %2$@. Les cartes hors ligne ne sont pas installées ? Les télécharger ici : http://maps.me/get
     de = Siehe meine Markierung auf MAPS.ME an. %1$@ oder %2$@ - Keine Offline-Karten installiert? Hier herunterladen: http://maps.me/get
-    hu = Nézd meg a MAPS.ME jelzőt! %1$@ vagy %2$@ A program letöltése: http://maps.me/get
+    hu = Nézd meg a MAPS.ME helyjelzőmet! %1$@ vagy %2$@ A program letöltése: http://maps.me/get
     id = Hei, lihat pinku di MAPS.ME! %1$@ atau %2$@ belum memiliki peta offline? Unduh di sini: http://maps.me/get
     it = Vedi pin sulla mappa. Apri %1$@ o %2$@
     ja = 私のピン情報はこの位置です。リンク: %1$@, %2$@
@@ -4493,7 +4494,7 @@
     fi = Hei, katso merkintäni MAPS.ME-kartalla
     fr = Hé, regarde mon épingle sur la carte MAPS.ME !
     de = Schau dir meine Stecknadel auf der MAPS.ME-Karte an
-    hu = Nézze meg a MAPS.ME jelzőmet
+    hu = Nézd meg a MAPS.ME helyjelzőmet
     id = Hei, lihat pinku di peta MAPS.ME
     it = Dai uno sguardo al mio pin sulla mappa di MAPS.ME
     ja = MAPS.MEでピン情報を確認
@@ -4729,7 +4730,7 @@
     fi = Sähköposti
     fr = Email
     de = Email
-    hu = Email
+    hu = E-mail
     id = Surel
     it = Email
     ja = Eメール
@@ -4896,7 +4897,7 @@
     fi = Tietoa
     fr = Infos
     de = Info
-    hu = Info
+    hu = Információk
     id = Info
     it = Informazioni
     ja = 情報
@@ -5088,6 +5089,7 @@
     pt-BR = Versão dos dados: %d
     zh-Hant = 資料版本： %d
     el = Ημερομηνία έκδοσης: %d
+    hu = Adatok verziója: %d
 
   [are_you_sure]
     comment = Confirmation in downloading countries dialog
@@ -5169,7 +5171,7 @@
     fi = Pituus
     fr = Longueur
     de = Länge
-    hu = Hossz
+    hu = Hosszúság
     id = Panjang
     it = Lunghezza
     ja = 距離
@@ -5408,7 +5410,7 @@
     fi = Näytä ruudulla
     fr = Afficher à l'écran
     de = Auf dem Bildschirm anzeigen
-    hu = Mutassa a kijelzőn
+    hu = Megjelenítés a térképen
     id = Tampilkan pada layar
     it = Condividi la mia location
     ja = 画面上に表示
@@ -5705,7 +5707,7 @@
     fi = Äänen kieli
     fr = Langue vocale
     de = Sprache für Sprachführung
-    hu = A hang nyelve
+    hu = Hang nyelve
     id = Bahasa Suara
     it = Lingua per la voce
     ja = 音声言語
@@ -5803,7 +5805,7 @@
     fi = Kuinka asettaa ääni
     fr = Comment configurer la voix
     de = Navi-Stimme konfigurieren
-    hu = Így állítsd be a hangot
+    hu = Hang beállítása
     id = Cara mengatur suara
     it = Come impostare la voce
     ja = 音声設定の仕方
@@ -5867,7 +5869,7 @@
     fi = Automaattinen zoomaus
     fr = Zoom automatique
     de = Auto-Zoom
-    hu = Auto-zoom
+    hu = Automatikus nagyítás
     id = Perbesar otomatis
     it = Zoom automatico
     ja = 自動ズーム
@@ -6724,7 +6726,7 @@
     fi = Lataa sijaintisi kartta
     fr = Télécharger la carte de l'endroit où vous êtes
     de = Laden Sie die Karte Ihres Standortes herunter
-    hu = Töltsd le annak a helynek a térképét, ahol most vagy
+    hu = Töltse le annak a helynek a térképét, ahol most vagy
     id = Unduh peta tempat di mana Anda berada sekarang
     it = Scarica la mappa del luogo in cui ti trovi
     ja = あなたがいる場所のマップをダウンロードしよう
@@ -6984,7 +6986,7 @@
     fi = Tykkää meistä Facebookissa
     fr = Aimer sur Facebook
     de = „Gefällt mir“ auf Facebook
-    hu = Lájkolj minket Facebookon
+    hu = Lájkoljon minket Facebookon
     id = Sukai di Facebook
     it = Dai Mi Piace su Facebook
     ja = Facebookでいいねをクリック
@@ -9443,7 +9445,7 @@
     fi = Ota sijaintipalvelut käyttöön
     fr = Veuillez activer les services de localisation
     de = Aktivieren Sie bitte Ortungsdienste
-    hu = Kérjük kapcsolja be a helyzetmeghatározó szolgáltatást
+    hu = Kérjük, kapcsolja be a helyzetmeghatározó szolgáltatást
     id = Mohon aktifkan Layanan Lokasi
     it = Cortesemente abilita i servizi di localizzazione
     ja = 位置情報サービスを有効化してください
@@ -12634,7 +12636,7 @@
     fi = Lisää aikataulu
     fr = Ajouter au planning
     de = Zeitplan hinzufügen
-    hu = Időrend felvitele
+    hu = Időrend hozzáadása
     id = Tambah Jadwal
     it = Aggiungi orari
     ja = スケジュール追加
@@ -12795,7 +12797,7 @@
     fi = Lisää suljettuna tunnit
     fr = Ajouter les heures de fermeture
     de = Schließzeiten hinzufügen
-    hu = Zárvatartási idők felvitele
+    hu = Zárva tartás felvitele
     id = Tambah Jam Tutup
     it = Aggiungi orari di chiusura
     ja = 閉店時間追加
@@ -12827,7 +12829,7 @@
     fi = Aukioloajat
     fr = Heures d'ouverture
     de = Öffnungszeiten
-    hu = Nyitvatartási idő
+    hu = Nyitva tartás
     id = Jam buka
     it = Orari di apertura
     ja = 営業時間
@@ -12923,7 +12925,7 @@
     fi = Suljettuna tunnit
     fr = Heures de fermeture
     de = Schließzeiten
-    hu = Zárvatartási órák
+    hu = Zárva tartás
     id = Jam Tutup
     it = Orari di chiusura
     ja = 閉店時間
@@ -13111,7 +13113,7 @@
     fi = Tämä on toinen kerta, kun paransit karttaa. Nyt olet %d. sijalla kartan muokkaajien listalla. Kerro siitä ystävillesi.
     fr = Ceci est votre seconde amélioration de carte. Vous êtes maintenant à la %de place dans la liste des éditeurs de cartes. Dites-le à vos amis.
     de = Das ist Ihre zweite Kartenverbesserung. Sie befinden sich jetzt auf Platz %d auf der Liste der Personen, die die Karte bearbeitet haben. Erzählen Sie Ihren Freunden davon.
-    hu = Ez a második térképjavításod. Most már te is rajta vagy a térképszerkesztők listáján, az %d. helyen. Mesélj erről a barátaidnak is.
+    hu = Ez a második térképjavítása. Most már Ön is rajta van a térképszerkesztők listáján, a(z) %d. helyen. Meséljen róla a barátainak is.
     id = ini peningkatan peta kedua Anda. Sekarang Anda di tempat yang ke-%d di daftar editor peta. Katakan kepada teman-teman Anda tentang hal ini.
     it = Questa è la tua seconda modifica alla mappa. Adesso sei al %d° posto nella lista di chi ha modificato la mappa. Dillo ai tuoi amici.
     ja = これは2回目の地図改善。現在地図編集者リストで%d位です。
@@ -13142,7 +13144,7 @@
     fi = Olet parantanut karttaa, kerro siitä ystävillesi ja muokatkaa karttaa yhdessä.
     fr = Vous avez amélioré la carte, dites-le à vos amis et modifiez la carte ensemble.
     de = Sie haben die Karte verbessert, erzählen Sie Ihren Freunden davon und bearbeiten Sie die Karte zusammen.
-    hu = Javítottál a térképen! Mondd el a barátaidnak is és szerkesszétek közösen!
+    hu = Javította a térképet! Mondja el barátainak is, és szerkesszék közösen!
     id = Anda telah meningkatkan peta, katakan kepada teman-teman Anda tentang hal ini, dan edit peta bersama.
     it = Hai migliorato la mappa. Dillo ai tuoi amici e modificate la mappa insieme.
     ja = 地図を改善したので、友達に教えて一緒に編集しましょう。
@@ -13172,7 +13174,7 @@
     fi = Jaa kavereille
     fr = Partagez avec vos amis
     de = Mit Freunden teilen
-    hu = Oszd meg az ismerőseiddel
+    hu = Megosztás ismerősökkel
     id = Bagikan dengan teman-teman
     it = Condividi con gli amici
     ja = 友達にシェア
@@ -17419,7 +17421,7 @@
     fi = Lähetä muistiinpano OSM-moderaattorille
     fr = Envoyer un message au modérateur d'OSM
     de = Senden Sie eine Notiz an den OSM-Moderator
-    hu = Megjegyzést küldött az OSM-moderátornak
+    hu = Megjegyzés küldése az OSM-moderátornak
     id = Mengirim catatan ke moderator OSM
     it = Invia una nota al moderatore OSM
     ja = OSM モデレーターにメモを送信
@@ -24481,7 +24483,7 @@
     fi = Ilmoittaudu yrityksen omistajaksi
     fr = Cette entreprise m'appartient
     de = Ist das Ihr Unternehmen?
-    hu = Igényelje ezt az üzletet
+    hu = Ez az Ön vállalkozása? Ha igen, igényelje meg!
     id = Klaim bisnis ini
     it = Rivendica questa attività
     ja = この企業の所有者であることを報告
@@ -24762,7 +24764,7 @@
     fi = Translitterointi latinaksi
     fr = Translittération en latin
     de = Transliteration ins Lateinische
-    hu = Átírás latin nyelvre
+    hu = Latin betűs átírás
     id = Transliterasi ke dalam bahasa Latin
     it = Traslitterazione in latino
     ja = ラテン文字への字訳
@@ -24801,7 +24803,7 @@
     fi = Jos kadulla tai kohteella ei ole nimeä kielelläsi, se kirjoitetetaan latinalaisilla kirjaimilla.
     fr = Si une rue ou un objet n’a pas de nom dans votre langue, l’alphabet latin sera utilisé pour l'écrire.
     de = Wenn eine Straße oder ein Objekt in Ihrer Sprache keinen Namen hat, wird er mit lateinischen Buchstaben geschrieben.
-    hu = Ha egy utcának vagy egy objektumnak nincs neve az Ön nyelvén, latin ábécével kerül átírásra.
+    hu = Ha egy utcának vagy egy objektumnak nincs neve az Ön nyelvén, latin betűkkel kerül átírásra.
     id = Jika jalan atau objek tidak memiliki nama dalam bahasa Anda, namanya akan dieja menggunakan alfabet Latin.
     it = Se una strada o un oggetto non ha un nome nella tua lingua, tale nome sarà scritto utilizzando l'alfabeto latino.
     ja = 通り名や物件名をあなたの言語で表示できない場合、ラテン文字のアルファベットで綴られます。
@@ -24833,6 +24835,7 @@
   [yandex_taxi_title]
     en = Yandex.Taxi
     ru = Яндекс.Такси
+    hu = Yandex.Taxi
 
   [learn_more]
     en = Learn more
@@ -24844,7 +24847,7 @@
     fi = Lisätietoja
     fr = En savoir plus
     de = Weitere Informationen
-    hu = Tudjon meg többet
+    hu = További információk
     id = Pelajari selengkapnya
     it = Ulteriori informazioni
     ja = 詳細情報
@@ -25031,7 +25034,7 @@
     fi = Hyväksy ja jatka
     fr = Accepter et continuer
     de = Zustimmen und fortfahren
-    hu = Fogadja el, és folytassa
+    hu = Elfogadás és folytatás
     id = Terima dan lanjutkan
     it = Accetta e continua
     ja = 同意して続ける
@@ -25062,7 +25065,7 @@
     fi = Lisätietoja
     fr = En savoir plus
     de = Weitere Informationen
-    hu = Tudjon meg többet
+    hu = További információk
     id = Pelajari selengkapnya
     it = Ulteriori informazioni
     ja = 詳細情報
@@ -25186,7 +25189,7 @@
     fi = MAPS.ME tarvitsee seuraavat käyttöoikeudet:
     fr = MAPS.ME doit avoir accès à
     de = MAPS.ME benötigt Zugriff auf
-    hu = `A MAPS.ME.-nek hozzáférésre van szüksége a következőhöz: `
+    hu = A MAPS.ME hozzáférést igényel a következőhöz:
     id = MAPS.ME membutuhkan akses ke
     it = MAPS.ME richiede l'accesso a
     ja = MAPS.ME がアクセス許可を必要とする項目
@@ -25591,7 +25594,7 @@
     fi = Suunnittele
     fr = Planifier
     de = Planen
-    hu = Terv
+    hu = Tervezés
     id = Rencana
     it = Pianifica
     ja = 計画する
@@ -25622,7 +25625,7 @@
     fi = Lisää
     fr = Ajouter
     de = Hinzufügen
-    hu = Hozzáad
+    hu = Hozzáadás
     id = Tambah
     it = Aggiungi
     ja = 追加
@@ -25653,7 +25656,7 @@
     fi = Poista
     fr = Supprimer
     de = Entfernen
-    hu = Eltávolítja
+    hu = Eltávolítás
     id = Hapus
     it = Rimuovi
     ja = 削除
@@ -25777,7 +25780,7 @@
     fi = Lisää pysähdys
     fr = Ajouter un arrêt
     de = Zwischenstopp hinzufügen
-    hu = Hozzáad megállót
+    hu = Megálló hozzáadása
     id = Tambah perhentian
     it = Aggiungi sosta
     ja = 停止地点を追加
@@ -25890,7 +25893,7 @@
     fi = Lisää oma sijainti
     fr = Ajouter ma position
     de = Meinen Standort hinzufügen
-    hu = Add hozzá saját pozíciómat
+    hu = Saját pozíció hozzáadása
     id = Tambahkan posisi saya
     it = Aggiungi mia posizione
     ja = 自分の場所を追加
@@ -25921,7 +25924,7 @@
     fi = Valitse aloituspiste
     fr = Choisissez un point de départ
     de = Startpunkt auswählen
-    hu = Válasszon egy kiindulási pontot
+    hu = Kiindulási pont kiválasztása
     id = Pilih titik awal
     it = Scegli un punto di partenza
     ja = 出発地点を選択
@@ -25952,7 +25955,7 @@
     fi = Valitse kohde
     fr = Choisissez une destination
     de = Ziel auswählen
-    hu = Válassza ki a célt
+    hu = Cél kiválasztása
     id = Pilih destinasi
     it = Scegli una destinazione
     ja = 目的地を選択
@@ -26014,7 +26017,7 @@
     fi = Kierroksia, aktiviteetteja, nähtävyyksien katselua ja muuta
     fr = Excursions, activités, visites et plus
     de = Touren, Aktivitäten, Sehenswürdigkeiten und mehr
-    hu = Túrák, tevékenységek, városnézés, és sok egyéb
+    hu = Túrák, tevékenységek, városnézés és sok minden más
     id = Wisata, kegiatan, tamasya, dan lain-lain
     it = Tour, attività, turismo e altro
     ja = 旅行、アクティビティ、観光など
@@ -26045,7 +26048,7 @@
     fi = Lisätietoja
     fr = En savoir plus
     de = Weitere Informationen
-    hu = Tudjon meg többet
+    hu = További információk
     id = Pelajari selengkapnya
     it = Ulteriori informazioni
     ja = 詳細情報
