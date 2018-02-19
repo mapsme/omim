@@ -381,7 +381,7 @@ void logSponsoredEvent(MWMPlacePageData * data, NSString * eventName)
   else if (data.isBookmark)
     title = data.externalTitle;
   else
-    title = L(@"placepage_unknown_place");
+    title = L(@"core_placepage_unknown_place");
 
   NSString * subtitle = nil;
   if (data.subtitle.length > 0 && ![title isEqualToString:data.subtitle])
