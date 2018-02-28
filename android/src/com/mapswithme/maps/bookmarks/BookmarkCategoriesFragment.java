@@ -64,8 +64,8 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
     super.onViewCreated(view, savedInstanceState);
 
     mLoadingPlaceholder = view.findViewById(R.id.placeholder_loading);
-    mBackupController = new BookmarkBackupController(view.findViewById(R.id.backup),
-                                                     new Authorizer(this));
+    mBackupController = /*new BookmarkBackupController(view.findViewById(R.id.backup),
+                                                     new Authorizer(this));*/ null;
     if (getAdapter() != null)
     {
       getAdapter().setOnClickListener(this);
@@ -91,7 +91,7 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
 
     View root = getView();
     if (root != null)
-      UiUtils.showIf(!showLoadingPlaceholder && !showPlaceHolder, root, R.id.backup);
+      UiUtils.showIf(/*!showLoadingPlaceholder && !showPlaceHolder*/ false, root, R.id.backup);
   }
 
   private void updateLoadingPlaceholder()
