@@ -291,7 +291,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     initZoomPrefsCallbacks();
     initMapStylePrefsCallbacks();
     initAutoDownloadPrefsCallbacks();
-    initBackupBookmarksPrefsCallbacks();
+//    initBackupBookmarksPrefsCallbacks();
     initLargeFontSizePrefsCallbacks();
     initTransliterationPrefsCallbacks();
     init3dModePrefsCallbacks();
@@ -714,7 +714,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     });
   }
 
-  private void initBackupBookmarksPrefsCallbacks()
+/*  private void initBackupBookmarksPrefsCallbacks()
   {
     TwoStatePreference pref = (TwoStatePreference)findPreference(getString(R.string.pref_backupbookmarks));
     if (pref == null)
@@ -730,7 +730,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
           Statistics.INSTANCE.trackBkmSettingsToggle(value);
           return true;
         });
-  }
+  }*/
 
   private void initMapStylePrefsCallbacks()
   {
