@@ -206,8 +206,8 @@ public:
   void CheckLocationForRouting(location::GpsInfo const & info);
   void CallRouteBuilded(routing::IRouter::ResultCode code,
                         storage::TCountriesVec const & absentCountries);
-  void OnBuildRouteReady(routing::Route const & route, routing::IRouter::ResultCode code);
-  void OnRebuildRouteReady(routing::Route const & route, routing::IRouter::ResultCode code);
+  void OnBuildRouteReady(std::shared_ptr<routing::Route> route, routing::IRouter::ResultCode code);
+  void OnRebuildRouteReady(std::shared_ptr<routing::Route> route, routing::IRouter::ResultCode code);
   void OnRoutePointPassed(RouteMarkType type, size_t intermediateIndex);
   void OnLocationUpdate(location::GpsInfo & info);
   void SetAllowSendingPoints(bool isAllowed)
@@ -259,7 +259,7 @@ public:
   void CancelPreviewMode();
 
 private:
-  void InsertRoute(routing::Route const & route);
+  void InsertRoute(std::shared_ptr<routing::Route> route);
   bool IsTrackingReporterEnabled() const;
   void MatchLocationToRoute(location::GpsInfo & info,
                             location::RouteMatchingInfo & routeMatchingInfo) const;

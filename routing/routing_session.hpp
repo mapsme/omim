@@ -77,7 +77,7 @@ public:
 
   typedef function<void(map<string, string> const &)> TRoutingStatisticsCallback;
 
-  typedef function<void(Route const &, IRouter::ResultCode)> TReadyCallback;
+  typedef function<void(shared_ptr<Route>, IRouter::ResultCode)> TReadyCallback;
   typedef function<void(float)> TProgressCallback;
   typedef function<void(size_t passedCheckpointIdx)> CheckpointCallback;
 
