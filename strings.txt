@@ -28504,6 +28504,7 @@
   [luggage_storage]
     en = Luggage storage
     ru = Хранение багажа
+    sv = Bagageförvaring
 
   [discovery_button_subtitle_book_hotels]
     en = Book hotels
