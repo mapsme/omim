@@ -1223,6 +1223,7 @@
 	<string name="whats_new_discovery_title">Knappen Upptäck</string>
 	<string name="whats_new_discovery_message">Upptäck saker i närheten med ett enda klick!</string>
 	<string name="price_per_hour">%s/timme</string>
+	<string name="luggage_storage">Bagageförvaring</string>
 	<string name="bookmarks_backup">Aktivera säkerhetskopiering</string>
 	<string name="authorization_button_sign_in">Logga in</string>
 	<string name="bookmarks_message_authorized_user">Dina bokmärken säkerhetskopieras automatiskt i en säker molnlagring. Vill du aktivera säkerhetskopiering?</string>
