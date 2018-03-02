@@ -254,8 +254,8 @@ RoutingManager::RoutingManager(Callbacks && callbacks, Delegate & delegate)
   });
 
   m_routingSession.SetReadyCallbacks(
-      [this](Route const & route, IRouter::ResultCode code) { OnBuildRouteReady(route, code); },
-      [this](Route const & route, IRouter::ResultCode code) { OnRebuildRouteReady(route, code); });
+      [this](shared_ptr<Route> route, IRouter::ResultCode code) { OnBuildRouteReady(route, code); },
+      [this](shared_ptr<Route> route, IRouter::ResultCode code) { OnRebuildRouteReady(route, code); });
 
   m_routingSession.SetCheckpointCallback([this](size_t passedCheckpointIdx)
   {
@@ -285,8 +285,9 @@ void RoutingManager::SetBookmarkManager(BookmarkManager * bmManager)
   m_bmManager = bmManager;
 }
 
-void RoutingManager::OnBuildRouteReady(Route const & route, IRouter::ResultCode code)
+void RoutingManager::OnBuildRouteReady(shared_ptr<Route> route, IRouter::ResultCode code)
 {
+  CHECK(route, ("shared_ptr to route is nullptr."));
   // Hide preview.
   HidePreviewSegments();
 
@@ -297,10 +298,10 @@ void RoutingManager::OnBuildRouteReady(Route const & route, IRouter::ResultCode 
     m_drapeEngine.SafeCall(&df::DrapeEngine::StopLocationFollow);
 
     // Validate route (in case of bicycle routing it can be invalid).
-    ASSERT(route.IsValid(), ());
-    if (route.IsValid())
+    ASSERT(route->IsValid(), ());
+    if (route->IsValid())
     {
-      m2::RectD routeRect = route.GetPoly().GetLimitRect();
+      m2::RectD routeRect = route->GetPoly().GetLimitRect();
       routeRect.Scale(kRouteScaleMultiplier);
       m_drapeEngine.SafeCall(&df::DrapeEngine::SetModelViewRect, routeRect,
                              true /* applyRotation */, -1 /* zoom */, true /* isAnim */);
@@ -308,7 +309,7 @@ void RoutingManager::OnBuildRouteReady(Route const & route, IRouter::ResultCode 
   }
   else
   {
-    absentCountries.assign(route.GetAbsentCountries().begin(), route.GetAbsentCountries().end());
+    absentCountries.assign(route->GetAbsentCountries().begin(), route->GetAbsentCountries().end());
 
     if (code != IRouter::NeedMoreMaps)
       RemoveRoute(true /* deactivateFollowing */);
@@ -316,8 +317,9 @@ void RoutingManager::OnBuildRouteReady(Route const & route, IRouter::ResultCode 
   CallRouteBuilded(code, absentCountries);
 }
 
-void RoutingManager::OnRebuildRouteReady(Route const & route, IRouter::ResultCode code)
+void RoutingManager::OnRebuildRouteReady(shared_ptr<Route> route, IRouter::ResultCode code)
 {
+  CHECK(route, ("shared_ptr to route is nullptr."));
   // Hide preview.
   HidePreviewSegments();
 
@@ -438,11 +440,12 @@ void RoutingManager::RemoveRoute(bool deactivateFollowing)
   }
 }
 
-void RoutingManager::InsertRoute(Route const & route)
+void RoutingManager::InsertRoute(shared_ptr<Route> route)
 {
   if (!m_drapeEngine)
     return;
 
+  CHECK(route, ("shared_ptr to route is nullptr."));
   // TODO: Now we always update whole route, so we need to remove previous one.
   RemoveRoute(false /* deactivateFollowing */);
 
@@ -464,17 +467,17 @@ void RoutingManager::InsertRoute(Route const & route)
   vector<m2::PointD> points;
   double distance = 0.0;
 
-  auto const subroutesCount = route.GetSubrouteCount();
-  for (size_t subrouteIndex = route.GetCurrentSubrouteIdx(); subrouteIndex < subroutesCount; ++subrouteIndex)
+  auto const subroutesCount = route->GetSubrouteCount();
+  for (size_t subrouteIndex = route->GetCurrentSubrouteIdx(); subrouteIndex < subroutesCount; ++subrouteIndex)
   {
-    route.GetSubrouteInfo(subrouteIndex, segments);
+    route->GetSubrouteInfo(subrouteIndex, segments);
 
     // Fill points.
     double const currentBaseDistance = distance;
     auto subroute = make_unique_dp<df::Subroute>();
     subroute->m_baseDistance = currentBaseDistance;
     subroute->m_baseDepthIndex = static_cast<double>(subroutesCount - subrouteIndex - 1);
-    auto const startPt = route.GetSubrouteAttrs(subrouteIndex).GetStart().GetPoint();
+    auto const startPt = route->GetSubrouteAttrs(subrouteIndex).GetStart().GetPoint();
     if (m_currentRouterType != RouterType::Transit)
     {
       points.clear();
@@ -896,7 +899,7 @@ void RoutingManager::CheckLocationForRouting(location::GpsInfo const & info)
   {
     m_routingSession.RebuildRoute(
         MercatorBounds::FromLatLon(info.m_latitude, info.m_longitude),
-        [this](Route const & route, IRouter::ResultCode code) { OnRebuildRouteReady(route, code); },
+        [this](shared_ptr<Route> route, IRouter::ResultCode code) { OnRebuildRouteReady(route, code); },
         0 /* timeoutSec */, RoutingSession::State::RouteRebuilding,
         true /* adjustToPrevRoute */);
   }
@@ -978,7 +981,7 @@ void RoutingManager::SetDrapeEngine(ref_ptr<df::DrapeEngine> engine, bool is3dAl
       // In case of the engine reinitialization recover route.
       if (IsRoutingActive())
       {
-        InsertRoute(*m_routingSession.GetRoute());
+        InsertRoute(m_routingSession.GetRoute());
         if (is3dAllowed && m_routingSession.IsFollowing())
           m_drapeEngine.SafeCall(&df::DrapeEngine::EnablePerspective);
       }

@@ -150,7 +150,7 @@ void RoutingSession::DoReadyCallback::operator()(Route & route, IRouter::ResultC
       m_rs.m_route->AddAbsentCountry(country);
   }
 
-  m_callback(*m_rs.m_route, e);
+  m_callback(m_rs.m_route, e);
 }
 
 void RoutingSession::RemoveRoute()
