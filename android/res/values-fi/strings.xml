@@ -1232,7 +1232,7 @@
 	<string name="bookmarks_places">%s kirjanmerkkiä</string>
 	<string name="bookmarks_create_new_group">Luo uusi luettelo</string>
 	<string name="downloader_hide_screen">Piilota näyttö</string>
-	<string name="downloader_percent">%1$s (s%% / %2$s)</string>
+	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">Ladataan %s...</string>
 	<string name="downloader_applying">%s otetaan käyttöön...</string>
 	<string name="transit_not_found">Navigointi kohteiden välillä ei ole vielä käytettävissä tällä alueella</string>

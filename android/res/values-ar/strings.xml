@@ -1238,7 +1238,7 @@
 	<string name="bookmarks_places">%s من الإشارات المرجعية</string>
 	<string name="bookmarks_create_new_group">إنشاء قائمة جديدة</string>
 	<string name="downloader_hide_screen">إخفاء الشاشة</string>
-	<string name="downloader_percent">%1$s (%2$s من s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s من %3$s)</string>
 	<string name="downloader_process">جار تنزيل %s...</string>
 	<string name="downloader_applying">جار تطبيق %s...</string>
 	<string name="transit_not_found">الملاحة المؤقتة في هذه المنطقة غير متوفرة بعد</string>

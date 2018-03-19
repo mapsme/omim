@@ -1231,7 +1231,7 @@
 	<string name="bookmarks_places">%s のブックマーク</string>
 	<string name="bookmarks_create_new_group">新しいリストを作成する</string>
 	<string name="downloader_hide_screen">画面を非表示</string>
-	<string name="downloader_percent">%1$s (%2$s / s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">%s をダウンロードしています...</string>
 	<string name="downloader_applying">%s を適用中です...</string>
 	<string name="transit_not_found">この地域での乗り換え案内はまだご利用いただけません</string>

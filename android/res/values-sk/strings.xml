@@ -1235,7 +1235,7 @@
 	<string name="bookmarks_places">%s záložiek</string>
 	<string name="bookmarks_create_new_group">Vytvoriť nový zoznam</string>
 	<string name="downloader_hide_screen">Skryť obrazovku</string>
-	<string name="downloader_percent">%1$s (%2$s s %%)</string>
+	<string name="downloader_percent">%1$s (%2$s z %3$s)</string>
 	<string name="downloader_process">Sťahovanie %s...</string>
 	<string name="downloader_applying">Použitie %s...</string>
 	<string name="transit_not_found">Tranzitná navigácia v tomto regióne zatiaľ nie je k dispozícii</string>

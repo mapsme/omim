@@ -1238,7 +1238,7 @@
 	<string name="bookmarks_places">%s yer imi</string>
 	<string name="bookmarks_create_new_group">Yeni liste oluştur</string>
 	<string name="downloader_hide_screen">Ekranı Gizle</string>
-	<string name="downloader_percent">%1$s (%2$s / s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">%s indiriliyor...</string>
 	<string name="downloader_applying">%s uygulanıyor...</string>
 	<string name="transit_not_found">Transit navigasyon henüz bu bölgede kullanılamıyor</string>

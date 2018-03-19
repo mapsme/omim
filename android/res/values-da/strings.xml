@@ -1236,7 +1236,7 @@
 	<string name="bookmarks_places">%s bogmærker</string>
 	<string name="bookmarks_create_new_group">Opret ny liste</string>
 	<string name="downloader_hide_screen">Skjul skærm</string>
-	<string name="downloader_percent">%1$s (%2$s af s %%)</string>
+	<string name="downloader_percent">%1$s (%2$s af %3$s)</string>
 	<string name="downloader_process">Downloader %s...</string>
 	<string name="downloader_applying">Anvender %s...</string>
 	<string name="transit_not_found">Transitnavigation i denne region er endnu ikke tilgængelig</string>

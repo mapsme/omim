@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "ซ่อนหน้าจอ";
 
-"downloader_percent" = "%s (%s จาก s%)";
+"downloader_percent" = "%s (%s จาก %s)";
 
 "downloader_process" = "กำลังดาวน์โหลด %s...";
 

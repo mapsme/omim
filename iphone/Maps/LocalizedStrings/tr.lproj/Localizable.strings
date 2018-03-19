@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "Ekranı Gizle";
 
-"downloader_percent" = "%s (%s / s%)";
+"downloader_percent" = "%s (%s / %s)";
 
 "downloader_process" = "%s indiriliyor...";
 

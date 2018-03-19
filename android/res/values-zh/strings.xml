@@ -1238,7 +1238,7 @@
 	<string name="bookmarks_places">%s 個書籤</string>
 	<string name="bookmarks_create_new_group">创建新的列表</string>
 	<string name="downloader_hide_screen">隱藏畫面</string>
-	<string name="downloader_percent">%1$s (%2$s / s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">正在下載 %s...</string>
 	<string name="downloader_applying">正在套用 %s...</string>
 	<string name="transit_not_found">尚無法使用本區域的過境導航</string>

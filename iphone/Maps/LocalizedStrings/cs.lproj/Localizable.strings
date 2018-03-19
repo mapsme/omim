@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "Skrýt obrazovku";
 
-"downloader_percent" = "%s (%s s %)";
+"downloader_percent" = "%s (%s z %s)";
 
 "downloader_process" = "Stahování %s...";
 

@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "Nascondi schermata";
 
-"downloader_percent" = "%s (%s di s%)";
+"downloader_percent" = "%s (%s di %s)";
 
 "downloader_process" = "Download di %s...";
 

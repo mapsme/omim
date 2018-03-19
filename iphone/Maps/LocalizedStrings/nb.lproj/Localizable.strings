@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "Skjul skjerm";
 
-"downloader_percent" = "%s (%s av s%)";
+"downloader_percent" = "%s (%s av %s)";
 
 "downloader_process" = "Laster ned %s ...";
 

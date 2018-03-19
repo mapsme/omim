@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "画面を非表示";
 
-"downloader_percent" = "%s (%s / s%)";
+"downloader_percent" = "%s (%s / %s)";
 
 "downloader_process" = "%s をダウンロードしています...";
 

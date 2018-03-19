@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "Ocultar ecrã";
 
-"downloader_percent" = "%s (%s de s%)";
+"downloader_percent" = "%s (%s de %s)";
 
 "downloader_process" = "A transferir %s...";
 

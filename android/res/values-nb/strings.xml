@@ -1230,7 +1230,7 @@
 	<string name="bookmarks_places">%s bokmerker</string>
 	<string name="bookmarks_create_new_group">Opprett ny liste</string>
 	<string name="downloader_hide_screen">Skjul skjerm</string>
-	<string name="downloader_percent">%1$s (%2$s av s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s av %3$s)</string>
 	<string name="downloader_process">Laster ned %s ...</string>
 	<string name="downloader_applying">Bruker %s ...</string>
 	<string name="transit_not_found">Transittnavigering i dette området er foreløpig ikke tilgjengelig</string>
