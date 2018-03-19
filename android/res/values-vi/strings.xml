@@ -1232,7 +1232,7 @@
 	<string name="bookmarks_places">%s dấu trang</string>
 	<string name="bookmarks_create_new_group">Tạo danh sách mới</string>
 	<string name="downloader_hide_screen">Ẩn Màn hình</string>
-	<string name="downloader_percent">%1$s (%2$s / s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">Tải về %s...</string>
 	<string name="downloader_applying">Áp dụng %s...</string>
 	<string name="transit_not_found">Chưa có tính năng dẫn đường quá cảnh cho khu vực này</string>

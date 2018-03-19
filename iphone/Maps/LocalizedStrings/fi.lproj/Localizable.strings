@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "Piilota näyttö";
 
-"downloader_percent" = "%s (s% / %s)";
+"downloader_percent" = "%s (%s / %s)";
 
 "downloader_process" = "Ladataan %s...";
 

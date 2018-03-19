@@ -996,7 +996,7 @@
 	<string name="bookmarks_places">%s αγαπημένα</string>
 	<string name="bookmarks_create_new_group">Δημιουργία νέας λίστας</string>
 	<string name="downloader_hide_screen">Απόκρυψη οθόνης</string>
-	<string name="downloader_percent">%1$s (%2$s από s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s από %3$s)</string>
 	<string name="downloader_process">Λήψη %s...</string>
 	<string name="downloader_applying">Εφαρμογή %s...</string>
 	<string name="transit_not_found">Η πλοήγηση διαμετακόμισης στην περιοχή αυτή δεν είναι ακόμα διαθέσιμη</string>

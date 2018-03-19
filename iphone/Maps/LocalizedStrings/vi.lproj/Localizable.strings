@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "Ẩn Màn hình";
 
-"downloader_percent" = "%s (%s / s%)";
+"downloader_percent" = "%s (%s / %s)";
 
 "downloader_process" = "Tải về %s...";
 

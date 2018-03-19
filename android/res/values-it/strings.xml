@@ -1231,7 +1231,7 @@
 	<string name="bookmarks_places">%s preferiti</string>
 	<string name="bookmarks_create_new_group">Crea una nuova lista</string>
 	<string name="downloader_hide_screen">Nascondi schermata</string>
-	<string name="downloader_percent">%1$s (%2$s di s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s di %3$s)</string>
 	<string name="downloader_process">Download di %s...</string>
 	<string name="downloader_applying">Applicazione di %s...</string>
 	<string name="transit_not_found">La navigazione in transito in questa regione non è ancora disponibile</string>

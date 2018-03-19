@@ -1228,7 +1228,7 @@
 	<string name="bookmarks_places">%s 북마크</string>
 	<string name="bookmarks_create_new_group">새 목록 만들기</string>
 	<string name="downloader_hide_screen">화면 숨기기</string>
-	<string name="downloader_percent">%1$s(%2$s/s%%)</string>
+	<string name="downloader_percent">%1$s(%2$s / %3$s)</string>
 	<string name="downloader_process">%s 다운로드 중...</string>
 	<string name="downloader_applying">%s 적용 중...</string>
 	<string name="transit_not_found">이 지역에서 대중교통 내비게이션은 아직 사용 가능하지 않습니다.</string>

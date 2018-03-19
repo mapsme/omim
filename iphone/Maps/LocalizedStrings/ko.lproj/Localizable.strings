@@ -2199,7 +2199,7 @@
 
 "downloader_hide_screen" = "화면 숨기기";
 
-"downloader_percent" = "%s(%s/s%)";
+"downloader_percent" = "%s(%s / %s)";
 
 "downloader_process" = "%s 다운로드 중...";
 

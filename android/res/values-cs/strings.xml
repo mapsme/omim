@@ -1239,7 +1239,7 @@
 	<string name="bookmarks_places">%s záložek</string>
 	<string name="bookmarks_create_new_group">Vytvořte nový seznam</string>
 	<string name="downloader_hide_screen">Skrýt obrazovku</string>
-	<string name="downloader_percent">%1$s (%2$s s %%)</string>
+	<string name="downloader_percent">%1$s (%2$s z %3$s)</string>
 	<string name="downloader_process">Stahování %s...</string>
 	<string name="downloader_applying">Aplikuji %s...</string>
 	<string name="transit_not_found">Tranzitní navigace v tomto regionu zatím není k dispozici</string>

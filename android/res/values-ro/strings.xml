@@ -1228,7 +1228,7 @@
 	<string name="bookmarks_places">%s semne de carte</string>
 	<string name="bookmarks_create_new_group">Creați o listă nouă</string>
 	<string name="downloader_hide_screen">Ascundere ecran</string>
-	<string name="downloader_percent">%1$s (%2$s din s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s din %3$s)</string>
 	<string name="downloader_process">Descărcare %s...</string>
 	<string name="downloader_applying">Aplicare %s...</string>
 	<string name="transit_not_found">Navigarea în tranzit prin această regiune nu este disponibilă încă</string>

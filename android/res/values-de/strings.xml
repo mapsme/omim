@@ -1246,7 +1246,7 @@
 	<string name="bookmarks_places">%s Lesezeichen</string>
 	<string name="bookmarks_create_new_group">Erstelle eine neue Liste</string>
 	<string name="downloader_hide_screen">Bildschirm verbergen</string>
-	<string name="downloader_percent">%1$s (%2$s von s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s von %3$s)</string>
 	<string name="downloader_process">%s heruntergeladen...</string>
 	<string name="downloader_applying">%s anwenden...</string>
 	<string name="transit_not_found">Transit-Navigation in dieser Region ist noch nicht verfügbar</string>

@@ -1231,7 +1231,7 @@
 	<string name="bookmarks_places">%s markah</string>
 	<string name="bookmarks_create_new_group">Buat daftar baru</string>
 	<string name="downloader_hide_screen">Sembunyikan Layar</string>
-	<string name="downloader_percent">%1$s (%2$s dari s%%)</string>
+	<string name="downloader_percent">%1$s (%2$s dari %3$s)</string>
 	<string name="downloader_process">Mengunduh %s...</string>
 	<string name="downloader_applying">Menerapkan %s...</string>
 	<string name="transit_not_found">Navigasi transit di daerah ini masih belum tersedia</string>
