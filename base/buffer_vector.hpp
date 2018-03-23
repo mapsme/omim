@@ -410,6 +410,11 @@ public:
       resize(std::distance(b, i));
   }
 
+  size_t GetSize() const
+  {
+    return sizeof(T) * N + sizeof(size_t) + sizeof(T) * m_dynamic.size() + sizeof(std::vector<T>);
+  }
+
 private:
   void SwitchToDynamic()
   {

@@ -392,85 +392,88 @@ IRouter::ResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoint
     return IRouter::NeedMoreMaps;
 
   TrafficStash::Guard guard(m_trafficStash);
-  auto graph = MakeWorldGraph();
-
-  vector<Segment> segments;
-
-  Segment startSegment;
-  bool startSegmentIsAlmostCodirectionalDirection = false;
-  if (!FindBestSegment(checkpoints.GetPointFrom(), startDirection, true /* isOutgoing */, *graph,
-                       startSegment, startSegmentIsAlmostCodirectionalDirection))
   {
-    return IRouter::StartPointNotFound;
-  }
+    auto graph = MakeWorldGraph();
 
-  size_t subrouteSegmentsBegin = 0;
-  vector<Route::SubrouteAttrs> subroutes;
-  PushPassedSubroutes(checkpoints, subroutes);
-  unique_ptr<IndexGraphStarter> starter;
+    vector<Segment> segments;
 
-  for (size_t i = checkpoints.GetPassedIdx(); i < checkpoints.GetNumSubroutes(); ++i)
-  {
-    bool const isFirstSubroute = i == checkpoints.GetPassedIdx();
-    bool const isLastSubroute = i == checkpoints.GetNumSubroutes() - 1;
-    auto const & startCheckpoint = checkpoints.GetPoint(i);
-    auto const & finishCheckpoint = checkpoints.GetPoint(i + 1);
-
-    Segment finishSegment;
-    bool dummy = false;
-    if (!FindBestSegment(finishCheckpoint, m2::PointD::Zero() /* direction */,
-                         false /* isOutgoing */, *graph, finishSegment,
-                         dummy /* bestSegmentIsAlmostCodirectional */))
+    Segment startSegment;
+    bool startSegmentIsAlmostCodirectionalDirection = false;
+    if (!FindBestSegment(checkpoints.GetPointFrom(), startDirection, true /* isOutgoing */, *graph,
+                         startSegment, startSegmentIsAlmostCodirectionalDirection))
     {
-      return isLastSubroute ? IRouter::EndPointNotFound : IRouter::IntermediatePointNotFound;
+      return IRouter::StartPointNotFound;
     }
 
-    bool isStartSegmentStrictForward = (m_vehicleType == VehicleType::Car);
-    if (isFirstSubroute)
-      isStartSegmentStrictForward = startSegmentIsAlmostCodirectionalDirection;
+    size_t subrouteSegmentsBegin = 0;
+    vector<Route::SubrouteAttrs> subroutes;
+    PushPassedSubroutes(checkpoints, subroutes);
+    unique_ptr<IndexGraphStarter> starter;
 
-    IndexGraphStarter subrouteStarter(MakeFakeEnding(startSegment, startCheckpoint, *graph),
-                                      MakeFakeEnding(finishSegment, finishCheckpoint, *graph),
-                                      starter ? starter->GetNumFakeSegments() : 0,
-                                      isStartSegmentStrictForward, *graph);
+    for (size_t i = checkpoints.GetPassedIdx(); i < checkpoints.GetNumSubroutes(); ++i)
+    {
+      bool const isFirstSubroute = i == checkpoints.GetPassedIdx();
+      bool const isLastSubroute = i == checkpoints.GetNumSubroutes() - 1;
+      auto const & startCheckpoint = checkpoints.GetPoint(i);
+      auto const & finishCheckpoint = checkpoints.GetPoint(i + 1);
 
-    vector<Segment> subroute;
-    auto const result = CalculateSubroute(checkpoints, i, delegate, subrouteStarter, subroute);
+      Segment finishSegment;
+      bool dummy = false;
+      if (!FindBestSegment(finishCheckpoint, m2::PointD::Zero() /* direction */,
+                           false /* isOutgoing */, *graph, finishSegment,
+                           dummy /* bestSegmentIsAlmostCodirectional */))
+      {
+        return isLastSubroute ? IRouter::EndPointNotFound : IRouter::IntermediatePointNotFound;
+      }
 
-    if (result != IRouter::NoError)
-      return result;
+      bool isStartSegmentStrictForward = (m_vehicleType == VehicleType::Car);
+      if (isFirstSubroute)
+        isStartSegmentStrictForward = startSegmentIsAlmostCodirectionalDirection;
 
-    IndexGraphStarter::CheckValidRoute(subroute);
+      IndexGraphStarter subrouteStarter(MakeFakeEnding(startSegment, startCheckpoint, *graph),
+                                        MakeFakeEnding(finishSegment, finishCheckpoint, *graph),
+                                        starter ? starter->GetNumFakeSegments() : 0,
+                                        isStartSegmentStrictForward, *graph);
 
-    segments.insert(segments.end(), subroute.begin(), subroute.end());
+      vector<Segment> subroute;
+      auto const result = CalculateSubroute(checkpoints, i, delegate, subrouteStarter, subroute);
 
-    size_t subrouteSegmentsEnd = segments.size();
-    subroutes.emplace_back(subrouteStarter.GetStartJunction(), subrouteStarter.GetFinishJunction(),
-                           subrouteSegmentsBegin, subrouteSegmentsEnd);
-    subrouteSegmentsBegin = subrouteSegmentsEnd;
-    bool const hasRealOrPart = GetLastRealOrPart(subrouteStarter, subroute, startSegment);
-    CHECK(hasRealOrPart, ("No real or part of real segments in route."));
-    if (!starter)
-      starter = make_unique<IndexGraphStarter>(move(subrouteStarter));
-    else
-      starter->Append(FakeEdgesContainer(move(subrouteStarter)));
+      if (result != IRouter::NoError)
+        return result;
+
+      IndexGraphStarter::CheckValidRoute(subroute);
+
+      segments.insert(segments.end(), subroute.begin(), subroute.end());
+
+      size_t subrouteSegmentsEnd = segments.size();
+      subroutes
+          .emplace_back(subrouteStarter.GetStartJunction(), subrouteStarter.GetFinishJunction(),
+                        subrouteSegmentsBegin, subrouteSegmentsEnd);
+      subrouteSegmentsBegin = subrouteSegmentsEnd;
+      bool const hasRealOrPart = GetLastRealOrPart(subrouteStarter, subroute, startSegment);
+      CHECK(hasRealOrPart, ("No real or part of real segments in route."));
+      if (!starter)
+        starter = make_unique<IndexGraphStarter>(move(subrouteStarter));
+      else
+        starter->Append(FakeEdgesContainer(move(subrouteStarter)));
+    }
+
+    route.SetCurrentSubrouteIdx(checkpoints.GetPassedIdx());
+    route.SetSubroteAttrs(move(subroutes));
+
+    IndexGraphStarter::CheckValidRoute(segments);
+
+    auto redressResult = RedressRoute(segments, delegate, *starter, route);
+    if (redressResult != IRouter::NoError)
+      return redressResult;
+
+    m_lastRoute = make_unique<SegmentedRoute>(checkpoints.GetStart(), checkpoints.GetFinish(),
+                                              route.GetSubroutes());
+    for (Segment const & segment : segments)
+      m_lastRoute->AddStep(segment, starter->GetPoint(segment, true /* front */));
+
+    m_lastFakeEdges = make_unique<FakeEdgesContainer>(move(*starter));
   }
-
-  route.SetCurrentSubrouteIdx(checkpoints.GetPassedIdx());
-  route.SetSubroteAttrs(move(subroutes));
-
-  IndexGraphStarter::CheckValidRoute(segments);
-
-  auto redressResult = RedressRoute(segments, delegate, *starter, route);
-  if (redressResult != IRouter::NoError)
-    return redressResult;
-
-  m_lastRoute = make_unique<SegmentedRoute>(checkpoints.GetStart(), checkpoints.GetFinish(),
-                                            route.GetSubroutes());
-  for (Segment const & segment : segments)
-    m_lastRoute->AddStep(segment, starter->GetPoint(segment, true /* front */));
-
-  m_lastFakeEdges = make_unique<FakeEdgesContainer>(move(*starter));
 
   return IRouter::NoError;
 }

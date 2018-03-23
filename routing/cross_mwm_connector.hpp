@@ -200,6 +200,14 @@ public:
     }
   }
 
+  size_t GetSize() const
+  {
+    return sizeof(NumMwmId) + sizeof(Segment) * (m_enters.size() + m_exits.size()) +
+        (sizeof(Key) + Transition<CrossMwmId>::GetSize()) * m_transitions.size() +
+        (sizeof(CrossMwmId) + 4) * m_crossMwmIdToFeatureId.size() + sizeof(connector::WeightsLoadState) + 4 + 8 +
+        sizeof(connector::Weight) + sizeof(connector::Weight) * m_weights.size();
+  }
+
 private:
   struct Key
   {
@@ -243,6 +251,8 @@ private:
       , m_forwardIsEnter(forwardIsEnter)
     {
     }
+
+    static size_t GetSize() { return 4 + 4 + sizeof(CrossMwmIdInner) + 2 * sizeof(m2::PointD) + 2 * sizeof(bool); }
 
     uint32_t m_enterIdx = 0;
     uint32_t m_exitIdx = 0;

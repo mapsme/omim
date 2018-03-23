@@ -54,6 +54,20 @@ public:
       f(id);
   }
 
+  size_t GetSize() const
+  {
+    size_t idSz = 0;
+    for (auto const & i : m_idToFile)
+      idSz += i.GetSize();
+
+    size_t fileSz = 0;
+
+    for (auto const & f: m_fileToId)
+      fileSz += (f.first.GetSize() + sizeof(NumMwmId));
+
+    return idSz + fileSz;
+  }
+
 private:
   std::vector<platform::CountryFile> m_idToFile;
   std::map<platform::CountryFile, NumMwmId> m_fileToId;

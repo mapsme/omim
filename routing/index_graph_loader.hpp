@@ -20,6 +20,7 @@ public:
 
   virtual IndexGraph & GetIndexGraph(NumMwmId mwmId) = 0;
   virtual void Clear() = 0;
+  virtual size_t GetSize() const = 0;
 
   static std::unique_ptr<IndexGraphLoader> Create(
       VehicleType vehicleType, bool loadAltitudes, std::shared_ptr<NumMwmIds> numMwmIds,

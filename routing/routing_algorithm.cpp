@@ -13,8 +13,8 @@ namespace routing
 
 namespace
 {
-uint32_t constexpr kVisitPeriod = 4;
-float constexpr kProgressInterval = 2;
+//uint32_t constexpr kVisitPeriod = 4;
+//float constexpr kProgressInterval = 2;
 
 double constexpr KMPH2MPS = 1000.0 / (60 * 60);
 
@@ -102,19 +102,19 @@ private:
   double const m_maxSpeedMPS;
 };
 
-typedef AStarAlgorithm<RoadGraph> TAlgorithmImpl;
+//typedef AStarAlgorithm<RoadGraph> TAlgorithmImpl;
 
-IRoutingAlgorithm::Result Convert(TAlgorithmImpl::Result value)
-{
-  switch (value)
-  {
-  case TAlgorithmImpl::Result::OK: return IRoutingAlgorithm::Result::OK;
-  case TAlgorithmImpl::Result::NoPath: return IRoutingAlgorithm::Result::NoPath;
-  case TAlgorithmImpl::Result::Cancelled: return IRoutingAlgorithm::Result::Cancelled;
-  }
-  ASSERT(false, ("Unexpected TAlgorithmImpl::Result value:", value));
-  return IRoutingAlgorithm::Result::NoPath;
-}
+//IRoutingAlgorithm::Result Convert(TAlgorithmImpl::Result value)
+//{
+//  switch (value)
+//  {
+//  case TAlgorithmImpl::Result::OK: return IRoutingAlgorithm::Result::OK;
+//  case TAlgorithmImpl::Result::NoPath: return IRoutingAlgorithm::Result::NoPath;
+//  case TAlgorithmImpl::Result::Cancelled: return IRoutingAlgorithm::Result::Cancelled;
+//  }
+//  ASSERT(false, ("Unexpected TAlgorithmImpl::Result value:", value));
+//  return IRoutingAlgorithm::Result::NoPath;
+//}
 }  // namespace
 
 string DebugPrint(IRoutingAlgorithm::Result const & value)
@@ -133,64 +133,64 @@ string DebugPrint(IRoutingAlgorithm::Result const & value)
 
 // *************************** AStar routing algorithm implementation *************************************
 
-IRoutingAlgorithm::Result AStarRoutingAlgorithm::CalculateRoute(IRoadGraph const & graph,
-                                                                Junction const & startPos,
-                                                                Junction const & finalPos,
-                                                                RouterDelegate const & delegate,
-                                                                RoutingResult<IRoadGraph::Vertex, IRoadGraph::Weight> & path)
-{
-  AStarProgress progress(0, 95);
-  uint32_t visitCount = 0;
-
-  auto onVisitJunctionFn = [&](Junction const & junction, Junction const & /* target */) {
-    if (++visitCount % kVisitPeriod != 0)
-      return;
-
-    delegate.OnPointCheck(junction.GetPoint());
-    auto const lastValue = progress.GetLastValue();
-    auto const newValue = progress.GetProgressForDirectedAlgo(junction.GetPoint());
-    if (newValue - lastValue > kProgressInterval)
-      delegate.OnProgress(newValue);
-
-  };
-
-  my::Cancellable const & cancellable = delegate;
-  progress.Initialize(startPos.GetPoint(), finalPos.GetPoint());
-  RoadGraph roadGraph(graph);
-  TAlgorithmImpl::Params params(roadGraph, startPos, finalPos, nullptr /* prevRoute */, cancellable,
-                                onVisitJunctionFn, {} /* checkLength */);
-  TAlgorithmImpl::Result const res = TAlgorithmImpl().FindPath(params, path);
-  return Convert(res);
-}
-
-// *************************** AStar-bidirectional routing algorithm implementation ***********************
-
-IRoutingAlgorithm::Result AStarBidirectionalRoutingAlgorithm::CalculateRoute(
-    IRoadGraph const & graph, Junction const & startPos, Junction const & finalPos,
-    RouterDelegate const & delegate, RoutingResult<IRoadGraph::Vertex, IRoadGraph::Weight> & path)
-{
-  AStarProgress progress(0, 95);
-  uint32_t visitCount = 0;
-
-  auto onVisitJunctionFn = [&](Junction const & junction, Junction const & target) {
-    if (++visitCount % kVisitPeriod != 0)
-      return;
-
-    delegate.OnPointCheck(junction.GetPoint());
-    auto const lastValue = progress.GetLastValue();
-    auto const newValue =
-        progress.GetProgressForBidirectedAlgo(junction.GetPoint(), target.GetPoint());
-    if (newValue - lastValue > kProgressInterval)
-      delegate.OnProgress(newValue);
-  };
-
-  my::Cancellable const & cancellable = delegate;
-  progress.Initialize(startPos.GetPoint(), finalPos.GetPoint());
-  RoadGraph roadGraph(graph);
-  TAlgorithmImpl::Params params(roadGraph, startPos, finalPos, {} /* prevRoute */, cancellable,
-                                onVisitJunctionFn, {} /* checkLength */);
-  TAlgorithmImpl::Result const res = TAlgorithmImpl().FindPathBidirectional(params, path);
-  return Convert(res);
-}
+//IRoutingAlgorithm::Result AStarRoutingAlgorithm::CalculateRoute(IRoadGraph const & graph,
+//                                                                Junction const & startPos,
+//                                                                Junction const & finalPos,
+//                                                                RouterDelegate const & delegate,
+//                                                                RoutingResult<IRoadGraph::Vertex, IRoadGraph::Weight> & path)
+//{
+//  AStarProgress progress(0, 95);
+//  uint32_t visitCount = 0;
+//
+//  auto onVisitJunctionFn = [&](Junction const & junction, Junction const & /* target */) {
+//    if (++visitCount % kVisitPeriod != 0)
+//      return;
+//
+//    delegate.OnPointCheck(junction.GetPoint());
+//    auto const lastValue = progress.GetLastValue();
+//    auto const newValue = progress.GetProgressForDirectedAlgo(junction.GetPoint());
+//    if (newValue - lastValue > kProgressInterval)
+//      delegate.OnProgress(newValue);
+//
+//  };
+//
+//  my::Cancellable const & cancellable = delegate;
+//  progress.Initialize(startPos.GetPoint(), finalPos.GetPoint());
+//  RoadGraph roadGraph(graph);
+//  TAlgorithmImpl::Params params(roadGraph, startPos, finalPos, nullptr /* prevRoute */, cancellable,
+//                                onVisitJunctionFn, {} /* checkLength */);
+//  TAlgorithmImpl::Result const res = TAlgorithmImpl().FindPath(params, path);
+//  return Convert(res);
+//}
+//
+//// *************************** AStar-bidirectional routing algorithm implementation ***********************
+//
+//IRoutingAlgorithm::Result AStarBidirectionalRoutingAlgorithm::CalculateRoute(
+//    IRoadGraph const & graph, Junction const & startPos, Junction const & finalPos,
+//    RouterDelegate const & delegate, RoutingResult<IRoadGraph::Vertex, IRoadGraph::Weight> & path)
+//{
+//  AStarProgress progress(0, 95);
+//  uint32_t visitCount = 0;
+//
+//  auto onVisitJunctionFn = [&](Junction const & junction, Junction const & target) {
+//    if (++visitCount % kVisitPeriod != 0)
+//      return;
+//
+//    delegate.OnPointCheck(junction.GetPoint());
+//    auto const lastValue = progress.GetLastValue();
+//    auto const newValue =
+//        progress.GetProgressForBidirectedAlgo(junction.GetPoint(), target.GetPoint());
+//    if (newValue - lastValue > kProgressInterval)
+//      delegate.OnProgress(newValue);
+//  };
+//
+//  my::Cancellable const & cancellable = delegate;
+//  progress.Initialize(startPos.GetPoint(), finalPos.GetPoint());
+//  RoadGraph roadGraph(graph);
+//  TAlgorithmImpl::Params params(roadGraph, startPos, finalPos, {} /* prevRoute */, cancellable,
+//                                onVisitJunctionFn, {} /* checkLength */);
+//  TAlgorithmImpl::Result const res = TAlgorithmImpl().FindPathBidirectional(params, path);
+//  return Convert(res);
+//}
 
 }  // namespace routing

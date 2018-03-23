@@ -17,6 +17,10 @@ class AltitudeLoader
 {
 public:
   AltitudeLoader(Index const & index, MwmSet::MwmId const & mwmId);
+  ~AltitudeLoader()
+  {
+    LOG(LINFO, ("AltitudeLoader size:", GetSizeMB(GetSize()), "MB."));
+  }
 
   /// \returns altitude of feature with |featureId|. All items of the returned vector are valid
   /// or the returned vector is empty.
@@ -25,6 +29,16 @@ public:
   bool HasAltitudes() const;
 
   void ClearCache() { m_cache.clear(); }
+
+  size_t GetSize() const
+  {
+    size_t cacheSz = 0;
+    for (auto const & kv : m_cache)
+      cacheSz += (sizeof(uint32_t) + sizeof(feature::TAltitude) * kv.second.size());
+
+    return m_altitudeAvailabilityRegion->Size() + m_featureTableRegion->Size() + cacheSz +
+           sizeof(AltitudeHeader) + m_countryFileName.size();
+  }
 
 private:
   unique_ptr<CopiedMemoryRegion> m_altitudeAvailabilityRegion;

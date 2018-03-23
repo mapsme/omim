@@ -72,6 +72,8 @@ public:
   /// \returns transit-specific information for segment. For nontransit segments returns nullptr.
   virtual std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) = 0;
 
+  virtual size_t GetSize() const = 0;
+
 protected:
   void GetTwins(Segment const & segment, bool isOutgoing, std::vector<SegmentEdge> & edges);
   virtual void GetTwinsInner(Segment const & segment, bool isOutgoing,

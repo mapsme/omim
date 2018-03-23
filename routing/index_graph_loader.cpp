@@ -21,10 +21,16 @@ public:
   IndexGraphLoaderImpl(VehicleType vehicleType, bool loadAltitudes, shared_ptr<NumMwmIds> numMwmIds,
                        shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
                        shared_ptr<EdgeEstimator> estimator, Index & index);
+  
+  ~IndexGraphLoaderImpl()
+  {
+    return;
+  }
 
   // IndexGraphLoader overrides:
   virtual IndexGraph & GetIndexGraph(NumMwmId numMwmId) override;
   virtual void Clear() override;
+  virtual size_t GetSize() const override;
 
 private:
   IndexGraph & Load(NumMwmId mwmId);
@@ -88,6 +94,14 @@ IndexGraph & IndexGraphLoaderImpl::Load(NumMwmId numMwmId)
 }
 
 void IndexGraphLoaderImpl::Clear() { m_graphs.clear(); }
+
+size_t IndexGraphLoaderImpl::GetSize() const
+{
+  size_t sz = 0;
+  for (auto const & kv : m_graphs)
+    sz += (4 + kv.second->GetSize());
+  return sz;
+}
 
 bool ReadRoadAccessFromMwm(MwmValue const & mwmValue, VehicleType vehicleType,
                            RoadAccess & roadAccess)

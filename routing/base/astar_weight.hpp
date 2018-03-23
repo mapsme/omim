@@ -32,4 +32,5 @@ constexpr double GetAStarWeightMax<double>()
   return std::numeric_limits<double>::max();
 }
 
+inline size_t GetSizeMB(size_t sizeB) { return sizeB / (1024 * 1024); }
 }  // namespace routing

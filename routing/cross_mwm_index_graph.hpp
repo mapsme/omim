@@ -153,6 +153,15 @@ public:
     return isEnter ? connector.GetEnters() : connector.GetExits();
   }
 
+  size_t GetSize() const
+  {
+    size_t sz = 0;
+    for (auto const & kv : m_connectors)
+      sz += (sizeof(NumMwmId) + kv.second.GetSize());
+
+    return sz + sizeof(VehicleType);
+  }
+
 private:
   CrossMwmConnector<CrossMwmId> const & GetCrossMwmConnectorWithWeights(NumMwmId numMwmId)
   {

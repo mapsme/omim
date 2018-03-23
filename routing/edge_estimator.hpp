@@ -44,6 +44,8 @@ public:
   // Check wherether leap is allowed on specified mwm or not.
   virtual bool LeapIsAllowed(NumMwmId mwmId) const = 0;
 
+  virtual size_t GetSize() const { return 16; }
+
   static std::shared_ptr<EdgeEstimator> Create(VehicleType vehicleType, double maxSpeedKMpH,
                                                double offroadSpeedKMpH,
                                                std::shared_ptr<TrafficStash>);

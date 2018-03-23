@@ -27,7 +27,7 @@ public:
                           std::shared_ptr<EdgeEstimator> estimator);
 
   // WorldGraph overrides:
-  ~SingleVehicleWorldGraph() override = default;
+  ~SingleVehicleWorldGraph() override;
 
   void GetEdgeList(Segment const & segment, bool isOutgoing,
                    std::vector<SegmentEdge> & edges) override;
@@ -49,6 +49,8 @@ public:
   bool LeapIsAllowed(NumMwmId mwmId) const override;
   std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter) override;
   std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) override;
+
+  size_t GetSize() const override;
 
   // This method should be used for tests only
   IndexGraph & GetIndexGraphForTests(NumMwmId numMwmId)

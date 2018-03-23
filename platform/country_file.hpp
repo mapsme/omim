@@ -27,6 +27,11 @@ public:
   inline bool operator==(const CountryFile & rhs) const { return m_name == rhs.m_name; }
   inline bool operator!=(const CountryFile & rhs) const { return !(*this == rhs); }
 
+  size_t GetSize() const
+  {
+    return m_name.size() + 2 * sizeof(TMwmSize);
+  }
+
 private:
   friend string DebugPrint(CountryFile const & file);
 

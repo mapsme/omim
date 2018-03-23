@@ -5,6 +5,7 @@
 
 #include "base/assert.hpp"
 #include "base/cancellable.hpp"
+#include "base/logging.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -141,6 +142,12 @@ public:
 
     void ReconstructPath(Vertex const & v, std::vector<Vertex> & path) const;
 
+    size_t GetSize() const
+    {
+      return (sizeof(Vertex) + sizeof(Weight)) * m_distanceMap.size() +
+          2 * sizeof(Vertex) * m_parents.size();
+    }
+
   private:
     std::map<Vertex, Weight> m_distanceMap;
     std::map<Vertex, Vertex> m_parents;
@@ -260,6 +267,18 @@ private:
         graph.GetIngoingEdgesList(v, adj);
     }
 
+    size_t GetQueueSize() const
+    {
+      return queue.size() * sizeof(State);
+    }
+
+    size_t GetSize() const
+    {
+      return sizeof(bool) + 2 * sizeof(Vertex) + 2 * sizeof(Weight) +
+          (sizeof(Vertex) + sizeof(Weight)) * bestDistance.size() +
+          2 * sizeof(Vertex) * parent.size() + sizeof(Vertex) + sizeof(Weight);
+    }
+
     bool const forward;
     Vertex const & startVertex;
     Vertex const & finalVertex;
@@ -301,6 +320,7 @@ void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVer
   context.Clear();
 
   std::priority_queue<State, std::vector<State>, std::greater<State>> queue;
+  uint32_t steps = 0;
 
   context.SetDistance(startVertex, kZeroDistance);
   queue.push(State(startVertex, kZeroDistance));
@@ -309,6 +329,15 @@ void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVer
 
   while (!queue.empty())
   {
+    ++steps;
+
+    if (steps % 10000 == 0)
+    {
+      LOG(LINFO, ("PropagateWave(...). Queue size:", GetSizeMB(queue.size()),
+          "MB. Context size:", GetSizeMB(context.GetSize()),
+          "MB. Graph size:", GetSizeMB(graph.GetSize()), "MB. Steps:", steps));
+    }
+
     State const stateV = queue.top();
     queue.pop();
 
@@ -482,6 +511,17 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::FindPathBidirectio
 
   while (!cur->queue.empty() && !nxt->queue.empty())
   {
+    if (steps % 10000 == 0)
+    {
+      LOG(LINFO, ("FindPathBidirectional(...). Queue size:",
+          GetSizeMB(cur->GetQueueSize() + nxt->GetQueueSize()), "MB. Context sizes:",
+          GetSizeMB(cur->GetSize() + nxt->GetSize()), "MB. Graph size:",
+          GetSizeMB(graph.GetSize()), "MB. Best dist sz:",
+          cur->bestDistance.size() + nxt->bestDistance.size(),
+          "Parent sz:", cur->parent.size() + nxt->parent.size(),
+          "Weight sz:", sizeof(Weight), "Vertex sz:", sizeof(Vertex), " Steps:", steps));
+    }
+    
     ++steps;
 
     if (periodicCancellable.IsCancelled())

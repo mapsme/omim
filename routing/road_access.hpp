@@ -1,9 +1,12 @@
 #pragma once
 
+#include "routing/base/astar_weight.hpp"
+
 #include "routing/segment.hpp"
 #include "routing/vehicle_mask.hpp"
 
 #include "base/assert.hpp"
+#include "base/logging.hpp"
 
 #include <cstdint>
 #include <map>
@@ -41,6 +44,11 @@ public:
     Count
   };
 
+  ~RoadAccess()
+  {
+    LOG(LINFO, ("RoadAccess size:", GetSizeMB(GetSize()), "MB."));
+  }
+
   std::map<uint32_t, RoadAccess::Type> const & GetFeatureTypes() const { return m_featureTypes; }
   std::map<RoadPoint, RoadAccess::Type> const & GetPointTypes() const { return m_pointTypes; }
 
@@ -64,6 +72,12 @@ public:
   void SetFeatureTypesForTests(MF && mf)
   {
     m_featureTypes = std::forward<MF>(mf);
+  }
+
+  size_t GetSize() const
+  {
+    return (sizeof(uint32_t) + sizeof(RoadAccess::Type)) * m_featureTypes.size() +
+           (sizeof(RoadPoint) + sizeof(RoadAccess::Type)) * m_pointTypes.size();
   }
 
 private:

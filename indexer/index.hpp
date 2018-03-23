@@ -22,6 +22,8 @@
 #include <utility>
 #include <vector>
 
+inline size_t GetSizeMB(size_t sizeB) { return sizeB / (1024 * 1024); }
+
 class MwmInfoEx : public MwmInfo
 {
 private:
@@ -286,6 +288,10 @@ public:
   {
   public:
     FeaturesLoaderGuard(Index const & index, MwmId const & id);
+    ~FeaturesLoaderGuard()
+    {
+//      LOG(LINFO, ("FeaturesLoaderGuard size:", GetSizeMB(GetSize()), "MB."));
+    }
 
     inline MwmSet::MwmId const & GetId() const { return m_handle.GetId(); }
     std::string GetCountryFileName() const;
@@ -302,6 +308,10 @@ public:
 
     size_t GetNumFeatures() const;
 
+    size_t GetSize() const
+    {
+      return sizeof(m_handle) + m_vector->GetSize();
+    }
 
   private:
     MwmHandle m_handle;

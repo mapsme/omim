@@ -38,6 +38,10 @@ public:
   CrossMwmGraph(std::shared_ptr<NumMwmIds> numMwmIds, shared_ptr<m4::Tree<NumMwmId>> numMwmTree,
                 std::shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory, VehicleType vehicleType,
                 CourntryRectFn const & countryRectFn, Index & index);
+  ~CrossMwmGraph()
+  {
+    return;
+  }
 
   /// \brief Transition segment is a segment which is crossed by mwm border. That means
   /// start and finish of such segment have to lie in different mwms. If a segment is
@@ -94,6 +98,11 @@ public:
   {
     CHECK(CrossMwmSectionExists(numMwmId), ("Should be used in LeapsOnly mode only. LeapsOnly mode requires CrossMwmIndexGraph."));
     return m_crossMwmIndexGraph.GetTransitions(numMwmId, isEnter);
+  }
+
+  size_t GetSize() const
+  {
+    return m_crossMwmIndexGraph.GetSize() + m_crossMwmTransitGraph.GetSize();
   }
 
 private:

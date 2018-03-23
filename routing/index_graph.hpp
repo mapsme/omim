@@ -1,5 +1,7 @@
 #pragma once
 
+#include "routing/base/astar_weight.hpp"
+
 #include "routing/edge_estimator.hpp"
 #include "routing/geometry.hpp"
 #include "routing/joint.hpp"
@@ -30,6 +32,10 @@ public:
 
   IndexGraph() = default;
   explicit IndexGraph(unique_ptr<GeometryLoader> loader, shared_ptr<EdgeEstimator> estimator);
+  ~IndexGraph()
+  {
+    LOG(LINFO, ("IndexGraph size:", GetSizeMB(GetSize()), "MB."));
+  }
 
   // Put outgoing (or ingoing) egdes for segment to the 'edges' vector.
   void GetEdgeList(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges);
@@ -77,7 +83,26 @@ public:
     m_jointIndex.ForEachPoint(jointId, forward<F>(f));
   }
 
+  size_t GetSize() const
+  {
+    size_t restSz = 0;
+    for (auto const & r : m_restrictions)
+      restSz += r.GetSize();
+
+    return m_geometry.GetSize() + 8 + m_roadIndex.GetSizeBytes() + m_jointIndex.GetSize() + restSz + m_roadAccess.GetSize();
+  }
+
 private:
+  class D
+  {
+  public:
+    ~D()
+    {
+      return;
+    }
+
+  };
+
   RouteWeight CalcSegmentWeight(Segment const & segment);
   void GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
                            vector<SegmentEdge> & edges);
@@ -91,6 +116,7 @@ private:
 
   Geometry m_geometry;
   shared_ptr<EdgeEstimator> m_estimator;
+  D d;
   RoadIndex m_roadIndex;
   JointIndex m_jointIndex;
   RestrictionVec m_restrictions;

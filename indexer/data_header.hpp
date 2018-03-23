@@ -85,6 +85,12 @@ namespace feature
     inline void SetType(MapType t) { m_type = t; }
     inline MapType GetType() const { return m_type; }
 
+    size_t GetSize() const
+    {
+      return sizeof(serial::CodingParams) + sizeof(pair<int64_t, int64_t>) + m_scales.GetSize() +
+             m_langs.GetSize() + sizeof(version::Format) + sizeof(MapType);
+    }
+
   private:
     version::Format m_format;
     MapType m_type;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "routing/base/astar_weight.hpp"
+
 #include "routing/joint.hpp"
 #include "routing/road_index.hpp"
 #include "routing/road_point.hpp"
@@ -17,6 +19,11 @@ namespace routing
 class JointIndex final
 {
 public:
+  ~JointIndex()
+  {
+    LOG(LINFO, ("JointIndex size:", GetSizeMB(GetSize()), "MB."));
+  }
+
   // Read comments in Build method about -1.
   uint32_t GetNumJoints() const
   {
@@ -35,6 +42,12 @@ public:
   }
 
   void Build(RoadIndex const & roadIndex, uint32_t numJoints);
+
+  size_t GetSize() const
+  {
+    return sizeof(uint32_t) * m_offsets.size() + sizeof(vector<uint32_t>) +
+           sizeof(RoadPoint) * m_points.size() + sizeof(vector<RoadPoint>);
+  }
 
 private:
   // Begin index for jointId entries.

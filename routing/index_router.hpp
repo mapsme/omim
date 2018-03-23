@@ -138,8 +138,8 @@ private:
       return ConvertTransitResult(mwmIds,
                                   ConvertResult<Graph>(algorithm.FindPath(params, routingResult)));
     }
-    return ConvertTransitResult(
-        mwmIds, ConvertResult<Graph>(algorithm.FindPathBidirectional(params, routingResult)));
+    auto const result = algorithm.FindPathBidirectional(params, routingResult);
+    return ConvertTransitResult(mwmIds, ConvertResult<Graph>(result));
   }
 
   VehicleType m_vehicleType;

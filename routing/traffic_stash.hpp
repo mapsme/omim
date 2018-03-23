@@ -39,6 +39,10 @@ public:
   };
 
   TrafficStash(traffic::TrafficCache const & source, std::shared_ptr<NumMwmIds> numMwmIds);
+  ~TrafficStash()
+  {
+    return;
+  }
 
   traffic::SpeedGroup GetSpeedGroup(Segment const & segment) const;
   void SetColoring(NumMwmId numMwmId, std::shared_ptr<traffic::TrafficInfo::Coloring> coloring);

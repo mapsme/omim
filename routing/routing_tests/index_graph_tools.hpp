@@ -63,6 +63,11 @@ public:
   ~TestGeometryLoader() override = default;
 
   void Load(uint32_t featureId, routing::RoadGeometry & road) override;
+  virtual size_t GetSize() const override
+  {
+    CHECK(false, ());
+    return 0;
+  }
 
   void AddRoad(uint32_t featureId, bool oneWay, float speed,
                routing::RoadGeometry::Points const & points);
@@ -80,6 +85,11 @@ public:
   ~ZeroGeometryLoader() override = default;
 
   void Load(uint32_t featureId, routing::RoadGeometry & road) override;
+  size_t GetSize() const override
+  {
+    CHECK(false, ());
+    return 0;
+  }
 };
 
 class TestIndexGraphLoader final : public IndexGraphLoader
@@ -90,6 +100,7 @@ public:
 
   IndexGraph & GetIndexGraph(NumMwmId mwmId) override;
   void Clear() override;
+  size_t GetSize() const override { CHECK(false, ("Not supported.")); return 0; };
 
   void AddGraph(NumMwmId mwmId, unique_ptr<IndexGraph> graph);
 

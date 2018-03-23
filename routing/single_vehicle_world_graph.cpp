@@ -14,6 +14,11 @@ SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> cross
   CHECK(m_loader, ());
   CHECK(m_estimator, ());
 }
+  
+ SingleVehicleWorldGraph::~SingleVehicleWorldGraph()
+{
+  return;
+}
 
 void SingleVehicleWorldGraph::GetEdgeList(Segment const & segment, bool isOutgoing,
                                           vector<SegmentEdge> & edges)
@@ -113,6 +118,11 @@ vector<Segment> const & SingleVehicleWorldGraph::GetTransitions(NumMwmId numMwmI
 }
 
 unique_ptr<TransitInfo> SingleVehicleWorldGraph::GetTransitInfo(Segment const &) { return {}; }
+
+size_t SingleVehicleWorldGraph::GetSize() const
+{
+   return m_loader->GetSize() + m_crossMwmGraph->GetSize() + m_estimator->GetSize() + sizeof(Mode);
+}
 
 RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId)
 {

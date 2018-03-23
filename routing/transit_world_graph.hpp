@@ -60,6 +60,12 @@ public:
   std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter) override;
   std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) override;
 
+  size_t GetSize() const override
+  {
+    CHECK(false, ("Not supported."));
+    return 0;
+  };
+
 private:
   // WorldGraph overrides:
   void GetTwinsInner(Segment const & s, bool isOutgoing, std::vector<Segment> & twins) override;

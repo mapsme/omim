@@ -103,6 +103,8 @@ public:
   RouteWeight CalcSegmentWeight(Segment const & segment) const;
   RouteWeight CalcRouteSegmentWeight(std::vector<Segment> const & route, size_t segmentIndex) const;
 
+  size_t GetSize() const { return m_graph.GetSize(); }
+
 private:
   // Start or finish ending information. 
   struct Ending

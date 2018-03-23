@@ -1,8 +1,11 @@
 #pragma once
 
+#include "routing/base/astar_weight.hpp"
+
 #include "routing/joint.hpp"
 
 #include "base/checked_cast.hpp"
+#include "base/logging.hpp"
 
 #include "std/algorithm.hpp"
 #include "std/cstdint.hpp"
@@ -106,6 +109,11 @@ public:
     return result;
   }
 
+  size_t GetSize() const
+  {
+    return sizeof(Joint::Id) * m_jointIds.size() + sizeof(vector<Joint::Id>);
+  }
+
 private:
   // Joint ids indexed by point id.
   // If some point id doesn't match any joint id, this vector contains Joint::kInvalidId.
@@ -115,6 +123,10 @@ private:
 class RoadIndex final
 {
 public:
+  ~RoadIndex()
+  {
+    LOG(LINFO, ("RoadIndex size:", GetSizeMB(GetSizeBytes()), "MB. m_road.size()", m_roads.size()));
+  }
   void Import(vector<Joint> const & joints);
 
   void AddJoint(RoadPoint const & rp, Joint::Id jointId)
@@ -159,6 +171,14 @@ public:
   {
     for (auto const & it : m_roads)
       f(it.first, it.second);
+  }
+
+  size_t GetSizeBytes() const
+  {
+    size_t sz = 0;
+    for (auto const & kv : m_roads)
+      sz += (sizeof(uint32_t) + kv.second.GetSize());
+    return sz;
   }
 
 private:

@@ -50,6 +50,8 @@ public:
     });
   }
 
+  size_t GetSize() const { return m_LoadInfo.GetSize() + m_buffer.size(); }
+
 private:
   friend class FeaturesVectorTest;
 

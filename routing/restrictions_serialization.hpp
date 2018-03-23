@@ -41,6 +41,11 @@ struct Restriction
   bool operator==(Restriction const & restriction) const;
   bool operator<(Restriction const & restriction) const;
 
+  size_t GetSize() const
+  {
+    return 4 * m_featureIds.size() + sizeof(Type);
+  }
+
   // Links of the restriction in feature ids term.
   vector<uint32_t> m_featureIds;
   Type m_type;
