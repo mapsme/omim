@@ -29798,7 +29798,7 @@ fa = دوباره نپرس
     zh-Hant = 預訂在您所選日期有空的賓館！用入住和離店篩選
 
   [whats_new_title_ugc_travel]
-    en = Share your experience with other travellers! 
+    en = Share your experience with other travellers!
     ru = Делитесь вашими впечатлениями с другими путешественниками!
     ar = شارك تجربتك مع المسافرين الآخرين!
     cs = Podělte se o své zkušenosti s dalšími cestovateli!
@@ -29815,7 +29815,7 @@ fa = دوباره نپرس
     nb = Del dine opplevelser med andre reisende!
     pl = Podziel się swoimi wrażeniami z innymi podróżnymi!
     pt = Partilhe a sua experiência com outros viajantes!
-    pt-BR = Compartilhe sua experiência com outros viajantes! 
+    pt-BR = Compartilhe sua experiência com outros viajantes!
     ro = Comunicați-vă experiențele altor călători!
     es = ¡Comparta su experiencia con otros viajeros!
     sv = Dela din upplevelse med andra resenärer!
@@ -29824,7 +29824,7 @@ fa = دوباره نپرس
     uk = Поділіться вашими враженнями з іншими мандрівниками!
     vi = Chia sẻ trải nghiệm của bạn với những du khách khác!
     el = Μοιραστείτε την εμπειρία σας με άλλους ταξιδιώτες!
-    es_MX = Comparte tu experiencia con otros viajeros! 
+    es_MX = Comparte tu experiencia con otros viajeros!
     sk = Podeľte sa o svoje skúsenosti s ďalšími cestovateľmi!
     sw = Shiriki hisia zako na wasafiri wengine!
     zh-Hans = 與其他旅客分享您的體驗！
@@ -29862,7 +29862,7 @@ fa = دوباره نپرس
     sw = Kadiria na utoe maoni kuhusu maeneo uliyotembelea!
     zh-Hans = 評價您參觀過的地方！
     zh-Hant = 給您訪問過的地方打分和評價！
- 
+
   [dialog_pedestrian_route_is_long]
     tags = ios,android
     en = The pedestrian route is too long
@@ -30103,7 +30103,7 @@ fa = دوباره نپرس
   [bookmarks_error_title_empty_list_name]
     en = The name couldn't be empty
     ru = Имя списка не может быть пустым
-  
+
   [bookmarks_error_message_empty_list_name]
     en = Please enter the list name
     ru = Введите имя списка, пожалуйста
@@ -30126,4 +30126,4 @@ fa = دوباره نپرس
 
   [bookmarks_error_message_list_name_too_long]
     en = Please choose another name
-    ru = Выберите, пожалуйста, другое имя    
+    ru = Выберите, пожалуйста, другое имя
