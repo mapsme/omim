@@ -84,6 +84,10 @@ module Twine
       def format_value(value)
         escape_quotes(value)
       end
+
+      def should_include_definition(definition, lang)
+        !definition.is_plural? && super
+      end
     end
   end
 end
