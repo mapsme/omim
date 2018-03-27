@@ -136,14 +136,14 @@ public:
                OtherStrings const & ... args)
   {
     index.emplace_back(LocalizableStringSubIndex());
-    auto constexpr kMaxSize = static_cast<size_t>(std::numeric_limits<int8_t>::max() / 2);
+    auto constexpr kMaxSize = std::numeric_limits<int8_t>::max() - 1;
     int8_t counter = 0;
     for (auto const & p : properties)
     {
-      if (counter > kMaxSize)
+      if (counter >= kMaxSize)
         break;
-      CollectString(index.back(), static_cast<int8_t>(counter++), p.first);
-      CollectString(index.back(), static_cast<int8_t>(counter++), p.second);
+      CollectString(index.back(), counter++, p.first);
+      CollectString(index.back(), counter++, p.second);
     }
 
     Collect(index, args...);
