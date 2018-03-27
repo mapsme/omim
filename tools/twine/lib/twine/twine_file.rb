@@ -1,9 +1,13 @@
 module Twine
   class TwineDefinition
+    PLURAL_KEYS = %w(zero one two few many other)
+
     attr_reader :key
     attr_accessor :comment
     attr_accessor :tags
     attr_reader :translations
+    attr_reader :plural_translations
+    attr_reader :is_plural
     attr_accessor :reference
     attr_accessor :reference_key
 
@@ -12,6 +16,7 @@ module Twine
       @comment = nil
       @tags = nil
       @translations = {}
+      @plural_translations = {}
     end
 
     def comment
@@ -45,10 +50,28 @@ module Twine
 
     def translation_for_lang(lang)
       translation = [lang].flatten.map { |l| @translations[l] }.first
-
       translation = reference.translation_for_lang(lang) if translation.nil? && reference
-
       return translation
+    end
+
+    def plural_translation_for_lang(lang)
+      if @plural_translations.has_key? lang
+        @plural_translations[lang].clone
+      end
+    end
+
+    def is_plural?
+      !@plural_translations.empty?
+    end
+
+    def add_plural_translation(lang, plural, value)
+      if PLURAL_KEYS.include? plural
+        if !@plural_translations.has_key? lang
+          @plural_translations[lang] = { plural => value }
+        else
+          @plural_translations[lang][plural] = value
+        end
+      end
     end
   end
 
@@ -137,11 +160,12 @@ module Twine
               parsed = true
             end
           else
-            match = /^([^=]+)=(.*)$/.match(line)
+            match = /^([^:=]+):?([^:=]+)=(.*)$/.match(line)
             if match
               key = match[1].strip
-              value = match[2].strip
-              
+              plural_key = match[2].strip
+              value = match[3].strip
+
               value = value[1..-2] if value[0] == '`' && value[-1] == '`'
 
               case key
@@ -155,7 +179,14 @@ module Twine
                 if !@language_codes.include? key
                   add_language_code(key)
                 end
-                current_definition.translations[key] = value
+                # Providing backward compatibility
+                # for formatters without plural support
+                if plural_key.empty? || plural_key == 'other'
+                  current_definition.translations[key] = value
+                end
+                if plural_key
+                  current_definition.add_plural_translation(key, plural_key, value)
+                end
               end
               parsed = true
             end
@@ -192,7 +223,7 @@ module Twine
             if !value && !definition.reference_key
               puts "Warning: #{definition.key} does not exist in developer language '#{dev_lang}'"
             end
-            
+
             if definition.reference_key
               f.puts "\t\tref = #{definition.reference_key}"
             end

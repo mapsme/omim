@@ -7,6 +7,8 @@ module Twine
     class Android < Abstract
       include Twine::Placeholders
 
+      SUPPORTS_PLURAL = true
+
       LANG_CODES = Hash[
         'zh' => 'zh-Hans',
         'zh-CN' => 'zh-Hans',
@@ -108,6 +110,12 @@ module Twine
 
       def key_value_pattern
         "\t<string name=\"%{key}\">%{value}</string>"
+      end
+
+      def format_plural_keys(key, plural_hash)
+        result = "\t<plurals name=\"#{key}\">\n"
+        result += plural_hash.map{|quantity,value| "\t#{' ' * 2}<item quantity=\"#{quantity}\">#{value}</item>"}.join("\n")
+        result += "\n\t</plurals>"
       end
 
       def escape_value(value)

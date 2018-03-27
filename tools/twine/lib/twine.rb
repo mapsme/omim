@@ -31,6 +31,7 @@ module Twine
   require 'twine/formatters/abstract'
   require 'twine/formatters/android'
   require 'twine/formatters/apple'
+  require 'twine/formatters/apple_plural'
   require 'twine/formatters/django'
   require 'twine/formatters/flash'
   require 'twine/formatters/gettext'

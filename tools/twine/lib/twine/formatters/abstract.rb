@@ -3,6 +3,7 @@ require 'fileutils'
 module Twine
   module Formatters
     class Abstract
+      SUPPORTS_PLURAL = false
       attr_accessor :twine_file
       attr_accessor :options
 
@@ -46,11 +47,11 @@ module Twine
           end
           current_definition = TwineDefinition.new(key)
           current_section.definitions << current_definition
-          
+
           if @options[:tags] && @options[:tags].length > 0
-            current_definition.tags = @options[:tags]            
+            current_definition.tags = @options[:tags]
           end
-          
+
           @twine_file.definitions_by_key[key] = current_definition
           @twine_file.definitions_by_key[key].translations[lang] = value
         else
@@ -132,7 +133,13 @@ module Twine
       end
 
       def format_definition(definition, lang)
-        [format_comment(definition, lang), format_key_value(definition, lang)].compact.join
+        formatted_definition = [format_comment(definition, lang)]
+        if self.class::SUPPORTS_PLURAL && definition.is_plural?
+          formatted_definition << format_plural(definition, lang)
+        else
+          formatted_definition << format_key_value(definition, lang)
+        end
+        formatted_definition.compact.join
       end
 
       def format_comment(definition, lang)
@@ -143,8 +150,21 @@ module Twine
         key_value_pattern % { key: format_key(definition.key.dup), value: format_value(value.dup) }
       end
 
+      def format_plural(definition, lang)
+        if definition.is_plural?
+          plural_hash = definition.plural_translation_for_lang(lang)
+          if plural_hash
+            format_plural_keys(definition.key.dup, plural_hash)
+          end
+        end
+      end
+
       def key_value_pattern
         raise NotImplementedError.new("You must implement key_value_pattern in your formatter class.")
+      end
+
+      def format_plural_keys(plural_hash)
+        raise NotImplementedError.new("You must implement format_plural_keys in your formatter class.")
       end
 
       def format_key(key)
