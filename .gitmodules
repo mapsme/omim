@@ -1,15 +1,15 @@
 [submodule "tools/osmctools"]
 	path = tools/osmctools
-	url = git://github.com/mapsme/osmctools.git
+	url = https://github.com/mapsme/osmctools.git
 [submodule "tools/kothic"]
 	path = tools/kothic
-	url = git://github.com/mapsme/kothic.git
+	url = https://github.com/mapsme/kothic.git
 [submodule "3party/Alohalytics"]
 	path = 3party/Alohalytics
-	url = git://github.com/mapsme/Alohalytics.git
+	url = https://github.com/mapsme/Alohalytics.git
 [submodule "tools/macdeployqtfix"]
 	path = tools/macdeployqtfix
-	url = git://github.com/aurelien-rainone/macdeployqtfix.git
+	url = https://github.com/aurelien-rainone/macdeployqtfix.git
 [submodule "3party/protobuf/protobuf"]
 	path = 3party/protobuf/protobuf
-	url = git://github.com/mapsme/protobuf.git
+	url = https://github.com/mapsme/protobuf.git
