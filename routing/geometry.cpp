@@ -139,7 +139,7 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
 // Geometry ----------------------------------------------------------------------------------------
 Geometry::Geometry(unique_ptr<GeometryLoader> loader)
   : m_loader(move(loader))
-  , m_featureIdToRoad(make_unique<LruCache<uint32_t, RoadGeometry>>(
+  , m_featureIdToRoad(make_unique<FifoCache<uint32_t, RoadGeometry>>(
         kRoadsCacheSize,
         [this](uint32_t featureId, RoadGeometry & road) { m_loader->Load(featureId, road); }))
 {

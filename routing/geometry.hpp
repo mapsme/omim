@@ -11,7 +11,7 @@
 #include "geometry/point2d.hpp"
 
 #include "base/buffer_vector.hpp"
-#include "base/lru_cache.hpp"
+#include "base/fifo_cache.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -108,6 +108,6 @@ public:
 
 private:
   std::unique_ptr<GeometryLoader> m_loader;
-  std::unique_ptr<LruCache<uint32_t, RoadGeometry>> m_featureIdToRoad;
+  std::unique_ptr<FifoCache<uint32_t, RoadGeometry>> m_featureIdToRoad;
 };
 }  // namespace routing
