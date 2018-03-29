@@ -137,20 +137,20 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
 }
 
 // Geometry ----------------------------------------------------------------------------------------
-Geometry::Geometry(unique_ptr<GeometryLoader> loader) : m_loader(move(loader))
+Geometry::Geometry(unique_ptr<GeometryLoader> loader)
+  : m_loader(move(loader))
+  , m_featureIdToRoad(make_unique<LruCache<uint32_t, RoadGeometry>>(
+        kRoadsCacheSize,
+        [this](uint32_t featureId, RoadGeometry & road) { m_loader->Load(featureId, road); }))
 {
   CHECK(m_loader, ());
 }
 
 RoadGeometry const & Geometry::GetRoad(uint32_t featureId)
 {
-  auto const & it = m_roads.find(featureId);
-  if (it != m_roads.cend())
-    return it->second;
-
-  RoadGeometry & road = m_roads[featureId];
-  m_loader->Load(featureId, road);
-  return road;
+  ASSERT(m_featureIdToRoad, ());
+  ASSERT(m_loader, ());
+  return m_featureIdToRoad->GetValue(featureId);
 }
 
 // static
