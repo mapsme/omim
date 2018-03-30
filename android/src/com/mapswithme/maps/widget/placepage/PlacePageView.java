@@ -68,6 +68,7 @@ import com.mapswithme.maps.gallery.impl.Factory;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.review.Review;
 import com.mapswithme.maps.routing.RoutingController;
+import com.mapswithme.maps.search.FilterActivity;
 import com.mapswithme.maps.taxi.TaxiManager;
 import com.mapswithme.maps.taxi.TaxiType;
 import com.mapswithme.maps.ugc.Impress;
@@ -356,6 +357,7 @@ public class PlacePageView extends RelativeLayout
     directionFrame.setOnClickListener(this);
 
     mTvAddress = (TextView) mPreview.findViewById(R.id.tv__address);
+    mPreview.findViewById(R.id.search_hotels_btn).setOnClickListener(this);
 
     mPreviewRatingInfo = mPreview.findViewById(R.id.preview_rating_info);
     mRatingView = (RatingView) mPreviewRatingInfo.findViewById(R.id.rating_view);
@@ -1364,6 +1366,7 @@ public class PlacePageView extends RelativeLayout
       UiUtils.showIf((!isRatingEmpty || !isPriceEmpty) &&
                      mSponsored.getType() == Sponsored.TYPE_BOOKING, mPreviewRatingInfo);
     }
+    UiUtils.showIf(mapObject.getHotelType() != null, mPreview, R.id.search_hotels_btn);
   }
 
   private boolean isSponsored()
@@ -1889,6 +1892,9 @@ public class PlacePageView extends RelativeLayout
               GalleryType.VIATOR, GalleryPlacement.PLACEPAGE);
         }
         break;
+      case R.id.search_hotels_btn:
+        getActivity().onShowSimilarHotels();
+        break;
     }
   }
 
@@ -2113,6 +2119,11 @@ public class PlacePageView extends RelativeLayout
   public boolean isLeaveReviewButtonTouched(@NonNull MotionEvent event)
   {
     return mUgcController != null && mUgcController.isLeaveReviewButtonTouched(event);
+  }
+
+  public boolean isSearchSimilarHotelsButtonTouched(@NonNull MotionEvent event)
+  {
+    return UiUtils.isViewTouched(event, mPreview.findViewById(R.id.search_hotels_btn));
   }
 
   @Override
