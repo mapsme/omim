@@ -23,6 +23,7 @@ set(
   dfa_helpers.hpp
   exception.cpp
   exception.hpp
+  fifo_cache.hpp
   get_time.hpp
   gmtime.cpp
   gmtime.hpp
@@ -34,6 +35,7 @@ set(
   logging.cpp
   logging.hpp
   lower_case.cpp
+  lru_cache.hpp
   macros.hpp
   math.hpp
   matrix.hpp

@@ -11,14 +11,18 @@
 #include "geometry/point2d.hpp"
 
 #include "base/buffer_vector.hpp"
+#include "base/fifo_cache.hpp"
 
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 namespace routing
 {
+// @TODO(bykoianko) Consider setting cache size based on available memory.
+// Maximum road geometry cache size in items.
+size_t constexpr kRoadsCacheSize = 1000;
+
 class RoadGeometry final
 {
 public:
@@ -103,8 +107,7 @@ public:
   }
 
 private:
-  // Feature id to RoadGeometry map.
-  std::unordered_map<uint32_t, RoadGeometry> m_roads;
   std::unique_ptr<GeometryLoader> m_loader;
+  std::unique_ptr<FifoCache<uint32_t, RoadGeometry>> m_featureIdToRoad;
 };
 }  // namespace routing

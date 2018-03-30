@@ -14,8 +14,10 @@ set(
   condition_test.cpp
   containers_test.cpp
   control_flow_tests.cpp
+  fifo_cache_test.cpp
   levenshtein_dfa_test.cpp
   logging_test.cpp
+  lru_cache_test.cpp
   math_test.cpp
   matrix_test.cpp
   mem_trie_test.cpp
