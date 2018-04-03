@@ -29,7 +29,7 @@
     ro = Căutare
     nb = Søk
     fi = Haku
-	be = Пошук
+    be = Пошук
 
   [share_my_location]
     tags = ios
@@ -62,7 +62,7 @@
     ro = Partajează-mi poziția
     nb = Del posisjonen min
     fi = Jaa sijaintini
-	be = Падзяліцца месцазнаходжаннем
+    be = Падзяліцца месцазнаходжаннем
 
   [bookmarks]
     tags = ios
@@ -95,14 +95,14 @@
     ro = Marcaje
     nb = Bokmerker
     fi = Kirjanmerkit
-	be = Меткі
+    be = Меткі
 
   [route]
     tags = ios
     comment = Used in home screen quick actions.
     en = Route
     ar = المسار
-	be = Маршрут
+    be = Маршрут
     bg = Маршрут
     ca = Ruta
     cs = Trasa
@@ -146,7 +146,7 @@
     comment = Needed to explain why we always require access to GPS coordinates, and not only when the app is active.
     en = Defining current location in the background is necessary to fully enjoy the functionality of the app. It is mainly used in the options of following the route and saving your recent travelled path. 
     ru = Определение местоположения в фоне необходимо для полноценного пользования приложением. Оно используется в движении по маршруту и сохранении недавно пройденного пути.
-	fr = La localisation actuelle en arrière-plan est nécessaire pour profiter pleinement de toutes les fonctionnalités de l'application. Elle est principalement utilisée dans les options de navigation et d'enregistrement de votre chemin récemment parcouru.
+    fr = La localisation actuelle en arrière-plan est nécessaire pour profiter pleinement de toutes les fonctionnalités de l'application. Elle est principalement utilisée dans les options de navigation et d'enregistrement de votre chemin récemment parcouru.
     da = Det er nødvendigt at fastslå den gældende placering i baggrunden for at udnytte appens funktionalitet fuldt ud. Dette anvendes først og fremmest, når en rute skal følges, og når din sidste rejserute skal gemmes.
     id = Menentukan lokasi saat ini di latar belakang diperlukan untuk menikmati fungsi aplikasi. Digunakan terutama dalam opsi mengikuti rute dan menyimpan jalur yang telah Anda tempuh baru-baru ini.
     ko = 백그라운드에서 현재 위치를 정의하는 것은 완전히 앱의 기능을 즐길 수 있도록 해줍니다. 이는 주로 경로를 따르고 최근 여행 경로를 저장하는 옵션에 사용됩니다.
@@ -171,7 +171,7 @@
     pl = Określanie w tle bieżącej lokalizacji jest konieczne, aby w pełni korzystać z funkcjonalności aplikacji. Funkcji tej używa się głównie w ramach opcji podążania zgodnie z trasą i zapisywania niedawno przebytej trasy.
     nl = Het op de achtergrond vaststellen van de huidige locatie is noodzakelijk om volledig gebruik te maken van de functionaliteit van de app. Dit wordt voornamelijk gebruikt bij de opties voor het volgen van de route en het opslaan van je recent afgelegde pad.
     pt = A definição da localização atual em segundo plano é necessária para desfrutar totalmente da funcionalidade do aplicativo. Ela é utilizada principalmente nas opções de seguir a rota e salvar seu caminho recém-viajado. 
-	be = Вызначэнне месцазнаходжання ў фоне неабходна каб карыстацца праграмай без абмежаванняў. Яно выкарыстоўваецца падчас руху па маршруце і для захавання нядаўна пройдзенага шляху.
+    be = Вызначэнне месцазнаходжання ў фоне неабходна каб карыстацца праграмай без абмежаванняў. Яно выкарыстоўваецца падчас руху па маршруце і для захавання нядаўна пройдзенага шляху.
 
   [NSLocationWhenInUseUsageDescription]
     comment = Needed to explain why we require access to GPS coordinates when the app is active.
@@ -202,4 +202,4 @@
     pl = Określanie bieżącej lokalizacji używane jest w przypadku opcji podążania trasą i zapisywania ostatnio przebytej trasy.
     nl = Bepaling van de huidige locatie wordt gebruikt in de opties voor het volgen van de route en het opslaan van uw onlangs afgelegde weg.
     pt = A definição da localização atual é utilizada em determinadas funções, tais como o acompanhamento de um trajeto e o backup de trajetos feitos recentemente.
-	be = Вызначэнне месцазнаходжання выкарыстоўваецца падчас руху па маршруце і для захавання нядаўна пройдзенага шляху.
+    be = Вызначэнне месцазнаходжання выкарыстоўваецца падчас руху па маршруце і для захавання нядаўна пройдзенага шляху.
