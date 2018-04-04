@@ -31035,4 +31035,7 @@
     ru = Профиль OSM  
 	be = Профіль OSM
        
- 
+  [place_page_search_similar_hotel]
+	en = Search similar hotels
+	ru = Найти похожие отели   
+	be = Знайсці падобныя гатэлі
