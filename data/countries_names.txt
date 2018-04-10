@@ -2,6 +2,7 @@
   en = Abkhazia
   ru = Абхазия
   ar = أبخازيا
+  be = Абхазія
   cs = Abcházie
   da = Abkhasien
   nl = Abchazië
@@ -33,6 +34,7 @@
   en = Afghanistan
   ru = Афганистан
   ar = أفغانستان
+  be = Аўганістан
   cs = Afghánistán
   da = Afghanistan
   nl = Afghanistan
@@ -64,6 +66,7 @@
   en = Alabama
   ru = Алабама
   ar = ألاباما
+  be = Алабама
   cs = Alabama
   da = Alabama
   nl = Alabama
@@ -95,6 +98,7 @@
   en = Albania
   ru = Албания
   ar = ألبانيا
+  be = Албанія
   cs = Albánie
   da = Albanien
   nl = Albanië
@@ -126,6 +130,7 @@
   en = Algeria
   ru = Алжир
   ar = الجزائر
+  be = Алжыр
   cs = Alžírsko
   da = Algeriet
   nl = Algerije
@@ -157,6 +162,7 @@
   en = Algeria — Centre
   ru = Алжир — Центр
   ar = الجزائر — مركز
+  be = Алжыр - Цэнтар
   cs = Alžírsko — Střed
   da = Algeriet — Centrum
   nl = Algerije — Centrum
@@ -188,6 +194,7 @@
   en = Algeria — North
   ru = Алжир — Север
   ar = الجزائر — شمال
+  be = Алжыр - Поўнач
   cs = Alžírsko — Sever
   da = Algeriet — Nord
   nl = Algerije — Noord
@@ -219,6 +226,7 @@
   en = Andorra
   ru = Андорра
   ar = أندورا
+  be = Андора
   cs = Andorra
   da = Andorra
   nl = Andorra
@@ -250,6 +258,7 @@
   en = Angola
   ru = Ангола
   ar = أنجولا
+  be = Ангола
   cs = Angola
   da = Angola
   nl = Angola
@@ -281,6 +290,7 @@
   en = Anguilla
   ru = Ангилья
   ar = أنجويلا
+  be = Ангілья
   cs = Anguilla
   da = Anguilla
   nl = Anguilla
@@ -312,6 +322,7 @@
   en = Antarctica
   ru = Антарктида
   ar = أنتاركتيكا
+  be = Антарктыда
   cs = Antarktida
   da = Antarktis
   nl = Antarctica
@@ -343,6 +354,7 @@
   en = Antigua and Barbuda
   ru = Антигуа и Барбуда
   ar = أنتيغوا وباربودا
+  be = Антыгуа і Барбуда
   cs = Antigua a Barbuda
   da = Antigua og Barbuda
   nl = Antigua en Barbuda
@@ -374,6 +386,7 @@
   en = Argentina
   ru = Аргентина
   ar = الأرجنتين
+  be = Аргенціна
   cs = Argentina
   da = Argentina
   nl = Argentinië
@@ -405,6 +418,7 @@
   en = Buenos Aires Province — North
   ru = Буэнос-Айрес — Север
   ar = بوينس آيرس — شمال
+  be = Буэнас-Айрэс - Поўнач
   cs = Buenos Aires — Sever
   da = Provincia de Buenos Aires — Nord
   nl = Buenos Aires — Noord
@@ -436,6 +450,7 @@
   en = Buenos Aires Province — South
   ru = Буэнос-Айрес — Юг
   ar = بوينس آيرس — جنوب
+  be = Буэнас-Айрэс - Поўдзень
   cs = Buenos Aires — Jih
   da = Provincia de Buenos Aires — Syd
   nl = Buenos Aires — Zuid
@@ -467,6 +482,7 @@
   en = Cuyo
   ru = Куйо
   ar = كويو
+  be = Куё
   cs = Cuyo
   da = Cuyo
   nl = Cuyo
@@ -498,6 +514,7 @@
   en = Mesopotamia
   ru = Аргентинское Междуречье
   ar = ما بين النهرين
+  be = Аргенцінскае Міжрэчча 
   cs = Mezopotámie
   da = Mesopotamien
   nl = Mesopotamia
@@ -529,6 +546,7 @@
   en = Argentine Northwest
   ru = Аргентинский Северо-Запад
   ar = شمال غرب الأرجنتين
+  be = Аргенцінскі Паўночна-Захад
   cs = Severozápad Argentiny
   da = Nordvest Argentina
   nl = Noordwest-Argentinië
@@ -560,6 +578,7 @@
   en = Pampas
   ru = Пампасы
   ar = بامبس
+  be = Пампасы
   cs = Pampy
   da = Pampas
   nl = Pampa's
@@ -591,6 +610,7 @@
   en = Patagonia
   ru = Патагония
   ar = باتاغونيا
+  be = Патагонія
   cs = Patagonie
   da = Patagonien
   nl = Patagonië
@@ -622,6 +642,7 @@
   en = Arizona
   ru = Аризона
   ar = أريزونا
+  be = Арызона
   cs = Arizona
   da = Arizona
   nl = Arizona
@@ -653,6 +674,7 @@
   en = Armenia
   ru = Армения
   ar = أرمينيا
+  be = Арменія
   cs = Arménie
   da = Armenien
   nl = Armenië
@@ -684,6 +706,7 @@
   en = Australia
   ru = Австралия
   ar = أستراليا
+  be = Аўстралія
   cs = Austrálie
   da = Australien
   nl = Australië
@@ -715,6 +738,7 @@
   en = Melbourne
   ru = Мельбурн
   ar = ملبورن
+  be = Мельбурн
   cs = Melbourne
   da = Melbourne
   nl = Melbourne
@@ -746,6 +770,7 @@
   en = New South Wales
   ru = Новый Южный Уэльс
   ar = نيوساوث ويلز
+  be = Новы Паўднёвы Уэльс
   cs = Nový Jižní Wales
   da = New South Wales
   nl = Nieuw-Zuid-Wales
@@ -777,6 +802,7 @@
   en = Northern Territory
   ru = Северная территория
   ar = إقليم شمالي
+  be = Паўночная тэрыторыя
   cs = Severní teritorium
   da = Northern Territory
   nl = Noordelijk Territorium
@@ -808,6 +834,7 @@
   en = Queensland
   ru = Квинсленд
   ar = كوينزلاند
+  be = Квінслэнд
   cs = Queensland
   da = Queensland
   nl = Queensland
@@ -839,6 +866,7 @@
   en = South Australia
   ru = Южная Австралия
   ar = جنوب أستراليا
+  be = Паўднёвая Аўстралія
   cs = Jižní Austrálie
   da = South Australia
   nl = Zuid-Australië
@@ -870,6 +898,7 @@
   en = Tasmania
   ru = Тасмания
   ar = تسمانيا
+  be = Тасманія
   cs = Tasmánie
   da = Tasmanien
   nl = Tasmanië
@@ -901,6 +930,7 @@
   en = Victoria
   ru = Виктория
   ar = ولاية فيكتوريا
+  be = Вікторыя
   cs = Victoria
   da = Victoria
   nl = Victoria
@@ -932,6 +962,7 @@
   en = Western Australia
   ru = Западная Австралия
   ar = أستراليا الغربية
+  be = Заходняя Аўстралія
   cs = Západní Austrálie
   da = Western Australia
   nl = West-Australië
@@ -963,6 +994,7 @@
   en = Austria
   ru = Австрия
   ar = النمسا
+  be = Аўстрыя
   cs = Rakousko
   da = Østrig
   nl = Oostenrijk
@@ -994,6 +1026,7 @@
   en = Burgenland
   ru = Бургенланд
   ar = بورغنلاند
+  be = Бургенланд
   cs = Burgenland
   da = Burgenland
   nl = Burgenland
@@ -1025,6 +1058,7 @@
   en = Carinthia
   ru = Каринтия
   ar = كيرنتن
+  be = Карынтыя
   cs = Korutany
   da = Kärnten
   nl = Karinthië
@@ -1056,6 +1090,7 @@
   en = Lower Austria — West
   ru = Нижняя Австрия — Запад
   ar = النمسا السفلى — غرب
+  be = Ніжняя Аўстрыя - Захад
   cs = Dolní Rakousy — Západ
   da = Niederösterreich — Vest
   nl = Neder-Oostenrijk — West
@@ -1087,6 +1122,7 @@
   en = Vienna
   ru = Вена
   ar = فيينا
+  be = Вена
   cs = Vídeň
   da = Wien
   nl = Wenen
@@ -1118,6 +1154,7 @@
   en = Salzburg
   ru = Зальцбург
   ar = سالزبورغ
+  be = Зальцбург
   cs = Salcbursko
   da = Salzburg
   nl = Salzburg
@@ -1149,6 +1186,7 @@
   en = Styria
   ru = Штирия
   ar = شتايرمارك
+  be = Штырыя
   cs = Štýrsko
   da = Steiermark
   nl = Stiermarken
@@ -1180,6 +1218,7 @@
   en = Tyrol
   ru = Тироль
   ar = تيرول
+  be = Ціроль
   cs = Tyrolsko
   da = Tyrol
   nl = Tirol
@@ -1211,6 +1250,7 @@
   en = Upper Austria
   ru = Верхняя Австрия
   ar = النمسا العليا
+  be = Верхняя Аўстрыя
   cs = Horní Rakousy
   da = Oberösterreich
   nl = Opper-Oostenrijk
@@ -1242,6 +1282,7 @@
   en = Vorarlberg
   ru = Форарльберг
   ar = فورآرلبرغ
+  be = Форарльберг
   cs = Vorarlbersko
   da = Vorarlberg
   nl = Vorarlberg
@@ -1273,6 +1314,7 @@
   en = Azerbaijan
   ru = Азербайджан
   ar = أذربيجان
+  be = Азербайджан
   cs = Ázerbájdžán
   da = Aserbajdsjan
   nl = Azerbeidzjan
@@ -1304,6 +1346,7 @@
   en = Azerbaijan
   ru = Азербайджан
   ar = أذربيجان
+  be = Азербайджан
   cs = Ázerbájdžán
   da = Aserbajdsjan
   nl = Azerbeidzjan
@@ -1335,6 +1378,7 @@
   en = Bahrain
   ru = Бахрейн
   ar = البحرين
+  be = Бахрэйн
   cs = Bahrajn
   da = Bahrain
   nl = Bahrein
@@ -1366,6 +1410,7 @@
   en = Bangladesh
   ru = Бангладеш
   ar = بنغلاديش
+  be = Бангладэш
   cs = Bangladéš
   da = Bangladesh
   nl = Bangladesh
@@ -1397,6 +1442,7 @@
   en = Barbados
   ru = Барбадос
   ar = باربادوس
+  be = Барбадас
   cs = Barbados
   da = Barbados
   nl = Barbados
@@ -1428,6 +1474,7 @@
   en = Belarus
   ru = Беларусь
   ar = بيلاروسيا
+  be = Беларусь
   cs = Bělorusko
   da = Hviderusland
   nl = Wit-Rusland
@@ -1459,6 +1506,7 @@
   en = Brest Region
   ru = Брестская область
   ar = بوبريسك أوبلاست
+  be = Брэсцкая вобласць
   cs = Brestská oblast
   da = Brest oblast
   nl = Oblast Brest
@@ -1490,6 +1538,7 @@
   en = Gomel Region
   ru = Гомельская область
   ar = غومل أوبلاست
+  be = Гомельская вобласць
   cs = Homelská oblast
   da = Homel voblast
   nl = Oblast Homel
@@ -1521,6 +1570,7 @@
   en = Grodno Region
   ru = Гродненская область
   ar = جردونه أوبلاست
+  be = Гродзенская вобласць
   cs = Hrodenská oblast
   da = Hrodna oblast
   nl = Oblast Hrodna
@@ -1552,6 +1602,7 @@
   en = Mogilev Region
   ru = Могилёвская область
   ar = موغيليوف أوبلاست
+  be = Магілёўская вобласць
   cs = Mohylevská oblast
   da = Mahiljow voblast
   nl = Oblast Mahiljow
@@ -1583,6 +1634,7 @@
   en = Minsk Region
   ru = Минская область
   ar = منطقة مينسك
+  be = Мінская вобласць
   cs = Minská oblast
   da = Minsk voblast
   nl = Oblast Minsk
@@ -1614,6 +1666,7 @@
   en = Vitebsk Region
   ru = Витебская область
   ar = فيتسبك أوبلاست
+  be = Віцебская вобласць
   cs = Vitebská oblast
   da = Vitebsk
   nl = Oblast Vitebsk
@@ -1645,6 +1698,7 @@
   en = Belgium
   ru = Бельгия
   ar = بلجيكا
+  be = Бельгія
   cs = Belgie
   da = Belgien
   nl = België
@@ -1676,6 +1730,7 @@
   en = Antwerp Province
   ru = Антверпен
   ar = أنتفيرب
+  be = Антверпен (правінцыя)
   cs = Antverpy
   da = Antwerpen
   nl = Provincie Antwerpen
@@ -1707,6 +1762,7 @@
   en = East Flanders Province
   ru = Восточная Фландрия
   ar = فلاندر الشرقية
+  be = Усходняя Фландрыя
   cs = Východní Flandry
   da = Østflandern
   nl = Oost-Vlaanderen
@@ -1738,6 +1794,7 @@
   en = Flemish Brabant Province
   ru = Фламандский Брабант
   ar = برابانت فلاماند
+  be = Фламандскі Брабант
   cs = Vlámský Brabant
   da = Vlaams-Brabant
   nl = Vlaams-Brabant
@@ -1769,6 +1826,7 @@
   en = Hainaut Province
   ru = Эно
   ar = هينو
+  be = Эно (правінцыя)
   cs = Henegavsko
   da = Hainaut
   nl = Henegouwen
@@ -1800,6 +1858,7 @@
   en = Liège Province
   ru = Льеж
   ar = لياج
+  be = Льеж (правінцыя)
   cs = Lutych
   da = Liège
   nl = Provincie Luik
@@ -1831,6 +1890,7 @@
   en = Limburg Province
   ru = Лимбург
   ar = ليمبورغ
+  be = Лімбург (правінцыя)
   cs = Limburk
   da = Limburg
   nl = Limburg
@@ -1862,6 +1922,7 @@
   en = Luxembourg Province
   ru = Люксембург
   ar = لوكسمبورغ
+  be = Люксембург (правінцыя)
   cs = Lucemburk
   da = Luxembourg
   nl = Provincie Luxemburg
@@ -1893,6 +1954,7 @@
   en = Namur Province
   ru = Намюр
   ar = نامور
+  be = Намюр (правінцыя)
   cs = Namur
   da = Namur
   nl = Provincie Namen
@@ -1924,6 +1986,7 @@
   en = Walloon Brabant Province
   ru = Валлонский Брабант
   ar = برابانت والون
+  be = Валонскі Брабант
   cs = Valonský Brabant
   da = Brabant Wallon
   nl = Waals-Brabant
@@ -1955,6 +2018,7 @@
   en = West Flanders Province
   ru = Западная Фландрия
   ar = فلاندر الغربية
+  be = Заходняя Фландрыя
   cs = Západní Flandry
   da = Vestflandern
   nl = West-Vlaanderen
@@ -1986,6 +2050,7 @@
   en = Belize
   ru = Белиз
   ar = بليز
+  be = Беліз
   cs = Belize
   da = Belize
   nl = Belize
@@ -2017,6 +2082,7 @@
   en = Benin
   ru = Бенин
   ar = بنين
+  be = Бенін
   cs = Benin
   da = Benin
   nl = Benin
@@ -2048,6 +2114,7 @@
   en = Bermuda
   ru = Бермудские острова
   ar = جزر برمودا
+  be = Бермудскія астравы
   cs = Bermudy
   da = Bermuda
   nl = Bermuda
@@ -2079,6 +2146,7 @@
   en = Bhutan
   ru = Бутан
   ar = بوتان
+  be = Бутан
   cs = Bhútán
   da = Bhutan
   nl = Bhutan
@@ -2110,6 +2178,7 @@
   en = Bolivia
   ru = Боливия
   ar = بوليفيا
+  be = Балівія
   cs = Bolívie
   da = Bolivia
   nl = Bolivia
@@ -2141,6 +2210,7 @@
   en = Bosnia and Herzegovina
   ru = Босния и Герцеговина
   ar = البوسنة والهرسك
+  be = Боснія і Герцагавіна
   cs = Bosna a Hercegovina
   da = Bosnien-Hercegovina
   nl = Bosnië en Herzegovina
@@ -2172,6 +2242,7 @@
   en = Brčko District
   ru = Округ Брчко
   ar = مقاطعة بركو
+  be = Брчко (акруга)
   cs = Brčko
   da = Brčko
   nl = Brčko
@@ -2203,6 +2274,7 @@
   en = Federation of Bosnia and Herzegovina
   ru = Федерация Боснии и Герцеговины
   ar = اتحاد البوسنة والهرسك
+  be = Федэрацыя Босніі і Герцагавіны
   cs = Federace Bosny a Hercegoviny
   da = Føderationen Bosnien og Hercegovina
   nl = Federatie van Bosnië en Herzegovina
@@ -2234,6 +2306,7 @@
   en = Republika Srpska
   ru = Республика Сербская
   ar = جمهورية صرب البوسنة
+  be = Рэспубліка Сербская
   cs = Republika srbská
   da = Republika Srpska
   nl = Servische Republiek
@@ -2265,6 +2338,7 @@
   en = Botswana
   ru = Ботсвана
   ar = بوتسوانا
+  be = Батсвана
   cs = Botswana
   da = Botswana
   nl = Botswana
@@ -2296,6 +2370,7 @@
   en = Brazil
   ru = Бразилия
   ar = البرازيل
+  be = Бразілія
   cs = Brazílie
   da = Brasilien
   nl = Brazilië
@@ -2327,6 +2402,7 @@
   en = Bahia
   ru = Баия
   ar = باهيا
+  be = Баія
   cs = Bahia
   da = Bahia
   nl = Bahia
@@ -2358,6 +2434,7 @@
   en = Goiás
   ru = Гояс
   ar = غوياس
+  be = Гаяс
   cs = Goiás
   da = Goiás
   nl = Goiás
@@ -2389,6 +2466,7 @@
   en = Mato Grosso
   ru = Мату-Гросу
   ar = ماتو غروسو
+  be = Мату-Гросу
   cs = Mato Grosso
   da = Mato Grosso
   nl = Mato Grosso
@@ -2420,6 +2498,7 @@
   en = Mato Grosso do Sul
   ru = Мату-Гросу-ду-Сул
   ar = ماتو غروسو دو سول
+  be = Мату-Гросу-ду-Сул
   cs = Mato Grosso do Sul
   da = Mato Grosso do Sul
   nl = Mato Grosso do Sul
@@ -2451,6 +2530,7 @@
   en = North Region, Brazil
   ru = Северный регион
   ar = المنطقة الشمالية – البرازيل
+  be = Паўночны рэгіён
   cs = Severní region
   da = Norte
   nl = Regio Noord
@@ -2482,6 +2562,7 @@
   en = Northeast Region
   ru = Северо-восточный регион
   ar = منطقة شمال الشرق
+  be = Паўночна-усходні рэгіён
   cs = Severovýchodní region
   da = Nordeste
   nl = Regio Noordoost
@@ -2513,6 +2594,7 @@
   en = Paraíba
   ru = Параиба
   ar = بارايبا
+  be = Параіба
   cs = Paraíba
   da = Paraíba
   nl = Paraíba
@@ -2544,6 +2626,7 @@
   en = Paraná
   ru = Парана
   ar = بارانا
+  be = Парана
   cs = Paraná
   da = Paraná
   nl = Paraná
@@ -2575,6 +2658,7 @@
   en = Rio Grande do Norte
   ru = Риу-Гранди-ду-Норти
   ar = ريو غراندي دو نورتي
+  be = Рыу-Гранды-ду-Норты
   cs = Rio Grande do Norte
   da = Rio Grande do Norte
   nl = Rio Grande do Norte
@@ -2606,6 +2690,7 @@
   en = Santa Catarina
   ru = Санта-Катарина
   ar = سانتا كاتارينا
+  be = Санта-Катарына
   cs = Santa Catarina
   da = Santa Catarina
   nl = Santa Catarina
@@ -2637,6 +2722,7 @@
   en = Southern Brazil
   ru = Южный регион
   ar = جنوب البرازيل
+  be = Паўднёвы рэгіён
   cs = Jižní region
   da = Sul
   nl = Regio Zuid
@@ -2668,6 +2754,7 @@
   en = Espírito Santo
   ru = Эспириту-Санту
   ar = إسبيريتو سانتو
+  be = Эспірыту-Санту
   cs = Espírito Santo
   da = Espírito Santo
   nl = Espírito Santo
@@ -2699,6 +2786,7 @@
   en = Minas Gerais — Contagem
   ru = Минас-Жерайс — Контажен
   ar = كونتاجيم -ميناس جيرايس
+  be = Мінас-Жэрайс - Контажэн
   cs = Minas Gerais — Contagem
   da = Minas Gerais — Contagem
   nl = Minas Gerais — Contagem
@@ -2730,6 +2818,7 @@
   en = Minas Gerais — North
   ru = Минас-Жерайс — Север
   ar = ميناس جيرايس — شمال
+  be = Мінас-Жэрайс - Поўнач
   cs = Minas Gerais — Sever
   da = Minas Gerais — Nord
   nl = Minas Gerais — Noord
@@ -2761,6 +2850,7 @@
   en = Rio de Janeiro
   ru = Рио-де-Жанейро
   ar = ريو دي جانيرو
+  be = Рыа-дэ-Жанэйра
   cs = Rio de Janeiro
   da = Rio de Janeiro
   nl = Rio de Janeiro
@@ -2792,6 +2882,7 @@
   en = São Paulo — Campinas
   ru = Сан-Паулу — Кампинас
   ar = ساو باولو — كامبينيس
+  be = Сан-Паўлу - Кампінас
   cs = São Paulo — Campinas
   da = São Paulo — Campinas
   nl = São Paulo — Campinas
@@ -2823,6 +2914,7 @@
   en = São Paulo — Santos
   ru = Сан-Паулу — Сантус
   ar = ساو باولو — سانتوس
+  be = Сан-Паўлу - Сантус
   cs = São Paulo — Santos
   da = São Paulo — Santos
   nl = São Paulo — Santos
@@ -2854,6 +2946,7 @@
   en = São Paulo — Ribeirão Preto
   ru = Сан-Паулу — Рибейран-Прету
   ar = ساو باولو- ريبيراو بريتو
+  be = Сан-Паўлу - Рыбейран-Прэту
   cs = São Paulo — Ribeirão Preto
   da = São Paulo — Ribeirão Preto
   nl = São Paulo — Ribeirão Preto
@@ -2885,6 +2978,7 @@
   en = British Indian Ocean Territory
   ru = Британская территория в Индийском океане
   ar = إقليم المحيط الهندي البريطاني
+  be = Брытанская тэрыторыя ў Індыйскім акіяне
   cs = Britské indickooceánské území
   da = Det britiske territorium i det indiske ocean
   nl = Brits Indische Oceaanterritorium
@@ -2916,6 +3010,7 @@
   en = British Virgin Islands
   ru = Британские Виргинские острова
   ar = الجزر العذراء البريطانية
+  be = Брытанскія Віргінскія астравы
   cs = Britské Panenské ostrovy
   da = Britiske Jomfruøer
   nl = Britse Maagdeneilanden
@@ -2947,6 +3042,7 @@
   en = Brunei
   ru = Бруней
   ar = بروناي
+  be = Бруней
   cs = Brunej
   da = Brunei
   nl = Brunei
@@ -2978,6 +3074,7 @@
   en = Bulgaria
   ru = Болгария
   ar = بلغاريا
+  be = Балгарыя
   cs = Bulharsko
   da = Bulgarien
   nl = Bulgarije
@@ -3009,6 +3106,7 @@
   en = Burkina Faso
   ru = Буркина-Фасо
   ar = بوركينا فاسو
+  be = Буркіна-Фасо
   cs = Burkina Faso
   da = Burkina Faso
   nl = Burkina Faso
@@ -3040,6 +3138,7 @@
   en = Burundi
   ru = Бурунди
   ar = بوروندي
+  be = Бурундзі
   cs = Burundi
   da = Burundi
   nl = Burundi
@@ -3071,6 +3170,7 @@
   en = California
   ru = Калифорния
   ar = كاليفورنيا
+  be = Каліфорнія
   cs = Kalifornie
   da = Californien
   nl = Californië
