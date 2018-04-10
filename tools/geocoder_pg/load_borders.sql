@@ -3,13 +3,18 @@ DROP TABLE osm_line;
 DROP TABLE osm_roads;
 
 
+\! echo "Deleting unnamed objects"
+DELETE FROM osm_polygon WHERE name IS NULL OR name = '';
+DELETE FROM osm_point WHERE name IS NULL OR name = '';
+
+
 \! echo "Adding centroids to polygons"
 ALTER TABLE osm_polygon ADD COLUMN centroid geometry(Point, 4326);
 UPDATE osm_polygon SET centroid = ST_Centroid(way) WHERE place IS NOT NULL;
 
 
 \! echo "Splitting big polygons"
-drop table osm_polygon_geom;
+DROP TABLE IF EXISTS osm_polygon_geom;
 CREATE TABLE osm_polygon_geom AS
 SELECT osm_id, ST_Subdivide(way) AS way
 FROM osm_polygon;
@@ -50,7 +55,7 @@ INSERT INTO osm_polygon
   (osm_id, place, name, tags, way, centroid)
 SELECT
   -- Max way id is 565 mln as of March 2018
-  osm_id + 50*1000*1000*1000, place, name, tags,
+  osm_id + (50*1000*1000*1000)::bigint, place, name, tags,
   ST_Buffer(way, CASE
     -- Based on average radiuses of OSM place polygons
     WHEN place = 'city' THEN 0.078
@@ -114,7 +119,7 @@ UPDATE osm_polygon SET rank = CASE
   WHEN place = 'locality' THEN 19
   WHEN place = 'isolated_dwelling' THEN 20
   WHEN building IS NOT NULL THEN 30
-END
+END;
 
 
 \! echo "Statistics"

@@ -5,6 +5,7 @@ DATABASE=borders
 OSMCTOOLS="${OSMCTOOLS:-.}"
 PLANET="${1:-$(ls planet-1*.o5m 2>/dev/null | head -n 1)}"
 FILTERED="${FILTERED:-planet-borders.o5m}"
+SCRIPT_PATH="$(cd "$(dirname "$0")"; pwd)"
 
 if ! command -v osm2pgsql > /dev/null; then
   echo "Please install osm2pgsql"
@@ -34,7 +35,14 @@ if [ -f "$FILTERED" ]; then
   echo "Filtered file already exists, skipping it (make sure it's not too old!)"
   ls -l "$FILTERED"
 else
+  # "$OSMCTOOLS/osmfilter" "$PLANET" --keep="boundary=administrative =postal_code place=" -o="$FILTERED"
   "$OSMCTOOLS/osmfilter" "$PLANET" --keep="boundary=administrative =postal_code place= ( building= and addr:housenumber= )" -o="$FILTERED"
+fi
+
+TABLE="$(psql $DATABASE -qtAc "SELECT tablename FROM pg_tables WHERE tablename = 'osm_polygon'")"
+if [ -n "$TABLE" ]; then
+  echo "Renaming old table to osm_polygon_old"
+  psql $DATABASE -qtAc "ALTER TABLE osm_polygon RENAME TO osm_polygon_old; DELETE FROM osm_polygon_old WHERE rank > 10"
 fi
 
 echo "Loading $FILTERED into PostgreSQL database"
@@ -54,5 +62,21 @@ osm2pgsql --create --slim --drop --number-processes 8 \
   --cache 8000 --multi-geometry "$FILTERED"
 rm "$TMP_STYLE"
 
+if [ -n "$TABLE" ]; then
+  echo "Restoring missing regions"
+  psql $DATABASE <<EOF
+    INSERT INTO osm_polygon (osm_id, admin_level, boundary, postal_code, name, place, population, tags, way)
+    SELECT o.osm_id, o.admin_level, o.boundary, o.postal_code, o.name, o.place, o.population, o.tags, o.way
+    FROM osm_polygon_old o LEFT JOIN osm_polygon p ON
+      p.admin_level = old.admin_level AND
+      p.place = old.place AND
+      p.name = old.name AND
+      p.way && ST_PointOnSurface(old.way)
+    WHERE p.way IS NULL;
+
+    DROP TABLE osm_polygon_old;
+EOF
+fi
+
 echo "Postprocessing the database"
-psql $DATABASE < load_borders.sql
+psql $DATABASE < "$SCRIPT_PATH/load_borders.sql"
