@@ -1699,6 +1699,8 @@
 /* noun */
 "search_in_table" = "Danh sách";
 
+"booking_based_on_reviews" = "Dựa trên %d đánh giá khách sạn";
+
 "booking_show_more" = "Hiển thị thêm";
 
 "booking_reviews" = "Đánh giá";
@@ -2257,15 +2259,3 @@
 "profile_osm" = "Profile OSM";
 
 "place_page_search_similar_hotel" = "Search similar hotels";
-
-"bookmarks_detect_title" = "New files detected";
-
-"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
-
-"button_convert" = "Convert";
-
-"bookmarks_convert_error_title" = "Error";
-
-"bookmarks_convert_error_message" = "Some files were not converted.";
-
-"converting" = "Converting...";
