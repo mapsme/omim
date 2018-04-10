@@ -1699,6 +1699,8 @@
 /* noun */
 "search_in_table" = "Список";
 
+"booking_based_on_reviews" = "По %d отзывам об отеле";
+
 "booking_show_more" = "Показать еще";
 
 "booking_reviews" = "Отзывы";
@@ -2257,15 +2259,3 @@
 "profile_osm" = "Профиль OSM";
 
 "place_page_search_similar_hotel" = "Найти похожие отели";
-
-"bookmarks_detect_title" = "Обнаружены новые файлы";
-
-"bookmarks_detect_message" = "%d файл не был импортирован. Вы увидете его после конвертации.";
-
-"button_convert" = "Конвертировать";
-
-"bookmarks_convert_error_title" = "Ошибка";
-
-"bookmarks_convert_error_message" = "Некоторые файлы не конвертировались.";
-
-"converting" = "Конвертация...";
