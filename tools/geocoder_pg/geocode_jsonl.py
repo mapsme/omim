@@ -44,7 +44,7 @@ if __name__ == '__main__':
                         help='Database name, default=borders')
     parser.add_argument('-t', '--table', default='osm_polygon',
                         help='Database table, default=osm_polygon')
-    parser.add_argument('-o', '--output', type=argparse.FileType('w'),
+    parser.add_argument('output', type=argparse.FileType('w'),
                         help='Output file, use "-" for stdout')
     options = parser.parse_args()
 

@@ -39,13 +39,11 @@ if __name__ == '__main__':
         props = {level: name}
         for row in cursor:
             props[row[0]] = row[1]
-        if len(props) == 1:
-            continue
         if osm_id < 0:
             rid = (-osm_id) | OsmIdCode.RELATION
         elif osm_id > DB_NODE_BASE:
             rid = (osm_id - DB_NODE_BASE) | OsmIdCode.NODE
         else:
             rid = osm_id | OsmIdCode.WAY
-        feature = {'type': 'Feature', 'properties': {'name': name, 'address': props}}
+        feature = {'type': 'Feature', 'properties': {'name': name, 'rank': rank, 'address': props}}
         options.output.write(str(rid) + ' ' + json.dumps(feature, ensure_ascii=False) + '\n')
