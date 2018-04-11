@@ -437,6 +437,8 @@ private:
   void OnRestoreRequested(Cloud::RestoringRequestResult result, uint64_t backupTimestampInMs);
   void OnRestoredFilesPrepared();
 
+  bool CanConvert() const;
+
   ThreadChecker m_threadChecker;
 
   Callbacks m_callbacks;
@@ -483,6 +485,8 @@ private:
   Cloud::SynchronizationFinishedHandler m_onSynchronizationFinished;
   Cloud::RestoreRequestedHandler m_onRestoreRequested;
   Cloud::RestoredFilesPreparedHandler m_onRestoredFilesPrepared;
+
+  bool m_conversionInProgress = false;
 
   bool m_testModeEnabled = false;
 
