@@ -1578,6 +1578,24 @@ bool BookmarkManager::CanConvert() const
          !m_asyncLoadingInProgress && !m_conversionInProgress;
 }
 
+void BookmarkManager::FinishConversion(ConversionHandler const & handler, bool result)
+{
+  handler(result);
+
+  // Run deferred asynchronous loading if possible.
+  GetPlatform().RunTask(Platform::Thread::Gui, [this]()
+  {
+    m_conversionInProgress = false;
+    if (!m_bookmarkLoadingQueue.empty())
+    {
+      NotifyAboutStartAsyncLoading();
+      LoadBookmarkRoutine(m_bookmarkLoadingQueue.front().m_filename,
+                          m_bookmarkLoadingQueue.front().m_isTemporaryFile);
+      m_bookmarkLoadingQueue.pop_front();
+    }
+  });
+}
+
 size_t BookmarkManager::GetKmlFilesCountForConversion() const
 {
   ASSERT_THREAD_CHECKER(m_threadChecker, ());
@@ -1608,7 +1626,7 @@ void BookmarkManager::ConvertAllKmlFiles(ConversionHandler && handler)
     auto const newDir = GetBookmarksDirectory();
     if (!GetPlatform().IsFileExistsByFullPath(newDir) && !GetPlatform().MkDirChecked(newDir))
     {
-      handler(false /* success */);
+      FinishConversion(handler, false /* success */);
       return;
     }
 
@@ -1648,20 +1666,7 @@ void BookmarkManager::ConvertAllKmlFiles(ConversionHandler && handler)
       });
     }
 
-    handler(allConverted);
-
-    // Run deferred asynchronous loading if possible.
-    GetPlatform().RunTask(Platform::Thread::Gui, [this]()
-    {
-      m_conversionInProgress = false;
-      if (!m_bookmarkLoadingQueue.empty())
-      {
-        NotifyAboutStartAsyncLoading();
-        LoadBookmarkRoutine(m_bookmarkLoadingQueue.front().m_filename,
-                            m_bookmarkLoadingQueue.front().m_isTemporaryFile);
-        m_bookmarkLoadingQueue.pop_front();
-      }
-    });
+    FinishConversion(handler, allConverted);
   });
 }
 

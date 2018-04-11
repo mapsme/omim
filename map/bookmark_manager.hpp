@@ -438,6 +438,7 @@ private:
   void OnRestoredFilesPrepared();
 
   bool CanConvert() const;
+  void FinishConversion(ConversionHandler const & handler, bool result);
 
   ThreadChecker m_threadChecker;
 
@@ -450,6 +451,7 @@ private:
   bool m_loadBookmarksFinished = false;
   bool m_firstDrapeNotification = false;
   bool m_restoreApplying = false;
+  bool m_conversionInProgress = false;
 
   ScreenBase m_viewport;
 
@@ -485,8 +487,6 @@ private:
   Cloud::SynchronizationFinishedHandler m_onSynchronizationFinished;
   Cloud::RestoreRequestedHandler m_onRestoreRequested;
   Cloud::RestoredFilesPreparedHandler m_onRestoredFilesPrepared;
-
-  bool m_conversionInProgress = false;
 
   bool m_testModeEnabled = false;
 
