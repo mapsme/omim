@@ -30,33 +30,33 @@ namespace my
     ASSERT_CRASH();
 
 // TODO: Evaluate X only once in CHECK().
-#define CHECK(X, msg) do { if (X) {} else { \
+#define CHECK(X, msg) do { if (likely(X)) {} else { \
   ASSERT_FAIL(::my::impl::Message("CHECK("#X")", ::my::impl::Message msg));} } while(false)
-#define CHECK_EQUAL(X, Y, msg) do { if ((X) == (Y)) {} else { \
+#define CHECK_EQUAL(X, Y, msg) do { if (likely((X) == (Y))) {} else { \
   ASSERT_FAIL(::my::impl::Message("CHECK("#X" == "#Y")", \
                                    ::my::impl::Message(X, Y), \
                                    ::my::impl::Message msg));} } while (false)
-#define CHECK_NOT_EQUAL(X, Y, msg) do { if ((X) != (Y)) {} else { \
+#define CHECK_NOT_EQUAL(X, Y, msg) do { if (likely((X) != (Y))) {} else { \
   ASSERT_FAIL(::my::impl::Message("CHECK("#X" != "#Y")", \
                                    ::my::impl::Message(X, Y), \
                                    ::my::impl::Message msg));} } while (false)
-#define CHECK_LESS(X, Y, msg) do { if ((X) < (Y)) {} else { \
+#define CHECK_LESS(X, Y, msg) do { if (likely((X) < (Y))) {} else { \
   ASSERT_FAIL(::my::impl::Message("CHECK("#X" < "#Y")", \
                                    ::my::impl::Message(X, Y), \
                                    ::my::impl::Message msg));} } while (false)
-#define CHECK_LESS_OR_EQUAL(X, Y, msg) do { if ((X) <= (Y)) {} else { \
+#define CHECK_LESS_OR_EQUAL(X, Y, msg) do { if (likely((X) <= (Y))) {} else { \
   ASSERT_FAIL(::my::impl::Message("CHECK("#X" <= "#Y")", \
                                    ::my::impl::Message(X, Y), \
                                    ::my::impl::Message msg));} } while (false)
-#define CHECK_GREATER(X, Y, msg) do { if ((X) > (Y)) {} else { \
+#define CHECK_GREATER(X, Y, msg) do { if (likely((X) > (Y))) {} else { \
   ASSERT_FAIL(::my::impl::Message("CHECK("#X" > "#Y")", \
                                    ::my::impl::Message(X, Y), \
                                    ::my::impl::Message msg));} } while (false)
-#define CHECK_GREATER_OR_EQUAL(X, Y, msg) do { if ((X) >= (Y)) {} else { \
+#define CHECK_GREATER_OR_EQUAL(X, Y, msg) do { if (likely((X) >= (Y))) {} else { \
   ASSERT_FAIL(::my::impl::Message("CHECK("#X" >= "#Y")", \
                                    ::my::impl::Message(X, Y), \
                                    ::my::impl::Message msg));} } while (false)
-#define CHECK_OR_CALL(fail, call, X, msg) do { if (X) {} else { \
+#define CHECK_OR_CALL(fail, call, X, msg) do { if (likely(X)) {} else { \
   if (fail) {\
     ASSERT_FAIL(::my::impl::Message(::my::impl::Message("CHECK("#X")"), \
                                     ::my::impl::Message msg)); \

@@ -33,3 +33,6 @@ static_assert(MY_DEBUG_DEFINED ^ MY_RELEASE_DEFINED, "Either Debug or Release sh
 
 // platform macroses
 #include "std/target_os.hpp"
+
+#define likely(expr) __builtin_expect(!!(expr), 1)
+#define unlikely(expr) __builtin_expect(!!(expr), 0)
