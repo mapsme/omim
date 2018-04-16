@@ -45,6 +45,7 @@ std::array<std::pair<std::string, std::string>, 31> const kLanguageList =
   {"sw", "Kiswahili"},
   {"fa", "فارسی"},
   {"uk", "Українська"},
+  {"be", "Беларуская"},
   {"vi", "Tiếng Việt"}
 }};
 }  // namespace sound
