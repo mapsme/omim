@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1DA7908820762CEB008BDD6B /* libopen_location_code.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DA7908920762CEB008BDD6B /* libopen_location_code.a */; };
 		3404163C1E7BDFE000E2B6D6 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3404163A1E7BDFE000E2B6D6 /* PhotosViewController.swift */; };
 		340416441E7BED3900E2B6D6 /* PhotosTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340416421E7BED3900E2B6D6 /* PhotosTransitionAnimator.swift */; };
 		340416481E7BF28E00E2B6D6 /* UIView+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340416461E7BF28E00E2B6D6 /* UIView+Snapshot.swift */; };
@@ -339,6 +340,9 @@
 		34F73FA31E08300E00AC1FD6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34F73FA11E08300E00AC1FD6 /* Images.xcassets */; };
 		34F742321E0834F400AC1FD6 /* UIViewController+Navigation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34F742301E0834F400AC1FD6 /* UIViewController+Navigation.mm */; };
 		34FE5A6F1F18F30F00BCA729 /* TrafficButtonArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FE5A6D1F18F30F00BCA729 /* TrafficButtonArea.swift */; };
+		3DF9C22B207CC14A00DA0793 /* taxi_places in Resources */ = {isa = PBXBuildFile; fileRef = 3DF9C22A207CC14A00DA0793 /* taxi_places */; };
+		4501B1942077C35A001B9173 /* resources-xxxhdpi_clear in Resources */ = {isa = PBXBuildFile; fileRef = 4501B1922077C35A001B9173 /* resources-xxxhdpi_clear */; };
+		4501B1952077C35A001B9173 /* resources-xxxhdpi_dark in Resources */ = {isa = PBXBuildFile; fileRef = 4501B1932077C35A001B9173 /* resources-xxxhdpi_dark */; };
 		4554B6EC1E55F0EF0084017F /* drules_proto_vehicle_clear.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4554B6E81E55F02B0084017F /* drules_proto_vehicle_clear.bin */; };
 		4554B6EE1E55F0F30084017F /* drules_proto_vehicle_dark.bin in Resources */ = {isa = PBXBuildFile; fileRef = 4554B6E91E55F02B0084017F /* drules_proto_vehicle_dark.bin */; };
 		4586D0C41F48121A00DF9CE5 /* libbsdiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4586D0C31F48121A00DF9CE5 /* libbsdiff.a */; };
@@ -474,6 +478,8 @@
 		F61757F11FC731F5000AD0D0 /* DiscoveryOnlineTemplateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F61757EF1FC731F5000AD0D0 /* DiscoveryOnlineTemplateCell.xib */; };
 		F623DA6C1C9C2731006A3436 /* opening_hours_how_to_edit.html in Resources */ = {isa = PBXBuildFile; fileRef = F623DA6A1C9C2731006A3436 /* opening_hours_how_to_edit.html */; };
 		F623DA6F1C9C2E62006A3436 /* MWMAddPlaceNavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = F653CE171C71F62400A453F1 /* MWMAddPlaceNavigationBar.xib */; };
+		F62607FD207B790300176C5A /* SpinnerAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62607FC207B790300176C5A /* SpinnerAlert.swift */; };
+		F62607FF207B83C400176C5A /* MWMSpinnerAlert.xib in Resources */ = {isa = PBXBuildFile; fileRef = F62607FE207B83C400176C5A /* MWMSpinnerAlert.xib */; };
 		F626D52F1C3E83F800C17D15 /* MWMTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = F626D52D1C3E6CAA00C17D15 /* MWMTableViewCell.mm */; };
 		F6381BF61CD12045004CA943 /* LocaleTranslator.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6381BF41CD12045004CA943 /* LocaleTranslator.mm */; };
 		F63AF5061EA6162400A1DB98 /* FilterTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63AF5041EA6162400A1DB98 /* FilterTypeCell.swift */; };
@@ -488,6 +494,8 @@
 		F653CE191C71F62700A453F1 /* MWMAddPlaceNavigationBar.mm in Sources */ = {isa = PBXBuildFile; fileRef = F653CE151C71F60200A453F1 /* MWMAddPlaceNavigationBar.mm */; };
 		F6550C1F1FD81B3800352D88 /* RatingSummaryView+DefaultConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6550C1D1FD81B3800352D88 /* RatingSummaryView+DefaultConfig.swift */; };
 		F6558DA21E642CC0002203AE /* MWMFacilitiesController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6558DA01E642CC0002203AE /* MWMFacilitiesController.mm */; };
+		F655C027207278300048A241 /* DiscoveryMoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F655C026207278300048A241 /* DiscoveryMoreCell.swift */; };
+		F655C02920727A630048A241 /* DiscoveryMoreCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F655C02820727A630048A241 /* DiscoveryMoreCell.xib */; };
 		F660DEE51EAF4F59004DC056 /* MWMLocationManager+SpeedAndAltitude.swift in Sources */ = {isa = PBXBuildFile; fileRef = F660DEE31EAF4F59004DC056 /* MWMLocationManager+SpeedAndAltitude.swift */; };
 		F6664BFA1E6459CB00E703C2 /* PPFacilityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6664BF71E6459CB00E703C2 /* PPFacilityCell.swift */; };
 		F6664BFD1E6459CB00E703C2 /* PPFacilityCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6664BF81E6459CB00E703C2 /* PPFacilityCell.xib */; };
@@ -514,6 +522,8 @@
 		F6C16A671F9626B2000FE296 /* ReviewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3430291B1F87BC3000D0A07C /* ReviewsViewController.xib */; };
 		F6D67CDC2062B9C00032FD38 /* BCCreateCategoryAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D67CDB2062B9C00032FD38 /* BCCreateCategoryAlert.swift */; };
 		F6D67CDE2062BBA60032FD38 /* MWMBCCreateCategoryAlert.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6D67CDD2062BBA60032FD38 /* MWMBCCreateCategoryAlert.xib */; };
+		F6D67CE9206929590032FD38 /* PPPSearchSimilarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D67CE8206929590032FD38 /* PPPSearchSimilarButton.swift */; };
+		F6D67CEB2069318B0032FD38 /* PPPSearchSimilarButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6D67CEA2069318B0032FD38 /* PPPSearchSimilarButton.xib */; };
 		F6E2FD501E097BA00083EBEC /* MWMMapDownloaderAdsTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6E2FBFF1E097B9F0083EBEC /* MWMMapDownloaderAdsTableViewCell.mm */; };
 		F6E2FD531E097BA00083EBEC /* MWMMapDownloaderAdsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F6E2FC001E097B9F0083EBEC /* MWMMapDownloaderAdsTableViewCell.xib */; };
 		F6E2FD561E097BA00083EBEC /* MWMMapDownloaderButtonTableViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = F6E2FC021E097B9F0083EBEC /* MWMMapDownloaderButtonTableViewCell.mm */; };
@@ -694,6 +704,8 @@
 /* Begin PBXFileReference section */
 		1D3623240D0F684500981E51 /* MapsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapsAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* MapsAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = MapsAppDelegate.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		1DA7908720762B6F008BDD6B /* libopen_location_code.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libopen_location_code.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DA7908920762CEB008BDD6B /* libopen_location_code.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libopen_location_code.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		28A0AB4B0D9B1048005BE974 /* Maps_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Maps_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		29B97316FDCFA39411CA2CEA /* main.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = main.mm; sourceTree = "<group>"; };
 		3404163A1E7BDFE000E2B6D6 /* PhotosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
@@ -1253,6 +1265,9 @@
 		34FE4C441BCC013500066718 /* MWMMapWidgets.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMMapWidgets.mm; sourceTree = "<group>"; };
 		34FE5A6D1F18F30F00BCA729 /* TrafficButtonArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrafficButtonArea.swift; sourceTree = "<group>"; };
 		3DDB4BC31DAB98F000F4D021 /* libpartners_api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpartners_api.a; path = "../../../omim-xcode-build/Debug-iphonesimulator/libpartners_api.a"; sourceTree = "<group>"; };
+		3DF9C22A207CC14A00DA0793 /* taxi_places */ = {isa = PBXFileReference; lastKnownFileType = folder; name = taxi_places; path = ../../data/taxi_places; sourceTree = "<group>"; };
+		4501B1922077C35A001B9173 /* resources-xxxhdpi_clear */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "resources-xxxhdpi_clear"; path = "../../data/resources-xxxhdpi_clear"; sourceTree = "<group>"; };
+		4501B1932077C35A001B9173 /* resources-xxxhdpi_dark */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "resources-xxxhdpi_dark"; path = "../../data/resources-xxxhdpi_dark"; sourceTree = "<group>"; };
 		450703081E9E6CF000E8C029 /* local_ads_symbols.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = local_ads_symbols.txt; path = ../../data/local_ads_symbols.txt; sourceTree = "<group>"; };
 		451950391B7A3E070085DA05 /* patterns.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = patterns.txt; path = ../../data/patterns.txt; sourceTree = "<group>"; };
 		452FCA3A1B6A3DF7007019AB /* colors.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = colors.txt; path = ../../data/colors.txt; sourceTree = "<group>"; };
@@ -1355,6 +1370,8 @@
 		F61757EB1FC73027000AD0D0 /* DiscoveryOnlineTemplateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryOnlineTemplateCell.swift; sourceTree = "<group>"; };
 		F61757EF1FC731F5000AD0D0 /* DiscoveryOnlineTemplateCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscoveryOnlineTemplateCell.xib; sourceTree = "<group>"; };
 		F623DA6A1C9C2731006A3436 /* opening_hours_how_to_edit.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = opening_hours_how_to_edit.html; path = ../../data/opening_hours_how_to_edit.html; sourceTree = "<group>"; };
+		F62607FC207B790300176C5A /* SpinnerAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerAlert.swift; sourceTree = "<group>"; };
+		F62607FE207B83C400176C5A /* MWMSpinnerAlert.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MWMSpinnerAlert.xib; sourceTree = "<group>"; };
 		F626D52C1C3E6CAA00C17D15 /* MWMTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMTableViewCell.h; sourceTree = "<group>"; };
 		F626D52D1C3E6CAA00C17D15 /* MWMTableViewCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMTableViewCell.mm; sourceTree = "<group>"; };
 		F63774E61B59375E00BCF54D /* MWMRoutingDisclaimerAlert.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MWMRoutingDisclaimerAlert.xib; sourceTree = "<group>"; };
@@ -1395,6 +1412,8 @@
 		F6550C1D1FD81B3800352D88 /* RatingSummaryView+DefaultConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RatingSummaryView+DefaultConfig.swift"; sourceTree = "<group>"; };
 		F6558D9F1E642CC0002203AE /* MWMFacilitiesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMFacilitiesController.h; sourceTree = "<group>"; };
 		F6558DA01E642CC0002203AE /* MWMFacilitiesController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMFacilitiesController.mm; sourceTree = "<group>"; };
+		F655C026207278300048A241 /* DiscoveryMoreCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoveryMoreCell.swift; sourceTree = "<group>"; };
+		F655C02820727A630048A241 /* DiscoveryMoreCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscoveryMoreCell.xib; sourceTree = "<group>"; };
 		F6588E2A1B15C26700EE1E58 /* MWMTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMTextView.h; sourceTree = "<group>"; };
 		F6588E2B1B15C26700EE1E58 /* MWMTextView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMTextView.mm; sourceTree = "<group>"; };
 		F660DEE31EAF4F59004DC056 /* MWMLocationManager+SpeedAndAltitude.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MWMLocationManager+SpeedAndAltitude.swift"; sourceTree = "<group>"; };
@@ -1437,6 +1456,8 @@
 		F6BD1D221CA412E30047B8E8 /* MWMOsmAuthAlert.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MWMOsmAuthAlert.xib; sourceTree = "<group>"; };
 		F6D67CDB2062B9C00032FD38 /* BCCreateCategoryAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCCreateCategoryAlert.swift; sourceTree = "<group>"; };
 		F6D67CDD2062BBA60032FD38 /* MWMBCCreateCategoryAlert.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MWMBCCreateCategoryAlert.xib; sourceTree = "<group>"; };
+		F6D67CE8206929590032FD38 /* PPPSearchSimilarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPPSearchSimilarButton.swift; sourceTree = "<group>"; };
+		F6D67CEA2069318B0032FD38 /* PPPSearchSimilarButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PPPSearchSimilarButton.xib; sourceTree = "<group>"; };
 		F6DF5F321CD1136800A87154 /* LocaleTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocaleTranslator.h; sourceTree = "<group>"; };
 		F6E2FBFE1E097B9F0083EBEC /* MWMMapDownloaderAdsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMMapDownloaderAdsTableViewCell.h; sourceTree = "<group>"; };
 		F6E2FBFF1E097B9F0083EBEC /* MWMMapDownloaderAdsTableViewCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMMapDownloaderAdsTableViewCell.mm; sourceTree = "<group>"; };
@@ -1726,6 +1747,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1DA7908820762CEB008BDD6B /* libopen_location_code.a in Frameworks */,
 				45CBCCBA20590AAB006B55C2 /* libkml.a in Frameworks */,
 				349CFD0720456FEB00569949 /* GoogleMobileAds.framework in Frameworks */,
 				56EE14D11FE804550036F20C /* libtransit.a in Frameworks */,
@@ -1890,6 +1912,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1DA7908920762CEB008BDD6B /* libopen_location_code.a */,
+				1DA7908720762B6F008BDD6B /* libopen_location_code.a */,
 				45CBCCBB20590AAB006B55C2 /* libkml.a */,
 				349CFD0620456FEB00569949 /* GoogleMobileAds.framework */,
 				56EE14D21FE804550036F20C /* libtransit.a */,
@@ -3035,6 +3059,15 @@
 			path = RateAlert;
 			sourceTree = "<group>";
 		};
+		F62607FB207B78E300176C5A /* SpinnerAlert */ = {
+			isa = PBXGroup;
+			children = (
+				F62607FC207B790300176C5A /* SpinnerAlert.swift */,
+				F62607FE207B83C400176C5A /* MWMSpinnerAlert.xib */,
+			);
+			path = SpinnerAlert;
+			sourceTree = "<group>";
+		};
 		F63774E51B59374F00BCF54D /* RoutingDisclaimerAlert */ = {
 			isa = PBXGroup;
 			children = (
@@ -3058,6 +3091,7 @@
 		F64F195F1AB8125C006EAF7E /* CustomAlert */ = {
 			isa = PBXGroup;
 			children = (
+				F62607FB207B78E300176C5A /* SpinnerAlert */,
 				F6D67CDA2062B9810032FD38 /* CreateBookmarkCategory */,
 				349B92691DF0516C007779DD /* Toast */,
 				349A137E1DEC138C00C7DB60 /* MobileInternetAlert */,
@@ -3643,6 +3677,8 @@
 				F6E2FCDE1E097B9F0083EBEC /* _MWMPPPTitle.xib */,
 				F6E2FCDF1E097B9F0083EBEC /* MWMPPPreviewLayoutHelper.h */,
 				F6E2FCE01E097B9F0083EBEC /* MWMPPPreviewLayoutHelper.mm */,
+				F6D67CE8206929590032FD38 /* PPPSearchSimilarButton.swift */,
+				F6D67CEA2069318B0032FD38 /* PPPSearchSimilarButton.xib */,
 				34F1ADD11F6BC09E001CE79D /* PPPReview.swift */,
 				F6E2FCD91E097B9F0083EBEC /* PPPReview.xib */,
 			);
@@ -3842,6 +3878,8 @@
 				F69739AF1FD197DB00FDA07D /* MWMDiscoveryTableManager.h */,
 				F69739B01FD197DB00FDA07D /* MWMDiscoveryTableManager.mm */,
 				F69739B51FD19D9900FDA07D /* MWMDiscoveryTapDelegate.h */,
+				F655C026207278300048A241 /* DiscoveryMoreCell.swift */,
+				F655C02820727A630048A241 /* DiscoveryMoreCell.xib */,
 			);
 			path = Discovery;
 			sourceTree = "<group>";
@@ -3859,39 +3897,6 @@
 		FA065FC61286143F00FEA989 /* External Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BB25B1A51FB32767007276FA /* transit_colors.txt */,
-				F642D1221F0F9D1D005E3C25 /* ugc_types.csv */,
-				450703081E9E6CF000E8C029 /* local_ads_symbols.txt */,
-				BB7626B41E8559980031D71C /* icudt57l.dat */,
-				4554B6E81E55F02B0084017F /* drules_proto_vehicle_clear.bin */,
-				4554B6E91E55F02B0084017F /* drules_proto_vehicle_dark.bin */,
-				F623DA6A1C9C2731006A3436 /* opening_hours_how_to_edit.html */,
-				6B9978341C89A316003B8AA0 /* editor.config */,
-				671182DE1C7F0DD400CB8177 /* countries_obsolete.txt */,
-				671182DF1C7F0DD400CB8177 /* packed_polygons_obsolete.bin */,
-				671182E01C7F0DD400CB8177 /* WorldCoasts_obsolete.mwm */,
-				3476B8D51BFDD30B00874594 /* tts-how-to-set-up-voice.html */,
-				3476B8DF1BFDD33A00874594 /* tts-how-to-set-up-voice-img */,
-				4A23D1561B8B4DD700D4EB6F /* drules_proto_clear.bin */,
-				4A23D1571B8B4DD700D4EB6F /* resources-6plus_clear */,
-				4A23D1581B8B4DD700D4EB6F /* resources-mdpi_clear */,
-				F607C1831C032A8800B53A87 /* resources-hdpi_clear */,
-				4A23D1591B8B4DD700D4EB6F /* resources-xhdpi_clear */,
-				4A23D15A1B8B4DD700D4EB6F /* resources-xxhdpi_clear */,
-				4A7D89C11B2EBF3B00AC843E /* resources-6plus_dark */,
-				4A7D89C21B2EBF3B00AC843E /* resources-mdpi_dark */,
-				F607C1841C032A8800B53A87 /* resources-hdpi_dark */,
-				4A7D89C31B2EBF3B00AC843E /* resources-xhdpi_dark */,
-				4A7D89C41B2EBF3B00AC843E /* resources-xxhdpi_dark */,
-				A367C93A1B17334800E2B6E7 /* resources-default */,
-				4A00DBDE1AB704C400113624 /* drules_proto_dark.bin */,
-				97A5967E19B9CD47007A963F /* copyright.html */,
-				978D4A30199A11E600D72CA7 /* faq.html */,
-				FAAEA7D0161BD26600CCD661 /* synonyms.txt */,
-				FAAFD696139D9BE2000AE70C /* categories.txt */,
-				FA64D9A813F975AD00350ECF /* types.txt */,
-				452FCA3A1B6A3DF7007019AB /* colors.txt */,
-				451950391B7A3E070085DA05 /* patterns.txt */,
 				EEA615E5134C4968003A9827 /* 01_dejavusans.ttf */,
 				9DF04B231B71010E00DACAF1 /* 02_droidsans-fallback.ttf */,
 				EEA615E7134C4968003A9827 /* 03_jomolhari-id-a3d.ttf */,
@@ -3899,15 +3904,51 @@
 				EEA615E9134C4968003A9827 /* 05_khmeros.ttf */,
 				EE164810135CEE49003B8A3E /* 06_code2000.ttf */,
 				FAF30A94173AB23900818BF6 /* 07_roboto_medium.ttf */,
-				FAFF42291347F101009BBB14 /* World.mwm */,
-				FA459EB314327AF700B5BB3C /* WorldCoasts.mwm */,
+				FAAFD696139D9BE2000AE70C /* categories.txt */,
+				EE026F0511D6AC0D00645242 /* classificator.txt */,
+				452FCA3A1B6A3DF7007019AB /* colors.txt */,
+				97A5967E19B9CD47007A963F /* copyright.html */,
+				671182DE1C7F0DD400CB8177 /* countries_obsolete.txt */,
+				FA46DA2B12D4166E00968C36 /* countries.txt */,
+				4A23D1561B8B4DD700D4EB6F /* drules_proto_clear.bin */,
+				4A00DBDE1AB704C400113624 /* drules_proto_dark.bin */,
+				4554B6E81E55F02B0084017F /* drules_proto_vehicle_clear.bin */,
+				4554B6E91E55F02B0084017F /* drules_proto_vehicle_dark.bin */,
+				6B9978341C89A316003B8AA0 /* editor.config */,
+				978D4A30199A11E600D72CA7 /* faq.html */,
 				EEFE7C1212F8C9E1006AF8C3 /* fonts_blacklist.txt */,
 				EEFE7C1312F8C9E1006AF8C3 /* fonts_whitelist.txt */,
-				EE583CBA12F773F00042CBE3 /* unicode_blocks.txt */,
-				FA46DA2B12D4166E00968C36 /* countries.txt */,
-				FA85F632145DDDC20090E1A0 /* packed_polygons.bin */,
-				EE026F0511D6AC0D00645242 /* classificator.txt */,
+				BB7626B41E8559980031D71C /* icudt57l.dat */,
+				450703081E9E6CF000E8C029 /* local_ads_symbols.txt */,
 				3495433C1EB22D9600F08F73 /* MPAdBrowserController.xib */,
+				F623DA6A1C9C2731006A3436 /* opening_hours_how_to_edit.html */,
+				671182DF1C7F0DD400CB8177 /* packed_polygons_obsolete.bin */,
+				FA85F632145DDDC20090E1A0 /* packed_polygons.bin */,
+				451950391B7A3E070085DA05 /* patterns.txt */,
+				3DF9C22A207CC14A00DA0793 /* taxi_places */,
+				4A23D1571B8B4DD700D4EB6F /* resources-6plus_clear */,
+				4A7D89C11B2EBF3B00AC843E /* resources-6plus_dark */,
+				A367C93A1B17334800E2B6E7 /* resources-default */,
+				F607C1831C032A8800B53A87 /* resources-hdpi_clear */,
+				F607C1841C032A8800B53A87 /* resources-hdpi_dark */,
+				4A23D1581B8B4DD700D4EB6F /* resources-mdpi_clear */,
+				4A7D89C21B2EBF3B00AC843E /* resources-mdpi_dark */,
+				4A23D1591B8B4DD700D4EB6F /* resources-xhdpi_clear */,
+				4A7D89C31B2EBF3B00AC843E /* resources-xhdpi_dark */,
+				4A23D15A1B8B4DD700D4EB6F /* resources-xxhdpi_clear */,
+				4A7D89C41B2EBF3B00AC843E /* resources-xxhdpi_dark */,
+				4501B1922077C35A001B9173 /* resources-xxxhdpi_clear */,
+				4501B1932077C35A001B9173 /* resources-xxxhdpi_dark */,
+				FAAEA7D0161BD26600CCD661 /* synonyms.txt */,
+				BB25B1A51FB32767007276FA /* transit_colors.txt */,
+				3476B8DF1BFDD33A00874594 /* tts-how-to-set-up-voice-img */,
+				3476B8D51BFDD30B00874594 /* tts-how-to-set-up-voice.html */,
+				FA64D9A813F975AD00350ECF /* types.txt */,
+				F642D1221F0F9D1D005E3C25 /* ugc_types.csv */,
+				EE583CBA12F773F00042CBE3 /* unicode_blocks.txt */,
+				FAFF42291347F101009BBB14 /* World.mwm */,
+				671182E01C7F0DD400CB8177 /* WorldCoasts_obsolete.mwm */,
+				FA459EB314327AF700B5BB3C /* WorldCoasts.mwm */,
 			);
 			name = "External Resources";
 			sourceTree = "<group>";
@@ -4058,6 +4099,7 @@
 				6741A9581BF340DE002C974C /* 04_padauk.ttf in Resources */,
 				6741A9591BF340DE002C974C /* 05_khmeros.ttf in Resources */,
 				34AB66801FC5AA330078E451 /* MWMiPhoneRoutePreview.xib in Resources */,
+				F6D67CEB2069318B0032FD38 /* PPPSearchSimilarButton.xib in Resources */,
 				F61757F11FC731F5000AD0D0 /* DiscoveryOnlineTemplateCell.xib in Resources */,
 				6741A95B1BF340DE002C974C /* 06_code2000.ttf in Resources */,
 				F603E05E1FDE9703006B84D6 /* DiscoverySearchCollectionHolderCell.xib in Resources */,
@@ -4107,6 +4149,7 @@
 				34EE25A61EFA6AD400F870AB /* ViatorElement.xib in Resources */,
 				F6E2FD951E097BA00083EBEC /* MWMBookmarkColorViewController.xib in Resources */,
 				F6E2FD9B1E097BA00083EBEC /* MWMBookmarkTitleCell.xib in Resources */,
+				4501B1942077C35A001B9173 /* resources-xxxhdpi_clear in Resources */,
 				349D1AD21E2E325B004A2006 /* MWMBottomMenuCollectionViewLandscapeCell.xib in Resources */,
 				3467CEB7202C6FA900D3C670 /* BMCNotificationsCell.xib in Resources */,
 				349D1AD51E2E325B004A2006 /* MWMBottomMenuCollectionViewPortraitCell.xib in Resources */,
@@ -4139,6 +4182,7 @@
 				3406FA191C6E0D8F00E9FAD2 /* MWMMapDownloadDialog.xib in Resources */,
 				F6E2FD531E097BA00083EBEC /* MWMMapDownloaderAdsTableViewCell.xib in Resources */,
 				F6E2FD591E097BA00083EBEC /* MWMMapDownloaderButtonTableViewCell.xib in Resources */,
+				F62607FF207B83C400176C5A /* MWMSpinnerAlert.xib in Resources */,
 				F6EBB2731FD7E4FD00B69B6A /* DiscoveryNoResultsCell.xib in Resources */,
 				F6E2FD621E097BA00083EBEC /* MWMMapDownloaderLargeCountryTableViewCell.xib in Resources */,
 				F6664BFD1E6459CB00E703C2 /* PPFacilityCell.xib in Resources */,
@@ -4151,6 +4195,7 @@
 				349A13851DEC138C00C7DB60 /* MWMMobileInternetAlert.xib in Resources */,
 				34D3B04B1E389D05004100F9 /* MWMNoteCell.xib in Resources */,
 				F6E2FDEF1E097BA00083EBEC /* MWMOpeningHoursAddClosedTableViewCell.xib in Resources */,
+				F655C02920727A630048A241 /* DiscoveryMoreCell.xib in Resources */,
 				34E50DE31F6FCBA1008EED49 /* UGCAddReviewCell.xib in Resources */,
 				34B6FD602015E6BF00C18E97 /* DiscoveryBookingCell.xib in Resources */,
 				F6E2FDF51E097BA00083EBEC /* MWMOpeningHoursAddScheduleTableViewCell.xib in Resources */,
@@ -4163,6 +4208,7 @@
 				F6E2FE011E097BA00083EBEC /* MWMOpeningHoursClosedSpanTableViewCell.xib in Resources */,
 				F6E2FE071E097BA00083EBEC /* MWMOpeningHoursDaysSelectorTableViewCell.xib in Resources */,
 				F6A806531FDAE51600D4D26F /* DiscoveryViatorCollectionHolderCell.xib in Resources */,
+				3DF9C22B207CC14A00DA0793 /* taxi_places in Resources */,
 				F6E2FE0D1E097BA00083EBEC /* MWMOpeningHoursDeleteScheduleTableViewCell.xib in Resources */,
 				F6E2FE161E097BA00083EBEC /* MWMOpeningHoursTimeSelectorTableViewCell.xib in Resources */,
 				F6E2FE1C1E097BA00083EBEC /* MWMOpeningHoursTimeSpanTableViewCell.xib in Resources */,
@@ -4204,6 +4250,7 @@
 				F6E2FF421E097BA00083EBEC /* MWMSearchTableViewController.xib in Resources */,
 				34AB66681FC5AA330078E451 /* TransportTransitPedestrian.xib in Resources */,
 				F6E2FEEE1E097BA00083EBEC /* MWMSearchView.xib in Resources */,
+				4501B1952077C35A001B9173 /* resources-xxxhdpi_dark in Resources */,
 				F6D67CDE2062BBA60032FD38 /* MWMBCCreateCategoryAlert.xib in Resources */,
 				344532511F714FD70059FBCC /* UGCAddReviewController.xib in Resources */,
 				3490D2E31CE9DD2500D0B838 /* MWMSideButtonsView.xib in Resources */,
@@ -4340,6 +4387,7 @@
 				34F742321E0834F400AC1FD6 /* UIViewController+Navigation.mm in Sources */,
 				340475811E081B3300C92850 /* iosOGLContextFactory.mm in Sources */,
 				34AB66561FC5AA330078E451 /* TransportTransitPedestrian.swift in Sources */,
+				F6D67CE9206929590032FD38 /* PPPSearchSimilarButton.swift in Sources */,
 				6741A9B11BF340DE002C974C /* MWMAPIBarView.mm in Sources */,
 				3467CEB2202C6EEE00D3C670 /* BMCNotificationsHeader.swift in Sources */,
 				34F4072F1E9E1AFF00E57AC0 /* BannersCache.swift in Sources */,
@@ -4486,6 +4534,7 @@
 				342CC5F21C2D7730005F3FE5 /* MWMAuthorizationLoginViewController.mm in Sources */,
 				340475591E081A4600C92850 /* WebViewController.mm in Sources */,
 				3404F4992028A20D0090E401 /* BMCCategoryCell.swift in Sources */,
+				F62607FD207B790300176C5A /* SpinnerAlert.swift in Sources */,
 				34F407411E9E1AFF00E57AC0 /* RBBanner.swift in Sources */,
 				3444DFD21F17620C00E73099 /* MWMMapWidgetsHelper.mm in Sources */,
 				348A8DFB1F66775A00D83026 /* RatingViewSettings.swift in Sources */,
@@ -4592,6 +4641,7 @@
 				F6E2FF1E1E097BA00083EBEC /* MWMSearchTabbedViewController.mm in Sources */,
 				F6E2FF301E097BA00083EBEC /* MWMSearchCommonCell.mm in Sources */,
 				F6E2FEA01E097BA00083EBEC /* MWMPlacePageLayout.mm in Sources */,
+				F655C027207278300048A241 /* DiscoveryMoreCell.swift in Sources */,
 				F6E2FEC41E097BA00083EBEC /* MWMSearchFilterPresentationController.mm in Sources */,
 				34AB66621FC5AA330078E451 /* TransportTransitSeparator.swift in Sources */,
 				340416541E7C09C200E2B6D6 /* PhotoScalingView.swift in Sources */,

@@ -10,6 +10,8 @@
 
 #include <vector>
 
+#include <boost/optional.hpp>
+
 @class MWMPlacePageData;
 @class MWMUGCReviewVM;
 
@@ -59,6 +61,7 @@ enum class PreviewRows
   Subtitle,
   Schedule,
   Review,
+  SearchSimilar,
   Address,
   Space,
   Banner
@@ -185,6 +188,9 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 - (NSURL *)URLToAllReviews;
 - (NSArray<MWMGalleryItemModel *> *)photos;
 
+- (boost::optional<int>)hotelRawApproximatePricing;
+- (boost::optional<ftypes::IsHotelChecker::Type>)hotelType;
+
 // Partners
 - (NSString *)partnerName;
 - (int)partnerIndex;
@@ -212,11 +218,11 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 
 // Bookmark
 - (NSString *)externalTitle;
-- (NSString *)bookmarkColor;
+- (kml::PredefinedColor)bookmarkColor;
 - (NSString *)bookmarkDescription;
 - (NSString *)bookmarkCategory;
-- (df::MarkID)bookmarkId;
-- (df::MarkGroupID)bookmarkCategoryId;
+- (kml::MarkId)bookmarkId;
+- (kml::MarkGroupId)bookmarkCategoryId;
 
 // Local Ads
 - (NSString *)localAdsURL;

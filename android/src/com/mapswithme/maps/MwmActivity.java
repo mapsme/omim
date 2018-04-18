@@ -38,6 +38,8 @@ import com.mapswithme.maps.api.ParsedRoutingData;
 import com.mapswithme.maps.api.ParsedSearchRequest;
 import com.mapswithme.maps.api.ParsedUrlMwmRequest;
 import com.mapswithme.maps.api.RoutePoint;
+import com.mapswithme.maps.auth.PassportAuthDialogFragment;
+import com.mapswithme.maps.background.Notifier;
 import com.mapswithme.maps.base.BaseMwmFragmentActivity;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity;
@@ -51,7 +53,6 @@ import com.mapswithme.maps.downloader.DownloaderFragment;
 import com.mapswithme.maps.downloader.MapManager;
 import com.mapswithme.maps.downloader.MigrationFragment;
 import com.mapswithme.maps.downloader.OnmapDownloader;
-import com.mapswithme.maps.editor.AuthDialogFragment;
 import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.editor.EditorActivity;
 import com.mapswithme.maps.editor.EditorHostFragment;
@@ -94,6 +95,7 @@ import com.mapswithme.maps.widget.placepage.PlacePageView.State;
 import com.mapswithme.util.Animations;
 import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.Counters;
+import com.mapswithme.util.DialogUtils;
 import com.mapswithme.util.InputUtils;
 import com.mapswithme.util.PermissionsUtils;
 import com.mapswithme.util.ThemeSwitcher;
@@ -101,6 +103,8 @@ import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.concurrency.UiThread;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
 import com.mapswithme.util.permissions.PermissionsResult;
 import com.mapswithme.util.sharing.ShareOption;
 import com.mapswithme.util.sharing.SharingHelper;
@@ -131,10 +135,12 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                  DiscoveryFragment.DiscoveryListener,
                                  FloatingSearchToolbarController.SearchToolbarListener
 {
+  private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
+  private static final String TAG = MwmActivity.class.getSimpleName();
+
   public static final String EXTRA_TASK = "map_task";
   public static final String EXTRA_LAUNCH_BY_DEEP_LINK = "launch_by_deep_link";
   private static final String EXTRA_CONSUMED = "mwm.extra.intent.processed";
-  private static final String EXTRA_UPDATE_COUNTRIES = ".extra.update.countries";
 
   private static final String[] DOCKED_FRAGMENTS = { SearchFragment.class.getName(),
                                                      DownloaderFragment.class.getName(),
@@ -150,6 +156,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private static final int REQ_CODE_LOCATION_PERMISSION = 1;
   private static final int REQ_CODE_DISCOVERY = 2;
+  private static final int REQ_CODE_SHOW_SIMILAR_HOTELS = 3;
 
   // Map tasks that we run AFTER rendering initialized
   private final Stack<MapTask> mTasks = new Stack<>();
@@ -316,17 +323,20 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private VisibleRectMeasurer mVisibleRectMeasurer;
 
-  public static Intent createShowMapIntent(Context context, String countryId, boolean doAutoDownload)
+  public static Intent createShowMapIntent(@NonNull Context context, @Nullable String countryId)
   {
     return new Intent(context, DownloadResourcesLegacyActivity.class)
-               .putExtra(DownloadResourcesLegacyActivity.EXTRA_COUNTRY, countryId)
-               .putExtra(DownloadResourcesLegacyActivity.EXTRA_AUTODOWNLOAD, doAutoDownload);
+               .putExtra(DownloadResourcesLegacyActivity.EXTRA_COUNTRY, countryId);
   }
 
-  public static Intent createUpdateMapsIntent()
+  @NonNull
+  public static Intent createAuthenticateIntent()
   {
     return new Intent(MwmApplication.get(), MwmActivity.class)
-               .putExtra(EXTRA_UPDATE_COUNTRIES, true);
+        .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        .putExtra(MwmActivity.EXTRA_TASK,
+                  new MwmActivity.ShowDialogTask(PassportAuthDialogFragment.class.getName()));
   }
 
   @Override
@@ -439,6 +449,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
       }
       SearchActivity.start(this, query, filter, params);
     }
+    if (mFilterController != null)
+      mFilterController.resetFilter();
   }
 
   public void showEditor()
@@ -537,7 +549,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     //  }
     //});
     //getWindow().getDecorView().addOnLayoutChangeListener(mVisibleRectMeasurer);
-    boolean isConsumed = processIntent(getIntent());
+    boolean isConsumed = savedInstanceState == null && processIntent(getIntent());
     // If the map activity is launched by any incoming intent (deeplink, update maps event, etc)
     // we haven't to try restoring the route. Also, if savedInstanceState != null it means that
     // the app is being restored by the system at the moment, so we don't need to restore the route.
@@ -639,7 +651,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
           if (Framework.nativeIsDownloadedMapAtScreenCenter())
             startActivity(new Intent(MwmActivity.this, FeatureCategoryActivity.class));
           else
-            UiUtils.showAlertDialog(MwmActivity.this, R.string.message_invalid_feature_position);
+            DialogUtils.showAlertDialog(MwmActivity.this, R.string.message_invalid_feature_position);
         });
     UiUtils.hide(mPositionChooser);
   }
@@ -1077,6 +1089,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
       case FilterActivity.REQ_CODE_FILTER:
         handleFilterResult(data);
         break;
+      case REQ_CODE_SHOW_SIMILAR_HOTELS:
+        if (mSearchController != null)
+          mSearchController.setQuery(getString(R.string.hotel));
+        handleFilterResult(data);
+        break;
     }
   }
 
@@ -1157,6 +1174,14 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                   FilterActivity.REQ_CODE_FILTER);
   }
 
+  public void onSearchSimilarHotels(@Nullable HotelsFilter filter)
+  {
+    BookingFilterParams params = mFilterController != null
+                                 ? mFilterController.getBookingFilterParams() : null;
+    FilterActivity.startForResult(MwmActivity.this, filter, params,
+                                  REQ_CODE_SHOW_SIMILAR_HOTELS);
+  }
+
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                          @NonNull int[] grantResults)
@@ -1183,15 +1208,14 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (intent == null)
       return false;
 
+    if (intent.hasExtra(SplashActivity.EXTRA_INTENT))
+      intent = intent.getParcelableExtra(SplashActivity.EXTRA_INTENT);
+
+    Notifier.processNotificationExtras(intent);
+
     if (intent.hasExtra(EXTRA_TASK))
     {
       addTask(intent);
-      return true;
-    }
-
-    if (intent.hasExtra(EXTRA_UPDATE_COUNTRIES))
-    {
-      showDownloader(true);
       return true;
     }
 
@@ -1295,8 +1319,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
       LikesManager.INSTANCE.showDialogs(this);
     }
   }
-
-
 
   @Override
   protected void onPause()
@@ -1704,21 +1726,16 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     private static final long serialVersionUID = 1L;
     private final String mCountryId;
-    private final boolean mDoAutoDownload;
 
-    public ShowCountryTask(String countryId, boolean doAutoDownload)
+    public ShowCountryTask(String countryId)
     {
       mCountryId = countryId;
-      mDoAutoDownload = doAutoDownload;
     }
 
     @Override
     public boolean run(MwmActivity target)
     {
-      if (mDoAutoDownload)
-        MapManager.warn3gAndDownload(target, mCountryId, null);
-
-      Framework.nativeShowCountry(mCountryId, mDoAutoDownload);
+      Framework.nativeShowCountry(mCountryId, false);
       return true;
     }
   }
@@ -2386,13 +2403,25 @@ public class MwmActivity extends BaseMwmFragmentActivity
     showSearch(query);
   }
 
-  public static class ShowAuthorizationTask implements MapTask
+  public static class ShowDialogTask implements MapTask
   {
+    @NonNull
+    private String mDialogName;
+
+    public ShowDialogTask(@NonNull String dialogName)
+    {
+      mDialogName = dialogName;
+    }
+
     @Override
     public boolean run(MwmActivity target)
     {
-      final DialogFragment fragment = (DialogFragment) Fragment.instantiate(target, AuthDialogFragment.class.getName());
-      fragment.show(target.getSupportFragmentManager(), AuthDialogFragment.class.getName());
+      Fragment f = target.getSupportFragmentManager().findFragmentByTag(mDialogName);
+      if (f != null)
+        return true;
+
+      final DialogFragment fragment = (DialogFragment) Fragment.instantiate(target, mDialogName);
+      fragment.show(target.getSupportFragmentManager(), mDialogName);
       return true;
     }
   }

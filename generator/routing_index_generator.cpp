@@ -20,17 +20,18 @@
 #include "transit/transit_graph_data.hpp"
 #include "transit/transit_serdes.hpp"
 
-#include "indexer/coding_params.hpp"
 #include "indexer/data_header.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_processor.hpp"
 
-#include "geometry/point2d.hpp"
-
 #include "coding/file_container.hpp"
 #include "coding/file_name_utils.hpp"
+#include "coding/geometry_coding.hpp"
 #include "coding/point_to_integer.hpp"
+#include "coding/pointd_to_pointu.hpp"
 #include "coding/reader.hpp"
+
+#include "geometry/point2d.hpp"
 
 #include "base/checked_cast.hpp"
 #include "base/logging.hpp"
@@ -139,7 +140,7 @@ private:
 
     for (size_t i = 0; i < f.GetPointsCount(); ++i)
     {
-      uint64_t const locationKey = PointToInt64(f.GetPoint(i), POINT_COORD_BITS);
+      uint64_t const locationKey = PointToInt64Obsolete(f.GetPoint(i), POINT_COORD_BITS);
       m_posToJoint[locationKey].AddPoint(RoadPoint(id, base::checked_cast<uint32_t>(i)));
     }
   }
@@ -443,10 +444,10 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
               foundCount, ", not found:", notFoundCount));
 }
 
-serial::CodingParams LoadCodingParams(string const & mwmFile)
+serial::GeometryCodingParams LoadGeometryCodingParams(string const & mwmFile)
 {
   DataHeader const dataHeader(mwmFile);
-  return dataHeader.GetDefCodingParams();
+  return dataHeader.GetDefGeometryCodingParams();
 }
 }  // namespace
 
@@ -491,7 +492,7 @@ void SerializeCrossMwm(string const & mwmFile, string const & sectionName,
                        CrossMwmConnectorPerVehicleType<CrossMwmId> const & connectors,
                        vector<CrossMwmConnectorSerializer::Transition<CrossMwmId>> const & transitions)
 {
-  serial::CodingParams const codingParams = LoadCodingParams(mwmFile);
+  serial::GeometryCodingParams const codingParams = LoadGeometryCodingParams(mwmFile);
   FilesContainerW cont(mwmFile, FileWriter::OP_WRITE_EXISTING);
   auto writer = cont.GetWriter(sectionName);
   auto const startPos = writer.Pos();

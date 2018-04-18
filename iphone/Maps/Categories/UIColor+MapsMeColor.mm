@@ -63,12 +63,9 @@ NSDictionary<NSString *, UIColor *> * night = @{
   @"alertBackground":
       [UIColor colorWithRed:scaled(60.) green:scaled(64.) blue:scaled(68.) alpha:alpha90],
   @"blackOpaque": [UIColor colorWithWhite:1. alpha:alpha04],
-  @"bannerBackground":
-      [UIColor colorWithRed:scaled(71.) green:scaled(75.) blue:scaled(80.) alpha:alpha100],
-  @"bannerButtonBackground":
-      [UIColor colorWithRed:scaled(45.) green:scaled(48.) blue:scaled(50.) alpha:alpha100],
   @"toastBackground": [UIColor colorWithWhite:0. alpha:alpha87],
-  @"statusBarBackground": [UIColor colorWithWhite:0. alpha:alpha32]
+  @"statusBarBackground": [UIColor colorWithWhite:0. alpha:alpha32],
+  @"bannerBackground" : [UIColor colorWithRed:scaled(71) green:scaled(75) blue:scaled(79) alpha:alpha100]
 };
 
 NSDictionary<NSString *, UIColor *> * day = @{
@@ -113,12 +110,9 @@ NSDictionary<NSString *, UIColor *> * day = @{
       [UIColor colorWithRed:scaled(3.) green:scaled(122.) blue:scaled(255.) alpha:alpha26],
   @"alertBackground" : [UIColor colorWithWhite:1. alpha:alpha90],
   @"blackOpaque" : [UIColor colorWithWhite:0. alpha:alpha04],
-  @"bannerBackground" :
-      [UIColor colorWithRed:scaled(252.) green:scaled(247.) blue:scaled(237.) alpha:alpha100],
-  @"bannerButtonBackground" :
-      [UIColor colorWithRed:scaled(242.) green:scaled(234.) blue:scaled(218.) alpha:alpha100],
   @"toastBackground" : [UIColor colorWithWhite:1. alpha:alpha87],
-  @"statusBarBackground" : [UIColor colorWithWhite:1. alpha:alpha36]
+  @"statusBarBackground" : [UIColor colorWithWhite:1. alpha:alpha36],
+  @"bannerBackground" : [UIColor colorWithRed:scaled(249) green:scaled(251) blue:scaled(231) alpha:alpha100]
 };
 
 UIColor * color(SEL cmd)
@@ -354,11 +348,26 @@ UIColor * color(SEL cmd)
   return UIColor.blackColor;
 }
 
++ (UIColor *)partner3Background
+{
+  return [UIColor colorWithRed:scaled(230) green:scaled(23) blue:scaled(23) alpha:alpha100];
+}
+
++ (UIColor *)partner3TextColor
+{
+  return [UIColor colorWithRed:scaled(255) green:scaled(255) blue:scaled(255) alpha:alpha100];
+}
+
 + (UIColor *)bannerBackground
 {
   return color(_cmd);
 }
-+ (UIColor *)bannerButtonBackground { return color(_cmd); }
+
++ (UIColor *)bannerButtonBackground
+{
+  return [UIColor blackDividers];
+}
+
 + (UIColor *)toastBackground { return color(_cmd); }
 + (UIColor *)statusBarBackground { return color(_cmd); }
 + (UIColor *)colorWithName:(NSString *)colorName

@@ -133,23 +133,26 @@ UNIT_CLASS_TEST(SearchAPITest, MultipleViewportsRequests)
 
 UNIT_CLASS_TEST(SearchAPITest, BookmarksSearch)
 {
-  vector<pair<df::MarkID, BookmarkData>> marks;
+  vector<pair<kml::MarkId, kml::BookmarkData>> marks;
 
-  marks.emplace_back(
-      0, BookmarkData("R&R dinner" /* name */, "cafe" /* type */,
-                      "They've got a cherry pie there that'll kill ya!" /* description */));
-  marks.emplace_back(1, BookmarkData("Silver Mustang Casino" /* name */, "casino" /* type */,
-                                     "Joyful place, owners Bradley and Rodney are very friendly!"));
-  marks.emplace_back(2, BookmarkData("Great Northern Hotel" /* name */, "hotel" /* type */,
-                                     "Clean place with a reasonable price" /* description */));
+  kml::BookmarkData data;
+  kml::SetDefaultStr(data.m_name, "R&R dinner");
+  kml::SetDefaultStr(data.m_description, "They've got a cherry pie there that'll kill ya!");
+  marks.emplace_back(0, data);
+  kml::SetDefaultStr(data.m_name, "Silver Mustang Casino");
+  kml::SetDefaultStr(data.m_description, "Joyful place, owners Bradley and Rodney are very friendly!");
+  marks.emplace_back(1, data);
+  kml::SetDefaultStr(data.m_name, "Great Northern Hotel");
+  kml::SetDefaultStr(data.m_description, "Clean place with a reasonable price");
+  marks.emplace_back(2, data);
   m_api.OnBookmarksCreated(marks);
 
-  promise<vector<df::MarkID>> promise;
+  promise<vector<kml::MarkId>> promise;
   auto future = promise.get_future();
 
   BookmarksSearchParams params;
   params.m_query = "gread silver hotel";
-  params.m_onResults = [&](vector<df::MarkID> const & results,
+  params.m_onResults = [&](vector<kml::MarkId> const & results,
                            BookmarksSearchParams::Status status) {
     if (status != BookmarksSearchParams::Status::Completed)
       return;
@@ -160,6 +163,6 @@ UNIT_CLASS_TEST(SearchAPITest, BookmarksSearch)
   m_api.SearchInBookmarks(params);
 
   auto const ids = future.get();
-  TEST_EQUAL(ids, vector<df::MarkID>({2, 1}), ());
+  TEST_EQUAL(ids, vector<kml::MarkId>({2, 1}), ());
 }
 }  // namespace

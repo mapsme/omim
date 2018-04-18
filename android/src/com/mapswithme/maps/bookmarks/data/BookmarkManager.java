@@ -1,5 +1,6 @@
 package com.mapswithme.maps.bookmarks.data;
 
+import android.support.annotation.IntDef;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
@@ -7,6 +8,8 @@ import com.mapswithme.maps.R;
 import com.mapswithme.util.statistics.Statistics;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,32 @@ import java.util.List;
 public enum BookmarkManager
 {
   INSTANCE;
+
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({ CLOUD_BACKUP, CLOUD_RESTORE })
+  public @interface SynchronizationType {}
+
+  public static final int CLOUD_BACKUP = 0;
+  public static final int CLOUD_RESTORE = 1;
+
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({ CLOUD_SUCCESS, CLOUD_AUTH_ERROR, CLOUD_NETWORK_ERROR,
+            CLOUD_DISK_ERROR, CLOUD_USER_INTERRUPTED })
+  public @interface SynchronizationResult {}
+
+  public static final int CLOUD_SUCCESS = 0;
+  public static final int CLOUD_AUTH_ERROR = 1;
+  public static final int CLOUD_NETWORK_ERROR = 2;
+  public static final int CLOUD_DISK_ERROR = 3;
+  public static final int CLOUD_USER_INTERRUPTED = 4;
+
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({ CLOUD_BACKUP_EXISTS, CLOUD_NO_BACKUP, CLOUD_NOT_ENOUGH_DISK_SPACE })
+  public @interface RestoringRequestResult {}
+
+  public static final int CLOUD_BACKUP_EXISTS = 0;
+  public static final int CLOUD_NO_BACKUP = 1;
+  public static final int CLOUD_NOT_ENOUGH_DISK_SPACE = 2;
 
   public static final List<Icon> ICONS = new ArrayList<>();
 
@@ -26,24 +55,26 @@ public enum BookmarkManager
   @NonNull
   private List<BookmarksSharingListener> mSharingListeners = new ArrayList<>();
 
+  @NonNull
+  private List<BookmarksCloudListener> mCloudListeners = new ArrayList<>();
+  
   static
   {
-    ICONS.add(new Icon("placemark-red", "placemark-red", R.drawable.ic_bookmark_marker_red_off, R.drawable.ic_bookmark_marker_red_on));
-    ICONS.add(new Icon("placemark-blue", "placemark-blue", R.drawable.ic_bookmark_marker_blue_off, R.drawable.ic_bookmark_marker_blue_on));
-    ICONS.add(new Icon("placemark-purple", "placemark-purple", R.drawable.ic_bookmark_marker_purple_off, R.drawable.ic_bookmark_marker_purple_on));
-    ICONS.add(new Icon("placemark-yellow", "placemark-yellow", R.drawable.ic_bookmark_marker_yellow_off, R.drawable.ic_bookmark_marker_yellow_on));
-    ICONS.add(new Icon("placemark-pink", "placemark-pink", R.drawable.ic_bookmark_marker_pink_off, R.drawable.ic_bookmark_marker_pink_on));
-    ICONS.add(new Icon("placemark-brown", "placemark-brown", R.drawable.ic_bookmark_marker_brown_off, R.drawable.ic_bookmark_marker_brown_on));
-    ICONS.add(new Icon("placemark-green", "placemark-green", R.drawable.ic_bookmark_marker_green_off, R.drawable.ic_bookmark_marker_green_on));
-    ICONS.add(new Icon("placemark-orange", "placemark-orange", R.drawable.ic_bookmark_marker_orange_off, R.drawable.ic_bookmark_marker_orange_on));
-    ICONS.add(new Icon("placemark-hotel", "placemark-hotel", R.drawable.ic_bookmark_marker_hotel_off, R.drawable.ic_bookmark_marker_hotel_on));
+    ICONS.add(new Icon("placemark-red", Icon.PREDEFINED_COLOR_RED, R.drawable.ic_bookmark_marker_red_off, R.drawable.ic_bookmark_marker_red_on));
+    ICONS.add(new Icon("placemark-blue", Icon.PREDEFINED_COLOR_BLUE, R.drawable.ic_bookmark_marker_blue_off, R.drawable.ic_bookmark_marker_blue_on));
+    ICONS.add(new Icon("placemark-purple", Icon.PREDEFINED_COLOR_PURPLE, R.drawable.ic_bookmark_marker_purple_off, R.drawable.ic_bookmark_marker_purple_on));
+    ICONS.add(new Icon("placemark-yellow", Icon.PREDEFINED_COLOR_YELLOW, R.drawable.ic_bookmark_marker_yellow_off, R.drawable.ic_bookmark_marker_yellow_on));
+    ICONS.add(new Icon("placemark-pink", Icon.PREDEFINED_COLOR_PINK, R.drawable.ic_bookmark_marker_pink_off, R.drawable.ic_bookmark_marker_pink_on));
+    ICONS.add(new Icon("placemark-brown", Icon.PREDEFINED_COLOR_BROWN, R.drawable.ic_bookmark_marker_brown_off, R.drawable.ic_bookmark_marker_brown_on));
+    ICONS.add(new Icon("placemark-green", Icon.PREDEFINED_COLOR_GREEN, R.drawable.ic_bookmark_marker_green_off, R.drawable.ic_bookmark_marker_green_on));
+    ICONS.add(new Icon("placemark-orange", Icon.PREDEFINED_COLOR_ORANGE, R.drawable.ic_bookmark_marker_orange_off, R.drawable.ic_bookmark_marker_orange_on));
   }
 
-  static Icon getIconByType(String type)
+  static Icon getIconByColor(@Icon.PredefinedColor int color)
   {
     for (Icon icon : ICONS)
     {
-      if (icon.getType().equals(type))
+      if (icon.getColor() == color)
         return icon;
     }
     // return default icon
@@ -56,9 +87,9 @@ public enum BookmarkManager
     setVisibility(catId, !isVisible);
   }
 
-  public Bookmark addNewBookmark(String name, double lat, double lon)
+  public Bookmark addNewBookmark(double lat, double lon)
   {
-    final Bookmark bookmark = nativeAddBookmarkToLastEditedCategory(name, lat, lon);
+    final Bookmark bookmark = nativeAddBookmarkToLastEditedCategory(lat, lon);
     Statistics.INSTANCE.trackBookmarkCreated();
     return bookmark;
   }
@@ -91,6 +122,16 @@ public enum BookmarkManager
   public void removeSharingListener(@NonNull BookmarksSharingListener listener)
   {
     mSharingListeners.remove(listener);
+  }
+
+  public void addCloudListener(@NonNull BookmarksCloudListener listener)
+  {
+    mCloudListeners.add(listener);
+  }
+
+  public void removeCloudListener(@NonNull BookmarksCloudListener listener)
+  {
+    mCloudListeners.remove(listener);
   }
 
   // Called from JNI.
@@ -140,6 +181,41 @@ public enum BookmarkManager
   {
     for (BookmarksSharingListener listener : mSharingListeners)
       listener.onPreparedFileForSharing(result);
+  }
+
+  // Called from JNI.
+  @MainThread
+  public void onSynchronizationStarted(@SynchronizationType int type)
+  {
+    for (BookmarksCloudListener listener : mCloudListeners)
+      listener.onSynchronizationStarted(type);
+  }
+
+  // Called from JNI.
+  @MainThread
+  public void onSynchronizationFinished(@SynchronizationType int type,
+                                        @SynchronizationResult int result,
+                                        @NonNull String errorString)
+  {
+    for (BookmarksCloudListener listener : mCloudListeners)
+      listener.onSynchronizationFinished(type, result, errorString);
+  }
+
+  // Called from JNI.
+  @MainThread
+  public void onRestoreRequested(@RestoringRequestResult int result,
+                                 long backupTimestampInMs)
+  {
+    for (BookmarksCloudListener listener : mCloudListeners)
+      listener.onRestoreRequested(result, backupTimestampInMs);
+  }
+
+  // Called from JNI.
+  @MainThread
+  public void onRestoredFilesPrepared()
+  {
+    for (BookmarksCloudListener listener : mCloudListeners)
+      listener.onRestoredFilesPrepared();
   }
 
   public boolean isVisible(long catId)
@@ -233,19 +309,10 @@ public enum BookmarkManager
 
   public void showBookmarkOnMap(long bmkId) { nativeShowBookmarkOnMap(bmkId); }
 
-  @NonNull
-  public Bookmark addBookmarkToLastEditedCategory(@NonNull String name, double lat, double lon)
-  {
-    return nativeAddBookmarkToLastEditedCategory(name, lat, lon);
-  }
-
   public long getLastEditedCategory() { return nativeGetLastEditedCategory(); }
 
-  @NonNull
-  public static String generateUniqueFileName(@NonNull String baseName)
-  {
-    return nativeGenerateUniqueFileName(baseName);
-  }
+  @Icon.PredefinedColor
+  public int getLastEditedColor() { return nativeGetLastEditedColor(); }
 
   public void setCloudEnabled(boolean enabled) { nativeSetCloudEnabled(enabled); }
 
@@ -256,18 +323,12 @@ public enum BookmarkManager
     return nativeGetLastSynchronizationTimestampInMs();
   }
 
-  public static void loadKmzFile(@NonNull String path, boolean isTemporaryFile)
+  public void loadKmzFile(@NonNull String path, boolean isTemporaryFile)
   {
     nativeLoadKmzFile(path, isTemporaryFile);
   }
 
-  @NonNull
-  public static String formatNewBookmarkName()
-  {
-    return nativeFormatNewBookmarkName();
-  }
-
-  public static boolean isAsyncBookmarksLoadingInProgress()
+  public boolean isAsyncBookmarksLoadingInProgress()
   {
     return nativeIsAsyncBookmarksLoadingInProgress();
   }
@@ -317,6 +378,21 @@ public enum BookmarkManager
     nativePrepareFileForSharing(catId);
   }
 
+  public void requestRestoring()
+  {
+    nativeRequestRestoring();
+  }
+
+  public void applyRestoring()
+  {
+    nativeApplyRestoring();
+  }
+
+  public void cancelRestoring()
+  {
+    nativeCancelRestoring();
+  }
+
   private native int nativeGetCategoriesCount();
 
   private native int nativeGetCategoryPositionById(long catId);
@@ -362,9 +438,12 @@ public enum BookmarkManager
   private native void nativeShowBookmarkOnMap(long bmkId);
 
   @NonNull
-  private native Bookmark nativeAddBookmarkToLastEditedCategory(String name, double lat, double lon);
+  private native Bookmark nativeAddBookmarkToLastEditedCategory(double lat, double lon);
 
   private native long nativeGetLastEditedCategory();
+
+  @Icon.PredefinedColor
+  private native int nativeGetLastEditedColor();
 
   private native void nativeSetCloudEnabled(boolean enabled);
 
@@ -372,13 +451,7 @@ public enum BookmarkManager
 
   private native long nativeGetLastSynchronizationTimestampInMs();
 
-  @NonNull
-  private static native String nativeGenerateUniqueFileName(@NonNull String baseName);
-
   private static native void nativeLoadKmzFile(@NonNull String path, boolean isTemporaryFile);
-
-  @NonNull
-  private static native String nativeFormatNewBookmarkName();
 
   private static native boolean nativeIsAsyncBookmarksLoadingInProgress();
 
@@ -398,6 +471,12 @@ public enum BookmarkManager
 
   private static native boolean nativeIsCategoryEmpty(long catId);
 
+  private static native void nativeRequestRestoring();
+
+  private static native void nativeApplyRestoring();
+
+  private static native void nativeCancelRestoring();
+
   public interface BookmarksLoadingListener
   {
     void onBookmarksLoadingStarted();
@@ -413,5 +492,41 @@ public enum BookmarkManager
   public interface BookmarksSharingListener
   {
     void onPreparedFileForSharing(@NonNull BookmarkSharingResult result);
+  }
+
+  public interface BookmarksCloudListener
+  {
+    /**
+     * The method is called when the synchronization started.
+     *
+     * @param type determines type of synchronization (backup or restoring).
+     */
+    void onSynchronizationStarted(@SynchronizationType int type);
+
+    /**
+     * The method is called when the synchronization finished.
+     *
+     * @param type determines type of synchronization (backup or restoring).
+     * @param result is one of possible results of the synchronization.
+     * @param errorString contains detailed description in case of unsuccessful completion.
+     */
+    void onSynchronizationFinished(@SynchronizationType int type,
+                                   @SynchronizationResult int result,
+                                   @NonNull String errorString);
+
+    /**
+     * The method is called after restoring request.
+     *
+     * @param result By result you can determine if the restoring is possible.
+     * @param backupTimestampInMs contains timestamp of the backup on the server (in milliseconds).
+     */
+    void onRestoreRequested(@RestoringRequestResult int result, long backupTimestampInMs);
+
+    /**
+     * Restored bookmark files are prepared to substitute for the current ones.
+     * After this callback any cached bookmarks data become invalid. Also after this
+     * callback the restoring process can not be cancelled.
+     */
+    void onRestoredFilesPrepared();
   }
 }

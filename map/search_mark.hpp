@@ -9,6 +9,9 @@
 #include "geometry/point2d.hpp"
 #include "geometry/screenbase.hpp"
 
+#include <boost/optional.hpp>
+
+#include <map>
 #include <string>
 #include <vector>
 
@@ -17,6 +20,7 @@ enum class SearchMarkType
   Default = 0,
   Booking,
   LocalAds,
+  Fc2018,
   NotFound, // Service value used in developer tools.
   Count
 };
@@ -26,9 +30,15 @@ class BookmarkManager;
 class SearchMarkPoint : public UserMark
 {
 public:
-  SearchMarkPoint(m2::PointD const & ptOrg);
+  explicit SearchMarkPoint(m2::PointD const & ptOrg);
 
   drape_ptr<SymbolNameZoomInfo> GetSymbolNames() const override;
+  df::ColorConstant GetColorConstant() const override;
+  drape_ptr<TitlesInfo> GetTitleDecl() const override;
+  int GetMinTitleZoom() const override;
+  df::RenderState::DepthLayer GetDepthLayer() const override;
+  drape_ptr<SymbolNameZoomInfo> GetBadgeNames() const override;
+  drape_ptr<SymbolOffsets> GetSymbolOffsets() const override;
 
   FeatureID GetFeatureID() const override { return m_featureID; }
   void SetFoundFeature(FeatureID const & feature);
@@ -37,8 +47,9 @@ public:
   void SetMatchedName(std::string const & name);
 
   void SetMarkType(SearchMarkType type);
-
   void SetPreparing(bool isPreparing);
+  void SetRating(float rating);
+  void SetPricing(int pricing);
 
 protected:
   template<typename T> void SetAttributeValue(T & dst, T const & src)
@@ -50,11 +61,16 @@ protected:
     dst = src;
   }
 
+  bool IsBookingSpecialMark() const;
+
   SearchMarkType m_type = SearchMarkType::Default;
   FeatureID m_featureID;
   // Used to pass exact search result matched string into a place page.
   std::string m_matchedName;
   bool m_isPreparing = false;
+  float m_rating = 0.0f;
+  int m_pricing = 0;
+  dp::TitleDecl m_titleDecl;
 };
 
 class SearchMarks
@@ -70,11 +86,12 @@ public:
   // NOTE: Vector of features must be sorted.
   void SetPreparingState(std::vector<FeatureID> const & features, bool isPreparing);
 
-private:
-  m2::PointD GetSize(SearchMarkType searchMarkType, ScreenBase const & modelView) const;
+  static m2::PointD GetSize(SearchMarkType searchMarkType, ScreenBase const & modelView);
+  static boost::optional<m2::PointD> GetSize(std::string const & symbolName);
 
+private:
   BookmarkManager * m_bmManager;
   df::DrapeEngineSafePtr m_drapeEngine;
 
-  std::vector<m2::PointF> m_searchMarksSizes;
+  static std::map<std::string, m2::PointF> m_searchMarksSizes;
 };

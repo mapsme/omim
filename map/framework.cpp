@@ -418,13 +418,13 @@ Framework::Framework(FrameworkParams const & params)
 
   m_bmManager = make_unique<BookmarkManager>(BookmarkManager::Callbacks(
       [this]() -> StringsBundle const & { return m_stringsBundle; },
-      [this](vector<pair<df::MarkID, BookmarkData>> const & marks) {
+      [this](vector<pair<kml::MarkId, kml::BookmarkData>> const & marks) {
         GetSearchAPI().OnBookmarksCreated(marks);
       },
-      [this](vector<pair<df::MarkID, BookmarkData>> const & marks) {
+      [this](vector<pair<kml::MarkId, kml::BookmarkData>> const & marks) {
         GetSearchAPI().OnBookmarksUpdated(marks);
       },
-      [this](vector<df::MarkID> const & marks) { GetSearchAPI().OnBookmarksDeleted(marks); }));
+      [this](vector<kml::MarkId> const & marks) { GetSearchAPI().OnBookmarksDeleted(marks); }));
 
   m_ParsedMapApi.SetBookmarkManager(m_bmManager.get());
   m_routingManager.SetBookmarkManager(m_bmManager.get());
@@ -705,7 +705,7 @@ void Framework::LoadBookmarks()
   GetBookmarkManager().LoadBookmarks();
 }
 
-df::MarkGroupID Framework::AddCategory(string const & categoryName)
+kml::MarkGroupId Framework::AddCategory(string const & categoryName)
 {
   return GetBookmarkManager().CreateBookmarkCategory(categoryName);
 }
@@ -723,8 +723,8 @@ void Framework::ResetBookmarkInfo(Bookmark const & bmk, place_page::Info & info)
 {
   info.SetBookmarkCategoryName("");
   info.SetBookmarkData({});
-  info.SetBookmarkId(df::kInvalidMarkId);
-  info.SetBookmarkCategoryId(df::kInvalidMarkGroupId);
+  info.SetBookmarkId(kml::kInvalidMarkId);
+  info.SetBookmarkCategoryId(kml::kInvalidMarkGroupId);
   FillPointInfo(bmk.GetPivot(), {} /* customTitle */, info);
 }
 
@@ -942,7 +942,7 @@ void Framework::FillRouteMarkInfo(RouteMarkPoint const & rmp, place_page::Info &
   info.SetIntermediateIndex(rmp.GetIntermediateIndex());
 }
 
-void Framework::ShowBookmark(df::MarkID id)
+void Framework::ShowBookmark(kml::MarkId id)
 {
   auto const * mark = m_bmManager->GetBookmark(id);
   ShowBookmark(mark);
@@ -955,12 +955,12 @@ void Framework::ShowBookmark(Bookmark const * mark)
 
   StopLocationFollow();
 
-  double scale = mark->GetScale();
-  if (scale == -1.0)
+  auto scale = static_cast<int>(mark->GetScale());
+  if (scale == 0)
     scale = scales::GetUpperComfortScale();
 
   if (m_drapeEngine != nullptr)
-    m_drapeEngine->SetModelViewCenter(mark->GetPivot(), static_cast<int>(scale), true /* isAnim */,
+    m_drapeEngine->SetModelViewCenter(mark->GetPivot(), scale, true /* isAnim */,
                                       true /* trackVisibleViewport */);
 
   place_page::Info info;
@@ -1441,8 +1441,12 @@ search::DisplayedCategories const & Framework::GetDisplayedCategories()
   if (auto const position = GetCurrentPosition())
     city = m_cityFinder->GetCityName(*position, StringUtf8Multilang::kEnglishCode);
 
-  LuggageHeroModifier modifier(city);
-  m_displayedCategories->Modify(modifier);
+  // Apply sponsored modifiers.
+  std::vector<std::unique_ptr<SponsoredCategoryModifier>> modifiers;
+  modifiers.push_back(std::make_unique<LuggageHeroModifier>(city));
+  modifiers.push_back(std::make_unique<Fc2018Modifier>(city));
+  for (auto & modifier : modifiers)
+    m_displayedCategories->Modify(*modifier);
 
   return *m_displayedCategories;
 }
@@ -1581,6 +1585,13 @@ void Framework::FillSearchResultsMarks(bool clear, search::Results::ConstIter be
       mark->SetFoundFeature(r.GetFeatureID());
     mark->SetMatchedName(r.GetString());
 
+    // TODO: Remove after FC2018 finishing.
+    if (r.m_metadata.m_isFootballCupObject)
+    {
+      mark->SetMarkType(SearchMarkType::Fc2018);
+      continue;
+    }
+
     if (isFeature && m_localAdsManager.Contains(r.GetFeatureID()))
     {
       mark->SetMarkType(SearchMarkType::LocalAds);
@@ -1588,7 +1599,11 @@ void Framework::FillSearchResultsMarks(bool clear, search::Results::ConstIter be
     }
 
     if (r.m_metadata.m_isSponsoredHotel)
+    {
       mark->SetMarkType(SearchMarkType::Booking);
+      mark->SetRating(r.m_metadata.m_hotelRating);
+      mark->SetPricing(r.m_metadata.m_hotelPricing);
+    }
 
     if (fn)
       fn(*mark);
@@ -2336,7 +2351,7 @@ string Framework::CodeGe0url(Bookmark const * bmk, bool addName)
 {
   double lat = MercatorBounds::YToLat(bmk->GetPivot().y);
   double lon = MercatorBounds::XToLon(bmk->GetPivot().x);
-  return CodeGe0url(lat, lon, bmk->GetScale(), addName ? bmk->GetName() : "");
+  return CodeGe0url(lat, lon, bmk->GetScale(), addName ? bmk->GetPreferredName() : "");
 }
 
 string Framework::CodeGe0url(double lat, double lon, double zoomLevel, string const & name)

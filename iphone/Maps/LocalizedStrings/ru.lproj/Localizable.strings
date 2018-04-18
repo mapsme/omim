@@ -1699,8 +1699,6 @@
 /* noun */
 "search_in_table" = "Список";
 
-"booking_based_on_reviews" = "По %d отзывам об отеле";
-
 "booking_show_more" = "Показать еще";
 
 "booking_reviews" = "Отзывы";
@@ -2106,6 +2104,8 @@
 
 "sponsored_partner1_action" = "Кешбэк";
 
+"sponsored_partner3_action" = "Купон";
+
 "whats_new_ugc_title" = "Оценки и отзывы";
 
 "whats_new_ugc_message" = "Теперь вы можете оставлять оценки и отзывы даже офлайн! Не забудьте обновить карты, чтобы увидеть изменения.";
@@ -2255,3 +2255,17 @@
 "notification_unsent_reviews_message" = "Пожалуйста, авторизуйтесь, чтобы поделиться своими отзывами с другими путешественниками";
 
 "profile_osm" = "Профиль OSM";
+
+"place_page_search_similar_hotel" = "Найти похожие отели";
+
+"bookmarks_detect_title" = "Обнаружены новые файлы";
+
+"bookmarks_detect_message" = "%d файл не был импортирован. Вы увидете его после конвертации.";
+
+"button_convert" = "Конвертировать";
+
+"bookmarks_convert_error_title" = "Ошибка";
+
+"bookmarks_convert_error_message" = "Некоторые файлы не конвертировались.";
+
+"converting" = "Конвертация...";

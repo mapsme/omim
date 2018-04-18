@@ -85,7 +85,8 @@ private:
                             char const * coordSeparator);
   bool MakeValid();
   void ParseColor(std::string const &value);
-  bool GetColorForStyle(std::string const & styleUrl, uint32_t & color);
+  bool GetColorForStyle(std::string const & styleUrl, uint32_t & color) const;
+  double GetTrackWidthForStyle(std::string const & styleUrl) const;
 
   FileData & m_data;
 
@@ -98,6 +99,7 @@ private:
   std::string m_mapStyleId;
   std::string m_styleUrlKey;
   std::map<std::string, uint32_t> m_styleUrl2Color;
+  std::map<std::string, double> m_styleUrl2Width;
   std::map<std::string, std::string> m_mapStyle2Style;
 
   int8_t m_attrCode;
@@ -111,7 +113,7 @@ private:
   m2::PointD m_org;
   uint8_t m_viewportScale;
   std::vector<uint32_t> m_featureTypes;
-  LocalizableString m_featureName;
+  LocalizableString m_customName;
   std::vector<LocalId> m_boundTracks;
   LocalId m_localId;
   BookmarkIcon m_icon;

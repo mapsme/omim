@@ -83,6 +83,14 @@
         android:name="PW_PROJECT_ID"
         android:value="${PW_PROJECT_ID}"/>
 
+    <meta-data
+      android:name="ru.mail.libnotify.application_name"
+      android:value="${LIBNOTIFY_APP_ID}"/>
+
+    <meta-data
+      android:name="ru.mail.libnotify.server_id"
+      android:value="${LIBNOTIFY_PROJECT_ID}"/>
+
     <!--meta-data
         android:name="PW_LOG_LEVEL"
         android:value="ERROR" /-->
@@ -384,7 +392,6 @@
         android:value="com.mapswithme.maps.MwmActivity"/>
     </activity>
 
-    <!-- facebook -->
     <activity
       android:name="com.facebook.FacebookActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -401,6 +408,12 @@
         <data android:scheme="@string/fb_login_protocol_scheme"/>
       </intent-filter>
     </activity>
+
+    <activity
+      android:name="com.mapswithme.maps.auth.PhoneAuthActivity"
+      android:configChanges="orientation|screenLayout|screenSize|keyboardHidden"
+      android:label="@string/authorization_button_sign_in"/>
+    
     <activity android:name="com.mopub.common.MoPubBrowser" android:configChanges="keyboardHidden|orientation|screenSize"/>
     <activity
       android:name=".search.FilterActivity"
@@ -419,6 +432,10 @@
     <service
         android:name="com.mapswithme.maps.background.WorkerService"
         android:exported="false"/>
+
+    <service
+      android:name="com.mapswithme.maps.background.NotificationService"
+      android:exported="false"/>
 
     <receiver android:name="com.mapswithme.maps.location.TrackRecorderWakeReceiver">
       <intent-filter>
@@ -470,17 +487,21 @@
       </intent-filter>
     </receiver>
 
+    <!-- Took this legacy code from https://www.pushwoosh.com/docs/gcm-integration-legacy.
+         Remove it after Pushwoosh is removed. -->
     <service
-        android:name="com.pushwoosh.GCMListenerService"
-        android:exported="false">
-      <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+      android:name="com.mapswithme.util.push.GCMListenerRouterService"
+      android:enabled="true"
+      android:exported="false" >
+      <intent-filter android:priority="100" >
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
       </intent-filter>
     </service>
 
     <service
-        android:name="com.pushwoosh.GCMInstanceIDListenerService"
-        android:exported="false">
+      android:name="com.mapswithme.util.push.GcmInstanceIDRouterListenerService"
+      android:enabled="true"
+      android:exported="false">
       <intent-filter>
         <action android:name="com.google.android.gms.iid.InstanceID"/>
       </intent-filter>
@@ -492,7 +513,8 @@
 
     <service
         android:name="com.pushwoosh.location.GeoLocationService"/>
-
+    <service android:name="com.mapswithme.util.push.GcmInstanceIDListenerService"/>
+    <service android:name="com.mapswithme.util.push.GcmMessageHandlerService"/>
     <!-- Catches app upgraded intent -->
     <receiver android:name=".background.UpgradeReceiver">
       <intent-filter>

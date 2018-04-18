@@ -7,6 +7,8 @@
 #include "coding/url_encode.hpp"
 #include "coding/writer.hpp"
 
+#include "platform/preferred_languages.hpp"
+
 #include "base/logging.hpp"
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
@@ -136,7 +138,7 @@ struct PhoneAuthRequestData
   std::string m_code;
 
   explicit PhoneAuthRequestData(std::string const & code)
-    : m_cliendId("phone_device_app")
+    : m_cliendId(kAppName)
     , m_code(code)
   {}
 
@@ -376,7 +378,7 @@ void User::UploadUserReviews(std::string && dataStr, size_t numberOfUnsynchroniz
       request.SetRawHeader("Authorization", BuildAuthorizationToken(m_accessToken));
       request.SetBodyData(dataStr, "application/json");
     },
-    [this, bytesCount, onCompleteUploading](std::string const &)
+    [bytesCount, onCompleteUploading](std::string const &)
     {
       alohalytics::Stats::Instance().LogEvent("UGC_DataUpload_finished",
                                               strings::to_string(bytesCount));
@@ -385,7 +387,7 @@ void User::UploadUserReviews(std::string && dataStr, size_t numberOfUnsynchroniz
       if (onCompleteUploading != nullptr)
         onCompleteUploading(true /* isSuccessful */);
     },
-    [this, onCompleteUploading, numberOfUnsynchronized](int errorCode)
+    [onCompleteUploading, numberOfUnsynchronized](int errorCode)
     {
       alohalytics::Stats::Instance().LogEvent("UGC_DataUpload_error",
                                               {{"error", strings::to_string(errorCode)},
@@ -396,6 +398,17 @@ void User::UploadUserReviews(std::string && dataStr, size_t numberOfUnsynchroniz
         onCompleteUploading(false /* isSuccessful */);
     });
   });
+}
+
+// static
+std::string User::GetPhoneAuthUrl(std::string const & redirectUri)
+{
+  std::ostringstream os;
+  os << kPassportServerUrl << "/oauth/authorize/?mode=phone_device&response_type=code"
+     << "&locale=" << languages::GetCurrentOrig() << "&redirect_uri=" << UrlEncode(redirectUri)
+     << "&client_id=" << kAppName;
+
+  return os.str();
 }
 
 void User::Request(std::string const & url, BuildRequestHandler const & onBuildRequest,

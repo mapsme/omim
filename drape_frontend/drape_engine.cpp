@@ -201,14 +201,14 @@ void DrapeEngine::SetModelViewAnyRect(m2::AnyRectD const & rect, bool isAnim)
   PostUserEvent(make_unique_dp<SetAnyRectEvent>(rect, isAnim));
 }
 
-void DrapeEngine::ClearUserMarksGroup(MarkGroupID groupId)
+void DrapeEngine::ClearUserMarksGroup(kml::MarkGroupId groupId)
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                   make_unique_dp<ClearUserMarkGroupMessage>(groupId),
                                   MessagePriority::Normal);
 }
 
-void DrapeEngine::ChangeVisibilityUserMarksGroup(MarkGroupID groupId, bool isVisible)
+void DrapeEngine::ChangeVisibilityUserMarksGroup(kml::MarkGroupId groupId, bool isVisible)
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                   make_unique_dp<ChangeUserMarkGroupVisibilityMessage>(groupId, isVisible),
@@ -235,14 +235,14 @@ void DrapeEngine::UpdateUserMarks(UserMarksProvider * provider, bool firstTime)
 
   if (!firstTime)
   {
-    df::MarkGroupID lastGroupId = *dirtyGroupIds.begin();
+    kml::MarkGroupId lastGroupId = *dirtyGroupIds.begin();
     bool visibilityChanged = provider->IsGroupVisibilityChanged(lastGroupId);
     bool groupIsVisible = provider->IsGroupVisible(lastGroupId);
 
     auto const handleMark = [&](
-      df::MarkID markId,
+      kml::MarkId markId,
       UserMarksRenderCollection & renderCollection,
-      MarkIDCollection *idCollection)
+      kml::MarkIdCollection *idCollection)
     {
       auto const *mark = provider->GetUserPointMark(markId);
       if (!mark->IsDirty())
@@ -277,7 +277,7 @@ void DrapeEngine::UpdateUserMarks(UserMarksProvider * provider, bool firstTime)
     removedIdCollection->m_lineIds.assign(removedLineIds.begin(), removedLineIds.end());
   }
 
-  std::map<df::MarkGroupID, drape_ptr<IDCollections>> dirtyMarkIds;
+  std::map<kml::MarkGroupId, drape_ptr<IDCollections>> dirtyMarkIds;
   for (auto groupId : dirtyGroupIds)
   {
     auto & idCollection = *(dirtyMarkIds.emplace(groupId, make_unique_dp<IDCollections>()).first->second);
@@ -687,7 +687,7 @@ void DrapeEngine::SetDisplacementMode(int mode)
                                   MessagePriority::Normal);
 }
 
-void DrapeEngine::RequestSymbolsSize(std::vector<string> const & symbols,
+void DrapeEngine::RequestSymbolsSize(std::vector<std::string> const & symbols,
                                      TRequestSymbolsSizeCallback const & callback)
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
@@ -807,10 +807,11 @@ drape_ptr<UserMarkRenderParams> DrapeEngine::GenerateMarkRenderInfo(UserPointMar
   renderInfo->m_pixelOffset = mark->GetPixelOffset();
   renderInfo->m_titleDecl = mark->GetTitleDecl();
   renderInfo->m_symbolNames = mark->GetSymbolNames();
+  renderInfo->m_badgeNames = mark->GetBadgeNames();
   renderInfo->m_coloredSymbols = mark->GetColoredSymbols();
   renderInfo->m_symbolSizes = mark->GetSymbolSizes();
   renderInfo->m_symbolOffsets = mark->GetSymbolOffsets();
-  renderInfo->m_color = mark->GetColor();
+  renderInfo->m_color = mark->GetColorConstant();
   renderInfo->m_hasSymbolPriority = mark->HasSymbolPriority();
   renderInfo->m_hasTitlePriority = mark->HasTitlePriority();
   renderInfo->m_priority = mark->GetPriority();

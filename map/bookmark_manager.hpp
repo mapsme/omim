@@ -2,6 +2,7 @@
 
 #include "map/bookmark.hpp"
 #include "map/cloud.hpp"
+#include "map/track.hpp"
 #include "map/user_mark_layer.hpp"
 
 #include "drape_frontend/drape_engine_safe_ptr.hpp"
@@ -28,14 +29,15 @@
 class BookmarkManager final
 {
   using UserMarkLayers = std::vector<std::unique_ptr<UserMarkLayer>>;
-  using CategoriesCollection = std::map<df::MarkGroupID, std::unique_ptr<BookmarkCategory>>;
+  using CategoriesCollection = std::map<kml::MarkGroupId, std::unique_ptr<BookmarkCategory>>;
 
-  using MarksCollection = std::map<df::MarkID, std::unique_ptr<UserMark>>;
-  using BookmarksCollection = std::map<df::MarkID, std::unique_ptr<Bookmark>>;
-  using TracksCollection = std::map<df::LineID, std::unique_ptr<Track>>;
+  using MarksCollection = std::map<kml::MarkId, std::unique_ptr<UserMark>>;
+  using BookmarksCollection = std::map<kml::MarkId, std::unique_ptr<Bookmark>>;
+  using TracksCollection = std::map<kml::TrackId, std::unique_ptr<Track>>;
 
 public:
-  using KMLDataCollection = std::vector<std::unique_ptr<KMLData>>;
+  using KMLDataCollection = std::vector<std::pair<std::string, std::unique_ptr<kml::FileData>>>;
+  using KMLDataCollectionPtr = std::shared_ptr<KMLDataCollection>;
 
   using AsyncLoadingStartedCallback = std::function<void()>;
   using AsyncLoadingFinishedCallback = std::function<void()>;
@@ -52,9 +54,9 @@ public:
   struct Callbacks
   {
     using GetStringsBundleFn = std::function<StringsBundle const &()>;
-    using CreatedBookmarksCallback = std::function<void(std::vector<std::pair<df::MarkID, BookmarkData>> const &)>;
-    using UpdatedBookmarksCallback = std::function<void(std::vector<std::pair<df::MarkID, BookmarkData>> const &)>;
-    using DeletedBookmarksCallback = std::function<void(std::vector<df::MarkID> const &)>;
+    using CreatedBookmarksCallback = std::function<void(std::vector<std::pair<kml::MarkId, kml::BookmarkData>> const &)>;
+    using UpdatedBookmarksCallback = std::function<void(std::vector<std::pair<kml::MarkId, kml::BookmarkData>> const &)>;
+    using DeletedBookmarksCallback = std::function<void(std::vector<kml::MarkId> const &)>;
 
     template <typename StringsBundleGetter, typename CreateListener, typename UpdateListener, typename DeleteListener>
     Callbacks(StringsBundleGetter && stringsBundleGetter, CreateListener && createListener,
@@ -83,17 +85,17 @@ public:
       return m_bmManager.CreateUserMark<UserMarkT>(ptOrg);
     }
 
-    Bookmark * CreateBookmark(m2::PointD const & ptOrg, BookmarkData const & bm);
-    Bookmark * CreateBookmark(m2::PointD const & ptOrg, BookmarkData & bm, df::MarkGroupID groupId);
-    Track * CreateTrack(m2::PolylineD const & polyline, Track::Params const & p);
+    Bookmark * CreateBookmark(kml::BookmarkData && bmData);
+    Bookmark * CreateBookmark(kml::BookmarkData && bmData, kml::MarkGroupId groupId);
+    Track * CreateTrack(kml::TrackData && trackData);
 
     template <typename UserMarkT>
-    UserMarkT * GetMarkForEdit(df::MarkID markId)
+    UserMarkT * GetMarkForEdit(kml::MarkId markId)
     {
       return m_bmManager.GetMarkForEdit<UserMarkT>(markId);
     }
 
-    Bookmark * GetBookmarkForEdit(df::MarkID markId);
+    Bookmark * GetBookmarkForEdit(kml::MarkId markId);
 
     template <typename UserMarkT, typename F>
     void DeleteUserMarks(UserMark::Type type, F && deletePredicate)
@@ -101,25 +103,25 @@ public:
       return m_bmManager.DeleteUserMarks<UserMarkT>(type, std::move(deletePredicate));
     };
 
-    void DeleteUserMark(df::MarkID markId);
-    void DeleteBookmark(df::MarkID bmId);
-    void DeleteTrack(df::LineID trackId);
+    void DeleteUserMark(kml::MarkId markId);
+    void DeleteBookmark(kml::MarkId bmId);
+    void DeleteTrack(kml::TrackId trackId);
 
-    void ClearGroup(df::MarkGroupID groupId);
+    void ClearGroup(kml::MarkGroupId groupId);
 
-    void SetIsVisible(df::MarkGroupID groupId, bool visible);
+    void SetIsVisible(kml::MarkGroupId groupId, bool visible);
 
-    void MoveBookmark(df::MarkID bmID, df::MarkGroupID curGroupID, df::MarkGroupID newGroupID);
-    void UpdateBookmark(df::MarkID bmId, BookmarkData const & bm);
+    void MoveBookmark(kml::MarkId bmID, kml::MarkGroupId curGroupID, kml::MarkGroupId newGroupID);
+    void UpdateBookmark(kml::MarkId bmId, kml::BookmarkData const & bm);
 
-    void AttachBookmark(df::MarkID bmId, df::MarkGroupID groupId);
-    void DetachBookmark(df::MarkID bmId, df::MarkGroupID groupId);
+    void AttachBookmark(kml::MarkId bmId, kml::MarkGroupId groupId);
+    void DetachBookmark(kml::MarkId bmId, kml::MarkGroupId groupId);
 
-    void AttachTrack(df::LineID trackId, df::MarkGroupID groupId);
-    void DetachTrack(df::LineID trackId, df::MarkGroupID groupId);
+    void AttachTrack(kml::TrackId trackId, kml::MarkGroupId groupId);
+    void DetachTrack(kml::TrackId trackId, kml::MarkGroupId groupId);
 
-    void SetCategoryName(df::MarkGroupID categoryId, std::string const & name);
-    bool DeleteBmCategory(df::MarkGroupID groupId);
+    void SetCategoryName(kml::MarkGroupId categoryId, std::string const & name);
+    bool DeleteBmCategory(kml::MarkGroupId groupId);
 
     void NotifyChanges();
 
@@ -128,7 +130,6 @@ public:
   };
 
   explicit BookmarkManager(Callbacks && callbacks);
-  ~BookmarkManager();
 
   void SetDrapeEngine(ref_ptr<df::DrapeEngine> engine);
 
@@ -140,48 +141,58 @@ public:
   void UpdateViewport(ScreenBase const & screen);
   void Teardown();
 
-  static bool IsBookmarkCategory(df::MarkGroupID groupId) { return groupId >= UserMark::BOOKMARK; }
-  static bool IsBookmark(df::MarkID markId) { return UserMark::GetMarkType(markId) == UserMark::BOOKMARK; }
+  static bool IsBookmarkCategory(kml::MarkGroupId groupId) { return groupId >= UserMark::USER_MARK_TYPES_COUNT_MAX; }
+  static bool IsBookmark(kml::MarkId markId) { return UserMark::GetMarkType(markId) == UserMark::BOOKMARK; }
+  static UserMark::Type GetGroupType(kml::MarkGroupId groupId)
+  {
+    return IsBookmarkCategory(groupId) ? UserMark::BOOKMARK : static_cast<UserMark::Type>(groupId);
+  }
 
   template <typename UserMarkT>
-  UserMarkT const * GetMark(df::MarkID markId) const
+  UserMarkT const * GetMark(kml::MarkId markId) const
   {
     auto * mark = GetUserMark(markId);
     ASSERT(dynamic_cast<UserMarkT const *>(mark) != nullptr, ());
     return static_cast<UserMarkT const *>(mark);
   }
 
-  UserMark const * GetUserMark(df::MarkID markId) const;
-  Bookmark const * GetBookmark(df::MarkID markId) const;
-  Track const * GetTrack(df::LineID trackId) const;
+  UserMark const * GetUserMark(kml::MarkId markId) const;
+  Bookmark const * GetBookmark(kml::MarkId markId) const;
+  Track const * GetTrack(kml::TrackId trackId) const;
 
-  df::MarkIDSet const & GetUserMarkIds(df::MarkGroupID groupId) const;
-  df::LineIDSet const & GetTrackIds(df::MarkGroupID groupId) const;
+  kml::MarkIdSet const & GetUserMarkIds(kml::MarkGroupId groupId) const;
+  kml::TrackIdSet const & GetTrackIds(kml::MarkGroupId groupId) const;
 
-  bool IsVisible(df::MarkGroupID groupId) const;
+  bool IsVisible(kml::MarkGroupId groupId) const;
 
-  df::MarkGroupID CreateBookmarkCategory(std::string const & name, bool autoSave = true);
+  kml::MarkGroupId CreateBookmarkCategory(kml::CategoryData && data, bool autoSave = true);
+  kml::MarkGroupId CreateBookmarkCategory(std::string const & name, bool autoSave = true);
 
-  std::string const & GetCategoryName(df::MarkGroupID categoryId) const;
-  std::string const & GetCategoryFileName(df::MarkGroupID categoryId) const;
+  std::string GetCategoryName(kml::MarkGroupId categoryId) const;
+  std::string GetCategoryFileName(kml::MarkGroupId categoryId) const;
 
-  df::GroupIDCollection const & GetBmGroupsIdList() const { return m_bmGroupsIdList; }
-  bool HasBmCategory(df::MarkGroupID groupId) const;
-  df::MarkGroupID LastEditedBMCategory();
-  std::string LastEditedBMType() const;
+  kml::MarkGroupId GetCategoryId(std::string const & name) const;
+
+  kml::GroupIdCollection const & GetBmGroupsIdList() const { return m_bmGroupsIdList; }
+  bool HasBmCategory(kml::MarkGroupId groupId) const;
+  kml::MarkGroupId LastEditedBMCategory();
+  kml::PredefinedColor LastEditedBMColor() const;
+
+  void SetLastEditedBmCategory(kml::MarkGroupId groupId);
+  void SetLastEditedBmColor(kml::PredefinedColor color);
 
   using TTouchRectHolder = function<m2::AnyRectD(UserMark::Type)>;
   UserMark const * FindNearestUserMark(TTouchRectHolder const & holder) const;
   UserMark const * FindNearestUserMark(m2::AnyRectD const & rect) const;
-  UserMark const * FindMarkInRect(df::MarkGroupID groupId, m2::AnyRectD const & rect, double & d) const;
+  UserMark const * FindMarkInRect(kml::MarkGroupId groupId, m2::AnyRectD const & rect, double & d) const;
 
-  /// Scans and loads all kml files with bookmarks in WritableDir.
+  /// Scans and loads all kml files with bookmarks.
   void LoadBookmarks();
   void LoadBookmark(std::string const & filePath, bool isTemporaryFile);
 
   /// Uses the same file name from which was loaded, or
   /// creates unique file name on first save and uses it every time.
-  bool SaveToKMLFile(df::MarkGroupID groupId);
+  void SaveBookmarks(kml::GroupIdCollection const & groupIdCollection);
 
   StaticMarkPoint & SelectionMark() { return *m_selectionMark; }
   StaticMarkPoint const & SelectionMark() const { return *m_selectionMark; }
@@ -204,23 +215,23 @@ public:
       ArchiveError,
       FileError
     };
-    df::MarkGroupID m_categoryId;
+    kml::MarkGroupId m_categoryId;
     Code m_code;
     std::string m_sharingPath;
     std::string m_errorString;
 
-    SharingResult(df::MarkGroupID categoryId, std::string const & sharingPath)
+    SharingResult(kml::MarkGroupId categoryId, std::string const & sharingPath)
       : m_categoryId(categoryId)
       , m_code(Code::Success)
       , m_sharingPath(sharingPath)
     {}
 
-    SharingResult(df::MarkGroupID categoryId, Code code)
+    SharingResult(kml::MarkGroupId categoryId, Code code)
       : m_categoryId(categoryId)
       , m_code(code)
     {}
 
-    SharingResult(df::MarkGroupID categoryId, Code code, std::string const & errorString)
+    SharingResult(kml::MarkGroupId categoryId, Code code, std::string const & errorString)
       : m_categoryId(categoryId)
       , m_code(code)
       , m_errorString(errorString)
@@ -228,9 +239,9 @@ public:
   };
 
   using SharingHandler = platform::SafeCallback<void(SharingResult const & result)>;
-  void PrepareFileForSharing(df::MarkGroupID categoryId, SharingHandler && handler);
+  void PrepareFileForSharing(kml::MarkGroupId categoryId, SharingHandler && handler);
 
-  bool IsCategoryEmpty(df::MarkGroupID categoryId) const;
+  bool IsCategoryEmpty(kml::MarkGroupId categoryId) const;
 
   bool IsUsedCategoryName(std::string const & name) const;
   bool AreAllCategoriesVisible() const;
@@ -242,14 +253,29 @@ public:
 
   // Convert all found kml files to the binary format.
   using ConversionHandler = platform::SafeCallback<void(bool success)>;
-  void ConvertAllKmlFiles(ConversionHandler && handler) const;
+  void ConvertAllKmlFiles(ConversionHandler && handler);
+
+  // These handlers are always called from UI-thread.
+  void SetCloudHandlers(Cloud::SynchronizationStartedHandler && onSynchronizationStarted,
+                        Cloud::SynchronizationFinishedHandler && onSynchronizationFinished,
+                        Cloud::RestoreRequestedHandler && onRestoreRequested,
+                        Cloud::RestoredFilesPreparedHandler && onRestoredFilesPrepared);
+
+  void RequestCloudRestoring();
+  void ApplyCloudRestoring();
+  void CancelCloudRestoring();
 
   /// These functions are public for unit tests only. You shouldn't call them from client code.
-  void SaveToKML(df::MarkGroupID groupId, std::ostream & s);
+  void EnableTestMode(bool enable);
+  bool SaveBookmarkCategory(kml::MarkGroupId groupId);
+  bool SaveBookmarkCategory(kml::MarkGroupId groupId, Writer & writer, bool useBinary) const;
   void CreateCategories(KMLDataCollection && dataCollection, bool autoSave = true);
   static std::string RemoveInvalidSymbols(std::string const & name);
-  static std::string GenerateUniqueFileName(const std::string & path, std::string name);
+  static std::string GenerateUniqueFileName(std::string const & path, std::string name, std::string const & fileExt);
   static std::string GenerateValidAndUniqueFilePathForKML(std::string const & fileName);
+  static std::string GenerateValidAndUniqueFilePathForKMB(std::string const & fileName);
+  static std::string GetActualBookmarksDirectory();
+  static bool IsMigrated();
 
 private:
   class MarksChangesTracker : public df::UserMarksProvider
@@ -257,47 +283,47 @@ private:
   public:
     explicit MarksChangesTracker(BookmarkManager & bmManager) : m_bmManager(bmManager) {}
 
-    void OnAddMark(df::MarkID markId);
-    void OnDeleteMark(df::MarkID markId);
-    void OnUpdateMark(df::MarkID markId);
+    void OnAddMark(kml::MarkId markId);
+    void OnDeleteMark(kml::MarkId markId);
+    void OnUpdateMark(kml::MarkId markId);
 
-    void OnAddLine(df::LineID lineId);
-    void OnDeleteLine(df::LineID lineId);
+    void OnAddLine(kml::TrackId lineId);
+    void OnDeleteLine(kml::TrackId lineId);
 
-    void OnAddGroup(df::MarkGroupID groupId);
-    void OnDeleteGroup(df::MarkGroupID groupId);
+    void OnAddGroup(kml::MarkGroupId groupId);
+    void OnDeleteGroup(kml::MarkGroupId groupId);
 
     bool CheckChanges();
     void ResetChanges();
 
     // UserMarksProvider
-    df::GroupIDSet GetAllGroupIds() const override;
-    df::GroupIDSet const & GetDirtyGroupIds() const override { return m_dirtyGroups; }
-    df::GroupIDSet const & GetRemovedGroupIds() const override { return m_removedGroups; }
-    df::MarkIDSet const & GetCreatedMarkIds() const override { return m_createdMarks; }
-    df::MarkIDSet const & GetRemovedMarkIds() const override { return m_removedMarks; }
-    df::MarkIDSet const & GetUpdatedMarkIds() const override { return m_updatedMarks; }
-    df::LineIDSet const & GetRemovedLineIds() const override { return m_removedLines; }
-    bool IsGroupVisible(df::MarkGroupID groupId) const override;
-    bool IsGroupVisibilityChanged(df::MarkGroupID groupId) const override;
-    df::MarkIDSet const & GetGroupPointIds(df::MarkGroupID groupId) const override;
-    df::LineIDSet const & GetGroupLineIds(df::MarkGroupID groupId) const override;
-    df::UserPointMark const * GetUserPointMark(df::MarkID markId) const override;
-    df::UserLineMark const * GetUserLineMark(df::LineID lineId) const override;
+    kml::GroupIdSet GetAllGroupIds() const override;
+    kml::GroupIdSet const & GetDirtyGroupIds() const override { return m_dirtyGroups; }
+    kml::GroupIdSet const & GetRemovedGroupIds() const override { return m_removedGroups; }
+    kml::MarkIdSet const & GetCreatedMarkIds() const override { return m_createdMarks; }
+    kml::MarkIdSet const & GetRemovedMarkIds() const override { return m_removedMarks; }
+    kml::MarkIdSet const & GetUpdatedMarkIds() const override { return m_updatedMarks; }
+    kml::TrackIdSet const & GetRemovedLineIds() const override { return m_removedLines; }
+    bool IsGroupVisible(kml::MarkGroupId groupId) const override;
+    bool IsGroupVisibilityChanged(kml::MarkGroupId groupId) const override;
+    kml::MarkIdSet const & GetGroupPointIds(kml::MarkGroupId groupId) const override;
+    kml::TrackIdSet const & GetGroupLineIds(kml::MarkGroupId groupId) const override;
+    df::UserPointMark const * GetUserPointMark(kml::MarkId markId) const override;
+    df::UserLineMark const * GetUserLineMark(kml::TrackId lineId) const override;
 
   private:
     BookmarkManager & m_bmManager;
 
-    df::MarkIDSet m_createdMarks;
-    df::MarkIDSet m_removedMarks;
-    df::MarkIDSet m_updatedMarks;
+    kml::MarkIdSet m_createdMarks;
+    kml::MarkIdSet m_removedMarks;
+    kml::MarkIdSet m_updatedMarks;
 
-    df::LineIDSet m_createdLines;
-    df::LineIDSet m_removedLines;
+    kml::TrackIdSet m_createdLines;
+    kml::TrackIdSet m_removedLines;
 
-    df::GroupIDSet m_dirtyGroups;
-    df::GroupIDSet m_createdGroups;
-    df::GroupIDSet m_removedGroups;
+    kml::GroupIdSet m_dirtyGroups;
+    kml::GroupIdSet m_createdGroups;
+    kml::GroupIdSet m_removedGroups;
   };
 
   template <typename UserMarkT>
@@ -307,17 +333,17 @@ private:
     auto mark = std::make_unique<UserMarkT>(ptOrg);
     auto * m = mark.get();
     auto const markId = m->GetId();
-    auto const groupId = static_cast<df::MarkGroupID>(m->GetMarkType());
+    auto const groupId = static_cast<kml::MarkGroupId>(m->GetMarkType());
     ASSERT_EQUAL(m_userMarks.count(markId), 0, ());
     ASSERT_LESS(groupId, m_userMarkLayers.size(), ());
     m_userMarks.emplace(markId, std::move(mark));
     m_changesTracker.OnAddMark(markId);
-    m_userMarkLayers[groupId]->AttachUserMark(markId);
+    m_userMarkLayers[groupId - 1]->AttachUserMark(markId);
     return m;
   }
 
   template <typename UserMarkT>
-  UserMarkT * GetMarkForEdit(df::MarkID markId)
+  UserMarkT * GetMarkForEdit(kml::MarkId markId)
   {
     ASSERT_THREAD_CHECKER(m_threadChecker, ());
     auto * mark = GetUserMarkForEdit(markId);
@@ -329,7 +355,7 @@ private:
   void DeleteUserMarks(UserMark::Type type, F && deletePredicate)
   {
     ASSERT_THREAD_CHECKER(m_threadChecker, ());
-    std::list<df::MarkID> marksToDelete;
+    std::list<kml::MarkId> marksToDelete;
     for (auto markId : GetUserMarkIds(type))
     {
       if (deletePredicate(GetMark<UserMarkT>(markId)))
@@ -340,38 +366,39 @@ private:
       DeleteUserMark(markId);
   };
 
-  UserMark * GetUserMarkForEdit(df::MarkID markId);
-  void DeleteUserMark(df::MarkID markId);
+  UserMark * GetUserMarkForEdit(kml::MarkId markId);
+  void DeleteUserMark(kml::MarkId markId);
 
-  Bookmark * CreateBookmark(m2::PointD const & ptOrg, BookmarkData const & bm);
-  Bookmark * CreateBookmark(m2::PointD const & ptOrg, BookmarkData & bm, df::MarkGroupID groupId);
+  Bookmark * CreateBookmark(kml::BookmarkData && bmData);
+  Bookmark * CreateBookmark(kml::BookmarkData && bmData, kml::MarkGroupId groupId);
 
-  Bookmark * GetBookmarkForEdit(df::MarkID markId);
-  void AttachBookmark(df::MarkID bmId, df::MarkGroupID groupId);
-  void DetachBookmark(df::MarkID bmId, df::MarkGroupID groupId);
-  void DeleteBookmark(df::MarkID bmId);
+  Bookmark * GetBookmarkForEdit(kml::MarkId markId);
+  void AttachBookmark(kml::MarkId bmId, kml::MarkGroupId groupId);
+  void DetachBookmark(kml::MarkId bmId, kml::MarkGroupId groupId);
+  void DeleteBookmark(kml::MarkId bmId);
 
-  Track * CreateTrack(m2::PolylineD const & polyline, Track::Params const & p);
+  Track * CreateTrack(kml::TrackData && trackData);
 
-  void AttachTrack(df::LineID trackId, df::MarkGroupID groupId);
-  void DetachTrack(df::LineID trackId, df::MarkGroupID groupId);
-  void DeleteTrack(df::LineID trackId);
+  void AttachTrack(kml::TrackId trackId, kml::MarkGroupId groupId);
+  void DetachTrack(kml::TrackId trackId, kml::MarkGroupId groupId);
+  void DeleteTrack(kml::TrackId trackId);
 
-  void ClearGroup(df::MarkGroupID groupId);
-  void SetIsVisible(df::MarkGroupID groupId, bool visible);
+  void ClearGroup(kml::MarkGroupId groupId);
+  void SetIsVisible(kml::MarkGroupId groupId, bool visible);
 
-  void SetCategoryName(df::MarkGroupID categoryId, std::string const & name);
-  bool DeleteBmCategory(df::MarkGroupID groupId);
+  void SetCategoryName(kml::MarkGroupId categoryId, std::string const & name);
+  bool DeleteBmCategory(kml::MarkGroupId groupId);
   void ClearCategories();
 
-  void MoveBookmark(df::MarkID bmID, df::MarkGroupID curGroupID, df::MarkGroupID newGroupID);
-  void UpdateBookmark(df::MarkID bmId, BookmarkData const & bm);
+  void MoveBookmark(kml::MarkId bmID, kml::MarkGroupId curGroupID, kml::MarkGroupId newGroupID);
+  void UpdateBookmark(kml::MarkId bmId, kml::BookmarkData const & bm);
 
-  UserMark const * GetMark(df::MarkID markId) const;
+  UserMark const * GetMark(kml::MarkId markId) const;
 
-  UserMarkLayer const * GetGroup(df::MarkGroupID groupId) const;
-  UserMarkLayer * GetGroup(df::MarkGroupID groupId);
-  BookmarkCategory * GetBmCategory(df::MarkGroupID categoryId) const;
+  UserMarkLayer const * GetGroup(kml::MarkGroupId groupId) const;
+  UserMarkLayer * GetGroup(kml::MarkGroupId groupId);
+  BookmarkCategory const * GetBmCategory(kml::MarkGroupId categoryId) const;
+  BookmarkCategory * GetBmCategory(kml::MarkGroupId categoryId);
 
   Bookmark * AddBookmark(std::unique_ptr<Bookmark> && bookmark);
   Track * AddTrack(std::unique_ptr<Track> && track);
@@ -383,19 +410,35 @@ private:
   void SaveState() const;
   void LoadState();
   void NotifyAboutStartAsyncLoading();
-  void NotifyAboutFinishAsyncLoading(std::shared_ptr<KMLDataCollection> && collection);
+  void NotifyAboutFinishAsyncLoading(KMLDataCollectionPtr && collection);
   boost::optional<std::string> GetKMLPath(std::string const & filePath);
   void NotifyAboutFile(bool success, std::string const & filePath, bool isTemporaryFile);
   void LoadBookmarkRoutine(std::string const & filePath, bool isTemporaryFile);
+  KMLDataCollectionPtr LoadBookmarks(std::string const & dir, std::string const & ext, bool binary,
+                                     std::vector<std::string> & filePaths);
 
-  void CollectDirtyGroups(df::GroupIDSet & dirtyGroups);
+  void CollectDirtyGroups(kml::GroupIdSet & dirtyGroups);
+
+  void UpdateBmGroupIdList();
 
   void SendBookmarksChanges();
-  void GetBookmarksData(df::MarkIDSet const & markIds,
-                        std::vector<std::pair<df::MarkID, BookmarkData>> & data) const;
+  void GetBookmarksData(kml::MarkIdSet const & markIds,
+                        std::vector<std::pair<kml::MarkId, kml::BookmarkData>> & data) const;
   void CheckAndCreateDefaultCategory();
+  void CheckAndResetLastIds();
 
-  void SaveToKML(BookmarkCategory * group, std::ostream & s);
+  std::unique_ptr<kml::FileData> CollectBmGroupKMLData(BookmarkCategory const * group) const;
+  KMLDataCollectionPtr PrepareToSaveBookmarks(kml::GroupIdCollection const & groupIdCollection);
+  bool SaveKmlFileSafe(kml::FileData & kmlData, std::string const & file, bool useBinary);
+
+  void OnSynchronizationStarted(Cloud::SynchronizationType type);
+  void OnSynchronizationFinished(Cloud::SynchronizationType type, Cloud::SynchronizationResult result,
+                                 std::string const & errorStr);
+  void OnRestoreRequested(Cloud::RestoringRequestResult result, uint64_t backupTimestampInMs);
+  void OnRestoredFilesPrepared();
+
+  bool CanConvert() const;
+  void FinishConversion(ConversionHandler const & handler, bool result);
 
   ThreadChecker m_threadChecker;
 
@@ -404,18 +447,20 @@ private:
   df::DrapeEngineSafePtr m_drapeEngine;
   AsyncLoadingCallbacks m_asyncLoadingCallbacks;
   std::atomic<bool> m_needTeardown;
-  df::MarkGroupID m_nextGroupID;
   size_t m_openedEditSessionsCount = 0;
   bool m_loadBookmarksFinished = false;
   bool m_firstDrapeNotification = false;
+  bool m_restoreApplying = false;
+  bool m_conversionInProgress = false;
 
   ScreenBase m_viewport;
 
   CategoriesCollection m_categories;
-  df::GroupIDCollection m_bmGroupsIdList;
+  kml::GroupIdCollection m_bmGroupsIdList;
 
   std::string m_lastCategoryUrl;
-  std::string m_lastType;
+  kml::MarkGroupId m_lastEditedGroupId = kml::kInvalidMarkGroupId;
+  kml::PredefinedColor m_lastColor = kml::PredefinedColor::Red;
   UserMarkLayers m_userMarkLayers;
 
   MarksCollection m_userMarks;
@@ -438,6 +483,12 @@ private:
   std::list<BookmarkLoaderInfo> m_bookmarkLoadingQueue;
 
   Cloud m_bookmarkCloud;
+  Cloud::SynchronizationStartedHandler m_onSynchronizationStarted;
+  Cloud::SynchronizationFinishedHandler m_onSynchronizationFinished;
+  Cloud::RestoreRequestedHandler m_onRestoreRequested;
+  Cloud::RestoredFilesPreparedHandler m_onRestoredFilesPrepared;
+
+  bool m_testModeEnabled = false;
 
   DISALLOW_COPY_AND_MOVE(BookmarkManager);
 };

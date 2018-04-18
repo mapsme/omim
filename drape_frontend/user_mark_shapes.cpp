@@ -93,14 +93,13 @@ struct UserPointVertex : public gpu::BaseVertex
   TColorAndAnimate m_colorAndAnimate;
 };
 
-std::string GetSymbolNameForZoomLevel(UserMarkRenderParams const & renderInfo,
+std::string GetSymbolNameForZoomLevel(drape_ptr<UserPointMark::SymbolNameZoomInfo> const & symbolNames,
                                       TileKey const & tileKey)
 {
-  if (!renderInfo.m_symbolNames)
+  if (!symbolNames)
     return {};
 
-  for (auto itName = renderInfo.m_symbolNames->rbegin(); itName != renderInfo.m_symbolNames->rend();
-       ++itName)
+  for (auto itName = symbolNames->crbegin(); itName != symbolNames->crend(); ++itName)
   {
     if (itName->first <= tileKey.m_zoomLevel)
       return itName->second;
@@ -170,7 +169,7 @@ void GeneratePoiSymbolShape(UserMarkRenderParams const & renderInfo, TileKey con
     ASSERT_LESS_OR_EQUAL(tileKey.m_zoomLevel, scales::UPPER_STYLE_SCALE, ());
     size_t offsetIndex = 0;
     if (tileKey.m_zoomLevel > 0)
-      offsetIndex = static_cast<size_t>(min(tileKey.m_zoomLevel - 1, scales::UPPER_STYLE_SCALE));
+      offsetIndex = static_cast<size_t>(std::min(tileKey.m_zoomLevel, scales::UPPER_STYLE_SCALE) - 1);
     symbolOffset = renderInfo.m_symbolOffsets->at(offsetIndex);
     params.m_offset = symbolOffset;
   }
@@ -287,7 +286,7 @@ std::string GetBackgroundForSymbol(std::string const & symbolName,
 }  // namespace
 
 void CacheUserMarks(TileKey const & tileKey, ref_ptr<dp::TextureManager> textures,
-                    MarkIDCollection const & marksId, UserMarksRenderCollection & renderParams,
+                    kml::MarkIdCollection const & marksId, UserMarksRenderCollection & renderParams,
                     dp::Batcher & batcher)
 {
   using UPV = UserPointVertex;
@@ -313,7 +312,7 @@ void CacheUserMarks(TileKey const & tileKey, ref_ptr<dp::TextureManager> texture
 
     m2::PointF symbolSize(0.0f, 0.0f);
     m2::PointF symbolOffset(0.0f, 0.0f);
-    auto const symbolName = GetSymbolNameForZoomLevel(renderInfo, tileKey);
+    auto const symbolName = GetSymbolNameForZoomLevel(renderInfo.m_symbolNames, tileKey);
 
     dp::Color color = dp::Color::White();
     if (!renderInfo.m_color.empty())
@@ -387,6 +386,18 @@ void CacheUserMarks(TileKey const & tileKey, ref_ptr<dp::TextureManager> texture
                          batcher);
     }
 
+    if (renderInfo.m_badgeNames != nullptr)
+    {
+      ASSERT(!renderInfo.m_hasSymbolPriority || renderInfo.m_symbolNames == nullptr,
+             ("Multiple POI shapes in an usermark are not supported yet"));
+      auto const badgeName = GetSymbolNameForZoomLevel(renderInfo.m_badgeNames, tileKey);
+      if (!badgeName.empty())
+      {
+        GeneratePoiSymbolShape(renderInfo, tileKey, tileCenter, badgeName, textures, symbolOffset,
+                               batcher);
+      }
+    }
+
     renderInfo.m_justCreated = false;
   }
 
@@ -437,9 +448,12 @@ void ProcessSplineSegmentRects(m2::SharedSpline const & spline, double maxSegmen
 }
 
 void CacheUserLines(TileKey const & tileKey, ref_ptr<dp::TextureManager> textures,
-                    LineIDCollection const & linesId, UserLinesRenderCollection & renderParams,
+                    kml::TrackIdCollection const & linesId, UserLinesRenderCollection & renderParams,
                     dp::Batcher & batcher)
 {
+  ASSERT_GREATER(tileKey.m_zoomLevel, 0, ());
+  ASSERT_LESS_OR_EQUAL(tileKey.m_zoomLevel, scales::GetUpperStyleScale(), ());
+
   auto const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
   bool const simplify = tileKey.m_zoomLevel <= kLineSimplifyLevelEnd;
 
@@ -493,7 +507,7 @@ void CacheUserLines(TileKey const & tileKey, ref_ptr<dp::TextureManager> texture
         params.m_depth = layer.m_depth;
         params.m_depthLayer = renderInfo.m_depthLayer;
         params.m_width = static_cast<float>(layer.m_width * vs *
-          kLineWidthZoomFactor[tileKey.m_zoomLevel]);
+          kLineWidthZoomFactor[tileKey.m_zoomLevel - 1]);
         params.m_minVisibleScale = 1;
         params.m_rank = 0;
 

@@ -1699,8 +1699,6 @@
 /* noun */
 "search_in_table" = "รายการ";
 
-"booking_based_on_reviews" = "ตาม %d รีวิวโรงแรม";
-
 "booking_show_more" = "แสดงเพิ่มเติม";
 
 "booking_reviews" = "รีวิว";
@@ -2106,6 +2104,8 @@
 
 "sponsored_partner1_action" = "Cash back";
 
+"sponsored_partner3_action" = "Coupon";
+
 "whats_new_ugc_title" = "อันดับคะแนนและรีวิว";
 
 "whats_new_ugc_message" = "ขณะนี้คุณสามารถให้คะแนนและรีวิวได้แม้กระทั่งออฟไลน์อยู่! อย่าลืมอัปเดตแผนที่ของคุณเพื่อจะได้เห็นการเปลี่ยนแปลง";
@@ -2255,3 +2255,17 @@
 "notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
 
 "profile_osm" = "Profile OSM";
+
+"place_page_search_similar_hotel" = "Search similar hotels";
+
+"bookmarks_detect_title" = "New files detected";
+
+"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
+
+"button_convert" = "Convert";
+
+"bookmarks_convert_error_title" = "Error";
+
+"bookmarks_convert_error_message" = "Some files were not converted.";
+
+"converting" = "Converting...";

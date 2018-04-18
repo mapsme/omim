@@ -1004,7 +1004,6 @@
 	<string name="search_no_results_reset_button">Сбросить фильтр</string>
 	<!-- noun -->
 	<string name="search_in_table">Список</string>
-	<string name="booking_based_on_reviews">По %d отзывам об отеле</string>
 	<string name="booking_show_more">Показать еще</string>
 	<string name="booking_reviews">Отзывы</string>
 	<string name="booking_hotel">Отель</string>
@@ -1215,6 +1214,7 @@
 	<string name="equipment">Оборудование</string>
 	<string name="quality">Качество</string>
 	<string name="sponsored_partner1_action">Кешбэк</string>
+	<string name="sponsored_partner3_action">Купон</string>
 	<string name="whats_new_ugc_title">Оценки и отзывы</string>
 	<string name="whats_new_ugc_message">Теперь вы можете оставлять оценки и отзывы даже офлайн! Не забудьте обновить карты, чтобы увидеть изменения.</string>
 	<string name="dialog_error_storage_title">Проблема с доступом к хранилищу</string>
@@ -1290,4 +1290,11 @@
 	<string name="notification_unsent_reviews_title">У вас есть неотправленные отзывы</string>
 	<string name="notification_unsent_reviews_message">Пожалуйста, авторизуйтесь, чтобы поделиться своими отзывами с другими путешественниками</string>
 	<string name="profile_osm">Профиль OSM</string>
+	<string name="place_page_search_similar_hotel">Найти похожие отели</string>
+	<string name="bookmarks_detect_title">Обнаружены новые файлы</string>
+	<string name="bookmarks_detect_message">%d файл не был импортирован. Вы увидете его после конвертации.</string>
+	<string name="button_convert">Конвертировать</string>
+	<string name="bookmarks_convert_error_title">Ошибка</string>
+	<string name="bookmarks_convert_error_message">Некоторые файлы не конвертировались.</string>
+	<string name="converting">Конвертация...</string>
 </resources>

@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:3.0.1'
+    classpath 'com.android.tools.build:gradle:3.1.1'
     classpath 'io.fabric.tools:gradle:1.+'
   }
 }
@@ -24,6 +24,9 @@ allprojects {
 repositories {
   maven {
     url 'https://maven.fabric.io/public'
+  }
+  maven {
+    url 'https://dl.bintray.com/libverify/android'
   }
   maven {
     url 'https://s3.amazonaws.com/moat-sdk-builds'
@@ -48,11 +51,12 @@ dependencies {
   implementation 'com.android.support:customtabs:25.0.0'
 
   // google play services
-  implementation 'com.google.android.gms:play-services-location:10.0.1'
-  implementation 'com.google.android.gms:play-services-analytics:10.0.1'
-  implementation 'com.google.android.gms:play-services-plus:10.0.1'
-  implementation 'com.google.android.gms:play-services-gcm:10.0.1'
-  implementation 'com.google.android.gms:play-services-ads:10.0.1'
+  implementation 'com.google.android.gms:play-services-location:11.8.0'
+  implementation 'com.google.android.gms:play-services-analytics:11.8.0'
+  implementation 'com.google.android.gms:play-services-plus:11.8.0'
+  implementation 'com.google.android.gms:play-services-gcm:11.8.0'
+  implementation 'com.google.android.gms:play-services-ads:11.8.0'
+  implementation 'com.google.android.gms:play-services-auth:11.8.0'
   // statistics
   implementation 'com.flurry.android:analytics:6.7.0'
   // crash reporting
@@ -69,11 +73,12 @@ dependencies {
   }
   implementation 'com.google.code.gson:gson:2.6.1'
   implementation 'com.pushwoosh:pushwoosh:4.12.2'
-  implementation 'com.my.tracker:mytracker-sdk:1.3.5'
+  implementation 'com.my.tracker:mytracker-sdk:1.5.2'
   implementation ('com.my.target:mytarget-sdk:4.6.14') {
     exclude group: 'com.android.support'
   }
-  implementation('com.mopub:mopub-sdk-native-static:4.17.0@aar') {
+  implementation('com.mopub:mopub-sdk-native-static:4.20.0@aar') {
+    exclude group: 'com.android.support'
     transitive = true
   }
   implementation fileTree(dir: '3rd_party', include: '*.jar')
@@ -87,8 +92,20 @@ dependencies {
   implementation 'com.github.bumptech.glide:glide:3.7.0'
   // Java concurrency annotations
   implementation 'net.jcip:jcip-annotations:1.0'
-  implementation 'com.android.support:multidex:1.0.2'
+  implementation 'com.android.support:multidex:1.0.3'
   implementation 'com.appsflyer:af-android-sdk:4.8.3'
+  implementation ("ru.mail:libnotify:0.1.163-notify-support-v98@aar") {
+    transitive = true;
+    changing = true;
+    exclude group: 'com.android.support'
+    exclude group: 'com.google.android.gms'
+  }
+  implementation ("ru.mail:libnotify-debug:0.1.163-notify-support-v98@aar") {
+    transitive = true;
+    changing = true;
+    exclude group: 'com.android.support'
+    exclude group: 'com.google.android.gms'
+  }
 }
 
 def getDate() {
@@ -133,6 +150,13 @@ android {
     manifestPlaceholders += ['PW_APPID': pwProps['pwAppId']]
     buildConfigField 'String', 'PW_APPID', /"${pwProps['pwAppId']}"/
     manifestPlaceholders += ['PW_PROJECT_ID': pwProps['pwProjectId']]
+
+    // Libnotify keys
+    Properties lnProps = new Properties()
+    lnProps.load(new FileInputStream("${projectDir}/libnotify.properties"));
+    manifestPlaceholders += ['LIBNOTIFY_APP_ID': lnProps['appId']]
+    manifestPlaceholders += ['LIBNOTIFY_PROJECT_ID': lnProps['projectId']]
+
     multiDexEnabled true
     multiDexKeepFile file('multidex-config.txt')
 
@@ -153,9 +177,11 @@ android {
         println("Building for the x86 architecture")
         abiFilters.add("x86")
       } else {
-        println("Building for the ARM and x86 architectures")
-        abiFilters.add("armeabi-v7a")
-        abiFilters.add("x86")
+        if (!project.hasProperty('splitApk')) {
+          println("Building for the ARM and x86 architectures")
+          abiFilters.add("armeabi-v7a")
+          abiFilters.add("x86")
+        }
       }
     }
   }
@@ -285,6 +311,15 @@ android {
     }
   }
 
+  variantFilter { variant ->
+    if (!variant.getFlavors().get(0).name.equals("web")
+            && !variant.getFlavors().get(0).name.equals("google")) {
+      println("Variant '" + variant.name + "' is ignored. If you want to build it please " +
+              "add variant's flavor to the variantFilter condition")
+      variant.setIgnore(true)
+    }
+  }
+
   splits.abi {
     boolean enabled = project.hasProperty('splitApk');
     println ("Create separate apks: " + enabled)
@@ -343,6 +378,7 @@ android {
       zipAlignEnabled true
       signingConfig signingConfigs.mapswithmeDebug
       android.sourceSets.debug.setRoot('flavors/debug')
+      manifestPlaceholders += ['LIBNOTIFY_APP_ID': 'MapsMeDebug']
     }
 
     release {
@@ -358,6 +394,7 @@ android {
       signingConfig signingConfigs.mapswithme
       android.sourceSets.beta.setRoot('flavors/beta')
       matchingFallbacks = ['debug', 'release']
+      manifestPlaceholders += ['LIBNOTIFY_APP_ID': 'MapsMeBeta']
     }
   }
 

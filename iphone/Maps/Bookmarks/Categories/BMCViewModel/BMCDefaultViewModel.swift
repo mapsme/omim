@@ -1,5 +1,8 @@
 final class BMCDefaultViewModel: NSObject {
+  typealias BM = MWMBookmarksManager
+
   var view: BMCView!
+
   private enum Const
   {
     static let minCategoryNameLength: UInt = 0
@@ -20,11 +23,9 @@ final class BMCDefaultViewModel: NSObject {
   var minCategoryNameLength: UInt = Const.minCategoryNameLength
   var maxCategoryNameLength: UInt = Const.maxCategoryNameLength
 
-  typealias BM = MWMBookmarksManager
-
   override init() {
     super.init()
-    MWMBookmarksManager.add(self)
+    BM.add(self)
     loadData()
   }
 
@@ -66,7 +67,7 @@ final class BMCDefaultViewModel: NSObject {
     sections.append(.permissions)
     setPermissions()
 
-    if MWMBookmarksManager.areBookmarksLoaded() {
+    if BM.areBookmarksLoaded() {
       sections.append(.categories)
       setCategories()
 
@@ -116,8 +117,8 @@ extension BMCDefaultViewModel: BMCViewModel {
     }
   }
 
-  func areAllCategoriesVisible() -> Bool {
-    return categories.reduce(true) { $0 && $1.isVisible }
+  func areAllCategoriesInvisible() -> Bool {
+    return BM.areAllCategoriesInvisible()
   }
 
   func updateAllCategoriesVisibility(isShowAll: Bool) {
@@ -195,11 +196,23 @@ extension BMCDefaultViewModel: BMCViewModel {
     }
     pendingPermission(isPending: false)
   }
+
+  func convertAllKMLIfNeeded() {
+    let count = BM.filesCountForConversion()
+    if count > 0 {
+      MWMAlertViewController.activeAlert().presentConvertBookmarksAlert(withCount: count) {
+        MWMAlertViewController.activeAlert().presentSpinnerAlert(withTitle: L("converting"),
+                                                                 cancel: nil)
+        BM.convertAll()
+      }
+    }
+  }
 }
 
 extension BMCDefaultViewModel: MWMBookmarksObserver {
   func onBookmarksLoadFinished() {
     loadData()
+    convertAllKMLIfNeeded()
   }
 
   func onBookmarkDeleted(_: MWMMarkID) {
@@ -216,5 +229,11 @@ extension BMCDefaultViewModel: MWMBookmarksObserver {
     case .fileError:
       onPreparedToShareCategory?(.error(title: L("dialog_routing_system_error"), text: L("bookmarks_error_message_share_general")))
     }
+  }
+
+  func onConversionFinish(_ success: Bool) {
+    setCategories()
+    view.update(sections: [.categories])
+    view.conversionFinished(success: success)
   }
 }

@@ -1699,8 +1699,6 @@
 /* noun */
 "search_in_table" = "Lijst";
 
-"booking_based_on_reviews" = "Gebaseerd op %d hotelbeoordelingen";
-
 "booking_show_more" = "Meer weergeven";
 
 "booking_reviews" = "Beoordelingen";
@@ -2106,6 +2104,8 @@
 
 "sponsored_partner1_action" = "Cash back";
 
+"sponsored_partner3_action" = "Coupon";
+
 "whats_new_ugc_title" = "Ratings en beoordelingen";
 
 "whats_new_ugc_message" = "Nu kunt u zelfs offline ratings en beoordelingen nalaten! Vergeet uw kaarten niet bij te werken zodat u de wijzigingen kunt zien.";
@@ -2255,3 +2255,17 @@
 "notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
 
 "profile_osm" = "Profile OSM";
+
+"place_page_search_similar_hotel" = "Search similar hotels";
+
+"bookmarks_detect_title" = "New files detected";
+
+"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
+
+"button_convert" = "Convert";
+
+"bookmarks_convert_error_title" = "Error";
+
+"bookmarks_convert_error_message" = "Some files were not converted.";
+
+"converting" = "Converting...";

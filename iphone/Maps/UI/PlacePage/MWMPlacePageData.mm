@@ -11,6 +11,8 @@
 
 #include "local_ads/event.hpp"
 
+#include "map/bookmark_helpers.hpp"
+
 #include "platform/preferred_languages.hpp"
 
 #include "partners_api/booking_api.hpp"
@@ -177,9 +179,15 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   if (self.schedule != OpeningHours::Unknown) m_previewRows.push_back(PreviewRows::Schedule);
   if (self.isBooking)
     m_previewRows.push_back(PreviewRows::Review);
-  if (self.address.length) m_previewRows.push_back(PreviewRows::Address);
-  m_previewRows.push_back(PreviewRows::Space);
 
+  if (self.address.length) m_previewRows.push_back(PreviewRows::Address);
+  if (self.hotelType)
+  {
+    m_previewRows.push_back(PreviewRows::Space);
+    m_previewRows.push_back(PreviewRows::SearchSimilar);
+  }
+
+  m_previewRows.push_back(PreviewRows::Space);
   NSAssert(!m_previewRows.empty(), @"Preview row's can't be empty!");
 
   if (network_policy::CanUseNetwork() && ![MWMSettings adForbidden] && m_info.HasBanner() &&
@@ -435,9 +443,14 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   if (isBookmark)
   {
     auto const categoryId = f.LastEditedBMCategory();
-    BookmarkData bmData{m_info.FormatNewBookmarkName(), f.LastEditedBMType()};
+    kml::BookmarkData bmData;
+    bmData.m_name = m_info.FormatNewBookmarkName();
+    bmData.m_color.m_predefinedColor = f.LastEditedBMColor();
+    bmData.m_point = self.mercator;
+    if (m_info.IsFeature())
+      SaveFeatureTypes(m_info.GetTypes(), bmData);
     auto editSession = bmManager.GetEditSession();
-    auto const * bookmark = editSession.CreateBookmark(self.mercator, bmData, categoryId);
+    auto const * bookmark = editSession.CreateBookmark(std::move(bmData), categoryId);
     f.FillBookmarkInfo(*bookmark, m_info);
     m_sections.insert(m_sections.begin() + 1, Sections::Bookmark);
   }
@@ -632,6 +645,16 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   return _photos;
 }
 
+- (boost::optional<int>)hotelRawApproximatePricing
+{
+  return m_info.GetRawApproximatePricing();
+}
+
+- (boost::optional<ftypes::IsHotelChecker::Type>)hotelType
+{
+  return m_info.GetHotelType();
+}
+
 #pragma mark - Partners
 
 - (NSString *)partnerName
@@ -677,14 +700,14 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   return m_info.GetSecondaryTitle().empty() ? nil : @(m_info.GetSecondaryTitle().c_str());
 }
 
-- (NSString *)bookmarkColor
+- (kml::PredefinedColor)bookmarkColor
 {
-  return m_info.IsBookmark() ? @(m_info.GetBookmarkData().GetType().c_str()) : nil;
+  return m_info.IsBookmark() ? m_info.GetBookmarkData().m_color.m_predefinedColor : kml::PredefinedColor::None;
 }
 
 - (NSString *)bookmarkDescription
 {
-  return m_info.IsBookmark() ? @(m_info.GetBookmarkData().GetDescription().c_str()) : nil;
+  return m_info.IsBookmark() ? @(kml::GetDefaultStr(m_info.GetBookmarkData().m_description).c_str()) : nil;
 }
 
 - (NSString *)bookmarkCategory
@@ -692,12 +715,12 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   return m_info.IsBookmark() ? @(m_info.GetBookmarkCategoryName().c_str()) : nil;
 }
 
-- (df::MarkID)bookmarkId
+- (kml::MarkId)bookmarkId
 {
   return m_info.GetBookmarkId();
 }
 
-- (df::MarkGroupID)bookmarkCategoryId
+- (kml::MarkGroupId)bookmarkCategoryId
 {
   return m_info.GetBookmarkCategoryId();
 }
@@ -783,7 +806,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (BOOL)isHolidayObject { return m_info.GetSponsoredType() == SponsoredType::Holiday; }
 - (BOOL)isBookingSearch { return !m_info.GetBookingSearchUrl().empty(); }
 - (BOOL)isMyPosition { return m_info.IsMyPosition(); }
-- (BOOL)isHTMLDescription { return strings::IsHTML(m_info.GetBookmarkData().GetDescription()); }
+- (BOOL)isHTMLDescription { return strings::IsHTML(kml::GetDefaultStr(m_info.GetBookmarkData().m_description)); }
 - (BOOL)isRoutePoint { return m_info.IsRoutePoint(); }
 - (BOOL)isPreviewExtended { return m_info.IsPreviewExtended(); }
 - (BOOL)isPartnerAppInstalled

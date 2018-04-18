@@ -54,7 +54,6 @@ public class DownloadResourcesLegacyActivity extends BaseMwmFragmentActivity
   private static final String TAG = DownloadResourcesLegacyActivity.class.getName();
 
   static final String EXTRA_COUNTRY = "country";
-  static final String EXTRA_AUTODOWNLOAD = "autodownload";
 
   // Error codes, should match the same codes in JNI
   private static final int ERR_DOWNLOAD_SUCCESS = 0;
@@ -708,13 +707,10 @@ public class DownloadResourcesLegacyActivity extends BaseMwmFragmentActivity
     public boolean process(Intent intent)
     {
       String countryId = intent.getStringExtra(EXTRA_COUNTRY);
-      final boolean autoDownload = intent.getBooleanExtra(EXTRA_AUTODOWNLOAD, false);
-      if (autoDownload)
-        Statistics.INSTANCE.trackEvent(Statistics.EventName.DOWNLOAD_COUNTRY_NOTIFICATION_CLICKED);
 
-      mMapTaskToForward = new MwmActivity.ShowCountryTask(countryId, autoDownload);
+      mMapTaskToForward = new MwmActivity.ShowCountryTask(countryId);
       org.alohalytics.Statistics.logEvent("OpenCountryTaskProcessor::process",
-                                          new String[] { "autoDownload", String.valueOf(autoDownload) },
+                                          new String[] { "autoDownload", "false" },
                                           LocationHelper.INSTANCE.getSavedLocation());
       return true;
     }
@@ -797,13 +793,18 @@ public class DownloadResourcesLegacyActivity extends BaseMwmFragmentActivity
       else
         path = mData.getPath();
 
-      if (path != null)
+      if (!TextUtils.isEmpty(path))
       {
         LOGGER.d(TAG, "Loading bookmarks file from: " + path);
-        BookmarkManager.loadKmzFile(path, isTemporaryFile);
+        loadKmzFile(path, isTemporaryFile);
       }
       else
         LOGGER.w(TAG, "Can't get bookmarks file from URI: " + mData);
+    }
+
+    private void loadKmzFile(final @NonNull String path, final boolean isTemporaryFile)
+    {
+      runOnUiThread(() -> BookmarkManager.INSTANCE.loadKmzFile(path, isTemporaryFile));
     }
 
     private String getExtensionFromMime(String mime)

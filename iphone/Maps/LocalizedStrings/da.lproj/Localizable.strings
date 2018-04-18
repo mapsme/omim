@@ -1699,8 +1699,6 @@
 /* noun */
 "search_in_table" = "Liste";
 
-"booking_based_on_reviews" = "Baseret på %d hotelanmeldelser";
-
 "booking_show_more" = "Vis mere";
 
 "booking_reviews" = "Anmeldelser";
@@ -2106,6 +2104,8 @@
 
 "sponsored_partner1_action" = "Cash back";
 
+"sponsored_partner3_action" = "Coupon";
+
 "whats_new_ugc_title" = "Vurderinger og anmeldelser";
 
 "whats_new_ugc_message" = "Du kan nu afgive vurderinger og anmeldelser, selv offline! Glem ikke at opdatere dit kort, så du kan se ændringerne.";
@@ -2255,3 +2255,17 @@
 "notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
 
 "profile_osm" = "Profile OSM";
+
+"place_page_search_similar_hotel" = "Search similar hotels";
+
+"bookmarks_detect_title" = "New files detected";
+
+"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
+
+"button_convert" = "Convert";
+
+"bookmarks_convert_error_title" = "Error";
+
+"bookmarks_convert_error_message" = "Some files were not converted.";
+
+"converting" = "Converting...";

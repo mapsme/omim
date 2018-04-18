@@ -174,7 +174,7 @@ std::string TimestampToString(Timestamp const & timestamp)
 void SaveLocalizableString(KmlWriter::WriterWrapper & writer, LocalizableString const & str,
                            std::string const & tagName, std::string const & offsetStr)
 {
-  if (str.size() < 2)
+  if ((tagName == "name" || tagName == "description") && str.size() == 1 && str.begin()->first == kDefaultLang)
     return;
 
   writer << offsetStr << "<mwm:" << tagName << ">\n";
@@ -325,7 +325,7 @@ void SaveCategoryData(KmlWriter::WriterWrapper & writer, CategoryData const & ca
 void SaveBookmarkExtendedData(KmlWriter::WriterWrapper & writer, BookmarkData const & bookmarkData)
 {
   if (bookmarkData.m_name.size() < 2 && bookmarkData.m_description.size() < 2 &&
-      bookmarkData.m_featureName.empty() && bookmarkData.m_viewportScale == 0 &&
+      bookmarkData.m_customName.empty() && bookmarkData.m_viewportScale == 0 &&
       bookmarkData.m_icon == BookmarkIcon::None && bookmarkData.m_featureTypes.empty() &&
       bookmarkData.m_boundTracks.empty())
   {
@@ -342,8 +342,8 @@ void SaveBookmarkExtendedData(KmlWriter::WriterWrapper & writer, BookmarkData co
     types.push_back(strings::to_string(t));
   SaveStringsArray(writer, types, "featureTypes", kIndent6);
 
-  if (!bookmarkData.m_featureName.empty())
-    SaveLocalizableString(writer, bookmarkData.m_featureName, "featureName", kIndent6);
+  if (!bookmarkData.m_customName.empty())
+    SaveLocalizableString(writer, bookmarkData.m_customName, "customName", kIndent6);
 
   if (bookmarkData.m_viewportScale != 0)
   {
@@ -511,7 +511,7 @@ void KmlParser::ResetPoint()
   m_styleUrlKey.clear();
 
   m_featureTypes.clear();
-  m_featureName.clear();
+  m_customName.clear();
   m_boundTracks.clear();
   m_localId = 0;
   m_trackLayers.clear();
@@ -562,7 +562,7 @@ void KmlParser::ParseLineCoordinates(std::string const & s, char const * blockSe
     m2::PointD pt;
     if (ParsePoint(*tupleIter, coordSeparator, pt))
     {
-      if (m_points.empty() || !(pt - m_points.back()).IsAlmostZero())
+      if (m_points.empty() || !pt.EqualDxDy(m_points.back(), 1e-5 /* eps */))
         m_points.push_back(std::move(pt));
     }
     ++tupleIter;
@@ -576,7 +576,7 @@ bool KmlParser::MakeValid()
     if (MercatorBounds::ValidX(m_org.x) && MercatorBounds::ValidY(m_org.y))
     {
       // Set default name.
-      if (m_name.empty())
+      if (m_name.empty() && m_featureTypes.empty())
         m_name[kDefaultLang] = PointToString(m_org);
 
       // Set default pin.
@@ -605,19 +605,32 @@ void KmlParser::ParseColor(std::string const & value)
   m_color = ToRGBA(fromHex[3], fromHex[2], fromHex[1], fromHex[0]);
 }
 
-bool KmlParser::GetColorForStyle(std::string const & styleUrl, uint32_t & color)
+bool KmlParser::GetColorForStyle(std::string const & styleUrl, uint32_t & color) const
 {
   if (styleUrl.empty())
     return false;
 
   // Remove leading '#' symbol
   auto const it = m_styleUrl2Color.find(styleUrl.substr(1));
-  if (it != m_styleUrl2Color.end())
+  if (it != m_styleUrl2Color.cend())
   {
     color = it->second;
     return true;
   }
   return false;
+}
+
+double KmlParser::GetTrackWidthForStyle(std::string const & styleUrl) const
+{
+  if (styleUrl.empty())
+    return kDefaultTrackWidth;
+
+  // Remove leading '#' symbol
+  auto const it = m_styleUrl2Width.find(styleUrl.substr(1));
+  if (it != m_styleUrl2Width.cend())
+    return it->second;
+
+  return kDefaultTrackWidth;
 }
 
 bool KmlParser::Push(std::string const & name)
@@ -676,7 +689,7 @@ void KmlParser::Pop(std::string const & tag)
         data.m_timestamp = m_timestamp;
         data.m_point = m_org;
         data.m_featureTypes = std::move(m_featureTypes);
-        data.m_featureName = std::move(m_featureName);
+        data.m_customName = std::move(m_customName);
         data.m_boundTracks = std::move(m_boundTracks);
         m_data.m_bookmarksData.push_back(std::move(data));
       }
@@ -701,12 +714,18 @@ void KmlParser::Pop(std::string const & tag)
       if (!m_styleId.empty())
       {
         m_styleUrl2Color[m_styleId] = m_color;
+        m_styleUrl2Width[m_styleId] = m_trackWidth;
         m_color = 0;
+        m_trackWidth = kDefaultTrackWidth;
       }
     }
   }
-  else if (tag == "mwm:additionalLineStyle" || tag == "LineStyle")
+  else if ((tag == "LineStyle" && m_tags.size() > 2 && GetTagFromEnd(2) == kPlacemark) ||
+           (tag == "mwm:additionalLineStyle" && m_tags.size() > 3 && GetTagFromEnd(3) == kPlacemark))
   {
+    // This code assumes that <Style> is stored inside <Placemark>.
+    // It is a violation of KML format, but it must be here to support
+    // loading of KML files which were stored by older versions of MAPS.ME.
     TrackLayer layer;
     layer.m_lineWidth = m_trackWidth;
     layer.m_color.m_predefinedColor = PredefinedColor::None;
@@ -815,12 +834,12 @@ void KmlParser::CharData(std::string value)
       {
         m_name[kDefaultLang] = value;
       }
-      else if (currTag == "styleUrl")
+      else if (currTag == kStyleUrl)
       {
         // Bookmark draw style.
         m_predefinedColor = ExtractPlacemarkPredefinedColor(value);
 
-        // Check if url is in styleMap map.
+        // Track draw style.
         if (!GetColorForStyle(value, m_color))
         {
           // Remove leading '#' symbol.
@@ -828,6 +847,11 @@ void KmlParser::CharData(std::string value)
           if (!styleId.empty())
             GetColorForStyle(styleId, m_color);
         }
+        TrackLayer layer;
+        layer.m_lineWidth = GetTrackWidthForStyle(value);
+        layer.m_color.m_predefinedColor = PredefinedColor::None;
+        layer.m_color.m_rgba = m_color;
+        m_trackLayers.push_back(std::move(layer));
       }
       else if (currTag == "description")
       {
@@ -944,8 +968,8 @@ void KmlParser::CharData(std::string value)
           m_name[m_attrCode] = value;
         else if (prevTag == "mwm:description" && m_attrCode >= 0)
           m_description[m_attrCode] = value;
-        else if (prevTag == "mwm:featureName" && m_attrCode >= 0)
-          m_featureName[m_attrCode] = value;
+        else if (prevTag == "mwm:customName" && m_attrCode >= 0)
+          m_customName[m_attrCode] = value;
         m_attrCode = StringUtf8Multilang::kUnsupportedLanguageCode;
       }
       else if (currTag == "mwm:value")

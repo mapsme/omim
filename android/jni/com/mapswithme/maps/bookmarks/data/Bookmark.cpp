@@ -9,7 +9,7 @@ namespace
 
 Bookmark const * getBookmark(jlong bokmarkId)
 {
-  Bookmark const * pBmk = frm()->GetBookmarkManager().GetBookmark(static_cast<df::MarkID>(bokmarkId));
+  Bookmark const * pBmk = frm()->GetBookmarkManager().GetBookmark(static_cast<kml::MarkId>(bokmarkId));
   ASSERT(pBmk, ("Bookmark not found, id", bokmarkId));
   return pBmk;
 }
@@ -21,7 +21,7 @@ JNIEXPORT jstring JNICALL
 Java_com_mapswithme_maps_bookmarks_data_Bookmark_nativeGetName(
      JNIEnv * env, jobject thiz, jlong bmk)
 {
-  return jni::ToJavaString(env, getBookmark(bmk)->GetName());
+  return jni::ToJavaString(env, getBookmark(bmk)->GetPreferredName());
 }
 
 JNIEXPORT jstring JNICALL
@@ -31,35 +31,40 @@ Java_com_mapswithme_maps_bookmarks_data_Bookmark_nativeGetBookmarkDescription(
   return jni::ToJavaString(env, getBookmark(bmk)->GetDescription());
 }
 
-JNIEXPORT jstring JNICALL
-Java_com_mapswithme_maps_bookmarks_data_Bookmark_nativeGetIcon(
+JNIEXPORT jint JNICALL
+Java_com_mapswithme_maps_bookmarks_data_Bookmark_nativeGetColor(
      JNIEnv * env, jobject thiz, jlong bmk)
 {
   auto const * mark = getBookmark(bmk);
-  return jni::ToJavaString(env, mark != nullptr ? mark->GetType() : "");
+  return static_cast<jint>(mark != nullptr ? mark->GetColor()
+                                           : frm()->LastEditedBMColor());
 }
 
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_bookmarks_data_Bookmark_nativeSetBookmarkParams(
        JNIEnv * env, jobject thiz, jlong bmk,
-       jstring name, jstring type, jstring descr)
+       jstring name, jint color, jstring descr)
 {
   auto const * mark = getBookmark(bmk);
 
   // initialize new bookmark
-  BookmarkData bm(jni::ToNativeString(env, name), jni::ToNativeString(env, type));
-  bm.SetDescription(descr ? jni::ToNativeString(env, descr)
-                          : mark->GetDescription());
+  kml::BookmarkData bmData(mark->GetData());
+  auto const bmName = jni::ToNativeString(env, name);
+  if (mark->GetPreferredName() != bmName)
+    kml::SetDefaultStr(bmData.m_customName, bmName);
+  if (descr)
+    kml::SetDefaultStr(bmData.m_description, jni::ToNativeString(env, descr));
+  bmData.m_color.m_predefinedColor = static_cast<kml::PredefinedColor>(color);
 
-  g_framework->ReplaceBookmark(static_cast<df::MarkID>(bmk), bm);
+  g_framework->ReplaceBookmark(static_cast<kml::MarkId>(bmk), bmData);
 }
 
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_bookmarks_data_Bookmark_nativeChangeCategory(
        JNIEnv * env, jobject thiz, jlong oldCat, jlong newCat, jlong bmk)
 {
-  g_framework->MoveBookmark(static_cast<df::MarkID>(bmk), static_cast<df::MarkGroupID>(oldCat),
-                            static_cast<df::MarkGroupID>(newCat));
+  g_framework->MoveBookmark(static_cast<kml::MarkId>(bmk), static_cast<kml::MarkGroupId>(oldCat),
+                            static_cast<kml::MarkGroupId>(newCat));
 }
 
 JNIEXPORT jobject JNICALL

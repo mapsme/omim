@@ -14,13 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.mapswithme.maps.Framework;
+import com.mapswithme.maps.PrivateVariables;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmDialogFragment;
 import com.mapswithme.util.log.Logger;
@@ -28,14 +31,63 @@ import com.mapswithme.util.log.LoggerFactory;
 import com.mapswithme.util.statistics.Statistics;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.List;
 
 public class SocialAuthDialogFragment extends BaseMwmDialogFragment
 {
 
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = SocialAuthDialogFragment.class.getSimpleName();
+  @SuppressWarnings("NullableProblems")
   @NonNull
-  private final CallbackManager mCallbackManager = CallbackManager.Factory.create();
+  private GoogleSignInClient mGoogleSignInClient;
+  @NonNull
+  private final CallbackManager mFacebookCallbackManager = CallbackManager.Factory.create();
+  @Nullable
+  private String mPhoneAuthToken;
+  @NonNull
+  private final List<TokenHandler> mTokenHandlers = Arrays.asList(
+      new FacebookTokenHandler(), new GoogleTokenHandler(),
+      new TokenHandler()
+      {
+        @Override
+        public boolean checkToken()
+        {
+          return !TextUtils.isEmpty(mPhoneAuthToken);
+        }
+
+        @Nullable
+        @Override
+        public String getToken()
+        {
+          return mPhoneAuthToken;
+        }
+
+        @Override
+        public int getType()
+        {
+          return Framework.SOCIAL_TOKEN_PHONE;
+        }
+      });
+  @Nullable
+  private TokenHandler mCurrentTokenHandler;
+  @NonNull
+  private final View.OnClickListener mPhoneClickListener = (View v) ->
+  {
+    PhoneAuthActivity.startForResult(this);
+  };
+
+  @NonNull
+  private final View.OnClickListener mGoogleClickListener = new View.OnClickListener()
+  {
+    @Override
+    public void onClick(View v)
+    {
+      Intent intent = mGoogleSignInClient.getSignInIntent();
+      startActivity(intent);
+    }
+  };
 
   @NonNull
   @Override
@@ -46,15 +98,34 @@ public class SocialAuthDialogFragment extends BaseMwmDialogFragment
     return res;
   }
 
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(PrivateVariables.googleWebClientId())
+        .requestEmail()
+        .build();
+    mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+  }
+
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                           @Nullable Bundle savedInstanceState)
   {
     View view = inflater.inflate(R.layout.fragment_auth_passport_dialog, container, false);
-    LoginButton button = view.findViewById(R.id.loging_button);
-    button.setReadPermissions(Constants.FACEBOOK_PERMISSIONS);
-    button.setFragment(this);
-    button.registerCallback(mCallbackManager, new FBCallback(this));
+
+    View googleButton = view.findViewById(R.id.google_button);
+    googleButton.setOnClickListener(mGoogleClickListener);
+
+    LoginButton facebookButton = view.findViewById(R.id.facebook_button);
+    facebookButton.setReadPermissions(Constants.FACEBOOK_PERMISSIONS);
+    facebookButton.setFragment(this);
+    facebookButton.registerCallback(mFacebookCallbackManager, new FBCallback(this));
+
+    View phoneButton = view.findViewById(R.id.phone_button);
+    phoneButton.setOnClickListener(mPhoneClickListener);
     return view;
   }
 
@@ -62,19 +133,19 @@ public class SocialAuthDialogFragment extends BaseMwmDialogFragment
   public void onResume()
   {
     super.onResume();
-    AccessToken token = AccessToken.getCurrentAccessToken();
-    String tokenValue = null;
-    if (token != null)
-      tokenValue = token.getToken();
 
-    if (TextUtils.isEmpty(tokenValue))
+    for (TokenHandler handler : mTokenHandlers)
     {
-      Statistics.INSTANCE.trackEvent(Statistics.EventName.UGC_AUTH_SHOWN);
-      return;
+      if (handler.checkToken())
+      {
+        mCurrentTokenHandler = handler;
+        LOGGER.i(TAG, "Social token is already obtained");
+        dismiss();
+        return;
+      }
     }
 
-    LOGGER.i(TAG, "Social token is already obtained");
-    dismiss();
+    Statistics.INSTANCE.trackEvent(Statistics.EventName.UGC_AUTH_SHOWN);
   }
 
   private void sendResult(int resultCode, @Nullable String socialToken,
@@ -82,7 +153,7 @@ public class SocialAuthDialogFragment extends BaseMwmDialogFragment
                           boolean isCancel)
   {
     Fragment caller = getTargetFragment();
-    if (caller == null)
+    if (caller == null || !caller.isAdded())
       return;
 
     Intent data = new Intent();
@@ -97,17 +168,41 @@ public class SocialAuthDialogFragment extends BaseMwmDialogFragment
   public void onActivityResult(int requestCode, int resultCode, Intent data)
   {
     super.onActivityResult(requestCode, resultCode, data);
-    mCallbackManager.onActivityResult(requestCode, resultCode, data);
+
+    if (data != null && requestCode == Constants.REQ_CODE_PHONE_AUTH_RESULT)
+    {
+      mPhoneAuthToken = data.getStringExtra(Constants.EXTRA_PHONE_AUTH_TOKEN);
+      return;
+    }
+
+    mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
   }
 
   @Override
   public void onDismiss(DialogInterface dialog)
   {
-    AccessToken token = AccessToken.getCurrentAccessToken();
-    int resultCode = token == null || TextUtils.isEmpty(token.getToken()) ? Activity.RESULT_CANCELED
-                                                                          : Activity.RESULT_OK;
-    sendResult(resultCode, token != null ? token.getToken() : null,
-               Framework.SOCIAL_TOKEN_FACEBOOK, null, true);
+    int resultCode;
+    String token;
+    @Framework.AuthTokenType
+    int type;
+    if (mCurrentTokenHandler == null)
+    {
+      resultCode = Activity.RESULT_CANCELED;
+      token = null;
+      type = Framework.SOCIAL_TOKEN_INVALID;
+    }
+    else
+    {
+      resultCode = Activity.RESULT_OK;
+      token = mCurrentTokenHandler.getToken();
+      type = mCurrentTokenHandler.getType();
+      if (TextUtils.isEmpty(token))
+        throw new AssertionError("Token must be non-null while token handler is non-null!");
+      if (type == Framework.SOCIAL_TOKEN_INVALID)
+        throw new AssertionError("Token type must be non-invalid while token handler is non-null!");
+    }
+
+    sendResult(resultCode, token, type, null, true);
     super.onDismiss(dialog);
   }
 
@@ -132,27 +227,26 @@ public class SocialAuthDialogFragment extends BaseMwmDialogFragment
     public void onCancel()
     {
       LOGGER.w(TAG, "onCancel");
-      sendResult(Activity.RESULT_CANCELED, null, Framework.SOCIAL_TOKEN_FACEBOOK,
-                 null, true);
+      sendEmptyResult(Activity.RESULT_CANCELED, Framework.SOCIAL_TOKEN_FACEBOOK,
+                      null, true);
     }
 
     @Override
     public void onError(FacebookException error)
     {
       LOGGER.e(TAG, "onError", error);
-      sendResult(Activity.RESULT_CANCELED, null, Framework.SOCIAL_TOKEN_FACEBOOK,
+      sendEmptyResult(Activity.RESULT_CANCELED, Framework.SOCIAL_TOKEN_FACEBOOK,
                  error != null ? error.getMessage() : null, false);
     }
 
-    private void sendResult(int resultCode, @Nullable String socialToken,
-                            @Framework.AuthTokenType int type, @Nullable String error,
-                            boolean isCancel)
+    private void sendEmptyResult(int resultCode, @Framework.AuthTokenType int type,
+                                 @Nullable String error, boolean isCancel)
     {
       SocialAuthDialogFragment fragment = mFragmentRef.get();
       if (fragment == null)
         return;
 
-      fragment.sendResult(resultCode, socialToken, type, error, isCancel);
+      fragment.sendResult(resultCode, null, type, error, isCancel);
     }
   }
 }

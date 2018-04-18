@@ -2,6 +2,7 @@ protocol BMCView: AnyObject {
   func update(sections: [BMCSection])
   func delete(at indexPath: IndexPath)
   func insert(at indexPath: IndexPath)
+  func conversionFinished(success: Bool)
 }
 
 enum BMCShareCategoryStatus {
@@ -23,7 +24,8 @@ protocol BMCViewModel: AnyObject {
 
   func item(indexPath: IndexPath) -> BMCModel
 
-  func areAllCategoriesVisible() -> Bool
+  func areAllCategoriesInvisible() -> Bool
+
   func updateAllCategoriesVisibility(isShowAll: Bool)
   func updateCategoryVisibility(category: BMCCategory)
 
@@ -38,4 +40,6 @@ protocol BMCViewModel: AnyObject {
 
   func pendingPermission(isPending: Bool)
   func grant(permission: BMCPermission?)
+
+  func convertAllKMLIfNeeded();
 }

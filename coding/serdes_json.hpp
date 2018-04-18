@@ -61,6 +61,15 @@ public:
     });
   }
 
+  template <typename T>
+  void operator()(std::unordered_set<T> const & dest, char const * name = nullptr)
+  {
+    NewScopeWith(my::NewJSONArray(), name, [this, &dest] {
+      for (auto const & v : dest)
+        (*this)(v);
+    });
+  }
+
   template <typename R>
   void operator()(R const & r, char const * name = nullptr)
   {
@@ -156,7 +165,7 @@ public:
   template <typename T>
   void operator()(std::vector<T> & vs, char const * name = nullptr)
   {
-    json_t * context = SaveContext(name);
+    json_t * outerContext = SaveContext(name);
 
     if (!json_is_array(m_json))
       MYTHROW(my::Json::Exception, ("The field", name, "must contain a json array."));
@@ -170,7 +179,30 @@ public:
       RestoreContext(context);
     }
 
-    RestoreContext(context);
+    RestoreContext(outerContext);
+  }
+
+  template <typename T>
+  void operator()(std::unordered_set<T> & dest, char const * name = nullptr)
+  {
+    json_t * outerContext = SaveContext(name);
+
+    if (!json_is_array(m_json))
+      MYTHROW(my::Json::Exception, ("The field", name, "must contain a json array."));
+
+    T tmp;
+    size_t size = json_array_size(m_json);
+    dest.reserve(size);
+    for (size_t index = 0; index < size; ++index)
+    {
+      json_t * context = SaveContext();
+      m_json = json_array_get(context, index);
+      (*this)(tmp);
+      dest.insert(tmp);
+      RestoreContext(context);
+    }
+
+    RestoreContext(outerContext);
   }
 
   template <typename R>

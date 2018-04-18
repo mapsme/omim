@@ -11,11 +11,11 @@
 #include "geometry/point2d.hpp"
 
 #include "base/buffer_vector.hpp"
+#include "base/fifo_cache.hpp"
 
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 namespace routing
 {
@@ -89,22 +89,30 @@ public:
       std::string const & fileName, std::shared_ptr<VehicleModelInterface> vehicleModel);
 };
 
+/// \brief This class supports loading geometry of roads for routing.
+/// \note Loaded information about road geometry is kept in a fixed-size cache |m_featureIdToRoad|.
+/// On the other hand methods GetRoad() and GetPoint() return geometry information by reference.
+/// The reference may be invalid after the next call of GetRoad() or GetPoint() because the cache
+/// item which is referred by returned reference may be evicted. It's done for performance reasons.
 class Geometry final
 {
 public:
   Geometry() = default;
   explicit Geometry(std::unique_ptr<GeometryLoader> loader);
 
+  /// \note The reference returned by the method is valid until the next call of GetRoad()
+  /// of GetPoint() methods.
   RoadGeometry const & GetRoad(uint32_t featureId);
 
+  /// \note The reference returned by the method is valid until the next call of GetRoad()
+  /// of GetPoint() methods.
   m2::PointD const & GetPoint(RoadPoint const & rp)
   {
     return GetRoad(rp.GetFeatureId()).GetPoint(rp.GetPointId());
   }
 
 private:
-  // Feature id to RoadGeometry map.
-  std::unordered_map<uint32_t, RoadGeometry> m_roads;
   std::unique_ptr<GeometryLoader> m_loader;
+  std::unique_ptr<FifoCache<uint32_t, RoadGeometry>> m_featureIdToRoad;
 };
 }  // namespace routing

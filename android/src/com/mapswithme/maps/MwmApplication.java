@@ -3,8 +3,6 @@ package com.mapswithme.maps;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -25,15 +23,11 @@ import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.TrackRecorder;
 import com.mapswithme.maps.routing.RoutingController;
-import com.mapswithme.maps.settings.StoragePathManager;
 import com.mapswithme.maps.sound.TtsPlayer;
 import com.mapswithme.maps.traffic.TrafficManager;
 import com.mapswithme.maps.ugc.UGC;
 import com.mapswithme.util.Config;
-import com.mapswithme.util.Constants;
 import com.mapswithme.util.Counters;
-import com.mapswithme.util.CrashlyticsUtils;
-import com.mapswithme.util.PermissionsUtils;
 import com.mapswithme.util.SharedPropertiesUtils;
 import com.mapswithme.util.StorageUtils;
 import com.mapswithme.util.ThemeSwitcher;
@@ -47,8 +41,10 @@ import com.my.tracker.MyTracker;
 import com.my.tracker.MyTrackerParams;
 import com.pushwoosh.PushManager;
 import io.fabric.sdk.android.Fabric;
+import ru.mail.libnotify.api.NotificationFactory;
+import ru.mail.notify.core.api.BackgroundAwakeMode;
+import ru.mail.notify.core.api.NetworkSyncMode;
 
-import java.io.File;
 import java.util.List;
 
 public class MwmApplication extends Application
@@ -79,8 +75,6 @@ public class MwmApplication extends Application
         {
           if (MapManager.nativeIsAutoretryFailed())
           {
-            Notifier.cancelDownloadSuggest();
-
             Notifier.notifyDownloadFailed(item.countryId, MapManager.nativeGetName(item.countryId));
             MapManager.sendErrorStat(Statistics.EventName.DOWNLOADER_ERROR, MapManager.nativeGetError(item.countryId));
           }
@@ -174,8 +168,10 @@ public class MwmApplication extends Application
   private void initCoreIndependentSdks()
   {
     initCrashlytics();
+    initLibnotify();
     initPushWoosh();
     initAppsFlyer();
+    initTracker();
   }
 
   /**
@@ -200,8 +196,6 @@ public class MwmApplication extends Application
       return;
 
     final boolean isInstallationIdFound = setInstallationIdToCrashlytics();
-
-    initTracker();
 
     final String settingsPath = StorageUtils.getSettingsPath();
     mLogger.d(TAG, "onCreate(), setting path = " + settingsPath);
@@ -343,6 +337,22 @@ public class MwmApplication extends Application
     }
   }
 
+  private void initLibnotify()
+  {
+    if (BuildConfig.DEBUG || BuildConfig.BUILD_TYPE.equals("beta"))
+    {
+      NotificationFactory.enableDebugMode();
+      NotificationFactory.setLogReceiver(LoggerFactory.INSTANCE.createLibnotifyLogger());
+      NotificationFactory.setUncaughtExceptionListener((thread, throwable) -> {
+        Logger l = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.THIRD_PARTY);
+        l.e("LIBNOTIFY", "Thread: " + thread, throwable);
+      });
+    }
+    NotificationFactory.setNetworkSyncMode(NetworkSyncMode.WIFI_ONLY);
+    NotificationFactory.setBackgroundAwakeMode(BackgroundAwakeMode.DISABLED);
+    NotificationFactory.initialize(this);
+  }
+
   private void initAppsFlyer()
   {
     // There is no necessary to use a conversion data listener for a while.
@@ -375,7 +385,8 @@ public class MwmApplication extends Application
     MyTracker.setDebugMode(BuildConfig.DEBUG);
     MyTracker.createTracker(PrivateVariables.myTrackerKey(), this);
     final MyTrackerParams myParams = MyTracker.getTrackerParams();
-    myParams.setDefaultVendorAppPackage();
+    if (myParams != null)
+      myParams.setDefaultVendorAppPackage();
     MyTracker.initTracker();
   }
 

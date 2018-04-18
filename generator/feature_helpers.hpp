@@ -1,10 +1,11 @@
 #pragma once
 
+#include "coding/geometry_coding.hpp"
+
 #include "geometry/distance.hpp"
 #include "geometry/point2d.hpp"
 #include "geometry/simplification.hpp"
 
-#include "indexer/coding_params.hpp"
 #include "indexer/scales.hpp"
 
 #include "base/assert.hpp"
@@ -40,7 +41,7 @@ private:
   m2::PointD m_midAll;
   size_t m_locCount = 0;
   size_t m_allCount = 0;
-  uint32_t m_coordBits = serial::CodingParams().GetCoordBits();
+  uint32_t m_coordBits = serial::GeometryCodingParams().GetCoordBits();
   std::vector<CellAndOffset> m_vec;
 };
 
@@ -80,7 +81,7 @@ public:
 private:
   m2::RectD const & m_rect;
   // 5.0E-7 is near with minimal epsilon when integer points are different
-  // PointD2PointU(x, y) != PointD2PointU(x + m_eps, y + m_eps)
+  // PointDToPointU(x, y) != PointDToPointU(x + m_eps, y + m_eps)
   double m_eps = 5.0E-7;
 };
 

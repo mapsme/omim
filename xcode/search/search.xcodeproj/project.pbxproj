@@ -297,6 +297,7 @@
 		0831F251200E56100034C365 /* processor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = processor.hpp; sourceTree = "<group>"; };
 		0831F252200E56100034C365 /* data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
 		0831F253200E56100034C365 /* types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = types.hpp; sourceTree = "<group>"; };
+		1D4E79A92076190D006B7856 /* libopen_location_code.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libopen_location_code.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		342D83301D5233B3000D8AEA /* hotels_classifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hotels_classifier.cpp; sourceTree = "<group>"; };
 		342D83311D5233B3000D8AEA /* hotels_classifier.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = hotels_classifier.hpp; sourceTree = "<group>"; };
 		3441CE4B1CFC1D7000CF30D4 /* processor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = processor.cpp; sourceTree = "<group>"; };
@@ -618,6 +619,7 @@
 		34F558391DBF2E0E00A4FC11 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1D4E79A92076190D006B7856 /* libopen_location_code.a */,
 				3D0AEB041FBB102C00AD042B /* libgenerator_tests_support.a */,
 				3D0AEB051FBB102C00AD042B /* libindexer_tests_support.a */,
 				39B2B9841FB469ED00AB85A1 /* libminizip.a */,
@@ -908,6 +910,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				456E1B3F1F9A3C8E009C32E1 /* cities_boundaries_table.hpp in Headers */,
+				3441CE511CFC1D7000CF30D4 /* processor.hpp in Headers */,
 				34EEAD701E55AE4300E95575 /* token_range.hpp in Headers */,
 				3461C9A51D79949600E6E6F5 /* utils.hpp in Headers */,
 				345C8DB01D2D15A50037E3A6 /* cbv.hpp in Headers */,
@@ -980,7 +983,6 @@
 				3461C9A41D79949600E6E6F5 /* editor_delegate.hpp in Headers */,
 				349B658A1D4F21E5001798E2 /* lazy_centers_table.hpp in Headers */,
 				344A71391F3DA03200B8DDB8 /* segment_tree.hpp in Headers */,
-				3441CE511CFC1D7000CF30D4 /* processor.hpp in Headers */,
 				3441CE531CFC1D7000CF30D4 /* query_params.hpp in Headers */,
 				3DF37FAB1EA11B380012CB31 /* everywhere_search_callback.hpp in Headers */,
 				3453BD591DAF91C100380ECB /* emitter.hpp in Headers */,

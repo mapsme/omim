@@ -1,12 +1,11 @@
 #pragma once
 
 #include "indexer/city_boundary.hpp"
-#include "indexer/coding_params.hpp"
-#include "indexer/geometry_coding.hpp"
 
 #include "coding/bit_streams.hpp"
 #include "coding/elias_coder.hpp"
-#include "coding/point_to_integer.hpp"
+#include "coding/geometry_coding.hpp"
+#include "coding/pointd_to_pointu.hpp"
 #include "coding/reader.hpp"
 #include "coding/varint.hpp"
 #include "coding/write_to_sink.hpp"
@@ -40,7 +39,7 @@ public:
   struct Visitor
   {
   public:
-    Visitor(Sink & sink, serial::CodingParams const & params)
+    Visitor(Sink & sink, serial::GeometryCodingParams const & params)
       : m_sink(sink), m_params(params), m_last(params.GetBasePoint())
     {
     }
@@ -49,7 +48,7 @@ public:
 
     void operator()(m2::PointU const & p)
     {
-      WriteVarUint(m_sink, ::EncodeDelta(p, m_last));
+      WriteVarUint(m_sink, coding::EncodePointDeltaAsUint(p, m_last));
       m_last = p;
     }
 
@@ -59,7 +58,7 @@ public:
       auto const max = ToU(bbox.Max());
 
       (*this)(min);
-      EncodePositiveDelta(min, max);
+      EncodeNonNegativePointDelta(min, max);
     }
 
     void operator()(m2::CalipersBox const & cbox)
@@ -90,8 +89,8 @@ public:
       auto const us = ToU(ps);
 
       (*this)(us[0]);
-      EncodeDelta(us[0], us[1]);
-      EncodeDelta(us[0], us[3]);
+      coding::EncodePointDelta(m_sink, us[0], us[1]);
+      coding::EncodePointDelta(m_sink, us[0], us[3]);
     }
 
     void operator()(m2::DiamondBox const & dbox)
@@ -119,7 +118,10 @@ public:
     }
 
   private:
-    m2::PointU ToU(m2::PointD const & p) const { return PointD2PointU(p, m_params.GetCoordBits()); }
+    m2::PointU ToU(m2::PointD const & p) const
+    {
+      return PointDToPointU(p, m_params.GetCoordBits());
+    }
 
     std::vector<m2::PointU> ToU(std::vector<m2::PointD> const & ps) const
     {
@@ -129,23 +131,18 @@ public:
       return us;
     }
 
-    void EncodeDelta(m2::PointU const & curr, m2::PointU const & next)
-    {
-      auto const dx = base::asserted_cast<int32_t>(next.x) -
-                      base::asserted_cast<int32_t>(curr.x);
-      auto const dy = base::asserted_cast<int32_t>(next.y) -
-                      base::asserted_cast<int32_t>(curr.y);
-      WriteVarInt(m_sink, dx);
-      WriteVarInt(m_sink, dy);
-    }
-
-    void EncodePositiveDelta(m2::PointU const & curr, m2::PointU const & next)
+    // Writes the difference of two 2d vectors to |m_sink|. The vector |next|
+    // must have both its coordinates greater than or equal to those
+    // of |curr|. While this condition is unlikely when encoding polylines,
+    // this method may be useful when encoding rectangles, in particular
+    // bounding boxes of shapes.
+    void EncodeNonNegativePointDelta(m2::PointU const & curr, m2::PointU const & next)
     {
       ASSERT_GREATER_OR_EQUAL(next.x, curr.x, ());
       ASSERT_GREATER_OR_EQUAL(next.y, curr.y, ());
 
       // Paranoid checks due to possible floating point artifacts
-      // here.  In general, next.x >= curr.x and next.y >= curr.y.
+      // here. In general, next.x >= curr.x and next.y >= curr.y.
       auto const dx = next.x >= curr.x ? next.x - curr.x : 0;
       auto const dy = next.y >= curr.y ? next.y - curr.y : 0;
       WriteVarUint(m_sink, dx);
@@ -153,11 +150,11 @@ public:
     }
 
     Sink & m_sink;
-    serial::CodingParams m_params;
+    serial::GeometryCodingParams m_params;
     m2::PointU m_last;
   };
 
-  CitiesBoundariesEncoder(Sink & sink, serial::CodingParams const & params)
+  CitiesBoundariesEncoder(Sink & sink, serial::GeometryCodingParams const & params)
     : m_sink(sink), m_visitor(sink, params)
   {
   }
@@ -197,7 +194,7 @@ public:
   struct Visitor
   {
   public:
-    Visitor(Source & source, serial::CodingParams const & params)
+    Visitor(Source & source, serial::GeometryCodingParams const & params)
       : m_source(source), m_params(params), m_last(params.GetBasePoint())
     {
     }
@@ -211,7 +208,7 @@ public:
 
     void operator()(m2::PointU & p)
     {
-      p = ::DecodeDelta(ReadVarUint<uint64_t>(m_source), m_last);
+      p = coding::DecodePointDeltaFromUint(ReadVarUint<uint64_t>(m_source), m_last);
       m_last = p;
     }
 
@@ -219,7 +216,7 @@ public:
     {
       m2::PointU min;
       (*this)(min);
-      auto const max = min + DecodePositiveDelta();
+      auto const max = DecodeNonNegativePointDelta(min);
 
       bbox = m2::BoundingBox();
       bbox.Add(FromU(min));
@@ -230,8 +227,8 @@ public:
     {
       std::vector<m2::PointU> us(4);
       (*this)(us[0]);
-      us[1] = DecodeDelta(us[0]);
-      us[3] = DecodeDelta(us[0]);
+      us[1] = coding::DecodePointDelta(m_source, us[0]);
+      us[3] = coding::DecodePointDelta(m_source, us[0]);
 
       auto ps = FromU(us);
       auto const dp = ps[3] - ps[0];
@@ -264,7 +261,7 @@ public:
   private:
     m2::PointD FromU(m2::PointU const & u) const
     {
-      return PointU2PointD(u, m_params.GetCoordBits());
+      return PointUToPointD(u, m_params.GetCoordBits());
     }
 
     std::vector<m2::PointD> FromU(std::vector<m2::PointU> const & us) const
@@ -275,26 +272,22 @@ public:
       return ps;
     }
 
-    m2::PointU DecodeDelta(m2::PointU const & base)
-    {
-      auto const dx = ReadVarInt<int32_t>(m_source);
-      auto const dy = ReadVarInt<int32_t>(m_source);
-      return m2::PointU(base.x + dx, base.y + dy);
-    }
-
-    m2::PointU DecodePositiveDelta()
+    // Reads the encoded difference from |m_source| and returns the
+    // point equal to |base| + difference. It is guaranteed that
+    // both coordinates of difference are non-negative.
+    m2::PointU DecodeNonNegativePointDelta(m2::PointU const & base)
     {
       auto const dx = ReadVarUint<uint32_t>(m_source);
       auto const dy = ReadVarUint<uint32_t>(m_source);
-      return m2::PointU(dx, dy);
+      return m2::PointU(base.x + dx, base.y + dy);
     }
 
     Source & m_source;
-    serial::CodingParams const m_params;
+    serial::GeometryCodingParams const m_params;
     m2::PointU m_last;
   };
 
-  CitiesBoundariesDecoderV0(Source & source, serial::CodingParams const & params)
+  CitiesBoundariesDecoderV0(Source & source, serial::GeometryCodingParams const & params)
     : m_source(source), m_visitor(source, params)
   {
   }
@@ -396,8 +389,8 @@ struct CitiesBoundariesSerDes
     HeaderV0 const header;
     visitor(header);
 
-    serial::CodingParams const params(header.m_coordBits,
-                                      m2::PointD(MercatorBounds::minX, MercatorBounds::minY));
+    serial::GeometryCodingParams const params(
+        header.m_coordBits, m2::PointD(MercatorBounds::minX, MercatorBounds::minY));
     CitiesBoundariesEncoder<Sink> encoder(sink, params);
     encoder(boundaries);
   }
@@ -420,8 +413,8 @@ struct CitiesBoundariesSerDes
     auto const wy = MercatorBounds::maxY - MercatorBounds::minY;
     precision = std::max(wx, wy) / pow(2, header.m_coordBits);
 
-    serial::CodingParams const params(header.m_coordBits,
-                                      m2::PointD(MercatorBounds::minX, MercatorBounds::minY));
+    serial::GeometryCodingParams const params(
+        header.m_coordBits, m2::PointD(MercatorBounds::minX, MercatorBounds::minY));
     CitiesBoundariesDecoderV0<Source> decoder(source, params);
     decoder(boundaries);
   }

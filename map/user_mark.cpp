@@ -1,37 +1,24 @@
 #include "map/user_mark.hpp"
-#include "map/user_mark_layer.hpp"
-
-#include "indexer/classificator.hpp"
+#include "map/user_mark_id_storage.hpp"
 
 #include "geometry/mercator.hpp"
 
-#include "base/string_utils.hpp"
-
-#include <atomic>
-
-namespace
+UserMark::UserMark(kml::MarkId id, m2::PointD const & ptOrg, UserMark::Type type)
+  : df::UserPointMark(id == kml::kInvalidMarkId ? UserMarkIdStorage::Instance().GetNextUserMarkId(type) : id)
+  , m_ptOrg(ptOrg)
 {
-static const uint32_t kMarkIdTypeBitsCount = 4;
-
-df::MarkID GetNextUserMarkId(UserMark::Type type)
-{
-  static std::atomic<uint32_t> nextMarkId(0);
-
-  static_assert(UserMark::Type::BOOKMARK < (1 << kMarkIdTypeBitsCount), "Not enough bits for user mark type.");
-  return static_cast<df::MarkID>(
-    (++nextMarkId) | (type << static_cast<uint32_t>(sizeof(df::MarkID) * 8 - kMarkIdTypeBitsCount)));
+  ASSERT_EQUAL(GetMarkType(), type, ());
 }
-}  // namespace
 
 UserMark::UserMark(m2::PointD const & ptOrg, UserMark::Type type)
-  : df::UserPointMark(GetNextUserMarkId(type))
+  : df::UserPointMark(UserMarkIdStorage::Instance().GetNextUserMarkId(type))
   , m_ptOrg(ptOrg)
 {}
 
 // static
-UserMark::Type UserMark::GetMarkType(df::MarkID id)
+UserMark::Type UserMark::GetMarkType(kml::MarkId id)
 {
-  return static_cast<Type>(id >> (sizeof(id) * 8 - kMarkIdTypeBitsCount));
+  return UserMarkIdStorage::GetMarkType(id);
 }
 
 m2::PointD const & UserMark::GetPivot() const
@@ -96,5 +83,7 @@ string DebugPrint(UserMark::Type type)
   case UserMark::Type::ROUTING: return "ROUTING";
   case UserMark::Type::LOCAL_ADS: return "LOCAL_ADS";
   case UserMark::Type::TRANSIT: return "TRANSIT";
+  case UserMark::Type::USER_MARK_TYPES_COUNT: return "USER_MARK_TYPES_COUNT";
+  case UserMark::Type::USER_MARK_TYPES_COUNT_MAX: return "USER_MARK_TYPES_COUNT_MAX";
   }
 }

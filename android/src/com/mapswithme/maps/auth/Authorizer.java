@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.mapswithme.maps.Framework;
-import com.mapswithme.util.ConnectionState;
 
 /**
  * An authorizer is responsible for an authorization for the Mapsme server,
@@ -55,7 +54,7 @@ public class Authorizer implements AuthorizationListener
 
   public final void authorize()
   {
-    if (isAuthorized() || !ConnectionState.isConnected())
+    if (isAuthorized())
     {
       if (mCallback != null)
         mCallback.onAuthorizationFinish(true);
@@ -83,7 +82,7 @@ public class Authorizer implements AuthorizationListener
         return;
 
       @Framework.AuthTokenType
-      int type = data.getIntExtra(Constants.EXTRA_TOKEN_TYPE, -1);
+      int type = data.getIntExtra(Constants.EXTRA_TOKEN_TYPE, Framework.SOCIAL_TOKEN_INVALID);
       boolean isCancel = data.getBooleanExtra(Constants.EXTRA_IS_CANCEL, false);
       if (isCancel)
       {
@@ -102,7 +101,7 @@ public class Authorizer implements AuthorizationListener
     if (!TextUtils.isEmpty(socialToken))
     {
       @Framework.AuthTokenType
-      int type = data.getIntExtra(Constants.EXTRA_TOKEN_TYPE, -1);
+      int type = data.getIntExtra(Constants.EXTRA_TOKEN_TYPE, Framework.SOCIAL_TOKEN_INVALID);
       mIsAuthorizationInProgress = true;
       if (mCallback != null)
         mCallback.onAuthorizationStart();

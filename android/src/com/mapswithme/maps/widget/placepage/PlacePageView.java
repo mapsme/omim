@@ -68,7 +68,8 @@ import com.mapswithme.maps.gallery.impl.Factory;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.review.Review;
 import com.mapswithme.maps.routing.RoutingController;
-import com.mapswithme.maps.taxi.TaxiManager;
+import com.mapswithme.maps.search.FilterUtils;
+import com.mapswithme.maps.search.HotelsFilter;
 import com.mapswithme.maps.taxi.TaxiType;
 import com.mapswithme.maps.ugc.Impress;
 import com.mapswithme.maps.ugc.UGCController;
@@ -356,6 +357,7 @@ public class PlacePageView extends RelativeLayout
     directionFrame.setOnClickListener(this);
 
     mTvAddress = (TextView) mPreview.findViewById(R.id.tv__address);
+    mPreview.findViewById(R.id.search_hotels_btn).setOnClickListener(this);
 
     mPreviewRatingInfo = mPreview.findViewById(R.id.preview_rating_info);
     mRatingView = (RatingView) mPreviewRatingInfo.findViewById(R.id.rating_view);
@@ -470,6 +472,11 @@ public class PlacePageView extends RelativeLayout
           case PARTNER1:
             frame.setBackgroundResource(R.drawable.button_partner1);
             color = Color.BLACK;
+            break;
+
+          case PARTNER3:
+            frame.setBackgroundResource(R.drawable.button_partner3);
+            color = Color.WHITE;
             break;
 
           case BOOKMARK:
@@ -748,8 +755,8 @@ public class PlacePageView extends RelativeLayout
       mReviewAdapter.setItems(new ArrayList<>(Arrays.asList(info.mReviews)));
       //noinspection ConstantConditions
       mHotelRating.setText(mSponsored.getRating());
-      String text = getResources().getString(R.string.booking_based_on_reviews,
-                                             info.mReviewsAmount);
+      String text = getResources().getString(R.string.placepage_summary_rating_description,
+                                             String.valueOf(info.mReviewsAmount));
       mHotelRatingBase.setText(text);
       TextView previewReviewCountView = (TextView) mPreviewRatingInfo.findViewById(R.id.tv__review_count);
       previewReviewCountView.setText(text);
@@ -1364,6 +1371,7 @@ public class PlacePageView extends RelativeLayout
       UiUtils.showIf((!isRatingEmpty || !isPriceEmpty) &&
                      mSponsored.getType() == Sponsored.TYPE_BOOKING, mPreviewRatingInfo);
     }
+    UiUtils.showIf(mapObject.getHotelType() != null, mPreview, R.id.search_hotels_btn);
   }
 
   private boolean isSponsored()
@@ -1889,6 +1897,23 @@ public class PlacePageView extends RelativeLayout
               GalleryType.VIATOR, GalleryPlacement.PLACEPAGE);
         }
         break;
+      case R.id.search_hotels_btn:
+        if (mMapObject == null)
+          break;
+
+        @FilterUtils.RatingDef
+        int filterRating = mSponsored != null ? Framework.getFilterRating(mSponsored.getRating())
+                           : FilterUtils.RATING_ANY;
+        HotelsFilter filter = FilterUtils.createHotelFilter(filterRating,
+                                                            mMapObject.getPriceRate(),
+                                                            mMapObject.getHotelType());
+        getActivity().onSearchSimilarHotels(filter);
+        String provider = mSponsored != null && mSponsored.getType() == Sponsored.TYPE_BOOKING
+                          ? Statistics.ParamValue.BOOKING_COM : Statistics.ParamValue.OSM;
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_HOTEL_SEARCH_SIMILAR,
+                                       Statistics.params().add(Statistics.EventParam.PROVIDER,
+                                                               provider));
+        break;
     }
   }
 
@@ -1897,8 +1922,7 @@ public class PlacePageView extends RelativeLayout
     if (MapObject.isOfType(MapObject.BOOKMARK, mapObject))
       setMapObject(Framework.nativeDeleteBookmarkFromMapObject(), true, null);
     else
-      setMapObject(BookmarkManager.INSTANCE.addNewBookmark(BookmarkManager.formatNewBookmarkName(),
-                                                           mapObject.getLat(), mapObject.getLon()), true, null);
+      setMapObject(BookmarkManager.INSTANCE.addNewBookmark(mapObject.getLat(), mapObject.getLon()), true, null);
     post(new Runnable()
     {
       @Override
@@ -2113,6 +2137,11 @@ public class PlacePageView extends RelativeLayout
   public boolean isLeaveReviewButtonTouched(@NonNull MotionEvent event)
   {
     return mUgcController != null && mUgcController.isLeaveReviewButtonTouched(event);
+  }
+
+  public boolean isSearchSimilarHotelsButtonTouched(@NonNull MotionEvent event)
+  {
+    return UiUtils.isViewTouched(event, mPreview.findViewById(R.id.search_hotels_btn));
   }
 
   @Override

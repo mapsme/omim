@@ -72,7 +72,7 @@ public:
 
   /// Place traits
   bool IsFeature() const { return m_featureID.IsValid(); }
-  bool IsBookmark() const { return m_markGroupId != df::kInvalidMarkGroupId && m_markId != df::kInvalidMarkId; }
+  bool IsBookmark() const { return m_markGroupId != kml::kInvalidMarkGroupId && m_markId != kml::kInvalidMarkId; }
   bool IsMyPosition() const { return m_isMyPosition; }
   bool IsRoutePoint() const { return m_isRoutePoint; }
 
@@ -94,7 +94,7 @@ public:
   bool HasWifi() const { return GetInternet() == osm::Internet::Wlan; }
   /// Should be used by UI code to generate cool name for new bookmarks.
   // TODO: Tune new bookmark name. May be add address or some other data.
-  std::string FormatNewBookmarkName() const;
+  kml::LocalizableString FormatNewBookmarkName() const;
 
   /// For showing in UI
   std::string const & GetTitle() const { return m_uiTitle; };
@@ -120,14 +120,14 @@ public:
   void SetLocalizedWifiString(std::string const & str) { m_localizedWifiString = str; }
 
   /// Bookmark
-  void SetBookmarkId(df::MarkID markId);
-  df::MarkID GetBookmarkId() const { return m_markId; }
-  void SetBookmarkCategoryId(df::MarkGroupID markGroupId) { m_markGroupId = markGroupId; }
-  df::MarkGroupID GetBookmarkCategoryId() const { return m_markGroupId; }
+  void SetBookmarkId(kml::MarkId markId);
+  kml::MarkId GetBookmarkId() const { return m_markId; }
+  void SetBookmarkCategoryId(kml::MarkGroupId markGroupId) { m_markGroupId = markGroupId; }
+  kml::MarkGroupId GetBookmarkCategoryId() const { return m_markGroupId; }
   std::string const & GetBookmarkCategoryName() const { return m_bookmarkCategoryName; }
   void SetBookmarkCategoryName(std::string const & name) { m_bookmarkCategoryName = name; }
-  void SetBookmarkData(BookmarkData const & data) { m_bookmarkData = data; }
-  BookmarkData const & GetBookmarkData() const { return m_bookmarkData; }
+  void SetBookmarkData(kml::BookmarkData const & data) { m_bookmarkData = data; }
+  kml::BookmarkData const & GetBookmarkData() const { return m_bookmarkData; }
 
   /// Api
   void SetApiId(std::string const & apiId) { m_apiId = apiId; }
@@ -218,6 +218,7 @@ public:
 private:
   std::string FormatSubtitle(bool withType) const;
   void GetPrefferedNames(std::string & primaryName, std::string & secondaryName) const;
+  std::string GetBookmarkName();
   /// @returns empty string or GetStars() count of ★ symbol.
   std::string FormatStars() const;
 
@@ -243,11 +244,11 @@ private:
 
   /// Bookmarks
   /// If not invalid, bookmark is bound to this place page.
-  df::MarkID m_markId = df::kInvalidMarkId;
-  df::MarkGroupID m_markGroupId = df::kInvalidMarkGroupId;;
+  kml::MarkId m_markId = kml::kInvalidMarkId;
+  kml::MarkGroupId m_markGroupId = kml::kInvalidMarkGroupId;;
   /// Bookmark category name. Empty, if it's not bookmark;
   std::string m_bookmarkCategoryName;
-  BookmarkData m_bookmarkData;
+  kml::BookmarkData m_bookmarkData;
 
   /// Api ID passed for the selected object. It's automatically included in api url below.
   std::string m_apiId;
@@ -304,6 +305,14 @@ private:
 
 namespace rating
 {
+enum class FilterRating
+{
+  Any,
+  Good,
+  VeryGood,
+  Excellent
+};
+
 enum Impress
 {
   None,
@@ -313,6 +322,8 @@ enum Impress
   Good,
   Excellent
 };
+
+FilterRating GetFilterRating(float const rawRating);
 
 Impress GetImpress(float const rawRating);
 std::string GetRatingFormatted(float const rawRating);

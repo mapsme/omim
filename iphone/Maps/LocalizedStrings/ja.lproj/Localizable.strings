@@ -1699,8 +1699,6 @@
 /* noun */
 "search_in_table" = "一覧";
 
-"booking_based_on_reviews" = "%d 件のホテルのレビューに基づいています";
-
 "booking_show_more" = "さらに表示";
 
 "booking_reviews" = "レビュー";
@@ -2106,6 +2104,8 @@
 
 "sponsored_partner1_action" = "Cash back";
 
+"sponsored_partner3_action" = "Coupon";
+
 "whats_new_ugc_title" = "評価とレビュー";
 
 "whats_new_ugc_message" = "オフライン時にも評価とレビューを残せるようになりました！変更箇所を確認できるよう、忘れずに地図を更新してください。";
@@ -2255,3 +2255,17 @@
 "notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
 
 "profile_osm" = "Profile OSM";
+
+"place_page_search_similar_hotel" = "Search similar hotels";
+
+"bookmarks_detect_title" = "New files detected";
+
+"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
+
+"button_convert" = "Convert";
+
+"bookmarks_convert_error_title" = "Error";
+
+"bookmarks_convert_error_message" = "Some files were not converted.";
+
+"converting" = "Converting...";

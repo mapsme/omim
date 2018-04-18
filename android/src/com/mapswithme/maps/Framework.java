@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Size;
 import android.support.annotation.UiThread;
+import android.text.TextUtils;
 
 import com.mapswithme.maps.ads.Banner;
 import com.mapswithme.maps.ads.LocalAdInfo;
@@ -21,7 +22,10 @@ import com.mapswithme.maps.routing.RouteMarkData;
 import com.mapswithme.maps.routing.RoutePointInfo;
 import com.mapswithme.maps.routing.RoutingInfo;
 import com.mapswithme.maps.routing.TransitRouteInfo;
+import com.mapswithme.maps.search.FilterUtils;
 import com.mapswithme.util.Constants;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -32,6 +36,9 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class Framework
 {
+  private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
+  private static final String TAG = Framework.class.getSimpleName();
+
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({MAP_STYLE_CLEAR, MAP_STYLE_DARK, MAP_STYLE_VEHICLE_CLEAR, MAP_STYLE_VEHICLE_DARK})
 
@@ -81,10 +88,11 @@ public class Framework
   public static final int ROUTE_REBUILD_AFTER_POINTS_LOADING = 0;
 
   @Retention(RetentionPolicy.SOURCE)
-  @IntDef({ SOCIAL_TOKEN_FACEBOOK, SOCIAL_TOKEN_GOOGLE, SOCIAL_TOKEN_PHONE, TOKEN_MAPSME })
+  @IntDef({ SOCIAL_TOKEN_INVALID, SOCIAL_TOKEN_FACEBOOK, SOCIAL_TOKEN_GOOGLE,
+            SOCIAL_TOKEN_PHONE, TOKEN_MAPSME })
   public @interface AuthTokenType
   {}
-
+  public static final int SOCIAL_TOKEN_INVALID = -1;
   public static final int SOCIAL_TOKEN_FACEBOOK = 0;
   public static final int SOCIAL_TOKEN_GOOGLE = 1;
   public static final int SOCIAL_TOKEN_PHONE = 2;
@@ -171,6 +179,25 @@ public class Framework
     double lon = location != null ? location.getLongitude() : 0;
     int accuracy = location != null ? (int) location.getAccuracy() : 0;
     nativeLogLocalAdsEvent(type, lat, lon, accuracy);
+  }
+
+  @FilterUtils.RatingDef
+  public static int getFilterRating(@Nullable String ratingString)
+  {
+    if (TextUtils.isEmpty(ratingString))
+      return FilterUtils.RATING_ANY;
+
+    try
+    {
+      float rawRating = Float.valueOf(ratingString);
+      return Framework.nativeGetFilterRating(rawRating);
+    }
+    catch (NumberFormatException e)
+    {
+      LOGGER.w(TAG, "Rating string is not valid: " + ratingString);
+    }
+
+    return FilterUtils.RATING_ANY;
   }
 
   public static native void nativeShowTrackRect(long track);
@@ -384,6 +411,9 @@ public class Framework
                                                    @AuthTokenType int socialTokenType,
                                                    @NonNull AuthorizationListener listener);
   public static native boolean nativeIsUserAuthenticated();
+  public static native String nativeGetPhoneAuthUrl(@NonNull String redirectUrl);
 
   public static native void nativeShowFeatureByLatLon(double lat, double lon);
+
+  private static native int nativeGetFilterRating(float rawRating);
 }

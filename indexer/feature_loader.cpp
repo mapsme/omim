@@ -1,10 +1,8 @@
+#include "indexer/feature_loader.hpp"
+
 #include "indexer/classificator.hpp"
 #include "indexer/feature.hpp"
-#include "indexer/feature_loader.hpp"
-#include "indexer/geometry_serialization.hpp"
 #include "indexer/scales.hpp"
-
-#include "geometry/pointu_to_uint64.hpp"
 
 #include "coding/byte_stream.hpp"
 #include "coding/dd_vector.hpp"
@@ -19,7 +17,6 @@
 
 namespace feature
 {
-
 uint8_t LoaderCurrent::GetHeader()
 {
   return Header();
@@ -47,7 +44,7 @@ void LoaderCurrent::ParseCommon()
 
   if (m_pF->GetFeatureType() == GEOM_POINT)
   {
-    m_pF->m_center = serial::LoadPoint(source, GetDefCodingParams());
+    m_pF->m_center = serial::LoadPoint(source, GetDefGeometryCodingParams());
     m_pF->m_limitRect.Add(m_pF->m_center);
   }
 
@@ -124,7 +121,7 @@ void LoaderCurrent::ParseHeader2()
 
   ArrayByteSource src(bitSource.RoundPtr());
 
-  serial::CodingParams const & cp = GetDefCodingParams();
+  serial::GeometryCodingParams const & cp = GetDefGeometryCodingParams();
 
   if (typeMask == HEADER_GEOM_LINE)
   {
@@ -188,7 +185,7 @@ uint32_t LoaderCurrent::ParseGeometry(int scale)
         ReaderSource<FilesContainerR::TReader> src(m_Info.GetGeometryReader(ind));
         src.Skip(m_ptsOffsets[ind]);
 
-        serial::CodingParams cp = GetCodingParams(ind);
+        serial::GeometryCodingParams cp = GetGeometryCodingParams(ind);
         cp.SetBasePoint(m_pF->m_points[0]);
         serial::LoadOuterPath(src, cp, m_pF->m_points);
 
@@ -235,7 +232,7 @@ uint32_t LoaderCurrent::ParseTriangles(int scale)
       {
         ReaderSource<FilesContainerR::TReader> src(m_Info.GetTrianglesReader(ind));
         src.Skip(m_trgOffsets[ind]);
-        serial::LoadOuterTriangles(src, GetCodingParams(ind), m_pF->m_triangles);
+        serial::LoadOuterTriangles(src, GetGeometryCodingParams(ind), m_pF->m_triangles);
 
         sz = static_cast<uint32_t>(src.Pos() - m_trgOffsets[ind]);
       }
@@ -346,5 +343,4 @@ int LoaderCurrent::GetScaleIndex(int scale, offsets_t const & offsets) const
     return -1;
   }
 }
-
-}
+}  // namespace feature

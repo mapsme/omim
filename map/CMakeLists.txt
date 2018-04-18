@@ -22,6 +22,8 @@ set(
   booking_filter_cache.hpp
   bookmark.cpp
   bookmark.hpp
+  bookmark_helpers.cpp
+  bookmark_helpers.hpp
   bookmark_manager.cpp
   bookmark_manager.hpp
   bookmarks_search_params.hpp
@@ -88,6 +90,8 @@ set(
   transit/transit_reader.hpp
   user.cpp
   user.hpp
+  user_mark_id_storage.cpp
+  user_mark_id_storage.hpp
   user_mark_layer.cpp
   user_mark_layer.hpp
   user_mark.cpp

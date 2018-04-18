@@ -40,6 +40,11 @@ final class BMCViewController: MWMViewController {
     viewModel = BMCDefaultViewModel()
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    viewModel.convertAllKMLIfNeeded()
+  }
+
   private func updateCategoryName(category: BMCCategory?) {
     let isNewCategory = (category == nil)
     alertController.presentCreateBookmarkCategoryAlert(withMaxCharacterNum: viewModel.maxCategoryNameLength,
@@ -64,8 +69,7 @@ final class BMCViewController: MWMViewController {
   private func shareCategory(category: BMCCategory, anchor: UIView) {
     let shareOnSuccess = { [viewModel] (url: URL) in
       typealias AVC = MWMActivityViewController
-      let fileName = (url.lastPathComponent as NSString).deletingPathExtension
-      let message = String(coreFormat: L("share_bookmarks_email_body"), arguments: [fileName])
+      let message = L("share_bookmarks_email_body")
       let shareController = AVC.share(for: url, message: message) { [viewModel] _, _, _, _ in
         viewModel?.finishShareCategory()
       }
@@ -151,6 +155,14 @@ extension BMCViewController: BMCView {
   func delete(at indexPath: IndexPath) {
     tableView.deleteRows(at: [indexPath], with: .automatic)
   }
+
+  func conversionFinished(success: Bool) {
+    MWMAlertViewController.activeAlert().closeAlert {
+      if !success {
+        MWMAlertViewController.activeAlert().presentBookmarkConversionErrorAlert()
+      }
+    }
+  }
 }
 
 extension BMCViewController: UITableViewDataSource {
@@ -226,7 +238,7 @@ extension BMCViewController: UITableViewDelegate {
     switch viewModel.sectionType(section: section) {
     case .permissions: return permissionsHeader
     case .categories:
-      categoriesHeader.isShowAll = !viewModel.areAllCategoriesVisible()
+      categoriesHeader.isShowAll = viewModel.areAllCategoriesInvisible()
       return categoriesHeader
     case .actions: return actionsHeader
     case .notifications: return notificationsHeader
@@ -268,7 +280,7 @@ extension BMCViewController: BMCPermissionsCellDelegate {
 extension BMCViewController: BMCCategoryCellDelegate {
   func visibilityAction(category: BMCCategory) {
     viewModel.updateCategoryVisibility(category: category)
-    categoriesHeader.isShowAll = !viewModel.areAllCategoriesVisible()
+    categoriesHeader.isShowAll = viewModel.areAllCategoriesInvisible()
   }
 
   func moreAction(category: BMCCategory, anchor: UIView) {
@@ -286,6 +298,6 @@ extension BMCViewController: BMCPermissionsHeaderDelegate {
 extension BMCViewController: BMCCategoriesHeaderDelegate {
   func visibilityAction(isShowAll: Bool) {
     viewModel.updateAllCategoriesVisibility(isShowAll: isShowAll)
-    categoriesHeader.isShowAll = !viewModel.areAllCategoriesVisible()
+    categoriesHeader.isShowAll = viewModel.areAllCategoriesInvisible()
   }
 }

@@ -6,6 +6,7 @@
 #include <chrono>
 #include <limits>
 #include <map>
+#include <set>
 #include <sstream>
 #include <vector>
 #include <unordered_map>
@@ -17,13 +18,23 @@ using LocalizableString = std::unordered_map<int8_t, std::string>;
 using LocalizableStringSubIndex = std::map<int8_t, uint32_t>;
 using LocalizableStringIndex = std::vector<LocalizableStringSubIndex>;
 using Properties = std::map<std::string, std::string>;
-using CategoryId = uint64_t;
-using BookmarkId = uint64_t;
+
+using MarkGroupId = uint64_t;
+using MarkId = uint64_t;
 using TrackId = uint64_t;
 using LocalId = uint8_t;
 
-CategoryId constexpr kInvalidCategoryId = std::numeric_limits<CategoryId>::max();
-BookmarkId constexpr kInvalidBookmarkId = std::numeric_limits<BookmarkId>::max();
+using MarkIdCollection = std::vector<MarkId>;
+using TrackIdCollection = std::vector<TrackId>;
+
+using MarkIdSet = std::set<MarkId, std::greater<MarkId>>;
+using TrackIdSet = std::set<TrackId>;
+
+using GroupIdCollection = std::vector<MarkGroupId>;
+using GroupIdSet = std::set<MarkGroupId>;
+
+MarkGroupId constexpr kInvalidMarkGroupId = std::numeric_limits<MarkGroupId>::max();
+MarkId constexpr kInvalidMarkId = std::numeric_limits<MarkId>::max();
 TrackId constexpr kInvalidTrackId = std::numeric_limits<TrackId>::max();
 
 inline uint64_t ToSecondsSinceEpoch(Timestamp const & time)
@@ -61,10 +72,21 @@ inline bool IsEqual(Timestamp const & ts1, Timestamp const & ts2)
 uint32_t constexpr kEmptyStringId = 0;
 double constexpr kMinLineWidth = 0.0;
 double constexpr kMaxLineWidth = 100.0;
-uint32_t constexpr kLineWidthBits = 30;
 double constexpr kMinRating = 0.0;
 double constexpr kMaxRating = 10.0;
-uint32_t constexpr kRatingBits = 30;
+uint8_t constexpr kDoubleBits = 30;
+
+int8_t constexpr kDefaultLangCode = 0;
+
+inline std::string GetDefaultStr(LocalizableString const & str)
+{
+  return (str.empty() || str.find(kDefaultLangCode) == str.end()) ? "" : str.at(kDefaultLangCode);
+}
+
+inline void SetDefaultStr(LocalizableString & localizableStr, std::string const & str)
+{
+  localizableStr[kDefaultLangCode] = str;
+}
 
 #define DECLARE_COLLECTABLE(IndexType, ...)            \
   IndexType m_collectionIndex;                         \

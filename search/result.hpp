@@ -44,11 +44,15 @@ public:
     std::string m_cuisine;
 
     // Following fields are used for hotels only.
+    int m_hotelPricing = 0;
     std::string m_hotelApproximatePricing;
     float m_hotelRating = kInvalidRatingValue;
     int m_stars = 0;
     bool m_isSponsoredHotel = false;
     bool m_isHotel = false;
+
+    // TODO: Remove after FC2018 finishing.
+    bool m_isFootballCupObject = false;
 
     // Valid for any result.
     osm::YesNoUnknown m_isOpenNow = osm::Unknown;

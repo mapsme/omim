@@ -1008,7 +1008,6 @@
 	<string name="search_no_results_reset_button">Reset Filter</string>
 	<!-- noun -->
 	<string name="search_in_table">List</string>
-	<string name="booking_based_on_reviews">Based on %d hotel reviews</string>
 	<string name="booking_show_more">Show more</string>
 	<string name="booking_reviews">Reviews</string>
 	<string name="booking_hotel">Hotel</string>
@@ -1215,7 +1214,7 @@
 	<string name="placepage_translate_button">Translate</string>
 	<string name="placepage_show_original_button">Show original</string>
 	<string name="placepage_more_reviews_booking_button">More reviews on Booking.com</string>
-	<string name="profile_authorization_title">Sing in with</string>
+	<string name="profile_authorization_title">Sign in with</string>
 	<string name="profile_authorization_message">Easy sign in without login and password in a couple of seconds</string>
 	<string name="profile_authorization_error">Oops, there was an error. Try to sign in again.</string>
 	<string name="service">Service</string>
@@ -1227,6 +1226,7 @@
 	<string name="equipment">Equipment</string>
 	<string name="quality">Quality</string>
 	<string name="sponsored_partner1_action">Cash back</string>
+	<string name="sponsored_partner3_action">Coupon</string>
 	<string name="whats_new_ugc_title">Ratings and reviews</string>
 	<string name="whats_new_ugc_message">You can now leave ratings and reviews even offline! Don\'t forget to update your maps so you can see the changes.</string>
 	<string name="dialog_error_storage_title">Storage access problem</string>
@@ -1302,4 +1302,11 @@
 	<string name="notification_unsent_reviews_title"> You have several unsent reviews</string>
 	<string name="notification_unsent_reviews_message"> Please sign in to share reviews with other travelers</string>
 	<string name="profile_osm">Profile OSM</string>
+	<string name="place_page_search_similar_hotel">Search similar hotels</string>
+	<string name="bookmarks_detect_title">New files detected</string>
+	<string name="bookmarks_detect_message">%d files were not imported. You can see them after conversion.</string>
+	<string name="button_convert">Convert</string>
+	<string name="bookmarks_convert_error_title">Error</string>
+	<string name="bookmarks_convert_error_message">Some files were not converted.</string>
+	<string name="converting">Converting...</string>
 </resources>

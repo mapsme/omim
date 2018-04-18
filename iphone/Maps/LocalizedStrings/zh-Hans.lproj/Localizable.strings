@@ -1699,8 +1699,6 @@
 /* noun */
 "search_in_table" = "列表";
 
-"booking_based_on_reviews" = "根据 %d 条酒店点评";
-
 "booking_show_more" = "显示更多";
 
 "booking_reviews" = "点评";
@@ -2106,6 +2104,8 @@
 
 "sponsored_partner1_action" = "Cash back";
 
+"sponsored_partner3_action" = "Coupon";
+
 "whats_new_ugc_title" = "评分和评价";
 
 "whats_new_ugc_message" = "现在，即使离线您也可以留下评分和评价！记得更新您的地图，这样您可以看到更改。";
@@ -2255,3 +2255,17 @@
 "notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
 
 "profile_osm" = "Profile OSM";
+
+"place_page_search_similar_hotel" = "Search similar hotels";
+
+"bookmarks_detect_title" = "New files detected";
+
+"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
+
+"button_convert" = "Convert";
+
+"bookmarks_convert_error_title" = "Error";
+
+"bookmarks_convert_error_message" = "Some files were not converted.";
+
+"converting" = "Converting...";

@@ -32,6 +32,7 @@ public:
 
   enum Type: uint32_t
   {
+    BOOKMARK, // Should always be the first one
     API,
     SEARCH,
     STATIC,
@@ -39,15 +40,17 @@ public:
     TRANSIT,
     LOCAL_ADS,
     DEBUG_MARK,
-    BOOKMARK, // Should always be the last one
+    USER_MARK_TYPES_COUNT,
+    USER_MARK_TYPES_COUNT_MAX = 1000,
   };
 
+  UserMark(kml::MarkId id, m2::PointD const & ptOrg, UserMark::Type type);
   UserMark(m2::PointD const & ptOrg, UserMark::Type type);
 
-  static Type GetMarkType(df::MarkID id);
+  static Type GetMarkType(kml::MarkId id);
 
   Type GetMarkType() const { return GetMarkType(GetId()); }
-  df::MarkGroupID GetGroupId() const override { return GetMarkType(); }
+  kml::MarkGroupId GetGroupId() const override { return GetMarkType(); }
 
   // df::UserPointMark overrides.
   bool IsDirty() const override { return m_isDirty; }
@@ -60,6 +63,7 @@ public:
   df::RenderState::DepthLayer GetDepthLayer() const override;
   drape_ptr<TitlesInfo> GetTitleDecl() const override { return nullptr; }
   drape_ptr<ColoredSymbolZoomInfo> GetColoredSymbols() const override { return nullptr; }
+  drape_ptr<SymbolNameZoomInfo> GetBadgeNames() const override { return nullptr; }
   drape_ptr<SymbolSizes> GetSymbolSizes() const override { return nullptr; }
   drape_ptr<SymbolOffsets> GetSymbolOffsets() const override { return nullptr; }
   uint16_t GetPriority() const override { return static_cast<uint16_t >(Priority::Default); }
@@ -70,7 +74,7 @@ public:
   int GetMinTitleZoom() const override { return GetMinZoom(); }
   FeatureID GetFeatureID() const override { return FeatureID(); }
   bool HasCreationAnimation() const override { return false; }
-  df::ColorConstant GetColor() const override { return {}; }
+  df::ColorConstant GetColorConstant() const override { return {}; }
 
   ms::LatLon GetLatLon() const;
 

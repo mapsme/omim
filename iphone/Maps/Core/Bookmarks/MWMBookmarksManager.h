@@ -32,6 +32,11 @@
 + (BOOL)isCloudEnabled;
 + (void)setCloudEnabled:(BOOL)enabled;
 
++ (NSUInteger)filesCountForConversion;
++ (void)convertAll;
+
++ (BOOL)areAllCategoriesInvisible;
+
 - (instancetype)init __attribute__((unavailable("call +manager instead")));
 - (instancetype)copy __attribute__((unavailable("call +manager instead")));
 - (instancetype)copyWithZone:(NSZone *)zone __attribute__((unavailable("call +manager instead")));

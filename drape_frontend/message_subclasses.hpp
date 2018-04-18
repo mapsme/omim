@@ -207,32 +207,32 @@ private:
 class ClearUserMarkGroupMessage : public Message
 {
 public:
-  ClearUserMarkGroupMessage(MarkGroupID groupId)
+  ClearUserMarkGroupMessage(kml::MarkGroupId groupId)
     : m_groupId(groupId)
   {}
 
   Type GetType() const override { return Message::ClearUserMarkGroup; }
 
-  MarkGroupID GetGroupId() const { return m_groupId; }
+  kml::MarkGroupId GetGroupId() const { return m_groupId; }
 
 private:
-  MarkGroupID m_groupId;
+  kml::MarkGroupId m_groupId;
 };
 
 class ChangeUserMarkGroupVisibilityMessage : public Message
 {
 public:
-  ChangeUserMarkGroupVisibilityMessage(MarkGroupID groupId, bool isVisible)
+  ChangeUserMarkGroupVisibilityMessage(kml::MarkGroupId groupId, bool isVisible)
     : m_groupId(groupId)
     , m_isVisible(isVisible) {}
 
   Type GetType() const override { return Message::ChangeUserMarkGroupVisibility; }
 
-  MarkGroupID GetGroupId() const { return m_groupId; }
+  kml::MarkGroupId GetGroupId() const { return m_groupId; }
   bool IsVisible() const { return m_isVisible; }
 
 private:
-  MarkGroupID m_groupId;
+  kml::MarkGroupId m_groupId;
   bool m_isVisible;
 };
 
@@ -266,7 +266,7 @@ private:
 class UpdateUserMarkGroupMessage : public Message
 {
 public:
-  UpdateUserMarkGroupMessage(MarkGroupID groupId,
+  UpdateUserMarkGroupMessage(kml::MarkGroupId groupId,
                              drape_ptr<IDCollections> && ids)
     : m_groupId(groupId)
     , m_ids(std::move(ids))
@@ -274,11 +274,11 @@ public:
 
   Type GetType() const override { return Message::UpdateUserMarkGroup; }
 
-  MarkGroupID GetGroupId() const { return m_groupId; }
+  kml::MarkGroupId GetGroupId() const { return m_groupId; }
   drape_ptr<IDCollections> AcceptIds() { return std::move(m_ids); }
 
 private:
-  MarkGroupID m_groupId;
+  kml::MarkGroupId m_groupId;
   drape_ptr<IDCollections> m_ids;
 };
 
@@ -908,27 +908,28 @@ private:
 class RequestSymbolsSizeMessage : public Message
 {
 public:
-  using TRequestSymbolsSizeCallback = function<void(vector<m2::PointF> const &)>;
+  using Sizes = std::map<std::string, m2::PointF>;
+  using RequestSymbolsSizeCallback = std::function<void(Sizes &&)>;
 
-  RequestSymbolsSizeMessage(vector<string> const & symbols,
-                            TRequestSymbolsSizeCallback const & callback)
+  RequestSymbolsSizeMessage(std::vector<std::string> const & symbols,
+                            RequestSymbolsSizeCallback const & callback)
     : m_symbols(symbols)
     , m_callback(callback)
   {}
 
   Type GetType() const override { return Message::RequestSymbolsSize; }
 
-  vector<string> const & GetSymbols() const { return m_symbols; }
+  std::vector<std::string> const & GetSymbols() const { return m_symbols; }
 
-  void InvokeCallback(vector<m2::PointF> const & sizes)
+  void InvokeCallback(Sizes && sizes)
   {
-    if (m_callback != nullptr)
-      m_callback(sizes);
+    if (m_callback)
+      m_callback(std::move(sizes));
   }
 
 private:
-  vector<string> m_symbols;
-  TRequestSymbolsSizeCallback m_callback;
+  std::vector<string> m_symbols;
+  RequestSymbolsSizeCallback m_callback;
 };
 
 class EnableTrafficMessage : public Message

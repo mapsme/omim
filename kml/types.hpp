@@ -103,7 +103,7 @@ struct BookmarkData
                                   visitor(m_name, "name"),
                                   visitor(m_description, "description"),
                                   visitor(m_featureTypes, "featureTypes"),
-                                  visitor(m_featureName, "featureName"),
+                                  visitor(m_customName, "customName"),
                                   visitor(m_color, "color"),
                                   visitor(m_icon, "icon"),
                                   visitor(m_viewportScale, "viewportScale"),
@@ -112,7 +112,7 @@ struct BookmarkData
                                   visitor(m_boundTracks, "boundTracks"),
                                   VISITOR_COLLECTABLE)
 
-  DECLARE_COLLECTABLE(LocalizableStringIndex, m_name, m_description, m_featureName)
+  DECLARE_COLLECTABLE(LocalizableStringIndex, m_name, m_description, m_customName)
 
   bool operator==(BookmarkData const & data) const
   {
@@ -124,22 +124,22 @@ struct BookmarkData
            IsEqual(m_timestamp, data.m_timestamp) &&
            m_point.EqualDxDy(data.m_point, kEps) &&
            m_featureTypes == data.m_featureTypes &&
-           m_featureName == data.m_featureName &&
+           m_customName == data.m_customName &&
            m_boundTracks == data.m_boundTracks;
   }
 
   bool operator!=(BookmarkData const & data) const { return !operator==(data); }
 
   // Unique id.
-  BookmarkId m_id = kInvalidBookmarkId;
+  MarkId m_id = kInvalidMarkId;
   // Bookmark's name.
   LocalizableString m_name;
   // Bookmark's description.
   LocalizableString m_description;
   // Bound feature's types.
   std::vector<uint32_t> m_featureTypes;
-  // Bound feature's name.
-  LocalizableString m_featureName;
+  // Custom bookmark's name.
+  LocalizableString m_customName;
   // Bookmark's color.
   ColorData m_color;
   // Bookmark's icon.
@@ -250,7 +250,7 @@ struct CategoryData
   bool operator!=(CategoryData const & data) const { return !operator==(data); }
 
   // Unique id.
-  CategoryId m_id = kInvalidCategoryId;
+  MarkGroupId m_id = kInvalidMarkGroupId;
   // Category's name.
   LocalizableString m_name;
   // Image URL.
@@ -297,6 +297,8 @@ struct FileData
 
   bool operator!=(FileData const & data) const { return !operator==(data); }
 
+  // Device id.
+  std::string m_deviceId;
   // Category's data.
   CategoryData m_categoryData;
   // Bookmarks collection.

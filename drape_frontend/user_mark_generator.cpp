@@ -12,23 +12,22 @@
 
 namespace df
 {
-
 std::vector<int> const kLineIndexingLevels = {1, 7, 11};
 
 UserMarkGenerator::UserMarkGenerator(TFlushFn const & flushFn)
   : m_flushFn(flushFn)
 {
-  ASSERT(m_flushFn != nullptr, ());
+  ASSERT(m_flushFn, ());
 }
 
-void UserMarkGenerator::RemoveGroup(MarkGroupID groupId)
+void UserMarkGenerator::RemoveGroup(kml::MarkGroupId groupId)
 {
   m_groupsVisibility.erase(groupId);
   m_groups.erase(groupId);
   UpdateIndex(groupId);
 }
 
-void UserMarkGenerator::SetGroup(MarkGroupID groupId, drape_ptr<IDCollections> && ids)
+void UserMarkGenerator::SetGroup(kml::MarkGroupId groupId, drape_ptr<IDCollections> && ids)
 {
   m_groups[groupId] = std::move(ids);
   UpdateIndex(groupId);
@@ -49,12 +48,12 @@ void UserMarkGenerator::SetCreatedUserMarks(drape_ptr<IDCollections> && ids)
   if (ids == nullptr)
     return;
   for (auto const & id : ids->m_markIds)
-    m_marks[id].get()->m_justCreated = true;
+    m_marks[id]->m_justCreated = true;
 }
 
 void UserMarkGenerator::SetUserMarks(drape_ptr<UserMarksRenderCollection> && marks)
 {
-  for (auto & pair : *marks.get())
+  for (auto & pair : *marks)
   {
     auto it = m_marks.find(pair.first);
     if (it != m_marks.end())
@@ -66,7 +65,7 @@ void UserMarkGenerator::SetUserMarks(drape_ptr<UserMarksRenderCollection> && mar
 
 void UserMarkGenerator::SetUserLines(drape_ptr<UserLinesRenderCollection> && lines)
 {
-  for (auto & pair : *lines.get())
+  for (auto & pair : *lines)
   {
     auto it = m_lines.find(pair.first);
     if (it != m_lines.end())
@@ -76,8 +75,7 @@ void UserMarkGenerator::SetUserLines(drape_ptr<UserLinesRenderCollection> && lin
   }
 }
 
-
-void UserMarkGenerator::UpdateIndex(MarkGroupID groupId)
+void UserMarkGenerator::UpdateIndex(kml::MarkGroupId groupId)
 {
   for (auto & tileGroups : m_index)
   {
@@ -93,11 +91,11 @@ void UserMarkGenerator::UpdateIndex(MarkGroupID groupId)
   if (groupIt == m_groups.end())
     return;
 
-  IDCollections & idCollection = *groupIt->second.get();
+  IDCollections & idCollection = *groupIt->second;
 
   for (auto markId : idCollection.m_markIds)
   {
-    UserMarkRenderParams const & params = *m_marks[markId].get();
+    UserMarkRenderParams const & params = *m_marks[markId];
     for (int zoomLevel = params.m_minZoom; zoomLevel <= scales::GetUpperScale(); ++zoomLevel)
     {
       TileKey const tileKey = GetTileKeyByPoint(params.m_pivot, zoomLevel);
@@ -108,7 +106,7 @@ void UserMarkGenerator::UpdateIndex(MarkGroupID groupId)
 
   for (auto lineId : idCollection.m_lineIds)
   {
-    UserLineRenderParams const & params = *m_lines[lineId].get();
+    UserLineRenderParams const & params = *m_lines[lineId];
 
     int const startZoom = GetNearestLineIndexZoom(params.m_minZoom);
     for (int zoomLevel : kLineIndexingLevels)
@@ -136,7 +134,7 @@ void UserMarkGenerator::UpdateIndex(MarkGroupID groupId)
   CleanIndex();
 }
 
-ref_ptr<IDCollections> UserMarkGenerator::GetIdCollection(TileKey const & tileKey, MarkGroupID groupId)
+ref_ptr<IDCollections> UserMarkGenerator::GetIdCollection(TileKey const & tileKey, kml::MarkGroupId groupId)
 {
   ref_ptr<MarksIDGroups> tileGroups;
   auto itTileGroups = m_index.find(tileKey);
@@ -189,7 +187,7 @@ void UserMarkGenerator::CleanIndex()
   }
 }
 
-void UserMarkGenerator::SetGroupVisibility(MarkGroupID groupId, bool isVisible)
+void UserMarkGenerator::SetGroupVisibility(kml::MarkGroupId groupId, bool isVisible)
 {
   if (isVisible)
     m_groupsVisibility.insert(groupId);
@@ -228,7 +226,7 @@ void UserMarkGenerator::GenerateUserMarksGeometry(TileKey const & tileKey, ref_p
   if (marksGroups == nullptr && linesGroups == nullptr)
     return;
 
-  uint32_t const kMaxSize = 65000;
+  uint32_t constexpr kMaxSize = 65000;
   dp::Batcher batcher(kMaxSize, kMaxSize);
   TUserMarksRenderData renderData;
   {
@@ -251,7 +249,7 @@ void UserMarkGenerator::CacheUserLines(TileKey const & tileKey, MarksIDGroups co
 {
   for (auto & groupPair : indexesGroups)
   {
-    MarkGroupID groupId = groupPair.first;
+    kml::MarkGroupId groupId = groupPair.first;
     if (m_groupsVisibility.find(groupId) == m_groupsVisibility.end())
       continue;
 
@@ -264,7 +262,7 @@ void UserMarkGenerator::CacheUserMarks(TileKey const & tileKey, MarksIDGroups co
 {
   for (auto & groupPair : indexesGroups)
   {
-    MarkGroupID groupId = groupPair.first;
+    kml::MarkGroupId groupId = groupPair.first;
     if (m_groupsVisibility.find(groupId) == m_groupsVisibility.end())
       continue;
     df::CacheUserMarks(tileKey, textures, groupPair.second->m_markIds, m_marks, batcher);
@@ -283,5 +281,4 @@ int UserMarkGenerator::GetNearestLineIndexZoom(int zoom) const
   }
   return nearestZoom;
 }
-
 }  // namespace df
