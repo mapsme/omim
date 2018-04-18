@@ -2,6 +2,7 @@ package com.mapswithme.maps.bookmarks;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -11,13 +12,12 @@ import android.view.ViewGroup;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmDialogFragment;
-import com.mapswithme.maps.bookmarks.data.Bookmark;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.dialog.EditTextDialogFragment;
 import com.mapswithme.util.statistics.Statistics;
 
 public class ChooseBookmarkCategoryFragment extends BaseMwmDialogFragment
-                                         implements EditTextDialogFragment.OnTextSaveListener,
+                                         implements EditTextDialogFragment.EditTextDialogInterface,
                                                     ChooseBookmarkCategoryAdapter.CategoryListener
 {
   public static final String CATEGORY_POSITION = "ExtraCategoryPosition";
@@ -74,13 +74,22 @@ public class ChooseBookmarkCategoryFragment extends BaseMwmDialogFragment
     super.onAttach(activity);
   }
 
+  @NonNull
   @Override
-  public void onSaveText(@Nullable String text)
+  public EditTextDialogFragment.OnTextSaveListener getSaveTextListener()
   {
-    createCategory(text);
+    return this::createCategory;
   }
 
-  private void createCategory(String name)
+  @NonNull
+  @Override
+  public EditTextDialogFragment.Validator getValidator()
+  {
+    return new CategoryValidator();
+  }
+
+
+  private void createCategory(@NonNull String name)
   {
     final long categoryId = BookmarkManager.INSTANCE.createCategory(name);
     final int categoryPosition = BookmarkManager.INSTANCE.getCategoriesCount() - 1;
