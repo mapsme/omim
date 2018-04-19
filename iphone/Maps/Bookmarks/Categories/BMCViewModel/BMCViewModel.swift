@@ -42,4 +42,7 @@ protocol BMCViewModel: AnyObject {
   func grant(permission: BMCPermission?)
 
   func convertAllKMLIfNeeded();
+  
+  func setNotificationsEnabled(_ enabled: Bool)
+  func areNotificationsEnabled() -> Bool
 }
