@@ -17,7 +17,8 @@ import com.mapswithme.util.statistics.Statistics;
 
 import java.util.Date;
 
-public class BookmarkBackupController implements Authorizer.Callback
+public class BookmarkBackupController implements Authorizer.Callback,
+                                                 BookmarkManager.BookmarksCloudListener
 {
   @NonNull
   private final BookmarkBackupView mBackupView;
@@ -30,7 +31,7 @@ public class BookmarkBackupController implements Authorizer.Callback
     public void onClick(View v)
     {
       mAuthorizer.authorize();
-      Statistics.INSTANCE.trackBkmSyncProposalApproved(false);
+      Statistics.INSTANCE.trackBmSyncProposalApproved(false);
     }
   };
   @NonNull
@@ -41,7 +42,7 @@ public class BookmarkBackupController implements Authorizer.Callback
     {
       BookmarkManager.INSTANCE.setCloudEnabled(true);
       update();
-      Statistics.INSTANCE.trackBkmSyncProposalApproved(mAuthorizer.isAuthorized());
+      Statistics.INSTANCE.trackBmSyncProposalApproved(mAuthorizer.isAuthorized());
     }
   };
 
@@ -68,7 +69,7 @@ public class BookmarkBackupController implements Authorizer.Callback
         mBackupView.hideProgressBar();
         mBackupView.setClickListener(mSignInClickListener);
         mBackupView.showButton();
-        Statistics.INSTANCE.trackBkmSyncProposalShown(mAuthorizer.isAuthorized());
+        Statistics.INSTANCE.trackBmSyncProposalShown(mAuthorizer.isAuthorized());
       }
       return;
     }
@@ -99,18 +100,20 @@ public class BookmarkBackupController implements Authorizer.Callback
     mBackupView.setButtonLabel(context.getString(R.string.bookmarks_backup));
     mBackupView.setClickListener(mEnableClickListener);
     mBackupView.showButton();
-    Statistics.INSTANCE.trackBkmSyncProposalShown(mAuthorizer.isAuthorized());
+    Statistics.INSTANCE.trackBmSyncProposalShown(mAuthorizer.isAuthorized());
   }
 
   public void onStart()
   {
     mAuthorizer.attach(this);
+    BookmarkManager.INSTANCE.addCloudListener(this);
     update();
   }
 
   public void onStop()
   {
     mAuthorizer.detach();
+    BookmarkManager.INSTANCE.removeCloudListener(this);
   }
 
   public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
@@ -131,11 +134,11 @@ public class BookmarkBackupController implements Authorizer.Callback
     {
       Notifier.cancelNotification(Notifier.ID_IS_NOT_AUTHENTICATED);
       BookmarkManager.INSTANCE.setCloudEnabled(true);
-      Statistics.INSTANCE.trackEvent(Statistics.EventName.BMK_SYNC_PROPOSAL_ENABLED);
+      Statistics.INSTANCE.trackEvent(Statistics.EventName.BM_SYNC_PROPOSAL_ENABLED);
     }
     else
     {
-      Statistics.INSTANCE.trackBkmSyncProposalError(Framework.TOKEN_MAPSME, "Unknown error");
+      Statistics.INSTANCE.trackBmSyncProposalError(Framework.TOKEN_MAPSME, "Unknown error");
     }
     update();
   }
@@ -143,12 +146,43 @@ public class BookmarkBackupController implements Authorizer.Callback
   @Override
   public void onSocialAuthenticationError(@Framework.AuthTokenType int type, @Nullable String error)
   {
-    Statistics.INSTANCE.trackBkmSyncProposalError(type, error);
+    Statistics.INSTANCE.trackBmSyncProposalError(type, error);
   }
 
   @Override
   public void onSocialAuthenticationCancel(@Framework.AuthTokenType int type)
   {
-    Statistics.INSTANCE.trackBkmSyncProposalError(type, "Cancel");
+    Statistics.INSTANCE.trackBmSyncProposalError(type, "Cancel");
+  }
+
+  @Override
+  public void onSynchronizationStarted(@BookmarkManager.SynchronizationType int type)
+  {
+    if (type == BookmarkManager.CLOUD_BACKUP)
+      Statistics.INSTANCE.trackEvent(Statistics.EventName.BM_SYNC_STARTED);
+    update();
+  }
+
+  @Override
+  public void onSynchronizationFinished(@BookmarkManager.SynchronizationType int type,
+                                        @BookmarkManager.RestoringRequestResult int result,
+                                        @NonNull String errorString)
+  {
+    if (type == BookmarkManager.CLOUD_BACKUP)
+      Statistics.INSTANCE.trackBmSynchronizationFinish(type, result, errorString);
+    update();
+  }
+
+  @Override
+  public void onRestoreRequested(@BookmarkManager.RestoringRequestResult int result,
+                                 long backupTimestampInMs)
+  {
+    // No op.
+  }
+
+  @Override
+  public void onRestoredFilesPrepared()
+  {
+    // No op.
   }
 }
