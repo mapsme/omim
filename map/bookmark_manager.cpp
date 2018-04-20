@@ -606,7 +606,8 @@ void BookmarkManager::NotifyChanges()
   if (hasBookmarks)
   {
     SaveBookmarks(categoriesToSave);
-    SendBookmarksChanges();
+    // Bookmark search is not yet supported.
+    //SendBookmarksChanges();
   }
 
   df::DrapeEngineLockGuard lock(m_drapeEngine);
