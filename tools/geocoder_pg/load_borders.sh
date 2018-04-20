@@ -35,14 +35,14 @@ if [ -f "$FILTERED" ]; then
   echo "Filtered file already exists, skipping it (make sure it's not too old!)"
   ls -l "$FILTERED"
 else
-  # "$OSMCTOOLS/osmfilter" "$PLANET" --keep="boundary=administrative =postal_code place=" -o="$FILTERED"
-  "$OSMCTOOLS/osmfilter" "$PLANET" --keep="boundary=administrative =postal_code place= ( building= and addr:housenumber= )" -o="$FILTERED"
+  "$OSMCTOOLS/osmfilter" "$PLANET" --keep="boundary=administrative =postal_code place=" -o="$FILTERED"
+  # "$OSMCTOOLS/osmfilter" "$PLANET" --keep="boundary=administrative =postal_code place= ( building= and addr:housenumber= )" -o="$FILTERED"
 fi
 
 TABLE="$(psql $DATABASE -qtAc "SELECT tablename FROM pg_tables WHERE tablename = 'osm_polygon'")"
 if [ -n "$TABLE" ]; then
   echo "Renaming old table to osm_polygon_old"
-  psql $DATABASE -qtAc "ALTER TABLE osm_polygon RENAME TO osm_polygon_old; DELETE FROM osm_polygon_old WHERE rank > 10"
+  psql $DATABASE -qtAc "ALTER TABLE osm_polygon RENAME TO osm_polygon_old; DELETE FROM osm_polygon_old WHERE rank > 6"
 fi
 
 echo "Loading $FILTERED into PostgreSQL database"
@@ -64,18 +64,20 @@ rm "$TMP_STYLE"
 
 if [ -n "$TABLE" ]; then
   echo "Restoring missing regions"
+  BEFORE="$(psql $DATABASE -qtAc "SELECT count(*) FROM osm_polygon WHERE admin_level in ('2', '3', '4', '5', '6')")"
   psql $DATABASE <<EOF
     INSERT INTO osm_polygon (osm_id, admin_level, boundary, postal_code, name, place, population, tags, way)
     SELECT o.osm_id, o.admin_level, o.boundary, o.postal_code, o.name, o.place, o.population, o.tags, o.way
     FROM osm_polygon_old o LEFT JOIN osm_polygon p ON
       p.admin_level = old.admin_level AND
-      p.place = old.place AND
       p.name = old.name AND
       p.way && ST_PointOnSurface(old.way)
     WHERE p.way IS NULL;
 
     DROP TABLE osm_polygon_old;
 EOF
+  AFTER="$(psql $DATABASE -qtAc "SELECT count(*) FROM osm_polygon WHERE admin_level in ('2', '3', '4', '5', '6')")"
+  echo "Added $(($AFTER-$BEFORE)) borders"
 fi
 
 echo "Postprocessing the database"

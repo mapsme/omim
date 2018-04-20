@@ -13,6 +13,10 @@ ALTER TABLE osm_polygon ADD COLUMN centroid geometry(Point, 4326);
 UPDATE osm_polygon SET centroid = ST_Centroid(way) WHERE place IS NOT NULL;
 
 
+\! echo "Adding node_id column to polygons"
+ALTER TABLE osm_polygon ADD COLUMN node_id BIGINT;
+
+
 \! echo "Splitting big polygons"
 DROP TABLE IF EXISTS osm_polygon_geom;
 CREATE TABLE osm_polygon_geom AS
@@ -44,7 +48,7 @@ WITH places AS (
   WHERE osm_point.osm_id = point_id
 )
 UPDATE osm_polygon poly
-SET tags = poly.tags || places.tags
+SET tags = poly.tags || places.tags, node_id = places.point_id
 FROM places
 WHERE poly.osm_id = places.osm_id;
 
@@ -52,10 +56,10 @@ WHERE poly.osm_id = places.osm_id;
 \! echo "Creating polygons from unmatched place nodes"
 WITH inserted AS (
 INSERT INTO osm_polygon
-  (osm_id, place, name, tags, way, centroid)
+  (osm_id, node_id, place, name, tags, way, centroid)
 SELECT
   -- Max way id is 565 mln as of March 2018
-  osm_id + (50*1000*1000*1000)::bigint, place, name, tags,
+  osm_id + 50::bigint*1000*1000*1000, osm_id, place, name, tags,
   ST_Buffer(way, CASE
     -- Based on average radiuses of OSM place polygons
     WHEN place = 'city' THEN 0.078
