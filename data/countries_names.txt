@@ -32034,6 +32034,7 @@
   en = East Midlands
   ru = Восточный Мидленд
   ar = منطقة ميدلاند الشرقية
+  be = Усходні Мідлэнд
   cs = East Midlands
   da = East Midlands
   nl = East Midlands
@@ -32065,6 +32066,7 @@
   en = East of England — Essex
   ru = Восточная Англия — Эссекс
   ar = مقاطعة إسكس-شرق إنجلترا
+  be = Усходняя Англія - Эсекс
   cs = Východní Anglie — Essex
   da = East of England — Essex
   nl = East of England — Essex
@@ -32096,6 +32098,7 @@
   en = East of England — Norfolk
   ru = Восточная Англия — Норфолк
   ar = مقاطعة نورفك- شرق إنجلترا
+  be = Усходняя Англія - Норфалк
   cs = Východní Anglie — Norfolk
   da = East of England — Norfolk
   nl = East of England — Norfolk
@@ -32127,6 +32130,7 @@
   en = Greater London
   ru = Большой Лондон
   ar = لندن الكبرى
+  be = Вялікі Лондан
   cs = Velký Londýn
   da = Greater London
   nl = Groot-Londen
@@ -32158,6 +32162,7 @@
   en = North East England
   ru = Северо-Восточная Англия
   ar = شمال شرق إنجلترا
+  be = Паўночна-Усходняя Англія
   cs = Severovýchodní Anglie
   da = North East England
   nl = North East England
@@ -32189,6 +32194,7 @@
   en = North West England
   ru = Северо-Западная Англия
   ar = شمال غرب إنجلترا
+  be = Паўночна-Заходняя Англія
   cs = Severozápadní Anglie
   da = North West England
   nl = North West England
@@ -32220,6 +32226,7 @@
   en = South East England — Brighton
   ru = Юго-Восточная Англия — Брайтон
   ar = جنوب شرق إنجلترا - برايتون
+  be = Паўднёва-Усходняя Англія - Брайтан
   cs = Jihovýchodní Anglie — Brighton
   da = South East England — Brighton
   nl = South East England — Brighton
@@ -32251,6 +32258,7 @@
   en = South East England — Oxford
   ru = Юго-Восточная Англия — Оксфорд
   ar = جنوب شرق إنجلترا – أكسفورد
+  be = Паўднёва-Усходняя Англія - Оксфард
   cs = Jihovýchodní Anglie — Oxford
   da = South East England — Oxford
   nl = South East England — Oxford
@@ -32282,6 +32290,7 @@
   en = South West England — Bristol
   ru = Юго-Западная Англия — Бристоль
   ar = جنوب غرب انجلترا – بريستول
+  be = Паўднёва-Заходняя Англія - Брысталь
   cs = Jihozápadní Anglie — Bristol
   da = South West England — Bristol
   nl = South West England — Bristol
@@ -32313,6 +32322,7 @@
   en = South West England — Cornwall
   ru = Юго-Западная Англия — Корнуолл
   ar = مقاطعة كورنوال -جنوب غرب انجلترا
+  be = Паўднёва-Заходняя Англія - Корнуал
   cs = Jihozápadní Anglie — Cornwall
   da = South West England — Cornwall
   nl = South West England — Cornwall
@@ -32344,6 +32354,7 @@
   en = West Midlands
   ru = Западный Мидленд
   ar = منطقة ميدلاند الغربية
+  be = Уэст-Мідлендс
   cs = West Midlands
   da = West Midlands
   nl = West Midlands
@@ -32375,6 +32386,7 @@
   en = Yorkshire and the Humber
   ru = Йоркшир и Хамбер
   ar = يوركشاير وهامبر
+  be = Ёркшыр і Хамбер
   cs = Yorkshire a Humber
   da = Yorkshire and the Humber
   nl = Yorkshire and the Humber
@@ -32406,6 +32418,7 @@
   en = Northern Ireland
   ru = Северная Ирландия
   ar = أيرلندا الشمالية
+  be = Паўночная Ірландыя
   cs = Severní Irsko
   da = Nordirland
   nl = Noord-Ierland
@@ -32437,6 +32450,7 @@
   en = Scotland — North
   ru = Шотландия — Север
   ar = إسكتلندا — شمال
+  be = Шатландыя - Поўнач
   cs = Skotsko — Sever
   da = Skotland — Nord
   nl = Schotland — Noord
@@ -32468,6 +32482,7 @@
   en = Scotland — South
   ru = Шотландия — Юг
   ar = إسكتلندا — جنوب
+  be = Шатландыя - Поўдзень
   cs = Skotsko — Jih
   da = Skotland — Syd
   nl = Schotland — Zuid
@@ -32499,6 +32514,7 @@
   en = Wales
   ru = Уэльс
   ar = ويلز
+  be = Уэльс
   cs = Wales
   da = Wales
   nl = Wales
@@ -32530,6 +32546,7 @@
   en = Birmingham
   ru = Бирмингем
   ar = برمنغهام، ألاباما
+  be = Бірмінгем
   cs = Birmingham
   da = Birmingham
   nl = Birmingham
@@ -32561,6 +32578,7 @@
   en = Montgomery
   ru = Монтгомери
   ar = مونتغومري، ألاباما
+  be = Мантгомеры
   cs = Montgomery
   da = Montgomery
   nl = Montgomery
@@ -32592,6 +32610,7 @@
   en = Alaska
   ru = Аляска
   ar = ألاسكا
+  be = Аляска
   cs = Aljaška
   da = Alaska
   nl = Alaska
@@ -32623,6 +32642,7 @@
   en = Flagstaff
   ru = Флагстафф
   ar = فلاغستاف
+  be = Флагстаф
   cs = Flagstaff
   da = Flagstaff
   nl = Flagstaff
@@ -32654,6 +32674,7 @@
   en = Phoenix
   ru = Финикс
   ar = فينيكس، أريزونا
+  be = Фінікс
   cs = Phoenix
   da = Phoenix
   nl = Phoenix
@@ -32685,6 +32706,7 @@
   en = Tucson
   ru = Тусон
   ar = توسان، أريزونا
+  be = Тусан
   cs = Tucson
   da = Tucson
   nl = Tucson
@@ -32716,6 +32738,7 @@
   en = Arkansas
   ru = Арканзас
   ar = أركنساس
+  be = Арканзас
   cs = Arkansas
   da = Arkansas
   nl = Arkansas
@@ -32747,6 +32770,7 @@
   en = Bakersfield
   ru = Бейкерсфилд
   ar = بيكرسفيلد، كاليفورنيا
+  be = Бэйкерсфілд
   cs = Bakersfield
   da = Bakersfield
   nl = Bakersfield
@@ -32778,6 +32802,7 @@
   en = Lancaster
   ru = Ланкастер
   ar = لانكاستر
+  be = Ланкасцер
   cs = Lancaster
   da = Lancaster
   nl = Lancaster
@@ -32809,6 +32834,7 @@
   en = Chico
   ru = Чико
   ar = تشيكو، كاليفورنيا
+  be = Чыка
   cs = Chico
   da = Chico
   nl = Chico
@@ -32840,6 +32866,7 @@
   en = Los Angeles
   ru = Лос-Анджелес
   ar = لوس أنجلوس
+  be = Лос-Анджэлес
   cs = Los Angeles
   da = Los Angeles
   nl = Los Angeles
@@ -32871,6 +32898,7 @@
   en = Los Angeles — North
   ru = Лос-Анджелес — Север
   ar = لوس أنجلوس — شمال
+  be = Лос-Анджэлес - Поўнач
   cs = Los Angeles — Sever
   da = Los Angeles — Nord
   nl = Los Angeles — Noord
@@ -32902,6 +32930,7 @@
   en = Redding
   ru = Реддинг (Калифорния)
   ar = ردينغ، كاليفورنيا
+  be = Рэддінг
   cs = Redding
   da = Redding
   nl = Redding
@@ -32933,6 +32962,7 @@
   en = Fresno
   ru = Фресно
   ar = فريسنو، كاليفورنيا
+  be = Фрэсна
   cs = Fresno
   da = Fresno
   nl = Fresno
@@ -32964,6 +32994,7 @@
   en = Sacramento
   ru = Сакраменто
   ar = ساكرامنتو، كاليفورنيا
+  be = Сакрамента
   cs = Sacramento
   da = Sacramento
   nl = Sacramento
@@ -32995,6 +33026,7 @@
   en = Stockton
   ru = Стоктон
   ar = ستوكتون، كاليفورنيا
+  be = Стоктан
   cs = Stockton
   da = Stockton
   nl = Stockton
@@ -33026,6 +33058,7 @@
   en = San Diego
   ru = Сан-Диего
   ar = سان دييغو، كاليفورنيا
+  be = Сан-Дыега
   cs = San Diego
   da = San Diego
   nl = San Diego
@@ -33057,6 +33090,7 @@
   en = San Francisco
   ru = Сан-Франциско
   ar = سان فرانسيسكو
+  be = Сан-Францыска
   cs = San Francisco
   da = San Francisco
   nl = San Francisco
@@ -33088,6 +33122,7 @@
   en = Santa Cruz
   ru = Санта-Крус
   ar = سانتا كروز، كاليفورنيا
+  be = Санта-Круз
   cs = Santa Cruz
   da = Santa Cruz
   nl = Santa Cruz
@@ -33119,6 +33154,7 @@
   en = Aspen
   ru = Аспен
   ar = أسبن
+  be = Аспен
   cs = Aspen
   da = Aspen
   nl = Aspen
@@ -33150,6 +33186,7 @@
   en = Denver
   ru = Денвер
   ar = دنفر، كولورادو
+  be = Дэнвер
   cs = Denver
   da = Denver
   nl = Denver
@@ -33181,6 +33218,7 @@
   en = Colorado — South
   ru = Колорадо — Юг
   ar = كولورادو — جنوب
+  be = Каларада - Поўдзень
   cs = Colorado — Jih
   da = Colorado — Syd
   nl = Colorado — Zuid
@@ -33212,6 +33250,7 @@
   en = Connecticut
   ru = Коннектикут
   ar = كونيتيكت
+  be = Канектыкут
   cs = Connecticut
   da = Connecticut
   nl = Connecticut
@@ -33243,6 +33282,7 @@
   en = Delaware
   ru = Делавэр
   ar = ديلاوير
+  be = Дэлавэр
   cs = Delaware
   da = Delaware
   nl = Delaware
@@ -33274,6 +33314,7 @@
   en = Jacksonville
   ru = Джэксонвилл
   ar = جاكسونفيل، فلوريدا
+  be = Джэксанвіл
   cs = Jacksonville
   da = Jacksonville
   nl = Jacksonville
@@ -33305,6 +33346,7 @@
   en = Miami
   ru = Майами
   ar = ميامي، فلوريدا
+  be = Маямі
   cs = Miami
   da = Miami
   nl = Miami
@@ -33336,6 +33378,7 @@
   en = Orlando
   ru = Орландо
   ar = أورلاندو، فلوريدا
+  be = Арланда
   cs = Orlando
   da = Orlando
   nl = Orlando
@@ -33367,6 +33410,7 @@
   en = Tampa
   ru = Тампа
   ar = تامبا، فلوريدا
+  be = Тампа
   cs = Tampa
   da = Tampa
   nl = Tampa
@@ -33398,6 +33442,7 @@
   en = Georgia
   ru = Джорджия
   ar = جورجيا
+  be = Джорджыя
   cs = Georgie
   da = Georgia
   nl = Georgia
@@ -33429,6 +33474,7 @@
   en = Atlanta
   ru = Атланта
   ar = أتلانتا، جورجيا
+  be = Атланта
   cs = Atlanta
   da = Atlanta
   nl = Atlanta
@@ -33460,6 +33506,7 @@
   en = Macon
   ru = Мейкон
   ar = ماكون، جورجيا
+  be = Мэйкан
   cs = Macon
   da = Macon
   nl = Macon
@@ -33491,6 +33538,7 @@
   en = Georgia — North
   ru = Джорджия — Север
   ar = جورجيا — شمال
+  be = Джорджыя - Поўнач
   cs = Georgie — Sever
   da = Georgia — Nord
   nl = Georgia — Noord
@@ -33522,6 +33570,7 @@
   en = Georgia — South
   ru = Джорджия — Юг
   ar = جورجيا — جنوب
+  be = Джорджыя - Поўдзень
   cs = Georgie — Jih
   da = Georgia — Syd
   nl = Georgia — Zuid
@@ -33553,6 +33602,7 @@
   en = Guam
   ru = Гуам
   ar = غوام
+  be = Гуам
   cs = Guam
   da = Guam
   nl = Guam
@@ -33584,6 +33634,7 @@
   en = Hawaii
   ru = Гавайи
   ar = هاواي
+  be = Гаваі
   cs = Havaj
   da = Hawaii
   nl = Hawaï
@@ -33615,6 +33666,7 @@
   en = Idaho
   ru = Айдахо
   ar = أيداهو
+  be = Айдаха
   cs = Idaho
   da = Idaho
   nl = Idaho
@@ -33646,6 +33698,7 @@
   en = Chicago
   ru = Чикаго
   ar = شيكاغو
+  be = Чыкага
   cs = Chicago
   da = Chicago
   nl = Chicago
@@ -33677,6 +33730,7 @@
   en = Elgin
   ru = Элджин
   ar = إلجين
+  be = Элджын
   cs = Elgin
   da = Elgin
   nl = Elgin
@@ -33708,6 +33762,7 @@
   en = Rockford
   ru = Рокфорд
   ar = روكفورد,إلينوي
+  be = Рокфард
   cs = Rockford
   da = Rockford
   nl = Rockford
@@ -33739,6 +33794,7 @@
   en = Illinois — South
   ru = Иллинойс — Юг
   ar = إلينوي — جنوب
+  be = Ілінойс - Поўдзень
   cs = Illinois — Jih
   da = Illinois — Syd
   nl = Illinois — Zuid
@@ -33770,6 +33826,7 @@
   en = Springfield
   ru = Спрингфилд
   ar = سبرينج فيلد، إلينوي
+  be = Спрынгфілд
   cs = Springfield
   da = Springfield
   nl = Springfield
@@ -33801,6 +33858,7 @@
   en = Indiana — North
   ru = Индиана — Север
   ar = إنديانا — شمال
+  be = Індыяна - Поўнач
   cs = Indiana — Sever
   da = Indiana — Nord
   nl = Indiana — Noord
@@ -33832,6 +33890,7 @@
   en = Indiana — South
   ru = Индиана — Юг
   ar = إنديانا — جنوب
+  be = Індыяна - Поўдзень
   cs = Indiana — Jih
   da = Indiana — Syd
   nl = Indiana — Zuid
@@ -33863,6 +33922,7 @@
   en = Des Moines
   ru = Де-Мойн
   ar = دي موين، آيوا
+  be = Дэ-Мойн
   cs = Des Moines
   da = Des Moines
   nl = Des Moines
@@ -33894,6 +33954,7 @@
   en = Waterloo
   ru = Ватерлоо
   ar = واترلو
+  be = Ватэрлоа
   cs = Waterloo
   da = Waterloo
   nl = Waterloo
@@ -33925,6 +33986,7 @@
   en = Iowa — West
   ru = Айова — Запад
   ar = آيوا — غرب
+  be = Аява - Захад
   cs = Iowa — Západ
   da = Iowa — Vest
   nl = Iowa — West
@@ -33956,6 +34018,7 @@
   en = Kansas — East
   ru = Канзас — Восток
   ar = كانساس — شرق
+  be = Канзас - Усход
   cs = Kansas — Východ
   da = Kansas — Øst
   nl = Kansas — Oost
@@ -33987,6 +34050,7 @@
   en = Kansas — West
   ru = Канзас — Запад
   ar = كانساس — غرب
+  be = Канзас - Захад
   cs = Kansas — Západ
   da = Kansas — Vest
   nl = Kansas — West
@@ -34018,6 +34082,7 @@
   en = Kentucky — East
   ru = Кентукки — Восток
   ar = كنتاكي — شرق
+  be = Кентукі - Усход
   cs = Kentucky — Východ
   da = Kentucky — Øst
   nl = Kentucky — Oost
@@ -34049,6 +34114,7 @@
   en = Kentucky — West
   ru = Кентукки — Запад
   ar = كنتاكي — غرب
+  be = Кентукі - Захад
   cs = Kentucky — Západ
   da = Kentucky — Vest
   nl = Kentucky — West
@@ -34080,6 +34146,7 @@
   en = Louisiana — West
   ru = Луизиана — Запад
   ar = لويزيانا — غرب
+  be = Луізіяна - Захад
   cs = Louisiana — Západ
   da = Louisiana — Vest
   nl = Louisiana — West
@@ -34111,6 +34178,7 @@
   en = New Orleans
   ru = Новый Орлеан
   ar = نيو أورلينز، لويزيانا
+  be = Новы Арлеан
   cs = New Orleans
   da = New Orleans
   nl = New Orleans
@@ -34142,6 +34210,7 @@
   en = Maine
   ru = Мэн
   ar = مين
+  be = Мэн
   cs = Maine
   da = Maine
   nl = Maine
@@ -34173,6 +34242,7 @@
   en = Baltimore
   ru = Балтимор
   ar = بالتيمور، ماريلاند
+  be = Балтымар
   cs = Baltimore
   da = Baltimore
   nl = Baltimore
@@ -34204,6 +34274,7 @@
   en = West, Washington, D.C.
   ru = Запад, Вашингтон
   ar = غرب, واشنطن العاصمة
+  be = Захад, Вашынгтон
   cs = Západ, Washington
   da = Vest, Washington D.C.
   nl = West, Washington D.C.
@@ -34235,6 +34306,7 @@
   en = Boston
   ru = Бостон
   ar = بوسطن
+  be = Бостан
   cs = Boston
   da = Boston
   nl = Boston
@@ -34266,6 +34338,7 @@
   en = Worcester
   ru = Вустер
   ar = ورسستر، ماساتشوستس
+  be = Вустэр
   cs = Worcester
   da = Worcester
   nl = Worcester
@@ -34297,6 +34370,7 @@
   en = Plymouth
   ru = Плимут
   ar = بليموث
+  be = Плімут
   cs = Plymouth
   da = Plymouth
   nl = Plymouth
@@ -34328,6 +34402,7 @@
   en = Barnstable
   ru = Барнстейбл
   ar = بارنستابل
+  be = Барнстэйбл
   cs = Barnstable
   da = Barnstable
   nl = Barnstable
@@ -34359,6 +34434,7 @@
   en = Springfield
   ru = Спрингфилд
   ar = سبرينغفيلد
+  be = Спрынгфілд
   cs = Springfield
   da = Springfield
   nl = Springfield
@@ -34390,6 +34466,7 @@
   en = Detroit
   ru = Детройт
   ar = ديترويت، ميشيغان
+  be = Дэтройт
   cs = Detroit
   da = Detroit
   nl = Detroit
@@ -34421,6 +34498,7 @@
   en = Michigan — North
   ru = Мичиган — Север
   ar = ميشيغان — شمال
+  be = Мічыган - Поўнач
   cs = Michigan — Sever
   da = Michigan — Nord
   nl = Michigan — Noord
@@ -34452,6 +34530,7 @@
   en = Michigan — South
   ru = Мичиган — Юг
   ar = ميشيغان — جنوب
+  be = Мічыган - Поўдзень
   cs = Michigan — Jih
   da = Michigan — Syd
   nl = Michigan — Zuid
@@ -34483,6 +34562,7 @@
   en = Minneapolis
   ru = Миннеаполис
   ar = مينيابولس، مينيسوتا
+  be = Мінеапаліс
   cs = Minneapolis
   da = Minneapolis
   nl = Minneapolis
@@ -34514,6 +34594,7 @@
   en = Minnesota — North
   ru = Миннесота — Север
   ar = مينيسوتا — شمال
+  be = Мінесота - Поўнач
   cs = Minnesota — Sever
   da = Minnesota — Nord
   nl = Minnesota — Noord
@@ -34545,6 +34626,7 @@
   en = Rochester
   ru = Рочестер
   ar = روتشيستر، مينيسوتا
+  be = Рочэстэр
   cs = Rochester
   da = Rochester
   nl = Rochester
@@ -34576,6 +34658,7 @@
   en = St. Cloud
   ru = Сент-Клауд
   ar = سانت كلاود
+  be = Сэнт-Клаўд
   cs = St. Cloud
   da = St. Cloud
   nl = St. Cloud
@@ -34607,6 +34690,7 @@
   en = Mississippi
   ru = Миссисипи
   ar = مسيسيبي
+  be = Місісіпі
   cs = Mississippi
   da = Mississippi
   nl = Mississippi
@@ -34638,6 +34722,7 @@
   en = Missouri — East
   ru = Миссури — Восток
   ar = ميزوري — شرق
+  be = Місуры - Усход
   cs = Missouri — Východ
   da = Missouri — Øst
   nl = Missouri — Oost
@@ -34669,6 +34754,7 @@
   en = Missouri — West
   ru = Миссури — Запад
   ar = ميزوري — غرب
+  be = Місуры - Захад
   cs = Missouri — Západ
   da = Missouri — Vest
   nl = Missouri — West
@@ -34700,6 +34786,7 @@
   en = Montana
   ru = Монтана
   ar = مونتانا
+  be = Мантана
   cs = Montana
   da = Montana
   nl = Montana
@@ -34731,6 +34818,7 @@
   en = Nebraska
   ru = Небраска
   ar = نبراسكا
+  be = Небраска
   cs = Nebraska
   da = Nebraska
   nl = Nebraska
@@ -34762,6 +34850,7 @@
   en = Nevada
   ru = Невада
   ar = نيفادا
+  be = Невада
   cs = Nevada
   da = Nevada
   nl = Nevada
@@ -34793,6 +34882,7 @@
   en = New Hampshire
   ru = Нью-Гэмпшир
   ar = نيوهامشير
+  be = Нью-Гэмпшыр
   cs = New Hampshire
   da = New Hampshire
   nl = New Hampshire
@@ -34824,6 +34914,7 @@
   en = New Jersey — North
   ru = Нью-Джерси — Север
   ar = نيو جيرسي — شمال
+  be = Нью-Джэрсі - Поўнач
   cs = New Jersey — Sever
   da = New Jersey — Nord
   nl = New Jersey — Noord
@@ -34855,6 +34946,7 @@
   en = New Jersey — South
   ru = Нью-Джерси — Юг
   ar = نيو جيرسي — جنوب
+  be = Нью-Джэрсі - Поўдзень
   cs = New Jersey — Jih
   da = New Jersey — Syd
   nl = New Jersey — Zuid
@@ -34886,6 +34978,7 @@
   en = New Mexico
   ru = Нью-Мексико
   ar = نيومكسيكو
+  be = Нью-Мексіка
   cs = Nové Mexiko
   da = New Mexico
   nl = New Mexico
@@ -34917,6 +35010,7 @@
   en = New York — Long Island
   ru = Нью-Йорк — Лонг-Айленд
   ar = نيويورك — لونغ آيلند
+  be = Нью-Ёрк — Лонг-Айлэнд
   cs = New York — Long Island
   da = New York — Long Island
   de = New York — Long Island
@@ -34948,6 +35042,7 @@
   en = New York — New York City
   ru = Нью-Йорк — Нью-Йорк
   ar = نيويورك — مدينة نيو يورك
+  be = Нью-Ёрк — Нью-Ёрк
   cs = New York — New York
   da = New York — New York
   nl = New York — New York City
@@ -34979,6 +35074,7 @@
   en = New York — North
   ru = Нью-Йорк — Север
   ar = نيويورك — شمال
+  be = Нью-Ёрк — Поўнач
   cs = New York — Sever
   da = New York — Nord
   nl = New York — Noord
@@ -35010,6 +35106,7 @@
   en = New York — West
   ru = Нью-Йорк — Запад
   ar = نيويورك — غرب
+  be = Нью-Ёрк — Захад
   cs = New York — Západ
   da = New York — Vest
   nl = New York — West
@@ -35041,6 +35138,7 @@
   en = Asheville
   ru = Эшвилл
   ar = آشفيل، كارولاينا الشمالية
+  be = Эшвіль
   cs = Asheville
   da = Asheville
   nl = Asheville
@@ -35072,6 +35170,7 @@
   en = Charlotte
   ru = Шарлотт
   ar = تشارلوت، كارولاينا الشمالية
+  be = Шарлат
   cs = Charlotte
   da = Charlotte
   nl = Charlotte
@@ -35103,6 +35202,7 @@
   en = Greensboro
   ru = Гринсборо
   ar = غرينزبورو، كارولاينا الشمالية
+  be = Грынсбара
   cs = Greensboro
   da = Greensboro
   nl = Greensboro
@@ -35134,6 +35234,7 @@
   en = Raleigh
   ru = Роли
   ar = رالي، كارولاينا الشمالية
+  be = Ролі
   cs = Raleigh
   da = Raleigh
   nl = Raleigh
@@ -35165,6 +35266,7 @@
   en = Wilmington
   ru = Уилмингтон
   ar = ويلمينغتون، كارولاينا الشمالية
+  be = Вілмінгтан
   cs = Wilmington
   da = Wilmington
   nl = Wilmington
@@ -35196,6 +35298,7 @@
   en = Wilson
   ru = Уилсон
   ar = ويلسون، كارولاينا الشمالية
+  be = Вілсан
   cs = Wilson
   da = Wilson
   nl = Wilson
@@ -35227,6 +35330,7 @@
   en = Bismarck
   ru = Бисмарк
   ar = بسمارك، داكوتا الشمالية
+  be = Бісмарк
   cs = Bismarck
   da = Bismarck
   nl = Bismarck
@@ -35258,6 +35362,7 @@
   en = Fargo
   ru = Фарго
   ar = فارغو، داكوتا الشمالية
+  be = Фарга
   cs = Fargo
   da = Fargo
   nl = Fargo
@@ -35289,6 +35394,7 @@
   en = Minot
   ru = Майнот
   ar = مينوت، داكوتا الشمالية
+  be = Майнот
   cs = Minot
   da = Minot
   nl = Minot
@@ -35320,6 +35426,7 @@
   en = Cleveland
   ru = Кливленд
   ar = كليفلاند، أوهايو
+  be = Кліўленд
   cs = Cleveland
   da = Cleveland
   nl = Cleveland
@@ -35351,6 +35458,7 @@
   en = Dayton
   ru = Дейтон
   ar = دايتون، أوهايو
+  be = Дэйтан
   cs = Dayton
   da = Dayton
   nl = Dayton
@@ -35382,6 +35490,7 @@
   en = Oklahoma — East
   ru = Оклахома — Восток
   ar = أوكلاهوما — شرق
+  be = Аклахома - Усход
   cs = Oklahoma — Východ
   da = Oklahoma — Øst
   nl = Oklahoma — Oost
@@ -35413,6 +35522,7 @@
   en = Oklahoma — West
   ru = Оклахома — Запад
   ar = أوكلاهوما — غرب
+  be = Аклахома - Захад
   cs = Oklahoma — Západ
   da = Oklahoma — Vest
   nl = Oklahoma — West
@@ -35444,6 +35554,7 @@
   en = Eugene
   ru = Юджин
   ar = يوجين، أوريغون
+  be = Юджын
   cs = Eugene
   da = Eugene
   nl = Eugene
@@ -35475,6 +35586,7 @@
   en = Portland
   ru = Портленд
   ar = بورتلاند، أوريغون
+  be = Портленд
   cs = Portland
   da = Portland
   nl = Portland
@@ -35506,6 +35618,7 @@
   en = Oregon — East
   ru = Орегон — Восток
   ar = أوريغون — شرق
+  be = Арэгон - Усход
   cs = Oregon — Východ
   da = Oregon — Øst
   de = Oregon — Osten
@@ -35537,6 +35650,7 @@
   en = Altoona
   ru = Алтуна
   ar = ألتونا
+  be = Алтуна
   cs = Altoona
   da = Altoona
   nl = Altoona
@@ -35568,6 +35682,7 @@
   en = Pittsburgh
   ru = Питтсбург
   ar = بيتسبرغ، بنسيلفانيا
+  be = Пітсбург
   cs = Pittsburgh
   da = Pittsburgh
   nl = Pittsburgh
@@ -35599,6 +35714,7 @@
   en = Reading
   ru = Рединг
   ar = ريدينغ
+  be = Рэдынг
   cs = Reading
   da = Reading
   nl = Reading
@@ -35630,6 +35746,7 @@
   en = Scranton
   ru = Скрентон
   ar = سكرانتون
+  be = Скрантан
   cs = Scranton
   da = Scranton
   nl = Scranton
@@ -35661,6 +35778,7 @@
   en = Puerto Rico
   ru = Пуэрто-Рико
   ar = بورتوريكو
+  be = Пуэрта-Рыка
   cs = Portoriko
   da = Puerto Rico
   nl = Puerto Rico
@@ -35692,6 +35810,7 @@
   en = Rhode Island
   ru = Род-Айленд
   ar = رود آيلاند
+  be = Род-Айленд
   cs = Rhode Island
   da = Rhode Island
   nl = Rhode Island
@@ -35723,6 +35842,7 @@
   en = Columbia
   ru = Колумбия
   ar = كولومبيا، كارولاينا الجنوبية
+  be = Калумбія
   cs = Columbia
   da = Columbia
   nl = Columbia
@@ -35754,6 +35874,7 @@
   en = Florence
   ru = Флоренция
   ar = فلورنس
+  be = Фларэнцыя
   cs = Florencie
   da = Florence
   nl = Florence
@@ -35785,6 +35906,7 @@
   en = South Dakota
   ru = Южная Дакота
   ar = داكوتا الجنوبية
+  be = Паўднёвая Дакота
   cs = Jižní Dakota
   da = South Dakota
   nl = South Dakota
@@ -35816,6 +35938,7 @@
   en = Tennessee — East
   ru = Теннесси — Восток
   ar = تينيسي — شرق
+  be = Тэнесі - Усход
   cs = Tennessee — Východ
   da = Tennessee — Øst
   nl = Tennessee — Oost
@@ -35847,6 +35970,7 @@
   en = Tennessee — West
   ru = Теннесси — Запад
   ar = تينيسي — غرب
+  be = Тэнесі - Захад
   cs = Tennessee — Západ
   da = Tennessee — Vest
   nl = Tennessee — West
@@ -35878,6 +36002,7 @@
   en = Austin
   ru = Остин
   ar = أوستن، تكساس
+  be = Остын
   cs = Austin
   da = Austin
   nl = Austin
@@ -35909,6 +36034,7 @@
   en = Dallas
   ru = Даллас
   ar = دالاس، تكساس
+  be = Далас
   cs = Dallas
   da = Dallas
   nl = Dallas
@@ -35940,6 +36066,7 @@
   en = Houston
   ru = Хьюстон
   ar = هيوستن، تكساس
+  be = Х’юстан
   cs = Houston
   da = Houston
   nl = Houston
@@ -35971,6 +36098,7 @@
   en = Amarillo
   ru = Амарилло
   ar = أماريلو، تكساس
+  be = Амарыла
   cs = Amarillo
   da = Amarillo
   nl = Amarillo
@@ -36002,6 +36130,7 @@
   en = San Antonio
   ru = Сан-Антонио
   ar = سان أنطونيو، تكساس
+  be = Сан-Антоніа
   cs = San Antonio
   da = San Antonio
   nl = San Antonio
@@ -36033,6 +36162,7 @@
   en = Laredo
   ru = Ларедо
   ar = لاريدو
+  be = Ларэда
   cs = Laredo
   da = Laredo
   nl = Laredo
@@ -36064,6 +36194,7 @@
   en = Tyler
   ru = Тайлер
   ar = تايلر، تكساس
+  be = Тайлер
   cs = Tyler
   da = Tyler
   nl = Tyler
@@ -36095,6 +36226,7 @@
   en = Waco
   ru = Уэйко
   ar = واكو، تكساس
+  be = Вэйка
   cs = Waco
   da = Waco
   nl = Waco
@@ -36126,6 +36258,7 @@
   en = Odessa
   ru = Одесса
   ar = أوديسا، تكساس
+  be = Адэса
   cs = Odessa
   da = Odessa
   nl = Odessa
@@ -36157,6 +36290,7 @@
   en = US Minor Outlying Islands
   ru = Внешние малые острова США
   ar = جزر الولايات المتحدة الصغيرة النائية
+  be = Знешнія малыя астравы
   cs = Menší odlehlé ostrovy Spojených států amerických
   da = USA's ydre småøer
   nl = Kleine afgelegen eilanden van de Verenigde Staten
@@ -36188,6 +36322,7 @@
   en = Utah
   ru = Юта
   ar = يوتا
+  be = Юта
   cs = Utah
   da = Utah
   nl = Utah
@@ -36219,6 +36354,7 @@
   en = Vermont
   ru = Вермонт
   ar = فيرمونت
+  be = Вермонт
   cs = Vermont
   da = Vermont
   nl = Vermont
@@ -36250,6 +36386,7 @@
   en = Chesapeake
   ru = Чесапик
   ar = تشيسابيك
+  be = Чэсапік
   cs = Chesapeake
   da = Chesapeake
   nl = Chesapeake
@@ -36281,6 +36418,7 @@
   en = Lynchburg
   ru = Линчберг (Виргиния)
   ar = لينشبرغ
+  be = Лінчбург
   cs = Lynchburg
   da = Lynchburg
   nl = Lynchburg
@@ -36312,6 +36450,7 @@
   en = Richmond
   ru = Ричмонд
   ar = ريتشموند
+  be = Рычманд
   cs = Richmond
   da = Richmond
   nl = Richmond
@@ -36343,6 +36482,7 @@
   en = Roanoke
   ru = Роанок
   ar = روانوك
+  be = Раанок
   cs = Roanoke
   da = Roanoke
   nl = Roanoke
@@ -36374,6 +36514,7 @@
   en = Tacoma
   ru = Такома
   ar = تاكوما، واشنطن
+  be = Такома
   cs = Tacoma
   da = Tacoma
   nl = Tacoma
@@ -36405,6 +36546,7 @@
   en = Seattle
   ru = Сиэтл
   ar = سياتيل، واشنطن
+  be = Сіэтл
   cs = Seattle
   da = Seattle
   nl = Seattle
@@ -36436,6 +36578,7 @@
   en = Yakima
   ru = Якима
   ar = ياكيما، واشنطن
+  be = Якіма
   cs = Yakima
   da = Yakima
   nl = Yakima
@@ -36467,6 +36610,7 @@
   en = West Virginia
   ru = Западная Виргиния
   ar = فيرجينيا الغربية
+  be = Заходняя Віргінія
   cs = Západní Virginie
   da = West Virginia
   nl = West Virginia
@@ -36498,6 +36642,7 @@
   en = Milwaukee
   ru = Милуоки
   ar = ميلواكي، ويسكنسن
+  be = Мілуокі
   cs = Milwaukee
   da = Milwaukee
   nl = Milwaukee
@@ -36529,6 +36674,7 @@
   en = Eau Claire
   ru = О-Клэр
   ar = أو كلير
+  be = О-Клэр
   cs = Eau Claire
   da = Eau Claire
   nl = Eau Claire
@@ -36560,6 +36706,7 @@
   en = Wyoming
   ru = Вайоминг
   ar = وايومنغ
+  be = Ваёмінг
   cs = Wyoming
   da = Wyoming
   nl = Wyoming
@@ -36591,6 +36738,7 @@
   en = Uganda
   ru = Уганда
   ar = أوغندا
+  be = Уганда
   cs = Uganda
   da = Uganda
   nl = Oeganda
@@ -36622,6 +36770,7 @@
   en = Ukraine
   ru = Украина
   ar = أوكرانيا
+  be = Украіна
   cs = Ukrajina
   da = Ukraine
   nl = Oekraïne
@@ -36653,6 +36802,7 @@
   en = Cherkasy Oblast
   ru = Черкасская область
   ar = محافظة تشيركاسي
+  be = Чаркаская вобласць
   cs = Čerkaská oblast
   da = Tjerkasi oblast
   nl = Oblast Tsjerkasy
@@ -36684,6 +36834,7 @@
   en = Chernihiv Oblast
   ru = Черниговская область
   ar = تشرنيهيف أوبلاست
+  be = Чарнігаўская вобласць
   cs = Černihivská oblast
   da = Tjernihiv oblast
   nl = Oblast Tsjernihiv
@@ -36715,6 +36866,7 @@
   en = Chernivtsi Oblast
   ru = Черновицкая область
   ar = تشيرنيفتسي أوبلاست
+  be = Чарнавіцкая вобласць
   cs = Černovická oblast
   da = Tjernivtsi oblast
   nl = Oblast Tsjernivtsi
@@ -36746,6 +36898,7 @@
   en = Dnipropetrovsk Oblast
   ru = Днепропетровская область
   ar = دنيبروبتروفسك أوبلاست
+  be = Днепрапятроўская вобласць
   cs = Dněpropetrovská oblast
   da = Dnipropetrovsk oblast
   nl = Oblast Dnjepropetrovsk
@@ -36777,6 +36930,7 @@
   en = Donetsk Oblast
   ru = Донецкая область
   ar = دونيتسك أوبلاست
+  be = Данецкая вобласць
   cs = Doněcká oblast
   da = Donetsk Oblast
   nl = Oblast Donetsk
@@ -36808,6 +36962,7 @@
   en = Ivano-Frankivsk Oblast
   ru = Ивано-Франковская область
   ar = إيفانو فرانكيفسك أوبلاست
+  be = Івана-Франкоўская вобласць
   cs = Ivanofrankivská oblast
   da = Ivano-Frankivsk oblast
   nl = Oblast Ivano-Frankivsk
@@ -36839,6 +36994,7 @@
   en = Kharkiv Oblast
   ru = Харьковская область
   ar = خاركيف أوبلاست
+  be = Харкаўская вобласць
   cs = Charkovská oblast
   da = Kharkiv oblast
   nl = Oblast Charkov
@@ -36870,6 +37026,7 @@
   en = Kherson Oblast
   ru = Херсонская область
   ar = خيرسون أوبلاست
+  be = Херсонская вобласць
   cs = Chersonská oblast
   da = Kherson oblast
   nl = Oblast Cherson
@@ -36901,6 +37058,7 @@
   en = Khmelnytsky Oblast
   ru = Хмельницкая область
   ar = خملنيتسكي أوبلاست
+  be = Хмяльніцкая вобласць
   cs = Chmelnycká oblast
   da = Khmelnitskij oblast
   nl = Oblast Chmelnytsky
@@ -36932,6 +37090,7 @@
   en = Kirovohrad Oblast
   ru = Кировоградская область
   ar = كيروفوهراد أوبلاست
+  be = Кіраваградская вобласць
   cs = Kirovohradská oblast
   da = Kirovograd oblast
   nl = Oblast Kirovohrad
@@ -36963,6 +37122,7 @@
   en = Kiev Oblast
   ru = Киевская область
   ar = كييف أوبلاست
+  be = Кіеўская вобласць
   cs = Kyjevská oblast
   da = Kijev oblast
   nl = Oblast Kiev
@@ -36994,6 +37154,7 @@
   en = Luhansk Oblast
   ru = Луганская область
   ar = لوهانسك أوبلاست
+  be = Луганская вобласць
   cs = Luhanská oblast
   da = Lugansk oblast
   nl = Oblast Loehansk
@@ -37025,6 +37186,7 @@
   en = Lviv Oblast
   ru = Львовская область
   ar = لفيف أوبلاست
+  be = Львоўская вобласць
   cs = Lvovská oblast
   da = Lviv oblast
   nl = Oblast Lviv
@@ -37056,6 +37218,7 @@
   en = Mykolaiv Oblast
   ru = Николаевская область
   ar = ميكولايف أوبلاست
+  be = Мікалаеўская вобласць
   cs = Nikolajevská oblast
   da = Mikolaiv oblast
   nl = Oblast Mykolajiv
@@ -37087,6 +37250,7 @@
   en = Odessa Oblast
   ru = Одесская область
   ar = أوديسا أوبلاست
+  be = Адэская вобласць
   cs = Oděská oblast
   da = Odessa oblast
   nl = Oblast Odessa
@@ -37118,6 +37282,7 @@
   en = Poltava Oblast
   ru = Полтавская область
   ar = بولتافا أوبلاست
+  be = Палтаўская вобласць
   cs = Poltavská oblast
   da = Poltava oblast
   nl = Oblast Poltava
@@ -37149,6 +37314,7 @@
   en = Rivne Oblast
   ru = Ровненская область
   ar = ريفنا أوبلاست
+  be = Ровенская вобласць
   cs = Rovenská oblast
   da = Rivne oblast
   nl = Oblast Rivne
@@ -37180,6 +37346,7 @@
   en = Sumy Oblast
   ru = Сумская область
   ar = سومي أوبلاست
+  be = Сумская вобласць
   cs = Sumská oblast
   da = Sumi oblast
   nl = Oblast Soemy
@@ -37211,6 +37378,7 @@
   en = Ternopil Oblast
   ru = Тернопольская область
   ar = تيرنوبل أوبلاست
+  be = Цярнопальская вобласць
   cs = Ternopilská oblast
   da = Ternopil oblast
   nl = Oblast Ternopil
@@ -37242,6 +37410,7 @@
   en = Vinnytsia Oblast
   ru = Винницкая область
   ar = فينيتسا أوبلاست
+  be = Вінніцкая вобласць
   cs = Vinnycká oblast
   da = Vinnitsja oblast
   nl = Oblast Vinnytsja
@@ -37273,6 +37442,7 @@
   en = Volyn Oblast
   ru = Волынская область
   ar = فولين أوبلاست
+  be = Валынская вобласць
   cs = Volyňská oblast
   da = Volyn oblast
   nl = Oblast Wolynië
@@ -37304,6 +37474,7 @@
   en = Zakarpattia Oblast
   ru = Закарпатская область
   ar = زاكارباتيا أوبلاست
+  be = Закарпацкая вобласць
   cs = Zakarpatská oblast
   da = Zakarpatska oblast
   nl = Oblast Transkarpatië
@@ -37335,6 +37506,7 @@
   en = Zaporizhzhya Oblast
   ru = Запорожская область
   ar = زابوروجييه أوبلاست
+  be = Запарожская вобласць
   cs = Záporožská oblast
   da = Zaporizjzja oblast
   nl = Oblast Zaporizja
@@ -37366,6 +37538,7 @@
   en = Zhytomyr Oblast
   ru = Житомирская область
   ar = زيتومير أوبلاست
+  be = Жытомірская вобласць
   cs = Žytomyrská oblast
   da = Zjitomir oblast
   nl = Oblast Zjytomyr
@@ -37397,6 +37570,7 @@
   en = United Arab Emirates
   ru = Объединённые Арабские Эмираты
   ar = الإمارات العربية المتحدة
+  be = Аб’яднаныя Арабскія Эміраты
   cs = Spojené arabské emiráty
   da = Forenede Arabiske Emirater
   nl = Verenigde Arabische Emiraten
@@ -37428,6 +37602,7 @@
   en = United Kingdom
   ru = Великобритания
   ar = المملكة المتحدة
+  be = Вялікабрытанія
   cs = Spojené království
   da = Storbritannien
   nl = Verenigd Koninkrijk
@@ -37459,6 +37634,7 @@
   en = United States Virgin Islands
   ru = Американские Виргинские острова
   ar = جزر العذراء الأمريكية
+  be = Амерыканскія Віргінскія астравы
   cs = Americké Panenské ostrovy
   da = Amerikanske Jomfruøer
   nl = Amerikaanse Maagdeneilanden
@@ -37490,6 +37666,7 @@
   en = United States of America
   ru = Соединённые Штаты Америки
   ar = الولايات المتحدة الأمريكية
+  be = Злучаныя Штаты Амерыкі
   cs = Spojené státy americké
   da = USA
   nl = Verenigde Staten van Amerika
@@ -37521,6 +37698,7 @@
   en = Uruguay
   ru = Уругвай
   ar = أوروغواي
+  be = Уругвай
   cs = Uruguay
   da = Uruguay
   nl = Uruguay
@@ -37552,6 +37730,7 @@
   en = Uzbekistan
   ru = Узбекистан
   ar = أوزبكستان
+  be = Узбекістан
   cs = Uzbekistán
   da = Usbekistan
   nl = Oezbekistan
@@ -37583,6 +37762,7 @@
   en = Vanuatu
   ru = Вануату
   ar = فانواتو
+  be = Вануату
   cs = Vanuatu
   da = Vanuatu
   nl = Vanuatu
@@ -37614,6 +37794,7 @@
   en = Venezuela
   ru = Венесуэла
   ar = فنزويلا
+  be = Венесуэла
   cs = Venezuela
   da = Venezuela
   nl = Venezuela
@@ -37645,6 +37826,7 @@
   en = Vietnam
   ru = Вьетнам
   ar = فيتنام
+  be = В’етнам
   cs = Vietnam
   da = Vietnam
   nl = Vietnam
@@ -37676,6 +37858,7 @@
   en = Virginia
   ru = Виргиния
   ar = فيرجينيا
+  be = Вірджынія
   cs = Virginie
   da = Virginia
   nl = Virginia
@@ -37707,6 +37890,7 @@
   en = Wallis and Futuna
   ru = Уоллис и Футуна
   ar = والس وفوتونا
+  be = Уоліс і Футуна
   cs = Wallis a Futuna
   da = Wallis og Futuna
   nl = Wallis en Futuna
@@ -37738,6 +37922,7 @@
   en = Washington
   ru = Вашингтон
   ar = واشنطن
+  be = Вашынгтон
   cs = Washington
   da = Washington
   nl = Washington
@@ -37769,6 +37954,7 @@
   en = Willis Island
   ru = остров Виллис
   ar = جزيرة ويليس
+  be = Востраў Віліс
   cs = Ostrov Willis
   da = Willis Island
   nl = Willis Eiland
@@ -37800,6 +37986,7 @@
   en = Wisconsin
   ru = Висконсин
   ar = ويسكونسن
+  be = Вісконсін
   cs = Wisconsin
   da = Wisconsin
   nl = Wisconsin
@@ -37831,6 +38018,7 @@
   en = Yemen
   ru = Йемен
   ar = اليمن
+  be = Емен
   cs = Jemen
   da = Yemen
   nl = Jemen
@@ -37862,6 +38050,7 @@
   en = Zambia
   ru = Замбия
   ar = زامبيا
+  be = Замбія
   cs = Zambie
   da = Zambia
   nl = Zambia
@@ -37893,6 +38082,7 @@
   en = Zimbabwe
   ru = Зимбабве
   ar = زيمبابوي
+  be = Зімбабвэ
   cs = Zimbabwe
   da = Zimbabwe
   nl = Zimbabwe
@@ -37924,6 +38114,7 @@
   en = Santa Fe Province
   ru = Санта-Фе
   ar = سانتا في
+  be = Санта-Фэ
   cs = Santa Fé
   da = Santa Fe
   nl = Santa Fe
@@ -37955,6 +38146,7 @@
   en = Brisbane
   ru = Брисбен
   ar = بريزبين
+  be = Брысбен
   cs = Brisbane
   da = Brisbane
   nl = Brisbane
@@ -37986,6 +38178,7 @@
   en = Sydney
   ru = Сидней
   ar = سيدني
+  be = Сідней
   cs = Sydney
   da = Sydney
   nl = Sydney
@@ -38017,6 +38210,7 @@
   en = Styria — Graz
   ru = Штирия — Грац
   ar = شتايرمارك — غراتس
+  be = Штырыя — Грац
   cs = Štýrsko — Štýrský Hradec
   da = Steiermark — Graz
   nl = Stiermarken — Graz
@@ -38048,6 +38242,7 @@
   en = Styria — Leoben
   ru = Штирия — Леобен
   ar = ستيريا — ليوبن
+  be = Штырыя — Леобэн
   cs = Štýrsko — Leoben
   da = Steiermark — Leoben
   nl = Stiermarken — Leoben
@@ -38079,6 +38274,7 @@
   en = Upper Austria — Linz
   ru = Верхняя Австрия — Линц
   ar = النمسا العليا — لينتز
+  be = Верхняя Аўстрыя — Лінц
   cs = Horní Rakousy — Linec
   da = Oberösterreich — Linz
   nl = Opper-Oostenrijk — Linz
@@ -38110,6 +38306,7 @@
   en = Upper Austria — Wels
   ru = Верхняя Австрия — Вельс
   ar = النمسا العليا — فيلس
+  be = Верхняя Аўстрыя — Вельс
   cs = Horní Rakousy — Wels
   da = Oberösterreich — Wels
   nl = Opper-Oostenrijk — Wels
@@ -38141,6 +38338,7 @@
   en = Bolivia — North
   ru = Боливия — Север
   ar = بوليفيا — شمال
+  be = Балівія - Поўнач
   cs = Bolívie — Sever
   da = Bolivia — Nord
   nl = Bolivia — Noord
@@ -38172,6 +38370,7 @@
   en = Bolivia — South
   ru = Боливия — Юг
   ar = بوليفيا — جنوب
+  be = Балівія - Поўдзень
   cs = Bolívie — Jih
   da = Bolivia — Syd
   nl = Bolivia — Zuid
