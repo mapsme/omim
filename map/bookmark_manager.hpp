@@ -454,6 +454,7 @@ private:
   bool m_loadBookmarksFinished = false;
   bool m_firstDrapeNotification = false;
   bool m_restoreApplying = false;
+  bool m_migrationInProgress = false;
   bool m_conversionInProgress = false;
   bool m_notificationsEnabled = true;
 
