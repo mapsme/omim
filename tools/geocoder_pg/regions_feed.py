@@ -27,7 +27,7 @@ if __name__ == '__main__':
     cursor = psycopg2.connect('dbname='+options.database).cursor()
     cursor.execute('''select osm_id, level, name, rank,
                    ST_X(ST_PointOnSurface(way)), ST_Y(ST_PointOnSurface(way))
-                   from {0} where rank <= 13 and name is not null order by rank'''.format(
+                   from {0} where rank <= 14 and name is not null order by rank'''.format(
                        options.table))
     for region in cursor.fetchall():
         osm_id, level, name, rank, lon, lat = region
@@ -45,5 +45,8 @@ if __name__ == '__main__':
             rid = (osm_id - DB_NODE_BASE) | OsmIdCode.NODE
         else:
             rid = osm_id | OsmIdCode.WAY
+        if rid >= 2**63:
+            # Negate as in int64_t
+            rid = -1 - (rid ^ (2**64 - 1))
         feature = {'type': 'Feature', 'properties': {'name': name, 'rank': rank, 'address': props}}
         options.output.write(str(rid) + ' ' + json.dumps(feature, ensure_ascii=False) + '\n')
