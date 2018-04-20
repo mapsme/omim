@@ -25,10 +25,10 @@ if __name__ == '__main__':
     options = parser.parse_args()
 
     cursor = psycopg2.connect('dbname='+options.database).cursor()
-    cursor.execute('''select osm_id, level, name, rank,
-                   ST_X(ST_PointOnSurface(way)), ST_Y(ST_PointOnSurface(way))
+    cursor.execute('''select osm_id, level, name, rank, ST_X(centroid), ST_Y(centroid)
                    from {0} where rank <= 14 and name is not null order by rank'''.format(
                        options.table))
+
     for region in cursor.fetchall():
         osm_id, level, name, rank, lon, lat = region
         cursor.execute('''select level, name
@@ -36,9 +36,9 @@ if __name__ == '__main__':
                        where ST_Intersects(g.way, ST_SetSRID(ST_MakePoint(%s, %s), 4326))
                        and rank < %s
                        '''.format(options.table), (lon, lat, rank))
-        props = {level: name}
+        addr = {level: name}
         for row in cursor:
-            props[row[0]] = row[1]
+            addr[row[0]] = row[1]
         if osm_id < 0:
             rid = (-osm_id) | OsmIdCode.RELATION
         elif osm_id > DB_NODE_BASE:
@@ -48,5 +48,9 @@ if __name__ == '__main__':
         if rid >= 2**63:
             # Negate as in int64_t
             rid = -1 - (rid ^ (2**64 - 1))
-        feature = {'type': 'Feature', 'properties': {'name': name, 'rank': rank, 'address': props}}
+        feature = {
+            'type': 'Feature',
+            'geometry': {'type': 'Point', 'coordinates': [lon, lat]},
+            'properties': {'name': name, 'rank': rank, 'address': addr}
+        }
         options.output.write(str(rid) + ' ' + json.dumps(feature, ensure_ascii=False) + '\n')

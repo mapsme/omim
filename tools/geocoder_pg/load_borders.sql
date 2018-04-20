@@ -10,7 +10,7 @@ DELETE FROM osm_point WHERE name IS NULL OR name = '';
 
 \! echo "Adding centroids to polygons"
 ALTER TABLE osm_polygon ADD COLUMN centroid geometry(Point, 4326);
-UPDATE osm_polygon SET centroid = ST_Centroid(way) WHERE place IS NOT NULL;
+UPDATE osm_polygon SET centroid = ST_PointOnSurface(way);
 
 
 \! echo "Adding node_id column to polygons"
@@ -35,7 +35,7 @@ CREATE INDEX ON osm_point (place);
 
 \! echo "Merging place polygons with place nodes"
 WITH places AS (
-  SELECT poly.osm_id, pt.tags, pt.osm_id AS point_id
+  SELECT poly.osm_id, pt.tags, pt.way, pt.osm_id AS point_id
   FROM osm_polygon poly, osm_point pt, osm_polygon_geom geom
   WHERE
     geom.osm_id = poly.osm_id
@@ -48,7 +48,7 @@ WITH places AS (
   WHERE osm_point.osm_id = point_id
 )
 UPDATE osm_polygon poly
-SET tags = poly.tags || places.tags, node_id = places.point_id
+SET tags = poly.tags || places.tags, node_id = places.point_id, centroid = places.way
 FROM places
 WHERE poly.osm_id = places.osm_id;
 
