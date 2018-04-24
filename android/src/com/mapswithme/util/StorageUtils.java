@@ -109,7 +109,9 @@ public class StorageUtils
   @NonNull
   public static String getSettingsPath()
   {
-    return Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.MWM_DIR_POSTFIX;
+    boolean isDev = BuildConfig.DEBUG || BuildConfig.BUILD_TYPE.equals("beta");
+    return Environment.getExternalStorageDirectory().getAbsolutePath() +
+           (isDev ? Constants.MWM_DIR_POSTFIX_DEV : Constants.MWM_DIR_POSTFIX);
   }
 
   @NonNull
