@@ -162,7 +162,7 @@
   en = Algeria — Centre
   ru = Алжир — Центр
   ar = الجزائر — مركز
-  be = Алжыр - Цэнтар
+  be = Алжыр — Цэнтар
   cs = Alžírsko — Střed
   da = Algeriet — Centrum
   nl = Algerije — Centrum
@@ -194,7 +194,7 @@
   en = Algeria — North
   ru = Алжир — Север
   ar = الجزائر — شمال
-  be = Алжыр - Поўнач
+  be = Алжыр — Поўнач
   cs = Alžírsko — Sever
   da = Algeriet — Nord
   nl = Algerije — Noord
@@ -418,7 +418,7 @@
   en = Buenos Aires Province — North
   ru = Буэнос-Айрес — Север
   ar = بوينس آيرس — شمال
-  be = Буэнас-Айрэс - Поўнач
+  be = Буэнас-Айрэс — Поўнач
   cs = Buenos Aires — Sever
   da = Provincia de Buenos Aires — Nord
   nl = Buenos Aires — Noord
@@ -450,7 +450,7 @@
   en = Buenos Aires Province — South
   ru = Буэнос-Айрес — Юг
   ar = بوينس آيرس — جنوب
-  be = Буэнас-Айрэс - Поўдзень
+  be = Буэнас-Айрэс — Поўдзень
   cs = Buenos Aires — Jih
   da = Provincia de Buenos Aires — Syd
   nl = Buenos Aires — Zuid
@@ -1090,7 +1090,7 @@
   en = Lower Austria — West
   ru = Нижняя Австрия — Запад
   ar = النمسا السفلى — غرب
-  be = Ніжняя Аўстрыя - Захад
+  be = Ніжняя Аўстрыя — Захад
   cs = Dolní Rakousy — Západ
   da = Niederösterreich — Vest
   nl = Neder-Oostenrijk — West
@@ -2786,7 +2786,7 @@
   en = Minas Gerais — Contagem
   ru = Минас-Жерайс — Контажен
   ar = كونتاجيم -ميناس جيرايس
-  be = Мінас-Жэрайс - Контажэн
+  be = Мінас-Жэрайс — Контажэн
   cs = Minas Gerais — Contagem
   da = Minas Gerais — Contagem
   nl = Minas Gerais — Contagem
@@ -2818,7 +2818,7 @@
   en = Minas Gerais — North
   ru = Минас-Жерайс — Север
   ar = ميناس جيرايس — شمال
-  be = Мінас-Жэрайс - Поўнач
+  be = Мінас-Жэрайс — Поўнач
   cs = Minas Gerais — Sever
   da = Minas Gerais — Nord
   nl = Minas Gerais — Noord
@@ -2882,7 +2882,7 @@
   en = São Paulo — Campinas
   ru = Сан-Паулу — Кампинас
   ar = ساو باولو — كامبينيس
-  be = Сан-Паўлу - Кампінас
+  be = Сан-Паўлу — Кампінас
   cs = São Paulo — Campinas
   da = São Paulo — Campinas
   nl = São Paulo — Campinas
@@ -2914,7 +2914,7 @@
   en = São Paulo — Santos
   ru = Сан-Паулу — Сантус
   ar = ساو باولو — سانتوس
-  be = Сан-Паўлу - Сантус
+  be = Сан-Паўлу — Сантус
   cs = São Paulo — Santos
   da = São Paulo — Santos
   nl = São Paulo — Santos
@@ -2946,7 +2946,7 @@
   en = São Paulo — Ribeirão Preto
   ru = Сан-Паулу — Рибейран-Прету
   ar = ساو باولو- ريبيراو بريتو
-  be = Сан-Паўлу - Рыбейран-Прэту
+  be = Сан-Паўлу — Рыбейран-Прэту
   cs = São Paulo — Ribeirão Preto
   da = São Paulo — Ribeirão Preto
   nl = São Paulo — Ribeirão Preto
@@ -3266,7 +3266,7 @@
   en = Cameroon — Centre
   ru = Камерун — Центр
   ar = الكاميرون — مركز
-  be = Камерун - Цэнтар
+  be = Камерун — Цэнтар
   cs = Kamerun — Střed
   da = Cameroun — Centrum
   nl = Kameroen — Centrum
@@ -3298,7 +3298,7 @@
   en = Cameroon — West
   ru = Камерун — Запад
   ar = الكاميرون — غرب
-  be = Камерун - Захад
+  be = Камерун — Захад
   cs = Kamerun — Západ
   da = Cameroun — Vest
   nl = Kameroen — West
@@ -3458,7 +3458,7 @@
   en = Alberta — North
   ru = Альберта — Север
   ar = ألبرتا — شمال
-  be = Альберта - Поўнач
+  be = Альберта — Поўнач
   cs = Alberta — Sever
   da = Alberta — Nord
   nl = Alberta — Noord
@@ -3490,7 +3490,7 @@
   en = Alberta — South
   ru = Альберта — Юг
   ar = ألبرتا — جنوب
-  be = Альберта - Поўдзень
+  be = Альберта — Поўдзень
   cs = Alberta — Jih
   da = Alberta — Syd
   nl = Alberta — Zuid
@@ -3554,7 +3554,7 @@
   en = British Columbia — Centre
   ru = Британская Колумбия — Центр
   ar = كولومبيا البريطانية — مركز
-  be = Брытанская Калумбія - Цэнтар
+  be = Брытанская Калумбія — Цэнтар
   cs = Britská Kolumbie — Střed
   da = Britisk Columbia — Centrum
   nl = Brits-Columbia — Centrum
@@ -3586,7 +3586,7 @@
   en = British Columbia — East
   ru = Британская Колумбия — Восток
   ar = كولومبيا البريطانية — شرق
-  be = Брытанская Калумбія - Усход
+  be = Брытанская Калумбія — Усход
   cs = Britská Kolumbie — Východ
   da = Britisk Columbia — Øst
   nl = Brits-Columbia — Oost
@@ -3650,7 +3650,7 @@
   en = British Columbia — West
   ru = Британская Колумбия — Запад
   ar = كولومبيا البريطانية — غرب
-  be = Брытанская Калумбія - Захад
+  be = Брытанская Калумбія — Захад
   cs = Britská Kolumbie — Západ
   da = Britisk Columbia — Vest
   nl = Brits-Columbia — West
@@ -3682,7 +3682,7 @@
   en = British Columbia — North
   ru = Британская Колумбия — Север
   ar = كولومبيا البريطانية — شمال
-  be = Брытанская Калумбія - Поўнач
+  be = Брытанская Калумбія — Поўнач
   cs = Britská Kolumbie — Sever
   da = Britisk Columbia — Nord
   nl = Brits-Columbia — Noord
@@ -3810,7 +3810,7 @@
   en = Labrador — North
   ru = Лабрадор — Север
   ar = لبرادور — شمال
-  be = Лабрадор - Поўнач
+  be = Лабрадор — Поўнач
   cs = Labrador — Sever
   da = Labrador — nord
   nl = Labrador — Noord
@@ -3842,7 +3842,7 @@
   en = Labrador — South
   ru = Лабрадор — Юг
   ar = لبرادور — جنوب
-  be = Лабрадор - Поўдзень
+  be = Лабрадор — Поўдзень
   cs = Labrador — Jih
   da = Labrador — syd
   nl = Labrador — Zuid
@@ -3874,7 +3874,7 @@
   en = Labrador — West
   ru = Лабрадор — Запад
   ar = لبرادور — غرب
-  be = Лабрадор - Захад
+  be = Лабрадор — Захад
   cs = Labrador — Západ
   da = Labrador — vest
   nl = Labrador — West
@@ -3938,7 +3938,7 @@
   en = Manitoba — North
   ru = Манитоба — Север
   ar = مانيتوبا — شمال
-  be = Манітоба - Поўнач
+  be = Манітоба — Поўнач
   cs = Manitoba — Sever
   da = Manitoba — Nord
   nl = Manitoba — Noord
@@ -3970,7 +3970,7 @@
   en = Manitoba — West
   ru = Манитоба — Запад
   ar = مانيتوبا — غرب
-  be = Манітоба - Захад
+  be = Манітоба — Захад
   cs = Manitoba — Západ
   da = Manitoba — Vest
   nl = Manitoba — West
@@ -4002,7 +4002,7 @@
   en = Brandon
   ru = Брандон
   ar = براندون
-  be = Манітоба - Поўдзень
+  be = Манітоба — Поўдзень
   cs = Brandon
   da = Brandon
   nl = Brandon
@@ -4130,7 +4130,7 @@
   en = Newfoundland — East
   ru = Ньюфаундленд — Восток
   ar = نيوفاوندلاند — شرق
-  be = Ньюфаўндленд - Усход
+  be = Ньюфаўндленд — Усход
   cs = Newfoundland — Východ
   da = Newfoundland — Øst
   nl = Newfoundland — Oost
@@ -4162,7 +4162,7 @@
   en = Newfoundland — North
   ru = Ньюфаундленд — Север
   ar = نيوفاوندلاند — شمال
-  be = Ньюфаўндленд - Поўнач
+  be = Ньюфаўндленд — Поўнач
   cs = Newfoundland — Sever
   da = Newfoundland — Nord
   nl = Newfoundland — Noord
@@ -4194,7 +4194,7 @@
   en = Newfoundland — South
   ru = Ньюфаундленд — Юг
   ar = نيوفاوندلاند — جنوب
-  be = Ньюфаўндленд - Поўдзень
+  be = Ньюфаўндленд — Поўдзень
   cs = Newfoundland — Jih
   da = Newfoundland — Syd
   nl = Newfoundland — Zuid
@@ -4226,7 +4226,7 @@
   en = Newfoundland — West
   ru = Ньюфаундленд — Запад
   ar = نيوفاوندلاند — غرب
-  be = Ньюфаўндленд - Захад
+  be = Ньюфаўндленд — Захад
   cs = Newfoundland — Západ
   da = Newfoundland — Vest
   nl = Newfoundland — West
@@ -4290,7 +4290,7 @@
   en = Northwest Territories — East
   ru = Северо-Западные территории — Восток
   ar = الأقاليم الشمالية الغربية — شرق
-  be = Паўночна-Заходнія тэрыторыі - Усход
+  be = Паўночна-Заходнія тэрыторыі — Усход
   cs = Severozápadní teritoria — Východ
   da = Northwest Territories — Øst
   nl = Northwest Territories — Oost
@@ -4322,7 +4322,7 @@
   en = Northwest Territories — North
   ru = Северо-Западные территории — Север
   ar = الأقاليم الشمالية الغربية — شمال
-  be = Паўночна-Заходнія тэрыторыі - Поўнач
+  be = Паўночна-Заходнія тэрыторыі — Поўнач
   cs = Severozápadní teritoria — Sever
   da = Northwest Territories — Nord
   nl = Northwest Territories — Noord
@@ -4514,7 +4514,7 @@
   en = Nunavut — North
   ru = Нунавут — Север
   ar = نونافوت — شمال
-  be = Нунавут - Поўнач
+  be = Нунавут — Поўнач
   cs = Nunavut — Sever
   da = Nunavut — Nord
   nl = Nunavut — Noord
@@ -4546,7 +4546,7 @@
   en = Nunavut — South
   ru = Нунавут — Юг
   ar = نونافوت — جنوب
-  be = Нунавут - Поўдзень
+  be = Нунавут — Поўдзень
   cs = Nunavut — Jih
   da = Nunavut — Syd
   nl = Nunavut — Zuid
@@ -4930,7 +4930,7 @@
   en = Ontario — North
   ru = Онтарио — Север
   ar = أونتاريو — شمال
-  be = Антарыа - Поўнач
+  be = Антарыа — Поўнач
   cs = Ontario — Sever
   da = Ontario — Nord
   nl = Ontario — Noord
@@ -5090,7 +5090,7 @@
   en = Quebec — North
   ru = Квебек — Север
   ar = كيبك — شمال
-  be = Квебек - Поўнач
+  be = Квебек — Поўнач
   cs = Québec — Sever
   da = Québec — Nord
   nl = Québec — Noord
@@ -5346,7 +5346,7 @@
   en = Saskatchewan — North
   ru = Саскачеван — Север
   ar = ساسكاتشوان — شمال
-  be = Саскачэван - Поўнач
+  be = Саскачэван — Поўнач
   cs = Saskatchewan — Sever
   da = Saskatchewan — Nord
   nl = Saskatchewan — Noord
@@ -5378,7 +5378,7 @@
   en = Saskatchewan — South
   ru = Саскачеван — Юг
   ar = ساسكاتشوان — جنوب
-  be = Саскачэван - Поўдзень
+  be = Саскачэван — Поўдзень
   cs = Saskatchewan — Jih
   da = Saskatchewan — Syd
   nl = Saskatchewan — Zuid
@@ -5442,7 +5442,7 @@
   en = Yukon — North
   ru = Юкон — Север
   ar = يوكون — شمال
-  be = Юкан - Поўнач
+  be = Юкан — Поўнач
   cs = Yukon — Sever
   da = Yukon — Nord
   nl = Yukon — Noord
@@ -5762,7 +5762,7 @@
   en = Chile — North
   ru = Чили — Север
   ar = تشيلي — شمال
-  be = Чылі - Поўнач
+  be = Чылі — Поўнач
   cs = Chile — Sever
   da = Chile — Nord
   nl = Chili — Noord
@@ -5794,7 +5794,7 @@
   en = Chile — South
   ru = Чили — Юг
   ar = تشيلي — جنوب
-  be = Чылі - Поўдзень
+  be = Чылі — Поўдзень
   cs = Chile — Jih
   da = Chile — Syd
   nl = Chili — Zuid
@@ -6754,7 +6754,7 @@
   en = Colombia — East
   ru = Колумбия — Восток
   ar = كولومبيا — شرق
-  be = Калумбія - Усход
+  be = Калумбія — Усход
   cs = Kolumbie — Východ
   da = Colombia — Øst
   nl = Colombia — Oost
@@ -6786,7 +6786,7 @@
   en = Colombia — North
   ru = Колумбия — Север
   ar = كولومبيا — شمال
-  be = Калумбія - Поўнач
+  be = Калумбія — Поўнач
   cs = Kolumbie — Sever
   da = Colombia — Nord
   nl = Colombia — Noord
@@ -6818,7 +6818,7 @@
   en = Colombia — West
   ru = Колумбия — Запад
   ar = كولومبيا — غرب
-  be = Калумбія - Захад
+  be = Калумбія — Захад
   cs = Kolumbie — Západ
   da = Colombia — Vest
   nl = Colombia — West
@@ -7586,7 +7586,7 @@
   en = Central Bohemian Region — East
   ru = Среднечешский край — Восток
   ar = إقليم بوهيميا الوسطى — شرق
-  be = Сярэднячэшскі край - Усход
+  be = Сярэднячэшскі край — Усход
   cs = Středočeský kraj — Východ
   da = Centralbøhmen — Øst
   nl = Midden-Bohemen — Oost
@@ -7618,7 +7618,7 @@
   en = Central Bohemian Region — West
   ru = Среднечешский край — Запад
   ar = إقليم بوهيميا الوسطى — غرب
-  be = Сярэднячэшскі край - Захад
+  be = Сярэднячэшскі край — Захад
   cs = Středočeský kraj — Západ
   da = Centralbøhmen — Vest
   nl = Midden-Bohemen — West
@@ -8226,7 +8226,7 @@
   en = Estonia — East
   ru = Эстония — Восток
   ar = إستونيا — شرق
-  be = Эстонія - Усход
+  be = Эстонія — Усход
   cs = Estonsko — Východ
   da = Estland — Øst
   nl = Estland — Oost
@@ -8258,7 +8258,7 @@
   en = Estonia — West
   ru = Эстония — Запад
   ar = إستونيا — غرب
-  be = Эстонія - Захад
+  be = Эстонія — Захад
   cs = Estonsko — Západ
   da = Estland — Vest
   nl = Estland — West
@@ -8546,7 +8546,7 @@
   en = Southern Finland — Helsinki
   ru = Южная Финляндия — Хельсинки
   ar = فنلندا الجنوبية — هلسنكي
-  be = Паўднёвая Фінляндыя - Хельсінкі
+  be = Паўднёвая Фінляндыя — Хельсінкі
   cs = Jižní Finsko — Helsinky
   da = Sydfinlands len — Helsinki
   nl = Zuid-Finland — Helsinki
@@ -8578,7 +8578,7 @@
   en = Southern Finland — Lappeenranta
   ru = Южная Финляндия — Лаппеэнранта
   ar = فنلندا الجنوبية — لابينرنتا
-  be = Паўднёвая Фінляндыя - Лапеэнранта
+  be = Паўднёвая Фінляндыя — Лапеэнранта
   cs = Jižní Finsko — Lappeenranta
   da = Sydfinlands len — Lappeenranta
   nl = Zuid-Finland — Lappeenranta
@@ -12418,7 +12418,7 @@
   en = Stuttgart — Heilbronn
   ru = Штутгарт — Хайльбронн
   ar = منطقة حكومة شتوتغارت - هايلبرون
-  be = Штутгарт - Хайльброн
+  be = Штутгарт — Хайльброн
   cs = Vládní obvod Stuttgart — Heilbronn
   da = Regierungsbezirk Stuttgart — Heilbronn
   nl = Regierungsbezirk Stuttgart — Heilbronn
@@ -12450,7 +12450,7 @@
   en = Stuttgart — Stuttgart
   ru = Штутгарт — Штутгарт
   ar = منطقة حكومة شتوتغارت - شتوتغارت
-  be = Штутгарт - Штутгарт
+  be = Штутгарт — Штутгарт
   cs = Vládní obvod Stuttgart — Stuttgart
   da = Regierungsbezirk Stuttgart — Stuttgart
   nl = Regierungsbezirk Stuttgart — Stuttgart
@@ -12546,7 +12546,7 @@
   en = Brandenburg — North
   ru = Бранденбург — Север
   ar = براندنبورغ — شمال
-  be = Брандэнбург - Поўнач
+  be = Брандэнбург — Поўнач
   cs = Braniborsko — Sever
   da = Brandenburg — Nord
   nl = Brandenburg — Noord
@@ -12578,7 +12578,7 @@
   en = Brandenburg — South
   ru = Бранденбург — Юг
   ar = براندنبورغ — جنوب
-  be = Брандэнбург - Поўдзень
+  be = Брандэнбург — Поўдзень
   cs = Braniborsko — Jih
   da = Brandenburg — Syd
   nl = Brandenburg — Zuid
@@ -12770,7 +12770,7 @@
   en = Upper Bavaria — East
   ru = Верхняя Бавария — Восток
   ar = بافاريا العليا- الشرق
-  be = Верхняя Баварыя - Усход
+  be = Верхняя Баварыя — Усход
   cs = Horní Bavorsko — Východ
   da = Oberbayern — Øst
   nl = Oberbayern — Oost
@@ -12802,7 +12802,7 @@
   en = Upper Bavaria — Ingolstadt
   ru = Верхняя Бавария — Ингольштадт
   ar = بافاريا العليا- إنغولشتات
-  be = Верхняя Баварыя - Інгальштат
+  be = Верхняя Баварыя — Інгальштат
   cs = Horní Bavorsko — Ingolstadt
   da = Oberbayern — Ingolstadt
   nl = Oberbayern — Ingolstadt
@@ -12834,7 +12834,7 @@
   en = Upper Bavaria — Munich
   ru = Верхняя Бавария — Мюнхен
   ar = بافاريا العليا- ميونيخ
-  be = Верхняя Баварыя - Мюнхен
+  be = Верхняя Баварыя — Мюнхен
   cs = Horní Bavorsko — Mnichov
   da = Oberbayern — München
   nl = Oberbayern — München
@@ -14594,7 +14594,7 @@
   en = Hungary — East
   ru = Венгрия — Восток
   ar = المجر — شرق
-  be = Вугоршчына - Усход
+  be = Вугоршчына — Усход
   cs = Maďarsko — Východ
   da = Ungarn — Øst
   nl = Hongarije — Oost
@@ -14626,7 +14626,7 @@
   en = Hungary — West
   ru = Венгрия — Запад
   ar = المجر — غرب
-  be = Вугоршчына - Захад
+  be = Вугоршчына — Захад
   cs = Maďarsko — Západ
   da = Ungarn — Vest
   nl = Hongarije — West
@@ -15906,7 +15906,7 @@
   en = Indonesia — East
   ru = Индонезия — Восток
   ar = إندونيسيا — شرق
-  be = Інданезія - Усход
+  be = Інданезія — Усход
   cs = Indonésie — Východ
   da = Indonesien — Øst
   nl = Indonesië — Oost
@@ -16162,7 +16162,7 @@
   en = Iran — North
   ru = Иран — Север
   ar = إيران — شمال
-  be = Іран - Поўнач
+  be = Іран — Поўнач
   cs = Írán — Sever
   da = Iran — Nord
   nl = Iran — Noord
@@ -16194,7 +16194,7 @@
   en = Iran — South
   ru = Иран — Юг
   ar = إيران — جنوب
-  be = Іран - Поўдзень
+  be = Іран — Поўдзень
   cs = Írán — Jih
   da = Iran — Syd
   nl = Iran — Zuid
@@ -19106,7 +19106,7 @@
   en = Hokkaidō — East
   ru = Хоккайдо — Восток
   ar = هوكايدو — شرق
-  be = Хакайда - Усход
+  be = Хакайда — Усход
   cs = Hokkaidó — Východ
   da = Hokkaido — Øst
   nl = Hokkaido — Oost
@@ -19138,7 +19138,7 @@
   en = Hokkaidō — North
   ru = Хоккайдо — Север
   ar = هوكايدو — شمال
-  be = Хакайда - Поўнач
+  be = Хакайда — Поўнач
   cs = Hokkaidó — Sever
   da = Hokkaido — Nord
   nl = Hokkaido — Noord
@@ -19170,7 +19170,7 @@
   en = Hokkaidō — West
   ru = Хоккайдо — Запад
   ar = هوكايدو — غرب
-  be = Хакайда - Захад
+  be = Хакайда — Захад
   cs = Hokkaidó — Západ
   da = Hokkaido — Vest
   nl = Hokkaido — West
@@ -21506,7 +21506,7 @@
   en = Mexico — East
   ru = Мексика — Восток
   ar = المكسيك — شرق
-  be = Мексіка - Усход
+  be = Мексіка — Усход
   cs = Mexiko — Východ
   da = Mexico — Øst
   nl = Mexico — Oost
@@ -21570,7 +21570,7 @@
   en = Mexico — North
   ru = Мексика — Север
   ar = المكسيك — شمال
-  be = Мексіка - Поўнач
+  be = Мексіка — Поўнач
   cs = Mexiko — Sever
   da = Mexico — Nord
   nl = Mexico — Noord
@@ -21602,7 +21602,7 @@
   en = Mexico — South
   ru = Мексика — Юг
   ar = المكسيك — جنوب
-  be = Мексіка - Поўдзень
+  be = Мексіка — Поўдзень
   cs = Mexiko — Jih
   da = Mexico — Syd
   nl = Mexico — Zuid
@@ -21986,7 +21986,7 @@
   en = Morocco — South
   ru = Марокко — Юг
   ar = المغرب — جنوب
-  be = Марока - Поўдзень
+  be = Марока — Поўдзень
   cs = Maroko — Jih
   da = Marokko — Syd
   nl = Marokko — Zuid
@@ -22242,7 +22242,7 @@
   en = Nepal — East
   ru = Непал — Восток
   ar = نيبال — شرق
-  be = Непал - Усход
+  be = Непал — Усход
   cs = Nepál — Východ
   da = Nepal — Øst
   nl = Nepal — Oost
@@ -22274,7 +22274,7 @@
   en = Nepal — West
   ru = Непал — Запад
   ar = نيبال — غرب
-  be = Непал - Захад
+  be = Непал — Захад
   cs = Nepál — Západ
   da = Nepal — Vest
   nl = Nepal — West
@@ -22434,7 +22434,7 @@
   en = Gelderland — Nijmegen
   ru = Гелдерланд — Неймеген
   ar = خيلدرلند — نيميغن
-  be = Гелдэрланд - Неймеген
+  be = Гелдэрланд — Неймеген
   cs = Gelderland — Nijmegen
   da = Gelderland — Nijmegen
   nl = Gelderland — Nijmegen
@@ -22466,7 +22466,7 @@
   en = Gelderland — Apeldoorn
   ru = Гелдерланд — Апелдорн
   ar = خيلدرلند — آبلدورن
-  be = Гелдэрланд - Апелдорн
+  be = Гелдэрланд — Апелдорн
   cs = Gelderland — Apeldoorn
   da = Gelderland — Apeldoorn
   nl = Gelderland — Apeldoorn
@@ -22498,7 +22498,7 @@
   en = Gelderland — Zutphen
   ru = Гелдерланд — Зютфен
   ar = خيلدرلند — زوتفن
-  be = Гелдэрланд - Зютфен
+  be = Гелдэрланд — Зютфен
   cs = Gelderland — Zutphen
   da = Gelderland — Zutphen
   nl = Gelderland — Zutphen
@@ -22594,7 +22594,7 @@
   en = North Brabant — Eindhoven
   ru = Северный Брабант — Эйндховен
   ar = شمال برابنت — آيندهوفن
-  be = Паўночны Брабант - Эйндхавен
+  be = Паўночны Брабант — Эйндхавен
   cs = Severní Brabantsko — Eindhoven
   da = Noord-Brabant — Eindhoven
   nl = Noord-Brabant — Eindhoven
@@ -22626,7 +22626,7 @@
   en = North Brabant — Roosendaal
   ru = Северный Брабант — Розендал
   ar = شمال برابنت — روسيندال
-  be = Паўночны Брабант - Разендал
+  be = Паўночны Брабант — Разендал
   cs = Severní Brabantsko — Roosendaal
   da = Noord-Brabant — Roosendaal
   nl = Noord-Brabant — Roosendaal
@@ -22658,7 +22658,7 @@
   en = North Brabant — Tilburg
   ru = Северный Брабант — Тилбург
   ar = شمال برابنت — تلبرغ
-  be = Паўночны Брабант - Цілбург
+  be = Паўночны Брабант — Цілбург
   cs = Severní Brabantsko — Tilburg
   da = Noord-Brabant — Tilburg
   nl = Noord-Brabant — Tilburg
@@ -22690,7 +22690,7 @@
   en = North Brabant — Uden
   ru = Северный Брабант — Уден
   ar = شمال برابنت — أودن
-  be = Паўночны Брабант - Удэн
+  be = Паўночны Брабант — Удэн
   cs = Severní Brabantsko — Uden
   da = Noord-Brabant — Uden
   nl = Noord-Brabant — Uden
@@ -22722,7 +22722,7 @@
   en = North Holland — Alkmaar
   ru = Северная Голландия — Алкмар
   ar = شمال-هولندا — ألكمار
-  be = Паўночная Галандыя - Алкмар
+  be = Паўночная Галандыя — Алкмар
   cs = Severní Holandsko — Alkmaar
   da = Noord-Holland — Alkmaar
   nl = Noord-Holland — Alkmaar
@@ -22754,7 +22754,7 @@
   en = North Holland — Amsterdam
   ru = Северная Голландия — Амстердам
   ar = شمال-هولندا — أمستردام
-  be = Паўночная Галандыя - Амстэрдам
+  be = Паўночная Галандыя — Амстэрдам
   cs = Severní Holandsko — Amsterdam
   da = Noord-Holland — Amsterdam
   nl = Noord-Holland — Amsterdam
@@ -22786,7 +22786,7 @@
   en = North Holland — Zaanstad
   ru = Северная Голландия — Занстад
   ar = شمال-هولندا — زانستاد
-  be = Паўночная Галандыя - Заанстад
+  be = Паўночная Галандыя — Заанстад
   cs = Severní Holandsko — Zaanstad
   da = Noord-Holland — Zaanstad
   nl = Noord-Holland — Zaanstad
@@ -22818,7 +22818,7 @@
   en = Overijssel — Enschede
   ru = Оверэйсел — Энсхеде
   ar = أوفرايسل — إنسخيده
-  be = Аверэйсел - Энсхедэ
+  be = Аверэйсел — Энсхедэ
   cs = Overijssel — Enschede
   da = Overijssel — Enschede
   nl = Overijssel — Enschede
@@ -22850,7 +22850,7 @@
   en = Overijssel — Zwolle
   ru = Оверэйсел — Зволле
   ar = أوفرايسل — زفوله
-  be = Аверэйсел - Зволе
+  be = Аверэйсел — Зволе
   cs = Overijssel — Zwolle
   da = Overijssel — Zwolle
   nl = Overijssel — Zwolle
@@ -22882,7 +22882,7 @@
   en = South Holland — Brielle
   ru = Южная Голландия — Брилле
   ar = جنوب هولندا — بريله
-  be = Паўднёвая Галандыя - Брыле
+  be = Паўднёвая Галандыя — Брыле
   cs = Jižní Holandsko — Brielle
   da = Zuid-Holland — Brielle
   nl = Zuid-Holland — Brielle
@@ -22914,7 +22914,7 @@
   en = South Holland — The Hague
   ru = Южная Голландия — Гаага
   ar = جنوب هولندا — لاهاي
-  be = Паўднёвая Галандыя - Гаага
+  be = Паўднёвая Галандыя — Гаага
   cs = Jižní Holandsko — Haag
   da = Zuid-Holland — Haag
   nl = Zuid-Holland — Den Haag
@@ -22946,7 +22946,7 @@
   en = South Holland — Leiden
   ru = Южная Голландия — Лейден
   ar = جنوب هولندا — ليدن
-  be = Паўднёвая Галандыя - Лейдэн
+  be = Паўднёвая Галандыя — Лейдэн
   cs = Jižní Holandsko — Leiden
   da = Zuid-Holland — Leiden
   nl = Zuid-Holland — Leiden
@@ -22978,7 +22978,7 @@
   en = South Holland — Rotterdam
   ru = Южная Голландия — Роттердам
   ar = جنوب هولندا — روتردام
-  be = Паўднёвая Галандыя - Ротэрдам
+  be = Паўднёвая Галандыя — Ротэрдам
   cs = Jižní Holandsko — Rotterdam
   da = Zuid-Holland — Rotterdam
   nl = Zuid-Holland — Rotterdam
@@ -23010,7 +23010,7 @@
   en = Utrecht — Amersfoort
   ru = Утрехт — Амерсфорт
   ar = مقاطعة أوترخت — آمرسفورت
-  be = Утрэхт - Амэрсфоорт
+  be = Утрэхт — Амэрсфоорт
   cs = Utrecht — Amersfoort
   da = Utrecht — Amersfoort
   nl = Utrecht — Amersfoort
@@ -23042,7 +23042,7 @@
   en = Utrecht — Utrecht
   ru = Утрехт — Утрехт
   ar = مقاطعة أوترخت — أوترخت
-  be = Утрэхт - Утрэхт
+  be = Утрэхт — Утрэхт
   cs = Utrecht — Utrecht
   da = Utrecht — Utrecht
   nl = Utrecht — Utrecht
@@ -23202,7 +23202,7 @@
   en = North — Auckland
   ru = Север — Окленд
   ar = شمال — أوكلاند
-  be = Поўнач - Окленд
+  be = Поўнач — Окленд
   cs = Sever — Auckland
   da = Nord — Auckland
   nl = Noord — Auckland
@@ -23234,7 +23234,7 @@
   en = North — Wellington
   ru = Север — Веллингтон
   ar = شمال — ويلينغتون
-  be = Поўнач - Уэлінгтан
+  be = Поўнач — Уэлінгтан
   cs = Sever — Wellington
   da = Nord — Wellington
   nl = Noord — Wellington
@@ -23266,7 +23266,7 @@
   en = South — Canterbury Region
   ru = Юг — Кентербери
   ar = جنوب -منطقة كانتربري
-  be = Поўдзень - Кентэрберы
+  be = Поўдзень — Кентэрберы
   cs = Jih — Canterbury
   da = Syd — Canterbury
   nl = Zuid — Canterbury
@@ -23298,7 +23298,7 @@
   en = South — Southland Region
   ru = Юг — Саутленд
   ar = الجنوب – منطقة ساوثلاند
-  be = Поўдзень - Саўзлэнд
+  be = Поўдзень — Саўзлэнд
   cs = Jih — Region Southland
   da = Southland District
   nl = Zuid — Southland
@@ -24354,7 +24354,7 @@
   en = Peru — North
   ru = Перу — Север
   ar = بيرو — شمال
-  be = Перу - Поўнач
+  be = Перу — Поўнач
   cs = Peru — Sever
   da = Peru — Nord
   nl = Peru — Noord
@@ -24386,7 +24386,7 @@
   en = Peru — South
   ru = Перу — Юг
   ar = بيرو — جنوب
-  be = Перу - Поўдзень
+  be = Перу — Поўдзень
   cs = Peru — Jih
   da = Peru — Syd
   nl = Peru — Zuid
@@ -24482,7 +24482,7 @@
   en = Luzon — North
   ru = Лусон — Север
   ar = لوزون — شمال
-  be = Люсон - Поўнач
+  be = Люсон — Поўнач
   cs = Luzon — Sever
   da = Luzon — Nord
   nl = Luzon — Noord
@@ -24514,7 +24514,7 @@
   en = Luzon — South
   ru = Лусон — Юг
   ar = لوزون — جنوب
-  be = Люсон - Поўдзень
+  be = Люсон — Поўдзень
   cs = Luzon — Jih
   da = Luzon — Syd
   nl = Luzon — Zuid
@@ -25218,7 +25218,7 @@
   en = Portugal — North
   ru = Португалия — Север
   ar = البرتغال — شمال
-  be = Партугалія - Поўнач
+  be = Партугалія — Поўнач
   cs = Portugalsko — Sever
   da = Portugal — Nord
   nl = Portugal — Noord
@@ -25250,7 +25250,7 @@
   en = Portugal — South
   ru = Португалия — Юг
   ar = البرتغال — جنوب
-  be = Партугалія - Поўдзень
+  be = Партугалія — Поўдзень
   cs = Portugalsko — Jih
   da = Portugal — Syd
   nl = Portugal — Zuid
@@ -25698,7 +25698,7 @@
   en = Arkhangelsk Oblast — Centre
   ru = Архангельская область — Центр
   ar = أرخانجيلسك أوبلاست — مركز
-  be = Архангельская вобласць - Цэнтар
+  be = Архангельская вобласць — Цэнтар
   cs = Archangelská oblast — Střed
   da = Arkhangelsk oblast — Centrum
   nl = Oblast Archangelsk — Centrum
@@ -25730,7 +25730,7 @@
   en = Arkhangelsk Oblast — North
   ru = Архангельская область — Север
   ar = أرخانجيلسك أوبلاست — شمال
-  be = Архангельская вобласць - Поўнач
+  be = Архангельская вобласць — Поўнач
   cs = Archangelská oblast — Sever
   da = Arkhangelsk oblast — Nord
   nl = Oblast Archangelsk — Noord
@@ -26530,7 +26530,7 @@
   en = Krasnodar Krai — North
   ru = Краснодарский край — Север
   ar = كراسنودار كراي — شمال
-  be = Краснадарскі край - Поўнач
+  be = Краснадарскі край — Поўнач
   cs = Krasnodarský kraj — Sever
   da = Krasnodar kraj — Nord
   nl = Kraj Krasnodar — Noord
@@ -26690,7 +26690,7 @@
   en = Leningrad Oblast — North
   ru = Ленинградская область — Север
   ar = لينينغراد أوبلاست — شمال
-  be = Ленінградская вобласць - Поўнач
+  be = Ленінградская вобласць — Поўнач
   cs = Leningradská oblast — Sever
   da = Leningrad oblast — Nord
   nl = Oblast Leningrad — Noord
@@ -26722,7 +26722,7 @@
   en = Leningrad Oblast — South
   ru = Ленинградская область — Юг
   ar = لينينغراد أوبلاست — جنوب
-  be = Ленінградская вобласць - Поўдзень
+  be = Ленінградская вобласць — Поўдзень
   cs = Leningradská oblast — Jih
   da = Leningrad oblast — Syd
   nl = Oblast Leningrad — Zuid
@@ -27522,7 +27522,7 @@
   en = Saint Petersburg
   ru = Санкт-Петербург
   ar = سانت بطرسبرغ
-  be = Ленінград
+  be = Пецярбург
   cs = Petrohrad
   da = Sankt Petersborg
   nl = Sint-Petersburg
@@ -29698,7 +29698,7 @@
   en = South Korea — North
   ru = Республика Корея — Север
   ar = كوريا الجنوبية — شمال
-  be = Паўднёвая Карэя - Поўнач
+  be = Паўднёвая Карэя — Поўнач
   cs = Jižní Korea — Sever
   da = Sydkorea — Nord
   nl = Zuid-Korea — Noord
@@ -29730,7 +29730,7 @@
   en = South Korea — South
   ru = Республика Корея — Юг
   ar = كوريا الجنوبية — جنوب
-  be = Паўднёвая Карэя - Поўдзень
+  be = Паўднёвая Карэя — Поўдзень
   cs = Jižní Korea — Jih
   da = Sydkorea — Syd
   nl = Zuid-Korea — Zuid
@@ -31426,7 +31426,7 @@
   en = Thailand — North
   ru = Таиланд — Север
   ar = تايلاند — شمال
-  be = Тайланд - Поўнач
+  be = Тайланд — Поўнач
   cs = Thajsko — Sever
   da = Thailand — Nord
   nl = Thailand — Noord
@@ -31458,7 +31458,7 @@
   en = Thailand — South
   ru = Таиланд — Юг
   ar = تايلاند — جنوب
-  be = Тайланд - Поўдзень
+  be = Тайланд — Поўдзень
   cs = Thajsko — Jih
   da = Thailand — Syd
   nl = Thailand — Zuid
@@ -32066,7 +32066,7 @@
   en = East of England — Essex
   ru = Восточная Англия — Эссекс
   ar = مقاطعة إسكس-شرق إنجلترا
-  be = Усходняя Англія - Эсекс
+  be = Усходняя Англія — Эсекс
   cs = Východní Anglie — Essex
   da = East of England — Essex
   nl = East of England — Essex
@@ -32098,7 +32098,7 @@
   en = East of England — Norfolk
   ru = Восточная Англия — Норфолк
   ar = مقاطعة نورفك- شرق إنجلترا
-  be = Усходняя Англія - Норфалк
+  be = Усходняя Англія — Норфалк
   cs = Východní Anglie — Norfolk
   da = East of England — Norfolk
   nl = East of England — Norfolk
@@ -32226,7 +32226,7 @@
   en = South East England — Brighton
   ru = Юго-Восточная Англия — Брайтон
   ar = جنوب شرق إنجلترا - برايتون
-  be = Паўднёва-Усходняя Англія - Брайтан
+  be = Паўднёва-Усходняя Англія — Брайтан
   cs = Jihovýchodní Anglie — Brighton
   da = South East England — Brighton
   nl = South East England — Brighton
@@ -32258,7 +32258,7 @@
   en = South East England — Oxford
   ru = Юго-Восточная Англия — Оксфорд
   ar = جنوب شرق إنجلترا – أكسفورد
-  be = Паўднёва-Усходняя Англія - Оксфард
+  be = Паўднёва-Усходняя Англія — Оксфард
   cs = Jihovýchodní Anglie — Oxford
   da = South East England — Oxford
   nl = South East England — Oxford
@@ -32290,7 +32290,7 @@
   en = South West England — Bristol
   ru = Юго-Западная Англия — Бристоль
   ar = جنوب غرب انجلترا – بريستول
-  be = Паўднёва-Заходняя Англія - Брысталь
+  be = Паўднёва-Заходняя Англія — Брысталь
   cs = Jihozápadní Anglie — Bristol
   da = South West England — Bristol
   nl = South West England — Bristol
@@ -32322,7 +32322,7 @@
   en = South West England — Cornwall
   ru = Юго-Западная Англия — Корнуолл
   ar = مقاطعة كورنوال -جنوب غرب انجلترا
-  be = Паўднёва-Заходняя Англія - Корнуал
+  be = Паўднёва-Заходняя Англія — Корнуал
   cs = Jihozápadní Anglie — Cornwall
   da = South West England — Cornwall
   nl = South West England — Cornwall
@@ -32450,7 +32450,7 @@
   en = Scotland — North
   ru = Шотландия — Север
   ar = إسكتلندا — شمال
-  be = Шатландыя - Поўнач
+  be = Шатландыя — Поўнач
   cs = Skotsko — Sever
   da = Skotland — Nord
   nl = Schotland — Noord
@@ -32482,7 +32482,7 @@
   en = Scotland — South
   ru = Шотландия — Юг
   ar = إسكتلندا — جنوب
-  be = Шатландыя - Поўдзень
+  be = Шатландыя — Поўдзень
   cs = Skotsko — Jih
   da = Skotland — Syd
   nl = Schotland — Zuid
@@ -32898,7 +32898,7 @@
   en = Los Angeles — North
   ru = Лос-Анджелес — Север
   ar = لوس أنجلوس — شمال
-  be = Лос-Анджэлес - Поўнач
+  be = Лос-Анджэлес — Поўнач
   cs = Los Angeles — Sever
   da = Los Angeles — Nord
   nl = Los Angeles — Noord
@@ -33218,7 +33218,7 @@
   en = Colorado — South
   ru = Колорадо — Юг
   ar = كولورادو — جنوب
-  be = Каларада - Поўдзень
+  be = Каларада — Поўдзень
   cs = Colorado — Jih
   da = Colorado — Syd
   nl = Colorado — Zuid
@@ -33538,7 +33538,7 @@
   en = Georgia — North
   ru = Джорджия — Север
   ar = جورجيا — شمال
-  be = Джорджыя - Поўнач
+  be = Джорджыя — Поўнач
   cs = Georgie — Sever
   da = Georgia — Nord
   nl = Georgia — Noord
@@ -33570,7 +33570,7 @@
   en = Georgia — South
   ru = Джорджия — Юг
   ar = جورجيا — جنوب
-  be = Джорджыя - Поўдзень
+  be = Джорджыя — Поўдзень
   cs = Georgie — Jih
   da = Georgia — Syd
   nl = Georgia — Zuid
@@ -33794,7 +33794,7 @@
   en = Illinois — South
   ru = Иллинойс — Юг
   ar = إلينوي — جنوب
-  be = Ілінойс - Поўдзень
+  be = Ілінойс — Поўдзень
   cs = Illinois — Jih
   da = Illinois — Syd
   nl = Illinois — Zuid
@@ -33858,7 +33858,7 @@
   en = Indiana — North
   ru = Индиана — Север
   ar = إنديانا — شمال
-  be = Індыяна - Поўнач
+  be = Індыяна — Поўнач
   cs = Indiana — Sever
   da = Indiana — Nord
   nl = Indiana — Noord
@@ -33890,7 +33890,7 @@
   en = Indiana — South
   ru = Индиана — Юг
   ar = إنديانا — جنوب
-  be = Індыяна - Поўдзень
+  be = Індыяна — Поўдзень
   cs = Indiana — Jih
   da = Indiana — Syd
   nl = Indiana — Zuid
@@ -33986,7 +33986,7 @@
   en = Iowa — West
   ru = Айова — Запад
   ar = آيوا — غرب
-  be = Аява - Захад
+  be = Аява — Захад
   cs = Iowa — Západ
   da = Iowa — Vest
   nl = Iowa — West
@@ -34018,7 +34018,7 @@
   en = Kansas — East
   ru = Канзас — Восток
   ar = كانساس — شرق
-  be = Канзас - Усход
+  be = Канзас — Усход
   cs = Kansas — Východ
   da = Kansas — Øst
   nl = Kansas — Oost
@@ -34050,7 +34050,7 @@
   en = Kansas — West
   ru = Канзас — Запад
   ar = كانساس — غرب
-  be = Канзас - Захад
+  be = Канзас — Захад
   cs = Kansas — Západ
   da = Kansas — Vest
   nl = Kansas — West
@@ -34082,7 +34082,7 @@
   en = Kentucky — East
   ru = Кентукки — Восток
   ar = كنتاكي — شرق
-  be = Кентукі - Усход
+  be = Кентукі — Усход
   cs = Kentucky — Východ
   da = Kentucky — Øst
   nl = Kentucky — Oost
@@ -34114,7 +34114,7 @@
   en = Kentucky — West
   ru = Кентукки — Запад
   ar = كنتاكي — غرب
-  be = Кентукі - Захад
+  be = Кентукі — Захад
   cs = Kentucky — Západ
   da = Kentucky — Vest
   nl = Kentucky — West
@@ -34146,7 +34146,7 @@
   en = Louisiana — West
   ru = Луизиана — Запад
   ar = لويزيانا — غرب
-  be = Луізіяна - Захад
+  be = Луізіяна — Захад
   cs = Louisiana — Západ
   da = Louisiana — Vest
   nl = Louisiana — West
@@ -34498,7 +34498,7 @@
   en = Michigan — North
   ru = Мичиган — Север
   ar = ميشيغان — شمال
-  be = Мічыган - Поўнач
+  be = Мічыган — Поўнач
   cs = Michigan — Sever
   da = Michigan — Nord
   nl = Michigan — Noord
@@ -34530,7 +34530,7 @@
   en = Michigan — South
   ru = Мичиган — Юг
   ar = ميشيغان — جنوب
-  be = Мічыган - Поўдзень
+  be = Мічыган — Поўдзень
   cs = Michigan — Jih
   da = Michigan — Syd
   nl = Michigan — Zuid
@@ -34594,7 +34594,7 @@
   en = Minnesota — North
   ru = Миннесота — Север
   ar = مينيسوتا — شمال
-  be = Мінесота - Поўнач
+  be = Мінесота — Поўнач
   cs = Minnesota — Sever
   da = Minnesota — Nord
   nl = Minnesota — Noord
@@ -34722,7 +34722,7 @@
   en = Missouri — East
   ru = Миссури — Восток
   ar = ميزوري — شرق
-  be = Місуры - Усход
+  be = Місуры — Усход
   cs = Missouri — Východ
   da = Missouri — Øst
   nl = Missouri — Oost
@@ -34754,7 +34754,7 @@
   en = Missouri — West
   ru = Миссури — Запад
   ar = ميزوري — غرب
-  be = Місуры - Захад
+  be = Місуры — Захад
   cs = Missouri — Západ
   da = Missouri — Vest
   nl = Missouri — West
@@ -34914,7 +34914,7 @@
   en = New Jersey — North
   ru = Нью-Джерси — Север
   ar = نيو جيرسي — شمال
-  be = Нью-Джэрсі - Поўнач
+  be = Нью-Джэрсі — Поўнач
   cs = New Jersey — Sever
   da = New Jersey — Nord
   nl = New Jersey — Noord
@@ -34946,7 +34946,7 @@
   en = New Jersey — South
   ru = Нью-Джерси — Юг
   ar = نيو جيرسي — جنوب
-  be = Нью-Джэрсі - Поўдзень
+  be = Нью-Джэрсі — Поўдзень
   cs = New Jersey — Jih
   da = New Jersey — Syd
   nl = New Jersey — Zuid
@@ -35490,7 +35490,7 @@
   en = Oklahoma — East
   ru = Оклахома — Восток
   ar = أوكلاهوما — شرق
-  be = Аклахома - Усход
+  be = Аклахома — Усход
   cs = Oklahoma — Východ
   da = Oklahoma — Øst
   nl = Oklahoma — Oost
@@ -35522,7 +35522,7 @@
   en = Oklahoma — West
   ru = Оклахома — Запад
   ar = أوكلاهوما — غرب
-  be = Аклахома - Захад
+  be = Аклахома — Захад
   cs = Oklahoma — Západ
   da = Oklahoma — Vest
   nl = Oklahoma — West
@@ -35618,7 +35618,7 @@
   en = Oregon — East
   ru = Орегон — Восток
   ar = أوريغون — شرق
-  be = Арэгон - Усход
+  be = Арэгон — Усход
   cs = Oregon — Východ
   da = Oregon — Øst
   de = Oregon — Osten
@@ -35938,7 +35938,7 @@
   en = Tennessee — East
   ru = Теннесси — Восток
   ar = تينيسي — شرق
-  be = Тэнесі - Усход
+  be = Тэнесі — Усход
   cs = Tennessee — Východ
   da = Tennessee — Øst
   nl = Tennessee — Oost
@@ -35970,7 +35970,7 @@
   en = Tennessee — West
   ru = Теннесси — Запад
   ar = تينيسي — غرب
-  be = Тэнесі - Захад
+  be = Тэнесі — Захад
   cs = Tennessee — Západ
   da = Tennessee — Vest
   nl = Tennessee — West
@@ -38338,7 +38338,7 @@
   en = Bolivia — North
   ru = Боливия — Север
   ar = بوليفيا — شمال
-  be = Балівія - Поўнач
+  be = Балівія — Поўнач
   cs = Bolívie — Sever
   da = Bolivia — Nord
   nl = Bolivia — Noord
@@ -38370,7 +38370,7 @@
   en = Bolivia — South
   ru = Боливия — Юг
   ar = بوليفيا — جنوب
-  be = Балівія - Поўдзень
+  be = Балівія — Поўдзень
   cs = Bolívie — Jih
   da = Bolivia — Syd
   nl = Bolivia — Zuid
@@ -38402,6 +38402,7 @@
   en = Goiás — Brasília
   ru = Гояс — Бразилиа
   ar = غوياس — برازيليا
+  be = Гаяс — Бразілія
   cs = Goiás — Brasília
   da = Goiás — Brasília
   nl = Goiás — Brasilia
@@ -38433,6 +38434,7 @@
   en = Goiás — North
   ru = Гояс — Север
   ar = غوياس — شمال
+  be = Гаяс — Поўнач
   cs = Goiás — Sever
   da = Goiás — Nord
   nl = Goiás — Noord
@@ -38464,6 +38466,7 @@
   en = North Region — East
   ru = Северный регион — Восток
   ar = المنطقة الشمالية — شرق
+  be = Паўночны Рэгіён — Усход
   cs = Severní region — Východ
   da = Norte — Øst
   nl = Regio Noord — Oost
@@ -38495,6 +38498,7 @@
   en = North Region — West
   ru = Северный регион — Запад
   ar = المنطقة الشمالية — غرب
+  be = Паўночны Рэгіён — Захад
   cs = Severní region — Západ
   da = Norte — Vest
   nl = Regio Noord — West
@@ -38526,6 +38530,7 @@
   en = Northeast Region — East
   ru = Северо-восточный регион — Восток
   ar = المنطقة الشمالية الشرقية — شرق
+  be = Паўночна-Усходні Рэгіён — Усход
   cs = Severovýchodní region — Východ
   da = Nordeste — Øst
   nl = Regio Noordoost — Oost
@@ -38557,6 +38562,7 @@
   en = Northeast Region — West
   ru = Северо-восточный регион — Запад
   ar = المنطقة الشمالية — غرب
+  be = Паўночна-Усходні Рэгіён — Захад
   cs = Severovýchodní region — Západ
   da = Nordeste — Vest
   nl = Regio Noordoost — West
@@ -38588,6 +38594,7 @@
   en = Paraná — East
   ru = Парана — Восток
   ar = بارانا — شرق
+  be = Парана — Усход
   cs = Paraná — Východ
   da = Paraná — Øst
   nl = Paraná — Oost
@@ -38619,6 +38626,7 @@
   en = Paraná — West
   ru = Парана — Запад
   ar = بارانا — غرب
+  be = Парана — Захад
   cs = Paraná — Západ
   da = Paraná — Vest
   nl = Paraná — West
@@ -38650,6 +38658,7 @@
   en = Southern Region — East
   ru = Южный регион — Восток
   ar = المنطقة الجنوبية — شرق
+  be = Паўднёвы Рэгіён — Усход
   cs = Jižní region — Východ
   da = Sul — Øst
   nl = Regio Zuid — Oost
@@ -38681,6 +38690,7 @@
   en = Southern Region — West
   ru = Южный регион — Запад
   ar = المنطقة الجنوبية — غرب
+  be = Паўднёвы Рэгіён — Захад
   cs = Jižní region — Západ
   da = Sul — Vest
   nl = Regio Zuid — West
@@ -38712,6 +38722,7 @@
   en = Bulgaria — East
   ru = Болгария — Восток
   ar = بلغاريا — شرق
+  be = Балгарыя — Усход
   cs = Bulharsko — Východ
   da = Bulgarien — Øst
   nl = Bulgarije — Oost
@@ -38743,6 +38754,7 @@
   en = Bulgaria — West
   ru = Болгария — Запад
   ar = بلغاريا — غرب
+  be = Балгарыя — Захад
   cs = Bulharsko — Západ
   da = Bulgarien — Vest
   nl = Bulgarije — West
@@ -38774,6 +38786,7 @@
   en = Wawa
   ru = Вава
   ar = واوا
+  be = Вава
   cs = Wawa
   da = Wawa
   nl = Wawa
@@ -38805,6 +38818,7 @@
   en = Chile — Centre
   ru = Чили — Центр
   ar = تشيلي — مركز
+  be = Чылі — Цэнтар
   cs = Chile — Střed
   da = Chile — Centrum
   nl = Chili — Centrum
@@ -38836,6 +38850,7 @@
   en = Kivu
   ru = Киву
   ar = كيفو
+  be = Ківу
   cs = Kivu
   da = Kivu
   nl = Kivu
@@ -38867,6 +38882,7 @@
   en = Congo — West
   ru = Конго — Запад
   ar = جمهورية الكونغو الديمقراطية — غرب
+  be = Конга — Захад
   cs = Demokratická republika Kongo — Západ
   da = Demokratiske Republik Congo — Vest
   nl = Congo-Kinshasa — West
@@ -38898,6 +38914,7 @@
   en = Croatia — Centre
   ru = Хорватия — Центр
   ar = كرواتيا — مركز
+  be = Харватыя — Цэнтар
   cs = Chorvatsko — Střed
   da = Kroatien — Centrum
   nl = Kroatië — Centrum
@@ -38929,6 +38946,7 @@
   en = Croatia — West
   ru = Хорватия — Запад
   ar = كرواتيا — غرب
+  be = Харватыя — Захад
   cs = Chorvatsko — Západ
   da = Kroatien — Vest
   nl = Kroatië — West
@@ -38960,6 +38978,7 @@
   en = Ecuador — East
   ru = Эквадор — Восток
   ar = الإكوادور — شرق
+  be = Эквадор — Усход
   cs = Ekvádor — Východ
   da = Ecuador — Øst
   nl = Ecuador — Oost
@@ -38991,6 +39010,7 @@
   en = Ecuador — West
   ru = Эквадор — Запад
   ar = الإكوادور — غرب
+  be = Эквадор — Захад
   cs = Ekvádor — Západ
   da = Ecuador — Vest
   nl = Ecuador — West
@@ -39022,6 +39042,7 @@
   en = Eastern Finland — North
   ru = Восточная Финляндия — Север
   ar = فنلندا الشرقية — شمال
+  be = Усходняя Фінляндыя — Поўнач
   cs = Východní Finsko — Sever
   da = Østfinlands len — Nord
   nl = Oost-Finland — Noord
@@ -39053,6 +39074,7 @@
   en = Eastern Finland — South
   ru = Восточная Финляндия — Юг
   ar = فنلندا الشرقية — جنوب
+  be = Усходняя Фінляндыя — Поўдзень
   cs = Východní Finsko — Jih
   da = Østfinlands len — Syd
   nl = Oost-Finland — Zuid
@@ -39084,6 +39106,7 @@
   en = Western Finland — Jyväskylä
   ru = Западная Финляндия — Йювяскюля
   ar = فنلندا الغربية — يوفاسكولا
+  be = Заходняя Фінляндыя — Ювяскюля
   cs = Západní Finsko — Jyväskylä
   da = Vestfinlands len — Jyväskylä
   nl = West-Finland — Jyväskylä
@@ -39115,6 +39138,7 @@
   en = Western Finland — Tampere
   ru = Западная Финляндия — Тампере
   ar = فنلندا الغربية — تامبيري
+  be = Заходняя Фінляндыя — Тамперэ
   cs = Západní Finsko — Tampere
   da = Vestfinlands len — Tampere
   nl = West-Finland — Tampere
@@ -39146,6 +39170,7 @@
   en = Franche-Comté — North
   ru = Франш-Конте — Север
   ar = فرانش كونته — شمال
+  be = Франш-Кантэ — Поўнач
   cs = Franche-Comté — Sever
   da = Franche-Comté — Nord
   nl = Franche-Comté — Noord
@@ -39177,6 +39202,7 @@
   en = Franche-Comté — South
   ru = Франш-Конте — Юг
   ar = فرانش كونته — جنوب
+  be = Франш-Кантэ — Поўдзень
   cs = Franche-Comté — Jih
   da = Franche-Comté — Syd
   nl = Franche-Comté — Zuid
@@ -39208,6 +39234,7 @@
   en = Loire-Atlantique — Nantes
   ru = Атлантическая Луара — Нант
   ar = لوار الأطلسية — نانت
+  be = Атлантычная Луара — Нант
   cs = Loire-Atlantique — Nantes
   da = Loire-Atlantique — Nantes
   nl = Loire-Atlantique — Nantes
@@ -39239,6 +39266,7 @@
   en = Loire-Atlantique — Saint-Nazaire
   ru = Атлантическая Луара — Сен-Назер
   ar = لويار أتلانتيك — سانت نازير
+  be = Атлантычная Луара — Сэнт-Назер
   cs = Loire-Atlantique — Saint-Nazaire
   da = Loire-Atlantique — Saint-Nazaire
   nl = Loire-Atlantique — Saint-Nazaire
@@ -39270,6 +39298,7 @@
   en = Upper Bavaria — South
   ru = Верхняя Бавария — Юг
   ar = بافاريا العليا — جنوب
+  be = Верхняя Баварыя — Поўдзень
   cs = Horní Bavorsko — Jih
   da = Oberbayern — Syd
   nl = Oberbayern — Zuid
@@ -39301,6 +39330,7 @@
   en = Karnataka — North
   ru = Карнатака — Север
   ar = كارناتاكا — شمال
+  be = Карнатака — Поўнач
   cs = Karnátaka — Sever
   da = Karnataka — Nord
   nl = Karnataka — Noord
@@ -39332,6 +39362,7 @@
   en = Karnataka — South
   ru = Карнатака — Юг
   ar = كارناتاكا — جنوب
+  be = Карнатака — Поўдзень
   cs = Karnátaka — Jih
   da = Karnataka — Syd
   nl = Karnataka — Zuid
@@ -39363,6 +39394,7 @@
   en = Iran — East
   ru = Иран — Восток
   ar = إيران — شرق
+  be = Іран — Усход
   cs = Írán — Východ
   da = Iran — Øst
   nl = Iran — Oost
@@ -39394,6 +39426,7 @@
   en = Iraq — North
   ru = Ирак — Север
   ar = العراق — شمال
+  be = Ірак — Поўнач
   cs = Irák — Sever
   da = Irak — Nord
   nl = Irak — Noord
@@ -39425,6 +39458,7 @@
   en = Iraq — South
   ru = Ирак — Юг
   ar = العراق — جنوب
+  be = Ірак — Поўдзень
   cs = Irák — Jih
   da = Irak — Syd
   nl = Irak — Zuid
@@ -39456,6 +39490,7 @@
   en = Aichi — Nagoya
   ru = Айти — Нагоя
   ar = آيتشي — ناغويا
+  be = Айці — Нагоя
   cs = Prefektura Aiči — Nagoja
   da = Aichi-præfekturet — Nagoya
   nl = Aichi — Nagoya
@@ -39487,6 +39522,7 @@
   en = Aichi — Toyohashi
   ru = Айти — Тоёхаси
   ar = آيتشي — تويوهاشي، آيتشي
+  be = Айці — Тояхашы
   cs = Prefektura Aiči — Toyohashi
   da = Aichi — Toyohashi
   nl = Aichi — Toyohashi
@@ -39518,6 +39554,7 @@
   en = Sapporo
   ru = Саппоро
   ar = سابورو
+  be = Сапара
   cs = Sapporo
   da = Sapporo
   nl = Sapporo
@@ -39549,6 +39586,7 @@
   en = Ōsaka
   ru = Осака
   ar = أوساكا
+  be = Осака
   cs = Ósaka
   da = Osaka
   nl = Osaka
@@ -39580,6 +39618,7 @@
   en = Ōsaka — West
   ru = Осака — Запад
   ar = أوساكا — غرب
+  be = Осака — Захад
   cs = Prefektura Ósaka — Západ
   da = Osaka-præfekturet — Vest
   nl = Osaka — West
@@ -39611,6 +39650,7 @@
   en = Kazakhstan — North
   ru = Казахстан — Север
   ar = كازاخستان — شمال
+  be = Казахстан — Поўнач
   cs = Kazachstán — Sever
   da = Kasakhstan — Nord
   nl = Kazachstan — Noord
@@ -39642,6 +39682,7 @@
   en = Kazakhstan — South
   ru = Казахстан — Юг
   ar = كازاخستان — جنوب
+  be = Казахстан — Поўдзень
   cs = Kazachstán — Jih
   da = Kasakhstan — Syd
   nl = Kazachstan — Zuid
@@ -39673,6 +39714,7 @@
   en = Lithuania — East
   ru = Литва — Восток
   ar = ليتوانيا — شرق
+  be = Летува — Усход
   cs = Litva — Východ
   da = Litauen — Øst
   nl = Litouwen — Oost
@@ -39704,6 +39746,7 @@
   en = Lithuania — West
   ru = Литва — Запад
   ar = ليتوانيا — غرب
+  be = Летува — Захад
   cs = Litva — Západ
   da = Litauen — Vest
   nl = Litouwen — West
@@ -39735,6 +39778,7 @@
   en = Chihuahua
   ru = Чиуауа
   ar = ولاية شيواوا
+  be = Чыўаўа
   cs = Chihuahua
   da = Chihuahua
   nl = Chihuahua
@@ -39766,6 +39810,7 @@
   en = Sonora
   ru = Сонора
   ar = ولاية سونورا
+  be = Санора
   cs = Sonora
   da = Sonora
   nl = Sonora
@@ -39797,6 +39842,7 @@
   en = Kathmandu
   ru = Катманду
   ar = كاثماندو
+  be = Катманду
   cs = Káthmándú
   da = Katmandu
   nl = Kathmandu
@@ -39828,6 +39874,7 @@
   en = Central Region
   ru = Центральный регион
   ar = المنطقة الوسطى
+  be = Цэнтральны Рэгіён
   cs = Centrální region
   da = Centrale region
   nl = Centrale regio
@@ -39859,6 +39906,7 @@
   en = Eastern Region
   ru = Восточный регион
   ar = المنطقة الشرقية
+  be = Усходні Рэгіён
   cs = Východní region
   da = Østlige region
   nl = oostelijke regio
@@ -39890,6 +39938,7 @@
   en = Nigeria — North
   ru = Нигерия — Север
   ar = نيجيريا — شمال
+  be = Нігерыя — Поўнач
   cs = Nigérie — Sever
   da = Nigeria — Nord
   nl = Nigeria — Noord
@@ -39921,6 +39970,7 @@
   en = Nigeria — South
   ru = Нигерия — Юг
   ar = نيجيريا — جنوب
+  be = Нігерыя — Поўдзень
   cs = Nigérie — Jih
   da = Nigeria — Syd
   nl = Nigeria — Zuid
@@ -39952,6 +40002,7 @@
   en = Hordaland
   ru = Хордаланн
   ar = هوردالان
+  be = Хордалан
   cs = Hordaland
   da = Hordaland
   nl = Hordaland
@@ -39983,6 +40034,7 @@
   en = Nordland
   ru = Нурланн
   ar = نورلان
+  be = Нурлан
   cs = Nordland
   da = Nordland
   nl = Nordland
@@ -40014,6 +40066,7 @@
   en = Nord-Trøndelag
   ru = Нур-Трёнделаг
   ar = نور ترونديلاغ
+  be = Нур-Трондэлаг
   cs = Nord-Trøndelag
   da = Nord-Trøndelag
   nl = Nord-Trøndelag
@@ -40045,6 +40098,7 @@
   en = Rogaland
   ru = Ругаланн
   ar = روغالاند
+  be = Ругалан
   cs = Rogaland
   da = Rogaland
   nl = Rogaland
@@ -40076,6 +40130,7 @@
   en = Sør-Trøndelag
   ru = Сёр-Трёнделаг
   ar = سور ترونديلاغ
+  be = Сёр-Трондэлаг
   cs = Sør-Trøndelag
   da = Sør-Trøndelag
   nl = Sør-Trøndelag
@@ -40107,6 +40162,7 @@
   en = Lima
   ru = Лима
   ar = ليما
+  be = Ліма
   cs = Lima
   da = Lima
   nl = Lima
@@ -40138,6 +40194,7 @@
   en = Islands of Portugal
   ru = Острова Португалии
   ar = جزر البرتغال
+  be = Партугальскія Астравы
   cs = Ostrovy Portugalska
   da = Øer i Portugal
   nl = Portugees eiland
@@ -40169,6 +40226,7 @@
   en = Viseu
   ru = Визеу
   ar = فيسيو
+  be = Візеў
   cs = Viseu
   da = Viseu
   nl = Viseu
@@ -40200,6 +40258,7 @@
   en = Krasnoyarsk Krai — North
   ru = Красноярский край — Север
   ar = كراسنويارسك كراي — شمال
+  be = Краснаярскі край — Поўнач
   cs = Krasnojarský kraj — Sever
   da = Krasnojarsk kraj — Nord
   nl = Kraj Krasnojarsk — Noord
@@ -40231,6 +40290,7 @@
   en = Krasnoyarsk Krai — South
   ru = Красноярский край — Юг
   ar = كراسنويارسك كراي — جنوب
+  be = Краснаярскі край — Поўдзень
   cs = Krasnojarský kraj — Jih
   da = Krasnojarsk kraj — Syd
   nl = Kraj Krasnojarsk — Zuid
@@ -40262,6 +40322,7 @@
   en = Moscow Oblast — East
   ru = Московская область — Восток
   ar = محافظة موسكو — شرق
+  be = Маскоўская вобласць — Усход
   cs = Moskevská oblast — Východ
   da = Moskva oblast — Øst
   nl = Oblast Moskou — Oost
@@ -40293,6 +40354,7 @@
   en = Moscow Oblast — West
   ru = Московская область — Запад
   ar = محافظة موسكو — غرب
+  be = Маскоўская вобласць — Захад
   cs = Moskevská oblast — Západ
   da = Moskva oblast — Vest
   nl = Oblast Moskou — West
@@ -40324,6 +40386,7 @@
   en = Perm Krai — North
   ru = Пермский край — Север
   ar = بيرم كراي — شمال
+  be = Пермскі край — Поўнач
   cs = Permský kraj — Sever
   da = Perm kraj — Nord
   nl = Kraj Perm — Noord
@@ -40355,6 +40418,7 @@
   en = Perm Krai — South
   ru = Пермский край — Юг
   ar = بيرم كراي — جنوب
+  be = Пермскі край — Поўдзень
   cs = Permský kraj — Jih
   da = Perm kraj — Syd
   nl = Kraj Perm — Zuid
@@ -40386,6 +40450,7 @@
   en = Republic of Karelia — North
   ru = Республика Карелия — Север
   ar = جمهورية كاريليا — شمال
+  be = Карэлія — Поўнач
   cs = Republika Karélie — Sever
   da = Karelen — Nord
   nl = Karelië — Noord
@@ -40417,6 +40482,7 @@
   en = Republic of Karelia — South
   ru = Республика Карелия — Юг
   ar = جمهورية كاريليا — جنوب
+  be = Карэлія — Поўдзень
   cs = Republika Karélie — Jih
   da = Karelen — Syd
   nl = Karelië — Zuid
@@ -40448,6 +40514,7 @@
   en = Sverdlovsk Oblast — North
   ru = Свердловская область — Север
   ar = سفيردلوفسك أوبلاست — شمال
+  be = Свярдлоўская вобласць — Поўнач
   cs = Sverdlovská oblast — Sever
   da = Sverdlovsk oblast — Nord
   nl = Oblast Sverdlovsk — Noord
@@ -40479,6 +40546,7 @@
   en = Sverdlovsk Oblast — Yekaterinburg
   ru = Свердловская область — Екатеринбург
   ar = سفيردلوفسك أوبلاست — ييكاتيرينبرغ
+  be = Свярдлоўская вобласць — Екацярынбург
   cs = Sverdlovská oblast — Jekatěrinburg
   da = Sverdlovsk oblast — Jekaterinburg
   nl = Oblast Sverdlovsk — Jekaterinenburg
@@ -40510,6 +40578,7 @@
   en = Yugra — Khanty-Mansiysk
   ru = ХМАО — Ханты-Мансийск
   ar = أوكروغ خانتي-مانسي ذاتية الحكم — خانتي-مانسييسك
+  be = Югра — Ханты-Мансійск
   cs = Chantymansijský autonomní okruh - Jugra — Chanty-Mansijsk
   da = Hanti-Mansi autonome okrug — Khanty-Mansijsk
   nl = Chanto-Mansië — Chanty-Mansiejsk
@@ -40541,6 +40610,7 @@
   en = Yugra — Surgut
   ru = ХМАО — Сургут
   ar = أوكروغ خانتي-مانسي ذاتية الحكم — سورغوت
+  be = Югра — Сургут
   cs = Chantymansijský autonomní okruh - Jugra — Surgut
   da = Hanti-Mansi autonome okrug — Surgut
   nl = Chanto-Mansië — Soergoet
@@ -40572,6 +40642,7 @@
   en = Saudi Arabia — North
   ru = Саудовская Аравия — Север
   ar = السعودية — شمال
+  be = Саўдаўская Аравія — Поўнач
   cs = Saúdská Arábie — Sever
   da = Saudi-Arabien — Nord
   nl = Saoedi-Arabië — Noord
@@ -40603,6 +40674,7 @@
   en = Saudi Arabia — South
   ru = Саудовская Аравия — Юг
   ar = السعودية — جنوب
+  be = Саўдаўская Аравія — Поўдзень
   cs = Saúdská Arábie — Jih
   da = Saudi-Arabien — Syd
   nl = Saoedi-Arabië — Zuid
@@ -40634,6 +40706,7 @@
   en = Slovenia — East
   ru = Словения — Восток
   ar = سلوفينيا — شرق
+  be = Славенія — Усход
   cs = Slovinsko — Východ
   da = Slovenien — Øst
   nl = Slovenië — Oost
@@ -40665,6 +40738,7 @@
   en = Slovenia — West
   ru = Словения — Запад
   ar = سلوفينيا — غرب
+  be = Славенія — Захад
   cs = Slovinsko — Západ
   da = Slovenien — Vest
   nl = Slovenië — West
@@ -40696,6 +40770,7 @@
   en = Andalusia — Granada
   ru = Андалусия — Гранада
   ar = منطقة أندلوسيا — غرناطة
+  be = Андалусія — Гранада
   cs = Andalusie — Granada
   da = Andalusien — Granada
   nl = Andalusië — Granada
@@ -40727,6 +40802,7 @@
   en = Andalusia — Seville
   ru = Андалусия — Севилья
   ar = منطقة أندلوسيا — إشبيلية
+  be = Андалусія — Севілья
   cs = Andalusie — Sevilla
   da = Andalusien — Sevilla
   nl = Andalusië — Sevilla
@@ -40758,6 +40834,7 @@
   en = Castile and León — East
   ru = Кастилия и Леон — Восток
   ar = منطقة قـشتالة وليون — شرق
+  be = Кастылія і Леон — Усход
   cs = Kastilie a León — Východ
   da = Castilla y León — Øst
   nl = Castilië en León — Oost
@@ -40789,6 +40866,7 @@
   en = Castile and León — West
   ru = Кастилия и Леон — Запад
   ar = منطقة قـشتالة وليون — غرب
+  be = Кастылія і Леон — Захад
   cs = Kastilie a León — Západ
   da = Castilla y León — Vest
   nl = Castilië en León — West
@@ -40820,6 +40898,7 @@
   en = Galicia — North
   ru = Галисия — Север
   ar = منطقة غاليسيا — شمال
+  be = Галісія — Поўнач
   cs = Galicie — Sever
   da = Galicien — Nord
   nl = Galicië — Noord
@@ -40851,6 +40930,7 @@
   en = Galicia — South
   ru = Галисия — Юг
   ar = منطقة غاليسيا — جنوب
+  be = Галісія — Поўдзень
   cs = Galicie — Jih
   da = Galicien — Syd
   nl = Galicië — Zuid
@@ -40882,6 +40962,7 @@
   en = Sudan — East
   ru = Судан — Восток
   ar = السودان — شرق
+  be = Судан — Усход
   cs = Súdán — Východ
   da = Sudan — Øst
   nl = Soedan — Oost
@@ -40913,6 +40994,7 @@
   en = Sudan — West
   ru = Судан — Запад
   ar = السودان — غرب
+  be = Судан — Захад
   cs = Súdán — Západ
   da = Sudan — Vest
   nl = Soedan — West
@@ -40944,6 +41026,7 @@
   en = Stockholm
   ru = Стокгольм
   ar = ستوكهولم
+  be = Стакгольм
   cs = Stockholm
   da = Stockholm
   nl = Stockholm
@@ -40975,6 +41058,7 @@
   en = Espace Mittelland — Bern
   ru = Центральная Швейцария — Берн
   ar = منطقة ميتلاند — بيرن
+  be = Цэнтральная Швейцарыя — Берн
   cs = Espace Mittelland — Bern
   da = Espace Mittelland — Bern
   nl = Espace Mittelland — Bern
@@ -41006,6 +41090,7 @@
   en = Espace Mittelland — East
   ru = Центральная Швейцария — Восток
   ar = منطقة ميتلاند — شرق
+  be = Цэнтральная Швейцарыя — Усход
   cs = Espace Mittelland — východ
   da = Espace Mittelland — Øst
   nl = Espace Mittelland — Oost
@@ -41037,6 +41122,7 @@
   en = Taiwan — North
   ru = Тайвань — Север
   ar = تايوان — شمال
+  be = Тайвань — Поўнач
   cs = Čínská republika — Sever
   da = Republikken Kina — Nord
   nl = Taiwan — Noord
@@ -41068,6 +41154,7 @@
   en = Taiwan — South
   ru = Тайвань — Юг
   ar = تايوان — جنوب
+  be = Тайвань — Поўдзень
   cs = Čínská republika — Jih
   da = Republikken Kina — Syd
   nl = Taiwan — Zuid
@@ -41099,6 +41186,7 @@
   en = Thailand — Centre
   ru = Таиланд — Центр
   ar = تايلاند — مركز
+  be = Тайланд — Цэнтар
   cs = Thajsko — Střed
   da = Thailand — Centrum
   nl = Thailand — Centrum
@@ -41130,6 +41218,7 @@
   en = Central Anatolia — Ankara
   ru = Центральная Анатолия — Анкара
   ar = منطقة وسط الأناضول — أنقرة
+  be = Цэнтральная Анатолія — Анкара
   cs = Střední Anatolie — Ankara
   da = Centralanatolien — Ankara
   nl = Centraal-Anatolië — Ankara
@@ -41161,6 +41250,7 @@
   en = Central Anatolia — Kayseri
   ru = Центральная Анатолия — Кайсери
   ar = منطقة وسط الأناضول — قيصرية
+  be = Цэнтральная Анатолія — Кайсеры
   cs = Střední Anatolie — Kayseri
   da = Centralanatolien — Kayseri
   nl = Centraal-Anatolië — Kayseri
@@ -41192,6 +41282,7 @@
   en = Marmara Region — Bursa
   ru = Мраморноморский регион — Бурса
   ar = منطقة مرمرة — بورصة
+  be = Мармуроваморскі рэгіён — Бурса
   cs = Marmarský region — Bursa
   da = Marmara-regionen — Bursa
   nl = Marmara-regio — Bursa
@@ -41223,6 +41314,7 @@
   en = Marmara Region — Istanbul
   ru = Мраморноморский регион — Стамбул
   ar = منطقة مرمرة — إسطنبول
+  be = Мармуроваморскі рэгіён — Стамбул
   cs = Marmarský region — Istanbul
   da = Marmara-regionen — Istanbul
   nl = Marmara-regio — Istanboel
@@ -41254,6 +41346,7 @@
   en = Arkansas — North
   ru = Арканзас — Север
   ar = أركنساس — شمال
+  be = Арканзас — Поўнач
   cs = Arkansas — Sever
   da = Arkansas — Nord
   nl = Arkansas — Noord
@@ -41285,6 +41378,7 @@
   en = Arkansas — South
   ru = Арканзас — Юг
   ar = أركنساس — جنوب
+  be = Арканзас — Поўдзень
   cs = Arkansas — Jih
   da = Arkansas — Syd
   nl = Arkansas — Zuid
@@ -41316,6 +41410,7 @@
   en = Gainesville
   ru = Гейнсвилл
   ar = غينزفيل، فلوريدا
+  be = Гейнсвіль
   cs = Gainesville
   da = Gainesville
   nl = Gainesville
@@ -41347,6 +41442,7 @@
   en = Idaho — North
   ru = Айдахо — Север
   ar = أيداهو — شمال
+  be = Айдаха — Поўнач
   cs = Idaho — Sever
   da = Idaho — Nord
   nl = Idaho — Noord
@@ -41378,6 +41474,7 @@
   en = Idaho — South
   ru = Айдахо — Юг
   ar = أيداهو — جنوب
+  be = Айдаха — Поўдзень
   cs = Idaho — Jih
   da = Idaho — Syd
   nl = Idaho — Zuid
@@ -41409,6 +41506,7 @@
   en = Evansville
   ru = Эвансвилл
   ar = إيفانسفيل
+  be = Эвансвіл
   cs = Evansville
   da = Evansville
   nl = Evansville
@@ -41440,6 +41538,7 @@
   en = Indianapolis
   ru = Индианаполис
   ar = إنديانابوليس، إنديانا
+  be = Індыянапаліс
   cs = Indianapolis
   da = Indianapolis
   nl = Indianapolis
@@ -41471,6 +41570,7 @@
   en = Wichita
   ru = Уичито
   ar = ويجيتا، كانساس
+  be = Уічыта
   cs = Wichita
   da = Wichita
   nl = Wichita (Kansas)
@@ -41502,6 +41602,7 @@
   en = Louisville
   ru = Луисвилл
   ar = لويفيل، كنتاكي
+  be = Луісвіл
   cs = Louisville
   da = Louisville
   nl = Louisville
@@ -41533,6 +41634,7 @@
   en = Grand Rapids
   ru = Гранд-Рапидс
   ar = غراند رابيدز
+  be = Гранд-Рапідс
   cs = Grand Rapids
   da = Grand Rapids
   nl = Grand Rapids
@@ -41564,6 +41666,7 @@
   en = Lansing
   ru = Лансинг
   ar = لانسنغ، ميشيغان
+  be = Лансінг
   cs = Lansing
   da = Lansing
   nl = Lansing
@@ -41595,6 +41698,7 @@
   en = Gulfport
   ru = Галфпорт
   ar = غولفبورت
+  be = Галфпарт
   cs = Gulfport
   da = Gulfport
   nl = Gulfport
@@ -41626,6 +41730,7 @@
   en = Mississippi — North
   ru = Миссисипи — Север
   ar = مسيسيبي — شمال
+  be = Місісіпі — Поўнач
   cs = Mississippi — Sever
   da = Mississippi — Nord
   nl = Mississippi — Noord
@@ -41657,6 +41762,7 @@
   en = Kansas City
   ru = Канзас-Сити
   ar = كانزاس سيتي، ميزوري
+  be = Канзас-Сіці
   cs = Kansas City
   da = Kansas City (Missouri)
   nl = Kansas City
@@ -41688,6 +41794,7 @@
   en = Springfield
   ru = Спрингфилд
   ar = سبرينغفيلد
+  be = Спрынгфілд
   cs = Springfield
   da = Springfield
   nl = Springfield
@@ -41719,6 +41826,7 @@
   en = St. Louis
   ru = Сент-Луис
   ar = سانت لويس، ميزوري
+  be = Сент-Луіс
   cs = Saint Louis
   da = St. Louis
   nl = Saint Louis
@@ -41750,6 +41858,7 @@
   en = Montana — East
   ru = Монтана — Восток
   ar = مونتانا — شرق
+  be = Мантана — Усход
   cs = Montana — Východ
   da = Montana — Øst
   nl = Montana — Oost
@@ -41781,6 +41890,7 @@
   en = Montana — West
   ru = Монтана — Запад
   ar = مونتانا — غرب
+  be = Мантана — Захад
   cs = Montana — Západ
   da = Montana — Vest
   nl = Montana — West
@@ -41812,6 +41922,7 @@
   en = Nebraska — East
   ru = Небраска — Восток
   ar = نبراسكا — شرق
+  be = Небраска — Усход
   cs = Nebraska — Východ
   da = Nebraska — Øst
   nl = Nebraska — Oost
@@ -41843,6 +41954,7 @@
   en = Nebraska — West
   ru = Небраска — Запад
   ar = نبراسكا — غرب
+  be = Небраска — Захад
   cs = Nebraska — Západ
   da = Nebraska — Vest
   nl = Nebraska — West
@@ -41874,6 +41986,7 @@
   en = Albuquerque
   ru = Альбукерке
   ar = ألباكركي، نيومكسيكو
+  be = Альбукерке
   cs = Albuquerque
   da = Albuquerque
   nl = Albuquerque
@@ -41905,6 +42018,7 @@
   en = Roswell
   ru = Розуэлл
   ar = روزويل، نيومكسيكو
+  be = Розуэл
   cs = Roswell
   da = Roswell
   nl = Roswell
@@ -41936,6 +42050,7 @@
   en = Cincinnati
   ru = Цинциннати
   ar = سينسيناتي، أوهايو
+  be = Цынцынаці
   cs = Cincinnati
   da = Cincinnati
   nl = Cincinnati
@@ -41967,6 +42082,7 @@
   en = Columbus
   ru = Колумбус
   ar = كولومبوس، أوهايو
+  be = Калумбус
   cs = Columbus
   da = Columbus
   nl = Columbus
@@ -41998,6 +42114,7 @@
   en = Toledo
   ru = Толидо
   ar = توليدو، أوهايو
+  be = Таліда
   cs = Toledo
   da = Toledo
   nl = Toledo
@@ -42029,6 +42146,7 @@
   en = Oklahoma City
   ru = Оклахома-Сити
   ar = أوكلاهوما سيتي، أوكلاهوما
+  be = Аклахома-Сіці
   cs = Oklahoma City
   da = Oklahoma City
   nl = Oklahoma City
@@ -42060,6 +42178,7 @@
   en = Tulsa
   ru = Талса
   ar = تولسا، أوكلاهوما
+  be = Талса
   cs = Tulsa
   da = Tulsa
   nl = Tulsa
@@ -42091,6 +42210,7 @@
   en = Charleston
   ru = Чарльстон
   ar = تشارلستون، كارولاينا الجنوبية
+  be = Чарлстан
   cs = Charleston
   da = Charleston
   nl = Charleston
@@ -42122,6 +42242,7 @@
   en = Amarillo
   ru = Амарилло
   ar = أماريلو، تكساس
+  be = Амарыла
   cs = Amarillo
   da = Amarillo
   nl = Amarillo
@@ -42153,6 +42274,7 @@
   en = Lubbock
   ru = Лаббок
   ar = لوبوك، تكساس
+  be = Лабак
   cs = Lubbock
   da = Lubbock
   nl = Lubbock
@@ -42184,6 +42306,7 @@
   en = Utah — North
   ru = Юта — Север
   ar = يوتا — شمال
+  be = Юта — Поўнач
   cs = Utah — Sever
   da = Utah — Nord
   nl = Utah — Noord
@@ -42215,6 +42338,7 @@
   en = Utah — South
   ru = Юта — Юг
   ar = يوتا — جنوب
+  be = Юта — Поўдзень
   cs = Utah — Jih
   da = Utah — Syd
   nl = Utah — Zuid
@@ -42246,6 +42370,7 @@
   en = Alexandria
   ru = Александрия
   ar = الإسكندرية، فيرجينيا
+  be = Александрыя
   cs = Alexandria
   da = Alexandria
   nl = Alexandria
@@ -42277,6 +42402,7 @@
   en = Eau Claire
   ru = О-Клэр
   ar = أو كلير
+  be = О-Клэр
   cs = Eau Claire
   da = Eau Claire
   nl = Eau Claire
@@ -42308,6 +42434,7 @@
   en = Madison
   ru = Мадисон
   ar = ماديسون، ويسكنسن
+  be = Мадысан
   cs = Madison
   da = Madison
   nl = Madison
@@ -42339,6 +42466,7 @@
   en = Venezuela — North
   ru = Венесуэла — Север
   ar = فنزويلا — شمال
+  be = Венесуэла — Поўнач
   cs = Venezuela — Sever
   da = Venezuela — Nord
   nl = Venezuela — Noord
@@ -42370,6 +42498,7 @@
   en = Venezuela — South
   ru = Венесуэла — Юг
   ar = فنزويلا — جنوب
+  be = Венесуэла — Поўдзень
   cs = Venezuela — Jih
   da = Venezuela — Syd
   nl = Venezuela — Zuid
@@ -42401,6 +42530,7 @@
   en = Buenos Aires
   ru = Буэнос-Айрес
   ar = بوينس آيرس
+  be = Буэнас-Айрэс
   cs = Buenos Aires
   da = Buenos Aires
   nl = Buenos Aires
@@ -42432,6 +42562,7 @@
   en = Lachute
   ru = Lachute
   ar = لاشوت، كيبك
+  be = Ляшут
   cs = Lachute
   da = Lachute
   nl = Lachute
@@ -42463,6 +42594,7 @@
   en = Regina
   ru = Реджайна
   ar = ريجاينا
+  be = Рэджайна
   cs = Regina
   da = Regina
   nl = Regina
@@ -42494,6 +42626,7 @@
   en = Saskatoon
   ru = Саскатун
   ar = ساسكاتون
+  be = Саскатун
   cs = Saskatoon
   da = Saskatoon
   nl = Saskatoon
@@ -42525,6 +42658,7 @@
   en = Braunschweig
   ru = Брауншвейг
   ar = براونشفايغ
+  be = Браўншвайг
   cs = Braunschweig
   da = Braunschweig
   nl = Braunschweig
@@ -42556,6 +42690,7 @@
   en = Saxony-Anhalt — Halle
   ru = Саксония-Анхальт — Галле
   ar = ساكسونيا أنهالت — هاله
+  be = Саксонія-Ангальт — Гале
   cs = Sasko-Anhaltsko — Halle
   da = Sachsen-Anhalt — Halle
   nl = Saksen-Anhalt — Halle
@@ -42587,6 +42722,7 @@
   en = Saxony-Anhalt — Magdeburg
   ru = Саксония-Анхальт — Магдебург
   ar = ساكسونيا أنهالت — ماغديبورغ
+  be = Саксонія-Ангальт — Магдэбург
   cs = Sasko-Anhaltsko — Magdeburg
   da = Sachsen-Anhalt — Magdeburg
   nl = Saksen-Anhalt — Magdeburg
@@ -42618,6 +42754,7 @@
   en = Schleswig-Holstein — Flensburg
   ru = Шлезвиг-Гольштейн — Фленсбург
   ar = شليسفيغ هولشتاين — فلنسبورغ
+  be = Шлезвіг-Гольштэйн — Фленсбург
   cs = Šlesvicko-Holštýnsko — Flensburg
   da = Slesvig-Holsten — Flensborg
   nl = Sleeswijk-Holstein — Flensburg
@@ -42649,6 +42786,7 @@
   en = Schleswig-Holstein — Kiel
   ru = Шлезвиг-Гольштейн — Киль
   ar = شليسفيغ هولشتاين — كيل
+  be = Шлезвіг-Гольштэйн — Кіль
   cs = Šlesvicko-Holštýnsko — Kiel
   da = Slesvig-Holsten — Kiel
   nl = Sleeswijk-Holstein — Kiel
@@ -42680,6 +42818,7 @@
   en = Porto
   ru = Порту
   ar = بورتو
+  be = Порту
   cs = Porto
   da = Porto
   nl = Porto
@@ -42711,6 +42850,7 @@
   en = North West England — Lancaster
   ru = Северо-Западная Англия — Ланкастер
   ar = شمال غرب إنجلترا — لانكاستر، لانكشاير
+  be = Паўночна-Заходняя Англія — Ланкасцер
   cs = Severozápadní Anglie — Lancaster
   da = North West England — Lancaster
   nl = North West England — Lancaster
@@ -42742,6 +42882,7 @@
   en = North West England — Manchester
   ru = Северо-Западная Англия — Манчестер
   ar = شمال غرب إنجلترا — مانشستر
+  be = Паўночна-Заходняя Англія — Манчэстэр
   cs = Severozápadní Anglie — Manchester
   da = North West England — Manchester
   nl = North West England — Manchester
@@ -42773,6 +42914,7 @@
   en = Gainesville
   ru = Гейнсвилл
   ar = غينزفيل، فلوريدا
+  be = Гейнсвіль
   cs = Gainesville
   da = Gainesville
   nl = Gainesville
@@ -42804,6 +42946,7 @@
   en = Victoria
   ru = Виктория
   ar = فيكتوريا، تكساس
+  be = Вікторыя
   cs = Victoria
   da = Victoria
   nl = Victoria
@@ -42835,6 +42978,7 @@
   en = Norfolk
   ru = Норфолк
   ar = نورفولك، فيرجينيا
+  be = Норфалк
   cs = Norfolk
   da = Norfolk
   nl = Norfolk
@@ -42865,6 +43009,7 @@
 [Abkhazia Description]
   en = Pitsunda, Gudauta, Sukhum
   ru = Пицунда, Гудаута, Сухум
+  be = Піцунда, Гудаута, Сухум
   nl = Soechoemi
   fr = Soukhoumi
   de = Pizunda, Suchum
@@ -42876,6 +43021,7 @@
 [Afghanistan Description]
   en = Kabul, Kandahar, Tokzar
   ru = Кабул, Кандагар
+  be = Кабул, Кандагар, Тукзар
   cs = Kábul
   da = Kabul, Kandahar
   nl = Kaboel
@@ -42900,6 +43046,7 @@
 [Albania Description]
   en = Tiranë, Kavaje, Shkoder
   ru = Тирана, Кавая, Шкодер
+  be = Тырана, Кавая, Шкодэр
   ar = تيرانا
   nl = Shkodër
   fr = Tirana
@@ -42920,6 +43067,7 @@
   en = Batna, Djelfa, Biskra
   ru = Батна, Джельфа, Бискра
   ar = باتنة, الجلفة, بسكرة
+  be = Батна, Джэльфа, Біскра
   fr = Batna, Djelfa, Biskra
   uk = Батна, Біскра
   el = Μπάτνα, Ντιέλφα, Μπίσκρα
@@ -42928,6 +43076,7 @@
   en = Algiers, Oran, Constantine
   ru = Алжир, Оран, Константина
   ar = الجزائر, وهران, قسنطينة
+  be = Алжыр, Аран, Канстанціна
   cs = Alžír
   da = Algier
   nl = Algiers
@@ -42956,6 +43105,7 @@
   en = Andorra la Vella, La Massana, Ordino
   ru = Андорра-ла-Велья, Ла-Массана, Ордино
   ar = أندورا لا فيلا
+  be = Андора-ла-Велья, Ла-Масана, Ардына
   nl = Andorra
   fr = Andorre-la-Vieille
   hu = Andorra la Vella
@@ -42975,6 +43125,7 @@
   en = Luanda, Lobito, Namibe
   ru = Луанда, Лобиту, Намибе
   ar = لواندا
+  be = Луанда, Лабіту, Намібэ
   cs = Luanda
   nl = Luanda
   fr = Luanda
@@ -42992,6 +43143,7 @@
 [Anguilla Description]
   en = The Valley, George Hill, Stoney Ground
   ru = Валли
+  be = Вэлі, Узгорак Джорджа, Зямля Стоні
   hu = The Valley
   ja = バレー
   ko = 더밸리
@@ -43003,12 +43155,14 @@
 [Antarctica Description]
   en = McMurdo Station, Stația științifică chileeană „Villa Las Estrellas”, Rocky Cove
   ru = Мак-Мёрдо
+  be = Станцыя Мак-Мёрда, Станцыя "Вілья-лас-Эстрэльяс", Скалістая Бухта
   el = Σταθμός McMurdo, Στατία Στιντιφίκα χιλεάνα „Villa Las Estrellas”, Ρίκι κόουβ
 
 [Antigua and Barbuda Description]
   en = St. John's, English Harbour, Freetown
   ru = Сент-Джонс
   ar = سانت جونز، أنتيغوا وبربودا
+  be = Сент-Джонс, Англійскі Харбар, Фрытаўн
   cs = Saint John's
   da = Saint John's
   fi = St. John’s
@@ -43029,6 +43183,7 @@
   en = Buenos Aires, José C. Paz, González Catán
   ru = Буэнос-Айрес
   ar = بوينس آيرس
+  be = Буэнас-Айрэс, Хасэ Паз, Гансалес Катан
   fr = Buenos Aires
   de = Buenos Aires
   hu = Buenos Aires
@@ -43042,11 +43197,13 @@
 
 [Argentina_Buenos Aires_North Description]
   en = Dolores, Pinamar, Villa Gesell
+  be = Далорэс, Пинамар, Вила Гёсэль
   el = Ντολόρες, Πιναμάρ, Βίλλα Γκεσέλ
 
 [Argentina_Buenos Aires_South Description]
   en = Bahía Blanca, Miramar, Tandil
   ru = Баия-Бланка, Тандил
+  be = Бая-Бланка, Мірамар, Тандыл
   fr = Bahia Blanca
   uk = Баїя-Бланка, Танділ
   el = Μπαχία Μπλάνκα, Μιραμάρ, Ταντίλ
@@ -43054,18 +43211,21 @@
 [Argentina_Cuyo Description]
   en = San Juan, San Rafael, San Luis
   ru = Сан-Хуан, Сан-Рафаэль, Сан-Луис
+  be = Сан-Хуан, Сан-Рафаэль, Сан-Луіс
   uk = Сан-Рафаель, Сан-Луїс
   el = Σαν Χουάν, Σαν Ραφαέλ, Σαν Λουίς
   he = סן חואן, סן לואיס
 
 [Argentina_Mesopotamia Description]
   en = Federación, Paraná, Alvear
+  be = Федэрэйшн, Парана, Алвір
   el = Φεντερασιόν, Παρανά, Αλβεάρ
   he = פרנה
 
 [Argentina_Northwest Description]
   en = San Miguel de Tucumán, San Fernando del Valle de Catamarca, San Salvador de Jujuy
   ru = Сан-Мигель-де-Тукуман, Сан-Сальвадор-де-Жужуй
+  be = Сан-Мігель-дэ-Тукуман, Сан-Сальвадор-дэ-Жужуй
   uk = Сан-Мігель-де-Тукуман
   el = Σαν Μιγκέλ ντε Τουκουμάν, Σαν Φερνάντο ντελ Βάλλε ντε Καταμάρκα, Σαν Σαλβαδόρ ντε Χουχούι
   he = טוקומאן, קטמרקה, חוחוי
@@ -43074,6 +43234,7 @@
   en = Córdoba, Santa Rosa, Río Cuarto
   ru = Кордова, Санта-Роса, Рио-Куарто
   ar = كوردوبا
+  be = Кордава, Санта-Роза, Рыа-Кварта
   it = Cordova
   ja = コルドバ
   ko = 코르도바
@@ -43086,6 +43247,7 @@
 [Argentina_Patagonia Description]
   en = Cutral Co, Viedma, Comodoro Rivadavia
   ru = Вьедма, Комодоро-Ривадавия
+  be = Кутрал Ко, В'едма, Камадора-Рывадавія
   uk = В'єдма, Комодоро-Рівадавія
   el = Κουτράλ Κο, Βιέντμα, Κομοντόρο Ριβαντάβια
   he = ויידמה
@@ -43094,6 +43256,7 @@
   en = Rosario, Santa Fe, Las Parejas
   ru = Росарио, Санта-Фе
   ar = روزاريو, سانتا في
+  be = Расарыа, Санта-Фэ, Лас Парэяс
   ja = ロサリオ
   es = Rosario
   uk = Санта-Фе
@@ -43104,6 +43267,7 @@
   en = Yerevan, Ashtarak, Gyumri
   ru = Ереван, Аштарак, Гюмри
   ar = يريفان
+  be = Ерэван, Аштарак, Гюмры
   cs = Jerevan
   da = Jerevan
   nl = Jerevan
@@ -43131,6 +43295,7 @@
 [Australia_Brisbane Description]
   en = Brisbane, Redcliffe, Gold Coast
   ru = Брисбен, Голд-Кост
+  be = Брысбен, Рэдкліф, Голд-Кост
   fr = Brisbane
   de = Brisbane
   ja = ブリスベン, レッドクリフ, ゴールドコースト
@@ -43142,6 +43307,7 @@
 [Australia_Melbourne Description]
   en = Melbourne, Geelong, Yering
   ru = Мельбурн, Джелонг
+  be = Мельбурн, Джыланг, Ерынг
   fr = Melbourne
   de = Melbourne
   ja = メルボルン, ジーロング
@@ -43153,11 +43319,13 @@
 
 [Australia_New South Wales Description]
   en = Barham, Tuncurry, Tocumwal
+  be = Бархам, Тункуры, Такумвал
   el = Μπαρχάμ, Τουνκούρι Τοκουμβάλ
 
 [Australia_Northern Territory Description]
   en = Darwin, Tennant Creek, Mutitjulu
   ru = Дарвин, Теннант-Крик
+  be = Дарвін, Ценант-Крык, Муціт'юлу
   ja = ダーウィン
   uk = Дарвін, Теннант-Крік
   el = Ντάργουιν, Τέναντ Κρικ, Μουτιτζούλου
