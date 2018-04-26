@@ -2,6 +2,7 @@
 
 #include "platform/platform.hpp"
 
+#include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
 namespace
@@ -29,6 +30,8 @@ UserMarkIdStorage::UserMarkIdStorage()
     LoadLastTrackId();
     LoadLastCategoryId();
   }
+  LOG(LINFO, ("lastBookmarkId =", m_lastBookmarkId, "lastTrackId =", m_lastTrackId,
+              "lastCategoryId =", m_lastCategoryId));
 }
 
 // static
@@ -53,18 +56,21 @@ void UserMarkIdStorage::ResetBookmarkId()
 {
   m_lastBookmarkId = 0;
   SaveLastBookmarkId();
+  LOG(LINFO, ("Reset bookmark id"));
 }
 
 void UserMarkIdStorage::ResetTrackId()
 {
   m_lastTrackId = 0;
   SaveLastTrackId();
+  LOG(LINFO, ("Reset track id"));
 }
 
 void UserMarkIdStorage::ResetCategoryId()
 {
   m_lastCategoryId = static_cast<uint64_t>(UserMark::Type::USER_MARK_TYPES_COUNT_MAX);
   SaveLastCategoryId();
+  LOG(LINFO, ("Reset category id"));
 }
 
 kml::MarkId UserMarkIdStorage::GetNextUserMarkId(UserMark::Type type)
