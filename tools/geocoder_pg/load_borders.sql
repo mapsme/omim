@@ -78,7 +78,7 @@ WHERE
 RETURNING osm_id, way
 )
 INSERT INTO osm_polygon_geom (osm_id, way)
-SELECT osm_id, ST_Subdivide(way)
+SELECT osm_id, way
 FROM inserted;
 
 
@@ -124,6 +124,10 @@ UPDATE osm_polygon SET rank = CASE
   WHEN place = 'isolated_dwelling' THEN 20
   WHEN building IS NOT NULL THEN 30
 END;
+
+
+\! echo "Creating index on ranks"
+CREATE INDEX ON osm_polygon (rank);
 
 
 \! echo "Statistics"
