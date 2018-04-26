@@ -458,6 +458,9 @@ Bookmark * BookmarkManager::CreateBookmark(kml::BookmarkData && bm, kml::MarkGro
 
   auto * bookmark = CreateBookmark(std::move(bm));
   bookmark->Attach(groupId);
+
+  LOG(LINFO, ("Created bookmark. Id =", bookmark->GetId()));
+
   auto * group = GetBmCategory(groupId);
   group->AttachUserMark(bookmark->GetId());
   group->SetIsVisible(true);
@@ -759,7 +762,8 @@ Bookmark * BookmarkManager::AddBookmark(std::unique_ptr<Bookmark> && bookmark)
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   auto * bm = bookmark.get();
   auto const markId = bm->GetId();
-  CHECK_EQUAL(m_bookmarks.count(markId), 0, ());
+  CHECK_EQUAL(m_bookmarks.count(markId), 0,
+              ("mark id =", markId, "total bookmarks count =", m_bookmarks.size()));
   m_bookmarks.emplace(markId, std::move(bookmark));
   m_changesTracker.OnAddMark(markId);
   return bm;
@@ -770,7 +774,8 @@ Track * BookmarkManager::AddTrack(std::unique_ptr<Track> && track)
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   auto * t = track.get();
   auto const trackId = t->GetId();
-  CHECK_EQUAL(m_tracks.count(trackId), 0, ());
+  CHECK_EQUAL(m_tracks.count(trackId), 0,
+              ("track id =", trackId, "total tracks count =", m_tracks.size()));
   m_tracks.emplace(trackId, std::move(track));
   m_changesTracker.OnAddLine(trackId);
   return t;
@@ -840,6 +845,7 @@ BookmarkManager::KMLDataCollectionPtr BookmarkManager::LoadBookmarks(std::string
 void BookmarkManager::LoadBookmarks()
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
+  LOG(LINFO, ("Bookmarks migration completed:", IsMigrated()));
   ClearCategories();
   m_loadBookmarksFinished = false;
   if (!IsMigrated())
@@ -958,6 +964,7 @@ void BookmarkManager::NotifyAboutFinishAsyncLoading(KMLDataCollectionPtr && coll
     }
     if (!collection->empty())
     {
+      LOG(LINFO, ("CreateCategories after async loading"));
       CreateCategories(std::move(*collection));
     }
     else if (!m_loadBookmarksFinished)
@@ -1326,12 +1333,14 @@ void BookmarkManager::CreateCategories(KMLDataCollection && dataCollection, bool
   for (auto const & data : dataCollection)
   {
     auto const & fileName = data.first;
-    auto & fileData = *data.second.get();
+    auto & fileData = *data.second;
     auto & categoryData = fileData.m_categoryData;
 
     if ((categoryData.m_id != kml::kInvalidMarkGroupId) &&
-        (UserMarkIdStorage::Instance().IsJustCreated() || fileData.m_deviceId != GetPlatform().UniqueClientId()))
+        (UserMarkIdStorage::Instance().IsJustCreated() ||
+         fileData.m_deviceId != GetPlatform().UniqueClientId()))
     {
+      LOG(LINFO, ("Bookmarks ids were reset for file", fileName));
       ResetIds(fileData);
     }
 
@@ -1689,6 +1698,7 @@ void BookmarkManager::ConvertAllKmlFiles(ConversionHandler && handler)
     {
       GetPlatform().RunTask(Platform::Thread::Gui, [this, fileData = std::move(fileData)]() mutable
       {
+        LOG(LINFO, ("CreateCategories after conversion"));
         CreateCategories(std::move(*fileData), true /* autoSave */);
       });
     }
