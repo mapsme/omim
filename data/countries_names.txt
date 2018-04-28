@@ -1535,7 +1535,7 @@
   sk = Brestská oblasť
 
 [Belarus_Homiel Region]
-  en = Gomel Region
+  en = Homiel Region
   ru = Гомельская область
   ar = غومل أوبلاست
   be = Гомельская вобласць
@@ -1567,7 +1567,7 @@
   sk = Homeľská oblasť
 
 [Belarus_Hrodna Region]
-  en = Grodno Region
+  en = Hrodna Region
   ru = Гродненская область
   ar = جردونه أوبلاست
   be = Гродзенская вобласць
@@ -1599,7 +1599,7 @@
   sk = Hrodnianska oblasť
 
 [Belarus_Maglieu Region]
-  en = Mogilev Region
+  en = Mahilyow Region
   ru = Могилёвская область
   ar = موغيليوف أوبلاست
   be = Магілёўская вобласць
@@ -1663,7 +1663,7 @@
   sk = Minská oblasť
 
 [Belarus_Vitebsk Region]
-  en = Vitebsk Region
+  en = Vitsebsk Region
   ru = Витебская область
   ar = فيتسبك أوبلاست
   be = Віцебская вобласць
@@ -43333,12 +43333,14 @@
 [Australia_Queensland Description]
   en = Charleville, Winton, Townsville
   ru = Чарлвилл, Уинтон, Таунсвилл
+  be = Чарлвіль, Вінтан, Таўнсвіль
   ja = チャールビル, ウィントン, タウンズビル
   el = Σάρλβιλ, Γουίντον, Τάουνσβιλ
 
 [Australia_South Australia Description]
   en = Adelaide, Port Lincoln, Murray Bridge
   ru = Аделаида, Порт-Линкольн
+  be = Адэлаіда, Порт-Лінкальн, Мэрры Брыдж
   fr = Adélaïde
   de = Adelaide
   ja = アデレード, ポートリンカーン, マレーブリッジ
@@ -43351,6 +43353,7 @@
   en = Sydney, Canberra, Newcastle
   ru = Сидней, Канберра, Ньюкасл
   ar = سيدني, كانبرا
+  be = Сідней, Канбера, Ньюкасл
   fr = Sydney, Canberra
   de = Sydney, Canberra
   hu = Canberra
@@ -43368,6 +43371,7 @@
 [Australia_Tasmania Description]
   en = Hobart, Strahan, Huonville
   ru = Хобарт, Стран
+  be = Хобарт, Стран, Хуонвіль
   fr = Hobart
   hu = Hobart
   ja = ホバート, ストラーン
@@ -43380,6 +43384,7 @@
 [Australia_Victoria Description]
   en = Wangaratta, Bendigo, Ballarat
   ru = Вангаратта, Бендиго, Балларат
+  be = Вангарата, Бендзіга, Баларат
   ja = ウォンガラッタ, ベンディゴ, バララット
   uk = Вангаратта
   el = Γουανγκαράτα, Μπέντιγκο, Μπάλαρατ
@@ -43389,6 +43394,7 @@
   en = Perth, Joondalup, Kalgoorlie
   ru = Перт, Калгурли
   ar = بيرث
+  be = Перт, Джундалуп, Калгурлі
   fr = Perth
   de = Perth
   ja = パース, ジュンダラップ, カルグーリー
@@ -43586,8 +43592,9 @@
   he = ברידג'טאון
 
 [Belarus_Brest Region Description]
-  en = Brest, Pinsk, Baranovichi
+  en = Brest, Pinsk, Baranavichy
   ru = Брест, Пинск, Барановичи
+  be = Брэст, Пінск, Баранавічы
   fr = Pinsk, Baranavitchy
   de = Brest, Pinsk, Baranawitschy
   hu = Breszt, Pinszk
@@ -43598,8 +43605,9 @@
   sk = Brest
 
 [Belarus_Homiel Region Description]
-  en = Homel, Mazyr, Zhlobin
+  en = Homiel, Mazyr, Zhlobin
   ru = Гомель, Мозырь, Жлобин
+  be = Гомель, Мазыр, Жлобін
   fr = Jlobine
   de = Homel, Masyr, Schlobin
   hu = Homel
@@ -43610,6 +43618,7 @@
 [Belarus_Hrodna Region Description]
   en = Hrodna, Lida, Vawkavysk
   ru = Гродно, Лида, Волковыск
+  be = Гродна, Ліда, Ваўкавыск
   cs = Hrodna
   fr = Lida
   de = Hrodna, Lida
@@ -43619,8 +43628,9 @@
   he = גרודנו
 
 [Belarus_Maglieu Region Description]
-  en = Mahilyow, Babruysk, Čerykaŭ
+  en = Mahilyow, Babruysk, Cherykaw
   ru = Могилёв, Бобруйск, Чериков
+  be = Магілёў, Бабруйск, Чэрыкаў
   cs = Mohylev
   fr = Moguilev, Babrouïsk
   de = Mahiljou, Babrujsk
@@ -43630,9 +43640,10 @@
   el = Μαχίλιο, Μπαμπρίσκ, Σέρικάου
 
 [Belarus_Minsk Region Description]
-  en = Minsk, Barysaw, Soligorsk
+  en = Minsk, Barysaw, Salihorsk
   ru = Минск, Борисов, Солигорск
   ar = مينسك
+  be = Мінск, Барысаў, Салігорск
   cs = Minsk
   nl = Minsk
   fi = Minsk
@@ -43652,8 +43663,9 @@
   sk = Minsk
 
 [Belarus_Vitebsk Region Description]
-  en = Vitebsk, Orsha, Navapolatsk
+  en = Vitsebsk, Orsha, Navapolatsk
   ru = Витебск, Орша, Новополоцк
+  be = Віцебск, Орша, Наваполацк
   fr = Vitebsk, Navapolatsk
   de = Wizebsk, Orscha, Nawapolazk
   hu = Orsa
@@ -45332,6 +45344,7 @@
 [Crimea Description]
   en = Sevastopol, Simferopol, Kerch
   ru = Севастополь, Симферополь, Керчь
+  be = Севастопаль, Сімферопаль, Керч
   cs = Sevastopol
   nl = Sebastopol, Simferopol, Kertsj
   fi = Kertš
@@ -45833,6 +45846,7 @@
 [Estonia_East Description]
   en = Põltsamaa linn, Võru, Tartu
   ru = город Пылтсамаа, Тарту
+  be = горад Пыльтсамаа, Выру, Тарту
   fi = Tartto
   de = Stadtgemeinde Oberpahlen, Dorpat
   pl = Tartu
@@ -45843,6 +45857,7 @@
 [Estonia_West Description]
   en = Tallinn, Pärnu, Maardu
   ru = Таллин, Пярну, Маарду
+  be = Талін, Пярну, Маарду
   ar = تالين
   fi = Tallinna
   fr = Tallinn
@@ -46937,6 +46952,7 @@
 [Georgia Description]
   en = Tbilisi, Kutaisi, Batumi
   ru = Тбилиси, Кутаиси, Батуми
+  be = Тбілісі, Кутаісі, Батумі
   ar = تبليسي, كوتايسي
   cs = Tbilisi
   da = Tbilisi
@@ -49602,6 +49618,7 @@
   en = Astana, Karaganda, Pavlodar
   ru = Астана, Караганда, Павлодар
   ar = أستانا
+  be = Астана, Караганда, Паўладар
   da = Astana
   nl = Astana
   fr = Astana, Karaganda
@@ -49622,6 +49639,7 @@
 [Kazakhstan_South Description]
   en = Almaty, Shymkent, Aktobe
   ru = Алматы, Шымкент, Актобе
+  be = Алматы, Шымкент, Актабэ
   nl = Almaty
   fr = Almaty, Chimkent, Aktioubé
   de = Almaty, Schymkent, Aqtöbe
@@ -49705,6 +49723,7 @@
   en = Bishkek, Osh, Balykchy
   ru = Бишкек, Ош, Балыкчы
   ar = بيشكك
+  be = Бішкек, Ош, Балыкчы
   cs = Biškek, Oš
   da = Bisjkek
   nl = Bisjkek
@@ -49754,6 +49773,7 @@
   en = Riga, Daugavpils, Liepāja
   ru = Рига, Даугавпилс, Лиепая
   ar = ريغا
+  be = Рыга, Дзьвінск, Ліепая
   cs = Riga
   da = Riga
   nl = Riga
@@ -49863,6 +49883,7 @@
   en = Vilnius, Kaunas, Alytus
   ru = Вильнюс, Каунас, Алитус
   ar = فيلنيوس, كاوناس, أليتس
+  be = Вільня, Коўна, Алітус
   cs = Vilnius
   nl = Vilnius
   fi = Vilna
@@ -49885,6 +49906,7 @@
   en = Klaipėda, Šiauliai, Panevėžys
   ru = Клайпеда, Шяуляй, Панявежис
   ar = كلايبيدا, شياولياي
+  be = Клайпеда, Шаўляй, Панявеж
   de = Memel, Schaulen, Ponewiesch
   hu = Klaipėda
   ja = クライペダ, シャウレイ, パネヴェジース
@@ -50183,6 +50205,7 @@
   en = Chișinău, Tiraspol, Bălți
   ru = Кишинёв, Тирасполь, Бельцы
   ar = كيشيناو
+  be = Кішынёў, Ціраспаль, Бэлць
   cs = Kišiněv
   nl = Chisinau
   fr = Chisinau, Tiraspol
@@ -51106,6 +51129,7 @@
 [Poland_Greater Poland Voivodeship Description]
   en = Poznan, Kalisz, Jaraczewo
   ru = Познань, Калишь
+  be = Познань, Каліш, Ярачэва
   cs = Poznaň
   de = Posen, Kalisch
   hu = Poznań
@@ -51120,6 +51144,7 @@
   en = Bydgoszcz, Toruń, Włocławek
   ru = Быдгощ, Торунь, Влоцлавек
   ar = بيدغوز
+  be = Быдгашч, Торунь, Улацлавак
   cs = Bydhošť
   de = Bromberg, Thorn, Leslau
   ja = ブィドゴシュチュ, トルン, ヴウォツワヴェク
@@ -51133,6 +51158,7 @@
 [Poland_Lesser Poland Voivodeship Description]
   en = Krakow, Tarnów, Nowy Sącz
   ru = Краков, Тарнув, Новы-Сонч
+  be = Кракаў, Тарнаў, Новы Сонч
   cs = Krakov, Nový Sadec
   nl = Krakau
   fi = Krakova
@@ -51151,6 +51177,7 @@
 [Poland_Lodz Voivodeship Description]
   en = Łódź, Piotrków Trybunalski, Pabianice
   ru = Лодзь, Пётркув-Трыбунальски, Пабьянице
+  be = Лодзь, Пётркаў Трыбунальскі, Паб’яніцы
   cs = Lodž
   de = Lodz, Petrikau, Pabianitz
   ja = ウッチ, ピョートルクフ・トルィブナルスキ
@@ -51163,6 +51190,7 @@
   en = Wrocław, Wałbrzych, Legnica
   ru = Вроцлав, Валбжих
   ar = فروتزواف
+  be = Уроцлаў, Валбжых, Лягніца
   cs = Vratislav, Valbřich
   fr = Wroclaw
   de = Breslau, Waldenburg
@@ -51178,6 +51206,7 @@
 [Poland_Lublin Voivodeship Description]
   en = Lublin, Chełm, Zamość
   ru = Люблин, Хелм, Замосць
+  be = Люблін, Хелм, Замасць
   de = Zamosch
   ja = ルブリン, ヘウム, ザモシチ
   pl = Lublin
@@ -51189,6 +51218,7 @@
 [Poland_Lubusz Voivodeship Description]
   en = Gorzów Wielkopolski, Zielona Góra, Lubniewice
   ru = Гожув-Велькопольски, Зелёна-Гура
+  be = Гожаў Велькапольскі, Зялёна Гура, Любневіцэ
   de = Landsberg an der Warthe, Grünberg in Schlesien, Königswalde
   hu = Zielona Góra
   ja = ゴジュフ・ヴィエルコポルスキ, ジェロナ・グラ
@@ -51199,6 +51229,7 @@
   en = Warsaw, Radom, Płock
   ru = Варшава, Радом, Плоцк
   ar = وارسو
+  be = Варшава, Радам, Плоцк
   cs = Varšava
   da = Warszawa
   nl = Warschau
@@ -51226,6 +51257,7 @@
 [Poland_Opole Voivodeship Description]
   en = Opole, Biała, Baborów
   ru = Ополе, Бяла, Баборув
+  be = Аполе, Бяла, Бабораў
   cs = Opolí, Bavorov
   de = Oppeln, Zülz, Bauerwitz
   ja = オポーレ
@@ -51235,6 +51267,7 @@
 [Poland_Podlaskie Voivodeship Description]
   en = Białystok, Czyżew, Suwałki
   ru = Белосток, Чижев, Сувалки
+  be = Беласток, Чыжэў, Сувалкі
   de = Bialystok, Suwalken
   ja = ビャウィストク, スヴァウキ
   uk = Білосток, Сувалки
@@ -51244,6 +51277,7 @@
 [Poland_Pomeranian Voivodeship Description]
   en = Gdańsk, Gdynia, Słupsk
   ru = Гданьск, Гдыня, Слупск
+  be = Гданьск, Гдыня, Слупск
   cs = Gdaňsk, Gdyně
   de = Danzig, Gdingen, Stolp
   hu = Gdańsk, Gdynia
@@ -51259,6 +51293,7 @@
   en = Katowice, Częstochowa, Sosnowiec
   ru = Катовице, Ченстохова, Сосновец
   ar = كاتوفيتسه
+  be = Катавіцы, Чэнстахова, Сасновец
   cs = Katovice, Čenstochová
   de = Kattowitz, Tschenstochau, Sosnowitz
   ja = カトヴィツェ, チェンストホヴァ, ソスノヴィエツ
@@ -51274,6 +51309,7 @@
 [Poland_Subcarpathian Voivodeship Description]
   en = Rzeszów, Jedlicze, Dynów
   ru = Жешув, Едличе, Дынув
+  be = Жэшаў, Едлічэ, Дынаў
   cs = Řešov
   de = Dünhof
   ja = ジェシュフ
@@ -51285,6 +51321,7 @@
   en = Kielce, Ostrowiec Świętokrzyski, Starachowice
   ru = Кельце, Островец-Свентокшиский, Стараховице
   ar = كيلسي
+  be = Кельцы, Астравец-Свентакшыцкі, Старахавіцэ
   hu = Kielce
   ja = キェルツェ
   ko = 키엘체
@@ -51296,6 +51333,7 @@
 [Poland_Warmian-Masurian Voivodeship Description]
   en = Olsztyn, Elbląg, Elk
   ru = Ольштын, Эльблонг, Элк
+  be = Ольштын, Эльблёнг, Элк
   cs = Olštýn
   de = Allenstein, Elbing, Lyck
   ja = オルシュティン, エルブロンク, エウク
@@ -51310,6 +51348,7 @@
   en = Szczecin, Koszalin, Redło
   ru = Щецин, Кошалин
   ar = شتتين
+  be = Шчэцін, Кашалін
   cs = Štětín
   da = Stettin
   de = Stettin, Köslin, Pflugrade
@@ -51513,6 +51552,7 @@
 [Russia_Altai Krai Description]
   en = Barnaul, Biysk, Rubtsovsk
   ru = Барнаул, Бийск, Рубцовск
+  be = Барнавул, Бійск, Рубцоўск
   fr = Barnaoul
   de = Barnaul, Rubzowsk
   hu = Barnaul
@@ -51526,6 +51566,7 @@
 [Russia_Altai Republic Description]
   en = Gorno-Altaysk, Mayma, Kosh-Agach
   ru = Горно-Алтайск, Майма, Кош-Агач
+  be = Горна-Алтайск, Майма, Кош-Агач
   de = Gorno-Altaisk, Maima, Kosch-Agatsch
   ja = ゴルノ=アルタイスク, マイマ, コシ=アガチ
   el = Γκόρνο-Αλτέσκ, Μάιμα, Κος-Αγκάτς
@@ -51533,6 +51574,7 @@
 [Russia_Amur Oblast Description]
   en = Blagoveshchensk, Belogorsk, Svobodny
   ru = Благовещенск, Белогорск, Свободный
+  be = Благавешчанск, Белагорск
   fr = Blagovechtchensk
   de = Blagoweschtschensk, Swobodny
   hu = Blagovescsenszk
@@ -51550,6 +51592,7 @@
   en = Arkhangelsk, Severodvinsk, Novodvinsk
   ru = Архангельск, Северодвинск, Новодвинск
   ar = أرخانغلسك
+  be = Архангельск, Северадзвінск, Навадзвінск
   da = Arkhangelsk
   nl = Archangelsk
   fi = Arkangeli
@@ -51570,6 +51613,7 @@
 [Russia_Arkhangelsk Oblast_North Description]
   en = Kotlas, Koryazhma, Vychegodskiy
   ru = Котлас, Коряжма, Вычегодский
+  be = Котлас, Каражма, Вычагодскі
   de = Kotlas, Korjaschma, Wytschegodski
   ja = コトラス, コリャジュマ, ヴィイチェゴーツキー
   el = Κότλας, Κοριάζμα, Βιτσεγκόντσκι
@@ -51578,6 +51622,7 @@
   en = Astrakhan, Gospitomnika, Akhtubinsk
   ru = Астрахань, Госпитомника, Ахтубинск
   ar = أستراخان
+  be = Астрахань, Ахтубінск
   cs = Astrachaň
   da = Astrakan
   nl = Astrachan
@@ -51604,6 +51649,7 @@
 [Russia_Bashkortostan Description]
   en = Ufa, Sterlitamak, Salavat
   ru = Уфа, Стерлитамак, Салават
+  be = Уфа, Стэрлітамак, Салават
   nl = Oefa
   fr = Oufa
   de = Ufa, Sterlitamak, Salawat
@@ -51619,6 +51665,7 @@
 [Russia_Belgorod Oblast Description]
   en = Belgorod, Stary Oskol, Gubkin
   ru = Белгород, Старый Оскол, Губкин
+  be = Белгарад, Стары Аскол, Губкін
   cs = Bělgorod
   fr = Belgorod
   de = Belgorod, Stary Oskol, Gubkin
@@ -51632,6 +51679,7 @@
   en = Bryansk, Novozybkov, Клинцы
   ru = Брянск, Новозыбков, Клинцы
   ar = بريانسك
+  be = Бранск, Навазыбкаў, Клінцы
   fi = Brjansk
   fr = Briansk
   de = Brjansk, Nowosybkow, Klinzy
@@ -51645,6 +51693,7 @@
 [Russia_Buryatia Description]
   en = Ulan-Ude, Selenduma, Джида
   ru = Улан-Удэ, Селендума
+  be = Улан-Удэ
   nl = Oelan-Oede
   fr = Oulan-Oude
   de = Ulan-Ude, Selenduma, Dschida
@@ -51658,6 +51707,7 @@
   en = Grozny, Urus-Martan, Shali
   ru = Грозный, Урус-Мартан, Шали
   ar = أوروس-مارتان
+  be = Грозны, Урус-Мартан, Шалі
   nl = Grozny, Oeroes-Martan
   fr = Grozny, Ourous-Martan
   de = Grosny, Urus-Martan, Schali
@@ -51672,6 +51722,7 @@
   en = Chelyabinsk, Magnitogorsk, Zlatoust
   ru = Челябинск, Магнитогорск, Златоуст
   ar = تشيليابنسك, زلاتوست
+  be = Чалябінск, Магнітагорск, Златавуст
   cs = Čeljabinsk, Magnitogorsk
   da = Tjeljabinsk
   nl = Tsjeljabinsk
@@ -51698,6 +51749,7 @@
 [Russia_Chukotka Autonomous Okrug Description]
   en = Anadyr, Bilibino, Pevek
   ru = Анадырь, Билибино, Певек
+  be = Анадыр, Білібіна, Певек
   de = Anadyr, Bilibino, Pewek
   ja = アナディリ, ビリビノ, ペヴェク
   sv = Anadyr
@@ -51706,6 +51758,7 @@
 [Russia_Chuvashia Description]
   en = Cheboksary, Novocheboksarsk, Kanash
   ru = Чебоксары, Новочебоксарск, Канаш
+  be = Чэбаксары, Новачэбаксарск, Канаш
   fr = Tcheboksary
   de = Tscheboksary, Nowotscheboksarsk
   ja = チェボクサル, ノヴォチェボクサルスク, カナシ
@@ -51717,6 +51770,7 @@
 [Russia_Ingushetia Description]
   en = Nazran, Ordzhonikidzevskaya, Karabulak
   ru = Назрань, Орджоникидзевская, Карабулак
+  be = Назрань, Сунжа, Карабулак
   nl = Karaboelak
   fr = Nazran, Karaboulak
   de = Nasran, Ordschonikidsewskaja, Karabulak
@@ -51730,6 +51784,7 @@
 [Russia_Irkutsk Oblast Description]
   en = Irkutsk, Bratsk, Angarsk
   ru = Иркутск, Братск, Ангарск
+  be = Іркуцк, Брацк, Ангарск
   fr = Irkoutsk, Bratsk, Angarsk
   de = Irkutsk, Bratsk, Angarsk
   hu = Irkutszk
@@ -51743,6 +51798,7 @@
 [Russia_Ivanovo Oblast Description]
   en = Ivanovo, Kineshma, Shuya
   ru = Иваново, Кинешма, Шуя
+  be = Іванава, Кінешма, Шуя
   fi = Ivanovo
   fr = Ivanovo, Chouïa
   de = Iwanowo, Kineschma, Schuja
@@ -51755,6 +51811,7 @@
   en = Birobidzhan, Облучье, Николаевка
   ru = Биробиджан, Облучье, Николаевка
   ar = بيروبيجان
+  be = Бірабіджан
   cs = Birobidžan
   da = Birobidzjan
   nl = Birobidzjan
@@ -51780,6 +51837,7 @@
   en = Nalchik, Prokhladny, Baksan
   ru = Нальчик, Прохладный, Баксан
   ar = نالتشيك, باكسان
+  be = Нальчык, Прахладны, Баксан
   nl = Naltsjik
   fr = Naltchik, Baksan
   de = Naltschik, Prochladny, Baksan
@@ -51795,6 +51853,7 @@
   en = Kaliningrad, Sovetsk, Chernyakhovsk
   ru = Калининград, Советск, Черняховск
   ar = كالينينغراد
+  be = Каралявец, Савецк, Чарняхоўск
   cs = Kaliningrad
   nl = Kaliningrad
   fr = Kaliningrad, Tcherniakhovsk
@@ -51813,6 +51872,7 @@
   en = Kaluga, Obninsk, Babynino
   ru = Калуга, Обнинск, Бабынино
   ar = كالوغا, أوبنينسك
+  be = Калуга, Обнінск, Бабыніна
   cs = Obninsk
   da = Obninsk
   nl = Kaloega, Obninsk
@@ -51837,6 +51897,7 @@
   en = Petropavlovsk-Kamchatsky, Yelizovo, Vilyuchinsk
   ru = Петропавловск-Камчатский, Елизово, Вилючинск
   ar = بيتروبافلوفسك-كامتشاتسكي
+  be = Петрапаўлаўск-Камчацкі, Елізава, Вілючынск
   da = Petropavlovsk-Kamtjatskij
   nl = Petropavlovsk-Kamtsjatski
   fr = Petropavlovsk-Kamtchatski
@@ -51855,6 +51916,7 @@
   en = Cherkessk, Pregradnaya, Ust-Dzheguta
   ru = Черкесск, Преградная, Усть-Джегута
   ar = تشيركيسك
+  be = Чаркеск, Усць-Джэгута
   fr = Tcherkessk
   de = Tscherkessk, Pregradnaja, Ust-Dscheguta
   it = Čerkessk
@@ -51867,6 +51929,7 @@
 [Russia_Kemerov Oblast Description]
   en = Kemerovo, Novokuznetsk, Prokopyevsk
   ru = Кемерово, Новокузнецк, Прокопьевск
+  be = Кемерава, Новакузнецк, Пракоп’еўск
   fr = Kemerovo, Novokouznetsk
   de = Kemerowo, Nowokusnezk, Prokopjewsk
   ja = ケメロヴォ, ノヴォクズネツク, プロコピエフスク
@@ -51880,6 +51943,7 @@
 [Russia_Khabarovsk Krai Description]
   en = Khabarovsk, Komsomolsk-on-Amur, Amursk
   ru = Хабаровск, Комсомольск-на-Амуре, Амурск
+  be = Хабараўск, Камсамольск-на-Амуры, Амурск
   cs = Komsomolsk na Amuru
   da = Khabarovsk
   nl = Chabarovsk
@@ -51899,6 +51963,7 @@
   en = Abakan, Chernogorsk, Sayanogorsk
   ru = Абакан, Черногорск, Саяногорск
   ar = أباكان
+  be = Абакан, Чарнагорск, Саянагорск
   cs = Abakan
   da = Abakan
   nl = Abakan
@@ -51924,6 +51989,7 @@
 [Russia_Kirov Oblast Description]
   en = Kirov, Kirovo-Chepetsk, Slobodskoy
   ru = Киров, Кирово-Чепецк, Слободской
+  be = Кіраў, Кірава-Чапецк, Слабадской
   fr = Kirov
   de = Kirow, Kirowo-Tschepezk, Slobodskoi
   ja = キーロフ州, キロヴォ=チェペツク, スロヴォツコイ
@@ -51938,6 +52004,7 @@
   en = Syktyvkar, Ukhta, Vorkuta
   ru = Сыктывкар, Ухта, Воркута
   ar = أوختا
+  be = Сыктыўкар, Ухта, Варкута
   nl = Oechta
   fr = Syktyvkar, Oukhta
   de = Syktywkar, Uchta, Workuta
@@ -51951,6 +52018,7 @@
 [Russia_Kostroma Oblast Description]
   en = Kostroma, Buy, Sharya
   ru = Кострома, Буй, Шарья
+  be = Кастрама, Буй, Шар’я
   fi = Kostroma
   fr = Kostroma
   de = Kostroma, Bui, Scharja
@@ -51963,6 +52031,7 @@
   en = Krasnodar, Novorossiysk, Armavir
   ru = Краснодар, Новороссийск, Армавир
   ar = كراسنودار
+  be = Краснадар, Новарасійск, Армавір
   fi = Krasnodar
   fr = Krasnodar
   de = Krasnodar, Noworossijsk, Armawir
@@ -51982,6 +52051,7 @@
   en = Sochi, Maykop, Gelendzhik
   ru = Сочи, Майкоп, Геленджик
   ar = غيلينجيك
+  be = Сочы, Майкоп, Геленджык
   cs = Soči, Majkop
   da = Sotji
   nl = Sotsji, Majkop
@@ -52008,6 +52078,7 @@
 [Russia_Krasnoyarsk Krai_North Description]
   en = Norilsk, Dudinka, Северо-Енисейский
   ru = Норильск, Дудинка
+  be = Нарыльск, Дудзінка
   de = Norilsk, Dudinka
   ja = ノリリスク, ドゥディンカ, セヴェロ=エニセイスキー
   pl = Norylsk, Dudinka
@@ -52017,6 +52088,7 @@
 [Russia_Krasnoyarsk Krai_South Description]
   en = Krasnoyarsk, Achinsk, Kansk
   ru = Красноярск, Ачинск, Канск
+  be = Краснаярск, Ачынск, Канск
   cs = Krasnojarsk
   fr = Krasnoïarsk, Atchinsk
   de = Krasnojarsk, Atschinsk, Kansk
@@ -52031,6 +52103,7 @@
 [Russia_Kurgan Oblast Description]
   en = Kurgan, Shadrinsk, Варгаши
   ru = Курган
+  be = Курган
   da = Kurgan
   fr = Kourgan
   de = Kurgan, Schadrinsk
@@ -52045,6 +52118,7 @@
   en = Kursk, Железногорск, Kurchatov
   ru = Курск, Курчатов
   ar = كورشاتوف
+  be = Курск, Курчатаў
   cs = Kurčatov
   fr = Koursk, Kourtchatov
   de = Kursk, Kurtschatow
@@ -52059,6 +52133,7 @@
 [Russia_Leningradskaya Oblast_Karelsky Description]
   en = Vyborg, Vsevolozhsk, Sertolovo
   ru = Выборг, Всеволожск, Сертолово
+  be = Выбарг, Усевалажск, Серталава
   fi = Viipuri, Seuloskoi, Sierattala
   de = Wyborg, Wsewoloschsk, Sertolowo
   ja = ヴィボルク
@@ -52069,14 +52144,16 @@
 [Russia_Leningradskaya Oblast_Southeast Description]
   en = Gatchina, Sosnoviy Bor, Tikhvin
   ru = Гатчина, Сосновый Бор, Тихвин
+  be = Гатчына, Сасновы Бор, Ціхвін
   fi = Hatsina, Tihvinä
   de = Gattschina, Sosnowy Bor, Tichwin
   el = Γκάτσινα, Σοσνόβι Μπορ Τικβίν
 
 [Russia_Lipetsk Oblast Description]
   en = Lipetsk, Yelets, Gryazi
-  ru = Липецк, Елец, Грязи
+  ru = Ліпецк, Елец, Грязи
   ar = ليبيتسك, ييليتس, غريازي
+  be = Липецк, Ялец, Гразі
   nl = Lipetsk
   fi = Grjazi
   fr = Lipetsk, Elets, Griazi
@@ -52098,6 +52175,7 @@
   en = Magadan, Ola, Susuman
   ru = Магадан, Ола, Сусуман
   ar = ماغادان
+  be = Магадан, Ола, Сусуман
   fr = Magadan
   de = Magadan, Ola, Sussuman
   ja = マガダン, オラ, ススマン
@@ -52111,6 +52189,7 @@
   en = Yoshkar-Ola, Volzhsk, Kozmodemyansk
   ru = Йошкар-Ола, Волжск, Козьмодемьянск
   ar = كوزمودمينسك
+  be = Іашкар-Ала, Волжск, Казьмадзямьянск
   fr = Kozmodemiansk
   de = Joschkar-Ola, Kozmodemjansk
   ja = ヨシュカル=オラ, ヴォルシスク, コジモデミヤンスク
@@ -52123,6 +52202,7 @@
   en = Moscow, Khimki, Troitsk
   ru = Москва, Химки, Троицк
   ar = موسكو, خيمكي
+  be = Масква, Хімкі, Троіцк
   cs = Moskva, Chimki
   da = Moskva
   nl = Moskou, Chimki
@@ -52152,6 +52232,7 @@
   en = Balashikha, Podolsk, Korolyov
   ru = Балашиха, Подольск, Королёв
   ar = بودولسك
+  be = Балашыха, Падольск, Каралёў
   cs = Podolsk
   da = Podolsk
   nl = Podolsk
@@ -52179,6 +52260,7 @@
   en = Zelenograd, Odintsovo, Krasnogorsk
   ru = Зеленоград, Одинцово, Красногорск
   ar = زيلينوغراد, أودينتسوفو, كراسنوغورسك
+  be = Зеленаград, Адзінцова, Краснагорск
   cs = Odincovo, Krasnogorsk
   nl = Odintsovo, Krasnogorsk
   fi = Zelenograd, Odintsovo, Krasnogorsk
@@ -52203,6 +52285,7 @@
   en = Murmansk, Apatity, Severomorsk
   ru = Мурманск, Апатиты, Североморск
   ar = أباتيتي
+  be = Мурманск, Апатыты, Севераморск
   cs = Apatity
   da = Apatity
   nl = Apatity
@@ -52227,6 +52310,7 @@
 [Russia_Nenets Autonomous Okrug Description]
   en = Красное, Nar'yan-Mar, Искателей
   ru = Нарьян-Мар
+  be = Нар’ян-Мар
   fr = Narian-Mar
   de = Narjan-Mar, Iskatelej
   ja = ナリヤン=マル, イスカチェレイ
@@ -52239,6 +52323,7 @@
   en = Nizhny Novgorod, Dzerzhinsk, Arzamas
   ru = Нижний Новгород, Арзамас
   ar = نيجني نوفغورود
+  be = Ніжні Ноўгарад, Арзамас
   cs = Nižnij Novgorod
   nl = Nizjni Novgorod
   fr = Nijni Novgorod, Dzerjinsk, Arzamas
@@ -52259,6 +52344,7 @@
 [Russia_North Ossetia-Alania Description]
   en = Vladikavkaz, Mozdok, Beslan
   ru = Владикавказ, Моздок, Беслан
+  be = Уладзікаўказ, Маздок, Беслан
   cs = Vladikavkaz
   fr = Vladikavkaz, Mozdok, Beslan
   de = Wladikawkas, Mosdok, Beslan
@@ -52280,6 +52366,7 @@
   en = Veliky Novgorod, Borovichi, Staraya Russa
   ru = Великий Новгород, Боровичи, Старая Русса
   ar = فيليكي نوفغورود
+  be = Вялікі Ноўгарад, Баравічы, Старая Руса
   cs = Velký Novgorod
   nl = Veliki Novgorod
   fi = Veliki Novgorod
@@ -52295,6 +52382,7 @@
 [Russia_Novosibirsk Oblast Description]
   en = Novosibirsk, Berdsk, Iskitim
   ru = Новосибирск, Бердск, Искитим
+  be = Новасібірск, Бердск, Іскіцім
   cs = Novosibirsk
   da = Novosibirsk
   fr = Novossibirsk
@@ -52311,6 +52399,7 @@
 [Russia_Omsk Oblast Description]
   en = Omsk, Tara, Исилькуль
   ru = Омск, Тара
+  be = Омск, Тара
   da = Omsk
   fr = Omsk
   de = Omsk, Tara, Issilkul
@@ -52325,6 +52414,7 @@
 [Russia_Orenburg Oblast Description]
   en = Orenburg, Orsk, Novotroitsk
   ru = Оренбург, Орск, Новотроицк
+  be = Арэнбург, Орск, Наватроіцк
   fr = Orenbourg
   de = Orenburg, Nowotroizk
   hu = Orenburg
@@ -52338,6 +52428,7 @@
 [Russia_Oryol Oblast Description]
   en = Oryol, Livny, Mtsensk
   ru = Орёл, Ливны, Мценск
+  be = Арол, Ліўны, Мцэнск
   ar = أوريول
   fr = Orel, Mtsensk
   de = Orjol, Liwny, Mzensk
@@ -52350,6 +52441,7 @@
 [Russia_Penza Oblast Description]
   en = Penza, Kuznetsk, Zarecnyy
   ru = Пенза, Кузнецк, Заречный
+  be = Пенза, Кузнецк, Зарэчны
   fr = Penza
   de = Pensa, Kusnezk, Saretschny
   hu = Penza
@@ -52362,6 +52454,7 @@
 [Russia_Perm Krai_North Description]
   en = Berezniki, Solikamsk, Lysva
   ru = Березники, Соликамск, Лысьва
+  be = Бярэзнікі, Салікамск, Лысьва
   de = Beresniki, Solikamsk, Lyswa
   ja = ベレズニキ, ソリカムスク, ルイシヴァ
   pl = Bieriezniki, Solikamsk
@@ -52372,6 +52465,7 @@
 [Russia_Perm Krai_South Description]
   en = Perm, Chaikovsky, Kungur
   ru = Пермь, Чайковский, Кунгур
+  be = Перм, Чайкоўскі, Кунгур
   fr = Perm
   de = Perm, Tschaikowski, Kungur
   hu = Perm
@@ -52385,6 +52479,7 @@
 [Russia_Primorsky Krai Description]
   en = Vladivostok, Ussurijsk, Nahodka
   ru = Владивосток, Уссурийск, Находка
+  be = Уладзівасток, Усурыйск, Находка
   cs = Vladivostok
   da = Vladivostok
   nl = Vladivostok
@@ -52405,6 +52500,7 @@
 [Russia_Pskov Oblast Description]
   en = Pskov, Velikiye Luki, Ostrov
   ru = Псков, Великие Луки, Остров
+  be = Пскоў, Вялікія Лукі, Востраў
   da = Pskov
   nl = Pskov
   fi = Pihkova
@@ -52419,6 +52515,7 @@
 [Russia_Republic of Dagestan Description]
   en = Makhachkala, Khasavyurt, Derbent
   ru = Махачкала, Хасавюрт, Дербент
+  be = Махачкала, Хасавюрт, Дзербент
   ar = محج قلعة, خاسافيورت, دربند
   cs = Machačkala
   nl = Machatsjkala, Derbent
@@ -52442,6 +52539,7 @@
 [Russia_Republic of Kalmykia Description]
   en = Elista, Lagan, Tsagan Aman
   ru = Элиста, Лагань, Цаган Аман
+  be = Эліста, Лагань, Цаган Аман
   nl = Lagan
   fr = Elista
   de = Elista, Lagan
@@ -52455,6 +52553,7 @@
 [Russia_Republic of Karelia_North Description]
   en = Kostomuksha, Segezha, Kem
   ru = Костомукша, Сегежа, Кемь
+  be = Кастамукша, Сегежа, Кем
   fi = Kostamus, Sekee, Kemi
   de = Segescha, Kem
   sv = Kostomuksja, Kem
@@ -52463,6 +52562,7 @@
 [Russia_Republic of Karelia_South Description]
   en = Petrozavodsk, Kondopoga, Sortavala
   ru = Петрозаводск, Кондопога, Сортавала
+  be = Петразаводск, Кондапага, Сортавала
   cs = Petrozavodsk
   fi = Petroskoi, Kontupohja, Sortavala
   fr = Petrozavodsk
@@ -52478,6 +52578,7 @@
 [Russia_Republic of Mordovia Description]
   en = Saransk, Рузаевка, Kovylkino
   ru = Саранск, Рузаевка, Ковылкино
+  be = Саранск, Рузаеўка, Кавылкіна
   fr = Saransk
   de = Saransk, Rusajewka, Kowylkino
   ja = サランスク, ルザーエフカ, コヴィルキノ
@@ -52489,6 +52590,7 @@
   en = Rostov-on-Don, Taganrog, Shakhty
   ru = Ростов-на-Дону, Таганрог, Шахты
   ar = روستوف-نا-دونو, تاغانروغ, شاختاي
+  be = Растоў-на-Доне, Таганрог, Шахты
   cs = Šachty
   da = Rostov ved Don
   nl = Taganrog, Sjachty
@@ -52512,6 +52614,7 @@
   en = Ryazan, Kasimov, Skopin
   ru = Рязань, Касимов
   ar = ريازان
+  be = Разань, Касімаў
   cs = Rjazaň
   da = Rjasan
   nl = Rjazan
@@ -52538,6 +52641,7 @@
 [Russia_Saint Petersburg Description]
   en = Saint Petersburg, Kolpino, Pushkin
   ru = Санкт-Петербург, Колпино, Пушкин
+  be = Пецярбург, Колпіна , Пушкін
   cs = Petrohrad
   da = Sankt Petersborg
   nl = Sint-Petersburg
@@ -52561,6 +52665,7 @@
 [Russia_Sakha Republic Description]
   en = Yakutsk, Neryungri, Mirny
   ru = Якутск, Нерюнгри, Мирный
+  be = Якуцк, Нерунгры, Мірны
   da = Jakutsk
   nl = Jakoetsk
   fr = Iakoutsk
@@ -52577,6 +52682,7 @@
 [Russia_Sakhalin Oblast Description]
   en = Yuzhno-Sakhalinsk, Korsakov, Kholmsk
   ru = Южно-Сахалинск, Корсаков, Холмск
+  be = Южна-Сахалінск, Карсакаў, Хоўмск
   fr = Ioujno-Sakhalinsk
   de = Juschno-Sachalinsk, Korsakow, Cholmsk
   ja = ユジノ=サハリンスク, コルサコフ, ホルムスク
@@ -52588,6 +52694,7 @@
 [Russia_Samara Oblast Description]
   en = Samara, Tolyatti, Syzran
   ru = Самара, Тольятти, Сызрань
+  be = Самара, Тальяці, Сызрань
   da = Samara
   fr = Samara, Togliatti
   de = Samara, Togliatti, Sysran
@@ -52604,6 +52711,7 @@
 [Russia_Saratov Oblast Description]
   en = Saratov, Engels, Balakovo
   ru = Саратов, Энгельс, Балаково
+  be = Саратаў, Энгельс, Балакова
   da = Saratov
   fr = Saratov
   de = Saratow, Engels, Balakowo
@@ -52621,6 +52729,7 @@
 [Russia_Smolensk Oblast Description]
   en = Smolensk, Вязьма, Roslavl
   ru = Смоленск, Рославль
+  be = Смаленск, Рослаўль, Вязьма
   cs = Smolensk
   da = Smolensk
   fr = Smolensk
@@ -52637,6 +52746,7 @@
   en = Stavropol, Pyatigorsk, Kislovodsk
   ru = Ставрополь, Пятигорск, Кисловодск
   ar = بياتيغورسك
+  be = Стаўрапаль, Пяцігорск, Кіславодск
   cs = Pjatigorsk
   nl = Stavropol, Pjatigorsk
   fr = Stavropol, Piatigorsk
@@ -52656,6 +52766,7 @@
 [Russia_Sverdlovsk Oblast_Ekaterinburg Description]
   en = Yekaterinburg, Kamensk-Uralsky, Pervouralsk
   ru = Екатеринбург, Каменск-Уральский
+  be = Екацярынбург, Каменск-Уральскі
   cs = Jekatěrinburg
   fr = Iekaterinbourg
   de = Jekaterinburg, Kamensk-Uralski, Perwouralsk
@@ -52671,6 +52782,7 @@
 [Russia_Sverdlovsk Oblast_North Description]
   en = Nizhny Tagil, Serov, Novouralsk
   ru = Нижний Тагил, Серов, Новоуральск
+  be = Ніжні Тагіл, Сяроў, Новаўральск
   de = Nischni Tagil, Serow, Nowouralsk
   ja = ニジニ・タギル, セローフ, ノヴォウラリスク
   pl = Niżny Tagił, Sierow
@@ -52680,6 +52792,7 @@
 [Russia_Tambov Oblast Description]
   en = Tambov, Michurinsk, Rasskazovo
   ru = Тамбов, Мичуринск, Рассказово
+  be = Тамбоў, Мічурынск, Расказава
   fr = Tambov
   de = Tambow, Mitschurinsk, Rasskasowo
   hu = Tambov
@@ -52692,6 +52805,7 @@
   en = Kazan, Naberezhnye Chelny, Nizhnekamsk
   ru = Казань, Набережные Челны, Нижнекамск
   ar = قازان, نابريجناي تشلني
+  be = Казань, Набярэжныя Чаўны, Ніжнякамск
   cs = Kazaň, Naberežnyje Čelny
   da = Kazan
   nl = Kazan, Naberezjnye Tsjelny
@@ -52716,6 +52830,7 @@
   en = Tomsk, Seversk, Strezhevoy
   ru = Томск, Северск, Стрежевой
   ar = تومسك
+  be = Томск, Северск, Стрэжавы
   cs = Tomsk, Seversk
   da = Tomsk
   nl = Tomsk, Seversk
@@ -52741,6 +52856,7 @@
   en = Tula, Novomoskovsk, Donskoj
   ru = Тула, Новомосковск, Донской
   ar = نوفوموسكوفيك
+  be = Тула, Новамаскоўск, Данскі
   nl = Novomoskovsk
   fi = Novomoskovsk
   fr = Toula, Novomoskovsk, Donskoï
@@ -52762,6 +52878,7 @@
 [Russia_Tuva Description]
   en = Kyzyl, Kaa-Khem, Ak-Dovurak
   ru = Кызыл, Каа-Хем, Ак-Довурак
+  be = Кызыл, Каа-Хем, Ак-Довурак
   fr = Kyzyl
   de = Kysyl, Kaa-Chem, Ak-Dowurak
   ja = クズル, カア=ヘム, アク=ドヴラク
@@ -52773,6 +52890,7 @@
   en = Tver, Rzhev, Vysnij Volocek
   ru = Тверь, Ржев, Вышний Волочёк
   ar = تفير
+  be = Цвер, Ржэў, Вышні Валачок
   nl = Tver
   fi = Tver, Vyšni Volotšok
   fr = Tver
@@ -52785,6 +52903,7 @@
 [Russia_Tyumen Oblast Description]
   en = Tyumen, Tobolsk, Ishim
   ru = Тюмень, Тобольск, Ишим
+  be = Цюмень, Табольск, Ішым
   fr = Tioumen
   de = Tjumen, Tobolsk, Ischim
   hu = Tyumeny
@@ -52800,6 +52919,7 @@
   en = Izhevsk, Sarapul, Votkinsk
   ru = Ижевск, Сарапул, Воткинск
   ar = سارابول
+  be = Іжэўск, Сарапул, Водкінск
   da = Izjevsk
   nl = Sarapoel
   fr = Ijevsk, Sarapoul
@@ -52816,6 +52936,7 @@
 [Russia_Ulyanovsk Oblast Description]
   en = Ulyanovsk, Dimitrovgrad, Inza
   ru = Ульяновск, Димитровград, Инза
+  be = Ульянаўск, Дзімітраўград, Інза
   fr = Oulianovsk, Dimitrovgrad
   de = Uljanowsk, Dimitrowgrad, Insar
   ja = ウリヤノフスク, ディミトロフグラード, インザ
@@ -52829,6 +52950,7 @@
   en = Vladimir, Kovrov, Murom
   ru = Владимир, Ковров, Муром
   ar = فلاديمير
+  be = Уладзімір, Каўроў, Мурам
   cs = Vladimir
   da = Vladimir
   nl = Vladimir
@@ -52856,6 +52978,7 @@
   en = Volgograd, Volzhskiy, Kamyshin
   ru = Волгоград, Волжский, Камышин
   ar = فولغوغراد, كاميشين
+  be = Валгаград, Волжскі, Камышын
   cs = Volgograd, Kamyšin
   nl = Kamysjin
   fr = Volgograd, Kamychine
@@ -52877,6 +53000,7 @@
 [Russia_Vologda Oblast Description]
   en = Vologda, Cherepovets, Сокол
   ru = Вологда, Череповец
+  be = Волагда, Чарапавец
   fi = Vologda
   fr = Vologda
   de = Wologda, Tscherepowez, Sokol
@@ -52890,6 +53014,7 @@
 [Russia_Voronezh Oblast Description]
   en = Voronezh, Borisoglebsk, Rossosh
   ru = Воронеж, Борисоглебск, Россошь
+  be = Варонеж, Барысаглебск, Росаш
   cs = Voroněž
   fr = Voronej
   de = Woronesch, Borissoglebsk, Rossosch
@@ -52909,6 +53034,7 @@
 [Russia_Yamalo-Nenets Autonomous Okrug Description]
   en = Novy Urengoy, Noyabrsk, Salekhard
   ru = Новый Уренгой, Ноябрьск, Салехард
+  be = Новы Урэнгой, Наябрск, Салехард
   fr = Salekhard
   de = Nowy Urengoi, Nojabrsk, Salechard
   ja = ノヴィ・ウレンゴイ, ノヤブリスク, サレハルド
@@ -52921,6 +53047,7 @@
   en = Yaroslavl, Rybinsk, Pereslavl-Zalessky
   ru = Ярославль, Рыбинск, Переславль-Залесский
   ar = بيرسلافل-زالسكي
+  be = Яраслаўль, Рыбінск, Пераслаўль-Залескі
   cs = Jaroslavl
   nl = Pereslavl-Zalesski
   fi = Jaroslavl, Pereslavl-Zalesski
@@ -52940,6 +53067,7 @@
 [Russia_Yugra_Khanty Description]
   en = Khanty-Mansiysk, Nyagan, Uray
   ru = Ханты-Мансийск, Нягань, Урай
+  be = Ханты-Мансійск, Нягань, Урай
   fr = Khanty-Mansiïsk
   de = Chanty-Mansijsk, Urai
   hu = Hanti-Manszijszk
@@ -52952,6 +53080,7 @@
 [Russia_Yugra_Surgut Description]
   en = Surgut, Nizhnevartovsk, Nefteyugansk
   ru = Сургут, Нижневартовск, Нефтеюганск
+  be = Сургут, Ніжнявартаўск, Нефцеюганск
   de = Surgut, Nischnewartowsk, Neftejugansk
   ja = スルグト, ニジネヴァルトフスク, ネフチェユガンスク
   pl = Surgut, Niżniewartowsk, Nieftiejugansk
@@ -52961,6 +53090,7 @@
 [Russia_Zabaykalsky Krai Description]
   en = Chita, Krasnokamensk, Borzya
   ru = Чита, Краснокаменск, Борзя
+  be = Чыта, Краснакаменск, Борзя
   cs = Čita
   fr = Tchita
   de = Tschita, Krasnokamensk, Borsja
@@ -54525,6 +54655,7 @@
   en = Ashgabat, Dashoguz, Türkmenabat
   ru = Ашхабад, Дашогуз
   ar = عشق آباد
+  be = Ашхабад, Дашагуз
   cs = Ašchabad
   da = Asjkhabad
   nl = Asjchabad
@@ -55612,6 +55743,7 @@
 [Ukraine_Cherkasy Oblast Description]
   en = Cherkasy, Uman, Smila
   ru = Черкассы, Умань, Смела
+  be = Чаркасы, Умань, Смела
   cs = Čerkasy
   fi = Tšerkasy
   fr = Tcherkassy, Ouman
@@ -55628,6 +55760,7 @@
 [Ukraine_Chernihiv Oblast Description]
   en = Chernihiv, Nizhyn, Pryluky
   ru = Чернигов, Нежин, Прилуки
+  be = Чарнігаў, Ніжын, Прылукы
   fr = Tchernihiv
   de = Tschernihiw, Nischyn, Pryluky
   hu = Csernyihiv, Pryluky
@@ -55639,6 +55772,7 @@
 [Ukraine_Chernivtsi Oblast Description]
   en = Chernivtsi, Storozhynets, Zastavna
   ru = Черновцы, Сторожинец, Заставна
+  be = Чарнаўцы, Старажынэць, Застаўна
   fr = Tchernivtsi
   de = Czernowitz, Storoschynez, Sastawna
   hu = Csernyivci
@@ -55651,6 +55785,7 @@
 [Ukraine_Dnipropetrovsk Oblast Description]
   en = Dnipropetrovsk, Krivoy Rog, Dniprodzerzhynsk
   ru = Днепропетровск, Кривой Рог, Днепродзержинск
+  be = Дняпро, Крывы Рог, Кам’янскэ
   cs = Dněpropetrovsk, Krivoj Rog
   fr = Dnipropetrovsk, Kryvyï Rih, Dniprodzerjynsk
   de = Dnipropetrowsk, Krywyj Rih, Dniprodserschynsk
@@ -55665,6 +55800,7 @@
   en = Donetsk, Mariupol, Makiivka
   ru = Донецк, Мариуполь, Макеевка
   ar = دونيتسك, ماريوبول
+  be = Данецк, Марыупаль, Макееўка
   cs = Doněck, Mariupol, Makijivka
   da = Donetsk, Mariupol
   nl = Donetsk, Marioepol, Makijivka
@@ -55693,6 +55829,7 @@
 [Ukraine_Ivano-Frankivsk Oblast Description]
   en = Ivano-Frankivsk, Kalush, Kolomyia
   ru = Ивано-Франковск, Калуш, Коломыя
+  be = Івана-Франкоўск, Калуш, Каламыя
   cs = Ivano-Frankivsk
   da = Ivano-Frankivsk
   nl = Ivano-Frankivsk
@@ -55718,6 +55855,7 @@
 [Ukraine_Kharkiv Oblast Description]
   en = Kharkiv, Lozova, Kupiansk
   ru = Харьков, Лозовая, Купянск
+  be = Харкаў, Лазава, Куп’янск
   cs = Charkov
   nl = Charkov
   fi = Harkova
@@ -55734,6 +55872,7 @@
 [Ukraine_Kherson Oblast Description]
   en = Kherson, Nova Kakhovka, Наддніпрянське
   ru = Херсон, Новая Каховка
+  be = Херсон, Новая Кахоўка
   fr = Kherson
   de = Cherson, Nowa Kachowka
   hu = Herszon, Nova Kakhovka
@@ -55745,6 +55884,7 @@
 [Ukraine_Khmelnytskyi Oblast Description]
   en = Khmelnytskyi, Kamianets-Podilskyi, Shepetivka
   ru = Хмельницкий, Каменец-Подольский, Шепетовка
+  be = Хмяльніцкі, Камянец-Падольскі, Шапятоўка
   cs = Chmelnyckyj, Kamenec Podolský, Šepetivka
   nl = Chmelnytsky
   fr = Khmelnytskyï, Kamianets-Podilskyï, Chepetivka
@@ -55763,6 +55903,7 @@
 [Ukraine_Kirovohrad Oblast Description]
   en = Kirovohrad, Oleksandriia, Svitlovodsk
   ru = Кировоград, Александрия, Светловодск
+  be = Крапыўныцкы, Александрыя, Світлаводск
   fr = Kirovohrad, Svitlovodsk
   de = Kirowohrad, Olexandrija, Switlowodsk
   hu = Kirovohrad, Olekszandrija, Svitlovodsk
@@ -55774,6 +55915,7 @@
   en = Kyiv, Bila Tserkva, Brovary
   ru = Киев, Белая Церковь, Бровары
   ar = كييف
+  be = Кіеў, Белая Царква, Бравары
   cs = Kyjev, Bila Cerkva
   da = Kiev
   nl = Kiev
@@ -55802,6 +55944,7 @@
   en = Luhansk, Alchevsk, Sievierodonetsk
   ru = Луганск, Алчевск, Северодонецк
   ar = ألتشيفسك
+  be = Луганск, Алчэўск, Севераданэцк
   cs = Luhansk, Alčevsk
   da = Luhansk
   nl = Loehansk, Altsjevsk
@@ -55828,6 +55971,7 @@
 [Ukraine_Lviv Oblast Description]
   en = Lviv, Sambir City Council, Drohobych
   ru = Львов, Самборский городской совет, Дрогобыч
+  be = Львоў, Самбар, Драгобыч
   cs = Lvov, Drohobyč
   nl = Drohobytsj
   fr = Lviv, Drohobytch
@@ -55847,6 +55991,7 @@
 [Ukraine_Mykolaiv Oblast Description]
   en = Mykolaiv, Pervomaisk, Yuzhnoukrainsk
   ru = Николаев, Первомайск, Южноукраинск
+  be = Мікалаеў, Первамайск, Южнаўкраінск
   fr = Mykolaïv
   de = Mykolajiw, Perwomajsk, Juschnoukrajinsk
   hu = Mikolajiv, Pervomaisk, Yuzhnoukrainsk
@@ -55858,6 +56003,7 @@
 [Ukraine_Odessa Oblast Description]
   en = Odessa, Izmail, Chornomorsk
   ru = Одесса, Измаил, Черноморск
+  be = Адэса, Ізмаіл, Чарнаморск
   cs = Oděsa
   fr = Odessa
   de = Odessa, Ismajil, Tschornomorsk
@@ -55874,6 +56020,7 @@
 [Ukraine_Poltava Oblast Description]
   en = Poltava, Kremenchuk, Komsomolsk
   ru = Полтава, Кременчуг, Комсомольск
+  be = Палтава, Крэмэнчук, Камсамольск
   da = Krementjuk
   nl = Krementsjoek
   fi = Krementšuk
@@ -55891,6 +56038,7 @@
 [Ukraine_Rivne Oblast Description]
   en = Rivne, Kuznetsovsk, Dubno
   ru = Ровно, Кузнецовск, Дубно
+  be = Роўна, Вараш, Дубна
   fr = Rivne
   de = Riwne, Kusnezowsk, Dubno
   hu = Rivne, Kuznetsovsk, Dubno
@@ -55901,6 +56049,7 @@
 [Ukraine_Sumy Oblast Description]
   en = Sumy, Konotop, Shostka
   ru = Сумы, Конотоп, Шостка
+  be = Сумы, Канатоп, Шостка
   fr = Soumy
   de = Sumy, Konotop, Schostka
   hu = Szumi, Konotop, Sosztka
@@ -55912,6 +56061,7 @@
 [Ukraine_Ternopil Oblast Description]
   en = Ternopil, Chortkiv, Kremenets
   ru = Тернополь, Чортков, Кременец
+  be = Цярнопаль, Чарткоў, Крэмэнэць
   fr = Ternopil
   de = Ternopil, Tschortkiw, Kremenez
   hu = Ternopil
@@ -55922,6 +56072,7 @@
 [Ukraine_Vinnytsia Oblast Description]
   en = Vinnytsia, Ворошиловка, Zhmerynka
   ru = Винница, Жмеринка
+  be = Вінніца, Жмэрынка
   cs = Vinnycja
   nl = Vinnytsja
   fr = Vinnytsia
@@ -55939,6 +56090,7 @@
 [Ukraine_Volyn Oblast Description]
   en = Lutsk, Kovel, Novovolynsk
   ru = Луцк, Ковель, Нововолынск
+  be = Луцк, Ковель, Новавалынск
   fr = Loutsk, Novovolynsk
   de = Luzk, Kowel, Nowowolysnk
   hu = Luck, Kovel, Novovolinszk
@@ -55949,6 +56101,7 @@
 [Ukraine_Zakarpattia Oblast Description]
   en = Uzhhorod, Mukacheve, Khust
   ru = Ужгород, Мукачево, Хуст
+  be = Ужгарад, Мукачэва, Хуст
   cs = Užhorod, Mukačevo, Chust
   fr = Oujhorod, Khoust
   de = Uschhorod, Mukatschewe, Chust
@@ -55967,6 +56120,7 @@
 [Ukraine_Zaporizhia Oblast Description]
   en = Zaporizhzhia, Melitopol, Berdiansk
   ru = Запорожье, Мелитополь, Бердянск
+  be = Запарожжа, Мэлітопаль, Бэрдзянск
   cs = Záporoží
   fr = Zaporijia, Melitopol, Berdiansk
   de = Saporischschja, Melitopol, Berdjansk
@@ -55982,6 +56136,7 @@
 [Ukraine_Zhytomyr Oblast Description]
   en = Zhytomyr, Berdychiv, Korosten
   ru = Житомир, Бердичев, Коростень
+  be = Жытомір, Бярдзічаў, Корасцень
   cs = Žytomyr
   fr = Jytomyr
   de = Schytomyr, Berdytschiw, Korosten
@@ -56044,6 +56199,7 @@
   en = Tashkent, Kokand, Namangan
   ru = Ташкент, Коканд, Наманган
   ar = طشقند
+  be = Ташкент, Каканд, Наманган
   cs = Taškent
   da = Tasjkent
   nl = Tasjkent
@@ -56197,6 +56353,7 @@
 [United States of America Short]
   en = USA
   ru = США
+  be = ЗША
   da = USA
   fi = Yhdysvallat
   fr = États-Unis
@@ -56217,6 +56374,7 @@
 [Bosnia and Herzegovina Short]
   en = B&H
   ru = БиГ
+  be = БіГ
   cs = B-H
   da = B-H
   nl = B-H
@@ -56241,6 +56399,7 @@
   en = Palestine
   ru = Палестина
   ar = دولة فلسطين
+  be = Палестына
   cs = Palestina
   da = Palæstina
   nl = Palestina
@@ -56271,6 +56430,7 @@
 [United Kingdom Short]
   en = UK
   ru = UK
+  be = UK
   cs = UK
   da = UK
   nl = UK
@@ -56302,6 +56462,7 @@
   en = Czechia
   ru = Чехия
   ar = التشيك
+  be = Чэхія
   cs = Česko
   da = Tjekkiet
   nl = Tsjechië
@@ -56333,6 +56494,7 @@
 en = Buenos Aires
 ru = Буэнос-Айрес
 ar = بوينس آيرس
+be = Буэнас-Айрэс
 cs = Buenos Aires
 da = Buenos Aires
 nl = Buenos Aires
@@ -56364,6 +56526,7 @@ sk = Buenos Aires
 en = Buenos Aires
 ru = Буэнос-Айрес
 ar = بوينس آيرس
+be = Буэнас-Айрэс
 cs = Buenos Aires
 da = Buenos Aires
 nl = Buenos Aires
@@ -56395,6 +56558,7 @@ sk = Buenos Aires
 en = Lower Austria
 ru = Нижняя Австрия
 ar = النمسا السفلى
+be = Ніжняя Аўстрыя
 cs = Dolní Rakousy
 da = Niederösterreich
 nl = Neder-Oostenrijk
@@ -56426,6 +56590,7 @@ sk = Dolné Rakúsko
 en = Minas Gerais
 ru = Минас-Жерайс
 ar = ميناس جيرايس
+be = Мінас-Жэрайс
 cs = Minas Gerais
 da = Minas Gerais
 nl = Minas Gerais
@@ -56457,6 +56622,7 @@ sk = Minas Gerais
 en = São Paulo
 ru = Сан-Паулу
 ar = ساو باولو- ريبيراو بريتو
+be = Сан-Паўлу
 cs = São Paulo
 da = São Paulo
 nl = São Paulo
@@ -56487,6 +56653,7 @@ sk = São Paulo
 en = Central Bohemian Region
 ru = Среднечешский край
 ar = إقليم بوهيميا الوسطى
+be = Сярэднячэшскі край
 cs = Středočeský kraj
 da = Centralbøhmen
 nl = Midden-Bohemen
@@ -56518,6 +56685,7 @@ sk = Stredočeský kraj
 en = Central Bohemian Region
 ru = Среднечешский край
 ar = إقليم بوهيميا الوسطى
+be = Сярэднячэшскі край
 cs = Středočeský kraj
 da = Centralbøhmen
 nl = Midden-Bohemen
@@ -56549,6 +56717,7 @@ sk = Stredočeský kraj
 en = Southwest Finland
 ru = Юго-Западная Финляндия
 ar = فارسينايس سوومي
+be = Паўднёва-заходняя Фінляндыя
 cs = Vlastní Finsko
 da = Egentliga Finland
 nl = Varsinais-Suomi
@@ -56579,6 +56748,7 @@ sk = Varsinais-Suomi
 en = Brandenburg
 ru = Бранденбург
 ar = براندنبورغ
+be = 
 cs = Braniborsko
 da = Brandenburg
 nl = Brandenburg
@@ -56610,6 +56780,7 @@ sk = Brandenbursko
 en = Brandenburg
 ru = Бранденбург
 ar = براندنبورغ
+be = Брандэнбург
 cs = Braniborsko
 da = Brandenburg
 nl = Brandenburg
@@ -56641,6 +56812,7 @@ sk = Brandenbursko
 en = Rhineland-Palatinate
 ru = Рейнланд-Пфальц
 ar = راينلند بالاتينات
+be = Рэйнланд-Пфальц
 cs = Porýní-Falc
 da = Rheinland-Pfalz
 nl = Rijnland-Palts
@@ -56672,6 +56844,7 @@ sk = Porýnie-Falcko
 en = Nuevo León
 ru = Нуэво-Леон
 ar = ولاية نويفو ليون
+be = Нуэва-Леон
 cs = Nuevo León
 da = Nuevo León
 nl = Nuevo León
@@ -56703,6 +56876,7 @@ sk = Nuevo León
 en = Nayarit
 ru = Наярит
 ar = ولاية ناياريت
+be = Наярыт
 cs = Nayarit
 da = Nayarit
 nl = Nayarit
@@ -56734,6 +56908,7 @@ sk = Nayarit
 en = Gelderland
 ru = Гелдерланд
 ar = خيلدرلند
+be = Гелдэрланд
 cs = Gelderland
 da = Gelderland
 nl = Gelderland
@@ -56764,6 +56939,7 @@ sk = Gelderland
 en = Oslo
 ru = Осло
 ar = أوسلو
+be = Осла
 cs = Oslo
 da = Oslo
 nl = Oslo
@@ -56795,6 +56971,7 @@ sk = Oslo
 en = Luzon
 ru = Лусон
 ar = لوزون
+be = Люсон
 cs = Luzon
 da = Luzon
 nl = Luzon
@@ -56826,6 +57003,7 @@ sk = Luzon
 en = Luzon
 ru = Лусон
 ar = لوزون
+be = Люсон
 cs = Luzon
 da = Luzon
 nl = Luzon
@@ -56857,6 +57035,7 @@ sk = Luzon
 en = Nord-Est
 ru = Северо-восток
 ar = الشمال الشرقي
+be = Паўночны Ўсход
 cs = Nord-Est
 da = Nord-Est
 nl = Noordoost
@@ -56887,6 +57066,7 @@ sk = Nord-Est
 en = Nord-Vest
 ru = Северо-запад
 ar = الشمال الغربي
+be = Паўночны Захад
 cs = Nord-Vest
 da = Nord-Vest
 nl = Noordwest
@@ -56917,6 +57097,7 @@ sk = Nord-Vest
 en = Sud
 ru = Южный регион
 ar = الجنوب
+be = Поўдзень
 cs = Sud
 da = Sud
 nl = Zuid
@@ -56948,6 +57129,7 @@ sk = Sud
 en = Sud-Est
 ru = Юго-восток
 ar = الجنوب الشرقي
+be = Паўднёвы Ўсход
 cs = Sud-Est
 da = Sud-Est
 nl = Zuidoost
@@ -56978,6 +57160,7 @@ sk = Sud-Est
 en = Sud-Vest
 ru = Юго-запад
 ar = الجنوب الغربي
+be = Паўднёвы Захад
 cs = Sud-Vest
 da = Sud-Vest
 nl = Zuidwest
@@ -57008,6 +57191,7 @@ sk = Sud-Vest
 en = Vest
 ru = Запад
 ar = الغرب
+be = Захад
 cs = Vest
 da = Vest
 nl = Vest
@@ -57038,6 +57222,7 @@ sk = Vest
 en = Arkhangelsk Oblast
 ru = Архангельская область
 ar = أرخانجيلسك أوبلاست
+be = Архангельская вобласць
 cs = Archangelská oblast
 da = Arkhangelsk oblast
 nl = Oblast Archangelsk
@@ -57069,6 +57254,7 @@ sk = Archangeľská oblasť
 en = Arkhangelsk Oblast
 ru = Архангельская область
 ar = أرخانجيلسك أوبلاست
+be = Архангельская вобласць
 cs = Archangelská oblast
 da = Arkhangelsk oblast
 nl = Oblast Archangelsk
@@ -57100,6 +57286,7 @@ sk = Archangeľská oblasť
 en = Central Switzerland
 ru = Центральная Швейцария
 ar = وسط سويسرا
+be = Цэнтральная Швейцарыя
 cs = Střední Švýcarsko
 da = Centralschweiz
 nl = Centraal Zwitserland
@@ -57131,6 +57318,7 @@ sk = Stredné Švajčiarsko
 en = Scotland
 ru = Шотландия
 ar = إسكتلندا
+be = Шатландыя
 cs = Skotsko
 da = Skotland
 nl = Schotland
@@ -57162,6 +57350,7 @@ sk = Škótsko
 en = Scotland
 ru = Шотландия
 ar = إسكتلندا
+be = Шатландыя
 cs = Skotsko
 da = Skotland
 nl = Schotland
@@ -57193,6 +57382,7 @@ sk = Škótsko
 en = Goiás
 ru = Гояс
 ar = غوياس
+be = Гаяс
 cs = Goiás
 da = Goiás
 nl = Goiás
@@ -57224,6 +57414,7 @@ sk = Goiás
 en = North Region
 ru = Северный регион
 ar = المنطقة الشمالية
+be = Паўночны рэгіён
 cs = Severní region
 da = Norte
 nl = Regio Noord
@@ -57255,6 +57446,7 @@ sk = Severný región
 en = North Region
 ru = Северный регион
 ar = المنطقة الشمالية
+be = Паўночны рэгіён
 cs = Severní region
 da = Norte
 nl = Regio Noord
@@ -57286,6 +57478,7 @@ sk = Severný región
 en = Northeast Region
 ru = Северо-восточный регион
 ar = المنطقة الشمالية الشرقية
+be = Паўночна-усходні рэгіён
 cs = Severovýchodní region
 da = Nordeste
 nl = Regio Noordoost
@@ -57317,6 +57510,7 @@ sk = Severovýchodný región
 en = Northeast Region
 ru = Северо-восточный регион
 ar = المنطقة الشمالية
+be = Паўночна-усходні рэгіён
 cs = Severovýchodní region
 da = Nordeste
 nl = Regio Noordoost
@@ -57348,6 +57542,7 @@ sk = Severovýchodný región
 en = Paraná
 ru = Парана
 ar = بارانا
+be = Парана
 cs = Paraná
 da = Paraná
 nl = Paraná
@@ -57379,6 +57574,7 @@ sk = Paraná
 en = Paraná
 ru = Парана
 ar = بارانا
+be = Парана
 cs = Paraná
 da = Paraná
 nl = Paraná
@@ -57410,6 +57606,7 @@ sk = Paraná
 en = Southern Region
 ru = Южный регион
 ar = المنطقة الجنوبية
+be = Паўднёвы рэгіён
 cs = Jižní region
 da = Sul
 nl = Regio Zuid
@@ -57441,6 +57638,7 @@ sk = Južná oblasť
 en = Southern Region
 ru = Южный регион
 ar = المنطقة الجنوبية
+be = Паўднёвы рэгіён
 cs = Jižní region
 da = Sul
 nl = Regio Zuid
@@ -57472,6 +57670,7 @@ sk = Južná oblasť
 en = Congo
 ru = Конго
 ar = جمهورية الكونغو الديمقراطية
+be = Конга
 cs = Kongo
 da = Congo
 nl = Congo-Kinshasa
@@ -57503,6 +57702,7 @@ sk = Kongo
 en = Eastern Finland
 ru = Восточная Финляндия
 ar = فنلندا الشرقية
+be = Усходняя Фінляндыя
 cs = Východní Finsko
 da = Østfinlands len
 nl = Oost-Finland
@@ -57534,6 +57734,7 @@ sk = Východné Fínsko
 en = Eastern Finland
 ru = Восточная Финляндия
 ar = فنلندا الشرقية
+be = Усходняя Фінляндыя
 cs = Východní Finsko
 da = Østfinlands len
 nl = Oost-Finland
@@ -57565,6 +57766,7 @@ sk = Východné Fínsko
 en = Franche-Comté
 ru = Франш-Конте
 ar = فرانش كونته
+be = Франш-Кантэ
 cs = Franche-Comté
 da = Franche-Comté
 nl = Franche-Comté
@@ -57596,6 +57798,7 @@ sk = Franche-Comté
 en = Franche-Comté
 ru = Франш-Конте
 ar = فرانش كونته
+be = Франш-Кантэ
 cs = Franche-Comté
 da = Franche-Comté
 nl = Franche-Comté
@@ -57627,6 +57830,7 @@ sk = Franche-Comté
 en = Karnataka
 ru = Карнатака
 ar = كارناتاكا
+be = Карнатака
 cs = Karnátaka
 da = Karnataka
 nl = Karnataka
@@ -57658,6 +57862,7 @@ sk = Karnátaka
 en = Karnataka
 ru = Карнатака
 ar = كارناتاكا
+be = Карнатака
 cs = Karnátaka
 da = Karnataka
 nl = Karnataka
@@ -57689,6 +57894,7 @@ sk = Karnátaka
 en = Krasnoyarsk Krai
 ru = Красноярский край
 ar = كراسنويارسك كراي
+be = Краснаярскі край
 cs = Krasnojarský kraj
 da = Krasnojarsk kraj
 nl = Kraj Krasnojarsk
@@ -57720,6 +57926,7 @@ sk = Krasnojarský kraj
 en = Krasnoyarsk Krai
 ru = Красноярский край
 ar = كراسنويارسك كراي
+be = Краснаярскі край
 cs = Krasnojarský kraj
 da = Krasnojarsk kraj
 nl = Kraj Krasnojarsk
@@ -57751,6 +57958,7 @@ sk = Krasnojarský kraj
 en = Moscow Oblast
 ru = Московская область
 ar = محافظة موسكو
+be = Маскоўская вобласць
 cs = Moskevská oblast
 da = Moskva oblast
 nl = Oblast Moskou
@@ -57782,6 +57990,7 @@ sk = Moskovská oblasť
 en = Moscow Oblast
 ru = Московская область
 ar = محافظة موسكو
+be = Маскоўская вобласць
 cs = Moskevská oblast
 da = Moskva oblast
 nl = Oblast Moskou
@@ -57813,6 +58022,7 @@ sk = Moskovská oblasť
 en = Perm Krai
 ru = Пермский край
 ar = بيرم كراي
+be = Пермскі край
 cs = Permský kraj
 da = Perm kraj
 nl = Kraj Perm
@@ -57844,6 +58054,7 @@ sk = Permský kraj
 en = Perm Krai
 ru = Пермский край
 ar = بيرم كراي
+be = Пермскі край
 cs = Permský kraj
 da = Perm kraj
 nl = Kraj Perm
@@ -57875,6 +58086,7 @@ sk = Permský kraj
 en = Republic of Karelia
 ru = Республика Карелия
 ar = جمهورية كاريليا
+be = Карэлія
 cs = Republika Karélie
 da = Karelen
 nl = Karelië
@@ -57906,6 +58118,7 @@ sk = Karelsko
 en = Republic of Karelia
 ru = Республика Карелия
 ar = جمهورية كاريليا
+be = Карэлія
 cs = Republika Karélie
 da = Karelen
 nl = Karelië
@@ -57937,6 +58150,7 @@ sk = Karelsko
 en = Sverdlovsk Oblast
 ru = Свердловская область
 ar = سفيردلوفسك أوبلاست
+be = Свярдлоўская вобласць
 cs = Sverdlovská oblast
 da = Sverdlovsk oblast
 nl = Oblast Sverdlovsk
@@ -57968,6 +58182,7 @@ sk = Sverdlovská oblasť
 en = Castile and León
 ru = Кастилия и Леон
 ar = منطقة قـشتالة وليون
+be = Кастылія і Леон
 cs = Kastilie a León
 da = Castilla y León
 nl = Castilië en León
@@ -57999,6 +58214,7 @@ sk = Kastília a León
 en = Castile and León
 ru = Кастилия и Леон
 ar = منطقة قـشتالة وليون
+be = Кастылія і Леон
 cs = Kastilie a León
 da = Castilla y León
 nl = Castilië en León
@@ -58030,6 +58246,7 @@ sk = Kastília a León
 en = Galicia
 ru = Галисия
 ar = منطقة غاليسيا
+be = Галісія
 cs = Galicie
 da = Galicien
 nl = Galicië
@@ -58061,6 +58278,7 @@ sk = Galícia
 en = Galicia
 ru = Галисия
 ar = منطقة غاليسيا
+be = Галісія
 cs = Galicie
 da = Galicien
 nl = Galicië
@@ -58092,6 +58310,7 @@ sk = Galícia
 en = Espace Mittelland
 ru = Центральная Швейцария
 ar = منطقة ميتلاند
+be = Цэнтральная Швейцарыя
 cs = Espace Mittelland
 da = Espace Mittelland
 nl = Espace Mittelland
