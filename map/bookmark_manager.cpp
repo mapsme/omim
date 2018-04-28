@@ -1336,11 +1336,10 @@ void BookmarkManager::CreateCategories(KMLDataCollection && dataCollection, bool
     auto & fileData = *data.second;
     auto & categoryData = fileData.m_categoryData;
 
-    if ((categoryData.m_id != kml::kInvalidMarkGroupId) &&
-        (UserMarkIdStorage::Instance().IsJustCreated() ||
-         fileData.m_deviceId != GetPlatform().UniqueClientId()))
+    if (!UserMarkIdStorage::Instance().CheckIds(fileData) || HasDuplicatedIds(fileData))
     {
       LOG(LINFO, ("Bookmarks ids were reset for file", fileName));
+      //TODO: notify subscribers(like search subsystem). This KML could have been indexed.
       ResetIds(fileData);
     }
 
@@ -1393,6 +1392,29 @@ void BookmarkManager::CreateCategories(KMLDataCollection && dataCollection, bool
     auto * group = GetBmCategory(groupId);
     group->EnableAutoSave(autoSave);
   }
+}
+
+bool BookmarkManager::HasDuplicatedIds(kml::FileData const & fileData) const
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+  if (fileData.m_categoryData.m_id == kml::kInvalidMarkGroupId)
+    return false;
+
+  if (m_categories.find(fileData.m_categoryData.m_id) != m_categories.cend())
+    return true;
+
+  for (auto const & b : fileData.m_bookmarksData)
+  {
+    if (m_bookmarks.count(b.m_id) > 0)
+      return true;
+  }
+
+  for (auto const & t : fileData.m_tracksData)
+  {
+    if (m_tracks.count(t.m_id) > 0)
+      return true;
+  }
+  return false;
 }
 
 std::unique_ptr<kml::FileData> BookmarkManager::CollectBmGroupKMLData(BookmarkCategory const * group) const
