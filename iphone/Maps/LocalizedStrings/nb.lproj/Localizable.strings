@@ -2036,8 +2036,6 @@
 
 "placepage_summary_rating" = "Sammendrag av vurderinger";
 
-"placepage_summary_rating_description" = "Basert på %s vurderinger";
-
 "placepage_rate_comment" = "Trykk for å gi din vurdering av stedet.";
 
 "placepage_rate_horrible" = "Elendig";
@@ -2192,8 +2190,6 @@
 
 "bookmarks_groups_show_all" = "Vis alle";
 
-"bookmarks_places" = "%s bokmerker";
-
 "bookmarks_create_new_group" = "Opprett ny liste";
 
 "downloader_hide_screen" = "Skjul skjerm";
@@ -2230,42 +2226,48 @@
 
 "maxim_taxi_title" = "maxim";
 
-"bookmarks_error_title_empty_list_name" = "The name couldn't be empty";
+"bookmarks_error_title_empty_list_name" = "Navnet kan ikke være tomt";
 
-"bookmarks_error_message_empty_list_name" = "Please enter the list name";
+"bookmarks_error_message_empty_list_name" = "Vennligst skriv inn listenavnet";
 
-"bookmarks_new_list_hint" = "New list";
+"bookmarks_new_list_hint" = "Ny liste";
 
-"bookmarks_error_title_list_name_already_taken" = "This name is already taken";
+"bookmarks_error_title_list_name_already_taken" = "Dette navnet er allerede tatt";
 
-"bookmarks_error_message_list_name_already_taken" = "Please choose another name";
+"bookmarks_error_message_list_name_already_taken" = "Vennligst velg et annet navn";
 
-"bookmarks_error_title_list_name_too_long" = "This name is too long";
+"bookmarks_error_title_list_name_too_long" = "Dette navnet er for langt";
 
-"bookmarks_error_message_list_name_too_long" = "Please choose another name";
+"bookmarks_error_message_list_name_too_long" = "Vennligst velg et annet navn";
 
-"please_wait" = "Please wait...";
+"please_wait" = "Vennligst vent...";
 
-"fc2018" = "Football World Cup 2018";
+"fc2018" = "Fotball VM 2018";
 
-"phone_number" = "Phone number";
+"phone_number" = "Telefonnummer";
 
-"notification_unsent_reviews_title" = " You have several unsent reviews";
+"notification_unsent_reviews_title" = "Du har flere usendte anmeldelser";
 
-"notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
+"notification_unsent_reviews_message" = "Vennligst logg inn for å dele anmeldelser med andre reisende";
 
-"profile_osm" = "Profile OSM";
+"profile_osm" = "Profil OSM";
 
-"place_page_search_similar_hotel" = "Search similar hotels";
+"place_page_search_similar_hotel" = "Søk lignende hoteller";
 
-"bookmarks_detect_title" = "New files detected";
+"bookmarks_detect_title" = "Nye filer oppdaget";
 
-"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
+"button_convert" = "Konvertere";
 
-"button_convert" = "Convert";
+"bookmarks_convert_error_title" = "Feil";
 
-"bookmarks_convert_error_title" = "Error";
+"bookmarks_convert_error_message" = "Noen filer ble ikke konvertert.";
 
-"bookmarks_convert_error_message" = "Some files were not converted.";
+"converting" = "Konvertere...";
 
-"converting" = "Converting...";
+"wn_reinvented_bookmarks_title" = "Vi gjenoppfunnet bokmerker!";
+
+"wn_reinvented_bookmarks_message" = "Du kan sikkerhetskopiere bokmerker, lage lister... Det er utrolig...";
+
+"wn_way_of_booking_title" = "Vi reimagined veien for booking!";
+
+"wn_way_of_booking_message" = "Bare finn et hotell på kartet og bestill det, eller velg det samme.";

@@ -265,12 +265,15 @@ public:
   void ApplyCloudRestoring();
   void CancelCloudRestoring();
 
+  void SetNotificationsEnabled(bool enabled);
+  bool AreNotificationsEnabled() const;
+
   /// These functions are public for unit tests only. You shouldn't call them from client code.
   void EnableTestMode(bool enable);
   bool SaveBookmarkCategory(kml::MarkGroupId groupId);
   bool SaveBookmarkCategory(kml::MarkGroupId groupId, Writer & writer, bool useBinary) const;
   void CreateCategories(KMLDataCollection && dataCollection, bool autoSave = true);
-  static std::string RemoveInvalidSymbols(std::string const & name);
+  static std::string RemoveInvalidSymbols(std::string const & name, std::string const & defaultName);
   static std::string GenerateUniqueFileName(std::string const & path, std::string name, std::string const & fileExt);
   static std::string GenerateValidAndUniqueFilePathForKML(std::string const & fileName);
   static std::string GenerateValidAndUniqueFilePathForKMB(std::string const & fileName);
@@ -329,12 +332,12 @@ private:
   template <typename UserMarkT>
   UserMarkT * CreateUserMark(m2::PointD const & ptOrg)
   {
-    ASSERT_THREAD_CHECKER(m_threadChecker, ());
+    CHECK_THREAD_CHECKER(m_threadChecker, ());
     auto mark = std::make_unique<UserMarkT>(ptOrg);
     auto * m = mark.get();
     auto const markId = m->GetId();
     auto const groupId = static_cast<kml::MarkGroupId>(m->GetMarkType());
-    ASSERT_EQUAL(m_userMarks.count(markId), 0, ());
+    CHECK_EQUAL(m_userMarks.count(markId), 0, ());
     ASSERT_LESS(groupId, m_userMarkLayers.size(), ());
     m_userMarks.emplace(markId, std::move(mark));
     m_changesTracker.OnAddMark(markId);
@@ -345,7 +348,7 @@ private:
   template <typename UserMarkT>
   UserMarkT * GetMarkForEdit(kml::MarkId markId)
   {
-    ASSERT_THREAD_CHECKER(m_threadChecker, ());
+    CHECK_THREAD_CHECKER(m_threadChecker, ());
     auto * mark = GetUserMarkForEdit(markId);
     ASSERT(dynamic_cast<UserMarkT *>(mark) != nullptr, ());
     return static_cast<UserMarkT *>(mark);
@@ -354,7 +357,7 @@ private:
   template <typename UserMarkT, typename F>
   void DeleteUserMarks(UserMark::Type type, F && deletePredicate)
   {
-    ASSERT_THREAD_CHECKER(m_threadChecker, ());
+    CHECK_THREAD_CHECKER(m_threadChecker, ());
     std::list<kml::MarkId> marksToDelete;
     for (auto markId : GetUserMarkIds(type))
     {
@@ -451,7 +454,9 @@ private:
   bool m_loadBookmarksFinished = false;
   bool m_firstDrapeNotification = false;
   bool m_restoreApplying = false;
+  bool m_migrationInProgress = false;
   bool m_conversionInProgress = false;
+  bool m_notificationsEnabled = true;
 
   ScreenBase m_viewport;
 

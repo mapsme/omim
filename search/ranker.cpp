@@ -59,7 +59,7 @@ NameScores GetNameScores(FeatureType const & ft, Geocoder::Params const & params
   TokenSlice slice(params, range);
   TokenSliceNoCategories sliceNoCategories(params, range);
 
-  for (auto const & lang : params.GetLangs())
+  for (auto const lang : params.GetLangs())
   {
     string name;
     if (!ft.GetName(lang, name))
@@ -455,7 +455,7 @@ void Ranker::SuggestStrings()
 
   string prologue = DropLastToken(m_params.m_query);
 
-  for (auto const & locale : m_params.m_categoryLocales)
+  for (auto const locale : m_params.m_categoryLocales)
     MatchForSuggestions(m_params.m_prefix, locale, prologue);
 }
 
@@ -560,12 +560,25 @@ void Ranker::MakeRankerResults(Geocoder::Params const & geocoderParams,
 void Ranker::GetBestMatchName(FeatureType const & f, string & name) const
 {
   KeywordLangMatcher::Score bestScore;
-  auto bestNameFinder = [&](int8_t lang, string const & s) {
+  auto updateScore = [&](int8_t lang, string const & s, bool force) {
     auto const score = m_keywordsScorer.CalcScore(lang, s);
-    if (bestScore < score)
+    if (force ? bestScore <= score : bestScore < score)
     {
       bestScore = score;
       name = s;
+    }
+  };
+
+  auto bestNameFinder = [&](int8_t lang, string const & s) {
+    updateScore(lang, s, true /* force */);
+    // Default name should be written in the regional language.
+    if (lang == StringUtf8Multilang::kDefaultCode)
+    {
+      auto const mwmInfo = f.GetID().m_mwmId.GetInfo();
+      vector<int8_t> mwmLangCodes;
+      mwmInfo->GetRegionData().GetLanguages(mwmLangCodes);
+      for (auto const l : mwmLangCodes)
+        updateScore(l, s, false /* force */);
     }
   };
   UNUSED_VALUE(f.ForEachName(bestNameFinder));

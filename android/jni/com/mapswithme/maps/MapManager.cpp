@@ -448,12 +448,18 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeFindCountry(JNIEnv * env, j
 JNIEXPORT jboolean JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeIsDownloading(JNIEnv * env, jclass clazz)
 {
-  return GetStorage().IsDownloadInProgress();
+  return static_cast<jboolean>(GetStorage().IsDownloadInProgress());
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_mapswithme_maps_downloader_MapManager_nativeGetCurrentDownloadingCountryId(JNIEnv * env, jclass)
+{
+  return jni::ToJavaString(env, GetStorage().GetCurrentDownloadingCountryId());
 }
 
 static void StartBatchingCallbacks()
 {
-  ASSERT_THREAD_CHECKER(g_batchingThreadChecker, ("StartBatchingCallbacks"));
+  CHECK_THREAD_CHECKER(g_batchingThreadChecker, ("StartBatchingCallbacks"));
   ASSERT(!g_isBatched, ());
   ASSERT(g_batchedCallbackData.empty(), ());
 
@@ -462,7 +468,7 @@ static void StartBatchingCallbacks()
 
 static void EndBatchingCallbacks(JNIEnv * env)
 {
-  ASSERT_THREAD_CHECKER(g_batchingThreadChecker, ("EndBatchingCallbacks"));
+  CHECK_THREAD_CHECKER(g_batchingThreadChecker, ("EndBatchingCallbacks"));
 
   static jclass arrayListClass = jni::GetGlobalClassRef(env, "java/util/ArrayList");
   static jmethodID arrayListCtor = jni::GetConstructorID(env, arrayListClass, "(I)V");

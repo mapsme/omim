@@ -34,8 +34,8 @@ import java.util.Set;
 
 import static com.mapswithme.util.statistics.Statistics.EventName.DOWNLOADER_DIALOG_CANCEL;
 import static com.mapswithme.util.statistics.Statistics.EventName.DOWNLOADER_DIALOG_DOWNLOAD;
-import static com.mapswithme.util.statistics.Statistics.EventName.DOWNLOADER_DIALOG_LATER;
 import static com.mapswithme.util.statistics.Statistics.EventName.DOWNLOADER_DIALOG_HIDE;
+import static com.mapswithme.util.statistics.Statistics.EventName.DOWNLOADER_DIALOG_LATER;
 import static com.mapswithme.util.statistics.Statistics.EventName.DOWNLOADER_DIALOG_MANUAL_DOWNLOAD;
 import static com.mapswithme.util.statistics.Statistics.EventName.DOWNLOADER_DIALOG_SHOW;
 
@@ -81,7 +81,7 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
   @Nullable
   private String mProcessedMapId;
   @StringRes
-  private int mCommonStatusResId;
+  private int mCommonStatusResId = Utils.INVALID_ID;
 
   private void finish()
   {
@@ -107,6 +107,7 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
                                                    mTotalSizeBytes / Constants.MB);
 
     MapManager.nativeCancel(CountryItem.getRootId());
+
     final UpdateInfo info = MapManager.nativeGetUpdateInfo(CountryItem.getRootId());
     if (info == null)
     {
@@ -114,9 +115,9 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
       return;
     }
 
+    updateTotalSizes(info);
+
     mAutoUpdate = false;
-    mTotalSize = StringUtils.getFileSizeString(info.totalSize);
-    mTotalSizeBytes = info.totalSize;
     mOutdatedMaps = Framework.nativeGetOutdatedCountries();
 
     if (mStorageCallback != null)
@@ -262,38 +263,59 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
   {
     super.onResume();
 
-    if (isAllUpdated())
+    // The storage callback must be non-null at this point.
+    //noinspection ConstantConditions
+    mStorageCallback.attach(this);
+    mProgressBar.setOnClickListener(mCancelClickListener);
+
+    if (isAllUpdated() || Framework.nativeGetOutdatedCountries().length == 0)
     {
       finish();
       return;
     }
 
-    // The storage callback must be non-null at this point.
-    //noinspection ConstantConditions
-    mStorageCallback.attach(this);
-
-    if (mAutoUpdate && !MapManager.nativeIsDownloading())
+    if (mAutoUpdate)
     {
-      MapManager.warnOn3gUpdate(getActivity(), CountryItem.getRootId(), new Runnable()
+      if (!MapManager.nativeIsDownloading())
       {
-        @Override
-        public void run()
+        MapManager.warnOn3gUpdate(getActivity(), CountryItem.getRootId(), new Runnable()
         {
-          MapManager.nativeUpdate(CountryItem.getRootId());
-          Statistics.INSTANCE.trackDownloaderDialogEvent(DOWNLOADER_DIALOG_DOWNLOAD,
-                                                         mTotalSizeBytes / Constants.MB);
+          @Override
+          public void run()
+          {
+            MapManager.nativeUpdate(CountryItem.getRootId());
+            Statistics.INSTANCE.trackDownloaderDialogEvent(DOWNLOADER_DIALOG_DOWNLOAD,
+                                                           mTotalSizeBytes / Constants.MB);
+          }
+        });
+      }
+      else
+      {
+        final UpdateInfo info = MapManager.nativeGetUpdateInfo(CountryItem.getRootId());
+        if (info == null)
+        {
+          finish();
+          return;
         }
-      });
+
+        updateTotalSizes(info);
+        updateProgress();
+
+        updateProcessedMapInfo();
+        setCommonStatus(mProcessedMapId, mCommonStatusResId);
+      }
     }
   }
 
   @Override
   public void onPause()
   {
+    super.onPause();
+
+    mProgressBar.setOnClickListener(null);
+
     if (mStorageCallback != null)
       mStorageCallback.detach();
-
-    super.onPause();
   }
 
   @Override
@@ -344,7 +366,6 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
                        getString(R.string.downloader_hide_screen) :
                        getString(R.string.whats_new_auto_update_button_later));
     mFinishBtn.setOnClickListener(mFinishClickListener);
-    mProgressBar.setOnClickListener(mCancelClickListener);
     mProgressBar.post(() -> mProgressBar.setPending(true));
     if (mAutoUpdate)
       setCommonStatus(mProcessedMapId, mCommonStatusResId);
@@ -376,7 +397,7 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
 
   void setCommonStatus(@Nullable String mwmId, @StringRes int mwmStatusResId)
   {
-    if (mwmId == null || mwmStatusResId == 0)
+    if (mwmId == null || mwmStatusResId == Utils.INVALID_ID)
       return;
 
     mProcessedMapId = mwmId;
@@ -385,6 +406,43 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
     String status = getString(mwmStatusResId, MapManager.nativeGetName(mwmId));
     mTitle.setText(status);
   }
+
+  void updateTotalSizes(@NonNull UpdateInfo info)
+  {
+    mTotalSize = StringUtils.getFileSizeString(info.totalSize);
+    mTotalSizeBytes = info.totalSize;
+  }
+
+  void updateProgress()
+  {
+    int progress = MapManager.nativeGetOverallProgress(mOutdatedMaps);
+    setProgress(progress, mTotalSizeBytes * progress / 100, mTotalSizeBytes);
+  }
+
+  void updateProcessedMapInfo()
+  {
+    mProcessedMapId = MapManager.nativeGetCurrentDownloadingCountryId();
+
+    if (mProcessedMapId == null)
+      return;
+
+    CountryItem processedCountryItem = new CountryItem(mProcessedMapId);
+    MapManager.nativeGetAttributes(processedCountryItem);
+
+    switch (processedCountryItem.status)
+    {
+      case CountryItem.STATUS_PROGRESS:
+        mCommonStatusResId = R.string.downloader_process;
+        break;
+      case CountryItem.STATUS_APPLYING:
+        mCommonStatusResId = R.string.downloader_applying;
+        break;
+      default:
+        mCommonStatusResId = Utils.INVALID_ID;
+        break;
+    }
+  }
+
   private static class DetachableStorageCallback implements MapManager.StorageCallback
   {
     @Nullable

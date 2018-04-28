@@ -1154,7 +1154,9 @@
 	<string name="placepage_no_reviews">Ingen anmeldelser</string>
 	<string name="placepage_reviewed">Du har allerede anmeldt dette sted</string>
 	<string name="placepage_summary_rating">Sammenfattende vurdering</string>
-	<string name="placepage_summary_rating_description">Baseret på %s anmeldelser</string>
+	<plurals name="placepage_summary_rating_description">
+	  <item quantity="other">Baseret på %d anmeldelser</item>
+	</plurals>
 	<string name="placepage_rate_comment">Tryk for at vurdere og anmelde dette sted.</string>
 	<string name="placepage_rate_horrible">Forfærdeligt</string>
 	<string name="placepage_rate_bad">Dårligt</string>
@@ -1230,7 +1232,9 @@
 	<string name="bookmarks_groups">Lister</string>
 	<string name="bookmarks_groups_hide_all">Skjul alle</string>
 	<string name="bookmarks_groups_show_all">Vis alle</string>
-	<string name="bookmarks_places">%s bogmærker</string>
+	<plurals name="bookmarks_places">
+	  <item quantity="other">%d bogmærker</item>
+	</plurals>
 	<string name="bookmarks_create_new_group">Opret ny liste</string>
 	<string name="downloader_hide_screen">Skjul skærm</string>
 	<string name="downloader_percent">%1$s (%2$s af %3$s)</string>
@@ -1248,4 +1252,31 @@
 	<string name="bookmarks_error_message_share_empty">Kan ikke dele en tom liste</string>
 	<string name="discovery_button_subtitle_book_hotels">Reserver hoteller</string>
 	<string name="luggage_storage">Bagageopbevaring</string>
+	<string name="bookmarks_error_title_empty_list_name">Navnet kunne ikke være tomt</string>
+	<string name="bookmarks_error_message_empty_list_name">Indtast venligst listen navn</string>
+	<string name="bookmarks_new_list_hint">Ny liste</string>
+	<string name="bookmarks_error_title_list_name_already_taken">Dette navn er allerede taget</string>
+	<string name="bookmarks_error_message_list_name_already_taken">Vælg venligst et andet navn</string>
+	<string name="bookmarks_error_title_list_name_too_long">Dette navn er for langt</string>
+	<string name="bookmarks_error_message_list_name_too_long">Vælg venligst et andet navn</string>
+	<string name="please_wait">Vent venligst...</string>
+	<string name="fc2018">Fodbold VM 2018</string>
+	<string name="phone_number">Telefonnummer</string>
+	<string name="notification_unsent_reviews_title">Du har flere usendte anmeldelser</string>
+	<string name="notification_unsent_reviews_message">Venligst log ind for at dele anmeldelser med andre rejsende</string>
+	<string name="profile_osm">Profil OSM</string>
+	<string name="place_page_search_similar_hotel">Søg lignende hoteller</string>
+	<string name="bookmarks_detect_title">Nye filer registreret</string>
+	<plurals name="bookmarks_detect_message">
+	  <item quantity="one">%d fil blev fundet. Du vil se det efter konvertering.</item>
+	  <item quantity="other">Der er fundet %d filer. Du vil se dem efter konvertering.</item>
+	</plurals>
+	<string name="button_convert">Konvertere</string>
+	<string name="bookmarks_convert_error_title">Fejl</string>
+	<string name="bookmarks_convert_error_message">Nogle filer blev ikke konverteret.</string>
+	<string name="converting">Konvertering...</string>
+	<string name="wn_reinvented_bookmarks_title">Vi genopfandt bogmærker!</string>
+	<string name="wn_reinvented_bookmarks_message">Du kan sikkerhedskopiere bogmærker, oprette lister... Det er fantastisk...</string>
+	<string name="wn_way_of_booking_title">Vi reimagined måde at reservere!</string>
+	<string name="wn_way_of_booking_message">Find blot et hotel på kortet og book det, eller vælg det samme.</string>
 </resources>

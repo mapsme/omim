@@ -23,7 +23,7 @@ NSString * const CloudErrorToString(Cloud::SynchronizationResult result)
   case Cloud::SynchronizationResult::AuthError: return kStatAuth;
   case Cloud::SynchronizationResult::NetworkError: return kStatNetwork;
   case Cloud::SynchronizationResult::DiskError: return kStatDisk;
-  case Cloud::SynchronizationResult::UserInterrupted: return nil;
+  case Cloud::SynchronizationResult::UserInterrupted: return kStatUserInterrupted;
   }
 }
 }  // namespace
@@ -357,6 +357,16 @@ NSString * const CloudErrorToString(Cloud::SynchronizationResult result)
 + (BOOL)areAllCategoriesInvisible
 {
   return GetFramework().GetBookmarkManager().AreAllCategoriesInvisible();
+}
+
++ (void)setNotificationsEnabled:(BOOL)enabled
+{
+  GetFramework().GetBookmarkManager().SetNotificationsEnabled(enabled);
+}
+
++ (BOOL)areNotificationsEnabled
+{
+  return GetFramework().GetBookmarkManager().AreNotificationsEnabled();
 }
 
 @end

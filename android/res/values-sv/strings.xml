@@ -1154,7 +1154,9 @@
 	<string name="placepage_no_reviews">Inga omdömen</string>
 	<string name="placepage_reviewed">Du har redan lämnat ett omdöme om den här platsen</string>
 	<string name="placepage_summary_rating">Sammanfattning av omdömen</string>
-	<string name="placepage_summary_rating_description">Baserat på %s omdömen</string>
+	<plurals name="placepage_summary_rating_description">
+	  <item quantity="other">Baserat på %d omdömen</item>
+	</plurals>
 	<string name="placepage_rate_comment">Tryck för att betygsätta och lämna ett omdöme om den här platsen.</string>
 	<string name="placepage_rate_horrible">Hemskt</string>
 	<string name="placepage_rate_bad">Dåligt</string>
@@ -1230,7 +1232,9 @@
 	<string name="bookmarks_groups">Listor</string>
 	<string name="bookmarks_groups_hide_all">Dölj alla</string>
 	<string name="bookmarks_groups_show_all">Visa alla</string>
-	<string name="bookmarks_places">%s bokmärken</string>
+	<plurals name="bookmarks_places">
+	  <item quantity="other">%d bokmärken</item>
+	</plurals>
 	<string name="bookmarks_create_new_group">Skapa ny lista</string>
 	<string name="downloader_hide_screen">Dölj skärm</string>
 	<string name="downloader_percent">%1$s (%2$s av %3$s)</string>
@@ -1248,4 +1252,31 @@
 	<string name="bookmarks_error_message_share_empty">Kan inte dela en tom lista</string>
 	<string name="discovery_button_subtitle_book_hotels">Boka hotell</string>
 	<string name="luggage_storage">Bagageförvaring</string>
+	<string name="bookmarks_error_title_empty_list_name">Namnet kunde inte vara tomt</string>
+	<string name="bookmarks_error_message_empty_list_name">Vänligen ange listnamnet</string>
+	<string name="bookmarks_new_list_hint">Ny lista</string>
+	<string name="bookmarks_error_title_list_name_already_taken">Det här namnet är redan taget</string>
+	<string name="bookmarks_error_message_list_name_already_taken">Vänligen välj ett annat namn</string>
+	<string name="bookmarks_error_title_list_name_too_long">Det här namnet är för långt</string>
+	<string name="bookmarks_error_message_list_name_too_long">Vänligen välj ett annat namn</string>
+	<string name="please_wait">Vänligen vänta...</string>
+	<string name="fc2018">Fotbolls VM 2018</string>
+	<string name="phone_number">Telefonnummer</string>
+	<string name="notification_unsent_reviews_title">Du har flera unsent recensioner</string>
+	<string name="notification_unsent_reviews_message">Vänligen logga in för att dela omdömen med andra resenärer</string>
+	<string name="profile_osm">OSM-profil</string>
+	<string name="place_page_search_similar_hotel">Sök liknande hotell</string>
+	<string name="bookmarks_detect_title">Nya filer upptäcktes</string>
+	<plurals name="bookmarks_detect_message">
+	  <item quantity="one">%d fil hittades. Du kommer att se den efter omvandlingen.</item>
+	  <item quantity="other">%d filer har hittats. Du kommer att se dem efter omvandlingen.</item>
+	</plurals>
+	<string name="button_convert">Konvertera</string>
+	<string name="bookmarks_convert_error_title">Fel</string>
+	<string name="bookmarks_convert_error_message">Vissa filer konverterades inte.</string>
+	<string name="converting">Konvertera...</string>
+	<string name="wn_reinvented_bookmarks_title">Vi återuppfinde bokmärken!</string>
+	<string name="wn_reinvented_bookmarks_message">Du kan säkerhetskopiera bokmärken, skapa listor... Det är fantastiskt...</string>
+	<string name="wn_way_of_booking_title">Vi reimagined sättet att boka!</string>
+	<string name="wn_way_of_booking_message">Hitta bara ett hotell på kartan och boka det, eller välj den liknande.</string>
 </resources>

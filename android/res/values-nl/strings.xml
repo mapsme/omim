@@ -1150,7 +1150,9 @@
 	<string name="placepage_no_reviews">Geen beoordelingen</string>
 	<string name="placepage_reviewed">U hebt deze plaats al beoordeeld</string>
 	<string name="placepage_summary_rating">Samengevatte rating</string>
-	<string name="placepage_summary_rating_description">Gebaseerd op %s beoordelingen</string>
+	<plurals name="placepage_summary_rating_description">
+	  <item quantity="other">Gebaseerd op %d beoordelingen</item>
+	</plurals>
 	<string name="placepage_rate_comment">Tap om deze plaats te raten en te beoordelen.</string>
 	<string name="placepage_rate_horrible">Verschrikkelijk</string>
 	<string name="placepage_rate_bad">Slecht</string>
@@ -1226,7 +1228,9 @@
 	<string name="bookmarks_groups">lijsten</string>
 	<string name="bookmarks_groups_hide_all">Alles verbergen</string>
 	<string name="bookmarks_groups_show_all">Alles weergeven</string>
-	<string name="bookmarks_places">%s bladwijzers</string>
+	<plurals name="bookmarks_places">
+	  <item quantity="other">%d bladwijzers</item>
+	</plurals>
 	<string name="bookmarks_create_new_group">Nieuwe lijst maken</string>
 	<string name="downloader_hide_screen">Scherm Verbergen</string>
 	<string name="downloader_percent">%1$s (%2$s van %3$s)</string>
@@ -1244,4 +1248,31 @@
 	<string name="bookmarks_error_message_share_empty">Een lege lijst kan niet gedeeld worden</string>
 	<string name="discovery_button_subtitle_book_hotels">Boek hotels</string>
 	<string name="luggage_storage">Bagageopslag</string>
+	<string name="bookmarks_error_title_empty_list_name">De naam kan niet leeg zijn</string>
+	<string name="bookmarks_error_message_empty_list_name">Voer de lijstnaam in</string>
+	<string name="bookmarks_new_list_hint">Nieuwe lijst</string>
+	<string name="bookmarks_error_title_list_name_already_taken">Deze naam is al in gebruik</string>
+	<string name="bookmarks_error_message_list_name_already_taken">Kies alstublieft een andere naam</string>
+	<string name="bookmarks_error_title_list_name_too_long">Deze naam is te lang</string>
+	<string name="bookmarks_error_message_list_name_too_long">Kies alstublieft een andere naam</string>
+	<string name="please_wait">Even geduld aub...</string>
+	<string name="fc2018">Wereldkampioenschap voetbal 2018</string>
+	<string name="phone_number">Telefoonnummer</string>
+	<string name="notification_unsent_reviews_title">U heeft verschillende niet-verzonden recensies</string>
+	<string name="notification_unsent_reviews_message">Meld u aan om recensies te delen met andere reizigers</string>
+	<string name="profile_osm">Profiel OSM</string>
+	<string name="place_page_search_similar_hotel">Zoek vergelijkbare hotels</string>
+	<string name="bookmarks_detect_title">Nieuwe bestanden gedetecteerd</string>
+	<plurals name="bookmarks_detect_message">
+	  <item quantity="one">%d bestand gevonden. Je ziet het na het converteren.</item>
+	  <item quantity="other">Er zijn %d bestanden gevonden. Je zult ze na de conversie zien.</item>
+	</plurals>
+	<string name="button_convert">Omzetten</string>
+	<string name="bookmarks_convert_error_title">Fout</string>
+	<string name="bookmarks_convert_error_message">Sommige bestanden waren niet geconverteerd.</string>
+	<string name="converting">Het omzetten van...</string>
+	<string name="wn_reinvented_bookmarks_title">We hebben bladwijzers opnieuw uitgevonden!</string>
+	<string name="wn_reinvented_bookmarks_message">U kunt een back-up maken van bladwijzers, lijsten maken... Het is verbazingwekkend...</string>
+	<string name="wn_way_of_booking_title">We hebben de manier van boeken opnieuw bedacht!</string>
+	<string name="wn_way_of_booking_message">Zoek gewoon een hotel op de kaart en boek het, of selecteer een vergelijkbaar hotel.</string>
 </resources>

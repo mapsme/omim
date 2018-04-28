@@ -2036,8 +2036,6 @@
 
 "placepage_summary_rating" = "Súhrnné hodnotenie";
 
-"placepage_summary_rating_description" = "Na základe %s recenzií";
-
 "placepage_rate_comment" = "Ťuknutím ohodnoťte a preskúmajte toto miesto.";
 
 "placepage_rate_horrible" = "Hrozné";
@@ -2192,8 +2190,6 @@
 
 "bookmarks_groups_show_all" = "Zobraziť všetko";
 
-"bookmarks_places" = "%s záložiek";
-
 "bookmarks_create_new_group" = "Vytvoriť nový zoznam";
 
 "downloader_hide_screen" = "Skryť obrazovku";
@@ -2230,42 +2226,48 @@
 
 "maxim_taxi_title" = "maxim";
 
-"bookmarks_error_title_empty_list_name" = "The name couldn't be empty";
+"bookmarks_error_title_empty_list_name" = "Názov nemôže byť prázdny";
 
-"bookmarks_error_message_empty_list_name" = "Please enter the list name";
+"bookmarks_error_message_empty_list_name" = "Zadajte názov zoznamu";
 
-"bookmarks_new_list_hint" = "New list";
+"bookmarks_new_list_hint" = "Nový zoznam";
 
-"bookmarks_error_title_list_name_already_taken" = "This name is already taken";
+"bookmarks_error_title_list_name_already_taken" = "Tento názov už bol prijatý";
 
-"bookmarks_error_message_list_name_already_taken" = "Please choose another name";
+"bookmarks_error_message_list_name_already_taken" = "Vyberte iné meno";
 
-"bookmarks_error_title_list_name_too_long" = "This name is too long";
+"bookmarks_error_title_list_name_too_long" = "Tento názov je príliš dlhý";
 
-"bookmarks_error_message_list_name_too_long" = "Please choose another name";
+"bookmarks_error_message_list_name_too_long" = "Vyberte iné meno";
 
-"please_wait" = "Please wait...";
+"please_wait" = "Prosím čakajte...";
 
-"fc2018" = "Football World Cup 2018";
+"fc2018" = "Majstrovstvá sveta vo futbale 2018";
 
-"phone_number" = "Phone number";
+"phone_number" = "Telefónne číslo";
 
-"notification_unsent_reviews_title" = " You have several unsent reviews";
+"notification_unsent_reviews_title" = "Máte niekoľko neoslaných recenzií";
 
-"notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
+"notification_unsent_reviews_message" = "Prihláste sa a zdieľajte recenzie s ostatnými cestujúcimi";
 
-"profile_osm" = "Profile OSM";
+"profile_osm" = "Profil OSM";
 
-"place_page_search_similar_hotel" = "Search similar hotels";
+"place_page_search_similar_hotel" = "Vyhľadať podobné hotely";
 
-"bookmarks_detect_title" = "New files detected";
+"bookmarks_detect_title" = "Zistené nové súbory";
 
-"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
+"button_convert" = "Premeniť";
 
-"button_convert" = "Convert";
+"bookmarks_convert_error_title" = "Chyba";
 
-"bookmarks_convert_error_title" = "Error";
+"bookmarks_convert_error_message" = "Niektoré súbory neboli konvertované.";
 
-"bookmarks_convert_error_message" = "Some files were not converted.";
+"converting" = "Konverziu...";
 
-"converting" = "Converting...";
+"wn_reinvented_bookmarks_title" = "Znovu sme vytvorili záložky!";
+
+"wn_reinvented_bookmarks_message" = "Môžete zálohovať záložky, vytvárať zoznamy... Je to úžasné...";
+
+"wn_way_of_booking_title" = "Zmenili sme spôsob rezervácie!";
+
+"wn_way_of_booking_message" = "Stačí nájsť hotel na mape a rezervovať ho, alebo si vybrať podobný hotel.";

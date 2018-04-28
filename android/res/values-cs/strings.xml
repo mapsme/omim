@@ -1157,7 +1157,9 @@
 	<string name="placepage_no_reviews">Žádná hodnocení</string>
 	<string name="placepage_reviewed">Toto místo jste již hodnotili</string>
 	<string name="placepage_summary_rating">Souhrnné hodnocení</string>
-	<string name="placepage_summary_rating_description">Na základě %s hodnocení</string>
+	<plurals name="placepage_summary_rating_description">
+	  <item quantity="other">Na základě %d hodnocení</item>
+	</plurals>
 	<string name="placepage_rate_comment">Pro ohodnocení tohoto místa a napsání recenze klepněte níže.</string>
 	<string name="placepage_rate_horrible">Hrozné</string>
 	<string name="placepage_rate_bad">Špatné</string>
@@ -1233,7 +1235,9 @@
 	<string name="bookmarks_groups">Seznamy</string>
 	<string name="bookmarks_groups_hide_all">Skrýt vše</string>
 	<string name="bookmarks_groups_show_all">Zobrazit vše</string>
-	<string name="bookmarks_places">%s záložek</string>
+	<plurals name="bookmarks_places">
+	  <item quantity="other">%d záložek</item>
+	</plurals>
 	<string name="bookmarks_create_new_group">Vytvořte nový seznam</string>
 	<string name="downloader_hide_screen">Skrýt obrazovku</string>
 	<string name="downloader_percent">%1$s (%2$s z %3$s)</string>
@@ -1251,4 +1255,32 @@
 	<string name="bookmarks_error_message_share_empty">Nelze sdílet s prázdným seznamem</string>
 	<string name="discovery_button_subtitle_book_hotels">Zarezervovat hotely</string>
 	<string name="luggage_storage">Úschovna zavazadel</string>
+	<string name="bookmarks_error_title_empty_list_name">Jméno nemůže být prázdné</string>
+	<string name="bookmarks_error_message_empty_list_name">Zadejte název seznamu</string>
+	<string name="bookmarks_new_list_hint">Nový seznam</string>
+	<string name="bookmarks_error_title_list_name_already_taken">Toto jméno již bylo provedeno</string>
+	<string name="bookmarks_error_message_list_name_already_taken">Zvolte jiný název</string>
+	<string name="bookmarks_error_title_list_name_too_long">Tento název je příliš dlouhý</string>
+	<string name="bookmarks_error_message_list_name_too_long">Zvolte jiný název</string>
+	<string name="please_wait">Prosím, čekejte...</string>
+	<string name="fc2018">Mistrovství světa ve fotbale 2018</string>
+	<string name="phone_number">Telefonní číslo</string>
+	<string name="notification_unsent_reviews_title">Máte několik recenzí</string>
+	<string name="notification_unsent_reviews_message">Přihlaste se a sdílejte recenze s ostatními cestovateli</string>
+	<string name="profile_osm">Profil OSM</string>
+	<string name="place_page_search_similar_hotel">Hledat podobné hotely</string>
+	<string name="bookmarks_detect_title">Byly zjištěny nové soubory</string>
+	<plurals name="bookmarks_detect_message">
+	  <item quantity="one">%d soubor byl nalezen. Uvidíte ji po konverzi.</item>
+	  <item quantity="few">%d byly nalezeny soubory. Uvidíte je po konverzi.</item>
+	  <item quantity="other">Bylo nalezeno %d souborů. Uvidíte je po konverzi.</item>
+	</plurals>
+	<string name="button_convert">Konvertovat</string>
+	<string name="bookmarks_convert_error_title">Chyba</string>
+	<string name="bookmarks_convert_error_message">Některé soubory nebyly převedeny.</string>
+	<string name="converting">Převádění...</string>
+	<string name="wn_reinvented_bookmarks_title">Znovu jsme vytvořili záložky!</string>
+	<string name="wn_reinvented_bookmarks_message">Můžete je zálohovat, vytvářet seznamy... Je to úžasné...</string>
+	<string name="wn_way_of_booking_title">Změnili jsme způsob rezervace!</string>
+	<string name="wn_way_of_booking_message">Stačí najít hotel na mapě a rezervovat ho, nebo si vybrat podobný hotel.</string>
 </resources>

@@ -160,7 +160,7 @@ UNIT_TEST(RussiaMoscowPlanetnayaOnlyStraightTest)
   integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
   integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnRight);
   integration::GetNthTurn(route, 2).TestValid().TestDirection(CarDirection::TurnLeft);
-  integration::GetNthTurn(route, 3).TestValid().TestDirection(CarDirection::GoStraight);
+  integration::GetNthTurn(route, 3).TestValid().TestDirection(CarDirection::TurnSlightRight);
   integration::GetNthTurn(route, 4).TestValid().TestDirection(CarDirection::TurnRight);
 
   integration::TestRouteLength(route, 454.);
@@ -199,7 +199,7 @@ UNIT_TEST(RussiaMoscowTTKVarshavskoeShosseOutTurnTest)
   TEST_EQUAL(result, IRouter::NoError, ());
   integration::TestTurnCount(route, 2 /* expectedTurnCount */);
   integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightLeft);
+  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::GoStraight);
 }
 
 UNIT_TEST(RussiaMoscowTTKUTurnTest)
@@ -216,7 +216,7 @@ UNIT_TEST(RussiaMoscowTTKUTurnTest)
   integration::TestTurnCount(route, 4 /* expectedTurnCount */);
   integration::GetNthTurn(route, 0).TestValid().TestOneOfDirections(
       {CarDirection::TurnSlightRight, CarDirection::TurnRight});
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightLeft);
+  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::GoStraight);
   integration::GetNthTurn(route, 2).TestValid().TestDirection(CarDirection::UTurnLeft);
   integration::GetNthTurn(route, 3).TestValid().TestDirection(CarDirection::TurnSlightLeft);
 }
@@ -385,7 +385,7 @@ UNIT_TEST(ThailandPhuketNearPrabarameeRoad)
 
   TEST_EQUAL(result, IRouter::NoError, ());
   integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightLeft);
+  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::GoStraight);
 }
 
 // Test case: a route goes in Moscow from Varshavskoe shosse (from the city center direction)
@@ -512,7 +512,9 @@ UNIT_TEST(RussiaMoscowLeningradskiyPrptToTTKTest)
   TEST_EQUAL(result, IRouter::NoError, ());
   integration::TestTurnCount(route, 2 /* expectedTurnCount */);
   integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::GoStraight);
+  // @TODO(bykoianko) It's a case when two possible ways go slight left.
+  // A special processing should be implemented for such cases.
+  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightLeft);
 }
 
 UNIT_TEST(RussiaMoscowLeningradskiyPrptDublToTTKTest)
@@ -528,7 +530,7 @@ UNIT_TEST(RussiaMoscowLeningradskiyPrptDublToTTKTest)
   TEST_EQUAL(result, IRouter::NoError, ());
   integration::TestTurnCount(route, 2 /* expectedTurnCount */);
   integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightLeft);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::GoStraight);
+  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightLeft);
 }
 
 UNIT_TEST(RussiaMoscowSvobodaStTest)
@@ -543,7 +545,7 @@ UNIT_TEST(RussiaMoscowSvobodaStTest)
 
   TEST_EQUAL(result, IRouter::NoError, ());
   integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightLeft);
+  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::GoStraight);
 }
 
 UNIT_TEST(RussiaTiinskTest)
@@ -766,7 +768,7 @@ UNIT_TEST(NetherlandsBarneveldTest)
 
   TEST_EQUAL(result, IRouter::NoError, ());
   integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightRight);
+  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::GoStraight);
 }
 
 UNIT_TEST(GermanyRaunheimAirportTest)
@@ -926,4 +928,35 @@ UNIT_TEST(USATampaTest)
   integration::TestTurnCount(route, 1 /* expectedTurnCount */);
   integration::GetNthTurn(route, 0).TestValid().TestOneOfDirections(
       {CarDirection::TurnSlightRight, CarDirection::TurnRight});
+}
+
+// Test on go straight direction if it's possible to go through a roundabout.
+UNIT_TEST(RussiaMoscowMinskia1TurnTest)
+{
+  TRouteResult const routeResult =
+      integration::CalculateRoute(integration::GetVehicleComponents<VehicleType::Car>(),
+                                  MercatorBounds::FromLatLon(55.7355, 37.48717), {0., 0.},
+                                  MercatorBounds::FromLatLon(55.73694, 37.48587));
+
+  Route const & route = *routeResult.first;
+  IRouter::ResultCode const result = routeResult.second;
+
+  TEST_EQUAL(result, IRouter::NoError, ());
+  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
+  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::GoStraight);
+}
+
+UNIT_TEST(RussiaMoscowMinskia2TurnTest)
+{
+  TRouteResult const routeResult =
+      integration::CalculateRoute(integration::GetVehicleComponents<VehicleType::Car>(),
+                                  MercatorBounds::FromLatLon(55.74244, 37.4808), {0., 0.},
+                                  MercatorBounds::FromLatLon(55.74336, 37.48124));
+
+  Route const & route = *routeResult.first;
+  IRouter::ResultCode const result = routeResult.second;
+
+  TEST_EQUAL(result, IRouter::NoError, ());
+  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
+  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
 }

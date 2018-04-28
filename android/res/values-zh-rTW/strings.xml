@@ -1160,7 +1160,9 @@
 	<string name="placepage_no_reviews">無評論</string>
 	<string name="placepage_reviewed">您已評論過這個地方</string>
 	<string name="placepage_summary_rating">評分摘要</string>
-	<string name="placepage_summary_rating_description">根據 %s 則評論</string>
+	<plurals name="placepage_summary_rating_description">
+	  <item quantity="other">根據 %d 則評論</item>
+	</plurals>
 	<string name="placepage_rate_comment">點選以為這個地點評分或評論。</string>
 	<string name="placepage_rate_horrible">很糟</string>
 	<string name="placepage_rate_bad">不好</string>
@@ -1236,7 +1238,9 @@
 	<string name="bookmarks_groups">列表</string>
 	<string name="bookmarks_groups_hide_all">隱藏全部</string>
 	<string name="bookmarks_groups_show_all">顯示全部</string>
-	<string name="bookmarks_places">%s個書籤</string>
+	<plurals name="bookmarks_places">
+	  <item quantity="other">%d個書籤</item>
+	</plurals>
 	<string name="bookmarks_create_new_group">創建新列表</string>
 	<string name="downloader_hide_screen">隱藏屏幕</string>
 	<string name="downloader_percent">%1$s (%2$s，共%3$s)</string>
@@ -1254,4 +1258,30 @@
 	<string name="bookmarks_error_message_share_empty">無法分享空列表</string>
 	<string name="discovery_button_subtitle_book_hotels">訂賓館</string>
 	<string name="luggage_storage">行李寄存</string>
+	<string name="bookmarks_error_title_empty_list_name">名字不能為空</string>
+	<string name="bookmarks_error_message_empty_list_name">請輸入列表名稱</string>
+	<string name="bookmarks_new_list_hint">新的列表</string>
+	<string name="bookmarks_error_title_list_name_already_taken">這個名字已經被使用了</string>
+	<string name="bookmarks_error_message_list_name_already_taken">請選擇其他名稱</string>
+	<string name="bookmarks_error_title_list_name_too_long">這個名字太長了</string>
+	<string name="bookmarks_error_message_list_name_too_long">請選擇其他名稱</string>
+	<string name="please_wait">請稍候...</string>
+	<string name="fc2018">2018年世界杯足球賽</string>
+	<string name="phone_number">電話號碼</string>
+	<string name="notification_unsent_reviews_title">你有幾個未發表的評論</string>
+	<string name="notification_unsent_reviews_message">請登錄與其他旅客分享評論</string>
+	<string name="profile_osm">配置文件OSM</string>
+	<string name="place_page_search_similar_hotel">搜索類似的酒店</string>
+	<string name="bookmarks_detect_title">檢測到新文件</string>
+	<plurals name="bookmarks_detect_message">
+	  <item quantity="other">找到%d個文件。 轉換後你會看到它。</item>
+	</plurals>
+	<string name="button_convert">兌換</string>
+	<string name="bookmarks_convert_error_title">錯誤</string>
+	<string name="bookmarks_convert_error_message">有些文件未被轉換。</string>
+	<string name="converting">轉換...</string>
+	<string name="wn_reinvented_bookmarks_title">我們改造了書籤！</string>
+	<string name="wn_reinvented_bookmarks_message">你可以備份書籤，創建列表...這太神奇了...</string>
+	<string name="wn_way_of_booking_title">我們重新定位了預訂方式！</string>
+	<string name="wn_way_of_booking_message">只需在地圖上找到一家酒店並預訂，或選擇類似的酒店即可。</string>
 </resources>

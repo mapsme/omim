@@ -1153,7 +1153,9 @@
 	<string name="placepage_no_reviews">Brak recenzji</string>
 	<string name="placepage_reviewed">Już wystawiono recenzję temu miejscu</string>
 	<string name="placepage_summary_rating">Łączna ocena</string>
-	<string name="placepage_summary_rating_description">Na podstawie %s recenzji</string>
+	<plurals name="placepage_summary_rating_description">
+	  <item quantity="other">Na podstawie %d recenzji</item>
+	</plurals>
 	<string name="placepage_rate_comment">Naciśnij, aby ocenić i zrecenzować miejsce.</string>
 	<string name="placepage_rate_horrible">Okropne</string>
 	<string name="placepage_rate_bad">Złe</string>
@@ -1229,7 +1231,9 @@
 	<string name="bookmarks_groups">Listy</string>
 	<string name="bookmarks_groups_hide_all">Ukryj wszystkie</string>
 	<string name="bookmarks_groups_show_all">Pokaż wszystkie</string>
-	<string name="bookmarks_places">Zakładki: %s</string>
+	<plurals name="bookmarks_places">
+	  <item quantity="other">Zakładki: %d</item>
+	</plurals>
 	<string name="bookmarks_create_new_group">Utwórz nową listę</string>
 	<string name="downloader_hide_screen">Ukryj ekran</string>
 	<string name="downloader_percent">%1$s (%2$s z %3$s)</string>
@@ -1247,4 +1251,32 @@
 	<string name="bookmarks_error_message_share_empty">Nie można udostępnić pustej listy</string>
 	<string name="discovery_button_subtitle_book_hotels">Rezerwuj hotele</string>
 	<string name="luggage_storage">Przechowalnia bagażu</string>
+	<string name="bookmarks_error_title_empty_list_name">Nazwa nie może być pusta</string>
+	<string name="bookmarks_error_message_empty_list_name">Wprowadź nazwę listy</string>
+	<string name="bookmarks_new_list_hint">Nowa lista</string>
+	<string name="bookmarks_error_title_list_name_already_taken">Ta nazwa jest już zajęta</string>
+	<string name="bookmarks_error_message_list_name_already_taken">Wybierz inną nazwę</string>
+	<string name="bookmarks_error_title_list_name_too_long">Ta nazwa jest za długa</string>
+	<string name="bookmarks_error_message_list_name_too_long">Wybierz inną nazwę</string>
+	<string name="please_wait">Proszę czekać...</string>
+	<string name="fc2018">Puchar Świata w Piłce Nożnej 2018</string>
+	<string name="phone_number">Numer telefonu</string>
+	<string name="notification_unsent_reviews_title">Masz kilka niewysłanych recenzji</string>
+	<string name="notification_unsent_reviews_message">Zaloguj się, aby udostępniać recenzje innym podróżnym</string>
+	<string name="profile_osm">Profil OSM</string>
+	<string name="place_page_search_similar_hotel">Wyszukaj podobne hotele</string>
+	<string name="bookmarks_detect_title">Wykryto nowe pliki</string>
+	<plurals name="bookmarks_detect_message">
+	  <item quantity="one">Znaleziono %d plik. Zobaczysz to po konwersji.</item>
+	  <item quantity="two">Znaleziono %d pliki. Zobaczysz je po konwersji.</item>
+	  <item quantity="other">Znaleziono %d plików. Zobaczysz je po konwersji.</item>
+	</plurals>
+	<string name="button_convert">konwertować</string>
+	<string name="bookmarks_convert_error_title">błąd</string>
+	<string name="bookmarks_convert_error_message">Sommige bestanden waren niet geconverteerd.</string>
+	<string name="converting">Przekształcanie...</string>
+	<string name="wn_reinvented_bookmarks_title">Odnowiliśmy zakładki!</string>
+	<string name="wn_reinvented_bookmarks_message">Możesz tworzyć kopie zapasowe zakładek, tworzyć listy... To niesamowite...</string>
+	<string name="wn_way_of_booking_title">Przeformułowaliśmy sposób rezerwacji!</string>
+	<string name="wn_way_of_booking_message">Wystarczy znaleźć hotel na mapie i zarezerwować go lub wybrać podobny.</string>
 </resources>

@@ -9,6 +9,8 @@
 
 #include "base/stl_helpers.hpp"
 
+#include <unordered_set>
+
 namespace
 {
 static NSTimeInterval kDayInterval = 24 * 60 * 60;
@@ -18,18 +20,13 @@ static uint8_t kAdultsCount = 2;
 static int8_t kAgeOfChild = 5;
 static NSString * const kHotelTypePattern = @"search_hotel_filter_%@";
 
-std::array<ftypes::IsHotelChecker::Type, static_cast<size_t>(ftypes::IsHotelChecker::Type::Count)> const kTypes = {{
-  ftypes::IsHotelChecker::Type::Hotel,
-  ftypes::IsHotelChecker::Type::Apartment,
-  ftypes::IsHotelChecker::Type::CampSite,
-  ftypes::IsHotelChecker::Type::Chalet,
-  ftypes::IsHotelChecker::Type::GuestHouse,
-  ftypes::IsHotelChecker::Type::Hostel,
-  ftypes::IsHotelChecker::Type::Motel,
-  ftypes::IsHotelChecker::Type::Resort
-}};
+std::array<ftypes::IsHotelChecker::Type, my::Key(ftypes::IsHotelChecker::Type::Count)> const
+    kTypes = {{ftypes::IsHotelChecker::Type::Hotel, ftypes::IsHotelChecker::Type::Apartment,
+               ftypes::IsHotelChecker::Type::CampSite, ftypes::IsHotelChecker::Type::Chalet,
+               ftypes::IsHotelChecker::Type::GuestHouse, ftypes::IsHotelChecker::Type::Hostel,
+               ftypes::IsHotelChecker::Type::Motel, ftypes::IsHotelChecker::Type::Resort}};
 
-unsigned makeMask(std::vector<ftypes::IsHotelChecker::Type> const & items)
+unsigned makeMask(std::unordered_set<ftypes::IsHotelChecker::Type> const & items)
 {
   unsigned mask = 0;
   for (auto const i : items)
@@ -107,7 +104,7 @@ void configButton(UIButton * button, NSString * primaryText, NSString * secondar
                                                   UICollectionViewDataSource,
                                                   MWMFilterCheckCellDelegate, UITableViewDataSource>
 {
-  std::vector<ftypes::IsHotelChecker::Type> m_selectedTypes;
+  std::unordered_set<ftypes::IsHotelChecker::Type> m_selectedTypes;
 }
 
 @property(nonatomic) MWMFilterCheckCell * check;
@@ -142,6 +139,7 @@ void configButton(UIButton * button, NSString * primaryText, NSString * secondar
 
   if (params.m_type != ftypes::IsHotelChecker::Type::Count)
   {
+    m_selectedTypes.emplace(params.m_type);
     [self.type.collectionView
                        selectItemAtIndexPath:[NSIndexPath indexPathForItem:my::Key(params.m_type)
                                    inSection:0]
@@ -474,7 +472,15 @@ void configButton(UIButton * button, NSString * primaryText, NSString * secondar
   auto const type = kTypes[indexPath.row];
   auto str = [NSString stringWithFormat:kHotelTypePattern, @(ftypes::IsHotelChecker::GetHotelTypeTag(type))];
   cell.tagName.text = L(str);
-  cell.selected = find(m_selectedTypes.begin(), m_selectedTypes.end(), type) != m_selectedTypes.end();
+  auto const selected = m_selectedTypes.find(type) != m_selectedTypes.end();
+  cell.selected = selected;
+  if (selected)
+  {
+    [collectionView selectItemAtIndexPath:indexPath
+                                 animated:NO
+                           scrollPosition:UICollectionViewScrollPositionNone];
+  }
+
   return cell;
 }
 
@@ -502,13 +508,13 @@ void configButton(UIButton * button, NSString * primaryText, NSString * secondar
   }
   [Statistics logEvent:kStatSearchFilterClick
         withParameters:@{kStatCategory: kStatHotel, kStatType: typeString}];
-  m_selectedTypes.emplace_back(type);
+  m_selectedTypes.emplace(type);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
   auto const type = kTypes[indexPath.row];
-  m_selectedTypes.erase(remove(m_selectedTypes.begin(), m_selectedTypes.end(), type));
+  m_selectedTypes.erase(type);
 }
 
 #pragma mark - Properties

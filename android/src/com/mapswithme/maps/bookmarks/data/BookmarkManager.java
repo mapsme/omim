@@ -70,7 +70,8 @@ public enum BookmarkManager
     ICONS.add(new Icon("placemark-orange", Icon.PREDEFINED_COLOR_ORANGE, R.drawable.ic_bookmark_marker_orange_off, R.drawable.ic_bookmark_marker_orange_on));
   }
 
-  static Icon getIconByColor(@Icon.PredefinedColor int color)
+  @NonNull
+  Icon getIconByColor(@Icon.PredefinedColor int color)
   {
     for (Icon icon : ICONS)
     {
@@ -393,6 +394,16 @@ public enum BookmarkManager
     nativeCancelRestoring();
   }
 
+  public void setNotificationsEnabled(boolean enabled)
+  {
+    nativeSetNotificationsEnabled(enabled);
+  }
+
+  public boolean areNotificationsEnabled()
+  {
+    return nativeAreNotificationsEnabled();
+  }
+
   private native int nativeGetCategoriesCount();
 
   private native int nativeGetCategoryPositionById(long catId);
@@ -476,6 +487,10 @@ public enum BookmarkManager
   private static native void nativeApplyRestoring();
 
   private static native void nativeCancelRestoring();
+
+  private static native void nativeSetNotificationsEnabled(boolean enabled);
+
+  private static native boolean nativeAreNotificationsEnabled();
 
   public interface BookmarksLoadingListener
   {

@@ -2036,8 +2036,6 @@
 
 "placepage_summary_rating" = "Riepilogo valutazione";
 
-"placepage_summary_rating_description" = "Basato su %s recensioni";
-
 "placepage_rate_comment" = "Tocca per valutare e recensire questa località.";
 
 "placepage_rate_horrible" = "Pessimo";
@@ -2192,8 +2190,6 @@
 
 "bookmarks_groups_show_all" = "Mostra tutto";
 
-"bookmarks_places" = "%s preferiti";
-
 "bookmarks_create_new_group" = "Crea una nuova lista";
 
 "downloader_hide_screen" = "Nascondi schermata";
@@ -2230,42 +2226,48 @@
 
 "maxim_taxi_title" = "maxim";
 
-"bookmarks_error_title_empty_list_name" = "The name couldn't be empty";
+"bookmarks_error_title_empty_list_name" = "Il nome non può essere vuoto";
 
-"bookmarks_error_message_empty_list_name" = "Please enter the list name";
+"bookmarks_error_message_empty_list_name" = "Si prega di inserire il nome della lista";
 
-"bookmarks_new_list_hint" = "New list";
+"bookmarks_new_list_hint" = "Nuova lista";
 
-"bookmarks_error_title_list_name_already_taken" = "This name is already taken";
+"bookmarks_error_title_list_name_already_taken" = "Questo nome è già stato scelto";
 
-"bookmarks_error_message_list_name_already_taken" = "Please choose another name";
+"bookmarks_error_message_list_name_already_taken" = "Si prega di scegliere un altro nome";
 
-"bookmarks_error_title_list_name_too_long" = "This name is too long";
+"bookmarks_error_title_list_name_too_long" = "Questo nome è troppo lungo";
 
-"bookmarks_error_message_list_name_too_long" = "Please choose another name";
+"bookmarks_error_message_list_name_too_long" = "Si prega di scegliere un altro nome";
 
-"please_wait" = "Please wait...";
+"please_wait" = "Attendere prego...";
 
-"fc2018" = "Football World Cup 2018";
+"fc2018" = "Mondiali di calcio 2018";
 
-"phone_number" = "Phone number";
+"phone_number" = "Numero di telefono";
 
-"notification_unsent_reviews_title" = " You have several unsent reviews";
+"notification_unsent_reviews_title" = "Hai diverse recensioni non inviate";
 
-"notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
+"notification_unsent_reviews_message" = "Accedi per condividere recensioni con altri viaggiatori";
 
-"profile_osm" = "Profile OSM";
+"profile_osm" = "Profilo OSM";
 
-"place_page_search_similar_hotel" = "Search similar hotels";
+"place_page_search_similar_hotel" = "Cerca hotel simili";
 
-"bookmarks_detect_title" = "New files detected";
+"bookmarks_detect_title" = "Nuovi file rilevati";
 
-"bookmarks_detect_message" = "%d files were not imported. You can see them after conversion.";
+"button_convert" = "Convertire";
 
-"button_convert" = "Convert";
+"bookmarks_convert_error_title" = "Errore";
 
-"bookmarks_convert_error_title" = "Error";
+"bookmarks_convert_error_message" = "Alcuni file non sono stati convertiti.";
 
-"bookmarks_convert_error_message" = "Some files were not converted.";
+"converting" = "Conversione...";
 
-"converting" = "Converting...";
+"wn_reinvented_bookmarks_title" = "Abbiamo reinventato i segnalibri!";
+
+"wn_reinvented_bookmarks_message" = "Puoi fare il backup dei segnalibri, creare liste... È incredibile...";
+
+"wn_way_of_booking_title" = "Abbiamo reimmaginato il modo di prenotare!";
+
+"wn_way_of_booking_message" = "Basta trovare un hotel sulla mappa e prenotarlo, o selezionare quello simile.";

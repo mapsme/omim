@@ -90,6 +90,7 @@
 #include "base/math.hpp"
 #include "base/scope_guard.hpp"
 #include "base/stl_add.hpp"
+#include "base/stl_helpers.hpp"
 #include "base/timer.hpp"
 
 #include "std/algorithm.hpp"
@@ -1442,11 +1443,11 @@ search::DisplayedCategories const & Framework::GetDisplayedCategories()
     city = m_cityFinder->GetCityName(*position, StringUtf8Multilang::kEnglishCode);
 
   // Apply sponsored modifiers.
-  std::vector<std::unique_ptr<SponsoredCategoryModifier>> modifiers;
-  modifiers.push_back(std::make_unique<LuggageHeroModifier>(city));
-  modifiers.push_back(std::make_unique<Fc2018Modifier>(city));
-  for (auto & modifier : modifiers)
-    m_displayedCategories->Modify(*modifier);
+  std::tuple<LuggageHeroModifier, Fc2018Modifier> modifiers(city, city);
+  my::for_each_in_tuple(modifiers, [&](size_t, SponsoredCategoryModifier & modifier)
+  {
+    m_displayedCategories->Modify(modifier);
+  });
 
   return *m_displayedCategories;
 }
@@ -1566,7 +1567,7 @@ void Framework::FillSearchResultsMarks(bool clear, search::Results const & resul
 
 void Framework::FillSearchResultsMarks(bool clear, search::Results::ConstIter begin,
                                        search::Results::ConstIter end,
-                                       SearchMarkPostProcesing fn /* = nullptr */)
+                                       SearchMarkPostProcessing fn /* = nullptr */)
 {
   auto editSession = GetBookmarkManager().GetEditSession();
   if (clear)
@@ -1587,22 +1588,19 @@ void Framework::FillSearchResultsMarks(bool clear, search::Results::ConstIter be
 
     // TODO: Remove after FC2018 finishing.
     if (r.m_metadata.m_isFootballCupObject)
-    {
       mark->SetMarkType(SearchMarkType::Fc2018);
-      continue;
-    }
-
-    if (isFeature && m_localAdsManager.Contains(r.GetFeatureID()))
-    {
-      mark->SetMarkType(SearchMarkType::LocalAds);
-      continue;
-    }
 
     if (r.m_metadata.m_isSponsoredHotel)
     {
       mark->SetMarkType(SearchMarkType::Booking);
       mark->SetRating(r.m_metadata.m_hotelRating);
       mark->SetPricing(r.m_metadata.m_hotelPricing);
+    }
+
+    if (isFeature && m_localAdsManager.Contains(r.GetFeatureID()))
+    {
+      mark->SetMarkType(r.m_metadata.m_isSponsoredHotel ? SearchMarkType::LocalAdsBooking
+                                                        : SearchMarkType::LocalAds);
     }
 
     if (fn)

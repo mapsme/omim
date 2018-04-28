@@ -25,7 +25,6 @@ final class BMCDefaultViewModel: NSObject {
 
   override init() {
     super.init()
-    BM.add(self)
     loadData()
   }
 
@@ -206,6 +205,22 @@ extension BMCDefaultViewModel: BMCViewModel {
         BM.convertAll()
       }
     }
+  }
+
+  func addToObserverList() {
+    BM.add(self)
+  }
+
+  func removeFromObserverList() {
+    BM.remove(self)
+  }
+  
+  func setNotificationsEnabled(_ enabled: Bool) {
+    BM.setNotificationsEnabled(enabled)
+  }
+  
+  func areNotificationsEnabled() -> Bool {
+    return BM.areNotificationsEnabled()
   }
 }
 

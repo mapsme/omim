@@ -392,6 +392,9 @@ public final class MapManager
    */
   public static native boolean nativeIsDownloading();
 
+  @Nullable
+  public static native String nativeGetCurrentDownloadingCountryId();
+
   /**
    * Enqueues given {@code root} node and its children in downloader.
    */

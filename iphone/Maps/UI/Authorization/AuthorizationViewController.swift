@@ -92,11 +92,12 @@ final class AuthorizationViewController: MWMViewController {
 
   @IBAction private func phoneSignIn() {
     dismiss(animated: true) {
-      let url = ViewModel.phoneAuthURL()
+      let url = ViewModel.phoneAuthURL()!
       let wv = WebViewController(authURL: url, onSuccessAuth: { (token: String?) in
         self.process(token: token!, type: .phone)
       }, onFailure: {
         self.process(error: NSError(domain: kMapsmeErrorDomain, code: 0), type: .phone)
+        self.errorHandler?(.cancelled)
       })
 
       MapViewController.topViewController().navigationController?.pushViewController(wv!, animated: true)
