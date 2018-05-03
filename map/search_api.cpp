@@ -173,7 +173,7 @@ bool SearchAPI::SearchEverywhere(EverywhereSearchParams const & params)
           RunUITask([params, results, productInfo] {
             params.m_onResults(results, productInfo);
           });
-        if (results.IsEndedNormal() && !params.m_bookingFilterParams.IsEmpty())
+        if (results.IsEndedNormal() && m_sponsoredMode == SponsoredMode::Booking)
         {
           m_delegate.FilterSearchResultsOnBooking(params.m_bookingFilterParams, results,
                                                   false /* inViewport */);
@@ -212,7 +212,7 @@ bool SearchAPI::SearchInViewport(ViewportSearchParams const & params)
       [this, params](Results const & results) {
         if (results.IsEndMarker() && params.m_onCompleted)
           RunUITask([params, results] { params.m_onCompleted(results); });
-        if (results.IsEndedNormal() && !params.m_bookingFilterParams.IsEmpty())
+        if (results.IsEndedNormal() && m_sponsoredMode == SponsoredMode::Booking)
         {
           m_delegate.FilterSearchResultsOnBooking(params.m_bookingFilterParams, results,
                                                   true /* inViewport */);
@@ -466,8 +466,11 @@ void SearchAPI::UpdateSponsoredMode(string const & query,
                                     booking::filter::availability::Params const & params)
 {
   m_sponsoredMode = SponsoredMode::None;
-  if (!params.IsEmpty())
+  if (!params.IsEmpty() &&
+      GetPlatform().ConnectionStatus() != Platform::EConnectionType::CONNECTION_NONE)
+  {
     m_sponsoredMode = SponsoredMode::Booking;
+  }
 }
 
 string DebugPrint(SearchAPI::SponsoredMode mode)
