@@ -26,7 +26,6 @@
 #include <chrono>
 #include <functional>
 #include <memory>
-#include <string>
 #include <vector>
 
 #include "3party/jansson/myjansson.hpp"
@@ -313,7 +312,12 @@ UNIT_CLASS_TEST(StorageTest, ContentTest)
   ToJSONObject(*embeddedNode.get(), "data_version", lastIndex.m_dataVersion);
   ToJSONObject(*embeddedNode.get(), "mwm_name", lastIndex.m_mwmName);
   ToJSONObject(*embeddedNode.get(), "feature_id", lastIndex.m_featureId);
-  ToJSONObject(*embeddedNode.get(), "feature_type", classif().GetReadableObjectName(lastIndex.m_matchingType));
+  ftraits::UGCRatingCategories categories;
+  for (auto & r : newUGC.m_ratings)
+    categories.emplace_back(r.m_key.m_key);
+
+  auto const optType = ftraits::UGC::GetMatchedType(categories);
+  ToJSONObject(*embeddedNode.get(), "feature_type", *optType);
   ToJSONObject(*ugcNode.get(), "feature", *embeddedNode.release());
 
   auto array = my::NewJSONArray();
