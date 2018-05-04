@@ -35,6 +35,11 @@ public:
     return m_mapping.cend();
   }
 
+  ConstIterator Begin() const
+  {
+    return m_mapping.cbegin();
+  }
+
   ConstIterator End() const
   {
     return m_mapping.cend();

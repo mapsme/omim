@@ -66,6 +66,12 @@ protected:
     return instance;
   }
 
+  static ftypes::HashMapMatcher<uint32_t, Value> const & GetMatcher()
+  {
+    auto const & instance = Instance();
+    return instance.m_matcher;
+  };
+
   ftypes::HashMapMatcher<uint32_t, Value> m_matcher;
   ftypes::HashSetMatcher<uint32_t> m_excluded;
 };
@@ -84,11 +90,12 @@ using UGCRatingCategories = std::vector<std::string>;
 struct UGCItem
 {
   UGCItem() {}
-  UGCItem(UGCTypeMask m, UGCRatingCategories && c)
-    : m_mask(m), m_categories(std::move(c))
+  UGCItem(std::string const & t, UGCTypeMask m, UGCRatingCategories && c)
+    : m_matchedType(t), m_mask(m), m_categories(std::move(c))
   {
   }
 
+  std::string m_matchedType;
   UGCTypeMask m_mask = UGCTYPE_NONE;
   UGCRatingCategories m_categories;
 };
@@ -109,7 +116,7 @@ class UGC : public TraitsBase<UGC, UGCItem>
 
       ASSERT_EQUAL(row.size(), 5, ());
 
-      UGCItem item(ReadMasks(row), ParseByWhitespaces(row[kCategoriesPos]));
+      UGCItem item(row[kTypePos], ReadMasks(row), ParseByWhitespaces(row[kCategoriesPos]));
       auto typePath = ParseByDashes(row[kTypePos]);
 
       if (IsUGCAvailable(item.m_mask))
@@ -188,6 +195,21 @@ public:
     auto const opt = GetValue(types);
     if (opt)
       return opt->m_categories;
+    return {};
+  }
+
+  // Returns first matched type which will be used on the server side
+  // for checking the categories conform to the type.
+  static boost::optional<std::string> GetMatchedType(UGCRatingCategories const & categories)
+  {
+    auto const & matcher = GetMatcher();
+    auto const end = matcher.End();
+    for (auto it = matcher.Begin(); it != end; ++it)
+    {
+      if (it->second.m_categories == categories)
+        return it->second.m_matchedType;
+    }
+
     return {};
   }
 };

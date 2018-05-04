@@ -322,11 +322,25 @@ string Storage::GetUGCToSend() const
     }
 
     my::Json serializedUgc(data);
+    ftraits::UGCRatingCategories categories;
+    for (auto const & r : update.m_ratings)
+      categories.emplace_back(r.m_key.m_key);
+
     auto embeddedNode = my::NewJSONObject();
     ToJSONObject(*embeddedNode.get(), "data_version", index.m_dataVersion);
     ToJSONObject(*embeddedNode.get(), "mwm_name", index.m_mwmName);
     ToJSONObject(*embeddedNode.get(), "feature_id", index.m_featureId);
-    ToJSONObject(*embeddedNode.get(), "feature_type", classif().GetReadableObjectName(index.m_matchingType));
+    if (auto const optType = ftraits::UGC::GetMatchedType(categories))
+    {
+      ToJSONObject(*embeddedNode.get(), "feature_type", *optType);
+    }
+    else
+    {
+      LOG(LINFO, ("Incorrect categories:", categories, "for feature:", index.m_featureId,
+          "mwm:", index.m_mwmName, "data version:", index.m_dataVersion));
+      continue;
+    }
+
     ToJSONObject(*serializedUgc.get(), "feature", *embeddedNode.release());
     json_array_append_new(array.get(), serializedUgc.get_deep_copy());
   }
