@@ -39,13 +39,13 @@ omim_link_libraries(
   routing
   search
   storage
-  indexer
   drape
   traffic
   routing_common
   transit
-  editor
   kml
+  indexer
+  editor
   platform
   geometry
   coding
