@@ -1,5 +1,7 @@
 #include "kml/serdes.hpp"
 
+#include "indexer/classificator.hpp"
+
 #include "geometry/mercator.hpp"
 
 #include "coding/hex.hpp"
@@ -148,7 +150,7 @@ void SaveStyle(KmlWriter::WriterWrapper & writer, std::string const & style)
   writer << kIndent2 << "<Style id=\"" << style << "\">\n"
          << kIndent4 << "<IconStyle>\n"
          << kIndent6 << "<Icon>\n"
-         << kIndent8 << "<href>http://mapswith.me/placemarks/" << style << ".png</href>\n"
+         << kIndent8 << "<href>http://maps.me/placemarks/" << style << ".png</href>\n"
          << kIndent6 << "</Icon>\n"
          << kIndent4 << "</IconStyle>\n"
          << kIndent2 << "</Style>\n";
@@ -338,8 +340,10 @@ void SaveBookmarkExtendedData(KmlWriter::WriterWrapper & writer, BookmarkData co
 
   std::vector<std::string> types;
   types.reserve(bookmarkData.m_featureTypes.size());
+  auto const & c = classif();
   for (auto const & t : bookmarkData.m_featureTypes)
-    types.push_back(strings::to_string(t));
+    types.push_back(c.GetReadableObjectName(c.GetTypeForIndex(t)));
+
   SaveStringsArray(writer, types, "featureTypes", kIndent6);
 
   if (!bookmarkData.m_customName.empty())
@@ -975,8 +979,16 @@ void KmlParser::CharData(std::string value)
       else if (currTag == "mwm:value")
       {
         uint32_t i;
-        if (prevTag == "mwm:featureTypes" && strings::to_uint(value, i))
-          m_featureTypes.push_back(i);
+        if (prevTag == "mwm:featureTypes")
+        {
+          auto const & c = classif();
+          auto const type = c.GetTypeByReadableObjectName(value);
+          if (c.IsTypeValid(type))
+          {
+            auto const typeInd = c.GetIndexForType(type);
+            m_featureTypes.push_back(typeInd);
+          }
+        }
         else if (prevTag == "mwm:boundTracks" && strings::to_uint(value, i))
           m_boundTracks.push_back(static_cast<LocalId>(i));
       }
