@@ -228,11 +228,15 @@ Cloud::RequestResult CloudRequestWithResult(std::string const & url,
   request.SetTimeout(kRequestTimeoutInSec);
   request.SetRawHeader("Accept", kApplicationJson);
   request.SetRawHeader("Authorization", BuildAuthenticationToken(accessToken));
-  request.SetBodyData(SerializeToJson(RequestDataType(args...)), kApplicationJson);
+  auto jsonBody = SerializeToJson(RequestDataType(args...));
+  LOG(LINFO, ("Cloud request. URL =", url, ", json =", jsonBody));
+  request.SetBodyData(std::move(jsonBody), kApplicationJson);
 
   if (request.RunHttpRequest() && !request.WasRedirected())
   {
     int const resultCode = request.ErrorCode();
+    LOG(LINFO, ("Cloud result. Code =", resultCode, ", response =",
+                (IsSuccessfulResultCode(resultCode) ? "hidden" : request.ServerResponse())));
     if (resultCode == 403)
     {
       LOG(LWARNING, ("Access denied for", url));
@@ -329,16 +333,18 @@ Cloud::SnapshotResponseData ReadSnapshotFile(std::string const & filename)
   return {};
 }
 
-Cloud::RequestResult DownloadFile(std::string const & url, std::string const & fileName,
-                                  bool & successfullyWritten)
+Cloud::RequestResult DownloadFile(std::string const & url, bool isFallback,
+                                  std::string const & fileName, bool & successfullyWritten)
 {
   successfullyWritten = true;
   platform::HttpClient request(url);
+  LOG(LINFO, ("Cloud downloading file. Server type =", (isFallback ? "fallback_server" : "download_server")));
   request.SetTimeout(kRequestTimeoutInSec);
   if (request.RunHttpRequest() && !request.WasRedirected())
   {
     auto const & response = request.ServerResponse();
     int const resultCode = request.ErrorCode();
+    LOG(LINFO, ("Cloud downloading result. Code =", resultCode));
     if (resultCode == 403)
     {
       LOG(LWARNING, ("Access denied for", url));
@@ -423,6 +429,8 @@ void Cloud::SetState(State state)
 
   if (m_state == state)
     return;
+  
+  LOG(LINFO, (state == State::Enabled ? "Cloud enabled" : "Cloud disabled"));
 
   m_state = state;
   settings::Set(m_params.m_settingsParamName, static_cast<int>(m_state));
@@ -1047,6 +1055,7 @@ Cloud::RequestResult Cloud::ExecuteUploading(UploadingResponseData const & respo
   int code = 0;
   for (size_t i = 0; i < urls.size(); ++i)
   {
+    LOG(LINFO, ("Cloud uploading file. Server type =", kStatErrors[i]));
     platform::HttpUploader request;
     request.SetUrl(urls[i]);
     request.SetMethod(responseData.m_method);
@@ -1059,6 +1068,7 @@ Cloud::RequestResult Cloud::ExecuteUploading(UploadingResponseData const & respo
 
     auto const result = request.Upload();
     code = result.m_httpCode;
+    LOG(LINFO, ("Cloud uploading result. Code =", code));
     if (IsSuccessfulResultCode(code))
       return {RequestStatus::Ok, {}};
 
@@ -1514,7 +1524,7 @@ void Cloud::DownloadingTask(std::string const & dirPath, bool useFallbackUrl,
       bool successfullyWritten = true;
       auto const downloadResult = DownloadFile(useFallbackUrl ? result.m_response.m_fallbackUrl
                                                               : result.m_response.m_url,
-                                               filePath, successfullyWritten);
+                                               useFallbackUrl, filePath, successfullyWritten);
       if (!successfullyWritten)
       {
         FinishRestoring(SynchronizationResult::DiskError, "Could not create downloaded file");
