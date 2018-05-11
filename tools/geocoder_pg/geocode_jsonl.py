@@ -5,19 +5,18 @@ import multiprocessing
 import argparse
 
 
-def init_geocoder(options):
-    global cursor, table
-    cursor = psycopg2.connect('dbname='+options.database).cursor()
-    table = options.table
+def init_geocoder(database):
+    global cursor
+    cursor = psycopg2.connect('dbname='+database).cursor()
 
 
 def geocode(data):
-    global cursor, table
+    global cursor
     coords = data['geometry']['coordinates']
     cursor.execute('''select level, name, tags->'addr:street', tags->'addr:housenumber'
-                   from {0} p join {0}_geom g using (osm_id)
+                   from osm_polygon p join osm_polygon_geom g using (osm_id)
                    where ST_Intersects(g.way, ST_SetSRID(ST_MakePoint(%s, %s), 4326))
-                   '''.format(table), (coords[0], coords[1]))
+                   ''', (coords[0], coords[1]))
     props = data['properties']['address']
     for row in cursor:
         if row[0] == 'building':
@@ -42,13 +41,11 @@ if __name__ == '__main__':
                         help='Source file')
     parser.add_argument('-d', '--database', default='borders',
                         help='Database name, default=borders')
-    parser.add_argument('-t', '--table', default='osm_polygon',
-                        help='Database table, default=osm_polygon')
     parser.add_argument('output', type=argparse.FileType('w'),
                         help='Output file, use "-" for stdout')
     options = parser.parse_args()
 
-    with multiprocessing.Pool(initializer=init_geocoder, initargs=(options,)) as pool:
+    with multiprocessing.Pool(initializer=init_geocoder, initargs=(options.database,)) as pool:
         for data in pool.imap_unordered(geocode, (json.loads(line) for line in options.input), 100):
             if 'building' in data['properties']['address']:
                 print_data(data)

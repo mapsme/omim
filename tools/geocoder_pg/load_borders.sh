@@ -42,7 +42,9 @@ fi
 TABLE="$(psql $DATABASE -qtAc "SELECT tablename FROM pg_tables WHERE tablename = 'osm_polygon'")"
 if [ -n "$TABLE" ]; then
   echo "Renaming old table to osm_polygon_old"
-  psql $DATABASE -qtAc "ALTER TABLE osm_polygon RENAME TO osm_polygon_old; DELETE FROM osm_polygon_old WHERE rank > 6"
+  psql $DATABASE -qtAc "ALTER TABLE osm_polygon RENAME TO osm_polygon_old; ALTER INDEX osm_polygon_index RENAME TO osm_polygon_old_index; DELETE FROM osm_polygon_old WHERE rank > 6"
+  echo "Deleting old tables and indexes"
+  psql $DATABASE -qtAc "DROP TABLE IF EXISTS osm_polygon_geom; DROP INDEX IF EXISTS osm_polygon_name_idx, osm_polygon_osm_id_idx, osm_polygon_rank_idx"
 fi
 
 echo "Loading $FILTERED into PostgreSQL database"
@@ -70,7 +72,6 @@ if [ -n "$TABLE" ]; then
     SELECT o.osm_id, o.admin_level, o.boundary, o.postal_code, o.name, o.place, o.tags, o.way
     FROM osm_polygon_old o LEFT JOIN osm_polygon p ON
       p.admin_level = o.admin_level AND
-      p.name = o.name AND
       p.way && o.centroid
     WHERE p.way IS NULL;
 
