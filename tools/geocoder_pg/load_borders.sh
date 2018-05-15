@@ -41,10 +41,10 @@ fi
 
 TABLE="$(psql $DATABASE -qtAc "SELECT tablename FROM pg_tables WHERE tablename = 'osm_polygon'")"
 if [ -n "$TABLE" ]; then
+  echo "Deleting old tables and indexes"
+  psql $DATABASE -qtAc "DROP TABLE IF EXISTS osm_polygon_geom, osm_polygon_old; DROP INDEX IF EXISTS osm_polygon_name_idx, osm_polygon_osm_id_idx, osm_polygon_rank_idx, osm_polygon_old_index"
   echo "Renaming old table to osm_polygon_old"
   psql $DATABASE -qtAc "ALTER TABLE osm_polygon RENAME TO osm_polygon_old; ALTER INDEX osm_polygon_index RENAME TO osm_polygon_old_index; DELETE FROM osm_polygon_old WHERE rank > 6"
-  echo "Deleting old tables and indexes"
-  psql $DATABASE -qtAc "DROP TABLE IF EXISTS osm_polygon_geom; DROP INDEX IF EXISTS osm_polygon_name_idx, osm_polygon_osm_id_idx, osm_polygon_rank_idx"
 fi
 
 echo "Loading $FILTERED into PostgreSQL database"
@@ -64,7 +64,8 @@ osm2pgsql --create --slim --drop --number-processes 8 \
   --cache 8000 --multi-geometry "$FILTERED"
 rm "$TMP_STYLE"
 
-if [ -n "$TABLE" ]; then
+# NOTE: This part ↓↓↓ is disabled due to very low speed
+if [ -n "$TABLE" -a -z "1" ]; then
   echo "Restoring missing regions"
   BEFORE="$(psql $DATABASE -qtAc "SELECT count(*) FROM osm_polygon WHERE admin_level in ('2', '3', '4', '5', '6')")"
   psql $DATABASE <<EOF
