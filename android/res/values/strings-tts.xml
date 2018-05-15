@@ -42,6 +42,7 @@
     <item>ro</item>
     <item>fa</item>
     <item>uk</item>
+    <item>be</item>
     <item>vi</item>
   </string-array>
 
@@ -73,6 +74,7 @@
     <item>Română</item>
     <item>فارسی</item>
     <item>Українська</item>
+    <item>Беларуская</item>
     <item>Tiếng Việt</item>
   </string-array>
 </resources>

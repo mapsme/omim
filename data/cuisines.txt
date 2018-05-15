@@ -5,6 +5,7 @@
     en = Regional
     ru = Региональная кухня
     ar = مطبخ إقليمي
+    be = Рэгіянальная кухня
     cs = Regionální kuchyně
     da = Regionalt køkken
     nl = Regionale keuken
@@ -37,6 +38,7 @@
     en = Pizza
     ru = Пиццерия
     ar = بيتزا
+    be = Піцэрыя
     cs = Pizza
     da = Pizza
     nl = Pizza's
@@ -69,6 +71,7 @@
     en = Burger
     ru = Бургеры
     ar = برغر
+    be = Бургеры
     cs = Burger
     da = Burger
     nl = Hamburgers
@@ -101,6 +104,7 @@
     en = Italian
     ru = Итальянская кухня
     ar = مطبخ إيطالي
+    be = Італьянская кухня
     cs = Italská kuchyně
     da = Italiensk
     nl = Italiaans
@@ -133,6 +137,7 @@
     en = Chinese
     ru = Китайская кухня
     ar = مطبخ صيني
+    be = Кітайская кухня
     cs = Čínská kuchyně
     da = Kinesisk
     nl = Chinees
@@ -165,6 +170,7 @@
     en = Coffee
     ru = Кофе
     ar = ﺓﻮﻬﻗ
+    be = Кавярня
     cs = Káva
     da = Kaffe
     nl = Koffie
@@ -198,6 +204,7 @@
     en = Sandwich
     ru = Сэндвичи
     ar = ساندوتش
+    be = Бутэрброды
     cs = Sendvič
     da = Sandwich
     nl = Broodjes
@@ -230,6 +237,7 @@
     en = German
     ru = Немецкая кухня
     ar = مطبخ ألماني
+    be = Нямецкая кухня
     cs = Německá kuchyně
     da = Tysk
     nl = Duits
@@ -262,6 +270,7 @@
     en = Japanese
     ru = Японская кухня
     ar = مطبخ ياباني
+    be = Японская кухя
     cs = Japonská kuchyně
     da = Japansk
     nl = Japans
@@ -294,6 +303,7 @@
     en = Kebab
     ru = Кебабы
     ar = كباب
+    be = Кебаб
     cs = Kebab
     da = Kebab
     nl = Kebab
@@ -326,6 +336,7 @@
     en = Mexican
     ru = Мексиканская кухня
     ar = مطبخ مكسيكي
+    be = Мексіканская кухня
     cs = Mexická kuchyně
     da = Mexicansk
     nl = Mexicaans
@@ -358,6 +369,7 @@
     en = Indian
     ru = Индийская кухня
     ar = مطبخ هندي
+    be = Індыйская кухня
     cs = Indická kuchyně
     da = Indisk
     nl = Indisch
@@ -390,6 +402,7 @@
     en = American
     ru = Американская кухня
     ar = مطبخ أمريكي
+    be = Амерыканская кухня
     cs = Americká kuchyně
     da = Amerikansk
     nl = Amerikaans
@@ -422,6 +435,7 @@
     en = French
     ru = Французская кухня
     ar = مطبخ فرنسي
+    be = Французская кухня
     cs = Francouzská kuchyně
     da = Fransk
     nl = Frans
@@ -454,6 +468,7 @@
     en = Ice Cream
     ru = Кафе-мороженое
     ar = مُثَلّجات
+    be = Марозіва
     cs = Zmrzlina
     da = Is
     nl = Ijs
@@ -486,6 +501,7 @@
     en = Asian
     ru = Азиатская кухня
     ar = مطبخ آسيوي
+    be = Азіяцкая кухня
     cs = Asijská kuchyně
     da = Asiatisk
     nl = Aziatisch
@@ -518,6 +534,7 @@
     en = Chicken
     ru = Блюда из курицы
     ar = دجاج
+    be = Стравы з курыцы
     cs = Kuře
     da = Kylling
     nl = Kip
@@ -550,6 +567,7 @@
     en = Greek
     ru = Греческая кухня
     ar = مطبخ يوناني
+    be = Грэчаская кухня
     cs = Řecká kuchyně
     da = Græsk
     nl = Grieks
@@ -582,6 +600,7 @@
     en = Thai
     ru = Тайская кухня
     ar = مطبخ تايلندي
+    be = Тайская кухня
     cs = Thajská kuchyně
     da = Thailandsk
     nl = Thais gerechten
@@ -614,6 +633,7 @@
     en = International
     ru = Международная кухня
     ar = مطبخ عالمي
+    be = Міжнародная кухня
     cs = Mezinárodní kuchyně
     da = International
     nl = Internationaal
@@ -646,6 +666,7 @@
     en = Sushi
     ru = Суши
     ar = سوشي
+    be = Сушы
     cs = Suši
     da = Sushi
     nl = Sushi
@@ -678,6 +699,7 @@
     en = Fish and Chips
     ru = Рыба и картофель фри
     ar = سمك و رقائق البطاطس
+    be = Рыба і смажаная бульба
     cs = Ryba a hranolky
     da = Fish and chips
     nl = Fish and chips
@@ -710,6 +732,7 @@
     en = Turkish
     ru = Турецкая кухня
     ar = مطبخ تركي
+    be = Турэцкая кухня
     cs = Turecká kuchyně
     da = Tyrkisk
     nl = Turks
@@ -742,6 +765,7 @@
     en = Seafood
     ru = Морепродукты
     ar = مأكولات بحرية
+    be = Стравы з морапрадуктамі
     cs = Mořské plody
     da = Fisk og skaldyr
     nl = Vis en zeevruchten
@@ -774,6 +798,7 @@
     en = Steak House
     ru = Стейк-хаус
     ar = شرائح اللحم
+    be = Стэйкі
     cs = Steaková restaurace
     da = Steakhouse
     nl = Steakhouse
@@ -806,6 +831,7 @@
     en = Spanish
     ru = Испанская кухня
     ar = مطبخ إسباني
+    be = Іспанская кухня
     cs = Španělská kuchyně
     da = Spansk
     nl = Spaans
@@ -838,6 +864,7 @@
     en = Fish
     ru = Рыбный ресторан
     ar = سمك
+    be = Стравы з рыбы
     cs = Ryba
     da = Fisk
     nl = Vis
@@ -870,6 +897,7 @@
     en = Vietnamese
     ru = Вьетнамская кухня
     ar = مطبخ فيتنامي
+    be = В’етнамская кухня
     cs = Vietnamská kuchyně
     da = Vietnamesisk
     nl = Vietnamees
@@ -902,6 +930,7 @@
     en = Noodles
     ru = Лапшичная
     ar = الشعرية
+    be = Стравы з вермішэлі
     cs = Nudle
     da = Nudler
     nl = Noedels
@@ -934,6 +963,7 @@
     en = Vegetarian
     ru = Вегетарианская кухня
     ar = مطبخ نباتي
+    be = Вегетарыянская кухня
     cs = Vegetariánská kuchyně
     da = Vegetarretter
     nl = Vegetarisch
@@ -966,6 +996,7 @@
     en = Korean
     ru = Корейская
     ar = مطبخ كوري
+    be = Карэйская кухня
     cs = Korejská kuchyně
     da = Koreansk
     nl = Koreaans
@@ -998,6 +1029,7 @@
     en = Friture
     ru = Блюда во фритюре
     ar = وجبات سريعة
+    be = Стравы ў фрыцюры
     cs = Smažené pokrmy
     da = Friture
     nl = Frituur
@@ -1030,6 +1062,7 @@
     en = Barbecue
     ru = Барбекю
     ar = مشويات
+    be = Барбекю
     cs = Grilované pokrmy
     da = Barbecue
     nl = Barbecue
@@ -1062,6 +1095,7 @@
     en = Bavarian
     ru = Баварская кухня
     ar = مطبخ بافاري
+    be = Баварская кухня
     cs = Bavorská kuchyně
     da = Bavarisk
     nl = Beiers
@@ -1094,6 +1128,7 @@
     en = Ramen
     ru = Рамен
     ar = حساء رامن
+    be = Рамэн
     cs = Ramen
     da = Ramen
     nl = Ramennoedels
@@ -1126,6 +1161,7 @@
     en = Italian, Pizza
     ru = Итальянская, пиццерия
     ar = مطبخ إيطالي؛بيتزا
+    be = Італьянская піца
     cs = Italská, pizza
     da = Italiensk, pizza
     nl = Italiaans, pizza
@@ -1158,6 +1194,7 @@
     en = Mediterranean
     ru = Средиземноморская кухня
     ar = مطبخ شرق أوسطي
+    be = Міжземнаморская кухня
     cs = Středomořská kuchyně
     da = Middelhavskost
     nl = Mediterraans
@@ -1190,6 +1227,7 @@
     en = Donut
     ru = Пончики
     ar = الكعك المحلاة
+    be = Пончыкі
     cs = Kobliha
     da = Donuts
     nl = Donuts
@@ -1222,6 +1260,7 @@
     en = Beef Bowl
     ru = Рис и говядина
     ar = طبق لحم البقر
+    be = Рыс і ялавічына
     cs = Miska hovězího
     da = Gyudon
     nl = Gyudon
@@ -1254,6 +1293,7 @@
     en = Cake
     ru = Кондитерская
     ar = كيك
+    be = Кандытарская
     cs = Dort
     da = Kager
     nl = Taart
@@ -1286,6 +1326,7 @@
     en = Crepe
     ru = Тонкие блинчики
     ar = كريب
+    be = Крэпы
     cs = Crêpe
     da = Crepes
     nl = Pannenkoek
@@ -1318,6 +1359,7 @@
     en = Heuriger
     ru = Винная таверна (хойригер)
     ar = البيرة
+    be = Хойрыгер
     cs = Heuriger
     da = Heuriger
     nl = Heuriger
@@ -1350,6 +1392,7 @@
     en = Lebanese
     ru = Ливанская кухня
     ar = مطبخ لبناني
+    be = Ліванская кухня
     cs = Libanonská kuchyně
     da = Libanesisk
     nl = Libanees
@@ -1382,6 +1425,7 @@
     en = Local
     ru = Местная кухня
     ar = مطبخ محلي
+    be = Мясцовая кухня
     cs = Místní kuchyně
     da = Lokalt køkken
     nl = Regionale keuken
@@ -1414,6 +1458,7 @@
     en = Curry
     ru = Блюда карри
     ar = كاري
+    be = Кары
     cs = Kari
     da = Karryretter
     nl = Curry's
@@ -1446,6 +1491,7 @@
     en = Filipino
     ru = Филиппинская кухня
     ar = مطبخ فلبيني
+    be = Філіпінская кухня
     cs = Filipínská kuchyně
     da = Filippinsk
     nl = Filipijns
@@ -1478,6 +1524,7 @@
     en = Russian
     ru = Русская кухня
     ar = مطبخ روسي
+    be = Руская кухня
     cs = Ruská kuchyně
     da = Russisk
     nl = Russisch
@@ -1510,6 +1557,7 @@
     en = Breakfast
     ru = Завтраки
     ar = فطور
+    be = Сняданак
     cs = Snídaně
     da = Morgenmad
     nl = Ontbijt
@@ -1542,6 +1590,7 @@
     en = Tapas
     ru = Тапас-бар
     ar = تاباس
+    be = Тапас
     cs = Tapas
     da = Tapas
     nl = Tapas
@@ -1574,6 +1623,7 @@
     en = Bagel
     ru = Бубличная
     ar = كعك بولندي
+    be = Выпечка
     cs = Bagel
     da = Bagels
     nl = Bagels
@@ -1606,6 +1656,7 @@
     en = Pasta
     ru = Паста
     ar = مَعْكَرُونَة
+    be = Макароны
     cs = Těstoviny
     da = Pasta
     nl = Pasta
@@ -1638,6 +1689,7 @@
     en = Buschenschank
     ru = Домашняя таверна (бушеншанк)
     ar = البيرة
+    be = Хатняя карчма
     cs = Buschenschank
     da = Buschenschank
     nl = Buschenschank
@@ -1670,6 +1722,7 @@
     en = Sausage
     ru = Сосисочная
     ar = سجق
+    be = Кілбаса
     cs = Klobása
     da = Pølser
     nl = Worst
@@ -1702,6 +1755,7 @@
     en = Portuguese
     ru = Португальская кухня
     ar = مطبخ برتغالي
+    be = Партугальская кухня
     cs = Portugalská kuchyně
     da = Portugisisk
     nl = Portugees
@@ -1734,6 +1788,7 @@
     en = Grill
     ru = Гриль
     ar = شواء
+    be = Грыль
     cs = Gril
     da = Grill
     nl = Gegrilde gerechten
@@ -1766,6 +1821,7 @@
     en = Pancake
     ru = Блинная
     ar = بان كيك
+    be = Бліны
     cs = Palačinka
     da = Pandekager
     nl = Pannenkoek
@@ -1798,6 +1854,7 @@
     en = Malagasy
     ru = Мадагаскарская кухня
     ar = مدغشقر
+    be = Мадагаскарская кухня
     cs = Madagaskarská kuchyně
     da = Madagaskisk
     nl = Malagassisch
@@ -1830,6 +1887,7 @@
     en = Polish
     ru = Польская кухня
     ar = مطبخ بولندي
+    be = Польская кухня
     cs = Polská kuchyně
     da = Polsk
     nl = Pools
@@ -1862,6 +1920,7 @@
     en = Diner
     ru = Дайнер
     ar = العشاء
+    be = Дайнэр
     cs = Večeře
     da = Diner
     nl = Diner
@@ -1894,6 +1953,7 @@
     en = African
     ru = Африканская кухня
     ar = مطبخ أفريقي
+    be = Афрыканская кухня
     cs = Africká kuchyně
     da = Afrikansk
     nl = Afrikaans
@@ -1926,6 +1986,7 @@
     en = Georgian
     ru = Грузинская кухня
     ar = مطبخ جورجي
+    be = Грузінская кухня
     cs = Gruzínská kuchyně
     da = Georgisk
     nl = Georgisch
@@ -1958,6 +2019,7 @@
     en = Croatian
     ru = Хорватская кухня
     ar = مطبخ كرواتي
+    be = Харвацкая кухня
     cs = Chorvatská kuchyně
     da = Kroatisk
     nl = Kroatisch
@@ -1990,6 +2052,7 @@
     en = Arab
     ru = Арабская кухня
     ar = مطبخ عربي
+    be = Арабская кухня
     cs = Arabská kuchyně
     da = Arabisk
     nl = Arabisch
@@ -2022,6 +2085,7 @@
     en = Balkan
     ru = Балканская кухня
     ar = مطبخ بلقاني
+    be = Балканская кухня
     cs = Balkánská kuchyně
     da = Balkansk
     nl = Balkan
@@ -2054,6 +2118,7 @@
     en = Brazilian
     ru = Бразильская кухня
     ar = مطبخ برازيلي
+    be = Бразільская кухня
     cs = Brazilská kuchyně
     da = Brasiliansk
     nl = Braziliaans
@@ -2086,6 +2151,7 @@
     en = Caribbean
     ru = Карибская кухня
     ar = مطبخ كاريبي
+    be = Карыбская кухня
     cs = Karibská kuchyně
     da = Caribisk
     nl = Caraïbisch
@@ -2118,6 +2184,7 @@
     en = Austrian
     ru = Австрийская кухня
     ar = مطبخ نمساوي
+    be = Аўстрыйская кухня
     cs = Rakouská kuchyně
     da = Østrigsk
     nl = Oostenrijks
@@ -2150,6 +2217,7 @@
     en = Vegan
     ru = Веганская кухня
     ar = مطبخ نباتي
+    be = Веганская кухня
     cs = Veganská kuchyně
     da = Vegansk
     nl = Veganistisch
@@ -2182,6 +2250,7 @@
     en = Argentinian
     ru = Аргентинская кухня
     ar = مطبخ أرجنتيني
+    be = Аргентынская кухня
     cs = Argentinská kuchyně
     da = Argentinsk
     nl = Argentijns
@@ -2214,6 +2283,7 @@
     en = Persian
     ru = Иранская кухня
     ar = مطبخ إيراني
+    be = Іранская кухня
     cs = Perská kuchyně
     da = Persisk
     nl = Perzisch
@@ -2246,6 +2316,7 @@
     en = Soba
     ru = Соба
     ar = سوبا
+    be = Соба
     cs = Soba
     da = Soba
     nl = Soba
@@ -2278,6 +2349,7 @@
     en = Malaysian
     ru = Малазийская кухня
     ar = مطبخ ماليزي
+    be = Малайзійская кухня
     cs = Malajsijská kuchyně
     da = Malaysisk
     nl = Maleisisch
@@ -2310,6 +2382,7 @@
     en = Indonesian
     ru = Индонезийская кухня
     ar = مطبخ إندونيسي
+    be = Інданэзійская кухня
     cs = Indonéská kuchyně
     da = Indonesisk
     nl = Indonesisch
@@ -2342,6 +2415,7 @@
     en = Ethiopian
     ru = Эфиопская кухня
     ar = مطبخ إثيوبي
+    be = Эфіопская кухня
     cs = Etiopská kuchyně
     da = Etiopisk
     nl = Ethiopisch
@@ -2374,6 +2448,7 @@
     en = Deli
     ru = Деликатесы
     ar = أطعمة مبردة
+    be = Далікатэсы
     cs = Lahůdky
     da = Deli
     nl = Deli
@@ -2406,6 +2481,7 @@
     en = Irish
     ru = Ирландская кухня
     ar = مطبخ إيرلندي
+    be = Ірландская кухня
     cs = Irská kuchyně
     da = Irsk
     nl = Iers
@@ -2438,6 +2514,7 @@
     en = Hungarian
     ru = Венгерская кухня
     ar = مطبخ مجري
+    be = Венгерская кухня
     cs = Maďarská kuchyně
     da = Ungarsk
     nl = Hongaars
@@ -2470,6 +2547,7 @@
     en = Lao
     ru = Лаосская кухня
     ar = مطبخ لاوي
+    be = Лаоская кухня
     cs = Laoská kuchyně
     da = Laotisk
     nl = Laotiaans
@@ -2502,6 +2580,7 @@
     en = Hotdog
     ru = Хот-доги
     ar = هوت دوغ
+    be = Хот-догі
     cs = Hot dog
     da = Hotdogs
     nl = Hotdogs
@@ -2534,6 +2613,7 @@
     en = Far Eastern
     ru = Восточная кухня
     ar = مطبخ شرقي
+    be = Усходняя кухня
     cs = Orientální kuchyně
     da = Orientalsk
     nl = Oosters
@@ -2566,6 +2646,7 @@
     en = Savory Pancakes
     ru = Несладкие блинчики
     ar = بان كيك السافوري
+    be = Несалодкія блінцы
     cs = Pikantní palačinky
     da = Madpandekager
     nl = Hartige pannenkoeken
@@ -2598,6 +2679,7 @@
     en = Moroccan
     ru = Марокканская кухня
     ar = مطبخ مغربي
+    be = Мараканская кухня
     cs = Marocká kuchyně
     da = Marokkansk
     nl = Marokkaans
@@ -2630,6 +2712,7 @@
     en = Peruvian
     ru = Перуанская кухня
     ar = بيرو
+    be = Перуанская кухня
     cs = Peruánská kuchyně
     da = Peruviansk
     nl = Peruaans
@@ -2662,6 +2745,7 @@
     en = Fine Dining
     ru = Ресторан высокой кухни
     ar = مطعم متكامل
+    be = Рэстарацыя вышэйшай кухні
     cs = Zážitková gastronomie
     da = Eksklusiv
     nl = Gastronomisch
@@ -2694,6 +2778,7 @@
     en = Tea
     ru = Чайная
     ar = شاي
+    be = Гарбатня
     cs = Čaj
     da = Te
     nl = Thee

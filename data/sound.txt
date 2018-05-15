@@ -4,6 +4,7 @@
     en = Slight right.
     ru = Держитесь правее.
     ar = إلى اليمين قليلا.
+    be = Трымайцеся права.
     cs = Mírně doprava.
     da = Blødt til højre.
     nl = Houd rechts aan.
@@ -37,6 +38,7 @@
     en = Turn right.
     ru = Поверните направо.
     ar = انعطف يمينا.
+    be = Павярніце ўправа.
     cs = Odbočte vpravo.
     da = Drej til højre.
     nl = Sla rechtsaf.
@@ -70,6 +72,7 @@
     en = Sharp right.
     ru = Резко поверните направо.
     ar = إلى أقصى اليمين.
+    be = Рэзка павярніце ўправа.
     cs = Ostře doprava.
     da = Skarpt til højre.
     nl = Scherp rechtsaf.
@@ -103,6 +106,7 @@
     en = Enter the roundabout.
     ru = Поверните на кольцо.
     ar = اتجه إلى الطريق الدوار.
+    be = Заедзьце на круг.
     cs = Vjeďte na kruhový objezd.
     da = Kør ind i rundkørslen.
     nl = Rij de rotonde op.
@@ -136,6 +140,7 @@
     en = Exit from the roundabout.
     ru = Сверните с кольца.
     ar = اخرج من الدوار.
+    be = З'едзьце з кругу.
     cs = Opusťte kruhový objezd.
     da = Forlad rundkørslen.
     nl = Verlaat de rotonde.
@@ -169,6 +174,7 @@
     en = Slight left.
     ru = Держитесь левее.
     ar = إلى اليسار قليلاً.
+    be = Трымайцеся лева.
     cs = Mírně doleva.
     da = Blødt til venstre.
     nl = Houd links aan.
@@ -202,6 +208,7 @@
     en = Turn left.
     ru = Поверните налево.
     ar = انعطف يسارا.
+    be = Павярніце ўлева.
     cs = Odbočte vlevo.
     da = Drej til venstre.
     nl = Sla linksaf.
@@ -235,6 +242,7 @@
     en = Sharp left.
     ru = Резко поверните налево.
     ar = إلى أقصى اليسار.
+    be = Рэзка павярніце ўлева.
     cs = Ostře doleva.
     da = Skarpt til venstre.
     nl = Scherp linksaf.
@@ -268,6 +276,7 @@
     en = Make a u-turn.
     ru = Развернитесь.
     ar = انعطف بدوران كامل.
+    be = Развярніцеся.
     cs = Otočte se do protisměru.
     da = Vend om.
     nl = Keer om.
@@ -301,6 +310,7 @@
     en = Go straight.
     ru = Двигайтесь прямо.
     ar = انطلق مباشرة.
+    be = Рухайцеся наперад.
     cs = Jeďte rovně.
     da = Fortsæt lige ud.
     nl = Rij rechtdoor.
@@ -334,6 +344,7 @@
     en = Exit.
     ru = Съезд.
     ar = مخرج, خروج.
+    be = З'езд.
     cs = výstup.
     da = Afkørsel.
     nl = Verlaat.
@@ -367,6 +378,7 @@
     en = You’ll arrive.
     ru = Вы прибудете в пункт назначения.
     ar = سوف تصل.
+    be = Вы прыедзеце.
     cs = Přijedete do cíle.
     da = Ankommer du.
     nl = Arriveert u.
@@ -400,6 +412,7 @@
     en = You have arrived.
     ru = Вы прибыли в пункт назначения.
     ar = لقد وصلت.
+    be = Вы даехалі.
     cs = Jste v cíli.
     da = Du er ankommet.
     nl = Bestemming bereikt.
@@ -433,6 +446,7 @@
     en = In fifty meters
     ru = Через пятьсот метров
     ar = بعد خمسين مترًا
+    be = Праз пяцьсот метраў
     cs = Za padesát metrů
     da = Om halvtreds meter
     nl = Over vijftig meter
@@ -466,6 +480,7 @@
     en = In one hundred meters
     ru = Через сто метров
     ar = بعد مئة متر
+    be = Праз сто метраў
     cs = Za sto metrů
     da = Om et hundrede meter
     nl = Over honderd meter
@@ -499,6 +514,7 @@
     en = In two hundred meters
     ru = Через двести метров
     ar = بعد مئتين متر
+    be = Праз дзвесце метраў
     cs = Za dvě stě metrů
     da = Om to hundrede meter
     nl = Over tweehonderd meter
@@ -532,6 +548,7 @@
     en = In two hundred and fifty meters
     ru = Через двести пятьдесят метров
     ar = بعد مئتين وخمسين مترًا
+    be = Праз дзвесце пяцьдзесят метраў
     cs = Za dvě stě padesát metrů
     da = Om to hundrede og halvtreds meter
     nl = Over tweehonderdvijftig meter
@@ -565,6 +582,7 @@
     en = In three hundred meters
     ru = Через триста метров
     ar = بعد ثلاثمئة متر
+    be = Праз трыста метраў
     cs = Za tři sta metrů
     da = Om tre hundrede meter
     nl = Over driehonderd meter
@@ -598,6 +616,7 @@
     en = In four hundred meters
     ru = Через четыреста метров
     ar = بعد أربعمئة متر
+    be = Праз чатырыста метраў
     cs = Za čtyři sta metrů
     da = Om fire hundrede meter
     nl = Over vierhonderd meter
@@ -631,6 +650,7 @@
     en = In five hundred meters
     ru = Через пятьсот метров
     ar = بعد خمسمئة متر
+    be = Праз пяцьсот метраў
     cs = Za pět set metrů
     da = Om fem hundrede meter
     nl = Over vijfhonderd meter
@@ -664,6 +684,7 @@
     en = In six hundred meters
     ru = Через шестьсот метров
     ar = بعد ستمئة متر
+    be = Праз шэсцьсот метраў
     cs = Za šest set metrů
     da = Om seks hundrede meter
     nl = Over zeshonderd meter
@@ -697,6 +718,7 @@
     en = In seven hundred meters
     ru = Через семьсот метров
     ar = بعد سبعمئة متر
+    be = Праз семсот метраў
     cs = Za sedm set metrů
     da = Om syv hundrede meter
     nl = Over zevenhonderd meter
@@ -730,6 +752,7 @@
     en = In seven hundred and fifty meters
     ru = Через семьсот пятьдесят метров
     ar = بعد سبعمئة وخمسين مترًا
+    be = Праз семсот пяцьдзесят метраў
     cs = Za sedm set padesát metrů
     da = Om syv hundrede og halvtreds meter
     nl = Over zevenhonderdvijftig meter
@@ -763,6 +786,7 @@
     en = In eight hundred meters
     ru = Через восемьсот метров
     ar = بعد ثمانمئة متر
+    be = Праз восемсот метраў
     cs = Za osm set metrů
     da = Om otte hundrede meter
     nl = Over achthonderd meter
@@ -796,6 +820,7 @@
     en = In nine hundred meters
     ru = Через девятьсот метров
     ar = بعد تسعمئة متر
+    be = Праз дзевяцьсот метраў
     cs = Za devět se metrů
     da = Om ni hundrede meter
     nl = Over negenhonderd meter
@@ -829,6 +854,7 @@
     en = In one kilometer
     ru = Через километр
     ar = بعد كيلو متر واحدٍ
+    be = Праз кіламетр
     cs = Za jeden kilometr
     da = Om en kilometer
     nl = Over één kilometer
@@ -862,6 +888,7 @@
     en = In one and a half kilometers
     ru = Через полтора километра
     ar = بعد كيلو متر ونصف
+    be = Праз паўтара кіламетра
     cs = Za jeden a půl kilometru
     da = Om halvanden kilometer
     nl = Over anderhalve kilometer
@@ -895,6 +922,7 @@
     en = In two kilometers
     ru = Через два километра
     ar = بعد كيلو مترين
+    be = Праз два кіламетры
     cs = Za dva kilometry
     da = Om to kilometer
     nl = Over twee kilometer
@@ -928,6 +956,7 @@
     en = In two and a half kilometers
     ru = Через два с половиной километра
     ar = بعد كيلو مترين ونصف
+    be = Праз два з паловай кіламетры
     cs = Za dva a půl kilometru
     da = Om en kilometer
     nl = Over tweeëneenhalve kilometer
@@ -961,6 +990,7 @@
     en = In three kilometers
     ru = Через три километра
     ar = بعد ثلاثة كيلو مترات
+    be = Праз тры кіламетры
     cs = Za tři kilometry
     da = Om tre kilometer
     nl = Over drie kilometer
@@ -994,6 +1024,7 @@
     en = Then
     ru = Затем
     ar = ثم
+    be = Потым
     cs = Poté
     da = Derefter
     nl = Daarna
@@ -1027,6 +1058,7 @@
     en = Take the first exit.
     ru = Сверните на первый съезд.
     ar = اسلك المخرج الأول.
+    be = Рухайцеся на першы з'езд.
     cs = Vyjeďte prvním výjezdem.
     da = Tag den første afkørsel.
     nl = Neem de eerste afslag.
@@ -1060,6 +1092,7 @@
     en = Take the second exit.
     ru = Сверните на второй съезд.
     ar = اسلك المخرج الثاني.
+    be = Рухайцеся на другі з'езд.
     cs = Vyjeďte druhým výjezdem.
     da = Tag den anden afkørsel.
     nl = Neem de tweede afslag.
@@ -1093,6 +1126,7 @@
     en = Take the third exit.
     ru = Сверните на третий съезд.
     ar = اسلك المخرج الثالث.
+    be = Рухайцеся на трэці з'езд.
     cs = Vyjeďte třetím výjezdem.
     da = Tag den tredje afkørsel.
     nl = Neem de derde afslag.
@@ -1126,6 +1160,7 @@
     en = Take the fourth exit.
     ru = Сверните на четвертый съезд.
     ar = اسلك المخرج الرابع.
+    be = Рухайцеся на чацвёрты з'езд.
     cs = Vyjeďte čtvrtým výjezdem.
     da = Tag den fjerde afkørsel.
     nl = Neem de vierde afslag.
@@ -1159,6 +1194,7 @@
     en = Take the fifth exit.
     ru = Сверните на пятый съезд.
     ar = اسلك المخرج الخامس.
+    be = Рухайцеся на пяты з'езд.
     cs = Vyjeďte pátým výjezdem.
     da = Tag den femte afkørsel.
     nl = Neem de vijfde afslag.
@@ -1192,6 +1228,7 @@
     en = Take the sixth exit.
     ru = Сверните на шестой съезд.
     ar = اسلك المخرج السادس.
+    be = Рухайцеся на шосты з'езд.
     cs = Vyjeďte šestým výjezdem.
     da = Tag den sjette afkørsel.
     nl = Neem de zesde afslag.
@@ -1225,6 +1262,7 @@
     en = Take the seventh exit.
     ru = Сверните на седьмой съезд.
     ar = اسلك المخرج السابع.
+    be = Рухайцеся на сёмы з'езд.
     cs = Vyjeďte sedmým výjezdem.
     da = Tag den syvende afkørsel.
     nl = Neem de zevende afslag.
@@ -1258,6 +1296,7 @@
     en = Take the eighth exit.
     ru = Сверните на восьмой съезд.
     ar = اسلك المخرج الثامن.
+    be = Рухайцеся на восьмы з'езд.
     cs = Vyjeďte osmým výjezdem.
     da = Tag den ottende afkørsel.
     nl = Neem de achtste afslag.
@@ -1291,6 +1330,7 @@
     en = Take the ninth exit.
     ru = Сверните на девятый съезд.
     ar = اسلك المخرج التاسع.
+    be = Рухайцеся на дзевяты з'езд.
     cs = Vyjeďte devátým výjezdem.
     da = Tag den niende afkørsel.
     nl = Neem de negende afslag.
@@ -1324,6 +1364,7 @@
     en = Take the tenth exit.
     ru = Сверните на десятый съезд.
     ar = اسلك المخرج العاشر.
+    be = Рухайцеся на дзесяты з'езд.
     cs = Vyjeďte desátým výjezdem.
     da = Tag den tiende afkørsel.
     nl = Neem de tiende afslag.
@@ -1357,6 +1398,7 @@
     en = Take the eleventh exit.
     ru = Сверните на одиннадцатый съезд.
     ar = اسلك المَخْرَج الحادي عشر.
+    be = Рухайцеся на адзінаццаты з'езд.
     cs = Vyjeďte jedenáctým výjezdem.
     da = Tag den ellevte afkørsel.
     nl = Neem de elfde afslag.
@@ -1390,6 +1432,7 @@
     en = In fifty feet
     ru = Через пятьдесят футов
     ar = بعد خمسين قدمًا
+    be = Праз пяцьдзесят футаў
     cs = Za padesát stop
     da = Om halvtreds fod
     nl = Over vijftig voet
@@ -1423,6 +1466,7 @@
     en = In one hundred feet
     ru = Через сто футов
     ar = بعد مئة قدم
+    be = Праз сто футаў
     cs = Za sto stop
     da = Om et hundrede fod
     nl = Over honderd voet
@@ -1456,6 +1500,7 @@
     en = In two hundred feet
     ru = Через двести футов
     ar = بعد مئتين قدم
+    be = Праз дзвесце футаў
     cs = Za dvě stě stop
     da = Om to hundrede fod
     nl = Over tweehonderd voet
@@ -1489,6 +1534,7 @@
     en = In three hundred feet
     ru = Через триста футов
     ar = بعد ثلاثمئة قدم
+    be = Праз трыста футаў
     cs = Za tři sta stop
     da = Om tre hundrede fod
     nl = Over driehonderd voet
@@ -1522,6 +1568,7 @@
     en = In four hundred feet
     ru = Через четыреста футов
     ar = بعد أربعمئة قدم
+    be = Праз чатырыста футаў
     cs = Za čtyři sta stop
     da = Om fire hundrede fod
     nl = Over vierhonderd voet
@@ -1555,6 +1602,7 @@
     en = In five hundred feet
     ru = Через пятьсот футов
     ar = بعد خمسمئة قدم
+    be = Праз пяцьсот футаў
     cs = Za pět set stop
     da = Om femte hundrede fod
     nl = Over vijfhonderd voet
@@ -1588,6 +1636,7 @@
     en = In six hundred feet
     ru = Через шестьсот футов
     ar = بعد ستمئة قدم
+    be = Праз шэсцьсот футаў
     cs = Za šest set stop
     da = Om sjette hundrede fod
     nl = Over zeshonderd voet
@@ -1621,6 +1670,7 @@
     en = In seven hundred feet
     ru = Через семьсот футов
     ar = بعد سبعمئة قدم
+    be = Праз семсот футаў
     cs = Za sedm set stop
     da = Om syv hundrede fod
     nl = Over zevenhonderd voet
@@ -1654,6 +1704,7 @@
     en = In eight hundred feet
     ru = Через восемьсот футов
     ar = بعد ثمانمئة قدم
+    be = Праз восемсот футаў
     cs = Za osm set stop
     da = Om otte hundrede fod
     nl = Over achthonderd voet
@@ -1687,6 +1738,7 @@
     en = In nine hundred feet
     ru = Через девятьсот футов
     ar = بعد تسعمئة قدم
+    be = Праз дзевяцьсот футаў
     cs = Za devět set stop
     da = Om ni hundrede fod
     nl = Over negenhonderd voet
@@ -1720,6 +1772,7 @@
     en = In one thousand feet
     ru = Через тысячу футов
     ar = بعد ألف قدم
+    be = Праз тысячу футаў
     cs = Za tisíc stop
     da = Om et tusind fod
     nl = Over duizend voet
@@ -1753,6 +1806,7 @@
     en = In fifteen hundred feet
     ru = Через тысячу пятьсот футов
     ar = بعد ألف وخمسمئة قدم
+    be = Праз тысячу пяцьсот футаў
     cs = Za tisíc pět set stop
     da = Om et tusind fem hundrede fod
     nl = Over vijftienhonderd voet
@@ -1786,6 +1840,7 @@
     en = In two thousand feet
     ru = Через две тысячи футов
     ar = بعد ألفين قدم
+    be = Праз дзве тысячы футаў
     cs = Za dva tisíce stop
     da = Om to tusind fod
     nl = Over tweeduizend voet
@@ -1819,6 +1874,7 @@
     en = In twenty five hundred feet
     ru = Через две тысячи пятьсот футов
     ar = بعد ألفين وخمسمئة قدم
+    be = Праз дзве тысячы пяцьсот футаў
     cs = Za dva tisíce pět set stop
     da = Om to tusinde fem hundrede fod
     nl = Over vijfentwintighonderd voet
@@ -1852,6 +1908,7 @@
     en = In three thousand feet
     ru = Через три тысячи футов
     ar = بعد ثلاثة آلاف قدم
+    be = Праз тры тысячы футаў
     cs = Za tři tisíce stop
     da = Om tre tusind fod
     nl = Over drieduizend voet
@@ -1885,6 +1942,7 @@
     en = In thirty five hundred feet
     ru = Через три тысячи пятьсот футов
     ar = بعد ثلاثة آلاف وخمسمئة قدم
+    be = Праз тры тысячы пяцьсот футаў
     cs = Za tři tisíce pět set stop
     da = Om tre tusind fem hundrede fod
     nl = Over vijfendertighonderd voet
@@ -1918,6 +1976,7 @@
     en = In four thousand feet
     ru = Через четыре тысячи футов
     ar = بعد أربعة آلاف قدم
+    be = Праз чатыры тысячы футаў
     cs = Za čtyři tisíce stop
     da = Om fire tusind fod
     nl = Over vierduizend voet
@@ -1951,6 +2010,7 @@
     en = In forty five hundred feet
     ru = Через четыре тысячи пятьсот футов
     ar = بعد أربعة آلاف وخمسمئة قدم
+    be = Праз чатыры тысячы пяцьсот футаў
     cs = Za čtyři tisíce pět set stop
     da = Om fire tusind fem hundrede fod
     nl = Over vijfenveertighonderd voet
@@ -1984,6 +2044,7 @@
     en = In five thousand feet
     ru = Через пять тысяч футов
     ar = بعد خمسة آلاف قدم
+    be = Праз пяць тысяч футаў
     cs = Za pět tisíc stop
     da = Om fem tusind fod
     nl = Over vijfduizend voet
@@ -2017,6 +2078,7 @@
     en = In one mile
     ru = Через одну милю
     ar = بعد ميل واحد
+    be = Праз адну мілю
     cs = Za jednu míli
     da = Om en mil
     nl = Over één mijl
@@ -2050,6 +2112,7 @@
     en = In one and a half miles
     ru = Через полторы мили
     ar = بعد ميل ونصف
+    be = Праз паўтары мілі
     cs = Za jednu a půl míle
     da = Om halvanden mil
     nl = Over anderhalve mijl
@@ -2083,6 +2146,7 @@
     en = In two miles
     ru = Через две мили
     ar = بعد ميلين
+    be = Праз дзве мілі
     cs = Za dvě míle
     da = Om to mil
     nl = Over twee mijl
