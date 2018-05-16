@@ -66,7 +66,7 @@
 				<string>mapsme</string>
 				<string>ge0</string>
 				<string>geo</string>
-				<string>fb462405334160274</string>
+				<string>fb185237551520383</string>
 				<string>mapswithmepro</string>
 			</array>
 		</dict>
@@ -96,7 +96,7 @@
 		</array>
 	</dict>
 	<key>FacebookAppID</key>
-	<string>462405334160274</string>
+	<string>185237551520383</string>
 	<key>FacebookDisplayName</key>
 	<string>MapsWithMe, offline maps</string>
 	<key>LSApplicationQueriesSchemes</key>
