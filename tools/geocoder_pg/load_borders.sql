@@ -8,6 +8,13 @@ DELETE FROM osm_polygon WHERE name IS NULL OR name = '';
 DELETE FROM osm_point WHERE name IS NULL OR name = '';
 
 
+\! echo "Deleting countries drawn with ways and territorial waters"
+DELETE FROM osm_polygon WHERE
+  boundary = 'administrative'
+  AND admin_level = '2'
+  AND (osm_id > 0 OR (tags->'border_type' = 'territorial' and tags->'maritime' = 'yes'));
+
+
 \! echo "Adding centroids to polygons"
 ALTER TABLE osm_polygon ADD COLUMN centroid geometry(Point, 4326);
 UPDATE osm_polygon SET centroid = ST_PointOnSurface(way);
