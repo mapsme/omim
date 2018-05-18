@@ -150,6 +150,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onBookmarksLoadingStarted()
   {
@@ -158,6 +159,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onBookmarksLoadingFinished()
   {
@@ -166,6 +168,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onBookmarksFileLoaded(boolean success, @NonNull String fileName,
                                     boolean isTemporaryFile)
@@ -183,6 +186,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onFinishKmlConversion(boolean success)
   {
@@ -191,6 +195,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onPreparedFileForSharing(BookmarkSharingResult result)
   {
@@ -199,6 +204,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onSynchronizationStarted(@SynchronizationType int type)
   {
@@ -207,6 +213,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onSynchronizationFinished(@SynchronizationType int type,
                                         @SynchronizationResult int result,
@@ -217,6 +224,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onRestoreRequested(@RestoringRequestResult int result,
                                  long backupTimestampInMs)
@@ -226,6 +234,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onRestoredFilesPrepared()
   {
@@ -234,6 +243,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onImportStarted(@NonNull String id)
   {
@@ -242,6 +252,7 @@ public enum BookmarkManager
   }
 
   // Called from JNI.
+  @SuppressWarnings("unused")
   @MainThread
   public void onImportFinished(@NonNull String id, boolean successful)
   {
