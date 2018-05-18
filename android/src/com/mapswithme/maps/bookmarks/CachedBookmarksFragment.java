@@ -15,7 +15,8 @@ import com.mapswithme.maps.base.BaseMwmFragment;
 import com.mapswithme.maps.widget.recycler.ItemDecoratorFactory;
 import com.mapswithme.maps.widget.recycler.RecyclerLongClickListener;
 
-public class CachedBookmarksFragment extends BaseMwmFragment implements RecyclerLongClickListener, CategoryListCallback
+public class CachedBookmarksFragment extends BaseMwmFragment implements RecyclerLongClickListener,
+                                                                        CategoryListCallback
 {
 
   private BookmarkCategoriesAdapter mAdapter;
@@ -74,9 +75,9 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
   private void openBookmarksCatalogScreen()
   {
     Intent intent = new Intent(getActivity(),
-                               BookmarksCatalogActivity.class)
-        .putExtra(BookmarksCatalogFragment.EXTRA_BOOKMARKS_CATALOG_URL,
-                  "");
+                               BookmarksCatalogActivity.class).putExtra(
+                                   BookmarksCatalogFragment.EXTRA_BOOKMARKS_CATALOG_URL,
+                                   "");
     getActivity().startActivity(intent);
   }
 

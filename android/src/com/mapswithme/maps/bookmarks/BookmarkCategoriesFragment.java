@@ -318,15 +318,6 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
     void commit(@NonNull String newName);
   }
 
-  private class BookmarksDataObserver extends RecyclerView.AdapterDataObserver
-  {
-    @Override
-    public void onChanged()
-    {
-      updateResultsPlaceholder();
-    }
-  }
-
   private class ImportKmlTask implements Runnable
   {
     private boolean alreadyDone = false;

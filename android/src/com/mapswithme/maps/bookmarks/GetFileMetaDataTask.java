@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.util.Utils;
 
 import java.io.IOException;
@@ -43,7 +44,8 @@ class GetFileMetaDataTask extends AsyncTask<Intent, Void, OperationStatus<GetFil
   {
     if (status.isOk())
     {
-      status.getResult();
+      Result result = status.getResult();
+      BookmarkManager.INSTANCE.importFromCatalog(result.getArchiveId(), result.getFilePath());
     }
   }
 
