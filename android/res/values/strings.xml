@@ -1337,4 +1337,12 @@
 	<string name="sign_agree_pp_gdpr">I agree to the <a href="https://legal.my.com/us/maps/privacy/">Privacy Policy</a></string>
 	<string name="sign_agree_tof_gdpr">I agree to the <a href="https://legal.my.com/us/maps/tou/">Terms of Use</a></string>
 	<string name="sign_agree_news_gdpr">I agree to receive the latest news about MAPS.ME products</string>
+	<string name="bookmarks_page_my">my</string>
+	<string name="bookmarks_page_downloaded">downloaded</string>
+  <string name="cached_bookmarks_placeholder_title">Download new places</string>
+	<string name="cached_bookmarks_placeholder_subtitle">Press the button to download thousands  of intresting places and routes created  by MAPS.ME users. You will need the internet connection.</string>
+	<string name="downloader_download_routers">download routes</string>
+	<string name="cached_bookmarks_header_title">Bookmarks Downloaded</string>
+	<string name="cached_bookmarks_header_description">Press the button to download thousands of intresting places and routes created by MAPS.ME users. You will need the internet connection.</string>
+	<string name="bookmarks_groups_cached">Downloaded lists</string>
 </resources>

@@ -32,9 +32,29 @@ public class Holders
   static class GeneralViewHolder extends RecyclerView.ViewHolder
   {
 
+    @NonNull
+    private final TextView mText;
+    @NonNull
+    private final ImageView mImage;
+
     GeneralViewHolder(@NonNull View itemView)
     {
       super(itemView);
+
+      mImage = itemView.findViewById(R.id.image);
+      mText = itemView.findViewById(R.id.text);
+    }
+
+    @NonNull
+    public TextView getText()
+    {
+      return mText;
+    }
+
+    @NonNull
+    public ImageView getImage()
+    {
+      return mImage;
     }
   }
 
@@ -42,34 +62,68 @@ public class Holders
   {
     @NonNull
     private TextView mButton;
+    @NonNull
+    private TextView mText;
+
 
     HeaderViewHolder(@NonNull View itemView)
     {
       super(itemView);
       mButton = itemView.findViewById(R.id.button);
+      mText = itemView.findViewById(R.id.text_message);
     }
 
-    void setAction(@Nullable HeaderAction action, final boolean showAll)
+    @NonNull
+    public TextView getText()
     {
-      mButton.setText(showAll ? R.string.bookmarks_groups_show_all :
-                      R.string.bookmarks_groups_hide_all);
-      mButton.setOnClickListener
-          (v ->
-           {
-             if (action == null)
-               return;
+      return mText;
+    }
 
-             if (showAll)
-               action.onShowAll();
-             else
-               action.onHideAll();
-           });
+    @NonNull
+    public TextView getButton()
+    {
+      return mButton;
+    }
+
+    void setAction(@Nullable HeaderAction action,
+                   @NonNull AbstractAdapterResourceProvider resProvider,
+                   final boolean showAll)
+    {
+      mButton.setText(showAll
+                      ? resProvider.getHeaderBtn().getSelectModeText()
+                      : resProvider.getHeaderBtn().getUnSelectModeText());
+      mButton.setOnClickListener(new ToggleShowAllClickListener(action, showAll));
+
     }
 
     public interface HeaderAction
     {
       void onHideAll();
       void onShowAll();
+    }
+
+    private static class ToggleShowAllClickListener implements View.OnClickListener
+    {
+      private final HeaderAction mAction;
+      private final boolean mShowAll;
+
+      public ToggleShowAllClickListener(HeaderAction action, boolean showAll)
+      {
+        mAction = action;
+        mShowAll = showAll;
+      }
+
+      @Override
+      public void onClick(View view)
+      {
+        if (mAction == null)
+          return;
+
+        if (mShowAll)
+          mAction.onShowAll();
+        else
+          mAction.onHideAll();
+      }
     }
   }
 
@@ -270,8 +324,11 @@ public class Holders
                                                                          position - 1);
       Track track = BookmarkManager.INSTANCE.getTrack(trackId);
       mName.setText(track.getName());
-      mDistance.setText(mDistance.getContext().getString(R.string.length)
-                        + " " + track.getLengthString());
+      mDistance.setText(new StringBuilder().append(mDistance.getContext()
+                                                            .getString(R.string.length))
+                                           .append(" ")
+                                           .append(track.getLengthString())
+                                           .toString());
       Drawable circle = Graphics.drawCircle(track.getColor(), R.dimen.track_circle_size,
                                             mIcon.getContext().getResources());
       mIcon.setImageDrawable(circle);

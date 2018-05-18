@@ -32,6 +32,6 @@ public class BaseMwmFragment extends Fragment
 
   public BaseMwmFragmentActivity getMwmActivity()
   {
-    return (BaseMwmFragmentActivity) getActivity();
+    return Utils.castTo(getActivity());
   }
 }

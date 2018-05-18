@@ -228,12 +228,36 @@
           android:pathPattern=".*\\.kml"
           android:scheme="file"/>
       </intent-filter>
+
+
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+
+        <data
+          android:host="dlink.maps.me"
+          android:scheme="mapsme"/>
+      </intent-filter>
     </activity>
 
     <activity
         android:name="com.mapswithme.maps.DownloadResourcesLegacyActivity"
         android:configChanges="orientation|screenLayout|screenSize"
         android:label="@string/app_name"/>
+
+    <activity
+      android:name="com.mapswithme.maps.bookmarks.BookmarksCatalogActivity"
+      android:label="@string/app_name"/>
+
+    <receiver
+      android:name="com.mapswithme.maps.bookmarks.DownloadListenerService"
+      android:exported="true" >
+      <intent-filter>
+        <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+      </intent-filter>
+    </receiver>
 
     <activity-alias
       android:name="com.mapswithme.maps.DownloadResourcesActivity"

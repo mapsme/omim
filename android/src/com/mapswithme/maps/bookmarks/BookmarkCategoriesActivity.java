@@ -43,6 +43,6 @@ public class BookmarkCategoriesActivity extends BaseToolbarActivity
   @Override
   protected Class<? extends Fragment> getFragmentClass()
   {
-    return BookmarkCategoriesFragment.class;
+    return BookmarkCategoriesPagerFragment.class;
   }
 }

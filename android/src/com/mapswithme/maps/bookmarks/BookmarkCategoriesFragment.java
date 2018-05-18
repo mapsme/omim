@@ -31,7 +31,7 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
                RecyclerLongClickListener,
                BookmarkManager.BookmarksLoadingListener,
                BookmarkManager.BookmarksSharingListener,
-               BookmarkCategoriesAdapter.CategoryListInterface,
+               CategoryListCallback,
                KmlImportController.ImportKmlCallback, Authorizer.SocialAuthCallback
 {
   private static final int MAX_CATEGORY_NAME_LENGTH = 60;
@@ -44,20 +44,7 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
   @Nullable
   private KmlImportController mKmlImportController;
   @NonNull
-  private Runnable mImportKmlTask = new Runnable()
-  {
-    private boolean alreadyDone = false;
-
-    @Override
-    public void run()
-    {
-      if (alreadyDone)
-        return;
-
-      importKml();
-      alreadyDone = true;
-    }
-  };
+  private Runnable mImportKmlTask = new ImportKmlTask();
 
   @Override
   protected @LayoutRes int getLayoutRes()
@@ -92,7 +79,7 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
     {
       getAdapter().setOnClickListener(this);
       getAdapter().setOnLongClickListener(this);
-      getAdapter().setCategoryListInterface(this);
+      getAdapter().setCategoryListCallback(this);
     }
 
     RecyclerView rw = getRecyclerView();
@@ -122,9 +109,13 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
     BookmarkManager.INSTANCE.addLoadingListener(this);
     BookmarkManager.INSTANCE.addSharingListener(this);
     if (mBackupController != null)
+    {
       mBackupController.onStart();
+    }
     if (mKmlImportController != null)
+    {
       mKmlImportController.onStart();
+    }
   }
 
   @Override
@@ -134,7 +125,9 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
     BookmarkManager.INSTANCE.removeLoadingListener(this);
     BookmarkManager.INSTANCE.removeSharingListener(this);
     if (mBackupController != null)
+    {
       mBackupController.onStop();
+    }
     if (mKmlImportController != null)
       mKmlImportController.onStop();
   }
@@ -275,7 +268,7 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
   }
 
   @Override
-  public void onAddCategory()
+  public void onFooterClick()
   {
     mCategoryEditor = BookmarkManager.INSTANCE::createCategory;
 
@@ -323,5 +316,31 @@ public class BookmarkCategoriesFragment extends BaseMwmRecyclerFragment
   interface CategoryEditor
   {
     void commit(@NonNull String newName);
+  }
+
+  private class BookmarksDataObserver extends RecyclerView.AdapterDataObserver
+  {
+    @Override
+    public void onChanged()
+    {
+      updateResultsPlaceholder();
+    }
+  }
+
+  private class ImportKmlTask implements Runnable
+  {
+    private boolean alreadyDone = false;
+
+    @Override
+    public void run()
+    {
+      if (alreadyDone)
+      {
+        return;
+      }
+
+      importKml();
+      alreadyDone = true;
+    }
   }
 }

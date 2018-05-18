@@ -228,6 +228,11 @@ public class Utils
     }
   }
 
+  public static <T> T castTo(Object instance)
+  {
+    return (T)instance;
+  }
+
   public static void sendSupportMail(@NonNull Activity activity, @NonNull String subject)
   {
     LoggerFactory.INSTANCE.zipLogs(new OnZipCompletedCallback(activity, subject));
