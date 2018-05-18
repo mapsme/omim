@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -61,10 +60,10 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
 
   private static class WebViewBookmarksCatalogClient extends WebViewClient
   {
-
+    @NonNull
     private final Context mContext;
 
-    private WebViewBookmarksCatalogClient(Context context)
+    private WebViewBookmarksCatalogClient(@NonNull Context context)
     {
       mContext = context.getApplicationContext();
     }
@@ -74,8 +73,9 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
     {
       DownloadManager downloadManager = (DownloadManager)mContext.getSystemService(DOWNLOAD_SERVICE);
       if (downloadManager != null){
-        DownloadManager.Request request = new DownloadManager.Request(onPrepareUri(url));
-
+        Uri uri = onPrepareUri(url);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setDestinationInExternalFilesDir(mContext, null, uri.getLastPathSegment());
         downloadManager.enqueue(request);
       }
       return super.shouldOverrideUrlLoading(view, url);

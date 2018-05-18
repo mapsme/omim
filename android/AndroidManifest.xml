@@ -252,12 +252,17 @@
       android:label="@string/app_name"/>
 
     <receiver
-      android:name="com.mapswithme.maps.bookmarks.DownloadListenerService"
-      android:exported="true" >
+      android:name="com.mapswithme.maps.bookmarks.SystemDownloadCompletedReceiver"
+      android:exported="true">
       <intent-filter>
-        <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+        <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
       </intent-filter>
     </receiver>
+
+    <service
+      android:name="com.mapswithme.maps.bookmarks.SystemDownloadCompletedService"
+      android:exported="false">
+    </service>
 
     <activity-alias
       android:name="com.mapswithme.maps.DownloadResourcesActivity"
