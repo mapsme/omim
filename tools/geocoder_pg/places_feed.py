@@ -4,19 +4,45 @@ import psycopg2.extras
 import json
 import logging
 
+
+def parse_name_and_wiki(row, tags):
+    for k, v in tags.items():
+        if k[:5] == 'name:':
+            row['name_' + k[5:]] = v
+        elif k in ('wikipedia', 'wikidata', 'int_name'):
+            row[k] = v
+
 logging.basicConfig(level=logging.INFO, datefmt='%H:%M:%S', format='%(asctime)s %(message)s')
 conn = psycopg2.connect('dbname=borders')
 psycopg2.extras.register_hstore(conn)
 cur = conn.cursor()
 
-logging.info('Querying database')
+logging.info('Prefetching countries and regions')
+cur.execute("SELECT rank, osm_id, name, tags FROM osm_polygon WHERE rank = 2 OR rank = 4")
+regions = {}
+countries = {}
+for row in cur:
+    if row[0] == 4 and row[1] not in regions:
+        regions[row[1]] = {}
+        regions[row[1]]['name'] = row[2]
+        regions[row[1]]['iso'] = (row[3].get('ISO3166-2') or
+                                  row[3].get('int_ref'))
+        parse_name_and_wiki(regions[row[1]], row[3])
+    if row[0] == 2 and row[1] not in countries:
+        countries[row[1]] = {}
+        countries[row[1]]['name'] = row[2]
+        countries[row[1]]['iso'] = (row[3].get('ISO3166-1:alpha2') or
+                                    row[3].get('ISO3166-1') or
+                                    row[3].get('int_ref'))
+        parse_name_and_wiki(countries[row[1]], row[3])
+
+logging.info('Querying places')
 cur.execute("""
 SELECT
   COALESCE(pl.node_id, pl.osm_id) AS id, pl.place, pl.name,
   ST_X(pl.centroid) as lon, ST_Y(pl.centroid) as lat,
   pl.tags,
-  adm4.osm_id, adm4.name, adm4.tags,
-  adm2.osm_id, adm2.name, adm2.tags
+  adm4.osm_id, adm2.osm_id
 FROM
   osm_polygon pl
   LEFT JOIN osm_polygon adm4 ON ST_Intersects(adm4.way, pl.centroid) AND adm4.rank = 4
@@ -27,17 +53,10 @@ WHERE
             """)
 
 
-def parse_name_and_wiki(row, tags):
-    for k, v in tags.items():
-        if k[:5] == 'name:':
-            row['name_' + k[5:]] = v
-        elif k in ('wikipedia', 'wikidata', 'int_name'):
-            row[k] = v
-
 logging.info('Populating countries, regions and places dicts')
 places = {}
-regions = {}
-countries = {}
+unused_regions = set(regions.keys())
+unused_countries = set(countries.keys())
 while True:
     try:
         row = next(cur)
@@ -53,26 +72,27 @@ while True:
         places[row[0]]['lon'] = row[3]
         places[row[0]]['lat'] = row[4]
         places[row[0]]['region'] = row[6]
-        places[row[0]]['country'] = row[9]
+        places[row[0]]['country'] = row[7]
+        if row[6]:
+            unused_regions.discard(row[6])
+            regions[row[6]]['country'] = row[7]
         parse_name_and_wiki(places[row[0]], row[5])
-    elif row[9] < places[row[0]]['country']:
+        unused_countries.discard(row[7])
+    elif row[7] < places[row[0]]['country']:
         places[row[0]]['region'] = row[6]
-        places[row[0]]['country'] = row[9]
+        places[row[0]]['country'] = row[7]
+        if row[6]:
+            unused_regions.discard(row[6])
+            regions[row[6]]['country'] = row[7]
+        unused_countries.discard(row[7])
 
-    if row[6] and row[6] not in regions:
-        regions[row[6]] = {}
-        regions[row[6]]['name'] = row[7]
-        regions[row[6]]['country'] = row[9]
-        regions[row[6]]['iso'] = (row[8].get('ISO3166-2') or
-                                  row[8].get('int_ref'))
-        parse_name_and_wiki(regions[row[6]], row[8])
-    if row[9] and row[9] not in countries:
-        countries[row[9]] = {}
-        countries[row[9]]['name'] = row[10]
-        countries[row[9]]['iso'] = (row[11].get('ISO3166-1:alpha2') or
-                                    row[11].get('ISO3166-1') or
-                                    row[11].get('int_ref'))
-        parse_name_and_wiki(countries[row[9]], row[11])
+
+logging.info('Cleaning up %s unused countries and %s unused regions',
+             len(unused_countries), len(unused_regions))
+for k in unused_countries:
+    del countries[k]
+for k in unused_regions:
+    del regions[k]
 
 
 logging.info('Filtering')

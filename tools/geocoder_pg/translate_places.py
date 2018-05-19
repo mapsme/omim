@@ -109,7 +109,8 @@ for i in range(0, len(from_wikidata), WIKIDATA_API_QUERY_PACK):
                 places[mapping[entity]]['wikidata_date'] = today
                 for lang in labels['labels']:
                     if lang not in mapping[entity]:
-                        places[mapping[entity]]['name_' + lang] = labels['labels'][lang]['value']
+                        if 'name_' + lang not in places[mapping[entity]]:
+                            places[mapping[entity]]['name_' + lang] = labels['labels'][lang]['value']
 sys.stderr.write('Done\n')
 sys.stderr.flush()
 
