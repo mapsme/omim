@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.widget.PlaceholderView;
+import com.mapswithme.util.CoreInitChecker;
+import com.mapswithme.util.DefaultCoreChecker;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 
@@ -41,10 +43,26 @@ public abstract class BaseMwmRecyclerFragment extends Fragment
   }
 
   @Override
-  public void onAttach(Context context)
+  public final void onAttach(Context context)
   {
     super.onAttach(context);
-    Utils.detachFragmentIfCoreNotInitialized(context, this);
+    if (getChecker().check(context))
+    {
+      onSafeAttach(context);
+      return;
+    }
+    Utils.detachFragment(context, this);
+  }
+
+  @NonNull
+  protected CoreInitChecker getChecker()
+  {
+    return new DefaultCoreChecker();
+  }
+
+  protected void onSafeAttach(@NonNull Context context)
+  {
+    // No default implementation.
   }
 
   @Override

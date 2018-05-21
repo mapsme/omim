@@ -254,16 +254,6 @@ public class MapFragment extends BaseMwmFragment
   }
 
   @Override
-  public void onCreate(Bundle b)
-  {
-    super.onCreate(b);
-    setRetainInstance(true);
-    Bundle args = getArguments();
-    if (args != null)
-      mLaunchByDeepLink = args.getBoolean(ARG_LAUNCH_BY_DEEP_LINK);
-  }
-
-  @Override
   public void onStart()
   {
     super.onStart();
@@ -285,6 +275,11 @@ public class MapFragment extends BaseMwmFragment
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
   {
+    setRetainInstance(true);
+    Bundle args = getArguments();
+    if (args != null)
+      mLaunchByDeepLink = args.getBoolean(ARG_LAUNCH_BY_DEEP_LINK);
+
     View view = inflater.inflate(R.layout.fragment_map, container, false);
     mSurfaceView = (SurfaceView) view.findViewById(R.id.map_surfaceview);
     mSurfaceView.getHolder().addCallback(this);
