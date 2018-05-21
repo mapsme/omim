@@ -84,7 +84,8 @@ public:
   {
     File,
     Network,
-    Gui
+    Gui,
+    Background,
   };
 
   using TFilesWithType = std::vector<std::pair<std::string, EFileType>>;
@@ -125,6 +126,7 @@ protected:
 
   std::unique_ptr<base::WorkerThread> m_networkThread;
   std::unique_ptr<base::WorkerThread> m_fileThread;
+  std::unique_ptr<base::WorkerThread> m_backgroundThread;
 
 public:
   Platform();
@@ -280,7 +282,7 @@ public:
   template <typename Task>
   void RunTask(Thread thread, Task && task)
   {
-    ASSERT(m_networkThread && m_fileThread, ());
+    ASSERT(m_networkThread && m_fileThread && m_backgroundThread, ());
     switch (thread)
     {
     case Thread::File:
@@ -292,13 +294,16 @@ public:
     case Thread::Gui:
       RunOnGuiThread(std::forward<Task>(task));
       break;
+    case Thread::Background:
+      m_backgroundThread->Push(std::forward<Task>(task));
+      break;
     }
   }
 
   template <typename Task>
   void RunDelayedTask(Thread thread, base::WorkerThread::Duration const & delay, Task && task)
   {
-    ASSERT(m_networkThread && m_fileThread, ());
+    ASSERT(m_networkThread && m_fileThread && m_backgroundThread, ());
     switch (thread)
     {
     case Thread::File:
@@ -309,6 +314,9 @@ public:
       break;
     case Thread::Gui:
       CHECK(false, ("Delayed tasks for gui thread are not supported yet"));
+      break;
+    case Thread::Background:
+      m_backgroundThread->PushDelayed(delay, std::forward<Task>(task));
       break;
     }
   }
