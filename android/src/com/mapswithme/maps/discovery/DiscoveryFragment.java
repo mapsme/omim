@@ -76,9 +76,9 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements UICallb
   };
 
   @Override
-  public void onAttach(Context context)
+  public void onSafeAttach(@NonNull Context context)
   {
-    super.onAttach(context);
+    super.onSafeAttach(context);
 
     if (context instanceof CustomNavigateUpListener)
       mNavigateUpListener = (CustomNavigateUpListener) context;

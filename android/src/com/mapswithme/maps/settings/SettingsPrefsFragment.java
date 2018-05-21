@@ -19,6 +19,7 @@ import android.support.v7.preference.TwoStatePreference;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -274,10 +275,9 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
   }
 
   @Override
-  public void onCreate(Bundle savedInstanceState)
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
   {
-    super.onCreate(savedInstanceState);
-
+    super.onViewCreated(view, savedInstanceState);
     mPreferenceScreen = getPreferenceScreen();
     mStoragePref = findPreference(getString(R.string.pref_storage));
     mPrefEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_tts_enabled));
@@ -843,9 +843,9 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
   }
 
   @Override
-  public void onAttach(Context context)
+  public void onSafeAttach(@NonNull Context context)
   {
-    super.onAttach(context);
+    super.onSafeAttach(context);
 
     if (!(context instanceof Activity))
       return;
