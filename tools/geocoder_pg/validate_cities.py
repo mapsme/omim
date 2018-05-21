@@ -437,6 +437,13 @@ with open(countries_name, 'r') as f:
     else:
         countries = json.load(f)
 
+regions_name = re.sub(r'places(?=[._-])', 'regions', sys.argv[1])
+with open(regions_name, 'r') as f:
+    if '.csv' in regions_name:
+        regions = read_csv_into_dict(f)
+    else:
+        regions = json.load(f)
+
 country_iso = {}
 for country in countries.values():
     name = None
@@ -445,6 +452,12 @@ for country in countries.values():
             name = country[k]
             break
     country_iso[name.lower()] = country['iso']
+
+for region in regions.values():
+    if region.get('iso'):
+        if region['iso'][:2] != countries[str(region['country'])].get('iso'):
+            print('Wrong ISO for a region {}: {} and country has {}'.format(
+                region['name'], region['iso'], countries[str(region['country'])].get('iso')))
 
 place_names = defaultdict(list)
 for pid, names in places.items():
