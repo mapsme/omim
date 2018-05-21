@@ -52,8 +52,7 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
     recycler.setLayoutManager(layoutManager);
     recycler.setNestedScrollingEnabled(false);
     recycler.addItemDecoration(ItemDecoratorFactory.createVerticalDefaultDecorator(getContext()));
-    mAdapter = new BookmarkCategoriesAdapter(getContext(),
-                                             BookmarksPageFactory.CACHED.getResProvider());
+    mAdapter = new CatalogBookmarkCategoriesAdapter(getContext());
     mAdapter.setOnLongClickListener(this);
     mAdapter.setCategoryListCallback(this);
     recycler.setAdapter(mAdapter);

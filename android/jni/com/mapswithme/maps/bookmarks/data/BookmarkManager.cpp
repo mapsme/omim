@@ -28,6 +28,8 @@ jmethodID g_onRestoreRequestedMethod;
 jmethodID g_onRestoredFilesPreparedMethod;
 jmethodID g_onImportStartedMethod;
 jmethodID g_onImportFinishedMethod;
+jclass g_BookmarkCategoryClass;
+jmethodID g_BookmarkCategoryConstructor;
 
 void PrepareClassRefs(JNIEnv * env)
 {
@@ -66,6 +68,18 @@ void PrepareClassRefs(JNIEnv * env)
     jni::GetMethodID(env, bookmarkManagerInstance, "onImportStarted", "(Ljava/lang/String;)V");
   g_onImportFinishedMethod =
     jni::GetMethodID(env, bookmarkManagerInstance, "onImportFinished", "(Ljava/lang/String;Z)V");
+  g_BookmarkCategoryClass =
+    jni::GetGlobalClassRef(env, "com/mapswithme/maps/bookmarks/data/BookmarkCategory");
+/*  public BookmarkCategory(long id,
+                          String name,
+                          String authorId,
+                          String authorName,
+                          long tracksCount,
+                          long bookmarksCount,
+                          boolean fromCatalog,
+                          boolean isVisible)*/
+  g_BookmarkCategoryConstructor =
+    jni::GetConstructorID(env, g_BookmarkCategoryClass, "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZZ)V");
 }
 
 void OnAsyncLoadingStarted(JNIEnv * env)
@@ -648,4 +662,34 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeIsCategoryFromCata
   auto & bm = frm()->GetBookmarkManager();
   return static_cast<jboolean>(bm.IsCategoryFromCatalog(static_cast<kml::MarkGroupId>(catId)));
 }
+
+
+JNIEXPORT jobjectArray JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeGetBookmarkCategories(
+        JNIEnv *env, jobject thiz)
+{
+    const auto & bm = frm()->GetBookmarkManager();
+    kml::GroupIdCollection categories = bm.GetBmGroupsIdList();
+
+    return ToJavaArray(env, g_BookmarkCategoryClass, categories, [](JNIEnv * env, kml::MarkGroupId const & item) {
+        const auto & manager = frm()->GetBookmarkManager();
+        const auto & data = manager.GetCategoryData(item);
+        const auto & isFromCatalog = manager.IsCategoryFromCatalog(item);
+        const auto & tracksCount = manager.GetTrackIds(data.m_id).size();
+        const auto & bookmarksCount = manager.GetUserMarkIds(data.m_id).size();
+        const auto & isVisible = manager.IsVisible(data.m_id);
+        return env->NewObject(g_BookmarkCategoryClass,
+                              g_BookmarkCategoryConstructor,
+                              data.m_id,
+                              jni::ToJavaString(env, kml::GetDefaultStr(data.m_name)),
+                              jni::ToJavaString(env, data.m_authorId),
+                              jni::ToJavaString(env, data.m_authorName),
+                              static_cast<jint>(tracksCount),
+                              static_cast<jint>(bookmarksCount),
+                              static_cast<jboolean>(isFromCatalog),
+                              static_cast<jboolean>(isVisible));
+    });
+}
+
+
 }  // extern "C"

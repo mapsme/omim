@@ -375,6 +375,24 @@ public enum BookmarkManager
     return nativeIsAsyncBookmarksLoadingInProgress();
   }
 
+  @NonNull
+  public AbstractCategoriesSnapshot.Default getCatalogCategoriesSnapshot()
+  {
+    return new AbstractCategoriesSnapshot.Catalog(nativeGetBookmarkCategories());
+  }
+
+  @NonNull
+  public AbstractCategoriesSnapshot.Default getOwnedCategoriesSnapshot()
+  {
+    return new AbstractCategoriesSnapshot.Owned(nativeGetBookmarkCategories());
+  }
+
+  @NonNull
+  public AbstractCategoriesSnapshot.Default getAllCategoriesSnapshot()
+  {
+    return new AbstractCategoriesSnapshot.All(nativeGetBookmarkCategories());
+  }
+
   public boolean isUsedCategoryName(@NonNull String name)
   {
     return nativeIsUsedCategoryName(name);
@@ -494,6 +512,8 @@ public enum BookmarkManager
   private native int nativeGetBookmarksCount(long catId);
 
   private native int nativeGetTracksCount(long catId);
+
+  private native BookmarkCategory[] nativeGetBookmarkCategories();
 
   @NonNull
   private native Bookmark nativeGetBookmark(long bmkId);

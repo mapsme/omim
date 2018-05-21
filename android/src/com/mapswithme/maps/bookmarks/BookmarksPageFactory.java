@@ -8,7 +8,7 @@ import com.mapswithme.maps.R;
 
 public enum BookmarksPageFactory
 {
-  CACHED(new AbstractAdapterResourceProvider.Cached())
+  CATALOG(new AbstractAdapterResourceProvider.Catalog())
       {
         @NonNull
         @Override

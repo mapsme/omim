@@ -61,7 +61,7 @@ public abstract class AbstractAdapterResourceProvider
     }
   }
 
-  public static class Cached extends Default
+  public static class Catalog extends Default
   {
 
     @Override

@@ -31,7 +31,7 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
 
   private List<BookmarksPageFactory> onPrepareAdapterDataSet()
   {
-    return Arrays.asList(BookmarksPageFactory.OWNED, BookmarksPageFactory.CACHED);
+    return Arrays.asList(BookmarksPageFactory.OWNED, BookmarksPageFactory.CATALOG);
   }
 
   @Nullable

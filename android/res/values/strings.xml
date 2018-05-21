@@ -1345,4 +1345,5 @@
 	<string name="cached_bookmarks_header_title">Bookmarks Downloaded</string>
 	<string name="cached_bookmarks_header_description">Press the button to download thousands of intresting places and routes created by MAPS.ME users. You will need the internet connection.</string>
 	<string name="bookmarks_groups_cached">Downloaded lists</string>
+  <string name="author_name_by_prefix">by</string>
 </resources>

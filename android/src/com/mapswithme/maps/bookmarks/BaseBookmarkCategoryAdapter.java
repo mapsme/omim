@@ -4,7 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+
+import java.util.List;
 
 public abstract class BaseBookmarkCategoryAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V>
 {
@@ -25,11 +28,14 @@ public abstract class BaseBookmarkCategoryAdapter<V extends RecyclerView.ViewHol
   @Override
   public int getItemCount()
   {
-    return BookmarkManager.INSTANCE.getCategoriesCount();
+    return getBookmarkCategories().size();
   }
 
-  public long getCategoryIdByPosition(int position)
-  {
-    return BookmarkManager.INSTANCE.getCategoryIdByPosition(position);
+  public List<BookmarkCategory> getBookmarkCategories(){
+      return BookmarkManager.INSTANCE.getOwnedCategoriesSnapshot().items();
+  }
+
+  public BookmarkCategory getCategoryByPosition(int position){
+    return getBookmarkCategories().get(position);
   }
 }

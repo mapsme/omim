@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkInfo;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.DistanceAndAzimut;
@@ -137,6 +138,11 @@ public class Holders
     TextView mSize;
     @NonNull
     View mMore;
+    @NonNull
+    TextView mAuthorName;
+    @Nullable
+    BookmarkCategory.Author mAuthor;
+
 
     CategoryViewHolder(@NonNull View root)
     {
@@ -148,6 +154,7 @@ public class Holders
       UiUtils.expandTouchAreaForView(mVisibilityMarker, 0, left, 0, right);
       mSize = root.findViewById(R.id.size);
       mMore = root.findViewById(R.id.more);
+      mAuthorName = root.findViewById(R.id.author_name);
     }
 
     void setVisibilityState(boolean visible)
@@ -173,6 +180,23 @@ public class Holders
     void setSize(int size)
     {
       mSize.setText(mSize.getResources().getQuantityString(R.plurals.bookmarks_places, size, size));
+    }
+
+    @NonNull
+    public TextView getAuthorName()
+    {
+      return mAuthorName;
+    }
+
+    @Nullable
+    public BookmarkCategory.Author getAuthor()
+    {
+      return mAuthor;
+    }
+
+    public void setAuthor(@Nullable BookmarkCategory.Author author)
+    {
+      mAuthor = author;
     }
   }
 

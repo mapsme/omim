@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
 import com.mapswithme.maps.widget.recycler.RecyclerLongClickListener;
@@ -94,33 +95,58 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     int type = getItemViewType(position);
     if (type == TYPE_ACTION_FOOTER)
     {
-      Holders.GeneralViewHolder generalHolder = (Holders.GeneralViewHolder) holder;
-      generalHolder.getImage().setImageResource(mResProvider.getFooterImage());
-      generalHolder.getText().setText(mResProvider.getFooterText());
+      bindFooterHolder((Holders.GeneralViewHolder) holder);
       return;
     }
 
     if (type == TYPE_ACTION_HEADER)
     {
-      HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
-      headerHolder.setAction(mMassOperationAction,
-                             mResProvider, BookmarkManager.INSTANCE.areAllCategoriesInvisible()
-                            );
-      headerHolder.getText().setText(mResProvider.getHeaderText());
+      bindHeaderHolder((HeaderViewHolder) holder);
       return;
     }
 
-    CategoryViewHolder categoryHolder = (CategoryViewHolder) holder;
-    final BookmarkManager bmManager = BookmarkManager.INSTANCE;
-    final long catId = getCategoryIdByPosition(toCategoryPosition(position));
-    categoryHolder.setName(bmManager.getCategoryName(catId));
-    categoryHolder.setSize(bmManager.getCategorySize(catId));
-    categoryHolder.setVisibilityState(bmManager.isVisible(catId));
-    categoryHolder.setVisibilityListener(new ToggleVisibilityClickListener(catId, categoryHolder, bmManager));
-    categoryHolder.setMoreListener(v -> {
+    bindCategoryHolder((CategoryViewHolder) holder, position);
+  }
+
+  private void bindFooterHolder(Holders.GeneralViewHolder holder)
+  {
+    holder.getImage().setImageResource(mResProvider.getFooterImage());
+    holder.getText().setText(mResProvider.getFooterText());
+  }
+
+  private void bindHeaderHolder(HeaderViewHolder holder)
+  {
+    holder.setAction(mMassOperationAction,
+                     mResProvider, BookmarkManager.INSTANCE.areAllCategoriesInvisible()
+                    );
+    holder.getText().setText(mResProvider.getHeaderText());
+  }
+
+  private void bindCategoryHolder(CategoryViewHolder holder, int position)
+  {
+    final BookmarkCategory category = getCategoryByPosition(toCategoryPosition(position));
+    holder.setName(category.getName());
+    holder.setSize(category.size());
+    holder.setVisibilityState(category.isVisible());
+    bindAuthor(holder, category);
+    ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(holder,
+                                                                               category);
+    holder.setVisibilityListener(listener);
+    holder.setMoreListener(v -> {
       if (mCategoryListCallback != null)
         mCategoryListCallback.onMoreOperationClick(toCategoryPosition(position));
     });
+  }
+
+  private void bindAuthor(CategoryViewHolder categoryHolder, BookmarkCategory category)
+  {
+    CharSequence authorName = category.getAuthor() == null
+                              ? null
+                              : BookmarkCategory
+                                  .Author
+                                  .getRepresentation(getContext(),category.getAuthor());
+    categoryHolder.getAuthorName().setText(authorName);
+    categoryHolder.setAuthor(category.getAuthor());
   }
 
   @Override
@@ -218,23 +244,23 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
 
   private class ToggleVisibilityClickListener implements View.OnClickListener
   {
-    private final long mCatId;
+    @NonNull
     private final CategoryViewHolder mCategoryHolder;
-    private final BookmarkManager mBmManager;
+    @NonNull
+    private final BookmarkCategory mCategory;
 
-    public ToggleVisibilityClickListener(long catId, CategoryViewHolder categoryHolder,
-                                         BookmarkManager bmManager)
+    public ToggleVisibilityClickListener(@NonNull CategoryViewHolder categoryHolder,
+                                         @NonNull BookmarkCategory category)
     {
-      mCatId = catId;
       mCategoryHolder = categoryHolder;
-      mBmManager = bmManager;
+      mCategory = category;
     }
 
     @Override
     public void onClick(View v)
     {
-      BookmarkManager.INSTANCE.toggleCategoryVisibility(mCatId);
-      mCategoryHolder.setVisibilityState(mBmManager.isVisible(mCatId));
+      BookmarkManager.INSTANCE.toggleCategoryVisibility(mCategory.getId());
+      mCategoryHolder.setVisibilityState(mCategory.isVisible());
       notifyItemChanged(HEADER_POSITION);
     }
   }

@@ -40,9 +40,11 @@
       <ImageView
         android:id="@+id/header_close"
         android:baselineAlignBottom="true"
-        mapsme:layout_constraintBaseline_toBaselineOf="@id/header_title"
         mapsme:layout_constraintRight_toRightOf="parent"
-        android:background="@drawable/about_logo"
+        mapsme:layout_constraintBottom_toTopOf="@id/header_description"
+        mapsme:layout_constraintBaseline_toBaselineOf="@id/header_title"
+        android:src="@drawable/ic_clear"
+        android:tint="@color/icon_tint"
         android:layout_width="@dimen/margin_half_double_plus"
         android:layout_height="@dimen/margin_half_double_plus"/>
     </android.support.constraint.ConstraintLayout>
