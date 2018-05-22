@@ -2301,3 +2301,17 @@
 "sign_agree_tof_gdpr" = "Elfogadom a <a href=\"https://legal.my.com/us/maps/tou/\">Általános Szerződési Feltételeket</a>";
 
 "sign_agree_news_gdpr" = "Elfogadom, hogy megkapja a MAPS.ME termékekkel kapcsolatos legfrissebb híreke";
+
+"bookmarks_page_downloaded" = "downloaded";
+
+"bookmarks_page_my" = "my";
+
+"cached_bookmarks_placeholder_title" = "Download new places";
+
+"cached_bookmarks_placeholder_subtitle" = "Press the button to download thousands  of intresting places and routes created  by MAPS.ME users. You will need the internet connection.";
+
+"downloader_download_routers" = "download routes";
+
+"bookmarks_groups_cached" = "Downloaded lists";
+
+"author_name_by_prefix" = "by";
