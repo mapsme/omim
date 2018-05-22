@@ -76,7 +76,6 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
 
   }
 
-  /*FIXME*/
   private void openBookmarksCatalogScreen()
   {
     Intent intent = new Intent(getActivity(),
@@ -86,6 +85,7 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
     getActivity().startActivity(intent);
   }
 
+  /*FIXME*/
   @NonNull
   private String getCatalogUrl()
   {
