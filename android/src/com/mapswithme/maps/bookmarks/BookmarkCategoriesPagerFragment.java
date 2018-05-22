@@ -18,7 +18,6 @@ import java.util.List;
 
 public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
 {
-
   @NonNull
   private List<BookmarksPageFactory> mFactories;
 

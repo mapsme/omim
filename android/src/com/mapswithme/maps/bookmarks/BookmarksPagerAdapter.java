@@ -33,7 +33,8 @@ public class BookmarksPagerAdapter extends FragmentPagerAdapter
   @Override
   public CharSequence getPageTitle(int position)
   {
-    return mContext.getResources().getString(mFactories.get(position).getTitle());
+    int titleResId = mFactories.get(position).getTitle();
+    return mContext.getResources().getString(titleResId);
   }
 
   @Override

@@ -100,7 +100,7 @@ public class BookmarkCategory
 
   public static class Author {
 
-    public static final String WORD_SEPARATOR = " • ";
+    public static final String PHRASE_SEPARATOR = " • ";
     public static final String SPACE = " ";
     @NonNull
     private final String mId;
@@ -128,7 +128,7 @@ public class BookmarkCategory
 
     public static String getRepresentation(Context context, Author author){
       return new StringBuilder()
-          .append(WORD_SEPARATOR)
+          .append(PHRASE_SEPARATOR)
           .append(context.getResources().getString(R.string.author_name_by_prefix))
           .append(SPACE)
           .append(author.getName())
@@ -163,7 +163,6 @@ public class BookmarkCategory
 
   public static class IsFromCatalog implements TypeConverter<BookmarkCategory, Boolean>
   {
-
     @Override
     public Boolean convert(@NonNull BookmarkCategory data)
     {

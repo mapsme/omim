@@ -63,7 +63,6 @@ public abstract class AbstractAdapterResourceProvider
 
   public static class Catalog extends Default
   {
-
     @Override
     public int getHeaderText()
     {

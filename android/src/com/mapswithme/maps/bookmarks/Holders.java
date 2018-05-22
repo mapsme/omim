@@ -41,7 +41,6 @@ public class Holders
     GeneralViewHolder(@NonNull View itemView)
     {
       super(itemView);
-
       mImage = itemView.findViewById(R.id.image);
       mText = itemView.findViewById(R.id.text);
     }

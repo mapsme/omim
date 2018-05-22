@@ -139,20 +139,4 @@ class GetFileMetaDataTask extends AsyncTask<Intent, Void, OperationStatus<GetFil
            ? cursor.getString(cursor.getColumnIndex(columnName))
            : null;
   }
-
-  private Cursor openCursor(@NonNull DownloadManager manager,
-                            @NonNull Intent intent) throws IOException
-  {
-    final long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-    DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
-    Cursor cursor = manager.query(query);
-    if (cursor.moveToFirst())
-    {
-      return cursor;
-    }
-    else
-    {
-      throw new IOException("cursor cannot move to first");
-    }
-  }
 }

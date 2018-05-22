@@ -81,7 +81,6 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
     webSettings.setLoadWithOverviewMode(true);
     webSettings.setDisplayZoomControls(false);
     webSettings.setJavaScriptEnabled(true);
-    webSettings.setLoadWithOverviewMode(true);
   }
 
   /*FIXME*/

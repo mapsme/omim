@@ -45,7 +45,6 @@ public class AbstractCategoriesSnapshot
 
   public static class Owned extends Default
   {
-
     public Owned(@NonNull BookmarkCategory[] items)
     {
       super(items, new FilterStrategy.Owned());
