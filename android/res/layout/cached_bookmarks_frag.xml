@@ -57,7 +57,7 @@
   </LinearLayout>
 
   <RelativeLayout
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -84,7 +84,7 @@
         android:paddingLeft="@dimen/margin_double_and_half"
         android:paddingRight="@dimen/margin_double_and_half"
         android:paddingTop="@dimen/placeholder_margin_top"
-        mapsme:imgSrcDefault="@drawable/about_logo"
+        mapsme:imgSrcDefault="@drawable/img_empty_bookmarks"
         mapsme:titleDefault="@string/cached_bookmarks_placeholder_title"
         mapsme:subTitleDefault="@string/cached_bookmarks_placeholder_subtitle"/>
 

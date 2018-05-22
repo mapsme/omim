@@ -23,6 +23,7 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
   /*FIXME*/
   @NonNull
   private ViewGroup mEmptyViewContainer;
+  private View mPayloadContainer;
 
   @Nullable
   @Override
@@ -33,7 +34,9 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
     View root = inflater.inflate(R.layout.cached_bookmarks_frag, null);
     initEmptyView(root);
     initRecycler(root);
-
+    mPayloadContainer = root.findViewById(R.id.cached_bookmarks_payload_container);
+    mPayloadContainer.setVisibility(View.GONE);
+    mEmptyViewContainer.setVisibility(View.VISIBLE);
     return root;
   }
 
@@ -42,6 +45,7 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
     mEmptyViewContainer = root.findViewById(R.id.placeholder_container);
     View downloadRoutesBtn = mEmptyViewContainer.findViewById(R.id.download_routers_btn);
     downloadRoutesBtn.setOnClickListener(new DownloadRoutesClickListener());
+    mEmptyViewContainer.setVisibility(View.VISIBLE);
   }
 
   private void initRecycler(View root)
@@ -78,8 +82,14 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
     Intent intent = new Intent(getActivity(),
                                BookmarksCatalogActivity.class).putExtra(
                                    BookmarksCatalogFragment.EXTRA_BOOKMARKS_CATALOG_URL,
-                                   "");
+                                   getCatalogUrl());
     getActivity().startActivity(intent);
+  }
+
+  @NonNull
+  private String getCatalogUrl()
+  {
+    return "https://bookcat.demo.mapsme1.devmail.ru/simplefront/all";
   }
 
   @Override
