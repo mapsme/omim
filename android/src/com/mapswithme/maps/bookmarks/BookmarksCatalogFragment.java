@@ -19,8 +19,8 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class BookmarksCatalogFragment extends BaseMwmFragment
 {
-
   public static final String EXTRA_BOOKMARKS_CATALOG_URL = "bookmarks_catalog_url";
+  /*FIXME*/
   private static final String STUB_DATA = "<a href=\"mapsme://dlink.maps.me/catalogue?id=a9e4e048-f864-4209-b64f-1db1ebdfb16b&amp;name=bundle+number+one\">\n" +
                                           "    <button>Click me</button>\n" +
                                           "</a>";
@@ -53,6 +53,7 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
     View root = inflater.inflate(R.layout.bookmarks_catalog_frag, null);
     WebView webView = root.findViewById(R.id.webview);
     webView.setWebViewClient(new WebViewBookmarksCatalogClient(getContext()));
+    /*FIXME*/
     String baseUri = "https://" + "e.mail.ru";
     webView.loadDataWithBaseURL(baseUri, STUB_DATA, "text/html", "utf-8", null);
     return root;
@@ -81,6 +82,7 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
       return super.shouldOverrideUrlLoading(view, url);
     }
 
+    /*FIXME*/
     private Uri onPrepareUri(String url)
     {
       return Uri.parse("https://cdn.empireonline.com/jpg/70/0/0/640/480/aspectfit/0/0/0/0/0/0/c/articles/5a8373cc59a3c7762a368381/Jason-Statham.jpg");

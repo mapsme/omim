@@ -18,8 +18,9 @@ import com.mapswithme.maps.widget.recycler.RecyclerLongClickListener;
 public class CachedBookmarksFragment extends BaseMwmFragment implements RecyclerLongClickListener,
                                                                         CategoryListCallback
 {
-
+  /*FIXME*/
   private BookmarkCategoriesAdapter mAdapter;
+  /*FIXME*/
   @NonNull
   private ViewGroup mEmptyViewContainer;
 
@@ -71,6 +72,7 @@ public class CachedBookmarksFragment extends BaseMwmFragment implements Recycler
 
   }
 
+  /*FIXME*/
   private void openBookmarksCatalogScreen()
   {
     Intent intent = new Intent(getActivity(),

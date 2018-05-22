@@ -10,11 +10,9 @@ import com.mapswithme.maps.content.TypeConverter;
 
 public class BookmarkCategory
 {
-
   private final long mId;
   @NonNull
   private final String mName;
-
   @Nullable
   private final Author mAuthor;
   private final int mTracksCount;
@@ -167,7 +165,7 @@ public class BookmarkCategory
   {
 
     @Override
-    public Boolean convert(BookmarkCategory data)
+    public Boolean convert(@NonNull BookmarkCategory data)
     {
       return data.isFromCatalog();
     }

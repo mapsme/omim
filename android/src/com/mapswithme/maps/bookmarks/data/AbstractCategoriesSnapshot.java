@@ -11,9 +11,10 @@ import java.util.List;
 
 public class AbstractCategoriesSnapshot
 {
+  @NonNull
   private final List<BookmarkCategory> mSnapshot;
 
-  public AbstractCategoriesSnapshot(BookmarkCategory[] items)
+  public AbstractCategoriesSnapshot(@NonNull BookmarkCategory[] items)
   {
     mSnapshot = Collections.unmodifiableList(Arrays.asList(items));
   }
@@ -28,13 +29,14 @@ public class AbstractCategoriesSnapshot
     @NonNull
     private final FilterStrategy mStrategy;
 
-    public Default(BookmarkCategory[] items, @NonNull FilterStrategy strategy)
+    public Default(@NonNull BookmarkCategory[] items, @NonNull FilterStrategy strategy)
     {
       super(items);
       mStrategy = strategy;
     }
 
     @Override
+    @NonNull
     public final List<BookmarkCategory> items()
     {
       return mStrategy.filter(super.items());
@@ -44,7 +46,7 @@ public class AbstractCategoriesSnapshot
   public static class Owned extends Default
   {
 
-    public Owned(BookmarkCategory[] items)
+    public Owned(@NonNull BookmarkCategory[] items)
     {
       super(items, new FilterStrategy.Owned());
     }
@@ -52,7 +54,7 @@ public class AbstractCategoriesSnapshot
 
   public static class Catalog extends Default
   {
-    public Catalog(BookmarkCategory[] items)
+    public Catalog(@NonNull BookmarkCategory[] items)
     {
       super(items, new FilterStrategy.Catalog());
     }
@@ -60,7 +62,7 @@ public class AbstractCategoriesSnapshot
 
   public static class All extends Default {
 
-    public All(BookmarkCategory[] items)
+    public All(@NonNull BookmarkCategory[] items)
     {
       super(items, new FilterStrategy.All());
     }
@@ -68,12 +70,12 @@ public class AbstractCategoriesSnapshot
 
   private abstract static class FilterStrategy
   {
-    public abstract List<BookmarkCategory> filter(List<BookmarkCategory> items);
+    public abstract List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items);
 
     public static class All extends FilterStrategy
     {
       @Override
-      public List<BookmarkCategory> filter(List<BookmarkCategory> items)
+      public List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items)
       {
         return items;
       }
@@ -107,7 +109,7 @@ public class AbstractCategoriesSnapshot
     }
 
     @Override
-    public List<BookmarkCategory> filter(List<BookmarkCategory> items)
+    public List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items)
     {
       List<BookmarkCategory> result = new ArrayList<>();
       for (BookmarkCategory each : items)
