@@ -1344,4 +1344,5 @@
 	<string name="downloader_download_routers">download routes</string>
 	<string name="bookmarks_groups_cached">Downloaded lists</string>
 	<string name="author_name_by_prefix">by</string>
+	<string name="routes_and_bookmarks">Routes and bookmarks</string>
 </resources>
