@@ -95,44 +95,47 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     int type = getItemViewType(position);
     if (type == TYPE_ACTION_FOOTER)
     {
-      bindFooterHolder((Holders.GeneralViewHolder) holder);
+      bindFooterHolder(holder);
       return;
     }
 
     if (type == TYPE_ACTION_HEADER)
     {
-      bindHeaderHolder((HeaderViewHolder) holder);
+      bindHeaderHolder(holder);
       return;
     }
 
-    bindCategoryHolder((CategoryViewHolder) holder, position);
+    bindCategoryHolder(holder, position);
   }
 
-  private void bindFooterHolder(Holders.GeneralViewHolder holder)
+  private void bindFooterHolder(RecyclerView.ViewHolder holder)
   {
-    holder.getImage().setImageResource(mResProvider.getFooterImage());
-    holder.getText().setText(mResProvider.getFooterText());
+    Holders.GeneralViewHolder generalViewHolder = (Holders.GeneralViewHolder) holder;
+    generalViewHolder.getImage().setImageResource(mResProvider.getFooterImage());
+    generalViewHolder.getText().setText(mResProvider.getFooterText());
   }
 
-  private void bindHeaderHolder(HeaderViewHolder holder)
+  private void bindHeaderHolder(RecyclerView.ViewHolder holder)
   {
-    holder.setAction(mMassOperationAction,
-                     mResProvider, BookmarkManager.INSTANCE.areAllCategoriesInvisible()
-                    );
-    holder.getText().setText(mResProvider.getHeaderText());
+    HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+    headerViewHolder.setAction(mMassOperationAction,
+                               mResProvider,
+                               BookmarkManager.INSTANCE.areAllCategoriesInvisible());
+    headerViewHolder.getText().setText(mResProvider.getHeaderText());
   }
 
-  private void bindCategoryHolder(CategoryViewHolder holder, int position)
+  private void bindCategoryHolder(RecyclerView.ViewHolder holder, int position)
   {
     final BookmarkCategory category = getCategoryByPosition(toCategoryPosition(position));
-    holder.setName(category.getName());
-    holder.setSize(category.size());
-    holder.setVisibilityState(category.isVisible());
-    bindAuthor(holder, category);
-    ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(holder,
+    CategoryViewHolder categoryHolder = (CategoryViewHolder) holder;
+    categoryHolder.setName(category.getName());
+    categoryHolder.setSize(category.size());
+    categoryHolder.setVisibilityState(category.isVisible());
+    bindAuthor(categoryHolder, category);
+    ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(categoryHolder,
                                                                                category);
-    holder.setVisibilityListener(listener);
-    holder.setMoreListener(v -> {
+    categoryHolder.setVisibilityListener(listener);
+    categoryHolder.setMoreListener(v -> {
       if (mCategoryListCallback != null)
         mCategoryListCallback.onMoreOperationClick(toCategoryPosition(position));
     });
