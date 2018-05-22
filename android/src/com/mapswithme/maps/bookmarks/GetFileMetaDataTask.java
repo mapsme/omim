@@ -103,10 +103,17 @@ class GetFileMetaDataTask extends AsyncTask<Intent, Void, OperationStatus<GetFil
     Cursor cursor = null;
     try
     {
-      cursor = openCursor(manager, intent);
-      String filePath = getFilePath(cursor);
-      String archiveId = getArchiveId(cursor);
-      return new Result(filePath, archiveId);
+      final long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+      DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
+      cursor = manager.query(query);
+      if (cursor.moveToFirst()){
+        String filePath = getFilePath(cursor);
+        String archiveId = getArchiveId(cursor);
+        return new Result(filePath, archiveId);
+      }
+      else {
+        throw new IOException("cursor cannot move to first");
+      }
     }
     finally
     {
