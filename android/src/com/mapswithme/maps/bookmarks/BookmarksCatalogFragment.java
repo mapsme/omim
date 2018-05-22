@@ -108,8 +108,10 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
         Pair<Uri, Uri> uriPair = onPrepareUri(url);
         srcUri = uriPair.first;
         Uri dstUri = uriPair.second;
-        DownloadManager.Request request = new DownloadManager.Request(dstUri);
-        request.setDestinationInExternalFilesDir(mContext, null, dstUri.getLastPathSegment());
+        DownloadManager.Request request = new DownloadManager
+            .Request(dstUri)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalFilesDir(mContext, null, dstUri.getLastPathSegment());
         downloadManager.enqueue(request);
       }
       return !DOWNLOAD_ARCHIVE_SCHEME.equals(srcUri == null ? null : srcUri.getScheme());

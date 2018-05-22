@@ -56,48 +56,52 @@
       android:layout_marginBottom="@dimen/bookmark_recycler_view_bottom_margin"/>
   </LinearLayout>
 
-  <RelativeLayout
-    android:visibility="visible"
+  <android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    android:id="@+id/placeholder_container">
+    <com.mapswithme.maps.widget.PlaceholderView
+      android:id="@+id/placeholder"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="@dimen/margin_double_and_half"
+      android:paddingRight="@dimen/margin_double_and_half"
+      android:paddingTop="@dimen/placeholder_margin_top"
+      mapsme:imgSrcDefault="@drawable/img_empty_bookmarks"
+      mapsme:titleDefault="@string/cached_bookmarks_placeholder_title"
+      mapsme:subTitleDefault="@string/cached_bookmarks_placeholder_subtitle"/>
+    <Button
+      android:id="@+id/download_routers_btn"
+      style="@style/MwmWidget.Button.Accent"
+      android:layout_marginTop="@dimen/margin_half"
+      android:text="@string/downloader_download_routers"
+      mapsme:layout_constraintLeft_toLeftOf="parent"
+      mapsme:layout_constraintRight_toRightOf="parent"
+      mapsme:layout_constraintTop_toBottomOf="@id/placeholder"
+      android:textAppearance="@style/MwmTextAppearance.Body1.Light"/>
+  </android.support.constraint.ConstraintLayout>
 
+  <LinearLayout
+    android:id="@+id/placeholder_loading"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:gravity="center"
+    android:visibility="gone"
+    tools:visibility="visible">
     <ProgressBar
-      android:id="@+id/progress"
+      style="@style/Widget.AppCompat.ProgressBar"
+      android:background="@null"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"/>
+    <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/margin_base"
-      android:layout_marginBottom="@dimen/margin_half"
-      android:layout_centerInParent="true"
-      android:visibility="gone"
-      tools:visibility="visible"/>
-
-    <android.support.constraint.ConstraintLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:visibility="visible"
-      android:id="@+id/placeholder_container">
-
-      <com.mapswithme.maps.widget.PlaceholderView
-        android:id="@+id/placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/margin_double_and_half"
-        android:paddingRight="@dimen/margin_double_and_half"
-        android:paddingTop="@dimen/placeholder_margin_top"
-        mapsme:imgSrcDefault="@drawable/img_empty_bookmarks"
-        mapsme:titleDefault="@string/cached_bookmarks_placeholder_title"
-        mapsme:subTitleDefault="@string/cached_bookmarks_placeholder_subtitle"/>
-
-      <Button
-        android:id="@+id/download_routers_btn"
-        style="@style/MwmWidget.Button.Accent"
-        android:layout_marginTop="@dimen/margin_half"
-        android:text="@string/downloader_download_routers"
-        mapsme:layout_constraintLeft_toLeftOf="parent"
-        mapsme:layout_constraintRight_toRightOf="parent"
-        mapsme:layout_constraintTop_toBottomOf="@id/placeholder"
-        android:textAppearance="@style/MwmTextAppearance.Body1.Light"/>
-    </android.support.constraint.ConstraintLayout>
-  </RelativeLayout>
+      android:paddingTop="@dimen/margin_half"
+      android:textAppearance="@style/MwmTextAppearance.Body3"
+      android:text="@string/load_kmz_title"/>
+  </LinearLayout>
 
 </RelativeLayout>

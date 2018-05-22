@@ -69,6 +69,7 @@ public class AbstractCategoriesSnapshot
 
   private abstract static class FilterStrategy
   {
+    @NonNull
     public abstract List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items);
 
     public static class All extends FilterStrategy
