@@ -1343,6 +1343,6 @@
 	<string name="cached_bookmarks_placeholder_subtitle">Press the button to download thousands  of intresting places and routes created  by MAPS.ME users. You will need the internet connection.</string>
 	<string name="downloader_download_routers">download routes</string>
 	<string name="bookmarks_groups_cached">Downloaded lists</string>
-	<string name="author_name_by_prefix">by</string>
+	<string name="author_name_by_prefix">by %s</string>
 	<string name="routes_and_bookmarks">Routes and bookmarks</string>
 </resources>
