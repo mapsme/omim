@@ -96,11 +96,10 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
     getActivity().startActivity(intent);
   }
 
-  /*FIXME*/
   @NonNull
   private String getCatalogUrl()
   {
-    return "https://bookcat.demo.mapsme1.devmail.ru/simplefront/all";
+    return BookmarkManager.INSTANCE.getCatalogFrontendUrl();
   }
 
   @Override

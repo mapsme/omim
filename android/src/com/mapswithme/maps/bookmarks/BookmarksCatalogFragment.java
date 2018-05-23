@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmFragment;
+import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 
 import java.util.Set;
 
@@ -136,13 +137,8 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
       if (TextUtils.isEmpty(fileId)){
         throw new IllegalArgumentException("query param id not found");
       }
-      Uri.Builder builder = new Uri
-          .Builder()
-          .scheme(DOWNLOAD_ARCHIVE_SCHEME)
-          .authority(DOWNLOAD_ARCHIVE_HOST)
-          .appendPath(STATIC_SEGMENT)
-          .appendPath(fileId)
-          .appendPath(fileId);
+      String downloadUrl = BookmarkManager.INSTANCE.getCatalogDownloadUrl(fileId);
+      Uri.Builder builder = Uri.parse(downloadUrl).buildUpon();
 
       Set<String> paramNames = srcUri.getQueryParameterNames();
       for (String each : paramNames){
