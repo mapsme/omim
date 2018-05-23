@@ -87,8 +87,6 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
   /*FIXME*/
   private static class WebViewBookmarksCatalogClient extends WebViewClient
   {
-    public static final String DOWNLOAD_ARCHIVE_HOST = "bookcat.demo.mapsme1.devmail.ru";
-    public static final String STATIC_SEGMENT = "static";
     public static final String DOWNLOAD_ARCHIVE_SCHEME = "https";
     public static final String QUERY_PARAM_ID_KEY = "id";
     public static final String QUERY_PARAM_NAME_KEY = "name";

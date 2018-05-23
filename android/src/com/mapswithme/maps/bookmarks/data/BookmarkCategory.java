@@ -1,6 +1,7 @@
 package com.mapswithme.maps.bookmarks.data;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -127,11 +128,11 @@ public class BookmarkCategory
 
 
     public static String getRepresentation(Context context, Author author){
+      Resources res = context.getResources();
       return new StringBuilder()
           .append(PHRASE_SEPARATOR)
-          .append(context.getResources().getString(R.string.author_name_by_prefix))
-          .append(SPACE)
-          .append(author.getName())
+          .append(String.format(res.getString(R.string.author_name_by_prefix),
+                                author.getName()))
           .toString();
     }
 

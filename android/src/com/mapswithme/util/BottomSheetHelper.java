@@ -197,12 +197,6 @@ public final class BottomSheetHelper
     return sRef.get();
   }
 
-  public static boolean isShowing()
-  {
-    BottomSheet bs = getReference();
-    return (bs != null && bs.isShowing());
-  }
-
   public static void free()
   {
     BottomSheet ref = getReference();
