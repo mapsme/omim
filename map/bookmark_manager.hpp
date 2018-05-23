@@ -418,7 +418,7 @@ private:
   void NotifyAboutFile(bool success, std::string const & filePath, bool isTemporaryFile);
   void LoadBookmarkRoutine(std::string const & filePath, bool isTemporaryFile);
   KMLDataCollectionPtr LoadBookmarks(std::string const & dir, std::string const & ext, bool binary,
-                                     std::vector<std::string> & filePaths);
+                                     std::vector<std::string> & cloudFilePaths);
 
   void CollectDirtyGroups(kml::GroupIdSet & dirtyGroups);
 
