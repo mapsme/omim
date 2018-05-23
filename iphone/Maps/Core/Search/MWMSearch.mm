@@ -178,7 +178,7 @@ using Observers = NSHashTable<Observer>;
 {
   if (!query || query.length == 0)
     return;
-  CLS_LOG(@"Save search text: %@\nInputLocale: %@", query, inputLocale);
+
   string const locale = (!inputLocale || inputLocale.length == 0)
                             ? [MWMSearch manager]->m_everywhereParams.m_inputLocale
                             : inputLocale.UTF8String;
@@ -190,7 +190,7 @@ using Observers = NSHashTable<Observer>;
 {
   if (!query)
     return;
-  CLS_LOG(@"Search text: %@\nInputLocale: %@", query, inputLocale);
+
   MWMSearch * manager = [MWMSearch manager];
   if (inputLocale.length != 0)
   {
