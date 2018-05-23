@@ -90,6 +90,7 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
     public static final String STATIC_SEGMENT = "static";
     public static final String DOWNLOAD_ARCHIVE_SCHEME = "https";
     public static final String QUERY_PARAM_ID_KEY = "id";
+    public static final String QUERY_PARAM_NAME_KEY = "name";
 
     @NonNull
     private final Context mContext;
@@ -108,13 +109,24 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
         Pair<Uri, Uri> uriPair = onPrepareUri(url);
         srcUri = uriPair.first;
         Uri dstUri = uriPair.second;
+
+        String title = getTitle(srcUri);
         DownloadManager.Request request = new DownloadManager
             .Request(dstUri)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setTitle(title)
             .setDestinationInExternalFilesDir(mContext, null, dstUri.getLastPathSegment());
         downloadManager.enqueue(request);
       }
       return !DOWNLOAD_ARCHIVE_SCHEME.equals(srcUri == null ? null : srcUri.getScheme());
+    }
+
+    private String getTitle(Uri srcUri)
+    {
+      String title;
+      return TextUtils.isEmpty((title = srcUri.getQueryParameter(QUERY_PARAM_NAME_KEY)))
+             ? srcUri.getQueryParameter(QUERY_PARAM_ID_KEY)
+             : title;
     }
 
     private Pair<Uri, Uri> onPrepareUri(String url)
