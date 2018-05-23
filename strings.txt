@@ -31384,7 +31384,7 @@ fa = دوباره نپرس
     en = Downloaded lists
 
   [author_name_by_prefix]
-    en = by
+    en = by %s
 
   [routes_and_bookmarks]
     en = Routes and bookmarks
