@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.util.UiUtils;
 
-public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment
+public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment implements
+                                                                            BookmarkManager.BookmarksCatalogListener
+
 {
   @NonNull
   private ViewGroup mEmptyViewContainer;
@@ -70,6 +73,20 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment
     }
   }
 
+  @Override
+  public void onStart()
+  {
+    super.onStart();
+    BookmarkManager.INSTANCE.addCatalogListener(this);
+  }
+
+  @Override
+  public void onStop()
+  {
+    super.onStop();
+    BookmarkManager.INSTANCE.removeCatalogListener(this);
+  }
+
   private void openBookmarksCatalogScreen()
   {
     Intent intent = new Intent(getActivity(),
@@ -90,6 +107,30 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment
   public void onMoreOperationClick(int position)
   {
 
+  }
+
+  @Override
+  public void onImportStarted(@NonNull String serverId)
+  {
+    mProgressContainer.setVisibility(View.VISIBLE);
+    mEmptyViewContainer.setVisibility(View.GONE);
+    mPayloadContainer.setVisibility(View.GONE);
+  }
+
+  @Override
+  public void onImportFinished(@NonNull String serverId, boolean successful)
+  {
+    if (successful){
+      mPayloadContainer.setVisibility(View.VISIBLE);
+      mProgressContainer.setVisibility(View.GONE);
+      mEmptyViewContainer.setVisibility(View.GONE);
+      getAdapter().notifyDataSetChanged();
+    } else {
+      boolean isEmptyAdapter = getAdapter().getItemCount() == 0;
+      mProgressContainer.setVisibility(View.GONE);
+      UiUtils.showIf(isEmptyAdapter, mEmptyViewContainer);
+      UiUtils.showIf(!isEmptyAdapter,mPayloadContainer);
+    }
   }
 
   private class CloseHeaderClickListener implements View.OnClickListener
