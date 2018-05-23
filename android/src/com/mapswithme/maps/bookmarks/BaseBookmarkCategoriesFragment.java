@@ -12,13 +12,12 @@ import android.view.View;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmRecyclerFragment;
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.BookmarkSharingResult;
 import com.mapswithme.maps.dialog.EditTextDialogFragment;
 import com.mapswithme.maps.widget.PlaceholderView;
 import com.mapswithme.maps.widget.recycler.ItemDecoratorFactory;
-import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
-import com.mapswithme.maps.widget.recycler.RecyclerLongClickListener;
 import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.sharing.SharingHelper;
@@ -26,15 +25,18 @@ import com.mapswithme.util.sharing.SharingHelper;
 public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFragment
     implements EditTextDialogFragment.EditTextDialogInterface,
                MenuItem.OnMenuItemClickListener,
-               RecyclerClickListener,
-               RecyclerLongClickListener,
                BookmarkManager.BookmarksLoadingListener,
                BookmarkManager.BookmarksSharingListener,
                CategoryListCallback,
-               KmlImportController.ImportKmlCallback
+               KmlImportController.ImportKmlCallback,
+               OnItemClickListener<BookmarkCategory>,
+               OnItemLongClickListener<BookmarkCategory>
+
+
 {
   private static final int MAX_CATEGORY_NAME_LENGTH = 60;
-  private long mSelectedCatId;
+  @Nullable
+  private BookmarkCategory mSelectedCategory;
   @Nullable
   private CategoryEditor mCategoryEditor;
   @Nullable
@@ -137,7 +139,6 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   public void onPause()
   {
     super.onPause();
-    BottomSheetHelper.free();
   }
 
   @Override
@@ -146,17 +147,17 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     switch (item.getItemId())
     {
     case R.id.set_show:
-      BookmarkManager.INSTANCE.toggleCategoryVisibility(mSelectedCatId);
+      BookmarkManager.INSTANCE.toggleCategoryVisibility(mSelectedCategory.getId());
       if (getAdapter() != null)
         getAdapter().notifyDataSetChanged();
       break;
 
     case R.id.set_share:
-      SharingHelper.INSTANCE.prepareBookmarkCategoryForSharing(getActivity(), mSelectedCatId);
+      SharingHelper.INSTANCE.prepareBookmarkCategoryForSharing(getActivity(), mSelectedCategory.getId());
       break;
 
     case R.id.set_delete:
-      BookmarkManager.INSTANCE.deleteCategory(mSelectedCatId);
+      BookmarkManager.INSTANCE.deleteCategory(mSelectedCategory.getId());
       if (getAdapter() != null)
         getAdapter().notifyDataSetChanged();
       break;
@@ -164,10 +165,10 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     case R.id.set_edit:
       mCategoryEditor = newName ->
       {
-        BookmarkManager.INSTANCE.setCategoryName(mSelectedCatId, newName);
+        BookmarkManager.INSTANCE.setCategoryName(mSelectedCategory.getId(), newName);
       };
       EditTextDialogFragment.show(getString(R.string.bookmark_set_name),
-                                  BookmarkManager.INSTANCE.getCategoryName(mSelectedCatId),
+                                  mSelectedCategory.getName(),
                                   getString(R.string.rename), getString(R.string.cancel),
                                   MAX_CATEGORY_NAME_LENGTH, this);
       break;
@@ -176,28 +177,28 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     return true;
   }
 
+/*
   @Override
-  public void onLongItemClick(View v, int position)
+  public void onLongItemClick(View v, BookmarkCategory category, int position)
   {
-    showBottomMenu(position);
+    showBottomMenu(category);
   }
+*/
 
-  private void showBottomMenu(int position)
+  private void showBottomMenu(BookmarkCategory item)
   {
-    final BookmarkManager bmManager = BookmarkManager.INSTANCE;
-    mSelectedCatId = bmManager.getCategoryIdByPosition(position);
+    mSelectedCategory = item;
 
-    final String name = bmManager.getCategoryName(mSelectedCatId);
-    BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), name)
+
+    BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), mSelectedCategory.getName())
                                                     .sheet(R.menu.menu_bookmark_categories)
                                                     .listener(this);
 
-    final boolean isVisible = bmManager.isVisible(mSelectedCatId);
     bs.getItemByIndex(0)
-      .setIcon(isVisible ? R.drawable.ic_hide : R.drawable.ic_show)
-      .setTitle(isVisible ? R.string.hide : R.string.show);
+      .setIcon(mSelectedCategory.isVisible() ? R.drawable.ic_hide : R.drawable.ic_show)
+      .setTitle(mSelectedCategory.isVisible() ? R.string.hide : R.string.show);
 
-    final boolean deleteIsPossible = bmManager.getCategoriesCount() > 1;
+    final boolean deleteIsPossible = getAdapter().getBookmarkCategories().size() > 1;
     bs.getItemById(R.id.set_delete)
       .setVisible(deleteIsPossible)
       .setEnabled(deleteIsPossible);
@@ -206,17 +207,19 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   }
 
   @Override
-  public void onMoreOperationClick(int position)
+  public void onMoreOperationClick(BookmarkCategory item)
   {
-    showBottomMenu(position);
+    showBottomMenu(item);
   }
 
+/*
   @Override
-  public void onItemClick(View v, int position)
+  public void onItemClick(View v, BookmarkCategory entity, int position)
   {
     startActivity(new Intent(getActivity(), BookmarkListActivity.class)
-                      .putExtra(ChooseBookmarkCategoryFragment.CATEGORY_POSITION, position));
+                      .putExtra(BookmarksListFragment.EXTRA_CATEGORY, position));
   }
+*/
 
   @Override
   protected void setupPlaceholder(@Nullable PlaceholderView placeholder)
@@ -294,6 +297,19 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   public EditTextDialogFragment.Validator getValidator()
   {
     return new CategoryValidator();
+  }
+
+  @Override
+  public void onItemClick(View v, BookmarkCategory category)
+  {
+    startActivity(new Intent(getActivity(), BookmarkListActivity.class)
+                      .putExtra(BookmarksListFragment.EXTRA_CATEGORY, category));
+  }
+
+  @Override
+  public void onItemLongClick(View v, BookmarkCategory category)
+  {
+    showBottomMenu(category);
   }
 
   interface CategoryEditor

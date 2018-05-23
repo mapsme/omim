@@ -29,7 +29,7 @@ public class AbstractCategoriesSnapshot
     @NonNull
     private final FilterStrategy mStrategy;
 
-    public Default(@NonNull BookmarkCategory[] items, @NonNull FilterStrategy strategy)
+    protected Default(@NonNull BookmarkCategory[] items, @NonNull FilterStrategy strategy)
     {
       super(items);
       mStrategy = strategy;
@@ -40,6 +40,25 @@ public class AbstractCategoriesSnapshot
     public final List<BookmarkCategory> items()
     {
       return mStrategy.filter(super.items());
+    }
+
+    public int indexOfOrThrow(BookmarkCategory category)
+    {
+      int indexOf = items().indexOf(category);
+      if (indexOf < 0)
+      {
+        throw new UnsupportedOperationException(new StringBuilder("this category absent ")
+                                                    .append("in current snapshot")
+                                                    .append(indexOf)
+                                                    .toString());
+      }
+      return indexOf;
+    }
+
+    public static Default from(BookmarkCategory[] bookmarkCategories,
+                               FilterStrategy strategy)
+    {
+      return new Default(bookmarkCategories, strategy);
     }
   }
 
@@ -67,7 +86,7 @@ public class AbstractCategoriesSnapshot
     }
   }
 
-  private abstract static class FilterStrategy
+  public abstract static class FilterStrategy
   {
     @NonNull
     public abstract List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items);
@@ -81,20 +100,30 @@ public class AbstractCategoriesSnapshot
       }
     }
 
-    private static class Owned extends PredicativeStrategy<Boolean>
+    public static class Owned extends PredicativeStrategy<Boolean>
     {
       private Owned()
       {
         super(new Predicate.Equals<>(new BookmarkCategory.IsFromCatalog(), false));
       }
+
+      public static FilterStrategy makeInstance()
+      {
+        return new Owned();
+      }
     }
 
-    private static class Catalog extends PredicativeStrategy<Boolean>
+    public static class Catalog extends PredicativeStrategy<Boolean>
     {
       private Catalog()
       {
         super(new Predicate.Equals<>(new BookmarkCategory.IsFromCatalog(), true));
       }
+
+      public static Catalog makeInstance(){
+        return new Catalog();
+      }
+
     }
   }
 

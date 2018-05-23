@@ -2,14 +2,17 @@ package com.mapswithme.maps.bookmarks.data;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.bookmarks.BookmarksPageFactory;
 import com.mapswithme.maps.content.TypeConverter;
 
-public class BookmarkCategory
+public class BookmarkCategory implements Parcelable
 {
   private final long mId;
   @NonNull
@@ -18,7 +21,7 @@ public class BookmarkCategory
   private final Author mAuthor;
   private final int mTracksCount;
   private final int mBookmarksCount;
-  private final boolean mFromCatalog;
+  private final int mTypeIndex;
   private final boolean mIsVisible;
 
   public BookmarkCategory(long id,
@@ -34,7 +37,7 @@ public class BookmarkCategory
     mName = name;
     mTracksCount = tracksCount;
     mBookmarksCount = bookmarksCount;
-    mFromCatalog = fromCatalog;
+    mTypeIndex = fromCatalog ? Type.CATALOG.ordinal() : Type.OWNED.ordinal();
     mIsVisible = isVisible;
     mAuthor = TextUtils.isEmpty(authorId) || TextUtils.isEmpty(authorName)
               ? null
@@ -84,9 +87,14 @@ public class BookmarkCategory
     return mBookmarksCount;
   }
 
+  public Type getType()
+  {
+    return Type.values()[mTypeIndex];
+  }
+
   public boolean isFromCatalog()
   {
-    return mFromCatalog;
+    return Type.values()[mTypeIndex] == Type.CATALOG;
   }
 
   public boolean isVisible()
@@ -99,7 +107,7 @@ public class BookmarkCategory
     return getBookmarksCount() +  getTracksCount();
   }
 
-  public static class Author {
+  public static class Author implements Parcelable{
 
     public static final String PHRASE_SEPARATOR = " • ";
     public static final String SPACE = " ";
@@ -160,6 +168,40 @@ public class BookmarkCategory
     {
       return mId.hashCode();
     }
+
+    @Override
+    public int describeContents()
+    {
+      return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+      dest.writeString(this.mId);
+      dest.writeString(this.mName);
+    }
+
+    protected Author(Parcel in)
+    {
+      this.mId = in.readString();
+      this.mName = in.readString();
+    }
+
+    public static final Creator<Author> CREATOR = new Creator<Author>()
+    {
+      @Override
+      public Author createFromParcel(Parcel source)
+      {
+        return new Author(source);
+      }
+
+      @Override
+      public Author[] newArray(int size)
+      {
+        return new Author[size];
+      }
+    };
   }
 
   public static class IsFromCatalog implements TypeConverter<BookmarkCategory, Boolean>
@@ -180,9 +222,85 @@ public class BookmarkCategory
     sb.append(", mAuthor=").append(mAuthor);
     sb.append(", mTracksCount=").append(mTracksCount);
     sb.append(", mBookmarksCount=").append(mBookmarksCount);
-    sb.append(", mFromCatalog=").append(mFromCatalog);
+    sb.append(", mFromCatalog=").append(isFromCatalog());
     sb.append(", mIsVisible=").append(mIsVisible);
     sb.append('}');
     return sb.toString();
+  }
+
+  @Override
+  public int describeContents()
+  {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags)
+  {
+    dest.writeLong(this.mId);
+    dest.writeString(this.mName);
+    dest.writeParcelable(this.mAuthor, flags);
+    dest.writeInt(this.mTracksCount);
+    dest.writeInt(this.mBookmarksCount);
+    dest.writeInt(this.mTypeIndex);
+    dest.writeByte(this.mIsVisible ? (byte) 1 : (byte) 0);
+  }
+
+  protected BookmarkCategory(Parcel in)
+  {
+    this.mId = in.readLong();
+    this.mName = in.readString();
+    this.mAuthor = in.readParcelable(Author.class.getClassLoader());
+    this.mTracksCount = in.readInt();
+    this.mBookmarksCount = in.readInt();
+    this.mTypeIndex = in.readInt();
+    this.mIsVisible = in.readByte() != 0;
+  }
+
+  public static final Creator<BookmarkCategory> CREATOR = new Creator<BookmarkCategory>()
+  {
+    @Override
+    public BookmarkCategory createFromParcel(Parcel source)
+    {
+      return new BookmarkCategory(source);
+    }
+
+    @Override
+    public BookmarkCategory[] newArray(int size)
+    {
+      return new BookmarkCategory[size];
+    }
+  };
+
+  public enum Type
+  {
+    CATALOG(
+        BookmarksPageFactory.CATALOG,
+        AbstractCategoriesSnapshot.FilterStrategy.Catalog.makeInstance()),
+    OWNED(
+        BookmarksPageFactory.OWNED,
+        AbstractCategoriesSnapshot.FilterStrategy.Owned.makeInstance());
+
+    private BookmarksPageFactory mFactory;
+    private AbstractCategoriesSnapshot.FilterStrategy mFilterStrategy;
+
+    Type(@NonNull BookmarksPageFactory pageFactory,
+         @NonNull AbstractCategoriesSnapshot.FilterStrategy filterStrategy)
+    {
+      mFactory = pageFactory;
+      mFilterStrategy = filterStrategy;
+    }
+
+    @NonNull
+    public BookmarksPageFactory getFactory()
+    {
+      return mFactory;
+    }
+
+    @NonNull
+    public AbstractCategoriesSnapshot.FilterStrategy getFilterStrategy()
+    {
+      return mFilterStrategy;
+    }
   }
 }

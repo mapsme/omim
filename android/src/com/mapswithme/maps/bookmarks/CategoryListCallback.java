@@ -1,8 +1,10 @@
 package com.mapswithme.maps.bookmarks;
 
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
+
 interface CategoryListCallback
 {
   void onFooterClick();
 
-  void onMoreOperationClick(int position);
+  void onMoreOperationClick(BookmarkCategory item);
 }

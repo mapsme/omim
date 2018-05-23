@@ -139,9 +139,8 @@ public class Holders
     View mMore;
     @NonNull
     TextView mAuthorName;
-    @Nullable
-    BookmarkCategory.Author mAuthor;
-
+    @NonNull
+    private BookmarkCategory mEntity;
 
     CategoryViewHolder(@NonNull View root)
     {
@@ -181,21 +180,21 @@ public class Holders
       mSize.setText(mSize.getResources().getQuantityString(R.plurals.bookmarks_places, size, size));
     }
 
+    void setCategory(@NonNull BookmarkCategory entity)
+    {
+      mEntity = entity;
+    }
+
+    @NonNull
+    public BookmarkCategory getEntity()
+    {
+      return mEntity;
+    }
+
     @NonNull
     public TextView getAuthorName()
     {
       return mAuthorName;
-    }
-
-    @Nullable
-    public BookmarkCategory.Author getAuthor()
-    {
-      return mAuthor;
-    }
-
-    public void setAuthor(@Nullable BookmarkCategory.Author author)
-    {
-      mAuthor = author;
     }
   }
 
@@ -203,6 +202,8 @@ public class Holders
   {
     static final int SECTION_TRACKS = 0;
     static final int SECTION_BMKS = 1;
+    private BookmarkCategory mBookmarkCategory;
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({ SECTION_TRACKS, SECTION_BMKS })
     public @interface Section {}

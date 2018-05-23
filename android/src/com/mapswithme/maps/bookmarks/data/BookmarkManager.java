@@ -291,9 +291,19 @@ public enum BookmarkManager
 
   public int getCategoriesCount() { return nativeGetCategoriesCount(); }
 
-  public int getCategoryPositionById(long catId)
+  @NonNull
+  public BookmarkCategory getCategoryById(long catId)
   {
-    return nativeGetCategoryPositionById(catId);
+    List<BookmarkCategory> items = getAllCategoriesSnapshot().items();
+    for (BookmarkCategory each : items){
+      if (catId ==  each.getId()){
+        return each;
+      }
+    }
+    throw new IllegalArgumentException(new StringBuilder().append("category with id = ")
+                                                          .append(catId)
+                                                          .append(" missing")
+                                                          .toString());
   }
 
   public long getCategoryIdByPosition(int position)
@@ -391,6 +401,13 @@ public enum BookmarkManager
   public AbstractCategoriesSnapshot.Default getAllCategoriesSnapshot()
   {
     return new AbstractCategoriesSnapshot.All(nativeGetBookmarkCategories());
+  }
+
+  @NonNull
+  public AbstractCategoriesSnapshot.Default getCategoriesSnapshot(AbstractCategoriesSnapshot
+                                                     .FilterStrategy strategy)
+  {
+    return AbstractCategoriesSnapshot.Default.from(nativeGetBookmarkCategories(), strategy);
   }
 
   public boolean isUsedCategoryName(@NonNull String name)

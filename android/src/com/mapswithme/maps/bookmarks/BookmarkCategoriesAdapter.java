@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
-import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
-import com.mapswithme.maps.widget.recycler.RecyclerLongClickListener;
 
 import static com.mapswithme.maps.bookmarks.Holders.CategoryViewHolder;
 import static com.mapswithme.maps.bookmarks.Holders.HeaderViewHolder;
@@ -26,9 +24,9 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
   @NonNull
   private final AbstractAdapterResourceProvider mResProvider;
   @Nullable
-  private RecyclerLongClickListener mLongClickListener;
+  private OnItemLongClickListener<BookmarkCategory> mLongClickListener;
   @Nullable
-  private RecyclerClickListener mClickListener;
+  private OnItemClickListener<BookmarkCategory> mClickListener;
   @Nullable
   private CategoryListCallback mCategoryListCallback;
   @NonNull
@@ -47,12 +45,12 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     this(context, BookmarksPageFactory.OWNED.getResProvider());
   }
 
-  public void setOnClickListener(@Nullable RecyclerClickListener listener)
+  public void setOnClickListener(@Nullable OnItemClickListener<BookmarkCategory> listener)
   {
     mClickListener = listener;
   }
 
-  void setOnLongClickListener(@Nullable RecyclerLongClickListener listener)
+  void setOnLongClickListener(@Nullable OnItemLongClickListener<BookmarkCategory> listener)
   {
     mLongClickListener = listener;
   }
@@ -128,28 +126,29 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
   {
     final BookmarkCategory category = getCategoryByPosition(toCategoryPosition(position));
     CategoryViewHolder categoryHolder = (CategoryViewHolder) holder;
+    categoryHolder.setCategory(category);
     categoryHolder.setName(category.getName());
     categoryHolder.setSize(category.size());
     categoryHolder.setVisibilityState(category.isVisible());
-    bindAuthor(categoryHolder, category);
+    bindAuthor(categoryHolder);
     ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(categoryHolder,
                                                                                category);
     categoryHolder.setVisibilityListener(listener);
     categoryHolder.setMoreListener(v -> {
       if (mCategoryListCallback != null)
-        mCategoryListCallback.onMoreOperationClick(toCategoryPosition(position));
+        mCategoryListCallback.onMoreOperationClick(category);
     });
   }
 
-  private void bindAuthor(CategoryViewHolder categoryHolder, BookmarkCategory category)
+  private void bindAuthor(CategoryViewHolder categoryHolder)
   {
+    BookmarkCategory category = categoryHolder.getEntity();
     CharSequence authorName = category.getAuthor() == null
                               ? null
                               : BookmarkCategory
                                   .Author
                                   .getRepresentation(getContext(),category.getAuthor());
     categoryHolder.getAuthorName().setText(authorName);
-    categoryHolder.setAuthor(category.getAuthor());
   }
 
   @Override
@@ -193,7 +192,10 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     public boolean onLongClick(View view)
     {
       if (mLongClickListener != null)
-        mLongClickListener.onLongItemClick(mView, toCategoryPosition(mHolder.getAdapterPosition()));
+      {
+        mLongClickListener.onItemLongClick(mView, mHolder.getEntity());
+//        mLongClickListener.onLongItemClick(mView, toCategoryPosition(mHolder.getAdapterPosition()));
+      }
       return true;
     }
   }
@@ -230,7 +232,8 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
       if (mClickListener != null)
       {
         final int pos = mHolder.getAdapterPosition();
-        mClickListener.onItemClick(v, BookmarkCategoriesAdapter.this.toCategoryPosition(pos));
+//        mClickListener.onItemClick(v, mHolder.getEntity(), BookmarkCategoriesAdapter.this.toCategoryPosition(pos));
+        mClickListener.onItemClick(v, mHolder.getEntity());
       }
     }
   }

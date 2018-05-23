@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.util.UiUtils;
 
@@ -103,7 +104,7 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
   }
 
   @Override
-  public void onMoreOperationClick(int position)
+  public void onMoreOperationClick(BookmarkCategory item)
   {
 
   }
