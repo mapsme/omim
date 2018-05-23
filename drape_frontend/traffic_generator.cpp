@@ -2,6 +2,7 @@
 
 #include "drape_frontend/line_shape_helper.hpp"
 #include "drape_frontend/map_shape.hpp"
+#include "drape_frontend/shader_def.hpp"
 #include "drape_frontend/shape_view_params.hpp"
 #include "drape_frontend/tile_utils.hpp"
 #include "drape_frontend/traffic_renderer.hpp"
@@ -9,7 +10,6 @@
 
 #include "drape/attribute_provider.hpp"
 #include "drape/glsl_func.hpp"
-#include "drape/shader_def.hpp"
 #include "drape/texture_manager.hpp"
 
 #include "indexer/map_style_reader.hpp"
@@ -18,12 +18,14 @@
 
 #include "std/algorithm.hpp"
 
+#include <functional>
+
+using namespace std::placeholders;
+
 namespace df
 {
-
 namespace
 {
-
 // Values of the following arrays are based on traffic-arrow texture.
 static array<float, static_cast<size_t>(traffic::SpeedGroup::Count)> kCoordVOffsets =
 {{
@@ -130,11 +132,11 @@ void TrafficGenerator::FlushSegmentsGeometry(TileKey const & tileKey, TrafficSeg
   ASSERT(m_colorsCacheValid, ());
   auto const texture = m_colorsCache[static_cast<size_t>(traffic::SpeedGroup::G0)].GetTexture();
 
-  dp::GLState state(gpu::TRAFFIC_PROGRAM, dp::GLState::GeometryLayer);
+  auto state = CreateGLState(gpu::TRAFFIC_PROGRAM, RenderState::GeometryLayer);
   state.SetColorTexture(texture);
   state.SetMaskTexture(textures->GetTrafficArrowTexture());
 
-  dp::GLState lineState(gpu::TRAFFIC_LINE_PROGRAM, dp::GLState::GeometryLayer);
+  auto lineState = CreateGLState(gpu::TRAFFIC_LINE_PROGRAM, RenderState::GeometryLayer);
   lineState.SetColorTexture(texture);
   lineState.SetDrawAsLine(true);
 
@@ -345,7 +347,16 @@ void TrafficGenerator::SetSimplifiedColorSchemeEnabled(bool enabled)
 }
 
 // static
-df::ColorConstant TrafficGenerator::GetColorBySpeedGroup(traffic::SpeedGroup const & speedGroup, bool route)
+traffic::SpeedGroup TrafficGenerator::CheckColorsSimplification(traffic::SpeedGroup speedGroup)
+{
+  // In simplified color scheme we reduce amount of speed groups visually.
+  if (m_simplifiedColorScheme && speedGroup == traffic::SpeedGroup::G4)
+    return traffic::SpeedGroup::G3;
+  return speedGroup;
+}
+
+// static
+df::ColorConstant TrafficGenerator::GetColorBySpeedGroup(traffic::SpeedGroup speedGroup, bool route)
 {
   size_t constexpr kSpeedGroupsCount = static_cast<size_t>(traffic::SpeedGroup::Count);
   static array<df::ColorConstant, kSpeedGroupsCount> const kColorMap
@@ -372,12 +383,7 @@ df::ColorConstant TrafficGenerator::GetColorBySpeedGroup(traffic::SpeedGroup con
     "TrafficUnknown",
   }};
 
-  traffic::SpeedGroup group = speedGroup;
-  // In simplified color scheme we reduce amount of speed groups visually.
-  if (m_simplifiedColorScheme && speedGroup == traffic::SpeedGroup::G4)
-    group = traffic::SpeedGroup::G3;
-
-  size_t const index = static_cast<size_t>(group);
+  size_t const index = static_cast<size_t>(CheckColorsSimplification(speedGroup));
   ASSERT_LESS(index, kSpeedGroupsCount, ());
   return route ? kColorMapRoute[index] : kColorMap[index];
 }

@@ -8,10 +8,11 @@
 
 using namespace local_ads;
 using namespace std;
+using platform::tests_support::ScopedFile;
 
 UNIT_TEST(LocalAdsHelpers_Read_Write_Country_Name)
 {
-  platform::tests_support::ScopedFile testFile("la_tests.dat");
+  ScopedFile testFile("la_tests.dat", ScopedFile::Mode::Create);
 
   string const countryName = "Russia_Moscow";
   {
@@ -31,17 +32,17 @@ UNIT_TEST(LocalAdsHelpers_Read_Write_Country_Name)
 
 UNIT_TEST(LocalAdsHelpers_Read_Write_Timestamp)
 {
-  platform::tests_support::ScopedFile testFile("la_tests.dat");
+  ScopedFile testFile("la_tests.dat", ScopedFile::Mode::Create);
 
-  auto ts = chrono::steady_clock::now();
+  auto ts = local_ads::Clock::now();
   {
     FileWriter writer(testFile.GetFullPath());
     WriteTimestamp<chrono::hours>(writer, ts);
     WriteTimestamp<chrono::seconds>(writer, ts);
   }
 
-  chrono::steady_clock::time_point resultInHours;
-  chrono::steady_clock::time_point resultInSeconds;
+  local_ads::Timestamp resultInHours;
+  local_ads::Timestamp resultInSeconds;
   {
     FileReader reader(testFile.GetFullPath());
     ReaderSource<FileReader> src(reader);
@@ -55,7 +56,7 @@ UNIT_TEST(LocalAdsHelpers_Read_Write_Timestamp)
 
 UNIT_TEST(LocalAdsHelpers_Read_Write_RawData)
 {
-  platform::tests_support::ScopedFile testFile("la_tests.dat");
+  ScopedFile testFile("la_tests.dat", ScopedFile::Mode::Create);
 
   vector<uint8_t> rawData = {1, 2, 3, 4, 5};
   {

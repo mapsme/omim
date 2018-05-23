@@ -8,6 +8,7 @@
 #include "search/search_tests_support/test_search_request.hpp"
 
 #include "indexer/classificator_loader.hpp"
+#include "indexer/index.hpp"
 
 #include "storage/country_info_getter.hpp"
 #include "storage/index.hpp"
@@ -94,7 +95,7 @@ void DisplayStats(ostream & os, vector<Sample> const & samples, vector<Stats> co
   {
     if (stats[i].m_notFound.empty())
       continue;
-    os << "Query #" << i << " \"" << strings::ToUtf8(samples[i].m_query) << "\":" << endl;
+    os << "Query #" << i + 1 << " \"" << strings::ToUtf8(samples[i].m_query) << "\":" << endl;
     for (auto const & j : stats[i].m_notFound)
       os << "Not found: " << DebugPrint(samples[i].m_results[j]) << endl;
   }
@@ -122,7 +123,7 @@ int main(int argc, char * argv[])
   LOG(LINFO, ("writable dir =", platform.WritableDir()));
   LOG(LINFO, ("resources dir =", platform.ResourcesDir()));
 
-  Storage storage(countriesFile, FLAGS_mwm_path);
+  Storage storage(countriesFile);
   storage.Init(&DidDownload, &WillDelete);
   auto infoGetter = CountryInfoReader::CreateCountryInfoReader(platform);
   infoGetter->InitAffiliationsInfo(&storage.GetAffiliations());
@@ -151,7 +152,7 @@ int main(int argc, char * argv[])
   }
 
   classificator::Load();
-  TestSearchEngine engine(move(infoGetter), make_unique<ProcessorFactory>(), Engine::Params{});
+  Index index;
 
   vector<platform::LocalCountryFile> mwms;
   platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* the latest version */,
@@ -159,11 +160,13 @@ int main(int argc, char * argv[])
   for (auto & mwm : mwms)
   {
     mwm.SyncWithDisk();
-    engine.RegisterMap(mwm);
+    index.RegisterMap(mwm);
   }
 
+  TestSearchEngine engine(index, move(infoGetter), Engine::Params{});
+
   vector<Stats> stats(samples.size());
-  FeatureLoader loader(engine);
+  FeatureLoader loader(index);
   Matcher matcher(loader);
 
   cout << "SampleId,";
@@ -174,11 +177,9 @@ int main(int argc, char * argv[])
   {
     auto const & sample = samples[i];
 
-    engine.SetLocale(sample.m_locale);
-
     search::SearchParams params;
     sample.FillSearchParams(params);
-    TestSearchRequest request(engine, params, sample.m_viewport);
+    TestSearchRequest request(engine, params);
     request.Run();
 
     auto const & results = request.Results();
@@ -189,7 +190,7 @@ int main(int argc, char * argv[])
 
     for (size_t j = 0; j < results.size(); ++j)
     {
-      if (results[j].GetResultType() != Result::RESULT_FEATURE)
+      if (results[j].GetResultType() != Result::Type::Feature)
         continue;
       auto const & info = results[j].GetRankingInfo();
       cout << i << ",";
@@ -214,6 +215,7 @@ int main(int argc, char * argv[])
 
   if (FLAGS_stats_path.empty())
   {
+    cerr << string(34, '=') << " Statistics " << string(34, '=') << endl;
     DisplayStats(cerr, samples, stats);
   }
   else

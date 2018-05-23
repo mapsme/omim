@@ -1,40 +1,21 @@
 #include "search/search_integration_tests/helpers.hpp"
 
-#include "search/editor_delegate.hpp"
-#include "search/processor_factory.hpp"
-#include "search/search_tests_support/test_search_request.hpp"
+#include "storage/country_info_getter.hpp"
 
-#include "indexer/classificator_loader.hpp"
-#include "indexer/indexer_tests_support/helpers.hpp"
-#include "indexer/map_style.hpp"
-#include "indexer/map_style_reader.hpp"
 #include "indexer/scales.hpp"
 
-#include "platform/platform.hpp"
+#include "geometry/mercator.hpp"
+#include "geometry/rect2d.hpp"
+
+using namespace std;
 
 namespace search
 {
-// TestWithClassificator ---------------------------------------------------------------------------
-TestWithClassificator::TestWithClassificator()
-{
-  GetStyleReader().SetCurrentStyle(MapStyleMerged);
-  classificator::Load();
-}
-
-// SearchTest --------------------------------------------------------------------------------------
 SearchTest::SearchTest()
-  : m_platform(GetPlatform())
-  , m_scopedLog(LDEBUG)
-  , m_engine(make_unique<storage::CountryInfoGetterForTesting>(), make_unique<ProcessorFactory>(),
-             Engine::Params())
+  : m_scopedLog(LDEBUG)
+  , m_engine(m_index, make_unique<storage::CountryInfoGetterForTesting>(), Engine::Params{})
 {
-  indexer::tests_support::SetUpEditorForTesting(make_unique<EditorDelegate>(m_engine));
-}
-
-SearchTest::~SearchTest()
-{
-  for (auto const & file : m_files)
-    Cleanup(file);
+  SetViewport(MercatorBounds::FullRect());
 }
 
 void SearchTest::RegisterCountry(string const & name, m2::RectD const & rect)
@@ -56,7 +37,7 @@ bool SearchTest::ResultsMatch(string const & query,
 {
   tests_support::TestSearchRequest request(m_engine, query, locale, Mode::Everywhere, m_viewport);
   request.Run();
-  return MatchResults(m_engine, rules, request.Results());
+  return MatchResults(m_index, rules, request.Results());
 }
 
 bool SearchTest::ResultsMatch(string const & query, Mode mode,
@@ -64,30 +45,38 @@ bool SearchTest::ResultsMatch(string const & query, Mode mode,
 {
   tests_support::TestSearchRequest request(m_engine, query, "en", mode, m_viewport);
   request.Run();
-  return MatchResults(m_engine, rules, request.Results());
+  return MatchResults(m_index, rules, request.Results());
 }
 
 bool SearchTest::ResultsMatch(vector<search::Result> const & results, TRules const & rules)
 {
-  return MatchResults(m_engine, rules, results);
+  return MatchResults(m_index, rules, results);
 }
 
 bool SearchTest::ResultsMatch(SearchParams const & params, TRules const & rules)
 {
-  tests_support::TestSearchRequest request(m_engine, params, m_viewport);
+  tests_support::TestSearchRequest request(m_engine, params);
   request.Run();
   return ResultsMatch(request.Results(), rules);
 }
 
-unique_ptr<tests_support::TestSearchRequest> SearchTest::MakeRequest(string const & query)
+bool SearchTest::ResultMatches(search::Result const & result, TRule const & rule)
+{
+  return tests_support::ResultMatches(m_index, rule, result);
+}
+
+unique_ptr<tests_support::TestSearchRequest> SearchTest::MakeRequest(
+    string const & query, string const & locale /* = "en" */)
 {
   SearchParams params;
   params.m_query = query;
-  params.m_inputLocale = "en";
+  params.m_inputLocale = locale;
+  params.m_viewport = m_viewport;
   params.m_mode = Mode::Everywhere;
+  params.m_needAddress = true;
   params.m_suggestsEnabled = false;
 
-  auto request = make_unique<tests_support::TestSearchRequest>(m_engine, params, m_viewport);
+  auto request = make_unique<tests_support::TestSearchRequest>(m_engine, params);
   request->Run();
   return request;
 }
@@ -96,14 +85,18 @@ size_t SearchTest::CountFeatures(m2::RectD const & rect)
 {
   size_t count = 0;
   auto counter = [&count](const FeatureType & /* ft */) { ++count; };
-  m_engine.ForEachInRect(counter, rect, scales::GetUpperScale());
+  m_index.ForEachInRect(counter, rect, scales::GetUpperScale());
   return count;
 }
 
 // static
-void SearchTest::Cleanup(platform::LocalCountryFile const & map)
+void SearchTest::OnMwmBuilt(MwmInfo const & info)
 {
-  platform::CountryIndexes::DeleteFromDisk(map);
-  map.DeleteFromDisk(MapOptions::Map);
+  switch (info.GetType())
+  {
+  case MwmInfo::COUNTRY: RegisterCountry(info.GetCountryName(), info.m_limitRect); break;
+  case MwmInfo::WORLD: m_engine.LoadCitiesBoundaries(); break;
+  case MwmInfo::COASTS: break;
+  }
 }
 }  // namespace search

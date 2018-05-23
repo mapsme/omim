@@ -1,54 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <!-- First start screen -->
-  <integer-array name="first_start_images">
-    <item>@drawable/img_first_start_offline</item>
-    <item>@drawable/img_first_start_navigation</item>
-  </integer-array>
-
-  <string-array name="first_start_titles">
-    <item>@string/onboarding_offline_navigation_title</item>
-    <item>@string/onboarding_offline_maps_title</item>
-  </string-array>
-
-  <string-array name="first_start_subtitles">
-    <item>@string/onboarding_offline_navigation_message</item>
-    <item>@string/onboarding_offline_maps_message</item>
-  </string-array>
-
-  <string-array name="first_start_switch_titles">
-    <item/>
-    <item/>
-  </string-array>
-
-  <string-array name="first_start_switch_subtitles">
-    <item/>
-    <item/>
-  </string-array>
-
   <!-- What's new -->
   <integer-array name="news_images">
-    <item>@drawable/ic_wn_rich_page_hotel</item>
+    <item>@drawable/img_wn_reinvented_bookmarks</item>
+    <item>@drawable/img_wn_way_of_booking</item>
   </integer-array>
-s
+
   <string-array name="news_titles">
-    <item>@string/whatsnew_more_info_on_hotels_title</item>
+    <item>@string/wn_reinvented_bookmarks_title</item>
+    <item>@string/wn_way_of_booking_title</item>
   </string-array>
 
   <string-array name="news_messages_1">
-    <item>@string/whatsnew_more_info_on_hotels_message</item>
+    <item>@string/wn_reinvented_bookmarks_message</item>
+    <item>@string/wn_way_of_booking_message</item>
   </string-array>
 
   <string-array name="news_messages_2">
+    <item/>
     <item/>
   </string-array>
 
   <string-array name="news_switch_titles">
     <item/>
+    <item/>
   </string-array>
 
   <string-array name="news_switch_subtitles">
+    <item/>
     <item/>
   </string-array>
 </resources>

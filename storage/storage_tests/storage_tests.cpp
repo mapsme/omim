@@ -38,12 +38,15 @@
 
 #include "defines.hpp"
 
+#include "base/assert.hpp"
 #include "base/scope_guard.hpp"
 #include "base/string_utils.hpp"
 
+#include "std/algorithm.hpp"
 #include "std/bind.hpp"
 #include "std/condition_variable.hpp"
 #include "std/exception.hpp"
+#include "std/iterator.hpp"
 #include "std/map.hpp"
 #include "std/mutex.hpp"
 #include "std/shared_ptr.hpp"
@@ -60,6 +63,34 @@ string const kMapTestDir = "map-tests";
 namespace
 {
 using TLocalFilePtr = shared_ptr<LocalCountryFile>;
+
+class DummyDownloadingPolicy : public DownloadingPolicy
+{
+public:
+  bool IsDownloadingAllowed() override { return false; }
+};
+
+class SometimesFailingDownloadingPolicy : public DownloadingPolicy
+{
+public:
+  explicit SometimesFailingDownloadingPolicy(vector<uint64_t> const & failedRequests)
+    : m_failedRequests(failedRequests)
+  {
+    sort(m_failedRequests.begin(), m_failedRequests.end());
+  }
+
+  bool IsDownloadingAllowed() override
+  {
+    auto const allowed =
+        !binary_search(m_failedRequests.begin(), m_failedRequests.end(), m_request);
+    ++m_request;
+    return allowed;
+  }
+
+private:
+  vector<uint64_t> m_failedRequests;
+  uint64_t m_request = 0;
+};
 
 string const kSingleMwmCountriesTxt = string(R"({
            "id": "Countries",
@@ -519,7 +550,7 @@ void InitStorage(Storage & storage, TaskRunner & runner,
 {
   storage.Clear();
   storage.Init(update, [](TCountryId const &, TLocalFilePtr const){return false;});
-  storage.RegisterAllLocalMaps();
+  storage.RegisterAllLocalMaps(false /* enableDiffs */);
   storage.SetDownloaderForTesting(make_unique<FakeMapFilesDownloader>(runner));
 }
 
@@ -632,7 +663,7 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
                                  : version::FOR_TESTING_TWO_COMPONENT_MWM2;
 
   storage.Init(&OnCountryDownloaded, [](TCountryId const &, TLocalFilePtr const){return false;});
-  storage.RegisterAllLocalMaps();
+  storage.RegisterAllLocalMaps(false /* enableDiffs */);
 
   TCountryId const countryId = storage.FindCountryIdByFile("Azerbaijan");
   TEST(IsCountryIdValid(countryId), ());
@@ -644,14 +675,14 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   TEST_EQUAL(Status::ENotDownloaded, storage.CountryStatusEx(countryId), ());
 
   TLocalFilePtr localFileV1 = CreateDummyMapFile(countryFile, v1, 1024 /* size */);
-  storage.RegisterAllLocalMaps();
+  storage.RegisterAllLocalMaps(false /* enableDiffs */);
   latestLocalFile = storage.GetLatestLocalFile(countryId);
   TEST(latestLocalFile.get(), ("Created map file wasn't found by storage."));
   TEST_EQUAL(latestLocalFile->GetVersion(), localFileV1->GetVersion(), ());
   TEST_EQUAL(Status::EOnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
 
   TLocalFilePtr localFileV2 = CreateDummyMapFile(countryFile, v2, 2048 /* size */);
-  storage.RegisterAllLocalMaps();
+  storage.RegisterAllLocalMaps(false /* enableDiffs */);
   latestLocalFile = storage.GetLatestLocalFile(countryId);
   TEST(latestLocalFile.get(), ("Created map file wasn't found by storage."));
   TEST_EQUAL(latestLocalFile->GetVersion(), localFileV2->GetVersion(), ());
@@ -844,29 +875,24 @@ UNIT_CLASS_TEST(TwoComponentStorageTest, DownloadTwoCountriesAndDelete)
     unique_ptr<CountryDownloaderChecker> uruguayChecker = make_unique<CountryDownloaderChecker>(
         storage, uruguayCountryId, MapOptions::MapWithCarRouting,
         vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::ENotDownloaded});
-    // Only routing file will be deleted for Venezuela, thus, Venezuela should pass through
-    // following
-    // states:
-    // NotDownloaded -> InQueue (Venezuela is added after Uruguay) -> Downloading -> Downloading
-    // (second notification will be sent after deletion of a routing file) -> OnDisk.
+    // Venezuela should pass through the following states:
+    // NotDownloaded -> InQueue (Venezuela is added after Uruguay) -> Downloading -> NotDownloaded.
     unique_ptr<CountryDownloaderChecker> venezuelaChecker = make_unique<CountryDownloaderChecker>(
         storage, venezuelaCountryId, MapOptions::MapWithCarRouting,
         vector<Status>{Status::ENotDownloaded, Status::EInQueue, Status::EDownloading,
-                        Status::EDownloading, Status::EOnDisk});
+                        Status::ENotDownloaded});
     uruguayChecker->StartDownload();
     venezuelaChecker->StartDownload();
     storage.DeleteCountry(uruguayCountryId, MapOptions::Map);
-    storage.DeleteCountry(venezuelaCountryId, MapOptions::CarRouting);
+    storage.DeleteCountry(venezuelaCountryId, MapOptions::Map);
     runner.Run();
   }
-  // @TODO(bykoianko) This test changed its behaivier. This commented lines are left specially
-  // to fixed later.
+
   TLocalFilePtr uruguayFile = storage.GetLatestLocalFile(uruguayCountryId);
   TEST(!uruguayFile.get(), (*uruguayFile));
 
   TLocalFilePtr venezuelaFile = storage.GetLatestLocalFile(venezuelaCountryId);
-  TEST(venezuelaFile.get(), ());
-  TEST_EQUAL(MapOptions::Map, venezuelaFile->GetFiles(), ());
+  TEST(!venezuelaFile.get(), ());
 }
 
 UNIT_CLASS_TEST(StorageTest, CancelDownloadingWhenAlmostDone)
@@ -888,7 +914,7 @@ UNIT_CLASS_TEST(StorageTest, CancelDownloadingWhenAlmostDone)
 
 UNIT_CLASS_TEST(StorageTest, DeleteCountry)
 {
-  tests_support::ScopedFile map("Wonderland.mwm", "map");
+  tests_support::ScopedFile map("Wonderland.mwm", ScopedFile::Mode::Create);
   LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland",
                                                            version::FOR_TESTING_SINGLE_MWM1);
   TEST_EQUAL(MapOptions::MapWithCarRouting, file.GetFiles(), ());
@@ -914,7 +940,7 @@ UNIT_CLASS_TEST(StorageTest, DeleteCountry)
 
 UNIT_CLASS_TEST(TwoComponentStorageTest, DeleteCountry)
 {
-  tests_support::ScopedFile map("Wonderland.mwm", "map");
+  tests_support::ScopedFile map("Wonderland.mwm", ScopedFile::Mode::Create);
   LocalCountryFile file = LocalCountryFile::MakeForTesting("Wonderland",
                                                            version::FOR_TESTING_TWO_COMPONENT_MWM1);
   TEST_EQUAL(MapOptions::Map, file.GetFiles(), ());
@@ -937,7 +963,6 @@ UNIT_CLASS_TEST(TwoComponentStorageTest, DeleteCountry)
 
   map.Reset();
 }
-
 
 UNIT_TEST(StorageTest_FailedDownloading)
 {
@@ -977,19 +1002,17 @@ UNIT_TEST(StorageTest_ObsoleteMapsRemoval)
   CountryFile country("Azerbaijan");
 
   tests_support::ScopedDir dir1("1");
-  tests_support::ScopedFile map1(dir1, country, MapOptions::Map, "map1");
+  tests_support::ScopedFile map1(dir1, country, MapOptions::Map);
   LocalCountryFile file1(dir1.GetFullPath(), country, 1 /* version */);
-  CountryIndexes::PreparePlaceOnDisk(file1);
 
   tests_support::ScopedDir dir2("2");
-  tests_support::ScopedFile map2(dir2, country, MapOptions::Map, "map2");
+  tests_support::ScopedFile map2(dir2, country, MapOptions::Map);
   LocalCountryFile file2(dir2.GetFullPath(), country, 2 /* version */);
-  CountryIndexes::PreparePlaceOnDisk(file2);
 
   TEST(map1.Exists(), ());
   TEST(map2.Exists(), ());
 
-  storage.RegisterAllLocalMaps();
+  storage.RegisterAllLocalMaps(false /* enableDiffs */);
 
   TEST(!map1.Exists(), ());
   map1.Reset();
@@ -1385,10 +1408,8 @@ UNIT_TEST(StorageTest_GetUpdateInfoSingleMwm)
   classificator::Load();
   WritableDirChanger writableDirChanger(kMapTestDir);
 
-  Platform & platform = GetPlatform();
-
-  string const kVersion1Dir = my::JoinFoldersToPath(platform.WritableDir(), "1");
-  platform.MkDir(kVersion1Dir);
+  string const kVersion1Dir = my::JoinFoldersToPath(GetPlatform().WritableDir(), "1");
+  CHECK_EQUAL(Platform::MkDir(kVersion1Dir), Platform::ERR_OK, ());
 
   LocalCountryFile country1(kVersion1Dir, CountryFile("OutdatedCountry1"), 1);
   LocalCountryFile country2(kVersion1Dir, CountryFile("OutdatedCountry2"), 1);
@@ -1402,7 +1423,7 @@ UNIT_TEST(StorageTest_GetUpdateInfoSingleMwm)
   }
 
   Storage storage(kSingleMwmCountriesTxt, make_unique<TestMapFilesDownloader>());
-  storage.RegisterAllLocalMaps();
+  storage.RegisterAllLocalMaps(false /* enableDiffs */);
 
   country1.SyncWithDisk();
   country2.SyncWithDisk();
@@ -1795,5 +1816,83 @@ UNIT_TEST(StorageTest_GetTopmostNodesForWithLevel)
   TEST_EQUAL(path[0], "France_Burgundy_Saone-et-Loire", ());
 }
 
+UNIT_TEST(StorageTest_FalsePolicy)
+{
+  DummyDownloadingPolicy policy;
+  Storage storage;
+  storage.SetDownloadingPolicy(&policy);
 
+  storage.Init(&OnCountryDownloaded /* didDownload */,
+               [](TCountryId const &, TLocalFilePtr const) { return false; } /* willDelete */);
+  storage.SetDownloaderForTesting(make_unique<TestMapFilesDownloader>());
+  storage.SetCurrentDataVersionForTesting(1234);
+
+  auto const countryId = storage.FindCountryIdByFile("Uruguay");
+  auto const countryFile = storage.GetCountryFile(countryId);
+
+  // To prevent interference with other tests and on other tests it's
+  // better to remove temporary downloader files.
+  DeleteDownloaderFilesForCountry(storage.GetCurrentDataVersion(), countryFile);
+  MY_SCOPE_GUARD(cleanup, [&]() {
+    DeleteDownloaderFilesForCountry(storage.GetCurrentDataVersion(),
+                                    countryFile);
+  });
+
+  {
+    FailedDownloadingWaiter waiter(storage, countryId);
+    storage.DownloadCountry(countryId, MapOptions::Map);
+  }
+}
+
+UNIT_CLASS_TEST(StorageTest, MultipleMaps)
+{
+  // This test tries do download all maps from Russian Federation, but
+  // network policy sometimes changes, therefore some countries won't
+  // be downloaded.
+
+  vector<uint64_t> const failedRequests {{5, 10, 21}};
+  TEST(is_sorted(failedRequests.begin(), failedRequests.end()), ());
+
+  SometimesFailingDownloadingPolicy policy(failedRequests);
+  Storage storage;
+  storage.SetDownloadingPolicy(&policy);
+
+  auto const nodeId = storage.FindCountryIdByFile("Russian Federation");
+  TCountriesVec children;
+  storage.GetChildren(nodeId, children);
+  vector<bool> downloaded(children.size());
+
+  auto const onStatusChange = [&](TCountryId const &id) {
+    auto const status = storage.CountryStatusEx(id);
+    if (status != Status::EOnDisk)
+      return;
+
+    auto const it = find(children.cbegin(), children.cend(), id);
+    if (it == children.end())
+      return;
+
+    downloaded[distance(children.cbegin(), it)] = true;
+  };
+
+  auto const onProgress = [&](TCountryId const & /* countryId */,
+                              TLocalAndRemoteSize const & /* progress */) {};
+
+  auto const slot = storage.Subscribe(onStatusChange, onProgress);
+  MY_SCOPE_GUARD(cleanup, [&]() { storage.Unsubscribe(slot); });
+
+  storage.Init(&OnCountryDownloaded /* didDownload */,
+               [](TCountryId const &, TLocalFilePtr const) { return false; } /* willDelete */);
+  storage.SetDownloaderForTesting(make_unique<FakeMapFilesDownloader>(runner));
+  storage.DownloadNode(nodeId);
+  runner.Run();
+
+  for (size_t i = 0; i < downloaded.size(); ++i)
+  {
+    auto const expected = !binary_search(failedRequests.begin(), failedRequests.end(), i);
+    TEST_EQUAL(downloaded[i], expected, ("Unexpected status for country:", children[i]));
+  }
+
+  // Unfortunately, whole country was not downloaded.
+  TEST_EQUAL(storage.CountryStatusEx(nodeId), Status::ENotDownloaded, ());
+}
 }  // namespace storage

@@ -1,5 +1,4 @@
 #import "MWMFrameworkHelper.h"
-#import "CLLocation+Mercator.h"
 #import "MWMLocationManager.h"
 #import "MapViewController.h"
 
@@ -9,14 +8,14 @@
 
 @implementation MWMFrameworkHelper
 
-+ (void)zoomToCurrentPosition
++ (void)processFirstLaunch
 {
   auto & f = GetFramework();
   CLLocation * lastLocation = [MWMLocationManager lastLocation];
   if (!lastLocation)
     f.SwitchMyPositionNextMode();
   else
-    f.SetViewportCenter(lastLocation.mercator, 13 /* zoom */);
+    f.RunFirstLaunchAnimation();
 }
 
 + (void)setVisibleViewport:(CGRect)rect
@@ -66,4 +65,5 @@
   }
 }
 
++ (void)createFramework { UNUSED_VALUE(GetFramework()); }
 @end

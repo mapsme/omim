@@ -12,6 +12,7 @@ omim_link_libraries(${PROJECT_NAME}
   openlr
   routing
   routing_common
+  storage
   indexer
   editor
   platform
@@ -24,8 +25,12 @@ omim_link_libraries(${PROJECT_NAME}
   oauthcpp
   opening_hours
   protobuf
+  mwm_diff
+  bsdiff
   pugixml
   stats_client
   ${Qt5Core_LIBRARIES}
   ${LIBZ}
 )
+
+link_qt5_network(${PROJECT_NAME})

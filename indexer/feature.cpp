@@ -118,16 +118,12 @@ editor::XMLFeature FeatureType::ToXML(bool serializeType) const
   else
   {
     ParseTriangles(BEST_GEOMETRY);
-    vector<m2::PointD> geometry(begin(m_triangles), end(m_triangles));
-    // Remove duplicates.
-    my::SortUnique(geometry);
-    feature.SetGeometry(geometry);
+    feature.SetGeometry(begin(m_triangles), end(m_triangles));
   }
 
   ForEachName([&feature](uint8_t const & lang, string const & name)
               {
                 feature.SetName(lang, name);
-                return true;
               });
 
   string const house = GetHouseNumber();
@@ -369,6 +365,7 @@ void FeatureType::ParseMetadata() const
 
 StringUtf8Multilang const & FeatureType::GetNames() const
 {
+  ParseCommon();
   return m_params.name;
 }
 
@@ -376,11 +373,9 @@ void FeatureType::SetNames(StringUtf8Multilang const & newNames)
 {
   m_params.name.Clear();
   // Validate passed string to clean up empty names (if any).
-  newNames.ForEach([this](int8_t langCode, string const & name) -> bool
-  {
+  newNames.ForEach([this](int8_t langCode, string const & name) {
     if (!name.empty())
       m_params.name.AddString(langCode, name);
-    return true;
   });
 
   if (m_params.name.IsEmpty())

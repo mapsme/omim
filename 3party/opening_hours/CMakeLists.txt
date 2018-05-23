@@ -11,6 +11,7 @@ add_compile_options(
   "-std=c++11"
 )
 
+add_clang_compile_options("-Wno-unused-local-typedef")
 
 set(
   SRC
@@ -33,3 +34,5 @@ set(
 add_library(opening_hours ${SRC})
 
 omim_add_test_subdirectory(opening_hours_tests)
+omim_add_test_subdirectory(opening_hours_integration_tests)
+omim_add_test_subdirectory(opening_hours_supported_features_tests)

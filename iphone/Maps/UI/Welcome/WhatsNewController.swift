@@ -3,16 +3,16 @@ import UIKit
 final class WhatsNewController: MWMViewController, WelcomeProtocol {
 
   static var welcomeConfigs: [WelcomeConfig] = [
-//    WelcomeConfig(image:  #imageLiteral(resourceName: "wn_img_1"),
-//                  title: "whatsnew_improved_search",
-//                  text: "whatsnew_improved_search_text",
-//                  buttonTitle: "whats_new_next_button",
-//                  buttonAction: #selector(nextPage)),
-    WelcomeConfig(image:  #imageLiteral(resourceName: "wn_img_1"),
-                  title: "whatsnew_more_info_on_hotels_title",
-                  text: "whatsnew_more_info_on_hotels_message",
+    WelcomeConfig(image: #imageLiteral(resourceName: "img_wn_reinvented_bookmarks"),
+                  title: "wn_reinvented_bookmarks_title",
+                  text: "wn_reinvented_bookmarks_message",
+                  buttonTitle: "whats_new_next_button",
+                  buttonAction: #selector(nextPage)),
+    WelcomeConfig(image: #imageLiteral(resourceName: "img_wn_way_of_booking"),
+                  title: "wn_way_of_booking_title",
+                  text: "wn_way_of_booking_message",
                   buttonTitle: "done",
-                  buttonAction: #selector(close))
+                  buttonAction: #selector(close)),
   ]
 
   var pageIndex: Int!

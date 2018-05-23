@@ -8,8 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +24,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -29,7 +32,6 @@ import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
-import com.mapswithme.maps.uber.UberLinks;
 import com.mapswithme.util.concurrency.UiThread;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
@@ -38,12 +40,15 @@ import com.mapswithme.util.statistics.AlohaHelper;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 
 public class Utils
 {
+  @StringRes
+  public static final int INVALID_ID = 0;
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = "Utils";
 
@@ -54,7 +59,7 @@ public class Utils
 
   private Utils() {}
 
-  public static void closeStream(Closeable stream)
+  public static void closeStream(@Nullable Closeable stream)
   {
     if (stream != null)
     {
@@ -159,7 +164,7 @@ public class Utils
     return Uri.parse(uriString);
   }
 
-  public static String getDeviceModel()
+  public static String getFullDeviceModel()
   {
     String model = Build.MODEL;
     if (!model.startsWith(Build.MANUFACTURER))
@@ -204,13 +209,23 @@ public class Utils
     activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Url.TWITTER_MAPSME_HTTP)));
   }
 
-  public static void openUrl(@NonNull Context activity, @NonNull String url)
+  public static void openUrl(@NonNull Context activity, @Nullable String url)
   {
-    final Intent intent = new Intent(Intent.ACTION_VIEW);
-    if (!url.startsWith("http://") && !url.startsWith("https://"))
-      url = "http://" + url;
-    intent.setData(Uri.parse(url));
-    activity.startActivity(intent);
+    if (TextUtils.isEmpty(url))
+      return;
+
+    try
+    {
+      final Intent intent = new Intent(Intent.ACTION_VIEW);
+      if (!url.startsWith("http://") && !url.startsWith("https://"))
+        url = "http://" + url;
+      intent.setData(Uri.parse(url));
+      activity.startActivity(intent);
+    }
+    catch (ActivityNotFoundException e)
+    {
+      CrashlyticsUtils.logException(e);
+    }
   }
 
   public static void sendSupportMail(@NonNull Activity activity, @NonNull String subject)
@@ -218,8 +233,11 @@ public class Utils
     LoggerFactory.INSTANCE.zipLogs(new OnZipCompletedCallback(activity, subject));
   }
 
-  public static void navigateToParent(@NonNull Activity activity)
+  public static void navigateToParent(@Nullable Activity activity)
   {
+    if (activity == null)
+      return;
+
     if (activity instanceof CustomNavigateUpListener)
       ((CustomNavigateUpListener) activity).customOnNavigateUp();
     else
@@ -284,12 +302,12 @@ public class Utils
     return installationId;
   }
 
-  public static boolean isUberInstalled(@NonNull Activity context)
+  public static boolean isAppInstalled(@NonNull Context context, @NonNull String packageName)
   {
     try
     {
       PackageManager pm = context.getPackageManager();
-      pm.getPackageInfo("com.ubercab", PackageManager.GET_ACTIVITIES);
+      pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
       return true;
     } catch (PackageManager.NameNotFoundException e)
     {
@@ -297,20 +315,41 @@ public class Utils
     }
   }
 
-  public static void launchUber(@NonNull Activity context, @NonNull UberLinks links)
+  private static void launchAppDirectly(@NonNull Context context, @NonNull SponsoredLinks links)
   {
-    final Intent intent = new Intent(Intent.ACTION_VIEW);
-    if (isUberInstalled(context))
-    {
-
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      intent.setData(Uri.parse(links.getDeepLink()));
-    } else
-    {
-      // No Uber app! Open mobile website.
-      intent.setData(Uri.parse(links.getUniversalLink()));
-    }
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    intent.setData(Uri.parse(links.getDeepLink()));
     context.startActivity(intent);
+  }
+
+  private static void launchAppIndirectly(@NonNull Context context, @NonNull SponsoredLinks links)
+  {
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setData(Uri.parse(links.getDeepLink()));
+    context.startActivity(intent);
+  }
+
+  public static void openPartner(@NonNull Context activity, @NonNull SponsoredLinks links,
+                                 @NonNull String packageName, @NonNull PartnerAppOpenMode openMode)
+  {
+    switch (openMode)
+    {
+      case  Direct:
+        if (!Utils.isAppInstalled(activity, packageName))
+        {
+          openUrl(activity, links.getUniversalLink());
+          return;
+        }
+        launchAppDirectly(activity, links);
+        break;
+      case Indirect:
+        launchAppIndirectly(activity, links);
+        break;
+      default:
+        throw new AssertionError("Unsupported partner app open mode: " + openMode +
+                                 "; Package name: " + packageName);
+    }
   }
 
   public static void sendTo(@NonNull Context context, @NonNull String email)
@@ -332,6 +371,18 @@ public class Utils
     {
       LOGGER.e(TAG, "Failed to call phone", e);
       AlohaHelper.logException(e);
+    }
+  }
+
+  public static void showSystemSettings(@NonNull Context context)
+  {
+    try
+    {
+      context.startActivity(new Intent(Settings.ACTION_SETTINGS));
+    }
+    catch (ActivityNotFoundException e)
+    {
+      LOGGER.e(TAG, "Failed to open system settings", e);
     }
   }
 
@@ -360,6 +411,73 @@ public class Utils
       LOGGER.e(TAG, "Failed to obtain a currency for locale: " + locale, e);
       return null;
     }
+  }
+
+  @NonNull
+  public static String formatCurrencyString(@NonNull String price, @NonNull String currencyCode)
+  {
+    String text;
+    try
+    {
+      float value = Float.valueOf(price);
+      Locale locale = Locale.getDefault();
+      Currency currency = Utils.getCurrencyForLocale(locale);
+      // If the currency cannot be obtained for the default locale we will use Locale.US.
+      if (currency == null)
+        locale = Locale.US;
+      NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+      if (!TextUtils.isEmpty(currencyCode))
+        formatter.setCurrency(Currency.getInstance(currencyCode));
+      return formatter.format(value);
+    }
+    catch (Throwable e)
+    {
+      LOGGER.e(TAG, "Failed to format string for price = " + price
+                    + " and currencyCode = " + currencyCode, e);
+      text = (price + " " + currencyCode);
+    }
+    return text;
+  }
+
+  static String makeUrlSafe(@NonNull final String url)
+  {
+    return url.replaceAll("(token|password|key)=([^&]+)", "***");
+  }
+
+  @StringRes
+  public static int getStringIdByKey(@NonNull Context context, @NonNull String key)
+  {
+    try
+    {
+      Resources res = context.getResources();
+      @StringRes
+      int nameId = res.getIdentifier(key, "string", context.getPackageName());
+      if (nameId == INVALID_ID || nameId == View.NO_ID)
+        throw new Resources.NotFoundException("String id '" + key + "' is not found");
+      return nameId;
+    }
+    catch (RuntimeException e)
+    {
+      LOGGER.e(TAG, "Failed to get string with id '" + key + "'", e);
+      if (BuildConfig.BUILD_TYPE.equals("debug") || BuildConfig.BUILD_TYPE.equals("beta"))
+      {
+        Toast.makeText(context, "Add string id for '" + key + "'!",
+                       Toast.LENGTH_LONG).show();
+      }
+    }
+    return INVALID_ID;
+  }
+
+  @NonNull
+  public static String getDeviceName()
+  {
+    return Build.MANUFACTURER;
+  }
+
+  @NonNull
+  public static String getDeviceModel()
+  {
+    return Build.MODEL;
   }
 
   private  static class OnZipCompletedCallback implements LoggerFactory.OnZipCompletedListener
@@ -415,12 +533,39 @@ public class Utils
   public static void detachFragmentIfCoreNotInitialized(@NonNull Context context,
                                                         @NonNull Fragment fragment)
   {
-    if (context instanceof AppCompatActivity && !MwmApplication.get().isPlatformInitialized())
+    if (context instanceof AppCompatActivity && !MwmApplication.get().arePlatformAndCoreInitialized())
     {
       ((AppCompatActivity)context).getSupportFragmentManager()
                                   .beginTransaction()
                                   .detach(fragment)
                                   .commit();
     }
+  }
+
+  public static String capitalize(@Nullable String src)
+  {
+    if (TextUtils.isEmpty(src))
+      return src;
+
+    if (src.length() == 1)
+      return Character.toString(Character.toUpperCase(src.charAt(0)));
+
+    return Character.toUpperCase(src.charAt(0)) + src.substring(1);
+  }
+
+  public static String unCapitalize(@Nullable String src)
+  {
+    if (TextUtils.isEmpty(src))
+      return src;
+
+    if (src.length() == 1)
+      return Character.toString(Character.toLowerCase(src.charAt(0)));
+
+    return Character.toLowerCase(src.charAt(0)) + src.substring(1);
+  }
+
+  public enum PartnerAppOpenMode
+  {
+    None, Direct, Indirect
   }
 }

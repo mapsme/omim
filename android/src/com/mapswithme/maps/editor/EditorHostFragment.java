@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.mapswithme.maps.editor.data.LocalizedStreet;
 import com.mapswithme.maps.widget.SearchToolbarController;
 import com.mapswithme.maps.widget.ToolbarController;
 import com.mapswithme.util.ConnectionState;
+import com.mapswithme.util.DialogUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.statistics.Statistics;
@@ -224,7 +226,6 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
     for (LocalizedName name : sNames)
       languages.add(name.lang);
     args.putStringArrayList(LanguagesFragment.EXISTING_LOCALIZED_NAMES, languages);
-    UiUtils.hide(mToolbarController.findViewById(R.id.save));
     editWithFragment(Mode.LANGUAGE, R.string.choose_language, args, LanguagesFragment.class, false);
   }
 
@@ -285,16 +286,23 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
         Editor.nativeSetSelectedCuisines(cuisines);
         editMapObject();
         break;
+      case LANGUAGE:
+        editMapObject();
+        break;
       case MAP_OBJECT:
         if (!setEdits())
           return;
 
         // Save object edits
         if (!MwmApplication.prefs().contains(NOOB_ALERT_SHOWN))
+        {
           showNoobDialog();
+        }
         else
+        {
+          saveNote();
           saveMapObjectEdits();
-
+        }
         break;
       }
     }
@@ -312,7 +320,8 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
         final Activity parent = getActivity();
         Intent intent = new Intent(parent, MwmActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra(MwmActivity.EXTRA_TASK, new MwmActivity.ShowAuthorizationTask());
+        intent.putExtra(MwmActivity.EXTRA_TASK,
+                        new MwmActivity.ShowDialogTask(AuthDialogFragment.class.getName()));
         parent.startActivity(intent);
 
         if (parent instanceof MwmActivity)
@@ -324,8 +333,17 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
     else
     {
       Statistics.INSTANCE.trackEditorError(mIsNewObject);
-      UiUtils.showAlertDialog(getActivity(), R.string.downloader_no_space_title);
+      DialogUtils.showAlertDialog(getActivity(), R.string.downloader_no_space_title);
     }
+  }
+
+  private void saveNote()
+  {
+    String tag = EditorFragment.class.getName();
+    EditorFragment fragment = (EditorFragment) getChildFragmentManager().findFragmentByTag(tag);
+    String note = fragment.getDescription();
+    if (!TextUtils.isEmpty(note))
+      Editor.nativeCreateNote(note);
   }
 
   private void showMistakeDialog(@StringRes int resId)
@@ -350,11 +368,7 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
           MwmApplication.prefs().edit()
                         .putBoolean(NOOB_ALERT_SHOWN, true)
                         .apply();
-          // Save note
-          final String note = ((EditorFragment) getChildFragmentManager().findFragmentByTag(EditorFragment.class.getName())).getDescription();
-          if (note.length() != 0)
-            Editor.nativeCreateNote(note);
-          // Save edits
+          saveNote();
           saveMapObjectEdits();
         }
       })

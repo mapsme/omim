@@ -2,12 +2,17 @@
 
 #include "platform/platform.hpp"
 
+#include "geometry/mercator.hpp"
+
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 #include "base/timer.hpp"
 
-#include "geometry/mercator.hpp"
+#include "std/functional.hpp"
+
+using namespace std;
+using namespace std::placeholders;
 
 namespace routing
 {
@@ -31,9 +36,15 @@ string ToString(IRouter::ResultCode code)
   case IRouter::InternalError: return "InternalError";
   case IRouter::NeedMoreMaps: return "NeedMoreMaps";
   case IRouter::FileTooOld: return "FileTooOld";
+  case IRouter::IntermediatePointNotFound: return "IntermediatePointNotFound";
+  case IRouter::TransitRouteNotFoundNoNetwork: return "TransitRouteNotFoundNoNetwork";
+  case IRouter::TransitRouteNotFoundTooLongPedestrian: return "TransitRouteNotFoundTooLongPedestrian";
+  case IRouter::RouteNotFoundRedressRouteError: return "RouteNotFoundRedressRouteError";
   }
-  ASSERT(false, ());
-  return "Routing result code case error.";
+
+  string const result = "Unknown IRouter::ResultCode:" + to_string(static_cast<int>(code));
+  ASSERT(false, (result));
+  return result;
 }
 
 map<string, string> PrepareStatisticsData(string const & routerName,
@@ -146,16 +157,16 @@ void AsyncRouter::SetRouter(unique_ptr<IRouter> && router, unique_ptr<IOnlineFet
   m_absentFetcher = move(fetcher);
 }
 
-void AsyncRouter::CalculateRoute(m2::PointD const & startPoint, m2::PointD const & direction,
-                                 m2::PointD const & finalPoint, TReadyCallback const & readyCallback,
+void AsyncRouter::CalculateRoute(Checkpoints const & checkpoints, m2::PointD const & direction,
+                                 bool adjustToPrevRoute, TReadyCallback const & readyCallback,
                                  RouterDelegate::TProgressCallback const & progressCallback,
                                  uint32_t timeoutSec)
 {
   unique_lock<mutex> ul(m_guard);
 
-  m_startPoint = startPoint;
+  m_checkpoints = checkpoints;
   m_startDirection = direction;
-  m_finalPoint = finalPoint;
+  m_adjustToPrevRoute = adjustToPrevRoute;
 
   ResetDelegate();
 
@@ -216,6 +227,19 @@ void AsyncRouter::LogCode(IRouter::ResultCode code, double const elapsedSec)
     case IRouter::FileTooOld:
       LOG(LINFO, ("File too old"));
       break;
+    case IRouter::IntermediatePointNotFound:
+      LOG(LWARNING, ("Can't find intermediate point node"));
+      break;
+    case IRouter::TransitRouteNotFoundNoNetwork:
+      LOG(LWARNING, ("No transit route is found because there's no transit network in the mwm of "
+                     "the route point"));
+      break;
+    case IRouter::TransitRouteNotFoundTooLongPedestrian:
+      LOG(LWARNING, ("No transit route is found because pedestrian way is too long"));
+      break;
+    case IRouter::RouteNotFoundRedressRouteError:
+      LOG(LWARNING, ("Route not found because of a redress route error"));
+      break;
   }
 }
 
@@ -256,7 +280,9 @@ void AsyncRouter::ThreadFunc()
 void AsyncRouter::CalculateRoute()
 {
   shared_ptr<RouterDelegateProxy> delegate;
-  m2::PointD startPoint, finalPoint, startDirection;
+  Checkpoints checkpoints;
+  m2::PointD startDirection;
+  bool adjustToPrevRoute = false;
   shared_ptr<IOnlineFetcher> absentFetcher;
   shared_ptr<IRouter> router;
 
@@ -272,9 +298,9 @@ void AsyncRouter::CalculateRoute()
     if (!m_delegate)
       return;
 
-    startPoint = m_startPoint;
-    finalPoint = m_finalPoint;
+    checkpoints = m_checkpoints;
     startDirection = m_startDirection;
+    adjustToPrevRoute = m_adjustToPrevRoute;
     delegate = m_delegate;
     router = m_router;
     absentFetcher = m_absentFetcher;
@@ -288,13 +314,15 @@ void AsyncRouter::CalculateRoute()
 
   try
   {
-    LOG(LDEBUG, ("Calculating the route from", startPoint, "to", finalPoint, "startDirection", startDirection));
+    LOG(LINFO, ("Calculating the route. checkpoints:", checkpoints, "startDirection:",
+                startDirection, "router name:", router->GetName()));
 
     if (absentFetcher)
-      absentFetcher->GenerateRequest(startPoint, finalPoint);
+      absentFetcher->GenerateRequest(checkpoints);
 
     // Run basic request.
-    code = router->CalculateRoute(startPoint, startDirection, finalPoint, delegate->GetDelegate(), route);
+    code = router->CalculateRoute(checkpoints, startDirection, adjustToPrevRoute,
+                                  delegate->GetDelegate(), route);
 
     elapsedSec = timer.ElapsedSeconds(); // routing time
     LogCode(code, elapsedSec);
@@ -303,12 +331,13 @@ void AsyncRouter::CalculateRoute()
   {
     code = IRouter::InternalError;
     LOG(LERROR, ("Exception happened while calculating route:", e.Msg()));
-    SendStatistics(startPoint, startDirection, finalPoint, e.Msg());
+    SendStatistics(checkpoints.GetStart(), startDirection, checkpoints.GetFinish(), e.Msg());
     delegate->OnReady(route, code);
     return;
   }
 
-  SendStatistics(startPoint, startDirection, finalPoint, code, route, elapsedSec);
+  SendStatistics(checkpoints.GetStart(), startDirection, checkpoints.GetFinish(), code, route,
+                 elapsedSec);
 
   // Draw route without waiting network latency.
   if (code == IRouter::NoError)

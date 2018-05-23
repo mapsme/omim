@@ -11,16 +11,41 @@ set(
   banner.hpp
   booking_api.cpp
   booking_api.hpp
+  booking_availability_params.cpp
+  booking_availability_params.hpp
   facebook_ads.cpp
   facebook_ads.hpp
+  google_ads.cpp
+  google_ads.hpp
+  locals_api.cpp
+  locals_api.hpp
+  maxim_api.cpp
+  maxim_api.hpp
   mopub_ads.cpp
   mopub_ads.hpp
   opentable_api.cpp
   opentable_api.hpp
+  partners.cpp
+  partners.hpp
   rb_ads.cpp
   rb_ads.hpp
+  taxi_base.cpp
+  taxi_base.hpp
+  taxi_engine.cpp
+  taxi_engine.hpp
+  taxi_places.cpp
+  taxi_places.hpp
+  taxi_places_loader.cpp
+  taxi_places_loader.hpp
+  taxi_provider.hpp
   uber_api.cpp
   uber_api.hpp
+  utils.cpp
+  utils.hpp
+  viator_api.cpp
+  viator_api.hpp
+  yandex_api.cpp
+  yandex_api.hpp
 )
 
 add_library(${PROJECT_NAME} ${SRC})

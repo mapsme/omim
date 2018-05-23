@@ -3,7 +3,7 @@
   <!-- Text colors -->
   <color name="text_dark">@color/black_primary</color>
   <color name="text_dark_subtitle">@color/black_secondary</color>
-  <color name="text_dark_hint">@color/black_lightest</color>
+  <color name="text_dark_hint">@color/black_38</color>
   <color name="text_light">@color/white_primary</color>
   <color name="text_light_subtitle">@color/white_secondary</color>
   <color name="text_light_hint">@color/white_lightest</color>
@@ -19,17 +19,23 @@
 
   <color name="black_primary">#DE000000</color>   <!-- 87% black -->
   <color name="black_secondary">#8A000000</color> <!-- 54% black -->
-  <color name="black_lightest">#61000000</color>  <!-- 38% black -->
+  <color name="black_4">#0A000000</color> <!-- 4% black -->
   <color name="black_8">#14000000</color> <!-- 8% black -->
+  <color name="black_11">#1C000000</color> <!-- 11% black -->
+  <color name="black_12">#1E000000</color> <!-- 12% black -->
   <color name="black_24">#3D000000</color> <!-- 24% black -->
-  <color name="black_60">#99000000</color> <!-- 24% black -->
+  <color name="black_38">#61000000</color>  <!-- 38% black -->
+  <color name="black_60">#99000000</color> <!-- 60% black -->
   <color name="white_primary">#FFFFFFFF</color>   <!-- 100% white -->
   <color name="white_secondary">#B3FFFFFF</color> <!-- 70% white -->
   <color name="white_lightest">#4CFFFFFF</color>  <!-- 50% white -->
+  <color name="white_4">#0AFFFFFF</color> <!-- 4% white -->
   <color name="white_8">#14FFFFFF</color> <!-- 8% white -->
-  <color name="white_12">#1Effffff</color> <!-- 12% white -->
-  <color name="white_24">#3DFFFFFF</color> <!-- 24% black -->
-  <color name="white_60">#99FFFFFF</color> <!-- 24% black -->
+  <color name="white_11">#1CFFFFFF</color> <!-- 11% white -->
+  <color name="white_12">#1EFFFFFF</color> <!-- 12% white -->
+  <color name="white_24">#3DFFFFFF</color> <!-- 24% white -->
+  <color name="white_38">#61FFFFFF</color>  <!-- 38% white -->
+  <color name="white_60">#99FFFFFF</color> <!-- 60% white -->
   <color name="warm_gray">#FF999691</color>
   <color name="warm_gray_night">#FF999691</color>
 
@@ -80,6 +86,8 @@
   <color name="bg_placepage_rating_negative">#FFCDD2</color>
   <color name="bg_placepage_rating_negative_night">#1EFFEBF0</color>
 
+  <color name="bg_search_available_hotel">#1A43A047</color>
+
   <!-- Buttons -->
   <color name="button">@color/button_normal</color>
   <color name="button_night">@color/button_normal_night</color>
@@ -88,7 +96,7 @@
   <color name="button_pressed">#66999999</color>
   <color name="button_pressed_night">#40CCCCCC</color>
   <color name="button_disabled">#00000000</color>
-  <color name="button_disabled_night">#00000000</color>
+  <color name="button_disabled_night">@color/white_12</color>
   <color name="button_text">#FF000000</color>
   <color name="button_text_night">#FFFFFFFF</color>
   <color name="button_text_disabled">#42000000</color>
@@ -99,8 +107,8 @@
   <color name="button_accent_normal">@color/base_accent</color>
   <color name="button_accent_normal_night">@color/base_accent_night</color>
   <color name="button_accent_pressed">#FF1C85D6</color>
-  <color name="button_accent_pressed_night">#FFCCB870</color>
-  <color name="button_accent_disabled">#FFEFEFEF</color>
+  <color name="button_accent_pressed_night">#FF3C9BBE</color>
+  <color name="button_accent_disabled">@color/black_12</color>
   <color name="button_accent_disabled_night">#FF505050</color>
   <color name="button_accent_text">#FFFFFFFF</color>
   <color name="button_accent_text_night">#FF000000</color>
@@ -113,20 +121,17 @@
   <color name="button_red_disabled">#FFB9332B</color>
   <color name="button_red_text">#FFFFFFFF</color>
   <color name="button_red_text_disabled">#FF606060</color>
+  <color name="button_facebook">#FF3B5998</color>
 
   <color name="downloader_gray">#FF999999</color>
 
   <!-- Routing-->
   <color name="bg_routing_progress">#1F000000</color>
-  <color name="routing_slot_background">#FFFFFFFF</color>
-  <color name="routing_slot_background_night">@color/bg_panel_night</color>
-  <color name="routing_slot_background_pressed">#FFF0F0F0</color>
-  <color name="routing_slot_background_pressed_night">@color/bg_window_night</color>
-  <color name="routing_slot_shadow">#3D000000</color>
   <color name="routing_button_tint">#FFFFFFFF</color>
   <color name="routing_button_activated_tint">@color/bg_statusbar</color>
   <color name="routing_button_activated_tint_night">@color/bg_statusbar_night</color>
   <color name="routing_button_pressed_tint">#80FFFFFF</color>
+  <color name="routing_intermediate_point">#43A047</color>
 
 
   <color name="bs_divider_color">@color/divider</color>
@@ -158,18 +163,30 @@
   <color name="bg_brand_booking_pressed">#FF1B549E</color>
   <color name="bg_brand_opentable">#FFDA3743</color>
   <color name="bg_brand_opentable_pressed">#FFFC5965</color>
+  <color name="bg_brand_partner1">#FFFFDA00</color>
+  <color name="bg_brand_partner1_pressed">#FFF2CE00</color>
+  <color name="bg_brand_partner3">#FFE61717</color>
+  <color name="bg_brand_partner3_pressed">#FFB31212</color>
 
-  <!-- Banner colors-->
-  <color name="bg_banner_color">#FFFFFBF3</color>
+  <!-- Banner colors -->
+  <color name="bg_banner_color">#FFFDFFE6</color>
   <color name="bg_banner_color_night">#FF484C50</color>
   <color name="text_banner_color">#28000000</color>
   <color name="text_banner_color_night">#28FFFFFF</color>
-  <color name="bg_banner_button">#FFF3EBDA</color>
-  <color name="bg_banner_button_night">#FF52565A</color>
+  <color name="bg_banner_button">@color/black_12</color>
+  <color name="bg_banner_button_night">@color/white_12</color>
   <color name="text_ads_color">#FFFFFBF2</color>
   <color name="text_ads_color_night">#FFFFFBF2</color>
   <color name="banner_action_btn_start_anim_night">#FF888A82</color>
   <color name="banner_action_btn_end_anim">#FFD9D2C3</color>
   <color name="banner_action_btn_end_anim_night">#FF71736C</color>
 
+  <!-- Rating colors -->
+  <color name="rating_excellent">#43A047</color>
+  <color name="rating_good">#7CB342</color>
+  <color name="rating_normal">#F5B027</color>
+  <color name="rating_bad">#F4511E</color>
+  <color name="rating_horrible">#E53935</color>
+  <color name="rating_none">#FF888A82</color>
+  <color name="rating_coming_soon">#FF1E96F0</color>
 </resources>

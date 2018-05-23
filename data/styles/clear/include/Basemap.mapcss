@@ -84,6 +84,7 @@ area[landuse=field],
 {z-index: 41;}
 
 area[natural=wetland],
+area[leisure=marina],
 line[waterway=stream][intermittent=yes]
 {z-index: 42;}
 
@@ -180,8 +181,8 @@ area|z10-[place=islet]
 area|z0-[natural=coastline]
 {fill-color: @water;}
 
-area|z0-[natural=land]
-area|z10-[place=islet],
+area|z0-[natural=land],
+area|z10-[place=islet]
 {fill-color: @background;}
 
 /* 3.BOUNDARIES */
@@ -344,6 +345,7 @@ area|z0-[waterway=dock],
 area|z0-[waterway=riverbank],
 area|z10-[natural=bay],
 area|z11-[natural=wetland],
+area|z11-[leisure=marina],
 area|z12-[landuse=basin],
 area|z12-[landuse=reservoir],
 area|z13-[leisure=swimming_pool],
@@ -374,7 +376,7 @@ area|z13-[leisure=swimming_pool],
 area|z16-[amenity=fountain],
 {fill-color: @water;}
 
-area|z11-[natural=wetland],
+area|z11-[natural=wetland]
 {fill-color: @wetland;}
 
 /* 6.2 Line water(river,canal etc.) */
@@ -455,7 +457,7 @@ area|z15-[landuse=railway],
 area|z15-[landuse=quarry],
 area|z15-[leisure=pitch],
 area|z15-[leisure=stadium],
-area|z15-[amenity=parking]
+area|z15-[amenity=parking],
 area|z16-[public_transport=platform],
 area|z16-[amenity=place_of_worship],
 area|z16-[railway=platform],
@@ -564,22 +566,15 @@ area|z15-[amenity=parking]
 
 /* 8.BUILDINGS */
 
-area|z12-[man_made=pier],
-area|z12-[man_made=breakwater],
-line|z14-[man_made=pier],
-line|z14-[man_made=breakwater],
-line|z14-[man_made=cutline]
-{fill-position: background;	fill-opacity: 1;}
-
 /* 8.1 Pier */
 area|z12-[man_made=pier],
 area|z12-[man_made=breakwater],
- {fill-color: @background;casing-color: @background;}
+{fill-position: background; fill-opacity: 1; fill-color: @background;casing-color: @background;}
 
 line|z14-[man_made=pier],
 line|z14-[man_made=breakwater],
 line|z14-[man_made=cutline]
-{casing-width: 2;casing-color: @background;fill-color: @background;}
+{width: 2;color: @background;opacity: 1;}
 
 /* 8.2 Building */
 
@@ -607,7 +602,7 @@ area|z17[landuse=garages],
 area|z17[building=train_station],
 {fill-color: @building_dark;opacity: 0.9;casing-width: 1;casing-color: @building_dark_border;}
 
-area|z17-[aeroway=terminal]
+area|z17-[aeroway=terminal],
 area|z18-[building],
 area|z18-[building:part],
 area|z18-[landuse=garages],

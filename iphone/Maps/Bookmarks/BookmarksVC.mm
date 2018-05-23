@@ -1,21 +1,14 @@
 #import "BookmarksVC.h"
 #import "CircleView.h"
 #import "ColorPickerView.h"
-#import "MWMBookmarkNameCell.h"
-#import "MWMCommon.h"
+#import "MWMBookmarksManager.h"
 #import "MWMLocationHelpers.h"
-#import "MWMLocationManager.h"
 #import "MWMLocationObserver.h"
 #import "MWMMailViewController.h"
-#import "MWMMapViewControlsManager.h"
-#import "MapViewController.h"
-#import "MapsAppDelegate.h"
-#import "Statistics.h"
+#import "MWMSearchManager.h"
 #import "SwiftBridge.h"
 
 #include "Framework.h"
-
-#include "platform/measurement_utils.hpp"
 
 #include "geometry/distance_on_sphere.hpp"
 
@@ -25,8 +18,6 @@
 #define PINDIAMETER 18
 
 #define EMPTY_SECTION -666
-
-extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotification";
 
 @interface BookmarksVC() <MFMailComposeViewControllerDelegate, MWMLocationObserver>
 {
@@ -39,22 +30,37 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
 
 @implementation BookmarksVC
 
-- (instancetype)initWithCategory:(NSUInteger)index
+- (instancetype)initWithCategory:(MWMMarkGroupID)index
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   if (self)
   {
-    m_categoryIndex = index;
-    self.title = @(GetFramework().GetBmCategory(index)->GetName().c_str());
+    m_categoryId = index;
+    auto const & bmManager = GetFramework().GetBookmarkManager();
+    self.title = @(bmManager.GetCategoryName(m_categoryId).c_str());
     [self calculateSections];
   }
   return self;
 }
 
-- (void)viewDidLoad
+- (kml::MarkId)getBookmarkIdByRow:(NSInteger)row
 {
-  [super viewDidLoad];
-  [self.tableView registerWithCellClass:[MWMBookmarkNameCell class]];
+  auto const & bmManager = GetFramework().GetBookmarkManager();
+  auto const & bookmarkIds = bmManager.GetUserMarkIds(m_categoryId);
+  ASSERT_LESS(row, bookmarkIds.size(), ());
+  auto it = bookmarkIds.begin();
+  std::advance(it, row);
+  return *it;
+}
+
+- (kml::TrackId)getTrackIdByRow:(NSInteger)row
+{
+  auto const & bmManager = GetFramework().GetBookmarkManager();
+  auto const & trackIds = bmManager.GetTrackIds(m_categoryId);
+  ASSERT_LESS(row, trackIds.size(), ());
+  auto it = trackIds.begin();
+  std::advance(it, row);
+  return *it;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -65,11 +71,11 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
   if (section == 0)
-    return 2;
+    return 1;
   else if (section == m_trackSection)
-    return GetFramework().GetBmCategory(m_categoryIndex)->GetTracksCount();
+    return GetFramework().GetBookmarkManager().GetTrackIds(m_categoryId).size();
   else if (section == m_bookmarkSection)
-    return GetFramework().GetBmCategory(m_categoryIndex)->GetUserMarkCount();
+    return GetFramework().GetBookmarkManager().GetUserMarkIds(m_categoryId).size();
   else if (section == m_shareSection)
     return 1;
   else
@@ -80,12 +86,8 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
 {
   [Statistics logEvent:kStatEventName(kStatBookmarks, kStatToggleVisibility)
                    withParameters:@{kStatValue : sender.on ? kStatVisible : kStatHidden}];
-  BookmarkCategory * cat = GetFramework().GetBmCategory(m_categoryIndex);
-  {
-    BookmarkCategory::Guard guard(*cat);
-    guard.m_controller.SetIsVisible(sender.on);
-  }
-  cat->SaveToKMLFile();
+  auto & bmManager = GetFramework().GetBookmarkManager();
+  bmManager.GetEditSession().SetIsVisible(m_categoryId, sender.on);
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -100,35 +102,27 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
   Framework & fr = GetFramework();
-  BookmarkCategory * cat = fr.GetBmCategory(m_categoryIndex);
-  if (!cat)
+  
+  auto & bmManager = fr.GetBookmarkManager();
+  if (!bmManager.HasBmCategory(m_categoryId))
     return nil;
 
   UITableViewCell * cell = nil;
   // First section, contains info about current set
   if (indexPath.section == 0)
   {
-    if (indexPath.row == 0)
+    cell = [tableView dequeueReusableCellWithIdentifier:@"BookmarksVCSetVisibilityCell"];
+    if (!cell)
     {
-      cell = [tableView dequeueReusableCellWithCellClass:[MWMBookmarkNameCell class]
-                                               indexPath:indexPath];
-      [static_cast<MWMBookmarkNameCell *>(cell) configWithName:@(cat->GetName().c_str()) delegate:self];
+      cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"BookmarksVCSetVisibilityCell"];
+      cell.textLabel.text = L(@"visible");
+      cell.accessoryView = [[UISwitch alloc] init];
+      cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    else
-    {
-      cell = [tableView dequeueReusableCellWithIdentifier:@"BookmarksVCSetVisibilityCell"];
-      if (!cell)
-      {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"BookmarksVCSetVisibilityCell"];
-        cell.textLabel.text = L(@"visible");
-        cell.accessoryView = [[UISwitch alloc] init];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-      }
-      UISwitch * sw = (UISwitch *)cell.accessoryView;
-      sw.on = cat->IsVisible();
-      sw.onTintColor = [UIColor linkBlue];
-      [sw addTarget:self action:@selector(onVisibilitySwitched:) forControlEvents:UIControlEventValueChanged];
-    }
+    UISwitch * sw = (UISwitch *)cell.accessoryView;
+    sw.on = bmManager.IsVisible(m_categoryId);
+    sw.onTintColor = [UIColor linkBlue];
+    [sw addTarget:self action:@selector(onVisibilitySwitched:) forControlEvents:UIControlEventValueChanged];
   }
 
   else if (indexPath.section == m_trackSection)
@@ -136,7 +130,8 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
     cell = [tableView dequeueReusableCellWithIdentifier:@"TrackCell"];
     if (!cell)
       cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"TrackCell"];
-    Track const * tr = cat->GetTrack(indexPath.row);
+    kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
+    Track const * tr = bmManager.GetTrack(trackId);
     cell.textLabel.text = @(tr->GetName().c_str());
     string dist;
     if (measurement_utils::FormatDistance(tr->GetLengthMeters(), dist))
@@ -154,11 +149,12 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
     UITableViewCell * bmCell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"BookmarksVCBookmarkItemCell"];
     if (!bmCell)
       bmCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"BookmarksVCBookmarkItemCell"];
-    Bookmark const * bm = static_cast<Bookmark const *>(cat->GetUserMark(indexPath.row));
+    kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
+    Bookmark const * bm = bmManager.GetBookmark(bmId);
     if (bm)
     {
-      bmCell.textLabel.text = @(bm->GetName().c_str());
-      bmCell.imageView.image = [CircleView createCircleImageWith:PINDIAMETER andColor:[ColorPickerView colorForName:@(bm->GetType().c_str())]];
+      bmCell.textLabel.text = @(bm->GetPreferredName().c_str());
+      bmCell.imageView.image = [CircleView createCircleImageWith:PINDIAMETER andColor:[ColorPickerView getUIColor:bm->GetColor()]];
 
       CLLocation * lastLocation = [MWMLocationManager lastLocation];
       if (lastLocation)
@@ -202,8 +198,9 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
   [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
   Framework & f = GetFramework();
-  BookmarkCategory const * cat = f.GetBmCategory(m_categoryIndex);
-  ASSERT(cat, ("NULL category"));
+  auto & bmManager = f.GetBookmarkManager();
+  bool const categoryExists = bmManager.HasBmCategory(m_categoryId);
+  ASSERT(categoryExists, ("Nonexistent category"));
   if (indexPath.section == 0)
   {
     if (indexPath.row == 0)
@@ -214,9 +211,10 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
   }
   else if (indexPath.section == m_trackSection)
   {
-    if (cat)
+    if (categoryExists)
     {
-      Track const * tr = cat->GetTrack(indexPath.row);
+      kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
+      Track const * tr = bmManager.GetTrack(trackId);
       ASSERT(tr, ("NULL track"));
       if (tr)
       {
@@ -227,41 +225,40 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
   }
   else if (indexPath.section == m_bookmarkSection)
   {
-    if (cat)
+    if (categoryExists)
     {
-      Bookmark const * bm = static_cast<Bookmark const *>(cat->GetUserMark(indexPath.row));
+      kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
+      Bookmark const * bm = bmManager.GetBookmark(bmId);
       ASSERT(bm, ("NULL bookmark"));
       if (bm)
       {
         [Statistics logEvent:kStatEventName(kStatBookmarks, kStatShowOnMap)];
         // Same as "Close".
-        MapViewController * mapVC = self.navigationController.viewControllers.firstObject;
-        mapVC.controlsManager.searchHidden = YES;
-        f.ShowBookmark({static_cast<size_t>(indexPath.row), m_categoryIndex});
+        [MWMSearchManager manager].state = MWMSearchManagerStateHidden;
+        f.ShowBookmark(bm);
         [self.navigationController popToRootViewControllerAnimated:YES];
       }
     }
   }
   else if (indexPath.section == m_shareSection)
   {
-    BookmarkCategory const * cat = GetFramework().GetBmCategory(m_categoryIndex);
-    if (cat)
+    if (categoryExists)
     {
       [Statistics logEvent:kStatEventName(kStatBookmarks, kStatExport)];
-      NSString * catName = @(cat->GetName().c_str());
+      NSString * catName = @(bmManager.GetCategoryName(m_categoryId).c_str());
       if (![catName length])
         catName = @"MapsMe";
 
-      NSString * filePath = @(cat->GetFileName().c_str());
+      NSString * filePath = self.categoryFileName;
       NSMutableString * kmzFile = [NSMutableString stringWithString:filePath];
       [kmzFile replaceCharactersInRange:NSMakeRange([filePath length] - 1, 1) withString:@"z"];
 
-      if (CreateZipFromPathDeflatedAndDefaultCompression([filePath UTF8String], [kmzFile UTF8String]))
+      if (CreateZipFromPathDeflatedAndDefaultCompression(filePath.UTF8String, kmzFile.UTF8String))
         [self sendBookmarksWithExtension:@".kmz" andType:@"application/vnd.google-earth.kmz" andFile:kmzFile andCategory:catName];
       else
         [self sendBookmarksWithExtension:@".kml" andType:@"application/vnd.google-earth.kml+xml" andFile:filePath andCategory:catName];
 
-      (void)my::DeleteFileX([kmzFile UTF8String]);
+      (void)my::DeleteFileX(kmzFile.UTF8String);
     }
   }
 }
@@ -284,28 +281,22 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
 {
   if (indexPath.section == m_trackSection || indexPath.section == m_bookmarkSection)
   {
-    BookmarkCategory * cat = GetFramework().GetBmCategory(m_categoryIndex);
-    if (cat)
+    auto & bmManager = GetFramework().GetBookmarkManager();
+    if (bmManager.HasBmCategory(m_categoryId))
     {
       if (editingStyle == UITableViewCellEditingStyleDelete)
       {
         if (indexPath.section == m_trackSection)
         {
-          cat->DeleteTrack(indexPath.row);
+          kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
+          bmManager.GetEditSession().DeleteTrack(trackId);
         }
         else
         {
-          BookmarkAndCategory bookmarkAndCategory{static_cast<size_t>(indexPath.row), m_categoryIndex};
-          NSValue * value = [NSValue valueWithBytes:&bookmarkAndCategory objCType:@encode(BookmarkAndCategory)];
-          [[NSNotificationCenter defaultCenter] postNotificationName:BOOKMARK_DELETED_NOTIFICATION object:value];
-          BookmarkCategory::Guard guard(*cat);
-          guard.m_controller.DeleteUserMark(indexPath.row);
-          [NSNotificationCenter.defaultCenter postNotificationName:kBookmarksChangedNotification
-                                                            object:nil
-                                                          userInfo:nil];
+          kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
+          [MWMBookmarksManager deleteBookmark:bmId];
         }
       }
-      cat->SaveToKMLFile();
       size_t previousNumberOfSections  = m_numberOfSections;
       [self calculateSections];
       //We can delete the row with animation, if number of sections stay the same.
@@ -313,7 +304,7 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
         [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
       else
         [self.tableView reloadData];
-      if (cat->GetUserMarkCount() + cat->GetTracksCount() == 0)
+      if (bmManager.GetUserMarkIds(m_categoryId).size() + bmManager.GetTrackIds(m_categoryId).size() == 0)
       {
         self.navigationItem.rightBarButtonItem = nil;
         [self setEditing:NO animated:YES];
@@ -327,8 +318,8 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
 - (void)onLocationUpdate:(location::GpsInfo const &)info
 {
   // Refresh distance
-  BookmarkCategory * cat = GetFramework().GetBmCategory(m_categoryIndex);
-  if (cat)
+  auto & bmManager = GetFramework().GetBookmarkManager();
+  if (bmManager.HasBmCategory(m_categoryId))
   {
     UITableView * table = (UITableView *)self.view;
     [table.visibleCells enumerateObjectsUsingBlock:^(UITableViewCell * cell, NSUInteger idx, BOOL * stop)
@@ -336,7 +327,8 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
       NSIndexPath * indexPath = [table indexPathForCell:cell];
       if (indexPath.section == self->m_bookmarkSection)
       {
-        Bookmark const * bm = static_cast<Bookmark const *>(cat->GetUserMark(indexPath.row));
+        kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
+        Bookmark const * bm = bmManager.GetBookmark(bmId);
         if (bm)
         {
           m2::PointD const center = bm->GetPivot();
@@ -357,8 +349,9 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
   [MWMLocationManager addObserver:self];
 
   // Display Edit button only if table is not empty
-  BookmarkCategory * cat = GetFramework().GetBmCategory(m_categoryIndex);
-  if (cat && (cat->GetUserMarkCount() + cat->GetTracksCount()))
+  auto & bmManager = GetFramework().GetBookmarkManager();
+  if (bmManager.HasBmCategory(m_categoryId)
+    && (bmManager.GetUserMarkIds(m_categoryId).size() + bmManager.GetTrackIds(m_categoryId).size()))
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
   else
     self.navigationItem.rightBarButtonItem = nil;
@@ -366,42 +359,30 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
   [super viewWillAppear:animated];
 }
 
-- (void)renameBMCategoryIfChanged:(NSString *)newName
-{
-  // Update edited category name
-  BookmarkCategory * cat = GetFramework().GetBmCategory(m_categoryIndex);
-  char const * newCharName = [newName UTF8String];
-  if (cat->GetName() != newCharName)
-  {
-    cat->SetName(newCharName);
-    cat->SaveToKMLFile();
-    self.navigationController.title = newName;
-  }
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
   [MWMLocationManager removeObserver:self];
 
   // Save possibly edited set name
-  UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-  if ([cell isKindOfClass:[MWMBookmarkNameCell class]])
-  {
-    NSString * newName = static_cast<MWMBookmarkNameCell *>(cell).currentName;
-    if (newName)
-      [self renameBMCategoryIfChanged:newName];
-  }
   [super viewWillDisappear:animated];
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+- (void)viewDidAppear:(BOOL)animated
 {
-  if (textField.text.length == 0)
-    return YES;
-  // Hide keyboard
-  [textField resignFirstResponder];
-  [self renameBMCategoryIfChanged:textField.text];
-  return NO;
+  // Disable all notifications in BM on appearance of this view.
+  // It allows to significantly improve performance in case of bookmarks
+  // modification. All notifications will be sent on controller's disappearance.
+  [MWMBookmarksManager setNotificationsEnabled: NO];
+  
+  [super viewDidAppear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+  // Allow to send all notifications in BM.
+  [MWMBookmarksManager setNotificationsEnabled: YES];
+  
+  [super viewDidDisappear:animated];
 }
 
 - (void)sendBookmarksWithExtension:(NSString *)fileExtension andType:(NSString *)mimeType andFile:(NSString *)filePath andCategory:(NSString *)catName
@@ -409,25 +390,61 @@ extern NSString * const kBookmarksChangedNotification = @"BookmarksChangedNotifi
   MWMMailViewController * mailVC = [[MWMMailViewController alloc] init];
   mailVC.mailComposeDelegate = self;
   [mailVC setSubject:L(@"share_bookmarks_email_subject")];
-  NSData * myData = [[NSData alloc] initWithContentsOfFile:filePath];
-  [mailVC addAttachmentData:myData mimeType:mimeType fileName:[NSString stringWithFormat:@"%@%@", catName, fileExtension]];
-  [mailVC setMessageBody:[NSString stringWithFormat:L(@"share_bookmarks_email_body"), catName] isHTML:NO];
+
+  std::ifstream ifs(filePath.UTF8String);
+  std::vector<char> data;
+  if (ifs.is_open())
+  {
+    ifs.seekg(0, ifs.end);
+    auto const size = ifs.tellg();
+    if (size == -1)
+    {
+      ASSERT(false, ("Attachment file seek error."));
+    }
+    else if (size == 0)
+    {
+      ASSERT(false, ("Attachment file is empty."));
+    }
+    else
+    {
+      data.resize(size);
+      ifs.seekg(0);
+      ifs.read(data.data(), size);
+      ifs.close();
+    }
+  }
+  else
+  {
+    ASSERT(false, ("Attachment file is missing."));
+  }
+
+  if (!data.empty())
+  {
+    auto myData = [[NSData alloc] initWithBytes:data.data() length:data.size()];
+    [mailVC addAttachmentData:myData mimeType:mimeType fileName:[NSString stringWithFormat:@"%@%@", catName, fileExtension]];
+  }
+  [mailVC setMessageBody:L(@"share_bookmarks_email_body") isHTML:NO];
   [self presentViewController:mailVC animated:YES completion:nil];
+}
+
+- (NSString *)categoryFileName
+{
+  return @(GetFramework().GetBookmarkManager().GetCategoryFileName(m_categoryId).c_str());
 }
 
 - (void)calculateSections
 {
   int index = 1;
-  BookmarkCategory * cat = GetFramework().GetBmCategory(m_categoryIndex);
-  if (cat->GetTracksCount())
+  auto & bmManager = GetFramework().GetBookmarkManager();
+  if (bmManager.GetTrackIds(m_categoryId).size())
     m_trackSection = index++;
   else
     m_trackSection = EMPTY_SECTION;
-  if (cat->GetUserMarkCount())
+  if (bmManager.GetUserMarkIds(m_categoryId).size())
     m_bookmarkSection = index++;
   else
     m_bookmarkSection = EMPTY_SECTION;
-  if ([MWMMailViewController canSendMail])
+  if ([MWMMailViewController canSendMail] && self.categoryFileName.length > 0)
     m_shareSection = index++;
   else
     m_shareSection = EMPTY_SECTION;

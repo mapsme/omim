@@ -1,26 +1,29 @@
 project(indexer)
 
-include_directories(${OMIM_ROOT}/3party/protobuf/src)
+include_directories(${OMIM_ROOT}/3party/protobuf/protobuf/src)
 
 set(
   SRC
   altitude_loader.cpp
   altitude_loader.hpp
-  categories_holder_loader.cpp
+  borders.cpp
+  borders.hpp
   categories_holder.cpp
   categories_holder.hpp
+  categories_holder_loader.cpp
   categories_index.cpp
   categories_index.hpp
   cell_coverer.hpp
   cell_id.hpp
+  cell_value_pair.hpp
   centers_table.cpp
   centers_table.hpp
+  cities_boundaries_serdes.hpp
+  city_boundary.hpp
+  classificator.cpp
   classificator_loader.cpp
   classificator_loader.hpp
-  classificator.cpp
   classificator.hpp
-  coding_params.cpp
-  coding_params.hpp
   cuisines.cpp
   cuisines.hpp
   data_factory.cpp
@@ -42,6 +45,8 @@ set(
   editable_map_object.hpp
   edits_migration.cpp
   edits_migration.hpp
+  fake_feature_ids.cpp
+  fake_feature_ids.hpp
   feature_algo.cpp
   feature_algo.hpp
   feature_altitude.hpp
@@ -70,12 +75,11 @@ set(
   features_offsets_table.hpp
   features_vector.cpp
   features_vector.hpp
+  ftraits.hpp
   ftypes_matcher.cpp
   ftypes_matcher.hpp
-  geometry_coding.cpp
-  geometry_coding.hpp
-  geometry_serialization.cpp
-  geometry_serialization.hpp
+  ftypes_sponsored.cpp
+  ftypes_sponsored.hpp
   index_builder.cpp
   index_builder.hpp
   index_helpers.cpp
@@ -83,8 +87,12 @@ set(
   index.cpp
   index.hpp
   interval_index_builder.hpp
-  interval_index_iface.hpp
   interval_index.hpp
+  locality_index.hpp
+  locality_index_builder.hpp
+  locality_index_builder.cpp
+  locality_object.hpp
+  locality_object.cpp
   map_object.cpp
   map_object.hpp
   map_style_reader.cpp
@@ -95,9 +103,6 @@ set(
   mwm_set.hpp
   new_feature_categories.cpp   # it's in indexer because of CategoriesHolder dependency.
   new_feature_categories.hpp   # it's in indexer because of CategoriesHolder dependency.
-  old/feature_loader_101.cpp
-  old/feature_loader_101.hpp
-  old/interval_index_101.hpp
   osm_editor.cpp
   osm_editor.hpp
   postcodes_matcher.cpp   # it's in indexer due to editor which is in indexer and depends on postcodes_marcher
@@ -110,6 +115,7 @@ set(
   scale_index.hpp
   scales.cpp
   scales.hpp
+  scales_patch.hpp
   search_delimiters.cpp     # it's in indexer because of CategoriesHolder dependency.
   search_delimiters.hpp       # it's in indexer because of CategoriesHolder dependency.
   search_string_utils.cpp   # it's in indexer because of CategoriesHolder dependency.
@@ -119,7 +125,6 @@ set(
   string_slice.hpp
   succinct_trie_builder.hpp
   succinct_trie_reader.hpp
-  tesselator_decl.hpp
   tree_structure.hpp
   trie_builder.hpp
   trie_reader.hpp

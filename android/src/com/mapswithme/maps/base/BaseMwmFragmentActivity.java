@@ -1,6 +1,7 @@
 package com.mapswithme.maps.base;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -13,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.SplashActivity;
@@ -23,14 +23,15 @@ import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 
-public class BaseMwmFragmentActivity extends AppCompatActivity
+public abstract class BaseMwmFragmentActivity extends AppCompatActivity
                                   implements BaseActivity
 {
   private final BaseActivityDelegate mBaseDelegate = new BaseActivityDelegate(this);
 
-  private boolean mInitializationComplete = false;
+  private boolean mInitializationCompleted = false;
 
   @Override
+  @NonNull
   public Activity get()
   {
     return this;
@@ -49,18 +50,24 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     throw new IllegalArgumentException("Attempt to apply unsupported theme: " + theme);
   }
 
+  /**
+   * Shows splash screen and initializes the core in case when it was not initialized.
+   *
+   * Do not override this method!
+   * Use {@link #safeOnCreate(Bundle savedInstanceState)}
+   */
   @CallSuper
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState)
+  protected final void onCreate(@Nullable Bundle savedInstanceState)
   {
-    if (!MwmApplication.get().isPlatformInitialized()
+    if (!MwmApplication.get().arePlatformAndCoreInitialized()
         || !PermissionsUtils.isExternalStorageGranted())
     {
       super.onCreate(savedInstanceState);
-      goToSplashScreen();
+      goToSplashScreen(getIntent());
       return;
     }
-    mInitializationComplete = true;
+    mInitializationCompleted = true;
 
     mBaseDelegate.onCreate();
     super.onCreate(savedInstanceState);
@@ -68,6 +75,10 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     safeOnCreate(savedInstanceState);
   }
 
+  /**
+   * Use this safe method instead of {@link #onCreate(Bundle savedInstanceState)}.
+   * When this method is called, the core is already initialized.
+   */
   @CallSuper
   protected void safeOnCreate(@Nullable Bundle savedInstanceState)
   {
@@ -91,9 +102,9 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     attachDefaultFragment();
   }
 
-  protected boolean isInitializationComplete()
+  protected boolean isInitializationCompleted()
   {
-    return mInitializationComplete;
+    return mInitializationCompleted;
   }
 
   @ColorRes
@@ -119,6 +130,15 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     return true;
   }
 
+  @CallSuper
+  @Override
+  protected void onNewIntent(Intent intent)
+  {
+    super.onNewIntent(intent);
+    mBaseDelegate.onNewIntent(intent);
+  }
+
+  @CallSuper
   @Override
   protected void onPostCreate(@Nullable Bundle savedInstanceState)
   {
@@ -126,6 +146,7 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     mBaseDelegate.onPostCreate();
   }
 
+  @CallSuper
   @Override
   protected void onDestroy()
   {
@@ -133,6 +154,7 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     mBaseDelegate.onDestroy();
   }
 
+  @CallSuper
   @Override
   protected void onStart()
   {
@@ -140,6 +162,7 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     mBaseDelegate.onStart();
   }
 
+  @CallSuper
   @Override
   protected void onStop()
   {
@@ -165,13 +188,14 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     super.onResume();
     if (!PermissionsUtils.isExternalStorageGranted())
     {
-      goToSplashScreen();
+      goToSplashScreen(null);
       return;
     }
 
     mBaseDelegate.onResume();
   }
 
+  @CallSuper
   @Override
   protected void onPostResume()
   {
@@ -179,6 +203,7 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     mBaseDelegate.onPostResume();
   }
 
+  @CallSuper
   @Override
   protected void onPause()
   {
@@ -251,12 +276,9 @@ public class BaseMwmFragmentActivity extends AppCompatActivity
     return android.R.id.content;
   }
 
-  private void goToSplashScreen()
+  private void goToSplashScreen(@Nullable Intent initialIntent)
   {
-    Class<? extends Activity> type = null;
-    if (!(this instanceof MwmActivity))
-      type = getClass();
-    SplashActivity.start(this, type);
+    SplashActivity.start(this, getClass(), initialIntent);
     finish();
   }
 }

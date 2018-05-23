@@ -35,6 +35,11 @@ public:
     return m_mapping.cend();
   }
 
+  ConstIterator End() const
+  {
+    return m_mapping.cend();
+  }
+
   bool IsValid(ConstIterator it) const
   {
     return it != m_mapping.cend();
@@ -44,19 +49,19 @@ public:
   {
     return IsValid(Find(types));
   }
-
-  template<typename TypesPaths, typename ... Args>
-  void Append(TypesPaths const & types, Args const & ... args)
+  template <typename Type, typename... Args>
+  void AppendType(Type && type, Args &&... args)
   {
+    m_mapping.emplace(classif().GetTypeByPath(std::forward<Type>(type)),
+                      std::forward<Args>(args)...);
+  }
+
+  template <typename TypesPaths, typename... Args>
+  void Append(TypesPaths && types, Args &&... args)
+  {
+    // We mustn't forward args in the loop below because it will be forwarded at first iteration.
     for (auto const & type : types)
-    {
-#if defined(DEBUG)
-      feature::TypesHolder holder;
-      holder.Assign(classif().GetTypeByPath(type));
-      ASSERT(Find(holder) == m_mapping.cend(), ("This type already exists", type));
-#endif
-      m_mapping.emplace(classif().GetTypeByPath(type), args...);
-    }
+      AppendType(type, args...);
   }
 
 private:

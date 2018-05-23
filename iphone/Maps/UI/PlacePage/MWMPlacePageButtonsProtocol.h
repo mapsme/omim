@@ -1,4 +1,9 @@
-typedef UIView * (^MWMPlacePageButtonsDismissBlock)(NSInteger);
+#import "MWMPlacePageTaxiProvider.h"
+#import "MWMRatingSummaryViewValueType.h"
+
+typedef UIView * _Nullable (^MWMPlacePageButtonsDismissBlock)(NSInteger);
+
+@protocol MWMReviewsViewModelProtocol;
 
 @protocol MWMPlacePageButtonsProtocol<NSObject>
 
@@ -7,14 +12,21 @@ typedef UIView * (^MWMPlacePageButtonsDismissBlock)(NSInteger);
 - (void)addBusiness;
 - (void)book:(BOOL)isDescription;
 - (void)editBookmark;
-- (void)taxiTo;
+- (void)orderTaxi:(MWMPlacePageTaxiProvider)provider;
 - (void)showAllReviews;
 - (void)showAllFacilities;
 - (void)showPhotoAtIndex:(NSInteger)index
-           referenceView:(UIView *)referenceView
-           referenceViewWhenDismissingHandler:(MWMPlacePageButtonsDismissBlock)referenceViewWhenDismissingHandler;
-- (void)showGalery;
+                         referenceView:(UIView * _Nullable)referenceView
+    referenceViewWhenDismissingHandler:
+        (nonnull MWMPlacePageButtonsDismissBlock)referenceViewWhenDismissingHandler;
+- (void)showGallery;
+- (void)showUGCAddReview:(MWMRatingSummaryViewValueType)value fromPreview:(BOOL)fromPreview;
+- (void)searchSimilar;
 
 - (void)openLocalAdsURL;
+
+- (void)openSponsoredURL:(NSURL * _Nullable)url;
+
+- (void)openReviews:(id<MWMReviewsViewModelProtocol> _Nonnull)reviewsViewModel;
 
 @end

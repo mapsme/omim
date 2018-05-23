@@ -5,10 +5,12 @@ import android.location.Location;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mapswithme.maps.location.LocationHelper;
+import com.mapswithme.util.Language;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 import com.mopub.nativeads.BaseNativeAd;
@@ -21,7 +23,8 @@ import com.mopub.nativeads.StaticNativeAd;
 
 import java.util.EnumSet;
 
-class MopubNativeDownloader extends CachingNativeAdLoader implements MoPubNative.MoPubNativeNetworkListener
+class MopubNativeDownloader extends CachingNativeAdLoader
+    implements MoPubNative.MoPubNativeNetworkListener, NativeAd.MoPubNativeEventListener
 {
   private final static Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private final static String TAG = MopubNativeDownloader.class.getSimpleName();
@@ -32,6 +35,13 @@ class MopubNativeDownloader extends CachingNativeAdLoader implements MoPubNative
   MopubNativeDownloader(@Nullable OnAdCacheModifiedListener listener, @Nullable AdTracker tracker)
   {
     super(tracker, listener);
+  }
+
+  @Override
+  public void loadAd(@NonNull Context context, @NonNull String bannerId)
+  {
+    mBannerId = bannerId;
+    super.loadAd(context, bannerId);
   }
 
   @Override
@@ -48,14 +58,16 @@ class MopubNativeDownloader extends CachingNativeAdLoader implements MoPubNative
                    RequestParameters.NativeAdAsset.TEXT,
                    RequestParameters.NativeAdAsset.CALL_TO_ACTION_TEXT,
                    RequestParameters.NativeAdAsset.ICON_IMAGE);
+    requestParameters.desiredAssets(assetsSet);
 
     Location l = LocationHelper.INSTANCE.getSavedLocation();
     if (l != null)
       requestParameters.location(l);
-    requestParameters.desiredAssets(assetsSet);
+
+    String locale = Language.nativeNormalize(Language.getDefaultLocale());
+    requestParameters.keywords("user_lang:" + locale);
 
     nativeAd.makeRequest(requestParameters.build());
-    mBannerId = bannerId;
   }
 
   @NonNull
@@ -66,8 +78,9 @@ class MopubNativeDownloader extends CachingNativeAdLoader implements MoPubNative
   }
 
   @Override
-  public void onNativeLoad(NativeAd nativeAd)
+  public void onNativeLoad(final NativeAd nativeAd)
   {
+    nativeAd.setMoPubNativeEventListener(this);
     LOGGER.d(TAG, "onNativeLoad nativeAd = " + nativeAd);
     CachedMwmNativeAd ad = new MopubNativeAd(nativeAd, SystemClock.elapsedRealtime());
     onAdLoaded(nativeAd.getAdUnitId(), ad);
@@ -83,6 +96,19 @@ class MopubNativeDownloader extends CachingNativeAdLoader implements MoPubNative
     onError(mBannerId, getProvider(), new MopubAdError(errorCode.toString()));
   }
 
+  @Override
+  public void onImpression(View view)
+  {
+    LOGGER.d(TAG, "on MoPub Ad impressed");
+  }
+
+  @Override
+  public void onClick(View view)
+  {
+    if (!TextUtils.isEmpty(mBannerId))
+      onAdClicked(mBannerId);
+  }
+
   private static class DummyRenderer implements MoPubAdRenderer<StaticNativeAd>
   {
 
@@ -90,7 +116,7 @@ class MopubNativeDownloader extends CachingNativeAdLoader implements MoPubNative
     @Override
     public View createAdView(@NonNull Context context, @Nullable ViewGroup parent)
     {
-      // This method is never called, don't worry about nullness warning
+      // This method is never called, don't worry about nullness warning.
       // noinspection ConstantConditions
       return null;
     }
@@ -98,7 +124,7 @@ class MopubNativeDownloader extends CachingNativeAdLoader implements MoPubNative
     @Override
     public void renderAdView(@NonNull View view, @NonNull StaticNativeAd ad)
     {
-      // no op
+      // No op.
     }
 
     @Override

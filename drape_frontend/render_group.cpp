@@ -1,19 +1,19 @@
 #include "drape_frontend/render_group.hpp"
+#include "drape_frontend/shader_def.hpp"
 #include "drape_frontend/visual_params.hpp"
 
 #include "drape/debug_rect_renderer.hpp"
-#include "drape/shader_def.hpp"
 #include "drape/vertex_array_buffer.hpp"
 
 #include "geometry/screenbase.hpp"
 
 #include "base/stl_add.hpp"
 
-#include "std/bind.hpp"
+#include <sstream>
+#include <utility>
 
 namespace df
 {
-
 void BaseRenderGroup::SetRenderParams(ref_ptr<dp::GpuProgram> shader, ref_ptr<dp::GpuProgram> shader3d,
                                       ref_ptr<dp::UniformValuesStorage> generalUniforms)
 {
@@ -38,17 +38,11 @@ void BaseRenderGroup::Render(const ScreenBase & screen)
   dp::ApplyUniforms(*(m_generalUniforms.get()), shader);
 }
 
-bool BaseRenderGroup::IsOverlay() const
-{
-  return m_state.GetDepthLayer() == dp::GLState::OverlayLayer;
-}
-
 RenderGroup::RenderGroup(dp::GLState const & state, df::TileKey const & tileKey)
   : TBase(state, tileKey)
   , m_pendingOnDelete(false)
   , m_canBeDeleted(false)
-{
-}
+{}
 
 RenderGroup::~RenderGroup()
 {
@@ -59,7 +53,7 @@ void RenderGroup::Update(ScreenBase const & modelView)
 {
   ASSERT(m_shader != nullptr, ());
   ASSERT(m_generalUniforms != nullptr, ());
-  for(drape_ptr<dp::RenderBucket> & renderBucket : m_renderBuckets)
+  for (auto & renderBucket : m_renderBuckets)
     renderBucket->Update(modelView);
 }
 
@@ -74,10 +68,26 @@ void RenderGroup::CollectOverlay(ref_ptr<dp::OverlayTree> tree)
     renderBucket->CollectOverlayHandles(tree);
 }
 
+bool RenderGroup::HasOverlayHandles() const
+{
+  for (auto & renderBucket : m_renderBuckets)
+  {
+    if (renderBucket->HasOverlayHandles())
+      return true;
+  }
+  return false;
+}
+
 void RenderGroup::RemoveOverlay(ref_ptr<dp::OverlayTree> tree)
 {
   for (auto & renderBucket : m_renderBuckets)
     renderBucket->RemoveOverlayHandles(tree);
+}
+
+void RenderGroup::SetOverlayVisibility(bool isVisible)
+{
+  for (auto & renderBucket : m_renderBuckets)
+    renderBucket->SetOverlayVisibility(isVisible);
 }
 
 void RenderGroup::Render(ScreenBase const & screen)
@@ -97,7 +107,7 @@ void RenderGroup::Render(ScreenBase const & screen)
   int const programIndex = m_state.GetProgramIndex();
   int const program3dIndex = m_state.GetProgram3dIndex();
 
-  if (m_state.GetDepthLayer() == dp::GLState::OverlayLayer)
+  if (IsOverlay())
   {
     if (programIndex == gpu::COLORED_SYMBOL_PROGRAM ||
         programIndex == gpu::COLORED_SYMBOL_BILLBOARD_PROGRAM)
@@ -139,20 +149,31 @@ void RenderGroup::Render(ScreenBase const & screen)
       renderBucket->Render(m_state.GetDrawAsLine());
   }
 
-#ifdef RENDER_DEBUG_RECTS
   for(auto const & renderBucket : m_renderBuckets)
     renderBucket->RenderDebug(screen);
-#endif
 }
 
 void RenderGroup::AddBucket(drape_ptr<dp::RenderBucket> && bucket)
 {
-  m_renderBuckets.push_back(move(bucket));
+  m_renderBuckets.push_back(std::move(bucket));
 }
 
-bool RenderGroup::IsLess(RenderGroup const & other) const
+bool RenderGroup::IsOverlay() const
 {
-  return m_state < other.m_state;
+  auto const depthLayer = GetDepthLayer(m_state);
+  return (depthLayer == RenderState::OverlayLayer) ||
+         (depthLayer == RenderState::NavigationLayer && HasOverlayHandles());
+}
+
+bool RenderGroup::IsUserMark() const
+{
+  auto const depthLayer = GetDepthLayer(m_state);
+  return depthLayer == RenderState::UserLineLayer ||
+         depthLayer == RenderState::UserMarkLayer ||
+         depthLayer == RenderState::TransitMarkLayer ||
+         depthLayer == RenderState::RoutingMarkLayer ||
+         depthLayer == RenderState::LocalAdsMarkLayer ||
+         depthLayer == RenderState::SearchMarkLayer;
 }
 
 bool RenderGroup::UpdateCanBeDeletedStatus(bool canBeDeleted, int currentZoom, ref_ptr<dp::OverlayTree> tree)
@@ -186,82 +207,52 @@ bool RenderGroupComparator::operator()(drape_ptr<RenderGroup> const & l, drape_p
 
   if (rCanBeDeleted == lCanBeDeleted)
   {
-    dp::GLState const & lState = l->GetState();
-    dp::GLState const & rState = r->GetState();
-    dp::GLState::DepthLayer lDepth = lState.GetDepthLayer();
-    dp::GLState::DepthLayer rDepth = rState.GetDepthLayer();
+    auto const & lState = l->GetState();
+    auto const & rState = r->GetState();
+    auto const lDepth = GetDepthLayer(lState);
+    auto const rDepth = GetDepthLayer(rState);
     if (lDepth != rDepth)
       return lDepth < rDepth;
 
     return lState < rState;
   }
-
-  if (rCanBeDeleted)
-    return true;
-
-  return false;
+  return rCanBeDeleted;
 }
 
-UserMarkRenderGroup::UserMarkRenderGroup(size_t layerId, dp::GLState const & state, TileKey const & tileKey,
-                                         drape_ptr<dp::RenderBucket> && bucket)
+UserMarkRenderGroup::UserMarkRenderGroup(dp::GLState const & state, TileKey const & tileKey)
   : TBase(state, tileKey)
-  , m_renderBucket(move(bucket))
-  , m_animation(new OpacityAnimation(0.25 /*duration*/, 0.0 /* minValue */, 1.0 /* maxValue*/))
-  , m_layerId(layerId)
 {
-  m_mapping.AddRangePoint(0.6, 1.3);
-  m_mapping.AddRangePoint(0.85, 0.8);
-  m_mapping.AddRangePoint(1.0, 1.0);
-}
-
-UserMarkRenderGroup::~UserMarkRenderGroup()
-{
+  if (state.GetProgramIndex() == gpu::BOOKMARK_ANIM_PROGRAM ||
+      state.GetProgram3dIndex() == gpu::BOOKMARK_ANIM_BILLBOARD_PROGRAM)
+  {
+    m_animation = make_unique<OpacityAnimation>(0.25 /*duration*/, 0.0 /* minValue */, 1.0 /* maxValue*/);
+    m_mapping.AddRangePoint(0.6f, 1.3f);
+    m_mapping.AddRangePoint(0.85f, 0.8f);
+    m_mapping.AddRangePoint(1.0f, 1.0f);
+  }
 }
 
 void UserMarkRenderGroup::UpdateAnimation()
 {
   BaseRenderGroup::UpdateAnimation();
-  float t = 1.0;
+  float interplationT = 1.0f;
   if (m_animation)
-    t = m_animation->GetOpacity();
-
-  m_uniforms.SetFloatValue("u_interpolationT", m_mapping.GetValue(t));
-}
-
-void UserMarkRenderGroup::Render(ScreenBase const & screen)
-{
-  BaseRenderGroup::Render(screen);
-
-  // Set tile-based model-view matrix.
   {
-    math::Matrix<float, 4, 4> mv = GetTileKey().GetTileBasedModelView(screen);
-    m_uniforms.SetMatrix4x4Value("modelView", mv.m_data);
+    auto const t = static_cast<float>(m_animation->GetOpacity());
+    interplationT = m_mapping.GetValue(t);
   }
-
-  ref_ptr<dp::GpuProgram> shader = screen.isPerspective() ? m_shader3d : m_shader;
-  dp::ApplyUniforms(m_uniforms, shader);
-  if (m_renderBucket != nullptr)
-  {
-    m_renderBucket->GetBuffer()->Build(shader);
-    m_renderBucket->Render(m_state.GetDrawAsLine());
-  }
+  m_uniforms.SetFloatValue("u_interpolationT", interplationT);
 }
 
-size_t UserMarkRenderGroup::GetLayerId() const
-{
-  return m_layerId;
-}
-
-bool UserMarkRenderGroup::CanBeClipped() const
+bool UserMarkRenderGroup::IsUserPoint() const
 {
   return m_state.GetProgramIndex() != gpu::LINE_PROGRAM;
 }
 
-string DebugPrint(RenderGroup const & group)
+std::string DebugPrint(RenderGroup const & group)
 {
-  ostringstream out;
+  std::ostringstream out;
   out << DebugPrint(group.GetTileKey());
   return out.str();
 }
-
-} // namespace df
+}  // namespace df

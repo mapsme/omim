@@ -2,6 +2,8 @@
 
 #include "defines.hpp"
 
+using namespace std;
+
 namespace
 {
 // TODO(AlexZ): Review and replace invalid languages which does not map correctly to
@@ -209,48 +211,29 @@ bool StringUtf8Multilang::HasString(int8_t lang) const
   return false;
 }
 
-namespace
-{
-
-struct Printer
-{
-  string & m_out;
-  Printer(string & out) : m_out(out) {}
-  bool operator()(int8_t code, string const & name) const
-  {
-    m_out += string(StringUtf8Multilang::GetLangByCode(code)) + string(":") + name + " ";
-    return true;
-  }
-};
-
-struct Finder
-{
-  string const & m_s;
-  int8_t m_res;
-  Finder(string const & s) : m_s(s), m_res(-1) {}
-  bool operator()(int8_t code, string const & name)
-  {
-    if (name == m_s)
-    {
-      m_res = code;
-      return false;
-    }
-    return true;
-  }
-};
-
-} // namespace
-
 int8_t StringUtf8Multilang::FindString(string const & utf8s) const
 {
-  Finder finder(utf8s);
-  ForEach(finder);
-  return finder.m_res;
+  int8_t result = kUnsupportedLanguageCode;
+
+  ForEach([&utf8s, &result](int8_t code, string const & name) {
+    if (name == utf8s)
+    {
+      result = code;
+      return base::ControlFlow::Break;
+    }
+    return base::ControlFlow::Continue;
+  });
+
+  return result;
 }
 
 string DebugPrint(StringUtf8Multilang const & s)
 {
-  string out;
-  s.ForEach(Printer(out));
-  return out;
+  string result;
+
+  s.ForEach([&result](int8_t code, string const & name) {
+    result += string(StringUtf8Multilang::GetLangByCode(code)) + string(":") + name + " ";
+  });
+
+  return result;
 }

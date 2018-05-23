@@ -99,7 +99,7 @@ bool Sample::DeserializeFromJSON(string const & jsonStr)
   }
   catch (my::Json::Exception const & e)
   {
-    LOG(LDEBUG, ("Can't parse sample:", e.Msg(), jsonStr));
+    LOG(LWARNING, ("Can't parse sample:", e.Msg(), jsonStr));
   }
   return false;
 }
@@ -123,7 +123,9 @@ bool Sample::operator<(Sample const & rhs) const
     return m_posAvailable < rhs.m_posAvailable;
   if (m_viewport != rhs.m_viewport)
     return LessRect(m_viewport, rhs.m_viewport);
-  return Less(m_results, rhs.m_results);
+  if (!Equal(m_results, rhs.m_results))
+    return Less(m_results, rhs.m_results);
+  return Less(m_relatedQueries, rhs.m_relatedQueries);
 }
 
 bool Sample::operator==(Sample const & rhs) const { return !(*this < rhs) && !(rhs < *this); }
@@ -171,6 +173,7 @@ void Sample::DeserializeFromJSONImpl(json_t * root)
 
   FromJSONObject(root, "viewport", m_viewport);
   FromJSONObjectOptional(root, "results", m_results);
+  FromJSONObjectOptional(root, "related_queries", m_relatedQueries);
 }
 
 void Sample::SerializeToJSONImpl(json_t & root) const
@@ -180,20 +183,21 @@ void Sample::SerializeToJSONImpl(json_t & root) const
   ToJSONObject(root, "position", m_pos);
   ToJSONObject(root, "viewport", m_viewport);
   ToJSONObject(root, "results", m_results);
+  ToJSONObject(root, "related_queries", m_relatedQueries);
 }
 
 void Sample::FillSearchParams(search::SearchParams & params) const
 {
   params.m_query = strings::ToUtf8(m_query);
   params.m_inputLocale = m_locale;
+  params.m_viewport = m_viewport;
   params.m_mode = Mode::Everywhere;
   if (m_posAvailable)
-  {
-    auto const latLon = MercatorBounds::ToLatLon(m_pos);
-    params.SetPosition(latLon.lat, latLon.lon);
-  }
+    params.m_position = m_pos;
 
+  params.m_needAddress = true;
   params.m_suggestsEnabled = false;
+  params.m_needHighlighting = false;
 }
 
 void FromJSONObject(json_t * root, string const & field, Sample::Result::Relevance & relevance)

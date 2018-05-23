@@ -15,26 +15,25 @@ namespace drule { class BaseRule; }
 
 namespace df
 {
-
 class IsBuildingHasPartsChecker : public ftypes::BaseChecker
 {
   IsBuildingHasPartsChecker();
 public:
-  static IsBuildingHasPartsChecker const & Instance();
+  DECLARE_CHECKER_INSTANCE(IsBuildingHasPartsChecker);
 };
 
 class IsBuildingPartChecker : public ftypes::BaseChecker
 {
   IsBuildingPartChecker();
 public:
-  static IsBuildingPartChecker const & Instance();
+  DECLARE_CHECKER_INSTANCE(IsBuildingPartChecker);
 };
 
 class IsHatchingTerritoryChecker : public ftypes::BaseChecker
 {
   IsHatchingTerritoryChecker();
 public:
-  static IsHatchingTerritoryChecker const & Instance();
+  DECLARE_CHECKER_INSTANCE(IsHatchingTerritoryChecker);
 };
 
 struct CaptionDescription
@@ -49,8 +48,8 @@ struct CaptionDescription
   string const & GetMainText() const;
   string const & GetAuxText() const;
   string const & GetRoadNumber() const;
-  string GetPathName() const;
   bool IsNameExists() const;
+  bool IsHouseNumberInMainText() const { return m_isHouseNumberInMainText; }
 
 private:
   /// Clear aux name on high zoom and clear long main name on low zoom.
@@ -62,6 +61,7 @@ private:
   string m_auxText;
   string m_roadNumber;
   string m_houseNumber;
+  bool m_isHouseNumberInMainText = false;
 };
 
 class Stylist

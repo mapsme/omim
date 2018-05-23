@@ -1,14 +1,11 @@
 #import "MWMSearchTableViewController.h"
-#import "MWMLocationManager.h"
-#import "MWMSearchChangeModeView.h"
 #import "MWMSearchCommonCell.h"
 #import "MWMSearchSuggestionCell.h"
 #import "MWMSearchTableView.h"
-#import "MapsAppDelegate.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
 
-@interface MWMSearchTableViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface MWMSearchTableViewController ()<UITableViewDataSource, UITableViewDelegate, MWMGoogleFallbackBannerDynamicSizeDelegate>
 
 @property(weak, nonatomic) IBOutlet UITableView * tableView;
 
@@ -57,9 +54,10 @@
 - (void)viewWillTransitionToSize:(CGSize)size
        withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
+  [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
   [coordinator
       animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        [self onSearchResultsUpdated];
+        [self reloadData];
       }
                       completion:nil];
 }
@@ -74,6 +72,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+  if ([MWMSearch resultsCount] == 0)
+  {
+    NSAssert(false, @"Invalid reload with outdated SearchIndex");
+    return [tableView dequeueReusableCellWithCellClass:[MWMSearchCommonCell class] indexPath:indexPath];
+  }
   auto const row = indexPath.row;
   auto const containerIndex = [MWMSearch containerIndexWithRow:row];
   switch ([MWMSearch resultTypeWithRow:row])
@@ -84,15 +87,23 @@
         dequeueReusableCellWithCellClass:[MWMSearchCommonCell class]
                                indexPath:indexPath]);
     auto const & result = [MWMSearch resultWithContainerIndex:containerIndex];
-    auto const isLocalAds = [MWMSearch isLocalAdsWithContainerIndex:containerIndex];
-    [cell config:result isLocalAds:isLocalAds];
+    auto const isBookingAvailable = [MWMSearch isBookingAvailableWithContainerIndex:containerIndex];
+    auto const & productInfo = [MWMSearch productInfoWithContainerIndex:containerIndex];
+    [cell config:result isAvailable:isBookingAvailable productInfo:productInfo];
     return cell;
   }
   case MWMSearchItemTypeMopub:
+  case MWMSearchItemTypeFacebook:
+  case MWMSearchItemTypeGoogle:
   {
-    auto cell = static_cast<MWMAdBanner *>(
-        [tableView dequeueReusableCellWithCellClass:[MWMAdBanner class] indexPath:indexPath]);
+    auto cell = static_cast<MWMAdBanner *>([tableView dequeueReusableCellWithCellClass:[MWMAdBanner class] indexPath:indexPath]);
     auto ad = [MWMSearch adWithContainerIndex:containerIndex];
+    if ([ad isKindOfClass:[MWMGoogleFallbackBanner class]])
+    {
+      auto fallbackAd = static_cast<MWMGoogleFallbackBanner *>(ad);
+      fallbackAd.cellIndexPath = indexPath;
+      fallbackAd.dynamicSizeDelegate = self;
+    }
     [cell configWithAd:ad containerType:MWMAdBannerContainerTypeSearch];
     return cell;
   }
@@ -107,6 +118,13 @@
     return cell;
   }
   }
+}
+
+#pragma mark - MWMGoogleFallbackBannerDynamicSizeDelegate
+
+- (void)dynamicSizeUpdatedWithBanner:(MWMGoogleFallbackBanner * _Nonnull)banner
+{
+  [self.tableView reloadRowsAtIndexPaths:@[banner.cellIndexPath] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 #pragma mark - UITableViewDelegate
@@ -126,11 +144,13 @@
     [delegate processSearchWithResult:result];
     break;
   }
-  case MWMSearchItemTypeMopub: break;
+  case MWMSearchItemTypeMopub: 
+  case MWMSearchItemTypeFacebook:
+  case MWMSearchItemTypeGoogle: break;
   case MWMSearchItemTypeSuggestion:
   {
     auto const & suggestion = [MWMSearch resultWithContainerIndex:containerIndex];
-    NSString * suggestionString = @(suggestion.GetSuggestionString());
+    NSString * suggestionString = @(suggestion.GetSuggestionString().c_str());
     [Statistics logEvent:kStatEventName(kStatSearch, kStatSelectResult)
           withParameters:@{kStatValue : suggestionString, kStatScreen : kStatSearch}];
     [delegate searchText:suggestionString forInputLocale:nil];
@@ -142,17 +162,10 @@
 
 - (void)onSearchCompleted
 {
+  [self reloadData];
   BOOL const noResults = [MWMSearch resultsCount] == 0;
   self.tableView.hidden = noResults;
   [(MWMSearchTableView *)self.view hideNoResultsView:!noResults];
-}
-
-- (void)onSearchResultsUpdated
-{
-  if (!IPAD && [MWMSearch isSearchOnMap])
-    return;
-
-  [self reloadData];
 }
 
 @end

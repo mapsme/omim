@@ -4,12 +4,9 @@
 #import "Statistics.h"
 #import "SwiftBridge.h"
 #import "WebViewController.h"
-
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
 #include "Framework.h"
-
-#include "platform/platform.hpp"
 
 extern NSString * const kAlohalyticsTapEventKey;
 
@@ -22,6 +19,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 @property(weak, nonatomic) IBOutlet SettingsTableViewLinkCell * facebookCell;
 @property(weak, nonatomic) IBOutlet SettingsTableViewLinkCell * twitterCell;
 @property(weak, nonatomic) IBOutlet SettingsTableViewLinkCell * subscribeCell;
+@property(weak, nonatomic) IBOutlet SettingsTableViewLinkCell * osmCell;
 @property(weak, nonatomic) IBOutlet SettingsTableViewLinkCell * rateCell;
 @property(weak, nonatomic) IBOutlet SettingsTableViewLinkCell * copyrightCell;
 
@@ -36,7 +34,7 @@ extern NSString * const kAlohalyticsTapEventKey;
   [super viewDidLoad];
   self.title = L(@"about_menu_title");
 
-  [[NSBundle mainBundle] loadNibNamed:@"MWMAboutControllerHeader" owner:self options:nil];
+  [NSBundle.mainBundle loadNibNamed:@"MWMAboutControllerHeader" owner:self options:nil];
   self.tableView.tableHeaderView = self.headerView;
 
   AppInfo * appInfo = [AppInfo sharedInfo];
@@ -45,9 +43,6 @@ extern NSString * const kAlohalyticsTapEventKey;
     version = [NSString stringWithFormat:@"%@.%@", version, appInfo.buildNumber];
   self.versionLabel.text = [NSString stringWithFormat:L(@"version"), version];
 
-  NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
-  dateFormatter.dateStyle = NSDateFormatterShortStyle;
-  dateFormatter.timeStyle = NSDateFormatterNoStyle;
   auto const dataVersion = GetFramework().GetCurrentDataVersion();
   self.dateLabel.text = [NSString stringWithFormat:L(@"date"), dataVersion];
 }
@@ -78,11 +73,16 @@ extern NSString * const kAlohalyticsTapEventKey;
                     subject:L(@"subscribe_me_subject")
                 toRecipient:@"subscribe@maps.me"];
   }
+  else if (cell == self.osmCell)
+  {
+    [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"osm"];
+    [self openUrl:[NSURL URLWithString:@"https://www.openstreetmap.org"]];
+  }
   else if (cell == self.rateCell)
   {
     [Statistics logEvent:kStatSettingsOpenSection withParameters:@{kStatName : kStatRate}];
     [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"rate"];
-    [[UIApplication sharedApplication] rateVersionFrom:@"rate_menu_item"];
+    [UIApplication.sharedApplication rateVersionFrom:@"rate_menu_item"];
   }
   else if (cell == self.copyrightCell)
   {

@@ -7,9 +7,13 @@
 #include "indexer/features_vector.hpp"
 
 #include "base/cancellable.hpp"
+#include "base/stl_helpers.hpp"
 
 namespace search
 {
+// static
+FeaturesLayerPathFinder::Mode FeaturesLayerPathFinder::m_mode = MODE_AUTO;
+
 namespace
 {
 using TParentGraph = unordered_map<uint32_t, uint32_t>;
@@ -61,9 +65,15 @@ bool GetPath(uint32_t id, vector<FeaturesLayer const *> const & layers, TParentG
   } while (level < layers.size() && it != parent.cend());
   return level == layers.size();
 }
+
+bool MayHaveDelayedFeatures(FeaturesLayer const & layer)
+{
+  return layer.m_type == Model::TYPE_BUILDING &&
+         house_numbers::LooksLikeHouseNumber(layer.m_subQuery, layer.m_lastTokenIsPrefix);
+}
 }  // namespace
 
-FeaturesLayerPathFinder::FeaturesLayerPathFinder(my::Cancellable const & cancellable)
+FeaturesLayerPathFinder::FeaturesLayerPathFinder(::base::Cancellable const & cancellable)
   : m_cancellable(cancellable)
 {
 }
@@ -75,13 +85,22 @@ void FeaturesLayerPathFinder::FindReachableVertices(FeaturesLayerMatcher & match
   if (layers.empty())
     return;
 
-  uint64_t const topDownCost = CalcTopDownPassCost(layers);
-  uint64_t const bottomUpCost = CalcBottomUpPassCost(layers);
+  switch (m_mode)
+  {
+  case MODE_AUTO:
+  {
+    uint64_t const topDownCost = CalcTopDownPassCost(layers);
+    uint64_t const bottomUpCost = CalcBottomUpPassCost(layers);
 
-  if (bottomUpCost < topDownCost)
-    FindReachableVerticesBottomUp(matcher, layers, results);
-  else
-    FindReachableVerticesTopDown(matcher, layers, results);
+    if (bottomUpCost < topDownCost)
+      FindReachableVerticesBottomUp(matcher, layers, results);
+    else
+      FindReachableVerticesTopDown(matcher, layers, results);
+  }
+  break;
+  case MODE_BOTTOM_UP: FindReachableVerticesBottomUp(matcher, layers, results); break;
+  case MODE_TOP_DOWN: FindReachableVerticesTopDown(matcher, layers, results); break;
+  }
 }
 
 void FeaturesLayerPathFinder::FindReachableVerticesTopDown(
@@ -95,8 +114,9 @@ void FeaturesLayerPathFinder::FindReachableVerticesTopDown(
 
   TParentGraph parent;
 
-  auto addEdge = [&](uint32_t childFeature, uint32_t parentFeature)
-  {
+  auto addEdge = [&](uint32_t childFeature, uint32_t parentFeature) {
+    if (parent.find(childFeature) != parent.end())
+      return;
     parent[childFeature] = parentFeature;
     buffer.push_back(childFeature);
   };
@@ -105,27 +125,27 @@ void FeaturesLayerPathFinder::FindReachableVerticesTopDown(
   {
     BailIfCancelled(m_cancellable);
 
-    if (reachable.empty())
-      return;
-
     FeaturesLayer parent(*layers[i]);
     if (i != layers.size() - 1)
       my::SortUnique(reachable);
     parent.m_sortedFeatures = &reachable;
-    parent.m_hasDelayedFeatures = false;
+
+    // The first condition is an optimization: it is enough to extract
+    // the delayed features only once.
+    parent.m_hasDelayedFeatures = (i == layers.size() - 1 && MayHaveDelayedFeatures(parent));
 
     FeaturesLayer child(*layers[i - 1]);
-    child.m_hasDelayedFeatures =
-        child.m_type == SearchModel::SEARCH_TYPE_BUILDING &&
-        house_numbers::LooksLikeHouseNumber(child.m_subQuery, child.m_lastTokenIsPrefix);
+    child.m_hasDelayedFeatures = MayHaveDelayedFeatures(child);
 
     buffer.clear();
     matcher.Match(child, parent, addEdge);
     reachable.swap(buffer);
   }
 
+  auto const & lowestLevel = reachable;
+
   IntersectionResult result;
-  for (auto const & id : reachable)
+  for (auto const & id : lowestLevel)
   {
     if (GetPath(id, layers, parent, result))
       results.push_back(result);
@@ -143,41 +163,53 @@ void FeaturesLayerPathFinder::FindReachableVerticesBottomUp(
 
   TParentGraph parent;
 
-  auto addEdge = [&](uint32_t childFeature, uint32_t parentFeature)
-  {
+  // It is possible that there are delayed features on the lowest level.
+  // We do not know about them until the matcher has been called, so
+  // they will be added in |addEdge|. On the other hand, if there is
+  // only one level, we must make sure that it is nonempty.
+  // This problem does not arise in the top-down pass because there
+  // the last reached level is exactly the lowest one.
+  vector<uint32_t> lowestLevel = reachable;
+  // True iff |addEdge| works with the lowest level.
+  bool first = true;
+
+  auto addEdge = [&](uint32_t childFeature, uint32_t parentFeature) {
+    if (parent.find(childFeature) != parent.end())
+      return;
     parent[childFeature] = parentFeature;
     buffer.push_back(parentFeature);
+
+    if (first)
+      lowestLevel.push_back(childFeature);
   };
 
   for (size_t i = 0; i + 1 != layers.size(); ++i)
   {
     BailIfCancelled(m_cancellable);
 
-    if (reachable.empty())
-      return;
-
     FeaturesLayer child(*layers[i]);
     if (i != 0)
       my::SortUnique(reachable);
     child.m_sortedFeatures = &reachable;
-    child.m_hasDelayedFeatures = false;
+    child.m_hasDelayedFeatures = (i == 0 && MayHaveDelayedFeatures(child));
 
     FeaturesLayer parent(*layers[i + 1]);
-    parent.m_hasDelayedFeatures =
-        parent.m_type == SearchModel::SEARCH_TYPE_BUILDING &&
-        house_numbers::LooksLikeHouseNumber(parent.m_subQuery, parent.m_lastTokenIsPrefix);
+    parent.m_hasDelayedFeatures = MayHaveDelayedFeatures(parent);
 
     buffer.clear();
     matcher.Match(child, parent, addEdge);
     reachable.swap(buffer);
+
+    first = false;
   }
 
+  my::SortUnique(lowestLevel);
+
   IntersectionResult result;
-  for (auto const & id : *(layers.front()->m_sortedFeatures))
+  for (auto const & id : lowestLevel)
   {
     if (GetPath(id, layers, parent, result))
       results.push_back(result);
   }
 }
-
 }  // namespace search

@@ -11,145 +11,329 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.ThemeUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 final class PlacePageButtons
 {
-  private final int MAX_BUTTONS;
+  private static final Map<Integer, PartnerItem> PARTNERS_ITEMS = new HashMap<Integer, PartnerItem>()
+  {{
+    put(PartnerItem.PARTNER1.getIndex(), PartnerItem.PARTNER1);
+    put(PartnerItem.PARTNER3.getIndex(), PartnerItem.PARTNER3);
+  }};
+
+  private final int mMaxButtons;
 
   private final PlacePageView mPlacePage;
   private final ViewGroup mFrame;
   private final ItemListener mItemListener;
 
-  private List<Item> mPrevItems;
+  private List<ButtonInterface> mPrevItems;
 
-  enum Item
+  interface ButtonInterface
+  {
+    @StringRes
+    int getTitle();
+
+    @DrawableRes
+    int getIcon();
+
+    @NonNull
+    ButtonType getType();
+  }
+
+  enum ButtonType
+  {
+    PARTNER1, PARTNER3, BOOKING, BOOKING_SEARCH, OPENTABLE, BACK, BOOKMARK,
+    ROUTE_FROM, ROUTE_TO, ROUTE_ADD, ROUTE_REMOVE, SHARE, MORE, CALL
+  }
+
+  private enum PartnerItem implements ButtonInterface
+  {
+    PARTNER1(1)
+    {
+      @Override
+      public int getTitle()
+      {
+        return R.string.sponsored_partner1_action;
+      }
+
+      @Override
+      public int getIcon()
+      {
+        return R.drawable.ic_24px_logo_partner1;
+      }
+
+      @NonNull
+      public ButtonType getType()
+      {
+        return ButtonType.PARTNER1;
+      }
+    },
+
+    PARTNER3(3)
+    {
+      @Override
+      public int getTitle()
+      {
+        return R.string.sponsored_partner3_action;
+      }
+
+      @Override
+      public int getIcon()
+      {
+        return R.drawable.ic_24px_logo_partner3;
+      }
+
+      @Override
+      @NonNull
+      public ButtonType getType()
+      {
+        return ButtonType.PARTNER3;
+      }
+    };
+
+    private final int mIndex;
+
+    PartnerItem(int index)
+    {
+      mIndex = index;
+    }
+
+    public int getIndex()
+    {
+      return mIndex;
+    }
+  }
+
+  enum Item implements ButtonInterface
   {
     BOOKING
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.book_button;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
         return R.drawable.ic_booking;
+      }
+
+      @Override
+      @NonNull
+      public ButtonType getType()
+      {
+        return ButtonType.BOOKING;
       }
     },
 
     BOOKING_SEARCH
-        {
-          @Override
-          int getTitle()
-          {
-            return R.string.booking_search;
-          }
+    {
+      @Override
+      public int getTitle()
+      {
+        return R.string.booking_search;
+      }
 
-          @Override
-          int getIcon()
-          {
-            return R.drawable.ic_menu_search;
-          }
-        },
+      @Override
+      public int getIcon()
+      {
+        return R.drawable.ic_menu_search;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.BOOKING_SEARCH;
+      }
+    },
 
     OPENTABLE
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.book_button;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
         return R.drawable.ic_opentable;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.OPENTABLE;
       }
     },
 
     BACK
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.back;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
         return ThemeUtils.getResource(MwmApplication.get(), android.R.attr.homeAsUpIndicator);
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.BACK;
       }
     },
 
     BOOKMARK
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.bookmark;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
         return R.drawable.ic_bookmarks_off;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.BOOKMARK;
       }
     },
 
     ROUTE_FROM
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.p2p_from_here;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
         return R.drawable.ic_route_from;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.ROUTE_FROM;
       }
     },
 
     ROUTE_TO
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.p2p_to_here;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
         return R.drawable.ic_route_to;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.ROUTE_TO;
+      }
+    },
+
+    ROUTE_ADD
+    {
+      @Override
+      public int getTitle()
+      {
+        return R.string.placepage_add_stop;
+      }
+
+      @Override
+      public int getIcon()
+      {
+        return R.drawable.ic_route_via;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.ROUTE_ADD;
+      }
+    },
+
+    ROUTE_REMOVE
+    {
+      @Override
+      public int getTitle()
+      {
+        return R.string.placepage_remove_stop;
+      }
+
+      @Override
+      public int getIcon()
+      {
+        return R.drawable.ic_route_remove;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.ROUTE_REMOVE;
       }
     },
 
     SHARE
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.share;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
         return R.drawable.ic_share;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.SHARE;
       }
     },
 
@@ -157,40 +341,64 @@ final class PlacePageButtons
     MORE
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.placepage_more_button;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
         return R.drawable.bs_ic_more;
       }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.MORE;
+      }
     },
+
     CALL
     {
       @Override
-      int getTitle()
+      public int getTitle()
       {
         return R.string.placepage_call_button;
       }
 
       @Override
-      int getIcon()
+      public int getIcon()
       {
-        return R.drawable.ic_phone;
+        return R.drawable.ic_place_page_phone;
+      }
+
+      @NonNull
+      @Override
+      public ButtonType getType()
+      {
+        return ButtonType.CALL;
       }
     };
 
-    abstract @StringRes int getTitle();
-    abstract @DrawableRes int getIcon();
+    @StringRes
+    public int getTitle()
+    {
+      throw new UnsupportedOperationException("Not supported!");
+    }
+
+    @DrawableRes
+    public int getIcon()
+    {
+      throw new UnsupportedOperationException("Not supported!");
+    }
   }
 
   interface ItemListener
   {
-    void onPrepareVisibleView(Item item, View frame, ImageView icon, TextView title);
-    void onItemClick(Item item);
+    void onPrepareVisibleView(ButtonInterface item, View frame, ImageView icon, TextView title);
+    void onItemClick(ButtonInterface item);
   }
 
   PlacePageButtons(PlacePageView placePage, ViewGroup frame, ItemListener itemListener)
@@ -199,32 +407,53 @@ final class PlacePageButtons
     mFrame = frame;
     mItemListener = itemListener;
 
-    MAX_BUTTONS = mPlacePage.getContext().getResources().getInteger(R.integer.pp_buttons_max);
+    mMaxButtons = mPlacePage.getContext().getResources().getInteger(R.integer.pp_buttons_max);
   }
 
-  private @NonNull List<Item> collectButtons(List<Item> items)
+  @NonNull
+  static ButtonInterface getPartnerItem(int partnerIndex)
   {
-    List<Item> res = new ArrayList<>(items);
-    if (res.size() > MAX_BUTTONS)
-      res.add(MAX_BUTTONS - 1, Item.MORE);
+    ButtonInterface item = PARTNERS_ITEMS.get(partnerIndex);
+    if (item == null)
+      throw new AssertionError("Wrong partner index: " + partnerIndex);
+    return item;
+  }
+
+  private @NonNull List<ButtonInterface> collectButtons(List<ButtonInterface> items)
+  {
+    List<ButtonInterface> res = new ArrayList<>(items);
+    if (res.size() > mMaxButtons)
+      res.add(mMaxButtons - 1, Item.MORE);
 
     // Swap ROUTE_FROM and ROUTE_TO if the latter one was pressed out to bottomsheet
     int from = res.indexOf(Item.ROUTE_FROM);
     if (from > -1)
     {
+      int addStop = res.indexOf(Item.ROUTE_ADD);
       int to = res.indexOf(Item.ROUTE_TO);
-      if (to > from && to >= MAX_BUTTONS)
+      if ((to > from && to >= mMaxButtons) || (to > from && addStop >= mMaxButtons))
         Collections.swap(res, from, to);
+
+      if (addStop >= mMaxButtons)
+      {
+        from = res.indexOf(Item.ROUTE_FROM);
+        if (addStop > from)
+          Collections.swap(res, from, addStop);
+      }
 
       preserveRoutingButtons(res, Item.CALL);
       preserveRoutingButtons(res, Item.BOOKING);
       preserveRoutingButtons(res, Item.BOOKING_SEARCH);
+      from = res.indexOf(Item.ROUTE_FROM);
+      to = res.indexOf(Item.ROUTE_TO);
+      if (from < mMaxButtons && from > to)
+        Collections.swap(res, to, from);
     }
 
     return res;
   }
 
-  private void preserveRoutingButtons(@NonNull List<Item> items, @NonNull Item itemToShift)
+  private void preserveRoutingButtons(@NonNull List<ButtonInterface> items, @NonNull Item itemToShift)
   {
     if (!RoutingController.get().isNavigating() && !RoutingController.get().isPlanning())
       return;
@@ -233,19 +462,29 @@ final class PlacePageButtons
     if (pos > -1)
     {
       items.remove(pos);
-      items.add(MAX_BUTTONS, itemToShift);
+      items.add(mMaxButtons, itemToShift);
       int to = items.indexOf(Item.ROUTE_TO);
-      items.remove(Item.ROUTE_FROM);
-      items.add(to + 1, Item.ROUTE_FROM);
+      if (items.indexOf(Item.ROUTE_ADD) > -1)
+      {
+        items.remove(Item.ROUTE_ADD);
+        items.remove(Item.ROUTE_FROM);
+        items.add(to + 1, Item.ROUTE_ADD);
+        items.add(mMaxButtons, Item.ROUTE_FROM);
+      }
+      else
+      {
+        items.remove(Item.ROUTE_FROM);
+        items.add(to + 1, Item.ROUTE_FROM);
+      }
     }
   }
 
-  private void showPopup(final List<Item> buttons)
+  private void showPopup(final List<ButtonInterface> buttons)
   {
     BottomSheetHelper.Builder bs = new BottomSheetHelper.Builder(mPlacePage.getActivity());
-    for (int i = MAX_BUTTONS; i < buttons.size(); i++)
+    for (int i = mMaxButtons; i < buttons.size(); i++)
     {
-      Item bsItem = buttons.get(i);
+      ButtonInterface bsItem = buttons.get(i);
       bs.sheet(i, bsItem.getIcon(), bsItem.getTitle());
     }
 
@@ -262,7 +501,7 @@ final class PlacePageButtons
     bs.tint().show();
   }
 
-  private View createButton(final List<Item> items, final Item current)
+  private View createButton(final List<ButtonInterface> items, final ButtonInterface current)
   {
     View res = LayoutInflater.from(mPlacePage.getContext()).inflate(R.layout.place_page_button, mFrame, false);
 
@@ -289,14 +528,14 @@ final class PlacePageButtons
     return res;
   }
 
-  void setItems(List<Item> items)
+  void setItems(List<ButtonInterface> items)
   {
-    final List<Item> buttons = collectButtons(items);
+    final List<ButtonInterface> buttons = collectButtons(items);
     if (buttons.equals(mPrevItems))
       return;
 
     mFrame.removeAllViews();
-    int count = Math.min(buttons.size(), MAX_BUTTONS);
+    int count = Math.min(buttons.size(), mMaxButtons);
     for (int i = 0; i < count; i++)
       mFrame.addView(createButton(buttons, buttons.get(i)));
 

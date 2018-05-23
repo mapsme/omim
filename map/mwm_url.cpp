@@ -8,6 +8,9 @@
 
 #include "drape_frontend/visual_params.hpp"
 
+#include "platform/marketing_service.hpp"
+#include "platform/settings.hpp"
+
 #include "coding/uri.hpp"
 
 #include "base/logging.hpp"
@@ -20,36 +23,88 @@
 
 namespace url_scheme
 {
+namespace lead
+{
+char const * kFrom = marketing::kFrom;
+char const * kType = marketing::kType;
+char const * kName = marketing::kName;
+char const * kContent = marketing::kContent;
+char const * kKeyword = marketing::kKeyword;
+
+struct CampaignDescription
+{
+  void Write() const
+  {
+    if (!IsValid())
+    {
+      LOG(LERROR, ("Invalid campaign description"));
+      return;
+    }
+
+    marketing::Settings::Set(kFrom, m_from);
+    marketing::Settings::Set(kType, m_type);
+    marketing::Settings::Set(kName, m_name);
+
+    if (!m_content.empty())
+      marketing::Settings::Set(kContent, m_content);
+
+    if (!m_keyword.empty())
+      marketing::Settings::Set(kKeyword, m_keyword);
+  }
+
+  bool IsValid() const { return !m_from.empty() && !m_type.empty() && !m_name.empty(); }
+  
+  string m_from;
+  string m_type;
+  string m_name;
+  string m_content;
+  string m_keyword;
+};
+}  // namespace lead
+
+namespace map
+{
+char const * kLatLon = "ll";
+char const * kZoomLevel = "z";
+char const * kName = "n";
+char const * kId = "id";
+char const * kStyle = "s";
+char const * kBackUrl = "backurl";
+char const * kVersion = "v";
+char const * kAppName = "appname";
+char const * kBalloonAction = "balloonaction";
+}  // namespace map
+
+namespace route
+{
+char const * kSourceLatLon = "sll";
+char const * kDestLatLon = "dll";
+char const * kSourceName = "saddr";
+char const * kDestName = "daddr";
+char const * kRouteType = "type";
+char const * kRouteTypeVehicle = "vehicle";
+char const * kRouteTypePedestrian = "pedestrian";
+char const * kRouteTypeBicycle = "bicycle";
+char const * kRouteTypeTransit = "transit";
+}  // namespace route
+
+namespace search
+{
+char const * kQuery = "query";
+char const * kCenterLatLon = "cll";
+char const * kLocale = "locale";
+char const * kSearchOnMap = "map";
+}  // namespace search
+  
 namespace
 {
-string const kLatLon = "ll";
-string const kQuery = "query";
-string const kCenterLatLon = "cll";
-string const kLocale = "locale";
-string const kSearchOnMap = "map";
-string const kSourceLatLon = "sll";
-string const kDestLatLon = "dll";
-string const kZoomLevel = "z";
-string const kName = "n";
-string const kSourceName = "saddr";
-string const kDestName = "daddr";
-string const kId = "id";
-string const kStyle = "s";
-string const kBackUrl = "backurl";
-string const kVersion = "v";
-string const kAppName = "appname";
-string const kBalloonAction = "balloonaction";
-string const kRouteType = "type";
-string const kRouteTypeVehicle = "vehicle";
-string const kRouteTypePedestrian = "pedestrian";
-string const kRouteTypeBicycle = "bicycle";
-
 enum class ApiURLType
 {
   Incorrect,
   Map,
   Route,
-  Search
+  Search,
+  Lead
 };
 
 std::array<std::string, 3> const kAvailableSchemes = {{"mapswithme", "mwm", "mapsme"}};
@@ -66,6 +121,8 @@ ApiURLType URLType(Uri const & uri)
     return ApiURLType::Route;
   if (path == "search")
     return ApiURLType::Search;
+  if (path == "lead")
+    return ApiURLType::Lead;
 
   return ApiURLType::Incorrect;
 }
@@ -125,21 +182,25 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
     case ApiURLType::Map:
     {
       vector<ApiPoint> points;
-      if (!uri.ForEachKeyValue(bind(&ParsedMapApi::AddKeyValue, this, _1, _2, ref(points))))
+      auto const result = uri.ForEachKeyValue([&points, this](string const & key, string const & value)
+                                              {
+                                                return AddKeyValue(key, value, points);
+                                              });
+      if (!result)
         return ParsingResult::Incorrect;
 
       if (points.empty())
         return ParsingResult::Incorrect;
 
       ASSERT(m_bmManager != nullptr, ());
-      UserMarkControllerGuard guard(*m_bmManager, UserMarkType::API_MARK);
+      auto editSession = m_bmManager->GetEditSession();
       for (auto const & p : points)
       {
         m2::PointD glPoint(MercatorBounds::FromLatLon(p.m_lat, p.m_lon));
-        ApiMarkPoint * mark = static_cast<ApiMarkPoint *>(guard.m_controller.CreateUserMark(glPoint));
+        auto * mark = editSession.CreateUserMark<ApiMarkPoint>(glPoint);
         mark->SetName(p.m_name);
-        mark->SetID(p.m_id);
-        mark->SetStyle(style::GetSupportedStyle(p.m_style, p.m_name, ""));
+        mark->SetApiID(p.m_id);
+        mark->SetStyle(style::GetSupportedStyle(p.m_style));
       }
 
       return ParsingResult::Map;
@@ -147,8 +208,14 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
     case ApiURLType::Route:
     {
       m_routePoints.clear();
+      using namespace route;
       vector<string> pattern{kSourceLatLon, kSourceName, kDestLatLon, kDestName, kRouteType};
-      if (!uri.ForEachKeyValue(bind(&ParsedMapApi::RouteKeyValue, this, _1, _2, ref(pattern))))
+      auto const result = uri.ForEachKeyValue([&pattern, this](string const & key, string const & value)
+                                              {
+                                                return RouteKeyValue(key, value, pattern);
+                                              });
+
+      if (!result)
         return ParsingResult::Incorrect;
 
       if (pattern.size() != 0)
@@ -163,17 +230,41 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
       return ParsingResult::Route;
     }
     case ApiURLType::Search:
+    {
       SearchRequest request;
-      if (!uri.ForEachKeyValue(bind(&ParsedMapApi::SearchKeyValue, this, _1, _2, ref(request))))
+      auto const result = uri.ForEachKeyValue([&request, this](string const & key, string const & value)
+                                              {
+                                                return SearchKeyValue(key, value, request);
+                                              });
+      if (!result)
         return ParsingResult::Incorrect;
       
       m_request = request;
       return request.m_query.empty() ? ParsingResult::Incorrect : ParsingResult::Search;
+    }
+    case ApiURLType::Lead:
+    {
+      lead::CampaignDescription description;
+      auto result = uri.ForEachKeyValue([&description, this](string const & key, string const & value)
+                                        {
+                                          return LeadKeyValue(key, value, description);
+                                        });
+      if (!result)
+        return ParsingResult::Incorrect;
+
+      if (!description.IsValid())
+        return ParsingResult::Incorrect;
+
+      description.Write();
+      return ParsingResult::Lead;
+    }
   }
 }
 
 bool ParsedMapApi::RouteKeyValue(string const & key, string const & value, vector<string> & pattern)
 {
+  using namespace route;
+
   if (pattern.empty() || key != pattern.front())
     return false;
 
@@ -195,7 +286,8 @@ bool ParsedMapApi::RouteKeyValue(string const & key, string const & value, vecto
   else if (key == kRouteType)
   {
     string const lowerValue = strings::MakeLowerCase(value);
-    if (lowerValue == kRouteTypePedestrian || lowerValue == kRouteTypeVehicle || lowerValue == kRouteTypeBicycle)
+    if (lowerValue == kRouteTypePedestrian || lowerValue == kRouteTypeVehicle ||
+        lowerValue == kRouteTypeBicycle || lowerValue == kRouteTypeTransit)
     {
       m_routingType = lowerValue;
     }
@@ -212,6 +304,8 @@ bool ParsedMapApi::RouteKeyValue(string const & key, string const & value, vecto
 
 bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<ApiPoint> & points)
 {
+  using namespace map;
+
   if (key == kLatLon)
   {
     double lat = 0.0;
@@ -289,6 +383,8 @@ bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<
 
 bool ParsedMapApi::SearchKeyValue(string const & key, string const & value, SearchRequest & request) const
 {
+  using namespace search;
+
   if (key == kQuery)
   {
     if (value.empty())
@@ -318,6 +414,26 @@ bool ParsedMapApi::SearchKeyValue(string const & key, string const & value, Sear
   return true;
 }
 
+bool ParsedMapApi::LeadKeyValue(string const & key, string const & value, lead::CampaignDescription & description) const
+{
+  using namespace lead;
+
+  if (key == kFrom)
+    description.m_from = value;
+  else if (key == kType)
+    description.m_type = value;
+  else if (key == kName)
+    description.m_name = value;
+  else if (key == kContent)
+    description.m_content = value;
+  else if (key == kKeyword)
+    description.m_keyword = value;
+  /*
+   We have to support parsing the uri which contains unregistred parameters.
+   */
+  return true;
+}
+
 void ParsedMapApi::Reset()
 {
   m_globalBackUrl.clear();
@@ -330,20 +446,18 @@ void ParsedMapApi::Reset()
 bool ParsedMapApi::GetViewportRect(m2::RectD & rect) const
 {
   ASSERT(m_bmManager != nullptr, ());
-  UserMarkControllerGuard guard(*m_bmManager, UserMarkType::API_MARK);
-
-  size_t markCount = guard.m_controller.GetUserMarkCount();
-  if (markCount == 1 && m_zoomLevel >= 1)
+  auto const & markIds = m_bmManager->GetUserMarkIds(UserMark::Type::API);
+  if (markIds.size() == 1 && m_zoomLevel >= 1)
   {
     double zoom = min(static_cast<double>(scales::GetUpperComfortScale()), m_zoomLevel);
-    rect = df::GetRectForDrawScale(zoom, guard.m_controller.GetUserMark(0)->GetPivot());
+    rect = df::GetRectForDrawScale(zoom, m_bmManager->GetUserMark(*markIds.begin())->GetPivot());
     return true;
   }
   else
   {
     m2::RectD result;
-    for (size_t i = 0; i < guard.m_controller.GetUserMarkCount(); ++i)
-      result.Add(guard.m_controller.GetUserMark(i)->GetPivot());
+    for (auto markId : markIds)
+      result.Add(m_bmManager->GetUserMark(markId)->GetPivot());
 
     if (result.IsValid())
     {
@@ -358,12 +472,11 @@ bool ParsedMapApi::GetViewportRect(m2::RectD & rect) const
 ApiMarkPoint const * ParsedMapApi::GetSinglePoint() const
 {
   ASSERT(m_bmManager != nullptr, ());
-  UserMarkControllerGuard guard(*m_bmManager, UserMarkType::API_MARK);
-
-  if (guard.m_controller.GetUserMarkCount() != 1)
+  auto const & markIds = m_bmManager->GetUserMarkIds(UserMark::Type::API);
+  if (markIds.size() != 1)
     return nullptr;
 
-  return static_cast<ApiMarkPoint const *>(guard.m_controller.GetUserMark(0));
+  return static_cast<ApiMarkPoint const *>(m_bmManager->GetUserMark(*markIds.begin()));
 }
 
 }

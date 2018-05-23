@@ -1,13 +1,12 @@
 #import "SelectSetVC.h"
-#import "AddSetVC.h"
 #import "SwiftBridge.h"
 #import "UIViewController+Navigation.h"
 
 #include "Framework.h"
 
-@interface SelectSetVC () <AddSetVCDelegate>
+@interface SelectSetVC ()
 {
-  BookmarkAndCategory m_bac;
+  kml::MarkGroupId m_categoryId;
 }
 
 @property (copy, nonatomic) NSString * category;
@@ -18,14 +17,14 @@
 @implementation SelectSetVC
 
 - (instancetype)initWithCategory:(NSString *)category
-                             bac:(BookmarkAndCategory const &)bac
+                      categoryId:(kml::MarkGroupId)categoryId
                         delegate:(id<MWMSelectSetDelegate>)delegate
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   if (self)
   {
     _category = category;
-    m_bac = bac;
+    m_categoryId = categoryId;
     _delegate = delegate;
   }
   return self;
@@ -36,7 +35,6 @@
   [super viewDidLoad];
   NSAssert(self.category, @"Category can't be nil!");
   NSAssert(self.delegate, @"Delegate can't be nil!");
-  NSAssert(m_bac.IsValid(), @"Invalid BookmarkAndCategory's instance!");
   self.title = L(@"bookmark_sets");
 }
 
@@ -51,7 +49,7 @@
   if (section == 0)
     return 1;
 
-  return GetFramework().GetBmCategoriesCount();
+  return GetFramework().GetBookmarkManager().GetBmGroupsIdList().size();
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -65,11 +63,12 @@
   }
   else
   {
-    BookmarkCategory * cat = GetFramework().GetBmCategory(indexPath.row);
-    if (cat)
-      cell.textLabel.text = @(cat->GetName().c_str());
+    auto & bmManager = GetFramework().GetBookmarkManager();
+    auto categoryId = bmManager.GetBmGroupsIdList()[indexPath.row];
+    if (bmManager.HasBmCategory(categoryId))
+      cell.textLabel.text = @(bmManager.GetCategoryName(categoryId).c_str());
 
-    if (m_bac.m_categoryIndex == indexPath.row)
+    if (m_categoryId == categoryId)
       cell.accessoryType = UITableViewCellAccessoryCheckmark;
     else
       cell.accessoryType = UITableViewCellAccessoryNone;
@@ -77,24 +76,12 @@
   return cell;
 }
 
-- (void)addSetVC:(AddSetVC *)vc didAddSetWithIndex:(int)setIndex
+- (void)moveBookmarkToSetWithCategoryId:(kml::MarkGroupId)categoryId
 {
-  [self moveBookmarkToSetWithIndex:setIndex];
+  m_categoryId = categoryId;
+  self.category = @(GetFramework().GetBookmarkManager().GetCategoryName(categoryId).c_str());
   [self.tableView reloadData];
-  [self.delegate didSelectCategory:self.category withBac:m_bac];
-}
-
-- (void)moveBookmarkToSetWithIndex:(int)setIndex
-{
-  BookmarkAndCategory bac;
-  bac.m_bookmarkIndex = static_cast<size_t>(
-      GetFramework().MoveBookmark(m_bac.m_bookmarkIndex, m_bac.m_categoryIndex, setIndex));
-  bac.m_categoryIndex = setIndex;
-  m_bac = bac;
-
-  BookmarkCategory const * category =
-      GetFramework().GetBookmarkManager().GetBmCategory(bac.m_categoryIndex);
-  self.category = @(category->GetName().c_str());
+  [self.delegate didSelectCategory:self.category withCategoryId:categoryId];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -102,14 +89,24 @@
   [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
   if (indexPath.section == 0)
   {
-    AddSetVC * asVC = [[AddSetVC alloc] init];
-    asVC.delegate = self;
-    [self.navigationController pushViewController:asVC animated:YES];
+    [self.alertController presentCreateBookmarkCategoryAlertWithMaxCharacterNum:60
+                                                          minCharacterNum:0
+                                                            isNewCategory:YES
+                                                                 callback:^BOOL (NSString * name)
+     {
+       if (![MWMBookmarksManager checkCategoryName:name])
+         return false;
+
+       auto const id = [MWMBookmarksManager createCategoryWithName:name];
+       [self moveBookmarkToSetWithCategoryId:id];
+       return true;
+    }];
   }
   else
   {
-    [self moveBookmarkToSetWithIndex:static_cast<int>(indexPath.row)];
-    [self.delegate didSelectCategory:self.category withBac:m_bac];
+    auto categoryId = GetFramework().GetBookmarkManager().GetBmGroupsIdList()[indexPath.row];
+    [self moveBookmarkToSetWithCategoryId:categoryId];
+    [self.delegate didSelectCategory:self.category withCategoryId:categoryId];
     [self backTap];
   }
 }

@@ -13,6 +13,8 @@ set(
   context.hpp
   edits.cpp
   edits.hpp
+  feature_info_dialog.cpp
+  feature_info_dialog.hpp
   helpers.cpp
   helpers.hpp
   main_model.cpp
@@ -45,24 +47,30 @@ omim_link_libraries(
   tracking
   traffic
   routing_common
-  indexer
+  transit
+  ugc
   drape
   partners_api
   local_ads
+  kml
+  indexer
   platform
-  editor geometry
+  editor 
+  mwm_diff
+  bsdiff
+  geometry
   coding
   base
   expat
   freetype
   icu
+  agg
   gflags
   jansson
   minizip
   oauthcpp
   opening_hours
   openlr
-  osrm
   protobuf
   pugixml
   sdf_image

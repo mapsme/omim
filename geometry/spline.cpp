@@ -92,6 +92,14 @@ bool Spline::IsValid() const
   return m_position.size() > 1;
 }
 
+Spline::iterator Spline::GetPoint(double step) const
+{
+  iterator it;
+  it.Attach(*this);
+  it.Advance(step);
+  return it;
+}
+
 Spline const & Spline::operator = (Spline const & spl)
 {
   if(&spl != this)
@@ -106,6 +114,13 @@ Spline const & Spline::operator = (Spline const & spl)
 double Spline::GetLength() const
 {
   return accumulate(m_length.begin(), m_length.end(), 0.0);
+}
+
+void Spline::Clear()
+{
+  m_position.clear();
+  m_direction.clear();
+  m_length.clear();
 }
 
 Spline::iterator::iterator()
@@ -151,6 +166,11 @@ void Spline::iterator::Attach(Spline const & spl)
   m_dir = m_spl->m_direction[m_index];
   m_avrDir = m_spl->m_direction[m_index];
   m_pos = m_spl->m_position[m_index] + m_dir * m_dist;
+}
+
+bool Spline::iterator::IsAttached() const
+{
+  return m_spl != nullptr;
 }
 
 void Spline::iterator::Advance(double step)
@@ -285,9 +305,13 @@ Spline * SharedSpline::operator->()
 
 Spline const * SharedSpline::operator->() const
 {
+  return Get();
+}
+
+Spline const * SharedSpline::Get() const
+{
   ASSERT(!IsNull(), ());
   return m_spline.get();
 }
-
 }
 

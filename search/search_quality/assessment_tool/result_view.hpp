@@ -24,7 +24,7 @@ public:
   ResultView(search::Result const & result, QWidget & parent);
   ResultView(search::Sample::Result const & result, QWidget & parent);
 
-  void EnableEditing(Edits::RelevanceEditor && editor);
+  void SetEditor(Edits::Editor && editor);
 
   void Update();
 
@@ -38,6 +38,7 @@ private:
 
   QRadioButton * CreateRatioButton(string const & label, QLayout & layout);
   void OnRelevanceChanged();
+  void UpdateRelevanceRadioButtons();
 
   QLabel * m_name = nullptr;
   QLabel * m_type = nullptr;
@@ -47,5 +48,5 @@ private:
   QRadioButton * m_relevant = nullptr;
   QRadioButton * m_vital = nullptr;
 
-  std::unique_ptr<Edits::RelevanceEditor> m_editor;
+  std::unique_ptr<Edits::Editor> m_editor;
 };

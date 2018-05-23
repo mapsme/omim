@@ -2,7 +2,17 @@ package com.mapswithme.util;
 
 import android.support.annotation.NonNull;
 
+import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.MwmApplication;
+
+import static com.mapswithme.util.Counters.KEY_APP_FIRST_INSTALL_FLAVOR;
+import static com.mapswithme.util.Counters.KEY_APP_FIRST_INSTALL_VERSION;
+import static com.mapswithme.util.Counters.KEY_APP_LAST_SESSION_TIMESTAMP;
+import static com.mapswithme.util.Counters.KEY_APP_LAUNCH_NUMBER;
+import static com.mapswithme.util.Counters.KEY_APP_SESSION_NUMBER;
+import static com.mapswithme.util.Counters.KEY_LIKES_LAST_RATED_SESSION;
+import static com.mapswithme.util.Counters.KEY_MISC_FIRST_START_DIALOG_SEEN;
+import static com.mapswithme.util.Counters.KEY_MISC_NEWS_LAST_VERSION;
 
 public final class Config
 {
@@ -12,9 +22,8 @@ public final class Config
   private static final String KEY_TTS_LANGUAGE = "TtsLanguage";
 
   private static final String KEY_DOWNLOADER_AUTO = "AutoDownloadEnabled";
-
   private static final String KEY_PREF_ZOOM_BUTTONS = "ZoomButtonsEnabled";
-  private static final String KEY_PREF_STATISTICS = "StatisticsEnabled";
+  static final String KEY_PREF_STATISTICS = "StatisticsEnabled";
   private static final String KEY_PREF_USE_GS = "UseGoogleServices";
 
   private static final String KEY_MISC_DISCLAIMER_ACCEPTED = "IsDisclaimerApproved";
@@ -93,6 +102,23 @@ public final class Config
     nativeSetBoolean(key, value);
   }
 
+  public static void migrateCountersToSharedPrefs()
+  {
+    int version = getInt(KEY_APP_FIRST_INSTALL_VERSION, BuildConfig.VERSION_CODE);
+    MwmApplication.prefs()
+                  .edit()
+                  .putInt(KEY_APP_LAUNCH_NUMBER, getInt(KEY_APP_LAUNCH_NUMBER))
+                  .putInt(KEY_APP_FIRST_INSTALL_VERSION, version)
+                  .putString(KEY_APP_FIRST_INSTALL_FLAVOR, getString(KEY_APP_FIRST_INSTALL_FLAVOR))
+                  .putLong(KEY_APP_LAST_SESSION_TIMESTAMP, getLong(KEY_APP_LAST_SESSION_TIMESTAMP))
+                  .putInt(KEY_APP_SESSION_NUMBER, getInt(KEY_APP_SESSION_NUMBER))
+                  .putBoolean(KEY_MISC_FIRST_START_DIALOG_SEEN,
+                              getBool(KEY_MISC_FIRST_START_DIALOG_SEEN))
+                  .putInt(KEY_MISC_NEWS_LAST_VERSION, getInt(KEY_MISC_NEWS_LAST_VERSION))
+                  .putInt(KEY_LIKES_LAST_RATED_SESSION, getInt(KEY_LIKES_LAST_RATED_SESSION))
+                  .apply();
+  }
+
   public static String getStoragePath()
   {
     return getString(KEY_APP_STORAGE);
@@ -143,14 +169,9 @@ public final class Config
     setBool(KEY_PREF_ZOOM_BUTTONS, show);
   }
 
-  public static boolean isStatisticsEnabled()
-  {
-    return MwmApplication.prefs().getBoolean(KEY_PREF_STATISTICS, true);
-  }
-
   public static void setStatisticsEnabled(boolean enabled)
   {
-    MwmApplication.prefs().edit().putBoolean(KEY_PREF_STATISTICS, enabled).apply();
+    setBool(KEY_PREF_STATISTICS, enabled);
   }
 
   public static boolean useGoogleServices()
@@ -233,7 +254,7 @@ public final class Config
   @NetworkPolicy.NetworkPolicyDef
   public static int getUseMobileDataSettings()
   {
-    switch(getInt(KEY_MISC_USE_MOBILE_DATA, NetworkPolicy.ASK))
+    switch(getInt(KEY_MISC_USE_MOBILE_DATA, NetworkPolicy.NONE))
     {
       case NetworkPolicy.ASK:
         return NetworkPolicy.ASK;
@@ -245,6 +266,8 @@ public final class Config
         return NetworkPolicy.NOT_TODAY;
       case NetworkPolicy.TODAY:
         return NetworkPolicy.TODAY;
+      case NetworkPolicy.NONE:
+        return NetworkPolicy.NONE;
     }
 
     throw new AssertionError("Wrong NetworkPolicy type!");
@@ -281,6 +304,16 @@ public final class Config
     return getBool(KEY_MISC_USE_MOBILE_DATA_ROAMING, false);
   }
 
+  public static boolean isTransliteration()
+  {
+    return nativeGetTransliteration();
+  }
+
+  public static void setTransliteration(boolean value)
+  {
+    nativeSetTransliteration(value);
+  }
+
 
   private static native boolean nativeGetBoolean(String name, boolean defaultValue);
   private static native void nativeSetBoolean(String name, boolean value);
@@ -294,4 +327,6 @@ public final class Config
   private static native void nativeSetString(String name, String value);
   private static native boolean nativeGetLargeFontsSize();
   private static native void nativeSetLargeFontsSize(boolean value);
+  private static native boolean nativeGetTransliteration();
+  private static native void nativeSetTransliteration(boolean value);
 }

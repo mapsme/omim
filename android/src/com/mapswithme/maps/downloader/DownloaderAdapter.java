@@ -180,7 +180,7 @@ class DownloaderAdapter extends RecyclerView.Adapter<DownloaderAdapter.ViewHolde
       {
         Intent intent = new Intent(adapter.mActivity, MwmActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra(MwmActivity.EXTRA_TASK, new MwmActivity.ShowCountryTask(item.id, false));
+        intent.putExtra(MwmActivity.EXTRA_TASK, new MwmActivity.ShowCountryTask(item.id));
         adapter.mActivity.startActivity(intent);
 
         if (!(adapter.mActivity instanceof MwmActivity))
@@ -378,6 +378,7 @@ class DownloaderAdapter extends RecyclerView.Adapter<DownloaderAdapter.ViewHolde
       {
       case CountryItem.STATUS_DONE:
       case CountryItem.STATUS_PROGRESS:
+      case CountryItem.STATUS_APPLYING:
       case CountryItem.STATUS_ENQUEUED:
         processLongClick();
         break;
@@ -396,7 +397,7 @@ class DownloaderAdapter extends RecyclerView.Adapter<DownloaderAdapter.ViewHolde
           @Override
           public void run()
           {
-            Notifier.cancelDownloadFailed();
+            Notifier.cancelNotification(Notifier.ID_DOWNLOAD_FAILED);
           }
         });
         break;
@@ -456,6 +457,7 @@ class DownloaderAdapter extends RecyclerView.Adapter<DownloaderAdapter.ViewHolde
         break;
 
       case CountryItem.STATUS_PROGRESS:
+      case CountryItem.STATUS_APPLYING:
       case CountryItem.STATUS_ENQUEUED:
         items.add(MenuItem.CANCEL);
 
@@ -597,10 +599,16 @@ class DownloaderAdapter extends RecyclerView.Adapter<DownloaderAdapter.ViewHolde
       UiUtils.showIf(mSearchResultsMode, mFoundName);
 
       long size;
-      if (mItem.status == CountryItem.STATUS_ENQUEUED || mItem.status == CountryItem.STATUS_PROGRESS)
+      if (mItem.status == CountryItem.STATUS_ENQUEUED ||
+          mItem.status == CountryItem.STATUS_PROGRESS ||
+          mItem.status == CountryItem.STATUS_APPLYING)
+      {
         size = mItem.enqueuedSize;
+      }
       else
+      {
         size = ((!mSearchResultsMode && mMyMapsMode) ? mItem.size : mItem.totalSize);
+      }
 
       mSize.setText(StringUtils.getFileSizeString(size));
       mStatusIcon.update(mItem);

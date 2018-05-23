@@ -2,13 +2,6 @@ project(drape)
 
 get_filename_component(DRAPE_ROOT ${PROJECT_SOURCE_DIR} ABSOLUTE)
 
-execute_process(
-  COMMAND python ${OMIM_ROOT}/tools/autobuild/shader_preprocessor.py
-  ${DRAPE_ROOT}/shaders
-  shader_index.txt
-  shader_def
-)
-
 add_definitions(-DU_DISABLE_RENAMING)
 
 include_directories(
@@ -46,9 +39,12 @@ set(
   ${DRAPE_ROOT}/debug_rect_renderer.hpp
   ${DRAPE_ROOT}/drape_diagnostics.hpp
   ${DRAPE_ROOT}/drape_global.hpp
+  ${DRAPE_ROOT}/drape_routine.hpp
   ${DRAPE_ROOT}/dynamic_texture.hpp
   ${DRAPE_ROOT}/font_texture.cpp
   ${DRAPE_ROOT}/font_texture.hpp
+  ${DRAPE_ROOT}/framebuffer.cpp
+  ${DRAPE_ROOT}/framebuffer.hpp
   ${DRAPE_ROOT}/glconstants.cpp
   ${DRAPE_ROOT}/glconstants.hpp
   ${DRAPE_ROOT}/glextensions_list.cpp
@@ -59,12 +55,15 @@ set(
   ${DRAPE_ROOT}/glsl_types.hpp
   ${DRAPE_ROOT}/glstate.cpp
   ${DRAPE_ROOT}/glstate.hpp
+  ${DRAPE_ROOT}/glyph_generator.cpp
+  ${DRAPE_ROOT}/glyph_generator.hpp
   ${DRAPE_ROOT}/glyph_manager.cpp
   ${DRAPE_ROOT}/glyph_manager.hpp
   ${DRAPE_ROOT}/gpu_buffer.cpp
   ${DRAPE_ROOT}/gpu_buffer.hpp
   ${DRAPE_ROOT}/gpu_program.cpp
   ${DRAPE_ROOT}/gpu_program.hpp
+  ${DRAPE_ROOT}/gpu_program_info.hpp
   ${DRAPE_ROOT}/gpu_program_manager.cpp
   ${DRAPE_ROOT}/gpu_program_manager.hpp
   ${DRAPE_ROOT}/hw_texture.cpp
@@ -89,8 +88,6 @@ set(
   ${DRAPE_ROOT}/render_bucket.hpp
   ${DRAPE_ROOT}/shader.cpp
   ${DRAPE_ROOT}/shader.hpp
-  ${DRAPE_ROOT}/shader_def.cpp
-  ${DRAPE_ROOT}/shader_def.hpp
   ${DRAPE_ROOT}/static_texture.cpp
   ${DRAPE_ROOT}/static_texture.hpp
   ${DRAPE_ROOT}/stipple_pen_resource.cpp
@@ -119,6 +116,8 @@ set(
   ${DRAPE_ROOT}/utils/vertex_decl.hpp
   ${DRAPE_ROOT}/vertex_array_buffer.cpp
   ${DRAPE_ROOT}/vertex_array_buffer.hpp
+  ${DRAPE_ROOT}/viewport.cpp
+  ${DRAPE_ROOT}/viewport.hpp
   ${DRAPE_ROOT}/visual_scale.hpp
 )
 

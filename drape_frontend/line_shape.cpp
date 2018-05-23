@@ -1,13 +1,12 @@
 #include "drape_frontend/line_shape.hpp"
 
 #include "drape_frontend/line_shape_helper.hpp"
-#include "drape_frontend/visual_params.hpp"
+#include "drape_frontend/shader_def.hpp"
 
 #include "drape/attribute_provider.hpp"
 #include "drape/batcher.hpp"
 #include "drape/glsl_types.hpp"
 #include "drape/glsl_func.hpp"
-#include "drape/shader_def.hpp"
 #include "drape/support_manager.hpp"
 #include "drape/texture_manager.hpp"
 #include "drape/utils/vertex_decl.hpp"
@@ -61,6 +60,7 @@ struct BaseBuilderParams
   dp::TextureManager::ColorRegion m_color;
   float m_pxHalfWidth;
   float m_depth;
+  RenderState::DepthLayer m_depthLayer;
   dp::LineCap m_cap;
   dp::LineJoin m_join;
 };
@@ -179,7 +179,7 @@ public:
 
   dp::GLState GetState() override
   {
-    dp::GLState state(gpu::LINE_PROGRAM, dp::GLState::GeometryLayer);
+    auto state = CreateGLState(gpu::LINE_PROGRAM, m_params.m_depthLayer);
     state.SetColorTexture(m_params.m_color.GetTexture());
     return state;
   }
@@ -208,7 +208,7 @@ public:
     if (m_params.m_cap == dp::ButtCap)
       return TBase::GetCapState();
 
-    dp::GLState state(gpu::CAP_JOIN_PROGRAM, dp::GLState::GeometryLayer);
+    auto state = CreateGLState(gpu::CAP_JOIN_PROGRAM, m_params.m_depthLayer);
     state.SetColorTexture(m_params.m_color.GetTexture());
     state.SetDepthFunction(gl_const::GLLess);
     return state;
@@ -279,7 +279,7 @@ public:
 
   dp::GLState GetState() override
   {
-    dp::GLState state(gpu::AREA_OUTLINE_PROGRAM, dp::GLState::GeometryLayer);
+    auto state = CreateGLState(gpu::AREA_OUTLINE_PROGRAM, m_params.m_depthLayer);
     state.SetColorTexture(m_params.m_color.GetTexture());
     state.SetDrawAsLine(true);
     state.SetLineWidth(m_lineWidth);
@@ -322,7 +322,7 @@ public:
 
   dp::GLState GetState() override
   {
-    dp::GLState state(gpu::DASHED_LINE_PROGRAM, dp::GLState::GeometryLayer);
+    auto state = CreateGLState(gpu::DASHED_LINE_PROGRAM, m_params.m_depthLayer);
     state.SetColorTexture(m_params.m_color.GetTexture());
     state.SetMaskTexture(m_texCoordGen.GetRegion().GetTexture());
     return state;
@@ -492,6 +492,7 @@ void LineShape::Prepare(ref_ptr<dp::TextureManager> textures) const
     p.m_cap = m_params.m_cap;
     p.m_color = colorRegion;
     p.m_depth = m_params.m_depth;
+    p.m_depthLayer = m_params.m_depthLayer;
     p.m_join = m_params.m_join;
     p.m_pxHalfWidth = pxHalfWidth;
   };

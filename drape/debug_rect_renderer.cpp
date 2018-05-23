@@ -1,25 +1,20 @@
 #include "drape/debug_rect_renderer.hpp"
 
-#include "drape/gpu_program_manager.hpp"
+#include "drape/glextensions_list.hpp"
 #include "drape/glfunctions.hpp"
-#include "drape/shader_def.hpp"
+#include "drape/gpu_program_manager.hpp"
 
 namespace dp
 {
-
 namespace
 {
-
 m2::PointF PixelPointToScreenSpace(ScreenBase const & screen, m2::PointF const & pt)
 {
-  float const szX = static_cast<float>(screen.isPerspective() ? screen.PixelRectIn3d().SizeX() :
-                                                                screen.PixelRect().SizeX());
-  float const szY = static_cast<float>(screen.isPerspective() ? screen.PixelRectIn3d().SizeY() :
-                                                                screen.PixelRect().SizeY());
+  float const szX = static_cast<float>(screen.PixelRectIn3d().SizeX());
+  float const szY = static_cast<float>(screen.PixelRectIn3d().SizeY());
   return m2::PointF(pt.x / szX - 0.5f, -pt.y / szY + 0.5f) * 2.0f;
 }
-
-}
+}  // namespace
 
 DebugRectRenderer & DebugRectRenderer::Instance()
 {
@@ -30,9 +25,8 @@ DebugRectRenderer & DebugRectRenderer::Instance()
 DebugRectRenderer::DebugRectRenderer()
   : m_VAO(0)
   , m_vertexBuffer(0)
-  , m_isEnabled(true)
-{
-}
+  , m_isEnabled(false)
+{}
 
 DebugRectRenderer::~DebugRectRenderer()
 {
@@ -40,22 +34,27 @@ DebugRectRenderer::~DebugRectRenderer()
   ASSERT_EQUAL(m_vertexBuffer, 0, ());
 }
 
-void DebugRectRenderer::Init(ref_ptr<dp::GpuProgramManager> mng)
+void DebugRectRenderer::Init(ref_ptr<dp::GpuProgramManager> mng, int programId)
 {
+  if (dp::GLExtensionsList::Instance().IsSupported(dp::GLExtensionsList::VertexArrayObject))
+  {
+    m_VAO = GLFunctions::glGenVertexArray();
+    GLFunctions::glBindVertexArray(m_VAO);
+  }
+
   m_vertexBuffer = GLFunctions::glGenBuffer();
   GLFunctions::glBindBuffer(m_vertexBuffer, gl_const::GLArrayBuffer);
-
-  m_VAO = GLFunctions::glGenVertexArray();
-  GLFunctions::glBindVertexArray(m_VAO);
-
-  m_program = mng->GetProgram(gpu::DEBUG_RECT_PROGRAM);
+  m_program = mng->GetProgram(programId);
   int8_t attributeLocation = m_program->GetAttributeLocation("a_position");
   ASSERT_NOT_EQUAL(attributeLocation, -1, ());
   GLFunctions::glEnableVertexAttribute(attributeLocation);
-  GLFunctions::glVertexAttributePointer(attributeLocation, 2, gl_const::GLFloatType, false, sizeof(float) * 2, 0);
+  GLFunctions::glVertexAttributePointer(attributeLocation, 2, gl_const::GLFloatType, false,
+                                        sizeof(float) * 2, 0);
+
+  if (m_VAO != 0)
+    GLFunctions::glBindVertexArray(0);
 
   GLFunctions::glBindBuffer(0, gl_const::GLArrayBuffer);
-  GLFunctions::glBindVertexArray(0);
 }
 
 void DebugRectRenderer::Destroy()
@@ -85,7 +84,8 @@ void DebugRectRenderer::SetEnabled(bool enabled)
   m_isEnabled = enabled;
 }
 
-void DebugRectRenderer::DrawRect(ScreenBase const & screen, m2::RectF const & rect, dp::Color const & color) const
+void DebugRectRenderer::DrawRect(ScreenBase const & screen, m2::RectF const & rect,
+                                 dp::Color const & color) const
 {
   if (!m_isEnabled)
     return;
@@ -94,7 +94,9 @@ void DebugRectRenderer::DrawRect(ScreenBase const & screen, m2::RectF const & re
   m_program->Bind();
 
   GLFunctions::glBindBuffer(m_vertexBuffer, gl_const::GLArrayBuffer);
-  GLFunctions::glBindVertexArray(m_VAO);
+
+  if (m_VAO != 0)
+    GLFunctions::glBindVertexArray(m_VAO);
 
   array<m2::PointF, 5> vertices;
   vertices[0] = PixelPointToScreenSpace(screen, rect.LeftBottom());
@@ -103,24 +105,27 @@ void DebugRectRenderer::DrawRect(ScreenBase const & screen, m2::RectF const & re
   vertices[3] = PixelPointToScreenSpace(screen, rect.RightBottom());
   vertices[4] = vertices[0];
 
-  GLFunctions::glBufferData(gl_const::GLArrayBuffer, vertices.size() * sizeof(vertices[0]),
+  GLFunctions::glBufferData(gl_const::GLArrayBuffer,
+                            static_cast<uint32_t>(vertices.size() * sizeof(vertices[0])),
                             vertices.data(), gl_const::GLStaticDraw);
 
   int8_t const location = m_program->GetUniformLocation("u_color");
   if (location >= 0)
-    GLFunctions::glUniformValuef(location, color.GetRedF(), color.GetGreenF(), color.GetBlueF(), color.GetAlfaF());
+    GLFunctions::glUniformValuef(location, color.GetRedF(), color.GetGreenF(),
+                                 color.GetBlueF(), color.GetAlphaF());
 
-  GLFunctions::glDrawArrays(gl_const::GLLineStrip, 0, vertices.size());
+  GLFunctions::glDrawArrays(gl_const::GLLineStrip, 0, static_cast<uint32_t>(vertices.size()));
+
+  if (m_VAO != 0)
+    GLFunctions::glBindVertexArray(0);
 
   GLFunctions::glBindBuffer(0, gl_const::GLArrayBuffer);
-  GLFunctions::glBindVertexArray(0);
 
   m_program->Unbind();
 }
 
-#ifdef COLLECT_DISPLACEMENT_INFO
-
-void DebugRectRenderer::DrawArrow(ScreenBase const & screen, OverlayTree::DisplacementData const & data) const
+void DebugRectRenderer::DrawArrow(ScreenBase const & screen,
+                                  OverlayTree::DisplacementData const & data) const
 {
   if (!m_isEnabled)
     return;
@@ -132,7 +137,9 @@ void DebugRectRenderer::DrawArrow(ScreenBase const & screen, OverlayTree::Displa
   m_program->Bind();
 
   GLFunctions::glBindBuffer(m_vertexBuffer, gl_const::GLArrayBuffer);
-  GLFunctions::glBindVertexArray(m_VAO);
+
+  if (m_VAO != 0)
+    GLFunctions::glBindVertexArray(m_VAO);
 
   array<m2::PointF, 5> vertices;
   m2::PointF const dir = (data.m_arrowEnd - data.m_arrowStart).Normalize();
@@ -143,22 +150,22 @@ void DebugRectRenderer::DrawArrow(ScreenBase const & screen, OverlayTree::Displa
   vertices[3] = vertices[1];
   vertices[4] = PixelPointToScreenSpace(screen, data.m_arrowEnd - dir * 20 - side * 10);
 
-  GLFunctions::glBufferData(gl_const::GLArrayBuffer, vertices.size() * sizeof(vertices[0]),
+  GLFunctions::glBufferData(gl_const::GLArrayBuffer,
+                            static_cast<uint32_t>(vertices.size() * sizeof(vertices[0])),
                             vertices.data(), gl_const::GLStaticDraw);
 
   int8_t const location = m_program->GetUniformLocation("u_color");
   if (location >= 0)
     GLFunctions::glUniformValuef(location, data.m_arrowColor.GetRedF(), data.m_arrowColor.GetGreenF(),
-                                 data.m_arrowColor.GetBlueF(), data.m_arrowColor.GetAlfaF());
+                                 data.m_arrowColor.GetBlueF(), data.m_arrowColor.GetAlphaF());
 
-  GLFunctions::glDrawArrays(gl_const::GLLineStrip, 0, vertices.size());
+  GLFunctions::glDrawArrays(gl_const::GLLineStrip, 0, static_cast<uint32_t>(vertices.size()));
+
+  if (m_VAO != 0)
+    GLFunctions::glBindVertexArray(0);
 
   GLFunctions::glBindBuffer(0, gl_const::GLArrayBuffer);
-  GLFunctions::glBindVertexArray(0);
 
   m_program->Unbind();
 }
-
-#endif
-
-} // namespace dp
+}  // namespace dp

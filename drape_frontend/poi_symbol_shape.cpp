@@ -1,11 +1,13 @@
 #include "drape_frontend/poi_symbol_shape.hpp"
 #include "drape_frontend/color_constants.hpp"
+#include "drape_frontend/shader_def.hpp"
 
 #include "drape/attribute_provider.hpp"
 #include "drape/batcher.hpp"
 #include "drape/texture_manager.hpp"
-#include "drape/shader_def.hpp"
 #include "drape/utils/vertex_decl.hpp"
+
+#include <utility>
 
 namespace
 {
@@ -14,9 +16,28 @@ df::ColorConstant const kPoiDeletedMaskColor = "PoiDeletedMask";
 using SV = gpu::SolidTexturingVertex;
 using MV = gpu::MaskedTexturingVertex;
 
+glsl::vec2 ShiftNormal(glsl::vec2 const & n, df::PoiSymbolViewParams const & params,
+                       m2::PointF const & pixelSize)
+{
+  glsl::vec2 result = n + glsl::vec2(params.m_offset.x, params.m_offset.y);
+  m2::PointF const halfPixelSize = pixelSize * 0.5f;
+
+  if (params.m_anchor & dp::Top)
+    result.y += halfPixelSize.y;
+  else if (params.m_anchor & dp::Bottom)
+    result.y -= halfPixelSize.y;
+
+  if (params.m_anchor & dp::Left)
+    result.x += halfPixelSize.x;
+  else if (params.m_anchor & dp::Right)
+    result.x -= halfPixelSize.x;
+
+  return result;
+}
+
 template<typename TVertex>
 void Batch(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && handle,
-           glsl::vec4 const & position,
+           glsl::vec4 const & position, df::PoiSymbolViewParams const & params,
            dp::TextureManager::SymbolRegion const & symbolRegion,
            dp::TextureManager::ColorRegion const & colorRegion)
 {
@@ -25,7 +46,7 @@ void Batch(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && handle,
 
 template<>
 void Batch<SV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && handle,
-               glsl::vec4 const & position,
+               glsl::vec4 const & position, df::PoiSymbolViewParams const & params,
                dp::TextureManager::SymbolRegion const & symbolRegion,
                dp::TextureManager::ColorRegion const & colorRegion)
 {
@@ -35,17 +56,17 @@ void Batch<SV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && han
 
   SV vertexes[] =
   {
-    SV{ position, glsl::vec2(-halfSize.x, halfSize.y),
+    SV{ position, ShiftNormal(glsl::vec2(-halfSize.x, halfSize.y), params, pixelSize),
         glsl::vec2(texRect.minX(), texRect.maxY()) },
-    SV{ position, glsl::vec2(-halfSize.x, -halfSize.y),
+    SV{ position, ShiftNormal(glsl::vec2(-halfSize.x, -halfSize.y), params, pixelSize),
         glsl::vec2(texRect.minX(), texRect.minY()) },
-    SV{ position, glsl::vec2(halfSize.x, halfSize.y),
+    SV{ position, ShiftNormal(glsl::vec2(halfSize.x, halfSize.y), params, pixelSize),
         glsl::vec2(texRect.maxX(), texRect.maxY()) },
-    SV{ position, glsl::vec2(halfSize.x, -halfSize.y),
+    SV{ position, ShiftNormal(glsl::vec2(halfSize.x, -halfSize.y), params, pixelSize),
         glsl::vec2(texRect.maxX(), texRect.minY()) },
   };
 
-  dp::GLState state(gpu::TEXTURING_PROGRAM, dp::GLState::OverlayLayer);
+  auto state = df::CreateGLState(gpu::TEXTURING_PROGRAM, params.m_depthLayer);
   state.SetProgram3dIndex(gpu::TEXTURING_BILLBOARD_PROGRAM);
   state.SetColorTexture(symbolRegion.GetTexture());
   state.SetTextureFilter(gl_const::GLNearest);
@@ -57,7 +78,7 @@ void Batch<SV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && han
 
 template<>
 void Batch<MV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && handle,
-               glsl::vec4 const & position,
+               glsl::vec4 const & position, df::PoiSymbolViewParams const & params,
                dp::TextureManager::SymbolRegion const & symbolRegion,
                dp::TextureManager::ColorRegion const & colorRegion)
 {
@@ -68,17 +89,17 @@ void Batch<MV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && han
 
   MV vertexes[] =
   {
-    MV{ position, glsl::vec2(-halfSize.x, halfSize.y),
+    MV{ position, ShiftNormal(glsl::vec2(-halfSize.x, halfSize.y), params, pixelSize),
         glsl::vec2(texRect.minX(), texRect.maxY()), maskColorCoords },
-    MV{ position, glsl::vec2(-halfSize.x, -halfSize.y),
+    MV{ position, ShiftNormal(glsl::vec2(-halfSize.x, -halfSize.y), params, pixelSize),
         glsl::vec2(texRect.minX(), texRect.minY()), maskColorCoords },
-    MV{ position, glsl::vec2(halfSize.x, halfSize.y),
+    MV{ position, ShiftNormal(glsl::vec2(halfSize.x, halfSize.y), params, pixelSize),
         glsl::vec2(texRect.maxX(), texRect.maxY()), maskColorCoords },
-    MV{ position, glsl::vec2(halfSize.x, -halfSize.y),
+    MV{ position, ShiftNormal(glsl::vec2(halfSize.x, -halfSize.y), params, pixelSize),
         glsl::vec2(texRect.maxX(), texRect.minY()), maskColorCoords },
   };
 
-  dp::GLState state(gpu::MASKED_TEXTURING_PROGRAM, dp::GLState::OverlayLayer);
+  auto state = df::CreateGLState(gpu::MASKED_TEXTURING_PROGRAM, params.m_depthLayer);
   state.SetProgram3dIndex(gpu::MASKED_TEXTURING_BILLBOARD_PROGRAM);
   state.SetColorTexture(symbolRegion.GetTexture());
   state.SetMaskTexture(colorRegion.GetTexture()); // Here mask is a color.
@@ -88,18 +109,14 @@ void Batch<MV>(ref_ptr<dp::Batcher> batcher, drape_ptr<dp::OverlayHandle> && han
   provider.InitStream(0 /* streamIndex */, MV::GetBindingInfo(), make_ref(vertexes));
   batcher->InsertTriangleStrip(state, make_ref(&provider), move(handle));
 }
-
-} // namespace
+}  // namespace
 
 namespace df
 {
 PoiSymbolShape::PoiSymbolShape(m2::PointD const & mercatorPt, PoiSymbolViewParams const & params,
-                               TileKey const & tileKey, uint32_t textIndex,
-                               int displacementMode, uint16_t specialModePriority)
+                               TileKey const & tileKey, uint32_t textIndex)
   : m_pt(mercatorPt)
   , m_params(params)
-  , m_displacementMode(displacementMode)
-  , m_specialModePriority(specialModePriority)
   , m_tileCoords(tileKey.GetTileCoords())
   , m_textIndex(textIndex)
 {}
@@ -113,28 +130,35 @@ void PoiSymbolShape::Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManag
   glsl::vec4 const position = glsl::vec4(pt, m_params.m_depth, -m_params.m_posZ);
   m2::PointF const pixelSize = region.GetPixelSize();
 
-  dp::OverlayID overlayId = dp::OverlayID(m_params.m_id, m_tileCoords, m_textIndex);
-  drape_ptr<dp::OverlayHandle> handle = make_unique_dp<dp::SquareHandle>(overlayId,
-                                                                         dp::Center,
-                                                                         m_pt, pixelSize,
-                                                                         GetOverlayPriority(),
-                                                                         true /* isBound */,
-                                                                         m_params.m_symbolName,
-                                                                         true /* isBillboard */);
-  handle->SetDisplacementMode(m_displacementMode);
-  handle->SetPivotZ(m_params.m_posZ);
-  handle->SetExtendingSize(m_params.m_extendingSize);
-
   if (m_params.m_obsoleteInEditor)
   {
     dp::TextureManager::ColorRegion maskColorRegion;
     textures->GetColorRegion(df::GetColorConstant(kPoiDeletedMaskColor), maskColorRegion);
-    Batch<MV>(batcher, move(handle), position, region, maskColorRegion);
+    Batch<MV>(batcher, CreateOverlayHandle(pixelSize), position, m_params,
+              region, maskColorRegion);
   }
   else
   {
-    Batch<SV>(batcher, move(handle), position, region, dp::TextureManager::ColorRegion());
+    Batch<SV>(batcher, CreateOverlayHandle(pixelSize), position, m_params,
+              region, dp::TextureManager::ColorRegion());
   }
+}
+
+drape_ptr<dp::OverlayHandle> PoiSymbolShape::CreateOverlayHandle(m2::PointF const & pixelSize) const
+{
+  dp::OverlayID overlayId = dp::OverlayID(m_params.m_id, m_tileCoords, m_textIndex);
+  drape_ptr<dp::OverlayHandle> handle = make_unique_dp<dp::SquareHandle>(overlayId, m_params.m_anchor,
+                                                                         m_pt, m2::PointD(pixelSize), m2::PointD(m_params.m_offset),
+                                                                         GetOverlayPriority(),
+                                                                         true /* isBound */,
+                                                                         m_params.m_symbolName,
+                                                                         true /* isBillboard */);
+  handle->SetPivotZ(m_params.m_posZ);
+  handle->SetExtendingSize(m_params.m_extendingSize);
+  if (m_params.m_specialDisplacement == SpecialDisplacement::UserMark)
+    handle->SetUserMarkOverlay(true);
+  handle->SetOverlayRank(m_params.m_startOverlayRank);
+  return handle;
 }
 
 uint64_t PoiSymbolShape::GetOverlayPriority() const
@@ -144,14 +168,12 @@ uint64_t PoiSymbolShape::GetOverlayPriority() const
     return dp::kPriorityMaskAll;
 
   // Special displacement mode.
-  if ((m_displacementMode & dp::displacement::kDefaultMode) == 0)
-    return dp::CalculateSpecialModePriority(m_specialModePriority);
+  if (m_params.m_specialDisplacement == SpecialDisplacement::SpecialMode)
+    return dp::CalculateSpecialModePriority(m_params.m_specialPriority);
 
-  // Set up minimal priority for shapes which belong to areas.
-  if (m_params.m_hasArea)
-    return 0;
+  if (m_params.m_specialDisplacement == SpecialDisplacement::UserMark)
+    return dp::CalculateUserMarkPriority(m_params.m_minVisibleScale, m_params.m_specialPriority);
 
   return dp::CalculateOverlayPriority(m_params.m_minVisibleScale, m_params.m_rank, m_params.m_depth);
 }
-
-} // namespace df
+}  // namespace df

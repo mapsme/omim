@@ -12,7 +12,6 @@
 
 #include "std/unique_ptr.hpp"
 
-#include <atomic>
 #include <cstring>
 #include <mutex>
 
@@ -26,6 +25,10 @@ struct Transliteration::TransliteratorInfo
   std::mutex m_mutex;
   std::unique_ptr<Transliterator> m_transliterator;
 };
+
+Transliteration::Transliteration()
+  : m_mode(Mode::Enabled)
+{}
 
 Transliteration::~Transliteration()
 {
@@ -59,8 +62,16 @@ void Transliteration::Init(std::string const & icuDataDir)
   }
 }
 
+void Transliteration::SetMode(Transliteration::Mode mode)
+{
+  m_mode = mode;
+}
+
 bool Transliteration::Transliterate(std::string const & str, int8_t langCode, std::string & out) const
 {
+  if (m_mode != Mode::Enabled)
+    return false;
+
   if (str.empty() || strings::IsASCIIString(str))
     return false;
 
@@ -83,7 +94,7 @@ bool Transliteration::Transliterate(std::string const & str, int8_t langCode, st
     {
       UErrorCode status = U_ZERO_ERROR;
 
-      std::string const removeDiacriticRule = ";NFD;[\u02B9-\u02D3\u0301-\u0358]Remove;NFC";
+      std::string const removeDiacriticRule = ";NFD;[\u02B9-\u02D3\u0301-\u0358\u00B7\u0027]Remove;NFC";
       transliteratorId.append(removeDiacriticRule);
 
       UnicodeString translitId(transliteratorId.c_str());

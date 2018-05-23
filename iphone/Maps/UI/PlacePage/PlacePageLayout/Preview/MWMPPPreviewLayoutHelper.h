@@ -15,7 +15,9 @@
                                   withData:(MWMPlacePageData *)data;
 - (void)rotateDirectionArrowToAngle:(CGFloat)angle;
 - (void)setDistanceToObject:(NSString *)distance;
+- (void)setSpeedAndAltitude:(NSString *)speedAndAltitude;
 - (void)insertRowAtTheEnd;
+- (void)notifyHeightWashChanded;
 - (CGFloat)height;
 
 - (void)layoutInOpenState:(BOOL)isOpen;

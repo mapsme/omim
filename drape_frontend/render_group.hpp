@@ -2,16 +2,15 @@
 
 #include "drape_frontend/animation/opacity_animation.hpp"
 #include "drape_frontend/animation/value_mapping.hpp"
+#include "drape_frontend/render_state.hpp"
 #include "drape_frontend/tile_utils.hpp"
 
 #include "drape/pointers.hpp"
-#include "drape/glstate.hpp"
 #include "drape/render_bucket.hpp"
 
-#include "std/deque.hpp"
-#include "std/vector.hpp"
-#include "std/set.hpp"
-#include "std/unique_ptr.hpp"
+#include <memory>
+#include <vector>
+#include <string>
 
 class ScreenBase;
 namespace dp { class OverlayTree; }
@@ -24,7 +23,8 @@ class BaseRenderGroup
 public:
   BaseRenderGroup(dp::GLState const & state, TileKey const & tileKey)
     : m_state(state)
-    , m_tileKey(tileKey) {}
+    , m_tileKey(tileKey)
+  {}
 
   virtual ~BaseRenderGroup() {}
 
@@ -34,7 +34,6 @@ public:
   dp::GLState const & GetState() const { return m_state; }
   TileKey const & GetTileKey() const { return m_tileKey; }
   dp::UniformValuesStorage const & GetUniforms() const { return m_uniforms; }
-  bool IsOverlay() const;
 
   virtual void UpdateAnimation();
   virtual void Render(ScreenBase const & screen);
@@ -60,7 +59,9 @@ public:
 
   void Update(ScreenBase const & modelView);
   void CollectOverlay(ref_ptr<dp::OverlayTree> tree);
+  bool HasOverlayHandles() const;
   void RemoveOverlay(ref_ptr<dp::OverlayTree> tree);
+  void SetOverlayVisibility(bool isVisible);
   void Render(ScreenBase const & screen) override;
 
   void AddBucket(drape_ptr<dp::RenderBucket> && bucket);
@@ -73,15 +74,16 @@ public:
 
   bool UpdateCanBeDeletedStatus(bool canBeDeleted, int currentZoom, ref_ptr<dp::OverlayTree> tree);
 
-  bool IsLess(RenderGroup const & other) const;
+  bool IsOverlay() const;
+  bool IsUserMark() const;
 
 private:
-  vector<drape_ptr<dp::RenderBucket> > m_renderBuckets;
+  std::vector<drape_ptr<dp::RenderBucket>> m_renderBuckets;
   mutable bool m_pendingOnDelete;
   mutable bool m_canBeDeleted;
 
 private:
-  friend string DebugPrint(RenderGroup const & group);
+  friend std::string DebugPrint(RenderGroup const & group);
 };
 
 class RenderGroupComparator
@@ -91,27 +93,20 @@ public:
   bool m_pendingOnDeleteFound = false;
 };
 
-class UserMarkRenderGroup : public BaseRenderGroup
+class UserMarkRenderGroup : public RenderGroup
 {
-  using TBase = BaseRenderGroup;
+  using TBase = RenderGroup;
 
 public:
-  UserMarkRenderGroup(size_t layerId, dp::GLState const & state, TileKey const & tileKey,
-                      drape_ptr<dp::RenderBucket> && bucket);
-  ~UserMarkRenderGroup() override;
+  UserMarkRenderGroup(dp::GLState const & state, TileKey const & tileKey);
+  ~UserMarkRenderGroup() override {}
 
   void UpdateAnimation() override;
-  void Render(ScreenBase const & screen) override;
 
-  size_t GetLayerId() const;
-
-  bool CanBeClipped() const;
+  bool IsUserPoint() const;
 
 private:
-  drape_ptr<dp::RenderBucket> m_renderBucket;
-  unique_ptr<OpacityAnimation> m_animation;
+  std::unique_ptr<OpacityAnimation> m_animation;
   ValueMapping<float> m_mapping;
-  size_t m_layerId;
 };
-
-} // namespace df
+}  // namespace df

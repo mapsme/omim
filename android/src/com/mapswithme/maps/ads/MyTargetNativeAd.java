@@ -90,4 +90,26 @@ class MyTargetNativeAd extends CachedMwmNativeAd
   {
     return null;
   }
+
+  @Override
+  void detachAdListener()
+  {
+    mAd.setListener(null);
+  }
+
+  @Override
+  void attachAdListener(@NonNull Object listener)
+  {
+    if (!(listener instanceof NativeAd.NativeAdListener))
+      throw new AssertionError("A listener for myTarget ad must be instance of " +
+                               "NativeAd.NativeAdListener class! Not '" + listener.getClass() + "'!");
+    mAd.setListener((NativeAd.NativeAdListener) listener);
+  }
+
+  @NonNull
+  @Override
+  public NetworkType getNetworkType()
+  {
+    return NetworkType.MYTARGET;
+  }
 }

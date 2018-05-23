@@ -33,4 +33,10 @@
 + (BOOL)largeFontSize;
 + (void)setLargeFontSize:(BOOL)largeFontSize;
 
++ (BOOL)transliteration;
++ (void)setTransliteration:(BOOL)transliteration;
+
++ (BOOL)isTrackWarningAlertShown;
++ (void)setTrackWarningAlertShown:(BOOL)shown;
+
 @end

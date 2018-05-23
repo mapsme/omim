@@ -143,6 +143,10 @@ class ResponseProvider:
                 "/partners/price": self.partners_price,
                 "/booking/min_price": self.partners_minprice,
                 "/booking/min_price.getHotelAvailability": self.partners_minprice,
+                "/booking/min_price/hotelAvailability": self.partners_hotel_availability,
+                "/partners/taxi_info": self.partners_yandex_taxi_info,
+                "/partners/get-offers-in-bbox/": self.partners_rent_nearby,
+                "/partners/CalculateByCoords": self.partners_calculate_by_coords,
             }[url]()
         except:
             return self.test_404()
@@ -220,6 +224,18 @@ class ResponseProvider:
 
     def partners_minprice(self):
         return Payload(jsons.PARTNERS_MINPRICE)
+
+    def partners_hotel_availability(self):
+        return Payload(jsons.HOTEL_AVAILABILITY)
+
+    def partners_yandex_taxi_info(self):
+        return Payload(jsons.PARTNERS_TAXI_INFO)
+
+    def partners_rent_nearby(self):
+        return Payload(jsons.PARTNERS_RENT_NEARBY)
+
+    def partners_calculate_by_coords(self):
+        return Payload(jsons.PARTNERS_CALCULATE_BY_COORDS)
 
     def kill(self):
         logging.debug("Kill called in ResponseProvider")

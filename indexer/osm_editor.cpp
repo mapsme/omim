@@ -1,13 +1,15 @@
+#include "indexer/osm_editor.hpp"
+
 #include "indexer/categories_holder.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/edits_migration.hpp"
+#include "indexer/fake_feature_ids.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/feature_decl.hpp"
 #include "indexer/feature_impl.hpp"
 #include "indexer/feature_meta.hpp"
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/index.hpp"
-#include "indexer/osm_editor.hpp"
 #include "indexer/index_helpers.hpp"
 
 #include "platform/local_country_file_utils.hpp"
@@ -60,18 +62,63 @@ constexpr char const * kAddrStreetTag = "addr:street";
 
 constexpr char const * kUploaded = "Uploaded";
 constexpr char const * kDeletedFromOSMServer = "Deleted from OSM by someone";
-constexpr char const * kRelationsAreNotSupported = "Relations are not supported yet";
 constexpr char const * kNeedsRetry = "Needs Retry";
-constexpr char const * kWrongMatch = "Matched feature has no tags";
+constexpr char const * kMatchedFeatureIsEmpty = "Matched feature has no tags";
+
+struct XmlSection
+{
+  XmlSection(osm::Editor::FeatureStatus status, std::string const & sectionName)
+    : m_status(status)
+    , m_sectionName(sectionName)
+  {
+  }
+
+  osm::Editor::FeatureStatus m_status = osm::Editor::FeatureStatus::Untouched;
+  std::string m_sectionName;
+};
+
+array<XmlSection, 4> const kXmlSections =
+{{
+   {osm::Editor::FeatureStatus::Deleted, kDeleteSection},
+   {osm::Editor::FeatureStatus::Modified, kModifySection},
+   {osm::Editor::FeatureStatus::Obsolete, kObsoleteSection},
+   {osm::Editor::FeatureStatus::Created, kCreateSection}
+}};
+
+struct LogHelper
+{
+  LogHelper(MwmSet::MwmId const & mwmId) : m_mwmId(mwmId) {}
+
+  ~LogHelper()
+  {
+    LOG(LINFO, ("For", m_mwmId, ". Was loaded", m_modified, "modified,", m_created, "created,",
+                m_deleted, "deleted and", m_obsolete, "obsolete features."));
+  }
+
+  void OnStatus(osm::Editor::FeatureStatus status)
+  {
+    switch (status)
+    {
+    case osm::Editor::FeatureStatus::Deleted: ++m_deleted; break;
+    case osm::Editor::FeatureStatus::Modified: ++m_modified; break;
+    case osm::Editor::FeatureStatus::Obsolete: ++m_obsolete; break;
+    case osm::Editor::FeatureStatus::Created: ++m_created; break;
+    case osm::Editor::FeatureStatus::Untouched: ASSERT(false, ());
+    }
+  }
+
+  uint32_t m_deleted = 0;
+  uint32_t m_obsolete = 0;
+  uint32_t m_modified = 0;
+  uint32_t m_created = 0;
+  MwmSet::MwmId const & m_mwmId;
+};
 
 bool NeedsUpload(string const & uploadStatus)
 {
   return uploadStatus != kUploaded &&
       uploadStatus != kDeletedFromOSMServer &&
-      // TODO: Remove this line when relations are supported.
-      uploadStatus != kRelationsAreNotSupported &&
-      // TODO: Remove this when we have better matching algorithm.
-      uploadStatus != kWrongMatch;
+      uploadStatus != kMatchedFeatureIsEmpty;
 }
 
 /// Compares editable fields connected with feature ignoring street.
@@ -107,9 +154,6 @@ XMLFeature GetMatchingFeatureFromOSM(osm::ChangesetWrapper & cw, FeatureType con
   // have BEST_GEOMETRY geometry.
   auto geometry = ft.GetTriangesAsPoints(FeatureType::BEST_GEOMETRY);
 
-  // Filters out duplicate points for closed ways or triangles' vertices.
-  my::SortUnique(geometry);
-
   ASSERT_GREATER_OR_EQUAL(geometry.size(), 3, ("Is it an area feature?"));
 
   return cw.GetMatchingAreaFeatureFromOSM(geometry);
@@ -134,11 +178,9 @@ namespace osm
 // TODO(AlexZ): Normalize osm multivalue strings for correct merging
 // (e.g. insert/remove spaces after ';' delimeter);
 
-Editor::Editor()
-  : m_configLoader(m_config)
-  , m_notes(editor::Notes::MakeNotes())
-  , m_storage(make_unique<editor::LocalStorage>())
+Editor::Editor() : m_configLoader(m_config), m_notes(editor::Notes::MakeNotes())
 {
+  SetDefaultStorage();
 }
 
 Editor & Editor::Instance()
@@ -147,7 +189,12 @@ Editor & Editor::Instance()
   return instance;
 }
 
-void Editor::LoadMapEdits()
+void Editor::SetDefaultStorage()
+{
+  m_storage = make_unique<editor::LocalStorage>();
+}
+
+void Editor::LoadEdits()
 {
   if (!m_delegate)
   {
@@ -159,121 +206,36 @@ void Editor::LoadMapEdits()
   if (!m_storage->Load(doc))
     return;
 
-  array<pair<FeatureStatus, char const *>, 4> const sections =
-  {{
-      {FeatureStatus::Deleted, kDeleteSection},
-      {FeatureStatus::Modified, kModifySection},
-      {FeatureStatus::Obsolete, kObsoleteSection},
-      {FeatureStatus::Created, kCreateSection}
-  }};
-  int deleted = 0, obsolete = 0, modified = 0, created = 0;
-
   bool needRewriteEdits = false;
 
   // TODO(mgsergio): synchronize access to m_features.
   m_features.clear();
-  for (xml_node mwm : doc.child(kXmlRootNode).children(kXmlMwmNode))
+  for (auto const & mwm : doc.child(kXmlRootNode).children(kXmlMwmNode))
   {
     string const mapName = mwm.attribute("name").as_string("");
     int64_t const mapVersion = mwm.attribute("version").as_llong(0);
-    MwmSet::MwmId const mwmId = GetMwmIdByMapName(mapName);
+    auto const mwmId = GetMwmIdByMapName(mapName);
+
+    // TODO(mgsergio, milchakov): |mapName| may change between launches.
+    // The right thing to do here is to try to migrate all changes anyway.
+    if (!mwmId.IsAlive())
+    {
+      LOG(LINFO, ("Mwm", mapName, "was deleted"));
+      needRewriteEdits = true;
+      continue;
+    }
+
     // TODO(mgsergio, AlexZ): Is it normal to have isMwmIdAlive and mapVersion
     // NOT equal to mwmId.GetInfo()->GetVersion() at the same time?
-    auto const needMigrateEdits = !mwmId.IsAlive() || mapVersion != mwmId.GetInfo()->GetVersion();
-    needRewriteEdits |= needMigrateEdits;
+    auto const needMigrateEdits = mapVersion != mwmId.GetInfo()->GetVersion();
+    needRewriteEdits = needRewriteEdits || needMigrateEdits;
 
-    for (auto const & section : sections)
-    {
-      for (auto const nodeOrWay : mwm.child(section.second).select_nodes("node|way"))
-      {
-        try
-        {
-          XMLFeature const xml(nodeOrWay.node());
-
-          // TODO(mgsergio): A map could be renamed, we'll treat it as deleted.
-          // The right thing to do is to try to migrate all changes anyway.
-          if (!mwmId.IsAlive())
-          {
-            LOG(LINFO, ("Mwm", mapName, "was deleted"));
-            goto SECTION_END;
-          }
-
-          TForEachFeaturesNearByFn forEach = [this](TFeatureTypeFn && fn,
-                                                    m2::PointD const & point) {
-            return ForEachFeatureAtPoint(move(fn), point);
-          };
-
-          // TODO(mgsergio): Deleted features are not properly handled yet.
-          auto const fid = needMigrateEdits
-                               ? editor::MigrateFeatureIndex(
-                                     forEach, xml, section.first,
-                                     [this, &mwmId] { return GenerateNewFeatureId(mwmId); })
-                               : FeatureID(mwmId, xml.GetMWMFeatureIndex());
-
-          // Remove obsolete changes during migration.
-          if (needMigrateEdits && IsObsolete(xml, fid))
-            continue;
-
-          FeatureTypeInfo fti;
-          if (section.first == FeatureStatus::Created)
-          {
-            fti.m_feature.FromXML(xml);
-          }
-          else
-          {
-            auto const originalFeaturePtr = GetOriginalFeature(fid);
-            if (!originalFeaturePtr)
-            {
-              LOG(LERROR, ("A feature with id", fid, "cannot be loaded."));
-              alohalytics::LogEvent("Editor_MissingFeature_Error");
-              goto SECTION_END;
-            }
-
-            fti.m_feature = *originalFeaturePtr;
-            fti.m_feature.ApplyPatch(xml);
-          }
-
-          fti.m_feature.SetID(fid);
-          fti.m_street = xml.GetTagValue(kAddrStreetTag);
-
-          fti.m_modificationTimestamp = xml.GetModificationTime();
-          ASSERT_NOT_EQUAL(my::INVALID_TIME_STAMP, fti.m_modificationTimestamp, ());
-          fti.m_uploadAttemptTimestamp = xml.GetUploadTime();
-          fti.m_uploadStatus = xml.GetUploadStatus();
-          fti.m_uploadError = xml.GetUploadError();
-          fti.m_status = section.first;
-          switch (section.first)
-          {
-          case FeatureStatus::Deleted: ++deleted; break;
-          case FeatureStatus::Modified: ++modified; break;
-          case FeatureStatus::Obsolete: ++obsolete; break;
-          case FeatureStatus::Created: ++created; break;
-          case FeatureStatus::Untouched: ASSERT(false, ()); continue;
-          }
-          // Insert initialized structure at the end: exceptions are possible in above code.
-          m_features[fid.m_mwmId].emplace(fid.m_index, move(fti));
-        }
-        catch (editor::XMLFeatureError const & ex)
-        {
-          ostringstream s;
-          nodeOrWay.node().print(s, "  ");
-          LOG(LERROR, (ex.what(), "Can't create XMLFeature in section", section.second, s.str()));
-        }
-        catch (editor::MigrationError const & ex)
-        {
-          LOG(LWARNING, (ex.Msg(), "mwmId =", mwmId, XMLFeature(nodeOrWay.node())));
-        }
-      } // for nodes
-    } // for sections
- SECTION_END:
-    ;
+    LoadMwmEdits(mwm, mwmId, needMigrateEdits);
   } // for mwms
 
   // Save edits with new indexes and mwm version to avoid another migration on next startup.
   if (needRewriteEdits)
     Save();
-  LOG(LINFO, ("Loaded", modified, "modified,",
-              created, "created,", deleted, "deleted and", obsolete, "obsolete features."));
 }
 
 bool Editor::Save() const
@@ -404,32 +366,9 @@ void Editor::DeleteFeature(FeatureID const & fid)
   Invalidate();
 }
 
-namespace
-{
-constexpr uint32_t kStartIndexForCreatedFeatures = numeric_limits<uint32_t>::max() - 0xfffff;
-}  // namespace
-
 bool Editor::IsCreatedFeature(FeatureID const & fid)
 {
-  return fid.m_index >= kStartIndexForCreatedFeatures;
-}
-
-bool Editor::OriginalFeatureHasDefaultName(FeatureID const & fid) const
-{
-  if (IsCreatedFeature(fid))
-    return false;
-
-  auto const originalFeaturePtr = GetOriginalFeature(fid);
-  if (!originalFeaturePtr)
-  {
-    LOG(LERROR, ("A feature with id", fid, "cannot be loaded."));
-    alohalytics::LogEvent("Editor_MissingFeature_Error");
-    return false;
-  }
-
-  auto const & names = originalFeaturePtr->GetNames();
-
-  return names.HasString(StringUtf8Multilang::kDefaultCode);
+  return feature::FakeFeatureIds::IsEditorCreatedFeature(fid.m_index);
 }
 
 /// Several cases should be handled while saving changes:
@@ -811,8 +750,7 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
                 continue;
               }
 
-              XMLFeature osmFeature = GetMatchingFeatureFromOSM(
-                  changeset, *originalFeaturePtr);
+              XMLFeature osmFeature = GetMatchingFeatureFromOSM(changeset, *originalFeaturePtr);
               XMLFeature const osmFeatureCopy = osmFeature;
               osmFeature.ApplyPatch(feature);
               // Check to avoid uploading duplicates into OSM.
@@ -854,16 +792,9 @@ void Editor::UploadChanges(string const & key, string const & secret, TChangeset
           ++errorsCount;
           LOG(LWARNING, (ex.what()));
         }
-        catch (ChangesetWrapper::RelationFeatureAreNotSupportedException const & ex)
-        {
-          fti.m_uploadStatus = kRelationsAreNotSupported;
-          fti.m_uploadError = ex.Msg();
-          ++errorsCount;
-          LOG(LWARNING, (ex.what()));
-        }
         catch (ChangesetWrapper::EmptyFeatureException const & ex)
         {
-          fti.m_uploadStatus = kWrongMatch;
+          fti.m_uploadStatus = kMatchedFeatureIsEmpty;
           fti.m_uploadError = ex.Msg();
           ++errorsCount;
           LOG(LWARNING, (ex.what()));
@@ -928,6 +859,40 @@ void Editor::SaveUploadedInformation(FeatureTypeInfo const & fromUploader)
   fti.m_uploadStatus = fromUploader.m_uploadStatus;
   fti.m_uploadError = fromUploader.m_uploadError;
   Save();
+}
+
+bool Editor::FillFeatureInfo(FeatureStatus status, XMLFeature const & xml, FeatureID const & fid,
+                             FeatureTypeInfo & fti) const
+{
+  if (status == FeatureStatus::Created)
+  {
+    fti.m_feature.FromXML(xml);
+  }
+  else
+  {
+    auto const originalFeaturePtr = GetOriginalFeature(fid);
+    if (!originalFeaturePtr)
+    {
+      LOG(LERROR, ("A feature with id", fid, "cannot be loaded."));
+      alohalytics::LogEvent("Editor_MissingFeature_Error");
+      return false;
+    }
+
+    fti.m_feature = *originalFeaturePtr;
+    fti.m_feature.ApplyPatch(xml);
+  }
+
+  fti.m_feature.SetID(fid);
+  fti.m_street = xml.GetTagValue(kAddrStreetTag);
+
+  fti.m_modificationTimestamp = xml.GetModificationTime();
+  ASSERT_NOT_EQUAL(my::INVALID_TIME_STAMP, fti.m_modificationTimestamp, ());
+  fti.m_uploadAttemptTimestamp = xml.GetUploadTime();
+  fti.m_uploadStatus = xml.GetUploadStatus();
+  fti.m_uploadError = xml.GetUploadError();
+  fti.m_status = status;
+
+  return true;
 }
 
 // Macros is used to avoid code duplication.
@@ -1037,11 +1002,11 @@ NewFeatureCategories Editor::GetNewFeatureCategories() const
   return NewFeatureCategories(*(m_config.Get()));
 }
 
-FeatureID Editor::GenerateNewFeatureId(MwmSet::MwmId const & id)
+FeatureID Editor::GenerateNewFeatureId(MwmSet::MwmId const & id) const
 {
-  DECLARE_AND_ASSERT_THREAD_CHECKER("GenerateNewFeatureId is single-threaded.");
+  DECLARE_AND_CHECK_THREAD_CHECKER("GenerateNewFeatureId is single-threaded.");
   // TODO(vng): Double-check if new feature indexes should uninterruptedly continue after existing indexes in mwm file.
-  uint32_t featureIndex = kStartIndexForCreatedFeatures;
+  uint32_t featureIndex = feature::FakeFeatureIds::kEditorCreatedFeaturesStart;
   auto const found = m_features.find(id);
   if (found != m_features.end())
   {
@@ -1052,6 +1017,7 @@ FeatureID Editor::GenerateNewFeatureId(MwmSet::MwmId const & id)
         featureIndex = feature.first + 1;
     }
   }
+  CHECK(feature::FakeFeatureIds::IsEditorCreatedFeature(featureIndex), ());
   return FeatureID(id, featureIndex);
 }
 
@@ -1073,6 +1039,7 @@ bool Editor::CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::Mwm
 }
 
 void Editor::CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
+                        feature::TypesHolder const & holder, string const & defaultName,
                         NoteProblemType const type, string const & note)
 {
   auto const version = GetMwmCreationTimeByMwmId(fid.m_mwmId);
@@ -1080,13 +1047,14 @@ void Editor::CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
   ostringstream sstr;
   auto canCreate = true;
 
+  if (!note.empty())
+    sstr << "\"" << note << "\"" << endl;
+
   switch (type)
   {
     case NoteProblemType::PlaceDoesNotExist:
     {
-      sstr << kPlaceDoesNotExistMessage;
-      if (!note.empty())
-        sstr << " User comments: \"" << note << '\"';
+      sstr << kPlaceDoesNotExistMessage << endl;
       auto const isCreated = GetFeatureStatus(fid) == FeatureStatus::Created;
       auto const createdAndUploaded = (isCreated && IsFeatureUploaded(fid.m_mwmId, fid.m_index));
       CHECK(!isCreated || createdAndUploaded, ());
@@ -1098,13 +1066,22 @@ void Editor::CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
 
       break;
     }
-    case NoteProblemType::General:
-    {
-      sstr << note;
-      break;
-    }
+    case NoteProblemType::General: break;
   }
-  sstr << " (OSM data version: " << stringVersion << ')';
+
+  if (defaultName.empty())
+    sstr << "POI has no name" << endl;
+  else
+    sstr << "POI name: " << defaultName << endl;
+
+  sstr << "POI types:";
+  for (auto const & type : holder.ToObjectNames())
+  {
+    sstr << ' ' << type;
+  }
+  sstr << endl;
+
+  sstr << "OSM data version: " << stringVersion << endl;
 
   if (canCreate)
     m_notes->CreateNote(latLon, sstr.str());
@@ -1164,7 +1141,7 @@ string Editor::GetOriginalFeatureStreet(FeatureType & ft) const
   return m_delegate->GetOriginalFeatureStreet(ft);
 }
 
-void Editor::ForEachFeatureAtPoint(TFeatureTypeFn && fn, m2::PointD const & point) const
+void Editor::ForEachFeatureAtPoint(FeatureTypeFn && fn, m2::PointD const & point) const
 {
   if (!m_delegate)
   {
@@ -1172,6 +1149,64 @@ void Editor::ForEachFeatureAtPoint(TFeatureTypeFn && fn, m2::PointD const & poin
     return;
   }
   m_delegate->ForEachFeatureAtPoint(move(fn), point);
+}
+
+FeatureID Editor::GetFeatureIdByXmlFeature(XMLFeature const & xml, MwmSet::MwmId const & mwmId,
+                                           FeatureStatus status, bool needMigrate) const
+{
+  ForEachFeaturesNearByFn forEach = [this](FeatureTypeFn && fn, m2::PointD const & point)
+  {
+    return ForEachFeatureAtPoint(move(fn), point);
+  };
+
+  // TODO(mgsergio): Deleted features are not properly handled yet.
+  if (needMigrate)
+  {
+    return editor::MigrateFeatureIndex(forEach, xml, status,
+                                       [this, &mwmId] { return GenerateNewFeatureId(mwmId); });
+  }
+
+  return FeatureID(mwmId, xml.GetMWMFeatureIndex());
+}
+
+void Editor::LoadMwmEdits(xml_node const & mwm, MwmSet::MwmId const & mwmId, bool needMigrate)
+{
+  LogHelper logHelper(mwmId);
+
+  for (auto const & section : kXmlSections)
+  {
+    for (auto const & nodeOrWay : mwm.child(section.m_sectionName.c_str()).select_nodes("node|way"))
+    {
+      try
+      {
+        XMLFeature const xml(nodeOrWay.node());
+
+        auto const fid = GetFeatureIdByXmlFeature(xml, mwmId, section.m_status, needMigrate);
+
+        // Remove obsolete changes during migration.
+        if (needMigrate && IsObsolete(xml, fid))
+          continue;
+
+        FeatureTypeInfo fti;
+        if (!FillFeatureInfo(section.m_status, xml, fid, fti))
+          continue;
+
+        logHelper.OnStatus(section.m_status);
+
+        m_features[fid.m_mwmId].emplace(fid.m_index, move(fti));
+      }
+      catch (editor::XMLFeatureError const & ex)
+      {
+        ostringstream s;
+        nodeOrWay.node().print(s, "  ");
+        LOG(LERROR, (ex.what(), "mwmId =", mwmId, "in section", section.m_sectionName, s.str()));
+      }
+      catch (editor::MigrationError const & ex)
+      {
+        LOG(LWARNING, (ex.what(), "mwmId =", mwmId, XMLFeature(nodeOrWay.node())));
+      }
+    }
+  }
 }
 
 string DebugPrint(Editor::FeatureStatus fs)

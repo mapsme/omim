@@ -1,40 +1,47 @@
 package com.mapswithme.maps.search;
 
+import com.mapswithme.maps.bookmarks.data.FeatureId;
+
+import static com.mapswithme.maps.search.SearchResultTypes.TYPE_LOCAL_ADS_CUSTOMER;
+import static com.mapswithme.maps.search.SearchResultTypes.TYPE_RESULT;
+import static com.mapswithme.maps.search.SearchResultTypes.TYPE_SUGGEST;
+
 /**
  * Class instances are created from native code.
  */
 @SuppressWarnings("unused")
-public class SearchResult
+public class SearchResult implements SearchData
 {
-  public static final int TYPE_SUGGEST = 0;
-  public static final int TYPE_RESULT = 1;
-  public static final int TYPE_LOCAL_ADS_CUSTOMER = 2;
-
   // Values should match osm::YesNoUnknown enum.
   public static final int OPEN_NOW_UNKNOWN = 0;
   public static final int OPEN_NOW_YES = 1;
   public static final int OPEN_NOW_NO = 2;
 
+  public static final SearchResult EMPTY = new SearchResult("", "", 0, 0,
+                                                            new int[] {});
+
   public static class Description
   {
+    public final FeatureId featureId;
     public final String featureType;
     public final String region;
     public final String distance;
     public final String cuisine;
-    public final String rating;
     public final String pricing;
+    public final float rating;
     public final int stars;
     public final int openNow;
 
-    public Description(String featureType, String region, String distance,
-                       String cuisine, String rating, String pricing, int stars, int openNow)
+    public Description(FeatureId featureId, String featureType, String region, String distance,
+                       String cuisine, String pricing, float rating, int stars, int openNow)
     {
+      this.featureId = featureId;
       this.featureType = featureType;
       this.region = region;
       this.distance = distance;
       this.cuisine = cuisine;
-      this.rating = rating;
       this.pricing = pricing;
+      this.rating = rating;
       this.stars = stars;
       this.openNow = openNow;
     }
@@ -77,5 +84,11 @@ public class SearchResult
     this.lon = lon;
     this.description = description;
     this.highlightRanges = highlightRanges;
+  }
+
+  @Override
+  public int getItemViewType()
+  {
+    return type;
   }
 }

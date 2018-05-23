@@ -35,12 +35,14 @@
 #include "base/string_utils.hpp"
 #include "base/timer.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/fstream.hpp"
-#include "std/initializer_list.hpp"
-#include "std/limits.hpp"
-#include "std/unordered_map.hpp"
-#include "std/vector.hpp"
+#include <algorithm>
+#include <fstream>
+#include <initializer_list>
+#include <limits>
+#include <unordered_map>
+#include <vector>
+
+using namespace std;
 
 #define SYNONYMS_FILE "synonyms.txt"
 
@@ -61,7 +63,7 @@ public:
 
     while (stream.good())
     {
-      std::getline(stream, line);
+      getline(stream, line);
       if (line.empty())
         continue;
 
@@ -159,12 +161,12 @@ struct FeatureNameInserter
     m_keyValuePairs.emplace_back(key, m_val);
   }
 
-  bool operator()(signed char lang, string const & name) const
+  void operator()(signed char lang, string const & name) const
   {
     strings::UniString const uniName = search::NormalizeAndSimplifyString(name);
 
     // split input string on tokens
-    buffer_vector<strings::UniString, 32> tokens;
+    search::QueryTokens tokens;
     SplitUniString(uniName, MakeBackInsertFunctor(tokens), search::Delimiters());
 
     // add synonyms for input native string
@@ -176,7 +178,8 @@ struct FeatureNameInserter
                           });
     }
 
-    int const maxTokensCount = search::MAX_TOKENS - 1;
+    static_assert(search::kMaxNumTokens > 0, "");
+    size_t const maxTokensCount = search::kMaxNumTokens - 1;
     if (tokens.size() > maxTokensCount)
     {
       LOG(LWARNING, ("Name has too many tokens:", name));
@@ -197,8 +200,6 @@ struct FeatureNameInserter
       for (auto const & token : tokens)
         AddToken(lang, token);
     }
-
-    return true;
   }
 };
 
@@ -395,16 +396,9 @@ bool BuildSearchIndexFromDataFile(string const & filename, bool forceRebuild)
   if (readContainer.IsExist(SEARCH_INDEX_FILE_TAG) && !forceRebuild)
     return true;
 
-  string mwmName = filename;
-  my::GetNameFromFullPath(mwmName);
-  my::GetNameWithoutExt(mwmName);
-
-  string const indexFilePath = platform.WritablePathForFile(
-        mwmName + "." SEARCH_INDEX_FILE_TAG EXTENSION_TMP);
+  string const indexFilePath = filename + "." + SEARCH_INDEX_FILE_TAG EXTENSION_TMP;
+  string const addrFilePath = filename + "." + SEARCH_ADDRESS_FILE_TAG EXTENSION_TMP;
   MY_SCOPE_GUARD(indexFileGuard, bind(&FileWriter::DeleteFileX, indexFilePath));
-
-  string const addrFilePath = platform.WritablePathForFile(
-        mwmName + "." SEARCH_ADDRESS_FILE_TAG EXTENSION_TMP);
   MY_SCOPE_GUARD(addrFileGuard, bind(&FileWriter::DeleteFileX, addrFilePath));
 
   try
@@ -464,8 +458,8 @@ bool BuildSearchIndexFromDataFile(string const & filename, bool forceRebuild)
 
 void BuildSearchIndex(FilesContainerR & container, Writer & indexWriter)
 {
-  using TKey = strings::UniString;
-  using TValue = FeatureIndexValue;
+  using Key = strings::UniString;
+  using Value = FeatureIndexValue;
 
   Platform & platform = GetPlatform();
 
@@ -475,16 +469,17 @@ void BuildSearchIndex(FilesContainerR & container, Writer & indexWriter)
   CategoriesHolder categoriesHolder(platform.GetReader(SEARCH_CATEGORIES_FILE_NAME));
 
   FeaturesVectorTest features(container);
-  auto codingParams = trie::GetCodingParams(features.GetHeader().GetDefCodingParams());
-  SingleValueSerializer<TValue> serializer(codingParams);
+  auto codingParams =
+      trie::GetGeometryCodingParams(features.GetHeader().GetDefGeometryCodingParams());
+  SingleValueSerializer<Value> serializer(codingParams);
 
-  vector<pair<TKey, TValue>> searchIndexKeyValuePairs;
+  vector<pair<Key, Value>> searchIndexKeyValuePairs;
   AddFeatureNameIndexPairs(features, categoriesHolder, searchIndexKeyValuePairs);
 
   sort(searchIndexKeyValuePairs.begin(), searchIndexKeyValuePairs.end());
   LOG(LINFO, ("End sorting strings:", timer.ElapsedSeconds()));
 
-  trie::Build<Writer, TKey, ValueList<TValue>, SingleValueSerializer<TValue>>(
+  trie::Build<Writer, Key, ValueList<Value>, SingleValueSerializer<Value>>(
       indexWriter, serializer, searchIndexKeyValuePairs);
 
   LOG(LINFO, ("End building search index, elapsed seconds:", timer.ElapsedSeconds()));

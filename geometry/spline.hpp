@@ -29,6 +29,7 @@ public:
     double GetFullLength() const;
 
     size_t GetIndex() const;
+    bool IsAttached() const;
 
   private:
     friend class Spline;
@@ -55,9 +56,14 @@ public:
   bool IsPrelonging(PointD const & pt);
   size_t GetSize() const;
   vector<PointD> const & GetPath() const { return m_position; }
+  vector<double> const & GetLengths() const { return m_length; }
+  vector<PointD> const & GetDirections() const { return m_direction; }
+  void Clear();
+
+  iterator GetPoint(double step) const;
 
   template <typename TFunctor>
-  void ForEachNode(iterator const & begin, iterator const & end, TFunctor & f) const
+  void ForEachNode(iterator const & begin, iterator const & end, TFunctor const & f) const
   {
     ASSERT(begin.BeginAgain() == false, ());
     ASSERT(end.BeginAgain() == false, ());
@@ -97,6 +103,8 @@ public:
 
   Spline * operator->();
   Spline const * operator->() const;
+
+  Spline const * Get() const;
 
 private:
   shared_ptr<Spline> m_spline;

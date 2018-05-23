@@ -9,7 +9,6 @@
 #include <functional>
 #include <list>
 #include <map>
-#include <mutex>
 #include <string>
 #include <vector>
 
@@ -32,16 +31,9 @@ public:
     uint8_t m_zoomLevel = 0;
   };
 
-  Statistics() = default;
-  ~Statistics();
+  Statistics();
 
   void Startup();
-  void Teardown();
-
-  void SetUserId(std::string const & userId);
-
-  void SetCustomServerSerializer(ServerSerializer && serializer);
-
   void RegisterEvent(Event && event);
   void RegisterEvents(std::list<Event> && events);
 
@@ -52,44 +44,29 @@ public:
   void CleanupAfterTesting();
 
 private:
-  void ThreadRoutine();
-  bool RequestEvents(std::list<Event> & events, bool & needToSend);
-
-  void IndexMetadata();
-  void ExtractMetadata(std::string const & fileName);
-  void BalanceMemory();
-
-  std::list<Event> WriteEvents(std::list<Event> & events, std::string & fileNameToRebuild);
-  std::list<Event> ReadEvents(std::string const & fileName) const;
-  void ProcessEvents(std::list<Event> & events);
-
-  void SendToServer();
-  std::vector<uint8_t> SerializeForServer(std::list<Event> const & events) const;
-
   using MetadataKey = std::pair<std::string, int64_t>;
   struct Metadata
   {
     std::string m_fileName;
     Timestamp m_timestamp;
-
+    
     Metadata() = default;
     Metadata(std::string const & fileName, Timestamp const & timestamp)
       : m_fileName(fileName), m_timestamp(timestamp)
-    {
-    }
+    {}
   };
+  
+  void IndexMetadata();
+  void ExtractMetadata(std::string const & fileName);
+  void BalanceMemory();
+
+  std::list<Event> WriteEvents(std::list<Event> & events, std::string & fileNameToRebuild);
+  void ProcessEvents(std::list<Event> & events);
+
+  void SendToServer();
+  void SendFileWithMetadata(MetadataKey && metadataKey, Metadata && metadata);
+
+  std::string const m_userId;
   std::map<MetadataKey, Metadata> m_metadataCache;
-  Timestamp m_lastSending;
-  bool m_isFirstSending = true;
-
-  std::string m_userId;
-  ServerSerializer m_serverSerializer;
-
-  bool m_isRunning = false;
-  std::list<Event> m_events;
-
-  std::condition_variable m_condition;
-  std::mutex m_mutex;
-  threads::SimpleThread m_thread;
 };
 }  // namespace local_ads

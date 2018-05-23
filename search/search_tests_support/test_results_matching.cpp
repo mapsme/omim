@@ -5,8 +5,9 @@
 #include "indexer/feature_decl.hpp"
 #include "indexer/index.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
 
+using namespace std;
 using namespace generator::tests_support;
 
 namespace search
@@ -97,6 +98,21 @@ bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
 
   LOG(LWARNING, (os.str()));
   return false;
+}
+
+bool MatchResults(Index const & index, vector<shared_ptr<MatchingRule>> rules,
+                  search::Results const & actual)
+{
+  vector<search::Result> const results(actual.begin(), actual.end());
+  return MatchResults(index, rules, results);
+}
+
+bool ResultMatches(Index const & index, shared_ptr<MatchingRule> rule,
+                   search::Result const & result)
+{
+  bool matches = false;
+  index.ReadFeature([&](FeatureType & ft) { matches = rule->Matches(ft); }, result.GetFeatureID());
+  return matches;
 }
 
 string DebugPrint(MatchingRule const & rule) { return rule.ToString(); }

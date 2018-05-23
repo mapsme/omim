@@ -3,6 +3,8 @@
 
 #include "coding/file_name_utils.hpp"
 
+#include "generator/utils.hpp"
+
 #include "geometry/mercator.hpp"
 #include "geometry/point2d.hpp"
 
@@ -17,9 +19,11 @@
 #include "platform/platform.hpp"
 
 #include "search/engine.hpp"
+#include "search/locality_finder.hpp"
 #include "search/reverse_geocoder.hpp"
 #include "search/search_quality/helpers.hpp"
 
+#include "storage/country_info_getter.hpp"
 #include "storage/index.hpp"
 #include "storage/storage.hpp"
 
@@ -72,8 +76,7 @@ set<string> const kPoiTypes = {"amenity",  "shop",    "tourism",  "leisure",   "
 string GetReadableType(FeatureType const & f)
 {
   uint32_t result = 0;
-  f.ForEachType([&result](uint32_t type)
-  {
+  f.ForEachType([&result](uint32_t type) {
     string fullName = classif().GetFullObjectName(type);
     auto pos = fullName.find("|");
     if (pos != string::npos)
@@ -88,8 +91,7 @@ string GetWheelchairType(FeatureType const & f)
 {
   static const uint32_t wheelchair = classif().GetTypeByPath({"wheelchair"});
   string result;
-  f.ForEachType([&result](uint32_t type)
-  {
+  f.ForEachType([&result](uint32_t type) {
     uint32_t truncated = type;
     ftype::TruncValue(truncated, 1);
     if (truncated == wheelchair)
@@ -103,12 +105,22 @@ string GetWheelchairType(FeatureType const & f)
   return result;
 }
 
+bool HasAtm(FeatureType const & f)
+{
+  static const uint32_t atm = classif().GetTypeByPath({"amenity", "atm"});
+  bool result = false;
+  f.ForEachType([&result](uint32_t type) {
+    if (type == atm)
+      result = true;
+  });
+  return result;
+}
+
 string BuildUniqueId(ms::LatLon const & coords, string const & name)
 {
   ostringstream ss;
   ss << strings::to_string_with_digits_after_comma(coords.lat, 6) << ','
-     << strings::to_string_with_digits_after_comma(coords.lon, 6) << ','
-     << name;
+     << strings::to_string_with_digits_after_comma(coords.lon, 6) << ',' << name;
   uint32_t hash = 0;
   for (char const c : ss.str())
     hash = hash * 101 + c;
@@ -118,11 +130,7 @@ string BuildUniqueId(ms::LatLon const & coords, string const & name)
 void AppendNames(FeatureType const & f, vector<string> & columns)
 {
   vector<string> names(kLangCount);
-  f.GetNames().ForEach([&names](int8_t code, string const & name) -> bool
-  {
-    names[code] = string(name);
-    return true;
-  });
+  f.GetNames().ForEach([&names](int8_t code, string const & name) { names[code] = name; });
   columns.insert(columns.end(), next(names.begin()), names.end());
 }
 
@@ -131,7 +139,8 @@ void PrintAsCSV(vector<string> const & columns, char const delimiter, ostream & 
   bool first = true;
   for (string value : columns)
   {
-    // Newlines are hard to process, replace them with spaces. And trim the string.
+    // Newlines are hard to process, replace them with spaces. And trim the
+    // string.
     replace(value.begin(), value.end(), '\r', ' ');
     replace(value.begin(), value.end(), '\n', ' ');
     strings::Trim(value);
@@ -162,25 +171,38 @@ void PrintAsCSV(vector<string> const & columns, char const delimiter, ostream & 
 class Processor
 {
   search::ReverseGeocoder m_geocoder;
-  my::Cancellable m_cancellable;
+  base::Cancellable m_cancellable;
+  search::CitiesBoundariesTable m_boundariesTable;
   search::VillagesCache m_villagesCache;
   search::LocalityFinder m_finder;
 
 public:
   Processor(Index const & index)
-    : m_geocoder(index), m_villagesCache(m_cancellable), m_finder(index, m_villagesCache)
+    : m_geocoder(index)
+    , m_boundariesTable(index)
+    , m_villagesCache(m_cancellable)
+    , m_finder(index, m_boundariesTable, m_villagesCache)
   {
+    m_boundariesTable.Load();
   }
 
   void ClearCache() { m_villagesCache.Clear(); }
 
-  void operator()(FeatureType const & f, uint32_t const & id) { Process(f); }
+  void operator()(FeatureType const & f, map<uint32_t, osm::Id> const & ft2osm)
+  {
+    Process(f, ft2osm);
+  }
 
-  void Process(FeatureType const & f)
+  void Process(FeatureType const & f, map<uint32_t, osm::Id> const & ft2osm)
   {
     f.ParseBeforeStatistic();
     string const & category = GetReadableType(f);
-    if (!f.HasName() || f.GetFeatureType() == feature::GEOM_LINE || category.empty())
+    // "operator" is a reserved word, hence "operatr". This word is pretty
+    // common in C++ projects.
+    string const & operatr = f.GetMetadata().Get(feature::Metadata::FMD_OPERATOR);
+    auto const & osmIt = ft2osm.find(f.GetID().m_index);
+    if ((!f.HasName() && operatr.empty()) || f.GetFeatureType() == feature::GEOM_LINE ||
+        category.empty() || osmIt == ft2osm.cend())
       return;
     m2::PointD const & center = FindCenter(f);
     ms::LatLon const & ll = MercatorBounds::ToLatLon(center);
@@ -188,37 +210,55 @@ public:
     obj.SetFromFeatureType(f);
 
     string city;
-    m_finder.GetLocality(center, city);
+    m_finder.GetLocality(center, [&city](search::LocalityItem const & item) {
+      item.GetSpecifiedOrDefaultName(StringUtf8Multilang::kDefaultCode, city);
+    });
 
     string const & mwmName = f.GetID().GetMwmName();
     string name, secondary;
     f.GetPreferredNames(name, secondary);
+    if (name.empty())
+      name = operatr;
+    string const & osmId = strings::to_string(osmIt->second.EncodedId());
     string const & uid = BuildUniqueId(ll, name);
     string const & lat = strings::to_string_with_digits_after_comma(ll.lat, 6);
     string const & lon = strings::to_string_with_digits_after_comma(ll.lon, 6);
     search::ReverseGeocoder::Address addr;
     string addrStreet = "";
     string addrHouse = "";
+    double constexpr kDistanceThresholdMeters = 0.5;
     if (m_geocoder.GetExactAddress(f, addr))
     {
       addrStreet = addr.GetStreetName();
       addrHouse = addr.GetHouseNumber();
+    }
+    else
+    {
+      m_geocoder.GetNearbyAddress(center, addr);
+      if (addr.GetDistance() < kDistanceThresholdMeters)
+      {
+        addrStreet = addr.GetStreetName();
+        addrHouse = addr.GetHouseNumber();
+      }
     }
     string const & phone = f.GetMetadata().Get(feature::Metadata::FMD_PHONE_NUMBER);
     string const & website = f.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
     string cuisine = f.GetMetadata().Get(feature::Metadata::FMD_CUISINE);
     replace(cuisine.begin(), cuisine.end(), ';', ',');
     string const & stars = f.GetMetadata().Get(feature::Metadata::FMD_STARS);
-    string const & operatr = f.GetMetadata().Get(feature::Metadata::FMD_OPERATOR);
     string const & internet = f.GetMetadata().Get(feature::Metadata::FMD_INTERNET);
     string const & denomination = f.GetMetadata().Get(feature::Metadata::FMD_DENOMINATION);
     string const & wheelchair = GetWheelchairType(f);
     string const & opening_hours = f.GetMetadata().Get(feature::Metadata::FMD_OPEN_HOURS);
+    string const & wikipedia = f.GetMetadata().GetWikiURL();
+    string const & floor = f.GetMetadata().Get(feature::Metadata::FMD_LEVEL);
+    string const & fee = strings::EndsWith(category, "-fee") ? "yes" : "";
+    string const & atm = HasAtm(f) ? "yes" : "";
 
-    vector<string> columns = {uid,          lat,        lon,          mwmName,   category,
-                              name,         city,       addrStreet,   addrHouse, phone,
-                              website,      cuisine,    stars,        operatr,   internet,
-                              denomination, wheelchair, opening_hours};
+    vector<string> columns = {
+        osmId,        uid,        lat,           lon,       mwmName, category, name,    city,
+        addrStreet,   addrHouse,  phone,         website,   cuisine, stars,    operatr, internet,
+        denomination, wheelchair, opening_hours, wikipedia, floor,   fee,      atm};
     AppendNames(f, columns);
     PrintAsCSV(columns, ';', cout);
   }
@@ -226,14 +266,21 @@ public:
 
 void PrintHeader()
 {
-  vector<string> columns = {"id",           "lat",        "lon",          "mwm",      "category",
-                            "name",         "city",       "street",       "house",    "phone",
-                            "website",      "cuisines",   "stars",        "operator", "internet",
-                            "denomination", "wheelchair", "opening_hours"};
+  vector<string> columns = {"id",       "old_id",       "lat",        "lon",           "mwm",
+                            "category", "name",         "city",       "street",        "house",
+                            "phone",    "website",      "cuisines",   "stars",         "operator",
+                            "internet", "denomination", "wheelchair", "opening_hours", "wikipedia",
+                            "floor",    "fee",          "atm"};
   // Append all supported name languages in order.
   for (uint8_t idx = 1; idx < kLangCount; idx++)
     columns.push_back("name_" + string(StringUtf8Multilang::GetLangByCode(idx)));
   PrintAsCSV(columns, ';', cout);
+}
+
+bool ParseFeatureIdToOsmIdMapping(string const & path, map<uint32_t, osm::Id> & mapping)
+{
+  return generator::ForEachOsmId2FeatureId(
+      path, [&](osm::Id const & osmId, uint32_t const featureId) { mapping[featureId] = osmId; });
 }
 
 void DidDownload(storage::TCountryId const & /* countryId */,
@@ -264,7 +311,7 @@ int main(int argc, char ** argv)
   if (argc > 2)
   {
     pl.SetResourceDir(argv[2]);
-    countriesFile = my::JoinFoldersToPath(argv[2], COUNTRIES_FILE);
+    countriesFile = my::JoinPath(argv[2], COUNTRIES_FILE);
   }
 
   storage::Storage storage(countriesFile, argv[1]);
@@ -282,8 +329,6 @@ int main(int argc, char ** argv)
                                        mwms);
   for (auto & mwm : mwms)
   {
-    if (argc > 3 && !strings::StartsWith(mwm.GetCountryName(), argv[3]))
-      continue;
     mwm.SyncWithDisk();
     auto const & p = index.RegisterMap(mwm);
     CHECK_EQUAL(MwmSet::RegResult::Success, p.second, ("Could not register map", mwm));
@@ -299,14 +344,20 @@ int main(int argc, char ** argv)
   {
     if (mwmInfo->GetType() != MwmInfo::COUNTRY)
       continue;
+    if (argc > 3 && !strings::StartsWith(mwmInfo->GetCountryName() + DATA_FILE_EXTENSION, argv[3]))
+      continue;
     LOG(LINFO, ("Processing", mwmInfo->GetCountryName()));
+    string osmToFeatureFile = my::JoinPath(
+        argv[1], mwmInfo->GetCountryName() + DATA_FILE_EXTENSION + OSM2FEATURE_FILE_EXTENSION);
+    map<uint32_t, osm::Id> featureIdToOsmId;
+    ParseFeatureIdToOsmIdMapping(osmToFeatureFile, featureIdToOsmId);
     MwmSet::MwmId mwmId(mwmInfo);
     Index::FeaturesLoaderGuard loader(index, mwmId);
     for (uint32_t ftIndex = 0; ftIndex < loader.GetNumFeatures(); ftIndex++)
     {
       FeatureType ft;
       if (loader.GetFeatureByIndex(static_cast<uint32_t>(ftIndex), ft))
-        doProcess.Process(ft);
+        doProcess.Process(ft, featureIdToOsmId);
     }
     doProcess.ClearCache();
   }

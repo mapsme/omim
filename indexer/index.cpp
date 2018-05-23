@@ -15,6 +15,7 @@ using platform::LocalCountryFile;
 //////////////////////////////////////////////////////////////////////////////////
 // MwmValue implementation
 //////////////////////////////////////////////////////////////////////////////////
+using namespace std;
 
 MwmValue::MwmValue(LocalCountryFile const & localFile)
   : m_cont(platform::GetCountryReader(localFile, MapOptions::Map)), m_file(localFile)
@@ -110,6 +111,28 @@ bool Index::FeaturesLoaderGuard::IsWorld() const
     return false;
 
   return m_handle.GetValue<MwmValue>()->GetHeader().GetType() == feature::DataHeader::world;
+}
+
+unique_ptr<FeatureType> Index::FeaturesLoaderGuard::GetOriginalFeatureByIndex(uint32_t index) const
+{
+  auto feature = make_unique<FeatureType>();
+  if (!GetOriginalFeatureByIndex(index, *feature))
+    return {};
+
+  return feature;
+}
+
+unique_ptr<FeatureType> Index::FeaturesLoaderGuard::GetOriginalOrEditedFeatureByIndex(uint32_t index) const
+{
+  auto feature = make_unique<FeatureType>();
+  if (!m_handle.IsAlive())
+    return {};
+
+  ASSERT_NOT_EQUAL(m_editor.GetFeatureStatus(m_handle.GetId(), index), osm::Editor::FeatureStatus::Created, ());
+  if (!GetFeatureByIndex(index, *feature))
+    return {};
+
+  return feature;
 }
 
 bool Index::FeaturesLoaderGuard::GetFeatureByIndex(uint32_t index, FeatureType & ft) const

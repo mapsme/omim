@@ -1,6 +1,5 @@
 @objc(MWMPPHotelDescriptionCell)
-final class PPHotelDescriptionCell: MWMTableViewCell
-{
+final class PPHotelDescriptionCell: MWMTableViewCell {
   private let kMaximumDescriptionHeight: CGFloat = 60
 
   @IBOutlet private var compactModeConstraints: [NSLayoutConstraint]!
@@ -10,8 +9,8 @@ final class PPHotelDescriptionCell: MWMTableViewCell
   private weak var updateDelegate: MWMPlacePageCellUpdateProtocol?
   private var isNeedToForceLayout: Bool = false
 
-  func config(with description: String, delegate: MWMPlacePageCellUpdateProtocol) {
-    descriptionText.text = description;
+  @objc func config(with description: String, delegate: MWMPlacePageCellUpdateProtocol) {
+    descriptionText.text = description
     descriptionText.sizeToFit()
     updateDelegate = delegate
 
@@ -22,29 +21,26 @@ final class PPHotelDescriptionCell: MWMTableViewCell
     super.layoutSubviews()
     if isNeedToForceLayout {
       isNeedToForceLayout = false
-      let isCompact = descriptionText.height > kMaximumDescriptionHeight;
-      if (isCompact) {
-        compactModeConstraints.forEach { $0.priority = UILayoutPriorityDefaultHigh }
+      let isCompact = descriptionText.height > kMaximumDescriptionHeight
+      if isCompact {
+        compactModeConstraints.forEach { $0.priority = UILayoutPriority.defaultHigh }
       }
 
       hideButton(!isCompact)
     }
   }
 
-  private func hideButton(_ isHidden:Bool = true) {
+  private func hideButton(_ isHidden: Bool = true) {
     button.isHidden = isHidden
-    buttonZeroHeight.priority = isHidden ? UILayoutPriorityDefaultHigh : UILayoutPriorityDefaultLow
+    buttonZeroHeight.priority = isHidden ? UILayoutPriority.defaultHigh : UILayoutPriority.defaultLow
   }
 
   @IBAction private func tap() {
-    compactModeConstraints.forEach { $0.priority = UILayoutPriorityDefaultLow }
-    hideButton()
-    setNeedsLayout()
-    UIView.animate(withDuration: kDefaultAnimationDuration, animations: { [weak self] in
-      guard let s = self else { return }
-
-      s.layoutIfNeeded()
-      s.updateDelegate?.cellUpdated()
+    animateConstraints(animations: {
+      self.compactModeConstraints.forEach { $0.priority = UILayoutPriority.defaultLow }
+      self.hideButton()
+    }, completion: {
+      self.updateDelegate?.cellUpdated()
     })
   }
 }

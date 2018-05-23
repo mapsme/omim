@@ -1,5 +1,6 @@
 package com.mapswithme.maps.ads;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -55,7 +56,8 @@ public class CompoundNativeAdLoader extends BaseNativeAdLoader implements Native
   public void loadAd(@NonNull Context context, @NonNull List<Banner> banners)
   {
     LOGGER.i(TAG, "Load ads for " + banners);
-    cancelLoaders();
+    detach();
+    cancel();
     mLoadingCompleted = false;
     mFailedProviders.clear();
 
@@ -69,8 +71,17 @@ public class CompoundNativeAdLoader extends BaseNativeAdLoader implements Native
 
       NativeAdLoader loader = Factory.createLoaderForBanner(banner, mCacheListener, mAdTracker);
       mLoaders.add(loader);
+      attach();
       loader.setAdListener(this);
-      loader.loadAd(context, banner.getId());
+      // TODO: this workaround is need to avoid memory leak of activity context in MyTarget SDK.
+      // The fix of myTarged sdk will be done in this issue https://jira.mail.ru/browse/MOBADS-207.
+      // After the mentioned issued is fixed, this workaround should be removed. Also, we can't use
+      // the application context for all providers, because some of them (e.g. Mopub) requires an
+      // activity context and can't work with application context correctly.
+      if (loader instanceof MyTargetAdsLoader)
+        loader.loadAd(context.getApplicationContext(), banner.getId());
+      else
+        loader.loadAd(context, banner.getId());
     }
   }
 
@@ -84,6 +95,31 @@ public class CompoundNativeAdLoader extends BaseNativeAdLoader implements Native
   public boolean isAdLoading(@NonNull String bannerId)
   {
     throw new UnsupportedOperationException("A compound loader doesn't support this operation!");
+  }
+
+  @SuppressLint("MissingSuperCall")
+  // Don't need to call super here, because we don't need to null the mAdListener from the
+  // CompoundNativeAdLoader
+  @Override
+  public void cancel()
+  {
+    for (NativeAdLoader loader : mLoaders)
+      loader.cancel();
+    mLoaders.clear();
+  }
+
+  @Override
+  public void detach()
+  {
+    for (NativeAdLoader loader : mLoaders)
+      loader.detach();
+  }
+
+  @Override
+  public void attach()
+  {
+    for (NativeAdLoader loader : mLoaders)
+      loader.attach();
   }
 
   public boolean isAdLoading()
@@ -167,13 +203,6 @@ public class CompoundNativeAdLoader extends BaseNativeAdLoader implements Native
     if (getAdListener() != null)
       getAdListener().onAdLoaded(ad);
     mLoadingCompleted = true;
-  }
-
-  private void cancelLoaders()
-  {
-    for (NativeAdLoader adLoader : mLoaders)
-      adLoader.setAdListener(null);
-    mLoaders.clear();
   }
 
   private class DelayedNotification implements Runnable

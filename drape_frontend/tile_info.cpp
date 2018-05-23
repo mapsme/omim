@@ -1,9 +1,10 @@
+#include "drape_frontend/tile_info.hpp"
 #include "drape_frontend/drape_measurer.hpp"
 #include "drape_frontend/engine_context.hpp"
 #include "drape_frontend/map_data_provider.hpp"
+#include "drape_frontend/metaline_manager.hpp"
 #include "drape_frontend/rule_drawer.hpp"
 #include "drape_frontend/stylist.hpp"
-#include "drape_frontend/tile_info.hpp"
 
 #include "indexer/scales.hpp"
 
@@ -12,17 +13,14 @@
 #include "base/scope_guard.hpp"
 #include "base/logging.hpp"
 
-#include "std/bind.hpp"
+#include <functional>
+
+using namespace std::placeholders;
 
 namespace df
 {
-
-TileInfo::TileInfo(drape_ptr<EngineContext> && engineContext,
-                   CustomSymbolsContextWeakPtr customSymbolsContext)
-  : m_context(move(engineContext))
-  , m_customSymbolsContext(customSymbolsContext)
-  , m_is3dBuildings(false)
-  , m_trafficEnabled(false)
+TileInfo::TileInfo(drape_ptr<EngineContext> && engineContext)
+  : m_context(std::move(engineContext))
   , m_isCanceled(false)
 {}
 
@@ -33,30 +31,25 @@ m2::RectD TileInfo::GetGlobalRect() const
 
 void TileInfo::ReadFeatureIndex(MapDataProvider const & model)
 {
-  if (DoNeedReadIndex())
+  if (!DoNeedReadIndex())
+    return;
+
+  CheckCanceled();
+
+  size_t const kAverageFeaturesCount = 256;
+  m_featureInfo.reserve(kAverageFeaturesCount);
+
+  MwmSet::MwmId lastMwm;
+  model.ReadFeaturesID([this, &lastMwm](FeatureID const & id)
   {
-    CheckCanceled();
-
-    size_t const kAverageFeaturesCount = 256;
-    m_featureInfo.reserve(kAverageFeaturesCount);
-
-#ifdef DEBUG
-    set<MwmSet::MwmId> existing;
-    MwmSet::MwmId lastMwm;
-    model.ReadFeaturesID([this, &existing, &lastMwm](FeatureID const & id)
+    if (m_mwms.empty() || lastMwm != id.m_mwmId)
     {
-      if (existing.empty() || lastMwm != id.m_mwmId)
-      {
-        ASSERT(existing.insert(id.m_mwmId).second, ());
-        lastMwm = id.m_mwmId;
-      }
-#else
-    model.ReadFeaturesID([this](FeatureID const & id)
-    {
-#endif
-      m_featureInfo.push_back(id);
-    }, GetGlobalRect(), GetZoomLevel());
-  }
+      auto result = m_mwms.insert(id.m_mwmId);
+      VERIFY(result.second, ());
+      lastMwm = id.m_mwmId;
+    }
+    m_featureInfo.push_back(id);
+  }, GetGlobalRect(), GetZoomLevel());
 }
 
 void TileInfo::ReadFeatures(MapDataProvider const & model)
@@ -67,20 +60,20 @@ void TileInfo::ReadFeatures(MapDataProvider const & model)
   m_context->BeginReadTile();
 
   // Reading can be interrupted by exception throwing
-  MY_SCOPE_GUARD(ReleaseReadTile, bind(&EngineContext::EndReadTile, m_context.get()));
+  MY_SCOPE_GUARD(ReleaseReadTile, std::bind(&EngineContext::EndReadTile, m_context.get()));
 
   ReadFeatureIndex(model);
   CheckCanceled();
 
+  m_context->GetMetalineManager()->Update(m_mwms);
+
   if (!m_featureInfo.empty())
   {
     auto const deviceLang = StringUtf8Multilang::GetLangIndex(languages::GetCurrentNorm());
-    RuleDrawer drawer(bind(&TileInfo::InitStylist, this, deviceLang, _1, _2),
-                      bind(&TileInfo::IsCancelled, this),
-                      model.m_isCountryLoadedByName,
-                      make_ref(m_context), m_customSymbolsContext.lock(),
-                      m_is3dBuildings, m_trafficEnabled);
-    model.ReadFeatures(bind<void>(ref(drawer), _1), m_featureInfo);
+    RuleDrawer drawer(std::bind(&TileInfo::InitStylist, this, deviceLang, _1, _2),
+                      std::bind(&TileInfo::IsCancelled, this),
+                      model.m_isCountryLoadedByName, make_ref(m_context));
+    model.ReadFeatures(std::bind<void>(std::ref(drawer), _1), m_featureInfo);
   }
 #if defined(DRAPE_MEASURER) && defined(TILES_STATISTIC)
   DrapeMeasurer::Instance().EndTileReading();
@@ -100,7 +93,8 @@ bool TileInfo::IsCancelled() const
 void TileInfo::InitStylist(int8_t deviceLang, FeatureType const & f, Stylist & s)
 {
   CheckCanceled();
-  df::InitStylist(f, deviceLang, m_context->GetTileKey().m_zoomLevel, m_is3dBuildings, s);
+  df::InitStylist(f, deviceLang, m_context->GetTileKey().m_zoomLevel,
+                  m_context->Is3dBuildingsEnabled(), s);
 }
 
 bool TileInfo::DoNeedReadIndex() const
@@ -118,5 +112,4 @@ int TileInfo::GetZoomLevel() const
 {
   return ClipTileZoomByMaxDataZoom(m_context->GetTileKey().m_zoomLevel);
 }
-
-} // namespace df
+}  // namespace df

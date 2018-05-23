@@ -20,8 +20,11 @@ omim_link_libraries(
   routing
   traffic
   routing_common
+  transit
   search
   storage
+  mwm_diff
+  kml
   indexer
   platform
   editor
@@ -30,17 +33,19 @@ omim_link_libraries(
   opening_hours
   coding
   base
-  osrm
   jansson
   protobuf
+  bsdiff
   succinct
   stats_client
   generator
   gflags
   pugixml
   icu
+  agg
   ${Qt5Widgets_LIBRARIES}
   ${LIBZ}
 )
 
 link_qt5_core(${PROJECT_NAME})
+link_qt5_network(${PROJECT_NAME})

@@ -9,14 +9,16 @@
 #include "geometry/mercator.hpp"
 
 #include "base/assert.hpp"
+#include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/bind.hpp"
-#include "std/cstdint.hpp"
-#include "std/function.hpp"
-#include "std/initializer_list.hpp"
-#include "std/set.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <functional>
+#include <initializer_list>
+#include <set>
+#include <vector>
+
+using namespace std;
 
 namespace ftype
 {
@@ -136,6 +138,10 @@ namespace ftype
         ++token;
         lang = (token ? *token : "default");
 
+        // Do not consider languages with suffixes, like "en:pronunciation".
+        if (++token)
+          return false;
+
         // Replace dummy arabian tag with correct tag.
         if (lang == "ar1")
           lang = "ar";
@@ -220,14 +226,14 @@ namespace ftype
     enum EType { ENTRANCE, HIGHWAY, ADDRESS, ONEWAY, PRIVATE, LIT, NOFOOT, YESFOOT,
                  NOBICYCLE, YESBICYCLE, BICYCLE_BIDIR, SURFPGOOD, SURFPBAD, SURFUGOOD, SURFUBAD,
                  HASPARTS, NOCAR, YESCAR, WLAN, RW_STATION, RW_STATION_SUBWAY, WHEELCHAIR_YES,
-                 BARRIER_GATE
+                 BARRIER_GATE, TOLL
                };
 
     CachedTypes()
     {
       Classificator const & c = classif();
 
-      StringIL arr[] =
+      my::StringIL arr[] =
       {
         {"entrance"}, {"highway"},
         {"building", "address"}, {"hwtag", "oneway"}, {"hwtag", "private"},
@@ -237,7 +243,7 @@ namespace ftype
         {"psurface", "unpaved_good"}, {"psurface", "unpaved_bad"},
         {"building", "has_parts"}, {"hwtag", "nocar"}, {"hwtag", "yescar"},
         {"internet_access", "wlan"}, {"railway", "station"}, {"railway", "station", "subway"},
-        {"wheelchair", "yes"}, {"barrier", "gate"}
+        {"wheelchair", "yes"}, {"barrier", "gate"}, {"hwtag", "toll"}
       };
 
       for (auto const & e : arr)
@@ -305,13 +311,15 @@ namespace ftype
         current = path.back().get();
 
         // Next objects trying to find by value first.
-        ClassifObjectPtr pObj =
-            ForEachTagEx<ClassifObjectPtr>(p, skipRows, [&current](string const & k, string const & v)
-            {
-              if (!NeedMatchValue(k, v))
-                return ClassifObjectPtr();
-              return current->BinaryFind(v);
-            });
+        // Prevent merging different tags (e.g. shop=pet from shop=abandoned, was:shop=pet).
+       ClassifObjectPtr pObj =
+           path.size() == 1 ? ClassifObjectPtr()
+                            : ForEachTagEx<ClassifObjectPtr>(
+                                  p, skipRows, [&current](string const & k, string const & v) {
+                                    if (!NeedMatchValue(k, v))
+                                      return ClassifObjectPtr();
+                                    return current->BinaryFind(v);
+                                  });
 
         if (pObj)
         {
@@ -431,13 +439,13 @@ namespace ftype
     if (!isHighway || (surface.empty() && smoothness.empty()))
       return string();
 
-    static StringIL pavedSurfaces = {"paved", "asphalt", "cobblestone", "cobblestone:flattened",
-                                     "sett", "concrete", "concrete:lanes", "concrete:plates",
-                                     "paving_stones", "metal", "wood"};
-    static StringIL badSurfaces = {"cobblestone", "sett", "metal", "wood", "grass", "gravel",
-                                   "mud", "sand", "snow", "woodchips"};
-    static StringIL badSmoothness = {"bad", "very_bad", "horrible", "very_horrible", "impassable",
-                                     "robust_wheels", "high_clearance", "off_road_wheels", "rough"};
+    static my::StringIL pavedSurfaces = {"paved", "asphalt", "cobblestone", "cobblestone:flattened",
+                                         "sett", "concrete", "concrete:lanes", "concrete:plates",
+                                         "paving_stones", "metal", "wood"};
+    static my::StringIL badSurfaces = {"cobblestone", "sett", "metal", "wood", "grass", "gravel",
+                                       "mud", "sand", "snow", "woodchips"};
+    static my::StringIL badSmoothness = {"bad", "very_bad", "horrible", "very_horrible", "impassable",
+                                         "robust_wheels", "high_clearance", "off_road_wheels", "rough"};
 
     bool isPaved = false;
     bool isGood = true;
@@ -584,6 +592,7 @@ namespace ftype
           { "barrier", "gate", [&params] { params.AddType(types.Get(CachedTypes::BARRIER_GATE)); }},
 
           { "lit", "~", [&params] { params.AddType(types.Get(CachedTypes::LIT)); }},
+          { "toll", "~", [&params] { params.AddType(types.Get(CachedTypes::TOLL)); }},
 
           { "foot", "!", [&params] { params.AddType(types.Get(CachedTypes::NOFOOT)); }},
           { "foot", "~", [&params] { params.AddType(types.Get(CachedTypes::YESFOOT)); }},

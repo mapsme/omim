@@ -1,6 +1,7 @@
 #include "drape_frontend/my_position.hpp"
 #include "drape_frontend/color_constants.hpp"
 #include "drape_frontend/map_shape.hpp"
+#include "drape_frontend/shader_def.hpp"
 #include "drape_frontend/shape_view_params.hpp"
 #include "drape_frontend/tile_utils.hpp"
 
@@ -9,7 +10,6 @@
 #include "drape/glsl_types.hpp"
 #include "drape/overlay_handle.hpp"
 #include "drape/render_bucket.hpp"
-#include "drape/shader_def.hpp"
 
 #include "indexer/map_style_reader.hpp"
 
@@ -103,13 +103,13 @@ void MyPosition::RenderAccuracy(ScreenBase const & screen, int zoomLevel,
 {
   dp::UniformValuesStorage uniforms = commonUniforms;
   m2::PointD accuracyPoint(m_position.x + m_accuracy, m_position.y);
-  float pixelAccuracy = (screen.GtoP(accuracyPoint) - screen.GtoP(m_position)).Length();
+  float pixelAccuracy = (screen.GtoP(accuracyPoint) - screen.GtoP(m2::PointD(m_position))).Length();
 
-  TileKey const key = GetTileKeyByPoint(m_position, ClipTileZoomByMaxDataZoom(zoomLevel));
+  TileKey const key = GetTileKeyByPoint(m2::PointD(m_position), ClipTileZoomByMaxDataZoom(zoomLevel));
   math::Matrix<float, 4, 4> mv = key.GetTileBasedModelView(screen);
   uniforms.SetMatrix4x4Value("modelView", mv.m_data);
 
-  m2::PointD const pos = MapShape::ConvertToLocal(m_position, key.GetGlobalRect().Center(), kShapeCoordScalar);
+  m2::PointD const pos = MapShape::ConvertToLocal(m2::PointD(m_position), key.GetGlobalRect().Center(), kShapeCoordScalar);
   uniforms.SetFloatValue("u_position", pos.x, pos.y, 0.0f);
   uniforms.SetFloatValue("u_accuracy", pixelAccuracy);
   uniforms.SetFloatValue("u_opacity", 1.0f);
@@ -122,19 +122,19 @@ void MyPosition::RenderMyPosition(ScreenBase const & screen, int zoomLevel,
 {
   if (m_showAzimuth)
   {
-    m_arrow3d.SetPosition(m_position);
+    m_arrow3d.SetPosition(m2::PointD(m_position));
     m_arrow3d.SetAzimuth(m_azimuth);
     m_arrow3d.Render(screen, mng, m_isRoutingMode);
   }
   else
   {
     dp::UniformValuesStorage uniforms = commonUniforms;
-    TileKey const key = GetTileKeyByPoint(m_position, ClipTileZoomByMaxDataZoom(zoomLevel));
+    TileKey const key = GetTileKeyByPoint(m2::PointD(m_position), ClipTileZoomByMaxDataZoom(zoomLevel));
     math::Matrix<float, 4, 4> mv = key.GetTileBasedModelView(screen);
     uniforms.SetMatrix4x4Value("modelView", mv.m_data);
 
-    m2::PointD const pos = MapShape::ConvertToLocal(m_position, key.GetGlobalRect().Center(), kShapeCoordScalar);
-    uniforms.SetFloatValue("u_position", pos.x, pos.y, dp::depth::MY_POSITION_MARK);
+    m2::PointD const pos = MapShape::ConvertToLocal(m2::PointD(m_position), key.GetGlobalRect().Center(), kShapeCoordScalar);
+    uniforms.SetFloatValue("u_position", pos.x, pos.y, dp::depth::kMyPositionMarkDepth);
     uniforms.SetFloatValue("u_azimut", -(m_azimuth + screen.GetAngle()));
     uniforms.SetFloatValue("u_opacity", 1.0);
     RenderPart(mng, uniforms, MY_POSITION_POINT);
@@ -164,7 +164,7 @@ void MyPosition::CacheAccuracySector(ref_ptr<dp::TextureManager> mng)
     buffer.emplace_back(nextNormal, colorCoord);
   }
 
-  dp::GLState state(gpu::ACCURACY_PROGRAM, dp::GLState::OverlayLayer);
+  auto state = CreateGLState(gpu::ACCURACY_PROGRAM, RenderState::OverlayLayer);
   state.SetColorTexture(color.GetTexture());
 
   {
@@ -215,7 +215,7 @@ void MyPosition::CachePointPosition(ref_ptr<dp::TextureManager> mng)
 
   m_arrow3d.SetTexture(mng);
 
-  dp::GLState state(gpu::MY_POSITION_PROGRAM, dp::GLState::OverlayLayer);
+  auto state = CreateGLState(gpu::MY_POSITION_PROGRAM, RenderState::OverlayLayer);
   state.SetColorTexture(pointSymbol.GetTexture());
 
   dp::TextureManager::SymbolRegion * symbols[kSymbolsCount] = { &pointSymbol };

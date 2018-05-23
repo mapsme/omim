@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/buffer_vector.hpp"
+#include "base/macros.hpp"
 #include "base/stl_add.hpp"
 
 #include <algorithm>
@@ -87,6 +88,7 @@ UniString MakeUniString(std::string const & utf8s);
 std::string ToUtf8(UniString const & s);
 bool IsASCIIString(std::string const & str);
 bool IsASCIIDigit(UniChar c);
+bool IsASCIISpace(UniChar c);
 bool IsASCIILatin(UniChar c);
 
 inline std::string DebugPrint(UniString const & s) { return ToUtf8(s); }
@@ -337,28 +339,29 @@ bool IsInArray(T(&arr)[N], TT const & t)
 
 /// @name From string to numeric.
 //@{
-bool to_int(char const * s, int & i, int base = 10);
-bool to_uint(char const * s, unsigned int & i, int base = 10);
-bool to_uint64(char const * s, uint64_t & i);
-bool to_int64(char const * s, int64_t & i);
-bool to_float(char const * s, float & f);
-bool to_double(char const * s, double & d);
+WARN_UNUSED_RESULT bool to_int(char const * s, int & i, int base = 10);
+WARN_UNUSED_RESULT bool to_uint(char const * s, unsigned int & i, int base = 10);
+WARN_UNUSED_RESULT bool to_uint64(char const * s, uint64_t & i);
+WARN_UNUSED_RESULT bool to_int64(char const * s, int64_t & i);
+WARN_UNUSED_RESULT bool to_float(char const * s, float & f);
+WARN_UNUSED_RESULT bool to_double(char const * s, double & d);
 
-inline bool is_number(std::string const & s)
+WARN_UNUSED_RESULT inline bool is_number(std::string const & s)
 {
   int64_t dummy;
   return to_int64(s.c_str(), dummy);
 }
 
-inline bool to_int(std::string const & s, int & i, int base = 10) { return to_int(s.c_str(), i, base); }
-inline bool to_uint(std::string const & s, unsigned int & i, int base = 10)
+WARN_UNUSED_RESULT inline bool to_int(std::string const & s, int & i, int base = 10) { return to_int(s.c_str(), i, base); }
+WARN_UNUSED_RESULT inline bool to_uint(std::string const & s, unsigned int & i, int base = 10)
 {
   return to_uint(s.c_str(), i, base);
 }
-inline bool to_uint64(std::string const & s, uint64_t & i) { return to_uint64(s.c_str(), i); }
-inline bool to_int64(std::string const & s, int64_t & i) { return to_int64(s.c_str(), i); }
-inline bool to_float(std::string const & s, float & f) { return to_float(s.c_str(), f); }
-inline bool to_double(std::string const & s, double & d) { return to_double(s.c_str(), d); }
+
+WARN_UNUSED_RESULT inline bool to_uint64(std::string const & s, uint64_t & i) { return to_uint64(s.c_str(), i); }
+WARN_UNUSED_RESULT inline bool to_int64(std::string const & s, int64_t & i) { return to_int64(s.c_str(), i); }
+WARN_UNUSED_RESULT inline bool to_float(std::string const & s, float & f) { return to_float(s.c_str(), f); }
+WARN_UNUSED_RESULT inline bool to_double(std::string const & s, double & d) { return to_double(s.c_str(), d); }
 //@}
 
 /// @name From numeric to string.
@@ -371,6 +374,18 @@ std::string to_string(T t)
   std::ostringstream ss;
   ss << t;
   return ss.str();
+}
+
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, int & i) { return to_int(s, i); }
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, unsigned int & i) { return to_uint(s, i); }
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, uint64_t & i) { return to_uint64(s, i); }
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, int64_t & i) { return to_int64(s, i); }
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, float & f) { return to_float(s, f); }
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, double & d) { return to_double(s, d); }
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, std::string & result)
+{
+  result = s;
+  return true;
 }
 
 namespace impl
@@ -453,6 +468,8 @@ bool StartsWith(IterT1 beg, IterT1 end, IterT2 begPrefix, IterT2 endPrefix)
 bool StartsWith(UniString const & s, UniString const & p);
 
 bool StartsWith(std::string const & s1, char const * s2);
+
+bool StartsWith(std::string const & s1, std::string const & s2);
 
 bool EndsWith(std::string const & s1, char const * s2);
 

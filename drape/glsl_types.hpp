@@ -4,7 +4,7 @@
 
 #include "drape/color.hpp"
 
-#include "std/type_traits.hpp"
+#include <type_traits>
 
 #include <glm_config.hpp>
 #include <glm/vec2.hpp>
@@ -68,10 +68,16 @@ inline vec4 ToVec4(dp::Color const & color)
   return glsl::vec4(double(color.GetRed()) / 255,
                     double(color.GetGreen()) / 255,
                     double(color.GetBlue()) / 255,
-                    double(color.GetAlfa()) / 255);
+                    double(color.GetAlpha()) / 255);
 }
 
-template<typename T, class = typename enable_if<is_integral<T>::value || is_floating_point<T>::value>::type>
+inline vec4 ToVec4(m2::PointD const & pt1, m2::PointD const & pt2)
+{
+  return glsl::vec4(pt1.x, pt1.y, pt2.x, pt2.y);
+}
+
+template <typename T, typename = std::enable_if_t<std::is_integral<T>::value ||
+                                                  std::is_floating_point<T>::value>>
 inline uint8_t GetArithmeticComponentCount()
 {
   return 1;

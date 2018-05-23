@@ -23,17 +23,27 @@ namespace routing
 class IndexGraph final
 {
 public:
+  // AStarAlgorithm types aliases:
+  using Vertex = Segment;
+  using Edge = SegmentEdge;
+  using Weight = RouteWeight;
+
   IndexGraph() = default;
-  explicit IndexGraph(unique_ptr<GeometryLoader> loader, shared_ptr<EdgeEstimator> estimator);
+  IndexGraph(shared_ptr<Geometry> geometry, shared_ptr<EdgeEstimator> estimator);
 
   // Put outgoing (or ingoing) egdes for segment to the 'edges' vector.
   void GetEdgeList(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges);
 
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
 
-  Geometry & GetGeometry() { return m_geometry; }
+  Geometry & GetGeometry() { return *m_geometry; }
   bool IsRoad(uint32_t featureId) const { return m_roadIndex.IsRoad(featureId); }
   RoadJointIds const & GetRoad(uint32_t featureId) const { return m_roadIndex.GetRoad(featureId); }
+
+  RoadAccess::Type GetAccessType(Segment const & segment) const
+  {
+    return m_roadAccess.GetFeatureType(segment.GetFeatureId());
+  }
 
   uint32_t GetNumRoads() const { return m_roadIndex.GetSize(); }
   uint32_t GetNumJoints() const { return m_jointIndex.GetNumJoints(); }
@@ -44,6 +54,11 @@ public:
 
   void SetRestrictions(RestrictionVec && restrictions);
   void SetRoadAccess(RoadAccess && roadAccess);
+
+  // Interface for AStarAlgorithm:
+  void GetOutgoingEdgesList(Segment const & segment, vector<SegmentEdge> & edges);
+  void GetIngoingEdgesList(Segment const & segment, vector<SegmentEdge> & edges);
+  RouteWeight HeuristicCostEstimate(Segment const & from, Segment const & to);
 
   void PushFromSerializer(Joint::Id jointId, RoadPoint const & rp)
   {
@@ -63,14 +78,18 @@ public:
   }
 
 private:
-  double CalcSegmentWeight(Segment const & segment);
+  RouteWeight CalcSegmentWeight(Segment const & segment);
   void GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
                            vector<SegmentEdge> & edges);
   void GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
                           vector<SegmentEdge> & edges);
-  double GetPenalties(Segment const & u, Segment const & v) const;
+  RouteWeight GetPenalties(Segment const & u, Segment const & v);
+  m2::PointD const & GetPoint(Segment const & segment, bool front)
+  {
+    return GetGeometry().GetRoad(segment.GetFeatureId()).GetPoint(segment.GetPointId(front));
+  }
 
-  Geometry m_geometry;
+  shared_ptr<Geometry> m_geometry;
   shared_ptr<EdgeEstimator> m_estimator;
   RoadIndex m_roadIndex;
   JointIndex m_jointIndex;

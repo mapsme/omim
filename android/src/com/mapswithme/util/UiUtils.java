@@ -4,13 +4,11 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.AnyRes;
@@ -20,7 +18,6 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.annotation.StyleRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -116,12 +113,12 @@ public final class UiUtils
     });
   }
 
-  public static void hide(View view)
+  public static void hide(@NonNull View view)
   {
     view.setVisibility(View.GONE);
   }
 
-  public static void hide(View... views)
+  public static void hide(@NonNull View... views)
   {
     for (final View v : views)
       v.setVisibility(View.GONE);
@@ -223,6 +220,17 @@ public final class UiUtils
       hide(views);
   }
 
+  public static void showIf(boolean condition, View parent, @IdRes int... viewIds)
+  {
+    for (@IdRes int id : viewIds)
+    {
+      if (condition)
+        show(parent.findViewById(id));
+      else
+        hide(parent.findViewById(id));
+    }
+  }
+
   public static void setTextAndShow(TextView tv, CharSequence text)
   {
     tv.setText(text);
@@ -239,24 +247,6 @@ public final class UiUtils
   {
     toolbar.setNavigationIcon(ThemeUtils.getResource(toolbar.getContext(), R.attr.homeAsUpIndicator));
   }
-
-  public static AlertDialog buildAlertDialog(Activity activity, int titleId)
-  {
-    return new AlertDialog.Builder(activity)
-            .setCancelable(false)
-            .setMessage(titleId)
-            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-              @Override
-              public void onClick(DialogInterface dlg, int which) { dlg.dismiss(); }
-            })
-            .create();
-  }
-
-  public static void showAlertDialog(Activity activity, int titleId)
-  {
-    buildAlertDialog(activity, titleId).show();
-  }
-
 
   public static String deviceOrientationAsString(Activity activity)
   {
@@ -312,12 +302,6 @@ public final class UiUtils
   {
     button.setTextColor(ThemeUtils.getColor(button.getContext(), button.isEnabled() ? R.attr.redButtonTextColor
                                                                                     : R.attr.redButtonTextColorDisabled));
-  }
-
-  public static void updateAccentButton(Button button)
-  {
-    button.setTextColor(ThemeUtils.getColor(button.getContext(), button.isEnabled() ? R.attr.accentButtonTextColor
-                                                                                    : R.attr.accentButtonTextColorDisabled));
   }
 
   public static Uri getUriToResId(@NonNull Context context, @AnyRes int resId)
@@ -473,20 +457,32 @@ public final class UiUtils
   public static void expandTouchAreaForView(@NonNull final View view, final int extraArea)
   {
     final View parent = (View) view.getParent();
-    parent.post(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        Rect rect = new Rect();
-        view.getHitRect(rect);
-        rect.top -= extraArea;
-        rect.left -= extraArea;
-        rect.right += extraArea;
-        rect.bottom += extraArea;
-        parent.setTouchDelegate(new TouchDelegate(rect, view));
-      }
-    });
+    parent.post(() ->
+                {
+                  Rect rect = new Rect();
+                  view.getHitRect(rect);
+                  rect.top -= extraArea;
+                  rect.left -= extraArea;
+                  rect.right += extraArea;
+                  rect.bottom += extraArea;
+                  parent.setTouchDelegate(new TouchDelegate(rect, view));
+                });
+  }
+
+  public static void expandTouchAreaForView(@NonNull final View view, final int top, final int left,
+                                            final int bottom, final int right)
+  {
+    final View parent = (View) view.getParent();
+    parent.post(() ->
+                {
+                  Rect rect = new Rect();
+                  view.getHitRect(rect);
+                  rect.top -= top;
+                  rect.left -= left;
+                  rect.right += right;
+                  rect.bottom += bottom;
+                  parent.setTouchDelegate(new TouchDelegate(rect, view));
+                });
   }
 
   // utility class

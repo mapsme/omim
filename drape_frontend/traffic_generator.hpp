@@ -2,11 +2,11 @@
 
 #include "drape_frontend/batchers_pool.hpp"
 #include "drape_frontend/color_constants.hpp"
+#include "drape_frontend/render_state.hpp"
 #include "drape_frontend/tile_key.hpp"
 
 #include "drape/color.hpp"
 #include "drape/glsl_types.hpp"
-#include "drape/glstate.hpp"
 #include "drape/render_bucket.hpp"
 #include "drape/texture_manager.hpp"
 
@@ -148,7 +148,8 @@ public:
   void InvalidateTexturesCache();
 
   static void SetSimplifiedColorSchemeEnabled(bool enabled);
-  static df::ColorConstant GetColorBySpeedGroup(traffic::SpeedGroup const & speedGroup, bool route);
+  static traffic::SpeedGroup CheckColorsSimplification(traffic::SpeedGroup speedGroup);
+  static df::ColorConstant GetColorBySpeedGroup(traffic::SpeedGroup speedGroup, bool route);
 
 private:
   struct TrafficBatcherKey

@@ -4,7 +4,10 @@
 #include "search/pre_ranking_info.hpp"
 #include "search/ranking_utils.hpp"
 
-#include "std/iostream.hpp"
+#include <cstddef>
+#include <cstdint>
+#include <ostream>
+#include <string>
 
 class FeatureType;
 
@@ -23,8 +26,15 @@ struct RankingInfo
   // Score for the feature's name.
   NameScore m_nameScore = NAME_SCORE_ZERO;
 
+  // Number of typos.
+  ErrorsMade m_errorsMade;
+
+  // True iff all tokens that are not stop-words
+  // were used when retrieving the feature.
+  bool m_allTokensUsed = true;
+
   // Search type for the feature.
-  SearchModel::SearchType m_searchType = SearchModel::SEARCH_TYPE_COUNT;
+  Model::Type m_type = Model::TYPE_COUNT;
 
   // True if all of the tokens that the feature was matched by
   // correspond to this feature's categories.
@@ -35,15 +45,16 @@ struct RankingInfo
   // tokens are categorial ones.
   bool m_falseCats = false;
 
-  static void PrintCSVHeader(ostream & os);
+  static void PrintCSVHeader(std::ostream & os);
 
-  void ToCSV(ostream & os) const;
+  void ToCSV(std::ostream & os) const;
 
   // Returns rank calculated by a linear model. Large values
   // correspond to important features.
   double GetLinearModelRank() const;
+
+  size_t GetErrorsMade() const;
 };
 
-string DebugPrint(RankingInfo const & info);
-
+std::string DebugPrint(RankingInfo const & info);
 }  // namespace search

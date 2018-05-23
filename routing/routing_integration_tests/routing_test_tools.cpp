@@ -5,19 +5,18 @@
 #include "testing/testing.hpp"
 
 #include "map/feature_vec_model.hpp"
-#include "map/mwm_tree.hpp"
 
-#include "geometry/distance_on_sphere.hpp"
-#include "geometry/latlon.hpp"
+#include "storage/routing_helpers.hpp"
 
 #include "routing/index_router.hpp"
 #include "routing/online_absent_fetcher.hpp"
 #include "routing/online_cross_fetcher.hpp"
-#include "routing/road_graph_router.hpp"
 #include "routing/route.hpp"
 #include "routing/router_delegate.hpp"
 
 #include "indexer/index.hpp"
+
+#include "storage/country_parent_getter.hpp"
 
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
@@ -25,7 +24,12 @@
 #include "platform/preferred_languages.hpp"
 
 #include "geometry/distance_on_sphere.hpp"
+#include "geometry/latlon.hpp"
 
+#include "base/math.hpp"
+#include "base/stl_add.hpp"
+
+#include "std/functional.hpp"
 #include "std/limits.hpp"
 
 #include "private.h"
@@ -36,12 +40,14 @@ using namespace routing;
 using namespace routing_test;
 
 using TRouterFactory =
-    function<unique_ptr<IRouter>(Index & index, TCountryFileFn const & countryFileFn)>;
+    function<unique_ptr<IRouter>(Index & index, TCountryFileFn const & countryFileFn,
+                                 shared_ptr<NumMwmIds> numMwmIds)>;
 
 namespace
 {
 double constexpr kErrorMeters = 1.0;
 double constexpr kErrorSeconds = 1.0;
+
 void ChangeMaxNumberOfOpenFiles(size_t n)
 {
   struct rlimit rlp;
@@ -55,7 +61,7 @@ namespace integration
 {
   shared_ptr<model::FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles)
   {
-    size_t const maxOpenFileNumber = 1024;
+    size_t const maxOpenFileNumber = 4096;
     ChangeMaxNumberOfOpenFiles(maxOpenFileNumber);
     shared_ptr<model::FeaturesFetcher> featuresFetcher(new model::FeaturesFetcher);
     featuresFetcher->InitClassificator();
@@ -78,10 +84,11 @@ namespace integration
     return storage::CountryInfoReader::CreateCountryInfoReader(platform);
   }
 
-  unique_ptr<CarRouter> CreateCarRouter(Index & index,
-                                        storage::CountryInfoGetter const & infoGetter,
-                                        traffic::TrafficCache const & trafficCache,
-                                        vector<LocalCountryFile> const & localFiles)
+  unique_ptr<IndexRouter> CreateVehicleRouter(Index & index,
+                                              storage::CountryInfoGetter const & infoGetter,
+                                              traffic::TrafficCache const & trafficCache,
+                                              vector<LocalCountryFile> const & localFiles,
+                                              VehicleType vehicleType)
   {
     auto const countryFileGetter = [&infoGetter](m2::PointD const & pt) {
       return infoGetter.GetRegionCountryId(pt);
@@ -91,19 +98,30 @@ namespace integration
       return infoGetter.GetLimitRectForLeaf(countryId);
     };
 
-    shared_ptr<NumMwmIds> numMwmIds = make_shared<NumMwmIds>();
-    for (LocalCountryFile const & f : localFiles)
-      numMwmIds->RegisterFile(f.GetCountryFile());
+    auto numMwmIds = make_shared<NumMwmIds>();
+    for (auto const & f : localFiles)
+    {
+      auto const & countryFile = f.GetCountryFile();
+      auto const mwmId = index.GetMwmIdByCountryFile(countryFile);
+      CHECK(mwmId.IsAlive(), ());
+      if (mwmId.GetInfo()->GetType() == MwmInfo::COUNTRY && countryFile.GetName() != "minsk-pass")
+        numMwmIds->RegisterFile(countryFile);
+    }
 
-    auto carRouter = make_unique<CarRouter>(
-        index, countryFileGetter,
-        IndexRouter::CreateCarRouter(countryFileGetter, getMwmRectByName, numMwmIds,
-                                     MakeNumMwmTree(*numMwmIds, infoGetter), trafficCache, index));
-    return carRouter;
+    auto countryParentGetter = my::make_unique<storage::CountryParentGetter>();
+    CHECK(countryParentGetter, ());
+
+    auto indexRouter = make_unique<IndexRouter>(vehicleType, false /* load altitudes*/,
+                                                *countryParentGetter, countryFileGetter,
+                                                getMwmRectByName, numMwmIds,
+                                                MakeNumMwmTree(*numMwmIds, infoGetter), trafficCache, index);
+
+    return indexRouter;
   }
 
   unique_ptr<IRouter> CreateAStarRouter(Index & index,
                                         storage::CountryInfoGetter const & infoGetter,
+                                        vector<LocalCountryFile> const & localFiles,
                                         TRouterFactory const & routerFactory)
   {
     // |infoGetter| should be a reference to an object which exists while the
@@ -112,61 +130,16 @@ namespace integration
     {
       return infoGetter.GetRegionCountryId(pt);
     };
-    unique_ptr<IRouter> router = routerFactory(index, countryFileGetter);
+
+    auto numMwmIds = make_shared<NumMwmIds>();
+    for (auto const & file : localFiles)
+      numMwmIds->RegisterFile(file.GetCountryFile());
+
+    unique_ptr<IRouter> router = routerFactory(index, countryFileGetter, numMwmIds);
     return unique_ptr<IRouter>(move(router));
   }
 
-  class OsrmRouterComponents : public IRouterComponents
-  {
-  public:
-    OsrmRouterComponents(vector<LocalCountryFile> const & localFiles)
-      : IRouterComponents(localFiles)
-      , m_carRouter(CreateCarRouter(m_featuresFetcher->GetIndex(), *m_infoGetter, m_trafficCache,
-                                    localFiles))
-    {
-    }
-
-    IRouter * GetRouter() const override { return m_carRouter.get(); }
-
-  private:
-    traffic::TrafficCache m_trafficCache;
-    unique_ptr<CarRouter> m_carRouter;
-  };
-
-  class PedestrianRouterComponents : public IRouterComponents
-  {
-  public:
-    PedestrianRouterComponents(vector<LocalCountryFile> const & localFiles)
-      : IRouterComponents(localFiles)
-      , m_router(CreateAStarRouter(m_featuresFetcher->GetIndex(), *m_infoGetter,
-                                   CreatePedestrianAStarBidirectionalRouter))
-    {
-    }
-
-    IRouter * GetRouter() const override { return m_router.get(); }
-
-  private:
-    unique_ptr<IRouter> m_router;
-  };
-
-  class BicycleRouterComponents : public IRouterComponents
-  {
-  public:
-    BicycleRouterComponents(vector<LocalCountryFile> const & localFiles)
-      : IRouterComponents(localFiles)
-      , m_router(CreateAStarRouter(m_featuresFetcher->GetIndex(), *m_infoGetter,
-                                   CreateBicycleAStarBidirectionalRouter))
-    {
-    }
-
-    IRouter * GetRouter() const override { return m_router.get(); }
-
-  private:
-    unique_ptr<IRouter> m_router;
-  };
-
-  template <typename TRouterComponents>
-  shared_ptr<TRouterComponents> CreateAllMapsComponents()
+  void GetAllLocalFiles(vector<LocalCountryFile> & localFiles)
   {
     // Setting stored paths from testingmain.cpp
     Platform & pl = GetPlatform();
@@ -177,51 +150,18 @@ namespace integration
       pl.SetResourceDir(options.m_resourcePath);
 
     platform::migrate::SetMigrationFlag();
-
-    vector<LocalCountryFile> localFiles;
     platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
                                          localFiles);
     for (auto & file : localFiles)
       file.SyncWithDisk();
+  }
+
+  shared_ptr<VehicleRouterComponents> CreateAllMapsComponents(VehicleType vehicleType)
+  {
+    vector<LocalCountryFile> localFiles;
+    GetAllLocalFiles(localFiles);
     ASSERT(!localFiles.empty(), ());
-    return shared_ptr<TRouterComponents>(new TRouterComponents(localFiles));
-  }
-
-  shared_ptr<IRouterComponents> GetOsrmComponents(vector<platform::LocalCountryFile> const & localFiles)
-  {
-    return shared_ptr<IRouterComponents>(new OsrmRouterComponents(localFiles));
-  }
-
-  IRouterComponents & GetOsrmComponents()
-  {
-    static auto const instance = CreateAllMapsComponents<OsrmRouterComponents>();
-    ASSERT(instance, ());
-    return *instance;
-  }
-
-  shared_ptr<IRouterComponents> GetPedestrianComponents(vector<platform::LocalCountryFile> const & localFiles)
-  {
-    return make_shared<PedestrianRouterComponents>(localFiles);
-  }
-
-  IRouterComponents & GetPedestrianComponents()
-  {
-    static auto const instance = CreateAllMapsComponents<PedestrianRouterComponents>();
-    ASSERT(instance, ());
-    return *instance;
-  }
-
-  shared_ptr<IRouterComponents> GetBicycleComponents(
-      vector<platform::LocalCountryFile> const & localFiles)
-  {
-    return make_shared<BicycleRouterComponents>(localFiles);
-  }
-
-  IRouterComponents & GetBicycleComponents()
-  {
-    static auto const instance = CreateAllMapsComponents<BicycleRouterComponents>();
-    ASSERT(instance, ());
-    return *instance;
+    return make_shared<VehicleRouterComponents>(localFiles, vehicleType);
   }
 
   TRouteResult CalculateRoute(IRouterComponents const & routerComponents,
@@ -229,11 +169,9 @@ namespace integration
                               m2::PointD const & finalPoint)
   {
     RouterDelegate delegate;
-    IRouter * router = routerComponents.GetRouter();
-    ASSERT(router, ());
     shared_ptr<Route> route(new Route("mapsme"));
-    IRouter::ResultCode result =
-        router->CalculateRoute(startPoint, startDirection, finalPoint, delegate, *route.get());
+    IRouter::ResultCode result = routerComponents.GetRouter().CalculateRoute(
+        Checkpoints(startPoint, finalPoint), startDirection, false /* adjust */, delegate, *route);
     ASSERT(route, ());
     return TRouteResult(route, result);
   }
@@ -241,7 +179,9 @@ namespace integration
   void TestTurnCount(routing::Route const & route, uint32_t expectedTurnCount)
   {
     // We use -1 for ignoring the "ReachedYourDestination" turn record.
-    TEST_EQUAL(route.GetTurns().size() - 1, expectedTurnCount, ());
+    vector<turns::TurnItem> turns;
+    route.GetTurnsForTesting(turns);
+    TEST_EQUAL(turns.size() - 1, expectedTurnCount, ());
   }
 
   void TestCurrentStreetName(routing::Route const & route, string const & expectedStreetName)
@@ -256,7 +196,7 @@ namespace integration
     string streetName;
     double distance;
     turns::TurnItem turn;
-    TEST(route.GetCurrentTurn(distance, turn), ());
+    route.GetCurrentTurn(distance, turn);
     route.GetStreetNameAfterIdx(turn.m_index, streetName);
     TEST_EQUAL(streetName, expectedStreetName, ());
   }
@@ -276,6 +216,16 @@ namespace integration
     double const routeSeconds = route.GetTotalTimeSec();
     TEST(my::AlmostEqualAbs(routeSeconds, expectedRouteSeconds, delta),
         ("Route time test failed. Expected:", expectedRouteSeconds, "have:", routeSeconds, "delta:", delta));
+  }
+
+  void TestRoutePointsNumber(Route const & route, size_t expectedPointsNumber, double relativeError)
+  {
+    CHECK_GREATER_OR_EQUAL(relativeError, 0.0, ());
+    size_t const routePoints = route.GetPoly().GetSize();
+    TEST(my::AlmostEqualRel(static_cast<double>(routePoints),
+                            static_cast<double>(expectedPointsNumber), relativeError),
+         ("Route points test failed. Expected:", expectedPointsNumber, "have:", routePoints,
+          "relative error:", relativeError));
   }
 
   void CalculateRouteAndTestRouteLength(IRouterComponents const & routerComponents,
@@ -310,16 +260,16 @@ namespace integration
     return *this;
   }
 
-  const TestTurn & TestTurn::TestDirection(routing::turns::TurnDirection expectedDirection) const
+  const TestTurn & TestTurn::TestDirection(routing::turns::CarDirection expectedDirection) const
   {
-    TEST_EQUAL(m_direction, expectedDirection, ());
+    TEST_EQUAL(m_direction, expectedDirection, (m_direction));
     return *this;
   }
 
   const TestTurn & TestTurn::TestOneOfDirections(
-      set<routing::turns::TurnDirection> const & expectedDirections) const
+      set<routing::turns::CarDirection> const & expectedDirections) const
   {
-    TEST(expectedDirections.find(m_direction) != expectedDirections.cend(), ());
+    TEST(expectedDirections.find(m_direction) != expectedDirections.cend(), (m_direction));
     return *this;
   }
 
@@ -331,7 +281,8 @@ namespace integration
 
   TestTurn GetNthTurn(routing::Route const & route, uint32_t turnNumber)
   {
-    Route::TTurns const & turns = route.GetTurns();
+    vector<turns::TurnItem> turns;
+    route.GetTurnsForTesting(turns);
     if (turnNumber >= turns.size())
       return TestTurn();
 
@@ -346,15 +297,13 @@ namespace integration
     {
       return routerComponents.GetCountryInfoGetter().GetRegionCountryId(p);
     };
-    auto localFileChecker =
-        [&routerComponents](string const & /* countryFile */) -> bool
-    {
+    auto localFileChecker = [](string const & /* countryFile */) -> bool {
       // Always returns that the file is absent.
       return false;
     };
     routing::OnlineAbsentCountriesFetcher fetcher(countryFileGetter, localFileChecker);
-    fetcher.GenerateRequest(MercatorBounds::FromLatLon(startPoint),
-                            MercatorBounds::FromLatLon(finalPoint));
+    fetcher.GenerateRequest(Checkpoints(MercatorBounds::FromLatLon(startPoint),
+                                        MercatorBounds::FromLatLon(finalPoint)));
     vector<string> absent;
     fetcher.GetAbsentCountries(absent);
     if (expected.size() < 2)
@@ -372,7 +321,12 @@ namespace integration
                          vector<string> const & expected,
                          IRouterComponents & routerComponents)
   {
-    routing::OnlineCrossFetcher fetcher(OSRM_ONLINE_SERVER_URL, startPoint, finalPoint);
+    TCountryFileFn const countryFileGetter = [&](m2::PointD const & p) {
+      return routerComponents.GetCountryInfoGetter().GetRegionCountryId(p);
+    };
+    routing::OnlineCrossFetcher fetcher(countryFileGetter, OSRM_ONLINE_SERVER_URL,
+                                        Checkpoints(MercatorBounds::FromLatLon(startPoint),
+                                                    MercatorBounds::FromLatLon(finalPoint)));
     fetcher.Do();
     vector<m2::PointD> const & points = fetcher.GetMwmPoints();
     set<string> foundMwms;

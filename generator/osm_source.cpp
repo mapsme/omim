@@ -1,10 +1,13 @@
+#include "generator/osm_source.hpp"
+
+#include "generator/cities_boundaries_builder.hpp"
 #include "generator/coastlines_generator.hpp"
 #include "generator/feature_generator.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/intermediate_elements.hpp"
+#include "generator/node_mixer.hpp"
 #include "generator/osm_element.hpp"
 #include "generator/osm_o5m_source.hpp"
-#include "generator/osm_source.hpp"
 #include "generator/osm_translator.hpp"
 #include "generator/osm_xml_source.hpp"
 #include "generator/polygonizer.hpp"
@@ -14,7 +17,9 @@
 
 #include "generator/booking_dataset.hpp"
 #include "generator/opentable_dataset.hpp"
+#include "generator/viator_dataset.hpp"
 
+#include "indexer/city_boundary.hpp"
 #include "indexer/classificator.hpp"
 
 #include "platform/platform.hpp"
@@ -27,7 +32,12 @@
 #include "coding/file_name_utils.hpp"
 #include "coding/parse_xml.hpp"
 
+#include <memory>
+#include <set>
+
 #include "defines.hpp"
+
+using namespace std;
 
 SourceReader::SourceReader()
 : m_file(unique_ptr<istream, Deleter>(&cin, Deleter(false)))
@@ -36,8 +46,8 @@ SourceReader::SourceReader()
 }
 
 SourceReader::SourceReader(string const & filename)
+: m_file(unique_ptr<istream, Deleter>(new ifstream(filename), Deleter()))
 {
-  m_file = unique_ptr<istream, Deleter>(new ifstream(filename), Deleter());
   CHECK(static_cast<ifstream *>(m_file.get())->is_open() , ("Can't open file:", filename));
   LOG_SHORT(LINFO, ("Reading OSM data from", filename));
 }
@@ -61,7 +71,7 @@ class IntermediateData
 {
   using TReader = cache::OSMElementCache<TMode>;
 
-  using TFile = typename conditional<TMode == cache::EMode::Write, FileWriter, FileReader>::type;
+  using TFile = conditional_t<TMode == cache::EMode::Write, FileWriter, FileReader>;
 
   using TKey = uint64_t;
   static_assert(is_integral<TKey>::value, "TKey is not integral type");
@@ -241,7 +251,7 @@ public:
     // Assume that area places has better priority than point places at the very end ...
     /// @todo It was usefull when place=XXX type has any area fill style.
     /// Need to review priority logic here (leave the native osm label).
-    return !IsPoint();
+    return !IsPoint() && r.IsPoint();
   }
 
 private:
@@ -260,7 +270,6 @@ private:
   m2::PointD m_pt;
   uint32_t m_type;
   double m_thresholdM;
-
 };
 
 class MainFeaturesEmitter : public EmitterBase
@@ -282,6 +291,8 @@ class MainFeaturesEmitter : public EmitterBase
 
   generator::BookingDataset m_bookingDataset;
   generator::OpentableDataset m_opentableDataset;
+  generator::ViatorDataset m_viatorDataset;
+  shared_ptr<generator::OsmIdToBoundariesTable> m_boundariesTable;
 
   /// Used to prepare a list of cities to serve as a list of nodes
   /// for building a highway graph with OSRM for low zooms.
@@ -298,14 +309,34 @@ class MainFeaturesEmitter : public EmitterBase
   };
   uint32_t m_types[TYPES_COUNT];
 
-  inline uint32_t Type(TypeIndex i) const { return m_types[i]; }
+  uint32_t Type(TypeIndex i) const { return m_types[i]; }
+
+  uint32_t GetPlaceType(FeatureParams const & params) const
+  {
+    static uint32_t const placeType = classif().GetTypeByPath({"place"});
+    return params.FindType(placeType, 1);
+  }
+
+  void UnionEqualPlacesIds(Place const & place)
+  {
+    if (!m_boundariesTable)
+      return;
+
+    auto const id = place.GetFeature().GetLastOsmId();
+    m_places.ForEachInRect(place.GetLimitRect(), [&](Place const & p) {
+      if (p.IsEqual(place))
+        m_boundariesTable->Union(p.GetFeature().GetLastOsmId(), id);
+    });
+  }
 
 public:
   MainFeaturesEmitter(feature::GenerateInfo const & info)
     : m_skippedElementsPath(info.GetIntermediateFileName("skipped_elements", ".lst"))
     , m_failOnCoasts(info.m_failOnCoasts)
-    , m_bookingDataset(info.m_bookingDatafileName, info.m_bookingReferenceDir)
-    , m_opentableDataset(info.m_opentableDatafileName, info.m_opentableReferenceDir)
+    , m_bookingDataset(info.m_bookingDatafileName)
+    , m_opentableDataset(info.m_opentableDatafileName)
+    , m_viatorDataset(info.m_viatorDatafileName)
+    , m_boundariesTable(info.m_boundariesTable)
   {
     Classificator const & c = classif();
 
@@ -336,7 +367,7 @@ public:
           new feature::FeaturesCollector(info.GetTmpFileName(WORLD_COASTS_FILE_NAME)));
 
     if (info.m_splitByPolygons || !info.m_fileName.empty())
-      m_countries = make_unique<TCountriesGenerator>(info);
+      m_countries = my::make_unique<TCountriesGenerator>(info);
 
     if (info.m_createWorld)
       m_world.reset(new TWorldGenerator(info));
@@ -344,17 +375,27 @@ public:
 
   void operator()(FeatureBuilder1 & fb) override
   {
-    static uint32_t const placeType = classif().GetTypeByPath({"place"});
-    uint32_t const type = fb.GetParams().FindType(placeType, 1);
+    uint32_t const type = GetPlaceType(fb.GetParams());
 
     // TODO(mgserigio): Would it be better to have objects that store callback
     // and can be piped: action-if-cond1 | action-if-cond-2 | ... ?
     // The first object which perform action terminates the cahin.
     if (type != ftype::GetEmptyValue() && !fb.GetName().empty())
     {
+      auto const viatorObjId = m_viatorDataset.FindMatchingObjectId(fb);
+      if (viatorObjId != generator::ViatorCity::InvalidObjectId())
+      {
+        m_viatorDataset.PreprocessMatchedOsmObject(viatorObjId, fb, [this, viatorObjId](FeatureBuilder1 & fb)
+        {
+          m_skippedElements << "VIATOR\t" << DebugPrint(fb.GetMostGenericOsmId())
+                            << '\t' << viatorObjId.Get() << endl;
+        });
+      }
+
+      Place const place(fb, type);
+      UnionEqualPlacesIds(place);
       m_places.ReplaceEqualInRect(
-          Place(fb, type),
-          [](Place const & p1, Place const & p2) { return p1.IsEqual(p2); },
+          place, [](Place const & p1, Place const & p2) { return p1.IsEqual(p2); },
           [](Place const & p1, Place const & p2) { return p1.IsBetterThan(p2); });
       return;
     }
@@ -384,6 +425,22 @@ public:
     }
 
     Emit(fb);
+  }
+
+  void EmitCityBoundary(FeatureBuilder1 const & fb, FeatureParams const & params) override
+  {
+    if (!m_boundariesTable)
+      return;
+
+    auto const type = GetPlaceType(params);
+    if (type == ftype::GetEmptyValue())
+      return;
+
+    auto const id = fb.GetLastOsmId();
+    m_boundariesTable->Append(id, indexer::CityBoundary(fb.GetOuterGeometry()));
+
+    Place const place(fb, type);
+    UnionEqualPlacesIds(place);
   }
 
   /// @return false if coasts are not merged and FLAG_fail_on_coasts is set
@@ -527,7 +584,7 @@ private:
 unique_ptr<EmitterBase> MakeMainFeatureEmitter(feature::GenerateInfo const & info)
 {
   LOG(LINFO, ("Processing booking data from", info.m_bookingDatafileName, "done."));
-  return make_unique<MainFeaturesEmitter>(info);
+  return my::make_unique<MainFeaturesEmitter>(info);
 }
 
 template <typename TElement, typename TCache>
@@ -672,8 +729,11 @@ void ProcessOsmElementsFromO5M(SourceReader & stream, function<void(OsmElement *
 // Generate functions implementations.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+using PreEmit = function<bool(OsmElement *)>;
+
 template <class TNodesHolder>
-bool GenerateFeaturesImpl(feature::GenerateInfo & info, EmitterBase & emitter)
+bool GenerateFeaturesImpl(feature::GenerateInfo & info, EmitterBase & emitter,
+                          PreEmit const & preEmit)
 {
   try
   {
@@ -687,22 +747,12 @@ bool GenerateFeaturesImpl(feature::GenerateInfo & info, EmitterBase & emitter)
     OsmToFeatureTranslator<EmitterBase, TDataCache> parser(
         emitter, cache, info.m_makeCoasts ? classif().GetCoastType() : 0,
         info.GetAddressesFileName(), info.GetIntermediateFileName(RESTRICTIONS_FILENAME, ""),
-        info.GetIntermediateFileName(ROAD_ACCESS_FILENAME, "")
-        );
+        info.GetIntermediateFileName(ROAD_ACCESS_FILENAME, ""),
+        info.GetIntermediateFileName(METALINES_FILENAME, ""));
 
-    TagAdmixer tagAdmixer(info.GetIntermediateFileName("ways", ".csv"),
-                          info.GetIntermediateFileName("towns", ".csv"));
-    TagReplacer tagReplacer(GetPlatform().ResourcesDir() + REPLACED_TAGS_FILE);
-    OsmTagMixer osmTagMixer(GetPlatform().ResourcesDir() + MIXED_TAGS_FILE);
-
-    // Here we can add new tags to the elements!
-    auto const fn = [&](OsmElement * e)
-    {
-      tagReplacer(e);
-      tagAdmixer(e);
-      osmTagMixer(e);
-
-      parser.EmitElement(e);
+    auto const fn = [&](OsmElement * e) {
+      if (preEmit(e))
+        parser.EmitElement(e);
     };
 
     SourceReader reader = info.m_osmFileName.empty() ? SourceReader() : SourceReader(info.m_osmFileName);
@@ -717,6 +767,8 @@ bool GenerateFeaturesImpl(feature::GenerateInfo & info, EmitterBase & emitter)
     }
 
     LOG(LINFO, ("Processing", info.m_osmFileName, "done."));
+
+    generator::MixFakeNodes(GetPlatform().ResourcesDir() + MIXED_NODES_FILE, fn);
 
     // Stop if coasts are not merged and FLAG_fail_on_coasts is set
     if (!emitter.Finish())
@@ -767,19 +819,84 @@ bool GenerateIntermediateDataImpl(feature::GenerateInfo & info)
   return true;
 }
 
-bool GenerateFeatures(feature::GenerateInfo & info, EmitterFactory factory)
+bool GenerateRaw(feature::GenerateInfo & info, std::unique_ptr<EmitterBase> emitter, PreEmit const & preEmit)
 {
-  auto emitter = factory(info);
   switch (info.m_nodeStorageType)
   {
     case feature::GenerateInfo::NodeStorageType::File:
-      return GenerateFeaturesImpl<cache::RawFilePointStorage<cache::EMode::Read>>(info, *emitter);
+      return GenerateFeaturesImpl<cache::RawFilePointStorage<cache::EMode::Read>>(info, *emitter, preEmit);
     case feature::GenerateInfo::NodeStorageType::Index:
-      return GenerateFeaturesImpl<cache::MapFilePointStorage<cache::EMode::Read>>(info, *emitter);
+      return GenerateFeaturesImpl<cache::MapFilePointStorage<cache::EMode::Read>>(info, *emitter, preEmit);
     case feature::GenerateInfo::NodeStorageType::Memory:
-      return GenerateFeaturesImpl<cache::RawMemPointStorage<cache::EMode::Read>>(info, *emitter);
+      return GenerateFeaturesImpl<cache::RawMemPointStorage<cache::EMode::Read>>(info, *emitter, preEmit);
   }
   return false;
+}
+
+bool GenerateFeatures(feature::GenerateInfo & info, EmitterFactory factory)
+{
+  TagAdmixer tagAdmixer(info.GetIntermediateFileName("ways", ".csv"),
+                        info.GetIntermediateFileName("towns", ".csv"));
+  TagReplacer tagReplacer(GetPlatform().ResourcesDir() + REPLACED_TAGS_FILE);
+  OsmTagMixer osmTagMixer(GetPlatform().ResourcesDir() + MIXED_TAGS_FILE);
+
+  auto preEmit = [&](OsmElement * e) {
+    // Here we can add new tags to the elements!
+    tagReplacer(e);
+    tagAdmixer(e);
+    osmTagMixer(e);
+    return true;
+  };
+
+  return GenerateRaw(info, factory(info), preEmit);
+}
+
+bool GenerateRegionFeatures(feature::GenerateInfo & info, EmitterFactory factory)
+{
+  set<string> const adminLevels = {"2", "4", "5", "6"};
+  set<string> const places = {"city", "town", "village", "hamlet", "suburb"};
+
+  auto isRegion = [&adminLevels, &places](OsmElement const & e) {
+    // We do not make any assumptions about shape of places without explicit border for now.
+    if (e.type != OsmElement::EntityType::Way && e.type != OsmElement::EntityType::Relation)
+      return false;
+
+    bool haveBoundary = false;
+    bool haveAdminLevel = false;
+    for (auto const & t : e.Tags())
+    {
+      if (t.key == "boundary" && t.value == "administrative")
+        haveBoundary = true;
+
+      if (t.key == "admin_level" && adminLevels.find(t.value) != adminLevels.end())
+        haveAdminLevel = true;
+
+      if (haveBoundary && haveAdminLevel)
+        return true;
+
+      if (t.key == "place" && places.find(t.value) != places.end())
+        return true;
+    }
+
+    return false;
+  };
+
+  auto preEmit = [&isRegion](OsmElement * e) {
+    if (isRegion(*e))
+    {
+      // Emit feature with original geometry and visible "natural = land" tag.
+      // Now emitter does not have a single place of decision which elements to emit and which to
+      // ignore. So the only way to make it emit element is to construct "good" element.
+      // This code should be removed in case of emitter refactoring.
+      e->m_tags = {};
+      e->AddTag("natural", "land");
+      e->AddTag("type", "multipolygon");
+      return true;
+    }
+    return false;
+  };
+
+  return GenerateRaw(info, factory(info), preEmit);
 }
 
 bool GenerateIntermediateData(feature::GenerateInfo & info)

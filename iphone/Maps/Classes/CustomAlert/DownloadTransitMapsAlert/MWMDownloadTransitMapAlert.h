@@ -1,6 +1,4 @@
-#import "MWMAlert.h"
-
-#include "storage/storage.hpp"
+#import "MWMAlert+CPP.h"
 
 @interface MWMDownloadTransitMapAlert : MWMAlert
 

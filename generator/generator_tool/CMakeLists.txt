@@ -4,6 +4,10 @@ include_directories(${OMIM_PATH}/3party/gflags/src)
 
 set(SRC generator_tool.cpp)
 
+if (BUILD_DESIGNER)
+  set(SRC MACOSX_BUNDLE ${SRC})
+endif()
+
 omim_add_executable(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
@@ -12,6 +16,8 @@ omim_link_libraries(
   routing
   traffic
   routing_common
+  transit
+  ugc
   search
   storage
   indexer
@@ -26,7 +32,8 @@ omim_link_libraries(
   icu
   jansson
   protobuf
-  osrm
+  mwm_diff
+  bsdiff
   stats_client
   minizip
   succinct
@@ -34,7 +41,9 @@ omim_link_libraries(
   tess2
   gflags
   oauthcpp
+  sqlite3
   ${LIBZ}
 )
 
 link_qt5_core(${PROJECT_NAME})
+link_qt5_network(${PROJECT_NAME})

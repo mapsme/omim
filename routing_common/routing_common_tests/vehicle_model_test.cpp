@@ -11,19 +11,30 @@
 namespace
 {
 routing::VehicleModel::InitListT const s_testLimits = {
-    {{"highway", "trunk"}, 150},
-    {{"highway", "primary"}, 120},
-    {{"highway", "secondary"}, 80},
-    {{"highway", "residential"}, 50},
+    {{"highway", "trunk"}, 150, true},
+    {{"highway", "primary"}, 120, true},
+    {{"highway", "secondary"}, 80, true},
+    {{"highway", "residential"}, 50, true},
+    {{"highway", "service"}, 50, false},
+};
+
+class  VehicleModelTest
+{
+public:
+  VehicleModelTest() { classificator::Load(); }
 };
 
 class TestVehicleModel : public routing::VehicleModel
 {
   friend void CheckOneWay(initializer_list<uint32_t> const & types, bool expectedValue);
+  friend void CheckPassThroughAllowed(initializer_list<uint32_t> const & types, bool expectedValue);
   friend void CheckSpeed(initializer_list<uint32_t> const & types, double expectedSpeed);
 
 public:
   TestVehicleModel() : VehicleModel(classif(), s_testLimits) {}
+
+  // We are not going to use offroad routing in these tests.
+  double GetOffroadSpeed() const override { return 0.0; }
 };
 
 uint32_t GetType(char const * s0, char const * s1 = 0, char const * s2 = 0)
@@ -57,17 +68,25 @@ void CheckOneWay(initializer_list<uint32_t> const & types, bool expectedValue)
 
   TEST_EQUAL(vehicleModel.HasOneWayType(h), expectedValue, ());
 }
+
+void CheckPassThroughAllowed(initializer_list<uint32_t> const & types, bool expectedValue)
+{
+  TestVehicleModel vehicleModel;
+  feature::TypesHolder h;
+  for (uint32_t t : types)
+    h.Add(t);
+
+  TEST_EQUAL(vehicleModel.HasPassThroughType(h), expectedValue, ());
+}
 }  // namespace
 
-UNIT_TEST(VehicleModel_MaxSpeed)
+UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_MaxSpeed)
 {
-  classificator::Load();
-
   TestVehicleModel vehicleModel;
   TEST_EQUAL(vehicleModel.GetMaxSpeed(), 150, ());
 }
 
-UNIT_TEST(VehicleModel_Speed)
+UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_Speed)
 {
   CheckSpeed({GetType("highway", "secondary", "bridge")}, 80.0);
   CheckSpeed({GetType("highway", "secondary", "tunnel")}, 80.0);
@@ -78,7 +97,7 @@ UNIT_TEST(VehicleModel_Speed)
   CheckSpeed({GetType("highway", "residential")}, 50.0);
 }
 
-UNIT_TEST(VehicleModel_Speed_MultiTypes)
+UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_Speed_MultiTypes)
 {
   uint32_t const typeTunnel = GetType("highway", "secondary", "tunnel");
   uint32_t const typeSecondary = GetType("highway", "secondary");
@@ -89,7 +108,7 @@ UNIT_TEST(VehicleModel_Speed_MultiTypes)
   CheckSpeed({typeHighway, typeTunnel}, 80.0);
 }
 
-UNIT_TEST(VehicleModel_OneWay)
+UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_OneWay)
 {
   uint32_t const typeBridge = GetType("highway", "secondary", "bridge");
   uint32_t const typeOneway = GetOnewayType();
@@ -102,7 +121,7 @@ UNIT_TEST(VehicleModel_OneWay)
   CheckOneWay({typeOneway}, true);
 }
 
-UNIT_TEST(VehicleModel_DifferentSpeeds)
+UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_DifferentSpeeds)
 {
   uint32_t const typeSecondary = GetType("highway", "secondary");
   uint32_t const typePrimary = GetType("highway", "primary");
@@ -113,4 +132,11 @@ UNIT_TEST(VehicleModel_DifferentSpeeds)
 
   CheckSpeed({typePrimary, typeOneway, typeSecondary}, 80.0);
   CheckOneWay({typePrimary, typeOneway, typeSecondary}, true);
+}
+
+UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_PassThroughAllowed)
+{
+  CheckPassThroughAllowed({GetType("highway", "secondary")}, true);
+  CheckPassThroughAllowed({GetType("highway", "primary")}, true);
+  CheckPassThroughAllowed({GetType("highway", "service")}, false);
 }

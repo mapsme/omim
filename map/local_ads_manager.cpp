@@ -1,4 +1,6 @@
 #include "map/local_ads_manager.hpp"
+#include "map/bookmark_manager.hpp"
+#include "map/local_ads_mark.hpp"
 
 #include "local_ads/campaign_serialization.hpp"
 #include "local_ads/config.hpp"
@@ -8,35 +10,45 @@
 #include "drape_frontend/drape_engine.hpp"
 #include "drape_frontend/visual_params.hpp"
 
+#include "indexer/feature_algo.hpp"
 #include "indexer/feature_data.hpp"
 #include "indexer/scales.hpp"
 
 #include "platform/http_client.hpp"
+#include "platform/marketing_service.hpp"
 #include "platform/platform.hpp"
+#include "platform/preferred_languages.hpp"
+#include "platform/settings.hpp"
 
 #include "coding/file_name_utils.hpp"
+#include "coding/multilang_utf8_string.hpp"
 #include "coding/url_encode.hpp"
-#include "coding/zlib.hpp"
 
-#include "3party/jansson/myjansson.hpp"
+#include "base/url_helpers.hpp"
 
 #include "private.h"
 
+#include <array>
 #include <cstring>
 #include <sstream>
 
-// First implementation of local ads statistics serialization
-// is deflated JSON.
-#define TEMPORARY_LOCAL_ADS_JSON_SERIALIZATION
+using namespace base;
 
 namespace
 {
+std::array<char const * const, 5> const kMarketingParameters = {{marketing::kFrom, marketing::kType, marketing::kName,
+                                                                 marketing::kContent, marketing::kKeyword}};
 std::string const kServerUrl = LOCAL_ADS_SERVER_URL;
 std::string const kCampaignPageUrl = LOCAL_ADS_COMPANY_PAGE_URL;
 
 std::string const kCampaignFile = "local_ads_campaigns.dat";
 std::string const kLocalAdsSymbolsFile = "local_ads_symbols.txt";
 auto constexpr kWWanUpdateTimeout = std::chrono::hours(12);
+uint8_t constexpr kRequestMinZoomLevel = 12;
+auto constexpr kFailedDownloadingTimeout = std::chrono::seconds(2);
+auto constexpr kMaxDownloadingAttempts = 5;
+
+auto constexpr kHiddenFeaturePriority = 1;
 
 void SerializeCampaign(FileWriter & writer, std::string const & countryName,
                        LocalAdsManager::Timestamp const & ts,
@@ -60,91 +72,143 @@ std::string GetPath(std::string const & fileName)
   return my::JoinFoldersToPath(GetPlatform().WritableDir(), fileName);
 }
 
-std::chrono::steady_clock::time_point Now()
-{
-  return std::chrono::steady_clock::now();
-}
-
 std::string MakeCampaignDownloadingURL(MwmSet::MwmId const & mwmId)
 {
   if (kServerUrl.empty() || !mwmId.IsAlive())
     return {};
 
   std::ostringstream ss;
-  ss << kServerUrl << "/" << mwmId.GetInfo()->GetVersion() << "/"
+  auto const campaignDataVersion = static_cast<uint32_t>(local_ads::Version::Latest);
+  ss << kServerUrl << "/"
+     << campaignDataVersion << "/"
+     << mwmId.GetInfo()->GetVersion() << "/"
      << UrlEncode(mwmId.GetInfo()->GetCountryName()) << ".ads";
   return ss.str();
 }
 
-std::vector<uint8_t> DownloadCampaign(MwmSet::MwmId const & mwmId)
+std::string GetCustomIcon(FeatureType & featureType)
 {
-  std::string const url = MakeCampaignDownloadingURL(mwmId);
-  if (url.empty())
-    return {};
-
-  platform::HttpClient request(url);
-  if (!request.RunHttpRequest() || request.ErrorCode() != 200)
-    return {};
-
-  string const & response = request.ServerResponse();
-  return std::vector<uint8_t>(response.cbegin(), response.cend());
+  auto const websiteStr = featureType.GetMetadata().Get(feature::Metadata::FMD_WEBSITE);
+  if (websiteStr.find("burgerking") != std::string::npos)
+    return "0_burger-king";
+  return {};
 }
 
-df::CustomSymbols ParseCampaign(std::vector<uint8_t> const & rawData, MwmSet::MwmId const & mwmId,
-                                LocalAdsManager::Timestamp timestamp)
-{
-  df::CustomSymbols symbols;
+using CampaignData = std::map<FeatureID, std::shared_ptr<LocalAdsMarkData>>;
 
+CampaignData ParseCampaign(std::vector<uint8_t> const & rawData, MwmSet::MwmId const & mwmId,
+                           LocalAdsManager::Timestamp timestamp,
+                           LocalAdsManager::GetFeatureByIdFn const & getFeatureByIdFn)
+{
+  ASSERT(getFeatureByIdFn != nullptr, ());
+  CampaignData data;
   auto campaigns = local_ads::Deserialize(rawData);
   for (local_ads::Campaign const & campaign : campaigns)
   {
-    std::string const iconName = campaign.GetIconName();
-    auto const expiration = timestamp + std::chrono::hours(24 * campaign.m_daysBeforeExpired);
-    if (iconName.empty() || Now() > expiration)
+    FeatureID featureId(mwmId, campaign.m_featureId);
+    if (campaign.m_priority == kHiddenFeaturePriority)
+    {
+      data.insert(std::make_pair(featureId, nullptr));
       continue;
-    symbols.insert(std::make_pair(FeatureID(mwmId, campaign.m_featureId),
-                                  df::CustomSymbol(iconName, campaign.m_priorityBit)));
+    }
+
+    std::string iconName = campaign.GetIconName();
+    auto const expiration = timestamp + std::chrono::hours(24 * campaign.m_daysBeforeExpired);
+    if (iconName.empty() || local_ads::Clock::now() > expiration)
+      continue;
+
+    FeatureType featureType;
+    if (getFeatureByIdFn(featureId, featureType))
+    {
+      auto const customIcon = GetCustomIcon(featureType);
+      if (!customIcon.empty())
+        iconName = customIcon;
+    }
+
+    auto markData = std::make_shared<LocalAdsMarkData>();
+    markData->m_symbolName = iconName;
+    markData->m_minZoomLevel = campaign.m_minZoomLevel;
+    data.insert(std::make_pair(featureId, std::move(markData)));
   }
 
-  return symbols;
+  return data;
 }
 
-#ifdef TEMPORARY_LOCAL_ADS_JSON_SERIALIZATION
-std::vector<uint8_t> SerializeLocalAdsToJSON(std::list<local_ads::Event> const & events,
-                                             std::string const & userId, std::string & contentType,
-                                             std::string & contentEncoding)
+df::CustomFeatures ReadCampaignFeatures(LocalAdsManager::ReadFeaturesFn const & reader,
+                                        CampaignData & campaignData)
 {
-  using namespace std::chrono;
-  ASSERT(!events.empty(), ());
-  auto root = my::NewJSONObject();
-  ToJSONObject(*root, "userId", userId);
-  ToJSONObject(*root, "countryId", events.front().m_countryId);
-  ToJSONObject(*root, "mwmVersion", events.front().m_mwmVersion);
-  auto eventsNode = my::NewJSONArray();
-  for (auto const & event : events)
-  {
-    auto eventNode = my::NewJSONObject();
-    auto s = duration_cast<seconds>(event.m_timestamp.time_since_epoch()).count();
-    ToJSONObject(*eventNode, "type", static_cast<uint8_t>(event.m_type));
-    ToJSONObject(*eventNode, "timestamp", static_cast<int64_t>(s));
-    ToJSONObject(*eventNode, "featureId", static_cast<int32_t>(event.m_featureId));
-    ToJSONObject(*eventNode, "zoomLevel", event.m_zoomLevel);
-    ToJSONObject(*eventNode, "latitude", event.m_latitude);
-    ToJSONObject(*eventNode, "longitude", event.m_longitude);
-    ToJSONObject(*eventNode, "accuracyInMeters", event.m_accuracyInMeters);
-    json_array_append_new(eventsNode.get(), eventNode.release());
-  }
-  json_object_set_new(root.get(), "events", eventsNode.release());
-  std::unique_ptr<char, JSONFreeDeleter> buffer(
-      json_dumps(root.get(), JSON_COMPACT | JSON_ENSURE_ASCII));
-  std::vector<uint8_t> result;
+  ASSERT(reader != nullptr, ());
 
-  using Deflate = coding::ZLib::Deflate;
-  Deflate deflate(Deflate::Format::ZLib, Deflate::Level::BestCompression);
-  deflate(buffer.get(), strlen(buffer.get()), std::back_inserter(result));
-  return result;
+  std::vector<FeatureID> features;
+  features.reserve(campaignData.size());
+  df::CustomFeatures customFeatures;
+  for (auto const & data : campaignData)
+  {
+    if (data.second)
+      features.push_back(data.first);
+    customFeatures.insert(std::make_pair(data.first, data.second != nullptr));
+  }
+
+  auto const deviceLang = StringUtf8Multilang::GetLangIndex(languages::GetCurrentNorm());
+  reader([&campaignData, deviceLang](FeatureType const & ft)
+  {
+    auto it = campaignData.find(ft.GetID());
+    CHECK(it != campaignData.end(), ());
+    CHECK(it->second != nullptr, ());
+    it->second->m_position = feature::GetCenter(ft, scales::GetUpperScale());
+    ft.GetPreferredNames(true /* allowTranslit */, deviceLang,
+                         it->second->m_mainText, it->second->m_auxText);
+  }, features);
+
+  return customFeatures;
 }
-#endif
+
+void CreateLocalAdsMarks(BookmarkManager * bmManager, CampaignData && campaignData)
+{
+  if (bmManager == nullptr)
+    return;
+
+  // Here we copy campaign data, because we can create user marks only from UI thread.
+  GetPlatform().RunTask(Platform::Thread::Gui, [bmManager, campaignData = std::move(campaignData)]()
+  {
+    auto editSession = bmManager->GetEditSession();
+    for (auto const & data : campaignData)
+    {
+      if (data.second == nullptr)
+        continue;
+
+      auto * mark = editSession.CreateUserMark<LocalAdsMark>(data.second->m_position);
+      mark->SetData(LocalAdsMarkData(*data.second));
+      mark->SetFeatureId(data.first);
+    }
+  });
+}
+
+void DeleteLocalAdsMarks(BookmarkManager * bmManager, MwmSet::MwmId const & mwmId)
+{
+  if (bmManager == nullptr)
+    return;
+
+  GetPlatform().RunTask(Platform::Thread::Gui, [bmManager, mwmId]()
+  {
+    bmManager->GetEditSession().DeleteUserMarks<LocalAdsMark>(UserMark::Type::LOCAL_ADS,
+                                                              [&mwmId](LocalAdsMark const * mark)
+                                                              {
+                                                                return mark->GetFeatureID().m_mwmId == mwmId;
+                                                              });
+  });
+}
+
+void DeleteAllLocalAdsMarks(BookmarkManager * bmManager)
+{
+  if (bmManager == nullptr)
+    return;
+
+  GetPlatform().RunTask(Platform::Thread::Gui, [bmManager]()
+  {
+    bmManager->GetEditSession().ClearGroup(UserMark::Type::LOCAL_ADS);
+  });
+}
 
 std::string MakeCampaignPageURL(FeatureID const & featureId)
 {
@@ -154,218 +218,263 @@ std::string MakeCampaignPageURL(FeatureID const & featureId)
   std::ostringstream ss;
   ss << kCampaignPageUrl << "/" << featureId.m_mwmId.GetInfo()->GetVersion() << "/"
      << UrlEncode(featureId.m_mwmId.GetInfo()->GetCountryName()) << "/" << featureId.m_index;
-  return ss.str();
+
+  url::Params params;
+  params.reserve(kMarketingParameters.size());
+  for (auto const & key : kMarketingParameters)
+  {
+    string value;
+    if (!marketing::Settings::Get(key, value))
+      continue;
+
+    params.push_back({key, value});
+  }
+
+  return url::Make(ss.str(), params);
 }
 }  // namespace
 
-LocalAdsManager::LocalAdsManager(GetMwmsByRectFn const & getMwmsByRectFn,
-                                 GetMwmIdByName const & getMwmIdByName)
-  : m_getMwmsByRectFn(getMwmsByRectFn), m_getMwmIdByNameFn(getMwmIdByName)
+LocalAdsManager::LocalAdsManager(GetMwmsByRectFn && getMwmsByRectFn,
+                                 GetMwmIdByNameFn && getMwmIdByName,
+                                 ReadFeaturesFn && readFeaturesFn,
+                                 GetFeatureByIdFn && getFeatureByIDFn)
+  : m_getMwmsByRectFn(std::move(getMwmsByRectFn))
+  , m_getMwmIdByNameFn(std::move(getMwmIdByName))
+  , m_readFeaturesFn(std::move(readFeaturesFn))
+  , m_getFeatureByIdFn(std::move(getFeatureByIDFn))
+  , m_bmManager(nullptr)
 {
   CHECK(m_getMwmsByRectFn != nullptr, ());
   CHECK(m_getMwmIdByNameFn != nullptr, ());
-
-  m_statistics.SetUserId(GetPlatform().UniqueClientId());
-
-#ifdef TEMPORARY_LOCAL_ADS_JSON_SERIALIZATION
-  using namespace std::placeholders;
-  m_statistics.SetCustomServerSerializer(std::bind(&SerializeLocalAdsToJSON, _1, _2, _3, _4));
-#endif
+  CHECK(m_readFeaturesFn != nullptr, ());
+  CHECK(m_getFeatureByIdFn != nullptr, ());
 }
 
-LocalAdsManager::~LocalAdsManager()
+void LocalAdsManager::Startup(BookmarkManager * bmManager)
 {
-  std::lock_guard<std::mutex> lock(m_mutex);
-  ASSERT(!m_isRunning, ());
-}
-
-void LocalAdsManager::Startup()
-{
-  {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    if (m_isRunning)
-      return;
-    m_isRunning = true;
-  }
   FillSupportedTypes();
 
-  m_thread = threads::SimpleThread(&LocalAdsManager::ThreadRoutine, this);
+  GetPlatform().RunTask(Platform::Thread::File, [this, bmManager]
+  {
+    m_bmManager = bmManager;
+
+    local_ads::IconsInfo::Instance().SetSourceFile(kLocalAdsSymbolsFile);
+
+    std::string const campaignFile = GetPath(kCampaignFile);
+
+    // Read persistence data.
+    ReadCampaignFile(campaignFile);
+    Invalidate();
+  });
 
   m_statistics.Startup();
 }
 
-void LocalAdsManager::Teardown()
-{
-  {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    if (!m_isRunning)
-      return;
-    m_isRunning = false;
-  }
-  m_condition.notify_one();
-  m_thread.join();
-
-  m_statistics.Teardown();
-}
-
 void LocalAdsManager::SetDrapeEngine(ref_ptr<df::DrapeEngine> engine)
 {
-  m_drapeEngine = engine;
-  {
-    std::lock_guard<std::mutex> lock(m_symbolsCacheMutex);
-    if (m_symbolsCache.empty())
-      return;
-
-    m_drapeEngine->AddCustomSymbols(std::move(m_symbolsCache));
-    m_symbolsCache.clear();
-  }
+  m_drapeEngine.Set(engine);
+  UpdateFeaturesCache({});
 }
 
 void LocalAdsManager::UpdateViewport(ScreenBase const & screen)
 {
-  auto connectionStatus = GetPlatform().ConnectionStatus();
+  auto const connectionStatus = GetPlatform().ConnectionStatus();
   if (kServerUrl.empty() || connectionStatus == Platform::EConnectionType::CONNECTION_NONE ||
-      df::GetZoomLevel(screen.GetScale()) <= scales::GetUpperWorldScale())
+      df::GetZoomLevel(screen.GetScale()) < kRequestMinZoomLevel)
   {
     return;
   }
 
-  std::vector<std::string> requestedCampaigns;
+  // This function must be called on UI-thread.
   auto mwms = m_getMwmsByRectFn(screen.ClipRect());
   if (mwms.empty())
     return;
 
   // Request local ads campaigns.
+  GetPlatform().RunTask(Platform::Thread::File, [this, mwms = std::move(mwms)]() mutable
   {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    if (!m_isRunning)
-      return;
+    RequestCampaigns(std::move(mwms));
+  });
+}
 
-    for (auto const & mwm : mwms)
+void LocalAdsManager::RequestCampaigns(std::vector<MwmSet::MwmId> && mwmIds)
+{
+  auto const connectionStatus = GetPlatform().ConnectionStatus();
+  
+  std::vector<std::string> requestedCampaigns;
+  {
+    std::lock_guard<std::mutex> lock(m_campaignsMutex);
+    for (auto const & mwm : mwmIds)
     {
       auto info = mwm.GetInfo();
       if (!info)
         continue;
+      
+      // Skip currently downloading mwms.
+      if (m_downloadingMwms.find(mwm) != m_downloadingMwms.cend())
+        continue;
+
+      // Skip downloading request if maximum attempts count has been reached or
+      // we are waiting for new attempt.
+      auto const failedDownloadsIt = m_failedDownloads.find(mwm);
+      if (failedDownloadsIt != m_failedDownloads.cend() && !failedDownloadsIt->second.CanRetry())
+        continue;
+      
       std::string const & mwmName = info->GetCountryName();
       auto campaignIt = m_campaigns.find(mwmName);
       if (campaignIt == m_campaigns.end())
       {
         requestedCampaigns.push_back(mwmName);
+        m_downloadingMwms.insert(mwm);
         continue;
       }
-
+      
       // If a campaign has not been requested from server this session.
       if (!campaignIt->second)
       {
         auto const it = m_info.find(mwmName);
         bool needUpdateByTimeout = (connectionStatus == Platform::EConnectionType::CONNECTION_WIFI);
         if (!needUpdateByTimeout && it != m_info.end())
-          needUpdateByTimeout = Now() > (it->second.m_created + kWWanUpdateTimeout);
-
+          needUpdateByTimeout = local_ads::Clock::now() > (it->second.m_created + kWWanUpdateTimeout);
+        
         if (needUpdateByTimeout || it == m_info.end())
+        {
           requestedCampaigns.push_back(mwmName);
+          m_downloadingMwms.insert(mwm);
+        }
       }
     }
-
-    if (!requestedCampaigns.empty())
-    {
-      for (auto const & campaign : requestedCampaigns)
-        m_requestedCampaigns.insert(std::make_pair(m_getMwmIdByNameFn(campaign), RequestType::Download));
-      m_condition.notify_one();
-    }
   }
+  
+  if (requestedCampaigns.empty())
+    return;
+  
+  std::set<Request> requests;
+  for (auto const & campaign : requestedCampaigns)
+    requests.insert(std::make_pair(m_getMwmIdByNameFn(campaign), RequestType::Download));
+  ProcessRequests(std::move(requests));
 }
 
-void LocalAdsManager::ThreadRoutine()
+bool LocalAdsManager::DownloadCampaign(MwmSet::MwmId const & mwmId, std::vector<uint8_t> & bytes)
 {
-  local_ads::IconsInfo::Instance().SetSourceFile(kLocalAdsSymbolsFile);
+  bytes.clear();
 
-  std::string const campaignFile = GetPath(kCampaignFile);
+  std::string const url = MakeCampaignDownloadingURL(mwmId);
+  if (url.empty())
+    return true; // In this case empty result is valid.
 
-  // Read persistence data.
-  ReadCampaignFile(campaignFile);
-  Invalidate();
-
-  std::set<Request> campaignMwms;
-  while (WaitForRequest(campaignMwms))
+  // Skip already downloaded campaigns.
+  auto const & countryName = mwmId.GetInfo()->GetCountryName();
   {
-    for (auto const & mwm : campaignMwms)
-    {
-      if (!mwm.first.IsAlive())
-        continue;
+    std::lock_guard<std::mutex> lock(m_campaignsMutex);
+    auto const it = m_campaigns.find(countryName);
+    if (it != m_campaigns.cend() && it->second)
+      return false;
+  }
 
-      std::string const countryName = mwm.first.GetInfo()->GetCountryName();
-      if (mwm.second == RequestType::Download)
+  platform::HttpClient request(url);
+  request.SetTimeout(5); // timeout in seconds
+  bool const success = request.RunHttpRequest() && request.ErrorCode() == 200;
+
+  std::lock_guard<std::mutex> lock(m_campaignsMutex);
+  m_downloadingMwms.erase(mwmId);
+  if (!success)
+  {
+    bool const isAbsent = request.ErrorCode() == 404;
+    auto const it = m_failedDownloads.find(mwmId);
+    if (it == m_failedDownloads.cend())
+    {
+      m_failedDownloads.insert(std::make_pair(mwmId, BackoffStats(std::chrono::steady_clock::now(),
+                                                                  kFailedDownloadingTimeout,
+                                                                  1 /* m_attemptsCount */, isAbsent)));
+    }
+    else
+    {
+      // Here we increase timeout multiplying by 2.
+      it->second.m_currentTimeout = std::chrono::seconds(it->second.m_currentTimeout.count() * 2);
+      it->second.m_attemptsCount++;
+      it->second.m_fileIsAbsent = isAbsent;
+    }
+    return false;
+  }
+
+  m_failedDownloads.erase(mwmId);
+  auto const & response = request.ServerResponse();
+  bytes.assign(response.cbegin(), response.cend());
+  return true;
+}
+
+void LocalAdsManager::ProcessRequests(std::set<Request> && requests)
+{
+  GetPlatform().RunTask(Platform::Thread::Network, [this, requests = std::move(requests)]
+  {
+    std::string const campaignFile = GetPath(kCampaignFile);
+    for (auto const & request : requests)
+    {
+      auto const & mwm = request.first;
+      auto const & type =  request.second;
+      
+      if (!mwm.IsAlive())
+        continue;
+      
+      std::string const & countryName = mwm.GetInfo()->GetCountryName();
+      if (type == RequestType::Download)
       {
         // Download campaign data from server.
         CampaignInfo info;
-        info.m_data = DownloadCampaign(mwm.first);
-        if (info.m_data.empty())
+        info.m_created = local_ads::Clock::now();
+        if (!DownloadCampaign(mwm, info.m_data))
           continue;
-        info.m_created = Now();
-
-        // Parse data and send symbols to rendering.
-        auto symbols = ParseCampaign(std::move(info.m_data), mwm.first, info.m_created);
-        if (symbols.empty())
+        
+        // Parse data and recreate marks.
+        ClearLocalAdsForMwm(mwm);
+        if (!info.m_data.empty())
         {
-          std::lock_guard<std::mutex> lock(m_mutex);
-          m_campaigns.erase(countryName);
-          m_info.erase(countryName);
-          DeleteSymbolsFromRendering(mwm.first);
+          auto campaignData = ParseCampaign(info.m_data, mwm, info.m_created, m_getFeatureByIdFn);
+          if (!campaignData.empty())
+          {
+            UpdateFeaturesCache(ReadCampaignFeatures(m_readFeaturesFn, campaignData));
+            CreateLocalAdsMarks(m_bmManager, std::move(campaignData));
+          }
         }
-        else
-        {
-          UpdateFeaturesCache(symbols);
-          SendSymbolsToRendering(std::move(symbols));
-        }
-
-        // Update run-time data.
-        {
-          std::lock_guard<std::mutex> lock(m_mutex);
-          m_campaigns[countryName] = true;
-          m_info[countryName] = info;
-        }
+        
+        std::lock_guard<std::mutex> lock(m_campaignsMutex);
+        m_campaigns[countryName] = true;
+        m_info[countryName] = info;
       }
-      else if (mwm.second == RequestType::Delete)
+      else if (type == RequestType::Delete)
       {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_campaignsMutex);
         m_campaigns.erase(countryName);
         m_info.erase(countryName);
-        DeleteSymbolsFromRendering(mwm.first);
+        ClearLocalAdsForMwm(mwm);
       }
     }
-    campaignMwms.clear();
-
+    
     // Save data persistently.
-    WriteCampaignFile(campaignFile);
-  }
-}
-
-bool LocalAdsManager::WaitForRequest(std::set<Request> & campaignMwms)
-{
-  std::unique_lock<std::mutex> lock(m_mutex);
-
-  m_condition.wait(lock, [this] {return !m_isRunning || !m_requestedCampaigns.empty();});
-  if (!m_isRunning)
-    return false;
-
-  campaignMwms = std::move(m_requestedCampaigns);
-  m_requestedCampaigns.clear();
-  return true;
+    GetPlatform().RunTask(Platform::Thread::File, [this, campaignFile]
+    {
+      WriteCampaignFile(campaignFile);
+    });
+  });
 }
 
 void LocalAdsManager::OnDownloadCountry(std::string const & countryName)
 {
-  std::lock_guard<std::mutex> lock(m_mutex);
-  m_campaigns.erase(countryName);
-  m_info.erase(countryName);
+  GetPlatform().RunTask(Platform::Thread::File, [this, countryName]
+  {
+    std::lock_guard<std::mutex> lock(m_campaignsMutex);
+    m_campaigns.erase(countryName);
+    m_info.erase(countryName);
+  });
 }
 
 void LocalAdsManager::OnDeleteCountry(std::string const & countryName)
 {
-  std::lock_guard<std::mutex> lock(m_mutex);
-  m_requestedCampaigns.insert(std::make_pair(m_getMwmIdByNameFn(countryName), RequestType::Delete));
-  m_condition.notify_one();
+  GetPlatform().RunTask(Platform::Thread::File, [this, countryName]
+  {
+    ProcessRequests({std::make_pair(m_getMwmIdByNameFn(countryName), RequestType::Delete)});
+  });
 }
 
 void LocalAdsManager::ReadCampaignFile(std::string const & campaignFile)
@@ -373,7 +482,7 @@ void LocalAdsManager::ReadCampaignFile(std::string const & campaignFile)
   if (!GetPlatform().IsFileExistsByFullPath(campaignFile))
     return;
 
-  std::lock_guard<std::mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_campaignsMutex);
   try
   {
     FileReader reader(campaignFile, true /* withExceptions */);
@@ -398,9 +507,9 @@ void LocalAdsManager::ReadCampaignFile(std::string const & campaignFile)
 
 void LocalAdsManager::WriteCampaignFile(std::string const & campaignFile)
 {
+  std::lock_guard<std::mutex> lock(m_campaignsMutex);
   try
   {
-    std::lock_guard<std::mutex> lock(m_mutex);
     FileWriter writer(campaignFile);
     for (auto const & info : m_info)
       SerializeCampaign(writer, info.first, info.second.m_created, info.second.m_data);
@@ -411,53 +520,59 @@ void LocalAdsManager::WriteCampaignFile(std::string const & campaignFile)
   }
 }
 
-void LocalAdsManager::SendSymbolsToRendering(df::CustomSymbols && symbols)
-{
-  if (symbols.empty())
-    return;
-
-  if (m_drapeEngine == nullptr)
-  {
-    std::lock_guard<std::mutex> lock(m_symbolsCacheMutex);
-    m_symbolsCache.insert(symbols.begin(), symbols.end());
-    return;
-  }
-  m_drapeEngine->AddCustomSymbols(std::move(symbols));
-}
-
-void LocalAdsManager::DeleteSymbolsFromRendering(MwmSet::MwmId const & mwmId)
-{
-  if (m_drapeEngine != nullptr)
-    m_drapeEngine->RemoveCustomSymbols(mwmId);
-}
-
 void LocalAdsManager::Invalidate()
 {
-  if (m_drapeEngine != nullptr)
-    m_drapeEngine->RemoveAllCustomSymbols();
-
-  df::CustomSymbols symbols;
+  GetPlatform().RunTask(Platform::Thread::File, [this]
   {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    for (auto const & info : m_info)
+    DeleteAllLocalAdsMarks(m_bmManager);
+    m_drapeEngine.SafeCall(&df::DrapeEngine::RemoveAllCustomFeatures);
+
+    CampaignData campaignData;
     {
-      auto campaignSymbols = ParseCampaign(info.second.m_data, m_getMwmIdByNameFn(info.first),
-                                           info.second.m_created);
-      symbols.insert(campaignSymbols.begin(), campaignSymbols.end());
+      std::lock_guard<std::mutex> lock(m_campaignsMutex);
+      for (auto const & info : m_info)
+      {
+        auto data = ParseCampaign(info.second.m_data, m_getMwmIdByNameFn(info.first),
+                                  info.second.m_created, m_getFeatureByIdFn);
+        campaignData.insert(data.begin(), data.end());
+      }
     }
-  }
-  UpdateFeaturesCache(symbols);
-  SendSymbolsToRendering(std::move(symbols));
+    UpdateFeaturesCache(ReadCampaignFeatures(m_readFeaturesFn, campaignData));
+    CreateLocalAdsMarks(m_bmManager, std::move(campaignData));
+  });
 }
 
-void LocalAdsManager::UpdateFeaturesCache(df::CustomSymbols const & symbols)
+void LocalAdsManager::UpdateFeaturesCache(df::CustomFeatures && features)
 {
-  if (symbols.empty())
-    return;
+  df::CustomFeatures featuresCache;
+  {
+    std::lock_guard<std::mutex> lock(m_featuresCacheMutex);
+    if (!features.empty())
+      m_featuresCache.insert(features.begin(), features.end());
+    featuresCache = m_featuresCache;
+  }
+  m_drapeEngine.SafeCall(&df::DrapeEngine::SetCustomFeatures, std::move(featuresCache));
+}
 
-  std::lock_guard<std::mutex> lock(m_featuresCacheMutex);
-  for (auto const & symbolPair : symbols)
-    m_featuresCache.insert(symbolPair.first);
+void LocalAdsManager::ClearLocalAdsForMwm(MwmSet::MwmId const & mwmId)
+{
+  // Clear feature cache.
+  {
+    std::lock_guard<std::mutex> lock(m_featuresCacheMutex);
+    for (auto it = m_featuresCache.begin(); it != m_featuresCache.end();)
+    {
+      if (it->first.m_mwmId == mwmId)
+        it = m_featuresCache.erase(it);
+      else
+        ++it;
+    }
+  }
+
+  // Remove custom features in graphics engine.
+  m_drapeEngine.SafeCall(&df::DrapeEngine::RemoveCustomFeatures, mwmId);
+
+  // Delete marks.
+  DeleteLocalAdsMarks(m_bmManager, mwmId);
 }
 
 bool LocalAdsManager::Contains(FeatureID const & featureId) const
@@ -474,4 +589,10 @@ bool LocalAdsManager::IsSupportedType(feature::TypesHolder const & types) const
 std::string LocalAdsManager::GetCompanyUrl(FeatureID const & featureId) const
 {
   return MakeCampaignPageURL(featureId);
+}
+
+bool LocalAdsManager::BackoffStats::CanRetry() const
+{
+  return !m_fileIsAbsent && m_attemptsCount < kMaxDownloadingAttempts &&
+         std::chrono::steady_clock::now() > (m_lastDownloading + m_currentTimeout);
 }

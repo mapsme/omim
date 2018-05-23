@@ -1,5 +1,7 @@
 #pragma once
 
+#include "routing/checkpoints.hpp"
+#include "routing/route.hpp"
 #include "routing/router_delegate.hpp"
 
 #include "geometry/point2d.hpp"
@@ -15,6 +17,7 @@ namespace routing
 
 using TCountryFileFn = std::function<std::string(m2::PointD const &)>;
 using CourntryRectFn = std::function<m2::RectD(std::string const & countryId)>;
+using CountryParentNameGetterFn = std::function<std::string(std::string const &)>;
 
 class Route;
 
@@ -22,10 +25,11 @@ class Route;
 enum class RouterType
 {
   // @TODO It's necessary to rename Vehicle value to Car.
-  Vehicle = 0,  /// For Car routing (OSRM or AStar).
+  Vehicle = 0,  /// For Car routing.
   Pedestrian,   /// For A star pedestrian routing.
   Bicycle,      /// For A star bicycle routing.
   Taxi,         /// For taxi route calculation Vehicle routing is used.
+  Transit,      /// For A star pedestrian + transit routing.
   Count         /// Number of router types.
 };
 
@@ -53,7 +57,11 @@ public:
     RouteNotFound = 8,
     NeedMoreMaps = 9,
     InternalError = 10,
-    FileTooOld = 11
+    FileTooOld = 11,
+    IntermediatePointNotFound = 12,
+    TransitRouteNotFoundNoNetwork = 13,
+    TransitRouteNotFoundTooLongPedestrian = 14,
+    RouteNotFoundRedressRouteError = 15,
   };
 
   virtual ~IRouter() {}
@@ -71,14 +79,14 @@ public:
   /// @param startPoint point to start routing
   /// @param startDirection start direction for routers with high cost of the turnarounds
   /// @param finalPoint target point for route
+  /// @param adjust adjust route to the previous one if possible
   /// @param delegate callback functions and cancellation flag
   /// @param route result route
   /// @return ResultCode error code or NoError if route was initialised
   /// @see Cancellable
-  virtual ResultCode CalculateRoute(m2::PointD const & startPoint,
-                                    m2::PointD const & startDirection,
-                                    m2::PointD const & finalPoint, RouterDelegate const & delegate,
-                                    Route & route) = 0;
+  virtual ResultCode CalculateRoute(Checkpoints const & checkpoints,
+                                    m2::PointD const & startDirection, bool adjust,
+                                    RouterDelegate const & delegate, Route & route) = 0;
 };
 
 }  // namespace routing

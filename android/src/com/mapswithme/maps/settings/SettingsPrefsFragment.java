@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.TwoStatePreference;
 import android.text.Spannable;
@@ -21,20 +22,20 @@ import android.text.style.ForegroundColorSpan;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.downloader.MapManager;
 import com.mapswithme.maps.downloader.OnmapDownloader;
 import com.mapswithme.maps.editor.ProfileActivity;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.TrackRecorder;
-import com.mapswithme.maps.search.SearchFragment;
 import com.mapswithme.maps.sound.LanguageData;
 import com.mapswithme.maps.sound.TtsPlayer;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.NetworkPolicy;
+import com.mapswithme.util.SharedPropertiesUtils;
 import com.mapswithme.util.ThemeSwitcher;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.concurrency.UiThread;
@@ -87,12 +88,16 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     if (singleStorageOnly())
     {
       if (old != null)
-        getPreferenceScreen().removePreference(old);
+      {
+        removePreference(getString(R.string.pref_settings_general), old);
+      }
     }
     else
     {
       if (old == null && mStoragePref != null)
+      {
         getPreferenceScreen().addPreference(mStoragePref);
+      }
     }
   }
 
@@ -129,7 +134,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
       if (mPrefEnabled != null)
         mPrefEnabled.setTitle(R.string.on);
       if (mLangInfoLink != null)
-        getPreferenceScreen().removePreference(mLangInfoLink);
+        removePreference(getString(R.string.pref_navigation), mLangInfoLink);
 
       if (mCurrentLanguage != null && mCurrentLanguage.downloaded)
       {
@@ -220,7 +225,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     mLangInfo.setSummary(enabled ? R.string.prefs_languages_information
                                  : R.string.prefs_languages_information_off);
     if (enabled)
-      getPreferenceScreen().removePreference(mLangInfoLink);
+      removePreference(getString(R.string.pref_navigation), mLangInfoLink);
     else if (isOnTtsScreen())
       getPreferenceScreen().addPreference(mLangInfoLink);
 
@@ -286,19 +291,18 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     initZoomPrefsCallbacks();
     initMapStylePrefsCallbacks();
     initAutoDownloadPrefsCallbacks();
+    initBackupBookmarksPrefsCallbacks();
     initLargeFontSizePrefsCallbacks();
+    initTransliterationPrefsCallbacks();
     init3dModePrefsCallbacks();
     initPerspectivePrefsCallbacks();
     initTrackRecordPrefsCallbacks();
     initStatisticsPrefsCallback();
     initPlayServicesPrefsCallbacks();
     initAutoZoomPrefsCallbacks();
-    initSimplifiedTrafficColorsPrefsCallbacks();
-
-    if (!MytargetHelper.isShowcaseSwitchedOnServer())
-      getPreferenceScreen().removePreference(findPreference(getString(R.string.pref_showcase_switched_on)));
-
+    initDisplayShowcasePrefs();
     initLoggingEnabledPrefsCallbacks();
+    initEmulationBadStorage();
     initUseMobileDataPrefsCallbacks();
 
     updateTts();
@@ -350,6 +354,18 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     return super.onPreferenceTreeClick(preference);
   }
 
+  private void initDisplayShowcasePrefs()
+  {
+    if (MytargetHelper.isShowcaseSwitchedOnServer())
+      return;
+
+    Preference pref = findPreference(getString(R.string.pref_showcase_switched_on));
+    if (pref == null)
+      return;
+
+    removePreference(getString(R.string.pref_settings_general), pref);
+  }
+
   private void initLangInfoLink()
   {
     if (mLangInfoLink != null)
@@ -370,28 +386,8 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
           return false;
         }
       });
-      mPreferenceScreen.removePreference(mLangInfoLink);
+      removePreference(getString(R.string.pref_navigation), mLangInfoLink);
     }
-  }
-
-  private void initSimplifiedTrafficColorsPrefsCallbacks()
-  {
-    final TwoStatePreference prefSimplifiedColors = (TwoStatePreference)findPreference(
-        getString(R.string.pref_traffic_simplified_colors));
-    if (prefSimplifiedColors == null)
-      return;
-
-    boolean simplifiedColorsEnabled = Framework.nativeGetSimplifiedTrafficColorsEnabled();
-    prefSimplifiedColors.setChecked(simplifiedColorsEnabled);
-    prefSimplifiedColors.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-    {
-      @Override
-      public boolean onPreferenceChange(Preference preference, Object newValue)
-      {
-        Framework.nativeSetSimplifiedTrafficColorsEnabled((Boolean)newValue);
-        return true;
-      }
-    });
   }
 
   private void initLargeFontSizePrefsCallbacks()
@@ -416,6 +412,28 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     });
   }
 
+  private void initTransliterationPrefsCallbacks()
+  {
+    Preference pref = findPreference(getString(R.string.pref_transliteration));
+    if (pref == null)
+      return;
+
+    ((TwoStatePreference)pref).setChecked(Config.isTransliteration());
+    pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+    {
+      @Override
+      public boolean onPreferenceChange(Preference preference, Object newValue)
+      {
+        boolean oldVal = Config.isTransliteration();
+        boolean newVal = (Boolean) newValue;
+        if (oldVal != newVal)
+          Config.setTransliteration(newVal);
+
+        return true;
+      }
+    });
+  }
+
   private void initUseMobileDataPrefsCallbacks()
   {
     final ListPreference mobilePref = (ListPreference)findPreference(
@@ -425,7 +443,8 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
 
     int curValue = Config.getUseMobileDataSettings();
 
-    if (curValue != NetworkPolicy.NOT_TODAY && curValue != NetworkPolicy.TODAY)
+    if (curValue != NetworkPolicy.NOT_TODAY && curValue != NetworkPolicy.TODAY
+        && curValue != NetworkPolicy.NONE)
     {
       mobilePref.setValue(String.valueOf(curValue));
       mobilePref.setSummary(mobilePref.getEntry());
@@ -475,30 +494,26 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     if (pref == null)
       return;
 
-    if (!MwmApplication.prefs().getBoolean(SearchFragment.PREFS_SHOW_ENABLE_LOGGING_SETTING,
-                                           BuildConfig.BUILD_TYPE.equals("beta")))
-    {
-      getPreferenceScreen().removePreference(pref);
-    }
-    else
-    {
-      final boolean isLoggingEnabled = LoggerFactory.INSTANCE.isFileLoggingEnabled();
-      ((TwoStatePreference) pref).setChecked(isLoggingEnabled);
-      pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-      {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue)
+    final boolean isLoggingEnabled = LoggerFactory.INSTANCE.isFileLoggingEnabled();
+    ((TwoStatePreference) pref).setChecked(isLoggingEnabled);
+    pref.setOnPreferenceChangeListener(
+        (preference, newValue) ->
         {
-          boolean oldVal = isLoggingEnabled;
           boolean newVal = (Boolean) newValue;
-          if (oldVal != newVal)
-          {
+          if (isLoggingEnabled != newVal)
             LoggerFactory.INSTANCE.setFileLoggingEnabled(newVal);
-          }
           return true;
-        }
-      });
-    }
+        });
+  }
+
+  private void initEmulationBadStorage()
+  {
+    Preference pref = findPreference(getString(R.string.pref_emulate_bad_external_storage));
+    if (pref == null)
+      return;
+
+    if (!SharedPropertiesUtils.shouldShowEmulateBadStorageSetting())
+      removePreference(getString(R.string.pref_settings_general), pref);
   }
 
   private void initAutoZoomPrefsCallbacks()
@@ -527,7 +542,9 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
       return;
 
     if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MwmApplication.get()) != ConnectionResult.SUCCESS)
-      getPreferenceScreen().removePreference(pref);
+    {
+      removePreference(getString(R.string.pref_settings_general), pref);
+    }
     else
     {
       ((TwoStatePreference) pref).setChecked(Config.useGoogleServices());
@@ -555,7 +572,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     if (pref == null)
       return;
 
-    ((TwoStatePreference)pref).setChecked(Config.isStatisticsEnabled());
+    ((TwoStatePreference)pref).setChecked(SharedPropertiesUtils.isStatisticsEnabled());
     pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
     {
       @Override
@@ -697,6 +714,24 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     });
   }
 
+  private void initBackupBookmarksPrefsCallbacks()
+  {
+    TwoStatePreference pref = (TwoStatePreference)findPreference(getString(R.string.pref_backupbookmarks));
+    if (pref == null)
+      return;
+
+    boolean curValue = BookmarkManager.INSTANCE.isCloudEnabled();
+    pref.setChecked(curValue);
+    pref.setOnPreferenceChangeListener(
+        (preference, newValue) ->
+        {
+          Boolean value = (Boolean) newValue;
+          BookmarkManager.INSTANCE.setCloudEnabled(value);
+          Statistics.INSTANCE.trackBmSettingsToggle(value);
+          return true;
+        });
+  }
+
   private void initMapStylePrefsCallbacks()
   {
     final ListPreference pref = (ListPreference)findPreference(getString(R.string.pref_map_style));
@@ -796,6 +831,15 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
         return true;
       }
     });
+  }
+
+  private void removePreference(@NonNull String categoryKey, @NonNull Preference preference)
+  {
+    PreferenceCategory category = (PreferenceCategory) findPreference(categoryKey);
+    if (category == null)
+      return;
+
+    category.removePreference(preference);
   }
 
   @Override

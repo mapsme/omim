@@ -9,24 +9,25 @@
 #include "drape_frontend/overlay_batcher.hpp"
 #include "drape_frontend/requested_tiles.hpp"
 #include "drape_frontend/traffic_generator.hpp"
-#include "drape_frontend/viewport.hpp"
+#include "drape_frontend/user_mark_generator.hpp"
 
 #include "drape/pointers.hpp"
+#include "drape/viewport.hpp"
 
 namespace dp
 {
-
 class OGLContextFactory;
 class TextureManager;
-
-}
+}  // namespace dp
 
 namespace df
 {
-
 class Message;
 class ReadManager;
 class RouteBuilder;
+class MetalineManager;
+
+using TIsUGCFn = function<bool (FeatureID const &)>;
 
 class BackendRenderer : public BaseRenderer
 {
@@ -35,19 +36,21 @@ public:
 
   struct Params : BaseRenderer::Params
   {
-    Params(ref_ptr<ThreadsCommutator> commutator, ref_ptr<dp::OGLContextFactory> factory,
-           ref_ptr<dp::TextureManager> texMng, MapDataProvider const & model,
-           TUpdateCurrentCountryFn const & updateCurrentCountryFn,
-           ref_ptr<RequestedTiles> requestedTiles, bool allow3dBuildings,
-           bool trafficEnabled, bool simplifiedTrafficColors)
-      : BaseRenderer::Params(commutator, factory, texMng)
+    Params(dp::ApiVersion apiVersion, ref_ptr<ThreadsCommutator> commutator,
+           ref_ptr<dp::OGLContextFactory> factory, ref_ptr<dp::TextureManager> texMng,
+           MapDataProvider const & model, TUpdateCurrentCountryFn const & updateCurrentCountryFn,
+           ref_ptr<RequestedTiles> requestedTiles, bool allow3dBuildings, bool trafficEnabled,
+           bool simplifiedTrafficColors, TIsUGCFn && isUGCFn)
+      : BaseRenderer::Params(apiVersion, commutator, factory, texMng)
       , m_model(model)
       , m_updateCurrentCountryFn(updateCurrentCountryFn)
       , m_requestedTiles(requestedTiles)
       , m_allow3dBuildings(allow3dBuildings)
       , m_trafficEnabled(trafficEnabled)
       , m_simplifiedTrafficColors(simplifiedTrafficColors)
-    {}
+      , m_isUGCFn(std::move(isUGCFn))
+    {
+    }
 
     MapDataProvider const & m_model;
     TUpdateCurrentCountryFn m_updateCurrentCountryFn;
@@ -55,6 +58,7 @@ public:
     bool m_allow3dBuildings;
     bool m_trafficEnabled;
     bool m_simplifiedTrafficColors;
+    TIsUGCFn m_isUGCFn;
   };
 
   BackendRenderer(Params && params);
@@ -73,7 +77,7 @@ private:
   void RecacheChoosePositionMark();
   void RecacheMapShapes();
 
-#ifdef RENRER_DEBUG_INFO_LABELS
+#ifdef RENDER_DEBUG_INFO_LABELS
   void RecacheDebugLabels();
 #endif
 
@@ -96,6 +100,7 @@ private:
   void FlushGeometry(TileKey const & key, dp::GLState const & state, drape_ptr<dp::RenderBucket> && buffer);
 
   void FlushTrafficRenderData(TrafficRenderData && renderData);
+  void FlushUserMarksRenderData(TUserMarksRenderData && renderData);
 
   void CleanupOverlays(TileKey const & tileKey);
 
@@ -104,6 +109,7 @@ private:
   drape_ptr<ReadManager> m_readManager;
   drape_ptr<RouteBuilder> m_routeBuilder;
   drape_ptr<TrafficGenerator> m_trafficGenerator;
+  drape_ptr<UserMarkGenerator> m_userMarkGenerator;
   drape_ptr<DrapeApiBuilder> m_drapeApiBuilder;
   gui::LayerCacher m_guiCacher;
 
@@ -113,9 +119,10 @@ private:
 
   TUpdateCurrentCountryFn m_updateCurrentCountryFn;
 
+  drape_ptr<MetalineManager> m_metalineManager;
+
 #ifdef DEBUG
   bool m_isTeardowned;
 #endif
 };
-
-} // namespace df
+}  // namespace df

@@ -1,13 +1,11 @@
 project(map)
 
 include_directories(
-  ${OMIM_ROOT}/3party/protobuf/src
+  ${OMIM_ROOT}/3party/protobuf/protobuf/src
   ${OMIM_ROOT}/3party/freetype/include
   ${OMIM_ROOT}/3party/jansson/src
   ${OMIM_ROOT}/3party/glm
 )
-
-append(CMAKE_CXX_FLAGS "-std=c++11")
 
 set(
   SRC
@@ -17,18 +15,38 @@ set(
   api_mark_point.hpp
   benchmark_tools.hpp
   benchmark_tools.cpp
-  bookmark_manager.cpp
-  bookmark_manager.hpp
+  booking_filter.cpp
+  booking_filter.hpp
+  booking_filter_availability_params.hpp
+  booking_filter_cache.cpp
+  booking_filter_cache.hpp
   bookmark.cpp
   bookmark.hpp
+  bookmark_catalog.cpp
+  bookmark_catalog.hpp
+  bookmark_helpers.cpp
+  bookmark_helpers.hpp
+  bookmark_manager.cpp
+  bookmark_manager.hpp
+  bookmarks_search_params.hpp
   chart_generator.cpp
   chart_generator.hpp
+  cloud.cpp
+  cloud.hpp
+  discovery/discovery_client_params.hpp
+  discovery/discovery_manager.cpp
+  discovery/discovery_manager.hpp
+  discovery/discovery_search_params.hpp
   displacement_mode_manager.cpp
   displacement_mode_manager.hpp
+  displayed_categories_modifiers.cpp
+  displayed_categories_modifiers.hpp
+  everywhere_search_params.hpp
   feature_vec_model.cpp
   feature_vec_model.hpp
   framework.cpp
   framework.hpp
+  framework_light.hpp
   ge0_parser.cpp
   ge0_parser.hpp
   geourl_process.cpp
@@ -45,23 +63,42 @@ set(
   gps_tracker.hpp
   local_ads_manager.cpp
   local_ads_manager.hpp
+  local_ads_mark.cpp
+  local_ads_mark.hpp
   local_ads_supported_types.cpp
-  mwm_tree.cpp
-  mwm_tree.hpp
   mwm_url.cpp
   mwm_url.hpp
   place_page_info.cpp
   place_page_info.hpp
   reachable_by_taxi_checker.cpp
   reachable_by_taxi_checker.hpp
+  routing_manager.cpp
+  routing_manager.hpp
+  routing_mark.cpp
+  routing_mark.hpp
+  search_api.cpp
+  search_api.hpp
+  search_mark.cpp
+  search_mark.hpp
+  taxi_delegate.cpp
+  taxi_delegate.hpp
   track.cpp
   track.hpp
   traffic_manager.cpp
   traffic_manager.hpp
-  user_mark_container.cpp
-  user_mark_container.hpp
+  transit/transit_display.cpp
+  transit/transit_display.hpp
+  transit/transit_reader.cpp
+  transit/transit_reader.hpp
+  user.cpp
+  user.hpp
+  user_mark_id_storage.cpp
+  user_mark_id_storage.hpp
+  user_mark_layer.cpp
+  user_mark_layer.hpp
   user_mark.cpp
   user_mark.hpp
+  viewport_search_params.hpp
 )
 
 add_library(${PROJECT_NAME} ${SRC})
@@ -69,3 +106,7 @@ add_library(${PROJECT_NAME} ${SRC})
 omim_add_test_subdirectory(map_tests)
 omim_add_test_subdirectory(mwm_tests)
 omim_add_test_subdirectory(style_tests)
+
+if (PLATFORM_DESKTOP)
+  add_subdirectory(benchmark_tool)
+endif()

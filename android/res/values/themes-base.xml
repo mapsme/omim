@@ -16,7 +16,7 @@
     <item name="android:windowActionBarOverlay">true</item>
     <item name="clickableBackground">?selectableItemBackground</item>
     <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
-    <item name="alertDialogTheme">@style/MwmTheme.DialogFragment</item>
+    <item name="alertDialogTheme">@style/MwmTheme.AlertDialog</item>
     <item name="windowBackgroundForced">@color/bg_window</item>
     <item name="cardFrame">@drawable/card_frame</item>
     <item name="cardBackground">@color/bg_cards</item>
@@ -39,9 +39,6 @@
     <item name="ppPreviewHeadOpen">@drawable/bg_place_page_head_open</item>
     <item name="ppPreviewHeadClosed">@drawable/bg_place_page_head_closed</item>
 
-    <item name="routingSlot">@drawable/routing_slot_background</item>
-    <item name="routingSlotPressed">@drawable/routing_slot_background_pressed</item>
-    <item name="routingSlotMarker">@drawable/routing_slot_marker</item>
     <item name="navNextTurnFrame">@drawable/bg_nav_next_turn</item>
     <item name="navNextNextTurnFrame">@drawable/bg_nav_next_next_turn</item>
 
@@ -51,14 +48,21 @@
     <item name="buttonDialogTextColor">@color/base_accent</item>
 
     <item name="accentButtonBackground">@drawable/button_accent</item>
-    <item name="accentButtonTextColor">@color/button_accent_text</item>
+    <item name="accentButtonRoundBackground">@drawable/button_accent_round</item>
+    <item name="accentButtonTextColor">@color/button_text_accent</item>
+    <!-- TODO: remove accentButtonTextColorDisabled attribute and use everywhere
+               accentButtonTextColor selector -->
     <item name="accentButtonTextColorDisabled">@color/button_accent_text_disabled</item>
+    <item name="ghostButtonBackground">@drawable/button_ghost</item>
+    <item name="ghostButtonTextColor">@color/button_text_ghost</item>
+    <item name="facebookButtonBackground">@drawable/button_ghost_facebook</item>
 
     <item name="redButtonBackground">@drawable/button_red</item>
     <item name="redButtonTextColor">@color/button_red_text</item>
     <item name="redButtonTextColorDisabled">@color/button_red_text_disabled</item>
 
-    <item name="startButtonBackground">@drawable/button_start</item>
+    <item name="primaryButtonBackground">@drawable/button_primary</item>
+    <item name="reviewButtonBackground">@drawable/button_leave_review</item>
 
     <item name="circleAccent">@drawable/circle_accent</item>
 
@@ -85,8 +89,8 @@
     <item name="ppNegative">@drawable/ic_negative_review</item>
 
     <item name="bannerText">@color/text_banner_color</item>
-    <item name="bannerBackground">@color/bg_banner_color</item>
-    <item name="bannerButtonBackground">@color/bg_banner_button</item>
+    <item name="bannerBackground">@drawable/bg_pp_banner</item>
+    <item name="bannerButtonBackground">@drawable/bg_pp_banner_large_button</item>
     <item name="adsBackground">@drawable/bg_ads</item>
     <item name="adsText">@color/text_ads_color</item>
     <item name="adsActionBackground">@drawable/bg_ads_action</item>
@@ -101,6 +105,25 @@
 
     <item name="localAdSearchResBackground">@color/search_local_ads_customer_result</item>
     <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+
+    <item name="tagBackground">@drawable/bg_tag</item>
+
+    <item name="sponsoredGalleryMore">@drawable/ic_sponsored_gallery_more</item>
+    <item name="luggageLogo">@drawable/logo_luggagehero_light</item>
+    <item name="viatorLogo">@drawable/ic_logo_viator_light</item>
+
+    <item name="ratingButtonBackground">@drawable/bg_rating_button</item>
+
+    <item name="android:listDivider">@drawable/list_divider</item>
+
+    <!-- if don't override this attribute the app will be crashed on start on Android 4.xx,
+      because on old prelolipop devices vector drawables don't work correctly -->
+    <item name="homeAsUpIndicator">@drawable/abc_ic_ab_back_mtrl_am_alpha</item>
+
+    <item name="transitPedestrianBackground">@color/black_4</item>
+    <item name="transitStepDivider">@drawable/dot_divider</item>
+    <item name="filterPropertyBackground">@drawable/button_with_border</item>
+    <item name="adChoicesIcon">@drawable/ic_ad_light</item>
   </style>
 
   <!-- Night theme -->
@@ -120,7 +143,7 @@
     <item name="clickableBackground">?selectableItemBackground</item>
     <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
 
-    <item name="alertDialogTheme">@style/MwmTheme.Night.DialogFragment</item>
+    <item name="alertDialogTheme">@style/MwmTheme.Night.AlertDialog</item>
     <item name="windowBackgroundForced">@color/bg_window_night</item>
     <item name="cardFrame">@drawable/card_frame_night</item>
     <item name="cardBackground">@color/bg_cards_night</item>
@@ -143,9 +166,6 @@
     <item name="ppPreviewHeadOpen">@drawable/bg_place_page_head_open_night</item>
     <item name="ppPreviewHeadClosed">@drawable/bg_place_page_head_closed_night</item>
 
-    <item name="routingSlot">@drawable/routing_slot_background_night</item>
-    <item name="routingSlotPressed">@drawable/routing_slot_background_pressed_night</item>
-    <item name="routingSlotMarker">@drawable/routing_slot_marker_night</item>
     <item name="navNextTurnFrame">@drawable/bg_nav_next_turn_night</item>
     <item name="navNextNextTurnFrame">@drawable/bg_nav_next_next_turn_night</item>
 
@@ -155,14 +175,21 @@
     <item name="buttonDialogTextColor">@color/base_accent_night</item>
 
     <item name="accentButtonBackground">@drawable/button_accent_night</item>
+    <item name="accentButtonRoundBackground">@drawable/button_accent_round_night</item>
     <item name="accentButtonTextColor">@color/button_accent_text_night</item>
+    <!-- TODO: remove accentButtonTextColorDisabled attribute and use everywhere
+               accentButtonTextColor selector -->
     <item name="accentButtonTextColorDisabled">@color/button_accent_text_disabled_night</item>
+    <item name="ghostButtonBackground">@drawable/button_ghost_night</item>
+    <item name="ghostButtonTextColor">@color/button_text_ghost_night</item>
+    <item name="facebookButtonBackground">@drawable/button_ghost_facebook_night</item>
 
     <item name="redButtonBackground">@drawable/button_red</item>
     <item name="redButtonTextColor">@color/button_red_text</item>
     <item name="redButtonTextColorDisabled">@color/button_red_text_disabled</item>
 
-    <item name="startButtonBackground">@drawable/button_start_night</item>
+    <item name="primaryButtonBackground">@drawable/button_primary_night</item>
+    <item name="reviewButtonBackground">@drawable/button_leave_review_night</item>
 
     <item name="circleAccent">@drawable/circle_accent_night</item>
 
@@ -189,8 +216,8 @@
     <item name="ppNegative">@drawable/ic_negative_review_night</item>
 
     <item name="bannerText">@color/text_banner_color_night</item>
-    <item name="bannerBackground">@color/bg_banner_color_night</item>
-    <item name="bannerButtonBackground">@color/bg_banner_button_night</item>
+    <item name="bannerBackground">@drawable/bg_pp_banner_night</item>
+    <item name="bannerButtonBackground">@drawable/bg_pp_banner_large_button_night</item>
     <item name="adsBackground">@drawable/bg_ads_night</item>
     <item name="adsText">@color/text_ads_color_night</item>
     <item name="adsActionBackground">@drawable/bg_ads_action_night</item>
@@ -204,6 +231,24 @@
     <item name="warmGray">@color/warm_gray_night</item>
 
     <item name="localAdSearchResBackground">@color/search_local_ads_customer_result_night</item>
-    <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+
+    <item name="tagBackground">@drawable/bg_tag_night</item>
+
+    <item name="sponsoredGalleryMore">@drawable/ic_sponsored_gallery_more_night</item>
+    <item name="luggageLogo">@drawable/logo_luggagehero_dark</item>
+    <item name="viatorLogo">@drawable/ic_logo_viator_dark</item>
+
+    <item name="ratingButtonBackground">@drawable/bg_rating_button_night</item>
+
+    <item name="android:listDivider">@drawable/list_divider_night</item>
+
+    <!-- if don't override this attribute the app will be crashed on start on Android 4.xx,
+      because on old prelolipop devices vector drawables don't work correctly -->
+    <item name="homeAsUpIndicator">@drawable/abc_ic_ab_back_mtrl_am_alpha</item>
+
+    <item name="transitPedestrianBackground">@color/white_4</item>
+    <item name="transitStepDivider">@drawable/dot_divider_night</item>
+    <item name="filterPropertyBackground">@drawable/button_with_border_night</item>
+    <item name="adChoicesIcon">@drawable/ic_ad_dark</item>
   </style>
 </resources>

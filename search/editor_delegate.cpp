@@ -4,7 +4,6 @@
 
 #include "indexer/feature_decl.hpp"
 #include "indexer/index.hpp"
-#include "indexer/index.hpp"
 #include "indexer/index_helpers.hpp"
 
 namespace search
@@ -18,11 +17,11 @@ MwmSet::MwmId EditorDelegate::GetMwmIdByMapName(string const & name) const
 
 unique_ptr<FeatureType> EditorDelegate::GetOriginalFeature(FeatureID const & fid) const
 {
-  auto feature = make_unique<FeatureType>();
-  Index::FeaturesLoaderGuard const guard(m_index, fid.m_mwmId);
-  if (!guard.GetOriginalFeatureByIndex(fid.m_index, *feature))
-    return unique_ptr<FeatureType>();
-  feature->ParseEverything();
+  Index::FeaturesLoaderGuard guard(m_index, fid.m_mwmId);
+  auto feature = guard.GetOriginalFeatureByIndex(fid.m_index);
+  if (feature)
+    feature->ParseEverything();
+
   return feature;
 }
 
@@ -35,7 +34,7 @@ string EditorDelegate::GetOriginalFeatureStreet(FeatureType & ft) const
   return {};
 }
 
-void EditorDelegate::ForEachFeatureAtPoint(osm::Editor::TFeatureTypeFn && fn,
+void EditorDelegate::ForEachFeatureAtPoint(osm::Editor::FeatureTypeFn && fn,
                                            m2::PointD const & point) const
 {
   auto const kToleranceMeters = 1e-2;

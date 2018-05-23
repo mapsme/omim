@@ -1,46 +1,49 @@
 #pragma once
 
-#include "std/chrono.hpp"
-#include "std/function.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include "partners_api/booking_availability_params.hpp"
+
+#include "platform/safe_callback.hpp"
+
+#include <chrono>
+#include <functional>
+#include <string>
+#include <vector>
 
 namespace booking
 {
 struct HotelPhotoUrls
 {
-  string m_small;
-  string m_original;
+  std::string m_small;
+  std::string m_original;
 };
 
 struct HotelReview
 {
   /// An issue date.
-  time_point<system_clock> m_date;
+  std::chrono::time_point<std::chrono::system_clock> m_date;
   /// Author's hotel evaluation.
   float m_score = 0.0;
   /// Review author name.
-  string m_author;
+  std::string m_author;
   /// Review text. There can be either one or both positive/negative review.
-  string m_pros;
-  string m_cons;
+  std::string m_pros;
+  std::string m_cons;
 };
 
 struct HotelFacility
 {
-  string m_type;
-  string m_name;
+  std::string m_type;
+  std::string m_name;
 };
 
 struct HotelInfo
 {
-  string m_hotelId;
+  std::string m_hotelId;
 
-  string m_description;
-  vector<HotelPhotoUrls> m_photos;
-  vector<HotelFacility> m_facilities;
-  vector<HotelReview> m_reviews;
+  std::string m_description;
+  std::vector<HotelPhotoUrls> m_photos;
+  std::vector<HotelFacility> m_facilities;
+  std::vector<HotelReview> m_reviews;
   float m_score = 0.0;
   uint32_t m_scoreCount = 0;
 };
@@ -48,28 +51,43 @@ struct HotelInfo
 class RawApi
 {
 public:
-  static bool GetHotelAvailability(string const & hotelId, string const & currency, string & result);
-  static bool GetExtendedInfo(string const & hotelId, string const & lang, string & result);
+  // Booking Api v1 methods:
+  static bool GetHotelAvailability(std::string const & hotelId, std::string const & currency, std::string & result);
+  static bool GetExtendedInfo(std::string const & hotelId, std::string const & lang, std::string & result);
+  // Booking Api v2 methods:
+  static bool HotelAvailability(AvailabilityParams const & params, std::string & result);
 };
 
-using GetMinPriceCallback = function<void(string const & hotelId, string const & price, string const & currency)>;
-using GetHotelInfoCallback = function<void(HotelInfo const & hotelInfo)>;
+using GetMinPriceCallback = platform::SafeCallback<void(std::string const & hotelId, std::string const & price, std::string const & currency)>;
+using GetHotelInfoCallback = platform::SafeCallback<void(HotelInfo const & hotelInfo)>;
+// NOTE: this callback will be called on the network thread.
+using GetHotelAvailabilityCallback = std::function<void(std::vector<std::string> hotelIds)>;
 
+/// Callbacks will be called in the same order as methods are called.
 class Api
 {
 public:
-  string GetBookHotelUrl(string const & baseUrl) const;
-  string GetDescriptionUrl(string const & baseUrl) const;
-  string GetHotelReviewsUrl(string const & hotelId, string const & baseUrl) const;
-  string GetSearchUrl(string const & city, string const & name) const;
-  // Real-time information methods (used for retriving rapidly changing information).
-  // These methods send requests directly to Booking.
-  void GetMinPrice(string const & hotelId, string const & currency, GetMinPriceCallback const & fn);
+  std::string GetBookHotelUrl(std::string const & baseUrl) const;
+  std::string GetDeepLink(std::string const & hotelId) const;
+  std::string GetDescriptionUrl(std::string const & baseUrl) const;
+  std::string GetHotelReviewsUrl(std::string const & hotelId, std::string const & baseUrl) const;
+  std::string GetSearchUrl(std::string const & city, std::string const & name) const;
+  std::string ApplyAvailabilityParams(std::string const & url, AvailabilityParams const & params);
 
-  // Static information methods (use for information that can be cached).
-  // These methods use caching server to prevent Booking from being ddossed.
-  void GetHotelInfo(string const & hotelId, string const & lang, GetHotelInfoCallback const & fn);
+  /// Real-time information methods (used for retrieving rapidly changing information).
+  /// These methods send requests directly to Booking.
+  void GetMinPrice(std::string const & hotelId, std::string const & currency,
+                   GetMinPriceCallback const & fn) const;
+
+  /// NOTE: callback will be called on the network thread.
+  void GetHotelAvailability(AvailabilityParams const & params,
+                            GetHotelAvailabilityCallback const & fn) const;
+
+  /// Static information methods (use for information that can be cached).
+  /// These methods use caching server to prevent Booking from being ddossed.
+  void GetHotelInfo(std::string const & hotelId, std::string const & lang,
+                    GetHotelInfoCallback const & fn) const;
 };
 
-void SetBookingUrlForTesting(string const & url);
+void SetBookingUrlForTesting(std::string const & url);
 }  // namespace booking

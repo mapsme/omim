@@ -21,6 +21,7 @@
 
 using namespace generator::tests_support;
 using namespace indexer::tests_support;
+using platform::tests_support::ScopedFile;
 
 namespace
 {
@@ -151,6 +152,9 @@ EditorTest::EditorTest()
 
 EditorTest::~EditorTest()
 {
+
+  indexer::tests_support::TearDownEditorForTesting();
+
   for (auto const & file : m_mwmFiles)
     Cleanup(file);
 }
@@ -328,47 +332,6 @@ void EditorTest::GetEditedFeatureStreetTest()
   });
 }
 
-void EditorTest::OriginalFeatureHasDefaultNameTest()
-{
-  auto & editor = osm::Editor::Instance();
-
-  auto const mwmId = ConstructTestMwm([](TestMwmBuilder & builder)
-  {
-    TestCafe cafe(m2::PointD(1.0, 1.0), "London Cafe", "en");
-    TestCafe unnamedCafe(m2::PointD(2.0, 2.0), "", "en");
-    TestCafe secondUnnamedCafe(m2::PointD(3.0, 3.0), "", "en");
-
-    builder.Add(cafe);
-    builder.Add(unnamedCafe);
-    builder.Add(secondUnnamedCafe);
-  });
-
-  ForEachCafeAtPoint(m_index, m2::PointD(1.0, 1.0), [&editor](FeatureType & ft)
-  {
-    TEST(editor.OriginalFeatureHasDefaultName(ft.GetID()), ());
-  });
-
-  ForEachCafeAtPoint(m_index, m2::PointD(2.0, 2.0), [&editor](FeatureType & ft)
-  {
-    TEST(!editor.OriginalFeatureHasDefaultName(ft.GetID()), ());
-  });
-
-  ForEachCafeAtPoint(m_index, m2::PointD(3.0, 3.0), [&editor](FeatureType & ft)
-  {
-    osm::EditableMapObject emo;
-    FillEditableMapObject(editor, ft, emo);
-
-    StringUtf8Multilang names;
-    names.AddString(StringUtf8Multilang::GetLangIndex("en"), "Eng name");
-    names.AddString(StringUtf8Multilang::GetLangIndex("default"), "Default name");
-    emo.SetName(names);
-
-    TEST_EQUAL(editor.SaveEditedFeature(emo), osm::Editor::SaveResult::SavedSuccessfully, ());
-
-    TEST(!editor.OriginalFeatureHasDefaultName(ft.GetID()), ());
-  });
-}
-
 void EditorTest::GetFeatureStatusTest()
 {
   auto & editor = osm::Editor::Instance();
@@ -434,7 +397,7 @@ void EditorTest::IsFeatureUploadedTest()
   pugi::xml_document doc;
   GenerateUploadedFeature(mwmId, emo, doc);
   editor.m_storage->Save(doc);
-  editor.LoadMapEdits();
+  editor.LoadEdits();
 
   TEST(editor.IsFeatureUploaded(emo.GetID().m_mwmId, emo.GetID().m_index), ());
 }
@@ -648,14 +611,17 @@ void EditorTest::HaveMapEditsOrNotesToUploadTest()
   editor.ClearAllLocalEdits();
   TEST(!editor.HaveMapEditsOrNotesToUpload(), ());
 
-  platform::tests_support::ScopedFile sf("test_notes.xml");
+  ScopedFile sf("test_notes.xml", ScopedFile::Mode::DoNotCreate);
 
   editor.m_notes = Notes::MakeNotes(sf.GetFullPath(), true);
 
   ForEachCafeAtPoint(m_index, m2::PointD(1.0, 1.0), [&editor](FeatureType & ft)
   {
     using NoteType = osm::Editor::NoteProblemType;
-    editor.CreateNote({1.0, 1.0}, ft.GetID(), NoteType::PlaceDoesNotExist, "exploded");
+    feature::TypesHolder typesHolder;
+    string defaultName;
+    editor.CreateNote({1.0, 1.0}, ft.GetID(), typesHolder, defaultName, NoteType::PlaceDoesNotExist,
+                      "exploded");
   });
 
   TEST(editor.HaveMapEditsOrNotesToUpload(), ());
@@ -749,7 +715,7 @@ void EditorTest::GetStatsTest()
   pugi::xml_document doc;
   GenerateUploadedFeature(mwmId, emo, doc);
   editor.m_storage->Save(doc);
-  editor.LoadMapEdits();
+  editor.LoadEdits();
 
   stats = editor.GetStats();
   TEST_EQUAL(stats.m_edits.size(), 1, ());
@@ -822,19 +788,22 @@ void EditorTest::CreateNoteTest()
     builder.Add(TestCafe(m2::PointD(2.0, 2.0), "Cafe", "en"));
   });
 
-  auto const createAndCheckNote = [&editor](FeatureID const & fId,
-                                            ms::LatLon const & pos,
-                                            osm::Editor::NoteProblemType const noteType)
-  {
-    platform::tests_support::ScopedFile sf("test_notes.xml");
+  auto const createAndCheckNote = [&editor](FeatureID const & fId, ms::LatLon const & pos,
+                                            osm::Editor::NoteProblemType const noteType) {
+    ScopedFile sf("test_notes.xml", ScopedFile::Mode::DoNotCreate);
     editor.m_notes = Notes::MakeNotes(sf.GetFullPath(), true);
-    editor.CreateNote(pos, fId, noteType, "with comment");
+    feature::TypesHolder holder;
+    holder.Assign(classif().GetTypeByPath({"amenity", "restaurant"}));
+    string defaultName = "Test name";
+    editor.CreateNote(pos, fId, holder, defaultName, noteType, "with comment");
 
     auto notes = editor.m_notes->GetNotes();
     TEST_EQUAL(notes.size(), 1, ());
     TEST(notes.front().m_point.EqualDxDy(pos, 1e-10), ());
     TEST_NOT_EQUAL(notes.front().m_note.find("with comment"), string::npos, ());
     TEST_NOT_EQUAL(notes.front().m_note.find("OSM data version"), string::npos, ());
+    TEST_NOT_EQUAL(notes.front().m_note.find("restaurant"), string::npos, ());
+    TEST_NOT_EQUAL(notes.front().m_note.find("Test name"), string::npos, ());
   };
 
   ForEachCafeAtPoint(m_index, m2::PointD(1.0, 1.0), [&editor, &createAndCheckNote](FeatureType & ft)
@@ -921,7 +890,7 @@ void EditorTest::LoadMapEditsTest()
   features.emplace_back(emo.GetID());
 
   editor.Save();
-  editor.LoadMapEdits();
+  editor.LoadEdits();
 
   auto const fillLoaded = [&editor](vector<FeatureID> & loadedFeatures)
   {
@@ -952,7 +921,7 @@ void EditorTest::LoadMapEditsTest()
     builder.Add(TestCafe(m2::PointD(6.0, 6.0), "Moscow Cafe4", "en"));
   }, 1);
 
-  editor.LoadMapEdits();
+  editor.LoadEdits();
   fillLoaded(loadedFeatures);
 
   TEST_EQUAL(features.size(), loadedFeatures.size(), ());
@@ -962,7 +931,7 @@ void EditorTest::LoadMapEditsTest()
 
   TEST_EQUAL(editor.m_features.size(), 2, ());
 
-  editor.LoadMapEdits();
+  editor.LoadEdits();
   fillLoaded(loadedFeatures);
 
   TEST_EQUAL(editor.m_features.size(), 1, ());
@@ -974,7 +943,7 @@ void EditorTest::LoadMapEditsTest()
   pugi::xml_document doc;
   GenerateUploadedFeature(gbMwmId, gbEmo, doc);
   editor.m_storage->Save(doc);
-  editor.LoadMapEdits();
+  editor.LoadEdits();
   fillLoaded(loadedFeatures);
 
   TEST_EQUAL(editor.m_features.size(), 1, ());
@@ -991,7 +960,7 @@ void EditorTest::LoadMapEditsTest()
 
   newGbMwmId.GetInfo()->m_version.SetSecondsSinceEpoch(time(nullptr) + 1);
 
-  editor.LoadMapEdits();
+  editor.LoadEdits();
   TEST(editor.m_features.empty(), ());
 }
 
@@ -1061,11 +1030,6 @@ using editor::testing::EditorTest;
 UNIT_CLASS_TEST(EditorTest, GetFeatureTypeInfoTest)
 {
   EditorTest::GetFeatureTypeInfoTest();
-}
-
-UNIT_CLASS_TEST(EditorTest, OriginalFeatureHasDefaultNameTest)
-{ 
-  EditorTest::OriginalFeatureHasDefaultNameTest();
 }
 
 UNIT_CLASS_TEST(EditorTest, SetIndexTest)

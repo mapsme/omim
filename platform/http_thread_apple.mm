@@ -111,8 +111,9 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
     return request;
   }
   // In all other cases we are cancelling redirects
-  LOG(LWARNING, ("Canceling because of redirect from", [[[redirectResponse URL] absoluteString] UTF8String],
-      "to", [[[request URL] absoluteString] UTF8String]));
+  LOG(LWARNING,
+      ("Canceling because of redirect from", redirectResponse.URL.absoluteString.UTF8String, "to",
+       request.URL.absoluteString.UTF8String));
   [connection cancel];
   m_callback->OnFinish(-3, m_begRange, m_endRange);
   return nil;
@@ -216,12 +217,15 @@ HttpThread * CreateNativeHttpThread(string const & url,
                                     int64_t size,
                                     string const & pb)
 {
-  return [[HttpThread alloc] initWith:url callback:cb begRange:beg endRange:end expectedSize:size postBody:pb];
+  HttpThread * request = [[HttpThread alloc] initWith:url callback:cb begRange:beg endRange:end expectedSize:size postBody:pb];
+  CFRetain(reinterpret_cast<void *>(request));
+  return request;
 }
 
 void DeleteNativeHttpThread(HttpThread * request)
 {
   [request cancel];
+  CFRelease(reinterpret_cast<void *>(request));
 }
 
 } // namespace downloader

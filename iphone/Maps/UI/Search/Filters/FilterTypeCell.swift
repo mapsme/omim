@@ -1,5 +1,5 @@
 final class TypeCellFlowLayout: UICollectionViewFlowLayout {
-  
+
   override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
     let attributes = super.layoutAttributesForElements(in: rect)
 
@@ -12,7 +12,7 @@ final class TypeCellFlowLayout: UICollectionViewFlowLayout {
 
       layoutAttribute.frame.origin.x = leftMargin
       leftMargin += layoutAttribute.frame.width + minimumInteritemSpacing
-      maxY = max(layoutAttribute.frame.maxY , maxY)
+      maxY = max(layoutAttribute.frame.maxY, maxY)
     }
     return attributes
   }
@@ -20,19 +20,19 @@ final class TypeCellFlowLayout: UICollectionViewFlowLayout {
 
 @objc(MWMFilterTypeCell)
 final class FilterTypeCell: UICollectionViewCell {
-  
+
   @IBOutlet weak var tagName: UILabel!
 
   override var isSelected: Bool {
     didSet {
-      backgroundColor = isSelected ? UIColor.linkBlue() : UIColor.pressBackground()
+      backgroundColor = isSelected ? UIColor.linkBlue() : UIColor.white()
       tagName.textColor = isSelected ? UIColor.white() : UIColor.blackPrimaryText()
     }
   }
 
   override var isHighlighted: Bool {
     didSet {
-      backgroundColor = isHighlighted ? UIColor.linkBlueHighlighted() : UIColor.pressBackground()
+      backgroundColor = isHighlighted ? UIColor.linkBlueHighlighted() : UIColor.white()
       tagName.textColor = isHighlighted ? UIColor.white() : UIColor.blackPrimaryText()
     }
   }

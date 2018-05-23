@@ -1,11 +1,11 @@
 #pragma once
 
-#include "std/string.hpp"
+#include <string>
 
 namespace routing
 {
 // This function is the generator tool's interface to building the mwm
-// section which contains road restrictions. (See http://wiki.openstreetmap.org/wiki/Restriction)
+// section which contains road restrictions. (See https://wiki.openstreetmap.org/wiki/Restriction)
 // As long as the restrictions are built later than the road features themselves
 // during the generation process, we have to store a mapping between osm ids and feature ids:
 // the restrictions are written in OSM terms while for the road features only their feature ids
@@ -29,6 +29,6 @@ namespace routing
 /// \param osmIdsToFeatureIdsPath a binary file with mapping form osm ids to feature ids.
 /// One osm id is mapped to one feature id. The file should be saved with the help of
 /// OsmID2FeatureID class or using a similar way.
-bool BuildRoadRestrictions(string const & mwmPath, string const & restrictionPath,
-                           string const & osmIdsToFeatureIdsPath);
+bool BuildRoadRestrictions(std::string const & mwmPath, std::string const & restrictionPath,
+                           std::string const & osmIdsToFeatureIdsPath);
 }  // namespace routing

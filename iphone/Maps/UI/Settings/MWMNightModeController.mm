@@ -1,10 +1,7 @@
 #import "MWMNightModeController.h"
 #import "MWMSettings.h"
-#import "MapsAppDelegate.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
-
-#include "Framework.h"
 
 @interface MWMNightModeController ()
 
@@ -40,7 +37,7 @@
     return;
 
   _selectedCell = cell;
-  NSString * statValue = nil;
+  NSString * statValue = @"";
   if ([cell isEqual:self.on])
   {
     [MWMSettings setTheme:MWMThemeNight];

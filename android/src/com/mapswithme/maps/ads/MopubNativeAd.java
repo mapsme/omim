@@ -14,6 +14,7 @@ class MopubNativeAd extends CachedMwmNativeAd
 {
   @NonNull
   private final NativeAd mNativeAd;
+  @NonNull
   private final StaticNativeAd mAd;
 
   MopubNativeAd(@NonNull NativeAd ad, long timestamp)
@@ -81,5 +82,33 @@ class MopubNativeAd extends CachedMwmNativeAd
   public String getPrivacyInfoUrl()
   {
     return mAd.getPrivacyInformationIconClickThroughUrl();
+  }
+
+  @Override
+  void detachAdListener()
+  {
+    mNativeAd.setMoPubNativeEventListener(null);
+  }
+
+  @Override
+  void attachAdListener(@NonNull Object listener)
+  {
+    if (!(listener instanceof NativeAd.MoPubNativeEventListener))
+      throw new AssertionError("A listener for MoPub ad must be instance of " +
+                               "NativeAd.MoPubNativeEventListener class! Not '"
+                               + listener.getClass() + "'!");
+    mNativeAd.setMoPubNativeEventListener((NativeAd.MoPubNativeEventListener) listener);
+  }
+
+  @NonNull
+  @Override
+  public NetworkType getNetworkType()
+  {
+    // There is no more elegant way to detect the type of the native ad when it's hidden under the
+    // Mopub architecture(classes).
+    String className = mAd.getClass().toString().toLowerCase();
+    if (className.contains("facebook"))
+      return NetworkType.FACEBOOK;
+    return NetworkType.UNKNOWN;
   }
 }

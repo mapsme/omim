@@ -34,6 +34,9 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.mapswithme.util.SharedPropertiesUtils.isShowcaseSwitchedOnLocal;
 import static com.mapswithme.util.statistics.Statistics.EventName.PP_BANNER_CLICK;
 import static com.mapswithme.util.statistics.Statistics.EventName.PP_BANNER_SHOW;
+import static com.mapswithme.util.statistics.Statistics.PP_BANNER_STATE_DETAILS;
+import static com.mapswithme.util.statistics.Statistics.PP_BANNER_STATE_PREVIEW;
+
 
 final class BannerController
 {
@@ -66,7 +69,7 @@ final class BannerController
   @NonNull
   private final TextView mActionLarge;
   @NonNull
-  private final View mAds;
+  private final ImageView mAdChoices;
 
   private final float mCloseFrameHeight;
 
@@ -81,6 +84,8 @@ final class BannerController
   private CompoundNativeAdLoader mAdsLoader;
   @Nullable
   private AdTracker mAdTracker;
+  @NonNull
+  private MyNativeAdsListener mAdsListener = new MyNativeAdsListener();
 
   BannerController(@NonNull View bannerView, @Nullable BannerListener listener,
                    @NonNull CompoundNativeAdLoader loader, @Nullable AdTracker tracker)
@@ -90,33 +95,18 @@ final class BannerController
     mListener = listener;
     Resources resources = mFrame.getResources();
     mCloseFrameHeight = resources.getDimension(R.dimen.placepage_banner_height);
-    mIcon = (ImageView) bannerView.findViewById(R.id.iv__banner_icon);
-    mTitle = (TextView) bannerView.findViewById(R.id.tv__banner_title);
-    mMessage = (TextView) bannerView.findViewById(R.id.tv__banner_message);
-    mActionSmall = (TextView) bannerView.findViewById(R.id.tv__action_small);
-    mActionLarge = (TextView) bannerView.findViewById(R.id.tv__action_large);
-    mAds = bannerView.findViewById(R.id.tv__ads);
-    mAds.setOnClickListener(new View.OnClickListener()
-    {
-      @Override
-      public void onClick(View v)
-      {
-        handlePrivacyInfoUrl();
-      }
-    });
+    mIcon = bannerView.findViewById(R.id.iv__banner_icon);
+    mTitle = bannerView.findViewById(R.id.tv__banner_title);
+    mMessage = bannerView.findViewById(R.id.tv__banner_message);
+    mActionSmall = bannerView.findViewById(R.id.tv__action_small);
+    mActionLarge = bannerView.findViewById(R.id.tv__action_large);
+    mAdChoices = bannerView.findViewById(R.id.ad_choices);
+    mAdChoices.setOnClickListener(v -> handlePrivacyInfoUrl());
     Resources res = mFrame.getResources();
-    UiUtils.expandTouchAreaForView(mAds, (int) res.getDimension(R.dimen.margin_quarter_plus));
-    loader.setAdListener(new MyNativeAdsListener());
+    UiUtils.expandTouchAreaForView(mAdChoices, (int) res.getDimension(R.dimen.margin_quarter_plus));
     mAdsLoader = loader;
     mAdTracker = tracker;
-    mFrame.setOnClickListener(new View.OnClickListener()
-    {
-      @Override
-      public void onClick(View v)
-      {
-        animateActionButton();
-      }
-    });
+    mFrame.setOnClickListener(v -> animateActionButton());
   }
 
   private void handlePrivacyInfoUrl()
@@ -150,11 +140,11 @@ final class BannerController
     if ((mAdsLoader.isAdLoading() || hasErrorOccurred())
         && mCurrentAd == null)
     {
-      UiUtils.hide(mIcon, mTitle, mMessage, mActionSmall, mActionLarge, mAds);
+      UiUtils.hide(mIcon, mTitle, mMessage, mActionSmall, mActionLarge, mAdChoices);
     }
     else
     {
-      UiUtils.show(mIcon, mTitle, mMessage, mActionSmall, mActionLarge, mAds);
+      UiUtils.show(mIcon, mTitle, mMessage, mActionSmall, mActionLarge, mAdChoices);
       if (mOpened)
         UiUtils.hide(mActionSmall);
       else
@@ -181,7 +171,6 @@ final class BannerController
     }
 
     UiUtils.show(mFrame);
-
     mAdsLoader.loadAd(mFrame.getContext(), mBanners);
     updateVisibility();
   }
@@ -260,9 +249,26 @@ final class BannerController
       return;
 
     if (isVisible)
+    {
       mAdTracker.onViewShown(mCurrentAd.getProvider(), mCurrentAd.getBannerId());
+      mCurrentAd.registerView(mFrame);
+    }
     else
+    {
       mAdTracker.onViewHidden(mCurrentAd.getProvider(), mCurrentAd.getBannerId());
+      mCurrentAd.unregisterView(mFrame);
+    }
+  }
+
+  void detach()
+  {
+    mAdsLoader.detach();
+    mAdsLoader.setAdListener(null);
+  }
+
+  void attach()
+  {
+    mAdsLoader.setAdListener(mAdsListener);
   }
 
   private void fillViews(@NonNull MwmNativeAd data)
@@ -271,6 +277,16 @@ final class BannerController
     mMessage.setText(data.getDescription());
     mActionSmall.setText(data.getAction());
     mActionLarge.setText(data.getAction());
+    fillAdChoicesIcon(data);
+  }
+
+  private void fillAdChoicesIcon(@NonNull MwmNativeAd data)
+  {
+    MwmNativeAd.NetworkType type = data.getNetworkType();
+    if (type == MwmNativeAd.NetworkType.FACEBOOK)
+      mAdChoices.setImageResource(R.drawable.ic_ads_fb);
+    else
+      mAdChoices.setImageResource(ThemeUtils.getResource(mFrame.getContext(), R.attr.adChoicesIcon));
   }
 
   private void loadIconAndOpenIfNeeded(@NonNull MwmNativeAd data)
@@ -285,7 +301,7 @@ final class BannerController
     else if (!mOpened)
     {
       close();
-      Statistics.INSTANCE.trackPPBanner(PP_BANNER_SHOW, data, 0);
+      Statistics.INSTANCE.trackPPBanner(PP_BANNER_SHOW, data, PP_BANNER_STATE_PREVIEW);
     }
     else
     {
@@ -320,6 +336,11 @@ final class BannerController
     }
     animator.setDuration(300);
     animator.start();
+  }
+
+  boolean isOpened()
+  {
+    return mOpened;
   }
 
   interface BannerListener
@@ -377,7 +398,8 @@ final class BannerController
     @Override
     public void onClick(@NonNull MwmNativeAd ad)
     {
-      Statistics.INSTANCE.trackPPBanner(PP_BANNER_CLICK, ad, mOpened ? 1 : 0);
+      Statistics.INSTANCE.trackPPBanner(PP_BANNER_CLICK, ad,
+                                        mOpened ? PP_BANNER_STATE_DETAILS : PP_BANNER_STATE_PREVIEW);
     }
   }
 }

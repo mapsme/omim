@@ -32,7 +32,8 @@ namespace location
     EAndroidNative,
     EGoogle,
     ETizen,
-    EPredictor
+    EPredictor,
+    EUser
   };
 
   /// Our structure ALWAYS has valid lat, lon and horizontal accuracy.
@@ -124,8 +125,8 @@ namespace location
   {
   public:
     FollowingInfo()
-        : m_turn(routing::turns::TurnDirection::NoTurn),
-          m_nextTurn(routing::turns::TurnDirection::NoTurn),
+        : m_turn(routing::turns::CarDirection::None),
+          m_nextTurn(routing::turns::CarDirection::None),
           m_exitNum(0),
           m_time(0),
           m_completionPercent(0),
@@ -164,9 +165,9 @@ namespace location
     //@{
     string m_distToTurn;
     string m_turnUnitsSuffix;
-    routing::turns::TurnDirection m_turn;
+    routing::turns::CarDirection m_turn;
     /// Turn after m_turn. Returns NoTurn if there is no turns after.
-    routing::turns::TurnDirection m_nextTurn;
+    routing::turns::CarDirection m_nextTurn;
     uint32_t m_exitNum;
     //@}
     int m_time;
@@ -181,6 +182,8 @@ namespace location
     string m_sourceName;
     // The next street name.
     string m_targetName;
+    // Street name to display. May be empty.
+    string m_displayedStreetName;
 
     // Percentage of the route completion.
     double m_completionPercent;

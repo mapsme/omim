@@ -2,7 +2,6 @@ project(generator)
 
 include_directories(
   ${OMIM_ROOT}/3party/gflags/src
-  ${OMIM_ROOT}/3party/osrm/osrm-backend/include
   ${OMIM_ROOT}/3party/jansson/src
 )
 
@@ -20,6 +19,8 @@ set(SRC
   centers_table_builder.hpp
   check_model.cpp
   check_model.hpp
+  cities_boundaries_builder.cpp
+  cities_boundaries_builder.hpp
   coastlines_generator.cpp
   coastlines_generator.hpp
   dumper.cpp
@@ -29,14 +30,23 @@ set(SRC
   feature_emitter_iface.hpp
   feature_generator.cpp
   feature_generator.hpp
+  feature_helpers.cpp
+  feature_helpers.hpp
   feature_merger.cpp
   feature_merger.hpp
   feature_sorter.cpp
   feature_sorter.hpp
   gen_mwm_info.hpp
   generate_info.hpp
+  geometry_holder.hpp
   intermediate_data.hpp
   intermediate_elements.hpp
+  locality_sorter.cpp
+  locality_sorter.hpp
+  metalines_builder.cpp
+  metalines_builder.hpp
+  node_mixer.hpp
+  node_mixer.cpp
   opentable_dataset.cpp
   opentable_dataset.hpp
   opentable_scoring.cpp
@@ -46,8 +56,6 @@ set(SRC
   osm2type.hpp
   osm_element.cpp
   osm_element.hpp
-  osm_id.cpp
-  osm_id.hpp
   osm_o5m_source.hpp
   osm_source.cpp
   osm_translator.hpp
@@ -63,8 +71,6 @@ set(SRC
   restriction_writer.hpp
   road_access_generator.cpp
   road_access_generator.hpp
-  routing_generator.cpp
-  routing_generator.hpp
   routing_helpers.cpp
   routing_helpers.hpp
   routing_index_generator.cpp
@@ -73,6 +79,7 @@ set(SRC
   search_index_builder.hpp
   sponsored_dataset.hpp
   sponsored_dataset_inl.hpp
+  sponsored_object_storage.hpp
   sponsored_scoring.cpp
   sponsored_scoring.hpp
   srtm_parser.cpp
@@ -86,8 +93,20 @@ set(SRC
   towns_dumper.hpp
   traffic_generator.cpp
   traffic_generator.hpp
+  transit_generator.cpp
+  transit_generator.hpp
+  ugc_db.cpp
+  ugc_db.hpp
+  ugc_section_builder.cpp
+  ugc_section_builder.hpp
+  ugc_translator.cpp
+  ugc_translator.hpp
   unpack_mwm.cpp
   unpack_mwm.hpp
+  utils.cpp
+  utils.hpp
+  viator_dataset.cpp
+  viator_dataset.hpp
   ways_merger.hpp
   world_map_generator.hpp
 )
@@ -97,6 +116,9 @@ add_library(${PROJECT_NAME} ${SRC})
 omim_add_test_subdirectory(generator_tests_support)
 omim_add_test_subdirectory(generator_tests)
 
-if (NOT SKIP_GTOOL)
-  add_subdirectory(generator_tool)
-endif()
+add_subdirectory(generator_tool)
+add_subdirectory(booking_quality_check)
+add_subdirectory(extract_addr)
+add_subdirectory(feature_segments_checker)
+add_subdirectory(restaurants_info)
+add_subdirectory(srtm_coverage_checker)

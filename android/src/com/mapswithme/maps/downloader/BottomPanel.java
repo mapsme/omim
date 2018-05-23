@@ -89,8 +89,6 @@ class BottomPanel
     });
 
     mButton = (Button) frame.findViewById(R.id.action);
-
-    UiUtils.updateAccentButton(mButton);
   }
 
   private void setUpdateAllState(UpdateInfo info)
@@ -140,6 +138,7 @@ class BottomPanel
           break;
 
         case CountryItem.STATUS_PROGRESS:
+        case CountryItem.STATUS_APPLYING:
         case CountryItem.STATUS_ENQUEUED:
           setCancelState();
           break;
@@ -170,6 +169,7 @@ class BottomPanel
             break;
 
           case CountryItem.STATUS_PROGRESS:
+          case CountryItem.STATUS_APPLYING:
           case CountryItem.STATUS_ENQUEUED:
             setCancelState();
             break;

@@ -6,6 +6,7 @@
 @import("../include/Roads.mapcss");
 @import("../include/Roads_label.mapcss");
 @import("../include/Icons.mapcss");
+@import("../include/Subways.mapcss");
 
 
 canvas
@@ -35,6 +36,18 @@ colors
   RoutePedestrian-opacity: 0.7;
   RouteBicycle-color: #FF4B8C;
   RouteBicycle-opacity: 0.7;
+  RoutePreview-color: #FFFFFF;
+  RoutePreview-opacity: 0.3;
+  RouteMaskCar-color: #000000;
+  RouteMaskCar-opacity: 0.5;
+  RouteArrowsMaskCar-color: #055FCD;
+  RouteArrowsMaskCar-opacity: 0.3;
+  RouteMaskBicycle-color: #000000;
+  RouteMaskBicycle-opacity: 0.5;
+  RouteArrowsMaskBicycle-color: #FF4B8C;
+  RouteArrowsMaskBicycle-opacity: 0.5;
+  RouteMaskPedestrian-color: #000000;
+  RouteMaskPedestrian-opacity: 0.5;
   Arrow3D-color: #41C8FF;
   Arrow3DObsolete-color: #82AAC8;
   Arrow3DObsolete-opacity: 0.72;
@@ -68,4 +81,39 @@ colors
   PoiHotelTextOutline-opacity: 0.6;
   PoiDeletedMask-color: #FFFFFF;
   PoiDeletedMask-opacity: 0.3;
+  DefaultTrackColor-color: #1E96F0;
+  RouteMarkPrimaryText-color: #888888;
+  RouteMarkPrimaryTextOutline-color: #000000;
+  RouteMarkSecondaryText-color: #888888;
+  RouteMarkSecondaryTextOutline-color: #000000;
+  LocalAdsPrimaryText-color: #888888;
+  LocalAdsPrimaryTextOutline-color: #000000;
+  LocalAdsSecondaryText-color: #888888;
+  LocalAdsSecondaryTextOutline-color: #000000;
+  TransitBackground-color: #000000;
+  TransitBackground-opacity: 0.4;
+  BookmarkRed-color: #E51B23;
+  BookmarkPink-color: #FF4182;
+  BookmarkPurple-color: #9C27B0;
+  BookmarkDeepPurple-color: #673AB7;
+  BookmarkBlue-color: #006EC7;
+  BookmarkLightBlue-color: #03A9F4;
+  BookmarkCyan-color: #01BCD4;
+  BookmarkTeal-color: #009588;
+  BookmarkGreen-color: #388E3C;
+  BookmarkLime-color: #7EBF39;
+  BookmarkYellow-color: #FFC800;
+  BookmarkOrange-color: #FFA000;
+  BookmarkDeepOrange-color: #607D8B;
+  BookmarkBrown-color: #795548;
+  BookmarkGray-color: #757575;
+  BookmarkBlueGray-color: #607D8B;
+  RatingNone-color: #597380;
+  RatingHorrible-color: #E63C2D;
+  RatingBad-color: #F06432;
+  RatingNormal-color: #FFC800;
+  RatingGood-color: #93BF39;
+  RatingExcellent-color: #3C8C3C;
+  RatingLocalAds-color: #4BB9E6;
+  RatingText-color: #FFFFFF;
 }

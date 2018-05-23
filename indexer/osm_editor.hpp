@@ -28,8 +28,12 @@ namespace editor
 namespace testing
 {
 class EditorTest;
-}  // namespace testing
-}  // namespace editor
+}
+}
+namespace editor
+{
+class XMLFeature;
+}
 
 class Index;
 
@@ -42,14 +46,9 @@ class Editor final : public MwmSet::Observer
   Editor();
 
 public:
-  using TFeatureTypeFn = function<void(FeatureType &)>;  // Mimics Framework::TFeatureTypeFn.
-
-  using TMwmIdByMapNameFn = function<MwmSet::MwmId(string const & /*map*/)>;
-  using TInvalidateFn = function<void()>;
-  using TFeatureLoaderFn = function<unique_ptr<FeatureType> (FeatureID const & /*fid*/)>;
-  using TFeatureOriginalStreetFn = function<string(FeatureType & /*ft*/)>;
-  using TForEachFeaturesNearByFn =
-      function<void(TFeatureTypeFn && /*fn*/, m2::PointD const & /*mercator*/)>;
+  using FeatureTypeFn = function<void(FeatureType & ft)>;
+  using InvalidateFn = function<void()>;
+  using ForEachFeaturesNearByFn = function<void(FeatureTypeFn && fn, m2::PointD const & mercator)>;
 
   struct Delegate
   {
@@ -58,7 +57,7 @@ public:
     virtual MwmSet::MwmId GetMwmIdByMapName(string const & name) const = 0;
     virtual unique_ptr<FeatureType> GetOriginalFeature(FeatureID const & fid) const = 0;
     virtual string GetOriginalFeatureStreet(FeatureType & ft) const = 0;
-    virtual void ForEachFeatureAtPoint(TFeatureTypeFn && fn, m2::PointD const & point) const = 0;
+    virtual void ForEachFeatureAtPoint(FeatureTypeFn && fn, m2::PointD const & point) const = 0;
   };
 
   enum class UploadResult
@@ -89,16 +88,18 @@ public:
     m_storage = move(storage);
   }
 
-  void SetInvalidateFn(TInvalidateFn const & fn) { m_invalidateFn = fn; }
+  void SetDefaultStorage();
 
-  void LoadMapEdits();
+  void SetInvalidateFn(InvalidateFn const & fn) { m_invalidateFn = fn; }
+
+  void LoadEdits();
   /// Resets editor to initial state: no any edits or created/deleted features.
   void ClearAllLocalEdits();
 
   void OnMapUpdated(platform::LocalCountryFile const &,
                     platform::LocalCountryFile const &) override
   {
-    LoadMapEdits();
+    LoadEdits();
   }
 
   void OnMapDeregistered(platform::LocalCountryFile const & localFile) override;
@@ -180,6 +181,7 @@ public:
   };
 
   void CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
+                  feature::TypesHolder const & holder, string const & defaultName,
                   NoteProblemType const type, string const & note);
   void UploadNotes(string const & key, string const & secret);
 
@@ -196,8 +198,6 @@ public:
   // Use GetFeatureStatus(fid) instead. This function is used when a feature is
   // not yet saved and we have to know if it was modified or created.
   static bool IsCreatedFeature(FeatureID const & fid);
-  // Returns true if the original feature has default name.
-  bool OriginalFeatureHasDefaultName(FeatureID const & fid) const;
 
 private:
   // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
@@ -212,7 +212,7 @@ private:
   bool MarkFeatureAsObsolete(FeatureID const & fid);
   bool RemoveFeature(FeatureID const & fid);
 
-  FeatureID GenerateNewFeatureId(MwmSet::MwmId const & id);
+  FeatureID GenerateNewFeatureId(MwmSet::MwmId const & id) const;
   EditableProperties GetEditablePropertiesForTypes(feature::TypesHolder const & types) const;
 
   struct FeatureTypeInfo
@@ -228,6 +228,9 @@ private:
     string m_uploadStatus;
     string m_uploadError;
   };
+
+  bool FillFeatureInfo(FeatureStatus status, editor::XMLFeature const & xml, FeatureID const & fid,
+                       FeatureTypeInfo & fti) const;
   /// @returns pointer to m_features[id][index] if exists, nullptr otherwise.
   FeatureTypeInfo const * GetFeatureTypeInfo(MwmSet::MwmId const & mwmId, uint32_t index) const;
   FeatureTypeInfo * GetFeatureTypeInfo(MwmSet::MwmId const & mwmId, uint32_t index);
@@ -239,7 +242,10 @@ private:
   MwmSet::MwmId GetMwmIdByMapName(string const & name);
   unique_ptr<FeatureType> GetOriginalFeature(FeatureID const & fid) const;
   string GetOriginalFeatureStreet(FeatureType & ft) const;
-  void ForEachFeatureAtPoint(TFeatureTypeFn && fn, m2::PointD const & point) const;
+  void ForEachFeatureAtPoint(FeatureTypeFn && fn, m2::PointD const & point) const;
+  FeatureID GetFeatureIdByXmlFeature(editor::XMLFeature const & xml, MwmSet::MwmId const & mwmId,
+                                     FeatureStatus status, bool needMigrate) const;
+  void LoadMwmEdits(pugi::xml_node const & mwm, MwmSet::MwmId const & mwmId, bool needMigrate);
 
   // TODO(AlexZ): Synchronize multithread access.
   /// Deleted, edited and created features.
@@ -248,7 +254,7 @@ private:
   unique_ptr<Delegate> m_delegate;
 
   /// Invalidate map viewport after edits.
-  TInvalidateFn m_invalidateFn;
+  InvalidateFn m_invalidateFn;
 
   /// Contains information about what and how can be edited.
   editor::EditorConfigWrapper m_config;

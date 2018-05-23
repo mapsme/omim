@@ -1,11 +1,9 @@
 #import "MWMSettings.h"
 #import "MWMCoreUnits.h"
-#import "MWMFrameworkHelper.h"
 #import "MWMMapViewControlsManager.h"
-#import "MapsAppDelegate.h"
 #import "SwiftBridge.h"
-
 #import "3party/Alohalytics/src/alohalytics_objc.h"
+#import "Flurry.h"
 
 #include "Framework.h"
 
@@ -25,6 +23,7 @@ char const * kStatisticsEnabledSettingsKey = "StatisticsEnabled";
 NSString * const kUDAutoNightModeOff = @"AutoNightModeOff";
 NSString * const kThemeMode = @"ThemeMode";
 NSString * const kSpotlightLocaleLanguageId = @"SpotlightLocaleLanguageId";
+NSString * const kUDTrackWarningAlertWasShown = @"TrackWarningAlertWasShown";
 }  // namespace
 
 @implementation MWMSettings
@@ -115,18 +114,20 @@ NSString * const kSpotlightLocaleLanguageId = @"SpotlightLocaleLanguageId";
   if (statisticsEnabled)
   {
     [Alohalytics enable];
+    [Flurry trackPreciseLocation:YES];
   }
   else
   {
     [Alohalytics logEvent:@"statisticsDisabled"];
     [Alohalytics disable];
+    [Flurry trackPreciseLocation:NO];
   }
   settings::Set(kStatisticsEnabledSettingsKey, static_cast<bool>(statisticsEnabled));
 }
 
 + (MWMTheme)theme
 {
-  auto ud = [NSUserDefaults standardUserDefaults];
+  auto ud = NSUserDefaults.standardUserDefaults;
   if (![ud boolForKey:kUDAutoNightModeOff])
     return MWMThemeAuto;
   return static_cast<MWMTheme>([ud integerForKey:kThemeMode]);
@@ -136,7 +137,7 @@ NSString * const kSpotlightLocaleLanguageId = @"SpotlightLocaleLanguageId";
 {
   if ([self theme] == theme)
     return;
-  auto ud = [NSUserDefaults standardUserDefaults];
+  auto ud = NSUserDefaults.standardUserDefaults;
   [ud setInteger:theme forKey:kThemeMode];
   BOOL const autoOff = theme != MWMThemeAuto;
   [ud setBool:autoOff forKey:kUDAutoNightModeOff];
@@ -153,12 +154,12 @@ NSString * const kSpotlightLocaleLanguageId = @"SpotlightLocaleLanguageId";
 + (void)setRoutingDisclaimerApproved { settings::Set(kRoutingDisclaimerApprovedKey, true); }
 + (NSString *)spotlightLocaleLanguageId
 {
-  return [[NSUserDefaults standardUserDefaults] stringForKey:kSpotlightLocaleLanguageId];
+  return [NSUserDefaults.standardUserDefaults stringForKey:kSpotlightLocaleLanguageId];
 }
 
 + (void)setSpotlightLocaleLanguageId:(NSString *)spotlightLocaleLanguageId
 {
-  NSUserDefaults * ud = [NSUserDefaults standardUserDefaults];
+  NSUserDefaults * ud = NSUserDefaults.standardUserDefaults;
   [ud setObject:spotlightLocaleLanguageId forKey:kSpotlightLocaleLanguageId];
   [ud synchronize];
 }
@@ -170,6 +171,27 @@ NSString * const kSpotlightLocaleLanguageId = @"SpotlightLocaleLanguageId";
   auto & f = GetFramework();
   f.SaveLargeFontsSize(isLargeSize);
   f.SetLargeFontsSize(isLargeSize);
+}
+
++ (BOOL)transliteration { return GetFramework().LoadTransliteration(); }
++ (void)setTransliteration:(BOOL)transliteration
+{
+  bool const isTransliteration = static_cast<bool>(transliteration);
+  auto & f = GetFramework();
+  f.SaveTransliteration(isTransliteration);
+  f.AllowTransliteration(isTransliteration);
+}
+
++ (BOOL)isTrackWarningAlertShown
+{
+  return [NSUserDefaults.standardUserDefaults boolForKey:kUDTrackWarningAlertWasShown];
+}
+
++ (void)setTrackWarningAlertShown:(BOOL)shown
+{
+  NSUserDefaults * ud = NSUserDefaults.standardUserDefaults;
+  [ud setBool:shown forKey:kUDTrackWarningAlertWasShown];
+  [ud synchronize];
 }
 
 @end

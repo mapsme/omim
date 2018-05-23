@@ -68,16 +68,6 @@ bool IsMiddleTunnel(int const layer, double const depth)
   return layer != feature::LAYER_EMPTY && depth < 19000;
 }
 
-void FilterRulesByRuntimeSelector(FeatureType const & f, int zoomLevel, drule::KeysT & keys)
-{
-  keys.erase_if([&f, zoomLevel](drule::Key const & key)->bool
-  {
-    drule::BaseRule const * const rule = drule::rules().Find(key);
-    ASSERT(rule != nullptr, ());
-    return !rule->TestFeature(f, zoomLevel);
-  });
-}
-
 class Aggregator
 {
 public:
@@ -123,26 +113,17 @@ private:
   void ProcessKey(drule::Key const & key)
   {
     double depth = key.m_priority;
-    if (IsMiddleTunnel(m_depthLayer, depth) &&
-        IsTypeOf(key, Line | Area | Waymarker))
+    if (IsMiddleTunnel(m_depthLayer, depth) && IsTypeOf(key, Line))
     {
       double const layerPart = m_depthLayer * drule::layer_base_priority;
       double const depthPart = fmod(depth, drule::layer_base_priority);
       depth = layerPart + depthPart;
     }
 
-    if (IsTypeOf(key, Caption | Symbol | Circle | PathText))
-    {
-      depth += m_priorityModifier;
-      if (m_geomType == feature::GEOM_POINT)
-        ++depth;
-    }
-    else if (IsTypeOf(key, Area))
-    {
-      depth -= m_priorityModifier;
-    }
-
     drule::BaseRule const * const dRule = drule::rules().Find(key);
+    if (dRule == nullptr)
+      return;
+
     m_rules.emplace_back(make_pair(dRule, depth));
 
     if (dRule->GetCaption(0) != nullptr)
@@ -185,23 +166,9 @@ IsBuildingHasPartsChecker::IsBuildingHasPartsChecker()
   m_types.push_back(classif().GetTypeByPath({"building", "has_parts"}));
 }
 
-// static
-IsBuildingHasPartsChecker const & IsBuildingHasPartsChecker::Instance()
-{
-  static IsBuildingHasPartsChecker const inst;
-  return inst;
-}
-
 IsBuildingPartChecker::IsBuildingPartChecker() : BaseChecker(1 /* level */)
 {
   m_types.push_back(classif().GetTypeByPath({"building:part"}));
-}
-
-// static
-IsBuildingPartChecker const & IsBuildingPartChecker::Instance()
-{
-  static IsBuildingPartChecker const inst;
-  return inst;
 }
 
 IsHatchingTerritoryChecker::IsHatchingTerritoryChecker()
@@ -214,14 +181,6 @@ IsHatchingTerritoryChecker::IsHatchingTerritoryChecker()
     m_types.push_back(c.GetTypeByPath({p[0], p[1]}));
 }
 
-// static
-IsHatchingTerritoryChecker const & IsHatchingTerritoryChecker::Instance()
-{
-  static IsHatchingTerritoryChecker const inst;
-  return inst;
-}
-
-
 void CaptionDescription::Init(FeatureType const & f,
                               int8_t deviceLang,
                               int const zoomLevel,
@@ -233,6 +192,11 @@ void CaptionDescription::Init(FeatureType const & f,
     f.GetPreferredNames(true /* allowTranslit */, deviceLang, m_mainText, m_auxText);
   else
     f.GetReadableName(true /* allowTranslit */, deviceLang, m_mainText);
+
+  // Set max text size to avoid VB/IB overflow in rendering.
+  size_t constexpr kMaxTextSize = 200;
+  if (m_mainText.size() > kMaxTextSize)
+    m_mainText = m_mainText.substr(0, kMaxTextSize) + "...";
 
   m_roadNumber = f.GetRoadNumber();
   m_houseNumber = f.GetHouseNumber();
@@ -254,15 +218,6 @@ string const & CaptionDescription::GetAuxText() const
 string const & CaptionDescription::GetRoadNumber() const
 {
   return m_roadNumber;
-}
-
-string CaptionDescription::GetPathName() const
-{
-  // Always concat names for linear features because we process only one draw rule now.
-  if (m_mainText.empty())
-    return m_mainText;
-  else
-    return m_mainText + "   " + m_auxText;
 }
 
 bool CaptionDescription::IsNameExists() const
@@ -287,13 +242,15 @@ void CaptionDescription::ProcessMainTextType(drule::text_type_t const & mainText
   {
     m_mainText.swap(m_houseNumber);
     m_houseNumber.clear();
+    m_isHouseNumberInMainText = true;
   }
   else if (mainTextType == drule::text_type_name)
   {
-    if (!m_houseNumber.empty())
+    if (!m_houseNumber.empty() &&
+        (m_mainText.empty() || m_houseNumber.find(m_mainText) != string::npos))
     {
-      if (m_mainText.empty() || m_houseNumber.find(m_mainText) != string::npos)
-        m_houseNumber.swap(m_mainText);
+      m_houseNumber.swap(m_mainText);
+      m_isHouseNumberInMainText = true;
     }
   }
 }
@@ -378,7 +335,7 @@ bool InitStylist(FeatureType const & f, int8_t deviceLang, int const zoomLevel, 
   drule::KeysT keys;
   pair<int, bool> const geomType = feature::GetDrawRule(types, zoomLevel, keys);
 
-  FilterRulesByRuntimeSelector(f, zoomLevel, keys);
+  feature::FilterRulesByRuntimeSelector(f, zoomLevel, keys);
 
   if (keys.empty())
     return false;
@@ -429,7 +386,7 @@ double GetFeaturePriority(FeatureType const & f, int const zoomLevel)
   drule::KeysT keys;
   pair<int, bool> const geomType = feature::GetDrawRule(f, zoomLevel, keys);
 
-  FilterRulesByRuntimeSelector(f, zoomLevel, keys);
+  feature::FilterRulesByRuntimeSelector(f, zoomLevel, keys);
 
   feature::EGeomType const mainGeomType = feature::EGeomType(geomType.first);
 

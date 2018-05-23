@@ -1,12 +1,15 @@
 #import "MWMPPPreviewLayoutHelper.h"
+#import <Crashlytics/Crashlytics.h>
 #import "MWMCommon.h"
 #import "MWMDirectionView.h"
 #import "MWMPlacePageData.h"
+#import "MWMPlacePageManagerHelper.h"
 #import "MWMTableViewCell.h"
+#import "MWMUGCViewModel.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
 
-#include "std/array.hpp"
+#include <array>
 
 #pragma mark - Base
 // Base class for avoiding copy-paste in inheriting cells.
@@ -81,27 +84,6 @@
 @implementation _MWMPPPSchedule
 @end
 
-#pragma mark - Booking
-
-@interface _MWMPPPBooking : MWMTableViewCell
-
-@property(weak, nonatomic) IBOutlet UILabel * rating;
-@property(weak, nonatomic) IBOutlet UILabel * pricing;
-
-- (void)configWithRating:(NSString *)rating pricing:(NSString *)pricing;
-
-@end
-
-@implementation _MWMPPPBooking
-
-- (void)configWithRating:(NSString *)rating pricing:(NSString *)pricing
-{
-  self.rating.text = rating;
-  self.pricing.text = pricing;
-}
-
-@end
-
 #pragma mark - Address
 
 @interface _MWMPPPAddress : _MWMPPPCellBase
@@ -121,31 +103,31 @@
 
 namespace
 {
-array<Class, 8> const kPreviewCells = {{[_MWMPPPTitle class], [_MWMPPPExternalTitle class],
-                                        [_MWMPPPSubtitle class], [_MWMPPPSchedule class],
-                                        [_MWMPPPBooking class], [_MWMPPPAddress class],
-                                        [_MWMPPPSpace class], [MWMAdBanner class]}};
+std::array<Class, 9> const kPreviewCells = {{[_MWMPPPTitle class],
+                                        [_MWMPPPExternalTitle class],
+                                        [_MWMPPPSubtitle class],
+                                        [_MWMPPPSchedule class],
+                                        [MWMPPPReview class],
+                                        [MWMPPPSearchSimilarButton class],
+                                        [_MWMPPPAddress class],
+                                        [_MWMPPPSpace class],
+                                        [MWMAdBanner class]}};
 }  // namespace
 
 @interface MWMPPPreviewLayoutHelper ()
 
-@property(weak, nonatomic) UITableView * tableView;
-
-@property(weak, nonatomic) NSLayoutConstraint * distanceCellTrailing;
-@property(weak, nonatomic) UIView * distanceView;
-
-@property(weak, nonatomic) MWMPlacePageData * data;
-@property(weak, nonatomic) id<MWMPPPreviewLayoutHelperDelegate> delegate;
-
-@property(nonatomic) CGFloat leading;
-@property(nonatomic) MWMDirectionView * directionView;
 @property(copy, nonatomic) NSString * distance;
-@property(weak, nonatomic) UIImageView * compass;
-@property(nonatomic) NSIndexPath * lastCellIndexPath;
-@property(nonatomic) BOOL lastCellIsBanner;
+@property(copy, nonatomic) NSString * speedAndAltitude;
+@property(nonatomic) MWMDirectionView * directionView;
 @property(nonatomic) NSUInteger distanceRow;
-
 @property(weak, nonatomic) MWMAdBanner * cachedBannerCell;
+@property(weak, nonatomic) MWMPlacePageData * data;
+@property(weak, nonatomic) NSLayoutConstraint * distanceCellTrailing;
+@property(weak, nonatomic) UIImageView * compass;
+@property(weak, nonatomic) UITableView * tableView;
+@property(weak, nonatomic) UIView * distanceView;
+@property(weak, nonatomic) _MWMPPPSubtitle * cachedSubtitle;
+@property(weak, nonatomic) id<MWMPPPreviewLayoutHelperDelegate> delegate;
 
 @end
 
@@ -174,11 +156,19 @@ array<Class, 8> const kPreviewCells = {{[_MWMPPPTitle class], [_MWMPPPExternalTi
   self.data = data;
   auto const & previewRows = data.previewRows;
   using place_page::PreviewRows;
-  self.lastCellIsBanner = NO;
-  self.lastCellIndexPath = [NSIndexPath indexPathForRow:previewRows.size() - 1 inSection:0];
-  auto it = find(previewRows.begin(), previewRows.end(), PreviewRows::Space);
-  if (it != previewRows.end())
-    self.distanceRow = distance(previewRows.begin(), it) - 1;
+
+  if (data.isMyPosition || previewRows.size() == 1)
+  {
+    self.distanceRow = 0;
+  }
+  else
+  {
+    auto it = find(previewRows.begin(), previewRows.end(), PreviewRows::Address);
+    if (it == previewRows.end())
+      it = find(previewRows.begin(), previewRows.end(), PreviewRows::Subtitle);
+    if (it != previewRows.end())
+      self.distanceRow = distance(previewRows.begin(), it);
+  }
 }
 
 - (UITableViewCell *)cellForRowAtIndexPath:(NSIndexPath *)indexPath withData:(MWMPlacePageData *)data
@@ -186,7 +176,7 @@ array<Class, 8> const kPreviewCells = {{[_MWMPPPTitle class], [_MWMPPPExternalTi
   using namespace place_page;
   auto tableView = self.tableView;
   auto const row = data.previewRows[indexPath.row];
-  Class cls = kPreviewCells[static_cast<size_t>(row)];
+  Class cls = kPreviewCells[my::Key(row)];
 
   auto * c = [tableView dequeueReusableCellWithCellClass:cls indexPath:indexPath];
   switch(row)
@@ -198,8 +188,16 @@ array<Class, 8> const kPreviewCells = {{[_MWMPPPTitle class], [_MWMPPPExternalTi
     static_cast<_MWMPPPExternalTitle *>(c).externalTitle.text = data.externalTitle;
     break;
   case PreviewRows::Subtitle:
-    static_cast<_MWMPPPSubtitle *>(c).subtitle.text = data.subtitle;
+  {
+    auto subtitleCell = static_cast<_MWMPPPSubtitle *>(c);
+    if (data.isMyPosition)
+      subtitleCell.subtitle.text = self.speedAndAltitude;
+    else
+      subtitleCell.subtitle.text = data.subtitle;
+
+    self.cachedSubtitle = subtitleCell;
     break;
+  }
   case PreviewRows::Schedule:
   {
     auto scheduleCell = static_cast<_MWMPPPSchedule *>(c);
@@ -221,12 +219,44 @@ array<Class, 8> const kPreviewCells = {{[_MWMPPPTitle class], [_MWMPPPExternalTi
     }
     break;
   }
-  case PreviewRows::Booking:
+  case PreviewRows::Review:
   {
-    auto bookingCell = static_cast<_MWMPPPBooking *>(c);
-    [bookingCell configWithRating:data.bookingRating pricing:data.bookingApproximatePricing];
-    [data assignOnlinePriceToLabel:bookingCell.pricing];
-    return bookingCell;
+    auto reviewCell = static_cast<MWMPPPReview *>(c);
+    if (data.isBooking)
+    {
+      [reviewCell configWithRating:data.bookingRating
+                      canAddReview:NO
+                      reviewsCount:0
+                       priceSetter:^(UILabel * pricingLabel) {
+                         pricingLabel.text = data.bookingApproximatePricing;
+                         [data assignOnlinePriceToLabel:pricingLabel];
+                       }
+                       onAddReview:^{
+                       }];
+    }
+    else
+    {
+      NSAssert(data.ugc, @"");
+      [reviewCell configWithRating:data.ugc.summaryRating
+          canAddReview:data.ugc.isUGCUpdateEmpty
+          reviewsCount:data.ugc.totalReviewsCount
+          priceSetter:^(UILabel * _Nonnull pricingLabel) {
+            pricingLabel.text = @"";
+          }
+          onAddReview:^{
+            [MWMPlacePageManagerHelper showUGCAddReview:MWMRatingSummaryViewValueTypeNoValue
+                                            fromPreview:YES];
+          }];
+    }
+    return reviewCell;
+  }
+  case PreviewRows::SearchSimilar:
+  {
+    auto searchCell = static_cast<MWMPPPSearchSimilarButton *>(c);
+    [searchCell configWithTap:^{
+      [MWMPlacePageManagerHelper searchSimilar];
+    }];
+    return searchCell;
   }
   case PreviewRows::Address:
     static_cast<_MWMPPPAddress *>(c).address.text = data.address;
@@ -293,18 +323,29 @@ array<Class, 8> const kPreviewCells = {{[_MWMPPPTitle class], [_MWMPPPExternalTi
   self.directionView.distanceLabel.text = distance;
 }
 
+- (void)setSpeedAndAltitude:(NSString *)speedAndAltitude
+{
+  auto data = self.data;
+  if (!data)
+    return;
+  if ([speedAndAltitude isEqualToString:_speedAndAltitude] || !data.isMyPosition)
+    return;
+
+  _speedAndAltitude = speedAndAltitude;
+  self.cachedSubtitle.subtitle.text = speedAndAltitude;
+}
+
 - (void)insertRowAtTheEnd
 {
-  auto const & previewRows = self.data.previewRows;
-  auto const size = previewRows.size();
-  self.lastCellIsBanner = previewRows.back() == place_page::PreviewRows::Banner;
-  self.lastCellIndexPath =
-      [NSIndexPath indexPathForRow:size - 1
-                         inSection:static_cast<NSUInteger>(place_page::Sections::Preview)];
+  auto data = self.data;
+  if (!data)
+    return;
   [self.tableView insertRowsAtIndexPaths:@[ self.lastCellIndexPath ]
                         withRowAnimation:UITableViewRowAnimationLeft];
   [self.delegate heightWasChanged];
 }
+
+- (void)notifyHeightWashChanded { [self.delegate heightWasChanged]; }
 
 - (CGFloat)height
 {
@@ -325,10 +366,18 @@ array<Class, 8> const kPreviewCells = {{[_MWMPPPTitle class], [_MWMPPPExternalTi
 {
   if (IPAD)
     return;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    auto data = self.data;
+    if (!data)
+      return;
 
-  [self.tableView update:^{
-    self.cachedBannerCell.state = isOpen ? MWMAdBannerStateDetailed : MWMAdBannerStateCompact;
-  }];
+    CLS_LOG(@"layoutInOpenState\tisOpen:%@\tLatitude:%@\tLongitude:%@", @(isOpen),
+            @(data.latLon.lat), @(data.latLon.lon));
+
+    [self.tableView update:^{
+      self.cachedBannerCell.state = isOpen ? MWMAdBannerStateDetailed : MWMAdBannerStateCompact;
+    }];
+  });
 }
 
 - (MWMDirectionView *)directionView
@@ -336,6 +385,23 @@ array<Class, 8> const kPreviewCells = {{[_MWMPPPTitle class], [_MWMPPPExternalTi
   if (!_directionView)
     _directionView = [[MWMDirectionView alloc] init];
   return _directionView;
+}
+
+- (NSIndexPath *)lastCellIndexPath
+{
+  auto data = self.data;
+  if (!data)
+    return nil;
+  return [NSIndexPath indexPathForRow:data.previewRows.size() - 1
+                            inSection:static_cast<NSUInteger>(place_page::Sections::Preview)];
+}
+
+- (BOOL)lastCellIsBanner
+{
+  auto data = self.data;
+  if (!data)
+    return NO;
+  return data.previewRows.back() == place_page::PreviewRows::Banner;
 }
 
 @end
