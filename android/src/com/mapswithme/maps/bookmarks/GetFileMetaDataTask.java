@@ -106,12 +106,14 @@ class GetFileMetaDataTask extends AsyncTask<Intent, Void, OperationStatus<GetFil
       final long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
       DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
       cursor = manager.query(query);
-      if (cursor.moveToFirst()){
+      if (cursor.moveToFirst())
+      {
         String filePath = getFilePath(cursor);
         String archiveId = getArchiveId(cursor);
         return new Result(filePath, archiveId);
       }
-      else {
+      else
+      {
         throw new IOException("cursor cannot move to first");
       }
     }
@@ -121,22 +123,30 @@ class GetFileMetaDataTask extends AsyncTask<Intent, Void, OperationStatus<GetFil
     }
   }
 
-  private String getFilePath(Cursor cursor)
+  private String getFilePath(Cursor cursor) throws IOException
   {
     return getColumnValue(cursor, DownloadManager.COLUMN_LOCAL_FILENAME);
   }
 
-  private String getArchiveId(Cursor cursor)
+  private String getArchiveId(Cursor cursor) throws IOException
   {
     return Uri.parse(getColumnValue(cursor, DownloadManager.COLUMN_URI)).getLastPathSegment();
   }
 
   @Nullable
-  private String getColumnValue(@NonNull Cursor cursor, @NonNull String columnName)
+  private String getColumnValue(@NonNull Cursor cursor, @NonNull String columnName) throws
+                                                                                    IOException
   {
     int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-    return status == DownloadManager.STATUS_SUCCESSFUL
-           ? cursor.getString(cursor.getColumnIndex(columnName))
-           : null;
+    if (status == DownloadManager.STATUS_SUCCESSFUL)
+    {
+      return cursor.getString(cursor.getColumnIndex(columnName));
+    }
+    else
+    {
+      throw new IOException(new StringBuilder().append("error download archive, status code = ")
+                                               .append(status)
+                                               .toString());
+    }
   }
 }
