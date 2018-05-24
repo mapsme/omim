@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.UiUtils;
 
 public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment implements
@@ -88,6 +89,24 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
     BookmarkManager.INSTANCE.removeCatalogListener(this);
   }
 
+  @Override
+  protected void showBottomMenuInternal(@NonNull BookmarkCategory item)
+  {
+    BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), item.getName())
+                                                    .sheet(R.menu.menu_catalog_bookmark_categories)
+                                                    .listener(this);
+
+    bs.getItemByIndex(0)
+      .setTitle(item.isVisible() ? R.string.hide : R.string.show);
+
+    final boolean deleteIsPossible = getAdapter().getBookmarkCategories().size() > 1;
+    bs.getItemById(R.id.delete_list)
+      .setVisible(deleteIsPossible)
+      .setEnabled(deleteIsPossible);
+
+    bs.tint().show();
+  }
+
   private void openBookmarksCatalogScreen()
   {
     Intent intent = new Intent(getActivity(),
@@ -104,9 +123,9 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
   }
 
   @Override
-  public void onMoreOperationClick(BookmarkCategory item)
+  public void onMoreOperationClick(@NonNull BookmarkCategory item)
   {
-
+    showBottomMenu(item);
   }
 
   @Override

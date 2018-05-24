@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +36,7 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
 {
   private static final int MAX_CATEGORY_NAME_LENGTH = 60;
-  @Nullable
+  @NonNull
   private BookmarkCategory mSelectedCategory;
   @Nullable
   private CategoryEditor mCategoryEditor;
@@ -144,38 +145,14 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   @Override
   public boolean onMenuItemClick(MenuItem item)
   {
-    switch (item.getItemId())
-    {
-    case R.id.set_show:
-      BookmarkManager.INSTANCE.toggleCategoryVisibility(mSelectedCategory.getId());
-      if (getAdapter() != null)
-        getAdapter().notifyDataSetChanged();
-      break;
-
-    case R.id.set_share:
-      SharingHelper.INSTANCE.prepareBookmarkCategoryForSharing(getActivity(), mSelectedCategory.getId());
-      break;
-
-    case R.id.set_delete:
-      BookmarkManager.INSTANCE.deleteCategory(mSelectedCategory.getId());
-      if (getAdapter() != null)
-        getAdapter().notifyDataSetChanged();
-      break;
-
-    case R.id.set_edit:
-      mCategoryEditor = newName ->
-      {
-        BookmarkManager.INSTANCE.setCategoryName(mSelectedCategory.getId(), newName);
-      };
-      EditTextDialogFragment.show(getString(R.string.bookmark_set_name),
-                                  mSelectedCategory.getName(),
-                                  getString(R.string.rename), getString(R.string.cancel),
-                                  MAX_CATEGORY_NAME_LENGTH, this);
-      break;
-    }
-
+    MenuItemClickProcessorWrapper processor = MenuItemClickProcessorWrapper
+        .getInstance(item.getItemId());
+    processor
+        .mInternalProcessor
+        .process(this, mSelectedCategory);
     return true;
   }
+
 
 /*
   @Override
@@ -185,13 +162,16 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   }
 */
 
-  private void showBottomMenu(BookmarkCategory item)
+  protected final void showBottomMenu(@NonNull BookmarkCategory item)
   {
     mSelectedCategory = item;
+    showBottomMenuInternal(item);
+  }
 
-
+  protected void showBottomMenuInternal(@NonNull BookmarkCategory item)
+  {
     BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), mSelectedCategory.getName())
-                                                    .sheet(R.menu.menu_bookmark_categories)
+                                                    .sheet(getCategoryMenuResId())
                                                     .listener(this);
 
     bs.getItemByIndex(0)
@@ -206,20 +186,17 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     bs.tint().show();
   }
 
+  @MenuRes
+  protected int getCategoryMenuResId()
+  {
+    return R.menu.menu_bookmark_categories;
+  }
+
   @Override
-  public void onMoreOperationClick(BookmarkCategory item)
+  public void onMoreOperationClick(@NonNull BookmarkCategory item)
   {
     showBottomMenu(item);
   }
-
-/*
-  @Override
-  public void onItemClick(View v, BookmarkCategory entity, int position)
-  {
-    startActivity(new Intent(getActivity(), BookmarkListActivity.class)
-                      .putExtra(BookmarksListFragment.EXTRA_CATEGORY, position));
-  }
-*/
 
   @Override
   protected void setupPlaceholder(@Nullable PlaceholderView placeholder)
@@ -333,4 +310,133 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
       alreadyDone = true;
     }
   }
+
+  protected enum MenuItemClickProcessorWrapper
+  {
+    SET_SHOW(R.id.set_show, new MenuClickProcessorBase.SetShow()),
+    SET_SHARE(R.id.set_share, new MenuClickProcessorBase.SetShare()),
+    SET_DELETE(R.id.set_delete, new MenuClickProcessorBase.SetDelete()),
+    SET_EDIT(R.id.set_edit, new MenuClickProcessorBase.SetEdit()),
+    SHOW_ON_MAP(R.id.show_on_map, new MenuClickProcessorBase.SetShow()),
+    SHARE_LIST(R.id.share_list, new MenuClickProcessorBase.SetShare()),
+    DELETE_LIST(R.id.delete_list, new MenuClickProcessorBase.SetDelete());
+
+    @MenuRes
+    private final int mId;
+    private MenuClickProcessorBase mInternalProcessor;
+
+    MenuItemClickProcessorWrapper(int id, MenuClickProcessorBase processorBase)
+    {
+      mId = id;
+      mInternalProcessor = processorBase;
+    }
+
+
+    @NonNull
+    public static MenuItemClickProcessorWrapper getInstance(@MenuRes int resId){
+      for (MenuItemClickProcessorWrapper each : values()){
+        if (each.mId == resId){
+          return each;
+        }
+      }
+      throw new IllegalArgumentException("enum value for res id = " + resId + " not found");
+    }
+  }
+
+  protected static abstract class MenuClickProcessorBase
+  {
+
+    public abstract void process(@NonNull BaseBookmarkCategoriesFragment frag,
+                                 @NonNull BookmarkCategory category);
+
+    protected static class SetShow extends MenuClickProcessorBase
+    {
+      @Override
+      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
+                          @NonNull BookmarkCategory category)
+      {
+        BookmarkManager.INSTANCE.toggleCategoryVisibility(category.getId());
+        if (frag.getAdapter() != null)
+          frag.getAdapter().notifyDataSetChanged();
+      }
+    }
+
+    protected static class SetShare extends MenuClickProcessorBase
+    {
+      @Override
+      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
+                          @NonNull BookmarkCategory category)
+      {
+        SharingHelper.INSTANCE.prepareBookmarkCategoryForSharing(frag.getActivity(),
+                                                                 category.getId());
+      }
+    }
+
+    protected static class SetDelete extends MenuClickProcessorBase
+    {
+      @Override
+      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
+                          @NonNull BookmarkCategory category)
+      {
+        BookmarkManager.INSTANCE.deleteCategory(category.getId());
+        if (frag.getAdapter() != null)
+        {
+          frag.getAdapter().notifyDataSetChanged();
+        }
+      }
+    }
+
+    protected static class SetEdit extends MenuClickProcessorBase
+    {
+      @Override
+      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
+                          @NonNull BookmarkCategory category)
+      {
+        frag.mCategoryEditor = newName ->
+        {
+          BookmarkManager.INSTANCE.setCategoryName(category.getId(), newName);
+        };
+        EditTextDialogFragment.show(frag.getString(R.string.bookmark_set_name),
+                                    category.getName(),
+                                    frag.getString(R.string.rename),
+                                    frag.getString(R.string.cancel),
+                                    MAX_CATEGORY_NAME_LENGTH,
+                                    frag);
+      }
+    }
+
+    /*FIXME undefined action yet*/
+    protected static class ShowOnMap extends MenuClickProcessorBase
+    {
+      @Override
+      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
+                          @NonNull BookmarkCategory category)
+      {
+
+      }
+    }
+
+    /*FIXME undefined action yet*/
+    protected static class ShareList extends MenuClickProcessorBase
+    {
+      @Override
+      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
+                          @NonNull BookmarkCategory category)
+      {
+
+      }
+    }
+
+    /*FIXME undefined action yet*/
+    protected static class DeleteList extends MenuClickProcessorBase
+    {
+      @Override
+      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
+                          @NonNull BookmarkCategory category)
+      {
+
+      }
+    }
+  }
+
 }

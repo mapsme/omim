@@ -1345,4 +1345,6 @@
 	<string name="bookmarks_groups_cached">Downloaded lists</string>
 	<string name="author_name_by_prefix">by %s</string>
 	<string name="routes_and_bookmarks">Routes and bookmarks</string>
+  <string name="share_list">Share list</string>
+	<string name="delete_list">Delete list</string>
 </resources>
