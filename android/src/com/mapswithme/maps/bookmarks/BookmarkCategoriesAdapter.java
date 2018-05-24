@@ -131,8 +131,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     categoryHolder.setSize(category.size());
     categoryHolder.setVisibilityState(category.isVisible());
     bindAuthor(categoryHolder);
-    ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(categoryHolder,
-                                                                               category);
+    ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(categoryHolder);
     categoryHolder.setVisibilityListener(listener);
     categoryHolder.setMoreListener(v -> {
       if (mCategoryListCallback != null)
@@ -194,7 +193,6 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
       if (mLongClickListener != null)
       {
         mLongClickListener.onItemLongClick(mView, mHolder.getEntity());
-//        mLongClickListener.onLongItemClick(mView, toCategoryPosition(mHolder.getAdapterPosition()));
       }
       return true;
     }
@@ -231,8 +229,6 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     {
       if (mClickListener != null)
       {
-        final int pos = mHolder.getAdapterPosition();
-//        mClickListener.onItemClick(v, mHolder.getEntity(), BookmarkCategoriesAdapter.this.toCategoryPosition(pos));
         mClickListener.onItemClick(v, mHolder.getEntity());
       }
     }
@@ -244,29 +240,27 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     public void onClick(View v)
     {
       if (mCategoryListCallback != null)
+      {
         mCategoryListCallback.onFooterClick();
+      }
     }
   }
 
   private class ToggleVisibilityClickListener implements View.OnClickListener
   {
     @NonNull
-    private final CategoryViewHolder mCategoryHolder;
-    @NonNull
-    private final BookmarkCategory mCategory;
+    private final CategoryViewHolder mHolder;
 
-    public ToggleVisibilityClickListener(@NonNull CategoryViewHolder categoryHolder,
-                                         @NonNull BookmarkCategory category)
+    public ToggleVisibilityClickListener(@NonNull CategoryViewHolder holder)
     {
-      mCategoryHolder = categoryHolder;
-      mCategory = category;
+      mHolder = holder;
     }
 
     @Override
     public void onClick(View v)
     {
-      BookmarkManager.INSTANCE.toggleCategoryVisibility(mCategory.getId());
-      mCategoryHolder.setVisibilityState(mCategory.isVisible());
+      BookmarkManager.INSTANCE.toggleCategoryVisibility(mHolder.getEntity().getId());
+      notifyItemChanged(mHolder.getAdapterPosition());
       notifyItemChanged(HEADER_POSITION);
     }
   }
