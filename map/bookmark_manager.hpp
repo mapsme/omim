@@ -252,7 +252,9 @@ public:
 
   bool IsUsedCategoryName(std::string const & name) const;
   bool AreAllCategoriesVisible() const;
+  bool AreAllCategoriesVisible(bool isFromCatalog) const;
   bool AreAllCategoriesInvisible() const;
+  bool AreAllCategoriesInvisible(bool isFromCatalog) const;
   void SetAllCategoriesVisibility(bool visible);
 
   // Return number of files for the conversion to the binary format.

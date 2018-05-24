@@ -1773,12 +1773,34 @@ bool BookmarkManager::AreAllCategoriesVisible() const
   return true;
 }
 
+bool BookmarkManager::AreAllCategoriesVisible(bool isFromCatalog) const
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+  for (auto const & category : m_categories)
+  {
+    if (IsCategoryFromCatalog(category.first) == isFromCatalog && !category.second->IsVisible())
+      return false;
+  }
+  return true;
+}
+
 bool BookmarkManager::AreAllCategoriesInvisible() const
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   for (auto const & c : m_categories)
   {
     if (c.second->IsVisible())
+      return false;
+  }
+  return true;
+}
+
+bool BookmarkManager::AreAllCategoriesInvisible(bool isFromCatalog) const
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+  for (auto const & category : m_categories)
+  {
+    if (IsCategoryFromCatalog(category.first) == isFromCatalog && category.second->IsVisible())
       return false;
   }
   return true;

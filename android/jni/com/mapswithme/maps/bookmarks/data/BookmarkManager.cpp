@@ -545,6 +545,25 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesIn
   return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesInvisible());
 }
 
+JNIEXPORT jboolean JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesInvisible1(
+        JNIEnv * env,
+        jobject thiz,
+        jboolean fromCatalog)
+{
+  return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesInvisible(static_cast<bool>(fromCatalog)));
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesVisible1(
+        JNIEnv * env,
+        jobject thiz,
+        jboolean fromCatalog)
+{
+  return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesVisible(static_cast<bool>(fromCatalog)));
+}
+
+
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeSetAllCategoriesVisibility(
         JNIEnv * env, jobject thiz, jboolean visible)
@@ -674,10 +693,10 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeGetBookmarkCategor
     return ToJavaArray(env, g_bookmarkCategoryClass, categories, [](JNIEnv * env, kml::MarkGroupId const & item) {
         auto const & manager = frm()->GetBookmarkManager();
         auto const & data = manager.GetCategoryData(item);
-        auto const & isFromCatalog = manager.IsCategoryFromCatalog(item);
-        auto const & tracksCount = manager.GetTrackIds(data.m_id).size();
-        auto const & bookmarksCount = manager.GetUserMarkIds(data.m_id).size();
-        auto const & isVisible = manager.IsVisible(data.m_id);
+        auto const isFromCatalog = manager.IsCategoryFromCatalog(item);
+        auto const tracksCount = manager.GetTrackIds(data.m_id).size();
+        auto const bookmarksCount = manager.GetUserMarkIds(data.m_id).size();
+        auto const isVisible = manager.IsVisible(data.m_id);
         return env->NewObject(g_bookmarkCategoryClass,
                               g_bookmarkCategoryConstructor,
                               static_cast<jlong>(data.m_id),

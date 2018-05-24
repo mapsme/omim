@@ -431,6 +431,16 @@ public enum BookmarkManager
     return nativeAreAllCategoriesInvisible();
   }
 
+  public boolean areAllCategoriesVisible(boolean fromCatalog)
+  {
+    return nativeAreAllCategoriesVisible1(fromCatalog);
+  }
+
+  public boolean areAllCategoriesInvisible(boolean fromCatalog)
+  {
+    return nativeAreAllCategoriesInvisible1(fromCatalog);
+  }
+
   public void setAllCategoriesVisibility(boolean visible)
   {
     nativeSetAllCategoriesVisibility(visible);
@@ -598,6 +608,10 @@ public enum BookmarkManager
   private static native boolean nativeAreAllCategoriesVisible();
 
   private static native boolean nativeAreAllCategoriesInvisible();
+
+  private static native boolean nativeAreAllCategoriesVisible1(boolean fromCatalog);
+
+  private static native boolean nativeAreAllCategoriesInvisible1(boolean fromCatalog);
 
   private static native void nativeSetAllCategoriesVisibility(boolean visible);
 
