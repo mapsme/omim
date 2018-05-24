@@ -19,6 +19,7 @@ public class AbstractCategoriesSnapshot
     mSnapshot = Collections.unmodifiableList(Arrays.asList(items));
   }
 
+  @NonNull
   protected List<BookmarkCategory> items()
   {
     return mSnapshot;
@@ -93,6 +94,7 @@ public class AbstractCategoriesSnapshot
 
     public static class All extends FilterStrategy
     {
+      @NonNull
       @Override
       public List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items)
       {
@@ -137,6 +139,7 @@ public class AbstractCategoriesSnapshot
       mPredicate = predicate;
     }
 
+    @NonNull
     @Override
     public List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items)
     {

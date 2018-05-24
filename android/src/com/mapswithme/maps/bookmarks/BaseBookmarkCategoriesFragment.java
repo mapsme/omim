@@ -3,6 +3,7 @@ package com.mapswithme.maps.bookmarks;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
@@ -162,16 +163,16 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
   protected void showBottomMenuInternal(@NonNull BookmarkCategory item)
   {
-    BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), mSelectedCategory.getName())
+    BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), item.getName())
                                                     .sheet(getCategoryMenuResId())
                                                     .listener(this);
 
     bs.getItemByIndex(0)
-      .setIcon(mSelectedCategory.isVisible() ? R.drawable.ic_hide : R.drawable.ic_show)
-      .setTitle(mSelectedCategory.isVisible() ? R.string.hide : R.string.show);
+      .setIcon(item.isVisible() ? R.drawable.ic_hide : R.drawable.ic_show)
+      .setTitle(item.isVisible() ? R.string.hide : R.string.show);
 
     final boolean deleteIsPossible = getAdapter().getBookmarkCategories().size() > 1;
-    bs.getItemById(R.id.set_delete)
+    bs.getItemById(getDeleteMenuItemResId())
       .setVisible(deleteIsPossible)
       .setEnabled(deleteIsPossible);
 
@@ -279,6 +280,12 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   public void onItemLongClick(View v, BookmarkCategory category)
   {
     showBottomMenu(category);
+  }
+
+  @IdRes
+  protected int getDeleteMenuItemResId()
+  {
+    return R.id.set_delete;
   }
 
   interface CategoryEditor

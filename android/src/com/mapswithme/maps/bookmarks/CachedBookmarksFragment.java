@@ -59,6 +59,12 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
   }
 
   @Override
+  protected int getDeleteMenuItemResId()
+  {
+    return R.id.delete_list;
+  }
+
+  @Override
   protected void updateLoadingPlaceholder()
   {
     super.updateLoadingPlaceholder();
@@ -90,21 +96,9 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
   }
 
   @Override
-  protected void showBottomMenuInternal(@NonNull BookmarkCategory item)
+  protected int getCategoryMenuResId()
   {
-    BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), item.getName())
-                                                    .sheet(R.menu.menu_catalog_bookmark_categories)
-                                                    .listener(this);
-
-    bs.getItemByIndex(0)
-      .setTitle(item.isVisible() ? R.string.hide : R.string.show);
-
-    final boolean deleteIsPossible = getAdapter().getBookmarkCategories().size() > 1;
-    bs.getItemById(R.id.delete_list)
-      .setVisible(deleteIsPossible)
-      .setEnabled(deleteIsPossible);
-
-    bs.tint().show();
+    return R.menu.menu_catalog_bookmark_categories;
   }
 
   private void openBookmarksCatalogScreen()
