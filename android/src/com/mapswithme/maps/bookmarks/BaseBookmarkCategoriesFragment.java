@@ -154,14 +154,6 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   }
 
 
-/*
-  @Override
-  public void onLongItemClick(View v, BookmarkCategory category, int position)
-  {
-    showBottomMenu(category);
-  }
-*/
-
   protected final void showBottomMenu(@NonNull BookmarkCategory item)
   {
     mSelectedCategory = item;
