@@ -170,25 +170,41 @@ Cloud::ConvertionResult ConvertBeforeUploading(std::string const & filePath,
 Cloud::ConvertionResult ConvertAfterDownloading(std::string const & filePath,
                                                 std::string const & convertedFilePath)
 {
-  ZipFileReader::FileListT files;
-  ZipFileReader::FilesList(filePath, files);
-  if (files.empty())
-    return {};
-
-  auto fileName = files.front().first;
-  for (auto const & file : files)
+  std::string unarchievedPath;
+  try
   {
-    if (GetFileExt(file.first) == kKmlExtension)
+    ZipFileReader::FileListT files;
+    ZipFileReader::FilesList(filePath, files);
+    if (files.empty())
+      return {};
+
+    auto fileName = files.front().first;
+    for (auto const &file : files)
     {
-      fileName = file.first;
-      break;
+      if (GetFileExt(file.first) == kKmlExtension)
+      {
+        fileName = file.first;
+        break;
+      }
     }
+    unarchievedPath = filePath + ".raw";
+    ZipFileReader::UnzipFile(filePath, fileName, unarchievedPath);
   }
-  std::string const unarchievedPath = filePath + ".raw";
-  MY_SCOPE_GUARD(fileGuard, bind(&FileWriter::DeleteFileX, unarchievedPath));
-  ZipFileReader::UnzipFile(filePath, fileName, unarchievedPath);
+  catch (ZipFileReader::OpenException const & ex)
+  {
+    LOG(LWARNING, ("Could not open zip file", ex.what()));
+    return {};
+  }
+  catch (std::exception const & ex)
+  {
+    LOG(LWARNING, ("Unexpected exception on openning zip file", ex.what()));
+    return {};
+  }
+
   if (!GetPlatform().IsFileExistsByFullPath(unarchievedPath))
     return {};
+
+  MY_SCOPE_GUARD(fileGuard, bind(&FileWriter::DeleteFileX, unarchievedPath));
 
   auto kmlData = LoadKmlFile(unarchievedPath, false /* binary */);
   if (kmlData == nullptr)
@@ -405,25 +421,42 @@ void FixUpHotelPlacemarks(BookmarkManager::KMLDataCollectionPtr & collection,
       continue;
 
     // TODO: use LoadKmzFile after rebase on master.
-    ZipFileReader::FileListT filesInZip;
-    ZipFileReader::FilesList(f, filesInZip);
-    if (filesInZip.empty())
-      continue;
-    
-    auto fileName = filesInZip.front().first;
-    for (auto const & fileInZip : filesInZip)
+    std::string unarchievedPath;
+    try
     {
-      if (GetFileExt(fileInZip.first) == kKmlExtension)
+      ZipFileReader::FileListT filesInZip;
+      ZipFileReader::FilesList(f, filesInZip);
+      if (filesInZip.empty())
+        continue;
+
+      auto fileName = filesInZip.front().first;
+      for (auto const & fileInZip : filesInZip)
       {
-        fileName = fileInZip.first;
-        break;
+        if (GetFileExt(fileInZip.first) == kKmlExtension)
+        {
+          fileName = fileInZip.first;
+          break;
+        }
       }
+      unarchievedPath = my::JoinPath(GetPlatform().TmpDir(), fileName + ".raw");
+
+      ZipFileReader::UnzipFile(f, fileName, unarchievedPath);
     }
-    std::string const unarchievedPath = my::JoinPath(GetPlatform().TmpDir(), fileName + ".raw");
-    MY_SCOPE_GUARD(fileGuard, bind(&FileWriter::DeleteFileX, unarchievedPath));
-    ZipFileReader::UnzipFile(f, fileName, unarchievedPath);
+    catch (ZipFileReader::OpenException const & ex)
+    {
+      LOG(LWARNING, ("Could not open zip file", ex.what()));
+      continue;
+    }
+    catch (std::exception const & ex)
+    {
+      LOG(LWARNING, ("Unexpected exception on openning zip file", ex.what()));
+      continue;
+    }
+
     if (!GetPlatform().IsFileExistsByFullPath(unarchievedPath))
       continue;
+
+    MY_SCOPE_GUARD(fileGuard, bind(&FileWriter::DeleteFileX, unarchievedPath));
     
     auto kmlData = LoadKmlFile(unarchievedPath, false /* binary */);
     if (kmlData == nullptr)
