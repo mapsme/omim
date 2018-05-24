@@ -274,12 +274,12 @@ public class BookmarkCategory implements Parcelable
 
   public enum Type
   {
-    CATALOG(
-        BookmarksPageFactory.CATALOG,
-        AbstractCategoriesSnapshot.FilterStrategy.Catalog.makeInstance()),
     OWNED(
         BookmarksPageFactory.OWNED,
-        AbstractCategoriesSnapshot.FilterStrategy.Owned.makeInstance());
+        AbstractCategoriesSnapshot.FilterStrategy.Owned.makeInstance()),
+    CATALOG(
+        BookmarksPageFactory.CATALOG,
+        AbstractCategoriesSnapshot.FilterStrategy.Catalog.makeInstance());
 
     private BookmarksPageFactory mFactory;
     private AbstractCategoriesSnapshot.FilterStrategy mFilterStrategy;

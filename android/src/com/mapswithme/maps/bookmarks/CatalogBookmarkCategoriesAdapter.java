@@ -12,7 +12,7 @@ public class CatalogBookmarkCategoriesAdapter extends BookmarkCategoriesAdapter
 {
   CatalogBookmarkCategoriesAdapter(@NonNull Context context)
   {
-    super(context, BookmarksPageFactory.CATALOG.getResProvider());
+    super(context, BookmarkCategory.Type.CATALOG);
   }
 
   @Override

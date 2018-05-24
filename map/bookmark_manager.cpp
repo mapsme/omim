@@ -1762,46 +1762,40 @@ bool BookmarkManager::IsUsedCategoryName(std::string const & name) const
   return false;
 }
 
-bool BookmarkManager::AreAllCategoriesVisible() const
+bool BookmarkManager::AreAllCategoriesVisible(const BookmarkCategoryFilter filter) const
 {
-  CHECK_THREAD_CHECKER(m_threadChecker, ());
-  for (auto const & c : m_categories)
-  {
-    if (!c.second->IsVisible())
-      return false;
-  }
-  return true;
+    CHECK_THREAD_CHECKER(m_threadChecker, ());
+    for (auto const & category : m_categories)
+    {
+        if (filter == BookmarkCategoryFilter::Count && !category.second->IsVisible())
+        {
+          return false;
+        } else if (filter == BookmarkCategoryFilter::Catalog && IsCategoryFromCatalog(category.first) && !category.second->IsVisible())
+        {
+          return false;
+        } else if (filter == BookmarkCategoryFilter::Default && !IsCategoryFromCatalog(category.first) && !category.second->IsVisible())
+        {
+          return false;
+        }
+    }
+    return true;
 }
 
-bool BookmarkManager::AreAllCategoriesVisible(bool isFromCatalog) const
+bool BookmarkManager::AreAllCategoriesInvisible(const BookmarkCategoryFilter filter) const
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   for (auto const & category : m_categories)
   {
-    if (IsCategoryFromCatalog(category.first) == isFromCatalog && !category.second->IsVisible())
+    if (filter == BookmarkCategoryFilter::Count && category.second->IsVisible())
+    {
       return false;
-  }
-  return true;
-}
-
-bool BookmarkManager::AreAllCategoriesInvisible() const
-{
-  CHECK_THREAD_CHECKER(m_threadChecker, ());
-  for (auto const & c : m_categories)
-  {
-    if (c.second->IsVisible())
+    } else if (filter == BookmarkCategoryFilter::Catalog && IsCategoryFromCatalog(category.first) && category.second->IsVisible())
+    {
       return false;
-  }
-  return true;
-}
-
-bool BookmarkManager::AreAllCategoriesInvisible(bool isFromCatalog) const
-{
-  CHECK_THREAD_CHECKER(m_threadChecker, ());
-  for (auto const & category : m_categories)
-  {
-    if (IsCategoryFromCatalog(category.first) == isFromCatalog && category.second->IsVisible())
+    } else if (filter == BookmarkCategoryFilter::Default && !IsCategoryFromCatalog(category.first) && category.second->IsVisible())
+    {
       return false;
+    }
   }
   return true;
 }

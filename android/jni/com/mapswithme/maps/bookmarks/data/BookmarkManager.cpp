@@ -530,37 +530,21 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeIsEditableCategory
   return static_cast<jboolean>(frm()->GetBookmarkManager().IsEditableCategory(static_cast<kml::MarkGroupId>(catId)));
 }
 
+JNIEXPORT jboolean JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesInvisible(
+        JNIEnv * env, jobject thiz, jint type)
+{
+  auto const value = static_cast<BookmarkManager::BookmarkCategoryFilter>(static_cast<int>(type));
+
+  return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesInvisible(value));
+}
 
 JNIEXPORT jboolean JNICALL
 Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesVisible(
-        JNIEnv * env, jobject thiz)
+        JNIEnv * env, jobject thiz, jint type)
 {
-  return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesVisible());
-}
-
-JNIEXPORT jboolean JNICALL
-Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesInvisible(
-        JNIEnv * env, jobject thiz)
-{
-  return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesInvisible());
-}
-
-JNIEXPORT jboolean JNICALL
-Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesInvisible1(
-        JNIEnv * env,
-        jobject thiz,
-        jboolean fromCatalog)
-{
-  return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesInvisible(static_cast<bool>(fromCatalog)));
-}
-
-JNIEXPORT jboolean JNICALL
-Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesVisible1(
-        JNIEnv * env,
-        jobject thiz,
-        jboolean fromCatalog)
-{
-  return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesVisible(static_cast<bool>(fromCatalog)));
+  auto const value = static_cast<BookmarkManager::BookmarkCategoryFilter>(static_cast<int>(type));
+  return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesVisible(value));
 }
 
 

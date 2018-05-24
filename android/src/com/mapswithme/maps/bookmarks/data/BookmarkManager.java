@@ -421,24 +421,35 @@ public enum BookmarkManager
 
   public boolean isEditableCategory(long catId) { return nativeIsEditableCategory(catId); }
 
-  public boolean areAllCategoriesVisible()
+  public boolean areAllCatalogCategoriesVisible()
   {
-    return nativeAreAllCategoriesVisible();
+    return areAllCategoriesVisible(BookmarkCategory.Type.CATALOG);
   }
 
-  public boolean areAllCategoriesInvisible()
+  public boolean areAllOwnedCategoriesVisible()
   {
-    return nativeAreAllCategoriesInvisible();
+    return areAllCategoriesVisible(BookmarkCategory.Type.OWNED);
   }
 
-  public boolean areAllCategoriesVisible(boolean fromCatalog)
+  public boolean areAllCategoriesVisible(BookmarkCategory.Type type)
   {
-    return nativeAreAllCategoriesVisible1(fromCatalog);
+
+    return nativeAreAllCategoriesVisible(type.ordinal());
   }
 
-  public boolean areAllCategoriesInvisible(boolean fromCatalog)
+  public boolean areAllCategoriesInvisible(BookmarkCategory.Type type)
   {
-    return nativeAreAllCategoriesInvisible1(fromCatalog);
+    return nativeAreAllCategoriesInvisible(type.ordinal());
+  }
+
+  public boolean areAllCatalogCategoriesInvisible()
+  {
+    return areAllCategoriesInvisible(BookmarkCategory.Type.CATALOG);
+  }
+
+  public boolean areAllOwnedCategoriesInvisible()
+  {
+    return areAllCategoriesInvisible(BookmarkCategory.Type.OWNED);
   }
 
   public void setAllCategoriesVisibility(boolean visible)
@@ -605,13 +616,9 @@ public enum BookmarkManager
 
   private static native boolean nativeIsEditableCategory(long catId);
 
-  private static native boolean nativeAreAllCategoriesVisible();
+  private static native boolean nativeAreAllCategoriesVisible(int type);
 
-  private static native boolean nativeAreAllCategoriesInvisible();
-
-  private static native boolean nativeAreAllCategoriesVisible1(boolean fromCatalog);
-
-  private static native boolean nativeAreAllCategoriesInvisible1(boolean fromCatalog);
+  private static native boolean nativeAreAllCategoriesInvisible(int type);
 
   private static native void nativeSetAllCategoriesVisibility(boolean visible);
 

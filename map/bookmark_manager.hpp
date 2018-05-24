@@ -209,6 +209,13 @@ public:
   std::unique_ptr<User::Subscriber> GetUserSubscriber();
   void SetInvalidTokenHandler(Cloud::InvalidTokenHandler && onInvalidToken);
 
+  enum class BookmarkCategoryFilter
+  {
+      Default = 0,
+      Catalog,
+      Count
+  };
+
   struct SharingResult
   {
     enum class Code
@@ -251,10 +258,8 @@ public:
   bool IsEditableCategory(kml::MarkGroupId groupId) const;
 
   bool IsUsedCategoryName(std::string const & name) const;
-  bool AreAllCategoriesVisible() const;
-  bool AreAllCategoriesVisible(bool isFromCatalog) const;
-  bool AreAllCategoriesInvisible() const;
-  bool AreAllCategoriesInvisible(bool isFromCatalog) const;
+  bool AreAllCategoriesVisible(const BookmarkCategoryFilter filter) const;
+  bool AreAllCategoriesInvisible(const BookmarkCategoryFilter filter) const;
   void SetAllCategoriesVisibility(bool visible);
 
   // Return number of files for the conversion to the binary format.

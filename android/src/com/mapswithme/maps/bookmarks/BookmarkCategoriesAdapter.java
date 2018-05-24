@@ -31,18 +31,21 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
   private CategoryListCallback mCategoryListCallback;
   @NonNull
   private final MassOperationAction mMassOperationAction;
+  @NonNull
+  private final BookmarkCategory.Type mType;
 
   BookmarkCategoriesAdapter(@NonNull Context context,
-                            @NonNull AbstractAdapterResourceProvider resProvider)
+                            @NonNull BookmarkCategory.Type type)
   {
     super(context.getApplicationContext());
-    mResProvider = resProvider;
+    mType = type;
+    mResProvider = type.getFactory().getResProvider();
     mMassOperationAction = new MassOperationAction();
   }
 
   BookmarkCategoriesAdapter(@NonNull Context context)
   {
-    this(context, BookmarksPageFactory.OWNED.getResProvider());
+    this(context, BookmarkCategory.Type.OWNED);
   }
 
   public void setOnClickListener(@Nullable OnItemClickListener<BookmarkCategory> listener)
@@ -118,7 +121,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
     headerViewHolder.setAction(mMassOperationAction,
                                mResProvider,
-                               BookmarkManager.INSTANCE.areAllCategoriesInvisible());
+                               BookmarkManager.INSTANCE.areAllCategoriesInvisible(mType));
     headerViewHolder.getText().setText(mResProvider.getHeaderText());
   }
 
