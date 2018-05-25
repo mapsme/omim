@@ -333,8 +333,10 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
     @NonNull
     public static MenuItemClickProcessorWrapper getInstance(@MenuRes int resId){
-      for (MenuItemClickProcessorWrapper each : values()){
-        if (each.mId == resId){
+      for (MenuItemClickProcessorWrapper each : values())
+      {
+        if (each.mId == resId)
+        {
           return each;
         }
       }
@@ -344,7 +346,6 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
   protected static abstract class MenuClickProcessorBase
   {
-
     public abstract void process(@NonNull BaseBookmarkCategoriesFragment frag,
                                  @NonNull BookmarkCategory category);
 
@@ -437,5 +438,4 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
       }
     }
   }
-
 }

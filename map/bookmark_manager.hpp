@@ -213,7 +213,7 @@ public:
   {
       Default = 0,
       Catalog,
-      Count
+      All
   };
 
   struct SharingResult

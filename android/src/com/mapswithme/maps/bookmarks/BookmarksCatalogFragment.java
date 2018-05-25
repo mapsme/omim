@@ -31,10 +31,6 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
   @NonNull
   private String mCatalogUrl;
 
-  public BookmarksCatalogFragment()
-  {
-  }
-
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
   {

@@ -1767,13 +1767,9 @@ bool BookmarkManager::AreAllCategoriesVisible(const BookmarkCategoryFilter filte
     CHECK_THREAD_CHECKER(m_threadChecker, ());
     for (auto const & category : m_categories)
     {
-        if (filter == BookmarkCategoryFilter::Count && !category.second->IsVisible())
-        {
-          return false;
-        } else if (filter == BookmarkCategoryFilter::Catalog && IsCategoryFromCatalog(category.first) && !category.second->IsVisible())
-        {
-          return false;
-        } else if (filter == BookmarkCategoryFilter::Default && !IsCategoryFromCatalog(category.first) && !category.second->IsVisible())
+        if ((filter == BookmarkCategoryFilter::All && !category.second->IsVisible())
+            || (filter == BookmarkCategoryFilter::Catalog && IsCategoryFromCatalog(category.first) && !category.second->IsVisible())
+            || (filter == BookmarkCategoryFilter::Default && !IsCategoryFromCatalog(category.first) && !category.second->IsVisible()))
         {
           return false;
         }
@@ -1786,13 +1782,9 @@ bool BookmarkManager::AreAllCategoriesInvisible(const BookmarkCategoryFilter fil
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   for (auto const & category : m_categories)
   {
-    if (filter == BookmarkCategoryFilter::Count && category.second->IsVisible())
-    {
-      return false;
-    } else if (filter == BookmarkCategoryFilter::Catalog && IsCategoryFromCatalog(category.first) && category.second->IsVisible())
-    {
-      return false;
-    } else if (filter == BookmarkCategoryFilter::Default && !IsCategoryFromCatalog(category.first) && category.second->IsVisible())
+    if ((filter == BookmarkCategoryFilter::All && category.second->IsVisible())
+        || (filter == BookmarkCategoryFilter::Catalog && IsCategoryFromCatalog(category.first) && category.second->IsVisible())
+        || (filter == BookmarkCategoryFilter::Default && !IsCategoryFromCatalog(category.first) && category.second->IsVisible()))
     {
       return false;
     }

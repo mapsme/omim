@@ -70,14 +70,14 @@ void PrepareClassRefs(JNIEnv * env)
     jni::GetMethodID(env, bookmarkManagerInstance, "onImportFinished", "(Ljava/lang/String;Z)V");
   g_bookmarkCategoryClass =
     jni::GetGlobalClassRef(env, "com/mapswithme/maps/bookmarks/data/BookmarkCategory");
-/*public BookmarkCategory(long id,
-                          String name,
-                          String authorId,
-                          String authorName,
-                          int tracksCount,
-                          int bookmarksCount,
-                          boolean fromCatalog,
-                          boolean isVisible)*/
+//public BookmarkCategory(long id,
+//                          String name,
+//                          String authorId,
+//                          String authorName,
+//                          int tracksCount,
+//                          int bookmarksCount,
+//                          boolean fromCatalog,
+//                          boolean isVisible)
   g_bookmarkCategoryConstructor =
     jni::GetConstructorID(env, g_bookmarkCategoryClass, "(JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZZ)V");
 }
@@ -674,7 +674,10 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeGetBookmarkCategor
     auto const & bm = frm()->GetBookmarkManager();
     kml::GroupIdCollection const & categories = bm.GetBmGroupsIdList();
 
-    return ToJavaArray(env, g_bookmarkCategoryClass, categories, [](JNIEnv * env, kml::MarkGroupId const & item) {
+    return ToJavaArray(env,
+                       g_bookmarkCategoryClass,
+                       categories,
+                       [](JNIEnv * env, kml::MarkGroupId const & item) {
         auto const & manager = frm()->GetBookmarkManager();
         auto const & data = manager.GetCategoryData(item);
         auto const isFromCatalog = manager.IsCategoryFromCatalog(item);
@@ -693,6 +696,4 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeGetBookmarkCategor
                               static_cast<jboolean>(isVisible));
     });
 }
-
-
 }  // extern "C"
