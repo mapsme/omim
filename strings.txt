@@ -31388,3 +31388,15 @@ fa = دوباره نپرس
 
   [routes_and_bookmarks]
     en = Routes and bookmarks
+
+  [objects]
+    en:one = %d objects
+    en:other = %d objects
+
+  [places]
+      en:one = %d place
+      en:other = %d places
+
+  [tracks]
+      en:one = %d track
+      en:other = %d tracks
