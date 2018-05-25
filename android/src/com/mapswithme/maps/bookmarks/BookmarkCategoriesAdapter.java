@@ -128,15 +128,28 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     CategoryViewHolder categoryHolder = (CategoryViewHolder) holder;
     categoryHolder.setCategory(category);
     categoryHolder.setName(category.getName());
-    categoryHolder.setSize(category.size());
-    categoryHolder.setVisibilityState(category.isVisible());
+    bindSize(categoryHolder, category);
     bindAuthor(categoryHolder, category);
+    categoryHolder.setVisibilityState(category.isVisible());
     ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(categoryHolder);
     categoryHolder.setVisibilityListener(listener);
     categoryHolder.setMoreListener(v -> {
       if (mCategoryListCallback != null)
         mCategoryListCallback.onMoreOperationClick(category);
     });
+  }
+
+  private void bindSize(CategoryViewHolder categoryHolder, BookmarkCategory category)
+  {
+    categoryHolder.setSize(category.getPluralsCountTemplate(),
+                           category.size() == 0
+                           ? 0
+                           : category.getBookmarksCount() == 0
+                             ? category.getTracksCount()
+                             : category.getTracksCount() == 0
+                               ? category.getBookmarksCount()
+                               : category.size()
+                          );
   }
 
   private void bindAuthor(@NonNull CategoryViewHolder categoryHolder,

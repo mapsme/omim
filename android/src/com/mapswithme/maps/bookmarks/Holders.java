@@ -5,6 +5,7 @@ import android.location.Location;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.PluralsRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
@@ -175,9 +176,9 @@ public class Holders
       mName.setText(name);
     }
 
-    void setSize(int size)
+    void setSize(@PluralsRes int phrase, int size)
     {
-      mSize.setText(mSize.getResources().getQuantityString(R.plurals.bookmarks_places, size, size));
+      mSize.setText(mSize.getResources().getQuantityString(phrase, size, size));
     }
 
     void setCategory(@NonNull BookmarkCategory entity)
@@ -202,7 +203,6 @@ public class Holders
   {
     static final int SECTION_TRACKS = 0;
     static final int SECTION_BMKS = 1;
-    private BookmarkCategory mBookmarkCategory;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({ SECTION_TRACKS, SECTION_BMKS })

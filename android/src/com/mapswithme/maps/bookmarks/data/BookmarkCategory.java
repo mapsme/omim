@@ -107,6 +107,17 @@ public class BookmarkCategory implements Parcelable
     return getBookmarksCount() +  getTracksCount();
   }
 
+  public int getPluralsCountTemplate()
+  {
+    return size() == 0
+           ? R.plurals.objects
+           : getTracksCount() == 0
+             ? R.plurals.places
+             : getBookmarksCount() == 0
+               ? R.string.tracks
+               : R.plurals.objects;
+  }
+
   public static class Author implements Parcelable{
 
     public static final String PHRASE_SEPARATOR = " • ";
