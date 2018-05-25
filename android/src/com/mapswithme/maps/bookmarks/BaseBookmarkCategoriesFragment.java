@@ -123,7 +123,9 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     BookmarkManager.INSTANCE.removeLoadingListener(this);
     BookmarkManager.INSTANCE.removeSharingListener(this);
     if (mKmlImportController != null)
+    {
       mKmlImportController.onStop();
+    }
   }
 
   @Override
@@ -332,7 +334,8 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
 
     @NonNull
-    public static MenuItemClickProcessorWrapper getInstance(@MenuRes int resId){
+    public static MenuItemClickProcessorWrapper getInstance(@MenuRes int resId)
+    {
       for (MenuItemClickProcessorWrapper each : values())
       {
         if (each.mId == resId)

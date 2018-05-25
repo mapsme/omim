@@ -8,7 +8,7 @@ import com.mapswithme.maps.R;
 
 public enum BookmarksPageFactory
 {
-  CATALOG(new AbstractAdapterResourceProvider.Catalog())
+  CATALOG(new AdapterResourceProvider.Catalog())
       {
         @NonNull
         @Override
@@ -40,20 +40,20 @@ public enum BookmarksPageFactory
       };
 
   @NonNull
-  private AbstractAdapterResourceProvider mResProvider;
+  private AdapterResourceProvider mResProvider;
 
-  BookmarksPageFactory(@NonNull AbstractAdapterResourceProvider resourceProvider)
+  BookmarksPageFactory(@NonNull AdapterResourceProvider resourceProvider)
   {
     mResProvider = resourceProvider;
   }
 
   BookmarksPageFactory()
   {
-    this(new AbstractAdapterResourceProvider.Default());
+    this(new AdapterResourceProvider.Default());
   }
 
   @NonNull
-  public AbstractAdapterResourceProvider getResProvider()
+  public AdapterResourceProvider getResProvider()
   {
     return mResProvider;
   }

@@ -22,7 +22,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
   private final static int TYPE_ACTION_HEADER = 2;
   private final static int HEADER_POSITION = 0;
   @NonNull
-  private final AbstractAdapterResourceProvider mResProvider;
+  private final AdapterResourceProvider mResProvider;
   @Nullable
   private OnItemLongClickListener<BookmarkCategory> mLongClickListener;
   @Nullable
@@ -30,7 +30,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
   @Nullable
   private CategoryListCallback mCategoryListCallback;
   @NonNull
-  private final MassOperationAction mMassOperationAction;
+  private final MassOperationAction mMassOperationAction = new MassOperationAction();
   @NonNull
   private final BookmarkCategory.Type mType;
 
@@ -40,7 +40,6 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     super(context.getApplicationContext());
     mType = type;
     mResProvider = type.getFactory().getResProvider();
-    mMassOperationAction = new MassOperationAction();
   }
 
   BookmarkCategoriesAdapter(@NonNull Context context)
@@ -80,12 +79,10 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
       return new Holders.GeneralViewHolder(item);
     }
 
-    View view = inflater.inflate(R.layout.item_bookmark_category,
-                                 parent,
-                                 false);
+    View view = inflater.inflate(R.layout.item_bookmark_category, parent,false);
     final CategoryViewHolder holder = new CategoryViewHolder(view);
     view.setOnClickListener(new CategoryItemClickListener(holder));
-    view.setOnLongClickListener(new LongClickListener(view, holder));
+    view.setOnLongClickListener(new LongClickListener(holder));
 
     return holder;
   }
@@ -109,14 +106,14 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     bindCategoryHolder(holder, position);
   }
 
-  private void bindFooterHolder(RecyclerView.ViewHolder holder)
+  private void bindFooterHolder(@NonNull RecyclerView.ViewHolder holder)
   {
     Holders.GeneralViewHolder generalViewHolder = (Holders.GeneralViewHolder) holder;
     generalViewHolder.getImage().setImageResource(mResProvider.getFooterImage());
     generalViewHolder.getText().setText(mResProvider.getFooterText());
   }
 
-  private void bindHeaderHolder(RecyclerView.ViewHolder holder)
+  private void bindHeaderHolder(@NonNull RecyclerView.ViewHolder holder)
   {
     HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
     headerViewHolder.setAction(mMassOperationAction,
@@ -125,7 +122,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     headerViewHolder.getText().setText(mResProvider.getHeaderText());
   }
 
-  private void bindCategoryHolder(RecyclerView.ViewHolder holder, int position)
+  private void bindCategoryHolder(@NonNull RecyclerView.ViewHolder holder, int position)
   {
     final BookmarkCategory category = getCategoryByPosition(toCategoryPosition(position));
     CategoryViewHolder categoryHolder = (CategoryViewHolder) holder;
@@ -133,7 +130,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     categoryHolder.setName(category.getName());
     categoryHolder.setSize(category.size());
     categoryHolder.setVisibilityState(category.isVisible());
-    bindAuthor(categoryHolder);
+    bindAuthor(categoryHolder, category);
     ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(categoryHolder);
     categoryHolder.setVisibilityListener(listener);
     categoryHolder.setMoreListener(v -> {
@@ -142,14 +139,14 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     });
   }
 
-  private void bindAuthor(CategoryViewHolder categoryHolder)
+  private void bindAuthor(@NonNull CategoryViewHolder categoryHolder,
+                          @NonNull BookmarkCategory category)
   {
-    BookmarkCategory category = categoryHolder.getEntity();
     CharSequence authorName = category.getAuthor() == null
                               ? null
                               : BookmarkCategory
                                   .Author
-                                  .getRepresentation(getContext(),category.getAuthor());
+                                  .getRepresentation(getContext(), category.getAuthor());
     categoryHolder.getAuthorName().setText(authorName);
   }
 
@@ -181,12 +178,11 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
 
   private class LongClickListener implements View.OnLongClickListener
   {
-    private final View mView;
+    @NonNull
     private final CategoryViewHolder mHolder;
 
-    public LongClickListener(View view, CategoryViewHolder holder)
+    public LongClickListener(CategoryViewHolder holder)
     {
-      mView = view;
       mHolder = holder;
     }
 
@@ -195,7 +191,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     {
       if (mLongClickListener != null)
       {
-        mLongClickListener.onItemLongClick(mView, mHolder.getEntity());
+        mLongClickListener.onItemLongClick(view, mHolder.getEntity());
       }
       return true;
     }

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
-import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.UiUtils;
 
 public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment implements
@@ -43,7 +42,7 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
   @Override
   protected int getLayoutRes()
   {
-    return R.layout.cached_bookmarks_frag;
+    return R.layout.fragment_cached_bookmarks;
   }
 
   @Override

@@ -87,7 +87,8 @@ public class BookmarkBackupController implements Authorizer.Callback,
     BookmarkManager.INSTANCE.cancelRestoring();
   };
 
-  BookmarkBackupController(@NonNull FragmentActivity context, @NonNull BookmarkBackupView backupView,
+  BookmarkBackupController(@NonNull FragmentActivity context,
+                           @NonNull BookmarkBackupView backupView,
                            @NonNull Authorizer authorizer)
   {
     mContext = context;

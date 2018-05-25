@@ -6,21 +6,21 @@ import android.support.annotation.StringRes;
 
 import com.mapswithme.maps.R;
 
-public abstract class AbstractAdapterResourceProvider
+public interface AdapterResourceProvider
 {
   @StringRes
-  public abstract int getHeaderText();
+  int getHeaderText();
 
   @StringRes
-  public abstract int getFooterText();
+  int getFooterText();
 
   @DrawableRes
-  public abstract int getFooterImage();
+  int getFooterImage();
 
   @NonNull
-  public abstract Button getHeaderBtn();
+  Button getHeaderBtn();
 
-  public static class Default extends AbstractAdapterResourceProvider
+  class Default implements AdapterResourceProvider
   {
     @NonNull
     private final Button mBtn;
@@ -61,7 +61,7 @@ public abstract class AbstractAdapterResourceProvider
     }
   }
 
-  public static class Catalog extends Default
+  class Catalog extends Default
   {
     @Override
     public int getHeaderText()
@@ -82,7 +82,7 @@ public abstract class AbstractAdapterResourceProvider
     }
   }
 
-  public static class Button
+  class Button
   {
     @StringRes
     public int getSelectModeText()

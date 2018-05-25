@@ -60,7 +60,8 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
   private void initWebView(WebView webView)
   {
     webView.setWebViewClient(new WebViewBookmarksCatalogClient(getContext()));
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+    {
       webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
     webView.setVerticalScrollBarEnabled(true);

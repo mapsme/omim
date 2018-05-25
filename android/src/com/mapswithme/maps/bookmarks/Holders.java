@@ -86,7 +86,7 @@ public class Holders
     }
 
     void setAction(@Nullable HeaderAction action,
-                   @NonNull AbstractAdapterResourceProvider resProvider,
+                   @NonNull AdapterResourceProvider resProvider,
                    final boolean showAll)
     {
       mButton.setText(showAll

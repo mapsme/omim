@@ -18,19 +18,11 @@ import java.util.List;
 
 public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
 {
-  @NonNull
-  private List<BookmarksPageFactory> mFactories;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    mFactories = onPrepareAdapterDataSet();
-  }
-
-  private List<BookmarksPageFactory> onPrepareAdapterDataSet()
-  {
-    return Arrays.asList(BookmarksPageFactory.OWNED, BookmarksPageFactory.CATALOG);
   }
 
   @Nullable
@@ -39,16 +31,22 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
                            @Nullable ViewGroup container,
                            @Nullable Bundle savedInstanceState)
   {
-    View root = inflater.inflate(R.layout.bookmark_categories_pager_frag, null);
+    View root = inflater.inflate(R.layout.fragment_bookmark_categories_pager, null);
     ViewPager viewPager = root.findViewById(R.id.viewpager);
     TabLayout tabLayout = root.findViewById(R.id.sliding_tabs_layout);
 
     FragmentManager fm = getActivity().getSupportFragmentManager();
     BookmarksPagerAdapter adapter = new BookmarksPagerAdapter(getContext(),
                                                               fm,
-                                                              mFactories);
+                                                              prepareAdapterDataSet());
     viewPager.setAdapter(adapter);
     tabLayout.setupWithViewPager(viewPager);
     return root;
+  }
+
+  @NonNull
+  private static List<BookmarksPageFactory> prepareAdapterDataSet()
+  {
+    return Arrays.asList(BookmarksPageFactory.OWNED, BookmarksPageFactory.CATALOG);
   }
 }
