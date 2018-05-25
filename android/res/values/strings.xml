@@ -1345,4 +1345,16 @@
 	<string name="bookmarks_groups_cached">Downloaded lists</string>
 	<string name="author_name_by_prefix">by %s</string>
 	<string name="routes_and_bookmarks">Routes and bookmarks</string>
+	<plurals name="objects">
+	  <item quantity="one">%d objects</item>
+	  <item quantity="other">%d objects</item>
+	</plurals>
+	<plurals name="places">
+	  <item quantity="one">%d place</item>
+	  <item quantity="other">%d places</item>
+	</plurals>
+	<plurals name="tracks">
+	  <item quantity="one">%d track</item>
+	  <item quantity="other">%d tracks</item>
+	</plurals>
 </resources>
