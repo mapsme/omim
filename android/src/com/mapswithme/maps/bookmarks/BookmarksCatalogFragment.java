@@ -1,14 +1,9 @@
 package com.mapswithme.maps.bookmarks;
 
-import android.app.DownloadManager;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +13,8 @@ import android.webkit.WebViewClient;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmFragment;
-import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 
-import java.util.Set;
-
-import static android.content.Context.DOWNLOAD_SERVICE;
+import java.io.IOException;
 
 public class BookmarksCatalogFragment extends BaseMwmFragment
 {
@@ -59,7 +51,7 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
 
   private void initWebView(WebView webView)
   {
-    webView.setWebViewClient(new WebViewBookmarksCatalogClient(getContext()));
+    webView.setWebViewClient(new WebViewBookmarksCatalogClient());
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
     {
       webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -81,66 +73,26 @@ public class BookmarksCatalogFragment extends BaseMwmFragment
     webSettings.setJavaScriptEnabled(true);
   }
 
-  /*FIXME*/
   private static class WebViewBookmarksCatalogClient extends WebViewClient
   {
-    public static final String DOWNLOAD_ARCHIVE_SCHEME = "https";
-    public static final String QUERY_PARAM_ID_KEY = "id";
-    public static final String QUERY_PARAM_NAME_KEY = "name";
-
-    @NonNull
-    private final Context mContext;
-
-    private WebViewBookmarksCatalogClient(@NonNull Context context)
-    {
-      mContext = context.getApplicationContext();
-    }
-
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url)
     {
-      Uri srcUri = null;
-      DownloadManager downloadManager = (DownloadManager)mContext.getSystemService(DOWNLOAD_SERVICE);
-      if (downloadManager != null){
-        Pair<Uri, Uri> uriPair = onPrepareUri(url);
-        srcUri = uriPair.first;
-        Uri dstUri = uriPair.second;
-
-        String title = getTitle(srcUri);
-        DownloadManager.Request request = new DownloadManager
-            .Request(dstUri)
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setTitle(title)
-            .setDestinationInExternalFilesDir(mContext, null, dstUri.getLastPathSegment());
-        downloadManager.enqueue(request);
+      try
+      {
+        return requestArchive(view, url);
       }
-      return !DOWNLOAD_ARCHIVE_SCHEME.equals(srcUri == null ? null : srcUri.getScheme());
+      catch (IOException e)
+      {
+        return super.shouldOverrideUrlLoading(view, url);
+      }
     }
 
-    private String getTitle(Uri srcUri)
+    private boolean requestArchive(WebView view, String url) throws IOException
     {
-      String title;
-      return TextUtils.isEmpty((title = srcUri.getQueryParameter(QUERY_PARAM_NAME_KEY)))
-             ? srcUri.getQueryParameter(QUERY_PARAM_ID_KEY)
-             : title;
-    }
-
-    private Pair<Uri, Uri> onPrepareUri(String url)
-    {
-      Uri srcUri = Uri.parse(url);
-      String fileId = srcUri.getQueryParameter(QUERY_PARAM_ID_KEY);
-      if (TextUtils.isEmpty(fileId)){
-        throw new IllegalArgumentException("query param id not found");
-      }
-      String downloadUrl = BookmarkManager.INSTANCE.getCatalogDownloadUrl(fileId);
-      Uri.Builder builder = Uri.parse(downloadUrl).buildUpon();
-
-      Set<String> paramNames = srcUri.getQueryParameterNames();
-      for (String each : paramNames){
-        builder.appendQueryParameter(each, srcUri.getQueryParameter(each));
-      }
-      Uri dstUri = builder.build();
-      return new Pair<Uri, Uri>(srcUri, dstUri);
+      BookmarksDownloadManager dm = BookmarksDownloadManager.from(view.getContext());
+      dm.enqueueRequest(url);
+      return true;
     }
   }
 }
