@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.PluralsRes;
 import android.text.TextUtils;
 
 import com.mapswithme.maps.R;
@@ -107,6 +108,7 @@ public class BookmarkCategory implements Parcelable
     return getBookmarksCount() +  getTracksCount();
   }
 
+  @PluralsRes
   public int getPluralsCountTemplate()
   {
     return size() == 0
@@ -118,12 +120,32 @@ public class BookmarkCategory implements Parcelable
                : R.plurals.objects;
   }
 
+  public int getPluralsCount()
+  {
+    return size() == 0
+           ? 0
+           : getBookmarksCount() == 0
+             ? getTracksCount()
+             : getTracksCount() == 0
+               ? getBookmarksCount()
+               : size();
+  }
+
   public static class Author implements Parcelable{
 
     public static final String PHRASE_SEPARATOR = " • ";
     public static final String SPACE = " ";
     @NonNull
     private final String mId;
+    public static String getRepresentation(Context context, Author author){
+      Resources res = context.getResources();
+      return new StringBuilder()
+          .append(PHRASE_SEPARATOR)
+          .append(String.format(res.getString(R.string.author_name_by_prefix),
+                                author.getName()))
+          .toString();
+    }
+
     @NonNull
     private final String mName;
 
@@ -145,15 +167,6 @@ public class BookmarkCategory implements Parcelable
       return mName;
     }
 
-
-    public static String getRepresentation(Context context, Author author){
-      Resources res = context.getResources();
-      return new StringBuilder()
-          .append(PHRASE_SEPARATOR)
-          .append(String.format(res.getString(R.string.author_name_by_prefix),
-                                author.getName()))
-          .toString();
-    }
 
     @Override
     public String toString()
