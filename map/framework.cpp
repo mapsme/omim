@@ -858,6 +858,11 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
       auto url = info.GetMetadata().Get(feature::Metadata::FMD_BANNER_URL);
       if (url.empty())
         url = partnerInfo.m_defaultBannerUrl;
+
+      // RELEASE 8.2 ONLY. Fix up data.
+      if (partnerInfo.m_partnerIndex == 10)
+        url = partnerInfo.m_defaultBannerUrl;
+
       info.SetSponsoredUrl(url);
       info.SetSponsoredDescriptionUrl(url);
     }
