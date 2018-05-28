@@ -145,6 +145,11 @@ CommandLineOptions const & GetTestingOptions()
 
 int main(int argc, char * argv[])
 {
+// See qt/main.cpp:111 for details
+#if defined(OMIM_OS_MAC) || defined(OMIM_OS_LINUX)
+   (void)::setenv("LC_NUMERIC", "C", 1);
+#endif
+
 #if defined(OMIM_UNIT_TEST_WITH_QT_EVENT_LOOP) && !defined(OMIM_OS_IPHONE)
   QAPP theApp(argc, argv);
   UNUSED_VALUE(theApp);
