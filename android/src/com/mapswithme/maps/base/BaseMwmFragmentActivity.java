@@ -9,8 +9,8 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -220,6 +220,36 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
   protected void displayToolbarAsActionBar()
   {
     setSupportActionBar(getToolbar());
+  }
+
+  @Override
+  public void onBackPressed()
+  {
+    FragmentManager manager = getSupportFragmentManager();
+    if (getFragmentClass() == null)
+    {
+      super.onBackPressed();
+      return;
+    }
+    String name = getFragmentClass().getName();
+    Fragment fragment = manager.findFragmentByTag(name);
+
+    if (fragment == null)
+    {
+      super.onBackPressed();
+      return;
+    }
+
+    boolean processed = onBackPressedInternal(fragment);
+    if (!processed)
+    {
+      super.onBackPressed();
+    }
+  }
+
+  protected boolean onBackPressedInternal(@NonNull @SuppressWarnings("unused") Fragment currentFragment)
+  {
+    return false;
   }
 
   /**

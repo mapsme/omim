@@ -24,6 +24,7 @@ import com.mapswithme.maps.bookmarks.data.AbstractCategoriesSnapshot;
 import com.mapswithme.maps.bookmarks.data.Bookmark;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.maps.bookmarks.data.FilterStrategy;
 import com.mapswithme.maps.bookmarks.data.Icon;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.statistics.Statistics;
@@ -162,8 +163,8 @@ public class EditBookmarkFragment extends BaseMwmDialogFragment implements View.
       return;
 
     final Bundle args = new Bundle();
-    AbstractCategoriesSnapshot.FilterStrategy strategy = mBookmarkCategory.getType()
-                                                                          .getFilterStrategy();
+    FilterStrategy strategy = mBookmarkCategory.getType()
+                                               .getFilterStrategy();
     AbstractCategoriesSnapshot.Default snapshot = BookmarkManager
         .INSTANCE
         .getCategoriesSnapshot(strategy);

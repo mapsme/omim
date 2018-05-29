@@ -19,7 +19,7 @@ import com.mapswithme.maps.base.BaseMwmFragment;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.util.UiUtils;
 
-public class PhoneAuthFragment extends BaseMwmFragment implements OnBackPressListener
+public class PhoneAuthFragment extends BaseWebViewMwmFragment
 {
   private static final String REDIRECT_URL = "http://localhost";
 
@@ -44,7 +44,7 @@ public class PhoneAuthFragment extends BaseMwmFragment implements OnBackPressLis
   {
     super.onViewCreated(view, savedInstanceState);
 
-    mWebView = view.findViewById(R.id.webview);
+    mWebView = view.findViewById(getWebViewResId());
     mProgress = view.findViewById(R.id.progress);
     mWebView.setWebViewClient(new WebViewClient()
     {
@@ -76,15 +76,5 @@ public class PhoneAuthFragment extends BaseMwmFragment implements OnBackPressLis
 
     mWebView.getSettings().setJavaScriptEnabled(true);
     mWebView.loadUrl(Framework.nativeGetPhoneAuthUrl(REDIRECT_URL));
-  }
-
-  @Override
-  public boolean onBackPressed()
-  {
-    if (!mWebView.canGoBack())
-      return false;
-
-    mWebView.goBack();
-    return true;
   }
 }

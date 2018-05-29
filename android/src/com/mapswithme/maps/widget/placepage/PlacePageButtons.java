@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class PlacePageButtons
+public final class PlacePageButtons
 {
   private static final Map<Integer, PartnerItem> PARTNERS_ITEMS = new HashMap<Integer, PartnerItem>()
   {{
@@ -37,29 +37,95 @@ final class PlacePageButtons
   private final ViewGroup mFrame;
   private final ItemListener mItemListener;
 
-  private List<ButtonInterface> mPrevItems;
+  private List<PlacePageButton> mPrevItems;
 
-  interface ButtonInterface
+  interface PlacePageButton
   {
     @StringRes
     int getTitle();
 
-    @DrawableRes
-    int getIcon();
+    ImageResources getIcon();
 
     @NonNull
     ButtonType getType();
+
+    class ImageResources
+    {
+
+      @DrawableRes
+      private final int mEnabledStateResId;
+      @DrawableRes
+      private final int mDisabledStateResId;
+
+      public ImageResources(int enabledStateResId,
+                            int disabledStateResId)
+      {
+        mEnabledStateResId = enabledStateResId;
+        mDisabledStateResId = disabledStateResId;
+      }
+
+      public ImageResources(int enabledStateResId)
+      {
+        this(enabledStateResId, enabledStateResId);
+      }
+
+      @DrawableRes
+      public int getDisabledStateResId()
+      {
+        return mDisabledStateResId;
+      }
+
+      @DrawableRes
+      public int getEnabledStateResId()
+      {
+        return mEnabledStateResId;
+      }
+
+      public static class Stub extends ImageResources
+      {
+        private static final int STUB_RES_ID = -1;
+
+        public Stub()
+        {
+          super(STUB_RES_ID);
+        }
+
+        @Override
+        public int getDisabledStateResId()
+        {
+          throw new UnsupportedOperationException("not supported here");
+        }
+
+        @Override
+        public int getEnabledStateResId()
+        {
+          throw new UnsupportedOperationException("not supported here");
+        }
+      }
+    }
   }
 
   enum ButtonType
   {
-    PARTNER1, PARTNER3, BOOKING, BOOKING_SEARCH, OPENTABLE, BACK, BOOKMARK,
-    ROUTE_FROM, ROUTE_TO, ROUTE_ADD, ROUTE_REMOVE, SHARE, MORE, CALL
+    PARTNER1,
+    PARTNER3,
+    BOOKING,
+    BOOKING_SEARCH,
+    OPENTABLE,
+    BACK,
+    BOOKMARK,
+    ROUTE_FROM,
+    ROUTE_TO,
+    ROUTE_ADD,
+    ROUTE_REMOVE,
+    SHARE,
+    MORE,
+    CALL
   }
 
-  private enum PartnerItem implements ButtonInterface
+  private enum PartnerItem implements PlacePageButton
   {
-    PARTNER1(1)
+    PARTNER1(1, new ImageResources(R.drawable.ic_24px_logo_partner1))
     {
       @Override
       public int getTitle()
@@ -68,11 +134,6 @@ final class PlacePageButtons
       }
 
       @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_24px_logo_partner1;
-      }
-
       @NonNull
       public ButtonType getType()
       {
@@ -80,18 +141,12 @@ final class PlacePageButtons
       }
     },
 
-    PARTNER3(3)
+    PARTNER3(3, new ImageResources(R.drawable.ic_24px_logo_partner3))
     {
       @Override
       public int getTitle()
       {
         return R.string.sponsored_partner3_action;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_24px_logo_partner3;
       }
 
       @Override
@@ -103,32 +158,35 @@ final class PlacePageButtons
     };
 
     private final int mIndex;
+    @NonNull
+    private ImageResources mImageResources;
 
-    PartnerItem(int index)
+    PartnerItem(int index, @NonNull ImageResources imageResources)
     {
       mIndex = index;
+      mImageResources = imageResources;
     }
 
     public int getIndex()
     {
       return mIndex;
     }
+
+    @Override
+    public ImageResources getIcon()
+    {
+      return mImageResources;
+    }
   }
 
-  enum Item implements ButtonInterface
+  enum Item implements PlacePageButton
   {
-    BOOKING
+    BOOKING(new ImageResources(R.drawable.ic_booking))
     {
       @Override
       public int getTitle()
       {
         return R.string.book_button;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_booking;
       }
 
       @Override
@@ -139,18 +197,12 @@ final class PlacePageButtons
       }
     },
 
-    BOOKING_SEARCH
+    BOOKING_SEARCH(new ImageResources(R.drawable.ic_menu_search))
     {
       @Override
       public int getTitle()
       {
         return R.string.booking_search;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_menu_search;
       }
 
       @NonNull
@@ -161,18 +213,12 @@ final class PlacePageButtons
       }
     },
 
-    OPENTABLE
+    OPENTABLE(new ImageResources(R.drawable.ic_opentable))
     {
       @Override
       public int getTitle()
       {
         return R.string.book_button;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_opentable;
       }
 
       @NonNull
@@ -183,7 +229,7 @@ final class PlacePageButtons
       }
     },
 
-    BACK
+    BACK(new ImageResources.Stub())
     {
       @Override
       public int getTitle()
@@ -192,9 +238,9 @@ final class PlacePageButtons
       }
 
       @Override
-      public int getIcon()
+      public ImageResources getIcon()
       {
-        return ThemeUtils.getResource(MwmApplication.get(), android.R.attr.homeAsUpIndicator);
+        return new ImageResources(ThemeUtils.getResource(MwmApplication.get(), android.R.attr.homeAsUpIndicator));
       }
 
       @NonNull
@@ -205,18 +251,12 @@ final class PlacePageButtons
       }
     },
 
-    BOOKMARK
+    BOOKMARK(new ImageResources(R.drawable.ic_bookmarks_off, R.drawable.bookmark_disabled))
     {
       @Override
       public int getTitle()
       {
         return R.string.bookmark;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_bookmarks_off;
       }
 
       @NonNull
@@ -227,18 +267,12 @@ final class PlacePageButtons
       }
     },
 
-    ROUTE_FROM
+    ROUTE_FROM(new ImageResources(R.drawable.ic_route_from))
     {
       @Override
       public int getTitle()
       {
         return R.string.p2p_from_here;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_route_from;
       }
 
       @NonNull
@@ -249,18 +283,12 @@ final class PlacePageButtons
       }
     },
 
-    ROUTE_TO
+    ROUTE_TO(new ImageResources(R.drawable.ic_route_to))
     {
       @Override
       public int getTitle()
       {
         return R.string.p2p_to_here;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_route_to;
       }
 
       @NonNull
@@ -271,18 +299,12 @@ final class PlacePageButtons
       }
     },
 
-    ROUTE_ADD
+    ROUTE_ADD(new ImageResources(R.drawable.ic_route_via))
     {
       @Override
       public int getTitle()
       {
         return R.string.placepage_add_stop;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_route_via;
       }
 
       @NonNull
@@ -293,18 +315,12 @@ final class PlacePageButtons
       }
     },
 
-    ROUTE_REMOVE
+    ROUTE_REMOVE(new ImageResources(R.drawable.ic_route_remove))
     {
       @Override
       public int getTitle()
       {
         return R.string.placepage_remove_stop;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_route_remove;
       }
 
       @NonNull
@@ -315,18 +331,12 @@ final class PlacePageButtons
       }
     },
 
-    SHARE
+    SHARE(new ImageResources(R.drawable.ic_share))
     {
       @Override
       public int getTitle()
       {
         return R.string.share;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_share;
       }
 
       @NonNull
@@ -338,18 +348,12 @@ final class PlacePageButtons
     },
 
     // Must not be used outside
-    MORE
+    MORE(new ImageResources(R.drawable.bs_ic_more))
     {
       @Override
       public int getTitle()
       {
         return R.string.placepage_more_button;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.bs_ic_more;
       }
 
       @NonNull
@@ -360,18 +364,12 @@ final class PlacePageButtons
       }
     },
 
-    CALL
+    CALL(new ImageResources(R.drawable.ic_place_page_phone))
     {
       @Override
       public int getTitle()
       {
         return R.string.placepage_call_button;
-      }
-
-      @Override
-      public int getIcon()
-      {
-        return R.drawable.ic_place_page_phone;
       }
 
       @NonNull
@@ -382,23 +380,30 @@ final class PlacePageButtons
       }
     };
 
+    private ImageResources mImageResources;
+
+    Item(@NonNull ImageResources imageResources)
+    {
+      mImageResources = imageResources;
+    }
+
     @StringRes
     public int getTitle()
     {
       throw new UnsupportedOperationException("Not supported!");
     }
 
-    @DrawableRes
-    public int getIcon()
+    @NonNull
+    public ImageResources getIcon()
     {
-      throw new UnsupportedOperationException("Not supported!");
+      return mImageResources;
     }
   }
 
   interface ItemListener
   {
-    void onPrepareVisibleView(ButtonInterface item, View frame, ImageView icon, TextView title);
-    void onItemClick(ButtonInterface item);
+    void onPrepareVisibleView(PlacePageButton item, View frame, ImageView icon, TextView title);
+    void onItemClick(PlacePageButton item);
   }
 
   PlacePageButtons(PlacePageView placePage, ViewGroup frame, ItemListener itemListener)
@@ -411,17 +416,17 @@ final class PlacePageButtons
   }
 
   @NonNull
-  static ButtonInterface getPartnerItem(int partnerIndex)
+  static PlacePageButton getPartnerItem(int partnerIndex)
   {
-    ButtonInterface item = PARTNERS_ITEMS.get(partnerIndex);
+    PlacePageButton item = PARTNERS_ITEMS.get(partnerIndex);
     if (item == null)
       throw new AssertionError("Wrong partner index: " + partnerIndex);
     return item;
   }
 
-  private @NonNull List<ButtonInterface> collectButtons(List<ButtonInterface> items)
+  private @NonNull List<PlacePageButton> collectButtons(List<PlacePageButton> items)
   {
-    List<ButtonInterface> res = new ArrayList<>(items);
+    List<PlacePageButton> res = new ArrayList<>(items);
     if (res.size() > mMaxButtons)
       res.add(mMaxButtons - 1, Item.MORE);
 
@@ -453,7 +458,7 @@ final class PlacePageButtons
     return res;
   }
 
-  private void preserveRoutingButtons(@NonNull List<ButtonInterface> items, @NonNull Item itemToShift)
+  private void preserveRoutingButtons(@NonNull List<PlacePageButton> items, @NonNull Item itemToShift)
   {
     if (!RoutingController.get().isNavigating() && !RoutingController.get().isPlanning())
       return;
@@ -479,13 +484,14 @@ final class PlacePageButtons
     }
   }
 
-  private void showPopup(final List<ButtonInterface> buttons)
+  private void showPopup(final List<PlacePageButton> buttons)
   {
     BottomSheetHelper.Builder bs = new BottomSheetHelper.Builder(mPlacePage.getActivity());
     for (int i = mMaxButtons; i < buttons.size(); i++)
     {
-      ButtonInterface bsItem = buttons.get(i);
-      bs.sheet(i, bsItem.getIcon(), bsItem.getTitle());
+      PlacePageButton bsItem = buttons.get(i);
+      int iconRes = bsItem.getIcon().getEnabledStateResId();
+      bs.sheet(i, iconRes, bsItem.getTitle());
     }
 
     bs.listener(new MenuItem.OnMenuItemClickListener()
@@ -501,36 +507,24 @@ final class PlacePageButtons
     bs.tint().show();
   }
 
-  private View createButton(final List<ButtonInterface> items, final ButtonInterface current)
+  private View createButton(final List<PlacePageButton> items, final PlacePageButton current)
   {
-    View res = LayoutInflater.from(mPlacePage.getContext()).inflate(R.layout.place_page_button, mFrame, false);
+    LayoutInflater inflater = LayoutInflater.from(mPlacePage.getContext());
+    View parent = inflater.inflate(R.layout.place_page_button, mFrame, false);
 
-    ImageView icon = (ImageView) res.findViewById(R.id.icon);
-    TextView title = (TextView) res.findViewById(R.id.title);
+    ImageView icon = (ImageView) parent.findViewById(R.id.icon);
+    TextView title = (TextView) parent.findViewById(R.id.title);
 
-    icon.setImageResource(current.getIcon());
     title.setText(current.getTitle());
-    mItemListener.onPrepareVisibleView(current, res, icon, title);
-
-    res.setOnClickListener(new View.OnClickListener()
-    {
-      @Override
-      public void onClick(View v)
-      {
-        if (current == Item.MORE)
-          showPopup(items);
-        else
-          mItemListener.onItemClick(current);
-      }
-    });
-
-
-    return res;
+    icon.setImageResource(current.getIcon().getEnabledStateResId());
+    mItemListener.onPrepareVisibleView(current, parent, icon, title);
+    parent.setOnClickListener(new ShowPopupClickListener(current, items));
+    return parent;
   }
 
-  void setItems(List<ButtonInterface> items)
+  void setItems(List<PlacePageButton> items)
   {
-    final List<ButtonInterface> buttons = collectButtons(items);
+    final List<PlacePageButton> buttons = collectButtons(items);
     if (buttons.equals(mPrevItems))
       return;
 
@@ -540,5 +534,26 @@ final class PlacePageButtons
       mFrame.addView(createButton(buttons, buttons.get(i)));
 
     mPrevItems = buttons;
+  }
+
+  private class ShowPopupClickListener implements View.OnClickListener
+  {
+    private final PlacePageButton mCurrent;
+    private final List<PlacePageButton> mItems;
+
+    public ShowPopupClickListener(PlacePageButton current, List<PlacePageButton> items)
+    {
+      mCurrent = current;
+      mItems = items;
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+      if (mCurrent == Item.MORE)
+        showPopup(mItems);
+      else
+        mItemListener.onItemClick(mCurrent);
+    }
   }
 }

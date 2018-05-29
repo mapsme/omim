@@ -30,7 +30,8 @@ public class BookmarkCategoriesFragment extends BaseBookmarkCategoriesFragment
   public void onStart()
   {
     super.onStart();
-    if (mBackupController != null) mBackupController.onStart();
+    if (mBackupController != null)
+      mBackupController.onStart();
   }
 
   @Override
@@ -45,12 +46,14 @@ public class BookmarkCategoriesFragment extends BaseBookmarkCategoriesFragment
   public void onStop()
   {
     super.onStop();
-    if (mBackupController != null) mBackupController.onStop();
+    if (mBackupController != null)
+      mBackupController.onStop();
   }
 
   @Override
   public void onSocialTokenResult(int resultCode, @Nullable Intent data)
   {
-    if (mBackupController != null) mBackupController.onSocialTokenResult(resultCode, data);
+    if (mBackupController != null)
+      mBackupController.onSocialTokenResult(resultCode, data);
   }
 }

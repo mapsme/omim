@@ -209,10 +209,10 @@ public:
   std::unique_ptr<User::Subscriber> GetUserSubscriber();
   void SetInvalidTokenHandler(Cloud::InvalidTokenHandler && onInvalidToken);
 
-  enum class BookmarkCategoryFilter
+  enum class CategoryFilterType
   {
-      Default = 0,
-      Catalog,
+      Private = 0,
+      Public,
       All
   };
 
@@ -258,8 +258,8 @@ public:
   bool IsEditableCategory(kml::MarkGroupId groupId) const;
 
   bool IsUsedCategoryName(std::string const & name) const;
-  bool AreAllCategoriesVisible(const BookmarkCategoryFilter filter) const;
-  bool AreAllCategoriesInvisible(const BookmarkCategoryFilter filter) const;
+  bool AreAllCategoriesVisible(CategoryFilterType const filter) const;
+  bool AreAllCategoriesInvisible(CategoryFilterType const filter) const;
   void SetAllCategoriesVisibility(bool visible);
 
   // Return number of files for the conversion to the binary format.
@@ -480,6 +480,7 @@ private:
   void FinishConversion(ConversionHandler const & handler, bool result);
 
   bool HasDuplicatedIds(kml::FileData const & fileData) const;
+  bool IsFilterTypeCorrected(CategoryFilterType const filter, const bool fromCatalog) const;
 
   ThreadChecker m_threadChecker;
 

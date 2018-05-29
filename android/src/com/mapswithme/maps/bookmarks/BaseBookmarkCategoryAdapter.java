@@ -9,7 +9,8 @@ import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 
 import java.util.List;
 
-public abstract class BaseBookmarkCategoryAdapter<V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V>
+public abstract class BaseBookmarkCategoryAdapter<V extends RecyclerView.ViewHolder>
+    extends RecyclerView.Adapter<V>
 {
   @NonNull
   private final Context mContext;
@@ -25,7 +26,8 @@ public abstract class BaseBookmarkCategoryAdapter<V extends RecyclerView.ViewHol
     return mContext;
   }
 
-  public List<BookmarkCategory> getBookmarkCategories(){
+  public List<BookmarkCategory> getBookmarkCategories()
+  {
     return BookmarkManager.INSTANCE.getOwnedCategoriesSnapshot().items();
   }
 
@@ -35,7 +37,8 @@ public abstract class BaseBookmarkCategoryAdapter<V extends RecyclerView.ViewHol
     return getBookmarkCategories().size();
   }
 
-  public BookmarkCategory getCategoryByPosition(int position){
+  public BookmarkCategory getCategoryByPosition(int position)
+  {
     List<BookmarkCategory> categories = getBookmarkCategories();
     if (position < 0 || position > categories.size() - 1){
       throw new ArrayIndexOutOfBoundsException(position);

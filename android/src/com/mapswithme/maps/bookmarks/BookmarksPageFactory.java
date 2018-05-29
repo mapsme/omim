@@ -23,7 +23,7 @@ public enum BookmarksPageFactory
           return R.string.bookmarks_page_downloaded;
         }
       },
-  OWNED
+  PRIVATE
       {
         @NonNull
         @Override

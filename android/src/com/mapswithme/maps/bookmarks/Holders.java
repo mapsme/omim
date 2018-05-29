@@ -86,7 +86,7 @@ public class Holders
       return mButton;
     }
 
-    void setAction(@Nullable HeaderAction action,
+    void setAction(@NonNull HeaderAction action,
                    @NonNull AdapterResourceProvider resProvider,
                    final boolean showAll)
     {
@@ -108,7 +108,7 @@ public class Holders
       private final HeaderAction mAction;
       private final boolean mShowAll;
 
-      public ToggleShowAllClickListener(HeaderAction action, boolean showAll)
+      ToggleShowAllClickListener(@NonNull HeaderAction action, boolean showAll)
       {
         mAction = action;
         mShowAll = showAll;
@@ -117,9 +117,6 @@ public class Holders
       @Override
       public void onClick(View view)
       {
-        if (mAction == null)
-          return;
-
         if (mShowAll)
           mAction.onShowAll();
         else

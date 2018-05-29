@@ -38,7 +38,7 @@ public class BookmarkCategory implements Parcelable
     mName = name;
     mTracksCount = tracksCount;
     mBookmarksCount = bookmarksCount;
-    mTypeIndex = fromCatalog ? Type.CATALOG.ordinal() : Type.OWNED.ordinal();
+    mTypeIndex = fromCatalog ? Type.CATALOG.ordinal() : Type.PRIVATE.ordinal();
     mIsVisible = isVisible;
     mAuthor = TextUtils.isEmpty(authorId) || TextUtils.isEmpty(authorName)
               ? null
@@ -166,7 +166,6 @@ public class BookmarkCategory implements Parcelable
     {
       return mName;
     }
-
 
     @Override
     public String toString()
@@ -298,18 +297,18 @@ public class BookmarkCategory implements Parcelable
 
   public enum Type
   {
-    OWNED(
-        BookmarksPageFactory.OWNED,
-        AbstractCategoriesSnapshot.FilterStrategy.Owned.makeInstance()),
+    PRIVATE(
+        BookmarksPageFactory.PRIVATE,
+        FilterStrategy.Private.makeInstance()),
     CATALOG(
         BookmarksPageFactory.CATALOG,
-        AbstractCategoriesSnapshot.FilterStrategy.Catalog.makeInstance());
+        FilterStrategy.Catalog.makeInstance());
 
     private BookmarksPageFactory mFactory;
-    private AbstractCategoriesSnapshot.FilterStrategy mFilterStrategy;
+    private FilterStrategy mFilterStrategy;
 
     Type(@NonNull BookmarksPageFactory pageFactory,
-         @NonNull AbstractCategoriesSnapshot.FilterStrategy filterStrategy)
+         @NonNull FilterStrategy filterStrategy)
     {
       mFactory = pageFactory;
       mFilterStrategy = filterStrategy;
@@ -322,7 +321,7 @@ public class BookmarkCategory implements Parcelable
     }
 
     @NonNull
-    public AbstractCategoriesSnapshot.FilterStrategy getFilterStrategy()
+    public FilterStrategy getFilterStrategy()
     {
       return mFilterStrategy;
     }

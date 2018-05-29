@@ -296,7 +296,8 @@ public enum BookmarkManager
   {
     List<BookmarkCategory> items = getAllCategoriesSnapshot().items();
     for (BookmarkCategory each : items){
-      if (catId ==  each.getId()){
+      if (catId ==  each.getId())
+      {
         return each;
       }
     }
@@ -306,6 +307,7 @@ public enum BookmarkManager
                                                           .toString());
   }
 
+  @Deprecated
   public long getCategoryIdByPosition(int position)
   {
     return nativeGetCategoryIdByPosition(position);
@@ -394,7 +396,7 @@ public enum BookmarkManager
   @NonNull
   public AbstractCategoriesSnapshot.Default getOwnedCategoriesSnapshot()
   {
-    return new AbstractCategoriesSnapshot.Owned(nativeGetBookmarkCategories());
+    return new AbstractCategoriesSnapshot.Private(nativeGetBookmarkCategories());
   }
 
   @NonNull
@@ -404,8 +406,7 @@ public enum BookmarkManager
   }
 
   @NonNull
-  public AbstractCategoriesSnapshot.Default getCategoriesSnapshot(AbstractCategoriesSnapshot
-                                                     .FilterStrategy strategy)
+  public AbstractCategoriesSnapshot.Default getCategoriesSnapshot(FilterStrategy strategy)
   {
     return AbstractCategoriesSnapshot.Default.from(nativeGetBookmarkCategories(), strategy);
   }
@@ -428,7 +429,7 @@ public enum BookmarkManager
 
   public boolean areAllOwnedCategoriesVisible()
   {
-    return areAllCategoriesVisible(BookmarkCategory.Type.OWNED);
+    return areAllCategoriesVisible(BookmarkCategory.Type.PRIVATE);
   }
 
   public boolean areAllCategoriesVisible(BookmarkCategory.Type type)
@@ -449,7 +450,7 @@ public enum BookmarkManager
 
   public boolean areAllOwnedCategoriesInvisible()
   {
-    return areAllCategoriesInvisible(BookmarkCategory.Type.OWNED);
+    return areAllCategoriesInvisible(BookmarkCategory.Type.PRIVATE);
   }
 
   public void setAllCategoriesVisibility(boolean visible)

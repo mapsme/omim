@@ -34,7 +34,6 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
                OnItemClickListener<BookmarkCategory>,
                OnItemLongClickListener<BookmarkCategory>
 
-
 {
   private static final int MAX_CATEGORY_NAME_LENGTH = 60;
   @NonNull
@@ -47,7 +46,8 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   private Runnable mImportKmlTask = new ImportKmlTask();
 
   @Override
-  protected @LayoutRes int getLayoutRes()
+  @LayoutRes
+  protected int getLayoutRes()
   {
     return R.layout.fragment_bookmark_categories;
   }
@@ -81,11 +81,12 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     }
 
     RecyclerView rw = getRecyclerView();
-    if (rw == null)
-      return;
+    if (rw == null) return;
 
     rw.setNestedScrollingEnabled(false);
-    rw.addItemDecoration(ItemDecoratorFactory.createVerticalDefaultDecorator(getContext()));
+    RecyclerView.ItemDecoration decor = ItemDecoratorFactory
+        .createVerticalDefaultDecorator(getContext());
+    rw.addItemDecoration(decor);
   }
 
   protected void onPrepareControllers(@NonNull View view)
@@ -111,9 +112,7 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     BookmarkManager.INSTANCE.addLoadingListener(this);
     BookmarkManager.INSTANCE.addSharingListener(this);
     if (mKmlImportController != null)
-    {
       mKmlImportController.onStart();
-    }
   }
 
   @Override
@@ -123,9 +122,7 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     BookmarkManager.INSTANCE.removeLoadingListener(this);
     BookmarkManager.INSTANCE.removeSharingListener(this);
     if (mKmlImportController != null)
-    {
       mKmlImportController.onStop();
-    }
   }
 
   @Override
@@ -222,8 +219,7 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
   private void importKml()
   {
-    if (mKmlImportController != null)
-      mKmlImportController.importKml();
+    if (mKmlImportController != null) mKmlImportController.importKml();
   }
 
   @Override
@@ -247,8 +243,7 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   @Override
   public void onFinishKmlImport()
   {
-    if (getAdapter() != null)
-      getAdapter().notifyDataSetChanged();
+    if (getAdapter() != null) getAdapter().notifyDataSetChanged();
   }
 
   @NonNull
@@ -297,15 +292,13 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
   private class ImportKmlTask implements Runnable
   {
-    private boolean alreadyDone = false;
+    private boolean alreadyDone;
 
     @Override
     public void run()
     {
       if (alreadyDone)
-      {
         return;
-      }
 
       importKml();
       alreadyDone = true;
@@ -314,19 +307,44 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
   protected enum MenuItemClickProcessorWrapper
   {
-    SET_SHOW(R.id.set_show, new MenuClickProcessorBase.SetShow()),
-    SET_SHARE(R.id.set_share, new MenuClickProcessorBase.SetShare()),
-    SET_DELETE(R.id.set_delete, new MenuClickProcessorBase.SetDelete()),
-    SET_EDIT(R.id.set_edit, new MenuClickProcessorBase.SetEdit()),
-    SHOW_ON_MAP(R.id.show_on_map, new MenuClickProcessorBase.SetShow()),
-    SHARE_LIST(R.id.share_list, new MenuClickProcessorBase.SetShare()),
-    DELETE_LIST(R.id.delete_list, new MenuClickProcessorBase.SetDelete());
+    SET_SHOW(R.id.set_show, setShow()),
+    SET_SHARE(R.id.set_share, setShare()),
+    SET_DELETE(R.id.set_delete, setDelete()),
+    SET_EDIT(R.id.set_edit, setEdit()),
+    SHOW_ON_MAP(R.id.show_on_map, setShow()),
+    SHARE_LIST(R.id.share_list, setShare()),
+    DELETE_LIST(R.id.delete_list, setDelete());
 
-    @MenuRes
+    @NonNull
+    private static MenuClickProcessorBase.SetEdit setEdit()
+    {
+      return new MenuClickProcessorBase.SetEdit();
+    }
+
+    @NonNull
+    private static MenuClickProcessorBase.SetDelete setDelete()
+    {
+      return new MenuClickProcessorBase.SetDelete();
+    }
+
+    @NonNull
+    private static MenuClickProcessorBase.SetShare setShare()
+    {
+      return new MenuClickProcessorBase.SetShare();
+    }
+
+    @NonNull
+    private static MenuClickProcessorBase.SetShow setShow()
+    {
+      return new MenuClickProcessorBase.SetShow();
+    }
+
+    @IdRes
     private final int mId;
+    @NonNull
     private MenuClickProcessorBase mInternalProcessor;
 
-    MenuItemClickProcessorWrapper(int id, MenuClickProcessorBase processorBase)
+    MenuItemClickProcessorWrapper(int id, @NonNull MenuClickProcessorBase processorBase)
     {
       mId = id;
       mInternalProcessor = processorBase;
@@ -334,7 +352,7 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
 
     @NonNull
-    public static MenuItemClickProcessorWrapper getInstance(@MenuRes int resId)
+    public static MenuItemClickProcessorWrapper getInstance(@IdRes int resId)
     {
       for (MenuItemClickProcessorWrapper each : values())
       {
@@ -405,39 +423,6 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
                                     frag.getString(R.string.cancel),
                                     MAX_CATEGORY_NAME_LENGTH,
                                     frag);
-      }
-    }
-
-    /*FIXME undefined action yet*/
-    protected static class ShowOnMap extends MenuClickProcessorBase
-    {
-      @Override
-      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
-                          @NonNull BookmarkCategory category)
-      {
-
-      }
-    }
-
-    /*FIXME undefined action yet*/
-    protected static class ShareList extends MenuClickProcessorBase
-    {
-      @Override
-      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
-                          @NonNull BookmarkCategory category)
-      {
-
-      }
-    }
-
-    /*FIXME undefined action yet*/
-    protected static class DeleteList extends MenuClickProcessorBase
-    {
-      @Override
-      public void process(@NonNull BaseBookmarkCategoriesFragment frag,
-                          @NonNull BookmarkCategory category)
-      {
-
       }
     }
   }

@@ -34,8 +34,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
   @NonNull
   private final BookmarkCategory.Type mType;
 
-  BookmarkCategoriesAdapter(@NonNull Context context,
-                            @NonNull BookmarkCategory.Type type)
+  BookmarkCategoriesAdapter(@NonNull Context context, @NonNull BookmarkCategory.Type type)
   {
     super(context.getApplicationContext());
     mType = type;
@@ -44,7 +43,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
 
   BookmarkCategoriesAdapter(@NonNull Context context)
   {
-    this(context, BookmarkCategory.Type.OWNED);
+    this(context, BookmarkCategory.Type.PRIVATE);
   }
 
   public void setOnClickListener(@Nullable OnItemClickListener<BookmarkCategory> listener)
@@ -139,7 +138,8 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     });
   }
 
-  private void bindSize(CategoryViewHolder categoryHolder, BookmarkCategory category)
+  private void bindSize(@NonNull CategoryViewHolder categoryHolder,
+                        @NonNull BookmarkCategory category)
   {
     categoryHolder.setSize(category.getPluralsCountTemplate(), category.getPluralsCount());
   }
@@ -186,7 +186,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     @NonNull
     private final CategoryViewHolder mHolder;
 
-    public LongClickListener(CategoryViewHolder holder)
+    LongClickListener(@NonNull CategoryViewHolder holder)
     {
       mHolder = holder;
     }
@@ -221,9 +221,10 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
 
   private class CategoryItemClickListener implements View.OnClickListener
   {
+    @NonNull
     private final CategoryViewHolder mHolder;
 
-    public CategoryItemClickListener(CategoryViewHolder holder)
+    CategoryItemClickListener(@NonNull CategoryViewHolder holder)
     {
       mHolder = holder;
     }
@@ -255,7 +256,7 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
     @NonNull
     private final CategoryViewHolder mHolder;
 
-    public ToggleVisibilityClickListener(@NonNull CategoryViewHolder holder)
+    ToggleVisibilityClickListener(@NonNull CategoryViewHolder holder)
     {
       mHolder = holder;
     }

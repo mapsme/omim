@@ -42,7 +42,7 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
   @Override
   protected int getLayoutRes()
   {
-    return R.layout.fragment_cached_bookmarks;
+    return R.layout.fragment_catalog_bookmark_categories;
   }
 
   @Override
@@ -102,10 +102,9 @@ public class CachedBookmarksFragment extends BaseBookmarkCategoriesFragment impl
 
   private void openBookmarksCatalogScreen()
   {
-    Intent intent = new Intent(getActivity(),
-                               BookmarksCatalogActivity.class).putExtra(
-                                   BookmarksCatalogFragment.EXTRA_BOOKMARKS_CATALOG_URL,
-                                   getCatalogUrl());
+    Intent intent = new Intent(getActivity(), BookmarksCatalogActivity.class)
+        .putExtra(BookmarksCatalogFragment.EXTRA_BOOKMARKS_CATALOG_URL,
+                  getCatalogUrl());
     getActivity().startActivity(intent);
   }
 

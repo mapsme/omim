@@ -15,8 +15,8 @@ import java.util.Set;
 
 public class BookmarksDownloadManager
 {
-  public static final String QUERY_PARAM_ID_KEY = "id";
-  public static final String QUERY_PARAM_NAME_KEY = "name";
+  private static final String QUERY_PARAM_ID_KEY = "id";
+  private static final String QUERY_PARAM_NAME_KEY = "name";
 
   @NonNull
   private final Context mContext;
@@ -35,7 +35,7 @@ public class BookmarksDownloadManager
       throw new IOException("system DownloadManager is null");
     }
 
-    Pair<Uri, Uri> uriPair = onPrepareUri(url);
+    Pair<Uri, Uri> uriPair = onPrepareUriPair(url);
     Uri srcUri = uriPair.first;
     Uri dstUri = uriPair.second;
 
@@ -60,7 +60,7 @@ public class BookmarksDownloadManager
            : title;
   }
 
-  private Pair<Uri, Uri> onPrepareUri(String url)
+  private Pair<Uri, Uri> onPrepareUriPair(String url)
   {
     Uri srcUri = Uri.parse(url);
     String fileId = srcUri.getQueryParameter(QUERY_PARAM_ID_KEY);

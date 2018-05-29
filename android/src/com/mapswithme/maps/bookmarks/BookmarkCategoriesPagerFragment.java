@@ -27,8 +27,7 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
 
   @Nullable
   @Override
-  public View onCreateView(LayoutInflater inflater,
-                           @Nullable ViewGroup container,
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                            @Nullable Bundle savedInstanceState)
   {
     View root = inflater.inflate(R.layout.fragment_bookmark_categories_pager, null);
@@ -47,6 +46,6 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
   @NonNull
   private static List<BookmarksPageFactory> prepareAdapterDataSet()
   {
-    return Arrays.asList(BookmarksPageFactory.OWNED, BookmarksPageFactory.CATALOG);
+    return Arrays.asList(BookmarksPageFactory.PRIVATE, BookmarksPageFactory.CATALOG);
   }
 }

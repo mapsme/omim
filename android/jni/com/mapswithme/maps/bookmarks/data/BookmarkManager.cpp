@@ -534,8 +534,7 @@ JNIEXPORT jboolean JNICALL
 Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesInvisible(
         JNIEnv * env, jobject thiz, jint type)
 {
-  auto const value = static_cast<BookmarkManager::BookmarkCategoryFilter>(static_cast<int>(type));
-
+  auto const value = static_cast<BookmarkManager::CategoryFilterType>(type);
   return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesInvisible(value));
 }
 
@@ -543,10 +542,9 @@ JNIEXPORT jboolean JNICALL
 Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAreAllCategoriesVisible(
         JNIEnv * env, jobject thiz, jint type)
 {
-  auto const value = static_cast<BookmarkManager::BookmarkCategoryFilter>(static_cast<int>(type));
+  auto const value = static_cast<BookmarkManager::CategoryFilterType>(type);
   return static_cast<jboolean>(frm()->GetBookmarkManager().AreAllCategoriesVisible(value));
 }
-
 
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeSetAllCategoriesVisibility(
@@ -665,7 +663,6 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeIsCategoryFromCata
   auto & bm = frm()->GetBookmarkManager();
   return static_cast<jboolean>(bm.IsCategoryFromCatalog(static_cast<kml::MarkGroupId>(catId)));
 }
-
 
 JNIEXPORT jobjectArray JNICALL
 Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeGetBookmarkCategories(

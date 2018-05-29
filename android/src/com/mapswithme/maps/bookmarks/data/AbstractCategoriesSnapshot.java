@@ -2,9 +2,6 @@ package com.mapswithme.maps.bookmarks.data;
 
 import android.support.annotation.NonNull;
 
-import com.mapswithme.maps.content.Predicate;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +40,7 @@ public class AbstractCategoriesSnapshot
       return mStrategy.filter(super.items());
     }
 
-    public int indexOfOrThrow(BookmarkCategory category)
+    public int indexOfOrThrow(@NonNull BookmarkCategory category)
     {
       int indexOf = items().indexOf(category);
       if (indexOf < 0)
@@ -63,11 +60,11 @@ public class AbstractCategoriesSnapshot
     }
   }
 
-  public static class Owned extends Default
+  public static class Private extends Default
   {
-    public Owned(@NonNull BookmarkCategory[] items)
+    public Private(@NonNull BookmarkCategory[] items)
     {
-      super(items, new FilterStrategy.Owned());
+      super(items, new FilterStrategy.Private());
     }
   }
 
@@ -84,74 +81,6 @@ public class AbstractCategoriesSnapshot
     public All(@NonNull BookmarkCategory[] items)
     {
       super(items, new FilterStrategy.All());
-    }
-  }
-
-  public abstract static class FilterStrategy
-  {
-    @NonNull
-    public abstract List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items);
-
-    public static class All extends FilterStrategy
-    {
-      @NonNull
-      @Override
-      public List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items)
-      {
-        return items;
-      }
-    }
-
-    public static class Owned extends PredicativeStrategy<Boolean>
-    {
-      private Owned()
-      {
-        super(new Predicate.Equals<>(new BookmarkCategory.IsFromCatalog(), false));
-      }
-
-      public static FilterStrategy makeInstance()
-      {
-        return new Owned();
-      }
-    }
-
-    public static class Catalog extends PredicativeStrategy<Boolean>
-    {
-      private Catalog()
-      {
-        super(new Predicate.Equals<>(new BookmarkCategory.IsFromCatalog(), true));
-      }
-
-      public static Catalog makeInstance(){
-        return new Catalog();
-      }
-
-    }
-  }
-
-  public static class PredicativeStrategy<T> extends FilterStrategy
-  {
-    @NonNull
-    private final Predicate<T, BookmarkCategory> mPredicate;
-
-    private PredicativeStrategy(@NonNull Predicate<T, BookmarkCategory> predicate)
-    {
-      mPredicate = predicate;
-    }
-
-    @NonNull
-    @Override
-    public List<BookmarkCategory> filter(@NonNull List<BookmarkCategory> items)
-    {
-      List<BookmarkCategory> result = new ArrayList<>();
-      for (BookmarkCategory each : items)
-      {
-        if (mPredicate.apply(each))
-        {
-          result.add(each);
-        }
-      }
-      return Collections.unmodifiableList(result);
     }
   }
 }

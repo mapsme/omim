@@ -1762,29 +1762,42 @@ bool BookmarkManager::IsUsedCategoryName(std::string const & name) const
   return false;
 }
 
-bool BookmarkManager::AreAllCategoriesVisible(const BookmarkCategoryFilter filter) const
-{
-    CHECK_THREAD_CHECKER(m_threadChecker, ());
-    for (auto const & category : m_categories)
-    {
-        if ((filter == BookmarkCategoryFilter::All && !category.second->IsVisible())
-            || (filter == BookmarkCategoryFilter::Catalog && IsCategoryFromCatalog(category.first) && !category.second->IsVisible())
-            || (filter == BookmarkCategoryFilter::Default && !IsCategoryFromCatalog(category.first) && !category.second->IsVisible()))
-        {
-          return false;
-        }
-    }
-    return true;
-}
-
-bool BookmarkManager::AreAllCategoriesInvisible(const BookmarkCategoryFilter filter) const
+bool BookmarkManager::AreAllCategoriesVisible(CategoryFilterType const filter) const
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
+  bool visible = false;
+  bool fromCatalog = false;
   for (auto const & category : m_categories)
   {
-    if ((filter == BookmarkCategoryFilter::All && category.second->IsVisible())
-        || (filter == BookmarkCategoryFilter::Catalog && IsCategoryFromCatalog(category.first) && category.second->IsVisible())
-        || (filter == BookmarkCategoryFilter::Default && !IsCategoryFromCatalog(category.first) && category.second->IsVisible()))
+    visible = category.second->IsVisible();
+    fromCatalog = IsCategoryFromCatalog(category.first);
+
+    if (!visible && IsFilterTypeCorrected(filter, fromCatalog))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool BookmarkManager::IsFilterTypeCorrected(CategoryFilterType const filter,
+                                            bool const fromCatalog) const
+{
+    return (filter == CategoryFilterType::All ||
+            (filter == CategoryFilterType::Public && fromCatalog) ||
+            (filter == CategoryFilterType::Private && !fromCatalog));
+}
+
+bool BookmarkManager::AreAllCategoriesInvisible(CategoryFilterType const filter) const
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+  bool visible = false;
+  bool fromCatalog = false;
+  for (auto const & category : m_categories)
+  {
+    visible = category.second->IsVisible();
+    fromCatalog = IsCategoryFromCatalog(category.first);
+    if (visible && IsFilterTypeCorrected(filter, fromCatalog))
     {
       return false;
     }
