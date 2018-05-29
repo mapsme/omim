@@ -228,6 +228,28 @@ public class Utils
     }
   }
 
+  public static <T> T castTo(Object instance)
+  {
+    return (T)instance;
+  }
+
+  public static void closeSafely(Closeable... closeable)
+  {
+    for (Closeable each : closeable){
+      if (each != null){
+        try
+        {
+          each.close();
+        }
+        catch (IOException e)
+        {
+          LOGGER.d(TAG, "there's something wrong");
+        }
+      }
+    }
+  }
+
+
   public static void sendSupportMail(@NonNull Activity activity, @NonNull String subject)
   {
     LoggerFactory.INSTANCE.zipLogs(new OnZipCompletedCallback(activity, subject));

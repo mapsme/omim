@@ -31364,3 +31364,39 @@ fa = دوباره نپرس
     sw = Nakubali kupokea habari za hivi karibuni kuhusu bidhaa za MAPS.ME
     zh-Hans = 我同意接收有关MAPS.ME产品的最新消息
     zh-Hant = 我同意接收有關MAPS.ME產品的最新消息
+
+  [bookmarks_page_downloaded]
+    en = downloaded
+
+  [bookmarks_page_my]
+    en = my
+
+  [cached_bookmarks_placeholder_title]
+    en = Download new places
+
+  [cached_bookmarks_placeholder_subtitle]
+    en = Press the button to download thousands  of intresting places and routes created  by MAPS.ME users. You will need the internet connection.
+
+  [downloader_download_routers]
+    en = download routes
+
+  [bookmarks_groups_cached]
+    en = Downloaded lists
+
+  [author_name_by_prefix]
+    en = by %s
+
+  [routes_and_bookmarks]
+    en = Routes and bookmarks
+
+  [objects]
+    en:one = %d objects
+    en:other = %d objects
+
+  [places]
+      en:one = %d place
+      en:other = %d places
+
+  [tracks]
+      en:one = %d track
+      en:other = %d tracks
