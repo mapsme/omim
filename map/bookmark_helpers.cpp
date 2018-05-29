@@ -389,5 +389,5 @@ std::string GetLocalizedBookmarkType(std::vector<uint32_t> const & types)
 
 std::string GetPreferredBookmarkName(kml::BookmarkData const & bmData)
 {
-  return kml::GetPreferredBookmarkName(bmData, languages::GetCurrentNorm(), languages::GetCurrentOrig());
+  return kml::GetPreferredBookmarkName(bmData, languages::GetCurrentOrig());
 }
