@@ -2301,3 +2301,19 @@
 "sign_agree_tof_gdpr" = "Tôi đồng ý với <a href=\"https://legal.my.com/us/maps/tou/\">Điều khoản sử dụng</a>";
 
 "sign_agree_news_gdpr" = "Tôi đồng ý nhận tin tức mới nhất về các sản phẩm MAPS.ME";
+
+"bookmarks_page_downloaded" = "downloaded";
+
+"bookmarks_page_my" = "my";
+
+"cached_bookmarks_placeholder_title" = "Download new places";
+
+"cached_bookmarks_placeholder_subtitle" = "Press the button to download thousands  of intresting places and routes created  by MAPS.ME users. You will need the internet connection.";
+
+"downloader_download_routers" = "download routes";
+
+"bookmarks_groups_cached" = "Downloaded lists";
+
+"author_name_by_prefix" = "by %s";
+
+"routes_and_bookmarks" = "Routes and bookmarks";
