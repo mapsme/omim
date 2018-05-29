@@ -1283,7 +1283,7 @@ void Cloud::ProcessSuccessfulSnapshot(SnapshotResult const & result)
   if (result.m_response.m_files.empty())
   {
     ThreadSafeCallback<RestoreRequestedHandler>([this]() { return m_onRestoreRequested; },
-                                                RestoringRequestResult::NoBackup,
+                                                RestoringRequestResult::NoBackup, "",
                                                 result.m_response.m_datetime);
     FinishRestoring(SynchronizationResult::Success, {});
     return;
@@ -1295,7 +1295,7 @@ void Cloud::ProcessSuccessfulSnapshot(SnapshotResult const & result)
   if (totalSize * kSizeScalar >= GetPlatform().GetWritableStorageSpace())
   {
     ThreadSafeCallback<RestoreRequestedHandler>([this]() { return m_onRestoreRequested; },
-                                                RestoringRequestResult::NotEnoughDiskSpace,
+                                                RestoringRequestResult::NotEnoughDiskSpace, "",
                                                 result.m_response.m_datetime);
     FinishRestoring(SynchronizationResult::DiskError, {});
     return;
@@ -1312,6 +1312,7 @@ void Cloud::ProcessSuccessfulSnapshot(SnapshotResult const & result)
   {
     ThreadSafeCallback<RestoreRequestedHandler>([this]() { return m_onRestoreRequested; },
                                                 RestoringRequestResult::BackupExists,
+                                                result.m_response.m_deviceName,
                                                 result.m_response.m_datetime);
   }
 }
