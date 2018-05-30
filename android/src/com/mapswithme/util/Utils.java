@@ -336,7 +336,7 @@ public class Utils
     switch (openMode)
     {
       case  Direct:
-        if (!Utils.isAppInstalled(activity, packageName))
+        if (!Utils.isAppInstalled(activity, packageName) || TextUtils.isEmpty(links.getDeepLink()))
         {
           openUrl(activity, links.getUniversalLink());
           return;
