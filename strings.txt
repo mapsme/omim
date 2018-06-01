@@ -28003,16 +28003,16 @@ fa = دوباره نپرس
     ru = Магазин
 
   [sponsored_partner8_action]
-    en = -
-    ru = -
+    en = Special
+    ru = Акция
 
   [sponsored_partner9_action]
-    en = -
-    ru = -
+    en = Special
+    ru = Акция
 
   [sponsored_partner10_action]
-    en = -
-    ru = -
+    en = Store
+    ru = Магазин
 
   [sponsored_partner11_action]
     en = -
@@ -31422,12 +31422,16 @@ fa = دوباره نپرس
     zh-Hant = 我同意接收有關MAPS.ME產品的最新消息
 
   [whats_new_localbiz_title]
+    en = Small business deserves attention
     ru = Малый бизнес заслуживает внимания
 
   [whats_new_localbiz_message]
+    en = Family cafes, cosy hostels, unique stores - they are the special of our journeys.
+We will optimize your page on the map free of charge so you will get noticed.
     ru = Локальные кафе, хостелы и магазинчики - именно они делают путешествия незабываемыми.\n\nОставьте заявку, и мы бесплатно оптимизируем страницу вашего бизнеса в MAPS.ME.
 
   [whats_new_order_button]
+    en = Leave a request
     ru = Оставить заявку
 
  [subtittle_opt_out]
@@ -31443,8 +31447,8 @@ fa = دوباره نپرس
    ru = Отчеты об ошибках
 
  [opt_out_fabric_description]
-   en = MAPS.ME uses your data to improve your experience.
-   ru = MAPS.ME использует ваши данные, чтобы улучшать приложение.
+   en = MAPS.ME uses your data to improve your experience. Changes will take effect after restart the app.
+   ru = MAPS.ME использует ваши данные, чтобы улучшать приложение. Перезапустите приложения, чтобы изменения вступили в силу.
 
  [opt_out_pushwoosh]
    en = Pushwoosh
@@ -31452,11 +31456,21 @@ fa = دوباره نپرس
  [opt_out_appsflyer]
    en = Appsflyer
 
- [opt_out_help_ios]
-   en = Your iOS mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\niOS 9 or Higher\n\nGo to your Settings > Select Privacy > Select Advertising > Enable the “Limit Ad Tracking” setting
+ [opt_out_help_ios_1]
+   en = Your iOS mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.
+   ru = Чтобы отказаться от получаения целевой рекламы в настройках вашего устройстваю
+
+ [opt_out_help_ios_2]
+   en = iOS 9 or Higher
+   ru = iOS 9 или выше
+
+[opt_out_help_ios_3]
+en = Go to your Settings → Select Privacy → Select Advertising → Enable the “Limit Ad Tracking” setting
+ru =Откройке «Настройки» → Выберите «Конфиденциальность» → Выберите «Реклама» → Включите «Ограничение трекинга»
 
  [opt_out_help_android]
-   en = Your Android mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android devices with OS 2.2 and up and Google Play Services version 4.0 and up:\nOpen your Google Settings app > Ads > Enable “Opt out of interest-based advertising”
+   en = Your Android mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android 2.2 and up and Google Play Services version 4.0 and up:\nSettings → Google → Ads → Opt out of Ads Personalization\nSettings → Google → Google Account → Personal info & privacy → Ads Settings → Ads Personalization
+   ru = Чтобы отказаться от получаения целевой рекламы в настройках вашего устройстваю\nAndroid 2.2 и выше и Google Play Сервисы 4.0 и выше\n\nНастройки телефона → Google → Реклама → Отключить персонализацию рекламы\nНастройки телефона → Google → Аккаунт Google → Конфиденциальность → Настройки реламных предпочтений → Персонализация рекламы
 
  [privacy_policy]
    en = Privacy policy
