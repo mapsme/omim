@@ -2336,15 +2336,13 @@
 
 "whats_new_order_button" = "Оставить заявку";
 
-"subtittle_opt_out" = "Настрокий сопровождения";
-
-"opt_out_flurry" = "Статистика";
+"subtittle_opt_out" = "Настройки сопровождения";
 
 "opt_out_mopub" = "Персонализированная реклама";
 
 "opt_out_fabric" = "Отчеты об ошибках";
 
-"opt_out_fabric_description" = "MAPS.ME использует ваши данные для улучшения приложения.";
+"opt_out_fabric_description" = "MAPS.ME использует ваши данные, чтобы улучшать приложение.";
 
 "opt_out_pushwoosh" = "Pushwoosh";
 
