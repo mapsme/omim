@@ -1343,4 +1343,11 @@
 	<string name="whats_new_localbiz_title">Малый бизнес заслуживает внимания</string>
 	<string name="whats_new_localbiz_message">Локальные кафе, хостелы и магазинчики - именно они делают путешествия незабываемыми.\n\nОставьте заявку, и мы бесплатно оптимизируем страницу вашего бизнеса в MAPS.ME.</string>
 	<string name="whats_new_order_button">Оставить заявку</string>
+	<string name="subtittle_opt_out">Настрокий сопровождения</string>
+	<string name="opt_out_flurry">Статистика</string>
+	<string name="opt_out_mopub">Персонализированная реклама</string>
+	<string name="opt_out_fabric">Отчеты об ошибках</string>
+	<string name="opt_out_fabric_description">MAPS.ME использует ваши данные для улучшения приложения.</string>
+	<string name="privacy_policy">Политика конфиденциальности</string>
+	<string name="terms_of_use">Условия использования</string>
 </resources>
