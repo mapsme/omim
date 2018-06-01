@@ -2112,11 +2112,11 @@
 
 "sponsored_partner7_action" = "Магазин";
 
-"sponsored_partner8_action" = "-";
+"sponsored_partner8_action" = "Акция";
 
-"sponsored_partner9_action" = "-";
+"sponsored_partner9_action" = "Акция";
 
-"sponsored_partner10_action" = "-";
+"sponsored_partner10_action" = "Магазин";
 
 "sponsored_partner11_action" = "-";
 
@@ -2342,15 +2342,19 @@
 
 "opt_out_fabric" = "Отчеты об ошибках";
 
-"opt_out_fabric_description" = "MAPS.ME использует ваши данные, чтобы улучшать приложение.";
+"opt_out_fabric_description" = "MAPS.ME использует ваши данные, чтобы улучшать приложение. Перезапустите приложения, чтобы изменения вступили в силу.";
 
 "opt_out_pushwoosh" = "Pushwoosh";
 
 "opt_out_appsflyer" = "Appsflyer";
 
-"opt_out_help_ios" = "Your iOS mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\niOS 9 or Higher\n\nGo to your Settings > Select Privacy > Select Advertising > Enable the “Limit Ad Tracking” setting";
+"opt_out_help_ios_1" = "Чтобы отказаться от получаения целевой рекламы в настройках вашего устройстваю";
 
-"opt_out_help_android" = "Your Android mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android devices with OS 2.2 and up and Google Play Services version 4.0 and up:\nOpen your Google Settings app > Ads > Enable “Opt out of interest-based advertising”";
+"opt_out_help_ios_2" = "iOS 9 или выше";
+
+"opt_out_help_ios_3" = "Откройке «Настройки» → Выберите «Конфиденциальность» → Выберите «Реклама» → Включите «Ограничение трекинга»";
+
+"opt_out_help_android" = "Чтобы отказаться от получаения целевой рекламы в настройках вашего устройстваю\nAndroid 2.2 и выше и Google Play Сервисы 4.0 и выше\n\nНастройки телефона → Google → Реклама → Отключить персонализацию рекламы\nНастройки телефона → Google → Аккаунт Google → Конфиденциальность → Настройки реламных предпочтений → Персонализация рекламы";
 
 "privacy_policy" = "Политика конфиденциальности";
 

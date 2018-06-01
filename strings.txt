@@ -31426,8 +31426,7 @@ fa = دوباره نپرس
     ru = Малый бизнес заслуживает внимания
 
   [whats_new_localbiz_message]
-    en = Family cafes, cosy hostels, unique stores - they are the special of our journeys.
-We will optimize your page on the map free of charge so you will get noticed.
+    en = Family cafes, cosy hostels, unique stores - they are the special of our journeys. We will optimize your page on the map free of charge so you will get noticed.
     ru = Локальные кафе, хостелы и магазинчики - именно они делают путешествия незабываемыми.\n\nОставьте заявку, и мы бесплатно оптимизируем страницу вашего бизнеса в MAPS.ME.
 
   [whats_new_order_button]

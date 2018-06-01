@@ -1222,9 +1222,9 @@
 	<string name="sponsored_partner5_action">Билеты</string>
 	<string name="sponsored_partner6_action">Магазин</string>
 	<string name="sponsored_partner7_action">Магазин</string>
-	<string name="sponsored_partner8_action">-</string>
-	<string name="sponsored_partner9_action">-</string>
-	<string name="sponsored_partner10_action">-</string>
+	<string name="sponsored_partner8_action">Акция</string>
+	<string name="sponsored_partner9_action">Акция</string>
+	<string name="sponsored_partner10_action">Магазин</string>
 	<string name="sponsored_partner11_action">-</string>
 	<string name="sponsored_partner12_action">-</string>
 	<string name="sponsored_partner13_action">-</string>
@@ -1346,7 +1346,11 @@
 	<string name="subtittle_opt_out">Настройки сопровождения</string>
 	<string name="opt_out_mopub">Персонализированная реклама</string>
 	<string name="opt_out_fabric">Отчеты об ошибках</string>
-	<string name="opt_out_fabric_description">MAPS.ME использует ваши данные, чтобы улучшать приложение.</string>
+	<string name="opt_out_fabric_description">MAPS.ME использует ваши данные, чтобы улучшать приложение. Перезапустите приложения, чтобы изменения вступили в силу.</string>
+	<string name="opt_out_help_ios_1">Чтобы отказаться от получаения целевой рекламы в настройках вашего устройстваю</string>
+	<string name="opt_out_help_ios_2">iOS 9 или выше</string>
+	<string name="opt_out_help_ios_3">Откройке «Настройки» → Выберите «Конфиденциальность» → Выберите «Реклама» → Включите «Ограничение трекинга»</string>
+	<string name="opt_out_help_android">Чтобы отказаться от получаения целевой рекламы в настройках вашего устройстваю\nAndroid 2.2 и выше и Google Play Сервисы 4.0 и выше\n\nНастройки телефона → Google → Реклама → Отключить персонализацию рекламы\nНастройки телефона → Google → Аккаунт Google → Конфиденциальность → Настройки реламных предпочтений → Персонализация рекламы</string>
 	<string name="privacy_policy">Политика конфиденциальности</string>
 	<string name="terms_of_use">Условия использования</string>
 </resources>

@@ -1234,9 +1234,9 @@
 	<string name="sponsored_partner5_action">Tickets</string>
 	<string name="sponsored_partner6_action">Store</string>
 	<string name="sponsored_partner7_action">Store</string>
-	<string name="sponsored_partner8_action">-</string>
-	<string name="sponsored_partner9_action">-</string>
-	<string name="sponsored_partner10_action">-</string>
+	<string name="sponsored_partner8_action">Special</string>
+	<string name="sponsored_partner9_action">Special</string>
+	<string name="sponsored_partner10_action">Store</string>
 	<string name="sponsored_partner11_action">-</string>
 	<string name="sponsored_partner12_action">-</string>
 	<string name="sponsored_partner13_action">-</string>
@@ -1351,14 +1351,19 @@
 	<string name="sign_agree_pp_gdpr">I agree to the &lt;a href="%s">Privacy Policy&lt;/a></string>
 	<string name="sign_agree_tof_gdpr">I agree to the &lt;a href="%s">Terms of Use&lt;/a></string>
 	<string name="sign_agree_news_gdpr">I agree to receive the latest news about MAPS.ME products</string>
+	<string name="whats_new_localbiz_title">Small business deserves attention</string>
+	<string name="whats_new_localbiz_message">Family cafes, cosy hostels, unique stores - they are the special of our journeys. We will optimize your page on the map free of charge so you will get noticed.</string>
+	<string name="whats_new_order_button">Leave a request</string>
 	<string name="subtittle_opt_out">Tracking settings</string>
 	<string name="opt_out_mopub">Personalized advertising</string>
 	<string name="opt_out_fabric">Crash reports</string>
-	<string name="opt_out_fabric_description">MAPS.ME uses your data to improve your experience.</string>
+	<string name="opt_out_fabric_description">MAPS.ME uses your data to improve your experience. Changes will take effect after restart the app.</string>
 	<string name="opt_out_pushwoosh">Pushwoosh</string>
 	<string name="opt_out_appsflyer">Appsflyer</string>
-	<string name="opt_out_help_ios">Your iOS mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\niOS 9 or Higher\n\nGo to your Settings > Select Privacy > Select Advertising > Enable the “Limit Ad Tracking” setting</string>
-	<string name="opt_out_help_android">Your Android mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android devices with OS 2.2 and up and Google Play Services version 4.0 and up:\nOpen your Google Settings app > Ads > Enable “Opt out of interest-based advertising”</string>
+	<string name="opt_out_help_ios_1">Your iOS mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.</string>
+	<string name="opt_out_help_ios_2">iOS 9 or Higher</string>
+	<string name="opt_out_help_ios_3">Go to your Settings → Select Privacy → Select Advertising → Enable the “Limit Ad Tracking” setting</string>
+	<string name="opt_out_help_android">Your Android mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android 2.2 and up and Google Play Services version 4.0 and up:\nSettings → Google → Ads → Opt out of Ads Personalization\nSettings → Google → Google Account → Personal info &amp; privacy → Ads Settings → Ads Personalization</string>
 	<string name="privacy_policy">Privacy policy</string>
 	<string name="terms_of_use">Terms of use</string>
 </resources>
