@@ -31432,23 +31432,19 @@ fa = دوباره نپرس
 
  [subtittle_opt_out]
    en = Tracking settings
-   ru = Настрокий сопровождения
-
- [opt_out_flurry]
-   en = Statistic
-   ru = Статистика
+   ru = Настройки сопровождения
 
  [opt_out_mopub]
-   en = Personalised advertising
+   en = Personalized advertising
    ru = Персонализированная реклама
 
  [opt_out_fabric]
-   en = Crash report
+   en = Crash reports
    ru = Отчеты об ошибках
 
  [opt_out_fabric_description]
-   en = MAPS.ME use your data to improve your experience.
-   ru = MAPS.ME использует ваши данные для улучшения приложения.
+   en = MAPS.ME uses your data to improve your experience.
+   ru = MAPS.ME использует ваши данные, чтобы улучшать приложение.
 
  [opt_out_pushwoosh]
    en = Pushwoosh
@@ -31461,7 +31457,6 @@ fa = دوباره نپرس
 
  [opt_out_help_android]
    en = Your Android mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android devices with OS 2.2 and up and Google Play Services version 4.0 and up:\nOpen your Google Settings app > Ads > Enable “Opt out of interest-based advertising”
-
 
  [privacy_policy]
    en = Privacy policy
