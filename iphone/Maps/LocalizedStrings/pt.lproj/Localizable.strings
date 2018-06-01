@@ -2332,13 +2332,11 @@
 
 "subtittle_opt_out" = "Tracking settings";
 
-"opt_out_flurry" = "Statistic";
+"opt_out_mopub" = "Personalized advertising";
 
-"opt_out_mopub" = "Personalised advertising";
+"opt_out_fabric" = "Crash reports";
 
-"opt_out_fabric" = "Crash report";
-
-"opt_out_fabric_description" = "MAPS.ME use your data to improve your experience.";
+"opt_out_fabric_description" = "MAPS.ME uses your data to improve your experience.";
 
 "opt_out_pushwoosh" = "Pushwoosh";
 

@@ -1352,10 +1352,9 @@
 	<string name="sign_agree_tof_gdpr">I agree to the &lt;a href="%s">Terms of Use&lt;/a></string>
 	<string name="sign_agree_news_gdpr">I agree to receive the latest news about MAPS.ME products</string>
 	<string name="subtittle_opt_out">Tracking settings</string>
-	<string name="opt_out_flurry">Statistic</string>
-	<string name="opt_out_mopub">Personalised advertising</string>
-	<string name="opt_out_fabric">Crash report</string>
-	<string name="opt_out_fabric_description">MAPS.ME use your data to improve your experience.</string>
+	<string name="opt_out_mopub">Personalized advertising</string>
+	<string name="opt_out_fabric">Crash reports</string>
+	<string name="opt_out_fabric_description">MAPS.ME uses your data to improve your experience.</string>
 	<string name="opt_out_pushwoosh">Pushwoosh</string>
 	<string name="opt_out_appsflyer">Appsflyer</string>
 	<string name="opt_out_help_ios">Your iOS mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\niOS 9 or Higher\n\nGo to your Settings > Select Privacy > Select Advertising > Enable the “Limit Ad Tracking” setting</string>
