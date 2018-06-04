@@ -194,7 +194,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Nullable
   private SearchFilterController mFilterController;
 
-  private boolean mIsFragmentContainer;
+  private boolean mIsTabletLayout;
   private boolean mIsFullscreen;
   private boolean mIsFullscreenAnimating;
   private boolean mIsAppearMenuLater;
@@ -382,14 +382,14 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   protected int getFragmentContentResId()
   {
-    return (mIsFragmentContainer ? R.id.fragment_container
-                                 : super.getFragmentContentResId());
+    return (mIsTabletLayout ? R.id.fragment_container
+                            : super.getFragmentContentResId());
   }
 
   @Nullable
   Fragment getFragment(Class<? extends Fragment> clazz)
   {
-    if (!mIsFragmentContainer)
+    if (!mIsTabletLayout)
       throw new IllegalStateException("Must be called for tablets only!");
 
     return getSupportFragmentManager().findFragmentByTag(clazz.getName());
@@ -415,7 +415,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public boolean containsFragment(@NonNull Class<? extends Fragment> fragmentClass)
   {
-    return mIsFragmentContainer && getFragment(fragmentClass) != null;
+    return mIsTabletLayout && getFragment(fragmentClass) != null;
   }
 
   private void showBookmarks()
@@ -423,9 +423,18 @@ public class MwmActivity extends BaseMwmFragmentActivity
     startActivity(new Intent(this, BookmarkCategoriesActivity.class));
   }
 
+  private void showSearchIfExist(@NonNull Intent data)
+  {
+    String query = data.getStringExtra(DiscoveryActivity.EXTRA_FILTER_SEARCH_QUERY);
+    if (TextUtils.isEmpty(query))
+      return;
+
+    showSearch(query);
+  }
+
   public void showSearch(String query)
   {
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       mSearchController.hide();
 
@@ -458,7 +467,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     // TODO(yunikkk) think about refactoring. It probably should be called in editor.
     Editor.nativeStartEdit();
     Statistics.INSTANCE.trackEditorLaunch(false);
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
       replaceFragment(EditorHostFragment.class, null, null);
     else
       EditorActivity.start(this);
@@ -491,7 +500,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     final Bundle args = new Bundle();
     args.putBoolean(DownloaderActivity.EXTRA_OPEN_DOWNLOADED, openDownloaded);
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       SearchEngine.INSTANCE.cancel();
       mSearchController.refreshToolbar();
@@ -524,9 +533,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     super.safeOnCreate(savedInstanceState);
     if (savedInstanceState != null)
       mLocationErrorDialogAnnoying = savedInstanceState.getBoolean(EXTRA_LOCATION_DIALOG_IS_ANNOYING);
-    mIsFragmentContainer = getResources().getBoolean(R.bool.tabletLayout);
+    mIsTabletLayout = getResources().getBoolean(R.bool.tabletLayout);
 
-    if (!mIsFragmentContainer && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP))
+    if (!mIsTabletLayout && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP))
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
     setContentView(R.layout.activity_map);
@@ -570,7 +579,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mPlacePageTracker = new PlacePageTracker(mPlacePage);
     }
 
-    if (!mIsFragmentContainer)
+    if (!mIsTabletLayout)
     {
       mRoutingPlanInplaceController = new RoutingPlanInplaceController(this, this, this);
       removeCurrentFragment(false);
@@ -755,7 +764,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void closeAllFloatingPanels()
   {
-    if (!mIsFragmentContainer)
+    if (!mIsTabletLayout)
       return;
 
     closePlacePage();
@@ -846,7 +855,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
         case ADD_PLACE:
           closePlacePage();
-          if (mIsFragmentContainer)
+          if (mIsTabletLayout)
             closeSidePanel();
           closeMenu(Statistics.EventName.MENU_ADD_PLACE, AlohaHelper.MENU_ADD_PLACE, new Runnable()
           {
@@ -929,7 +938,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       }
     });
 
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       mPanelAnimator = new PanelAnimator(this);
       mPanelAnimator.registerListener(mMainMenu.getLeftAnimationTrackListener());
@@ -942,7 +951,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void showDiscovery()
   {
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       replaceFragment(DiscoveryFragment.class, null, null);
     }
@@ -957,7 +966,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private void initOnmapDownloader()
   {
     mOnmapDownloader = new OnmapDownloader(this);
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
       mPanelAnimator.registerListener(mOnmapDownloader);
   }
 
@@ -987,10 +996,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
         mPlacePage.setState(State.HIDDEN);
     }
 
-    if (!mIsFragmentContainer && RoutingController.get().isPlanning())
+    if (!mIsTabletLayout && RoutingController.get().isPlanning())
       mRoutingPlanInplaceController.onSaveState(outState);
 
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
       if (fragment != null)
@@ -1044,7 +1053,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
         mPlacePageTracker.setMapObject(mapObject);
     }
 
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
       if (fragment != null)
@@ -1058,7 +1067,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       }
     }
 
-    if (!mIsFragmentContainer && RoutingController.get().isPlanning())
+    if (!mIsTabletLayout && RoutingController.get().isPlanning())
       mRoutingPlanInplaceController.restoreState(savedInstanceState);
 
     if (mNavigationController != null)
@@ -1087,7 +1096,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
         handleDiscoveryResult(data);
         break;
       case FilterActivity.REQ_CODE_FILTER:
-        handleFilterResult(data);
+        onActionShowFiltersSelected(data);
         break;
       case REQ_CODE_SHOW_SIMILAR_HOTELS:
         if (mSearchController != null)
@@ -1132,6 +1141,14 @@ public class MwmActivity extends BaseMwmFragmentActivity
         handleFilterResult(data);
         break;
     }
+  }
+
+  private void onActionShowFiltersSelected(@NonNull Intent data)
+  {
+    if (mIsTabletLayout)
+      showSearchIfExist(data);
+    else
+      handleFilterResult(data);
   }
 
   private void handleFilterResult(@Nullable Intent data)
@@ -1810,7 +1827,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
           return;
         }
 
-        if (mIsFragmentContainer)
+        if (mIsTabletLayout)
         {
           mMainMenu.setEnabled(MainMenu.Item.P2P, !RoutingController.get().isPlanning());
           mMainMenu.setEnabled(MainMenu.Item.SEARCH, !RoutingController.get().isWaitingPoiPick());
@@ -1912,7 +1929,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void showAddStartFrame()
   {
-    if (!mIsFragmentContainer)
+    if (!mIsTabletLayout)
     {
       mRoutingPlanInplaceController.showAddStartFrame();
       return;
@@ -1925,7 +1942,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void showAddFinishFrame()
   {
-    if (!mIsFragmentContainer)
+    if (!mIsTabletLayout)
     {
       mRoutingPlanInplaceController.showAddFinishFrame();
       return;
@@ -1938,7 +1955,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void hideRoutingActionFrame()
   {
-    if (!mIsFragmentContainer)
+    if (!mIsTabletLayout)
     {
       mRoutingPlanInplaceController.hideActionFrame();
       return;
@@ -1993,7 +2010,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     {
       mSearchController.hide();
 
-      if (mIsFragmentContainer)
+      if (mIsTabletLayout)
       {
         replaceFragment(RoutingPlanFragment.class, null, completionListener);
         if (mRestoreRoutingPlanFragmentNeeded && mSavedForTabletState != null)
@@ -2017,7 +2034,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
     else
     {
-      if (mIsFragmentContainer)
+      if (mIsTabletLayout)
       {
         adjustCompassAndTraffic(UiUtils.getStatusBarHeight(getApplicationContext()));
         setNavButtonsTopLimit(0);
@@ -2119,7 +2136,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void updateBuildProgress(int progress, @Framework.RouterType int router)
   {
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
       if (fragment != null)
@@ -2134,7 +2151,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onTaxiInfoReceived(@NonNull TaxiInfo info)
   {
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
       if (fragment != null)
@@ -2149,7 +2166,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onTaxiError(@NonNull TaxiManager.ErrorCode code)
   {
-    if (mIsFragmentContainer)
+    if (mIsTabletLayout)
     {
       RoutingPlanFragment fragment = (RoutingPlanFragment) getFragment(RoutingPlanFragment.class);
       if (fragment != null)
