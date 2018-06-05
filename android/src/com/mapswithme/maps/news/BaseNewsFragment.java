@@ -282,6 +282,9 @@ public abstract class BaseNewsFragment extends BaseMwmDialogFragment
     View content = View.inflate(getActivity(), R.layout.fragment_news, null);
     res.setContentView(content);
 
+    int offset = UiUtils.getStatusBarNewsFragOffset(content.getContext());
+    content.setPadding(content.getLeft(), content.getTop() + offset, content.getRight(), content.getBottom());
+
     mPager = (ViewPager)content.findViewById(R.id.pager);
     fixPagerSize();
 

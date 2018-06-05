@@ -51,11 +51,9 @@ public final class UiUtils
     @Override
     public void onAnimationStart(Animation animation)
     {}
-
     @Override
     public void onAnimationEnd(Animation animation)
     {}
-
     @Override
     public void onAnimationRepeat(Animation animation)
     {}
@@ -267,6 +265,12 @@ public final class UiUtils
         break;
     }
     return rotation;
+  }
+
+  public static int getStatusBarNewsFragOffset(Context context)
+  {
+    int height = getStatusBarHeight(context);
+    return isLandscape(context) ? height : 0;
   }
 
   public static boolean isTablet()
