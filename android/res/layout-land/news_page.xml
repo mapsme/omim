@@ -14,9 +14,11 @@
     android:layout_marginStart="@dimen/margin_double_plus"
     android:layout_gravity="center_vertical"/>
   <ScrollView
+    android:fillViewport="true"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
     <LinearLayout
+      android:layout_gravity="center"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="@dimen/margin_double_plus"
