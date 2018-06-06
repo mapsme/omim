@@ -294,9 +294,7 @@ public:
     case Thread::Gui:
       RunOnGuiThread(std::forward<Task>(task));
       break;
-    case Thread::Background:
-      m_backgroundThread->Push(std::forward<Task>(task));
-      break;
+    case Thread::Background: m_backgroundThread->Push(std::forward<Task>(task)); break;
     }
   }
 
