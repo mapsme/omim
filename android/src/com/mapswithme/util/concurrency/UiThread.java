@@ -43,6 +43,7 @@ public class UiThread
    * @param task  the code that must be executed on UI thread after given delayMillis.
    * @param delayMillis The delayMillis until the code will be executed.
    */
+  @Deprecated
   public static void runLater(Runnable task, long delayMillis)
   {
     sUiHandler.postDelayed(task, delayMillis);

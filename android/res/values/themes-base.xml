@@ -124,6 +124,11 @@
     <item name="transitStepDivider">@drawable/dot_divider</item>
     <item name="filterPropertyBackground">@drawable/button_with_border</item>
     <item name="adChoicesIcon">@drawable/ic_ad_light</item>
+    <item name="android:textAppearance">@style/TextAppearance</item>
+    <item name="android:textAppearanceSmall">@style/TextAppearance.Small</item>
+    <item name="android:textAppearanceMedium">@style/TextAppearance.Medium</item>
+    <item name="android:textAppearanceLarge">@style/TextAppearance.Large</item>
+    <item name="android:buttonStyle">@style/MwmWidget.Button</item>
   </style>
 
   <!-- Night theme -->
@@ -250,5 +255,10 @@
     <item name="transitStepDivider">@drawable/dot_divider_night</item>
     <item name="filterPropertyBackground">@drawable/button_with_border_night</item>
     <item name="adChoicesIcon">@drawable/ic_ad_dark</item>
+    <item name="android:textAppearance">@style/TextAppearance</item>
+    <item name="android:textAppearanceSmall">@style/TextAppearance.Small</item>
+    <item name="android:textAppearanceMedium">@style/TextAppearance.Medium</item>
+    <item name="android:textAppearanceLarge">@style/TextAppearance.Large</item>
+    <item name="android:buttonStyle">@style/MwmWidget.Button</item>
   </style>
 </resources>

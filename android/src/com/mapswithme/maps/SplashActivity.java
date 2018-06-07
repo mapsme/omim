@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -73,7 +72,8 @@ public class SplashActivity extends AppCompatActivity
 //    Run delayed task because resumeDialogs() must see the actual value of mCanceled flag,
 //    since onPause() callback can be blocked because of UI thread is busy with framework
 //    initialization.
-      UiThread.runLater(mFinalDelayedTask);
+      if (mSavedInstanceState == null)
+        UiThread.runLater(mFinalDelayedTask);
     }
   };
   @NonNull
@@ -88,6 +88,8 @@ public class SplashActivity extends AppCompatActivity
 
   @NonNull
   private final BaseActivityDelegate mBaseDelegate = new BaseActivityDelegate(this);
+  @Nullable
+  private Bundle mSavedInstanceState;
 
   public static void start(@NonNull Context context,
                            @Nullable Class<? extends Activity> activityToStart,
@@ -112,6 +114,7 @@ public class SplashActivity extends AppCompatActivity
   protected void onCreate(@Nullable Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
+    mSavedInstanceState = savedInstanceState;
     mBaseDelegate.onCreate();
     handleUpdateMapsFragmentCorrectly(savedInstanceState);
     UiThread.cancelDelayedTasks(mPermissionsDelayedTask);

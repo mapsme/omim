@@ -29,6 +29,7 @@ import com.mapswithme.maps.downloader.CountryItem;
 import com.mapswithme.maps.downloader.MapManager;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationListener;
+import com.mapswithme.maps.news.WelcomeDialogFragment;
 import com.mapswithme.maps.search.SearchEngine;
 import com.mapswithme.util.ConnectionState;
 import com.mapswithme.util.Constants;
@@ -432,7 +433,7 @@ public class DownloadResourcesLegacyActivity extends BaseMwmFragmentActivity
 
   private void showMap()
   {
-    if (!mAreResourcesDownloaded)
+    if (!mAreResourcesDownloaded || WelcomeDialogFragment.isAgreementRefused(this))
       return;
 
     final Intent intent = new Intent(this, MwmActivity.class);

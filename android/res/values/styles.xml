@@ -364,4 +364,23 @@
     <item name="android:ellipsize">end</item>
     <item name="android:maxLines">2</item>
   </style>
+
+
+  <style name="TextAppearance" parent="TextAppearance.AppCompat">
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <style name="TextAppearance.Small" parent="TextAppearance.AppCompat.Small">
+    <item name="android:textSize">12sp</item>
+  </style>
+
+  <style name="TextAppearance.Medium" parent="TextAppearance.AppCompat.Medium">
+    <item name="android:textSize">16sp</item>
+    <item name="android:textColor">@color/text_appearance_medium</item>
+  </style>
+
+  <style name="TextAppearance.Large" parent="TextAppearance.AppCompat.Large">
+    <item name="android:textSize">20sp</item>
+  </style>
+
 </resources>

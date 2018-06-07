@@ -148,7 +148,7 @@ public class MwmApplication extends Application
   @NonNull
   public static SharedPreferences prefs(@NonNull Context context)
   {
-    String prefFile = context.getString(R.string.pref_file_name);
+    String prefFile = context.getApplicationContext().getString(R.string.pref_file_name);
     return context.getSharedPreferences(prefFile, MODE_PRIVATE);
   }
 

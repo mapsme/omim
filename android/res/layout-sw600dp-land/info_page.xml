@@ -17,41 +17,52 @@
       android:layout_gravity="center|right"
       tools:src="@drawable/img_welcome"/>
   </FrameLayout>
-  <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
+  <ScrollView
+    android:layout_gravity="center"
+    android:fillViewport="true"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
     android:layout_weight="1">
-    <TextView
-      android:id="@+id/tv__title"
-      android:layout_width="wrap_content"
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginRight="@dimen/margin_double"
-      android:layout_marginEnd="@dimen/margin_double"
-      android:layout_marginBottom="@dimen/margin_base"
-      android:textAppearance="@style/MwmTextAppearance.Title"
-      android:fontFamily="@string/robotoMedium"
-      tools:text="@string/onboarding_welcome_title"
-      tools:targetApi="jelly_bean"/>
-    <TextView
-      android:id="@+id/tv__subtitle1"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginRight="@dimen/margin_double"
-      android:layout_marginEnd="@dimen/margin_double"
-      android:layout_marginBottom="@dimen/margin_base"
-      android:textAppearance="@style/MwmTextAppearance.Body1.Secondary"
-      tools:text="@string/onboarding_welcome_first_subtitle"/>
-    <TextView
-      android:id="@+id/tv__subtitle2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginRight="@dimen/margin_double"
-      android:layout_marginEnd="@dimen/margin_double"
-      android:layout_marginBottom="@dimen/margin_base"
-      android:textAppearance="@style/MwmTextAppearance.Body3"
-      android:linksClickable="true"
-      tools:text="@string/onboarding_welcome_second_subtitle"/>
-  </LinearLayout>
+      android:gravity="center_vertical">
+      <TextView
+        android:id="@+id/tv__title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_double"
+        android:layout_marginEnd="@dimen/margin_double"
+        android:layout_marginBottom="@dimen/margin_base"
+        android:textAppearance="@style/MwmTextAppearance.Title"
+        android:fontFamily="@string/robotoMedium"
+        tools:text="@string/onboarding_welcome_title"
+        tools:targetApi="jelly_bean"/>
+      <TextView
+        android:id="@+id/tv__subtitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_double"
+        android:layout_marginEnd="@dimen/margin_double"
+        android:layout_marginBottom="@dimen/margin_base"
+        android:textAppearance="@style/MwmTextAppearance.Body1.Secondary"
+        tools:text="@string/onboarding_welcome_first_subtitle"/>
+      <TextView
+        android:id="@+id/tv__subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_double"
+        android:layout_marginEnd="@dimen/margin_double"
+        android:layout_marginBottom="@dimen/margin_base"
+        android:text="@string/sign_message_gdpr"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:linksClickable="true"
+        android:visibility="gone"
+        tools:text="@string/onboarding_welcome_second_subtitle"/>
+      <include
+        android:visibility="gone"
+        layout="@layout/user_agreement_block"/>
+    </LinearLayout>
+  </ScrollView>
 </LinearLayout>
