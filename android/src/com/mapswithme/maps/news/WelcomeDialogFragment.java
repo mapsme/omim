@@ -29,8 +29,8 @@ import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmDialogFragment;
 import com.mapswithme.maps.location.LocationHelper;
-import com.mapswithme.util.Constants;
 import com.mapswithme.util.Counters;
+import com.mapswithme.util.SharedPropertiesUtils;
 import com.mapswithme.util.UiUtils;
 
 public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View.OnClickListener
@@ -60,7 +60,9 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
         && !recreate(activity)
         && isPrivacyPolicyConfirm(activity)
         && isTermOfUseConfirm(activity))
+    {
       return false;
+    }
 
     create(activity);
 
@@ -160,22 +162,16 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
     initAgreementMessages(contentView);
   }
 
-  private void initAgreementMessages(View contentView)
+  private void initAgreementMessages(@NonNull View contentView)
   {
-    initAgreement(contentView,
-                  R.id.term_of_use_welcome,
-                  R.string.sign_agree_tof_gdpr,
-                  Framework.nativeGetTermsOfUseLink());
-    initAgreement(contentView,
-                  R.id.privacy_policy_welcome ,
-                  R.string.sign_agree_pp_gdpr ,
-                  Framework.nativeGetPrivacyPolicyLink());
+    initAgreement(contentView, R.id.term_of_use_welcome,
+                  R.string.sign_agree_tof_gdpr, Framework.nativeGetTermsOfUseLink());
+    initAgreement(contentView, R.id.privacy_policy_welcome ,
+                  R.string.sign_agree_pp_gdpr ,Framework.nativeGetPrivacyPolicyLink());
   }
 
-  private void initAgreement(@NonNull View contentView,
-                             @IdRes int viewId,
-                             @StringRes int templateResId,
-                             @NonNull String src)
+  private void initAgreement(@NonNull View contentView, @IdRes int viewId,
+                             @StringRes int templateResId, @NonNull String src)
   {
     Resources res = getContext().getResources();
     TextView agreementMessage = contentView.findViewById(viewId);
@@ -232,8 +228,8 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
   {
     SharedPreferences.Editor editor = MwmApplication.prefs(getContext()).edit();
     editor
-        .putBoolean(Constants.Prefs.USER_AGREEMENT_PRIVACY_POLICY, mPrivacyPolicyCheckbox.isChecked())
-        .putBoolean(Constants.Prefs.USER_AGREEMENT_TERM_OF_USE, mTermsCheckbox.isChecked())
+        .putBoolean(SharedPropertiesUtils.USER_AGREEMENT_PRIVACY_POLICY, mPrivacyPolicyCheckbox.isChecked())
+        .putBoolean(SharedPropertiesUtils.USER_AGREEMENT_TERM_OF_USE, mTermsCheckbox.isChecked())
         .apply();
     if (mListener != null)
       mListener.onDialogDone();
@@ -255,12 +251,9 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
     return R.style.MwmTheme_DialogFragment_NoFullscreen_Night;
   }
 
-
   public static boolean isAgreementRefused(@NonNull Context context)
   {
-    boolean isTermsConfirm = isTermOfUseConfirm(context);
-    boolean isPolicyConfirm = isPrivacyPolicyConfirm(context);
-    return !isTermsConfirm || !isPolicyConfirm;
+    return !isTermOfUseConfirm(context) || !isPrivacyPolicyConfirm(context);
   }
 
   private boolean isPrivacyPolicyConfirm()
@@ -273,9 +266,9 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
     return isTermOfUseConfirm(getContext());
   }
 
-  private static boolean isPrivacyPolicyConfirm(Context context)
+  private static boolean isPrivacyPolicyConfirm(@NonNull Context context)
   {
-    return isSingleAgreementOk(context, Constants.Prefs.USER_AGREEMENT_PRIVACY_POLICY);
+    return isSingleAgreementOk(context, SharedPropertiesUtils.USER_AGREEMENT_PRIVACY_POLICY);
   }
 
   private static boolean isTermOfUseConfirm(@NonNull Context context)
@@ -285,7 +278,7 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
 
   private static boolean isTermOfUseOk(@NonNull Context activity)
   {
-    return isSingleAgreementOk(activity, Constants.Prefs.USER_AGREEMENT_TERM_OF_USE);
+    return isSingleAgreementOk(activity, SharedPropertiesUtils.USER_AGREEMENT_TERM_OF_USE);
   }
 
   private static boolean isSingleAgreementOk(@NonNull Context activity, @NonNull String key)

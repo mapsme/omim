@@ -57,7 +57,6 @@
         android:layout_marginBottom="@dimen/margin_base"
         android:text="@string/sign_message_gdpr"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:linksClickable="true"
         android:visibility="gone"
         tools:text="@string/onboarding_welcome_second_subtitle"/>
       <include

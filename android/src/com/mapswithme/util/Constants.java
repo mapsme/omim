@@ -77,10 +77,4 @@ public final class Constants
   public static final String FILES_DIR = "files";
 
   private Constants() {}
-
-  public static class Prefs
-  {
-    public static final String USER_AGREEMENT_TERM_OF_USE = "user_agreement_term_of_use";
-    public static final String USER_AGREEMENT_PRIVACY_POLICY = "user_agreement_privacy_policy";
-  }
 }
