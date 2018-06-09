@@ -59,20 +59,6 @@ public class Utils
 
   private Utils() {}
 
-  public static void closeStream(@Nullable Closeable stream)
-  {
-    if (stream != null)
-    {
-      try
-      {
-        stream.close();
-      } catch (final IOException e)
-      {
-        LOGGER.e(TAG, "Can't close stream", e);
-      }
-    }
-  }
-
   public static boolean isAmazonDevice()
   {
     return "Amazon".equalsIgnoreCase(Build.MANUFACTURER);
@@ -225,6 +211,31 @@ public class Utils
     catch (ActivityNotFoundException e)
     {
       CrashlyticsUtils.logException(e);
+    }
+  }
+
+  @NonNull
+  public static <T> T castTo(@NonNull Object instance)
+  {
+    //noinspection unchecked
+    return (T) instance;
+  }
+
+  public static void closeSafely(@NonNull Closeable... closeable)
+  {
+    for (Closeable each : closeable)
+    {
+      if (each != null)
+      {
+        try
+        {
+          each.close();
+        }
+        catch (IOException e)
+        {
+          LOGGER.e(TAG, "Failed to close '" + each + "'" , e);
+        }
+      }
     }
   }
 
