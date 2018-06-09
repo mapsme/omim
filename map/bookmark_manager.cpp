@@ -88,6 +88,17 @@ bool IsBadCharForPath(strings::UniChar const & c)
   return false;
 }
 
+bool IsValidFilterType(BookmarkManager::CategoryFilterType const filter,
+                       bool const fromCatalog) const
+{
+  switch (filter)
+  {
+  case BookmarkManager::CategoryFilterType::All: return true;
+  case BookmarkManager::CategoryFilterType::Public: return fromCatalog;
+  case BookmarkManager::CategoryFilterType::Private: return !fromCatalog;
+  }
+}
+
 class FindMarkFunctor
 {
 public:
@@ -1764,25 +1775,29 @@ bool BookmarkManager::IsUsedCategoryName(std::string const & name) const
   return false;
 }
 
-bool BookmarkManager::AreAllCategoriesVisible() const
+bool BookmarkManager::AreAllCategoriesVisible(CategoryFilterType const filter) const
 {
-  CHECK_THREAD_CHECKER(m_threadChecker, ());
-  for (auto const & c : m_categories)
-  {
-    if (!c.second->IsVisible())
-      return false;
-  }
-  return true;
+  return CheckVisibility(filter, true /* isVisible */);
 }
 
-bool BookmarkManager::AreAllCategoriesInvisible() const
+bool BookmarkManager::AreAllCategoriesInvisible(CategoryFilterType const filter) const
+{
+  return CheckVisibility(filter, false /* isVisible */);
+}
+
+bool BookmarkManager::CheckVisibility(BookmarkManager::CategoryFilterType const filter,
+                                      bool isVisible) const
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
-  for (auto const & c : m_categories)
+  for (auto const & category : m_categories)
   {
-    if (c.second->IsVisible())
+    auto const fromCatalog = IsCategoryFromCatalog(category.first);
+    if (!IsValidFilterType(filter, fromCatalog))
+      continue;
+    if (category.second->IsVisible() != isVisible)
       return false;
   }
+
   return true;
 }
 
