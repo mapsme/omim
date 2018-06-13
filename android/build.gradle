@@ -107,6 +107,10 @@ dependencies {
     exclude group: 'com.google.android.gms'
   }
   implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+  implementation ("android.arch.persistence.room:runtime:1.1.0") {
+    exclude group: 'com.android.support'
+  }
+  annotationProcessor "android.arch.persistence.room:compiler:1.1.0"
 }
 
 def getDate() {

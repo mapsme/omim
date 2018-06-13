@@ -15,6 +15,7 @@ import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 public class StorageUtils
 {
@@ -43,10 +44,15 @@ public class StorageUtils
   @Nullable
   private static String getExternalFilesDir()
   {
+    return getExternalFilesDir(MwmApplication.get());
+  }
+
+  private static String getExternalFilesDir(Context context)
+  {
     if (!isExternalStorageWritable())
       return null;
 
-    File dir = MwmApplication.get().getExternalFilesDir(null);
+    File dir = context.getExternalFilesDir(null);
     if (dir != null)
       return dir.getAbsolutePath();
 
@@ -181,5 +187,14 @@ public class StorageUtils
   {
     File file = new File(path);
     return file.length();
+  }
+
+  public static File getCatalogCategoryArchive(@NonNull Context context,
+                                               @NonNull String serverId) throws IOException
+  {
+    String dir = getExternalFilesDir(context);
+    if (dir == null)
+      throw new IOException("External files dir not allowed");
+    return new File(dir, serverId);
   }
 }

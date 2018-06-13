@@ -1,29 +1,23 @@
 package com.mapswithme.maps.bookmarks.data;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
+
+import java.util.Collection;
+import java.util.List;
 
 public class Result
 {
-  @Nullable
-  private final String mFilePath;
-  @Nullable
-  private final String mArchiveId;
+  @NonNull
+  private Collection<String> mItems;
 
-  public Result(@Nullable String filePath, @Nullable String archiveId)
+  public Result(@NonNull Collection<String> items)
   {
-    mFilePath = filePath;
-    mArchiveId = archiveId;
+    mItems = items;
   }
 
-  @Nullable
-  public String getFilePath()
+  @NonNull
+  public Collection<String> getItems()
   {
-    return mFilePath;
-  }
-
-  @Nullable
-  public String getArchiveId()
-  {
-    return mArchiveId;
+    return mItems;
   }
 }

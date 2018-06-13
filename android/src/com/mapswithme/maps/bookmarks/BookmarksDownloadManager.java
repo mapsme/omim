@@ -7,9 +7,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
-
-import java.util.Set;
 
 public class BookmarksDownloadManager
 {
@@ -24,7 +23,8 @@ public class BookmarksDownloadManager
     mContext = context.getApplicationContext();
   }
 
-  public long enqueueRequest(@NonNull String url)
+  @NonNull
+  public String enqueueRequestBlocking(@NonNull String url)
   {
     DownloadManager downloadManager =
         (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
@@ -39,12 +39,36 @@ public class BookmarksDownloadManager
     Uri dstUri = uriPair.second;
 
     String title = makeTitle(srcUri);
-    DownloadManager.Request request = new DownloadManager
-        .Request(dstUri)
-        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-        .setTitle(title)
-        .setDestinationInExternalFilesDir(mContext,null, dstUri.getLastPathSegment());
-    return downloadManager.enqueue(request);
+    String serverId = dstUri.getLastPathSegment();
+
+    DownloadManager.Request request = makeRequest(dstUri, title, serverId);
+    long contentProviderId = downloadManager.enqueue(request);
+    MwmApplication.BookmarkArchive archive = putArchiveToDb(contentProviderId, serverId);
+    return archive.getServerId();
+  }
+
+  private DownloadManager.Request makeRequest(Uri dstUri, String title, String serverId)
+  {
+    return new DownloadManager
+          .Request(dstUri)
+          .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+          .setTitle(title)
+          .setDestinationInExternalFilesDir(mContext, null, serverId);
+  }
+
+  @NonNull
+  private MwmApplication.BookmarkArchive putArchiveToDb(long contentProviderId, @NonNull String serverId)
+  {
+    MwmApplication.BookmarkArchive archive = new MwmApplication.BookmarkArchive(contentProviderId,
+                                                                                serverId);
+    getApp().getAppDb().bookmarkArchiveDao().createOrUpdate(archive);
+    return archive;
+  }
+
+  @NonNull
+  private MwmApplication getApp()
+  {
+    return (MwmApplication)mContext.getApplicationContext();
   }
 
   @NonNull
