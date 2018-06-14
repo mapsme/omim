@@ -104,7 +104,7 @@ set(
   viewport_search_params.hpp
 )
 
-add_library(${PROJECT_NAME} ${SRC})
+omim_add_library(${PROJECT_NAME} ${SRC})
 
 omim_add_test_subdirectory(map_tests)
 omim_add_test_subdirectory(mwm_tests)

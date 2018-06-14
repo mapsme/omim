@@ -132,7 +132,7 @@ set(
   world_graph.hpp
 )
 
-add_library(${PROJECT_NAME} ${SRC})
+omim_add_library(${PROJECT_NAME} ${SRC})
 omim_add_test_subdirectory(routing_tests)
 omim_add_test_subdirectory(routing_integration_tests)
 omim_add_test_subdirectory(routing_consistency_tests)

@@ -158,7 +158,7 @@ set(
   viewport_search_callback.hpp
 )
 
-add_library(${PROJECT_NAME} ${SRC})
+omim_add_library(${PROJECT_NAME} ${SRC})
 
 if (PLATFORM_DESKTOP)
   add_subdirectory(search_quality)
