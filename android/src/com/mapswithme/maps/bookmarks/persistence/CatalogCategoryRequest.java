@@ -9,6 +9,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
 import com.mapswithme.maps.bookmarks.data.Error;
+import com.mapswithme.maps.bookmarks.data.OperationStatus;
 import com.mapswithme.util.concurrency.UiThread;
 
 import java.io.IOException;
@@ -28,9 +29,7 @@ public interface CatalogCategoryRequest<R, E> extends Parcelable
     {
       DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
       if (manager == null)
-      {
         return onFailedGetDownloadManager();
-      }
       try
       {
         return getOperationStatus(context, intent);

@@ -15,7 +15,7 @@ import android.view.View;
 
 import com.mapswithme.maps.base.BaseActivity;
 import com.mapswithme.maps.base.BaseActivityDelegate;
-import com.mapswithme.maps.bookmarks.persistence.AfterStartQuery;
+import com.mapswithme.maps.bookmarks.persistence.PollingQuery;
 import com.mapswithme.maps.bookmarks.persistence.SystemDownloadCompletedService;
 import com.mapswithme.maps.downloader.UpdaterDialogFragment;
 import com.mapswithme.maps.editor.ViralFragment;
@@ -345,11 +345,8 @@ public class SplashActivity extends AppCompatActivity
 
   private void importCatalogBookmarks()
   {
-    AfterStartQuery request
-        = new AfterStartQuery();
-
+    PollingQuery request = new PollingQuery();
     Intent intent = SystemDownloadCompletedService.makeIntent(getApplicationContext(), request);
-
     startService(intent);
   }
 

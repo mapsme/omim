@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.Error;
+import com.mapswithme.maps.bookmarks.data.OperationStatus;
 import com.mapswithme.maps.bookmarks.data.Result;
 import com.mapswithme.util.StorageUtils;
 import com.mapswithme.util.Utils;
@@ -25,17 +26,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractQuery extends CatalogCategoryRequest.AbstractRequest<Result>
+public abstract class AbstractQuery extends CatalogCategoryRequest.AbstractRequest<Collection<String>>
 {
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
 
   @NonNull
-  public final Result doInBackgroundInternal(@NonNull Context context,
-                                             @NonNull Intent intent)
+  public final Collection<String> doInBackgroundInternal(@NonNull Context context,
+                                                         @NonNull Intent intent)
   {
     final long[] entries = getEntries(context, intent);
     if (entries.length == 0)
-      return new Result(Collections.emptySet());
+      return Collections.emptySet();
 
     Cursor cursor = null;
     try
@@ -50,14 +51,14 @@ public abstract class AbstractQuery extends CatalogCategoryRequest.AbstractReque
   }
 
   @NonNull
-  private Result convertToResult(@NonNull Cursor cursor)
+  private Collection<String> convertToResult(@NonNull Cursor cursor)
   {
     if (cursor.moveToFirst())
     {
       Set<String> archives = createArchives(cursor);
-      return new Result(Collections.unmodifiableSet(archives));
+      return Collections.unmodifiableSet(archives);
     }
-    return new Result(Collections.emptySet());
+    return Collections.emptySet();
   }
 
   private Cursor getCursor(@NonNull Context context, @NonNull long[] entries)
@@ -84,14 +85,14 @@ public abstract class AbstractQuery extends CatalogCategoryRequest.AbstractReque
 
   @Override
   public void onPostExecute(@NonNull Context context,
-                            @NonNull OperationStatus<Result, Error> status)
+                            @NonNull OperationStatus<Collection<String>, Error> status)
   {
     /*TODO special for arsentiy*/
     if (!isCoreInitialized(context))
       return;
 
     if (status.isOk())
-      onOkResultSafely(context, status.getResult().getItems());
+      onOkResultSafely(context, status.getResult());
     else
       onErrorResult(context);
   }

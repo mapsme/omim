@@ -6,8 +6,9 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 
 import com.mapswithme.maps.bookmarks.BookmarksDownloadManager;
+import com.mapswithme.maps.bookmarks.data.EmptyResult;
 
-public class InsertRequest extends CatalogCategoryRequest.AbstractRequest<InsertRequest.Result>
+public class InsertRequest extends CatalogCategoryRequest.AbstractRequest<EmptyResult>
 {
   public static final Creator<InsertRequest> CREATOR = new InsertCreator();
 
@@ -21,7 +22,7 @@ public class InsertRequest extends CatalogCategoryRequest.AbstractRequest<Insert
 
   protected InsertRequest(Parcel in)
   {
-    this.mUrl = in.readString();
+    mUrl = in.readString();
   }
 
   @Override
@@ -32,23 +33,11 @@ public class InsertRequest extends CatalogCategoryRequest.AbstractRequest<Insert
   }
 
   @Override
-  public Result doInBackgroundInternal(@NonNull Context context, @NonNull Intent intent)
+  public EmptyResult doInBackgroundInternal(@NonNull Context context, @NonNull Intent intent)
   {
     BookmarksDownloadManager dm = BookmarksDownloadManager.from(context);
-    String serverId = dm.enqueueRequestBlocking(mUrl);
-    return new Result(serverId);
-  }
-
-  public static class Result
-  {
-
-    @NonNull
-    private String mServerId;
-
-    public Result(@NonNull String serverId)
-    {
-      mServerId = serverId;
-    }
+    dm.enqueueRequestBlocking(mUrl);
+    return new EmptyResult();
   }
 
   public static class InsertCreator implements Creator<InsertRequest>

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.mapswithme.maps.background.AbstractLogBroadcastReceiver;
-import com.mapswithme.maps.bookmarks.persistence.ImmediatelyQuery;
+import com.mapswithme.maps.bookmarks.persistence.Query;
 import com.mapswithme.maps.bookmarks.persistence.SystemDownloadCompletedService;
 
 public class SystemDownloadCompletedReceiver extends AbstractLogBroadcastReceiver
@@ -25,10 +25,10 @@ public class SystemDownloadCompletedReceiver extends AbstractLogBroadcastReceive
     if (manager == null)
       return;
 
-    ImmediatelyQuery request = new ImmediatelyQuery();
+    Query request = new Query();
 
     Intent intent = SystemDownloadCompletedService.makeIntent(src, request);
     intent.setClass(context, SystemDownloadCompletedService.class);
-//    context.startService(intent);
+    context.startService(intent);
   }
 }

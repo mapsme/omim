@@ -1,4 +1,4 @@
-package com.mapswithme.maps.bookmarks.persistence;
+package com.mapswithme.maps.bookmarks.data;
 
 import android.support.annotation.Nullable;
 
@@ -9,7 +9,7 @@ public class OperationStatus<R, E>
   @Nullable
   private final E mError;
 
-  OperationStatus(@Nullable R result, @Nullable E error)
+  public OperationStatus(@Nullable R result, @Nullable E error)
   {
     mResult = result;
     mError = error;

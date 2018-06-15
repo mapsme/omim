@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.mapswithme.maps.bookmarks.data.Error;
+import com.mapswithme.maps.bookmarks.data.OperationStatus;
 
 class MainThreadTask<R> implements Runnable
 {

@@ -8,7 +8,7 @@ import java.util.List;
 public class Result
 {
   @NonNull
-  private Collection<String> mItems;
+  private final Collection<String> mItems;
 
   public Result(@NonNull Collection<String> items)
   {

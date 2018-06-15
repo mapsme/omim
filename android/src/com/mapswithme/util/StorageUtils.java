@@ -44,15 +44,16 @@ public class StorageUtils
   @Nullable
   private static String getExternalFilesDir()
   {
-    return getExternalFilesDir(MwmApplication.get());
+    return getExternalFilesDir(MwmApplication.get(), null);
   }
 
-  private static String getExternalFilesDir(Context context)
+  @Nullable
+  private static String getExternalFilesDir(@NonNull Context context, @Nullable String type)
   {
     if (!isExternalStorageWritable())
       return null;
 
-    File dir = context.getExternalFilesDir(null);
+    File dir = context.getExternalFilesDir(type);
     if (dir != null)
       return dir.getAbsolutePath();
 
@@ -189,10 +190,11 @@ public class StorageUtils
     return file.length();
   }
 
+  @NonNull
   public static File getCatalogCategoryArchive(@NonNull Context context,
                                                @NonNull String serverId) throws IOException
   {
-    String dir = getExternalFilesDir(context);
+    String dir = getExternalFilesDir(context, Environment.DIRECTORY_PODCASTS);
     if (dir == null)
       throw new IOException("External files dir not allowed");
     return new File(dir, serverId);

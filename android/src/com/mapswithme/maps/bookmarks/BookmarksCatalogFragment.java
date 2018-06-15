@@ -81,12 +81,8 @@ public class BookmarksCatalogFragment extends BaseWebViewMwmFragment
     private void requestArchiveAsync(@NonNull WebView view, @NonNull String url)
     {
       Context context = view.getContext();
-
-      InsertRequest request =
-          new InsertRequest(url);
-
+      InsertRequest request = new InsertRequest(url);
       Intent intent = SystemDownloadCompletedService.makeIntent(context, request);
-
       context.startService(intent);
     }
   }

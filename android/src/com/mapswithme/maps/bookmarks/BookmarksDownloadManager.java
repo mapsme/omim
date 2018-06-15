@@ -3,12 +3,14 @@ package com.mapswithme.maps.bookmarks;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.maps.bookmarks.persistence.BookmarkCategoryArchive;
 
 public class BookmarksDownloadManager
 {
@@ -43,24 +45,24 @@ public class BookmarksDownloadManager
 
     DownloadManager.Request request = makeRequest(dstUri, title, serverId);
     long contentProviderId = downloadManager.enqueue(request);
-    MwmApplication.BookmarkArchive archive = putArchiveToDb(contentProviderId, serverId);
+    BookmarkCategoryArchive archive = putArchiveToDb(contentProviderId, serverId);
     return archive.getServerId();
   }
 
-  private DownloadManager.Request makeRequest(Uri dstUri, String title, String serverId)
+  private DownloadManager.Request makeRequest(@NonNull Uri dstUri, @NonNull String title,
+                                              @NonNull String serverId)
   {
     return new DownloadManager
           .Request(dstUri)
           .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
           .setTitle(title)
-          .setDestinationInExternalFilesDir(mContext, null, serverId);
+          .setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_PODCASTS, serverId);
   }
 
   @NonNull
-  private MwmApplication.BookmarkArchive putArchiveToDb(long contentProviderId, @NonNull String serverId)
+  private BookmarkCategoryArchive putArchiveToDb(long contentProviderId, @NonNull String serverId)
   {
-    MwmApplication.BookmarkArchive archive = new MwmApplication.BookmarkArchive(contentProviderId,
-                                                                                serverId);
+    BookmarkCategoryArchive archive = new BookmarkCategoryArchive(contentProviderId, serverId);
     getApp().getAppDb().bookmarkArchiveDao().createOrUpdate(archive);
     return archive;
   }

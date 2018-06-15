@@ -3,17 +3,18 @@ package com.mapswithme.maps.bookmarks.persistence;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mapswithme.maps.bookmarks.data.Error;
 
 public class SystemDownloadCompletedService extends IntentService
 {
-  public static final String EXTRA_REQUEST = "operation_factory";
+  public static final String EXTRA_REQUEST = "request";
 
   public SystemDownloadCompletedService()
   {
-    super("GetFileMetaDataService");
+    super("SystemDownloadCompletedService");
   }
 
   @Override
@@ -24,18 +25,20 @@ public class SystemDownloadCompletedService extends IntentService
 
     CatalogCategoryRequest<?, Error> request = intent.getParcelableExtra(EXTRA_REQUEST);
     if (request == null)
-      throw new IllegalArgumentException("Factory not found in extras");
+      throw new IllegalArgumentException("Request not found in extras");
 
     request.doInBackground(this, intent);
   }
 
-  public static <T> Intent makeIntent(Context context, CatalogCategoryRequest<T, Error> request)
+  public static <T> Intent makeIntent(@NonNull Context context,
+                                      @NonNull CatalogCategoryRequest<T, Error> request)
   {
     Intent intent = new Intent(context, SystemDownloadCompletedService.class);
     return makeIntent(intent, request);
   }
 
-  public static <T> Intent makeIntent(Intent src, CatalogCategoryRequest<T, Error> request)
+  public static <T> Intent makeIntent(@NonNull Intent src,
+                                      @NonNull CatalogCategoryRequest<T, Error> request)
   {
     return src.putExtra(EXTRA_REQUEST, request);
   }

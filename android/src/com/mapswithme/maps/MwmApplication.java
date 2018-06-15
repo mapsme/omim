@@ -2,23 +2,12 @@
 package com.mapswithme.maps;
 
 import android.app.Application;
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Delete;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
-import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
@@ -65,6 +54,7 @@ import java.util.List;
 
 public class MwmApplication extends Application
 {
+  public static final String DB_NAME = "mwm_mapsme_database";
   private Logger mLogger;
   private final static String TAG = "MwmApplication";
 
@@ -73,6 +63,7 @@ public class MwmApplication extends Application
   private static MwmApplication sSelf;
   private SharedPreferences mPrefs;
   private AppBackgroundTracker mBackgroundTracker;
+  private MwmAppDb mAppDb;
 
   private boolean mFrameworkInitialized;
   private boolean mPlatformInitialized;
@@ -128,7 +119,6 @@ public class MwmApplication extends Application
           Statistics.INSTANCE.trackColdStartupInfo();
         }
       };
-  private MwmAppDb mAppDb;
 
   public MwmApplication()
   {
@@ -213,11 +203,10 @@ public class MwmApplication extends Application
 
   private void initRoomDb()
   {
-    mAppDb = Room
-        .databaseBuilder(getApplicationContext(), MwmAppDb.class, "database-name")
-        .build();
+    mAppDb = Room.databaseBuilder(getApplicationContext(), MwmAppDb.class, DB_NAME).build();
   }
 
+  @NonNull
   public MwmAppDb getAppDb()
   {
     return mAppDb;
@@ -480,98 +469,4 @@ public class MwmApplication extends Application
 
   @UiThread
   private static native void nativeInitCrashlytics();
-
-  @Database(entities = { BookmarkArchive.class }, version = 1, exportSchema = false)
-  public static abstract class MwmAppDb extends RoomDatabase
-  {
-
-    public abstract BookmarkArchiveDao bookmarkArchiveDao();
-
-    public static MwmAppDb from(Context context)
-    {
-      MwmApplication app = (MwmApplication) context.getApplicationContext();
-      return app.getAppDb();
-    }
-  }
-
-  @Entity(tableName = "bookmark_archive")
-  public static class BookmarkArchive
-  {
-    @PrimaryKey(autoGenerate = true)
-    private long mId;
-    @ColumnInfo(name = "external_id")
-    private final long mExternalContentProviderId;
-
-    @ColumnInfo(name = "server_id")
-    private final String mServerId;
-
-    public BookmarkArchive(long externalContentProviderId, @Nullable String serverId)
-    {
-      mExternalContentProviderId = externalContentProviderId;
-      mServerId = serverId;
-    }
-
-/*    @Ignore
-    public BookmarkArchive(@NonNull String serverId)
-    {
-      this(-1, serverId);
-    }
-
-    @Ignore
-    public BookmarkArchive(long externalContentProviderId)
-    {
-      this(externalContentProviderId, null);
-    }*/
-
-    public void setId(long id)
-    {
-      mId = id;
-    }
-
-    public long getId()
-    {
-      return mId;
-    }
-
-    public long getExternalContentProviderId()
-    {
-      return mExternalContentProviderId;
-    }
-
-    @NonNull
-    public String getServerId()
-    {
-      return mServerId;
-    }
-
-    @Override
-    public String toString()
-    {
-      final StringBuilder sb = new StringBuilder("BookmarkArchive{");
-      sb.append("mId=").append(mId);
-      sb.append(", mExternalContentProviderId=").append(mExternalContentProviderId);
-      sb.append('}');
-      return sb.toString();
-    }
-  }
-
-  @Dao
-  public interface BookmarkArchiveDao
-  {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long createOrUpdate(BookmarkArchive archive);
-
-    @Query("SELECT * FROM bookmark_archive")
-    List<BookmarkArchive> getAll();
-
-    @Delete
-    void delete(BookmarkArchive... archives);
-
-    @Query("DELETE FROM bookmark_archive WHERE server_id = :serverId")
-    int deleteByServerId(String serverId);
-
-    @Nullable
-    @Query("SELECT * FROM bookmark_archive WHERE server_id = :serverId LIMIT 1")
-    BookmarkArchive getArchive(String serverId);
-  }
 }
