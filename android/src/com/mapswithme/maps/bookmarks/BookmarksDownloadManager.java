@@ -3,13 +3,14 @@ package com.mapswithme.maps.bookmarks;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
-
-import java.util.Set;
+import com.mapswithme.maps.bookmarks.persistence.BookmarkCategoryArchive;
 
 public class BookmarksDownloadManager
 {
@@ -24,7 +25,8 @@ public class BookmarksDownloadManager
     mContext = context.getApplicationContext();
   }
 
-  public long enqueueRequest(@NonNull String url)
+  @NonNull
+  public String enqueueRequestBlocking(@NonNull String url)
   {
     DownloadManager downloadManager =
         (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
@@ -39,12 +41,36 @@ public class BookmarksDownloadManager
     Uri dstUri = uriPair.second;
 
     String title = makeTitle(srcUri);
-    DownloadManager.Request request = new DownloadManager
-        .Request(dstUri)
-        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-        .setTitle(title)
-        .setDestinationInExternalFilesDir(mContext,null, dstUri.getLastPathSegment());
-    return downloadManager.enqueue(request);
+    String serverId = dstUri.getLastPathSegment();
+
+    DownloadManager.Request request = makeRequest(dstUri, title, serverId);
+    long contentProviderId = downloadManager.enqueue(request);
+    BookmarkCategoryArchive archive = putArchiveToDb(contentProviderId, serverId);
+    return archive.getServerId();
+  }
+
+  private DownloadManager.Request makeRequest(@NonNull Uri dstUri, @NonNull String title,
+                                              @NonNull String serverId)
+  {
+    return new DownloadManager
+          .Request(dstUri)
+          .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+          .setTitle(title)
+          .setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_PODCASTS, serverId);
+  }
+
+  @NonNull
+  private BookmarkCategoryArchive putArchiveToDb(long contentProviderId, @NonNull String serverId)
+  {
+    BookmarkCategoryArchive archive = new BookmarkCategoryArchive(contentProviderId, serverId);
+    getApp().getAppDb().bookmarkArchiveDao().createOrUpdate(archive);
+    return archive;
+  }
+
+  @NonNull
+  private MwmApplication getApp()
+  {
+    return (MwmApplication)mContext.getApplicationContext();
   }
 
   @NonNull

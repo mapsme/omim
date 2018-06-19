@@ -1,6 +1,8 @@
 package com.mapswithme.maps.bookmarks;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +15,8 @@ import android.webkit.WebViewClient;
 
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.auth.BaseWebViewMwmFragment;
-
-import java.io.IOException;
+import com.mapswithme.maps.bookmarks.persistence.InsertRequest;
+import com.mapswithme.maps.bookmarks.persistence.SystemDownloadCompletedService;
 
 public class BookmarksCatalogFragment extends BaseWebViewMwmFragment
 {
@@ -72,21 +74,16 @@ public class BookmarksCatalogFragment extends BaseWebViewMwmFragment
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url)
     {
-      try
-      {
-        return requestArchive(view, url);
-      }
-      catch (IOException e)
-      {
-        return super.shouldOverrideUrlLoading(view, url);
-      }
+      requestArchiveAsync(view, url);
+      return true;
     }
 
-    private boolean requestArchive(@NonNull WebView view, @NonNull String url) throws IOException
+    private void requestArchiveAsync(@NonNull WebView view, @NonNull String url)
     {
-      BookmarksDownloadManager dm = BookmarksDownloadManager.from(view.getContext());
-      dm.enqueueRequest(url);
-      return true;
+      Context context = view.getContext();
+      InsertRequest request = new InsertRequest(url);
+      Intent intent = SystemDownloadCompletedService.makeIntent(context, request);
+      context.startService(intent);
     }
   }
 }

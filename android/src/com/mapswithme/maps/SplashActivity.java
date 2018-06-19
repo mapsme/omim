@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +15,8 @@ import android.view.View;
 
 import com.mapswithme.maps.base.BaseActivity;
 import com.mapswithme.maps.base.BaseActivityDelegate;
+import com.mapswithme.maps.bookmarks.persistence.PollingQuery;
+import com.mapswithme.maps.bookmarks.persistence.SystemDownloadCompletedService;
 import com.mapswithme.maps.downloader.UpdaterDialogFragment;
 import com.mapswithme.maps.editor.ViralFragment;
 import com.mapswithme.maps.news.BaseNewsFragment;
@@ -331,6 +332,22 @@ public class SplashActivity extends AppCompatActivity
   private void init()
   {
     mCoreInitialized = MwmApplication.get().initCore();
+    if (mCoreInitialized)
+    {
+      onPostCoreInit();
+    }
+  }
+
+  private void onPostCoreInit()
+  {
+    importCatalogBookmarks();
+  }
+
+  private void importCatalogBookmarks()
+  {
+    PollingQuery request = new PollingQuery();
+    Intent intent = SystemDownloadCompletedService.makeIntent(getApplicationContext(), request);
+    startService(intent);
   }
 
   @SuppressWarnings("unchecked")

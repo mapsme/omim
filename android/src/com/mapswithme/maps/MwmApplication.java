@@ -1,6 +1,8 @@
+
 package com.mapswithme.maps;
 
 import android.app.Application;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -54,6 +56,7 @@ import java.util.List;
 
 public class MwmApplication extends Application
 {
+  public static final String DB_NAME = "mwm_mapsme_database";
   private Logger mLogger;
   private final static String TAG = "MwmApplication";
 
@@ -62,6 +65,7 @@ public class MwmApplication extends Application
   private static MwmApplication sSelf;
   private SharedPreferences mPrefs;
   private AppBackgroundTracker mBackgroundTracker;
+  private MwmAppDb mAppDb;
 
   private boolean mFrameworkInitialized;
   private boolean mPlatformInitialized;
@@ -135,14 +139,14 @@ public class MwmApplication extends Application
   }
 
   /**
-   *
    * Use {@link #prefs(Context)} instead.
    */
   @Deprecated
   public synchronized static SharedPreferences prefs()
   {
     if (sSelf.mPrefs == null)
-      sSelf.mPrefs = sSelf.getSharedPreferences(sSelf.getString(R.string.pref_file_name), MODE_PRIVATE);
+      sSelf.mPrefs = sSelf.getSharedPreferences(sSelf.getString(R.string.pref_file_name),
+                                                MODE_PRIVATE);
 
     return sSelf.mPrefs;
   }
@@ -196,6 +200,18 @@ public class MwmApplication extends Application
     initPushWoosh();
     initAppsFlyer();
     initTracker();
+    initRoomDb();
+  }
+
+  private void initRoomDb()
+  {
+    mAppDb = Room.databaseBuilder(getApplicationContext(), MwmAppDb.class, DB_NAME).build();
+  }
+
+  @NonNull
+  public MwmAppDb getAppDb()
+  {
+    return mAppDb;
   }
 
   private void initMoPub()
@@ -366,7 +382,7 @@ public class MwmApplication extends Application
       PushwooshHelper.get().setContext(this);
       PushwooshHelper.get().synchronize();
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       mLogger.e("Pushwoosh", "Failed to init Pushwoosh", e);
     }
@@ -418,7 +434,7 @@ public class MwmApplication extends Application
       else
         PushwooshHelper.get().sendTag(tag, values);
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       mLogger.e("Pushwoosh", "Failed to send pushwoosh tags", e);
     }

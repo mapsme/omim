@@ -510,7 +510,7 @@
     </receiver>
 
     <service
-      android:name="com.mapswithme.maps.bookmarks.SystemDownloadCompletedService"
+      android:name="com.mapswithme.maps.bookmarks.persistence.SystemDownloadCompletedService"
       android:exported="false">
     </service>
 
