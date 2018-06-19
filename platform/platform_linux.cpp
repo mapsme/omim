@@ -144,8 +144,8 @@ Platform::Platform()
   }
   else
   {
-    string const devBuildWithSymlink = my::JoinPath(path, "..", "..", "data");
-    string const devBuildWithoutSymlink = my::JoinPath(path, "..", "..", "..", "omim", "data");
+    string const devBuildWithSymlink = my::JoinPath(path, "data");
+    string const devBuildWithoutSymlink = my::JoinPath(path, "..", "omim", "data");
     string const installedVersionWithPackages = my::JoinPath(path, "..", "share");
     string const installedVersionWithoutPackages = my::JoinPath(path, "..", "MapsWithMe");
     string const customInstall = path;
