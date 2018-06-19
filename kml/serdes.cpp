@@ -120,8 +120,9 @@ std::string GetStyleForPredefinedColor(PredefinedColor color)
   case PredefinedColor::Orange: return "placemark-orange";
   case PredefinedColor::None:
   case PredefinedColor::Count:
-    return {};
+    break;
   }
+  return {};
 }
   
 BookmarkIcon GetIcon(std::string const & iconName)
