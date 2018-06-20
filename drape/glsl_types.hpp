@@ -17,9 +17,10 @@
 #include <glm/mat4x2.hpp>
 #include <glm/mat4x3.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace glsl
 {
-
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;
@@ -38,10 +39,7 @@ using glm::dmat4;
 using glm::dmat4x2;
 using glm::dmat4x3;
 
-typedef vec4   Quad1;
-typedef mat4x2 Quad2;
-typedef mat4x3 Quad3;
-typedef mat4   Quad4;
+using glm::value_ptr;
 
 inline m2::PointF ToPoint(vec2 const & v)
 {
@@ -106,5 +104,4 @@ inline uint8_t GetComponentCount<vec4>()
 {
   return 4;
 }
-
-} // namespace glsl
+}  // namespace glsl
