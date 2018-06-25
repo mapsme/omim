@@ -16,6 +16,7 @@ from optparse import OptionParser
 import re
 
 REPLACE_CHARS_RE = re.compile("[\x00-\x1f]")
+CTEST_RE = re.compile(r"^\d+\:\s+(.+)$")
 
 
 class PrefixesInLog:
@@ -217,6 +218,9 @@ class PipeEach:
     def through_functions(self, *fns):
         for param in self.iterable_param:
             param = param.rstrip().decode('utf-8')
+            ctest_match = CTEST_RE.match(param)
+            if ctest_match:
+                param = ctest_match.group(1)
 
             for fn in fns:
                 if fn(param):

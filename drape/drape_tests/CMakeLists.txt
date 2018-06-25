@@ -38,7 +38,12 @@ set(
   uniform_value_tests.cpp
 )
 
-omim_add_executable(${PROJECT_NAME} ${DRAPE_COMMON_SRC} ${SRC})
+omim_add_test(
+  ${PROJECT_NAME}
+  LABELS Smoke
+  SOURCES ${DRAPE_COMMON_SRC} ${SRC}
+  CUSTOM_TEST
+)
 
 omim_link_libraries(
   ${PROJECT_NAME}

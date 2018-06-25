@@ -31,7 +31,11 @@ set(
   user_event_stream_tests.cpp
 )
 
-omim_add_test(${PROJECT_NAME} ${SRC})
+# This test is very slow -> exclude it from smoke
+omim_add_test(
+  ${PROJECT_NAME}
+  SOURCES ${SRC}
+)
 
 if (PLATFORM_MAC)
   omim_link_libraries(

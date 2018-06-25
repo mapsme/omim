@@ -101,6 +101,7 @@ data/*.ready
 data/*.osm
 data/*.bz2
 data/settings.ini
+data/marketing_settings.ini
 !data/minsk-pass.mwm
 !data/minsk-pass.osm.bz2
 data/index.idx
@@ -174,3 +175,5 @@ designer_version.h
 
 # Vim files
 tags
+
+testserver.log
