@@ -764,8 +764,7 @@ void RoutingSession::OnTrafficInfoRemoved(MwmSet::MwmId const & mwmId)
   });
 }
 
-void RoutingSession::CopyTraffic(
-    map<MwmSet::MwmId, shared_ptr<traffic::TrafficInfo::Coloring>> & trafficColoring) const
+void RoutingSession::CopyTraffic(traffic::AllMwmTrafficInfo & trafficColoring) const
 {
   TrafficCache::CopyTraffic(trafficColoring);
 }
