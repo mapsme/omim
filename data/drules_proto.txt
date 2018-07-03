@@ -37849,7 +37849,7 @@ cont {
       priority: -15519
     }
     symbol {
-      name: "swimming-m"
+      name: "none"
       priority: 16481
       min_distance: 10
     }
@@ -37861,6 +37861,7 @@ cont {
       }
       priority: 15481
     }
+    apply_if: "bbox_area<150"
   }
   element {
     scale: 18
@@ -37869,7 +37870,7 @@ cont {
       priority: -15519
     }
     symbol {
-      name: "swimming-m"
+      name: "none"
       priority: 16481
       min_distance: 10
     }
@@ -37881,6 +37882,7 @@ cont {
       }
       priority: 15481
     }
+    apply_if: "bbox_area<150"
   }
   element {
     scale: 19
@@ -37889,7 +37891,7 @@ cont {
       priority: -15519
     }
     symbol {
-      name: "swimming-m"
+      name: "none"
       priority: 16481
       min_distance: 10
     }
@@ -37901,6 +37903,7 @@ cont {
       }
       priority: 15481
     }
+    apply_if: "bbox_area<150"
   }
 }
 cont {
