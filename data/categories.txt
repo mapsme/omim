@@ -4389,7 +4389,7 @@ sk:^Cesta
 sw:^Jia
 fa:مسیر
 
-highway-primary|highway-primary_link|highway-residential|highway-secondary|highway-secondary_link|highway-tertiary|highway-tertiary_link|highway-service|highway-road|highway-track|highway-trunk|highway-trunk_link|highway-living_street|highway-pedestrian|highway-unclassified|highway-motorway_link|highway-motorway
+highway-primary|highway-primary_link|highway-residential|highway-secondary|highway-secondary_link|highway-tertiary|highway-tertiary_link|highway-service|highway-road|highway-track|highway-trunk|highway-trunk_link|highway-living_street|highway-unclassified|highway-motorway_link|highway-motorway
 en:^Street|st|str|ave|road|rd
 ru:^Улица|переулок|проезд|тракт|проспект|ул
 ar:^شارع|طريق
@@ -9191,3 +9191,23 @@ ru:2^ЧМ 2018 по футболу|1ФИФА|футбол|кубок
 event-fc2018_city
 en:^Football City 2018
 ru:^Город ЧМ 2018 по футболу
+
+historic-ship|@tourism
+en:^Ship|boat
+ru:^Корабль|судно|лодка
+
+historic-tomb|@tourism
+en:^Tomb|grave|memorial
+ru:^Захоронение|могила|кладбище|склеп
+
+tourism-gallery|@tourism
+en:^Gallery|museum
+ru:^Галерея|музей|картины
+
+tourism-theme_park|@tourism
+en:^Theme Park
+ru:^Парк развлечений
+
+highway-pedestrian|@tourism
+en:^Pedestrian Street
+ru:^Пешеходная улица
