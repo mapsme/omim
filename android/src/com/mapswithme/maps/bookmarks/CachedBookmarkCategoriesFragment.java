@@ -3,7 +3,6 @@ package com.mapswithme.maps.bookmarks;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,11 @@ import android.view.ViewGroup;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.util.BottomSheetHelper;
 import com.mapswithme.util.SharedPropertiesUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.sharing.TargetUtils;
+import com.mapswithme.util.statistics.Statistics;
 
 public class CachedBookmarkCategoriesFragment extends BaseBookmarkCategoriesFragment implements
                                                                                      BookmarkManager.BookmarksCatalogListener
@@ -82,12 +83,6 @@ public class CachedBookmarkCategoriesFragment extends BaseBookmarkCategoriesFrag
   }
 
   @Override
-  protected int getDeleteMenuItemResId()
-  {
-    return R.id.delete_list;
-  }
-
-  @Override
   protected void updateLoadingPlaceholder()
   {
     super.updateLoadingPlaceholder();
@@ -133,6 +128,7 @@ public class CachedBookmarkCategoriesFragment extends BaseBookmarkCategoriesFrag
         .putExtra(BookmarksCatalogFragment.EXTRA_BOOKMARKS_CATALOG_URL,
                   getCatalogUrl());
     getActivity().startActivity(intent);
+    Statistics.INSTANCE.trackOpenCatalogScreen();
   }
 
   @NonNull
@@ -172,6 +168,13 @@ public class CachedBookmarkCategoriesFragment extends BaseBookmarkCategoriesFrag
       UiUtils.showIf(isEmptyAdapter, mEmptyViewContainer);
       mPayloadContainer.setVisibility(isEmptyAdapter ? View.GONE : View.VISIBLE);
     }
+  }
+
+  @Override
+  protected void prepareBottomMenuItems(@NonNull BottomSheetHelper.Builder builder)
+  {
+    setEnableForMenuItem(R.id.delete_list, builder, true);
+    setEnableForMenuItem(R.id.share_list, builder, false);
   }
 
   private class CloseHeaderClickListener implements View.OnClickListener

@@ -42,10 +42,11 @@ import com.mapswithme.maps.background.Notifier;
 import com.mapswithme.maps.base.BaseMwmFragmentActivity;
 import com.mapswithme.maps.base.OnBackPressListener;
 import com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity;
+import com.mapswithme.maps.bookmarks.BookmarksDownloadManager;
+import com.mapswithme.maps.bookmarks.BookmarksPageFactory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.FeatureId;
 import com.mapswithme.maps.bookmarks.data.MapObject;
-import com.mapswithme.maps.maplayer.MapLayerCompositeController;
 import com.mapswithme.maps.discovery.DiscoveryActivity;
 import com.mapswithme.maps.discovery.DiscoveryFragment;
 import com.mapswithme.maps.discovery.ItemType;
@@ -62,7 +63,13 @@ import com.mapswithme.maps.editor.ReportFragment;
 import com.mapswithme.maps.gallery.Items;
 import com.mapswithme.maps.location.CompassData;
 import com.mapswithme.maps.location.LocationHelper;
+import com.mapswithme.maps.maplayer.MapLayerCompositeController;
+import com.mapswithme.maps.maplayer.Mode;
+import com.mapswithme.maps.maplayer.subway.OnSubwayLayerToggleListener;
 import com.mapswithme.maps.maplayer.subway.SubwayManager;
+import com.mapswithme.maps.maplayer.traffic.OnTrafficLayerToggleListener;
+import com.mapswithme.maps.maplayer.traffic.TrafficManager;
+import com.mapswithme.maps.maplayer.traffic.widget.TrafficButton;
 import com.mapswithme.maps.routing.NavigationController;
 import com.mapswithme.maps.routing.RoutePointInfo;
 import com.mapswithme.maps.routing.RoutingBottomMenuListener;
@@ -83,13 +90,8 @@ import com.mapswithme.maps.settings.SettingsActivity;
 import com.mapswithme.maps.settings.StoragePathManager;
 import com.mapswithme.maps.settings.UnitLocale;
 import com.mapswithme.maps.sound.TtsPlayer;
-import com.mapswithme.maps.maplayer.Mode;
-import com.mapswithme.maps.maplayer.subway.OnSubwayLayerToggleListener;
 import com.mapswithme.maps.taxi.TaxiInfo;
 import com.mapswithme.maps.taxi.TaxiManager;
-import com.mapswithme.maps.maplayer.traffic.TrafficManager;
-import com.mapswithme.maps.maplayer.traffic.OnTrafficLayerToggleListener;
-import com.mapswithme.maps.maplayer.traffic.widget.TrafficButton;
 import com.mapswithme.maps.widget.FadeView;
 import com.mapswithme.maps.widget.menu.BaseMenu;
 import com.mapswithme.maps.widget.menu.MainMenu;
@@ -1716,7 +1718,35 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public interface MapTask extends Serializable
   {
-    boolean run(MwmActivity target);
+    boolean run(@NonNull MwmActivity target);
+  }
+
+  public static class ImportBookmarkCatalogueTask implements MapTask
+  {
+    private static final long serialVersionUID = 5363722491377575159L;
+
+    @NonNull
+    private final String mUrl;
+
+    ImportBookmarkCatalogueTask(@NonNull String url)
+    {
+      mUrl = url;
+    }
+
+    @Override
+    public boolean run(@NonNull MwmActivity target)
+    {
+      try
+      {
+        BookmarksDownloadManager.from(target).enqueueRequest(mUrl);
+        BookmarkCategoriesActivity.start(target, BookmarksPageFactory.CATALOG.ordinal());
+      }
+      catch (BookmarksDownloadManager.UnprocessedUrlException e)
+      {
+        LOGGER.e(TAG,"Failed to download catalogue by '" + mUrl + "'", e);
+      }
+      return false;
+    }
   }
 
   public static class OpenUrlTask implements MapTask
@@ -1731,7 +1761,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     @Override
-    public boolean run(MwmActivity target)
+    public boolean run(@NonNull MwmActivity target)
     {
       final @ParsedUrlMwmRequest.ParsingResult int result = Framework.nativeParseAndSetApiUrl(mUrl);
       switch (result)
@@ -1777,7 +1807,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     @Override
-    public boolean run(MwmActivity target)
+    public boolean run(@NonNull MwmActivity target)
     {
       Framework.nativeShowCountry(mCountryId, false);
       return true;
@@ -2094,7 +2124,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     addTask(new MapTask()
     {
       @Override
-      public boolean run(MwmActivity target)
+      public boolean run(@NonNull MwmActivity target)
       {
         adjustCompass(offsetY);
         return true;
@@ -2465,7 +2495,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     @Override
-    public boolean run(MwmActivity target)
+    public boolean run(@NonNull MwmActivity target)
     {
       Fragment f = target.getSupportFragmentManager().findFragmentByTag(mDialogName);
       if (f != null)
@@ -2499,7 +2529,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     @Override
-    public boolean run(MwmActivity target)
+    public boolean run(@NonNull MwmActivity target)
     {
       BookmarkManager.INSTANCE.showBookmarkOnMap(mId);
       return true;
@@ -2514,7 +2544,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     @Override
-    public boolean run(MwmActivity target)
+    public boolean run(@NonNull MwmActivity target)
     {
       Framework.nativeShowTrackRect(mId);
       return true;
@@ -2533,7 +2563,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     @Override
-    public boolean run(MwmActivity target)
+    public boolean run(@NonNull MwmActivity target)
     {
       MapFragment.nativeShowMapForUrl(String.format(Locale.US,
                                                     "mapsme://map?ll=%f,%f", mLat, mLon));
@@ -2587,7 +2617,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
 
     @Override
-    public boolean run(MwmActivity target)
+    public boolean run(@NonNull MwmActivity target)
     {
       @Framework.RouterType int routerType = -1;
       if (!TextUtils.isEmpty(mRouter))
@@ -2642,7 +2672,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
 
     @Override
-    public boolean run(MwmActivity target)
+    public boolean run(@NonNull MwmActivity target)
     {
       RoutingController.get().restoreRoute();
       return true;
