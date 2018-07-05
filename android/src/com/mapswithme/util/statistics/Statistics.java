@@ -43,6 +43,7 @@ import com.my.tracker.MyTracker;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -306,6 +307,9 @@ public enum Statistics
     public static final String UGC_AUTH_DECLINED = "UGC_Auth_declined";
     public static final String UGC_AUTH_EXTERNAL_REQUEST_SUCCESS = "UGC_Auth_external_request_success";
     public static final String UGC_AUTH_ERROR = "UGC_Auth_error";
+    public static final String BOOKMARKS_TAB_CLICK = "Bookmarks_Tab_click";
+    private static final String BOOKMARKS_DOWNLOADED_CATALOGUE_OPEN = "Bookmarks_Downloaded_Catalogue_open";
+    private static final String BOOKMARKS_DOWNLOADED_CATALOGUE_ERROR = "Bookmarks_Downloaded_Catalogue_error";
 
     public static class Settings
     {
@@ -425,7 +429,7 @@ public enum Statistics
     public static final String GOOGLE = "google";
     public static final String MAPSME = "mapsme";
     public static final String PHONE = "phone";
-    static final String UNKNOWN = "unknown";
+    public static final String UNKNOWN = "unknown";
     static final String NETWORK = "network";
     static final String DISK = "disk";
     static final String AUTH = "auth";
@@ -435,6 +439,7 @@ public enum Statistics
     static final String DISK_NO_SPACE = "disk_no_space";
     static final String BACKUP = "backup";
     static final String RESTORE = "restore";
+    public static final String NO_INTERNET = "no_internet";
   }
 
   // Initialized once in constructor and does not change until the process restarts.
@@ -714,6 +719,23 @@ public enum Statistics
   public void trackBookHotelEvent(@NonNull Sponsored hotel, @NonNull MapObject mapObject)
   {
     trackHotelEvent(PP_SPONSORED_BOOK, hotel, mapObject);
+  }
+
+  public void trackBookmarksTabEvent(@NonNull String param)
+  {
+    ParameterBuilder params = new ParameterBuilder().add(EventParam.VALUE, param);
+    trackEvent(EventName.BOOKMARKS_TAB_CLICK, params);
+  }
+
+  public void trackOpenCatalogScreen()
+  {
+    trackEvent(EventName.BOOKMARKS_DOWNLOADED_CATALOGUE_OPEN, Collections.emptyMap());
+  }
+
+  public void trackDownloadCatalogError(@NonNull String value)
+  {
+    ParameterBuilder params = new ParameterBuilder().add(EventParam.ERROR, value);
+    trackEvent(EventName.BOOKMARKS_DOWNLOADED_CATALOGUE_ERROR, params);
   }
 
   public void trackPPBanner(@NonNull String eventName, @NonNull MwmNativeAd ad, @BannerState int state)
