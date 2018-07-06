@@ -2693,6 +2693,16 @@ bool Framework::ParseDrapeDebugCommand(string const & query)
     EnableTransitScheme(false /* enable */);
     return true;
   }
+  if (query == "?debug-info")
+  {
+    m_drapeEngine->ShowDebugInfo(true /* shown */);
+    return true;
+  }
+  if (query == "?no-debug-info")
+  {
+    m_drapeEngine->ShowDebugInfo(false /* shown */);
+    return true;
+  }
   return false;
 }
 
