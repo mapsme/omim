@@ -1,18 +1,35 @@
 package com.mapswithme.maps.maplayer.subway;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
-public enum TransitSchemeState
+import com.mapswithme.maps.R;
+import com.mapswithme.util.statistics.Statistics;
+
+enum TransitSchemeState
 {
   DISABLED,
-  ENABLED,
-  NO_DATA;
+  ENABLED
+      {
+        @Override
+        public void activate(@NonNull Context context)
+        {
+          Statistics.INSTANCE.trackSubwayEvent(Statistics.ParamValue.SUCCESS);
+        }
+      },
+  NO_DATA
+      {
+        @Override
+        public void activate(@NonNull Context context)
+        {
+          Toast.makeText(context, R.string.subway_data_unavailable, Toast.LENGTH_SHORT).show();
+          Statistics.INSTANCE.trackSubwayEvent(Statistics.ParamValue.UNAVAILABLE);
+        }
+      };
 
-  @NonNull
-  public static TransitSchemeState makeInstance(int index)
+  void activate(@NonNull Context context)
   {
-    if (index < 0 || index >= TransitSchemeState.values().length)
-      throw new IllegalArgumentException("No value for index = " + index);
-    return TransitSchemeState.values()[index];
+    /* Do nothing by default */
   }
 }

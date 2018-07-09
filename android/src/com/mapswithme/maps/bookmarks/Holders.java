@@ -223,6 +223,13 @@ public class Holders
 
     abstract void bind(int position);
 
+    static int calculateTrackPosition(@NonNull BookmarkCategory category, int position)
+    {
+      return position
+             - (isSectionEmpty(category, SECTION_TRACKS) ? 0 : 1)
+             - getDescItemCount(category);
+    }
+
     static boolean isSectionEmpty(@NonNull BookmarkCategory category, @Section int section)
     {
       switch (section)
@@ -355,9 +362,9 @@ public class Holders
     {
       // Since bookmarks are always below tracks and header we should take it into account
       // during the bookmark's position calculation.
-      return position - 1
-             - (isSectionEmpty(category, SECTION_TRACKS) ? 0 : category.getTracksCount() + 1)
-             - getDescItemCount(category);
+      return  calculateTrackPosition(category, position)
+              - category.getTracksCount()
+              - (isSectionEmpty(category, SECTION_BMKS) ? 0 : 1);
     }
   }
 
@@ -381,8 +388,8 @@ public class Holders
     @Override
     void bind(int position)
     {
-      final long trackId = BookmarkManager.INSTANCE.getTrackIdByPosition(mCategory.getId(),
-                                                                         position - 1);
+      int relativePos = calculateTrackPosition(mCategory, position);
+      final long trackId = BookmarkManager.INSTANCE.getTrackIdByPosition(mCategory.getId(), relativePos);
       Track track = BookmarkManager.INSTANCE.getTrack(trackId);
       mName.setText(track.getName());
       mDistance.setText(new StringBuilder().append(mDistance.getContext()

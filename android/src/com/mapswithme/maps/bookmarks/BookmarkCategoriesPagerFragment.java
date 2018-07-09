@@ -13,12 +13,18 @@ import android.view.ViewGroup;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmFragment;
 import com.mapswithme.util.SharedPropertiesUtils;
+import com.mapswithme.util.statistics.Statistics;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
 {
+  final static String ARG_CATEGORIES_PAGE = "arg_categories_page";
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private BookmarksPagerAdapter mAdapter;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
@@ -37,21 +43,32 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
 
     FragmentManager fm = getActivity().getSupportFragmentManager();
     List<BookmarksPageFactory> dataSet = getAdapterDataSet();
-    BookmarksPagerAdapter adapter = new BookmarksPagerAdapter(getContext(), fm, dataSet);
-    viewPager.setAdapter(adapter);
-
-    int lastVisibleScreen = SharedPropertiesUtils.getLastVisibleBookmarkCategoriesPage(getActivity());
-    viewPager.setCurrentItem(lastVisibleScreen);
+    mAdapter = new BookmarksPagerAdapter(getContext(), fm, dataSet);
+    viewPager.setAdapter(mAdapter);
+    viewPager.setCurrentItem(saveAndGetInitialPage());
     tabLayout.setupWithViewPager(viewPager);
     viewPager.addOnPageChangeListener(new PageChangeListener());
 
     return root;
   }
 
+  private int saveAndGetInitialPage()
+  {
+    Bundle args = getArguments();
+    if (args != null && args.containsKey(ARG_CATEGORIES_PAGE))
+    {
+      int page = args.getInt(ARG_CATEGORIES_PAGE);
+      SharedPropertiesUtils.setLastVisibleBookmarkCategoriesPage(getActivity(), page);
+      return page;
+    }
+
+    return SharedPropertiesUtils.getLastVisibleBookmarkCategoriesPage(getActivity());
+  }
+
   @NonNull
   private static List<BookmarksPageFactory> getAdapterDataSet()
   {
-    return Arrays.asList(BookmarksPageFactory.PRIVATE, BookmarksPageFactory.CATALOG);
+    return Arrays.asList(BookmarksPageFactory.values());
   }
 
   private class PageChangeListener extends ViewPager.SimpleOnPageChangeListener
@@ -60,6 +77,8 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
     public void onPageSelected(int position)
     {
       SharedPropertiesUtils.setLastVisibleBookmarkCategoriesPage(getActivity(), position);
+      BookmarksPageFactory factory = mAdapter.getItemFactory(position);
+      Statistics.INSTANCE.trackBookmarksTabEvent(factory.getAnalytics().getName());
     }
   }
 }

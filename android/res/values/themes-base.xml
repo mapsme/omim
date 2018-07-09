@@ -24,7 +24,7 @@
     <item name="colorPrimary">@color/bg_primary</item>
     <item name="colorControlNormal">?secondary</item>
     <item name="colorAccent">@color/base_accent</item>
-    <item name="colorControlHighlight">@color/white_38</item>
+    <item name="colorBtnHighlight">@color/white_38</item>
     <item name="panel">@color/bg_panel</item>
     <item name="sidePanel">@color/bg_side_panel</item>
     <item name="iconTint">@color/icon_tint</item>
@@ -130,6 +130,7 @@
     <item name="trafficMenuDisabled">@drawable/ic_traffic_menu_light_off</item>
     <item name="subwayMenuDisabled">@drawable/ic_subway_menu_light_off</item>
     <item name="toggleMapLayerBtnBg">@drawable/bg_toggle_map_layer_btn</item>
+    <item name="accentTextColorSelector">@color/tab_text</item>
   </style>
 
   <!-- Night theme -->
@@ -158,7 +159,7 @@
     <item name="colorPrimary">@color/bg_primary_night</item>
     <item name="colorControlNormal">?secondary</item>
     <item name="colorAccent">@color/base_accent_night</item>
-    <item name="colorControlHighlight">@color/white_24</item>
+    <item name="colorBtnHighlight">@color/white_24</item>
     <item name="panel">@color/bg_panel_night</item>
     <item name="sidePanel">@color/bg_side_panel_night</item>
     <item name="iconTint">@color/icon_tint_night</item>
@@ -263,5 +264,6 @@
     <item name="trafficMenuDisabled">@drawable/ic_traffic_menu_dark_off</item>
     <item name="subwayMenuDisabled">@drawable/ic_subway_menu_dark_off</item>
     <item name="toggleMapLayerBtnBg">@drawable/bg_toggle_map_layer_btn_dark</item>
+    <item name="accentTextColorSelector">@color/tab_text_night</item>
   </style>
 </resources>
