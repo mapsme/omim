@@ -508,8 +508,6 @@ public class RoutingController implements TaxiManager.TaxiListener
       return;
     }
 
-    Statistics.INSTANCE.trackEvent(Statistics.EventName.ROUTING_START);
-    AlohaHelper.logClick(AlohaHelper.ROUTING_START);
     setState(State.NAVIGATION);
 
     if (mContainer != null)
@@ -1041,6 +1039,12 @@ public class RoutingController implements TaxiManager.TaxiListener
 
     if (getStartPoint() != null && getEndPoint() != null)
       build();
+  }
+
+  @Framework.RouterType
+  public int getLastRouterType()
+  {
+    return mLastRouterType;
   }
 
   private void openRemovingIntermediatePointsTransaction()
