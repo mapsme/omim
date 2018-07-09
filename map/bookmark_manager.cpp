@@ -726,7 +726,7 @@ void BookmarkManager::NotifyChanges()
   if (hasBookmarks)
   {
     SaveBookmarks(categoriesToSave);
-    SendBookmarksChanges();
+    // SendBookmarksChanges();
   }
 
   df::DrapeEngineLockGuard lock(m_drapeEngine);
