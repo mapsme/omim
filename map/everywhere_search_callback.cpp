@@ -25,7 +25,8 @@ void EverywhereSearchCallback::operator()(Results const & results)
     m_productInfo.push_back(m_productInfoDelegate.GetProductInfo(results[i]));
   }
 
-  if (results.IsEndedNormal() && results.GetType() == Results::Type::Hotels)
+  if (results.IsEndedNormal() && results.GetType() == Results::Type::Hotels &&
+      !m_bookingFilterTasks.IsEmpty())
   {
     m_hotelsDelegate.FilterResultsForHotelsQuery(m_bookingFilterTasks, results,
                                                  false /* inViewport */);
