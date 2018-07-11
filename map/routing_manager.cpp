@@ -419,6 +419,7 @@ void RoutingManager::RemoveRoute(bool deactivateFollowing)
 
   if (deactivateFollowing)
   {
+    m_transitReadManager->BlockTransitSchemeMode(false /* isBlocked */);
     // Remove all subroutes.
     m_drapeEngine.SafeCall(&df::DrapeEngine::RemoveSubroute,
                            dp::DrapeID(), true /* deactivateFollowing */);
@@ -568,6 +569,8 @@ void RoutingManager::FollowRoute()
 {
   if (!m_routingSession.EnableFollowMode())
     return;
+
+  m_transitReadManager->BlockTransitSchemeMode(true /* isBlocked */);
 
   // Switching on the extrapolatior only for following mode in car and bicycle navigation.
   m_extrapolator.Enable(m_currentRouterType == RouterType::Vehicle ||
@@ -895,8 +898,10 @@ bool RoutingManager::DisableFollowMode()
 {
   bool const disabled = m_routingSession.DisableFollowMode();
   if (disabled)
+  {
+    m_transitReadManager->BlockTransitSchemeMode(false /* isBlocked */);
     m_drapeEngine.SafeCall(&df::DrapeEngine::DeactivateRouteFollowing);
-
+  }
   return disabled;
 }
 
