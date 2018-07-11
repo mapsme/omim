@@ -33,7 +33,7 @@ namespace
 using BookmarkIdDoc = pair<bookmarks::Id, bookmarks::Doc>;
 
 double const kDistEqualQueryMeters = 100.0;
-size_t const kDefaultNumResultsForDiscovery = 100;
+size_t const kDefaultNumResultsForDiscovery = 200;
 
 // Cancels search query by |handle|.
 void CancelQuery(weak_ptr<ProcessorHandle> & handle)
@@ -231,16 +231,12 @@ void SearchAPI::SearchForDiscovery(DiscoverySearchParams const & params)
   CHECK(!params.m_query.empty(), ());
   CHECK_GREATER(params.m_itemsCount, 0, ());
 
-  auto const resultsCount = params.m_sortingType == DiscoverySearchParams::SortingType::None
-                            ? params.m_itemsCount
-                            : kDefaultNumResultsForDiscovery;
-
   SearchParams p;
   p.m_query = params.m_query;
   p.m_inputLocale = "en";
   p.m_viewport = params.m_viewport;
   p.m_position = params.m_position;
-  p.m_maxNumResults = resultsCount;
+  p.m_maxNumResults = kDefaultNumResultsForDiscovery;
   p.m_mode = search::Mode::Everywhere;
   p.m_onResults = DiscoverySearchCallback(
     static_cast<ProductInfo::Delegate &>(*this),
@@ -248,26 +244,36 @@ void SearchAPI::SearchForDiscovery(DiscoverySearchParams const & params)
     if (!results.IsEndMarker())
       return;
 
+    auto const & v = params.m_viewport;
+    auto const maxDistance = MercatorBounds::DistanceOnEarth(v.LeftTop(), v.RightTop()) / 2;
+
+    Results r;
+    for (auto const & result : results)
+    {
+      if (result.GetRankingInfo().m_distanceToPivot > maxDistance)
+        continue;
+
+      auto copy = result;
+      r.AddResultNoChecks(move(copy));
+    }
+
     switch (params.m_sortingType)
     {
     case DiscoverySearchParams::SortingType::None:
-      params.m_onResults(results, productInfo);
       break;
     case DiscoverySearchParams::SortingType::HotelRating:
     {
-      Results r(results);
       r.SortBy(DiscoverySearchParams::HotelRatingComparator());
-      params.m_onResults(TrimResults(move(r), params.m_itemsCount), productInfo);
       break;
     }
     case DiscoverySearchParams::SortingType::Popularity:
     {
-      Results r(results);
       r.SortBy(DiscoverySearchParams::PopularityComparator());
-      params.m_onResults(TrimResults(move(r), params.m_itemsCount), productInfo);
       break;
     }
     }
+
+    params.m_onResults(TrimResults(move(r), params.m_itemsCount), productInfo);
   });
 
   GetEngine().Search(p);

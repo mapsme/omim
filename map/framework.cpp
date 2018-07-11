@@ -2569,10 +2569,10 @@ void Framework::EnableChoosePositionMode(bool enable, bool enableBounds, bool ap
 discovery::Manager::Params Framework::GetDiscoveryParams(
     discovery::ClientParams && clientParams) const
 {
-  auto constexpr kRectSideM = 2000.0;
+  auto constexpr kRadiusMeters = 2000.0;
   discovery::Manager::Params p;
   p.m_viewportCenter = GetDiscoveryViewportCenter();
-  p.m_viewport = MercatorBounds::RectByCenterXYAndSizeInMeters(p.m_viewportCenter, kRectSideM);
+  p.m_viewport = MercatorBounds::RectByCenterXYAndSizeInMeters(p.m_viewportCenter, kRadiusMeters);
   p.m_curency = clientParams.m_currency;
   p.m_lang = clientParams.m_lang;
   p.m_itemsCount = clientParams.m_itemsCount;
