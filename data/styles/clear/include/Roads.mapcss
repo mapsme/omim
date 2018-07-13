@@ -590,8 +590,8 @@ line|z18-[highway=secondary_link][bridge?]::bridgeblack
 
 /* 6.RESIDENTAL & TERTIARY 11-22 ZOOM */
 
-line|z11-[highway=residential],
-line|z11-[highway=tertiary],
+line|z13-[highway=residential],
+line|z13-[highway=tertiary],
 line|z15-[highway=residential_link],
 line|z15-[highway=tertiary_link],
 {color: @residential; opacity: 1;}
@@ -611,11 +611,8 @@ line|z14-[highway=tertiary_link][bridge?]::bridgeblack
 
 /* 6.1 Residential & Tertiary 11-22 ZOOM */
 
-line|z11[highway=residential],
-line|z11[highway=tertiary]
-{width: 0.8;}
-line|z12-13[highway=residential],
-line|z12-13[highway=tertiary]
+line|z13[highway=residential],
+line|z13[highway=tertiary]
 {width: 1.2;}
 line|z14[highway=residential],
 line|z14[highway=tertiary]
