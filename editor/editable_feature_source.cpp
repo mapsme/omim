@@ -14,8 +14,15 @@ bool EditableFeatureSource::GetModifiedFeature(uint32_t index, FeatureType & fea
   return editor.GetEditedFeature(m_handle.GetId(), index, feature);
 }
 
-void EditableFeatureSource::ForEachInRectAndScale(m2::RectD const & rect, int scale,
-                                                  std::function<void(uint32_t)> const & fn) const
+void EditableFeatureSource::ForEachInRectAndScale(
+    m2::RectD const & rect, int scale, std::function<void(FeatureID const &)> const & fn) const
+{
+  osm::Editor & editor = osm::Editor::Instance();
+  editor.ForEachFeatureInMwmRectAndScale(m_handle.GetId(), fn, rect, scale);
+}
+
+void EditableFeatureSource::ForEachInRectAndScale(
+    m2::RectD const & rect, int scale, std::function<void(FeatureType &)> const & fn) const
 {
   osm::Editor & editor = osm::Editor::Instance();
   editor.ForEachFeatureInMwmRectAndScale(m_handle.GetId(), fn, rect, scale);
