@@ -63,8 +63,6 @@ MWMEditorCellTypeClassMap const kCellType2Class{
     {MWMEditorCellTypeCategory, [MWMEditorCategoryCell class]},
     {MWMEditorCellTypeAdditionalName, [MWMEditorAdditionalNameTableViewCell class]},
     {MWMEditorCellTypeAddAdditionalName, [MWMEditorAddAdditionalNameTableViewCell class]},
-    {MWMEditorCellTypeAddAdditionalNamePlaceholder,
-     [MWMEditorAdditionalNamePlaceholderTableViewCell class]},
     {MWMEditorCellTypeStreet, [MWMEditorSelectTableViewCell class]},
     {MWMEditorCellTypeBuilding, [MWMEditorTextTableViewCell class]},
     {MWMEditorCellTypeZipCode, [MWMEditorTextTableViewCell class]},
@@ -116,8 +114,6 @@ vector<MWMEditorCellType> cellsForAdditionalNames(osm::NamesDataSource const & d
     {
       auto const mandatoryNamesCount = ds.mandatoryNamesCount;
       res.insert(res.begin(), mandatoryNamesCount, MWMEditorCellTypeAdditionalName);
-      if (allNamesSize > mandatoryNamesCount)
-        res.push_back(MWMEditorCellTypeAddAdditionalNamePlaceholder);
     }
   }
   res.push_back(MWMEditorCellTypeAddAdditionalName);
@@ -394,7 +390,7 @@ void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableV
     m_sections.push_back(MWMEditorSectionAdditionalNames);
     m_cells[MWMEditorSectionAdditionalNames] = cells;
     registerCellsForTableView(cells, self.tableView);
-    [self.additionalNamesHeader setAdditionalNamesVisible:cells.size() > ds.mandatoryNamesCount + 1];
+    [self.additionalNamesHeader setAdditionalNamesVisible:cells.size() > ds.mandatoryNamesCount];
   }
 
   if (isAddressEditable)
@@ -576,7 +572,6 @@ void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableV
     [tCell configWithDelegate:self];
     break;
   }
-  case MWMEditorCellTypeAddAdditionalNamePlaceholder: break;
   case MWMEditorCellTypeStreet:
   {
     MWMEditorSelectTableViewCell * tCell = static_cast<MWMEditorSelectTableViewCell *>(cell);

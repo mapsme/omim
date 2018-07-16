@@ -17,7 +17,6 @@ typedef NS_ENUM(NSUInteger, MWMEditorCellType) {
   MWMEditorCellTypeName,
   MWMEditorCellTypeAdditionalName,
   MWMEditorCellTypeAddAdditionalName,
-  MWMEditorCellTypeAddAdditionalNamePlaceholder,
   MWMEditorCellTypeStreet,
   MWMEditorCellTypeBuilding,
   MWMEditorCellTypeZipCode,
