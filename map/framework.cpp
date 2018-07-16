@@ -608,6 +608,7 @@ bool Framework::OnCountryFileDelete(storage::TCountryId const & countryId, stora
     auto const mwmId = m_model.GetDataSource().GetMwmIdByCountryFile(localFile->GetCountryFile());
     m_model.DeregisterMap(platform::CountryFile(countryId));
     deferredDelete = true;
+    // Notify managers in case of mwm deletion.
     m_localAdsManager.OnMwmDeregistered(mwmId);
     m_transitManager.OnMwmDeregistered(mwmId);
     m_trafficManager.OnMwmDeregistered(mwmId);
@@ -624,6 +625,15 @@ void Framework::OnMapDeregistered(platform::LocalCountryFile const & localFile)
   {
     m_storage.DeleteCustomCountryVersion(localFile);
   };
+
+  auto const mwmId = m_model.GetDataSource().GetMwmIdByCountryFile(localFile.GetCountryFile());
+  if (mwmId.GetInfo())
+  {
+    // Notify managers in case of mwm updating.
+    m_localAdsManager.OnMwmDeregistered(mwmId);
+    m_transitManager.OnMwmDeregistered(mwmId);
+    m_trafficManager.OnMwmDeregistered(mwmId);
+  }
 
   // Call action on thread in which the framework was created
   // For more information look at comment for Observer class in mwm_set.hpp
