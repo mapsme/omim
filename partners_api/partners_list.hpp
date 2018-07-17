@@ -3,7 +3,7 @@
 #include <vector>
 
 std::vector<PartnerInfo> const kPartners = {
-  PartnerInfo(2, "LuggageHero"),
+  PartnerInfo(2, "LuggageHero", true /* m_hasButton */),
   PartnerInfo(3, "BurgerKing", true /* m_hasButton */),
   PartnerInfo(4, "Adidas", true /* m_hasButton */),
   PartnerInfo(6, "AdidasOriginal", true /* m_hasButton */),
@@ -17,10 +17,6 @@ std::vector<PartnerInfo> const kPartners = {
   PartnerInfo(11, "KFC", true /* m_hasButton */),
   PartnerInfo(12, "AzbukaVkusa", true /* m_hasButton */,
               "https://localads.maps.me/redirects/azbuka_vkusa"),
-  PartnerInfo(13, "Shokoladnitsa", true /* m_hasButton */),
-  PartnerInfo(14, "Yakitoriya", true /* m_hasButton */),
-  PartnerInfo(15, "Menza", true /* m_hasButton */),
-  PartnerInfo(16, "YanPrimus", true /* m_hasButton */),
   PartnerInfo(17, "GinNo", true /* m_hasButton */),
   PartnerInfo(18, "MegafonGreenDot", true /* m_hasButton */,
               "https://localads.maps.me/redirects/megafon_green"),
