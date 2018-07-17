@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <map>
 #include <string>
 #include <utility>
 #include <type_traits>
@@ -127,6 +128,58 @@ Results TrimResults(Results && results, size_t const maxCount)
   r.AddResultsNoChecks(results.begin(), results.begin() + maxCount);
   return r;
 }
+
+class DiscoveryResultMaker
+{
+public:
+  DiscoveryResultMaker(DiscoverySearchParams const & params,
+                       Results const & results,
+                       std::vector<ProductInfo> const & productInfo)
+      : m_params(params)
+      , m_results(results)
+      , m_productInfo(productInfo)
+    {
+    }
+
+  template <typename Comparator>
+  void OnResults()
+  {
+    Results r;
+    std::vector<ProductInfo> info;
+    for (auto & item : MakeMap<Comparator>())
+    {
+      auto copy = item.first;
+      r.AddResultNoChecks(move(copy));
+      info.emplace_back(move(item.second));
+    }
+
+    m_params.m_onResults(TrimResults(move(r), m_params.m_itemsCount), info);
+  }
+
+private:
+  template <typename Comparator>
+  std::multimap<Result, ProductInfo, Comparator> MakeMap()
+  {
+    auto const & v = m_params.m_viewport;
+    auto const maxDistance = MercatorBounds::DistanceOnEarth(v.LeftTop(), v.RightTop()) / 2;
+
+    std::multimap<Result, ProductInfo, Comparator> ret;
+
+    for (size_t i = 0; i <  m_results.GetCount(); ++i)
+    {
+      if (m_results[i].GetRankingInfo().m_distanceToPivot > maxDistance)
+        continue;
+
+      ret.emplace(m_results[i], m_productInfo[i]);
+    }
+
+    return ret;
+  };
+
+  DiscoverySearchParams const & m_params;
+  Results const & m_results;
+  std::vector<ProductInfo> const & m_productInfo;
+};
 }  // namespace
 
 SearchAPI::SearchAPI(DataSource & dataSource, storage::Storage const & storage,
@@ -244,36 +297,26 @@ void SearchAPI::SearchForDiscovery(DiscoverySearchParams const & params)
     if (!results.IsEndMarker())
       return;
 
-    auto const & v = params.m_viewport;
-    auto const maxDistance = MercatorBounds::DistanceOnEarth(v.LeftTop(), v.RightTop()) / 2;
-
-    Results r;
-    for (auto const & result : results)
-    {
-      if (result.GetRankingInfo().m_distanceToPivot > maxDistance)
-        continue;
-
-      auto copy = result;
-      r.AddResultNoChecks(move(copy));
-    }
+    DiscoveryResultMaker maker(params, results, productInfo);
 
     switch (params.m_sortingType)
     {
-    case DiscoverySearchParams::SortingType::None:
+    case DiscoverySearchParams::SortingType::ByPosition:
+    {
+      maker.OnResults<DiscoverySearchParams::ByPositionComparator>();
       break;
+    }
     case DiscoverySearchParams::SortingType::HotelRating:
     {
-      r.SortBy(DiscoverySearchParams::HotelRatingComparator());
+      maker.OnResults<DiscoverySearchParams::HotelRatingComparator>();
       break;
     }
     case DiscoverySearchParams::SortingType::Popularity:
     {
-      r.SortBy(DiscoverySearchParams::PopularityComparator());
+      maker.OnResults<DiscoverySearchParams::PopularityComparator>();
       break;
     }
     }
-
-    params.m_onResults(TrimResults(move(r), params.m_itemsCount), productInfo);
   });
 
   GetEngine().Search(p);
