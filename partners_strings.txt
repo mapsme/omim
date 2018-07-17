@@ -1,5 +1,9 @@
 [[ Partners ]]
 
+  [sponsored_partner2_action]
+    en = 
+    ru = 
+    
   [sponsored_partner3_action]
     en = Coupon
     ru = Купон
@@ -35,22 +39,6 @@
   [sponsored_partner12_action]
     en = Store
     ru = Магазин
-    
-  [sponsored_partner13_action]
-    en = -
-    ru = -
-    
-  [sponsored_partner14_action]
-    en = -
-    ru = -
-    
-  [sponsored_partner15_action]
-    en = -
-    ru = -
-    
-  [sponsored_partner16_action]
-    en = -
-    ru = -
     
   [sponsored_partner17_action]
     en = -
