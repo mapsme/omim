@@ -3,7 +3,7 @@
 #include <vector>
 
 std::vector<PartnerInfo> const kPartners = {
-  PartnerInfo(2, "LuggageHero"),
+  PartnerInfo(2, "LuggageHero", true /* m_hasButton */),
   PartnerInfo(3, "BurgerKing", true /* m_hasButton */),
   PartnerInfo(4, "Adidas", true /* m_hasButton */),
   PartnerInfo(6, "AdidasOriginal", true /* m_hasButton */),
