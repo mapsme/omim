@@ -20,6 +20,7 @@
 #include "base/logging.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 
@@ -76,9 +77,13 @@ bool PreRankerResult::LessRankAndPopularity(PreRankerResult const & r1, PreRanke
 {
   if (r1.m_info.m_rank != r2.m_info.m_rank)
     return r1.m_info.m_rank > r2.m_info.m_rank;
-  if (r1.m_info.m_popularity != r2.m_info.m_popularity)
-    return r1.m_info.m_popularity > r2.m_info.m_popularity;
-  return r1.m_info.m_distanceToPivot < r2.m_info.m_distanceToPivot;
+
+  auto const mixPopularityAndDistance = [](PreRankerResult const & r) {
+    return 6.0 / log2(64 + r.m_info.m_distanceToPivot) +
+           static_cast<double>(r.m_info.m_popularity) / numeric_limits<uint8_t>::max();
+  };
+
+  return mixPopularityAndDistance(r1) > mixPopularityAndDistance(r2);
 }
 
 // static
