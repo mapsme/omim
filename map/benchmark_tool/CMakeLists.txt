@@ -21,6 +21,8 @@ omim_link_libraries(
   ugc
   kml
   editor
+  search
+  storage
   indexer
   geometry
   platform
