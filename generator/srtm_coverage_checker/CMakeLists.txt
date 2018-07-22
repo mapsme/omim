@@ -20,6 +20,8 @@ omim_link_libraries(
   routing_common
   traffic
   kml
+  search
+  storage
   indexer
   editor
   platform

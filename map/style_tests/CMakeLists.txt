@@ -23,6 +23,8 @@ omim_link_libraries(
   map
   traffic
   kml
+  search
+  storage
   indexer
   pugixml
   opening_hours
@@ -37,6 +39,7 @@ omim_link_libraries(
   icu
   agg
   stats_client
+  succinct
   ${LIBZ}
 )
 

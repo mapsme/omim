@@ -21,6 +21,7 @@ omim_link_libraries(
   routing_common
   ugc
   kml
+  search
   indexer
   editor
   storage
