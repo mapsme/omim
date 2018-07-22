@@ -28,6 +28,8 @@ omim_link_libraries(
   storage
   kml
   editor
+  search
+  storage
   indexer
   platform
   mwm_diff
