@@ -223,7 +223,7 @@ void Storage::Load()
     if (!version)
       version = i.m_version;
     else
-      CHECK_EQUAL(static_cast<uint8_t>(*version), static_cast<uint8_t>(i.m_version), ("Inconsistent index"));
+      CHECK_EQUAL(static_cast<uint8_t>(*version), static_cast<uint8_t>(i.m_version), ("Inconsistent index:", data));
 
     if (i.m_deleted)
       ++m_numberOfDeleted;
