@@ -170,6 +170,7 @@ private:
   void RenderRouteLayer(ScreenBase const & modelView);
   void RenderSearchMarksLayer(ScreenBase const & modelView);
   void RenderTransitBackground();
+  void RenderEmptyFrame(dp::OGLContext * context);
 
   bool HasTransitRouteData() const;
   bool HasRouteData() const;
