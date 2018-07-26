@@ -9204,6 +9204,18 @@ el:^Χριστούγεννα ή Ρεβεγιόν πρωτοχρονιάς
 sponsored-partner2
 en:^Luggage Storage|Luggage Hero|3luggagehero
 
+sponsored-partner18
+en:^MegaFon
+ru:^МегаФон
+
+sponsored-partner19
+en:^MegaFon
+ru:^МегаФон
+
+sponsored-partner20
+en:^MegaFon
+ru:^МегаФон
+
 event-fc2018
 en:3^Football Cup 2018|2FIFA|championship|fc2018
 ru:2^ЧМ 2018 по футболу|1ФИФА|футбол|кубок
