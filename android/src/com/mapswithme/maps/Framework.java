@@ -437,6 +437,7 @@ public class Framework
   public static native String nativeGetTermsOfUseLink();
 
   public static native void nativeShowFeatureByLatLon(double lat, double lon);
+  public static native void nativeShowBookmarkCategory(long cat);
 
   private static native int nativeGetFilterRating(float rawRating);
 
