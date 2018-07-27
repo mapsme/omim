@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.mapswithme.maps.R;
 import com.mapswithme.maps.SplashActivity;
 import com.mapswithme.maps.base.BaseToolbarActivity;
 import com.mapswithme.maps.base.OnBackPressListener;
@@ -23,6 +24,7 @@ public class BookmarksCatalogActivity extends BaseToolbarActivity
     if (intent != null)
       setIntent(intent);
     super.safeOnCreate(savedInstanceState);
+    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_home_up_indicator_close);
   }
 
   @Override
@@ -35,5 +37,11 @@ public class BookmarksCatalogActivity extends BaseToolbarActivity
   protected boolean onBackPressedInternal(@NonNull Fragment currentFragment)
   {
     return Utils.<OnBackPressListener>castTo(currentFragment).onBackPressed();
+  }
+
+  @Override
+  protected void onHomeOptionItemSelected()
+  {
+    finish();
   }
 }
