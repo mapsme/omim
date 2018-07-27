@@ -19,7 +19,11 @@ set(
   test_map_files_downloader.hpp
 )
 
-omim_add_test(${PROJECT_NAME} ${SRC})
+omim_add_test(
+  ${PROJECT_NAME}
+  LABELS Smoke Server
+  SOURCES ${SRC}
+)
 
 omim_link_libraries(
   ${PROJECT_NAME}

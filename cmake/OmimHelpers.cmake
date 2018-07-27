@@ -59,13 +59,61 @@ function(omim_add_library library)
 endfunction()
 
 function(omim_add_test executable)
-  if (NOT SKIP_TESTS)
-    omim_add_executable(
-      ${executable}
-      ${ARGN}
-      ${OMIM_ROOT}/testing/testingmain.cpp
-     )
+  if (SKIP_TESTS)
+    return()
   endif()
+
+  set(options CUSTOM_TEST)
+  set(multiValueArgs LABELS REQUIRED SOURCES)
+  cmake_parse_arguments(
+    OMIM_TEST "${options}" "" "${multiValueArgs}" ${ARGN}
+  )
+
+  set(TEST_COMMAND ${CMAKE_BINARY_DIR}/${executable}
+    --data_path=${OMIM_ROOT}/data
+    --user_resource_path=${OMIM_ROOT}/data
+  )
+
+  # Backward capability
+  # Supporting syntax like: omim_add_test(${PROJECT_NAME} ${SRC})
+  if (NOT OMIM_TEST_LABELS AND NOT OMIM_TEST_SOURCES)
+    set(OMIM_TEST_SOURCES ${ARGN})
+    set(OMIM_TEST_LABELS Smoke)
+  endif()
+
+  if (Server IN_LIST OMIM_TEST_REQUIRED)
+    add_test(
+      NAME ${executable}
+      COMMAND ${OMIM_ROOT}/tools/unix/run_test_with_server.sh "${TEST_COMMAND}"
+      )
+  else()
+    add_test(
+      NAME ${executable}
+      COMMAND ${TEST_COMMAND}
+      )
+  endif()
+
+  set_tests_properties(
+    ${executable}
+    PROPERTIES
+    LABELS
+    "${OMIM_TEST_LABELS}"
+    ENVIRONMENT
+    "LC_NUMERIC=C"
+    WORKING_DIRECTORY
+    ${OMIM_ROOT} # ./data not found issue
+    FAIL_REGULAR_EXPRESSION
+    "Some tests FAILED"
+  )
+
+  if (NOT OMIM_TEST_CUSTOM_TEST)
+    set(OMIM_TEST_SOURCES ${OMIM_TEST_SOURCES} ${OMIM_ROOT}/testing/testingmain.cpp)
+  endif()
+
+  omim_add_executable(
+    ${executable}
+    ${OMIM_TEST_SOURCES}
+  )
 endfunction()
 
 function(omim_add_test_subdirectory subdir)

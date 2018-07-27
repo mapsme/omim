@@ -11,8 +11,12 @@ set(
   routing_consistency_tests.cpp
 )
 
-# Not using omim_add_test because we don't need testingmain.cpp
-omim_add_executable(${PROJECT_NAME} ${SRC})
+omim_add_test(
+  ${PROJECT_NAME}
+  LABELS Maps
+  SOURCES ${SRC}
+  CUSTOM_TEST
+)
 
 omim_link_libraries(
   ${PROJECT_NAME}

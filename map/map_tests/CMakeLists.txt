@@ -25,7 +25,11 @@ set(
   working_time_tests.cpp
 )
 
-omim_add_test(${PROJECT_NAME} ${SRC})
+omim_add_test(
+  ${PROJECT_NAME}
+  REQUIRED Server
+  SOURCES ${SRC}
+)
 
 omim_link_libraries(
   ${PROJECT_NAME}
