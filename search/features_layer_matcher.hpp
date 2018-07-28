@@ -35,7 +35,7 @@
 #include "std/utility.hpp"
 #include "std/vector.hpp"
 
-class DataSourceBase;
+class DataSource;
 
 namespace search
 {
@@ -61,7 +61,7 @@ public:
   static int constexpr kBuildingRadiusMeters = 50;
   static int constexpr kStreetRadiusMeters = 100;
 
-  FeaturesLayerMatcher(DataSourceBase const & dataSource, ::base::Cancellable const & cancellable);
+  FeaturesLayerMatcher(DataSource const & dataSource, ::base::Cancellable const & cancellable);
   void SetContext(MwmContext * context);
   void SetPostcodes(CBV const * postcodes);
 
@@ -377,7 +377,8 @@ private:
     /// Correct fix would be injection into ForEachInIntervalAndScale, so deleted features will
     /// never
     /// be emitted and used in other code.
-    UNUSED_VALUE(m_context->GetFeature(id, ft));
+    if (!m_context->GetFeature(id, ft))
+        LOG(LWARNING, ("GetFeature() returned false."));
   }
 
   MwmContext * m_context;

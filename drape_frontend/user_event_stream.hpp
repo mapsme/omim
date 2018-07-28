@@ -17,6 +17,7 @@
 #include <list>
 #include <memory>
 #include <mutex>
+#include <string>
 
 namespace df
 {
@@ -351,7 +352,7 @@ public:
     virtual void OnScaleEnded() = 0;
     virtual void OnAnimatedScaleEnded() = 0;
 
-    virtual void OnTouchMapAction() = 0;
+    virtual void OnTouchMapAction(TouchEvent::ETouchType touchType) = 0;
 
     virtual bool OnNewVisibleViewport(m2::RectD const & oldViewport, m2::RectD const & newViewport,
                                       m2::PointD & gOffset) = 0;
@@ -460,7 +461,7 @@ private:
 
   void ApplyAnimations();
   void ResetAnimations(Animation::Type animType, bool rewind = true, bool finishAll = false);
-  void ResetAnimations(Animation::Type animType, string const & customType,
+  void ResetAnimations(Animation::Type animType, std::string const & customType,
                        bool rewind = true, bool finishAll = false);
   void ResetMapPlaneAnimations();
   bool InterruptFollowAnimations(bool force);

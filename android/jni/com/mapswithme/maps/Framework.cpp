@@ -27,6 +27,8 @@
 
 #include "geometry/angles.hpp"
 
+#include "indexer/feature_altitude.hpp"
+
 #include "platform/country_file.hpp"
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
@@ -43,6 +45,7 @@
 
 #include <memory>
 #include <utility>
+#include <vector>
 
 using namespace std;
 using namespace std::placeholders;
@@ -93,6 +96,7 @@ Framework::Framework()
   , m_isChoosePositionMode(false)
 {
   m_work.GetTrafficManager().SetStateListener(bind(&Framework::TrafficStateChanged, this, _1));
+  m_work.GetTransitManager().SetStateListener(bind(&Framework::TransitSchemeStateChanged, this, _1));
 }
 
 void Framework::OnLocationError(int errorCode)
@@ -134,6 +138,12 @@ void Framework::TrafficStateChanged(TrafficManager::TrafficState state)
 {
   if (m_onTrafficStateChangedFn)
     m_onTrafficStateChangedFn(state);
+}
+
+void Framework::TransitSchemeStateChanged(TransitReadManager::TransitSchemeState state)
+{
+  if (m_onTransitStateChangedFn)
+    m_onTransitStateChangedFn(state);
 }
 
 bool Framework::CreateDrapeEngine(JNIEnv * env, jobject jSurface, int densityDpi, bool firstLaunch,
@@ -284,7 +294,7 @@ Storage & Framework::GetStorage()
   return m_work.GetStorage();
 }
 
-DataSourceBase const & Framework::GetDataSource() { return m_work.GetDataSource(); }
+DataSource const & Framework::GetDataSource() { return m_work.GetDataSource(); }
 
 void Framework::ShowNode(TCountryId const & idx, bool zoomToDownloadButton)
 {
@@ -429,6 +439,16 @@ void Framework::ShowTrack(kml::TrackId track)
 void Framework::SetTrafficStateListener(TrafficManager::TrafficStateChangedFn const & fn)
 {
   m_onTrafficStateChangedFn = fn;
+}
+
+void Framework::SetTransitSchemeListener(TransitReadManager::TransitStateChangedFn const & function)
+{
+  m_onTransitStateChangedFn = function;
+}
+
+bool Framework::IsTrafficEnabled()
+{
+  return m_work.GetTrafficManager().IsEnabled();
 }
 
 void Framework::EnableTraffic()
@@ -1086,12 +1106,21 @@ Java_com_mapswithme_maps_Framework_nativeGenerateRouteAltitudeChartBits(JNIEnv *
   ::Framework * fr = frm();
   ASSERT(fr, ());
 
+  feature::TAltitudes altitudes;
+  vector<double> routePointDistanceM;
+  if (!fr->GetRoutingManager().GetRouteAltitudesAndDistancesM(routePointDistanceM, altitudes))
+  {
+    LOG(LWARNING, ("Can't get distance to route points and altitude."));
+    return nullptr;
+  }
+
   vector<uint8_t> imageRGBAData;
   int32_t minRouteAltitude = 0;
   int32_t maxRouteAltitude = 0;
   measurement_utils::Units units = measurement_utils::Units::Metric;
   if (!fr->GetRoutingManager().GenerateRouteAltitudeChart(
-          width, height, imageRGBAData, minRouteAltitude, maxRouteAltitude, units))
+        width, height, altitudes, routePointDistanceM, imageRGBAData,
+        minRouteAltitude, maxRouteAltitude, units))
   {
     LOG(LWARNING, ("Can't generate route altitude image."));
     return nullptr;
@@ -1409,6 +1438,24 @@ Java_com_mapswithme_maps_Framework_nativeSetAutoZoomEnabled(JNIEnv * env, jclass
   bool const autoZoomEnabled = static_cast<bool>(enabled);
   frm()->SaveAutoZoom(autoZoomEnabled);
   frm()->AllowAutoZoom(autoZoomEnabled);
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_Framework_nativeSetTransitSchemeEnabled(JNIEnv * env, jclass, jboolean enabled)
+{
+  frm()->GetTransitManager().EnableTransitSchemeMode(static_cast<bool>(enabled));
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_mapswithme_maps_Framework_nativeIsTransitSchemeEnabled(JNIEnv * env, jclass)
+{
+  return static_cast<jboolean>(frm()->LoadTransitSchemeEnabled());
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_Framework_nativeSaveSettingSchemeEnabled(JNIEnv * env, jclass, jboolean enabled)
+{
+  frm()->SaveTransitSchemeEnabled(static_cast<bool>(enabled));
 }
 
 JNIEXPORT jboolean JNICALL

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.maps.content.DataSource;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationListener;
 import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
@@ -26,11 +27,12 @@ import static com.mapswithme.maps.bookmarks.Holders.BaseBookmarkHolder.getDescSe
 import static com.mapswithme.maps.bookmarks.Holders.BaseBookmarkHolder.getTracksSectionPosition;
 import static com.mapswithme.maps.bookmarks.Holders.BaseBookmarkHolder.isSectionEmpty;
 import static com.mapswithme.maps.bookmarks.Holders.BookmarkViewHolder.calculateBookmarkPosition;
+import static com.mapswithme.maps.bookmarks.Holders.BaseBookmarkHolder.calculateTrackPosition;
 
 public class BookmarkListAdapter extends RecyclerView.Adapter<Holders.BaseBookmarkHolder>
 {
   @NonNull
-  private final BookmarkCategory mCategory;
+  private final DataSource<BookmarkCategory> mDataSource;
 
   // view types
   static final int TYPE_TRACK = 0;
@@ -52,9 +54,9 @@ public class BookmarkListAdapter extends RecyclerView.Adapter<Holders.BaseBookma
   @Nullable
   private RecyclerClickListener mClickListener;
 
-  BookmarkListAdapter(@NonNull BookmarkCategory category)
+  BookmarkListAdapter(@NonNull DataSource<BookmarkCategory> dataSource)
   {
-    mCategory = category;
+    mDataSource = dataSource;
   }
 
   public void setOnClickListener(@Nullable RecyclerClickListener listener)
@@ -86,19 +88,19 @@ public class BookmarkListAdapter extends RecyclerView.Adapter<Holders.BaseBookma
     {
       case TYPE_TRACK:
         holder = new Holders.TrackViewHolder(inflater.inflate(R.layout.item_track, parent,
-                                                              false), mCategory);
+                                                              false));
         break;
       case TYPE_BOOKMARK:
         holder = new Holders.BookmarkViewHolder(inflater.inflate(R.layout.item_bookmark, parent,
-                                                                 false), mCategory);
+                                                                 false));
         break;
       case TYPE_SECTION:
         TextView tv = (TextView) inflater.inflate(R.layout.item_category_title, parent, false);
-        holder = new Holders.SectionViewHolder(tv, mCategory);
+        holder = new Holders.SectionViewHolder(tv);
         break;
       case TYPE_DESC:
         View desc = inflater.inflate(R.layout.item_category_description, parent, false);
-        holder = new Holders.DescriptionViewHolder(desc, mCategory);
+        holder = new Holders.DescriptionViewHolder(desc, getCategory());
         break;
     }
 
@@ -113,24 +115,24 @@ public class BookmarkListAdapter extends RecyclerView.Adapter<Holders.BaseBookma
   @Override
   public void onBindViewHolder(Holders.BaseBookmarkHolder holder, int position)
   {
-    holder.bind(position);
+    holder.bind(position, getCategory());
   }
 
   @Override
   public int getItemViewType(int position)
   {
-    final int descPos = getDescSectionPosition(mCategory);
-    final int bmkPos = getBookmarksSectionPosition(mCategory);
-    final int trackPos = getTracksSectionPosition(mCategory);
+    final int descPos = getDescSectionPosition(getCategory());
+    final int bmkPos = getBookmarksSectionPosition(getCategory());
+    final int trackPos = getTracksSectionPosition(getCategory());
 
     if (position == bmkPos || position == trackPos || position == descPos)
       return TYPE_SECTION;
 
-    if (position > bmkPos && !isSectionEmpty(mCategory, SECTION_BMKS))
+    if (position > bmkPos && !isSectionEmpty(getCategory(), SECTION_BMKS))
       return TYPE_BOOKMARK;
-    else if (position > trackPos && !isSectionEmpty(mCategory, SECTION_TRACKS))
+    else if (position > trackPos && !isSectionEmpty(getCategory(), SECTION_TRACKS))
       return TYPE_TRACK;
-    else if (position > descPos && !isSectionEmpty(mCategory, SECTION_DESC))
+    else if (position > descPos && !isSectionEmpty(getCategory(), SECTION_DESC))
       return TYPE_DESC;
 
     throw new IllegalArgumentException("Position not found: " + position);
@@ -145,10 +147,10 @@ public class BookmarkListAdapter extends RecyclerView.Adapter<Holders.BaseBookma
   @Override
   public int getItemCount()
   {
-    return mCategory.size()
-           + (isSectionEmpty(mCategory, SECTION_TRACKS) ? 0 : 1)
-           + (isSectionEmpty(mCategory, SECTION_BMKS) ? 0 : 1)
-           + getDescItemCount(mCategory);
+    return getCategory().size()
+           + (isSectionEmpty(getCategory(), SECTION_TRACKS) ? 0 : 1)
+           + (isSectionEmpty(getCategory(), SECTION_BMKS) ? 0 : 1)
+           + getDescItemCount(getCategory());
   }
 
   // FIXME: remove this heavy method and use BoomarkInfo class instead.
@@ -159,14 +161,21 @@ public class BookmarkListAdapter extends RecyclerView.Adapter<Holders.BaseBookma
 
     if (getItemViewType(position) == TYPE_TRACK)
     {
-      final long trackId = BookmarkManager.INSTANCE.getTrackIdByPosition(mCategory.getId(), position - 1);
+      int relativePos = calculateTrackPosition(getCategory(), position);
+      final long trackId = BookmarkManager.INSTANCE.getTrackIdByPosition(getCategory().getId(), relativePos);
       return BookmarkManager.INSTANCE.getTrack(trackId);
     }
     else
     {
-      final int pos = calculateBookmarkPosition(mCategory, position);
-      final long bookmarkId = BookmarkManager.INSTANCE.getBookmarkIdByPosition(mCategory.getId(), pos);
+      final int pos = calculateBookmarkPosition(getCategory(), position);
+      final long bookmarkId = BookmarkManager.INSTANCE.getBookmarkIdByPosition(getCategory().getId(), pos);
       return BookmarkManager.INSTANCE.getBookmark(bookmarkId);
     }
+  }
+
+  @NonNull
+  private BookmarkCategory getCategory()
+  {
+    return mDataSource.getData();
   }
 }

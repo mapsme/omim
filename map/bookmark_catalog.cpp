@@ -1,6 +1,7 @@
 #include "map/bookmark_catalog.hpp"
 
 #include "platform/platform.hpp"
+#include "platform/preferred_languages.hpp"
 
 #include "coding/file_name_utils.hpp"
 
@@ -9,7 +10,7 @@
 #include <sstream>
 #include <utility>
 
-#define STAGE_BOOKMARKS_CATALOG_SERVER
+//#define STAGE_BOOKMARKS_CATALOG_SERVER
 #include "private.h"
 
 namespace
@@ -21,10 +22,7 @@ std::string BuildCatalogDownloadUrl(std::string const & serverId)
 {
   if (kCatalogDownloadServer.empty())
     return {};
-
-  std::ostringstream ss;
-  ss << kCatalogDownloadServer << "/static/" << serverId << "/" << serverId;
-  return ss.str();
+  return kCatalogDownloadServer + serverId;
 }
 }  // namespace
 
@@ -113,5 +111,5 @@ std::string BookmarkCatalog::GetDownloadUrl(std::string const & serverId) const
 
 std::string BookmarkCatalog::GetFrontendUrl() const
 {
-  return kCatalogFrontendServer;
+  return kCatalogFrontendServer + languages::GetCurrentNorm() + "/mobilefront/";
 }

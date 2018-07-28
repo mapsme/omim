@@ -10,6 +10,8 @@
 
 #include "platform/platform.hpp"
 
+#include <algorithm>
+
 namespace
 {
 
@@ -37,7 +39,7 @@ bool IsScaleAllowableIn3d(int scale)
 
 double CalculateScale(m2::RectD const & pixelRect, m2::RectD const & localRect)
 {
-  return max(localRect.SizeX() / pixelRect.SizeX(), localRect.SizeY() / pixelRect.SizeY());
+  return std::max(localRect.SizeX() / pixelRect.SizeX(), localRect.SizeY() / pixelRect.SizeY());
 }
 
 m2::PointD CalculateCenter(double scale, m2::RectD const & pixelRect,
@@ -260,11 +262,10 @@ bool ApplyScale(m2::PointD const & pixelScaleCenter, double factor, ScreenBase &
 
   if (!CheckMaxScale(tmp))
   {
-    // Set scale value slightly less than upper bound, to get closest valid zoom.
-    auto const correctedScale = GetScale((scales::GetUpperStyleScale() + 1) * 0.995);
-    tmp.SetScale(correctedScale);
-    if (!CheckMaxScale(tmp))
+    auto const maxScale = GetScreenScale(scales::GetUpperStyleScale() + 0.42);
+    if (maxScale > screen.GetScale() && CheckMaxScale(screen))
       return false;
+    tmp.SetScale(maxScale);
   }
 
   // re-checking the borders, as we might violate them a bit (don't know why).

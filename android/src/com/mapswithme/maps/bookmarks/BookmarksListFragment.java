@@ -23,6 +23,7 @@ import com.mapswithme.maps.bookmarks.data.Bookmark;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.BookmarkSharingResult;
+import com.mapswithme.maps.bookmarks.data.CategoryDataSource;
 import com.mapswithme.maps.bookmarks.data.Track;
 import com.mapswithme.maps.widget.placepage.EditBookmarkFragment;
 import com.mapswithme.maps.widget.placepage.Sponsored;
@@ -42,7 +43,9 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   public static final String TAG = BookmarksListFragment.class.getSimpleName();
   public static final String EXTRA_CATEGORY = "bookmark_category";
 
-  private BookmarkCategory mCategory;
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private CategoryDataSource mCategoryDataSource;
   private int mSelectedPosition;
 
   @CallSuper
@@ -50,14 +53,26 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   public void onCreate(@Nullable Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    mCategory = getArguments().getParcelable(EXTRA_CATEGORY);
+    BookmarkCategory category = getCategoryOrThrow();
+    mCategoryDataSource = new CategoryDataSource(category);
+  }
+
+  @NonNull
+  private BookmarkCategory getCategoryOrThrow()
+  {
+    Bundle args = getArguments();
+    BookmarkCategory category;
+    if (args == null || ((category = args.getParcelable(EXTRA_CATEGORY))) == null)
+      throw new IllegalArgumentException("Category not exist in bundle");
+
+    return category;
   }
 
   @NonNull
   @Override
   protected BookmarkListAdapter createAdapter()
   {
-    return new BookmarkListAdapter(mCategory);
+    return new BookmarkListAdapter(mCategoryDataSource);
   }
 
   @Override
@@ -78,7 +93,7 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
     showPlaceholder(isEmpty);
     ActionBar bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
     if (bar != null)
-      bar.setTitle(mCategory.getName());
+      bar.setTitle(mCategoryDataSource.getData().getName());
     addRecyclerDecor();
   }
 
@@ -125,7 +140,7 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   private void configureAdapter()
   {
     BookmarkListAdapter adapter = getAdapter();
-
+    adapter.registerAdapterDataObserver(mCategoryDataSource);
     adapter.startLocationUpdate();
     adapter.setOnClickListener(this);
     adapter.setOnLongClickListener(isCatalogCategory() ? null : this);
@@ -180,12 +195,6 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
         BottomSheetHelper.Builder bs = BottomSheetHelper.create(getActivity(), bookmark.getTitle())
                                                         .sheet(menuResId)
                                                         .listener(this);
-        if (!ShareOption.SMS.isSupported(getActivity()))
-          bs.getMenu().removeItem(R.id.share_message);
-
-        if (!ShareOption.EMAIL.isSupported(getActivity()))
-          bs.getMenu().removeItem(R.id.share_email);
-
         bs.tint().show();
         break;
 
@@ -222,14 +231,6 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
 
     switch (menuItem.getItemId())
     {
-    case R.id.share_message:
-      ShareOption.SMS.shareMapObject(getActivity(), item, Sponsored.nativeGetCurrent());
-      break;
-
-    case R.id.share_email:
-      ShareOption.EMAIL.shareMapObject(getActivity(), item, Sponsored.nativeGetCurrent());
-      break;
-
     case R.id.share:
       ShareOption.ANY.shareMapObject(getActivity(), item, Sponsored.nativeGetCurrent());
       break;
@@ -264,7 +265,7 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
 
   private boolean isCatalogCategory()
   {
-    return mCategory.getType() == BookmarkCategory.Type.CATALOG;
+    return mCategoryDataSource.getData().getType() == BookmarkCategory.Type.CATALOG;
   }
 
   @Override
@@ -272,7 +273,8 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   {
     if (item.getItemId() == R.id.set_share)
     {
-      SharingHelper.INSTANCE.prepareBookmarkCategoryForSharing(getActivity(), mCategory.getId());
+      SharingHelper.INSTANCE.prepareBookmarkCategoryForSharing(getActivity(),
+                                                               mCategoryDataSource.getData().getId());
       return true;
     }
 

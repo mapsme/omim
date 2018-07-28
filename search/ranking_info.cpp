@@ -12,26 +12,28 @@ namespace
 {
 // See search/search_quality/scoring_model.py for details.  In short,
 // these coeffs correspond to coeffs in a linear model.
-double const kDistanceToPivot = -0.2837370;
+double const kDistanceToPivot = -1.0000000;
 double const kRank = 1.0000000;
-double const kFalseCats = 0.0000000;
-double const kErrorsMade = -0.0118797;
+// todo: (@t.yan) Adjust.
+double const kPopularity = 1.0000000;
+double const kFalseCats = -0.0839847;
+double const kErrorsMade = 0.0066984;
 double const kAllTokensUsed = 0.0000000;
 double const kNameScore[NameScore::NAME_SCORE_COUNT] = {
-  -0.0995842 /* Zero */,
-  0.0265404 /* Substring */,
-  0.0238720 /* Prefix */,
-  0.0491718 /* Full Match */
+  -0.4027035 /* Zero */,
+  0.1063430 /* Substring */,
+  0.0661467 /* Prefix */,
+  0.2302138 /* Full Match */
 };
 double const kType[Model::TYPE_COUNT] = {
-  -0.0059073 /* POI */,
-  -0.0059073 /* Building */,
-  0.0293600 /* Street */,
-  0.0254288 /* Unclassified */,
-  -0.1130063 /* Village */,
-  -0.1549069 /* City */,
-  0.1656289 /* State */,
-  0.0534028 /* Country */
+  -0.3210718 /* POI */,
+  -0.3210718 /* Building */,
+  -0.2660116 /* Street */,
+  -0.3135561 /* Unclassified */,
+  -0.3071279 /* Village */,
+  0.1013253 /* City */,
+  0.3336005 /* State */,
+  0.7728417 /* Country */
 };
 
 double TransformDistance(double distance)
@@ -48,6 +50,7 @@ void RankingInfo::PrintCSVHeader(ostream & os)
 {
   os << "DistanceToPivot"
      << ",Rank"
+     << ",Popularity"
      << ",NameScore"
      << ",ErrorsMade"
      << ",SearchType"
@@ -62,6 +65,7 @@ string DebugPrint(RankingInfo const & info)
   os << "RankingInfo [";
   os << "m_distanceToPivot:" << info.m_distanceToPivot << ",";
   os << "m_rank:" << static_cast<int>(info.m_rank) << ",";
+  os << "m_popularity:" << static_cast<int>(info.m_popularity) << ",";
   os << "m_nameScore:" << DebugPrint(info.m_nameScore) << ",";
   os << "m_errorsMade:" << DebugPrint(info.m_errorsMade) << ",";
   os << "m_type:" << DebugPrint(info.m_type) << ",";
@@ -77,6 +81,7 @@ void RankingInfo::ToCSV(ostream & os) const
   os << fixed;
   os << m_distanceToPivot << ",";
   os << static_cast<int>(m_rank) << ",";
+  os << static_cast<int>(m_popularity) << ",";
   os << DebugPrint(m_nameScore) << ",";
   os << GetErrorsMade() << ",";
   os << DebugPrint(m_type) << ",";
@@ -93,6 +98,7 @@ double RankingInfo::GetLinearModelRank() const
   // integrated in the build system.
   double const distanceToPivot = TransformDistance(m_distanceToPivot);
   double const rank = static_cast<double>(m_rank) / numeric_limits<uint8_t>::max();
+  double const popularity = static_cast<double>(m_popularity) / numeric_limits<uint8_t>::max();
 
   auto nameScore = m_nameScore;
   if (m_pureCats || m_falseCats)
@@ -109,6 +115,7 @@ double RankingInfo::GetLinearModelRank() const
   double result = 0.0;
   result += kDistanceToPivot * distanceToPivot;
   result += kRank * rank;
+  result += kPopularity * popularity;
   result += kNameScore[nameScore];
   result += kErrorsMade * GetErrorsMade();
   result += kType[m_type];

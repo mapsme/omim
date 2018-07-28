@@ -10,7 +10,6 @@ set(
   metadata_parser_test.cpp
   node_mixer_test.cpp
   osm2meta_test.cpp
-  osm_id_test.cpp
   osm_o5m_source_test.cpp
   osm_type_test.cpp
   road_access_test.cpp
@@ -36,6 +35,7 @@ omim_link_libraries(
   platform_tests_support
   generator
   drape_frontend
+  shaders
   map
   routing
   search

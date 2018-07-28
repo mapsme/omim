@@ -1,11 +1,11 @@
 protocol BMCCategoriesHeaderDelegate {
-  func visibilityAction(isShowAll: Bool)
+  func visibilityAction(_ categoriesHeader: BMCCategoriesHeader)
 }
 
-final class BMCCategoriesHeader: UIView {
+final class BMCCategoriesHeader: UITableViewHeaderFooterView {
   @IBOutlet private weak var label: UILabel! {
     didSet {
-      label.font = .bold14()
+      label.font = .medium14()
       label.textColor = .blackSecondaryText()
       label.text = L("bookmarks_groups").uppercased()
     }
@@ -30,6 +30,6 @@ final class BMCCategoriesHeader: UIView {
   var delegate: BMCCategoriesHeaderDelegate!
 
   @IBAction private func buttonAction() {
-    delegate.visibilityAction(isShowAll: isShowAll)
+    delegate.visibilityAction(self)
   }
 }

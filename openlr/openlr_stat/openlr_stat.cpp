@@ -58,7 +58,8 @@ int32_t const kMinNumThreads = 1;
 int32_t const kMaxNumThreads = 128;
 int32_t const kHandleAllSegments = -1;
 
-void LoadDataSources(std::string const & pathToMWMFolder, std::vector<DataSource> & dataSources)
+void LoadDataSources(std::string const & pathToMWMFolder,
+                     std::vector<FrozenDataSource> & dataSources)
 {
   CHECK(Platform::IsDirectory(pathToMWMFolder), (pathToMWMFolder, "must be a directory."));
 
@@ -259,7 +260,8 @@ int main(int argc, char * argv[])
 
   auto const numThreads = static_cast<uint32_t>(FLAGS_num_threads);
 
-  std::vector<DataSource> dataSources(numThreads);
+  std::vector<FrozenDataSource> dataSources(numThreads);
+
   LoadDataSources(FLAGS_mwms_path, dataSources);
 
   OpenLRDecoder decoder(dataSources, storage::CountryParentGetter(FLAGS_countries_filename,

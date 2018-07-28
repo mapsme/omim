@@ -132,8 +132,8 @@ TrackMatcher::Step::Step(DataPoint const & dataPoint)
 }
 
 void TrackMatcher::Step::FillCandidatesWithNearbySegments(
-    DataSourceBase const & dataSource, IndexGraph const & graph, VehicleModelInterface const & vehicleModel,
-    NumMwmId mwmId)
+    DataSource const & dataSource, IndexGraph const & graph,
+    VehicleModelInterface const & vehicleModel, NumMwmId mwmId)
 {
   dataSource.ForEachInRect(
       [&](FeatureType const & ft) {

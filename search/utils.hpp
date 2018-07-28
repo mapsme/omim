@@ -5,10 +5,13 @@
 #include "search/token_slice.hpp"
 
 #include "indexer/categories_holder.hpp"
+#include "indexer/feature_decl.hpp"
 #include "indexer/mwm_set.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
 #include "indexer/trie.hpp"
+
+#include "geometry/rect2d.hpp"
 
 #include "base/levenshtein_dfa.hpp"
 #include "base/stl_helpers.hpp"
@@ -20,7 +23,7 @@
 #include <memory>
 #include <vector>
 
-class DataSourceBase;
+class DataSource;
 class MwmInfo;
 
 namespace search
@@ -114,7 +117,17 @@ bool FillCategories(QuerySliceOnRawStrings<T> const & slice, Locales const & loc
   return !types.empty();
 }
 
-MwmSet::MwmHandle FindWorld(DataSourceBase const & dataSource,
-                            std::vector<std::shared_ptr<MwmInfo>> const &infos);
-MwmSet::MwmHandle FindWorld(DataSourceBase const & dataSource);
+// Returns classificator types for category with |name| and |locale|. For metacategories
+// like "Hotel" returns all subcategories types.
+std::vector<uint32_t> GetCategoryTypes(std::string const & name, std::string const & locale,
+                                       CategoriesHolder const & categories);
+
+MwmSet::MwmHandle FindWorld(DataSource const & dataSource,
+                            std::vector<std::shared_ptr<MwmInfo>> const & infos);
+MwmSet::MwmHandle FindWorld(DataSource const & dataSource);
+
+using FeatureIndexCallback = std::function<void(FeatureID const &)>;
+// Applies |fn| to each feature index of type from |types| in |rect|.
+void ForEachOfTypesInRect(DataSource const & dataSource, std::vector<uint32_t> const & types,
+                          m2::RectD const & rect, FeatureIndexCallback const & fn);
 }  // namespace search

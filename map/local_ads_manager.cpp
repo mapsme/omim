@@ -139,6 +139,9 @@ CampaignData ParseCampaign(std::vector<uint8_t> const & rawData, MwmSet::MwmId c
   for (local_ads::Campaign const & campaign : campaigns)
   {
     FeatureID featureId(mwmId, campaign.m_featureId);
+    if (!featureId.IsValid())
+      continue;
+
     if (campaign.m_priority == kHiddenFeaturePriority)
     {
       data.insert(std::make_pair(featureId, nullptr));
@@ -313,7 +316,7 @@ void LocalAdsManager::UpdateViewport(ScreenBase const & screen)
 {
   auto const connectionStatus = GetPlatform().ConnectionStatus();
   if (kServerUrl.empty() || connectionStatus == Platform::EConnectionType::CONNECTION_NONE ||
-      df::GetZoomLevel(screen.GetScale()) < kRequestMinZoomLevel)
+    df::GetZoomLevel(screen.GetScale()) < kRequestMinZoomLevel)
   {
     return;
   }
@@ -324,17 +327,17 @@ void LocalAdsManager::UpdateViewport(ScreenBase const & screen)
     return;
 
   // Request local ads campaigns.
-  GetPlatform().RunTask(Platform::Thread::File, [this, mwms = std::move(mwms)]() mutable
+  GetPlatform().RunTask(Platform::Thread::File, [this, mwms = std::move(mwms)]()
   {
-    RequestCampaigns(std::move(mwms));
+    RequestCampaigns(mwms);
   });
 }
 
-void LocalAdsManager::RequestCampaigns(std::vector<MwmSet::MwmId> && mwmIds)
+void LocalAdsManager::RequestCampaigns(std::vector<MwmSet::MwmId> const & mwmIds)
 {
   auto const connectionStatus = GetPlatform().ConnectionStatus();
   
-  std::vector<std::string> requestedCampaigns;
+  std::vector<MwmSet::MwmId> requestedCampaigns;
   {
     std::lock_guard<std::mutex> lock(m_campaignsMutex);
     for (auto const & mwm : mwmIds)
@@ -357,7 +360,7 @@ void LocalAdsManager::RequestCampaigns(std::vector<MwmSet::MwmId> && mwmIds)
       auto campaignIt = m_campaigns.find(mwmName);
       if (campaignIt == m_campaigns.end())
       {
-        requestedCampaigns.push_back(mwmName);
+        requestedCampaigns.push_back(mwm);
         m_downloadingMwms.insert(mwm);
         continue;
       }
@@ -372,7 +375,7 @@ void LocalAdsManager::RequestCampaigns(std::vector<MwmSet::MwmId> && mwmIds)
         
         if (needUpdateByTimeout || it == m_info.end())
         {
-          requestedCampaigns.push_back(mwmName);
+          requestedCampaigns.push_back(mwm);
           m_downloadingMwms.insert(mwm);
         }
       }
@@ -384,7 +387,7 @@ void LocalAdsManager::RequestCampaigns(std::vector<MwmSet::MwmId> && mwmIds)
   
   std::set<Request> requests;
   for (auto const & campaign : requestedCampaigns)
-    requests.insert(std::make_pair(m_getMwmIdByNameFn(campaign), RequestType::Download));
+    requests.insert(std::make_pair(campaign, RequestType::Download));
   ProcessRequests(std::move(requests));
 }
 
@@ -445,9 +448,9 @@ void LocalAdsManager::ProcessRequests(std::set<Request> && requests)
     for (auto const & request : requests)
     {
       auto const & mwm = request.first;
-      auto const & type =  request.second;
+      auto const & type = request.second;
       
-      if (!mwm.IsAlive())
+      if (!mwm.GetInfo())
         continue;
       
       std::string const & countryName = mwm.GetInfo()->GetCountryName();
@@ -502,11 +505,25 @@ void LocalAdsManager::OnDownloadCountry(std::string const & countryName)
   });
 }
 
-void LocalAdsManager::OnDeleteCountry(std::string const & countryName)
+void LocalAdsManager::OnMwmDeregistered(platform::LocalCountryFile const & countryFile)
 {
-  GetPlatform().RunTask(Platform::Thread::File, [this, countryName]
+  MwmSet::MwmId mwmId;
   {
-    ProcessRequests({std::make_pair(m_getMwmIdByNameFn(countryName), RequestType::Delete)});
+    std::lock_guard<std::mutex> lock(m_featuresCacheMutex);
+    for (auto const & cachedMwm : m_featuresCache)
+    {
+      if (cachedMwm.first.m_mwmId.IsDeregistered(countryFile))
+      {
+        mwmId = cachedMwm.first.m_mwmId;
+        break;
+      }
+    }
+  }
+  if (!mwmId.GetInfo())
+    return;
+  GetPlatform().RunTask(Platform::Thread::File, [this, mwmId]
+  {
+    ProcessRequests({std::make_pair(mwmId, RequestType::Delete)});
   });
 }
 

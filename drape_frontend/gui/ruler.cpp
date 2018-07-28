@@ -4,7 +4,8 @@
 #include "drape_frontend/gui/drape_gui.hpp"
 #include "drape_frontend/gui/gui_text.hpp"
 #include "drape_frontend/gui/ruler_helper.hpp"
-#include "drape_frontend/shader_def.hpp"
+
+#include "shaders/programs.hpp"
 
 #include "drape/glsl_func.hpp"
 #include "drape/glsl_types.hpp"
@@ -120,9 +121,9 @@ private:
 
     m_size = m2::PointF(helper.GetRulerPixelLength(), 2 * helper.GetRulerHalfHeight());
     if (IsAppearing())
-      m_uniforms.SetFloatValue("u_length", helper.GetRulerPixelLength());
-    m_uniforms.SetFloatValue("u_position", m_pivot.x, m_pivot.y);
-    m_uniforms.SetFloatValue("u_opacity", GetOpacity());
+      m_params.m_length = helper.GetRulerPixelLength();
+    m_params.m_position = m_pivot;
+    m_params.m_opacity = GetOpacity();
   }
 };
 
@@ -161,7 +162,7 @@ protected:
   void UpdateImpl(ScreenBase const & /*screen*/, RulerHelper const & /*helper*/) override
   {
     if (IsVisible())
-      m_uniforms.SetFloatValue("u_opacity", GetOpacity());
+      m_params.m_opacity = GetOpacity();
   }
 
 private:
@@ -212,8 +213,9 @@ void Ruler::DrawRuler(m2::PointF & size, ShapeControl & control, ref_ptr<dp::Tex
   data.push_back(RulerVertex(glsl::vec2(0.0, h), normals[1], texCoord));
   data.push_back(RulerVertex(glsl::vec2(0.0, -h), normals[1], texCoord));
 
-  auto state = df::CreateGLState(gpu::RULER_PROGRAM, df::RenderState::GuiLayer);
+  auto state = df::CreateGLState(gpu::Program::Ruler, df::RenderState::GuiLayer);
   state.SetColorTexture(reg.GetTexture());
+  state.SetDepthTestEnabled(false);
 
   dp::AttributeProvider provider(1, 4);
   provider.InitStream(0, GetBindingInfo(), make_ref(data.data()));

@@ -1,9 +1,15 @@
 #include "testing/testing.hpp"
 
-#include "search/base/text_index.hpp"
+#include "search/base/text_index/mem.hpp"
+#include "search/base/text_index/merger.hpp"
+#include "search/base/text_index/reader.hpp"
+#include "search/base/text_index/text_index.hpp"
 
 #include "indexer/search_string_utils.hpp"
 
+#include "platform/platform_tests_support/scoped_file.hpp"
+
+#include "coding/file_writer.hpp"
 #include "coding/reader.hpp"
 #include "coding/write_to_sink.hpp"
 #include "coding/writer.hpp"
@@ -13,57 +19,25 @@
 
 #include "std/transform_iterator.hpp"
 
+#include <algorithm>
 #include <cstdint>
+#include <iterator>
 #include <string>
 #include <vector>
 
+using namespace platform::tests_support;
 using namespace search::base;
 using namespace search;
 using namespace std;
 
 namespace
 {
-template <typename Token>
-void Serdes(MemTextIndex<Token> & memIndex, MemTextIndex<Token> & deserializedMemIndex)
+// Prepend several bytes to serialized indexes in order to check the relative offsets.
+size_t const kSkip = 10;
+
+search::base::MemTextIndex BuildMemTextIndex(vector<string> const & docsCollection)
 {
-  // Prepend several bytes to check the relative offsets.
-  size_t const kSkip = 10;
-  vector<uint8_t> buf;
-  {
-    MemWriter<decltype(buf)> writer(buf);
-    WriteZeroesToSink(writer, kSkip);
-    memIndex.Serialize(writer);
-  }
-
-  {
-    MemReaderWithExceptions reader(buf.data() + kSkip, buf.size());
-    ReaderSource<decltype(reader)> source(reader);
-    deserializedMemIndex.Deserialize(source);
-  }
-}
-
-template <typename Token>
-void TestForEach(MemTextIndex<Token> const & index, Token const & token,
-                 vector<uint32_t> const & expected)
-{
-  vector<uint32_t> actual;
-  index.ForEachPosting(token, MakeBackInsertFunctor(actual));
-  TEST_EQUAL(actual, expected, ());
-};
-}  // namespace
-
-namespace search
-{
-UNIT_TEST(MemTextIndex_Smoke)
-{
-  using Token = string;
-
-  vector<Token> const docsCollection = {
-      "a b c",
-      "a c",
-  };
-
-  MemTextIndex<Token> memIndex;
+  MemTextIndex memIndex;
 
   for (size_t docId = 0; docId < docsCollection.size(); ++docId)
   {
@@ -75,49 +49,159 @@ UNIT_TEST(MemTextIndex_Smoke)
     }
   }
 
-  MemTextIndex<Token> deserializedMemIndex;
-  Serdes(memIndex, deserializedMemIndex);
+  return memIndex;
+}
 
-  for (auto const & index : {memIndex, deserializedMemIndex})
+void Serdes(MemTextIndex & memIndex, MemTextIndex & deserializedMemIndex, vector<uint8_t> & buf)
+{
+  buf.clear();
   {
-    TestForEach<Token>(index, "a", {0, 1});
-    TestForEach<Token>(index, "b", {0});
-    TestForEach<Token>(index, "c", {0, 1});
+    MemWriter<vector<uint8_t>> writer(buf);
+    WriteZeroesToSink(writer, kSkip);
+    memIndex.Serialize(writer);
+  }
+
+  {
+    MemReaderWithExceptions reader(buf.data() + kSkip, buf.size());
+    ReaderSource<decltype(reader)> source(reader);
+    deserializedMemIndex.Deserialize(source);
   }
 }
 
-UNIT_TEST(MemTextIndex_UniString)
+template <typename Index, typename Token>
+void TestForEach(Index const & index, Token const & token, vector<uint32_t> const & expected)
 {
-  using Token = strings::UniString;
+  vector<uint32_t> actual;
+  index.ForEachPosting(token, MakeBackInsertFunctor(actual));
+  TEST_EQUAL(actual, expected, (token));
+};
+}  // namespace
 
+namespace search
+{
+UNIT_TEST(TextIndex_Smoke)
+{
+  using Token = base::Token;
+
+  vector<Token> const docsCollection = {
+      "a b c",
+      "a c",
+  };
+
+  auto memIndex = BuildMemTextIndex(docsCollection);
+
+  vector<uint8_t> indexData;
+  MemTextIndex deserializedMemIndex;
+  Serdes(memIndex, deserializedMemIndex, indexData);
+
+  for (auto const & index : {memIndex, deserializedMemIndex})
+  {
+    TestForEach(index, "a", {0, 1});
+    TestForEach(index, "b", {0});
+    TestForEach(index, "c", {0, 1});
+    TestForEach(index, "d", {});
+  }
+
+  {
+    string contents;
+    copy_n(indexData.begin() + kSkip, indexData.size() - kSkip, back_inserter(contents));
+    ScopedFile file("text_index_tmp", contents);
+    FileReader fileReader(file.GetFullPath());
+    TextIndexReader textIndexReader(fileReader);
+    TestForEach(textIndexReader, "a", {0, 1});
+    TestForEach(textIndexReader, "b", {0});
+    TestForEach(textIndexReader, "c", {0, 1});
+    TestForEach(textIndexReader, "d", {});
+  }
+}
+
+UNIT_TEST(TextIndex_UniString)
+{
   vector<std::string> const docsCollectionUtf8s = {
       "â b ç",
       "â ç",
   };
-  vector<Token> const docsCollection(
+  vector<strings::UniString> const docsCollection(
       make_transform_iterator(docsCollectionUtf8s.begin(), &strings::MakeUniString),
       make_transform_iterator(docsCollectionUtf8s.end(), &strings::MakeUniString));
 
-  MemTextIndex<Token> memIndex;
+  MemTextIndex memIndex;
 
   for (size_t docId = 0; docId < docsCollection.size(); ++docId)
   {
-    auto addToIndex = [&](Token const & token) {
-      memIndex.AddPosting(token, static_cast<uint32_t>(docId));
+    auto addToIndex = [&](strings::UniString const & token) {
+      memIndex.AddPosting(strings::ToUtf8(token), static_cast<uint32_t>(docId));
     };
     auto delims = [](strings::UniChar const & c) { return c == ' '; };
     SplitUniString(docsCollection[docId], addToIndex, delims);
   }
 
-  MemTextIndex<Token> deserializedMemIndex;
-  Serdes(memIndex, deserializedMemIndex);
+  vector<uint8_t> indexData;
+  MemTextIndex deserializedMemIndex;
+  Serdes(memIndex, deserializedMemIndex, indexData);
 
   for (auto const & index : {memIndex, deserializedMemIndex})
   {
-    TestForEach<Token>(index, strings::MakeUniString("a"), {});
-    TestForEach<Token>(index, strings::MakeUniString("â"), {0, 1});
-    TestForEach<Token>(index, strings::MakeUniString("b"), {0});
-    TestForEach<Token>(index, strings::MakeUniString("ç"), {0, 1});
+    TestForEach(index, strings::MakeUniString("a"), {});
+    TestForEach(index, strings::MakeUniString("â"), {0, 1});
+    TestForEach(index, strings::MakeUniString("b"), {0});
+    TestForEach(index, strings::MakeUniString("ç"), {0, 1});
+  }
+}
+
+UNIT_TEST(TextIndex_Merging)
+{
+  using Token = base::Token;
+
+  // todo(@m) Arrays? docsCollection[i]
+  vector<Token> const docsCollection1 = {
+      "a b c",
+      "",
+      "d",
+  };
+  vector<Token> const docsCollection2 = {
+      "",
+      "a c",
+      "e",
+  };
+
+  auto memIndex1 = BuildMemTextIndex(docsCollection1);
+  vector<uint8_t> indexData1;
+  MemTextIndex deserializedMemIndex1;
+  Serdes(memIndex1, deserializedMemIndex1, indexData1);
+
+  auto memIndex2 = BuildMemTextIndex(docsCollection2);
+  vector<uint8_t> indexData2;
+  MemTextIndex deserializedMemIndex2;
+  Serdes(memIndex2, deserializedMemIndex2, indexData2);
+
+  {
+    string contents1;
+    copy_n(indexData1.begin() + kSkip, indexData1.size() - kSkip, back_inserter(contents1));
+    ScopedFile file1("text_index_tmp1", contents1);
+    FileReader fileReader1(file1.GetFullPath());
+    TextIndexReader textIndexReader1(fileReader1);
+
+    string contents2;
+    copy_n(indexData2.begin() + kSkip, indexData2.size() - kSkip, back_inserter(contents2));
+    ScopedFile file2("text_index_tmp2", contents2);
+    FileReader fileReader2(file2.GetFullPath());
+    TextIndexReader textIndexReader2(fileReader2);
+
+    ScopedFile file3("text_index_tmp3", ScopedFile::Mode::Create);
+    {
+      FileWriter fileWriter(file3.GetFullPath());
+      TextIndexMerger::Merge(textIndexReader1, textIndexReader2, fileWriter);
+    }
+
+    FileReader fileReader3(file3.GetFullPath());
+    TextIndexReader textIndexReader3(fileReader3);
+    TestForEach(textIndexReader3, "a", {0, 1});
+    TestForEach(textIndexReader3, "b", {0});
+    TestForEach(textIndexReader3, "c", {0, 1});
+    TestForEach(textIndexReader3, "x", {});
+    TestForEach(textIndexReader3, "d", {2});
+    TestForEach(textIndexReader3, "e", {2});
   }
 }
 }  // namespace search

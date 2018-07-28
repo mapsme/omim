@@ -1,5 +1,6 @@
 #include "drape_frontend/circles_pack_shape.hpp"
-#include "drape_frontend/shader_def.hpp"
+
+#include "shaders/programs.hpp"
 
 #include "drape/attribute_provider.hpp"
 #include "drape/batcher.hpp"
@@ -18,15 +19,16 @@ struct CirclesPackStaticVertex
   using TNormal = glsl::vec3;
 
   CirclesPackStaticVertex() = default;
-  CirclesPackStaticVertex(TNormal const & normal) : m_normal(normal) {}
+  explicit CirclesPackStaticVertex(TNormal const & normal) : m_normal(normal) {}
 
   TNormal m_normal;
 };
 
 dp::GLState GetCirclesPackState(ref_ptr<dp::TextureManager> texMng)
 {
-  auto state = CreateGLState(gpu::CIRCLE_POINT_PROGRAM, RenderState::OverlayLayer);
+  auto state = CreateGLState(gpu::Program::CirclePoint, RenderState::OverlayLayer);
   state.SetColorTexture(texMng->GetSymbolsTexture());
+  state.SetDepthTestEnabled(false);
   return state;
 }
 
@@ -57,7 +59,7 @@ dp::BindingInfo const & GetCirclesPackDynamicBindingInfo()
 }  // namespace
 
 CirclesPackHandle::CirclesPackHandle(size_t pointsCount)
-  : OverlayHandle(FeatureID(), dp::Anchor::Center, 0, false)
+  : OverlayHandle(FeatureID(), dp::Anchor::Center, 0 /* priority */, 1 /* minVisibleScale */, false)
   , m_needUpdate(false)
 {
   m_buffer.resize(pointsCount * dp::Batcher::VertexPerQuad);

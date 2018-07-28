@@ -457,7 +457,7 @@
 "are_you_sure" = "Θέλετε σίγουρα να συνεχίσετε?";
 
 /* Title for tracks category in bookmarks manager */
-"tracks" = "Διαδρομές";
+"tracks_title" = "Διαδρομές";
 
 /* Length of track in cell that describes route */
 "length" = "Μήκος";
@@ -1147,8 +1147,6 @@
 "add_opening_hours" = "Προσθέστε ώρες λειτουργίας";
 
 "edit_opening_hours" = "Επεξεργαστείτε τις ώρες λειτουργίας";
-
-"profile" = "Προφίλ";
 
 "no_osm_account" = "Δεν έχετε λογαριασμό OpenStreetMap;";
 
@@ -2100,44 +2098,6 @@
 
 "quality" = "Ποιότητα";
 
-"sponsored_partner1_action" = "Cash back";
-
-"sponsored_partner3_action" = "Coupon";
-
-"sponsored_partner4_action" = "Store";
-
-"sponsored_partner5_action" = "Tickets";
-
-"sponsored_partner6_action" = "Store";
-
-"sponsored_partner7_action" = "Store";
-
-"sponsored_partner8_action" = "Special";
-
-"sponsored_partner9_action" = "Special";
-
-"sponsored_partner10_action" = "Store";
-
-"sponsored_partner11_action" = "-";
-
-"sponsored_partner12_action" = "Store";
-
-"sponsored_partner13_action" = "-";
-
-"sponsored_partner14_action" = "-";
-
-"sponsored_partner15_action" = "-";
-
-"sponsored_partner16_action" = "-";
-
-"sponsored_partner17_action" = "-";
-
-"sponsored_partner18_action" = "Lifehack";
-
-"sponsored_partner19_action" = "Lifehack";
-
-"sponsored_partner20_action" = "Lifehack";
-
 "whats_new_ugc_title" = "Βαθμολογίες και κριτικές";
 
 "whats_new_ugc_message" = "Μπορείτε πλέον να αφήσετε βαθμολογίεςς και κριτικές ακόμα και όταν δεν είστε συνδεδεμένοι! Μην ξεχάσετε να ενημερώσετε τους χάρτες σας για να μπορείτε να δείτε τις αλλαγές.";
@@ -2284,7 +2244,7 @@
 
 "notification_unsent_reviews_message" = "Παρακαλώ συνδεθείτε για να μοιραστείτε κριτικές με άλλους ταξιδιώτες";
 
-"profile_osm" = "Προφίλ OSM";
+"profile" = "Προφίλ OpenStreetMap";
 
 "place_page_search_similar_hotel" = "Αναζήτηση παρόμοιων ξενοδοχείων";
 
@@ -2336,64 +2296,133 @@
 
 "sign_agree_news_gdpr" = "Συμφωνώ να λαμβάνω τα τελευταία νέα σχετικά με τα προϊόντα MAPS.ME";
 
-"whats_new_localbiz_title" = "Small business deserves attention";
+"whats_new_localbiz_title" = "Οι μικρές επιχειρήσεις αξίζουν προσοχή";
 
-"whats_new_localbiz_message" = "Family cafes, cozy hostels, unique stores – they are the special parts of our travels. We will optimize your page on the map free of charge so you will get noticed.";
+"whats_new_localbiz_message" = "Οι τοπικές καφετέριες, τα άνετα πανδοχεία και τα καταστήματα είναι που κάνουν τα ταξίδι μας αξέχαστα. Θα βελτιστοποιήσουμε τη σελίδα σας στο MAPS.ME για να την κάνουμε να ξεχωρίσει.";
 
-"whats_new_order_button" = "Leave a request";
+"whats_new_order_button" = "Αφήστε μια αίτηση";
 
-"bookmarks_page_downloaded" = "Downloaded";
+"bookmarks_page_downloaded" = "Κατέβηκε";
 
-"bookmarks_page_my" = "My";
+"bookmarks_page_my" = "Μου";
 
-"routes_and_bookmarks" = "Routes and bookmarks";
+"routes_and_bookmarks" = "Διαδρομές και σελιδοδείκτες";
 
-"bookmarks_webview_success_toast" = "Bookmarks succesfully downloaded";
+"bookmarks_webview_success_toast" = "Οι σελιδοδείκτες κατέβηκαν επιτυχώς";
 
-"cached_bookmarks_placeholder_title" = "Download new places";
+"cached_bookmarks_placeholder_title" = "Κατεβάστε νέα μέρη";
 
-"cached_bookmarks_placeholder_subtitle" = "Press the button to download thousands of interesting places and routes created by MAPS.ME users. You will need the internet connection.";
+"cached_bookmarks_placeholder_subtitle" = "Πιέστε το κουμπί για να κατεβάστε χιλιάδες ενδιαφέροντα μέρη και διαδρομές που δημιουργήθηκαν από τους χρήστες του MAPS.ME. Θα χρειαστείτε σύνδεση στο διαδίκτυο.";
 
-"downloader_download_routers" = "Download bookmarks";
+"downloader_download_routers" = "Κατεβάστε σελιδοδείκτες";
 
-"bookmarks_groups_cached" = "Downloaded lists";
+"bookmarks_groups_cached" = "Κατεβάστε λίστες";
 
-"author_name_by_prefix" = "by %s";
+"author_name_by_prefix" = "από %s";
 
-"subtittle_opt_out" = "Tracking settings";
+"subtittle_opt_out" = "Ρυθμίσεις διαδρομών";
 
-"opt_out_flurry" = "Statistic";
+"opt_out_flurry" = "Στατιστικές";
 
-"opt_out_mopub" = "Personalised advertising";
+"opt_out_mopub" = "Προσωπικές διαφημίσεις";
 
-"opt_out_fabric" = "Crash report";
+"opt_out_fabric" = "Αναφορά σφάλματος";
 
-"opt_out_fabric_description" = "We may use your data to improve MAPS.ME experience. Changes will take effect after you restart the app.";
+"opt_out_fabric_description" = "Μπορεί να χρησιμοποιήσουμε τα δεδομένα σας για να βελτιώσουμε την εμπειρία του MAPS.ME. Οι αλλαγές θα ενεργοποιηθούν μετά την επανεκκίνηση της εφαρμογής.";
 
 "opt_out_pushwoosh" = "Pushwoosh";
 
 "opt_out_appsflyer" = "Appsflyer";
 
-"opt_out_help_ios_1" = "Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.";
+"opt_out_help_ios_1" = "Η συσκευή σας μπορεί να παρέχει μια ρύθμιση «Περιορισμένη παρακολούθηση διαφημίσεων» ή «Αποκλεισμό διαφημίσεων με βάση το ενδιαφέρον».";
 
-"opt_out_help_ios_2" = "iOS 9 or Higher";
+"opt_out_help_ios_2" = "iOS 9 ή υψηλότερο";
 
-"opt_out_help_ios_3" = "Go to your Settings → Privacy → Advertising → Enable the “Limit Ad Tracking” setting";
+"opt_out_help_ios_3" = "Πηγαίνετε στις ρυθμίσεις → Απόρρητο → Διαφήμιση → Ενεργοποιήστε την επιλογή «Περιορισμένη παρακολούθηση διαφημίσεων»";
 
-"opt_out_help_android" = "Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android and Google Play Services version 4.0 and up:\nSettings → Google → Ads → Opt out of Ads Personalization\nor\nSettings → Google → Google Account → Personal info & privacy → Ads Settings → Ads Personalization";
+"opt_out_help_android" = "Η συσκευή σας μπορεί να παρέχει μια ρύθμιση «Περιορισμένη παρακολούθηση διαφημίσεων» ή «Αποκλεισμό διαφημίσεων με βάση το ενδιαφέρον».\n\n Για Android και υπηρεσίες Google Play εκδοχής 4.0 και πάνω:\n Ρυθμίσεις → Google → Διαφημίσεις → Αποκλεισμός προσωποποίησης διαφημίσεων\n ή \n Ρυθμίσεις → Google → Λογαριασμός Google → Προσωπικές πληροφορίες και ασφάλεια → Προσωποποίηση Διαφημίσεων";
 
-"privacy_policy" = "Privacy policy";
+"privacy_policy" = "Πολιτική απορρήτου";
 
-"terms_of_use" = "Terms of use";
+"terms_of_use" = "Όροι χρήσης";
 
-"button_layer_got_it" = "Got it";
+"backup_notification_failed" = "Η αποθήκευση των σελιδοδεικτών έχει διακοπεί. Συνδεθείτε για να το ξανανοίξετε.";
 
-"bookmarks_empty_list_title" = "This list is empty";
+"banner_megafon_banner_message" = "Πείτε αντίο στη διεθνή περιπλάνηση!";
 
-"bookmarks_empty_list_message" = "To add a bookmark, tap a place on the map and then tap the star icon";
+"banner_megafon_banner_button" = "Αντίο!";
 
-"category_desc_more" = "…more";
+"button_layer_traffic" = "Κίνηση";
 
-"title_error_downloading_bookmarks" = "An error occured";
+"button_layer_subway" = "Μετρό";
 
-"subtitle_error_downloading_bookmarks" = "Bookmarks were not downloaded";
+"layers_title" = "Επίπεδα του χάρτη";
+
+"layers_message" = "Χρησιμοποιήστε τα επίπεδα χάρτη για να δείτε την κίνηση, το χάρτη του μετρό και άλλες χρήσιμες πληροφορίες";
+
+"button_layer_got_it" = "Κατάλαβα";
+
+"subway_data_unavailable" = "Ο χάρτης μετρό δεν είναι διαθέσιμος";
+
+"bookmarks_empty_list_title" = "Η λίστα είναι άδεια";
+
+"bookmarks_empty_list_message" = "Για να προσθέσετε σελιδοδείκτη, πατήστε ένα μέρος στο χάρτη και μετά πατήστε το αστεράκι";
+
+"category_desc_more" = "…περισσότερα";
+
+"title_error_downloading_bookmarks" = "Συνέβη σφάλμα";
+
+"subtitle_error_downloading_bookmarks" = "Οι σελιδοδείκτες δεν κατέβηκαν";
+
+"whats_new_bookmarks_catalog_title" = "Το MAPS.ME έχει τώρα κατάλογο διαδρομών";
+
+"whats_new_bookmarks_catalog_message" = "Εκατοντάδες λεπτομερείς διαδρομές από όλο τον κόσμο: πού να πας, τι να δεις, πού να φας.";
+
+"whats_new_popularity_label_title" = "Δημοφιλείς τοποθεσίες κοντά σας";
+
+"whats_new_popularity_label_message" = "Η ενότητα \"Ανακαλύψτε κοντά\" θα σας βοηθήσει να βρείτε τα πιο δημοφιλή μέρη στην πόλη.";
+
+"whats_new_hot_offers_title" = "Ελκυστικές προσφορές από ξενοδοχεία";
+
+"whats_new_hot_offers_message" = "Μπορείτε να τα ψάξετε χρησιμοποιώντας την κατηγορία Ξενοδοχεία στην αναζήτηση. Οι προσφορές θα σημειώνονται με το σύμβολο επί τοις εκατό στο χάρτη και στα αποτελέσματα της αναζήτησης.";
+
+"error_already_downloaded" = "Έχει γίνει ήδη λήψη αυτής της λίστας";
+
+"popular_place" = "Popular";
+
+
+/**********  Partners  **********/
+
+"sponsored_partner3_action" = "Coupon";
+
+"sponsored_partner4_action" = "Store";
+
+"sponsored_partner6_action" = "Store";
+
+"sponsored_partner7_action" = "Store";
+
+"sponsored_partner8_action" = "Special";
+
+"sponsored_partner9_action" = "Special";
+
+"sponsored_partner10_action" = "Store";
+
+"sponsored_partner11_action" = "-";
+
+"sponsored_partner12_action" = "Store";
+
+"sponsored_partner13_action" = "-";
+
+"sponsored_partner14_action" = "-";
+
+"sponsored_partner15_action" = "-";
+
+"sponsored_partner16_action" = "-";
+
+"sponsored_partner17_action" = "-";
+
+"sponsored_partner18_action" = "Lifehack";
+
+"sponsored_partner19_action" = "Lifehack";
+
+"sponsored_partner20_action" = "Lifehack";

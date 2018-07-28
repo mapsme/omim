@@ -29,29 +29,9 @@ void Blending::Apply() const
     GLFunctions::glDisable(gl_const::GLBlending);
 }
 
-bool Blending::operator < (Blending const & other) const
-{
-  return m_isEnabled < other.m_isEnabled;
-}
+bool Blending::operator<(Blending const & other) const { return m_isEnabled < other.m_isEnabled; }
 
-bool Blending::operator == (Blending const & other) const
-{
-  return m_isEnabled == other.m_isEnabled;
-}
-
-GLState::GLState(int gpuProgramIndex, ref_ptr<BaseRenderState> renderState)
-  : m_renderState(renderState)
-  , m_gpuProgramIndex(gpuProgramIndex)
-  , m_gpuProgram3dIndex(gpuProgramIndex)
-  , m_depthFunction(gl_const::GLLessOrEqual)
-  , m_textureFilter(gl_const::GLLinear)
-  , m_colorTexture(nullptr)
-  , m_maskTexture(nullptr)
-  , m_drawAsLine(false)
-  , m_lineWidth(1)
-{
-  ASSERT(m_renderState != nullptr, ());
-}
+bool Blending::operator==(Blending const & other) const { return m_isEnabled == other.m_isEnabled; }
 
 glConst GLState::GetDepthFunction() const
 {
@@ -61,6 +41,16 @@ glConst GLState::GetDepthFunction() const
 void GLState::SetDepthFunction(glConst functionName)
 {
   m_depthFunction = functionName;
+}
+
+bool GLState::GetDepthTestEnabled() const
+{
+  return m_depthTestEnabled;
+}
+
+void GLState::SetDepthTestEnabled(bool enabled)
+{
+  m_depthTestEnabled = enabled;
 }
 
 glConst GLState::GetTextureFilter() const
@@ -99,10 +89,10 @@ bool GLState::operator<(GLState const & other) const
     return m_renderState->Less(other.m_renderState);
   if (!(m_blending == other.m_blending))
     return m_blending < other.m_blending;
-  if (m_gpuProgramIndex != other.m_gpuProgramIndex)
-    return m_gpuProgramIndex < other.m_gpuProgramIndex;
-  if (m_gpuProgram3dIndex != other.m_gpuProgram3dIndex)
-    return m_gpuProgram3dIndex < other.m_gpuProgram3dIndex;
+  if (m_gpuProgram != other.m_gpuProgram)
+    return m_gpuProgram < other.m_gpuProgram;
+  if (m_gpuProgram3d != other.m_gpuProgram3d)
+    return m_gpuProgram3d < other.m_gpuProgram3d;
   if (m_depthFunction != other.m_depthFunction)
     return m_depthFunction < other.m_depthFunction;
   if (m_colorTexture != other.m_colorTexture)
@@ -120,8 +110,8 @@ bool GLState::operator<(GLState const & other) const
 bool GLState::operator==(GLState const & other) const
 {
   return m_renderState->Equal(other.m_renderState) &&
-         m_gpuProgramIndex == other.m_gpuProgramIndex &&
-         m_gpuProgram3dIndex == other.m_gpuProgram3dIndex &&
+         m_gpuProgram == other.m_gpuProgram &&
+         m_gpuProgram3d == other.m_gpuProgram3d &&
          m_blending == other.m_blending &&
          m_colorTexture == other.m_colorTexture &&
          m_maskTexture == other.m_maskTexture &&
@@ -136,23 +126,9 @@ bool GLState::operator!=(GLState const & other) const
   return !operator==(other);
 }
 
-namespace
-{
-struct UniformApplier
-{
-  ref_ptr<GpuProgram> m_program;
-
-  void operator()(UniformValue const & value) const
-  {
-    ASSERT(m_program != nullptr, ());
-    value.Apply(m_program);
-  }
-};
-}  // namespace
-
 uint8_t TextureState::m_usedSlots = 0;
 
-void TextureState::ApplyTextures(GLState state, ref_ptr<GpuProgram> program)
+void TextureState::ApplyTextures(GLState const & state, ref_ptr<GpuProgram> program)
 {
   m_usedSlots = 0;
 
@@ -184,14 +160,6 @@ uint8_t TextureState::GetLastUsedSlots()
   return m_usedSlots;
 }
 
-void ApplyUniforms(UniformValuesStorage const & uniforms, ref_ptr<GpuProgram> program)
-{
-  static UniformApplier applier;
-  applier.m_program = program;
-  uniforms.ForeachValue(applier);
-  applier.m_program = nullptr;
-}
-
 void ApplyBlending(GLState const & state)
 {
   state.GetBlending().Apply();
@@ -201,7 +169,15 @@ void ApplyState(GLState const & state, ref_ptr<GpuProgram> program)
 {
   TextureState::ApplyTextures(state, program);
   ApplyBlending(state);
-  GLFunctions::glDepthFunc(state.GetDepthFunction());
+  if (state.GetDepthTestEnabled())
+  {
+    GLFunctions::glEnable(gl_const::GLDepthTest);
+    GLFunctions::glDepthFunc(state.GetDepthFunction());
+  }
+  else
+  {
+    GLFunctions::glDisable(gl_const::GLDepthTest);
+  }
   ASSERT_GREATER_OR_EQUAL(state.GetLineWidth(), 0, ());
   GLFunctions::glLineWidth(static_cast<uint32_t>(state.GetLineWidth()));
 }

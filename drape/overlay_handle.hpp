@@ -92,13 +92,14 @@ public:
   using Rects = std::vector<m2::RectF>;
 
   OverlayHandle(OverlayID const & id, dp::Anchor anchor,
-                uint64_t priority, bool isBillboard);
+                uint64_t priority, int minVisibleScale, bool isBillboard);
 
   virtual ~OverlayHandle() {}
 
   bool IsVisible() const;
   void SetIsVisible(bool isVisible);
 
+  int GetMinVisibleScale() const;
   bool IsBillboard() const;
 
   virtual m2::PointD GetPivot(ScreenBase const & screen, bool perspective) const;
@@ -148,8 +149,8 @@ public:
   void SetDisplayFlag(bool display) { m_displayFlag = display; }
   bool GetDisplayFlag() const { return m_displayFlag; }
 
-  void SetUserMarkOverlay(bool isUserMarkOverlay) { m_isUserMarkOverlay = isUserMarkOverlay; }
-  bool IsUserMarkOverlay() const { return m_isUserMarkOverlay; }
+  void SetSpecialLayerOverlay(bool isSpecialLayerOverlay) { m_isSpecialLayerOverlay = isSpecialLayerOverlay; }
+  bool IsSpecialLayerOverlay() const { return m_isSpecialLayerOverlay; }
 
 #ifdef DEBUG_OVERLAYS_OUTPUT
   virtual std::string GetOverlayDebugInfo() { return ""; }
@@ -171,6 +172,7 @@ protected:
   m2::RectD GetPixelRectPerspective(ScreenBase const & screen) const;
 
 private:
+  int m_minVisibleScale;
   bool const m_isBillboard;
   bool m_isVisible;
 
@@ -194,7 +196,7 @@ private:
   mutable bool m_extendedRectDirty;
 
   bool m_isReady = false;
-  bool m_isUserMarkOverlay = false;
+  bool m_isSpecialLayerOverlay = false;
   bool m_displayFlag = false;
 };
 
@@ -206,7 +208,7 @@ public:
   SquareHandle(OverlayID const & id, dp::Anchor anchor, m2::PointD const & gbPivot,
                m2::PointD const & pxSize, m2::PointD const & pxOffset,
                uint64_t priority, bool isBound, std::string const & debugStr,
-               bool isBillboard = false);
+               int minVisibleScale, bool isBillboard);
 
   m2::RectD GetPixelRect(ScreenBase const & screen, bool perspective) const override;
   void GetPixelShape(ScreenBase const & screen, bool perspective, Rects & rects) const override;

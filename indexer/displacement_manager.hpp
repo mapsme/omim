@@ -13,6 +13,7 @@
 #include "geometry/screenbase.hpp"
 #include "geometry/tree4d.hpp"
 
+#include "std/functional.hpp"
 #include "std/map.hpp"
 #include "std/queue.hpp"
 #include "std/target_os.hpp"
@@ -48,6 +49,7 @@ public:
 
   CellFeaturePair const & GetCellFeaturePair() const { return m_pair; }
   uint32_t GetBucket() const { return m_bucket; }
+
 private:
   CellFeaturePair m_pair;
   uint32_t m_bucket;
@@ -59,17 +61,17 @@ static_assert(std::is_trivially_copyable<CellFeatureBucketTuple>::value, "");
 
 /// Displacement manager filters incoming single-point features to simplify runtime
 /// feature visibility displacement.
-template <class TSorter>
+template <typename Sorter>
 class DisplacementManager
 {
 public:
   using CellFeaturePair = CellFeatureBucketTuple::CellFeaturePair;
 
-  DisplacementManager(TSorter & sorter) : m_sorter(sorter) {}
+  DisplacementManager(Sorter & sorter) : m_sorter(sorter) {}
 
   /// Add feature at bucket (zoom) to displaceable queue if possible. Pass to bucket otherwise.
-  template <class TFeature>
-  void Add(vector<int64_t> const & cells, uint32_t bucket, TFeature const & ft, uint32_t index)
+  template <typename Feature>
+  void Add(vector<int64_t> const & cells, uint32_t bucket, Feature const & ft, uint32_t index)
   {
     // Add to displaceable storage if we need to displace POI.
     if (bucket != scales::GetUpperScale() && IsDisplaceable(ft))
@@ -98,8 +100,9 @@ public:
     {
       auto scale = node.m_minScale;
       // Do not filter high level objects. Including metro and country names.
-      static auto const maximumIgnoredZoom = feature::GetDrawableScaleRange(
-        classif().GetTypeByPath({"railway", "station", "subway"})).first;
+      static auto const maximumIgnoredZoom =
+          feature::GetDrawableScaleRange(classif().GetTypeByPath({"railway", "station", "subway"}))
+              .first;
 
       if (maximumIgnoredZoom < 0 || scale <= maximumIgnoredZoom)
       {
@@ -114,10 +117,11 @@ public:
 
         m2::RectD const displacementRect(node.m_center, node.m_center);
         bool isDisplaced = false;
-        acceptedNodes.ForEachInRect(m2::Inflate(displacementRect, {delta, delta}),
-            [&isDisplaced, &node, &squaredDelta, &scale](DisplaceableNode const & rhs)
-            {
-              if (node.m_center.SquareLength(rhs.m_center) < squaredDelta && rhs.m_maxScale > scale)
+        acceptedNodes.ForEachInRect(
+            m2::Inflate(displacementRect, {delta, delta}),
+            [&isDisplaced, &node, &squaredDelta, &scale](DisplaceableNode const & rhs) {
+              if (node.m_center.SquaredLength(rhs.m_center) < squaredDelta &&
+                  rhs.m_maxScale > scale)
                 isDisplaced = true;
             });
         if (isDisplaced)
@@ -147,10 +151,14 @@ private:
 
     DisplaceableNode() : m_index(0), m_minScale(0), m_maxScale(0), m_priority(0) {}
 
-    template <class TFeature>
-    DisplaceableNode(vector<int64_t> const & cells, TFeature const & ft, uint32_t index,
-                    int zoomLevel)
-      : m_index(index), m_fID(ft.GetID()), m_center(ft.GetCenter()), m_cells(cells), m_minScale(zoomLevel)
+    template <typename Feature>
+    DisplaceableNode(vector<int64_t> const & cells, Feature const & ft, uint32_t index,
+                     int zoomLevel)
+      : m_index(index)
+      , m_fID(ft.GetID())
+      , m_center(ft.GetCenter())
+      , m_cells(cells)
+      , m_minScale(zoomLevel)
     {
       feature::TypesHolder const types(ft);
       auto scaleRange = feature::GetDrawableScaleRange(types);
@@ -186,8 +194,8 @@ private:
     m2::RectD const GetLimitRect() const { return m2::RectD(m_center, m_center); }
   };
 
-  template <class TFeature>
-  static bool IsDisplaceable(TFeature const & ft)
+  template <typename Feature>
+  static bool IsDisplaceable(Feature const & ft)
   {
     feature::TypesHolder const types(ft);
     return types.GetGeoType() == feature::GEOM_POINT;
@@ -206,7 +214,7 @@ private:
       m_sorter.Add(CellFeatureBucketTuple(CellFeaturePair(cell, node.m_index), scale));
   }
 
-  TSorter & m_sorter;
+  Sorter & m_sorter;
   vector<DisplaceableNode> m_storage;
 };
 }  // namespace indexer

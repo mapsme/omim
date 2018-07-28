@@ -4,11 +4,12 @@
 #include "drape_frontend/line_shape.hpp"
 #include "drape_frontend/map_shape.hpp"
 #include "drape_frontend/poi_symbol_shape.hpp"
-#include "drape_frontend/shader_def.hpp"
 #include "drape_frontend/shape_view_params.hpp"
 #include "drape_frontend/text_shape.hpp"
 #include "drape_frontend/tile_utils.hpp"
 #include "drape_frontend/visual_params.hpp"
+
+#include "shaders/programs.hpp"
 
 #include "drape/utils/vertex_decl.hpp"
 #include "drape/attribute_provider.hpp"
@@ -124,6 +125,7 @@ void GenerateColoredSymbolShapes(UserMarkRenderParams const & renderInfo, TileKe
 
       params.m_featureID = renderInfo.m_featureId;
       params.m_tileCenter = tileCenter;
+      params.m_depthTestEnabled = renderInfo.m_depthTestEnabled;
       params.m_depth = renderInfo.m_depth;
       params.m_depthLayer = renderInfo.m_depthLayer;
       params.m_minVisibleScale = renderInfo.m_minZoom;
@@ -154,6 +156,7 @@ void GeneratePoiSymbolShape(UserMarkRenderParams const & renderInfo, TileKey con
 {
   PoiSymbolViewParams params(renderInfo.m_featureId);
   params.m_tileCenter = tileCenter;
+  params.m_depthTestEnabled = renderInfo.m_depthTestEnabled;
   params.m_depth = renderInfo.m_depth;
   params.m_depthLayer = renderInfo.m_depthLayer;
   params.m_minVisibleScale = renderInfo.m_minZoom;
@@ -210,6 +213,7 @@ void GenerateTextShapes(UserMarkRenderParams const & renderInfo, TileKey const &
     params.m_titleDecl.m_secondaryTextFont.m_isSdf =
       params.m_titleDecl.m_secondaryTextFont.m_outlineColor != dp::Color::Transparent() ? true : isSdf;
 
+    params.m_depthTestEnabled = renderInfo.m_depthTestEnabled;
     params.m_depth = renderInfo.m_depth;
     params.m_depthLayer = renderInfo.m_depthLayer;
     params.m_minVisibleScale = renderInfo.m_minZoom;
@@ -255,7 +259,7 @@ m2::SharedSpline SimplifySpline(UserLineRenderParams const & renderInfo, double 
   m2::PointD lastAddedPoint;
   for (auto const & point : renderInfo.m_spline->GetPath())
   {
-    if (spline->GetSize() > 1 && point.SquareLength(lastAddedPoint) * sqrScale < kMinSegmentLength)
+    if (spline->GetSize() > 1 && point.SquaredLength(lastAddedPoint) * sqrScale < kMinSegmentLength)
     {
       spline->ReplacePoint(point);
     }
@@ -297,6 +301,7 @@ void CacheUserMarks(TileKey const & tileKey, ref_ptr<dp::TextureManager> texture
   dp::TextureManager::SymbolRegion region;
   dp::TextureManager::SymbolRegion backgroundRegion;
   RenderState::DepthLayer depthLayer = RenderState::UserMarkLayer;
+  bool depthTestEnabled = true;
   for (auto const id : marksId)
   {
     auto const it = renderParams.find(id);
@@ -309,6 +314,7 @@ void CacheUserMarks(TileKey const & tileKey, ref_ptr<dp::TextureManager> texture
 
     m2::PointD const tileCenter = tileKey.GetGlobalRect().Center();
     depthLayer = renderInfo.m_depthLayer;
+    depthTestEnabled = renderInfo.m_depthTestEnabled;
 
     m2::PointF symbolSize(0.0f, 0.0f);
     m2::PointF symbolOffset(0.0f, 0.0f);
@@ -403,12 +409,13 @@ void CacheUserMarks(TileKey const & tileKey, ref_ptr<dp::TextureManager> texture
 
   if (!buffer.empty())
   {
-    auto state = CreateGLState(isAnimated ? gpu::BOOKMARK_ANIM_PROGRAM
-                                          : gpu::BOOKMARK_PROGRAM, depthLayer);
-    state.SetProgram3dIndex(isAnimated ? gpu::BOOKMARK_ANIM_BILLBOARD_PROGRAM
-                                       : gpu::BOOKMARK_BILLBOARD_PROGRAM);
+    auto state = CreateGLState(isAnimated ? gpu::Program::BookmarkAnim
+                                          : gpu::Program::Bookmark, depthLayer);
+    state.SetProgram3d(isAnimated ? gpu::Program::BookmarkAnimBillboard
+                                  : gpu::Program::BookmarkBillboard);
     state.SetColorTexture(region.GetTexture());
     state.SetTextureFilter(gl_const::GLNearest);
+    state.SetDepthTestEnabled(depthTestEnabled);
 
     dp::AttributeProvider attribProvider(1, static_cast<uint32_t>(buffer.size()));
     attribProvider.InitStream(0, UPV::GetBinding(), make_ref(buffer.data()));
@@ -460,7 +467,7 @@ void CacheUserLines(TileKey const & tileKey, ref_ptr<dp::TextureManager> texture
   double sqrScale = 1.0;
   if (simplify)
   {
-    double const currentScaleGtoP = 1.0 / GetScale(tileKey.m_zoomLevel);
+    double const currentScaleGtoP = 1.0 / GetScreenScale(tileKey.m_zoomLevel);
     sqrScale = currentScaleGtoP * currentScaleGtoP;
   }
 
@@ -504,6 +511,7 @@ void CacheUserLines(TileKey const & tileKey, ref_ptr<dp::TextureManager> texture
         params.m_cap = dp::RoundCap;
         params.m_join = dp::RoundJoin;
         params.m_color = layer.m_color;
+        params.m_depthTestEnabled = true;
         params.m_depth = layer.m_depth;
         params.m_depthLayer = renderInfo.m_depthLayer;
         params.m_width = static_cast<float>(layer.m_width * vs *

@@ -1,5 +1,7 @@
 #include "testing/testing.hpp"
 
+#include "routing/routing_tests/tools.hpp"
+
 #include "routing/async_router.hpp"
 #include "routing/router.hpp"
 #include "routing/routing_callbacks.hpp"
@@ -7,15 +9,20 @@
 
 #include "geometry/point2d.hpp"
 
+#include "platform/platform.hpp"
+
 #include "base/timer.hpp"
 
-#include "std/condition_variable.hpp"
-#include "std/mutex.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <condition_variable>
+#include <cstdint>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <vector>
 
 using namespace routing;
 using namespace std::placeholders;
+using namespace std;
 
 namespace
 {
@@ -33,7 +40,8 @@ public:
                             bool adjustToPrevRoute, RouterDelegate const & delegate,
                             Route & route) override
   {
-    route = Route("dummy", checkpoints.GetPoints().cbegin(), checkpoints.GetPoints().cend());
+    route = Route("dummy", checkpoints.GetPoints().cbegin(), checkpoints.GetPoints().cend(),
+                  0 /* route id */);
 
     for (auto const & absent : m_absent)
       route.AddAbsentCountry(absent);
@@ -56,7 +64,7 @@ public:
 
 void DummyStatisticsCallback(map<string, string> const &) {}
 
-struct DummyResultCallback
+struct DummyRoutingCallbacks
 {
   vector<RouterResultCode> m_codes;
   vector<vector<string>> m_absent;
@@ -65,13 +73,34 @@ struct DummyResultCallback
   uint32_t const m_expected;
   uint32_t m_called;
 
-  DummyResultCallback(uint32_t expectedCalls) : m_expected(expectedCalls), m_called(0) {}
+  explicit DummyRoutingCallbacks(uint32_t expectedCalls) : m_expected(expectedCalls), m_called(0) {}
 
-  void operator()(Route & route, RouterResultCode code)
+  // ReadyCallbackOwnership callback
+  void operator()(shared_ptr<Route> route, RouterResultCode code)
   {
+    CHECK(route, ());
     m_codes.push_back(code);
-    auto const & absent = route.GetAbsentCountries();
+    auto const & absent = route->GetAbsentCountries();
     m_absent.emplace_back(absent.begin(), absent.end());
+    TestAndNotifyReadyCallbacks();
+  }
+
+  // NeedMoreMapsCallback callback
+  void operator()(uint64_t routeId, vector<string> const & absent)
+  {
+    m_codes.push_back(RouterResultCode::NeedMoreMaps);
+    m_absent.emplace_back(absent.begin(), absent.end());
+    TestAndNotifyReadyCallbacks();
+  }
+
+  void WaitFinish()
+  {
+    unique_lock<mutex> lk(m_lock);
+    return m_cv.wait(lk, [this] { return m_called == m_expected; });
+  }
+
+  void TestAndNotifyReadyCallbacks()
+  {
     {
       lock_guard<mutex> calledLock(m_lock);
       ++m_called;
@@ -80,24 +109,20 @@ struct DummyResultCallback
     }
     m_cv.notify_all();
   }
-
-  void WaitFinish()
-  {
-    unique_lock<mutex> lk(m_lock);
-    return m_cv.wait(lk, [this] { return m_called == m_expected; });
-  }
 };
 
-UNIT_TEST(NeedMoreMapsSignalTest)
+UNIT_CLASS_TEST(AsyncGuiThreadTest, NeedMoreMapsSignalTest)
 {
   vector<string> const absentData({"test1", "test2"});
   unique_ptr<IOnlineFetcher> fetcher(new DummyFetcher(absentData));
   unique_ptr<IRouter> router(new DummyRouter(RouterResultCode::NoError, {}));
-  DummyResultCallback resultCallback(2 /* expectedCalls */);
+  DummyRoutingCallbacks resultCallback(2 /* expectedCalls */);
   AsyncRouter async(DummyStatisticsCallback, nullptr /* pointCheckCallback */);
   async.SetRouter(move(router), move(fetcher));
   async.CalculateRoute(Checkpoints({1, 2} /* start */, {5, 6} /* finish */), {3, 4}, false,
-                       bind(ref(resultCallback), _1, _2), nullptr, 0);
+                       bind(ref(resultCallback), _1, _2) /* readyCallback */,
+                       bind(ref(resultCallback), _1, _2) /* needMoreMapsCallback */,
+                       nullptr /* removeRouteCallback */, nullptr /* progressCallback */, 0);
 
   resultCallback.WaitFinish();
 
@@ -110,15 +135,16 @@ UNIT_TEST(NeedMoreMapsSignalTest)
   TEST_EQUAL(resultCallback.m_absent[1], absentData, ());
 }
 
-UNIT_TEST(StandartAsyncFogTest)
+UNIT_CLASS_TEST(AsyncGuiThreadTest, StandardAsyncFogTest)
 {
   unique_ptr<IOnlineFetcher> fetcher(new DummyFetcher({}));
   unique_ptr<IRouter> router(new DummyRouter(RouterResultCode::NoError, {}));
-  DummyResultCallback resultCallback(1 /* expectedCalls */);
+  DummyRoutingCallbacks resultCallback(1 /* expectedCalls */);
   AsyncRouter async(DummyStatisticsCallback, nullptr /* pointCheckCallback */);
   async.SetRouter(move(router), move(fetcher));
   async.CalculateRoute(Checkpoints({1, 2} /* start */, {5, 6} /* finish */), {3, 4}, false,
-                       bind(ref(resultCallback), _1, _2), nullptr, 0);
+                       bind(ref(resultCallback), _1, _2), nullptr /* needMoreMapsCallback */,
+                       nullptr /* progressCallback */, nullptr /* removeRouteCallback */, 0);
 
   resultCallback.WaitFinish();
 

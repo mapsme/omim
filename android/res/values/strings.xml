@@ -296,7 +296,7 @@
 	<!-- Confirmation in downloading countries dialog -->
 	<string name="are_you_sure">Are you sure you want to continue?</string>
 	<!-- Title for tracks category in bookmarks manager -->
-	<string name="tracks">Tracks</string>
+	<string name="tracks_title">Tracks</string>
 	<!-- Length of track in cell that describes route -->
 	<string name="length">Length</string>
 	<string name="share_my_location">Share My Location</string>
@@ -711,7 +711,6 @@
 	<string name="sunset_to_sunrise">From sunset to sunrise</string>
 	<string name="add_opening_hours">Add opening hours</string>
 	<string name="edit_opening_hours">Edit business hours</string>
-	<string name="profile">Profile</string>
 	<string name="no_osm_account">Don\'t have an OpenStreetMap account?</string>
 	<string name="register_at_openstreetmap">Register at OpenStreetMap</string>
 	<string name="password_8_chars_min">Password (8 characters minimum)</string>
@@ -1228,25 +1227,6 @@
 	<string name="expertise">Expertise</string>
 	<string name="equipment">Equipment</string>
 	<string name="quality">Quality</string>
-	<string name="sponsored_partner1_action">Cash back</string>
-	<string name="sponsored_partner3_action">Coupon</string>
-	<string name="sponsored_partner4_action">Store</string>
-	<string name="sponsored_partner5_action">Tickets</string>
-	<string name="sponsored_partner6_action">Store</string>
-	<string name="sponsored_partner7_action">Store</string>
-	<string name="sponsored_partner8_action">Special</string>
-	<string name="sponsored_partner9_action">Special</string>
-	<string name="sponsored_partner10_action">Store</string>
-	<string name="sponsored_partner11_action">-</string>
-	<string name="sponsored_partner12_action">Store</string>
-	<string name="sponsored_partner13_action">-</string>
-	<string name="sponsored_partner14_action">-</string>
-	<string name="sponsored_partner15_action">-</string>
-	<string name="sponsored_partner16_action">-</string>
-	<string name="sponsored_partner17_action">-</string>
-	<string name="sponsored_partner18_action">Lifehack</string>
-	<string name="sponsored_partner19_action">Lifehack</string>
-	<string name="sponsored_partner20_action">Lifehack</string>
 	<string name="whats_new_ugc_title">Ratings and reviews</string>
 	<string name="whats_new_ugc_message">You can now leave ratings and reviews even offline! Don\'t forget to update your maps so you can see the changes.</string>
 	<string name="dialog_error_storage_title">Storage access problem</string>
@@ -1324,7 +1304,7 @@
 	<string name="phone_number">Phone number</string>
 	<string name="notification_unsent_reviews_title"> You have several unsent reviews</string>
 	<string name="notification_unsent_reviews_message"> Please sign in to share reviews with other travelers</string>
-	<string name="profile_osm">Profile OSM</string>
+	<string name="profile">OpenStreetMap profile</string>
 	<string name="place_page_search_similar_hotel">Search similar hotels</string>
 	<string name="bookmarks_detect_title">New files detected</string>
 	<plurals name="bookmarks_detect_message">
@@ -1355,7 +1335,7 @@
 	<string name="sign_agree_tof_gdpr">I agree to the &lt;a href="%s">Terms of Use&lt;/a></string>
 	<string name="sign_agree_news_gdpr">I agree to receive the latest news about MAPS.ME products</string>
 	<string name="whats_new_localbiz_title">Small business deserves attention</string>
-	<string name="whats_new_localbiz_message">Family cafes, cozy hostels, unique stores – they are the special parts of our travels. We will optimize your page on the map free of charge so you will get noticed.</string>
+	<string name="whats_new_localbiz_message">It is local cafes, cozy hostels and shops that make our journeys unforgettable. We will optimize your page in MAPS.ME to make it stand out.</string>
 	<string name="whats_new_order_button">Leave a request</string>
 	<string name="bookmarks_page_downloaded">Downloaded</string>
 	<string name="bookmarks_page_my">My</string>
@@ -1395,10 +1375,45 @@
 	<string name="opt_out_help_android">Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android and Google Play Services version 4.0 and up:\nSettings → Google → Ads → Opt out of Ads Personalization\nor\nSettings → Google → Google Account → Personal info &amp; privacy → Ads Settings → Ads Personalization</string>
 	<string name="privacy_policy">Privacy policy</string>
 	<string name="terms_of_use">Terms of use</string>
+	<string name="backup_notification_failed">Backing up your bookmarks has been suspended. Log in to turn it back on.</string>
+	<string name="banner_megafon_banner_message">Say goodbye to international roaming!</string>
+	<string name="banner_megafon_banner_button">Goodbye!</string>
+	<string name="button_layer_traffic">Traffic</string>
+	<string name="button_layer_subway">Subway</string>
+	<string name="layers_title">Map layers</string>
+	<string name="layers_message">Use map layers to display the traffic, subway map, and other useful information</string>
 	<string name="button_layer_got_it">Got it</string>
+	<string name="subway_data_unavailable">Subway map is unavailable</string>
 	<string name="bookmarks_empty_list_title">This list is empty</string>
 	<string name="bookmarks_empty_list_message">To add a bookmark, tap a place on the map and then tap the star icon</string>
 	<string name="category_desc_more">…more</string>
 	<string name="title_error_downloading_bookmarks">An error occured</string>
 	<string name="subtitle_error_downloading_bookmarks">Bookmarks were not downloaded</string>
+	<string name="whats_new_bookmarks_catalog_title">MAPS.ME now has a route library</string>
+	<string name="whats_new_bookmarks_catalog_message">Hundreds of detailed routes all around the world: where to go, what to see, where to eat.</string>
+	<string name="whats_new_popularity_label_title">Popular locations nearby</string>
+	<string name="whats_new_popularity_label_message">Discover nearby section will help you find the most popular places in the city.</string>
+	<string name="whats_new_hot_offers_title">Attractive offers from hotels</string>
+	<string name="whats_new_hot_offers_message">You can find these from the Hotels category in the search panel. The offers are marked with a percent symbol on the map and in the search results.</string>
+	<string name="error_already_downloaded">This list has already been downloaded</string>
+	<string name="popular_place">Popular</string>
+
+	<!-- SECTION:  Partners  -->
+	<string name="sponsored_partner3_action">Coupon</string>
+	<string name="sponsored_partner4_action">Store</string>
+	<string name="sponsored_partner6_action">Store</string>
+	<string name="sponsored_partner7_action">Store</string>
+	<string name="sponsored_partner8_action">Special</string>
+	<string name="sponsored_partner9_action">Special</string>
+	<string name="sponsored_partner10_action">Store</string>
+	<string name="sponsored_partner11_action">-</string>
+	<string name="sponsored_partner12_action">Store</string>
+	<string name="sponsored_partner13_action">-</string>
+	<string name="sponsored_partner14_action">-</string>
+	<string name="sponsored_partner15_action">-</string>
+	<string name="sponsored_partner16_action">-</string>
+	<string name="sponsored_partner17_action">-</string>
+	<string name="sponsored_partner18_action">Lifehack</string>
+	<string name="sponsored_partner19_action">Lifehack</string>
+	<string name="sponsored_partner20_action">Lifehack</string>
 </resources>

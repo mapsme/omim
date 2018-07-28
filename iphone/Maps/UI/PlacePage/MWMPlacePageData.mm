@@ -718,7 +718,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
 - (NSString *)bookmarkDescription
 {
-  return m_info.IsBookmark() ? @(kml::GetDefaultStr(m_info.GetBookmarkData().m_description).c_str()) : nil;
+  return m_info.IsBookmark() ? @(GetPreferredBookmarkStr(m_info.GetBookmarkData().m_description).c_str()) : nil;
 }
 
 - (NSString *)bookmarkCategory
@@ -734,6 +734,11 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (kml::MarkGroupId)bookmarkCategoryId
 {
   return m_info.GetBookmarkCategoryId();
+}
+
+- (BOOL)isBookmarkFromCatalog
+{
+  return self.isBookmark && [MWMBookmarksManager isCategoryFromCatalog:self.bookmarkCategoryId];
 }
 
 #pragma mark - Local Ads
@@ -817,7 +822,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (BOOL)isHolidayObject { return m_info.GetSponsoredType() == SponsoredType::Holiday; }
 - (BOOL)isBookingSearch { return !m_info.GetBookingSearchUrl().empty(); }
 - (BOOL)isMyPosition { return m_info.IsMyPosition(); }
-- (BOOL)isHTMLDescription { return strings::IsHTML(kml::GetDefaultStr(m_info.GetBookmarkData().m_description)); }
+- (BOOL)isHTMLDescription { return strings::IsHTML(GetPreferredBookmarkStr(m_info.GetBookmarkData().m_description)); }
 - (BOOL)isRoutePoint { return m_info.IsRoutePoint(); }
 - (BOOL)isPreviewExtended { return m_info.IsPreviewExtended(); }
 - (BOOL)isPartnerAppInstalled

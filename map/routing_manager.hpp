@@ -41,7 +41,7 @@ namespace routing
 class NumMwmIds;
 }
 
-class DataSourceBase;
+class DataSource;
 
 struct RoutePointInfo
 {
@@ -67,7 +67,7 @@ public:
 
   struct Callbacks
   {
-    using DataSourceGetterFn = std::function<DataSourceBase &()>;
+    using DataSourceGetterFn = std::function<DataSource &()>;
     using CountryInfoGetterFn = std::function<storage::CountryInfoGetter &()>;
     using CountryParentNameGetterFn = std::function<std::string(std::string const &)>;
     using GetStringsBundleFn = std::function<StringsBundle const &()>;
@@ -129,7 +129,7 @@ public:
 
   void SetRouteBuildingListener(RouteBuildingCallback const & buildingCallback)
   {
-    m_routingCallback = buildingCallback;
+    m_routingBuildingCallback = buildingCallback;
   }
   /// See warning above.
   void SetRouteProgressListener(routing::ProgressCallback const & progressCallback)
@@ -207,6 +207,8 @@ public:
                         storage::TCountriesVec const & absentCountries);
   void OnBuildRouteReady(routing::Route const & route, routing::RouterResultCode code);
   void OnRebuildRouteReady(routing::Route const & route, routing::RouterResultCode code);
+  void OnNeedMoreMaps(uint64_t routeId, std::vector<std::string> const & absentCountries);
+  void OnRemoveRoute(routing::RouterResultCode code);
   void OnRoutePointPassed(RouteMarkType type, size_t intermediateIndex);
   void OnLocationUpdate(location::GpsInfo const & info);
   void SetAllowSendingPoints(bool isAllowed)
@@ -223,9 +225,16 @@ public:
   /// false otherwise.
   bool HasRouteAltitude() const;
 
+  /// \brief Fills altitude of current route points and distance in meters form the beginning
+  /// of the route point based on the route in RoutingSession.
+  bool GetRouteAltitudesAndDistancesM(std::vector<double> & routePointDistanceM,
+                                      feature::TAltitudes & altitudes) const;
+
   /// \brief Generates 4 bytes per point image (RGBA) and put the data to |imageRGBAData|.
   /// \param width is width of chart shall be generated in pixels.
   /// \param height is height of chart shall be generated in pixels.
+  /// \param altitudes route points altitude.
+  /// \param routePointDistanceM distance in meters from route beginning to route points.
   /// \param imageRGBAData is bits of result image in RGBA.
   /// \param minRouteAltitude is min altitude along the route in altitudeUnits.
   /// \param maxRouteAltitude is max altitude along the route in altitudeUnits.
@@ -235,8 +244,11 @@ public:
   /// |imageRGBAData| is not zero.
   /// \note If HasRouteAltitude() method returns true, GenerateRouteAltitudeChart(...)
   /// could return false if route was deleted or rebuilt between the calls.
-  bool GenerateRouteAltitudeChart(uint32_t width, uint32_t height, std::vector<uint8_t> & imageRGBAData,
-                                  int32_t & minRouteAltitude, int32_t & maxRouteAltitude,
+  bool GenerateRouteAltitudeChart(uint32_t width, uint32_t height,
+                                  feature::TAltitudes const & altitudes,
+                                  std::vector<double> const & routePointDistanceM,
+                                  std::vector<uint8_t> & imageRGBAData, int32_t & minRouteAltitude,
+                                  int32_t & maxRouteAltitude,
                                   measurement_utils::Units & altitudeUnits) const;
 
   uint32_t OpenRoutePointsTransaction();
@@ -282,7 +294,7 @@ private:
 
   void OnExtrapolatedLocationUpdate(location::GpsInfo const & info);
 
-  RouteBuildingCallback m_routingCallback = nullptr;
+  RouteBuildingCallback m_routingBuildingCallback = nullptr;
   RouteRecommendCallback m_routeRecommendCallback = nullptr;
   Callbacks m_callbacks;
   df::DrapeEngineSafePtr m_drapeEngine;

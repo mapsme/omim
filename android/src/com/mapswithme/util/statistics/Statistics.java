@@ -43,6 +43,7 @@ import com.my.tracker.MyTracker;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,8 @@ import static com.mapswithme.util.statistics.Statistics.EventName.PP_SPONSORED_O
 import static com.mapswithme.util.statistics.Statistics.EventName.PP_SPONSORED_SHOWN;
 import static com.mapswithme.util.statistics.Statistics.EventName.PP_SPONSOR_ITEM_SELECTED;
 import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_PLAN_TOOLTIP_CLICK;
+import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_ROUTE_FINISH;
+import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_ROUTE_START;
 import static com.mapswithme.util.statistics.Statistics.EventName.SEARCH_FILTER_CLICK;
 import static com.mapswithme.util.statistics.Statistics.EventName.UGC_AUTH_ERROR;
 import static com.mapswithme.util.statistics.Statistics.EventName.UGC_AUTH_EXTERNAL_REQUEST_SUCCESS;
@@ -90,6 +93,7 @@ import static com.mapswithme.util.statistics.Statistics.EventParam.HAS_AUTH;
 import static com.mapswithme.util.statistics.Statistics.EventParam.HOTEL;
 import static com.mapswithme.util.statistics.Statistics.EventParam.HOTEL_LAT;
 import static com.mapswithme.util.statistics.Statistics.EventParam.HOTEL_LON;
+import static com.mapswithme.util.statistics.Statistics.EventParam.INTERRUPTED;
 import static com.mapswithme.util.statistics.Statistics.EventParam.ITEM;
 import static com.mapswithme.util.statistics.Statistics.EventParam.MAP_DATA_SIZE;
 import static com.mapswithme.util.statistics.Statistics.EventParam.METHOD;
@@ -108,6 +112,7 @@ import static com.mapswithme.util.statistics.Statistics.EventParam.STATE;
 import static com.mapswithme.util.statistics.Statistics.EventParam.TYPE;
 import static com.mapswithme.util.statistics.Statistics.EventParam.VALUE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.BACKUP;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.BICYCLE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.BOOKING_COM;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.DISK_NO_SPACE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.FACEBOOK;
@@ -116,10 +121,15 @@ import static com.mapswithme.util.statistics.Statistics.ParamValue.HOLIDAY;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.MAPSME;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.NO_BACKUP;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.OPENTABLE;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.PEDESTRIAN;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.PHONE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.RESTORE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.SEARCH_BOOKING_COM;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.TAXI;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.TRAFFIC;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.TRANSIT;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.UNKNOWN;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.VEHICLE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.VIATOR;
 
 public enum Statistics
@@ -175,6 +185,9 @@ public enum Statistics
     public static final String BM_RESTORE_PROPOSAL_CANCEL = "Bookmarks_RestoreProposal_cancel";
     public static final String BM_RESTORE_PROPOSAL_SUCCESS = "Bookmarks_RestoreProposal_success";
     static final String BM_RESTORE_PROPOSAL_ERROR = "Bookmarks_RestoreProposal_error";
+    static final String BM_TAB_CLICK = "Bookmarks_Tab_click";
+    private static final String BM_DOWNLOADED_CATALOGUE_OPEN = "Bookmarks_Downloaded_Catalogue_open";
+    private static final String BM_DOWNLOADED_CATALOGUE_ERROR = "Bookmarks_Downloaded_Catalogue_error";
 
     // search
     public static final String SEARCH_CAT_CLICKED = "Search. Category clicked";
@@ -255,8 +268,8 @@ public enum Statistics
     // routing
     public static final String ROUTING_BUILD = "Routing. Build";
     public static final String ROUTING_START_SUGGEST_REBUILD = "Routing. Suggest rebuild";
-    public static final String ROUTING_START = "Routing. Start";
-    public static final String ROUTING_CLOSE = "Routing. Close";
+    public static final String ROUTING_ROUTE_START = "Routing_Route_start";
+    public static final String ROUTING_ROUTE_FINISH = "Routing_Route_finish";
     public static final String ROUTING_CANCEL = "Routing. Cancel";
     public static final String ROUTING_VEHICLE_SET = "Routing. Set vehicle";
     public static final String ROUTING_PEDESTRIAN_SET = "Routing. Set pedestrian";
@@ -306,13 +319,12 @@ public enum Statistics
     public static final String UGC_AUTH_DECLINED = "UGC_Auth_declined";
     public static final String UGC_AUTH_EXTERNAL_REQUEST_SUCCESS = "UGC_Auth_external_request_success";
     public static final String UGC_AUTH_ERROR = "UGC_Auth_error";
+    public static final String MAP_LAYERS_ACTIVATE = "Map_Layers_activate";
 
     public static class Settings
     {
       public static final String WEB_SITE = "Setings. Go to website";
-      public static final String WEB_BLOG = "Setings. Go to blog";
       public static final String FEEDBACK_GENERAL = "Send general feedback to android@maps.me";
-      public static final String SUBSCRIBE = "Settings. Subscribed";
       public static final String REPORT_BUG = "Settings. Bug reported";
       public static final String RATE = "Settings. Rate app called";
       public static final String TELL_FRIEND = "Settings. Tell to friend";
@@ -394,6 +406,9 @@ public enum Statistics
     public static final String PRICE_CATEGORY = "price_category";
     public static final String DATE = "date";
     static final String HAS_AUTH = "has_auth";
+    public static final String STATUS = "status";
+    static final String INTERRUPTED = "interrupted";
+
     private EventParam() {}
   }
 
@@ -427,7 +442,7 @@ public enum Statistics
     public static final String GOOGLE = "google";
     public static final String MAPSME = "mapsme";
     public static final String PHONE = "phone";
-    static final String UNKNOWN = "unknown";
+    public static final String UNKNOWN = "unknown";
     static final String NETWORK = "network";
     static final String DISK = "disk";
     static final String AUTH = "auth";
@@ -437,6 +452,18 @@ public enum Statistics
     static final String DISK_NO_SPACE = "disk_no_space";
     static final String BACKUP = "backup";
     static final String RESTORE = "restore";
+    public static final String NO_INTERNET = "no_internet";
+    public static final String MY = "my";
+    public static final String DOWNLOADED = "downloaded";
+    static final String SUBWAY = "subway";
+    static final String TRAFFIC = "traffic";
+    public static final String SUCCESS = "success";
+    public static final String UNAVAILABLE = "unavailable";
+    static final String PEDESTRIAN = "pedestrian";
+    static final String VEHICLE = "vehicle";
+    static final String BICYCLE = "bicycle";
+    static final String TAXI = "taxi";
+    static final String TRANSIT = "transit";
   }
 
   // Initialized once in constructor and does not change until the process restarts.
@@ -632,6 +659,23 @@ public enum Statistics
       PushwooshHelper.nativeSendEditorEditObjectTag();
   }
 
+  public void trackSubwayEvent(@NonNull String status)
+  {
+    trackMapLayerEvent(ParamValue.SUBWAY, status);
+  }
+
+  public void trackTrafficEvent(@NonNull String status)
+  {
+    trackMapLayerEvent(ParamValue.TRAFFIC, status);
+  }
+
+  private void trackMapLayerEvent(@NonNull String eventName, @NonNull String status)
+  {
+    ParameterBuilder builder = params().add(EventParam.NAME, eventName)
+                                       .add(EventParam.STATUS, status);
+    trackEvent(EventName.MAP_LAYERS_ACTIVATE, builder);
+  }
+
   public void trackEditorSuccess(boolean newObject)
   {
     trackEvent(newObject ? EventName.EDITOR_SUCCESS_CREATE : EventName.EDITOR_SUCCESS_EDIT,
@@ -716,6 +760,23 @@ public enum Statistics
   public void trackBookHotelEvent(@NonNull Sponsored hotel, @NonNull MapObject mapObject)
   {
     trackHotelEvent(PP_SPONSORED_BOOK, hotel, mapObject);
+  }
+
+  public void trackBookmarksTabEvent(@NonNull String param)
+  {
+    ParameterBuilder params = params().add(EventParam.VALUE, param);
+    trackEvent(EventName.BM_TAB_CLICK, params);
+  }
+
+  public void trackOpenCatalogScreen()
+  {
+    trackEvent(EventName.BM_DOWNLOADED_CATALOGUE_OPEN, Collections.emptyMap());
+  }
+
+  public void trackDownloadCatalogError(@NonNull String value)
+  {
+    ParameterBuilder params = params().add(EventParam.ERROR, value);
+    trackEvent(EventName.BM_DOWNLOADED_CATALOGUE_ERROR, params);
   }
 
   public void trackPPBanner(@NonNull String eventName, @NonNull MwmNativeAd ad, @BannerState int state)
@@ -965,6 +1026,46 @@ public enum Statistics
                params()
                    .add(MODE, isPlanning ? "planning" : "onroute")
                    .get());
+  }
+
+  public void trackRoutingStart(@Framework.RouterType int type,
+                                boolean trafficEnabled)
+  {
+    trackEvent(ROUTING_ROUTE_START, prepareRouteParams(type, trafficEnabled));
+  }
+
+  public void trackRoutingFinish(boolean interrupted, @Framework.RouterType int type,
+                                 boolean trafficEnabled)
+  {
+    ParameterBuilder params = prepareRouteParams(type, trafficEnabled);
+    trackEvent(ROUTING_ROUTE_FINISH, params.add(INTERRUPTED, interrupted ? 1 : 0));
+  }
+
+  @NonNull
+  private static ParameterBuilder prepareRouteParams(@Framework.RouterType int type,
+                                                     boolean trafficEnabled)
+  {
+    return params().add(MODE, toRouterType(type)).add(TRAFFIC, trafficEnabled ? 1 : 0);
+  }
+
+  @NonNull
+  private static String toRouterType(@Framework.RouterType int type)
+  {
+    switch (type)
+    {
+      case Framework.ROUTER_TYPE_VEHICLE:
+        return VEHICLE;
+      case Framework.ROUTER_TYPE_PEDESTRIAN:
+        return PEDESTRIAN;
+      case Framework.ROUTER_TYPE_BICYCLE:
+        return BICYCLE;
+      case Framework.ROUTER_TYPE_TAXI:
+        return TAXI;
+      case Framework.ROUTER_TYPE_TRANSIT:
+        return TRANSIT;
+      default:
+        throw new AssertionError("Unsupported router type: " + type);
+    }
   }
 
   public void trackRoutingTooltipEvent(@RoutePointInfo.RouteMarkType int type,

@@ -93,11 +93,12 @@ extern NSString * const kAlohalyticsTapEventKey;
   {
     [Statistics logEvent:kStatSettingsOpenSection withParameters:@{kStatName : kStatCopyright}];
     [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"copyright"];
-    string s;
-    GetPlatform().GetReader("copyright.html")->ReadAsString(s);
-    NSString * text = [NSString stringWithFormat:@"%@\n%@", self.versionLabel.text, @(s.c_str())];
+    NSError * error;
+    NSString * filePath = [[NSBundle mainBundle] pathForResource:@"copyright" ofType:@"html"];
+    NSString * s = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&error];
+    NSString * text = [NSString stringWithFormat:@"%@\n%@", self.versionLabel.text, s];
     WebViewController * aboutViewController =
-        [[WebViewController alloc] initWithHtml:text baseUrl:nil andTitleOrNil:L(@"copyright")];
+        [[WebViewController alloc] initWithHtml:text baseUrl:nil title:L(@"copyright")];
     aboutViewController.openInSafari = YES;
     [self.navigationController pushViewController:aboutViewController animated:YES];
   }

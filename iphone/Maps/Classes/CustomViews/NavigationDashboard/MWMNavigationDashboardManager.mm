@@ -281,9 +281,9 @@ using Observers = NSHashTable<Observer>;
 
 - (IBAction)trafficButtonAction
 {
-  BOOL const switchOn = ([MWMTrafficManager state] == MWMTrafficManagerStateDisabled);
+  BOOL const switchOn = ([MWMTrafficManager trafficState] == MWMTrafficManagerStateDisabled);
   [Statistics logEvent:kStatMenu withParameters:@{kStatTraffic : switchOn ? kStatOn : kStatOff}];
-  [MWMTrafficManager enableTraffic:switchOn];
+  [MWMTrafficManager setTrafficEnabled:switchOn];
 }
 
 - (IBAction)settingsButtonAction

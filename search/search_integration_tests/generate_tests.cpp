@@ -63,7 +63,7 @@ UNIT_CLASS_TEST(GenerateTest, GenerateDeprecatedTypes)
     MakeFeature(builder, {"shop", "estate_agent"}, {2, 2});
   }
 
-  DataSource dataSource;
+  FrozenDataSource dataSource;
   TEST_EQUAL(dataSource.Register(file).second, MwmSet::RegResult::Success, ());
 
   // New types.

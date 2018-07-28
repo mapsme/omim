@@ -285,7 +285,7 @@
 	<!-- Confirmation in downloading countries dialog -->
 	<string name="are_you_sure">Er du sikker på at du ønsker å fortsette?</string>
 	<!-- Title for tracks category in bookmarks manager -->
-	<string name="tracks">Ruter</string>
+	<string name="tracks_title">Ruter</string>
 	<!-- Length of track in cell that describes route -->
 	<string name="length">Lengde</string>
 	<string name="share_my_location">Del posisjonen min</string>
@@ -688,7 +688,6 @@
 	<string name="sunset_to_sunrise">Fra solnedgang til soloppgang</string>
 	<string name="add_opening_hours">Legg til åpningstider</string>
 	<string name="edit_opening_hours">Rediger åpningstider</string>
-	<string name="profile">Profil</string>
 	<string name="no_osm_account">Har du ingen konto hos OpenStreetMap?</string>
 	<string name="register_at_openstreetmap">Registrer deg</string>
 	<string name="password_8_chars_min">Passord (minimum 8 tegn)</string>
@@ -1258,7 +1257,7 @@
 	<string name="phone_number">Telefonnummer</string>
 	<string name="notification_unsent_reviews_title">Du har flere usendte anmeldelser</string>
 	<string name="notification_unsent_reviews_message">Vennligst logg inn for å dele anmeldelser med andre reisende</string>
-	<string name="profile_osm">Profil OSM</string>
+	<string name="profile">OpenStreetMap profil</string>
 	<string name="place_page_search_similar_hotel">Søk lignende hoteller</string>
 	<string name="bookmarks_detect_title">Nye filer oppdaget</string>
 	<plurals name="bookmarks_detect_message">

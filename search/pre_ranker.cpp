@@ -30,8 +30,9 @@ void SweepNearbyResults(double eps, set<FeatureID> const & prevEmit, vector<PreR
   {
     auto const & p = results[i].GetInfo().m_center;
     uint8_t const rank = results[i].GetInfo().m_rank;
+    uint8_t const popularity = results[i].GetInfo().m_popularity;
     uint8_t const prevCount = prevEmit.count(results[i].GetId()) ? 1 : 0;
-    uint8_t const priority = max(rank, prevCount);
+    uint8_t const priority = max({rank, prevCount, popularity});
     sweeper.Add(p.x, p.y, i, priority);
   }
 
@@ -45,7 +46,7 @@ void SweepNearbyResults(double eps, set<FeatureID> const & prevEmit, vector<PreR
 }
 }  // namespace
 
-PreRanker::PreRanker(DataSourceBase const & dataSource, Ranker & ranker)
+PreRanker::PreRanker(DataSource const & dataSource, Ranker & ranker)
   : m_dataSource(dataSource), m_ranker(ranker), m_pivotFeatures(dataSource)
 {
 }
@@ -71,6 +72,7 @@ void PreRanker::FillMissingFieldsInPreResults()
   MwmSet::MwmId mwmId;
   MwmSet::MwmHandle mwmHandle;
   unique_ptr<RankTable> ranks = make_unique<DummyRankTable>();
+  unique_ptr<RankTable> popularityRanks = make_unique<DummyRankTable>();
   unique_ptr<LazyCentersTable> centers;
 
   m_pivotFeatures.SetPosition(m_params.m_accuratePivotCenter, m_params.m_scale);
@@ -86,14 +88,19 @@ void PreRanker::FillMissingFieldsInPreResults()
       centers.reset();
       if (mwmHandle.IsAlive())
       {
-        ranks = RankTable::Load(mwmHandle.GetValue<MwmValue>()->m_cont);
+        ranks = RankTable::Load(mwmHandle.GetValue<MwmValue>()->m_cont, SEARCH_RANKS_FILE_TAG);
+        popularityRanks = RankTable::Load(mwmHandle.GetValue<MwmValue>()->m_cont,
+                                          POPULARITY_RANKS_FILE_TAG);
         centers = make_unique<LazyCentersTable>(*mwmHandle.GetValue<MwmValue>());
       }
       if (!ranks)
         ranks = make_unique<DummyRankTable>();
+      if (!popularityRanks)
+        popularityRanks = make_unique<DummyRankTable>();
     }
 
     info.m_rank = ranks->Get(id.m_index);
+    info.m_popularity = popularityRanks->Get(id.m_index);
 
     m2::PointD center;
     if (centers && centers->Get(id.m_index, center))
@@ -189,7 +196,7 @@ void PreRanker::Filter(bool viewportSearch)
   {
     size_t n = min(m_results.size(), BatchSize());
     nth_element(m_results.begin(), m_results.begin() + n, m_results.end(),
-                &PreRankerResult::LessRank);
+                &PreRankerResult::LessRankAndPopularity);
     filtered.insert(m_results.begin(), m_results.begin() + n);
   }
 

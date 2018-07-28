@@ -13,6 +13,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <utility>
 
 namespace routing
 {
@@ -41,7 +42,7 @@ public:
   TrafficStash(traffic::TrafficCache const & source, std::shared_ptr<NumMwmIds> numMwmIds);
 
   traffic::SpeedGroup GetSpeedGroup(Segment const & segment) const;
-  void SetColoring(NumMwmId numMwmId, std::shared_ptr<traffic::TrafficInfo::Coloring> coloring);
+  void SetColoring(NumMwmId numMwmId, std::shared_ptr<const traffic::TrafficInfo::Coloring> coloring);
   bool Has(NumMwmId numMwmId) const;
 
 private:
@@ -50,7 +51,7 @@ private:
   void Clear() { m_mwmToTraffic.clear(); }
 
   traffic::TrafficCache const & m_source;
-  shared_ptr<NumMwmIds> m_numMwmIds;
-  std::unordered_map<NumMwmId, std::shared_ptr<traffic::TrafficInfo::Coloring>> m_mwmToTraffic;
+  std::shared_ptr<NumMwmIds> m_numMwmIds;
+  std::unordered_map<NumMwmId, std::shared_ptr<const traffic::TrafficInfo::Coloring>> m_mwmToTraffic;
 };
 }  // namespace routing

@@ -41,7 +41,7 @@ using namespace routing;
 using namespace routing_test;
 
 using TRouterFactory =
-    function<unique_ptr<IRouter>(DataSourceBase & dataSource, TCountryFileFn const & countryFileFn,
+    function<unique_ptr<IRouter>(DataSource & dataSource, TCountryFileFn const & countryFileFn,
                                  shared_ptr<NumMwmIds> numMwmIds)>;
 
 namespace
@@ -85,7 +85,7 @@ namespace integration
     return storage::CountryInfoReader::CreateCountryInfoReader(platform);
   }
 
-  unique_ptr<IndexRouter> CreateVehicleRouter(DataSourceBase & dataSource,
+  unique_ptr<IndexRouter> CreateVehicleRouter(DataSource & dataSource,
                                               storage::CountryInfoGetter const & infoGetter,
                                               traffic::TrafficCache const & trafficCache,
                                               vector<LocalCountryFile> const & localFiles,
@@ -120,7 +120,7 @@ namespace integration
     return indexRouter;
   }
 
-  unique_ptr<IRouter> CreateAStarRouter(DataSourceBase & dataSource,
+  unique_ptr<IRouter> CreateAStarRouter(DataSource & dataSource,
                                         storage::CountryInfoGetter const & infoGetter,
                                         vector<LocalCountryFile> const & localFiles,
                                         TRouterFactory const & routerFactory)
@@ -170,7 +170,7 @@ namespace integration
                               m2::PointD const & finalPoint)
   {
     RouterDelegate delegate;
-    shared_ptr<Route> route(new Route("mapsme"));
+    shared_ptr<Route> route = make_shared<Route>("mapsme", 0 /* route id */);
     RouterResultCode result = routerComponents.GetRouter().CalculateRoute(
         Checkpoints(startPoint, finalPoint), startDirection, false /* adjust */, delegate, *route);
     ASSERT(route, ());

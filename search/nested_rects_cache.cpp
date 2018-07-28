@@ -19,7 +19,7 @@ namespace
 double const kPositionToleranceMeters = 15.0;
 }  // namespace
 
-NestedRectsCache::NestedRectsCache(DataSourceBase const & dataSource)
+NestedRectsCache::NestedRectsCache(DataSource const & dataSource)
   : m_dataSource(dataSource), m_scale(0), m_position(0, 0), m_valid(false)
 {
 }
@@ -56,7 +56,7 @@ double NestedRectsCache::GetDistanceToFeatureMeters(FeatureID const & id) const
 
   if (auto const & info = id.m_mwmId.GetInfo())
   {
-    auto const & rect = info->m_limitRect;
+    auto const & rect = info->m_bordersRect;
     return max(MercatorBounds::DistanceOnEarth(rect.Center(), m_position),
                GetRadiusMeters(static_cast<RectScale>(scale)));
   }
@@ -82,6 +82,7 @@ double NestedRectsCache::GetRadiusMeters(RectScale scale)
   case RECT_SCALE_LARGE: return 2500.0;
   case RECT_SCALE_COUNT: return 5000.0;
   }
+  CHECK_SWITCH();
 }
 
 void NestedRectsCache::Update()

@@ -206,7 +206,8 @@ void LocalityFinder::Holder::Clear()
 }
 
 // LocalityFinder ----------------------------------------------------------------------------------
-LocalityFinder::LocalityFinder(DataSourceBase const & dataSource, CitiesBoundariesTable const & boundariesTable,
+LocalityFinder::LocalityFinder(DataSource const & dataSource,
+                               CitiesBoundariesTable const & boundariesTable,
                                VillagesCache & villagesCache)
   : m_dataSource(dataSource)
   , m_boundariesTable(boundariesTable)
@@ -242,7 +243,7 @@ void LocalityFinder::LoadVicinity(m2::PointD const & p, bool loadCities, bool lo
     {
       auto const & value = *handle.GetValue<MwmValue>();
       if (!m_ranks)
-        m_ranks = RankTable::Load(value.m_cont);
+        m_ranks = RankTable::Load(value.m_cont, SEARCH_RANKS_FILE_TAG);
       if (!m_ranks)
         m_ranks = make_unique<DummyRankTable>();
 
@@ -285,12 +286,8 @@ void LocalityFinder::UpdateMaps()
 
     switch (info->GetType())
     {
-    case MwmInfo::WORLD:
-      m_worldId = id;
-      break;
-    case MwmInfo::COUNTRY:
-      m_maps.Add(id, info->m_limitRect);
-      break;
+    case MwmInfo::WORLD: m_worldId = id; break;
+    case MwmInfo::COUNTRY: m_maps.Add(id, info->m_bordersRect); break;
     case MwmInfo::COASTS: break;
     }
   }

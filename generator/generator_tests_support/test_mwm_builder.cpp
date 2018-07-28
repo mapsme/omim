@@ -131,7 +131,7 @@ void TestMwmBuilder::Finish()
 
   CHECK(indexer::BuildIndexFromDataFile(path, path), ("Can't build geometry index."));
 
-  CHECK(indexer::BuildSearchIndexFromDataFile(path, true /* forceRebuild */),
+  CHECK(indexer::BuildSearchIndexFromDataFile(path, true /* forceRebuild */, 1 /* threadsCount */),
         ("Can't build search index."));
 
   if (m_type == feature::DataHeader::world)
@@ -140,7 +140,7 @@ void TestMwmBuilder::Finish()
   CHECK(indexer::BuildCentersTableFromDataFile(path, true /* forceRebuild */),
         ("Can't build centers table."));
 
-  CHECK(search::RankTableBuilder::CreateIfNotExists(path), ());
+  CHECK(search::SearchRankTableBuilder::CreateIfNotExists(path), ());
 
   if (!m_languages.empty())
     CHECK(WriteRegionDataForTests(path, m_languages), ());

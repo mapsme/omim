@@ -203,9 +203,9 @@ public:
   void SetSimplifiedTrafficColors(bool simplified);
 
   void EnableTransitScheme(bool enable);
-  void UpdateTransitScheme(TransitDisplayInfos && transitDisplayInfos,
-                           std::vector<MwmSet::MwmId> const & visibleMwms);
+  void UpdateTransitScheme(TransitDisplayInfos && transitDisplayInfos);
   void ClearTransitSchemeCache(MwmSet::MwmId const & mwmId);
+  void ClearAllTransitSchemeCache();
 
   void SetFontScaleFactor(double scaleFactor);
 
@@ -224,6 +224,8 @@ public:
   void EnableUGCRendering(bool enabled);
 
   void RunFirstLaunchAnimation();
+
+  void ShowDebugInfo(bool shown);
 
 private:
   void AddUserEvent(drape_ptr<UserEvent> && e);

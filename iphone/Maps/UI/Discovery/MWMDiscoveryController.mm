@@ -14,6 +14,7 @@
 #include "DiscoveryControllerViewModel.hpp"
 
 #include "map/discovery/discovery_client_params.hpp"
+#include "map/search_product_info.hpp"
 
 #include "partners_api/locals_api.hpp"
 #include "partners_api/viator_api.hpp"
@@ -38,12 +39,13 @@ namespace
 {
 struct Callback
 {
-  void operator()(uint32_t const requestId, search::Results const & results, ItemType const type,
+  void operator()(uint32_t const requestId, search::Results const & results,
+                  vector<search::ProductInfo> const & productInfo, ItemType const type,
                   m2::PointD const & viewportCenter) const
   {
     CHECK(m_setSearchResults, ());
     CHECK(m_refreshSection, ());
-    m_setSearchResults(results, viewportCenter, type);
+    m_setSearchResults(results, productInfo, viewportCenter, type);
     m_refreshSection(type);
   }
 
@@ -63,8 +65,9 @@ struct Callback
     m_refreshSection(ItemType::LocalExperts);
   }
 
-  using SetSearchResults = function<void(search::Results const & res,
-                                         m2::PointD const & viewportCenter, ItemType const type)>;
+  using SetSearchResults =
+      function<void(search::Results const & res, vector<search::ProductInfo> const & productInfo,
+                    m2::PointD const & viewportCenter, ItemType const type)>;
   using SetViatorProducts = function<void(vector<viator::Product> const & viator)>;
   using SetLocalExperts = function<void(vector<locals::LocalExpert> const & experts)>;
   using RefreshSection = function<void(ItemType const type)>;
@@ -106,7 +109,7 @@ struct Callback
     auto & cb = m_callback;
     cb.m_setLocalExperts = bind(&DiscoveryControllerViewModel::SetExperts, &m_model, _1);
     cb.m_setSearchResults =
-        bind(&DiscoveryControllerViewModel::SetSearchResults, &m_model, _1, _2, _3);
+        bind(&DiscoveryControllerViewModel::SetSearchResults, &m_model, _1, _2, _3, _4);
     cb.m_setViatorProducts = bind(&DiscoveryControllerViewModel::SetViator, &m_model, _1);
     cb.m_refreshSection = [self](ItemType const type) { [self.tableManager reloadItem:type]; };
   }
@@ -168,11 +171,19 @@ struct Callback
     dest = kStatExternal;
     break;
   case ItemType::Attractions:
-    [self showSearchResult:m_model.GetAttractionAt(index)];
+    if (index == m_model.GetItemsCount(type))
+      [self searchTourism];
+    else
+      [self showSearchResult:m_model.GetAttractionAt(index)];
+
     dest = kStatPlacePage;
     break;
   case ItemType::Cafes:
-    [self showSearchResult:m_model.GetCafeAt(index)];
+    if (index == m_model.GetItemsCount(type))
+      [self searchFood];
+    else
+      [self showSearchResult:m_model.GetCafeAt(index)];
+      
     dest = kStatPlacePage;
     break;
   case ItemType::Hotels:
@@ -209,6 +220,20 @@ struct Callback
                          searchTextOnMap:[L(@"booking_hotel") stringByAppendingString:@" "]
                          forInputLocale:[NSLocale currentLocale].localeIdentifier];
                       }];
+}
+
+- (void)searchFood
+{
+  [self.navigationController popViewControllerAnimated:YES];
+  [MWMMapViewControlsManager.manager searchTextOnMap:[L(@"food") stringByAppendingString:@" "]
+                                      forInputLocale:[NSLocale currentLocale].localeIdentifier];
+}
+
+- (void)searchTourism
+{
+  [self.navigationController popViewControllerAnimated:YES];
+  [MWMMapViewControlsManager.manager searchTextOnMap:[L(@"tourism") stringByAppendingString:@" "]
+                                      forInputLocale:[NSLocale currentLocale].localeIdentifier];
 }
 
 - (void)routeToItem:(ItemType const)type atIndex:(size_t const)index

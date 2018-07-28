@@ -16,7 +16,7 @@
 #include <memory>
 #include <string>
 
-class DataSourceBase;
+class DataSource;
 
 namespace routing
 {
@@ -26,14 +26,13 @@ public:
   using Points = buffer_vector<m2::PointD, 32>;
 
   RoadGeometry() = default;
-  RoadGeometry(bool oneWay, double speed, Points const & points);
+  RoadGeometry(bool oneWay, double weightSpeedKMpH, double etaSpeedKMpH, Points const & points);
 
   void Load(VehicleModelInterface const & vehicleModel, FeatureType const & feature,
             feature::TAltitudes const * altitudes);
 
   bool IsOneWay() const { return m_isOneWay; }
-  // Kilometers per hour.
-  double GetSpeed() const { return m_speed; }
+  VehicleModelInterface::SpeedKMpH const & GetSpeed() const { return m_speed; }
   bool IsPassThroughAllowed() const { return m_isPassThroughAllowed; }
 
   Junction const & GetJunction(uint32_t junctionId) const
@@ -65,7 +64,7 @@ public:
 
 private:
   buffer_vector<Junction, 32> m_junctions;
-  double m_speed = 0.0;
+  VehicleModelInterface::SpeedKMpH m_speed;
   bool m_isOneWay = false;
   bool m_valid = false;
   bool m_isPassThroughAllowed = false;
@@ -79,7 +78,7 @@ public:
   virtual void Load(uint32_t featureId, RoadGeometry & road) = 0;
 
   // handle should be alive: it is caller responsibility to check it.
-  static std::unique_ptr<GeometryLoader> Create(DataSourceBase const & dataSource,
+  static std::unique_ptr<GeometryLoader> Create(DataSource const & dataSource,
                                                 MwmSet::MwmHandle const & handle,
                                                 std::shared_ptr<VehicleModelInterface> vehicleModel,
                                                 bool loadAltitudes);

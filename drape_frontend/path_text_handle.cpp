@@ -228,7 +228,7 @@ m2::Spline::iterator PathTextContext::GetProjectedPoint(std::vector<m2::Spline> 
         nearestStep = step + t;
       }
 
-      double const dist = pt.SquareLength(nearestPt);
+      double const dist = pt.SquaredLength(nearestPt);
       if (dist < minDist)
       {
         minDist = dist;
@@ -252,9 +252,10 @@ PathTextHandle::PathTextHandle(dp::OverlayID const & id,
                                float depth, uint32_t textIndex,
                                uint64_t priority, int fixedHeight,
                                ref_ptr<dp::TextureManager> textureManager,
+                               int minVisibleScale,
                                bool isBillboard)
   : TextHandle(id, context->GetLayout()->GetText(), dp::Center, priority,
-               fixedHeight, textureManager, isBillboard)
+               fixedHeight, textureManager, minVisibleScale, isBillboard)
   , m_context(context)
   , m_textIndex(textIndex)
   , m_depth(depth)

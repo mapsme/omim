@@ -61,6 +61,7 @@ omim_link_libraries(
   qt_common
   map
   drape_frontend
+  shaders
   routing
   search
   storage
@@ -146,6 +147,7 @@ copy_resources(
   resources-default
   resources-mdpi_clear
   cuisine-strings
+  taxi_places
   eula.html
 
   categories.txt

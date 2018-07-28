@@ -67,6 +67,7 @@ public:
   void SetCurrentDataVersion(int64_t dataVersion);
 
   void SetEnabled(bool enabled);
+  bool IsEnabled() const;
 
   void UpdateViewport(ScreenBase const & screen);
   void UpdateMyPosition(MyPosition const & myPosition);
@@ -75,12 +76,13 @@ public:
 
   void OnDestroyGLContext();
   void OnRecoverGLContext();
-  void OnMwmDeregistered(MwmSet::MwmId const & mwmId);
+  void OnMwmDeregistered(platform::LocalCountryFile const & countryFile);
 
   void OnEnterForeground();
   void OnEnterBackground();
 
   void SetSimplifiedColorScheme(bool simplified);
+  bool HasSimplifiedColorScheme() const { return m_hasSimplifiedColorScheme; }
 
 private:
   struct CacheEntry
@@ -127,7 +129,6 @@ private:
   void ChangeState(TrafficState newState);
 
   bool IsInvalidState() const;
-  bool IsEnabled() const;
 
   void UniteActiveMwms(set<MwmSet::MwmId> & activeMwms) const;
 
@@ -154,6 +155,8 @@ private:
 
   atomic<TrafficState> m_state;
   TrafficStateChangedFn m_onStateChangedFn;
+
+  bool m_hasSimplifiedColorScheme = true;
 
   size_t m_maxCacheSizeBytes;
   size_t m_currentCacheSizeBytes = 0;

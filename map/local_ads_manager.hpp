@@ -25,8 +25,6 @@
 #include <string>
 #include <vector>
 
-class DataSourceBase;
-
 namespace feature
 {
 class TypesHolder;
@@ -54,7 +52,7 @@ public:
   void UpdateViewport(ScreenBase const & screen);
 
   void OnDownloadCountry(std::string const & countryName);
-  void OnDeleteCountry(std::string const & countryName);
+  void OnMwmDeregistered(platform::LocalCountryFile const & countryFile);
 
   void Invalidate();
 
@@ -88,7 +86,7 @@ private:
   // by some reason.
   bool DownloadCampaign(MwmSet::MwmId const & mwmId, std::vector<uint8_t> & bytes);
   
-  void RequestCampaigns(std::vector<MwmSet::MwmId> && mwmIds);
+  void RequestCampaigns(std::vector<MwmSet::MwmId> const & mwmIds);
 
   GetMwmsByRectFn const m_getMwmsByRectFn;
   GetMwmIdByNameFn const m_getMwmIdByNameFn;

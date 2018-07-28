@@ -1,5 +1,8 @@
 #import "MWMBookmarksObserver.h"
 #import "MWMTypes.h"
+#import "MWMCatalogCommon.h"
+
+@class MWMCatalogCategory;
 
 @interface MWMBookmarksManager : NSObject
 
@@ -18,7 +21,8 @@
 + (void)setCategory:(MWMMarkGroupID)groupId name:(NSString *)name;
 + (BOOL)isCategoryVisible:(MWMMarkGroupID)groupId;
 + (void)setCategory:(MWMMarkGroupID)groupId isVisible:(BOOL)isVisible;
-+ (void)setAllCategoriesVisible:(BOOL)isVisible;
++ (void)setUserCategoriesVisible:(BOOL)isVisible;
++ (void)setCatalogCategoriesVisible:(BOOL)isVisible;
 + (void)deleteCategory:(MWMMarkGroupID)groupId;
 
 + (void)deleteBookmark:(MWMMarkID)bookmarkId;
@@ -35,14 +39,24 @@
 + (NSUInteger)filesCountForConversion;
 + (void)convertAll;
 
-+ (BOOL)areAllCategoriesInvisible;
-
 + (void)setNotificationsEnabled:(BOOL)enabled;
 + (BOOL)areNotificationsEnabled;
 
 + (void)requestRestoring;
 + (void)applyRestoring;
 + (void)cancelRestoring;
+
++ (NSURL * _Nullable)catalogFrontendUrl;
++ (NSURL * _Nullable)sharingUrlForCategoryId:(MWMMarkGroupID)groupId;
++ (void)downloadItemWithId:(NSString * _Nonnull)itemId
+                      name:(NSString * _Nonnull)name
+                  progress:(_Nullable ProgressBlock)progress
+                completion:(_Nullable CompletionBlock)completion;
++ (BOOL)isCategoryFromCatalog:(MWMMarkGroupID)groupId;
++ (NSArray<MWMCatalogCategory *> * _Nonnull)categoriesFromCatalog;
++ (NSInteger)getCatalogDownloadsCount;
++ (BOOL)isCategoryDownloading:(NSString * _Nonnull)itemId;
++ (BOOL)hasCategoryDownloaded:(NSString * _Nonnull)itemId;
 
 - (instancetype)init __attribute__((unavailable("call +manager instead")));
 - (instancetype)copy __attribute__((unavailable("call +manager instead")));

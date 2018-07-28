@@ -19,10 +19,13 @@
 #include "base/string_utils.hpp"
 #include "base/logging.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 
 #include "3party/opening_hours/opening_hours.hpp"
+
+using namespace std;
 
 namespace search
 {
@@ -69,10 +72,12 @@ PreRankerResult::PreRankerResult(FeatureID const & id, PreRankingInfo const & in
 }
 
 // static
-bool PreRankerResult::LessRank(PreRankerResult const & r1, PreRankerResult const & r2)
+bool PreRankerResult::LessRankAndPopularity(PreRankerResult const & r1, PreRankerResult const & r2)
 {
   if (r1.m_info.m_rank != r2.m_info.m_rank)
     return r1.m_info.m_rank > r2.m_info.m_rank;
+  if (r1.m_info.m_popularity != r2.m_info.m_popularity)
+    return r1.m_info.m_popularity > r2.m_info.m_popularity;
   return r1.m_info.m_distanceToPivot < r2.m_info.m_distanceToPivot;
 }
 
@@ -130,22 +135,19 @@ bool RankerResult::IsStreet() const
   return m_geomType == feature::GEOM_LINE && ftypes::IsStreetChecker::Instance()(m_types);
 }
 
-uint32_t RankerResult::GetBestType(set<uint32_t> const * pPrefferedTypes) const
+uint32_t RankerResult::GetBestType(vector<uint32_t> const & preferredTypes) const
 {
-  if (pPrefferedTypes)
+  ASSERT(is_sorted(preferredTypes.begin(), preferredTypes.end()), ());
+  if (!preferredTypes.empty())
   {
     for (uint32_t type : m_types)
     {
-      if (pPrefferedTypes->count(type) > 0)
+      if (binary_search(preferredTypes.begin(), preferredTypes.end(), type))
         return type;
     }
   }
 
-  // Do type truncate (2-level is enough for search results) only for
-  // non-preffered types (types from categories leave original).
-  uint32_t type = m_types.GetBestType();
-  ftype::TruncValue(type, 2);
-  return type;
+  return m_types.GetBestType();
 }
 
 // RankerResult::RegionInfo ------------------------------------------------------------------------

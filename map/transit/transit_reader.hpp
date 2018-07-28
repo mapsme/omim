@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-class DataSourceBase;
+class DataSource;
 
 using FeatureCallback = std::function<void (FeatureType const &)>;
 using TReadFeaturesFn = std::function<void (FeatureCallback const & , std::vector<FeatureID> const &)>;
@@ -31,8 +31,7 @@ using TReadFeaturesFn = std::function<void (FeatureCallback const & , std::vecto
 class ReadTransitTask: public threads::IRoutine
 {
 public:
-  ReadTransitTask(DataSourceBase & dataSource,
-                  TReadFeaturesFn const & readFeaturesFn)
+  ReadTransitTask(DataSource & dataSource, TReadFeaturesFn const & readFeaturesFn)
     : m_dataSource(dataSource), m_readFeaturesFn(readFeaturesFn)
   {}
 
@@ -65,7 +64,7 @@ private:
     }
   };
 
-  DataSourceBase & m_dataSource;
+  DataSource & m_dataSource;
   TReadFeaturesFn m_readFeaturesFn;
 
   uint64_t m_id = 0;
@@ -80,10 +79,17 @@ private:
 class TransitReadManager
 {
 public:
+  enum class TransitSchemeState
+  {
+    Disabled,
+    Enabled,
+    NoData,
+  };
+
   using GetMwmsByRectFn = function<vector<MwmSet::MwmId>(m2::RectD const &)>;
+  using TransitStateChangedFn = function<void(TransitSchemeState)>;
 
-
-  TransitReadManager(DataSourceBase & dataSource, TReadFeaturesFn const & readFeaturesFn,
+  TransitReadManager(DataSource & dataSource, TReadFeaturesFn const & readFeaturesFn,
                      GetMwmsByRectFn const & getMwmsByRectFn);
   ~TransitReadManager();
 
@@ -91,17 +97,20 @@ public:
   void Stop();
 
   void SetDrapeEngine(ref_ptr<df::DrapeEngine> engine);
+  void SetStateListener(TransitStateChangedFn const & onStateChangedFn);
 
   bool GetTransitDisplayInfo(TransitDisplayInfos & transitDisplayInfos);
 
   void EnableTransitSchemeMode(bool enable);
+  void BlockTransitSchemeMode(bool isBlocked);
   void UpdateViewport(ScreenBase const & screen);
-  void OnMwmDeregistered(MwmSet::MwmId const & mwmId);
+  void OnMwmDeregistered(platform::LocalCountryFile const & countryFile);
   void Invalidate();
 
 private:
   void OnTaskCompleted(threads::IRoutine * task);
 
+  void ChangeState(TransitSchemeState newState);
   void ShrinkCacheToAllowableSize();
   void ClearCache(MwmSet::MwmId const & mwmId);
 
@@ -113,10 +122,13 @@ private:
   uint64_t m_nextTasksGroupId = 0;
   std::map<uint64_t, size_t> m_tasksGroups;
 
-  DataSourceBase & m_dataSource;
+  DataSource & m_dataSource;
   TReadFeaturesFn m_readFeaturesFn;
 
   df::DrapeEngineSafePtr m_drapeEngine;
+
+  TransitSchemeState m_state = TransitSchemeState::Disabled;
+  TransitStateChangedFn m_onStateChangedFn;
 
   struct CacheEntry
   {
@@ -130,10 +142,10 @@ private:
   };
 
   GetMwmsByRectFn m_getMwmsByRectFn;
-  std::vector<MwmSet::MwmId> m_lastVisibleMwms;
   std::set<MwmSet::MwmId> m_lastActiveMwms;
   std::map<MwmSet::MwmId, CacheEntry> m_mwmCache;
   size_t m_cacheSize = 0;
   bool m_isSchemeMode = false;
+  bool m_isSchemeModeBlocked = false;
   pair<ScreenBase, bool> m_currentModelView = {ScreenBase(), false /* initialized */};
 };

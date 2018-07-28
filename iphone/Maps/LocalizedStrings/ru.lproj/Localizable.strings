@@ -457,7 +457,7 @@
 "are_you_sure" = "Вы уверены, что хотите продолжить?";
 
 /* Title for tracks category in bookmarks manager */
-"tracks" = "Треки";
+"tracks_title" = "Треки";
 
 /* Length of track in cell that describes route */
 "length" = "Длина";
@@ -1147,8 +1147,6 @@
 "add_opening_hours" = "Добавить время работы";
 
 "edit_opening_hours" = "Редактировать время работы";
-
-"profile" = "Профиль";
 
 "no_osm_account" = "Не зарегистрированы в OpenStreetMap?";
 
@@ -2100,44 +2098,6 @@
 
 "quality" = "Качество";
 
-"sponsored_partner1_action" = "Кешбэк";
-
-"sponsored_partner3_action" = "Купон";
-
-"sponsored_partner4_action" = "Магазин";
-
-"sponsored_partner5_action" = "Билеты";
-
-"sponsored_partner6_action" = "Магазин";
-
-"sponsored_partner7_action" = "Магазин";
-
-"sponsored_partner8_action" = "Акция";
-
-"sponsored_partner9_action" = "Акция";
-
-"sponsored_partner10_action" = "Магазин";
-
-"sponsored_partner11_action" = "-";
-
-"sponsored_partner12_action" = "Магазин";
-
-"sponsored_partner13_action" = "-";
-
-"sponsored_partner14_action" = "-";
-
-"sponsored_partner15_action" = "-";
-
-"sponsored_partner16_action" = "-";
-
-"sponsored_partner17_action" = "-";
-
-"sponsored_partner18_action" = "Лайфхак";
-
-"sponsored_partner19_action" = "Лайфхак";
-
-"sponsored_partner20_action" = "Лайфхак";
-
 "whats_new_ugc_title" = "Оценки и отзывы";
 
 "whats_new_ugc_message" = "Теперь вы можете оставлять оценки и отзывы даже офлайн! Не забудьте обновить карты, чтобы увидеть изменения.";
@@ -2284,7 +2244,7 @@
 
 "notification_unsent_reviews_message" = "Пожалуйста, авторизуйтесь, чтобы поделиться своими отзывами с другими путешественниками";
 
-"profile_osm" = "Профиль OSM";
+"profile" = "Профиль OpenStreetMap";
 
 "place_page_search_similar_hotel" = "Найти похожие отели";
 
@@ -2360,7 +2320,7 @@
 
 "author_name_by_prefix" = "%s";
 
-"subtittle_opt_out" = "Настрокий сопровождения";
+"subtittle_opt_out" = "Настройки сопровождения";
 
 "opt_out_flurry" = "Статистика";
 
@@ -2413,3 +2373,56 @@
 "title_error_downloading_bookmarks" = "Произошла ошибка";
 
 "subtitle_error_downloading_bookmarks" = "Метки не были загружены";
+
+"whats_new_bookmarks_catalog_title" = "В MAPS.ME появился каталог маршрутов";
+
+"whats_new_bookmarks_catalog_message" = "Десятки подробных маршрутов по всем миру: куда сходить, что посмотреть, где поесть.";
+
+"whats_new_popularity_label_title" = "Популярное поблизости";
+
+"whats_new_popularity_label_message" = "Раздел «Чем заняться» поможет найти самые популярные места в городе.";
+
+"whats_new_hot_offers_title" = "Выгодные предложения отелей";
+
+"whats_new_hot_offers_message" = "Ищите их с помощью категории «Отели» в поиске. Предложения будут обозначены значком процента на карте и в списке.";
+
+"error_already_downloaded" = "Этот список уже был загружен";
+
+"popular_place" = "Популярно";
+
+
+/**********  Partners  **********/
+
+"sponsored_partner3_action" = "Купон";
+
+"sponsored_partner4_action" = "Магазин";
+
+"sponsored_partner6_action" = "Магазин";
+
+"sponsored_partner7_action" = "Магазин";
+
+"sponsored_partner8_action" = "Акция";
+
+"sponsored_partner9_action" = "Акция";
+
+"sponsored_partner10_action" = "Магазин";
+
+"sponsored_partner11_action" = "-";
+
+"sponsored_partner12_action" = "Магазин";
+
+"sponsored_partner13_action" = "-";
+
+"sponsored_partner14_action" = "-";
+
+"sponsored_partner15_action" = "-";
+
+"sponsored_partner16_action" = "-";
+
+"sponsored_partner17_action" = "-";
+
+"sponsored_partner18_action" = "Лайфхак";
+
+"sponsored_partner19_action" = "Лайфхак";
+
+"sponsored_partner20_action" = "Лайфхак";

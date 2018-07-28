@@ -8,10 +8,10 @@
 
 #include "base/buffer_vector.hpp"
 
+#include "std/function.hpp"
 #include "std/iterator.hpp"
 #include "std/string.hpp"
 #include "std/utility.hpp"
-
 
 namespace feature
 {

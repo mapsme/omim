@@ -6,6 +6,7 @@
 #include "std/atomic.hpp"
 #include "std/cstdint.hpp"
 #include "std/noncopyable.hpp"
+#include "std/string.hpp"
 
 namespace df
 {
@@ -66,6 +67,7 @@ m2::RectD const & GetWorldRect();
 int GetTileScaleBase(ScreenBase const & s, uint32_t tileSize);
 int GetTileScaleBase(ScreenBase const & s);
 int GetTileScaleBase(m2::RectD const & r);
+double GetTileScaleBase(double drawScale);
 
 /// @return Adjusting base tile scale to look the same across devices with different
 /// tile size and visual scale values.
@@ -76,6 +78,7 @@ int GetDrawTileScale(int baseScale, uint32_t tileSize, double visualScale);
 int GetDrawTileScale(ScreenBase const & s, uint32_t tileSize, double visualScale);
 int GetDrawTileScale(m2::RectD const & r, uint32_t tileSize, double visualScale);
 int GetDrawTileScale(int baseScale);
+double GetDrawTileScale(double baseScale);
 int GetDrawTileScale(ScreenBase const & s);
 int GetDrawTileScale(m2::RectD const & r);
 
@@ -86,11 +89,10 @@ m2::RectD GetRectForDrawScale(double drawScale, m2::PointD const & center);
 
 uint32_t CalculateTileSize(uint32_t screenWidth, uint32_t screenHeight);
 
-double GetZoomLevel(double scale);
 void ExtractZoomFactors(ScreenBase const & s, double & zoom, int & index, float & lerpCoef);
 float InterpolateByZoomLevels(int index, float lerpCoef, std::vector<float> const & values);
 m2::PointF InterpolateByZoomLevels(int index, float lerpCoef, std::vector<m2::PointF> const & values);
-double GetNormalizedZoomLevel(double scale, int minZoom = 1);
-double GetScale(double zoomLevel);
-
+double GetNormalizedZoomLevel(double screenScale, int minZoom = 1);
+double GetScreenScale(double zoomLevel);
+double GetZoomLevel(double screenScale);
 } // namespace df

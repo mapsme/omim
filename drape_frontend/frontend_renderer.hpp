@@ -7,6 +7,7 @@
 #include "drape_frontend/backend_renderer.hpp"
 #include "drape_frontend/base_renderer.hpp"
 #include "drape_frontend/drape_api_renderer.hpp"
+#include "drape_frontend/frame_values.hpp"
 #include "drape_frontend/gps_track_renderer.hpp"
 #include "drape_frontend/my_position_controller.hpp"
 #include "drape_frontend/navigator.hpp"
@@ -22,10 +23,10 @@
 #include "drape_frontend/transit_scheme_renderer.hpp"
 #include "drape_frontend/user_event_stream.hpp"
 
-#include "drape/gpu_program_manager.hpp"
+#include "shaders/program_manager.hpp"
+
 #include "drape/overlay_tree.hpp"
 #include "drape/pointers.hpp"
-#include "drape/uniform_values_storage.hpp"
 #include "drape/vertex_array_buffer.hpp"
 
 #include "platform/location.hpp"
@@ -47,6 +48,7 @@ class RenderBucket;
 
 namespace df
 {
+class DrapeNotifier;
 class ScenarioManager;
 class ScreenQuadRenderer;
 class SelectionShape;
@@ -140,7 +142,7 @@ protected:
 
 private:
   void OnResize(ScreenBase const & screen);
-  void RenderScene(ScreenBase const & modelView);
+  void RenderScene(ScreenBase const & modelView, bool activeFrame);
   void PrepareBucket(dp::GLState const & state, drape_ptr<dp::RenderBucket> & bucket);
   void MergeBuckets();
   void RenderSingleGroup(ScreenBase const & modelView, ref_ptr<BaseRenderGroup> group);
@@ -161,15 +163,15 @@ private:
   void Render3dLayer(ScreenBase const & modelView, bool useFramebuffer);
   void RenderOverlayLayer(ScreenBase const & modelView);
   void RenderNavigationOverlayLayer(ScreenBase const & modelView);
-  void RenderUserMarksLayer(ScreenBase const & modelView, RenderState::DepthLayer layerId,
-                            bool enableDepthTest = true);
+  void RenderUserMarksLayer(ScreenBase const & modelView, RenderState::DepthLayer layerId);
   void RenderTransitSchemeLayer(ScreenBase const & modelView);
   void RenderTrafficLayer(ScreenBase const & modelView);
   void RenderRouteLayer(ScreenBase const & modelView);
   void RenderSearchMarksLayer(ScreenBase const & modelView);
   void RenderTransitBackground();
 
-  bool HasTransitRouteData();
+  bool HasTransitRouteData() const;
+  bool HasRouteData() const;
 
   ScreenBase const & ProcessEvents(bool & modelViewChanged, bool & viewportChanged);
   void PrepareScene(ScreenBase const & modelView);
@@ -200,7 +202,7 @@ private:
   void CorrectGlobalScalePoint(m2::PointD & pt) const override;
   void OnScaleEnded() override;
   void OnAnimatedScaleEnded() override;
-  void OnTouchMapAction() override;
+  void OnTouchMapAction(TouchEvent::ETouchType touchType) override;
   bool OnNewVisibleViewport(m2::RectD const & oldViewport, m2::RectD const & newViewport,
                             m2::PointD & gOffset) override;
 
@@ -250,11 +252,14 @@ private:
 
   void CheckAndRunFirstLaunchAnimation();
 
-  drape_ptr<dp::GpuProgramManager> m_gpuProgramManager;
+  void ScheduleOverlayCollecting();
+
+  drape_ptr<gpu::ProgramManager> m_gpuProgramManager;
 
   std::array<RenderLayer, RenderState::LayersCount> m_layers;
 
   drape_ptr<gui::LayerRenderer> m_guiRenderer;
+  gui::TWidgetsLayoutInfo m_lastWidgetsLayout;
   drape_ptr<MyPositionController> m_myPositionController;
   drape_ptr<SelectionShape> m_selectionShape;
   drape_ptr<RouteRenderer> m_routeRenderer;
@@ -267,7 +272,7 @@ private:
 
   drape_ptr<dp::OverlayTree> m_overlayTree;
 
-  dp::UniformValuesStorage m_generalUniforms;
+  FrameValues m_frameValues;
 
   bool m_enablePerspectiveInNavigation;
   bool m_enable3dBuildings;
@@ -317,6 +322,7 @@ private:
   bool m_needRestoreSize;
 
   bool m_trafficEnabled;
+  bool m_transitSchemeEnabled = false;
 
   drape_ptr<OverlaysTracker> m_overlaysTracker;
   OverlaysShowStatsCallback m_overlaysShowStatsCallback;
@@ -324,6 +330,7 @@ private:
   bool m_forceUpdateScene;
   bool m_forceUpdateUserMarks;
 
+  bool m_isAntialiasingEnabled = false;
   drape_ptr<PostprocessRenderer> m_postprocessRenderer;
 
   drape_ptr<ScenarioManager> m_scenarioManager;
@@ -334,6 +341,8 @@ private:
 
   bool m_finishTexturesInitialization = false;
   drape_ptr<ScreenQuadRenderer> m_transitBackground;
+
+  drape_ptr<DrapeNotifier> m_notifier;
 
 #ifdef DEBUG
   bool m_isTeardowned;

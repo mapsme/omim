@@ -311,7 +311,7 @@ public:
   storage::CountryInfoGetter & GetCountryInfoGetter() { return *m_infoGetter; }
   StorageDownloadingPolicy & GetDownloadingPolicy() { return m_storageDownloadingPolicy; }
 
-  DataSourceBase const & GetDataSource() const { return m_model.GetDataSource(); }
+  DataSource const & GetDataSource() const { return m_model.GetDataSource(); }
 
   SearchAPI & GetSearchAPI();
   SearchAPI const & GetSearchAPI() const;
@@ -339,6 +339,7 @@ public:
 
   // Utilities
   void VisualizeRoadsInRect(m2::RectD const & rect);
+  void VisualizeCityBoundariesInRect(m2::RectD const & rect);
 
   ads::Engine const & GetAdsEngine() const;
 
@@ -747,13 +748,17 @@ public:
 
   LocalAdsManager & GetLocalAdsManager();
 
+  TransitReadManager & GetTransitManager();
+
   bool LoadTrafficEnabled();
   void SaveTrafficEnabled(bool trafficEnabled);
 
   bool LoadTrafficSimplifiedColors();
   void SaveTrafficSimplifiedColors(bool simplified);
 
+  // TODO: Enable transit scheme via transit manager.
   void EnableTransitScheme(bool enable);
+
   bool LoadTransitSchemeEnabled();
   void SaveTransitSchemeEnabled(bool enabled);
 

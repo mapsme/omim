@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <map>
 #include <string>
 #include <type_traits>
 
@@ -116,7 +117,7 @@ private:
 };
 }  // namespace
 
-SearchAPI::SearchAPI(DataSourceBase & dataSource, storage::Storage const & storage,
+SearchAPI::SearchAPI(DataSource & dataSource, storage::Storage const & storage,
                      storage::CountryInfoGetter const & infoGetter, Delegate & delegate)
   : m_dataSource(dataSource)
   , m_storage(storage)
@@ -166,8 +167,9 @@ bool SearchAPI::SearchEverywhere(EverywhereSearchParams const & params)
 
   p.m_onResults = EverywhereSearchCallback(
       static_cast<EverywhereSearchCallback::Delegate &>(*this),
+      static_cast<ProductInfo::Delegate &>(*this),
       params.m_bookingFilterTasks,
-      [this, params](Results const & results, std::vector<ProductInfo> const & productInfo) {
+      [this, params](Results const & results, vector<ProductInfo> const & productInfo) {
         if (params.m_onResults)
           RunUITask([params, results, productInfo] {
             params.m_onResults(results, productInfo);
@@ -209,41 +211,6 @@ bool SearchAPI::SearchInViewport(ViewportSearchParams const & params)
   m_delegate.OnBookingFilterParamsUpdate(params.m_bookingFilterTasks);
 
   return Search(p, false /* forceSearch */);
-}
-
-void SearchAPI::SearchForDiscovery(DiscoverySearchParams const & params)
-{
-  CHECK(params.m_onResults, ());
-  CHECK(!params.m_query.empty(), ());
-  CHECK_GREATER(params.m_itemsCount, 0, ());
-
-  SearchParams p;
-  p.m_query = params.m_query;
-  p.m_inputLocale = "en";
-  p.m_viewport = params.m_viewport;
-  p.m_position = params.m_position;
-  p.m_maxNumResults = params.m_itemsCount;
-  p.m_mode = search::Mode::Viewport;
-  p.m_onResults = [params](Results const & results) {
-    if (!results.IsEndMarker())
-      return;
-
-    switch (params.m_sortingType)
-    {
-    case DiscoverySearchParams::SortingType::None:
-      params.m_onResults(results);
-      break;
-    case DiscoverySearchParams::SortingType::HotelRating:
-    {
-      Results r(results);
-      r.SortBy(DiscoverySearchParams::HotelRatingComparator());
-      params.m_onResults(r);
-      break;
-    }
-    }
-  };
-
-  GetEngine().Search(p);
 }
 
 bool SearchAPI::SearchInDownloader(storage::DownloaderSearchParams const & params)

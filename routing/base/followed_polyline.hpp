@@ -5,6 +5,7 @@
 #include "geometry/point2d.hpp"
 #include "geometry/polyline2d.hpp"
 
+#include <limits>
 #include <vector>
 
 namespace routing
@@ -13,9 +14,9 @@ class FollowedPolyline
 {
 public:
   FollowedPolyline() = default;
-  template <class TIter>
-  FollowedPolyline(TIter begin, TIter end)
-    : m_poly(begin, end)
+
+  template <typename Iter>
+  FollowedPolyline(Iter begin, Iter end) : m_poly(begin, end)
   {
     Update();
     // Initially we do not have intermediate points. Next checkpoint is finish.
@@ -83,7 +84,7 @@ public:
   /// \param startIdx Start segment index in |m_segProj|.
   /// \param endIdx The index after the last one in |m_segProj|.
   /// \returns iterator which contains projection point and projection segment index.
-  template <class DistanceFn>
+  template <typename DistanceFn>
   Iter GetClosestProjectionInInterval(m2::RectD const & posRect, DistanceFn const & distFn,
                                       size_t startIdx, size_t endIdx) const
   {
@@ -91,7 +92,7 @@ public:
     CHECK_LESS_OR_EQUAL(startIdx, endIdx, ());
 
     Iter res;
-    double minDist = numeric_limits<double>::max();
+    double minDist = std::numeric_limits<double>::max();
 
     m2::PointD const currPos = posRect.Center();
 
@@ -119,7 +120,7 @@ private:
   /// If there's a good projection of center of |posRect| to two closest segments of |m_poly|
   /// after |m_current| the iterator corresponding of the projection is returned.
   /// Otherwise returns a projection to closest point of route.
-  template <class DistanceFn>
+  template <typename DistanceFn>
   Iter GetBestProjection(m2::RectD const & posRect, DistanceFn const & distFn) const;
 
   void Update();
@@ -134,5 +135,4 @@ private:
   /// Accumulated cache of segments length in meters.
   std::vector<double> m_segDistance;
 };
-
 }  // namespace routing

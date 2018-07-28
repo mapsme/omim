@@ -21,10 +21,10 @@
     <item name="cardFrame">@drawable/card_frame</item>
     <item name="cardBackground">@color/bg_cards</item>
     <item name="fullscreenDialogTheme">@style/MwmTheme.DialogFragment.Fullscreen</item>
-    <item name="android:buttonStyle">@style/MwmWidget.Button.Primary</item>
     <item name="colorPrimary">@color/bg_primary</item>
     <item name="colorControlNormal">?secondary</item>
     <item name="colorAccent">@color/base_accent</item>
+    <item name="colorBtnHighlight">@color/white_38</item>
     <item name="panel">@color/bg_panel</item>
     <item name="sidePanel">@color/bg_side_panel</item>
     <item name="iconTint">@color/icon_tint</item>
@@ -62,7 +62,7 @@
     <item name="redButtonTextColor">@color/button_red_text</item>
     <item name="redButtonTextColorDisabled">@color/button_red_text_disabled</item>
 
-    <item name="primaryButtonBackground">@drawable/button_primary</item>
+    <item name="primaryButtonBackground">@drawable/button_accent</item>
     <item name="reviewButtonBackground">@drawable/button_leave_review</item>
 
     <item name="circleAccent">@drawable/circle_accent</item>
@@ -126,6 +126,11 @@
     <item name="filterPropertyBackground">@drawable/button_with_border</item>
     <item name="adChoicesIcon">@drawable/ic_ad_light</item>
     <item name="saleIcon">@drawable/ic_deal_light</item>
+    <item name="nav_bg_subway">@drawable/bg_subway_light</item>
+    <item name="trafficMenuDisabled">@drawable/ic_traffic_menu_light_off</item>
+    <item name="subwayMenuDisabled">@drawable/ic_subway_menu_light_off</item>
+    <item name="toggleMapLayerBtnBg">@drawable/bg_toggle_map_layer_btn</item>
+    <item name="accentTextColorSelector">@color/tab_text</item>
   </style>
 
   <!-- Night theme -->
@@ -142,7 +147,6 @@
     <item name="android:fontFamily" tools:targetApi="jelly_bean">@string/robotoRegular</item>
     <item name="android:colorBackgroundCacheHint">@null</item>
     <item name="android:windowActionBarOverlay">true</item>
-    <item name="android:buttonStyle">@style/MwmWidget.Button.Primary</item>
     <item name="clickableBackground">?selectableItemBackground</item>
     <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
 
@@ -155,6 +159,7 @@
     <item name="colorPrimary">@color/bg_primary_night</item>
     <item name="colorControlNormal">?secondary</item>
     <item name="colorAccent">@color/base_accent_night</item>
+    <item name="colorBtnHighlight">@color/white_24</item>
     <item name="panel">@color/bg_panel_night</item>
     <item name="sidePanel">@color/bg_side_panel_night</item>
     <item name="iconTint">@color/icon_tint_night</item>
@@ -192,7 +197,7 @@
     <item name="redButtonTextColor">@color/button_red_text</item>
     <item name="redButtonTextColorDisabled">@color/button_red_text_disabled</item>
 
-    <item name="primaryButtonBackground">@drawable/button_primary_night</item>
+    <item name="primaryButtonBackground">@drawable/button_accent_night</item>
     <item name="reviewButtonBackground">@drawable/button_leave_review_night</item>
 
     <item name="circleAccent">@drawable/circle_accent_night</item>
@@ -255,5 +260,10 @@
     <item name="filterPropertyBackground">@drawable/button_with_border_night</item>
     <item name="adChoicesIcon">@drawable/ic_ad_dark</item>
     <item name="saleIcon">@drawable/ic_deal_dark</item>
+    <item name="nav_bg_subway">@drawable/bg_subway_night</item>
+    <item name="trafficMenuDisabled">@drawable/ic_traffic_menu_dark_off</item>
+    <item name="subwayMenuDisabled">@drawable/ic_subway_menu_dark_off</item>
+    <item name="toggleMapLayerBtnBg">@drawable/bg_toggle_map_layer_btn_dark</item>
+    <item name="accentTextColorSelector">@color/tab_text_night</item>
   </style>
 </resources>

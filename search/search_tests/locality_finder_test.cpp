@@ -22,7 +22,7 @@ class LocalityFinderTest : public generator::tests_support::TestWithClassificato
 {
   platform::LocalCountryFile m_worldFile;
 
-  DataSource m_dataSource;
+  FrozenDataSource m_dataSource;
 
   ::base::Cancellable m_cancellable;
   search::VillagesCache m_villagesCache;
@@ -47,7 +47,7 @@ public:
       MwmSet::MwmId const & id = p.first;
       TEST(id.IsAlive(), ());
 
-      m_worldRect = id.GetInfo()->m_limitRect;
+      m_worldRect = id.GetInfo()->m_bordersRect;
       m_boundariesTable.Load();
     }
     catch (RootException const & ex)

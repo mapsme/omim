@@ -23,13 +23,12 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
 class CategoriesHolder;
-class DataSourceBase;
+class DataSource;
 
 namespace storage
 {
@@ -52,7 +51,7 @@ public:
     m2::RectD m_viewport;
     m2::PointD m_position;
     string m_pivotRegion;
-    std::set<uint32_t> m_preferredTypes;
+    std::vector<uint32_t> m_preferredTypes;
     bool m_suggestsEnabled = false;
     bool m_needAddress = false;
     bool m_needHighlighting = false;
@@ -79,7 +78,7 @@ public:
     size_t m_limit = 0;
   };
 
-  Ranker(DataSourceBase const & dataSource, CitiesBoundariesTable const & boundariesTable,
+  Ranker(DataSource const & dataSource, CitiesBoundariesTable const & boundariesTable,
          storage::CountryInfoGetter const & infoGetter, KeywordLangMatcher & keywordsScorer,
          Emitter & emitter, CategoriesHolder const & categories,
          std::vector<Suggest> const & suggests, VillagesCache & villagesCache,
@@ -134,7 +133,7 @@ private:
   int8_t m_localeCode;
   RegionInfoGetter m_regionInfoGetter;
 
-  DataSourceBase const & m_dataSource;
+  DataSource const & m_dataSource;
   storage::CountryInfoGetter const & m_infoGetter;
   Emitter & m_emitter;
   CategoriesHolder const & m_categories;

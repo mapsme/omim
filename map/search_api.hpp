@@ -3,6 +3,7 @@
 #include "map/booking_filter_params.hpp"
 #include "map/bookmark.hpp"
 #include "map/everywhere_search_callback.hpp"
+#include "map/search_product_info.hpp"
 #include "map/viewport_search_callback.hpp"
 
 #include "search/downloader_search_callback.hpp"
@@ -25,7 +26,7 @@
 
 #include <boost/optional.hpp>
 
-class DataSourceBase;
+class DataSource;
 
 namespace search
 {
@@ -44,7 +45,8 @@ struct DownloaderSearchParams;
 
 class SearchAPI : public search::DownloaderSearchCallback::Delegate,
                   public search::EverywhereSearchCallback::Delegate,
-                  public search::ViewportSearchCallback::Delegate
+                  public search::ViewportSearchCallback::Delegate,
+                  public search::ProductInfo::Delegate
 {
 public:
   struct Delegate
@@ -87,7 +89,7 @@ public:
     virtual search::ProductInfo GetProductInfo(search::Result const & result) const { return {}; };
   };
 
-  SearchAPI(DataSourceBase & dataSource, storage::Storage const & storage,
+  SearchAPI(DataSource & dataSource, storage::Storage const & storage,
             storage::CountryInfoGetter const & infoGetter, Delegate & delegate);
   virtual ~SearchAPI() = default;
 
@@ -100,8 +102,6 @@ public:
 
   // Search in the viewport.
   bool SearchInViewport(search::ViewportSearchParams const & params);
-
-  void SearchForDiscovery(search::DiscoverySearchParams const & params);
 
   // Search for maps by countries or cities.
   bool SearchInDownloader(storage::DownloaderSearchParams const & params);
@@ -155,7 +155,7 @@ private:
   bool QueryMayBeSkipped(search::SearchParams const & prevParams,
                          search::SearchParams const & currParams) const;
 
-  DataSourceBase & m_dataSource;
+  DataSource & m_dataSource;
   storage::Storage const & m_storage;
   storage::CountryInfoGetter const & m_infoGetter;
   Delegate & m_delegate;

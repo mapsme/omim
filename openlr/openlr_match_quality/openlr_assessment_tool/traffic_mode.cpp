@@ -102,8 +102,7 @@ void RoadPointCandidate::SetActivePoint(FeatureID const & fid)
 namespace openlr
 {
 // TrafficMode -------------------------------------------------------------------------------------
-TrafficMode::TrafficMode(std::string const & dataFileName,
-                         DataSourceBase const & dataSource,
+TrafficMode::TrafficMode(std::string const & dataFileName, DataSource const & dataSource,
                          std::unique_ptr<TrafficDrawerDelegateBase> drawerDelegate,
                          std::unique_ptr<PointsControllerDelegateBase> pointsDelegate,
                          QObject * parent)
@@ -241,7 +240,7 @@ void TrafficMode::OnItemSelected(QItemSelection const & selected, QItemSelection
 
   auto const row = selected.front().top();
 
-  CHECK_LESS(row, m_segments.size(), ());
+  CHECK_LESS(static_cast<size_t>(row), m_segments.size(), ());
   m_currentSegment = &m_segments[row];
 
   auto const & partnerSegment = m_currentSegment->GetPartnerSegment();

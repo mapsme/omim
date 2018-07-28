@@ -43,7 +43,7 @@ public:
 
   void operator()(m2::PointD const & point)
   {
-    double distance = m_center.SquareLength(point);
+    double distance = m_center.SquaredLength(point);
     if (distance < m_distance)
     {
       m_distance = distance;
@@ -178,7 +178,7 @@ class Processor
   search::LocalityFinder m_finder;
 
 public:
-  Processor(DataSourceBase const & dataSource)
+  Processor(DataSource const & dataSource)
     : m_geocoder(dataSource)
     , m_boundariesTable(dataSource)
     , m_villagesCache(m_cancellable)
@@ -220,7 +220,7 @@ public:
     f.GetPreferredNames(name, secondary);
     if (name.empty())
       name = operatr;
-    string const & osmId = strings::to_string(osmIt->second.EncodedId());
+    string const & osmId = strings::to_string(osmIt->second.GetEncodedId());
     string const & uid = BuildUniqueId(ll, name);
     string const & lat = strings::to_string_with_digits_after_comma(ll.lat, 6);
     string const & lon = strings::to_string_with_digits_after_comma(ll.lon, 6);
@@ -324,7 +324,7 @@ int main(int argc, char ** argv)
   classificator::Load();
   classif().SortClassificator();
 
-  DataSource dataSource;
+  FrozenDataSource dataSource;
   vector<platform::LocalCountryFile> mwms;
   platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* the latest version */,
                                        mwms);
@@ -353,7 +353,7 @@ int main(int argc, char ** argv)
     map<uint32_t, osm::Id> featureIdToOsmId;
     ParseFeatureIdToOsmIdMapping(osmToFeatureFile, featureIdToOsmId);
     MwmSet::MwmId mwmId(mwmInfo);
-    DataSource::FeaturesLoaderGuard loader(dataSource, mwmId);
+    FeaturesLoaderGuard loader(dataSource, mwmId);
     for (uint32_t ftIndex = 0; ftIndex < loader.GetNumFeatures(); ftIndex++)
     {
       FeatureType ft;

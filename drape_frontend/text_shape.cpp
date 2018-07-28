@@ -1,9 +1,10 @@
 #include "drape_frontend/text_shape.hpp"
 #include "drape_frontend/render_state.hpp"
-#include "drape_frontend/shader_def.hpp"
 #include "drape_frontend/text_handle.hpp"
 #include "drape_frontend/text_layout.hpp"
 #include "drape_frontend/visual_params.hpp"
+
+#include "shaders/programs.hpp"
 
 #include "drape/utils/vertex_decl.hpp"
 #include "drape/attribute_provider.hpp"
@@ -29,8 +30,9 @@ public:
                      glsl::vec2 const & pxSize, glsl::vec2 const & offset,
                      uint64_t priority, int fixedHeight,
                      ref_ptr<dp::TextureManager> textureManager, bool isOptional,
-                     gpu::TTextDynamicVertexBuffer && normals, bool isBillboard = false)
-    : TextHandle(id, text, anchor, priority, fixedHeight, textureManager, std::move(normals), isBillboard)
+                     gpu::TTextDynamicVertexBuffer && normals, int minVisibleScale, bool isBillboard)
+    : TextHandle(id, text, anchor, priority, fixedHeight, textureManager, std::move(normals), minVisibleScale,
+                 isBillboard)
     , m_pivot(glsl::ToPoint(pivot))
     , m_offset(glsl::ToPoint(offset))
     , m_size(glsl::ToPoint(pxSize))
@@ -313,8 +315,9 @@ void TextShape::DrawSubStringPlain(StraightTextLayout const & layout, dp::FontDe
   layout.CacheStaticGeometry(color, staticBuffer);
 
   bool const isNonSdfText = layout.GetFixedHeight() > 0;
-  auto state = CreateGLState(isNonSdfText ? gpu::TEXT_FIXED_PROGRAM : gpu::TEXT_PROGRAM, m_params.m_depthLayer);
-  state.SetProgram3dIndex(isNonSdfText ? gpu::TEXT_FIXED_BILLBOARD_PROGRAM : gpu::TEXT_BILLBOARD_PROGRAM);
+  auto state = CreateGLState(isNonSdfText ? gpu::Program::TextFixed : gpu::Program::Text, m_params.m_depthLayer);
+  state.SetProgram3d(isNonSdfText ? gpu::Program::TextFixedBillboard : gpu::Program::TextBillboard);
+  state.SetDepthTestEnabled(m_params.m_depthTestEnabled);
 
   ASSERT(color.GetTexture() == outline.GetTexture(), ());
   state.SetColorTexture(color.GetTexture());
@@ -339,6 +342,7 @@ void TextShape::DrawSubStringPlain(StraightTextLayout const & layout, dp::FontDe
                                                                             textures,
                                                                             isOptional,
                                                                             std::move(dynamicBuffer),
+                                                                            m_params.m_minVisibleScale,
                                                                             true);
   if (m_symbolSizes.size() > 1)
     handle->SetDynamicSymbolSizes(layout, m_symbolSizes, m_symbolAnchor);
@@ -348,8 +352,11 @@ void TextShape::DrawSubStringPlain(StraightTextLayout const & layout, dp::FontDe
   handle->SetOverlayRank(isPrimary ? m_params.m_startOverlayRank : m_params.m_startOverlayRank + 1);
 
   handle->SetExtendingSize(m_params.m_extendingSize);
-  if (m_params.m_specialDisplacement == SpecialDisplacement::UserMark)
-    handle->SetUserMarkOverlay(true);
+  if (m_params.m_specialDisplacement == SpecialDisplacement::UserMark ||
+      m_params.m_specialDisplacement == SpecialDisplacement::TransitScheme)
+  {
+    handle->SetSpecialLayerOverlay(true);
+  }
 
   dp::AttributeProvider provider(2, static_cast<uint32_t>(staticBuffer.size()));
   provider.InitStream(0, gpu::TextStaticVertex::GetBindingInfo(), make_ref(staticBuffer.data()));
@@ -374,8 +381,9 @@ void TextShape::DrawSubStringOutlined(StraightTextLayout const & layout, dp::Fon
   layout.CacheDynamicGeometry(finalOffset, dynamicBuffer);
   layout.CacheStaticGeometry(color, outline, staticBuffer);
 
-  auto state = CreateGLState(gpu::TEXT_OUTLINED_PROGRAM, m_params.m_depthLayer);
-  state.SetProgram3dIndex(gpu::TEXT_OUTLINED_BILLBOARD_PROGRAM);
+  auto state = CreateGLState(gpu::Program::TextOutlined, m_params.m_depthLayer);
+  state.SetProgram3d(gpu::Program::TextOutlinedBillboard);
+  state.SetDepthTestEnabled(m_params.m_depthTestEnabled);
   ASSERT(color.GetTexture() == outline.GetTexture(), ());
   state.SetColorTexture(color.GetTexture());
   state.SetMaskTexture(layout.GetMaskTexture());
@@ -396,6 +404,7 @@ void TextShape::DrawSubStringOutlined(StraightTextLayout const & layout, dp::Fon
                                                                             textures,
                                                                             isOptional,
                                                                             std::move(dynamicBuffer),
+                                                                            m_params.m_minVisibleScale,
                                                                             true);
   if (m_symbolSizes.size() > 1)
     handle->SetDynamicSymbolSizes(layout, m_symbolSizes, m_symbolAnchor);
@@ -405,8 +414,11 @@ void TextShape::DrawSubStringOutlined(StraightTextLayout const & layout, dp::Fon
   handle->SetOverlayRank(isPrimary ? m_params.m_startOverlayRank : m_params.m_startOverlayRank + 1);
 
   handle->SetExtendingSize(m_params.m_extendingSize);
-  if (m_params.m_specialDisplacement == SpecialDisplacement::UserMark)
-    handle->SetUserMarkOverlay(true);
+  if (m_params.m_specialDisplacement == SpecialDisplacement::UserMark ||
+      m_params.m_specialDisplacement == SpecialDisplacement::TransitScheme)
+  {
+    handle->SetSpecialLayerOverlay(true);
+  }
 
   dp::AttributeProvider provider(2, static_cast<uint32_t>(staticBuffer.size()));
   provider.InitStream(0, gpu::TextOutlinedStaticVertex::GetBindingInfo(), make_ref(staticBuffer.data()));
@@ -422,8 +434,11 @@ uint64_t TextShape::GetOverlayPriority() const
     return dp::kPriorityMaskAll;
 
   // Special displacement mode.
-  if (m_params.m_specialDisplacement == SpecialDisplacement::SpecialMode)
+  if (m_params.m_specialDisplacement == SpecialDisplacement::SpecialMode ||
+      m_params.m_specialDisplacement == SpecialDisplacement::TransitScheme)
+  {
     return dp::CalculateSpecialModePriority(m_params.m_specialPriority);
+  }
 
   if (m_params.m_specialDisplacement == SpecialDisplacement::UserMark)
     return dp::CalculateUserMarkPriority(m_params.m_minVisibleScale, m_params.m_specialPriority);

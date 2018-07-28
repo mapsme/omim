@@ -12,6 +12,7 @@
 #include "platform/platform.hpp"
 #include "platform/settings.hpp"
 
+#include "indexer/classificator.hpp"
 #include "indexer/scales.hpp"
 
 #include "coding/file_name_utils.hpp"
@@ -97,6 +98,7 @@ bool IsValidFilterType(BookmarkManager::CategoryFilterType const filter,
   case BookmarkManager::CategoryFilterType::Public: return fromCatalog;
   case BookmarkManager::CategoryFilterType::Private: return !fromCatalog;
   }
+  CHECK_SWITCH();
 }
 
 class FindMarkFunctor
@@ -115,7 +117,7 @@ public:
     m2::PointD const & org = mark->GetPivot();
     if (m_rect.IsPointInside(org))
     {
-      double minDCandidate = m_globalCenter.SquareLength(org);
+      double minDCandidate = m_globalCenter.SquaredLength(org);
       if (minDCandidate < m_minD)
       {
         *m_mark = mark;
@@ -343,8 +345,12 @@ bool MigrateIfNeeded()
   if (files.empty())
   {
     auto const newBookmarksDir = GetBookmarksDirectory();
-    if (!GetPlatform().IsFileExistsByFullPath(newBookmarksDir))
-      UNUSED_VALUE(GetPlatform().MkDirChecked(newBookmarksDir));
+    if (!GetPlatform().IsFileExistsByFullPath(newBookmarksDir) &&
+        !GetPlatform().MkDirChecked(newBookmarksDir))
+    {
+      LOG(LWARNING, ("Could not create directory:", newBookmarksDir));
+      return false;
+    }
     OnMigrationSuccess(0 /* originalCount */, 0 /* convertedCount */);
     return true;
   }
@@ -549,6 +555,23 @@ Bookmark * BookmarkManager::CreateBookmark(kml::BookmarkData && bm, kml::MarkGro
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   GetPlatform().GetMarketingService().SendMarketingEvent(marketing::kBookmarksBookmarkAction,
                                                          {{"action", "create"}});
+
+  auto const & c = classif();
+  CHECK(c.HasTypesMapping(), ());
+  std::stringstream ss;
+  for (size_t i = 0; i < bm.m_featureTypes.size(); ++i)
+  {
+    ss << c.GetReadableObjectName(c.GetTypeForIndex(bm.m_featureTypes[i]));
+    if (i + 1 < bm.m_featureTypes.size())
+      ss << ",";
+  }
+  auto const latLon = MercatorBounds::ToLatLon(bm.m_point);
+  alohalytics::TStringMap details{
+    {"action", "create"},
+    {"lat", strings::to_string(latLon.lat)},
+    {"lon", strings::to_string(latLon.lon)},
+    {"tags", ss.str()}};
+  alohalytics::Stats::Instance().LogEvent("Bookmarks_Bookmark_action", details);
 
   bm.m_timestamp = std::chrono::system_clock::now();
   bm.m_viewportScale = static_cast<uint8_t>(df::GetZoomLevel(m_viewport.GetScale()));
@@ -894,7 +917,8 @@ void BookmarkManager::SaveState() const
 
 void BookmarkManager::LoadState()
 {
-  UNUSED_VALUE(settings::Get(kLastEditedBookmarkCategory, m_lastCategoryUrl));
+  settings::TryGet(kLastEditedBookmarkCategory, m_lastCategoryUrl);
+
   uint32_t color;
   if (settings::Get(kLastEditedBookmarkColor, color) &&
       color > static_cast<uint32_t>(kml::PredefinedColor::None) &&
@@ -1804,18 +1828,16 @@ bool BookmarkManager::CheckVisibility(BookmarkManager::CategoryFilterType const 
   return true;
 }
 
-void BookmarkManager::SetAllCategoriesVisibility(BookmarkManager::CategoryFilterType const filter,
-                                                 bool visible)
+void BookmarkManager::SetAllCategoriesVisibility(CategoryFilterType const filter, bool visible)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   auto session = GetEditSession();
-
-  for (auto & c : m_categories)
+  for (auto const & category : m_categories)
   {
-    auto const fromCatalog = IsCategoryFromCatalog(c.first);
+    auto const fromCatalog = IsCategoryFromCatalog(category.first);
     if (!IsValidFilterType(filter, fromCatalog))
       continue;
-    c.second->SetIsVisible(visible);
+    category.second->SetIsVisible(visible);
   }
 }
 

@@ -101,10 +101,6 @@ private:
   void FlushGeometry(TileKey const & key, dp::GLState const & state, drape_ptr<dp::RenderBucket> && buffer);
 
   void FlushTransitRenderData(TransitRenderData && renderData);
-  void FlushTransitMarkersRenderData(TransitRenderData && renderData);
-  void FlushTransitTextRenderData(TransitRenderData && renderData);
-  void FlushTransitStubsRenderData(TransitRenderData && renderData);
-
   void FlushTrafficRenderData(TrafficRenderData && renderData);
   void FlushUserMarksRenderData(TUserMarksRenderData && renderData);
 
@@ -127,6 +123,8 @@ private:
   TUpdateCurrentCountryFn m_updateCurrentCountryFn;
 
   drape_ptr<MetalineManager> m_metalineManager;
+
+  gui::TWidgetsInitInfo m_lastWidgetsInfo;
 
 #ifdef DEBUG
   bool m_isTeardowned;

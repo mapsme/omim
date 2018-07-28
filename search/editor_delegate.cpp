@@ -9,7 +9,7 @@
 
 namespace search
 {
-EditorDelegate::EditorDelegate(DataSourceBase const & dataSource) : m_dataSource(dataSource) {}
+EditorDelegate::EditorDelegate(DataSource const & dataSource) : m_dataSource(dataSource) {}
 
 MwmSet::MwmId EditorDelegate::GetMwmIdByMapName(string const & name) const
 {
@@ -18,7 +18,7 @@ MwmSet::MwmId EditorDelegate::GetMwmIdByMapName(string const & name) const
 
 unique_ptr<FeatureType> EditorDelegate::GetOriginalFeature(FeatureID const & fid) const
 {
-  EditableDataSource::FeaturesLoaderGuard guard(m_dataSource, fid.m_mwmId);
+  FeaturesLoaderGuard guard(m_dataSource, fid.m_mwmId);
   auto feature = guard.GetOriginalFeatureByIndex(fid.m_index);
   if (feature)
     feature->ParseEverything();

@@ -17,15 +17,15 @@
 #include "geometry/point2d.hpp"
 #include "geometry/polyline2d.hpp"
 
-#include "base/mutex.hpp"
+#include "base/thread_checker.hpp"
 
-#include "std/functional.hpp"
-#include "std/limits.hpp"
-#include "std/map.hpp"
-#include "std/shared_ptr.hpp"
-#include "std/unique_ptr.hpp"
+#include <cstdint>
+#include <functional>
+#include <limits>
+#include <map>
+#include <memory>
 
-class DataSourceBase;
+class DataSource;
 
 namespace location
 {
@@ -40,12 +40,15 @@ struct SpeedCameraRestriction
   uint8_t m_maxSpeedKmH;  // Maximum speed allowed by the camera.
 
   SpeedCameraRestriction(size_t index, uint8_t maxSpeed) : m_index(index), m_maxSpeedKmH(maxSpeed) {}
-  SpeedCameraRestriction() : m_index(0), m_maxSpeedKmH(numeric_limits<uint8_t>::max()) {}
+  SpeedCameraRestriction() : m_index(0), m_maxSpeedKmH(std::numeric_limits<uint8_t>::max()) {}
 };
 
+/// \breaf This class is responsible for the route built in the program.
+/// \note All method of this class should be called from ui thread if there's no
+/// a special note near a method.
 class RoutingSession : public traffic::TrafficObserver, public traffic::TrafficCache
 {
-  friend void UnitTest_TestFollowRoutePercentTest();
+  friend struct UnitClass_AsyncGuiThreadTestWithRoutingSession_TestFollowRoutePercentTest;
 
 public:
   enum State
@@ -81,14 +84,17 @@ public:
   void Init(RoutingStatisticsCallback const & routingStatisticsFn,
             PointCheckCallback const & pointCheckCallback);
 
-  void SetRouter(unique_ptr<IRouter> && router, unique_ptr<OnlineAbsentCountriesFetcher> && fetcher);
+  void SetRouter(std::unique_ptr<IRouter> && router,
+                 std::unique_ptr<OnlineAbsentCountriesFetcher> && fetcher);
 
   /// @param[in] checkpoints in mercator
   /// @param[in] timeoutSec timeout in seconds, if zero then there is no timeout
   void BuildRoute(Checkpoints const & checkpoints,
                   uint32_t timeoutSec);
   void RebuildRoute(m2::PointD const & startPoint, ReadyCallback const & readyCallback,
-                    uint32_t timeoutSec, State routeRebuildingState, bool adjustToPrevRoute);
+                    NeedMoreMapsCallback const & needMoreMapsCallback,
+                    RemoveRouteCallback const & removeRouteCallback, uint32_t timeoutSec,
+                    State routeRebuildingState, bool adjustToPrevRoute);
 
   m2::PointD GetStartPoint() const;
   m2::PointD GetEndPoint() const;
@@ -113,14 +119,16 @@ public:
   /// \returns true if altitude information along |m_route| is available and
   /// false otherwise.
   bool HasRouteAltitude() const;
+  bool IsRouteId(uint64_t routeId) const;
+  bool IsRouteValid() const;
 
   /// \brief copies distance from route beginning to ends of route segments in meters and
   /// route altitude information to |routeSegDistanceM| and |routeAltitudes|.
   /// \returns true if there is valid route information. If the route is not valid returns false.
-  bool GetRouteAltitudesAndDistancesM(vector<double> & routeSegDistanceM,
+  bool GetRouteAltitudesAndDistancesM(std::vector<double> & routeSegDistanceM,
                                       feature::TAltitudes & routeAltitudesM) const;
 
-  State OnLocationPositionChanged(location::GpsInfo const & info, DataSourceBase const & dataSource);
+  State OnLocationPositionChanged(location::GpsInfo const & info, DataSource const & dataSource);
   void GetRouteFollowingInfo(location::FollowingInfo & info) const;
 
   void MatchLocationToRoute(location::GpsInfo & location,
@@ -143,8 +151,10 @@ public:
   bool EnableFollowMode();
 
   void SetRoutingSettings(RoutingSettings const & routingSettings);
-  void SetReadyCallbacks(ReadyCallback const & buildReadyCallback,
-                         ReadyCallback const & rebuildReadyCallback);
+  void SetRoutingCallbacks(ReadyCallback const & buildReadyCallback,
+                           ReadyCallback const & rebuildReadyCallback,
+                           NeedMoreMapsCallback const & needMoreMapsCallback,
+                           RemoveRouteCallback const & removeRouteCallback);
   void SetProgressCallback(ProgressCallback const & progressCallback);
   void SetCheckpointCallback(CheckpointCallback const & checkpointCallback);
 
@@ -152,63 +162,56 @@ public:
   void EnableTurnNotifications(bool enable);
   bool AreTurnNotificationsEnabled() const;
   void SetTurnNotificationsUnits(measurement_utils::Units const units);
-  void SetTurnNotificationsLocale(string const & locale);
-  string GetTurnNotificationsLocale() const;
-  void GenerateTurnNotifications(vector<string> & turnNotifications);
+  void SetTurnNotificationsLocale(std::string const & locale);
+  std::string GetTurnNotificationsLocale() const;
+  void GenerateTurnNotifications(std::vector<std::string> & turnNotifications);
 
   void EmitCloseRoutingEvent() const;
 
-  void ProtectedCall(RouteCallback const & callback) const;
+  void RouteCall(RouteCallback const & callback) const;
 
   // RoutingObserver overrides:
   void OnTrafficInfoClear() override;
+  /// \note. This method may be called from any thread because it touches class data on gui thread.
   void OnTrafficInfoAdded(traffic::TrafficInfo && info) override;
+  /// \note. This method may be called from any thread because it touches class data on gui thread.
   void OnTrafficInfoRemoved(MwmSet::MwmId const & mwmId) override;
 
   // TrafficCache overrides:
-  shared_ptr<traffic::TrafficInfo::Coloring> GetTrafficInfo(MwmSet::MwmId const & mwmId) const override;
-  void CopyTraffic(std::map<MwmSet::MwmId, std::shared_ptr<traffic::TrafficInfo::Coloring>> & trafficColoring) const override;
+  /// \note. This method may be called from any thread because it touches only data
+  /// protected by mutex in TrafficCache class.
+  void CopyTraffic(traffic::AllMwmTrafficInfo & trafficColoring) const override;
 
 private:
   struct DoReadyCallback
   {
     RoutingSession & m_rs;
     ReadyCallback m_callback;
-    threads::Mutex & m_routeSessionMutexInner;
 
-    DoReadyCallback(RoutingSession & rs, ReadyCallback const & cb,
-                    threads::Mutex & routeSessionMutex)
-        : m_rs(rs), m_callback(cb), m_routeSessionMutexInner(routeSessionMutex)
+    DoReadyCallback(RoutingSession & rs, ReadyCallback const & cb)
+        : m_rs(rs), m_callback(cb)
     {
     }
 
-    void operator()(Route & route, RouterResultCode e);
+    void operator()(std::shared_ptr<Route> route, RouterResultCode e);
   };
 
-  // Should be called with locked m_routingSessionMutex.
-  void AssignRoute(Route & route, RouterResultCode e);
+  void AssignRoute(std::shared_ptr<Route> route, RouterResultCode e);
 
   /// Returns a nearest speed camera record on your way and distance to it.
   /// Returns kInvalidSpeedCameraDistance if there is no cameras on your way.
-  // Should be called with locked m_routingSessionMutex.
-  double GetDistanceToCurrentCamM(SpeedCameraRestriction & camera, DataSourceBase const & dataSource);
+  double GetDistanceToCurrentCamM(SpeedCameraRestriction & camera, DataSource const & dataSource);
 
   /// RemoveRoute removes m_route and resets route attributes (m_state, m_lastDistance, m_moveAwayCounter).
   void RemoveRoute();
   void RebuildRouteOnTrafficUpdate();
 
-  // Should be called with locked m_routingSessionMutex.
-  void ResetImpl();
-  // Should be called with locked m_routingSessionMutex.
   double GetCompletionPercent() const;
-  // Should be called with locked m_routingSessionMutex.
   void PassCheckpoints();
-  // Should be called with locked m_routingSessionMutex.
-  bool IsNavigableImpl() const { return (m_state == RouteNotStarted || m_state == OnRoute || m_state == RouteFinished); }
 
 private:
-  unique_ptr<AsyncRouter> m_router;
-  shared_ptr<Route> m_route;
+  std::unique_ptr<AsyncRouter> m_router;
+  std::shared_ptr<Route> m_route;
   State m_state;
   bool m_isFollowing;
   Checkpoints m_checkpoints;
@@ -222,12 +225,9 @@ private:
   /// about camera will be sent at most once.
   mutable bool m_speedWarningSignal;
 
-  /// |m_routingSessionMutex| should be used for access to all members of RoutingSession class.
-  mutable threads::Mutex m_routingSessionMutex;
-
   /// Current position metrics to check for RouteNeedRebuild state.
-  double m_lastDistance;
-  int m_moveAwayCounter;
+  double m_lastDistance = 0.0;
+  int m_moveAwayCounter = 0;
   m2::PointD m_lastGoodPosition;
   // |m_currentDirection| is a vector from the position before last good position to last good position.
   m2::PointD m_currentDirection;
@@ -243,18 +243,22 @@ private:
 
   ReadyCallback m_buildReadyCallback;
   ReadyCallback m_rebuildReadyCallback;
+  NeedMoreMapsCallback m_needMoreMapsCallback;
+  RemoveRouteCallback m_removeRouteCallback;
   ProgressCallback m_progressCallback;
   CheckpointCallback m_checkpointCallback;
 
   // Statistics parameters
   // Passed distance on route including reroutes
-  double m_passedDistanceOnRouteMeters;
+  double m_passedDistanceOnRouteMeters = 0.0;
   // Rerouting count
-  int m_routingRebuildCount;
-  mutable double m_lastCompletionPercent;
+  int m_routingRebuildCount = -1; // -1 for the first rebuild called in BuildRoute().
+  mutable double m_lastCompletionPercent = 0.0;
+
+  DECLARE_THREAD_CHECKER(m_threadChecker);
 };
 
-void FormatDistance(double dist, string & value, string & suffix);
+void FormatDistance(double dist, std::string & value, std::string & suffix);
 
-string DebugPrint(RoutingSession::State state);
+std::string DebugPrint(RoutingSession::State state);
 }  // namespace routing

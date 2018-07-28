@@ -7,7 +7,9 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <memory>
 #include <string>
+#include <vector>
 
 namespace routing
 {
@@ -38,16 +40,14 @@ enum class RouterResultCode
 };
 
 using CheckpointCallback = std::function<void(size_t passedCheckpointIdx)>;
+using NeedMoreMapsCallback = std::function<void(uint64_t, std::vector<std::string> const &)>;
+using PointCheckCallback = std::function<void(m2::PointD const &)>;
 using ProgressCallback = std::function<void(float)>;
-// @TODO(bykoianko) ReadyCallback and ReadyCallbackOwnership callbacks should be gathered
-// to one with the following signature:
-// std::function<void(std::unique_ptr<Route>, RouterResultCode)>
-// That means calling ReadyCallback means passing ownership of ready instance of Route.
 using ReadyCallback = std::function<void(Route const &, RouterResultCode)>;
-using ReadyCallbackOwnership = std::function<void(Route &, RouterResultCode)>;
+using ReadyCallbackOwnership = std::function<void(std::shared_ptr<Route>, RouterResultCode)>;
+using RemoveRouteCallback = std::function<void(RouterResultCode)>;
 using RouteCallback = std::function<void(Route const &)>;
 using RoutingStatisticsCallback = std::function<void(std::map<std::string, std::string> const &)>;
-using PointCheckCallback = std::function<void(m2::PointD const &)>;
 
 inline std::string DebugPrint(RouterResultCode code)
 {
@@ -75,4 +75,7 @@ inline std::string DebugPrint(RouterResultCode code)
   ASSERT(false, (result));
   return result;
 }
+
+// This define should be set to see the spread of A* waves on the map.
+// #define SHOW_ROUTE_DEBUG_MARKS
 }  // namespace routing

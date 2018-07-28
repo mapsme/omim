@@ -33,6 +33,7 @@ public:
 
   bool AnimationExists(Animation::Object object) const;
   bool HasAnimations() const;
+  bool HasMapAnimations() const;
 
   void CombineAnimation(drape_ptr<Animation> && animation);
   void PushAnimation(drape_ptr<Animation> && animation);

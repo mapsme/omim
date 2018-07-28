@@ -3,10 +3,11 @@
 
 #include "base/logging.hpp"
 
+using namespace std;
+
 namespace m2
 {
-// CalculatePolyLineCenter -----------------------------------------------------------------------------
-
+// CalculatePolyLineCenter -------------------------------------------------------------------------
 void CalculatePolyLineCenter::operator()(m2::PointD const & pt)
 {
   m_length += (m_poly.empty() ? 0.0 : m_poly.back().m_p.Length(pt));
@@ -39,7 +40,6 @@ PointD CalculatePolyLineCenter::GetResult() const
 }
 
 // CalculatePointOnSurface -------------------------------------------------------------------------
-
 CalculatePointOnSurface::CalculatePointOnSurface(m2::RectD const & rect)
   : m_rectCenter(rect.Center())
   , m_center(m_rectCenter)
@@ -62,7 +62,7 @@ void CalculatePointOnSurface::operator()(PointD const & p1, PointD const & p2, P
   triangleCenter += p3;
   triangleCenter = triangleCenter / 3.0;
 
-  double triangleDistance = m_rectCenter.SquareLength(triangleCenter);
+  double triangleDistance = m_rectCenter.SquaredLength(triangleCenter);
   if (triangleDistance <= m_squareDistanceToApproximate)
   {
     m_center = triangleCenter;
@@ -71,7 +71,6 @@ void CalculatePointOnSurface::operator()(PointD const & p1, PointD const & p2, P
 }
 
 // CalculateBoundingBox ----------------------------------------------------------------------------
-
 void CalculateBoundingBox::operator()(PointD const & p)
 {
   // Works just fine. If you don't belive me, see geometry/rect2d.hpp.

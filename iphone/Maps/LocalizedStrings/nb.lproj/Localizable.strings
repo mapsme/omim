@@ -457,7 +457,7 @@
 "are_you_sure" = "Er du sikker på at du ønsker å fortsette?";
 
 /* Title for tracks category in bookmarks manager */
-"tracks" = "Ruter";
+"tracks_title" = "Ruter";
 
 /* Length of track in cell that describes route */
 "length" = "Lengde";
@@ -1147,8 +1147,6 @@
 "add_opening_hours" = "Legg til åpningstider";
 
 "edit_opening_hours" = "Rediger åpningstider";
-
-"profile" = "Profil";
 
 "no_osm_account" = "Har du ingen konto hos OpenStreetMap?";
 
@@ -2100,44 +2098,6 @@
 
 "quality" = "Kvalitet";
 
-"sponsored_partner1_action" = "Cash back";
-
-"sponsored_partner3_action" = "Coupon";
-
-"sponsored_partner4_action" = "Store";
-
-"sponsored_partner5_action" = "Tickets";
-
-"sponsored_partner6_action" = "Store";
-
-"sponsored_partner7_action" = "Store";
-
-"sponsored_partner8_action" = "Special";
-
-"sponsored_partner9_action" = "Special";
-
-"sponsored_partner10_action" = "Store";
-
-"sponsored_partner11_action" = "-";
-
-"sponsored_partner12_action" = "Store";
-
-"sponsored_partner13_action" = "-";
-
-"sponsored_partner14_action" = "-";
-
-"sponsored_partner15_action" = "-";
-
-"sponsored_partner16_action" = "-";
-
-"sponsored_partner17_action" = "-";
-
-"sponsored_partner18_action" = "Lifehack";
-
-"sponsored_partner19_action" = "Lifehack";
-
-"sponsored_partner20_action" = "Lifehack";
-
 "whats_new_ugc_title" = "Rangeringer og vurderinger";
 
 "whats_new_ugc_message" = "Nå kan du gi dine vurderinger selv i frakoblet modus! Ikke glem å oppdatere kartene dine for å se endringene.";
@@ -2284,7 +2244,7 @@
 
 "notification_unsent_reviews_message" = "Vennligst logg inn for å dele anmeldelser med andre reisende";
 
-"profile_osm" = "Profil OSM";
+"profile" = "OpenStreetMap profil";
 
 "place_page_search_similar_hotel" = "Søk lignende hoteller";
 
@@ -2338,7 +2298,7 @@
 
 "whats_new_localbiz_title" = "Small business deserves attention";
 
-"whats_new_localbiz_message" = "Family cafes, cozy hostels, unique stores – they are the special parts of our travels. We will optimize your page on the map free of charge so you will get noticed.";
+"whats_new_localbiz_message" = "It is local cafes, cozy hostels and shops that make our journeys unforgettable. We will optimize your page in MAPS.ME to make it stand out.";
 
 "whats_new_order_button" = "Leave a request";
 
@@ -2386,7 +2346,23 @@
 
 "terms_of_use" = "Terms of use";
 
+"backup_notification_failed" = "Backing up your bookmarks has been suspended. Log in to turn it back on.";
+
+"banner_megafon_banner_message" = "Say goodbye to international roaming!";
+
+"banner_megafon_banner_button" = "Goodbye!";
+
+"button_layer_traffic" = "Traffic";
+
+"button_layer_subway" = "Subway";
+
+"layers_title" = "Map layers";
+
+"layers_message" = "Use map layers to display the traffic, subway map, and other useful information";
+
 "button_layer_got_it" = "Got it";
+
+"subway_data_unavailable" = "Subway map is unavailable";
 
 "bookmarks_empty_list_title" = "This list is empty";
 
@@ -2397,3 +2373,56 @@
 "title_error_downloading_bookmarks" = "An error occured";
 
 "subtitle_error_downloading_bookmarks" = "Bookmarks were not downloaded";
+
+"whats_new_bookmarks_catalog_title" = "MAPS.ME now has a route library";
+
+"whats_new_bookmarks_catalog_message" = "Hundreds of detailed routes all around the world: where to go, what to see, where to eat.";
+
+"whats_new_popularity_label_title" = "Popular locations nearby";
+
+"whats_new_popularity_label_message" = "Discover nearby section will help you find the most popular places in the city.";
+
+"whats_new_hot_offers_title" = "Attractive offers from hotels";
+
+"whats_new_hot_offers_message" = "You can find these from the Hotels category in the search panel. The offers are marked with a percent symbol on the map and in the search results.";
+
+"error_already_downloaded" = "This list has already been downloaded";
+
+"popular_place" = "Popular";
+
+
+/**********  Partners  **********/
+
+"sponsored_partner3_action" = "Coupon";
+
+"sponsored_partner4_action" = "Store";
+
+"sponsored_partner6_action" = "Store";
+
+"sponsored_partner7_action" = "Store";
+
+"sponsored_partner8_action" = "Special";
+
+"sponsored_partner9_action" = "Special";
+
+"sponsored_partner10_action" = "Store";
+
+"sponsored_partner11_action" = "-";
+
+"sponsored_partner12_action" = "Store";
+
+"sponsored_partner13_action" = "-";
+
+"sponsored_partner14_action" = "-";
+
+"sponsored_partner15_action" = "-";
+
+"sponsored_partner16_action" = "-";
+
+"sponsored_partner17_action" = "-";
+
+"sponsored_partner18_action" = "Lifehack";
+
+"sponsored_partner19_action" = "Lifehack";
+
+"sponsored_partner20_action" = "Lifehack";

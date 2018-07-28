@@ -2,6 +2,7 @@
 
 #include "indexer/data_header.hpp"
 #include "indexer/data_source.hpp"
+#include "indexer/feature_source.hpp"
 #include "indexer/mwm_set.hpp"
 
 #include "coding/file_name_utils.hpp"
@@ -86,7 +87,7 @@ protected:
     events.emplace_back(forward<TArgs>(args)...);
   }
 
-  DataSource m_dataSource;
+  FrozenDataSource m_dataSource;
   vector<MwmSet::Event> m_expected;
   vector<MwmSet::Event> m_actual;
 };

@@ -457,7 +457,7 @@
 "are_you_sure" = "Är du säker på att du vill fortsätta?";
 
 /* Title for tracks category in bookmarks manager */
-"tracks" = "Rutter";
+"tracks_title" = "Rutter";
 
 /* Length of track in cell that describes route */
 "length" = "Längd";
@@ -1147,8 +1147,6 @@
 "add_opening_hours" = "Lägg till öppettider";
 
 "edit_opening_hours" = "Redigera öppettider";
-
-"profile" = "Profil";
 
 "no_osm_account" = "Inget konto hos OpenStreetMap?";
 
@@ -2100,44 +2098,6 @@
 
 "quality" = "Kvalitet";
 
-"sponsored_partner1_action" = "Cash back";
-
-"sponsored_partner3_action" = "Coupon";
-
-"sponsored_partner4_action" = "Store";
-
-"sponsored_partner5_action" = "Tickets";
-
-"sponsored_partner6_action" = "Store";
-
-"sponsored_partner7_action" = "Store";
-
-"sponsored_partner8_action" = "Special";
-
-"sponsored_partner9_action" = "Special";
-
-"sponsored_partner10_action" = "Store";
-
-"sponsored_partner11_action" = "-";
-
-"sponsored_partner12_action" = "Store";
-
-"sponsored_partner13_action" = "-";
-
-"sponsored_partner14_action" = "-";
-
-"sponsored_partner15_action" = "-";
-
-"sponsored_partner16_action" = "-";
-
-"sponsored_partner17_action" = "-";
-
-"sponsored_partner18_action" = "Lifehack";
-
-"sponsored_partner19_action" = "Lifehack";
-
-"sponsored_partner20_action" = "Lifehack";
-
 "whats_new_ugc_title" = "Betyg och omdömen";
 
 "whats_new_ugc_message" = "Nu kan du betygsätta och lämna omdömen offline! Glöm inte att uppdatera dina kartor så att du kan se ändringarna.";
@@ -2284,7 +2244,7 @@
 
 "notification_unsent_reviews_message" = "Vänligen logga in för att dela omdömen med andra resenärer";
 
-"profile_osm" = "OSM-profil";
+"profile" = "OpenStreetMap profil";
 
 "place_page_search_similar_hotel" = "Sök liknande hotell";
 
@@ -2336,64 +2296,133 @@
 
 "sign_agree_news_gdpr" = "Jag håller med om att få de senaste nyheterna om MAPS.ME produkter";
 
-"whats_new_localbiz_title" = "Small business deserves attention";
+"whats_new_localbiz_title" = "Småföretag förtjänar uppmärksamhet";
 
-"whats_new_localbiz_message" = "Family cafes, cozy hostels, unique stores – they are the special parts of our travels. We will optimize your page on the map free of charge so you will get noticed.";
+"whats_new_localbiz_message" = "Det är lokala kaféer, mysiga hotell och affärer som gör din resa oförglömlig. Vi vill optimera din sida på MAPS.Me för att den ska sticka ut.";
 
-"whats_new_order_button" = "Leave a request";
+"whats_new_order_button" = "Lämna en förfrågan";
 
-"bookmarks_page_downloaded" = "Downloaded";
+"bookmarks_page_downloaded" = "Ladda ner";
 
-"bookmarks_page_my" = "My";
+"bookmarks_page_my" = "Min";
 
-"routes_and_bookmarks" = "Routes and bookmarks";
+"routes_and_bookmarks" = "Rutt och bokmärken";
 
-"bookmarks_webview_success_toast" = "Bookmarks succesfully downloaded";
+"bookmarks_webview_success_toast" = "Bokmärkena har laddats ner";
 
-"cached_bookmarks_placeholder_title" = "Download new places";
+"cached_bookmarks_placeholder_title" = "Ladda ner nya platser";
 
-"cached_bookmarks_placeholder_subtitle" = "Press the button to download thousands of interesting places and routes created by MAPS.ME users. You will need the internet connection.";
+"cached_bookmarks_placeholder_subtitle" = "Tryck på knappen för att ladda ner tusentals intressanta platser och rutter skapade av MAPS.ME användare. Du behöver internetanslutning.";
 
-"downloader_download_routers" = "Download bookmarks";
+"downloader_download_routers" = "Ladda ner bokmärken";
 
-"bookmarks_groups_cached" = "Downloaded lists";
+"bookmarks_groups_cached" = "Nedladdade listor";
 
-"author_name_by_prefix" = "by %s";
+"author_name_by_prefix" = "av %s";
 
-"subtittle_opt_out" = "Tracking settings";
+"subtittle_opt_out" = "Spårningsinställningar";
 
-"opt_out_flurry" = "Statistic";
+"opt_out_flurry" = "Statistik";
 
-"opt_out_mopub" = "Personalised advertising";
+"opt_out_mopub" = "Personlig annonsering";
 
-"opt_out_fabric" = "Crash report";
+"opt_out_fabric" = "Olycksrapport";
 
-"opt_out_fabric_description" = "We may use your data to improve MAPS.ME experience. Changes will take effect after you restart the app.";
+"opt_out_fabric_description" = "Vi kan komma att använda din data för att förbättra MAPS.ME upplevelsen. Ändringarna kommer träda i kraft när du startar om appen.";
 
 "opt_out_pushwoosh" = "Pushwoosh";
 
 "opt_out_appsflyer" = "Appsflyer";
 
-"opt_out_help_ios_1" = "Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.";
+"opt_out_help_ios_1" = "Din mobila enhet kan tillhandahålla en ”Begränsad annonsspårning” eller ”Välj bort intressebaserad annonsering” inställning.";
 
-"opt_out_help_ios_2" = "iOS 9 or Higher";
+"opt_out_help_ios_2" = "iOS 9 eller nyare";
 
-"opt_out_help_ios_3" = "Go to your Settings → Privacy → Advertising → Enable the “Limit Ad Tracking” setting";
+"opt_out_help_ios_3" = "Gå till Inställningar → Integritet → Annonsering → Tillåt inställningen ”Begränsad annonsspårning”";
 
-"opt_out_help_android" = "Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android and Google Play Services version 4.0 and up:\nSettings → Google → Ads → Opt out of Ads Personalization\nor\nSettings → Google → Google Account → Personal info & privacy → Ads Settings → Ads Personalization";
+"opt_out_help_android" = "Din mobila enhet kan tillhandahålla en ”Begränsad annonsspårning” eller ”Välj bort intressebaserad annonsering” -inställning.\n\nFör Android och Google Play tjänster version 4.0 och nyare:\nInställningar → Google → Annonsering → Välj bort personlig annonsering\eller\nInställningar→ Google → Google konto → Personlig information och integritet → Annonseringsinställningar → Personlig annonsering";
 
-"privacy_policy" = "Privacy policy";
+"privacy_policy" = "Integritetspolicy";
 
-"terms_of_use" = "Terms of use";
+"terms_of_use" = "Allmänna villkor";
 
-"button_layer_got_it" = "Got it";
+"backup_notification_failed" = "Säkerhetskopiering av dina bokmärken har avbrutits. Logga in för att starta det igen.";
 
-"bookmarks_empty_list_title" = "This list is empty";
+"banner_megafon_banner_message" = "Säg farväl till internationell roaming!";
 
-"bookmarks_empty_list_message" = "To add a bookmark, tap a place on the map and then tap the star icon";
+"banner_megafon_banner_button" = "Hej då!";
 
-"category_desc_more" = "…more";
+"button_layer_traffic" = "Trafik";
 
-"title_error_downloading_bookmarks" = "An error occured";
+"button_layer_subway" = "Tunnelbana";
 
-"subtitle_error_downloading_bookmarks" = "Bookmarks were not downloaded";
+"layers_title" = "Kartlager";
+
+"layers_message" = "Använd kartlager för att visa trafik, karta över tunnelbanan och annan användbar information";
+
+"button_layer_got_it" = "Förstått";
+
+"subway_data_unavailable" = "Kartor över tunnelbana är otillgänglig";
+
+"bookmarks_empty_list_title" = "Listan är tom";
+
+"bookmarks_empty_list_message" = "För att lägga till bokmärken, tryck på kartan och sedan på stjärnikonen";
+
+"category_desc_more" = "…mer";
+
+"title_error_downloading_bookmarks" = "Ett fel har uppstått";
+
+"subtitle_error_downloading_bookmarks" = "Bokmärkena laddades inte ner";
+
+"whats_new_bookmarks_catalog_title" = "MAPS.ME har nu en ruttkatalog";
+
+"whats_new_bookmarks_catalog_message" = "Hundratals av detaljerade rutter, runt om i världen; Var du än är, vad du än vill se, var du än vill äta.";
+
+"whats_new_popularity_label_title" = "Populära lägen i närheten";
+
+"whats_new_popularity_label_message" = "”Upptäck i närheten” sektionen kommer att hjälpa dig hitta de populäraste platserna i staden.";
+
+"whats_new_hot_offers_title" = "Attraktiva hotellerbjudanden";
+
+"whats_new_hot_offers_message" = "Du kan söka efter dem via hotellkategorin i sökrutan. Erbjudandena kommer att vara märkta med en procentsymbol (%) på kartan och i sökresultatet.";
+
+"error_already_downloaded" = "Den här listan har redan laddats ned";
+
+"popular_place" = "Popular";
+
+
+/**********  Partners  **********/
+
+"sponsored_partner3_action" = "Coupon";
+
+"sponsored_partner4_action" = "Store";
+
+"sponsored_partner6_action" = "Store";
+
+"sponsored_partner7_action" = "Store";
+
+"sponsored_partner8_action" = "Special";
+
+"sponsored_partner9_action" = "Special";
+
+"sponsored_partner10_action" = "Store";
+
+"sponsored_partner11_action" = "-";
+
+"sponsored_partner12_action" = "Store";
+
+"sponsored_partner13_action" = "-";
+
+"sponsored_partner14_action" = "-";
+
+"sponsored_partner15_action" = "-";
+
+"sponsored_partner16_action" = "-";
+
+"sponsored_partner17_action" = "-";
+
+"sponsored_partner18_action" = "Lifehack";
+
+"sponsored_partner19_action" = "Lifehack";
+
+"sponsored_partner20_action" = "Lifehack";

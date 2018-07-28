@@ -5,25 +5,12 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.mapswithme.maps.R;
+import com.mapswithme.util.statistics.Analytics;
+import com.mapswithme.util.statistics.Statistics;
 
 public enum BookmarksPageFactory
 {
-  CATALOG(new AdapterResourceProvider.Catalog())
-      {
-        @NonNull
-        @Override
-        public Fragment instantiateFragment()
-        {
-          return new CachedBookmarkCategoriesFragment();
-        }
-
-        @Override
-        public int getTitle()
-        {
-          return R.string.bookmarks_page_downloaded;
-        }
-      },
-  PRIVATE
+  PRIVATE(new Analytics(Statistics.ParamValue.MY))
       {
         @NonNull
         @Override
@@ -37,25 +24,49 @@ public enum BookmarksPageFactory
         {
           return R.string.bookmarks_page_my;
         }
+      },
+  CATALOG(new Analytics(Statistics.ParamValue.DOWNLOADED), new AdapterResourceProvider.Catalog())
+      {
+        @NonNull
+        @Override
+        public Fragment instantiateFragment()
+        {
+          return new CachedBookmarkCategoriesFragment();
+        }
+
+        @Override
+        public int getTitle()
+        {
+          return R.string.bookmarks_page_downloaded;
+        }
       };
 
   @NonNull
-  private AdapterResourceProvider mResProvider;
+  private final AdapterResourceProvider mResProvider;
+  @NonNull
+  private final Analytics mAnalytics;
 
-  BookmarksPageFactory(@NonNull AdapterResourceProvider resourceProvider)
+  BookmarksPageFactory(@NonNull Analytics analytics, @NonNull AdapterResourceProvider provider)
   {
-    mResProvider = resourceProvider;
+    mAnalytics = analytics;
+    mResProvider = provider;
   }
 
-  BookmarksPageFactory()
+  BookmarksPageFactory(Analytics analytics)
   {
-    this(new AdapterResourceProvider.Default());
+    this(analytics, new AdapterResourceProvider.Default());
   }
 
   @NonNull
   public AdapterResourceProvider getResProvider()
   {
     return mResProvider;
+  }
+
+  @NonNull
+  public Analytics getAnalytics()
+  {
+    return mAnalytics;
   }
 
   public static BookmarksPageFactory get(String value)

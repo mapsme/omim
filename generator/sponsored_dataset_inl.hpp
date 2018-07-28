@@ -34,7 +34,7 @@ public:
   }
 
 private:
-  DataSource m_dataSource;
+  FrozenDataSource m_dataSource;
   std::unique_ptr<search::ReverseGeocoder> m_coder;
 };
 

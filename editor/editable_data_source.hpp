@@ -4,4 +4,10 @@
 
 #include "indexer/data_source.hpp"
 
-using EditableDataSource = DataSourceImpl<EditableFeatureSource>;
+#include <memory>
+
+class EditableDataSource : public DataSource
+{
+public:
+  EditableDataSource() : DataSource(std::make_unique<EditableFeatureSourceFactory>()) {}
+};

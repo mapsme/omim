@@ -203,8 +203,9 @@ include_directories(
   ${CMAKE_HOME_DIRECTORY}
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Network_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
 )
+
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -260,6 +261,10 @@ add_compile_options(
 )
 
 add_clang_compile_options("-Wshorten-64-to-32")
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND
+    CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
+  add_gcc_cpp_compile_options("-Wno-noexcept-type")
+endif()
 
 add_subdirectory(base)
 add_subdirectory(coding)
@@ -267,8 +272,10 @@ add_subdirectory(drape)
 add_subdirectory(drape_frontend)
 add_subdirectory(editor)
 add_subdirectory(generator/mwm_diff)
+add_subdirectory(geocoder)
 add_subdirectory(geometry)
 add_subdirectory(indexer)
+add_subdirectory(kml)
 add_subdirectory(local_ads)
 add_subdirectory(map)
 add_subdirectory(partners_api)
@@ -276,13 +283,13 @@ add_subdirectory(platform)
 add_subdirectory(routing)
 add_subdirectory(routing_common)
 add_subdirectory(search)
+add_subdirectory(shaders)
 add_subdirectory(stats)
 add_subdirectory(storage)
 add_subdirectory(tracking)
 add_subdirectory(traffic)
 add_subdirectory(transit)
 add_subdirectory(ugc)
-add_subdirectory(kml)
 
 if (PLATFORM_DESKTOP)
   if (BUILD_MAPSHOT)

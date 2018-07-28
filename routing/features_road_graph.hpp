@@ -16,12 +16,11 @@
 #include "std/unique_ptr.hpp"
 #include "std/vector.hpp"
 
-class DataSourceBase;
+class DataSource;
 class FeatureType;
 
 namespace routing
 {
-
 class FeaturesRoadGraph : public IRoadGraph
 {
 private:
@@ -31,8 +30,8 @@ private:
     CrossCountryVehicleModel(shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory);
 
     // VehicleModelInterface overrides:
-    double GetSpeed(FeatureType const & f) const override;
-    double GetMaxSpeed() const override;
+    VehicleModelInterface::SpeedKMpH GetSpeed(FeatureType const & f) const override;
+    VehicleModelInterface::SpeedKMpH GetMaxSpeed() const override { return m_maxSpeed; };
     double GetOffroadSpeed() const override;
     bool IsOneWay(FeatureType const & f) const override;
     bool IsRoad(FeatureType const & f) const override;
@@ -44,8 +43,8 @@ private:
     VehicleModelInterface * GetVehicleModel(FeatureID const & featureId) const;
 
     shared_ptr<VehicleModelFactoryInterface> const m_vehicleModelFactory;
-    double const m_maxSpeedKMPH;
-    double const m_offroadSpeedKMPH;
+    VehicleModelInterface::SpeedKMpH const m_maxSpeed;
+    double const m_offroadSpeedKMpH;
 
     mutable map<MwmSet::MwmId, shared_ptr<VehicleModelInterface>> m_cache;
   };
@@ -63,15 +62,15 @@ private:
   };
 
 public:
-  FeaturesRoadGraph(DataSourceBase const & dataSource, IRoadGraph::Mode mode,
+  FeaturesRoadGraph(DataSource const & dataSource, IRoadGraph::Mode mode,
                     shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory);
 
   static int GetStreetReadScale();
 
   // IRoadGraph overrides:
   RoadInfo GetRoadInfo(FeatureID const & featureId) const override;
-  double GetSpeedKMPH(FeatureID const & featureId) const override;
-  double GetMaxSpeedKMPH() const override;
+  double GetSpeedKMpH(FeatureID const & featureId) const override;
+  double GetMaxSpeedKMpH() const override;
   void ForEachFeatureClosestToCross(m2::PointD const & cross,
                                     ICrossEdgesLoader & edgesLoader) const override;
   void FindClosestEdges(m2::PointD const & point, uint32_t count,
@@ -89,7 +88,7 @@ private:
   struct Value
   {
     Value() = default;
-    Value(DataSourceBase const & dataSource, MwmSet::MwmHandle handle);
+    Value(DataSource const & dataSource, MwmSet::MwmHandle handle);
 
     bool IsAlive() const { return m_mwmHandle.IsAlive(); }
 
@@ -98,7 +97,7 @@ private:
   };
 
   bool IsOneWay(FeatureType const & ft) const;
-  double GetSpeedKMPHFromFt(FeatureType const & ft) const;
+  double GetSpeedKMpHFromFt(FeatureType const & ft) const;
 
   // Searches a feature RoadInfo in the cache, and if does not find then
   // loads feature from the index and takes speed for the feature from the vehicle model.
@@ -107,12 +106,12 @@ private:
   // This version is used to prevent redundant feature loading when feature speed is known.
   RoadInfo const & GetCachedRoadInfo(FeatureID const & featureId, FeatureType const & ft,
                                      double speedKMPH) const;
-  void ExtractRoadInfo(FeatureID const & featureId, FeatureType const & ft, double speedKMPH,
+  void ExtractRoadInfo(FeatureID const & featureId, FeatureType const & ft, double speedKMpH,
                        RoadInfo & ri) const;
 
   Value const & LockMwm(MwmSet::MwmId const & mwmId) const;
 
-  DataSourceBase const & m_dataSource;
+  DataSource const & m_dataSource;
   IRoadGraph::Mode const m_mode;
   mutable RoadInfoCache m_cache;
   mutable CrossCountryVehicleModel m_vehicleModel;

@@ -457,7 +457,7 @@
 "are_you_sure" = "Oletko varma että haluat jatkaa?";
 
 /* Title for tracks category in bookmarks manager */
-"tracks" = "Reitit";
+"tracks_title" = "Reitit";
 
 /* Length of track in cell that describes route */
 "length" = "Pituus";
@@ -1147,8 +1147,6 @@
 "add_opening_hours" = "Lisää aukioloajat";
 
 "edit_opening_hours" = "Muokkaa aukioloaikoja";
-
-"profile" = "Profiili";
 
 "no_osm_account" = "Eikö sinulla ole OpenStreetMap tiliä?";
 
@@ -2100,44 +2098,6 @@
 
 "quality" = "Laatu";
 
-"sponsored_partner1_action" = "Cash back";
-
-"sponsored_partner3_action" = "Coupon";
-
-"sponsored_partner4_action" = "Store";
-
-"sponsored_partner5_action" = "Tickets";
-
-"sponsored_partner6_action" = "Store";
-
-"sponsored_partner7_action" = "Store";
-
-"sponsored_partner8_action" = "Special";
-
-"sponsored_partner9_action" = "Special";
-
-"sponsored_partner10_action" = "Store";
-
-"sponsored_partner11_action" = "-";
-
-"sponsored_partner12_action" = "Store";
-
-"sponsored_partner13_action" = "-";
-
-"sponsored_partner14_action" = "-";
-
-"sponsored_partner15_action" = "-";
-
-"sponsored_partner16_action" = "-";
-
-"sponsored_partner17_action" = "-";
-
-"sponsored_partner18_action" = "Lifehack";
-
-"sponsored_partner19_action" = "Lifehack";
-
-"sponsored_partner20_action" = "Lifehack";
-
 "whats_new_ugc_title" = "Arviot ja arvostelut";
 
 "whats_new_ugc_message" = "Nyt voit jättää arvioita ja arvosteluja myös offline-tilassa! Älä unohda päivittää karttojasi, jotta näet muutokset.";
@@ -2284,7 +2244,7 @@
 
 "notification_unsent_reviews_message" = "Kirjaudu sisään jaa arviot muiden matkustajien kanssa";
 
-"profile_osm" = "Profiili OSM";
+"profile" = "OpenStreetMap-profiili";
 
 "place_page_search_similar_hotel" = "Etsi samanlaisia ​​hotelleja";
 
@@ -2336,64 +2296,133 @@
 
 "sign_agree_news_gdpr" = "Hyväksyn viimeisimmät uutiset MAPS.ME-tuotteista";
 
-"whats_new_localbiz_title" = "Small business deserves attention";
+"whats_new_localbiz_title" = "Pienet yritykset ansaitsevat huomiota";
 
-"whats_new_localbiz_message" = "Family cafes, cozy hostels, unique stores – they are the special parts of our travels. We will optimize your page on the map free of charge so you will get noticed.";
+"whats_new_localbiz_message" = "Juuri paikalliset kahvilat, kotoisat hostellit ja kaupat tekevät matkastasi unohtumattoman. Me optimoimme sivusi MAPS.ME:ssä saadaksesi sen erottumaan joukosta.";
 
-"whats_new_order_button" = "Leave a request";
+"whats_new_order_button" = "Jätä pyyntö";
 
-"bookmarks_page_downloaded" = "Downloaded";
+"bookmarks_page_downloaded" = "Ladattu";
 
-"bookmarks_page_my" = "My";
+"bookmarks_page_my" = "Minun";
 
-"routes_and_bookmarks" = "Routes and bookmarks";
+"routes_and_bookmarks" = "Reitit ja kirjanmerkit";
 
-"bookmarks_webview_success_toast" = "Bookmarks succesfully downloaded";
+"bookmarks_webview_success_toast" = "Kirjanmerkit ladattu onnistuneesti";
 
-"cached_bookmarks_placeholder_title" = "Download new places";
+"cached_bookmarks_placeholder_title" = "Lataa uudet paikat";
 
-"cached_bookmarks_placeholder_subtitle" = "Press the button to download thousands of interesting places and routes created by MAPS.ME users. You will need the internet connection.";
+"cached_bookmarks_placeholder_subtitle" = "Paina nappulaa ladataksesi tuhansia kiinnostavia paikkoja ja reittejä joita MAPS.ME käyttäjät ovat luoneet. Tarvitset internet yhteyden.";
 
-"downloader_download_routers" = "Download bookmarks";
+"downloader_download_routers" = "Lataa kirjanmerkit";
 
-"bookmarks_groups_cached" = "Downloaded lists";
+"bookmarks_groups_cached" = "Ladatut lista";
 
-"author_name_by_prefix" = "by %s";
+"author_name_by_prefix" = "%s";
 
-"subtittle_opt_out" = "Tracking settings";
+"subtittle_opt_out" = "Seuranta-asetukset";
 
-"opt_out_flurry" = "Statistic";
+"opt_out_flurry" = "Tilasto";
 
-"opt_out_mopub" = "Personalised advertising";
+"opt_out_mopub" = "Yksilöity mainonta";
 
-"opt_out_fabric" = "Crash report";
+"opt_out_fabric" = "Kaatumisraportti";
 
-"opt_out_fabric_description" = "We may use your data to improve MAPS.ME experience. Changes will take effect after you restart the app.";
+"opt_out_fabric_description" = "Me saatamme käyttää tietojasi parantaaksemme MAPS.ME kokemusta. Muutokset alkavat vaikuttamaan kun käynnistät sovelluksen uudestaan.";
 
 "opt_out_pushwoosh" = "Pushwoosh";
 
 "opt_out_appsflyer" = "Appsflyer";
 
-"opt_out_help_ios_1" = "Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.";
+"opt_out_help_ios_1" = "Mobiililaitteesi saattaa tarjota ”Rajoittettu Mainos Seuranta” tai ”Poistu internet-perusteisesta mainnonnasta” asetuksia.";
 
-"opt_out_help_ios_2" = "iOS 9 or Higher";
+"opt_out_help_ios_2" = "iOS 9 tai Korkeampi";
 
-"opt_out_help_ios_3" = "Go to your Settings → Privacy → Advertising → Enable the “Limit Ad Tracking” setting";
+"opt_out_help_ios_3" = "Mene Asetuksiisi → Yksityisyys → Mainonta → Salli ”Rajoita Mainos Seurantaa” asetus";
 
-"opt_out_help_android" = "Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android and Google Play Services version 4.0 and up:\nSettings → Google → Ads → Opt out of Ads Personalization\nor\nSettings → Google → Google Account → Personal info & privacy → Ads Settings → Ads Personalization";
+"opt_out_help_android" = "Mobiililaitteesi saattaa tarjota ”Rajoittettu Mainos Seuranta” tai ”Poistu internet-perusteisesta mainnonnasta” asetuksia.\n\nAndroidille ja Google Play Palvelut versio 4.0 tai myöhemmin:\nAsetukset → Google → Mainokset → Poistu Mainosten Yksilöinti\ntai\nAsetukset → Google → Google Tili → Henkilökohtaiset tiedot ja yksityisyys → Mainos Asetukset → Mainosten Yksilöinti";
 
-"privacy_policy" = "Privacy policy";
+"privacy_policy" = "Yksityisyyskäytäntö";
 
-"terms_of_use" = "Terms of use";
+"terms_of_use" = "Käyttöehdot";
 
-"button_layer_got_it" = "Got it";
+"backup_notification_failed" = "Kirjanmerkkiesi varmuuskopionti on keskeytetty. Kirjaudu sisään ja laita se takaisin päälle.";
 
-"bookmarks_empty_list_title" = "This list is empty";
+"banner_megafon_banner_message" = "Sano hyvästit roaming-datalle!";
 
-"bookmarks_empty_list_message" = "To add a bookmark, tap a place on the map and then tap the star icon";
+"banner_megafon_banner_button" = "Hyvästi!";
 
-"category_desc_more" = "…more";
+"button_layer_traffic" = "Liikenne";
 
-"title_error_downloading_bookmarks" = "An error occured";
+"button_layer_subway" = "Metro";
 
-"subtitle_error_downloading_bookmarks" = "Bookmarks were not downloaded";
+"layers_title" = "Kartan tasot";
+
+"layers_message" = "Käytä kartan tasoja näyttääksesi liikenteen, metrokartan ja muita hyödyllisiä tietoja";
+
+"button_layer_got_it" = "Ymmärsin";
+
+"subway_data_unavailable" = "Metrokartta ei ole saatavilla";
+
+"bookmarks_empty_list_title" = "Lista on tyhjä";
+
+"bookmarks_empty_list_message" = "Lisätäksesi kirjanmerkin, paina kartasta ja sitten paina tähden kuvaa";
+
+"category_desc_more" = "…lisää";
+
+"title_error_downloading_bookmarks" = "Tapahtui virhe";
+
+"subtitle_error_downloading_bookmarks" = "Kirjanmerkkejä ei ole ladattu";
+
+"whats_new_bookmarks_catalog_title" = "MAPS.ME:ssä on nyt reitti katalogi";
+
+"whats_new_bookmarks_catalog_message" = "Satoja yksityiskohtaisia reittejä kaikkialta maailmasta: minne mennä, mitä nähdä, missä syödä.";
+
+"whats_new_popularity_label_title" = "Suosittuja kohteita lähellä";
+
+"whats_new_popularity_label_message" = "Mitä Tehdä osio auttaa sinua löytämään suosituimmat paikat kaupungissa.";
+
+"whats_new_hot_offers_title" = "Houkuttelevia tarjouksia hotelleilta";
+
+"whats_new_hot_offers_message" = "Voit etsiä niitä käyttämällä Hotellit kategoriaa haussa. Tulokset näytetään prosentti merkillä kartassa ja hakutuloksissa.";
+
+"error_already_downloaded" = "Tämä lista on jo ladattu";
+
+"popular_place" = "Popular";
+
+
+/**********  Partners  **********/
+
+"sponsored_partner3_action" = "Coupon";
+
+"sponsored_partner4_action" = "Store";
+
+"sponsored_partner6_action" = "Store";
+
+"sponsored_partner7_action" = "Store";
+
+"sponsored_partner8_action" = "Special";
+
+"sponsored_partner9_action" = "Special";
+
+"sponsored_partner10_action" = "Store";
+
+"sponsored_partner11_action" = "-";
+
+"sponsored_partner12_action" = "Store";
+
+"sponsored_partner13_action" = "-";
+
+"sponsored_partner14_action" = "-";
+
+"sponsored_partner15_action" = "-";
+
+"sponsored_partner16_action" = "-";
+
+"sponsored_partner17_action" = "-";
+
+"sponsored_partner18_action" = "Lifehack";
+
+"sponsored_partner19_action" = "Lifehack";
+
+"sponsored_partner20_action" = "Lifehack";

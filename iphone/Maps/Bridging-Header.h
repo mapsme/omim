@@ -74,3 +74,5 @@
 #import "UIFont+MapsMeFonts.h"
 #import "UIViewController+Navigation.h"
 #import "WebViewController.h"
+#import "MWMCatalogCategory.h"
+#import "MWMCatalogCommon.h"

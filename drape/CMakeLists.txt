@@ -63,9 +63,6 @@ set(
   ${DRAPE_ROOT}/gpu_buffer.hpp
   ${DRAPE_ROOT}/gpu_program.cpp
   ${DRAPE_ROOT}/gpu_program.hpp
-  ${DRAPE_ROOT}/gpu_program_info.hpp
-  ${DRAPE_ROOT}/gpu_program_manager.cpp
-  ${DRAPE_ROOT}/gpu_program_manager.hpp
   ${DRAPE_ROOT}/hw_texture.cpp
   ${DRAPE_ROOT}/hw_texture.hpp
   ${DRAPE_ROOT}/index_buffer.cpp
@@ -104,8 +101,6 @@ set(
   ${DRAPE_ROOT}/texture_of_colors.hpp
   ${DRAPE_ROOT}/uniform_value.cpp
   ${DRAPE_ROOT}/uniform_value.hpp
-  ${DRAPE_ROOT}/uniform_values_storage.cpp
-  ${DRAPE_ROOT}/uniform_values_storage.hpp
   ${DRAPE_ROOT}/utils/glyph_usage_tracker.cpp
   ${DRAPE_ROOT}/utils/glyph_usage_tracker.hpp
   ${DRAPE_ROOT}/utils/gpu_mem_tracker.cpp

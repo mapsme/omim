@@ -8,20 +8,23 @@ import android.widget.ImageView;
 
 import com.mopub.nativeads.NativeAd;
 import com.mopub.nativeads.NativeImageHelper;
-import com.mopub.nativeads.StaticNativeAd;
 
-class MopubNativeAd extends CachedMwmNativeAd
+public class MopubNativeAd extends CachedMwmNativeAd
 {
   @NonNull
   private final NativeAd mNativeAd;
   @NonNull
-  private final StaticNativeAd mAd;
+  private final AdDataAdapter mDataAdapter;
+  @Nullable
+  private final AdRegistrator mAdRegistrator;
 
-  MopubNativeAd(@NonNull NativeAd ad, long timestamp)
+  public MopubNativeAd(@NonNull NativeAd ad, @NonNull AdDataAdapter adData,
+                       @Nullable AdRegistrator registrator, long timestamp)
   {
     super(timestamp);
     mNativeAd = ad;
-    mAd = (StaticNativeAd) mNativeAd.getBaseNativeAd();
+    mDataAdapter = adData;
+    mAdRegistrator = registrator;
   }
 
   @NonNull
@@ -35,33 +38,57 @@ class MopubNativeAd extends CachedMwmNativeAd
   @Override
   public String getTitle()
   {
-    return TextUtils.isEmpty(mAd.getTitle()) ? "" : mAd.getTitle();
+    return TextUtils.isEmpty(mDataAdapter.getTitle()) ? "" : mDataAdapter.getTitle();
   }
 
   @NonNull
   @Override
   public String getDescription()
   {
-    return TextUtils.isEmpty(mAd.getText()) ? "" : mAd.getText();
+    return TextUtils.isEmpty(mDataAdapter.getText()) ? "" : mDataAdapter.getText();
   }
 
   @NonNull
   @Override
   public String getAction()
   {
-    return TextUtils.isEmpty(mAd.getCallToAction()) ? "" : mAd.getCallToAction();
+    return TextUtils.isEmpty(mDataAdapter.getCallToAction()) ? "" : mDataAdapter.getCallToAction();
   }
 
   @Override
   public void loadIcon(@NonNull View view)
   {
-    NativeImageHelper.loadImageView(mAd.getIconImageUrl(), (ImageView) view);
+    NativeImageHelper.loadImageView(mDataAdapter.getIconImageUrl(), (ImageView) view);
+  }
+
+  @Override
+  void register(@NonNull View view)
+  {
+    mNativeAd.prepare(view);
   }
 
   @Override
   public void unregister(@NonNull View view)
   {
     mNativeAd.clear(view);
+  }
+
+  @Override
+  public void registerView(@NonNull View view)
+  {
+    super.registerView(view);
+
+    if (mAdRegistrator != null)
+      mAdRegistrator.registerView(mNativeAd.getBaseNativeAd(), view);
+  }
+
+  @Override
+  public void unregisterView(@NonNull View view)
+  {
+    super.unregisterView(view);
+
+    if (mAdRegistrator != null)
+      mAdRegistrator.unregisterView(mNativeAd.getBaseNativeAd(), view);
   }
 
   @NonNull
@@ -71,17 +98,11 @@ class MopubNativeAd extends CachedMwmNativeAd
     return Providers.MOPUB;
   }
 
-  @Override
-  void register(@NonNull View view)
-  {
-    mNativeAd.prepare(view);
-  }
-
   @Nullable
   @Override
   public String getPrivacyInfoUrl()
   {
-    return mAd.getPrivacyInformationIconClickThroughUrl();
+    return mDataAdapter.getPrivacyInfoUrl();
   }
 
   @Override
@@ -104,6 +125,12 @@ class MopubNativeAd extends CachedMwmNativeAd
   @Override
   public NetworkType getNetworkType()
   {
-    return NetworkType.MOPUB;
+    return mDataAdapter.getType();
+  }
+
+  @Override
+  public String toString()
+  {
+    return super.toString() + ", mediated ad: " + mNativeAd.getBaseNativeAd();
   }
 }

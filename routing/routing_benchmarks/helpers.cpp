@@ -30,11 +30,10 @@ using namespace std;
 namespace
 {
 void TestRouter(routing::IRouter & router, m2::PointD const & startPos,
-                m2::PointD const & finalPos, routing::Route & foundRoute)
+                m2::PointD const & finalPos, routing::Route & route)
 {
   routing::RouterDelegate delegate;
   LOG(LINFO, ("Calculating routing ...", router.GetName()));
-  routing::Route route("");
   my::Timer timer;
   auto const resultCode = router.CalculateRoute(routing::Checkpoints(startPos, finalPos),
                                                 m2::PointD::Zero() /* startDirection */,
@@ -48,7 +47,6 @@ void TestRouter(routing::IRouter & router, m2::PointD const & startPos,
   LOG(LINFO, ("Route polyline size:", route.GetPoly().GetSize()));
   LOG(LINFO, ("Route distance, meters:", route.GetTotalDistanceMeters()));
   LOG(LINFO, ("Elapsed, seconds:", elapsedSec));
-  foundRoute.Swap(route);
 }
 
 m2::PointD GetPointOnEdge(routing::Edge const & e, double posAlong)
@@ -63,7 +61,7 @@ m2::PointD GetPointOnEdge(routing::Edge const & e, double posAlong)
 }  // namespace
 
 RoutingTest::RoutingTest(routing::IRoadGraph::Mode mode, set<string> const & neededMaps)
-  : m_mode(mode), m_neededMaps(neededMaps), m_numMwmIds(my::make_unique<routing::NumMwmIds>())
+  : m_mode(mode) , m_neededMaps(neededMaps) , m_numMwmIds(my::make_unique<routing::NumMwmIds>())
 {
   classificator::Load();
 
@@ -105,14 +103,14 @@ RoutingTest::RoutingTest(routing::IRoadGraph::Mode mode, set<string> const & nee
 void RoutingTest::TestRouters(m2::PointD const & startPos, m2::PointD const & finalPos)
 {
   // Find route by A*-bidirectional algorithm.
-  routing::Route routeFoundByAstarBidirectional("");
+  routing::Route routeFoundByAstarBidirectional("", 0 /* route id */);
   {
     auto router = CreateRouter("test-astar-bidirectional");
     TestRouter(*router, startPos, finalPos, routeFoundByAstarBidirectional);
   }
 
   // Find route by A* algorithm.
-  routing::Route routeFoundByAstar("");
+  routing::Route routeFoundByAstar("", 0 /* route id */);
   {
     auto router = CreateRouter("test-astar");
     TestRouter(*router, startPos, finalPos, routeFoundByAstar);

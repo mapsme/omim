@@ -19,7 +19,13 @@
 
 #include "Framework.h"
 
+#include "indexer/feature_altitude.hpp"
+
 #include "platform/local_country_file_utils.hpp"
+
+#include <cstdint>
+#include <memory>
+#include <vector>
 
 using namespace routing;
 
@@ -152,6 +158,11 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
 
 + (void)stopRouting
 {
+  auto type = GetFramework().GetRoutingManager().GetRouter();
+  [Statistics logEvent:kStatRoutingRouteFinish withParameters:@{
+                                                                kStatMode : @(routing::ToString(type).c_str()),
+                                                                kStatRoutingInterrupted : @([self isRouteFinished])
+                                                                }];
   [self stop:YES];
 }
 
@@ -430,7 +441,14 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
       else
         [Statistics logEvent:kStatEventName(kStatPointToPoint, kStatGo)
               withParameters:@{kStatValue : kStatPointToPoint}];
-      
+
+      auto type = GetFramework().GetRoutingManager().GetRouter();
+      [Statistics logEvent:kStatRoutingRouteStart
+            withParameters:@{
+                             kStatMode : @(routing::ToString(type).c_str()),
+                             kStatTraffic : @(GetFramework().GetTrafficManager().IsEnabled())
+                             }];
+
       if (p1.isMyPosition && [MWMLocationManager lastLocation])
       {
         rm.FollowRoute();
@@ -480,7 +498,6 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
 
 + (void)stop:(BOOL)removeRoutePoints
 {
-  [Statistics logEvent:kStatEventName(kStatPointToPoint, kStatClose)];
   [self doStop:removeRoutePoints];
   // Don't save taxi routing type as default.
   if ([MWMRouter isTaxi])
@@ -517,14 +534,21 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
 
 + (void)routeAltitudeImageForSize:(CGSize)size completion:(MWMImageHeightBlock)block
 {
-  auto router = self.router;
-  dispatch_async(router.renderAltitudeImagesQueue, ^{
+  if (![self hasRouteAltitude])
+    return;
+
+  auto routePointDistanceM = std::make_shared<std::vector<double>>(std::vector<double>());
+  auto altitudes = std::make_shared<feature::TAltitudes>(feature::TAltitudes());
+  if (!GetFramework().GetRoutingManager().GetRouteAltitudesAndDistancesM(*routePointDistanceM, *altitudes))
+    return;
+
+  // Note. |routePointDistanceM| and |altitudes| should not be used in the method after line below.
+  dispatch_async(self.router.renderAltitudeImagesQueue, [=] () {
     auto router = self.router;
-    if (![self hasRouteAltitude])
-      return;
     CGFloat const screenScale = [UIScreen mainScreen].scale;
-    CGSize const scaledSize = {.width = size.width * screenScale,
-                               .height = size.height * screenScale};
+    CGSize const scaledSize = {size.width * screenScale, size.height * screenScale};
+    CHECK_GREATER_OR_EQUAL(scaledSize.width, 0.0, ());
+    CHECK_GREATER_OR_EQUAL(scaledSize.height, 0.0, ());
     uint32_t const width = static_cast<uint32_t>(scaledSize.width);
     uint32_t const height = static_cast<uint32_t>(scaledSize.height);
     if (width == 0 || height == 0)
@@ -538,11 +562,17 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
       int32_t minRouteAltitude = 0;
       int32_t maxRouteAltitude = 0;
       measurement_utils::Units units = measurement_utils::Units::Metric;
-      if (!GetFramework().GetRoutingManager().GenerateRouteAltitudeChart(
-              width, height, imageRGBAData, minRouteAltitude, maxRouteAltitude, units))
+ 
+      if(!GetFramework().GetRoutingManager().GenerateRouteAltitudeChart(width, height,
+                                                                        *altitudes,
+                                                                        *routePointDistanceM,
+                                                                        imageRGBAData,
+                                                                        minRouteAltitude,
+                                                                        maxRouteAltitude, units))
       {
         return;
       }
+
       if (imageRGBAData.empty())
         return;
       imageData = [NSData dataWithBytes:imageRGBAData.data() length:imageRGBAData.size()];

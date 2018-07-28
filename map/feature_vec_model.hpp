@@ -91,8 +91,8 @@ class FeaturesFetcher : public MwmSet::Observer
     }
     //@}
 
-    DataSourceBase const & GetDataSource() const { return m_dataSource; }
-    DataSourceBase & GetDataSource() { return m_dataSource; }
+    DataSource const & GetDataSource() const { return m_dataSource; }
+    DataSource & GetDataSource() { return m_dataSource; }
     m2::RectD GetWorldRect() const;
   };
 }

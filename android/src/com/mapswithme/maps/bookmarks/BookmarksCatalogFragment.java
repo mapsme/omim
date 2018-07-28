@@ -1,12 +1,16 @@
 package com.mapswithme.maps.bookmarks;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -17,9 +21,13 @@ import android.widget.Toast;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.auth.BaseWebViewMwmFragment;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
-import com.mapswithme.util.DialogUtils;
 import com.mapswithme.util.ConnectionState;
+import com.mapswithme.util.DialogUtils;
 import com.mapswithme.util.UiUtils;
+import com.mapswithme.util.Utils;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
+import com.mapswithme.util.statistics.Statistics;
 
 import java.lang.ref.WeakReference;
 
@@ -133,11 +141,14 @@ public class BookmarksCatalogFragment extends BaseWebViewMwmFragment
 
   private static class WebViewBookmarksCatalogClient extends WebViewClient
   {
+    private final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
+    private final String TAG = WebViewBookmarksCatalogClient.class.getSimpleName();
+
     @NonNull
     private final WeakReference<BookmarksCatalogFragment> mReference;
 
     @Nullable
-    private WebResourceError mError;
+    private Object mError;
 
     WebViewBookmarksCatalogClient(@NonNull BookmarksCatalogFragment frag)
     {
@@ -175,6 +186,31 @@ public class BookmarksCatalogFragment extends BaseWebViewMwmFragment
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error)
     {
       super.onReceivedError(view, request, error);
+      String description = Utils.isMarshmallowOrLater() ? makeDescription(error) : null;
+      handleError(error, description);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @NonNull
+    private static String makeDescription(@NonNull WebResourceError error)
+    {
+      return error.getErrorCode() + "  " + error.getDescription();
+    }
+
+    @Override
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error)
+    {
+      super.onReceivedSslError(view, handler, error);
+      handleError(error);
+    }
+
+    private void handleError(@NonNull Object error)
+    {
+      handleError(error, null);
+    }
+
+    private void handleError(@NonNull Object error, @Nullable String description)
+    {
       mError = error;
       BookmarksCatalogFragment frag;
       if ((frag = mReference.get()) == null)
@@ -183,9 +219,15 @@ public class BookmarksCatalogFragment extends BaseWebViewMwmFragment
       UiUtils.show(frag.mRetryBtn);
       UiUtils.hide(frag.mWebView, frag.mProgressView);
       if (ConnectionState.isConnected())
+      {
+        LOGGER.e(TAG, "Failed to load catalog: " + mError + ", description: " + description);
+        Statistics.INSTANCE.trackDownloadCatalogError(Statistics.ParamValue.UNKNOWN);
         return;
-      Toast.makeText(frag.getContext(), R.string.common_check_internet_connection_dialog_title, Toast.LENGTH_SHORT)
-           .show();
+      }
+
+      Statistics.INSTANCE.trackDownloadCatalogError(Statistics.ParamValue.NO_INTERNET);
+      Toast.makeText(frag.getContext(), R.string.common_check_internet_connection_dialog_title,
+                     Toast.LENGTH_SHORT).show();
     }
 
     private void retry()

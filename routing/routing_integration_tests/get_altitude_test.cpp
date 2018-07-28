@@ -43,7 +43,7 @@ LocalCountryFile GetLocalCountryFileByCountryId(CountryFile const & country)
 void TestAltitudeOfAllMwmFeatures(string const & countryId, TAltitude const altitudeLowerBoundMeters,
                                   TAltitude const altitudeUpperBoundMeters)
 {
-  DataSource dataSource;
+  FrozenDataSource dataSource;
 
   LocalCountryFile const country = GetLocalCountryFileByCountryId(CountryFile(countryId));
   TEST_NOT_EQUAL(country, LocalCountryFile(), ());

@@ -72,7 +72,7 @@ double CalcMaxSpeed(NumMwmIds const & numMwmIds,
   numMwmIds.ForEachId([&](NumMwmId id) {
     string const & country = numMwmIds.GetFile(id).GetName();
     double const mwmMaxSpeed =
-        vehicleModelFactory.GetVehicleModelForCountry(country)->GetMaxSpeed();
+        vehicleModelFactory.GetVehicleModelForCountry(country)->GetMaxSpeed().m_weight;
     maxSpeed = max(maxSpeed, mwmMaxSpeed);
   });
   CHECK_GREATER(maxSpeed, 0.0, ());
@@ -98,10 +98,12 @@ shared_ptr<VehicleModelFactoryInterface> CreateVehicleModelFactory(
     CHECK(false, ("Can't create VehicleModelFactoryInterface for", vehicleType));
     return nullptr;
   }
+  CHECK_SWITCH();
 }
 
 unique_ptr<IDirectionsEngine> CreateDirectionsEngine(VehicleType vehicleType,
-                                                     shared_ptr<NumMwmIds> numMwmIds, DataSourceBase & dataSource)
+                                                     shared_ptr<NumMwmIds> numMwmIds,
+                                                     DataSource & dataSource)
 {
   switch (vehicleType)
   {
@@ -115,6 +117,7 @@ unique_ptr<IDirectionsEngine> CreateDirectionsEngine(VehicleType vehicleType,
     CHECK(false, ("Can't create DirectionsEngine for", vehicleType));
     return nullptr;
   }
+  CHECK_SWITCH();
 }
 
 shared_ptr<TrafficStash> CreateTrafficStash(VehicleType vehicleType, shared_ptr<NumMwmIds> numMwmIds,
@@ -154,7 +157,7 @@ bool MwmHasRoutingData(version::MwmTraits const & traits)
   return traits.HasRoutingIndex() && traits.HasCrossMwmSection();
 }
 
-void GetOutdatedMwms(DataSourceBase & dataSource, vector<string> & outdatedMwms)
+void GetOutdatedMwms(DataSource & dataSource, vector<string> & outdatedMwms)
 {
   outdatedMwms.clear();
   vector<shared_ptr<MwmInfo>> infos;
@@ -274,7 +277,7 @@ IndexRouter::IndexRouter(VehicleType vehicleType, bool loadAltitudes,
                          CountryParentNameGetterFn const & countryParentNameGetterFn,
                          TCountryFileFn const & countryFileFn, CourntryRectFn const & countryRectFn,
                          shared_ptr<NumMwmIds> numMwmIds, unique_ptr<m4::Tree<NumMwmId>> numMwmTree,
-                         traffic::TrafficCache const & trafficCache, DataSourceBase & dataSource)
+                         traffic::TrafficCache const & trafficCache, DataSource & dataSource)
   : m_vehicleType(vehicleType)
   , m_loadAltitudes(loadAltitudes)
   , m_name("astar-bidirectional-" + ToString(m_vehicleType))
@@ -761,7 +764,7 @@ RouterResultCode IndexRouter::ProcessLeaps(vector<Segment> const & input,
   auto const lastMwmId = input[input.size() - 2].GetMwmId();
   auto const finishLeapStartIt = find_if(startLeapEndIt, input.end(),
                                          [lastMwmId](Segment const & s) { return s.GetMwmId() == lastMwmId; });
-  auto const finishLeapStart = distance(input.begin(), finishLeapStartIt);
+  auto const finishLeapStart = static_cast<size_t>(distance(input.begin(), finishLeapStartIt));
 
   for (size_t i = 0; i <= finishLeapStart; ++i)
   {
@@ -780,7 +783,7 @@ RouterResultCode IndexRouter::ProcessLeaps(vector<Segment> const & input,
     {
       bool const isStartLeap = i == 0;
       i = isStartLeap ? startLeapEnd : input.size() - 1;
-      CHECK_LESS(i, input.size(), ());
+      CHECK_LESS(static_cast<size_t>(i), input.size(), ());
       auto const & next = input[i];
 
       // First start-to-mwm-exit and last mwm-enter-to-finish leaps need special processing.
@@ -807,7 +810,7 @@ RouterResultCode IndexRouter::ProcessLeaps(vector<Segment> const & input,
     else
     {
       ++i;
-      CHECK_LESS(i, input.size(), ());
+      CHECK_LESS(static_cast<size_t>(i), input.size(), ());
       auto const & next = input[i];
 
       CHECK(!IndexGraphStarter::IsFakeSegment(current), ());
@@ -863,7 +866,7 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
 
   for (size_t i = 0; i + 1 < numPoints; ++i)
   {
-    time += starter.CalcRouteSegmentWeight(segments, i).GetWeight();
+    time += starter.CalcSegmentETA(segments[i]);
     times.emplace_back(static_cast<uint32_t>(i + 1), time);
   }
 

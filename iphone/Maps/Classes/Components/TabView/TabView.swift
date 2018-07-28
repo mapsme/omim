@@ -1,16 +1,12 @@
 fileprivate class ContentCell: UICollectionViewCell {
   var view: UIView? {
     didSet {
-      oldValue?.removeFromSuperview()
-      if let view = view {
+      if let view = view, view != oldValue {
+        oldValue?.removeFromSuperview()
+        view.frame = contentView.bounds
         contentView.addSubview(view)
       }
     }
-  }
-
-  override func prepareForReuse() {
-    super.prepareForReuse()
-    view?.removeFromSuperview()
   }
 
   override func layoutSubviews() {
@@ -59,6 +55,10 @@ protocol TabViewDataSource: AnyObject {
   func tabView(_ tabView: TabView, titleAt index: Int) -> String?
 }
 
+protocol TabViewDelegate: AnyObject {
+  func tabView(_ tabView: TabView, didSelectTabAt index: Int)
+}
+
 @objcMembers
 @objc(MWMTabView)
 class TabView: UIView {
@@ -75,9 +75,12 @@ class TabView: UIView {
   private let slidingView = UIView()
   private var slidingViewLeft: NSLayoutConstraint!
   private var slidingViewWidth: NSLayoutConstraint!
-  private var pageCount = 0
+  private lazy var pageCount = { return self.dataSource?.numberOfPages(in: self) ?? 0; }()
+  var selectedIndex: Int?
+  private var lastSelectedIndex: Int?
 
   weak var dataSource: TabViewDataSource?
+  weak var delegate: TabViewDelegate?
 
   var barTintColor = UIColor.white {
     didSet {
@@ -191,17 +194,17 @@ class TabView: UIView {
     slidingView.addConstraint(slidingViewWidth)
   }
 
-  override func willMove(toSuperview newSuperview: UIView?) {
-    super.willMove(toSuperview: newSuperview)
-    pageCount = dataSource?.numberOfPages(in: self) ?? 0
-  }
-
   override func layoutSubviews() {
-    super.layoutSubviews()
-
-    slidingViewWidth.constant = bounds.width / CGFloat(pageCount)
     tabsLayout.invalidateLayout()
     tabsContentLayout.invalidateLayout()
+    super.layoutSubviews()
+    slidingViewWidth.constant = pageCount > 0 ? bounds.width / CGFloat(pageCount) : 0
+    tabsContentCollectionView.layoutIfNeeded()
+    if let selectedIndex = selectedIndex {
+      tabsContentCollectionView.scrollToItem(at: IndexPath(item: selectedIndex, section: 0),
+                                             at: .left,
+                                             animated: false)
+    }
   }
 }
 
@@ -233,13 +236,30 @@ extension TabView : UICollectionViewDataSource {
 
 extension TabView : UICollectionViewDelegateFlowLayout {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    let scrollOffset = scrollView.contentOffset.x / scrollView.contentSize.width
-    slidingViewLeft.constant = scrollOffset * bounds.width
+    if scrollView.contentSize.width > 0 {
+      let scrollOffset = scrollView.contentOffset.x / scrollView.contentSize.width
+      slidingViewLeft.constant = scrollOffset * bounds.width
+    }
+  }
+
+  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    lastSelectedIndex = selectedIndex
+  }
+
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    selectedIndex = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
+    if let selectedIndex = selectedIndex, selectedIndex != lastSelectedIndex {
+      delegate?.tabView(self, didSelectTabAt: selectedIndex)
+    }
   }
 
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     if (collectionView == tabsCollectionView) {
-      tabsContentCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+      if selectedIndex != indexPath.item {
+        selectedIndex = indexPath.item
+        tabsContentCollectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        delegate?.tabView(self, didSelectTabAt: selectedIndex!)
+      }
     }
   }
 

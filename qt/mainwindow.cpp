@@ -124,7 +124,8 @@ MainWindow::MainWindow(Framework & framework, bool apiOpenGLES3, QString const &
 #ifndef NO_DOWNLOADER
   // Show intro dialog if necessary
   bool bShow = true;
-  (void)settings::Get("ShowWelcome", bShow);
+  string const showWelcome = "ShowWelcome";
+  settings::TryGet(showWelcome, bShow);
 
   if (bShow)
   {
@@ -321,6 +322,12 @@ void MainWindow::CreateNavigationBar()
                                           this, SLOT(OnSwitchSelectionMode()));
     m_selectionMode->setCheckable(true);
     m_selectionMode->setToolTip(tr("Turn on/off selection mode"));
+
+    m_selectionCityBoundariesMode =
+        pToolBar->addAction(QIcon(":/navig64/city_boundaries.png"), tr("City boundaries selection mode"),
+                            this, SLOT(OnSwitchCityBoundariesSelectionMode()));
+    m_selectionCityBoundariesMode->setCheckable(true);
+    m_selectionCityBoundariesMode->setChecked(m_pDrawWidget->GetFramework().LoadTrafficEnabled());
 
     m_clearSelection = pToolBar->addAction(QIcon(":/navig64/clear.png"), tr("Clear selection"),
                                            this, SLOT(OnClearSelection()));
@@ -548,10 +555,32 @@ void MainWindow::OnCreateFeatureClicked()
 
 void MainWindow::OnSwitchSelectionMode()
 {
+  if (m_selectionCityBoundariesMode->isChecked())
+  {
+    // Unchecking selection city boundaries mode.
+    m_selectionCityBoundariesMode->setChecked(false);
+    m_pDrawWidget->SetCityBoundariesSelectionMode(false);
+  }
+
   m_pDrawWidget->SetSelectionMode(m_selectionMode->isChecked());
 }
 
-void MainWindow::OnClearSelection() { m_pDrawWidget->GetFramework().GetDrapeApi().Clear(); }
+void MainWindow::OnSwitchCityBoundariesSelectionMode()
+{
+  if (m_selectionMode->isChecked())
+  {
+    // Unchecking selection mode.
+    m_selectionMode->setChecked(false);
+    m_pDrawWidget->SetSelectionMode(false);
+  }
+
+  m_pDrawWidget->SetCityBoundariesSelectionMode(m_selectionCityBoundariesMode->isChecked());
+}
+
+void MainWindow::OnClearSelection()
+{
+  m_pDrawWidget->GetFramework().GetDrapeApi().Clear();
+}
 
 void MainWindow::OnSearchButtonClicked()
 {

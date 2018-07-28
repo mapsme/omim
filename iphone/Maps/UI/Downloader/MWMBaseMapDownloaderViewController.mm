@@ -15,7 +15,6 @@
 #import "MWMMyTarget.h"
 #import "MWMSegue.h"
 #import "MWMStorage.h"
-#import "MWMToast.h"
 #import "SwiftBridge.h"
 #import "UIViewController+Navigation.h"
 
@@ -137,19 +136,6 @@ using namespace storage;
 
 - (void)configMyTarget { [MWMMyTarget manager].delegate = self; }
 
-- (void)backTap
-{
-  UINavigationController * navVC = self.navigationController;
-  NSArray<UIViewController *> * viewControllers = navVC.viewControllers;
-  NSInteger const viewControllersCount = viewControllers.count;
-  NSInteger const prevVCIndex = viewControllersCount - 2;
-  Class const migrationClass = [MWMMigrationViewController class];
-  if (prevVCIndex < 0 || [viewControllers[prevVCIndex] isKindOfClass:migrationClass])
-    [navVC popToRootViewControllerAnimated:YES];
-  else
-    [super backTap];
-}
-
 - (void)notifyParentController
 {
   NSArray<MWMViewController *> * viewControllers = [self.navigationController viewControllers];
@@ -247,8 +233,8 @@ using namespace storage;
   {
     Storage::UpdateInfo updateInfo{};
     s.GetUpdateInfo(parentCountryId, updateInfo);
-    self.showAllMapsButtons = updateInfo.m_numberOfMwmFilesToUpdate != 0;
-    if (self.showAllMapsButtons)
+    self.showAllMapsButtons = YES;
+    if (updateInfo.m_numberOfMwmFilesToUpdate != 0)
     {
       self.allMapsButton.hidden = NO;
       [self.allMapsButton
@@ -256,6 +242,22 @@ using namespace storage;
                                               formattedSize(updateInfo.m_totalUpdateSizeInBytes)]
           forState:UIControlStateNormal];
       self.allMapsCancelButton.hidden = YES;
+    }
+    else
+    {
+      TCountriesVec queuedChildren;
+      s.GetQueuedChildren(parentCountryId, queuedChildren);
+      if (queuedChildren.empty())
+      {
+        self.showAllMapsButtons = NO;
+      }
+      else
+      {
+        self.showAllMapsButtons = YES;
+        self.allMapsButton.hidden = YES;
+        self.allMapsCancelButton.hidden = NO;
+        [self.allMapsCancelButton setTitle:kCancelAllTitle forState:UIControlStateNormal];
+      }
     }
   }
   else if (parentCountryId != s.GetRootId())
@@ -708,8 +710,6 @@ using namespace storage;
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-  if ([MWMToast affectsStatusBar])
-    return [MWMToast preferredStatusBarStyle];
   setStatusBarBackgroundColor(UIColor.clearColor);
   return UIStatusBarStyleLightContent;
 }

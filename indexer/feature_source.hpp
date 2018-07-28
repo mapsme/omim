@@ -42,11 +42,20 @@ public:
   virtual bool GetModifiedFeature(uint32_t index, FeatureType & feature) const;
 
   virtual void ForEachInRectAndScale(m2::RectD const & rect, int scale,
-                                     std::function<void(FeatureID const &)> const & fn) const;
-  virtual void ForEachInRectAndScale(m2::RectD const & rect, int scale,
-                                     std::function<void(FeatureType &)> const & fn) const;
+                                     std::function<void(uint32_t)> const & fn) const;
 
 protected:
   MwmSet::MwmHandle const & m_handle;
   std::unique_ptr<FeaturesVector> m_vector;
 };  // class FeatureSource
+
+// Lightweight FeatureSource factory. Each DataSource owns factory object.
+class FeatureSourceFactory
+{
+public:
+  virtual ~FeatureSourceFactory() = default;
+  virtual std::unique_ptr<FeatureSource> operator()(MwmSet::MwmHandle const & handle) const
+  {
+    return std::make_unique<FeatureSource>(handle);
+  }
+};

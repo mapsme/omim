@@ -1,11 +1,13 @@
 #pragma once
 
-#include "drape/gpu_program_manager.hpp"
+#include "drape/gpu_program.hpp"
 #include "drape/overlay_tree.hpp"
 #include "drape/pointers.hpp"
 
 #include "geometry/rect2d.hpp"
 #include "geometry/screenbase.hpp"
+
+#include <functional>
 
 #ifdef BUILD_DESIGNER
 #define RENDER_DEBUG_RECTS
@@ -13,12 +15,14 @@
 
 namespace dp
 {
-
 class DebugRectRenderer
 {
 public:
   static DebugRectRenderer & Instance();
-  void Init(ref_ptr<dp::GpuProgramManager> mng, int programId);
+
+  using ParamsSetter = std::function<void(ref_ptr<dp::GpuProgram> program, dp::Color const & color)>;
+
+  void Init(ref_ptr<dp::GpuProgram> program, ParamsSetter && paramsSetter);
   void Destroy();
 
   bool IsEnabled() const;
@@ -31,11 +35,11 @@ private:
   DebugRectRenderer();
   ~DebugRectRenderer();
 
+  ParamsSetter m_paramsSetter;
   uint32_t m_VAO;
   uint32_t m_vertexBuffer;
   ref_ptr<dp::GpuProgram> m_program;
   bool m_isEnabled;
 };
-
-} // namespace dp
+}  // namespace dp
 

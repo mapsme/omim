@@ -2,7 +2,8 @@
 
 #include "drape_frontend/animation/show_hide_animation.hpp"
 #include "drape_frontend/gui/drape_gui.hpp"
-#include "drape_frontend/shader_def.hpp"
+
+#include "shaders/programs.hpp"
 
 #include "drape/glsl_func.hpp"
 #include "drape/glsl_types.hpp"
@@ -32,8 +33,8 @@ struct CompassVertex
 class CompassHandle : public TappableHandle
 {
   using TBase = TappableHandle;
-  double const VisibleStartAngle = my::DegToRad(5.0);
-  double const VisibleEndAngle = my::DegToRad(355.0);
+  double const kVisibleStartAngle = my::DegToRad(5.0);
+  double const kVisibleEndAngle = my::DegToRad(355.0);
 
 public:
   CompassHandle(uint32_t id, m2::PointF const & pivot, m2::PointF const & size,
@@ -51,10 +52,10 @@ public:
 
   bool Update(ScreenBase const & screen) override
   {
-    float angle = ang::AngleIn2PI(screen.GetAngle());
+    auto const angle = static_cast<float>(ang::AngleIn2PI(screen.GetAngle()));
 
     bool isVisiblePrev = IsVisible();
-    bool isVisibleAngle = angle > VisibleStartAngle && angle < VisibleEndAngle;
+    bool isVisibleAngle = angle > kVisibleStartAngle && angle < kVisibleEndAngle;
 
     bool isVisible = isVisibleAngle || (isVisiblePrev && DrapeGui::Instance().IsInUserAction());
 
@@ -72,9 +73,8 @@ public:
 
       glsl::mat4 r = glsl::rotate(glsl::mat4(), angle, glsl::vec3(0.0, 0.0, 1.0));
       glsl::mat4 m = glsl::translate(glsl::mat4(), glsl::vec3(m_pivot, 0.0));
-      m = glsl::transpose(m * r);
-      m_uniforms.SetMatrix4x4Value("modelView", glsl::value_ptr(m));
-      m_uniforms.SetFloatValue("u_opacity", static_cast<float>(m_animation.GetT()));
+      m_params.m_modelView = glsl::transpose(m * r);
+      m_params.m_opacity = static_cast<float>(m_animation.GetT());
     }
 
     if (m_animation.IsFinished())
@@ -106,8 +106,9 @@ drape_ptr<ShapeRenderer> Compass::Draw(m2::PointF & compassSize, ref_ptr<dp::Tex
     CompassVertex(glsl::vec2(halfSize.x, -halfSize.y), glsl::ToVec2(texRect.RightBottom()))
   };
 
-  auto state = df::CreateGLState(gpu::TEXTURING_GUI_PROGRAM, df::RenderState::GuiLayer);
+  auto state = df::CreateGLState(gpu::Program::TexturingGui, df::RenderState::GuiLayer);
   state.SetColorTexture(region.GetTexture());
+  state.SetDepthTestEnabled(false);
 
   dp::AttributeProvider provider(1, 4);
   dp::BindingInfo info(2);

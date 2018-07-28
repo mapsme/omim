@@ -4,7 +4,6 @@
 #import "MWMEditorViewController.h"
 #import "MWMKeyboard.h"
 #import "MWMTableViewCell.h"
-#import "MWMToast.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
 #import "UIViewController+Navigation.h"
@@ -83,21 +82,8 @@ string locale()
   self.selectedIndexPath = [NSIndexPath indexPathForRow:(distance(all.begin(), it)) inSection:0];
 }
 
-- (void)backTap
-{
-  id<MWMObjectsCategorySelectorDelegate> delegate = self.delegate;
-  if (delegate)
-  {
-    auto const object = self.createdObject;
-    [delegate reloadObject:object];
-  }
-  [super backTap];
-}
-
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-  if ([MWMToast affectsStatusBar])
-    return [MWMToast preferredStatusBarStyle];
   setStatusBarBackgroundColor(UIColor.clearColor);
   return UIStatusBarStyleLightContent;
 }
@@ -185,8 +171,13 @@ string locale()
 {
   self.selectedIndexPath = indexPath;
 
-  if (self.delegate)
-    [self backTap];
+  id<MWMObjectsCategorySelectorDelegate> delegate = self.delegate;
+  if (delegate)
+  {
+    auto const object = self.createdObject;
+    [delegate reloadObject:object];
+    [self goBack];
+  }
   else
     [self performSegueWithIdentifier:kToEditorSegue sender:nil];
 }

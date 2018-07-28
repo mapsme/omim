@@ -8,11 +8,16 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
+
+import java.net.URLEncoder;
 
 public class BookmarksDownloadManager
 {
   private static final String QUERY_PARAM_ID_KEY = "id";
   private static final String QUERY_PARAM_NAME_KEY = "name";
+  private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
 
   @NonNull
   private final Context mContext;
@@ -22,6 +27,7 @@ public class BookmarksDownloadManager
     mContext = context.getApplicationContext();
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   public long enqueueRequest(@NonNull String url) throws UnprocessedUrlException
   {
     Pair<Uri, Uri> uriPair = prepareUriPair(url);
@@ -39,11 +45,12 @@ public class BookmarksDownloadManager
     Uri dstUri = uriPair.second;
 
     String title = makeTitle(srcUri);
+    LOGGER.d("Bookmarks catalog url", "Value = " + dstUri);
     DownloadManager.Request request = new DownloadManager
         .Request(dstUri)
         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
         .setTitle(title)
-        .setDestinationInExternalFilesDir(mContext,null, dstUri.getLastPathSegment());
+        .setDestinationInExternalFilesDir(mContext, null, dstUri.getLastPathSegment());
     return downloadManager.enqueue(request);
   }
 
@@ -67,7 +74,8 @@ public class BookmarksDownloadManager
 
     for (String each : srcUri.getQueryParameterNames())
     {
-      builder.appendQueryParameter(each, srcUri.getQueryParameter(each));
+      String queryParameter = srcUri.getQueryParameter(each);
+      builder.appendQueryParameter(each, URLEncoder.encode(queryParameter));
     }
     Uri dstUri = builder.build();
     return new Pair<>(srcUri, dstUri);
@@ -79,8 +87,10 @@ public class BookmarksDownloadManager
     return new BookmarksDownloadManager(context);
   }
 
-  static class UnprocessedUrlException extends Exception
+  public static class UnprocessedUrlException extends Exception
   {
+    private static final long serialVersionUID = -8641309036628295064L;
+
     UnprocessedUrlException(@NonNull String msg)
     {
       super(msg);

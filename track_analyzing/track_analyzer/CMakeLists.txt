@@ -5,6 +5,7 @@ include_directories(${OMIM_ROOT}/3party/gflags/src)
 set(
   SRC
   cmd_cpp_track.cpp
+  cmd_gpx.cpp
   cmd_match.cpp
   cmd_table.cpp
   cmd_track.cpp
@@ -21,13 +22,10 @@ omim_link_libraries(
   ${PROJECT_NAME}
   track_analyzing
   generator
-  map
   routing
   traffic
   routing_common
   storage
-  kml
-  editor
   indexer
   platform
   mwm_diff
@@ -35,15 +33,11 @@ omim_link_libraries(
   geometry
   coding
   base
-  opening_hours
   icu
   jansson
   protobuf
   stats_client
-  succinct
-  pugixml
   gflags
-  oauthcpp
   ${LIBZ}
 )
 

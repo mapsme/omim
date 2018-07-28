@@ -23,6 +23,7 @@ struct CommonViewParams
 {
   RenderState::DepthLayer m_depthLayer = RenderState::GeometryLayer;
   float m_depth = 0.0f;
+  bool m_depthTestEnabled = true;
   int m_minVisibleScale = 0;
   uint8_t m_rank = 0;
   m2::PointD m_tileCenter;
@@ -33,7 +34,8 @@ enum class SpecialDisplacement
   None,
   SpecialMode,
   UserMark,
-  HouseNumber
+  HouseNumber,
+  TransitScheme
 };
 
 struct CommonOverlayViewParams : public CommonViewParams

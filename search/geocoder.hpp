@@ -35,7 +35,6 @@
 #include "base/string_utils.hpp"
 
 #include "std/limits.hpp"
-#include "std/set.hpp"
 #include "std/shared_ptr.hpp"
 #include "std/string.hpp"
 #include "std/unique_ptr.hpp"
@@ -43,7 +42,7 @@
 #include "std/vector.hpp"
 
 class CategoriesHolder;
-class DataSourceBase;
+class DataSource;
 class MwmValue;
 
 namespace storage
@@ -83,11 +82,11 @@ public:
     m2::RectD m_pivot;
     Locales m_categoryLocales;
     shared_ptr<hotels_filter::Rule> m_hotelsFilter;
-    set<uint32_t> m_preferredTypes;
+    vector<uint32_t> m_preferredTypes;
     shared_ptr<Tracer> m_tracer;
   };
 
-  Geocoder(DataSourceBase const & dataSource, storage::CountryInfoGetter const & infoGetter,
+  Geocoder(DataSource const & dataSource, storage::CountryInfoGetter const & infoGetter,
            CategoriesHolder const & categories, PreRanker & preRanker,
            VillagesCache & villagesCache, ::base::Cancellable const & cancellable);
   ~Geocoder();
@@ -239,7 +238,7 @@ private:
   WARN_UNUSED_RESULT bool GetTypeInGeocoding(BaseContext const & ctx, uint32_t featureId,
                                              Model::Type & type);
 
-  DataSourceBase const & m_dataSource;
+  DataSource const & m_dataSource;
   storage::CountryInfoGetter const & m_infoGetter;
   CategoriesHolder const & m_categories;
 

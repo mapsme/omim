@@ -36,6 +36,7 @@ std::string GetBookmarkIconType(kml::BookmarkIcon const & icon)
     ASSERT(false, ("Invalid bookmark icon type"));
     return {};
   }
+  CHECK_SWITCH();
 }
 }  // namespace
 
@@ -105,6 +106,7 @@ df::ColorConstant Bookmark::GetColorConstant() const
     case kml::PredefinedColor::Count:
       return "BookmarkRed";
   }
+  CHECK_SWITCH();
 }
 
 bool Bookmark::HasCreationAnimation() const
@@ -147,7 +149,7 @@ void Bookmark::SetName(std::string const & name, int8_t langCode)
 
 std::string Bookmark::GetCustomName() const
 {
-  return kml::GetDefaultStr(m_data.m_customName);
+  return GetPreferredBookmarkStr(m_data.m_customName);
 }
 
 void Bookmark::SetCustomName(std::string const & customName)
@@ -163,7 +165,7 @@ m2::RectD Bookmark::GetViewport() const
 
 std::string Bookmark::GetDescription() const
 {
-  return kml::GetDefaultStr(m_data.m_description);
+  return GetPreferredBookmarkStr(m_data.m_description);
 }
 
 void Bookmark::SetDescription(std::string const & description)
@@ -249,7 +251,7 @@ void BookmarkCategory::SetServerId(std::string const & serverId)
 
 std::string BookmarkCategory::GetName() const
 {
-  return kml::GetDefaultStr(m_data.m_name);
+  return GetPreferredBookmarkStr(m_data.m_name);
 }
 
 bool BookmarkCategory::IsCategoryFromCatalog() const

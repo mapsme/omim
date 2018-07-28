@@ -20,6 +20,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <cstdint>
 
 #ifdef DEBUG
 #define TEST_CALL(action) if (m_testFn) m_testFn(action)
@@ -391,7 +392,7 @@ bool UserEventStream::OnSetCenter(ref_ptr<SetCenterEvent> centerEvent)
   }
   else
   {
-    screen.SetFromParams(center, screen.GetAngle(), GetScale(zoom));
+    screen.SetFromParams(center, screen.GetAngle(), GetScreenScale(zoom));
     screen.MatchGandP3d(center, m_visibleViewport.Center());
   }
 
@@ -553,7 +554,7 @@ bool UserEventStream::SetFollowAndRotate(m2::PointD const & userPos, m2::PointD 
   }
   else
   {
-    screen.SetFromParams(userPos, -azimuth, isAutoScale ? autoScale : GetScale(preferredZoomLevel));
+    screen.SetFromParams(userPos, -azimuth, isAutoScale ? autoScale : GetScreenScale(preferredZoomLevel));
   }
   screen.MatchGandP3d(userPos, pixelPos);
 
@@ -622,7 +623,7 @@ void UserEventStream::ResetAnimations(Animation::Type animType, bool rewind, boo
     ApplyAnimations();
 }
 
-void UserEventStream::ResetAnimations(Animation::Type animType, string const & customType, bool rewind, bool finishAll)
+void UserEventStream::ResetAnimations(Animation::Type animType, std::string const & customType, bool rewind, bool finishAll)
 {
   bool const hasAnimations = m_animationSystem.HasAnimations();
   m_animationSystem.FinishAnimations(animType, customType, rewind, finishAll);
@@ -702,7 +703,7 @@ bool UserEventStream::ProcessTouch(TouchEvent const & touch)
 bool UserEventStream::TouchDown(array<Touch, 2> const & touches)
 {
   if (m_listener)
-    m_listener->OnTouchMapAction();
+    m_listener->OnTouchMapAction(TouchEvent::TOUCH_DOWN);
 
   size_t touchCount = GetValidTouchesCount(touches);
   bool isMapTouch = true;
@@ -764,13 +765,13 @@ bool UserEventStream::TouchDown(array<Touch, 2> const & touches)
 
 bool UserEventStream::CheckDrag(array<Touch, 2> const & touches, double threshold) const
 {
-  return m_startDragOrg.SquareLength(m2::PointD(touches[0].m_location)) > threshold;
+  return m_startDragOrg.SquaredLength(m2::PointD(touches[0].m_location)) > threshold;
 }
 
 bool UserEventStream::TouchMove(array<Touch, 2> const & touches)
 {
   if (m_listener)
-    m_listener->OnTouchMapAction();
+    m_listener->OnTouchMapAction(TouchEvent::TOUCH_MOVE);
 
   double const kDragThreshold = pow(VisualParams::Instance().GetDragThreshold(), 2);
   size_t touchCount = GetValidTouchesCount(touches);
@@ -795,8 +796,8 @@ bool UserEventStream::TouchMove(array<Touch, 2> const & touches)
     if (touchCount == 2)
     {
       auto const threshold = static_cast<float>(kDragThreshold);
-      if (m_twoFingersTouches[0].SquareLength(touches[0].m_location) > threshold ||
-          m_twoFingersTouches[1].SquareLength(touches[1].m_location) > threshold)
+      if (m_twoFingersTouches[0].SquaredLength(touches[0].m_location) > threshold ||
+          m_twoFingersTouches[1].SquaredLength(touches[1].m_location) > threshold)
         BeginScale(touches[0], touches[1]);
       else
         isMapTouch = false;
@@ -854,7 +855,7 @@ bool UserEventStream::TouchMove(array<Touch, 2> const & touches)
 bool UserEventStream::TouchCancel(array<Touch, 2> const & touches)
 {
   if (m_listener)
-    m_listener->OnTouchMapAction();
+    m_listener->OnTouchMapAction(TouchEvent::TOUCH_CANCEL);
 
   size_t touchCount = GetValidTouchesCount(touches);
   UNUSED_VALUE(touchCount);
@@ -898,7 +899,7 @@ bool UserEventStream::TouchCancel(array<Touch, 2> const & touches)
 bool UserEventStream::TouchUp(array<Touch, 2> const & touches)
 {
   if (m_listener)
-    m_listener->OnTouchMapAction();
+    m_listener->OnTouchMapAction(TouchEvent::TOUCH_UP);
 
   size_t touchCount = GetValidTouchesCount(touches);
   bool isMapTouch = true;
@@ -1018,8 +1019,9 @@ bool UserEventStream::EndDrag(Touch const & t, bool cancelled)
 
   CheckAutoRotate();
 
-  if (!cancelled && m_kineticScrollEnabled && m_scroller.IsActive() &&
-      m_kineticTimer.TimeElapsedAs<std::chrono::milliseconds>().count() >= kKineticDelayMs)
+  auto const ms = static_cast<uint64_t>(
+              m_kineticTimer.TimeElapsedAs<std::chrono::milliseconds>().count());
+  if (!cancelled && m_kineticScrollEnabled && m_scroller.IsActive() && ms >= kKineticDelayMs)
   {
     drape_ptr<Animation> anim = m_scroller.CreateKineticAnimation(m_navigator.Screen());
     if (anim != nullptr)
@@ -1108,7 +1110,8 @@ void UserEventStream::DetectShortTap(Touch const & touch)
   if (DetectForceTap(touch))
     return;
 
-  auto const ms = m_touchTimer.TimeElapsedAs<std::chrono::milliseconds>().count();
+  auto const ms = static_cast<uint64_t>(
+              m_touchTimer.TimeElapsedAs<std::chrono::milliseconds>().count());
   if (ms > kDoubleTapPauseMs)
   {
     m_state = STATE_EMPTY;
@@ -1124,7 +1127,8 @@ void UserEventStream::DetectLongTap(Touch const & touch)
   if (DetectForceTap(touch))
     return;
 
-  auto const ms = m_touchTimer.TimeElapsedAs<std::chrono::milliseconds>().count();
+  auto const ms = static_cast<uint64_t>(
+              m_touchTimer.TimeElapsedAs<std::chrono::milliseconds>().count());
   if (ms > kLongTouchMs)
   {
     TEST_CALL(LONG_TAP_DETECTED);
@@ -1136,7 +1140,8 @@ void UserEventStream::DetectLongTap(Touch const & touch)
 
 bool UserEventStream::DetectDoubleTap(Touch const & touch)
 {
-  auto const ms = m_touchTimer.TimeElapsedAs<std::chrono::milliseconds>().count();
+  auto const ms = static_cast<uint64_t>(
+              m_touchTimer.TimeElapsedAs<std::chrono::milliseconds>().count());
   if (m_state != STATE_WAIT_DOUBLE_TAP || ms > kDoubleTapPauseMs)
     return false;
 

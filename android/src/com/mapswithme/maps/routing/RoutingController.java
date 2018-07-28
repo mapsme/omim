@@ -78,6 +78,7 @@ public class RoutingController implements TaxiManager.TaxiListener
     void onAddedStop();
     void onRemovedStop();
     void onBuiltRoute();
+    boolean isSubwayEnabled();
 
     /**
      * @param progress progress to be displayed.
@@ -117,38 +118,42 @@ public class RoutingController implements TaxiManager.TaxiListener
   @SuppressWarnings("FieldCanBeLocal")
   private final Framework.RoutingListener mRoutingListener = new Framework.RoutingListener()
   {
+    @MainThread
     @Override
     public void onRoutingEvent(final int resultCode, @Nullable final String[] missingMaps)
     {
       mLogger.d(TAG, "onRoutingEvent(resultCode: " + resultCode + ")");
-      UiThread.run(() -> {
-        mLastResultCode = resultCode;
-        mLastMissingMaps = missingMaps;
-        mContainsCachedResult = true;
+      mLastResultCode = resultCode;
+      mLastMissingMaps = missingMaps;
+      mContainsCachedResult = true;
 
-        if (mLastResultCode == ResultCodesHelper.NO_ERROR
-            || ResultCodesHelper.isMoreMapsNeeded(mLastResultCode))
-        {
-          mCachedRoutingInfo = Framework.nativeGetRouteFollowingInfo();
-          if (mLastRouterType == Framework.ROUTER_TYPE_TRANSIT)
-            mCachedTransitRouteInfo = Framework.nativeGetTransitRouteInfo();
-          setBuildState(BuildState.BUILT);
-          mLastBuildProgress = 100;
-          if (mContainer != null)
-            mContainer.onBuiltRoute();
-        }
+      if (mLastResultCode == ResultCodesHelper.NO_ERROR
+        || ResultCodesHelper.isMoreMapsNeeded(mLastResultCode))
+      {
+        mCachedRoutingInfo = Framework.nativeGetRouteFollowingInfo();
+        if (mLastRouterType == Framework.ROUTER_TYPE_TRANSIT)
+          mCachedTransitRouteInfo = Framework.nativeGetTransitRouteInfo();
+        setBuildState(BuildState.BUILT);
+        mLastBuildProgress = 100;
+        if (mContainer != null)
+          mContainer.onBuiltRoute();
+      }
 
-        processRoutingEvent();
-      });
+      processRoutingEvent();
     }
   };
 
   @SuppressWarnings("FieldCanBeLocal")
-  private final Framework.RoutingProgressListener mRoutingProgressListener =
-    progress -> UiThread.run(() -> {
+  private final Framework.RoutingProgressListener mRoutingProgressListener = new Framework.RoutingProgressListener()
+  {
+    @MainThread
+    @Override
+    public void onRouteBuildingProgress(float progress)
+    {
       mLastBuildProgress = (int) progress;
       updateProgress();
-    });
+    }
+  };
 
   @SuppressWarnings("FieldCanBeLocal")
   private final Framework.RoutingRecommendationListener mRoutingRecommendationListener =
@@ -413,10 +418,27 @@ public class RoutingController implements TaxiManager.TaxiListener
       return;
     }
 
+    initLastRouteType(startPoint, endPoint, fromApi);
+    prepare(startPoint, endPoint, mLastRouterType, fromApi);
+  }
+
+  private void initLastRouteType(@Nullable MapObject startPoint, @Nullable MapObject endPoint,
+                                 boolean fromApi)
+  {
+    if (isSubwayEnabled() && !fromApi)
+    {
+      mLastRouterType = Framework.ROUTER_TYPE_TRANSIT;
+      return;
+    }
+
     if (startPoint != null && endPoint != null)
       mLastRouterType = Framework.nativeGetBestRouter(startPoint.getLat(), startPoint.getLon(),
                                                       endPoint.getLat(), endPoint.getLon());
-    prepare(startPoint, endPoint, mLastRouterType, fromApi);
+  }
+
+  private boolean isSubwayEnabled()
+  {
+    return mContainer != null && mContainer.isSubwayEnabled();
   }
 
   public void prepare(final @Nullable MapObject startPoint, final @Nullable MapObject endPoint,
@@ -490,8 +512,6 @@ public class RoutingController implements TaxiManager.TaxiListener
       return;
     }
 
-    Statistics.INSTANCE.trackEvent(Statistics.EventName.ROUTING_START);
-    AlohaHelper.logClick(AlohaHelper.ROUTING_START);
     setState(State.NAVIGATION);
 
     if (mContainer != null)
@@ -1023,6 +1043,12 @@ public class RoutingController implements TaxiManager.TaxiListener
 
     if (getStartPoint() != null && getEndPoint() != null)
       build();
+  }
+
+  @Framework.RouterType
+  public int getLastRouterType()
+  {
+    return mLastRouterType;
   }
 
   private void openRemovingIntermediatePointsTransaction()

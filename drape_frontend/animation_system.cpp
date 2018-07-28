@@ -156,6 +156,17 @@ bool AnimationSystem::HasAnimations() const
   return !m_animationChain.empty();
 }
 
+bool AnimationSystem::HasMapAnimations() const
+{
+  if (AnimationExists(Animation::Object::MapPlane))
+    return true;
+
+  if (AnimationExists(Animation::Object::Selection))
+    return true;
+
+  return false;
+}
+
 AnimationSystem & AnimationSystem::Instance()
 {
   static AnimationSystem animSystem;
@@ -348,7 +359,7 @@ void AnimationSystem::FinishObjectAnimations(Animation::Object object, bool rewi
 
 void AnimationSystem::Advance(double elapsedSeconds)
 {
-  if (m_animationChain.empty())
+  if (!HasAnimations())
     return;
 
   TAnimationList finishedAnimations;

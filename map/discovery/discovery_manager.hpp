@@ -3,8 +3,10 @@
 #include "search/city_finder.hpp"
 
 #include "map/discovery/discovery_client_params.hpp"
+#include "map/discovery/discovery_search.hpp"
 #include "map/discovery/discovery_search_params.hpp"
 #include "map/search_api.hpp"
+#include "map/search_product_info.hpp"
 
 #include "partners_api/booking_api.hpp"
 #include "partners_api/locals_api.hpp"
@@ -19,11 +21,12 @@
 #include "base/thread_checker.hpp"
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-class DataSourceBase;
+class DataSource;
 
 namespace discovery
 {
@@ -54,7 +57,7 @@ public:
 
   using ErrorCalback = std::function<void(uint32_t const requestId, ItemType const type)>;
 
-  Manager(DataSourceBase const & dataSource, search::CityFinder & cityFinder, APIs const & apis);
+  Manager(DataSource const & dataSource, search::CityFinder & cityFinder, APIs const & apis);
 
   template <typename ResultCallback>
   uint32_t Discover(Params && params, ResultCallback const & onResult, ErrorCalback const & onError)
@@ -114,13 +117,20 @@ public:
       {
         auto p = GetSearchParams(params, type);
         auto const viewportCenter = params.m_viewportCenter;
-        p.m_onResults = [requestId, onResult, type, viewportCenter](search::Results const & results) {
+        p.m_onResults =
+          [requestId, onResult, type, viewportCenter](search::Results const & results,
+                                                      std::vector<search::ProductInfo> const & productInfo) {
           GetPlatform().RunTask(Platform::Thread::Gui,
-                                [requestId, onResult, type, results, viewportCenter] {
-            onResult(requestId, results, type, viewportCenter);
+                                [requestId, onResult, type, results, productInfo, viewportCenter] {
+            onResult(requestId, results, productInfo, type, viewportCenter);
           });
         };
-        m_searchApi.SearchForDiscovery(p);
+
+        if (type == ItemType::Hotels)
+          ProcessSearchIntent(std::make_shared<SearchHotels>(m_dataSource, p, m_searchApi));
+        else
+          ProcessSearchIntent(std::make_shared<SearchPopularPlaces>(m_dataSource, p, m_searchApi));
+
         break;
       }
       case ItemType::LocalExperts:
@@ -150,10 +160,10 @@ public:
   std::string GetLocalExpertsUrl(m2::PointD const & point) const;
 
 private:
-  static search::DiscoverySearchParams GetSearchParams(Manager::Params const & params, ItemType const type);
+  static DiscoverySearchParams GetSearchParams(Manager::Params const & params, ItemType const type);
   std::string GetCityViatorId(m2::PointD const & point) const;
 
-  DataSourceBase const & m_dataSource;
+  DataSource const & m_dataSource;
   search::CityFinder & m_cityFinder;
   SearchAPI & m_searchApi;
   viator::Api const & m_viatorApi;

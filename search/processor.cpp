@@ -141,7 +141,7 @@ size_t const Processor::kPreResultsCount = 200;
 double const Processor::kMinViewportRadiusM = 5.0 * 1000;
 double const Processor::kMaxViewportRadiusM = 50.0 * 1000;
 
-Processor::Processor(DataSourceBase const & dataSource, CategoriesHolder const & categories,
+Processor::Processor(DataSource const & dataSource, CategoriesHolder const & categories,
                      vector<Suggest> const & suggests,
                      storage::CountryInfoGetter const & infoGetter)
   : m_categories(categories)
@@ -276,10 +276,8 @@ void Processor::SetQuery(string const & query)
   // Get preferred types to show in results.
   m_preferredTypes.clear();
   ForEachCategoryType(QuerySliceOnRawStrings<decltype(m_tokens)>(m_tokens, m_prefix),
-                      [&](size_t, uint32_t t)
-                      {
-                        m_preferredTypes.insert(t);
-                      });
+                      [&](size_t, uint32_t t) { m_preferredTypes.push_back(t); });
+  my::SortUnique(m_preferredTypes);
 }
 
 m2::PointD Processor::GetPivotPoint(bool viewportSearch) const

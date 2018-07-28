@@ -145,7 +145,7 @@ private:
   {
     if (m_table)
       return;
-    m_table = search::RankTable::Load(m_value.m_cont);
+    m_table = search::RankTable::Load(m_value.m_cont, SEARCH_RANKS_FILE_TAG);
     if (!m_table)
       m_table = make_unique<search::DummyRankTable>();
   }
@@ -284,7 +284,7 @@ struct KeyedMwmInfo
 {
   KeyedMwmInfo(shared_ptr<MwmInfo> const & info, m2::RectD const & pivot) : m_info(info)
   {
-    auto const & rect = m_info->m_limitRect;
+    auto const & rect = m_info->m_bordersRect;
     m_similarity = GetSimilarity(pivot, rect);
     m_distance = GetDistanceMeters(pivot.Center(), rect);
   }
@@ -325,9 +325,8 @@ size_t OrderCountries(m2::RectD const & pivot, vector<shared_ptr<MwmInfo>> & inf
   for (auto const & info : keyedInfos)
     infos.emplace_back(info.m_info);
 
-  auto intersects = [&](shared_ptr<MwmInfo> const & info) -> bool
-  {
-    return pivot.IsIntersect(info->m_limitRect);
+  auto intersects = [&](shared_ptr<MwmInfo> const & info) -> bool {
+    return pivot.IsIntersect(info->m_bordersRect);
   };
 
   auto const sep = stable_partition(infos.begin(), infos.end(), intersects);
@@ -336,7 +335,7 @@ size_t OrderCountries(m2::RectD const & pivot, vector<shared_ptr<MwmInfo>> & inf
 }  // namespace
 
 // Geocoder::Geocoder ------------------------------------------------------------------------------
-Geocoder::Geocoder(DataSourceBase const & dataSource, storage::CountryInfoGetter const & infoGetter,
+Geocoder::Geocoder(DataSource const & dataSource, storage::CountryInfoGetter const & infoGetter,
                    CategoriesHolder const & categories, PreRanker & preRanker,
                    VillagesCache & villagesCache, ::base::Cancellable const & cancellable)
   : m_dataSource(dataSource)
@@ -427,10 +426,9 @@ void Geocoder::GoInViewport()
   vector<shared_ptr<MwmInfo>> infos;
   m_dataSource.GetMwmsInfo(infos);
 
-  my::EraseIf(infos, [this](shared_ptr<MwmInfo> const & info)
-              {
-                return !m_params.m_pivot.IsIntersect(info->m_limitRect);
-              });
+  my::EraseIf(infos, [this](shared_ptr<MwmInfo> const & info) {
+    return !m_params.m_pivot.IsIntersect(info->m_bordersRect);
+  });
 
   GoImpl(infos, true /* inViewport */);
 }
@@ -1414,6 +1412,7 @@ CBV Geocoder::RetrieveGeometryFeatures(MwmContext const & context, m2::RectD con
   case RECT_ID_LOCALITY: return m_localityRectsCache.Get(context, rect, m_params.GetScale());
   case RECT_ID_COUNT: ASSERT(false, ("Invalid RectId.")); return CBV();
   }
+  CHECK_SWITCH();
 }
 
 bool Geocoder::GetTypeInGeocoding(BaseContext const & ctx, uint32_t featureId, Model::Type & type)

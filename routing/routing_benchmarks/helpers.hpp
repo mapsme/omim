@@ -42,7 +42,7 @@ protected:
                        std::vector<std::pair<routing::Edge, routing::Junction>> & edges);
 
   routing::IRoadGraph::Mode const m_mode;
-  DataSource m_dataSource;
+  FrozenDataSource m_dataSource;
   traffic::TrafficCache m_trafficCache;
 
   std::vector<platform::LocalCountryFile> m_localFiles;
@@ -68,11 +68,14 @@ public:
     // some speed depending of road type (0 <= speed <= maxSpeed).  For
     // tests purposes for all allowed features speed must be the same as
     // max speed.
-    double GetSpeed(FeatureType const & f) const override
+    using SpeedKMpH = typename Model::SpeedKMpH;
+
+    SpeedKMpH GetSpeed(FeatureType const & f) const override
     {
-      double const speed = Model::GetSpeed(f);
-      if (speed <= 0.0)
-        return 0.0;
+      auto const speed = Model::GetSpeed(f);
+      if (speed.m_weight <= 0.0)
+        return SpeedKMpH();
+
       return Model::GetMaxSpeed();
     }
   };

@@ -673,13 +673,9 @@ private:
   bool m_isVisible;
 };
 
-class UpdateMapStyleMessage : public BaseBlockingMessage
+class UpdateMapStyleMessage : public Message
 {
 public:
-  UpdateMapStyleMessage(Blocker & blocker)
-    : BaseBlockingMessage(blocker)
-  {}
-
   Type GetType() const override { return Message::UpdateMapStyle; }
 };
 
@@ -1050,22 +1046,25 @@ private:
   MwmSet::MwmId m_mwmId;
 };
 
+class ClearAllTransitSchemeDataMessage : public Message
+{
+public:
+  Type GetType() const override { return Message::ClearAllTransitSchemeData; }
+};
+
 class UpdateTransitSchemeMessage : public Message
 {
 public:
-  UpdateTransitSchemeMessage(TransitDisplayInfos && transitInfos,
-                             std::vector<MwmSet::MwmId> const & visibleMwms)
-    : m_transitInfos(move(transitInfos)), m_visibleMwms(visibleMwms)
+  UpdateTransitSchemeMessage(TransitDisplayInfos && transitInfos)
+    : m_transitInfos(move(transitInfos))
   {}
 
   Type GetType() const override { return Message::UpdateTransitScheme; }
 
   TransitDisplayInfos const & GetTransitDisplayInfos() { return m_transitInfos; }
-  std::vector<MwmSet::MwmId> const & GetVisibleMwms() const { return m_visibleMwms; }
 
 private:
   TransitDisplayInfos m_transitInfos;
-  std::vector<MwmSet::MwmId> m_visibleMwms;
 };
 
 class RegenerateTransitMessage : public Message
@@ -1076,15 +1075,6 @@ public:
 
 using FlushTransitSchemeMessage = FlushRenderDataMessage<TransitRenderData,
                                                          Message::FlushTransitScheme>;
-
-using FlushTransitMarkersMessage = FlushRenderDataMessage<TransitRenderData,
-                                                          Message::FlushTransitMarkers>;
-
-using FlushTransitTextMessage = FlushRenderDataMessage<TransitRenderData,
-                                                       Message::FlushTransitText>;
-
-using FlushTransitStubsMessage = FlushRenderDataMessage<TransitRenderData,
-                                                        Message::FlushTransitStubs>;
 
 class DrapeApiAddLinesMessage : public Message
 {
@@ -1261,5 +1251,44 @@ class FinishTexturesInitializationMessage : public Message
 {
 public:
   Type GetType() const override { return Message::FinishTexturesInitialization; }
+};
+
+class ShowDebugInfoMessage : public Message
+{
+public:
+  explicit ShowDebugInfoMessage(bool shown)
+    : m_shown(shown)
+  {}
+
+  Type GetType() const override { return Message::ShowDebugInfo; }
+  bool IsShown() const { return m_shown; }
+
+private:
+  bool const m_shown;
+};
+
+class NotifyRenderThreadMessage : public Message
+{
+public:
+  using Functor = std::function<void(uint64_t notifyId)>;
+  NotifyRenderThreadMessage(Functor const & functor, uint64_t notifyId)
+    : m_functor(functor)
+    , m_notifyId(notifyId)
+  {}
+
+  // We can not notify render threads without active OpenGL context.
+  bool IsGLContextDependent() const override { return true; }
+
+  Type GetType() const override { return Message::NotifyRenderThread; }
+
+  void InvokeFunctor()
+  {
+    if (m_functor)
+      m_functor(m_notifyId);
+  }
+
+private:
+  Functor m_functor;
+  uint64_t const m_notifyId;
 };
 }  // namespace df

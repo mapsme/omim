@@ -20,6 +20,7 @@
 
 #include "routing_common/num_mwm_id.hpp"
 
+#include "search/cities_boundaries_table.hpp"
 #include "search/downloader_search_callback.hpp"
 #include "search/editor_delegate.hpp"
 #include "search/engine.hpp"
@@ -255,6 +256,11 @@ LocalAdsManager & Framework::GetLocalAdsManager()
   return m_localAdsManager;
 }
 
+TransitReadManager & Framework::GetTransitManager()
+{
+  return m_transitManager;
+}
+
 void Framework::OnUserPositionChanged(m2::PointD const & position, bool hasPosition)
 {
   GetBookmarkManager().MyPositionMark().SetUserPosition(position, hasPosition);
@@ -366,7 +372,7 @@ Framework::Framework(FrameworkParams const & params)
                      bind(&Framework::GetMwmsByRect, this, _1, false /* rough */))
   , m_routingManager(
         RoutingManager::Callbacks(
-            [this]() -> DataSourceBase & { return m_model.GetDataSource(); },
+            [this]() -> DataSource & { return m_model.GetDataSource(); },
             [this]() -> storage::CountryInfoGetter & { return GetCountryInfoGetter(); },
             [this](string const & id) -> string { return m_storage.GetParentIdFor(id); },
             [this]() -> StringsBundle const & { return m_stringsBundle; }),
@@ -482,6 +488,8 @@ Framework::Framework(FrameworkParams const & params)
   LOG(LINFO, ("Editor initialized"));
 
   m_trafficManager.SetCurrentDataVersion(m_storage.GetCurrentDataVersion());
+  m_trafficManager.SetSimplifiedColorScheme(LoadTrafficSimplifiedColors());
+  m_trafficManager.SetEnabled(LoadTrafficEnabled());
 
   m_adsEngine = make_unique<ads::Engine>();
 
@@ -573,7 +581,7 @@ void Framework::OnCountryFileDownloaded(storage::TCountryId const & countryId, s
     auto p = m_model.RegisterMap(*localFile);
     MwmSet::MwmId const & id = p.first;
     if (id.IsAlive())
-      rect = id.GetInfo()->m_limitRect;
+      rect = id.GetInfo()->m_bordersRect;
   }
   m_trafficManager.Invalidate();
   m_transitManager.Invalidate();
@@ -600,7 +608,6 @@ bool Framework::OnCountryFileDelete(storage::TCountryId const & countryId, stora
     rect = m_infoGetter->GetLimitRectForLeaf(countryId);
     m_model.DeregisterMap(platform::CountryFile(countryId));
     deferredDelete = true;
-    m_localAdsManager.OnDeleteCountry(countryId);
   }
   InvalidateRect(rect);
 
@@ -610,6 +617,10 @@ bool Framework::OnCountryFileDelete(storage::TCountryId const & countryId, stora
 
 void Framework::OnMapDeregistered(platform::LocalCountryFile const & localFile)
 {
+  m_localAdsManager.OnMwmDeregistered(localFile);
+  m_transitManager.OnMwmDeregistered(localFile);
+  m_trafficManager.OnMwmDeregistered(localFile);
+
   auto action = [this, localFile]
   {
     m_storage.DeleteCustomCountryVersion(localFile);
@@ -621,10 +632,6 @@ void Framework::OnMapDeregistered(platform::LocalCountryFile const & localFile)
     action();
   else
     GetPlatform().RunTask(Platform::Thread::Gui, action);
-
-  auto const mwmId = m_model.GetDataSource().GetMwmIdByCountryFile(localFile.GetCountryFile());
-  m_trafficManager.OnMwmDeregistered(mwmId);
-  m_transitManager.OnMwmDeregistered(mwmId);
 }
 
 bool Framework::HasUnsavedEdits(storage::TCountryId const & countryId)
@@ -744,7 +751,7 @@ void Framework::FillFeatureInfo(FeatureID const & fid, place_page::Info & info) 
     return;
   }
 
-  EditableDataSource::FeaturesLoaderGuard const guard(m_model.GetDataSource(), fid.m_mwmId);
+  FeaturesLoaderGuard const guard(m_model.GetDataSource(), fid.m_mwmId);
   FeatureType ft;
   if (!guard.GetFeatureByIndex(fid.m_index, ft))
   {
@@ -989,6 +996,8 @@ void Framework::ShowTrack(Track const & track)
 
 void Framework::ShowFeatureByMercator(m2::PointD const & pt)
 {
+  StopLocationFollow();
+
   if (m_drapeEngine != nullptr)
   {
     m_drapeEngine->SetModelViewCenter(pt, scales::GetUpperComfortScale(), true /* isAnim */,
@@ -1531,7 +1540,7 @@ size_t Framework::ShowSearchResults(search::Results const & results)
     Result const & r = results[i];
     if (r.HasPoint())
     {
-      double const dist = center.SquareLength(r.GetFeatureCenter());
+      double const dist = center.SquaredLength(r.GetFeatureCenter());
       if (dist < minDistance)
       {
         minDistance = dist;
@@ -1720,11 +1729,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   Load3dMode(allow3d, allow3dBuildings);
 
   bool const isAutozoomEnabled = LoadAutoZoom();
-  bool const trafficEnabled = LoadTrafficEnabled();
-  m_trafficManager.SetEnabled(trafficEnabled);
-  bool const simplifiedTrafficColors = LoadTrafficSimplifiedColors();
-  m_trafficManager.SetSimplifiedColorScheme(simplifiedTrafficColors);
-
+  bool const trafficEnabled = m_trafficManager.IsEnabled();
+  bool const simplifiedTrafficColors = m_trafficManager.HasSimplifiedColorScheme();
   double const fontsScaleFactor = LoadLargeFontsSize() ? kLargeFontsScaleFactor : 1.0;
 
   df::DrapeEngine::Params p(
@@ -1774,6 +1780,9 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::OGLContextFactory> contextFactory,
   m_searchMarks.SetDrapeEngine(make_ref(m_drapeEngine));
 
   InvalidateUserMarks();
+
+  bool const transitSchemeEnabled = LoadTransitSchemeEnabled();
+  m_transitManager.EnableTransitSchemeMode(transitSchemeEnabled);
 
   benchmark::RunGraphicsBenchmark(this);
 }
@@ -1924,7 +1933,7 @@ void Framework::SetupMeasurementSystem()
   GetPlatform().SetupMeasurementSystem();
 
   auto units = measurement_utils::Units::Metric;
-  UNUSED_VALUE(settings::Get(settings::kMeasurementUnits, units));
+  settings::TryGet(settings::kMeasurementUnits, units);
 
   m_routingManager.SetTurnNotificationsUnits(units);
 }
@@ -2077,7 +2086,7 @@ bool Framework::GetFeatureByID(FeatureID const & fid, FeatureType & ft) const
 {
   ASSERT(fid.IsValid(), ());
 
-  EditableDataSource::FeaturesLoaderGuard guard(m_model.GetDataSource(), fid.m_mwmId);
+  FeaturesLoaderGuard guard(m_model.GetDataSource(), fid.m_mwmId);
   if (!guard.GetFeatureByIndex(fid.m_index, ft))
     return false;
 
@@ -2538,15 +2547,13 @@ void Framework::SaveAutoZoom(bool allowAutoZoom)
 void Framework::EnableTransitScheme(bool enable)
 {
   m_transitManager.EnableTransitSchemeMode(enable);
-  if (m_drapeEngine != nullptr)
-    m_drapeEngine->EnableTransitScheme(enable);
 }
 
 bool Framework::LoadTransitSchemeEnabled()
 {
   bool enabled;
   if (!settings::Get(kTransitSchemeEnabledKey, enabled))
-    enabled = true;
+    enabled = false;
   return enabled;
 }
 
@@ -2598,7 +2605,7 @@ vector<m2::TriangleD> Framework::GetSelectedFeatureTriangles() const
   if (!m_selectedFeature.IsValid())
     return triangles;
 
-  EditableDataSource::FeaturesLoaderGuard const guard(m_model.GetDataSource(), m_selectedFeature.m_mwmId);
+  FeaturesLoaderGuard const guard(m_model.GetDataSource(), m_selectedFeature.m_mwmId);
   FeatureType ft;
   if (!guard.GetFeatureByIndex(m_selectedFeature.m_index, ft))
     return triangles;
@@ -2688,6 +2695,16 @@ bool Framework::ParseDrapeDebugCommand(string const & query)
     EnableTransitScheme(false /* enable */);
     return true;
   }
+  if (query == "?debug-info")
+  {
+    m_drapeEngine->ShowDebugInfo(true /* shown */);
+    return true;
+  }
+  if (query == "?no-debug-info")
+  {
+    m_drapeEngine->ShowDebugInfo(false /* shown */);
+    return true;
+  }
   return false;
 }
 
@@ -2732,10 +2749,10 @@ bool Framework::ParseEditorDebugCommand(search::SearchParams const & params)
 
 namespace
 {
-WARN_UNUSED_RESULT bool LocalizeStreet(DataSourceBase const & dataSource, FeatureID const & fid,
+WARN_UNUSED_RESULT bool LocalizeStreet(DataSource const & dataSource, FeatureID const & fid,
                                        osm::LocalizedStreet & result)
 {
-  EditableDataSource::FeaturesLoaderGuard g(dataSource, fid.m_mwmId);
+  FeaturesLoaderGuard g(dataSource, fid.m_mwmId);
   FeatureType ft;
   if (!g.GetFeatureByIndex(fid.m_index, ft))
     return false;
@@ -2748,7 +2765,7 @@ WARN_UNUSED_RESULT bool LocalizeStreet(DataSourceBase const & dataSource, Featur
 }
 
 vector<osm::LocalizedStreet> TakeSomeStreetsAndLocalize(
-    vector<search::ReverseGeocoder::Street> const & streets, DataSourceBase const & dataSource)
+    vector<search::ReverseGeocoder::Street> const & streets, DataSource const & dataSource)
 
 {
   vector<osm::LocalizedStreet> results;
@@ -2777,7 +2794,7 @@ vector<osm::LocalizedStreet> TakeSomeStreetsAndLocalize(
   return results;
 }
 
-void SetStreet(search::ReverseGeocoder const & coder, DataSourceBase const & dataSource,
+void SetStreet(search::ReverseGeocoder const & coder, DataSource const & dataSource,
                FeatureType & ft, osm::EditableMapObject & emo)
 {
   auto const & editor = osm::Editor::Instance();
@@ -2844,7 +2861,7 @@ void SetStreet(search::ReverseGeocoder const & coder, DataSourceBase const & dat
   emo.SetNearbyStreets(move(localizedStreets));
 }
 
-void SetHostingBuildingAddress(FeatureID const & hostingBuildingFid, DataSourceBase const & dataSource,
+void SetHostingBuildingAddress(FeatureID const & hostingBuildingFid, DataSource const & dataSource,
                                search::ReverseGeocoder const & coder, osm::EditableMapObject & emo)
 {
   if (!hostingBuildingFid.IsValid())
@@ -2852,7 +2869,7 @@ void SetHostingBuildingAddress(FeatureID const & hostingBuildingFid, DataSourceB
 
   FeatureType hostingBuildingFeature;
 
-  EditableDataSource::FeaturesLoaderGuard g(dataSource, hostingBuildingFid.m_mwmId);
+  FeaturesLoaderGuard g(dataSource, hostingBuildingFid.m_mwmId);
   if (!g.GetFeatureByIndex(hostingBuildingFid.m_index, hostingBuildingFeature))
     return;
 
@@ -2946,7 +2963,7 @@ osm::Editor::SaveResult Framework::SaveEditedMapObject(osm::EditableMapObject em
   {
     auto const isCreatedFeature = editor.IsCreatedFeature(emo.GetID());
 
-    EditableDataSource::FeaturesLoaderGuard g(m_model.GetDataSource(), emo.GetID().m_mwmId);
+    FeaturesLoaderGuard g(m_model.GetDataSource(), emo.GetID().m_mwmId);
     FeatureType originalFeature;
     if (!isCreatedFeature)
     {
@@ -3114,12 +3131,34 @@ storage::TCountriesVec Framework::GetTopmostCountries(ms::LatLon const & latlon)
 
 namespace
 {
-  vector<dp::Color> colorList = { dp::Color(255, 0, 0, 255), dp::Color(0, 255, 0, 255), dp::Color(0, 0, 255, 255),
-                                  dp::Color(255, 255, 0, 255), dp::Color(0, 255, 255, 255), dp::Color(255, 0, 255, 255),
-                                  dp::Color(100, 0, 0, 255), dp::Color(0, 100, 0, 255), dp::Color(0, 0, 100, 255),
-                                  dp::Color(100, 100, 0, 255), dp::Color(0, 100, 100, 255), dp::Color(100, 0, 100, 255)
-                                };
-} // namespace
+vector<dp::Color> colorList = {
+    dp::Color(255, 0, 0, 255),   dp::Color(0, 255, 0, 255),   dp::Color(0, 0, 255, 255),
+    dp::Color(255, 255, 0, 255), dp::Color(0, 255, 255, 255), dp::Color(255, 0, 255, 255),
+    dp::Color(100, 0, 0, 255),   dp::Color(0, 100, 0, 255),   dp::Color(0, 0, 100, 255),
+    dp::Color(100, 100, 0, 255), dp::Color(0, 100, 100, 255), dp::Color(100, 0, 100, 255)};
+
+dp::Color const cityBoundaryBBColor = dp::Color(255, 0, 0, 255);
+dp::Color const cityBoundaryCBColor = dp::Color(0, 255, 0, 255);
+dp::Color const cityBoundaryDBColor = dp::Color(0, 0, 255, 255);
+
+template <class Box>
+void DrawLine(Box const & box, dp::Color const & color, df::DrapeApi & drapeApi, string const & id)
+{
+  auto points = box.Points();
+  CHECK(!points.empty(), ());
+  points.push_back(points.front());
+
+  points.erase(unique(points.begin(), points.end(), [](m2::PointD const & p1, m2::PointD const & p2) {
+    m2::PointD const delta = p2 - p1;
+    return delta.IsAlmostZero();
+  }), points.end());
+
+  if (points.size() <= 1)
+    return;
+
+  drapeApi.AddLine(id, df::DrapeApiLineData(points, color).Width(3.0f).ShowPoints(true).ShowId());
+}
+}  // namespace
 
 void Framework::VisualizeRoadsInRect(m2::RectD const & rect)
 {
@@ -3148,6 +3187,44 @@ void Framework::VisualizeRoadsInRect(m2::RectD const & rect)
       }
     }
   }, kScale);
+}
+
+void Framework::VisualizeCityBoundariesInRect(m2::RectD const & rect)
+{
+  search::CitiesBoundariesTable table(GetDataSource());
+  table.Load();
+
+  vector<uint32_t> featureIds;
+  GetCityBoundariesInRectForTesting(table, rect, featureIds);
+
+  for (auto const fid : featureIds)
+  {
+    search::CitiesBoundariesTable::Boundaries boundaries;
+    table.Get(fid, boundaries);
+
+    string id = "fid:" + strings::to_string(fid);
+    FeaturesLoaderGuard loader(GetDataSource(), GetDataSource().GetMwmIdByCountryFile(CountryFile("World")));
+    FeatureType ft;
+    if (loader.GetFeatureByIndex(fid, ft))
+    {
+      string name;
+      ft.GetName(FeatureType::DEFAULT_LANG, name);
+      id += ", name:" + name;
+    }
+
+    size_t const boundariesSize = boundaries.GetBoundariesForTesting().size();
+    for (size_t i = 0; i < boundariesSize; ++i)
+    {
+      string idWithIndex = id;
+      auto const & cityBoundary = boundaries.GetBoundariesForTesting()[i];
+      if (boundariesSize > 1)
+        idWithIndex = id + " , i:" + strings::to_string(i);
+
+      DrawLine(cityBoundary.m_bbox, cityBoundaryBBColor, m_drapeApi, idWithIndex + ", bb");
+      DrawLine(cityBoundary.m_cbox, cityBoundaryCBColor, m_drapeApi, idWithIndex + ", cb");
+      DrawLine(cityBoundary.m_dbox, cityBoundaryDBColor, m_drapeApi, idWithIndex + ", db");
+    }
+  }
 }
 
 ads::Engine const & Framework::GetAdsEngine() const

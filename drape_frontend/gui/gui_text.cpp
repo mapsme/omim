@@ -1,7 +1,8 @@
 #include "drape_frontend/gui/gui_text.hpp"
 
-#include "drape_frontend/shader_def.hpp"
 #include "drape_frontend/visual_params.hpp"
+
+#include "shaders/programs.hpp"
 
 #include "base/string_utils.hpp"
 #include "base/stl_add.hpp"
@@ -10,6 +11,7 @@
 #include "drape/glsl_func.hpp"
 
 #include <algorithm>
+#include <array>
 #include <memory>
 #include <type_traits>
 
@@ -18,7 +20,7 @@ namespace gui
 namespace
 {
 glsl::vec2 GetNormalsAndMask(dp::TextureManager::GlyphRegion const & glyph, float textRatio,
-                             array<glsl::vec2, 4> & normals, array<glsl::vec2, 4> & maskTexCoord)
+                             std::array<glsl::vec2, 4> & normals, std::array<glsl::vec2, 4> & maskTexCoord)
 {
   m2::PointF const pixelSize = glyph.GetPixelSize() * textRatio;
   m2::RectF const & r = glyph.GetTexRect();
@@ -104,8 +106,10 @@ dp::BindingInfo const & StaticLabel::Vertex::GetBindingInfo()
 }
 
 StaticLabel::LabelResult::LabelResult()
-  : m_state(df::CreateGLState(gpu::TEXT_OUTLINED_GUI_PROGRAM, df::RenderState::GuiLayer))
-{}
+  : m_state(df::CreateGLState(gpu::Program::TextOutlinedGui, df::RenderState::GuiLayer))
+{
+  m_state.SetDepthTestEnabled(false);
+}
 
 char const * StaticLabel::DefaultDelim = "\n";
 
@@ -179,7 +183,7 @@ void StaticLabel::CacheStaticText(std::string const & text, char const * delim,
     prevLineHeight = 0.0;
     for (size_t j = 0; j < regions.size(); ++j)
     {
-      array<glsl::vec2, 4> normals, maskTex;
+      std::array<glsl::vec2, 4> normals, maskTex;
 
       dp::TextureManager::GlyphRegion const & glyph = regions[j];
       glsl::vec2 offsets = GetNormalsAndMask(glyph, textRatio, normals, maskTex);
@@ -283,8 +287,10 @@ dp::BindingInfo const & MutableLabel::DynamicVertex::GetBindingInfo()
 }
 
 MutableLabel::PrecacheResult::PrecacheResult()
-  : m_state(df::CreateGLState(gpu::TEXT_OUTLINED_GUI_PROGRAM, df::RenderState::GuiLayer))
-{}
+  : m_state(df::CreateGLState(gpu::Program::TextOutlinedGui, df::RenderState::GuiLayer))
+{
+  m_state.SetDepthTestEnabled(false);
+}
 
 MutableLabel::MutableLabel(dp::Anchor anchor)
   : m_anchor(anchor)
@@ -394,7 +400,7 @@ void MutableLabel::SetText(LabelResult & result, std::string text) const
     ASSERT(it != m_alphabet.end(), ());
     if (it != m_alphabet.end())
     {
-      array<glsl::vec2, 4> normals, maskTex;
+      std::array<glsl::vec2, 4> normals, maskTex;
       dp::TextureManager::GlyphRegion const & glyph = it->second;
       glsl::vec2 offsets = GetNormalsAndMask(glyph, m_textRatio, normals, maskTex);
 

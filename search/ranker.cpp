@@ -11,6 +11,7 @@
 
 #include "editor/editable_data_source.hpp"
 
+#include "indexer/data_source.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/search_string_utils.hpp"
 
@@ -145,6 +146,7 @@ ftypes::Type GetLocalityIndex(feature::TypesHolder const & types)
   case VILLAGE: return NONE;
   case LOCALITY_COUNT: return type;
   }
+  CHECK_SWITCH();
 }
 
 // TODO: Format street and house number according to local country's rules.
@@ -209,18 +211,17 @@ private:
 
 class RankerResultMaker
 {
-  using LoaderGuard = EditableDataSource::FeaturesLoaderGuard;
   Ranker & m_ranker;
-  DataSourceBase const & m_dataSource;
+  DataSource const & m_dataSource;
   Geocoder::Params const & m_params;
   storage::CountryInfoGetter const & m_infoGetter;
 
-  unique_ptr<LoaderGuard> m_loader;
+  unique_ptr<FeaturesLoaderGuard> m_loader;
 
   bool LoadFeature(FeatureID const & id, FeatureType & ft)
   {
     if (!m_loader || m_loader->GetId() != id.m_mwmId)
-      m_loader = make_unique<LoaderGuard>(m_dataSource, id.m_mwmId);
+      m_loader = make_unique<FeaturesLoaderGuard>(m_dataSource, id.m_mwmId);
     if (!m_loader->GetFeatureByIndex(id.m_index, ft))
       return false;
 
@@ -258,6 +259,7 @@ class RankerResultMaker
 
     info.m_distanceToPivot = MercatorBounds::DistanceOnEarth(center, pivot);
     info.m_rank = preInfo.m_rank;
+    info.m_popularity = preInfo.m_popularity;
     info.m_type = preInfo.m_type;
     info.m_allTokensUsed = preInfo.m_allTokensUsed;
 
@@ -331,7 +333,7 @@ class RankerResultMaker
   }
 
 public:
-  RankerResultMaker(Ranker & ranker, DataSourceBase const & dataSource,
+  RankerResultMaker(Ranker & ranker, DataSource const & dataSource,
                     storage::CountryInfoGetter const & infoGetter, Geocoder::Params const & params)
     : m_ranker(ranker), m_dataSource(dataSource), m_params(params), m_infoGetter(infoGetter)
   {
@@ -358,7 +360,7 @@ public:
   }
 };
 
-Ranker::Ranker(DataSourceBase const & dataSource, CitiesBoundariesTable const & boundariesTable,
+Ranker::Ranker(DataSource const & dataSource, CitiesBoundariesTable const & boundariesTable,
                storage::CountryInfoGetter const & infoGetter, KeywordLangMatcher & keywordsScorer,
                Emitter & emitter, CategoriesHolder const & categories,
                vector<Suggest> const & suggests, VillagesCache & villagesCache,
@@ -422,7 +424,7 @@ Result Ranker::MakeResult(RankerResult const & rankerResult, bool needAddress,
     case RankerResult::Type::TYPE_FEATURE:
     case RankerResult::Type::TYPE_BUILDING:
     {
-      auto const type = rankerResult.GetBestType(&m_params.m_preferredTypes);
+      auto const type = rankerResult.GetBestType(m_params.m_preferredTypes);
       return Result(r.GetID(), r.GetCenter(), name, address,
                     m_categories.GetReadableFeatureType(type, m_params.m_currentLocaleCode), type,
                     r.GetMetadata());
@@ -430,6 +432,7 @@ Result Ranker::MakeResult(RankerResult const & rankerResult, bool needAddress,
     case RankerResult::Type::TYPE_LATLON: return Result(r.GetCenter(), name, address);
     }
     ASSERT(false, ("Bad RankerResult type:", static_cast<size_t>(r.GetResultType())));
+    CHECK_SWITCH();
   };
 
   auto res = mk(rankerResult);
@@ -640,7 +643,7 @@ void Ranker::ProcessSuggestions(vector<RankerResult> & vec) const
 
 string Ranker::GetLocalizedRegionInfoForResult(RankerResult const & result) const
 {
-  auto const type = result.GetBestType(&m_params.m_preferredTypes);
+  auto const type = result.GetBestType(m_params.m_preferredTypes);
 
   storage::TCountryId id;
   if (!result.GetCountryId(m_infoGetter, type, id))

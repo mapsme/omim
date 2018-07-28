@@ -285,7 +285,7 @@
 	<!-- Confirmation in downloading countries dialog -->
 	<string name="are_you_sure">Apakah Anda yakin ingin melanjutkan?</string>
 	<!-- Title for tracks category in bookmarks manager -->
-	<string name="tracks">Jalur</string>
+	<string name="tracks_title">Jalur</string>
 	<!-- Length of track in cell that describes route -->
 	<string name="length">Panjang</string>
 	<string name="share_my_location">Bagikan Lokasi Saya</string>
@@ -687,7 +687,6 @@
 	<string name="sunset_to_sunrise">Dari matahari terbenam sampai matahari terbit</string>
 	<string name="add_opening_hours">Tambah jam kerja</string>
 	<string name="edit_opening_hours">Sunting jam kerja</string>
-	<string name="profile">Profil</string>
 	<string name="no_osm_account">Tidak ada akun di OpenStreetMap?</string>
 	<string name="register_at_openstreetmap">Mendaftar</string>
 	<string name="password_8_chars_min">Kata Sandi (minimal 8 karakter)</string>
@@ -1259,7 +1258,7 @@
 	<string name="phone_number">Nomor telepon</string>
 	<string name="notification_unsent_reviews_title">Anda memiliki beberapa ulasan yang tidak terkirim</string>
 	<string name="notification_unsent_reviews_message">Harap masuk untuk berbagi ulasan dengan wisatawan lain</string>
-	<string name="profile_osm">Profil OSM</string>
+	<string name="profile">Profil OpenStreetMap</string>
 	<string name="place_page_search_similar_hotel">Cari hotel serupa</string>
 	<string name="bookmarks_detect_title">File baru terdeteksi</string>
 	<plurals name="bookmarks_detect_message">
@@ -1289,4 +1288,60 @@
 	<string name="sign_agree_pp_gdpr">Saya setuju dengan &lt;a href="%s">Kebijakan Privasi&lt;/a></string>
 	<string name="sign_agree_tof_gdpr">Saya setuju dengan &lt;a href="%s">Ketentuan Penggunaan&lt;/a></string>
 	<string name="sign_agree_news_gdpr">Saya setuju untuk menerima berita terbaru tentang produk MAPS.ME</string>
+	<string name="whats_new_localbiz_title">Bisnis kecil layak mendapatkan perhatian</string>
+	<string name="whats_new_localbiz_message">Kafe lokal, hostel nyaman, dan pertokoan adalah yang membuat perjalanan kita tak terlupakan. Kami akan mengoptimalkan halaman Anda di MAPS.ME untuk membuatnya menonjol.</string>
+	<string name="whats_new_order_button">Tinggalkan permintaan</string>
+	<string name="bookmarks_page_downloaded">Diunduh</string>
+	<string name="bookmarks_page_my">Milik saya</string>
+	<string name="routes_and_bookmarks">Rute dan bookmark</string>
+	<string name="bookmarks_webview_success_toast">Bookmark berhasil diunduh</string>
+	<string name="cached_bookmarks_placeholder_title">Unduh tempat baru</string>
+	<string name="cached_bookmarks_placeholder_subtitle">Tekan tombol untuk mengunduh ribuan tempat dan rute menarik yang dibuat oleh pengguna MAPS.ME. Anda akan memerlukan koneksi internet.</string>
+	<string name="downloader_download_routers">Unduh bookmark</string>
+	<string name="bookmarks_groups_cached">Daftar yang telah diunduh.</string>
+	<string name="author_name_by_prefix">oleh %s</string>
+	<plurals name="bookmarks_objects">
+	  <item quantity="other">obyek %s</item>
+	</plurals>
+	<plurals name="objects">
+	  <item quantity="other">tempat %d</item>
+	</plurals>
+	<plurals name="places">
+	  <item quantity="other">tempat %d</item>
+	</plurals>
+	<plurals name="tracks">
+	  <item quantity="other">trek %d</item>
+	</plurals>
+	<string name="subtittle_opt_out">Pengaturan treking</string>
+	<string name="opt_out_flurry">Statistik</string>
+	<string name="opt_out_mopub">Iklan yang telah dipersonalisasi</string>
+	<string name="opt_out_fabric">Laporan tabrakan</string>
+	<string name="opt_out_fabric_description">Kami dapat menggunakan data Anda untuk meningkatkan pengalaman MAPS.ME. Perubahan akan berlaku setelah Anda memulai ulang aplikasi.</string>
+	<string name="opt_out_help_ios_1">Perangkat seluler Anda mungkin menyediakan pengaturan \"\"Batasi Treking Iklan\"\" atau \"\"Keluar dari iklan berbasis ketertarikan\"\".</string>
+	<string name="opt_out_help_ios_2">iOS 9 atau Lebih Tinggi</string>
+	<string name="opt_out_help_ios_3">Ke Pengaturan → Privasi → Iklan → Aktifkan pengaturan \"\"Batasi Treking Iklan\"\"</string>
+	<string name="opt_out_help_android">Perangkat seluler Anda mungkin menyediakan pengaturan \"\"Batasi treking iklan\"\" atau \"\"Keluar dari iklan berbasis ketertarikan\"\".\n\nUntuk Android dan Google Play Services versi 4.0 dan ke atas:\nPengaturan → Google → Iklan → Keluar dari Personalisasi Iklan\nor\nPengaturan → Google → Akun Google → Informasi personal &amp; privasi → Pengaturan Iklan → Personalisasi Iklan</string>
+	<string name="privacy_policy">Kebijakan privasi</string>
+	<string name="terms_of_use">Ketentuan penggunaan</string>
+	<string name="backup_notification_failed">Mencadangkan bookmark Anda telah dihentikan. Masuk untuk kembali mengaktifkannya.</string>
+	<string name="banner_megafon_banner_message">Katakan selamat tinggal pada roaming internasional!</string>
+	<string name="banner_megafon_banner_button">Selamat tinggal!</string>
+	<string name="button_layer_traffic">Lalu lintas</string>
+	<string name="button_layer_subway">Kereta bawah tanah</string>
+	<string name="layers_title">Lapisan peta</string>
+	<string name="layers_message">Gunakan lapisan peta untuk menampilkan lalu lintas, peta kereta bawah tanah, dan informasi berguna lainnya</string>
+	<string name="button_layer_got_it">Mengerti</string>
+	<string name="subway_data_unavailable">Peta bawah tanah tidak tersedia</string>
+	<string name="bookmarks_empty_list_title">Daftar ini kosong</string>
+	<string name="bookmarks_empty_list_message">Untuk menambahkan bookmark, ketuk satu tempat di peta lalu ketuk ikon bintang</string>
+	<string name="category_desc_more">…selengkapnya</string>
+	<string name="title_error_downloading_bookmarks">Terjadi kesalahan</string>
+	<string name="subtitle_error_downloading_bookmarks">Bookmark tidak terunduh</string>
+	<string name="whats_new_bookmarks_catalog_title">MAPS.ME sekarang memiliki katalog rute</string>
+	<string name="whats_new_bookmarks_catalog_message">Ratusan rute yang detail di seluruh dunia: tempat untuk dikunjungi, untuk melihat-lihat, untuk makan.</string>
+	<string name="whats_new_popularity_label_title">Lokasi populer terdekat</string>
+	<string name="whats_new_popularity_label_message">Bagian temukan di sekitar akan membantu Anda menemukan tempat paling populer di kota.</string>
+	<string name="whats_new_hot_offers_title">Penawaran menarik dari hotel</string>
+	<string name="whats_new_hot_offers_message">Anda dapat mencarinya menggunakan kategori Hotel di pencarian. Penawaran akan ditandai dengan simbol persentase di peta dan di hasil pencarian.</string>
+	<string name="error_already_downloaded">Daftar ini sudah diunduh</string>
 </resources>

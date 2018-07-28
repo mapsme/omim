@@ -158,7 +158,8 @@ bool BicycleDirectionsEngine::AdjacentEdges::IsAlmostEqual(AdjacentEdges const &
 }
 
 // BicycleDirectionsEngine ------------------------------------------------------------------------
-BicycleDirectionsEngine::BicycleDirectionsEngine(DataSourceBase const & dataSource, shared_ptr<NumMwmIds> numMwmIds)
+BicycleDirectionsEngine::BicycleDirectionsEngine(DataSource const & dataSource,
+                                                 shared_ptr<NumMwmIds> numMwmIds)
   : m_dataSource(dataSource), m_numMwmIds(numMwmIds)
 {
   CHECK(m_numMwmIds, ());
@@ -210,10 +211,10 @@ bool BicycleDirectionsEngine::Generate(IndexRoadGraph const & graph, vector<Junc
   return true;
 }
 
-EditableDataSource::FeaturesLoaderGuard & BicycleDirectionsEngine::GetLoader(MwmSet::MwmId const & id)
+FeaturesLoaderGuard & BicycleDirectionsEngine::GetLoader(MwmSet::MwmId const & id)
 {
   if (!m_loader || id != m_loader->GetId())
-    m_loader = make_unique<EditableDataSource::FeaturesLoaderGuard>(m_dataSource, id);
+    m_loader = make_unique<FeaturesLoaderGuard>(m_dataSource, id);
   return *m_loader;
 }
 
@@ -345,7 +346,8 @@ void BicycleDirectionsEngine::FillPathSegmentsAndAdjacentEdgesMap(
       continue;
     }
 
-    CHECK_EQUAL(prevJunctions.size(), abs(static_cast<int32_t>(inSegId - startSegId)) + 1, ());
+    CHECK_EQUAL(prevJunctions.size(), static_cast<size_t>(
+                    abs(static_cast<int32_t>(inSegId - startSegId)) + 1), ());
 
     prevJunctions.push_back(currJunction);
 

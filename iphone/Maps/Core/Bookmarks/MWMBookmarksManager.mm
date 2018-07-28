@@ -1,4 +1,6 @@
 #import "MWMBookmarksManager.h"
+#import "MWMCatalogCategory+Convenience.h"
+#import "MWMCatalogObserver.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
 
@@ -36,6 +38,8 @@ NSString * const CloudErrorToString(Cloud::SynchronizationResult result)
 @property(nonatomic) Observers * observers;
 @property(nonatomic) BOOL areBookmarksLoaded;
 @property(nonatomic) NSURL * shareCategoryURL;
+
+@property(nonatomic) NSMutableDictionary<NSString *, MWMCatalogObserver*> * catalogObservers;
 
 @end
 
@@ -213,7 +217,10 @@ NSString * const CloudErrorToString(Cloud::SynchronizationResult result)
   auto const & list = GetFramework().GetBookmarkManager().GetBmGroupsIdList();
   NSMutableArray<NSNumber *> * collection = @[].mutableCopy;
   for (auto const & groupId : list)
-    [collection addObject:@(groupId)];
+  {
+    if (!GetFramework().GetBookmarkManager().IsCategoryFromCatalog(groupId))
+      [collection addObject:@(groupId)];
+  }
   return collection.copy;
 }
 
@@ -254,10 +261,14 @@ NSString * const CloudErrorToString(Cloud::SynchronizationResult result)
   GetFramework().GetBookmarkManager().GetEditSession().SetIsVisible(groupId, isVisible);
 }
 
-+ (void)setAllCategoriesVisible:(BOOL)isVisible
-{
-  GetFramework().GetBookmarkManager().SetAllCategoriesVisibility(BookmarkManager::CategoryFilterType::All,
-                                                                 isVisible);
++ (void)setUserCategoriesVisible:(BOOL)isVisible {
+  GetFramework().GetBookmarkManager()
+  .SetAllCategoriesVisibility(BookmarkManager::CategoryFilterType::Private, isVisible);
+}
+
++ (void)setCatalogCategoriesVisible:(BOOL)isVisible {
+  GetFramework().GetBookmarkManager()
+  .SetAllCategoriesVisibility(BookmarkManager::CategoryFilterType::Public, isVisible);
 }
 
 + (void)deleteCategory:(MWMMarkGroupID)groupId
@@ -426,11 +437,6 @@ NSString * const CloudErrorToString(Cloud::SynchronizationResult result)
   [[UIViewController topViewController] presentViewController:alert animated:YES completion:nil];
 }
 
-+ (BOOL)areAllCategoriesInvisible
-{
-  return GetFramework().GetBookmarkManager().AreAllCategoriesInvisible(BookmarkManager::CategoryFilterType::All);
-}
-
 + (void)setNotificationsEnabled:(BOOL)enabled
 {
   GetFramework().GetBookmarkManager().SetNotificationsEnabled(enabled);
@@ -439,6 +445,109 @@ NSString * const CloudErrorToString(Cloud::SynchronizationResult result)
 + (BOOL)areNotificationsEnabled
 {
   return GetFramework().GetBookmarkManager().AreNotificationsEnabled();
+}
+
++ (NSURL *)catalogFrontendUrl
+{
+  NSString * urlString = @(GetFramework().GetBookmarkManager().GetCatalog().GetFrontendUrl().c_str());
+  return urlString ? [NSURL URLWithString:urlString] : nil;
+}
+
++ (NSURL *)sharingUrlForCategoryId:(MWMMarkGroupID)groupId
+{
+  NSString * urlString = @(GetFramework().GetBookmarkManager().GetCategoryCatalogDeeplink(groupId).c_str());
+  return urlString ? [NSURL URLWithString:urlString] : nil;
+}
+
++ (void)downloadItemWithId:(NSString *)itemId
+                      name:(NSString *)name
+                  progress:(ProgressBlock)progress
+                completion:(CompletionBlock)completion
+{
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    [MWMBookmarksManager manager].catalogObservers = [NSMutableDictionary dictionary];
+    auto onDownloadStarted = [](std::string const & catId)
+    {
+      auto observer = [MWMBookmarksManager manager].catalogObservers[@(catId.c_str())];
+      if (observer)
+        [observer onDownloadStart];
+    };
+    auto onDownloadFinished = [](std::string const & catId, platform::RemoteFile::Result const & result)
+    {
+      auto observer = [MWMBookmarksManager manager].catalogObservers[@(catId.c_str())];
+      if (observer)
+      {
+        [observer onDownloadComplete:result.m_status];
+        if (result.m_status != platform::RemoteFile::Status::Ok) {
+          [[MWMBookmarksManager manager].catalogObservers removeObjectForKey:observer.categoryId];
+        }
+      }
+    };
+    auto onImportStarted = [](std::string const & catId)
+    {
+      auto observer = [MWMBookmarksManager manager].catalogObservers[@(catId.c_str())];
+      if (observer)
+        [observer onImportStart];
+    };
+    auto onImportFinished = [](std::string const & catId, bool successful)
+    {
+      auto observer = [MWMBookmarksManager manager].catalogObservers[@(catId.c_str())];
+      if (observer)
+      {
+        [observer onImportCompleteSuccessful:successful];
+        [[MWMBookmarksManager manager].catalogObservers removeObjectForKey:observer.categoryId];
+      }
+    };
+    GetFramework().GetBookmarkManager().SetCatalogHandlers(std::move(onDownloadStarted),
+                                                           std::move(onDownloadFinished),
+                                                           std::move(onImportStarted),
+                                                           std::move(onImportFinished));
+  });
+  auto observer = [[MWMCatalogObserver alloc] init];
+  observer.categoryId = itemId;
+  observer.progressBlock = progress;
+  observer.completionBlock = completion;
+  [[MWMBookmarksManager manager].catalogObservers setObject:observer forKey:itemId];
+  GetFramework().GetBookmarkManager().DownloadFromCatalogAndImport(itemId.UTF8String, name.UTF8String);
+}
+
++ (BOOL)isCategoryFromCatalog:(MWMMarkGroupID)groupId
+{
+  return GetFramework().GetBookmarkManager().IsCategoryFromCatalog(groupId);
+}
+
++ (NSArray<MWMCatalogCategory *> *)categoriesFromCatalog
+{
+  NSMutableArray * result = [NSMutableArray array];
+  auto const & list = GetFramework().GetBookmarkManager().GetBmGroupsIdList();
+  for (auto const & groupId : list)
+  {
+    if ([self isCategoryFromCatalog:groupId])
+    {
+      kml::CategoryData categoryData = GetFramework().GetBookmarkManager().GetCategoryData(groupId);
+      uint64_t bookmarksCount = [self getCategoryMarksCount:groupId] + [self getCategoryTracksCount:groupId];
+      MWMCatalogCategory * category = [[MWMCatalogCategory alloc] initWithCategoryData:categoryData
+                                                                       bookmarksCount:bookmarksCount];
+      [result addObject:category];
+    }
+  }
+  return [result copy];
+}
+
++ (NSInteger)getCatalogDownloadsCount
+{
+  return GetFramework().GetBookmarkManager().GetCatalog().GetDownloadingCount();
+}
+
++ (BOOL)isCategoryDownloading:(NSString *)itemId
+{
+  return GetFramework().GetBookmarkManager().GetCatalog().IsDownloading(itemId.UTF8String);
+}
+
++ (BOOL)hasCategoryDownloaded:(NSString *)itemId
+{
+  return GetFramework().GetBookmarkManager().GetCatalog().HasDownloaded(itemId.UTF8String);
 }
 
 @end

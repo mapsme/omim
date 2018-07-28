@@ -137,11 +137,10 @@ unique_ptr<TransitDisplayInfo> && ReadTransitTask::GetTransitInfo()
   return move(m_transitInfo);
 }
 
-TransitReadManager::TransitReadManager(DataSourceBase & dataSource, TReadFeaturesFn const & readFeaturesFn,
+TransitReadManager::TransitReadManager(DataSource & dataSource,
+                                       TReadFeaturesFn const & readFeaturesFn,
                                        GetMwmsByRectFn const & getMwmsByRectFn)
-  : m_dataSource(dataSource)
-  , m_readFeaturesFn(readFeaturesFn)
-  , m_getMwmsByRectFn(getMwmsByRectFn)
+  : m_dataSource(dataSource), m_readFeaturesFn(readFeaturesFn), m_getMwmsByRectFn(getMwmsByRectFn)
 {
   Start();
 }
@@ -176,12 +175,42 @@ void TransitReadManager::SetDrapeEngine(ref_ptr<df::DrapeEngine> engine)
 
 void TransitReadManager::EnableTransitSchemeMode(bool enable)
 {
+  ChangeState(enable ? TransitSchemeState::Enabled : TransitSchemeState::Disabled);
   if (m_isSchemeMode == enable)
     return;
   m_isSchemeMode = enable;
+
+  m_drapeEngine.SafeCall(&df::DrapeEngine::EnableTransitScheme, enable);
+
+  if (m_isSchemeModeBlocked)
+    return;
+
   if (!m_isSchemeMode)
   {
-    m_lastVisibleMwms.clear();
+    m_lastActiveMwms.clear();
+    m_mwmCache.clear();
+    m_cacheSize = 0;
+  }
+  else
+  {
+    Invalidate();
+  }
+}
+
+void TransitReadManager::BlockTransitSchemeMode(bool isBlocked)
+{
+  if (m_isSchemeModeBlocked == isBlocked)
+    return;
+
+  m_isSchemeModeBlocked = isBlocked;
+
+  if (!m_isSchemeMode)
+    return;
+
+  if (m_isSchemeModeBlocked)
+  {
+    m_drapeEngine.SafeCall(&df::DrapeEngine::ClearAllTransitSchemeCache);
+
     m_lastActiveMwms.clear();
     m_mwmCache.clear();
     m_cacheSize = 0;
@@ -196,21 +225,21 @@ void TransitReadManager::UpdateViewport(ScreenBase const & screen)
 {
   m_currentModelView = {screen, true /* initialized */};
 
-  if (!m_isSchemeMode)
+  if (!m_isSchemeMode || m_isSchemeModeBlocked)
     return;
 
-  if (df::GetZoomLevel(screen.GetScale()) < kMinSchemeZoomLevel)
+  if (df::GetDrawTileScale(screen) < kMinSchemeZoomLevel)
+  {
+    ChangeState(TransitSchemeState::Enabled);
     return;
+  }
 
   auto mwms = m_getMwmsByRectFn(screen.ClipRect());
-  if (m_lastVisibleMwms == mwms)
-    return;
 
-  m_lastVisibleMwms = mwms;
   m_lastActiveMwms.clear();
-
   auto const currentTime = steady_clock::now();
-  TransitDisplayInfos displayInfos;
+
+  TransitDisplayInfos newTransitData;
   for (auto const & mwmId : mwms)
   {
     if (!mwmId.IsAlive())
@@ -219,7 +248,7 @@ void TransitReadManager::UpdateViewport(ScreenBase const & screen)
     auto it = m_mwmCache.find(mwmId);
     if (it == m_mwmCache.end())
     {
-      displayInfos[mwmId] = {};
+      newTransitData[mwmId] = {};
       m_mwmCache.insert(make_pair(mwmId, CacheEntry(currentTime)));
     }
     else
@@ -227,24 +256,46 @@ void TransitReadManager::UpdateViewport(ScreenBase const & screen)
       it->second.m_lastActiveTime = currentTime;
     }
   }
-  GetTransitDisplayInfo(displayInfos);
-  if (!displayInfos.empty())
-  {
-    for (auto const & transitInfo : displayInfos)
-    {
-      if (transitInfo.second != nullptr)
-      {
-        auto it = m_mwmCache.find(transitInfo.first);
-        it->second.m_isLoaded = true;
-        it->second.m_dataSize = CalculateCacheSize(*transitInfo.second);
-        m_cacheSize += it->second.m_dataSize;
 
-      }
+  if (!newTransitData.empty())
+  {
+    GetTransitDisplayInfo(newTransitData);
+
+    TransitDisplayInfos validTransitData;
+    for (auto & transitDataItem : newTransitData)
+    {
+      auto & transitInfo = transitDataItem.second;
+      if (!transitInfo || transitInfo->m_lines.empty())
+        continue;
+
+      auto it = m_mwmCache.find(transitDataItem.first);
+
+      it->second.m_isLoaded = true;
+
+      auto const dataSize = CalculateCacheSize(*transitInfo);
+      it->second.m_dataSize = dataSize;
+      m_cacheSize += dataSize;
+
+      validTransitData[transitDataItem.first] = std::move(transitInfo);
     }
-    ShrinkCacheToAllowableSize();
-    m_drapeEngine.SafeCall(&df::DrapeEngine::UpdateTransitScheme,
-                           std::move(displayInfos), mwms);
+
+    if (!validTransitData.empty())
+    {
+      ShrinkCacheToAllowableSize();
+      m_drapeEngine.SafeCall(&df::DrapeEngine::UpdateTransitScheme, std::move(validTransitData));
+    }
   }
+
+  bool hasData = m_lastActiveMwms.empty();
+  for (auto const & mwmId : m_lastActiveMwms)
+  {
+    if (m_mwmCache.at(mwmId).m_isLoaded)
+    {
+      hasData = true;
+      break;
+    }
+  }
+  ChangeState(hasData ? TransitSchemeState::Enabled : TransitSchemeState::NoData);
 }
 
 void TransitReadManager::ClearCache(MwmSet::MwmId const & mwmId)
@@ -257,8 +308,17 @@ void TransitReadManager::ClearCache(MwmSet::MwmId const & mwmId)
   m_drapeEngine.SafeCall(&df::DrapeEngine::ClearTransitSchemeCache, mwmId);
 }
 
-void TransitReadManager::OnMwmDeregistered(MwmSet::MwmId const & mwmId)
+void TransitReadManager::OnMwmDeregistered(platform::LocalCountryFile const & countryFile)
 {
+  MwmSet::MwmId mwmId;
+  for (auto const & cacheEntry : m_mwmCache)
+  {
+    if (cacheEntry.first.IsDeregistered(countryFile))
+    {
+      mwmId = cacheEntry.first;
+      break;
+    }
+  }
   ClearCache(mwmId);
 }
 
@@ -266,8 +326,6 @@ void TransitReadManager::Invalidate()
 {
   if (!m_isSchemeMode)
     return;
-
-  m_lastVisibleMwms.clear();
 
   if (m_currentModelView.second)
     UpdateViewport(m_currentModelView.first);
@@ -342,4 +400,18 @@ void TransitReadManager::OnTaskCompleted(threads::IRoutine * task)
 
   if (--m_tasksGroups[t->GetId()] == 0)
     m_event.notify_all();
+}
+
+void TransitReadManager::SetStateListener(TransitStateChangedFn const & onStateChangedFn)
+{
+  m_onStateChangedFn = onStateChangedFn;
+}
+
+void TransitReadManager::ChangeState(TransitSchemeState newState)
+{
+  if (m_state == newState)
+    return;
+  m_state = newState;
+  if (m_onStateChangedFn)
+    m_onStateChangedFn(newState);
 }

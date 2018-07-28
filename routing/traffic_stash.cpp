@@ -6,8 +6,10 @@
 
 namespace routing
 {
+using namespace std;
+
 TrafficStash::TrafficStash(traffic::TrafficCache const & source, shared_ptr<NumMwmIds> numMwmIds)
-  : m_source(source), m_numMwmIds(std::move(numMwmIds))
+  : m_source(source), m_numMwmIds(move(numMwmIds))
 {
   CHECK(m_numMwmIds, ());
 }
@@ -31,7 +33,7 @@ traffic::SpeedGroup TrafficStash::GetSpeedGroup(Segment const & segment) const
 }
 
 void TrafficStash::SetColoring(NumMwmId numMwmId,
-                               std::shared_ptr<traffic::TrafficInfo::Coloring> coloring)
+                               shared_ptr<const traffic::TrafficInfo::Coloring> coloring)
 {
   m_mwmToTraffic[numMwmId] = coloring;
 }
@@ -43,7 +45,7 @@ bool TrafficStash::Has(NumMwmId numMwmId) const
 
 void TrafficStash::CopyTraffic()
 {
-  std::map<MwmSet::MwmId, std::shared_ptr<traffic::TrafficInfo::Coloring>> copy;
+  traffic::AllMwmTrafficInfo copy;
   m_source.CopyTraffic(copy);
   for (auto const & kv : copy)
   {

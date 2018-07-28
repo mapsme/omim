@@ -12,14 +12,15 @@
 
 
 class FeatureType;
-class DataSourceBase;
+class DataSource;
 
 namespace search
 {
+class MwmContext;
 
 class ReverseGeocoder
 {
-  DataSourceBase const & m_dataSource;
+  DataSource const & m_dataSource;
 
   struct Object
   {
@@ -42,7 +43,7 @@ public:
   /// All "Nearby" functions work in this lookup radius.
   static int constexpr kLookupRadiusM = 500;
 
-  explicit ReverseGeocoder(DataSourceBase const & dataSource);
+  explicit ReverseGeocoder(DataSource const & dataSource);
 
   using Street = Object;
 
@@ -77,6 +78,8 @@ public:
 
   /// @return Sorted by distance streets vector for the specified MwmId.
   //@{
+  static void GetNearbyStreets(search::MwmContext & context, m2::PointD const & center,
+                               vector<Street> & streets);
   void GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD const & center,
                         vector<Street> & streets) const;
   void GetNearbyStreets(FeatureType & ft, vector<Street> & streets) const;
@@ -98,11 +101,11 @@ private:
   /// Helper class to incapsulate house 2 street table reloading.
   class HouseTable
   {
-    DataSourceBase const & m_dataSource;
+    DataSource const & m_dataSource;
     unique_ptr<search::HouseToStreetTable> m_table;
     MwmSet::MwmHandle m_handle;
   public:
-    explicit HouseTable(DataSourceBase const & dataSource) : m_dataSource(dataSource) {}
+    explicit HouseTable(DataSource const & dataSource) : m_dataSource(dataSource) {}
     bool Get(FeatureID const & fid, uint32_t & streetIndex);
   };
 

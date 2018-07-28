@@ -140,16 +140,26 @@ void TrafficManager::SetCurrentDataVersion(int64_t dataVersion)
   m_currentDataVersion = dataVersion;
 }
 
-void TrafficManager::OnMwmDeregistered(MwmSet::MwmId const & mwmId)
+void TrafficManager::OnMwmDeregistered(platform::LocalCountryFile const & countryFile)
 {
   if (!IsEnabled())
     return;
 
   {
     lock_guard<mutex> lock(m_mutex);
+
+    MwmSet::MwmId mwmId;
+    for (auto const & cacheEntry : m_mwmCache)
+    {
+      if (cacheEntry.first.IsDeregistered(countryFile))
+      {
+        mwmId = cacheEntry.first;
+        break;
+      }
+    }
+
     ClearCache(mwmId);
   }
-  Invalidate();
 }
 
 void TrafficManager::OnDestroyGLContext()
@@ -447,6 +457,10 @@ void TrafficManager::ClearCache(MwmSet::MwmId const & mwmId)
   }
   m_mwmCache.erase(it);
   m_trafficETags.erase(mwmId);
+  m_activeDrapeMwms.erase(mwmId);
+  m_activeRoutingMwms.erase(mwmId);
+  m_lastDrapeMwmsByRect.clear();
+  m_lastRoutingMwmsByRect.clear();
 }
 
 bool TrafficManager::IsEnabled() const
@@ -560,6 +574,7 @@ void TrafficManager::Resume()
 
 void TrafficManager::SetSimplifiedColorScheme(bool simplified)
 {
+  m_hasSimplifiedColorScheme = simplified;
   m_drapeEngine.SafeCall(&df::DrapeEngine::SetSimplifiedTrafficColors, simplified);
 }
 

@@ -8,36 +8,40 @@ namespace osm
 {
 class Id
 {
-  uint64_t m_encodedId;
-
-  static const uint64_t INVALID = 0ULL;
-
 public:
-  explicit Id(uint64_t encodedId = INVALID);
+  enum class Type
+  {
+    Node,
+    Way,
+    Relation
+  };
+
+  static const uint64_t kInvalid = 0ULL;
+
+  explicit Id(uint64_t encodedId = kInvalid);
 
   static Id Node(uint64_t osmId);
   static Id Way(uint64_t osmId);
   static Id Relation(uint64_t osmId);
 
-  uint64_t OsmId() const;
-  uint64_t EncodedId() const;
-  bool IsNode() const;
-  bool IsWay() const;
-  bool IsRelation() const;
+  uint64_t GetOsmId() const;
+  uint64_t GetEncodedId() const;
+  Type GetType() const;
 
-  /// For debug output
-  std::string Type() const;
+  bool operator<(Id const & other) const { return m_encodedId < other.m_encodedId; }
+  bool operator==(Id const & other) const { return m_encodedId == other.m_encodedId; }
+  bool operator!=(Id const & other) const { return !(*this == other); }
+  bool operator==(uint64_t other) const { return GetOsmId() == other; }
 
-  inline bool operator<(Id const & other) const { return m_encodedId < other.m_encodedId; }
-  inline bool operator==(Id const & other) const { return m_encodedId == other.m_encodedId; }
-  inline bool operator!=(Id const & other) const { return !(*this == other); }
-  bool operator==(uint64_t other) const { return OsmId() == other; }
+private:
+  uint64_t m_encodedId;
 };
 
 struct HashId : private std::hash<uint64_t>
 {
-  size_t operator()(Id const & id) const { return std::hash<uint64_t>::operator()(id.OsmId()); }
+  size_t operator()(Id const & id) const { return std::hash<uint64_t>::operator()(id.GetOsmId()); }
 };
 
-std::string DebugPrint(osm::Id const & id);
+std::string DebugPrint(Id::Type const & t);
+std::string DebugPrint(Id const & id);
 }  // namespace osm

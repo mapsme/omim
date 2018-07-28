@@ -369,17 +369,9 @@ void DrapeEngine::InvalidateRect(m2::RectD const & rect)
 
 void DrapeEngine::UpdateMapStyle()
 {
-  // Update map style.
-  {
-    UpdateMapStyleMessage::Blocker blocker;
-    m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
-                                    make_unique_dp<UpdateMapStyleMessage>(blocker),
-                                    MessagePriority::High);
-    blocker.Wait();
-  }
-
-  // Recache gui after updating of style.
-  RecacheGui(false);
+  m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
+                                  make_unique_dp<UpdateMapStyleMessage>(),
+                                  MessagePriority::High);
 }
 
 void DrapeEngine::RecacheMapShapes()
@@ -749,12 +741,17 @@ void DrapeEngine::ClearTransitSchemeCache(MwmSet::MwmId const & mwmId)
                                   MessagePriority::Normal);
 }
 
-void DrapeEngine::UpdateTransitScheme(TransitDisplayInfos && transitDisplayInfos,
-                                      std::vector<MwmSet::MwmId> const & visibleMwms)
+void DrapeEngine::ClearAllTransitSchemeCache()
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
-                                  make_unique_dp<UpdateTransitSchemeMessage>(std::move(transitDisplayInfos),
-                                                                             visibleMwms),
+                                  make_unique_dp<ClearAllTransitSchemeDataMessage>(),
+                                  MessagePriority::Normal);
+}
+
+void DrapeEngine::UpdateTransitScheme(TransitDisplayInfos && transitDisplayInfos)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
+                                  make_unique_dp<UpdateTransitSchemeMessage>(std::move(transitDisplayInfos)),
                                   MessagePriority::Normal);
 }
 
@@ -825,10 +822,18 @@ void DrapeEngine::RunFirstLaunchAnimation()
                                   MessagePriority::Normal);
 }
 
+void DrapeEngine::ShowDebugInfo(bool shown)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
+                                  make_unique_dp<ShowDebugInfoMessage>(shown),
+                                  MessagePriority::Normal);
+}
+
 drape_ptr<UserMarkRenderParams> DrapeEngine::GenerateMarkRenderInfo(UserPointMark const * mark)
 {
   auto renderInfo = make_unique_dp<UserMarkRenderParams>();
   renderInfo->m_anchor = mark->GetAnchor();
+  renderInfo->m_depthTestEnabled = mark->GetDepthTestEnabled();
   renderInfo->m_depth = mark->GetDepth();
   renderInfo->m_depthLayer = mark->GetDepthLayer();
   renderInfo->m_minZoom = mark->GetMinZoom();

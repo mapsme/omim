@@ -1,6 +1,7 @@
 #include "search_index_builder.hpp"
 
 #include "search/common.hpp"
+#include "search/mwm_context.hpp"
 #include "search/reverse_geocoder.hpp"
 #include "search/search_index_values.hpp"
 #include "search/search_trie.hpp"
@@ -37,15 +38,15 @@
 
 #include <algorithm>
 #include <fstream>
-#include <initializer_list>
-#include <limits>
+#include <map>
+#include <mutex>
 #include <unordered_map>
 #include <vector>
+#include <thread>
 
 using namespace std;
 
 #define SYNONYMS_FILE "synonyms.txt"
-
 
 namespace
 {
@@ -317,56 +318,116 @@ void AddFeatureNameIndexPairs(FeaturesVectorTest const & features,
       synonyms.get(), keyValuePairs, categoriesHolder, header.GetScaleRange(), valueBuilder));
 }
 
-void BuildAddressTable(FilesContainerR & container, Writer & writer)
+bool GetStreetIndex(search::MwmContext & ctx, uint32_t featureID, string const & streetName,
+                    uint32_t & result)
 {
-  ReaderSource<ModelReaderPtr> src = container.GetReader(SEARCH_TOKENS_FILE_TAG);
+  size_t streetIndex = 0;
+  strings::UniString const street = search::GetStreetNameAsKey(streetName);
+
+  bool const hasStreet = !street.empty();
+  if (hasStreet)
+  {
+    FeatureType ft;
+    VERIFY(ctx.GetFeature(featureID, ft), ());
+
+    using TStreet = search::ReverseGeocoder::Street;
+    vector<TStreet> streets;
+    search::ReverseGeocoder::GetNearbyStreets(ctx, feature::GetCenter(ft), streets);
+
+    streetIndex = search::ReverseGeocoder::GetMatchedStreetIndex(street, streets);
+    if (streetIndex < streets.size())
+    {
+      result = base::checked_cast<uint32_t>(streetIndex);
+      return true;
+    }
+  }
+
+  result = hasStreet ? 1 : 0;
+  return false;
+}
+
+void BuildAddressTable(FilesContainerR & container, Writer & writer, uint32_t threadsCount)
+{
+  // Read all street names to memory.
+  ReaderSource<ModelReaderPtr> src(container.GetReader(SEARCH_TOKENS_FILE_TAG));
+  vector<feature::AddressData> addrs;
+  while (src.Size() > 0)
+  {
+    addrs.push_back({});
+    addrs.back().Deserialize(src);
+  }
+  uint32_t const featuresCount = base::checked_cast<uint32_t>(addrs.size());
+
+  // Initialize temporary source for the current mwm file.
+  FrozenDataSource dataSource;
+  MwmSet::MwmId mwmId;
+  {
+    auto const regResult =
+        dataSource.RegisterMap(platform::LocalCountryFile::MakeTemporary(container.GetFileName()));
+    ASSERT_EQUAL(regResult.second, MwmSet::RegResult::Success, ());
+    mwmId = regResult.first;
+  }
+
+  vector<unique_ptr<search::MwmContext>> contexts(threadsCount);
+
   uint32_t address = 0, missing = 0;
   map<size_t, size_t> bounds;
 
-  DataSource dataSource;
-  /// @ todo Make some better solution, or legalize MakeTemporary.
-  auto const res = dataSource.RegisterMap(platform::LocalCountryFile::MakeTemporary(container.GetFileName()));
-  ASSERT_EQUAL(res.second, MwmSet::RegResult::Success, ());
-  search::ReverseGeocoder rgc(dataSource);
+  uint32_t const kEmptyResult = uint32_t(-1);
+  vector<uint32_t> results(featuresCount, kEmptyResult);
 
-  {
-    FixedBitsDDVector<3, FileReader>::Builder<Writer> building2Street(writer);
+  mutex resMutex;
 
-    FeaturesVectorTest features(container);
-    for (uint32_t index = 0; src.Size() > 0; ++index)
+  // Thread working function.
+  auto const fn = [&](uint32_t threadIdx) {
+    uint64_t const fc = static_cast<uint64_t>(featuresCount);
+    uint32_t const beg = static_cast<uint32_t>(fc * threadIdx / threadsCount);
+    uint32_t const end = static_cast<uint32_t>(fc * (threadIdx + 1) / threadsCount);
+
+    for (uint32_t i = beg; i < end; ++i)
     {
-      feature::AddressData data;
-      data.Deserialize(src);
+      uint32_t streetIndex;
+      bool const found = GetStreetIndex(*(contexts[threadIdx]), i,
+                                        addrs[i].Get(feature::AddressData::STREET), streetIndex);
 
-      size_t streetIndex = 0;
-      bool streetMatched = false;
-      strings::UniString const street = search::GetStreetNameAsKey(data.Get(feature::AddressData::STREET));
-      if (!street.empty())
+      lock_guard<mutex> guard(resMutex);
+
+      if (found)
       {
-        FeatureType ft;
-        features.GetVector().GetByIndex(index, ft);
-        ft.SetID({res.first, index});
-
-        using TStreet = search::ReverseGeocoder::Street;
-        vector<TStreet> streets;
-        rgc.GetNearbyStreets(ft, streets);
-
-        streetIndex = rgc.GetMatchedStreetIndex(street, streets);
-        if (streetIndex < streets.size())
-        {
-          ++bounds[streetIndex];
-          streetMatched = true;
-        }
-        else
-        {
-          ++missing;
-        }
+        results[i] = streetIndex;
+        ++bounds[streetIndex];
         ++address;
       }
-      if (streetMatched)
-        building2Street.PushBack(base::checked_cast<decltype(building2Street)::ValueType>(streetIndex));
-      else
+      else if (streetIndex > 0)
+      {
+        ++missing;
+        ++address;
+      }
+    }
+  };
+
+  // Prepare threads and mwm contexts for each thread.
+  vector<thread> threads;
+  for (size_t i = 0; i < threadsCount; ++i)
+  {
+    auto handle = dataSource.GetMwmHandleById(mwmId);
+    contexts[i] = make_unique<search::MwmContext>(move(handle));
+    threads.emplace_back(fn, i);
+  }
+
+  // Wait for thread's finish.
+  for (auto & t : threads)
+    t.join();
+
+  // Flush results to disk.
+  {
+    FixedBitsDDVector<3, FileReader>::Builder<Writer> building2Street(writer);
+    for (auto i : results)
+    {
+      if (i == kEmptyResult)
         building2Street.PushBackUndefined();
+      else
+        building2Street.PushBack(i);
     }
 
     LOG(LINFO, ("Address: Building -> Street (opt, all)", building2Street.GetCount()));
@@ -382,7 +443,7 @@ void BuildAddressTable(FilesContainerR & container, Writer & writer)
 
 namespace indexer
 {
-bool BuildSearchIndexFromDataFile(string const & filename, bool forceRebuild)
+bool BuildSearchIndexFromDataFile(string const & filename, bool forceRebuild, uint32_t threadsCount)
 {
   Platform & platform = GetPlatform();
 
@@ -405,7 +466,7 @@ bool BuildSearchIndexFromDataFile(string const & filename, bool forceRebuild)
     if (filename != WORLD_FILE_NAME && filename != WORLD_COASTS_FILE_NAME)
     {
       FileWriter writer(addrFilePath);
-      BuildAddressTable(readContainer, writer);
+      BuildAddressTable(readContainer, writer, threadsCount);
       LOG(LINFO, ("Search address table size =", writer.Size()));
     }
     {

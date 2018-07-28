@@ -210,7 +210,21 @@ using namespace osm_auth_ios;
     switch (parsingType)
     {
     case ParsedMapApi::ParsingResult::Incorrect:
-      LOG(LWARNING, ("Incorrect parsing result for url:", url));
+      if ([m_mwmURL rangeOfString:@"catalog"].location != NSNotFound)
+      {
+        auto navController = self.mapViewController.navigationController;
+        [navController popToRootViewControllerAnimated:NO];
+        auto bookmarks = [[MWMBookmarksTabViewController alloc] init];
+        bookmarks.activeTab = ActiveTabCatalog;
+        auto url = [[NSURL alloc] initWithString:m_mwmURL];
+        auto catalog = [[MWMCatalogWebViewController alloc] init:url];
+        [navController pushViewController:bookmarks animated:NO];
+        [navController pushViewController:catalog animated:NO];
+      }
+      else
+      {
+        LOG(LWARNING, ("Incorrect parsing result for url:", url));
+      }
       break;
     case ParsedMapApi::ParsingResult::Route:
     {
@@ -641,7 +655,12 @@ using namespace osm_auth_ios;
   navigationBar.barTintColor = [UIColor primary];
   navigationBar.titleTextAttributes = [self navigationBarTextAttributes];
   navigationBar.translucent = NO;
+  [navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
   navigationBar.shadowImage = [UIImage new];
+  auto backImage = [[UIImage imageNamed:@"ic_nav_bar_back_sys"]
+                    imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+  navigationBar.backIndicatorImage = backImage;
+  navigationBar.backIndicatorTransitionMaskImage = backImage;
 }
 
 + (void)customizeAppearance
@@ -825,9 +844,15 @@ using namespace osm_auth_ios;
 - (void)showAlertIfRequired
 {
   if ([self shouldShowRateAlert])
+  {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showRateAlert) object:nil];
     [self performSelector:@selector(showRateAlert) withObject:nil afterDelay:30.0];
+  }
   else if ([self shouldShowFacebookAlert])
+  {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showFacebookAlert) object:nil];
     [self performSelector:@selector(showFacebookAlert) withObject:nil afterDelay:30.0];
+  }
 }
 
 - (void)showAlert:(BOOL)isRate

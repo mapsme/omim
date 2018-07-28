@@ -193,7 +193,8 @@ bool Results::AddResult(Result && result)
 
   if (result.IsSuggest())
   {
-    if (distance(m_results.begin(), it) >= kMaxNumSuggests)
+    auto const d = distance(m_results.begin(), it);
+    if (d >= static_cast<decltype(d)>(kMaxNumSuggests))
       return false;
 
     for (auto i = m_results.begin(); i != it; ++i)
@@ -271,6 +272,11 @@ void Results::InsertResult(vector<Result>::iterator where, Result && result)
   result.SetPositionInResults(static_cast<int32_t>(distance(m_results.begin(), where)));
   m_hotelsClassif.Add(result);
   m_results.insert(where, move(result));
+}
+
+string DebugPrint(search::Results const & results)
+{
+  return ::my::impl::DebugPrintSequence(results.begin(), results.end());
 }
 
 // AddressInfo -------------------------------------------------------------------------------------

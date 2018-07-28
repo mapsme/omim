@@ -5,6 +5,7 @@
 #import "MWMLocationHelpers.h"
 #import "MWMLocationObserver.h"
 #import "MWMSearchManager.h"
+#import "MWMCategoryInfoCell.h"
 #import "SwiftBridge.h"
 
 #include "Framework.h"
@@ -14,16 +15,31 @@
 #include "coding/zip_creator.hpp"
 #include "coding/internal/file_data.hpp"
 
-#define PINDIAMETER 18
+#include <iterator>
+#include <string>
+#include <vector>
 
-#define EMPTY_SECTION -666
+using namespace std;
 
-@interface BookmarksVC() <MWMLocationObserver>
+namespace
 {
-  int m_trackSection;
-  int m_bookmarkSection;
-  int m_numberOfSections;
+enum class Section
+{
+  Info,
+  Track,
+  Bookmark
+};
+
+CGFloat const kPinDiameter = 18.0f;
+}  // namespace
+
+@interface BookmarksVC() <MWMLocationObserver, MWMCategoryInfoCellDelegate>
+{
+  vector<Section> m_sections;
 }
+
+@property(nonatomic) BOOL infoExpanded;
+
 @end
 
 @implementation BookmarksVC
@@ -34,8 +50,8 @@
   if (self)
   {
     m_categoryId = index;
-    auto const & bmManager = GetFramework().GetBookmarkManager();
-    self.title = @(bmManager.GetCategoryName(m_categoryId).c_str());
+    auto const & bm = GetFramework().GetBookmarkManager();
+    self.title = @(bm.GetCategoryName(m_categoryId).c_str());
     [self calculateSections];
   }
   return self;
@@ -43,91 +59,83 @@
 
 - (kml::MarkId)getBookmarkIdByRow:(NSInteger)row
 {
-  auto const & bmManager = GetFramework().GetBookmarkManager();
-  auto const & bookmarkIds = bmManager.GetUserMarkIds(m_categoryId);
+  auto const & bm = GetFramework().GetBookmarkManager();
+  auto const & bookmarkIds = bm.GetUserMarkIds(m_categoryId);
   ASSERT_LESS(row, bookmarkIds.size(), ());
   auto it = bookmarkIds.begin();
-  std::advance(it, row);
+  advance(it, row);
   return *it;
 }
 
 - (kml::TrackId)getTrackIdByRow:(NSInteger)row
 {
-  auto const & bmManager = GetFramework().GetBookmarkManager();
-  auto const & trackIds = bmManager.GetTrackIds(m_categoryId);
+  auto const & bm = GetFramework().GetBookmarkManager();
+  auto const & trackIds = bm.GetTrackIds(m_categoryId);
   ASSERT_LESS(row, trackIds.size(), ());
   auto it = trackIds.begin();
-  std::advance(it, row);
+  advance(it, row);
   return *it;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-  return m_numberOfSections;
+  return m_sections.size();
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  if (section == 0)
+  auto const & bm = GetFramework().GetBookmarkManager();
+  switch (m_sections.at(section))
+  {
+  case Section::Info:
     return 1;
-  else if (section == m_trackSection)
-    return GetFramework().GetBookmarkManager().GetTrackIds(m_categoryId).size();
-  else if (section == m_bookmarkSection)
-    return GetFramework().GetBookmarkManager().GetUserMarkIds(m_categoryId).size();
-  else
-    return 0;
-}
-
-- (void)onVisibilitySwitched:(UISwitch *)sender
-{
-  [Statistics logEvent:kStatEventName(kStatBookmarks, kStatToggleVisibility)
-                   withParameters:@{kStatValue : sender.on ? kStatVisible : kStatHidden}];
-  auto & bmManager = GetFramework().GetBookmarkManager();
-  bmManager.GetEditSession().SetIsVisible(m_categoryId, sender.on);
+  case Section::Track:
+    return bm.GetTrackIds(m_categoryId).size();
+  case Section::Bookmark:
+    return bm.GetUserMarkIds(m_categoryId).size();
+  }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-  if (section == m_trackSection)
-    return L(@"tracks");
-  if (section == m_bookmarkSection)
+  switch (m_sections.at(section))
+  {
+  case Section::Info:
+    return L(@"placepage_place_description");
+  case Section::Track:
+    return L(@"tracks_title");
+  case Section::Bookmark:
     return L(@"bookmarks");
-  return nil;
+  }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  Framework & fr = GetFramework();
-  
-  auto & bmManager = fr.GetBookmarkManager();
-  if (!bmManager.HasBmCategory(m_categoryId))
+  auto & f = GetFramework();
+  auto const & bm = f.GetBookmarkManager();
+  if (!bm.HasBmCategory(m_categoryId))
     return nil;
 
   UITableViewCell * cell = nil;
-  // First section, contains info about current set
-  if (indexPath.section == 0)
+  switch (m_sections.at(indexPath.section))
   {
-    cell = [tableView dequeueReusableCellWithIdentifier:@"BookmarksVCSetVisibilityCell"];
-    if (!cell)
-    {
-      cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"BookmarksVCSetVisibilityCell"];
-      cell.textLabel.text = L(@"visible");
-      cell.accessoryView = [[UISwitch alloc] init];
-      cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    UISwitch * sw = (UISwitch *)cell.accessoryView;
-    sw.on = bmManager.IsVisible(m_categoryId);
-    sw.onTintColor = [UIColor linkBlue];
-    [sw addTarget:self action:@selector(onVisibilitySwitched:) forControlEvents:UIControlEventValueChanged];
+  case Section::Info:
+  {
+    cell = [tableView dequeueReusableCellWithCellClass:MWMCategoryInfoCell.class indexPath:indexPath];
+    auto infoCell = (MWMCategoryInfoCell *)cell;
+    auto const & categoryData = bm.GetCategoryData(m_categoryId);
+    [infoCell updateWithCategoryData:categoryData delegate:self];
+    infoCell.expanded = self.infoExpanded;
+    break;
   }
-
-  else if (indexPath.section == m_trackSection)
+  case Section::Track:
   {
     cell = [tableView dequeueReusableCellWithIdentifier:@"TrackCell"];
     if (!cell)
       cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"TrackCell"];
+
     kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
-    Track const * tr = bmManager.GetTrack(trackId);
+    Track const * tr = bm.GetTrack(trackId);
     cell.textLabel.text = @(tr->GetName().c_str());
     string dist;
     if (measurement_utils::FormatDistance(tr->GetLengthMeters(), dist))
@@ -135,41 +143,46 @@
       cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", L(@"length"), @(dist.c_str())];
     else
       cell.detailTextLabel.text = nil;
-    const dp::Color c = tr->GetColor(0);
-    cell.imageView.image = [CircleView createCircleImageWith:PINDIAMETER andColor:[UIColor colorWithRed:c.GetRed()/255.f green:c.GetGreen()/255.f
-                                                                                                   blue:c.GetBlue()/255.f alpha:1.f]];
+    dp::Color const c = tr->GetColor(0);
+    cell.imageView.image = [CircleView createCircleImageWith:kPinDiameter
+                                                    andColor:[UIColor colorWithRed:c.GetRed()/255.f
+                                                                             green:c.GetGreen()/255.f
+                                                                              blue:c.GetBlue()/255.f
+                                                                             alpha:1.f]];
+    break;
   }
-  // Contains bookmarks list
-  else if (indexPath.section == m_bookmarkSection)
+  case Section::Bookmark:
   {
-    UITableViewCell * bmCell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"BookmarksVCBookmarkItemCell"];
-    if (!bmCell)
-      bmCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"BookmarksVCBookmarkItemCell"];
+    cell = [tableView dequeueReusableCellWithIdentifier:@"BookmarksVCBookmarkItemCell"];
+    if (!cell)
+      cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                    reuseIdentifier:@"BookmarksVCBookmarkItemCell"];
+
     kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
-    Bookmark const * bm = bmManager.GetBookmark(bmId);
-    if (bm)
+    Bookmark const * bookmark = bm.GetBookmark(bmId);
+    CHECK(cell, ("NULL bookmark"));
+    cell.textLabel.text = @(bookmark->GetPreferredName().c_str());
+    cell.imageView.image = [CircleView createCircleImageWith:kPinDiameter
+                                                    andColor:[ColorPickerView getUIColor:bookmark->GetColor()]];
+
+    CLLocation * lastLocation = [MWMLocationManager lastLocation];
+    if (lastLocation)
     {
-      bmCell.textLabel.text = @(bm->GetPreferredName().c_str());
-      bmCell.imageView.image = [CircleView createCircleImageWith:PINDIAMETER andColor:[ColorPickerView getUIColor:bm->GetColor()]];
+      double north = location_helpers::headingToNorthRad([MWMLocationManager lastHeading]);
+      string distance;
+      double azimut = -1.0;
+      f.GetDistanceAndAzimut(bookmark->GetPivot(), lastLocation.coordinate.latitude,
+                              lastLocation.coordinate.longitude, north, distance, azimut);
 
-      CLLocation * lastLocation = [MWMLocationManager lastLocation];
-      if (lastLocation)
-      {
-        double north = location_helpers::headingToNorthRad([MWMLocationManager lastHeading]);
-        string distance;
-        double azimut = -1.0;
-        fr.GetDistanceAndAzimut(bm->GetPivot(), lastLocation.coordinate.latitude,
-                                lastLocation.coordinate.longitude, north, distance, azimut);
-
-        bmCell.detailTextLabel.text = @(distance.c_str());
-      }
-      else
-        bmCell.detailTextLabel.text = nil;
+      cell.detailTextLabel.text = @(distance.c_str());
     }
     else
-      ASSERT(false, ("NULL bookmark"));
+    {
+      cell.detailTextLabel.text = nil;
+    }
 
-    cell = bmCell;
+    break;
+  }
   }
 
   cell.backgroundColor = [UIColor white];
@@ -182,93 +195,99 @@
 {
   // Remove cell selection
   [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-  Framework & f = GetFramework();
-  auto & bmManager = f.GetBookmarkManager();
-  bool const categoryExists = bmManager.HasBmCategory(m_categoryId);
-  ASSERT(categoryExists, ("Nonexistent category"));
-  if (indexPath.section == 0)
+  auto & f = GetFramework();
+  auto & bm = f.GetBookmarkManager();
+  bool const categoryExists = bm.HasBmCategory(m_categoryId);
+  CHECK(categoryExists, ("Nonexistent category"));
+  switch (m_sections.at(indexPath.section))
   {
-    if (indexPath.row == 0)
-    {
-      // Edit name
-      // @TODO
-    }
+  case Section::Info:
+    break;
+  case Section::Track:
+  {
+    kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
+    Track const * tr = bm.GetTrack(trackId);
+    CHECK(tr, ("NULL track"));
+    f.ShowTrack(*tr);
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    break;
   }
-  else if (indexPath.section == m_trackSection)
+  case Section::Bookmark:
   {
-    if (categoryExists)
-    {
-      kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
-      Track const * tr = bmManager.GetTrack(trackId);
-      ASSERT(tr, ("NULL track"));
-      if (tr)
-      {
-        f.ShowTrack(*tr);
-        [self.navigationController popToRootViewControllerAnimated:YES];
-      }
-    }
+    kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
+    Bookmark const * bookmark = bm.GetBookmark(bmId);
+    CHECK(bookmark, ("NULL bookmark"));
+    [Statistics logEvent:kStatEventName(kStatBookmarks, kStatShowOnMap)];
+    // Same as "Close".
+    [MWMSearchManager manager].state = MWMSearchManagerStateHidden;
+    f.ShowBookmark(bookmark);
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    break;
   }
-  else if (indexPath.section == m_bookmarkSection)
-  {
-    if (categoryExists)
-    {
-      kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
-      Bookmark const * bm = bmManager.GetBookmark(bmId);
-      ASSERT(bm, ("NULL bookmark"));
-      if (bm)
-      {
-        [Statistics logEvent:kStatEventName(kStatBookmarks, kStatShowOnMap)];
-        // Same as "Close".
-        [MWMSearchManager manager].state = MWMSearchManagerStateHidden;
-        f.ShowBookmark(bm);
-        [self.navigationController popToRootViewControllerAnimated:YES];
-      }
-    }
   }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  if (indexPath.section == m_trackSection || indexPath.section == m_bookmarkSection)
-    return YES;
-  return NO;
+  auto const s = m_sections.at(indexPath.section);
+  return !GetFramework().GetBookmarkManager().IsCategoryFromCatalog(m_categoryId) && s != Section::Info;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  if (indexPath.section == m_trackSection || indexPath.section == m_bookmarkSection)
+  auto const s = m_sections.at(indexPath.section);
+  if (s == Section::Info)
+    return;
+
+  auto & bm = GetFramework().GetBookmarkManager();
+  if (!bm.HasBmCategory(m_categoryId))
+    return;
+
+  if (editingStyle == UITableViewCellEditingStyleDelete)
   {
-    auto & bmManager = GetFramework().GetBookmarkManager();
-    if (bmManager.HasBmCategory(m_categoryId))
+    if (s == Section::Track)
     {
-      if (editingStyle == UITableViewCellEditingStyleDelete)
-      {
-        if (indexPath.section == m_trackSection)
-        {
-          kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
-          bmManager.GetEditSession().DeleteTrack(trackId);
-        }
-        else
-        {
-          kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
-          [MWMBookmarksManager deleteBookmark:bmId];
-        }
-      }
-      size_t previousNumberOfSections  = m_numberOfSections;
-      [self calculateSections];
-      //We can delete the row with animation, if number of sections stay the same.
-      if (previousNumberOfSections == m_numberOfSections)
-        [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationFade];
-      else
-        [self.tableView reloadData];
-      if (bmManager.GetUserMarkIds(m_categoryId).size() + bmManager.GetTrackIds(m_categoryId).size() == 0)
-      {
-        self.navigationItem.rightBarButtonItem = nil;
-        [self setEditing:NO animated:YES];
-      }
+      kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
+      bm.GetEditSession().DeleteTrack(trackId);
+    }
+    else
+    {
+      kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
+      [MWMBookmarksManager deleteBookmark:bmId];
     }
   }
+
+  auto const previousNumberOfSections = m_sections.size();
+  [self calculateSections];
+
+  //We can delete the row with animation, if number of sections stay the same.
+  if (previousNumberOfSections == m_sections.size())
+    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+  else
+    [self.tableView reloadData];
+
+  if (bm.GetUserMarkIds(m_categoryId).size() + bm.GetTrackIds(m_categoryId).size() == 0)
+  {
+    self.navigationItem.rightBarButtonItem = nil;
+    [self setEditing:NO animated:YES];
+  }
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+  auto header = (UITableViewHeaderFooterView *)view;
+  header.textLabel.textColor = [UIColor blackSecondaryText];
+  header.textLabel.font = [UIFont medium14];
+}
+
+#pragma mark - MWMCategoryInfoCellDelegate
+
+- (void)categoryInfoCellDidPressMore:(MWMCategoryInfoCell *)cell
+{
+  [self.tableView beginUpdates];
+  cell.expanded = YES;
+  [self.tableView endUpdates];
+  self.infoExpanded = YES;
 }
 
 #pragma mark - MWMLocationObserver
@@ -276,40 +295,47 @@
 - (void)onLocationUpdate:(location::GpsInfo const &)info
 {
   // Refresh distance
-  auto & bmManager = GetFramework().GetBookmarkManager();
-  if (bmManager.HasBmCategory(m_categoryId))
+  auto const & bm = GetFramework().GetBookmarkManager();
+  if (!bm.HasBmCategory(m_categoryId))
+    return;
+
+  auto table = (UITableView *)self.view;
+  [table.visibleCells enumerateObjectsUsingBlock:^(UITableViewCell * cell, NSUInteger idx, BOOL * stop)
   {
-    UITableView * table = (UITableView *)self.view;
-    [table.visibleCells enumerateObjectsUsingBlock:^(UITableViewCell * cell, NSUInteger idx, BOOL * stop)
-    {
-      NSIndexPath * indexPath = [table indexPathForCell:cell];
-      if (indexPath.section == self->m_bookmarkSection)
-      {
-        kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
-        Bookmark const * bm = bmManager.GetBookmark(bmId);
-        if (bm)
-        {
-          m2::PointD const center = bm->GetPivot();
-          double const metres = ms::DistanceOnEarth(info.m_latitude, info.m_longitude,
-                                                    MercatorBounds::YToLat(center.y), MercatorBounds::XToLon(center.x));
-          cell.detailTextLabel.text = location_helpers::formattedDistance(metres);
-        }
-      }
-    }];
-  }
+    auto indexPath = [table indexPathForCell:cell];
+    auto const s = self->m_sections.at(indexPath.section);
+    if (s != Section::Bookmark)
+      return;
+
+    kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
+    Bookmark const * bookmark = bm.GetBookmark(bmId);
+    if (!bookmark)
+      return;
+
+    m2::PointD const center = bookmark->GetPivot();
+    double const metres = ms::DistanceOnEarth(info.m_latitude, info.m_longitude,
+                                              MercatorBounds::YToLat(center.y), MercatorBounds::XToLon(center.x));
+    cell.detailTextLabel.text = location_helpers::formattedDistance(metres);
+  }];
 }
 
 //*********** End of Location manager callbacks ********************
 //******************************************************************
+
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  [self.tableView registerWithCellClass:MWMCategoryInfoCell.class];
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
   [MWMLocationManager addObserver:self];
 
   // Display Edit button only if table is not empty
-  auto & bmManager = GetFramework().GetBookmarkManager();
-  if (bmManager.HasBmCategory(m_categoryId)
-    && (bmManager.GetUserMarkIds(m_categoryId).size() + bmManager.GetTrackIds(m_categoryId).size()))
+  auto & bm = GetFramework().GetBookmarkManager();
+  if (bm.HasBmCategory(m_categoryId) && !bm.IsCategoryFromCatalog(m_categoryId)
+    && (bm.GetUserMarkIds(m_categoryId).size() + bm.GetTrackIds(m_categoryId).size()))
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
   else
     self.navigationItem.rightBarButtonItem = nil;
@@ -350,17 +376,16 @@
 
 - (void)calculateSections
 {
-  int index = 1;
-  auto & bmManager = GetFramework().GetBookmarkManager();
-  if (bmManager.GetTrackIds(m_categoryId).size())
-    m_trackSection = index++;
-  else
-    m_trackSection = EMPTY_SECTION;
-  if (bmManager.GetUserMarkIds(m_categoryId).size())
-    m_bookmarkSection = index++;
-  else
-    m_bookmarkSection = EMPTY_SECTION;
-  m_numberOfSections = index;
+  m_sections.clear();
+  auto const & bm = GetFramework().GetBookmarkManager();
+  if (bm.IsCategoryFromCatalog(m_categoryId))
+    m_sections.emplace_back(Section::Info);
+
+  if (bm.GetTrackIds(m_categoryId).size() > 0)
+    m_sections.emplace_back(Section::Track);
+
+  if (bm.GetUserMarkIds(m_categoryId).size() > 0)
+    m_sections.emplace_back(Section::Bookmark);
 }
 
 @end

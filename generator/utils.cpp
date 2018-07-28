@@ -24,7 +24,7 @@ SingleMwmDataSource::SingleMwmDataSource(std::string const & mwmPath)
   m_mwmId = result.first;
 }
 
-void LoadDataSource(DataSourceBase & dataSource)
+void LoadDataSource(DataSource & dataSource)
 {
   vector<platform::LocalCountryFile> localFiles;
 

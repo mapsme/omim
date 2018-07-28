@@ -102,7 +102,7 @@ public:
     return FeatureIdForPoint(mercator, ftypes::IsRailwayStationChecker::Instance());
   }
 
-  DataSourceBase & GetDataSource() { return m_dataSource; }
+  DataSource & GetDataSource() { return m_dataSource; }
 
   ~MwmBuilder()
   {
@@ -111,10 +111,7 @@ public:
   }
 
 private:
-  MwmBuilder()
-  {
-    classificator::Load();
-  }
+  MwmBuilder() { classificator::Load(); }
 
   MwmSet::MwmId BuildMwm(BuilderFn const & fn)
   {
@@ -136,7 +133,7 @@ private:
 
     auto const & info = id.GetInfo();
     if (info)
-      m_infoGetter.AddCountry(storage::CountryDef(kTestMwmName, info->m_limitRect));
+      m_infoGetter.AddCountry(storage::CountryDef(kTestMwmName, info->m_bordersRect));
 
     CHECK(id.IsAlive(), ());
     return id;
@@ -164,7 +161,7 @@ private:
     map.DeleteFromDisk(MapOptions::Map);
   }
 
-  DataSource m_dataSource;
+  FrozenDataSource m_dataSource;
   storage::CountryInfoGetterForTesting m_infoGetter;
   platform::LocalCountryFile m_testMwm;
 };
@@ -445,7 +442,7 @@ UNIT_TEST(UGC_IndexMigrationFromV0ToV1Smoke)
   auto & p = GetPlatform();
   auto const version = "v0";
   auto const indexFileName = "index.json";
-  auto const folder = my::JoinPath(p.WritableDir(), "ugc_migration", "test_index", version);
+  auto const folder = my::JoinPath(p.WritableDir(), "ugc_migration_supported_files", "test_index", version);
   auto const indexFilePath = my::JoinPath(folder, indexFileName);
   {
     using Inflate = coding::ZLib::Inflate;

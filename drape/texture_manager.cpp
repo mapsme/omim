@@ -12,23 +12,23 @@
 #include "coding/file_name_utils.hpp"
 #include "coding/reader.hpp"
 
+#include "base/buffer_vector.hpp"
 #include "base/logging.hpp"
 #include "base/stl_add.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/vector.hpp"
-#include "std/bind.hpp"
-
 #include <algorithm>
+#include <cstdint>
+#include <limits>
+#include <vector>
 
 namespace dp
 {
-
 uint32_t const kMaxTextureSize = 1024;
 uint32_t const kStippleTextureWidth = 512;
 uint32_t const kMinStippleTextureHeight = 64;
 uint32_t const kMinColorTextureSize = 32;
-size_t const kInvalidGlyphGroup = numeric_limits<size_t>::max();
+size_t const kInvalidGlyphGroup = std::numeric_limits<size_t>::max();
 
 // number of glyphs (since 0) which will be in each texture
 size_t const kDuplicatedGlyphsCount = 128;
@@ -250,12 +250,21 @@ void TextureManager::Release()
   m_glyphTextures.clear();
 
   m_glyphManager.reset();
+
+  m_glyphGenerator->FinishGeneration();
+  m_nothingToUpload.test_and_set();
 }
 
 bool TextureManager::UpdateDynamicTextures()
 {
+  // For some reasons OpenGL can not update textures immediately.
+  // Here we use some timeout to allow to do it.
+  double const kUploadTimeoutInSeconds = 2.0;
+
   if (!HasAsyncRoutines() && m_nothingToUpload.test_and_set())
-    return false;
+    return m_uploadTimer.ElapsedSeconds() < kUploadTimeoutInSeconds;
+
+  m_uploadTimer.Reset();
 
   m_colorTexture->UpdateState();
   m_stipplePenTexture->UpdateState();
@@ -541,6 +550,8 @@ void TextureManager::Init(Params const & params)
     else
       m_glyphGroups.push_back(GlyphGroup(start, end));
   });
+
+  m_nothingToUpload.clear();
 }
 
 void TextureManager::OnSwitchMapStyle()

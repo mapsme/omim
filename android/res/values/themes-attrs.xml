@@ -97,14 +97,17 @@
     <attr name="ratingButtonBackground" format="reference"/>
     <attr name="reviewButtonBackground" format="reference"/>
     <attr name="transitPedestrianBackground" format="color"/>
+    <attr name="colorBtnHighlight" format="color"/>
     <attr name="transitStepDivider" format="reference"/>
     <attr name="filterPropertyBackground" format="reference"/>
     <attr name="adChoicesIcon" format="reference"/>
     <attr name="saleIcon" format="reference"/>
+    <attr name="toggleMapLayerBtnBg" format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="ThemeAttrs.NavButtons">
     <attr name="nav_background" format="reference"/>
+    <attr name="nav_bg_subway" format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="ThemeAttrs.Downloader">

@@ -2,6 +2,8 @@
 
 #include "editor/editable_data_source.hpp"
 
+#include "indexer/data_source.hpp"
+
 #include <sstream>
 
 namespace
@@ -11,17 +13,19 @@ std::string GetQuery(discovery::ItemType const type)
   switch (type)
   {
   case discovery::ItemType::Hotels: return "hotel ";
-  case discovery::ItemType::Attractions: return "attraction ";
+  case discovery::ItemType::Attractions: return "attractions ";
   case discovery::ItemType::Cafes: return "cafe ";
   case discovery::ItemType::LocalExperts:
   case discovery::ItemType::Viator: ASSERT(false, ()); return "";
   }
+
+  CHECK_SWITCH();
 }
 }  // namespace
 
 namespace discovery
 {
-Manager::Manager(DataSourceBase const & dataSource, search::CityFinder & cityFinder, APIs const & apis)
+Manager::Manager(DataSource const & dataSource, search::CityFinder & cityFinder, APIs const & apis)
   : m_dataSource(dataSource)
   , m_cityFinder(cityFinder)
   , m_searchApi(apis.m_search)
@@ -31,15 +35,12 @@ Manager::Manager(DataSourceBase const & dataSource, search::CityFinder & cityFin
 }
 
 // static
-search::DiscoverySearchParams Manager::GetSearchParams(Manager::Params const & params, ItemType const type)
+DiscoverySearchParams Manager::GetSearchParams(Manager::Params const & params, ItemType const type)
 {
-  search::DiscoverySearchParams p;
+  DiscoverySearchParams p;
   p.m_query = GetQuery(type);
   p.m_viewport = params.m_viewport;
-  p.m_position = params.m_viewportCenter;
   p.m_itemsCount = params.m_itemsCount;
-  if (type == ItemType::Hotels)
-    p.m_sortingType = search::DiscoverySearchParams::SortingType::HotelRating;
 
   return p;
 }
@@ -67,7 +68,7 @@ std::string Manager::GetCityViatorId(m2::PointD const & point) const
   if (!fid.IsValid())
     return {};
 
-  EditableDataSource::FeaturesLoaderGuard const guard(m_dataSource, fid.m_mwmId);
+  FeaturesLoaderGuard const guard(m_dataSource, fid.m_mwmId);
   FeatureType ft;
   if (!guard.GetFeatureByIndex(fid.m_index, ft))
   {

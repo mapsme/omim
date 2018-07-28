@@ -41,25 +41,14 @@ bool IsNormalTurn(TurnItem const & turn)
 }
 }  //  namespace
 
-Route::Route(string const & router, vector<m2::PointD> const & points, string const & name)
-  : m_router(router), m_routingSettings(GetRoutingSettings(VehicleType::Car)),
-    m_name(name), m_poly(points.begin(), points.end())
+Route::Route(string const & router, vector<m2::PointD> const & points, uint64_t routeId,
+             string const & name)
+  : m_router(router)
+  , m_routingSettings(GetRoutingSettings(VehicleType::Car))
+  , m_name(name)
+  , m_poly(points.begin(), points.end())
+  , m_routeId(routeId)
 {
-}
-
-void Route::Swap(Route & rhs)
-{
-  m_router.swap(rhs.m_router);
-  swap(m_routingSettings, rhs.m_routingSettings);
-  m_poly.Swap(rhs.m_poly);
-  m_name.swap(rhs.m_name);
-  m_absentCountries.swap(rhs.m_absentCountries);
-  m_routeSegments.swap(rhs.m_routeSegments);
-  swap(m_haveAltitudes, rhs.m_haveAltitudes);
-
-  swap(m_subrouteUid, rhs.m_subrouteUid);
-  swap(m_currentSubrouteIdx, rhs.m_currentSubrouteIdx);
-  m_subrouteAttrs.swap(rhs.m_subrouteAttrs);
 }
 
 void Route::AddAbsentCountry(string const & name)

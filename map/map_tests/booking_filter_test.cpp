@@ -29,7 +29,7 @@ class TestMwmEnvironment : public TestWithCustomMwms,
                            public FilterBase::Delegate
 {
 public:
-  DataSourceBase const & GetDataSource() const override { return m_dataSource; }
+  DataSource const & GetDataSource() const override { return m_dataSource; }
 
   booking::Api const & GetApi() const override { return m_api; }
 
@@ -46,7 +46,7 @@ protected:
 
   void OnMwmBuilt(MwmInfo const & info) override
   {
-    m_infoGetter.AddCountry(storage::CountryDef(info.GetCountryName(), info.m_limitRect));
+    m_infoGetter.AddCountry(storage::CountryDef(info.GetCountryName(), info.m_bordersRect));
   }
 
 private:

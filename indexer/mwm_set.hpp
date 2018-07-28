@@ -29,7 +29,7 @@
 class MwmInfo
 {
 public:
-  friend class DataSourceBase;
+  friend class DataSource;
   friend class MwmSet;
 
   enum MwmTypeT
@@ -49,7 +49,8 @@ public:
   MwmInfo();
   virtual ~MwmInfo() = default;
 
-  m2::RectD m_limitRect;          ///< Limit rect of mwm.
+  m2::RectD m_bordersRect;        ///< Rect around region border. Features which cross region border may
+                                  ///< cross this rect.
   uint8_t m_minScale;             ///< Min zoom level of mwm.
   uint8_t m_maxScale;             ///< Max zoom level of mwm.
   version::MwmVersion m_version;  ///< Mwm file version.
@@ -91,7 +92,7 @@ protected:
 class MwmInfoEx : public MwmInfo
 {
 private:
-  friend class DataSourceBase;
+  friend class DataSource;
   friend class MwmValue;
 
   // weak_ptr is needed here to access offsets table in already
@@ -118,6 +119,8 @@ public:
 
     void Reset() { m_info.reset(); }
     bool IsAlive() const { return (m_info && m_info->GetStatus() != MwmInfo::STATUS_DEREGISTERED); }
+    bool IsDeregistered(platform::LocalCountryFile const & deregisteredCountryFile) const;
+
     shared_ptr<MwmInfo> & GetInfo() { return m_info; }
     shared_ptr<MwmInfo> const & GetInfo() const { return m_info; }
 
@@ -315,7 +318,7 @@ public:
   MwmHandle GetMwmHandleById(MwmId const & id);
 
   /// Now this function looks like workaround, but it allows to avoid ugly const_cast everywhere..
-  /// Client code usually holds const reference to DataSourceBase, but implementation is non-const.
+  /// Client code usually holds const reference to DataSource, but implementation is non-const.
   /// @todo Actually, we need to define, is this behaviour (getting Handle) const or non-const.
   MwmHandle GetMwmHandleById(MwmId const & id) const
   {

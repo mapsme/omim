@@ -1,7 +1,6 @@
 #import "MWMNavigationController.h"
 #import "MWMCommon.h"
 #import "MWMController.h"
-#import "MWMToast.h"
 #import "MapsAppDelegate.h"
 #import "UIViewController+Navigation.h"
 
@@ -15,8 +14,6 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-  if ([MWMToast affectsStatusBar])
-    return [MWMToast preferredStatusBarStyle];
   setStatusBarBackgroundColor(UIColor.clearColor);
   return UIStatusBarStyleLightContent;
 }
@@ -40,9 +37,16 @@
   NSAssert([viewController conformsToProtocol:@protocol(MWMController)], @"Controller must inherit ViewController or TableViewController class");
   id<MWMController> vc = static_cast<id<MWMController>>(viewController);
   [navigationController setNavigationBarHidden:!vc.hasNavigationBar animated:animated];
+}
 
-  if ([navigationController.viewControllers count] > 1)
-    [viewController showBackButton];
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+  auto topVC = self.viewControllers.lastObject;
+  topVC.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@""
+                                                                            style:UIBarButtonItemStylePlain
+                                                                           target:nil
+                                                                           action:nil];
+  [super pushViewController:viewController animated:animated];
 }
 
 - (BOOL)shouldAutorotate

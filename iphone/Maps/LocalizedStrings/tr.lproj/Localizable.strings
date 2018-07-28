@@ -457,7 +457,7 @@
 "are_you_sure" = "Devam etmek istediğinizden emin misiniz?";
 
 /* Title for tracks category in bookmarks manager */
-"tracks" = "Parçalar";
+"tracks_title" = "Parçalar";
 
 /* Length of track in cell that describes route */
 "length" = "Uzunluk";
@@ -1147,8 +1147,6 @@
 "add_opening_hours" = "İş saatlerini ekle";
 
 "edit_opening_hours" = "İş saatlerini düzenle";
-
-"profile" = "Profil";
 
 "no_osm_account" = "OpenStreetMap' hesabın yok mu?";
 
@@ -2100,44 +2098,6 @@
 
 "quality" = "Kalite";
 
-"sponsored_partner1_action" = "Cash back";
-
-"sponsored_partner3_action" = "Coupon";
-
-"sponsored_partner4_action" = "Store";
-
-"sponsored_partner5_action" = "Tickets";
-
-"sponsored_partner6_action" = "Store";
-
-"sponsored_partner7_action" = "Store";
-
-"sponsored_partner8_action" = "Special";
-
-"sponsored_partner9_action" = "Special";
-
-"sponsored_partner10_action" = "Store";
-
-"sponsored_partner11_action" = "-";
-
-"sponsored_partner12_action" = "Store";
-
-"sponsored_partner13_action" = "-";
-
-"sponsored_partner14_action" = "-";
-
-"sponsored_partner15_action" = "-";
-
-"sponsored_partner16_action" = "-";
-
-"sponsored_partner17_action" = "-";
-
-"sponsored_partner18_action" = "Lifehack";
-
-"sponsored_partner19_action" = "Lifehack";
-
-"sponsored_partner20_action" = "Lifehack";
-
 "whats_new_ugc_title" = "Puanlamalar ve değerlendirmeler";
 
 "whats_new_ugc_message" = "Artık puanlamalarınızı ve değerlendirmelerinizi çevrimdışıyken bırakabilirsiniz! Değişiklikleri görebilmek için haritalarınızı güncellemeyi unutmayın.";
@@ -2284,7 +2244,7 @@
 
 "notification_unsent_reviews_message" = "Diğer gezginlerle yorum paylaşmak için lütfen giriş yapın";
 
-"profile_osm" = "Profil OSM";
+"profile" = "OpenStreetMap profil";
 
 "place_page_search_similar_hotel" = "Benzer otellerde ara";
 
@@ -2336,64 +2296,133 @@
 
 "sign_agree_news_gdpr" = "MAPS.ME ürünleri hakkında en yeni haberleri almayı kabul ediyorum";
 
-"whats_new_localbiz_title" = "Small business deserves attention";
+"whats_new_localbiz_title" = "Küçük işletmeler de ilgi hak ediyor";
 
-"whats_new_localbiz_message" = "Family cafes, cozy hostels, unique stores – they are the special parts of our travels. We will optimize your page on the map free of charge so you will get noticed.";
+"whats_new_localbiz_message" = "Seyahatlerinizi unutulmaz kılan bölgedeki kafeler, konforlu oteller ve alışveriş yapabileceğiniz mağazalardır. Tüm bunların ön plana çıkabilmesi için MAPS.ME sayfanızı optimize edeceğiz.";
 
-"whats_new_order_button" = "Leave a request";
+"whats_new_order_button" = "İsteğinizi iletin";
 
-"bookmarks_page_downloaded" = "Downloaded";
+"bookmarks_page_downloaded" = "İndirildi";
 
-"bookmarks_page_my" = "My";
+"bookmarks_page_my" = "Bana ait";
 
-"routes_and_bookmarks" = "Routes and bookmarks";
+"routes_and_bookmarks" = "Rotalar ve yer imleri";
 
-"bookmarks_webview_success_toast" = "Bookmarks succesfully downloaded";
+"bookmarks_webview_success_toast" = "Yer imleri başarıyla indirildi";
 
-"cached_bookmarks_placeholder_title" = "Download new places";
+"cached_bookmarks_placeholder_title" = "Yeni yerler indirin";
 
-"cached_bookmarks_placeholder_subtitle" = "Press the button to download thousands of interesting places and routes created by MAPS.ME users. You will need the internet connection.";
+"cached_bookmarks_placeholder_subtitle" = "MAPS.ME kullanıcılarının oluşturduğu binlerce ilgi çekici yeri ve rotayı indirmek için düğmeye basın. İnternet bağlantınızın olması gerekir.";
 
-"downloader_download_routers" = "Download bookmarks";
+"downloader_download_routers" = "İndirilen yer imleri";
 
-"bookmarks_groups_cached" = "Downloaded lists";
+"bookmarks_groups_cached" = "İndirilen listeler";
 
-"author_name_by_prefix" = "by %s";
+"author_name_by_prefix" = "- %s";
 
-"subtittle_opt_out" = "Tracking settings";
+"subtittle_opt_out" = "İzleme ayarları";
 
-"opt_out_flurry" = "Statistic";
+"opt_out_flurry" = "İstatistik";
 
-"opt_out_mopub" = "Personalised advertising";
+"opt_out_mopub" = "Kişiye özel reklamcılık";
 
-"opt_out_fabric" = "Crash report";
+"opt_out_fabric" = "Kilitlenme raporu";
 
-"opt_out_fabric_description" = "We may use your data to improve MAPS.ME experience. Changes will take effect after you restart the app.";
+"opt_out_fabric_description" = "MAPS.ME deneyimini geliştirmek için verilerinizi kullanabiliriz. Değişiklikler, uygulama yeniden başlatıldıktan sonra geçerli olur.";
 
 "opt_out_pushwoosh" = "Pushwoosh";
 
 "opt_out_appsflyer" = "Appsflyer";
 
-"opt_out_help_ios_1" = "Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.";
+"opt_out_help_ios_1" = "Mobil cihazınız, “Reklam İzlemeyi Sınırla” veya “İlgiye dayalı reklamcılığı devre dışı bırak” ayarı sunar.";
 
-"opt_out_help_ios_2" = "iOS 9 or Higher";
+"opt_out_help_ios_2" = "iOS 9 veya Üstü";
 
-"opt_out_help_ios_3" = "Go to your Settings → Privacy → Advertising → Enable the “Limit Ad Tracking” setting";
+"opt_out_help_ios_3" = "Ayarlar → Gizlilik → Reklamcılık'a gidin ve “Reklam İzlemeyi Sınırla” ayarını etkinleştirin";
 
-"opt_out_help_android" = "Your mobile device may provide a “Limit Ad Tracking” or “Opt out of interest-based advertising” setting.\n\nFor Android and Google Play Services version 4.0 and up:\nSettings → Google → Ads → Opt out of Ads Personalization\nor\nSettings → Google → Google Account → Personal info & privacy → Ads Settings → Ads Personalization";
+"opt_out_help_android" = "Mobil cihazınız, “Reklam İzlemeyi Sınırla” veya “İlgiye dayalı reklamcılığı devre dışı bırak” ayarı sunar.\n\nAndroid ve Google Play Services 4.0 ve üzeri sürümü için:\nAyarlar → Google → Reklamlar → Reklamları Kişiselleştirme'yi devre dışı bırak\nAyarlar → Google → Google Hesabı → Kişisel bilgiler ve gizlilik → Reklam Ayarları → Reklamları Kişiselleştirme";
 
-"privacy_policy" = "Privacy policy";
+"privacy_policy" = "Gizlilik politikası";
 
-"terms_of_use" = "Terms of use";
+"terms_of_use" = "Kullanım koşulları";
 
-"button_layer_got_it" = "Got it";
+"backup_notification_failed" = "Yer imlerinizin yedeklenmesi işlemi askıya alındı. İşlemi devam ettirmek için oturum açın.";
 
-"bookmarks_empty_list_title" = "This list is empty";
+"banner_megafon_banner_message" = "Uluslararası dolaşıma güle güle deyin!";
 
-"bookmarks_empty_list_message" = "To add a bookmark, tap a place on the map and then tap the star icon";
+"banner_megafon_banner_button" = "Güle güle!";
 
-"category_desc_more" = "…more";
+"button_layer_traffic" = "Trafik";
 
-"title_error_downloading_bookmarks" = "An error occured";
+"button_layer_subway" = "Metro";
 
-"subtitle_error_downloading_bookmarks" = "Bookmarks were not downloaded";
+"layers_title" = "Harita katmanları";
+
+"layers_message" = "Trafik, metro haritası ve diğer kullanışlı bilgileri görüntülemek için harita katmanlarını kullanın";
+
+"button_layer_got_it" = "Anladım";
+
+"subway_data_unavailable" = "Metro haritası mevcut değil";
+
+"bookmarks_empty_list_title" = "Bu liste boş";
+
+"bookmarks_empty_list_message" = "Yer imi eklemek için önce haritadaki bir yere sonrasında ise yıldız simgesine dokunun";
+
+"category_desc_more" = "…daha fazla";
+
+"title_error_downloading_bookmarks" = "Bir hata oluştu";
+
+"subtitle_error_downloading_bookmarks" = "Yer imleri indirilmedi";
+
+"whats_new_bookmarks_catalog_title" = "MAPS.ME'de artık yeni bir rota kategorisi var";
+
+"whats_new_bookmarks_catalog_message" = "Dünyanın dört bir yanından yüzlerce ayrıntılı rota: Nereye gidilir? Nereleri ziyaret edilir? Ne yenir?";
+
+"whats_new_popularity_label_title" = "Yakındaki popüler yerler";
+
+"whats_new_popularity_label_message" = "Yakın çevreyi keşfedin kısmı şehirdeki en popüler yerleri bulmana yardımcı olacak.";
+
+"whats_new_hot_offers_title" = "İlgi çekici otel teklifleri";
+
+"whats_new_hot_offers_message" = "Arama bölümündeki Oteller kategorisini kullanarak ilgi çekici teklifleri bulabilirsiniz. Otel teklifleri, haritada ve arama sonuçlarında bir yüzdelik sembolü ile işaretlenir.";
+
+"error_already_downloaded" = "Bu liste zaten indirildi";
+
+"popular_place" = "Popular";
+
+
+/**********  Partners  **********/
+
+"sponsored_partner3_action" = "Coupon";
+
+"sponsored_partner4_action" = "Store";
+
+"sponsored_partner6_action" = "Store";
+
+"sponsored_partner7_action" = "Store";
+
+"sponsored_partner8_action" = "Special";
+
+"sponsored_partner9_action" = "Special";
+
+"sponsored_partner10_action" = "Store";
+
+"sponsored_partner11_action" = "-";
+
+"sponsored_partner12_action" = "Store";
+
+"sponsored_partner13_action" = "-";
+
+"sponsored_partner14_action" = "-";
+
+"sponsored_partner15_action" = "-";
+
+"sponsored_partner16_action" = "-";
+
+"sponsored_partner17_action" = "-";
+
+"sponsored_partner18_action" = "Lifehack";
+
+"sponsored_partner19_action" = "Lifehack";
+
+"sponsored_partner20_action" = "Lifehack";

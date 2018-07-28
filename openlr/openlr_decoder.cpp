@@ -81,7 +81,7 @@ struct alignas(kCacheLineSize) Stats
 
 bool IsRealVertex(m2::PointD const & p, FeatureID const & fid, DataSource const & dataSource)
 {
-  DataSource::FeaturesLoaderGuard g(dataSource, fid.m_mwmId);
+  FeaturesLoaderGuard g(dataSource, fid.m_mwmId);
   auto const ft = g.GetOriginalFeatureByIndex(fid.m_index);
   bool matched = false;
   ft->ForEachPoint(
@@ -189,7 +189,7 @@ void CopyWithoutOffsets(InputIterator const start, InputIterator const stop, Out
 class SegmentsDecoderV1
 {
 public:
-  SegmentsDecoderV1(DataSourceBase const & dataSource, unique_ptr<CarModelFactory> cmf)
+  SegmentsDecoderV1(DataSource const & dataSource, unique_ptr<CarModelFactory> cmf)
     : m_roadGraph(dataSource, IRoadGraph::Mode::ObeyOnewayTag, move(cmf))
     , m_infoGetter(dataSource)
     , m_router(m_roadGraph, m_infoGetter)
@@ -378,7 +378,7 @@ bool OpenLRDecoder::SegmentsFilter::Matches(LinearSegment const & segment) const
 }
 
 // OpenLRDecoder -----------------------------------------------------------------------------
-OpenLRDecoder::OpenLRDecoder(vector<DataSource> const & dataSources,
+OpenLRDecoder::OpenLRDecoder(vector<FrozenDataSource> const & dataSources,
                              CountryParentNameGetter const & countryParentNameGetter)
   : m_dataSources(dataSources), m_countryParentNameGetter(countryParentNameGetter)
 {

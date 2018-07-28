@@ -32,8 +32,8 @@ public:
 
   bool IsGreater(ref_ptr<OverlayHandle> const & l, ref_ptr<OverlayHandle> const & r) const
   {
-    bool const displayFlagLeft = ((!m_enableMask || l->IsUserMarkOverlay()) ? true : l->GetDisplayFlag());
-    bool const displayFlagRight = ((!m_enableMask || r->IsUserMarkOverlay()) ? true : r->GetDisplayFlag());
+    bool const displayFlagLeft = ((!m_enableMask || l->IsSpecialLayerOverlay()) ? true : l->GetDisplayFlag());
+    bool const displayFlagRight = ((!m_enableMask || r->IsSpecialLayerOverlay()) ? true : r->GetDisplayFlag());
     if (displayFlagLeft > displayFlagRight)
       return true;
 
@@ -78,7 +78,7 @@ OverlayTree::OverlayTree(double visualScale)
 
 void OverlayTree::Clear()
 {
-  m_frameCounter = kInvalidFrame;
+  InvalidateOnNextFrame();
   TBase::Clear();
   m_handlesCache.clear();
   for (auto & handles : m_handles)
@@ -104,8 +104,8 @@ bool OverlayTree::Frame()
   }
 
   m_frameCounter++;
-  if (m_frameCounter >= m_frameUpdatePeriod)
-    m_frameCounter = kInvalidFrame;
+  if (m_frameCounter >= static_cast<int>(m_frameUpdatePeriod))
+    InvalidateOnNextFrame();
 
   return IsNeedUpdate();
 }
@@ -115,13 +115,19 @@ bool OverlayTree::IsNeedUpdate() const
   return m_frameCounter == kInvalidFrame;
 }
 
-void OverlayTree::StartOverlayPlacing(ScreenBase const & screen)
+void OverlayTree::InvalidateOnNextFrame()
+{
+  m_frameCounter = kInvalidFrame;
+}
+
+void OverlayTree::StartOverlayPlacing(ScreenBase const & screen, int zoomLevel)
 {
   ASSERT(IsNeedUpdate(), ());
   TBase::Clear();
   m_handlesCache.clear();
   m_traits.SetModelView(screen);
   m_displacementInfo.clear();
+  m_zoomLevel = zoomLevel;
 }
 
 void OverlayTree::Remove(ref_ptr<OverlayHandle> handle)
@@ -130,7 +136,7 @@ void OverlayTree::Remove(ref_ptr<OverlayHandle> handle)
     return;
 
   if (m_handlesCache.find(handle) != m_handlesCache.end())
-    m_frameCounter = kInvalidFrame;
+    InvalidateOnNextFrame();
 }
 
 void OverlayTree::Add(ref_ptr<OverlayHandle> handle)
@@ -140,6 +146,10 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle)
   ScreenBase const & modelView = GetModelView();
 
   handle->SetIsVisible(false);
+
+  if (m_zoomLevel < handle->GetMinVisibleScale())
+    return;
+
   handle->SetCachingEnable(true);
 
   // Skip duplicates.
@@ -149,7 +159,7 @@ void OverlayTree::Add(ref_ptr<OverlayHandle> handle)
   // Skip not-ready handles.
   if (!handle->Update(modelView))
   {
-    m_frameCounter = kInvalidFrame;
+    InvalidateOnNextFrame();
     handle->SetReady(false);
     return;
   }
@@ -430,7 +440,7 @@ void OverlayTree::SetDisplacementEnabled(bool enabled)
   if (m_isDisplacementEnabled == enabled)
     return;
   m_isDisplacementEnabled = enabled;
-  m_frameCounter = kInvalidFrame;
+  InvalidateOnNextFrame();
 }
 
 void OverlayTree::SetSelectedFeature(FeatureID const & featureID)

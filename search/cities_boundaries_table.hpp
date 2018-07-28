@@ -4,6 +4,7 @@
 #include "indexer/feature_decl.hpp"
 
 #include "geometry/point2d.hpp"
+#include "geometry/rect2d.hpp"
 
 #include <cstdint>
 #include <sstream>
@@ -12,7 +13,7 @@
 #include <utility>
 #include <vector>
 
-class DataSourceBase;
+class DataSource;
 
 namespace feature
 {
@@ -23,6 +24,10 @@ namespace search
 {
 class CitiesBoundariesTable
 {
+  friend void GetCityBoundariesInRectForTesting(CitiesBoundariesTable const &,
+                                                m2::RectD const & rect,
+                                                std::vector<uint32_t> & featureIds);
+
 public:
   class Boundaries
   {
@@ -43,6 +48,8 @@ public:
     // |*this|.
     bool HasPoint(m2::PointD const & p) const;
 
+    std::vector<indexer::CityBoundary> const & GetBoundariesForTesting() const { return m_boundaries; }
+
     friend std::string DebugPrint(Boundaries const & boundaries)
     {
       std::ostringstream os;
@@ -58,7 +65,7 @@ public:
     double m_eps = 0.0;
   };
 
-  explicit CitiesBoundariesTable(DataSourceBase const & dataSource) : m_dataSource(dataSource) {}
+  explicit CitiesBoundariesTable(DataSource const & dataSource) : m_dataSource(dataSource) {}
 
   bool Load();
 
@@ -68,10 +75,18 @@ public:
   bool Get(FeatureID const & fid, Boundaries & bs) const;
   bool Get(uint32_t fid, Boundaries & bs) const;
 
+  size_t GetSize() const { return m_table.size(); }
+
 private:
-  DataSourceBase const & m_dataSource;
+  DataSource const & m_dataSource;
   MwmSet::MwmId m_mwmId;
   std::unordered_map<uint32_t, std::vector<indexer::CityBoundary>> m_table;
   double m_eps = 0.0;
 };
+
+/// \brief Fills |featureIds| with feature ids of city boundaries if bounding rect of
+/// the city boundary crosses |rect|.
+/// \note This method is inefficient and is written for debug and test purposes only.
+void GetCityBoundariesInRectForTesting(CitiesBoundariesTable const &, m2::RectD const & rect,
+                                       std::vector<uint32_t> & featureIds);
 }  // namespace search
