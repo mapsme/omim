@@ -54,11 +54,16 @@ final class AdBanner: UITableViewCell {
   @IBOutlet private weak var adCallToActionButtonCompact: UIButton!
   @IBOutlet private weak var adCallToActionButtonDetailed: UIButton!
   @IBOutlet private weak var adCallToActionButtonCustom: UIButton!
-  @IBOutlet private weak var nativeAdView: UIView!
   @IBOutlet private weak var fallbackAdView: UIView!
   @IBOutlet private var nativeAdViewBottom: NSLayoutConstraint!
   @IBOutlet private var fallbackAdViewBottom: NSLayoutConstraint!
   @IBOutlet private var fallbackAdViewHeight: NSLayoutConstraint!
+  @IBOutlet private weak var nativeAdView: UIView! {
+    didSet {
+      nativeAdView.layer.borderColor = UIColor.blackDividers().cgColor
+    }
+  }
+  
   @objc static let detailedBannerExcessHeight: Float = 36
 
   enum AdType {
@@ -121,6 +126,19 @@ final class AdBanner: UITableViewCell {
     }
 
     UIViewController.topViewController().open(url)
+  }
+
+  @IBAction
+  private func removeAction() {
+    Alohalytics.logEvent("Placepage_Banner_close")
+    let langCode = NSLocale.current.languageCode
+    guard let url = URL(string: "https://localads.maps.me/redirects/ads_removal?mapsme_lang=\(langCode ?? "")") else {
+      assert(true, "Invalid ads removal url")
+      return
+    }
+    if let webViewController = WebViewController(url: url, title: "") {
+      UIViewController.topViewController().navigationController?.pushViewController(webViewController, animated: true)
+    }
   }
 
   override func layoutSubviews() {
