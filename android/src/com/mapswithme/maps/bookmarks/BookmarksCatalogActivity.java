@@ -24,7 +24,7 @@ public class BookmarksCatalogActivity extends BaseToolbarActivity
     if (intent != null)
       setIntent(intent);
     super.safeOnCreate(savedInstanceState);
-    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_home_up_indicator_close);
+    getToolbar().setNavigationIcon(R.drawable.ic_clear);
   }
 
   @Override
