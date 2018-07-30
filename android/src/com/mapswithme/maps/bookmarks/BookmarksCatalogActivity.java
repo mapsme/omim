@@ -14,6 +14,9 @@ import com.mapswithme.util.Utils;
 
 public class BookmarksCatalogActivity extends BaseToolbarActivity
 {
+  public static final int REQ_CODE_CATALOG = 123;
+  public static final String EXTRA_CATEGORY = "category";
+
   @Override
   protected void safeOnCreate(@Nullable Bundle savedInstanceState)
   {
