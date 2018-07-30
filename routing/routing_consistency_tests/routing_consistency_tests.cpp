@@ -26,8 +26,8 @@ double constexpr kRouteLengthAccuracy =  0.15;
 static CommandLineOptions g_options;
 CommandLineOptions const & GetTestingOptions() {return g_options;}
 
-DEFINE_string(input_file, "", "File with statistics output.");
-DEFINE_string(data_path, "../../data/", "Working directory, 'path_to_exe/../../data' if empty.");
+DEFINE_string(input_file, "../omim/data/routing_statistics.log", "File with statistics output.");
+DEFINE_string(data_path, "../omim/data/", "Working directory, 'path_to_exe/../../data' if empty.");
 DEFINE_string(user_resource_path, "", "User defined resource path for classificator.txt and etc.");
 DEFINE_bool(verbose, false, "Output processed lines to log.");
 DEFINE_uint64(confidence, 5, "Maximum test count for each single mwm file.");
