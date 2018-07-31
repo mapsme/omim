@@ -2048,7 +2048,6 @@ void FrontendRenderer::Routine::Do()
   double frameTime = 0.0;
   bool modelViewChanged = true;
   bool viewportChanged = true;
-  bool invalidContext = false;
   uint32_t inactiveFramesCounter = 0;
   bool forceFullRedrawNextFrame = false;
   uint32_t constexpr kMaxInactiveFrames = 2;
@@ -2077,7 +2076,6 @@ void FrontendRenderer::Routine::Do()
   {
     if (context->validate())
     {
-      invalidContext = false;
       timer.Reset();
 
       ScreenBase modelView = m_renderer.ProcessEvents(modelViewChanged, viewportChanged);
@@ -2174,12 +2172,8 @@ void FrontendRenderer::Routine::Do()
     }
     else
     {
+      forceFullRedrawNextFrame = true;
       inactiveFramesCounter = 0;
-      if (!invalidContext)
-      {
-        LOG(LINFO, ("Invalid context. Rendering is stopped."));
-        invalidContext = true;
-      }
     }
     m_renderer.CheckRenderingEnabled();
   }
