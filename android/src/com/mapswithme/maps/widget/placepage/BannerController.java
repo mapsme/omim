@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import com.mapswithme.maps.ads.MwmNativeAd;
 import com.mapswithme.maps.ads.NativeAdError;
 import com.mapswithme.maps.ads.NativeAdListener;
 import com.mapswithme.util.Config;
+import com.mapswithme.util.Language;
 import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
@@ -50,6 +52,8 @@ final class BannerController
   private static final int MIN_MESSAGE_LINES = 3;
   private static final int MAX_TITLE_LINES = 2;
   private static final int MIN_TITLE_LINES = 1;
+
+  private static final String AD_REMOVAL_URL = "https://localads.maps.me/redirects/ads_removal";
 
   private static boolean isTouched(@Nullable View view, @NonNull MotionEvent event)
   {
@@ -161,6 +165,12 @@ final class BannerController
 
   private void handleAdsRemoval()
   {
+    Uri uri = Uri.parse(AD_REMOVAL_URL)
+                 .buildUpon()
+                 .appendQueryParameter("mapsme_lang", Language.getDefaultLocale())
+                 .build();
+    Utils.openUrl(mBannerView.getContext(), uri.toString());
+    org.alohalytics.Statistics.logEvent(Statistics.EventName.PP_BANNER_CLOSE);
   }
 
   private void setErrorStatus(boolean value)

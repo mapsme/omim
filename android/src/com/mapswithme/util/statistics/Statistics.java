@@ -225,6 +225,7 @@ public enum Statistics
     public static final String PP_BANNER_SHOW = "Placepage_Banner_show";
     public static final String PP_BANNER_ERROR = "Placepage_Banner_error";
     public static final String PP_BANNER_BLANK = "Placepage_Banner_blank";
+    public static final String PP_BANNER_CLOSE = "Placepage_Banner_close";
     public static final String PP_HOTEL_GALLERY_OPEN = "PlacePage_Hotel_Gallery_open";
     public static final String PP_HOTEL_REVIEWS_LAND = "PlacePage_Hotel_Reviews_land";
     public static final String PP_HOTEL_DESCRIPTION_LAND = "PlacePage_Hotel_Description_land";
