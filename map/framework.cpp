@@ -385,6 +385,7 @@ Framework::Framework(FrameworkParams const & params)
       m_drapeEngine->SetDisplacementMode(mode);
   })
   , m_lastReportedCountry(kInvalidCountryId)
+  , m_popularityLoader(m_model.GetDataSource())
 {
   m_startBackgroundTime = my::Timer::LocalTime();
 
@@ -907,6 +908,7 @@ void Framework::FillInfoFromFeatureType(FeatureType const & ft, place_page::Info
   auto const latlon = MercatorBounds::ToLatLon(feature::GetCenter(ft));
   ASSERT(m_taxiEngine, ());
   info.SetReachableByTaxiProviders(m_taxiEngine->GetProvidersAtPos(latlon));
+  info.SetPopularity(m_popularityLoader.Get(ft.GetID()));
 }
 
 void Framework::FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & info) const
