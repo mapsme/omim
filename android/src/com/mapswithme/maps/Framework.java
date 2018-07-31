@@ -448,4 +448,6 @@ public class Framework
 
   @NonNull
   public static native String nativeGetMegafonDownloaderBannerUrl();
+
+  public static native void nativeMakeCrash();
 }
