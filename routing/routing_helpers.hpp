@@ -31,6 +31,11 @@ bool IsRoad(TTypes const & types)
          BicycleModel::AllLimitsInstance().HasRoadType(types);
 }
 
+template <class TTypes>
+bool IsCarRoad(TTypes const & types) {
+  return CarModel::AllLimitsInstance().HasRoadType(types);
+}
+
 void FillSegmentInfo(std::vector<Segment> const & segments, std::vector<Junction> const & junctions,
                      Route::TTurns const & turns, Route::TStreets const & streets,
                      Route::TTimes const & times, std::shared_ptr<TrafficStash> const & trafficStash,

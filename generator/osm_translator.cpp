@@ -78,7 +78,7 @@ RelationTagsNode::RelationTagsNode(routing::TagsProcessor & tagsProcessor) :
 void RelationTagsNode::Process(RelationElement const & e)
 {
   std::string const & type = e.GetType();
-  if (TBase::IsSkipRelation(type))
+  if (Base::IsSkipRelation(type))
     return;
 
   if (type == "restriction")
@@ -88,8 +88,8 @@ void RelationTagsNode::Process(RelationElement const & e)
   }
 
   bool const processAssociatedStreet = type == "associatedStreet" &&
-                                       TBase::IsKeyTagExists("addr:housenumber") &&
-                                       !TBase::IsKeyTagExists("addr:street");
+                                       Base::IsKeyTagExists("addr:housenumber") &&
+                                       !Base::IsKeyTagExists("addr:street");
   for (auto const & p : e.tags)
   {
     // - used in railway station processing
@@ -99,12 +99,12 @@ void RelationTagsNode::Process(RelationElement const & e)
         p.first == "maxspeed" ||
         strings::StartsWith(p.first, "addr:"))
     {
-      if (!TBase::IsKeyTagExists(p.first))
-        TBase::AddCustomTag(p);
+      if (!Base::IsKeyTagExists(p.first))
+        Base::AddCustomTag(p);
     }
     // Convert associatedStreet relation name to addr:street tag if we don't have one.
     else if (p.first == "name" && processAssociatedStreet)
-      TBase::AddCustomTag({"addr:street", p.second});
+      Base::AddCustomTag({"addr:street", p.second});
   }
 }
 
@@ -252,11 +252,12 @@ OsmToFeatureTranslator::OsmToFeatureTranslator(std::shared_ptr<EmitterInterface>
                                                cache::IntermediateDataReader & holder,
                                                feature::GenerateInfo const & info) :
   m_emitter(emitter),
-  m_holder(holder),
+  m_cache(holder),
   m_coastType(info.m_makeCoasts ? classif().GetCoastType() : 0),
   m_nodeRelations(m_routingTagsProcessor),
   m_wayRelations(m_routingTagsProcessor),
-  m_metalinesBuilder(info.GetIntermediateFileName(METALINES_FILENAME))
+  m_metalinesBuilder(info.GetIntermediateFileName(METALINES_FILENAME)),
+  m_cameraNodeProcessor(info.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME))
 {
   auto const addrFilePath = info.GetAddressesFileName();
   if (!addrFilePath.empty())
@@ -297,7 +298,7 @@ void OsmToFeatureTranslator::EmitElement(OsmElement * p)
     // Parse geometry.
     for (uint64_t ref : p->Nodes())
     {
-      if (!m_holder.GetNode(ref, pt.y, pt.x))
+      if (!m_cache.GetNode(ref, pt.y, pt.x))
         break;
       ft.AddPoint(pt);
     }
@@ -317,8 +318,8 @@ void OsmToFeatureTranslator::EmitElement(OsmElement * p)
     EmitArea(ft, params, [&] (FeatureBuilder1 & ft)
     {
       isCoastLine = false;  // emit coastline feature only once
-      HolesProcessor processor(p->id, m_holder);
-      m_holder.ForEachRelationByWay(p->id, processor);
+      HolesProcessor processor(p->id, m_cache);
+      m_cache.ForEachRelationByWay(p->id, processor);
       ft.SetAreaAddHoles(processor.GetHoles());
     });
 
@@ -335,7 +336,7 @@ void OsmToFeatureTranslator::EmitElement(OsmElement * p)
     if (!ParseType(p, params))
       break;
 
-    RelationBorders helper(m_holder);
+    RelationBorders helper(m_cache);
     helper.Build(p);
 
     auto const & holesGeometry = helper.GetHoles();
@@ -370,18 +371,24 @@ bool OsmToFeatureTranslator::ParseType(OsmElement * p, FeatureParams & params)
   if (p->IsNode())
   {
     m_nodeRelations.Reset(p->id, p);
-    m_holder.ForEachRelationByNodeCached(p->id, m_nodeRelations);
+    m_cache.ForEachRelationByNodeCached(p->id, m_nodeRelations);
   }
   else if (p->IsWay())
   {
     m_wayRelations.Reset(p->id, p);
-    m_holder.ForEachRelationByWayCached(p->id, m_wayRelations);
+    m_cache.ForEachRelationByWayCached(p->id, m_wayRelations);
   }
 
   // Get params from element tags.
   ftype::GetNameAndType(p, params);
   if (!params.IsValid())
     return false;
+
+  if (p->type == OsmElement::EntityType::Node &&
+      ftypes::IsSpeedCamChecker::Instance()(params.m_types))
+  {
+    m_cameraNodeProcessor.ProcessAndWrite(*p, params, m_cache);
+  }
 
   m_routingTagsProcessor.m_roadAccessWriter.Process(*p);
   return true;

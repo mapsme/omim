@@ -1,5 +1,6 @@
 #pragma once
 
+#include "generator/camera_processor.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/metalines_builder.hpp"
@@ -73,7 +74,7 @@ private:
 
 class RelationTagsNode : public RelationTagsBase
 {
-  using TBase = RelationTagsBase;
+  using Base = RelationTagsBase;
 
 public:
   explicit RelationTagsNode(routing::TagsProcessor & tagsProcessor);
@@ -97,7 +98,6 @@ private:
 protected:
   void Process(RelationElement const & e) override;
 };
-
 
 class HolesAccumulator
 {
@@ -138,7 +138,6 @@ public:
 
   virtual void EmitElement(OsmElement * p) = 0;
 };
-
 
 class OsmToFeatureTranslator : public OsmToFeatureTranslatorInterface
 {
@@ -193,7 +192,7 @@ private:
 
 private:
   std::shared_ptr<EmitterInterface> m_emitter;
-  cache::IntermediateDataReader & m_holder;
+  cache::IntermediateDataReader & m_cache;
   uint32_t m_coastType;
   std::unique_ptr<FileWriter> m_addrWriter;
 
@@ -202,6 +201,7 @@ private:
   RelationTagsNode m_nodeRelations;
   RelationTagsWay m_wayRelations;
   feature::MetalinesBuilder m_metalinesBuilder;
+  CameraNodeProcessor m_cameraNodeProcessor;
 };
 
 class OsmToFeatureTranslatorRegion : public OsmToFeatureTranslatorInterface

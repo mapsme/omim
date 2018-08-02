@@ -36,6 +36,7 @@ struct MetadataTagProcessorImpl
   std::string ValidateAndFormat_price_rate(std::string const & v) const;
   std::string ValidateAndFormat_sponsored_id(std::string const & v) const;
   std::string ValidateAndFormat_rating(std::string const & v) const;
+  std::string ValidateAndFormat_direction(std::string const & v) const;
 
 protected:
   FeatureParams & m_params;
@@ -46,7 +47,7 @@ class MetadataTagProcessor : private MetadataTagProcessorImpl
 public:
   /// Make base class constructor public.
   using MetadataTagProcessorImpl::MetadataTagProcessorImpl;
-  /// Since it is used as a functor wich stops iteration in ftype::ForEachTag
+  /// Since it is used as a functor which stops iteration in ftype::ForEachTag
   /// and the is no need for interrupting it always returns false.
   /// TODO(mgsergio): Move to cpp after merge with https://github.com/mapsme/omim/pull/1314
   bool operator() (std::string const & k, std::string const & v)
@@ -100,6 +101,7 @@ public:
     case Metadata::FMD_RATING: valid = ValidateAndFormat_rating(v); break;
     case Metadata::FMD_BANNER_URL: valid = ValidateAndFormat_url(v); break;
     case Metadata::FMD_LEVEL: valid = ValidateAndFormat_level(v); break;
+    case Metadata::FMD_DIRECTION: valid = ValidateAndFormat_direction(v); break;
 
     case Metadata::FMD_TEST_ID:
     case Metadata::FMD_COUNT: CHECK(false, ("FMD_COUNT can not be used as a type."));

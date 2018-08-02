@@ -93,7 +93,8 @@ namespace feature
     bool Has(uint32_t t) const { return (find(begin(), end(), t) != end()); }
     //@}
 
-    template <class TFn> bool RemoveIf(TFn && fn)
+    template <class TFn>
+    bool RemoveIf(TFn && fn)
     {
       size_t const oldSize = m_size;
 
@@ -209,7 +210,7 @@ struct FeatureParamsBase
 
 class FeatureParams : public FeatureParamsBase
 {
-  typedef FeatureParamsBase BaseT;
+  using BaseT = FeatureParamsBase;
 
   uint8_t m_geomType;
 

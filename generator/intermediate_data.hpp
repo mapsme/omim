@@ -199,6 +199,7 @@ class IntermediateDataReader
 {
 public:
   IntermediateDataReader(shared_ptr<PointStorageReaderInterface> nodes, feature::GenerateInfo & info);
+
   bool GetNode(Key id, double & lat, double & lon) const { return m_nodes->GetPoint(id, lat, lon); }
   bool GetWay(Key id, WayElement & e) { return m_ways.Read(id, e); }
   void LoadIndex();
@@ -222,6 +223,12 @@ public:
   {
     CachedRelationProcessor<ToDo> processor(m_relations, std::forward<ToDo>(toDo));
     m_nodeToRelations.ForEachByKey(id, processor);
+  }
+
+  template <class ToDo>
+  void ForEachWayByNode(Key id, ToDo && toDo)
+  {
+    m_nodeToWays.ForEachByKey(id, std::forward<ToDo>(toDo));
   }
 
 private:
@@ -266,14 +273,21 @@ private:
   cache::OSMElementCacheReader m_relations;
   cache::IndexFileReader m_nodeToRelations;
   cache::IndexFileReader m_wayToRelations;
+  cache::IndexFileReader m_nodeToWays;
 };
 
 class IntermediateDataWriter
 {
 public:
   IntermediateDataWriter(std::shared_ptr<PointStorageWriterInterface> nodes, feature::GenerateInfo & info);
+
   void AddNode(Key id, double lat, double lon) { m_nodes->AddPoint(id, lat, lon); }
-  void AddWay(Key id, WayElement const & e) { m_ways.Write(id, e); }
+  void AddWay(Key id, WayElement const & e)
+  {
+    m_ways.Write(id, e);
+
+    AddToIndex(m_nodeToWays, id, e.nodes);
+  }
   void AddRelation(Key id, RelationElement const & e);
   void SaveIndex();
 
@@ -283,6 +297,21 @@ private:
   cache::OSMElementCacheWriter m_relations;
   cache::IndexFileWriter m_nodeToRelations;
   cache::IndexFileWriter m_wayToRelations;
+  cache::IndexFileWriter m_nodeToWays;
+
+  template <class Index, class Container>
+  static void AddToIndex(Index & index, Key relationId, Container const & values)
+  {
+    for (auto const & v : values)
+      index.Add(v.first, relationId);
+  }
+
+  template <class Index>
+  static void AddToIndex(Index & index, Key relationId, std::vector<uint64_t> const & values)
+  {
+    for (auto const & v : values)
+      index.Add(v, relationId);
+  }
 };
 
 std::shared_ptr<PointStorageReaderInterface>

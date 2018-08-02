@@ -98,6 +98,8 @@ bool Metadata::TypeFromString(string const & k, Metadata::EType & outType)
     outType = Metadata::FMD_BANNER_URL;
   else if (k == "level")
     outType = Metadata::FMD_LEVEL;
+  else if (k == "direction")
+    outType = Metadata::FMD_DIRECTION;
   else
     return false;
 

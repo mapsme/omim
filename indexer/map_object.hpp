@@ -154,6 +154,7 @@ std::vector<Props> MetadataToProps(std::vector<T> const & metadata)
     case Metadata::FMD_RATING:
     case Metadata::FMD_BANNER_URL:
     case Metadata::FMD_TEST_ID:
+    case Metadata::FMD_DIRECTION:
     case Metadata::FMD_COUNT:
       break;
       // Please add new cases when compiler issues an "unhandled switch case" warning here.
