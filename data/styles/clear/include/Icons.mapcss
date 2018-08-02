@@ -313,6 +313,8 @@ node[amenity=biergarten],
 area[amenity=biergarten]
 {z-index: 2782;}
 
+node[sponsored=partner1],
+area[sponsored=partner1],
 node[sponsored=partner2],
 area[sponsored=partner2],
 node[sponsored=partner4],
@@ -2725,6 +2727,14 @@ area|z18-[amenity=motorcycle_parking]
 
 
 /* 8 Sponsored */
+
+node|z14-[sponsored=partner1],
+area|z14-[sponsored=partner1]
+{icon-image: partner1-l.svg;font-size: 10;text: name;text-color: @poi_label;text-offset: 1;}
+
+node|z18-[sponsored=partner1],
+area|z18-[sponsored=partner1]
+{icon-image: partner1-l.svg;font-size: 11;text-optional: true;}
 
 node|z14-[sponsored=partner2],
 area|z14-[sponsored=partner2]
