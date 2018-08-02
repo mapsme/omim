@@ -163,8 +163,8 @@
   <color name="bg_brand_booking_pressed">#FF1B549E</color>
   <color name="bg_brand_opentable">#FFDA3743</color>
   <color name="bg_brand_opentable_pressed">#FFFC5965</color>
-  <color name="bg_brand_partner1">#FFFFDA00</color>
-  <color name="bg_brand_partner1_pressed">#FFF2CE00</color>
+  <color name="bg_brand_partner1">#FF303438</color>
+  <color name="bg_brand_partner1_pressed">#FF303438</color>
   <color name="bg_brand_partner3">#FFE61717</color>
   <color name="bg_brand_partner3_pressed">#FFB31212</color>
   <color name="bg_brand_partner4">#FF000000</color>

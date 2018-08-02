@@ -340,12 +340,12 @@ UIColor * color(SEL cmd)
 
 + (UIColor *)partner1Background
 {
-  return [UIColor colorWithRed:scaled(255) green:scaled(218) blue:scaled(0) alpha:alpha100];
+  return [UIColor colorWithRed:scaled(48) green:scaled(52) blue:scaled(56) alpha:alpha100];
 }
 
 + (UIColor *)partner1TextColor
 {
-  return UIColor.blackColor;
+  return UIColor.whiteColor;
 }
 
 + (UIColor *)partner3Background
