@@ -377,11 +377,3 @@ string MetadataTagProcessorImpl::ValidateAndFormat_wikipedia(string v) const
   replace(normalized.begin() + colonIndex, normalized.end(), '_', ' ');
   return normalized;
 }
-
-string MetadataTagProcessorImpl::ValidateAndFormat_direction(string const & v) const
-{
-  if (!ftypes::IsSpeedCamChecker::Instance()(m_params.m_types))
-    return string();
-
-  return v;
-}
