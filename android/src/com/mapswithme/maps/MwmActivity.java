@@ -1076,7 +1076,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     addTask(mapTask);
   }
 
-  private boolean showBookmarkCategory(BookmarkCategory category)
+  private boolean showBookmarkCategory(@NonNull BookmarkCategory category)
   {
     Framework.nativeShowBookmarkCategory(category.getId());
     return true;
