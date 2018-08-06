@@ -2,6 +2,7 @@
 
 namespace generator {
 
+// TODO add "inline static ..." after moving to c++17
 MwmSet::MwmId CamerasInfoCollector::m_mwmId{};
 uint32_t constexpr CamerasInfoCollector::kLatestVersion;
 double constexpr CamerasInfoCollector::Camera::kEqualityEps;
