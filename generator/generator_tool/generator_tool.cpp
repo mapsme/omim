@@ -1,7 +1,7 @@
 #include "generator/altitude_generator.hpp"
 #include "generator/borders_generator.hpp"
 #include "generator/borders_loader.hpp"
-#include "generator/camera_processor.hpp"
+#include "generator/camera_info_collector.hpp"
 #include "generator/centers_table_builder.hpp"
 #include "generator/check_model.hpp"
 #include "generator/cities_boundaries_builder.hpp"

@@ -29,61 +29,8 @@
 #include <utility>
 #include <vector>
 
-namespace
+namespace generator
 {
-enum class CameraDirection
-{
-  Unknown,
-  Forward,
-  Backward,
-  Both
-};
-
-auto constexpr kEqualityEps = 1e-5;
-auto constexpr kMaxDistFromCameraToClosestSegment = 20; // meters
-auto constexpr kSearchCameraRadius = 10;
-auto constexpr kMaxCameraSpeed = 255;
-}
-
-class CameraNodeProcessor
-{
-public:
-  explicit CameraNodeProcessor(std::string const & filePath)
-    : m_fileWriter(filePath, FileWriter::OP_WRITE_TRUNCATE)
-  {
-    LOG(LINFO, ("Saving information about cameras and ways, where they lie on, to:", filePath));
-  }
-
-  template <typename Cache>
-  void ProcessAndWrite(OsmElement & p, FeatureParams const & params, Cache cache)
-  {
-    std::string maxSpeedString = params.GetMetadata().Get(feature::Metadata::EType::FMD_MAXSPEED);
-    if (maxSpeedString.empty())
-      maxSpeedString = "0";
-
-    int32_t maxSpeed;
-    CHECK(strings::to_int(maxSpeedString.c_str(), maxSpeed), ("Bad speed format:", maxSpeedString));
-
-    m_fileWriter.Write(reinterpret_cast<char* >(&p.lat), sizeof(p.lat));
-    m_fileWriter.Write(reinterpret_cast<char* >(&p.lon), sizeof(p.lat));
-    m_fileWriter.Write(reinterpret_cast<char* >(&maxSpeed), sizeof(maxSpeed));
-
-    std::vector<uint64_t> ways;
-    cache.ForEachWayByNode(p.id, [&ways](uint64_t wayId)
-    {
-      ways.push_back(wayId);
-      return false;
-    });
-
-    auto size = static_cast<uint32_t>(ways.size());
-    m_fileWriter.Write(reinterpret_cast<char * >(&size), sizeof(size));
-    for (auto wayId : ways)
-      m_fileWriter.Write(reinterpret_cast<char * >(&wayId), sizeof(wayId));
-  }
-
-private:
-  FileWriter m_fileWriter;
-};
 
 class CamerasInfoCollector
 {
@@ -91,16 +38,28 @@ public:
   CamerasInfoCollector(std::string const & dataFilePath, std::string const & camerasInfoPath,
                        std::string const & osmIdsToFeatureIdsPath);
 
-  bool IsValid() const { return m_valid; }
+  enum class CameraDirection
+  {
+    Unknown,
+    Forward,
+    Backward,
+    Both
+  };
 
   struct Camera
   {
+    static double constexpr kEqualityEps = 1e-5;
+
     // feature_id and segment_id, where placed camera.
     // k - coef from 0 to 1 where it placed at segment.
     // uint64_t - because we store osm::Id::Way here at first.
-    struct SegmentCoord {
+    struct SegmentCoord
+    {
       SegmentCoord() = default;
-      SegmentCoord(uint64_t fId, uint32_t sId, float k) : featureId(fId), segmentId(sId), k(k) {}
+
+      SegmentCoord(uint64_t fId, uint32_t sId, float k) : featureId(fId), segmentId(sId), k(k)
+      {}
+
       uint64_t featureId;
       uint32_t segmentId;
       float k;
@@ -114,7 +73,6 @@ public:
     uint8_t m_maxSpeed;
     std::vector<SegmentCoord> m_ways;
     CameraDirection m_direction;
-
 
     void ParseDirection()
     {
@@ -142,23 +100,23 @@ public:
 
   static void Serialize(FileWriter & writer, std::vector<Camera> const & cameras);
 
-private:
-  bool ParseIntermediateInfo(string const & camerasInfoPath);
+  bool IsValid() const { return m_valid; }
 
-  template <typename T>
-  void Read(FileReader & fileReader, uint64_t & pos, T * pointer)
-  {
-    fileReader.Read(pos, reinterpret_cast<void *>(pointer), sizeof(T));
-    pos += sizeof(T);
-  }
+private:
+  static uint32_t constexpr kLatestVersion = 1;
+  static double constexpr kMaxDistFromCameraToClosestSegment = 20; // meters
+  static double constexpr kSearchCameraRadius = 10;
+  static uint32_t constexpr kMaxCameraSpeed = 255;
+
+  bool ParseIntermediateInfo(string const & camerasInfoPath);
 
   bool m_valid;
   std::vector<Camera> m_cameras;
   FrozenDataSource m_dataSource;
 
   static MwmSet::MwmId m_mwmId;
-  static uint32_t const kLatestVersion;
 };
+} // namespace generator
 
 namespace routing
 {

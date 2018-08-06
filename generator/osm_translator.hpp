@@ -1,6 +1,7 @@
 #pragma once
 
-#include "generator/camera_processor.hpp"
+#include "generator/camera_node_processor.hpp"
+#include "generator/camera_info_collector.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/metalines_builder.hpp"

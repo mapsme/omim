@@ -1,7 +1,13 @@
-#include "generator/camera_processor.hpp"
+#include "generator/camera_info_collector.hpp"
+
+namespace generator {
 
 MwmSet::MwmId CamerasInfoCollector::m_mwmId{};
-uint32_t const CamerasInfoCollector::kLatestVersion = 1;
+uint32_t constexpr CamerasInfoCollector::kLatestVersion;
+double constexpr CamerasInfoCollector::Camera::kEqualityEps;
+double constexpr CamerasInfoCollector::kMaxDistFromCameraToClosestSegment;
+double constexpr CamerasInfoCollector::kSearchCameraRadius;
+uint32_t constexpr CamerasInfoCollector::kMaxCameraSpeed;
 
 CamerasInfoCollector::CamerasInfoCollector(std::string const & dataFilePath, std::string const & camerasInfoPath,
                                            std::string const & osmIdsToFeatureIdsPath) : m_valid(true)
@@ -124,14 +130,14 @@ std::pair<uint32_t, bool> CamerasInfoCollector::Camera::FindMyself(uint32_t wayI
   uint32_t result = 0;
   bool isRoad = true;
 
-  auto const readFeature = [&](FeatureType & ft)
+  auto const readFeature = [&result, this, &isRoad, wayId](FeatureType & ft)
   {
     bool found = false;
     isRoad = routing::IsRoad(feature::TypesHolder(ft));
     if (!isRoad)
       return;
 
-    auto const forEachPoint = [&result, &found, this](m2::PointD const &pt)
+    auto const forEachPoint = [&result, &found, this](m2::PointD const & pt)
     {
       if (found)
         return;
@@ -162,8 +168,7 @@ void CamerasInfoCollector::Camera::TranslateWaysIdFromOsmId(std::map<osm::Id, ui
       // It means, that way was not valid, and didn't pass to mwm.
       // So we should also erase it from our set.
       m_ways.erase(it);
-    }
-    else
+    } else
     {
       it->featureId = mapIt->second; // osmId -> featureId
       ++it;
@@ -183,7 +188,7 @@ void CamerasInfoCollector::Camera::Serialize(FileWriter & writer, CamerasInfoCol
     WriteToSink(writer, way.segmentId);
 
     static_assert(sizeof(float) == sizeof(uint32_t), "Sizeof float not equal sizeof uint32_t");
-    auto coef = *reinterpret_cast<uint32_t*>(const_cast<float*>(&way.k));
+    auto coef = *reinterpret_cast<uint32_t *>(const_cast<float *>(&way.k));
     WriteToSink(writer, coef);
   }
 
@@ -200,8 +205,8 @@ void CamerasInfoCollector::Camera::Serialize(FileWriter & writer, CamerasInfoCol
 
 bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
 {
-  FileReader fileReader(camerasInfoPath);
-  uint64_t fileSize = fileReader.Size();
+  FileReader reader(camerasInfoPath);
+  ReaderSource<FileReader> src(reader);
 
   uint32_t maxSpeed, relatedWaysNumber;
 
@@ -212,24 +217,24 @@ bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
 
   double lat, lon;
   m2::PointD center;
-  uint64_t pos = 0;
 
-  while (pos < fileSize)
+  while (src.Size() > 0)
   {
-    Read(fileReader, pos, &lat);
-    Read(fileReader, pos, &lon);
-    Read(fileReader, pos, &maxSpeed);
-    Read(fileReader, pos, &relatedWaysNumber);
+    src.Read(&lat, sizeof(lat));
+    src.Read(&lon, sizeof(lon));
+    src.Read(&maxSpeed, sizeof(maxSpeed));
+    src.Read(&relatedWaysNumber, sizeof(relatedWaysNumber));
 
     ways.resize(relatedWaysNumber);
     center = MercatorBounds::FromLatLon(lat, lon);
 
-    CHECK((0 <= maxSpeed && maxSpeed <= kMaxCameraSpeed), ("Speed of camera should be in interval from 0 to", kMaxCameraSpeed));
+    CHECK((0 <= maxSpeed && maxSpeed <= kMaxCameraSpeed),
+          ("Speed of camera should be in interval from 0 to", kMaxCameraSpeed));
     CHECK((0 <= relatedWaysNumber && relatedWaysNumber <= 255),
           ("Number of related to camera ways should be interval from 0 to 255"));
 
     for (uint32_t i = 0; i < relatedWaysNumber; ++i)
-      Read(fileReader, pos, &ways[i].featureId);
+      src.Read(&ways[i].featureId, sizeof(ways[i].featureId));
 
     m_cameras.emplace_back(center, maxSpeed, std::move(ways));
   }
@@ -239,7 +244,7 @@ bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
 
 void CamerasInfoCollector::Serialize(FileWriter & writer, const vector<CamerasInfoCollector::Camera> & cameras)
 {
-  WriteToSink(writer, kLatestVersion);
+  WriteToSink(writer, CamerasInfoCollector::kLatestVersion);
 
   auto amount = static_cast<uint32_t>(cameras.size());
   WriteToSink(writer, amount);
@@ -247,13 +252,14 @@ void CamerasInfoCollector::Serialize(FileWriter & writer, const vector<CamerasIn
   for (auto const & camera : cameras)
     Camera::Serialize(writer, camera);
 }
+} // namespace generator
 
 void routing::BuildCamerasInfo(std::string const & dataFilePath, std::string const & camerasInfoPath,
                                std::string const & osmIdsToFeatureIdsPath)
 {
   LOG(LINFO, ("Generating cameras info for", dataFilePath));
 
-  CamerasInfoCollector collector(dataFilePath, camerasInfoPath, osmIdsToFeatureIdsPath);
+  generator::CamerasInfoCollector collector(dataFilePath, camerasInfoPath, osmIdsToFeatureIdsPath);
 
   if (!collector.IsValid())
     return;
@@ -261,5 +267,6 @@ void routing::BuildCamerasInfo(std::string const & dataFilePath, std::string con
   FilesContainerW cont(dataFilePath, FileWriter::OP_WRITE_EXISTING);
   FileWriter writer = cont.GetWriter(CAMERAS_INFO_FILE_TAG);
 
-  CamerasInfoCollector::Serialize(writer, collector.GetData());
+  generator::CamerasInfoCollector::Serialize(writer, collector.GetData());
 }
+
