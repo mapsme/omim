@@ -13,9 +13,9 @@
 #include <cctype>
 #include <cmath>
 #include <cstdlib>
-#include <unordered_set>
 #include <iostream>
 #include <sstream>
+#include <unordered_set>
 
 using namespace std;
 
@@ -383,5 +383,5 @@ string MetadataTagProcessorImpl::ValidateAndFormat_direction(string const & v) c
   if (!ftypes::IsSpeedCamChecker::Instance()(m_params.m_types))
     return string();
 
-  return v.empty() ? string() : v;
+  return v;
 }

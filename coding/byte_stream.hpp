@@ -2,7 +2,7 @@
 #include "base/base.hpp"
 
 #include <cstring>
-
+#include <cstddef>
 
 class ArrayByteSource
 {

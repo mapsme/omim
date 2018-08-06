@@ -420,7 +420,7 @@ FileWriter FilesContainerW::GetWriter(Tag const & tag)
     
     m_info.push_back(Info(tag, writer.Pos()));
     
-    ASSERT(m_info.back().m_offset % kSectionAlignment == 0, ());
+    ASSERT_EQUAL(m_info.back().m_offset % kSectionAlignment, 0, ());
     
     return writer;
   }

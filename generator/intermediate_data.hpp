@@ -299,14 +299,14 @@ private:
   cache::IndexFileWriter m_wayToRelations;
   cache::IndexFileWriter m_nodeToWays;
 
-  template <class Index, class Container>
+  template <typename Index, class Container>
   static void AddToIndex(Index & index, Key relationId, Container const & values)
   {
     for (auto const & v : values)
       index.Add(v.first, relationId);
   }
 
-  template <class Index>
+  template <typename Index>
   static void AddToIndex(Index & index, Key relationId, std::vector<uint64_t> const & values)
   {
     for (auto const & v : values)

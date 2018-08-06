@@ -318,9 +318,7 @@ namespace ftype
         if (path.size() != 1)
         {
           ForEachTagEx<ClassifObjectPtr>(p, skipRows, [&current](string const & k, string const & v) {
-            if (!NeedMatchValue(k, v))
-              return ClassifObjectPtr();
-            return current->BinaryFind(v);
+            return NeedMatchValue(k, v) ? current->BinaryFind(v) : ClassifObjectPtr();
           });
         }
 
