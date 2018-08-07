@@ -17,6 +17,7 @@
 #include "geometry/point2d.hpp"
 #include "geometry/segment2d.hpp"
 
+#include "base/checked_cast.hpp"
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
@@ -87,7 +88,7 @@ public:
     // Returns pair:
     // 1. id of segment, which starts at camera's center.
     // 2. bool - false if current feature is not the road, and we should erase it from vector of ways.
-    std::pair<uint32_t, bool> FindMyself(uint32_t wayId, FrozenDataSource const & dataSource, 
+    std::pair<uint32_t, bool> FindMyself(uint32_t wayId, FrozenDataSource const & dataSource,
                                          MwmSet::MwmId const & mwmId);
 
     void TranslateWaysIdFromOsmId(std::map<osm::Id, uint32_t> const & osmIdToFeatureId);

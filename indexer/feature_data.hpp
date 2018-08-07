@@ -1,4 +1,5 @@
 #pragma once
+
 #include "indexer/feature_decl.hpp"
 #include "indexer/feature_meta.hpp"
 
@@ -90,7 +91,7 @@ namespace feature
       return (m_size > 0 ? m_types[0] : 0);
     }
 
-    bool Has(uint32_t t) const { return (find(begin(), end(), t) != end()); }
+    bool Has(uint32_t t) const { return (std::find(begin(), end(), t) != end()); }
     //@}
 
     template <typename Fn>
@@ -98,7 +99,7 @@ namespace feature
     {
       size_t const oldSize = m_size;
 
-      auto const e = remove_if(begin(), end(), forward<Fn>(fn));
+      auto const e = std::remove_if(begin(), end(), std::forward<Fn>(fn));
       m_size = distance(begin(), e);
 
       return (m_size != oldSize);

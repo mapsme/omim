@@ -13,8 +13,8 @@
 #include <cstdint>
 #include <string>
 
-namespace generator {
-
+namespace generator
+{
 class CameraNodeProcessor
 {
 public:

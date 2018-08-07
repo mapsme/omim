@@ -58,7 +58,9 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
     {
       std::tie(it->segmentId, shouldErase) = FindMyself(static_cast<uint32_t>(it->featureId), dataSource, mwmId);
       if (shouldErase)
+      {
         m_ways.erase(it);
+      }
       else
       {
         it->k = 0; // Camera starts at the begin of segment.
@@ -71,7 +73,7 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
 
   uint32_t bestFeatureId, segmentIdOfBestFeatureId;
   auto minDist = std::numeric_limits<double>::max();
-  float coef;
+  float coef = 0;
 
   // Look at each segment of roads and find the closest.
   auto const updClosestFeatureCallback = [&](FeatureType & ft)
@@ -168,7 +170,8 @@ void CamerasInfoCollector::Camera::TranslateWaysIdFromOsmId(std::map<osm::Id, ui
       // It means, that way was not valid, and didn't pass to mwm.
       // So we should also erase it from our set.
       m_ways.erase(it);
-    } else
+    }
+    else
     {
       it->featureId = mapIt->second; // osmId -> featureId
       ++it;
@@ -178,24 +181,24 @@ void CamerasInfoCollector::Camera::TranslateWaysIdFromOsmId(std::map<osm::Id, ui
 
 void CamerasInfoCollector::Camera::Serialize(FileWriter & writer, CamerasInfoCollector::Camera const & camera)
 {
-  auto waysNumber = static_cast<uint8_t>(camera.m_ways.size());
+  auto waysNumber = base::asserted_cast<uint8_t>(camera.m_ways.size());
   WriteToSink(writer, waysNumber);
 
   for (auto const & way : camera.m_ways)
   {
-    auto featureId = static_cast<uint32_t>(way.featureId);
+    auto const featureId = static_cast<uint32_t>(way.featureId);
     WriteToSink(writer, featureId);
     WriteToSink(writer, way.segmentId);
 
     static_assert(sizeof(float) == sizeof(uint32_t), "Sizeof float not equal sizeof uint32_t");
-    auto coef = *reinterpret_cast<uint32_t *>(const_cast<float *>(&way.k));
+    auto const coef = *reinterpret_cast<uint32_t *>(const_cast<float *>(&way.k));
     WriteToSink(writer, coef);
   }
 
-  auto speed = static_cast<uint8_t>(camera.m_maxSpeed);
+  auto const speed = static_cast<uint8_t>(camera.m_maxSpeed);
   WriteToSink(writer, speed);
 
-  auto direction = static_cast<uint8_t>(camera.m_direction);
+  auto const direction = static_cast<uint8_t>(camera.m_direction);
   WriteToSink(writer, direction);
 
   // TODO add implementation of this feature
@@ -214,7 +217,6 @@ bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
   // pair of (feature_id, segment_id) - coord of camera, after
   // TranslateWaysIdFromOsmId() and FindClosestSegment().
   std::vector<Camera::SegmentCoord> ways;
-
   double lat, lon;
   m2::PointD center;
 
@@ -242,7 +244,7 @@ bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
   return true;
 }
 
-void CamerasInfoCollector::Serialize(FileWriter & writer, const vector<CamerasInfoCollector::Camera> & cameras)
+void CamerasInfoCollector::Serialize(FileWriter & writer, std::vector<CamerasInfoCollector::Camera> const & cameras)
 {
   WriteToSink(writer, CamerasInfoCollector::kLatestVersion);
 
@@ -262,7 +264,10 @@ void routing::BuildCamerasInfo(std::string const & dataFilePath, std::string con
   generator::CamerasInfoCollector collector(dataFilePath, camerasInfoPath, osmIdsToFeatureIdsPath);
 
   if (!collector.IsValid())
+  {
+    LOG(LCRITICAL, ("Can not get info about cameras"));
     return;
+  }
 
   FilesContainerW cont(dataFilePath, FileWriter::OP_WRITE_EXISTING);
   FileWriter writer = cont.GetWriter(CAMERAS_INFO_FILE_TAG);
