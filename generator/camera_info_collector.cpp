@@ -5,6 +5,7 @@ namespace generator
 // TODO add "inline static ..." after moving to c++17
 uint32_t constexpr CamerasInfoCollector::kLatestVersion;
 double constexpr CamerasInfoCollector::Camera::kEqualityEps;
+double constexpr CamerasInfoCollector::Camera::kSignificantPartOfSegmentCoef;
 double constexpr CamerasInfoCollector::kMaxDistFromCameraToClosestSegment;
 double constexpr CamerasInfoCollector::kSearchCameraRadius;
 uint32_t constexpr CamerasInfoCollector::kMaxCameraSpeed;
@@ -190,8 +191,7 @@ void CamerasInfoCollector::Camera::Serialize(FileWriter & writer, CamerasInfoCol
     WriteToSink(writer, featureId);
     WriteToSink(writer, way.segmentId);
 
-    static_assert(sizeof(float) == sizeof(uint32_t), "Sizeof float not equal sizeof uint32_t");
-    auto const coef = *reinterpret_cast<uint32_t *>(const_cast<float *>(&way.k));
+    auto const coef = static_cast<uint32_t>(way.k * kSignificantPartOfSegmentCoef);
     WriteToSink(writer, coef);
   }
 

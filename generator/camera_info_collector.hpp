@@ -49,6 +49,7 @@ public:
   struct Camera
   {
     static double constexpr kEqualityEps = 1e-5;
+    static double constexpr kSignificantPartOfSegmentCoef = 1e9;
 
     // feature_id and segment_id, where placed camera.
     // k - coef from 0 to 1 where it placed at segment.
