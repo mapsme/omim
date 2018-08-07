@@ -1,14 +1,14 @@
 #pragma once
 
-#include "base/logging.hpp"
-#include "base/string_utils.hpp"
-
-#include "coding/file_writer.hpp"
-
 #include "generator/osm_element.hpp"
 
 #include "routing/base/followed_polyline.hpp"
 #include "routing/routing_helpers.hpp"
+
+#include "coding/file_writer.hpp"
+
+#include "base/logging.hpp"
+#include "base/string_utils.hpp"
 
 #include <cstdint>
 #include <string>

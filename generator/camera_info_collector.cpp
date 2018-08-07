@@ -1,9 +1,8 @@
 #include "generator/camera_info_collector.hpp"
 
-namespace generator {
-
+namespace generator
+{
 // TODO add "inline static ..." after moving to c++17
-MwmSet::MwmId CamerasInfoCollector::m_mwmId{};
 uint32_t constexpr CamerasInfoCollector::kLatestVersion;
 double constexpr CamerasInfoCollector::Camera::kEqualityEps;
 double constexpr CamerasInfoCollector::kMaxDistFromCameraToClosestSegment;
@@ -39,17 +38,16 @@ CamerasInfoCollector::CamerasInfoCollector(std::string const & dataFilePath, std
     return;
   }
 
-  m_mwmId = registerResult.first;
-
   for (auto & camera : m_cameras)
   {
     camera.ParseDirection();
     camera.TranslateWaysIdFromOsmId(osmIdToFeatureId);
-    camera.FindClosestSegment(m_dataSource);
+    camera.FindClosestSegment(m_dataSource, registerResult.first);
   }
 }
 
-void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & dataSource)
+void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & dataSource,
+                                                      MwmSet::MwmId const & mwmId)
 {
   if (!m_ways.empty())
   {
@@ -58,7 +56,7 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
     // So we should find it in feature's points.
     for (auto it = m_ways.begin(); it != m_ways.end();)
     {
-      std::tie(it->segmentId, shouldErase) = FindMyself(static_cast<uint32_t>(it->featureId), dataSource);
+      std::tie(it->segmentId, shouldErase) = FindMyself(static_cast<uint32_t>(it->featureId), dataSource, mwmId);
       if (shouldErase)
         m_ways.erase(it);
       else
@@ -125,9 +123,10 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
     m_ways.emplace_back(bestFeatureId, segmentIdOfBestFeatureId, coef);
 }
 
-std::pair<uint32_t, bool> CamerasInfoCollector::Camera::FindMyself(uint32_t wayId, FrozenDataSource const & dataSource)
+std::pair<uint32_t, bool> CamerasInfoCollector::Camera::FindMyself(uint32_t wayId, FrozenDataSource const & dataSource,
+                                                                   MwmSet::MwmId const & mwmId)
 {
-  FeatureID ft(m_mwmId, wayId);
+  FeatureID ft(mwmId, wayId);
   uint32_t result = 0;
   bool isRoad = true;
 
