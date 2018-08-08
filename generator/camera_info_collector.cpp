@@ -1,5 +1,7 @@
 #include "generator/camera_info_collector.hpp"
 
+#include "coding/reader.hpp"
+
 namespace generator
 {
 // TODO add "inline static ..." after moving to c++17
@@ -223,10 +225,10 @@ bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
 
   while (src.Size() > 0)
   {
-    src.Read(&lat, sizeof(lat));
-    src.Read(&lon, sizeof(lon));
-    src.Read(&maxSpeed, sizeof(maxSpeed));
-    src.Read(&relatedWaysNumber, sizeof(relatedWaysNumber));
+    ReadPrimitiveFromSource(src, lat);
+    ReadPrimitiveFromSource(src, lon);
+    ReadPrimitiveFromSource(src, maxSpeed);
+    ReadPrimitiveFromSource(src, relatedWaysNumber);
 
     ways.resize(relatedWaysNumber);
     center = MercatorBounds::FromLatLon(lat, lon);
@@ -236,7 +238,7 @@ bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
           ("Number of related to camera ways should be interval from 0 to 255"));
 
     for (uint32_t i = 0; i < relatedWaysNumber; ++i)
-      src.Read(&ways[i].m_featureId, sizeof(ways[i].m_featureId));
+      ReadPrimitiveFromSource(src, ways[i].m_featureId);
 
     m_cameras.emplace_back(center, maxSpeed, std::move(ways));
   }
@@ -251,8 +253,28 @@ void CamerasInfoCollector::Serialize(FileWriter & writer, std::vector<CamerasInf
   auto amount = static_cast<uint32_t>(cameras.size());
   WriteToSink(writer, amount);
 
+  std::map<uint64_t, int> counter;
+
   for (auto const & camera : cameras)
+  {
+    for (auto & w : camera.m_ways) {
+      if (counter.find(w.m_featureId) == counter.end()) {
+        counter[w.m_featureId] = 0;
+      }
+      counter[w.m_featureId]++;
+    }
     Camera::Serialize(writer, camera);
+  }
+
+  int arr[10];
+  for (int & i : arr) i = 0;
+  for (auto & it : counter) {
+    arr[it.second]++;
+  }
+
+  for (int i = 0; i < 10; i++) {
+    LOG(LWARNING, (i, "=>", arr[i]));
+  }
 }
 }  // namespace generator
 
