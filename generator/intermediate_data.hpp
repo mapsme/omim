@@ -204,28 +204,28 @@ public:
   bool GetWay(Key id, WayElement & e) { return m_ways.Read(id, e); }
   void LoadIndex();
 
-  template <class ToDo>
+  template <typename ToDo>
   void ForEachRelationByWay(Key id, ToDo && toDo)
   {
     RelationProcessor<ToDo> processor(m_relations, std::forward<ToDo>(toDo));
     m_wayToRelations.ForEachByKey(id, processor);
   }
 
-  template <class ToDo>
+  template <typename ToDo>
   void ForEachRelationByWayCached(Key id, ToDo && toDo)
   {
     CachedRelationProcessor<ToDo> processor(m_relations, std::forward<ToDo>(toDo));
     m_wayToRelations.ForEachByKey(id, processor);
   }
 
-  template <class ToDo>
+  template <typename ToDo>
   void ForEachRelationByNodeCached(Key id, ToDo && toDo)
   {
     CachedRelationProcessor<ToDo> processor(m_relations, std::forward<ToDo>(toDo));
     m_nodeToRelations.ForEachByKey(id, processor);
   }
 
-  template <class ToDo>
+  template <typename ToDo>
   void ForEachWayByNode(Key id, ToDo && toDo)
   {
     m_nodeToWays.ForEachByKey(id, std::forward<ToDo>(toDo));
@@ -234,7 +234,7 @@ public:
 private:
   using CacheReader = cache::OSMElementCacheReader;
 
-  template <class Element, class ToDo>
+  template <typename Element, typename ToDo>
   class ElementProcessorBase
   {
   public:
@@ -251,7 +251,7 @@ private:
     ToDo & m_toDo;
   };
 
-  template <class ToDo>
+  template <typename ToDo>
   struct RelationProcessor : public ElementProcessorBase<RelationElement, ToDo>
   {
     using Base = ElementProcessorBase<RelationElement, ToDo>;
@@ -259,7 +259,7 @@ private:
     RelationProcessor(CacheReader & reader, ToDo & toDo) : Base(reader, toDo) {}
   };
 
-  template <class ToDo>
+  template <typename ToDo>
   struct CachedRelationProcessor : public RelationProcessor<ToDo>
   {
     using Base = RelationProcessor<ToDo>;
@@ -299,7 +299,7 @@ private:
   cache::IndexFileWriter m_wayToRelations;
   cache::IndexFileWriter m_nodeToWays;
 
-  template <typename Index, class Container>
+  template <typename Index, typename Container>
   static void AddToIndex(Index & index, Key relationId, Container const & values)
   {
     for (auto const & v : values)
