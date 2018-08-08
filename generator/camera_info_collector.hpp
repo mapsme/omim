@@ -57,7 +57,9 @@ public:
     struct SegmentCoord
     {
       SegmentCoord() = default;
-      SegmentCoord(uint64_t fId, uint32_t sId, double k) : m_featureId(fId), m_segmentId(sId), k(k) {}
+      SegmentCoord(uint64_t fId, uint32_t sId, double k) : m_featureId(fId), m_segmentId(sId), k(k)
+      {
+      }
 
       uint64_t m_featureId = 0;
       uint32_t m_segmentId = 0;
@@ -117,10 +119,10 @@ private:
   std::vector<Camera> m_cameras;
   FrozenDataSource m_dataSource;
 };
-} // namespace generator
+}  // namespace generator
 
 namespace routing
 {
 void BuildCamerasInfo(std::string const & dataFilePath, std::string const & camerasInfoPath,
                       std::string const & osmIdsToFeatureIdsPath);
-} // namespace routing
+}  // namespace routing

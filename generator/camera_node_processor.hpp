@@ -18,8 +18,7 @@ namespace generator
 class CameraNodeProcessor
 {
 public:
-  explicit CameraNodeProcessor(std::string const & filePath)
-    : m_fileWriter(filePath)
+  explicit CameraNodeProcessor(std::string const & filePath) : m_fileWriter(filePath)
   {
     LOG(LINFO, ("Saving information about cameras and ways, where they lie on, to:", filePath));
   }
@@ -54,4 +53,4 @@ public:
 private:
   FileWriter m_fileWriter;
 };
-} // namespace generator
+}  // namespace generator

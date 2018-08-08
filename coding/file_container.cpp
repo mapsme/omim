@@ -416,9 +416,9 @@ FileWriter FilesContainerW::GetWriter(Tag const & tag)
     FileWriter writer(m_name, FileWriter::OP_WRITE_EXISTING, true);
     writer.Seek(curr);
     writer.WritePaddingByPos(kSectionAlignment);
-    
+
     m_info.emplace_back(tag, writer.Pos());
-    
+
     ASSERT_EQUAL(m_info.back().m_offset % kSectionAlignment, 0, ());
     
     return writer;
@@ -429,7 +429,7 @@ FileWriter FilesContainerW::GetWriter(Tag const & tag)
     
     FileWriter writer(m_name, FileWriter::OP_APPEND);
     writer.WritePaddingByPos(kSectionAlignment);
-    
+
     m_info.emplace_back(tag, writer.Pos());
 
     ASSERT_EQUAL(m_info.back().m_offset % kSectionAlignment, 0, ());

@@ -10,7 +10,8 @@ double constexpr CamerasInfoCollector::kMaxDistFromCameraToClosestSegmentMeters;
 double constexpr CamerasInfoCollector::kSearchCameraRadiusMeters;
 uint32_t constexpr CamerasInfoCollector::kMaxCameraSpeedKmpH;
 
-CamerasInfoCollector::CamerasInfoCollector(std::string const & dataFilePath, std::string const & camerasInfoPath,
+CamerasInfoCollector::CamerasInfoCollector(std::string const & dataFilePath,
+                                           std::string const & camerasInfoPath,
                                            std::string const & osmIdsToFeatureIdsPath)
 {
   std::map<osm::Id, uint32_t> osmIdToFeatureId;
@@ -59,7 +60,7 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
       if (auto id = FindMyself(static_cast<uint32_t>(it->m_featureId), dataSource, mwmId))
       {
         it->m_segmentId = *id;
-        it->k = 0; // Camera starts at the begin of segment.
+        it->k = 0;  // Camera starts at the begin of segment.
         ++it;
       }
       else
@@ -118,16 +119,16 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
   };
 
   dataSource.ForEachInRect(
-    updClosestFeatureCallback, MercatorBounds::RectByCenterXYAndSizeInMeters(m_center, kSearchCameraRadiusMeters),
-    scales::GetUpperScale());
+      updClosestFeatureCallback,
+      MercatorBounds::RectByCenterXYAndSizeInMeters(m_center, kSearchCameraRadiusMeters),
+      scales::GetUpperScale());
 
   if (minDist != std::numeric_limits<double>::max())
     m_ways.emplace_back(bestFeatureId, segmentIdOfBestFeatureId, coef);
 }
 
-boost::optional<uint32_t> CamerasInfoCollector::Camera::FindMyself(uint32_t wayId,
-                                                                   FrozenDataSource const & dataSource,
-                                                                   MwmSet::MwmId const & mwmId)
+boost::optional<uint32_t> CamerasInfoCollector::Camera::FindMyself(
+    uint32_t wayId, FrozenDataSource const & dataSource, MwmSet::MwmId const & mwmId)
 {
   FeatureID ft(mwmId, wayId);
   uint32_t result = 0;
@@ -174,7 +175,7 @@ void CamerasInfoCollector::Camera::TranslateWaysIdFromOsmId(std::map<osm::Id, ui
     }
     else
     {
-      it->m_featureId = mapIt->second; // osmId -> featureId
+      it->m_featureId = mapIt->second;  // osmId -> featureId
       ++it;
     }
   }
@@ -253,7 +254,7 @@ void CamerasInfoCollector::Serialize(FileWriter & writer, std::vector<CamerasInf
   for (auto const & camera : cameras)
     Camera::Serialize(writer, camera);
 }
-} // namespace generator
+}  // namespace generator
 
 void routing::BuildCamerasInfo(std::string const & dataFilePath, std::string const & camerasInfoPath,
                                std::string const & osmIdsToFeatureIdsPath)
