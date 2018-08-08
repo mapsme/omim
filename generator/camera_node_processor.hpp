@@ -19,13 +19,13 @@ class CameraNodeProcessor
 {
 public:
   explicit CameraNodeProcessor(std::string const & filePath)
-    : m_fileWriter(filePath, FileWriter::OP_WRITE_TRUNCATE)
+    : m_fileWriter(filePath)
   {
     LOG(LINFO, ("Saving information about cameras and ways, where they lie on, to:", filePath));
   }
 
   template <typename Cache>
-  void ProcessAndWrite(OsmElement & p, FeatureParams const & params, Cache cache)
+  void ProcessAndWrite(OsmElement & p, FeatureParams const & params, Cache & cache)
   {
     std::string maxSpeedString = params.GetMetadata().Get(feature::Metadata::EType::FMD_MAXSPEED);
     if (maxSpeedString.empty())
@@ -54,5 +54,4 @@ public:
 private:
   FileWriter m_fileWriter;
 };
-
 } // namespace generator

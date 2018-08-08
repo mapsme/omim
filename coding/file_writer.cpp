@@ -3,7 +3,6 @@
 
 #include <memory>
 
-
 FileWriter::FileWriter(FileWriter && rhs)
 : m_pFileData(move(rhs.m_pFileData)), m_bTruncOnClose(rhs.m_bTruncOnClose)
 {

@@ -6,12 +6,12 @@ namespace generator
 uint32_t constexpr CamerasInfoCollector::kLatestVersion;
 double constexpr CamerasInfoCollector::Camera::kEqualityEps;
 double constexpr CamerasInfoCollector::Camera::kSignificantPartOfSegmentCoef;
-double constexpr CamerasInfoCollector::kMaxDistFromCameraToClosestSegment;
-double constexpr CamerasInfoCollector::kSearchCameraRadius;
-uint32_t constexpr CamerasInfoCollector::kMaxCameraSpeed;
+double constexpr CamerasInfoCollector::kMaxDistFromCameraToClosestSegmentMeters;
+double constexpr CamerasInfoCollector::kSearchCameraRadiusMeters;
+uint32_t constexpr CamerasInfoCollector::kMaxCameraSpeedKmpH;
 
 CamerasInfoCollector::CamerasInfoCollector(std::string const & dataFilePath, std::string const & camerasInfoPath,
-                                           std::string const & osmIdsToFeatureIdsPath) : m_valid(true)
+                                           std::string const & osmIdsToFeatureIdsPath)
 {
   std::map<osm::Id, uint32_t> osmIdToFeatureId;
   if (!routing::ParseOsmIdToFeatureIdMapping(osmIdsToFeatureIdsPath, osmIdToFeatureId))
@@ -52,20 +52,19 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
 {
   if (!m_ways.empty())
   {
-    bool shouldErase = false;
     // If m_ways is not empty. It means, that one of point it is our camera.
     // So we should find it in feature's points.
     for (auto it = m_ways.begin(); it != m_ways.end();)
     {
-      std::tie(it->segmentId, shouldErase) = FindMyself(static_cast<uint32_t>(it->featureId), dataSource, mwmId);
-      if (shouldErase)
+      if (auto id = FindMyself(static_cast<uint32_t>(it->m_featureId), dataSource, mwmId))
       {
-        m_ways.erase(it);
+        it->m_segmentId = *id;
+        it->k = 0; // Camera starts at the begin of segment.
+        ++it;
       }
       else
       {
-        it->k = 0; // Camera starts at the begin of segment.
-        ++it;
+        m_ways.erase(it);
       }
     }
 
@@ -74,7 +73,7 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
 
   uint32_t bestFeatureId, segmentIdOfBestFeatureId;
   auto minDist = std::numeric_limits<double>::max();
-  float coef = 0;
+  double coef = 0;
 
   // Look at each segment of roads and find the closest.
   auto const updClosestFeatureCallback = [&](FeatureType & ft)
@@ -89,13 +88,13 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
 
     ft.ParseGeometry(scales::GetUpperScale());
     std::vector<m2::PointD> points(ft.GetPointsCount());
-    for (size_t i = 0; i < points.size(); i++)
+    for (size_t i = 0; i < points.size(); ++i)
       points[i] = ft.GetPoint(i);
 
     routing::FollowedPolyline polyline(points.begin(), points.end());
-    m2::RectD rect = MercatorBounds::RectByCenterXYAndSizeInMeters(m_center, kSearchCameraRadius);
+    m2::RectD rect = MercatorBounds::RectByCenterXYAndSizeInMeters(m_center, kSearchCameraRadiusMeters);
     auto bestSegment = polyline.UpdateProjection(rect);
-    float tmpCoef = 0;
+    double tmpCoef = 0;
 
     if (bestSegment.IsValid())
     {
@@ -109,7 +108,7 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
       tmpCoef = MercatorBounds::DistanceOnEarth(p1, cameraProjOnSegment) / MercatorBounds::DistanceOnEarth(p1, p2);
     }
 
-    if (curMinDist < minDist && curMinDist < kMaxDistFromCameraToClosestSegment)
+    if (curMinDist < minDist && curMinDist < kMaxDistFromCameraToClosestSegmentMeters)
     {
       minDist = curMinDist;
       bestFeatureId = ft.GetID().m_index;
@@ -119,14 +118,15 @@ void CamerasInfoCollector::Camera::FindClosestSegment(FrozenDataSource const & d
   };
 
   dataSource.ForEachInRect(
-    updClosestFeatureCallback, MercatorBounds::RectByCenterXYAndSizeInMeters(m_center, kSearchCameraRadius),
+    updClosestFeatureCallback, MercatorBounds::RectByCenterXYAndSizeInMeters(m_center, kSearchCameraRadiusMeters),
     scales::GetUpperScale());
 
   if (minDist != std::numeric_limits<double>::max())
     m_ways.emplace_back(bestFeatureId, segmentIdOfBestFeatureId, coef);
 }
 
-std::pair<uint32_t, bool> CamerasInfoCollector::Camera::FindMyself(uint32_t wayId, FrozenDataSource const & dataSource,
+boost::optional<uint32_t> CamerasInfoCollector::Camera::FindMyself(uint32_t wayId,
+                                                                   FrozenDataSource const & dataSource,
                                                                    MwmSet::MwmId const & mwmId)
 {
   FeatureID ft(mwmId, wayId);
@@ -153,19 +153,19 @@ std::pair<uint32_t, bool> CamerasInfoCollector::Camera::FindMyself(uint32_t wayI
 
     ft.ForEachPoint(forEachPoint, scales::GetUpperScale());
 
-    CHECK(found, ("Can not find camera point at the feature:", wayId));
+    CHECK(found, ("Cannot find camera point at the feature:", wayId));
   };
 
   dataSource.ReadFeature(readFeature, ft);
 
-  return {result, !isRoad};
+  return isRoad ? boost::optional<uint32_t>(result) : boost::optional<uint32_t>();
 }
 
 void CamerasInfoCollector::Camera::TranslateWaysIdFromOsmId(std::map<osm::Id, uint32_t> const & osmIdToFeatureId)
 {
   for (auto it = m_ways.begin(); it != m_ways.end();)
   {
-    auto const mapIt = osmIdToFeatureId.find(osm::Id::Way(it->featureId));
+    auto const mapIt = osmIdToFeatureId.find(osm::Id::Way(it->m_featureId));
     if (mapIt == osmIdToFeatureId.cend())
     {
       // It means, that way was not valid, and didn't pass to mwm.
@@ -174,7 +174,7 @@ void CamerasInfoCollector::Camera::TranslateWaysIdFromOsmId(std::map<osm::Id, ui
     }
     else
     {
-      it->featureId = mapIt->second; // osmId -> featureId
+      it->m_featureId = mapIt->second; // osmId -> featureId
       ++it;
     }
   }
@@ -187,9 +187,9 @@ void CamerasInfoCollector::Camera::Serialize(FileWriter & writer, CamerasInfoCol
 
   for (auto const & way : camera.m_ways)
   {
-    auto const featureId = static_cast<uint32_t>(way.featureId);
+    auto const featureId = static_cast<uint32_t>(way.m_featureId);
     WriteToSink(writer, featureId);
-    WriteToSink(writer, way.segmentId);
+    WriteToSink(writer, way.m_segmentId);
 
     auto const coef = static_cast<uint32_t>(way.k * kSignificantPartOfSegmentCoef);
     WriteToSink(writer, coef);
@@ -230,13 +230,12 @@ bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
     ways.resize(relatedWaysNumber);
     center = MercatorBounds::FromLatLon(lat, lon);
 
-    CHECK((0 <= maxSpeed && maxSpeed <= kMaxCameraSpeed),
-          ("Speed of camera should be in interval from 0 to", kMaxCameraSpeed));
+    CHECK((0 <= maxSpeed && maxSpeed <= kMaxCameraSpeedKmpH), ());
     CHECK((0 <= relatedWaysNumber && relatedWaysNumber <= 255),
           ("Number of related to camera ways should be interval from 0 to 255"));
 
     for (uint32_t i = 0; i < relatedWaysNumber; ++i)
-      src.Read(&ways[i].featureId, sizeof(ways[i].featureId));
+      src.Read(&ways[i].m_featureId, sizeof(ways[i].m_featureId));
 
     m_cameras.emplace_back(center, maxSpeed, std::move(ways));
   }
@@ -265,7 +264,7 @@ void routing::BuildCamerasInfo(std::string const & dataFilePath, std::string con
 
   if (!collector.IsValid())
   {
-    LOG(LCRITICAL, ("Can not get info about cameras"));
+    LOG(LCRITICAL, ("Cannot get info about cameras"));
     return;
   }
 
