@@ -353,7 +353,8 @@ IntermediateDataReader::IntermediateDataReader(shared_ptr<PointStorageReaderInte
   m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache),
   m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache),
   m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)),
-  m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
+  m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT)),
+  m_nodeToWays(info.GetIntermediateFileName(NODES_TO_WAYS_FILE, ""))
 {
 }
 
@@ -364,6 +365,7 @@ void IntermediateDataReader::LoadIndex()
 
   m_nodeToRelations.ReadAll();
   m_wayToRelations.ReadAll();
+  m_nodeToWays.ReadAll();
 }
 
 // IntermediateDataWriter
@@ -373,7 +375,8 @@ IntermediateDataWriter::IntermediateDataWriter(shared_ptr<PointStorageWriterInte
   m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache),
   m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache),
   m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)),
-  m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
+  m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT)),
+  m_nodeToWays(info.GetIntermediateFileName(NODES_TO_WAYS_FILE, ""))
 {
 }
 
@@ -397,6 +400,7 @@ void IntermediateDataWriter::SaveIndex()
 
   m_nodeToRelations.WriteAll();
   m_wayToRelations.WriteAll();
+  m_nodeToWays.WriteAll();
 }
 
 // Functions

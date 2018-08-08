@@ -4,6 +4,8 @@
 
 #include "coding/url_encode.hpp"
 
+#include "routing/routing_helpers.hpp"
+
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
@@ -11,6 +13,8 @@
 #include <cctype>
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
+#include <sstream>
 #include <unordered_set>
 
 using namespace std;
@@ -23,6 +27,73 @@ constexpr char const * kOSMMultivalueDelimiter = ";";
 // https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_the_world
 auto constexpr kMaxBuildingLevelsInTheWorld = 167;
 auto constexpr kMinBuildingLevel = -6;
+
+std::unordered_map<std::string, std::string> const kHumanSpeedToNumber =
+{
+  {"AT:urban", "50"},
+  {"AT:rural", "100"},
+  {"AT:trunk", "100"},
+  {"AT:motorway", "130"},
+  {"BE:urban", "50"},
+  {"BE:zone", "30"},
+  {"BE:motorway", "120"},
+  {"BE:zone30", "30"},
+  {"BE:rural", "70"},
+  {"BE:school", "30"},
+  {"CZ:motorway", "130"},
+  {"CZ:trunk", "110"},
+  {"CZ:rural", "90"},
+  {"CZ:urban_motorway", "80"},
+  {"CZ:urban_trunk", "80"},
+  {"CZ:urban", "50"},
+  {"DE:rural", "100"},
+  {"DE:urban", "50"},
+  {"DE:bicycle_road", "30"},
+  {"FR:motorway", "130"},
+  {"FR:rural", "80"},
+  {"FR:urban", "50"},
+  {"HU:living_street", "20"},
+  {"HU:motorway", "130"},
+  {"HU:rural", "90"},
+  {"HU:trunk", "110"},
+  {"HU:urban", "50"},
+  {"IT:rural", "90"},
+  {"IT:motorway", "130"},
+  {"IT:urban", "50"},
+  {"JP:nsl", "60"},
+  {"JP:express", "100"},
+  {"LT:rural", "90"},
+  {"LT:urban", "50"},
+  {"NO:rural", "80"},
+  {"NO:urban", "50"},
+  {"ON:urban", "50"},
+  {"ON:rural", "80"},
+  {"PT:motorway", "120"},
+  {"PT:rural", "90"},
+  {"PT:trunk", "100"},
+  {"PT:urban", "50"},
+  {"RO:motorway", "130"},
+  {"RO:rural", "90"},
+  {"RO:trunk", "100"},
+  {"RO:urban", "50"},
+  {"RU:living_street", "20"},
+  {"RU:urban", "60"},
+  {"RU:rural", "90"},
+  {"RU:motorway", "110"},
+
+  {"GB:motorway", "112"},  // 70 mph = 112.65408 kmph
+  {"GB:nsl_dual", "112"},  // 70 mph = 112.65408 kmph
+  {"GB:nsl_single", "96"}, // 60 mph = 96.56064 kmph
+
+  {"UK:motorway", "112"},  // 70 mph
+  {"UK:nsl_dual", "112"},  // 70 mph
+  {"UK:nsl_single", "96"}, // 60 mph
+
+  {"UZ:living_street", "30"},
+  {"UZ:urban", "70"},
+  {"UZ:rural", "100"},
+  {"UZ:motorway", "110"},
+};
 
 template <class T>
 void RemoveDuplicatesAndKeepOrder(vector<T> & vec)
@@ -71,6 +142,41 @@ string MetadataTagProcessorImpl::ValidateAndFormat_maxspeed(string const & v) co
 {
   if (!ftypes::IsSpeedCamChecker::Instance()(m_params.m_types))
     return string();
+
+  auto const & it = kHumanSpeedToNumber.find(v);
+  if (it != kHumanSpeedToNumber.cend())
+    return it->second;
+
+  string result{};
+
+  int i;
+  for (i = 0; i < v.size(); ++i)
+  {
+    if (isdigit(v[i]))
+      result += v[i];
+    else
+      break;
+  }
+
+  while (i < v.size() && isspace(v[i++])) {}
+
+  if (strings::StartsWith(string(v.begin() + i, v.end()), "kmh"))
+  {
+    return result;
+  }
+  else if (strings::StartsWith(string(v.begin() + i, v.end()), "mph"))
+  {
+    int32_t mph;
+    if (!strings::to_int(result.c_str(), mph))
+      return string();
+
+    mph = static_cast<int32_t>(routing::KMPH2MilesPH(mph));
+    return strings::to_string(mph);
+  }
+  else
+  {
+    return result;
+  }
 
   return v;
 }

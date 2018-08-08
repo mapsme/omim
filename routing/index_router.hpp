@@ -132,9 +132,8 @@ private:
   }
 
   template <typename Graph>
-  RouterResultCode FindPath(
-      typename AStarAlgorithm<Graph>::Params & params, std::set<NumMwmId> const & mwmIds,
-      RoutingResult<typename Graph::Vertex, typename Graph::Weight> & routingResult) const
+  RouterResultCode FindPath(typename AStarAlgorithm<Graph>::Params & params, std::set<NumMwmId> const & mwmIds,
+                            RoutingResult<typename Graph::Vertex, typename Graph::Weight> & routingResult) const
   {
     AStarAlgorithm<Graph> algorithm;
     if (params.m_graph.GetMode() == WorldGraph::Mode::LeapsOnly)
@@ -142,8 +141,8 @@ private:
       return ConvertTransitResult(mwmIds,
                                   ConvertResult<Graph>(algorithm.FindPath(params, routingResult)));
     }
-    return ConvertTransitResult(
-        mwmIds, ConvertResult<Graph>(algorithm.FindPathBidirectional(params, routingResult)));
+    return ConvertTransitResult(mwmIds,
+                                ConvertResult<Graph>(algorithm.FindPathBidirectional(params, routingResult)));
   }
 
   VehicleType m_vehicleType;

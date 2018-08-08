@@ -15,6 +15,9 @@ set(SRC
   borders_generator.hpp
   borders_loader.cpp
   borders_loader.hpp
+  camera_info_collector.cpp
+  camera_info_collector.hpp
+  camera_node_processor.hpp
   centers_table_builder.cpp
   centers_table_builder.hpp
   check_model.cpp
@@ -56,8 +59,8 @@ set(SRC
   locality_sorter.hpp
   metalines_builder.cpp
   metalines_builder.hpp
-  node_mixer.hpp
   node_mixer.cpp
+  node_mixer.hpp
   opentable_dataset.cpp
   opentable_dataset.hpp
   opentable_scoring.cpp

@@ -1,9 +1,8 @@
 #pragma once
 #include "base/base.hpp"
 
-#include "std/vector.hpp"
-#include "std/cstring.hpp"
-
+#include <cstring>
+#include <cstddef>
 
 class ArrayByteSource
 {
@@ -21,9 +20,9 @@ public:
     m_p += size;
   }
 
-  inline const void * Ptr() const { return m_p; }
-  inline const unsigned char * PtrUC() const { return m_p; }
-  inline const char * PtrC() const { return static_cast<char const *>(Ptr()); }
+  inline void const * Ptr() const { return m_p; }
+  inline unsigned char const * PtrUC() const { return m_p; }
+  inline char const * PtrC() const { return static_cast<char const *>(Ptr()); }
 
   void Advance(size_t size)
   {
@@ -31,7 +30,7 @@ public:
   }
 
 private:
-  const unsigned char * m_p;
+  unsigned char const * m_p;
 };
 
 template <class StorageT> class PushBackByteSink

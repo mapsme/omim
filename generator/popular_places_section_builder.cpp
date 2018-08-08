@@ -80,11 +80,10 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
   LOG(LINFO, ("Build Popular Places section"));
 
   std::unordered_map<uint32_t, osm::Id> featureIdToOsmId;
-  ForEachOsmId2FeatureId(osmToFeatureFilename,
-                         [&featureIdToOsmId](osm::Id const & osmId, uint32_t fId)
-                         {
-                           featureIdToOsmId.emplace(fId, osmId);
-                         });
+  ForEachOsmId2FeatureId(osmToFeatureFilename, [&featureIdToOsmId](osm::Id const & osmId, uint32_t fId)
+  {
+    featureIdToOsmId.emplace(fId, osmId);
+  });
 
   PopularPlaces places;
   LoadPopularPlaces(srcFilename, places);

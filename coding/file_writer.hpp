@@ -17,8 +17,10 @@ public:
     // Create an empty file for writing. If a file with the same name already exists
     // its content is erased and the file is treated as a new empty file.
     OP_WRITE_TRUNCATE = 1,
+    
     // Open a file for update. The file is created if it does not exist.
     OP_WRITE_EXISTING = 2,
+    
     // Append to a file. Writing operations append data at the end of the file.
     // The file is created if it does not exist.
     // Seek should not be called, if file is opened for append.
@@ -48,10 +50,9 @@ public:
   string const & GetName() const;
 
 private:
-  typedef my::FileData fdata_t;
 
   void WritePadding(uint64_t offset, uint64_t factor);
 
-  unique_ptr<fdata_t> m_pFileData;
+  unique_ptr<my::FileData> m_pFileData;
   bool m_bTruncOnClose;
 };

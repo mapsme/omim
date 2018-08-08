@@ -16,6 +16,7 @@
 
 #define NODES_FILE "nodes.dat"
 #define WAYS_FILE "ways.dat"
+#define NODES_TO_WAYS_FILE "nodes_to_way.dat"
 #define RELATIONS_FILE "relations.dat"
 #define TOWNS_FILE "towns.csv"
 #define OFFSET_EXT ".offs"
@@ -43,6 +44,7 @@
 #define POPULARITY_RANKS_FILE_TAG "popularity"
 #define REGION_INFO_FILE_TAG "rgninfo"
 #define METALINES_FILE_TAG "metalines"
+#define CAMERAS_INFO_FILE_TAG "speedcamsinfo"
 // Temporary addresses section that is used in search index generation.
 #define SEARCH_TOKENS_FILE_TAG "addrtags"
 #define TRAFFIC_KEYS_FILE_TAG "traffic"
@@ -94,6 +96,7 @@
 #define RESTRICTIONS_FILENAME "restrictions.csv"
 #define ROAD_ACCESS_FILENAME "road_access.csv"
 #define METALINES_FILENAME "metalines.bin"
+#define CAMERAS_TO_WAYS_FILENAME "cameras_to_ways.bin"
 
 #define TRAFFIC_FILE_EXTENSION ".traffic"
 
