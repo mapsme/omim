@@ -106,9 +106,10 @@ if [ "$SOURCE_TYPE" == "o5m" ]; then
     CROSS_MWM="--make_cross_mwm"
   fi
 
-  $GENERATOR_TOOL $INTDIR_FLAG --osm_file_type=o5m --osm_file_name="$SOURCE_FILE" --preprocess=true || fail "Preprocessing failed"
-  $GENERATOR_TOOL $INTDIR_FLAG --osm_file_type=o5m --osm_file_name="$SOURCE_FILE" --data_path="$TARGET" --user_resource_path="$DATA_PATH" $GENERATE_EVERYTHING --output="$BASE_NAME"
-  $GENERATOR_TOOL $INTDIR_FLAG --data_path="$TARGET" --user_resource_path="$DATA_PATH" ${CROSS_MWM-} --make_routing_index --generate_traffic_keys --output="$BASE_NAME"
+  THREADS="--thread_count=`nproc --all`"
+  $GENERATOR_TOOL $INTDIR_FLAG $THREADS --osm_file_type=o5m --osm_file_name="$SOURCE_FILE" --preprocess=true || fail "Preprocessing failed"
+  $GENERATOR_TOOL $INTDIR_FLAG $THREADS --osm_file_type=o5m --osm_file_name="$SOURCE_FILE" --data_path="$TARGET" --user_resource_path="$DATA_PATH" $GENERATE_EVERYTHING --output="$BASE_NAME"
+  $GENERATOR_TOOL $INTDIR_FLAG $THREADS --data_path="$TARGET" --user_resource_path="$DATA_PATH" ${CROSS_MWM-} --make_routing_index --generate_traffic_keys --output="$BASE_NAME"
 else
   echo "Unsupported source type: $SOURCE_TYPE" >&2
 fi

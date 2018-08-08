@@ -193,6 +193,7 @@ LOG_PATH="${LOG_PATH:-$TARGET/logs}"
 mkdir -p "$LOG_PATH"
 PLANET_LOG="$LOG_PATH/generate_planet.log"
 TEST_LOG="$LOG_PATH/test_planet.log"
+THREADS="--thread_count=8"
 [ -n "${MAIL-}" ] && trap "grep STATUS \"$PLANET_LOG\" | mailx -s \"Generate_planet: build failed at $(hostname)\" \"$MAIL\"; exit 1" SIGTERM ERR
 echo -e "\n\n----------------------------------------\n\n" >> "$PLANET_LOG"
 log "STATUS" "Start ${DESC-}"
@@ -379,10 +380,10 @@ if [ "$MODE" == "coast" ]; then
       # Strip coastlines from the planet to speed up the process
       "$OSMCTOOLS/osmfilter" "$PLANET" --keep= --keep-ways="natural=coastline" --keep-nodes="capital=yes place=town =city" "-o=$COASTS_O5M"
       # Preprocess coastlines to separate intermediate directory
-      "$GENERATOR_TOOL" --intermediate_data_path="$INTCOASTSDIR/" --node_storage=map --osm_file_type=o5m --osm_file_name="$COASTS_O5M" \
+      "$GENERATOR_TOOL" $THREADS --intermediate_data_path="$INTCOASTSDIR/" --node_storage=map --osm_file_type=o5m --osm_file_name="$COASTS_O5M" \
         -preprocess 2>> "$LOG_PATH/WorldCoasts.log"
       # Generate temporary coastlines file in the coasts intermediate dir
-      if ! "$GENERATOR_TOOL" --intermediate_data_path="$INTCOASTSDIR/" --node_storage=map --osm_file_type=o5m --osm_file_name="$COASTS_O5M" \
+      if ! "$GENERATOR_TOOL" $THREADS --intermediate_data_path="$INTCOASTSDIR/" --node_storage=map --osm_file_type=o5m --osm_file_name="$COASTS_O5M" \
         --user_resource_path="$DATA_PATH/" -make_coasts -fail_on_coasts 2>&1 | tee -a "$LOG_PATH/WorldCoasts.log" | { grep -i 'not merged\|coastline polygons' || true; }
       then
         log "STATUS" "Coastline merge failed"
@@ -431,7 +432,7 @@ fi
 if [ "$MODE" == "inter" ]; then
   putmode "Step 3: Generating intermediate data for all MWMs"
   # 1st pass, run in parallel - preprocess whole planet to speed up generation if all coastlines are correct
-  "$GENERATOR_TOOL" --intermediate_data_path="$INTDIR/" --node_storage=$NODE_STORAGE --osm_file_type=o5m --osm_file_name="$PLANET" \
+  "$GENERATOR_TOOL" $THREADS --intermediate_data_path="$INTDIR/" --node_storage=$NODE_STORAGE --osm_file_type=o5m --osm_file_name="$PLANET" \
     -preprocess 2>> "$PLANET_LOG"
   MODE=features
 fi
@@ -473,7 +474,7 @@ if [ "$MODE" == "features" ]; then
                     --user_resource_path="$DATA_PATH/" \
                     --dump_cities_boundaries \
                     --cities_boundaries_data="$CITIES_BOUNDARIES_DATA" \
-                    $PARAMS_SPLIT 2>> "$PLANET_LOG"
+                    $PARAMS_SPLIT $THREADS  2>> "$PLANET_LOG"
   MODE=mwm
 fi
 
@@ -495,7 +496,7 @@ if [ "$MODE" == "mwm" ]; then
   [ -z "$NO_REGIONS" -a -z "$(ls "$INTDIR/tmp" | grep '\.mwm\.tmp')" ] && fail "No .mwm.tmp files found."
   # 3rd pass - do in parallel
   # but separate exceptions for world files to finish them earlier
-  PARAMS="--data_path=$TARGET --intermediate_data_path=$INTDIR/ --user_resource_path=$DATA_PATH/ --node_storage=$NODE_STORAGE --planet_version=$MWM_VERSION -generate_geometry -generate_index"
+  PARAMS="$THREADS --data_path=$TARGET --intermediate_data_path=$INTDIR/ --user_resource_path=$DATA_PATH/ --node_storage=$NODE_STORAGE --planet_version=$MWM_VERSION -generate_geometry -generate_index"
   if [ -n "$OPT_WORLD" ]; then
     (
       "$GENERATOR_TOOL" $PARAMS --output=World 2>> "$LOG_PATH/World.log"
@@ -504,7 +505,7 @@ if [ "$MODE" == "mwm" ]; then
                         --generate_search_index \
                         --generate_cities_boundaries \
                         --cities_boundaries_data="$CITIES_BOUNDARIES_DATA" \
-                        --output=World 2>> "$LOG_PATH/World.log"
+                        --output=World $THREADS 2>> "$LOG_PATH/World.log"
     ) &
     "$GENERATOR_TOOL" $PARAMS --output=WorldCoasts 2>> "$LOG_PATH/WorldCoasts.log" &
   fi
@@ -517,7 +518,7 @@ if [ "$MODE" == "mwm" ]; then
     for file in "$INTDIR"/tmp/*.mwm.tmp; do
       if [[ "$file" != *minsk-pass* && "$file" != *World* ]]; then
         BASENAME="$(basename "$file" .mwm.tmp)"
-        "$GENERATOR_TOOL" $PARAMS_WITH_SEARCH --output="$BASENAME" 2>> "$LOG_PATH/$BASENAME.log" &
+        "$GENERATOR_TOOL" $THREADS $PARAMS_WITH_SEARCH --output="$BASENAME" 2>> "$LOG_PATH/$BASENAME.log" &
         forky
       fi
     done
@@ -540,9 +541,9 @@ if [ "$MODE" == "routing" ]; then
     if [[ "$file" != *minsk-pass* && "$file" != *World* ]]; then
       BASENAME="$(basename "$file" .mwm)"
       (
-        "$GENERATOR_TOOL" --data_path="$TARGET" --intermediate_data_path="$INTDIR/" --user_resource_path="$DATA_PATH/" \
+        "$GENERATOR_TOOL" $THREADS --data_path="$TARGET" --intermediate_data_path="$INTDIR/" --user_resource_path="$DATA_PATH/" \
         --make_cross_mwm --disable_cross_mwm_progress --make_routing_index --generate_traffic_keys --output="$BASENAME" 2>> "$LOG_PATH/$BASENAME.log"
-        "$GENERATOR_TOOL" --data_path="$TARGET" --intermediate_data_path="$INTDIR/" --user_resource_path="$DATA_PATH/" \
+        "$GENERATOR_TOOL" $THREADS --data_path="$TARGET" --intermediate_data_path="$INTDIR/" --user_resource_path="$DATA_PATH/" \
         --make_transit_cross_mwm --transit_path="$DATA_PATH" --output="$BASENAME" 2>> "$LOG_PATH/$BASENAME.log"
         ) &
       forky
