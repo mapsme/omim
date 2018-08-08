@@ -21,6 +21,7 @@
 namespace routing
 {
 inline double KMPH2MPS(double kmph) { return kmph * 1000.0 / (60 * 60); }
+inline double KMPH2MilesPH(double kmph) { return kmph * 0.621371; }
 
 /// \returns true when there exists a routing mode where the feature with |types| can be used.
 template <typename Types>

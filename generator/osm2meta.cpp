@@ -147,6 +147,37 @@ string MetadataTagProcessorImpl::ValidateAndFormat_maxspeed(string const & v) co
   if (it != kHumanSpeedToNumber.cend())
     return it->second;
 
+  string result{};
+
+  int i;
+  for (i = 0; i < v.size(); ++i)
+  {
+    if (isdigit(v[i]))
+      result += v[i];
+    else
+      break;
+  }
+
+  while (i < v.size() && isspace(v[i++])) {}
+
+  if (strings::StartsWith(string(v.begin() + i, v.end()), "kmh"))
+  {
+    return result;
+  }
+  else if (strings::StartsWith(string(v.begin() + i, v.end()), "mph"))
+  {
+    int32_t mph;
+    if (!strings::to_int(result.c_str(), mph))
+      return string();
+
+    mph = static_cast<int32_t>(routing::KMPH2MilesPH(mph));
+    return strings::to_string(mph);
+  }
+  else
+  {
+    return result;
+  }
+
   return v;
 }
 

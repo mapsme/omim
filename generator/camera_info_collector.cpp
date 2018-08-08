@@ -1,6 +1,7 @@
 #include "generator/camera_info_collector.hpp"
 
 #include "coding/reader.hpp"
+#include "coding/varint.hpp"
 
 namespace generator
 {
@@ -186,27 +187,27 @@ void CamerasInfoCollector::Camera::TranslateWaysIdFromOsmId(std::map<osm::Id, ui
 void CamerasInfoCollector::Camera::Serialize(FileWriter & writer, CamerasInfoCollector::Camera const & camera)
 {
   auto waysNumber = base::asserted_cast<uint8_t>(camera.m_ways.size());
-  WriteToSink(writer, waysNumber);
+  WriteVarUint(writer, waysNumber);
 
   for (auto const & way : camera.m_ways)
   {
     auto const featureId = static_cast<uint32_t>(way.m_featureId);
-    WriteToSink(writer, featureId);
-    WriteToSink(writer, way.m_segmentId);
+    WriteVarUint(writer, featureId);
+    WriteVarUint(writer, way.m_segmentId);
 
     auto const coef = static_cast<uint32_t>(way.k * kSignificantPartOfSegmentCoef);
-    WriteToSink(writer, coef);
+    WriteVarUint(writer, coef);
   }
 
   auto const speed = static_cast<uint8_t>(camera.m_maxSpeed);
-  WriteToSink(writer, speed);
+  WriteVarUint(writer, speed);
 
   auto const direction = static_cast<uint8_t>(camera.m_direction);
-  WriteToSink(writer, direction);
+  WriteVarUint(writer, direction);
 
   // TODO add implementation of this feature
-  WriteToSink(writer, 0); // Time, from which camera is on
-  WriteToSink(writer, 0); // Time, from which camera is off
+  WriteVarInt(writer, 0); // Time, from which camera is on
+  WriteVarInt(writer, 0); // Time, from which camera is off
 }
 
 bool CamerasInfoCollector::ParseIntermediateInfo(string const & camerasInfoPath)
@@ -251,7 +252,7 @@ void CamerasInfoCollector::Serialize(FileWriter & writer, std::vector<CamerasInf
   WriteToSink(writer, CamerasInfoCollector::kLatestVersion);
 
   auto amount = static_cast<uint32_t>(cameras.size());
-  WriteToSink(writer, amount);
+  WriteVarUint(writer, amount);
 
   std::map<uint64_t, int> counter;
 
