@@ -27,7 +27,7 @@ class EmitterPlanet : public EmitterInterface
   using CountriesGenerator = CountryMapGenerator<feature::Polygonizer<feature::FeaturesCollector>>;
 
 public:
-  explicit EmitterPlanet(feature::GenerateInfo const & info);
+  explicit EmitterPlanet(feature::GenerateInfo const & info, size_t numThreads);
 
   // EmitterInterface overrides:
   void operator()(FeatureBuilder1 & fb) override;
@@ -69,5 +69,6 @@ private:
   /// Used to prepare a list of cities to serve as a list of nodes
   /// for building a highway graph with OSRM for low zooms.
   m4::Tree<Place> m_places;
+  size_t m_numThreads;
 };
 }  // namespace generator

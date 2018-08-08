@@ -317,14 +317,11 @@ public:
   }
 };
 
-void CoastlineFeaturesGenerator::GetFeatures(vector<FeatureBuilder1> & features)
+void CoastlineFeaturesGenerator::GetFeatures(vector<FeatureBuilder1> & features, size_t numThreads)
 {
-  size_t const maxThreads = thread::hardware_concurrency();
-  CHECK_GREATER(maxThreads, 0, ("Not supported platform"));
-
   mutex featuresMutex;
   RegionInCellSplitter::Process(
-      maxThreads, RegionInCellSplitter::kStartLevel, m_tree,
+      numThreads, RegionInCellSplitter::kStartLevel, m_tree,
       [&features, &featuresMutex, this](RegionInCellSplitter::TCell const & cell, DoDifference & cellData)
       {
         FeatureBuilder1 fb;

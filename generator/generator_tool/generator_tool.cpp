@@ -150,6 +150,8 @@ DEFINE_bool(generate_addresses_file, false, "Generate .addr file (for '--output'
 DEFINE_bool(generate_traffic_keys, false,
             "Generate keys for the traffic map (road segment -> speed group).");
 
+DEFINE_int32(thread_count, 1, "The maximum number of threads that can be created during generation.");
+
 using namespace generator;
 
 int main(int argc, char ** argv)
@@ -247,7 +249,7 @@ int main(int argc, char ** argv)
     genInfo.m_fileName = FLAGS_output;
     genInfo.m_genAddresses = FLAGS_generate_addresses_file;
 
-    auto emitter = CreateEmitter(EmitterType::PLANET, genInfo);
+    auto emitter = CreateEmitter(EmitterType::PLANET, genInfo, FLAGS_thread_count);
     if (!GenerateFeatures(genInfo, emitter))
       return -1;
 
@@ -387,8 +389,7 @@ int main(int argc, char ** argv)
       LOG(LINFO, ("Generating search index for", datFile));
 
       /// @todo Make threads count according to environment (single mwm build or planet build).
-      if (!indexer::BuildSearchIndexFromDataFile(datFile, true /* forceRebuild */,
-                                                 1 /* threadsCount */))
+      if (!indexer::BuildSearchIndexFromDataFile(datFile, true /* forceRebuild */, FLAGS_thread_count))
         LOG(LCRITICAL, ("Error generating search index."));
 
       LOG(LINFO, ("Generating rank table for", datFile));

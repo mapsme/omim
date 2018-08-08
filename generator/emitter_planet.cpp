@@ -11,13 +11,14 @@ using namespace std;
 
 namespace generator
 {
-EmitterPlanet::EmitterPlanet(feature::GenerateInfo const & info) :
+EmitterPlanet::EmitterPlanet(feature::GenerateInfo const & info, size_t numThreads) :
   m_skippedElementsPath(info.GetIntermediateFileName("skipped_elements", ".lst")),
   m_failOnCoasts(info.m_failOnCoasts),
   m_bookingDataset(info.m_bookingDatafileName),
   m_opentableDataset(info.m_opentableDatafileName),
   m_viatorDataset(info.m_viatorDatafileName),
-  m_boundariesTable(info.m_boundariesTable)
+  m_boundariesTable(info.m_boundariesTable),
+  m_numThreads(numThreads)
 {
   Classificator const & c = classif();
   char const * arr[][2] = {
@@ -155,7 +156,7 @@ bool EmitterPlanet::Finish()
     size_t totalPolygons = 0;
 
     vector<FeatureBuilder1> vecFb;
-    m_coasts->GetFeatures(vecFb);
+    m_coasts->GetFeatures(vecFb, m_numThreads);
 
     for (auto & fb : vecFb)
     {
