@@ -247,7 +247,7 @@ int main(int argc, char ** argv)
     genInfo.m_fileName = FLAGS_output;
     genInfo.m_genAddresses = FLAGS_generate_addresses_file;
 
-    auto emitter = CreateEmitter(EmitterType::PLANET, genInfo);
+    auto emitter = CreateEmitter(EmitterType::Planet, genInfo);
     if (!GenerateFeatures(genInfo, emitter))
       return -1;
 
@@ -277,7 +277,7 @@ int main(int argc, char ** argv)
 
     genInfo.m_fileName = FLAGS_output;
 
-    auto emitter = CreateEmitter(EmitterType::REGION, genInfo);
+    auto emitter = CreateEmitter(EmitterType::Region, genInfo);
     if (!GenerateRegionFeatures(genInfo, emitter))
       return -1;
   }
