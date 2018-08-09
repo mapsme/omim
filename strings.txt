@@ -33008,7 +33008,7 @@ fa = دوباره نپرس
 
   [cached_guides_placeholder_subtitle]
     en = Detailed offline guides for any kind of a journey. Choose the one that suits you best and download it directly to the map. You will need the internet connection to download guides.
-    ru = 
+    ru = Мы собрали каталог с подробными оффлайн маршрутами по городам мира! Теперь каждый путешественник сможет найти маршрут по своему вкусу и загрузить в MAPS.ME. Все загруженные маршруты автоматически отобразятся на карте. Для загрузки маршрута необходимо подключение к интернету.
 
   [guides_groups_cached]
     en = Downloaded guides
