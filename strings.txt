@@ -32989,3 +32989,39 @@ fa = دوباره نپرس
   [bookmarks_downloaded_subtitle]
     en = Press ‘View on map’ to explore new places from the list
     ru = Нажмите «Посмотреть на карте» чтобы посмотреть новые места из списка
+
+  [bookmarks_guides]
+    en = Bookmarks and guides
+    ru = Метки и путеводители
+
+  [guides]
+    en = Guides
+    ru = Путеводители
+
+  [guide_downloaded_title]
+    en = The guide has been downloaded successfully
+    ru = Путеводитель был успешно загружен
+
+  [download_guides]
+    en = Download guides
+    ru = Загрузите путеводители
+
+  [cached_guides_placeholder_subtitle]
+    en = Detailed offline guides for any kind of a journey. Choose the one that suits you best and download it directly to the map. You will need the internet connection to download guides.
+    ru = 
+
+  [guides_groups_cached]
+    en = Downloaded guides
+    ru = Загруженные путеводители
+
+  [subtitle_error_downloading_guide]
+    en = The guide was not downloaded
+    ru = Путеводитель не был загружен
+
+  [error_already_downloaded_guide]
+    en = This guide has already been downloaded
+    ru = Этот путеводитель уже был загружен
+
+  [guide_downloaded_subtitle]
+    en = Press ‘View on map’ to explore the guide
+    ru = Нажмите «Посмотреть на карте» чтобы открыть путеводитель
