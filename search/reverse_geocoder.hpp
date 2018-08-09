@@ -76,16 +76,18 @@ public:
   friend string DebugPrint(Address const & addr);
 
   /// @return Sorted by distance streets vector for the specified MwmId.
-  //@{
   void GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD const & center,
                         vector<Street> & streets) const;
   void GetNearbyStreets(FeatureType & ft, vector<Street> & streets) const;
-  //@}
+  void GetOriginalNearbyStreets(MwmSet::MwmId const & id, m2::PointD const & center,
+                                vector<Street> & streets) const;
 
   /// @returns [a lot of] nearby feature's streets and an index of a feature's street.
   /// Returns a value greater than vector size when there are no Street the feature belongs to.
   /// @note returned vector can contain duplicated street segments.
   pair<vector<Street>, uint32_t> GetNearbyFeatureStreets(FeatureType & ft) const;
+  /// Same as GetNearbyFeatureStreets but returns streets from MWM only.
+  pair<vector<Street>, uint32_t> GetOriginalNearbyFeatureStreets(FeatureType & ft) const;
 
   /// @return The nearest exact address where building has house number and valid street match.
   void GetNearbyAddress(m2::PointD const & center, Address & addr) const;
@@ -112,7 +114,6 @@ private:
   void GetNearbyBuildings(m2::PointD const & center, vector<Building> & buildings) const;
 
   static Building FromFeature(FeatureType const & ft, double distMeters);
-  static m2::RectD GetLookupRect(m2::PointD const & center, double radiusM);
 };
 
 } // namespace search
