@@ -89,6 +89,8 @@ iphone/Maps/3party/Carthage/Build/*.version
 # GeneratedFiles
 version/version.hpp
 tools/win/MapsWithMe*
+tools/python_tests/routing_memory_tests/pyomimrouting.so
+tools/python_tests/routing_memory_tests/*.svg
 GeneratedFiles
 
 # data

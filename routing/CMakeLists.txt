@@ -138,3 +138,5 @@ omim_add_test_subdirectory(routing_tests)
 omim_add_test_subdirectory(routing_integration_tests)
 omim_add_test_subdirectory(routing_consistency_tests)
 omim_add_test_subdirectory(routing_benchmarks)
+
+omim_add_pybindings_subdirectory(pyomimrouting)
