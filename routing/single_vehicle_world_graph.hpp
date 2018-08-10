@@ -50,6 +50,7 @@ public:
   bool LeapIsAllowed(NumMwmId mwmId) const override;
   std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter) override;
   std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) override;
+  std::vector<RouteSegment::SpeedCamera> GetSpeedCamInfo(Segment const & segment) override;
 
   // This method should be used for tests only
   IndexGraph & GetIndexGraphForTests(NumMwmId numMwmId)

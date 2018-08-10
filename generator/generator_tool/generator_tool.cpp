@@ -1,6 +1,7 @@
 #include "generator/altitude_generator.hpp"
 #include "generator/borders_generator.hpp"
 #include "generator/borders_loader.hpp"
+#include "generator/camera_info_collector.hpp"
 #include "generator/centers_table_builder.hpp"
 #include "generator/check_model.hpp"
 #include "generator/cities_boundaries_builder.hpp"
@@ -24,6 +25,7 @@
 #include "generator/unpack_mwm.hpp"
 
 #include "routing/cross_mwm_ids.hpp"
+#include "routing/routing_helpers.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
@@ -253,8 +255,8 @@ int main(int argc, char ** argv)
 
     if (FLAGS_generate_world)
     {
-      genInfo.m_bucketNames.push_back(WORLD_FILE_NAME);
-      genInfo.m_bucketNames.push_back(WORLD_COASTS_FILE_NAME);
+      genInfo.m_bucketNames.emplace_back(WORLD_FILE_NAME);
+      genInfo.m_bucketNames.emplace_back(WORLD_COASTS_FILE_NAME);
     }
 
     if (FLAGS_dump_cities_boundaries)
@@ -431,9 +433,12 @@ int main(int argc, char ** argv)
           genInfo.GetIntermediateFileName(RESTRICTIONS_FILENAME);
       string const roadAccessFilename =
           genInfo.GetIntermediateFileName(ROAD_ACCESS_FILENAME);
+      string const camerasFilename =
+        genInfo.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME);
 
       routing::BuildRoadRestrictions(datFile, restrictionsFilename, osmToFeatureFilename);
       routing::BuildRoadAccessInfo(datFile, roadAccessFilename, osmToFeatureFilename);
+      routing::BuildCamerasInfo(datFile, camerasFilename, osmToFeatureFilename);
       routing::BuildRoutingIndex(datFile, country, *countryParentGetter);
     }
 
