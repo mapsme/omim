@@ -2341,7 +2341,7 @@ void FrontendRenderer::CheckAndRunFirstLaunchAnimation()
   }
 
   int constexpr kDesiredZoomLevel = 13;
-  m2::PointD const pos =  m_myPositionController->GetDrawablePosition();
+  m2::PointD const pos = m_myPositionController->GetDrawablePosition();
   AddUserEvent(make_unique_dp<SetCenterEvent>(pos, kDesiredZoomLevel, true /* isAnim */,
                                               false /* trackVisibleViewport */));
 }
