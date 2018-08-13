@@ -87,8 +87,9 @@ using namespace storage;
 }
 
 - (void)dealloc { _locationManager.delegate = nil; }
-- (void)processNotification:(NSDictionary *)userInfo onLaunch:(BOOL)onLaunch
+- (void)processNotification:(UILocalNotification *)notification onLaunch:(BOOL)onLaunch
 {
+  NSDictionary * userInfo = [notification userInfo];
   if ([userInfo[kDownloadMapActionKey] isEqualToString:kDownloadMapActionName])
   {
     [Statistics logEvent:@"'Download Map' Notification Clicked"];
