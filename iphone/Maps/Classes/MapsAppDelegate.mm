@@ -414,22 +414,11 @@ using namespace osm_auth_ios;
 - (void)application:(UIApplication *)application
     performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-  auto onTap = ^{
-    MapViewController * mapViewController = [MapViewController sharedController];
-    [mapViewController.navigationController popToRootViewControllerAnimated:NO];
-    [mapViewController showUGCAuth];
-  };
-
-  if ([LocalNotificationManager.sharedManager showUGCNotificationIfNeeded:onTap])
-  {
-    completionHandler(UIBackgroundFetchResultNewData);
-    return;
-  }
-
   auto tasks = @[
     [[MWMBackgroundStatisticsUpload alloc] init], [[MWMBackgroundEditsUpload alloc] init],
     [[MWMBackgroundUGCUpload alloc] init], [[MWMBackgroundDownloadMapNotification alloc] init]
   ];
+
   [self runBackgroundTasks:tasks completionHandler:completionHandler];
 }
 
