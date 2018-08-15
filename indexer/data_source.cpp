@@ -94,7 +94,7 @@ public:
     // Check created features container.
     // Need to do it on a per-mwm basis, because Drape relies on features in a sorted order.
     // Touched (created, edited) features reading.
-    src->ForEachInRectAndScale(cov.GetRect(), scale, m_fn);
+    src->ForEachAdditionalFeature(cov.GetRect(), scale, m_fn);
   }
 
 private:
