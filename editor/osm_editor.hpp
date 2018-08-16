@@ -15,12 +15,12 @@
 
 #include "geometry/rect2d.hpp"
 
+#include "base/atomic_shared_ptr.hpp"
 #include "base/timer.hpp"
 
 #include "std/ctime.hpp"
 #include "std/function.hpp"
 #include "std/map.hpp"
-#include "std/mutex.hpp"
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
@@ -38,6 +38,8 @@ class XMLFeature;
 
 namespace osm
 {
+// NOTE: this class is thead-safe for read operations,
+// but write operations should be called on main thread only.
 class Editor final : public MwmSet::Observer
 {
   friend class editor::testing::EditorTest;
@@ -65,16 +67,42 @@ public:
     Error,
     NothingToUpload
   };
+
   using FinishUploadCallback = function<void(UploadResult)>;
+
+  enum SaveResult
+  {
+    NothingWasChanged,
+    SavedSuccessfully,
+    NoFreeSpaceError,
+    NoUnderlyingMapError,
+    SavingError
+  };
+
+  enum class NoteProblemType
+  {
+    General,
+    PlaceDoesNotExist
+  };
+
+  struct Stats
+  {
+    /// <id, feature status string>
+    vector<pair<FeatureID, string>> m_edits;
+    size_t m_uploadedCount = 0;
+    time_t m_lastUploadTimestamp = my::INVALID_TIME_STAMP;
+  };
+
+  // Predefined messages.
+  static const char * const kPlaceDoesNotExistMessage;
 
   static Editor & Instance();
 
-  inline void SetDelegate(unique_ptr<Delegate> delegate) { m_delegate = move(delegate); }
+  void SetDelegate(unique_ptr<Delegate> delegate) { m_delegate = move(delegate); }
 
-  inline void SetStorageForTesting(unique_ptr<editor::StorageBase> storage)
-  {
-    m_storage = move(storage);
-  }
+  void SetStorageForTesting(unique_ptr<editor::StorageBase> storage) { m_storage = move(storage); }
+
+  void ResetNotes() { m_notes = editor::Notes::MakeNotes(); }
 
   void SetDefaultStorage();
 
@@ -92,18 +120,12 @@ public:
 
   void OnMapDeregistered(platform::LocalCountryFile const & localFile) override;
 
-  using TFeatureIDFunctor = function<void(FeatureID const &)>;
-  void ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
-                                       TFeatureIDFunctor const & f,
-                                       m2::RectD const & rect,
-                                       int scale);
-  using TFeatureTypeFunctor = function<void(FeatureType &)>;
-  void ForEachFeatureInMwmRectAndScale(MwmSet::MwmId const & id,
-                                       TFeatureTypeFunctor const & f,
-                                       m2::RectD const & rect,
-                                       int scale);
-
-  // TODO(mgsergio): Unify feature functions signatures.
+  using FeatureIDFunctor = function<void(FeatureID const &)>;
+  void ForEachCreatedFeature(MwmSet::MwmId const & id, FeatureIDFunctor const & f,
+                             m2::RectD const & rect, int scale) const;
+  using FeatureTypeFunctor = function<void(FeatureType const &)>;
+  void ForEachCreatedFeature(MwmSet::MwmId const & id, FeatureTypeFunctor const & f,
+                             m2::RectD const & rect, int scale) const;
 
   /// Easy way to check if a feature was deleted, modified, created or not changed at all.
   FeatureStatus GetFeatureStatus(MwmSet::MwmId const & mwmId, uint32_t index) const;
@@ -127,14 +149,6 @@ public:
   /// @returns sorted features indices with specified status.
   vector<uint32_t> GetFeaturesByStatus(MwmSet::MwmId const & mwmId, FeatureStatus status) const;
 
-  enum SaveResult
-  {
-    NothingWasChanged,
-    SavedSuccessfully,
-    NoFreeSpaceError,
-    NoUnderlyingMapError,
-    SavingError
-  };
   /// Editor checks internally if any feature params were actually edited.
   SaveResult SaveEditedFeature(EditableMapObject const & emo);
 
@@ -146,7 +160,7 @@ public:
 
   bool HaveMapEditsOrNotesToUpload() const;
   bool HaveMapEditsToUpload(MwmSet::MwmId const & mwmId) const;
-  bool HaveMapEditsToUpload() const;
+
   using ChangesetTags = map<string, string>;
   /// Tries to upload all local changes to OSM server in a separate thread.
   /// @param[in] tags should provide additional information about client to use in changeset.
@@ -156,30 +170,13 @@ public:
   // Editor should silently ignore all types in config which are unknown to him.
   NewFeatureCategories GetNewFeatureCategories() const;
 
-  bool CreatePoint(uint32_t type, m2::PointD const & mercator,
-                   MwmSet::MwmId const & id, EditableMapObject & outFeature);
-
-  // Predefined messages.
-  static const char * const kPlaceDoesNotExistMessage;
-
-  enum class NoteProblemType
-  {
-    General,
-    PlaceDoesNotExist
-  };
+  bool CreatePoint(uint32_t type, m2::PointD const & mercator, MwmSet::MwmId const & id,
+                   EditableMapObject & outFeature) const;
 
   void CreateNote(ms::LatLon const & latLon, FeatureID const & fid,
                   feature::TypesHolder const & holder, string const & defaultName,
                   NoteProblemType const type, string const & note);
-  void UploadNotes(string const & key, string const & secret);
 
-  struct Stats
-  {
-    /// <id, feature status string>
-    vector<pair<FeatureID, string>> m_edits;
-    size_t m_uploadedCount = 0;
-    time_t m_lastUploadTimestamp = my::INVALID_TIME_STAMP;
-  };
   Stats GetStats() const;
 
   // Don't use this function to determine if a feature in editor was created.
@@ -188,20 +185,14 @@ public:
   static bool IsCreatedFeature(FeatureID const & fid);
 
 private:
-  // TODO(AlexZ): Synchronize Save call/make it on a separate thread.
-  /// @returns false if fails.
-  bool Save() const;
-  void RemoveFeatureFromStorageIfExists(MwmSet::MwmId const & mwmId, uint32_t index);
-  void RemoveFeatureFromStorageIfExists(FeatureID const & fid);
-  /// Notify framework that something has changed and should be redisplayed.
-  void Invalidate();
-
-  // Saves a feature in internal storage with FeatureStatus::Obsolete status.
-  bool MarkFeatureAsObsolete(FeatureID const & fid);
-  bool RemoveFeature(FeatureID const & fid);
-
-  FeatureID GenerateNewFeatureId(MwmSet::MwmId const & id) const;
-  EditableProperties GetEditablePropertiesForTypes(feature::TypesHolder const & types) const;
+  // TODO(a): Use this structure as part of FeatureTypeInfo.
+  struct UploadInfo
+  {
+    time_t m_uploadAttemptTimestamp = my::INVALID_TIME_STAMP;
+    /// Is empty if upload has never occured or one of k* constants above otherwise.
+    string m_uploadStatus;
+    string m_uploadError;
+  };
 
   struct FeatureTypeInfo
   {
@@ -217,27 +208,53 @@ private:
     string m_uploadError;
   };
 
+  using FeaturesContainer = map<MwmSet::MwmId, map<uint32_t, FeatureTypeInfo>>;
+
+  /// @returns false if fails.
+  bool Save(FeaturesContainer const & features) const;
+  bool SaveTransaction(shared_ptr<FeaturesContainer> const & features);
+  bool RemoveFeatureIfExists(FeatureID const & fid);
+  /// Notify framework that something has changed and should be redisplayed.
+  void Invalidate();
+
+  // Saves a feature in internal storage with FeatureStatus::Obsolete status.
+  bool MarkFeatureAsObsolete(FeatureID const & fid);
+  bool RemoveFeature(FeatureID const & fid);
+
+  FeatureID GenerateNewFeatureId(FeaturesContainer const & features, MwmSet::MwmId const & id) const;
+  EditableProperties GetEditablePropertiesForTypes(feature::TypesHolder const & types) const;
+
   bool FillFeatureInfo(FeatureStatus status, editor::XMLFeature const & xml, FeatureID const & fid,
                        FeatureTypeInfo & fti) const;
   /// @returns pointer to m_features[id][index] if exists, nullptr otherwise.
-  FeatureTypeInfo const * GetFeatureTypeInfo(MwmSet::MwmId const & mwmId, uint32_t index) const;
-  FeatureTypeInfo * GetFeatureTypeInfo(MwmSet::MwmId const & mwmId, uint32_t index);
-  void SaveUploadedInformation(FeatureTypeInfo const & fromUploader);
+  FeatureTypeInfo const * GetFeatureTypeInfo(FeaturesContainer const & features,
+                                             MwmSet::MwmId const & mwmId, uint32_t index) const;
+  void SaveUploadedInformation(FeatureID const & fid, UploadInfo const & fromUploader);
 
-  void MarkFeatureWithStatus(FeatureID const & fid, FeatureStatus status);
+  void MarkFeatureWithStatus(FeaturesContainer & editableFeatures, FeatureID const & fid,
+                             FeatureStatus status);
 
   // These methods are just checked wrappers around Delegate.
   MwmSet::MwmId GetMwmIdByMapName(string const & name);
   unique_ptr<FeatureType> GetOriginalFeature(FeatureID const & fid) const;
   string GetOriginalFeatureStreet(FeatureType & ft) const;
   void ForEachFeatureAtPoint(FeatureTypeFn && fn, m2::PointD const & point) const;
-  FeatureID GetFeatureIdByXmlFeature(editor::XMLFeature const & xml, MwmSet::MwmId const & mwmId,
-                                     FeatureStatus status, bool needMigrate) const;
-  void LoadMwmEdits(pugi::xml_node const & mwm, MwmSet::MwmId const & mwmId, bool needMigrate);
+  FeatureID GetFeatureIdByXmlFeature(FeaturesContainer const & features, editor::XMLFeature const & xml,
+                                     MwmSet::MwmId const & mwmId, FeatureStatus status,
+                                     bool needMigrate) const;
+  void LoadMwmEdits(FeaturesContainer & loadedFeatures, pugi::xml_node const & mwm,
+                    MwmSet::MwmId const & mwmId, bool needMigrate);
 
-  // TODO(AlexZ): Synchronize multithread access.
+  bool HaveMapEditsToUpload(FeaturesContainer const & features) const;
+
+  FeatureStatus GetFeatureStatusImpl(FeaturesContainer const & features, MwmSet::MwmId const & mwmId,
+                                     uint32_t index) const;
+
+  bool IsFeatureUploadedImpl(FeaturesContainer const & features, MwmSet::MwmId const & mwmId,
+                             uint32_t index) const;
+
   /// Deleted, edited and created features.
-  map<MwmSet::MwmId, map<uint32_t, FeatureTypeInfo>> m_features;
+  base::AtomicSharedPtr<FeaturesContainer> m_features;
 
   unique_ptr<Delegate> m_delegate;
 
@@ -245,14 +262,14 @@ private:
   InvalidateFn m_invalidateFn;
 
   /// Contains information about what and how can be edited.
-  editor::EditorConfigWrapper m_config;
+  base::AtomicSharedPtr<editor::EditorConfig> m_config;
   editor::ConfigLoader m_configLoader;
 
   /// Notes to be sent to osm.
   shared_ptr<editor::Notes> m_notes;
-  // Mutex which locks OnMapDeregistered method
-  mutex m_mapDeregisteredMutex;
 
   unique_ptr<editor::StorageBase> m_storage;
+
+  DECLARE_THREAD_CHECKER(MainThreadChecker);
 };  // class Editor
 }  // namespace osm

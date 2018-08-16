@@ -41,10 +41,10 @@ public:
 
   virtual bool GetModifiedFeature(uint32_t index, FeatureType & feature) const;
 
-  virtual void ForEachInRectAndScale(m2::RectD const & rect, int scale,
-                                     std::function<void(FeatureID const &)> const & fn) const;
-  virtual void ForEachInRectAndScale(m2::RectD const & rect, int scale,
-                                     std::function<void(FeatureType &)> const & fn) const;
+  virtual void ForEachAdditionalFeature(m2::RectD const & rect, int scale,
+                                        std::function<void(FeatureID const &)> const & fn) const;
+  virtual void ForEachAdditionalFeature(m2::RectD const & rect, int scale,
+                                        std::function<void(FeatureType &)> const & fn) const;
 
 protected:
   MwmSet::MwmHandle const & m_handle;
