@@ -113,30 +113,13 @@ UNIT_TEST(Intermediate_Data_relation_element_save_load_test)
   TEST_NOT_EQUAL(e2.tags["key2old"], "value2old", ());
 }
 
-UNIT_TEST(Intermediate_Data_cache_nodes_to_ways_test)
+void TestIntermediateDataCacheNodesToWays(string const & osmSourceXML,
+                                          std::set<std::pair<uint64_t, uint64_t>> & trueAnswers,
+                                          uint64_t numberOfNodes)
 {
-  string const osmSourceXML = R"(
-<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
-
-    <node id="1" lat="55.779384" lon="37.3699375" version="1"></node>
-    <node id="2" lat="55.779304" lon="37.3699375" version="1"></node>
-    <node id="3" lat="55.773084" lon="37.3699375" version="1"></node>
-
-    <way id="10" version="1">
-      <nd ref="1"/>
-    </way>
-    <way id="20" version="1">
-      <nd ref="1"/>
-      <nd ref="2"/>
-      <nd ref="3"/>
-    </way>
-
-  </osm>
-                                )";
-
   // Directory name for creating test mwm and temporary files.
-  string const kTestDir = "nodes_to_ways_test";
-  string const kOsmFileName = "town" OSM_DATA_FILE_EXTENSION;
+  static string const kTestDir = "nodes_to_ways_test";
+  static string const kOsmFileName = "town" OSM_DATA_FILE_EXTENSION;
 
   Platform & platform = GetPlatform();
 
@@ -165,12 +148,10 @@ UNIT_TEST(Intermediate_Data_cache_nodes_to_ways_test)
   IntermediateDataReader cache({}, genInfo);
   cache.LoadIndex();
 
-  std::set<std::pair<uint64_t, uint64_t>> trueAnswers = {
-    {1, 10}, {1, 20}, {2, 20}, {3, 20}
-  };
-
-  for (uint64_t i = 1; i <= 3UL; ++i) {
-    cache.ForEachWayByNode(i, [&](uint64_t wayId) {
+  for (uint64_t i = 1; i <= numberOfNodes; ++i)
+  {
+    cache.ForEachWayByNode(i, [&](uint64_t wayId)
+    {
       auto const it = trueAnswers.find({i, wayId});
       TEST(it != trueAnswers.cend(), ("Has found pair, that should not be here"));
       trueAnswers.erase(it);
@@ -179,4 +160,113 @@ UNIT_TEST(Intermediate_Data_cache_nodes_to_ways_test)
   }
 
   TEST(trueAnswers.empty(), ("Some data didn't cached!"));
+}
+
+UNIT_TEST(Intermediate_Data_cache_nodes_to_ways_test_1)
+{
+  string const osmSourceXML = R"(
+<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+
+    <node id="1" lat="55.779384" lon="37.3699375" version="1"></node>
+    <node id="2" lat="55.779304" lon="37.3699375" version="1"></node>
+    <node id="3" lat="55.773084" lon="37.3699375" version="1"></node>
+
+    <way id="10" version="1">
+      <nd ref="1"/>
+    </way>
+    <way id="20" version="1">
+      <nd ref="1"/>
+      <nd ref="2"/>
+      <nd ref="3"/>
+    </way>
+
+  </osm>
+)";
+
+  std::set<std::pair<uint64_t, uint64_t>> trueAnswers = {
+    {1, 10}, {1, 20}, {2, 20}, {3, 20}
+  };
+
+  TestIntermediateDataCacheNodesToWays(osmSourceXML, trueAnswers, /* number of nodes in xml = */ 3);
+}
+
+UNIT_TEST(Intermediate_Data_cache_nodes_to_ways_test_3)
+{
+  string const osmSourceXML = R"(
+<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+
+    <node id="1" lat="55.779384" lon="37.3699375" version="1"></node>
+    <node id="2" lat="55.779304" lon="37.3699375" version="1"></node>
+    <node id="3" lat="55.773084" lon="37.3699375" version="1"></node>
+    <node id="4" lat="55.773024" lon="37.3699375" version="1"></node>
+    <node id="5" lat="55.773014" lon="37.3699375" version="1"></node>
+
+    <way id="10" version="1">
+      <nd ref="1"/>
+      <nd ref="2"/>
+    </way>
+    <way id="20" version="1">
+      <nd ref="1"/>
+      <nd ref="3"/>
+    </way>
+    <way id="30" version="1">
+      <nd ref="1"/>
+      <nd ref="3"/>
+      <nd ref="4"/>
+      <nd ref="5"/>
+    </way>
+
+  </osm>
+)";
+
+  std::set<std::pair<uint64_t, uint64_t>> trueAnswers = {
+    {1, 10}, {2, 10}, {1, 20}, {3, 20}, {1, 30}, {3, 30}, {4, 30}, {5, 30}
+  };
+
+  TestIntermediateDataCacheNodesToWays(osmSourceXML, trueAnswers, /* number of nodes in xml = */ 5);
+}
+
+UNIT_TEST(Intermediate_Data_cache_nodes_to_ways_test_4)
+{
+  string const osmSourceXML = R"(
+<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+
+    <node id="1" lat="55.779384" lon="37.3699375" version="1"></node>
+
+    <way id="10" version="1">
+      <nd ref="1"/>
+    </way>
+    <way id="20" version="1">
+      <nd ref="1"/>
+    </way>
+
+  </osm>
+)";
+
+  std::set<std::pair<uint64_t, uint64_t>> trueAnswers = {
+    {1, 10}, {1, 20}
+  };
+
+  TestIntermediateDataCacheNodesToWays(osmSourceXML, trueAnswers, /* number of nodes in xml = */ 1);
+}
+
+
+UNIT_TEST(Intermediate_Data_cache_nodes_to_ways_test_5)
+{
+  string const osmSourceXML = R"(
+<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+
+    <node id="1" lat="55.779384" lon="37.3699375" version="1"></node>
+
+    <way id="10" version="1">
+    </way>
+    <way id="20" version="1">
+    </way>
+
+  </osm>
+)";
+
+  std::set<std::pair<uint64_t, uint64_t>> trueAnswers = {};
+
+  TestIntermediateDataCacheNodesToWays(osmSourceXML, trueAnswers, /* number of nodes in xml = */ 1);
 }

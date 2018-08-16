@@ -79,8 +79,7 @@ class RawFilePointStorageMmapReader : public PointStorageReaderInterface
 public:
   explicit RawFilePointStorageMmapReader(string const & name) :
     m_mmapReader(name)
-  {
-  }
+  {}
 
   // PointStorageReaderInterface overrides:
   bool GetPoint(uint64_t id, double & lat, double & lon) const override
@@ -104,8 +103,7 @@ class RawFilePointStorageWriter : public PointStorageWriterBase
 public:
   explicit RawFilePointStorageWriter(string const & name) :
     m_fileWriter(name)
-  {
-  }
+  {}
 
   // PointStorageWriterInterface overrides:
   void AddPoint(uint64_t id, double lat, double lon) override
@@ -348,13 +346,15 @@ void OSMElementCacheWriter::SaveOffsets() { m_offsets.WriteAll(); }
 
 // IntermediateDataReader
 IntermediateDataReader::IntermediateDataReader(shared_ptr<PointStorageReaderInterface> nodes,
-                                               feature::GenerateInfo & info)
-  : m_nodes(nodes)
-  , m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache)
-  , m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache)
-  , m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT))
-  , m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
-  , m_nodeToWays(info.GetIntermediateFileName(NODES_TO_WAYS_FILE, ""))
+                                               feature::GenerateInfo & info) :
+    m_nodes(nodes),
+    m_ways(info.GetIntermediateFileName(WAYS_FILE),
+    info.m_preloadCache),
+    m_relations(info.GetIntermediateFileName(RELATIONS_FILE),
+    info.m_preloadCache),
+    m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)),
+    m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT)),
+    m_nodeToWays(info.GetIntermediateFileName(NODES_TO_WAYS_FILE, ""))
 {
 }
 
@@ -370,13 +370,13 @@ void IntermediateDataReader::LoadIndex()
 
 // IntermediateDataWriter
 IntermediateDataWriter::IntermediateDataWriter(shared_ptr<PointStorageWriterInterface> nodes,
-                                               feature::GenerateInfo & info)
-  : m_nodes(nodes)
-  , m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache)
-  , m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache)
-  , m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT))
-  , m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
-  , m_nodeToWays(info.GetIntermediateFileName(NODES_TO_WAYS_FILE, ""))
+                                               feature::GenerateInfo & info) :
+    m_nodes(nodes),
+    m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache),
+    m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache),
+    m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)),
+    m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT)),
+    m_nodeToWays(info.GetIntermediateFileName(NODES_TO_WAYS_FILE, ""))
 {
 }
 

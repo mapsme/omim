@@ -31,7 +31,8 @@ void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
 
     auto segmentId = ReadVarUint<uint32_t>(src);
 
-    auto coefInt = ReadVarUint<uint32_t>(src);
+    uint32_t coefInt;
+    ReadPrimitiveFromSource(src, coefInt);
     double coef = Uint32ToDouble(coefInt, 0, 1, 32);
 
     auto speed = ReadVarUint<uint32_t>(src);

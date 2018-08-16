@@ -126,6 +126,7 @@ bool CamerasInfoCollector::ParseIntermediateInfo(std::string const & camerasInfo
     {
       LOG(LINFO, ("Bad SpeedCamera max speed:", maxSpeedKmPH));
       ASSERT(false, ("maxSpeedKmPH:", maxSpeedKmPH, "kMax:", kMaxCameraSpeedKmpH));
+      maxSpeedKmPH = 0;
     }
 
     CHECK((0 <= relatedWaysNumber && relatedWaysNumber <= 255),
