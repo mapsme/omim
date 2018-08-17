@@ -25,11 +25,11 @@ bool ForEachRoadFromFile(string const & filename, ToDo && toDo)
 
 namespace routing
 {
-void AddFeatureId(osm::Id osmId, uint32_t featureId, map<osm::Id, uint32_t> &osmIdToFeatureId)
+void AddFeatureId(osm::Id osmId, uint32_t featureId, map<osm::Id, uint32_t> & osmIdToFeatureId)
 {
   // Failing to insert here usually means that two features were created
   // from one osm id, for example an area and its boundary.
-  osmIdToFeatureId.insert(make_pair(osmId, featureId));
+  osmIdToFeatureId.emplace(osmId, featureId);
 }
 
 bool ParseOsmIdToFeatureIdMapping(string const & osmIdsToFeatureIdPath,

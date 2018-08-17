@@ -1,5 +1,7 @@
 #pragma once
 
+#include "generator/camera_info_collector.hpp"
+#include "generator/camera_node_processor.hpp"
 #include "generator/metalines_builder.hpp"
 #include "generator/relation_tags.hpp"
 #include "generator/routing_helpers.hpp"
@@ -17,7 +19,7 @@ struct OsmElement;
 class FeatureBuilder1;
 namespace feature
 {
-class GenerateInfo;
+struct GenerateInfo;
 }  // namespace feature
 
 namespace generator
@@ -48,12 +50,13 @@ private:
 
 private:
   std::shared_ptr<EmitterInterface> m_emitter;
-  cache::IntermediateDataReader & m_holder;
+  cache::IntermediateDataReader & m_cache;
   uint32_t m_coastType;
   std::unique_ptr<FileWriter> m_addrWriter;
   routing::TagsProcessor m_routingTagsProcessor;
   RelationTagsNode m_nodeRelations;
   RelationTagsWay m_wayRelations;
   feature::MetalinesBuilder m_metalinesBuilder;
+  CameraNodeProcessor m_cameraNodeProcessor;
 };
 }  // namespace generator

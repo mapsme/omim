@@ -925,7 +925,7 @@ void RoutingManager::CheckLocationForRouting(location::GpsInfo const & info)
   auto const featureDataSourceGetterFn = m_callbacks.m_dataSourceGetter;
   ASSERT(featureDataSourceGetterFn, ());
   RoutingSession::State const state =
-      m_routingSession.OnLocationPositionChanged(info, featureDataSourceGetterFn());
+      m_routingSession.OnLocationPositionChanged(info);
   if (state == RoutingSession::RouteNeedRebuild)
   {
     m_routingSession.RebuildRoute(

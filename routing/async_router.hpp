@@ -106,8 +106,8 @@ private:
   /// Thread which executes routing calculation
   threads::SimpleThread m_thread;
   std::condition_variable m_threadCondVar;
-  bool m_threadExit;
-  bool m_hasRequest;
+  std::atomic<bool> m_threadExit;
+  std::atomic<bool> m_hasRequest;
 
   /// Current request parameters
   bool m_clearState = false;

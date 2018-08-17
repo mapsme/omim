@@ -81,8 +81,7 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
 
   std::unordered_map<uint32_t, osm::Id> featureIdToOsmId;
   ForEachOsmId2FeatureId(osmToFeatureFilename,
-                         [&featureIdToOsmId](osm::Id const & osmId, uint32_t fId)
-                         {
+                         [&featureIdToOsmId](osm::Id const & osmId, uint32_t fId) {
                            featureIdToOsmId.emplace(fId, osmId);
                          });
 
