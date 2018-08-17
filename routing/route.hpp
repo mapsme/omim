@@ -39,8 +39,21 @@ SubrouteUid constexpr kInvalidSubrouteId = std::numeric_limits<uint64_t>::max();
 class RouteSegment final
 {
 public:
-  // See m_speedCameras comment about pair.
-  using SpeedCamera = std::pair<double, uint8_t>;
+  // Store coefficient where camera placed at the segment (number from 0 to 1)
+  // and it's max speed.
+  struct SpeedCamera
+  {
+    SpeedCamera() = default;
+    SpeedCamera(double k, uint8_t s): m_coef(k), m_maxSpeedKmPH(s) {}
+
+    friend bool operator<(SpeedCamera const & lhs, SpeedCamera const & rhs)
+    {
+      return lhs.m_coef < rhs.m_coef && lhs.m_maxSpeedKmPH < rhs.m_maxSpeedKmPH;
+    }
+
+    double m_coef = 0.0;
+    uint8_t m_maxSpeedKmPH = 0;
+  };
 
   RouteSegment(Segment const & segment, turns::TurnItem const & turn, Junction const & junction,
                std::string const & street, double distFromBeginningMeters,

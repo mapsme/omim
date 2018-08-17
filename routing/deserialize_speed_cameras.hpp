@@ -12,9 +12,21 @@
 namespace routing
 {
 // Pair of featureId and segmentId
-using SegmentCoord = std::pair<uint32_t, uint32_t>;
+//using SegmentCoord = std::pair<uint32_t, uint32_t>;
+struct SegmentCoord {
+  SegmentCoord() = default;
+  SegmentCoord(uint32_t fId, uint32_t sId) : m_featureId(fId), m_segmentId(sId) {}
+
+  friend bool operator<(SegmentCoord const & lhs, SegmentCoord const & rhs)
+  {
+    return lhs.m_featureId < rhs.m_featureId && lhs.m_segmentId < rhs.m_featureId;
+  }
+
+  uint32_t m_featureId;
+  uint32_t m_segmentId;
+};
 
 void DeserializeSpeedCamsFromMwm(
     ReaderSource<FilesContainerR::TReader> & src,
-    std::multimap<std::pair<uint32_t, uint32_t>, RouteSegment::SpeedCamera> & map);
+    std::multimap<SegmentCoord, RouteSegment::SpeedCamera> & map);
 }  // namespace routing

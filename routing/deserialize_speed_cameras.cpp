@@ -38,7 +38,7 @@ void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
     double const coef = Uint32ToDouble(coefInt, 0, 1, 32);
 
     auto speed = ReadVarUint<uint32_t>(src);
-    CHECK(speed < generator::CamerasInfoCollector::kMaxCameraSpeedKmpH, ());
+    CHECK_LESS(speed, generator::CamerasInfoCollector::kMaxCameraSpeedKmpH, ());
     if (speed == 0)
       speed = routing::SpeedCameraOnRoute::kNoSpeedInfo;
 
@@ -51,7 +51,7 @@ void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
       ("Number of conditions should be 0, non zero number is not implemented now"));
 
     segment = {featureId, segmentId};
-    speedCamera = {coef, speed};
+    speedCamera = {coef, static_cast<uint8_t>(speed)};
 
     map.emplace(segment, speedCamera);
   }

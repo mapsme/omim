@@ -362,11 +362,11 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(GpsInfo const & 
             {
               double segmentLength = lastSegment.GetDistFromBeginningMeters() - distToPrevSegment;
               if (lastSegment.GetSegment().IsForward())
-                segmentLength *= speedCam.first;
+                segmentLength *= speedCam.m_coef;
               else
-                segmentLength *= (1 - speedCam.first);
+                segmentLength *= (1 - speedCam.m_coef);
 
-              m_cachedSpeedCameras.emplace(distToPrevSegment + segmentLength, speedCam.second);
+              m_cachedSpeedCameras.emplace(distToPrevSegment + segmentLength, speedCam.m_maxSpeedKmPH);
             }
           }
 
