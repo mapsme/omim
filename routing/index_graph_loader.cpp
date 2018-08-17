@@ -1,8 +1,10 @@
 #include "routing/index_graph_loader.hpp"
 
+#include "routing/deserialize_speed_cameras.hpp"
 #include "routing/index_graph_serialization.hpp"
 #include "routing/restriction_loader.hpp"
 #include "routing/road_access_serialization.hpp"
+#include "routing/route.hpp"
 #include "routing/routing_exceptions.hpp"
 
 #include "indexer/data_source.hpp"
@@ -11,6 +13,9 @@
 
 #include "base/assert.hpp"
 #include "base/timer.hpp"
+
+#include <map>
+#include <unordered_map>
 
 namespace
 {
@@ -27,6 +32,7 @@ public:
   // IndexGraphLoader overrides:
   Geometry & GetGeometry(NumMwmId numMwmId) override;
   IndexGraph & GetIndexGraph(NumMwmId numMwmId) override;
+  vector<RouteSegment::SpeedCamera> GetSpeedCameraInfo(Segment const & segment) override;
   void Clear() override;
 
 private:
@@ -46,6 +52,8 @@ private:
   shared_ptr<VehicleModelFactoryInterface> m_vehicleModelFactory;
   shared_ptr<EdgeEstimator> m_estimator;
   unordered_map<NumMwmId, GeometryIndexGraph> m_graphs;
+
+  unordered_map<NumMwmId, multimap<SegmentCoord, RouteSegment::SpeedCamera>> m_cachedCameras;
 };
 
 IndexGraphLoaderImpl::IndexGraphLoaderImpl(
@@ -83,6 +91,55 @@ IndexGraph & IndexGraphLoaderImpl::GetIndexGraph(NumMwmId numMwmId)
   }
 
   return *CreateIndexGraph(numMwmId, CreateGeometry(numMwmId)).m_indexGraph;
+}
+
+vector<RouteSegment::SpeedCamera> IndexGraphLoaderImpl::GetSpeedCameraInfo(Segment const & segment)
+{
+  auto const numMwmId = segment.GetMwmId();
+
+  auto it = m_cachedCameras.find(numMwmId);
+  if (it == m_cachedCameras.end()) // If not cached, let's cache and use.
+  {
+    m_cachedCameras.emplace(numMwmId,
+                            multimap<SegmentCoord, RouteSegment::SpeedCamera>{});
+    auto & mapReference = m_cachedCameras.find(numMwmId)->second;
+
+    auto const & file = m_numMwmIds->GetFile(numMwmId);
+    auto handle = m_dataSource.GetMwmHandleByCountryFile(file);
+    if (!handle.IsAlive())
+      MYTHROW(RoutingException, ("Can't get mwm handle for", file));
+
+    try
+    {
+      MwmValue const & mwmValue = *handle.GetValue<MwmValue>();
+      FilesContainerR::TReader reader(mwmValue.m_cont.GetReader(CAMERAS_INFO_FILE_TAG));
+      ReaderSource<FilesContainerR::TReader> src(reader);
+      DeserializeSpeedCamsFromMwm(src, mapReference);
+    }
+    catch (Reader::OpenException & ex)
+    {
+      LOG(LINFO, ("No section about speed cameras"));
+      return {};
+    }
+
+    it = m_cachedCameras.find(numMwmId);
+  }
+
+  // TODO (@gmoryes) auto && [start, end] = ...
+  auto equalRange = it->second.equal_range({segment.GetFeatureId(), segment.GetSegmentIdx()});
+  auto & start = equalRange.first;
+  auto & end = equalRange.second;
+  if (start == end)
+    return {};
+
+  vector<RouteSegment::SpeedCamera> result;
+  while (start != end)
+  {
+    result.push_back(start->second);
+    ++start;
+  }
+
+  return result;
 }
 
 IndexGraphLoaderImpl::GeometryIndexGraph & IndexGraphLoaderImpl::CreateGeometry(NumMwmId numMwmId)
