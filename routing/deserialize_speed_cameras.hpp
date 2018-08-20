@@ -26,7 +26,9 @@ struct SegmentCoord {
   uint32_t m_segmentId;
 };
 
+extern std::vector<RouteSegment::SpeedCamera> kEmptyVectorOfSpeedCameras;
+
 void DeserializeSpeedCamsFromMwm(
     ReaderSource<FilesContainerR::TReader> & src,
-    std::multimap<SegmentCoord, RouteSegment::SpeedCamera> & map);
+    std::map<SegmentCoord, std::vector<RouteSegment::SpeedCamera>> & camerasVector);
 }  // namespace routing

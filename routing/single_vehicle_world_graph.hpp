@@ -6,6 +6,7 @@
 #include "routing/index_graph.hpp"
 #include "routing/index_graph_loader.hpp"
 #include "routing/road_graph.hpp"
+#include "routing/route.hpp"
 #include "routing/segment.hpp"
 #include "routing/transit_info.hpp"
 #include "routing/world_graph.hpp"

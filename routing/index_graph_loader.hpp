@@ -23,7 +23,7 @@ public:
 
   virtual Geometry & GetGeometry(NumMwmId numMwmId) = 0;
   virtual IndexGraph & GetIndexGraph(NumMwmId mwmId) = 0;
-  virtual std::vector<RouteSegment::SpeedCamera> GetSpeedCameraInfo(Segment const & segment) = 0;
+  virtual std::vector<RouteSegment::SpeedCamera> & GetSpeedCameraInfo(Segment const & segment) = 0;
   virtual void Clear() = 0;
 
   static std::unique_ptr<IndexGraphLoader> Create(

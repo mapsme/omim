@@ -38,10 +38,12 @@ struct SpeedCameraOnRoute
 {
   SpeedCameraOnRoute() = default;
   SpeedCameraOnRoute(double distFromBegin, uint8_t maxSpeedKmH)
-    : m_distFromBegin(distFromBegin), m_maxSpeedKmH(maxSpeedKmH)
+    : m_distFromBeginMeters(distFromBegin), m_maxSpeedKmH(maxSpeedKmH)
   {}
 
   static double constexpr kAverageAccelerationOfBraking = -6.4697;  // Meters to square seconds.
+  static_assert(kAverageAccelerationOfBraking != 0, "");
+
   static double constexpr kDangerousZoneMeters = 450.0;  // Influence zone of speed camera.
   static double constexpr kDistanceEpsilonMeters = 10.0;
   static uint8_t constexpr kNoSpeedInfo = std::numeric_limits<uint8_t>::max();
@@ -55,14 +57,8 @@ struct SpeedCameraOnRoute
   /// \breaf Return true if user must be warned about camera and false otherwise.
   bool IsDangerous(double distanceToCamera, double speed) const;
 
-  double m_distFromBegin = 0.0;          // Distance from beginning to current camera
+  double m_distFromBeginMeters = 0.0;          // Distance from beginning to current camera
   uint8_t m_maxSpeedKmH = kNoSpeedInfo;  // Maximum speed allowed by the camera.
-};
-
-struct LastSpeedCameraOnRoute
-{
-  size_t m_lastRouteSegmentIndex = 0;
-  double m_distFromBegin = 0;
 };
 
 /// \breaf This class is responsible for the route built in the program.
@@ -187,7 +183,7 @@ public:
   void SetTurnNotificationsLocale(std::string const & locale);
   bool AreTurnNotificationsEnabled() const;
   std::string GetTurnNotificationsLocale() const;
-  void ForTestingSetLocaleWithJson(std::string const & json, std::string const & locale);
+  void SetLocaleWithJsonForTesting(std::string const & json, std::string const & locale);
 
   void EmitCloseRoutingEvent() const;
 
@@ -205,7 +201,9 @@ public:
   /// protected by mutex in TrafficCache class.
   void CopyTraffic(traffic::AllMwmTrafficInfo & trafficColoring) const override;
 
-  void AssignRouteForTests(std::shared_ptr<Route> route, RouterResultCode e) { AssignRoute(route, e); }
+  void AssignRouteForTesting(std::shared_ptr<Route> route, RouterResultCode e) { AssignRoute(route, e); }
+
+  void ProcessSpeedCameras(location::GpsInfo const & info);
 
 private:
   struct DoReadyCallback
@@ -251,7 +249,7 @@ private:
   bool m_makeNotificationAboutSpeedCam = false;
 
   // Index of a last checked route segment for a speed camera.
-  size_t m_lastCheckedSpeedCameraIndex;
+  size_t m_lastCheckedSpeedCameraIndex = 0;
 
   /// Current position metrics to check for RouteNeedRebuild state.
   double m_lastDistance = 0.0;

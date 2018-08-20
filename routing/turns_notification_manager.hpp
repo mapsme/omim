@@ -146,7 +146,7 @@ public:
   void SetSpeedMetersPerSecond(double speed);
   void SetLocale(std::string const & locale) { m_getTtsText.SetLocale(locale); }
   measurement_utils::Units GetLengthUnits() const { return m_settings.GetLengthUnits(); }
-  void ForTestingSetLocaleWithJson(std::string const & json, std::string const & locale);
+  void SetLocaleWithJsonForTesting(std::string const & json, std::string const & locale);
 
   /// \brief Generate text of speed camera notification.
   std::string GenerateSpeedCameraText() const;

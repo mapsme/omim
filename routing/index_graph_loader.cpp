@@ -32,7 +32,7 @@ public:
   // IndexGraphLoader overrides:
   Geometry & GetGeometry(NumMwmId numMwmId) override;
   IndexGraph & GetIndexGraph(NumMwmId numMwmId) override;
-  vector<RouteSegment::SpeedCamera> GetSpeedCameraInfo(Segment const & segment) override;
+  vector<RouteSegment::SpeedCamera> & GetSpeedCameraInfo(Segment const & segment) override;
   void Clear() override;
 
 private:
@@ -53,7 +53,7 @@ private:
   shared_ptr<EdgeEstimator> m_estimator;
   unordered_map<NumMwmId, GeometryIndexGraph> m_graphs;
 
-  unordered_map<NumMwmId, multimap<SegmentCoord, RouteSegment::SpeedCamera>> m_cachedCameras;
+  unordered_map<NumMwmId, map<SegmentCoord, vector<RouteSegment::SpeedCamera>>> m_cachedCameras;
 };
 
 IndexGraphLoaderImpl::IndexGraphLoaderImpl(
@@ -93,15 +93,15 @@ IndexGraph & IndexGraphLoaderImpl::GetIndexGraph(NumMwmId numMwmId)
   return *CreateIndexGraph(numMwmId, CreateGeometry(numMwmId)).m_indexGraph;
 }
 
-vector<RouteSegment::SpeedCamera> IndexGraphLoaderImpl::GetSpeedCameraInfo(Segment const & segment)
+vector<RouteSegment::SpeedCamera> & IndexGraphLoaderImpl::GetSpeedCameraInfo(Segment const & segment)
 {
   auto const numMwmId = segment.GetMwmId();
 
   auto it = m_cachedCameras.find(numMwmId);
-  if (it == m_cachedCameras.end()) // If not cached, let's cache and use.
+  if (it == m_cachedCameras.end())
   {
     m_cachedCameras.emplace(numMwmId,
-                            multimap<SegmentCoord, RouteSegment::SpeedCamera>{});
+                            map<SegmentCoord, vector<RouteSegment::SpeedCamera>>{});
     auto & mapReference = m_cachedCameras.find(numMwmId)->second;
 
     auto const & file = m_numMwmIds->GetFile(numMwmId);
@@ -119,27 +119,17 @@ vector<RouteSegment::SpeedCamera> IndexGraphLoaderImpl::GetSpeedCameraInfo(Segme
     catch (Reader::OpenException & ex)
     {
       LOG(LINFO, ("No section about speed cameras"));
-      return {};
+      return kEmptyVectorOfSpeedCameras;
     }
 
     it = m_cachedCameras.find(numMwmId);
   }
 
-  // TODO (@gmoryes) auto && [start, end] = ...
-  auto equalRange = it->second.equal_range({segment.GetFeatureId(), segment.GetSegmentIdx()});
-  auto & start = equalRange.first;
-  auto & end = equalRange.second;
-  if (start == end)
-    return {};
+  auto result = it->second.find({segment.GetFeatureId(), segment.GetSegmentIdx()});
+  if (result == it->second.end())
+    return kEmptyVectorOfSpeedCameras;
 
-  vector<RouteSegment::SpeedCamera> result;
-  while (start != end)
-  {
-    result.push_back(start->second);
-    ++start;
-  }
-
-  return result;
+  return result->second;
 }
 
 IndexGraphLoaderImpl::GeometryIndexGraph & IndexGraphLoaderImpl::CreateGeometry(NumMwmId numMwmId)

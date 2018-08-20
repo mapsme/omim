@@ -237,7 +237,7 @@ CarDirection NotificationManager::GenerateSecondTurnNotification(vector<TurnItem
   return CarDirection::None;
 }
 
-void NotificationManager::ForTestingSetLocaleWithJson(std::string const & json, std::string const & locale)
+void NotificationManager::SetLocaleWithJsonForTesting(std::string const & json, std::string const & locale)
 {
   m_getTtsText.ForTestingSetLocaleWithJson(json, locale);
 }

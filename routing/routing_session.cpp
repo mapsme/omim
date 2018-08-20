@@ -311,71 +311,7 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(GpsInfo const & 
       // Warning signals checks
       if (m_routingSettings.m_speedCameraWarningEnabled)
       {
-        auto const passedDistance = m_route->GetCurrentDistanceFromBeginMeters();
-
-        // Step 1. Process warned cameras.
-        while (!m_warnedSpeedCameras.empty())
-        {
-          auto const & oldestCamera = m_warnedSpeedCameras.front();
-          double const distBetweenCameraAndCurrentPos = passedDistance - oldestCamera.m_distFromBegin;
-          if (distBetweenCameraAndCurrentPos > SpeedCameraOnRoute::kDangerousZoneMeters)
-            m_warnedSpeedCameras.pop();
-          else
-            break;
-        }
-
-        // We will turn off big red button only after all cameras, that were be warned, exhausted.
-        if (m_warnedSpeedCameras.empty())
-          m_showWarningAboutSpeedCam = false;
-
-        // Step 2. Check cached cameras.
-        if (!m_cachedSpeedCameras.empty())
-        {
-          auto const & closestSpeedCamera = m_cachedSpeedCameras.front();
-          if (closestSpeedCamera.m_distFromBegin < passedDistance)
-          {
-            PassCameraToWarned();
-          }
-          else
-          {
-            auto const distanceToCamera = closestSpeedCamera.m_distFromBegin - passedDistance;
-            if (closestSpeedCamera.IsDangerous(distanceToCamera, info.m_speed))
-              ProcessCameraWarning();
-          }
-        }
-
-        // Step 3. Find new cameras, to be cached.
-        size_t lastChecked = m_lastCheckedSpeedCameraIndex;
-        double distToPrevSegment =
-            m_route->GetRouteSegments()[lastChecked].GetDistFromBeginningMeters();
-        double distFromCurPosToLatestCheckedSegment = distToPrevSegment - passedDistance;
-
-        auto const & segments = m_route->GetRouteSegments();
-        while (lastChecked < segments.size() &&
-               distFromCurPosToLatestCheckedSegment < SpeedCameraOnRoute::kLookAheadDistanceMeters)
-        {
-          auto const & lastSegment = segments[lastChecked];
-          auto const & speedCamsVector = lastSegment.GetSpeedCams();
-          if (!speedCamsVector.empty())
-          {
-            for (auto const & speedCam : speedCamsVector)
-            {
-              double segmentLength = lastSegment.GetDistFromBeginningMeters() - distToPrevSegment;
-              if (lastSegment.GetSegment().IsForward())
-                segmentLength *= speedCam.m_coef;
-              else
-                segmentLength *= (1 - speedCam.m_coef);
-
-              m_cachedSpeedCameras.emplace(distToPrevSegment + segmentLength, speedCam.m_maxSpeedKmPH);
-            }
-          }
-
-          distToPrevSegment = lastSegment.GetDistFromBeginningMeters();
-          distFromCurPosToLatestCheckedSegment = distToPrevSegment - passedDistance;
-          ++lastChecked;
-        }
-
-        m_lastCheckedSpeedCameraIndex = lastChecked;
+        ProcessSpeedCameras(info);
       }
     }
 
@@ -573,8 +509,8 @@ void RoutingSession::AssignRoute(shared_ptr<Route> route, RouterResultCode e)
   route->SetRoutingSettings(m_routingSettings);
   m_route = route;
   m_lastCheckedSpeedCameraIndex = 0;
-  m_cachedSpeedCameras = {};  // clear dequeue
-  m_warnedSpeedCameras = {};  // clear dequeue
+  m_cachedSpeedCameras = {};
+  m_warnedSpeedCameras = {};
 }
 
 void RoutingSession::SetRouter(unique_ptr<IRouter> && router,
@@ -809,8 +745,78 @@ void RoutingSession::CopyTraffic(traffic::AllMwmTrafficInfo & trafficColoring) c
   TrafficCache::CopyTraffic(trafficColoring);
 }
 
+void RoutingSession::ProcessSpeedCameras(GpsInfo const & info) {
+  auto const passedDistanceMeters = m_route->GetCurrentDistanceFromBeginMeters();
+
+  // Step 1. Process warned cameras.
+  while (!m_warnedSpeedCameras.empty())
+  {
+    auto const & oldestCamera = m_warnedSpeedCameras.front();
+    double const distBetweenCameraAndCurrentPos = passedDistanceMeters - oldestCamera.m_distFromBeginMeters;
+    if (distBetweenCameraAndCurrentPos > SpeedCameraOnRoute::kDangerousZoneMeters)
+      m_warnedSpeedCameras.pop();
+    else
+      break;
+  }
+
+  // We will turn off big red icon in UI only after all cameras, that were be warned, exhausted.
+  if (m_warnedSpeedCameras.empty())
+    m_showWarningAboutSpeedCam = false;
+
+  // Step 2. Check cached cameras.
+  if (!m_cachedSpeedCameras.empty())
+  {
+    auto const & closestSpeedCamera = m_cachedSpeedCameras.front();
+    if (closestSpeedCamera.m_distFromBeginMeters < passedDistanceMeters)
+    {
+      PassCameraToWarned();
+    }
+    else
+    {
+      auto const distanceToCameraMeters = closestSpeedCamera.m_distFromBeginMeters - passedDistanceMeters;
+      if (closestSpeedCamera.IsDangerous(distanceToCameraMeters, info.m_speed))
+        ProcessCameraWarning();
+    }
+  }
+
+  // Step 3. Find new cameras, to be cached.
+  size_t lastChecked = m_lastCheckedSpeedCameraIndex;
+  CHECK(lastChecked < m_route->GetRouteSegments().size(), ());
+  double distToPrevSegment =
+    m_route->GetRouteSegments()[lastChecked].GetDistFromBeginningMeters();
+  double distFromCurPosToLatestCheckedSegmentM = distToPrevSegment - passedDistanceMeters;
+
+  auto const & segments = m_route->GetRouteSegments();
+  while (lastChecked < segments.size() &&
+         distFromCurPosToLatestCheckedSegmentM < SpeedCameraOnRoute::kLookAheadDistanceMeters)
+  {
+    auto const & lastSegment = segments[lastChecked];
+    auto const & speedCamsVector = lastSegment.GetSpeedCams();
+    if (!speedCamsVector.empty())
+    {
+      for (auto const & speedCam : speedCamsVector)
+      {
+        double segmentLength = lastSegment.GetDistFromBeginningMeters() - distToPrevSegment;
+        if (lastSegment.GetSegment().IsForward())
+          segmentLength *= speedCam.m_coef;
+        else
+          segmentLength *= (1 - speedCam.m_coef);
+
+        m_cachedSpeedCameras.emplace(distToPrevSegment + segmentLength, speedCam.m_maxSpeedKmPH);
+      }
+    }
+
+    distToPrevSegment = lastSegment.GetDistFromBeginningMeters();
+    distFromCurPosToLatestCheckedSegmentM = distToPrevSegment - passedDistanceMeters;
+    ++lastChecked;
+  }
+
+  m_lastCheckedSpeedCameraIndex = lastChecked;
+}
+
 void RoutingSession::ProcessCameraWarning()
 {
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
   CHECK(!m_cachedSpeedCameras.empty(), ());
 
   m_showWarningAboutSpeedCam = true;       // Big red button in UI.
@@ -827,9 +833,9 @@ void RoutingSession::PassCameraToWarned()
   m_cachedSpeedCameras.pop();
 }
 
-void RoutingSession::ForTestingSetLocaleWithJson(std::string const & json, std::string const & locale)
+void RoutingSession::SetLocaleWithJsonForTesting(std::string const & json, std::string const & locale)
 {
-  m_turnNotificationsMgr.ForTestingSetLocaleWithJson(json, locale);
+  m_turnNotificationsMgr.SetLocaleWithJsonForTesting(json, locale);
 }
 
 string DebugPrint(RoutingSession::State state)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "routing/deserialize_speed_cameras.hpp"
 #include "routing/edge_estimator.hpp"
 #include "routing/fake_ending.hpp"
 #include "routing/index_graph.hpp"
@@ -91,7 +92,11 @@ public:
 
   Geometry & GetGeometry(NumMwmId mwmId) override { return GetIndexGraph(mwmId).GetGeometry(); }
   IndexGraph & GetIndexGraph(NumMwmId mwmId) override;
-  std::vector<RouteSegment::SpeedCamera> GetSpeedCameraInfo(Segment const & segment) override { return {}; }
+  std::vector<RouteSegment::SpeedCamera> & GetSpeedCameraInfo(Segment const & segment) override
+  {
+    return kEmptyVectorOfSpeedCameras;
+  }
+
   void Clear() override;
 
   void AddGraph(NumMwmId mwmId, unique_ptr<IndexGraph> graph);

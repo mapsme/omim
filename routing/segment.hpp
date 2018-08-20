@@ -75,7 +75,7 @@ public:
 
   bool IsRealSegment() const
   {
-    return m_featureId && m_mwmId != kFakeNumMwmId && !FakeFeatureIds::IsTransitFeature(m_featureId);
+    return m_mwmId != kFakeNumMwmId && !FakeFeatureIds::IsTransitFeature(m_featureId);
   }
 
 private:

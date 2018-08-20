@@ -11,11 +11,14 @@
 #include "base/macros.hpp"
 
 #include <limits>
+#include <vector>
 
 namespace routing
 {
+std::vector<RouteSegment::SpeedCamera> kEmptyVectorOfSpeedCameras = {};
+
 void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
-                                 std::multimap<SegmentCoord, RouteSegment::SpeedCamera> & map)
+                                 std::map<SegmentCoord, vector<RouteSegment::SpeedCamera>> & map)
 {
   generator::CamerasInfoCollector::Header header;
   header.Deserialize(src);
@@ -33,7 +36,7 @@ void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
 
     auto const segmentId = ReadVarUint<uint32_t>(src);
 
-    uint32_t coefInt;
+    uint32_t coefInt = 0;
     ReadPrimitiveFromSource(src, coefInt);
     double const coef = Uint32ToDouble(coefInt, 0, 1, 32);
 
@@ -53,7 +56,11 @@ void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
     segment = {featureId, segmentId};
     speedCamera = {coef, static_cast<uint8_t>(speed)};
 
-    map.emplace(segment, speedCamera);
+    auto it = map.find(segment);
+    if (it == map.end())
+      map.emplace(segment, vector<RouteSegment::SpeedCamera>{speedCamera});
+    else
+      it->second.emplace_back(speedCamera);
   }
 }
 }  // namespace routing
