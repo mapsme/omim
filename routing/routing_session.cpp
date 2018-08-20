@@ -746,6 +746,8 @@ void RoutingSession::CopyTraffic(traffic::AllMwmTrafficInfo & trafficColoring) c
 }
 
 void RoutingSession::ProcessSpeedCameras(GpsInfo const & info) {
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+
   auto const passedDistanceMeters = m_route->GetCurrentDistanceFromBeginMeters();
 
   // Step 1. Process warned cameras.
@@ -794,15 +796,21 @@ void RoutingSession::ProcessSpeedCameras(GpsInfo const & info) {
     auto const & speedCamsVector = lastSegment.GetSpeedCams();
     if (!speedCamsVector.empty())
     {
-      for (auto const & speedCam : speedCamsVector)
+      // Cameras stored from beginning to ending of segment. So if we go at segment in backward direction,
+      // we should read cameras in reverse sequence too.
+      bool isForward = lastSegment.GetSegment().IsForward();
+      size_t n = speedCamsVector.size();
+      size_t curCameraIndex = isForward ? 0 : n - 1;
+      while (isForward ? (curCameraIndex < n) : (curCameraIndex >= 0))
       {
+        auto const & speedCam = speedCamsVector[curCameraIndex];
         double segmentLength = lastSegment.GetDistFromBeginningMeters() - distToPrevSegment;
-        if (lastSegment.GetSegment().IsForward())
-          segmentLength *= speedCam.m_coef;
-        else
-          segmentLength *= (1 - speedCam.m_coef);
+
+        isForward ? (segmentLength *= speedCam.m_coef) : segmentLength *= (1 - speedCam.m_coef);
 
         m_cachedSpeedCameras.emplace(distToPrevSegment + segmentLength, speedCam.m_maxSpeedKmPH);
+
+        isForward ? ++curCameraIndex : --curCameraIndex;
       }
     }
 
@@ -828,6 +836,7 @@ void RoutingSession::ProcessCameraWarning()
 
 void RoutingSession::PassCameraToWarned()
 {
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
   CHECK(!m_cachedSpeedCameras.empty(), ());
   m_warnedSpeedCameras.push(m_cachedSpeedCameras.front());
   m_cachedSpeedCameras.pop();
