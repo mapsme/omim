@@ -13,6 +13,7 @@
 #include "generator/metalines_builder.hpp"
 #include "generator/osm_source.hpp"
 #include "generator/popular_places_section_builder.hpp"
+#include "generator/regions_kv.hpp"
 #include "generator/restriction_generator.hpp"
 #include "generator/road_access_generator.hpp"
 #include "generator/routing_index_generator.hpp"
@@ -99,6 +100,8 @@ DEFINE_bool(generate_geo_objects_index, false,
             "Generate objects and index for server-side reverse geocoder.");
 DEFINE_bool(generate_regions, false,
             "Generate regiond index and borders for server-side reverse geocoder.");
+DEFINE_bool(generate_regions_kv, false,
+            "Generate regiond key-value for server-side reverse geocoder.");
 
 DEFINE_bool(dump_cities_boundaries, false, "Dump cities boundaries to a file");
 DEFINE_bool(generate_cities_boundaries, false, "Generate cities boundaries section");
@@ -155,7 +158,7 @@ using namespace generator;
 int main(int argc, char ** argv)
 {
   google::SetUsageMessage(
-      "Takes OSM XML data from stdin and creates data and index files in several passes.");
+        "Takes OSM XML data from stdin and creates data and index files in several passes.");
 
   google::ParseCommandLineFlags(&argc, &argv, true);
 
@@ -175,7 +178,7 @@ int main(int argc, char ** argv)
 
   feature::GenerateInfo genInfo;
   genInfo.m_intermediateDir = FLAGS_intermediate_data_path.empty() ? path
-                            : my::AddSlashIfNeeded(FLAGS_intermediate_data_path);
+                                                                   : my::AddSlashIfNeeded(FLAGS_intermediate_data_path);
   genInfo.m_targetDir = genInfo.m_tmpDir = path;
 
   /// @todo Probably, it's better to add separate option for .mwm.tmp files.
@@ -222,7 +225,7 @@ int main(int argc, char ** argv)
       FLAGS_dump_feature_names != "" || FLAGS_check_mwm || FLAGS_srtm_path != "" ||
       FLAGS_make_routing_index || FLAGS_make_cross_mwm || FLAGS_make_transit_cross_mwm ||
       FLAGS_generate_traffic_keys || FLAGS_transit_path != "" || FLAGS_ugc_data != "" ||
-      FLAGS_popular_places_data != "")
+      FLAGS_popular_places_data != "" || FLAGS_generate_regions_kv)
   {
     classificator::Load();
     classif().SortClassificator();
@@ -371,6 +374,15 @@ int main(int argc, char ** argv)
         LOG(LINFO, ("Processing metalines from", metalinesFilename));
         if (!feature::WriteMetalinesSection(datFile, metalinesFilename, osmToFeatureFilename))
           LOG(LCRITICAL, ("Error generating metalines section."));
+      }
+    }
+
+    if (FLAGS_generate_region_features && FLAGS_generate_regions_kv)
+    {
+      if (!GenerateRegionsKv(genInfo))
+      {
+        LOG(LCRITICAL, ("Error generating regions kv."));
+        return -1;
       }
     }
 
@@ -529,6 +541,7 @@ int main(int argc, char ** argv)
 
   if (FLAGS_check_mwm)
     check_model::ReadFeatures(datFile);
+
 
   return 0;
 }

@@ -79,8 +79,12 @@ set(SRC
   place.cpp
   relation_tags.cpp
   relation_tags.hpp
+  region_info_collector.cpp
+  region_info_collector.hpp
   region_meta.cpp
   region_meta.hpp
+  regions_kv.cpp
+  regions_kv.hpp
   restriction_collector.cpp
   restriction_collector.hpp
   restriction_generator.cpp
@@ -108,6 +112,7 @@ set(SRC
   tag_admixer.hpp
   tesselator.cpp
   tesselator.hpp
+  thread_pool.hpp
   towns_dumper.cpp
   towns_dumper.hpp
   traffic_generator.cpp
