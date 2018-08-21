@@ -801,7 +801,7 @@ void RoutingSession::ProcessSpeedCameras(GpsInfo const & info) {
       bool isForward = lastSegment.GetSegment().IsForward();
       size_t n = speedCamsVector.size();
       size_t curCameraIndex = isForward ? 0 : n - 1;
-      while (isForward ? (curCameraIndex < n) : (curCameraIndex >= 0))
+      while (curCameraIndex < n)
       {
         auto const & speedCam = speedCamsVector[curCameraIndex];
         double segmentLength = lastSegment.GetDistFromBeginningMeters() - distToPrevSegment;
