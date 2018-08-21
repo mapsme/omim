@@ -11,10 +11,13 @@
 
 #include "coding/file_name_utils.hpp"
 
+#include "base/geo_object_id.hpp"
+
 #include "defines.hpp"
 
 #include "3party/jansson/myjansson.hpp"
 
+#include <fstream>
 #include <memory>
 #include <queue>
 #include <string>
@@ -377,7 +380,8 @@ namespace generator
 {
 bool GenerateRegionsKv(const feature::GenerateInfo & genInfo)
 { 
-  auto const collectorFileName = genInfo.GetTmpFileName(genInfo.m_fileName, RegionInfoCollector::kDefaultExt);
+  auto const collectorFileName = genInfo.GetTmpFileName(genInfo.m_fileName,
+                                                        RegionInfoCollector::kDefaultExt);
   RegionInfoCollector regionsInfoCollector(collectorFileName);
   RegionKvBuilderJson::Regions regions;
 
@@ -387,7 +391,7 @@ bool GenerateRegionsKv(const feature::GenerateInfo & genInfo)
     if (!fb.IsArea() || !fb.IsGeometryClosed())
       return;
 
-    auto const id = fb.GetLastOsmId().GetOsmId();
+    auto const id = fb.GetLastOsmId().GetSerialId();
     auto const region = Region(fb, regionsInfoCollector.Get(id));
 
     auto const & label = region.GetLabel();
@@ -403,6 +407,8 @@ bool GenerateRegionsKv(const feature::GenerateInfo & genInfo)
 
   auto kvBuilder = std::make_unique<RegionKvBuilderJson>(std::move(regions));
   auto const countryTrees = kvBuilder->GetCountryTrees();
+  auto const jsonlName = genInfo.GetIntermediateFileName(genInfo.m_fileName, ".jsonl");
+  std::ofstream ofs(jsonlName, std::ofstream::out);
   for (auto const & countryName : kvBuilder->GetCountryNames())
   {
     auto keyRange = countryTrees.equal_range(countryName);
@@ -410,11 +416,14 @@ bool GenerateRegionsKv(const feature::GenerateInfo & genInfo)
     {
       auto const strings = kvBuilder->ToStrings(it->second);
       for (auto const & s: strings)
-        std::cout << s << std::endl;
+      {
+        static uint64_t encodedId = 0;
+        ofs << base::GeoObjectId(base::GeoObjectId::Type::OsmRelation, ++encodedId).GetEncodedId()
+            << " " << s << std::endl;
+      }
     }
   }
 
-  // auto const outFile = my::JoinPath(path, genInfo.m_fileName + ".jsonl");
   return true;
 }
 }  // namespace generator
