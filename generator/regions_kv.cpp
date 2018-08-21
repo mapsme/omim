@@ -31,11 +31,11 @@ using namespace generator;
 
 struct Region
 {
-  static constexpr short kNoRank = -1;
+  static short constexpr kNoRank = -1;
 
   using Point = FeatureBuilder1::PointSeq::value_type;
 
-  Region(const FeatureBuilder1 & fb, const generator::RegionData & rd) :
+  Region(FeatureBuilder1 const & fb, generator::RegionData const & rd) :
     m_name(fb.GetParams().name),
     m_region(std::move(fb.GetOuterGeometry())),
     m_regionData(rd),
@@ -63,10 +63,9 @@ struct Region
     return m_regionData.m_adminLevel == kAdmLvlCountry;
   }
 
-  bool IsContain(const Region & smaller) const
+  bool IsContains(Region const & smaller) const
   {
     auto const & region = smaller.m_region.Data();
-    using Point = Region::Point;
     auto leftRigth = std::minmax_element(std::begin(region), std::end(region),
                                          [](const Point & l, const Point & r) { return l.x < r.x; });
     auto bottomTop = std::minmax_element(std::begin(region), std::end(region),
@@ -166,7 +165,7 @@ using NodePtrList = std::vector<NodePtr>;
 
 struct Node
 {
-  Node(const Region & region) : m_region(region) {}
+  Node(Region const & region) : m_region(region) {}
 
   Region m_region;
   NodePtrList m_children;
@@ -301,7 +300,7 @@ public:
   }
 
 private:
-  static NodePtr BuildCountryRegionTree(const Region & country,  const Regions & allRegions)
+  static NodePtr BuildCountryRegionTree(Region const & country, Regions const & allRegions)
   {
     Regions regionsInCountry;
     auto const rectCountry = country.m_region.GetRect();
@@ -331,7 +330,7 @@ private:
       {
         auto const & currRegion = (*itCurr)->m_region;
         auto const & rectCurr = currRegion.m_region.GetRect();
-        if (rectCurr.IsRectInside(rectFirst) && currRegion.IsContain(firstRegion))
+        if (rectCurr.IsRectInside(rectFirst) && currRegion.IsContains(firstRegion))
         {
           (*itFirstNode)->m_parent = *itCurr;
           (*itCurr)->m_children.push_back(*itFirstNode);
@@ -378,7 +377,7 @@ using RegionKvBuilderJson = RegionKvBuilder<JsonPolicy>;
 
 namespace generator
 {
-bool GenerateRegionsKv(const feature::GenerateInfo & genInfo)
+bool GenerateRegionsKv(feature::GenerateInfo const & genInfo)
 { 
   auto const collectorFileName = genInfo.GetTmpFileName(genInfo.m_fileName,
                                                         RegionInfoCollector::kDefaultExt);

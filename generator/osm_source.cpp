@@ -298,7 +298,7 @@ bool GenerateRegionFeatures(feature::GenerateInfo & info, shared_ptr<EmitterInte
   if (!GenerateRaw(info, emitter, preEmit, translator))
     return false;
 
-  string const fileName = info.GetTmpFileName(info.m_fileName, RegionInfoCollector::kDefaultExt);
+  auto const fileName = info.GetTmpFileName(info.m_fileName, RegionInfoCollector::kDefaultExt);
   regionInfoCollector.Save(fileName);
   return true;
 }

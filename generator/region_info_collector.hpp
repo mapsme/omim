@@ -27,7 +27,7 @@ enum PlaceType: int8_t
   Count
 };
 
-PlaceType CodePlaceType(const std::string place);
+PlaceType CodePlaceType(std::string const & place);
 
 struct alignas(1) RegionData
 {
@@ -42,23 +42,23 @@ struct alignas(1) RegionData
 class RegionInfoCollector
 {
 public:
-  static const std::string kDefaultExt;  // = ".regions.bin"
+  static std::string const kDefaultExt;  // = ".regions.bin"
 
   RegionInfoCollector() = default;
-  explicit RegionInfoCollector(const std::string & fileName);
-  explicit RegionInfoCollector(const Platform::FilesList & fileNames);
+  explicit RegionInfoCollector(std::string const & fileName);
+  explicit RegionInfoCollector(Platform::FilesList const & fileNames);
 
   // It is supposed to be called already on the filtered osm objects that represent regions.
   void Add(OsmElement const & el);
   RegionData & Get(uint64_t osmId);
   const RegionData & Get(uint64_t osmId) const;
   bool IsExists(uint64_t osmId) const;
-  void Save(const std::string & fileName);
+  void Save(std::string const & fileName);
 
 private:
   using Map = std::unordered_map<uint64_t, RegionData>;
 
-  void ParseFile(const std::string & fileName);
+  void ParseFile(std::string const & fileName);
   void Fill(OsmElement const & el, RegionData & rd);
 
   Map m_map;

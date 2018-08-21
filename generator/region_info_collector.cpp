@@ -18,7 +18,7 @@ uint8_t const kVersion = 0;
 
 namespace generator
 {
-PlaceType CodePlaceType(const std::string place)
+PlaceType CodePlaceType(std::string const & place)
 {
   static std::map<std::string, PlaceType> const m = {
     {"city", PlaceType::City}, {"town", PlaceType::Town}, {"village", PlaceType::Village},
@@ -33,18 +33,18 @@ PlaceType CodePlaceType(const std::string place)
 
 const std::string RegionInfoCollector::kDefaultExt = ".regions.bin";
 
-RegionInfoCollector::RegionInfoCollector(const std::string & fileName)
+RegionInfoCollector::RegionInfoCollector(std::string const & fileName)
 {
   ParseFile(fileName);
 }
 
-RegionInfoCollector::RegionInfoCollector(const Platform::FilesList & fileNames)
+RegionInfoCollector::RegionInfoCollector(Platform::FilesList const & fileNames)
 {
   for (auto const & fileName : fileNames)
     ParseFile(fileName);
 }
 
-void RegionInfoCollector::ParseFile(const std::string & fileName)
+void RegionInfoCollector::ParseFile(std::string const & fileName)
 {
   FileReader reader(fileName);
   ReaderSource<FileReader> src(reader);
@@ -68,7 +68,7 @@ void RegionInfoCollector::Add(OsmElement const & el)
   m_map.emplace(el.id, regionData);
 }
 
-void RegionInfoCollector::Save(const std::string & fileName)
+void RegionInfoCollector::Save(std::string const & fileName)
 {
   FileWriter writer(fileName);
   writer.Write(&kVersion, sizeof(kVersion));

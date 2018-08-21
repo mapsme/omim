@@ -9,5 +9,5 @@ struct GenerateInfo;
 
 namespace generator
 {
-bool GenerateRegionsKv(const feature::GenerateInfo & genInfo);
+bool GenerateRegionsKv(feature::GenerateInfo const & genInfo);
 }  // namespace generator
