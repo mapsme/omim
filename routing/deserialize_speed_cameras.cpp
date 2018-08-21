@@ -40,13 +40,14 @@ void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
     ReadPrimitiveFromSource(src, coefInt);
     double const coef = Uint32ToDouble(coefInt, 0, 1, 32);
 
-    auto speed = ReadVarUint<uint32_t>(src);
+    uint8_t speed;
+    ReadPrimitiveFromSource(src, speed);
     CHECK_LESS(speed, generator::CamerasInfoCollector::kMaxCameraSpeedKmpH, ());
     if (speed == 0)
       speed = routing::SpeedCameraOnRoute::kNoSpeedInfo;
 
     // We don't use direction of camera, because of bad data in OSM.
-    UNUSED_VALUE(ReadVarUint<uint32_t>(src));  // direction
+    UNUSED_VALUE(ReadPrimitiveFromSource<uint8_t>(src));  // direction
 
     // Number of time conditions of camera.
     auto const conditionsNumber = ReadVarUint<uint32_t>(src);
