@@ -55,7 +55,7 @@ struct SpeedCameraOnRoute
   static double constexpr kLookAheadDistanceMeters = 750.0;
 
   /// \breaf Return true if user must be warned about camera and false otherwise.
-  bool IsDangerous(double distanceToCamera, double speed) const;
+  bool IsDangerous(double distanceToCameraMeters, double speed) const;
 
   double m_distFromBeginMeters = 0.0;          // Distance from beginning to current camera
   uint8_t m_maxSpeedKmH = kNoSpeedInfo;  // Maximum speed allowed by the camera.
