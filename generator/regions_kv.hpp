@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 namespace feature
 {
 struct GenerateInfo;
@@ -9,5 +7,5 @@ struct GenerateInfo;
 
 namespace generator
 {
-bool GenerateRegionsKv(feature::GenerateInfo const & genInfo);
+bool GenerateRegions(feature::GenerateInfo const & genInfo);
 }  // namespace generator

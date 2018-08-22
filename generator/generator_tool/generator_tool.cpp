@@ -99,9 +99,9 @@ DEFINE_bool(generate_search_index, false, "5th pass - generate search index.");
 DEFINE_bool(generate_geo_objects_index, false,
             "Generate objects and index for server-side reverse geocoder.");
 DEFINE_bool(generate_regions, false,
-            "Generate regiond index and borders for server-side reverse geocoder.");
+            "Generate regions index and borders for server-side reverse geocoder.");
 DEFINE_bool(generate_regions_kv, false,
-            "Generate regiond key-value for server-side reverse geocoder.");
+            "Generate regions key-value for server-side reverse geocoder.");
 
 DEFINE_bool(dump_cities_boundaries, false, "Dump cities boundaries to a file");
 DEFINE_bool(generate_cities_boundaries, false, "Generate cities boundaries section");
@@ -379,7 +379,7 @@ int main(int argc, char ** argv)
 
     if (FLAGS_generate_region_features && FLAGS_generate_regions_kv)
     {
-      if (!GenerateRegionsKv(genInfo))
+      if (!GenerateRegions(genInfo))
       {
         LOG(LCRITICAL, ("Error generating regions kv."));
         return -1;
@@ -541,7 +541,6 @@ int main(int argc, char ** argv)
 
   if (FLAGS_check_mwm)
     check_model::ReadFeatures(datFile);
-
 
   return 0;
 }

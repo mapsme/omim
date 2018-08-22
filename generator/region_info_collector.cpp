@@ -18,45 +18,49 @@ uint8_t const kVersion = 0;
 
 namespace generator
 {
+std::string const RegionInfoCollector::kDefaultExt = ".regions.bin";
+
 PlaceType CodePlaceType(std::string const & place)
 {
   static std::map<std::string, PlaceType> const m = {
-    {"city", PlaceType::City}, {"town", PlaceType::Town}, {"village", PlaceType::Village},
-    {"suburb", PlaceType::Suburb}, {"neighbourhood", PlaceType::Neighbourhood},
-    {"hamlet", PlaceType::Hamlet}, {"locality", PlaceType::Locality},
+    {"city", PlaceType::City},
+    {"town", PlaceType::Town},
+    {"village", PlaceType::Village},
+    {"suburb", PlaceType::Suburb},
+    {"neighbourhood", PlaceType::Neighbourhood},
+    {"hamlet", PlaceType::Hamlet},
+    {"locality", PlaceType::Locality},
     {"isolated_dwelling", PlaceType::IsolatedDwelling}
   };
 
   auto const it = m.find(place);
-  return it == m.end() ? PlaceType::None : it->second;
+  return it == m.end() ? PlaceType::Unknown : it->second;
 }
 
-const std::string RegionInfoCollector::kDefaultExt = ".regions.bin";
-
-RegionInfoCollector::RegionInfoCollector(std::string const & fileName)
+RegionInfoCollector::RegionInfoCollector(std::string const & filename)
 {
-  ParseFile(fileName);
+  ParseFile(filename);
 }
 
-RegionInfoCollector::RegionInfoCollector(Platform::FilesList const & fileNames)
+RegionInfoCollector::RegionInfoCollector(Platform::FilesList const & filenames)
 {
-  for (auto const & fileName : fileNames)
-    ParseFile(fileName);
+  for (auto const & filename : filenames)
+    ParseFile(filename);
 }
 
-void RegionInfoCollector::ParseFile(std::string const & fileName)
+void RegionInfoCollector::ParseFile(std::string const & filename)
 {
-  FileReader reader(fileName);
+  FileReader reader(filename);
   ReaderSource<FileReader> src(reader);
   uint8_t version;
-  src.Read(&version, sizeof(version));
-  ASSERT_EQUAL(version, kVersion, ("Versions do not match."));
+  ReadPrimitiveFromSource(src, version);
+  CHECK_EQUAL(version, kVersion, ("Versions do not match."));
   uint32_t size;
-  src.Read(&size, sizeof(size));
+  ReadPrimitiveFromSource(src, size);
   RegionData regionData;
   for (uint32_t i = 0; i < size; ++i)
   {
-    src.Read(&regionData, sizeof(regionData));
+    ReadPrimitiveFromSource(src, regionData);
     m_map.emplace(regionData.m_osmId, regionData);
   }
 }
@@ -68,9 +72,9 @@ void RegionInfoCollector::Add(OsmElement const & el)
   m_map.emplace(el.id, regionData);
 }
 
-void RegionInfoCollector::Save(std::string const & fileName)
+void RegionInfoCollector::Save(std::string const & filename)
 {
-  FileWriter writer(fileName);
+  FileWriter writer(filename);
   writer.Write(&kVersion, sizeof(kVersion));
   uint32_t const size = static_cast<uint32_t>(m_map.size());
   writer.Write(&size, sizeof(size));
@@ -88,7 +92,7 @@ const RegionData & RegionInfoCollector::Get(uint64_t osmId) const
   return m_map.at(osmId);
 }
 
-bool RegionInfoCollector::IsExists(uint64_t osmId) const
+bool RegionInfoCollector::Exists(uint64_t osmId) const
 {
   return m_map.count(osmId);
 }
@@ -101,13 +105,14 @@ void RegionInfoCollector::Fill(OsmElement const & el, RegionData & rd)
   try
   {
     const auto adminLevel = std::stoi(al);
-    // Administrative level is in the range [1 ... 10].
-    rd.m_adminLevel = (adminLevel >= 1 || adminLevel <= 10) ?
-                        static_cast<int8_t>(adminLevel) : RegionData::kNoAdminLevel;
+    // Administrative level is in the range [1 ... 12].
+    // https://wiki.openstreetmap.org/wiki/Tag:boundary=administrative
+    rd.m_adminLevel = (adminLevel >= 1 || adminLevel <= 12) ?
+                        static_cast<AdminLevel>(adminLevel) : AdminLevel::Unknown;
   }
-  catch(...)  // std::invalid_argument, std::out_of_range
+  catch (...)  // std::invalid_argument, std::out_of_range
   {
-    rd.m_adminLevel = RegionData::kNoAdminLevel;
+    rd.m_adminLevel = AdminLevel::Unknown;
   }
 }
 }  // namespace generator

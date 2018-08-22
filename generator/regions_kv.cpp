@@ -3,9 +3,6 @@
 #include "generator/feature_builder.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/region_info_collector.hpp"
-#include "generator/thread_pool.hpp"
-
-#include "geometry/region2d.hpp"
 
 #include "platform/platform.hpp"
 
@@ -13,9 +10,9 @@
 
 #include "base/geo_object_id.hpp"
 
-#include "defines.hpp"
-
+#include "3party/boost/boost/geometry.hpp"
 #include "3party/jansson/myjansson.hpp"
+#include "3party/thread_pool.hpp"
 
 #include <fstream>
 #include <memory>
@@ -25,24 +22,29 @@
 #include <unordered_set>
 #include <vector>
 
+#include "defines.hpp"
+
 namespace
 {
 using namespace generator;
 
+namespace bg = boost::geometry;
+
 struct Region
 {
-  static short constexpr kNoRank = -1;
+  static uint8_t constexpr kNoRank = 0;
 
   using Point = FeatureBuilder1::PointSeq::value_type;
+  using BoostPoint = bg::model::point<double, 2, bg::cs::cartesian>;
+  using BoostPolygon = bg::model::polygon<BoostPoint>;
 
   Region(FeatureBuilder1 const & fb, generator::RegionData const & rd) :
     m_name(fb.GetParams().name),
-    m_region(std::move(fb.GetOuterGeometry())),
     m_regionData(rd),
-    m_center(fb.GetGeometryCenter())
+    m_rect(fb.GetLimitRect())
   {
-    auto const rect = m_region.GetRect();
-    m_area = (rect.maxX() - rect.minX()) * (rect.maxY() - rect.minY());
+    m_area = m_rect.SizeX() * m_rect.SizeY();
+    FillPolygon(fb);
   }
 
   std::string GetName(int8_t lang = StringUtf8Multilang::kDefaultCode) const
@@ -52,57 +54,69 @@ struct Region
     return s;
   }
 
-  void RemoveRegionGeometry()
+  void ClearPolygon()
   {
-    m_region = std::move(m2::Region<Point>());
+    m_polygon = {};
+  }
+
+  void FillPolygon(FeatureBuilder1 const & fb)
+  {
+    auto const & fbGeometry = fb.GetGeometry();
+    auto it = std::begin(fbGeometry);
+    FillBoostGeometry(m_polygon.outer(), *it);
+    m_polygon.inners().resize(fbGeometry.size() - 1);
+    int i = 0;
+    for (it = ++it; it != std::end(fbGeometry); ++it)
+      FillBoostGeometry(m_polygon.inners()[i++], *it);
   }
 
   bool IsCountry() const
   {
-    static int8_t const kAdmLvlCountry = 2;
-    return m_regionData.m_adminLevel == kAdmLvlCountry;
+    static auto const kAdminLevelCountry = AdminLevel::Two;
+    return m_regionData.m_adminLevel == kAdminLevelCountry;
   }
 
-  bool IsContains(Region const & smaller) const
+  bool Contains(Region const & smaller) const
   {
-    auto const & region = smaller.m_region.Data();
-    auto leftRigth = std::minmax_element(std::begin(region), std::end(region),
-                                         [](const Point & l, const Point & r) { return l.x < r.x; });
-    auto bottomTop = std::minmax_element(std::begin(region), std::end(region),
-                                         [](const Point & l, const Point & r) { return l.y < r.y; });
-
-    return m_region.Contains(*leftRigth.first) &&
-        m_region.Contains(*leftRigth.second) &&
-        m_region.Contains(*bottomTop.first) &&
-        m_region.Contains(*bottomTop.second);
+    return bg::within(smaller.m_polygon, m_polygon);
   }
 
-  short GetRank() const
+  // Absolute rank values do not mean anything. But if the rank of the first object is more than the
+  // rank of the second object, then the first object is considered more nested.
+  uint8_t GetRank() const
   {
-    if (m_regionData.m_adminLevel >= 2 && m_regionData.m_adminLevel <= 4)
-      return m_regionData.m_adminLevel;
-
-    switch (m_regionData.m_place)
+    switch (m_regionData.m_adminLevel)
     {
-    case PlaceType::City: return 10;
-    case PlaceType::Town: return 11;
-    case PlaceType::Village: return 13;
-    default:
-      break;
+    case AdminLevel::Two:
+    case AdminLevel::Three:
+    case AdminLevel::Four: return static_cast<uint8_t>(m_regionData.m_adminLevel);
+    default: break;
     }
 
-    if (m_regionData.m_adminLevel >= 5 && m_regionData.m_adminLevel <= 8)
-      return m_regionData.m_adminLevel;
+    switch (m_regionData.m_place)
+    {
+    case PlaceType::City:
+    case PlaceType::Town:
+    case PlaceType::Village: return static_cast<uint8_t>(m_regionData.m_place);
+    default: break;
+    }
+
+    switch (m_regionData.m_adminLevel) {
+    case AdminLevel::Five:
+    case AdminLevel::Six:
+    case AdminLevel::Seven:
+    case AdminLevel::Eight: return static_cast<uint8_t>(m_regionData.m_adminLevel);
+    default: break;
+    }
 
     switch (m_regionData.m_place)
     {
-    case PlaceType::Suburb: return 14;
-    case PlaceType::Neighbourhood: return 15;
-    case PlaceType::Hamlet: return 17;
-    case PlaceType::Locality: return 19;
-    case PlaceType::IsolatedDwelling: return 20;
-    default:
-      break;
+    case PlaceType::Suburb:
+    case PlaceType::Neighbourhood:
+    case PlaceType::Hamlet:
+    case PlaceType::Locality:
+    case PlaceType::IsolatedDwelling: return static_cast<uint8_t>(m_regionData.m_place);
+    default: break;
     }
 
     return kNoRank;
@@ -112,10 +126,9 @@ struct Region
   {
     switch (m_regionData.m_adminLevel)
     {
-    case 2: return "country";
-    case 4: return "region";
-    default:
-      break;
+    case AdminLevel::Two: return "country";
+    case AdminLevel::Four: return "region";
+    default: break;
     }
 
     switch (m_regionData.m_place)
@@ -123,76 +136,129 @@ struct Region
     case PlaceType::City:
     case PlaceType::Town:
     case PlaceType::Village:
-    case PlaceType::Hamlet:
-      return "locality";
-    default:
-      break;
+    case PlaceType::Hamlet: return "locality";
+    default: break;
     }
 
     switch (m_regionData.m_adminLevel)
     {
-    case 6: return "subregion";
-    default:
-      break;
+    case AdminLevel::Six: return "subregion";
+    default: break;
     }
 
     switch (m_regionData.m_place)
     {
     case PlaceType::Suburb:
-    case PlaceType::Neighbourhood:
-      return "suburb";
+    case PlaceType::Neighbourhood: return "suburb";
     case PlaceType::Locality:
-    case PlaceType::IsolatedDwelling:
-      return "sublocality";
-    default:
-      break;
+    case PlaceType::IsolatedDwelling: return "sublocality";
+    default: break;
     }
 
     return "";
   }
 
+  Point Center() const
+  {
+    return m_rect.Center();
+  }
+
+  double GetArea() const
+  {
+    return m_area;
+  }
+
+  m2::RectD const & GetRect() const
+  {
+    return m_rect;
+  }
+
+private:
+  template <typename BoostGeometry, typename FbGeometry>
+  void FillBoostGeometry(BoostGeometry & geometry, FbGeometry const & fbGeometry)
+  {
+    for (const auto & p : fbGeometry)
+      bg::append(geometry, BoostPoint{p.x, p.y});
+  }
+
   StringUtf8Multilang m_name;
-  m2::Region<Point> m_region;
   RegionData m_regionData;
-  Point m_center;
+  BoostPolygon m_polygon;
+  m2::RectD m_rect;
   double m_area;
 };
 
-struct Node;
-using NodePtr = std::shared_ptr<Node>;
-using NodeWPtr = std::weak_ptr<Node>;
-using NodePtrList = std::vector<NodePtr>;
-
 struct Node
 {
+  using Ptr = std::shared_ptr<Node>;
+  using WeakPtr = std::weak_ptr<Node>;
+  using PtrList = std::vector<Ptr>;
+
   Node(Region const & region) : m_region(region) {}
 
+  void AddChild(Ptr child)
+  {
+    m_children.push_back(child);
+  }
+
+  void SetParent(Ptr parent)
+  {
+    m_parent = parent;
+  }
+
+  Ptr GetParent()
+  {
+    return m_parent.lock();
+  }
+
+  PtrList const & GetChildren()
+  {
+    return m_children;
+  }
+
+  bool HasChildren()
+  {
+    return m_children.size();
+  }
+
+  Region & GetData()
+  {
+    return m_region;
+  }
+
+private:
   Region m_region;
-  NodePtrList m_children;
-  NodeWPtr m_parent;
+  PtrList m_children;
+  WeakPtr m_parent;
 };
 
 // This function is for debugging only and can be a collection of statistics.
-int SizeTree(NodePtr node)
+size_t TreeSize(Node::Ptr node)
 {
-  if (node->m_children.empty())
+  if (!node)
+    return 0;
+
+  if (!node->HasChildren())
     return 1;
 
-  int i = 0;
-  for (auto const & n : node->m_children)
-    i += SizeTree(n);
+  size_t i = 0;
+  for (auto const & n : node->GetChildren())
+    i += TreeSize(n);
 
   return i + 1;
 }
 
 // This function is for debugging only and can be a collection of statistics.
-int MaxDepth(NodePtr node)
+size_t MaxDepth(Node::Ptr node)
 {
-  if (node->m_children.empty())
+  if (!node)
+    return 0;
+
+  if (!node->HasChildren())
     return 1;
 
-  int i = -1;
-  for (auto const & n : node->m_children)
+  size_t i = 0;
+  for (auto const & n : node->GetChildren())
     i = std::max(MaxDepth(n), i);
 
   return i + 1;
@@ -201,27 +267,28 @@ int MaxDepth(NodePtr node)
 class JsonPolicy
 {
 public:
-  std::string ToString(NodePtrList const & nodePtrList) const
+  std::string ToString(Node::PtrList const & nodePtrList) const
   {
     if (nodePtrList.empty())
       return "";
 
-    const auto & main = nodePtrList[0];
+    const auto & main = nodePtrList[0]->GetData();
 
     auto geometry = my::NewJSONObject();
     ToJSONObject(*geometry, "type", "Point");
     auto coordinates = my::NewJSONArray();
-    ToJSONArray(*coordinates, main->m_region.m_center.x);
-    ToJSONArray(*coordinates, main->m_region.m_center.y);
+    auto const center = main.Center();
+    ToJSONArray(*coordinates, center.x);
+    ToJSONArray(*coordinates, center.y);
     ToJSONObject(*geometry, "coordinates", coordinates);
 
     auto address = my::NewJSONObject();
     for (auto const & p : nodePtrList)
-      ToJSONObject(*address, p->m_region.GetLabel(), p->m_region.GetName());
+      ToJSONObject(*address, p->GetData().GetLabel(), p->GetData().GetName());
 
     auto properties = my::NewJSONObject();
-    ToJSONObject(*properties, "name", main->m_region.GetName());
-    ToJSONObject(*properties, "rank", main->m_region.GetRank());
+    ToJSONObject(*properties, "name", main.GetName());
+    ToJSONObject(*properties, "rank", main.GetRank());
     ToJSONObject(*properties, "address", address);
 
     auto feature = my::NewJSONObject();
@@ -234,14 +301,14 @@ public:
 };
 
 template<typename ToStringPolicy>
-class RegionKvBuilder : public ToStringPolicy
+class RegionsKvBuilder : public ToStringPolicy
 {
 public:
   using Regions = std::vector<Region>;
   using StringList = std::vector<std::string>;
-  using CountryTrees = std::multimap<std::string, NodePtr>;
+  using CountryTrees = std::multimap<std::string, Node::Ptr>;
 
-  explicit RegionKvBuilder(Regions && pregions)
+  explicit RegionsKvBuilder(Regions && pregions)
   {
     Regions regions(std::move(pregions));
     std::copy_if(std::begin(regions), std::end(regions), std::back_inserter(m_countries),
@@ -253,7 +320,10 @@ public:
     MakeCountryTrees(regions);
   }
 
-  const Regions & GetCountries() const { return m_countries; }
+  Regions const & GetCountries() const
+  {
+    return m_countries;
+  }
 
   StringList GetCountryNames() const
   {
@@ -272,27 +342,30 @@ public:
     return result;
   }
 
-  const CountryTrees & GetCountryTrees() const { return m_cuntryTrees; }
+  CountryTrees const & GetCountryTrees() const
+  {
+    return m_countryTrees;
+  }
 
-  StringList ToStrings(NodePtr tree) const
+  StringList ToStrings(Node::Ptr tree) const
   {
     StringList result;
-    std::queue<NodePtr> queue;
+    std::queue<Node::Ptr> queue;
     queue.push(tree);
     while (!queue.empty())
     {
       const auto el = queue.front();
       queue.pop();
-      NodePtrList nodes;
+      Node::PtrList nodes;
       auto current = el;
       while (current)
       {
         nodes.push_back(current);
-        current = current->m_parent.lock();
+        current = current->GetParent();
       }
 
       result.emplace_back(ToStringPolicy::ToString(nodes));
-      for (auto const & n : el->m_children)
+      for (auto const & n : el->GetChildren())
         queue.push(n);
     }
 
@@ -300,22 +373,21 @@ public:
   }
 
 private:
-  static NodePtr BuildCountryRegionTree(Region const & country, Regions const & allRegions)
+  static Node::Ptr BuildCountryRegionTree(Region const & country, Regions const & allRegions)
   {
     Regions regionsInCountry;
-    auto const rectCountry = country.m_region.GetRect();
     std::copy_if(std::begin(allRegions), std::end(allRegions), std::back_inserter(regionsInCountry),
-                 [&country, &rectCountry] (const Region & r)
+                 [&country] (const Region & r)
     {
-      auto const rect = r.m_region.GetRect();
-      return rectCountry.IsRectInside(rect) && !r.IsCountry();
+      auto const & countryRect = country.GetRect();
+      return countryRect.IsRectInside(r.GetRect());
     });
 
     regionsInCountry.emplace_back(country);
     std::sort(std::begin(regionsInCountry), std::end(regionsInCountry),
-              [](const Region & r, const Region & l) { return r.m_area > l.m_area; });
+              [](const Region & r, const Region & l) { return r.GetArea() > l.GetArea(); });
 
-    std::vector<NodePtr> nodes;
+    Node::PtrList nodes;
     nodes.reserve(regionsInCountry.size());
     std::transform(std::begin(regionsInCountry), std::end(regionsInCountry),std::back_inserter(nodes),
                    [](const Region & r) { return std::make_shared<Node>(r); });
@@ -323,18 +395,19 @@ private:
     while (nodes.size() > 1)
     {
       auto itFirstNode = std::rbegin(nodes);
-      auto & firstRegion = (*itFirstNode)->m_region;
-      auto const & rectFirst = firstRegion.m_region.GetRect();
+      auto & firstRegion = (*itFirstNode)->GetData();
+      auto const & rectFirst = firstRegion.GetRect();
       auto itCurr = itFirstNode + 1;
       for (; itCurr != std::rend(nodes); ++itCurr)
       {
-        auto const & currRegion = (*itCurr)->m_region;
-        auto const & rectCurr = currRegion.m_region.GetRect();
-        if (rectCurr.IsRectInside(rectFirst) && currRegion.IsContains(firstRegion))
+        auto const & currRegion = (*itCurr)->GetData();
+        auto const & rectCurr = currRegion.GetRect();
+        if (rectCurr.IsRectInside(rectFirst) && currRegion.Contains(firstRegion))
         {
-          (*itFirstNode)->m_parent = *itCurr;
-          (*itCurr)->m_children.push_back(*itFirstNode);
-          firstRegion.RemoveRegionGeometry();
+          (*itFirstNode)->SetParent(*itCurr);
+          (*itCurr)->AddChild(*itFirstNode);
+          // We want to free up memory.
+          firstRegion.ClearPolygon();
           nodes.pop_back();
           break;
         }
@@ -349,14 +422,14 @@ private:
 
   void MakeCountryTrees(Regions const & regions)
   {
-    std::vector<std::future<NodePtr>> results;
+    std::vector<std::future<Node::Ptr>> results;
     {
       auto const cpuCount = std::thread::hardware_concurrency();
       ASSERT_GREATER(cpuCount, 0, ());
       ThreadPool threadPool(cpuCount);
       for (auto const & country : GetCountries())
       {
-        auto f = threadPool.enqueue(&RegionKvBuilder::BuildCountryRegionTree, country, regions);
+        auto f = threadPool.enqueue(&RegionsKvBuilder::BuildCountryRegionTree, country, regions);
         results.emplace_back(std::move(f));
       }
     }
@@ -364,33 +437,33 @@ private:
     for (auto & r : results)
     {
       auto const tree = r.get();
-      m_cuntryTrees.insert({tree->m_region.GetName(), tree});
+      m_countryTrees.insert({tree->GetData().GetName(), tree});
     }
   }
 
-  CountryTrees m_cuntryTrees;
+  CountryTrees m_countryTrees;
   Regions m_countries;
 };
 
-using RegionKvBuilderJson = RegionKvBuilder<JsonPolicy>;
+using RegionKvBuilderJson = RegionsKvBuilder<JsonPolicy>;
 }  // namespace
 
 namespace generator
 {
-bool GenerateRegionsKv(feature::GenerateInfo const & genInfo)
+bool GenerateRegions(feature::GenerateInfo const & genInfo)
 { 
-  auto const collectorFileName = genInfo.GetTmpFileName(genInfo.m_fileName,
+  auto const collectorFilename = genInfo.GetTmpFileName(genInfo.m_fileName,
                                                         RegionInfoCollector::kDefaultExt);
-  RegionInfoCollector regionsInfoCollector(collectorFileName);
+  RegionInfoCollector regionsInfoCollector(collectorFilename);
   RegionKvBuilderJson::Regions regions;
 
-  auto const tmpMwmFileName = genInfo.GetTmpFileName(genInfo.m_fileName);
+  auto const tmpMwmFilename = genInfo.GetTmpFileName(genInfo.m_fileName);
   auto callback = [&regions, &regionsInfoCollector](const FeatureBuilder1 & fb, uint64_t)
   {
     if (!fb.IsArea() || !fb.IsGeometryClosed())
       return;
 
-    auto const id = fb.GetLastOsmId().GetSerialId();
+    auto const id = fb.GetMostGenericOsmId().GetSerialId();
     auto const region = Region(fb, regionsInfoCollector.Get(id));
 
     auto const & label = region.GetLabel();
@@ -401,8 +474,8 @@ bool GenerateRegionsKv(feature::GenerateInfo const & genInfo)
     regions.emplace_back(region);
   };
 
-  LOG(LINFO, ("Processing", tmpMwmFileName));
-  feature::ForEachFromDatRawFormat(tmpMwmFileName, callback);
+  LOG(LINFO, ("Processing", tmpMwmFilename));
+  feature::ForEachFromDatRawFormat(tmpMwmFilename, callback);
 
   auto kvBuilder = std::make_unique<RegionKvBuilderJson>(std::move(regions));
   auto const countryTrees = kvBuilder->GetCountryTrees();
@@ -410,7 +483,7 @@ bool GenerateRegionsKv(feature::GenerateInfo const & genInfo)
   std::ofstream ofs(jsonlName, std::ofstream::out);
   for (auto const & countryName : kvBuilder->GetCountryNames())
   {
-    auto keyRange = countryTrees.equal_range(countryName);
+    auto const keyRange = countryTrees.equal_range(countryName);
     for (auto it = keyRange.first; it != keyRange.second; ++it)
     {
       auto const strings = kvBuilder->ToStrings(it->second);

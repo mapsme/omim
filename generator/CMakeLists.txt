@@ -112,7 +112,6 @@ set(SRC
   tag_admixer.hpp
   tesselator.cpp
   tesselator.hpp
-  thread_pool.hpp
   towns_dumper.cpp
   towns_dumper.hpp
   traffic_generator.cpp
