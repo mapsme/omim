@@ -42,7 +42,6 @@ omim_link_libraries(
   platform
   oauthcpp
   geometry
-  generator
   coding
   base
   jansson

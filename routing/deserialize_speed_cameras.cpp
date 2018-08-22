@@ -1,6 +1,7 @@
 #include "routing/deserialize_speed_cameras.hpp"
 
 #include "routing/routing_session.hpp"
+#include "routing/serialize_speed_camera.hpp"
 
 #include "generator/camera_info_collector.hpp"
 
@@ -20,7 +21,7 @@ std::vector<RouteSegment::SpeedCamera> kEmptyVectorOfSpeedCameras = {};
 void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
                                  std::map<SegmentCoord, vector<RouteSegment::SpeedCamera>> & map)
 {
-  generator::CamerasInfoCollector::Header header;
+  SpeedCameraMwmHeader header;
   header.Deserialize(src);
   CHECK(header.IsValid(), ("Bad header of speed cam section"));
   uint32_t const amount = header.GetAmount();
@@ -42,7 +43,7 @@ void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
 
     uint8_t speed;
     ReadPrimitiveFromSource(src, speed);
-    CHECK_LESS(speed, generator::CamerasInfoCollector::kMaxCameraSpeedKmpH, ());
+    CHECK_LESS(speed, kMaxCameraSpeedKmpH, ());
     if (speed == 0)
       speed = routing::SpeedCameraOnRoute::kNoSpeedInfo;
 

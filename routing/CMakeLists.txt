@@ -104,6 +104,8 @@ set(
   segment.hpp
   segmented_route.cpp
   segmented_route.hpp
+  serialize_speed_camera.cpp
+  serialize_speed_camera.hpp
   single_vehicle_world_graph.cpp
   single_vehicle_world_graph.hpp
   traffic_stash.cpp

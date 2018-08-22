@@ -12,7 +12,6 @@
 namespace routing
 {
 // Pair of featureId and segmentId
-//using SegmentCoord = std::pair<uint32_t, uint32_t>;
 struct SegmentCoord {
   SegmentCoord() = default;
   SegmentCoord(uint32_t fId, uint32_t sId) : m_featureId(fId), m_segmentId(sId) {}
