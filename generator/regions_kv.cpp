@@ -38,7 +38,7 @@ struct Region
   using BoostPoint = bg::model::point<double, 2, bg::cs::cartesian>;
   using BoostPolygon = bg::model::polygon<BoostPoint>;
 
-  Region(FeatureBuilder1 const & fb, generator::RegionData const & rd) :
+  Region(FeatureBuilder1 const & fb, RegionDataProxy rd) :
     m_name(fb.GetParams().name),
     m_regionData(rd),
     m_rect(fb.GetLimitRect())
@@ -73,7 +73,7 @@ struct Region
   bool IsCountry() const
   {
     static auto const kAdminLevelCountry = AdminLevel::Two;
-    return m_regionData.m_adminLevel == kAdminLevelCountry;
+    return m_regionData.GetAdminLevel() == kAdminLevelCountry;
   }
 
   bool Contains(Region const & smaller) const
@@ -85,37 +85,40 @@ struct Region
   // rank of the second object, then the first object is considered more nested.
   uint8_t GetRank() const
   {
-    switch (m_regionData.m_adminLevel)
+    auto const adminLevel = m_regionData.GetAdminLevel();
+    auto const placeType = m_regionData.GetPlaceType();
+
+    switch (adminLevel)
     {
     case AdminLevel::Two:
     case AdminLevel::Three:
-    case AdminLevel::Four: return static_cast<uint8_t>(m_regionData.m_adminLevel);
+    case AdminLevel::Four: return static_cast<uint8_t>(adminLevel);
     default: break;
     }
 
-    switch (m_regionData.m_place)
+    switch (placeType)
     {
     case PlaceType::City:
     case PlaceType::Town:
-    case PlaceType::Village: return static_cast<uint8_t>(m_regionData.m_place);
+    case PlaceType::Village: return static_cast<uint8_t>(placeType);
     default: break;
     }
 
-    switch (m_regionData.m_adminLevel) {
+    switch (adminLevel) {
     case AdminLevel::Five:
     case AdminLevel::Six:
     case AdminLevel::Seven:
-    case AdminLevel::Eight: return static_cast<uint8_t>(m_regionData.m_adminLevel);
+    case AdminLevel::Eight: return static_cast<uint8_t>(adminLevel);
     default: break;
     }
 
-    switch (m_regionData.m_place)
+    switch (placeType)
     {
     case PlaceType::Suburb:
     case PlaceType::Neighbourhood:
     case PlaceType::Hamlet:
     case PlaceType::Locality:
-    case PlaceType::IsolatedDwelling: return static_cast<uint8_t>(m_regionData.m_place);
+    case PlaceType::IsolatedDwelling: return static_cast<uint8_t>(placeType);
     default: break;
     }
 
@@ -124,14 +127,17 @@ struct Region
 
   std::string GetLabel() const
   {
-    switch (m_regionData.m_adminLevel)
+    auto const adminLevel = m_regionData.GetAdminLevel();
+    auto const placeType = m_regionData.GetPlaceType();
+
+    switch (adminLevel)
     {
     case AdminLevel::Two: return "country";
     case AdminLevel::Four: return "region";
     default: break;
     }
 
-    switch (m_regionData.m_place)
+    switch (placeType)
     {
     case PlaceType::City:
     case PlaceType::Town:
@@ -140,13 +146,13 @@ struct Region
     default: break;
     }
 
-    switch (m_regionData.m_adminLevel)
+    switch (adminLevel)
     {
     case AdminLevel::Six: return "subregion";
     default: break;
     }
 
-    switch (m_regionData.m_place)
+    switch (placeType)
     {
     case PlaceType::Suburb:
     case PlaceType::Neighbourhood: return "suburb";
@@ -156,6 +162,16 @@ struct Region
     }
 
     return "";
+  }
+
+  bool HasIsoCode() const
+  {
+    return m_regionData.HasIsoCodeAlpha3();
+  }
+
+  std::string GetIsoCode() const
+  {
+    return m_regionData.GetIsoCodeAlpha3();
   }
 
   Point Center() const
@@ -182,7 +198,7 @@ private:
   }
 
   StringUtf8Multilang m_name;
-  RegionData m_regionData;
+  RegionDataProxy m_regionData;
   BoostPolygon m_polygon;
   m2::RectD m_rect;
   double m_area;
@@ -272,7 +288,8 @@ public:
     if (nodePtrList.empty())
       return "";
 
-    const auto & main = nodePtrList[0]->GetData();
+    const auto & main = nodePtrList.front()->GetData();
+    const auto & country = nodePtrList.back()->GetData();
 
     auto geometry = my::NewJSONObject();
     ToJSONObject(*geometry, "type", "Point");
@@ -290,6 +307,8 @@ public:
     ToJSONObject(*properties, "name", main.GetName());
     ToJSONObject(*properties, "rank", main.GetRank());
     ToJSONObject(*properties, "address", address);
+    if (country.HasIsoCode())
+      ToJSONObject(*properties, "code", country.GetIsoCode());
 
     auto feature = my::NewJSONObject();
     ToJSONObject(*feature, "type", "Feature");

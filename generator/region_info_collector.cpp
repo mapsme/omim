@@ -13,7 +13,7 @@
 
 namespace
 {
-uint8_t const kVersion = 0;
+uint8_t const kVersion = 1;
 }  // namespace
 
 namespace generator
@@ -55,49 +55,39 @@ void RegionInfoCollector::ParseFile(std::string const & filename)
   uint8_t version;
   ReadPrimitiveFromSource(src, version);
   CHECK_EQUAL(version, kVersion, ("Versions do not match."));
-  uint32_t size;
-  ReadPrimitiveFromSource(src, size);
-  RegionData regionData;
-  for (uint32_t i = 0; i < size; ++i)
-  {
-    ReadPrimitiveFromSource(src, regionData);
-    m_map.emplace(regionData.m_osmId, regionData);
-  }
+  ReadSeq(src, m_mapRegionData);
+  ReadSeq(src, m_mapIsoCode);
 }
 
 void RegionInfoCollector::Add(OsmElement const & el)
 {
   RegionData regionData;
-  Fill(el, regionData);
-  m_map.emplace(el.id, regionData);
+  FillRegionData(el, regionData);
+  m_mapRegionData.emplace(el.id, regionData);
+
+  // If the region is a country.
+  if (regionData.m_adminLevel == AdminLevel::Two)
+  {
+    IsoCode isoCode;
+    FillIsoCode(el, isoCode);
+    m_mapIsoCode.emplace(el.id, isoCode);
+  }
 }
 
 void RegionInfoCollector::Save(std::string const & filename)
 {
   FileWriter writer(filename);
   writer.Write(&kVersion, sizeof(kVersion));
-  uint32_t const size = static_cast<uint32_t>(m_map.size());
-  writer.Write(&size, sizeof(size));
-  for (auto const & el : m_map)
-    writer.Write(&el.second, sizeof(el.second));
+  WriteSeq(writer, m_mapRegionData);
+  WriteSeq(writer, m_mapIsoCode);
 }
 
-RegionData & RegionInfoCollector::Get(uint64_t osmId)
+RegionDataProxy RegionInfoCollector::Get(uint64_t osmId) const
 {
-  return m_map.at(osmId);
+  return RegionDataProxy(*this, osmId);
 }
 
-const RegionData & RegionInfoCollector::Get(uint64_t osmId) const
-{
-  return m_map.at(osmId);
-}
-
-bool RegionInfoCollector::Exists(uint64_t osmId) const
-{
-  return m_map.count(osmId);
-}
-
-void RegionInfoCollector::Fill(OsmElement const & el, RegionData & rd)
+void RegionInfoCollector::FillRegionData(OsmElement const & el, RegionData & rd)
 {
   rd.m_osmId = el.id;
   rd.m_place = CodePlaceType(el.GetTag("place"));
@@ -114,5 +104,96 @@ void RegionInfoCollector::Fill(OsmElement const & el, RegionData & rd)
   {
     rd.m_adminLevel = AdminLevel::Unknown;
   }
+}
+
+void RegionInfoCollector::FillIsoCode(OsmElement const & el, IsoCode & rd)
+{
+  rd.m_osmId = el.id;
+  rd.SetAlpha2(el.GetTag("ISO3166-1:alpha2"));
+  rd.SetAlpha3(el.GetTag("ISO3166-1:alpha3"));
+  rd.SetNumeric(el.GetTag("ISO3166-1:numeric"));
+}
+
+RegionDataProxy::RegionDataProxy(const RegionInfoCollector & regionInfoCollector, uint64_t osmId)
+  : m_regionInfoCollector(regionInfoCollector),
+    m_osmId(osmId)
+{
+}
+
+RegionInfoCollector const & RegionDataProxy::Collector() const
+{
+  return m_regionInfoCollector;
+}
+
+RegionInfoCollector::MapRegionData const & RegionDataProxy::MapRegionData() const
+{
+  return Collector().m_mapRegionData;
+}
+
+RegionInfoCollector::MapIsoCode const & RegionDataProxy::MapIsoCode() const
+{
+  return Collector().m_mapIsoCode;
+}
+
+uint64_t RegionDataProxy::GetOsmId() const
+{
+  return m_osmId;
+}
+
+AdminLevel RegionDataProxy::GetAdminLevel() const
+{
+  return MapRegionData().at(m_osmId).m_adminLevel;
+}
+
+PlaceType RegionDataProxy::GetPlaceType() const
+{
+  return MapRegionData().at(m_osmId).m_place;
+}
+
+bool RegionDataProxy::HasAdminLevel() const
+{
+  return MapRegionData().count(m_osmId) &&
+      MapRegionData().at(m_osmId).m_adminLevel == AdminLevel::Unknown;
+}
+
+bool RegionDataProxy::HasPlaceType() const
+{
+  return MapRegionData().count(m_osmId) &&
+      MapRegionData().at(m_osmId).m_place == PlaceType::Unknown;
+}
+
+bool RegionDataProxy::HasIsoCode() const
+{
+  return MapIsoCode().count(m_osmId);
+}
+
+bool RegionDataProxy::HasIsoCodeAlpha2() const
+{
+  return HasIsoCode() && MapIsoCode().at(m_osmId).HasAlpha2();
+}
+
+bool RegionDataProxy::HasIsoCodeAlpha3() const
+{
+  return HasIsoCode() && MapIsoCode().at(m_osmId).HasAlpha3();
+}
+
+bool RegionDataProxy::HasIsoCodeAlphaNumeric() const
+{
+  return HasIsoCode() && MapIsoCode().at(m_osmId).HasNumeric();
+}
+
+std::string RegionDataProxy::GetIsoCodeAlpha2() const
+{
+  return MapIsoCode().at(m_osmId).GetAlpha2();
+}
+
+std::string RegionDataProxy::GetIsoCodeAlpha3() const
+{
+  return MapIsoCode().at(m_osmId).GetAlpha3();
+}
+
+std::string RegionDataProxy::GetIsoCodeAlphaNumeric() const
+{
+  return MapIsoCode().at(m_osmId).GetNumeric();
 }
 }  // namespace generator
