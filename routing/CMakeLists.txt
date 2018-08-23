@@ -16,6 +16,8 @@ set(
   base/routing_result.hpp
   bicycle_directions.cpp
   bicycle_directions.hpp
+  city_boundaries_checker.cpp
+  city_boundaries_checker.hpp
   checkpoint_predictor.cpp
   checkpoint_predictor.hpp
   checkpoints.cpp
