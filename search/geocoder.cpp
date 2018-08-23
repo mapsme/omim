@@ -22,6 +22,7 @@
 #include "indexer/rank_table.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
+#include "indexer/utils.hpp"
 
 #include "storage/country_info_getter.hpp"
 
@@ -463,7 +464,7 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> & infos, bool inViewport)
     m_cities.clear();
     for (auto & regions : m_regions)
       regions.clear();
-    MwmSet::MwmHandle handle = FindWorld(m_dataSource, infos);
+    MwmSet::MwmHandle handle = indexer::FindWorld(m_dataSource, infos);
     if (handle.IsAlive())
     {
       auto & value = *handle.GetValue<MwmValue>();

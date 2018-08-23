@@ -6,7 +6,6 @@
 
 #include "indexer/categories_holder.hpp"
 #include "indexer/feature_decl.hpp"
-#include "indexer/mwm_set.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
 #include "indexer/trie.hpp"
@@ -20,7 +19,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
-#include <memory>
 #include <vector>
 
 class DataSource;
@@ -121,10 +119,6 @@ bool FillCategories(QuerySliceOnRawStrings<T> const & slice, Locales const & loc
 // like "Hotel" returns all subcategories types.
 std::vector<uint32_t> GetCategoryTypes(std::string const & name, std::string const & locale,
                                        CategoriesHolder const & categories);
-
-MwmSet::MwmHandle FindWorld(DataSource const & dataSource,
-                            std::vector<std::shared_ptr<MwmInfo>> const & infos);
-MwmSet::MwmHandle FindWorld(DataSource const & dataSource);
 
 using FeatureIndexCallback = std::function<void(FeatureID const &)>;
 // Applies |fn| to each feature index of type from |types| in |rect|.
