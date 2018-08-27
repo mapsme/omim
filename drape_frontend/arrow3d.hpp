@@ -24,26 +24,26 @@ class ScreenBase;
 
 namespace df
 {
-class Arrow3d: public dp::MeshObject
+class Arrow3d : public dp::MeshObject
 {
   using Base = dp::MeshObject;
 public:
-  Arrow3d();
+  explicit Arrow3d(ref_ptr<dp::GraphicsContext> context);
 
   void SetPosition(m2::PointD const & position);
   void SetAzimuth(double azimuth);
   void SetTexture(ref_ptr<dp::TextureManager> texMng);
   void SetPositionObsolete(bool obsolete);
 
-  void Render(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng, ScreenBase const & screen,
-              bool routingMode);
+  void Render(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng,
+              ScreenBase const & screen, bool routingMode);
 
 private:
   math::Matrix<float, 4, 4> CalculateTransform(ScreenBase const & screen, float dz,
                                                float scaleFactor) const;
-  void RenderArrow(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng, ScreenBase const & screen,
-                   gpu::Program program, dp::Color const & color, float dz, float scaleFactor,
-                   bool hasNormals);
+  void RenderArrow(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng,
+                   ScreenBase const & screen, gpu::Program program, dp::Color const & color,
+                   float dz, float scaleFactor);
 
   m2::PointD m_position;
   double m_azimuth = 0.0;

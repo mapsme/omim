@@ -1,5 +1,6 @@
 #include "drape/render_state.hpp"
-#include "drape/glfunctions.hpp"
+#include "drape/gl_functions.hpp"
+#include "drape/gl_gpu_program.hpp"
 
 #include "base/buffer_vector.hpp"
 
@@ -12,22 +13,32 @@ std::string const kMaskTextureName = "u_maskTex";
 }  // namespace
 
 // static
-void AlphaBlendingState::Apply()
+void AlphaBlendingState::Apply(ref_ptr<GraphicsContext> context)
 {
-  GLFunctions::glBlendEquation(gl_const::GLAddBlend);
-  GLFunctions::glBlendFunc(gl_const::GLSrcAlpha, gl_const::GLOneMinusSrcAlpha);
+  auto const apiVersion = context->GetApiVersion();
+  if (apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3)
+  {
+    GLFunctions::glBlendEquation(gl_const::GLAddBlend);
+    GLFunctions::glBlendFunc(gl_const::GLSrcAlpha, gl_const::GLOneMinusSrcAlpha);
+  }
+  //TODO(@rokuz,@darina): Metal?
 }
 
 Blending::Blending(bool isEnabled)
   : m_isEnabled(isEnabled)
 {}
 
-void Blending::Apply() const
+void Blending::Apply(ref_ptr<GraphicsContext> context) const
 {
-  if (m_isEnabled)
-    GLFunctions::glEnable(gl_const::GLBlending);
-  else
-    GLFunctions::glDisable(gl_const::GLBlending);
+  auto const apiVersion = context->GetApiVersion();
+  if (apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3)
+  {
+    if (m_isEnabled)
+      GLFunctions::glEnable(gl_const::GLBlending);
+    else
+      GLFunctions::glDisable(gl_const::GLBlending);
+  }
+  //TODO(@rokuz,@darina): Metal?
 }
 
 bool Blending::operator<(Blending const & other) const { return m_isEnabled < other.m_isEnabled; }
@@ -170,23 +181,29 @@ bool RenderState::operator!=(RenderState const & other) const
 
 uint8_t TextureState::m_usedSlots = 0;
 
-void TextureState::ApplyTextures(RenderState const & state, ref_ptr<GpuProgram> program)
+void TextureState::ApplyTextures(ref_ptr<GraphicsContext> context, RenderState const & state,
+                                 ref_ptr<GpuProgram> program)
 {
   m_usedSlots = 0;
-
-  for (auto const & texture : state.GetTextures())
+  auto const apiVersion = context->GetApiVersion();
+  if (apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3)
   {
-    auto const tex = texture.second;
-    int8_t texLoc = -1;
-    if (tex != nullptr && (texLoc = program->GetUniformLocation(texture.first)) >= 0)
+    ref_ptr<dp::GLGpuProgram> p = program;
+    for (auto const &texture : state.GetTextures())
     {
-      GLFunctions::glActiveTexture(gl_const::GLTexture0 + m_usedSlots);
-      tex->Bind();
-      GLFunctions::glUniformValuei(texLoc, m_usedSlots);
-      tex->SetFilter(state.GetTextureFilter());
-      m_usedSlots++;
+      auto const tex = texture.second;
+      int8_t texLoc = -1;
+      if (tex != nullptr && (texLoc = p->GetUniformLocation(texture.first)) >= 0)
+      {
+        GLFunctions::glActiveTexture(gl_const::GLTexture0 + m_usedSlots);
+        tex->Bind();
+        GLFunctions::glUniformValuei(texLoc, m_usedSlots);
+        tex->SetFilter(state.GetTextureFilter());
+        m_usedSlots++;
+      }
     }
   }
+  //TODO(@rokuz,@darina): Metal?
 }
 
 uint8_t TextureState::GetLastUsedSlots()
@@ -194,20 +211,25 @@ uint8_t TextureState::GetLastUsedSlots()
   return m_usedSlots;
 }
 
-void ApplyBlending(RenderState const & state)
+void ApplyBlending(ref_ptr<GraphicsContext> context, RenderState const & state)
 {
-  state.GetBlending().Apply();
+  state.GetBlending().Apply(std::move(context));
 }
 
 void ApplyState(ref_ptr<GraphicsContext> context, ref_ptr<GpuProgram> program, RenderState const & state)
 {
-  TextureState::ApplyTextures(state, program);
-  ApplyBlending(state);
+  TextureState::ApplyTextures(context, state, std::move(program));
+  ApplyBlending(context, state);
   context->SetDepthTestEnabled(state.GetDepthTestEnabled());
   if (state.GetDepthTestEnabled())
     context->SetDepthTestFunction(state.GetDepthFunction());
 
-  ASSERT_GREATER_OR_EQUAL(state.GetLineWidth(), 0, ());
-  GLFunctions::glLineWidth(static_cast<uint32_t>(state.GetLineWidth()));
+  // Metal does not support line width.
+  auto const apiVersion = context->GetApiVersion();
+  if (apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3)
+  {
+    ASSERT_GREATER_OR_EQUAL(state.GetLineWidth(), 0, ());
+    GLFunctions::glLineWidth(static_cast<uint32_t>(state.GetLineWidth()));
+  }
 }
 }  // namespace dp

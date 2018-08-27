@@ -1,6 +1,6 @@
 #include "drape/hw_texture_ios.hpp"
-#include "drape/glfunctions.hpp"
-#include "drape/glIncludes.hpp"
+#include "drape/gl_functions.hpp"
+#include "drape/gl_includes.hpp"
 
 #include "base/logging.hpp"
 
@@ -111,8 +111,9 @@ void HWTextureAllocatorApple::RiseFlushFlag()
   m_needFlush = true;
 }
 
-drape_ptr<HWTexture> HWTextureAllocatorApple::CreateTexture()
+drape_ptr<HWTexture> HWTextureAllocatorApple::CreateTexture(ref_ptr<dp::GraphicsContext> context)
 {
+  UNUSED_VALUE(context);
   return make_unique_dp<HWTextureApple>(make_ref<HWTextureAllocatorApple>(this));
 }
 
@@ -142,9 +143,9 @@ HWTextureApple::~HWTextureApple()
   }
 }
 
-void HWTextureApple::Create(Params const & params, ref_ptr<void> data)
+void HWTextureApple::Create(ref_ptr<dp::GraphicsContext> context, Params const & params, ref_ptr<void> data)
 {
-  TBase::Create(params, data);
+  TBase::Create(context, params, data);
 
   m_allocator = params.m_allocator.downcast<HWTextureAllocatorApple>();
   m_directBuffer = m_allocator->CVCreatePixelBuffer(params.m_width, params.m_height, params.m_format);
@@ -195,6 +196,30 @@ void HWTextureApple::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t
   Unlock();
 }
 
+void HWTextureApple::Bind() const
+{
+  ASSERT(Validate(), ());
+  if (m_textureID != 0)
+    GLFunctions::glBindTexture(GetID());
+}
+  
+void HWTextureApple::SetFilter(TextureFilter filter)
+{
+  ASSERT(Validate(), ());
+  if (m_filter != filter)
+  {
+    m_filter = filter;
+    auto const f = DecodeTextureFilter(m_filter);
+    GLFunctions::glTexParameter(gl_const::GLMinFilter, f);
+    GLFunctions::glTexParameter(gl_const::GLMagFilter, f);
+  }
+}
+  
+bool HWTextureApple::Validate() const
+{
+  return GetID() != 0;
+}
+  
 void HWTextureApple::Lock()
 {
   ASSERT(m_directPointer == nullptr, ());

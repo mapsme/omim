@@ -3,11 +3,11 @@
 #include "drape/drape_tests/memory_comparer.hpp"
 #include "drape/drape_tests/dummy_texture.hpp"
 
-#include "drape/glconstants.hpp"
+#include "drape/gl_constants.hpp"
 #include "drape/texture_of_colors.hpp"
 #include "drape/texture.hpp"
 
-#include "drape/drape_tests/glmock_functions.hpp"
+#include "drape/drape_tests/gl_mock_functions.hpp"
 
 #include <gmock/gmock.h>
 
