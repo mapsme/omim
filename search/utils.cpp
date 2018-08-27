@@ -6,6 +6,7 @@
 #include "search/mwm_context.hpp"
 
 #include "indexer/data_source.hpp"
+#include "indexer/mwm_set.hpp"
 
 #include "base/cancellable.hpp"
 
@@ -68,28 +69,6 @@ vector<uint32_t> GetCategoryTypes(string const & name, string const & locale,
 
   my::SortUnique(types);
   return types;
-}
-
-MwmSet::MwmHandle FindWorld(DataSource const & dataSource,
-                            vector<shared_ptr<MwmInfo>> const & infos)
-{
-  MwmSet::MwmHandle handle;
-  for (auto const & info : infos)
-  {
-    if (info->GetType() == MwmInfo::WORLD)
-    {
-      handle = dataSource.GetMwmHandleById(MwmSet::MwmId(info));
-      break;
-    }
-  }
-  return handle;
-}
-
-MwmSet::MwmHandle FindWorld(DataSource const & dataSource)
-{
-  vector<shared_ptr<MwmInfo>> infos;
-  dataSource.GetMwmsInfo(infos);
-  return FindWorld(dataSource, infos);
 }
 
 void ForEachOfTypesInRect(DataSource const & dataSource, vector<uint32_t> const & types,

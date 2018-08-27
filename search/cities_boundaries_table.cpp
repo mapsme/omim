@@ -3,10 +3,10 @@
 #include "search/categories_cache.hpp"
 #include "search/localities_source.hpp"
 #include "search/mwm_context.hpp"
-#include "search/utils.hpp"
 
 #include "indexer/cities_boundaries_serdes.hpp"
 #include "indexer/mwm_set.hpp"
+#include "indexer/utils.hpp"
 
 #include "coding/reader.hpp"
 
@@ -32,7 +32,7 @@ bool CitiesBoundariesTable::Boundaries::HasPoint(m2::PointD const & p) const
 // CitiesBoundariesTable ---------------------------------------------------------------------------
 bool CitiesBoundariesTable::Load()
 {
-  auto handle = FindWorld(m_dataSource);
+  auto handle = indexer::FindWorld(m_dataSource);
   if (!handle.IsAlive())
   {
     LOG(LWARNING, ("Can't find World map file."));
