@@ -251,10 +251,17 @@ BOOL gIsFirstMyPositionMode = YES;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
   self.view.clipsToBounds = YES;
   [self processMyPositionStateModeEvent:MWMMyPositionModePendingPosition];
   [MWMKeyboard addObserver:self];
   self.welcomePageController = [MWMWelcomePageController controllerWithParent:self];
+}
+
+- (void)viewDidLayoutSubviews
+{
+  [super viewDidLayoutSubviews];
+  [(EAGLView *)self.view createDrapeEngine];
 }
 
 - (void)mwm_refreshUI

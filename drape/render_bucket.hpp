@@ -8,14 +8,8 @@
 
 class ScreenBase;
 
-namespace df
-{
-class BatchMergeHelper;
-}
-
 namespace dp
 {
-
 class GraphicsContext;
 class DebugRenderer;
 class OverlayHandle;
@@ -24,9 +18,8 @@ class VertexArrayBuffer;
 
 class RenderBucket
 {
-  friend class df::BatchMergeHelper;
 public:
-  RenderBucket(drape_ptr<VertexArrayBuffer> && buffer);
+  explicit RenderBucket(drape_ptr<VertexArrayBuffer> && buffer);
   ~RenderBucket();
 
   ref_ptr<VertexArrayBuffer> GetBuffer();
@@ -68,5 +61,4 @@ private:
   vector<drape_ptr<OverlayHandle> > m_overlay;
   drape_ptr<VertexArrayBuffer> m_buffer;
 };
-
-} // namespace dp
+}  // namespace dp

@@ -1,7 +1,7 @@
 #include "drape/hw_texture.hpp"
 
-#include "drape/glextensions_list.hpp"
-#include "drape/glfunctions.hpp"
+#include "drape/gl_extensions_list.hpp"
+#include "drape/gl_functions.hpp"
 #include "drape/utils/gpu_mem_tracker.hpp"
 
 #include "platform/platform.hpp"
@@ -11,14 +11,18 @@
 
 #if defined(OMIM_OS_IPHONE)
 #include "drape/hw_texture_ios.hpp"
-#endif
 
-#define ASSERT_ID ASSERT(GetID() != 0, ())
+extern drape_ptr<dp::HWTextureAllocator> CreateMetalAllocator();
+extern ref_ptr<dp::HWTextureAllocator> GetDefaultMetalAllocator();
+#endif
 
 namespace dp
 {
 void UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType)
 {
+  auto const apiVersion = GLFunctions::CurrentApiVersion;
+  CHECK(apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3, ());
+
   switch (format)
   {
   case TextureFormat::RGBA8:
@@ -28,21 +32,19 @@ void UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType)
 
   case TextureFormat::Alpha:
     // On OpenGL ES3 GLAlpha is not supported, we use GLRed instead.
-    layout = GLFunctions::CurrentApiVersion == dp::ApiVersion::OpenGLES2 ? gl_const::GLAlpha
-                                                                         : gl_const::GLRed;
+    layout = apiVersion == dp::ApiVersion::OpenGLES2 ? gl_const::GLAlpha : gl_const::GLRed;
     pixelType = gl_const::GL8BitOnChannel;
     return;
 
   case TextureFormat::RedGreen:
     // On OpenGL ES2 2-channel textures are not supported.
-    layout = GLFunctions::CurrentApiVersion == dp::ApiVersion::OpenGLES2 ? gl_const::GLRGBA
-                                                                         : gl_const::GLRedGreen;
+    layout = (apiVersion == dp::ApiVersion::OpenGLES2) ? gl_const::GLRGBA : gl_const::GLRedGreen;
     pixelType = gl_const::GL8BitOnChannel;
     return;
 
   case TextureFormat::DepthStencil:
     // OpenGLES2 does not support texture-based depth-stencil.
-    CHECK(GLFunctions::CurrentApiVersion != dp::ApiVersion::OpenGLES2, ());
+    CHECK(apiVersion != dp::ApiVersion::OpenGLES2, ());
     layout = gl_const::GLDepthStencil;
     pixelType = gl_const::GLUnsignedInt24_8Type;
     return;
@@ -61,6 +63,9 @@ void UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType)
 
 glConst DecodeTextureFilter(TextureFilter filter)
 {
+  auto const apiVersion = GLFunctions::CurrentApiVersion;
+  CHECK(apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3, ());
+
   switch (filter)
   {
   case TextureFilter::Linear: return gl_const::GLLinear;
@@ -71,6 +76,9 @@ glConst DecodeTextureFilter(TextureFilter filter)
 
 glConst DecodeTextureWrapping(TextureWrapping wrapping)
 {
+  auto const apiVersion = GLFunctions::CurrentApiVersion;
+  CHECK(apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3, ());
+
   switch (wrapping)
   {
   case TextureWrapping::ClampToEdge: return gl_const::GLClampToEdge;
@@ -87,9 +95,13 @@ HWTexture::~HWTexture()
 #endif
 }
 
-void HWTexture::Create(Params const & params) { Create(params, nullptr); }
+void HWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & params)
+{
+  Create(std::move(context), params, nullptr);
+}
 
-void HWTexture::Create(Params const & params, ref_ptr<void> /* data */)
+void HWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & params,
+                       ref_ptr<void> /* data */)
 {
   m_width = params.m_width;
   m_height = params.m_height;
@@ -97,7 +109,7 @@ void HWTexture::Create(Params const & params, ref_ptr<void> /* data */)
   m_filter = params.m_filter;
 
   uint32_t const bytesPerPixel = GetBytesPerPixel(m_format);
-  if (GLFunctions::CurrentApiVersion == dp::ApiVersion::OpenGLES3 && params.m_usePixelBuffer &&
+  if (context->GetApiVersion() == dp::ApiVersion::OpenGLES3 && params.m_usePixelBuffer &&
       bytesPerPixel > 0)
   {
     float const kPboPercent = 0.1f;
@@ -121,44 +133,26 @@ TextureFormat HWTexture::GetFormat() const { return m_format; }
 
 uint32_t HWTexture::GetWidth() const
 {
-  ASSERT_ID;
+  ASSERT(Validate(), ());
   return m_width;
 }
 
 uint32_t HWTexture::GetHeight() const
 {
-  ASSERT_ID;
+  ASSERT(Validate(), ());
   return m_height;
 }
 
 float HWTexture::GetS(uint32_t x) const
 {
-  ASSERT_ID;
+  ASSERT(Validate(), ());
   return x / static_cast<float>(m_width);
 }
 
 float HWTexture::GetT(uint32_t y) const
 {
-  ASSERT_ID;
+  ASSERT(Validate(), ());
   return y / static_cast<float>(m_height);
-}
-
-void HWTexture::Bind() const
-{
-  ASSERT_ID;
-  if (m_textureID != 0)
-    GLFunctions::glBindTexture(GetID());
-}
-
-void HWTexture::SetFilter(TextureFilter filter)
-{
-  if (m_filter != filter)
-  {
-    m_filter = filter;
-    auto const f = DecodeTextureFilter(m_filter);
-    GLFunctions::glTexParameter(gl_const::GLMinFilter, f);
-    GLFunctions::glTexParameter(gl_const::GLMagFilter, f);
-  }
 }
 
 uint32_t HWTexture::GetID() const { return m_textureID; }
@@ -172,9 +166,10 @@ OpenGLHWTexture::~OpenGLHWTexture()
     GLFunctions::glDeleteBuffer(m_pixelBufferID);
 }
 
-void OpenGLHWTexture::Create(Params const & params, ref_ptr<void> data)
+void OpenGLHWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & params,
+                             ref_ptr<void> data)
 {
-  Base::Create(params, data);
+  Base::Create(std::move(context), params, data);
 
   m_textureID = GLFunctions::glGenTexture();
   Bind();
@@ -206,7 +201,7 @@ void OpenGLHWTexture::Create(Params const & params, ref_ptr<void> data)
 void OpenGLHWTexture::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height,
                                  ref_ptr<void> data)
 {
-  ASSERT_ID;
+  ASSERT(Validate(), ());
   glConst layout;
   glConst pixelType;
   UnpackFormat(m_format, layout, pixelType);
@@ -226,8 +221,33 @@ void OpenGLHWTexture::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_
   }
 }
 
-drape_ptr<HWTexture> OpenGLHWTextureAllocator::CreateTexture()
+void OpenGLHWTexture::Bind() const
 {
+  ASSERT(Validate(), ());
+  if (m_textureID != 0)
+    GLFunctions::glBindTexture(GetID());
+}
+
+void OpenGLHWTexture::SetFilter(TextureFilter filter)
+{
+  ASSERT(Validate(), ());
+  if (m_filter != filter)
+  {
+    m_filter = filter;
+    auto const f = DecodeTextureFilter(m_filter);
+    GLFunctions::glTexParameter(gl_const::GLMinFilter, f);
+    GLFunctions::glTexParameter(gl_const::GLMagFilter, f);
+  }
+}
+
+bool OpenGLHWTexture::Validate() const
+{
+  return GetID() != 0;
+}
+
+drape_ptr<HWTexture> OpenGLHWTextureAllocator::CreateTexture(ref_ptr<dp::GraphicsContext> context)
+{
+  UNUSED_VALUE(context);
   return make_unique_dp<OpenGLHWTexture>();
 }
 
@@ -236,12 +256,21 @@ void OpenGLHWTextureAllocator::Flush()
   GLFunctions::glFlush();
 }
 
-drape_ptr<HWTextureAllocator> CreateAllocator()
+drape_ptr<HWTextureAllocator> CreateAllocator(ref_ptr<dp::GraphicsContext> context)
 {
-  if (GLFunctions::CurrentApiVersion == dp::ApiVersion::OpenGLES3)
+  auto const apiVersion = context->GetApiVersion();
+  if (apiVersion == dp::ApiVersion::Metal)
   {
-    return make_unique_dp<OpenGLHWTextureAllocator>();
+#if defined(OMIM_OS_IPHONE)
+    return CreateMetalAllocator();
+#endif
+    CHECK(false, ("Metal rendering is supported now only on iOS."));
+    return nullptr;
   }
+
+  if (apiVersion == dp::ApiVersion::OpenGLES3)
+    return make_unique_dp<OpenGLHWTextureAllocator>();
+
 #if defined(OMIM_OS_IPHONE) && !defined(OMIM_OS_IPHONE_SIMULATOR)
   return make_unique_dp<HWTextureAllocatorApple>();
 #else
@@ -249,8 +278,18 @@ drape_ptr<HWTextureAllocator> CreateAllocator()
 #endif
 }
 
-ref_ptr<HWTextureAllocator> GetDefaultAllocator()
+ref_ptr<HWTextureAllocator> GetDefaultAllocator(ref_ptr<dp::GraphicsContext> context)
 {
+  auto const apiVersion = context->GetApiVersion();
+  if (apiVersion == dp::ApiVersion::Metal)
+  {
+#if defined(OMIM_OS_IPHONE)
+    return GetDefaultMetalAllocator();
+#endif
+    CHECK(false, ("Metal rendering is supported now only on iOS."));
+    return nullptr;
+  }
+
   static OpenGLHWTextureAllocator s_allocator;
   return make_ref<HWTextureAllocator>(&s_allocator);
 }

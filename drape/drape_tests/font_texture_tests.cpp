@@ -1,5 +1,5 @@
 #include "drape/drape_tests/dummy_texture.hpp"
-#include "drape/drape_tests/glmock_functions.hpp"
+#include "drape/drape_tests/gl_mock_functions.hpp"
 #include "drape/drape_tests/img.hpp"
 
 #include "platform/platform.hpp"

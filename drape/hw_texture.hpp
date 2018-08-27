@@ -1,6 +1,7 @@
 #pragma once
 
-#include "drape/glconstants.hpp"
+#include "drape/gl_constants.hpp"
+#include "drape/graphics_context.hpp"
 #include "drape/pointers.hpp"
 #include "drape/texture_types.hpp"
 
@@ -24,19 +25,25 @@ public:
     TextureWrapping m_wrapTMode = TextureWrapping::ClampToEdge;
     TextureFormat m_format = TextureFormat::Unspecified;
     bool m_usePixelBuffer = false;
+    bool m_isRenderTarget = false;
+    bool m_isMutable = false;
 
     ref_ptr<HWTextureAllocator> m_allocator;
   };
 
-  void Create(Params const & params);
-  virtual void Create(Params const & params, ref_ptr<void> data) = 0;
+  void Create(ref_ptr<dp::GraphicsContext> context, Params const & params);
+
+  virtual void Create(ref_ptr<dp::GraphicsContext> context, Params const & params,
+                      ref_ptr<void> data) = 0;
   virtual void UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height,
                           ref_ptr<void> data) = 0;
 
-  void Bind() const;
+  virtual void Bind() const = 0;
 
-  // Texture must be bound before calling this method.
-  void SetFilter(TextureFilter filter);
+  // For OpenGL texture must be bound before calling this method.
+  virtual void SetFilter(TextureFilter filter) = 0;
+
+  virtual bool Validate() const = 0;
 
   TextureFormat GetFormat() const;
   uint32_t GetWidth() const;
@@ -62,7 +69,7 @@ class HWTextureAllocator
 public:
   virtual ~HWTextureAllocator() = default;
 
-  virtual drape_ptr<HWTexture> CreateTexture() = 0;
+  virtual drape_ptr<HWTexture> CreateTexture(ref_ptr<dp::GraphicsContext> context) = 0;
   virtual void Flush() = 0;
 };
 
@@ -72,20 +79,24 @@ class OpenGLHWTexture : public HWTexture
 
 public:
   ~OpenGLHWTexture() override;
-  void Create(Params const & params, ref_ptr<void> data) override;
+  void Create(ref_ptr<dp::GraphicsContext> context, Params const & params,
+              ref_ptr<void> data) override;
   void UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t height,
                   ref_ptr<void> data) override;
+  void Bind() const override;
+  void SetFilter(TextureFilter filter) override;
+  bool Validate() const override;
 };
 
 class OpenGLHWTextureAllocator : public HWTextureAllocator
 {
 public:
-  drape_ptr<HWTexture> CreateTexture() override;
+  drape_ptr<HWTexture> CreateTexture(ref_ptr<dp::GraphicsContext> context) override;
   void Flush() override;
 };
 
-ref_ptr<HWTextureAllocator> GetDefaultAllocator();
-drape_ptr<HWTextureAllocator> CreateAllocator();
+ref_ptr<HWTextureAllocator> GetDefaultAllocator(ref_ptr<dp::GraphicsContext> context);
+drape_ptr<HWTextureAllocator> CreateAllocator(ref_ptr<dp::GraphicsContext> context);
 
 void UnpackFormat(TextureFormat format, glConst & layout, glConst & pixelType);
 glConst DecodeTextureFilter(TextureFilter filter);
