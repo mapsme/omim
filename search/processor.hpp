@@ -63,7 +63,8 @@ public:
   static double const kMaxViewportRadiusM;
 
   Processor(DataSource const & dataSource, CategoriesHolder const & categories,
-            std::vector<Suggest> const & suggests, storage::CountryInfoGetter const & infoGetter);
+            CitiesBoundariesTable const & citiesBoundaries, std::vector<Suggest> const & suggests,
+            storage::CountryInfoGetter const & infoGetter);
 
   void SetViewport(m2::RectD const & viewport);
   void SetPreferredLocale(std::string const & locale);
@@ -94,7 +95,6 @@ public:
   void InitEmitter(SearchParams const & searchParams);
 
   void ClearCaches();
-  void LoadCitiesBoundaries();
   void LoadCountriesTree();
 
   void OnBookmarksCreated(std::vector<std::pair<bookmarks::Id, bookmarks::Doc>> const & marks);
@@ -133,7 +133,7 @@ protected:
   int8_t m_currentLocaleCode = StringUtf8Multilang::kUnsupportedLanguageCode;
 
   VillagesCache m_villagesCache;
-  CitiesBoundariesTable m_citiesBoundaries;
+  CitiesBoundariesTable const & m_citiesBoundaries;
 
   KeywordLangMatcher m_keywordsScorer;
   Emitter m_emitter;
