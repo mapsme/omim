@@ -105,4 +105,4 @@
 
 #define BOOKING_EXCLUDED_FILE "booking_excluded.txt"
 
-auto constexpr kInvalidRatingValue = -1.0f;
+auto constexpr kInvalidRatingValue = 0.0f;
