@@ -1,6 +1,7 @@
 #pragma once
 
 #include "search/bookmarks/processor.hpp"
+#include "search/cities_boundaries_table.hpp"
 #include "search/result.hpp"
 #include "search/search_params.hpp"
 #include "search/suggest.hpp"
@@ -161,6 +162,8 @@ private:
 
   void DoSearch(SearchParams const & params, std::shared_ptr<ProcessorHandle> handle,
                 Processor & processor);
+
+  CitiesBoundariesTable m_citiesBoundaries;
 
   std::vector<Suggest> m_suggests;
 

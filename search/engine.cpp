@@ -94,7 +94,7 @@ Engine::Params::Params(string const & locale, size_t numThreads)
 // Engine ------------------------------------------------------------------------------------------
 Engine::Engine(DataSource & dataSource, CategoriesHolder const & categories,
                storage::CountryInfoGetter const & infoGetter, Params const & params)
-  : m_shutdown(false)
+  : m_citiesBoundaries(dataSource), m_shutdown(false)
 {
   InitSuggestions doInit;
   categories.ForEachName(bind<void>(ref(doInit), placeholders::_1));
@@ -103,7 +103,8 @@ Engine::Engine(DataSource & dataSource, CategoriesHolder const & categories,
   m_contexts.resize(params.m_numThreads);
   for (size_t i = 0; i < params.m_numThreads; ++i)
   {
-    auto processor = make_unique<Processor>(dataSource, categories, m_suggests, infoGetter);
+    auto processor =
+        make_unique<Processor>(dataSource, categories, m_citiesBoundaries, m_suggests, infoGetter);
     processor->SetPreferredLocale(params.m_locale);
     m_contexts[i].m_processor = move(processor);
   }
@@ -151,8 +152,10 @@ void Engine::ClearCaches()
 
 void Engine::LoadCitiesBoundaries()
 {
-  PostMessage(Message::TYPE_BROADCAST,
-              [](Processor & processor) { processor.LoadCitiesBoundaries(); });
+  if (m_citiesBoundaries.Load())
+    LOG(LINFO, ("Loaded cities boundaries"));
+  else
+    LOG(LWARNING, ("Can't load cities boundaries"));
 }
 
 void Engine::LoadCountriesTree()

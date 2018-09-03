@@ -142,13 +142,14 @@ double const Processor::kMinViewportRadiusM = 5.0 * 1000;
 double const Processor::kMaxViewportRadiusM = 50.0 * 1000;
 
 Processor::Processor(DataSource const & dataSource, CategoriesHolder const & categories,
+                     CitiesBoundariesTable const & citiesBoundaries,
                      vector<Suggest> const & suggests,
                      storage::CountryInfoGetter const & infoGetter)
   : m_categories(categories)
   , m_infoGetter(infoGetter)
   , m_position(0, 0)
   , m_villagesCache(static_cast<::base::Cancellable const &>(*this))
-  , m_citiesBoundaries(dataSource)
+  , m_citiesBoundaries(citiesBoundaries)
   , m_keywordsScorer(LanguageTier::LANGUAGE_TIER_COUNT)
   , m_ranker(dataSource, m_citiesBoundaries, infoGetter, m_keywordsScorer, m_emitter, categories,
              suggests, m_villagesCache, static_cast<::base::Cancellable const &>(*this))
@@ -309,14 +310,6 @@ m2::RectD const & Processor::GetViewport() const
 {
   ASSERT(m_viewport.IsValid(), ());
   return m_viewport;
-}
-
-void Processor::LoadCitiesBoundaries()
-{
-  if (m_citiesBoundaries.Load())
-    LOG(LINFO, ("Loaded cities boundaries"));
-  else
-    LOG(LWARNING, ("Can't load cities boundaries"));
 }
 
 void Processor::LoadCountriesTree() { m_ranker.LoadCountriesTree(); }
