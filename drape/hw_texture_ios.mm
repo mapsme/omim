@@ -147,8 +147,8 @@ void HWTextureApple::Create(ref_ptr<dp::GraphicsContext> context, Params const &
 {
   TBase::Create(context, params, data);
 
-  m_allocator = params.m_allocator.downcast<HWTextureAllocatorApple>();
-  m_directBuffer = m_allocator->CVCreatePixelBuffer(params.m_width, params.m_height, params.m_format);
+  m_allocator = m_params.m_allocator.downcast<HWTextureAllocatorApple>();
+  m_directBuffer = m_allocator->CVCreatePixelBuffer(m_params.m_width, m_params.m_height, params.m_format);
 
   glConst layout, pixelType;
   UnpackFormat(params.m_format, layout, pixelType);
@@ -157,17 +157,17 @@ void HWTextureApple::Create(ref_ptr<dp::GraphicsContext> context, Params const &
 
   m_textureID = CVOpenGLESTextureGetName(m_texture);
   GLFunctions::glBindTexture(m_textureID);
-  auto const f = DecodeTextureFilter(params.m_filter);
+  auto const f = DecodeTextureFilter(m_params.m_filter);
   GLFunctions::glTexParameter(gl_const::GLMinFilter, f);
   GLFunctions::glTexParameter(gl_const::GLMagFilter, f);
-  GLFunctions::glTexParameter(gl_const::GLWrapS, DecodeTextureWrapping(params.m_wrapSMode));
-  GLFunctions::glTexParameter(gl_const::GLWrapT, DecodeTextureWrapping(params.m_wrapTMode));
+  GLFunctions::glTexParameter(gl_const::GLWrapS, DecodeTextureWrapping(m_params.m_wrapSMode));
+  GLFunctions::glTexParameter(gl_const::GLWrapT, DecodeTextureWrapping(m_params.m_wrapTMode));
 
   if (data == nullptr)
     return;
 
   Lock();
-  memcpy(m_directPointer, data.get(), m_width * m_height * GetBytesPerPixel(m_format));
+  memcpy(m_directPointer, data.get(), m_params.m_width * m_params.m_height * GetBytesPerPixel(m_params.m_format));
   Unlock();
 }
 
@@ -178,7 +178,8 @@ void HWTextureApple::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t
   if (bytesPerPixel == 1)
   {
     gray8c_view_t srcView = interleaved_view(width, height, (gray8c_pixel_t *)data.get(), width);
-    gray8_view_t dstView = interleaved_view(m_width, m_height, (gray8_pixel_t *)m_directPointer, m_width);
+    gray8_view_t dstView = interleaved_view(m_params.m_width, m_params.m_height,
+                                            (gray8_pixel_t *)m_directPointer, m_params.m_width);
     gray8_view_t subDstView = subimage_view(dstView, x, y, width, height);
     copy_pixels(srcView, subDstView);
   }
@@ -187,9 +188,9 @@ void HWTextureApple::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t
     rgba8c_view_t srcView = interleaved_view(width, height,
                                              (rgba8c_pixel_t *)data.get(),
                                              width * bytesPerPixel);
-    rgba8_view_t dstView = interleaved_view(m_width, m_height,
+    rgba8_view_t dstView = interleaved_view(m_params.m_width, m_params.m_height,
                                             (rgba8_pixel_t *)m_directPointer,
-                                            m_width * bytesPerPixel);
+                                            m_params.m_width * bytesPerPixel);
     rgba8_view_t subDstView = subimage_view(dstView, x, y, width, height);
     copy_pixels(srcView, subDstView);
   }
@@ -206,10 +207,10 @@ void HWTextureApple::Bind() const
 void HWTextureApple::SetFilter(TextureFilter filter)
 {
   ASSERT(Validate(), ());
-  if (m_filter != filter)
+  if (m_params.m_filter != filter)
   {
-    m_filter = filter;
-    auto const f = DecodeTextureFilter(m_filter);
+    m_params.m_filter = filter;
+    auto const f = DecodeTextureFilter(m_params.m_filter);
     GLFunctions::glTexParameter(gl_const::GLMinFilter, f);
     GLFunctions::glTexParameter(gl_const::GLMagFilter, f);
   }
@@ -226,7 +227,8 @@ void HWTextureApple::Lock()
 
   CHECK_EQUAL(CVPixelBufferLockBaseAddress(m_directBuffer, 0), kCVReturnSuccess, ());
 
-  ASSERT_EQUAL(CVPixelBufferGetBytesPerRow(m_directBuffer), m_width * GetBytesPerPixel(m_format), ());
+  ASSERT_EQUAL(CVPixelBufferGetBytesPerRow(m_directBuffer),
+               m_params.m_width * GetBytesPerPixel(m_params.m_format), ());
   m_directPointer = CVPixelBufferGetBaseAddress(m_directBuffer);
 }
 

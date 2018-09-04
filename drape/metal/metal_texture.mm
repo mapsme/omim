@@ -70,8 +70,8 @@ void MetalTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & p
     texDesc.storageMode = MTLStorageModeShared;
     m_texture = [metalDevice newTextureWithDescriptor:texDesc];
     CHECK(m_texture != nil, ());
-    MTLRegion region = MTLRegionMake2D(0, 0, params.m_width, params.m_height);
-    auto const rowBytes = params.m_width * GetBytesPerPixel(m_format);
+    MTLRegion region = MTLRegionMake2D(0, 0, m_params.m_width, m_params.m_height);
+    auto const rowBytes = m_params.m_width * GetBytesPerPixel(m_params.m_format);
     [m_texture replaceRegion:region mipmapLevel:0 withBytes:data.get() bytesPerRow:rowBytes];
   }
 }
@@ -80,7 +80,7 @@ void MetalTexture::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_t h
 {
   CHECK(m_isMutable, ("Upload data is avaivable only for mutable textures."));
   MTLRegion region = MTLRegionMake2D(x, y, width, height);
-  auto const rowBytes = width * GetBytesPerPixel(m_format);
+  auto const rowBytes = width * GetBytesPerPixel(m_params.m_format);
   [m_texture replaceRegion:region mipmapLevel:0 withBytes:data.get() bytesPerRow:rowBytes];
 }
 

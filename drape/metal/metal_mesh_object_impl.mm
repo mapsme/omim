@@ -84,7 +84,6 @@ public:
   
   void DrawPrimitives(ref_ptr<dp::GraphicsContext> context, uint32_t verticesCount) override
   {
-    CHECK(context != nullptr, ());
     ref_ptr<dp::metal::MetalBaseContext> metalContext = context;
     [metalContext->GetCommandEncoder() drawPrimitives:GetPrimitiveType(m_mesh->m_drawPrimitive)
                                           vertexStart:0

@@ -1,15 +1,20 @@
 #include "drape/metal/metal_base_context.hpp"
+#include "drape/metal/metal_gpu_program.hpp"
+#include "drape/metal/metal_texture.hpp"
+
+#include "drape/framebuffer.hpp"
 
 #include "base/assert.hpp"
 
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <utility>
 
 namespace dp
 {
 namespace metal
-{  
+{
 MetalBaseContext::MetalBaseContext(id<MTLDevice> device, id<MTLTexture> depthStencilTexture)
   : m_device(device)
   , m_depthStencilTexture(depthStencilTexture)
@@ -103,12 +108,35 @@ void MetalBaseContext::ApplyFramebuffer(std::string const & framebufferLabel)
   }
   else
   {
-    // TODO(@rokuz,@darina): Bind framebuffer textures
+    ref_ptr<Framebuffer> framebuffer = m_currentFramebuffer;
+    
+    ASSERT(dynamic_cast<MetalTexture *>(framebuffer->GetTexture()->GetHardwareTexture().get()) != nullptr, ());
+    ref_ptr<MetalTexture> colorAttachment = framebuffer->GetTexture()->GetHardwareTexture();
+    m_renderPassDescriptor.colorAttachments[0].texture = colorAttachment->GetTexture();
+    
+    auto const depthStencilRef = framebuffer->GetDepthStencilRef();
+    if (depthStencilRef != nullptr)
+    {
+      ASSERT(dynamic_cast<MetalTexture *>(depthStencilRef->GetTexture()->GetHardwareTexture().get()) != nullptr, ());
+      ref_ptr<MetalTexture> depthStencilAttachment = depthStencilRef->GetTexture()->GetHardwareTexture();
+      m_renderPassDescriptor.depthAttachment.texture = depthStencilAttachment->GetTexture();
+      m_renderPassDescriptor.stencilAttachment.texture = depthStencilAttachment->GetTexture();
+    }
+    else
+    {
+      m_renderPassDescriptor.depthAttachment.texture = nil;
+      m_renderPassDescriptor.stencilAttachment.texture = nil;
+    }
   }
   
   CHECK(m_currentCommandEncoder == nil, ("Current command encoder was not finished."));
   m_currentCommandEncoder = [m_frameCommandBuffer renderCommandEncoderWithDescriptor:m_renderPassDescriptor];
   [m_currentCommandEncoder pushDebugGroup:@(framebufferLabel.c_str())];
+  
+  // Default rendering options.
+  [m_currentCommandEncoder setFrontFacingWinding:MTLWindingClockwise];
+  [m_currentCommandEncoder setCullMode:MTLCullModeBack];
+  [m_currentCommandEncoder setStencilReferenceValue:1];
 }
 
 void MetalBaseContext::SetClearColor(dp::Color const & color)
@@ -154,22 +182,22 @@ void MetalBaseContext::SetViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t 
 
 void MetalBaseContext::SetDepthTestEnabled(bool enabled)
 {
-  
+  m_currentDepthStencilKey.m_depthEnabled = enabled;
 }
 
 void MetalBaseContext::SetDepthTestFunction(dp::TestFunction depthFunction)
 {
-  
+  m_currentDepthStencilKey.m_depthFunction = depthFunction;
 }
 
 void MetalBaseContext::SetStencilTestEnabled(bool enabled)
 {
-  
+  m_currentDepthStencilKey.m_stencilEnabled = enabled;
 }
 
 void MetalBaseContext::SetStencilFunction(dp::StencilFace face, dp::TestFunction stencilFunction)
 {
-  
+  m_currentDepthStencilKey.SetStencilFunction(face, stencilFunction);
 }
 
 void MetalBaseContext::SetStencilActions(dp::StencilFace face,
@@ -177,7 +205,7 @@ void MetalBaseContext::SetStencilActions(dp::StencilFace face,
                                          dp::StencilAction depthFailAction,
                                          dp::StencilAction passAction)
 {
-  
+  m_currentDepthStencilKey.SetStencilActions(face, stencilFailAction, depthFailAction, passAction);
 }
   
 id<MTLDevice> MetalBaseContext::GetMetalDevice() const
@@ -189,6 +217,25 @@ id<MTLRenderCommandEncoder> MetalBaseContext::GetCommandEncoder() const
 {
   CHECK(m_currentCommandEncoder != nil, ("Probably encoding commands were called before ApplyFramebuffer."));
   return m_currentCommandEncoder;
+}
+  
+id<MTLDepthStencilState> MetalBaseContext::GetDepthStencilState()
+{
+  return m_metalStates.GetDepthStencilState(m_device, m_currentDepthStencilKey);
+}
+  
+id<MTLRenderPipelineState> MetalBaseContext::GetPipelineState(ref_ptr<GpuProgram> program, bool blendingEnabled)
+{
+  CHECK(m_currentCommandEncoder != nil, ("Probably encoding commands were called before ApplyFramebuffer."));
+  
+  id<MTLTexture> colorTexture = m_renderPassDescriptor.colorAttachments[0].texture;
+  CHECK(colorTexture != nil, ());
+  
+  id<MTLTexture> depthTexture = m_renderPassDescriptor.depthAttachment.texture;
+  MTLPixelFormat depthStencilFormat = (depthTexture != nil) ? depthTexture.pixelFormat : MTLPixelFormatInvalid;
+  
+  MetalStates::PipelineKey const key(program, colorTexture.pixelFormat, depthStencilFormat, blendingEnabled);
+  return m_metalStates.GetPipelineState(m_device, key);
 }
 
 void MetalBaseContext::Present()

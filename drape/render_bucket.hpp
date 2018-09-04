@@ -2,16 +2,15 @@
 
 #include "drape/pointers.hpp"
 
-#include "std/function.hpp"
-#include "std/limits.hpp"
-#include "std/vector.hpp"
+#include <limits>
+#include <vector>
 
 class ScreenBase;
 
 namespace dp
 {
-class GraphicsContext;
 class DebugRenderer;
+class GraphicsContext;
 class OverlayHandle;
 class OverlayTree;
 class VertexArrayBuffer;
@@ -55,10 +54,9 @@ public:
 private:
   void BeforeUpdate();
 
-private:
-  int m_featuresMinZoom = numeric_limits<int>::max();
+  int m_featuresMinZoom = std::numeric_limits<int>::max();
 
-  vector<drape_ptr<OverlayHandle> > m_overlay;
+  std::vector<drape_ptr<OverlayHandle>> m_overlay;
   drape_ptr<VertexArrayBuffer> m_buffer;
 };
 }  // namespace dp

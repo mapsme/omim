@@ -7,19 +7,16 @@
 #include "drape/vertex_array_buffer.hpp"
 
 #include "base/stl_add.hpp"
-#include "std/bind.hpp"
+
+#include <utility>
 
 namespace dp
 {
-
 RenderBucket::RenderBucket(drape_ptr<VertexArrayBuffer> && buffer)
-  : m_buffer(move(buffer))
-{
-}
+  : m_buffer(std::move(buffer))
+{}
 
-RenderBucket::~RenderBucket()
-{
-}
+RenderBucket::~RenderBucket() {}
 
 ref_ptr<VertexArrayBuffer> RenderBucket::GetBuffer()
 {
@@ -28,7 +25,7 @@ ref_ptr<VertexArrayBuffer> RenderBucket::GetBuffer()
 
 drape_ptr<VertexArrayBuffer> && RenderBucket::MoveBuffer()
 {
-  return move(m_buffer);
+  return std::move(m_buffer);
 }
 
 size_t RenderBucket::GetOverlayHandlesCount() const
@@ -144,7 +141,7 @@ void RenderBucket::RenderDebug(ref_ptr<GraphicsContext> context, ScreenBase cons
     if (!screen.PixelRect().IsIntersect(handle->GetPixelRect(screen, false)))
       continue;
 
-    OverlayHandle::Rects const & rects = handle->GetExtendedPixelShape(screen);
+    auto const & rects = handle->GetExtendedPixelShape(screen);
     for (auto const & rect : rects)
     {
       if (screen.isPerspective() && !screen.PixelRectIn3d().IsIntersect(m2::RectD(rect)))
@@ -158,5 +155,4 @@ void RenderBucket::RenderDebug(ref_ptr<GraphicsContext> context, ScreenBase cons
     }
   }
 }
-
-} // namespace dp
+}  // namespace dp

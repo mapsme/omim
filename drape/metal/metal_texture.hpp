@@ -27,6 +27,8 @@ public:
   void SetFilter(TextureFilter filter) override;
   bool Validate() const override;
   
+  id<MTLTexture> GetTexture() const { return m_texture; }
+  
 private:
   ref_ptr<MetalTextureAllocator> m_allocator;
   id<MTLTexture> m_texture;

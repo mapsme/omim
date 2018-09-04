@@ -102,12 +102,12 @@ UNIT_TEST(UploadingGlyphs)
     ;
 
   Texture::Params p;
-  p.m_allocator = GetDefaultAllocator();
+  p.m_allocator = GetDefaultAllocator(nullptr /* context */);
   p.m_format = dp::TextureFormat::Alpha;
   p.m_width = p.m_height = 128;
 
   DummyTexture tex;
-  tex.Create(p);
+  tex.Create(nullptr /* context */, p);
   EXPECTGL(glTexSubImage2D(_, _, _, _, _, _, _))
       .WillRepeatedly(Invoke(&r, &UploadedRender::glMemoryToQImage));
   index.UploadResources(make_ref(&tex));
