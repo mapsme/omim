@@ -16,7 +16,7 @@ enum ClearBits: uint32_t
 
 enum class TestFunction : uint8_t
 {
-  Never,
+  Never = 0,
   Less,
   Equal,
   LessOrEqual,
@@ -28,14 +28,14 @@ enum class TestFunction : uint8_t
 
 enum class StencilFace : uint8_t
 {
-  Front,
+  Front = 0,
   Back,
   FrontAndBack
 };
 
 enum class StencilAction : uint8_t
 {
-  Keep,
+  Keep = 0,
   Zero,
   Replace,
   Increment,

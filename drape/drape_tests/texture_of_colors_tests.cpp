@@ -94,13 +94,13 @@ UNIT_TEST(ColorPalleteUploadingSingleRow)
   InitOpenGLTextures(width, height);
 
   Texture::Params p;
-  p.m_allocator = GetDefaultAllocator();
+  p.m_allocator = GetDefaultAllocator(nullptr /* context */);
   p.m_format = dp::TextureFormat::RGBA8;
   p.m_width = width;
   p.m_height = height;
 
   DummyTexture texture;
-  texture.Create(p);
+  texture.Create(nullptr /* context */, p);
   DummyColorPallete cp(m2::PointU(width, height));
   cp.UploadResources(make_ref(&texture));
 
@@ -192,13 +192,13 @@ UNIT_TEST(ColorPalleteUploadingPartialyRow)
   InitOpenGLTextures(width, height);
 
   Texture::Params p;
-  p.m_allocator = GetDefaultAllocator();
+  p.m_allocator = GetDefaultAllocator(nullptr /* context */);
   p.m_format = dp::TextureFormat::RGBA8;
   p.m_width = width;
   p.m_height = height;
 
   DummyTexture texture;
-  texture.Create(p);
+  texture.Create(nullptr /* context */, p);
 
   DummyColorPallete cp(m2::PointU(width, height));
 
@@ -280,13 +280,13 @@ UNIT_TEST(ColorPalleteUploadingMultiplyRow)
   InitOpenGLTextures(width, height);
 
   Texture::Params p;
-  p.m_allocator = GetDefaultAllocator();
+  p.m_allocator = GetDefaultAllocator(nullptr /* context */);
   p.m_format = dp::TextureFormat::RGBA8;
   p.m_width = width;
   p.m_height = height;
 
   DummyTexture texture;
-  texture.Create(p);
+  texture.Create(nullptr /* context */, p);
 
   DummyColorPallete cp(m2::PointU(width, height));
   cp.SetIsDebug(true);

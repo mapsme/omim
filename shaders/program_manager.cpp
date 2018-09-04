@@ -28,7 +28,7 @@ void ProgramManager::Init(ref_ptr<dp::GraphicsContext> context)
   }
   else
   {
-    CHECK(false, ("Unsupported API version"));
+    CHECK(false, ("Unsupported API version."));
   }
 }
   

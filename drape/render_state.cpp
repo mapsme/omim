@@ -12,24 +12,31 @@ std::string const kColorTextureName = "u_colorTex";
 std::string const kMaskTextureName = "u_maskTex";
 }  // namespace
 
+#if defined(OMIM_OS_IPHONE)
+extern void ApplyDepthStencilStateForMetal(ref_ptr<GraphicsContext> context);
+extern void ApplyPipelineStateForMetal(ref_ptr<GraphicsContext> context, ref_ptr<GpuProgram> program,
+                                       bool blendingEnabled);
+#endif
+
 // static
 void AlphaBlendingState::Apply(ref_ptr<GraphicsContext> context)
 {
+  // For Metal Rendering these settings must be set in the pipeline state.
   auto const apiVersion = context->GetApiVersion();
   if (apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3)
   {
     GLFunctions::glBlendEquation(gl_const::GLAddBlend);
     GLFunctions::glBlendFunc(gl_const::GLSrcAlpha, gl_const::GLOneMinusSrcAlpha);
   }
-  //TODO(@rokuz,@darina): Metal?
 }
 
 Blending::Blending(bool isEnabled)
   : m_isEnabled(isEnabled)
 {}
 
-void Blending::Apply(ref_ptr<GraphicsContext> context) const
+void Blending::Apply(ref_ptr<GraphicsContext> context, ref_ptr<GpuProgram> program) const
 {
+  // For Metal Rendering these settings must be set in the pipeline state.
   auto const apiVersion = context->GetApiVersion();
   if (apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3)
   {
@@ -38,7 +45,10 @@ void Blending::Apply(ref_ptr<GraphicsContext> context) const
     else
       GLFunctions::glDisable(gl_const::GLBlending);
   }
-  //TODO(@rokuz,@darina): Metal?
+  else
+  {
+    CHECK(false, ("Unsupported API version."));
+  }
 }
 
 bool Blending::operator<(Blending const & other) const { return m_isEnabled < other.m_isEnabled; }
@@ -47,7 +57,7 @@ bool Blending::operator==(Blending const & other) const { return m_isEnabled == 
 
 void RenderState::SetColorTexture(ref_ptr<Texture> tex)
 {
-  m_textures[kColorTextureName] = tex;
+  m_textures[kColorTextureName] = std::move(tex);
 }
 
 ref_ptr<Texture> RenderState::GetColorTexture() const
@@ -60,7 +70,7 @@ ref_ptr<Texture> RenderState::GetColorTexture() const
 
 void RenderState::SetMaskTexture(ref_ptr<Texture> tex)
 {
-  m_textures[kMaskTextureName] = tex;
+  m_textures[kMaskTextureName] = std::move(tex);
 }
 
 ref_ptr<Texture> RenderState::GetMaskTexture() const
@@ -73,7 +83,7 @@ ref_ptr<Texture> RenderState::GetMaskTexture() const
 
 void RenderState::SetTexture(std::string const & name, ref_ptr<Texture> tex)
 {
-  m_textures[name] = tex;
+  m_textures[name] = std::move(tex);
 }
 
 ref_ptr<Texture> RenderState::GetTexture(std::string const & name) const
@@ -189,7 +199,7 @@ void TextureState::ApplyTextures(ref_ptr<GraphicsContext> context, RenderState c
   if (apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3)
   {
     ref_ptr<dp::GLGpuProgram> p = program;
-    for (auto const &texture : state.GetTextures())
+    for (auto const & texture : state.GetTextures())
     {
       auto const tex = texture.second;
       int8_t texLoc = -1;
@@ -211,21 +221,38 @@ uint8_t TextureState::GetLastUsedSlots()
   return m_usedSlots;
 }
 
-void ApplyBlending(ref_ptr<GraphicsContext> context, RenderState const & state)
-{
-  state.GetBlending().Apply(std::move(context));
-}
-
 void ApplyState(ref_ptr<GraphicsContext> context, ref_ptr<GpuProgram> program, RenderState const & state)
 {
-  TextureState::ApplyTextures(context, state, std::move(program));
-  ApplyBlending(context, state);
+  auto const apiVersion = context->GetApiVersion();
+  
+  TextureState::ApplyTextures(context, state, program);
+  
+  // Apply blending state.
+  if (apiVersion == dp::ApiVersion::Metal)
+  {
+    // For Metal rendering blending state is a part of the pipeline state.
+#if defined(OMIM_OS_IPHONE)
+    ApplyPipelineStateForMetal(context, program, state.GetBlending().m_isEnabled);
+#endif
+  }
+  else
+  {
+    state.GetBlending().Apply(context, program);
+  }
+  
+  // Apply depth state.
   context->SetDepthTestEnabled(state.GetDepthTestEnabled());
   if (state.GetDepthTestEnabled())
     context->SetDepthTestFunction(state.GetDepthFunction());
+  if (apiVersion == dp::ApiVersion::Metal)
+  {
+    // For Metal rendering we have to apply depth-stencil state after SetX functions calls.
+#if defined(OMIM_OS_IPHONE)
+    ApplyDepthStencilStateForMetal(context);
+#endif
+  }
 
   // Metal does not support line width.
-  auto const apiVersion = context->GetApiVersion();
   if (apiVersion == dp::ApiVersion::OpenGLES2 || apiVersion == dp::ApiVersion::OpenGLES3)
   {
     ASSERT_GREATER_OR_EQUAL(state.GetLineWidth(), 0, ());

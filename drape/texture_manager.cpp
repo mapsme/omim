@@ -271,7 +271,7 @@ bool TextureManager::UpdateDynamicTextures(ref_ptr<dp::GraphicsContext> context)
     if (apiVersion == dp::ApiVersion::Metal)
       return false;
 
-    CHECK(false, ("Unsupported API"));
+    CHECK(false, ("Unsupported API version."));
   }
 
   m_uploadTimer.Reset();

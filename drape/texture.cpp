@@ -109,4 +109,9 @@ bool Texture::AllocateTexture(ref_ptr<dp::GraphicsContext> context,
   }
   return false;
 }
+  
+ref_ptr<HWTexture> Texture::GetHardwareTexture() const
+{
+  return make_ref(m_hwTexture);
+}
 }  // namespace dp

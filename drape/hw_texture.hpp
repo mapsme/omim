@@ -40,7 +40,7 @@ public:
 
   virtual void Bind() const = 0;
 
-  // For OpenGL texture must be bound before calling this method.
+  // For OpenGL the texture must be bound before calling this method.
   virtual void SetFilter(TextureFilter filter) = 0;
 
   virtual bool Validate() const = 0;
@@ -54,11 +54,8 @@ public:
   uint32_t GetID() const;
 
 protected:
-  uint32_t m_width = 0;
-  uint32_t m_height = 0;
-  TextureFormat m_format = TextureFormat::Unspecified;
+  Params m_params;
   uint32_t m_textureID = 0;
-  TextureFilter m_filter = TextureFilter::Linear;
   uint32_t m_pixelBufferID = 0;
   uint32_t m_pixelBufferSize = 0;
   uint32_t m_pixelBufferElementSize = 0;

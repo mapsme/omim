@@ -21,6 +21,9 @@ public:
 
   void Bind() override {}
   void Unbind() override {}
+  
+  id<MTLFunction> GetVertexShader() const { return m_vertexShader; }
+  id<MTLFunction> GetFragmentShader() const { return m_fragmentShader; }
 
 private:
   id<MTLFunction> m_vertexShader;

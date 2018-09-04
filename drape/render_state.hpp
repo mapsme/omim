@@ -21,7 +21,7 @@ struct Blending
 {
   explicit Blending(bool isEnabled = true);
 
-  void Apply(ref_ptr<GraphicsContext> context) const;
+  void Apply(ref_ptr<GraphicsContext> context, ref_ptr<GpuProgram> program) const;
 
   bool operator<(Blending const & other) const;
   bool operator==(Blending const & other) const;
@@ -125,5 +125,4 @@ private:
 };
 
 void ApplyState(ref_ptr<GraphicsContext> context, ref_ptr<GpuProgram> program, RenderState const & state);
-void ApplyBlending(ref_ptr<GraphicsContext> context, RenderState const & state);
 }  // namespace dp

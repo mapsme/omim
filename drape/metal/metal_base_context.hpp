@@ -2,9 +2,11 @@
 #import <MetalKit/MetalKit.h>
 
 #include "drape/graphics_context.hpp"
+#include "drape/gpu_program.hpp"
+#include "drape/metal/metal_states.hpp"
+#include "drape/pointers.hpp"
 
 #include <cstdint>
-#include <unordered_map>
 
 namespace dp
 {
@@ -38,6 +40,8 @@ public:
   
   id<MTLDevice> GetMetalDevice() const;
   id<MTLRenderCommandEncoder> GetCommandEncoder() const;
+  id<MTLDepthStencilState> GetDepthStencilState();
+  id<MTLRenderPipelineState> GetPipelineState(ref_ptr<GpuProgram> program, bool blendingEnabled);
   
 protected:
   void SetFrameDrawable(id<CAMetalDrawable> drawable);
@@ -49,6 +53,8 @@ protected:
   MTLRenderPassDescriptor * m_renderPassDescriptor;
   id<MTLCommandQueue> m_commandQueue;
   ref_ptr<dp::BaseFramebuffer> m_currentFramebuffer;
+  MetalStates::DepthStencilKey m_currentDepthStencilKey;
+  MetalStates m_metalStates;
   
   // These objects are recreated each frame. They MUST NOT be stored anywhere.
   id<CAMetalDrawable> m_frameDrawable;

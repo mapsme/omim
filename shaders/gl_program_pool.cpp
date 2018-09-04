@@ -3,6 +3,7 @@
 #include "shaders/gl_shaders.hpp"
 
 #include "drape/gl_gpu_program.hpp"
+#include "drape/gl_functions.hpp"
 
 namespace gpu
 {
@@ -23,6 +24,7 @@ GLProgramPool::GLProgramPool(dp::ApiVersion apiVersion)
 
 GLProgramPool::~GLProgramPool()
 {
+  GLFunctions::glUseProgram(0);
   ProgramParams::Destroy();
 }
 

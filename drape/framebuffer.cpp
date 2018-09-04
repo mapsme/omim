@@ -56,6 +56,11 @@ uint32_t Framebuffer::DepthStencil::GetStencilAttachmentId() const
   return m_stencilEnabled ? m_texture->GetID() : 0;
 }
 
+ref_ptr<FramebufferTexture> Framebuffer::DepthStencil::GetTexture() const
+{
+  return make_ref(m_texture);
+}
+
 Framebuffer::Framebuffer()
   : m_colorFormat(TextureFormat::RGBA8)
 {

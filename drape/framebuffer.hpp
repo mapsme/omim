@@ -30,6 +30,7 @@ public:
     void Destroy();
     uint32_t GetDepthAttachmentId() const;
     uint32_t GetStencilAttachmentId() const;
+    ref_ptr<FramebufferTexture> GetTexture() const;
   private:
     bool const m_depthEnabled = false;
     bool const m_stencilEnabled = false;

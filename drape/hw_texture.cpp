@@ -103,22 +103,21 @@ void HWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & para
 void HWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & params,
                        ref_ptr<void> /* data */)
 {
-  m_width = params.m_width;
-  m_height = params.m_height;
-  m_format = params.m_format;
-  m_filter = params.m_filter;
+  m_params = params;
 
-  uint32_t const bytesPerPixel = GetBytesPerPixel(m_format);
-  if (context->GetApiVersion() == dp::ApiVersion::OpenGLES3 && params.m_usePixelBuffer &&
+  // OpenGL ES 2.0 does not support PBO, Metal has no necessity in it.
+  uint32_t const bytesPerPixel = GetBytesPerPixel(m_params.m_format);
+  if (context && context->GetApiVersion() == dp::ApiVersion::OpenGLES3 && params.m_usePixelBuffer &&
       bytesPerPixel > 0)
   {
     float const kPboPercent = 0.1f;
     m_pixelBufferElementSize = bytesPerPixel;
-    m_pixelBufferSize = static_cast<uint32_t>(kPboPercent * m_width * m_height * bytesPerPixel);
+    m_pixelBufferSize =
+        static_cast<uint32_t>(kPboPercent * m_params.m_width * m_params.m_height * bytesPerPixel);
   }
 
 #if defined(TRACK_GPU_MEM)
-  uint32_t const memSize = (CHAR_BIT * bytesPerPixel * m_width * m_height) >> 3;
+  uint32_t const memSize = (CHAR_BIT * bytesPerPixel * m_params.m_width * m_params.m_height) >> 3;
   dp::GPUMemTracker::Inst().AddAllocated("Texture", m_textureID, memSize);
   dp::GPUMemTracker::Inst().SetUsed("Texture", m_textureID, memSize);
   if (params.m_usePixelBuffer)
@@ -129,30 +128,30 @@ void HWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & para
 #endif
 }
 
-TextureFormat HWTexture::GetFormat() const { return m_format; }
+TextureFormat HWTexture::GetFormat() const { return m_params.m_format; }
 
 uint32_t HWTexture::GetWidth() const
 {
   ASSERT(Validate(), ());
-  return m_width;
+  return m_params.m_width;
 }
 
 uint32_t HWTexture::GetHeight() const
 {
   ASSERT(Validate(), ());
-  return m_height;
+  return m_params.m_height;
 }
 
 float HWTexture::GetS(uint32_t x) const
 {
   ASSERT(Validate(), ());
-  return x / static_cast<float>(m_width);
+  return x / static_cast<float>(m_params.m_width);
 }
 
 float HWTexture::GetT(uint32_t y) const
 {
   ASSERT(Validate(), ());
-  return y / static_cast<float>(m_height);
+  return y / static_cast<float>(m_params.m_height);
 }
 
 uint32_t HWTexture::GetID() const { return m_textureID; }
@@ -176,14 +175,14 @@ void OpenGLHWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const 
 
   glConst layout;
   glConst pixelType;
-  UnpackFormat(m_format, layout, pixelType);
+  UnpackFormat(m_params.m_format, layout, pixelType);
 
-  auto const f = DecodeTextureFilter(m_filter);
-  GLFunctions::glTexImage2D(m_width, m_height, layout, pixelType, data.get());
+  auto const f = DecodeTextureFilter(m_params.m_filter);
+  GLFunctions::glTexImage2D(m_params.m_width, m_params.m_height, layout, pixelType, data.get());
   GLFunctions::glTexParameter(gl_const::GLMinFilter, f);
   GLFunctions::glTexParameter(gl_const::GLMagFilter, f);
-  GLFunctions::glTexParameter(gl_const::GLWrapS, DecodeTextureWrapping(params.m_wrapSMode));
-  GLFunctions::glTexParameter(gl_const::GLWrapT, DecodeTextureWrapping(params.m_wrapTMode));
+  GLFunctions::glTexParameter(gl_const::GLWrapS, DecodeTextureWrapping(m_params.m_wrapSMode));
+  GLFunctions::glTexParameter(gl_const::GLWrapT, DecodeTextureWrapping(m_params.m_wrapTMode));
 
   if (m_pixelBufferSize > 0)
   {
@@ -204,7 +203,7 @@ void OpenGLHWTexture::UploadData(uint32_t x, uint32_t y, uint32_t width, uint32_
   ASSERT(Validate(), ());
   glConst layout;
   glConst pixelType;
-  UnpackFormat(m_format, layout, pixelType);
+  UnpackFormat(m_params.m_format, layout, pixelType);
 
   uint32_t const mappingSize = height * width * m_pixelBufferElementSize;
   if (m_pixelBufferID != 0 && m_pixelBufferSize != 0 && m_pixelBufferSize >= mappingSize)
@@ -231,10 +230,10 @@ void OpenGLHWTexture::Bind() const
 void OpenGLHWTexture::SetFilter(TextureFilter filter)
 {
   ASSERT(Validate(), ());
-  if (m_filter != filter)
+  if (m_params.m_filter != filter)
   {
-    m_filter = filter;
-    auto const f = DecodeTextureFilter(m_filter);
+    m_params.m_filter = filter;
+    auto const f = DecodeTextureFilter(m_params.m_filter);
     GLFunctions::glTexParameter(gl_const::GLMinFilter, f);
     GLFunctions::glTexParameter(gl_const::GLMagFilter, f);
   }
@@ -258,6 +257,10 @@ void OpenGLHWTextureAllocator::Flush()
 
 drape_ptr<HWTextureAllocator> CreateAllocator(ref_ptr<dp::GraphicsContext> context)
 {
+  // Context can be nullptr in unit tests.
+  if (!context)
+    return make_unique_dp<OpenGLHWTextureAllocator>();
+
   auto const apiVersion = context->GetApiVersion();
   if (apiVersion == dp::ApiVersion::Metal)
   {
@@ -280,8 +283,8 @@ drape_ptr<HWTextureAllocator> CreateAllocator(ref_ptr<dp::GraphicsContext> conte
 
 ref_ptr<HWTextureAllocator> GetDefaultAllocator(ref_ptr<dp::GraphicsContext> context)
 {
-  auto const apiVersion = context->GetApiVersion();
-  if (apiVersion == dp::ApiVersion::Metal)
+  // Context can be nullptr in unit tests.
+  if (context && context->GetApiVersion() == dp::ApiVersion::Metal)
   {
 #if defined(OMIM_OS_IPHONE)
     return GetDefaultMetalAllocator();

@@ -172,4 +172,10 @@ UNIT_TEST(UniformValueTest)
   UniformValue::ApplyRaw(positionLoc, glsl::vec4(1.0f, 2.0f, 3.0f, 4.0f));
 
   UniformValue::ApplyRaw(modelViewLoc, glsl::make_mat4(matrix));
+
+  program->Unbind();
+
+  program.reset();
+  vs.reset();
+  fs.reset();
 }
