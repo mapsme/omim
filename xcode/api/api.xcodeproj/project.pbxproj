@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3496AB901DC1F7D400C5DDBA /* api-client-test.c in Sources */ = {isa = PBXBuildFile; fileRef = 3496AB8E1DC1F71200C5DDBA /* api-client-test.c */; };
 		3496AB911DC1F7E000C5DDBA /* libapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675347171A40577A00A0A8C3 /* libapi.a */; };
+		4486B61A212D5CB50019C176 /* serialize_speed_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4486B618212D5CB50019C176 /* serialize_speed_camera.cpp */; };
+		4486B61B212D5CB50019C176 /* serialize_speed_camera.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4486B619212D5CB50019C176 /* serialize_speed_camera.hpp */; };
 		675347271A4057A700A0A8C3 /* api-client.c in Sources */ = {isa = PBXBuildFile; fileRef = 675347251A4057A700A0A8C3 /* api-client.c */; };
 		675347281A4057A700A0A8C3 /* api-client.h in Headers */ = {isa = PBXBuildFile; fileRef = 675347261A4057A700A0A8C3 /* api-client.h */; };
 		6753472B1A4057C500A0A8C3 /* api-client-internals.h in Headers */ = {isa = PBXBuildFile; fileRef = 6753472A1A4057C500A0A8C3 /* api-client-internals.h */; };
@@ -19,6 +21,8 @@
 		34763F481DBE28F800D370CF /* common-release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-release.xcconfig"; path = "../common-release.xcconfig"; sourceTree = "<group>"; };
 		3496AB761DC1F6CD00C5DDBA /* api_tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = api_tests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3496AB8E1DC1F71200C5DDBA /* api-client-test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "api-client-test.c"; sourceTree = "<group>"; };
+		4486B618212D5CB50019C176 /* serialize_speed_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = serialize_speed_camera.cpp; path = ../../routing/serialize_speed_camera.cpp; sourceTree = "<group>"; };
+		4486B619212D5CB50019C176 /* serialize_speed_camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = serialize_speed_camera.hpp; path = ../../routing/serialize_speed_camera.hpp; sourceTree = "<group>"; };
 		675347171A40577A00A0A8C3 /* libapi.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libapi.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		675347251A4057A700A0A8C3 /* api-client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "api-client.c"; path = "src/c/api-client.c"; sourceTree = "<group>"; };
 		675347261A4057A700A0A8C3 /* api-client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "api-client.h"; path = "src/c/api-client.h"; sourceTree = "<group>"; };
@@ -56,6 +60,8 @@
 		6753470E1A40577A00A0A8C3 = {
 			isa = PBXGroup;
 			children = (
+				4486B618212D5CB50019C176 /* serialize_speed_camera.cpp */,
+				4486B619212D5CB50019C176 /* serialize_speed_camera.hpp */,
 				34763F471DBE28F800D370CF /* common-debug.xcconfig */,
 				34763F481DBE28F800D370CF /* common-release.xcconfig */,
 				3496AB8D1DC1F6E400C5DDBA /* api_tests */,
@@ -100,6 +106,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				675347281A4057A700A0A8C3 /* api-client.h in Headers */,
+				4486B61B212D5CB50019C176 /* serialize_speed_camera.hpp in Headers */,
 				6753472B1A4057C500A0A8C3 /* api-client-internals.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -202,6 +209,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				675347271A4057A700A0A8C3 /* api-client.c in Sources */,
+				4486B61A212D5CB50019C176 /* serialize_speed_camera.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

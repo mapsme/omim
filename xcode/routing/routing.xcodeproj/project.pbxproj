@@ -911,6 +911,7 @@
 		67BD35961C69F03E003AA26F /* routing_integration_tests */ = {
 			isa = PBXGroup;
 			children = (
+				44B312552125A65700365415 /* speed_camera_notification_test.cpp */,
 				567E9F7A1F58506B0064CB96 /* street_names_test.cpp */,
 				567E9F701F5850460064CB96 /* route_test.cpp */,
 				567E9F711F5850460064CB96 /* get_altitude_test.cpp */,
@@ -1230,6 +1231,7 @@
 				5694CECC1EBA25F7004576D3 /* road_access.cpp in Sources */,
 				A1616E2B1B6B60AB003F078E /* router_delegate.cpp in Sources */,
 				6741AA9C1BF35331002C974C /* turns_notification_manager.cpp in Sources */,
+				44B312562125A65800365415 /* speed_camera_notification_test.cpp in Sources */,
 				0C0DF9211DE898B70055A22F /* index_graph_starter.cpp in Sources */,
 				56C439281E93BF8C00998E29 /* cross_mwm_graph.cpp in Sources */,
 				670EE5731B664796001E8064 /* pedestrian_directions.cpp in Sources */,
