@@ -2015,6 +2015,10 @@ sk:3^Atrakcia|3pamiatka|3zaujímavosť
 sw:^Kivutio|utalii
 fa:جاذبه گردشگری
 
+tourism-attraction-animal|@tourism
+en:Animal
+ru:Животное
+
 tourism-artwork|@tourism
 en:3^Artwork|U+1F3A8
 ru:3^Произведение искусства|3скульптура
@@ -2047,6 +2051,22 @@ el:^Έργα τέχνης|τουρισμός|αξιοθέατα
 sk:3^Umelecké diela
 sw:^Kazi ya kisanaa|utalii
 fa:اثارهنری
+
+tourism-artwork-architecture|@tourism
+en:Notable Building|3^artwork|U+1F3A8
+ru:Памятник архитектуры|произведение искусства
+
+tourism-artwork-sculpture|historic-memorial-sculpture|@tourism
+en:Sculpture|3^artwork|U+1F3A8
+ru:Скульптура|произведение искусства
+
+tourism-artwork-statue|historic-memorial-statue|@tourism
+en:Statue|3^artwork|U+1F3A8
+ru:Статуя|произведение искусства
+
+tourism-artwork-painting|@tourism
+en:Painting|3^artwork|U+1F3A8
+ru:Картина|произведение искусства
 
 tourism-viewpoint|@tourism
 en:4^Viewpoint
@@ -2536,6 +2556,14 @@ sk:^Zámok|atrakcia
 sw:^Ngome|kivutio|utalii
 fa:قلعه تاریخی
 
+historic-castle-defensive|@tourism
+en:Castle|Fortress|Kremlin|U+1F3EF|U+1F3F0|U+1F451|U+1F478
+ru:Замок|Крепость|Кремль
+
+historic-castle-stately|@tourism
+en:Palace|Castle|U+1F3EF|U+1F3F0|U+1F451|U+1F478
+ru:Дворец|Замок
+
 historic-memorial|@tourism
 en:^Memorial|monument|U+1F5FC|U+1F5FD|U+1F5FF
 ru:^Памятник|мемориал
@@ -2568,6 +2596,10 @@ el:^Μνημείο|θέαμα|τουρισμός|αξιοθέατα
 sk:^Pomník|pamiatka|atrakcia|zaujímavosť
 sw:^Makumbusho|kumbukumbu ya kihistoria|kivutio|utalii
 fa:یادبود تاریخی
+
+historic-memorial-plaque|@tourism
+en:Memorial Plaque|blue
+ru:Мемориальная табличка
 
 historic-monument|@tourism
 en:^Monument|U+1F5FD|U+1F5FF
@@ -4460,6 +4492,10 @@ el:^Έξοδος|διασταύρωση
 sk:^Dopravný uzol|3diaľnica
 sw:^Njia panda
 fa:تقاطع
+
+place-square|@tourism
+en:Square|plaza
+ru:Площадь
 
 natural-peak
 en:^Peak|mountain|U+1F5FB|U+1F304
