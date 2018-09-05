@@ -392,9 +392,7 @@ Framework::Framework(FrameworkParams const & params)
   , m_subscription(std::make_unique<Subscription>())
   , m_tipsApi(static_cast<TipsApi::Delegate &>(*this))
 {
-  CHECK(IsLittleEndian(), ("Only little endian architecture is supported."));
-
-  m_startBackgroundTime = my::Timer::LocalTime();
+  CHECK(IsLittleEndian(), ("Only little-endian architectures are supported."));
 
   // Editor should be initialized from the main thread to set its ThreadChecker.
   // However, search calls editor upon initialization thus setting the lazy editor's ThreadChecker
