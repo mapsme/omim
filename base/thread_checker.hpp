@@ -3,6 +3,7 @@
 #include "base/assert.hpp"
 #include "base/macros.hpp"
 
+#include <atomic>
 #include <thread>
 
 /// This class remembers id of a thread on which it was created, and
@@ -18,7 +19,7 @@ public:
   bool CalledOnOriginalThread() const;
 
 private:
-  std::thread::id const m_id;
+  std::atomic<std::thread::id> const m_id;
 
   DISALLOW_COPY_AND_MOVE(ThreadChecker);
 };
