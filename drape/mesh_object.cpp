@@ -36,7 +36,7 @@ public:
     UNUSED_VALUE(context);
 
     bool const isVAOSupported =
-        dp::GLExtensionsList::Instance().IsSupported(dp::GLExtensionsList::VertexArrayObject);
+      GLFunctions::ExtensionsList.IsSupported(dp::GLExtensionsList::VertexArrayObject);
     if (isVAOSupported)
     {
       m_VAO = GLFunctions::glGenVertexArray();
@@ -104,7 +104,7 @@ public:
 
   void Bind(ref_ptr<dp::GpuProgram> program) override
   {
-    if (dp::GLExtensionsList::Instance().IsSupported(dp::GLExtensionsList::VertexArrayObject))
+    if (GLFunctions::ExtensionsList.IsSupported(dp::GLExtensionsList::VertexArrayObject))
     {
       GLFunctions::glBindVertexArray(m_VAO);
       return;
@@ -128,7 +128,7 @@ public:
 
   void Unbind(ref_ptr<dp::GpuProgram> program) override
   {
-    if (dp::GLExtensionsList::Instance().IsSupported(dp::GLExtensionsList::VertexArrayObject))
+    if (GLFunctions::ExtensionsList.IsSupported(dp::GLExtensionsList::VertexArrayObject))
       GLFunctions::glBindVertexArray(0);
     GLFunctions::glBindBuffer(0, gl_const::GLArrayBuffer);
   }
