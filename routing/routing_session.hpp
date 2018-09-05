@@ -46,6 +46,7 @@ struct SpeedCameraOnRoute
 
   static double constexpr kDangerousZoneMeters = 450.0;  // Influence zone of speed camera.
   static double constexpr kDistanceEpsilonMeters = 10.0;
+  static double constexpr kDistToReduceSpeedBeforeUnknownCameraM = 50.0;
   static uint8_t constexpr kNoSpeedInfo = std::numeric_limits<uint8_t>::max();
 
   // Addition time for user to make a decision about slow down the speed.

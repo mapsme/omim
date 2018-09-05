@@ -51,11 +51,15 @@ void FormatDistance(double dist, string & value, string & suffix)
 
 bool SpeedCameraOnRoute::IsDangerous(double distanceToCameraMeters, double speed) const
 {
+  static_assert(kAverageAccelerationOfBraking < 0, "AverageAccelerationOfBraking must be negative");
+
   if (distanceToCameraMeters < kDangerousZoneMeters + kDistanceEpsilonMeters)
     return true;
 
   if (m_maxSpeedKmH == kNoSpeedInfo)
-    return distanceToCameraMeters < kDangerousZoneMeters;
+    return distanceToCameraMeters < kDangerousZoneMeters + kDistToReduceSpeedBeforeUnknownCameraM;
+
+  double distToDangerousZone = distanceToCameraMeters - kDangerousZoneMeters;
 
   if (speed < routing::KMPH2MPS(m_maxSpeedKmH))
     return false;
@@ -64,8 +68,15 @@ bool SpeedCameraOnRoute::IsDangerous(double distanceToCameraMeters, double speed
       (routing::KMPH2MPS(m_maxSpeedKmH) - speed) / kAverageAccelerationOfBraking;
   timeToSlowSpeed += kTimeForDecision;
 
-  double distanceNeedsToSlowDown = timeToSlowSpeed * speed;
-  if (distanceToCameraMeters < distanceNeedsToSlowDown + kDistanceEpsilonMeters)
+  // Integral V(t) from 0 to T = timeToSlowSpeed,
+  // where V(t) = V_0 + at,
+  //   V_0 - current speed
+  //   a - kAverageAccelerationOfBraking
+  // equals V_0 * t + at^2 / 2
+  double distanceNeedsToSlowDown = timeToSlowSpeed * speed +
+                                   (kAverageAccelerationOfBraking * timeToSlowSpeed * timeToSlowSpeed) / 2;
+
+  if (distToDangerousZone < distanceNeedsToSlowDown + kDistanceEpsilonMeters)
     return true;
 
   return false;
@@ -288,7 +299,7 @@ RoutingSession::State RoutingSession::OnLocationPositionChanged(GpsInfo const & 
   ASSERT(m_route, ());
   ASSERT(m_route->IsValid(), ());
 
-  m_turnNotificationsMgr.SetSpeedMetersPerSecond(info.m_speed);
+  m_turnNotificationsMgr.SetSpeedMetersPerSecond(info.m_speedMpS);
 
   if (m_route->MoveIterator(info))
   {
@@ -777,14 +788,14 @@ void RoutingSession::ProcessSpeedCameras(GpsInfo const & info) {
     else
     {
       auto const distanceToCameraMeters = closestSpeedCamera.m_distFromBeginMeters - passedDistanceMeters;
-      if (closestSpeedCamera.IsDangerous(distanceToCameraMeters, info.m_speed))
+      if (closestSpeedCamera.IsDangerous(distanceToCameraMeters, info.m_speedMpS))
         ProcessCameraWarning();
     }
   }
 
   // Step 3. Find new cameras, to be cached.
   size_t lastChecked = m_lastCheckedSpeedCameraIndex;
-  CHECK_LESS(lastChecked, m_route->GetRouteSegments().size(), ());
+  CHECK_LESS_OR_EQUAL(lastChecked, m_route->GetRouteSegments().size(), ());
 
   double distToPrevSegment =
     m_route->GetRouteSegments()[lastChecked].GetDistFromBeginningMeters();

@@ -29,8 +29,6 @@ set(
   cross_mwm_graph.hpp
   cross_mwm_ids.hpp
   cross_mwm_index_graph.hpp
-  deserialize_speed_cameras.cpp
-  deserialize_speed_cameras.hpp
   directions_engine.hpp
   edge_estimator.cpp
   edge_estimator.hpp
@@ -104,8 +102,8 @@ set(
   segment.hpp
   segmented_route.cpp
   segmented_route.hpp
-  serialize_speed_camera.cpp
-  serialize_speed_camera.hpp
+  speed_camera_ser_des.cpp
+  speed_camera_ser_des.hpp
   single_vehicle_world_graph.cpp
   single_vehicle_world_graph.hpp
   traffic_stash.cpp

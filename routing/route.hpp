@@ -44,11 +44,14 @@ public:
   struct SpeedCamera
   {
     SpeedCamera() = default;
-    SpeedCamera(double k, uint8_t s): m_coef(k), m_maxSpeedKmPH(s) {}
+    SpeedCamera(double coef, uint8_t maxSpeedKmPH): m_coef(coef), m_maxSpeedKmPH(maxSpeedKmPH) {}
 
     friend bool operator<(SpeedCamera const & lhs, SpeedCamera const & rhs)
     {
-      return lhs.m_coef < rhs.m_coef && lhs.m_maxSpeedKmPH < rhs.m_maxSpeedKmPH;
+      if (lhs.m_coef != rhs.m_coef)
+        return lhs.m_coef < rhs.m_coef;
+
+      return lhs.m_maxSpeedKmPH < rhs.m_maxSpeedKmPH;
     }
 
     double m_coef = 0.0;

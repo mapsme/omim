@@ -1,11 +1,11 @@
 #include "routing/index_graph_loader.hpp"
 
-#include "routing/deserialize_speed_cameras.hpp"
 #include "routing/index_graph_serialization.hpp"
 #include "routing/restriction_loader.hpp"
 #include "routing/road_access_serialization.hpp"
 #include "routing/route.hpp"
 #include "routing/routing_exceptions.hpp"
+#include "routing/speed_camera_ser_des.hpp"
 
 #include "indexer/data_source.hpp"
 
@@ -119,7 +119,7 @@ vector<RouteSegment::SpeedCamera> & IndexGraphLoaderImpl::GetSpeedCameraInfo(Seg
     catch (Reader::OpenException & ex)
     {
       LOG(LINFO, ("No section about speed cameras"));
-      return kEmptyVectorOfSpeedCameras;
+      return EmptyVectorOfSpeedCameras();
     }
 
     it = m_cachedCameras.find(numMwmId);
@@ -127,7 +127,7 @@ vector<RouteSegment::SpeedCamera> & IndexGraphLoaderImpl::GetSpeedCameraInfo(Seg
 
   auto result = it->second.find({segment.GetFeatureId(), segment.GetSegmentIdx()});
   if (result == it->second.end())
-    return kEmptyVectorOfSpeedCameras;
+    return EmptyVectorOfSpeedCameras();
 
   return result->second;
 }

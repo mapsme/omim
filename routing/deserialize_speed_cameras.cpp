@@ -45,7 +45,10 @@ void DeserializeSpeedCamsFromMwm(ReaderSource<FilesContainerR::TReader> & src,
     ReadPrimitiveFromSource(src, speed);
     CHECK_LESS(speed, kMaxCameraSpeedKmpH, ());
     if (speed == 0)
-      speed = routing::SpeedCameraOnRoute::kNoSpeedInfo;
+    {
+      // TODO (@gmoryes) change to (speed = routing::SpeedCameraOnRoute::kNoSpeedInfo)
+      speed = std::numeric_limits<uint8_t>::max();
+    }
 
     // We don't use direction of camera, because of bad data in OSM.
     UNUSED_VALUE(ReadPrimitiveFromSource<uint8_t>(src));  // direction
