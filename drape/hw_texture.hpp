@@ -50,6 +50,8 @@ public:
   uint32_t GetHeight() const;
   float GetS(uint32_t x) const;
   float GetT(uint32_t y) const;
+  
+  Params const & GetParams() const { return m_params; }
 
   uint32_t GetID() const;
 

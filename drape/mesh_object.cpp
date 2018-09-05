@@ -28,7 +28,7 @@ class GLMeshObjectImpl : public MeshObjectImpl
 {
 public:
   explicit GLMeshObjectImpl(ref_ptr<dp::MeshObject> mesh)
-    : m_mesh(std::move(mesh))
+    : m_mesh(mesh)
   {}
 
   void Build(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::GpuProgram> program) override
@@ -220,7 +220,7 @@ void MeshObject::Build(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::GpuProg
   Reset();
 
   CHECK(m_impl != nullptr, ());
-  m_impl->Build(std::move(context), std::move(program));
+  m_impl->Build(context, program);
 
   m_initialized = true;
 }
@@ -253,7 +253,7 @@ void MeshObject::DrawPrimitives(ref_ptr<dp::GraphicsContext> context)
       static_cast<uint32_t>(buffer.m_data.size() * sizeof(buffer.m_data[0]) / buffer.m_stride);
 
   CHECK(m_impl != nullptr, ());
-  m_impl->DrawPrimitives(std::move(context), verticesCount);
+  m_impl->DrawPrimitives(context, verticesCount);
 }
 
 void MeshObject::Unbind(ref_ptr<dp::GpuProgram> program)

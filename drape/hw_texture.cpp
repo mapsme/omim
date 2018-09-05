@@ -97,7 +97,7 @@ HWTexture::~HWTexture()
 
 void HWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & params)
 {
-  Create(std::move(context), params, nullptr);
+  Create(context, params, nullptr);
 }
 
 void HWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & params,
@@ -168,7 +168,7 @@ OpenGLHWTexture::~OpenGLHWTexture()
 void OpenGLHWTexture::Create(ref_ptr<dp::GraphicsContext> context, Params const & params,
                              ref_ptr<void> data)
 {
-  Base::Create(std::move(context), params, data);
+  Base::Create(context, params, data);
 
   m_textureID = GLFunctions::glGenTexture();
   Bind();
