@@ -261,7 +261,9 @@ BOOL gIsFirstMyPositionMode = YES;
 - (void)viewDidLayoutSubviews
 {
   [super viewDidLayoutSubviews];
-  [(EAGLView *)self.view createDrapeEngine];
+  EAGLView * renderingView = (EAGLView *)self.view;
+  if (!renderingView.drapeEngineCreated)
+    [renderingView createDrapeEngine];
 }
 
 - (void)mwm_refreshUI
