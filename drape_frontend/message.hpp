@@ -98,7 +98,7 @@ public:
 
   virtual ~Message() = default;
   virtual Type GetType() const { return Unknown; }
-  virtual bool IsGLContextDependent() const { return false; }
+  virtual bool IsGraphicsContextDependent() const { return false; }
 };
 
 enum class MessagePriority
