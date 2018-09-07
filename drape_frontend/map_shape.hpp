@@ -3,6 +3,7 @@
 #include "drape_frontend/message.hpp"
 #include "drape_frontend/tile_key.hpp"
 
+#include "drape/graphics_context.hpp"
 #include "drape/pointers.hpp"
 
 #include "geometry/point2d.hpp"
@@ -29,8 +30,9 @@ class MapShape
 {
 public:
   virtual ~MapShape() = default;
-  virtual void Prepare(ref_ptr<dp::TextureManager> /*textures*/) const {}
-  virtual void Draw(ref_ptr<dp::Batcher> batcher, ref_ptr<dp::TextureManager> textures) const = 0;
+  virtual void Prepare(ref_ptr<dp::TextureManager> /* textures */) const {}
+  virtual void Draw(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Batcher> batcher,
+                    ref_ptr<dp::TextureManager> textures) const = 0;
   virtual MapShapeType GetType() const { return MapShapeType::GeometryType; }
 
   void SetFeatureMinZoom(int minZoom) { m_minZoom = minZoom; }
@@ -65,7 +67,7 @@ class TileReadStartMessage : public MapShapeMessage
 public:
   explicit TileReadStartMessage(TileKey const & key) : MapShapeMessage(key) {}
   Type GetType() const override { return Message::TileReadStarted; }
-  bool IsGLContextDependent() const override { return true; }
+  bool IsGraphicsContextDependent() const override { return true; }
 };
 
 class TileReadEndMessage : public MapShapeMessage
@@ -73,7 +75,7 @@ class TileReadEndMessage : public MapShapeMessage
 public:
   explicit TileReadEndMessage(TileKey const & key) : MapShapeMessage(key) {}
   Type GetType() const override { return Message::TileReadEnded; }
-  bool IsGLContextDependent() const override { return true; }
+  bool IsGraphicsContextDependent() const override { return true; }
 };
 
 class MapShapeReadedMessage : public MapShapeMessage
@@ -84,7 +86,7 @@ public:
   {}
 
   Type GetType() const override { return Message::MapShapeReaded; }
-  bool IsGLContextDependent() const override { return true; }
+  bool IsGraphicsContextDependent() const override { return true; }
   TMapShapes const & GetShapes() { return m_shapes; }
 
 private:
