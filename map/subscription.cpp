@@ -125,7 +125,8 @@ void Subscription::Validate(std::string const & receiptData, std::string const &
   // If we validate the subscription immediately after purchasing, we believe that
   // the subscription is valid and apply it before the validation. If the result of
   // validation will be different, we return everything back.
-  if (m_subscriptionId.empty() && !receiptData.empty())
+  bool isJustPaidSubscription = m_subscriptionId.empty() && !receiptData.empty();
+  if (isJustPaidSubscription)
   {
     m_isActive = true;
     m_subscriptionId = GetSubscriptionId();
@@ -136,6 +137,12 @@ void Subscription::Validate(std::string const & receiptData, std::string const &
 
   auto const status = GetPlatform().ConnectionStatus();
   if (status == Platform::EConnectionType::CONNECTION_NONE || receiptData.empty())
+  {
+    ApplyValidation(ValidationCode::Failure);
+    return;
+  }
+
+  if (!isJustPaidSubscription && status != Platform::EConnectionType::CONNECTION_WIFI)
   {
     ApplyValidation(ValidationCode::Failure);
     return;
