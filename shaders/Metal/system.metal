@@ -29,7 +29,7 @@ typedef struct
 } Fragment_DepthOutput;
 
 vertex Fragment_T vsCleaner(device const Vertex_T * vertices [[buffer(0)]],
-                               uint vid [[vertex_id]])
+                            ushort vid [[vertex_id]])
 {
   Fragment_T out;
   out.position = float4(vertices[vid].a_position, 0.0, 1.0);
