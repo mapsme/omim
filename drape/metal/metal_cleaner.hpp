@@ -36,7 +36,8 @@ private:
                   ref_ptr<GpuProgram> program);
   
   id<MTLBuffer> m_buffer;
-  id<MTLDepthStencilState> m_depthState;
+  id<MTLDepthStencilState> m_depthEnabledState;
+  id<MTLDepthStencilState> m_depthDisabledState;
   glsl::vec4 m_clearColor;
   
   drape_ptr<GpuProgram> m_programClearColor;

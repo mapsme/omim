@@ -26,7 +26,13 @@ void MetalCleaner::Init(ref_ptr<MetalBaseContext> context,
   MTLDepthStencilDescriptor * desc = [[MTLDepthStencilDescriptor alloc] init];
   desc.depthWriteEnabled = YES;
   desc.depthCompareFunction = MTLCompareFunctionAlways;
-  m_depthState = [device newDepthStencilStateWithDescriptor:desc];
+  m_depthEnabledState = [device newDepthStencilStateWithDescriptor:desc];
+  CHECK(m_depthEnabledState != nil, ());
+  
+  desc.depthWriteEnabled = NO;
+  desc.depthCompareFunction = MTLCompareFunctionAlways;
+  m_depthDisabledState = [device newDepthStencilStateWithDescriptor:desc];
+  CHECK(m_depthDisabledState != nil, ());
 }
 
 void MetalCleaner::SetClearColor(Color const & color)
@@ -57,22 +63,28 @@ void MetalCleaner::RenderQuad(ref_ptr<MetalBaseContext> metalContext, id<MTLRend
   
 void MetalCleaner::ClearDepth(ref_ptr<MetalBaseContext> context, id<MTLRenderCommandEncoder> encoder)
 {
-  [encoder setDepthStencilState:m_depthState];
+  [encoder pushDebugGroup:@"ClearDepth"];
+  [encoder setDepthStencilState:m_depthEnabledState];
   RenderQuad(context, encoder, make_ref(m_programClearDepth));
+  [encoder popDebugGroup];
 }
 
 void MetalCleaner::ClearColor(ref_ptr<MetalBaseContext> context, id<MTLRenderCommandEncoder> encoder)
 {
-  [encoder setDepthStencilState:nil];
+  [encoder pushDebugGroup:@"ClearColor"];
+  [encoder setDepthStencilState:m_depthDisabledState];
   ApplyColorParam(encoder, make_ref(m_programClearColor));
   RenderQuad(context, encoder, make_ref(m_programClearColor));
+  [encoder popDebugGroup];
 }
 
 void MetalCleaner::ClearColorAndDepth(ref_ptr<MetalBaseContext> context, id<MTLRenderCommandEncoder> encoder)
 {
-  [encoder setDepthStencilState:m_depthState];
+  [encoder pushDebugGroup:@"ClearColorAndDepth"];
+  [encoder setDepthStencilState:m_depthEnabledState];
   ApplyColorParam(encoder, make_ref(m_programClearColorAndDepth));
   RenderQuad(context, encoder, make_ref(m_programClearColorAndDepth));
+  [encoder popDebugGroup];
 }
 }  // namespace metal
 }  // namespace dp
