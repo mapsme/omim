@@ -429,8 +429,6 @@ void PostprocessRenderer::OnChangedRouteFollowingMode(ref_ptr<dp::GraphicsContex
   m_isRouteFollowingActive = isRouteFollowingActive;
   if (m_width != 0 && m_height != 0)
     UpdateFramebuffers(context, m_width, m_height);
-  m_isMainFramebufferRendered = false;
-  m_isSmaaFramebufferRendered = false;
 }
 
 StencilWriterGuard::StencilWriterGuard(ref_ptr<PostprocessRenderer> renderer,

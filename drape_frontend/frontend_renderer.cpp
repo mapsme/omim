@@ -51,9 +51,9 @@ namespace dp
 {
 extern void RenderFrameMediator(std::function<void()> && renderFrameFunction);
 }  // namespace dp
-#define RENDER_FRAME(renderFunction) dp::RenderFrameMediator([this]{ m_renderer.RenderFrame(); });
+#define RENDER_FRAME(renderFunction) dp::RenderFrameMediator([this]{ renderFunction; });
 #else
-#define RENDER_FRAME(renderFunction) m_renderer.RenderFrame();
+#define RENDER_FRAME(renderFunction) renderFunction;
 #endif
 
 namespace df
@@ -224,7 +224,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   {
   case Message::FlushTile:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FlushRenderBucketMessage> msg = message;
       dp::RenderState const & state = msg->GetState();
       TileKey const & key = msg->GetKey();
@@ -239,7 +239,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::FlushOverlays:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FlushOverlaysMessage> msg = message;
       TOverlaysRenderData renderData = msg->AcceptRenderData();
       for (auto & overlayRenderData : renderData)
@@ -265,7 +265,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::FinishTileRead:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FinishTileReadMessage> msg = message;
       bool changed = false;
       for (auto const & tileKey : msg->GetTiles())
@@ -302,7 +302,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::FlushUserMarks:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FlushUserMarksMessage> msg = message;
       TUserMarksRenderData marksRenderData = msg->AcceptRenderData();
       for (auto & renderData : marksRenderData)
@@ -359,7 +359,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::MapShapes:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<MapShapesMessage> msg = message;
       CHECK(m_context != nullptr, ());
       m_myPositionController->SetRenderShape(m_context, m_texMng, msg->AcceptShape());
@@ -441,7 +441,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::FlushSubroute:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FlushSubrouteMessage> msg = message;
       auto subrouteData = msg->AcceptRenderData();
 
@@ -472,7 +472,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::FlushTransitScheme:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FlushTransitSchemeMessage > msg = message;
       auto renderData = msg->AcceptRenderData();
       CHECK(m_context != nullptr, ());
@@ -483,7 +483,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::FlushSubrouteArrows:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FlushSubrouteArrowsMessage> msg = message;
       drape_ptr<SubrouteArrowsData> routeArrowsData = msg->AcceptRenderData();
       if (CheckRouteRecaching(make_ref(routeArrowsData)))
@@ -497,7 +497,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::FlushSubrouteMarkers:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FlushSubrouteMarkersMessage> msg = message;
       drape_ptr<SubrouteMarkersData> markersData = msg->AcceptRenderData();
       if (markersData->m_recacheId < 0)
@@ -514,7 +514,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::RemoveSubroute:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<RemoveSubrouteMessage> msg = message;
       if (msg->NeedDeactivateFollowing())
       {
@@ -564,7 +564,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::AddRoutePreviewSegment:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<AddRoutePreviewSegmentMessage> const msg = message;
       RouteRenderer::PreviewInfo info;
       info.m_startPoint = msg->GetStartPoint();
@@ -575,7 +575,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::RemoveRoutePreviewSegment:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<RemoveRoutePreviewSegmentMessage> const msg = message;
       if (msg->NeedRemoveAll())
         m_routeRenderer->RemoveAllPreviewSegments();
@@ -586,7 +586,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::SetSubrouteVisibility:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<SetSubrouteVisibilityMessage> const msg = message;
       m_routeRenderer->SetSubrouteVisibility(msg->GetSubrouteId(), msg->IsVisible());
       break;
@@ -684,7 +684,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
 
   case Message::FlushCirclesPack:
     {
-      if (m_apiVersion == dp::ApiVersion::Metal) return; // TEMPORARY
+      if (m_apiVersion == dp::ApiVersion::Metal) return; // TODO(@darina, @rokuz): TEMPORARY
       ref_ptr<FlushCirclesPackMessage> msg = message;
       CHECK(m_context != nullptr, ());
       switch (msg->GetDestination())
