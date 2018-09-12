@@ -1503,7 +1503,7 @@ search::DisplayedCategories const & Framework::GetDisplayedCategories()
   {
     // Add Category modifiers here.
     //std::tuple<Modifier> modifiers(city);
-    //my::for_each_in_tuple(modifiers, [&](size_t, SponsoredCategoryModifier & modifier)
+    //base::for_each_in_tuple(modifiers, [&](size_t, SponsoredCategoryModifier & modifier)
     //{
     //  m_displayedCategories->Modify(modifier);
     //});
