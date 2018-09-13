@@ -5,7 +5,7 @@
 
 using namespace metal;
 
-float4 applyPivotTransform(float4 pivot, float4x4 pivotTransform, float pivotRealZ)
+float4 ApplyPivotTransform(float4 pivot, float4x4 pivotTransform, float pivotRealZ)
 {
   float4 transformedPivot = pivot;
   float w = transformedPivot.w;

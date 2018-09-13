@@ -69,8 +69,8 @@ std::array<ProgramInfo, static_cast<size_t>(Program::ProgramsCount)> const kMeta
   ProgramInfo("", "", {}),  // HatchingArea
   ProgramInfo("vsTexturingGui", "fsTexturingGui", {{0, 1}}),  // TexturingGui
   ProgramInfo("vsRuler", "fsRuler", {{0, 2}}),  // Ruler
-  ProgramInfo("vsAccuracy", "fsTexturingShapes", {{0, 1}}),  // Accuracy
-  ProgramInfo("vsMyPosition", "fsTexturingShapes", {{0, 1}}),  // MyPosition
+  ProgramInfo("vsAccuracy", "fsAccuracy", {{0, 1}}),  // Accuracy
+  ProgramInfo("vsMyPosition", "fsMyPosition", {{0, 1}}),  // MyPosition
   ProgramInfo("", "", {}),  // Transit
   ProgramInfo("", "", {}),  // TransitMarker
   ProgramInfo("", "", {}),  // Route

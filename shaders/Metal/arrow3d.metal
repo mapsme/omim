@@ -43,7 +43,7 @@ vertex Fragment_T vsArrow3d(const Vertex_T in [[stage_in]],
 }
 
 fragment float4 fsArrow3d(const Fragment_T in [[stage_in]],
-                         constant Uniforms_T & uniforms [[buffer(0)]])
+                          constant Uniforms_T & uniforms [[buffer(0)]])
 {
   float alpha = smoothstep(0.8, 1.0, in.intensity.y);
   return float4((in.intensity.x * 0.5 + 0.5) * uniforms.u_color.rgb, uniforms.u_color.a * alpha);
@@ -66,7 +66,7 @@ vertex FragmentShadow_T vsArrow3dShadow(const VertexShadow_T in [[stage_in]],
 }
 
 fragment float4 fsArrow3dShadow(const FragmentShadow_T in [[stage_in]],
-                                 constant Uniforms_T & uniforms [[buffer(0)]])
+                                constant Uniforms_T & uniforms [[buffer(0)]])
 {
   return float4(uniforms.u_color.rgb, uniforms.u_color.a * in.intensity);
 }
