@@ -28,13 +28,15 @@ typedef struct
 typedef struct
 {
   float4 position [[position]];
-  float2 colorTexCoord;
+  float4 color;
   float2 maskTexCoord;
   float halfLength;
 } TrafficFragment_T;
 
 vertex TrafficFragment_T vsTraffic(const TrafficVertex_T in [[stage_in]],
-                                   constant Uniforms_T & uniforms [[buffer(1)]])
+                                   constant Uniforms_T & uniforms [[buffer(1)]],
+                                   texture2d<float> u_colorTex [[texture(0)]],
+                                   sampler u_colorTexSampler [[sampler(0)]])
 {
   constexpr float kArrowVSize = 0.25;
   
@@ -52,7 +54,7 @@ vertex TrafficFragment_T vsTraffic(const TrafficVertex_T in [[stage_in]],
   }
   
   float uOffset = length(float4(kShapeCoordScalar, 0.0, 0.0, 0.0) * uniforms.u_modelView) * in.a_normal.w;
-  out.colorTexCoord = in.a_colorTexCoord.xy;
+  out.color = u_colorTex.sample(u_colorTexSampler, in.a_colorTexCoord.xy);
   float v = mix(in.a_colorTexCoord.z, in.a_colorTexCoord.z + kArrowVSize, 0.5 * in.a_normal.z + 0.5);
   out.maskTexCoord = float2(uOffset * uniforms.u_trafficParams.z, v) * uniforms.u_trafficParams.w;
   out.maskTexCoord.x *= step(in.a_colorTexCoord.w, out.maskTexCoord.x);
@@ -65,10 +67,8 @@ vertex TrafficFragment_T vsTraffic(const TrafficVertex_T in [[stage_in]],
 
 fragment float4 fsTraffic(const TrafficFragment_T in [[stage_in]],
                           constant Uniforms_T & uniforms [[buffer(0)]],
-                          texture2d<float> u_colorTex [[texture(0)]],
-                          sampler u_colorTexSampler [[sampler(0)]],
-                          texture2d<float> u_maskTex [[texture(1)]],
-                          sampler u_maskTexSampler [[sampler(1)]])
+                          texture2d<float> u_maskTex [[texture(0)]],
+                          sampler u_maskTexSampler [[sampler(0)]])
 {
   constexpr float kAntialiasingThreshold = 0.92;
   
@@ -77,7 +77,7 @@ fragment float4 fsTraffic(const TrafficFragment_T in [[stage_in]],
   
   constexpr float kMaskOpacity = 0.7;
   
-  float4 color = u_colorTex.sample(u_colorTexSampler, in.colorTexCoord);
+  float4 color = in.color;
   float alphaCode = color.a;
   float4 mask = u_maskTex.sample(u_maskTexSampler, in.maskTexCoord);
   color.a = uniforms.u_opacity * (1.0 - smoothstep(kAntialiasingThreshold, 1.0, abs(in.halfLength)));
@@ -102,29 +102,27 @@ typedef struct
 typedef struct
 {
   float4 position [[position]];
-  float2 colorTexCoord;
+  float4 color;
 } TrafficLineFragment_T;
 
 vertex TrafficLineFragment_T vsTrafficLine(const TrafficLineVertex_T in [[stage_in]],
-                                           constant Uniforms_T & uniforms [[buffer(1)]])
+                                           constant Uniforms_T & uniforms [[buffer(1)]],
+                                           texture2d<float> u_colorTex [[texture(0)]],
+                                           sampler u_colorTexSampler [[sampler(0)]])
 {
   TrafficLineFragment_T out;
   
   float2 transformedAxisPos = (float4(in.a_position.xy, 0.0, 1.0) * uniforms.u_modelView).xy;
   float4 pos = float4(transformedAxisPos, in.a_position.z, 1.0) * uniforms.u_projection;
-  out.colorTexCoord = in.a_colorTexCoord;
+  out.color = float4(u_colorTex.sample(u_colorTexSampler, in.a_colorTexCoord).rgb, uniforms.u_opacity);
   out.position = ApplyPivotTransform(pos, uniforms.u_pivotTransform, 0.0);
   
   return out;
 }
 
-fragment float4 fsTrafficLine(const TrafficLineFragment_T in [[stage_in]],
-                              constant Uniforms_T & uniforms [[buffer(0)]],
-                              texture2d<float> u_colorTex [[texture(0)]],
-                              sampler u_colorTexSampler [[sampler(0)]])
+fragment float4 fsTrafficLine(const TrafficLineFragment_T in [[stage_in]])
 {
-  float4 color = u_colorTex.sample(u_colorTexSampler, in.colorTexCoord);
-  return float4(color.rgb, uniforms.u_opacity);
+  return in.color;
 }
 
 // TrafficCircle
@@ -139,12 +137,14 @@ typedef struct
 typedef struct
 {
   float4 position [[position]];
-  float2 colorTexCoord;
+  float4 color;
   float3 radius;
 } TrafficCircleFragment_T;
 
 vertex TrafficCircleFragment_T vsTrafficCircle(const TrafficCircleVertex_T in [[stage_in]],
-                                               constant Uniforms_T & uniforms [[buffer(1)]])
+                                               constant Uniforms_T & uniforms [[buffer(1)]],
+                                               texture2d<float> u_colorTex [[texture(0)]],
+                                               sampler u_colorTexSampler [[sampler(0)]])
 {
   TrafficCircleFragment_T out;
   
@@ -169,7 +169,7 @@ vertex TrafficCircleFragment_T vsTrafficCircle(const TrafficCircleVertex_T in [[
   out.radius = float3(in.a_normal.zw, 1.0) * 0.5 * (leftSize + rightSize);
   
   float2 finalPos = transformedAxisPos + out.radius.xy;
-  out.colorTexCoord = in.a_colorTexCoord;
+  out.color = u_colorTex.sample(u_colorTexSampler, in.a_colorTexCoord);
   float4 pos = float4(finalPos, in.a_position.z, 1.0) * uniforms.u_projection;
   out.position = ApplyPivotTransform(pos, uniforms.u_pivotTransform, 0.0);
   
@@ -183,22 +183,22 @@ typedef struct
 } TrafficCircleOut_T;
 
 fragment TrafficCircleOut_T fsTrafficCircle(const TrafficCircleFragment_T in [[stage_in]],
-                                            constant Uniforms_T & uniforms [[buffer(0)]],
-                                            texture2d<float> u_colorTex [[texture(0)]],
-                                            sampler u_colorTexSampler [[sampler(0)]])
+                                            constant Uniforms_T & uniforms [[buffer(0)]])
 {
   constexpr float kAntialiasingThreshold = 0.92;
   
   TrafficCircleOut_T out;
   
-  float4 color = u_colorTex.sample(u_colorTexSampler, in.colorTexCoord);
+  float4 color = in.color;
   
   float smallRadius = in.radius.z * kAntialiasingThreshold;
   float stepValue = smoothstep(smallRadius * smallRadius, in.radius.z * in.radius.z,
                                in.radius.x * in.radius.x + in.radius.y * in.radius.y);
   color.a = uniforms.u_opacity * (1.0 - stepValue);
-  if (color.a < 0.01)
+  if (color.a < 0.001)
     out.depth = 1.0;
+  else
+    out.depth = in.position.z;
   out.color = color;
   return out;
 }
