@@ -89,8 +89,8 @@ fragment float4 fsTransitMarker(const TransitMarkerFragment_T in [[stage_in]])
   
   float maxRadius = 1.0;
   float aaRadius = 0.9;
-  float stepValue = smoothstep(aaRadius * aaRadius, maxRadius * maxRadius, dot(radius.xy, radius.xy));
-  finalColor.a = finalColor.a * (1.0 - stepValue);
+  float stepValue = 1.0 - smoothstep(aaRadius * aaRadius, maxRadius * maxRadius, dot(radius.xy, radius.xy));
+  finalColor.a *= stepValue;
 
   return finalColor;
 }
@@ -133,18 +133,21 @@ typedef struct
 
 fragment TransitCircleOut_T fsTransitCircle(const TransitCircleFragment_T in [[stage_in]])
 {
-  constexpr float kAAPixelsCount = 2.5;
+  constexpr float kAntialiasingPixelsCount = 2.5;
  
   TransitCircleOut_T out;
   
   float4 finalColor = in.color;
   
-  float smallRadius = in.radius.z - kAAPixelsCount;
+  float smallRadius = in.radius.z - kAntialiasingPixelsCount;
   float stepValue = smoothstep(smallRadius * smallRadius, in.radius.z * in.radius.z,
                                dot(in.radius.xy, in.radius.xy));
   finalColor.a = finalColor.a * (1.0 - stepValue);
-  if (finalColor.a < 0.01)
+  if (finalColor.a < 0.001)
     out.depth = 1.0;
+  else
+    out.depth = in.position.z;
+  
   out.color = finalColor;
   
   return out;
