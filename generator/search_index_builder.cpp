@@ -519,7 +519,7 @@ void BuildSearchIndex(FilesContainerR & container, Writer & indexWriter)
   Platform & platform = GetPlatform();
 
   LOG(LINFO, ("Start building search index for", container.GetFileName()));
-  my::Timer timer;
+  base::Timer timer;
 
   CategoriesHolder categoriesHolder(platform.GetReader(SEARCH_CATEGORIES_FILE_NAME));
 
