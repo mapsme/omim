@@ -40,16 +40,15 @@ class SensorHelper implements SensorEventListener
     if (mSensorData.isAbsent())
     {
       notifyImmediately(event);
-      return;
     }
-
-    SensorType type = SensorType.get(event);
-    if (type == SensorType.TYPE_MAGNETIC_FIELD)
-      addRateLimitMessage();
-
-    if (!mHandler.hasMessages(MARKER) || type != SensorType.TYPE_MAGNETIC_FIELD)
+    else if (SensorType.get(event) == SensorType.TYPE_ACCELEROMETER)
     {
       notifyImmediately(event);
+    }
+    else if (!mHandler.hasMessages(MARKER))
+    {
+      notifyImmediately(event);
+      addRateLimitMessage();
     }
   }
 
@@ -218,4 +217,5 @@ class SensorHelper implements SensorEventListener
 
     public abstract void updateDataInternal(@NonNull SensorData data, @NonNull float[] params);
   }
+
 }
