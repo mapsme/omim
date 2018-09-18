@@ -154,3 +154,10 @@ if (PLATFORM_LINUX)
 endif()
 
 omim_add_test_subdirectory(platform_tests)
+
+# initWithRequest:delegate is deprecated. The code needs to be rewritten
+# using the new API. Silence the warning until then.
+set_source_files_properties(
+  http_thread_apple.mm
+  PROPERTIES COMPILE_FLAGS -Wno-deprecated-declarations
+)
