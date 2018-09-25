@@ -2410,63 +2410,63 @@
 
 "bookmarks_guides" = "书签和导览";
 
-"remove_ads" = "Remove ads";
+"remove_ads" = "关闭广告";
 
-"remove_ads_title" = "Remove all ads and support MAPS.ME";
+"remove_ads_title" = "关闭所有广告并支持MAPS.ME";
 
-"paybtn_title" = "Pay %s/year";
+"paybtn_title" = "支付％s /年";
 
-"paybtn_subtitle" = "Save %s/year";
+"paybtn_subtitle" = "节省％s /年";
 
-"options_dropdown_title" = "More options";
+"options_dropdown_title" = "其他选择";
 
-"why_support" = "Why support MAPS.ME?";
+"why_support" = "为什么支持MAPS.ME?";
 
-"options_dropdown_item1" = "%s/month (save %s/year)";
+"options_dropdown_item1" = "%s/月 (节省％s /年)";
 
-"options_dropdown_item2" = "%s/week (no savings)";
+"options_dropdown_item2" = "%s/周 (未节省)";
 
-"why_support_item1" = "We will remove all ads for you";
+"why_support_item1" = "我们将为您关闭所有广告";
 
-"why_support_item2" = "You help us to improve MAPS.ME";
+"why_support_item2" = "您帮助我们改进MAPS.ME";
 
-"why_support_item3" = "You help us improve open maps OpenStreetMap.org";
+"why_support_item3" = "您帮助我们改进OpenStreetMaps.org地图";
 
-"purchase_processing" = "Your purchase is being processed…";
+"purchase_processing" = "";
 
-"tips_bookmarks_catalog_title" = "Can't plan a route over interesting locations?";
+"tips_bookmarks_catalog_title" = "所有类型旅行的离线指南";
 
-"tips_bookmarks_catalog_message" = "Download and plan tourist routes over interesting locations in different cities of the world.";
+"tips_bookmarks_catalog_message" = "下载并设置到世界各地各个城市景点的旅游路线。";
 
-"tips_discover_button_title" = "Want to find popular locations nearby?";
+"tips_discover_button_title" = "想在该地区找到受欢迎的机构吗？";
 
-"tips_discover_button_message" = "The \"Discover nearby\" section contains the best restaurants, hotels, and sights.";
+"tips_discover_button_message" = "在“探索周围”部分中收集了最近最好的餐馆、酒店和名胜古迹。";
 
-"tips_book_hotel_title" = "Book the cosiest hotels for your journeys";
+"tips_book_hotel_title" = "请为您的假期预订最舒适的酒店";
 
-"tips_book_hotel_message" = "Use the search and filters to find the best hotels for you. Use the \"Book\" button in the location placepage to book a hotel instantly.";
+"tips_book_hotel_message" = "在搜索和过滤器的帮助下，您将找到最好的酒店。点击地点卡中的“预約”键即可立即预订酒店。";
 
-"tips_map_layers_title" = "Don't know at which station to make a connection?";
+"tips_map_layers_title" = "不知道在哪个地铁站换乘？";
 
-"tips_map_layers_message" = "Turn on the subway layer to display the subway map, and you will always find your way in a new city.";
+"tips_map_layers_message" = "请打开地图上的地铁图层以显示地铁图，您在新的城市中始终有导航。";
 
-"channels_map_update" = "Map updates";
+"channels_map_update" = "更新地图";
 
-"channels_reviews" = "Unsent reviews";
+"channels_reviews" = "未发送的意见";
 
-"purchase_loading" = "Purchase information is loading…";
+"purchase_loading" = "加载购买信息……";
 
-"purchase_error_subtitle" = "An error occurred while processing your purchase";
+"purchase_error_subtitle" = "处理购买时出错。";
 
-"awaiting_approval" = "Awaiting a parent's approval";
+"awaiting_approval" = "我们正在等待父母的确认";
 
-"whats_new_leave_review" = "Leave a review! Share your opinion about the locations you visited on your vacation.";
+"whats_new_leave_review" = "请留言！分享您对度假时所去过的地方的看法";
 
-"server_unavailable_title" = "Server is unavailable";
+"server_unavailable_title" = "服务不可用";
 
-"server_unavailable_message" = "The purchase will be completed later. If the error persists, please contact support@maps.me.";
+"server_unavailable_message" = "购买将在稍后完成。如果错误仍然存在，请联系support@maps.me";
 
-"offline_fiters_check_in" = "Connect to the internet to filter hotels by dates.";
+"offline_fiters_check_in" = "连接到网络来选择到达和离开的日期。";
 
 
 /**********  Partners  **********/

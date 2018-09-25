@@ -2410,63 +2410,63 @@
 
 "bookmarks_guides" = "Penanda dan panduan";
 
-"remove_ads" = "Remove ads";
+"remove_ads" = "Hapus iklan";
 
-"remove_ads_title" = "Remove all ads and support MAPS.ME";
+"remove_ads_title" = "Hapus semua iklan dan dukungan MAPS.ME";
 
-"paybtn_title" = "Pay %s/year";
+"paybtn_title" = "Bayar %s/tahun";
 
-"paybtn_subtitle" = "Save %s/year";
+"paybtn_subtitle" = "Hemat %s/tahun";
 
-"options_dropdown_title" = "More options";
+"options_dropdown_title" = "Opsi lainnya";
 
-"why_support" = "Why support MAPS.ME?";
+"why_support" = "Kenapa dukungan MAPS.ME?";
 
-"options_dropdown_item1" = "%s/month (save %s/year)";
+"options_dropdown_item1" = "%s/bulan (hemat %s/tahun)";
 
-"options_dropdown_item2" = "%s/week (no savings)";
+"options_dropdown_item2" = "%s/minggu (tanpa penghematan)";
 
-"why_support_item1" = "We will remove all ads for you";
+"why_support_item1" = "Kami akan menghapus semua iklan untuk Anda";
 
-"why_support_item2" = "You help us to improve MAPS.ME";
+"why_support_item2" = "Anda membantu kami meningkatkan MAPS.ME";
 
-"why_support_item3" = "You help us improve open maps OpenStreetMap.org";
+"why_support_item3" = "Anda membantu kami meningkatkan peta terbuka OpenStreetMap.org";
 
-"purchase_processing" = "Your purchase is being processed…";
+"purchase_processing" = "";
 
-"tips_bookmarks_catalog_title" = "Can't plan a route over interesting locations?";
+"tips_bookmarks_catalog_title" = "Panduan offline untuk setiap jenis perjalanan";
 
-"tips_bookmarks_catalog_message" = "Download and plan tourist routes over interesting locations in different cities of the world.";
+"tips_bookmarks_catalog_message" = "Unduh dan rencanakan rute wisata di lokasi-lokasi menarik di berbagai kota di dunia.";
 
-"tips_discover_button_title" = "Want to find popular locations nearby?";
+"tips_discover_button_title" = "Ingin menemukan lokasi yang populer di sekitar?";
 
-"tips_discover_button_message" = "The \"Discover nearby\" section contains the best restaurants, hotels, and sights.";
+"tips_discover_button_message" = "Bagian “Temukan di sekitar” berisi restoran, hotel, dan pemandangan terbaik.";
 
-"tips_book_hotel_title" = "Book the cosiest hotels for your journeys";
+"tips_book_hotel_title" = "Pesan hotel ternyaman untuk perjalanan Anda";
 
-"tips_book_hotel_message" = "Use the search and filters to find the best hotels for you. Use the \"Book\" button in the location placepage to book a hotel instantly.";
+"tips_book_hotel_message" = "Gunakan pencarian dan filter untuk menemukan hotel terbaik untuk Anda. Gunakan tombol “Pesan” pada placepage lokasi untuk memesan hotel secara instan.";
 
-"tips_map_layers_title" = "Don't know at which station to make a connection?";
+"tips_map_layers_title" = "Tidak tahu stasiun mana untuk menyambungkan perjalanan?";
 
-"tips_map_layers_message" = "Turn on the subway layer to display the subway map, and you will always find your way in a new city.";
+"tips_map_layers_message" = "Aktifkan layer kereta bawah tanah untuk menampilkan peta kereta bawah tanah, dan Anda akan selalu menemukan jalan ke kota baru.";
 
-"channels_map_update" = "Map updates";
+"channels_map_update" = "Pembaruan peta";
 
-"channels_reviews" = "Unsent reviews";
+"channels_reviews" = "Ulasan tak terkirim";
 
-"purchase_loading" = "Purchase information is loading…";
+"purchase_loading" = "Memuat informasi pembelian…";
 
-"purchase_error_subtitle" = "An error occurred while processing your purchase";
+"purchase_error_subtitle" = "Kesalahan terjadi saat memproses pembelian Anda";
 
-"awaiting_approval" = "Awaiting a parent's approval";
+"awaiting_approval" = "Menunggu persetujuan orang tua";
 
-"whats_new_leave_review" = "Leave a review! Share your opinion about the locations you visited on your vacation.";
+"whats_new_leave_review" = "Tinggalkan ulasan! Bagikan opini tentang lokasi yang Anda kunjungi selama berlibur.";
 
-"server_unavailable_title" = "Server is unavailable";
+"server_unavailable_title" = "Server tidak tersedia";
 
-"server_unavailable_message" = "The purchase will be completed later. If the error persists, please contact support@maps.me.";
+"server_unavailable_message" = "Pembelian akan diselesaikan nanti. Jika kesalahan tetap terjadi, silakan hubungi support@maps.me.";
 
-"offline_fiters_check_in" = "Connect to the internet to filter hotels by dates.";
+"offline_fiters_check_in" = "Sambungkan ke internet untuk memfilter hotel berdasar tanggal.";
 
 
 /**********  Partners  **********/
