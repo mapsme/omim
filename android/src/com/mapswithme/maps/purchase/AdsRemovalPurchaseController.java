@@ -65,6 +65,8 @@ class AdsRemovalPurchaseController extends AbstractPurchaseController<AdsRemoval
     {
       LOGGER.i(TAG, "Validation status of 'ads removal': " + status);
       boolean activateSubscription = status != AdsRemovalValidationStatus.NOT_VERIFIED;
+      LOGGER.i(TAG, "Ads removal subscription "
+                    + (activateSubscription ? "activated" : "deactivated"));
       Framework.nativeSetActiveRemoveAdsSubscription(activateSubscription);
 
       if (getUiCallback() != null)
@@ -123,6 +125,11 @@ class AdsRemovalPurchaseController extends AbstractPurchaseController<AdsRemoval
       if (TextUtils.isEmpty(purchaseData))
       {
         LOGGER.i(TAG, "Existing purchase data for 'ads removal' not found");
+        if (Framework.nativeHasActiveRemoveAdsSubscription())
+        {
+          LOGGER.i(TAG, "Ads removal subscription deactivated");
+          Framework.nativeSetActiveRemoveAdsSubscription(false);
+        }
         return;
       }
 
