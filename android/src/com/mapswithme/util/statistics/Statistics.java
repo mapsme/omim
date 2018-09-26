@@ -1,7 +1,6 @@
 package com.mapswithme.util.statistics;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
@@ -137,8 +136,10 @@ import static com.mapswithme.util.statistics.Statistics.ParamValue.UNKNOWN;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.VEHICLE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.VIATOR;
 
-public final class Statistics
+public enum Statistics
 {
+  INSTANCE;
+
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({PP_BANNER_STATE_PREVIEW, PP_BANNER_STATE_DETAILS})
   public @interface BannerState {}
@@ -467,9 +468,8 @@ public final class Statistics
   // avoid their initialization if user has disabled statistics collection.
   private final boolean mEnabled;
 
-  public Statistics(@NonNull ExternalLibrariesMediator mediator)
+  Statistics()
   {
-    mMediator = mediator;
     mEnabled = SharedPropertiesUtils.isStatisticsEnabled();
     final Context context = MwmApplication.get();
     // At the moment we need special handling for Alohalytics to enable/disable logging of events in core C++ code.
@@ -480,14 +480,13 @@ public final class Statistics
     configure(context);
   }
 
+  @SuppressWarnings("NullableProblems")
   @NonNull
-  private final ExternalLibrariesMediator mMediator;
+  private ExternalLibrariesMediator mMediator;
 
-  @NonNull
-  public static Statistics from(@NonNull Application application)
+  public void setMediator(@NonNull ExternalLibrariesMediator mediator)
   {
-    MwmApplication app = (MwmApplication) application;
-    return app.getStatistics();
+    mMediator = mediator;
   }
 
   private void configure(Context context)
@@ -731,8 +730,8 @@ public final class Statistics
                                    @NonNull MapObject mapObject)
   {
     String provider = restaurant.getType() == Sponsored.TYPE_OPENTABLE ? OPENTABLE : "Unknown restaurant";
-    trackEvent(eventName, LocationHelper.INSTANCE.getLastKnownLocation(),
-                                                 Statistics.params().add(PROVIDER, provider)
+    Statistics.INSTANCE.trackEvent(eventName, LocationHelper.INSTANCE.getLastKnownLocation(),
+                                   Statistics.params().add(PROVIDER, provider)
                                              .add(RESTAURANT, restaurant.getId())
                                              .add(RESTAURANT_LAT, mapObject.getLat())
                                              .add(RESTAURANT_LON, mapObject.getLon()).get());
@@ -742,8 +741,8 @@ public final class Statistics
                               @NonNull MapObject mapObject)
   {
     String provider = hotel.getType() == Sponsored.TYPE_BOOKING ? BOOKING_COM : "Unknown hotel";
-    trackEvent(eventName, LocationHelper.INSTANCE.getLastKnownLocation(),
-               Statistics.params().add(PROVIDER, provider)
+    Statistics.INSTANCE.trackEvent(eventName, LocationHelper.INSTANCE.getLastKnownLocation(),
+                                   Statistics.params().add(PROVIDER, provider)
                                              .add(HOTEL, hotel.getId())
                                              .add(HOTEL_LAT, mapObject.getLat())
                                              .add(HOTEL_LON, mapObject.getLon()).get());
@@ -1074,11 +1073,11 @@ public final class Statistics
                                         @NonNull MapObject mapObject)
   {
     // Here we code category by means of rating.
-    trackEvent(eventName, LocationHelper.INSTANCE.getLastKnownLocation(),
-               Statistics.params().add(PROVIDER, convertToSponsor(sponsoredObj))
-                         .add(CATEGORY, sponsoredObj.getRating())
-                         .add(OBJECT_LAT, mapObject.getLat())
-                         .add(OBJECT_LON, mapObject.getLon()).get());
+    Statistics.INSTANCE.trackEvent(eventName, LocationHelper.INSTANCE.getLastKnownLocation(),
+        Statistics.params().add(PROVIDER, convertToSponsor(sponsoredObj))
+            .add(CATEGORY, sponsoredObj.getRating())
+            .add(OBJECT_LAT, mapObject.getLat())
+            .add(OBJECT_LON, mapObject.getLon()).get());
   }
 
   @NonNull
