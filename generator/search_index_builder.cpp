@@ -46,6 +46,7 @@
 
 using namespace std;
 
+#define WORLD_SYNONYMS_FILE "synonyms_world.txt"
 #define SYNONYMS_FILE "synonyms.txt"
 
 namespace
@@ -77,8 +78,6 @@ public:
         for (size_t i = 1; i < tokens.size(); ++i)
         {
           strings::Trim(tokens[i]);
-          // synonym should not has any spaces
-          ASSERT ( tokens[i].find_first_of(" \t") == string::npos, () );
           m_map.insert(make_pair(tokens[0], tokens[i]));
         }
       }
@@ -230,24 +229,16 @@ struct ValueBuilder<FeatureIndexValue>
 template <typename TKey, typename TValue>
 class FeatureInserter
 {
-  SynonymsHolder * m_synonyms;
-  vector<pair<TKey, TValue>> & m_keyValuePairs;
-
-  CategoriesHolder const & m_categories;
-
-  pair<int, int> m_scales;
-
-  ValueBuilder<TValue> const & m_valueBuilder;
-
 public:
   FeatureInserter(SynonymsHolder * synonyms, vector<pair<TKey, TValue>> & keyValuePairs,
                   CategoriesHolder const & catHolder, pair<int, int> const & scales,
-                  ValueBuilder<TValue> const & valueBuilder)
+                  ValueBuilder<TValue> const & valueBuilder, bool isWorld)
     : m_synonyms(synonyms)
     , m_keyValuePairs(keyValuePairs)
     , m_categories(catHolder)
     , m_scales(scales)
     , m_valueBuilder(valueBuilder)
+    , m_isWorld(isWorld)
   {
   }
 
@@ -265,7 +256,7 @@ public:
     // Init inserter with serialized value.
     // Insert synonyms only for countries and states (maybe will add cities in future).
     FeatureNameInserter<TKey, TValue> inserter(
-        skipIndex.IsCountryOrState(types) ? m_synonyms : nullptr, m_keyValuePairs, hasStreetType);
+        m_isWorld && !skipIndex.IsCountryOrState(types) ? nullptr : m_synonyms, m_keyValuePairs, hasStreetType);
     m_valueBuilder.MakeValue(f, index, inserter.m_val);
 
     string const postcode = f.GetMetadata().Get(feature::Metadata::FMD_POSTCODE);
@@ -290,6 +281,10 @@ public:
     if (types.Empty())
       return;
 
+    string const op = f.GetMetadata().Get(feature::Metadata::FMD_OPERATOR);
+    if (!op.empty())
+      inserter(StringUtf8Multilang::kDefaultCode, op);
+
     Classificator const & c = classif();
 
     vector<uint32_t> categoryTypes;
@@ -299,6 +294,14 @@ public:
     for (uint32_t t : categoryTypes)
       inserter.AddToken(kCategoriesLang, FeatureTypeToString(c.GetIndexForType(t)));
   }
+
+private:
+  SynonymsHolder * m_synonyms;
+  vector<pair<TKey, TValue>> & m_keyValuePairs;
+  CategoriesHolder const & m_categories;
+  pair<int, int> m_scales;
+  ValueBuilder<TValue> const & m_valueBuilder;
+  bool m_isWorld;
 };
 
 template <typename TKey, typename TValue>
@@ -310,12 +313,11 @@ void AddFeatureNameIndexPairs(FeaturesVectorTest const & features,
 
   ValueBuilder<TValue> valueBuilder;
 
-  unique_ptr<SynonymsHolder> synonyms;
-  if (header.GetType() == feature::DataHeader::world)
-    synonyms.reset(new SynonymsHolder(GetPlatform().WritablePathForFile(SYNONYMS_FILE)));
+  bool const isWorld = header.GetType() == feature::DataHeader::world;
+  auto const synonyms = make_unique<SynonymsHolder>(GetPlatform().WritablePathForFile(isWorld ? WORLD_SYNONYMS_FILE : SYNONYMS_FILE));
 
   features.GetVector().ForEach(FeatureInserter<TKey, TValue>(
-      synonyms.get(), keyValuePairs, categoriesHolder, header.GetScaleRange(), valueBuilder));
+      synonyms.get(), keyValuePairs, categoriesHolder, header.GetScaleRange(), valueBuilder, isWorld));
 }
 
 bool GetStreetIndex(search::MwmContext & ctx, uint32_t featureID, string const & streetName,

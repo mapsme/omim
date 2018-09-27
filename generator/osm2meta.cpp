@@ -104,8 +104,9 @@ string MetadataTagProcessorImpl::ValidateAndFormat_operator(string const & v) co
 {
   auto const & isATM = ftypes::IsATMChecker::Instance();
   auto const & isFuelStation = ftypes::IsFuelStationChecker::Instance();
+  auto const & isFood = ftypes::IsFoodChecker::Instance();
 
-  if (!(isATM(m_params.m_types) || isFuelStation(m_params.m_types)))
+  if (!(isATM(m_params.m_types) || isFuelStation(m_params.m_types) || isFood(m_params.m_types)))
     return string();
 
   return v;
