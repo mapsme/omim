@@ -6233,7 +6233,7 @@
     fr = Ceci vous permet d’enregistrer le chemin emprunté pendant un certain temps et de le voir sur la carte. Veuillez noter : l’activation de cette fonction entraîne une grande utilisation de la batterie. La route sera supprimée automatiquement de la carte lorsque l’intervalle de temps sera arrivé à expiration.
     de = So können Sie die zurückgelegte Strecke für einen bestimmten Zeitraum aufzeichnen und auf der Karte sehen. Hinweis: Die Aktivierung dieser Funktion führt zu erhöhtem Batterieverbrauch. Die Aufzeichnung wird nach Ablauf des Zeitintervalls automatisch von der Karte entfernt.
     hu = Ez lehetővé teszi a bejárt útvonal rögzítését és megtekintését a térképen bizonyos időre. Kérjük, vegye figyelembe, hogy ezen funkció aktiválásával megnöveli az akkumulátor használatát. Az útvonal automatikusan törlődik a térképről az időtartam lejártával.
-    id = Ini memungkinkan Anda untuk merekam jalur yang telah dilalui selama jangka waktu tertentu dan melihatnya pada peta. Harap ketahui: aktivasi fungsi ini menyebabkan peningkatan penggunaan baterai. Trek akan dihapus secara otomatis dari peta setelah selang waktu berakhir.
+    id = Ini memungkinkan Anda untuk m                                                                                                              erekam jalur yang telah dilalui selama jangka waktu tertentu dan melihatnya pada peta. Harap ketahui: aktivasi fungsi ini menyebabkan peningkatan penggunaan baterai. Trek akan dihapus secara otomatis dari peta setelah selang waktu berakhir.
     it = Consente di registrare il tratto percorso in un determinato periodo di tempo e vedere lo stesso sulla mappa. Nota: l'attivazione di questa funzione incrementa l'uso della batteria. Il tratto viene rimosso automaticamente dalla mappa allo scadere dell'intervallo di tempo.
     ja = 移動経路を一定期間記録し、地図上で確認できるようにします。注意：この機能を有効にすると、バッテリーの消費量が増えます。表示期間が終了すると、走行軌跡は地図から自動的に削除されます。
     ko = 특정 기간 동안 이동된 경로를 기록하고 지도에서 그 경로를 볼 수 있습니다. 참고: 이 기능을 활성화하면 배터리 사용량이 증가하게 됩니다. 시간 간격이 만료된 후 지도에서 해당 트랙이 자동으로 제거됩니다.
@@ -24241,7 +24241,7 @@
     zh-Hant = • 更精準估計到達時間。\n• 該應用程式已經考慮到限制性區域和道路標誌。
     el = • Ακριβέστερη εκτίμηση ώρας άφιξης. \n• Η εφαρμογή λαμβάνει υπόψη τις περιοχές που απαγορεύονται και την οδική σήμανση.
     sk = • Presnejší odhad času príchodu.\\n • Aplikácia berie do úvahy obmedzenia a dopravné značky.
-    fa = تخمین دقیق تر از زمان ورود. \ n • برنامه به مناطق محدود و نشانه های جاده اشاره دارد.
+    fa = تخمین دقیق تر از زمان ورود. \n • برنامه به مناطق محدود و نشانه های جاده اشاره دارد.
 
   [whatsnew_smaller_mwm_title]
     en = Maps Got Smaller
@@ -24365,7 +24365,7 @@
     zh-Hant = 點按地點，即可向您的路線新增路徑點。
     el = Πατήστε στα μέρη για να προσθέσετε ενδιάμεσα σημεία στη διαδρομή σας.
     sk = Ťuknite na miesta, ak chcete do trasy pridať body.
-    fa = مکان ها را برای افزودن ایستگاه های راه به مسیر خود ضربه بزنید
+    fa = مکان ها را برای افزودن ایستگاه های راه به مسیر خود ضربه بزنید.
 
   [whatsnew_viator_title]
     en = Book a tour
@@ -24646,7 +24646,7 @@
     zh-Hant = 無法載入資訊。
     el = Η φόρτωση πληροφοριών απέτυχε.
     sk = Nepodarilo sa načítať informácie.
-    fa = اطلاعات بارگیری نشد
+    fa = اطلاعات بارگیری نشد.
 
   [booking_search]
     en = Booking.com
@@ -25227,7 +25227,7 @@
     el = Γενικό σχόλιο
     sk = Všeobecné pripomienky
     sw = Maoni Jumla
-    fa =  "تنظیمات: دکمه "ارسال بازخورد کلی"   
+    fa =  "تنظیمات: دکمه "ارسال بازخورد کلی   
 
   [on]
     en = On
@@ -25355,7 +25355,7 @@
     el = Για μερικές γλώσσες θα χρειαστεί να εγκαταστήσετε συνθεσάιζερ ομιλίας ή συμπληρωματικό πακέτο γλώσσας από το app store (Google Play Market, Samsung Apps).\nΑνοίξτε τις Ρυθμίσεις της συσκευής σας → Γλώσσα και εισαγωγή → Ομιλία → Μετατροπή κειμένου σε ομιλία.\nΕδώ μπορείτε να διαχειριστείτε τις ρυθμίσεις της σύνθεσης ομιλίας (για παράδειγμα, μπορείτε να κατεβάσετε πακέτο γλώσσας για χρήση εκτός σύνδεσης) και να επιλέξετε άλλη μηχανή μετατροπής κειμένου σε ομιλία.
     sk = Pre niektoré jazyky bude potrebné nainštalovať syntetizátor reči alebo balík doplnkového jazyka z obchodu s aplikáciami (Google Play, Samsung Apps). Otvorte nastavenia zariadenia → Jazyk a vstup → Reč → Prevod textu na reč. Tu môžete spravovať nastavenia pre syntézu reči (napríklad stiahnuť jazykový balík pre použitie v režime offline) a vybrať iný jazyk.
     sw = Kwa baadhi ya lugha, utahitaji kusakinisha programu nyingine ya kusanidi usemi au kifurushi cha ziada cha lugha kutoka kwenye duka la programu-tumizi (Google Play Market, Samsung Apps).\nFungua mipangilio ya kifaa chako → Lugha na Ingizo → Usemi → Tokeo la maandishi kuwa usemi.\nHapa unaweza kusimamia usanidi wa usemi (kwa mfano, kupakua kifurushi cha lugha ili utumie nje ya mtandao) na uchague injini nyingine ya maandishi-kuwa-usemi.
-    fa = برای بعضی از زبان ها، شما باید speech synthesizer یا یک بسته زبان دیگر را از فروشگاه برنامه (بازار Google Play، Samsung Apps) نصب کنید. \ n تنظیمات دستگاه خود را باز کنید. → زبان و ورودی → گفتار → خروجی متن به گفتار. می توانید تنظیمات برای ترکیب گفتار (به عنوان مثال، بسته های زبان را برای استفاده آفلاین دانلود کنید) را مدیریت کنید و یک موتور دیگر متن به گفتار را انتخاب کنید.
+    fa = برای بعضی از زبان ها، شما باید speech synthesizer یا یک بسته زبان دیگر را از فروشگاه برنامه (بازار Google Play، Samsung Apps) نصب کنید. \n تنظیمات دستگاه خود را باز کنید. → زبان و ورودی → گفتار → خروجی متن به گفتار. می توانید تنظیمات برای ترکیب گفتار (به عنوان مثال، بسته های زبان را برای استفاده آفلاین دانلود کنید) را مدیریت کنید و یک موتور دیگر متن به گفتار را انتخاب کنید.
     
   [prefs_languages_information_off_link]
     en = For more information please check this guide.
@@ -27064,6 +27064,7 @@
     sk = Na základe %d recenzií
     sw = Kulingana na maoni %d
     fa = براساس %d ارزیابی
+
   [placepage_rate_comment]
     en = Tap to rate and review this place.
     ru = Нажмите, чтобы оставить оценку и отзыв этого места.
@@ -27094,7 +27095,7 @@
     el = Πατήστε για να βαθμολογήσετε και να γράψετε μια κριτική για αυτό το μέρος.
     sk = Ťuknutím ohodnoťte a preskúmajte toto miesto.
     sw = Gusa ili kukadiria na kutoa maoni kuhusu mahali hapa.
-    fa = برای رای دادن و ارزیابی این مکان ضربه بزنید
+    fa = برای رای دادن و ارزیابی این مکان ضربه بزنید.
 
   [placepage_rate_horrible]
     en = Horrible
@@ -28779,7 +28780,7 @@
     nb = Ikke tilgjengelig offline.
     sk = Nie sú k dispozícii offline.
     sw = Haipatikani nje ya mtandao.
-    fa = در دسترس نیست
+    fa = در دسترس نیست.
 
   [directions_finish]
     en = Destination
@@ -29624,8 +29625,7 @@
     zh-Hans = %d 個書籤
     zh-Hant = %d個書籤
     fa:one = %d نشانه
-    af:other = %d نشانه‌ها
-
+    fa:other = %d نشانه‌ها
 
   [bookmarks_create_new_group]
     en = Create new list
@@ -29795,7 +29795,7 @@
     sw = Inatekeleza %s...
     zh-Hans = 正在套用 %s...
     zh-Hant = 應用 %s 中……
-    fa = اعمال
+    fa = اعمال %s...
 
   [transit_not_found]
     tags = ios,android
@@ -30209,7 +30209,7 @@
     sw = Jina halikuweza kuwa tupu
     zh-Hans = 名字不能为空
     zh-Hant = 名字不能為空
-    fa = نام ممکن نیست خالی باشد
+    fa = نام نمیتواند خالی باشد
 
   [bookmarks_error_message_empty_list_name]
     en = Please enter the list name
@@ -30955,7 +30955,6 @@
     zh-Hant = 我們重新定位了預訂方式！
     fa = در شیوهٔ رزورو بازاندیشی کردیم!
     
-
   [wn_way_of_booking_message]
     en = Just find a hotel on the map and book it, or select the similar one.
     ru = Если интересующий отель занят, воспользуйтесь кнопкой «Найти похожие отели».
@@ -31877,7 +31876,7 @@
   [author_name_by_prefix]
     en = by %s
     ru = %s
-    ar = بواسطة٪ s
+    ar = بواسطة%s
     cs = %s
     da = af %s
     nl = volgens %s
@@ -32374,7 +32373,7 @@
     sw = Kifaa chako cha mkononi kinaweza kutoa mpangilio wa “Zuia Ufuatiliaji wa Matangazo” au “Chagua kutoka kwenye utangazaji unaotegemea mapendeleo”.\n\nKwa Huduma za Android na Google Play toleo 4.0 na zaidi:\nMipangilio → Google → Matangazo → Chagua kutoka kwa Ubinafsishaji wa Matangazo\nau\nMipangilio → Google → Akaunti ya Google → Maelezo ya kibinafsi na faragha → Mipangilio ya Matangazo → Ubinafsishaji wa Matangazo
     zh-Hans = 您可以选择不在设备设置中接收定向广告。\ NAndroid和Google Play Services 4.0或更高版本\ n \ n电话设置→Google→广告→停用广告个性化\ n或\ n手机设置→Google→Google帐户→隐私→首选项设置→ 广告的个性化
     zh-Hant = 您可以選擇停止在設備設置中接受定向廣告。Android и Google Play Services 4.0或更高版本\n\n電話設置 → Google → 廣告 → 停用廣告個性化\n或\n電話設置 → Google → Google賬戶 → 隱私 → 首選項設置 → 廣告個性化
-    fa = دستگاه تلفن همراه شما ممکن است یک «ردیابی محدود آگهی» یا «لغو تبلیغات مبتنی بر علاقه» ارائه کند. \ n \ n برای Android و Google Play Services نسخه 4.0 و بالاتر: \ n تنظیمات → Google → آگهی → غیرفعال کردن تبلیغات شخصی سازی \ یا \ n تنظیمات → Google → حساب Google → اطلاعات شخصی و حریم خصوصی → تنظیمات تبلیغات → شخصی سازی تبلیغات
+    fa = دستگاه تلفن همراه شما ممکن است یک «ردیابی محدود آگهی» یا «لغو تبلیغات مبتنی بر علاقه» ارائه کند. \n \n برای Android و Google Play Services نسخه 4.0 و بالاتر: \n تنظیمات → Google → آگهی → غیرفعال کردن تبلیغات شخصی سازی \ یا \n تنظیمات → Google → حساب Google → اطلاعات شخصی و حریم خصوصی → تنظیمات تبلیغات → شخصی سازی تبلیغات
 
   [privacy_policy]
     en = Privacy policy
@@ -33054,7 +33053,7 @@
     sw = Sehemu ya "Gundua yaliyo karibu" itakusaidia kupata maeneo maarufu zaidi jijini.
     zh-Hans = “探索周围”部分将帮助您找到该市最受欢迎的地方。
     zh-Hant = “探索鄰近區域”部分將幫您找到該城市最受歡迎的地方。
-    fa =  بخش کشف نزدیک به شما کمک خواهد کرد که مکان های محبوب شهر را پیدا کنید.
+    fa = بخش کشف نزدیک به شما کمک خواهد کرد که مکان های محبوب شهر را پیدا کنید.
 
   [whats_new_hot_offers_title]
     en = Attractive offers from hotels
