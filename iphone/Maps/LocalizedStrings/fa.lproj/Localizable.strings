@@ -1842,7 +1842,7 @@
 
 "whatsnew_better_routing_title" = "بهبود مسیر برنامه ریزی";
 
-"whatsnew_better_routing_message" = "تخمین دقیق تر از زمان ورود. \ n • برنامه به مناطق محدود و نشانه های جاده اشاره دارد.";
+"whatsnew_better_routing_message" = "تخمین دقیق تر از زمان ورود. \n • برنامه به مناطق محدود و نشانه های جاده اشاره دارد.";
 
 "whatsnew_smaller_mwm_title" = "نقشه کوچکتر شده است";
 
@@ -1850,7 +1850,7 @@
 
 "whatsnew_waypoints_title" = "مسیرهای مسیریابی";
 
-"whatsnew_waypoints_message" = "مکان ها را برای افزودن ایستگاه های راه به مسیر خود ضربه بزنید";
+"whatsnew_waypoints_message" = "مکان ها را برای افزودن ایستگاه های راه به مسیر خود ضربه بزنید.";
 
 "whatsnew_viator_title" = "رزرو تور";
 
@@ -1868,7 +1868,7 @@
 
 "offline_place_page_more_information" = "برای کسب اطلاعات بیشتر در مورد مکان، به اینترنت متصل شوید.";
 
-"failed_load_information" = "اطلاعات بارگیری نشد";
+"failed_load_information" = "اطلاعات بارگیری نشد.";
 
 "booking_search" = "Booking.com";
 
@@ -1905,7 +1905,7 @@
 "search_hotel_filters_type" = "نوع";
 
 /* Settings: "Send general feedback" button */
-"feedback_general" = "\"تنظیمات: دکمه \"ارسال بازخورد کلی\"";
+"feedback_general" = "\"تنظیمات: دکمه \"ارسال بازخورد کلی";
 
 "on" = "روشن";
 
@@ -1913,7 +1913,7 @@
 
 "prefs_languages_information" = "ما از TTS سیستم برای دستورالعمل های صوتی استفاده می کنیم. بسیاری از دستگاه های Android از Google TTS استفاده می کنند، شما می توانید آن را از Google Play دانلود کنید (https://play.google.com/store/apps/details؟id=com.google.android.tts)";
 
-"prefs_languages_information_off" = "برای بعضی از زبان ها، شما باید speech synthesizer یا یک بسته زبان دیگر را از فروشگاه برنامه (بازار Google Play، Samsung Apps) نصب کنید. \ n تنظیمات دستگاه خود را باز کنید. → زبان و ورودی → گفتار → خروجی متن به گفتار. می توانید تنظیمات برای ترکیب گفتار (به عنوان مثال، بسته های زبان را برای استفاده آفلاین دانلود کنید) را مدیریت کنید و یک موتور دیگر متن به گفتار را انتخاب کنید.";
+"prefs_languages_information_off" = "برای بعضی از زبان ها، شما باید speech synthesizer یا یک بسته زبان دیگر را از فروشگاه برنامه (بازار Google Play، Samsung Apps) نصب کنید. \n تنظیمات دستگاه خود را باز کنید. → زبان و ورودی → گفتار → خروجی متن به گفتار. می توانید تنظیمات برای ترکیب گفتار (به عنوان مثال، بسته های زبان را برای استفاده آفلاین دانلود کنید) را مدیریت کنید و یک موتور دیگر متن به گفتار را انتخاب کنید.";
 
 "prefs_languages_information_off_link" = "برای اطلاعات بیشتر لطفا این راهنما را بررسی کنید.";
 
@@ -2034,7 +2034,7 @@
 
 "placepage_summary_rating" = "خلاصه ای از ارزیابی";
 
-"placepage_rate_comment" = "برای رای دادن و ارزیابی این مکان ضربه بزنید";
+"placepage_rate_comment" = "برای رای دادن و ارزیابی این مکان ضربه بزنید.";
 
 "placepage_rate_horrible" = "ناگوار";
 
@@ -2136,7 +2136,7 @@
 
 "booking_filters_check_out" = "خروج";
 
-"booking_filters_offline" = "در دسترس نیست";
+"booking_filters_offline" = "در دسترس نیست.";
 
 "directions_finish" = "مقصد";
 
@@ -2192,7 +2192,7 @@
 
 "downloader_process" = "در حال دانلود %s...";
 
-"downloader_applying" = "اعمال";
+"downloader_applying" = "اعمال %s...";
 
 "transit_not_found" = "ناوبری حمل و نقل در این منطقه هنوز در دسترس نیست";
 
@@ -2218,7 +2218,7 @@
 
 "maxim_taxi_title" = "maxim";
 
-"bookmarks_error_title_empty_list_name" = "نام ممکن نیست خالی باشد";
+"bookmarks_error_title_empty_list_name" = "نام نمیتواند خالی باشد";
 
 "bookmarks_error_message_empty_list_name" = "لطفا نام لیست را وارد کنید";
 
@@ -2336,7 +2336,7 @@
 
 "opt_out_help_ios_3" = "به تنظیمات خود بروید ← حریم خصوصی ← تبلیغات ← گزینه  «محدود کردن ردیابی آگهی» را فعال کنید";
 
-"opt_out_help_android" = "دستگاه تلفن همراه شما ممکن است یک «ردیابی محدود آگهی» یا «لغو تبلیغات مبتنی بر علاقه» ارائه کند. \ n \ n برای Android و Google Play Services نسخه 4.0 و بالاتر: \ n تنظیمات → Google → آگهی → غیرفعال کردن تبلیغات شخصی سازی \ یا \ n تنظیمات → Google → حساب Google → اطلاعات شخصی و حریم خصوصی → تنظیمات تبلیغات → شخصی سازی تبلیغات";
+"opt_out_help_android" = "دستگاه تلفن همراه شما ممکن است یک «ردیابی محدود آگهی» یا «لغو تبلیغات مبتنی بر علاقه» ارائه کند. \n \n برای Android و Google Play Services نسخه 4.0 و بالاتر: \n تنظیمات → Google → آگهی → غیرفعال کردن تبلیغات شخصی سازی \ یا \n تنظیمات → Google → حساب Google → اطلاعات شخصی و حریم خصوصی → تنظیمات تبلیغات → شخصی سازی تبلیغات";
 
 "privacy_policy" = "سیاست حریم خصوصی";
 

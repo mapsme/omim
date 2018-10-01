@@ -1009,11 +1009,11 @@
 	<string name="whatsnew_more_info_on_hotels_title">اطلاعات بیشتر در مورد هتل ها</string>
 	<string name="whatsnew_more_info_on_hotels_message">نگاهی به نام تجاری جدید برای صفحات هتل: بررسی عکس، بررسی کاربر و سایر اطلاعات آنلاین.</string>
 	<string name="whatsnew_better_routing_title">بهبود مسیر برنامه ریزی</string>
-	<string name="whatsnew_better_routing_message">تخمین دقیق تر از زمان ورود. \ n • برنامه به مناطق محدود و نشانه های جاده اشاره دارد.</string>
+	<string name="whatsnew_better_routing_message">تخمین دقیق تر از زمان ورود. \n • برنامه به مناطق محدود و نشانه های جاده اشاره دارد.</string>
 	<string name="whatsnew_smaller_mwm_title">نقشه کوچکتر شده است</string>
 	<string name="whatsnew_smaller_mwm_message">نقشه ها نیاز به ذخیره سازی 20٪ کمتر دارند.</string>
 	<string name="whatsnew_waypoints_title">مسیرهای مسیریابی</string>
-	<string name="whatsnew_waypoints_message">مکان ها را برای افزودن ایستگاه های راه به مسیر خود ضربه بزنید</string>
+	<string name="whatsnew_waypoints_message">مکان ها را برای افزودن ایستگاه های راه به مسیر خود ضربه بزنید.</string>
 	<string name="whatsnew_viator_title">رزرو تور</string>
 	<string name="whatsnew_viator_message">تورهای محبوب را در شهرهای توریستی در سراسر جهان انتخاب کنید.</string>
 	<string name="whatsnew_driving_style_title">نقشه جدید برای رانندگی</string>
@@ -1022,7 +1022,7 @@
 	<string name="details_on_bookingcom">جزئیات در Booking.com</string>
 	<string name="reviews_on_bookingcom">بررسی بیشتر در Booking.com</string>
 	<string name="offline_place_page_more_information">برای کسب اطلاعات بیشتر در مورد مکان، به اینترنت متصل شوید.</string>
-	<string name="failed_load_information">اطلاعات بارگیری نشد</string>
+	<string name="failed_load_information">اطلاعات بارگیری نشد.</string>
 	<string name="whats_new_auto_update_updating_maps">به روز رسانی نقشه ها</string>
 	<string name="whats_new_auto_update_title">نقشه های دانلود شده خود را به روز کنید</string>
 	<string name="whats_new_auto_update_message">به روز رسانی نقشه ها اطلاعات مربوط به اشیا را به روز نگه می دارد</string>
@@ -1040,11 +1040,11 @@
 	<string name="view_campaign_button">کسب و کار تبلیغ می شود</string>
 	<string name="search_hotel_filters_type">نوع</string>
 	<!-- Settings: "Send general feedback" button -->
-	<string name="feedback_general">\"تنظیمات: دکمه \"ارسال بازخورد کلی\"</string>
+	<string name="feedback_general">\"تنظیمات: دکمه \"ارسال بازخورد کلی</string>
 	<string name="on">روشن</string>
 	<string name="off">خاموش</string>
 	<string name="prefs_languages_information">ما از TTS سیستم برای دستورالعمل های صوتی استفاده می کنیم. بسیاری از دستگاه های Android از Google TTS استفاده می کنند، شما می توانید آن را از Google Play دانلود کنید (https://play.google.com/store/apps/details؟id=com.google.android.tts)</string>
-	<string name="prefs_languages_information_off">برای بعضی از زبان ها، شما باید speech synthesizer یا یک بسته زبان دیگر را از فروشگاه برنامه (بازار Google Play، Samsung Apps) نصب کنید. \ n تنظیمات دستگاه خود را باز کنید. → زبان و ورودی → گفتار → خروجی متن به گفتار. می توانید تنظیمات برای ترکیب گفتار (به عنوان مثال، بسته های زبان را برای استفاده آفلاین دانلود کنید) را مدیریت کنید و یک موتور دیگر متن به گفتار را انتخاب کنید.</string>
+	<string name="prefs_languages_information_off">برای بعضی از زبان ها، شما باید speech synthesizer یا یک بسته زبان دیگر را از فروشگاه برنامه (بازار Google Play، Samsung Apps) نصب کنید. \n تنظیمات دستگاه خود را باز کنید. → زبان و ورودی → گفتار → خروجی متن به گفتار. می توانید تنظیمات برای ترکیب گفتار (به عنوان مثال، بسته های زبان را برای استفاده آفلاین دانلود کنید) را مدیریت کنید و یک موتور دیگر متن به گفتار را انتخاب کنید.</string>
 	<string name="prefs_languages_information_off_link">برای اطلاعات بیشتر لطفا این راهنما را بررسی کنید.</string>
 	<string name="whatsnew_transliteration_title">ترجمه به لاتین</string>
 	<string name="whatsnew_transliteration_message">اگر یک خیابان یا یک شیء یک نام در زبان شما نداشته باشد، با استفاده از الفبای لاتین، املای آن نوشته می شود.</string>
@@ -1101,7 +1101,7 @@
 	<plurals name="placepage_summary_rating_description">
 	  <item quantity="other">براساس %d ارزیابی</item>
 	</plurals>
-	<string name="placepage_rate_comment">برای رای دادن و ارزیابی این مکان ضربه بزنید</string>
+	<string name="placepage_rate_comment">برای رای دادن و ارزیابی این مکان ضربه بزنید.</string>
 	<string name="placepage_rate_horrible">ناگوار</string>
 	<string name="placepage_rate_bad">ضعیف</string>
 	<string name="placepage_rate_normal">معمولی</string>
@@ -1150,7 +1150,7 @@
 	<string name="discovery_button_404_error_message">متأسفیم، ما چیزی جالب در اطراف پیدا نکردیم.</string>
 	<string name="booking_filters_check_in">ورود</string>
 	<string name="booking_filters_check_out">خروج</string>
-	<string name="booking_filters_offline">در دسترس نیست</string>
+	<string name="booking_filters_offline">در دسترس نیست.</string>
 	<string name="directions_finish">مقصد</string>
 	<string name="directions_on_foot">پیاده روی %s</string>
 	<string name="core_entrance">ورودی</string>
@@ -1174,11 +1174,15 @@
 	<string name="bookmarks_groups">لیست ها</string>
 	<string name="bookmarks_groups_hide_all">پنهان کردن همه</string>
 	<string name="bookmarks_groups_show_all">نمایش همه</string>
+	<plurals name="bookmarks_places">
+	  <item quantity="one">%d نشانه</item>
+	  <item quantity="other">%d نشانه‌ها</item>
+	</plurals>
 	<string name="bookmarks_create_new_group">ایجاد لیست جدید</string>
 	<string name="downloader_hide_screen">پنهان کردن صفحه</string>
 	<string name="downloader_percent">%1$s (%2$s از %3$s)</string>
 	<string name="downloader_process">در حال دانلود %s...</string>
-	<string name="downloader_applying">اعمال</string>
+	<string name="downloader_applying">اعمال %s...</string>
 	<string name="transit_not_found">ناوبری حمل و نقل در این منطقه هنوز در دسترس نیست</string>
 	<string name="whats_new_title_hotel_filter">فیلترهای جدید هتل در دسترس است!</string>
 	<string name="whats_new_message_hotel_filter">رزرو هتل در دسترس برای تاریخ خود را! از چک کردن استفاده کنید و فیلتر کنید</string>
@@ -1190,7 +1194,7 @@
 	<string name="bookmarks_error_title_share_empty">خطای اشتراک</string>
 	<string name="bookmarks_error_message_share_empty">یک لیست خالی را نمی توان به اشتراک گذاشت</string>
 	<string name="discovery_button_subtitle_book_hotels">رزرو هتل</string>
-	<string name="bookmarks_error_title_empty_list_name">نام ممکن نیست خالی باشد</string>
+	<string name="bookmarks_error_title_empty_list_name">نام نمیتواند خالی باشد</string>
 	<string name="bookmarks_error_message_empty_list_name">لطفا نام لیست را وارد کنید</string>
 	<string name="bookmarks_new_list_hint">لیست جدید</string>
 	<string name="bookmarks_error_title_list_name_already_taken">این اسم قبلا انتخاب شده است</string>
@@ -1267,7 +1271,7 @@
 	<string name="opt_out_help_ios_1">در دستگاه همراهتان تنظیمی با نام “Limit Ad Tracking” یا “Opt out of interest-based advertising” وجود دارد.</string>
 	<string name="opt_out_help_ios_2">آی‌اواس ۹ یا بالاتر</string>
 	<string name="opt_out_help_ios_3">به تنظیمات خود بروید ← حریم خصوصی ← تبلیغات ← گزینه  «محدود کردن ردیابی آگهی» را فعال کنید</string>
-	<string name="opt_out_help_android">دستگاه تلفن همراه شما ممکن است یک «ردیابی محدود آگهی» یا «لغو تبلیغات مبتنی بر علاقه» ارائه کند. \ n \ n برای Android و Google Play Services نسخه 4.0 و بالاتر: \ n تنظیمات → Google → آگهی → غیرفعال کردن تبلیغات شخصی سازی \ یا \ n تنظیمات → Google → حساب Google → اطلاعات شخصی و حریم خصوصی → تنظیمات تبلیغات → شخصی سازی تبلیغات</string>
+	<string name="opt_out_help_android">دستگاه تلفن همراه شما ممکن است یک «ردیابی محدود آگهی» یا «لغو تبلیغات مبتنی بر علاقه» ارائه کند. \n \n برای Android و Google Play Services نسخه 4.0 و بالاتر: \n تنظیمات → Google → آگهی → غیرفعال کردن تبلیغات شخصی سازی \ یا \n تنظیمات → Google → حساب Google → اطلاعات شخصی و حریم خصوصی → تنظیمات تبلیغات → شخصی سازی تبلیغات</string>
 	<string name="privacy_policy">سیاست حریم خصوصی</string>
 	<string name="terms_of_use">شرایط استفاده</string>
 	<string name="backup_notification_failed">پشتیبانگیری از نشانکهای شما به حالت تعلیق درآمده است وارد شوید تا آن را دوباره روشن کنید</string>
