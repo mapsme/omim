@@ -2468,7 +2468,10 @@
 
 "offline_fiters_check_in" = "برای فیلتر کردن هتل ها با تاریخ، به اینترنت متصل شوید.";
 
-"rutaxi_title" = "RuTaxi[[ Partners ]]";
+"rutaxi_title" = "RuTaxi";
+
+
+/**********  Partners  **********/
 
 "sponsored_partner1_action" = "Outlets";
 
