@@ -33582,14 +33582,9 @@
     el = Πληρώστε %s/χρόνο
     sk = Zaplaťte %s/rok
     sw = Lipa %s/mwaka
-<<<<<<< HEAD
     zh-Hans = 支付％s /年
     zh-Hant = 支付％s /年
     fa = هزینه %s/سال
-=======
-    zh-Hans = 支付%s/年
-    zh-Hant = 支付%s/年
->>>>>>> upstream/master
 
   [paybtn_subtitle]
     en = Save %s/year
@@ -33621,14 +33616,9 @@
     el = Εξοικονομήστε %s/χρόνο
     sk = Ušetrite %s/rok
     sw = Okoa %s/mwaka
-<<<<<<< HEAD
     zh-Hans = 节省％s /年
     zh-Hant = 節省％s /年
     fa = صرفه جویی %s/سال
-=======
-    zh-Hans = 节省%s/年
-    zh-Hant = 節省%s/年
->>>>>>> upstream/master
 
   [options_dropdown_title]
     en = More options
@@ -33728,16 +33718,10 @@
     el = %s/το μήνα (εξοικονομήστε %s/χρόνο)
     sk = %s/mesačne (ušetrite %s/ročne)
     sw = %s/mwezi (okoa %s/mwaka)
-<<<<<<< HEAD
     zh-Hans = %s/月 (节省％s /年)
     zh-Hant = %s/月 (節省％s /年)
     fa = ماه (صرفه جویی %s/ سال)
-    
-=======
-    zh-Hans = %s/月 (节省%s/年)
-    zh-Hant = %s/月 (節省%s/年)
 
->>>>>>> upstream/master
   [options_dropdown_item2]
     en = %s/week (no savings)
     ru = %s/неделя (экономии нет)
@@ -33985,13 +33969,8 @@
     cs = Chcete najít oblíbené podniky v okolí?
     da = Vil du finde populære steder i nærheden?
     nl = Wilt u populaire plaatsen in de omgeving vinden?
-<<<<<<< HEAD
-    fi = Haluatko löytää suosittuja lähistöllä olevia kohteita
-    fr = Vous voulez trouver des endroits populaires à proximité ?
-=======
     fi = Haluatko löytää suosittuja lähistöllä olevia kohteita?
     fr = Vous voulez trouver des endroits populaires à proximité ?
->>>>>>> upstream/master
     de = Möchten Sie beliebte Anstalten im Bezirk finden?
     hu = Népszerű érdekességeket keres a közelben?
     id = Ingin menemukan lokasi yang populer di sekitar?
@@ -34082,12 +34061,8 @@
     sk = Zarezervujte si najútulnejšie hotely pre svoje cesty
     sw = Ifadhi nafasi katika hoteli nzuri kwa ajili ya safari zako
     zh-Hans = 请为您的假期预订最舒适的酒店
-<<<<<<< HEAD
     zh-Hant = 請為您的假期預訂最舒適的酒店。
     fa = هتل های راحت را برای سفرهای خود رزرو کنید
-=======
-    zh-Hant = 請為您的假期預訂最舒適的酒店
->>>>>>> upstream/master
 
   [tips_book_hotel_message]
     en = Use the search and filters to find the best hotels for you. Use the "Book" button in the location placepage to book a hotel instantly.
@@ -34391,14 +34366,9 @@
     el = Αφήστε μια κριτική! Μοιραστείτε τη γνώμη σας για τις τοποθεσίες που επισκεφθήκατε στις διακοπές σας.
     sk = Zanechať recenziu! Podeľte sa o svoj názor o miestach, ktoré ste navštívili počas dovolenky.
     sw = Acha maoni yako! Ambia wengine kuhusu sehemu ulizozitembelea wakati wa mapumziko.
-<<<<<<< HEAD
     zh-Hans = 请留言！分享您对度假时所去过的地方的看法
     zh-Hant = 請留言！請分享您對度假時索取過的地方的看法
     fa = یک دیدگاه بگذارید ، نظر خود را درباره مکانهایی که در تعطیلات خود بازدید کرده اید، به اشتراک بگذارید.
-=======
-    zh-Hans = 请留言！分享您对度假时所去过的地方的看法。
-    zh-Hant = 請留言！請分享您對度假時索取過的地方的看法。
->>>>>>> upstream/master
 
   [server_unavailable_title]
     en = Server is unavailable
@@ -34464,15 +34434,9 @@
     el = Η αγορά θα ολοκληρωθεί αργότερα. Αν το σφάλμα επιμένει, παρακαλώ επικοινωνήστε στο support@maps.me. 
     sk = Nákup bude dokončený neskôr. Ak chyba pretrváva, kontaktujte support@maps.me.
     sw = Ununuzi utakamilishwa baadaye. Shinda ikiendelea, tafadhali julisha support@maps.me.
-<<<<<<< HEAD
     zh-Hans = 购买将在稍后完成。如果错误仍然存在，请联系support@maps.me
     zh-Hant = 購買將在稍後完成。如果錯誤仍然存在，請聯繫support@maps.me
     fa = خرید بعدا تکمیل خواهد شد. اگر خطا همچنان ادامه دارد، لطفا با support@maps.me تماس بگیرید.
-
-=======
-    zh-Hans = 购买将在稍后完成。如果错误仍然存在，请联系support@maps.me。
-    zh-Hant = 購買將在稍後完成。如果錯誤仍然存在，請聯繫support@maps.me。
->>>>>>> upstream/master
     
   [offline_fiters_check_in]
     en = Connect to the internet to filter hotels by dates.
@@ -34489,15 +34453,9 @@
     it = Per scegliere la data di check-in e check-out bisogna collegarsi a internet.
     ja = インターネットに接続して、ホテルを日付で絞り込み検索します。
     ko = 인터넷에 연결해 날짜를 통해서 호텔들을 필터 하세요.
-<<<<<<< HEAD
-    no = Koble seg til Internett for å velge ankomst- og avreisedato.
-    pl = Połącz się z Internetem aby wybrać datę zameldowania i wymeldowania.
-    pt = Ligue-se à Internet para filtrar os hotéis por datas.
-=======
     no = Koble seg til іnternett for å velge ankomst- og avreisedato.
     pl = Połącz się z іnternetem aby wybrać datę zameldowania i wymeldowania.
     pt = Ligue-se à іnternet para filtrar os hotéis por datas.
->>>>>>> upstream/master
     pt-BR = Conecte-se a internet para filtrar os hotéis por datas.
     ro = Conectați-vă la internet pentru a putea alege data sosirii și plecării.
     es = Conéctese a Internet para seleccionar la fecha de llegada y salida.
