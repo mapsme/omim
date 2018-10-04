@@ -530,7 +530,7 @@ BOOL defaultOrientation(CGSize const & size)
     NSAssert(sv != nil, @"Superview can't be nil");
     if ([sv.subviews containsObject:self])
       return;
-    [sv insertSubview:self atIndex:0];
+    [sv insertSubview:self atIndex:1];
     [self configLayout];
   }
   [UIView animateWithDuration:kDefaultAnimationDuration
