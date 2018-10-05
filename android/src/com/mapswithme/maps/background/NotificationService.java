@@ -38,8 +38,8 @@ public class NotificationService extends JobIntentService
     final Intent intent = new Intent(context, NotificationService.class)
         .setAction(CONNECTIVITY_ACTION);
 
-    int id = JobItem.CONNECTIVITY_CHANGED_ITEM.getIntentServiceId();
-    JobIntentService.enqueueWork(context, NotificationService.class, id, intent);
+    int id = JobItem.CONNECTIVITY_CHANGED.getIntentServiceId();
+    JobIntentService.enqueueWork(context,JobItem.CONNECTIVITY_CHANGED.getIntentService(), id, intent);
   }
 
   private boolean notifyIsNotAuthenticated()

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
 
 import com.mapswithme.maps.background.AbstractLogBroadcastReceiver;
+import com.mapswithme.maps.scheduling.JobItem;
 
 public class SystemDownloadCompletedReceiver extends AbstractLogBroadcastReceiver
 {
@@ -24,7 +25,7 @@ public class SystemDownloadCompletedReceiver extends AbstractLogBroadcastReceive
     if (manager == null)
       return;
     intent.setClass(context, SystemDownloadCompletedService.class);
-    int jobId = SystemDownloadCompletedService.class.hashCode();
-    JobIntentService.enqueueWork(context, SystemDownloadCompletedService.class, jobId, intent);
+    int jobId = JobItem.SYSTEM_DOWNLOAD.getIntentServiceId();
+    JobIntentService.enqueueWork(context, JobItem.SYSTEM_DOWNLOAD.getIntentService(), jobId, intent);
   }
 }
