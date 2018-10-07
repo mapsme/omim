@@ -536,7 +536,7 @@
 
 "duration_1_day" = "1 jour";
 
-"recent_track_help_text" = "Ceci vous permet d’enregistrer le chemin emprunté pendant un certain temps et de le voir sur la carte. Veuillez noter : l’activation de cette fonction entraîne une grande utilisation de la batterie. La route sera supprimée automatiquement de la carte lorsque l’intervalle de temps sera arrivé à expiration.";
+"recent_track_help_text" = "Ceci vous permet d’enregistrer le chemin emprunté pendant un certain temps et de le voir sur la carte. Veuillez noter : l’activation de cette fonction entraîne une grande utilisation de la batterie. La route sera supprimée automatiquement de la carte lorsque l’intervalle de temps sera arrivé à expiration.";
 
 "pref_track_ios_caption" = "L'itinéraire récent indique votre chemin parcouru.";
 
@@ -1421,7 +1421,7 @@
 
 "whatsnew_update_editor_title" = "Nous avons mis à jour l'éditeur de cartes";
 
-"whatsnew_update_editor_message" = "Les utilisateurs de MAPS.ME ont procédé à 200 000 modifications de cartes. Nous créons ensemble les cartes les plus détaillées du monde. Rejoignez-nous !";
+"whatsnew_update_editor_message" = "Les utilisateurs de MAPS.ME ont procédé à 200 000 modifications de cartes. Nous créons ensemble les cartes les plus détaillées du monde. Rejoignez-nous !";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "Pour utiliser l'Éditeur de Cartes, veuillez mettre à jour toutes les cartes.";
@@ -1838,7 +1838,7 @@
 
 "whatsnew_more_info_on_hotels_title" = "Plus d’informations sur les hôtels";
 
-"whatsnew_more_info_on_hotels_message" = "Tout nouveau look pour les pages d'hôtels : découvrez les photos, les commentaires des utilisateurs et d'autres informations en ligne.";
+"whatsnew_more_info_on_hotels_message" = "Tout nouveau look pour les pages d'hôtels : découvrez les photos, les commentaires des utilisateurs et d'autres informations en ligne.";
 
 "whatsnew_better_routing_title" = "Planification d'itinéraire améliorée";
 
@@ -1982,7 +1982,7 @@
 
 "planning_route_remove_title" = "Faire glisser ici pour supprimer";
 
-"dialog_change_start_point_message" = "Remplacer le point de départ par l’emplacement actuel ?";
+"dialog_change_start_point_message" = "Remplacer le point de départ par l’emplacement actuel ?";
 
 "button_replace" = "Remplacer";
 
@@ -2168,7 +2168,7 @@
 
 "authorization_button_sign_in" = "Se connecter";
 
-"bookmarks_message_authorized_user" = "La sauvegarde de vos signets est effectuée automatiquement dans un stockage sécurisé sur le cloud. Voulez-vous activer la sauvegarde ?";
+"bookmarks_message_authorized_user" = "La sauvegarde de vos signets est effectuée automatiquement dans un stockage sécurisé sur le cloud. Voulez-vous activer la sauvegarde ?";
 
 "bookmarks_message_unauthorized_user" = "La sauvegarde de vos signets est effectuée automatiquement dans un stockage sécurisé sur le cloud. Connectez-vous pour activer la sauvegarde.";
 
@@ -2196,13 +2196,13 @@
 
 "transit_not_found" = "La navigation en transit dans cette région n’est pas encore disponible";
 
-"whats_new_title_hotel_filter" = "Nouveaux filtres d’hôtel disponibles !";
+"whats_new_title_hotel_filter" = "Nouveaux filtres d’hôtel disponibles !";
 
-"whats_new_message_hotel_filter" = "Réservez des hôtels disponibles à vos dates ! Utilisez les filtres de check-in et check-out";
+"whats_new_message_hotel_filter" = "Réservez des hôtels disponibles à vos dates ! Utilisez les filtres de check-in et check-out";
 
-"whats_new_title_ugc_travel" = "Partagez votre expérience avec d’autres voyageurs !";
+"whats_new_title_ugc_travel" = "Partagez votre expérience avec d’autres voyageurs !";
 
-"whats_new_message_ugc_travel" = "Notez et donnez votre avis sur les lieux que vous avez visités !";
+"whats_new_message_ugc_travel" = "Notez et donnez votre avis sur les lieux que vous avez visités !";
 
 "dialog_pedestrian_route_is_long" = "La route piétonne est trop longue";
 
@@ -2438,7 +2438,7 @@
 
 "tips_bookmarks_catalog_message" = "Téléchargez et planifiez des itinéraires touristiques sur des sites intéressants dans différentes villes du monde.";
 
-"tips_discover_button_title" = "Vous voulez trouver des endroits populaires à proximité ?";
+"tips_discover_button_title" = "Vous voulez trouver des endroits populaires à proximité ?";
 
 "tips_discover_button_message" = "La section «Découvrir les alentours» contient les meilleurs restaurants, hôtels et sites touristiques.";
 

@@ -334,7 +334,7 @@
 	<string name="duration_6_hours">6 heures</string>
 	<string name="duration_12_hours">12 heures</string>
 	<string name="duration_1_day">1 jour</string>
-	<string name="recent_track_help_text">Ceci vous permet d’enregistrer le chemin emprunté pendant un certain temps et de le voir sur la carte. Veuillez noter : l’activation de cette fonction entraîne une grande utilisation de la batterie. La route sera supprimée automatiquement de la carte lorsque l’intervalle de temps sera arrivé à expiration.</string>
+	<string name="recent_track_help_text">Ceci vous permet d’enregistrer le chemin emprunté pendant un certain temps et de le voir sur la carte. Veuillez noter : l’activation de cette fonction entraîne une grande utilisation de la batterie. La route sera supprimée automatiquement de la carte lorsque l’intervalle de temps sera arrivé à expiration.</string>
 	<string name="pref_track_ios_caption">L\'itinéraire récent indique votre chemin parcouru.</string>
 	<string name="pref_track_ios_subcaption">Veuillez sélectionner la période d\'enregistrement du parcours.</string>
 	<string name="placepage_distance">Distance</string>
@@ -845,7 +845,7 @@
 	<string name="current_location_unknown_error_title">L\'emplacement actuel est inconnu.</string>
 	<string name="current_location_unknown_error_message">Une erreur est survenue lors de la recherche de votre emplacement. Vérifiez que le périphérique fonctionne correctement et réessayez ultérieurement</string>
 	<string name="whatsnew_update_editor_title">Nous avons mis à jour l\'éditeur de cartes</string>
-	<string name="whatsnew_update_editor_message">Les utilisateurs de MAPS.ME ont procédé à 200 000 modifications de cartes. Nous créons ensemble les cartes les plus détaillées du monde. Rejoignez-nous !</string>
+	<string name="whatsnew_update_editor_message">Les utilisateurs de MAPS.ME ont procédé à 200 000 modifications de cartes. Nous créons ensemble les cartes les plus détaillées du monde. Rejoignez-nous !</string>
 	<!-- Additional text in whats new -->
 	<string name="whatsnew_update_editor_message_update">Pour utiliser l\'Éditeur de Cartes, veuillez mettre à jour toutes les cartes.</string>
 	<string name="location_services_disabled_header">L\'identification de la localisation est désactivée</string>
@@ -1070,7 +1070,7 @@
 	<string name="pref_traffic_simplified_colors_title">Couleurs circulation simplifiées</string>
 	<string name="enable_logging">Activer le journal</string>
 	<string name="whatsnew_more_info_on_hotels_title">Plus d’informations sur les hôtels</string>
-	<string name="whatsnew_more_info_on_hotels_message">Tout nouveau look pour les pages d\'hôtels : découvrez les photos, les commentaires des utilisateurs et d\'autres informations en ligne.</string>
+	<string name="whatsnew_more_info_on_hotels_message">Tout nouveau look pour les pages d\'hôtels : découvrez les photos, les commentaires des utilisateurs et d\'autres informations en ligne.</string>
 	<string name="whatsnew_better_routing_title">Planification d\'itinéraire améliorée</string>
 	<string name="whatsnew_better_routing_message">• Estimation plus précise de l’heure d’arrivée.\n• L’application tient compte des zones limitées et des panneaux de signalisation.</string>
 	<string name="whatsnew_smaller_mwm_title">Cartes plus petites</string>
@@ -1142,7 +1142,7 @@
 	<string name="button_add">Ajouter</string>
 	<string name="placepage_remove_stop">Supprimer</string>
 	<string name="planning_route_remove_title">Faire glisser ici pour supprimer</string>
-	<string name="dialog_change_start_point_message">Remplacer le point de départ par l’emplacement actuel ?</string>
+	<string name="dialog_change_start_point_message">Remplacer le point de départ par l’emplacement actuel ?</string>
 	<string name="button_replace">Remplacer</string>
 	<string name="placepage_add_stop">Ajouter un arrêt</string>
 	<string name="whatsnew_intermediate_point_title">Arrêt supplémentaire</string>
@@ -1232,7 +1232,7 @@
 	<string name="price_per_hour">%s/heure</string>
 	<string name="bookmarks_backup">Activer la sauvegarde</string>
 	<string name="authorization_button_sign_in">Se connecter</string>
-	<string name="bookmarks_message_authorized_user">La sauvegarde de vos signets est effectuée automatiquement dans un stockage sécurisé sur le cloud. Voulez-vous activer la sauvegarde ?</string>
+	<string name="bookmarks_message_authorized_user">La sauvegarde de vos signets est effectuée automatiquement dans un stockage sécurisé sur le cloud. Voulez-vous activer la sauvegarde ?</string>
 	<string name="bookmarks_message_unauthorized_user">La sauvegarde de vos signets est effectuée automatiquement dans un stockage sécurisé sur le cloud. Connectez-vous pour activer la sauvegarde.</string>
 	<string name="bookmarks_message_unbackuped_user">La sauvegarde de vos signets est effectuée automatiquement dans un stockage sécurisé sur le cloud.</string>
 	<string name="bookmarks_message_backuped_user">La sauvegarde de vos signets est effectuée automatiquement dans un stockage sécurisé sur le cloud. Dernière sauvegarde %s</string>
@@ -1249,10 +1249,10 @@
 	<string name="downloader_process">Téléchargement de %s...</string>
 	<string name="downloader_applying">Application de %s...</string>
 	<string name="transit_not_found">La navigation en transit dans cette région n’est pas encore disponible</string>
-	<string name="whats_new_title_hotel_filter">Nouveaux filtres d’hôtel disponibles !</string>
-	<string name="whats_new_message_hotel_filter">Réservez des hôtels disponibles à vos dates ! Utilisez les filtres de check-in et check-out</string>
-	<string name="whats_new_title_ugc_travel">Partagez votre expérience avec d’autres voyageurs !</string>
-	<string name="whats_new_message_ugc_travel">Notez et donnez votre avis sur les lieux que vous avez visités !</string>
+	<string name="whats_new_title_hotel_filter">Nouveaux filtres d’hôtel disponibles !</string>
+	<string name="whats_new_message_hotel_filter">Réservez des hôtels disponibles à vos dates ! Utilisez les filtres de check-in et check-out</string>
+	<string name="whats_new_title_ugc_travel">Partagez votre expérience avec d’autres voyageurs !</string>
+	<string name="whats_new_message_ugc_travel">Notez et donnez votre avis sur les lieux que vous avez visités !</string>
 	<string name="dialog_pedestrian_route_is_long">La route piétonne est trop longue</string>
 	<string name="dialog_message_transit_not_found_connection">Planifier un itinéraire dans un réseau de transport en commun</string>
 	<string name="bookmarks_error_message_share_general">Impossible de partager en raison d\'une erreur d\'application</string>
@@ -1380,7 +1380,7 @@
 	<string name="purchase_processing">Votre commande est en cours de traitement…</string>
 	<string name="tips_bookmarks_catalog_title">Guides hors ligne pour tout type de voyage</string>
 	<string name="tips_bookmarks_catalog_message">Téléchargez et planifiez des itinéraires touristiques sur des sites intéressants dans différentes villes du monde.</string>
-	<string name="tips_discover_button_title">Vous voulez trouver des endroits populaires à proximité ?</string>
+	<string name="tips_discover_button_title">Vous voulez trouver des endroits populaires à proximité ?</string>
 	<string name="tips_discover_button_message">La section «Découvrir les alentours» contient les meilleurs restaurants, hôtels et sites touristiques.</string>
 	<string name="tips_book_hotel_title">Réservez les hôtels les plus confortables pour vos voyages</string>
 	<string name="tips_book_hotel_message">Utilisez la recherche et la sélection pour trouver les meilleurs hôtels pour vous. Utilisez le bouton «Réserver» sur la page d’emplacement pour réserver un hôtel instantanément.</string>

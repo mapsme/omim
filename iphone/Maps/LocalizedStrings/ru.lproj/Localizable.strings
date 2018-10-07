@@ -1421,7 +1421,7 @@
 
 "whatsnew_update_editor_title" = "Мы обновили редактор";
 
-"whatsnew_update_editor_message" = "Пользователи MAPS.ME внесли уже 200 000 правок на карту. Вместе мы сделаем карты самыми подробными в мире. Присоединяйся!";
+"whatsnew_update_editor_message" = "Пользователи MAPS.ME внесли уже 200 000 правок на карту. Вместе мы сделаем карты самыми подробными в мире. Присоединяйся!";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "Обновите все карты, чтобы использовать редактор.";
@@ -1601,7 +1601,7 @@
 
 "whatsnew_booking_2_header" = "Поиск отелей стал проще";
 
-"whatsnew_booking_2_message" = "При поиске отображается рейтинг и ценовая категория отеля.";
+"whatsnew_booking_2_message" = "При поиске отображается рейтинг и ценовая категория отеля.";
 
 "whatsnew_cycle_navigation_header" = "Велонавигация (бета-версия)";
 
@@ -2434,7 +2434,7 @@
 
 "purchase_processing" = "Ваша покупка обрабатывается…";
 
-"tips_bookmarks_catalog_title" = "Офлайн-путеводители для всех видов путешествий";
+"tips_bookmarks_catalog_title" = "Сложно придумать маршрут по интересным местам?";
 
 "tips_bookmarks_catalog_message" = "Скачивайте и прокладывайте туристические маршруты по интересным местам в разных городах мира.";
 
