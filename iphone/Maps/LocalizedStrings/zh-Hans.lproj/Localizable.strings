@@ -1421,7 +1421,7 @@
 
 "whatsnew_update_editor_title" = "我们已经更新了地图编辑器";
 
-"whatsnew_update_editor_message" = "MAPS.ME 用户已经进行了 200 000 处地图修改。我们正在齐心协力打造世界上最详细的地图，加入我们吧！";
+"whatsnew_update_editor_message" = "MAPS.ME 用户已经进行了 200 000 处地图修改。我们正在齐心协力打造世界上最详细的地图，加入我们吧！";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "如要使用地图编辑器，请更新所有地图";
@@ -2414,15 +2414,15 @@
 
 "remove_ads_title" = "关闭所有广告并支持MAPS.ME";
 
-"paybtn_title" = "支付%s/年";
+"paybtn_title" = "支付％s /年";
 
-"paybtn_subtitle" = "节省%s/年";
+"paybtn_subtitle" = "节省％s /年";
 
 "options_dropdown_title" = "其他选择";
 
 "why_support" = "为什么支持MAPS.ME?";
 
-"options_dropdown_item1" = "%s/月 (节省%s/年)";
+"options_dropdown_item1" = "%s/月 (节省％s /年)";
 
 "options_dropdown_item2" = "%s/周 (未节省)";
 
@@ -2460,11 +2460,11 @@
 
 "awaiting_approval" = "我们正在等待父母的确认";
 
-"whats_new_leave_review" = "请留言！分享您对度假时所去过的地方的看法。";
+"whats_new_leave_review" = "请留言！分享您对度假时所去过的地方的看法";
 
 "server_unavailable_title" = "服务不可用";
 
-"server_unavailable_message" = "购买将在稍后完成。如果错误仍然存在，请联系support@maps.me。";
+"server_unavailable_message" = "购买将在稍后完成。如果错误仍然存在，请联系support@maps.me";
 
 "offline_fiters_check_in" = "连接到网络来选择到达和离开的日期。";
 

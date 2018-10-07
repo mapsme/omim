@@ -1421,7 +1421,7 @@
 
 "whatsnew_update_editor_title" = "Vi har oppdatert kartredigeringsprogrammet";
 
-"whatsnew_update_editor_message" = "MAPS.ME-brukere har foretatt 200 000 kartendringer. I fellesskap lager vi de mest detaljerte kartene i verden. Bli med du også!";
+"whatsnew_update_editor_message" = "MAPS.ME-brukere har foretatt 200 000 kartendringer. I fellesskap lager vi de mest detaljerte kartene i verden. Bli med du også!";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "For å bruke kartredigerings-funksjonen, vennligst oppdater alle kartene.";
@@ -2434,7 +2434,7 @@
 
 "purchase_processing" = "Your purchase is being processed…";
 
-"tips_bookmarks_catalog_title" = "Offline guides for every kind of journey";
+"tips_bookmarks_catalog_title" = "Can't plan a route over interesting locations?";
 
 "tips_bookmarks_catalog_message" = "Download and plan tourist routes over interesting locations in different cities of the world.";
 

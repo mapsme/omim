@@ -691,7 +691,7 @@
 	<string name="day_off">مغلق</string>
 	<string name="today">اليوم</string>
 	<string name="sunrise_to_sunset">من الشروق إلى المغيب</string>
-	<string name="sunset_to_sunrise">من غروب الشمس وحتى الشروق</string>
+	<string name="sunset_to_sunrise">من غروب الشمس وحØªى الشروق</string>
 	<string name="add_opening_hours">اضف ساعات عمل</string>
 	<string name="edit_opening_hours">حرر ساعات عمل</string>
 	<string name="no_osm_account">ليس لديك حساب في OpenStreetMap؟</string>

@@ -2236,9 +2236,9 @@
 
 "phone_number" = "Phone number";
 
-"notification_unsent_reviews_title" = " You have several unsent reviews";
+"notification_unsent_reviews_title" = "You have several unsent reviews";
 
-"notification_unsent_reviews_message" = " Please sign in to share reviews with other travelers";
+"notification_unsent_reviews_message" = "Please sign in to share reviews with other travelers";
 
 "profile" = "OpenStreetMap profile";
 
@@ -2262,25 +2262,25 @@
 
 "wn_way_of_booking_message" = "Just find a hotel on the map and book it, or select the similar one.";
 
-"bookmarks_restore" = " Restore bookmarks";
+"bookmarks_restore" = "Restore bookmarks";
 
-"bookmarks_restore_process" = " Restoring...";
+"bookmarks_restore_process" = "Restoring...";
 
-"bookmarks_restore_title" = " Restore this version?";
+"bookmarks_restore_title" = "Restore this version?";
 
-"bookmarks_restore_message" = " Your bookmarks will be restored from %s (%s)";
+"bookmarks_restore_message" = "Your bookmarks will be restored from %s (%s)";
 
-"bookmarks_restore_empty_title" = " You don’t have any backups";
+"bookmarks_restore_empty_title" = "You don’t have any backups";
 
-"bookmarks_restore_empty_message" = " The server couldn't find previously made backups";
+"bookmarks_restore_empty_message" = "The server couldn't find previously made backups";
 
 "common_check_internet_connection_dialog_title" = "No internet connection";
 
-"error_server_title" = " Server error";
+"error_server_title" = "Server error";
 
-"error_server_message" = " There was an error on the server, please try again later";
+"error_server_message" = "There was an error on the server, please try again later";
 
-"error_system_message" = " An unknown error occurred";
+"error_system_message" = "An unknown error occurred";
 
 "restore" = "Restore";
 
@@ -2434,7 +2434,7 @@
 
 "purchase_processing" = "Your purchase is being processed…";
 
-"tips_bookmarks_catalog_title" = "Offline guides for every kind of journey";
+"tips_bookmarks_catalog_title" = "Can't plan a route over interesting locations?";
 
 "tips_bookmarks_catalog_message" = "Download and plan tourist routes over interesting locations in different cities of the world.";
 

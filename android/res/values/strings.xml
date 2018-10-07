@@ -1300,8 +1300,8 @@
 	<string name="bookmarks_error_message_list_name_too_long">Please choose another name</string>
 	<string name="please_wait">Please wait...</string>
 	<string name="phone_number">Phone number</string>
-	<string name="notification_unsent_reviews_title"> You have several unsent reviews</string>
-	<string name="notification_unsent_reviews_message"> Please sign in to share reviews with other travelers</string>
+	<string name="notification_unsent_reviews_title">You have several unsent reviews</string>
+	<string name="notification_unsent_reviews_message">Please sign in to share reviews with other travelers</string>
 	<string name="profile">OpenStreetMap profile</string>
 	<string name="place_page_search_similar_hotel">Search similar hotels</string>
 	<string name="bookmarks_detect_title">New files detected</string>
@@ -1317,16 +1317,16 @@
 	<string name="wn_reinvented_bookmarks_message">You can backup them, create lists...It’s amazing...</string>
 	<string name="wn_way_of_booking_title">We reimagined the way of booking!</string>
 	<string name="wn_way_of_booking_message">Just find a hotel on the map and book it, or select the similar one.</string>
-	<string name="bookmarks_restore"> Restore bookmarks</string>
-	<string name="bookmarks_restore_process"> Restoring...</string>
-	<string name="bookmarks_restore_title"> Restore this version?</string>
-	<string name="bookmarks_restore_message"> Your bookmarks will be restored from %1$s (%2$s)</string>
-	<string name="bookmarks_restore_empty_title"> You don’t have any backups</string>
-	<string name="bookmarks_restore_empty_message"> The server couldn\'t find previously made backups</string>
+	<string name="bookmarks_restore">Restore bookmarks</string>
+	<string name="bookmarks_restore_process">Restoring...</string>
+	<string name="bookmarks_restore_title">Restore this version?</string>
+	<string name="bookmarks_restore_message">Your bookmarks will be restored from %1$s (%2$s)</string>
+	<string name="bookmarks_restore_empty_title">You don’t have any backups</string>
+	<string name="bookmarks_restore_empty_message">The server couldn\'t find previously made backups</string>
 	<string name="common_check_internet_connection_dialog_title">No internet connection</string>
-	<string name="error_server_title"> Server error</string>
-	<string name="error_server_message"> There was an error on the server, please try again later</string>
-	<string name="error_system_message"> An unknown error occurred</string>
+	<string name="error_server_title">Server error</string>
+	<string name="error_server_message">There was an error on the server, please try again later</string>
+	<string name="error_system_message">An unknown error occurred</string>
 	<string name="restore">Restore</string>
 	<string name="sign_message_gdpr">To continue you must accept our Terms of Use and Privacy Policy. Please read them carefully.</string>
 	<string name="sign_agree_pp_gdpr">I agree to the &lt;a href="%s">Privacy Policy&lt;/a></string>
@@ -1419,7 +1419,7 @@
 	<string name="why_support_item2">You help us to improve MAPS.ME</string>
 	<string name="why_support_item3">You help us improve open maps OpenStreetMap.org</string>
 	<string name="purchase_processing">Your purchase is being processed…</string>
-	<string name="tips_bookmarks_catalog_title">Offline guides for every kind of journey</string>
+	<string name="tips_bookmarks_catalog_title">Can\'t plan a route over interesting locations?</string>
 	<string name="tips_bookmarks_catalog_message">Download and plan tourist routes over interesting locations in different cities of the world.</string>
 	<string name="tips_discover_button_title">Want to find popular locations nearby?</string>
 	<string name="tips_discover_button_message">The \"Discover nearby\" section contains the best restaurants, hotels, and sights.</string>

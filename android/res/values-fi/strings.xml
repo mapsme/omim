@@ -832,7 +832,7 @@
 	<string name="current_location_unknown_error_title">Nykyinen sijainti on tuntematon.</string>
 	<string name="current_location_unknown_error_message">Tapahtui virhe määritettäessä sijaintiasi. Tarkista laitteesi ja yritä myöhemmin uudelleen.</string>
 	<string name="whatsnew_update_editor_title">Olemme päivittäneet karttamuokkaimen</string>
-	<string name="whatsnew_update_editor_message">MAPS.ME -käyttäjät ovat tehneet 200 000 karttavaihtoehtoa. Yhdessä teemme maailman yksityiskohtaisimmat kartat. Liity meihin!</string>
+	<string name="whatsnew_update_editor_message">MAPS.ME -käyttäjät ovat tehneet 200 000 karttavaihtoehtoa. Yhdessä teemme maailman yksityiskohtaisimmat kartat. Liity meihin!</string>
 	<!-- Additional text in whats new -->
 	<string name="whatsnew_update_editor_message_update">Päivitä kaikki kartat käyttääksesi Karttamuokkainta.</string>
 	<string name="location_services_disabled_header">Sijaintipalvelut on poistettu käytöstä</string>

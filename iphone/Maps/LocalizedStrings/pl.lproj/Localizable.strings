@@ -1421,7 +1421,7 @@
 
 "whatsnew_update_editor_title" = "Zaktualizowaliśmy edytor map";
 
-"whatsnew_update_editor_message" = "Użytkownicy MAPS.ME dokonali 200 000 zmian w mapach. Wspólnie tworzymy najbardziej szczegółowe mapy na świecie. Przyłącz się do nas!";
+"whatsnew_update_editor_message" = "Użytkownicy MAPS.ME dokonali 200 000 zmian w mapach. Wspólnie tworzymy najbardziej szczegółowe mapy na świecie. Przyłącz się do nas!";
 
 /* Additional text in whats new */
 "whatsnew_update_editor_message_update" = "Aby korzystać z edytora map, zaktualizuj wszystkie mapy.";
@@ -2466,7 +2466,7 @@
 
 "server_unavailable_message" = "Zakup zostanie sfinalizowany później. Jeśli błąd wystąpi ponownie, prosimy o kontakt z support@maps.me.";
 
-"offline_fiters_check_in" = "Połącz się z іnternetem aby wybrać datę zameldowania i wymeldowania.";
+"offline_fiters_check_in" = "Połącz się z іnternetem aby wybrać datę zameldowania i wymeldowania.";
 
 "rutaxi_title" = "RuTaxi";
 
