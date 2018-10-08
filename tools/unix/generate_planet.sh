@@ -505,6 +505,7 @@ if [ "$MODE" == "mwm" ]; then
       "$GENERATOR_TOOL" --data_path="$TARGET" \
                         --user_resource_path="$DATA_PATH/" \
                         --generate_search_index \
+                        --popular_places_data=$POPULAR_PLACES_FILE \
                         --generate_cities_boundaries \
                         --cities_boundaries_data="$CITIES_BOUNDARIES_DATA" \
                         --output=World 2>> "$LOG_PATH/World.log"

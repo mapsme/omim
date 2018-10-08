@@ -101,7 +101,8 @@ class SearchRankTableBuilder
 {
 public:
   // Calculates search ranks for all features in an mwm.
-  static void CalcSearchRanks(FilesContainerR & rcont, std::vector<uint8_t> & ranks);
+  static void CalcSearchRanks(FilesContainerR & rcont, std::vector<uint8_t> const & popularity,
+                              std::vector<uint8_t> & ranks);
 
   // Following methods create rank table for an mwm.
   // * When rank table already exists and has proper endianness, does nothing.
@@ -112,7 +113,9 @@ public:
   //
   // Return true if rank table was successfully generated and written
   // or already exists and has correct format.
-  static bool CreateIfNotExists(platform::LocalCountryFile const & localFile) noexcept;
-  static bool CreateIfNotExists(std::string const & mapPath) noexcept;
+  static bool CreateIfNotExists(platform::LocalCountryFile const & localFile,
+                                std::vector<uint8_t> const & popularity) noexcept;
+  static bool CreateIfNotExists(std::string const & mapPath,
+                                std::vector<uint8_t> const & popularity) noexcept;
 };
 }  // namespace search

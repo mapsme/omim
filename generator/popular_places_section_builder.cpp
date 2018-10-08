@@ -8,9 +8,12 @@
 #include "ugc/binary/serdes.hpp"
 
 #include "indexer/feature_data.hpp"
-#include "indexer/feature_processor.hpp"
+#include "indexer/features_vector.hpp"
 #include "indexer/ftraits.hpp"
 #include "indexer/rank_table.hpp"
+
+#include "coding/file_container.hpp"
+#include "coding/file_reader.hpp"
 
 #include "base/string_utils.hpp"
 
@@ -64,11 +67,10 @@ void LoadPopularPlaces(std::string const & srcFilename, PopularPlaces & places)
   });
 }
 
-bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string const & mwmFile,
-                                  std::string const & osmToFeatureFilename)
+void FillPopularityVector(std::string const & srcFilename, std::string const & mwmFile,
+                          std::string const & osmToFeatureFilename,
+                          std::vector<PopularityIndex> & popularity)
 {
-  using ugc::binary::IndexUGC;
-
   LOG(LINFO, ("Build Popular Places section"));
 
   std::unordered_map<uint32_t, base::GeoObjectId> featureIdToOsmId;
@@ -82,11 +84,12 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
 
   bool popularPlaceFound = false;
 
-  std::vector<PopularityIndex> content;
-  feature::ForEachFromDat(mwmFile, [&](FeatureType const & f, uint32_t featureId)
+  FeaturesVectorTest features((FilesContainerR(make_unique<FileReader>(mwmFile))));
+  auto const featuresNumber = features.GetVector().GetNumFeatures();
+  CHECK_GREATER(featuresNumber, 0, ());
+  popularity.resize(featuresNumber);
+  for (uint32_t featureId = 0; featureId < featuresNumber; ++featureId)
   {
-    ASSERT_EQUAL(content.size(), featureId, ());
-
     PopularityIndex rank = 0;
     auto const it = featureIdToOsmId.find(featureId);
     // Non-OSM features (coastlines, sponsored objects) are not used.
@@ -101,10 +104,19 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
       }
     }
 
-    content.emplace_back(rank);
-  });
-  
+    popularity[featureId] = rank;
+  }
+
   if (!popularPlaceFound)
+    popularity.clear();
+}
+
+bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string const & mwmFile,
+                                  std::string const & osmToFeatureFilename)
+{
+  std::vector<PopularityIndex> content;
+  FillPopularityVector(srcFilename, mwmFile, osmToFeatureFilename, content);
+  if (content.empty())
     return true;
 
   FilesContainerW cont(mwmFile, FileWriter::OP_WRITE_EXISTING);

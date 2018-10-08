@@ -89,7 +89,7 @@ UNIT_TEST(RankTableBuilder_EndToEnd)
   vector<uint8_t> ranks;
   {
     FilesContainerR rcont(mapPath);
-    search::SearchRankTableBuilder::CalcSearchRanks(rcont, ranks);
+    search::SearchRankTableBuilder::CalcSearchRanks(rcont, {} /* popularity */, ranks);
   }
 
   {
@@ -152,7 +152,7 @@ UNIT_TEST(RankTableBuilder_WrongEndianness)
   }
 
   // Try to re-create rank table in test file.
-  TEST(search::SearchRankTableBuilder::CreateIfNotExists(kTestFile), ());
+  TEST(search::SearchRankTableBuilder::CreateIfNotExists(kTestFile, {} /* popularity */), ());
 
   // Try to load and map rank table - both methods should work now.
   TestTable(ranks, kTestFile);

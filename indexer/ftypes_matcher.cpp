@@ -244,6 +244,14 @@ IsVillageChecker::IsVillageChecker()
     m_types.push_back(c.GetTypeByPath({p[0], p[1]}));
 }
 
+IsIslandChecker::IsIslandChecker()
+{
+  Classificator const & c = classif();
+  m_types.push_back(c.GetTypeByPath({"place", "island"}));
+  m_types.push_back(c.GetTypeByPath({"place", "islet"}));
+  m_types.push_back(c.GetTypeByPath({"place", "archipelago"}));
+}
+
 IsOneWayChecker::IsOneWayChecker()
 {
   Classificator const & c = classif();

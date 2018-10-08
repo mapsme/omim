@@ -238,21 +238,37 @@ uint8_t CalcTransportRank(FeatureType & ft)
   return 0;
 }
 
+uint8_t CalcPopularityRank(FeatureType & ft, vector<uint8_t> const & popularity)
+{
+  if (popularity.empty())
+    return 0;
+
+  uint32_t const id = ft.GetID().m_index;
+  CHECK_LESS(id, popularity.size(), ());
+
+  if (ftypes::IsIslandChecker::Instance()(ft))
+    return popularity[id];
+
+  return 0;
+}
+
 // Calculates search rank for a feature.
-uint8_t CalcSearchRank(FeatureType & ft)
+uint8_t CalcSearchRank(FeatureType & ft, vector<uint8_t> const & popularity)
 {
   auto const eventRank = CalcEventRank(ft);
   auto const transportRank = CalcTransportRank(ft);
   auto const populationRank = feature::PopulationToRank(ftypes::GetPopulation(ft));
+  auto const popularityRank = CalcPopularityRank(ft, popularity);
 
-  return base::clamp(eventRank + transportRank + populationRank, 0,
+  return base::clamp(eventRank + transportRank + populationRank + popularityRank, 0,
                      static_cast<int>(numeric_limits<uint8_t>::max()));
 }
 
 // Creates rank table if it does not exists in |rcont| or has wrong
 // endianness. Otherwise (table exists and has correct format) returns
 // null.
-unique_ptr<RankTable> CreateSearchRankTableIfNotExists(FilesContainerR & rcont)
+unique_ptr<RankTable> CreateSearchRankTableIfNotExists(FilesContainerR & rcont,
+                                                       vector<uint8_t> const & popularity)
 {
   unique_ptr<RankTable> table;
 
@@ -286,7 +302,7 @@ unique_ptr<RankTable> CreateSearchRankTableIfNotExists(FilesContainerR & rcont)
   if (!table)
   {
     vector<uint8_t> ranks;
-    SearchRankTableBuilder::CalcSearchRanks(rcont, ranks);
+    SearchRankTableBuilder::CalcSearchRanks(rcont, popularity, ranks);
     table = make_unique<RankTableV0>(ranks);
   }
 
@@ -307,17 +323,21 @@ unique_ptr<RankTable> RankTable::Load(FilesMappingContainer const & mcont, strin
 }
 
 // static
-void SearchRankTableBuilder::CalcSearchRanks(FilesContainerR & rcont, vector<uint8_t> & ranks)
+void SearchRankTableBuilder::CalcSearchRanks(FilesContainerR & rcont,
+                                             vector<uint8_t> const & popularity,
+                                             vector<uint8_t> & ranks)
 {
   feature::DataHeader header(rcont);
   FeaturesVector featuresVector(rcont, header, nullptr /* features offsets table */);
 
-  featuresVector.ForEach(
-      [&ranks](FeatureType & ft, uint32_t /* index */) { ranks.push_back(CalcSearchRank(ft)); });
+  featuresVector.ForEach([&popularity, &ranks](FeatureType & ft, uint32_t /* index */) {
+    ranks.push_back(CalcSearchRank(ft, popularity));
+  });
 }
 
 // static
-bool SearchRankTableBuilder::CreateIfNotExists(platform::LocalCountryFile const & localFile) noexcept
+bool SearchRankTableBuilder::CreateIfNotExists(platform::LocalCountryFile const & localFile,
+                                               vector<uint8_t> const & popularity) noexcept
 {
   try
   {
@@ -332,7 +352,7 @@ bool SearchRankTableBuilder::CreateIfNotExists(platform::LocalCountryFile const 
       mapPath = reader.GetName();
 
       FilesContainerR rcont(reader);
-      table = CreateSearchRankTableIfNotExists(rcont);
+      table = CreateSearchRankTableIfNotExists(rcont, popularity);
     }
 
     if (table)
@@ -348,14 +368,15 @@ bool SearchRankTableBuilder::CreateIfNotExists(platform::LocalCountryFile const 
 }
 
 // static
-bool SearchRankTableBuilder::CreateIfNotExists(string const & mapPath) noexcept
+bool SearchRankTableBuilder::CreateIfNotExists(string const & mapPath,
+                                               vector<uint8_t> const & popularity) noexcept
 {
   try
   {
     unique_ptr<RankTable> table;
     {
       FilesContainerR rcont(mapPath);
-      table = CreateSearchRankTableIfNotExists(rcont);
+      table = CreateSearchRankTableIfNotExists(rcont, popularity);
     }
 
     if (table)

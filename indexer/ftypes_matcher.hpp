@@ -123,6 +123,14 @@ public:
   DECLARE_CHECKER_INSTANCE(IsVillageChecker);
 };
 
+class IsIslandChecker : public BaseChecker
+{
+  IsIslandChecker();
+
+public:
+  DECLARE_CHECKER_INSTANCE(IsIslandChecker);
+};
+
 class IsOneWayChecker : public BaseChecker
 {
   IsOneWayChecker();
