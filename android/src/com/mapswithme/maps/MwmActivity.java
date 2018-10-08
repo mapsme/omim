@@ -125,6 +125,7 @@ import com.mapswithme.util.sharing.SharingHelper;
 import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.PlacePageTracker;
 import com.mapswithme.util.statistics.Statistics;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -240,6 +241,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private PurchaseController<AdsRemovalPurchaseCallback> mAdsRemovalPurchaseController;
   @NonNull
   private final OnClickListener mOnMyPositionClickListener = new CurrentPositionClickListener();
+  @Nullable
+  private TipsHolder mCurrentTips;
 
   public interface LeftAnimationTrackListener
   {
@@ -568,10 +571,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (savedInstanceState == null && RoutingController.get().hasSavedRoute())
     {
       addTask(new RestoreRouteTask());
-      return;
     }
-
-    initTips();
   }
 
   private void initViews()
@@ -603,7 +603,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (api == TipsApi.STUB)
       return;
 
-    api.showTutorial(getActivity());
+    if (mCurrentTips != null && (mCurrentTips.isStartingView() || api == mCurrentTips.mApi))
+      return;
+
+    MaterialTapTargetPrompt tutorial = api.showTutorial(this);
+    mCurrentTips = new TipsHolder(api, tutorial);
   }
 
   private void initFilterViews()
@@ -1250,6 +1254,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (mNavAnimationController != null)
       mNavAnimationController.onResume();
     mPlacePage.onActivityResume();
+    initTips();
   }
 
   @Override
@@ -2858,6 +2863,36 @@ public class MwmActivity extends BaseMwmFragmentActivity
     {
       Statistics.INSTANCE.trackToolbarClick(getItem());
       getActivity().startLocationToPoint(null, false);
+    }
+  }
+
+  private static class TipsHolder
+  {
+    @NonNull
+    private final MaterialTapTargetPrompt mView;
+    @NonNull
+    private final TipsApi mApi;
+
+    private TipsHolder(@NonNull TipsApi tipsApi, @NonNull MaterialTapTargetPrompt tipsView)
+    {
+      mView = tipsView;
+      mApi = tipsApi;
+    }
+
+    private boolean isStartingView()
+    {
+      final int state = mView.getState();
+      return state == MaterialTapTargetPrompt.STATE_REVEALING
+             || state == MaterialTapTargetPrompt.STATE_REVEALED;
+    }
+
+    @Override
+    public String toString()
+    {
+      final StringBuilder sb = new StringBuilder("TipsHolder{");
+      sb.append("mApi=").append(mApi);
+      sb.append('}');
+      return sb.toString();
     }
   }
 }
