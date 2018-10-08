@@ -75,7 +75,8 @@ public enum TipsApi
 
   STUB
       {
-        public void showTutorial(@NonNull Activity activity)
+        @NonNull
+        public MaterialTapTargetPrompt showTutorial(@NonNull Activity activity)
         {
           throw new UnsupportedOperationException("Not supported here!");
         }
@@ -122,7 +123,9 @@ public enum TipsApi
     return mAllowedScreens.contains(screenClass);
   }
 
-  public void showTutorial(@NonNull Activity activity)
+  @SuppressWarnings("ConstantConditions")
+  @NonNull
+  public MaterialTapTargetPrompt showTutorial(@NonNull Activity activity)
   {
     View target = activity.findViewById(mAnchorViewId);
     MaterialTapTargetPrompt.Builder builder = new MaterialTapTargetPrompt
@@ -138,10 +141,14 @@ public enum TipsApi
         .setSecondaryTextSize(R.dimen.text_size_body_3)
         .setSecondaryTextTypeface(Typeface.DEFAULT)
         .setBackgroundColour(ThemeUtils.getColor(activity, R.attr.tipsBgColor))
+        .setClipToView(null)
         .setFocalColour(activity.getResources().getColor(android.R.color.transparent))
         .setPromptBackground(new ImmersiveModeCompatPromptBackground(activity.getWindowManager()))
         .setPromptStateChangeListener((prompt, state) -> onPromptStateChanged(state));
-    builder.show();
+    if (builder.isTargetSet())
+      return builder.show();
+
+    throw new IllegalStateException("Target not found");
   }
 
   private void onPromptStateChanged(int state)
