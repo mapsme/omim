@@ -171,6 +171,8 @@ DEFINE_string(geo_objects_features, "", "Input tmp.mwm file with geo objects.");
 DEFINE_string(ids_without_addresses, "", "Output file with objects ids without addresses.");
 DEFINE_string(geo_objects_key_value, "", "Output geo objects key-value file.");
 
+DEFINE_string(regions_features, "", "Input regions tmp.mwm file.");
+
 // Common.
 DEFINE_bool(verbose, false, "Provide more detailed output.");
 
@@ -344,7 +346,7 @@ int main(int argc, char ** argv)
     auto const outFile = base::JoinPath(path, FLAGS_output + LOC_IDX_FILE_EXTENSION);
     if (FLAGS_generate_geo_objects_index)
     {
-      if (!feature::GenerateGeoObjectsData(genInfo.m_tmpDir, FLAGS_nodes_list_path, locDataFile))
+      if (!feature::GenerateGeoObjectsData(FLAGS_geo_objects_features, FLAGS_nodes_list_path, locDataFile))
       {
         LOG(LCRITICAL, ("Error generating geo objects data."));
         return -1;
@@ -361,7 +363,7 @@ int main(int argc, char ** argv)
 
     if (FLAGS_generate_regions)
     {
-      if (!feature::GenerateRegionsData(genInfo.m_tmpDir, locDataFile))
+      if (!feature::GenerateRegionsData(FLAGS_regions_features, locDataFile))
       {
         LOG(LCRITICAL, ("Error generating regions data."));
         return -1;
@@ -374,7 +376,7 @@ int main(int argc, char ** argv)
         LOG(LCRITICAL, ("Error generating regions index."));
         return -1;
       }
-      if (!feature::GenerateBorders(genInfo.m_tmpDir, outFile))
+      if (!feature::GenerateBorders(FLAGS_regions_features, outFile))
       {
         LOG(LCRITICAL, ("Error generating regions borders."));
         return -1;
