@@ -8556,6 +8556,7 @@ uk:^Платіжний термінал
 vi:^Thiết bị thanh toán
 zh-Hans:^支付终端
 zh-Hant:^付款終端
+fa:دستگاه کارخوان
 
 amenity-shower
 en:^Shower
@@ -8621,6 +8622,7 @@ uk:^Пункт постачання води
 vi:^Điểm cấp nước
 zh-Hans:^取水点
 zh-Hant:^飲水站
+fa:شیر آب
 
 emergency-defibrillator
 en:^Defibrillator|AED
@@ -8686,7 +8688,7 @@ uk:^Пожежний кран
 vi:^Vòi chữa cháy
 zh-Hans:^消防栓
 zh-Hant:^消防栓
-fa:شیراتش نشانی
+fa:شیر آتش‌نشانی
 
 leisure-fitness_station
 en:^Fitness Station
@@ -8917,6 +8919,7 @@ uk:^Ритуальна служба
 vi:^Tổ chức tang lễ
 zh-Hans:^殡仪馆
 zh-Hant:^葬儀社
+fa:مسئول تشیع جنازه
 
 shop-massage
 en:^Massage Parlour|massage|spa|massage center|massage therapy|massage services|massage salon|spa treatment|spa services
@@ -9048,6 +9051,7 @@ uk:^Ломбард
 vi:^Cầm đồ
 zh-Hans:^典当行
 zh-Hant:^當舖
+fa:عتیقه فروشی
 
 shop-stationery|@shop
 en:^Stationery Shop
@@ -9179,10 +9183,12 @@ uk:^Хибара
 vi:^Nhà tạm trú
 zh-Hans:^荒野小屋
 zh-Hant:^山屋
+fa:کلبه‌ی صحرایی
 
 tourism-gallery|@tourism
 en:^Gallery|museum
 ru:^Галерея|музей|картины|картинная галерея
+fa:گالری|موزه
 
 tourism-theme_park|@tourism
 en:^Theme park|Amusement park
