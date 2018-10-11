@@ -28,6 +28,7 @@
 #include "search/intermediate_result.hpp"
 #include "search/locality_finder.hpp"
 #include "search/reverse_geocoder.hpp"
+#include "search/utils.hpp"
 
 #include "storage/downloader_search_params.hpp"
 #include "storage/routing_helpers.hpp"
@@ -43,6 +44,7 @@
 #include "editor/editable_data_source.hpp"
 
 #include "indexer/categories_holder.hpp"
+#include "indexer/cities_boundaries_serdes.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/drawing_rules.hpp"
@@ -3234,15 +3236,15 @@ storage::TCountriesVec Framework::GetTopmostCountries(ms::LatLon const & latlon)
 
 namespace
 {
-vector<dp::Color> colorList = {
+vector<dp::Color> kColorList = {
     dp::Color(255, 0, 0, 255),   dp::Color(0, 255, 0, 255),   dp::Color(0, 0, 255, 255),
     dp::Color(255, 255, 0, 255), dp::Color(0, 255, 255, 255), dp::Color(255, 0, 255, 255),
     dp::Color(100, 0, 0, 255),   dp::Color(0, 100, 0, 255),   dp::Color(0, 0, 100, 255),
     dp::Color(100, 100, 0, 255), dp::Color(0, 100, 100, 255), dp::Color(100, 0, 100, 255)};
 
-dp::Color const cityBoundaryBBColor = dp::Color(255, 0, 0, 255);
-dp::Color const cityBoundaryCBColor = dp::Color(0, 255, 0, 255);
-dp::Color const cityBoundaryDBColor = dp::Color(0, 0, 255, 255);
+dp::Color const kCityBoundaryBBColor = dp::Color(255, 0, 0, 255);
+dp::Color const kCityBoundaryCBColor = dp::Color(0, 255, 0, 255);
+dp::Color const kCityBoundaryDBColor = dp::Color(0, 0, 255, 255);
 
 template <class Box>
 void DrawLine(Box const & box, dp::Color const & color, df::DrapeApi & drapeApi, string const & id)
@@ -3282,9 +3284,9 @@ void Framework::VisualizeRoadsInRect(m2::RectD const & rect)
 
       if (!allPointsOutside)
       {
-        size_t const colorIndex = counter % colorList.size();
+        size_t const colorIndex = counter % kColorList.size();
         m_drapeApi.AddLine(strings::to_string(ft.GetID().m_index),
-                           df::DrapeApiLineData(points, colorList[colorIndex])
+                           df::DrapeApiLineData(points, kColorList[colorIndex])
                                                 .Width(3.0f).ShowPoints(true).ShowId());
         counter++;
       }
@@ -3292,7 +3294,23 @@ void Framework::VisualizeRoadsInRect(m2::RectD const & rect)
   }, kScale);
 }
 
-void Framework::VisualizeCityBoundariesInRect(m2::RectD const & rect)
+void Framework::VisualizeCityBoundariesVec(vector<indexer::CityBoundary> const & cityBoundaries,
+                                           string const & caption)
+{
+  size_t const cityBoundariesSize = cityBoundaries.size();
+  for (size_t i = 0; i < cityBoundariesSize; ++i)
+  {
+    string idWithIndex = caption;
+    if (cityBoundariesSize > 1)
+      idWithIndex = caption + " , i:" + strings::to_string(i);
+
+    DrawLine(cityBoundaries[i].m_bbox, kCityBoundaryBBColor, m_drapeApi, idWithIndex + ", bb");
+    DrawLine(cityBoundaries[i].m_cbox, kCityBoundaryCBColor, m_drapeApi, idWithIndex + ", cb");
+    DrawLine(cityBoundaries[i].m_dbox, kCityBoundaryDBColor, m_drapeApi, idWithIndex + ", db");
+  }
+}
+
+void Framework::VisualizeCityBoundariesInRectWithName(m2::RectD const & rect)
 {
   search::CitiesBoundariesTable table(GetDataSource());
   table.Load();
@@ -3306,28 +3324,60 @@ void Framework::VisualizeCityBoundariesInRect(m2::RectD const & rect)
     search::CitiesBoundariesTable::Boundaries boundaries;
     table.Get(fid, boundaries);
 
-    string id = "fid:" + strings::to_string(fid);
+    string caption = "fid:" + strings::to_string(fid);
     FeatureType ft;
     if (loader.GetFeatureByIndex(fid, ft))
     {
       string name;
       ft.GetName(StringUtf8Multilang::kDefaultCode, name);
-      id += ", name:" + name;
+      caption += ", name:" + name;
     }
 
-    size_t const boundariesSize = boundaries.GetBoundariesForTesting().size();
-    for (size_t i = 0; i < boundariesSize; ++i)
-    {
-      string idWithIndex = id;
-      auto const & cityBoundary = boundaries.GetBoundariesForTesting()[i];
-      if (boundariesSize > 1)
-        idWithIndex = id + " , i:" + strings::to_string(i);
+    VisualizeCityBoundariesVec(boundaries.GetBoundariesForTesting(), caption);
+  }
+}
 
-      DrawLine(cityBoundary.m_bbox, cityBoundaryBBColor, m_drapeApi, idWithIndex + ", bb");
-      DrawLine(cityBoundary.m_cbox, cityBoundaryCBColor, m_drapeApi, idWithIndex + ", cb");
-      DrawLine(cityBoundary.m_dbox, cityBoundaryDBColor, m_drapeApi, idWithIndex + ", db");
+void Framework::VisualizeCityBoundariesInRect(m2::RectD const & rect)
+{
+  auto handle = search::FindWorld(GetDataSource());
+  if (!handle.IsAlive())
+  {
+    LOG(LWARNING, ("Can't find World map file."));
+    return;
+  }
+
+  auto const & cont = handle.GetValue<MwmValue>()->m_cont;
+  if (!cont.IsExist(CITIES_BOUNDARIES_FILE_TAG))
+  {
+    LOG(LWARNING, ("No cities boundaries table in the world map."));
+    return;
+  }
+
+  vector<vector<indexer::CityBoundary>> all;
+  double precision = 0;
+  try
+  {
+    auto reader = cont.GetReader(CITIES_BOUNDARIES_FILE_TAG);
+    ReaderSource<ReaderPtr<ModelReader>> source(reader);
+    indexer::CitiesBoundariesSerDes::Deserialize(source, all, precision);
+  }
+  catch (Reader::Exception const & e)
+  {
+    LOG(LERROR, ("Can't read cities boundaries table from the world map:", e.Msg()));
+    return;
+  }
+
+  vector<indexer::CityBoundary> allInRect;
+  for (auto const & v : all)
+  {
+    for (auto const & cb : v)
+    {
+      if (rect.IsIntersect(m2::RectD(cb.m_bbox.Min(), cb.m_bbox.Max())))
+        allInRect.push_back(cb);
     }
   }
+
+  VisualizeCityBoundariesVec(allInRect, string());
 }
 
 ads::Engine const & Framework::GetAdsEngine() const
