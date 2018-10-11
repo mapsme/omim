@@ -11,10 +11,10 @@ namespace downloader { class IHttpThreadCallback; }
 #import "../iphone/Maps/Classes/DownloadIndicatorProtocol.h"
 #endif
 
-@interface HttpThread : NSObject
+@interface HttpThread : NSObject<NSURLSessionDataDelegate>
 {
   downloader::IHttpThreadCallback * m_callback;
-  NSURLConnection * m_connection;
+  NSURLSessionDataTask * m_dataTask;
   int64_t m_begRange, m_endRange;
   int64_t m_downloadedBytes;
   int64_t m_expectedSize;

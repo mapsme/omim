@@ -37,7 +37,9 @@ extern NSString * gBrowserUserAgent;
 
 #include "base/logging.hpp"
 
-@interface Connection: NSObject<NSURLSessionDelegate>
+#import  "platform/http_session_manager.h"
+
+@interface Connection: NSObject
 + (nullable NSData *)sendSynchronousRequest:(NSURLRequest *)request
                           returningResponse:(NSURLResponse **)response
                                       error:(NSError **)error;
@@ -53,45 +55,44 @@ extern NSString * gBrowserUserAgent;
   return [connection sendSynchronousRequest:request returningResponse:response error:error];
 }
 
++ (HttpSessionManager *) sharedSessionManager
+{
+    static dispatch_once_t      sOnceToken;
+    static HttpSessionManager * sManager;
+    dispatch_once(&sOnceToken, ^{
+        sManager = [[HttpSessionManager alloc] initWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
+    });
+    
+    return sManager;
+}
+
 - (NSData *)sendSynchronousRequest:(NSURLRequest *)request
                  returningResponse:(NSURLResponse * __autoreleasing *)response
                              error:(NSError * __autoreleasing *)error
 {
-  NSURLSession * session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
-                                                        delegate:self
-                                                   delegateQueue:nil];
-  __block NSData * resultData = nil;
-  __block NSURLResponse * resultResponse = nil;
-  __block NSError * resultError = nil;
-
-  dispatch_group_t group = dispatch_group_create();
-  dispatch_group_enter(group);
-  [[session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data,
-                                                            NSURLResponse * _Nullable response,
-                                                            NSError * _Nullable error)
-  {
-    resultData = data;
-    resultResponse = response;
-    resultError = error;
-    dispatch_group_leave(group);
-  }] resume];
-
-  dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-  *response = resultResponse;
-  *error = resultError;
-  return resultData;
+    __block NSData * resultData = nil;
+    __block NSURLResponse * resultResponse = nil;
+    __block NSError * resultError = nil;
+    
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_enter(group);
+    
+    [[[Connection sharedSessionManager] dataTaskWithRequest:request delegate:nil
+                                          completionHandler:^(NSData * _Nullable data,
+                                                              NSURLResponse * _Nullable response,
+                                                              NSError * _Nullable error)
+      {
+          resultData = data;
+          resultResponse = response;
+          resultError = error;
+          dispatch_group_leave(group);
+      }] resume];
+    
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    *response = resultResponse;
+    *error = resultError;
+    return resultData;
 }
-
-#if DEBUG
-- (void)URLSession:(NSURLSession *)session
-didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
- completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
-                             NSURLCredential * _Nullable credential))completionHandler
-{
-  NSURLCredential * credential = [[NSURLCredential alloc] initWithTrust:[challenge protectionSpace].serverTrust];
-  completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
-}
-#endif
 @end
 
 namespace platform

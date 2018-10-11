@@ -7,6 +7,8 @@
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 
+#import "platform/http_session_manager.h"
+
 #define TIMEOUT_IN_SECONDS 60.0
 
 @implementation HttpThread
@@ -20,10 +22,21 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
 }
 #endif
 
++ (HttpSessionManager *) sharedSessionManager
+{
+    static dispatch_once_t      sOnceToken;
+    static HttpSessionManager * sManager;
+    dispatch_once(&sOnceToken, ^{
+        sManager = [[HttpSessionManager alloc] init];
+    });
+    
+    return sManager;
+}
+
 - (void) dealloc
 {
   LOG(LDEBUG, ("ID:", [self hash], "Connection is destroyed"));
-  [m_connection cancel];
+  [m_dataTask cancel];
 #ifdef OMIM_OS_IPHONE
   [downloadIndicator enableStandby];
   [downloadIndicator disableDownloadIndicator];
@@ -32,7 +45,7 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
 
 - (void) cancel
 {
-  [m_connection cancel];
+  [m_dataTask cancel];
 }
 
 - (id) initWith:(string const &)url callback:(downloader::IHttpThreadCallback &)cb begRange:(int64_t)beg
@@ -86,39 +99,31 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
   [downloadIndicator enableDownloadIndicator];
 #endif
 
-	// create the connection with the request and start loading the data
-	m_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    // create the task with the request and start loading the data
+    m_dataTask = [[[self class] sharedSessionManager] dataTaskWithRequest:request delegate:self completionHandler:nil];
 
-  if (m_connection == 0)
-  {
-    LOG(LERROR, ("Can't create connection for", url));
-    return nil;
-  }
-  else
-    LOG(LDEBUG, ("ID:", [self hash], "Starting connection to", url));
+    if (m_dataTask != nil)
+    {
+        [m_dataTask resume];
+        LOG(LDEBUG, ("ID:", [self hash], "Starting data task for", url));
+    }
+    else
+    {
+        LOG(LERROR, ("Can't create data task for", url));
+        return nil;
+    }
 
-  return self;
+    return self;
 }
 
 /// We cancel and don't support any redirects to avoid data corruption
 /// @TODO Display content to user - router is redirecting us somewhere
--(NSURLRequest *)connection:(NSURLConnection *)connection
-            willSendRequest:(NSURLRequest *)request
-           redirectResponse:(NSURLResponse *)redirectResponse
+- (void) URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler
 {
-  if (!redirectResponse)
-  {
-    // Special case, system just normalizes request, it's not a real redirect
-    return request;
-  }
-  // In all other cases we are cancelling redirects
-  LOG(LWARNING,
-      ("Canceling because of redirect from", redirectResponse.URL.absoluteString.UTF8String, "to",
-       request.URL.absoluteString.UTF8String));
-  [connection cancel];
-  m_callback->OnFinish(static_cast<NSHTTPURLResponse *>(redirectResponse).statusCode,
-                                    m_begRange, m_endRange);
-  return nil;
+    LOG(LWARNING, ("Canceling because of redirect from", response.URL.absoluteString.UTF8String,
+                   "to", request.URL.absoluteString.UTF8String));
+    [task cancel];
+    m_callback->OnFinish(static_cast<NSHTTPURLResponse *>(response).statusCode, m_begRange, m_endRange);
 }
 
 /// @return -1 if can't decode
@@ -134,81 +139,83 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
 	return -1;
 }
 
-- (void) connection: (NSURLConnection *)connection didReceiveResponse: (NSURLResponse *)response
+- (void) URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
 {
-  UNUSED_VALUE(connection);
-	// This method is called when the server has determined that it
-	// has enough information to create the NSURLResponse.
-
-  // check if this is OK (not a 404 or the like)
-  if ([response isKindOfClass:[NSHTTPURLResponse class]])
-  {
-    NSInteger const statusCode = [(NSHTTPURLResponse *)response statusCode];
-    LOG(LDEBUG, ("Got response with status code", statusCode));
-    // When we didn't ask for chunks, code should be 200
-    // When we asked for a chunk, code should be 206
-    bool const isChunk = !(m_begRange == 0 && m_endRange < 0);
-    if ((isChunk && statusCode != 206) || (!isChunk && statusCode != 200))
+    UNUSED_VALUE(dataTask);
+    // This method is called when the server has determined that it
+    // has enough information to create the NSURLResponse.
+    
+    // check if this is OK (not a 404 or the like)
+    if ([response isKindOfClass:[NSHTTPURLResponse class]])
     {
-      LOG(LWARNING, ("Received invalid HTTP status code, canceling download", statusCode));
-      [m_connection cancel];
-      m_callback->OnFinish(statusCode, m_begRange, m_endRange);
-      return;
+        NSInteger const statusCode = [(NSHTTPURLResponse *)response statusCode];
+        LOG(LDEBUG, ("Got response with status code", statusCode));
+        // When we didn't ask for chunks, code should be 200
+        // When we asked for a chunk, code should be 206
+        bool const isChunk = !(m_begRange == 0 && m_endRange < 0);
+        if ((isChunk && statusCode != 206) || (!isChunk && statusCode != 200))
+        {
+            LOG(LWARNING, ("Received invalid HTTP status code, canceling download", statusCode));
+            [m_dataTask cancel];
+            m_callback->OnFinish(statusCode, m_begRange, m_endRange);
+            return;
+        }
+        else if (m_expectedSize > 0)
+        {
+            // get full file expected size from Content-Range header
+            int64_t sizeOnServer = [HttpThread getContentRange:[(NSHTTPURLResponse *)response allHeaderFields]];
+            // if it's absent, use Content-Length instead
+            if (sizeOnServer < 0)
+                sizeOnServer = [response expectedContentLength];
+            // We should always check returned size, even if it's invalid (-1)
+            if (m_expectedSize != sizeOnServer)
+            {
+                
+                LOG(LWARNING, ("Canceling download - server replied with invalid size", sizeOnServer,
+                               "!=", m_expectedSize));
+                [m_dataTask cancel];
+                m_callback->OnFinish(downloader::non_http_error_code::kInconsistentFileSize, m_begRange, m_endRange);
+                return;
+            }
+        }
+        
+        completionHandler(NSURLSessionResponseAllow);
     }
-    else if (m_expectedSize > 0)
+    else
     {
-      // get full file expected size from Content-Range header
-      int64_t sizeOnServer = [HttpThread getContentRange:[(NSHTTPURLResponse *)response allHeaderFields]];
-      // if it's absent, use Content-Length instead
-      if (sizeOnServer < 0)
-        sizeOnServer = [response expectedContentLength];
-      // We should always check returned size, even if it's invalid (-1)
-      if (m_expectedSize != sizeOnServer)
-      {
-
-        LOG(LWARNING, ("Canceling download - server replied with invalid size",
-                       sizeOnServer, "!=", m_expectedSize));
-        [m_connection cancel];
-        m_callback->OnFinish(downloader::non_http_error_code::kInconsistentFileSize, m_begRange, m_endRange);
-        return;
-      }
+        // In theory, we should never be here.
+        ASSERT(false, ("Invalid non-http response, aborting request"));
+        [m_dataTask cancel];
+        m_callback->OnFinish(downloader::non_http_error_code::kNonHttpResponse, m_begRange, m_endRange);
     }
-  }
-  else
-  {
-    // In theory, we should never be here.
-    ASSERT(false, ("Invalid non-http response, aborting request"));
-    [m_connection cancel];
-    m_callback->OnFinish(downloader::non_http_error_code::kNonHttpResponse, m_begRange, m_endRange);
-  }
 }
 
-- (void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+- (void) URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
-  UNUSED_VALUE(connection);
-  int64_t const length = [data length];
-  m_downloadedBytes += length;
-  if(!m_callback->OnWrite(m_begRange + m_downloadedBytes - length, [data bytes], length))
-  {
-    [m_connection cancel];
-    m_callback->OnFinish(downloader::non_http_error_code::kWriteException, m_begRange, m_endRange);
-  }
+    UNUSED_VALUE(dataTask);
+    int64_t const length = [data length];
+    m_downloadedBytes += length;
+    if(!m_callback->OnWrite(m_begRange + m_downloadedBytes - length, [data bytes], length))
+    {
+        [m_dataTask cancel];
+        m_callback->OnFinish(downloader::non_http_error_code::kWriteException, m_begRange, m_endRange);
+    }
 }
 
-- (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+- (void) URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
-  UNUSED_VALUE(connection);
-  LOG(LWARNING, ("Connection failed", [[error localizedDescription] cStringUsingEncoding:NSUTF8StringEncoding]));
-  m_callback->OnFinish([error code], m_begRange, m_endRange);
-}
-
-- (void) connectionDidFinishLoading:(NSURLConnection *)connection
-{
-  UNUSED_VALUE(connection);
-  m_callback->OnFinish(200, m_begRange, m_endRange);
+    UNUSED_VALUE(task);
+    if (error)
+    {
+        LOG(LWARNING, ("Data task failed", [[error localizedDescription] cStringUsingEncoding:NSUTF8StringEncoding]));
+        m_callback->OnFinish([error code], m_begRange, m_endRange);
+    } else
+        m_callback->OnFinish(200, m_begRange, m_endRange);
 }
 
 @end
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 namespace downloader

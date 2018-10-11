@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		33F31066216E09B200C19E8A /* http_session_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 33F31064216E09B200C19E8A /* http_session_manager.h */; };
+		33F31067216E09B200C19E8A /* http_session_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 33F31064216E09B200C19E8A /* http_session_manager.h */; };
+		33F31068216E09B200C19E8A /* http_session_manager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 33F31065216E09B200C19E8A /* http_session_manager.mm */; };
+		33F31069216E09B200C19E8A /* http_session_manager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 33F31065216E09B200C19E8A /* http_session_manager.mm */; };
+		33F3106A216E09B200C19E8A /* http_session_manager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 33F31065216E09B200C19E8A /* http_session_manager.mm */; };
 		34513AFA1DCB37C100471BDA /* marketing_service_ios.mm in Sources */ = {isa = PBXBuildFile; fileRef = 34513AF71DCB37C100471BDA /* marketing_service_ios.mm */; };
 		34513AFB1DCB37C100471BDA /* marketing_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 34513AF81DCB37C100471BDA /* marketing_service.cpp */; };
 		34513AFC1DCB37C100471BDA /* marketing_service.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 34513AF91DCB37C100471BDA /* marketing_service.hpp */; };
@@ -124,6 +129,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		33F31064216E09B200C19E8A /* http_session_manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = http_session_manager.h; sourceTree = "<group>"; };
+		33F31065216E09B200C19E8A /* http_session_manager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = http_session_manager.mm; sourceTree = "<group>"; };
 		344D8A2E204945D000CF532F /* platform_ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = platform_ios.h; sourceTree = "<group>"; };
 		34513AF71DCB37C100471BDA /* marketing_service_ios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = marketing_service_ios.mm; sourceTree = "<group>"; };
 		34513AF81DCB37C100471BDA /* marketing_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = marketing_service.cpp; sourceTree = "<group>"; };
@@ -389,6 +396,8 @@
 				6753438C1A3F5D5900A0A8C3 /* http_request.hpp */,
 				6753438D1A3F5D5900A0A8C3 /* http_thread_apple.h */,
 				6753438E1A3F5D5900A0A8C3 /* http_thread_apple.mm */,
+				33F31064216E09B200C19E8A /* http_session_manager.h */,
+				33F31065216E09B200C19E8A /* http_session_manager.mm */,
 				6753438F1A3F5D5A00A0A8C3 /* http_thread_callback.hpp */,
 				3D318A042021DD8A007B2607 /* http_uploader_apple.mm */,
 				3D318A052021DD8B007B2607 /* http_uploader.hpp */,
@@ -476,6 +485,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33F31067216E09B200C19E8A /* http_session_manager.h in Headers */,
 				675341271C58C61D002CF0D9 /* scoped_dir.hpp in Headers */,
 				5661A5CC20DD57DA00C6B1D1 /* async_gui_thread.hpp in Headers */,
 				675341281C58C61D002CF0D9 /* scoped_mwm.hpp in Headers */,
@@ -512,6 +522,7 @@
 				3D78156F1F3A14090068B6AC /* gui_thread.hpp in Headers */,
 				451E32A21F73A8B000964C9F /* secure_storage.hpp in Headers */,
 				45D7ADBC210F48E500160DE3 /* http_user_agent.hpp in Headers */,
+				33F31066216E09B200C19E8A /* http_session_manager.h in Headers */,
 				674125091B4C00CC00A3E828 /* country_defines.hpp in Headers */,
 				675343CD1A3F5D5A00A0A8C3 /* platform.hpp in Headers */,
 				6741250F1B4C00CC00A3E828 /* local_country_file.hpp in Headers */,
@@ -646,6 +657,7 @@
 			files = (
 				675341251C58C60F002CF0D9 /* scoped_mwm.cpp in Sources */,
 				F6DF73591EC9EAE700D8BA0B /* string_storage_base.cpp in Sources */,
+				33F31069216E09B200C19E8A /* http_session_manager.mm in Sources */,
 				675341231C58C60F002CF0D9 /* scoped_dir.cpp in Sources */,
 				675341241C58C60F002CF0D9 /* scoped_file.cpp in Sources */,
 			);
@@ -674,6 +686,7 @@
 				F6DF73581EC9EAE700D8BA0B /* string_storage_base.cpp in Sources */,
 				3D318A062021DD8B007B2607 /* http_uploader_apple.mm in Sources */,
 				3D78156E1F3A14090068B6AC /* gui_thread_apple.mm in Sources */,
+				33F31068216E09B200C19E8A /* http_session_manager.mm in Sources */,
 				67247FFD1C60BD6500EDE56A /* writable_dir_changer.cpp in Sources */,
 				45D7ADBA210F48E500160DE3 /* http_user_agent.cpp in Sources */,
 				34513AFB1DCB37C100471BDA /* marketing_service.cpp in Sources */,
@@ -711,6 +724,7 @@
 				6783389A1C6DE59200FD6263 /* language_test.cpp in Sources */,
 				6783389D1C6DE59200FD6263 /* measurement_tests.cpp in Sources */,
 				678338971C6DE59200FD6263 /* country_file_tests.cpp in Sources */,
+				33F3106A216E09B200C19E8A /* http_session_manager.mm in Sources */,
 				678338951C6DE59200FD6263 /* testingmain.cpp in Sources */,
 				F6DF735A1EC9EAE700D8BA0B /* string_storage_base.cpp in Sources */,
 				6783389B1C6DE59200FD6263 /* local_country_file_tests.cpp in Sources */,
