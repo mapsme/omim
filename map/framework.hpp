@@ -350,6 +350,18 @@ public:
 
   // Utilities
   void VisualizeRoadsInRect(m2::RectD const & rect);
+  /// \brief Visualizes |cityBoundaries| with |caption|.
+  /// \note If it's necessary to visualize several vectors of CityBoundary at the same time
+  /// for every call of VisualizeCityBoundariesVec() should be passed a unique |caption|.
+  void VisualizeCityBoundariesVec(vector<indexer::CityBoundary> const & cityBoundaries,
+                                  string const & caption);
+  /// \brief Visualizes all city boundaries saved in World.mwm which are covered by |rect|
+  /// with their feature names written near them.
+  void VisualizeCityBoundariesInRectWithName(m2::RectD const & rect);
+  /// \brief Visualizes all city boundaries save in World.mwm which are covered by |rect|.
+  /// \note To recover feature ids of city boundaries saved in world mwm a CBV in CategoriesCache
+  /// is used. This method should be used for visualization CityBoundary vector irrespectively of
+  /// CategoriesCache.
   void VisualizeCityBoundariesInRect(m2::RectD const & rect);
 
   ads::Engine const & GetAdsEngine() const;

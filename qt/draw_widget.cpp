@@ -240,7 +240,7 @@ void DrawWidget::mouseReleaseEvent(QMouseEvent * e)
     else
     {
       CHECK(m_cityBoundariesSelectionMode, ());
-      m_framework.VisualizeCityBoundariesInRect(rect);
+      m_framework.VisualizeCityBoundariesInRectWithName(rect);
     }
 
     m_rubberBand->hide();
