@@ -34368,3 +34368,7 @@ fa = دوباره نپرس
     sw = Simamia usajili
     zh-Hans = 管理订购
     zh-Hant = 管理訂購
+
+  [taxi]
+    en = Taxi
+    ru = Такси
