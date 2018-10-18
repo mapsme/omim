@@ -279,9 +279,10 @@ public:
   void operator()(FeatureBuilder1 fb)
   {
     auto const isPopularAttraction = IsPopularAttraction(fb);
+    auto const isPopularIsland = IsPopularIsland(fb);
     auto const isInternationalAirport =
         fb.HasType(classif().GetTypeByPath({"aeroway", "aerodrome", "international"}));
-    auto const forcePushToWorld = isPopularAttraction || isInternationalAirport;
+    auto const forcePushToWorld = isPopularAttraction || isInternationalAirport || isPopularIsland;
 
     if (!m_worldBucket.NeedPushToWorld(fb) && !forcePushToWorld)
       return;
@@ -373,6 +374,27 @@ private:
       return false;
 
     // todo(@t.yan): maybe check place has wikipedia link.
+    return true;
+  }
+
+  static bool IsPopularIsland(FeatureBuilder1 const & fb)
+  {
+    if (fb.GetName().empty())
+      return false;
+
+    if (fb.GetMostGenericOsmId().GetType() == base::GeoObjectId::Type::OsmNode)
+      return false;
+
+    auto const isIsland = fb.HasType(classif().GetTypeByPath({"place", "island"})) ||
+                          fb.HasType(classif().GetTypeByPath({"place", "archipelago"}));
+
+    if (!isIsland)
+      return false;
+
+    // todo(@t.yan): use config instead of this criteria.
+    if (!fb.GetMetadata().Has(feature::Metadata::FMD_WIKIPEDIA))
+      return false;
+
     return true;
   }
 };
