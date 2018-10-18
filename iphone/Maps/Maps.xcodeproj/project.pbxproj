@@ -5206,6 +5206,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "maps.me dbg.entitlements";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator*]" = MetalContextFactory.mm;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -5222,6 +5223,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "maps.me dbg.entitlements";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator*]" = MetalContextFactory.mm;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -5238,6 +5240,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "maps.me dbg.entitlements";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3T6FSDE8C7;
 				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator*]" = MetalContextFactory.mm;
 				FRAMEWORK_SEARCH_PATHS = (
