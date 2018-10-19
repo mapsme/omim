@@ -6,6 +6,8 @@
 #include "indexer/locality_object.hpp"
 #include "indexer/scales.hpp"
 
+#include "coding/file_container.hpp"
+
 #include "geometry/rect2d.hpp"
 
 #include "base/geo_object_id.hpp"
@@ -14,6 +16,9 @@
 #include <functional>
 #include <memory>
 #include <set>
+#include <string>
+
+#include "defines.hpp"
 
 namespace indexer
 {
@@ -26,6 +31,7 @@ class LocalityIndex
 public:
   using ProcessObject = std::function<void(base::GeoObjectId const &)>;
 
+  LocalityIndex() = default;
   explicit LocalityIndex(Reader const & reader)
   {
     m_intervalIndex = std::make_unique<IntervalIndex<Reader, uint64_t>>(reader);
@@ -39,10 +45,10 @@ public:
     for (auto const & i : intervals)
     {
       m_intervalIndex->ForEach(
-          [&processObject](uint64_t storedId) {
-            processObject(LocalityObject::FromStoredId(storedId));
-          },
-          i.first, i.second);
+            [&processObject](uint64_t storedId) {
+        processObject(LocalityObject::FromStoredId(storedId));
+      },
+      i.first, i.second);
     }
   }
 
@@ -79,4 +85,33 @@ using GeoObjectsIndex = LocalityIndex<Reader, kGeoObjectsDepthLevels>;
 
 template <typename Reader>
 using RegionsIndex = LocalityIndex<Reader, kRegionsDepthLevels>;
+
+template <typename Reader>
+struct GeoObjectsIndexBox
+{
+  static constexpr const char * kFileTag = GEO_OBJECTS_INDEX_FILE_TAG;
+
+  using ReaderType = Reader;
+  using IndexType = GeoObjectsIndex<ReaderType>;
+};
+
+template <typename Reader>
+struct RegionsIndexBox
+{
+  static constexpr const char * kFileTag = REGIONS_INDEX_FILE_TAG;
+
+  using ReaderType = Reader;
+  using IndexType = RegionsIndex<ReaderType>;
+};
+
+template <typename IndexBox, typename Reader>
+typename IndexBox::IndexType ReadIndex(std::string const & pathIndx)
+{
+  FilesContainerR cont(pathIndx);
+  auto const offsetSize = cont.GetAbsoluteOffsetAndSize(IndexBox::kFileTag);
+  Reader reader(pathIndx);
+  typename IndexBox::ReaderType subReader(reader.CreateSubReader(offsetSize.first, offsetSize.second));
+  typename IndexBox::IndexType index(subReader);
+  return index;
+}
 }  // namespace indexer

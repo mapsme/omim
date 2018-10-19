@@ -7,8 +7,11 @@ set(
   cities_boundaries_checker_tests.cpp
   city_roads_tests.cpp
   coasts_test.cpp
+  common.cpp
+  common.hpp
   feature_builder_test.cpp
   feature_merger_test.cpp
+  filter_elements_tests.cpp
   intermediate_data_test.cpp
   metadata_parser_test.cpp
   node_mixer_test.cpp

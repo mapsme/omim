@@ -316,14 +316,13 @@ public:
 };
 
 template <class FeatureOut>
-class CountryMapGenerator
+class SimpleCountryMapGenerator
 {
 public:
-  CountryMapGenerator(feature::GenerateInfo const & info) : m_bucket(info) {}
+  SimpleCountryMapGenerator(feature::GenerateInfo const & info) : m_bucket(info) {}
 
-  void operator()(FeatureBuilder1 fb)
+  void operator()(FeatureBuilder1 & fb)
   {
-    if (feature::PreprocessForCountryMap(fb))
       m_bucket(fb);
   }
 
@@ -331,4 +330,18 @@ public:
 
 private:
   FeatureOut m_bucket;
+};
+
+template <class FeatureOut>
+class CountryMapGenerator : public SimpleCountryMapGenerator<FeatureOut>
+{
+public:
+  CountryMapGenerator(feature::GenerateInfo const & info) :
+    SimpleCountryMapGenerator<FeatureOut>(info) {}
+
+  void operator()(FeatureBuilder1 fb)
+  {
+    if (feature::PreprocessForCountryMap(fb))
+      SimpleCountryMapGenerator<FeatureOut>::operator()(fb);
+  }
 };

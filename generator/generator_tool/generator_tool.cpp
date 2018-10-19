@@ -11,10 +11,12 @@
 #include "generator/feature_generator.hpp"
 #include "generator/feature_sorter.hpp"
 #include "generator/generate_info.hpp"
+#include "generator/geo_objects/geo_objects.hpp"
 #include "generator/locality_sorter.hpp"
 #include "generator/metalines_builder.hpp"
 #include "generator/osm_source.hpp"
 #include "generator/popular_places_section_builder.hpp"
+#include "generator/regions/collector_region_info.hpp"
 #include "generator/regions/regions.hpp"
 #include "generator/restriction_generator.hpp"
 #include "generator/road_access_generator.hpp"
@@ -96,6 +98,8 @@ DEFINE_bool(preprocess, false, "1st pass - create nodes/ways/relations data.");
 DEFINE_bool(generate_features, false, "2nd pass - generate intermediate features.");
 DEFINE_bool(generate_region_features, false,
             "Generate intermediate features for regions to use in regions index and borders generation.");
+DEFINE_bool(generate_geo_objects_features, false,
+            "Generate intermediate features for geo objects to use in geo objects index.");
 DEFINE_bool(generate_geometry, false,
             "3rd pass - split and simplify geometry and triangles for features.");
 DEFINE_bool(generate_index, false, "4rd pass - generate index.");
@@ -160,6 +164,15 @@ DEFINE_string(delete_section, "", "Delete specified section (defines.hpp) from c
 DEFINE_bool(generate_addresses_file, false, "Generate .addr file (for '--output' option) with full addresses list.");
 DEFINE_bool(generate_traffic_keys, false,
             "Generate keys for the traffic map (road segment -> speed group).");
+
+// Generating geo objects key-value.
+DEFINE_string(regions_index, "", "Input regions index file.");
+DEFINE_string(regions_key_value, "", "Input regions key-value file.");
+DEFINE_string(geo_objects_features, "", "Input tmp.mwm file with geo objects.");
+DEFINE_string(ids_without_addresses, "", "Output file with objects ids without addresses.");
+DEFINE_string(geo_objects_key_value, "", "Output geo objects key-value file.");
+
+DEFINE_string(regions_features, "", "Input tmp.mwm file with regions.");
 
 // Common.
 DEFINE_bool(verbose, false, "Provide more detailed output.");
@@ -241,7 +254,8 @@ int main(int argc, char ** argv)
       FLAGS_dump_feature_names != "" || FLAGS_check_mwm || FLAGS_srtm_path != "" ||
       FLAGS_make_routing_index || FLAGS_make_cross_mwm || FLAGS_make_transit_cross_mwm ||
       FLAGS_make_city_roads || FLAGS_generate_traffic_keys || FLAGS_transit_path != "" ||
-      FLAGS_ugc_data != "" || FLAGS_popular_places_data != "")
+      FLAGS_ugc_data != "" || FLAGS_popular_places_data != "" || FLAGS_generate_geo_objects_features ||
+      FLAGS_geo_objects_key_value != "")
   {
     classificator::Load();
     classif().SortClassificator();
@@ -288,16 +302,32 @@ int main(int argc, char ** argv)
     }
   }
 
-  if (FLAGS_generate_region_features)
+  if (FLAGS_generate_region_features || FLAGS_generate_geo_objects_features)
   {
     CHECK(!FLAGS_generate_features && !FLAGS_make_coasts,
           ("FLAGS_generate_features and FLAGS_make_coasts should "
            "not be used with FLAGS_generate_region_features"));
+    CHECK(!(FLAGS_generate_region_features && FLAGS_generate_geo_objects_features), ());
 
     genInfo.m_fileName = FLAGS_output;
+    if (FLAGS_generate_region_features)
+    {
+      if (!GenerateRegionFeatures(genInfo))
+        return -1;
+    }
 
-    auto emitter = CreateEmitter(EmitterType::Region, genInfo);
-    if (!GenerateRegionFeatures(genInfo, emitter))
+    if (FLAGS_generate_geo_objects_features)
+    {
+      if (!GenerateGeoObjectsFeatures(genInfo))
+        return -1;
+    }
+  }
+
+  if (!FLAGS_geo_objects_key_value.empty())
+  {
+    if (!geo_objects::GenerateGeoObjects(FLAGS_regions_index, FLAGS_regions_key_value,
+                                         FLAGS_geo_objects_features, FLAGS_ids_without_addresses,
+                                         FLAGS_geo_objects_key_value, FLAGS_verbose))
       return -1;
   }
 
@@ -306,10 +336,9 @@ int main(int argc, char ** argv)
 
   if (FLAGS_generate_geo_objects_index || FLAGS_generate_regions)
   {
-    if (FLAGS_output.empty() || FLAGS_intermediate_data_path.empty())
+    if (FLAGS_output.empty())
     {
-      LOG(LCRITICAL, ("Bad output or intermediate_data_path. Output:", FLAGS_output,
-                      "intermediate_data_path:", FLAGS_intermediate_data_path));
+      LOG(LCRITICAL, ("Bad output or intermediate_data_path. Output:", FLAGS_output));
       return -1;
     }
 
@@ -317,7 +346,7 @@ int main(int argc, char ** argv)
     auto const outFile = base::JoinPath(path, FLAGS_output + LOC_IDX_FILE_EXTENSION);
     if (FLAGS_generate_geo_objects_index)
     {
-      if (!feature::GenerateGeoObjectsData(genInfo.m_tmpDir, FLAGS_nodes_list_path, locDataFile))
+      if (!feature::GenerateGeoObjectsData(FLAGS_geo_objects_features, FLAGS_nodes_list_path, locDataFile))
       {
         LOG(LCRITICAL, ("Error generating geo objects data."));
         return -1;
@@ -334,7 +363,7 @@ int main(int argc, char ** argv)
 
     if (FLAGS_generate_regions)
     {
-      if (!feature::GenerateRegionsData(genInfo.m_tmpDir, locDataFile))
+      if (!feature::GenerateRegionsData(FLAGS_regions_features, locDataFile))
       {
         LOG(LCRITICAL, ("Error generating regions data."));
         return -1;
@@ -347,11 +376,28 @@ int main(int argc, char ** argv)
         LOG(LCRITICAL, ("Error generating regions index."));
         return -1;
       }
-      if (!feature::GenerateBorders(genInfo.m_tmpDir, outFile))
+      if (!feature::GenerateBorders(FLAGS_regions_features, outFile))
       {
         LOG(LCRITICAL, ("Error generating regions borders."));
         return -1;
       }
+    }
+  }
+
+  if (FLAGS_generate_regions_kv)
+  {
+    CHECK(FLAGS_generate_region_features, ("Option --generate_regions_kv can be used only "
+                                           "together with option --generate_region_features."));
+    auto const pathInRegionsCollector = genInfo.GetTmpFileName(genInfo.m_fileName,
+                                                               regions::CollectorRegionInfo::kDefaultExt);
+    auto const pathInRegionsTmpMwm = genInfo.GetTmpFileName(genInfo.m_fileName);
+    auto const pathOutRepackedRegionsTmpMwm = genInfo.GetTmpFileName(genInfo.m_fileName + "_repacked");
+    auto const pathOutRegionsKv = genInfo.GetIntermediateFileName(genInfo.m_fileName, ".jsonl");
+    if (!regions::GenerateRegions(pathInRegionsTmpMwm, pathInRegionsCollector, pathOutRegionsKv,
+                                  pathOutRepackedRegionsTmpMwm, FLAGS_verbose))
+    {
+      LOG(LCRITICAL, ("Error generating regions kv."));
+      return EXIT_FAILURE;
     }
   }
 
@@ -390,17 +436,6 @@ int main(int argc, char ** argv)
         LOG(LINFO, ("Processing metalines from", metalinesFilename));
         if (!feature::WriteMetalinesSection(datFile, metalinesFilename, osmToFeatureFilename))
           LOG(LCRITICAL, ("Error generating metalines section."));
-      }
-    }
-
-    if (FLAGS_generate_regions_kv)
-    {
-      CHECK(FLAGS_generate_region_features, ("Option --generate_regions_kv can be used only "
-                                             "together with option --generate_region_features."));
-      if (!regions::GenerateRegions(genInfo))
-      {
-        LOG(LCRITICAL, ("Error generating regions kv."));
-        return EXIT_FAILURE;
       }
     }
 
