@@ -7,7 +7,7 @@
 
 namespace geocoder
 {
-using Tokens = std::vector<strings::UniString>;
+using Tokens = std::vector<std::string>;
 
 enum class Type
 {
@@ -19,6 +19,7 @@ enum class Type
   Locality,
   Suburb,
   Sublocality,
+  Street,
   Building,
 
   Count
