@@ -30,7 +30,7 @@ string const kRegionsData = R"#(
 geocoder::Tokens Split(string const & s)
 {
   geocoder::Tokens result;
-  search::NormalizeAndTokenizeString(s, result);
+  search::NormalizeAndTokenizeAsUtf8(s, result);
   return result;
 }
 }  // namespace
@@ -46,6 +46,7 @@ void TestGeocoder(Geocoder & geocoder, string const & query, vector<Result> && e
   sort(expected.begin(), expected.end(), base::LessBy(&Result::m_osmId));
   for (size_t i = 0; i < actual.size(); ++i)
   {
+    TEST(actual[i].m_certainty >= 0.0 && actual[i].m_certainty <= 1.0, (actual[i].m_certainty));
     TEST_EQUAL(actual[i].m_osmId, expected[i].m_osmId, ());
     TEST(base::AlmostEqualAbs(actual[i].m_certainty, expected[i].m_certainty, kCertaintyEps),
          (query, actual[i].m_certainty, expected[i].m_certainty));
@@ -61,8 +62,8 @@ UNIT_TEST(Geocoder_Smoke)
   base::GeoObjectId const cubaId(0xc00000000004b279);
 
   TestGeocoder(geocoder, "florencia", {{florenciaId, 1.0}});
-  TestGeocoder(geocoder, "cuba florencia", {{florenciaId, 1.0}, {cubaId, 0.5}});
-  TestGeocoder(geocoder, "florencia somewhere in cuba", {{cubaId, 0.25}, {florenciaId, 0.5}});
+  TestGeocoder(geocoder, "cuba florencia", {{florenciaId, 1.0}, {cubaId, 0.714286}});
+  TestGeocoder(geocoder, "florencia somewhere in cuba", {{cubaId, 0.714286}, {florenciaId, 1.0}});
 }
 
 UNIT_TEST(Geocoder_Hierarchy)
@@ -70,13 +71,14 @@ UNIT_TEST(Geocoder_Hierarchy)
   ScopedFile const regionsJsonFile("regions.jsonl", kRegionsData);
   Geocoder geocoder(regionsJsonFile.GetFullPath());
 
-  auto entries = geocoder.GetHierarchy().GetEntries({strings::MakeUniString("florencia")});
+  auto entries = geocoder.GetHierarchy().GetEntries({("florencia")});
 
   TEST(entries, ());
   TEST_EQUAL(entries->size(), 1, ());
-  TEST_EQUAL((*entries)[0].m_address[static_cast<size_t>(Type::Country)], Split("cuba"), ());
-  TEST_EQUAL((*entries)[0].m_address[static_cast<size_t>(Type::Region)], Split("ciego de avila"),
+  TEST_EQUAL((*entries)[0]->m_address[static_cast<size_t>(Type::Country)], Split("cuba"), ());
+  TEST_EQUAL((*entries)[0]->m_address[static_cast<size_t>(Type::Region)], Split("ciego de avila"),
              ());
-  TEST_EQUAL((*entries)[0].m_address[static_cast<size_t>(Type::Subregion)], Split("florencia"), ());
+  TEST_EQUAL((*entries)[0]->m_address[static_cast<size_t>(Type::Subregion)], Split("florencia"),
+             ());
 }
 }  // namespace geocoder
