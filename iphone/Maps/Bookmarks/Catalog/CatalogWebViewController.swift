@@ -94,9 +94,10 @@ final class CatalogWebViewController: WebViewController {
   override func webView(_ webView: WKWebView,
                         decidePolicyFor navigationAction: WKNavigationAction,
                         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-    guard let url = navigationAction.request.url, url.scheme == "mapsme" else {
-      super.webView(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
-      return
+    guard let url = navigationAction.request.url,
+      url.scheme == "mapsme" || url.path == "/mobilefront/buy_kml" else {
+        super.webView(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
+        return
     }
 
     processDeeplink(url)
