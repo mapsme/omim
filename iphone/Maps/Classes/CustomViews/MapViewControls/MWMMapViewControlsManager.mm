@@ -436,7 +436,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 - (void)didPressCancel:(MWMTutorialViewController *)viewController
 {
-  [MWMEye tipShownWithType:self.tutorialType event:MWMTipEventGotIt];
+  [MWMEye tipClickedWithType:self.tutorialType event:MWMTipEventGotIt];
   [viewController fadeOutWithCompletion:^{
     [viewController willMoveToParentViewController:nil];
     [viewController.view removeFromSuperview];
@@ -446,7 +446,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 - (void)didPressTarget:(MWMTutorialViewController *)viewController
 {
-  [MWMEye tipShownWithType:self.tutorialType event:MWMTipEventAction];
+  [MWMEye tipClickedWithType:self.tutorialType event:MWMTipEventAction];
   [viewController fadeOutWithCompletion:^{
     [viewController willMoveToParentViewController:nil];
     [viewController.view removeFromSuperview];
