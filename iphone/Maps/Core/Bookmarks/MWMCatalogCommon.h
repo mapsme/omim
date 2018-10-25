@@ -8,7 +8,8 @@ typedef NS_ENUM(NSInteger, MWMCategoryProgress)
 
 typedef NS_ENUM(NSInteger, MWMCategoryDownloadStatus)
 {
-  MWMCategoryDownloadStatusForbidden,
+  MWMCategoryDownloadStatusNeedAuth,
+  MWMCategoryDownloadStatusNeedPayment,
   MWMCategoryDownloadStatusNotFound,
   MWMCategoryDownloadStatusNetworkError,
   MWMCategoryDownloadStatusDiskError
