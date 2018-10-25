@@ -2,6 +2,8 @@
 
 #include "generator/category_to_speed.hpp"
 
+#include "routing/maxspeed_conversion.hpp"
+
 #include "platform/measurement_utils.hpp"
 
 #include "base/assert.hpp"
@@ -112,7 +114,7 @@ void CameraNodeIntermediateDataProcessor::ProcessWay(uint64_t id, WayElement con
 
 std::string CameraNodeIntermediateDataProcessor::ValidateMaxSpeedString(std::string const & maxSpeedString)
 {
-  SpeedInUnits speed;
+  routing::SpeedInUnits speed;
   if (!MaxspeedValueToSpeed(maxSpeedString, speed) || !speed.IsNumeric())
     return std::string();
 
