@@ -43,6 +43,72 @@ To automatically format a file, install `clang-format` and run:
 
     clang-format -i file.cpp file.hpp other_file.cpp
 
+## Include directives
+
+All include directives in hpp and cpp files should be grouped according to their modules. Every group should be separated
+by an empty line from the other code. All lines in each group should be sorted. Group of includes should be placed in the 
+following order:
+
+- If it's a cpp file, an include with the same name if there's one
+- testing
+- qt
+- generator
+- openlr
+- map
+- routing
+- search
+- storage
+- local_ads
+- drape_frontend
+- shaders
+- drape
+- kml
+- ugc
+- editor
+- partners_api
+- tracking
+- traffic
+- routing_common
+- indexer
+- metrics
+- platform
+- coding
+- geometry
+- partners_api
+- base
+- 3party
+- boost
+- std
+- defines.hpp
+
+Note. If a subsystem contains several directories every directory should be separated by an empty line. The order in that case
+from the most dependent module directory to the least one. That means, for example, `#include "generator/altitude_generator.hpp"`
+follows by `#include "generator/generator_tests_support/test_feature.hpp"`.
+
+Example of includes in generator/exapmple.cpp
+```c++
+#include "generator/exapmple.hpp"
+
+#include "generator/camera_info_collector.hpp"
+#include "generator/routing_helpers.hpp"
+
+#include "platform/platform_tests_support/scoped_dir.hpp"
+#include "platform/platform_tests_support/scoped_file.hpp"
+#include "platform/platform_tests_support/writable_dir_changer.hpp"
+
+#include "platform/platform.hpp"
+
+#include "base/assert.hpp"
+#include "base/geo_object_id.hpp"
+
+#include "3party/jansson/jansson_handle.hpp"
+
+#include <algorithm>
+#include <fstream>
+
+#include "defines.hpp"
+```
+
 ## Formatting Example/Guide/Reference
 
 ```cpp
