@@ -9,7 +9,7 @@ Below are our specific (but not all!) exceptions to the Google's coding standard
 - File names are lowercase with underscores, like `file_reader.cpp`.
 - We use `#pragma once` instead of the `#define` Guard in header files.
 - Includes are sorted and grouped by directory, there should be newlines between different directories.
-- Order of directories in includes: "current_dir/current_file.hpp", includes from other dirs sorted by dependencies (e.g. indexer, then coding, then base), "defines.hpp", C++ standard library headers, boost headers, 3party.
+- Order of directories in includes: "current_dir/current_file.hpp", includes from other dirs sorted by dependencies (e.g. indexer, then coding, then base), "defines.hpp", "private.h", C++ standard library headers, boost headers, 3party. If dirs doesn't depend on each other they may be written in any order. All subdirs of a dir should be grouped together.
 - We ARE using C++ exceptions.
 - We are using all features of C++11 (the only known exception is thread_local which is not fully supported on all platforms).
 - We try to limit the usage of boost libraries which require linking (and prefer C++11 types over their boost counterparts).
@@ -42,72 +42,6 @@ Most of our coding style is specified in a configuration file for [ClangFormat](
 To automatically format a file, install `clang-format` and run:
 
     clang-format -i file.cpp file.hpp other_file.cpp
-
-## Include directives
-
-All include directives in hpp and cpp files should be grouped according to their modules. Every group should be separated
-by an empty line from the other code. All lines in each group should be sorted. Group of includes should be placed in the 
-following order:
-
-- If it's a cpp file, an include with the same name if there's one
-- testing
-- qt
-- generator
-- openlr
-- map
-- routing
-- search
-- storage
-- local_ads
-- drape_frontend
-- shaders
-- drape
-- kml
-- ugc
-- editor
-- partners_api
-- tracking
-- traffic
-- routing_common
-- indexer
-- metrics
-- platform
-- coding
-- geometry
-- partners_api
-- base
-- 3party
-- boost
-- std
-- defines.hpp
-
-Note. If a subsystem contains several directories every directory should be separated by an empty line. The order in that case
-from the most dependent module directory to the least one. That means, for example, `#include "generator/altitude_generator.hpp"`
-follows by `#include "generator/generator_tests_support/test_feature.hpp"`.
-
-Example of includes in generator/exapmple.cpp
-```c++
-#include "generator/exapmple.hpp"
-
-#include "generator/camera_info_collector.hpp"
-#include "generator/routing_helpers.hpp"
-
-#include "platform/platform_tests_support/scoped_dir.hpp"
-#include "platform/platform_tests_support/scoped_file.hpp"
-#include "platform/platform_tests_support/writable_dir_changer.hpp"
-
-#include "platform/platform.hpp"
-
-#include "base/assert.hpp"
-#include "base/geo_object_id.hpp"
-
-#include "3party/jansson/jansson_handle.hpp"
-
-#include <algorithm>
-#include <fstream>
-
-#include "defines.hpp"
-```
 
 ## Formatting Example/Guide/Reference
 
