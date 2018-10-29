@@ -611,6 +611,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
     delegate.OnPointCheck(point);
   };
 
+  // TODO (@gmoryes) Strange heuristic. Thought about changing algorithm for adjusting route.
   auto const checkLength = [&starter](RouteWeight const & weight) {
     return weight <= RouteWeight(kAdjustLimitSec) && starter.CheckLength(weight);
   };

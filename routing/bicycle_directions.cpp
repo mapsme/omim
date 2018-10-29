@@ -355,6 +355,13 @@ void BicycleDirectionsEngine::FillPathSegmentsAndAdjacentEdgesMap(
 
     AdjacentEdges adjacentEdges(ingoingEdges.size());
     SegmentRange segmentRange;
+    /*std::ofstream output("/tmp/points");
+    output << std::setprecision(20);
+    for (auto const & item : path)
+    {
+      auto p = MercatorBounds::ToLatLon(item.GetPoint());
+      output << p.lat << " " << p.lon << std::endl;
+    }*/
     GetSegmentRangeAndAdjacentEdges(outgoingEdges, inEdge, startSegId, inSegId, segmentRange,
                                     adjacentEdges.m_outgoingTurns);
 

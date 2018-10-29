@@ -123,7 +123,7 @@ public:
       return m_distanceMap.find(vertex) != m_distanceMap.cend();
     }
 
-    Weight GetDistance(Vertex const & vertex) const
+    Weight GetPassedDistance(Vertex const & vertex) const
     {
       auto const & it = m_distanceMap.find(vertex);
       if (it == m_distanceMap.cend())
@@ -132,7 +132,7 @@ public:
       return it->second;
     }
 
-    void SetDistance(Vertex const & vertex, Weight const & distance)
+    void SetPassedDistance(Vertex const & vertex, Weight const & distance)
     {
       m_distanceMap[vertex] = distance;
     }
@@ -148,14 +148,19 @@ public:
 
   // VisitVertex returns true: wave will continue
   // VisitVertex returns false: wave will stop
-  template <typename VisitVertex, typename AdjustEdgeWeight, typename FilterStates>
+  template <typename VisitVertex, typename HeuristicFunction, typename FilterStates>
   void PropagateWave(Graph & graph, Vertex const & startVertex, VisitVertex && visitVertex,
-                     AdjustEdgeWeight && adjustEdgeWeight, FilterStates && filterStates,
+                     HeuristicFunction && heuristicFunction, FilterStates && filterStates,
                      Context & context) const;
 
   template <typename VisitVertex>
   void PropagateWave(Graph & graph, Vertex const & startVertex, VisitVertex && visitVertex,
                      Context & context) const;
+
+  template <typename VisitVertex, typename FilterStates>
+  void PropagateWave(Graph & graph, Vertex const & startVertex, VisitVertex && visitVertex,
+                     FilterStates && filterStates, Context & context) const;
+
 
   template <typename P>
   Result FindPath(P & params, RoutingResult<Vertex, Weight> & result) const;
@@ -199,12 +204,17 @@ private:
   // comment for FindPath for more information.
   struct State
   {
-    State(Vertex const & vertex, Weight const & distance) : vertex(vertex), distance(distance) {}
+    State(Vertex const & vertex, Weight const & passedDistance)
+      : vertex(vertex), passedDistance(passedDistance) {}
 
-    inline bool operator>(State const & rhs) const { return distance > rhs.distance; }
+    inline bool operator>(State const & rhs) const
+    {
+      return passedDistance + heuristicDistance > rhs.passedDistance + rhs.heuristicDistance;
+    }
 
     Vertex vertex;
-    Weight distance;
+    Weight passedDistance;
+    Weight heuristicDistance = Weight(0.0);
   };
 
   // BidirectionalStepContext keeps all the information that is needed to
@@ -218,38 +228,22 @@ private:
       , startVertex(startVertex)
       , finalVertex(finalVertex)
       , graph(graph)
-      , m_piRT(graph.HeuristicCostEstimate(finalVertex, startVertex))
-      , m_piFS(graph.HeuristicCostEstimate(startVertex, finalVertex))
     {
       bestVertex = forward ? startVertex : finalVertex;
-      pS = ConsistentHeuristic(bestVertex);
     }
 
-    Weight TopDistance() const
-    {
-      ASSERT(!queue.empty(), ());
-      return bestDistance.at(queue.top().vertex);
-    }
-
-    // p_f(v) = 0.5*(π_f(v) - π_r(v)) + 0.5*π_r(t)
-    // p_r(v) = 0.5*(π_r(v) - π_f(v)) + 0.5*π_f(s)
+    // p_f(v) = 0.5*(π_f(v) - π_r(v))
+    // p_r(v) = 0.5*(π_r(v) - π_f(v))
     // p_r(v) + p_f(v) = const. Note: this condition is called consistence.
     Weight ConsistentHeuristic(Vertex const & v) const
     {
       auto const piF = graph.HeuristicCostEstimate(v, finalVertex);
       auto const piR = graph.HeuristicCostEstimate(v, startVertex);
+
       if (forward)
-      {
-        /// @todo careful: with this "return" here and below in the Backward case
-        /// the heuristic becomes inconsistent but still seems to work.
-        /// return HeuristicCostEstimate(v, finalVertex);
-        return 0.5 * (piF - piR + m_piRT);
-      }
+        return 0.5 * (piF - piR);
       else
-      {
-        // return HeuristicCostEstimate(v, startVertex);
-        return 0.5 * (piR - piF + m_piFS);
-      }
+        return 0.5 * (piR - piF);
     }
 
     void GetAdjacencyList(Vertex const & v, std::vector<Edge> & adj)
@@ -264,23 +258,24 @@ private:
     Vertex const & startVertex;
     Vertex const & finalVertex;
     Graph & graph;
-    Weight const m_piRT;
-    Weight const m_piFS;
 
     std::priority_queue<State, std::vector<State>, std::greater<State>> queue;
     std::map<Vertex, Weight> bestDistance;
     std::map<Vertex, Vertex> parent;
     Vertex bestVertex;
-
-    Weight pS;
   };
 
   static void ReconstructPath(Vertex const & v, std::map<Vertex, Vertex> const & parent,
                               std::vector<Vertex> & path);
-  static void ReconstructPathBidirectional(Vertex const & v, Vertex const & w,
-                                           std::map<Vertex, Vertex> const & parentV,
-                                           std::map<Vertex, Vertex> const & parentW,
+  static void ReconstructPathBidirectional(Vertex const & vertex,
+                                           std::map<Vertex, Vertex> const & parentFromStartToVertex,
+                                           std::map<Vertex, Vertex> const & parentFromVertexToFinish,
                                            std::vector<Vertex> & path);
+
+  template <typename P>
+  static bool TryReconstructPathBidirectional(std::vector<std::tuple<Vertex, Weight, Weight>> const & commonVertices,
+                                              P & params, RoutingResult<Vertex, Weight> & result,
+                                              BidirectionalStepContext * cur, BidirectionalStepContext * nxt);
 };
 
 template <typename Graph>
@@ -291,10 +286,10 @@ template <typename Graph>
 constexpr typename Graph::Weight AStarAlgorithm<Graph>::kZeroDistance;
 
 template <typename Graph>
-template <typename VisitVertex, typename AdjustEdgeWeight, typename FilterStates>
+template <typename VisitVertex, typename HeuristicFunction, typename FilterStates>
 void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVertex,
                                           VisitVertex && visitVertex,
-                                          AdjustEdgeWeight && adjustEdgeWeight,
+                                          HeuristicFunction && heuristicFunction,
                                           FilterStates && filterStates,
                                           AStarAlgorithm<Graph>::Context & context) const
 {
@@ -302,7 +297,7 @@ void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVer
 
   std::priority_queue<State, std::vector<State>, std::greater<State>> queue;
 
-  context.SetDistance(startVertex, kZeroDistance);
+  context.SetPassedDistance(startVertex, kZeroDistance);
   queue.push(State(startVertex, kZeroDistance));
 
   std::vector<Edge> adj;
@@ -312,7 +307,8 @@ void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVer
     State const stateV = queue.top();
     queue.pop();
 
-    if (stateV.distance > context.GetDistance(stateV.vertex))
+    // If we already know the way shorter.
+    if (stateV.passedDistance > context.GetPassedDistance(stateV.vertex))
       continue;
 
     if (!visitVertex(stateV.vertex))
@@ -325,18 +321,22 @@ void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVer
       if (stateV.vertex == stateW.vertex)
         continue;
 
-      auto const edgeWeight = adjustEdgeWeight(stateV.vertex, edge);
-      auto const newReducedDist = stateV.distance + edgeWeight;
+      auto const edgeWeight = edge.GetWeight();
+      auto const pW = heuristicFunction(stateW.vertex);
+      auto const passedDistance = stateV.passedDistance + edgeWeight;
 
-      if (newReducedDist >= context.GetDistance(stateW.vertex) - kEpsilon)
+      if (passedDistance >= context.GetPassedDistance(stateW.vertex) - kEpsilon)
         continue;
 
-      stateW.distance = newReducedDist;
+      stateW.passedDistance = passedDistance;
+
+      auto const pV = heuristicFunction(stateV.vertex);
+      stateW.heuristicDistance = edgeWeight + pW - pV;
 
       if (!filterStates(stateW))
         continue;
 
-      context.SetDistance(stateW.vertex, newReducedDist);
+      context.SetPassedDistance(stateW.vertex, passedDistance);
       context.SetParent(stateW.vertex, stateV.vertex);
       queue.push(stateW);
     }
@@ -349,11 +349,19 @@ void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVer
                                           VisitVertex && visitVertex,
                                           AStarAlgorithm<Graph>::Context & context) const
 {
-  auto const adjustEdgeWeight = [](Vertex const & /* vertex */, Edge const & edge) {
-    return edge.GetWeight();
-  };
+  auto const heuristicFunction = [](Vertex const & /* vertex */) { return kZeroDistance; };
   auto const filterStates = [](State const & /* state */) { return true; };
-  PropagateWave(graph, startVertex, visitVertex, adjustEdgeWeight, filterStates, context);
+  PropagateWave(graph, startVertex, visitVertex, heuristicFunction, filterStates, context);
+}
+
+template <typename Graph>
+template <typename VisitVertex, typename FilterStates>
+void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVertex,
+                                          VisitVertex && visitVertex, FilterStates && filterStates,
+                                          AStarAlgorithm<Graph>::Context & context) const
+{
+  auto const heuristicFunction = [](Vertex const & /* vertex */) { return kZeroDistance; };
+  PropagateWave(graph, startVertex, visitVertex, heuristicFunction, filterStates, context);
 }
 
 // This implementation is based on the view that the A* algorithm
@@ -382,21 +390,6 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::FindPath(
   PeriodicPollCancellable periodicCancellable(params.m_cancellable);
   Result resultCode = Result::NoPath;
 
-  auto const heuristicDiff = [&](Vertex const & vertexFrom, Vertex const & vertexTo) {
-    return graph.HeuristicCostEstimate(vertexFrom, finalVertex) -
-           graph.HeuristicCostEstimate(vertexTo, finalVertex);
-  };
-
-  auto const fullToReducedLength = [&](Vertex const & vertexFrom, Vertex const & vertexTo,
-                                       Weight const length) {
-    return length - heuristicDiff(vertexFrom, vertexTo);
-  };
-
-  auto const reducedToFullLength = [&](Vertex const & vertexFrom, Vertex const & vertexTo,
-                                       Weight const reducedLength) {
-    return reducedLength + heuristicDiff(vertexFrom, vertexTo);
-  };
-
   auto visitVertex = [&](Vertex const & vertex) {
     if (periodicCancellable.IsCancelled())
     {
@@ -415,26 +408,20 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::FindPath(
     return true;
   };
 
-  auto const adjustEdgeWeight = [&](Vertex const & vertexV, Edge const & edge) {
-    auto const reducedWeight = fullToReducedLength(vertexV, edge.GetTarget(), edge.GetWeight());
-
-    CHECK_GREATER_OR_EQUAL(reducedWeight, -kEpsilon, ("Invariant violated."));
-
-    return std::max(reducedWeight, kZeroDistance);
+  auto const heuristicFunction = [&](Vertex const & vertexV) {
+    return graph.HeuristicCostEstimate(vertexV, finalVertex);
   };
 
   auto const filterStates = [&](State const & state) {
-    return params.m_checkLengthCallback(
-        reducedToFullLength(startVertex, state.vertex, state.distance));
+    return params.m_checkLengthCallback(state.passedDistance);
   };
 
-  PropagateWave(graph, startVertex, visitVertex, adjustEdgeWeight, filterStates, context);
+  PropagateWave(graph, startVertex, visitVertex, heuristicFunction, filterStates, context);
 
   if (resultCode == Result::OK)
   {
     context.ReconstructPath(finalVertex, result.m_path);
-    result.m_distance =
-        reducedToFullLength(startVertex, finalVertex, context.GetDistance(finalVertex));
+    result.m_distance = context.GetPassedDistance(finalVertex);
 
     if (!params.m_checkLengthCallback(result.m_distance))
       resultCode = Result::NoPath;
@@ -454,10 +441,6 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::FindPathBidirectio
 
   BidirectionalStepContext forward(true /* forward */, startVertex, finalVertex, graph);
   BidirectionalStepContext backward(false /* forward */, startVertex, finalVertex, graph);
-
-  bool foundAnyPath = false;
-  auto bestPathReducedLength = kZeroDistance;
-  auto bestPathRealLength = kZeroDistance;
 
   forward.bestDistance[startVertex] = kZeroDistance;
   forward.queue.push(State(startVertex, kZeroDistance));
@@ -480,6 +463,8 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::FindPathBidirectio
   uint32_t steps = 0;
   PeriodicPollCancellable periodicCancellable(params.m_cancellable);
 
+  std::vector<std::tuple<Vertex, Weight, Weight>> commonVertices;
+
   while (!cur->queue.empty() && !nxt->queue.empty())
   {
     ++steps;
@@ -488,43 +473,48 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::FindPathBidirectio
       return Result::Cancelled;
 
     if (steps % kQueueSwitchPeriod == 0)
-      std::swap(cur, nxt);
-
-    if (foundAnyPath)
     {
-      auto const curTop = cur->TopDistance();
-      auto const nxtTop = nxt->TopDistance();
-
-      // The intuition behind this is that we cannot obtain a path shorter
-      // than the left side of the inequality because that is how any path we find
-      // will look like (see comment for curPathReducedLength below).
-      // We do not yet have the proof that we will not miss a good path by doing so.
-
-      // The shortest reduced path corresponds to the shortest real path
-      // because the heuristics we use are consistent.
-      // It would be a mistake to make a decision based on real path lengths because
-      // several top states in a priority queue may have equal reduced path lengths and
-      // different real path lengths.
-
-      if (curTop + nxtTop >= bestPathReducedLength - kEpsilon)
+      std::swap(cur, nxt);
+      if (cur->forward)
       {
-        if (!params.m_checkLengthCallback(bestPathRealLength))
-          return Result::NoPath;
-
-        ReconstructPathBidirectional(cur->bestVertex, nxt->bestVertex, cur->parent, nxt->parent,
-                                     result.m_path);
-        result.m_distance = bestPathRealLength;
-        CHECK(!result.m_path.empty(), ());
-        if (!cur->forward)
-          reverse(result.m_path.begin(), result.m_path.end());
-        return Result::OK;
+        if (!commonVertices.empty())
+        {
+          if (TryReconstructPathBidirectional(commonVertices, params, result, cur, nxt))
+            return Result::OK;
+          else
+            return Result::NoPath;
+        }
       }
     }
 
     State const stateV = cur->queue.top();
+
+    //LOG(LINFO, (stateV.vertex, "=>", (stateV.heuristicDistance + stateV.passedDistance).GetWeight()));
+
+    /*{
+      std::ofstream output("/tmp/points", std::ofstream::app);
+      output << std::setprecision(20);
+      auto p = MercatorBounds::ToLatLon(graph.GetPoint(stateV.vertex, stateV.vertex.IsForward()));
+      output << p.lat << ' ' << p.lon << ' ' << (stateV.heuristicDistance + stateV.passedDistance).GetWeight() << std::endl;
+    }*/
+
     cur->queue.pop();
 
-    if (stateV.distance > cur->bestDistance[stateV.vertex])
+    if (stateV.vertex.GetFeatureId() == 63154 && stateV.vertex.GetSegmentIdx() == 0)
+    {
+      int asd = 5;
+      (void)asd;
+    }
+
+    auto p = MercatorBounds::FromLatLon({55.7038801, 37.5261496});
+    if (base::AlmostEqualAbs(graph.GetPoint(stateV.vertex, stateV.vertex.IsForward()), p, 1e-4))
+    {
+      int asd = 5;
+      (void)asd;
+    }
+
+    // If we already know the way shorter.
+    if (stateV.passedDistance > cur->bestDistance[stateV.vertex])
       continue;
 
     params.m_onVisitedVertexCallback(stateV.vertex,
@@ -540,49 +530,36 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::FindPathBidirectio
       auto const weight = edge.GetWeight();
       auto const pV = cur->ConsistentHeuristic(stateV.vertex);
       auto const pW = cur->ConsistentHeuristic(stateW.vertex);
-      auto const reducedWeight = weight + pW - pV;
+      auto const diff = pW - pV;
 
-      CHECK_GREATER_OR_EQUAL(reducedWeight, -kEpsilon, ("Invariant violated."));
-      auto const newReducedDist = stateV.distance + std::max(reducedWeight, kZeroDistance);
+      CHECK_GREATER_OR_EQUAL(weight + diff, -kEpsilon, ("Invariant violated."));
+      auto const newPassedDistanceToW = stateV.passedDistance + weight;
 
-      auto const fullLength = weight + stateV.distance + cur->pS - pV;
-      if (!params.m_checkLengthCallback(fullLength))
+      if (!params.m_checkLengthCallback(newPassedDistanceToW))
         continue;
 
-      auto const itCur = cur->bestDistance.find(stateW.vertex);
-      if (itCur != cur->bestDistance.end() && newReducedDist >= itCur->second - kEpsilon)
+      auto itCur = cur->bestDistance.find(stateW.vertex);
+      if (itCur != cur->bestDistance.end() && newPassedDistanceToW >= itCur->second - kEpsilon)
         continue;
 
-      auto const itNxt = nxt->bestDistance.find(stateW.vertex);
-      if (itNxt != nxt->bestDistance.end())
+      if (nxt->bestDistance.find(stateW.vertex) != nxt->bestDistance.end())
       {
-        auto const distW = itNxt->second;
-        // Reduced length that the path we've just found has in the original graph:
-        // find the reduced length of the path's parts in the reduced forward and backward graphs.
-        auto const curPathReducedLength = newReducedDist + distW;
-        // No epsilon here: it is ok to overshoot slightly.
-        if (!foundAnyPath || bestPathReducedLength > curPathReducedLength)
-        {
-          bestPathReducedLength = curPathReducedLength;
-
-          bestPathRealLength = stateV.distance + weight + distW;
-          bestPathRealLength += cur->pS - pV;
-          bestPathRealLength += nxt->pS - nxt->ConsistentHeuristic(stateW.vertex);
-
-          foundAnyPath = true;
-          cur->bestVertex = stateV.vertex;
-          nxt->bestVertex = stateW.vertex;
-        }
+        commonVertices.emplace_back(stateW.vertex, newPassedDistanceToW,
+                                    nxt->bestDistance[stateW.vertex]);
       }
 
-      stateW.distance = newReducedDist;
-      cur->bestDistance[stateW.vertex] = newReducedDist;
+      stateW.passedDistance = newPassedDistanceToW;
+      stateW.heuristicDistance = stateV.heuristicDistance + diff;
+      cur->bestDistance[stateW.vertex] = newPassedDistanceToW;
       cur->parent[stateW.vertex] = stateV.vertex;
       cur->queue.push(stateW);
     }
   }
 
-  return Result::NoPath;
+  if (commonVertices.empty())
+    return Result::NoPath;
+
+  return TryReconstructPathBidirectional(commonVertices, params, result, cur, nxt) ? Result::OK : Result::NoPath;
 }
 
 template <typename Graph>
@@ -631,7 +608,7 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::AdjustRoute(
     auto it = remainingDistances.find(vertex);
     if (it != remainingDistances.cend())
     {
-      auto const fullDistance = context.GetDistance(vertex) + it->second;
+      auto const fullDistance = context.GetPassedDistance(vertex) + it->second;
       if (fullDistance < minDistance)
       {
         minDistance = fullDistance;
@@ -642,15 +619,11 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::AdjustRoute(
     return true;
   };
 
-  auto const adjustEdgeWeight = [](Vertex const & /* vertex */, Edge const & edge) {
-    return edge.GetWeight();
-  };
-
   auto const filterStates = [&](State const & state) {
-    return params.m_checkLengthCallback(state.distance);
+    return params.m_checkLengthCallback(state.passedDistance);
   };
 
-  PropagateWave(graph, startVertex, visitVertex, adjustEdgeWeight, filterStates, context);
+  PropagateWave(graph, startVertex, visitVertex, filterStates, context);
   if (wasCancelled)
     return Result::Cancelled;
 
@@ -678,7 +651,7 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::AdjustRoute(
 
   auto const & it = remainingDistances.find(returnVertex);
   CHECK(it != remainingDistances.end(), ());
-  result.m_distance = context.GetDistance(returnVertex) + it->second;
+  result.m_distance = context.GetPassedDistance(returnVertex) + it->second;
   return Result::OK;
 }
 
@@ -703,19 +676,19 @@ void AStarAlgorithm<Graph>::ReconstructPath(Vertex const & v,
 
 // static
 template <typename Graph>
-void AStarAlgorithm<Graph>::ReconstructPathBidirectional(Vertex const & v, Vertex const & w,
-                                                         std::map<Vertex, Vertex> const & parentV,
-                                                         std::map<Vertex, Vertex> const & parentW,
+void AStarAlgorithm<Graph>::ReconstructPathBidirectional(Vertex const & vertex,
+                                                         std::map<Vertex, Vertex> const & parentFromStartToVertex,
+                                                         std::map<Vertex, Vertex> const & parentFromVertexToFinish,
                                                          std::vector<Vertex> & path)
 {
-  std::vector<Vertex> pathV;
-  ReconstructPath(v, parentV, pathV);
-  std::vector<Vertex> pathW;
-  ReconstructPath(w, parentW, pathW);
+  std::vector<Vertex> pathFromStartToVertex;
+  ReconstructPath(vertex, parentFromStartToVertex, pathFromStartToVertex);
+  std::vector<Vertex> pathFromVertexToFinish;
+  ReconstructPath(vertex, parentFromVertexToFinish, pathFromVertexToFinish);
   path.clear();
-  path.reserve(pathV.size() + pathW.size());
-  path.insert(path.end(), pathV.begin(), pathV.end());
-  path.insert(path.end(), pathW.rbegin(), pathW.rend());
+  path.reserve(pathFromStartToVertex.size() + pathFromVertexToFinish.size());
+  path.insert(path.end(), pathFromStartToVertex.begin(), pathFromStartToVertex.end());
+  path.insert(path.end(), pathFromVertexToFinish.rbegin() + 1, pathFromVertexToFinish.rend());
 }
 
 template <typename Graph>
@@ -723,5 +696,43 @@ void AStarAlgorithm<Graph>::Context::ReconstructPath(Vertex const & v,
                                                      std::vector<Vertex> & path) const
 {
   AStarAlgorithm<Graph>::ReconstructPath(v, m_parents, path);
+}
+
+// static
+template <typename Graph>
+template <typename P>
+bool AStarAlgorithm<Graph>::TryReconstructPathBidirectional(
+  std::vector<std::tuple<Vertex, Weight, Weight>> const & commonVertices,
+  P & params, RoutingResult<Vertex, Weight> & result,
+  BidirectionalStepContext * cur, BidirectionalStepContext * nxt)
+{
+  Vertex intersectVertex;
+  Weight dist1;  // It is can be dist from start to v or vice versa.
+  Weight dist2;  // Similarly.
+
+  Weight resultDist = kInfiniteDistance;
+  Vertex resultVertex;
+  for (auto const & item : commonVertices)
+  {
+    std::tie(intersectVertex, dist1, dist2) = item;
+
+    if (dist1 + dist2 < resultDist)
+    {
+      resultDist = dist1 + dist2;
+      resultVertex = intersectVertex;
+    }
+  }
+
+  CHECK_NOT_EQUAL(resultDist, kInfiniteDistance, ());
+
+  if (!params.m_checkLengthCallback(resultDist))
+    return false;
+
+  ReconstructPathBidirectional(resultVertex, cur->parent, nxt->parent, result.m_path);
+  CHECK(!result.m_path.empty(), ());
+
+  result.m_distance = resultDist;
+
+  return true;
 }
 }  // namespace routing

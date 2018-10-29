@@ -77,5 +77,5 @@ inline std::string DebugPrint(RouterResultCode code)
 }
 
 // This define should be set to see the spread of A* waves on the map.
-// #define SHOW_ROUTE_DEBUG_MARKS
+ #define SHOW_ROUTE_DEBUG_MARKS
 }  // namespace routing
