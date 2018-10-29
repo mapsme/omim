@@ -11,6 +11,35 @@ If a example.cpp file is located in some_dir dirctory it may have the following 
 #include "generator/feature_builder.hpp"
 #include "generator/routing_helpers.hpp"
 
+#include "map/gps_tracker.hpp"
+#include "map/taxi_delegate.hpp"
+
+#include "routing/route.hpp"
+#include "routing/routing_helpers.hpp"
+
+#include "search/locality_finder.hpp"
+#include "search/reverse_geocoder.hpp"
+
+#include "storage/country_info_getter.hpp"
+#include "storage/downloader_search_params.hpp"
+
+#include "drape_frontend/route_renderer.hpp"
+#include "drape_frontend/visual_params.hpp"
+
+#include "drape/constants.hpp"
+
+#include "editor/editable_data_source.hpp"
+
+#include "traffic/traffic_info.hpp"
+
+#include "routing_common/num_mwm_id.hpp"
+
+#include "indexer/ftypes_sponsored.hpp"
+#include "indexer/map_style_reader.hpp"
+#include "indexer/scales.hpp"
+
+#include "metrics/eye.hpp"
+
 #include "platform/platform.hpp"
 #include "platform/platform_tests_support/scoped_dir.hpp"
 #include "platform/platform_tests_support/scoped_file.hpp"
