@@ -9,7 +9,7 @@ Below are our specific (but not all!) exceptions to the Google's coding standard
 - File names are lowercase with underscores, like `file_reader.cpp`.
 - We use `#pragma once` instead of the `#define` Guard in header files.
 - Includes are sorted and grouped by directory, there should be newlines between different directories.
-- Order of directories in includes: "current_dir/current_file.hpp", includes from other dirs sorted by dependencies (e.g. indexer, then coding, then base), "defines.hpp", "private.h", C++ standard library headers, boost headers, 3party. If dirs doesn't depend on each other they may be written in any order. All subdirs of a dir should be grouped together.
+- Order of directories in includes: "current_dir/current_file.hpp", includes from other dirs sorted by dependencies (e.g. indexer, then coding, then base), "defines.hpp", "private.h", C++ standard library headers, boost headers, 3party. If dirs don't depend on each other they may be written in any order. All subdirs of a dir should be grouped together.
 - We ARE using C++ exceptions.
 - We are using all features of C++11 (the only known exception is thread_local which is not fully supported on all platforms).
 - We try to limit the usage of boost libraries which require linking (and prefer C++11 types over their boost counterparts).
