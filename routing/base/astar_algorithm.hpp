@@ -161,7 +161,6 @@ public:
   void PropagateWave(Graph & graph, Vertex const & startVertex, VisitVertex && visitVertex,
                      FilterStates && filterStates, Context & context) const;
 
-
   template <typename P>
   Result FindPath(P & params, RoutingResult<Vertex, Weight> & result) const;
 
@@ -331,7 +330,8 @@ void AStarAlgorithm<Graph>::PropagateWave(Graph & graph, Vertex const & startVer
       stateW.passedDistance = passedDistance;
 
       auto const pV = heuristicFunction(stateV.vertex);
-      stateW.heuristicDistance = edgeWeight + pW - pV;
+      auto const diff = pW - pV;
+      stateW.heuristicDistance = stateV.heuristicDistance + diff;
 
       if (!filterStates(stateW))
         continue;
@@ -475,43 +475,17 @@ typename AStarAlgorithm<Graph>::Result AStarAlgorithm<Graph>::FindPathBidirectio
     if (steps % kQueueSwitchPeriod == 0)
     {
       std::swap(cur, nxt);
-      if (cur->forward)
+      if (cur->forward && !commonVertices.empty())
       {
-        if (!commonVertices.empty())
-        {
-          if (TryReconstructPathBidirectional(commonVertices, params, result, cur, nxt))
-            return Result::OK;
-          else
-            return Result::NoPath;
-        }
+        if (TryReconstructPathBidirectional(commonVertices, params, result, cur, nxt))
+          return Result::OK;
+        else
+          return Result::NoPath;
       }
     }
 
     State const stateV = cur->queue.top();
-
-    //LOG(LINFO, (stateV.vertex, "=>", (stateV.heuristicDistance + stateV.passedDistance).GetWeight()));
-
-    /*{
-      std::ofstream output("/tmp/points", std::ofstream::app);
-      output << std::setprecision(20);
-      auto p = MercatorBounds::ToLatLon(graph.GetPoint(stateV.vertex, stateV.vertex.IsForward()));
-      output << p.lat << ' ' << p.lon << ' ' << (stateV.heuristicDistance + stateV.passedDistance).GetWeight() << std::endl;
-    }*/
-
     cur->queue.pop();
-
-    if (stateV.vertex.GetFeatureId() == 63154 && stateV.vertex.GetSegmentIdx() == 0)
-    {
-      int asd = 5;
-      (void)asd;
-    }
-
-    auto p = MercatorBounds::FromLatLon({55.7038801, 37.5261496});
-    if (base::AlmostEqualAbs(graph.GetPoint(stateV.vertex, stateV.vertex.IsForward()), p, 1e-4))
-    {
-      int asd = 5;
-      (void)asd;
-    }
 
     // If we already know the way shorter.
     if (stateV.passedDistance > cur->bestDistance[stateV.vertex])
