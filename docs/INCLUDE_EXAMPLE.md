@@ -20,6 +20,8 @@ If a example.cpp file is located in some_dir dirctory it may have the following 
 #include "search/locality_finder.hpp"
 #include "search/reverse_geocoder.hpp"
 
+#include "metrics/eye.hpp"
+
 #include "storage/country_info_getter.hpp"
 #include "storage/downloader_search_params.hpp"
 
@@ -38,12 +40,17 @@ If a example.cpp file is located in some_dir dirctory it may have the following 
 #include "indexer/map_style_reader.hpp"
 #include "indexer/scales.hpp"
 
-#include "metrics/eye.hpp"
-
 #include "platform/platform.hpp"
 #include "platform/platform_tests_support/scoped_dir.hpp"
 #include "platform/platform_tests_support/scoped_file.hpp"
 #include "platform/platform_tests_support/writable_dir_changer.hpp"
+
+#include "coding/url_encode.hpp"
+#include "coding/zip_reader.hpp"
+
+#include "geometry/angles.hpp"
+#include "geometry/any_rect2d.hpp"
+#include "geometry/distance_on_sphere.hpp"
 
 #include "base/assert.hpp"
 #include "base/geo_object_id.hpp"
