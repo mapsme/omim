@@ -1,4 +1,36 @@
-# Example of includes in cpp file
+## Include dependence
+
+                          qt
+                           |
+                 qt    generator_tool
+                  |        |
+                    map,  generator
+       |          |           |       |        |
+    search       eye      tracking   routing   drape_frontend
+       |          |           |       /        |
+       |          |           |    /           |
+    editor      storage    traffic          drape
+          \       |           |            /
+            \     |     routing_common    /
+              \   |           |          /
+               \  |           |         /
+                    ugc, transit
+                        |
+                     indexer
+                        |
+                     platform
+                        |
+                      coding
+                        |
+                     geometry
+                        |
+                       base
+                        |
+                      3party
+                        |
+                      std, boost
+
+## Example of includes in cpp file
 
 If a example.cpp file is located in some_dir dirctory it may have the following includes:
 ```c++
