@@ -559,7 +559,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     SharingHelper.INSTANCE.initialize();
 
-    mAdsRemovalPurchaseController = PurchaseFactory.createPurchaseController();
+    mAdsRemovalPurchaseController = PurchaseFactory.createAdsRemovalPurchaseController();
     mAdsRemovalPurchaseController.initialize(this);
 
     boolean isConsumed = savedInstanceState == null && processIntent(getIntent());
