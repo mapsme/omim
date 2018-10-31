@@ -3,6 +3,9 @@ import SafariServices
 final class BookmarksSharingViewController: MWMTableViewController {
   typealias ViewModel = MWMAuthorizationViewModel
   
+  var categoryId: MWMMarkGroupID?
+  var categoryUrl: URL?
+  
   @IBOutlet weak var uploadAndPublishCell: UploadActionCell!
   @IBOutlet weak var getDirectLinkCell: UploadActionCell!
   
@@ -22,11 +25,20 @@ final class BookmarksSharingViewController: MWMTableViewController {
     
     title = L("sharing_options") //"Sharing options"
     self.configureActionCells()
+    
+    assert(categoryId != nil, "We can't share nothing")
   }
   
   func configureActionCells() {
-    uploadAndPublishCell.config(title: L("upload_and_publish"), image: UIImage(named: "ic24PxGlobe")!)
-    getDirectLinkCell.config(title: L("upload_and_get_direct_link"), image: UIImage(named: "ic24PxLink")!)
+    uploadAndPublishCell.config(titles: [ .normal : L("upload_and_publish"),
+                                          .inProgress : L("upload_and_publish_progress_text"),
+                                          .completed : L("upload_and_publish_success") ],
+                                image: UIImage(named: "ic24PxGlobe")!,
+                                delegate: self)
+    getDirectLinkCell.config(titles: [ .normal : L("upload_and_get_direct_link"),
+                                       .inProgress : L("direct_link_progress_text"),
+                                       .completed : L("direct_link_success") ],
+                             image: UIImage(named: "ic24PxLink")!, delegate: self)
   }
   
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -46,7 +58,7 @@ final class BookmarksSharingViewController: MWMTableViewController {
     if (cell == self.uploadAndPublishCell) {
       self.uploadAndPublish()
     } else if (cell == self.getDirectLinkCell) {
-      self.getDirectLink()
+      self.uploadAndGetDirectLink()
     }
   }
   
@@ -56,9 +68,21 @@ final class BookmarksSharingViewController: MWMTableViewController {
     }
   }
   
-  func getDirectLink() {
-    self.performAfterValidation {
-      //implementation
+  func uploadAndGetDirectLink() {
+    self.performAfterValidation { [unowned self] in
+      MWMBookmarksManager.shared().uploadAndGetDirectLinkCategory(withId: self.categoryId!, progress: { (progress) in
+        if (progress == .uploadStarted) {
+          self.getDirectLinkCell.changeCellState(.inProgress)
+        }
+      }, completion: { (url, error) in
+        if (error != nil) {
+          self.getDirectLinkCell.changeCellState(.normal)
+          //handle errors
+        } else {
+          self.getDirectLinkCell.changeCellState(.completed)
+          self.categoryUrl = url
+        }
+      })
     }
   }
   
@@ -78,5 +102,13 @@ extension BookmarksSharingViewController: UITextViewDelegate {
     let safari = SFSafariViewController(url: URL)
     self.present(safari, animated: true, completion: nil)
     return false;
+  }
+}
+
+extension BookmarksSharingViewController: UploadActionCellDelegate {
+  func cellDidPressShareButton(_ cell: UploadActionCell) {
+    let message = L("share_bookmarks_email_body")
+    let shareController = MWMActivityViewController.share(for: categoryUrl, message: message)
+    shareController?.present(inParentViewController: self, anchorView: nil)
   }
 }

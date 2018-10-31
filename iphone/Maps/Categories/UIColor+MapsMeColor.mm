@@ -335,6 +335,11 @@ UIColor * color(SEL cmd)
   return color(_cmd);
 }
 
++ (UIColor *)sharingInProgressColor
+{
+  return [UIColor colorWithWhite:0. alpha:alpha38];
+}
+
 + (UIColor *)bannerButtonBackground
 {
   return [UIColor blackDividers];

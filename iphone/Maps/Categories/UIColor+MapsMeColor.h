@@ -47,6 +47,7 @@
 + (UIColor *)ratingLightGreen;
 + (UIColor *)ratingGreen;
 + (UIColor *)border;
++ (UIColor *)sharingInProgressColor;
 
 + (UIColor *)colorWithName:(NSString *)colorName;
 

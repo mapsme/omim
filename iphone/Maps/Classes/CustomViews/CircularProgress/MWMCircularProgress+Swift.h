@@ -18,6 +18,7 @@
 @property(nonatomic) MWMCircularProgressState state;
 @property(weak, nonatomic) id<MWMCircularProgressProtocol> _Nullable delegate;
 
+- (void)setSpinnerImage:(nullable NSString *)imageName forState:(MWMCircularProgressState)state;
 - (void)setSpinnerColoring:(MWMImageColoring)coloring;
 - (void)setSpinnerBackgroundColor:(nonnull UIColor *)backgroundColor;
 - (void)setInvertColor:(BOOL)invertColor;
