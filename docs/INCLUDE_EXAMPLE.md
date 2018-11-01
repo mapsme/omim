@@ -1,20 +1,21 @@
 ## Include dependence
 
-                          qt
-                           |
-                 qt    generator_tool
+
+                  qt    generator_tool
                   |        |
-                    map,  generator
-       |          |           |       |        |
-    search       eye      tracking   routing   drape_frontend
-       |          |           |       /        |
-       |          |           |    /           |
-    editor      storage    traffic          drape
-          \       |           |            /
-            \     |     routing_common    /
-              \   |           |          /
-               \  |           |         /
-                    ugc, transit
+                  map, generator
+                        |
+         _______________|______________________
+       /          |       |         |          \
+      eye    tracking routing    search   drape_frontend
+       |          |     /  \________|______/    |
+       |          |    /            |           |
+     storage    traffic           editor     drape
+          \       |                 |       /
+            \ routing_common        |      /
+              \   |                 |     /
+               \  |                 |    /
+                \_|__ugc, transit___|___/
                         |
                      indexer
                         |
