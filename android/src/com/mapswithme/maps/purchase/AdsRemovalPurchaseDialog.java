@@ -310,9 +310,15 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment implements A
   }
 
   @Override
-  public void onAlertDialogClick(int requestCode, int which)
+  public void onAlertDialogPositiveClick(int requestCode, int which)
   {
     handleErrorDialogEvent(requestCode);
+  }
+
+  @Override
+  public void onAlertDialogNegativeClick(int requestCode, int which)
+  {
+
   }
 
   @Override
