@@ -242,6 +242,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private PlacePageTracker mPlacePageTracker;
   @Nullable
   private PurchaseController<PurchaseCallback> mAdsRemovalPurchaseController;
+  @Nullable
+  private PurchaseController<PurchaseCallback> mBookmarkPurchaseController;
   @NonNull
   private final OnClickListener mOnMyPositionClickListener = new CurrentPositionClickListener();
 
@@ -562,6 +564,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     mAdsRemovalPurchaseController = PurchaseFactory.createAdsRemovalPurchaseController();
     mAdsRemovalPurchaseController.initialize(this);
+
+    mBookmarkPurchaseController = PurchaseFactory.createBookmarkPurchaseController();
+    mBookmarkPurchaseController.initialize(this);
 
     boolean isConsumed = savedInstanceState == null && processIntent(getIntent());
     // If the map activity is launched by any incoming intent (deeplink, update maps event, etc)
@@ -1358,6 +1363,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
     super.onDestroy();
     if (mAdsRemovalPurchaseController != null)
       mAdsRemovalPurchaseController.destroy();
+    if (mBookmarkPurchaseController != null)
+      mBookmarkPurchaseController.destroy();
   }
 
   @Override
