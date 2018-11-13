@@ -158,7 +158,6 @@ private:
 };
 
 class IndexGraphWrapper final
-<<<<<<< HEAD
 {
 public:
   IndexGraphWrapper(IndexGraph & graph, Segment const & start)
