@@ -13,17 +13,19 @@ using namespace eye;
 
 namespace
 {
-// The app shouldn't show any screen at all more frequently than once in 3 days.
-auto constexpr kShowAnyTipPeriod = std::chrono::hours(24) * 3;
-// The app shouldn't show the same screen more frequently than 1 month.
-auto constexpr kShowSameTipPeriod = std::chrono::hours(24) * 30;
+// The app shouldn't show any screen at all more frequently than once in 1 second.
+auto constexpr kShowAnyTipPeriod = std::chrono::seconds(2);
+// The app shouldn't show the same screen more frequently than 2 seconds.
+auto constexpr kShowSameTipPeriod = std::chrono::seconds(4);
 // Every current trigger for a tips screen can be activated at the start of the application by
-// default and if the app was inactive more then 12 hours.
-auto constexpr kShowTipAfterCollapsingPeriod = std::chrono::seconds(12 * 60 * 60);
+// default and if the app was inactive more then 1 millisecond.
+auto constexpr kShowTipAfterCollapsingPeriod = std::chrono::seconds(1);
 // If a user clicks on the action areas (highlighted or blue button)
 // the appropriate screen will never be shown again.
-size_t constexpr kActionClicksCountToDisable = 1;
+// 1 bi.
+size_t constexpr kActionClicksCountToDisable = 3;
 // If a user clicks 3 times on the button GOT IT the appropriate screen will never be shown again.
+// 1 bi.
 size_t constexpr kGotitClicksCountToDisable = 3;
 
 template <typename T, std::enable_if_t<std::is_enum<T>::value> * = nullptr>
