@@ -10,6 +10,8 @@
 #include "base/checked_cast.hpp"
 #include "base/exception.hpp"
 
+#include "routing/world_graph.hpp"
+
 #include <algorithm>
 #include <cstdlib>
 #include <limits>

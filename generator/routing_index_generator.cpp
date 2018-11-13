@@ -158,6 +158,7 @@ private:
 };
 
 class IndexGraphWrapper final
+<<<<<<< HEAD
 {
 public:
   IndexGraphWrapper(IndexGraph & graph, Segment const & start)
@@ -202,6 +203,13 @@ public:
     uint32_t const pointsNumber = m_graph.GetGeometry().GetRoad(segment.GetFeatureId()).GetPointsCount();
     return pointId == 0 || pointId + 1 == pointsNumber;
   }
+
+  m2::PointD const & GetPoint(Vertex const & vertex, bool forward)
+  {
+    return m_graph.GetPoint(vertex, forward);
+  }
+
+  IndexGraphStarterJoints<IndexGraphWrapper> & GetGraph() { return m_graph; }
 
 private:
   IndexGraph & m_graph;
