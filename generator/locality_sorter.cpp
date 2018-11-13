@@ -201,25 +201,10 @@ bool GenerateLocalityDataImpl(FeaturesCollector & collector, NeedSerialize const
   {
     LOG(LINFO, ("Processing", featuresFile));
 
-    CalculateMidPoints midPoints;
-    ForEachFromDatRawFormat(featuresFile, midPoints);
-
-    // Sort features by their middle point.
-    midPoints.Sort();
-
-    FileReader reader(featuresFile);
-    for (auto const & point : midPoints.GetVector())
-    {
-      ReaderSource<FileReader> src(reader);
-      src.Skip(point.second);
-
-      FeatureBuilder1 f;
-      ReadFromSourceRawFormat(src, f);
-      // Emit object.
+    ForEachFromDatRawFormat(featuresFile, [&](FeatureBuilder1 & f, size_t unused) {
       if (needSerialize(f))
         collector(f);
-    }
-
+    });
     collector.Finish();
   }
   catch (RootException const & ex)
