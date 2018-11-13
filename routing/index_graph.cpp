@@ -9,6 +9,8 @@
 #include "base/checked_cast.hpp"
 #include "base/exception.hpp"
 
+#include "routing/world_graph.hpp"
+
 #include <algorithm>
 #include <cstdlib>
 #include <limits>
@@ -285,6 +287,7 @@ void IndexGraph::ReconstructJointSegment(Segment const & parent,
 
     RouteWeight weight = CalcSegmentWeight(isOutgoing ? to : from) +
                          GetPenalties(isOutgoing ? from : to, isOutgoing ? to : from);
+
     edge = SegmentEdge(to, weight);
     return true;
   };
@@ -367,8 +370,8 @@ void IndexGraph::ReconstructJointSegment(Segment const & parent,
     if (hasRestriction)
       continue;
 
-    jointEdges.emplace_back(isOutgoing ? JointSegment(firstChild, prev) :
-                                         JointSegment(prev, firstChild),
+    jointEdges.emplace_back(isOutgoing ? JointSegment(firstChild, prev)
+                                       : JointSegment(prev, firstChild),
                             summaryWeight);
   }
 }
@@ -423,4 +426,6 @@ RouteWeight IndexGraph::GetPenalties(Segment const & u, Segment const & v)
 
   return RouteWeight(uTurnPenalty /* weight */, passThroughPenalty, accessPenalty, 0.0 /* transitTime */);
 }
+
+WorldGraphMode IndexGraph::GetMode() const { return WorldGraphMode::Undefined; }
 }  // namespace routing
