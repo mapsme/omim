@@ -3,6 +3,7 @@
 #import "MWMCatalogCommon.h"
 
 @class MWMCatalogCategory;
+@class MWMTagGroup;
 
 NS_ASSUME_NONNULL_BEGIN
 @interface MWMBookmarksManager : NSObject
@@ -59,6 +60,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSInteger)getCatalogDownloadsCount;
 - (BOOL)isCategoryDownloading:(NSString *)itemId;
 - (BOOL)hasCategoryDownloaded:(NSString *)itemId;
+
+- (void)loadTags:(void (^)(BOOL success, NSArray<MWMTagGroup *> * tags))completionBlock;
 
 - (void)uploadAndGetDirectLinkCategoryWithId:(MWMMarkGroupID)itemId
                                     progress:(ProgressBlock)progress

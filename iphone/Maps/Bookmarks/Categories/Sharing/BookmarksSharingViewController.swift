@@ -9,6 +9,8 @@ final class BookmarksSharingViewController: MWMTableViewController {
   @IBOutlet weak var uploadAndPublishCell: UploadActionCell!
   @IBOutlet weak var getDirectLinkCell: UploadActionCell!
   
+  let kTagsSegueIdentifier = "chooseTags"
+  
   @IBOutlet private weak var licenseAgreementTextView: UITextView! {
     didSet {
       let htmlString = String(coreFormat: L("ugc_routes_user_agreement"), arguments: [ViewModel.termsOfUseLink()])
@@ -63,8 +65,16 @@ final class BookmarksSharingViewController: MWMTableViewController {
   }
   
   func uploadAndPublish() {
-    self.performAfterValidation {
-      //implementation
+    self.performAfterValidation { [unowned self] in
+      self.performSegue(withIdentifier: "chooseTags", sender: self)
+    }
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?)  {
+    if (segue.identifier == kTagsSegueIdentifier) {
+      if let vc = segue.destination as? SharingTagsViewController {
+        vc.delegate = self
+      }
     }
   }
   
@@ -110,5 +120,11 @@ extension BookmarksSharingViewController: UploadActionCellDelegate {
     let message = L("share_bookmarks_email_body")
     let shareController = MWMActivityViewController.share(for: categoryUrl, message: message)
     shareController?.present(inParentViewController: self, anchorView: nil)
+  }
+}
+
+extension BookmarksSharingViewController: SharingTagsViewControllerDelegate {
+  func tagsSelectionCompletedWithResult(_ tags: [MWMTag]) {
+    //proceed with chosen tags
   }
 }

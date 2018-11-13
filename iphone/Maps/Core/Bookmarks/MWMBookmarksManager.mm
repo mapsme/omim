@@ -1,8 +1,11 @@
 #import "MWMBookmarksManager.h"
 #import "MWMCatalogCategory+Convenience.h"
+#import "MWMTag+Convenience.h"
+#import "MWMTagGroup+Convenience.h"
 #import "MWMCatalogObserver.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
+#import "AppInfo.h"
 
 #include "Framework.h"
 
@@ -565,6 +568,26 @@ NSString * const CloudErrorToString(Cloud::SynchronizationResult result)
 - (BOOL)hasCategoryDownloaded:(NSString *)itemId
 {
   return self.bm.GetCatalog().HasDownloaded(itemId.UTF8String);
+}
+
+- (void)loadTags:(void (^)(BOOL success, NSArray<MWMTagGroup *> * tags))completionBlock {
+  auto onTagsCompletion = [completionBlock](bool success, BookmarkCatalog::TagGroups const & tagGroups)
+  {
+    if (success)
+    {
+      NSMutableArray * groups = [NSMutableArray new];
+      for (auto const & groupData : tagGroups)
+      {
+        MWMTagGroup * tagGroup = [[MWMTagGroup alloc] initWithGroupData:groupData];
+        [groups addObject:tagGroup];
+      }
+      
+      completionBlock(success, [groups copy]);
+    } else
+      completionBlock(success, nil);
+  };
+  
+  self.bm.GetCatalog().RequestTagGroups([[AppInfo sharedInfo] languageId].UTF8String, std::move(onTagsCompletion));
 }
 
 #pragma mark - Helpers
