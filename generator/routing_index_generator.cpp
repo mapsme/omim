@@ -8,9 +8,12 @@
 #include "routing/cross_mwm_connector.hpp"
 #include "routing/cross_mwm_connector_serialization.hpp"
 #include "routing/cross_mwm_ids.hpp"
+#include "routing/fake_feature_ids.hpp"
 #include "routing/index_graph.hpp"
 #include "routing/index_graph_loader.hpp"
 #include "routing/index_graph_serialization.hpp"
+#include "routing/index_graph_starter_joints.hpp"
+#include "routing/joint_segment.hpp"
 #include "routing/vehicle_mask.hpp"
 
 #include "routing_common/bicycle_model.hpp"
@@ -40,6 +43,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <functional>
+#include <limits>
 #include <map>
 #include <memory>
 #include <unordered_map>
@@ -151,26 +155,64 @@ private:
   unordered_map<uint32_t, VehicleMask> m_masks;
 };
 
-class DijkstraWrapper final
+class IndexGraphWrapper final
+{
+public:
+  IndexGraphWrapper(IndexGraph & graph, Segment const & start)
+    : m_graph(graph), m_start(start) {}
+
+  // Just for compatibility with IndexGraphStarterJoints
+  // @{
+  Segment GetStartSegment() const { return m_start; }
+  Segment GetFinishSegment() const { return {}; }
+  bool ConvertToReal(Segment const & /* segment */) const { return false; }
+  // @}
+
+  m2::PointD const & GetPoint(Segment const & s, bool forward)
+  {
+    return m_graph.GetPoint(s, forward);
+  }
+
+  void GetEdgesList(Segment const & from, bool isOutgoing, std::vector<SegmentEdge> & edges)
+  {
+    m_graph.GetEdgeList(from, isOutgoing, edges);
+  }
+
+  void GetEdgeList(Segment const & segment, bool isOutgoing,
+                   std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights) const
+  {
+    return m_graph.GetEdgeList(segment, isOutgoing, edges, parentWeights);
+  }
+
+  bool IsJoint(Segment const & segment, bool fromStart) const
+  {
+    return m_graph.IsJoint(segment.GetRoadPoint(fromStart));
+  }
+
+private:
+  IndexGraph & m_graph;
+  Segment m_start;
+};
+
+class DijkstraWrapperJoints final
 {
 public:
   // AStarAlgorithm types aliases:
-  using Vertex = Segment;
-  using Edge = SegmentEdge;
+  using Vertex = JointSegment;
+  using Edge = JointEdge;
   using Weight = RouteWeight;
 
-  explicit DijkstraWrapper(IndexGraph & graph) : m_graph(graph) {}
+  explicit DijkstraWrapperJoints(IndexGraphWrapper & graph, Segment const & start)
+    : m_graph(graph, start) {}
 
   void GetOutgoingEdgesList(Vertex const & vertex, vector<Edge> & edges)
   {
-    edges.clear();
-    m_graph.GetEdgeList(vertex, true /* isOutgoing */, edges);
+    m_graph.GetOutgoingEdgesList(vertex, edges);
   }
 
   void GetIngoingEdgesList(Vertex const & vertex, vector<Edge> & edges)
   {
-    edges.clear();
-    m_graph.GetEdgeList(vertex, false /* isOutgoing */, edges);
+    m_graph.GetIngoingEdgesList(vertex, edges);
   }
 
   Weight HeuristicCostEstimate(Vertex const & /* from */, Vertex const & /* to */)
@@ -178,8 +220,15 @@ public:
     return GetAStarWeightZero<Weight>();
   }
 
+  m2::PointD const & GetPoint(Vertex const & vertex, bool forward)
+  {
+    return m_graph.GetPoint(vertex, forward);
+  }
+
+  IndexGraphStarterJoints<IndexGraphWrapper> & GetGraph() { return m_graph; }
+
 private:
-  IndexGraph & m_graph;
+  IndexGraphStarterJoints<IndexGraphWrapper> m_graph;
 };
 
 // Calculate distance from the starting border point to the transition along the border.
@@ -409,23 +458,59 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
 
     Segment const & enter = connector.GetEnter(i);
 
-    AStarAlgorithm<DijkstraWrapper> astar;
-    DijkstraWrapper wrapper(graph);
-    AStarAlgorithm<DijkstraWrapper>::Context context;
-    astar.PropagateWave(wrapper, enter,
-                        [](Segment const & /* vertex */) { return true; } /* visitVertex */,
+    AStarAlgorithm<DijkstraWrapperJoints> astar;
+    IndexGraphWrapper indexGraphWrapper(graph, enter);
+    DijkstraWrapperJoints wrapper(indexGraphWrapper, enter);
+    AStarAlgorithm<DijkstraWrapperJoints>::Context context;
+    std::unordered_map<uint32_t, std::vector<JointSegment>> visitedVertexes;
+    astar.PropagateWave(wrapper, wrapper.GetGraph().GetStartJoint(),
+                        [&](JointSegment const & vertex)
+                        {
+                          visitedVertexes[vertex.GetFeatureId()].emplace_back(vertex);
+                          return true;
+                        } /* visitVertex */,
                         context);
 
     for (Segment const & exit : connector.GetExits())
     {
-      if (context.HasDistance(exit))
-      {
-        weights[enter][exit] = context.GetDistance(exit);
-        ++foundCount;
-      }
-      else
+      auto const it = visitedVertexes.find(exit.GetFeatureId());
+      if (it == visitedVertexes.cend())
       {
         ++notFoundCount;
+        continue;
+      }
+
+      uint32_t const id = exit.GetSegmentIdx();
+      bool const forward = exit.IsForward();
+      for (auto const & jointSegment : it->second)
+      {
+        if (jointSegment.IsForward() != forward)
+          continue;
+
+        if ((jointSegment.GetStartSegmentId() <= id && id <= jointSegment.GetEndSegmentId()) ||
+            (jointSegment.GetEndSegmentId() <= id && id <= jointSegment.GetStartSegmentId()))
+        {
+
+          JointSegment const & parent = context.GetParent(jointSegment);
+          Segment parentSegment = parent.IsFake() ? wrapper.GetGraph().GetEndOfFakeJoint(parent)
+                                                  : parent.GetSegment(false /* start */);
+
+          RouteWeight weight = context.GetDistance(parent);
+
+          Segment const & firstChild = jointSegment.GetSegment(true /* start */);
+          uint32_t const lastPoint = exit.GetPointId(true /* front */);
+
+          if (parentSegment.GetFeatureId() == routing::FakeFeatureIds::kIndexGraphStarterId)
+            parentSegment = enter;
+
+          weight += graph.GetJointEdgeByLastPoint(parentSegment, firstChild,
+                                                  true /* isOutgoing */, lastPoint).GetWeight();
+
+          weights[enter][exit] = weight;
+          ++foundCount;
+
+          break;
+        }
       }
     }
   }

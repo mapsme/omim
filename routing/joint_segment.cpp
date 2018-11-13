@@ -6,7 +6,6 @@
 
 namespace routing
 {
-
 JointSegment::JointSegment(Segment const & from, Segment const & to)
 {
   CHECK(from.IsRealSegment() && to.IsRealSegment(),
