@@ -218,8 +218,6 @@ private:
       , startVertex(startVertex)
       , finalVertex(finalVertex)
       , graph(graph)
-      , m_piRT(graph.HeuristicCostEstimate(finalVertex, startVertex))
-      , m_piFS(graph.HeuristicCostEstimate(startVertex, finalVertex))
     {
       bestVertex = forward ? startVertex : finalVertex;
       pS = ConsistentHeuristic(bestVertex);
@@ -231,25 +229,17 @@ private:
       return bestDistance.at(queue.top().vertex);
     }
 
-    // p_f(v) = 0.5*(π_f(v) - π_r(v)) + 0.5*π_r(t)
-    // p_r(v) = 0.5*(π_r(v) - π_f(v)) + 0.5*π_f(s)
+    // p_f(v) = 0.5*(π_f(v) - π_r(v))
+    // p_r(v) = 0.5*(π_r(v) - π_f(v))
     // p_r(v) + p_f(v) = const. Note: this condition is called consistence.
     Weight ConsistentHeuristic(Vertex const & v) const
     {
       auto const piF = graph.HeuristicCostEstimate(v, finalVertex);
       auto const piR = graph.HeuristicCostEstimate(v, startVertex);
       if (forward)
-      {
-        /// @todo careful: with this "return" here and below in the Backward case
-        /// the heuristic becomes inconsistent but still seems to work.
-        /// return HeuristicCostEstimate(v, finalVertex);
-        return 0.5 * (piF - piR + m_piRT);
-      }
+        return 0.5 * (piF - piR);
       else
-      {
-        // return HeuristicCostEstimate(v, startVertex);
-        return 0.5 * (piR - piF + m_piFS);
-      }
+        return 0.5 * (piR - piF);
     }
 
     void GetAdjacencyList(Vertex const & v, std::vector<Edge> & adj)
@@ -264,8 +254,6 @@ private:
     Vertex const & startVertex;
     Vertex const & finalVertex;
     Graph & graph;
-    Weight const m_piRT;
-    Weight const m_piFS;
 
     std::priority_queue<State, std::vector<State>, std::greater<State>> queue;
     std::map<Vertex, Weight> bestDistance;
