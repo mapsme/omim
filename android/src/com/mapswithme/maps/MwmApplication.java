@@ -85,6 +85,7 @@ public class MwmApplication extends Application
     sSelf = this;
   }
 
+  @Deprecated
   public static MwmApplication get()
   {
     return sSelf;
@@ -159,7 +160,7 @@ public class MwmApplication extends Application
   private void initNotificationChannels()
   {
     NotificationChannelProvider channelProvider = NotificationChannelFactory.createProvider(this);
-    channelProvider.setAuthChannel();
+    channelProvider.setUGCChannel();
     channelProvider.setDownloadingChannel();
   }
 
