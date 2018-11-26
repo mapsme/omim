@@ -10,6 +10,7 @@
 #include <sstream>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 using namespace eye;
 
@@ -69,9 +70,12 @@ boost::optional<eye::Tip::Type> GetTipImpl(TipsApi::Duration showAnyTipPeriod,
   if (Clock::now() - lastShownTime <= showAnyTipPeriod)
     return {};
 
+  LOG(LINFO, ("Tip showing is allowed by time interval"));
+
   // If some tips are never shown.
   if (tips.size() < totalTipsCount)
   {
+    LOG(LINFO, ("Try to show candidate witch was not shown."));
     using Candidate = std::pair<Tip::Type, bool>;
     std::array<Candidate, totalTipsCount> candidates;
     for (size_t i = 0; i < totalTipsCount; ++i)
@@ -84,14 +88,18 @@ boost::optional<eye::Tip::Type> GetTipImpl(TipsApi::Duration showAnyTipPeriod,
       candidates[ToIndex(shownTip.m_type)].second = false;
     }
 
+    LOG(LINFO, ("Tips candidates are filled"));
+
     for (auto const & c : candidates)
     {
+      LOG(LINFO, ("Try to use candidate", c.first));
+
       if (c.second && conditions[ToIndex(c.first)](*info))
       {
         {
           std::ostringstream os;
           os << "Condition for tip " << DebugPrint(c.first)
-             << " returns true. Previously shown tips: [ ";
+             << " returned true. Previously shown tips: [ ";
           for (auto const & candidate : candidates)
           {
             if (!candidate.second)
@@ -106,17 +114,23 @@ boost::optional<eye::Tip::Type> GetTipImpl(TipsApi::Duration showAnyTipPeriod,
     }
   }
 
+  LOG(LINFO, ("Try to show candidate witch was already shown."));
+
   for (auto const & shownTip : tips)
   {
+    LOG(LINFO, ("Try to use candidate", shownTip));
+
     if (shownTip.m_eventCounters.Get(Tip::Event::ActionClicked) < kActionClicksCountToDisable &&
         shownTip.m_eventCounters.Get(Tip::Event::GotitClicked) < kGotitClicksCountToDisable &&
         Clock::now() - shownTip.m_lastShownTime > showSameTipPeriod &&
         conditions[ToIndex(shownTip.m_type)](*info))
     {
+      LOG(LINFO, ("Condition for tip", shownTip.m_type, "returned true"));
       return shownTip.m_type;
     }
   }
 
+  LOG(LINFO, ("No tips found"));
   return {};
 }
 }  // namespace
@@ -154,60 +168,95 @@ size_t TipsApi::GetGotitClicksCountToDisable()
 TipsApi::TipsApi(Delegate const & delegate)
   : m_delegate(delegate)
 {
-  m_conditions =
-  {{
-    // Condition for Tips::Type::BookmarksCatalog type.
-    [] (eye::Info const & info)
+  // Condition for Tips::Type::BookmarksCatalog type.
+  m_conditions.emplace_back(
+  [] (eye::Info const & info)
+  {
+    LOG(LINFO, ("Check condition for BookmarksCatalog tip"));
+    auto const result = info.m_bookmarks.m_lastOpenedTime.time_since_epoch().count() == 0 &&
+                 GetPlatform().ConnectionStatus() != Platform::EConnectionType::CONNECTION_NONE;
+    LOG(LINFO, ("Result for BookmarksCatalog tip condition is", result));
+    return result;
+  });
+
+  // Condition for Tips::Type::BookingHotels type.
+  m_conditions.emplace_back(
+  [] (eye::Info const & info)
+  {
+    LOG(LINFO, ("Check condition for BookingHotels tip"));
+    auto const result = info.m_booking.m_lastFilterUsedTime.time_since_epoch().count() == 0;
+    LOG(LINFO, ("Result for BookingHotels tip condition is", result));
+    return result;
+  });
+
+  // Condition for Tips::Type::DiscoverButton type.
+  m_conditions.emplace_back(
+  [this] (eye::Info const & info)
+  {
+    LOG(LINFO, ("Check condition for DiscoverButton tip"));
+    auto const eventsCount = ToIndex(Discovery::Event::Count);
+    for (size_t i = 0; i < eventsCount; ++i)
     {
-      return info.m_bookmarks.m_lastOpenedTime.time_since_epoch().count() == 0 &&
-        GetPlatform().ConnectionStatus() != Platform::EConnectionType::CONNECTION_NONE;
-    },
-    // Condition for Tips::Type::BookingHotels type.
-    [] (eye::Info const & info)
-    {
-      return info.m_booking.m_lastFilterUsedTime.time_since_epoch().count() == 0;
-    },
-    // Condition for Tips::Type::DiscoverButton type.
-    [this] (eye::Info const & info)
-    {
-      auto const eventsCount = ToIndex(Discovery::Event::Count);
-      for (size_t i = 0; i < eventsCount; ++i)
+      if (info.m_discovery.m_eventCounters.Get(static_cast<Discovery::Event>(i)) != 0)
       {
-        if (info.m_discovery.m_eventCounters.Get(static_cast<Discovery::Event>(i)) != 0)
-          return false;
-      }
-
-      auto const pos = m_delegate.GetCurrentPosition();
-      if (!pos.is_initialized())
+        LOG(LINFO, ("Discovery was used, false will be returned"));
         return false;
-
-      return m_delegate.IsCountryLoaded(pos.get());
-    },
-    // Condition for Tips::Type::PublicTransport type.
-    [this] (eye::Info const & info)
-    {
-      for (auto const & layer : info.m_layers)
-      {
-        if (layer.m_type == Layer::Type::PublicTransport)
-        {
-          if (layer.m_lastTimeUsed.time_since_epoch().count() != 0)
-          {
-            return false;
-          }
-        }
       }
-
-      auto const pos = m_delegate.GetCurrentPosition();
-      if (!pos.is_initialized())
-        return false;
-
-      return m_delegate.HaveTransit(pos.get());
     }
-  }};
+
+    LOG(LINFO, ("Get current position will be called. this ptr:", this, "delegate ref:", &m_delegate));
+    auto const pos = m_delegate.GetCurrentPosition();
+    if (!pos.is_initialized())
+    {
+      LOG(LINFO, ("Current position is not found, false will be returned"));
+      return false;
+    }
+
+    LOG(LINFO, ("Is country loaded will be called. this ptr:", this, "delegate ref:", &m_delegate));
+    auto const result = m_delegate.IsCountryLoaded(pos.get());
+
+    LOG(LINFO, ("Is country loaded retured", result));
+    return result;
+  });
+
+  // Condition for Tips::Type::PublicTransport type.
+  m_conditions.emplace_back(
+  [this] (eye::Info const & info)
+  {
+    LOG(LINFO, ("Check condition for PublicTransport tip"));
+    for (auto const & layer : info.m_layers)
+    {
+      if (layer.m_type == Layer::Type::PublicTransport &&
+          layer.m_lastTimeUsed.time_since_epoch().count() != 0)
+      {
+        LOG(LINFO, ("PublicTransport was used, false will be returned"));
+        return false;
+      }
+    }
+
+    LOG(LINFO, ("Get current position will be called. this ptr:", this, "delegate ref:", &m_delegate));
+    auto const pos = m_delegate.GetCurrentPosition();
+    if (!pos.is_initialized())
+    {
+      LOG(LINFO, ("Current position is not found, false will be returned"));
+      return false;
+    }
+
+    LOG(LINFO, ("Have transit will be called. this ptr:", this, "delegate ref:", &m_delegate));
+    auto const result = m_delegate.HaveTransit(pos.get());
+
+    LOG(LINFO, ("Have transit retured", result));
+    return result;
+  });
 }
 
 boost::optional<eye::Tip::Type> TipsApi::GetTip() const
 {
+  auto coinToss = std::time(nullptr) % 50;
+  // Try to show tip in 2% of cases.
+  if (coinToss != 0)
+    return {};
+
   return GetTipImpl(GetShowAnyTipPeriod(), GetShowSameTipPeriod(), m_delegate, m_conditions);
 }
 
