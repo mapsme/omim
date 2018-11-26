@@ -785,6 +785,7 @@ public:
 #if defined(OMIM_METAL_AVAILABLE)
   bool LoadMetalAllowed();
   void SaveMetalAllowed(bool allowed);
+  bool TestMetalMode();
 #endif
 
 public:
