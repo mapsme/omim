@@ -4,11 +4,11 @@
 
 #include "geometry/point2d.hpp"
 
-#include <array>
 #include <cstdint>
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <vector>
 
 #include <boost/optional.hpp>
 
@@ -17,7 +17,7 @@ class TipsApi
 public:
   using Duration = std::chrono::duration<uint64_t>;
   using Condition = std::function<bool(eye::Info const & info)>;
-  using Conditions = std::array<Condition, static_cast<size_t>(eye::Tip::Type::Count)>;
+  using Conditions = std::vector<Condition>;
 
   class Delegate
   {

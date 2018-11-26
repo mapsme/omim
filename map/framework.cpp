@@ -1282,6 +1282,7 @@ bool Framework::IsCountryLoaded(m2::PointD const & pt) const
 
   // Correct, but slow version (check country polygon).
   string const fName = m_infoGetter->GetRegionCountryId(pt);
+  LOG(LINFO, ("GetRegionCountryId returned:", fName));
   if (fName.empty())
     return true;
 
@@ -3840,6 +3841,7 @@ bool Framework::HaveTransit(m2::PointD const & pt) const
   auto const & dataSource = m_model.GetDataSource();
   MwmSet::MwmId const mwmId =
       dataSource.GetMwmIdByCountryFile(platform::CountryFile(m_infoGetter->GetRegionCountryId(pt)));
+  LOG(LINFO, ("GetMwmIdByCountryFile returned:", mwmId));
 
   MwmSet::MwmHandle handle = m_model.GetDataSource().GetMwmHandleById(mwmId);
   if (!handle.IsAlive())
