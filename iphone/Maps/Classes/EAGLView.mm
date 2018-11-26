@@ -48,7 +48,7 @@ double getExactDPI(double contentScaleFactor)
     return apiVersion;
   
 #ifdef OMIM_METAL_AVAILABLE
-  if (GetFramework().LoadMetalAllowed())
+  if (GetFramework().LoadMetalAllowed() || GetFramework().TestMetalMode())
   {
     id<MTLDevice> tempDevice = MTLCreateSystemDefaultDevice();
     if (tempDevice)

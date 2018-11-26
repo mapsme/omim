@@ -2556,6 +2556,22 @@ void Framework::SaveMetalAllowed(bool allowed)
 {
   settings::Set(kMetalAllowed, allowed);
 }
+
+bool Framework::TestMetalMode()
+{
+  // Test Metal once for a user and only for ~10% of users.
+  auto const coinToss = std::time(nullptr) % 10;
+  if (coinToss != 0)
+    return false;
+  
+  static std::string const kTestMetalMode = "TestMetalMode";
+  bool alreadyTested;
+  if (settings::Get(kTestMetalMode, alreadyTested))
+    return false;
+  
+  settings::Set(kTestMetalMode, true);
+  return true;
+}
 #endif
 
 void Framework::AllowTransliteration(bool allowTranslit)
