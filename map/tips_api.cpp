@@ -54,11 +54,24 @@ boost::optional<eye::Tip::Type> GetTipImpl(TipsApi::Duration showAnyTipPeriod,
   CHECK(info, ("Eye info must be initialized"));
   LOG(LINFO, ("Eye info ptr use count:", info.use_count(), "Info", *info, "Info::m_booking ref:",
     &(info->m_booking), "Info::m_bookmarks ref:", &(info->m_bookmarks), "Info::m_discovery ref:",
-    &(info->m_discovery), "Info::m_layers ref:", &(info->m_layers), "Info::m_tips ref:",
-    &(info->m_tips)));
+    &(info->m_discovery), "Info::m_layers ref:", &(info->m_layers), "Layers size:",
+    info->m_layers.size(), "Info::m_tips ref:", &(info->m_tips), "Tips size:", info->m_tips.size(),
+    "Conditions ref:", &conditions, "Delegate ref:", &delegate));
 
   auto const & tips = info->m_tips;
   auto constexpr totalTipsCount = static_cast<size_t>(Tip::Type::Count);
+
+  if (!tips.empty())
+    LOG(LINFO, ("Tips data ptr:", tips.data()));
+
+  CHECK_EQUAL(conditions.size(), totalTipsCount, ());
+
+  LOG(LINFO, ("Conditions data ptr:", conditions.data()));
+
+  for (size_t i = 0; i < conditions.size(); ++i)
+  {
+    CHECK(conditions[i] != nullptr, ("Condition at index", i, "is not initialized"));
+  }
 
   Time lastShownTime;
   for (auto const & tip : tips)
@@ -223,7 +236,10 @@ TipsApi::TipsApi(Delegate const & delegate)
   m_conditions.emplace_back(
   [this] (eye::Info const & info)
   {
-    LOG(LINFO, ("Check condition for PublicTransport tip"));
+    LOG(LINFO, ("Check condition for PublicTransport tip. Used layers size:", info.m_layers.size()));
+    if (!info.m_layers.empty())
+      LOG(LINFO, ("Layers data ptr:", info.m_layers.data()));
+
     for (auto const & layer : info.m_layers)
     {
       if (layer.m_type == Layer::Type::PublicTransport &&
