@@ -41,7 +41,8 @@ public class Metadata implements Parcelable
     FMD_PRICE_RATE(25),
     FMD_RATING(26),
     FMD_BANNER_URL(27),
-    FMD_LEVEL(28);
+    FMD_LEVEL(28),
+    FMD_AIRPORT_IATA(29);
 
     private final int mMetaType;
 
