@@ -268,11 +268,6 @@ TipsApi::TipsApi(Delegate const & delegate)
 
 boost::optional<eye::Tip::Type> TipsApi::GetTip() const
 {
-  auto coinToss = std::time(nullptr) % 50;
-  // Try to show tip in 2% of cases.
-  if (coinToss != 0)
-    return {};
-
   return GetTipImpl(GetShowAnyTipPeriod(), GetShowSameTipPeriod(), m_delegate, m_conditions);
 }
 
