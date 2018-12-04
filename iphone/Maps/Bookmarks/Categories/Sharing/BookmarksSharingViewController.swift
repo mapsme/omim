@@ -143,7 +143,7 @@ final class BookmarksSharingViewController: MWMTableViewController {
   
   func startUploadAndPublishFlow() {
     Statistics.logEvent(kStatSharingOptionsClick, withParameters: [kStatItem : kStatPublic])
-    performAfterValidation { [weak self] in
+    performAfterValidation(anchor: uploadAndPublishCell) { [weak self] in
       if let self = self {
         self.performSegue(withIdentifier: self.kPropertiesSegueIdentifier, sender: self)
       }
@@ -185,7 +185,7 @@ final class BookmarksSharingViewController: MWMTableViewController {
   
   func uploadAndGetDirectLink() {
     Statistics.logEvent(kStatSharingOptionsClick, withParameters: [kStatItem : kStatPrivate])
-    performAfterValidation { [weak self] in
+    performAfterValidation(anchor: getDirectLinkCell) { [weak self] in
       guard let s = self, s.categoryId != MWMFrameworkHelper.invalidCategoryId() else {
         assert(false, "categoryId must be valid")
         return
@@ -211,9 +211,9 @@ final class BookmarksSharingViewController: MWMTableViewController {
     }
   }
   
-  func performAfterValidation(action: @escaping MWMVoidBlock) {
+  func performAfterValidation(anchor: UIView, action: @escaping MWMVoidBlock) {
     if MWMFrameworkHelper.isNetworkConnected() {
-      signup(anchor: view, onComplete: { success in
+      signup(anchor: anchor, onComplete: { success in
         if success {
           action()
         } else {
@@ -226,7 +226,8 @@ final class BookmarksSharingViewController: MWMTableViewController {
                                                                message: L("common_check_internet_connection_dialog"),
                                                                rightButtonTitle: L("downloader_retry"),
                                                                leftButtonTitle: L("cancel")) {
-                                                                self.performAfterValidation(action: action)
+                                                                self.performAfterValidation(anchor: anchor,
+                                                                                            action: action)
       }
     }
   }
