@@ -20,8 +20,6 @@
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
-class HttpThread;
-
 namespace downloader
 {
 namespace non_http_error_code
@@ -49,19 +47,19 @@ string DebugPrint(long errorCode)
 }  // namespace non_http_error_code
 
 /// @return 0 if creation failed
-HttpThread * CreateNativeHttpThread(string const & url,
+const void * CreateNativeHttpThread(string const & url,
                                     IHttpThreadCallback & callback,
                                     int64_t begRange = 0,
                                     int64_t endRange = -1,
                                     int64_t expectedSize = -1,
                                     string const & postBody = string());
-void DeleteNativeHttpThread(HttpThread * thread);
+void DeleteNativeHttpThread(const void * thread);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// Stores server response into the memory
 class MemoryHttpRequest : public HttpRequest, public IHttpThreadCallback
 {
-  HttpThread * m_thread;
+  const void * m_thread;
 
   string m_requestUrl;
   string m_downloadedData;
@@ -127,7 +125,7 @@ public:
 class FileHttpRequest : public HttpRequest, public IHttpThreadCallback
 {
   ChunksDownloadStrategy m_strategy;
-  typedef pair<HttpThread *, int64_t> ThreadHandleT;
+  typedef pair<const void *, int64_t> ThreadHandleT;
   typedef list<ThreadHandleT> ThreadsContainerT;
   ThreadsContainerT m_threads;
 
@@ -144,7 +142,7 @@ class FileHttpRequest : public HttpRequest, public IHttpThreadCallback
     ChunksDownloadStrategy::ResultT result;
     while ((result = m_strategy.NextChunk(url, range)) == ChunksDownloadStrategy::ENextChunk)
     {
-      HttpThread * p = CreateNativeHttpThread(url, *this, range.first, range.second, m_progress.second);
+      const void * p = CreateNativeHttpThread(url, *this, range.first, range.second, m_progress.second);
       ASSERT ( p, () );
       m_threads.push_back(make_pair(p, range.first));
     }
@@ -168,7 +166,7 @@ class FileHttpRequest : public HttpRequest, public IHttpThreadCallback
                                              ThreadByPos(begRange));
     if (it != m_threads.end())
     {
-      HttpThread * p = it->first;
+      const void * p = it->first;
       m_threads.erase(it);
       DeleteNativeHttpThread(p);
     }
@@ -341,7 +339,7 @@ public:
     // can produce final notifications to this->OnFinish().
     while (!m_threads.empty())
     {
-      HttpThread * p = m_threads.back().first;
+      const void * p = m_threads.back().first;
       m_threads.pop_back();
       DeleteNativeHttpThread(p);
     }

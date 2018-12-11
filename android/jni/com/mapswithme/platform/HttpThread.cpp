@@ -64,7 +64,7 @@ public:
 
 namespace downloader
 {
-  HttpThread * CreateNativeHttpThread(std::string const & url,
+  const void * CreateNativeHttpThread(std::string const & url,
                                       downloader::IHttpThreadCallback & cb,
                                       int64_t beg,
                                       int64_t end,
@@ -74,7 +74,7 @@ namespace downloader
     return new HttpThread(url, cb, beg, end, size, pb);
   }
 
-  void DeleteNativeHttpThread(HttpThread * request)
+  void DeleteNativeHttpThread(const void * request)
   {
     delete request;
   }

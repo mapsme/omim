@@ -213,7 +213,7 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
 ///////////////////////////////////////////////////////////////////////////////////////
 namespace downloader
 {
-HttpThread * CreateNativeHttpThread(string const & url,
+const void * CreateNativeHttpThread(string const & url,
                                     downloader::IHttpThreadCallback & cb,
                                     int64_t beg,
                                     int64_t end,
@@ -221,14 +221,13 @@ HttpThread * CreateNativeHttpThread(string const & url,
                                     string const & pb)
 {
   HttpThread * request = [[HttpThread alloc] initWith:url callback:cb begRange:beg endRange:end expectedSize:size postBody:pb];
-  CFRetain(reinterpret_cast<void *>(request));
-  return request;
+  return CFBridgingRetain(request);
 }
 
-void DeleteNativeHttpThread(HttpThread * request)
+void DeleteNativeHttpThread(const void * request)
 {
-  [request cancel];
-  CFRelease(reinterpret_cast<void *>(request));
+  HttpThread *t = CFBridgingRelease(request);
+  [t cancel];
 }
 
 } // namespace downloader

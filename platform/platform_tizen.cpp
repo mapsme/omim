@@ -137,7 +137,7 @@ namespace downloader
 
 class IHttpThreadCallback;
 
-HttpThread * CreateNativeHttpThread(string const & url,
+const void * CreateNativeHttpThread(string const & url,
                                     downloader::IHttpThreadCallback & cb,
                                     int64_t beg,
                                     int64_t end,
@@ -148,7 +148,7 @@ HttpThread * CreateNativeHttpThread(string const & url,
   return pRes;
 }
 
-void DeleteNativeHttpThread(HttpThread * request)
+void DeleteNativeHttpThread(const void * request)
 {
   delete request;
 }

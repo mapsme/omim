@@ -150,7 +150,7 @@ void HttpThread::OnDownloadFinished()
 namespace downloader
 {
 
-HttpThread * CreateNativeHttpThread(string const & url,
+const void * CreateNativeHttpThread(string const & url,
                                     downloader::IHttpThreadCallback & cb,
                                     int64_t beg,
                                     int64_t end,
@@ -160,7 +160,7 @@ HttpThread * CreateNativeHttpThread(string const & url,
   return new HttpThread(url, cb, beg, end, size, pb);
 }
 
-void DeleteNativeHttpThread(HttpThread * request)
+void DeleteNativeHttpThread(const void * request)
 {
   delete request;
 }
