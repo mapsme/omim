@@ -16,6 +16,14 @@ struct SpeedCameraOnRoute
     : m_distFromBeginMeters(distFromBegin), m_maxSpeedKmH(maxSpeedKmH), m_position(position)
   {}
 
+  bool operator== (SpeedCameraOnRoute const & rhs)
+  {
+    static auto constexpr kEps = 1e-5;
+    return base::AlmostEqualAbs(m_distFromBeginMeters, rhs.m_distFromBeginMeters, kEps) &&
+           m_maxSpeedKmH == rhs.m_maxSpeedKmH &&
+           base::AlmostEqualAbs(m_position, rhs.m_position, kEps);
+  }
+
   static uint8_t constexpr kNoSpeedInfo = std::numeric_limits<uint8_t>::max();
 
   bool NoSpeed() const;

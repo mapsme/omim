@@ -62,10 +62,11 @@ public:
     VoiceNotificationZone
   };
 
+  int32_t GetModeForStat() const;
+
   static Interval GetIntervalByDistToCam(double distanceToCameraMeters, double speedMpS);
 
   void SetRoute(std::weak_ptr<Route> route) { m_route = std::move(route); }
-
   void SetSpeedCamShowCallback(SpeedCameraShowCallback && callback)
   {
     m_speedCamShowCallback = std::move(callback);
@@ -77,7 +78,6 @@ public:
   }
 
   bool Enable() const { return m_mode != SpeedCameraManagerMode::Never; }
-
   void OnLocationPositionChanged(location::GpsInfo const & info);
 
   // See comments in |enum class Interval|
@@ -138,16 +138,24 @@ private:
 
   void PassCameraToUI(SpeedCameraOnRoute const & camera);
 
-  void SetNotificationFlags(double passedDistanceMeters, double speedMpS, SpeedCameraOnRoute const & camera);
+  bool SetNotificationFlags(double passedDistanceMeters, double speedMpS, SpeedCameraOnRoute const & camera);
   bool IsSpeedHigh(double distanceToCameraMeters, double speedMpS, SpeedCameraOnRoute const & camera) const;
   bool NeedUpdateClosestCamera(double distanceToCameraMeters, double speedMpS, SpeedCameraOnRoute const & camera);
   bool NeedChangeHighlightedCamera(double distToCameraMeters, bool needUpdateClosestCamera) const;
   bool IsHighlightedCameraExpired(double distToCameraMeters) const;
 
+  /// \brief Send stat to aloha.
+  void SendNotificationStat(double passedDistanceMeters, double speedMpS, SpeedCameraOnRoute const & camera);
+  void SendEnterZoneStat(double distToCameraMeters, double speedMpS, SpeedCameraOnRoute const & camera);
+
 private:
   SpeedCameraOnRoute m_closestCamera;
   uint32_t m_beepSignalCounter;
   uint32_t m_voiceSignalCounter;
+
+  // Equals true, after the first time user appear in |Interval::ImpactZone|.
+  // And false after |m_closestCamera| become invalid.
+  bool m_hasEnteredTheZone;
 
   // Flag of doing sound notification about camera on a way.
   bool m_makeBeepSignal;

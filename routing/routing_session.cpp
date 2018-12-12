@@ -69,6 +69,11 @@ void RoutingSession::Init(RoutingStatisticsCallback const & routingStatisticsFn,
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   CHECK(!m_router, ());
   m_router = make_unique<AsyncRouter>(routingStatisticsFn, pointCheckCallback);
+
+  alohalytics::TStringMap params = {
+    {"speed_cameras", strings::to_string(m_speedCameraManager.GetModeForStat())}
+  };
+  alohalytics::LogEvent("OnRoutingInit", params);
 }
 
 void RoutingSession::BuildRoute(Checkpoints const & checkpoints,
