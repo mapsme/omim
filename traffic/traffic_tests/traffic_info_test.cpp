@@ -115,12 +115,12 @@ UNIT_TEST(TrafficInfo_UpdateTrafficData)
 {
   vector<TrafficInfo::RoadSegmentId> const keys = {
       TrafficInfo::RoadSegmentId(0, 0, 0),
-
-      TrafficInfo::RoadSegmentId(1, 0, 0), TrafficInfo::RoadSegmentId(1, 0, 1),
+      TrafficInfo::RoadSegmentId(1, 0, 0),
+      TrafficInfo::RoadSegmentId(1, 0, 1),
   };
 
   vector<SpeedGroup> const values1 = {
-      SpeedGroup::G1, SpeedGroup::G2, SpeedGroup::G3,
+      SpeedGroup::G1, SpeedGroup::G2, SpeedGroup::TempBlock,
   };
 
   vector<SpeedGroup> const values2 = {
@@ -130,12 +130,21 @@ UNIT_TEST(TrafficInfo_UpdateTrafficData)
   TrafficInfo info;
   info.SetTrafficKeysForTesting(keys);
 
-  TEST(info.UpdateTrafficData(values1), ());
+  string const mwmName;
+  TEST(info.UpdateTrafficData(values1, mwmName), ());
   for (size_t i = 0; i < keys.size(); ++i)
-    TEST_EQUAL(info.GetSpeedGroup(keys[i]), values1[i], ());
+    TEST_EQUAL(info.GetSpeedGroup(keys[i]), values1[i], (i));
 
-  TEST(info.UpdateTrafficData(values2), ());
+  TEST(info.UpdateTrafficData(values2, mwmName), ());
   for (size_t i = 0; i < keys.size(); ++i)
-    TEST_EQUAL(info.GetSpeedGroup(keys[i]), values2[i], ());
+    TEST_EQUAL(info.GetSpeedGroup(keys[i]), values2[i], (i));
+
+  string const mwmNameMoscow = "Russia_Moscow";
+  vector<SpeedGroup> const valuesNoBlocks = {
+      SpeedGroup::G1, SpeedGroup::G2, SpeedGroup::Unknown,
+  };
+  TEST(info.UpdateTrafficData(values1, mwmNameMoscow), ());
+  for (size_t i = 0; i < keys.size(); ++i)
+    TEST_EQUAL(info.GetSpeedGroup(keys[i]), valuesNoBlocks[i], (i));
 }
 }  // namespace traffic
