@@ -24,7 +24,7 @@ class TrafficInfo
 {
 private:
   // If the name of the mwm (m_mwmId) contains one of strings in |kRemoveBlocks|,
-  // no temporary blocks will be applied. The other traffic jam will applied.
+  // no temporary blocks will be applied for this mwm. The other traffic jam will applied.
   static vector<string> const kRemoveBlocks;
 
 public:
