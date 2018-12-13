@@ -7,6 +7,7 @@
 #include "std/cstdint.hpp"
 #include "std/map.hpp"
 #include "std/shared_ptr.hpp"
+#include "std/string.hpp"
 #include "std/vector.hpp"
 
 namespace platform
@@ -21,6 +22,11 @@ namespace traffic
 
 class TrafficInfo
 {
+private:
+  // If the name of the mwm (m_mwmId) contains one of strings in |kRemoveBlocks|,
+  // no temporary blocks will be applied. The other traffic jam will applied.
+  static vector<string> const kRemoveBlocks;
+
 public:
   static uint8_t const kLatestKeysVersion;
   static uint8_t const kLatestValuesVersion;
@@ -120,6 +126,9 @@ public:
 
   static void DeserializeTrafficValues(vector<uint8_t> const & data, vector<SpeedGroup> & result);
 
+  // Returns true if temporary blocks (SpeedGroup::TempBlock) should not be used and false otherwise.
+  static bool ShouldTempBlockedBeRemoved(string const & mwmName);
+
 private:
   enum class ServerDataStatus
   {
@@ -138,10 +147,10 @@ private:
   // Tries to read the values of the Coloring map from server into |values|.
   // Returns result of communicating with server as ServerDataStatus.
   // Otherwise, returns false and does not change m_coloring.
-  ServerDataStatus ReceiveTrafficValues(string & etag, vector<SpeedGroup> & values);
+  ServerDataStatus ReceiveTrafficValues(string & etag, vector<SpeedGroup> & values, string & mwmName);
 
   // Updates the coloring and changes the availability status if needed.
-  bool UpdateTrafficData(vector<SpeedGroup> const & values);
+  bool UpdateTrafficData(vector<SpeedGroup> const & values, string const & mwmName);
 
   ServerDataStatus ProcessFailure(platform::HttpClient const & request, int64_t const mwmVersion);
 

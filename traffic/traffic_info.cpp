@@ -91,6 +91,7 @@ TrafficInfo::RoadSegmentId::RoadSegmentId(uint32_t fid, uint16_t idx, uint8_t di
 // TrafficInfo --------------------------------------------------------------------------------
 
 // static
+vector<string> const TrafficInfo::kRemoveBlocks = {"Russia_"};
 uint8_t const TrafficInfo::kLatestKeysVersion = 0;
 uint8_t const TrafficInfo::kLatestValuesVersion = 0;
 
@@ -103,6 +104,10 @@ TrafficInfo::TrafficInfo(MwmSet::MwmId const & mwmId, int64_t currentDataVersion
     LOG(LWARNING, ("Attempt to create a traffic info for dead mwm."));
     return;
   }
+
+  // @TODO(bykoianko). It's a place of potential race condition. |mwmId| may be alive here
+  // but may be removed in another thread before call |mwmId.GetInfo()|.
+
   string const mwmPath = mwmId.GetInfo()->GetLocalFile().GetPath(MapOptions::Map);
   try
   {
@@ -158,10 +163,11 @@ void TrafficInfo::SetTrafficKeysForTesting(vector<RoadSegmentId> const & keys)
 bool TrafficInfo::ReceiveTrafficData(string & etag)
 {
   vector<SpeedGroup> values;
-  switch (ReceiveTrafficValues(etag, values))
+  string mwmName;
+  switch (ReceiveTrafficValues(etag, values, mwmName))
   {
   case ServerDataStatus::New:
-    return UpdateTrafficData(values);
+    return UpdateTrafficData(values, mwmName);
   case ServerDataStatus::NotChanged:
     return true;
   case ServerDataStatus::NotFound:
@@ -397,11 +403,24 @@ void TrafficInfo::DeserializeTrafficValues(vector<uint8_t> const & data,
   ASSERT_EQUAL(src.Size(), 0, ());
 }
 
+// static
+bool TrafficInfo::ShouldTempBlockedBeRemoved(string const & mwmName)
+{
+  return !mwmName.empty() &&
+         any_of(kRemoveBlocks.cbegin(), kRemoveBlocks.cend(), [&mwmName](string const & namePart) {
+           return mwmName.find(namePart) != string::npos;
+         });
+}
+
 // todo(@m) This is a temporary method. Do not refactor it.
 bool TrafficInfo::ReceiveTrafficKeys()
 {
   if (!m_mwmId.IsAlive())
     return false;
+
+  // @TODO(bykoianko). It's a place of potential race condition. |m_mwmId| may be alive here
+  // but may be removed in another thread before call |m_mwmId.GetInfo()|.
+
   auto const & info = m_mwmId.GetInfo();
   if (!info)
     return false;
@@ -436,17 +455,20 @@ bool TrafficInfo::ReceiveTrafficKeys()
   return true;
 }
 
-TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(string & etag, vector<SpeedGroup> & values)
+TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(string & etag, vector<SpeedGroup> & values, string & mwmName)
 {
   if (!m_mwmId.IsAlive())
     return ServerDataStatus::Error;
-  
+
+  // @TODO(bykoianko). It's a place of potential race condition. |m_mwmId| may be alive here
+  // but may be removed in another thread before call |m_mwmId.GetInfo()|.
   auto const & info = m_mwmId.GetInfo();
   if (!info)
     return ServerDataStatus::Error;
 
   auto const version = info->GetVersion();
-  string const url = MakeRemoteURL(info->GetCountryName(), version);
+  mwmName = info->GetCountryName();
+  string const url = MakeRemoteURL(mwmName, version);
 
   if (url.empty())
     return ServerDataStatus::Error;
@@ -468,12 +490,12 @@ TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(string & etag, v
   {
     m_availability = Availability::NoData;
     LOG(LWARNING, ("Could not read traffic values received from server. MWM:",
-                   info->GetCountryName(), "Version:", info->GetVersion()));
+        mwmName, "Version:", version));
 
     alohalytics::LogEvent(
         "$TrafficReadError",
-        alohalytics::TStringMap({{"mwm", info->GetCountryName()},
-                                 {"version", strings::to_string(info->GetVersion())}}));
+        alohalytics::TStringMap({{"mwm", mwmName},
+                                 {"version", strings::to_string(version)}}));
 
     return ServerDataStatus::Error;
   }
@@ -487,7 +509,7 @@ TrafficInfo::ServerDataStatus TrafficInfo::ReceiveTrafficValues(string & etag, v
   return ServerDataStatus::New;
 }
 
-bool TrafficInfo::UpdateTrafficData(vector<SpeedGroup> const & values)
+bool TrafficInfo::UpdateTrafficData(vector<SpeedGroup> const & values, string const & mwmName)
 {
   m_coloring.clear();
 
@@ -504,10 +526,15 @@ bool TrafficInfo::UpdateTrafficData(vector<SpeedGroup> const & values)
     return false;
   }
 
+  bool const keepTempBlocked = !ShouldTempBlockedBeRemoved(mwmName);
+
   for (size_t i = 0; i < m_keys.size(); ++i)
   {
-    if (values[i] != SpeedGroup::Unknown)
+    if (values[i] != SpeedGroup::Unknown &&
+        (values[i] != SpeedGroup::TempBlock || keepTempBlocked))
+    {
       m_coloring.emplace(m_keys[i], values[i]);
+    }
   }
 
   return true;
