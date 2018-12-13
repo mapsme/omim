@@ -18,17 +18,13 @@ class QueryProductDetailsRequest extends PlayStoreBillingRequest<PlayStoreBillin
 {
   @NonNull
   private final List<String> mProductIds;
-  @NonNull
-  private final SkuDetailsValidationStrategy mSkuDetailsValidationStrategy;
 
   QueryProductDetailsRequest(@NonNull BillingClient client, @NonNull String productType,
                              @Nullable PlayStoreBillingCallback callback,
-                             @NonNull List<String> productIds,
-                             @NonNull SkuDetailsValidationStrategy strategy)
+                             @NonNull List<String> productIds)
   {
     super(client, productType, callback);
     mProductIds = Collections.unmodifiableList(productIds);
-    mSkuDetailsValidationStrategy = strategy;
   }
 
   @Override
@@ -53,14 +49,39 @@ class QueryProductDetailsRequest extends PlayStoreBillingRequest<PlayStoreBillin
       return;
     }
 
-    if (getCallback() == null)
+    if (skuDetails == null || skuDetails.isEmpty())
+    {
+      LOGGER.w(TAG, "Purchase details not found");
+      if (getCallback() != null)
+        getCallback().onPurchaseDetailsFailure();
       return;
+    }
 
-    boolean isSkuValid = mSkuDetailsValidationStrategy.isValid(skuDetails);
+    if (hasIncorrectSkuDetails(skuDetails))
+    {
+      LOGGER.w(TAG, "Purchase details incorrect");
+      if (getCallback() != null)
+        getCallback().onPurchaseDetailsFailure();
+      return;
+    }
 
-    if (isSkuValid)
+    LOGGER.i(TAG, "Purchase details obtained: " + skuDetails);
+    if (getCallback() != null)
       getCallback().onPurchaseDetailsLoaded(skuDetails);
-    else
-      getCallback().onPurchaseDetailsFailure();
+  }
+
+  private static boolean hasIncorrectSkuDetails(@NonNull List<SkuDetails> skuDetails)
+  {
+    for (SkuDetails each : skuDetails)
+    {
+      if (AdsRemovalPurchaseDialog.Period.getInstance(each.getSubscriptionPeriod()) == null)
+      {
+        String msg = "Unsupported subscription period: '" + each.getSubscriptionPeriod() + "'";
+        CrashlyticsUtils.logException(new IllegalStateException(msg));
+        LOGGER.e(TAG, msg);
+        return true;
+      }
+    }
+    return false;
   }
 }
