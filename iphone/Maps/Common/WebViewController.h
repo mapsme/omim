@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
                             onSuccessAuth:(MWMStringBlock _Nullable)success
                                 onFailure:(MWMVoidBlock _Nullable)failure;
 - (void)willLoadUrl:(MWMBoolBlock)decisionHandler;
+- (BOOL)shouldAddAccessToken;
 - (void)forward;
 - (void)back;
 
