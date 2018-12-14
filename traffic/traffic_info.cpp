@@ -92,7 +92,7 @@ TrafficInfo::RoadSegmentId::RoadSegmentId(uint32_t fid, uint16_t idx, uint8_t di
 // TrafficInfo --------------------------------------------------------------------------------
 
 // static
-vector<string> const TrafficInfo::kRemoveBlocks = {"Russia_"};
+TrafficInfo::RemoveBlocks const TrafficInfo::kRemoveBlocks = {"Russia_"};
 uint8_t const TrafficInfo::kLatestKeysVersion = 0;
 uint8_t const TrafficInfo::kLatestValuesVersion = 0;
 
