@@ -4,6 +4,7 @@
 
 #include "indexer/mwm_set.hpp"
 
+#include <array>
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -25,7 +26,8 @@ class TrafficInfo
 private:
   // If the name of the mwm (m_mwmId) contains one of strings in |kRemoveBlocks|,
   // no temporary blocks will be applied for this mwm. The other traffic jam will applied.
-  static std::vector<std::string> const kRemoveBlocks;
+  using RemoveBlocks = std::array<std::string, 1>;
+  static RemoveBlocks const kRemoveBlocks;
 
 public:
   static uint8_t const kLatestKeysVersion;
