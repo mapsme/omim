@@ -122,7 +122,7 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
 {
     LOG(LWARNING, ("Canceling because of redirect from", response.URL.absoluteString.UTF8String,
                    "to", request.URL.absoluteString.UTF8String));
-    [task cancel];
+    completionHandler(nil);
     m_callback->OnFinish(static_cast<NSHTTPURLResponse *>(response).statusCode, m_begRange, m_endRange);
 }
 
@@ -156,7 +156,7 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
         if ((isChunk && statusCode != 206) || (!isChunk && statusCode != 200))
         {
             LOG(LWARNING, ("Received invalid HTTP status code, canceling download", statusCode));
-            [m_dataTask cancel];
+            completionHandler(NSURLSessionResponseCancel);
             m_callback->OnFinish(statusCode, m_begRange, m_endRange);
             return;
         }
@@ -173,7 +173,7 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
                 
                 LOG(LWARNING, ("Canceling download - server replied with invalid size", sizeOnServer,
                                "!=", m_expectedSize));
-                [m_dataTask cancel];
+                completionHandler(NSURLSessionResponseCancel);
                 m_callback->OnFinish(downloader::non_http_error_code::kInconsistentFileSize, m_begRange, m_endRange);
                 return;
             }
@@ -185,7 +185,7 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
     {
         // In theory, we should never be here.
         ASSERT(false, ("Invalid non-http response, aborting request"));
-        [m_dataTask cancel];
+        completionHandler(NSURLSessionResponseCancel);
         m_callback->OnFinish(downloader::non_http_error_code::kNonHttpResponse, m_begRange, m_endRange);
     }
 }
@@ -205,6 +205,9 @@ static id<DownloadIndicatorProtocol> downloadIndicator = nil;
 - (void) URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
     UNUSED_VALUE(task);
+    if (error.code == NSURLErrorCancelled)
+      return;
+  
     if (error)
     {
         LOG(LWARNING, ("Data task failed", [[error localizedDescription] cStringUsingEncoding:NSUTF8StringEncoding]));
