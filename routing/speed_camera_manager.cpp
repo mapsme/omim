@@ -406,7 +406,7 @@ void SpeedCameraManager::SendEnterZoneStat(double distToCameraMeters, double spe
   alohalytics::TStringMap params = {
     {"distance", to_string(distToCameraMeters)},
     {"speed", to_string(measurement_utils::MpsToKmph(speedMpS))},
-    {"speedlimit", camera.NoSpeed() ? "0" : to_string(camera.m_maxSpeedKmH)},
+    {"speedlimit", camera.NoSpeed() ? "0" : to_string(static_cast<uint32_t>(camera.m_maxSpeedKmH))},
     {"coord", "(" + to_string(latlon.lat) + "," + to_string(latlon.lon) + ")"}
   };
 
