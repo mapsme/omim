@@ -74,7 +74,7 @@ public class MwmApplication extends Application
   private ExternalLibrariesMediator mMediator;
   @SuppressWarnings("NullableProblems")
   @NonNull
-  private PurchaseValidationObservable mPurchaseValidationObservable;
+  private PurchaseOperationObservable mPurchaseOperationObservable;
   @SuppressWarnings("NullableProblems")
   @NonNull
   private MediaPlayerWrapper mPlayer;
@@ -163,7 +163,7 @@ public class MwmApplication extends Application
     mConnectivityListener = new ConnectivityJobScheduler(this);
     mConnectivityListener.listen();
 
-    mPurchaseValidationObservable = new PurchaseValidationObservable();
+    mPurchaseOperationObservable = new PurchaseOperationObservable();
     mPlayer = new MediaPlayerWrapper(this);
   }
 
@@ -258,7 +258,7 @@ public class MwmApplication extends Application
     RoutingController.get().initialize();
     TrafficManager.INSTANCE.initialize();
     SubwayManager.from(this).initialize();
-    mPurchaseValidationObservable.initialize();
+    mPurchaseOperationObservable.initialize();
     mFrameworkInitialized = true;
   }
 
@@ -310,9 +310,9 @@ public class MwmApplication extends Application
   }
 
   @NonNull
-  PurchaseValidationObservable getPurchaseValidationObservable()
+  PurchaseOperationObservable getPurchaseOperationObservable()
   {
-    return mPurchaseValidationObservable;
+    return mPurchaseOperationObservable;
   }
 
   public static void onUpgrade()
