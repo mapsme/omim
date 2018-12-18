@@ -81,6 +81,7 @@ omim_link_libraries(
   opening_hours
   stb_image
   sdf_image
+  vulkan_wrapper
   # TODO(syershov): Use FindPackage.
   sqlite3
   ${LIBZ}

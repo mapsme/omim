@@ -51,7 +51,8 @@ namespace android
   class Framework
   {
   private:
-    drape_ptr<dp::ThreadSafeFactory> m_contextFactory;
+    drape_ptr<dp::ThreadSafeFactory> m_oglContextFactory;
+    drape_ptr<dp::GraphicsContextFactory> m_vulkanContextFactory;
     ::Framework m_work;
 
     math::LowPassVector<float, 3> m_sensors[2];
