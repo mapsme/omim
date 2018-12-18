@@ -558,11 +558,14 @@ Framework::Framework(FrameworkParams const & params)
   m_notificationManager.TrimExpired();
   eye::Eye::Instance().TrimExpired();
   eye::Eye::Instance().Subscribe(&m_notificationManager);
+
+  GetPowerManager().Subscribe(this);
 }
 
 Framework::~Framework()
 {
   eye::Eye::Instance().UnsubscribeAll();
+  GetPowerManager().UnsubscribeAll();
 
   m_threadRunner.reset();
 
@@ -3832,6 +3835,12 @@ void Framework::OnBookingFilterParamsUpdate(booking::filter::Tasks const & filte
 booking::AvailabilityParams Framework::GetLastBookingAvailabilityParams() const
 {
   return m_bookingAvailabilityParams;
+}
+
+void Framework::OnFacilityStateChanged(PowerManager::Facility const facility, bool state)
+{
+  // Dummy.
+  // TODO: process facilities which do not have switch in UI.
 }
 
 TipsApi const & Framework::GetTipsApi() const
