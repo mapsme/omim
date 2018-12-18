@@ -18,6 +18,8 @@ import java.util.Objects;
 
 public class PlaceDescriptionFragment extends BaseMwmFragment
 {
+  private static final String WIDTH_FIT_CENTER = "width=\"100%\" ";
+  private static final String SRC_TAG = "src";
   public static final String EXTRA_DESCRIPTION = "description";
 
   @SuppressWarnings("NullableProblems")
@@ -38,10 +40,29 @@ public class PlaceDescriptionFragment extends BaseMwmFragment
   {
     View root = inflater.inflate(R.layout.fragment_place_description, container, false);
     WebView webView = root.findViewById(R.id.webview);
-    webView.loadData(mDescription, Utils.TEXT_HTML, Utils.UTF_8);
+    String preparedData = makeHtmlImagesFitCenter(mDescription);
     webView.setVerticalScrollBarEnabled(true);
     webView.setWebViewClient(new PlaceDescriptionClient());
+    webView.loadDataWithBaseURL(null, preparedData, Utils.TEXT_HTML, Utils.UTF_8, null);
     return root;
+  }
+
+  @NonNull
+  private static String makeHtmlImagesFitCenter(@NonNull String content)
+  {
+    String stringToAdd = WIDTH_FIT_CENTER;
+    StringBuilder builder = new StringBuilder(content);
+
+    int i = 0;
+    int cont = 0;
+    while (i != -1)
+    {
+      i = content.indexOf(SRC_TAG, i + 1);
+      if (i != -1)
+        builder.insert(i + (cont * stringToAdd.length()), stringToAdd);
+      ++cont;
+    }
+    return builder.toString();
   }
 
   private static class PlaceDescriptionClient extends WebViewClient
