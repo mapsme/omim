@@ -66,7 +66,8 @@ final class ViatorElement: UICollectionViewCell {
     didSet {
       if let model = model {
         if let url = model.imageURL {
-          image.af_setImage(withURL: url, placeholderImage: #imageLiteral(resourceName: "img_viator_placeholder"), imageTransition: .crossDissolve(kDefaultAnimationDuration))
+          image.image =  #imageLiteral(resourceName: "img_viator_placeholder")
+          image.wi_setImage(with: url, transitionDuration: kDefaultAnimationDuration)
         } else {
           image.image = #imageLiteral(resourceName: "img_viator_placeholder")
         }
