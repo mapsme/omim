@@ -2959,27 +2959,23 @@ void SetStreet(search::ReverseGeocoder const & coder, DataSource const & dataSou
   auto const & editor = osm::Editor::Instance();
   // Get exact feature's street address (if any) from mwm,
   // together with all nearby streets.
-  auto const streets = coder.GetNearbyFeatureStreets(ft);
-  auto const & streetsPool = streets.first;
-  auto const & featureStreetIndex = streets.second;
+  vector<search::ReverseGeocoder::Street> streets;
+  coder.GetNearbyStreets(ft, streets);
 
   string street;
   bool const featureIsInEditor = editor.GetEditedFeatureStreet(ft.GetID(), street);
-  bool const featureHasStreetInMwm = featureStreetIndex < streetsPool.size();
-  if (!featureIsInEditor && featureHasStreetInMwm)
-    street = streetsPool[featureStreetIndex].m_name;
+  if (!featureIsInEditor)
+    street = coder.GetFeatureStreetName(ft);
 
-  auto localizedStreets = TakeSomeStreetsAndLocalize(streetsPool, dataSource);
+  auto localizedStreets = TakeSomeStreetsAndLocalize(streets, dataSource);
 
   if (!street.empty())
   {
-    auto it = find_if(begin(streetsPool), end(streetsPool),
-                      [&street](search::ReverseGeocoder::Street const & s)
-                      {
-                        return s.m_name == street;
-                      });
+    auto it = find_if(
+        begin(streets), end(streets),
+        [&street](search::ReverseGeocoder::Street const & s) { return s.m_name == street; });
 
-    if (it != end(streetsPool))
+    if (it != end(streets))
     {
       osm::LocalizedStreet ls;
       if (!LocalizeStreet(dataSource, it->m_id, ls))
@@ -3149,9 +3145,7 @@ osm::Editor::SaveResult Framework::SaveEditedMapObject(osm::EditableMapObject em
     string originalFeatureStreet;
     if (!isCreatedFeature)
     {
-      auto const streets = coder.GetNearbyFeatureStreets(originalFeature);
-      if (streets.second < streets.first.size())
-        originalFeatureStreet = streets.first[streets.second].m_name;
+      originalFeatureStreet = coder.GetFeatureStreetName(originalFeature);
     }
     else
     {

@@ -64,8 +64,8 @@ public:
     }
   };
 
-  static size_t GetMatchedStreetIndex(strings::UniString const & keyName,
-                                      std::vector<Street> const & streets);
+  static std::pair<uint32_t, bool> GetMatchedStreetIndex(strings::UniString const & keyName,
+                                                         std::vector<Street> const & streets);
 
   struct Address
   {
@@ -86,15 +86,13 @@ public:
   void GetNearbyStreets(MwmSet::MwmId const & id, m2::PointD const & center,
                         std::vector<Street> & streets) const;
   void GetNearbyStreets(FeatureType & ft, std::vector<Street> & streets) const;
-  void GetNearbyOriginalStreets(MwmSet::MwmId const & id, m2::PointD const & center,
-                                std::vector<Street> & streets) const;
 
-  /// @returns [a lot of] nearby feature's streets and an index of a feature's street.
-  /// Returns a value greater than vector size when there are no Street the feature belongs to.
-  /// @note returned vector can contain duplicated street segments.
-  std::pair<std::vector<Street>, uint32_t> GetNearbyFeatureStreets(FeatureType & ft) const;
-  /// Same as GetNearbyFeatureStreets but returns streets from MWM only.
-  std::pair<std::vector<Street>, uint32_t> GetNearbyOriginalFeatureStreets(FeatureType & ft) const;
+  /// @return feature street name.
+  /// Returns empty string when there are no Street the feature belongs to.
+  std::string GetFeatureStreetName(FeatureType & ft) const;
+
+  /// Same with GetFeatureStreetName but gets stret from mwm only (not editor).
+  std::string GetOriginalFeatureStreetName(FeatureType & ft) const;
 
   /// @return The nearest exact address where building has house number and valid street match.
   void GetNearbyAddress(m2::PointD const & center, Address & addr) const;
@@ -112,7 +110,8 @@ private:
   {
   public:
     explicit HouseTable(DataSource const & dataSource) : m_dataSource(dataSource) {}
-    bool Get(FeatureID const & fid, uint32_t & streetIndex);
+    bool Get(FeatureID const & fid, HouseToStreetTable::StreetIdType & type,
+             uint32_t & streetIndex);
 
   private:
     DataSource const & m_dataSource;
@@ -120,7 +119,11 @@ private:
     MwmSet::MwmHandle m_handle;
   };
 
-  bool GetNearbyAddress(HouseTable & table, Building const & bld, Address & addr) const;
+  void GetNearbyAddress(m2::PointD const & center, double maxDistanceM, bool mwmOnly,
+                        Address & addr) const;
+  bool GetNearbyAddress(HouseTable & table, Building const & bld, bool mwmOnly,
+                        Address & addr) const;
+  bool GetExactAddress(FeatureType & ft, bool mwmOnly, Address & addr) const;
 
   /// @return Sorted by distance houses vector with valid house number.
   void GetNearbyBuildings(m2::PointD const & center, double maxDistanceM,
