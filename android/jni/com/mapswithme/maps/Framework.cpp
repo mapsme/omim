@@ -26,6 +26,7 @@
 #include "coding/file_name_utils.hpp"
 
 #include "geometry/angles.hpp"
+#include "geometry/mercator.hpp"
 
 #include "indexer/feature_altitude.hpp"
 
@@ -1949,5 +1950,20 @@ Java_com_mapswithme_maps_Framework_nativeGetMapObject(JNIEnv * env, jclass,
     return usermark_helper::CreateMapObject(env, info);
 
   return nullptr;
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_Framework_nativeSetViewportCenter(JNIEnv *, jclass, jdouble lat,
+                                                           jdouble lon, jint zoom)
+{
+  auto const center = MercatorBounds::FromLatLon(static_cast<double>(lat),
+                                                 static_cast<double>(lon));
+  frm()->SetViewportCenter(center, static_cast<int>(zoom));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_Framework_nativeStopLocationFollow(JNIEnv *, jclass)
+{
+  frm()->StopLocationFollow();
 }
 }  // extern "C"

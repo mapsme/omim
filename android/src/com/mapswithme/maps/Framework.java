@@ -525,4 +525,6 @@ public class Framework
       @NonNull NotificationCandidate.MapObject mapObject);
 
   private static native void nativeSetSpeedCamManagerMode(int mode);
+  public static native void nativeSetViewportCenter(double lat, double lon, int zoom);
+  public static native void nativeStopLocationFollow();
 }
