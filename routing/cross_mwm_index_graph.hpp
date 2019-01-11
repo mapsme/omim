@@ -23,6 +23,7 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <type_traits>
 #include <vector>
 
 namespace routing
@@ -186,10 +187,16 @@ private:
   }
 
   /// \brief Checks segment for equality point by point.
-   bool SegmentsAreEqualByGeometry(Segment const & one, Segment const & two)
+  bool SegmentsAreEqualByGeometry(Segment const & one, Segment const & two)
   {
+    // Do not check for transit graph.
     if (!one.IsRealSegment() || !two.IsRealSegment())
       return true;
+
+    static_assert(std::is_same<CrossMwmId, base::GeoObjectId>::value ||
+                  std::is_same<CrossMwmId, connector::TransitId>::value,
+                  "Be careful of usage other ids here. "
+                  "Make sure, there is not crash with your's new CrossMwmId");
 
     std::vector<m2::PointD> geometryOne = GetFeaturePointsBySegment(one);
     std::vector<m2::PointD> geometryTwo = GetFeaturePointsBySegment(two);
