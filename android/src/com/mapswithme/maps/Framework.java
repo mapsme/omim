@@ -513,7 +513,6 @@ public class Framework
   public static native MapObject nativeGetMapObject(
       @NonNull NotificationCandidate.MapObject mapObject);
 
-  public static native void nativeOnBatteryLevelChanged(int level);
   public static native void nativeSetPowerManagerFacility(int facilityType, boolean state);
   public static native void nativeSetPowerManagerScheme(int schemeType);
   public static native void nativeSetViewportCenter(double lat, double lon, int zoom);
