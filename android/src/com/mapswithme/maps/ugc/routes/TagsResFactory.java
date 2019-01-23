@@ -14,6 +14,7 @@ import android.graphics.drawable.shapes.RectShape;
 import android.support.annotation.NonNull;
 
 import com.mapswithme.maps.R;
+import com.mapswithme.util.ThemeUtils;
 
 public class TagsResFactory
 {
@@ -21,9 +22,21 @@ public class TagsResFactory
   public static StateListDrawable makeSelector(@NonNull Context context, int color)
   {
     StateListDrawable drawable = new StateListDrawable();
-    drawable.addState(new int[] { android.R.attr.state_selected }, makeSelectedDrawable(color));
-    drawable.addState(new int[] {}, makeDefaultDrawable(context, color));
+    drawable.addState(new int[] { android.R.attr.state_selected, android.R.attr.state_enabled },
+                      makeSelectedDrawable(color));
+    drawable.addState(new int[] { -android.R.attr.state_selected, android.R.attr.state_enabled },
+                      makeDefaultDrawable(context, color));
+    int unselectedDisabledColor = getDisabledTagColor(context);
+    drawable.addState(new int[] { -android.R.attr.state_selected, -android.R.attr.state_enabled },
+                      makeDefaultDrawable(context, unselectedDisabledColor));
     return drawable;
+  }
+
+  private static int getDisabledTagColor(@NonNull Context context)
+  {
+    Resources res = context.getResources();
+    return ThemeUtils.isNightTheme() ? res.getColor(R.color.white_12)
+                                     : res.getColor(R.color.black_12);
   }
 
   @NonNull
@@ -43,12 +56,13 @@ public class TagsResFactory
   {
     return new ColorStateList(
         new int[][] {
-            new int[] { android.R.attr.state_selected },
-            new int[] {}
-        },
+            new int[] { android.R.attr.state_selected, android.R.attr.state_enabled },
+            new int[] { -android.R.attr.state_selected, android.R.attr.state_enabled },
+            new int[] { -android.R.attr.state_selected, -android.R.attr.state_enabled } },
         new int[] {
             context.getResources().getColor(android.R.color.white),
-            color
+            color,
+            getDisabledTagColor(context)
         }
     );
   }

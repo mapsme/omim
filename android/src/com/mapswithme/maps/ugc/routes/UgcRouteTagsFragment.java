@@ -38,6 +38,7 @@ import com.mapswithme.util.UiUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class UgcRouteTagsFragment extends BaseMwmFragment implements BookmarkManager.BookmarksCatalogListener,
                                                                      OnItemClickListener<Pair<TagsAdapter, TagsAdapter.TagViewHolder>>,
@@ -46,6 +47,7 @@ public class UgcRouteTagsFragment extends BaseMwmFragment implements BookmarkMan
   private static final String BUNDLE_SELECTED_TAGS = "bundle_saved_tags";
   private static final String ERROR_LOADING_DIALOG_TAG = "error_loading_dialog";
   private static final int ERROR_LOADING_DIALOG_REQ_CODE = 205;
+  private static final int TAGS_LIMIT = 1;
 
   @SuppressWarnings("NullableProblems")
   @NonNull
@@ -200,7 +202,7 @@ public class UgcRouteTagsFragment extends BaseMwmFragment implements BookmarkMan
       showErrorLoadingDialog();
       return;
     }
-    installTags(tagsGroups);
+    installTags(tagsGroups, TAGS_LIMIT);
   }
 
   @Override
@@ -210,11 +212,12 @@ public class UgcRouteTagsFragment extends BaseMwmFragment implements BookmarkMan
     /* Not ready yet */
   }
 
-  private void installTags(@NonNull List<CatalogTagsGroup> tagsGroups)
+  private void installTags(@NonNull List<CatalogTagsGroup> tagsGroups, int tagsLimit)
   {
     List<CatalogTag> savedStateTags = validateSavedState(mSavedInstanceState);
     TagGroupNameAdapter categoryAdapter = new TagGroupNameAdapter(tagsGroups);
-    mTagsAdapter = new TagsCompositeAdapter(getContext(), tagsGroups, savedStateTags, this);
+    mTagsAdapter = new TagsCompositeAdapter(getContext(), tagsGroups, savedStateTags, this,
+                                            tagsLimit);
     RecyclerCompositeAdapter compositeAdapter = makeCompositeAdapter(categoryAdapter, mTagsAdapter);
     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
                                                                 LinearLayoutManager.VERTICAL,
@@ -262,9 +265,11 @@ public class UgcRouteTagsFragment extends BaseMwmFragment implements BookmarkMan
                           @NonNull Pair<TagsAdapter, TagsAdapter.TagViewHolder> item)
   {
     ActivityCompat.invalidateOptionsMenu(getActivity());
-    TagsAdapter adapter = item.first;
-    int position = item.second.getAdapterPosition();
-    adapter.notifyItemChanged(position);
+    Objects.requireNonNull(mTagsAdapter);
+    for (int i = 0; i < mTagsAdapter.getItemCount(); i++)
+    {
+      mTagsAdapter.getItem(i).notifyDataSetChanged();
+    }
   }
 
   @Override

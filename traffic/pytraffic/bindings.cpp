@@ -15,6 +15,7 @@
 #include "std/string.hpp"
 #include "std/vector.hpp"
 
+#include "pyhelpers/module_version.hpp"
 #include "pyhelpers/vector_list_conversion.hpp"
 #include "pyhelpers/vector_uint8.hpp"
 
@@ -102,7 +103,8 @@ boost::python::list GenerateTrafficKeys(string const & mwmPath)
 }
 
 vector<uint8_t> GenerateTrafficValues(vector<traffic::TrafficInfo::RoadSegmentId> const & keys,
-                                      boost::python::dict const & segmentMappingDict)
+                                      boost::python::dict const & segmentMappingDict,
+                                      uint8_t useTempBlock)
 {
   SegmentMapping segmentMapping;
   boost::python::list mappingKeys = segmentMappingDict.keys();
@@ -124,6 +126,9 @@ vector<uint8_t> GenerateTrafficValues(vector<traffic::TrafficInfo::RoadSegmentId
   for (auto const & kv : coloring)
   {
     ASSERT_EQUAL(kv.first, keys[i], ());
+    if (useTempBlock == 0 && kv.second == traffic::SpeedGroup::TempBlock)
+      continue;
+
     values[i] = kv.second;
     ++i;
   }
@@ -140,16 +145,17 @@ vector<uint8_t> GenerateTrafficValuesFromList(boost::python::list const & keys,
   vector<traffic::TrafficInfo::RoadSegmentId> keysVec =
       python_list_to_std_vector<traffic::TrafficInfo::RoadSegmentId>(keys);
 
-  return GenerateTrafficValues(keysVec, segmentMappingDict);
+  return GenerateTrafficValues(keysVec, segmentMappingDict, 1 /* useTempBlock */);
 }
 
 vector<uint8_t> GenerateTrafficValuesFromBinary(vector<uint8_t> const & keysBlob,
-                                                boost::python::dict const & segmentMappingDict)
+                                                boost::python::dict const & segmentMappingDict,
+                                                uint8_t useTempBlock = 1)
 {
   vector<traffic::TrafficInfo::RoadSegmentId> keys;
   traffic::TrafficInfo::DeserializeTrafficKeys(keysBlob, keys);
 
-  return GenerateTrafficValues(keys, segmentMappingDict);
+  return GenerateTrafficValues(keys, segmentMappingDict, useTempBlock);
 }
 
 void LoadClassificator(string const & classifPath)
@@ -162,6 +168,7 @@ void LoadClassificator(string const & classifPath)
 BOOST_PYTHON_MODULE(pytraffic)
 {
   using namespace boost::python;
+  scope().attr("__version__") = PYBINDINGS_VERSION;
 
   // Register the to-python converters.
   to_python_converter<vector<uint8_t>, vector_uint8t_to_str>();
@@ -198,5 +205,6 @@ BOOST_PYTHON_MODULE(pytraffic)
   def("load_classificator", LoadClassificator);
   def("generate_traffic_keys", GenerateTrafficKeys);
   def("generate_traffic_values_from_list", GenerateTrafficValuesFromList);
-  def("generate_traffic_values_from_binary", GenerateTrafficValuesFromBinary);
+  def("generate_traffic_values_from_binary", GenerateTrafficValuesFromBinary,
+      (arg("keysBlob"), arg("segmentMappingDict"), arg("useTempBlock") = 1));
 }

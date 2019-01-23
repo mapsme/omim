@@ -225,6 +225,23 @@ Platform::ChargingStatus Platform::GetChargingStatus()
   }
 }
 
+uint8_t Platform::GetBatteryLevel()
+{
+  auto const level = UIDevice.currentDevice.batteryLevel;
+
+  ASSERT_GREATER_OR_EQUAL(level, -1.0, ());
+  ASSERT_LESS_OR_EQUAL(level, 1.0, ());
+
+  if (level == -1.0)
+    return 100;
+
+  auto const result = static_cast<uint8_t>(level * 100);
+
+  CHECK_LESS_OR_EQUAL(result, 100, ());
+
+  return result;
+}
+
 void Platform::SetupMeasurementSystem() const
 {
   auto units = measurement_utils::Units::Metric;

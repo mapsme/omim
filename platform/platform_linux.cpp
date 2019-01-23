@@ -260,6 +260,12 @@ Platform::ChargingStatus Platform::GetChargingStatus()
   return Platform::ChargingStatus::Plugged;
 }
 
+uint8_t Platform::GetBatteryLevel()
+{
+  // This value is always 100 for desktop.
+  return 100;
+}
+
 void Platform::SetGuiThread(unique_ptr<base::TaskLoop> guiThread)
 {
   m_guiThread = move(guiThread);

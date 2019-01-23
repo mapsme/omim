@@ -23,6 +23,7 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <type_traits>
 #include <vector>
 
 namespace routing
@@ -120,7 +121,7 @@ public:
       // There are same in common, but in case of different version of mwms
       // their's geometry can differ from each other. Because of this we can not
       // build the route, because we fail in astar_algorithm.hpp CHECK(invariant) sometimes.
-      if (s.IsRealSegment() || SegmentsAreEqualByGeometry(s, *twinSeg))
+      if (SegmentsAreEqualByGeometry(s, *twinSeg))
         twins.push_back(*twinSeg);
       else
         LOG(LINFO, ("Bad cross mwm feature, differ in geometry. Current:", s, ", twin:", *twinSeg));
@@ -186,8 +187,17 @@ private:
   }
 
   /// \brief Checks segment for equality point by point.
-   bool SegmentsAreEqualByGeometry(Segment const & one, Segment const & two)
+  bool SegmentsAreEqualByGeometry(Segment const & one, Segment const & two)
   {
+    // Do not check for transit graph.
+    if (!one.IsRealSegment() || !two.IsRealSegment())
+      return true;
+
+    static_assert(std::is_same<CrossMwmId, base::GeoObjectId>::value ||
+                  std::is_same<CrossMwmId, connector::TransitId>::value,
+                  "Be careful of usage other ids here. "
+                  "Make sure, there is not crash with your new CrossMwmId");
+
     std::vector<m2::PointD> geometryOne = GetFeaturePointsBySegment(one);
     std::vector<m2::PointD> geometryTwo = GetFeaturePointsBySegment(two);
 

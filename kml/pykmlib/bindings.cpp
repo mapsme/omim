@@ -29,6 +29,7 @@
 #pragma clang diagnostic ignored "-Wunused-local-typedef"
 #endif
 
+#include "pyhelpers/module_version.hpp"
 #include "pyhelpers/vector_uint8.hpp"
 #include "pyhelpers/vector_list_conversion.hpp"
 
@@ -312,6 +313,7 @@ std::string AccessRulesToString(AccessRules accessRules)
   case AccessRules::P2P: return "P2P";
   case AccessRules::Paid: return "PAID";
   case AccessRules::Public: return "PUBLIC";
+  case AccessRules::AuthorOnly: return "AUTHOR_ONLY";
   case AccessRules::Count: CHECK(false, ("Unknown access rules")); return {};
   }
 }
@@ -642,6 +644,7 @@ std::string IndexToClassificatorType(uint32_t index)
 
 BOOST_PYTHON_MODULE(pykmlib)
 {
+  scope().attr("__version__") = PYBINDINGS_VERSION;
   register_exception_translator<std::runtime_error>(&TranslateRuntimeError);
   TimestampConverter();
   LatLonConverter();
@@ -664,6 +667,7 @@ BOOST_PYTHON_MODULE(pykmlib)
     .value(AccessRulesToString(AccessRules::P2P).c_str(), AccessRules::P2P)
     .value(AccessRulesToString(AccessRules::Paid).c_str(), AccessRules::Paid)
     .value(AccessRulesToString(AccessRules::Public).c_str(), AccessRules::Public)
+    .value(AccessRulesToString(AccessRules::AuthorOnly).c_str(), AccessRules::AuthorOnly)
     .export_values();
 
   enum_<BookmarkIcon>("BookmarkIcon")

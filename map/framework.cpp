@@ -557,6 +557,7 @@ Framework::Framework(FrameworkParams const & params)
   eye::Eye::Instance().TrimExpired();
   eye::Eye::Instance().Subscribe(&m_notificationManager);
 
+  GetPowerManager().Load();
   GetPowerManager().Subscribe(this);
 }
 
@@ -2583,8 +2584,16 @@ void Framework::SaveTransliteration(bool allowTranslit)
 
 void Framework::Allow3dMode(bool allow3d, bool allow3dBuildings)
 {
-  if (m_drapeEngine != nullptr)
-    m_drapeEngine->Allow3dMode(allow3d, allow3dBuildings);
+  if (m_drapeEngine == nullptr)
+    return;
+
+  if (!m_powerManager.IsFacilityEnabled(power_management::Facility::PerspectiveView))
+    allow3d = false;
+
+  if (!m_powerManager.IsFacilityEnabled(power_management::Facility::Buildings3d))
+    allow3dBuildings = false;
+
+  m_drapeEngine->Allow3dMode(allow3d, allow3dBuildings);
 }
 
 void Framework::Save3dMode(bool allow3d, bool allow3dBuildings)
@@ -3774,10 +3783,21 @@ booking::AvailabilityParams Framework::GetLastBookingAvailabilityParams() const
   return m_bookingAvailabilityParams;
 }
 
-void Framework::OnPowerFacilityChanged(PowerManager::Facility const facility, bool enabled)
+void Framework::OnPowerFacilityChanged(power_management::Facility const facility, bool enabled)
 {
-  // Dummy.
-  // TODO: process facilities which do not have switch in UI.
+  if (facility == power_management::Facility::PerspectiveView ||
+      facility == power_management::Facility::Buildings3d)
+  {
+    bool allow3d = true, allow3dBuildings = true;
+    Load3dMode(allow3d, allow3dBuildings);
+
+    if (facility == power_management::Facility::PerspectiveView)
+      allow3d = allow3d && enabled;
+    else
+      allow3dBuildings = allow3dBuildings && enabled;
+
+    Allow3dMode(allow3d, allow3dBuildings);
+  }
 }
 
 TipsApi const & Framework::GetTipsApi() const

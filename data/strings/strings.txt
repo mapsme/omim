@@ -37153,3 +37153,27 @@
     zh-Hans = 分享您的印象很容易
     zh-Hant = 分享您的印象很容易
     sk = Je ľahké podeliť sa o vaše dojmy
+
+  [power_management_title]
+    comment = FIXME. https://confluence.mail.ru/display/MAPSME/Energy+saving?preview=/110152893/184394356/image2019-1-15_18-55-54.png
+    en = power management
+
+  [power_management_settings]
+    comment = FIXME. https://confluence.mail.ru/display/MAPSME/Energy+saving?preview=/110152893/184394356/image2019-1-15_18-55-54.png
+    en = power management settings
+
+  [power_management_description]
+    comment = FIXME. https://confluence.mail.ru/display/MAPSME/Energy+saving?preview=/110152893/184394356/image2019-1-15_18-55-54.png
+    en = when automatic mode is selected...
+
+  [power_management_setting_never]
+    comment = FIXME. https://confluence.mail.ru/display/MAPSME/Energy+saving?preview=/110152893/184394356/image2019-1-15_18-55-54.png
+    en = never
+
+  [power_management_setting_auto]
+    comment = FIXME. https://confluence.mail.ru/display/MAPSME/Energy+saving?preview=/110152893/184394356/image2019-1-15_18-55-54.png
+    en = auto
+
+  [power_managment_setting_manual_max]
+    comment = FIXME. https://confluence.mail.ru/display/MAPSME/Energy+saving?preview=/110152893/184394356/image2019-1-15_18-55-54.png
+    en = extreme power saving
