@@ -236,20 +236,10 @@ private:
     // p_r(v) + p_f(v) = const. Note: this condition is called consistence.
     Weight ConsistentHeuristic(Vertex const & v) const
     {
-      auto const piF = graph.HeuristicCostEstimate(v, finalVertex);
-      auto const piR = graph.HeuristicCostEstimate(v, startVertex);
       if (forward)
-      {
-        /// @todo careful: with this "return" here and below in the Backward case
-        /// the heuristic becomes inconsistent but still seems to work.
-        /// return HeuristicCostEstimate(v, finalVertex);
-        return 0.5 * (piF - piR + m_piRT);
-      }
+        return graph.HeuristicCostEstimate(v, finalVertex);
       else
-      {
-        // return HeuristicCostEstimate(v, startVertex);
-        return 0.5 * (piR - piF + m_piFS);
-      }
+        return graph.HeuristicCostEstimate(v, startVertex);
     }
 
     void GetAdjacencyList(Vertex const & v, std::vector<Edge> & adj)
