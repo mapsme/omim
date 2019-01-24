@@ -73,9 +73,9 @@ inline int matchlen(const unsigned char* buf1,
 template <class T>
 SearchResult search(const T & sa,
                     const unsigned char* srcbuf,
-                    int srcsize,
+                    size_t srcsize,
                     const unsigned char* keybuf,
-                    int keysize) {
+                    size_t keysize) {
   int lo = 0;
   int hi = srcsize;
   while (hi - lo > 1) {

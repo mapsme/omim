@@ -57,7 +57,7 @@ BSDiffStatus MBS_ReadHeader(Source & src, MBSPatchHeader* header) {
   return OK;
 }
 
-std::string DebugPrint(BSDiffStatus status) {
+inline std::string DebugPrint(BSDiffStatus status) {
   switch (status) {
     case OK: return "OK";
     case MEM_ERROR: return "MEM_ERROR";

@@ -83,6 +83,7 @@
 #include "base/checked_cast.hpp"
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
+#include "base/suffix_array.hpp"
 #include "base/timer.hpp"
 
 #include <array>
@@ -109,6 +110,17 @@ private:
   std::vector<uint8_t> m_buf;
   MemWriter<std::vector<uint8_t>> m_writer;
 };
+
+//inline divsuf::saint_t BuildSuffixArray(const divsuf::sauchar_t *T, divsuf::saidx_t *SA, divsuf::saidx_t n)
+inline int32_t BuildSuffixArray(const uint8_t *T, size_t *SA, int32_t n)
+{
+  SA[0] = n;  // Manually add the empty string suffix.
+//  return divsuf::divsufsort(T, SA + 1, n);
+
+  base::Skew(n, T, SA + 1);
+
+  return 0;
+}
 
 inline uint32_t CalculateCrc(const uint8_t* buffer, size_t size) {
   // Calculate Crc by calling CRC method in zlib
@@ -143,11 +155,12 @@ BSDiffStatus CreateBinaryPatch(OldReader & old_reader,
   old_source.Read(old_buf.data(), old_buf.size());
   const uint8_t * old = old_buf.data();
 
-
-  std::vector<divsuf::saidx_t> suffix_array(old_size + 1);
+  std::vector<size_t> suffix_array(old_size + 1);
 
   base::Timer suf_sort_timer;
-  divsuf::saint_t result = divsuf::divsufsort_include_empty(old, suffix_array.data(), old_size);
+  divsuf::saint_t result = BuildSuffixArray(
+       old, suffix_array.data(), old_size);
+
   LOG(LINFO, ("Done divsufsort", suf_sort_timer.ElapsedSeconds()));
   if (result != 0)
     return UNEXPECTED_ERROR;

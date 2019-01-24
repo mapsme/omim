@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "3party/bsdiff-courgette/bsdiff/bsdiff.h"
 #include "3party/bsdiff-courgette/bsdiff/bsdiff_search.h"
 #include "3party/bsdiff-courgette/divsufsort/divsufsort.h"
 
@@ -20,8 +21,10 @@ UNIT_TEST(BSDiffSearchTest_Search)
   string const str = "the quick brown fox jumps over the lazy dog.";
   int const size = static_cast<int>(str.size());
   auto buf = reinterpret_cast<unsigned char const * const>(str.data());
-  vector<divsuf::saidx_t> suffix_array(size + 1);
-  divsuf::divsufsort_include_empty(buf, suffix_array.data(), size);
+
+  vector<size_t> suffix_array(size + 1);
+
+  bsdiff::BuildSuffixArray(buf, suffix_array.data(), size);
 
   // Specific queries.
   struct
@@ -108,8 +111,8 @@ UNIT_TEST(BSDiffSearchTest_SearchExact)
     unsigned char const * const buf =
         reinterpret_cast<unsigned char const * const>(testCases[idx].data());
 
-    vector<divsuf::saidx_t> suffix_array(size + 1);
-    divsuf::divsufsort_include_empty(buf, suffix_array.data(), size);
+    vector<size_t> suffix_array(size + 1);
+    bsdiff::BuildSuffixArray(buf, suffix_array.data(), size);
 
     // Test exact matches for every non-empty substring.
     for (int lo = 0; lo < size; ++lo)
