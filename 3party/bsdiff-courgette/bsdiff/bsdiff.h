@@ -143,7 +143,9 @@ BSDiffStatus CreateBinaryPatch(OldReader & old_reader,
   old_source.Read(old_buf.data(), old_buf.size());
   const uint8_t * old = old_buf.data();
 
+
   std::vector<divsuf::saidx_t> suffix_array(old_size + 1);
+
   base::Timer suf_sort_timer;
   divsuf::saint_t result = divsuf::divsufsort_include_empty(old, suffix_array.data(), old_size);
   LOG(LINFO, ("Done divsufsort", suf_sort_timer.ElapsedSeconds()));
