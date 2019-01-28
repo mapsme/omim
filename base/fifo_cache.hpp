@@ -29,7 +29,15 @@ public:
   {
     auto const it = m_map.find(key);
     if (it != m_map.cend())
+    {
+      if (Size() >= m_capacity && key == m_fifo.back())
+      {
+        m_fifo.push_front(key);
+        ASSERT_NOT_EQUAL(m_fifo.back(), key, ("Dangling pointer here."));
+      }
+
       return it->second;
+    }
 
     if (Size() >= m_capacity)
     {
