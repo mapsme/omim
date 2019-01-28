@@ -90,7 +90,7 @@ class GeometryLoader
 public:
   virtual ~GeometryLoader() = default;
 
-  virtual void Load(uint32_t featureId, RoadGeometry & road) = 0;
+  virtual void Load(uint32_t featureId, std::shared_ptr<RoadGeometry> road) = 0;
 
   // handle should be alive: it is caller responsibility to check it.
   static std::unique_ptr<GeometryLoader> Create(DataSource const & dataSource,
@@ -121,13 +121,13 @@ public:
 
   /// \note The reference returned by the method is valid until the next call of GetRoad()
   /// of GetPoint() methods.
-  RoadGeometry const & GetRoad(uint32_t featureId);
+  std::shared_ptr<RoadGeometry> GetRoad(uint32_t featureId);
 
   /// \note The reference returned by the method is valid until the next call of GetRoad()
   /// of GetPoint() methods.
   m2::PointD const & GetPoint(RoadPoint const & rp)
   {
-    return GetRoad(rp.GetFeatureId()).GetPoint(rp.GetPointId());
+    return GetRoad(rp.GetFeatureId())->GetPoint(rp.GetPointId());
   }
 
 private:

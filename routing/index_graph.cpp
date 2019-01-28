@@ -96,7 +96,7 @@ void IndexGraph::GetLastPointsForJoint(vector<Segment> const & children,
   for (auto const & child : children)
   {
     uint32_t const startPointId = child.GetPointId(!isOutgoing /* front */);
-    uint32_t const pointsNumber = m_geometry->GetRoad(child.GetFeatureId()).GetPointsCount();
+    uint32_t const pointsNumber = m_geometry->GetRoad(child.GetFeatureId())->GetPointsCount();
     CHECK_LESS(startPointId, pointsNumber, ());
 
     uint32_t endPointId;
@@ -172,14 +172,14 @@ RouteWeight IndexGraph::CalcSegmentWeight(Segment const & segment)
 void IndexGraph::GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
                                      vector<SegmentEdge> & edges)
 {
-  RoadGeometry const & road = m_geometry->GetRoad(rp.GetFeatureId());
+  std::shared_ptr<RoadGeometry> road = m_geometry->GetRoad(rp.GetFeatureId());
 
-  if (!road.IsValid())
+  if (!road->IsValid())
     return;
 
-  bool const bidirectional = !road.IsOneWay();
+  bool const bidirectional = !road->IsOneWay();
 
-  if ((isOutgoing || bidirectional) && rp.GetPointId() + 1 < road.GetPointsCount())
+  if ((isOutgoing || bidirectional) && rp.GetPointId() + 1 < road->GetPointsCount())
   {
     GetNeighboringEdge(from,
                        Segment(from.GetMwmId(), rp.GetFeatureId(), rp.GetPointId(), isOutgoing),
@@ -205,14 +205,14 @@ void IndexGraph::GetSegmentCandidateForJoint(Segment const & parent, bool isOutg
 
   m_jointIndex.ForEachPoint(jointId, [&](RoadPoint const & rp)
   {
-    RoadGeometry const & road = m_geometry->GetRoad(rp.GetFeatureId());
-    if (!road.IsValid())
+    std::shared_ptr<RoadGeometry> road = m_geometry->GetRoad(rp.GetFeatureId());
+    if (!road->IsValid())
       return;
 
-    bool const bidirectional = !road.IsOneWay();
+    bool const bidirectional = !road->IsOneWay();
     auto const pointId = rp.GetPointId();
 
-    if ((isOutgoing || bidirectional) && pointId + 1 < road.GetPointsCount())
+    if ((isOutgoing || bidirectional) && pointId + 1 < road->GetPointsCount())
       children.emplace_back(parent.GetMwmId(), rp.GetFeatureId(), pointId, isOutgoing);
 
     if ((!isOutgoing || bidirectional) && pointId > 0)
@@ -290,7 +290,7 @@ void IndexGraph::ReconstructJointSegment(Segment const & parent,
     // Check firstChild for UTurn.
     rp = parent.GetRoadPoint(isOutgoing);
     if (IsUTurn(parent, firstChild) && m_roadIndex.GetJointId(rp) == Joint::kInvalidId
-        && !m_geometry->GetRoad(parent.GetFeatureId()).IsEndPointId(rp.GetPointId()))
+        && !m_geometry->GetRoad(parent.GetFeatureId())->IsEndPointId(rp.GetPointId()))
     {
       continue;
     }
@@ -338,7 +338,7 @@ void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bo
   // Blocking U-turns on internal feature points.
   RoadPoint const rp = from.GetRoadPoint(isOutgoing);
   if (IsUTurn(from, to) && m_roadIndex.GetJointId(rp) == Joint::kInvalidId
-      && !m_geometry->GetRoad(from.GetFeatureId()).IsEndPointId(rp.GetPointId()))
+      && !m_geometry->GetRoad(from.GetFeatureId())->IsEndPointId(rp.GetPointId()))
   {
     return;
   }
@@ -359,8 +359,8 @@ void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bo
 
 RouteWeight IndexGraph::GetPenalties(Segment const & u, Segment const & v)
 {
-  bool const fromPassThroughAllowed = m_geometry->GetRoad(u.GetFeatureId()).IsPassThroughAllowed();
-  bool const toPassThroughAllowed = m_geometry->GetRoad(v.GetFeatureId()).IsPassThroughAllowed();
+  bool const fromPassThroughAllowed = m_geometry->GetRoad(u.GetFeatureId())->IsPassThroughAllowed();
+  bool const toPassThroughAllowed = m_geometry->GetRoad(v.GetFeatureId())->IsPassThroughAllowed();
   // Route crosses border of pass-through/non-pass-through area if |u| and |v| have different
   // pass through restrictions.
   int32_t const passThroughPenalty = fromPassThroughAllowed == toPassThroughAllowed ? 0 : 1;

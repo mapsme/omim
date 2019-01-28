@@ -83,7 +83,7 @@ private:
     return 50 * 60 + (startToFinishDistanceM / 1000) * 3 * 60;
   }
 
-  RoadGeometry const & GetRealRoadGeometry(NumMwmId mwmId, uint32_t featureId);
+  std::shared_ptr<RoadGeometry> GetRealRoadGeometry(NumMwmId mwmId, uint32_t featureId);
   void AddRealEdges(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges);
   TransitGraph & GetTransitGraph(NumMwmId mwmId);
 

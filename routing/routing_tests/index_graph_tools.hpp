@@ -64,7 +64,7 @@ public:
   // GeometryLoader overrides:
   ~TestGeometryLoader() override = default;
 
-  void Load(uint32_t featureId, routing::RoadGeometry & road) override;
+  void Load(uint32_t featureId, std::shared_ptr<routing::RoadGeometry> road) override;
 
   void AddRoad(uint32_t featureId, bool oneWay, float speed,
                routing::RoadGeometry::Points const & points);
@@ -81,7 +81,7 @@ public:
   // GeometryLoader overrides:
   ~ZeroGeometryLoader() override = default;
 
-  void Load(uint32_t featureId, routing::RoadGeometry & road) override;
+  void Load(uint32_t featureId, std::shared_ptr<routing::RoadGeometry> road) override;
 };
 
 class TestIndexGraphLoader final : public IndexGraphLoader
@@ -138,8 +138,8 @@ public:
   // EdgeEstimator overrides:
   ~WeightedEdgeEstimator() override = default;
 
-  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & /* road */) const override;
-  double CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const override { return 0.0; }
+  double CalcSegmentWeight(Segment const & segment, std::shared_ptr<RoadGeometry> /* road */) const override;
+  double CalcSegmentETA(Segment const & segment, std::shared_ptr<RoadGeometry> road) const override { return 0.0; }
   double GetUTurnPenalty() const override;
   bool LeapIsAllowed(NumMwmId /* mwmId */) const override;
 

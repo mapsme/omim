@@ -75,12 +75,12 @@ double GetBicycleClimbPenalty(double tangent, feature::TAltitude altitudeM)
 double GetCarClimbPenalty(double /* tangent */, feature::TAltitude /* altitude */) { return 1.0; }
 
 template <typename GetClimbPenalty>
-double CalcClimbSegment(Purpose purpose, Segment const & segment, RoadGeometry const & road,
+double CalcClimbSegment(Purpose purpose, Segment const & segment, std::shared_ptr<RoadGeometry> road,
                               GetClimbPenalty && getClimbPenalty)
 {
-  Junction const & from = road.GetJunction(segment.GetPointId(false /* front */));
-  Junction const & to = road.GetJunction(segment.GetPointId(true /* front */));
-  VehicleModelInterface::SpeedKMpH const & speed = road.GetSpeed(segment.IsForward());
+  Junction const & from = road->GetJunction(segment.GetPointId(false /* front */));
+  Junction const & to = road->GetJunction(segment.GetPointId(true /* front */));
+  VehicleModelInterface::SpeedKMpH const & speed = road->GetSpeed(segment.IsForward());
 
   double const distance = MercatorBounds::DistanceOnEarth(from.GetPoint(), to.GetPoint());
   double const speedMpS = KMPH2MPS(purpose == Purpose::Weight ? speed.m_weight : speed.m_eta);
@@ -138,12 +138,12 @@ public:
   double GetUTurnPenalty() const override { return 0.0 /* seconds */; }
   bool LeapIsAllowed(NumMwmId /* mwmId */) const override { return false; }
 
-  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const override
+  double CalcSegmentWeight(Segment const & segment, std::shared_ptr<RoadGeometry> road) const override
   {
     return CalcClimbSegment(Purpose::Weight, segment, road, GetPedestrianClimbPenalty);
   }
 
-  double CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const override
+  double CalcSegmentETA(Segment const & segment, std::shared_ptr<RoadGeometry> road) const override
   {
     return CalcClimbSegment(Purpose::ETA, segment, road, GetPedestrianClimbPenalty);
   }
@@ -162,12 +162,12 @@ public:
   double GetUTurnPenalty() const override { return 20.0 /* seconds */; }
   bool LeapIsAllowed(NumMwmId /* mwmId */) const override { return false; }
 
-  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const override
+  double CalcSegmentWeight(Segment const & segment, std::shared_ptr<RoadGeometry> road) const override
   {
     return CalcClimbSegment(Purpose::Weight, segment, road, GetBicycleClimbPenalty);
   }
 
-  double CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const override
+  double CalcSegmentETA(Segment const & segment, std::shared_ptr<RoadGeometry> road) const override
   {
     return CalcClimbSegment(Purpose::ETA, segment, road, GetBicycleClimbPenalty);
   }
@@ -181,13 +181,13 @@ public:
                double offroadSpeedKMpH);
 
   // EdgeEstimator overrides:
-  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const override;
-  double CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const override;
+  double CalcSegmentWeight(Segment const & segment, std::shared_ptr<RoadGeometry> road) const override;
+  double CalcSegmentETA(Segment const & segment, std::shared_ptr<RoadGeometry> road) const override;
   double GetUTurnPenalty() const override;
   bool LeapIsAllowed(NumMwmId mwmId) const override;
 
 private:
-  double CalcSegment(Purpose purpose, Segment const & segment, RoadGeometry const & road) const;
+  double CalcSegment(Purpose purpose, Segment const & segment, std::shared_ptr<RoadGeometry> road) const;
   shared_ptr<TrafficStash> m_trafficStash;
 };
 
@@ -197,12 +197,12 @@ CarEstimator::CarEstimator(shared_ptr<TrafficStash> trafficStash, double maxWeig
 {
 }
 
-double CarEstimator::CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const
+double CarEstimator::CalcSegmentWeight(Segment const & segment, std::shared_ptr<RoadGeometry> road) const
 {
   return CalcSegment(Purpose::Weight, segment, road);
 }
 
-double CarEstimator::CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const
+double CarEstimator::CalcSegmentETA(Segment const & segment, std::shared_ptr<RoadGeometry> road) const
 {
   return CalcSegment(Purpose::ETA, segment, road);
 }
@@ -217,7 +217,7 @@ double CarEstimator::GetUTurnPenalty() const
 
 bool CarEstimator::LeapIsAllowed(NumMwmId mwmId) const { return !m_trafficStash->Has(mwmId); }
 
-double CarEstimator::CalcSegment(Purpose purpose, Segment const & segment, RoadGeometry const & road) const
+double CarEstimator::CalcSegment(Purpose purpose, Segment const & segment, std::shared_ptr<RoadGeometry> road) const
 {
   // Current time estimation are too optimistic.
   // Need more accurate tuning: traffic lights, traffic jams, road models and so on.

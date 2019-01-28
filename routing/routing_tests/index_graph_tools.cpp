@@ -46,7 +46,7 @@ void RestrictionTest::SetStarter(FakeEnding const & start, FakeEnding const & fi
 }
 
 // TestGeometryLoader ------------------------------------------------------------------------------
-void TestGeometryLoader::Load(uint32_t featureId, RoadGeometry & road)
+void TestGeometryLoader::Load(uint32_t featureId, std::shared_ptr<RoadGeometry> road)
 {
   auto it = m_roads.find(featureId);
   if (it == m_roads.cend())
@@ -72,11 +72,12 @@ void TestGeometryLoader::SetPassThroughAllowed(uint32_t featureId, bool passThro
 }
 
 // ZeroGeometryLoader ------------------------------------------------------------------------------
-void ZeroGeometryLoader::Load(uint32_t /* featureId */, routing::RoadGeometry & road)
+void ZeroGeometryLoader::Load(uint32_t /* featureId */, std::shared_ptr<routing::RoadGeometry> road)
 {
   // Any valid road will do.
   auto const points = routing::RoadGeometry::Points({{0.0, 0.0}, {0.0, 1.0}});
-  road = RoadGeometry(true /* oneWay */, 1.0 /* weightSpeedKMpH */, 1.0 /* etaSpeedKMpH */, points);
+  road = std::make_shared<routing::RoadGeometry>(true /* oneWay */, 1.0 /* weightSpeedKMpH */,
+                                                 1.0 /* etaSpeedKMpH */, points);
 }
 
 // TestIndexGraphLoader ----------------------------------------------------------------------------
@@ -107,7 +108,7 @@ void TestTransitGraphLoader::AddGraph(NumMwmId mwmId, unique_ptr<TransitGraph> g
 
 // WeightedEdgeEstimator --------------------------------------------------------------
 double WeightedEdgeEstimator::CalcSegmentWeight(Segment const & segment,
-                                                RoadGeometry const & /* road */) const
+                                                std::shared_ptr<RoadGeometry> /* road */) const
 {
   auto const it = m_segmentWeights.find(segment);
   CHECK(it != m_segmentWeights.cend(), ());

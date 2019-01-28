@@ -77,7 +77,7 @@ Junction const & TransitWorldGraph::GetJunction(Segment const & segment, bool fr
     return GetTransitGraph(segment.GetMwmId()).GetJunction(segment, front);
 
   return GetRealRoadGeometry(segment.GetMwmId(), segment.GetFeatureId())
-      .GetJunction(segment.GetPointId(front));
+      ->GetJunction(segment.GetPointId(front));
 }
 
 m2::PointD const & TransitWorldGraph::GetPoint(Segment const & segment, bool front)
@@ -89,14 +89,14 @@ bool TransitWorldGraph::IsOneWay(NumMwmId mwmId, uint32_t featureId)
 {
   if (TransitGraph::IsTransitFeature(featureId))
     return true;
-  return GetRealRoadGeometry(mwmId, featureId).IsOneWay();
+  return GetRealRoadGeometry(mwmId, featureId)->IsOneWay();
 }
 
 bool TransitWorldGraph::IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId)
 {
   if (TransitGraph::IsTransitFeature(featureId))
     return true;
-  return GetRealRoadGeometry(mwmId, featureId).IsPassThroughAllowed();
+  return GetRealRoadGeometry(mwmId, featureId)->IsPassThroughAllowed();
 }
 
 void TransitWorldGraph::ClearCachedGraphs()
@@ -195,7 +195,7 @@ void TransitWorldGraph::GetTwinsInner(Segment const & segment, bool isOutgoing,
   m_crossMwmGraph->GetTwins(segment, isOutgoing, twins);
 }
 
-RoadGeometry const & TransitWorldGraph::GetRealRoadGeometry(NumMwmId mwmId, uint32_t featureId)
+std::shared_ptr<RoadGeometry> TransitWorldGraph::GetRealRoadGeometry(NumMwmId mwmId, uint32_t featureId)
 {
   CHECK(!TransitGraph::IsTransitFeature(featureId), ("GetRealRoadGeometry not designed for transit."));
   return m_indexLoader->GetGeometry(mwmId).GetRoad(featureId);

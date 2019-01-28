@@ -92,8 +92,8 @@ void SingleVehicleWorldGraph::GetEdgeList(Segment const & segment, bool isOutgoi
 
 Junction const & SingleVehicleWorldGraph::GetJunction(Segment const & segment, bool front)
 {
-  return GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId())
-      .GetJunction(segment.GetPointId(front));
+  auto geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId());
+  return geometry->GetJunction(segment.GetPointId(front));
 }
 
 m2::PointD const & SingleVehicleWorldGraph::GetPoint(Segment const & segment, bool front)
@@ -103,12 +103,12 @@ m2::PointD const & SingleVehicleWorldGraph::GetPoint(Segment const & segment, bo
 
 bool SingleVehicleWorldGraph::IsOneWay(NumMwmId mwmId, uint32_t featureId)
 {
-  return GetRoadGeometry(mwmId, featureId).IsOneWay();
+  return GetRoadGeometry(mwmId, featureId)->IsOneWay();
 }
 
 bool SingleVehicleWorldGraph::IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId)
 {
-  return GetRoadGeometry(mwmId, featureId).IsPassThroughAllowed();
+  return GetRoadGeometry(mwmId, featureId)->IsPassThroughAllowed();
 }
 
 void SingleVehicleWorldGraph::GetOutgoingEdgesList(Segment const & segment,
@@ -176,7 +176,7 @@ vector<RouteSegment::SpeedCamera> SingleVehicleWorldGraph::GetSpeedCamInfo(Segme
   return m_loader->GetSpeedCameraInfo(segment);
 }
 
-RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId)
+std::shared_ptr<RoadGeometry> SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId)
 {
   return m_loader->GetGeometry(mwmId).GetRoad(featureId);
 }

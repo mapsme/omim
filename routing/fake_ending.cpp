@@ -51,9 +51,9 @@ namespace routing
 FakeEnding MakeFakeEnding(Segment const & segment, m2::PointD const & point, IndexGraph & graph)
 {
   auto const & road = graph.GetGeometry().GetRoad(segment.GetFeatureId());
-  bool const oneWay = road.IsOneWay();
-  auto const & frontJunction = road.GetJunction(segment.GetPointId(true /* front */));
-  auto const & backJunction = road.GetJunction(segment.GetPointId(false /* front */));
+  bool const oneWay = road->IsOneWay();
+  auto const & frontJunction = road->GetJunction(segment.GetPointId(true /* front */));
+  auto const & backJunction = road->GetJunction(segment.GetPointId(false /* front */));
   return MakeFakeEndingImpl(backJunction, frontJunction, segment, point, oneWay);
 }
 

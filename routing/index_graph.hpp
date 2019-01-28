@@ -92,7 +92,7 @@ private:
   RouteWeight GetPenalties(Segment const & u, Segment const & v);
   m2::PointD const & GetPoint(Segment const & segment, bool front)
   {
-    return GetGeometry().GetRoad(segment.GetFeatureId()).GetPoint(segment.GetPointId(front));
+    return GetGeometry().GetRoad(segment.GetFeatureId())->GetPoint(segment.GetPointId(front));
   }
 
   void GetLastPointsForJoint(std::vector<Segment> const & children, bool isOutgoing, std::vector<uint32_t> & lastPoints);

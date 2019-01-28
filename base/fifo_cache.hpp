@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <functional>
+#include <memory>
 #include <unordered_map>
 
 #include <boost/circular_buffer.hpp>
@@ -14,7 +15,7 @@ class FifoCache
   template <typename K, typename V> friend class FifoCacheTest;
 
 public:
-  using Loader = std::function<void(Key const & key, Value & value)>;
+  using Loader = std::function<void(Key const & key, std::shared_ptr<Value> value)>;
 
   /// \param capacity maximum size of the cache in number of items.
   /// \param loader Function which is called if it's necessary to load a new item for the cache.
@@ -25,19 +26,11 @@ public:
 
   /// \brief Loads value, if it's necessary, by |key| with |m_loader|, puts it to cache and
   /// returns the reference to the value to |m_map|.
-  Value const & GetValue(Key const & key)
+  std::shared_ptr<Value> GetValue(Key const & key)
   {
     auto const it = m_map.find(key);
     if (it != m_map.cend())
-    {
-      if (Size() >= m_capacity && key == m_fifo.back())
-      {
-        m_fifo.push_front(key);
-        ASSERT_NOT_EQUAL(m_fifo.back(), key, ("Dangling pointer here."));
-      }
-
       return it->second;
-    }
 
     if (Size() >= m_capacity)
     {
@@ -47,15 +40,16 @@ public:
 
     m_fifo.push_front(key);
 
-    auto & v = m_map[key];
+    auto v = std::make_shared<Value>();
     m_loader(key, v);
+    m_map[key] = v;
     return v;
   }
 
 private:
   size_t Size() const { return m_map.size(); }
 
-  std::unordered_map<Key, Value> m_map;
+  std::unordered_map<Key, std::shared_ptr<Value>> m_map;
   boost::circular_buffer<Key> m_fifo;
   size_t m_capacity;
   Loader m_loader;

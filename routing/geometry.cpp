@@ -32,7 +32,7 @@ public:
                      AttrLoader attrLoader, bool loadAltitudes);
 
   // GeometryLoader overrides:
-  void Load(uint32_t featureId, RoadGeometry & road) override;
+  void Load(uint32_t featureId, std::shared_ptr<RoadGeometry> road) override;
 
 private:
   shared_ptr<VehicleModelInterface> m_vehicleModel;
@@ -60,7 +60,7 @@ GeometryLoaderImpl::GeometryLoaderImpl(DataSource const & dataSource,
   CHECK(m_attrLoader.m_maxspeeds, ());
 }
 
-void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road)
+void GeometryLoaderImpl::Load(uint32_t featureId, std::shared_ptr<RoadGeometry> road)
 {
   FeatureType feature;
   bool const isFound = m_guard.GetFeatureByIndex(featureId, feature);
@@ -73,8 +73,8 @@ void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road)
   if (m_loadAltitudes)
     altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature.GetPointsCount()));
 
-  road.Load(*m_vehicleModel, feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
-            m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
+  road->Load(*m_vehicleModel, feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
+             m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
   m_altitudeLoader.ClearCache();
 }
 
@@ -85,7 +85,7 @@ public:
   FileGeometryLoader(string const & fileName, shared_ptr<VehicleModelInterface> vehicleModel);
 
   // GeometryLoader overrides:
-  void Load(uint32_t featureId, RoadGeometry & road) override;
+  void Load(uint32_t featureId, std::shared_ptr<RoadGeometry> road) override;
 
 private:
   FeaturesVectorTest m_featuresVector;
@@ -118,15 +118,15 @@ FileGeometryLoader::FileGeometryLoader(string const & fileName,
   CHECK(m_vehicleModel, ());
 }
 
-void FileGeometryLoader::Load(uint32_t featureId, RoadGeometry & road)
+void FileGeometryLoader::Load(uint32_t featureId, std::shared_ptr<RoadGeometry> road)
 {
   FeatureType feature;
   m_featuresVector.GetVector().GetByIndex(featureId, feature);
   feature.ParseGeometry(FeatureType::BEST_GEOMETRY);
   // Note. If FileGeometryLoader is used for generation cross mwm section for bicycle or
   // pedestrian routing |altitudes| should be used here.
-  road.Load(*m_vehicleModel, feature, nullptr /* altitudes */, m_cityRoads.IsCityRoad(featureId),
-            m_maxspeeds.GetMaxspeed(featureId));
+  road->Load(*m_vehicleModel, feature, nullptr /* altitudes */, m_cityRoads.IsCityRoad(featureId),
+             m_maxspeeds.GetMaxspeed(featureId));
 }
 }  // namespace
 
@@ -190,12 +190,12 @@ Geometry::Geometry(unique_ptr<GeometryLoader> loader)
     : m_loader(move(loader))
     , m_featureIdToRoad(make_unique<FifoCache<uint32_t, RoadGeometry>>(
         kRoadsCacheSize,
-        [this](uint32_t featureId, RoadGeometry & road) { m_loader->Load(featureId, road); }))
+        [this](uint32_t featureId, std::shared_ptr<RoadGeometry> road) { m_loader->Load(featureId, road); }))
 {
   CHECK(m_loader, ());
 }
 
-RoadGeometry const & Geometry::GetRoad(uint32_t featureId)
+std::shared_ptr<RoadGeometry> Geometry::GetRoad(uint32_t featureId)
 {
   ASSERT(m_featureIdToRoad, ());
   ASSERT(m_loader, ());

@@ -78,7 +78,7 @@ private:
   // WorldGraph overrides:
   void GetTwinsInner(Segment const & s, bool isOutgoing, std::vector<Segment> & twins) override;
 
-  RoadGeometry const & GetRoadGeometry(NumMwmId mwmId, uint32_t featureId);
+  std::shared_ptr<RoadGeometry> GetRoadGeometry(NumMwmId mwmId, uint32_t featureId);
 
   std::unique_ptr<CrossMwmGraph> m_crossMwmGraph;
   std::unique_ptr<IndexGraphLoader> m_loader;
