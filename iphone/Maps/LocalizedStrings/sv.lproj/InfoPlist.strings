@@ -22,7 +22,7 @@
 /********** gps strings **********/
 
 /* Needed to explain why we always require access to GPS coordinates, and not only when the app is active. */
-"NSLocationAlwaysAndWhenInUseUsageDescription" = "Användning av geolokalisering i bakgrunden behövs för appens effektiva funktion och personifiering av rekommendationer";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Určovanie vašej aktuálnej polohy na pozadí je nevyhnutné na to, aby ste pomohli cestujúcim zanechaním recenzie na navštívených miestach";
 
 /* Needed to explain why we always require access to GPS coordinates, and not only when the app is active. */
 "NSLocationAlwaysUsageDescription" = "Att fastställa aktuell position i bakgrunden är nödvändigt för att fullt ut använda funktionaliteten hos appen. Det används främst när en rutt ska följas och när din senaste resväg skall sparas.";
