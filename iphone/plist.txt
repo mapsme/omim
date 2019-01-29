@@ -140,42 +140,42 @@
 [[gps strings]]
   [NSLocationAlwaysAndWhenInUseUsageDescription]
     comment = Needed to explain why we always require access to GPS coordinates, and not only when the app is active.
-    en = Defining your current location in the background is necessary for the effective use of application and personal recommendations
-    ru = Использование геолокации в фоне нужно для эффективной работы приложения и персонализации рекомендаций
-    ar = من الضروري تحديد الموقع الحالي في الخلفية للاستخدام الفعال للتطبيق والتوصيات الشخصية
-    cs = Zapnutí určení polohy na pozadí je nutné pro efektivní fungování aplikace a personalizace doporučení
-    da = At definere nuværende lokation i baggrunden er nødvendig for effektiv anvendelse af applikationen og personlige anbefalinger
-    nl = Het definiëren van de huidige locatie op de achtergrond is noodzakelijk voor het effectieve gebruik van toepassing en persoonlijke aanbevelingen
-    fi = Paikannuksen käyttö taustalla on välttämätöntä sovelluksen tehokkaan toiminnan ja suositusten personoimiseksi
-    fr = L'utilisation de la géolocalisation en mode de fond est nécessaire au bon fonctionnement de l'application et à la personnalisation des recommandations
-    de = Die Hintergrund-Geolokation ist für effektives Funktionieren der App und Personalisierung der Empfehlungen erforderlich
-    hu = A jelenlegi helyzet háttérben történő meghatározására szükség van az alkalmazás hatékony használata és a személyre szabott ajánlatok megjelenítése érdekében
-    id = Menentukan lokasi saat ini pada latar belakang adalah hal yang diperlukan untuk penggunaan aplikasi yang lebih efektif serta untuk rekomendasi personal
-    it = Abilitare la localizzazione in background per ottimizzare e personalizzare l'uso dell'App
-    ja = バックグランドでの現在地の特定が、アプリの効果的な利用と個人的なお勧めをするために必要です
-    ko = 백그라운드(배경)에서 현재 장소를 정의하는 것은 어플리케이션의 효과적인 사용과 개인을 위한 추천을 위해 필수적입니다
-    nb = Å finne nåværende plassering i bakgrunnen er nødvendig for effektiv bruk av applikasjon og personlige anbefalinger
-    pl = Zastosowanie geolokalizacji w tle jest niezbędne w celu efektywnej pracy aplikacji i personalizacji, dotyczącej personalizacji
-    pt = Geolocalização em segundo plano necessário para o funcionamento eficaz da aplicação e a personalização das recomendações
-    pt-BR = Definindo localidade atual no plano de fundo é necessário para o uso efetivo do aplicativo e recomendações pessoais
-    ro = Utilizarea localizării în fundal este necesară pentru funcționarea eficientă a aplicației și a personalizării recomandărilor
-    es = El uso de la geolocalización en el fondo, es necesario para el funcionamiento eficaz de la aplicación y la personalización de las recomendaciones
-    es-MX = Es necesario permitir los servicios de localización en segundo plano para el uso eficaz de la aplicación y para las recomendaciones personales
-    sv = Användning av geolokalisering i bakgrunden behövs för appens effektiva funktion och personifiering av rekommendationer
-    th = การกำหนดตำแหน่งปัจจุบันในพื้นหลังเป็นสิ่งจำเป็นสำหรับการใช้แอพพลิเคชัน และคำแนะนำส่วนบุคคลให้มีประสิทธิภาพ
-    tr = Geçerli konumun arka planda tanımlanması, uygulamanın etkili kullanımı ve kişisel öneriler için gereklidir
-    uk = Використання геолокації у фоновому режимі потрібно для ефективної роботи програми та персоналізації рекомендацій
-    vi = Xác định vị trí hiện tại trong nền là cần thiết để sử dụng hiệu quả các đề xuất cá nhân và ứng dụng
-    el = Η χρήση της γεωγραφικής κατανομής στο παρασκήνιο είναι απαραίτητη για την αποτελεσματική λειτουργία της εφαρμογής και την εξατομίκευση των συστάσεων
-    sk = Definovanie aktuálnej pozície na pozadí je nevyhnutné pre efektívne používanie aplikácie a osobných odporúčaní
-    sw = Kufafanua eneo la sasa katika picha ni muhimu kwa matumizi mazuri ya programu-tumizi na mapendekezo binafsi
-    zh-Hans = 在后台使用地理定位对于应用程序的有效运行和建议的个性化是必要的
-    zh-Hant = 在後台使用地理定位對於應用程序的有效運行和建議的個性化是必要的
-    fa = تعریف مکان فعلی در پس زمینه برای استفاده موثر از برنامه ها و توصیه های شخصی ضروری است
+    en = Access to your current location in background facilitates collecting reviews of visited places and helping users on their journeys
+    ru = Доступ к вашей геопозиции в фоновом решиме необходим для сбора отзывов на посещенные места и помощи пользователям в путешествиях
+    ar = استخدام تحديد الموقع الجغرافي في الخلفيّة ضروري لترك تقييمات حول الأماكن التي تمت زيارتها وكذلك لمساعدة المسافرين
+    cs = Použití geolokace v pozadí je nutné pro nechaní ohlasů o navštívených místech a pomoc cestujícím
+    da = At definere din nuværende position i baggrunden er nødvendig for at hjælpe rejsende, ved at efterlade anmeldelser på besøgte steder
+    nl = Het definiëren van uw huidige locatie op de achtergrond is noodzakelijk om reizigers te helpen door beoordelingen achter te laten op bezochte plaatsen
+    fi = Maantieteellisen sijainnin taustakäyttöä tarvitaan palautteen jättämistä ja matkalijoiden auttamista varten
+    fr = L'utilisation de la Géolocalisation en arrière-plan est nécessaire pour laisser des commentaires sur les lieux visités et aider les voyageurs
+    de = Die Geolokation im Hintergrundmodus erlaubt Feedbacks über besuchte Orte zu hinterlassen und den Reisenden zu helfen
+    hu = A háttéri módban való aktuális hely meghatározása szükséges ahhoz, hogy megjegyzéseket hagyjon a meglátogatott helyekről és segítse az utazókat
+    id = Menentukan lokasi Anda saat ini di latar belakang diperlukan untuk membantu wisatawan dengan meninggalkan tinjauan di tempat yang telah dikunjungi
+    it = Il sistema di localizzazione in background permette di lasciare le recensioni sui posti visitati ed essere d'aiuto ai viaggiatori
+    ja = バックグラウンドで現在の位置を決定する事は、訪問した場所についてのレビューを残す事によって旅行者を助けるために必要です
+    ko = 백그라운드에서 귀하의 현재 위치를 정의하는 것은 방문한 장소들에 대한 리뷰를 남겨줌으로써 여행자들을 돕는데 필요합니다
+    nb = Bakgrunns-lokalisering av din nåværende plassering er nødvendig for å hjelpe reisende med dine vurderinger av besøkte steder
+    pl = Określanie Twojej bieżącej lokalizacji w tle jest konieczne, aby pomóc podróżującym podczas publikowania recenzji na temat odwiedzonych miejsc
+    pt = Aplicação de geolocalização no modo de fundo é necessário para deixar comentários sobre lugares visitados e ajudar aos viajantes
+    pt-BR = Definir a sua localização atual no plano de fundo é necessário para ajudar os viajantes ao deixar avaliações em lugares visitados
+    ro = Utilizarea locației geografice în fundal este necesară pentru a lăsa comentarii despre locurile vizitate și pentru a ajuta călătorii
+    es = El uso de la geolocalización en segundo plano, es necesario para dejar comentarios, sobre los lugares visitados y ayudar a los viajeros
+    es-MX = El uso de la geolocalización en el fondo, es necesario para dejar comentarios, sobre los lugares visitados y ayudar a los viajeros
+    sv = Určovanie vašej aktuálnej polohy na pozadí je nevyhnutné na to, aby ste pomohli cestujúcim zanechaním recenzie na navštívených miestach
+    th = การกำหนดตำแหน่งปัจจุบันของคุณบนพื้นหลังเป็นสิ่งจำเป็นเพื่อช่วยเหลือนักท่องเที่ยวจากการเขียนรีวิวบนสถานที่ที่เคยไปมาแล้ว
+    tr = Geçerli konumunuzu arka planda tanımlamak, ziyaret edilen yerlere yorum bırakarak gezginlere yardım edebilmeniz için gereklidir
+    uk = Використання геолокації у фоновому режимі потрібно для того, щоб залишити відгуки про відвідані місця та допомогти мандрівникам
+    vi = Định vị vị trí của bạn trên nền ứng dụng và để lại nhận xét về các điểm đã tới thăm là điều cần thiết đề giúp khách du lịch có được nhiều thông tin hơn
+    el = Η χρήση του γεωγραφικού εντοπισμού στο παρασκήνιο είναι απαραίτητη για να μπορεί κανίς ν' αφήνει τα σχόλιά του για τις τοποθεσίες που έχει επισκεφτεί και για τη δυνατότητα παροχής βοήθειας στους ταξιδιώτες
+    sk = Určovanie vašej aktuálnej polohy na pozadí je nevyhnutné na to, aby ste pomohli cestujúcim zanechaním recenzie na navštívených miestach
+    sw = Kuelezea eneo lako la sasa kwenye picha ni muhimu ili kuwasaidia wasafiri kwa kuandika mitazamo yao ya maeneo waliyotembelea
+    zh-Hans = 背景中使用地理位置對於留下所到之處的評價以及對旅行者的幫助是必要的
+    zh-Hant = 在背景中使用地理位置对于留下所到之处的评价以及对旅行者的帮助是必要的
+    fa = تعیین مکان کنونی خود در پس زمینه با نوشتن نظرات خود در مورد مکان هایی که بازدید کرده اید برای یاری دادن به مسافران ضروری است
 
   [NSLocationAlwaysUsageDescription]
     comment = Needed to explain why we always require access to GPS coordinates, and not only when the app is active.
-    en = Defining current location in the background is necessary to fully enjoy the functionality of the app. It is mainly used in the options of following the route and saving your recent travelled path. 
+    en = Defining current location in the background is necessary to fully enjoy the functionality of the app. It is mainly used in the options of following the route and saving your recent travelled path.
     ru = Определение местоположения в фоне необходимо для полноценного пользования приложением. Оно используется в движении по маршруту и сохранении недавно пройденного пути.
     fr = La localisation actuelle en arrière-plan est nécessaire pour profiter pleinement de toutes les fonctionnalités de l'application. Elle est principalement utilisée dans les options de navigation et d'enregistrement de votre chemin récemment parcouru.
     da = Det er nødvendigt at fastslå den gældende placering i baggrunden for at udnytte appens funktionalitet fuldt ud. Dette anvendes først og fremmest, når en rute skal følges, og når din sidste rejserute skal gemmes.
@@ -201,7 +201,7 @@
     es = Es necesario definir la ubicación actual en el entorno para disfrutar al máximo de la funcionalidad de la aplicación. Se emplea principalmente en las opciones de seguir la ruta y guardar el camino recorrido reciente.
     pl = Określanie w tle bieżącej lokalizacji jest konieczne, aby w pełni korzystać z funkcjonalności aplikacji. Funkcji tej używa się głównie w ramach opcji podążania zgodnie z trasą i zapisywania niedawno przebytej trasy.
     nl = Het op de achtergrond vaststellen van de huidige locatie is noodzakelijk om volledig gebruik te maken van de functionaliteit van de app. Dit wordt voornamelijk gebruikt bij de opties voor het volgen van de route en het opslaan van je recent afgelegde pad.
-    pt = A definição da localização atual em segundo plano é necessária para desfrutar totalmente da funcionalidade do aplicativo. Ela é utilizada principalmente nas opções de seguir a rota e salvar seu caminho recém-viajado. 
+    pt = A definição da localização atual em segundo plano é necessária para desfrutar totalmente da funcionalidade do aplicativo. Ela é utilizada principalmente nas opções de seguir a rota e salvar seu caminho recém-viajado.
 
   [NSLocationWhenInUseUsageDescription]
     comment = Needed to explain why we require access to GPS coordinates when the app is active.
