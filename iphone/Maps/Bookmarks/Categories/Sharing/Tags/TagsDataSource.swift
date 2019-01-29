@@ -32,4 +32,8 @@ final class TagsDataSource: NSObject {
   func tags(for indexPaths: [IndexPath]) -> [MWMTag] {
     return indexPaths.map { self.tag(in: $0.section, at: $0.item) }
   }
+  
+  func maxNumberOfTagsToSelect() -> NSInteger {
+    return 6
+  }
 }

@@ -40,8 +40,7 @@ final class TagsCollectionViewLayout: UICollectionViewLayout {
       
       let indexPath = IndexPath(item: 0, section: section)
       
-      if collectionView.supplementaryView(forElementKind: UICollectionElementKindSectionHeader,
-                                          at: indexPath) != nil {
+      if collectionView.numberOfSections > 0 {
         let headerSize = headersCache[indexPath]?.size ?? CGSize(width: contentWidth, height: itemHeight)
         let frame = CGRect(x: 0, y: yOffset, width: headerSize.width, height: headerSize.height)
         let attr = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, with: indexPath)

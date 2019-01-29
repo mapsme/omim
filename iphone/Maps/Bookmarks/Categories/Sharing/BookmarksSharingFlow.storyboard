@@ -317,7 +317,6 @@
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.54000000000000004" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="ugc_route_tags_desc"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackSecondaryText"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular14"/>
                                                 </userDefinedRuntimeAttributes>
@@ -494,6 +493,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="UZU-x1-VBd" id="o5u-kl-mKw"/>
+                        <outlet property="descriptionLabel" destination="tjK-HW-d6t" id="dpY-62-3jn"/>
                         <outlet property="doneButton" destination="qY7-OC-33A" id="EoL-xY-8JM"/>
                         <outlet property="loadingTagsView" destination="tUs-JB-h8i" id="Hhx-T9-H1Q"/>
                         <outlet property="progressView" destination="RMh-DN-eFb" id="TwY-gF-3Rb"/>

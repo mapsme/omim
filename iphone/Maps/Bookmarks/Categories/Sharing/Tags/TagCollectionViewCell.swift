@@ -10,16 +10,27 @@ final class TagCollectionViewCell: UICollectionViewCell {
     }
   }
   
-  override var isSelected: Bool{
+  override var isSelected: Bool {
     didSet {
       containerView.backgroundColor = isSelected ? color : .white()
       title.textColor = isSelected ? .whitePrimaryText() : color
     }
   }
   
-  func update(with tag: MWMTag) {
+  func update(with tag: MWMTag, enabled: Bool) {
     title.text = tag.name
-    color = tag.color
+    
+    if isSelected {
+      color = tag.color
+      showSelectedState()
+    } else {
+      color = enabled ? tag.color : .blackDividers()
+    }
+  }
+  
+  func showSelectedState() {
+    containerView.backgroundColor = isSelected ? color : .white()
+    title.textColor = isSelected ? .whitePrimaryText() : color
   }
   
   override func prepareForReuse() {
