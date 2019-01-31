@@ -481,7 +481,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
     setContentView(R.layout.activity_map);
-    mPlacePageController = new BottomSheetPlacePageController(this);
+    mPlacePageController = new BottomSheetPlacePageController(this, this);
     mPlacePageController.initialize();
     mIsLaunchByDeepLink = getIntent().getBooleanExtra(EXTRA_LAUNCH_BY_DEEP_LINK, false);
     initViews();
@@ -1182,8 +1182,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mNavigationController.onResume();
     if (mNavAnimationController != null)
       mNavAnimationController.onResume();
-    // TODO:
-//    mPlacePage.onActivityResume();
+    mPlacePageController.onActivityResumed(this);
   }
 
   @Override
@@ -1200,8 +1199,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     super.onResumeFragments();
     RoutingController.get().restore();
-    // TODO:
-//    mPlacePage.restore();
 
     if (!LikesManager.INSTANCE.isNewUser() && Counters.isShowReviewForOldUser())
     {
@@ -1221,8 +1218,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     LikesManager.INSTANCE.cancelDialogs();
     if (mOnmapDownloader != null)
       mOnmapDownloader.onPause();
-    // TODO:
-//    mPlacePage.onActivityPause();
+    mPlacePageController.onActivityPaused(this);
     super.onPause();
   }
 
@@ -1240,8 +1236,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mToggleMapLayerController.attachCore();
     if (mNavigationController != null)
       TrafficManager.INSTANCE.attach(mNavigationController);
-    // TODO:
-    // mPlacePage.onActivityStarted();
+    mPlacePageController.onActivityStarted(this);
   }
 
   @Override
@@ -1256,8 +1251,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     RoutingController.get().detach();
     TrafficManager.INSTANCE.detachAll();
     mToggleMapLayerController.detachCore();
-    // TODO:
-//    mPlacePage.onActivityStopped();
+    mPlacePageController.onActivityStopped(this);
   }
 
   @Override
