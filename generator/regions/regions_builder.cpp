@@ -99,12 +99,11 @@ RegionsBuilder::IdStringList RegionsBuilder::ToIdStringList(Node::Ptr const & tr
 Node::PtrList RegionsBuilder::MakeSelectedRegionsByCountry(Region const & country,
                                                            Regions const & allRegions)
 {
-  Regions regionsInCountry;
+  Regions regionsInCountry{{country}};
   auto filterCopy = [&country] (const Region & r) { return country.ContainsRect(r); };
   std::copy_if(std::begin(allRegions), std::end(allRegions),
                std::back_inserter(regionsInCountry), filterCopy);
 
-  regionsInCountry.emplace_back(country);
   auto const comp = [](const Region & l, const Region & r) {
     auto const lArea = l.GetArea();
     auto const rArea = r.GetArea();

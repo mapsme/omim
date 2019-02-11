@@ -34,13 +34,17 @@ Node::PtrList MergeChildren(Node::PtrList const & l, Node::PtrList const & r, No
 
 Node::PtrList NormalizeChildren(Node::PtrList const & children, MergeFunc mergeTree)
 {
-  Node::PtrList uniqueChildren;
   auto const pred = [](Node::Ptr l, Node::Ptr r)
   {
     auto const & lRegion = l->GetData();
     auto const & rRegion = r->GetData();
     return lRegion.GetId() == rRegion.GetId();
   };
+
+  if (std::adjacent_find(std::begin(children), std::end(children), pred) == std::end(children))
+    return children;
+
+  Node::PtrList uniqueChildren;
   std::unique_copy(std::begin(children), std::end(children),
                    std::back_inserter(uniqueChildren), pred);
   Node::PtrList result;
