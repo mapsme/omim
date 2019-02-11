@@ -148,8 +148,6 @@ Node::Ptr MergeTree(Node::Ptr l, Node::Ptr r)
 
   auto const & lRegion = l->GetData();
   auto const & rRegion = r->GetData();
-  if (lRegion.GetId() != rRegion.GetId())
-    return nullptr;
 
   if (lRegion.GetArea() > rRegion.GetArea())
     return MergeHelper(l, r, MergeTree);
