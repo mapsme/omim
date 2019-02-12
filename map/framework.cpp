@@ -330,16 +330,16 @@ bool Framework::IsEnoughSpaceForMigrate() const
          Platform::TStorageStatus::STORAGE_OK;
 }
 
-TCountryId Framework::PreMigrate(ms::LatLon const & position,
-                           Storage::TChangeCountryFunction const & change,
-                           Storage::TProgressFunction const & progress)
+CountryId Framework::PreMigrate(ms::LatLon const & position,
+                           Storage::ChangeCountryFunction const & change,
+                           Storage::ProgressFunction const & progress)
 {
   GetStorage().PrefetchMigrateData();
 
   auto const infoGetter =
       CountryInfoReader::CreateCountryInfoReader(GetPlatform());
 
-  TCountryId currentCountryId =
+  CountryId currentCountryId =
       infoGetter->GetRegionCountryId(MercatorBounds::FromLatLon(position));
 
   if (currentCountryId == kInvalidCountryId)
@@ -368,11 +368,11 @@ void Framework::Migrate(bool keepDownloaded)
   m_taxiEngine.reset();
   m_cityFinder.reset();
   m_ugcApi.reset();
-  TCountriesVec existedCountries;
+  CountriesVec existedCountries;
   GetStorage().DeleteAllLocalMaps(&existedCountries);
   DeregisterAllMaps();
   m_model.Clear();
-  GetStorage().Migrate(keepDownloaded ? existedCountries : TCountriesVec());
+  GetStorage().Migrate(keepDownloaded ? existedCountries : CountriesVec());
   InitCountryInfoGetter();
   InitUGC();
   InitSearchAPI();
@@ -622,14 +622,14 @@ locals::Api * Framework::GetLocalsApi(platform::NetworkPolicy const & policy)
   return nullptr;
 }
 
-void Framework::ShowNode(storage::TCountryId const & countryId)
+void Framework::ShowNode(storage::CountryId const & countryId)
 {
   StopLocationFollow();
 
   ShowRect(CalcLimitRect(countryId, GetStorage(), GetCountryInfoGetter()));
 }
 
-void Framework::OnCountryFileDownloaded(storage::TCountryId const & countryId, storage::TLocalFilePtr const localFile)
+void Framework::OnCountryFileDownloaded(storage::CountryId const & countryId, storage::LocalFilePtr const localFile)
 {
   // Soft reset to signal that mwm file may be out of date in routing caches.
   m_routingManager.ResetRoutingSession();
@@ -651,7 +651,7 @@ void Framework::OnCountryFileDownloaded(storage::TCountryId const & countryId, s
   GetSearchAPI().ClearCaches();
 }
 
-bool Framework::OnCountryFileDelete(storage::TCountryId const & countryId, storage::TLocalFilePtr const localFile)
+bool Framework::OnCountryFileDelete(storage::CountryId const & countryId, storage::LocalFilePtr const localFile)
 {
   // Soft reset to signal that mwm file may be out of date in routing caches.
   m_routingManager.ResetRoutingSession();
@@ -696,10 +696,10 @@ void Framework::OnMapDeregistered(platform::LocalCountryFile const & localFile)
     GetPlatform().RunTask(Platform::Thread::Gui, action);
 }
 
-bool Framework::HasUnsavedEdits(storage::TCountryId const & countryId)
+bool Framework::HasUnsavedEdits(storage::CountryId const & countryId)
 {
   bool hasUnsavedChanges = false;
-  auto const forEachInSubtree = [&hasUnsavedChanges, this](storage::TCountryId const & fileName,
+  auto const forEachInSubtree = [&hasUnsavedChanges, this](storage::CountryId const & fileName,
       bool groupNode)
   {
     if (groupNode)
@@ -852,8 +852,8 @@ void Framework::FillFeatureInfo(FeatureID const & fid, place_page::Info & info) 
   if (isCountry || isState)
   {
     size_t const level = isState ? 1 : 0;
-    TCountriesVec countries;
-    TCountryId countryId = m_infoGetter->GetRegionCountryId(info.GetMercator());
+    CountriesVec countries;
+    CountryId countryId = m_infoGetter->GetRegionCountryId(info.GetMercator());
     GetStorage().GetTopmostNodesFor(countryId, countries, level);
     if (countries.size() == 1)
       countryId = countries.front();
@@ -1326,7 +1326,7 @@ void Framework::ClearAllCaches()
 
 void Framework::OnUpdateCurrentCountry(m2::PointD const & pt, int zoomLevel)
 {
-  storage::TCountryId newCountryId;
+  storage::CountryId newCountryId;
   if (zoomLevel > scales::GetUpperWorldScale())
     newCountryId = m_infoGetter->GetRegionCountryId(pt);
 
@@ -1504,7 +1504,7 @@ void Framework::InitTransliteration()
     Transliteration::Instance().SetMode(Transliteration::Mode::Disabled);
 }
 
-storage::TCountryId Framework::GetCountryIndex(m2::PointD const & pt) const
+storage::CountryId Framework::GetCountryIndex(m2::PointD const & pt) const
 {
   return m_infoGetter->GetRegionCountryId(pt);
 }
@@ -1532,7 +1532,7 @@ Framework::DoAfterUpdate Framework::ToDoAfterUpdate() const
 
   NodeAttrs attrs;
   s.GetNodeAttrs(rootId, attrs);
-  TMwmSize const countrySizeInBytes = attrs.m_localMwmSize;
+  MwmSize const countrySizeInBytes = attrs.m_localMwmSize;
 
   if (countrySizeInBytes == 0 || attrs.m_status != NodeStatus::OnDiskOutOfDate)
     return DoAfterUpdate::Nothing;
@@ -3275,11 +3275,11 @@ void Framework::CreateNote(osm::MapObject const & mapObject,
     DeactivateMapSelection(true /* notifyUI */);
 }
 
-storage::TCountriesVec Framework::GetTopmostCountries(ms::LatLon const & latlon) const
+storage::CountriesVec Framework::GetTopmostCountries(ms::LatLon const & latlon) const
 {
   m2::PointD const point = MercatorBounds::FromLatLon(latlon);
   auto const countryId = m_infoGetter->GetRegionCountryId(point);
-  storage::TCountriesVec topmostCountryIds;
+  storage::CountriesVec topmostCountryIds;
   GetStorage().GetTopmostNodesFor(countryId, topmostCountryIds);
   return topmostCountryIds;
 }
@@ -3613,7 +3613,7 @@ void Framework::SetPlacePageLocation(place_page::Info & info)
   if (info.GetCountryId().empty())
     info.SetCountryId(m_infoGetter->GetRegionCountryId(info.GetMercator()));
 
-  TCountriesVec countries;
+  CountriesVec countries;
   if (info.GetTopmostCountryIds().empty())
   {
     GetStorage().GetTopmostNodesFor(info.GetCountryId(), countries);
