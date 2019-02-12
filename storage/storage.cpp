@@ -564,6 +564,8 @@ void Storage::DeleteCountry(CountryId const & countryId, MapOptions opt)
   bool const deferredDelete = m_willDelete(countryId, localFile);
   DeleteCountryFiles(countryId, opt, deferredDelete);
   DeleteCountryFilesFromDownloader(countryId);
+  m_diffManager.RemoveDiffForCountry(countryId);
+
   NotifyStatusChangedForHierarchy(countryId);
 }
 
