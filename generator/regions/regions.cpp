@@ -104,6 +104,15 @@ void RepackTmpMwm(std::string const & srcFilename, std::string const & repackedF
 }
 }  // namespace
 
+
+RegionsBuilder StartRegionsBuilder(std::string const & pathInRegionsMwm,
+    RegionInfo & regionsInfoCollector, std::unique_ptr<ToStringPolicyInterface> toStringPolicy,
+    size_t threadsCount)
+{
+  RegionsBuilder::Regions regions = ReadAndFixData(pathInRegionsMwm, regionsInfoCollector);
+  return RegionsBuilder(std::move(regions), std::move(toStringPolicy), threadsCount);
+}
+
 void GenerateRegions(std::string const & pathInRegionsTmpMwm,
                      std::string const & pathInRegionsCollector,
                      std::string const & pathOutRegionsKv,
@@ -118,14 +127,14 @@ void GenerateRegions(std::string const & pathInRegionsTmpMwm,
   Transliteration::Instance().Init(GetPlatform().ResourcesDir());
 
   RegionInfo regionsInfoCollector(pathInRegionsCollector);
-  RegionsBuilder::Regions regions = ReadAndFixData(pathInRegionsTmpMwm, regionsInfoCollector);
   auto jsonPolicy = std::make_unique<JsonPolicy>(verbose);
-  auto kvBuilder = std::make_unique<RegionsBuilder>(std::move(regions), std::move(jsonPolicy), threadsCount);
+  auto kvBuilder = StartRegionsBuilder(pathInRegionsTmpMwm, regionsInfoCollector, std::move(jsonPolicy),
+                                       threadsCount);
 
   std::ofstream ofs(pathOutRegionsKv, std::ofstream::out);
   std::set<base::GeoObjectId> setIds;
   size_t countIds = 0;
-  kvBuilder->ForEachNormalizedCountry([&](std::string const & name, Node::Ptr const & tree) {
+  kvBuilder.ForEachNormalizedCountry([&](std::string const & name, Node::Ptr const & tree) {
     if (!tree)
       return;
 
@@ -133,7 +142,7 @@ void GenerateRegions(std::string const & pathInRegionsTmpMwm,
       DebugPrintTree(tree);
 
     LOG(LINFO, ("Processing country", name));
-    auto const idStringList = kvBuilder->ToIdStringList(tree);
+    auto const idStringList = kvBuilder.ToIdStringList(tree);
     for (auto const & s : idStringList)
     {
       ofs << static_cast<int64_t>(s.first.GetEncodedId()) << " " << s.second << "\n";
@@ -150,7 +159,7 @@ void GenerateRegions(std::string const & pathInRegionsTmpMwm,
   if (!pathOutRepackedRegionsTmpMwm.empty())
     RepackTmpMwm(pathInRegionsTmpMwm, pathOutRepackedRegionsTmpMwm, setIds, regionsInfoCollector);
 
-  LOG(LINFO, ("Regions objects key-value for", kvBuilder->GetCountryNames().size(),
+  LOG(LINFO, ("Regions objects key-value for", kvBuilder.GetCountryNames().size(),
               "countries storage saved to",  pathOutRegionsKv));
   LOG(LINFO, ("Repacked regions temprory mwm saved to",  pathOutRepackedRegionsTmpMwm));
   LOG(LINFO, (countIds, "total ids.", setIds.size(), "unique ids."));

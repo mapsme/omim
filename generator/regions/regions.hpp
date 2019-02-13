@@ -1,5 +1,10 @@
 #pragma once
 
+#include "generator/regions/region_info.hpp"
+#include "generator/regions/regions_builder.hpp"
+#include "generator/regions/to_string_policy.hpp"
+
+#include <memory>
 #include <string>
 
 namespace generator
@@ -12,5 +17,9 @@ void GenerateRegions(std::string const & pathInRegionsTmpMwm,
                      std::string const & pathOutRepackedRegionsTmpMwm,
                      bool verbose,
                      size_t threadsCount = 1);
+
+RegionsBuilder StartRegionsBuilder(std::string const & pathInRegionsMwm, RegionInfo & regionsInfoCollector,
+    std::unique_ptr<ToStringPolicyInterface> toStringPolicy, std::size_t threadsCount = 1);
+
 }  // namespace regions
 }  // namespace generator
