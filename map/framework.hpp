@@ -790,10 +790,8 @@ public:
   bool LoadTransitSchemeEnabled();
   void SaveTransitSchemeEnabled(bool enabled);
 
-#if defined(OMIM_METAL_AVAILABLE)
-  bool LoadMetalAllowed();
-  void SaveMetalAllowed(bool allowed);
-#endif
+  dp::ApiVersion LoadPreferredGraphicsAPI();
+  void SavePreferredGraphicsAPI(dp::ApiVersion apiVersion);
 
 public:
   template <typename ResultCallback>
