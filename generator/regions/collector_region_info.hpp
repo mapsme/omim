@@ -26,7 +26,6 @@ namespace regions
 enum class AdminLevel : uint8_t
 {
   Unknown = 0,
-  One = 1,
   Two = 2,
   Three = 3,
   Four = 4,
@@ -41,21 +40,41 @@ enum class AdminLevel : uint8_t
 };
 
 // https://wiki.openstreetmap.org/wiki/Key:place
-// Warning: values are important, be careful they are used in Region::GetRank() in regions.cpp
 enum class PlaceType: uint8_t
 {
   Unknown = 0,
-  City = 9,
-  Town = 10,
-  Village = 11,
-  Hamlet = 12,
-  Suburb = 13,
+  Country = 1,
+  State = 2,
+  Region = 3,
+  Province = 4,
+  District = 5,
+  County = 6,
+  Municipality = 7,
+  City = 8,
+  Town = 9,
+  Village = 10,
+  Hamlet = 11,
+  Suburb = 12,
+  Quarter = 13,
   Neighbourhood = 14,
   Locality = 15,
   IsolatedDwelling = 16,
 };
 
+enum class ObjectLevel : uint8_t
+{
+  Unknown = 0,
+  Country = 1,
+  Region = 2,
+  Subregion = 3,
+  Locality = 4,
+  Suburb = 5,
+  Sublocality = 6,
+};
+
 PlaceType EncodePlaceType(std::string const & place);
+
+char const * GetLabel(ObjectLevel level);
 
 // Codes for the names of countries, dependent territories, and special areas of geographical
 // interest.
@@ -85,6 +104,7 @@ struct RegionData
   base::GeoObjectId m_osmId;
   AdminLevel m_adminLevel = AdminLevel::Unknown;
   PlaceType m_place = PlaceType::Unknown;
+  base::GeoObjectId m_labelOsmId;
 };
 
 using MapRegionData = std::unordered_map<base::GeoObjectId, RegionData>;

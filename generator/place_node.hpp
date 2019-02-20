@@ -38,6 +38,14 @@ public:
       PtrList(m_children).swap(m_children);
   }
 
+  template <typename Visitor>
+  friend void Visit(Ptr const & tree, Visitor && visitor)
+  {
+    visitor(tree);
+    for (auto const & subtree : tree->GetChildren())
+      Visit(subtree, std::forward<Visitor>(visitor));
+  }
+
 private:
   Data m_data;
   PtrList m_children;

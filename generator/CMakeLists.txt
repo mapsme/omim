@@ -112,9 +112,14 @@ set(SRC
   relation_tags.hpp
   region_meta.cpp
   region_meta.hpp
-  regions/city.hpp
+  regions/admin_suburbs_marker.cpp
+  regions/admin_suburbs_marker.hpp
   regions/collector_region_info.cpp
   regions/collector_region_info.hpp
+  regions/country_specifier.cpp
+  regions/country_specifier.hpp
+  regions/locality_admin_regionizer.cpp
+  regions/locality_admin_regionizer.hpp
   regions/node.cpp
   regions/node.hpp
   regions/region.cpp
@@ -123,12 +128,16 @@ set(SRC
   regions/region_base.hpp
   regions/region_info.cpp
   regions/region_info.hpp
+  regions/region_place.cpp
+  regions/region_place.hpp
   regions/regions.cpp
   regions/regions.hpp
   regions/regions_builder.cpp
   regions/regions_builder.hpp
-  regions/regions_fixer.cpp
-  regions/regions_fixer.hpp
+  regions/relative_nesting_specifier.cpp
+  regions/relative_nesting_specifier.hpp
+  regions/ru_specifier.cpp
+  regions/ru_specifier.hpp
   regions/to_string_policy.cpp
   regions/to_string_policy.hpp
   restriction_collector.cpp

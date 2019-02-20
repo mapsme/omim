@@ -3,6 +3,7 @@
 #include "geometry/mercator.hpp"
 
 #include <algorithm>
+#include <bitset>
 #include <iomanip>
 #include <numeric>
 
@@ -16,9 +17,9 @@ using MergeFunc = std::function<Node::Ptr(Node::Ptr, Node::Ptr)>;
 
 bool LessNodePtrById(Node::Ptr l, Node::Ptr r)
 {
-  auto const & lRegion = l->GetData();
-  auto const & rRegion = r->GetData();
-  return lRegion.GetId() < rRegion.GetId();
+  auto const & lPlace = l->GetData();
+  auto const & rPlace = r->GetData();
+  return lPlace.GetId() < rPlace.GetId();
 }
 
 Node::PtrList MergeChildren(Node::PtrList const & l, Node::PtrList const & r, Node::Ptr newParent)
@@ -36,9 +37,9 @@ Node::PtrList NormalizeChildren(Node::PtrList const & children, MergeFunc mergeT
 {
   auto const pred = [](Node::Ptr l, Node::Ptr r)
   {
-    auto const & lRegion = l->GetData();
-    auto const & rRegion = r->GetData();
-    return lRegion.GetId() == rRegion.GetId();
+    auto const & lPlace = l->GetData();
+    auto const & rPlace = r->GetData();
+    return lPlace.GetId() == rPlace.GetId();
   };
 
   if (std::adjacent_find(std::begin(children), std::end(children), pred) == std::end(children))
@@ -103,28 +104,32 @@ size_t MaxDepth(Node::Ptr node)
 void PrintTree(Node::Ptr node, std::ostream & stream = std::cout, std::string prefix = "",
                bool isTail = true)
 {
-  auto const & children = node->GetChildren();
-  stream << prefix;
-  if (isTail)
+  auto const & place = node->GetData();
+  if (auto label = GetLabel(place.GetLevel()))
   {
-    stream << "└───";
-    prefix += "    ";
-  }
-  else
-  {
-    stream << "├───";
-    prefix += "│   ";
+    stream << prefix;
+    if (isTail)
+    {
+      stream << "└───";
+      prefix += "    ";
+    }
+    else
+    {
+      stream << "├───";
+      prefix += "│   ";
+    }
+
+    auto const point = place.GetCenter();
+    auto const center = MercatorBounds::ToLatLon({point.get<0>(), point.get<1>()});
+    stream << place.GetName() << "<" << place.GetEnglishOrTransliteratedName() << "> ("
+           << DebugPrint(place.GetId())
+           << ";" << label
+           << ";" << static_cast<int>(place.GetLevel())
+           << ";[" << std::fixed << std::setprecision(7) << center.lat << "," << center.lon << "])"
+           << std::endl;
   }
 
-  auto const & d = node->GetData();
-  auto const point = d.GetCenter();
-  auto const center = MercatorBounds::ToLatLon({point.get<0>(), point.get<1>()});
-  stream << d.GetName() << "<" << d.GetEnglishOrTransliteratedName() << "> ("
-         << DebugPrint(d.GetId())
-         << ";" << d.GetLabel()
-         << ";" << static_cast<size_t>(d.GetRank())
-         << ";[" << std::fixed << std::setprecision(7) << center.lat << "," << center.lon << "])"
-         << std::endl;
+  auto const & children = node->GetChildren();
   for (size_t i = 0, size = children.size(); i < size; ++i)
     PrintTree(children[i], stream, prefix, i == size - 1);
 }
@@ -146,8 +151,8 @@ Node::Ptr MergeTree(Node::Ptr l, Node::Ptr r)
   if (r == nullptr)
     return l;
 
-  auto const & lRegion = l->GetData();
-  auto const & rRegion = r->GetData();
+  auto const & lRegion = l->GetData().GetRegion();
+  auto const & rRegion = r->GetData().GetRegion();
 
   if (lRegion.GetArea() > rRegion.GetArea())
     return MergeHelper(l, r, MergeTree);
@@ -166,6 +171,39 @@ void NormalizeTree(Node::Ptr tree)
   tree->SetChildren(std::move(newChildren));
   for (auto const & ch : tree->GetChildren())
     NormalizeTree(ch);
+}
+
+std::vector<Node::Ptr> MakeLevelPath(Node::Ptr const & node)
+{
+  CHECK(node->GetData().GetLevel() != ObjectLevel::Unknown, ());
+
+  std::bitset<static_cast<std::size_t>(ObjectLevel::Sublocality) + 1> skipLevels;
+  std::vector<Node::Ptr> path{node};
+  for (auto p = node->GetParent(); p; p = p->GetParent())
+  {
+    auto const level = p->GetData().GetLevel();
+    if (ObjectLevel::Unknown == level)
+      continue;
+
+    if (skipLevels.test(static_cast<std::size_t>(level)))
+      continue;
+
+    skipLevels.set(static_cast<std::size_t>(level), true);
+    if (ObjectLevel::Locality == level)
+    {
+      // To ignore covered locality.
+      skipLevels.set(static_cast<std::size_t>(ObjectLevel::Suburb), true);
+      skipLevels.set(static_cast<std::size_t>(ObjectLevel::Sublocality), true);
+    }
+
+    path.push_back(p);
+  }
+
+  std::reverse(path.begin(), path.end());
+  std::sort(path.begin(), path.end(), [] (Node::Ptr const & l, Node::Ptr const & r) {
+    return l->GetData().GetLevel() < r->GetData().GetLevel();
+  });
+  return path;
 }
 }  // namespace regions
 }  // namespace generator

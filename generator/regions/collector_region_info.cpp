@@ -21,10 +21,17 @@ uint8_t const CollectorRegionInfo::kVersion = 0;
 PlaceType EncodePlaceType(std::string const & place)
 {
   static std::map<std::string, PlaceType> const m = {
+    {"country", PlaceType::Country},
+    {"state", PlaceType::State},
+    {"region", PlaceType::Region},
+    {"province", PlaceType::Province},
+    {"district", PlaceType::District},
+    {"county", PlaceType::County},
     {"city", PlaceType::City},
     {"town", PlaceType::Town},
     {"village", PlaceType::Village},
     {"suburb", PlaceType::Suburb},
+    {"quarter", PlaceType::Quarter},
     {"neighbourhood", PlaceType::Neighbourhood},
     {"hamlet", PlaceType::Hamlet},
     {"locality", PlaceType::Locality},
@@ -33,6 +40,29 @@ PlaceType EncodePlaceType(std::string const & place)
 
   auto const it = m.find(place);
   return it == m.end() ? PlaceType::Unknown : it->second;
+}
+
+char const * GetLabel(ObjectLevel level)
+{
+  switch (level)
+  {
+  case ObjectLevel::Country:
+    return "country";
+  case ObjectLevel::Region:
+    return "region";
+  case ObjectLevel:: Subregion:
+    return "subregion";
+  case ObjectLevel::Locality:
+    return "locality";
+  case ObjectLevel::Suburb:
+    return "suburb";
+  case ObjectLevel::Sublocality:
+    return "sublocality";
+  case ObjectLevel::Unknown:
+    break;
+  }
+
+  return nullptr;
 }
 
 CollectorRegionInfo::CollectorRegionInfo(std::string const & filename) : m_filename(filename) {}
@@ -65,21 +95,27 @@ void CollectorRegionInfo::FillRegionData(base::GeoObjectId const & osmId, OsmEle
   rd.m_osmId = osmId;
   rd.m_place = EncodePlaceType(el.GetTag("place"));
   auto const al = el.GetTag("admin_level");
-  if (al.empty())
-    return;
-
-  try
+  if (!al.empty())
   {
-    auto const adminLevel = std::stoi(al);
-    // Administrative level is in the range [1 ... 12].
-    // https://wiki.openstreetmap.org/wiki/Tag:boundary=administrative
-    rd.m_adminLevel = (adminLevel >= 1 && adminLevel <= 12) ?
-                        static_cast<AdminLevel>(adminLevel) : AdminLevel::Unknown;
+    try
+    {
+      auto const adminLevel = std::stoi(al);
+      // Administrative level is in the range [1 ... 12].
+      // https://wiki.openstreetmap.org/wiki/Tag:boundary=administrative
+      rd.m_adminLevel = (adminLevel >= 1 && adminLevel <= 12) ?
+                          static_cast<AdminLevel>(adminLevel) : AdminLevel::Unknown;
+    }
+    catch (std::exception const & e)  // std::invalid_argument, std::out_of_range
+    {
+      LOG(::base::LWARNING, (e.what()));
+      rd.m_adminLevel = AdminLevel::Unknown;
+    }
   }
-  catch (std::exception const & e)  // std::invalid_argument, std::out_of_range
+
+  for (auto const & member : el.Members())
   {
-    LOG(::base::LWARNING, (e.what()));
-    rd.m_adminLevel = AdminLevel::Unknown;
+    if ("label" == member.role && OsmElement::EntityType::Node == member.type)
+      rd.m_labelOsmId = base::MakeOsmNode(member.ref);
   }
 }
 

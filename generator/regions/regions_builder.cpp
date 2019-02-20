@@ -5,6 +5,10 @@
 #include "base/stl_helpers.hpp"
 #include "base/thread_pool_computational.hpp"
 
+#include "generator/regions/country_specifier.hpp"
+#include "generator/regions/relative_nesting_specifier.hpp"
+#include "generator/regions/ru_specifier.hpp"
+
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -18,26 +22,11 @@ namespace generator
 {
 namespace regions
 {
-namespace
-{
-Node::Ptr ShrinkToFit(Node::Ptr p)
-{
-  p->ShrinkToFitChildren();
-  for (auto ptr : p->GetChildren())
-    ShrinkToFit(ptr);
-
-  return p;
-}
-}  // namespace
-
-RegionsBuilder::RegionsBuilder(Regions && regions,
-                               std::unique_ptr<ToStringPolicyInterface> toStringPolicy,
-                               size_t threadsCount)
-  : m_toStringPolicy(std::move(toStringPolicy))
-  , m_regions(std::move(regions))
+RegionsBuilder::RegionsBuilder(Regions && regions, PlaceCentersMap && placeCentersMap, size_t threadsCount)
+  : m_regions(std::move(regions))
+  , m_placeCentersMap(std::move(placeCentersMap))
   , m_threadsCount(threadsCount)
 {
-  ASSERT(m_toStringPolicy, ());
   ASSERT(m_threadsCount != 0, ());
 
   auto const isCountry = [](Region const & r) { return r.IsCountry(); };
@@ -46,9 +35,6 @@ RegionsBuilder::RegionsBuilder(Regions && regions,
   auto const cmp = [](Region const & l, Region const & r) { return l.GetArea() > r.GetArea(); };
   std::sort(std::begin(m_countries), std::end(m_countries), cmp);
 }
-
-RegionsBuilder::RegionsBuilder(Regions && regions, size_t threadsCount)
-  : RegionsBuilder(std::move(regions), std::make_unique<JsonPolicy>(), threadsCount) {}
 
 RegionsBuilder::Regions const & RegionsBuilder::GetCountries() const
 {
@@ -69,113 +55,41 @@ RegionsBuilder::StringsList RegionsBuilder::GetCountryNames() const
   return result;
 }
 
-RegionsBuilder::IdStringList RegionsBuilder::ToIdStringList(Node::Ptr const & tree) const
-{
-  IdStringList result;
-  std::queue<Node::Ptr> queue;
-  queue.push(tree);
-  while (!queue.empty())
-  {
-    const auto el = queue.front();
-    queue.pop();
-    Node::PtrList nodes;
-    auto current = el;
-    while (current)
-    {
-      nodes.push_back(current);
-      current = current->GetParent();
-    }
-
-    auto string = m_toStringPolicy->ToString(nodes);
-    auto const id = nodes.front()->GetData().GetId();
-    result.emplace_back(std::make_pair(id, std::move(string)));
-    for (auto const & n : el->GetChildren())
-      queue.push(n);
-  }
-
-  return result;
-}
-
-Node::PtrList RegionsBuilder::MakeSelectedRegionsByCountry(Region const & country,
-                                                           Regions const & allRegions)
-{
-  Regions regionsInCountry{{country}};
-  auto filterCopy = [&country] (const Region & r) { return country.ContainsRect(r); };
-  std::copy_if(std::begin(allRegions), std::end(allRegions),
-               std::back_inserter(regionsInCountry), filterCopy);
-
-  auto const comp = [](const Region & l, const Region & r) {
-    auto const lArea = l.GetArea();
-    auto const rArea = r.GetArea();
-    return lArea != rArea ? lArea > rArea : l.GetRank() < r.GetRank();
-  };
-  std::sort(std::begin(regionsInCountry), std::end(regionsInCountry), comp);
-
-  Node::PtrList nodes;
-  nodes.reserve(regionsInCountry.size());
-  for (auto && region : regionsInCountry)
-    nodes.emplace_back(std::make_shared<Node>(std::move(region)));
-
-  return nodes;
-}
-
-Node::Ptr RegionsBuilder::BuildCountryRegionTree(Region const & country,
-                                                 Regions const & allRegions)
-{
-  auto nodes = MakeSelectedRegionsByCountry(country, allRegions);
-  while (nodes.size() > 1)
-  {
-    auto itFirstNode = std::rbegin(nodes);
-    auto & firstRegion = (*itFirstNode)->GetData();
-    auto itCurr = itFirstNode + 1;
-    for (; itCurr != std::rend(nodes); ++itCurr)
-    {
-      auto const & currRegion = (*itCurr)->GetData();
-      if (currRegion.Contains(firstRegion) ||
-          (firstRegion.GetWeight() < currRegion.GetWeight() &&
-           currRegion.Contains(firstRegion.GetCenter()) &&
-           currRegion.CalculateOverlapPercentage(firstRegion) > 50.0))
-      {
-        (*itFirstNode)->SetParent(*itCurr);
-        (*itCurr)->AddChild(*itFirstNode);
-        // We want to free up memory.
-        firstRegion.DeletePolygon();
-        nodes.pop_back();
-        break;
-      }
-    }
-
-    if (itCurr == std::rend(nodes))
-      nodes.pop_back();
-  }
-
-  return nodes.empty() ? std::shared_ptr<Node>() : ShrinkToFit(nodes.front());
-}
-
 void RegionsBuilder::ForEachNormalizedCountry(NormalizedCountryFn fn)
 {
   for (auto const & countryName : GetCountryNames())
   {
+    auto countrySpecifier = GetCountrySpecifier(countryName);
+
     RegionsBuilder::Regions country;
     auto const & countries = GetCountries();
     auto const pred = [&](const Region & r) { return countryName == r.GetName(); };
     std::copy_if(std::begin(countries), std::end(countries), std::back_inserter(country), pred);
-    auto const countryTrees = BuildCountryRegionTrees(country);
-    auto mergedTree = std::accumulate(std::begin(countryTrees), std::end(countryTrees),
+    auto const countryTrees = BuildCountryRegionTrees(country, *countrySpecifier);
+    auto tree = std::accumulate(std::begin(countryTrees), std::end(countryTrees),
                                       Node::Ptr(), MergeTree);
-    NormalizeTree(mergedTree);
-    fn(countryName, mergedTree);
+    if (!tree)
+      return;
+    NormalizeTree(tree);
+
+    countrySpecifier->AddPlaces(tree, m_placeCentersMap);
+    countrySpecifier->AdjustRegionsLevel(tree, m_placeCentersMap);
+
+    fn(countryName, tree);
   }
 }
 
-std::vector<Node::Ptr> RegionsBuilder::BuildCountryRegionTrees(RegionsBuilder::Regions const & countries)
+std::vector<Node::Ptr> RegionsBuilder::BuildCountryRegionTrees(RegionsBuilder::Regions const & countries,
+                                                               CountrySpecifier const & countrySpecifier)
 {
   std::vector<std::future<Node::Ptr>> tmp;
   {
     base::thread_pool::computational::ThreadPool threadPool(m_threadsCount);
     for (auto const & country : countries)
     {
-      auto result = threadPool.Submit(&RegionsBuilder::BuildCountryRegionTree, country, m_regions);
+      auto result = threadPool.Submit(&RegionsBuilder::BuildCountryRegionTree,
+                                      std::cref(country), std::cref(m_regions), std::cref(m_placeCentersMap),
+                                      std::cref(countrySpecifier));
       tmp.emplace_back(std::move(result));
     }
   }
@@ -184,6 +98,105 @@ std::vector<Node::Ptr> RegionsBuilder::BuildCountryRegionTrees(RegionsBuilder::R
   std::transform(std::begin(tmp), std::end(tmp),
                  std::back_inserter(res), [](auto & f) { return f.get(); });
   return res;
+}
+
+Node::Ptr RegionsBuilder::BuildCountryRegionTree(Region const & country, Regions const & allRegions,
+                                                 PlaceCentersMap const & placeCentersMap,
+                                                 CountrySpecifier const & countrySpecifier)
+{
+  Node::Ptr tree = std::make_shared<Node>(RegionPlace{ObjectLevel::Country, country});
+
+  auto addRegion = [&] (Region const & region) {
+    boost::optional<PlaceCenter> placeLabel;
+    if (auto levelOsmId = region.GetLabelOsmIdOptional())
+    {
+      auto label = placeCentersMap.find(*levelOsmId);
+      if (label != placeCentersMap.end())
+        placeLabel = label->second;
+    }
+    auto level = countrySpecifier.GetLevel(region, placeLabel);
+    auto node = std::make_shared<Node>(RegionPlace{level, region, std::move(placeLabel)});
+
+    Insert(tree, std::move(node), countrySpecifier);
+  };
+
+  for (auto const region : allRegions)
+  {
+    if (country.Contains(region))
+      addRegion(region);
+  }
+
+  if (tree->GetChildren().empty())
+    return {};
+
+  return tree;
+}
+
+void RegionsBuilder::Insert(Node::Ptr & tree, Node::Ptr && node, CountrySpecifier const & countrySpecifier)
+{
+  auto & nodePlace = node->GetData();
+  auto & children = tree->GetChildren();
+  auto && subtree = children.begin();
+  while (subtree != children.end())
+  {
+    auto c = Compare(nodePlace, (*subtree)->GetData(), countrySpecifier);
+    if (c < 0)
+    {
+      Insert(*subtree, std::move(node), countrySpecifier);
+      return;
+    }
+
+    if (c > 0)
+    {
+      AddChild(node, std::move(*subtree));
+      *subtree = std::move(children.back());
+      children.pop_back();
+      continue;
+    }
+
+    ++subtree;
+  }
+
+  CHECK(!node->GetParent(), ());
+  AddChild(tree, std::move(node));
+}
+
+void RegionsBuilder::AddChild(Node::Ptr & tree, Node::Ptr && node)
+{
+  node->SetParent(tree);
+  auto greaterArea = [&] (Node::Ptr const & other) {
+    return node->GetData().GetRegion().GetArea() > other->GetData().GetRegion().GetArea();
+  };
+  auto & children = tree->GetChildren();
+  auto pos = std::find_if(children.begin(), children.end(), greaterArea);
+  children.insert(pos, std::move(node));
+}
+
+int RegionsBuilder::Compare(RegionPlace const & l, RegionPlace const & r,
+                            CountrySpecifier const & countrySpecifier)
+{
+  auto const & lRegion = l.GetRegion();
+  auto const & rRegion = r.GetRegion();
+  if (lRegion.Contains(rRegion))
+    return 1;
+  if (rRegion.Contains(lRegion))
+    return -1;
+
+  if (    (lRegion.Contains(r.GetCenter()) || rRegion.Contains(l.GetCenter()))
+       && lRegion.CalculateOverlapPercentage(rRegion) > 50.0)
+  {
+    return countrySpecifier.CompareWeight(l, r);
+  }
+
+  return 0;
+}
+
+std::unique_ptr<CountrySpecifier> RegionsBuilder::GetCountrySpecifier(std::string const & countryName)
+{
+  if (u8"Россия" == countryName)
+    return std::make_unique<RuSpecifier>();
+
+  return std::make_unique<RelativeNestingSpecifier>();
 }
 }  // namespace regions
 }  // namespace generator

@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <limits>
+#include <list>
 #include <memory>
 #include <string>
 #include <vector>
@@ -36,7 +37,8 @@ using namespace std;
 
 namespace
 {
-using Tags = std::vector<std::pair<std::string, std::string>>;
+using Tags = vector<pair<string, string>>;
+auto NodeEntry = OsmElement::EntityType::Node;
 
 struct TagValue
 {
@@ -57,6 +59,7 @@ struct OsmElementData
   uint64_t id;
   vector<TagValue> tags;
   vector<m2::PointD> polygon;
+  vector<OsmElement::Member> members;
 };
 
 OsmElement MakeOsmElement(uint64_t id, std::string const & adminLevel,
@@ -70,13 +73,9 @@ OsmElement MakeOsmElement(uint64_t id, std::string const & adminLevel,
   return el;
 }
 
-void BuildTestData(GenerateInfo const & genInfo, string const & collectorFilename,
-    vector<OsmElementData> const & testData)
+void CollectRegionInfo(std::string const & filename, vector<OsmElementData> const & testData)
 {
-  classificator::Load();
-
-  CollectorRegionInfo collector(collectorFilename);
-  auto emitter = CreateEmitter(EmitterType::Simple, genInfo);
+  CollectorRegionInfo collector(filename);
 
   for (auto const & elementData : testData)
   {
@@ -85,8 +84,27 @@ void BuildTestData(GenerateInfo const & genInfo, string const & collectorFilenam
     el.type = elementData.polygon.size() > 1 ? OsmElement::EntityType::Relation : OsmElement::EntityType::Node;
     for (auto const tag : elementData.tags)
       el.AddTag(tag.key, tag.value);
+    el.m_members = elementData.members;
 
-    collector.Collect(MakeOsmRelation(el.id), el);
+    auto osmId = el.type == OsmElement::EntityType::Relation ? MakeOsmRelation(el.id) : MakeOsmNode(el.id);
+    collector.Collect(osmId, el);
+  }
+
+  collector.Save();
+}
+
+void BuildTestData(vector<OsmElementData> const & testData,
+                   RegionsBuilder::Regions & regions, RegionsBuilder::PlaceCentersMap & placeCentersMap,
+                   RegionInfo & collector)
+{
+  for (auto const & elementData : testData)
+  {
+    OsmElement el;
+    el.id = elementData.id;
+    el.type = elementData.polygon.size() > 1 ? OsmElement::EntityType::Relation : OsmElement::EntityType::Node;
+    for (auto const tag : elementData.tags)
+      el.AddTag(tag.key, tag.value);
+    el.m_members = elementData.members;
 
     FeatureBuilder1 fb1;
 
@@ -104,7 +122,8 @@ void BuildTestData(GenerateInfo const & genInfo, string const & collectorFilenam
       fb1.SetAreaAddHoles({});
     }
 
-    fb1.SetOsmId(MakeOsmRelation(elementData.id));
+    auto osmId = el.type == OsmElement::EntityType::Relation ? MakeOsmRelation(el.id) : MakeOsmNode(el.id);
+    fb1.SetOsmId(osmId);
 
     FeatureParams params;
     GetNameAndType(&el, params, [] (uint32_t type) {
@@ -112,24 +131,65 @@ void BuildTestData(GenerateInfo const & genInfo, string const & collectorFilenam
     });
     fb1.SetParams(params);
 
-    (*emitter)(fb1);
+    auto const id = fb1.GetMostGenericOsmId();
+    if (elementData.polygon.size() == 1)
+      placeCentersMap.emplace(id, PlaceCenter{fb1, collector.Get(id)});
+    else
+      regions.emplace_back(fb1, collector.Get(id));
   }
-
-  collector.Save();
 }
 
-std::string MakeCollectorData()
+class Helper : public ToStringPolicyInterface
+{
+public:
+  string ToString(vector<Node::Ptr> const & path) const override
+  {
+    stringstream stream;
+    auto i = path.begin();
+    stream << (*i)->GetData().GetName();
+    ++i;
+    for (; i != path.end(); ++i)
+      stream << ", " << GetLabel((*i)->GetData().GetLevel()) << ": " << (*i)->GetData().GetName();
+
+    return stream.str();
+  }
+};
+
+vector<string> GenerateTestRegions(vector<OsmElementData> const & testData)
+{
+  classificator::Load();
+
+  auto const filename = GetFileName();
+  CollectRegionInfo(filename, testData);
+
+  RegionsBuilder::Regions regions;
+  RegionsBuilder::PlaceCentersMap placeCentersMap;
+  RegionInfo collector(filename);
+  BuildTestData(testData, regions, placeCentersMap, collector);
+
+  auto builder = RegionsBuilder(std::move(regions), std::move(placeCentersMap));
+  vector<string> kvRegions;
+  builder.ForEachNormalizedCountry([&](string const & name, Node::Ptr const & tree) {
+    ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
+      kvRegions.push_back(Helper{}.ToString(path));
+    });
+  });
+
+  return kvRegions;
+}
+
+string MakeCollectorData()
 {
   auto const filename = GetFileName();
   CollectorRegionInfo collector(filename);
   collector.Collect(MakeOsmRelation(1 /* id */), MakeOsmElement(1 /* id */, "2" /* adminLevel */));
   collector.Collect(MakeOsmRelation(2 /* id */), MakeOsmElement(2 /* id */, "2" /* adminLevel */));
-  collector.Collect(MakeOsmRelation(3 /* id */), MakeOsmElement(3 /* id */, "4" /* adminLevel */));
-  collector.Collect(MakeOsmRelation(4 /* id */), MakeOsmElement(4 /* id */, "4" /* adminLevel */));
-  collector.Collect(MakeOsmRelation(5 /* id */), MakeOsmElement(5 /* id */, "4" /* adminLevel */));
-  collector.Collect(MakeOsmRelation(6 /* id */), MakeOsmElement(6 /* id */, "6" /* adminLevel */));
-  collector.Collect(MakeOsmRelation(7 /* id */), MakeOsmElement(7 /* id */, "6" /* adminLevel */));
-  collector.Collect(MakeOsmRelation(8 /* id */), MakeOsmElement(8 /* id */, "4" /* adminLevel */));
+  collector.Collect(MakeOsmRelation(3 /* id */), MakeOsmElement(3 /* id */, "4" /* adminLevel */, "region"));
+  collector.Collect(MakeOsmRelation(4 /* id */), MakeOsmElement(4 /* id */, "4" /* adminLevel */, "region"));
+  collector.Collect(MakeOsmRelation(5 /* id */), MakeOsmElement(5 /* id */, "4" /* adminLevel */, "region"));
+  collector.Collect(MakeOsmRelation(6 /* id */), MakeOsmElement(6 /* id */, "6" /* adminLevel */, "district"));
+  collector.Collect(MakeOsmRelation(7 /* id */), MakeOsmElement(7 /* id */, "6" /* adminLevel */, "district"));
+  collector.Collect(MakeOsmRelation(8 /* id */), MakeOsmElement(8 /* id */, "4" /* adminLevel */, "region"));
   collector.Save();
   return filename;
 }
@@ -224,44 +284,16 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
   return regions;
 }
 
-GenerateInfo TestGenerateInfo()
-{
-  Platform & platform = GetPlatform();
-
-  auto const tmpDir = platform.TmpDir();
-  platform.SetWritableDirForTests(tmpDir);
-
-  GenerateInfo genInfo;
-  genInfo.m_tmpDir = tmpDir;
-  return genInfo;
-}
-
-class Helper : public ToStringPolicyInterface
-{
-public:
-  std::string ToString(Node::PtrList const & nodePtrList) const override
-  {
-    std::stringstream stream;
-    auto i = nodePtrList.rbegin();
-    stream << (*i)->GetData().GetName();
-    ++i;
-    for (; i != nodePtrList.rend(); ++i)
-      stream << "," << (*i)->GetData().GetName();
-
-    return stream.str();
-  }
-};
-
-bool ExistsName(std::vector<std::string> const & coll, std::string const name)
+bool ExistsName(vector<string> const & coll, string const name)
 {
   auto const end = std::end(coll);
   return std::find(std::begin(coll), end, name) != end;
 }
 
-bool ExistsSubname(std::vector<std::string> const & coll, std::string const name)
+bool ExistsSubname(vector<string> const & coll, string const name)
 {
   auto const end = std::end(coll);
-  auto hasSubname = [&name] (std::string const & item) { return item.find(name) != std::string::npos; };
+  auto hasSubname = [&name] (string const & item) { return item.find(name) != string::npos; };
   return std::find_if(std::begin(coll), end, hasSubname) != end;
 }
 
@@ -271,7 +303,7 @@ UNIT_TEST(RegionsBuilderTest_GetCountryNames)
 {
   auto const filename = MakeCollectorData();
   RegionInfo collector(filename);
-  RegionsBuilder builder(MakeTestDataSet1(collector));
+  RegionsBuilder builder(MakeTestDataSet1(collector), {});
   auto const countryNames = builder.GetCountryNames();
   TEST_EQUAL(countryNames.size(), 2, ());
   TEST(std::count(std::begin(countryNames), std::end(countryNames), "Country_1"), ());
@@ -282,7 +314,7 @@ UNIT_TEST(RegionsBuilderTest_GetCountries)
 {
   auto const filename = MakeCollectorData();
   RegionInfo collector(filename);
-  RegionsBuilder builder(MakeTestDataSet1(collector));
+  RegionsBuilder builder(MakeTestDataSet1(collector), {});
   auto const countries = builder.GetCountries();
   TEST_EQUAL(countries.size(), 3, ());
   TEST_EQUAL(std::count_if(std::begin(countries), std::end(countries),
@@ -296,51 +328,101 @@ UNIT_TEST(RegionsBuilderTest_GetCountryTrees)
   auto const filename = MakeCollectorData();
   RegionInfo collector(filename);
   std::vector<std::string> bankOfNames;
-  RegionsBuilder builder(MakeTestDataSet1(collector), std::make_unique<Helper>());
+  RegionsBuilder builder(MakeTestDataSet1(collector), {});
   builder.ForEachNormalizedCountry([&](std::string const & name, Node::Ptr const & tree) {
-    auto const idStringList = builder.ToIdStringList(tree);
-    for (auto const & idString : idStringList)
-      bankOfNames.push_back(idString.second);
+    DebugPrintTree(tree);
+    ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
+      bankOfNames.push_back(Helper{}.ToString(path));
+    });
   });
 
   TEST(ExistsName(bankOfNames, "Country_2"), ());
-  TEST(ExistsName(bankOfNames, "Country_2,Country_2_Region_8"), ());
+  TEST(ExistsName(bankOfNames, "Country_2, region: Country_2_Region_8"), ());
 
   TEST(ExistsName(bankOfNames, "Country_1"), ());
-  TEST(ExistsName(bankOfNames, "Country_1,Country_1_Region_3"), ());
-  TEST(ExistsName(bankOfNames, "Country_1,Country_1_Region_4"), ());
-  TEST(ExistsName(bankOfNames, "Country_1,Country_1_Region_5"), ());
-  TEST(ExistsName(bankOfNames, "Country_1,Country_1_Region_5,Country_1_Region_5_Subregion_6"), ());
-  TEST(ExistsName(bankOfNames, "Country_1,Country_1_Region_5,Country_1_Region_5_Subregion_7"), ());
+  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_3"), ());
+  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_4"), ());
+  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_5"), ());
+  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_5, subregion: Country_1_Region_5_Subregion_6"), ());
+  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_5, subregion: Country_1_Region_5_Subregion_7"), ());
 }
 
-UNIT_TEST(RegionsBuilderTest_GetRusFedSuburbNode)
+UNIT_TEST(RegionsGenerationTest_GenerateCityRegionByPlacePoint)
 {
-  auto const collectorFilename = GetFileName();
-  auto genInfo = TestGenerateInfo();
-  genInfo.m_fileName = "regions";
-
-  BuildTestData(genInfo, collectorFilename, {
-    {1, {name = "Russia", admin = "2", ba}, {{0, 0}, {50, 50}}},
-    {2, {name = "Central Federal District", admin = "3", ba}, {{10, 10}, {20, 20}}},
-    {3, {name = "MOW", admin = "4", ba}, {{12, 12}, {18, 18}}},
-    {4, {name = "Moscow", place = "city"}, {{12, 12}, {17, 17}}},
-    {5, {name = "ZAO", admin = "5", ba}, {{14, 14}, {16, 16}}},
-    {6, {name = "Ramenki District", admin = "8", ba}, {{14, 14}, {15, 15}}},
-    {7, {name = "Ramenki Suburb", place = "suburb"}, {{14.5, 14.5}}},
-    {8, {name = "Outside Suburb", place = "suburb"}, {{15.5, 15.5}}},
+  auto regions = GenerateTestRegions({
+    {1, {name = u8"Nederland", admin = "2", ba}, {{0, 0}, {50, 50}}, {{6, NodeEntry, "admin_centre"}}},
+    {2, {name = u8"Nederland", admin = "3", ba}, {{10, 10}, {20, 20}}, {{6, NodeEntry, "admin_centre"}}},
+    {3, {name = u8"Noord-Holland", admin = "4", ba}, {{12, 12}, {18, 18}}, {{7, NodeEntry, "admin_centre"}}},
+    {4, {name = u8"Amsterdam", admin="8"}, {{14, 14}, {16, 16}}, {{6, NodeEntry, "admin_centre"}}},
+    {5, {name = u8"Amsterdam", admin="10"}, {{14, 14}, {16, 16}}},
+    {6, {name = u8"Amsterdam", place = "city", admin="2"}, {{14.5, 14.5}}},
+    {7, {name = u8"Haarlem", place = "city"}, {{17, 17}}},
   });
 
-  RegionInfo collector(collectorFilename);
-  auto pathInRegionsMwm = genInfo.GetTmpFileName(genInfo.m_fileName);
-  auto builder = StartRegionsBuilder(pathInRegionsMwm, collector, std::make_unique<Helper>());
-  std::vector<std::string> regions;
-  builder.ForEachNormalizedCountry([&](std::string const & name, Node::Ptr const & tree) {
-    auto const idStringList = builder.ToIdStringList(tree);
-    for (auto const & idString : idStringList)
-      regions.push_back(idString.second);
+  TEST(ExistsName(regions, u8"Nederland"), ());
+  TEST(ExistsName(regions, u8"Nederland, locality: Amsterdam"), ());
+}
+
+UNIT_TEST(RegionsGenerationTest_GenerateRusCitySuburb)
+{
+  auto regions = GenerateTestRegions({
+    {1, {name = u8"Россия", admin = "2", ba}, {{0, 0}, {50, 50}}},
+    {2, {name = u8"Сибирский федеральный округ", admin = "3", ba}, {{10, 10}, {20, 20}}},
+    {3, {name = u8"Омская область", admin = "4", ba}, {{12, 12}, {18, 18}}},
+    {4, {name = u8"Омск", place = "city"}, {{14, 14}, {16, 16}}},
+    {5, {name = u8"городской округ Омск", admin = "6", ba}, {{14, 14}, {16, 16}},
+      {{6, NodeEntry, "admin_centre"}}},
+    {6, {name = u8"Омск", place = "city"}, {{14.5, 14.5}}},
+    {7, {name = u8"Кировский административный округ", admin = "9", ba}, {{14, 14}, {15, 15}}},
   });
 
-  TEST(ExistsName(regions, "Russia,MOW,Moscow,Ramenki Suburb"), ());
-  TEST(!ExistsSubname(regions, "Outside Suburb"), ());
+  TEST(ExistsName(regions, u8"Россия, region: Омская область, subregion: городской округ Омск, "
+                           u8"locality: Омск"), ());
+  TEST(ExistsName(regions, u8"Россия, region: Омская область, subregion: городской округ Омск, "
+                           u8"locality: Омск, suburb: Кировский административный округ"), ());
+}
+
+UNIT_TEST(RegionsGenerationTest_GenerateRusMoscowSuburb)
+{
+  auto regions = GenerateTestRegions({
+    {1, {name = u8"Россия", admin = "2", ba}, {{0, 0}, {50, 50}}},
+    {2, {name = u8"Центральный федеральный округ", admin = "3", ba}, {{10, 10}, {20, 20}}},
+    {3, {name = u8"Москва", admin = "4", ba}, {{12, 12}, {18, 18}}},
+    {4, {name = u8"Москва", place = "city"}, {{12, 12}, {17, 17}}},
+    {5, {name = u8"Западный административный округ", admin = "5", ba}, {{14, 14}, {16, 16}}},
+    {6, {name = u8"район Раменки", admin = "8", ba}, {{14, 14}, {15, 15}}, {{7, NodeEntry, "label"}}},
+    {7, {name = u8"Раменки", place = "suburb"}, {{14.5, 14.5}}}, // label
+    {8, {name = u8"Тропарёво", place = "suburb"}, {{15.1, 15.1}}}, // no label
+    {9, {name = u8"Воробъёвы горы", place = "suburb"}, {{14.5, 14.5}, {14.6, 14.6}}},
+    {10, {name = u8"Центр", place = "suburb"}, {{15, 15}, {15.5, 15.5}}},
+  });
+
+  TEST(ExistsName(regions, u8"Россия, region: Москва"), ());
+  TEST(ExistsName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
+                           u8"locality: Москва"), ());
+  TEST(ExistsName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
+                           u8"locality: Москва, suburb: Раменки"), ());
+  TEST(ExistsName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
+                           u8"locality: Москва, suburb: Раменки, sublocality: Воробъёвы горы"), ());
+  TEST(ExistsName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
+                           u8"locality: Москва, sublocality: Центр"), ());
+  TEST(!ExistsSubname(regions, u8"Тропарёво"), ());
+}
+
+UNIT_TEST(RegionsGenerationTest_GenerateRusSPetersburgSuburb)
+{
+  auto regions = GenerateTestRegions({
+    {1, {name = u8"Россия", admin = "2", ba}, {{0, 0}, {50, 50}}},
+    {2, {name = u8"Северо-Западный федеральный округ", admin = "3", ba}, {{10, 10}, {20, 20}}},
+    {3, {name = u8"Санкт-Петербург", admin = "4", ba}, {{12, 12}, {18, 18}}},
+    {4, {name = u8"Санкт-Петербург", place = "city"}, {{12, 12}, {17, 17}}},
+    {5, {name = u8"Центральный район", admin = "5", ba}, {{14, 14}, {16, 16}}},
+    {6, {name = u8"Дворцовый округ", admin = "8", ba}, {{14, 14}, {15, 15}}},
+  });
+
+  TEST(ExistsName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург"), ());
+  TEST(ExistsName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург, "
+                           u8"suburb: Центральный район"), ());
+  TEST(ExistsName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург, "
+                           u8"suburb: Центральный район, sublocality: Дворцовый округ"), ());
 }

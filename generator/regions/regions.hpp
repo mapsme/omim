@@ -17,9 +17,5 @@ void GenerateRegions(std::string const & pathInRegionsTmpMwm,
                      std::string const & pathOutRepackedRegionsTmpMwm,
                      bool verbose,
                      size_t threadsCount = 1);
-
-RegionsBuilder StartRegionsBuilder(std::string const & pathInRegionsMwm, RegionInfo & regionsInfoCollector,
-    std::unique_ptr<ToStringPolicyInterface> toStringPolicy, std::size_t threadsCount = 1);
-
 }  // namespace regions
 }  // namespace generator

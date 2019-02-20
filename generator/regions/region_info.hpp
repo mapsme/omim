@@ -13,6 +13,8 @@
 #include <string>
 #include <utility>
 
+#include <boost/optional.hpp>
+
 namespace generator
 {
 namespace regions
@@ -67,6 +69,9 @@ public:
   base::GeoObjectId const & GetOsmId() const;
   AdminLevel GetAdminLevel() const;
   PlaceType GetPlaceType() const;
+  boost::optional<base::GeoObjectId> GetLabelOsmIdOptional() const;
+  auto GetLabelDataOptional() const
+    -> boost::optional<decltype(std::declval<T>().Get(std::declval<base::GeoObjectId>()))>;
 
   bool HasAdminLevel() const;
   bool HasPlaceType() const;

@@ -155,6 +155,11 @@ void FeatureBuilder1::AddPolygon(vector<m2::PointD> & poly)
   m_polygons.back().swap(poly);
 }
 
+void FeatureBuilder1::AddPolygon(vector<m2::PointD> && poly)
+{
+  AddPolygon(poly);
+}
+
 void FeatureBuilder1::ResetGeometry()
 {
   m_polygons.clear();

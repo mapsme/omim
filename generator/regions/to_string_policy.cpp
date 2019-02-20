@@ -1,5 +1,7 @@
 #include "generator/regions/to_string_policy.hpp"
 
+#include "generator/regions/collector_region_info.hpp"
+
 #include "geometry/mercator.hpp"
 
 #include <cstdint>
@@ -14,15 +16,14 @@ namespace generator
 {
 namespace regions
 {
-std::string JsonPolicy::ToString(Node::PtrList const & nodePtrList) const
+std::string JsonPolicy::ToString(std::vector<Node::Ptr> const & path) const
 {
-  auto const & main = nodePtrList.front()->GetData();
-  auto const & country = nodePtrList.back()->GetData();
-
   auto geometry = base::NewJSONObject();
   ToJSONObject(*geometry, "type", "Point");
   auto coordinates = base::NewJSONArray();
-  auto const tmpCenter = main.GetCenter();
+  auto const & endNode = path.back();
+  auto const & endPlace = endNode->GetData();
+  auto const tmpCenter = endPlace.GetCenter();
   auto const center = MercatorBounds::ToLatLon({tmpCenter.get<0>(), tmpCenter.get<1>()});
   ToJSONArray(*coordinates, center.lat);
   ToJSONArray(*coordinates, center.lon);
@@ -30,41 +31,47 @@ std::string JsonPolicy::ToString(Node::PtrList const & nodePtrList) const
 
   auto localeEn = base::NewJSONObject();
   auto address = base::NewJSONObject();
-  auto const mainLabel = main.GetLabel();
-  boost::optional<int64_t> pid;
-  for (auto const & p : boost::adaptors::reverse(nodePtrList))
+  std::string countryIsoCode;
+  for (auto const & p : path)
   {
+    auto const & place = p->GetData();
+    auto level = place.GetLevel();
+    char const * label = GetLabel(level);
+    if (!label)
+      continue;
 
-    auto const & region = p->GetData();
-    auto const label = region.GetLabel();
-    ToJSONObject(*address, label, region.GetName());
+    ToJSONObject(*address, label, place.GetName());
     if (m_extendedOutput)
     {
-      ToJSONObject(*address, label + "_i", DebugPrint(region.GetId()));
-      ToJSONObject(*address, label + "_a", region.GetArea());
-      ToJSONObject(*address, label + "_r", region.GetRank());
+      ToJSONObject(*address, std::string(label) + "_i", DebugPrint(place.GetId()));
+      ToJSONObject(*address, std::string(label) + "_a", place.GetRegion().GetArea());
+      ToJSONObject(*address, std::string(label) + "_r", static_cast<int>(level));
     }
 
-    ToJSONObject(*localeEn, label, region.GetEnglishOrTransliteratedName());
-    if (label != mainLabel)
-      pid = static_cast<int64_t>(region.GetId().GetEncodedId());
+    ToJSONObject(*localeEn, label, place.GetEnglishOrTransliteratedName());
   }
 
   auto locales = base::NewJSONObject();
   ToJSONObject(*locales, "en", localeEn);
 
   auto properties = base::NewJSONObject();
-  ToJSONObject(*properties, "name", main.GetName());
-  ToJSONObject(*properties, "rank", main.GetRank());
+  ToJSONObject(*properties, "name", endPlace.GetName());
+  ToJSONObject(*properties, "rank", static_cast<int>(endPlace.GetLevel()));
   ToJSONObject(*properties, "address", address);
   ToJSONObject(*properties, "locales", locales);
-  if (pid)
-    ToJSONObject(*properties, "pid", *pid);
-  else
+  if (path.size() == 1)
+  {
     ToJSONObject(*properties, "pid", base::NewJSONNull());
+  }
+  else
+  {
+    auto const & parent = (*(path.rbegin() + 1))->GetData();
+    ToJSONObject(*properties, "pid", static_cast<int64_t>(parent.GetId().GetEncodedId()));
+  }
 
-  if (country.HasIsoCode())
-    ToJSONObject(*properties, "code", country.GetIsoCode());
+  auto const & contryRegion = path.front()->GetData().GetRegion();
+  if (contryRegion.HasIsoCode())
+    ToJSONObject(*properties, "code", contryRegion.GetIsoCode());
 
   auto feature = base::NewJSONObject();
   ToJSONObject(*feature, "type", "Feature");

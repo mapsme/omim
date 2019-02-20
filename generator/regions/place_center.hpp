@@ -10,10 +10,10 @@ namespace generator
 {
 namespace regions
 {
-class City : public RegionWithName, public RegionWithData
+class PlaceCenter : public RegionWithName, public RegionWithData
 {
 public:
-  explicit City(FeatureBuilder1 const & fb, RegionDataProxy const & rd)
+  explicit PlaceCenter(FeatureBuilder1 const & fb, RegionDataProxy const & rd)
     : RegionWithName(fb.GetParams().name),
       RegionWithData(rd)
   {
@@ -27,6 +27,6 @@ private:
   BoostPoint m_center;
 };
 
-using PointCitiesMap = std::unordered_map<base::GeoObjectId, City>;
+//using PlaceCentersMap = std::unordered_map<base::GeoObjectId, PlaceCenter>;
 }  // namespace regions
 }  // namespace generator

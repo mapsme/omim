@@ -13,6 +13,7 @@
 #include <string>
 
 #include <boost/geometry.hpp>
+#include <boost/optional.hpp>
 
 namespace generator
 {
@@ -32,7 +33,6 @@ public:
   // 1. Return the english name if it exists.
   // 2. Return transliteration if it succeeds.
   // 3. Otherwise, return empty string.
-  std::string GetEnglishOrTransliteratedName() const;
   std::string GetName(int8_t lang = StringUtf8Multilang::kDefaultCode) const;
   StringUtf8Multilang const & GetMultilangName() const;
   void SetMultilangName(StringUtf8Multilang const & name);
@@ -44,19 +44,13 @@ protected:
 class RegionWithData
 {
 public:
-  static uint8_t constexpr kNoRank = 0;
-
   RegionWithData(RegionDataProxy const & regionData) : m_regionData(regionData) {}
 
   base::GeoObjectId GetId() const;
   bool HasIsoCode() const;
   std::string GetIsoCode() const;
 
-  // Absolute rank values do not mean anything. But if the rank of the first object is more than the
-  // rank of the second object, then the first object is considered more nested.
-  uint8_t GetRank() const;
-  std::string GetLabel() const;
-  size_t GetWeight() const;
+  boost::optional<base::GeoObjectId> GetLabelOsmIdOptional() const;
 
   AdminLevel GetAdminLevel() const { return m_regionData.GetAdminLevel(); }
   PlaceType GetPlaceType() const { return m_regionData.GetPlaceType(); }
