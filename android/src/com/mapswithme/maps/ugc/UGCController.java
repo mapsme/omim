@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UGCController implements View.OnClickListener, UGC.UGCListener
+public class UGCController implements View.OnClickListener, UGC.ReceiveUGCListener
 {
   @NonNull
   private final View mUgcRootView;
@@ -143,7 +143,7 @@ public class UGCController implements View.OnClickListener, UGC.UGCListener
     mReviewListDivider = mPlacePage.findViewById(R.id.ugc_review_list_divider);
     mUserReviewDivider = mPlacePage.findViewById(R.id.user_review_divider);
 
-    UGC.setListener(this);
+    UGC.setReceiveListener(this);
   }
 
   public void clear()
@@ -187,7 +187,7 @@ public class UGCController implements View.OnClickListener, UGC.UGCListener
       return;
 
     mMapObject = mapObject;
-    UGC.requestUGC(mMapObject.getFeatureId());
+    UGC.nativeRequestUGC(mMapObject.getFeatureId());
   }
 
   public boolean isLeaveReviewButtonTouched(@NonNull MotionEvent event)
