@@ -3131,7 +3131,7 @@ osm::Editor::SaveResult Framework::SaveEditedMapObject(osm::EditableMapObject em
     }
     else
     {
-      originalFeature.ReplaceBy(emo);
+      originalFeature = FeatureType::ConstructFromMapObject(emo);
     }
 
     // Handle only pois.
@@ -3158,7 +3158,7 @@ osm::Editor::SaveResult Framework::SaveEditedMapObject(osm::EditableMapObject em
     string originalFeatureStreet;
     if (!isCreatedFeature)
     {
-      originalFeatureStreet = coder.GetOriginalFeatureStreetName(originalFeature);
+      originalFeatureStreet = coder.GetOriginalFeatureStreetName(originalFeature.GetID());
     }
     else
     {
