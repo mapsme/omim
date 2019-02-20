@@ -69,6 +69,8 @@ set(SRC
   geometry_holder.hpp
   geo_objects/geo_objects.cpp
   geo_objects/geo_objects.hpp
+  hierarchy.cpp
+  hierarchy.hpp
   holes.cpp
   holes.hpp
   intermediate_data.cpp
@@ -101,8 +103,6 @@ set(SRC
   osm_source.cpp
   osm_xml_source.hpp
   polygonizer.hpp
-  popularity.cpp
-  popularity.hpp
   popular_places_section_builder.cpp
   popular_places_section_builder.hpp
   place.hpp

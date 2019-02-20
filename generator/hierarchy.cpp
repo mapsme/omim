@@ -1,4 +1,4 @@
-#include "generator/popularity.hpp"
+#include "generator/hierarchy.hpp"
 
 #include "generator/boost_helpers.hpp"
 

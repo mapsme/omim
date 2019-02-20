@@ -2,7 +2,7 @@
 
 #include "generator/feature_generator.hpp"
 #include "generator/generator_tests/common.hpp"
-#include "generator/popularity.hpp"
+#include "generator/hierarchy.hpp"
 
 #include "indexer/classificator_loader.hpp"
 #include "indexer/classificator.hpp"

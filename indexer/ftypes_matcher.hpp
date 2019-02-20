@@ -21,8 +21,8 @@
 namespace feature { class TypesHolder; }
 class FeatureType;
 
-#define DECLARE_CHECKER_INSTANCE(CheckerType) static CheckerType const & Instance() { \
-  static CheckerType const inst; return inst; }
+#define DECLARE_CHECKER_INSTANCE(CheckerType) \
+  static CheckerType const & Instance() { static CheckerType const inst; return inst; }
 
 namespace ftypes
 {

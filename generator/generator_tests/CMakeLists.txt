@@ -14,6 +14,7 @@ set(
   feature_builder_test.cpp
   feature_merger_test.cpp
   filter_elements_tests.cpp
+  hierarchy_builder_tests.cpp
   intermediate_data_test.cpp
   maxspeeds_tests.cpp
   metadata_parser_test.cpp
@@ -21,7 +22,6 @@ set(
   osm2meta_test.cpp
   osm_o5m_source_test.cpp
   osm_type_test.cpp
-  popularity_builder_tests.cpp
   region_info_collector_tests.cpp
   regions_tests.cpp
   restriction_collector_test.cpp
