@@ -195,6 +195,7 @@ DEFINE_string(geo_objects_key_value, "", "Output geo objects key-value file.");
 DEFINE_string(regions_features, "", "Input tmp.mwm file with regions.");
 
 DEFINE_string(popularity_csv, "", "Output csv for popularity.");
+DEFINE_string(complex, "", "Output directory for csv files.");
 
 // Common.
 DEFINE_bool(verbose, false, "Provide more detailed output.");
@@ -284,7 +285,8 @@ int GeneratorToolMain(int argc, char ** argv)
       FLAGS_make_city_roads || FLAGS_generate_maxspeed || FLAGS_generate_traffic_keys ||
       FLAGS_transit_path != "" || FLAGS_ugc_data != "" || FLAGS_popular_places_data != "" ||
       FLAGS_generate_geo_objects_features || FLAGS_geo_objects_key_value != "" ||
-      FLAGS_dump_wikipedia_urls != "" || FLAGS_wikipedia_pages != "" || FLAGS_popularity_csv != "")
+      FLAGS_dump_wikipedia_urls != "" || FLAGS_wikipedia_pages != "" || FLAGS_popularity_csv != "" ||
+      FLAGS_complex != "")
   {
     classificator::Load();
   }
@@ -428,7 +430,12 @@ int GeneratorToolMain(int argc, char ** argv)
 
   if (!FLAGS_popularity_csv.empty())
   {
-    popularity::BuildPopularitySrcFromAllData(genInfo.m_tmpDir, FLAGS_popularity_csv, threadsCount);
+    hierarchy::BuildSrcFromAllData<popularity::Popularity>(genInfo.m_tmpDir, FLAGS_popularity_csv, threadsCount);
+  }
+
+  if (!FLAGS_complex.empty())
+  {
+    hierarchy::BuildSrcFromAllDataToDir<complex_area::Complex>(genInfo.m_tmpDir, FLAGS_complex, threadsCount);
   }
 
   if (!FLAGS_dump_wikipedia_urls.empty())

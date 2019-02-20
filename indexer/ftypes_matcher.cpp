@@ -476,6 +476,29 @@ IsPopularityPlaceChecker::IsPopularityPlaceChecker()
     m_types.push_back(c.GetTypeByPath({t.first, t.second}));
 }
 
+IsAdministrativeChecker::IsAdministrativeChecker() : BaseChecker(2 /* level */)
+{
+  m_types.push_back(classif().GetTypeByPath({"place", "city"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "continent"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "country"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "county"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "hamlet"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "island"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "islet"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "isolated_dwelling"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "locality"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "neighbourhood"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "ocean"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "region"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "sea"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "state"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "suburb"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "town"}));
+  m_types.push_back(classif().GetTypeByPath({"place", "village"}));
+
+  m_types.push_back(classif().GetTypeByPath({"boundary", "administrative"}));
+}
+
 boost::optional<IsHotelChecker::Type> IsHotelChecker::GetHotelType(FeatureType & ft) const
 {
   feature::TypesHolder types(ft);

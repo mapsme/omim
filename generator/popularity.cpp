@@ -1,17 +1,13 @@
 #include "generator/popularity.hpp"
 
 #include "generator/boost_helpers.hpp"
-#include "generator/platform_helpers.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/feature_utils.hpp"
-#include "indexer/ftypes_matcher.hpp"
 
 #include "geometry/mercator.hpp"
 
-#include "base/assert.hpp"
-#include "base/geo_object_id.hpp"
-#include "base/thread_pool_computational.hpp"
+#include "base/stl_helpers.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -21,9 +17,9 @@
 
 namespace generator
 {
-namespace popularity
+namespace hierarchy
 {
-PopularityGeomPlace::PopularityGeomPlace(FeatureBuilder1 const & feature)
+HierarchyGeomPlace::HierarchyGeomPlace(FeatureBuilder1 const & feature)
   : m_id(feature.GetMostGenericOsmId())
   , m_feature(feature)
   , m_polygon(std::make_unique<BoostPolygon>())
@@ -33,7 +29,7 @@ PopularityGeomPlace::PopularityGeomPlace(FeatureBuilder1 const & feature)
   m_area = boost::geometry::area(*m_polygon);
 }
 
-bool PopularityGeomPlace::Contains(PopularityGeomPlace const & smaller) const
+bool HierarchyGeomPlace::Contains(HierarchyGeomPlace const & smaller) const
 {
   CHECK(m_polygon, ());
   CHECK(smaller.m_polygon, ());
@@ -42,7 +38,7 @@ bool PopularityGeomPlace::Contains(PopularityGeomPlace const & smaller) const
       boost::geometry::covered_by(*smaller.m_polygon, *m_polygon);
 }
 
-bool PopularityGeomPlace::Contains(m2::PointD const & point) const
+bool HierarchyGeomPlace::Contains(m2::PointD const & point) const
 {
   CHECK(m_polygon, ());
 
@@ -50,47 +46,8 @@ bool PopularityGeomPlace::Contains(m2::PointD const & point) const
       boost::geometry::covered_by(BoostPoint(point.x, point.y), *m_polygon);
 }
 
-PopularityBuilder::PopularityBuilder(std::string const & dataFilename)
-  : m_dataFilename(dataFilename) {}
-
-std::vector<PopularityLine> PopularityBuilder::Build() const
-{
-  std::vector<FeatureBuilder1> pointObjs;
-  std::vector<FeatureBuilder1> geomObjs;
-  auto const & checker = ftypes::IsPopularityPlaceChecker::Instance();
-  feature::ForEachFromDatRawFormat(m_dataFilename, [&](FeatureBuilder1 const & fb, uint64_t /* currPos */) {
-    if (!checker(fb.GetTypesHolder()) || GetFeatureName(fb).empty())
-      return;
-
-    if (fb.IsPoint())
-      pointObjs.push_back(fb);
-    else if (fb.IsArea() && fb.IsGeometryClosed())
-      geomObjs.push_back(fb);
-  });
-
-  auto geomObjsPtrs = MakeNodes(geomObjs);
-  auto const tree = MakeTree4d(geomObjsPtrs);
-  auto const mapIdToNode = GetAreaMap(geomObjsPtrs);
-  LinkGeomPlaces(mapIdToNode, tree, geomObjsPtrs);
-
-  std::vector<PopularityLine> result;
-  FillLinesFromGeomObjectPtrs(geomObjsPtrs, result);
-  FillLinesFromPointObjects(pointObjs, mapIdToNode, tree, result);
-  return result;
-}
-
 // static
-std::string PopularityBuilder::GetType(FeatureBuilder1 const & feature)
-{
-  auto const & c = classif();
-  auto const & checker = ftypes::IsPopularityPlaceChecker::Instance();
-  auto const & types = feature.GetTypes();
-  auto const it = std::find_if(std::begin(types), std::end(types), checker);
-  return it == std::end(types) ? string() : c.GetReadableObjectName(*it);
-}
-
-// static
-std::string PopularityBuilder::GetFeatureName(FeatureBuilder1 const & feature)
+std::string HierarchyBuilder::GetFeatureName(FeatureBuilder1 const & feature)
 {
   auto const & str = feature.GetParams().name;
   auto const deviceLang = StringUtf8Multilang::GetLangIndex("ru");
@@ -102,27 +59,8 @@ std::string PopularityBuilder::GetFeatureName(FeatureBuilder1 const & feature)
 }
 
 // static
-void PopularityBuilder::FillLinesFromPointObjects(std::vector<FeatureBuilder1> const & pointObjs,
-                                                  MapIdToNode const & m, Tree4d const & tree,
-                                                  std::vector<PopularityLine> & lines)
-{
-  lines.reserve(lines.size() + pointObjs.size());
-  for (auto const & p : pointObjs)
-  {
-    auto const center = p.GetKeyPoint();
-    PopularityLine line;
-    line.m_id = p.GetMostGenericOsmId();
-    line.m_parent = FindPointParent(center, m, tree);
-    line.m_center = center;
-    line.m_type = GetType(p);
-    line.m_name = GetFeatureName(p);
-    lines.push_back(line);
-  }
-}
-
-// static
 boost::optional<base::GeoObjectId>
-PopularityBuilder::FindPointParent(m2::PointD const & point, MapIdToNode const & m, Tree4d const & tree)
+HierarchyBuilder::FindPointParent(m2::PointD const & point, MapIdToNode const & m, Tree4d const & tree)
 {
   boost::optional<base::GeoObjectId> bestId;
   auto minArea = std::numeric_limits<double>::max();
@@ -142,9 +80,9 @@ PopularityBuilder::FindPointParent(m2::PointD const & point, MapIdToNode const &
 }
 
 // static
-boost::optional<PopularityBuilder::Node::Ptr>
-PopularityBuilder::FindPopularityGeomPlaceParent(PopularityGeomPlace const & place,
-                                                 MapIdToNode const & m, Tree4d const & tree)
+boost::optional<HierarchyBuilder::Node::Ptr>
+HierarchyBuilder::FindPopularityGeomPlaceParent(HierarchyGeomPlace const & place,
+                                                MapIdToNode const & m, Tree4d const & tree)
 {
   boost::optional<Node::Ptr> bestPlace;
   auto minArea = std::numeric_limits<double>::max();
@@ -168,7 +106,7 @@ PopularityBuilder::FindPopularityGeomPlaceParent(PopularityGeomPlace const & pla
 }
 
 // static
-PopularityBuilder::MapIdToNode PopularityBuilder::GetAreaMap(Node::PtrList const & nodes)
+HierarchyBuilder::MapIdToNode HierarchyBuilder::GetAreaMap(Node::PtrList const & nodes)
 {
   std::unordered_map<base::GeoObjectId, Node::Ptr> result;
   result.reserve(nodes.size());
@@ -182,7 +120,7 @@ PopularityBuilder::MapIdToNode PopularityBuilder::GetAreaMap(Node::PtrList const
 }
 
 // static
-PopularityBuilder::Tree4d PopularityBuilder::MakeTree4d(Node::PtrList const & nodes)
+HierarchyBuilder::Tree4d HierarchyBuilder::MakeTree4d(Node::PtrList const & nodes)
 {
   Tree4d tree;
   for (auto const & n : nodes)
@@ -196,34 +134,7 @@ PopularityBuilder::Tree4d PopularityBuilder::MakeTree4d(Node::PtrList const & no
 }
 
 // static
-void PopularityBuilder::FillLineFromGeomObjectPtr(PopularityLine & line, Node::Ptr const & node)
-{
-  auto const & data = node->GetData();
-  auto const & feature = data.GetFeature();
-  line.m_id = data.GetId();
-  if (node->HasParent())
-    line.m_parent = node->GetParent()->GetData().GetId();
-
-  line.m_center = feature.GetKeyPoint();
-  line.m_type = GetType(feature);
-  line.m_name = GetFeatureName(feature);
-}
-
-// static
-void PopularityBuilder::FillLinesFromGeomObjectPtrs(Node::PtrList const & nodes,
-                                                    std::vector<PopularityLine> & lines)
-{
-  lines.reserve(lines.size() + nodes.size());
-  for (auto const & n : nodes)
-  {
-    PopularityLine line;
-    FillLineFromGeomObjectPtr(line, n);
-    lines.push_back(line);
-  }
-}
-
-// static
-void PopularityBuilder::LinkGeomPlaces(MapIdToNode const & m, Tree4d const & tree, Node::PtrList & nodes)
+void HierarchyBuilder::LinkGeomPlaces(MapIdToNode const & m, Tree4d const & tree, Node::PtrList & nodes)
 {
   if (nodes.size() < 2)
     return;
@@ -245,50 +156,128 @@ void PopularityBuilder::LinkGeomPlaces(MapIdToNode const & m, Tree4d const & tre
 }
 
 // static
-PopularityBuilder::Node::PtrList
-PopularityBuilder::MakeNodes(std::vector<FeatureBuilder1> const & features)
+HierarchyBuilder::Node::PtrList
+HierarchyBuilder::MakeNodes(std::vector<FeatureBuilder1> const & features)
 {
   Node::PtrList nodes;
   nodes.reserve(features.size());
   std::transform(std::begin(features), std::end(features), std::back_inserter(nodes), [](FeatureBuilder1 const & f) {
-    return std::make_shared<Node>(PopularityGeomPlace(f));
+    return std::make_shared<Node>(HierarchyGeomPlace(f));
   });
 
   return nodes;
 }
 
-std::vector<PopularityLine> BuildPopularitySrcFromData(std::string const & dataFilename)
+HierarchyBuilder::HierarchyBuilder(std::string const & dataFilename, ftypes::BaseChecker const & checker)
+  : m_dataFullFilename(dataFilename)
+  , m_dataFilename(base::GetNameFromFullPathWithoutExt(dataFilename))
+  , m_checker(checker) {}
+
+std::string HierarchyBuilder::GetType(FeatureBuilder1 const & feature) const
 {
-  PopularityBuilder builder(dataFilename);
-  return builder.Build();
+  auto const & c = classif();
+  auto const & types = feature.GetTypes();
+  auto const it = std::find_if(std::begin(types), std::end(types), std::cref(m_checker));
+  return it == std::end(types) ? string() : c.GetReadableObjectName(*it);
 }
 
-std::vector<PopularityLine> BuildPopularitySrcFromAllData(std::vector<std::string> const & dataFilenames,
-                                                          size_t cpuCount)
+void HierarchyBuilder::FillLinesFromPointObjects(std::vector<FeatureBuilder1> const & pointObjs,
+                                                 MapIdToNode const & m, Tree4d const & tree,
+                                                 std::vector<HierarchyLine> & lines) const
 {
-  CHECK_GREATER(cpuCount, 0, ());
-
-  base::thread_pool::computational::ThreadPool threadPool(cpuCount);
-  std::vector<std::future<std::vector<PopularityLine>>> futures;
-  for (auto const & filename : dataFilenames)
+  lines.reserve(lines.size() + pointObjs.size());
+  for (auto const & p : pointObjs)
   {
-    auto result = threadPool.Submit(
-                    static_cast<std::vector<PopularityLine>(*)(std::string const &)>(BuildPopularitySrcFromData),
-                    filename);
-    futures.emplace_back(std::move(result));
+    auto const center = p.GetKeyPoint();
+    HierarchyLine line;
+    line.m_id = p.GetMostGenericOsmId();
+    line.m_parent = FindPointParent(center, m, tree);
+    line.m_center = center;
+    line.m_type = GetType(p);
+    line.m_name = GetFeatureName(p);
+    line.m_dataFilename = m_dataFilename;
+    lines.push_back(line);
   }
+}
 
-  std::vector<PopularityLine> result;
-  for (auto & f : futures)
+void HierarchyBuilder::FillLineFromGeomObjectPtr(HierarchyLine & line, Node::Ptr const & node) const
+{
+  auto const & data = node->GetData();
+  auto const & feature = data.GetFeature();
+  line.m_id = data.GetId();
+  if (node->HasParent())
+    line.m_parent = node->GetParent()->GetData().GetId();
+
+  line.m_center = feature.GetKeyPoint();
+  line.m_type = GetType(feature);
+  line.m_name = GetFeatureName(feature);
+  line.m_dataFilename = m_dataFilename;
+}
+
+void HierarchyBuilder::FillLinesFromGeomObjectPtrs(Node::PtrList const & nodes,
+                                                   std::vector<HierarchyLine> & lines) const
+{
+  lines.reserve(lines.size() + nodes.size());
+  for (auto const & n : nodes)
   {
-    auto lines = f.get();
-    std::move(std::begin(lines), std::end(lines), std::back_inserter(result));
+    HierarchyLine line;
+    FillLineFromGeomObjectPtr(line, n);
+    lines.push_back(line);
   }
+}
 
+void HierarchyBuilder::SetDataFilename(std::string const & dataFilename)
+{
+  m_dataFullFilename = dataFilename;
+}
+
+void HierarchyBuilder::Prepare(std::string const & dataFilename, std::vector<FeatureBuilder1> & pointObjs,
+                               Node::PtrList & geomObjsPtrs, Tree4d & tree, MapIdToNode & mapIdToNode) const
+{
+  std::vector<FeatureBuilder1> geomObjs;
+  feature::ForEachFromDatRawFormat(dataFilename, [&](FeatureBuilder1 const & fb, uint64_t /* currPos */) {
+    if (!m_checker(fb.GetTypesHolder()) || GetFeatureName(fb).empty())
+      return;
+
+    if (fb.IsPoint())
+      pointObjs.push_back(fb);
+    else if (fb.IsArea() && fb.IsGeometryClosed())
+      geomObjs.push_back(fb);
+  });
+
+  geomObjsPtrs = MakeNodes(geomObjs);
+  tree = MakeTree4d(geomObjsPtrs);
+  mapIdToNode = GetAreaMap(geomObjsPtrs);
+  LinkGeomPlaces(mapIdToNode, tree, geomObjsPtrs);
+}
+}  // namespace hierarchy
+
+namespace popularity
+{
+using namespace hierarchy;
+
+Builder::Builder(std::string const & dataFilename) :
+  HierarchyBuilder(dataFilename, ftypes::IsPopularityPlaceChecker::Instance()) {}
+
+Builder::Builder() : Builder("") {}
+
+std::vector<HierarchyLine> Builder::Build() const
+{
+  std::vector<FeatureBuilder1> pointObjs;
+  Node::PtrList geomObjsPtrs;
+  Tree4d tree;
+  MapIdToNode mapIdToNode;
+  Prepare(m_dataFullFilename, pointObjs, geomObjsPtrs, tree, mapIdToNode);
+
+  std::vector<HierarchyLine> result;
+  FillLinesFromGeomObjectPtrs(geomObjsPtrs, result);
+  FillLinesFromPointObjects(pointObjs, mapIdToNode, tree, result);
   return result;
 }
 
-void WriteLines(std::vector<PopularityLine> const & lines, std::string const & outFilename)
+// static
+void Writer::WriteLines(std::vector<hierarchy::HierarchyLine> const & lines,
+                        std::string const & outFilename)
 {
   std::ofstream stream;
   stream.exceptions(std::fstream::failbit | std::fstream::badbit);
@@ -306,19 +295,55 @@ void WriteLines(std::vector<PopularityLine> const & lines, std::string const & o
            << line.m_type << ";" << line.m_name << "\n";
   }
 }
-
-void BuildPopularitySrcFromData(std::string const & dataFilename, std::string const & outFilename)
-{
-  auto const lines = BuildPopularitySrcFromData(dataFilename);
-  WriteLines(lines, outFilename);
-}
-
-void BuildPopularitySrcFromAllData(std::string const & dataDir, std::string const & outFilename,
-                                   size_t cpuCount)
-{
-  auto const filenames = platform_helpers::GetFullDataTmpFilePaths(dataDir);
-  auto const lines = BuildPopularitySrcFromAllData(filenames, cpuCount);
-  WriteLines(lines, outFilename);
-}
 }  // namespace popularity
+
+namespace complex_area
+{
+using namespace hierarchy;
+
+Builder::Builder(std::string const & dataFilename) :
+  HierarchyBuilder(dataFilename, ftypes::IsComplexChecker::Instance()) {}
+
+Builder::Builder() : Builder("") {}
+
+std::vector<HierarchyLine> Builder::Build() const
+{
+  std::vector<FeatureBuilder1> pointObjs;
+  Node::PtrList geomObjsPtrs;
+  Tree4d tree;
+  MapIdToNode mapIdToNode;
+  Prepare(m_dataFilename, pointObjs, geomObjsPtrs, tree, mapIdToNode);
+
+  std::vector<HierarchyLine> result;
+  FillLinesFromGeomObjectPtrs(geomObjsPtrs, result);
+
+  std::vector<HierarchyLine> tmp;
+  FillLinesFromPointObjects(pointObjs, mapIdToNode, tree, tmp);
+  std::copy_if(std::begin(tmp), std::end(tmp), std::back_inserter(result), [] (auto & p) {
+    return static_cast<bool>(p.m_parent);
+  });
+  return result;
+}
+
+// static
+void Writer::WriteLines(std::vector<hierarchy::HierarchyLine> const & lines,
+                        std::string const & outFilename)
+{
+  std::ofstream stream;
+  stream.exceptions(std::fstream::failbit | std::fstream::badbit);
+  stream.open(outFilename);
+  stream << std::fixed << std::setprecision(7);
+  stream << "Id;Parent id;Lat;Lon;Main type;Name;MwmName\n";
+  for (auto const & line : lines)
+  {
+    stream << line.m_id.GetEncodedId() << ";";
+    if (line.m_parent)
+      stream << *line.m_parent;
+
+    auto const center = MercatorBounds::ToLatLon(line.m_center);
+    stream << ";" << center.lat << ";" << center.lon << ";"
+           << line.m_type << ";" << line.m_name << ";" << line.m_dataFilename << "\n";
+  }
+}
+}  // namespace complex_area
 }  // namespace generator

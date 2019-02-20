@@ -22,7 +22,7 @@ namespace feature { class TypesHolder; }
 class FeatureType;
 
 #define DECLARE_CHECKER_INSTANCE(CheckerType) static CheckerType const & Instance() { \
-                                              static CheckerType const inst; return inst; }
+  static CheckerType const inst; return inst; }
 
 namespace ftypes
 {
@@ -195,20 +195,20 @@ class WikiChecker : public BaseChecker
 {
   WikiChecker();
 public:
-   static std::set<std::pair<std::string, std::string>> const kTypesForWiki;
+  static std::set<std::pair<std::string, std::string>> const kTypesForWiki;
 
-   DECLARE_CHECKER_INSTANCE(WikiChecker);
+  DECLARE_CHECKER_INSTANCE(WikiChecker);
 
-   template <typename Ft>
-   bool NeedFeature(Ft & feature) const
-   {
-     bool need = false;
-     feature.ForEachType([&](uint32_t type) {
-       if (!need && IsMatched(type))
-         need = true;
-     });
-     return need;
-   }
+  template <typename Ft>
+  bool NeedFeature(Ft & feature) const
+  {
+    bool need = false;
+    feature.ForEachType([&](uint32_t type) {
+      if (!need && IsMatched(type))
+        need = true;
+    });
+    return need;
+  }
 };
 
 class IsPlaceChecker : public BaseChecker
@@ -241,6 +241,20 @@ class IsPopularityPlaceChecker : public BaseChecker
   IsPopularityPlaceChecker();
 public:
   DECLARE_CHECKER_INSTANCE(IsPopularityPlaceChecker);
+};
+
+class IsAdministrativeChecker : public BaseChecker
+{
+  IsAdministrativeChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsAdministrativeChecker);
+};
+
+class IsComplexChecker : public IsAdministrativeChecker
+{
+public:
+  // BaseChecker overrides:
+  bool IsMatched(uint32_t type) const override { return !IsAdministrativeChecker::IsMatched(type); }
 };
 
 class IsHotelChecker : public BaseChecker

@@ -22,6 +22,7 @@
 #include <vector>
 
 using namespace generator;
+using namespace generator::hierarchy;
 using namespace generator::popularity;
 
 namespace generator_tests
@@ -36,24 +37,25 @@ public:
 
   void GetType() const
   {
+    Builder popularityBuilder;
     {
       FeatureBuilder1 fb;
       auto const type = m_cl.GetTypeByPath({"tourism", "museum"});
       auto const checkableType =  m_cl.GetReadableObjectName(type);
       fb.AddType(m_cl.GetTypeByPath({"building"}));
       fb.AddType(type);
-      TEST_EQUAL(PopularityBuilder::GetType(fb), checkableType, ());
+      TEST_EQUAL(popularityBuilder.GetType(fb), checkableType, ());
     }
 
     {
       FeatureBuilder1 fb;
       fb.AddType(m_cl.GetTypeByPath({"building"}));
-      TEST_EQUAL(PopularityBuilder::GetType(fb), "", ());
+      TEST_EQUAL(popularityBuilder.GetType(fb), "", ());
     }
 
     {
       FeatureBuilder1 fb;
-      TEST_EQUAL(PopularityBuilder::GetType(fb), "", ());
+      TEST_EQUAL(popularityBuilder.GetType(fb), "", ());
     }
   }
 
@@ -64,7 +66,7 @@ public:
       std::string checkableName = "Фича";
       fb.AddName("ru", checkableName);
       fb.AddName("en", "Feature");
-      TEST_EQUAL(PopularityBuilder::GetFeatureName(fb), checkableName, ());
+      TEST_EQUAL(Builder::GetFeatureName(fb), checkableName, ());
     }
 
     {
@@ -72,25 +74,25 @@ public:
       std::string checkableName = "Feature";
       fb.AddName("en", checkableName);
       fb.AddName("default", "Fonctionnalité");
-      TEST_EQUAL(PopularityBuilder::GetFeatureName(fb), checkableName, ());
+      TEST_EQUAL(Builder::GetFeatureName(fb), checkableName, ());
     }
 
     {
       FeatureBuilder1 fb;
       std::string checkableName = "Fonctionnalité";
       fb.AddName("default", checkableName);
-      TEST_EQUAL(PopularityBuilder::GetFeatureName(fb), checkableName, ());
+      TEST_EQUAL(Builder::GetFeatureName(fb), checkableName, ());
     }
 
     {
       FeatureBuilder1 fb;
       fb.AddName("fr", "Fonctionnalité");
-      TEST_EQUAL(PopularityBuilder::GetFeatureName(fb), "", ());
+      TEST_EQUAL(Builder::GetFeatureName(fb), "", ());
     }
 
     {
       FeatureBuilder1 fb;
-      TEST_EQUAL(PopularityBuilder::GetFeatureName(fb), "", ());
+      TEST_EQUAL(Builder::GetFeatureName(fb), "", ());
     }
   }
 
@@ -104,26 +106,26 @@ public:
     auto const filteredArea = FilterArea(m_testSet);
     auto geomPlaces = MakePopularityGeomPlaces(filteredArea);
     auto const nameToNode = GetPlacesMap(geomPlaces);
-    auto const m = PopularityBuilder::GetAreaMap(geomPlaces);
-    auto const tree = PopularityBuilder::MakeTree4d(geomPlaces);
+    auto const m = Builder::GetAreaMap(geomPlaces);
+    auto const tree = Builder::MakeTree4d(geomPlaces);
 
     {
       auto const & ft = pointMap.at("1_3_4");
-      auto const parent = PopularityBuilder::FindPointParent(ft.GetKeyPoint(), m, tree);
+      auto const parent = Builder::FindPointParent(ft.GetKeyPoint(), m, tree);
       TEST(parent, ());
       TEST_EQUAL(*parent, nameToNode.at("1_3")->GetData().GetId(), ());
     }
 
     {
       auto const & ft = pointMap.at("1_3_5");
-      auto const parent = PopularityBuilder::FindPointParent(ft.GetKeyPoint(), m, tree);
+      auto const parent = Builder::FindPointParent(ft.GetKeyPoint(), m, tree);
       TEST(parent, ());
       TEST_EQUAL(*parent, nameToNode.at("1_3")->GetData().GetId(), ());
     }
 
     {
       m2::PointD bad{1000.0, 1000.0};
-      auto const parent = PopularityBuilder::FindPointParent(bad, m, tree);
+      auto const parent = Builder::FindPointParent(bad, m, tree);
       TEST(!parent, ());
     }
   }
@@ -133,23 +135,23 @@ public:
     auto const filtered = FilterArea(m_testSet);
     auto geomPlaces = MakePopularityGeomPlaces(filtered);
     auto const nameToNode = GetPlacesMap(geomPlaces);
-    auto const m = PopularityBuilder::GetAreaMap(geomPlaces);
-    auto const tree = PopularityBuilder::MakeTree4d(geomPlaces);
+    auto const m = Builder::GetAreaMap(geomPlaces);
+    auto const tree = Builder::MakeTree4d(geomPlaces);
 
     {
-      auto const t = PopularityBuilder::FindPopularityGeomPlaceParent(nameToNode.at("1_2")->GetData(), m, tree);
+      auto const t = Builder::FindPopularityGeomPlaceParent(nameToNode.at("1_2")->GetData(), m, tree);
       TEST(t, ());
       TEST_EQUAL(*t, nameToNode.at("1"), ());
     }
 
     {
-      auto const t = PopularityBuilder::FindPopularityGeomPlaceParent(nameToNode.at("1_3")->GetData(), m, tree);
+      auto const t = Builder::FindPopularityGeomPlaceParent(nameToNode.at("1_3")->GetData(), m, tree);
       TEST(t, ());
       TEST_EQUAL(*t, nameToNode.at("1"), ());
     }
 
     {
-      auto const t = PopularityBuilder::FindPopularityGeomPlaceParent(nameToNode.at("1")->GetData(), m, tree);
+      auto const t = Builder::FindPopularityGeomPlaceParent(nameToNode.at("1")->GetData(), m, tree);
       TEST(!t, ());
     }
   }
@@ -159,11 +161,11 @@ public:
     {
       auto const filtered = FilterArea(m_testSet);
       auto const geomPlaces = MakePopularityGeomPlaces(filtered);
-      std::map<base::GeoObjectId, PopularityBuilder::Node::Ptr> checkableMap;
+      std::map<base::GeoObjectId, Builder::Node::Ptr> checkableMap;
       for (auto const & n : geomPlaces)
         checkableMap.emplace(n->GetData().GetId(), n);
 
-      auto const m = PopularityBuilder::GetAreaMap(geomPlaces);
+      auto const m = Builder::GetAreaMap(geomPlaces);
       TEST_EQUAL(m.size(), checkableMap.size(), ());
       for (auto const & p : checkableMap)
       {
@@ -173,7 +175,7 @@ public:
     }
 
     {
-      auto const m = PopularityBuilder::GetAreaMap({});
+      auto const m = Builder::GetAreaMap({});
       TEST(m.empty(), ());
     }
   }
@@ -187,7 +189,7 @@ public:
       for (auto const & node : geomPlaces)
         checkableIds.insert(node->GetData().GetId());
 
-      auto const tree = PopularityBuilder::MakeTree4d(geomPlaces);
+      auto const tree = Builder::MakeTree4d(geomPlaces);
       std::set<base::GeoObjectId> ids;
       tree.ForEach([&](auto const & id) {
         ids.insert(id);
@@ -198,7 +200,7 @@ public:
 
     {
       std::set<base::GeoObjectId> checkableIds;
-      auto const tree = PopularityBuilder::MakeTree4d({});
+      auto const tree = Builder::MakeTree4d({});
       std::set<base::GeoObjectId> ids;
       tree.ForEach([&](auto const & id) {
         ids.insert(id);
@@ -213,12 +215,12 @@ public:
     auto const filtered = FilterArea(m_testSet);
     auto geomPlaces = MakePopularityGeomPlaces(filtered);
     auto const nameToNode = GetPlacesMap(geomPlaces);
-    auto const m = PopularityBuilder::GetAreaMap(geomPlaces);
-    auto const tree = PopularityBuilder::MakeTree4d(geomPlaces);
-    PopularityBuilder::LinkGeomPlaces(m, tree, geomPlaces);
+    auto const m = Builder::GetAreaMap(geomPlaces);
+    auto const tree = Builder::MakeTree4d(geomPlaces);
+    Builder::LinkGeomPlaces(m, tree, geomPlaces);
 
     TEST_EQUAL(nameToNode.size(), 3, ());
-    TEST_EQUAL(nameToNode.at("1")->GetParent(), PopularityBuilder::Node::Ptr(), ());
+    TEST_EQUAL(nameToNode.at("1")->GetParent(), Builder::Node::Ptr(), ());
     TEST_EQUAL(nameToNode.at("1_2")->GetParent(), nameToNode.at("1"), ());
     TEST_EQUAL(nameToNode.at("1_3")->GetParent(), nameToNode.at("1"), ());
   }
@@ -226,7 +228,7 @@ public:
   static void MakeNodes()
   {
     std::vector<FeatureBuilder1> v = FilterArea(m_testSet);
-    auto const nodes = PopularityBuilder::MakeNodes(v);
+    auto const nodes = Builder::MakeNodes(v);
     TEST_EQUAL(nodes.size(), v.size(), ());
     for (size_t i = 0; i < v.size(); ++i)
       TEST_EQUAL(nodes[i]->GetData().GetId(), v[i].GetMostGenericOsmId() , ());
@@ -245,10 +247,10 @@ public:
         collector(feature);
     }
 
-    PopularityBuilder builder(filename);
+    Builder builder(filename);
     auto const lines = builder.Build();
 
-    std::map<std::string, PopularityLine> m;
+    std::map<std::string, HierarchyLine> m;
     for (auto const & line : lines)
       m.emplace(line.m_name, line);
 
@@ -364,22 +366,22 @@ private:
     return filtered;
   }
 
-  static std::map<std::string, PopularityBuilder::Node::Ptr>
-  GetPlacesMap(PopularityBuilder::Node::PtrList const & geomPlaces)
+  static std::map<std::string, Builder::Node::Ptr>
+  GetPlacesMap(Builder::Node::PtrList const & geomPlaces)
   {
-    std::map<std::string, PopularityBuilder::Node::Ptr> nameToNode;
+    std::map<std::string, Builder::Node::Ptr> nameToNode;
     for (auto const & place : geomPlaces)
       nameToNode.emplace(place->GetData().GetFeature().GetName(), place);
 
     return nameToNode;
   }
 
-  static PopularityBuilder::Node::PtrList MakePopularityGeomPlaces(std::vector<FeatureBuilder1> const & v)
+  static Builder::Node::PtrList MakePopularityGeomPlaces(std::vector<FeatureBuilder1> const & v)
   {
-    PopularityBuilder::Node::PtrList nodes;
+    Builder::Node::PtrList nodes;
     nodes.reserve(v.size());
     std::transform(std::begin(v), std::end(v), std::back_inserter(nodes), [](FeatureBuilder1 const & f) {
-      return std::make_shared<PopularityBuilder::Node>(PopularityGeomPlace(f));
+      return std::make_shared<Builder::Node>(HierarchyGeomPlace(f));
     });
 
     return nodes;

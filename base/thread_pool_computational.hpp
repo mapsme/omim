@@ -12,7 +12,6 @@
 
 namespace base
 {
-using namespace threads;
 namespace thread_pool
 {
 namespace computational
@@ -25,7 +24,7 @@ namespace computational
 class ThreadPool
 {
 public:
-  using FunctionType = FunctionWrapper;
+  using FunctionType = threads::FunctionWrapper;
   using Threads = std::vector<std::thread>;
 
   // Constructs a ThreadPool.
@@ -130,7 +129,7 @@ private:
   std::condition_variable m_condition;
   std::queue<FunctionType> m_queue;
   Threads m_threads;
-  ThreadsJoiner<> m_joiner;
+  threads::ThreadsJoiner<> m_joiner;
 };
 }  // namespace computational
 }  // namespace thread_pool
