@@ -37,7 +37,8 @@ public:
 
   void GetType() const
   {
-    Builder popularityBuilder;
+    auto const filename = GetFileName();
+    Builder popularityBuilder(filename);
     {
       FeatureBuilder1 fb;
       auto const type = m_cl.GetTypeByPath({"tourism", "museum"});

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "generator/factory_utils.hpp"
+#include "generator/translator_complex.hpp"
 #include "generator/translator_geo_objects.hpp"
 #include "generator/translator_interface.hpp"
 #include "generator/translator_planet.hpp"
@@ -17,7 +18,8 @@ enum class TranslatorType
 {
   Planet,
   Region,
-  GeoObjects
+  GeoObjects,
+  Complex
 };
 
 template <class... Args>
@@ -31,6 +33,8 @@ std::shared_ptr<TranslatorInterface> CreateTranslator(TranslatorType type, Args&
     return create<TranslatorRegion>(std::forward<Args>(args)...);
   case TranslatorType::GeoObjects:
     return create<TranslatorGeoObjects>(std::forward<Args>(args)...);
+  case TranslatorType::Complex:
+    return create<TranslatorComplex>(std::forward<Args>(args)...);
   }
   UNREACHABLE();
 }

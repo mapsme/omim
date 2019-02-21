@@ -63,6 +63,7 @@ struct HierarchyLine
   std::string m_type;
   std::string m_name;
   std::string m_dataFilename;
+  uint8_t m_level;
 };
 
 class HierarchyBuilder
@@ -90,8 +91,10 @@ protected:
   static Tree4d MakeTree4d(Node::PtrList const & nodes);
   static void LinkGeomPlaces(MapIdToNode const & m, Tree4d const & tree, Node::PtrList & nodes);
   static Node::PtrList MakeNodes(std::vector<FeatureBuilder1> const & features);
+  static uint8_t GetLevel(Node::Ptr node);
 
-  std::string GetType(FeatureBuilder1 const & feature) const;
+  virtual std::string GetType(FeatureBuilder1 const & feature) const;
+
   void FillLinesFromPointObjects(std::vector<FeatureBuilder1> const & pointObjs, MapIdToNode const & m,
                                  Tree4d const & tree, std::vector<HierarchyLine> & lines) const;
   void FillLineFromGeomObjectPtr(HierarchyLine & line, Node::Ptr const & node) const;
@@ -99,7 +102,8 @@ protected:
                                    std::vector<HierarchyLine> & lines) const;
   void SetDataFilename(std::string const & dataFilename);
   void Prepare(std::string const & dataFilename, std::vector<FeatureBuilder1> & pointObjs,
-               Node::PtrList & geomObjsPtrs, Tree4d & tree, MapIdToNode & mapIdToNode) const;
+               std::vector<FeatureBuilder1> & geomObjs, Node::PtrList & geomObjsPtrs,
+               Tree4d & tree, MapIdToNode & mapIdToNode) const;
 
   std::string m_dataFullFilename;
   std::string m_dataFilename;
@@ -112,7 +116,6 @@ namespace popularity
 class Builder : public hierarchy::HierarchyBuilder
 {
 public:
-  Builder();
   explicit Builder(std::string const & dataFilename);
 
   // hierarchy::HierarchyBuilder overrides:
@@ -144,10 +147,11 @@ namespace complex_area
 class Builder : public hierarchy::HierarchyBuilder
 {
 public:
-  Builder();
   explicit Builder(std::string const & dataFilename);
 
   // hierarchy::HierarchyBuilder overrides:
+  std::string GetType(FeatureBuilder1 const & feature) const override;
+
   std::vector<hierarchy::HierarchyLine> Build() const override;
 };
 
@@ -213,6 +217,7 @@ std::vector<HierarchyLine> BuildSrcFromAllData(std::vector<std::string> const & 
 template <typename T>
 void BuildSrcFromData(std::string const & dataFilename, std::string const & outFilename)
 {
+
   auto const lines = BuildSrcFromData<T>(dataFilename);
   T::Writer::WriteLines(lines, outFilename);
 }
@@ -238,9 +243,9 @@ void BuildSrcFromAllDataToDir(std::string const & dataDir, std::string const & o
   {
     auto const outFilename = base::JoinPath(outDir,
                                             base::GetNameFromFullPathWithoutExt(filename) + ".hrc");
-    auto result = threadPool.Submit(
-                    static_cast<void(*)(std::string const &, std::string const &)>(BuildSrcFromData<T>),
-                    filename, outFilename);
+    threadPool.Submit(
+          static_cast<void(*)(std::string const &, std::string const &)>(BuildSrcFromData<T>),
+          filename, outFilename);
   }
 }
 }  // namespace hierarchy

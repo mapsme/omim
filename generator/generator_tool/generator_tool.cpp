@@ -195,6 +195,8 @@ DEFINE_string(geo_objects_key_value, "", "Output geo objects key-value file.");
 DEFINE_string(regions_features, "", "Input tmp.mwm file with regions.");
 
 DEFINE_string(popularity_csv, "", "Output csv for popularity.");
+
+DEFINE_bool(generate_complex_features, false, "Generate intermediate features for complex.");
 DEFINE_string(complex, "", "Output directory for csv files.");
 
 // Common.
@@ -286,7 +288,7 @@ int GeneratorToolMain(int argc, char ** argv)
       FLAGS_transit_path != "" || FLAGS_ugc_data != "" || FLAGS_popular_places_data != "" ||
       FLAGS_generate_geo_objects_features || FLAGS_geo_objects_key_value != "" ||
       FLAGS_dump_wikipedia_urls != "" || FLAGS_wikipedia_pages != "" || FLAGS_popularity_csv != "" ||
-      FLAGS_complex != "")
+      FLAGS_complex != "" || FLAGS_generate_complex_features)
   {
     classificator::Load();
   }
@@ -332,6 +334,16 @@ int GeneratorToolMain(int argc, char ** argv)
       }
     }
   }
+
+  if (FLAGS_generate_complex_features)
+  {
+    genInfo.m_splitByPolygons = FLAGS_split_by_polygons;
+    genInfo.m_fileName = FLAGS_output;
+    if (!GenerateComplexFeatures(genInfo))
+      return EXIT_FAILURE;
+  }
+
+  if (FLAGS_generate_complex_features)
 
   if (FLAGS_generate_region_features || FLAGS_generate_geo_objects_features)
   {

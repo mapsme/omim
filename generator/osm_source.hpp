@@ -42,6 +42,7 @@ public:
 bool GenerateFeatures(feature::GenerateInfo & info, std::shared_ptr<EmitterInterface> emitter);
 bool GenerateRegionFeatures(feature::GenerateInfo & info);
 bool GenerateGeoObjectsFeatures(feature::GenerateInfo & info);
+bool GenerateComplexFeatures(feature::GenerateInfo & info);
 
 bool GenerateIntermediateData(feature::GenerateInfo & info);
 

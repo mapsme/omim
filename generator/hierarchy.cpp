@@ -13,6 +13,7 @@
 #include <functional>
 #include <fstream>
 #include <limits>
+#include <map>
 #include <memory>
 
 namespace generator
@@ -25,7 +26,7 @@ HierarchyGeomPlace::HierarchyGeomPlace(FeatureBuilder1 const & feature)
   , m_polygon(std::make_unique<BoostPolygon>())
 {
   CHECK(m_polygon, ());
-  boost_helpers::FillPolygon(*m_polygon, m_feature);
+  boost_helpers::FillPolygon(*m_polygon, m_feature, false /* fillHoles */);
   m_area = boost::geometry::area(*m_polygon);
 }
 
@@ -47,6 +48,20 @@ bool HierarchyGeomPlace::Contains(m2::PointD const & point) const
 }
 
 // static
+uint8_t HierarchyBuilder::GetLevel(Node::Ptr node)
+{
+  auto const tmp = node;
+  uint8_t level = 0;
+  while (node)
+  {
+    node = node->GetParent();
+    ++level;
+  }
+
+  return level;
+}
+
+// static
 std::string HierarchyBuilder::GetFeatureName(FeatureBuilder1 const & feature)
 {
   auto const & str = feature.GetParams().name;
@@ -64,14 +79,16 @@ HierarchyBuilder::FindPointParent(m2::PointD const & point, MapIdToNode const & 
 {
   boost::optional<base::GeoObjectId> bestId;
   auto minArea = std::numeric_limits<double>::max();
+  base::GeoObjectId minId;
   tree.ForEachInRect({point, point}, [&](base::GeoObjectId const & id) {
     if (m.count(id) == 0)
       return;
 
     auto const & r = m.at(id)->GetData();
-    if (r.GetArea() < minArea && r.Contains(point))
+    if ((r.GetArea() == minArea ? minId < r.GetId() : r.GetArea() < minArea) && r.Contains(point))
     {
       minArea = r.GetArea();
+      minId = r.GetId();
       bestId = id;
     }
   });
@@ -95,7 +112,8 @@ HierarchyBuilder::FindPopularityGeomPlaceParent(HierarchyGeomPlace const & place
     if (r.GetId() == place.GetId() || r.GetArea() < place.GetArea())
       return;
 
-    if (r.GetArea() < minArea && r.Contains(place))
+    if ((r.GetArea() == place.GetArea() ? place.GetId() < r.GetId() : r.GetArea() < minArea) &&
+        r.Contains(place))
     {
       minArea = r.GetArea();
       bestPlace = m.at(id);
@@ -161,7 +179,7 @@ HierarchyBuilder::MakeNodes(std::vector<FeatureBuilder1> const & features)
 {
   Node::PtrList nodes;
   nodes.reserve(features.size());
-  std::transform(std::begin(features), std::end(features), std::back_inserter(nodes), [](FeatureBuilder1 const & f) {
+  std::transform(std::cbegin(features), std::cend(features), std::back_inserter(nodes), [](FeatureBuilder1 const & f) {
     return std::make_shared<Node>(HierarchyGeomPlace(f));
   });
 
@@ -177,8 +195,8 @@ std::string HierarchyBuilder::GetType(FeatureBuilder1 const & feature) const
 {
   auto const & c = classif();
   auto const & types = feature.GetTypes();
-  auto const it = std::find_if(std::begin(types), std::end(types), std::cref(m_checker));
-  return it == std::end(types) ? string() : c.GetReadableObjectName(*it);
+  auto const it = std::find_if(std::cbegin(types), std::cend(types), std::cref(m_checker));
+  return it == std::cend(types) ? string() : c.GetReadableObjectName(*it);
 }
 
 void HierarchyBuilder::FillLinesFromPointObjects(std::vector<FeatureBuilder1> const & pointObjs,
@@ -196,6 +214,7 @@ void HierarchyBuilder::FillLinesFromPointObjects(std::vector<FeatureBuilder1> co
     line.m_type = GetType(p);
     line.m_name = GetFeatureName(p);
     line.m_dataFilename = m_dataFilename;
+    line.m_level = line.m_parent ? GetLevel(m.at(*line.m_parent)) + 1 : 0;
     lines.push_back(line);
   }
 }
@@ -212,6 +231,7 @@ void HierarchyBuilder::FillLineFromGeomObjectPtr(HierarchyLine & line, Node::Ptr
   line.m_type = GetType(feature);
   line.m_name = GetFeatureName(feature);
   line.m_dataFilename = m_dataFilename;
+  line.m_level = GetLevel(node);
 }
 
 void HierarchyBuilder::FillLinesFromGeomObjectPtrs(Node::PtrList const & nodes,
@@ -232,16 +252,16 @@ void HierarchyBuilder::SetDataFilename(std::string const & dataFilename)
 }
 
 void HierarchyBuilder::Prepare(std::string const & dataFilename, std::vector<FeatureBuilder1> & pointObjs,
-                               Node::PtrList & geomObjsPtrs, Tree4d & tree, MapIdToNode & mapIdToNode) const
+                               std::vector<FeatureBuilder1> & geomObjs, Node::PtrList & geomObjsPtrs,
+                               Tree4d & tree, MapIdToNode & mapIdToNode) const
 {
-  std::vector<FeatureBuilder1> geomObjs;
   feature::ForEachFromDatRawFormat(dataFilename, [&](FeatureBuilder1 const & fb, uint64_t /* currPos */) {
-    if (!m_checker(fb.GetTypesHolder()) || GetFeatureName(fb).empty())
+    if (!m_checker(fb.GetTypesHolder()) || GetFeatureName(fb).empty() || fb.GetOsmIds().empty())
       return;
 
     if (fb.IsPoint())
       pointObjs.push_back(fb);
-    else if (fb.IsArea() && fb.IsGeometryClosed())
+    else if (fb.IsArea())
       geomObjs.push_back(fb);
   });
 
@@ -259,15 +279,14 @@ using namespace hierarchy;
 Builder::Builder(std::string const & dataFilename) :
   HierarchyBuilder(dataFilename, ftypes::IsPopularityPlaceChecker::Instance()) {}
 
-Builder::Builder() : Builder("") {}
-
 std::vector<HierarchyLine> Builder::Build() const
 {
   std::vector<FeatureBuilder1> pointObjs;
+  std::vector<FeatureBuilder1> geomObjs;
   Node::PtrList geomObjsPtrs;
   Tree4d tree;
   MapIdToNode mapIdToNode;
-  Prepare(m_dataFullFilename, pointObjs, geomObjsPtrs, tree, mapIdToNode);
+  Prepare(m_dataFullFilename, pointObjs, geomObjs, geomObjsPtrs, tree, mapIdToNode);
 
   std::vector<HierarchyLine> result;
   FillLinesFromGeomObjectPtrs(geomObjsPtrs, result);
@@ -286,7 +305,7 @@ void Writer::WriteLines(std::vector<hierarchy::HierarchyLine> const & lines,
   stream << "Id;Parent id;Lat;Lon;Main type;Name\n";
   for (auto const & line : lines)
   {
-    stream << line.m_id.GetEncodedId() << ";";
+    stream << line.m_id << ";";
     if (line.m_parent)
       stream << *line.m_parent;
 
@@ -304,22 +323,37 @@ using namespace hierarchy;
 Builder::Builder(std::string const & dataFilename) :
   HierarchyBuilder(dataFilename, ftypes::IsComplexChecker::Instance()) {}
 
-Builder::Builder() : Builder("") {}
+std::string Builder::GetType(FeatureBuilder1 const & feature) const
+{
+  auto const & c = classif();
+  auto const & types = feature.GetTypes();
+
+  auto it = std::find_if(std::cbegin(types), std::cend(types), std::cref(ftypes::IsPoiChecker::Instance()));
+  if (it != std::cend(types))
+    return c.GetReadableObjectName(*it);
+
+  it = std::find_if(std::cbegin(types), std::cend(types), [&](auto const & t) {
+    return m_checker(t) && c.GetReadableObjectName(t) != "building";
+  });
+
+  return it == std::cend(types) ? string() : c.GetReadableObjectName(*it);
+}
 
 std::vector<HierarchyLine> Builder::Build() const
 {
   std::vector<FeatureBuilder1> pointObjs;
+  std::vector<FeatureBuilder1> geomObjs;
   Node::PtrList geomObjsPtrs;
   Tree4d tree;
   MapIdToNode mapIdToNode;
-  Prepare(m_dataFilename, pointObjs, geomObjsPtrs, tree, mapIdToNode);
+  Prepare(m_dataFullFilename, pointObjs, geomObjs, geomObjsPtrs, tree, mapIdToNode);
 
   std::vector<HierarchyLine> result;
   FillLinesFromGeomObjectPtrs(geomObjsPtrs, result);
 
   std::vector<HierarchyLine> tmp;
   FillLinesFromPointObjects(pointObjs, mapIdToNode, tree, tmp);
-  std::copy_if(std::begin(tmp), std::end(tmp), std::back_inserter(result), [] (auto & p) {
+  std::copy_if(std::cbegin(tmp), std::cend(tmp), std::back_inserter(result), [] (auto & p) {
     return static_cast<bool>(p.m_parent);
   });
   return result;
@@ -333,7 +367,8 @@ void Writer::WriteLines(std::vector<hierarchy::HierarchyLine> const & lines,
   stream.exceptions(std::fstream::failbit | std::fstream::badbit);
   stream.open(outFilename);
   stream << std::fixed << std::setprecision(7);
-  stream << "Id;Parent id;Lat;Lon;Main type;Name;MwmName\n";
+  std::map<uint8_t, size_t> statistic;
+  stream << "Id;Parent id;Lat;Lon;Main type;Name;MwmName;Level\n";
   for (auto const & line : lines)
   {
     stream << line.m_id.GetEncodedId() << ";";
@@ -342,8 +377,15 @@ void Writer::WriteLines(std::vector<hierarchy::HierarchyLine> const & lines,
 
     auto const center = MercatorBounds::ToLatLon(line.m_center);
     stream << ";" << center.lat << ";" << center.lon << ";"
-           << line.m_type << ";" << line.m_name << ";" << line.m_dataFilename << "\n";
+           << line.m_type << ";" << line.m_name << ";"
+           << line.m_dataFilename << ";" << static_cast<int>(line.m_level) <<"\n";
+
+    statistic[line.m_level] += 1;
   }
+
+  LOG(LINFO, ("Сompleted building file", outFilename));
+  for (auto const & item : statistic)
+    LOG(LINFO, (item.second, "elements on the level", static_cast<size_t>(item.first)));
 }
 }  // namespace complex_area
 }  // namespace generator

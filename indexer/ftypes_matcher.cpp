@@ -478,25 +478,72 @@ IsPopularityPlaceChecker::IsPopularityPlaceChecker()
 
 IsAdministrativeChecker::IsAdministrativeChecker() : BaseChecker(2 /* level */)
 {
-  m_types.push_back(classif().GetTypeByPath({"place", "city"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "continent"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "country"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "county"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "hamlet"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "island"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "islet"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "isolated_dwelling"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "locality"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "neighbourhood"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "ocean"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "region"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "sea"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "state"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "suburb"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "town"}));
-  m_types.push_back(classif().GetTypeByPath({"place", "village"}));
+  vector<pair<string, string>> const types = {
+    {"place", "city"},
+    {"place", "continent"},
+    {"place", "country"},
+    {"place", "county"},
+    {"place", "hamlet"},
+    {"place", "island"},
+    {"place", "islet"},
+    {"place", "isolated_dwelling"},
+    {"place", "locality"},
+    {"place", "neighbourhood"},
+    {"place", "ocean"},
+    {"place", "region"},
+    {"place", "sea"},
+    {"place", "state"},
+    {"place", "suburb"},
+    {"place", "town"},
+    {"place", "village"},
+    {"boundary", "administrative"}
+  };
 
-  m_types.push_back(classif().GetTypeByPath({"boundary", "administrative"}));
+  Classificator const & c = classif();
+  for (auto const & t : types)
+    m_types.push_back(c.GetTypeByPath({t.first, t.second}));
+}
+
+IsNaturalChecker::IsNaturalChecker() : BaseChecker(1 /* level */)
+{
+  Classificator const & c = classif();
+  m_types.push_back(c.GetTypeByPath({"natural"}));
+}
+
+bool IsComplexChecker::IsMatched(uint32_t type) const
+{
+  return !(IsAdministrativeChecker::Instance().IsMatched(type) ||
+           IsNaturalChecker::Instance().IsMatched(type));
+}
+
+bool IsComplexChecker::operator()(feature::TypesHolder const & types) const
+{
+  static auto const building = classif().GetTypeByPath({"building"});
+  if (types.Size() == 1 && types.GetBestType() == building)
+    return false;
+
+  for (uint32_t t : types)
+  {
+    if (IsMatched(t))
+      return true;
+  }
+
+  return false;
+}
+
+bool IsComplexChecker::operator()(std::vector<uint32_t> const & types) const
+{
+  static auto const building = classif().GetTypeByPath({"building"});
+  if (types.size() == 1 && types[0] == building)
+    return false;
+
+  for (uint32_t t : types)
+  {
+    if (IsMatched(t))
+      return true;
+  }
+
+  return false;
 }
 
 boost::optional<IsHotelChecker::Type> IsHotelChecker::GetHotelType(FeatureType & ft) const

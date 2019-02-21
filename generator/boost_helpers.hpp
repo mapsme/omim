@@ -19,13 +19,19 @@ void FillBoostGeometry(BoostGeometry & geometry, FbGeometry const & fbGeometry)
 }
 
 template <typename BoostPolygon>
-void FillPolygon(BoostPolygon & polygon, FeatureBuilder1 const & fb)
+void FillPolygon(BoostPolygon & polygon, FeatureBuilder1 const & fb, bool fillHoles = true)
 {
   using BoostPoint = typename BoostPolygon::point_type;
   auto const & fbGeometry = fb.GetGeometry();
   CHECK(!fbGeometry.empty(), ());
   auto it = std::begin(fbGeometry);
   FillBoostGeometry<BoostPoint>(polygon.outer(), *it);
+  if (!fillHoles)
+  {
+    boost::geometry::correct(polygon);
+    return;
+  }
+
   polygon.inners().resize(fbGeometry.size() - 1);
   int i = 0;
   ++it;

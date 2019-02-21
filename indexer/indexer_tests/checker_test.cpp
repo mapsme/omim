@@ -3,6 +3,7 @@
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_source.hpp"
+#include "indexer/feature_data.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
 #include "base/logging.hpp"
@@ -263,4 +264,17 @@ UNIT_TEST(IsWikiChecker)
     TEST(checker(t), ());
 
   TEST(!checker(c.GetTypeByPath({"route", "shuttle_train"})), ());
+}
+
+
+UNIT_TEST(IsComplexChecker)
+{
+  classificator::Load();
+  Classificator const & c = classif();
+  auto const & checker = ftypes::IsComplexChecker::Instance();
+  TEST(checker(c.GetTypeByPath({"leisure", "park"})), ());
+  TEST(checker(c.GetTypeByPath({"tourism", "gallery"})), ());
+  TEST(!checker(c.GetTypeByPath({"place", "city"})), ());
+  TEST(!checker(c.GetTypeByPath({"boundary", "administrative"})), ());
+  TEST(!checker({c.GetTypeByPath({"building"})}), ());
 }

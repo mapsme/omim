@@ -166,6 +166,7 @@ set(SRC
   traffic_generator.hpp
   transit_generator.cpp
   transit_generator.hpp
+  translator_complex.hpp
   translator_factory.hpp
   translator_geo_objects.cpp
   translator_geo_objects.hpp

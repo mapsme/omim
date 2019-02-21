@@ -344,6 +344,21 @@ bool GenerateGeoObjectsFeatures(feature::GenerateInfo & info)
   return GenerateRaw(info, preEmit, translators);
 }
 
+bool GenerateComplexFeatures(feature::GenerateInfo & info)
+{
+  auto const preEmit = [](OsmElement * e)
+  {
+    UNUSED_VALUE(e);
+    return true;
+  };
+  auto cache = LoadCache(info);
+  std::vector<std::shared_ptr<TranslatorInterface>> translators;
+  auto emitter = CreateEmitter(EmitterType::Simple, info);
+  auto translator = CreateTranslator(TranslatorType::Complex, emitter, cache);
+  translators.emplace_back(translator);
+  return GenerateRaw(info, preEmit, translators);
+}
+
 bool GenerateIntermediateData(feature::GenerateInfo & info)
 {
   try

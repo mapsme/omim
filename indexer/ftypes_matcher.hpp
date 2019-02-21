@@ -39,10 +39,10 @@ protected:
 public:
   virtual bool IsMatched(uint32_t type) const;
 
-  bool operator()(feature::TypesHolder const & types) const;
-  bool operator()(FeatureType & ft) const;
-  bool operator()(std::vector<uint32_t> const & types) const;
-  bool operator()(uint32_t type) const { return IsMatched(type); }
+  virtual bool operator()(feature::TypesHolder const & types) const;
+  virtual bool operator()(FeatureType & ft) const;
+  virtual bool operator()(std::vector<uint32_t> const & types) const;
+  virtual bool operator()(uint32_t type) const { return IsMatched(type); }
 
   static uint32_t PrepareToMatch(uint32_t type, uint8_t level);
 
@@ -250,11 +250,25 @@ public:
   DECLARE_CHECKER_INSTANCE(IsAdministrativeChecker);
 };
 
-class IsComplexChecker : public IsAdministrativeChecker
+class IsNaturalChecker : public BaseChecker
+{
+  IsNaturalChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsNaturalChecker);
+};
+
+class IsComplexChecker : public BaseChecker
 {
 public:
   // BaseChecker overrides:
-  bool IsMatched(uint32_t type) const override { return !IsAdministrativeChecker::IsMatched(type); }
+  bool operator()(feature::TypesHolder const & types) const override;
+  bool operator()(FeatureType & ft) const override { return BaseChecker::operator()(ft); }
+  bool operator()(std::vector<uint32_t> const & types) const override;
+  bool operator()(uint32_t type) const override { return BaseChecker::operator()(type); }
+
+  bool IsMatched(uint32_t type) const override;
+
+  DECLARE_CHECKER_INSTANCE(IsComplexChecker);
 };
 
 class IsHotelChecker : public BaseChecker
