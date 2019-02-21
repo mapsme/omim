@@ -13,6 +13,7 @@ set(
   base/astar_progress.cpp
   base/astar_progress.hpp
   base/astar_weight.hpp
+  base/bfs.hpp
   base/followed_polyline.cpp
   base/followed_polyline.hpp
   base/routing_result.hpp

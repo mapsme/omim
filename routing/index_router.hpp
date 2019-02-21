@@ -90,6 +90,10 @@ private:
                                      RouterDelegate const & delegate, AStarProgress & progress,
                                      IndexGraphStarter & graph, std::vector<Segment> & subroute);
 
+  void PostprocessLeapsJoints(std::vector<Segment> & pathWithoutPostprocessing,
+                              IndexGraphStarter & starter,
+                              std::vector<Segment> & output);
+
   RouterResultCode AdjustRoute(Checkpoints const & checkpoints,
                                m2::PointD const & startDirection,
                                RouterDelegate const & delegate, Route & route);

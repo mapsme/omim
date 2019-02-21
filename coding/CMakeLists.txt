@@ -63,6 +63,8 @@ set(
   reader_wrapper.hpp
   reader_writer_ops.cpp
   reader_writer_ops.hpp
+  #scanline.cpp
+  #scanline.hpp
   serdes_binary_header.hpp
   serdes_json.hpp
   sha1.cpp
