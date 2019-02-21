@@ -77,7 +77,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
 
 @interface MWMPlacePageManager ()<MWMFrameworkStorageObserver, MWMPlacePageLayoutDelegate,
                                   MWMPlacePageLayoutDataSource, MWMLocationObserver,
-                                  MWMBookmarksObserver, MWMUGCAddReviewControllerDelegate>
+                                  MWMBookmarksObserver, MWMGCReviewSaver>
 
 @property(nonatomic) MWMPlacePageLayout * layout;
 @property(nonatomic) MWMPlacePageData * data;
@@ -598,7 +598,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
         }];
   auto ugcReviewModel =
       [[MWMUGCReviewModel alloc] initWithReviewValue:value ratings:ratings title:title text:@""];
-  auto ugcVC = [MWMUGCAddReviewController instanceWithModel:ugcReviewModel delegate: self];
+  auto ugcVC = [MWMUGCAddReviewController instanceWithModel:ugcReviewModel saver: self];
   [[MapViewController sharedController].navigationController pushViewController:ugcVC animated:YES];
 }
 
