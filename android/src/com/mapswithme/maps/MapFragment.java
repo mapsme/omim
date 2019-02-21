@@ -251,7 +251,7 @@ public class MapFragment extends BaseMwmFragment
   void destroyContext()
   {
     LOGGER.d(TAG, "destroyContext, mContextCreated = " + mContextCreated +
-                  ", isAdded = " + isAdded(), new Throwable());
+                  ", isAdded = " + isAdded());
     if (!mContextCreated || !isAdded())
       return;
 
