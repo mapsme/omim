@@ -1396,8 +1396,6 @@ void Framework::EnterBackground()
 
   SaveViewport();
 
-  m_ugcApi->SaveUGCOnDisk();
-
   m_trafficManager.OnEnterBackground();
   m_routingManager.SetAllowSendingPoints(false);
 
