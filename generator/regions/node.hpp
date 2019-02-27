@@ -11,18 +11,18 @@ namespace regions
 {
 using Node = PlaceNode<RegionPlace>;
 
-size_t TreeSize(Node::Ptr node);
+size_t TreeSize(Node::Ptr const & node);
 
-size_t MaxDepth(Node::Ptr node);
+size_t MaxDepth(Node::Ptr const & node);
 
 void DebugPrintTree(Node::Ptr const & tree, std::ostream & stream = std::cout);
 
 // This function merges two trees if the roots have the same ids.
-Node::Ptr MergeTree(Node::Ptr l, Node::Ptr r);
+Node::Ptr MergeTree(Node::Ptr const & l, Node::Ptr const & r);
 
 // This function corrects the tree. It traverses the whole node and unites children with
 // the same ids.
-void NormalizeTree(Node::Ptr tree);
+void NormalizeTree(Node::Ptr & tree);
 
 std::vector<Node::Ptr> MakeLevelPath(Node::Ptr const & node);
 

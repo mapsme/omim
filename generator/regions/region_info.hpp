@@ -70,8 +70,6 @@ public:
   AdminLevel GetAdminLevel() const;
   PlaceType GetPlaceType() const;
   boost::optional<base::GeoObjectId> GetLabelOsmIdOptional() const;
-  auto GetLabelDataOptional() const
-    -> boost::optional<decltype(std::declval<T>().Get(std::declval<base::GeoObjectId>()))>;
 
   bool HasAdminLevel() const;
   bool HasPlaceType() const;

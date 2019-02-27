@@ -117,7 +117,7 @@ struct RegionsGenerator
       auto const & node = path.back();
       auto const & place = node->GetData();
       auto const & placeId = place.GetId();
-      auto && regionEmplace = countriesRegionIds.emplace(placeId, country);
+      auto const & regionEmplace = countriesRegionIds.emplace(placeId, country);
       if (!regionEmplace.second)
       {
         if (regionEmplace.first->second != country) // object may have several regions
