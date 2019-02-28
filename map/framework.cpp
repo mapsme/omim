@@ -2435,6 +2435,9 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
     default:
       ASSERT(false, ("FindNearestUserMark returned invalid mark."));
     }
+
+    utils::RegisterEyeEventIfPossible(eye::MapObject::Event::Type::Open, GetCurrentPosition(),
+                                      outInfo);
     return df::SelectionShape::OBJECT_USER_MARK;
   }
 
