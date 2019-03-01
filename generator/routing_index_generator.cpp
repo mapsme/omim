@@ -186,7 +186,23 @@ public:
 
   bool IsJoint(Segment const & segment, bool fromStart) const
   {
-    return m_graph.IsJoint(segment.GetRoadPoint(fromStart));
+    bool log = false;
+    if (segment.GetFeatureId() == 122271)
+      log = true;
+
+    if (log)
+      LOG(LINFO, ("segment =", segment, "isJoint:", m_graph.IsJoint(segment.GetRoadPoint(fromStart))));
+
+    if (m_graph.IsJoint(segment.GetRoadPoint(fromStart)))
+      return true;
+
+    uint32_t const pointId = segment.GetPointId(fromStart);
+    uint32_t const pointsNumber = m_graph.GetGeometry().GetRoad(segment.GetFeatureId()).GetPointsCount();
+    if (log)
+    {
+      LOG(LINFO, ("segment =", segment, "pointId =", pointId, "pointsNumber =", pointsNumber));
+    }
+    return pointId == 0 || pointId + 1 == pointsNumber;
   }
 
 private:
@@ -453,10 +469,11 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
   size_t notFoundCount = 0;
   for (size_t i = 0; i < numEnters; ++i)
   {
-    if (!disableCrossMwmProgress && (i % 10 == 0) && (i != 0))
+    if (i % 10 == 0)
       LOG(LINFO, ("Building leaps:", i, "/", numEnters, "waves passed"));
 
     Segment const & enter = connector.GetEnter(i);
+
 
     AStarAlgorithm<DijkstraWrapperJoints> astar;
     IndexGraphWrapper indexGraphWrapper(graph, enter);
@@ -466,7 +483,23 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
     astar.PropagateWave(wrapper, wrapper.GetGraph().GetStartJoint(),
                         [&](JointSegment const & vertex)
                         {
-                          visitedVertexes[vertex.GetFeatureId()].emplace_back(vertex);
+                          if (vertex.IsFake())
+                          {
+                            Segment start = wrapper.GetGraph().GetSegmentOfFakeJoint(vertex, true /* start */);
+                            Segment end = wrapper.GetGraph().GetSegmentOfFakeJoint(vertex, false /* start */);
+                            if (start.IsForward() != end.IsForward())
+                            {
+                              LOG(LINFO, ("bad forward:", vertex));
+                              LOG(LINFO, ("start =", start, "end =", end, "enter =", enter));
+                              return true;
+                            }
+                            visitedVertexes[end.GetFeatureId()].emplace_back(start, end);
+                          }
+                          else
+                          {
+                            visitedVertexes[vertex.GetFeatureId()].emplace_back(vertex);
+                          }
+
                           return true;
                         } /* visitVertex */,
                         context);
@@ -490,25 +523,34 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
         if ((jointSegment.GetStartSegmentId() <= id && id <= jointSegment.GetEndSegmentId()) ||
             (jointSegment.GetEndSegmentId() <= id && id <= jointSegment.GetStartSegmentId()))
         {
+          RouteWeight weight;
+          Segment parentSegment;
+          if (context.HasParent(jointSegment))
+          {
+            JointSegment const & parent = context.GetParent(jointSegment);
+            parentSegment = parent.IsFake() ? wrapper.GetGraph().GetSegmentOfFakeJoint(parent, false /* start */)
+                                            : parent.GetSegment(false /* start */);
 
-          JointSegment const & parent = context.GetParent(jointSegment);
-          Segment parentSegment = parent.IsFake() ? wrapper.GetGraph().GetEndOfFakeJoint(parent)
-                                                  : parent.GetSegment(false /* start */);
-
-          RouteWeight weight = context.GetDistance(parent);
+            weight = context.GetDistance(parent);
+          }
+          else
+          {
+            parentSegment = enter;
+          }
 
           Segment const & firstChild = jointSegment.GetSegment(true /* start */);
           uint32_t const lastPoint = exit.GetPointId(true /* front */);
 
-          if (parentSegment.GetFeatureId() == routing::FakeFeatureIds::kIndexGraphStarterId)
-            parentSegment = enter;
+          auto optionalEdge =  graph.GetJointEdgeByLastPoint(parentSegment, firstChild,
+                                                             true /* isOutgoing */, lastPoint);
 
-          weight += graph.GetJointEdgeByLastPoint(parentSegment, firstChild,
-                                                  true /* isOutgoing */, lastPoint).GetWeight();
+          if (!optionalEdge)
+            continue;
 
+          weight += (*optionalEdge).GetWeight();
           weights[enter][exit] = weight;
-          ++foundCount;
 
+          ++foundCount;
           break;
         }
       }

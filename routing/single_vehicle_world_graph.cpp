@@ -73,7 +73,7 @@ void SingleVehicleWorldGraph::GetEdgeList(Segment const & parent, bool isOutgoin
   auto & indexGraph = GetIndexGraph(parent.GetMwmId());
   indexGraph.GetEdgeList(parent, isOutgoing, jointEdges, parentWeights);
 
-  if (m_mode != WorldGraph::Mode::JointSingleMwm)
+  if (m_mode != WorldGraphMode::JointSingleMwm)
     CheckAndProcessTransitFeatures(parent, jointEdges, parentWeights, isOutgoing);
 }
 

@@ -67,7 +67,7 @@ public:
     return segment.GetFeatureId() != std::numeric_limits<uint32_t>::max();
   }
 
-  Segment const & GetEndOfFakeJoint(JointSegment const & joint);
+  Segment const & GetSegmentOfFakeJoint(JointSegment const & joint, bool start);
 
 private:
   static auto constexpr kInvisibleStartId = std::numeric_limits<uint32_t>::max() - 2;
@@ -288,12 +288,12 @@ void IndexGraphStarterJoints<Graph>::AddFakeJoints(Segment const & segment, bool
 }
 
 template <typename Graph>
-Segment const & IndexGraphStarterJoints<Graph>::GetEndOfFakeJoint(JointSegment const & joint)
+Segment const & IndexGraphStarterJoints<Graph>::GetSegmentOfFakeJoint(JointSegment const & joint, bool start)
 {
   auto const it = m_fakeJointSegments.find(joint);
   CHECK(it != m_fakeJointSegments.cend(), ("No such fake joint:", joint, "in JointStarter."));
 
-  return (it->second).GetSegment(false /* start */);
+  return (it->second).GetSegment(start);
 }
 
 template <typename Graph>

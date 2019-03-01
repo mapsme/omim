@@ -99,8 +99,9 @@ public:
     return GetGeometry().GetRoad(segment.GetFeatureId()).GetPoint(segment.GetPointId(front));
   }
 
-private:
   RouteWeight CalcSegmentWeight(Segment const & segment);
+
+private:
   void GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
                            vector<SegmentEdge> & edges);
   void GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
