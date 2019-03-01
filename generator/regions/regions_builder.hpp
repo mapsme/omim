@@ -49,6 +49,7 @@ private:
   // Return: 0 - no relation, 1 - |l| contains |r|, -1 - |r| contains |l|.
   static int Compare(RegionPlace const & l, RegionPlace const & r, CountrySpecifier const & countrySpecifier);
   std::unique_ptr<CountrySpecifier> GetCountrySpecifier(std::string const & countryName);
+  void ReviseSublocalityDisposition(Node::Ptr & tree) const;
 
   Regions m_countries;
   Regions m_regions;

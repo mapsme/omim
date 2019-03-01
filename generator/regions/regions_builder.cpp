@@ -75,6 +75,8 @@ void RegionsBuilder::ForEachNormalizedCountry(NormalizedCountryFn const & fn)
     countrySpecifier->AddPlaces(tree, m_placeCentersMap);
     countrySpecifier->AdjustRegionsLevel(tree, m_placeCentersMap);
 
+    ReviseSublocalityDisposition(tree);
+
     fn(countryName, tree);
   }
 }
@@ -197,6 +199,24 @@ std::unique_ptr<CountrySpecifier> RegionsBuilder::GetCountrySpecifier(std::strin
     return std::make_unique<RuSpecifier>();
 
   return std::make_unique<RelativeNestingSpecifier>();
+}
+
+void RegionsBuilder::ReviseSublocalityDisposition(Node::Ptr & tree) const
+{
+  auto & place = tree->GetData();
+  auto const level = place.GetLevel();
+  if (ObjectLevel::Locality == level)
+    return;
+
+  if (ObjectLevel::Suburb == level || ObjectLevel::Sublocality == level)
+  {
+    LOG(LINFO, ("The", GetLabel(level), "object", place.GetId(),
+                "(", GetPlaceNotation(place), ") are skipped: outside locality"));
+    place.SetLevel(ObjectLevel::Unknown);
+  }
+
+  for (auto & subtree : tree->GetChildren())
+    ReviseSublocalityDisposition(subtree);
 }
 }  // namespace regions
 }  // namespace generator
