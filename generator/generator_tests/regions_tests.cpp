@@ -62,8 +62,7 @@ struct OsmElementData
   vector<OsmElement::Member> members;
 };
 
-OsmElement MakeOsmElement(uint64_t id, std::string const & adminLevel,
-                          std::string const & place = "")
+OsmElement MakeOsmElement(uint64_t id, string const & adminLevel, string const & place = "")
 {
   OsmElement el;
   el.id = id;
@@ -73,7 +72,7 @@ OsmElement MakeOsmElement(uint64_t id, std::string const & adminLevel,
   return el;
 }
 
-void CollectRegionInfo(std::string const & filename, vector<OsmElementData> const & testData)
+void CollectRegionInfo(string const & filename, vector<OsmElementData> const & testData)
 {
   CollectorRegionInfo collector(filename);
 
@@ -142,6 +141,7 @@ void BuildTestData(vector<OsmElementData> const & testData,
 class Helper : public ToStringPolicyInterface
 {
 public:
+  // ToStringPolicyInterface overrides:
   string ToString(vector<Node::Ptr> const & path) const override
   {
     stringstream stream;
@@ -327,9 +327,9 @@ UNIT_TEST(RegionsBuilderTest_GetCountryTrees)
 {
   auto const filename = MakeCollectorData();
   RegionInfo collector(filename);
-  std::vector<std::string> bankOfNames;
+  vector<string> bankOfNames;
   RegionsBuilder builder(MakeTestDataSet1(collector), {});
-  builder.ForEachNormalizedCountry([&](std::string const & name, Node::Ptr const & tree) {
+  builder.ForEachNormalizedCountry([&](string const & name, Node::Ptr const & tree) {
     DebugPrintTree(tree);
     ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
       bankOfNames.push_back(Helper{}.ToString(path));

@@ -111,7 +111,7 @@ struct RegionsGenerator
     auto country = std::make_shared<std::string>(countryNotation);
 
     auto jsonPolicy = std::make_unique<JsonPolicy>(verbose);
-    ForEachLevelPath(tree, [&] (std::vector<Node::Ptr> const & path) {
+    ForEachLevelPath(tree, [&] (NodePath const & path) {
       ++regionsTotalCount;
       ++countryRegionsCount;
 
@@ -121,7 +121,7 @@ struct RegionsGenerator
       auto const & regionEmplace = countriesRegionIds.emplace(placeId, country);
       if (!regionEmplace.second)
       {
-        if (regionEmplace.first->second != country) // object may have several regions
+        if (regionEmplace.first->second != country)  // object may have several regions
         {
           LOG(LWARNING, ("Failed to place", GetLabel(place.GetLevel()), "region", placeId,
                          "(", GetPlaceNotation(place), ")",

@@ -182,8 +182,8 @@ int RegionsBuilder::Compare(RegionPlace const & l, RegionPlace const & r,
   if (rRegion.Contains(lRegion))
     return -1;
 
-  if (    (lRegion.Contains(r.GetCenter()) || rRegion.Contains(l.GetCenter()))
-       && lRegion.CalculateOverlapPercentage(rRegion) > 50.0)
+  if ((lRegion.Contains(r.GetCenter()) || rRegion.Contains(l.GetCenter())) &&
+      lRegion.CalculateOverlapPercentage(rRegion) > 50.0)
   {
     return countrySpecifier.CompareWeight(l, r);
   }

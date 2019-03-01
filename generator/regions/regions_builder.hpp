@@ -30,7 +30,7 @@ public:
   using CountryTrees = std::multimap<std::string, Node::Ptr>;
   using NormalizedCountryFn = std::function<void(std::string const &, Node::Ptr const &)>;
 
-  RegionsBuilder(Regions && regions, PlaceCentersMap && placeCentersMap,size_t threadsCount = 1);
+  RegionsBuilder(Regions && regions, PlaceCentersMap && placeCentersMap, size_t threadsCount = 1);
 
   Regions const & GetCountries() const;
   StringsList GetCountryNames() const;

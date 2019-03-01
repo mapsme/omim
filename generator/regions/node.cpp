@@ -173,12 +173,12 @@ void NormalizeTree(Node::Ptr & tree)
     NormalizeTree(ch);
 }
 
-std::vector<Node::Ptr> MakeLevelPath(Node::Ptr const & node)
+NodePath MakeLevelPath(Node::Ptr const & node)
 {
   CHECK(node->GetData().GetLevel() != ObjectLevel::Unknown, ());
 
   std::bitset<static_cast<std::size_t>(ObjectLevel::Sublocality) + 1> skipLevels;
-  std::vector<Node::Ptr> path{node};
+  NodePath path{node};
   for (auto p = node->GetParent(); p; p = p->GetParent())
   {
     auto const level = p->GetData().GetLevel();

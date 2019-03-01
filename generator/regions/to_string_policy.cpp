@@ -16,7 +16,7 @@ namespace generator
 {
 namespace regions
 {
-std::string JsonPolicy::ToString(std::vector<Node::Ptr> const & path) const
+std::string JsonPolicy::ToString(NodePath const & path) const
 {
   auto geometry = base::NewJSONObject();
   ToJSONObject(*geometry, "type", "Point");

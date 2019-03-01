@@ -14,26 +14,25 @@ bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree)
 {
   auto const & place = tree->GetData();
 
-  auto & placeLabel = place.GetPlaceLabel();
+  auto const & placeLabel = place.GetPlaceLabel();
   if (placeLabel && placeLabel->GetId() == m_placeCenter.GetId())
     return true;
 
   if (!place.GetRegion().HasAdminLevel())
     return ContainsSameLocality(tree);
 
-  auto level = place.GetLevel();
+  auto const level = place.GetLevel();
   if (ObjectLevel::Locality == level)
     return ContainsSameLocality(tree);
 
   for (auto & subtree : tree->GetChildren())
   {
-    auto & subregion = subtree->GetData().GetRegion();
+    auto const & subregion = subtree->GetData().GetRegion();
     if (!subregion.Contains(m_placeCenter))
       continue;
 
     if (ApplyTo(subtree))
       return true;
-    break;
   }
 
   if (IsFitNode(tree))
@@ -48,13 +47,13 @@ bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree)
 bool LocalityAdminRegionizer::ContainsSameLocality(Node::Ptr const & tree)
 {
   auto const & place = tree->GetData();
-  auto level = place.GetLevel();
+  auto const level = place.GetLevel();
   if (ObjectLevel::Locality == level && place.GetName() == m_placeCenter.GetName())
     return true;
 
   for (auto & subtree : tree->GetChildren())
   {
-    auto & subregion = subtree->GetData().GetRegion();
+    auto const & subregion = subtree->GetData().GetRegion();
     if (subregion.Contains(m_placeCenter))
       return ContainsSameLocality(subtree);
   }
@@ -74,7 +73,7 @@ bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node)
 
 void LocalityAdminRegionizer::InsertInto(Node::Ptr & node)
 {
-  auto & parentPlace = node->GetData();
+  auto const & parentPlace = node->GetData();
   auto logLevel = m_placeCenter.GetPlaceType() <= PlaceType::Town ? LINFO : LDEBUG;
   LOG(logLevel, ("Place", StringifyPlaceType(m_placeCenter.GetPlaceType()), "object", m_placeCenter.GetId(),
                  "(", GetPlaceNotation(m_placeCenter), ")",

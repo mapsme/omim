@@ -9,8 +9,8 @@ namespace regions
 class RuSpecifier : public RelativeNestingSpecifier
 {
 public:
+  // CountrySpecifier overrides:
   void AdjustRegionsLevel(Node::Ptr & tree, RegionsBuilder::PlaceCentersMap const & placeCentersMap) override;
-
   ObjectLevel GetLevel(Region const & region, boost::optional<PlaceCenter> const & placeLabel) const override;
 
 private:

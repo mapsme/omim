@@ -9,6 +9,7 @@ namespace regions
 class RelativeNestingSpecifier : public CountrySpecifier
 {
 public:
+  // CountrySpecifier overrides:
   void AddPlaces(Node::Ptr & tree, RegionsBuilder::PlaceCentersMap const & placeCentersMap) override;
 
 private:

@@ -10,6 +10,7 @@ namespace generator
 namespace regions
 {
 using Node = PlaceNode<RegionPlace>;
+using NodePath = std::vector<Node::Ptr>;
 
 size_t TreeSize(Node::Ptr const & node);
 
@@ -24,7 +25,7 @@ Node::Ptr MergeTree(Node::Ptr const & l, Node::Ptr const & r);
 // the same ids.
 void NormalizeTree(Node::Ptr & tree);
 
-std::vector<Node::Ptr> MakeLevelPath(Node::Ptr const & node);
+NodePath MakeLevelPath(Node::Ptr const & node);
 
 template <typename Func>
 void ForEachLevelPath(Node::Ptr const & tree, Func && func)

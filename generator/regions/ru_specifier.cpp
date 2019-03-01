@@ -86,7 +86,7 @@ void RuSpecifier::MarkAllSuburbsToSublocalities(Node::Ptr & tree)
 {
   auto & place = tree->GetData();
   auto const level = place.GetLevel();
-  if (ObjectLevel::Locality == level) // nested locality
+  if (ObjectLevel::Locality == level)  // nested locality
     return;
 
   if (level == ObjectLevel::Suburb)
