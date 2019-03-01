@@ -55,7 +55,7 @@ RegionsBuilder::StringsList RegionsBuilder::GetCountryNames() const
   return result;
 }
 
-void RegionsBuilder::ForEachNormalizedCountry(NormalizedCountryFn fn)
+void RegionsBuilder::ForEachNormalizedCountry(NormalizedCountryFn const & fn)
 {
   for (auto const & countryName : GetCountryNames())
   {

@@ -12,7 +12,7 @@ LocalityAdminRegionizer::LocalityAdminRegionizer(PlaceCenter const & placeCenter
 
 bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree)
 {
-  auto & place = tree->GetData();
+  auto const & place = tree->GetData();
 
   auto & placeLabel = place.GetPlaceLabel();
   if (placeLabel && placeLabel->GetId() == m_placeCenter.GetId())
@@ -64,7 +64,7 @@ bool LocalityAdminRegionizer::ContainsSameLocality(Node::Ptr const & tree)
 
 bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node)
 {
-  auto & place = node->GetData();
+  auto const & place = node->GetData();
 
   if (place.GetRegion().GetAdminLevel() <= AdminLevel::Four)
     return false;

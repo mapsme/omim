@@ -26,7 +26,5 @@ public:
 private:
   BoostPoint m_center;
 };
-
-//using PlaceCentersMap = std::unordered_map<base::GeoObjectId, PlaceCenter>;
 }  // namespace regions
 }  // namespace generator

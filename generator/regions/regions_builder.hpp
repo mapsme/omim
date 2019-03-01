@@ -34,7 +34,7 @@ public:
 
   Regions const & GetCountries() const;
   StringsList GetCountryNames() const;
-  void ForEachNormalizedCountry(NormalizedCountryFn fn);
+  void ForEachNormalizedCountry(NormalizedCountryFn const & fn);
 private:
   static Node::PtrList MakeSelectedRegionsByCountry(Region const & country,
                                                     Regions const & allRegions,

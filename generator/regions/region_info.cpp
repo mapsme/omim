@@ -115,17 +115,6 @@ boost::optional<base::GeoObjectId> BaseRegionDataProxy<T>::GetLabelOsmIdOptional
 }
 
 template <typename T>
-auto BaseRegionDataProxy<T>::GetLabelDataOptional() const
-  -> boost::optional<decltype(std::declval<T>().Get(std::declval<base::GeoObjectId>()))>
-{
-  auto const & labelId = GetMapRegionData().at(m_osmId).m_labelOsmId;
-  if (!labelId.GetEncodedId())
-    return {};
-
-  return m_regionInfoCollector.get().Get(labelId);
-}
-
-template <typename T>
 bool BaseRegionDataProxy<T>::HasAdminLevel() const
 {
   return (GetMapRegionData().count(m_osmId) != 0) &&

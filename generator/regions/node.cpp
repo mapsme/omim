@@ -13,9 +13,9 @@ namespace regions
 {
 namespace
 {
-using MergeFunc = std::function<Node::Ptr(Node::Ptr, Node::Ptr)>;
+using MergeFunc = std::function<Node::Ptr(Node::Ptr const &, Node::Ptr const &)>;
 
-bool LessNodePtrById(Node::Ptr l, Node::Ptr r)
+bool LessNodePtrById(Node::Ptr const & l, Node::Ptr const & r)
 {
   auto const & lPlace = l->GetData();
   auto const & rPlace = r->GetData();
@@ -35,7 +35,7 @@ Node::PtrList MergeChildren(Node::PtrList const & l, Node::PtrList const & r, No
 
 Node::PtrList NormalizeChildren(Node::PtrList const & children, MergeFunc mergeTree)
 {
-  auto const pred = [](Node::Ptr l, Node::Ptr r)
+  auto const pred = [](Node::Ptr const & l, Node::Ptr const & r)
   {
     auto const & lPlace = l->GetData();
     auto const & rPlace = r->GetData();
@@ -60,7 +60,7 @@ Node::PtrList NormalizeChildren(Node::PtrList const & children, MergeFunc mergeT
   return result;
 }
 
-Node::Ptr MergeHelper(Node::Ptr l, Node::Ptr r, MergeFunc mergeTree)
+Node::Ptr MergeHelper(Node::Ptr const & l, Node::Ptr const & r, MergeFunc mergeTree)
 {
   auto const & lChildren = l->GetChildren();
   auto const & rChildren = r->GetChildren();
@@ -77,7 +77,7 @@ Node::Ptr MergeHelper(Node::Ptr l, Node::Ptr r, MergeFunc mergeTree)
 }
 }  // nmespace
 
-size_t TreeSize(Node::Ptr node)
+size_t TreeSize(Node::Ptr const & node)
 {
   if (node == nullptr)
     return 0;
@@ -89,7 +89,7 @@ size_t TreeSize(Node::Ptr node)
   return size;
 }
 
-size_t MaxDepth(Node::Ptr node)
+size_t MaxDepth(Node::Ptr const & node)
 {
   if (node == nullptr)
     return 0;
@@ -101,7 +101,7 @@ size_t MaxDepth(Node::Ptr node)
   return depth;
 }
 
-void PrintTree(Node::Ptr node, std::ostream & stream = std::cout, std::string prefix = "",
+void PrintTree(Node::Ptr const & node, std::ostream & stream = std::cout, std::string prefix = "",
                bool isTail = true)
 {
   auto const & place = node->GetData();
@@ -143,7 +143,7 @@ void DebugPrintTree(Node::Ptr const & tree, std::ostream & stream)
   stream << std::endl;
 }
 
-Node::Ptr MergeTree(Node::Ptr l, Node::Ptr r)
+Node::Ptr MergeTree(Node::Ptr const & l, Node::Ptr const & r)
 {
   if (l == nullptr)
     return r;
@@ -160,7 +160,7 @@ Node::Ptr MergeTree(Node::Ptr l, Node::Ptr r)
     return MergeHelper(r, l, MergeTree);
 }
 
-void NormalizeTree(Node::Ptr tree)
+void NormalizeTree(Node::Ptr & tree)
 {
   if (tree == nullptr)
     return;
@@ -169,7 +169,7 @@ void NormalizeTree(Node::Ptr tree)
   std::sort(std::begin(children), std::end(children), LessNodePtrById);
   auto newChildren = NormalizeChildren(children, MergeTree);
   tree->SetChildren(std::move(newChildren));
-  for (auto const & ch : tree->GetChildren())
+  for (auto & ch : tree->GetChildren())
     NormalizeTree(ch);
 }
 

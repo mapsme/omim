@@ -350,13 +350,12 @@ UNIT_TEST(RegionsBuilderTest_GetCountryTrees)
 UNIT_TEST(RegionsGenerationTest_GenerateCityRegionByPlacePoint)
 {
   auto regions = GenerateTestRegions({
-    {1, {name = u8"Nederland", admin = "2", ba}, {{0, 0}, {50, 50}}, {{6, NodeEntry, "admin_centre"}}},
-    {2, {name = u8"Nederland", admin = "3", ba}, {{10, 10}, {20, 20}}, {{6, NodeEntry, "admin_centre"}}},
-    {3, {name = u8"Noord-Holland", admin = "4", ba}, {{12, 12}, {18, 18}}, {{7, NodeEntry, "admin_centre"}}},
-    {4, {name = u8"Amsterdam", admin="8"}, {{14, 14}, {16, 16}}, {{6, NodeEntry, "admin_centre"}}},
-    {5, {name = u8"Amsterdam", admin="10"}, {{14, 14}, {16, 16}}},
-    {6, {name = u8"Amsterdam", place = "city", admin="2"}, {{14.5, 14.5}}},
-    {7, {name = u8"Haarlem", place = "city"}, {{17, 17}}},
+    {1, {name = u8"Nederland", admin = "2", ba}, {{0, 0}, {50, 50}}},
+    {2, {name = u8"Nederland", admin = "3", ba}, {{10, 10}, {20, 20}}},
+    {3, {name = u8"Noord-Holland", admin = "4", ba}, {{12, 12}, {18, 18}}},
+    {4, {name = u8"Amsterdam", admin = "8", ba}, {{14, 14}, {16, 16}}},
+    {5, {name = u8"Amsterdam", admin = "10", ba}, {{14, 14}, {16, 16}}},
+    {6, {name = u8"Amsterdam", place = "city", admin= "2"}, {{14.5, 14.5}}},
   });
 
   TEST(ExistsName(regions, u8"Nederland"), ());
