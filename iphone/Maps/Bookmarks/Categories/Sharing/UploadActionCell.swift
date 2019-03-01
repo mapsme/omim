@@ -70,6 +70,7 @@ final class UploadActionCell: MWMTableViewCell {
         actionImage.tintColor = .blackSecondaryText()
         actionTitle.textColor = .blackSecondaryText()
         actionTitle.font = .regular16()
+        actionTitle.text = titles?[.disabled]
         shareButton.isHidden = true
         selectionStyle = .none
       }
