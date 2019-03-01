@@ -42,6 +42,32 @@ PlaceType EncodePlaceType(std::string const & place)
   return it == m.end() ? PlaceType::Unknown : it->second;
 }
 
+char const * StringifyPlaceType(PlaceType placeType)
+{
+  static std::vector<char const *> const tags = {
+    "unknown",
+    "country",
+    "state",
+    "region",
+    "province",
+    "district",
+    "county",
+    "municipality",
+    "city",
+    "town",
+    "village",
+    "suburb",
+    "quarter",
+    "neighbourhood",
+    "hamlet",
+    "locality",
+    "isolated_dwelling"
+  };
+
+  auto index = static_cast<std::size_t>(placeType);
+  return index < tags.size() ? tags[index] : "unknown";
+}
+
 char const * GetLabel(ObjectLevel level)
 {
   switch (level)

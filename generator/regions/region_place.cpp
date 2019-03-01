@@ -1,7 +1,5 @@
 #include "generator/regions/region_place.hpp"
 
-#include "coding/transliteration.hpp"
-
 namespace generator
 {
 namespace regions
@@ -33,26 +31,14 @@ std::string RegionPlace::GetName() const
   
 std::string RegionPlace::GetEnglishOrTransliteratedName() const
 {
-  std::string s = m_placeLabel ? m_placeLabel->GetName(StringUtf8Multilang::kEnglishCode)
-                               : m_region.GetName(StringUtf8Multilang::kEnglishCode);
-  if (!s.empty())
-    return s;
-
-  auto const fn = [&s](int8_t code, std::string const & name) {
-    if (code != StringUtf8Multilang::kDefaultCode &&
-        Transliteration::Instance().Transliterate(name, code, s))
-    {
-      return base::ControlFlow::Break;
-    }
-
-    return base::ControlFlow::Continue;
-  };
-
   if (m_placeLabel)
-    m_placeLabel->GetMultilangName().ForEach(fn);
-  else
-    m_region.GetMultilangName().ForEach(fn);
-  return s;
+  {
+    auto name = m_placeLabel->GetEnglishOrTransliteratedName();
+    if (!name.empty())
+      return name;
+  }
+
+  return m_region.GetEnglishOrTransliteratedName();
 }
 
 PlaceType RegionPlace::GetPlaceType() const

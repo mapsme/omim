@@ -6,6 +6,7 @@
 #include "geometry/rect2d.hpp"
 
 #include "coding/string_utf8_multilang.hpp"
+#include "coding/transliteration.hpp"
 
 #include "base/geo_object_id.hpp"
 
@@ -33,6 +34,7 @@ public:
   // 1. Return the english name if it exists.
   // 2. Return transliteration if it succeeds.
   // 3. Otherwise, return empty string.
+  std::string GetEnglishOrTransliteratedName() const;
   std::string GetName(int8_t lang = StringUtf8Multilang::kDefaultCode) const;
   StringUtf8Multilang const & GetMultilangName() const;
   void SetMultilangName(StringUtf8Multilang const & name);

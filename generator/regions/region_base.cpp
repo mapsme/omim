@@ -14,6 +14,26 @@ std::string RegionWithName::GetName(int8_t lang) const
   return s;
 }
 
+std::string RegionWithName::GetEnglishOrTransliteratedName() const
+{
+  std::string s = GetName(StringUtf8Multilang::kEnglishCode);
+  if (!s.empty())
+    return s;
+
+  auto const fn = [&s](int8_t code, std::string const & name) {
+    if (code != StringUtf8Multilang::kDefaultCode &&
+        Transliteration::Instance().Transliterate(name, code, s))
+    {
+      return base::ControlFlow::Break;
+    }
+
+    return base::ControlFlow::Continue;
+  };
+
+  m_name.ForEach(fn);
+  return s;
+}
+
 StringUtf8Multilang const & RegionWithName::GetMultilangName() const
 {
   return m_name;

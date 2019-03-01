@@ -20,8 +20,14 @@ public:
   void SetLevel(ObjectLevel level);
 
   base::GeoObjectId GetId() const;
-  std::string GetName() const;
+
+  // This function will take the following steps:
+  // 1. Return the english name if it exists.
+  // 2. Return transliteration if it succeeds.
+  // 3. Otherwise, return empty string.
   std::string GetEnglishOrTransliteratedName() const;
+  std::string GetName() const;
+
   PlaceType GetPlaceType() const;
   BoostPoint GetCenter() const;
 

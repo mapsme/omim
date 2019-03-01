@@ -73,8 +73,21 @@ enum class ObjectLevel : uint8_t
 };
 
 PlaceType EncodePlaceType(std::string const & place);
+char const * StringifyPlaceType(PlaceType placeType);
 
 char const * GetLabel(ObjectLevel level);
+
+template <typename Place>
+std::string GetPlaceNotation(Place const & place)
+{
+  auto notation = place.GetEnglishOrTransliteratedName();
+  if (notation.empty())
+    return place.GetName();
+
+  if (notation != place.GetName())
+    notation += " / " + place.GetName();
+  return notation;
+}
 
 // Codes for the names of countries, dependent territories, and special areas of geographical
 // interest.
