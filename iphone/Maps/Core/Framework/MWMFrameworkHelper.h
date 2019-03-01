@@ -1,3 +1,9 @@
+typedef NS_ENUM(NSUInteger, MWMZoomMode) {
+  MWMZoomModeIn = 0,
+  MWMZoomModeOut
+};
+
+NS_SWIFT_NAME(FrameworkHelper)
 @interface MWMFrameworkHelper : NSObject
 
 + (void)processFirstLaunch;
@@ -17,5 +23,13 @@
 + (BOOL)isNetworkConnected;
 
 + (MWMMarkGroupID)invalidCategoryId;
+
++ (void)zoomMap:(MWMZoomMode)mode;
++ (void)moveMap:(UIOffset)offset;
++ (void)deactivateMapSelection:(BOOL)notifyUI NS_SWIFT_NAME(deactivateMapSelection(notifyUI:));
++ (void)switchMyPositionMode;
++ (void)stopLocationFollow;
++ (NSArray<NSString *> *)obtainLastSearchQueries;
++ (BOOL)needUpdateMaps;
 
 @end
