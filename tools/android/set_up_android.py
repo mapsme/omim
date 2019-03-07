@@ -8,6 +8,7 @@ try:
 except NameError:
   pass
 
+
 def find_recursive(root, subpath, maxdepth=4):
   queue = collections.deque([(root, 0)])
   if 'PATH' in os.environ:
@@ -25,6 +26,7 @@ def find_recursive(root, subpath, maxdepth=4):
           queue.append((fullname, item[1] + 1))
   return None
 
+
 def read_local_properties():
   androidRoot = os.path.join(os.path.dirname(sys.argv[0]), '..', '..', 'android')
   propsFile = os.path.join(androidRoot, 'local.properties')
@@ -39,6 +41,7 @@ def read_local_properties():
         elif line.startswith('ndk.dir') and '=' in line:
           ndkDir = line.split('=')[1].strip()
   return (sdkDir, ndkDir)
+
 
 def query_path(title, option, default, subpath):
   default = '' if not default else os.path.abspath(default)
@@ -83,6 +86,13 @@ def write_local_properties(sdkDir, ndkDir):
     print('Copying to {0}'.format(dst))
     shutil.copy(propsFile, dst)
 
+
+def add_if_windows(ext):
+    # Add an extension to the file if the operation system is Windows.
+    # Otherwise no extension is added.
+    return ext if os.name != 'nt' else ''
+
+
 if __name__ == '__main__':
   parser = OptionParser()
   parser.add_option('-s', '--sdk', help='Path to Android SDK')
@@ -98,7 +108,7 @@ if __name__ == '__main__':
       sdkDir = sdkDirOld
     if not ndkDir:
       ndkDir = ndkDirOld
-    sdkDir = query_path('Android SDK', options.sdk, sdkDir, ['platform-tools', 'adb'])
-    ndkDir = query_path('Android NDK', options.ndk, ndkDir, ['ndk-build'])
+    sdkDir = query_path('Android SDK', options.sdk, sdkDir, ['platform-tools', 'adb' + add_if_windows('.exe')])
+    ndkDir = query_path('Android NDK', options.ndk, ndkDir, ['ndk-build' + add_if_windows('.cmd')])
 
   write_local_properties(sdkDir, ndkDir)
