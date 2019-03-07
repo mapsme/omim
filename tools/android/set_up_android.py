@@ -90,7 +90,7 @@ def write_local_properties(sdkDir, ndkDir):
 def add_if_windows(ext):
     # Add an extension to the file if the operation system is Windows.
     # Otherwise no extension is added.
-    return ext if os.name != 'nt' else ''
+    return ext if os.name == 'nt' else ''
 
 
 if __name__ == '__main__':
