@@ -3860,3 +3860,8 @@ bool Framework::MakePlacePageInfo(NotificationCandidate const & notification,
 
   return found;
 }
+
+boost::optional<notifications::NotificationCandidate> Framework::GetNotification()
+{
+  return m_notificationManager.GetNotification();
+}

@@ -4,7 +4,10 @@
 #import "Statistics.h"
 
 #include "map/framework_light.hpp"
+
 #include "platform/network_policy_ios.h"
+
+#include "Framework.h"
 
 static NSString * const kLastUGCNotificationDate = @"LastUGCNotificationDate";
 
@@ -39,8 +42,7 @@ static NSString * const kLastUGCNotificationDate = @"LastUGCNotificationDate";
 
 + (CoreNotificationWrapper *)reviewNotificationWrapper
 {
-  lightweight::Framework const framework(lightweight::REQUEST_TYPE_NOTIFICATION);
-  auto const notificationCandidate = framework.GetNotification();
+  auto const notificationCandidate = GetFramework().GetNotification();
   if (notificationCandidate)
   {
     auto const notification = notificationCandidate.get();
