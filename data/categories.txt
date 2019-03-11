@@ -8556,7 +8556,7 @@ uk:^Платіжний термінал
 vi:^Thiết bị thanh toán
 zh-Hans:^支付终端
 zh-Hant:^付款終端
-fa:دستگاه کارخوان
+fa:دستگاه کارتخوان
 
 amenity-shower
 en:^Shower
