@@ -8622,7 +8622,7 @@ uk:^Пункт постачання води
 vi:^Điểm cấp nước
 zh-Hans:^取水点
 zh-Hant:^飲水站
-fa:شیر آب
+fa:شیر آب قابل شرب
 
 emergency-defibrillator
 en:^Defibrillator|AED
