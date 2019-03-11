@@ -44,7 +44,7 @@ PlaceType EncodePlaceType(std::string const & place)
 
 char const * StringifyPlaceType(PlaceType placeType)
 {
-  static std::vector<char const *> const tags = {
+  constexpr auto tags = {
     "unknown",
     "country",
     "state",
@@ -56,6 +56,7 @@ char const * StringifyPlaceType(PlaceType placeType)
     "city",
     "town",
     "village",
+    "hamlet",
     "suburb",
     "quarter",
     "neighbourhood",
@@ -65,7 +66,7 @@ char const * StringifyPlaceType(PlaceType placeType)
   };
 
   auto index = static_cast<std::size_t>(placeType);
-  return index < tags.size() ? tags[index] : "unknown";
+  return index < tags.size() ? tags.begin()[index] : "unknown";
 }
 
 char const * GetLabel(ObjectLevel level)

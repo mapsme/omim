@@ -1,9 +1,7 @@
 #include "generator/regions/regions_builder.hpp"
 
 #include "base/assert.hpp"
-#include "base/thread_pool_computational.hpp"
 #include "base/stl_helpers.hpp"
-#include "base/thread_pool_computational.hpp"
 
 #include "generator/regions/country_specifier.hpp"
 #include "generator/regions/relative_nesting_specifier.hpp"
@@ -23,29 +21,75 @@ namespace generator
 namespace regions
 {
 RegionsBuilder::RegionsBuilder(Regions && regions, PlaceCentersMap && placeCentersMap, size_t threadsCount)
-  : m_regions(std::move(regions))
-  , m_placeCentersMap(std::move(placeCentersMap))
-  , m_threadsCount(threadsCount)
+  : m_threadsCount(threadsCount)
+  , m_threadPool(threadsCount)
 {
-  ASSERT(m_threadsCount != 0, ());
+  m_regionPlaceOrder = FormRegionPlaceOrder(std::move(regions), placeCentersMap);
 
-  auto const isCountry = [](Region const & r) { return r.IsCountry(); };
-  std::copy_if(std::begin(m_regions), std::end(m_regions), std::back_inserter(m_countries), isCountry);
-  base::EraseIf(m_regions, isCountry);
-  auto const cmp = [](Region const & l, Region const & r) { return l.GetArea() > r.GetArea(); };
-  std::sort(std::begin(m_countries), std::end(m_countries), cmp);
+  m_placeCentersMap = std::move(placeCentersMap);
+  EraseLabelPlacePoints(m_placeCentersMap, m_regionPlaceOrder);
+
+  m_countriesOuters = ExtractCountriesOuters(m_regionPlaceOrder);
 }
 
-RegionsBuilder::Regions const & RegionsBuilder::GetCountries() const
+RegionsBuilder::RegionPlaceLot RegionsBuilder::FormRegionPlaceOrder(
+    Regions && regions, PlaceCentersMap const & placeCentersMap)
 {
-  return m_countries;
+  RegionPlaceLot placeOrder;
+
+  auto const cmp = [](Region const & l, Region const & r) { return l.GetArea() > r.GetArea(); };
+  std::sort(std::begin(regions), std::end(regions), cmp);
+
+  placeOrder.reserve(regions.size());
+  for (auto & region : regions)
+  {
+    boost::optional<PlaceCenter> placeLabel;
+    if (auto labelOsmId = region.GetLabelOsmIdOptional())
+    {
+      auto label = placeCentersMap.find(*labelOsmId);
+      if (label != placeCentersMap.end())
+        placeLabel = label->second;
+    }
+    placeOrder.emplace_back(std::move(region), std::move(placeLabel));
+  }
+
+  return placeOrder;
+}
+
+void RegionsBuilder::EraseLabelPlacePoints(PlaceCentersMap & placePointsMap,
+                                           RegionPlaceLot const & placeOrder)
+{
+  for (auto const & place : placeOrder)
+  {
+    if (auto levelOsmId = place.GetRegion().GetLabelOsmIdOptional())
+      placePointsMap.erase(*levelOsmId);
+  }
+}
+
+RegionsBuilder::RegionPlaceLot RegionsBuilder::ExtractCountriesOuters(RegionPlaceLot & placeOrder)
+{
+  RegionPlaceLot countriesOuters;
+
+  auto const isCountry = [](RegionPlace const & place) {
+    return PlaceType::Country == place.GetPlaceType() || AdminLevel::Two == place.GetAdminLevel();
+  };
+  std::copy_if(std::begin(placeOrder), std::end(placeOrder), std::back_inserter(countriesOuters),
+               isCountry);
+  base::EraseIf(placeOrder, isCountry);
+
+  return countriesOuters;
+}
+
+RegionsBuilder::RegionPlaceLot const & RegionsBuilder::GetCountriesOuters() const
+{
+  return m_countriesOuters;
 }
 
 RegionsBuilder::StringsList RegionsBuilder::GetCountryNames() const
 {
   StringsList result;
   std::unordered_set<std::string> set;
-  for (auto const & c : GetCountries())
+  for (auto const & c : GetCountriesOuters())
   {
     auto name = c.GetName();
     if (set.insert(name).second)
@@ -61,9 +105,9 @@ void RegionsBuilder::ForEachNormalizedCountry(NormalizedCountryFn const & fn)
   {
     auto countrySpecifier = GetCountrySpecifier(countryName);
 
-    RegionsBuilder::Regions country;
-    auto const & countries = GetCountries();
-    auto const pred = [&](const Region & r) { return countryName == r.GetName(); };
+    RegionPlaceLot country;
+    auto const & countries = GetCountriesOuters();
+    auto const pred = [&](const RegionPlace & p) { return countryName == p.GetName(); };
     std::copy_if(std::begin(countries), std::end(countries), std::back_inserter(country), pred);
     auto const countryTrees = BuildCountryRegionTrees(country, *countrySpecifier);
     auto tree = std::accumulate(std::begin(countryTrees), std::end(countryTrees),
@@ -81,116 +125,122 @@ void RegionsBuilder::ForEachNormalizedCountry(NormalizedCountryFn const & fn)
   }
 }
 
-std::vector<Node::Ptr> RegionsBuilder::BuildCountryRegionTrees(RegionsBuilder::Regions const & countries,
+std::vector<Node::Ptr> RegionsBuilder::BuildCountryRegionTrees(RegionPlaceLot const & countryOuters,
                                                                CountrySpecifier const & countrySpecifier)
 {
-  std::vector<std::future<Node::Ptr>> tmp;
-  {
-    base::thread_pool::computational::ThreadPool threadPool(m_threadsCount);
-    for (auto const & country : countries)
-    {
-      auto result = threadPool.Submit(&RegionsBuilder::BuildCountryRegionTree,
-                                      std::cref(country), std::cref(m_regions), std::cref(m_placeCentersMap),
-                                      std::cref(countrySpecifier));
-      tmp.emplace_back(std::move(result));
-    }
-  }
   std::vector<Node::Ptr> res;
-  res.reserve(tmp.size());
-  std::transform(std::begin(tmp), std::end(tmp),
-                 std::back_inserter(res), [](auto & f) { return f.get(); });
+  res.reserve(countryOuters.size());
+
+  for (auto const & outer : countryOuters)
+  {
+    std::vector<std::future<ParentChildPairs>> tasks;
+    auto nodes = MakeCountryNodeOrder(outer, countrySpecifier);
+    for (std::size_t t = 0; t < m_threadsCount; ++t)
+    {
+      tasks.push_back(m_threadPool.Submit(FindAllParentChildPairs,
+                                          std::cref(nodes), t, m_threadsCount, std::cref(countrySpecifier)));
+    }
+
+    for (auto & t : tasks)
+      BindNodeChildren(t.get());
+
+    auto tree = nodes.front();
+    if (!tree->GetChildren().empty())
+      res.push_back(tree);
+  }
+
   return res;
 }
 
-Node::Ptr RegionsBuilder::BuildCountryRegionTree(Region const & country, Regions const & allRegions,
-                                                 PlaceCentersMap const & placeCentersMap,
-                                                 CountrySpecifier const & countrySpecifier)
+std::vector<Node::Ptr> RegionsBuilder::MakeCountryNodeOrder(RegionPlace const & countryOuter,
+                                                            CountrySpecifier const & countrySpecifier)
 {
-  Node::Ptr tree = std::make_shared<Node>(RegionPlace{ObjectLevel::Country, country});
-
-  auto addRegion = [&] (Region const & region) {
-    boost::optional<PlaceCenter> placeLabel;
-    if (auto levelOsmId = region.GetLabelOsmIdOptional())
-    {
-      auto label = placeCentersMap.find(*levelOsmId);
-      if (label != placeCentersMap.end())
-        placeLabel = label->second;
-    }
-    auto level = countrySpecifier.GetLevel(region, placeLabel);
-    auto node = std::make_shared<Node>(RegionPlace{level, region, std::move(placeLabel)});
-
-    Insert(tree, std::move(node), countrySpecifier);
-  };
-
-  for (auto const region : allRegions)
+  auto const & countryOuterRegion = countryOuter.GetRegion();
+  std::vector<Node::Ptr> nodes{std::make_shared<Node>(LevelPlace{ObjectLevel::Country, countryOuter})};
+  for (auto const & place : m_regionPlaceOrder)
   {
-    if (country.Contains(region))
-      addRegion(region);
+    auto const & placeRegion = place.GetRegion();
+    if (countryOuterRegion.ContainsRect(placeRegion))
+    {
+      auto level = countrySpecifier.GetLevel(place);
+      auto node = std::make_shared<Node>(LevelPlace{level, place});
+      nodes.emplace_back(std::move(node));
+    }
   }
 
-  if (tree->GetChildren().empty())
-    return {};
-
-  return tree;
+  return nodes;
 }
 
-void RegionsBuilder::Insert(Node::Ptr & tree, Node::Ptr && node, CountrySpecifier const & countrySpecifier)
+RegionsBuilder::ParentChildPairs RegionsBuilder::FindAllParentChildPairs(
+    std::vector<Node::Ptr> const & nodeOrder, std::size_t startOffset, std::size_t step,
+    CountrySpecifier const & countrySpecifier)
 {
-  auto & nodePlace = node->GetData();
-  auto & children = tree->GetChildren();
-  auto && subtree = children.begin();
-  while (subtree != children.end())
+  ParentChildPairs res;
+
+  auto size = nodeOrder.size();
+  for (auto i = (std::ptrdiff_t(size) - 1) - std::ptrdiff_t(startOffset); i > 0; i -= step)
   {
-    auto c = Compare(nodePlace, (*subtree)->GetData(), countrySpecifier);
-    if (c < 0)
+    auto const & place = nodeOrder[i]->GetData();
+    auto const & placeRegion = place.GetRegion();
+    for (auto j = i - 1; j >= 0; --j)
     {
-      Insert(*subtree, std::move(node), countrySpecifier);
-      return;
-    }
+      auto const & parentCandidate = nodeOrder[j];
+      auto const & candidatePlace = parentCandidate->GetData();
+      auto const & candidateRegion = candidatePlace.GetRegion();
+      if (!candidateRegion.ContainsRect(placeRegion))
+        continue;
 
-    if (c > 0)
-    {
-      AddChild(node, std::move(*subtree));
-      *subtree = std::move(children.back());
-      children.pop_back();
-      continue;
+      auto c = Compare(candidatePlace, place, countrySpecifier);
+      if (c == 1)
+        res.emplace_back(parentCandidate, nodeOrder[i]);
+      else if (c == -1)
+        res.emplace_back(nodeOrder[i], parentCandidate);
     }
-
-    ++subtree;
   }
 
-  CHECK(!node->GetParent(), ());
-  AddChild(tree, std::move(node));
+  return res;
+}
+
+void RegionsBuilder::BindNodeChildren(ParentChildPairs const & parentChildPairs)
+{
+  for (auto & pair : parentChildPairs)
+  {
+    auto & parent = pair.first;
+    auto & child = pair.second;
+    child->SetParent(parent);
+    parent->AddChild(std::move(child));
+  }
 }
 
 void RegionsBuilder::AddChild(Node::Ptr & tree, Node::Ptr && node)
 {
   node->SetParent(tree);
-  auto greaterArea = [&] (Node::Ptr const & other) {
-    return node->GetData().GetRegion().GetArea() > other->GetData().GetRegion().GetArea();
-  };
   auto & children = tree->GetChildren();
-  auto pos = std::find_if(children.begin(), children.end(), greaterArea);
-  children.insert(pos, std::move(node));
+  children.push_back(std::move(node));
 }
 
-int RegionsBuilder::Compare(RegionPlace const & l, RegionPlace const & r,
+int RegionsBuilder::Compare(LevelPlace const & l, LevelPlace const & r,
                             CountrySpecifier const & countrySpecifier)
 {
   auto const & lRegion = l.GetRegion();
   auto const & rRegion = r.GetRegion();
-  if (lRegion.Contains(rRegion))
+  auto lArea = lRegion.GetArea();
+  auto rArea = rRegion.GetArea();
+
+  if (lArea > 1.001 * rArea && lRegion.Contains(rRegion))
     return 1;
-  if (rRegion.Contains(lRegion))
+  if (rArea > 1.001 * lArea && rRegion.Contains(lRegion))
     return -1;
 
-  if ((lRegion.Contains(r.GetCenter()) || rRegion.Contains(l.GetCenter())) &&
-      lRegion.CalculateOverlapPercentage(rRegion) > 50.0)
-  {
-    return countrySpecifier.CompareWeight(l, r);
-  }
+  if (lRegion.CalculateOverlapPercentage(rRegion) < 50.0)
+    return 0;
 
-  return 0;
+  if (0.5 * lArea >= rArea)
+    return 1;
+  if (0.5 * rArea >= lArea)
+    return -1;
+
+  return countrySpecifier.CompareWeight(l, r);
 }
 
 std::unique_ptr<CountrySpecifier> RegionsBuilder::GetCountrySpecifier(std::string const & countryName)

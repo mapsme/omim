@@ -49,12 +49,6 @@ void Region::FillPolygon(FeatureBuilder1 const & fb)
   boost_helpers::FillPolygon(*m_polygon, fb);
 }
 
-bool Region::IsCountry() const
-{
-  static auto const kAdminLevelCountry = AdminLevel::Two;
-  return !HasPlaceType() && GetAdminLevel() == kAdminLevelCountry;
-}
-
 bool Region::Contains(Region const & smaller) const
 {
   CHECK(m_polygon, ());

@@ -26,7 +26,7 @@ bool TranslatorRegion::IsSuitableElement(OsmElement const * p) const
                                                "district", "county",
                                                "city", "town", "village", "hamlet",
                                                "suburb", "quarter", "neighbourhood",
-                                               "locality", "isolated_dwelling"};
+                                               "isolated_dwelling"};
 
   for (auto const & t : p->Tags())
   {

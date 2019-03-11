@@ -21,9 +21,9 @@ public:
   virtual void AdjustRegionsLevel(Node::Ptr & tree, RegionsBuilder::PlaceCentersMap const & placeCentersMap)
   { }
 
-  virtual ObjectLevel GetLevel(Region const & region, boost::optional<PlaceCenter> const & placeLabel) const;
+  virtual ObjectLevel GetLevel(RegionPlace const & place) const;
   // Return -1, 0, 1.
-  virtual int CompareWeight(RegionPlace const & lhs, RegionPlace const & rhs) const;
+  virtual int CompareWeight(LevelPlace const & lhs, LevelPlace const & rhs) const;
 
 protected:
   ObjectLevel GetLevel(PlaceType placeType) const;

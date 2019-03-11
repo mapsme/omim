@@ -70,9 +70,7 @@ Node::Ptr MergeHelper(Node::Ptr const & l, Node::Ptr const & r, MergeFunc mergeT
 
   auto resultChildren = NormalizeChildren(children, mergeTree);
   l->SetChildren(std::move(resultChildren));
-  l->ShrinkToFitChildren();
   r->RemoveChildren();
-  r->ShrinkToFitChildren();
   return l;
 }
 }  // nmespace

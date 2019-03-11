@@ -32,7 +32,6 @@ public:
   bool Contains(BoostPoint const & point) const;
   double CalculateOverlapPercentage(Region const & other) const;
   BoostPoint GetCenter() const;
-  bool IsCountry() const;
   BoostRect const & GetRect() const { return m_rect; }
   std::shared_ptr<BoostPolygon> const & GetPolygon() const noexcept { return m_polygon; }
   double GetArea() const { return m_area; }

@@ -9,7 +9,21 @@ namespace generator
 {
 namespace regions
 {
-using Node = PlaceNode<RegionPlace>;
+class LevelPlace : public RegionPlace
+{
+public:
+  LevelPlace(ObjectLevel level, RegionPlace const & regionPlace)
+    : RegionPlace(regionPlace), m_level{level}
+  { }
+
+  ObjectLevel GetLevel() const noexcept { return m_level; }
+  void SetLevel(ObjectLevel level) { m_level = level; }
+
+private:
+  ObjectLevel m_level;
+};
+
+using Node = PlaceNode<LevelPlace>;
 using NodePath = std::vector<Node::Ptr>;
 
 size_t TreeSize(Node::Ptr const & node);

@@ -11,10 +11,11 @@ class RuSpecifier : public RelativeNestingSpecifier
 public:
   // CountrySpecifier overrides:
   void AdjustRegionsLevel(Node::Ptr & tree, RegionsBuilder::PlaceCentersMap const & placeCentersMap) override;
-  ObjectLevel GetLevel(Region const & region, boost::optional<PlaceCenter> const & placeLabel) const override;
+  ObjectLevel GetLevel(RegionPlace const & place) const override;
 
 private:
   void AdjustMoscowAdministrativeDivisions(Node::Ptr & tree);
+  Node::Ptr FindMoscowRegion(Node::Ptr const & tree) const;
   Node::Ptr FindMoscowCity(Node::Ptr const & tree) const;
 
   void MarkMoscowSubregionsByAdministrativeOkrugs(Node::Ptr & node);

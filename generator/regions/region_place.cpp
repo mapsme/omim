@@ -4,14 +4,9 @@ namespace generator
 {
 namespace regions
 {
-RegionPlace::RegionPlace(ObjectLevel level, Region const & region, boost::optional<PlaceCenter> placeLabel)
-  : m_level{level}, m_region{region}, m_placeLabel{placeLabel}
+RegionPlace::RegionPlace(Region const & region, boost::optional<PlaceCenter> placeLabel)
+  : m_region{region}, m_placeLabel{placeLabel}
 { }
-
-void RegionPlace::SetLevel(ObjectLevel level)
-{
-  m_level = level;
-}
 
 base::GeoObjectId RegionPlace::GetId() const
 {
@@ -47,6 +42,11 @@ PlaceType RegionPlace::GetPlaceType() const
     return m_placeLabel->GetPlaceType();
 
   return m_region.GetPlaceType();
+}
+
+AdminLevel RegionPlace::GetAdminLevel() const
+{
+  return m_region.GetAdminLevel();
 }
 
 BoostPoint RegionPlace::GetCenter() const

@@ -14,10 +14,7 @@ namespace regions
 class RegionPlace
 {
 public:
-  RegionPlace(ObjectLevel level, Region const & region, boost::optional<PlaceCenter> placeLabel = {});
-
-  ObjectLevel GetLevel() const noexcept { return m_level; }
-  void SetLevel(ObjectLevel level);
+  RegionPlace(Region const & region, boost::optional<PlaceCenter> placeLabel = {});
 
   base::GeoObjectId GetId() const;
 
@@ -29,13 +26,13 @@ public:
   std::string GetName() const;
 
   PlaceType GetPlaceType() const;
+  AdminLevel GetAdminLevel() const;
   BoostPoint GetCenter() const;
 
   Region const & GetRegion() const noexcept { return m_region; }
   boost::optional<PlaceCenter> const & GetPlaceLabel() const noexcept { return m_placeLabel; }
 
 private:
-  ObjectLevel m_level;
   Region m_region;
   boost::optional<PlaceCenter> m_placeLabel;
 };

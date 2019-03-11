@@ -4,36 +4,47 @@ namespace generator
 {
 namespace regions
 {
-ObjectLevel CountrySpecifier::GetLevel(Region const & region,
-                                       boost::optional<PlaceCenter> const & placeLabel) const
+ObjectLevel CountrySpecifier::GetLevel(RegionPlace const & place) const
 {
-  if (placeLabel)
-    return GetLevel(placeLabel->GetPlaceType());
-
-  auto placeLevel = GetLevel(region.GetPlaceType());
+  auto placeLevel = GetLevel(place.GetPlaceType());
   if (placeLevel != ObjectLevel::Unknown)
     return placeLevel;
 
-  if (region.GetAdminLevel() == AdminLevel::Two)
+  if (place.GetAdminLevel() == AdminLevel::Two)
     return ObjectLevel::Country;
 
   return ObjectLevel::Unknown;
 }
 
-int CountrySpecifier::CompareWeight(RegionPlace const & lhs, RegionPlace const & rhs) const
+int CountrySpecifier::CompareWeight(LevelPlace const & lhs, LevelPlace const & rhs) const
 {
   if (lhs.GetLevel() != ObjectLevel::Unknown && rhs.GetLevel() != ObjectLevel::Unknown)
-    return lhs.GetLevel() > rhs.GetLevel() ? -1 : lhs.GetLevel() < rhs.GetLevel();
+  {
+    if (lhs.GetLevel() > rhs.GetLevel())
+      return -1;
+    if (lhs.GetLevel() < rhs.GetLevel())
+      return 1;
+  }
+
+  auto lhsPlaceType = lhs.GetPlaceType();
+  auto rhsPlaceType = rhs.GetPlaceType();
+  if (lhsPlaceType != PlaceType::Unknown && rhsPlaceType != PlaceType::Unknown)
+  {
+    if (lhsPlaceType > rhsPlaceType)
+      return -1;
+    if (lhsPlaceType < rhsPlaceType)
+      return 1;
+    // Check by admin level (administrative city (district + city) > city).
+  }
 
   auto lhsAdminLevel = lhs.GetRegion().GetAdminLevel();
   auto rhsAdminLevel = rhs.GetRegion().GetAdminLevel();
   if (lhsAdminLevel != AdminLevel::Unknown && rhsAdminLevel != AdminLevel::Unknown)
     return lhsAdminLevel > rhsAdminLevel ? -1 : lhsAdminLevel < rhsAdminLevel;
-
-  auto lhsPlaceType = lhs.GetPlaceType();
-  auto rhsPlaceType = rhs.GetPlaceType();
-  if (lhsPlaceType != PlaceType::Unknown && rhsPlaceType != PlaceType::Unknown)
-    return lhsPlaceType > rhsPlaceType ? -1 : lhsPlaceType < rhsPlaceType;
+  if (lhsAdminLevel != AdminLevel::Unknown)
+    return 1;
+  if (rhsAdminLevel != AdminLevel::Unknown)
+    return -1;
 
   return 0;
 }

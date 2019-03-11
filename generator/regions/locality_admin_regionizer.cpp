@@ -82,8 +82,8 @@ void LocalityAdminRegionizer::InsertInto(Node::Ptr & node)
 
   Region placeRegion{m_placeCenter.GetMultilangName(), m_placeCenter.GetRegionData(),
                      parentPlace.GetRegion().GetPolygon()};
-  auto placeNode = std::make_shared<Node>(RegionPlace{ObjectLevel::Locality, std::move(placeRegion),
-                                                      m_placeCenter});
+  auto place = LevelPlace{ObjectLevel::Locality, {std::move(placeRegion), m_placeCenter}};
+  auto placeNode = std::make_shared<Node>(std::move(place));
   placeNode->SetParent(node);
 
   placeNode->SetChildren(std::move(node->GetChildren()));
