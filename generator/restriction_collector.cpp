@@ -59,6 +59,7 @@ RestrictionCollector::RestrictionCollector(std::string const & restrictionPath,
 
   if (!IsValid())
     LOG(LERROR, ("Some restrictions are not valid."));
+
   LOG(LDEBUG, ("Number of loaded restrictions:", m_restrictions.size()));
 }
 

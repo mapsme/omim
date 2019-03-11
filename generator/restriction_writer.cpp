@@ -19,10 +19,14 @@ namespace
 using namespace routing;
 
 std::vector<std::pair<std::string, Restriction::Type>> const kRestrictionTypes =
-  {{"no_right_turn", Restriction::Type::No},  {"no_left_turn", Restriction::Type::No},
-   {"no_u_turn", Restriction::Type::No}, {"no_straight_on", Restriction::Type::No},
-   {"no_entry", Restriction::Type::No}, {"no_exit", Restriction::Type::No},
-   {"only_right_turn", Restriction::Type::Only}, {"only_left_turn", Restriction::Type::Only},
+  {{"no_right_turn", Restriction::Type::No},
+   {"no_left_turn", Restriction::Type::No},
+   {"no_u_turn", Restriction::Type::No},
+   {"no_straight_on", Restriction::Type::No},
+   {"no_entry", Restriction::Type::No},
+   {"no_exit", Restriction::Type::No},
+   {"only_right_turn", Restriction::Type::Only},
+   {"only_left_turn", Restriction::Type::Only},
    {"only_straight_on", Restriction::Type::Only}};
 
 /// \brief Converts restriction type form string to RestrictionCollector::Type.
@@ -62,29 +66,47 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
 
   CHECK_EQUAL(relationElement.GetType(), "restriction", ());
 
-  // Note. For the time being only line-point-line road restriction is supported.
-  if (relationElement.nodes.size() != 1 || relationElement.ways.size() != 2)
-    return;  // Unsupported restriction. For example line-line-line.
+//  // Note. For the time being only line-point-line road restriction is supported.
+//  if (relationElement.nodes.size() != 1 || relationElement.ways.size() != 2)
+//    return;  // Unsupported restriction. For example line-line-line.
 
-  // Extracting osm ids of lines and points of the restriction.
-  auto const findTag = [](std::vector<std::pair<uint64_t, std::string>> const & members,
-                          std::string const & tag) {
-    auto const it = std::find_if(
-        members.cbegin(), members.cend(),
-        [&tag](std::pair<uint64_t, std::string> const & p) { return p.second == tag; });
-    return it;
+  auto const getMembersByTag = [&relationElement](std::string const & tag)
+  {
+    std::vector<RelationElement::Member> result;
+    for (auto const & member : relationElement.ways)
+    {
+      if (member.second == tag)
+        result.emplace_back(member);
+    }
+
+    for (auto const & member : relationElement.nodes)
+    {
+      if (member.second == tag)
+        result.emplace_back(member);
+    }
+
+    return result;
   };
 
-  auto const fromIt = findTag(relationElement.ways, "from");
-  if (fromIt == relationElement.ways.cend())
+  auto const from = getMembersByTag("from");
+  auto const to = getMembersByTag("to");
+  auto const via = getMembersByTag("to");
+
+  if (from.size() != 1 || to.size() != 1 || via.empty())
     return;
 
-  auto const toIt = findTag(relationElement.ways, "to");
-  if (toIt == relationElement.ways.cend())
-    return;
-
-  if (findTag(relationElement.nodes, "via") == relationElement.nodes.cend())
-    return;
+  // Either 1 node as vis, either several ways as via.
+  // https://wiki.openstreetmap.org/wiki/Relation:restriction#Members
+  if (via.size() != 1)
+  {
+    bool allMembersAreWays = std::all_of(via.begin(), via.end(),
+                                         [](auto const & member)
+                                         {
+                                           return member.second == "way";
+                                         });
+    if (!allMembersAreWays)
+      return;
+  }
 
   // Extracting type of restriction.
   auto const tagIt = relationElement.tags.find("restriction");
@@ -96,7 +118,14 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
     return;
 
   // Adding restriction.
-  m_stream << ToString(type) << "," << fromIt->first << ", " << toIt->first << '\n';
+  m_stream << ToString(type) << "," << from.back().first << ", ";
+  if (via.back().second != "node")
+  {
+    for (auto const & viaMember : via)
+      m_stream << viaMember.first << ", ";
+  }
+
+  m_stream << to.back().first << '\n';
 }
 
 bool RestrictionWriter::IsOpened() const { return m_stream && m_stream.is_open(); }
