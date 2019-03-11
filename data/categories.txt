@@ -8919,7 +8919,7 @@ uk:^Ритуальна служба
 vi:^Tổ chức tang lễ
 zh-Hans:^殡仪馆
 zh-Hant:^葬儀社
-fa:مسئول تشیع جنازه
+fa:مسئول تشییع جنازه
 
 shop-massage
 en:^Massage Parlour|massage|spa|massage center|massage therapy|massage services|massage salon|spa treatment|spa services
