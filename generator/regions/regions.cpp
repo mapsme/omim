@@ -70,13 +70,14 @@ struct RegionsGenerator
 
     LOG(LINFO, ("Regions objects key-value for", builder.GetCountryNames().size(),
                 "countries storage saved to",  pathOutRegionsKv));
-    LOG(LINFO, ("Repacked regions temprory mwm saved to",  pathOutRepackedRegionsTmpMwm));
+    LOG(LINFO, ("Repacked regions temprory mwm saved to", pathOutRepackedRegionsTmpMwm));
     LOG(LINFO, (regionsTotalCount, "total ids.", countriesRegionIds.size(), "unique ids."));
     LOG(LINFO, ("Finish generating regions.", timer.ElapsedSeconds(), "seconds."));
   }
 
   void GenerateRegions(RegionsBuilder & builder)
   {
+    std::multimap<base::GeoObjectId, Node::Ptr> objectsRegions;
     builder.ForEachNormalizedCountry([&, this](std::string const &, Node::Ptr const & tree) {
       if (!tree)
         return;
@@ -84,27 +85,27 @@ struct RegionsGenerator
       if (verbose)
         DebugPrintTree(tree);
 
-      GenerateCountry(tree);
+      GenerateCountry(tree, objectsRegions);
     });
-  }
-
-  void GenerateCountry(Node::Ptr const & tree)
-  {
-    auto countryNotation = GetPlaceNotation(tree->GetData());
-    LOG(LINFO, ("Processing country", countryNotation));
-
-    std::multimap<base::GeoObjectId, Node::Ptr> countryRegions;
-    GenerateKv(countryNotation, tree, countryRegions);
 
     // todo(maksimandrianov1): Perhaps this is not the best solution. This is a hot fix. Perhaps it
     // is better to transfer this to index generation(function GenerateRegionsData),
     // or to combine index generation and key-value storage generation in
     // generator_tool(generator_tool.cpp).
-    RepackTmpMwm(pathInRegionsTmpMwm, countryNotation, countryRegions);
+    RepackTmpMwm(pathInRegionsTmpMwm, objectsRegions);
+  }
+
+  void GenerateCountry(Node::Ptr const & tree,
+                       std::multimap<base::GeoObjectId, Node::Ptr> & objectsRegions)
+  {
+    auto countryNotation = GetPlaceNotation(tree->GetData());
+    LOG(LINFO, ("Processing country", countryNotation));
+
+    GenerateKv(countryNotation, tree, objectsRegions);
   }
 
   void GenerateKv(std::string const & countryNotation, Node::Ptr const & tree,
-                  std::multimap<base::GeoObjectId, Node::Ptr> & countryRegions)
+                  std::multimap<base::GeoObjectId, Node::Ptr> & objectsRegions)
   {
     size_t countryRegionsCount = 0;
     size_t countryRegionObjectCount = 0;
@@ -132,7 +133,7 @@ struct RegionsGenerator
       }
 
       regionsKv << static_cast<int64_t>(placeId.GetEncodedId()) << " " << jsonPolicy->ToString(path) << "\n";
-      countryRegions.emplace(placeId, node);
+      objectsRegions.emplace(placeId, node);
       ++countryRegionObjectCount;
     });
 
@@ -166,13 +167,13 @@ struct RegionsGenerator
     return std::make_tuple(std::move(regions), std::move(placeCentersMap));
   }
 
-  void RepackTmpMwm(std::string const & srcFilename, std::string const & countryNotation,
-                    std::multimap<base::GeoObjectId, Node::Ptr> const & countryRegions)
+  void RepackTmpMwm(std::string const & srcFilename,
+                    std::multimap<base::GeoObjectId, Node::Ptr> const & objectsRegions)
   {
     std::set<base::GeoObjectId> processedObjects;
     auto const toDo = [&](FeatureBuilder1 & fb, uint64_t /* currPos */) {
       auto id = fb.GetMostGenericOsmId();
-      auto objectRegions = countryRegions.equal_range(id);
+      auto objectRegions = objectsRegions.equal_range(id);
       if (objectRegions.first == objectRegions.second)
         return;
 
@@ -188,9 +189,7 @@ struct RegionsGenerator
       }
     };
 
-    LOG(LINFO, ("Start repack of regions for", countryNotation));
     feature::ForEachFromDatRawFormat(srcFilename, toDo);
-    LOG(LINFO, ("Finish repack of regions for", countryNotation));
   }
 
   void ResetGeometry(FeatureBuilder1 & fb, Region const & region)
