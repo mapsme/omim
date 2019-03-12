@@ -74,11 +74,10 @@ bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node)
 void LocalityAdminRegionizer::InsertInto(Node::Ptr & node)
 {
   auto const & parentPlace = node->GetData();
-  auto logLevel = m_placeCenter.GetPlaceType() <= PlaceType::Town ? LINFO : LDEBUG;
-  LOG(logLevel, ("Place", StringifyPlaceType(m_placeCenter.GetPlaceType()), "object", m_placeCenter.GetId(),
-                 "(", GetPlaceNotation(m_placeCenter), ")",
-                 "has bounded by region", parentPlace.GetId(),
-                 "(", GetPlaceNotation(parentPlace), ")"));
+  LOG(LDEBUG, ("Place", StringifyPlaceType(m_placeCenter.GetPlaceType()), "object", m_placeCenter.GetId(),
+               "(", GetPlaceNotation(m_placeCenter), ")",
+               "has bounded by region", parentPlace.GetId(),
+               "(", GetPlaceNotation(parentPlace), ")"));
 
   Region placeRegion{m_placeCenter.GetMultilangName(), m_placeCenter.GetRegionData(),
                      parentPlace.GetRegion().GetPolygon()};

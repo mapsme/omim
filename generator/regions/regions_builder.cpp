@@ -142,7 +142,7 @@ std::vector<Node::Ptr> RegionsBuilder::BuildCountryRegionTrees(RegionPlaceLot co
     }
 
     for (auto & t : tasks)
-      BindNodeChildren(t.get());
+      BindNodeChildren(t.get(), countrySpecifier);
 
     auto tree = nodes.front();
     if (!tree->GetChildren().empty())
@@ -192,8 +192,12 @@ RegionsBuilder::ParentChildPairs RegionsBuilder::FindAllParentChildPairs(
 
       auto c = Compare(candidatePlace, place, countrySpecifier);
       if (c == 1)
+      {
         res.emplace_back(parentCandidate, nodeOrder[i]);
-      else if (c == -1)
+        break;
+      }
+
+      if (c == -1)
         res.emplace_back(nodeOrder[i], parentCandidate);
     }
   }
@@ -201,22 +205,27 @@ RegionsBuilder::ParentChildPairs RegionsBuilder::FindAllParentChildPairs(
   return res;
 }
 
-void RegionsBuilder::BindNodeChildren(ParentChildPairs const & parentChildPairs)
+void RegionsBuilder::BindNodeChildren(ParentChildPairs const & parentChildPairs,
+                                      CountrySpecifier const & countrySpecifier)
 {
   for (auto & pair : parentChildPairs)
   {
     auto & parent = pair.first;
     auto & child = pair.second;
+
+    if (auto childCurrParent = child->GetParent())
+    {
+      auto c = Compare(childCurrParent->GetData(), parent->GetData(), countrySpecifier);
+      if (c <= 0)
+        continue;
+
+      auto & parentClildren = childCurrParent->GetChildren();
+      parentClildren.erase(std::find(begin(parentClildren), end(parentClildren), child));
+    }
+
     child->SetParent(parent);
     parent->AddChild(std::move(child));
   }
-}
-
-void RegionsBuilder::AddChild(Node::Ptr & tree, Node::Ptr && node)
-{
-  node->SetParent(tree);
-  auto & children = tree->GetChildren();
-  children.push_back(std::move(node));
 }
 
 int RegionsBuilder::Compare(LevelPlace const & l, LevelPlace const & r,
@@ -260,8 +269,8 @@ void RegionsBuilder::ReviseSublocalityDisposition(Node::Ptr & tree) const
 
   if (ObjectLevel::Suburb == level || ObjectLevel::Sublocality == level)
   {
-    LOG(LINFO, ("The", GetLabel(level), "object", place.GetId(),
-                "(", GetPlaceNotation(place), ") are skipped: outside locality"));
+    LOG(LDEBUG, ("The", GetLabel(level), "object", place.GetId(),
+                 "(", GetPlaceNotation(place), ") are skipped: outside locality"));
     place.SetLevel(ObjectLevel::Unknown);
   }
 

@@ -52,8 +52,8 @@ private:
   static ParentChildPairs FindAllParentChildPairs(std::vector<Node::Ptr> const & nodeOrder,
                                                   std::size_t startOffset, std::size_t step,
                                                   CountrySpecifier const & countrySpecifier);
-  void BindNodeChildren(ParentChildPairs const & parentChildPairs);
-  void AddChild(Node::Ptr & tree, Node::Ptr && node);
+  void BindNodeChildren(ParentChildPairs const & parentChildPairs,
+                        CountrySpecifier const & countrySpecifier);
   // Return: 0 - no relation, 1 - |l| contains |r|, -1 - |r| contains |l|.
   static int Compare(LevelPlace const & l, LevelPlace const & r, CountrySpecifier const & countrySpecifier);
   std::unique_ptr<CountrySpecifier> GetCountrySpecifier(std::string const & countryName);

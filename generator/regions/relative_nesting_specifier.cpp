@@ -26,7 +26,7 @@ void RelativeNestingSpecifier::AddLocalities(Node::Ptr & tree,
 {
   auto & country = tree->GetData();
   auto const & countryRegion = country.GetRegion();
-  auto localityPlaceTypes = {PlaceType::City, PlaceType::Town, PlaceType::Village, PlaceType::Hamlet};
+  auto localityPlaceTypes = {PlaceType::City, PlaceType::Town};
   for (auto placeType : localityPlaceTypes)
   {
     for (auto const & placeItem : placeCentersMap)
@@ -37,7 +37,7 @@ void RelativeNestingSpecifier::AddLocalities(Node::Ptr & tree,
         LocalityAdminRegionizer regionizer{place};
         if (!regionizer.ApplyTo(tree))
         {
-          auto logLevel = place.GetPlaceType() <= PlaceType::Town ? LINFO : LDEBUG;
+          auto logLevel = place.GetPlaceType() <= PlaceType::City ? LINFO : LDEBUG;
           LOG(logLevel, ("Can't to define boundary for the",
                          StringifyPlaceType(place.GetPlaceType()), "place",
                          place.GetId(), "(", GetPlaceNotation(place), ")",

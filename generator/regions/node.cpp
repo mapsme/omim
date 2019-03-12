@@ -33,7 +33,7 @@ Node::PtrList MergeChildren(Node::PtrList const & l, Node::PtrList const & r, No
   return result;
 }
 
-Node::PtrList NormalizeChildren(Node::PtrList const & children, MergeFunc mergeTree)
+Node::PtrList NormalizeChildren(Node::PtrList && children, MergeFunc mergeTree)
 {
   auto const pred = [](Node::Ptr const & l, Node::Ptr const & r)
   {
@@ -43,7 +43,7 @@ Node::PtrList NormalizeChildren(Node::PtrList const & children, MergeFunc mergeT
   };
 
   if (std::adjacent_find(std::begin(children), std::end(children), pred) == std::end(children))
-    return children;
+    return std::move(children);
 
   Node::PtrList uniqueChildren;
   std::unique_copy(std::begin(children), std::end(children),
@@ -57,18 +57,18 @@ Node::PtrList NormalizeChildren(Node::PtrList const & children, MergeFunc mergeT
     result.emplace_back(std::move(merged));
   }
 
-  return result;
+  return std::move(result);
 }
 
 Node::Ptr MergeHelper(Node::Ptr const & l, Node::Ptr const & r, MergeFunc mergeTree)
 {
   auto const & lChildren = l->GetChildren();
   auto const & rChildren = r->GetChildren();
-  auto const children = MergeChildren(lChildren, rChildren, l);
+  auto children = MergeChildren(lChildren, rChildren, l);
   if (children.empty())
     return l;
 
-  auto resultChildren = NormalizeChildren(children, mergeTree);
+  auto resultChildren = NormalizeChildren(std::move(children), mergeTree);
   l->SetChildren(std::move(resultChildren));
   r->RemoveChildren();
   return l;
@@ -165,7 +165,7 @@ void NormalizeTree(Node::Ptr & tree)
 
   auto & children = tree->GetChildren();
   std::sort(std::begin(children), std::end(children), LessNodePtrById);
-  auto newChildren = NormalizeChildren(children, MergeTree);
+  auto newChildren = NormalizeChildren(std::move(children), MergeTree);
   tree->SetChildren(std::move(newChildren));
   for (auto & ch : tree->GetChildren())
     NormalizeTree(ch);
