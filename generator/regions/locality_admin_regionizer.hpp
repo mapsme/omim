@@ -1,7 +1,7 @@
 #pragma once
 
 #include "generator/regions/node.hpp"
-#include "generator/regions/place_center.hpp"
+#include "generator/regions/place_point.hpp"
 
 namespace generator
 {
@@ -10,7 +10,7 @@ namespace regions
 class LocalityAdminRegionizer
 {
 public:
-  LocalityAdminRegionizer(PlaceCenter const & placeCenter);
+  LocalityAdminRegionizer(PlacePoint const & placePoint);
 
   bool ApplyTo(Node::Ptr & tree);
 
@@ -21,7 +21,7 @@ protected:
   bool ContainsSameLocality(Node::Ptr const & tree);
 
 private:
-  PlaceCenter const & m_placeCenter;
+  PlacePoint const & m_placePoint;
 };
 }  // namespace regions
 }  // namespace generator

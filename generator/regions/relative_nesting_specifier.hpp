@@ -10,11 +10,11 @@ class RelativeNestingSpecifier : public CountrySpecifier
 {
 public:
   // CountrySpecifier overrides:
-  void AddPlaces(Node::Ptr & tree, RegionsBuilder::PlaceCentersMap const & placeCentersMap) override;
+  void AddPlaces(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointsMap) override;
 
 private:
-  void AddLocalities(Node::Ptr & tree, RegionsBuilder::PlaceCentersMap const & placeCentersMap);
-  void AddSuburbs(Node::Ptr & tree, RegionsBuilder::PlaceCentersMap const & placeCentersMap);
+  void AddLocalities(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointsMap);
+  bool AddPlacePoint(Node::PtrList & outers, PlacePoint const & placePoint);
 };
 }  // namespace regions
 }  // namespace generator

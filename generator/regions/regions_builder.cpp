@@ -20,20 +20,20 @@ namespace generator
 {
 namespace regions
 {
-RegionsBuilder::RegionsBuilder(Regions && regions, PlaceCentersMap && placeCentersMap, size_t threadsCount)
+RegionsBuilder::RegionsBuilder(Regions && regions, PlacePointsMap && placePointsMap, size_t threadsCount)
   : m_threadsCount(threadsCount)
   , m_threadPool(threadsCount)
 {
-  m_regionPlaceOrder = FormRegionPlaceOrder(std::move(regions), placeCentersMap);
+  m_regionPlaceOrder = FormRegionPlaceOrder(std::move(regions), placePointsMap);
 
-  m_placeCentersMap = std::move(placeCentersMap);
-  EraseLabelPlacePoints(m_placeCentersMap, m_regionPlaceOrder);
+  m_placePointsMap = std::move(placePointsMap);
+  EraseLabelPlacePoints(m_placePointsMap, m_regionPlaceOrder);
 
   m_countriesOuters = ExtractCountriesOuters(m_regionPlaceOrder);
 }
 
 RegionsBuilder::RegionPlaceLot RegionsBuilder::FormRegionPlaceOrder(
-    Regions && regions, PlaceCentersMap const & placeCentersMap)
+    Regions && regions, PlacePointsMap const & placePointsMap)
 {
   RegionPlaceLot placeOrder;
 
@@ -43,11 +43,11 @@ RegionsBuilder::RegionPlaceLot RegionsBuilder::FormRegionPlaceOrder(
   placeOrder.reserve(regions.size());
   for (auto & region : regions)
   {
-    boost::optional<PlaceCenter> placeLabel;
+    boost::optional<PlacePoint> placeLabel;
     if (auto labelOsmId = region.GetLabelOsmIdOptional())
     {
-      auto label = placeCentersMap.find(*labelOsmId);
-      if (label != placeCentersMap.end())
+      auto label = placePointsMap.find(*labelOsmId);
+      if (label != placePointsMap.end())
         placeLabel = label->second;
     }
     placeOrder.emplace_back(std::move(region), std::move(placeLabel));
@@ -56,7 +56,7 @@ RegionsBuilder::RegionPlaceLot RegionsBuilder::FormRegionPlaceOrder(
   return placeOrder;
 }
 
-void RegionsBuilder::EraseLabelPlacePoints(PlaceCentersMap & placePointsMap,
+void RegionsBuilder::EraseLabelPlacePoints(PlacePointsMap & placePointsMap,
                                            RegionPlaceLot const & placeOrder)
 {
   for (auto const & place : placeOrder)

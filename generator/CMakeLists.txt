@@ -122,6 +122,7 @@ set(SRC
   regions/locality_admin_regionizer.hpp
   regions/node.cpp
   regions/node.hpp
+  regions/place_point.hpp
   regions/region.cpp
   regions/region.hpp
   regions/region_base.cpp

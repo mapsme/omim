@@ -4,7 +4,7 @@ namespace generator
 {
 namespace regions
 {
-RegionPlace::RegionPlace(Region const & region, boost::optional<PlaceCenter> placeLabel)
+RegionPlace::RegionPlace(Region const & region, boost::optional<PlacePoint> placeLabel)
   : m_region{region}, m_placeLabel{placeLabel}
 { }
 

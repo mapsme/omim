@@ -10,10 +10,10 @@ namespace generator
 {
 namespace regions
 {
-class PlaceCenter : public RegionWithName, public RegionWithData
+class PlacePoint : public RegionWithName, public RegionWithData
 {
 public:
-  explicit PlaceCenter(FeatureBuilder1 const & fb, RegionDataProxy const & rd)
+  explicit PlacePoint(FeatureBuilder1 const & fb, RegionDataProxy const & rd)
     : RegionWithName(fb.GetParams().name),
       RegionWithData(rd)
   {

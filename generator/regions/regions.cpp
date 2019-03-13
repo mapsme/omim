@@ -4,7 +4,7 @@
 #include "generator/feature_generator.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/regions/node.hpp"
-#include "generator/regions/place_center.hpp"
+#include "generator/regions/place_point.hpp"
 #include "generator/regions/regions.hpp"
 #include "generator/regions/regions_builder.hpp"
 #include "generator/regions/to_string_policy.hpp"
@@ -63,9 +63,9 @@ struct RegionsGenerator
 
     RegionInfo regionsInfoCollector(pathInRegionsCollector);
     RegionsBuilder::Regions regions;
-    RegionsBuilder::PlaceCentersMap placeCentersMap;
-    std::tie(regions, placeCentersMap) = ReadDatasetFromTmpMwm(pathInRegionsTmpMwm, regionsInfoCollector);
-    RegionsBuilder builder(std::move(regions), std::move(placeCentersMap), threadsCount);
+    RegionsBuilder::PlacePointsMap placePointsMap;
+    std::tie(regions, placePointsMap) = ReadDatasetFromTmpMwm(pathInRegionsTmpMwm, regionsInfoCollector);
+    RegionsBuilder builder(std::move(regions), std::move(placePointsMap), threadsCount);
     GenerateRegions(builder);
 
     LOG(LINFO, ("Regions objects key-value for", builder.GetCountryNames().size(),
@@ -141,11 +141,11 @@ struct RegionsGenerator
                 countryRegionObjectCount, "object ids."));
   }
 
-  std::tuple<RegionsBuilder::Regions, RegionsBuilder::PlaceCentersMap>
+  std::tuple<RegionsBuilder::Regions, RegionsBuilder::PlacePointsMap>
   ReadDatasetFromTmpMwm(std::string const & tmpMwmFilename, RegionInfo & collector)
   {
     RegionsBuilder::Regions regions;
-    RegionsBuilder::PlaceCentersMap placeCentersMap;
+    RegionsBuilder::PlacePointsMap placePointsMap;
     auto const toDo = [&](FeatureBuilder1 const & fb, uint64_t /* currPos */) {
       if (fb.GetName().empty())
         return;
@@ -159,12 +159,12 @@ struct RegionsGenerator
       else if (fb.IsPoint())
       {
         auto const id = fb.GetMostGenericOsmId();
-        placeCentersMap.emplace(id, PlaceCenter{fb, collector.Get(id)});
+        placePointsMap.emplace(id, PlacePoint{fb, collector.Get(id)});
       }
     };
 
     feature::ForEachFromDatRawFormat(tmpMwmFilename, toDo);
-    return std::make_tuple(std::move(regions), std::move(placeCentersMap));
+    return std::make_tuple(std::move(regions), std::move(placePointsMap));
   }
 
   void RepackTmpMwm(std::string const & srcFilename,

@@ -2,7 +2,7 @@
 
 #include "generator/boost_helpers.hpp"
 #include "generator/regions/collector_region_info.hpp"
-#include "generator/regions/place_center.hpp"
+#include "generator/regions/place_point.hpp"
 
 #include "geometry/mercator.hpp"
 
@@ -87,7 +87,7 @@ BoostPoint Region::GetCenter() const
   return p;
 }
 
-bool Region::Contains(PlaceCenter const & placePoint) const
+bool Region::Contains(PlacePoint const & placePoint) const
 {
   CHECK(m_polygon, ());
 

@@ -6,8 +6,8 @@ namespace generator
 {
 namespace regions
 {
-LocalityAdminRegionizer::LocalityAdminRegionizer(PlaceCenter const & placeCenter)
-  : m_placeCenter(placeCenter)
+LocalityAdminRegionizer::LocalityAdminRegionizer(PlacePoint const & placePoint)
+  : m_placePoint(placePoint)
 { }
 
 bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree)
@@ -15,7 +15,7 @@ bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree)
   auto const & place = tree->GetData();
 
   auto const & placeLabel = place.GetPlaceLabel();
-  if (placeLabel && placeLabel->GetId() == m_placeCenter.GetId())
+  if (placeLabel && placeLabel->GetId() == m_placePoint.GetId())
     return true;
 
   if (!place.GetRegion().HasAdminLevel())
@@ -28,7 +28,7 @@ bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree)
   for (auto & subtree : tree->GetChildren())
   {
     auto const & subregion = subtree->GetData().GetRegion();
-    if (!subregion.Contains(m_placeCenter))
+    if (!subregion.Contains(m_placePoint))
       continue;
 
     if (ApplyTo(subtree))
@@ -48,13 +48,13 @@ bool LocalityAdminRegionizer::ContainsSameLocality(Node::Ptr const & tree)
 {
   auto const & place = tree->GetData();
   auto const level = place.GetLevel();
-  if (ObjectLevel::Locality == level && place.GetName() == m_placeCenter.GetName())
+  if (ObjectLevel::Locality == level && place.GetName() == m_placePoint.GetName())
     return true;
 
   for (auto & subtree : tree->GetChildren())
   {
     auto const & subregion = subtree->GetData().GetRegion();
-    if (subregion.Contains(m_placeCenter))
+    if (subregion.Contains(m_placePoint))
       return ContainsSameLocality(subtree);
   }
 
@@ -68,20 +68,20 @@ bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node)
   if (place.GetRegion().GetAdminLevel() <= AdminLevel::Four)
     return false;
 
-  return place.GetName() == m_placeCenter.GetName();
+  return place.GetName() == m_placePoint.GetName();
 }
 
 void LocalityAdminRegionizer::InsertInto(Node::Ptr & node)
 {
   auto const & parentPlace = node->GetData();
-  LOG(LDEBUG, ("Place", StringifyPlaceType(m_placeCenter.GetPlaceType()), "object", m_placeCenter.GetId(),
-               "(", GetPlaceNotation(m_placeCenter), ")",
+  LOG(LDEBUG, ("Place", StringifyPlaceType(m_placePoint.GetPlaceType()), "object", m_placePoint.GetId(),
+               "(", GetPlaceNotation(m_placePoint), ")",
                "has bounded by region", parentPlace.GetId(),
                "(", GetPlaceNotation(parentPlace), ")"));
 
-  Region placeRegion{m_placeCenter.GetMultilangName(), m_placeCenter.GetRegionData(),
+  Region placeRegion{m_placePoint.GetMultilangName(), m_placePoint.GetRegionData(),
                      parentPlace.GetRegion().GetPolygon()};
-  auto place = LevelPlace{ObjectLevel::Locality, {std::move(placeRegion), m_placeCenter}};
+  auto place = LevelPlace{ObjectLevel::Locality, {std::move(placeRegion), m_placePoint}};
   auto placeNode = std::make_shared<Node>(std::move(place));
   placeNode->SetParent(node);
 

@@ -13,7 +13,7 @@ class RegionDataProxy;
 
 namespace regions
 {
-class PlaceCenter;
+class PlacePoint;
 
 // This is a helper class that is needed to represent the region.
 // With this view, further processing is simplified.
@@ -28,7 +28,7 @@ public:
   void DeletePolygon();
   bool Contains(Region const & smaller) const;
   bool ContainsRect(Region const & smaller) const;
-  bool Contains(PlaceCenter const & placePoint) const;
+  bool Contains(PlacePoint const & placePoint) const;
   bool Contains(BoostPoint const & point) const;
   double CalculateOverlapPercentage(Region const & other) const;
   BoostPoint GetCenter() const;

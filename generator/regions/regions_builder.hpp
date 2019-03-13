@@ -3,7 +3,7 @@
 #include "base/thread_pool_computational.hpp"
 
 #include "generator/regions/node.hpp"
-#include "generator/regions/place_center.hpp"
+#include "generator/regions/place_point.hpp"
 #include "generator/regions/region.hpp"
 #include "generator/regions/to_string_policy.hpp"
 
@@ -28,12 +28,12 @@ class RegionsBuilder
 public:
   using Regions = std::vector<Region>;
   using RegionPlaceLot = std::vector<RegionPlace>;
-  using PlaceCentersMap = std::unordered_map<base::GeoObjectId, PlaceCenter>;
+  using PlacePointsMap = std::unordered_map<base::GeoObjectId, PlacePoint>;
   using StringsList = std::vector<std::string>;
   using CountryTrees = std::multimap<std::string, Node::Ptr>;
   using NormalizedCountryFn = std::function<void(std::string const &, Node::Ptr const &)>;
 
-  RegionsBuilder(Regions && regions, PlaceCentersMap && placeCentersMap, size_t threadsCount = 1);
+  RegionsBuilder(Regions && regions, PlacePointsMap && placePointsMap, size_t threadsCount = 1);
 
   RegionPlaceLot const & GetCountriesOuters() const;
   StringsList GetCountryNames() const;
@@ -41,8 +41,8 @@ public:
 private:
   using ParentChildPairs = std::vector<std::pair<Node::Ptr, Node::Ptr>>;
 
-  RegionPlaceLot FormRegionPlaceOrder(Regions && regions, PlaceCentersMap const & placeCentersMap);
-  void EraseLabelPlacePoints(PlaceCentersMap & placePointsMap, RegionPlaceLot const & placeOrder);
+  RegionPlaceLot FormRegionPlaceOrder(Regions && regions, PlacePointsMap const & placePointsMap);
+  void EraseLabelPlacePoints(PlacePointsMap & placePointsMap, RegionPlaceLot const & placeOrder);
   RegionPlaceLot ExtractCountriesOuters(RegionPlaceLot & placeOrder);
 
   std::vector<Node::Ptr> BuildCountryRegionTrees(RegionPlaceLot const & countryOuters,
@@ -61,7 +61,7 @@ private:
 
   RegionPlaceLot m_countriesOuters;
   RegionPlaceLot m_regionPlaceOrder; // in descending order by area
-  PlaceCentersMap m_placeCentersMap;
+  PlacePointsMap m_placePointsMap;
   size_t m_threadsCount;
   base::thread_pool::computational::ThreadPool m_threadPool;
 };

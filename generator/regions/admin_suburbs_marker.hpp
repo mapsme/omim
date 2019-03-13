@@ -1,7 +1,7 @@
 #pragma once
 
 #include "generator/regions/node.hpp"
-#include "generator/regions/place_center.hpp"
+#include "generator/regions/place_point.hpp"
 #include "generator/regions/regions_builder.hpp"
 
 namespace generator

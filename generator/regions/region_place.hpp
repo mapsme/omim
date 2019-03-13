@@ -1,7 +1,7 @@
 #pragma once
 
 #include "generator/regions/collector_region_info.hpp"
-#include "generator/regions/place_center.hpp"
+#include "generator/regions/place_point.hpp"
 #include "generator/regions/region.hpp"
 
 #include <boost/optional.hpp>
@@ -14,7 +14,7 @@ namespace regions
 class RegionPlace
 {
 public:
-  RegionPlace(Region const & region, boost::optional<PlaceCenter> placeLabel = {});
+  RegionPlace(Region const & region, boost::optional<PlacePoint> placeLabel = {});
 
   base::GeoObjectId GetId() const;
 
@@ -30,11 +30,11 @@ public:
   BoostPoint GetCenter() const;
 
   Region const & GetRegion() const noexcept { return m_region; }
-  boost::optional<PlaceCenter> const & GetPlaceLabel() const noexcept { return m_placeLabel; }
+  boost::optional<PlacePoint> const & GetPlaceLabel() const noexcept { return m_placeLabel; }
 
 private:
   Region m_region;
-  boost::optional<PlaceCenter> m_placeLabel;
+  boost::optional<PlacePoint> m_placeLabel;
 };
 }  // namespace regions
 }  // namespace generator
