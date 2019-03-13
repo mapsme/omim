@@ -99,7 +99,7 @@ RegionsBuilder::StringsList RegionsBuilder::GetCountryNames() const
   return result;
 }
 
-void RegionsBuilder::ForEachNormalizedCountry(NormalizedCountryFn const & fn)
+void RegionsBuilder::ForEachCountry(CountryFn const & fn)
 {
   for (auto const & countryName : GetCountryNames())
   {
@@ -109,19 +109,21 @@ void RegionsBuilder::ForEachNormalizedCountry(NormalizedCountryFn const & fn)
     auto const & countries = GetCountriesOuters();
     auto const pred = [&](const RegionPlace & p) { return countryName == p.GetName(); };
     std::copy_if(std::begin(countries), std::end(countries), std::back_inserter(country), pred);
-    auto const countryTrees = BuildCountryRegionTrees(country, *countrySpecifier);
-    auto tree = std::accumulate(std::begin(countryTrees), std::end(countryTrees),
-                                      Node::Ptr(), MergeTree);
-    if (!tree)
-      return;
-    NormalizeTree(tree);
+    auto countryTrees = BuildCountryRegionTrees(country, *countrySpecifier);
+    auto countryPlacePoints = FindCountryPlacePoints(country);
+    auto unboundedPlacePoints = countryPlacePoints;
 
-    countrySpecifier->AddPlaces(tree, m_placeCentersMap);
-    countrySpecifier->AdjustRegionsLevel(tree, m_placeCentersMap);
+    countrySpecifier->AddPlaces(countryTrees, unboundedPlacePoints);
+    countrySpecifier->AdjustRegionsLevel(countryTrees, unboundedPlacePoints);
 
-    ReviseSublocalityDisposition(tree);
+    std::for_each(begin(countryTrees), end(countryTrees), ReviseSublocalityDisposition);
 
-    fn(countryName, tree);
+    CountryStats stats;
+    for (auto const & tree : countryTrees)
+      Visit(tree, [&stats, this] (Node::Ptr const & node) { UpdateStats(stats, node); } );
+    UpdateStats(stats, countryPlacePoints, unboundedPlacePoints);
+
+    fn(countryName, countryTrees, stats);
   }
 }
 
@@ -260,7 +262,7 @@ std::unique_ptr<CountrySpecifier> RegionsBuilder::GetCountrySpecifier(std::strin
   return std::make_unique<RelativeNestingSpecifier>();
 }
 
-void RegionsBuilder::ReviseSublocalityDisposition(Node::Ptr & tree) const
+void RegionsBuilder::ReviseSublocalityDisposition(Node::Ptr & tree)
 {
   auto & place = tree->GetData();
   auto const level = place.GetLevel();
@@ -276,6 +278,108 @@ void RegionsBuilder::ReviseSublocalityDisposition(Node::Ptr & tree) const
 
   for (auto & subtree : tree->GetChildren())
     ReviseSublocalityDisposition(subtree);
+}
+
+RegionsBuilder::PlacePointsMap RegionsBuilder::FindCountryPlacePoints(RegionPlaceLot const & countryOuters)
+{
+  PlacePointsMap countryPoints;
+
+  auto tasks = PushCountryPlacePointsFinders(countryOuters);
+  for (auto & t : tasks)
+  {
+    auto part = t.get();
+    countryPoints.insert(begin(part), end(part));
+  }
+
+  return countryPoints;
+}
+
+std::vector<std::future<RegionsBuilder::PlacePointsMap>> RegionsBuilder::PushCountryPlacePointsFinders(
+    RegionPlaceLot const & countryOuter)
+{
+  std::vector<std::future<PlacePointsMap>> tasks;
+
+  auto i = begin(m_placePointsMap);
+  while (i != end(m_placePointsMap))
+  {
+    auto from = i;
+    int n = 0;
+    constexpr auto taskBlockSize = 1000;
+    while (i != end(m_placePointsMap) && n < taskBlockSize)
+    {
+      ++i;
+      ++n;
+    }
+
+    tasks.push_back(m_threadPool.Submit(FindCountryPlacePointsForRange, std::cref(countryOuter), from, i));
+  }
+
+  return tasks;
+}
+
+RegionsBuilder::PlacePointsMap RegionsBuilder::FindCountryPlacePointsForRange(
+    RegionPlaceLot const & countryOuters, PlacePointsMap::iterator begin, PlacePointsMap::iterator end)
+{
+  PlacePointsMap countryPoints;
+
+  for (auto i = begin; i != end; ++i)
+  {
+    for (auto const & outer : countryOuters)
+    {
+      auto const & region = outer.GetRegion();
+      if (region.Contains(i->second))
+        countryPoints.insert(*i);
+    }
+  };
+
+  return countryPoints;
+}
+
+void RegionsBuilder::UpdateStats(CountryStats & stats, Node::Ptr const & node)
+{
+  auto const & place = node->GetData();
+
+  auto const level = place.GetLevel();
+  if (level != ObjectLevel::Unknown)
+    ++stats.objectLevelCounts[level];
+
+  auto const placeType = place.GetPlaceType();
+  if (placeType != PlaceType::Unknown)
+    ++stats.placeCounts[placeType];
+
+  auto const adminLevel = place.GetAdminLevel();
+  if (adminLevel != AdminLevel::Unknown)
+    UpdateStats(stats, adminLevel, node);
+}
+
+void RegionsBuilder::UpdateStats(CountryStats & stats, AdminLevel adminLevel, Node::Ptr const & node)
+{
+  auto const & place = node->GetData();
+
+  auto & adminLevelStats = stats.adminLevels[adminLevel];
+  ++adminLevelStats.count;
+
+  auto const placeType = place.GetPlaceType();
+  if (placeType != PlaceType::Unknown)
+    ++adminLevelStats.placeCounts[placeType];
+
+  for (auto const & subnode : node->GetChildren())
+  {
+    auto const & subplace = subnode->GetData();
+    auto const subplaceType = subplace.GetPlaceType();
+    if (subplaceType != PlaceType::Unknown)
+      ++adminLevelStats.placeCounts[subplaceType];
+  }
+}
+
+void RegionsBuilder::UpdateStats(CountryStats & stats, PlacePointsMap const & placePoints,
+                                 PlacePointsMap const & unboudedPlacePoints)
+{
+  for (auto const & place : placePoints)
+    ++stats.placePointsCounts[place.second.GetPlaceType()];
+
+  for (auto const & place : unboudedPlacePoints)
+    ++stats.unboudedPlacePointsCounts[place.second.GetPlaceType()];
 }
 }  // namespace regions
 }  // namespace generator

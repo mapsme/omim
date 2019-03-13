@@ -9,43 +9,62 @@ namespace generator
 {
 namespace regions
 {
-void RelativeNestingSpecifier::AddPlaces(Node::Ptr & tree,
-                                         RegionsBuilder::PlaceCentersMap const & placeCentersMap)
+void RelativeNestingSpecifier::AddPlaces(Node::PtrList & outers,
+                                         RegionsBuilder::PlacePointsMap & placePointsMap)
 {
-  if (!tree)
-    return;
+  AddLocalities(outers, placePointsMap);
 
-  AddLocalities(tree, placeCentersMap);
-
-  AdminSuburbsMarker suburbsMarker{placeCentersMap};
-  suburbsMarker.MarkSuburbs(tree);
+  for (auto & tree : outers)
+  {
+    AdminSuburbsMarker suburbsMarker{};
+    suburbsMarker.MarkSuburbs(tree);
+  }
 }
 
-void RelativeNestingSpecifier::AddLocalities(Node::Ptr & tree,
-                                             RegionsBuilder::PlaceCentersMap const & placeCentersMap)
+void RelativeNestingSpecifier::AddLocalities(Node::PtrList & outers,
+                                             RegionsBuilder::PlacePointsMap & placePointsMap)
 {
-  auto & country = tree->GetData();
-  auto const & countryRegion = country.GetRegion();
   auto localityPlaceTypes = {PlaceType::City, PlaceType::Town};
   for (auto placeType : localityPlaceTypes)
   {
-    for (auto const & placeItem : placeCentersMap)
+    auto placePoint = begin(placePointsMap);
+    while (placePoint != end(placePointsMap))
     {
-      if (placeType == placeItem.second.GetPlaceType() && countryRegion.Contains(placeItem.second))
+      auto const & place = placePoint->second;
+      if (placeType == place.GetPlaceType() && AddPlacePoint(outers, place))
       {
-        auto const & place = placeItem.second;
-        LocalityAdminRegionizer regionizer{place};
-        if (!regionizer.ApplyTo(tree))
-        {
-          auto logLevel = place.GetPlaceType() <= PlaceType::City ? LINFO : LDEBUG;
-          LOG(logLevel, ("Can't to define boundary for the",
-                         StringifyPlaceType(place.GetPlaceType()), "place",
-                         place.GetId(), "(", GetPlaceNotation(place), ")",
-                         "in", GetPlaceNotation(country)));
-        }
+        placePoint = placePointsMap.erase(placePoint);
+        continue;
       }
+
+      ++placePoint;
     }
   }
+}
+
+bool RelativeNestingSpecifier::AddPlacePoint(Node::PtrList & outers, PlacePoint const & placePoint)
+{
+  for (auto & tree : outers)
+  {
+    auto & country = tree->GetData();
+    auto const & countryRegion = country.GetRegion();
+    if (!countryRegion.Contains(placePoint))
+      continue;
+
+    LocalityAdminRegionizer regionizer{placePoint};
+    if (!regionizer.ApplyTo(tree))
+    {
+      LOG(LDEBUG, ("Can't to define boundary for the",
+                   StringifyPlaceType(placePoint.GetPlaceType()), "place",
+                   placePoint.GetId(), "(", GetPlaceNotation(placePoint), ")",
+                   "in", GetPlaceNotation(country)));
+      return false;
+    }
+
+    return true;
+  }
+
+  return false;
 }
 }  // namespace regions
 }  // namespace generator

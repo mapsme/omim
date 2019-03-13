@@ -40,6 +40,8 @@ namespace regions
 namespace {
 struct RegionsGenerator
 {
+  using Stats = RegionsBuilder::CountryStats;
+
   std::string pathInRegionsTmpMwm;
   std::ofstream regionsKv;
   feature::FeaturesCollector featuresCollector;
@@ -78,14 +80,17 @@ struct RegionsGenerator
   void GenerateRegions(RegionsBuilder & builder)
   {
     std::multimap<base::GeoObjectId, Node::Ptr> objectsRegions;
-    builder.ForEachNormalizedCountry([&, this](std::string const &, Node::Ptr const & tree) {
-      if (!tree)
+
+    builder.ForEachCountry([&, this] (
+        std::string const &, Node::PtrList const & outers, Stats const & stats) {
+      if (outers.empty())
         return;
 
-      if (verbose)
-        DebugPrintTree(tree);
+      auto const countryPlace = outers.front()->GetData();
+      auto const countryName = countryPlace.GetEnglishOrTransliteratedName();
+      LogStatistics(countryName, stats);
 
-      GenerateCountry(tree, objectsRegions);
+      GenerateKv(countryName, outers, objectsRegions);
     });
 
     // todo(maksimandrianov1): Perhaps this is not the best solution. This is a hot fix. Perhaps it
@@ -95,49 +100,48 @@ struct RegionsGenerator
     RepackTmpMwm(pathInRegionsTmpMwm, objectsRegions);
   }
 
-  void GenerateCountry(Node::Ptr const & tree,
-                       std::multimap<base::GeoObjectId, Node::Ptr> & objectsRegions)
-  {
-    auto countryNotation = GetPlaceNotation(tree->GetData());
-    LOG(LINFO, ("Processing country", countryNotation));
-
-    GenerateKv(countryNotation, tree, objectsRegions);
-  }
-
-  void GenerateKv(std::string const & countryNotation, Node::Ptr const & tree,
+  void GenerateKv(std::string const & countryName, Node::PtrList const & outers,
                   std::multimap<base::GeoObjectId, Node::Ptr> & objectsRegions)
   {
+    LOG(LINFO, ("Generate country", countryName));
+
+    auto country = std::make_shared<std::string>(countryName);
     size_t countryRegionsCount = 0;
     size_t countryRegionObjectCount = 0;
-    auto country = std::make_shared<std::string>(countryNotation);
 
     auto jsonPolicy = std::make_unique<JsonPolicy>(verbose);
-    ForEachLevelPath(tree, [&] (NodePath const & path) {
-      ++regionsTotalCount;
-      ++countryRegionsCount;
+    for (auto const & tree : outers)
+    {
+      if (verbose)
+        DebugPrintTree(tree);
 
-      auto const & node = path.back();
-      auto const & place = node->GetData();
-      auto const & placeId = place.GetId();
-      auto const & regionEmplace = countriesRegionIds.emplace(placeId, country);
-      if (!regionEmplace.second)
-      {
-        if (regionEmplace.first->second != country)  // object may have several regions
+      ForEachLevelPath(tree, [&] (NodePath const & path) {
+        ++regionsTotalCount;
+        ++countryRegionsCount;
+
+        auto const & node = path.back();
+        auto const & place = node->GetData();
+        auto const & placeId = place.GetId();
+        auto const & regionEmplace = countriesRegionIds.emplace(placeId, country);
+        if (!regionEmplace.second)
         {
-          LOG(LWARNING, ("Failed to place", GetLabel(place.GetLevel()), "region", placeId,
-                         "(", GetPlaceNotation(place), ")",
-                         "into", countryNotation, ": region exist in", *regionEmplace.first->second,
-                         "already"));
+          if (regionEmplace.first->second != country)  // object may have several regions
+          {
+            LOG(LWARNING, ("Failed to place", GetLabel(place.GetLevel()), "region", placeId,
+                           "(", GetPlaceNotation(place), ")",
+                           "into", *country, ": region exist in", *regionEmplace.first->second,
+                           "already"));
+          }
+          return;
         }
-        return;
-      }
 
-      regionsKv << static_cast<int64_t>(placeId.GetEncodedId()) << " " << jsonPolicy->ToString(path) << "\n";
-      objectsRegions.emplace(placeId, node);
-      ++countryRegionObjectCount;
-    });
+        regionsKv << static_cast<int64_t>(placeId.GetEncodedId()) << " " << jsonPolicy->ToString(path) << "\n";
+        objectsRegions.emplace(placeId, node);
+        ++countryRegionObjectCount;
+      });
+    }
 
-    LOG(LINFO, ("Country regions of", countryNotation, "has built: ", countryRegionsCount, "total ids.",
+    LOG(LINFO, ("Country regions of", *country, "has built:", countryRegionsCount, "total ids.",
                 countryRegionObjectCount, "object ids."));
   }
 
@@ -210,6 +214,74 @@ struct RegionsGenerator
     std::transform(std::begin(polygon), std::end(polygon), std::back_inserter(seq),
                    [] (BoostPoint const & p) { return m2::PointD(p.get<0>(), p.get<1>()); });
     return seq;
+  }
+
+  void LogStatistics(std::string const & countryName, Stats const & stats)
+  {
+    for (auto const & item : stats.objectLevelCounts)
+      LOG(LINFO, (countryName, ":", GetLabel(item.first), "-", item.second));
+
+    for (auto const & item : stats.placeCounts)
+      LOG(LINFO, (countryName, ":", StringifyPlaceType(item.first), "-", item.second));
+
+    for (auto placeType : GetPlacePointTypes(stats))
+      LogPlacePointStatistics(countryName, stats, placeType);
+
+    for (auto const & item : stats.adminLevels)
+      LogStatistics(countryName, item.first, item.second);
+  }
+
+  void LogPlacePointStatistics(std::string const & countryName, Stats const & stats, PlaceType placeType)
+  {
+    auto count = [placeType] (std::map<PlaceType, Stats::Counter> const & pointsStats) {
+      auto i = pointsStats.find(placeType);
+      return i != end(pointsStats) ? i->second : 0;
+    };  
+    auto totalCount = count(stats.placePointsCounts);
+    auto unbounedeCount = count(stats.unboudedPlacePointsCounts);
+    auto bounedeCount = totalCount - unbounedeCount;
+    LOG(LINFO, (countryName, ":", StringifyPlaceType(placeType), "place point" "-",
+                bounedeCount, "/", unbounedeCount,
+                "(" + std::to_string(100 * bounedeCount / totalCount) + "%)"));
+  }
+
+  void LogStatistics(std::string const & countryName, AdminLevel adminLevel,
+                     Stats::AdminLevelStats const & adminLevelStats)
+  {
+    auto const adminLevelLabel = "admin_level=" + std::to_string(static_cast<int>(adminLevel));
+
+    auto placeSummary = GeneratePlaceSummary(adminLevelStats.placeCounts);
+    if (!placeSummary.empty())
+      placeSummary = "(" + placeSummary + ")";
+
+    LOG(LINFO, (countryName, ":", adminLevelLabel, "-", adminLevelStats.count, placeSummary));
+  }
+
+  std::set<PlaceType> GetPlacePointTypes(Stats const & stats)
+  {
+    std::set<PlaceType> placePointTypes;
+
+    for (auto placeTypeStats : stats.placePointsCounts)
+      placePointTypes.insert(placeTypeStats.first);
+
+    for (auto placeTypeStats : stats.placePointsCounts)
+      placePointTypes.insert(placeTypeStats.first);
+
+    return placePointTypes;
+  }
+
+  template <typename List>
+  std::string GeneratePlaceSummary(List const & placeCounts)
+  {
+    std::stringstream summary;
+    for (auto const & item : placeCounts)
+      summary << ", " << StringifyPlaceType(item.first) << " - " << item.second;
+
+    auto summaryStr = summary.str();
+    if (!summaryStr.empty())
+      summaryStr.erase(0, 2);
+
+    return summaryStr;
   }
 };
 }  // namespace

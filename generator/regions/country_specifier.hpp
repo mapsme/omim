@@ -16,7 +16,7 @@ class CountrySpecifier
 public:
   virtual ~CountrySpecifier() = default;
 
-  virtual void AddPlaces(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointssMap)
+  virtual void AddPlaces(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointsMap)
   { }
   virtual void AdjustRegionsLevel(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointsMap)
   { }

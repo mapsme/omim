@@ -11,70 +11,6 @@ namespace generator
 {
 namespace regions
 {
-namespace
-{
-using MergeFunc = std::function<Node::Ptr(Node::Ptr const &, Node::Ptr const &)>;
-
-bool LessNodePtrById(Node::Ptr const & l, Node::Ptr const & r)
-{
-  auto const & lPlace = l->GetData();
-  auto const & rPlace = r->GetData();
-  return lPlace.GetId() < rPlace.GetId();
-}
-
-Node::PtrList MergeChildren(Node::PtrList const & l, Node::PtrList const & r, Node::Ptr newParent)
-{
-  Node::PtrList result(l);
-  std::copy(std::begin(r), std::end(r), std::back_inserter(result));
-  for (auto & p : result)
-    p->SetParent(newParent);
-
-  std::sort(std::begin(result), std::end(result), LessNodePtrById);
-  return result;
-}
-
-Node::PtrList NormalizeChildren(Node::PtrList && children, MergeFunc mergeTree)
-{
-  auto const pred = [](Node::Ptr const & l, Node::Ptr const & r)
-  {
-    auto const & lPlace = l->GetData();
-    auto const & rPlace = r->GetData();
-    return lPlace.GetId() == rPlace.GetId();
-  };
-
-  if (std::adjacent_find(std::begin(children), std::end(children), pred) == std::end(children))
-    return std::move(children);
-
-  Node::PtrList uniqueChildren;
-  std::unique_copy(std::begin(children), std::end(children),
-                   std::back_inserter(uniqueChildren), pred);
-  Node::PtrList result;
-  for (auto const & ch : uniqueChildren)
-  {
-    auto const bounds = std::equal_range(std::begin(children), std::end(children), ch,
-                                         LessNodePtrById);
-    auto merged = std::accumulate(bounds.first, bounds.second, Node::Ptr(), mergeTree);
-    result.emplace_back(std::move(merged));
-  }
-
-  return std::move(result);
-}
-
-Node::Ptr MergeHelper(Node::Ptr const & l, Node::Ptr const & r, MergeFunc mergeTree)
-{
-  auto const & lChildren = l->GetChildren();
-  auto const & rChildren = r->GetChildren();
-  auto children = MergeChildren(lChildren, rChildren, l);
-  if (children.empty())
-    return l;
-
-  auto resultChildren = NormalizeChildren(std::move(children), mergeTree);
-  l->SetChildren(std::move(resultChildren));
-  r->RemoveChildren();
-  return l;
-}
-}  // nmespace
-
 size_t TreeSize(Node::Ptr const & node)
 {
   if (node == nullptr)
@@ -139,36 +75,6 @@ void DebugPrintTree(Node::Ptr const & tree, std::ostream & stream)
   stream << "TREE SIZE: " <<  TreeSize(tree) << std::endl;
   PrintTree(tree, stream);
   stream << std::endl;
-}
-
-Node::Ptr MergeTree(Node::Ptr const & l, Node::Ptr const & r)
-{
-  if (l == nullptr)
-    return r;
-
-  if (r == nullptr)
-    return l;
-
-  auto const & lRegion = l->GetData().GetRegion();
-  auto const & rRegion = r->GetData().GetRegion();
-
-  if (lRegion.GetArea() > rRegion.GetArea())
-    return MergeHelper(l, r, MergeTree);
-  else
-    return MergeHelper(r, l, MergeTree);
-}
-
-void NormalizeTree(Node::Ptr & tree)
-{
-  if (tree == nullptr)
-    return;
-
-  auto & children = tree->GetChildren();
-  std::sort(std::begin(children), std::end(children), LessNodePtrById);
-  auto newChildren = NormalizeChildren(std::move(children), MergeTree);
-  tree->SetChildren(std::move(newChildren));
-  for (auto & ch : tree->GetChildren())
-    NormalizeTree(ch);
 }
 
 NodePath MakeLevelPath(Node::Ptr const & node)

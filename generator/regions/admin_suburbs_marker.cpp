@@ -6,10 +6,6 @@ namespace generator
 {
 namespace regions
 {
-AdminSuburbsMarker::AdminSuburbsMarker(RegionsBuilder::PlaceCentersMap const & placeCentersMap)
-  : m_placeCentersMap(placeCentersMap)
-{ }
-
 void AdminSuburbsMarker::MarkSuburbs(Node::Ptr & tree)
 {
   auto & place = tree->GetData();

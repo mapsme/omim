@@ -30,14 +30,14 @@ public:
   using RegionPlaceLot = std::vector<RegionPlace>;
   using PlacePointsMap = std::unordered_map<base::GeoObjectId, PlacePoint>;
   using StringsList = std::vector<std::string>;
-  using CountryTrees = std::multimap<std::string, Node::Ptr>;
-  using NormalizedCountryFn = std::function<void(std::string const &, Node::Ptr const &)>;
+  struct CountryStats;
+  using CountryFn = std::function<void(std::string const &, Node::PtrList const &, CountryStats const &)>;
 
   RegionsBuilder(Regions && regions, PlacePointsMap && placePointsMap, size_t threadsCount = 1);
 
   RegionPlaceLot const & GetCountriesOuters() const;
   StringsList GetCountryNames() const;
-  void ForEachNormalizedCountry(NormalizedCountryFn const & fn);
+  void ForEachCountry(CountryFn const & fn);
 private:
   using ParentChildPairs = std::vector<std::pair<Node::Ptr, Node::Ptr>>;
 
@@ -57,13 +57,41 @@ private:
   // Return: 0 - no relation, 1 - |l| contains |r|, -1 - |r| contains |l|.
   static int Compare(LevelPlace const & l, LevelPlace const & r, CountrySpecifier const & countrySpecifier);
   std::unique_ptr<CountrySpecifier> GetCountrySpecifier(std::string const & countryName);
-  void ReviseSublocalityDisposition(Node::Ptr & tree) const;
+  static void ReviseSublocalityDisposition(Node::Ptr & tree);
+
+  PlacePointsMap FindCountryPlacePoints(RegionPlaceLot const & countryOuters);
+  std::vector<std::future<PlacePointsMap>> PushCountryPlacePointsFinders(RegionPlaceLot const & countryOuter);
+  static PlacePointsMap FindCountryPlacePointsForRange(RegionPlaceLot const & countryOuters,
+                                                       PlacePointsMap::iterator begin,
+                                                       PlacePointsMap::iterator end);
+
+  void UpdateStats(CountryStats & stats, Node::Ptr const & node);
+  void UpdateStats(CountryStats & stats, AdminLevel adminLevel, Node::Ptr const & node);
+  void UpdateStats(CountryStats & stats, PlacePointsMap const & placePoints,
+                   PlacePointsMap const & unboudedPlacePoints);
 
   RegionPlaceLot m_countriesOuters;
   RegionPlaceLot m_regionPlaceOrder; // in descending order by area
   PlacePointsMap m_placePointsMap;
   size_t m_threadsCount;
   base::thread_pool::computational::ThreadPool m_threadPool;
+};
+
+struct RegionsBuilder::CountryStats
+{
+  using Counter = unsigned long long;
+
+  struct AdminLevelStats
+  {
+     Counter count;
+     std::map<PlaceType, Counter> placeCounts;
+  };
+
+  std::map<ObjectLevel, Counter> objectLevelCounts;
+  std::map<PlaceType, Counter> placeCounts;
+  std::map<PlaceType, Counter> placePointsCounts;
+  std::map<PlaceType, Counter> unboudedPlacePointsCounts;
+  std::map<AdminLevel, AdminLevelStats> adminLevels;
 };
 }  // namespace regions
 }  // namespace generator

@@ -32,13 +32,6 @@ size_t MaxDepth(Node::Ptr const & node);
 
 void DebugPrintTree(Node::Ptr const & tree, std::ostream & stream = std::cout);
 
-// This function merges two trees if the roots have the same ids.
-Node::Ptr MergeTree(Node::Ptr const & l, Node::Ptr const & r);
-
-// This function corrects the tree. It traverses the whole node and unites children with
-// the same ids.
-void NormalizeTree(Node::Ptr & tree);
-
 NodePath MakeLevelPath(Node::Ptr const & node);
 
 template <typename Func>
