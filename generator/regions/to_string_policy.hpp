@@ -3,7 +3,6 @@
 #include "generator/regions/node.hpp"
 
 #include <string>
-#include <vector>
 
 namespace generator
 {

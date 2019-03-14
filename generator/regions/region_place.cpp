@@ -52,7 +52,7 @@ AdminLevel RegionPlace::GetAdminLevel() const
 BoostPoint RegionPlace::GetCenter() const
 {
   if (m_placeLabel)
-    return m_placeLabel->GetCenter();
+    return m_placeLabel->GetPosition();
 
   return m_region.GetCenter();
 }

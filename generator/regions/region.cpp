@@ -91,7 +91,7 @@ bool Region::Contains(PlacePoint const & placePoint) const
 {
   CHECK(m_polygon, ());
 
-  return Contains(placePoint.GetCenter());
+  return Contains(placePoint.GetPosition());
 }
 
 bool Region::Contains(BoostPoint const & point) const

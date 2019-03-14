@@ -31,7 +31,6 @@ std::string JsonPolicy::ToString(NodePath const & path) const
 
   auto localeEn = base::NewJSONObject();
   auto address = base::NewJSONObject();
-  std::string countryIsoCode;
   for (auto const & p : path)
   {
     auto const & place = p->GetData();

@@ -18,13 +18,13 @@ public:
       RegionWithData(rd)
   {
     auto const p = fb.GetKeyPoint();
-    m_center = {p.x, p.y};
+    m_position = {p.x, p.y};
   }
 
-  BoostPoint GetCenter() const {  return m_center; }
+  BoostPoint GetPosition() const {  return m_position; }
 
 private:
-  BoostPoint m_center;
+  BoostPoint m_position;
 };
 }  // namespace regions
 }  // namespace generator

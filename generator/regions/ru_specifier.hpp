@@ -6,7 +6,7 @@ namespace generator
 {
 namespace regions
 {
-class RuSpecifier : public RelativeNestingSpecifier
+class RuSpecifier final : public RelativeNestingSpecifier
 {
 public:
   // CountrySpecifier overrides:
