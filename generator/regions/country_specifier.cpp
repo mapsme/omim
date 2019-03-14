@@ -4,7 +4,7 @@ namespace generator
 {
 namespace regions
 {
-void CountrySpecifier::AddPlaces(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointsMap)
+void CountrySpecifier::AddPlaces(Node::PtrList & outers, PlacePointsMap & placePointsMap)
 { }
 
 void CountrySpecifier::AdjustRegionsLevel(Node::PtrList & outers)
@@ -12,7 +12,7 @@ void CountrySpecifier::AdjustRegionsLevel(Node::PtrList & outers)
 
 ObjectLevel CountrySpecifier::GetLevel(RegionPlace const & place) const
 {
-  auto placeLevel = GetLevel(place.GetPlaceType());
+  auto const placeLevel = GetLevel(place.GetPlaceType());
   if (placeLevel != ObjectLevel::Unknown)
     return placeLevel;
 
@@ -32,8 +32,8 @@ int CountrySpecifier::CompareWeight(LevelPlace const & lhs, LevelPlace const & r
       return 1;
   }
 
-  auto lhsPlaceType = lhs.GetPlaceType();
-  auto rhsPlaceType = rhs.GetPlaceType();
+  auto const lhsPlaceType = lhs.GetPlaceType();
+  auto const rhsPlaceType = rhs.GetPlaceType();
   if (lhsPlaceType != PlaceType::Unknown && rhsPlaceType != PlaceType::Unknown)
   {
     if (lhsPlaceType > rhsPlaceType)
@@ -43,8 +43,8 @@ int CountrySpecifier::CompareWeight(LevelPlace const & lhs, LevelPlace const & r
     // Check by admin level (administrative city (district + city) > city).
   }
 
-  auto lhsAdminLevel = lhs.GetRegion().GetAdminLevel();
-  auto rhsAdminLevel = rhs.GetRegion().GetAdminLevel();
+  auto const lhsAdminLevel = lhs.GetRegion().GetAdminLevel();
+  auto const rhsAdminLevel = rhs.GetRegion().GetAdminLevel();
   if (lhsAdminLevel != AdminLevel::Unknown && rhsAdminLevel != AdminLevel::Unknown)
     return lhsAdminLevel > rhsAdminLevel ? -1 : lhsAdminLevel < rhsAdminLevel;
   if (lhsAdminLevel != AdminLevel::Unknown)

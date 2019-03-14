@@ -1,17 +1,17 @@
 #pragma once
 
-#include "base/thread_pool_computational.hpp"
-
 #include "generator/regions/node.hpp"
 #include "generator/regions/place_point.hpp"
 #include "generator/regions/region.hpp"
+#include "generator/regions/regions_builder_stats.hpp"
 #include "generator/regions/to_string_policy.hpp"
 
+#include "base/thread_pool_computational.hpp"
+
 #include <functional>
-#include <map>
 #include <memory>
 #include <string>
-#include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace generator
@@ -28,10 +28,9 @@ class RegionsBuilder
 public:
   using Regions = std::vector<Region>;
   using RegionPlaceLot = std::vector<RegionPlace>;
-  using PlacePointsMap = std::unordered_map<base::GeoObjectId, PlacePoint>;
   using StringsList = std::vector<std::string>;
-  struct CountryStats;
-  using CountryFn = std::function<void(std::string const &, Node::PtrList const &, CountryStats const &)>;
+  using CountryFn = std::function<void(std::string const &, Node::PtrList const &,
+                                       CountryRegionsBuilderStats const &)>;
 
   RegionsBuilder(Regions && regions, PlacePointsMap && placePointsMap, size_t threadsCount = 1);
 
@@ -70,33 +69,11 @@ private:
                                                        PlacePointsMap::iterator begin,
                                                        PlacePointsMap::iterator end);
 
-  void UpdateStats(CountryStats & stats, Node::Ptr const & node);
-  void UpdateStats(CountryStats & stats, AdminLevel adminLevel, Node::Ptr const & node);
-  void UpdateStats(CountryStats & stats, PlacePointsMap const & placePoints,
-                   PlacePointsMap const & unboudedPlacePoints);
-
   RegionPlaceLot m_countriesOuters;
   RegionPlaceLot m_regionPlaceOrder; // in descending order by area
   PlacePointsMap m_placePointsMap;
   size_t m_threadsCount;
   base::thread_pool::computational::ThreadPool m_threadPool;
-};
-
-struct RegionsBuilder::CountryStats
-{
-  using Counter = unsigned long long;
-
-  struct AdminLevelStats
-  {
-     Counter count;
-     std::map<PlaceType, Counter> placeCounts;
-  };
-
-  std::map<ObjectLevel, Counter> objectLevelCounts;
-  std::map<PlaceType, Counter> placeCounts;
-  std::map<PlaceType, Counter> placePointsCounts;
-  std::map<PlaceType, Counter> unboudedPlacePointsCounts;
-  std::map<AdminLevel, AdminLevelStats> adminLevels;
 };
 }  // namespace regions
 }  // namespace generator

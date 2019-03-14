@@ -40,8 +40,6 @@ namespace regions
 namespace {
 struct RegionsGenerator
 {
-  using Stats = RegionsBuilder::CountryStats;
-
   std::string pathInRegionsTmpMwm;
   std::ofstream regionsKv;
   feature::FeaturesCollector featuresCollector;
@@ -65,7 +63,7 @@ struct RegionsGenerator
 
     RegionInfo regionsInfoCollector(pathInRegionsCollector);
     RegionsBuilder::Regions regions;
-    RegionsBuilder::PlacePointsMap placePointsMap;
+    PlacePointsMap placePointsMap;
     std::tie(regions, placePointsMap) = ReadDatasetFromTmpMwm(pathInRegionsTmpMwm, regionsInfoCollector);
     RegionsBuilder builder(std::move(regions), std::move(placePointsMap), threadsCount);
     GenerateRegions(builder);
@@ -82,7 +80,7 @@ struct RegionsGenerator
     std::multimap<base::GeoObjectId, Node::Ptr> objectsRegions;
 
     builder.ForEachCountry([&, this] (
-        std::string const &, Node::PtrList const & outers, Stats const & stats) {
+        std::string const &, Node::PtrList const & outers, CountryRegionsBuilderStats const & stats) {
       if (outers.empty())
         return;
 
@@ -145,11 +143,11 @@ struct RegionsGenerator
                 countryRegionObjectCount, "object ids."));
   }
 
-  std::tuple<RegionsBuilder::Regions, RegionsBuilder::PlacePointsMap>
+  std::tuple<RegionsBuilder::Regions, PlacePointsMap>
   ReadDatasetFromTmpMwm(std::string const & tmpMwmFilename, RegionInfo & collector)
   {
     RegionsBuilder::Regions regions;
-    RegionsBuilder::PlacePointsMap placePointsMap;
+    PlacePointsMap placePointsMap;
     auto const toDo = [&](FeatureBuilder1 const & fb, uint64_t /* currPos */) {
       if (fb.GetName().empty())
         return;
@@ -176,7 +174,7 @@ struct RegionsGenerator
   {
     std::set<base::GeoObjectId> processedObjects;
     auto const toDo = [&](FeatureBuilder1 & fb, uint64_t /* currPos */) {
-      auto id = fb.GetMostGenericOsmId();
+      auto const id = fb.GetMostGenericOsmId();
       auto objectRegions = objectsRegions.equal_range(id);
       if (objectRegions.first == objectRegions.second)
         return;
@@ -216,7 +214,7 @@ struct RegionsGenerator
     return seq;
   }
 
-  void LogStatistics(std::string const & countryName, Stats const & stats)
+  void LogStatistics(std::string const & countryName, CountryRegionsBuilderStats const & stats)
   {
     LOG(LINFO, ("-----------------------------------------------------------------"));
 
@@ -226,7 +224,7 @@ struct RegionsGenerator
     for (auto const & item : stats.placeCounts)
       LOG(LINFO, (countryName, ":", StringifyPlaceType(item.first), "place", "-", item.second));
 
-    for (auto placeType : GetPlacePointTypes(stats))
+    for (auto const placeType : GetPlacePointTypes(stats))
       LogPlacePointStatistics(countryName, stats, placeType);
 
     for (auto const & item : stats.adminLevels)
@@ -235,22 +233,23 @@ struct RegionsGenerator
     LOG(LINFO, ("-----------------------------------------------------------------"));
   }
 
-  void LogPlacePointStatistics(std::string const & countryName, Stats const & stats, PlaceType placeType)
+  void LogPlacePointStatistics(std::string const & countryName, CountryRegionsBuilderStats const & stats,
+                               PlaceType placeType)
   {
-    auto count = [placeType] (std::map<PlaceType, Stats::Counter> const & pointsStats) {
+    auto count = [placeType] (std::map<PlaceType, CountryRegionsBuilderStats::Counter> const & pointsStats) {
       auto i = pointsStats.find(placeType);
       return i != end(pointsStats) ? i->second : 0;
     };  
-    auto totalCount = count(stats.placePointsCounts);
-    auto unbounedeCount = count(stats.unboudedPlacePointsCounts);
-    auto bounedeCount = totalCount - unbounedeCount;
+    auto const totalCount = count(stats.placePointsCounts);
+    auto const unbounedeCount = count(stats.unboudedPlacePointsCounts);
+    auto const bounedeCount = totalCount - unbounedeCount;
     LOG(LINFO, (countryName, ":", StringifyPlaceType(placeType), "place point" "-",
                 bounedeCount, "/", unbounedeCount,
                 "(" + std::to_string(100 * bounedeCount / totalCount) + "%)"));
   }
 
   void LogStatistics(std::string const & countryName, AdminLevel adminLevel,
-                     Stats::AdminLevelStats const & adminLevelStats)
+                     CountryRegionsBuilderStats::AdminLevelStats const & adminLevelStats)
   {
     auto const adminLevelLabel = "admin_level=" + std::to_string(static_cast<int>(adminLevel));
 
@@ -261,14 +260,14 @@ struct RegionsGenerator
     LOG(LINFO, (countryName, ":", adminLevelLabel, "-", adminLevelStats.count, placeSummary));
   }
 
-  std::set<PlaceType> GetPlacePointTypes(Stats const & stats)
+  std::set<PlaceType> GetPlacePointTypes(CountryRegionsBuilderStats const & stats)
   {
     std::set<PlaceType> placePointTypes;
 
-    for (auto placeTypeStats : stats.placePointsCounts)
+    for (auto const & placeTypeStats : stats.placePointsCounts)
       placePointTypes.insert(placeTypeStats.first);
 
-    for (auto placeTypeStats : stats.placePointsCounts)
+    for (auto const & placeTypeStats : stats.placePointsCounts)
       placePointTypes.insert(placeTypeStats.first);
 
     return placePointTypes;

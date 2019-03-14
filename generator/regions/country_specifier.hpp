@@ -2,6 +2,7 @@
 
 #include "generator/regions/collector_region_info.hpp"
 #include "generator/regions/node.hpp"
+#include "generator/regions/place_point.hpp"
 #include "generator/regions/region.hpp"
 #include "generator/regions/regions_builder.hpp"
 
@@ -16,7 +17,7 @@ class CountrySpecifier
 public:
   virtual ~CountrySpecifier() = default;
 
-  virtual void AddPlaces(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointsMap);
+  virtual void AddPlaces(Node::PtrList & outers, PlacePointsMap & placePointsMap);
   virtual void AdjustRegionsLevel(Node::PtrList & outers);
 
   virtual ObjectLevel GetLevel(RegionPlace const & place) const;

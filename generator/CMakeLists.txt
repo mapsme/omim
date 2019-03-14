@@ -135,6 +135,8 @@ set(SRC
   regions/regions.hpp
   regions/regions_builder.cpp
   regions/regions_builder.hpp
+  regions/regions_builder_stats.cpp
+  regions/regions_builder_stats.hpp
   regions/relative_nesting_specifier.cpp
   regions/relative_nesting_specifier.hpp
   regions/ru_specifier.cpp

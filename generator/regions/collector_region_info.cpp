@@ -27,6 +27,7 @@ PlaceType EncodePlaceType(std::string const & place)
     {"province", PlaceType::Province},
     {"district", PlaceType::District},
     {"county", PlaceType::County},
+    {"municipality", PlaceType::Municipality},
     {"city", PlaceType::City},
     {"town", PlaceType::Town},
     {"village", PlaceType::Village},
@@ -44,7 +45,7 @@ PlaceType EncodePlaceType(std::string const & place)
 
 char const * StringifyPlaceType(PlaceType placeType)
 {
-  constexpr auto tags = {
+  static constexpr auto tags = {
     "unknown",
     "country",
     "state",
@@ -60,12 +61,11 @@ char const * StringifyPlaceType(PlaceType placeType)
     "suburb",
     "quarter",
     "neighbourhood",
-    "hamlet",
     "locality",
     "isolated_dwelling"
   };
 
-  auto index = static_cast<std::size_t>(placeType);
+  auto const index = static_cast<std::size_t>(placeType);
   return index < tags.size() ? tags.begin()[index] : "unknown";
 }
 

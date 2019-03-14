@@ -9,8 +9,7 @@ namespace generator
 {
 namespace regions
 {
-void RelativeNestingSpecifier::AddPlaces(Node::PtrList & outers,
-                                         RegionsBuilder::PlacePointsMap & placePointsMap)
+void RelativeNestingSpecifier::AddPlaces(Node::PtrList & outers, PlacePointsMap & placePointsMap)
 {
   AddLocalities(outers, placePointsMap);
 
@@ -21,8 +20,7 @@ void RelativeNestingSpecifier::AddPlaces(Node::PtrList & outers,
   }
 }
 
-void RelativeNestingSpecifier::AddLocalities(Node::PtrList & outers,
-                                             RegionsBuilder::PlacePointsMap & placePointsMap)
+void RelativeNestingSpecifier::AddLocalities(Node::PtrList & outers, PlacePointsMap & placePointsMap)
 {
   auto localityPlaceTypes = {PlaceType::City, PlaceType::Town};
   for (auto placeType : localityPlaceTypes)

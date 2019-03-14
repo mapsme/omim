@@ -19,4 +19,3 @@ private:
 };
 }  // namespace regions
 }  // namespace generator
-

@@ -93,7 +93,7 @@ void CollectRegionInfo(string const & filename, vector<OsmElementData> const & t
 }
 
 void BuildTestData(vector<OsmElementData> const & testData,
-                   RegionsBuilder::Regions & regions, RegionsBuilder::PlacePointsMap & placePointsMap,
+                   RegionsBuilder::Regions & regions, PlacePointsMap & placePointsMap,
                    RegionInfo & collector)
 {
   for (auto const & elementData : testData)
@@ -116,8 +116,7 @@ void BuildTestData(vector<OsmElementData> const & testData,
     {
       auto const & p1 = elementData.polygon[0];
       auto const & p2 = elementData.polygon[1];
-      vector<m2::PointD> poly{{p1.x, p1.y}, {p1.x, p2.y}, {p2.x, p2.y}, {p2.x, p1.y}, {p1.x, p1.x}};
-      fb1.AddPolygon(poly);
+      fb1.AddPolygon({{p1.x, p1.y}, {p1.x, p2.y}, {p2.x, p2.y}, {p2.x, p1.y}, {p1.x, p1.x}});
       fb1.SetAreaAddHoles({});
     }
 
@@ -163,14 +162,14 @@ vector<string> GenerateTestRegions(vector<OsmElementData> const & testData)
   CollectRegionInfo(filename, testData);
 
   RegionsBuilder::Regions regions;
-  RegionsBuilder::PlacePointsMap placePointsMap;
+  PlacePointsMap placePointsMap;
   RegionInfo collector(filename);
   BuildTestData(testData, regions, placePointsMap, collector);
 
   RegionsBuilder builder(std::move(regions), std::move(placePointsMap));
   vector<string> kvRegions;
   builder.ForEachCountry([&](string const & name, Node::PtrList const & outers,
-      RegionsBuilder::CountryStats const &) {
+      CountryRegionsBuilderStats const &) {
     for (auto const & tree : outers)
     {
       ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
@@ -205,8 +204,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_1");
     fb1.SetOsmId(MakeOsmRelation(1 /* id */));
-    vector<m2::PointD> poly = {{2, 8}, {3, 12}, {8, 15}, {13, 12}, {15, 7}, {11, 2}, {4, 4}, {2, 8}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{2, 8}, {3, 12}, {8, 15}, {13, 12}, {15, 7}, {11, 2}, {4, 4}, {2, 8}});
     fb1.SetAreaAddHoles({{{5, 8}, {7, 10}, {10, 10}, {11, 7}, {10, 4}, {7, 5}, {5, 8}}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(1 /* id */))));
   }
@@ -215,8 +213,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_2");
     fb1.SetOsmId(MakeOsmRelation(2 /* id */));
-    vector<m2::PointD> poly = {{5, 8}, {7, 10}, {10, 10}, {11, 7}, {10, 4}, {7, 5}, {5, 8}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{5, 8}, {7, 10}, {10, 10}, {11, 7}, {10, 4}, {7, 5}, {5, 8}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(2 /* id */))));
   }
 
@@ -224,8 +221,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_2");
     fb1.SetOsmId(MakeOsmRelation(2 /* id */));
-    vector<m2::PointD> poly = {{0, 0}, {0, 2}, {2, 2}, {2, 0}, {0, 0}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{0, 0}, {0, 2}, {2, 2}, {2, 0}, {0, 0}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(2 /* id */))));
   }
 
@@ -233,8 +229,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_1_Region_3");
     fb1.SetOsmId(MakeOsmRelation(3 /* id */));
-    vector<m2::PointD> poly = {{4, 4}, {7, 5}, {10, 4}, {12, 9}, {15, 7}, {11, 2}, {4, 4}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{4, 4}, {7, 5}, {10, 4}, {12, 9}, {15, 7}, {11, 2}, {4, 4}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(3 /* id */))));
   }
 
@@ -242,9 +237,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_1_Region_4");
     fb1.SetOsmId(MakeOsmRelation(4 /* id */));
-    vector<m2::PointD> poly = {{7, 10}, {9, 12}, {8, 15}, {13, 12}, {15, 7}, {12, 9},
-                               {11, 7}, {10, 10}, {7, 10}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{7, 10}, {9, 12}, {8, 15}, {13, 12}, {15, 7}, {12, 9}, {11, 7}, {10, 10}, {7, 10}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(4 /* id */))));
   }
 
@@ -252,9 +245,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_1_Region_5");
     fb1.SetOsmId(MakeOsmRelation(5 /* id */));
-    vector<m2::PointD> poly = {{4, 4}, {2, 8}, {3, 12}, {8, 15}, {9, 12}, {7, 10}, {5, 8},
-                               {7, 5}, {4, 4}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{4, 4}, {2, 8}, {3, 12}, {8, 15}, {9, 12}, {7, 10}, {5, 8}, {7, 5}, {4, 4}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(5 /* id */))));
   }
 
@@ -262,8 +253,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_1_Region_5_Subregion_6");
     fb1.SetOsmId(MakeOsmRelation(6 /* id */));
-    vector<m2::PointD> poly = {{4, 4}, {2, 8}, {3, 12}, {4, 10}, {5, 10}, {5, 8}, {7, 5}, {4, 4}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{4, 4}, {2, 8}, {3, 12}, {4, 10}, {5, 10}, {5, 8}, {7, 5}, {4, 4}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(6 /* id */))));
   }
 
@@ -271,8 +261,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_1_Region_5_Subregion_7");
     fb1.SetOsmId(MakeOsmRelation(7 /* id */));
-    vector<m2::PointD> poly = {{3, 12}, {8, 15}, {9, 12}, {7, 10}, {5, 8}, {5, 10}, {4, 10}, {3, 12}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{3, 12}, {8, 15}, {9, 12}, {7, 10}, {5, 8}, {5, 10}, {4, 10}, {3, 12}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(7 /* id */))));
   }
 
@@ -280,8 +269,7 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
     FeatureBuilder1 fb1;
     fb1.AddName("default", "Country_2_Region_8");
     fb1.SetOsmId(MakeOsmRelation(8 /* id */));
-    vector<m2::PointD> poly = {{0, 0}, {0, 1}, {1, 1}, {1, 0}, {0, 0}};
-    fb1.AddPolygon(poly);
+    fb1.AddPolygon({{0, 0}, {0, 1}, {1, 1}, {1, 0}, {0, 0}});
     regions.emplace_back(Region(fb1, collector.Get(MakeOsmRelation(8 /* id */))));
   }
 
@@ -334,7 +322,7 @@ UNIT_TEST(RegionsBuilderTest_GetCountryTrees)
   vector<string> bankOfNames;
   RegionsBuilder builder(MakeTestDataSet1(collector), {});
   builder.ForEachCountry([&](string const & name, Node::PtrList const & outers,
-      RegionsBuilder::CountryStats const &) {
+      CountryRegionsBuilderStats const &) {
     for (auto const & tree : outers)
     {
       DebugPrintTree(tree);

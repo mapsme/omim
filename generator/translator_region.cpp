@@ -23,7 +23,7 @@ TranslatorRegion::TranslatorRegion(std::shared_ptr<EmitterInterface> emitter,
 bool TranslatorRegion::IsSuitableElement(OsmElement const * p) const
 {
   static std::set<std::string> const places = {"state", "region", "province",
-                                               "district", "county",
+                                               "district", "county", "municipality",
                                                "city", "town", "village", "hamlet",
                                                "suburb", "quarter", "neighbourhood",
                                                "isolated_dwelling"};

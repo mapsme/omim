@@ -1,11 +1,11 @@
 #include "generator/regions/regions_builder.hpp"
 
-#include "base/assert.hpp"
-#include "base/stl_helpers.hpp"
-
 #include "generator/regions/country_specifier.hpp"
 #include "generator/regions/relative_nesting_specifier.hpp"
 #include "generator/regions/ru_specifier.hpp"
+
+#include "base/assert.hpp"
+#include "base/stl_helpers.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -118,10 +118,9 @@ void RegionsBuilder::ForEachCountry(CountryFn const & fn)
 
     std::for_each(begin(countryTrees), end(countryTrees), ReviseSublocalityDisposition);
 
-    CountryStats stats;
-    for (auto const & tree : countryTrees)
-      Visit(tree, [&stats, this] (Node::Ptr const & node) { UpdateStats(stats, node); } );
-    UpdateStats(stats, countryPlacePoints, unboundedPlacePoints);
+    CountryRegionsBuilderStats stats;
+    stats.Update(countryTrees);
+    stats.Update(countryPlacePoints, unboundedPlacePoints);
 
     fn(countryName, countryTrees, stats);
   }
@@ -312,7 +311,7 @@ void RegionsBuilder::ReviseSublocalityDisposition(Node::Ptr & tree)
     ReviseSublocalityDisposition(subtree);
 }
 
-RegionsBuilder::PlacePointsMap RegionsBuilder::FindCountryPlacePoints(RegionPlaceLot const & countryOuters)
+PlacePointsMap RegionsBuilder::FindCountryPlacePoints(RegionPlaceLot const & countryOuters)
 {
   PlacePointsMap countryPoints;
 
@@ -326,7 +325,7 @@ RegionsBuilder::PlacePointsMap RegionsBuilder::FindCountryPlacePoints(RegionPlac
   return countryPoints;
 }
 
-std::vector<std::future<RegionsBuilder::PlacePointsMap>> RegionsBuilder::PushCountryPlacePointsFinders(
+std::vector<std::future<PlacePointsMap>> RegionsBuilder::PushCountryPlacePointsFinders(
     RegionPlaceLot const & countryOuter)
 {
   std::vector<std::future<PlacePointsMap>> tasks;
@@ -349,7 +348,7 @@ std::vector<std::future<RegionsBuilder::PlacePointsMap>> RegionsBuilder::PushCou
   return tasks;
 }
 
-RegionsBuilder::PlacePointsMap RegionsBuilder::FindCountryPlacePointsForRange(
+PlacePointsMap RegionsBuilder::FindCountryPlacePointsForRange(
     RegionPlaceLot const & countryOuters, PlacePointsMap::iterator begin, PlacePointsMap::iterator end)
 {
   PlacePointsMap countryPoints;
@@ -365,53 +364,6 @@ RegionsBuilder::PlacePointsMap RegionsBuilder::FindCountryPlacePointsForRange(
   };
 
   return countryPoints;
-}
-
-void RegionsBuilder::UpdateStats(CountryStats & stats, Node::Ptr const & node)
-{
-  auto const & place = node->GetData();
-
-  auto const level = place.GetLevel();
-  if (level != ObjectLevel::Unknown)
-    ++stats.objectLevelCounts[level];
-
-  auto const placeType = place.GetPlaceType();
-  if (placeType != PlaceType::Unknown)
-    ++stats.placeCounts[placeType];
-
-  auto const adminLevel = place.GetAdminLevel();
-  if (adminLevel != AdminLevel::Unknown)
-    UpdateStats(stats, adminLevel, node);
-}
-
-void RegionsBuilder::UpdateStats(CountryStats & stats, AdminLevel adminLevel, Node::Ptr const & node)
-{
-  auto const & place = node->GetData();
-
-  auto & adminLevelStats = stats.adminLevels[adminLevel];
-  ++adminLevelStats.count;
-
-  auto const placeType = place.GetPlaceType();
-  if (placeType != PlaceType::Unknown)
-    ++adminLevelStats.placeCounts[placeType];
-
-  for (auto const & subnode : node->GetChildren())
-  {
-    auto const & subplace = subnode->GetData();
-    auto const subplaceType = subplace.GetPlaceType();
-    if (subplaceType != PlaceType::Unknown)
-      ++adminLevelStats.placeCounts[subplaceType];
-  }
-}
-
-void RegionsBuilder::UpdateStats(CountryStats & stats, PlacePointsMap const & placePoints,
-                                 PlacePointsMap const & unboudedPlacePoints)
-{
-  for (auto const & place : placePoints)
-    ++stats.placePointsCounts[place.second.GetPlaceType()];
-
-  for (auto const & place : unboudedPlacePoints)
-    ++stats.unboudedPlacePointsCounts[place.second.GetPlaceType()];
 }
 }  // namespace regions
 }  // namespace generator

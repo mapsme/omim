@@ -59,8 +59,7 @@ public:
   bool IsLine() const { return (GetGeomType() == feature::GEOM_LINE); }
   bool IsArea() const { return (GetGeomType() == feature::GEOM_AREA); }
 
-  void AddPolygon(std::vector<m2::PointD> & poly);
-  void AddPolygon(vector<m2::PointD> && poly);
+  void AddPolygon(std::vector<m2::PointD> && poly);
 
   void ResetGeometry();
   //@}

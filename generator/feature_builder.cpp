@@ -138,7 +138,7 @@ void FeatureBuilder1::SetAreaAddHoles(FeatureBuilder1::Geometry const & holes)
   }
 }
 
-void FeatureBuilder1::AddPolygon(vector<m2::PointD> & poly)
+void FeatureBuilder1::AddPolygon(vector<m2::PointD> && poly)
 {
   // check for closing
   if (poly.size() < 3)
@@ -153,11 +153,6 @@ void FeatureBuilder1::AddPolygon(vector<m2::PointD> & poly)
     m_polygons.push_back(PointSeq());
 
   m_polygons.back().swap(poly);
-}
-
-void FeatureBuilder1::AddPolygon(vector<m2::PointD> && poly)
-{
-  AddPolygon(poly);
 }
 
 void FeatureBuilder1::ResetGeometry()

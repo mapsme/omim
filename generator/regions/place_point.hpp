@@ -10,6 +10,9 @@ namespace generator
 {
 namespace regions
 {
+class PlacePoint;
+using PlacePointsMap = std::unordered_map<base::GeoObjectId, PlacePoint>;
+
 class PlacePoint : public RegionWithName, public RegionWithData
 {
 public:
