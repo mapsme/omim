@@ -218,17 +218,21 @@ struct RegionsGenerator
 
   void LogStatistics(std::string const & countryName, Stats const & stats)
   {
+    LOG(LINFO, ("-----------------------------------------------------------------"));
+
     for (auto const & item : stats.objectLevelCounts)
-      LOG(LINFO, (countryName, ":", GetLabel(item.first), "-", item.second));
+      LOG(LINFO, (countryName, ":", GetLabel(item.first), "label", "-", item.second));
 
     for (auto const & item : stats.placeCounts)
-      LOG(LINFO, (countryName, ":", StringifyPlaceType(item.first), "-", item.second));
+      LOG(LINFO, (countryName, ":", StringifyPlaceType(item.first), "place", "-", item.second));
 
     for (auto placeType : GetPlacePointTypes(stats))
       LogPlacePointStatistics(countryName, stats, placeType);
 
     for (auto const & item : stats.adminLevels)
       LogStatistics(countryName, item.first, item.second);
+
+    LOG(LINFO, ("-----------------------------------------------------------------"));
   }
 
   void LogPlacePointStatistics(std::string const & countryName, Stats const & stats, PlaceType placeType)

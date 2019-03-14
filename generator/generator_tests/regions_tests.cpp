@@ -93,7 +93,7 @@ void CollectRegionInfo(string const & filename, vector<OsmElementData> const & t
 }
 
 void BuildTestData(vector<OsmElementData> const & testData,
-                   RegionsBuilder::Regions & regions, RegionsBuilder::PlaceCentersMap & placeCentersMap,
+                   RegionsBuilder::Regions & regions, RegionsBuilder::PlacePointsMap & placePointsMap,
                    RegionInfo & collector)
 {
   for (auto const & elementData : testData)
@@ -132,7 +132,7 @@ void BuildTestData(vector<OsmElementData> const & testData,
 
     auto const id = fb1.GetMostGenericOsmId();
     if (elementData.polygon.size() == 1)
-      placeCentersMap.emplace(id, PlaceCenter{fb1, collector.Get(id)});
+      placePointsMap.emplace(id, PlacePoint{fb1, collector.Get(id)});
     else
       regions.emplace_back(fb1, collector.Get(id));
   }
@@ -163,16 +163,20 @@ vector<string> GenerateTestRegions(vector<OsmElementData> const & testData)
   CollectRegionInfo(filename, testData);
 
   RegionsBuilder::Regions regions;
-  RegionsBuilder::PlaceCentersMap placeCentersMap;
+  RegionsBuilder::PlacePointsMap placePointsMap;
   RegionInfo collector(filename);
-  BuildTestData(testData, regions, placeCentersMap, collector);
+  BuildTestData(testData, regions, placePointsMap, collector);
 
-  auto builder = RegionsBuilder(std::move(regions), std::move(placeCentersMap));
+  RegionsBuilder builder(std::move(regions), std::move(placePointsMap));
   vector<string> kvRegions;
-  builder.ForEachNormalizedCountry([&](string const & name, Node::Ptr const & tree) {
-    ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
-      kvRegions.push_back(Helper{}.ToString(path));
-    });
+  builder.ForEachCountry([&](string const & name, Node::PtrList const & outers,
+      RegionsBuilder::CountryStats const &) {
+    for (auto const & tree : outers)
+    {
+      ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
+        kvRegions.push_back(Helper{}.ToString(path));
+      });
+    }
   });
 
   return kvRegions;
@@ -315,12 +319,12 @@ UNIT_TEST(RegionsBuilderTest_GetCountries)
   auto const filename = MakeCollectorData();
   RegionInfo collector(filename);
   RegionsBuilder builder(MakeTestDataSet1(collector), {});
-  auto const countries = builder.GetCountries();
+  auto const countries = builder.GetCountriesOuters();
   TEST_EQUAL(countries.size(), 3, ());
   TEST_EQUAL(std::count_if(std::begin(countries), std::end(countries),
-                           [](const Region & r) {return r.GetName() == "Country_1"; }), 1, ());
+                           [](const RegionPlace & p) {return p.GetName() == "Country_1"; }), 1, ());
   TEST_EQUAL(std::count_if(std::begin(countries), std::end(countries),
-                           [](const Region & r) {return r.GetName() == "Country_2"; }), 2, ());
+                           [](const RegionPlace & p) {return p.GetName() == "Country_2"; }), 2, ());
 }
 
 UNIT_TEST(RegionsBuilderTest_GetCountryTrees)
@@ -329,11 +333,15 @@ UNIT_TEST(RegionsBuilderTest_GetCountryTrees)
   RegionInfo collector(filename);
   vector<string> bankOfNames;
   RegionsBuilder builder(MakeTestDataSet1(collector), {});
-  builder.ForEachNormalizedCountry([&](string const & name, Node::Ptr const & tree) {
-    DebugPrintTree(tree);
-    ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
-      bankOfNames.push_back(Helper{}.ToString(path));
-    });
+  builder.ForEachCountry([&](string const & name, Node::PtrList const & outers,
+      RegionsBuilder::CountryStats const &) {
+    for (auto const & tree : outers)
+    {
+      DebugPrintTree(tree);
+      ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
+        bankOfNames.push_back(Helper{}.ToString(path));
+      });
+    }
   });
 
   TEST(ExistsName(bankOfNames, "Country_2"), ());

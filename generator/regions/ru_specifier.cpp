@@ -18,9 +18,9 @@ void RuSpecifier::AdjustMoscowAdministrativeDivisions(Node::PtrList & outers)
     AdjustMoscowAdministrativeDivisions(tree);
 
   if (!m_moscowRegionHasProcessed)
-    LOG(LERROR, ("Failed to find Moscow region"));
+    LOG(LWARNING, ("Failed to find Moscow region"));
   else if (!m_moscowCityHasProcessed)
-    LOG(LERROR, ("Failed to find Moscow city"));
+    LOG(LWARNING, ("Failed to find Moscow city"));
 }
 
 void RuSpecifier::AdjustMoscowAdministrativeDivisions(Node::Ptr const & tree)

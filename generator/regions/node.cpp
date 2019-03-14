@@ -39,29 +39,28 @@ void PrintTree(Node::Ptr const & node, std::ostream & stream = std::cout, std::s
                bool isTail = true)
 {
   auto const & place = node->GetData();
-  if (auto label = GetLabel(place.GetLevel()))
-  {
-    stream << prefix;
-    if (isTail)
-    {
-      stream << "└───";
-      prefix += "    ";
-    }
-    else
-    {
-      stream << "├───";
-      prefix += "│   ";
-    }
+  auto label = GetLabel(place.GetLevel());
 
-    auto const point = place.GetCenter();
-    auto const center = MercatorBounds::ToLatLon({point.get<0>(), point.get<1>()});
-    stream << place.GetName() << "<" << place.GetEnglishOrTransliteratedName() << "> ("
-           << DebugPrint(place.GetId())
-           << ";" << label
-           << ";" << static_cast<int>(place.GetLevel())
-           << ";[" << std::fixed << std::setprecision(7) << center.lat << "," << center.lon << "])"
-           << std::endl;
+  stream << prefix;
+  if (isTail)
+  {
+    stream << "└───";
+    prefix += "    ";
   }
+  else
+  {
+    stream << "├───";
+    prefix += "│   ";
+  }
+
+  auto const point = place.GetCenter();
+  auto const center = MercatorBounds::ToLatLon({point.get<0>(), point.get<1>()});
+  stream << place.GetName() << "<" << place.GetEnglishOrTransliteratedName() << "> ("
+         << DebugPrint(place.GetId())
+         << ";" << (label ? label : "-")
+         << ";" << static_cast<int>(place.GetLevel())
+         << ";[" << std::fixed << std::setprecision(7) << center.lat << "," << center.lon << "])"
+         << std::endl;
 
   auto const & children = node->GetChildren();
   for (size_t i = 0, size = children.size(); i < size; ++i)

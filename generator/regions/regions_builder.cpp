@@ -182,29 +182,72 @@ RegionsBuilder::ParentChildPairs RegionsBuilder::FindAllParentChildPairs(
   auto size = nodeOrder.size();
   for (auto i = (std::ptrdiff_t(size) - 1) - std::ptrdiff_t(startOffset); i > 0; i -= step)
   {
-    auto const & place = nodeOrder[i]->GetData();
-    auto const & placeRegion = place.GetRegion();
-    for (auto j = i - 1; j >= 0; --j)
-    {
-      auto const & parentCandidate = nodeOrder[j];
-      auto const & candidatePlace = parentCandidate->GetData();
-      auto const & candidateRegion = candidatePlace.GetRegion();
-      if (!candidateRegion.ContainsRect(placeRegion))
-        continue;
-
-      auto c = Compare(candidatePlace, place, countrySpecifier);
-      if (c == 1)
-      {
-        res.emplace_back(parentCandidate, nodeOrder[i]);
-        break;
-      }
-
-      if (c == -1)
-        res.emplace_back(nodeOrder[i], parentCandidate);
-    }
+    if (auto parent = FindParent(nodeOrder, cbegin(nodeOrder) + i, countrySpecifier))
+      res.emplace_back(parent, nodeOrder[i]);
   }
 
   return res;
+}
+
+Node::Ptr RegionsBuilder::FindParent(std::vector<Node::Ptr> const & nodeOrder,
+    std::vector<Node::Ptr>::const_iterator forItem, CountrySpecifier const & countrySpecifier)
+{
+  auto const & node = *forItem;
+  auto const & place = node->GetData();
+  auto const & placeRegion = place.GetRegion();
+  auto from = FindLowerAreaBound(nodeOrder, forItem);
+  CHECK(forItem < from.base(), ());
+
+  Node::Ptr parent;
+  auto forItemReverseIterator = make_reverse_iterator(next(forItem));
+  for (auto i = from, end = crend(nodeOrder); i != end; ++i)
+  {
+    auto const & candidate = *i;
+    auto const & candidatePlace = candidate->GetData();
+    auto const & candidateRegion = candidatePlace.GetRegion();
+
+    if (parent)
+    {
+      auto const & parentRegion = parent->GetData().GetRegion();
+      if (1.001 * parentRegion.GetArea() < candidateRegion.GetArea())
+        break;
+    }
+
+    if (!candidateRegion.ContainsRect(placeRegion))
+      continue;
+
+    if (i == forItemReverseIterator)
+      continue;
+
+    auto c = Compare(candidatePlace, place, countrySpecifier);
+    if (c == 1)
+    {
+      if (parent && 0 <= Compare(candidatePlace, parent->GetData(), countrySpecifier))
+        continue;
+
+      parent = candidate;
+    }
+  }
+
+  return parent;
+}
+
+std::vector<Node::Ptr>::const_reverse_iterator RegionsBuilder::FindLowerAreaBound(
+    std::vector<Node::Ptr> const & nodeOrder, std::vector<Node::Ptr>::const_iterator forItem)
+{
+  auto const & node = *forItem;
+  auto const & place = node->GetData();
+  auto const & region = place.GetRegion();
+
+  auto begin = crbegin(nodeOrder);
+  auto end = make_reverse_iterator(next(forItem));
+  auto nodeAreaGreater = [] (Node::Ptr const & element, double nodeArea) {
+    auto const & elementRegion = element->GetData().GetRegion();
+    return 1.001 * elementRegion.GetArea() < nodeArea;
+  };
+  if (begin == end || nodeAreaGreater(*(end - 1), region.GetArea()))
+    return end;
+  return std::lower_bound(begin, end, region.GetArea(), nodeAreaGreater);
 }
 
 void RegionsBuilder::BindNodeChildren(ParentChildPairs const & parentChildPairs,
@@ -214,17 +257,6 @@ void RegionsBuilder::BindNodeChildren(ParentChildPairs const & parentChildPairs,
   {
     auto & parent = pair.first;
     auto & child = pair.second;
-
-    if (auto childCurrParent = child->GetParent())
-    {
-      auto c = Compare(childCurrParent->GetData(), parent->GetData(), countrySpecifier);
-      if (c <= 0)
-        continue;
-
-      auto & parentClildren = childCurrParent->GetChildren();
-      parentClildren.erase(std::find(begin(parentClildren), end(parentClildren), child));
-    }
-
     child->SetParent(parent);
     parent->AddChild(std::move(child));
   }

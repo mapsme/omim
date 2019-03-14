@@ -52,6 +52,11 @@ private:
   static ParentChildPairs FindAllParentChildPairs(std::vector<Node::Ptr> const & nodeOrder,
                                                   std::size_t startOffset, std::size_t step,
                                                   CountrySpecifier const & countrySpecifier);
+  static Node::Ptr FindParent(std::vector<Node::Ptr> const & nodeOrder,
+                              std::vector<Node::Ptr>::const_iterator forItem,
+                              CountrySpecifier const & countrySpecifier);
+  static std::vector<Node::Ptr>::const_reverse_iterator FindLowerAreaBound(
+      std::vector<Node::Ptr> const & nodeOrder, std::vector<Node::Ptr>::const_iterator forItem);
   void BindNodeChildren(ParentChildPairs const & parentChildPairs,
                         CountrySpecifier const & countrySpecifier);
   // Return: 0 - no relation, 1 - |l| contains |r|, -1 - |r| contains |l|.
