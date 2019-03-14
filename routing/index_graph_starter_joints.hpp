@@ -574,4 +574,20 @@ JointSegment IndexGraphStarterJoints<Graph>::CreateInvisibleJoint(Segment const 
 
   return result;
 }
+
+template <typename Graph>
+void IndexGraphStarterJoints<Graph>::Reset()
+{
+  m_startJoint = JointSegment();
+  m_endJoint = JointSegment();
+  m_startSegment = Segment();
+  m_endSegment = Segment();
+  m_savedWeight.clear();
+  m_fakeJointSegments.clear();
+  m_reconstructedFakeJoints.clear();
+  m_startOutEdges.clear();
+  m_endOutEdges.clear();
+  m_fakeId = 0;
+  m_init = false;
+}
 }  // namespace routing
