@@ -24,7 +24,11 @@ void AdminSuburbsMarker::MarkSuburbsInCity(Node::Ptr & tree)
 {
   auto & place = tree->GetData();
   if (ObjectLevel::Locality == place.GetLevel())
+  {
+    for (auto & subtree : tree->GetChildren())
+      MarkSuburbsInCity(subtree);
     return;
+  }
 
   auto & region = place.GetRegion();
   if (region.HasAdminLevel())
