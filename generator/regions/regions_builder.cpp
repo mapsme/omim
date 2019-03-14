@@ -114,7 +114,7 @@ void RegionsBuilder::ForEachCountry(CountryFn const & fn)
     auto unboundedPlacePoints = countryPlacePoints;
 
     countrySpecifier->AddPlaces(countryTrees, unboundedPlacePoints);
-    countrySpecifier->AdjustRegionsLevel(countryTrees, unboundedPlacePoints);
+    countrySpecifier->AdjustRegionsLevel(countryTrees);
 
     std::for_each(begin(countryTrees), end(countryTrees), ReviseSublocalityDisposition);
 

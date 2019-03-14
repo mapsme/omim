@@ -4,6 +4,12 @@ namespace generator
 {
 namespace regions
 {
+void CountrySpecifier::AddPlaces(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointsMap)
+{ }
+
+void CountrySpecifier::AdjustRegionsLevel(Node::PtrList & outers)
+{ }
+
 ObjectLevel CountrySpecifier::GetLevel(RegionPlace const & place) const
 {
   auto placeLevel = GetLevel(place.GetPlaceType());

@@ -6,9 +6,9 @@ namespace generator
 {
 namespace regions
 {
-void RuSpecifier::AdjustRegionsLevel(Node::PtrList & outers, RegionsBuilder::PlacePointsMap & placePointsMap)
+void RuSpecifier::AdjustRegionsLevel(Node::PtrList & outers)
 {
-  RelativeNestingSpecifier::AdjustRegionsLevel(outers, placePointsMap);
+  RelativeNestingSpecifier::AdjustRegionsLevel(outers);
   AdjustMoscowAdministrativeDivisions(outers);
 }
 
