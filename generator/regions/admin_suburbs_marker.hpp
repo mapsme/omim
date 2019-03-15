@@ -14,6 +14,7 @@ public:
   void MarkSuburbs(Node::Ptr & tree);
 
 private:
+  void MarkLocality(Node::Ptr & tree);
   void MarkSuburbsInCity(Node::Ptr & tree);
   void MarkUnderLocalityAsSublocalities(Node::Ptr & tree);
 };

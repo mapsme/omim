@@ -87,27 +87,5 @@ ObjectLevel CountrySpecifier::GetLevel(PlaceType placeType) const
 
   return ObjectLevel::Unknown;
 }
-
-PlaceType CountrySpecifier::GetWeightPlaceType(PlaceType placeType) const
-{
-  switch (placeType)
-  {
-  case PlaceType::Region:
-  case PlaceType::Province:
-    return PlaceType::State;
-  case PlaceType::County:
-    return PlaceType::District;
-  case PlaceType::Town:
-  case PlaceType::Village:
-  case PlaceType::Hamlet:
-    return PlaceType::City;
-  case PlaceType::Quarter:
-    return PlaceType::Neighbourhood;
-  default:
-    break;
-  }
-
-  return placeType;
-}
 }  // namespace regions
 }  // namespace generator

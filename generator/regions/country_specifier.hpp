@@ -26,7 +26,6 @@ public:
 
 protected:
   ObjectLevel GetLevel(PlaceType placeType) const;
-  PlaceType GetWeightPlaceType(PlaceType placeType) const;
 };
 }  // namespace regions
 }  // namespace generator

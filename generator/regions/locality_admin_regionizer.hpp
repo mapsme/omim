@@ -12,13 +12,13 @@ class LocalityAdminRegionizer
 public:
   LocalityAdminRegionizer(PlacePoint const & placePoint);
 
-  bool ApplyTo(Node::Ptr & tree);
+  bool ApplyTo(Node::Ptr & tree) const;
 
 protected:
-  bool IsFitNode(Node::Ptr & node);
-  void InsertInto(Node::Ptr & node);
+  bool IsFitNode(Node::Ptr & node) const;
+  void InsertInto(Node::Ptr & node) const;
 
-  bool ContainsSameLocality(Node::Ptr const & tree);
+  bool ContainsSameLocality(Node::Ptr const & tree) const;
 
 private:
   PlacePoint const & m_placePoint;

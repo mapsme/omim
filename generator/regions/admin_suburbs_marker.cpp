@@ -11,8 +11,7 @@ void AdminSuburbsMarker::MarkSuburbs(Node::Ptr & tree)
   auto & place = tree->GetData();
   if (ObjectLevel::Locality == place.GetLevel())
   {
-    for (auto & subtree : tree->GetChildren())
-      MarkSuburbsInCity(subtree);
+    MarkLocality(tree);
     return;
   }
 
@@ -20,13 +19,19 @@ void AdminSuburbsMarker::MarkSuburbs(Node::Ptr & tree)
     MarkSuburbs(subtree);
 }
 
+void AdminSuburbsMarker::MarkLocality(Node::Ptr & tree)
+{
+  ASSERT(ObjectLevel::Locality == tree->GetData().GetLevel(), ());
+  for (auto & subtree : tree->GetChildren())
+    MarkSuburbsInCity(subtree);
+}
+
 void AdminSuburbsMarker::MarkSuburbsInCity(Node::Ptr & tree)
 {
   auto & place = tree->GetData();
   if (ObjectLevel::Locality == place.GetLevel())
   {
-    for (auto & subtree : tree->GetChildren())
-      MarkSuburbsInCity(subtree);
+    MarkLocality(tree);
     return;
   }
 
@@ -43,7 +48,10 @@ void AdminSuburbsMarker::MarkUnderLocalityAsSublocalities(Node::Ptr & tree)
   auto & place = tree->GetData();
   auto const level = place.GetLevel();
   if (ObjectLevel::Locality == level)
+  {
+    MarkLocality(tree);
     return;
+  }
 
   if (ObjectLevel::Suburb == level)
     place.SetLevel(ObjectLevel::Sublocality);

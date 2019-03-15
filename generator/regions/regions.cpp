@@ -236,15 +236,15 @@ struct RegionsGenerator
   void LogPlacePointStatistics(std::string const & countryName, CountryRegionsBuilderStats const & stats,
                                PlaceType placeType)
   {
-    auto count = [placeType] (std::map<PlaceType, CountryRegionsBuilderStats::Counter> const & pointsStats) {
+    auto countIn = [placeType] (std::map<PlaceType, CountryRegionsBuilderStats::Counter> const & pointsStats) {
       auto i = pointsStats.find(placeType);
       return i != end(pointsStats) ? i->second : 0;
     };  
-    auto const totalCount = count(stats.placePointsCounts);
-    auto const unbounedeCount = count(stats.unboudedPlacePointsCounts);
+    auto const totalCount = countIn(stats.placePointsCounts);
+    auto const unbounedeCount = countIn(stats.unboudedPlacePointsCounts);
     auto const bounedeCount = totalCount - unbounedeCount;
     LOG(LINFO, (countryName, ":", StringifyPlaceType(placeType), "place point" "-",
-                bounedeCount, "/", unbounedeCount,
+                bounedeCount, "/", totalCount,
                 "(" + std::to_string(100 * bounedeCount / totalCount) + "%)"));
   }
 

@@ -2,6 +2,8 @@
 
 #include "generator/regions/region.hpp"
 
+#include <utility>
+
 namespace generator
 {
 namespace regions
@@ -10,7 +12,7 @@ LocalityAdminRegionizer::LocalityAdminRegionizer(PlacePoint const & placePoint)
   : m_placePoint(placePoint)
 { }
 
-bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree)
+bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree) const
 {
   auto const & place = tree->GetData();
 
@@ -44,7 +46,7 @@ bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree)
   return false;
 }
 
-bool LocalityAdminRegionizer::ContainsSameLocality(Node::Ptr const & tree)
+bool LocalityAdminRegionizer::ContainsSameLocality(Node::Ptr const & tree) const
 {
   auto const & place = tree->GetData();
   auto const level = place.GetLevel();
@@ -61,7 +63,7 @@ bool LocalityAdminRegionizer::ContainsSameLocality(Node::Ptr const & tree)
   return false;
 }
 
-bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node)
+bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node) const
 {
   auto const & place = node->GetData();
 
@@ -71,7 +73,7 @@ bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node)
   return place.GetName() == m_placePoint.GetName();
 }
 
-void LocalityAdminRegionizer::InsertInto(Node::Ptr & node)
+void LocalityAdminRegionizer::InsertInto(Node::Ptr & node) const
 {
   auto const & parentPlace = node->GetData();
   LOG(LDEBUG, ("Place", StringifyPlaceType(m_placePoint.GetPlaceType()), "object", m_placePoint.GetId(),
