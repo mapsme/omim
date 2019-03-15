@@ -38,24 +38,16 @@ namespace generator
 namespace regions
 {
 namespace {
-struct RegionsGenerator
+class RegionsGenerator
 {
-  std::string m_pathInRegionsTmpMwm;
-  std::ofstream m_regionsKv;
-  feature::FeaturesCollector m_featuresCollector;
-
-  std::map<base::GeoObjectId, std::shared_ptr<std::string>> countriesRegionIds;
-  size_t regionsTotalCount = 0;
-
-  bool verbose;
-
+public:
   RegionsGenerator(std::string const & pathInRegionsTmpMwm, std::string const & pathInRegionsCollector,
                    std::string const & pathOutRegionsKv, std::string const & pathOutRepackedRegionsTmpMwm,
                    bool verbose, size_t threadsCount)
     : m_pathInRegionsTmpMwm{pathInRegionsTmpMwm}
     , m_regionsKv{pathOutRegionsKv, std::ofstream::out}
     , m_featuresCollector{pathOutRepackedRegionsTmpMwm}
-    , verbose{verbose}
+    , m_verbose{verbose}
   {
     LOG(LINFO, ("Start generating regions from ", m_pathInRegionsTmpMwm));
     auto timer = base::Timer();
@@ -71,10 +63,11 @@ struct RegionsGenerator
     LOG(LINFO, ("Regions objects key-value for", builder.GetCountryNames().size(),
                 "countries storage saved to",  pathOutRegionsKv));
     LOG(LINFO, ("Repacked regions temprory mwm saved to", pathOutRepackedRegionsTmpMwm));
-    LOG(LINFO, (regionsTotalCount, "total ids.", countriesRegionIds.size(), "unique ids."));
+    LOG(LINFO, (m_regionsTotalCount, "total ids.", m_countriesRegionIds.size(), "unique ids."));
     LOG(LINFO, ("Finish generating regions.", timer.ElapsedSeconds(), "seconds."));
   }
 
+private:
   void GenerateRegions(RegionsBuilder & builder)
   {
     std::multimap<base::GeoObjectId, Node::Ptr> objectsRegions;
@@ -107,20 +100,20 @@ struct RegionsGenerator
     size_t countryRegionsCount = 0;
     size_t countryRegionObjectCount = 0;
 
-    auto jsonPolicy = std::make_unique<JsonPolicy>(verbose);
+    auto jsonPolicy = std::make_unique<JsonPolicy>(m_verbose);
     for (auto const & tree : outers)
     {
-      if (verbose)
+      if (m_verbose)
         DebugPrintTree(tree);
 
       ForEachLevelPath(tree, [&] (NodePath const & path) {
-        ++regionsTotalCount;
+        ++m_regionsTotalCount;
         ++countryRegionsCount;
 
         auto const & node = path.back();
         auto const & place = node->GetData();
         auto const & placeId = place.GetId();
-        auto const & regionEmplace = countriesRegionIds.emplace(placeId, country);
+        auto const & regionEmplace = m_countriesRegionIds.emplace(placeId, country);
         if (!regionEmplace.second)
         {
           if (regionEmplace.first->second != country)  // object may have several regions
@@ -287,6 +280,15 @@ struct RegionsGenerator
 
     return summaryStr;
   }
+
+  std::string m_pathInRegionsTmpMwm;
+  std::ofstream m_regionsKv;
+  feature::FeaturesCollector m_featuresCollector;
+
+  std::map<base::GeoObjectId, std::shared_ptr<std::string>> m_countriesRegionIds;
+  size_t m_regionsTotalCount = 0;
+
+  bool m_verbose;
 };
 }  // namespace
 
