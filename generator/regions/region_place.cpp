@@ -4,8 +4,8 @@ namespace generator
 {
 namespace regions
 {
-RegionPlace::RegionPlace(Region const & region, boost::optional<PlacePoint> placeLabel)
-  : m_region{region}, m_placeLabel{placeLabel}
+RegionPlace::RegionPlace(Region const & region, boost::optional<PlacePoint> && placeLabel)
+  : m_region{region}, m_placeLabel{std::move(placeLabel)}
 { }
 
 base::GeoObjectId RegionPlace::GetId() const

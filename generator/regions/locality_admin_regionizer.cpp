@@ -67,7 +67,7 @@ bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node) const
 {
   auto const & place = node->GetData();
 
-  if (place.GetRegion().GetAdminLevel() <= AdminLevel::Four)
+  if (place.GetRegion().GetAdminLevel() <= AdminLevel::Three)
     return false;
 
   return place.GetName() == m_placePoint.GetName();

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <base/geo_object_id.hpp>
+
 #include <cstdint>
 #include <functional>
 #include <iosfwd>

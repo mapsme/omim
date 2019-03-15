@@ -6,7 +6,6 @@
 #include "geometry/rect2d.hpp"
 
 #include "coding/string_utf8_multilang.hpp"
-#include "coding/transliteration.hpp"
 
 #include "base/geo_object_id.hpp"
 

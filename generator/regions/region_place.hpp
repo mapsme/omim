@@ -4,6 +4,8 @@
 #include "generator/regions/place_point.hpp"
 #include "generator/regions/region.hpp"
 
+#include <string>
+
 #include <boost/optional.hpp>
 
 namespace generator
@@ -14,7 +16,7 @@ namespace regions
 class RegionPlace
 {
 public:
-  RegionPlace(Region const & region, boost::optional<PlacePoint> placeLabel = {});
+  RegionPlace(Region const & region, boost::optional<PlacePoint> && placeLabel = {});
 
   base::GeoObjectId GetId() const;
 

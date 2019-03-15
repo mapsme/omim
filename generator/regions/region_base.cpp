@@ -1,5 +1,7 @@
 #include "generator/regions/region_base.hpp"
 
+#include "coding/transliteration.hpp"
+
 #include "base/assert.hpp"
 #include "base/control_flow.hpp"
 

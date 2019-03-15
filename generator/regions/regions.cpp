@@ -40,9 +40,9 @@ namespace regions
 namespace {
 struct RegionsGenerator
 {
-  std::string pathInRegionsTmpMwm;
-  std::ofstream regionsKv;
-  feature::FeaturesCollector featuresCollector;
+  std::string m_pathInRegionsTmpMwm;
+  std::ofstream m_regionsKv;
+  feature::FeaturesCollector m_featuresCollector;
 
   std::map<base::GeoObjectId, std::shared_ptr<std::string>> countriesRegionIds;
   size_t regionsTotalCount = 0;
@@ -52,19 +52,19 @@ struct RegionsGenerator
   RegionsGenerator(std::string const & pathInRegionsTmpMwm, std::string const & pathInRegionsCollector,
                    std::string const & pathOutRegionsKv, std::string const & pathOutRepackedRegionsTmpMwm,
                    bool verbose, size_t threadsCount)
-    : pathInRegionsTmpMwm{pathInRegionsTmpMwm}
-    , regionsKv{pathOutRegionsKv, std::ofstream::out}
-    , featuresCollector{pathOutRepackedRegionsTmpMwm}
+    : m_pathInRegionsTmpMwm{pathInRegionsTmpMwm}
+    , m_regionsKv{pathOutRegionsKv, std::ofstream::out}
+    , m_featuresCollector{pathOutRepackedRegionsTmpMwm}
     , verbose{verbose}
   {
-    LOG(LINFO, ("Start generating regions from ", pathInRegionsTmpMwm));
+    LOG(LINFO, ("Start generating regions from ", m_pathInRegionsTmpMwm));
     auto timer = base::Timer();
     Transliteration::Instance().Init(GetPlatform().ResourcesDir());
 
     RegionInfo regionsInfoCollector(pathInRegionsCollector);
     RegionsBuilder::Regions regions;
     PlacePointsMap placePointsMap;
-    std::tie(regions, placePointsMap) = ReadDatasetFromTmpMwm(pathInRegionsTmpMwm, regionsInfoCollector);
+    std::tie(regions, placePointsMap) = ReadDatasetFromTmpMwm(m_pathInRegionsTmpMwm, regionsInfoCollector);
     RegionsBuilder builder(std::move(regions), std::move(placePointsMap), threadsCount);
     GenerateRegions(builder);
 
@@ -95,7 +95,7 @@ struct RegionsGenerator
     // is better to transfer this to index generation(function GenerateRegionsData),
     // or to combine index generation and key-value storage generation in
     // generator_tool(generator_tool.cpp).
-    RepackTmpMwm(pathInRegionsTmpMwm, objectsRegions);
+    RepackTmpMwm(m_pathInRegionsTmpMwm, objectsRegions);
   }
 
   void GenerateKv(std::string const & countryName, Node::PtrList const & outers,
@@ -133,7 +133,8 @@ struct RegionsGenerator
           return;
         }
 
-        regionsKv << static_cast<int64_t>(placeId.GetEncodedId()) << " " << jsonPolicy->ToString(path) << "\n";
+        m_regionsKv << static_cast<int64_t>(placeId.GetEncodedId()) << " " << jsonPolicy->ToString(path)
+                    << "\n";
         objectsRegions.emplace(placeId, node);
         ++countryRegionObjectCount;
       });
@@ -187,7 +188,7 @@ struct RegionsGenerator
         ResetGeometry(fb, region->second->GetData().GetRegion());
         fb.SetOsmId(id);
         fb.SetRank(0);
-        featuresCollector(fb);
+        m_featuresCollector(fb);
       }
     };
 
