@@ -29,7 +29,7 @@ public:
   bool IsValid() const;
 
   /// \returns Sorted vector of restrictions.
-  RestrictionVec const & GetRestrictions() const { return m_restrictions; }
+  std::vector<Restriction> const & GetRestrictions() const { return m_restrictions; }
 
 private:
   friend void UnitTest_RestrictionTest_ValidCase();
@@ -56,7 +56,7 @@ private:
   /// \returns true if restriction is add and false otherwise.
   bool AddRestriction(Restriction::Type type, std::vector<base::GeoObjectId> const & osmIds);
 
-  RestrictionVec m_restrictions;
+  std::vector<Restriction> m_restrictions;
   std::map<base::GeoObjectId, uint32_t> m_osmIdToFeatureId;
 };
 

@@ -33,7 +33,7 @@ bool BuildRoadRestrictions(std::string const & mwmPath, std::string const & rest
     return false;
   }
 
-  RestrictionVec const & restrictions = restrictionCollector.GetRestrictions();
+  std::vector<Restriction> const & restrictions = restrictionCollector.GetRestrictions();
 
   auto const firstOnlyIt =
       std::lower_bound(restrictions.cbegin(), restrictions.cend(),

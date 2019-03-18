@@ -29,7 +29,7 @@ using namespace std;
 //                  |
 // 2 *              *
 //    ↖          ↗   ↖
-//      F2      F3      F4
+//      F2     F3     F4
 //        ↖  ↗           ↖
 // 1        *               *
 //        ↗  ↖
@@ -89,7 +89,8 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF1F3Only)
 {
   Init(BuildXYGraph());
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {1 /* feature from */, 3 /* feature to */}}};
+    {1 /* feature from */, 3 /* feature to */}
+  };
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -106,7 +107,8 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5Only)
 {
   Init(BuildXYGraph());
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {3 /* feature from */, 5 /* feature to */}}};
+    {3 /* feature from */, 5 /* feature to */}
+  };
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -124,8 +126,9 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_PermutationsF3F5OnlyF1F3Only)
 {
   Init(BuildXYGraph());
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {1 /* feature from */, 3 /* feature to */}},
-      {Restriction::Type::Only, {3 /* feature from */, 5 /* feature to */}}};
+    {1 /* feature from */, 3 /* feature to */},
+    {3 /* feature from */, 5 /* feature to */}
+  };
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -144,11 +147,11 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_PermutationsF3F5OnlyAndF0F2No)
   Init(BuildXYGraph());
 
   RestrictionVec restrictionsNo = {
-    {Restriction::Type::No, {1 /* feature from */, 2 /* feature to */}}
+    {1 /* feature from */, 2 /* feature to */}
   };
 
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {3 /* feature from */, 5 /* feature to */}}
+    {3 /* feature from */, 5 /* feature to */}
   };
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -167,10 +170,10 @@ UNIT_CLASS_TEST(RestrictionTest, XYGraph_RestrictionF3F5OnlyAndF1F3No)
 {
   Init(BuildXYGraph());
   RestrictionVec restrictionsNo = {
-    {Restriction::Type::No, {1 /* feature from */, 3 /* feature to */}}
+    {1 /* feature from */, 3 /* feature to */}
   };
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {3 /* feature from */, 5 /* feature to */}}
+    {3 /* feature from */, 5 /* feature to */}
   };
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -310,8 +313,8 @@ UNIT_CLASS_TEST(RestrictionTest, XXGraph_PermutationsF1F3OnlyAndF3F6Only)
   Init(BuildXXGraph());
   RestrictionVec restrictionsNo;
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {1 /* feature from */, 3 /* feature to */}},
-      {Restriction::Type::Only, {3 /* feature from */, 6 /* feature to */}}
+    {1 /* feature from */, 3 /* feature to */},
+    {3 /* feature from */, 6 /* feature to */}
   };
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -327,15 +330,16 @@ UNIT_CLASS_TEST(RestrictionTest, XXGraph_PermutationsF1F3OnlyAndF3F6Only)
 UNIT_CLASS_TEST(RestrictionTest, XXGraph_RestrictionF1F3No)
 {
   Init(BuildXXGraph());
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {1 /* feature from */, 3 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {1 /* feature from */, 3 /* feature to */}
+  };
   vector<m2::PointD> const expectedGeom = {
       {2 /* x */, -1 /* y */}, {2, 0}, {3, 0}, {3, 1}, {2, 2}, {3, 3}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(9 /* featureId */, 0 /* segmentIdx */, m2::PointD(2, -1), *m_graph),
-      MakeFakeEnding(6, 0, m2::PointD(3, 3), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(6, 0, m2::PointD(3, 3), *m_graph), move(restrictionsNo), *this);
 }
 
 // Cumulative case. Route through XX graph with four restricitons of different types applying
@@ -344,13 +348,13 @@ UNIT_CLASS_TEST(RestrictionTest, XXGraph_PermutationsF1F3NoF7F8OnlyF8F4OnlyF4F6O
 {
   Init(BuildXXGraph());
   RestrictionVec restrictionsNo = {
-    {Restriction::Type::No, {1 /* feature from */, 3 /* feature to */}}
+    {1 /* feature from */, 3 /* feature to */}
   };
 
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {4 /* feature from */, 6 /* feature to */}},
-      {Restriction::Type::Only, {7 /* feature from */, 8 /* feature to */}},
-      {Restriction::Type::Only, {8 /* feature from */, 4 /* feature to */}}
+    {4 /* feature from */, 6 /* feature to */},
+    {7 /* feature from */, 8 /* feature to */},
+    {8 /* feature from */, 4 /* feature to */}
   };
 
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
@@ -378,7 +382,7 @@ UNIT_CLASS_TEST(RestrictionTest, XXGraph_CheckOnlyRestriction)
   };
 
   RestrictionVec restrictionsOnly = {
-    {Restriction::Type::Only, {0 /* feature from */, 2 /* feature to */}},
+    {0 /* feature from */, 2 /* feature to */},
   };
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,

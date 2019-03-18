@@ -18,7 +18,7 @@ public:
   explicit RestrictionLoader(MwmValue const & mwmValue, IndexGraph const & graph);
 
   bool HasRestrictions() const { return !m_restrictions.empty(); }
-  RestrictionVec && StealRestrictions() { return move(m_restrictions); }
+  RestrictionVec && StealRestrictions() { return std::move(m_restrictions); }
 
 private:
   unique_ptr<FilesContainerR::TReader> m_reader;
@@ -28,6 +28,6 @@ private:
 };
 
 void ConvertRestrictionsOnlyToNoAndSort(IndexGraph const & graph,
-                                        RestrictionVec const & restrictionsOnly,
+                                        RestrictionVec & restrictionsOnly,
                                         RestrictionVec & restrictionsNo);
 }  // namespace routing

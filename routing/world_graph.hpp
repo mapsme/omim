@@ -46,7 +46,7 @@ public:
 
   virtual void GetEdgeList(Segment const & segment, bool isOutgoing,
                            std::vector<SegmentEdge> & edges) = 0;
-  virtual void GetEdgeList(Segment const & segment, bool isOutgoing,
+  virtual void GetEdgeList(JointSegment const & vertex, Segment const & segment, bool isOutgoing,
                            std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights) = 0;
 
   // Checks whether path length meets restrictions. Restrictions may depend on the distance from

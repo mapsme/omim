@@ -9,6 +9,7 @@
 #include "base/assert.hpp"
 #include "base/checked_cast.hpp"
 #include "base/exception.hpp"
+#include "base/timer.hpp"
 
 #include "routing/world_graph.hpp"
 
@@ -28,14 +29,14 @@ bool IsUTurn(Segment const & u, Segment const & v)
          u.IsForward() != v.IsForward();
 }
 
-bool IsRestricted(RestrictionVec const & restrictions, Segment const & u, Segment const & v,
+/*bool IsRestricted(std::vector<std::vector<uint32_t>> const & restrictions, Segment const & u, Segment const & v,
                   bool isOutgoing)
 {
   uint32_t const featureIdFrom = isOutgoing ? u.GetFeatureId() : v.GetFeatureId();
   uint32_t const featureIdTo = isOutgoing ? v.GetFeatureId() : u.GetFeatureId();
 
   if (!binary_search(restrictions.cbegin(), restrictions.cend(),
-                     Restriction(Restriction::Type::No, {featureIdFrom, featureIdTo})))
+                     std::vector<uint32_t>({featureIdFrom, featureIdTo})))
   {
     return false;
   }
@@ -44,22 +45,21 @@ bool IsRestricted(RestrictionVec const & restrictions, Segment const & u, Segmen
     return true;
 
   // @TODO(bykoianko) According to current code if a feature id is marked as a feature with
-  // restrictricted U-turn it's restricted to make a U-turn on the both ends of the feature.
-  // Generally speaking it's wrong. In osm there's information about the end of the feature
-  // where the U-turn is restricted. It's necessary to pass the data to mwm and to use it here.
-  // Please see test LineGraph_RestrictionF1F1No for details.
-  //
-  // Another example when it's necessary to be aware about feature end participated in restriction
-  // is
-  //        *---F1---*
-  //        |        |
-  // *--F3--A        B--F4--*
-  //        |        |
-  //        *---F2---*
-  // In case of restriction F1-A-F2 or F1-B-F2 of any type (No, Only) the important information
-  // is lost.
+  //   restrictricted U-turn it's restricted to make a U-turn on the both ends of the feature.
+  //   Generally speaking it's wrong. In osm there's information about the end of the feature
+  //   where the U-turn is restricted. It's necessary to pass the data to mwm and to use it here.
+  //   Please see test LineGraph_RestrictionF1F1No for details.
+  //   Another example when it's necessary to be aware about feature end participated in restriction
+  //   is
+  //          *---F1---*
+  //          |        |
+  //   *--F3--A        B--F4--*
+  //          |        |
+  //          *---F2---*
+  //   In case of restriction F1-A-F2 or F1-B-F2 of any type (No, Only) the important information
+  //   is lost.
   return IsUTurn(u, v);
-}
+}*/
 }  // namespace
 
 namespace routing
@@ -137,7 +137,8 @@ void IndexGraph::GetLastPointsForJoint(vector<Segment> const & children,
   }
 }
 
-void IndexGraph::GetEdgeList(Segment const & parent, bool isOutgoing, vector<JointEdge> & edges,
+void IndexGraph::GetEdgeList(JointSegment const & parentJoint,
+                             Segment const & parent, bool isOutgoing, vector<JointEdge> & edges,
                              vector<RouteWeight> & parentWeights)
 {
   vector<Segment> possibleChildren;
@@ -146,8 +147,9 @@ void IndexGraph::GetEdgeList(Segment const & parent, bool isOutgoing, vector<Joi
   vector<uint32_t> lastPoints;
   GetLastPointsForJoint(possibleChildren, isOutgoing, lastPoints);
 
-  ReconstructJointSegment(parent, possibleChildren, lastPoints,
-                          isOutgoing, edges, parentWeights);
+  std::map<JointSegment, JointSegment> parents;
+  ReconstructJointSegment(parentJoint, parent, possibleChildren, lastPoints,
+                          isOutgoing, edges, parentWeights, parents);
 }
 
 boost::optional<JointEdge>
@@ -159,8 +161,8 @@ IndexGraph::GetJointEdgeByLastPoint(Segment const & parent, Segment const & firs
 
   vector<JointEdge> edges;
   vector<RouteWeight> parentWeights;
-  ReconstructJointSegment(parent, possibleChilds, lastPoints,
-                          isOutgoing, edges, parentWeights);
+  /*ReconstructJointSegment(parent, possibleChilds, lastPoints,
+                          isOutgoing, edges, parentWeights);*/
 
   CHECK_LESS_OR_EQUAL(edges.size(), 1, ());
   if (edges.size() == 1)
@@ -184,7 +186,17 @@ void IndexGraph::Import(vector<Joint> const & joints)
 void IndexGraph::SetRestrictions(RestrictionVec && restrictions)
 {
   ASSERT(is_sorted(restrictions.cbegin(), restrictions.cend()), ());
-  m_restrictions = move(restrictions);
+  base::HighResTimer timer;
+  for (auto const & restriction : restrictions)
+  {
+    auto & forward = m_restrictionsForward[restriction.back()];
+    forward.emplace_back(restriction.begin(), std::prev(restriction.end()));
+    std::reverse(forward.begin(), forward.end());
+
+    m_restrictionsBackward[restriction.front()].emplace_back(std::next(restriction.begin()), restriction.end());
+  }
+
+  LOG(LINFO, ("Restrictions build done:", timer.ElapsedNano() / 1e6, "ms"));
 }
 
 void IndexGraph::SetRoadAccess(RoadAccess && roadAccess) { m_roadAccess = move(roadAccess); }
@@ -272,12 +284,14 @@ void IndexGraph::GetSegmentCandidateForJoint(Segment const & parent, bool isOutg
 /// \param |parentWeights| - see |IndexGraphStarterJoints::GetEdgeList| method about this argument.
 ///                          Shotly - in case of |isOutgoing| == false, method saves here the weights
 ///                                   from parent to firstChildren.
-void IndexGraph::ReconstructJointSegment(Segment const & parent,
+void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
+                                         Segment const & parent,
                                          vector<Segment> const & firstChildren,
                                          vector<uint32_t> const & lastPointIds,
                                          bool isOutgoing,
                                          vector<JointEdge> & jointEdges,
-                                         vector<RouteWeight> & parentWeights)
+                                         vector<RouteWeight> & parentWeights,
+                                         std::map<JointSegment, JointSegment> & parents)
 {
   CHECK_EQUAL(firstChildren.size(), lastPointIds.size(), ());
 
@@ -310,7 +324,7 @@ void IndexGraph::ReconstructJointSegment(Segment const & parent,
     }
 
     if (parent.GetFeatureId() != firstChild.GetFeatureId() &&
-        IsRestricted(m_restrictions, parent, firstChild, isOutgoing))
+        IsRestricted(parentJoint, firstChild, parent.GetFeatureId(), isOutgoing, parents))
     {
       continue;
     }
@@ -372,8 +386,8 @@ void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bo
     return;
   }
 
-  if (IsRestricted(m_restrictions, from, to, isOutgoing))
-    return;
+  /*if (IsRestricted(m_restrictions, from, to, isOutgoing))
+    return;*/
 
   if (m_roadAccess.GetFeatureType(to.GetFeatureId()) == RoadAccess::Type::No)
     return;

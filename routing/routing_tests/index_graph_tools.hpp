@@ -254,7 +254,7 @@ void TestRestrictions(vector<m2::PointD> const & expectedRouteGeom,
 // take arbitrary values.
 void TestTopologyGraph(TestIndexGraphTopology const & graph, TestIndexGraphTopology::Vertex from,
                        TestIndexGraphTopology::Vertex to, bool expectedPathFound,
-                       double const expectedWeight,
+                       double expectedWeight,
                        vector<TestIndexGraphTopology::Edge> const & expectedEdges);
 
 // Creates FakeEnding projected to |Segment(kTestNumMwmId, featureId, segmentIdx, true /* forward

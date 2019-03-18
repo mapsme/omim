@@ -7,6 +7,8 @@
 
 #include "base/stl_helpers.hpp"
 
+#include <iterator>
+
 namespace
 {
 using namespace routing;
@@ -64,33 +66,52 @@ RestrictionLoader::RestrictionLoader(MwmValue const & mwmValue, IndexGraph const
 }
 
 void ConvertRestrictionsOnlyToNoAndSort(IndexGraph const & graph,
-                                        RestrictionVec const & restrictionsOnly,
+                                        RestrictionVec & restrictionsOnly,
                                         RestrictionVec & restrictionsNo)
 {
-  for (Restriction const & o : restrictionsOnly)
+  for (auto & restriction : restrictionsOnly)
   {
-    if (o.m_featureIds.size() != 2)
-      continue;
+    if (restriction.size() != 2)
+    {
+      LOG(LINFO, ("Hello to fucking restriction mafucka"));
+    }
 
-    if (!graph.IsRoad(o.m_featureIds[0]) || !graph.IsRoad(o.m_featureIds[1]))
+    if (std::any_of(restriction.begin(), restriction.end(),
+                    [&graph](auto const & item)
+                    {
+                      return !graph.IsRoad(item);
+                    }))
+    {
       continue;
+    }
+
+    auto const lastFeatureId     = *(restriction.end() - 1);
+    auto const prevLastFeatureId = *(restriction.end() - 2);
 
     // Looking for a joint of an intersection of |o| features.
     Joint::Id const common =
-        GetCommonEndJoint(graph.GetRoad(o.m_featureIds[0]), graph.GetRoad(o.m_featureIds[1]));
+      GetCommonEndJoint(graph.GetRoad(prevLastFeatureId), graph.GetRoad(lastFeatureId));
+
     if (common == Joint::kInvalidId)
       continue;
+
+    std::move_iterator<std::vector<uint32_t>::iterator> start(restriction.begin());
+    std::move_iterator<std::vector<uint32_t>::iterator> end(restriction.end() - 1);
+    vector<uint32_t> commonVector(start, end);
 
     // Adding restriction of type No for all features of joint |common| except for
     // the second feature of restriction |o|.
     graph.ForEachPoint(common, [&](RoadPoint const & rp) {
-      if (rp.GetFeatureId() != o.m_featureIds[1 /* to */])
+      if (rp.GetFeatureId() != lastFeatureId)
       {
-        restrictionsNo.emplace_back(Restriction::Type::No,
-              vector<uint32_t>({o.m_featureIds[0 /* from */], rp.GetFeatureId()}));
+        std::vector<uint32_t> result(commonVector);
+        result.emplace_back(rp.GetFeatureId());
+        restrictionsNo.emplace_back(std::move(result));
       }
     });
   }
+
+//  LOG(LINFO, ("restrictionsNo.size() =", restrictionsNo.size()));
   base::SortUnique(restrictionsNo);
 }
 }  // namespace routing

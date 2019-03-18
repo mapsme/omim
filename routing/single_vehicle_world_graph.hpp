@@ -34,7 +34,7 @@ public:
   void GetEdgeList(Segment const & segment, bool isOutgoing,
                    std::vector<SegmentEdge> & edges) override;
 
-  void GetEdgeList(Segment const & parent, bool isOutgoing,
+  void GetEdgeList(JointSegment const & parentJoint, Segment const & parent, bool isOutgoing,
                    std::vector<JointEdge> & jointEdges, std::vector<RouteWeight> & parentWeights) override;
 
   bool CheckLength(RouteWeight const &, double) const override { return true; }

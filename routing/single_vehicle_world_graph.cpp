@@ -61,7 +61,8 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
   jointEdges.insert(jointEdges.end(), newCrossMwmEdges.begin(), newCrossMwmEdges.end());
 }
 
-void SingleVehicleWorldGraph::GetEdgeList(Segment const & parent, bool isOutgoing,
+void SingleVehicleWorldGraph::GetEdgeList(JointSegment const & parentJoint,
+                                          Segment const & parent, bool isOutgoing,
                                           vector<JointEdge> & jointEdges,
                                           vector<RouteWeight> & parentWeights)
 {
@@ -71,7 +72,7 @@ void SingleVehicleWorldGraph::GetEdgeList(Segment const & parent, bool isOutgoin
     return;
 
   auto & indexGraph = GetIndexGraph(parent.GetMwmId());
-  indexGraph.GetEdgeList(parent, isOutgoing, jointEdges, parentWeights);
+  indexGraph.GetEdgeList(parentJoint, parent, isOutgoing, jointEdges, parentWeights);
 
   if (m_mode != WorldGraphMode::JointSingleMwm)
     CheckAndProcessTransitFeatures(parent, jointEdges, parentWeights, isOutgoing);

@@ -47,7 +47,7 @@ struct Restriction
   Type m_type;
 };
 
-using RestrictionVec = std::vector<Restriction>;
+using RestrictionVec = std::vector<std::vector<uint32_t>>;
 
 std::string ToString(Restriction::Type const & type);
 std::string DebugPrint(Restriction::Type const & type);
@@ -96,8 +96,8 @@ class RestrictionSerializer
 public:
   template <class Sink>
   static void Serialize(RestrictionHeader const & header,
-                        RestrictionVec::const_iterator begin,
-                        RestrictionVec::const_iterator end, Sink & sink)
+                        std::vector<Restriction>::const_iterator begin,
+                        std::vector<Restriction>::const_iterator end, Sink & sink)
   {
     auto const firstOnlyIt = begin + header.m_noRestrictionCount;
     SerializeSingleType(begin, firstOnlyIt, sink);
@@ -109,10 +109,8 @@ public:
                           RestrictionVec & restrictionsNo,
                           RestrictionVec & restrictionsOnly, Source & src)
   {
-    DeserializeSingleType(Restriction::Type::No, header.m_noRestrictionCount,
-                          restrictionsNo, src);
-    DeserializeSingleType(Restriction::Type::Only, header.m_onlyRestrictionCount,
-                          restrictionsOnly, src);
+    DeserializeSingleType(header.m_noRestrictionCount, restrictionsNo, src);
+    DeserializeSingleType(header.m_onlyRestrictionCount, restrictionsOnly, src);
   }
 
 private:
@@ -123,8 +121,8 @@ private:
   /// \param end is an iterator to the element after the last element to serialize.
   /// \note All restrictions should have the same type.
   template <class Sink>
-  static void SerializeSingleType(RestrictionVec::const_iterator begin,
-                                  RestrictionVec::const_iterator end, Sink & sink)
+  static void SerializeSingleType(std::vector<Restriction>::const_iterator begin,
+                                  std::vector<Restriction>::const_iterator end, Sink & sink)
   {
     if (begin == end)
       return;
@@ -138,7 +136,7 @@ private:
     {
       CHECK_EQUAL(type, begin->m_type, ());
 
-      routing::Restriction const & restriction = *begin;
+      Restriction const & restriction = *begin;
       CHECK(restriction.IsValid(), ());
       CHECK_LESS(1, restriction.m_featureIds.size(),
                  ("No sense in zero or one link restrictions."));
@@ -161,8 +159,7 @@ private:
   }
 
   template <class Source>
-  static bool DeserializeSingleType(Restriction::Type type, uint32_t count,
-                                    RestrictionVec & restrictions, Source & src)
+  static bool DeserializeSingleType(uint32_t count, RestrictionVec & restrictions, Source & src)
   {
     uint32_t prevFirstLinkFeatureId = 0;
     BitReader<Source> bits(src);
@@ -176,16 +173,16 @@ private:
       }
       size_t const numLinks = biasedLinkNumber + 1 /* number of link is two or more */;
 
-      Restriction restriction(type, {} /* links */);
-      restriction.m_featureIds.resize(numLinks);
+      std::vector<uint32_t> restriction;
+      restriction.resize(numLinks);
       auto const biasedFirstFeatureId = coding::DeltaCoder::Decode(bits);
       if (biasedFirstFeatureId == 0)
       {
         LOG(LERROR, ("Decoded first link restriction feature id delta is zero."));
         return false;
       }
-      restriction.m_featureIds[0] =
-          prevFirstLinkFeatureId + base::checked_cast<uint32_t>(biasedFirstFeatureId) - 1;
+
+      restriction[0] = prevFirstLinkFeatureId + base::checked_cast<uint32_t>(biasedFirstFeatureId) - 1;
       for (size_t j = 1; j < numLinks; ++j)
       {
         auto const biasedDelta = coding::DeltaCoder::Decode(bits);
@@ -196,12 +193,12 @@ private:
         }
 
         uint32_t const delta = base::asserted_cast<uint32_t>(biasedDelta - 1);
-        restriction.m_featureIds[j] =
-            static_cast<uint32_t>(bits::ZigZagDecode(delta) + restriction.m_featureIds[j - 1]);
+        restriction[j] =
+            static_cast<uint32_t>(bits::ZigZagDecode(delta) + restriction[j - 1]);
       }
 
-      prevFirstLinkFeatureId = restriction.m_featureIds[0];
-      restrictions.push_back(restriction);
+      prevFirstLinkFeatureId = restriction[0];
+      restrictions.emplace_back(std::move(restriction));
     }
     return true;
   }

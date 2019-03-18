@@ -34,6 +34,8 @@ public:
   using Edge = SegmentEdge;
   using Weight = RouteWeight;
 
+  using Restrictions = std::unordered_map<uint32_t, std::vector<std::vector<uint32_t>>>;
+
   IndexGraph() = default;
   IndexGraph(shared_ptr<Geometry> geometry, shared_ptr<EdgeEstimator> estimator,
              RoutingOptions routingOptions = RoutingOptions());
@@ -41,8 +43,9 @@ public:
   // Put outgoing (or ingoing) egdes for segment to the 'edges' vector.
   void GetEdgeList(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges);
 
-  void GetEdgeList(Segment const & parent, bool isOutgoing, std::vector<JointEdge> & edges,
-                   std::vector<RouteWeight> & parentWeights);
+  void GetEdgeList(JointSegment const & parentJoint,
+                   Segment const & parent, bool isOutgoing, vector<JointEdge> & edges,
+                   vector<RouteWeight> & parentWeights);
 
   boost::optional<JointEdge> GetJointEdgeByLastPoint(Segment const & parent, Segment const & firstChild,
                                                      bool isOutgoing, uint32_t lastPoint);
@@ -99,6 +102,13 @@ public:
     return GetGeometry().GetRoad(segment.GetFeatureId()).GetPoint(segment.GetPointId(front));
   }
 
+private:
+
+  template <typename Parent>
+  bool IsRestricted(Parent const & parentJoint,
+                    Segment const & current, uint32_t parentFeatureId, bool isOutgoing,
+                    std::map<Parent, Parent> & parents) const;
+
   RouteWeight CalcSegmentWeight(Segment const & segment);
 
 private:
@@ -109,17 +119,65 @@ private:
   RouteWeight GetPenalties(Segment const & u, Segment const & v);
 
   void GetSegmentCandidateForJoint(Segment const & parent, bool isOutgoing, std::vector<Segment> & children);
-  void ReconstructJointSegment(Segment const & parent, std::vector<Segment> const & firstChildren,
-                               std::vector<uint32_t> const & lastPointIds,
-                               bool isOutgoing, std::vector<JointEdge> & jointEdges,
-                               std::vector<RouteWeight> & parentWeights);
+  void ReconstructJointSegment(JointSegment const & parentJoint,
+                               Segment const & parent,
+                               vector<Segment> const & firstChildren,
+                               vector<uint32_t> const & lastPointIds,
+                               bool isOutgoing,
+                               vector<JointEdge> & jointEdges,
+                               vector<RouteWeight> & parentWeights,
+                               std::map<JointSegment, JointSegment> & parents);
 
   shared_ptr<Geometry> m_geometry;
   shared_ptr<EdgeEstimator> m_estimator;
   RoadIndex m_roadIndex;
   JointIndex m_jointIndex;
-  RestrictionVec m_restrictions;
+  Restrictions m_restrictionsForward;
+  Restrictions m_restrictionsBackward;
   RoadAccess m_roadAccess;
   RoutingOptions m_avoidRoutingOptions;
 };
+
+template <typename Parent>
+bool IndexGraph::IsRestricted(Parent const & parentJoint,
+                              Segment const & current, uint32_t parentFeatureId, bool isOutgoing,
+                              std::map<Parent, Parent> & parents) const
+{
+  auto const & restrictions = isOutgoing ? m_restrictionsForward : m_restrictionsBackward;
+  auto const it = restrictions.find(current.GetFeatureId());
+  if (it == restrictions.cend())
+    return false;
+
+  std::vector<JointSegment> parentOfCurrent;
+  for (std::vector<uint32_t> const & restriction : it->second)
+  {
+    bool startFromParent = restriction[0] == parentFeatureId;
+    if (restriction.size() == 2 && startFromParent)
+      return true;
+
+    // tmp debug
+    if (parents.empty())
+      continue;
+
+    JointSegment & curPrev = parents[parentJoint];
+    for (size_t i = 1; i < restriction.size(); ++i)
+    {
+      if (i == parentOfCurrent.size())
+        parentOfCurrent.emplace_back(parents[curPrev]);
+
+      ASSERT_LESS(i, parentOfCurrent.size(), ());
+      if (parentOfCurrent[i].GetFeatureId() == restriction[i])
+      {
+        if (i + 1 == restriction.size())
+          return true;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  return false;
+}
 }  // namespace routing

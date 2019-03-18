@@ -81,15 +81,16 @@ UNIT_CLASS_TEST(RestrictionTest, CrossGraph_UTurn)
   SetStarter(MakeFakeEnding(0 /* featureId */, 0 /* segmentIdx */, m2::PointD(-1, 0), *m_graph),
              MakeFakeEnding(7, 0, m2::PointD(1, 2), *m_graph));
 
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {1 /* feature from */, 6 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {1 /* feature from */, 6 /* feature to */}
+  };
   vector<m2::PointD> const expectedGeom = {{-1.0, 0.0}, {0.0, 0.0}, {1.0, 0.0}, {1.0, -1.0},
                                            {1.0, 0.0},  {1.0, 1.0}, {1.0, 2.0}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(0 /* featureId */, 0 /* segmentIdx */, m2::PointD(-1, 0), *m_graph),
-      MakeFakeEnding(7, 0, m2::PointD(1, 2), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(7, 0, m2::PointD(1, 2), *m_graph), move(restrictionsNo), *this);
 }
 
 // Finish
@@ -156,36 +157,36 @@ UNIT_CLASS_TEST(RestrictionTest, TriangularGraph)
 UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_RestrictionNoF2F1)
 {
   Init(BuildTriangularGraph());
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {2 /* feature from */, 1 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {2 /* feature from */, 1 /* feature to */}};
   vector<m2::PointD> const expectedGeom = {
       {3 /* x */, 0 /* y */}, {2, 0}, {1, 0}, {0, 0}, {0, 2}, {0, 3}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(5 /* featureId */, 0 /* senmentIdx */, m2::PointD(3, 0), *m_graph),
-      MakeFakeEnding(4, 0, m2::PointD(0, 3), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(4, 0, m2::PointD(0, 3), *m_graph), move(restrictionsNo), *this);
 }
 
 UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_RestrictionNoF5F2)
 {
   Init(BuildTriangularGraph());
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {5 /* feature from */, 2 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {5 /* feature from */, 2 /* feature to */}};
   vector<m2::PointD> const expectedGeom = {
       {3 /* x */, 0 /* y */}, {2, 0}, {1, 0}, {0, 0}, {0, 2}, {0, 3}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(5 /* featureId */, 0 /* segmentIdx */, m2::PointD(3, 0), *m_graph),
-      MakeFakeEnding(4, 0, m2::PointD(0, 3), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(4, 0, m2::PointD(0, 3), *m_graph), move(restrictionsNo), *this);
 }
 
 UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_RestrictionOnlyF5F3)
 {
   Init(BuildTriangularGraph());
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {5 /* feature from */, 3 /* feature to */}}};
+      {{5 /* feature from */, 3 /* feature to */}}};
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -202,11 +203,11 @@ UNIT_CLASS_TEST(RestrictionTest, TriangularGraph_RestrictionNoF5F2RestrictionOnl
 {
   Init(BuildTriangularGraph());
   RestrictionVec restrictionsNo = {
-    {Restriction::Type::No, {5 /* feature from */, 2 /* feature to */}},
+    {5 /* feature from */, 2 /* feature to */}
   };
 
   RestrictionVec restrictionsOnly = {
-    {Restriction::Type::Only, {5 /* feature from */, 3 /* feature to */}},
+    {5 /* feature from */, 3 /* feature to */}
   };
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -277,22 +278,24 @@ UNIT_CLASS_TEST(RestrictionTest, TwowayCornerGraph)
 UNIT_CLASS_TEST(RestrictionTest, TwowayCornerGraph_RestrictionF3F2No)
 {
   Init(BuildTwowayCornerGraph());
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {3 /* feature from */, 2 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {3 /* feature from */, 2 /* feature to */}
+  };
   vector<m2::PointD> const expectedGeom = {
       {3 /* x */, 0 /* y */}, {2, 0}, {1, 0}, {0, 0}, {0, 1}, {0, 2}, {0, 3}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(3 /* featureId */, 0 /* segmentIdx */, m2::PointD(3, 0), *m_graph),
-      MakeFakeEnding(4, 0, m2::PointD(0, 3), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(4, 0, m2::PointD(0, 3), *m_graph), move(restrictionsNo), *this);
 }
 
 UNIT_CLASS_TEST(RestrictionTest, TwowayCornerGraph_RestrictionF3F1Only)
 {
   Init(BuildTwowayCornerGraph());
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {3 /* feature from */, 1 /* feature to */}}};
+    {3 /* feature from */, 1 /* feature to */}
+  };
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -384,7 +387,8 @@ UNIT_CLASS_TEST(RestrictionTest, TwoSquaresGraph_RestrictionF10F3Only)
 {
   Init(BuildTwoSquaresGraph());
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {10 /* feature from */, 3 /* feature to */}}};
+    {10 /* feature from */, 3 /* feature to */}
+  };
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -402,8 +406,9 @@ UNIT_CLASS_TEST(RestrictionTest, TwoSquaresGraph_RestrictionF10F3OnlyF3F4Only)
 {
   Init(BuildTwoSquaresGraph());
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {3 /* feature from */, 4 /* feature to */}},
-      {Restriction::Type::Only, {10 /* feature from */, 3 /* feature to */}}};
+    {3 /* feature from */, 4 /* feature to */},
+    {10 /* feature from */, 3 /* feature to */}
+  };
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -421,10 +426,11 @@ UNIT_CLASS_TEST(RestrictionTest, TwoSquaresGraph_RestrictionF2F8NoRestrictionF9F
 {
   Init(BuildTwoSquaresGraph());
   RestrictionVec restrictionsNo = {
-      {Restriction::Type::No, {2 /* feature from */, 8 /* feature to */}}};  // Invalid restriction.
-  RestrictionVec const restrictionsOnly = {
-      {Restriction::Type::Only,
-       {9 /* feature from */, 1 /* feature to */}}};  // Invalid restriction.
+    {2 /* feature from */, 8 /* feature to */}
+  };  // Invalid restriction.
+  RestrictionVec restrictionsOnly = {
+    {9 /* feature from */, 1 /* feature to */}
+  };  // Invalid restriction.
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
 
@@ -496,41 +502,43 @@ UNIT_TEST(FlagGraph)
 UNIT_CLASS_TEST(RestrictionTest, FlagGraph_RestrictionF0F3No)
 {
   Init(BuildFlagGraph());
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {0 /* feature from */, 3 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {0 /* feature from */, 3 /* feature to */}
+  };
   vector<m2::PointD> const expectedGeom = {
       {2 /* x */, 0 /* y */}, {1, 0}, {0, 0}, {0, 1}, {0.5, 1}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(0 /* featureId */, 0 /* segmentIdx */, m2::PointD(2, 0), *m_graph),
-      MakeFakeEnding(6, 0, m2::PointD(0.5, 1), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(6, 0, m2::PointD(0.5, 1), *m_graph), move(restrictionsNo), *this);
 }
 
 // Route through flag graph with one restriciton (type only) from F0 to F1.
 UNIT_CLASS_TEST(RestrictionTest, FlagGraph_RestrictionF0F1Only)
 {
   Init(BuildFlagGraph());
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {0 /* feature from */, 1 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {0 /* feature from */, 1 /* feature to */}
+  };
   vector<m2::PointD> const expectedGeom = {{2 /* x */, 0 /* y */}, {1, 0}, {1, 1}, {0.5, 1}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(0 /* featureId */, 0 /* segmentIdx */, m2::PointD(2, 0), *m_graph),
-      MakeFakeEnding(6, 0, m2::PointD(0.5, 1), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(6, 0, m2::PointD(0.5, 1), *m_graph), move(restrictionsNo), *this);
 }
 
 UNIT_CLASS_TEST(RestrictionTest, FlagGraph_PermutationsF1F3NoF7F8OnlyF8F4OnlyF4F6Only)
 {
   Init(BuildFlagGraph());
   RestrictionVec restrictionsNo = {
-      {Restriction::Type::No, {0 /* feature from */, 3 /* feature to */}}
+    {0 /* feature from */, 3 /* feature to */}
   };
 
   RestrictionVec restrictionsOnly = {
-    {Restriction::Type::Only, {0 /* feature from */, 1 /* feature to */}},
-    {Restriction::Type::Only, {1 /* feature from */, 2 /* feature to */}}
+    {0 /* feature from */, 1 /* feature to */},
+    {1 /* feature from */, 2 /* feature to */}
   };
 
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
@@ -601,15 +609,16 @@ UNIT_TEST(PosterGraph)
 UNIT_CLASS_TEST(RestrictionTest, PosterGraph_RestrictionF0F3No)
 {
   Init(BuildPosterGraph());
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {0 /* feature from */, 3 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {0 /* feature from */, 3 /* feature to */}
+  };
   vector<m2::PointD> const expectedGeom = {
       {2 /* x */, 0 /* y */}, {1, 0}, {0, 0}, {0, 1}, {0.5, 1}, {1, 1}, {2, 1}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(0 /* featureId */, 0 /* segmentIdx */, m2::PointD(2, 0), *m_graph),
-      MakeFakeEnding(6, 0, m2::PointD(2, 1), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(6, 0, m2::PointD(2, 1), *m_graph), move(restrictionsNo), *this);
 }
 
 // Route through poster graph with restrictions F0-F1 (type only).
@@ -618,7 +627,8 @@ UNIT_CLASS_TEST(RestrictionTest, PosterGraph_RestrictionF0F1Only)
   Init(BuildPosterGraph());
 
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {0 /* feature from */, 1 /* feature to */}}};
+    {0 /* feature from */, 1 /* feature to */}
+  };
   RestrictionVec restrictionsNo;
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -733,8 +743,9 @@ UNIT_CLASS_TEST(RestrictionTest, SquaresGraph_RestrictionF0F1OnlyF1F5Only)
   Init(BuildSquaresGraph());
   RestrictionVec restrictionsNo;
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {0 /* feature from */, 1 /* feature to */}},
-      {Restriction::Type::Only, {1 /* feature from */, 5 /* feature to */}}};
+    {0 /* feature from */, 1 /* feature to */},
+    {1 /* feature from */, 5 /* feature to */}
+  };
 
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
@@ -778,15 +789,16 @@ unique_ptr<SingleVehicleWorldGraph> BuildLineGraph()
 UNIT_CLASS_TEST(RestrictionTest, LineGraph_RestrictionF1F1No)
 {
   Init(BuildLineGraph());
-  RestrictionVec restrictions = {
-      {Restriction::Type::No, {1 /* feature from */, 1 /* feature to */}}};
+  RestrictionVec restrictionsNo = {
+    {1 /* feature from */, 1 /* feature to */}
+  };
   vector<m2::PointD> const expectedGeom = {
       {0 /* x */, 0 /* y */}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}};
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(0 /* featureId */, 0 /* segmentIdx */, m2::PointD(0, 0), *m_graph),
-      MakeFakeEnding(2, 0, m2::PointD(5, 0), *m_graph), move(restrictions), *this);
+      MakeFakeEnding(2, 0, m2::PointD(5, 0), *m_graph), move(restrictionsNo), *this);
 }
 
 // 2 *---F2-->*
@@ -830,7 +842,8 @@ UNIT_CLASS_TEST(RestrictionTest, FGraph_RestrictionF0F2Only)
   Init(BuildFGraph());
   RestrictionVec restrictionsNo;
   RestrictionVec restrictionsOnly = {
-      {Restriction::Type::Only, {0 /* feature from */, 2 /* feature to */}}};
+    {0 /* feature from */, 2 /* feature to */}
+  };
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
 
