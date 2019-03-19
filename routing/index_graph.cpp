@@ -25,12 +25,6 @@ using namespace base;
 using namespace routing;
 using namespace std;
 
-bool IsUTurn(Segment const & u, Segment const & v)
-{
-  return u.GetFeatureId() == v.GetFeatureId() && u.GetSegmentIdx() == v.GetSegmentIdx() &&
-         u.IsForward() != v.IsForward();
-}
-
 /*bool IsRestricted(std::vector<std::vector<uint32_t>> const & restrictions, Segment const & u, Segment const & v,
                   bool isOutgoing)
 {
@@ -66,6 +60,12 @@ bool IsUTurn(Segment const & u, Segment const & v)
 
 namespace routing
 {
+bool IsUTurn(Segment const & u, Segment const & v)
+{
+  return u.GetFeatureId() == v.GetFeatureId() && u.GetSegmentIdx() == v.GetSegmentIdx() &&
+         u.IsForward() != v.IsForward();
+}
+
 std::map<Segment, Segment> IndexGraph::kEmptyParentsSegments;
 
 IndexGraph::IndexGraph(shared_ptr<Geometry> geometry, shared_ptr<EdgeEstimator> estimator,
@@ -335,10 +335,12 @@ void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
     }
 
     if (parent.GetFeatureId() != firstChild.GetFeatureId() &&
-        IsRestricted(parentJoint, firstChild, isOutgoing, parents))
+        IsRestricted(parentJoint, parent, firstChild, isOutgoing, parents))
     {
       continue;
     }
+
+    if (parent.GetFeatureId())
 
     // Check current JointSegment for bad road access between segments.
     rp = firstChild.GetRoadPoint(isOutgoing);
@@ -397,7 +399,7 @@ void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bo
     return;
   }
 
-  if (IsRestricted(from, to, isOutgoing, parents))
+  if (IsRestricted(from, from, to, isOutgoing, parents))
     return;
 
   if (m_roadAccess.GetFeatureType(to.GetFeatureId()) == RoadAccess::Type::No)

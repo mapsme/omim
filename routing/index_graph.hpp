@@ -142,8 +142,11 @@ private:
   RoutingOptions m_avoidRoutingOptions;
 };
 
+bool IsUTurn(Segment const & u, Segment const & v);
+
 template <typename Parent>
 bool IndexGraph::IsRestricted(Parent const & parent,
+                              Segment const & parentSegment,
                               Segment const & current, bool isOutgoing,
                               std::map<Parent, Parent> & parents) const
 {
@@ -165,6 +168,11 @@ bool IndexGraph::IsRestricted(Parent const & parent,
   uint32_t parentFeatureId = parent.GetFeatureId();
   for (std::vector<uint32_t> const & restriction : it->second)
   {
+    // TODO (@gmoryes) remove u_turn check here
+    bool fakeNoUTurn = current.GetFeatureId() == parentFeatureId && !IsUTurn(parentSegment, current);
+    if (fakeNoUTurn)
+      continue;
+
     bool prevIsParent = restriction[0] == parentFeatureId;
     if (!prevIsParent)
       continue;
