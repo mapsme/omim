@@ -16,15 +16,15 @@ void CountryRegionsBuilderStats::UpdateByNode(Node::Ptr const & node)
 
   auto const level = place.GetLevel();
   if (level != ObjectLevel::Unknown)
-    ++objectLevelCounts[level];
+    ++m_objectLevelCounts[level];
 
   auto const placeType = place.GetPlaceType();
   if (placeType != PlaceType::Unknown)
-    ++placeCounts[placeType];
+    ++m_placeCounts[placeType];
 
   auto const adminLevel = place.GetAdminLevel();
   if (adminLevel != AdminLevel::Unknown)
-    UpdateAdminStatsByNode(adminLevels[adminLevel], node);
+    UpdateAdminStatsByNode(m_adminLevels[adminLevel], node);
 }
 
 void CountryRegionsBuilderStats::UpdateAdminStatsByNode(AdminLevelStats & adminLevelStats,
@@ -32,18 +32,18 @@ void CountryRegionsBuilderStats::UpdateAdminStatsByNode(AdminLevelStats & adminL
 {
   auto const & place = node->GetData();
 
-  ++adminLevelStats.count;
+  ++adminLevelStats.m_count;
 
   auto const placeType = place.GetPlaceType();
   if (placeType != PlaceType::Unknown)
-    ++adminLevelStats.placeCounts[placeType];
+    ++adminLevelStats.m_placeCounts[placeType];
 
   for (auto const & subnode : node->GetChildren())
   {
     auto const & subplace = subnode->GetData();
     auto const subplaceType = subplace.GetPlaceType();
     if (subplaceType != PlaceType::Unknown)
-      ++adminLevelStats.placeCounts[subplaceType];
+      ++adminLevelStats.m_placeCounts[subplaceType];
   }
 }
 
@@ -51,10 +51,10 @@ void CountryRegionsBuilderStats::Update(PlacePointsMap const & placePoints,
                                         PlacePointsMap const & unboudedPlacePoints)
 {
   for (auto const & place : placePoints)
-    ++placePointsCounts[place.second.GetPlaceType()];
+    ++m_placePointsCounts[place.second.GetPlaceType()];
 
   for (auto const & place : unboudedPlacePoints)
-    ++unboudedPlacePointsCounts[place.second.GetPlaceType()];
+    ++m_unboudedPlacePointsCounts[place.second.GetPlaceType()];
 }
 }  // namespace regions
 }  // namespace generator

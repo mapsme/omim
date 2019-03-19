@@ -15,15 +15,15 @@ struct CountryRegionsBuilderStats
 
   struct AdminLevelStats
   {
-    Counter count;
-    std::map<PlaceType, Counter> placeCounts;
+    Counter m_count;
+    std::map<PlaceType, Counter> m_placeCounts;
   };
 
-  std::map<ObjectLevel, Counter> objectLevelCounts;
-  std::map<PlaceType, Counter> placeCounts;
-  std::map<PlaceType, Counter> placePointsCounts;
-  std::map<PlaceType, Counter> unboudedPlacePointsCounts;
-  std::map<AdminLevel, AdminLevelStats> adminLevels;
+  std::map<ObjectLevel, Counter> m_objectLevelCounts;
+  std::map<PlaceType, Counter> m_placeCounts;
+  std::map<PlaceType, Counter> m_placePointsCounts;
+  std::map<PlaceType, Counter> m_unboudedPlacePointsCounts;
+  std::map<AdminLevel, AdminLevelStats> m_adminLevels;
 
   void Update(Node::PtrList const & countryOuters);
   void Update(PlacePointsMap const & placePoints, PlacePointsMap const & unboudedPlacePoints);

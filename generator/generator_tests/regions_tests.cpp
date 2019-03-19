@@ -42,10 +42,12 @@ auto NodeEntry = OsmElement::EntityType::Node;
 
 struct TagValue
 {
-  string key;
-  string value;
+  string m_key;
+  string m_value;
 
-  TagValue operator=(string const & value) const { return {key, value}; }
+  TagValue(string key, string value = {}) : m_key{move(key)}, m_value{move(value)} { }
+
+  TagValue operator=(string const & value) const { return {m_key, value}; }
 };
 
 TagValue const admin{"admin_level"};
@@ -55,10 +57,10 @@ TagValue const ba{"boundary", "administrative"};
 
 struct OsmElementData
 {
-  uint64_t id;
-  vector<TagValue> tags;
-  vector<m2::PointD> polygon;
-  vector<OsmElement::Member> members;
+  uint64_t m_id;
+  vector<TagValue> m_tags;
+  vector<m2::PointD> m_polygon;
+  vector<OsmElement::Member> m_members;
 };
 
 OsmElement MakeOsmElement(uint64_t id, string const & adminLevel, string const & place = "")
@@ -74,11 +76,11 @@ OsmElement MakeOsmElement(uint64_t id, string const & adminLevel, string const &
 OsmElement MakeOsmElement(OsmElementData const & elementData)
 {
   OsmElement el;
-  el.id = elementData.id;
-  el.type = elementData.polygon.size() > 1 ? OsmElement::EntityType::Relation : OsmElement::EntityType::Node;
-  for (auto const tag : elementData.tags)
-    el.AddTag(tag.key, tag.value);
-  el.m_members = elementData.members;
+  el.id = elementData.m_id;
+  el.type = elementData.m_polygon.size() > 1 ? OsmElement::EntityType::Relation : OsmElement::EntityType::Node;
+  for (auto const tag : elementData.m_tags)
+    el.AddTag(tag.m_key, tag.m_value);
+  el.m_members = elementData.m_members;
   return el;
 }
 
@@ -105,15 +107,15 @@ void BuildTestData(vector<OsmElementData> const & testData,
     auto el = MakeOsmElement(elementData);
     FeatureBuilder1 fb1;
 
-    CHECK(elementData.polygon.size() == 1 || elementData.polygon.size() == 2, ());
-    if (elementData.polygon.size() == 1)
+    CHECK(elementData.m_polygon.size() == 1 || elementData.m_polygon.size() == 2, ());
+    if (elementData.m_polygon.size() == 1)
     {
-      fb1.SetCenter(elementData.polygon[0]);
+      fb1.SetCenter(elementData.m_polygon[0]);
     }
-    else if (elementData.polygon.size() == 2)
+    else if (elementData.m_polygon.size() == 2)
     {
-      auto const & p1 = elementData.polygon[0];
-      auto const & p2 = elementData.polygon[1];
+      auto const & p1 = elementData.m_polygon[0];
+      auto const & p2 = elementData.m_polygon[1];
       fb1.AddPolygon({{p1.x, p1.y}, {p1.x, p2.y}, {p2.x, p2.y}, {p2.x, p1.y}, {p1.x, p1.x}});
       fb1.SetAreaAddHoles({});
     }
@@ -128,7 +130,7 @@ void BuildTestData(vector<OsmElementData> const & testData,
     fb1.SetParams(params);
 
     auto const id = fb1.GetMostGenericOsmId();
-    if (elementData.polygon.size() == 1)
+    if (elementData.m_polygon.size() == 1)
       placePointsMap.emplace(id, PlacePoint{fb1, collector.Get(id)});
     else
       regions.emplace_back(fb1, collector.Get(id));

@@ -212,16 +212,16 @@ private:
   {
     LOG(LINFO, ("-----------------------------------------------------------------"));
 
-    for (auto const & item : stats.objectLevelCounts)
+    for (auto const & item : stats.m_objectLevelCounts)
       LOG(LINFO, (countryName, ":", GetLabel(item.first), "label", "-", item.second));
 
-    for (auto const & item : stats.placeCounts)
+    for (auto const & item : stats.m_placeCounts)
       LOG(LINFO, (countryName, ":", StringifyPlaceType(item.first), "place", "-", item.second));
 
     for (auto const placeType : GetPlacePointTypes(stats))
       LogPlacePointStatistics(countryName, stats, placeType);
 
-    for (auto const & item : stats.adminLevels)
+    for (auto const & item : stats.m_adminLevels)
       LogStatistics(countryName, item.first, item.second);
 
     LOG(LINFO, ("-----------------------------------------------------------------"));
@@ -234,8 +234,8 @@ private:
       auto i = pointsStats.find(placeType);
       return i != end(pointsStats) ? i->second : 0;
     };  
-    auto const totalCount = countIn(stats.placePointsCounts);
-    auto const unboundedCount = countIn(stats.unboudedPlacePointsCounts);
+    auto const totalCount = countIn(stats.m_placePointsCounts);
+    auto const unboundedCount = countIn(stats.m_unboudedPlacePointsCounts);
     auto const boundedCount = totalCount - unboundedCount;
     LOG(LINFO, (countryName, ":", StringifyPlaceType(placeType), "place point" "-",
                 boundedCount, "/", totalCount,
@@ -247,21 +247,21 @@ private:
   {
     auto const adminLevelLabel = "admin_level=" + std::to_string(static_cast<int>(adminLevel));
 
-    auto placeSummary = GeneratePlaceSummary(adminLevelStats.placeCounts);
+    auto placeSummary = GeneratePlaceSummary(adminLevelStats.m_placeCounts);
     if (!placeSummary.empty())
       placeSummary = "(" + placeSummary + ")";
 
-    LOG(LINFO, (countryName, ":", adminLevelLabel, "-", adminLevelStats.count, placeSummary));
+    LOG(LINFO, (countryName, ":", adminLevelLabel, "-", adminLevelStats.m_count, placeSummary));
   }
 
   std::set<PlaceType> GetPlacePointTypes(CountryRegionsBuilderStats const & stats)
   {
     std::set<PlaceType> placePointTypes;
 
-    for (auto const & placeTypeStats : stats.placePointsCounts)
+    for (auto const & placeTypeStats : stats.m_placePointsCounts)
       placePointTypes.insert(placeTypeStats.first);
 
-    for (auto const & placeTypeStats : stats.placePointsCounts)
+    for (auto const & placeTypeStats : stats.m_placePointsCounts)
       placePointTypes.insert(placeTypeStats.first);
 
     return placePointTypes;
