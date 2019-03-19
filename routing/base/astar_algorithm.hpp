@@ -576,7 +576,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     params.m_onVisitedVertexCallback(stateV.vertex,
                                      cur->forward ? cur->finalVertex : cur->startVertex);
 
-    auto p = MercatorBounds::FromLatLon({56.0785422, 21.1226221});
+    auto p = MercatorBounds::FromLatLon({55.8015964, 37.5489224});
     auto curP = graph.GetPoint(stateV.vertex, stateV.vertex.IsForward());
     if (base::AlmostEqualAbs(p, curP, 1e-3))
     {

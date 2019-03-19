@@ -165,7 +165,8 @@ bool IndexGraph::IsRestricted(Parent const & parent,
     return true;
   };
 
-  uint32_t parentFeatureId = parent.GetFeatureId();
+  // Be carefull here with fake |parent|, |parentSegment| is always non-fake
+  uint32_t parentFeatureId = parentSegment.GetFeatureId();
   for (std::vector<uint32_t> const & restriction : it->second)
   {
     // TODO (@gmoryes) remove u_turn check here

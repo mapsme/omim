@@ -88,6 +88,12 @@ void ConvertRestrictionsOnlyToNoAndSort(IndexGraph const & graph,
     auto const lastFeatureId     = *(restriction.end() - 1);
     auto const prevLastFeatureId = *(restriction.end() - 2);
 
+    if (lastFeatureId == 301633 || prevLastFeatureId == 301633)
+    {
+      int asd = 5;
+      (void)asd;
+    }
+
     // Looking for a joint of an intersection of |o| features.
     Joint::Id const common =
       GetCommonEndJoint(graph.GetRoad(prevLastFeatureId), graph.GetRoad(lastFeatureId));

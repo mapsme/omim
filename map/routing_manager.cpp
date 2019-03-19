@@ -272,7 +272,7 @@ RoutingManager::RoutingManager(Callbacks && callbacks, Delegate & delegate)
     GetPlatform().GetMarketingService().SendMarketingEvent(marketing::kRoutingCalculatingRoute, {});
 
     bool draw = std::getenv("DRAW_M") && !std::string(std::getenv("DRAW_M")).empty();
-    int eachN = 5;
+    int eachN = 1;
     if (draw)
     {
       std::ifstream input("/tmp/points_forward");
