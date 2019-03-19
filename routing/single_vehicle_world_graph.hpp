@@ -75,10 +75,27 @@ public:
     return m_loader->GetIndexGraph(numMwmId);
   }
 
+  void SetAStarParents(bool forward, std::map<Segment, Segment> & parents) override
+  {
+    if (forward)
+      m_parentsForSegments.forward = &parents;
+    else
+      m_parentsForSegments.backward = &parents;
+  }
+
+  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents)
+  {
+    if (forward)
+      m_parentsForJoints.forward = &parents;
+    else
+      m_parentsForJoints.backward = &parents;
+  }
+
 private:
   // Retrieves the same |jointEdges|, but into others mwms.
   // If they are cross mwm edges, of course.
-  void CheckAndProcessTransitFeatures(Segment const & parent,
+  void CheckAndProcessTransitFeatures(JointSegment const & parentJoint,
+                                      Segment const & parent,
                                       std::vector<JointEdge> & jointEdges,
                                       std::vector<RouteWeight> & parentWeights,
                                       bool isOutgoing);
@@ -92,5 +109,25 @@ private:
   std::shared_ptr<EdgeEstimator> m_estimator;
   RoutingOptions m_avoidRoutingOptions = RoutingOptions();
   WorldGraphMode m_mode = WorldGraphMode::NoLeaps;
+
+  template <typename Vertex>
+  struct AStarParents
+  {
+    using ParentType = std::map<Vertex, Vertex>;
+    static ParentType kEmpty;
+    ParentType * forward = &kEmpty;
+    ParentType * backward = &kEmpty;
+  };
+
+  AStarParents<Segment> m_parentsForSegments;
+  AStarParents<JointSegment> m_parentsForJoints;
 };
+
+template <>
+SingleVehicleWorldGraph::AStarParents<Segment>::ParentType
+SingleVehicleWorldGraph::AStarParents<Segment>::kEmpty;
+
+template <>
+SingleVehicleWorldGraph::AStarParents<JointSegment>::ParentType
+SingleVehicleWorldGraph::AStarParents<JointSegment>::kEmpty;
 }  // namespace routing

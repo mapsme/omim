@@ -71,6 +71,7 @@ public:
   }
 
   Segment const & GetSegmentOfFakeJoint(JointSegment const & joint, bool start);
+  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> parents) {}
 
   ~IndexGraphStarterJoints() override = default;
 

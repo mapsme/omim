@@ -253,7 +253,7 @@ unique_ptr<SingleVehicleWorldGraph> BuildXXGraph()
 //             F4       F5
 //           ↗             ↘
 // 1        *                *
-//           ↖               ↓
+//           ↖               ↑
 //             F2            F3
 //               ↖           ↓ <-- Finish
 // 0 *              *--F1--->*

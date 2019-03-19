@@ -267,9 +267,47 @@ RoutingManager::RoutingManager(Callbacks && callbacks, Delegate & delegate)
   , m_extrapolator(
         [this](location::GpsInfo const & gpsInfo) { this->OnExtrapolatedLocationUpdate(gpsInfo); })
 {
-  auto const routingStatisticsFn = [](map<string, string> const & statistics) {
+  auto const routingStatisticsFn = [this](map<string, string> const & statistics) {
     alohalytics::LogEvent("Routing_CalculatingRoute", statistics);
     GetPlatform().GetMarketingService().SendMarketingEvent(marketing::kRoutingCalculatingRoute, {});
+
+    bool draw = std::getenv("DRAW_M") && !std::string(std::getenv("DRAW_M")).empty();
+    int eachN = 5;
+    if (draw)
+    {
+      std::ifstream input("/tmp/points_forward");
+      double lat, lon;
+      int cnt = 0;
+      auto editSession = m_bmManager->GetEditSession();
+      while (input >> lat >> lon)
+      {
+        if (++cnt % eachN != 0)
+          continue;
+
+        auto pt = MercatorBounds::FromLatLon({lat, lon});
+        editSession.SetIsVisible(UserMark::Type::DEBUG_MARK, true);
+        auto point = editSession.CreateUserMark<ColoredDebugMarkPoint>(pt);
+        point->SetColor(dp::Color::Red());
+      }
+    }
+
+    if (draw)
+    {
+      std::ifstream input("/tmp/points_backward");
+      double lat, lon;
+      int cnt = 0;
+      auto editSession = m_bmManager->GetEditSession();
+      while (input >> lat >> lon)
+      {
+        if (++cnt % eachN != 0)
+          continue;
+
+        auto pt = MercatorBounds::FromLatLon({lat, lon});
+        editSession.SetIsVisible(UserMark::Type::DEBUG_MARK, true);
+        auto point = editSession.CreateUserMark<ColoredDebugMarkPoint>(pt);
+        point->SetColor(dp::Color::Blue());
+      }
+    }
   };
 
   m_routingSession.Init(routingStatisticsFn,

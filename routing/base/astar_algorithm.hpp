@@ -14,6 +14,10 @@
 #include <queue>
 #include <vector>
 
+#include <fstream>
+#include <cstdlib>
+#include "geometry/mercator.hpp"
+
 namespace routing
 {
 template <typename Vertex, typename Edge, typename Weight>
@@ -462,6 +466,25 @@ typename AStarAlgorithm<Vertex, Edge, Weight>::Result
 AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
                                                             RoutingResult<Vertex, Weight> & result) const
 {
+  bool draw = std::getenv("DRAW_A") && !std::string(std::getenv("DRAW_A")).empty();
+  std::ofstream output_forward;
+  std::ofstream output_backward;
+  static uint64_t cnt = 0;
+  if (cnt == 0 && draw)
+  {
+    std::ofstream tmp1("/tmp/points_forward", std::ofstream::trunc);
+    std::ofstream tmp2("/tmp/points_backward", std::ofstream::trunc);
+  }
+  cnt++;
+
+  if (draw)
+  {
+    output_forward.open("/tmp/points_forward", std::ofstream::app);
+    output_backward.open("/tmp/points_backward", std::ofstream::app);
+    output_forward << std::setprecision(20);
+    output_backward << std::setprecision(20);
+  }
+
   auto & graph = params.m_graph;
   auto const & finalVertex = params.m_finalVertex;
   auto const & startVertex = params.m_startVertex;
@@ -538,11 +561,28 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     State const stateV = cur->queue.top();
     cur->queue.pop();
 
+    if (draw)
+    {
+      auto p = MercatorBounds::ToLatLon(graph.GetPoint(stateV.vertex, stateV.vertex.IsForward()));
+      if (cur->forward)
+        output_forward << p.lat << ' ' << p.lon << '\n';
+      else
+        output_backward << p.lat << ' ' << p.lon << '\n';
+    }
+
     if (stateV.distance > cur->bestDistance[stateV.vertex])
       continue;
 
     params.m_onVisitedVertexCallback(stateV.vertex,
                                      cur->forward ? cur->finalVertex : cur->startVertex);
+
+    auto p = MercatorBounds::FromLatLon({56.0785422, 21.1226221});
+    auto curP = graph.GetPoint(stateV.vertex, stateV.vertex.IsForward());
+    if (base::AlmostEqualAbs(p, curP, 1e-3))
+    {
+      int asd = 4;
+      (void)asd;
+    }
 
     cur->GetAdjacencyList(stateV.vertex, adj);
     for (auto const & edge : adj)
@@ -715,7 +755,8 @@ void AStarAlgorithm<Vertex, Edge, Weight>::ReconstructPath(Vertex const & v,
       break;
     cur = it->second;
   }
-  reverse(path.begin(), path.end());
+
+  std::reverse(path.begin(), path.end());
 }
 
 // static

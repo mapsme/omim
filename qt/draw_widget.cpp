@@ -176,8 +176,8 @@ void DrawWidget::mousePressEvent(QMouseEvent * e)
 
   m2::PointD const pt = GetDevicePoint(e);
 
-  ms::LatLon from = {55.77399, 37.68468};
-  ms::LatLon to =   {55.77198, 37.68782};
+  ms::LatLon from = {55.77787, 37.70405};
+  ms::LatLon to =   {55.77691, 37.70428};
 
   if (IsLeftButton(e))
   {

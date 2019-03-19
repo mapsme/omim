@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "routing/single_vehicle_world_graph.hpp"
 
 #include <utility>
@@ -6,22 +8,32 @@ namespace routing
 {
 using namespace std;
 
+template <>
+SingleVehicleWorldGraph::AStarParents<Segment>::ParentType
+SingleVehicleWorldGraph::AStarParents<Segment>::kEmpty = {};
+
+template <>
+SingleVehicleWorldGraph::AStarParents<JointSegment>::ParentType
+SingleVehicleWorldGraph::AStarParents<JointSegment>::kEmpty = {};
+
 SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> crossMwmGraph,
                                                  unique_ptr<IndexGraphLoader> loader,
                                                  shared_ptr<EdgeEstimator> estimator)
-  : m_crossMwmGraph(move(crossMwmGraph)), m_loader(move(loader)), m_estimator(estimator)
+  : m_crossMwmGraph(move(crossMwmGraph)), m_loader(move(loader)), m_estimator(std::move(estimator))
 {
   CHECK(m_loader, ());
   CHECK(m_estimator, ());
 }
 
-void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & parent,
+void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(JointSegment const & parentJoint,
+                                                             Segment const & parent,
                                                              vector<JointEdge> & jointEdges,
                                                              vector<RouteWeight> & parentWeights,
                                                              bool isOutgoing)
 {
   bool opposite = !isOutgoing;
   vector<JointEdge> newCrossMwmEdges;
+  auto & parents = isOutgoing ? *m_parentsForJoints.forward : *m_parentsForJoints.forward;
   for (size_t i = 0; i < jointEdges.size(); ++i)
   {
     JointSegment const & target = jointEdges[i].GetTarget();
@@ -46,8 +58,9 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
       twinIndexGraph.GetLastPointsForJoint({start}, isOutgoing, lastPoints);
       ASSERT_EQUAL(lastPoints.size(), 1, ());
 
-      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(parent, target.GetSegment(!opposite),
-                                                                isOutgoing, lastPoints.back()))
+      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(parentJoint, parent,
+                                                                target.GetSegment(!opposite),
+                                                                isOutgoing, lastPoints.back(), parents))
       {
         newCrossMwmEdges.emplace_back(*edge);
         newCrossMwmEdges.back().GetTarget().GetFeatureId() = twinFeatureId;
@@ -71,11 +84,12 @@ void SingleVehicleWorldGraph::GetEdgeList(JointSegment const & parentJoint,
   if (!parent.IsRealSegment())
     return;
 
+  auto & parents = isOutgoing ? *m_parentsForJoints.forward : *m_parentsForJoints.backward;
   auto & indexGraph = GetIndexGraph(parent.GetMwmId());
-  indexGraph.GetEdgeList(parentJoint, parent, isOutgoing, jointEdges, parentWeights);
+  indexGraph.GetEdgeList(parentJoint, parent, isOutgoing, jointEdges, parentWeights, parents);
 
   if (m_mode != WorldGraphMode::JointSingleMwm)
-    CheckAndProcessTransitFeatures(parent, jointEdges, parentWeights, isOutgoing);
+    CheckAndProcessTransitFeatures(parentJoint, parent, jointEdges, parentWeights, isOutgoing);
 }
 
 void SingleVehicleWorldGraph::GetEdgeList(Segment const & segment, bool isOutgoing,
@@ -95,8 +109,9 @@ void SingleVehicleWorldGraph::GetEdgeList(Segment const & segment, bool isOutgoi
     return;
   }
 
+  auto & parents = isOutgoing ? *m_parentsForSegments.forward : *m_parentsForSegments.backward;
   IndexGraph & indexGraph = m_loader->GetIndexGraph(segment.GetMwmId());
-  indexGraph.GetEdgeList(segment, isOutgoing, edges);
+  indexGraph.GetEdgeList(segment, isOutgoing, edges, parents);
 
   if (m_mode != WorldGraphMode::SingleMwm && m_crossMwmGraph && m_crossMwmGraph->IsTransition(segment, isOutgoing))
     GetTwins(segment, isOutgoing, edges);

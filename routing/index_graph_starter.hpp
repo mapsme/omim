@@ -120,6 +120,11 @@ public:
 
   ~IndexGraphStarter() override = default;
 
+  void SetAStarParents(bool forward, std::map<Segment, Segment> & parents)
+  {
+    m_graph.SetAStarParents(forward, parents);
+  }
+
 private:
   // Start or finish ending information. 
   struct Ending
@@ -174,6 +179,5 @@ private:
   Ending m_finish;
   double m_startToFinishDistanceM;
   FakeGraph<Segment, FakeVertex> m_fake;
-  RoutingOptions m_avoidRoutingOptions;
 };
 }  // namespace routing

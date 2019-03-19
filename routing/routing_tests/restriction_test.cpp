@@ -692,7 +692,7 @@ UNIT_TEST(TwoWayGraph)
 //            |         |
 // 0 *<--F5---*<--F1----*<--F0---* Start
 // Finish
-//   0        1        2         3
+//   0        1         2        3
 // Note 1. F0, F1 and F5 are one-way features. F3, F2 and F4 are two-way features.
 // Note 2. Any feature contains of one segment.
 unique_ptr<SingleVehicleWorldGraph> BuildSquaresGraph()
@@ -735,22 +735,20 @@ UNIT_TEST(SquaresGraph)
   TestRouteGeometry(*starter, Algorithm::Result::OK, expectedGeom);
 }
 
-// It's a test on correct working in case when because of adding restrictions
-// start and finish could be match on blocked, moved or copied edges.
-// See IndexGraphStarter constructor for a detailed description.
 UNIT_CLASS_TEST(RestrictionTest, SquaresGraph_RestrictionF0F1OnlyF1F5Only)
 {
   Init(BuildSquaresGraph());
   RestrictionVec restrictionsNo;
   RestrictionVec restrictionsOnly = {
-    {0 /* feature from */, 1 /* feature to */},
-    {1 /* feature from */, 5 /* feature to */}
+    {0 /* feature from */, 3 /* feature to */}
   };
 
   ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
                                      restrictionsNo);
 
-  vector<m2::PointD> const expectedGeom = {{3 /* x */, 0 /* y */}, {2, 0}, {1, 0}, {0, 0}};
+  vector<m2::PointD> const expectedGeom = {
+    {3.0, 0.0}, {2.0, 0.0}, {2.0, 1.0}, {1.0, 1.0}, {1.0, 0.0}, {0.0, 0.0}
+  };
 
   TestRestrictions(
       expectedGeom, Algorithm::Result::OK,
@@ -758,7 +756,8 @@ UNIT_CLASS_TEST(RestrictionTest, SquaresGraph_RestrictionF0F1OnlyF1F5Only)
       MakeFakeEnding(5, 0, m2::PointD(0, 0), *m_graph), move(restrictionsNo), *this);
 }
 
-// 0 Start *--F0--->*---F1---*---F1---*---F1---*---F2-->* Finish
+// TODO (@gmoryes) make true u_turn restriction
+// 0 Start *--F0--->*<--F1---*---F1---*---F1---*---F2-->* Finish
 //         0        1        2        3        4        5
 // Note. F0 and F2 are one segment one-way features. F1 is a 3 segment two-way feature.
 unique_ptr<SingleVehicleWorldGraph> BuildLineGraph()
@@ -939,5 +938,83 @@ UNIT_CLASS_TEST(RestrictionTest, NontransiStartAndShortWay)
   SetStarter(MakeFakeEnding(0 /* featureId */, 0 /* segmentIdx */, m2::PointD(0, 0), *m_graph),
              MakeFakeEnding(2, 0, m2::PointD(3, 0), *m_graph));
   TestRouteGeometry(*m_starter, Algorithm::Result::OK, expectedGeom);
+}
+
+// 2                 *
+//                ↗     ↘
+//              F5        F4
+//            ↗              ↘                  Finish
+// 1         *                 *<- F3 ->*-> F8 -> *
+//            ↖                         ↑
+//              F6                      F2
+//         Start   ↖                    ↑
+// 0         *-> F7 ->*-> F0 ->*-> F1 ->*
+//          -1        0        1        2         3
+//
+unique_ptr<SingleVehicleWorldGraph> BuildTwoCubeGraph()
+{
+  unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
+  loader->AddRoad(0 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{0.0, 0.0}, {1.0, 0.0}}));
+  loader->AddRoad(1 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 0.0}, {2.0, 0.0}}));
+  loader->AddRoad(2 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 0.0}, {2.0, 1.0}}));
+  loader->AddRoad(3 /* feature id */, false /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 1.0}, {2.0, 1.0}}));
+  loader->AddRoad(4 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{0.0, 2.0}, {1.0, 1.0}}));
+  loader->AddRoad(5 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{-1.0, 1.0}, {0.0, 2.0}}));
+  loader->AddRoad(6 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{0.0, 0.0}, {-1.0, 1.0}}));
+  loader->AddRoad(7 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{-1.0, 0.0}, {0.0, 0.0}}));
+  loader->AddRoad(8 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 1.0}, {3.0, 1.0}}));
+
+  vector<Joint> const joints = {
+    // {{/* feature id */, /* point id */}, ... }
+    MakeJoint({{7, 0}}),                 /* joint at point (-1, 0) */
+    MakeJoint({{0, 0}, {6, 0}, {7, 1}}), /* joint at point (0, 0) */
+    MakeJoint({{0, 1}, {1, 0}}),         /* joint at point (1, 0) */
+    MakeJoint({{1, 1}, {2, 0}}),         /* joint at point (2, 0) */
+    MakeJoint({{2, 1}, {3, 1}, {8, 0}}), /* joint at point (2, 1) */
+    MakeJoint({{3, 0}, {4, 1}}),         /* joint at point (1, 1) */
+    MakeJoint({{5, 1}, {4, 0}}),         /* joint at point (0, 2) */
+    MakeJoint({{6, 1}, {5, 0}}),         /* joint at point (-1, 1) */
+    MakeJoint({{8, 1}}),                 /* joint at point (3, 1) */
+
+  };
+
+  traffic::TrafficCache const trafficCache;
+  shared_ptr<EdgeEstimator> estimator = CreateEstimatorForCar(trafficCache);
+  return BuildWorldGraph(move(loader), estimator, joints);
+}
+
+UNIT_CLASS_TEST(RestrictionTest, RestrictionNoWithWayAsVia_1)
+{
+  Init(BuildTwoCubeGraph());
+
+  m2::PointD const start(-1.0, 0.0);
+  m2::PointD const finish(3.0, 1.0);
+  auto const test = [&](vector<m2::PointD> const & expectedGeom, RestrictionVec && restrictionsNo) {
+    TestRestrictions(
+      expectedGeom, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+      MakeFakeEnding(7 /* featureId */, 0 /* segmentIdx */, start, *m_graph),
+      MakeFakeEnding(8 /* featureId */, 0 /* segmentIdx */, finish, *m_graph),
+      move(restrictionsNo), *this);
+  };
+
+  // Can not go from |0| to |2| via |1|
+  RestrictionVec restrictionsNo = {
+    {0 /* feature 0 */, 1 /* feature 1 */, 2 /* feature 2 */}
+  };
+
+  // Check that without restrictions we can find path better.
+  LOG(LINFO, ("Start first"));
+  test({start, {0, 0}, {-1, 1}, {0, 2}, {1, 1}, {2, 1}, finish}, move(restrictionsNo));
+  LOG(LINFO, ("Start second"));
+  test({start, {0, 0}, {1, 0}, {2, 0}, {2, 1}, finish}, RestrictionVec());
 }
 }  // namespace routing_test

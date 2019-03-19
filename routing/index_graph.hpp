@@ -40,15 +40,19 @@ public:
   IndexGraph(shared_ptr<Geometry> geometry, shared_ptr<EdgeEstimator> estimator,
              RoutingOptions routingOptions = RoutingOptions());
 
+  static std::map<Segment, Segment> kEmptyParentsSegments;
   // Put outgoing (or ingoing) egdes for segment to the 'edges' vector.
-  void GetEdgeList(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges);
+  void GetEdgeList(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges,
+                   std::map<Segment, Segment> & parents = kEmptyParentsSegments);
 
   void GetEdgeList(JointSegment const & parentJoint,
                    Segment const & parent, bool isOutgoing, vector<JointEdge> & edges,
-                   vector<RouteWeight> & parentWeights);
+                   vector<RouteWeight> & parentWeights, std::map<JointSegment, JointSegment> & parents);
 
-  boost::optional<JointEdge> GetJointEdgeByLastPoint(Segment const & parent, Segment const & firstChild,
-                                                     bool isOutgoing, uint32_t lastPoint);
+  boost::optional<JointEdge> GetJointEdgeByLastPoint(JointSegment const & parentJoint,
+                                                     Segment const & parent, Segment const & firstChild,
+                                                     bool isOutgoing, uint32_t lastPoint,
+                                                     std::map<JointSegment, JointSegment> & parents);
 
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
 
@@ -113,9 +117,9 @@ private:
 
 private:
   void GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
-                           vector<SegmentEdge> & edges);
+                           vector<SegmentEdge> & edges, std::map<Segment, Segment> & parents);
   void GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
-                          vector<SegmentEdge> & edges);
+                          vector<SegmentEdge> & edges, std::map<Segment, Segment> & parents);
   RouteWeight GetPenalties(Segment const & u, Segment const & v);
 
   void GetSegmentCandidateForJoint(Segment const & parent, bool isOutgoing, std::vector<Segment> & children);
@@ -139,8 +143,8 @@ private:
 };
 
 template <typename Parent>
-bool IndexGraph::IsRestricted(Parent const & parentJoint,
-                              Segment const & current, uint32_t parentFeatureId, bool isOutgoing,
+bool IndexGraph::IsRestricted(Parent const & parent,
+                              Segment const & current, bool isOutgoing,
                               std::map<Parent, Parent> & parents) const
 {
   auto const & restrictions = isOutgoing ? m_restrictionsForward : m_restrictionsBackward;
@@ -148,25 +152,40 @@ bool IndexGraph::IsRestricted(Parent const & parentJoint,
   if (it == restrictions.cend())
     return false;
 
-  std::vector<JointSegment> parentOfCurrent;
+  std::vector<Parent> parentOfCurrent;
+  auto const getParent = [&parents, &parentOfCurrent](Parent const & p) {
+    auto const parentIt = parents.find(p);
+    if (parentIt == parents.cend())
+      return false;
+
+    parentOfCurrent.emplace_back(parentIt->second);
+    return true;
+  };
+
+  uint32_t parentFeatureId = parent.GetFeatureId();
   for (std::vector<uint32_t> const & restriction : it->second)
   {
-    bool startFromParent = restriction[0] == parentFeatureId;
-    if (restriction.size() == 2 && startFromParent)
+    bool prevIsParent = restriction[0] == parentFeatureId;
+    if (!prevIsParent)
+      continue;
+
+    if (restriction.size() == 1)
       return true;
 
-    // tmp debug
+    // If parents empty we process only two feature restrictions
     if (parents.empty())
       continue;
 
-    JointSegment & curPrev = parents[parentJoint];
+    if (!getParent(parent))
+      continue;
+
     for (size_t i = 1; i < restriction.size(); ++i)
     {
-      if (i == parentOfCurrent.size())
-        parentOfCurrent.emplace_back(parents[curPrev]);
+      ASSERT_GREATER_OR_EQUAL(i, 1, ());
+      if (i - 1 == parentOfCurrent.size() && !getParent(parentOfCurrent.back()))
+        break;
 
-      ASSERT_LESS(i, parentOfCurrent.size(), ());
-      if (parentOfCurrent[i].GetFeatureId() == restriction[i])
+      if (parentOfCurrent.back().GetFeatureId() == restriction[i])
       {
         if (i + 1 == restriction.size())
           return true;

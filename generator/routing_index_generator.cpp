@@ -185,10 +185,10 @@ public:
     m_graph.GetEdgeList(from, isOutgoing, edges);
   }
 
-  void GetEdgeList(Segment const & segment, bool isOutgoing,
-                   vector<JointEdge> & edges, vector<RouteWeight> & parentWeights) const
+  void GetEdgeList(JointSegment const & parentJoint, Segment const & parent, bool isOutgoing,
+                   std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights) const
   {
-    return m_graph.GetEdgeList(segment, isOutgoing, edges, parentWeights);
+    return m_graph.GetEdgeList(parentJoint, parent, isOutgoing, edges, parentWeights);
   }
 
   bool IsJoint(Segment const & segment, bool fromStart) const
