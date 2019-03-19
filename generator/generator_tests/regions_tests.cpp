@@ -45,14 +45,13 @@ struct TagValue
   string key;
   string value;
 
-  TagValue operator = (string const & value)
-  { return {key, value}; }
+  TagValue operator=(string const & value) const { return {key, value}; }
 };
 
-TagValue admin{"admin_level"};
-TagValue place{"place"};
-TagValue name{"name"};
-TagValue ba{"boundary", "administrative"};
+TagValue const admin{"admin_level"};
+TagValue const place{"place"};
+TagValue const name{"name"};
+TagValue const ba{"boundary", "administrative"};
 
 struct OsmElementData
 {

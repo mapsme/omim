@@ -79,9 +79,9 @@ private:
 
       auto const countryPlace = outers.front()->GetData();
       auto const countryName = countryPlace.GetEnglishOrTransliteratedName();
-      LogStatistics(countryName, stats);
 
       GenerateKv(countryName, outers, objectsRegions);
+      LogStatistics(countryName, stats);
     });
 
     // todo(maksimandrianov1): Perhaps this is not the best solution. This is a hot fix. Perhaps it

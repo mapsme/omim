@@ -37,6 +37,7 @@ public:
   RegionPlaceLot const & GetCountriesOuters() const;
   StringsList GetCountryNames() const;
   void ForEachCountry(CountryFn const & fn);
+
 private:
   using ParentChildPairs = std::vector<std::pair<Node::Ptr, Node::Ptr>>;
 
@@ -61,6 +62,7 @@ private:
   // Return: 0 - no relation, 1 - |l| contains |r|, -1 - |r| contains |l|.
   static int Compare(LevelPlace const & l, LevelPlace const & r, CountrySpecifier const & countrySpecifier);
   std::unique_ptr<CountrySpecifier> GetCountrySpecifier(std::string const & countryName);
+  static bool IsAreaLess(Region const & lhs, Region const & rhs);
   static void ReviseSublocalityDisposition(Node::Ptr & tree);
 
   PlacePointsMap FindCountryPlacePoints(RegionPlaceLot const & countryOuters);
@@ -68,6 +70,8 @@ private:
   static PlacePointsMap FindCountryPlacePointsForRange(RegionPlaceLot const & countryOuters,
                                                        PlacePointsMap::iterator begin,
                                                        PlacePointsMap::iterator end);
+
+  static constexpr double k_areaRelativeErrorPercent = 0.1;
 
   RegionPlaceLot m_countriesOuters;
   RegionPlaceLot m_regionPlaceOrder; // in descending order by area

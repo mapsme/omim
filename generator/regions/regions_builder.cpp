@@ -61,8 +61,8 @@ void RegionsBuilder::EraseLabelPlacePoints(PlacePointsMap & placePointsMap,
 {
   for (auto const & place : placeOrder)
   {
-    if (auto levelOsmId = place.GetRegion().GetLabelOsmIdOptional())
-      placePointsMap.erase(*levelOsmId);
+    if (auto labelOsmId = place.GetRegion().GetLabelOsmIdOptional())
+      placePointsMap.erase(*labelOsmId);
   }
 }
 
@@ -136,7 +136,7 @@ std::vector<Node::Ptr> RegionsBuilder::BuildCountryRegionTrees(RegionPlaceLot co
   {
     std::vector<std::future<ParentChildPairs>> tasks;
     auto nodes = MakeCountryNodeOrder(outer, countrySpecifier);
-    for (std::size_t t = 0; t < m_threadsCount; ++t)
+    for (size_t t = 0; t < m_threadsCount; ++t)
     {
       tasks.push_back(m_threadPool.Submit(FindAllParentChildPairs,
                                           std::cref(nodes), t, m_threadsCount, std::cref(countrySpecifier)));
@@ -172,14 +172,16 @@ std::vector<Node::Ptr> RegionsBuilder::MakeCountryNodeOrder(RegionPlace const & 
   return nodes;
 }
 
+// static
 RegionsBuilder::ParentChildPairs RegionsBuilder::FindAllParentChildPairs(
-    std::vector<Node::Ptr> const & nodeOrder, std::size_t startOffset, std::size_t step,
+    std::vector<Node::Ptr> const & nodeOrder, size_t startOffset, size_t step,
     CountrySpecifier const & countrySpecifier)
 {
   ParentChildPairs res;
 
-  auto size = nodeOrder.size();
-  for (auto i = (std::ptrdiff_t(size) - 1) - std::ptrdiff_t(startOffset); i > 0; i -= step)
+  auto const size = static_cast<std::ptrdiff_t>(nodeOrder.size());
+  auto const offset = static_cast<std::ptrdiff_t>(startOffset);
+  for (auto i = (size - 1) - offset; i > 0; i -= static_cast<std::ptrdiff_t>(step))
   {
     if (auto parent = FindParent(nodeOrder, cbegin(nodeOrder) + i, countrySpecifier))
       res.emplace_back(parent, nodeOrder[i]);
@@ -188,13 +190,14 @@ RegionsBuilder::ParentChildPairs RegionsBuilder::FindAllParentChildPairs(
   return res;
 }
 
+// static
 Node::Ptr RegionsBuilder::FindParent(std::vector<Node::Ptr> const & nodeOrder,
     std::vector<Node::Ptr>::const_iterator forItem, CountrySpecifier const & countrySpecifier)
 {
   auto const & node = *forItem;
   auto const & place = node->GetData();
   auto const & placeRegion = place.GetRegion();
-  auto from = FindLowerAreaBound(nodeOrder, forItem);
+  auto const from = FindLowerAreaBound(nodeOrder, forItem);
   CHECK(forItem < from.base(), ());
 
   Node::Ptr parent;
@@ -208,7 +211,7 @@ Node::Ptr RegionsBuilder::FindParent(std::vector<Node::Ptr> const & nodeOrder,
     if (parent)
     {
       auto const & parentRegion = parent->GetData().GetRegion();
-      if (1.001 * parentRegion.GetArea() < candidateRegion.GetArea())
+      if (IsAreaLess(parentRegion, candidateRegion))
         break;
     }
 
@@ -218,7 +221,7 @@ Node::Ptr RegionsBuilder::FindParent(std::vector<Node::Ptr> const & nodeOrder,
     if (i == forItemReverseIterator)
       continue;
 
-    auto c = Compare(candidatePlace, place, countrySpecifier);
+    auto const c = Compare(candidatePlace, place, countrySpecifier);
     if (c == 1)
     {
       if (parent && 0 <= Compare(candidatePlace, parent->GetData(), countrySpecifier))
@@ -231,6 +234,7 @@ Node::Ptr RegionsBuilder::FindParent(std::vector<Node::Ptr> const & nodeOrder,
   return parent;
 }
 
+// static
 std::vector<Node::Ptr>::const_reverse_iterator RegionsBuilder::FindLowerAreaBound(
     std::vector<Node::Ptr> const & nodeOrder, std::vector<Node::Ptr>::const_iterator forItem)
 {
@@ -238,15 +242,15 @@ std::vector<Node::Ptr>::const_reverse_iterator RegionsBuilder::FindLowerAreaBoun
   auto const & place = node->GetData();
   auto const & region = place.GetRegion();
 
-  auto begin = crbegin(nodeOrder);
-  auto end = make_reverse_iterator(next(forItem));
-  auto nodeAreaGreater = [] (Node::Ptr const & element, double nodeArea) {
+  auto const begin = crbegin(nodeOrder);
+  auto const end = make_reverse_iterator(next(forItem));
+  auto nodeAreaGreater = [] (Node::Ptr const & element, Region const & nodeRegion) {
     auto const & elementRegion = element->GetData().GetRegion();
-    return 1.001 * elementRegion.GetArea() < nodeArea;
+    return IsAreaLess(elementRegion, nodeRegion);
   };
-  if (begin == end || nodeAreaGreater(*(end - 1), region.GetArea()))
+  if (begin == end || nodeAreaGreater(*(end - 1), region))
     return end;
-  return std::lower_bound(begin, end, region.GetArea(), nodeAreaGreater);
+  return std::lower_bound(begin, end, region, nodeAreaGreater);
 }
 
 void RegionsBuilder::BindNodeChildren(ParentChildPairs const & parentChildPairs,
@@ -261,28 +265,36 @@ void RegionsBuilder::BindNodeChildren(ParentChildPairs const & parentChildPairs,
   }
 }
 
+// static
 int RegionsBuilder::Compare(LevelPlace const & l, LevelPlace const & r,
                             CountrySpecifier const & countrySpecifier)
 {
   auto const & lRegion = l.GetRegion();
   auto const & rRegion = r.GetRegion();
-  auto lArea = lRegion.GetArea();
-  auto rArea = rRegion.GetArea();
 
-  if (lArea > 1.001 * rArea && lRegion.Contains(rRegion))
+  if (IsAreaLess(rRegion, lRegion) && lRegion.Contains(rRegion))
     return 1;
-  if (rArea > 1.001 * lArea && rRegion.Contains(lRegion))
+  if (IsAreaLess(lRegion, rRegion) && rRegion.Contains(lRegion))
     return -1;
 
   if (lRegion.CalculateOverlapPercentage(rRegion) < 50.0)
     return 0;
 
+  auto const lArea = lRegion.GetArea();
+  auto const rArea = rRegion.GetArea();
   if (0.5 * lArea >= rArea)
     return 1;
   if (0.5 * rArea >= lArea)
     return -1;
 
   return countrySpecifier.CompareWeight(l, r);
+}
+
+// static
+bool RegionsBuilder::IsAreaLess(Region const & lhs, Region const & rhs)
+{
+  constexpr auto lhsAreaRation = 1. + k_areaRelativeErrorPercent / 100.;
+  return lhsAreaRation * lhs.GetArea() < rhs.GetArea();
 }
 
 std::unique_ptr<CountrySpecifier> RegionsBuilder::GetCountrySpecifier(std::string const & countryName)
@@ -333,10 +345,10 @@ std::vector<std::future<PlacePointsMap>> RegionsBuilder::PushCountryPlacePointsF
   auto i = begin(m_placePointsMap);
   while (i != end(m_placePointsMap))
   {
-    auto from = i;
+    auto const from = i;
     int n = 0;
-    constexpr auto taskBlockSize = 1000;
-    while (i != end(m_placePointsMap) && n < taskBlockSize)
+    constexpr auto k_taskBlockSize = 1000;
+    while (i != end(m_placePointsMap) && n < k_taskBlockSize)
     {
       ++i;
       ++n;
