@@ -25,8 +25,8 @@ private:
 
   ObjectLevel GetRuAdminObjectLevel(AdminLevel adminLevel) const;
 
-  bool m_moscowRegionHasProcessed{false};
-  bool m_moscowCityHasProcessed{false};
+  bool m_moscowRegionWasProcessed{false};
+  bool m_moscowCityWasProcessed{false};
 };
 }  // namespace regions
 }  // namespace generator

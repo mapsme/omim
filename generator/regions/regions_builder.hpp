@@ -71,7 +71,7 @@ private:
                                                        PlacePointsMap::iterator begin,
                                                        PlacePointsMap::iterator end);
 
-  static constexpr double k_areaRelativeErrorPercent = 0.1;
+  static constexpr double kAreaRelativeErrorPercent = 0.1;
 
   RegionPlaceLot m_countriesOuters;
   RegionPlaceLot m_regionPlaceOrder; // in descending order by area

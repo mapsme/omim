@@ -201,8 +201,8 @@ Node::Ptr RegionsBuilder::FindParent(std::vector<Node::Ptr> const & nodeOrder,
   CHECK(forItem < from.base(), ());
 
   Node::Ptr parent;
-  auto forItemReverseIterator = make_reverse_iterator(next(forItem));
-  for (auto i = from, end = crend(nodeOrder); i != end; ++i)
+  auto forItemReverseIterator = std::make_reverse_iterator(std::next(forItem));
+  for (auto i = from, end = std::crend(nodeOrder); i != end; ++i)
   {
     auto const & candidate = *i;
     auto const & candidatePlace = candidate->GetData();
@@ -242,8 +242,8 @@ std::vector<Node::Ptr>::const_reverse_iterator RegionsBuilder::FindLowerAreaBoun
   auto const & place = node->GetData();
   auto const & region = place.GetRegion();
 
-  auto const begin = crbegin(nodeOrder);
-  auto const end = make_reverse_iterator(next(forItem));
+  auto const begin = std::crbegin(nodeOrder);
+  auto const end = std::make_reverse_iterator(std::next(forItem));
   auto nodeAreaGreater = [] (Node::Ptr const & element, Region const & nodeRegion) {
     auto const & elementRegion = element->GetData().GetRegion();
     return IsAreaLess(elementRegion, nodeRegion);
@@ -287,13 +287,13 @@ int RegionsBuilder::Compare(LevelPlace const & l, LevelPlace const & r,
   if (0.5 * rArea >= lArea)
     return -1;
 
-  return countrySpecifier.CompareWeight(l, r);
+  return countrySpecifier.RelateByWeight(l, r);
 }
 
 // static
 bool RegionsBuilder::IsAreaLess(Region const & lhs, Region const & rhs)
 {
-  constexpr auto lhsAreaRation = 1. + k_areaRelativeErrorPercent / 100.;
+  constexpr auto lhsAreaRation = 1. + kAreaRelativeErrorPercent / 100.;
   return lhsAreaRation * lhs.GetArea() < rhs.GetArea();
 }
 
@@ -315,7 +315,7 @@ void RegionsBuilder::ReviseSublocalityDisposition(Node::Ptr & tree)
   if (ObjectLevel::Suburb == level || ObjectLevel::Sublocality == level)
   {
     LOG(LDEBUG, ("The", GetLabel(level), "object", place.GetId(),
-                 "(", GetPlaceNotation(place), ") are skipped: outside locality"));
+                 "(", GetPlaceNotation(place), ") is skipped: outside locality"));
     place.SetLevel(ObjectLevel::Unknown);
   }
 
@@ -347,8 +347,8 @@ std::vector<std::future<PlacePointsMap>> RegionsBuilder::PushCountryPlacePointsF
   {
     auto const from = i;
     int n = 0;
-    constexpr auto k_taskBlockSize = 1000;
-    while (i != end(m_placePointsMap) && n < k_taskBlockSize)
+    constexpr auto kTaskBlockSize = 1000;
+    while (i != end(m_placePointsMap) && n < kTaskBlockSize)
     {
       ++i;
       ++n;

@@ -21,8 +21,9 @@ public:
   virtual void AdjustRegionsLevel(Node::PtrList & outers);
 
   virtual ObjectLevel GetLevel(RegionPlace const & place) const;
-  // Return -1, 0, 1.
-  virtual int CompareWeight(LevelPlace const & lhs, LevelPlace const & rhs) const;
+  // Return -1 - |lhs| is under place of |rhs|, 0 - undefined relation, 1 - |rhs| is under place of |lhs|.
+  // Non-transitive.
+  virtual int RelateByWeight(LevelPlace const & lhs, LevelPlace const & rhs) const;
 
 protected:
   ObjectLevel GetLevel(PlaceType placeType) const;

@@ -71,19 +71,24 @@ OsmElement MakeOsmElement(uint64_t id, string const & adminLevel, string const &
   return el;
 }
 
+OsmElement MakeOsmElement(OsmElementData const & elementData)
+{
+  OsmElement el;
+  el.id = elementData.id;
+  el.type = elementData.polygon.size() > 1 ? OsmElement::EntityType::Relation : OsmElement::EntityType::Node;
+  for (auto const tag : elementData.tags)
+    el.AddTag(tag.key, tag.value);
+  el.m_members = elementData.members;
+  return el;
+}
+
 void CollectRegionInfo(string const & filename, vector<OsmElementData> const & testData)
 {
   CollectorRegionInfo collector(filename);
 
   for (auto const & elementData : testData)
   {
-    OsmElement el;
-    el.id = elementData.id;
-    el.type = elementData.polygon.size() > 1 ? OsmElement::EntityType::Relation : OsmElement::EntityType::Node;
-    for (auto const tag : elementData.tags)
-      el.AddTag(tag.key, tag.value);
-    el.m_members = elementData.members;
-
+    auto el = MakeOsmElement(elementData);
     auto osmId = el.type == OsmElement::EntityType::Relation ? MakeOsmRelation(el.id) : MakeOsmNode(el.id);
     collector.Collect(osmId, el);
   }
@@ -97,13 +102,7 @@ void BuildTestData(vector<OsmElementData> const & testData,
 {
   for (auto const & elementData : testData)
   {
-    OsmElement el;
-    el.id = elementData.id;
-    el.type = elementData.polygon.size() > 1 ? OsmElement::EntityType::Relation : OsmElement::EntityType::Node;
-    for (auto const tag : elementData.tags)
-      el.AddTag(tag.key, tag.value);
-    el.m_members = elementData.members;
-
+    auto el = MakeOsmElement(elementData);
     FeatureBuilder1 fb1;
 
     CHECK(elementData.polygon.size() == 1 || elementData.polygon.size() == 2, ());
@@ -136,14 +135,17 @@ void BuildTestData(vector<OsmElementData> const & testData,
   }
 }
 
-class Helper : public ToStringPolicyInterface
+class ToLabelingStringPolicy : public ToStringPolicyInterface
 {
 public:
   // ToStringPolicyInterface overrides:
   string ToString(vector<Node::Ptr> const & path) const override
   {
+    CHECK(!path.empty(), ());
     stringstream stream;
     auto i = path.begin();
+    auto const & contryName = (*i)->GetData().GetName();
+    CHECK(!contryName.empty(), ());
     stream << (*i)->GetData().GetName();
     ++i;
     for (; i != path.end(); ++i)
@@ -172,7 +174,7 @@ vector<string> GenerateTestRegions(vector<OsmElementData> const & testData)
     for (auto const & tree : outers)
     {
       ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
-        kvRegions.push_back(Helper{}.ToString(path));
+        kvRegions.push_back(ToLabelingStringPolicy{}.ToString(path));
       });
     }
   });
@@ -275,26 +277,25 @@ RegionsBuilder::Regions MakeTestDataSet1(RegionInfo & collector)
   return regions;
 }
 
-bool ExistsName(vector<string> const & coll, string const name)
+bool HasName(vector<string> const & coll, string const & name)
 {
   auto const end = std::end(coll);
   return std::find(std::begin(coll), end, name) != end;
 }
 
-bool ExistsSubname(vector<string> const & coll, string const name)
+bool ContainsSubname(vector<string> const & coll, string const & name)
 {
   auto const end = std::end(coll);
   auto hasSubname = [&name] (string const & item) { return item.find(name) != string::npos; };
   return std::find_if(std::begin(coll), end, hasSubname) != end;
 }
-
 }  // namespace
 
 UNIT_TEST(RegionsBuilderTest_GetCountryNames)
 {
   auto const filename = MakeCollectorData();
   RegionInfo collector(filename);
-  RegionsBuilder builder(MakeTestDataSet1(collector), {});
+  RegionsBuilder builder(MakeTestDataSet1(collector), {} /* placePointsMap */);
   auto const countryNames = builder.GetCountryNames();
   TEST_EQUAL(countryNames.size(), 2, ());
   TEST(std::count(std::begin(countryNames), std::end(countryNames), "Country_1"), ());
@@ -305,7 +306,7 @@ UNIT_TEST(RegionsBuilderTest_GetCountries)
 {
   auto const filename = MakeCollectorData();
   RegionInfo collector(filename);
-  RegionsBuilder builder(MakeTestDataSet1(collector), {});
+  RegionsBuilder builder(MakeTestDataSet1(collector), {} /* placePointsMap */);
   auto const countries = builder.GetCountriesOuters();
   TEST_EQUAL(countries.size(), 3, ());
   TEST_EQUAL(std::count_if(std::begin(countries), std::end(countries),
@@ -319,27 +320,31 @@ UNIT_TEST(RegionsBuilderTest_GetCountryTrees)
   auto const filename = MakeCollectorData();
   RegionInfo collector(filename);
   vector<string> bankOfNames;
-  RegionsBuilder builder(MakeTestDataSet1(collector), {});
+  RegionsBuilder builder(MakeTestDataSet1(collector), {} /* placePointsMap */);
   builder.ForEachCountry([&](string const & name, Node::PtrList const & outers,
       CountryRegionsBuilderStats const &) {
     for (auto const & tree : outers)
     {
       DebugPrintTree(tree);
       ForEachLevelPath(tree, [&] (vector<Node::Ptr> const & path) {
-        bankOfNames.push_back(Helper{}.ToString(path));
+        bankOfNames.push_back(ToLabelingStringPolicy{}.ToString(path));
       });
     }
   });
 
-  TEST(ExistsName(bankOfNames, "Country_2"), ());
-  TEST(ExistsName(bankOfNames, "Country_2, region: Country_2_Region_8"), ());
+  TEST(HasName(bankOfNames, "Country_2"), ());
+  TEST(HasName(bankOfNames, "Country_2, region: Country_2_Region_8"), ());
 
-  TEST(ExistsName(bankOfNames, "Country_1"), ());
-  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_3"), ());
-  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_4"), ());
-  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_5"), ());
-  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_5, subregion: Country_1_Region_5_Subregion_6"), ());
-  TEST(ExistsName(bankOfNames, "Country_1, region: Country_1_Region_5, subregion: Country_1_Region_5_Subregion_7"), ());
+  TEST(HasName(bankOfNames, "Country_1"), ());
+  TEST(HasName(bankOfNames, "Country_1, region: Country_1_Region_3"), ());
+  TEST(HasName(bankOfNames, "Country_1, region: Country_1_Region_4"), ());
+  TEST(HasName(bankOfNames, "Country_1, region: Country_1_Region_5"), ());
+  TEST(HasName(bankOfNames, "Country_1, region: Country_1_Region_5, "
+                            "subregion: Country_1_Region_5_Subregion_6"),
+       ());
+  TEST(HasName(bankOfNames, "Country_1, region: Country_1_Region_5, "
+                            "subregion: Country_1_Region_5_Subregion_7"),
+       ());
 }
 
 UNIT_TEST(RegionsGenerationTest_GenerateCityRegionByPlacePoint)
@@ -353,8 +358,8 @@ UNIT_TEST(RegionsGenerationTest_GenerateCityRegionByPlacePoint)
     {6, {name = u8"Amsterdam", place = "city", admin= "2"}, {{14.5, 14.5}}},
   });
 
-  TEST(ExistsName(regions, u8"Nederland"), ());
-  TEST(ExistsName(regions, u8"Nederland, locality: Amsterdam"), ());
+  TEST(HasName(regions, u8"Nederland"), ());
+  TEST(HasName(regions, u8"Nederland, locality: Amsterdam"), ());
 }
 
 UNIT_TEST(RegionsGenerationTest_GenerateRusCitySuburb)
@@ -370,10 +375,12 @@ UNIT_TEST(RegionsGenerationTest_GenerateRusCitySuburb)
     {7, {name = u8"Кировский административный округ", admin = "9", ba}, {{14, 14}, {15, 15}}},
   });
 
-  TEST(ExistsName(regions, u8"Россия, region: Омская область, subregion: городской округ Омск, "
-                           u8"locality: Омск"), ());
-  TEST(ExistsName(regions, u8"Россия, region: Омская область, subregion: городской округ Омск, "
-                           u8"locality: Омск, suburb: Кировский административный округ"), ());
+  TEST(HasName(regions, u8"Россия, region: Омская область, subregion: городской округ Омск, "
+                        u8"locality: Омск"),
+       ());
+  TEST(HasName(regions, u8"Россия, region: Омская область, subregion: городской округ Омск, "
+                        u8"locality: Омск, suburb: Кировский административный округ"),
+       ());
 }
 
 UNIT_TEST(RegionsGenerationTest_GenerateRusMoscowSuburb)
@@ -391,16 +398,20 @@ UNIT_TEST(RegionsGenerationTest_GenerateRusMoscowSuburb)
     {10, {name = u8"Центр", place = "suburb"}, {{15, 15}, {15.5, 15.5}}},
   });
 
-  TEST(ExistsName(regions, u8"Россия, region: Москва"), ());
-  TEST(ExistsName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
-                           u8"locality: Москва"), ());
-  TEST(ExistsName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
-                           u8"locality: Москва, suburb: Раменки"), ());
-  TEST(ExistsName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
-                           u8"locality: Москва, suburb: Раменки, sublocality: Воробъёвы горы"), ());
-  TEST(ExistsName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
-                           u8"locality: Москва, sublocality: Центр"), ());
-  TEST(!ExistsSubname(regions, u8"Тропарёво"), ());
+  TEST(HasName(regions, u8"Россия, region: Москва"), ());
+  TEST(HasName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
+                        u8"locality: Москва"),
+       ());
+  TEST(HasName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
+                        u8"locality: Москва, suburb: Раменки"),
+       ());
+  TEST(HasName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
+                        u8"locality: Москва, suburb: Раменки, sublocality: Воробъёвы горы"),
+       ());
+  TEST(HasName(regions, u8"Россия, region: Москва, subregion: Западный административный округ, "
+                        u8"locality: Москва, sublocality: Центр"),
+       ());
+  TEST(!ContainsSubname(regions, u8"Тропарёво"), ());
 }
 
 UNIT_TEST(RegionsGenerationTest_GenerateRusSPetersburgSuburb)
@@ -414,9 +425,11 @@ UNIT_TEST(RegionsGenerationTest_GenerateRusSPetersburgSuburb)
     {6, {name = u8"Дворцовый округ", admin = "8", ba}, {{14, 14}, {15, 15}}},
   });
 
-  TEST(ExistsName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург"), ());
-  TEST(ExistsName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург, "
-                           u8"suburb: Центральный район"), ());
-  TEST(ExistsName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург, "
-                           u8"suburb: Центральный район, sublocality: Дворцовый округ"), ());
+  TEST(HasName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург"), ());
+  TEST(HasName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург, "
+                        u8"suburb: Центральный район"),
+       ());
+  TEST(HasName(regions, u8"Россия, region: Санкт-Петербург, locality: Санкт-Петербург, "
+                        u8"suburb: Центральный район, sublocality: Дворцовый округ"),
+       ());
 }

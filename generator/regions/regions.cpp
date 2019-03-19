@@ -49,7 +49,7 @@ public:
     , m_featuresCollector{pathOutRepackedRegionsTmpMwm}
     , m_verbose{verbose}
   {
-    LOG(LINFO, ("Start generating regions from ", m_pathInRegionsTmpMwm));
+    LOG(LINFO, ("Start generating regions from", m_pathInRegionsTmpMwm));
     auto timer = base::Timer();
     Transliteration::Instance().Init(GetPlatform().ResourcesDir());
 
@@ -62,7 +62,7 @@ public:
 
     LOG(LINFO, ("Regions objects key-value for", builder.GetCountryNames().size(),
                 "countries storage saved to",  pathOutRegionsKv));
-    LOG(LINFO, ("Repacked regions temprory mwm saved to", pathOutRepackedRegionsTmpMwm));
+    LOG(LINFO, ("Repacked regions temporary mwm saved to", pathOutRepackedRegionsTmpMwm));
     LOG(LINFO, (m_regionsTotalCount, "total ids.", m_countriesRegionIds.size(), "unique ids."));
     LOG(LINFO, ("Finish generating regions.", timer.ElapsedSeconds(), "seconds."));
   }
@@ -235,11 +235,11 @@ private:
       return i != end(pointsStats) ? i->second : 0;
     };  
     auto const totalCount = countIn(stats.placePointsCounts);
-    auto const unbounedeCount = countIn(stats.unboudedPlacePointsCounts);
-    auto const bounedeCount = totalCount - unbounedeCount;
+    auto const unboundedCount = countIn(stats.unboudedPlacePointsCounts);
+    auto const boundedCount = totalCount - unboundedCount;
     LOG(LINFO, (countryName, ":", StringifyPlaceType(placeType), "place point" "-",
-                bounedeCount, "/", totalCount,
-                "(" + std::to_string(100 * bounedeCount / totalCount) + "%)"));
+                boundedCount, "/", totalCount,
+                (totalCount ? "(" + std::to_string(100 * boundedCount / totalCount) + "%)" : "")));
   }
 
   void LogStatistics(std::string const & countryName, AdminLevel adminLevel,
@@ -267,8 +267,8 @@ private:
     return placePointTypes;
   }
 
-  template <typename List>
-  std::string GeneratePlaceSummary(List const & placeCounts)
+  template <typename Counts>
+  std::string GeneratePlaceSummary(Counts const & placeCounts)
   {
     std::stringstream summary;
     for (auto const & item : placeCounts)
@@ -288,7 +288,7 @@ private:
   std::map<base::GeoObjectId, std::shared_ptr<std::string>> m_countriesRegionIds;
   size_t m_regionsTotalCount = 0;
 
-  bool m_verbose;
+  bool m_verbose{false};
 };
 }  // namespace
 

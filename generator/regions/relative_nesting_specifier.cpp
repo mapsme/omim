@@ -52,7 +52,7 @@ bool RelativeNestingSpecifier::AddPlacePoint(Node::PtrList & outers, PlacePoint 
     LocalityAdminRegionizer regionizer{placePoint};
     if (!regionizer.ApplyTo(tree))
     {
-      LOG(LDEBUG, ("Can't to define boundary for the",
+      LOG(LDEBUG, ("Can't define boundary for the",
                    StringifyPlaceType(placePoint.GetPlaceType()), "place",
                    placePoint.GetId(), "(", GetPlaceNotation(placePoint), ")",
                    "in", GetPlaceNotation(country)));

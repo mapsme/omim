@@ -34,17 +34,17 @@ void DebugPrintTree(Node::Ptr const & tree, std::ostream & stream = std::cout);
 
 NodePath MakeLevelPath(Node::Ptr const & node);
 
-template <typename Func>
-void ForEachLevelPath(Node::Ptr const & tree, Func && func)
+template <typename Fn>
+void ForEachLevelPath(Node::Ptr const & tree, Fn && fn)
 {
   if (!tree)
     return;
 
   if (tree->GetData().GetLevel() != ObjectLevel::Unknown)
-    func(MakeLevelPath(tree));
+    std::forward<Fn>(fn)(MakeLevelPath(tree));
 
   for (auto const & subtree : tree->GetChildren())
-    ForEachLevelPath(subtree, std::forward<Func>(func));
+    ForEachLevelPath(subtree, std::forward<Fn>(fn));
 }
 }  // namespace regions
 }  // namespace generator

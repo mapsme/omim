@@ -78,7 +78,7 @@ void LocalityAdminRegionizer::InsertInto(Node::Ptr & node) const
   auto const & parentPlace = node->GetData();
   LOG(LDEBUG, ("Place", StringifyPlaceType(m_placePoint.GetPlaceType()), "object", m_placePoint.GetId(),
                "(", GetPlaceNotation(m_placePoint), ")",
-               "has bounded by region", parentPlace.GetId(),
+               "is bounded by region", parentPlace.GetId(),
                "(", GetPlaceNotation(parentPlace), ")"));
 
   Region placeRegion{m_placePoint.GetMultilangName(), m_placePoint.GetRegionData(),

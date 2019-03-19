@@ -86,10 +86,10 @@ char const * GetLabel(ObjectLevel level)
   case ObjectLevel::Sublocality:
     return "sublocality";
   case ObjectLevel::Unknown:
-    break;
+    return nullptr;
   }
 
-  return nullptr;
+  UNREACHABLE();
 }
 
 CollectorRegionInfo::CollectorRegionInfo(std::string const & filename) : m_filename(filename) {}
@@ -134,7 +134,7 @@ void CollectorRegionInfo::FillRegionData(base::GeoObjectId const & osmId, OsmEle
     }
     catch (std::exception const & e)  // std::invalid_argument, std::out_of_range
     {
-      LOG(::base::LWARNING, (e.what()));
+      LOG(LWARNING, (e.what()));
       rd.m_adminLevel = AdminLevel::Unknown;
     }
   }

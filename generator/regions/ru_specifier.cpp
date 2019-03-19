@@ -17,9 +17,9 @@ void RuSpecifier::AdjustMoscowAdministrativeDivisions(Node::PtrList & outers)
   for (auto const & tree : outers)
     AdjustMoscowAdministrativeDivisions(tree);
 
-  if (!m_moscowRegionHasProcessed)
+  if (!m_moscowRegionWasProcessed)
     LOG(LWARNING, ("Failed to find Moscow region"));
-  else if (!m_moscowCityHasProcessed)
+  else if (!m_moscowCityWasProcessed)
     LOG(LWARNING, ("Failed to find Moscow city"));
 }
 
@@ -52,7 +52,7 @@ void RuSpecifier::MarkMoscowSubregionsByAdministrativeOkrugs(Node::Ptr & tree)
   if (AdminLevel::Five == adminLevel)
   {
     place.SetLevel(ObjectLevel::Subregion);
-    m_moscowRegionHasProcessed = true;
+    m_moscowRegionWasProcessed = true;
     return;
   }
 
@@ -101,7 +101,7 @@ void RuSpecifier::MarkMoscowAdministrativeDistric(Node::Ptr & node)
 {
   auto & place = node->GetData();
   place.SetLevel(ObjectLevel::Suburb);
-  m_moscowCityHasProcessed = true;
+  m_moscowCityWasProcessed = true;
 
   for (auto & subtree : node->GetChildren())
     MarkAllSuburbsToSublocalities(subtree);

@@ -22,7 +22,7 @@ ObjectLevel CountrySpecifier::GetLevel(RegionPlace const & place) const
   return ObjectLevel::Unknown;
 }
 
-int CountrySpecifier::CompareWeight(LevelPlace const & lhs, LevelPlace const & rhs) const
+int CountrySpecifier::RelateByWeight(LevelPlace const & lhs, LevelPlace const & rhs) const
 {
   if (lhs.GetLevel() != ObjectLevel::Unknown && rhs.GetLevel() != ObjectLevel::Unknown)
   {
@@ -46,7 +46,7 @@ int CountrySpecifier::CompareWeight(LevelPlace const & lhs, LevelPlace const & r
   auto const lhsAdminLevel = lhs.GetRegion().GetAdminLevel();
   auto const rhsAdminLevel = rhs.GetRegion().GetAdminLevel();
   if (lhsAdminLevel != AdminLevel::Unknown && rhsAdminLevel != AdminLevel::Unknown)
-    return lhsAdminLevel > rhsAdminLevel ? -1 : lhsAdminLevel < rhsAdminLevel;
+    return lhsAdminLevel > rhsAdminLevel ? -1 : (lhsAdminLevel < rhsAdminLevel ? 1 : 0);
   if (lhsAdminLevel != AdminLevel::Unknown)
     return 1;
   if (rhsAdminLevel != AdminLevel::Unknown)
