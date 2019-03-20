@@ -951,7 +951,7 @@ UNIT_CLASS_TEST(RestrictionTest, NontransiStartAndShortWay)
 // 0         *-> F7 ->*-> F0 ->*-> F1 ->*
 //          -1        0        1        2         3
 //
-unique_ptr<SingleVehicleWorldGraph> BuildTwoCubeGraph()
+unique_ptr<SingleVehicleWorldGraph> BuildTwoCubeGraph1()
 {
   unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
   loader->AddRoad(0 /* feature id */, true /* one way */, 1.0 /* speed */,
@@ -984,7 +984,62 @@ unique_ptr<SingleVehicleWorldGraph> BuildTwoCubeGraph()
     MakeJoint({{5, 1}, {4, 0}}),         /* joint at point (0, 2) */
     MakeJoint({{6, 1}, {5, 0}}),         /* joint at point (-1, 1) */
     MakeJoint({{8, 1}}),                 /* joint at point (3, 1) */
+  };
 
+  traffic::TrafficCache const trafficCache;
+  shared_ptr<EdgeEstimator> estimator = CreateEstimatorForCar(trafficCache);
+  return BuildWorldGraph(move(loader), estimator, joints);
+}
+
+// 2                 *
+//                ↗     ↘
+//              F5        F4
+//            ↗              ↘                             Finish
+// 1         *                 *<- F3 ->*-> F8 -> *-> F10 -> *
+//            ↖                         ↑       ↗
+//              F6                      F2   F9
+//         Start   ↖                    ↑  ↗
+// 0         *-> F7 ->*-> F0 ->*-> F1 ->*
+//          -1        0        1        2         3          4
+//
+unique_ptr<SingleVehicleWorldGraph> BuildTwoCubeGraph2()
+{
+  unique_ptr<TestGeometryLoader> loader = make_unique<TestGeometryLoader>();
+  loader->AddRoad(0 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{0.0, 0.0}, {1.0, 0.0}}));
+  loader->AddRoad(1 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 0.0}, {2.0, 0.0}}));
+  loader->AddRoad(2 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 0.0}, {2.0, 1.0}}));
+  loader->AddRoad(3 /* feature id */, false /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{1.0, 1.0}, {2.0, 1.0}}));
+  loader->AddRoad(4 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{0.0, 2.0}, {1.0, 1.0}}));
+  loader->AddRoad(5 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{-1.0, 1.0}, {0.0, 2.0}}));
+  loader->AddRoad(6 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{0.0, 0.0}, {-1.0, 1.0}}));
+  loader->AddRoad(7 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{-1.0, 0.0}, {0.0, 0.0}}));
+  loader->AddRoad(8 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 1.0}, {3.0, 1.0}}));
+  loader->AddRoad(9 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{2.0, 0.0}, {3.0, 1.0}}));
+  loader->AddRoad(10 /* feature id */, true /* one way */, 1.0 /* speed */,
+                  RoadGeometry::Points({{3.0, 1.0}, {4.0, 1.0}}));
+
+  vector<Joint> const joints = {
+    // {{/* feature id */, /* point id */}, ... }
+    MakeJoint({{7, 0}}),                 /* joint at point (-1, 0) */
+    MakeJoint({{0, 0}, {6, 0}, {7, 1}}), /* joint at point (0, 0) */
+    MakeJoint({{0, 1}, {1, 0}}),          /* joint at point (1, 0) */
+    MakeJoint({{1, 1}, {2, 0}, {9, 0}}),  /* joint at point (2, 0) */
+    MakeJoint({{2, 1}, {3, 1}, {8, 0}}),  /* joint at point (2, 1) */
+    MakeJoint({{3, 0}, {4, 1}}),          /* joint at point (1, 1) */
+    MakeJoint({{5, 1}, {4, 0}}),          /* joint at point (0, 2) */
+    MakeJoint({{6, 1}, {5, 0}}),          /* joint at point (-1, 1) */
+    MakeJoint({{8, 1}, {9, 1}, {10, 0}}), /* joint at point (3, 1) */
+    MakeJoint({{10, 1}})                  /* joint at point (4, 1) */
   };
 
   traffic::TrafficCache const trafficCache;
@@ -994,7 +1049,7 @@ unique_ptr<SingleVehicleWorldGraph> BuildTwoCubeGraph()
 
 UNIT_CLASS_TEST(RestrictionTest, RestrictionNoWithWayAsVia_1)
 {
-  Init(BuildTwoCubeGraph());
+  Init(BuildTwoCubeGraph1());
 
   m2::PointD const start(-1.0, 0.0);
   m2::PointD const finish(3.0, 1.0);
@@ -1012,9 +1067,34 @@ UNIT_CLASS_TEST(RestrictionTest, RestrictionNoWithWayAsVia_1)
   };
 
   // Check that without restrictions we can find path better.
-  LOG(LINFO, ("Start first"));
   test({start, {0, 0}, {-1, 1}, {0, 2}, {1, 1}, {2, 1}, finish}, move(restrictionsNo));
-  LOG(LINFO, ("Start second"));
   test({start, {0, 0}, {1, 0}, {2, 0}, {2, 1}, finish}, RestrictionVec());
+}
+
+UNIT_CLASS_TEST(RestrictionTest, RestrictionOnlyWithWayAsVia_2)
+{
+  Init(BuildTwoCubeGraph2());
+
+  m2::PointD const start(-1.0, 0.0);
+  m2::PointD const finish(4.0, 1.0);
+  auto const test = [&](vector<m2::PointD> const & expectedGeom, RestrictionVec && restrictionsNo) {
+    TestRestrictions(
+      expectedGeom, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+      MakeFakeEnding(7 /* featureId */, 0 /* segmentIdx */, start, *m_graph),
+      MakeFakeEnding(10 /* featureId */, 0 /* segmentIdx */, finish, *m_graph),
+      move(restrictionsNo), *this);
+  };
+
+  RestrictionVec restrictionsNo;
+  // Can go from |0| to |2| only via |1|
+  RestrictionVec restrictionsOnly = {
+    {0 /* feature 0 */, 1 /* feature 1 */, 2 /* feature 2 */}
+  };
+  ConvertRestrictionsOnlyToNoAndSort(m_graph->GetIndexGraphForTests(kTestNumMwmId), restrictionsOnly,
+                                     restrictionsNo);
+
+  // Check that without restrictions we can find path better.
+  test({start, {0, 0}, {1, 0}, {2, 0}, {2, 1}, {3, 1}, finish}, move(restrictionsNo));
+  test({start, {0, 0}, {1, 0}, {2, 0}, {3, 1}, finish}, RestrictionVec());
 }
 }  // namespace routing_test
