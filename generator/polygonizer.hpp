@@ -161,11 +161,11 @@ namespace feature
         m_Names.push_back(country->m_name);
         m_Buckets.push_back(new FeatureOutT(m_info.GetTmpFileName(country->m_name)));
         country->m_index = static_cast<int>(m_Buckets.size())-1;
-
-        if (!m_currentNames.empty())
-          m_currentNames += ';';
-        m_currentNames += country->m_name;
       }
+
+      if (!m_currentNames.empty())
+        m_currentNames += ';';
+      m_currentNames += country->m_name;
 
       auto & bucket = *(m_Buckets[country->m_index]);
       bucket(fb);

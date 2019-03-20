@@ -17,6 +17,10 @@ void EmitterSimple::GetNames(std::vector<std::string> & names) const
 
 void EmitterSimple::operator()(FeatureBuilder1 & fb)
 {
+  auto & emitter = m_regionGenerator->Parent();
+
+  emitter.Start();
   (*m_regionGenerator)(fb);
+  emitter.Finish();
 }
 }  // namespace generator

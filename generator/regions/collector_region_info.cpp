@@ -35,7 +35,6 @@ PlaceType EncodePlaceType(std::string const & place)
     {"quarter", PlaceType::Quarter},
     {"neighbourhood", PlaceType::Neighbourhood},
     {"hamlet", PlaceType::Hamlet},
-    {"locality", PlaceType::Locality},
     {"isolated_dwelling", PlaceType::IsolatedDwelling}
   };
 
@@ -61,7 +60,6 @@ char const * StringifyPlaceType(PlaceType placeType)
     "suburb",
     "quarter",
     "neighbourhood",
-    "locality",
     "isolated_dwelling"
   };
 

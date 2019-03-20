@@ -57,8 +57,7 @@ enum class PlaceType: uint8_t
   Suburb = 12,
   Quarter = 13,
   Neighbourhood = 14,
-  Locality = 15,
-  IsolatedDwelling = 16,
+  IsolatedDwelling = 15,
 };
 
 enum class ObjectLevel : uint8_t

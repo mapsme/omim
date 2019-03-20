@@ -75,10 +75,9 @@ ObjectLevel CountrySpecifier::GetLevel(PlaceType placeType) const
   case PlaceType::Hamlet:
     return ObjectLevel::Locality;
   case PlaceType::Suburb:
+    return ObjectLevel::Suburb;
   case PlaceType::Quarter:
   case PlaceType::Neighbourhood:
-    return ObjectLevel::Suburb;
-  case PlaceType::Locality:
   case PlaceType::IsolatedDwelling:
     return ObjectLevel::Sublocality;
   case PlaceType::Unknown:
