@@ -12,6 +12,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <map>
 #include <vector>
 
 namespace routing
@@ -97,6 +98,8 @@ public:
   {
     return TimeBetweenSec(v, w, m_maxSpeedMPS);
   }
+
+  void SetAStarParents(bool /* forward */, std::map<Vertex, Vertex> & /* parents */) {}
 
 private:
   IRoadGraph const & m_roadGraph;

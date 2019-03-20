@@ -561,14 +561,14 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     State const stateV = cur->queue.top();
     cur->queue.pop();
 
-    if (draw)
+    /*if (draw)
     {
       auto p = MercatorBounds::ToLatLon(graph.GetPoint(stateV.vertex, stateV.vertex.IsForward()));
       if (cur->forward)
         output_forward << p.lat << ' ' << p.lon << '\n';
       else
         output_backward << p.lat << ' ' << p.lon << '\n';
-    }
+    }*/
 
     if (stateV.distance > cur->bestDistance[stateV.vertex])
       continue;
@@ -576,13 +576,13 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     params.m_onVisitedVertexCallback(stateV.vertex,
                                      cur->forward ? cur->finalVertex : cur->startVertex);
 
-    auto p = MercatorBounds::FromLatLon({55.8015964, 37.5489224});
-    auto curP = graph.GetPoint(stateV.vertex, stateV.vertex.IsForward());
-    if (base::AlmostEqualAbs(p, curP, 1e-3))
-    {
-      int asd = 4;
-      (void)asd;
-    }
+//    auto p = MercatorBounds::FromLatLon({55.8015964, 37.5489224});
+//    auto curP = graph.GetPoint(stateV.vertex, stateV.vertex.IsForward());
+//    if (base::AlmostEqualAbs(p, curP, 1e-3))
+//    {
+//      int asd = 4;
+//      (void)asd;
+//    }
 
     cur->GetAdjacencyList(stateV.vertex, adj);
     for (auto const & edge : adj)
