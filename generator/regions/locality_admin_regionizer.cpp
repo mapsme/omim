@@ -20,9 +20,6 @@ bool LocalityAdminRegionizer::ApplyTo(Node::Ptr & tree) const
   if (placeLabel && placeLabel->GetId() == m_placePoint.GetId())
     return true;
 
-  if (!place.GetRegion().HasAdminLevel())
-    return ContainsSameLocality(tree);
-
   auto const level = place.GetLevel();
   if (ObjectLevel::Locality == level)
     return ContainsSameLocality(tree);
@@ -67,7 +64,8 @@ bool LocalityAdminRegionizer::IsFitNode(Node::Ptr & node) const
 {
   auto const & place = node->GetData();
 
-  if (place.GetRegion().GetAdminLevel() <= AdminLevel::Three)
+  auto const adminLevel = place.GetRegion().GetAdminLevel();
+  if (adminLevel == AdminLevel::Unknown || adminLevel <= AdminLevel::Three)
     return false;
 
   return place.GetName() == m_placePoint.GetName();
