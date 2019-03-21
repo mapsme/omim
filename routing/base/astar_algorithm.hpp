@@ -155,6 +155,8 @@ public:
       return it->second;
     }
 
+    std::map<Vertex, Vertex> & GetParents() { return m_parents; }
+
     void ReconstructPath(Vertex const & v, std::vector<Vertex> & path) const;
 
   private:

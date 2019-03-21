@@ -469,6 +469,7 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
     IndexGraphWrapper indexGraphWrapper(graph, enter);
     DijkstraWrapperJoints wrapper(indexGraphWrapper, enter);
     Algorithm::Context context;
+    indexGraphWrapper.SetAStarParents(context.GetParents());
     unordered_map<uint32_t, vector<JointSegment>> visitedVertexes;
     astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
                         [&](JointSegment const & vertex)
@@ -487,9 +488,10 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
                             visitedVertexes[vertex.GetFeatureId()].emplace_back(vertex);
                           }
 
-                          return true;
-                        } /* visitVertex */,
-                        context);
+                            return true;
+                          } /* visitVertex */,
+                          context);
+    }
 
     for (Segment const & exit : connector.GetExits())
     {
