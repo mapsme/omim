@@ -90,10 +90,18 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
 
   auto const from = getMembersByTag("from");
   auto const to = getMembersByTag("to");
-  auto const via = getMembersByTag("to");
+  auto const via = getMembersByTag("via");
+
 
   if (from.size() != 1 || to.size() != 1 || via.empty())
     return;
+
+  bool log = false;
+  if (from.front().first == 27696218)
+  {
+    LOG(LINFO, ("YES:", from, via, to));
+    log = true;
+  }
 
   // Either 1 node as vis, either several ways as via.
   // https://wiki.openstreetmap.org/wiki/Relation:restriction#Members
@@ -111,11 +119,19 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
   // Extracting type of restriction.
   auto const tagIt = relationElement.tags.find("restriction");
   if (tagIt == relationElement.tags.end())
+  {
+    if (log)
+      LOG(LINFO, ("tagIt bad"));
     return;
+  }
 
   Restriction::Type type = Restriction::Type::No;
   if (!TagToType(tagIt->second, type))
+  {
+    if (log)
+      LOG(LINFO, ("TagToType bad"));
     return;
+  }
 
   // Adding restriction.
   m_stream << ToString(type) << "," << from.back().first << ", ";

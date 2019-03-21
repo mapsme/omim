@@ -601,7 +601,7 @@ void LocalAdsManager::InvalidateImpl()
 {
   DeleteAllLocalAdsMarks();
   m_drapeEngine.SafeCall(&df::DrapeEngine::RemoveAllCustomFeatures);
-
+  return;
   CampaignData campaignData;
   {
     std::lock_guard<std::mutex> lock(m_campaignsMutex);

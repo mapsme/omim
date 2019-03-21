@@ -54,6 +54,10 @@ RestrictionLoader::RestrictionLoader(MwmValue const & mwmValue, IndexGraph const
     RestrictionVec restrictionsOnly;
     RestrictionSerializer::Deserialize(m_header, m_restrictions /* restriction No */,
                                        restrictionsOnly, src);
+    for (auto const & r : m_restrictions)
+    {
+      LOG(LINFO, ("get:", r));
+    }
     ConvertRestrictionsOnlyToNoAndSort(graph, restrictionsOnly, m_restrictions);
   }
   catch (Reader::OpenException const & e)
@@ -71,11 +75,6 @@ void ConvertRestrictionsOnlyToNoAndSort(IndexGraph const & graph,
 {
   for (auto & restriction : restrictionsOnly)
   {
-    if (restriction.size() != 2)
-    {
-      LOG(LINFO, ("Hello to fucking restriction mafucka"));
-    }
-
     if (std::any_of(restriction.begin(), restriction.end(),
                     [&graph](auto const & item)
                     {

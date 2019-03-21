@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <sstream>
 
 namespace routing
 {
@@ -200,6 +201,14 @@ private:
       prevFirstLinkFeatureId = restriction[0];
       restrictions.emplace_back(std::move(restriction));
     }
+
+//    for (auto const & r : restrictions)
+//    {
+//      std::stringstream ss;
+//      for (auto i : r)
+//        ss << i << " ";
+//      LOG(LINFO, (ss.str()));
+//    }
     return true;
   }
 };
