@@ -190,6 +190,11 @@ public:
     m_AStarParents = &parents;
   }
 
+  void GetEdgesList(Segment const & from, bool isOutgoing, std::vector<SegmentEdge> & edges)
+  {
+    m_graph.GetEdgeList(from, isOutgoing, edges);
+  }
+
   void GetEdgeList(JointSegment const & parentJoint, Segment const & parent, bool isOutgoing,
                    std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights) const
   {
