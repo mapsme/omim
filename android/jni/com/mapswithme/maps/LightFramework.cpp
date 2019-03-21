@@ -1,6 +1,6 @@
 #include "map/framework_light.hpp"
-#include "map/local_ads_manager.hpp"
 #include "map/framework_light_delegate.hpp"
+#include "map/local_ads_manager.hpp"
 
 #include "base/assert.hpp"
 
