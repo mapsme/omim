@@ -924,5 +924,5 @@ public:
   void OnPowerFacilityChanged(power_management::Facility const facility, bool enabled) override;
   void OnPowerSchemeChanged(power_management::Scheme const actualScheme) override;
 
-  boost::optional<notifications::NotificationCandidate> GetNotification();
+  notifications::NotificationManager & GetNotificationManager();
 };

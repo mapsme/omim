@@ -1,5 +1,6 @@
 #include "map/framework_light.hpp"
 #include "map/local_ads_manager.hpp"
+#include "map/framework_light_delegate.hpp"
 
 #include "base/assert.hpp"
 
@@ -92,16 +93,10 @@ Java_com_mapswithme_maps_LightFramework_nativeLogLocalAdsEvent(JNIEnv * env, jcl
 JNIEXPORT jobject JNICALL
 Java_com_mapswithme_maps_LightFramework_nativeGetNotification(JNIEnv * env, jclass clazz)
 {
-  boost::optional<notifications::NotificationCandidate> notification;
+  lightweight::Framework framework(lightweight::REQUEST_TYPE_NOTIFICATION);
   if (g_framework)
-  {
-    notification = g_framework->NativeFramework()->GetNotification();
-  }
-  else
-  {
-    lightweight::Framework framework(lightweight::REQUEST_TYPE_NOTIFICATION);
-    notification = framework.GetNotification();
-  }
+    framework.SetDelegate(make_unique<FrameworkLightDelegate>(*g_framework->NativeFramework()));
+  auto const notification = framework.GetNotification();
 
   if (!notification)
     return nullptr;
