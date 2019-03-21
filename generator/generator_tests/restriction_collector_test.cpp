@@ -53,9 +53,11 @@ UNIT_TEST(RestrictionTest_ValidCase)
   // Checking the result.
   TEST(restrictionCollector.IsValid(), ());
 
-  RestrictionVec const expectedRestrictions = {{Restriction::Type::No, {10, 20}},
-                                               {Restriction::Type::No, {20, 30}},
-                                               {Restriction::Type::Only, {50, 70}}};
+  std::vector<Restriction> const expectedRestrictions = {
+    {Restriction::Type::No, {10, 20}},
+    {Restriction::Type::No, {20, 30}},
+    {Restriction::Type::Only, {50, 70}}
+  };
   TEST_EQUAL(restrictionCollector.m_restrictions, expectedRestrictions, ());
 }
 
@@ -123,12 +125,14 @@ UNIT_TEST(RestrictionTest_RestrictionCollectorWholeClassTest)
                                             osmIdsToFeatureIdsFullPath);
   TEST(restrictionCollector.IsValid(), ());
 
-  RestrictionVec const & restrictions = restrictionCollector.GetRestrictions();
+  std::vector<Restriction> const & restrictions = restrictionCollector.GetRestrictions();
   TEST(is_sorted(restrictions.cbegin(), restrictions.cend()), ());
 
-  RestrictionVec const expectedRestrictions = {{Restriction::Type::No, {1, 1}},
-                                               {Restriction::Type::Only, {1, 2}},
-                                               {Restriction::Type::Only, {3, 4}}};
+  std::vector<Restriction> const expectedRestrictions = {
+    {Restriction::Type::No, {1, 1}},
+    {Restriction::Type::Only, {1, 2}},
+    {Restriction::Type::Only, {3, 4}}
+  };
   TEST_EQUAL(restrictions, expectedRestrictions, ());
 }
 }  // namespace routing

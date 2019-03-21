@@ -43,7 +43,7 @@ void BuildEmptyMwm(LocalCountryFile & country)
   generator::tests_support::TestMwmBuilder builder(country, feature::DataHeader::country);
 }
 
-void LoadRestrictions(string const & mwmFilePath, RestrictionVec & restrictions)
+void LoadRestrictions(string const & mwmFilePath, std::vector<Restriction> & restrictions)
 {
   FilesContainerR const cont(mwmFilePath);
   if (!cont.IsExist(RESTRICTIONS_FILE_TAG))
@@ -56,9 +56,15 @@ void LoadRestrictions(string const & mwmFilePath, RestrictionVec & restrictions)
     RestrictionHeader header;
     header.Deserialize(src);
 
+    RestrictionVec restrictionsNo;
     RestrictionVec restrictionsOnly;
-    RestrictionSerializer::Deserialize(header, restrictions, restrictionsOnly, src);
-    restrictions.insert(restrictions.end(), restrictionsOnly.cbegin(), restrictionsOnly.cend());
+    RestrictionSerializer::Deserialize(header, restrictionsNo, restrictionsOnly, src);
+
+    for (auto const & r : restrictionsNo)
+      restrictions.emplace_back(Restriction::Type::No, std::vector<uint32_t>(r.begin(), r.end()));
+
+    for (auto const & r : restrictionsOnly)
+      restrictions.emplace_back(Restriction::Type::Only, std::vector<uint32_t>(r.begin(), r.end()));
   }
   catch (Reader::OpenException const & e)
   {
@@ -99,7 +105,7 @@ void TestRestrictionBuilding(string const & restrictionContent, string const & m
   BuildRoadRestrictions(mwmFullPath, restrictionFullPath, mappingFullPath);
 
   // Reading from mwm section and testing restrictions.
-  RestrictionVec restrictionsFromMwm;
+  std::vector<Restriction> restrictionsFromMwm;
   LoadRestrictions(mwmFullPath, restrictionsFromMwm);
   RestrictionCollector const restrictionCollector(restrictionFullPath, mappingFullPath);
 
