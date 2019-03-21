@@ -158,18 +158,17 @@ void IndexGraph::GetEdgeList(JointSegment const & parentJoint,
 }
 
 boost::optional<JointEdge>
-IndexGraph::GetJointEdgeByLastPoint(JointSegment const & parentJoint,
-                                    Segment const & parent, Segment const & firstChild,
-                                    bool isOutgoing, uint32_t lastPoint,
-                                    std::map<JointSegment, JointSegment> & parents)
+IndexGraph::GetJointEdgeByLastPoint(Segment const & parent, Segment const & firstChild,
+                                    bool isOutgoing, uint32_t lastPoint)
 {
   vector<Segment> const possibleChilds = {firstChild};
   vector<uint32_t> const lastPoints = {lastPoint};
 
   vector<JointEdge> edges;
   vector<RouteWeight> parentWeights;
-  ReconstructJointSegment(parentJoint, parent, possibleChilds, lastPoints,
-                          isOutgoing, edges, parentWeights, parents);
+  std::map<JointSegment, JointSegment> emptyParents;
+  ReconstructJointSegment({}, parent, possibleChilds, lastPoints,
+                          isOutgoing, edges, parentWeights, emptyParents);
 
   CHECK_LESS_OR_EQUAL(edges.size(), 1, ());
   if (edges.size() == 1)

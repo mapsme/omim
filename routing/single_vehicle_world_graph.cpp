@@ -25,15 +25,13 @@ SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> cross
   CHECK(m_estimator, ());
 }
 
-void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(JointSegment const & parentJoint,
-                                                             Segment const & parent,
+void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & parent,
                                                              vector<JointEdge> & jointEdges,
                                                              vector<RouteWeight> & parentWeights,
                                                              bool isOutgoing)
 {
   bool opposite = !isOutgoing;
   vector<JointEdge> newCrossMwmEdges;
-  auto & parents = isOutgoing ? *m_parentsForJoints.forward : *m_parentsForJoints.forward;
   for (size_t i = 0; i < jointEdges.size(); ++i)
   {
     JointSegment const & target = jointEdges[i].GetTarget();
@@ -58,9 +56,9 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(JointSegment const 
       twinIndexGraph.GetLastPointsForJoint({start}, isOutgoing, lastPoints);
       ASSERT_EQUAL(lastPoints.size(), 1, ());
 
-      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(parentJoint, parent,
+      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(parent,
                                                                 target.GetSegment(!opposite),
-                                                                isOutgoing, lastPoints.back(), parents))
+                                                                isOutgoing, lastPoints.back()))
       {
         newCrossMwmEdges.emplace_back(*edge);
         newCrossMwmEdges.back().GetTarget().GetFeatureId() = twinFeatureId;
@@ -89,7 +87,7 @@ void SingleVehicleWorldGraph::GetEdgeList(JointSegment const & parentJoint,
   indexGraph.GetEdgeList(parentJoint, parent, isOutgoing, jointEdges, parentWeights, parents);
 
   if (m_mode != WorldGraphMode::JointSingleMwm)
-    CheckAndProcessTransitFeatures(parentJoint, parent, jointEdges, parentWeights, isOutgoing);
+    CheckAndProcessTransitFeatures(parent, jointEdges, parentWeights, isOutgoing);
 }
 
 void SingleVehicleWorldGraph::GetEdgeList(Segment const & segment, bool isOutgoing,

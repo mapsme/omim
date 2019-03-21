@@ -1071,7 +1071,31 @@ UNIT_CLASS_TEST(RestrictionTest, RestrictionNoWithWayAsVia_1)
   test({start, {0, 0}, {1, 0}, {2, 0}, {2, 1}, finish}, RestrictionVec());
 }
 
-UNIT_CLASS_TEST(RestrictionTest, RestrictionOnlyWithWayAsVia_2)
+UNIT_CLASS_TEST(RestrictionTest, RestrictionNoWithWayAsVia_2)
+{
+  Init(BuildTwoCubeGraph2());
+
+  m2::PointD const start(-1.0, 0.0);
+  m2::PointD const finish(4.0, 1.0);
+  auto const test = [&](vector<m2::PointD> const & expectedGeom, RestrictionVec && restrictionsNo) {
+    TestRestrictions(
+      expectedGeom, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+      MakeFakeEnding(7 /* featureId */, 0 /* segmentIdx */, start, *m_graph),
+      MakeFakeEnding(10 /* featureId */, 0 /* segmentIdx */, finish, *m_graph),
+      move(restrictionsNo), *this);
+  };
+
+  // Can go from |0| to |9| only via |1|
+  RestrictionVec restrictionsNo = {
+    {0 /* feature 0 */, 1 /* feature 1 */, 9 /* feature 2 */}
+  };
+
+  // Check that without restrictions we can find path better.
+  test({start, {0, 0}, {1, 0}, {2, 0}, {2, 1}, {3, 1}, finish}, move(restrictionsNo));
+  test({start, {0, 0}, {1, 0}, {2, 0}, {3, 1}, finish}, RestrictionVec());
+}
+
+UNIT_CLASS_TEST(RestrictionTest, RestrictionOnlyWithWayAsVia_1)
 {
   Init(BuildTwoCubeGraph2());
 

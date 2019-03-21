@@ -49,10 +49,8 @@ public:
                    Segment const & parent, bool isOutgoing, vector<JointEdge> & edges,
                    vector<RouteWeight> & parentWeights, std::map<JointSegment, JointSegment> & parents);
 
-  boost::optional<JointEdge> GetJointEdgeByLastPoint(JointSegment const & parentJoint,
-                                                     Segment const & parent, Segment const & firstChild,
-                                                     bool isOutgoing, uint32_t lastPoint,
-                                                     std::map<JointSegment, JointSegment> & parents);
+  boost::optional<JointEdge> GetJointEdgeByLastPoint(Segment const & parent, Segment const & firstChild,
+                                                     bool isOutgoing, uint32_t lastPoint);
 
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
 

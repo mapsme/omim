@@ -85,6 +85,7 @@ public:
   virtual void SetRoutingOptions(RoutingOptions /* routingOptions */);
 
   virtual void SetAStarParents(bool forward, std::map<Segment, Segment> & parents);
+  virtual void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents);
 
   /// \returns transit-specific information for segment. For nontransit segments returns nullptr.
   virtual std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) = 0;

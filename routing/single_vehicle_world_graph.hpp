@@ -83,7 +83,7 @@ public:
       m_parentsForSegments.backward = &parents;
   }
 
-  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents)
+  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents) override
   {
     if (forward)
       m_parentsForJoints.forward = &parents;
@@ -94,8 +94,7 @@ public:
 private:
   // Retrieves the same |jointEdges|, but into others mwms.
   // If they are cross mwm edges, of course.
-  void CheckAndProcessTransitFeatures(JointSegment const & parentJoint,
-                                      Segment const & parent,
+  void CheckAndProcessTransitFeatures(Segment const & parent,
                                       std::vector<JointEdge> & jointEdges,
                                       std::vector<RouteWeight> & parentWeights,
                                       bool isOutgoing);

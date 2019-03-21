@@ -125,6 +125,11 @@ public:
     m_graph.SetAStarParents(forward, parents);
   }
 
+  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents)
+  {
+    m_graph.SetAStarParents(forward, parents);
+  }
+
 private:
   // Start or finish ending information. 
   struct Ending
