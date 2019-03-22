@@ -18,7 +18,13 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-narrowing"
 #endif
-#include <boost/gil/gil_all.hpp>
+#if (BOOST_VERSION < 106800)
+#   include <boost/gil/gil_all.hpp>
+#   include <boost/gil/extension/io/png_dynamic_io.hpp>
+#else
+#   include <boost/gil.hpp>
+#   include <boost/gil/extension/io/png/old.hpp>
+#endif
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
