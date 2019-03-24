@@ -1,10 +1,12 @@
 #include "generator/restriction_writer.hpp"
 
 #include "generator/intermediate_elements.hpp"
+#include "generator/osm_element.hpp"
 #include "generator/restriction_collector.hpp"
 
 #include "routing/restrictions_serialization.hpp"
 
+#include "base/assert.hpp"
 #include "base/geo_object_id.hpp"
 #include "base/logging.hpp"
 
@@ -66,12 +68,7 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
 
   CHECK_EQUAL(relationElement.GetType(), "restriction", ());
 
-//  // Note. For the time being only line-point-line road restriction is supported.
-//  if (relationElement.nodes.size() != 1 || relationElement.ways.size() != 2)
-//    return;  // Unsupported restriction. For example line-line-line.
-
-  auto const getMembersByTag = [&relationElement](std::string const & tag)
-  {
+  auto const getMembersByTag = [&relationElement](std::string const & tag) {
     std::vector<RelationElement::Member> result;
     for (auto const & member : relationElement.ways)
     {
@@ -88,29 +85,37 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
     return result;
   };
 
+  auto const getType = [&relationElement](uint64_t osmId) {
+    for (auto const & member : relationElement.ways)
+    {
+      if (member.first == osmId)
+        return OsmElement::EntityType::Way;
+    }
+
+    for (auto const & member : relationElement.nodes)
+    {
+      if (member.first == osmId)
+        return OsmElement::EntityType::Node;
+    }
+
+    UNREACHABLE();
+  };
+
   auto const from = getMembersByTag("from");
   auto const to = getMembersByTag("to");
   auto const via = getMembersByTag("via");
 
-
   if (from.size() != 1 || to.size() != 1 || via.empty())
     return;
-
-  bool log = false;
-  if (from.front().first == 27696218)
-  {
-    LOG(LINFO, ("YES:", from, via, to));
-    log = true;
-  }
 
   // Either 1 node as vis, either several ways as via.
   // https://wiki.openstreetmap.org/wiki/Relation:restriction#Members
   if (via.size() != 1)
   {
     bool allMembersAreWays = std::all_of(via.begin(), via.end(),
-                                         [](auto const & member)
+                                         [&](auto const & member)
                                          {
-                                           return member.second == "way";
+                                           return getType(member.first) == OsmElement::EntityType::Way;
                                          });
     if (!allMembersAreWays)
       return;
@@ -119,23 +124,15 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
   // Extracting type of restriction.
   auto const tagIt = relationElement.tags.find("restriction");
   if (tagIt == relationElement.tags.end())
-  {
-    if (log)
-      LOG(LINFO, ("tagIt bad"));
     return;
-  }
 
   Restriction::Type type = Restriction::Type::No;
   if (!TagToType(tagIt->second, type))
-  {
-    if (log)
-      LOG(LINFO, ("TagToType bad"));
     return;
-  }
 
   // Adding restriction.
   m_stream << ToString(type) << "," << from.back().first << ", ";
-  if (via.back().second != "node")
+  if (getType(via.back().first) != OsmElement::EntityType::Node)
   {
     for (auto const & viaMember : via)
       m_stream << viaMember.first << ", ";

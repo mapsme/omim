@@ -106,11 +106,13 @@ bool RestrictionCollector::AddRestriction(Restriction::Type type,
                                           std::vector<base::GeoObjectId> const & osmIds)
 {
   std::vector<uint32_t> featureIds(osmIds.size());
+  LOG(LINFO, ("input:", osmIds));
   for (size_t i = 0; i < osmIds.size(); ++i)
   {
     auto const result = m_osmIdToFeatureId.find(osmIds[i]);
     if (result == m_osmIdToFeatureId.cend())
     {
+      LOG(LINFO, ("not found:", osmIds[i]));
       // It could happend near mwm border when one of a restriction lines is not included in mwm
       // but the restriction is included.
       return false;

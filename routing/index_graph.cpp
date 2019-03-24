@@ -338,8 +338,6 @@ void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
       continue;
     }
 
-    if (parent.GetFeatureId())
-
     // Check current JointSegment for bad road access between segments.
     rp = firstChild.GetRoadPoint(isOutgoing);
     uint32_t start = currentPointId;
