@@ -89,6 +89,8 @@ public:
   void GetEdgesList(Segment const & segment, bool isOutgoing,
                     std::vector<SegmentEdge> & edges) const;
 
+  // AStarGraph overridings
+  // @{
   void GetOutgoingEdgesList(Vertex const & segment, std::vector<Edge> & edges) override
   {
     GetEdgesList(segment, true /* isOutgoing */, edges);
@@ -104,6 +106,18 @@ public:
     return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */),
                                          GetPoint(to, true /* front */));
   }
+
+  void SetAStarParents(bool forward, std::map<Segment, Segment> & parents) override
+  {
+    m_graph.SetAStarParents(forward, parents);
+  }
+
+  bool IsWavesConnectible(std::map<Vertex, Vertex> & forwardParents, Vertex const & commonVertex,
+                          std::map<Vertex, Vertex> & backwardParents) override
+  {
+    return m_graph.IsWavesConnectible(forwardParents, commonVertex, backwardParents);
+  }
+  // @}
 
   RouteWeight HeuristicCostEstimate(Vertex const & from, m2::PointD const & to) const
   {
@@ -125,10 +139,13 @@ public:
     m_graph.SetAStarParents(forward, parents);
   }
 
-  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents)
+  bool IsWavesConnectible(std::map<JointSegment, JointSegment> & forwardParents,
+                          JointSegment const & commonVertex,
+                          std::map<JointSegment, JointSegment> & backwardParents)
   {
-    m_graph.SetAStarParents(forward, parents);
+    return m_graph.IsWavesConnectible(forwardParents, commonVertex, backwardParents);
   }
+  // @}
 
 private:
   // Start or finish ending information. 

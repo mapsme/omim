@@ -54,6 +54,18 @@ std::vector<RouteSegment::SpeedCamera> WorldGraph::GetSpeedCamInfo(Segment const
 void WorldGraph::SetAStarParents(bool forward, std::map<Segment, Segment> & parents) {}
 void WorldGraph::SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents) {}
 
+bool WorldGraph::IsWavesConnectible(ParentSegments & forwardParents, Segment const & commonVertex,
+                                    ParentSegments & backwardParents)
+{
+  return true;
+}
+
+bool WorldGraph::IsWavesConnectible(ParentJoints & forwardParents, JointSegment const & commonVertex,
+                                    ParentJoints & backwardParents)
+{
+  return true;
+}
+
 void WorldGraph::SetRoutingOptions(RoutingOptions /* routingOption */) {}
 
 std::vector<Segment> const & WorldGraph::GetTransitions(NumMwmId numMwmId, bool isEnter)

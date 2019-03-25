@@ -65,16 +65,19 @@ public:
   virtual void SetMode(WorldGraphMode mode) = 0;
   virtual WorldGraphMode GetMode() const = 0;
 
-  // Interface for AStarAlgorithm:
   virtual void GetOutgoingEdgesList(Segment const & segment, std::vector<SegmentEdge> & edges) = 0;
   virtual void GetIngoingEdgesList(Segment const & segment, std::vector<SegmentEdge> & edges) = 0;
 
   virtual RouteWeight HeuristicCostEstimate(Segment const & from, Segment const & to) = 0;
   virtual RouteWeight HeuristicCostEstimate(m2::PointD const & from, m2::PointD const & to) = 0;
   virtual RouteWeight HeuristicCostEstimate(Segment const & from, m2::PointD const & to) = 0;
+
   virtual RouteWeight CalcSegmentWeight(Segment const & segment) = 0;
+
   virtual RouteWeight CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const = 0;
+
   virtual RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to) const = 0;
+
   virtual double CalcSegmentETA(Segment const & segment) = 0;
 
   /// \returns transitions for mwm with id |numMwmId|.
@@ -84,8 +87,16 @@ public:
   virtual RoutingOptions GetRoutingOptions(Segment const & /* segment */);
   virtual void SetRoutingOptions(RoutingOptions /* routingOptions */);
 
-  virtual void SetAStarParents(bool forward, std::map<Segment, Segment> & parents);
-  virtual void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents);
+  using ParentSegments = std::map<Segment, Segment>;
+  using ParentJoints = std::map<JointSegment, JointSegment>;
+
+  virtual void SetAStarParents(bool forward, ParentSegments & parents);
+  virtual void SetAStarParents(bool forward, ParentJoints & parents);
+
+  virtual bool IsWavesConnectible(ParentSegments & forwardParents, Segment const & commonVertex,
+                                  ParentSegments & backwardParents);
+  virtual bool IsWavesConnectible(ParentJoints & forwardParents, JointSegment const & commonVertex,
+                                  ParentJoints & backwardParents);
 
   /// \returns transit-specific information for segment. For nontransit segments returns nullptr.
   virtual std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) = 0;

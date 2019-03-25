@@ -282,6 +282,8 @@ private:
         graph.GetIngoingEdgesList(v, adj);
     }
 
+    std::map<Vertex, Vertex> & GetParents() { return parent; }
+
     bool const forward;
     Vertex const & startVertex;
     Vertex const & finalVertex;
@@ -498,6 +500,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   BidirectionalStepContext forward(true /* forward */, startVertex, finalVertex, graph);
   BidirectionalStepContext backward(false /* forward */, startVertex, finalVertex, graph);
 
+  auto & forwardParents = forward.GetParents();
+  auto & backwardParents = backward.GetParents();
+
   bool foundAnyPath = false;
   auto bestPathReducedLength = kZeroDistance;
   auto bestPathRealLength = kZeroDistance;
@@ -616,7 +621,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         continue;
 
       auto const itNxt = nxt->bestDistance.find(stateW.vertex);
-      if (itNxt != nxt->bestDistance.end())
+      if (itNxt != nxt->bestDistance.end() &&
+          graph.IsWavesConnectible(forwardParents, stateW.vertex, backwardParents))
       {
         auto const distW = itNxt->second;
         // Reduced length that the path we've just found has in the original graph:
