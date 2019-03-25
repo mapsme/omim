@@ -72,8 +72,7 @@ public:
 
   Segment const & GetSegmentOfFakeJoint(JointSegment const & joint, bool start);
 
-  template <typename SegmentType>
-  void SetAStarParents(bool forward, std::map<SegmentType, SegmentType> & parents)
+  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents) override
   {
     m_graph.SetAStarParents(forward, parents);
   }

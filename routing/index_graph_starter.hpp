@@ -120,7 +120,7 @@ public:
 
   ~IndexGraphStarter() override = default;
 
-  void SetAStarParents(bool forward, std::map<Segment, Segment> & parents)
+  void SetAStarParents(bool forward, std::map<Segment, Segment> & parents) override
   {
     m_graph.SetAStarParents(forward, parents);
   }

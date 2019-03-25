@@ -99,8 +99,6 @@ public:
     return TimeBetweenSec(v, w, m_maxSpeedMPS);
   }
 
-  void SetAStarParents(bool /* forward */, std::map<Vertex, Vertex> & /* parents */) {}
-
 private:
   IRoadGraph const & m_roadGraph;
   double const m_maxSpeedMPS;

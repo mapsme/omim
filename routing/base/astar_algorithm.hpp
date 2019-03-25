@@ -141,7 +141,10 @@ public:
       m_distanceMap[vertex] = distance;
     }
 
-    void SetParent(Vertex const & parent, Vertex const & child) { m_parents[parent] = child; }
+    void SetParent(Vertex const & parent, Vertex const & child)
+    {
+      m_parents[parent] = child;
+    }
 
     bool HasParent(Vertex const & child) const
     {
@@ -311,11 +314,12 @@ constexpr Weight AStarAlgorithm<Vertex, Edge, Weight>::kZeroDistance;
 
 template <typename Vertex, typename Edge, typename Weight>
 template <typename VisitVertex, typename AdjustEdgeWeight, typename FilterStates>
-void AStarAlgorithm<Vertex, Edge, Weight>::PropagateWave(Graph & graph, Vertex const & startVertex,
-                                          VisitVertex && visitVertex,
-                                          AdjustEdgeWeight && adjustEdgeWeight,
-                                          FilterStates && filterStates,
-                                          AStarAlgorithm<Vertex, Edge, Weight>::Context & context) const
+void AStarAlgorithm<Vertex, Edge, Weight>::PropagateWave(
+  Graph & graph, Vertex const & startVertex,
+  VisitVertex && visitVertex,
+  AdjustEdgeWeight && adjustEdgeWeight,
+  FilterStates && filterStates,
+  AStarAlgorithm<Vertex, Edge, Weight>::Context & context) const
 {
   context.Clear();
 
@@ -675,6 +679,7 @@ typename AStarAlgorithm<Vertex, Edge, Weight>::Result
   }
 
   Context context;
+  graph.SetAStarParents(true /* forward */, context.GetParents());
   PeriodicPollCancellable periodicCancellable(params.m_cancellable);
 
   auto visitVertex = [&](Vertex const & vertex) {

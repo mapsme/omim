@@ -185,7 +185,7 @@ public:
     m_graph.GetEdgeList(from, isOutgoing, edges);
   }
 
-  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents)
+  void SetAStarParents(bool /* forward */, std::map<JointSegment, JointSegment> & parents)
   {
     m_AStarParents = &parents;
   }
@@ -221,6 +221,13 @@ public:
 
   IndexGraphStarterJoints<IndexGraphWrapper> & GetGraph() { return m_graph; }
 
+  template <typename Vertex>
+  RouteWeight HeuristicCostEstimate(Vertex const & /* from */, m2::PointD const & /* to */)
+  {
+    CHECK(false, ("This method should not use, it is just for compatibility with IndexGraphStarterJoints."));
+    return GetAStarWeightZero<RouteWeight>();
+  }
+
 private:
   std::map<JointSegment, JointSegment> * m_AStarParents = nullptr;
   IndexGraph & m_graph;
@@ -235,10 +242,35 @@ public:
     : IndexGraphStarterJoints<IndexGraphWrapper>(graph, start) {}
 
     // IndexGraphStarterJoints overrides
+  void GetOutgoingEdgesList(Vertex const & vertex, vector<Edge> & edges) override
+  {
+    m_graph.GetOutgoingEdgesList(vertex, edges);
+  }
+
+  void GetIngoingEdgesList(Vertex const & vertex, vector<Edge> & edges) override
+  {
+    m_graph.GetIngoingEdgesList(vertex, edges);
+  }
+
   Weight HeuristicCostEstimate(Vertex const & /* from */, Vertex const & /* to */) override
   {
     return GetAStarWeightZero<Weight>();
   }
+
+  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents) override
+  {
+    m_graph.SetAStarParents(forward, parents);
+  }
+
+  m2::PointD const & GetPoint(Vertex const & vertex, bool forward)
+  {
+    return m_graph.GetPoint(vertex, forward);
+  }
+
+  IndexGraphStarterJoints<IndexGraphWrapper> & GetGraph() { return m_graph; }
+
+private:
+  IndexGraphStarterJoints<IndexGraphWrapper> m_graph;
 };
 
 // Calculate distance from the starting border point to the transition along the border.
@@ -474,7 +506,7 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
     IndexGraphWrapper indexGraphWrapper(graph, enter);
     DijkstraWrapperJoints wrapper(indexGraphWrapper, enter);
     Algorithm::Context context;
-    indexGraphWrapper.SetAStarParents(context.GetParents());
+    indexGraphWrapper.SetAStarParents(true /* forward */, context.GetParents());
     unordered_map<uint32_t, vector<JointSegment>> visitedVertexes;
     astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
                         [&](JointSegment const & vertex)

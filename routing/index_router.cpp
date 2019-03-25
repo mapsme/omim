@@ -612,9 +612,9 @@ RouterResultCode IndexRouter::CalculateSubroute(Checkpoints const & checkpoints,
   }
   else
   {
-    using Vertex = IndexGraphStarter::Vertex;
-    using Edge = IndexGraphStarter::Edge;
-    using Weight = IndexGraphStarter::Weight;
+    using Vertex = Segment;
+    using Edge = SegmentEdge;
+    using Weight = RouteWeight;
 
     RoutingResult<Segment, RouteWeight> routingResult;
     AStarAlgorithm<Vertex, Edge, Weight>::Params params(
