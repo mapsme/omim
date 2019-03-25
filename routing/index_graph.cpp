@@ -13,7 +13,6 @@
 
 #include "routing/world_graph.hpp"
 
-
 #include <algorithm>
 #include <cstdlib>
 #include <limits>
