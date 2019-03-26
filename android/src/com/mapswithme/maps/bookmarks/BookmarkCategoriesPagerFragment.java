@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
-    implements TargetFragmentCallback
+    implements TargetFragmentCallback, AuthCompleteListener
 {
   final static String ARG_CATEGORIES_PAGE = "arg_categories_page";
   final static String ARG_CATALOG_DEEPLINK = "arg_catalog_deeplink";
@@ -36,6 +36,9 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
   @SuppressWarnings("NullableProblems")
   @NonNull
   private BookmarksDownloadFragmentDelegate mDelegate;
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private ViewPager mViewPager;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
@@ -71,16 +74,16 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
                            @Nullable Bundle savedInstanceState)
   {
     View root = inflater.inflate(R.layout.fragment_bookmark_categories_pager, container, false);
-    ViewPager viewPager = root.findViewById(R.id.viewpager);
+    mViewPager = root.findViewById(R.id.viewpager);
     TabLayout tabLayout = root.findViewById(R.id.sliding_tabs_layout);
 
     FragmentManager fm = getActivity().getSupportFragmentManager();
     List<BookmarksPageFactory> dataSet = getAdapterDataSet();
     mAdapter = new BookmarksPagerAdapter(getContext(), fm, dataSet);
-    viewPager.setAdapter(mAdapter);
-    viewPager.setCurrentItem(saveAndGetInitialPage());
-    tabLayout.setupWithViewPager(viewPager);
-    viewPager.addOnPageChangeListener(new PageChangeListener());
+    mViewPager.setAdapter(mAdapter);
+    mViewPager.setCurrentItem(saveAndGetInitialPage());
+    tabLayout.setupWithViewPager(mViewPager);
+    mViewPager.addOnPageChangeListener(new PageChangeListener());
 
     return root;
   }
@@ -133,6 +136,12 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
   public boolean isTargetAdded()
   {
     return mDelegate.isTargetAdded();
+  }
+
+  @Override
+  public void onAuthCompleted()
+  {
+    mViewPager.setAdapter(mAdapter);
   }
 
   private class PageChangeListener extends ViewPager.SimpleOnPageChangeListener
