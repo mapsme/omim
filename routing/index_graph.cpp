@@ -332,7 +332,8 @@ void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
     }
 
     if (parent.GetFeatureId() != firstChild.GetFeatureId() &&
-        IsRestricted(parentJoint, parent, firstChild, isOutgoing, parents))
+        IsRestricted(parentJoint, parent.GetFeatureId(), firstChild.GetFeatureId(),
+                     isOutgoing, parents))
     {
       continue;
     }
@@ -394,8 +395,11 @@ void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bo
     return;
   }
 
-  if (IsRestricted(from, from, to, isOutgoing, parents))
+  if (from.GetFeatureId() != to.GetFeatureId() &&
+      IsRestricted(from, from.GetFeatureId(), to.GetFeatureId(), isOutgoing, parents))
+  {
     return;
+  }
 
   if (m_roadAccess.GetFeatureType(to.GetFeatureId()) == RoadAccess::Type::No)
     return;

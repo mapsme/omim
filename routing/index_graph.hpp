@@ -104,16 +104,15 @@ public:
     return GetGeometry().GetRoad(segment.GetFeatureId()).GetPoint(segment.GetPointId(front));
   }
 
-private:
-
   template <typename Parent>
-  bool IsRestricted(Parent const & parentJoint,
-                    Segment const & current, uint32_t parentFeatureId, bool isOutgoing,
+  bool IsRestricted(Parent const & parent,
+                    uint32_t parentFeatureId,
+                    uint32_t currentFeatureId, bool isOutgoing,
                     std::map<Parent, Parent> & parents) const;
+private:
 
   RouteWeight CalcSegmentWeight(Segment const & segment);
 
-private:
   void GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
                            vector<SegmentEdge> & edges, std::map<Segment, Segment> & parents);
   void GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
@@ -142,14 +141,15 @@ private:
 
 bool IsUTurn(Segment const & u, Segment const & v);
 
+// Be careful here with fake |parent|, |parentSegment| is always non-fake
 template <typename Parent>
 bool IndexGraph::IsRestricted(Parent const & parent,
-                              Segment const & parentSegment,
-                              Segment const & current, bool isOutgoing,
+                              uint32_t parentFeatureId,
+                              uint32_t currentFeatureId, bool isOutgoing,
                               std::map<Parent, Parent> & parents) const
 {
   auto const & restrictions = isOutgoing ? m_restrictionsForward : m_restrictionsBackward;
-  auto const it = restrictions.find(current.GetFeatureId());
+  auto const it = restrictions.find(currentFeatureId);
   if (it == restrictions.cend())
     return false;
 
@@ -163,15 +163,8 @@ bool IndexGraph::IsRestricted(Parent const & parent,
     return true;
   };
 
-  // Be carefull here with fake |parent|, |parentSegment| is always non-fake
-  uint32_t parentFeatureId = parentSegment.GetFeatureId();
   for (std::vector<uint32_t> const & restriction : it->second)
   {
-    // TODO (@gmoryes) remove u_turn check here
-    bool fakeNoUTurn = current.GetFeatureId() == parentFeatureId && !IsUTurn(parentSegment, current);
-    if (fakeNoUTurn)
-      continue;
-
     bool prevIsParent = restriction[0] == parentFeatureId;
     if (!prevIsParent)
       continue;

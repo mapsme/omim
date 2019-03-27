@@ -17,7 +17,7 @@ JointSegment::JointSegment(Segment const & from, Segment const & to)
 {
   // Can not check segment for fake or not with segment.IsRealSegment(), because all segments
   // have got fake m_numMwmId during mwm generation.
-  CHECK(IsRealSegment(from) && IsRealSegment(to),
+  CHECK(::routing::IsRealSegment(from) && ::routing::IsRealSegment(to),
         ("Segments of joints can not be fake. Only through ToFake() method."));
 
   CHECK_EQUAL(from.GetMwmId(), to.GetMwmId(), ("Different mwmIds in segments for JointSegment"));

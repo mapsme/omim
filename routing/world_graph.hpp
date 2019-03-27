@@ -94,9 +94,11 @@ public:
   virtual void SetAStarParents(bool forward, ParentJoints & parents);
 
   virtual bool IsWavesConnectible(ParentSegments & forwardParents, Segment const & commonVertex,
-                                  ParentSegments & backwardParents);
+                                  ParentSegments & backwardParents,
+                                  std::function<uint32_t(Segment const &)> && fakeFeatureConverter);
   virtual bool IsWavesConnectible(ParentJoints & forwardParents, JointSegment const & commonVertex,
-                                  ParentJoints & backwardParents);
+                                  ParentJoints & backwardParents,
+                                  std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter);
 
   /// \returns transit-specific information for segment. For nontransit segments returns nullptr.
   virtual std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) = 0;

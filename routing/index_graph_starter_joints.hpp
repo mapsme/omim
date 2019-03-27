@@ -63,7 +63,22 @@ public:
   bool IsWavesConnectible(std::map<Vertex, Vertex> & forwardParents, Vertex const & commonVertex,
                           std::map<Vertex, Vertex> & backwardParents) override
   {
-    return m_graph.IsWavesConnectible(forwardParents, commonVertex, backwardParents);
+    auto const converter = [&](JointSegment const & vertex) {
+      if (vertex.IsRealSegment())
+        return vertex.GetFeatureId();
+
+      auto const it = m_fakeJointSegments.find(vertex);
+      ASSERT(it != m_fakeJointSegments.cend(), ());
+
+      auto const & first = it->second.GetSegment(true /* start */);
+      if (first.IsRealSegment())
+        return first.GetFeatureId();
+
+      auto const & second = it->second.GetSegment(false /* start */);
+      return second.GetFeatureId();
+    };
+
+    return m_graph.IsWavesConnectible(forwardParents, commonVertex, backwardParents, std::move(converter));
   }
   // @}
 

@@ -32,6 +32,8 @@ public:
   void ToFake(uint32_t fakeId);
   bool IsFake() const;
 
+  bool IsRealSegment() const { return !IsFake(); }
+
   Segment GetSegment(bool start) const
   {
     return {m_numMwmId, m_featureId, start ? m_startSegmentId : m_endSegmentId, m_forward};

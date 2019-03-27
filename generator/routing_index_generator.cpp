@@ -173,6 +173,12 @@ public:
     CHECK(false, ("This method exists only for compatibility with IndexGraphStarterJoints"));
     return GetAStarWeightZero<RouteWeight>();
   }
+  bool IsWavesConnectible(map<JointSegment, JointSegment> & /* forwardParents */,
+                          JointSegment const & /* commonVertex */,
+                          map<JointSegment, JointSegment> & /* backwardParents */)
+  {
+    return true;
+  }
   // @}
 
   m2::PointD const & GetPoint(Segment const & s, bool forward)

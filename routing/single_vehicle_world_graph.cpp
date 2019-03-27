@@ -1,8 +1,9 @@
-#include <utility>
-
 #include "routing/single_vehicle_world_graph.hpp"
 
+#include <algorithm>
 #include <utility>
+
+#include "boost/optional.hpp"
 
 namespace routing
 {
@@ -226,5 +227,133 @@ RoutingOptions SingleVehicleWorldGraph::GetRoutingOptions(Segment const & segmen
 
   auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId());
   return geometry.GetRoutingOptions();
+}
+
+void SingleVehicleWorldGraph::SetAStarParents(bool forward, std::map<Segment, Segment> & parents)
+{
+  if (forward)
+    m_parentsForSegments.forward = &parents;
+  else
+    m_parentsForSegments.backward = &parents;
+}
+
+void SingleVehicleWorldGraph::SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents)
+{
+  if (forward)
+    m_parentsForJoints.forward = &parents;
+  else
+    m_parentsForJoints.backward = &parents;
+}
+
+template <typename VertexType>
+bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, VertexType> & forwardParents,
+                                                     VertexType const & commonVertex,
+                                                     std::map<VertexType, VertexType> & backwardParents,
+                                                     std::function<uint32_t(VertexType const &)> && fakeFeatureConverter)
+{
+  LOG(LINFO, ("commonVertex =", commonVertex));
+  std::vector<VertexType> chain;
+  NumMwmId mwmId = kFakeNumMwmId;
+  auto const fillUntilNextFeatureId = [&](VertexType const & cur, std::map<VertexType, VertexType> & parents)
+  {
+    if (cur.IsRealSegment())
+      mwmId = cur.GetMwmId();
+
+    auto startFeatureId = cur.GetFeatureId();
+    auto it = parents.find(cur);
+    while (it != parents.end() && it->second.GetFeatureId() == startFeatureId)
+    {
+      chain.emplace_back(it->second);
+      it = parents.find(it->second);
+    }
+
+    if (it == parents.end())
+      return false;
+
+    chain.emplace_back(it->second);
+    return true;
+  };
+
+  auto const fillParents = [&](VertexType const & start, std::map<VertexType, VertexType> & parents)
+  {
+    VertexType current = start;
+    static uint32_t constexpr kStepCountOneSide = 5;
+    for (uint32_t i = 0; i < kStepCountOneSide; ++i)
+    {
+      if (!fillUntilNextFeatureId(current, parents))
+        break;
+
+      current = chain.back();
+    }
+  };
+
+  fillParents(commonVertex, forwardParents);
+
+  std::reverse(chain.begin(), chain.end());
+  chain.emplace_back(commonVertex);
+
+  fillParents(commonVertex, backwardParents);
+
+  if (mwmId == kFakeNumMwmId)
+    return true;
+
+  LOG(LINFO, ("CHAIN START"));
+  for (auto const & v : chain)
+  {
+    if (v.IsRealSegment())
+      LOG(LINFO, (v, MercatorBounds::ToLatLon(GetPoint(v.GetSegment(true), true))));
+  }
+
+  for (size_t i = 0; i < chain.size(); ++i)
+  {
+    if (!chain[i].IsRealSegment())
+      chain[i].GetFeatureId() = fakeFeatureConverter(chain[i]);
+  }
+
+  LOG(LINFO, ("AFTER CONVERT"));
+  for (auto const & v : chain)
+    LOG(LINFO, (v));
+  LOG(LINFO, ("CHAIN END"));
+
+  std::map<VertexType, VertexType> parents;
+  for (size_t i = 1; i < chain.size(); ++i)
+    parents[chain[i]] = chain[i - 1];
+
+  auto & currentIndexGraph = GetIndexGraph(mwmId);
+  for (size_t i = 1; i < chain.size(); ++i)
+  {
+    auto const & parent = chain[i - 1];
+    uint32_t parentFeatureId = chain[i - 1].GetFeatureId();
+    uint32_t currentFeatureId = chain[i].GetFeatureId();
+
+    if (currentIndexGraph.IsRestricted(parent, parentFeatureId, currentFeatureId, true /* isOutgoing */,
+                                        parents))
+    {
+      LOG(LINFO, ("Can not go though:"));
+      for (size_t j = 0; j <= i; ++j)
+        LOG(LINFO, (chain[j]));
+      LOG(LINFO, ("================================"));
+      return false;
+    }
+  }
+
+  LOG(LINFO, ("ALL OK"));
+  return true;
+}
+
+bool SingleVehicleWorldGraph::IsWavesConnectible(ParentSegments & forwardParents,
+                                                 Segment const & commonVertex,
+                                                 ParentSegments & backwardParents,
+                                                 std::function<uint32_t(Segment const &)> && fakeFeatureConverter)
+{
+  return IsWavesConnectibleImpl(forwardParents, commonVertex, backwardParents, std::move(fakeFeatureConverter));
+}
+
+bool SingleVehicleWorldGraph::IsWavesConnectible(ParentJoints & forwardParents,
+                                                 JointSegment const & commonVertex,
+                                                 ParentJoints & backwardParents,
+                                                 std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter)
+{
+  return IsWavesConnectibleImpl(forwardParents, commonVertex, backwardParents, std::move(fakeFeatureConverter));
 }
 }  // namespace routing

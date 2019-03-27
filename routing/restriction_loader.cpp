@@ -45,6 +45,13 @@ RestrictionLoader::RestrictionLoader(MwmValue const & mwmValue, IndexGraph const
   if (!mwmValue.m_cont.IsExist(RESTRICTIONS_FILE_TAG))
     return;
 
+  static int cnt = 0;
+  cnt++;
+  if (cnt == 1)
+  {
+    std::ofstream output("/tmp/restrictions");
+  }
+
   try
   {
     m_reader = make_unique<FilesContainerR::TReader>(mwmValue.m_cont.GetReader(RESTRICTIONS_FILE_TAG));
@@ -54,11 +61,17 @@ RestrictionLoader::RestrictionLoader(MwmValue const & mwmValue, IndexGraph const
     RestrictionVec restrictionsOnly;
     RestrictionSerializer::Deserialize(m_header, m_restrictions /* restriction No */,
                                        restrictionsOnly, src);
+
+    std::ofstream output("/tmp/restrictions", std::ofstream::app);
+    ConvertRestrictionsOnlyToNoAndSort(graph, restrictionsOnly, m_restrictions);
     for (auto const & r : m_restrictions)
     {
       LOG(LINFO, ("get:", r));
+      output << "get: [ " << r.size() << ": ";
+      for (auto id : r)
+        output << id << " ";
+      output << "]" << std::endl;
     }
-    ConvertRestrictionsOnlyToNoAndSort(graph, restrictionsOnly, m_restrictions);
   }
   catch (Reader::OpenException const & e)
   {
