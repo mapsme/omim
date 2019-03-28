@@ -79,6 +79,7 @@ set(
   task_loop.hpp
   thread.cpp
   thread.hpp
+  thread_batch.hpp
   thread_checker.cpp
   thread_checker.hpp
   thread_pool.cpp
