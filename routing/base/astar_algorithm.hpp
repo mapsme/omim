@@ -520,6 +520,20 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   BidirectionalStepContext * cur = &forward;
   BidirectionalStepContext * nxt = &backward;
 
+  auto const getResult = [&]() {
+    if (!params.m_checkLengthCallback(bestPathRealLength))
+      return Result::NoPath;
+
+    ReconstructPathBidirectional(cur->bestVertex, nxt->bestVertex, cur->parent, nxt->parent,
+                                 result.m_path);
+    result.m_distance = bestPathRealLength;
+    CHECK(!result.m_path.empty(), ());
+    if (!cur->forward)
+      reverse(result.m_path.begin(), result.m_path.end());
+
+    return Result::OK;
+  };
+
   std::vector<Edge> adj;
 
   // It is not necessary to check emptiness for both queues here
@@ -555,18 +569,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
       // different real path lengths.
 
       if (curTop + nxtTop >= bestPathReducedLength - kEpsilon)
-      {
-        if (!params.m_checkLengthCallback(bestPathRealLength))
-          return Result::NoPath;
-
-        ReconstructPathBidirectional(cur->bestVertex, nxt->bestVertex, cur->parent, nxt->parent,
-                                     result.m_path);
-        result.m_distance = bestPathRealLength;
-        CHECK(!result.m_path.empty(), ());
-        if (!cur->forward)
-          reverse(result.m_path.begin(), result.m_path.end());
-        return Result::OK;
-      }
+        return getResult();
     }
 
     State const stateV = cur->queue.top();
@@ -651,6 +654,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         cur->queue.push(stateW);
     }
   }
+
+  if (foundAnyPath)
+    return getResult();
 
   return Result::NoPath;
 }
