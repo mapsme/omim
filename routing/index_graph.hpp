@@ -160,14 +160,16 @@ bool IndexGraph::IsRestricted(Parent const & parent,
     uint32_t curFeatureId = prevFeatureId;
 
     auto nextParent = parents.end();
+    auto * curParrent = &p;
     while (curFeatureId == prevFeatureId)
     {
-      auto const parentIt = parents.find(p);
+      auto const parentIt = parents.find(*curParrent);
       if (parentIt == parents.cend())
         return false;
 
       curFeatureId = parentIt->second.GetFeatureId();
       nextParent = parentIt;
+      curParrent = &nextParent->second;
     }
 
     ASSERT(nextParent != parents.end(), ());
