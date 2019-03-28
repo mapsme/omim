@@ -329,8 +329,9 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
     uint32_t parentFeatureId = chain[i - 1].GetFeatureId();
     uint32_t currentFeatureId = chain[i].GetFeatureId();
 
-    if (currentIndexGraph.IsRestricted(parent, parentFeatureId, currentFeatureId, true /* isOutgoing */,
-                                        parents))
+    if (parentFeatureId != currentFeatureId &&
+        currentIndexGraph.IsRestricted(parent, parentFeatureId, currentFeatureId, true /* isOutgoing */,
+                                       parents))
     {
 //      LOG(LINFO, ("Can not go though:"));
 //      for (size_t j = 0; j <= i; ++j)
