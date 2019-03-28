@@ -647,7 +647,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         }
       }
 
-      //if (stateW.vertex != (cur->forward ? cur->finalVertex : cur->startVertex))
+      if (stateW.vertex != (cur->forward ? cur->finalVertex : cur->startVertex))
         cur->queue.push(stateW);
     }
   }
