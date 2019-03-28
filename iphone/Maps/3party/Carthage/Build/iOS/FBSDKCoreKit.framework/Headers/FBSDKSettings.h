@@ -18,45 +18,46 @@
 
 #import <UIKit/UIKit.h>
 
-#import <FBSDKCoreKit/FBSDKMacros.h>
-
 /*
  * Constants defining logging behavior.  Use with <[FBSDKSettings setLoggingBehavior]>.
  */
 
 /** Include access token in logging. */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorAccessTokens;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorAccessTokens;
 
 /** Log performance characteristics */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorPerformanceCharacteristics;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorPerformanceCharacteristics;
 
 /** Log FBSDKAppEvents interactions */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorAppEvents;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorAppEvents;
 
 /** Log Informational occurrences */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorInformational;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorInformational;
 
 /** Log cache errors. */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorCacheErrors;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorCacheErrors;
 
 /** Log errors from SDK UI controls */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorUIControlErrors;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorUIControlErrors;
 
 /** Log debug warnings from API response, i.e. when friends fields requested, but user_friends permission isn't granted. */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorGraphAPIDebugWarning;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorGraphAPIDebugWarning;
 
 /** Log warnings from API response, i.e. when requested feature will be deprecated in next version of API.
  Info is the lowest level of severity, using it will result in logging all previously mentioned levels.
  */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorGraphAPIDebugInfo;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorGraphAPIDebugInfo;
 
 /** Log errors from SDK network requests */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorNetworkRequests;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorNetworkRequests;
 
 /** Log errors likely to be preventable by the developer. This is in the default set of enabled logging behaviors. */
-FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorDeveloperErrors;
+FOUNDATION_EXPORT NSString *const FBSDKLoggingBehaviorDeveloperErrors;
 
 @interface FBSDKSettings : NSObject
+
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
 
 /**
   Get the Facebook App ID used by the SDK.
@@ -178,6 +179,18 @@ FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorDeveloperErrors;
 + (void)setCodelessDebugLogEnabled:(NSNumber *)CodelessDebugLogEnabled;
 
 /**
+ Flag which controls whether advertiserID could be collected.
+ If not explicitly set, the default is 1 - true
+ */
++ (NSNumber *)advertiserIDCollectionEnabled;
+
+/**
+ Set the flag which controls ontrols whether advertiserID could be collected.
+ @param AdvertiserIDCollectionEnabled Flag value, expressed as a value from 0 - false or 1 - true.
+ */
++ (void)setAdvertiserIDCollectionEnabled:(NSNumber *)AdvertiserIDCollectionEnabled;
+
+/**
   Gets whether data such as that generated through FBSDKAppEvents and sent to Facebook should be restricted from being used for other than analytics and conversions.  Defaults to NO.  This value is stored on the device and persists across app launches.
  */
 + (BOOL)limitEventAndDataUsage;
@@ -195,9 +208,12 @@ FBSDK_EXTERN NSString *const FBSDKLoggingBehaviorDeveloperErrors;
 + (NSString *)sdkVersion;
 
 /**
-  Retrieve the current Facebook SDK logging behavior.
+  The current Facebook SDK logging behavior.
  */
-+ (NSSet *)loggingBehavior;
+@property (class, nonatomic, copy) NSSet<NSString *> *loggingBehaviors;
+
++ (NSSet *)loggingBehavior
+DEPRECATED_MSG_ATTRIBUTE("Renamed `loggingBehaviors`");
 
 /**
   Set the current Facebook SDK logging behavior.  This should consist of strings defined as

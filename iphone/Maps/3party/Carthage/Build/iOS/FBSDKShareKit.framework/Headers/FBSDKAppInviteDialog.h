@@ -38,7 +38,7 @@
 + (instancetype)showFromViewController:(UIViewController *)viewController
                            withContent:(FBSDKAppInviteContent *)content
                               delegate:(id<FBSDKAppInviteDialogDelegate>)delegate
-__attribute__ ((deprecated("App Invites no longer supported")));
+DEPRECATED_MSG_ATTRIBUTE("App Invites no longer supported");
 
 
 /**
@@ -46,7 +46,7 @@ __attribute__ ((deprecated("App Invites no longer supported")));
  @warning use showFromViewController:withContent:delegate: instead
  */
 + (instancetype)showWithContent:(FBSDKAppInviteContent *)content delegate:(id<FBSDKAppInviteDialogDelegate>)delegate
-__attribute__ ((deprecated("use showFromViewController:withContent:delegate: instead")));
+DEPRECATED_MSG_ATTRIBUTE("use showFromViewController:withContent:delegate: instead");
 
 /**
  A UIViewController to present the dialog from.
@@ -75,7 +75,7 @@ __attribute__ ((deprecated("use showFromViewController:withContent:delegate: ins
  @see validateWithError:
  @return YES if the receiver can show the dialog, otherwise NO.
  */
-- (BOOL)canShow;
+@property (nonatomic, readonly) BOOL canShow;
 
 /**
  Begins the app invite from the receiver.
