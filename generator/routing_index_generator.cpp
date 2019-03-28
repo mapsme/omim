@@ -515,7 +515,9 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
     Algorithm::Context context;
     indexGraphWrapper.SetAStarParents(true /* forward */, context.GetParents());
     unordered_map<uint32_t, vector<JointSegment>> visitedVertexes;
-    astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
+    //if (false)
+    {
+    astar.PropagateWave(wrapper, wrapper.GetGraph().GetStartJoint(),
                         [&](JointSegment const & vertex)
                         {
                           if (vertex.IsFake())
