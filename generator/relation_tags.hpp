@@ -29,10 +29,6 @@ public:
   template <class Reader>
   base::ControlFlow operator() (uint64_t id, Reader & reader)
   {
-    if (id == 571347)
-    {
-      LOG(LINFO, ("here=================="));
-    }
     bool exists = false;
     RelationElement & e = m_cache.Find(id, exists);
     if (!exists)

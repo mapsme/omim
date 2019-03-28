@@ -251,7 +251,7 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
                                                      std::map<VertexType, VertexType> & backwardParents,
                                                      std::function<uint32_t(VertexType const &)> && fakeFeatureConverter)
 {
-  LOG(LINFO, ("commonVertex =", commonVertex));
+//  LOG(LINFO, ("commonVertex =", commonVertex));
   std::vector<VertexType> chain;
   NumMwmId mwmId = kFakeNumMwmId;
   auto const fillUntilNextFeatureId = [&](VertexType const & cur, std::map<VertexType, VertexType> & parents)
@@ -297,23 +297,26 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
   if (mwmId == kFakeNumMwmId)
     return true;
 
-  LOG(LINFO, ("CHAIN START"));
-  for (auto const & v : chain)
+//  LOG(LINFO, ("CHAIN START"));
+//  for (auto const & v : chain)
+//  {
+//    if (v.IsRealSegment())
+//      LOG(LINFO, (v, MercatorBounds::ToLatLon(GetPoint(v.GetSegment(true), true))));
+//  }
+
+  if (fakeFeatureConverter)
   {
-    if (v.IsRealSegment())
-      LOG(LINFO, (v, MercatorBounds::ToLatLon(GetPoint(v.GetSegment(true), true))));
+    for (size_t i = 0; i < chain.size(); ++i)
+    {
+      if (!chain[i].IsRealSegment())
+        chain[i].GetFeatureId() = fakeFeatureConverter(chain[i]);
+    }
   }
 
-  for (size_t i = 0; i < chain.size(); ++i)
-  {
-    if (!chain[i].IsRealSegment())
-      chain[i].GetFeatureId() = fakeFeatureConverter(chain[i]);
-  }
-
-  LOG(LINFO, ("AFTER CONVERT"));
-  for (auto const & v : chain)
-    LOG(LINFO, (v));
-  LOG(LINFO, ("CHAIN END"));
+//  LOG(LINFO, ("AFTER CONVERT"));
+//  for (auto const & v : chain)
+//    LOG(LINFO, (v));
+//  LOG(LINFO, ("CHAIN END"));
 
   std::map<VertexType, VertexType> parents;
   for (size_t i = 1; i < chain.size(); ++i)
@@ -329,10 +332,10 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
     if (currentIndexGraph.IsRestricted(parent, parentFeatureId, currentFeatureId, true /* isOutgoing */,
                                         parents))
     {
-      LOG(LINFO, ("Can not go though:"));
-      for (size_t j = 0; j <= i; ++j)
-        LOG(LINFO, (chain[j]));
-      LOG(LINFO, ("================================"));
+//      LOG(LINFO, ("Can not go though:"));
+//      for (size_t j = 0; j <= i; ++j)
+//        LOG(LINFO, (chain[j]));
+//      LOG(LINFO, ("================================"));
       return false;
     }
   }

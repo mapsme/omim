@@ -108,7 +108,7 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
   if (from.size() != 1 || to.size() != 1 || via.empty())
     return;
 
-  // Either 1 node as vis, either several ways as via.
+  // Either 1 node as via, either several ways as via.
   // https://wiki.openstreetmap.org/wiki/Relation:restriction#Members
   if (via.size() != 1)
   {

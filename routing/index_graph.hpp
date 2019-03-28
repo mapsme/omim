@@ -141,7 +141,7 @@ private:
 
 bool IsUTurn(Segment const & u, Segment const & v);
 
-// Be careful here with fake |parent|, |parentSegment| is always non-fake
+/// \note |parent| can be fake, |parentSegment| is always non-fake.
 template <typename Parent>
 bool IndexGraph::IsRestricted(Parent const & parent,
                               uint32_t parentFeatureId,
@@ -153,13 +153,25 @@ bool IndexGraph::IsRestricted(Parent const & parent,
   if (it == restrictions.cend())
     return false;
 
-  std::vector<Parent> parentOfCurrent;
-  auto const getParent = [&parents, &parentOfCurrent](Parent const & p) {
-    auto const parentIt = parents.find(p);
-    if (parentIt == parents.cend())
-      return false;
+  std::vector<Parent> parentsFromCurrent;
+  auto const getParent = [&parents, &parentsFromCurrent](Parent const & p)
+  {
+    uint32_t prevFeatureId = p.GetFeatureId();
+    uint32_t curFeatureId = prevFeatureId;
 
-    parentOfCurrent.emplace_back(parentIt->second);
+    auto nextParent = parents.end();
+    while (curFeatureId == prevFeatureId)
+    {
+      auto const parentIt = parents.find(p);
+      if (parentIt == parents.cend())
+        return false;
+
+      curFeatureId = parentIt->second.GetFeatureId();
+      nextParent = parentIt;
+    }
+
+    ASSERT(nextParent != parents.end(), ());
+    parentsFromCurrent.emplace_back(nextParent->second);
     return true;
   };
 
@@ -181,11 +193,10 @@ bool IndexGraph::IsRestricted(Parent const & parent,
 
     for (size_t i = 1; i < restriction.size(); ++i)
     {
-      ASSERT_GREATER_OR_EQUAL(i, 1, ());
-      if (i - 1 == parentOfCurrent.size() && !getParent(parentOfCurrent.back()))
+      if (i - 1 == parentsFromCurrent.size() && !getParent(parentsFromCurrent.back()))
         break;
 
-      if (parentOfCurrent.back().GetFeatureId() == restriction[i])
+      if (parentsFromCurrent.back().GetFeatureId() == restriction[i])
       {
         if (i + 1 == restriction.size())
           return true;

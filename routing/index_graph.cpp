@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "routing/index_graph.hpp"
 
 #include "routing/restrictions_serialization.hpp"
@@ -64,11 +66,11 @@ bool IsUTurn(Segment const & u, Segment const & v)
          u.IsForward() != v.IsForward();
 }
 
-std::map<Segment, Segment> IndexGraph::kEmptyParentsSegments;
+std::map<Segment, Segment> IndexGraph::kEmptyParentsSegments = {};
 
 IndexGraph::IndexGraph(shared_ptr<Geometry> geometry, shared_ptr<EdgeEstimator> estimator,
                        RoutingOptions routingOptions)
-  : m_geometry(geometry),
+  : m_geometry(std::move(geometry)),
     m_estimator(move(estimator)),
     m_avoidRoutingOptions(routingOptions)
 {
