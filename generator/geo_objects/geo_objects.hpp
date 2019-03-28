@@ -15,6 +15,8 @@ bool GenerateGeoObjects(std::string const & pathInRegionsIndx,
                         std::string const & pathInRegionsKv,
                         std::string const & pathInGeoObjectsTmpMwm,
                         std::string const & pathOutIdsWithoutAddress,
-                        std::string const & pathOutGeoObjectsKv, bool verbose);
+                        std::string const & pathOutGeoObjectsKv,
+                        bool verbose,
+                        size_t threadsCount);
 }  // namespace geo_objects
 }  // namespace generator

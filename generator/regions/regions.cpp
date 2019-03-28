@@ -114,22 +114,22 @@ private:
         auto const & place = node->GetData();
         auto const & placeId = place.GetId();
         auto const & regionEmplace = m_countriesRegionIds.emplace(placeId, country);
-        if (!regionEmplace.second)
+        if (!regionEmplace.second && regionEmplace.first->second != country)
         {
-          if (regionEmplace.first->second != country)  // object may have several regions
-          {
-            LOG(LWARNING, ("Failed to place", GetLabel(place.GetLevel()), "region", placeId,
-                           "(", GetPlaceNotation(place), ")",
-                           "into", *country, ": region exist in", *regionEmplace.first->second,
-                           "already"));
-          }
+          LOG(LWARNING, ("Failed to place", GetLabel(place.GetLevel()), "region", placeId,
+                         "(", GetPlaceNotation(place), ")",
+                         "into", *country, ": region exist in", *regionEmplace.first->second,
+                         "already"));
           return;
         }
 
-        m_regionsKv << static_cast<int64_t>(placeId.GetEncodedId()) << " " << jsonPolicy->ToString(path)
-                    << "\n";
         objectsRegions.emplace(placeId, node);
-        ++countryRegionObjectCount;
+        if (regionEmplace.second)
+        {
+          m_regionsKv << static_cast<int64_t>(placeId.GetEncodedId()) << " " << jsonPolicy->ToString(path)
+                      << "\n";
+          ++countryRegionObjectCount;
+        }
       });
     }
 
@@ -172,14 +172,14 @@ private:
       auto objectRegions = objectsRegions.equal_range(id);
       if (objectRegions.first == objectRegions.second)
         return;
-
       if (!processedObjects.insert(id).second)
         return;
 
       for (auto region = objectRegions.first; region != objectRegions.second; ++region)
       {
-        ResetGeometry(fb, region->second->GetData().GetRegion());
-        fb.SetOsmId(id);
+        auto const & place = region->second->GetData();
+        ResetGeometry(fb, place.GetRegion());
+        fb.SetOsmId(place.GetId());
         fb.SetRank(0);
         m_featuresCollector(fb);
       }
@@ -191,12 +191,15 @@ private:
   void ResetGeometry(FeatureBuilder1 & fb, Region const & region)
   {
     fb.ResetGeometry();
-    fb.SetAreaAddHoles({});
-    auto const & polygon =  region.GetPolygon();
+    auto const & polygon = region.GetPolygon();
     fb.AddPolygon(GetPointSeq(polygon->outer()));
-    for (auto & hole : polygon->inners())
-      fb.AddPolygon(GetPointSeq(hole));
+    FeatureBuilder1::Geometry holes;
+    auto const & inners = polygon->inners();
+    std::transform(std::begin(inners), std::end(inners), std::back_inserter(holes),
+                   [this](auto && polygon) { return this->GetPointSeq(polygon); });
+    fb.SetAreaAddHoles(std::move(holes));
     CHECK(fb.IsArea(), ());
+    CHECK(fb.IsGeometryClosed(), ());
   }
 
   template <typename Polygon>

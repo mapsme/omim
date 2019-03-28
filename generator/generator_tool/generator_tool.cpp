@@ -354,7 +354,7 @@ int GeneratorToolMain(int argc, char ** argv)
   {
     if (!geo_objects::GenerateGeoObjects(FLAGS_regions_index, FLAGS_regions_key_value,
                                          FLAGS_geo_objects_features, FLAGS_ids_without_addresses,
-                                         FLAGS_geo_objects_key_value, FLAGS_verbose))
+                                         FLAGS_geo_objects_key_value, FLAGS_verbose, threadsCount))
       return -1;
   }
 

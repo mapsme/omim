@@ -4,6 +4,7 @@
 #include "generator/locality_sorter.hpp"
 #include "generator/regions/region_base.hpp"
 
+#include "indexer/borders.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/locality_index.hpp"
@@ -13,14 +14,19 @@
 
 #include "geometry/mercator.hpp"
 
+#include "base/async.hpp"
 #include "base/geo_object_id.hpp"
 #include "base/logging.hpp"
+#include "base/thread_pool_computational.hpp"
+#include "base/thread_batch.hpp"
 #include "base/timer.hpp"
 
 #include <cstdint>
 #include <fstream>
 #include <functional>
 #include <future>
+#include <mutex>
+#include <thread>
 #include <unordered_map>
 #include <utility>
 
@@ -28,6 +34,9 @@
 
 #include <boost/optional.hpp>
 #include "3party/jansson/myjansson.hpp"
+
+using namespace base::threads;
+using namespace base::thread_pool::computational;
 
 namespace
 {
@@ -112,24 +121,27 @@ public:
 
       m_map.insert(kv);
     }
-
   }
 
   // KeyValueInterface overrides:
   boost::optional<base::Json> Find(uint64_t key) const override
   {
-    boost::optional<base::Json> result;
     auto const it = m_map.find(key);
-    if (it != std::end(m_map))
-      result = it->second;
+    if (it == std::end(m_map))
+      return {};
 
-    return result;
+    auto inWorker = m_ownerId != std::this_thread::get_id();
+    if (inWorker)
+      return it->second.GetDeepCopy();
+
+    return it->second;
   }
 
   size_t Size() const override { return m_map.size(); }
 
 private:
   std::unordered_map<uint64_t, base::Json> m_map;
+  std::thread::id m_ownerId = std::this_thread::get_id();
 };
 
 // An implementation for reading key-value storage with loading and searching in disk.
@@ -157,31 +169,51 @@ public:
   // KeyValueInterface overrides:
   boost::optional<base::Json> Find(uint64_t key) const override
   {
-    boost::optional<base::Json> result;
     auto const it = m_map.find(key);
     if (it == std::end(m_map))
-      return result;
+      return {};
 
-    m_stream.seekg(it->second);
     std::string line;
-    if (!std::getline(m_stream, line))
+    if (!ReadLine(it->second, line))
     {
-      LOG(LERROR, ("Cannot read line."));
-      return result;
+      LOG(LERROR, ("Cannot read KV-line for", key, "at position", it->second));
+      return {};
+    }
+
+    if (line.empty())
+    {
+      LOG(LERROR, ("Empty KV-line for", key, "at position", it->second));
+      return {};
     }
 
     KeyValue kv;
-    if (ParseKeyValueLine(line, kv))
-      result = kv.second;
+    if (!ParseKeyValueLine(line, kv))
+      return {};
 
-    return result;
+    return std::move(kv.second);
   }
 
   size_t Size() const override { return m_map.size(); }
 
 private:
+  bool ReadLine(std::istream::pos_type pos, std::string & line) const
+  {
+    std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
+    auto inWorker = m_ownerId != std::this_thread::get_id();
+    if (inWorker)
+      lock.lock();
+
+    m_stream.seekg(pos);
+    if (!std::getline(m_stream, line))
+      return false;
+
+    return true;
+  }
+
   std::istream & m_stream;
   std::unordered_map<uint64_t, std::istream::pos_type> m_map;
+  mutable std::mutex m_mutex;
+  std::thread::id m_ownerId = std::this_thread::get_id();
 };
 
 bool IsBuilding(FeatureBuilder1 const & fb)
@@ -229,11 +261,13 @@ int GetRankFromValue(base::Json json)
   return rank;
 }
 
-boost::optional<KeyValue> GetDeepestRegion(std::vector<base::GeoObjectId> const & ids,
-                                           KeyValueInterface const & regionKv)
+boost::optional<KeyValue> GetDeepestRegionInBorder(FeatureBuilder1 const & fb,
+    std::vector<base::GeoObjectId> const & ids, indexer::Borders const & regionBorders,
+    KeyValueInterface const & regionKv)
 {
-  boost::optional<KeyValue> deepest;
-  int deepestRank = 0;
+  std::multimap<int, KeyValue> regionsByRank; // minimize CPU consume by minimize
+                                              // calls of havy regionBorders.IsPointInside()
+  auto const center = fb.GetKeyPoint();
   for (auto const & id : ids)
   {
     base::Json temp;
@@ -244,30 +278,25 @@ boost::optional<KeyValue> GetDeepestRegion(std::vector<base::GeoObjectId> const 
       continue;
     }
 
-    temp = *res;
-    if (!json_is_object(temp.get()))
+    if (!json_is_object((*res).get()))
     {
       LOG(LWARNING, ("Value is not a json object in region key-value storage:", id));
       continue;
     }
 
-    if (!deepest)
-    {
-      deepestRank = GetRankFromValue(temp);
-      deepest = KeyValue(static_cast<int64_t>(id.GetEncodedId()), temp);
-    }
-    else
-    {
-      int tempRank = GetRankFromValue(temp);
-      if (deepestRank < tempRank)
-      {
-        deepest = KeyValue(static_cast<int64_t>(id.GetEncodedId()), temp);
-        deepestRank = tempRank;
-      }
-    }
+    auto rank = GetRankFromValue(*res);
+    auto idNumeric = static_cast<int64_t>(id.GetEncodedId());
+    regionsByRank.emplace(rank, KeyValue{idNumeric, std::move(*res)});
   }
 
-  return deepest;
+  for (auto i = regionsByRank.rbegin(); i != regionsByRank.rend(); ++i)
+  {
+    auto & kv = i->second;
+    if (regionBorders.IsPointInside(kv.first, center))
+      return std::move(kv);
+  }
+
+  return {};
 }
 
 void UpdateCoordinates(m2::PointD const & point, base::Json json)
@@ -310,10 +339,10 @@ base::Json AddAddress(FeatureBuilder1 const & fb, KeyValue const & regionKeyValu
 
 boost::optional<KeyValue>
 FindRegion(FeatureBuilder1 const & fb, indexer::RegionsIndex<IndexReader> const & regionIndex,
-           KeyValueInterface const & regionKv)
+           indexer::Borders const & regionBorders, KeyValueInterface const & regionKv)
 {
   auto const ids = SearchObjectsInIndex(fb, regionIndex);
-  return GetDeepestRegion(ids, regionKv);
+  return GetDeepestRegionInBorder(fb, ids, regionBorders, regionKv);
 }
 
 std::unique_ptr<char, JSONFreeDeleter>
@@ -379,26 +408,45 @@ MakeTempGeoObjectsIndex(std::string const & pathToGeoObjectsTmpMwm)
 }
 
 void BuildGeoObjectsWithAddresses(indexer::RegionsIndex<IndexReader> const & regionIndex,
+                                  indexer::Borders const & regionBorders,
                                   KeyValueInterface const & regionKv,
                                   std::string const & pathInGeoObjectsTmpMwm,
-                                  std::ostream & streamGeoObjectsKv, bool)
+                                  std::ostream & streamGeoObjectsKv,
+                                  bool /* verbose */,
+                                  size_t threadsCount)
 {
   size_t countGeoObjects = 0;
-  auto const fn = [&](FeatureBuilder1 & fb, uint64_t /* currPos */) {
-    if (!(IsBuilding(fb) || HasHouse(fb)))
-      return;
 
-    auto regionKeyValue = FindRegion(fb, regionIndex, regionKv);
-    if (!regionKeyValue)
-      return;
+  ThreadPool filterThreadPool{threadsCount};
+  base::threads::AsyncFinishFlag completeFlag;
+  std::mutex streamGeoObjectMutex;
 
-    auto const value = MakeGeoObjectValueWithAddress(fb, *regionKeyValue);
-    streamGeoObjectsKv << static_cast<int64_t>(fb.GetMostGenericOsmId().GetEncodedId()) << " "
-                       << value.get() << "\n";
-    ++countGeoObjects;
-  };
+  {
+    BatchSubmitter filterSubmitter{filterThreadPool, 1000}; // in scope for auto flush
 
-  feature::ForEachFromDatRawFormat(pathInGeoObjectsTmpMwm, fn);
+    auto const fn = [&](FeatureBuilder1 & fb, uint64_t /* currPos */) {
+      if (!(IsBuilding(fb) || HasHouse(fb)))
+        return;
+
+      filterSubmitter([&, fb, completeLock = completeFlag.GetLock()] {
+        auto regionKeyValue = FindRegion(fb, regionIndex, regionBorders, regionKv);
+        if (!regionKeyValue)
+          return;
+
+        auto const value = MakeGeoObjectValueWithAddress(fb, *regionKeyValue);
+        {
+          std::lock_guard<std::mutex> lock(streamGeoObjectMutex);
+          streamGeoObjectsKv << static_cast<int64_t>(fb.GetMostGenericOsmId().GetEncodedId()) << " "
+                           << value.get() << "\n";
+          ++countGeoObjects;
+        }
+      });
+    };
+
+    feature::ForEachFromDatRawFormat(pathInGeoObjectsTmpMwm, fn);
+  }
+
+  completeFlag.Wait();
   LOG(LINFO, ("Added ", countGeoObjects, "geo objects with addresses."));
 }
 
@@ -440,7 +488,9 @@ bool GenerateGeoObjects(std::string const & pathInRegionsIndx,
                         std::string const & pathInRegionsKv,
                         std::string const & pathInGeoObjectsTmpMwm,
                         std::string const & pathOutIdsWithoutAddress,
-                        std::string const & pathOutGeoObjectsKv, bool verbose)
+                        std::string const & pathOutGeoObjectsKv,
+                        bool verbose,
+                        size_t threadsCount)
 {
   LOG(LINFO, ("Start generating geo objects.."));
   auto timer = base::Timer();
@@ -452,14 +502,16 @@ bool GenerateGeoObjects(std::string const & pathInRegionsIndx,
                                          pathInGeoObjectsTmpMwm);
   auto const regionIndex =
       indexer::ReadIndex<indexer::RegionsIndexBox<IndexReader>, MmapReader>(pathInRegionsIndx);
+  indexer::Borders regionBorders;
+  regionBorders.Deserialize(pathInRegionsIndx);
   // Regions key-value storage is small (~150 Mb). We will load everything into memory.
   std::fstream streamRegionKv(pathInRegionsKv);
   KeyValueMem const regionsKv(streamRegionKv);
   LOG(LINFO, ("Size of regions key-value storage:", regionsKv.Size()));
   std::ofstream streamIdsWithoutAddress(pathOutIdsWithoutAddress);
   std::ofstream streamGeoObjectsKv(pathOutGeoObjectsKv);
-  BuildGeoObjectsWithAddresses(regionIndex, regionsKv, pathInGeoObjectsTmpMwm,
-                               streamGeoObjectsKv, verbose);
+  BuildGeoObjectsWithAddresses(regionIndex, regionBorders, regionsKv, pathInGeoObjectsTmpMwm,
+                               streamGeoObjectsKv, verbose, threadsCount);
   LOG(LINFO, ("Geo objects with addresses were built."));
   // Regions key-value storage is big (~80 Gb). We will not load the key value into memory.
   // This can be slow.
