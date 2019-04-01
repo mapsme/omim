@@ -3,7 +3,7 @@ CURRENT_PROJECT_VERSION = 9.0.6
 // Paths
 OMIM_ROOT = $(PROJECT_DIR)/../..
 QT_PATH = /usr/local/opt/qt5
-BOOST_ROOT = $(OMIM_ROOT)/3party/boost
+BOOST_ROOT = /usr/local/opt/boost/include
 
 HEADER_SEARCH_PATHS = $(inherited) $(OMIM_ROOT) $(BOOST_ROOT)
 FRAMEWORK_SEARCH_PATHS[sdk=macosx*] = $(QT_PATH)/lib

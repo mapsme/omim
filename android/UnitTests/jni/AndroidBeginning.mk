@@ -35,7 +35,7 @@ LOCAL_CPP_FEATURES += exceptions rtti
 
 LOCAL_C_INCLUDES := $(ROOT_PATH_FROM_JNI)/
 LOCAL_C_INCLUDES += $(ROOT_PATH)/
-LOCAL_C_INCLUDES += $(ROOT_PATH)/3party/boost/
+LOCAL_C_INCLUDES += /usr/local/opt/boost/include
 
 ifneq ($(NDK_DEBUG),1)
   ifeq ($(PRODUCTION),1)
