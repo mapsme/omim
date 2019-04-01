@@ -4,7 +4,7 @@ In general, [Google's coding standard](https://google.github.io/styleguide/cppgu
 
 Below are our specific (but not all!) exceptions to the Google's coding standard:
 
-- All code should conform to the C++14 standard (not C++17 or higher).
+- All code should conform to the C++17 standard.
 - We use `.cpp` and `.hpp` files, not `.cc` and `.h` (`.c` and `.h` are used for C code), in UTF-8 encoding.
 - File names are lowercase with underscores, like `file_reader.cpp`.
 - We use `#pragma once` instead of the `#define` Guard in header files.
