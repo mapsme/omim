@@ -364,6 +364,17 @@ UNIT_TEST(RegionsGenerationTest_GenerateCityRegionByPlacePoint)
   TEST(HasName(regions, u8"Nederland, locality: Amsterdam"), ());
 }
 
+UNIT_TEST(RegionsGenerationTest_GeneratePartialOverlapSuburbWithCity)
+{
+  auto regions = GenerateTestRegions({
+    {1, {name = u8"Россия", admin = "2", ba}, {{0, 0}, {50, 50}}},
+    {4, {name = u8"Нижний Новгород", place = "city"}, {{14, 14}, {16, 16}}},
+    {5, {name = u8"Канавинский район", admin = "9", ba}, {{14 - 0.01, 14 - 0.01}, {16 + 0.01, 14.5}}},
+  });
+
+  TEST(HasName(regions, u8"Россия, locality: Нижний Новгород, suburb: Канавинский район"), ());
+}
+
 UNIT_TEST(RegionsGenerationTest_GenerateRusCitySuburb)
 {
   auto regions = GenerateTestRegions({

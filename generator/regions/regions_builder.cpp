@@ -215,7 +215,7 @@ Node::Ptr RegionsBuilder::FindParent(std::vector<Node::Ptr> const & nodeOrder,
         break;
     }
 
-    if (!candidateRegion.ContainsRect(placeRegion))
+    if (!candidateRegion.ContainsRect(placeRegion) && !candidateRegion.Contains(placeRegion.GetCenter()))
       continue;
 
     if (i == forItemReverseIterator)
