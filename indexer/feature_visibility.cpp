@@ -389,6 +389,17 @@ int GetMinDrawableScale(TypesHolder const & types, m2::RectD limitRect)
   return -1;
 }
 
+int GetMinDrawableScaleGeometryOnly(TypesHolder const & types, m2::RectD limitRect)
+{
+  int const upBound = scales::GetUpperStyleScale();
+
+  for (int level = 0; level <= upBound; ++level)
+    if (IsDrawableForIndexGeometryOnly(types, limitRect, level))
+      return level;
+
+  return -1;
+}
+
 int GetMinDrawableScaleClassifOnly(TypesHolder const & types)
 {
   int const upBound = scales::GetUpperStyleScale();
