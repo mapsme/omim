@@ -16,12 +16,12 @@ base::GeoObjectId RegionPlace::GetId() const
   return m_region.GetId();
 }
 
-std::string RegionPlace::GetName() const
+std::string RegionPlace::GetName(int8_t lang) const
 {
   if (m_placeLabel)
-    return m_placeLabel->GetName();
+    return m_placeLabel->GetName(lang);
 
-  return m_region.GetName();
+  return m_region.GetName(lang);
 }
   
 std::string RegionPlace::GetEnglishOrTransliteratedName() const

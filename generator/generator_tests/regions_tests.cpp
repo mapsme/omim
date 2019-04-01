@@ -446,3 +446,15 @@ UNIT_TEST(RegionsGenerationTest_GenerateRusSPetersburgSuburb)
                         u8"suburb: Центральный район, sublocality: Дворцовый округ"),
        ());
 }
+
+UNIT_TEST(RegionsGenerationTest_GenerateBrusselsCaseByAdminBoundary)
+{
+  auto regions = GenerateTestRegions({
+    {1, {name = u8"België / Belgique / Belgien", admin = "2", ba}, {{0, 0}, {50, 50}}},
+    {3, {name = u8"Ville de Bruxelles - Stad Brussel", admin = "8", ba}, {{12, 12}, {18, 18}}},
+    {4, {name = u8"Bruxelles / Brussel", {"name:en", "Brussels"}, admin = "9", ba}, {{12, 12}, {17, 17}}},
+    {5, {name = u8"Bruxelles - Brussel", {"name:en", "Brussels"}, place = "city"}, {{15.5, 15.5}}},
+  });
+
+  TEST(HasName(regions, u8"België / Belgique / Belgien, locality: Bruxelles - Brussel"), ());
+}

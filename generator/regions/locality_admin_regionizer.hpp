@@ -16,6 +16,7 @@ public:
 
 protected:
   bool IsFitNode(Node::Ptr & node) const;
+  bool HasSearchName(RegionPlace const & place) const;
   void InsertInto(Node::Ptr & node) const;
 
   bool ContainsSameLocality(Node::Ptr const & tree) const;

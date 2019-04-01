@@ -25,7 +25,7 @@ public:
   // 2. Return transliteration if it succeeds.
   // 3. Otherwise, return empty string.
   std::string GetEnglishOrTransliteratedName() const;
-  std::string GetName() const;
+  std::string GetName(int8_t lang = StringUtf8Multilang::kDefaultCode) const;
 
   PlaceType GetPlaceType() const;
   AdminLevel GetAdminLevel() const;
