@@ -44,27 +44,43 @@ PlaceType EncodePlaceType(std::string const & place)
 
 char const * StringifyPlaceType(PlaceType placeType)
 {
-  static constexpr auto tags = {
-    "unknown",
-    "country",
-    "state",
-    "region",
-    "province",
-    "district",
-    "county",
-    "municipality",
-    "city",
-    "town",
-    "village",
-    "hamlet",
-    "suburb",
-    "quarter",
-    "neighbourhood",
-    "isolated_dwelling"
+  switch (placeType)
+  {
+  case PlaceType::Country:
+    return "country";
+  case PlaceType::State:
+    return "state";
+  case PlaceType::Region:
+    return "region";
+  case PlaceType::Province:
+    return "province";
+  case PlaceType::District:
+    return "district";
+  case PlaceType::County:
+    return "county";
+  case PlaceType::Municipality:
+    return "municipality";
+  case PlaceType::City:
+    return "city";
+  case PlaceType::Town:
+    return "town";
+  case PlaceType::Village:
+    return "village";
+  case PlaceType::Hamlet:
+    return "hamlet";
+  case PlaceType::Suburb:
+    return "suburb";
+  case PlaceType::Quarter:
+    return "quarter";
+  case PlaceType::Neighbourhood:
+    return "neighbourhood";
+  case PlaceType::IsolatedDwelling:
+    return "isolated_dwelling";
+  case PlaceType::Unknown:
+    return "unknown";
   };
 
-  auto const index = static_cast<std::size_t>(placeType);
-  return index < tags.size() ? tags.begin()[index] : "unknown";
+  UNREACHABLE();
 }
 
 char const * GetLabel(ObjectLevel level)

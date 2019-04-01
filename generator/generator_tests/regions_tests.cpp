@@ -146,8 +146,8 @@ public:
     CHECK(!path.empty(), ());
     stringstream stream;
     auto i = path.begin();
-    auto const & contryName = (*i)->GetData().GetName();
-    CHECK(!contryName.empty(), ());
+    auto const & countryName = (*i)->GetData().GetName();
+    CHECK(!countryName.empty(), ());
     stream << (*i)->GetData().GetName();
     ++i;
     for (; i != path.end(); ++i)

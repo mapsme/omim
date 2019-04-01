@@ -118,8 +118,7 @@ private:
         {
           LOG(LWARNING, ("Failed to place", GetLabel(place.GetLevel()), "region", placeId,
                          "(", GetPlaceNotation(place), ")",
-                         "into", *country, ": region exist in", *regionEmplace.first->second,
-                         "already"));
+                         "into", *country, ": region already exists in", *regionEmplace.first->second));
           return;
         }
 
@@ -289,7 +288,7 @@ private:
   feature::FeaturesCollector m_featuresCollector;
 
   std::map<base::GeoObjectId, std::shared_ptr<std::string>> m_countriesRegionIds;
-  size_t m_regionsTotalCount = 0;
+  size_t m_regionsTotalCount{0};
 
   bool m_verbose{false};
 };

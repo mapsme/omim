@@ -35,7 +35,7 @@ public:
   template <typename Visitor>
   friend void Visit(Ptr const & tree, Visitor && visitor)
   {
-    visitor(tree);
+    std::forward<Visitor>(visitor)(tree);
     for (auto const & subtree : tree->GetChildren())
       Visit(subtree, std::forward<Visitor>(visitor));
   }

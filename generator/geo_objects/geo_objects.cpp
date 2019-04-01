@@ -132,7 +132,7 @@ public:
 
     auto inWorker = m_ownerId != std::this_thread::get_id();
     if (inWorker)
-      return it->second.GetDeepCopy();
+      return it->second.GetDeepCopy(); // for thread safety
 
     return it->second;
   }
@@ -265,8 +265,8 @@ boost::optional<KeyValue> GetDeepestRegionInBorder(FeatureBuilder1 const & fb,
     std::vector<base::GeoObjectId> const & ids, indexer::Borders const & regionBorders,
     KeyValueInterface const & regionKv)
 {
-  std::multimap<int, KeyValue> regionsByRank; // minimize CPU consume by minimize
-                                              // calls of havy regionBorders.IsPointInside()
+  // Minimize CPU consume by minimize calls of havy regionBorders.IsPointInside().
+  std::multimap<int, KeyValue> regionsByRank;
   auto const center = fb.GetKeyPoint();
   for (auto const & id : ids)
   {
@@ -422,7 +422,8 @@ void BuildGeoObjectsWithAddresses(indexer::RegionsIndex<IndexReader> const & reg
   std::mutex streamGeoObjectMutex;
 
   {
-    BatchSubmitter filterSubmitter{filterThreadPool, 1000}; // in scope for auto flush
+    constexpr size_t kFilterBatchSize = 1000;
+    BatchSubmitter filterSubmitter{filterThreadPool, kFilterBatchSize}; // in scope for auto flush
 
     auto const fn = [&](FeatureBuilder1 & fb, uint64_t /* currPos */) {
       if (!(IsBuilding(fb) || HasHouse(fb)))
@@ -484,7 +485,7 @@ namespace generator
 {
 namespace geo_objects
 {
-bool GenerateGeoObjects(std::string const & pathInRegionsIndx,
+bool GenerateGeoObjects(std::string const & pathInRegionsIndex,
                         std::string const & pathInRegionsKv,
                         std::string const & pathInGeoObjectsTmpMwm,
                         std::string const & pathOutIdsWithoutAddress,
@@ -501,9 +502,9 @@ bool GenerateGeoObjects(std::string const & pathInRegionsIndx,
   auto geoObjectIndexFuture = std::async(std::launch::async, MakeTempGeoObjectsIndex,
                                          pathInGeoObjectsTmpMwm);
   auto const regionIndex =
-      indexer::ReadIndex<indexer::RegionsIndexBox<IndexReader>, MmapReader>(pathInRegionsIndx);
+      indexer::ReadIndex<indexer::RegionsIndexBox<IndexReader>, MmapReader>(pathInRegionsIndex);
   indexer::Borders regionBorders;
-  regionBorders.Deserialize(pathInRegionsIndx);
+  regionBorders.Deserialize(pathInRegionsIndex);
   // Regions key-value storage is small (~150 Mb). We will load everything into memory.
   std::fstream streamRegionKv(pathInRegionsKv);
   KeyValueMem const regionsKv(streamRegionKv);
