@@ -15,21 +15,26 @@
 
 namespace routing
 {
-bool BuildRoadRestrictions(std::string const & mwmPath, std::string const & restrictionPath,
-                           std::string const & osmIdsTofeatureIdsPath)
+bool BuildRoadRestrictions(std::string const & targetPath,
+                           std::string const & mwmPath,
+                           std::string const & country,
+                           std::string const & restrictionPath,
+                           std::string const & osmIdsTofeatureIdsPath,
+                           CountryParentNameGetterFn const & countryParentNameGetterFn)
 {
-  LOG(LDEBUG, ("BuildRoadRestrictions(", mwmPath, ", ", restrictionPath, ", ",
+  LOG(LDEBUG, ("BuildRoadRestrictions(", targetPath, ", ", restrictionPath, ", ",
               osmIdsTofeatureIdsPath, ");"));
-  RestrictionCollector restrictionCollector(restrictionPath, osmIdsTofeatureIdsPath);
+  RestrictionCollector restrictionCollector(targetPath, mwmPath,country, restrictionPath,
+                                            osmIdsTofeatureIdsPath, countryParentNameGetterFn);
   if (!restrictionCollector.HasRestrictions())
   {
-    LOG(LINFO, ("No restrictions for", mwmPath, "It's necessary to check that",
+    LOG(LINFO, ("No restrictions for", targetPath, "It's necessary to check that",
                    restrictionPath, "and", osmIdsTofeatureIdsPath, "are available."));
     return false;
   }
   if (!restrictionCollector.IsValid())
   {
-    LOG(LWARNING, ("Found invalid restrictions for", mwmPath, "Are osm2ft files relevant?"));
+    LOG(LWARNING, ("Found invalid restrictions for", targetPath, "Are osm2ft files relevant?"));
     return false;
   }
 

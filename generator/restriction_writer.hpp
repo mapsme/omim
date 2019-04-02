@@ -1,5 +1,7 @@
 #pragma once
 
+#include "generator/intermediate_data.hpp"
+
 #include <fstream>
 #include <string>
 
@@ -10,18 +12,29 @@ namespace routing
 class RestrictionWriter
 {
 public:
-  void Open(std::string const & fullPath);
+  enum class ViaType
+  {
+    Node,
+    Way,
+  };
 
-  /// \brief Writes |relationElement| to |m_stream| if |relationElement| is a supported restriction.
-  /// See restriction_generator.hpp for the description of the format.
-  /// \note For the time being only line-point-line restrictions are processed. The other
-  /// restrictions are ignored.
-  // @TODO(bykoianko) It's necessary to process all kind of restrictions.
+  static std::string const kNodeString;
+  static std::string const kWayString;
+
+  static ViaType ConvertFromString(std::string const & str);
+
+  void Open(std::string const & fullPath, generator::cache::IntermediateDataReader * cache);
+
   void Write(RelationElement const & relationElement);
 
 private:
   bool IsOpened() const;
 
   std::ofstream m_stream;
+  generator::cache::IntermediateDataReader * m_cache = nullptr;
 };
+
+std::string DebugPrint(RestrictionWriter::ViaType const & type);
+
 }  // namespace routing
+

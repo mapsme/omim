@@ -62,6 +62,8 @@ public:
     return m_forward < seg.m_forward;
   }
 
+  uint32_t GetStartSegmentId() const { return 0; }
+
   bool operator==(Segment const & seg) const
   {
     return m_featureId == seg.m_featureId && m_segmentIdx == seg.m_segmentIdx &&

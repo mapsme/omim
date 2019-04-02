@@ -64,7 +64,7 @@ TranslatorPlanet::TranslatorPlanet(std::shared_ptr<EmitterInterface> emitter,
 
   auto const restrictionsFilePath = info.GetIntermediateFileName(RESTRICTIONS_FILENAME);
   if (!restrictionsFilePath.empty())
-    m_routingTagsProcessor.m_restrictionWriter.Open(restrictionsFilePath);
+    m_routingTagsProcessor.m_restrictionWriter.Open(restrictionsFilePath, &m_cache);
 
   auto const roadAccessFilePath = info.GetIntermediateFileName(ROAD_ACCESS_FILENAME);
   if (!roadAccessFilePath.empty())

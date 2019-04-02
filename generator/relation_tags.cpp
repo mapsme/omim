@@ -48,7 +48,8 @@ void RelationTagsNode::Process(RelationElement const & e)
 
   if (type == "restriction")
   {
-    m_routingTagsProcessor.m_restrictionWriter.Write(e);
+    // Restriction can not be node type.
+//    m_routingTagsProcessor.m_restrictionWriter.Write(e);
     return;
   }
 

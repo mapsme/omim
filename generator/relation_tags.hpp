@@ -61,7 +61,7 @@ protected:
   void Process(RelationElement const & e) override;
 
 private:
-    using Base = RelationTagsBase;
+  using Base = RelationTagsBase;
 };
 
 class RelationTagsWay : public RelationTagsBase

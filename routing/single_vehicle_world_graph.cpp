@@ -256,9 +256,6 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
   NumMwmId mwmId = kFakeNumMwmId;
   auto const fillUntilNextFeatureId = [&](VertexType const & cur, std::map<VertexType, VertexType> & parents)
   {
-    if (cur.IsRealSegment())
-      mwmId = cur.GetMwmId();
-
     auto startFeatureId = cur.GetFeatureId();
     auto it = parents.find(cur);
     while (it != parents.end() && it->second.GetFeatureId() == startFeatureId)
@@ -277,7 +274,7 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
   auto const fillParents = [&](VertexType const & start, std::map<VertexType, VertexType> & parents)
   {
     VertexType current = start;
-    static uint32_t constexpr kStepCountOneSide = 5;
+    static uint32_t constexpr kStepCountOneSide = 3;
     for (uint32_t i = 0; i < kStepCountOneSide; ++i)
     {
       if (!fillUntilNextFeatureId(current, parents))
@@ -293,9 +290,6 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
   chain.emplace_back(commonVertex);
 
   fillParents(commonVertex, backwardParents);
-
-  if (mwmId == kFakeNumMwmId)
-    return true;
 
 //  LOG(LINFO, ("CHAIN START"));
 //  for (auto const & v : chain)
@@ -320,7 +314,16 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
 
   std::map<VertexType, VertexType> parents;
   for (size_t i = 1; i < chain.size(); ++i)
+  {
     parents[chain[i]] = chain[i - 1];
+    if (chain[i].IsRealSegment())
+    {
+      if (mwmId != kFakeNumMwmId && mwmId != chain[i].GetMwmId())
+        return true;
+
+      mwmId = chain[i].GetMwmId();
+    }
+  }
 
   auto & currentIndexGraph = GetIndexGraph(mwmId);
   for (size_t i = 1; i < chain.size(); ++i)

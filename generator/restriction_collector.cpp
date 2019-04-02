@@ -1,6 +1,13 @@
 #include "generator/restriction_collector.hpp"
 
+#include "platform/country_file.hpp"
+#include "platform/local_country_file.hpp"
+
 #include "generator/routing_helpers.hpp"
+
+#include "routing/restriction_loader.hpp"
+
+#include "geometry/mercator.hpp"
 
 #include "base/assert.hpp"
 #include "base/geo_object_id.hpp"
@@ -11,9 +18,12 @@
 
 #include <algorithm>
 #include <fstream>
+#include <unordered_set>
 
 namespace
 {
+using namespace routing;
+
 char const kNo[] = "No";
 char const kOnly[] = "Only";
 char const kDelim[] = ", \t\r\n";
@@ -33,8 +43,15 @@ bool ParseLineOfWayIds(strings::SimpleTokenizer & iter, std::vector<base::GeoObj
 
 namespace routing
 {
-RestrictionCollector::RestrictionCollector(std::string const & restrictionPath,
-                                           std::string const & osmIdsToFeatureIdPath)
+
+m2::PointD constexpr RestrictionCollector::kNoCoords;
+
+RestrictionCollector::RestrictionCollector(std::string const & targetPath,
+                                           std::string const & mwmPath,
+                                           std::string const & country,
+                                           std::string const & restrictionPath,
+                                           std::string const & osmIdsToFeatureIdPath,
+                                           CountryParentNameGetterFn const & countryParentNameGetterFn)
 {
   SCOPE_GUARD(clean, [this]() {
     m_osmIdToFeatureId.clear();
@@ -47,6 +64,18 @@ RestrictionCollector::RestrictionCollector(std::string const & restrictionPath,
                    osmIdsToFeatureIdPath));
     return;
   }
+
+  shared_ptr<VehicleModelInterface> vehicleModel =
+      CarModelFactory(countryParentNameGetterFn).GetVehicleModelForCountry(country);
+
+  MwmValue mwmValue(
+      platform::LocalCountryFile(targetPath, platform::CountryFile(country), 0 /* version */));
+
+  m_indexGraph = std::make_unique<IndexGraph>(
+      make_shared<Geometry>(GeometryLoader::CreateFromFile(mwmPath, vehicleModel)),
+      EdgeEstimator::Create(VehicleType::Car, *vehicleModel, nullptr /* trafficStash */));
+
+  DeserializeIndexGraph(mwmValue, VehicleType::Car, *m_indexGraph);
 
   if (!ParseRestrictions(restrictionPath))
   {
@@ -80,16 +109,28 @@ bool RestrictionCollector::ParseRestrictions(std::string const & path)
   {
     strings::SimpleTokenizer iter(line, kDelim);
     if (!iter)  // the line is empty
-      return false;
-
-    Restriction::Type type;
-    if (!FromString(*iter, type))
     {
-      LOG(LWARNING, ("Cannot parse a restriction type. Line:", line));
+      LOG(LINFO, ("line is empty"));
       return false;
     }
 
+    Restriction::Type restrictionType;
+    RestrictionWriter::ViaType viaType;
+    FromString(*iter, restrictionType);
     ++iter;
+
+    FromString(*iter, viaType);
+    ++iter;
+
+    m2::PointD coords = kNoCoords;
+    if (viaType == RestrictionWriter::ViaType::Node)
+    {
+      FromString(*iter, coords.y);
+      ++iter;
+      FromString(*iter, coords.x);
+      ++iter;
+    }
+
     std::vector<base::GeoObjectId> osmIds;
     if (!ParseLineOfWayIds(iter, osmIds))
     {
@@ -97,12 +138,63 @@ bool RestrictionCollector::ParseRestrictions(std::string const & path)
       return false;
     }
 
-    AddRestriction(type, osmIds);
+    if (viaType == RestrictionWriter::ViaType::Node)
+      CHECK_EQUAL(osmIds.size(), 2, ("Only |from| and |to| osmId"));
+
+    AddRestriction(coords, restrictionType, osmIds);
   }
   return true;
 }
 
-bool RestrictionCollector::AddRestriction(Restriction::Type type,
+Joint::Id RestrictionCollector::GetFirstCommonJoint(uint32_t firstFeatureId,
+                                                    uint32_t secondFeatureId)
+{
+  uint32_t firstLen = m_indexGraph->GetGeometry().GetRoad(firstFeatureId).GetPointsCount();
+  uint32_t secondLen = m_indexGraph->GetGeometry().GetRoad(secondFeatureId).GetPointsCount();
+
+  auto firstRoad = m_indexGraph->GetRoad(firstFeatureId);
+  auto secondRoad = m_indexGraph->GetRoad(secondFeatureId);
+
+  std::unordered_set<Joint::Id> used;
+  for (uint32_t i = 0; i < firstLen; ++i)
+  {
+    if (firstRoad.GetJointId(i) != Joint::kInvalidId)
+      used.emplace(firstRoad.GetJointId(i));
+  }
+
+  for (uint32_t i = 0; i < secondLen; ++i)
+  {
+    if (used.count(secondRoad.GetJointId(i)) != 0)
+      return secondRoad.GetJointId(i);
+  }
+
+  return Joint::kInvalidId;
+}
+
+bool RestrictionCollector::FeatureHasPointWithCoords(uint32_t featureId, m2::PointD const & coords)
+{
+  auto & roadGeometry = m_indexGraph->GetGeometry().GetRoad(featureId);
+  uint32_t pointsCount = roadGeometry.GetPointsCount();
+  for (uint32_t i = 0; i < pointsCount; ++i)
+  {
+    static double constexpr kEps = 1e-4;
+    if (base::AlmostEqualAbs(roadGeometry.GetPoint(i), coords, kEps))
+      return true;
+  }
+
+  return false;
+}
+
+bool RestrictionCollector::FeaturesAreCross(m2::PointD const & coords, uint32_t prev, uint32_t cur)
+{
+  if (coords == kNoCoords)
+    return GetFirstCommonJoint(prev, cur) != Joint::kInvalidId;
+
+  return FeatureHasPointWithCoords(prev, coords) && FeatureHasPointWithCoords(cur, coords);
+}
+
+bool RestrictionCollector::AddRestriction(m2::PointD const & coords,
+                                          Restriction::Type restrictionType,
                                           std::vector<base::GeoObjectId> const & osmIds)
 {
   std::vector<uint32_t> featureIds(osmIds.size());
@@ -120,7 +212,16 @@ bool RestrictionCollector::AddRestriction(Restriction::Type type,
     featureIds[i] = result->second;
   }
 
-  m_restrictions.emplace_back(type, featureIds);
+  for (size_t i = 1; i < featureIds.size(); ++i)
+  {
+    auto prev = featureIds[i - 1];
+    auto cur = featureIds[i];
+
+    if (!FeaturesAreCross(coords, prev, cur))
+      return false;
+  }
+
+  m_restrictions.emplace_back(restrictionType, featureIds);
   return true;
 }
 
@@ -129,19 +230,46 @@ void RestrictionCollector::AddFeatureId(uint32_t featureId, base::GeoObjectId os
   ::routing::AddFeatureId(osmId, featureId, m_osmIdToFeatureId);
 }
 
-bool FromString(std::string str, Restriction::Type & type)
+void FromString(std::string const & str, Restriction::Type & type)
 {
   if (str == kNo)
   {
     type = Restriction::Type::No;
-    return true;
+    return;
   }
+
   if (str == kOnly)
   {
     type = Restriction::Type::Only;
-    return true;
+    return;
   }
 
-  return false;
+  CHECK(false, ("Invalid line:", str, "expected:", kNo, "or", kOnly));
+  UNREACHABLE();
+}
+
+void FromString(std::string const & str, RestrictionWriter::ViaType & type)
+{
+  if (str == RestrictionWriter::kNodeString)
+  {
+    type = RestrictionWriter::ViaType::Node;
+    return;
+  }
+
+  if (str == RestrictionWriter::kWayString)
+  {
+    type = RestrictionWriter::ViaType::Way;
+    return;
+  }
+
+  CHECK(false, ("Invalid line:", str, "expected:", RestrictionWriter::kNodeString,
+                "or", RestrictionWriter::kWayString));
+}
+
+void FromString(std::string const & str, double & number)
+{
+  std::stringstream ss;
+  ss << str;
+  ss >> number;
 }
 }  // namespace routing

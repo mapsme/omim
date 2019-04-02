@@ -32,6 +32,7 @@ std::shared_ptr<TranslatorInterface> CreateTranslator(TranslatorType type, Args&
   case TranslatorType::GeoObjects:
     return create<TranslatorGeoObjects>(std::forward<Args>(args)...);
   }
+
   UNREACHABLE();
 }
 }  // namespace generator

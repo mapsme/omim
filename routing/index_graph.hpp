@@ -24,6 +24,8 @@
 
 namespace routing
 {
+bool IsUTurn(Segment const & u, Segment const & v);
+
 enum class WorldGraphMode;
 
 class IndexGraph final
@@ -138,8 +140,6 @@ private:
   RoadAccess m_roadAccess;
   RoutingOptions m_avoidRoutingOptions;
 };
-
-bool IsUTurn(Segment const & u, Segment const & v);
 
 /// \note |parent| can be fake, |parentSegment| is always non-fake.
 template <typename Parent>

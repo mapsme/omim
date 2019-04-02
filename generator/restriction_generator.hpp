@@ -1,5 +1,7 @@
 #pragma once
 
+#include "generator/routing_index_generator.hpp"
+
 #include <string>
 
 namespace routing
@@ -29,6 +31,10 @@ namespace routing
 /// \param osmIdsToFeatureIdsPath a binary file with mapping form osm ids to feature ids.
 /// One osm id is mapped to one feature id. The file should be saved with the help of
 /// OsmID2FeatureID class or using a similar way.
-bool BuildRoadRestrictions(std::string const & mwmPath, std::string const & restrictionPath,
-                           std::string const & osmIdsToFeatureIdsPath);
+bool BuildRoadRestrictions(std::string const & targetPath,
+                           std::string const & mwmPath,
+                           std::string const & country,
+                           std::string const & restrictionPath,
+                           std::string const & osmIdsToFeatureIdsPath,
+                           CountryParentNameGetterFn const & countryParentNameGetterFn);
 }  // namespace routing

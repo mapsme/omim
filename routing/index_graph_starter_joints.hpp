@@ -443,6 +443,34 @@ template <typename Graph>
 void IndexGraphStarterJoints<Graph>::GetEdgeList(JointSegment const & vertex, bool isOutgoing,
                                                  std::vector<JointEdge> & edges)
 {
+  bool draw = std::getenv("DRAW_A") && !std::string(std::getenv("DRAW_A")).empty();
+  std::ofstream output_forward;
+  std::ofstream output_backward;
+  static uint64_t cnt = 0;
+  if (cnt == 0 && draw)
+  {
+    std::ofstream tmp1("/tmp/points_forward", std::ofstream::trunc);
+    std::ofstream tmp2("/tmp/points_backward", std::ofstream::trunc);
+  }
+  cnt++;
+
+  if (draw)
+  {
+    output_forward.open("/tmp/points_forward", std::ofstream::app);
+    output_backward.open("/tmp/points_backward", std::ofstream::app);
+    output_forward << std::setprecision(20);
+    output_backward << std::setprecision(20);
+  }
+
+  if (draw)
+  {
+    auto p = MercatorBounds::ToLatLon(GetPoint(vertex, vertex.IsForward()));
+    if (isOutgoing)
+      output_forward << p.lat << ' ' << p.lon << '\n';
+    else
+      output_backward << p.lat << ' ' << p.lon << '\n';
+  }
+
   CHECK(m_init, ("IndexGraphStarterJoints was not initialized."));
 
   edges.clear();

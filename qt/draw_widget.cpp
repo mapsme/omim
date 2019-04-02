@@ -176,8 +176,8 @@ void DrawWidget::mousePressEvent(QMouseEvent * e)
 
   m2::PointD const pt = GetDevicePoint(e);
 
-  ms::LatLon from = {-33.874380000000002156, 151.20692999999999984};
-  ms::LatLon to =   {-33.873930000000001428, 151.2072300000000098};
+  ms::LatLon from = {52.307029999999997472, 104.2923799999999943};
+  ms::LatLon to =   {55.750441, 37.6175138};
 //  ms::LatLon to = {55.8163406, 37.6815853};
 
   //ms::LatLon to = {55.8158202, 37.6845412};

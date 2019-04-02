@@ -49,17 +49,37 @@ bool TagToType(std::string const & tag, Restriction::Type & type)
 
 namespace routing
 {
-void RestrictionWriter::Open(std::string const & fullPath)
+//static
+RestrictionWriter::ViaType RestrictionWriter::ConvertFromString(std::string const & str)
+{
+  if (str == "node")
+    return ViaType::Node;
+  else if (str == "way")
+    return ViaType::Way;
+
+  UNREACHABLE();
+}
+
+std::string const RestrictionWriter::kNodeString = "node";
+std::string const RestrictionWriter::kWayString = "way";
+
+void RestrictionWriter::Open(std::string const & fullPath,
+                             generator::cache::IntermediateDataReader * cache)
 {
   LOG(LINFO, ("Saving road restrictions in osm id terms to", fullPath));
   m_stream.open(fullPath, std::ofstream::out);
 
   if (!IsOpened())
     LOG(LINFO, ("Cannot open file", fullPath));
+
+  m_stream << std::setprecision(20);
+  m_cache = cache;
 }
 
 void RestrictionWriter::Write(RelationElement const & relationElement)
 {
+  CHECK(m_cache, ("Invalid cache"));
+
   if (!IsOpened())
   {
     LOG(LWARNING, ("Tried to write to a closed restrictions writer"));
@@ -130,16 +150,44 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
   if (!TagToType(tagIt->second, type))
     return;
 
-  // Adding restriction.
-  m_stream << ToString(type) << "," << from.back().first << ", ";
-  if (getType(via.back().first) != OsmElement::EntityType::Node)
+  auto viaType =
+      getType(via.back().first) == OsmElement::EntityType::Node ? ViaType::Node : ViaType::Way;
+
+  m_stream << ToString(type) << "," << DebugPrint(viaType) << ",";
+
+  if (viaType == ViaType::Way)
   {
+    m_stream << from.back().first << ",";
     for (auto const & viaMember : via)
-      m_stream << viaMember.first << ", ";
+      m_stream << viaMember.first << ",";
+  }
+  else
+  {
+    double y;
+    double x;
+    if (!m_cache->GetNode(via.back().first, y, x))
+    {
+      LOG(LINFO, ("can not find:", via.back().first));
+      return;
+    }
+
+    m_stream << y << "," << x << ",";
+    m_stream << from.back().first << ",";
   }
 
   m_stream << to.back().first << '\n';
 }
 
 bool RestrictionWriter::IsOpened() const { return m_stream && m_stream.is_open(); }
+
+std::string DebugPrint(RestrictionWriter::ViaType const & type)
+{
+  switch (type)
+  {
+  case RestrictionWriter::ViaType::Node: return RestrictionWriter::kNodeString;
+  case RestrictionWriter::ViaType::Way: return RestrictionWriter::kWayString;
+  }
+
+  UNREACHABLE();
+}
 }  // namespace routing

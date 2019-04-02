@@ -9,17 +9,8 @@
 
 #include <iterator>
 
-namespace
+namespace routing
 {
-using namespace routing;
-
-/// \returns if features |r1| and |r2| have a common end returns its joint id.
-/// If not, returns Joint::kInvalidId.
-/// \note It's possible that the both ends of |r1| and |r2| have common joint ids.
-/// In that case returns any of them.
-/// \note In general case ends of features don't have to be joints. For example all
-/// loose feature ends aren't joints. But if ends of r1 and r2 are connected at this
-/// point there has to be a joint. So the method is valid.
 Joint::Id GetCommonEndJoint(RoadJointIds const & r1, RoadJointIds const & r2)
 {
   auto const & j11 = r1.GetJointId(0 /* point id */);
@@ -35,22 +26,19 @@ Joint::Id GetCommonEndJoint(RoadJointIds const & r1, RoadJointIds const & r2)
 
   return Joint::kInvalidId;
 }
-}  // namespace
 
-namespace routing
-{
 RestrictionLoader::RestrictionLoader(MwmValue const & mwmValue, IndexGraph const & graph)
   : m_countryFileName(mwmValue.GetCountryFileName())
 {
   if (!mwmValue.m_cont.IsExist(RESTRICTIONS_FILE_TAG))
     return;
 
-//  static int cnt = 0;
-//  cnt++;
-//  if (cnt == 1)
-//  {
-//    std::ofstream output("/tmp/restrictions");
-//  }
+  static int cnt = 0;
+  cnt++;
+  if (cnt == 1)
+  {
+    std::ofstream output("/tmp/restrictions");
+  }
 
   try
   {
@@ -63,15 +51,16 @@ RestrictionLoader::RestrictionLoader(MwmValue const & mwmValue, IndexGraph const
                                        restrictionsOnly, src);
 
     std::ofstream output("/tmp/restrictions", std::ofstream::app);
+    output << "==================================== " << mwmValue.m_file.GetCountryName() << std::endl;
     ConvertRestrictionsOnlyToNoAndSort(graph, restrictionsOnly, m_restrictions);
-//    for (auto const & r : m_restrictions)
-//    {
-//      LOG(LINFO, ("get:", r));
-//      output << "get: [ " << r.size() << ": ";
-//      for (auto id : r)
-//        output << id << " ";
-//      output << "]" << std::endl;
-//    }
+    for (auto const & r : m_restrictions)
+    {
+      LOG(LINFO, ("get:", r));
+      output << "get: [ " << r.size() << ": ";
+      for (auto id : r)
+        output << id << " ";
+      output << "]" << std::endl;
+    }
   }
   catch (Reader::OpenException const & e)
   {
@@ -99,12 +88,6 @@ void ConvertRestrictionsOnlyToNoAndSort(IndexGraph const & graph,
 
     auto const lastFeatureId     = *(restriction.end() - 1);
     auto const prevLastFeatureId = *(restriction.end() - 2);
-
-    if (lastFeatureId == 301633 || prevLastFeatureId == 301633)
-    {
-      int asd = 5;
-      (void)asd;
-    }
 
     // Looking for a joint of an intersection of |o| features.
     Joint::Id const common =

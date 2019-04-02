@@ -17,6 +17,7 @@
 #include <fstream>
 #include <cstdlib>
 #include "geometry/mercator.hpp"
+#include "base/logging.hpp"
 
 namespace routing
 {
@@ -474,25 +475,6 @@ typename AStarAlgorithm<Vertex, Edge, Weight>::Result
 AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
                                                             RoutingResult<Vertex, Weight> & result) const
 {
-  bool draw = std::getenv("DRAW_A") && !std::string(std::getenv("DRAW_A")).empty();
-  std::ofstream output_forward;
-  std::ofstream output_backward;
-  static uint64_t cnt = 0;
-  if (cnt == 0 && draw)
-  {
-    std::ofstream tmp1("/tmp/points_forward", std::ofstream::trunc);
-    std::ofstream tmp2("/tmp/points_backward", std::ofstream::trunc);
-  }
-  cnt++;
-
-  if (draw)
-  {
-    output_forward.open("/tmp/points_forward", std::ofstream::app);
-    output_backward.open("/tmp/points_backward", std::ofstream::app);
-    output_forward << std::setprecision(20);
-    output_backward << std::setprecision(20);
-  }
-
   auto & graph = params.m_graph;
   auto const & finalVertex = params.m_finalVertex;
   auto const & startVertex = params.m_startVertex;
@@ -575,15 +557,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     State const stateV = cur->queue.top();
     cur->queue.pop();
 
-    /*if (draw)
-    {
-      auto p = MercatorBounds::ToLatLon(graph.GetPoint(stateV.vertex, stateV.vertex.IsForward()));
-      if (cur->forward)
-        output_forward << p.lat << ' ' << p.lon << '\n';
-      else
-        output_backward << p.lat << ' ' << p.lon << '\n';
-    }*/
-
     if (stateV.distance > cur->bestDistance[stateV.vertex])
       continue;
 
@@ -597,11 +570,23 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
 //      int asd = 4;
 //      (void)asd;
 //    }
+    if (stateV.vertex.GetFeatureId() == 2970)
+    {
+      int asd = 5;
+      (void)asd;
+    }
 
     cur->GetAdjacencyList(stateV.vertex, adj);
     for (auto const & edge : adj)
     {
       State stateW(edge.GetTarget(), kZeroDistance);
+
+      if (stateW.vertex.GetFeatureId() == 2978 && stateW.vertex.GetStartSegmentId() == 31)
+      {
+        int asd = 5;
+        (void)asd;
+      }
+
       if (stateV.vertex == stateW.vertex)
         continue;
 
@@ -635,9 +620,11 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         // find the reduced length of the path's parts in the reduced forward and backward graphs.
         auto const curPathReducedLength = newReducedDist + distW;
         // No epsilon here: it is ok to overshoot slightly.
-        if ((!foundAnyPath || bestPathReducedLength > curPathReducedLength) &&
-            graph.IsWavesConnectible(forwardParents, stateW.vertex, backwardParents))
+        bool connectible = graph.IsWavesConnectible(forwardParents, stateW.vertex, backwardParents);
+        LOG(LINFO, ("met in", stateW.vertex, "best =", bestPathReducedLength, "cur =", curPathReducedLength, "connectible:", connectible));
+        if ((!foundAnyPath || bestPathReducedLength > curPathReducedLength) && connectible)
         {
+          LOG(LINFO, ("updated"));
           bestPathReducedLength = curPathReducedLength;
 
           bestPathRealLength = stateV.distance + weight + distW;
