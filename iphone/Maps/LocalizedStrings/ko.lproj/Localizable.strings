@@ -2741,6 +2741,11 @@
 
 "whats_new_wiki_message" = "Wikipedia.org 의 관광객들에게 가장 매력적인 장소 페이지들의 내용들을 추가했습니다. 오프라인에서 가능합니다";
 
+"purchase_please_wait_toast" = "Please don't leave this screen before purchase is completed";
+
+
+/**********  Partners  **********/
+
 "sponsored_partner1_action" = "Outlets";
 
 "sponsored_partner2_action" = "Discount";

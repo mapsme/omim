@@ -2741,6 +2741,11 @@
 
 "whats_new_wiki_message" = "当社はWikipedia.orgの記事を最も人気の観光名所のページに追加しました。これらはオフラインで利用する事ができます";
 
+"purchase_please_wait_toast" = "Please don't leave this screen before purchase is completed";
+
+
+/**********  Partners  **********/
+
 "sponsored_partner1_action" = "Outlets";
 
 "sponsored_partner2_action" = "Discount";

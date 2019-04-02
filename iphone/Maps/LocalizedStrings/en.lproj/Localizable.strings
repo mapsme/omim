@@ -2741,6 +2741,11 @@
 
 "whats_new_wiki_message" = "We've added Wikipedia.org articles to the place pages of the most popular tourist attractions. They are available offline";
 
+"purchase_please_wait_toast" = "Please don't leave this screen before purchase is completed";
+
+
+/**********  Partners  **********/
+
 "sponsored_partner1_action" = "Outlets";
 
 "sponsored_partner2_action" = "Discount";

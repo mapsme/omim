@@ -2741,6 +2741,11 @@
 
 "whats_new_wiki_message" = "在热门景点的卡片中，我们添加了来自Wikipedia.org的文章，可以离线使用";
 
+"purchase_please_wait_toast" = "Please don't leave this screen before purchase is completed";
+
+
+/**********  Partners  **********/
+
 "sponsored_partner1_action" = "Outlets";
 
 "sponsored_partner2_action" = "Discount";

@@ -2741,6 +2741,11 @@
 
 "whats_new_wiki_message" = "В карточки популярных достопримечательностей мы добавили статьи из Wikipedia.org, доступные офлайн";
 
+"purchase_please_wait_toast" = "Пожалуйста, не покидайте экран до завершения покупки";
+
+
+/**********  Partners  **********/
+
 "sponsored_partner1_action" = "Аутлеты";
 
 "sponsored_partner2_action" = "Discount";
