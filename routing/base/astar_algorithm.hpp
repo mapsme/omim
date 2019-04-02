@@ -245,7 +245,7 @@ private:
     {
       bestVertex = forward ? startVertex : finalVertex;
       pS = ConsistentHeuristic(bestVertex);
-      graph.SetAStarParents(parent);
+      graph.SetAStarParents(forward, parent);
     }
 
     Weight TopDistance() const
@@ -570,22 +570,11 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
 //      int asd = 4;
 //      (void)asd;
 //    }
-    if (stateV.vertex.GetFeatureId() == 2970)
-    {
-      int asd = 5;
-      (void)asd;
-    }
 
     cur->GetAdjacencyList(stateV.vertex, adj);
     for (auto const & edge : adj)
     {
       State stateW(edge.GetTarget(), kZeroDistance);
-
-      if (stateW.vertex.GetFeatureId() == 2978 && stateW.vertex.GetStartSegmentId() == 31)
-      {
-        int asd = 5;
-        (void)asd;
-      }
 
       if (stateV.vertex == stateW.vertex)
         continue;

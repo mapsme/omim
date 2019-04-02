@@ -187,19 +187,14 @@ public:
     return m_graph.GetPoint(s, forward);
   }
 
-  void GetEdgesList(Segment const & from, bool isOutgoing, vector<SegmentEdge> & edges)
-  {
-    m_graph.GetEdgeList(from, isOutgoing, edges);
-  }
-
   void SetAStarParents(bool /* forward */, std::map<JointSegment, JointSegment> & parents)
   {
     m_AStarParents = &parents;
   }
 
-  void GetEdgesList(Segment const & from, bool isOutgoing, std::vector<SegmentEdge> & edges)
+  void GetEdgesList(Segment const & child, bool isOutgoing, std::vector<SegmentEdge> & edges)
   {
-    m_graph.GetEdgeList(from, isOutgoing, edges);
+    m_graph.GetEdgeList(child, isOutgoing, edges);
   }
 
   void GetEdgeList(JointSegment const & parentJoint, Segment const & parent, bool isOutgoing,
@@ -221,13 +216,6 @@ public:
     return pointId == 0 || pointId + 1 == pointsNumber;
   }
 
-  m2::PointD const & GetPoint(Vertex const & vertex, bool forward)
-  {
-    return m_graph.GetPoint(vertex, forward);
-  }
-
-  IndexGraphStarterJoints<IndexGraphWrapper> & GetGraph() { return m_graph; }
-
   template <typename Vertex>
   RouteWeight HeuristicCostEstimate(Vertex const & /* from */, m2::PointD const & /* to */)
   {
@@ -248,36 +236,10 @@ public:
   DijkstraWrapperJoints(IndexGraphWrapper & graph, Segment const & start)
     : IndexGraphStarterJoints<IndexGraphWrapper>(graph, start) {}
 
-    // IndexGraphStarterJoints overrides
-  void GetOutgoingEdgesList(Vertex const & vertex, vector<Edge> & edges) override
-  {
-    m_graph.GetOutgoingEdgesList(vertex, edges);
-  }
-
-  void GetIngoingEdgesList(Vertex const & vertex, vector<Edge> & edges) override
-  {
-    m_graph.GetIngoingEdgesList(vertex, edges);
-  }
-
   Weight HeuristicCostEstimate(Vertex const & /* from */, Vertex const & /* to */) override
   {
     return GetAStarWeightZero<Weight>();
   }
-
-  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents) override
-  {
-    m_graph.SetAStarParents(forward, parents);
-  }
-
-  m2::PointD const & GetPoint(Vertex const & vertex, bool forward)
-  {
-    return m_graph.GetPoint(vertex, forward);
-  }
-
-  IndexGraphStarterJoints<IndexGraphWrapper> & GetGraph() { return m_graph; }
-
-private:
-  IndexGraphStarterJoints<IndexGraphWrapper> m_graph;
 };
 
 // Calculate distance from the starting border point to the transition along the border.
@@ -517,7 +479,7 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
     unordered_map<uint32_t, vector<JointSegment>> visitedVertexes;
     if (false)
     {
-    astar.PropagateWave(wrapper, wrapper.GetGraph().GetStartJoint(),
+    astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
                         [&](JointSegment const & vertex)
                         {
                           if (vertex.IsFake())

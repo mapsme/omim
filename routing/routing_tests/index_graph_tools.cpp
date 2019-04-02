@@ -223,7 +223,7 @@ bool TestIndexGraphTopology::FindPath(Vertex start, Vertex finish, double & path
 
   AlgorithmForWorldGraph algorithm;
 
-  WorldGraphForAStar graphForAStar(*worldGraph);
+  routing_test::WorldGraphForAStar graphForAStar(*worldGraph);
 
   AlgorithmForWorldGraph::ParamsForTests params(graphForAStar, startSegment, finishSegment,
                                                 nullptr /* prevRoute */,

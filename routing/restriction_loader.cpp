@@ -50,17 +50,17 @@ RestrictionLoader::RestrictionLoader(MwmValue const & mwmValue, IndexGraph const
     RestrictionSerializer::Deserialize(m_header, m_restrictions /* restriction No */,
                                        restrictionsOnly, src);
 
-    std::ofstream output("/tmp/restrictions", std::ofstream::app);
-    output << "==================================== " << mwmValue.m_file.GetCountryName() << std::endl;
+    //std::ofstream output("/tmp/restrictions", std::ofstream::app);
+    //output << "==================================== " << mwmValue.m_file.GetCountryName() << std::endl;
     ConvertRestrictionsOnlyToNoAndSort(graph, restrictionsOnly, m_restrictions);
-    for (auto const & r : m_restrictions)
+    /*for (auto const & r : m_restrictions)
     {
       LOG(LINFO, ("get:", r));
       output << "get: [ " << r.size() << ": ";
       for (auto id : r)
         output << id << " ";
       output << "]" << std::endl;
-    }
+    }*/
   }
   catch (Reader::OpenException const & e)
   {

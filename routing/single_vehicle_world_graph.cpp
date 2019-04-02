@@ -325,6 +325,9 @@ bool SingleVehicleWorldGraph::IsWavesConnectibleImpl(std::map<VertexType, Vertex
     }
   }
 
+  if (mwmId == kFakeNumMwmId)
+    return true;
+
   auto & currentIndexGraph = GetIndexGraph(mwmId);
   for (size_t i = 1; i < chain.size(); ++i)
   {

@@ -1055,7 +1055,7 @@ UNIT_CLASS_TEST(RestrictionTest, RestrictionNoWithWayAsVia_1)
   m2::PointD const finish(3.0, 1.0);
   auto const test = [&](vector<m2::PointD> const & expectedGeom, RestrictionVec && restrictionsNo) {
     TestRestrictions(
-      expectedGeom, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+      expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(7 /* featureId */, 0 /* segmentIdx */, start, *m_graph),
       MakeFakeEnding(8 /* featureId */, 0 /* segmentIdx */, finish, *m_graph),
       move(restrictionsNo), *this);
@@ -1079,7 +1079,7 @@ UNIT_CLASS_TEST(RestrictionTest, RestrictionNoWithWayAsVia_2)
   m2::PointD const finish(4.0, 1.0);
   auto const test = [&](vector<m2::PointD> const & expectedGeom, RestrictionVec && restrictionsNo) {
     TestRestrictions(
-      expectedGeom, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+      expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(7 /* featureId */, 0 /* segmentIdx */, start, *m_graph),
       MakeFakeEnding(10 /* featureId */, 0 /* segmentIdx */, finish, *m_graph),
       move(restrictionsNo), *this);
@@ -1103,7 +1103,7 @@ UNIT_CLASS_TEST(RestrictionTest, RestrictionOnlyWithWayAsVia_1)
   m2::PointD const finish(4.0, 1.0);
   auto const test = [&](vector<m2::PointD> const & expectedGeom, RestrictionVec && restrictionsNo) {
     TestRestrictions(
-      expectedGeom, AStarAlgorithm<IndexGraphStarter>::Result::OK,
+      expectedGeom, Algorithm::Result::OK,
       MakeFakeEnding(7 /* featureId */, 0 /* segmentIdx */, start, *m_graph),
       MakeFakeEnding(10 /* featureId */, 0 /* segmentIdx */, finish, *m_graph),
       move(restrictionsNo), *this);
