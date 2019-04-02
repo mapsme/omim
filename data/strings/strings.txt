@@ -38823,3 +38823,8 @@
     zh-Hans = 在热门景点的卡片中，我们添加了来自Wikipedia.org的文章，可以离线使用
     zh-Hant = 在熱門景點的卡片中，我們添加了來自Wikipedia.org的文章，可以離線使用
     fa = ما مقالات Wikipedia.org را به صفحات جذاب‌ترین جاذبه‌های توریستی اضافه کرده‌ایم. آن‌ها به طور آفلاین دردسترس می‌باشد
+
+  [purchase_please_wait_toast]
+    en = Please don't leave this screen before purchase is completed
+    ru = Пожалуйста, не покидайте экран до завершения покупки
+
