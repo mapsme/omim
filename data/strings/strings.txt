@@ -18493,35 +18493,7 @@
   [current_location_unknown_continue_button]
     en = Continue
     ru = Продолжить
-    ar = استمرار
-    cs = Pokračovat
-    da = Fortsæt
-    nl = Doorgaan
-    fi = Jatka
-    fr = Continuer
-    de = Fortsetzen
-    hu = Folytatás
-    id = Lanjutkan
-    it = Continua
-    ja = 続ける
-    ko = 계속
-    nb = Fortsett
-    pl = Kontynuuj
-    pt = Continuar
-    pt-BR = Continuar
-    ro = Continuare
-    es = Continuar
-    sv = Fortsätt
-    th = ดำเนินการต่อ
-    tr = Devam
-    uk = Продовжити
-    vi = Tiếp tục
-    zh-Hans = 继续
-    zh-Hant = 繼續
-    el = Συνέχεια
-    sk = Pokračovať
-    fa = ادامه
-
+    
   [current_location_unknown_stop_button]
     en = Stop
     ru = Стоп
@@ -24765,44 +24737,8 @@
     fa = به روز رسانی نقشه ها اطلاعات مربوط به اشیا را به روز نگه می دارد
 
   [whats_new_auto_update_button_size]
-    en = Update (%s)
-    ru = Обновить (%s)
-    ar = تحديث (%s)
-    cs = Aktualizace (%s)
-    da = Opdater (%s)
-    nl = Bijwerken (%s)
-    fi = Päivitä (%s)
-    fr = Mettre à jour (%s)
-    de = Aktualisieren (%s)
-    hu = Frissítés (%s)
-    id = Pembaruan (%s)
-    it = Aggiorna (%s)
-    ja = 更新 (%s)
-    ko = 업데이트(%s)
-    nb = Oppdater (%s)
-    pl = Zaktualizuj (%s)
-    pt = Atualização (%s)
-    pt-BR = Atualizar (%s)
-    ro = Actualizare (%s)
-    es = Actualizar (%s)
-    sv = Uppdatera (%s)
-    th = อัปเดต (%s)
-    tr = Güncelle (%s)
-    uk = Оновити (%s)
-    vi = Cập nhật (%s)
-    zh-Hans = 更新 (%s)
-    zh-Hant = 更新 (%s)
-    af = Werk by (%s)
-    be = Абнавіць (%s)
-    el = Ενημέρωση (%s)
-    es_MX = Actualizar (%s)
-    fr_CA = Mettre à jour (%s)
-    he = עדכן (%s)
-    hi = (%s) अपडेट करें
-    sk = Aktualizovať (%s)
-    sw = Sasisha (%s)
-    fa = بروزرسانی (%s)
-
+    en = Update (%s) and proceed
+    ru = Обновить (%s) и продолжить
   [whats_new_auto_update_button_later]
     en = Manually update later
     ru = Обновить вручную позже
