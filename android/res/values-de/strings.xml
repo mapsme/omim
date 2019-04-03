@@ -847,7 +847,6 @@
 	<string name="current_location_unknown_title">Standortsuche fortsetzen?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Standort nicht gefunden. Möglicherweise befinden Sie sich in einem Gebäude oder einem Tunnel.</string>
-	<string name="current_location_unknown_continue_button">Fortsetzen</string>
 	<string name="current_location_unknown_stop_button">Anhalten</string>
 	<string name="current_location_unknown_error_title">Standort nicht gefunden.</string>
 	<string name="current_location_unknown_error_message">Bei der Standortsuche ist ein unbekannter Fehler aufgetreten. Prüfen Sie die Funktionstüchtigkeit Ihres Geräts und versuchen Sie es etwas später erneut.</string>
@@ -1092,7 +1091,6 @@
 	<string name="whats_new_auto_update_updating_maps">Kartenaktualisierung</string>
 	<string name="whats_new_auto_update_title">Aktualisieren Sie Ihre heruntergeladenen Karten</string>
 	<string name="whats_new_auto_update_message">Das Aktualisieren der Karten sorgt dafür, dass die Objektinformationen stets auf dem neuesten Stand sind</string>
-	<string name="whats_new_auto_update_button_size">Aktualisieren (%s)</string>
 	<string name="whats_new_auto_update_button_later">Später manuell aktualisieren</string>
 	<string name="search_hotel_filter_apartment">Appartements</string>
 	<string name="search_hotel_filter_camp_site">Zeltplatz</string>

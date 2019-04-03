@@ -833,7 +833,6 @@
 	<string name="current_location_unknown_title">Doorgaan met het detecteren van uw huidige locatie?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Huidige locatie is onbekend. Misschien bevindt u zich in een gebouw of tunnel.</string>
-	<string name="current_location_unknown_continue_button">Doorgaan</string>
 	<string name="current_location_unknown_stop_button">Stoppen</string>
 	<string name="current_location_unknown_error_title">Huidige locatie is onbekend.</string>
 	<string name="current_location_unknown_error_message">Er is een fout opgetreden tijdens het zoeken naar uw locatie. Controleer of uw apparaat goed werkt en probeer het later opnieuw.</string>
@@ -1078,7 +1077,6 @@
 	<string name="whats_new_auto_update_updating_maps">Kaarten bijwerken</string>
 	<string name="whats_new_auto_update_title">Werk uw gedownloade kaarten bij</string>
 	<string name="whats_new_auto_update_message">Kaarten bijwerken houdt de informatie over objecten actueel</string>
-	<string name="whats_new_auto_update_button_size">Bijwerken (%s)</string>
 	<string name="whats_new_auto_update_button_later">Later handmatig bijwerken</string>
 	<string name="search_hotel_filter_apartment">Appartementen</string>
 	<string name="search_hotel_filter_camp_site">Camping</string>

@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "目前位置未知，可能您在建築物內或隧道內。";
 
-"current_location_unknown_continue_button" = "繼續";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "停止";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "更新地圖以讓物件資訊保持在最新狀態";
 
-"whats_new_auto_update_button_size" = "更新 (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "稍後手動更新";
 

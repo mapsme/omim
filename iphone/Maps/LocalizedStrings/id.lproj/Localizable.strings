@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Lokasi saat ini tidak diketahui. Anda mungkin berada dalam bangunan atau terowongan.";
 
-"current_location_unknown_continue_button" = "Lanjutkan";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Berhenti";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Memperbarui peta membuat informasi tentang objek tetap terkini";
 
-"whats_new_auto_update_button_size" = "Pembaruan (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Perbarui secara manual nanti";
 

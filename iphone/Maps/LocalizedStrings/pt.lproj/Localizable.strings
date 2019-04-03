@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "A localização atual é desconhecida. Talvez esteja num edifício ou num túnel.";
 
-"current_location_unknown_continue_button" = "Continuar";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Parar";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Atualizar os mapas mantém atualizada a informação sobre objetos";
 
-"whats_new_auto_update_button_size" = "Atualização (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Atualizar manualmente mais tarde";
 

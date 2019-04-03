@@ -837,7 +837,6 @@
 	<string name="current_location_unknown_title">Продовжити пошук місцезнаходження?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Місцезнаходження не знайдено. Можливо, ви знаходитесь у приміщенні або тунелі.</string>
-	<string name="current_location_unknown_continue_button">Продовжити</string>
 	<string name="current_location_unknown_stop_button">Зупинити</string>
 	<string name="current_location_unknown_error_title">Місцезнаходження не знайдено.</string>
 	<string name="current_location_unknown_error_message">Під час пошуку місцезнаходження сталася невідома помилка. Перевірте працездатність пристрою та спробуйте відшукати місцеположення пізніше.</string>
@@ -1082,7 +1081,6 @@
 	<string name="whats_new_auto_update_updating_maps">Оновлення карт</string>
 	<string name="whats_new_auto_update_title">Оновити завантажені карти</string>
 	<string name="whats_new_auto_update_message">Оновлення карт дозволяє підтримувати інформацію про об\'єкти в актуальному стані</string>
-	<string name="whats_new_auto_update_button_size">Оновити (%s)</string>
 	<string name="whats_new_auto_update_button_later">Оновити вручну пізніше</string>
 	<string name="search_hotel_filter_apartment">Апартаменти</string>
 	<string name="search_hotel_filter_camp_site">Кемпінг</string>

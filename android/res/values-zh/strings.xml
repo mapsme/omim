@@ -839,7 +839,6 @@
 	<string name="current_location_unknown_title">继续检测您的当前位置？</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">当前位置未知，可能您在建筑内或隧道内。</string>
-	<string name="current_location_unknown_continue_button">继续</string>
 	<string name="current_location_unknown_stop_button">停止</string>
 	<string name="current_location_unknown_error_title">当前位置未知</string>
 	<string name="current_location_unknown_error_message">搜索您的位置时发生错误。请检查您的设备是否工作正常，然后重试。</string>
@@ -1084,7 +1083,6 @@
 	<string name="whats_new_auto_update_updating_maps">正在更新地图</string>
 	<string name="whats_new_auto_update_title">更新已下载的地图</string>
 	<string name="whats_new_auto_update_message">更新地图可以让对象的信息保持最新状态</string>
-	<string name="whats_new_auto_update_button_size">更新 (%s)</string>
 	<string name="whats_new_auto_update_button_later">稍后手动更新</string>
 	<string name="search_hotel_filter_apartment">公寓</string>
 	<string name="search_hotel_filter_camp_site">露营</string>

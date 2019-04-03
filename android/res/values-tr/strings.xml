@@ -839,7 +839,6 @@
 	<string name="current_location_unknown_title">Geçerli konumunuzuz izlenmeye devam edilsin mi</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Geçerli konum bilinmiyor Muhtemelen bir binanın içinde veya tüneldesiniz.</string>
-	<string name="current_location_unknown_continue_button">Devam</string>
 	<string name="current_location_unknown_stop_button">Dur</string>
 	<string name="current_location_unknown_error_title">Geçerli konum bilinmiyor.</string>
 	<string name="current_location_unknown_error_message">Konumunuz aranırken bir hata oluştu. Cihazının düzgün çalışıp çalışmadığını kontrol edip daha sonra tekrar deneyin.</string>
@@ -1084,7 +1083,6 @@
 	<string name="whats_new_auto_update_updating_maps">Haritalar güncelleniyor</string>
 	<string name="whats_new_auto_update_title">İndirdiğiniz haritaları güncelleyin</string>
 	<string name="whats_new_auto_update_message">Haritaları güncellemek, nesnelerle ilgili bilgilerin güncel kalmasını sağlar</string>
-	<string name="whats_new_auto_update_button_size">Güncelle (%s)</string>
 	<string name="whats_new_auto_update_button_later">Daha sonra manüel olarak güncelle</string>
 	<string name="search_hotel_filter_apartment">Apart otel</string>
 	<string name="search_hotel_filter_camp_site">Kamp alanı</string>

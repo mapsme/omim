@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Η τρέχουσα τοποθεσία είναι άγνωστη. Ίσως είστε σε ένα κτίριο ή σε μια σήραγγα.";
 
-"current_location_unknown_continue_button" = "Συνέχεια";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Στοπ";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Η ενημέρωση των χαρτών διατηρεί τις πληροφορίες των στοιχείων επικαιροποιημένες";
 
-"whats_new_auto_update_button_size" = "Ενημέρωση (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Χειροκίνητη ενημέρωση αργότερα";
 

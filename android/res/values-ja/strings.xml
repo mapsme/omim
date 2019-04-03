@@ -832,7 +832,6 @@
 	<string name="current_location_unknown_title">あなたの現在地を検出し続けますか？</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">現在地が不明です。建物の中やトンネル内の可能性があります。</string>
-	<string name="current_location_unknown_continue_button">続ける</string>
 	<string name="current_location_unknown_stop_button">止める</string>
 	<string name="current_location_unknown_error_title">現在地は不明です。</string>
 	<string name="current_location_unknown_error_message">お住まいの地域の検索中にエラーが発生しました。お使いのデバイスが正常に動作していることを確認してから再度試してください。</string>
@@ -1077,7 +1076,6 @@
 	<string name="whats_new_auto_update_updating_maps">地図を更新中</string>
 	<string name="whats_new_auto_update_title">ダウンロード済みのマップを更新してください</string>
 	<string name="whats_new_auto_update_message">地図を更新することで物件情報を最新の状態に保ちます</string>
-	<string name="whats_new_auto_update_button_size">更新 (%s)</string>
 	<string name="whats_new_auto_update_button_later">あとで手動で更新</string>
 	<string name="search_hotel_filter_apartment">アパート</string>
 	<string name="search_hotel_filter_camp_site">^キャンプ場</string>

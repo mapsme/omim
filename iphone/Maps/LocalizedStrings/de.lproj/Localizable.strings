@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Standort nicht gefunden. Möglicherweise befinden Sie sich in einem Gebäude oder einem Tunnel.";
 
-"current_location_unknown_continue_button" = "Fortsetzen";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Anhalten";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Das Aktualisieren der Karten sorgt dafür, dass die Objektinformationen stets auf dem neuesten Stand sind";
 
-"whats_new_auto_update_button_size" = "Aktualisieren (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Später manuell aktualisieren";
 

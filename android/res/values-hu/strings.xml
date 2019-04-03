@@ -834,7 +834,6 @@
 	<string name="current_location_unknown_title">Folytatja tartózkodási helyének keresését?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Tartózkodási helye ismeretlen. Lehet, hogy épületben vagy alagútban tartózkodik.</string>
-	<string name="current_location_unknown_continue_button">Folytatás</string>
 	<string name="current_location_unknown_stop_button">Leállítás</string>
 	<string name="current_location_unknown_error_message">Hiba történt tartózkodási helye keresésekor. Ellenőrizze készüléke működését és próbálkozzon újra.</string>
 	<string name="whatsnew_update_editor_title">Frissítettük a szerkesztőt</string>
@@ -1078,7 +1077,6 @@
 	<string name="whats_new_auto_update_updating_maps">Térképek frissítése</string>
 	<string name="whats_new_auto_update_title">Frissítse a letöltött térképeit</string>
 	<string name="whats_new_auto_update_message">A térképek frissítésével naprakészen tarthatja az objektumokra vonatkozó adatokat</string>
-	<string name="whats_new_auto_update_button_size">Frissítés (%s)</string>
 	<string name="whats_new_auto_update_button_later">Kézi frissítés később</string>
 	<string name="search_hotel_filter_apartment">Apartmanok</string>
 	<string name="search_hotel_filter_camp_site">Kemping</string>

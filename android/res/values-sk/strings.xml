@@ -836,7 +836,6 @@
 	<string name="current_location_unknown_title">Pokračovať v mazaní vašej súčasnej pozície?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Súčasná pozícia je neznáma. Možno sa nachádzate v budove alebo v tuneli.</string>
-	<string name="current_location_unknown_continue_button">Pokračovať</string>
 	<string name="current_location_unknown_stop_button">Zastaviť</string>
 	<string name="current_location_unknown_error_title">Súčasná pozícia je neznáma.</string>
 	<string name="current_location_unknown_error_message">Počas vyhľadávania vašej pozície došlo k chybe. Skontrolujte, či zariadenie pracuje správne a skúste to znova.</string>
@@ -1081,7 +1080,6 @@
 	<string name="whats_new_auto_update_updating_maps">Prebieha aktualizácia máp</string>
 	<string name="whats_new_auto_update_title">Aktualizujte svoje stiahnuté mapy</string>
 	<string name="whats_new_auto_update_message">Vďaka aktualizácii máp budú informácie o objektoch na mape aktualizované</string>
-	<string name="whats_new_auto_update_button_size">Aktualizovať (%s)</string>
 	<string name="whats_new_auto_update_button_later">Manuálne aktualizovať neskôr</string>
 	<string name="search_hotel_filter_apartment">Apartmány</string>
 	<string name="search_hotel_filter_camp_site">Camping</string>

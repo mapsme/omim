@@ -1,0 +1,46 @@
+  
+    
+  [onboarding_bydeeplink_author_subtitle]
+    en = To use routes offline, don't forget to download maps.
+    ru = Не забудьте загрузить карту города или страны, чтобы пользоваться маршрутом без интернета
+    
+  [onboarding_bydeeplink_country_subtitle]
+    en = To use routes offline, don't forget to download maps.
+    ru = Не забудьте загрузить карту города или страны, чтобы пользоваться маршрутом без интернета
+    
+  [onboarding_bydeeplink_city_title]
+    en = Travel guides to %s are waiting for you in the app!
+    ru = Путеводители по городу %s ждут в приложении!
+    
+  [onboarding_bydeeplink_country_title]
+    en = Travel guides to %s are waiting for you in the app!
+    ru = Маршруты по стране %s ждут в приложении! 
+    
+  [onboarding_bydeeplink_guide_title]
+    en = Guide "%s" is waiting for you in the app!
+    ru = Путеводитель "%s" ждет в приложении!
+    
+  [onboarding_bydeeplink_guide_subtitle]
+    en = Don't forget to download a map of a city or country to look into the route and use it without the internet
+    ru = Не забудьте загрузить карту города или страны, чтобы изучить маршрут и пользоваться им без интернета
+    
+  [purchase_screen_toast]
+    en = Please don't leave this screen before purchase is completed
+    ru = Пожалуйста, не покидайте экран до завершения покупки
+    
+  [whats_new_auto_update_bydeeplink_message]
+    en = Update maps to keep the information about objects up to date!
+    ru = Обновите карты, чтобы у вас была актуальная информация о местах вокруг!
+    
+  [onboarding_bydeeplink_city_subtitle]
+    en = To use routes offline, don't forget to download maps.
+    ru = Не забудьте загрузить карту города или страны, чтобы пользоваться маршрутом без интернета
+    
+  [onboarding_bydeeplink_author_title]
+    en = Travel guides from %s are waiting for you in the app!
+    ru = Путеводители автора %s ждут в приложении!
+    
+  [whats_new_auto_update_bydeeplink_title]
+    en = Before you proceed to guides...
+    ru = До того, как перейти к маршрутам...
+    

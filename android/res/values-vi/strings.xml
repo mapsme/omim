@@ -833,7 +833,6 @@
 	<string name="current_location_unknown_title">Tiếp tục phát hiện địa điểm hiện tại của bạn?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Chưa biết địa điểm hiện tại. Có thể bạn đang ở trong một tòa nhà hoặc đường hầm.</string>
-	<string name="current_location_unknown_continue_button">Tiếp tục</string>
 	<string name="current_location_unknown_stop_button">Dừng</string>
 	<string name="current_location_unknown_error_title">Chưa biết địa điểm hiện tại.</string>
 	<string name="current_location_unknown_error_message">Có lỗi khi tìm kiếm địa điểm của bạn. Đảm bảo rằng thiết bị của bạn hoạt động tốt và thử lại sau.</string>
@@ -1078,7 +1077,6 @@
 	<string name="whats_new_auto_update_updating_maps">Đang cập nhật bản đồ</string>
 	<string name="whats_new_auto_update_title">Cập nhật các bản đồ đã tải về của bạn</string>
 	<string name="whats_new_auto_update_message">Cập nhật bản đồ để cập nhật thông tin về các đối tượng trên đó</string>
-	<string name="whats_new_auto_update_button_size">Cập nhật (%s)</string>
 	<string name="whats_new_auto_update_button_later">Cập nhật thủ công sau</string>
 	<string name="search_hotel_filter_apartment">Căn hộ</string>
 	<string name="search_hotel_filter_camp_site">Cắm trại</string>

@@ -846,7 +846,6 @@
 	<string name="current_location_unknown_title">Continuer la détection de votre emplacement actuel ?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">L\'emplacement actuel est inconnu. Vous êtes peut-être dans un immeuble ou sous un tunnel.</string>
-	<string name="current_location_unknown_continue_button">Continuer</string>
 	<string name="current_location_unknown_stop_button">Arrêter</string>
 	<string name="current_location_unknown_error_title">L\'emplacement actuel est inconnu.</string>
 	<string name="current_location_unknown_error_message">Une erreur est survenue lors de la recherche de votre emplacement. Vérifiez que le périphérique fonctionne correctement et réessayez ultérieurement</string>
@@ -1091,7 +1090,6 @@
 	<string name="whats_new_auto_update_updating_maps">Mise à jour des cartes</string>
 	<string name="whats_new_auto_update_title">Mettez à jour vos cartes téléchargées</string>
 	<string name="whats_new_auto_update_message">Actualiser les cartes permet d\'actualiser également les informations sur les objets</string>
-	<string name="whats_new_auto_update_button_size">Mettre à jour (%s)</string>
 	<string name="whats_new_auto_update_button_later">Mettre à jour manuellement plus tard</string>
 	<string name="search_hotel_filter_apartment">Appart\'hôtel</string>
 	<string name="search_hotel_filter_camp_site">Camping</string>

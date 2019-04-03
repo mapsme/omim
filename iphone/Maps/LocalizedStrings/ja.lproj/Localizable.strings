@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "現在地が不明です。建物の中やトンネル内の可能性があります。";
 
-"current_location_unknown_continue_button" = "続ける";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "止める";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "地図を更新することで物件情報を最新の状態に保ちます";
 
-"whats_new_auto_update_button_size" = "更新 (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "あとで手動で更新";
 

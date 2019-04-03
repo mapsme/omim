@@ -839,7 +839,6 @@
 	<string name="current_location_unknown_title">هل تريد متابعة اكتشاف موقعك الحالي؟</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">الموقع الحالي غير معروف. ربما تتواجد داخل مبنى أو نفق.</string>
-	<string name="current_location_unknown_continue_button">استمرار</string>
 	<string name="current_location_unknown_stop_button">إيقاف</string>
 	<string name="current_location_unknown_error_title">الموقع الحالي غير معروف.</string>
 	<string name="current_location_unknown_error_message">حدث خطأ أثناء البحث عن موقعك. تأكد من أن جهازك يعمل بشكل صحيح وأعد المحاولة لاحقًا.</string>
@@ -1084,7 +1083,6 @@
 	<string name="whats_new_auto_update_updating_maps">تحديث الخرائط</string>
 	<string name="whats_new_auto_update_title">قم بتحديث الخرائط التي قمت بنتزيلها</string>
 	<string name="whats_new_auto_update_message">تحديث الخرائط والاحتفاظ بالمعلومات حول الكائنات محدثة</string>
-	<string name="whats_new_auto_update_button_size">تحديث (%s)</string>
 	<string name="whats_new_auto_update_button_later">تحديث يدوياً في وقت لاحق</string>
 	<string name="search_hotel_filter_apartment">شُقَق</string>
 	<string name="search_hotel_filter_camp_site">تخييم</string>

@@ -832,7 +832,6 @@
 	<string name="current_location_unknown_title">Terus mendeteksi lokasi Anda saat ini?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Lokasi saat ini tidak diketahui. Anda mungkin berada dalam bangunan atau terowongan.</string>
-	<string name="current_location_unknown_continue_button">Lanjutkan</string>
 	<string name="current_location_unknown_stop_button">Berhenti</string>
 	<string name="current_location_unknown_error_title">Lokasi saat ini tidak diketahui.</string>
 	<string name="current_location_unknown_error_message">Terjadi kesalahan saat mencari lokasi Anda. Periksa apakah perangkat Anda bekerja dengan benar dan coba lagi nanti.</string>
@@ -1077,7 +1076,6 @@
 	<string name="whats_new_auto_update_updating_maps">Memperbarui peta</string>
 	<string name="whats_new_auto_update_title">Perbarui peta yang sudah Anda unduh</string>
 	<string name="whats_new_auto_update_message">Memperbarui peta membuat informasi tentang objek tetap terkini</string>
-	<string name="whats_new_auto_update_button_size">Pembaruan (%s)</string>
 	<string name="whats_new_auto_update_button_later">Perbarui secara manual nanti</string>
 	<string name="search_hotel_filter_apartment">Apartemen</string>
 	<string name="search_hotel_filter_camp_site">Perkemahan</string>

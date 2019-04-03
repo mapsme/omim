@@ -833,7 +833,6 @@
 	<string name="current_location_unknown_title">Jatketaanko nykyisen sijaintisi havaitsemista?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Nykyistä sijaintiasi ei voitu määrittää. Kenties olet rakennuksessa tai tunnelissa.</string>
-	<string name="current_location_unknown_continue_button">Jatka</string>
 	<string name="current_location_unknown_stop_button">Seis</string>
 	<string name="current_location_unknown_error_title">Nykyinen sijainti on tuntematon.</string>
 	<string name="current_location_unknown_error_message">Tapahtui virhe määritettäessä sijaintiasi. Tarkista laitteesi ja yritä myöhemmin uudelleen.</string>
@@ -1078,7 +1077,6 @@
 	<string name="whats_new_auto_update_updating_maps">Päivitetään karttoja</string>
 	<string name="whats_new_auto_update_title">Päivitä ladatut kartat</string>
 	<string name="whats_new_auto_update_message">Karttojen päivittäminen pitää kohteita koskevat tiedot ajan tasalla</string>
-	<string name="whats_new_auto_update_button_size">Päivitä (%s)</string>
 	<string name="whats_new_auto_update_button_later">Päivitä manuaalisesti myöhemmin</string>
 	<string name="search_hotel_filter_apartment">Loma-asunnot</string>
 	<string name="search_hotel_filter_camp_site">Retkeily</string>

@@ -802,7 +802,6 @@
 	<string name="current_location_unknown_title">ایا یافتن مکان تان را ادامه می دهید؟</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">مکان شما ناشناس مانده است.ممکن است شما داخل یک ساختمان یا تونل باشید.</string>
-	<string name="current_location_unknown_continue_button">ادامه</string>
 	<string name="current_location_unknown_stop_button">توقف</string>
 	<string name="current_location_unknown_error_title">مکان فعلیتان ناشناس است.</string>
 	<string name="current_location_unknown_error_message">خطایی در هنگام جست وجوی مکان شمارخ داده است.بررسی کنیید دستگاهتان به درستی کار می کند و دوباره تلاش کنید.</string>
@@ -1028,7 +1027,6 @@
 	<string name="whats_new_auto_update_updating_maps">به روز رسانی نقشه ها</string>
 	<string name="whats_new_auto_update_title">نقشه های دانلود شده خود را به روز کنید</string>
 	<string name="whats_new_auto_update_message">به روز رسانی نقشه ها اطلاعات مربوط به اشیا را به روز نگه می دارد</string>
-	<string name="whats_new_auto_update_button_size">بروزرسانی (%s)</string>
 	<string name="whats_new_auto_update_button_later">بعدا به صورت دستی به روزرسانی کنید</string>
 	<string name="search_hotel_filter_apartment">آپارتمان ها</string>
 	<string name="search_hotel_filter_camp_site">چادر زدن</string>

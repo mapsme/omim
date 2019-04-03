@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Aktualna lokalizacja jest nieznana. Może znajdujesz się w budynku lub tunelu.";
 
-"current_location_unknown_continue_button" = "Kontynuuj";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Stop";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Aktualizacja map umożliwia uzyskanie bieżących informacji o obiektach";
 
-"whats_new_auto_update_button_size" = "Zaktualizuj (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Zaktualizuj ręcznie później";
 

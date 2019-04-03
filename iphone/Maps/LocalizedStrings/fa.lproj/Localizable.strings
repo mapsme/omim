@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "مکان شما ناشناس مانده است.ممکن است شما داخل یک ساختمان یا تونل باشید.";
 
-"current_location_unknown_continue_button" = "ادامه";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "توقف";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "به روز رسانی نقشه ها اطلاعات مربوط به اشیا را به روز نگه می دارد";
 
-"whats_new_auto_update_button_size" = "بروزرسانی (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "بعدا به صورت دستی به روزرسانی کنید";
 

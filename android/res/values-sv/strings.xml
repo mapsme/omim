@@ -837,7 +837,6 @@
 	<string name="current_location_unknown_title">Fortsätt detektera din nuvarande plats?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Nuvarande plats okänd. Du kanske är i en byggnad eller tunnel.</string>
-	<string name="current_location_unknown_continue_button">Fortsätt</string>
 	<string name="current_location_unknown_stop_button">Stopp</string>
 	<string name="current_location_unknown_error_title">Den nuvarande platsen är okänd.</string>
 	<string name="current_location_unknown_error_message">Ett fel inträffade vid sökning efter din plats. Kontrollera att din enhet fungerar och försök igen senare.</string>
@@ -1082,7 +1081,6 @@
 	<string name="whats_new_auto_update_updating_maps">Uppdaterar kartor</string>
 	<string name="whats_new_auto_update_title">Uppdatera dina nedladdade kartor</string>
 	<string name="whats_new_auto_update_message">Uppdatering av kartor håller information om objekt uppdaterade</string>
-	<string name="whats_new_auto_update_button_size">Uppdatera (%s)</string>
 	<string name="whats_new_auto_update_button_later">Uppdatera senare manuellt</string>
 	<string name="search_hotel_filter_apartment">Lägenheter</string>
 	<string name="search_hotel_filter_camp_site">Camping</string>

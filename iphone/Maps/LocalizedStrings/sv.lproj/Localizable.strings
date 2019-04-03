@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Nuvarande plats okänd. Du kanske är i en byggnad eller tunnel.";
 
-"current_location_unknown_continue_button" = "Fortsätt";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Stopp";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Uppdatering av kartor håller information om objekt uppdaterade";
 
-"whats_new_auto_update_button_size" = "Uppdatera (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Uppdatera senare manuellt";
 

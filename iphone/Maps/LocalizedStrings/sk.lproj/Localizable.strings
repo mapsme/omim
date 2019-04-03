@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Súčasná pozícia je neznáma. Možno sa nachádzate v budove alebo v tuneli.";
 
-"current_location_unknown_continue_button" = "Pokračovať";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Zastaviť";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Vďaka aktualizácii máp budú informácie o objektoch na mape aktualizované";
 
-"whats_new_auto_update_button_size" = "Aktualizovať (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Manuálne aktualizovať neskôr";
 

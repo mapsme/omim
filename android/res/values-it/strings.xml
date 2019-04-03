@@ -832,7 +832,6 @@
 	<string name="current_location_unknown_title">Continuare a rilevare la posizione attuale?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">La posizione attuale è sconosciuta. È possibile che ci si trovi all\'interno di un edificio o un tunnel.</string>
-	<string name="current_location_unknown_continue_button">Continua</string>
 	<string name="current_location_unknown_stop_button">Arresta</string>
 	<string name="current_location_unknown_error_title">La posizione attuale è sconosciuta.</string>
 	<string name="current_location_unknown_error_message">Si è verificato un errore durante la ricerca della posizione. Controllare che il dispositivo utilizzato funzioni correttamente e riprovare.</string>
@@ -1077,7 +1076,6 @@
 	<string name="whats_new_auto_update_updating_maps">Aggiornamento mappe</string>
 	<string name="whats_new_auto_update_title">Aggiorna le mappe scaricate</string>
 	<string name="whats_new_auto_update_message">Aggiornamento mappe mantiene aggiornate le informazioni sugli oggetti</string>
-	<string name="whats_new_auto_update_button_size">Aggiorna (%s)</string>
 	<string name="whats_new_auto_update_button_later">Aggiorna manualmente più tardi</string>
 	<string name="search_hotel_filter_apartment">Residence</string>
 	<string name="search_hotel_filter_camp_site">Campeggio</string>

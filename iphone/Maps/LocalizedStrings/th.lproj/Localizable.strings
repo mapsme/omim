@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "ไม่ทราบชื่อสถานที่ปัจจุบัน คุณอาจจะอยู่ในอาคาร หรือ ในอุโมงค์";
 
-"current_location_unknown_continue_button" = "ดำเนินการต่อ";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "หยุด";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "การอัปเดตแผนที่จะคงข้อมูลเกี่ยวกับจุดหมายต่าง ๆ ให้ล่าสุดอยู่เสมอ";
 
-"whats_new_auto_update_button_size" = "อัปเดต (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "อัปเดตด้วยตนเองภายหลัง";
 

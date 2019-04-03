@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Обновление карт поддерживает информацию об объектах в актуальном состоянии";
 
-"whats_new_auto_update_button_size" = "Обновить (%s)";
+"whats_new_auto_update_button_size" = "Обновить (%s) и продолжить";
 
 "whats_new_auto_update_button_later" = "Обновить вручную позже";
 

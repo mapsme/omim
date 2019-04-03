@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Nezjistili jsme vaši současnou polohu. Možná jste v budově nebo tunelu.";
 
-"current_location_unknown_continue_button" = "Pokračovat";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Zastavit";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Aktualizace map zajišťuje aktuální informace o objektech";
 
-"whats_new_auto_update_button_size" = "Aktualizace (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Aktualizovat ručně později";
 

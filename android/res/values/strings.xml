@@ -1111,7 +1111,7 @@
 	<string name="whats_new_auto_update_updating_maps">Updating maps</string>
 	<string name="whats_new_auto_update_title">Update your downloaded maps</string>
 	<string name="whats_new_auto_update_message">Updating maps keeps the information about objects up to date</string>
-	<string name="whats_new_auto_update_button_size">Update (%s)</string>
+	<string name="whats_new_auto_update_button_size">Update (%s) and proceed</string>
 	<string name="whats_new_auto_update_button_later">Manually update later</string>
 	<string name="search_hotel_filter_apartment">Apartments</string>
 	<string name="search_hotel_filter_camp_site">Camping</string>

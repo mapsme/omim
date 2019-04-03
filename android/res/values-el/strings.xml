@@ -638,7 +638,6 @@
 	<string name="current_location_unknown_title">Να συνεχίσει να ανιχνεύεται η τρέχουσα θέση σας;</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Η τρέχουσα τοποθεσία είναι άγνωστη. Ίσως είστε σε ένα κτίριο ή σε μια σήραγγα.</string>
-	<string name="current_location_unknown_continue_button">Συνέχεια</string>
 	<string name="current_location_unknown_stop_button">Στοπ</string>
 	<string name="current_location_unknown_error_title">Η τρέχουσα τοποθεσία είναι άγνωστη.</string>
 	<string name="current_location_unknown_error_message">Παρουσιάστηκε σφάλμα κατά την αναζήτηση της τοποθεσίας σας. Ελέγξτε αν η συσκευή σας λειτουργεί κανονικά και δοκιμάστε ξανά αργότερα.</string>
@@ -842,7 +841,6 @@
 	<string name="whats_new_auto_update_updating_maps">Ενημέρωση χαρτών</string>
 	<string name="whats_new_auto_update_title">Θα πρέπει να ενημερώστε τους χάρτες που έχετε κατεβάσει</string>
 	<string name="whats_new_auto_update_message">Η ενημέρωση των χαρτών διατηρεί τις πληροφορίες των στοιχείων επικαιροποιημένες</string>
-	<string name="whats_new_auto_update_button_size">Ενημέρωση (%s)</string>
 	<string name="whats_new_auto_update_button_later">Χειροκίνητη ενημέρωση αργότερα</string>
 	<string name="search_hotel_filter_apartment">Διαμερίσματα</string>
 	<string name="search_hotel_filter_camp_site">Κάμπινγκ</string>

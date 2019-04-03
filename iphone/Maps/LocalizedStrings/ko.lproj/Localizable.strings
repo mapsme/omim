@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "현재 위치를 알 수 없습니다. 건물 안이나 터널 안에서는 검색할 수 없습니다";
 
-"current_location_unknown_continue_button" = "계속";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "중지";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "지도를 업데이트하면 개체에 대한 정보가 최신 상태로 유지됩니다.";
 
-"whats_new_auto_update_button_size" = "업데이트(%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "나중에 수동으로 업데이트";
 

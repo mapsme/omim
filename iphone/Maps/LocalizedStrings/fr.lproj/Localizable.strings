@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "L'emplacement actuel est inconnu. Vous êtes peut-être dans un immeuble ou sous un tunnel.";
 
-"current_location_unknown_continue_button" = "Continuer";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Arrêter";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Actualiser les cartes permet d'actualiser également les informations sur les objets";
 
-"whats_new_auto_update_button_size" = "Mettre à jour (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Mettre à jour manuellement plus tard";
 

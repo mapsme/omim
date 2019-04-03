@@ -831,7 +831,6 @@
 	<string name="current_location_unknown_title">Fortsette å oppdage din gjeldende plassering?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Gjeldende plassering er ukjent. Du kan være i en bygning eller en tunnel.</string>
-	<string name="current_location_unknown_continue_button">Fortsett</string>
 	<string name="current_location_unknown_stop_button">Stopp</string>
 	<string name="current_location_unknown_error_title">Gjeldende plassering er ukjent.</string>
 	<string name="current_location_unknown_error_message">Det oppstod en feil under søking etter plasseringen din. Kontroller at plasseringen din virker som den skal, og prøv på nytt senere.</string>
@@ -1076,7 +1075,6 @@
 	<string name="whats_new_auto_update_updating_maps">Oppdaterer kart</string>
 	<string name="whats_new_auto_update_title">Oppdater dine nedlastede kart</string>
 	<string name="whats_new_auto_update_message">Ved å oppdatere kart holder du også informasjonen om ulike elementer oppdatert</string>
-	<string name="whats_new_auto_update_button_size">Oppdater (%s)</string>
 	<string name="whats_new_auto_update_button_later">Oppdater manuelt senere</string>
 	<string name="search_hotel_filter_apartment">Leiligheter</string>
 	<string name="search_hotel_filter_camp_site">Overnatting i bobiler</string>

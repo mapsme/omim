@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Nykyistä sijaintiasi ei voitu määrittää. Kenties olet rakennuksessa tai tunnelissa.";
 
-"current_location_unknown_continue_button" = "Jatka";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Seis";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Karttojen päivittäminen pitää kohteita koskevat tiedot ajan tasalla";
 
-"whats_new_auto_update_button_size" = "Päivitä (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Päivitä manuaalisesti myöhemmin";
 

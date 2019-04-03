@@ -830,7 +830,6 @@
 	<string name="current_location_unknown_title">Continuați cu detectarea locației dvs. curente?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Locația curentă este necunoscută. Poate vă aflați într-o clădire sau un tunel.</string>
-	<string name="current_location_unknown_continue_button">Continuare</string>
 	<string name="current_location_unknown_stop_button">Oprire</string>
 	<string name="current_location_unknown_error_title">Locația curentă este necunoscută.</string>
 	<string name="current_location_unknown_error_message">S-a produs o eroare la căutarea locației. Verificați dacă dispozitivul funcționează corect și încercați din nou.</string>
@@ -1074,7 +1073,6 @@
 	<string name="whats_new_auto_update_updating_maps">Se actualizează hărțile</string>
 	<string name="whats_new_auto_update_title">Actualizați hărțile descărcate</string>
 	<string name="whats_new_auto_update_message">Actualizarea hărților vă ajută să păstrați actualizate informațiile despre obiecte</string>
-	<string name="whats_new_auto_update_button_size">Actualizare (%s)</string>
 	<string name="whats_new_auto_update_button_later">Actualizare manuală mai târziu</string>
 	<string name="search_hotel_filter_apartment">Apartamente</string>
 	<string name="search_hotel_filter_camp_site">Camping</string>

@@ -840,7 +840,6 @@
 	<string name="current_location_unknown_title">Pokračovat se zjišťováním současné polohy?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Nezjistili jsme vaši současnou polohu. Možná jste v budově nebo tunelu.</string>
-	<string name="current_location_unknown_continue_button">Pokračovat</string>
 	<string name="current_location_unknown_stop_button">Zastavit</string>
 	<string name="current_location_unknown_error_title">Současná poloha nezjištěna.</string>
 	<string name="current_location_unknown_error_message">Při zjišťování současné polohy došlo k chybě. Zkontrolujte, že nedošlo k chybě zařízení a pokus prosím opakujte později.</string>
@@ -1085,7 +1084,6 @@
 	<string name="whats_new_auto_update_updating_maps">Aktualizuji mapy</string>
 	<string name="whats_new_auto_update_title">Aktualizujte své stažené mapy</string>
 	<string name="whats_new_auto_update_message">Aktualizace map zajišťuje aktuální informace o objektech</string>
-	<string name="whats_new_auto_update_button_size">Aktualizace (%s)</string>
 	<string name="whats_new_auto_update_button_later">Aktualizovat ručně později</string>
 	<string name="search_hotel_filter_apartment">Byty</string>
 	<string name="search_hotel_filter_camp_site">Kempování</string>

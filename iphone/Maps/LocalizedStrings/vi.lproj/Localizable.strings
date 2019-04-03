@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Chưa biết địa điểm hiện tại. Có thể bạn đang ở trong một tòa nhà hoặc đường hầm.";
 
-"current_location_unknown_continue_button" = "Tiếp tục";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Dừng";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Cập nhật bản đồ để cập nhật thông tin về các đối tượng trên đó";
 
-"whats_new_auto_update_button_size" = "Cập nhật (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Cập nhật thủ công sau";
 

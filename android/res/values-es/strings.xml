@@ -826,7 +826,6 @@
 	<string name="current_location_unknown_title">¿Continuar detectando su ubicación actual?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">La ubicación actual es desconocida. Quizá esté en un edificio o en un túnel.</string>
-	<string name="current_location_unknown_continue_button">Continuar</string>
 	<string name="current_location_unknown_stop_button">Detener</string>
 	<string name="current_location_unknown_error_title">La ubicación actual es desconocida.</string>
 	<string name="current_location_unknown_error_message">Se ha producido un error al buscar su ubicación. Compruebe que su dispositivo funciona correctamente e inténtelo más tarde.</string>
@@ -1071,7 +1070,6 @@
 	<string name="whats_new_auto_update_updating_maps">Actualizando mapas</string>
 	<string name="whats_new_auto_update_title">Actualice sus mapas descargados</string>
 	<string name="whats_new_auto_update_message">La actualización de mapas mantiene actualizada la información sobre objetos</string>
-	<string name="whats_new_auto_update_button_size">Actualizar (%s)</string>
 	<string name="whats_new_auto_update_button_later">Actualizar más tarde de forma manual</string>
 	<string name="search_hotel_filter_apartment">Apartamentos</string>
 	<string name="search_hotel_filter_camp_site">Campamento</string>

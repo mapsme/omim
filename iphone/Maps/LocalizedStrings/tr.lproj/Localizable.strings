@@ -1420,7 +1420,7 @@
 /* Error that appears after certain time without location. */
 "current_location_unknown_message" = "Geçerli konum bilinmiyor Muhtemelen bir binanın içinde veya tüneldesiniz.";
 
-"current_location_unknown_continue_button" = "Devam";
+"current_location_unknown_continue_button" = "Continue";
 
 "current_location_unknown_stop_button" = "Dur";
 
@@ -1879,7 +1879,7 @@
 
 "whats_new_auto_update_message" = "Haritaları güncellemek, nesnelerle ilgili bilgilerin güncel kalmasını sağlar";
 
-"whats_new_auto_update_button_size" = "Güncelle (%s)";
+"whats_new_auto_update_button_size" = "Update (%s) and proceed";
 
 "whats_new_auto_update_button_later" = "Daha sonra manüel olarak güncelle";
 

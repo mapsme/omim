@@ -836,7 +836,6 @@
 	<string name="current_location_unknown_title">Kontynuować wykrywanie bieżącej lokalizacji?</string>
 	<!-- Error that appears after certain time without location. -->
 	<string name="current_location_unknown_message">Aktualna lokalizacja jest nieznana. Może znajdujesz się w budynku lub tunelu.</string>
-	<string name="current_location_unknown_continue_button">Kontynuuj</string>
 	<string name="current_location_unknown_stop_button">Stop</string>
 	<string name="current_location_unknown_error_title">Aktualna lokalizacja jest nieznana.</string>
 	<string name="current_location_unknown_error_message">Podczas szukania twojej lokalizacji wystąpił błąd. Sprawdź czy twoje urządzenie działa poprawnie i spróbuj ponownie później.</string>
@@ -1081,7 +1080,6 @@
 	<string name="whats_new_auto_update_updating_maps">Aktualizacja map</string>
 	<string name="whats_new_auto_update_title">Zaktualizuj pobrane mapy</string>
 	<string name="whats_new_auto_update_message">Aktualizacja map umożliwia uzyskanie bieżących informacji o obiektach</string>
-	<string name="whats_new_auto_update_button_size">Zaktualizuj (%s)</string>
 	<string name="whats_new_auto_update_button_later">Zaktualizuj ręcznie później</string>
 	<string name="search_hotel_filter_apartment">Apartamenty</string>
 	<string name="search_hotel_filter_camp_site">Kamping</string>
