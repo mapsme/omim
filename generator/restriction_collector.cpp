@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <sstream>
 #include <unordered_set>
 
 namespace
@@ -28,7 +29,7 @@ char const kNo[] = "No";
 char const kOnly[] = "Only";
 char const kDelim[] = ", \t\r\n";
 
-bool ParseLineOfWayIds(strings::SimpleTokenizer & iter, std::vector<base::GeoObjectId> & numbers)
+bool ParseLineOfWayIds(strings::SimpleTokenizer & iter, vector<base::GeoObjectId> & numbers)
 {
   uint64_t number = 0;
   for (; iter; ++iter)
@@ -43,76 +44,75 @@ bool ParseLineOfWayIds(strings::SimpleTokenizer & iter, std::vector<base::GeoObj
 
 namespace routing
 {
-
 m2::PointD constexpr RestrictionCollector::kNoCoords;
 
-RestrictionCollector::RestrictionCollector(std::string const & targetPath,
-                                           std::string const & mwmPath,
-                                           std::string const & country,
-                                           std::string const & restrictionPath,
-                                           std::string const & osmIdsToFeatureIdPath,
-                                           CountryParentNameGetterFn const & countryParentNameGetterFn)
+bool RestrictionCollector::PrepareOsmIdToFeatureId(string const & osmIdsToFeatureIdPath)
 {
-  SCOPE_GUARD(clean, [this]() {
-    m_osmIdToFeatureId.clear();
-    m_restrictions.clear();
-  });
-
   if (!ParseOsmIdToFeatureIdMapping(osmIdsToFeatureIdPath, m_osmIdToFeatureId))
   {
     LOG(LWARNING, ("An error happened while parsing feature id to osm ids mapping from file:",
                    osmIdsToFeatureIdPath));
-    return;
+    m_osmIdToFeatureId.clear();
+    return false;
   }
 
+  return true;
+}
+
+void
+RestrictionCollector::InitIndexGraph(string const & targetPath,
+                                     string const & mwmPath,
+                                     string const & country,
+                                     CountryParentNameGetterFn const & countryParentNameGetterFn)
+{
   shared_ptr<VehicleModelInterface> vehicleModel =
       CarModelFactory(countryParentNameGetterFn).GetVehicleModelForCountry(country);
 
   MwmValue mwmValue(
       platform::LocalCountryFile(targetPath, platform::CountryFile(country), 0 /* version */));
 
-  m_indexGraph = std::make_unique<IndexGraph>(
+  m_indexGraph = make_unique<IndexGraph>(
       make_shared<Geometry>(GeometryLoader::CreateFromFile(mwmPath, vehicleModel)),
       EdgeEstimator::Create(VehicleType::Car, *vehicleModel, nullptr /* trafficStash */));
 
   DeserializeIndexGraph(mwmValue, VehicleType::Car, *m_indexGraph);
+}
+
+bool RestrictionCollector::Process(std::string const & restrictionPath)
+{
+  CHECK(m_indexGraph, ());
+
+  SCOPE_GUARD(clean, [this]() {
+    m_osmIdToFeatureId.clear();
+    m_restrictions.clear();
+  });
 
   if (!ParseRestrictions(restrictionPath))
   {
     LOG(LWARNING, ("An error happened while parsing restrictions from file:",  restrictionPath));
-    return;
+    return false;
   }
+
   clean.release();
 
   base::SortUnique(m_restrictions);
 
-  if (!IsValid())
-    LOG(LERROR, ("Some restrictions are not valid."));
-
   LOG(LDEBUG, ("Number of loaded restrictions:", m_restrictions.size()));
+  return true;
 }
 
-bool RestrictionCollector::IsValid() const
-{
-  return std::find_if(begin(m_restrictions), end(m_restrictions),
-                 [](Restriction const & r) { return !r.IsValid(); }) == end(m_restrictions);
-}
-
-bool RestrictionCollector::ParseRestrictions(std::string const & path)
+bool RestrictionCollector::ParseRestrictions(string const & path)
 {
   std::ifstream stream(path);
   if (stream.fail())
     return false;
 
-  std::string line;
-  while (std::getline(stream, line))
+  string line;
+  while (getline(stream, line))
   {
     strings::SimpleTokenizer iter(line, kDelim);
     if (!iter)  // the line is empty
-    {
-      LOG(LINFO, ("line is empty"));
       return false;
-    }
 
     Restriction::Type restrictionType;
     RestrictionWriter::ViaType viaType;
@@ -131,7 +131,7 @@ bool RestrictionCollector::ParseRestrictions(std::string const & path)
       ++iter;
     }
 
-    std::vector<base::GeoObjectId> osmIds;
+    vector<base::GeoObjectId> osmIds;
     if (!ParseLineOfWayIds(iter, osmIds))
     {
       LOG(LWARNING, ("Cannot parse osm ids from", path));
@@ -173,6 +173,7 @@ Joint::Id RestrictionCollector::GetFirstCommonJoint(uint32_t firstFeatureId,
 
 bool RestrictionCollector::FeatureHasPointWithCoords(uint32_t featureId, m2::PointD const & coords)
 {
+  CHECK(m_indexGraph, ());
   auto & roadGeometry = m_indexGraph->GetGeometry().GetRoad(featureId);
   uint32_t pointsCount = roadGeometry.GetPointsCount();
   for (uint32_t i = 0; i < pointsCount; ++i)
@@ -195,9 +196,9 @@ bool RestrictionCollector::FeaturesAreCross(m2::PointD const & coords, uint32_t 
 
 bool RestrictionCollector::AddRestriction(m2::PointD const & coords,
                                           Restriction::Type restrictionType,
-                                          std::vector<base::GeoObjectId> const & osmIds)
+                                          vector<base::GeoObjectId> const & osmIds)
 {
-  std::vector<uint32_t> featureIds(osmIds.size());
+  vector<uint32_t> featureIds(osmIds.size());
   for (size_t i = 0; i < osmIds.size(); ++i)
   {
     auto const result = m_osmIdToFeatureId.find(osmIds[i]);
@@ -230,7 +231,7 @@ void RestrictionCollector::AddFeatureId(uint32_t featureId, base::GeoObjectId os
   ::routing::AddFeatureId(osmId, featureId, m_osmIdToFeatureId);
 }
 
-void FromString(std::string const & str, Restriction::Type & type)
+void FromString(string const & str, Restriction::Type & type)
 {
   if (str == kNo)
   {
@@ -248,7 +249,7 @@ void FromString(std::string const & str, Restriction::Type & type)
   UNREACHABLE();
 }
 
-void FromString(std::string const & str, RestrictionWriter::ViaType & type)
+void FromString(string const & str, RestrictionWriter::ViaType & type)
 {
   if (str == RestrictionWriter::kNodeString)
   {
@@ -266,7 +267,7 @@ void FromString(std::string const & str, RestrictionWriter::ViaType & type)
                 "or", RestrictionWriter::kWayString));
 }
 
-void FromString(std::string const & str, double & number)
+void FromString(string const & str, double & number)
 {
   std::stringstream ss;
   ss << str;

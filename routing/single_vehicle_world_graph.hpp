@@ -105,12 +105,6 @@ private:
                               std::map<VertexType, VertexType> & backwardParents,
                               std::function<uint32_t(VertexType const &)> && fakeFeatureConverter);
 
-  template <typename Parent>
-  bool IsRestricted(Parent const & parent,
-                    Segment const & parentSegment,
-                    Segment const & current, bool isOutgoing,
-                    std::map<Parent, Parent> & parents) const;
-
   // Retrieves the same |jointEdges|, but into others mwms.
   // If they are cross mwm edges, of course.
   void CheckAndProcessTransitFeatures(Segment const & parent,
@@ -140,12 +134,4 @@ private:
   AStarParents<Segment> m_parentsForSegments;
   AStarParents<JointSegment> m_parentsForJoints;
 };
-
-template <>
-SingleVehicleWorldGraph::AStarParents<Segment>::ParentType
-SingleVehicleWorldGraph::AStarParents<Segment>::kEmpty;
-
-template <>
-SingleVehicleWorldGraph::AStarParents<JointSegment>::ParentType
-SingleVehicleWorldGraph::AStarParents<JointSegment>::kEmpty;
 }  // namespace routing

@@ -1,6 +1,6 @@
 #include "testing/testing.hpp"
 
-#include "routing/routing_tests/index_graph_tools.hpp"
+#include "routing_common/index_graph_tools.hpp"
 
 #include "routing/fake_ending.hpp"
 #include "routing/geometry.hpp"
@@ -1122,3 +1122,4 @@ UNIT_CLASS_TEST(RestrictionTest, RestrictionOnlyWithWayAsVia_1)
   test({start, {0, 0}, {1, 0}, {2, 0}, {3, 1}, finish}, RestrictionVec());
 }
 }  // namespace routing_test
+

@@ -153,7 +153,7 @@ void RestrictionWriter::Write(RelationElement const & relationElement)
   auto viaType =
       getType(via.back().first) == OsmElement::EntityType::Node ? ViaType::Node : ViaType::Way;
 
-  m_stream << ToString(type) << "," << DebugPrint(viaType) << ",";
+  m_stream << DebugPrint(type) << "," << DebugPrint(viaType) << ",";
 
   if (viaType == ViaType::Way)
   {

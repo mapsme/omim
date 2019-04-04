@@ -39,7 +39,6 @@ struct Restriction
   };
 
   Restriction(Type type, std::vector<uint32_t> const & links) : m_featureIds(links), m_type(type) {}
-  bool IsValid() const;
   bool operator==(Restriction const & restriction) const;
   bool operator<(Restriction const & restriction) const;
 
@@ -50,7 +49,6 @@ struct Restriction
 
 using RestrictionVec = std::vector<std::vector<uint32_t>>;
 
-std::string ToString(Restriction::Type const & type);
 std::string DebugPrint(Restriction::Type const & type);
 std::string DebugPrint(Restriction const & restriction);
 
@@ -138,7 +136,6 @@ private:
       CHECK_EQUAL(type, begin->m_type, ());
 
       Restriction const & restriction = *begin;
-      CHECK(restriction.IsValid(), ());
       CHECK_LESS(1, restriction.m_featureIds.size(),
                  ("No sense in zero or one link restrictions."));
 

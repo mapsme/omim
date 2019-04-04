@@ -26,20 +26,19 @@ class RestrictionCollector
 {
 public:
   RestrictionCollector() = default;
-  /// \param restrictionPath full path to file with road restrictions in osm id terms.
-  /// \param osmIdsToFeatureIdsPath full path to file with mapping from osm ids to feature ids.
-  RestrictionCollector(std::string const & targetPath,
-                       std::string const & mwmPath,
-                       std::string const & country,
-                       std::string const & restrictionPath,
-                       std::string const & osmIdsToFeatureIdsPath,
-                       CountryParentNameGetterFn const & countryParentNameGetterFn);
+
+  bool PrepareOsmIdToFeatureId(string const & osmIdsToFeatureIdPath);
+
+  void InitIndexGraph(std::string const & targetPath,
+                      string const & mwmPath,
+                      std::string const & country,
+                      CountryParentNameGetterFn const & countryParentNameGetterFn);
+
+  void SetIndexGraphForTest(std::unique_ptr<IndexGraph> graph) { m_indexGraph = std::move(graph); }
+
+  bool Process(std::string const & restrictionPath);
 
   bool HasRestrictions() const { return !m_restrictions.empty(); }
-
-  /// \returns true if all restrictions in |m_restrictions| are valid and false otherwise.
-  /// \note Complexity of the method is linear in the size of |m_restrictions|.
-  bool IsValid() const;
 
   /// \returns Sorted vector of restrictions.
   std::vector<Restriction> const & GetRestrictions() const { return m_restrictions; }
@@ -52,6 +51,8 @@ private:
   friend void UnitTest_RestrictionTest_ValidCase();
   friend void UnitTest_RestrictionTest_InvalidCase();
   friend void UnitTest_RestrictionTest_ParseRestrictions();
+  friend void UnitTest_RestrictionTest_InvalidCase_NoSuchFeature();
+  friend void UnitTest_RestrictionTest_InvalidCase_FeaturesNotIntersecting();
 
   /// \brief Parses comma separated text file with line in following format:
   /// <type of restrictions>, <osm id 1 of the restriction>, <osm id 2>, and so on
@@ -88,6 +89,8 @@ private:
   std::map<base::GeoObjectId, uint32_t> m_osmIdToFeatureId;
 
   std::unique_ptr<IndexGraph> m_indexGraph;
+
+  std::string m_restrictionPath;
 };
 
 void FromString(std::string const & str, Restriction::Type & type);

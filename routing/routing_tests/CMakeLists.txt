@@ -14,8 +14,6 @@ set(
   fake_graph_test.cpp
   followed_polyline_test.cpp
   index_graph_test.cpp
-  index_graph_tools.cpp
-  index_graph_tools.hpp
   maxspeeds_tests.cpp
   nearest_edge_finder_tests.cpp
   online_cross_fetcher_test.cpp

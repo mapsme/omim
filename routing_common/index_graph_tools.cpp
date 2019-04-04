@@ -1,4 +1,4 @@
-#include "routing/routing_tests/index_graph_tools.hpp"
+#include "routing_common/index_graph_tools.hpp"
 
 #include "testing/testing.hpp"
 
@@ -351,6 +351,15 @@ unique_ptr<SingleVehicleWorldGraph> BuildWorldGraph(unique_ptr<TestGeometryLoade
   indexLoader->AddGraph(kTestNumMwmId, move(graph));
   return make_unique<SingleVehicleWorldGraph>(nullptr /* crossMwmGraph */, move(indexLoader),
                                               estimator);
+}
+
+unique_ptr<IndexGraph> BuildIndexGraph(unique_ptr<TestGeometryLoader> geometryLoader,
+                                       shared_ptr<EdgeEstimator> estimator,
+                                       vector<Joint> const & joints)
+{
+  auto graph = make_unique<IndexGraph>(make_shared<Geometry>(move(geometryLoader)), estimator);
+  graph->Import(joints);
+  return graph;
 }
 
 unique_ptr<SingleVehicleWorldGraph> BuildWorldGraph(unique_ptr<ZeroGeometryLoader> geometryLoader,

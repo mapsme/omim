@@ -14,11 +14,6 @@
 #include <queue>
 #include <vector>
 
-#include <fstream>
-#include <cstdlib>
-#include "geometry/mercator.hpp"
-#include "base/logging.hpp"
-
 namespace routing
 {
 template <typename Vertex, typename Edge, typename Weight>
@@ -563,14 +558,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     params.m_onVisitedVertexCallback(stateV.vertex,
                                      cur->forward ? cur->finalVertex : cur->startVertex);
 
-//    auto p = MercatorBounds::FromLatLon({55.8015964, 37.5489224});
-//    auto curP = graph.GetPoint(stateV.vertex, stateV.vertex.IsForward());
-//    if (base::AlmostEqualAbs(p, curP, 1e-3))
-//    {
-//      int asd = 4;
-//      (void)asd;
-//    }
-
     cur->GetAdjacencyList(stateV.vertex, adj);
     for (auto const & edge : adj)
     {
@@ -609,11 +596,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         // find the reduced length of the path's parts in the reduced forward and backward graphs.
         auto const curPathReducedLength = newReducedDist + distW;
         // No epsilon here: it is ok to overshoot slightly.
-        bool connectible = graph.IsWavesConnectible(forwardParents, stateW.vertex, backwardParents);
-        LOG(LINFO, ("met in", stateW.vertex, "best =", bestPathReducedLength, "cur =", curPathReducedLength, "connectible:", connectible));
-        if ((!foundAnyPath || bestPathReducedLength > curPathReducedLength) && connectible)
+        if ((!foundAnyPath || bestPathReducedLength > curPathReducedLength) &&
+            graph.IsWavesConnectible(forwardParents, stateW.vertex, backwardParents))
         {
-          LOG(LINFO, ("updated"));
           bestPathReducedLength = curPathReducedLength;
 
           bestPathRealLength = stateV.distance + weight + distW;

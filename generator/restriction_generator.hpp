@@ -1,11 +1,21 @@
 #pragma once
 
+#include "generator/restriction_collector.hpp"
 #include "generator/routing_index_generator.hpp"
 
+#include <memory>
 #include <string>
 
 namespace routing
 {
+std::unique_ptr<RestrictionCollector>
+CreateRestrictionCollectorAndParse(
+    std::string const & targetPath, std::string const & mwmPath, std::string const & country,
+    std::string const & restrictionPath, std::string const & osmIdsToFeatureIdsPath,
+    CountryParentNameGetterFn const & countryParentNameGetterFn);
+
+void SerializeRestrictions(RestrictionCollector const & restrictonCollector,
+                           std::string const & mwmPath);
 // This function is the generator tool's interface to building the mwm
 // section which contains road restrictions. (See https://wiki.openstreetmap.org/wiki/Restriction)
 // As long as the restrictions are built later than the road features themselves

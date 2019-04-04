@@ -255,6 +255,10 @@ unique_ptr<SingleVehicleWorldGraph> BuildWorldGraph(unique_ptr<ZeroGeometryLoade
                                                     shared_ptr<EdgeEstimator> estimator,
                                                     vector<Joint> const & joints);
 
+unique_ptr<IndexGraph> BuildIndexGraph(unique_ptr<TestGeometryLoader> geometryLoader,
+                                       shared_ptr<EdgeEstimator> estimator,
+                                       vector<Joint> const & joints);
+
 routing::Joint MakeJoint(vector<routing::RoadPoint> const & points);
 
 shared_ptr<routing::EdgeEstimator> CreateEstimatorForCar(
