@@ -169,7 +169,7 @@ void IndexGraphStarter::GetEdgesList(Segment const & segment, bool isOutgoing,
   edges.clear();
 
   // If mode is LeapsOnly we need to connect start/finish segment to transitions.
-  if (m_graph.GetMode() == WorldGraphMode::LeapsOnly)
+  if (m_graph.GetMode() == WorldGraph::Mode::LeapsOnly)
   {
     if (segment.IsRealSegment() && !IsRoutingOptionsGood(segment))
       return;
@@ -363,12 +363,12 @@ void IndexGraphStarter::AddFakeEdges(Segment const & segment, bool isOutgoing, v
       //     |segment|       |s|
       //  *------------>*----------->
       bool const sIsOutgoing =
-          GetJunction(segment, true /* front */) == GetJunction(s, false /* front */);
+          GetJunction(segment, true /*front */) == GetJunction(s, false /* front */);
 
       //        |s|       |segment|
       //  *------------>*----------->
       bool const sIsIngoing =
-          GetJunction(s, true /* front */) == GetJunction(segment, false /* front */);
+          GetJunction(s, true /*front */) == GetJunction(segment, false /* front */);
 
       if ((isOutgoing && sIsOutgoing) || (!isOutgoing && sIsIngoing))
       {
