@@ -61,6 +61,7 @@ RestrictionWriter::ViaType RestrictionWriter::ConvertFromString(std::string cons
     return ViaType::Way;
 
   CHECK(false, ("Bad via type in restrictons:", str));
+  UNREACHABLE();
 }
 
 
