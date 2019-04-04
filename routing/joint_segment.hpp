@@ -31,7 +31,6 @@ public:
 
   void ToFake(uint32_t fakeId);
   bool IsFake() const;
-
   bool IsRealSegment() const { return !IsFake(); }
 
   Segment GetSegment(bool start) const

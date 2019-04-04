@@ -199,13 +199,6 @@ private:
       restrictions.emplace_back(std::move(restriction));
     }
 
-//    for (auto const & r : restrictions)
-//    {
-//      std::stringstream ss;
-//      for (auto i : r)
-//        ss << i << " ";
-//      LOG(LINFO, (ss.str()));
-//    }
     return true;
   }
 };

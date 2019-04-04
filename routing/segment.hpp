@@ -31,7 +31,7 @@ public:
   {
   }
 
-  Segment const & GetSegment(bool start) const { return *this; }
+  Segment const & GetSegment(bool /* start */) const { return *this; }
   NumMwmId GetMwmId() const { return m_mwmId; }
   uint32_t GetFeatureId() const { return m_featureId; }
   uint32_t & GetFeatureId() { return m_featureId; }

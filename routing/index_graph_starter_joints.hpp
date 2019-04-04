@@ -98,7 +98,6 @@ public:
 
   Segment const & GetSegmentOfFakeJoint(JointSegment const & joint, bool start);
 
-
   ~IndexGraphStarterJoints() override = default;
 
 private:
