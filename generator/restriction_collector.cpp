@@ -107,8 +107,8 @@ bool RestrictionCollector::ParseRestrictions(string const & path)
   if (stream.fail())
     return false;
 
-  string line;
-  while (getline(stream, line))
+  std::string line;
+  while (std::getline(stream, line))
   {
     strings::SimpleTokenizer iter(line, kDelim);
     if (!iter)  // the line is empty
@@ -131,7 +131,7 @@ bool RestrictionCollector::ParseRestrictions(string const & path)
       ++iter;
     }
 
-    vector<base::GeoObjectId> osmIds;
+    std::vector<base::GeoObjectId> osmIds;
     if (!ParseLineOfWayIds(iter, osmIds))
     {
       LOG(LWARNING, ("Cannot parse osm ids from", path));
@@ -196,9 +196,9 @@ bool RestrictionCollector::FeaturesAreCross(m2::PointD const & coords, uint32_t 
 
 bool RestrictionCollector::AddRestriction(m2::PointD const & coords,
                                           Restriction::Type restrictionType,
-                                          vector<base::GeoObjectId> const & osmIds)
+                                          std::vector<base::GeoObjectId> const & osmIds)
 {
-  vector<uint32_t> featureIds(osmIds.size());
+  std::vector<uint32_t> featureIds(osmIds.size());
   for (size_t i = 0; i < osmIds.size(); ++i)
   {
     auto const result = m_osmIdToFeatureId.find(osmIds[i]);
@@ -231,7 +231,7 @@ void RestrictionCollector::AddFeatureId(uint32_t featureId, base::GeoObjectId os
   ::routing::AddFeatureId(osmId, featureId, m_osmIdToFeatureId);
 }
 
-void FromString(string const & str, Restriction::Type & type)
+void FromString(std::string const & str, Restriction::Type & type)
 {
   if (str == kNo)
   {
@@ -249,7 +249,7 @@ void FromString(string const & str, Restriction::Type & type)
   UNREACHABLE();
 }
 
-void FromString(string const & str, RestrictionWriter::ViaType & type)
+void FromString(std::string const & str, RestrictionWriter::ViaType & type)
 {
   if (str == RestrictionWriter::kNodeString)
   {
@@ -267,7 +267,7 @@ void FromString(string const & str, RestrictionWriter::ViaType & type)
                 "or", RestrictionWriter::kWayString));
 }
 
-void FromString(string const & str, double & number)
+void FromString(std::string const & str, double & number)
 {
   std::stringstream ss;
   ss << str;

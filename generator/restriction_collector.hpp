@@ -82,7 +82,7 @@ private:
   /// \note This method should be called to add a restriction when feature ids of the restriction
   /// are unknown. The feature ids should be set later with a call of |SetFeatureId(...)| method.
   /// \returns true if restriction is add and false otherwise.
-  bool AddRestriction(m2::PointD const & latlon, Restriction::Type type,
+  bool AddRestriction(m2::PointD const & coords, Restriction::Type type,
                       std::vector<base::GeoObjectId> const & osmIds);
 
   std::vector<Restriction> m_restrictions;

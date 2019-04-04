@@ -49,19 +49,20 @@ bool TagToType(std::string const & tag, Restriction::Type & type)
 
 namespace routing
 {
+std::string const RestrictionWriter::kNodeString = "node";
+std::string const RestrictionWriter::kWayString = "way";
+
 //static
 RestrictionWriter::ViaType RestrictionWriter::ConvertFromString(std::string const & str)
 {
-  if (str == "node")
+  if (str == kNodeString)
     return ViaType::Node;
-  else if (str == "way")
+  else if (str == kWayString)
     return ViaType::Way;
 
-  UNREACHABLE();
+  CHECK(false, ("Bad via type in restrictons:", str));
 }
 
-std::string const RestrictionWriter::kNodeString = "node";
-std::string const RestrictionWriter::kWayString = "way";
 
 void RestrictionWriter::Open(std::string const & fullPath,
                              generator::cache::IntermediateDataReader * cache)
