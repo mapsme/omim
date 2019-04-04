@@ -11,9 +11,6 @@
 #include "base/assert.hpp"
 #include "base/checked_cast.hpp"
 #include "base/exception.hpp"
-#include "base/timer.hpp"
-
-#include "routing/world_graph.hpp"
 
 #include <algorithm>
 #include <cstdlib>
