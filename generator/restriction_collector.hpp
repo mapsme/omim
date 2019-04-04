@@ -6,8 +6,6 @@
 #include "routing/index_graph_loader.hpp"
 #include "routing/restrictions_serialization.hpp"
 
-#include "geometry/latlon.hpp"
-
 #include "base/geo_object_id.hpp"
 
 #include <functional>
@@ -50,7 +48,6 @@ private:
 
   friend void UnitTest_RestrictionTest_ValidCase();
   friend void UnitTest_RestrictionTest_InvalidCase();
-  friend void UnitTest_RestrictionTest_ParseRestrictions();
   friend void UnitTest_RestrictionTest_InvalidCase_NoSuchFeature();
   friend void UnitTest_RestrictionTest_InvalidCase_FeaturesNotIntersecting();
 
