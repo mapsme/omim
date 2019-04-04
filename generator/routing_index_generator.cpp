@@ -477,8 +477,6 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
     AStarAlgorithm<JointSegment, JointEdge, RouteWeight>::Context context;
     indexGraphWrapper.SetAStarParents(true /* forward */, context.GetParents());
     unordered_map<uint32_t, vector<JointSegment>> visitedVertexes;
-    if (false)
-    {
     astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
                         [&](JointSegment const & vertex)
                         {
@@ -499,7 +497,6 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
                             return true;
                           } /* visitVertex */,
                           context);
-    }
 
     for (Segment const & exit : connector.GetExits())
     {
