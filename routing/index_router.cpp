@@ -543,10 +543,6 @@ RouterResultCode IndexRouter::CalculateSubroute(Checkpoints const & checkpoints,
       break;
   }
 
-  bool no_leaps = std::getenv("NO_LEAPS") && !std::string(std::getenv("NO_LEAPS")).empty();
-  if (no_leaps)
-    starter.GetGraph().SetMode(WorldGraphMode::Joints);
-
   LOG(LINFO, ("Routing in mode:", starter.GetGraph().GetMode()));
 
   auto const progressRange = CalcProgressRange(checkpoints, subrouteIdx);
