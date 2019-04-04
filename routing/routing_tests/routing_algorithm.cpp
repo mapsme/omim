@@ -12,7 +12,6 @@
 
 #include <cmath>
 #include <cstdint>
-#include <map>
 #include <vector>
 
 namespace routing
