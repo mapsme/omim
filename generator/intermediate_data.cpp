@@ -29,7 +29,6 @@ size_t const kMaxNodesInOSM = size_t{1} << 33;
 
 void ToLatLon(double lat, double lon, LatLon & ll)
 {
-
   int64_t const lat64 = lat * kValueOrder;
   int64_t const lon64 = lon * kValueOrder;
 
@@ -173,8 +172,6 @@ public:
 
     LatLon & ll = m_data[id];
     ToLatLon(lat, lon, ll);
-
-    LOG(LINFO, ("add:", id, lat, lon, "res:", ll.m_lat, ll.m_lon));
 
     ++m_numProcessedPoints;
   }

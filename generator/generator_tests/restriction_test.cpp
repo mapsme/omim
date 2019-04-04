@@ -266,7 +266,7 @@ UNIT_TEST(RestrictionGenerationTest_BadConnection_1)
       R"(Only, node,                  0.0, 2.0,  7,   6
          No,   way,                              2,   8, 10)";
 
-  // So we don't first restriction here.
+  // So we don't expect first restriction here.
   std::vector<Restriction> expected = {
       {Restriction::Type::No,   {2, 8, 10}}
   };
