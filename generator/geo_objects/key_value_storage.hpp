@@ -20,8 +20,8 @@ using KeyValue = std::pair<uint64_t, base::Json>;
 class KeyValueStorage
 {
 public:
-  explicit KeyValueStorage(std::istream & stream, std::function<bool(KeyValue const &)> pred = DefaultPred);
-  virtual ~KeyValueStorage() = default;
+  explicit KeyValueStorage(std::istream & stream,
+                           std::function<bool(KeyValue const &)> const & pred = DefaultPred);
 
   boost::optional<base::Json> Find(uint64_t key) const;
   size_t Size() const;

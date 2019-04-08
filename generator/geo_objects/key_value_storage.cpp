@@ -8,7 +8,7 @@ namespace generator
 {
 namespace geo_objects
 {
-KeyValueStorage::KeyValueStorage(std::istream & stream, std::function<bool(KeyValue const &)> pred)
+KeyValueStorage::KeyValueStorage(std::istream & stream, std::function<bool(KeyValue const &)> const & pred)
 {
   std::string line;
   while (std::getline(stream, line))
