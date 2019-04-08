@@ -11,10 +11,13 @@ namespace geo_objects
 KeyValueStorage::KeyValueStorage(std::istream & stream, std::function<bool(KeyValue const &)> const & pred)
 {
   std::string line;
+  std::streamoff lineNumber = 0;
   while (std::getline(stream, line))
   {
+    ++lineNumber;
+
     KeyValue kv;
-    if (!ParseKeyValueLine(line, kv) || !pred(kv))
+    if (!ParseKeyValueLine(line, kv, lineNumber) || !pred(kv))
       continue;
 
     m_values.insert(kv);
@@ -22,19 +25,19 @@ KeyValueStorage::KeyValueStorage(std::istream & stream, std::function<bool(KeyVa
 }
 
 // static
-bool KeyValueStorage::ParseKeyValueLine(std::string const & line, KeyValue & res)
+bool KeyValueStorage::ParseKeyValueLine(std::string const & line, KeyValue & res, std::streamoff lineNumber)
 {
   auto const pos = line.find(" ");
   if (pos == std::string::npos)
   {
-    LOG(LWARNING, ("Cannot find separator."));
+    LOG(LWARNING, ("Cannot find separator in line", lineNumber));
     return false;
   }
 
   int64_t id;
   if (!strings::to_int64(line.substr(0, pos), id))
   {
-    LOG(LWARNING, ("Cannot parse id."));
+    LOG(LWARNING, ("Cannot parse id", line.substr(0, pos) , "in line", lineNumber));
     return false;
   }
 
@@ -45,9 +48,9 @@ bool KeyValueStorage::ParseKeyValueLine(std::string const & line, KeyValue & res
     if (!json.get())
       return false;
   }
-  catch (base::Json::Exception const &)
+  catch (base::Json::Exception const & err)
   {
-    LOG(LWARNING, ("Cannot create base::Json."));
+    LOG(LWARNING, ("Cannot create base::Json in line", lineNumber, ":", err.Msg()));
     return false;
   }
 

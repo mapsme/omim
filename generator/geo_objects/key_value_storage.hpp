@@ -28,7 +28,7 @@ public:
 
 private:
   static bool DefaultPred(KeyValue const &) { return true; }
-  static bool ParseKeyValueLine(std::string const & line, KeyValue & res);
+  static bool ParseKeyValueLine(std::string const & line, KeyValue & res, std::streamoff lineNumber);
 
   std::unordered_map<uint64_t, base::Json> m_values;
 };
