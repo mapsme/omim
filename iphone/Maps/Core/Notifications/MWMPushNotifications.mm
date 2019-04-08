@@ -45,6 +45,7 @@ NSString * const kPushDeviceTokenLogEvent = @"iOSPushDeviceToken";
 + (void)application:(UIApplication *)application
     didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
+  NSLog(@"Pushwoosh failed to register: %@", error);
   [[PushNotificationManager pushManager] handlePushRegistrationFailure:error];
   [[Crashlytics sharedInstance] recordError:error];
 }
