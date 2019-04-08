@@ -1,7 +1,5 @@
 #pragma once
 
-#include "3party/jansson/myjansson.hpp"
-
 #include <cstdint>
 #include <fstream>
 #include <functional>
@@ -10,6 +8,8 @@
 #include <utility>
 
 #include <boost/optional.hpp>
+
+#include "3party/jansson/myjansson.hpp"
 
 namespace generator
 {
