@@ -2,8 +2,6 @@
 
 #include "base/logging.hpp"
 
-#include <experimental/string_view>
-
 namespace generator
 {
 namespace geo_objects

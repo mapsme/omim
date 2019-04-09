@@ -3,10 +3,10 @@
 #include "jansson_handle.hpp"
 
 #include "base/exception.hpp"
+#include "base/stl_string_view.hpp"
 #include "base/string_utils.hpp"
 
 #include <cstdint>
-#include <experimental/string_view>
 #include <memory>
 #include <string>
 #include <vector>
@@ -36,7 +36,7 @@ public:
   DECLARE_EXCEPTION(Exception, RootException);
 
   Json() = default;
-  explicit Json(std::experimental::string_view const & s) { ParseFrom(s); }
+  explicit Json(std::string_view const & s) { ParseFrom(s); }
 
   Json GetDeepCopy() const
   {
@@ -44,7 +44,7 @@ public:
     copy.m_handle.AttachNew(get_deep_copy());
     return copy;
   }
-  void ParseFrom(std::experimental::string_view const & s)
+  void ParseFrom(std::string_view const & s)
   {
     json_error_t jsonError;
     m_handle.AttachNew(json_loadb(s.data(), s.size(), 0, &jsonError));
