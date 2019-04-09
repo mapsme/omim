@@ -3,8 +3,9 @@
 #include "jansson_handle.hpp"
 
 #include "base/exception.hpp"
-#include "base/stl_string_view.hpp"
 #include "base/string_utils.hpp"
+
+#include "std/string_view.hpp"
 
 #include <cstdint>
 #include <memory>
