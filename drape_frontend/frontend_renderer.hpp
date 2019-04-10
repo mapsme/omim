@@ -36,6 +36,7 @@
 
 #include <array>
 #include <functional>
+#include <memory>
 #include <unordered_set>
 #include <vector>
 
@@ -139,7 +140,7 @@ public:
 
 protected:
   void AcceptMessage(ref_ptr<Message> message) override;
-  unique_ptr<threads::IRoutine> CreateRoutine() override;
+  std::unique_ptr<threads::IRoutine> CreateRoutine() override;
   void OnContextCreate() override;
   void OnContextDestroy() override;
 
@@ -338,7 +339,7 @@ private:
     bool m_enableAutoZoom;
   };
 
-  unique_ptr<FollowRouteData> m_pendingFollowRoute;
+  std::unique_ptr<FollowRouteData> m_pendingFollowRoute;
 
   std::vector<m2::TriangleD> m_dragBoundArea;
 
