@@ -12,7 +12,8 @@
 #include "routing/route_point.hpp"
 #include "routing/route_weight.hpp"
 #include "routing/segment.hpp"
-#include "routing/world_graph.hpp"
+
+#include "routing/world_graph/world_graph.hpp"
 
 #include "routing_common/num_mwm_id.hpp"
 

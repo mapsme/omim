@@ -114,8 +114,6 @@ set(
   segment.hpp
   segmented_route.cpp
   segmented_route.hpp
-  single_vehicle_world_graph.cpp
-  single_vehicle_world_graph.hpp
   speed_camera.cpp
   speed_camera.hpp
   speed_camera_manager.cpp
@@ -131,8 +129,6 @@ set(
   transit_graph_loader.cpp
   transit_graph_loader.hpp
   transit_info.hpp
-  transit_world_graph.cpp
-  transit_world_graph.hpp
   turn_candidate.hpp
   turns.cpp
   turns.hpp
@@ -144,10 +140,15 @@ set(
   turns_sound_settings.hpp
   turns_tts_text.cpp
   turns_tts_text.hpp
-  vehicle_mask.cpp  
+  vehicle_mask.cpp
   vehicle_mask.hpp
-  world_graph.cpp
-  world_graph.hpp
+
+  world_graph/single_vehicle_world_graph.cpp
+  world_graph/single_vehicle_world_graph.hpp
+  world_graph/transit_world_graph.cpp
+  world_graph/transit_world_graph.hpp
+  world_graph/world_graph.cpp
+  world_graph/world_graph.hpp
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})

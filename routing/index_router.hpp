@@ -14,7 +14,8 @@
 #include "routing/routing_callbacks.hpp"
 #include "routing/segment.hpp"
 #include "routing/segmented_route.hpp"
-#include "routing/world_graph.hpp"
+
+#include "routing/world_graph/world_graph.hpp"
 
 #include "routing_common/num_mwm_id.hpp"
 #include "routing_common/vehicle_model.hpp"

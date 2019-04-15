@@ -9,7 +9,8 @@
 #include "routing/segment.hpp"
 #include "routing/transit_graph_loader.hpp"
 #include "routing/transit_info.hpp"
-#include "routing/world_graph.hpp"
+
+#include "routing/world_graph/world_graph.hpp"
 
 #include "routing_common/num_mwm_id.hpp"
 

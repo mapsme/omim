@@ -1,4 +1,4 @@
-#include "routing/transit_world_graph.hpp"
+#include "routing/world_graph/transit_world_graph.hpp"
 
 #include "routing/index_graph.hpp"
 #include "routing/transit_graph.hpp"

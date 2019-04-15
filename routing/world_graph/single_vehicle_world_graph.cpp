@@ -1,4 +1,4 @@
-#include "routing/single_vehicle_world_graph.hpp"
+#include "routing/world_graph/single_vehicle_world_graph.hpp"
 
 #include <utility>
 

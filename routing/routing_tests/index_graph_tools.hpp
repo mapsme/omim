@@ -11,9 +11,10 @@
 #include "routing/route.hpp"
 #include "routing/segment.hpp"
 #include "routing/speed_camera_ser_des.hpp"
-#include "routing/single_vehicle_world_graph.hpp"
 #include "routing/transit_graph_loader.hpp"
-#include "routing/transit_world_graph.hpp"
+
+#include "routing/world_graph/single_vehicle_world_graph.hpp"
+#include "routing/world_graph/transit_world_graph.hpp"
 
 #include "routing/base/astar_algorithm.hpp"
 

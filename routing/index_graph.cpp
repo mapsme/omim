@@ -2,7 +2,8 @@
 
 #include "routing/restrictions_serialization.hpp"
 #include "routing/routing_options.hpp"
-#include "routing/world_graph.hpp"
+
+#include "routing/world_graph/world_graph.hpp"
 
 #include "platform/settings.hpp"
 

@@ -1,4 +1,4 @@
-#include "routing/world_graph.hpp"
+#include "routing/world_graph/world_graph.hpp"
 
 namespace routing
 {

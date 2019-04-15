@@ -15,12 +15,13 @@
 #include "routing/routing_exceptions.hpp"
 #include "routing/routing_helpers.hpp"
 #include "routing/routing_options.hpp"
-#include "routing/single_vehicle_world_graph.hpp"
 #include "routing/speed_camera_prohibition.hpp"
 #include "routing/transit_info.hpp"
-#include "routing/transit_world_graph.hpp"
 #include "routing/turns_generator.hpp"
 #include "routing/vehicle_mask.hpp"
+
+#include "routing/world_graph/single_vehicle_world_graph.hpp"
+#include "routing/world_graph/transit_world_graph.hpp"
 
 #include "routing_common/bicycle_model.hpp"
 #include "routing_common/car_model.hpp"

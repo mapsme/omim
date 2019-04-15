@@ -1,7 +1,8 @@
 #include "routing/fake_ending.hpp"
 
 #include "routing/index_graph.hpp"
-#include "routing/world_graph.hpp"
+
+#include "routing/world_graph/world_graph.hpp"
 
 #include "geometry/mercator.hpp"
 #include "geometry/parametrized_segment.hpp"
