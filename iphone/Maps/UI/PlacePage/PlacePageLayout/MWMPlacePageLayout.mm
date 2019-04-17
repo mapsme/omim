@@ -413,7 +413,7 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
               case ButtonsRows::AddPlace: [delegate addPlace]; break;
               case ButtonsRows::EditPlace: [delegate editPlace]; break;
               case ButtonsRows::AddBusiness: [delegate addBusiness]; break;
-              case ButtonsRows::HotelDescription: [delegate book:NO]; break;
+              case ButtonsRows::HotelDescription: [delegate book:NO withEventName:kStatPlacePageHotelDetails]; break;
               case ButtonsRows::Other: NSAssert(false, @"Incorrect row");
               }
             }];
@@ -483,7 +483,7 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
 
         [c configWithTitle:L(@"reviews_on_bookingcom")
                      action:^{
-                       [delegate book:NO];
+                       [delegate book:NO withEventName:kStatPlacePageHotelReviews];
                      }
               isInsetButton:NO];
         return c;
@@ -510,7 +510,7 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
             [tableView dequeueReusableCellWithCellClass:cls indexPath:indexPath]);
         [c configWithTitle:L(@"more_on_bookingcom")
                      action:^{
-                       [delegate book:NO];
+                       [delegate book:NO withEventName:kStatPlacePageHotelDescription];
                        ;
                      }
               isInsetButton:NO];

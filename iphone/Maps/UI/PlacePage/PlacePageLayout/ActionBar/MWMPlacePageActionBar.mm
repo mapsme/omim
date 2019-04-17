@@ -7,6 +7,7 @@
 #import "MWMRouter.h"
 #import "MapViewController.h"
 #import "MWMPlacePageData.h"
+#import "StatisticsStrings.h"
 
 @interface MWMPlacePageActionBar ()<MWMActionBarButtonDelegate>
 {
@@ -227,7 +228,7 @@
   {
   case EButton::Download: [delegate downloadSelectedArea]; break;
   case EButton::Opentable:
-  case EButton::Booking: [delegate book:NO]; break;
+  case EButton::Booking: [delegate book:NO withEventName:kStatPlacePageHotelBook]; break;
   case EButton::BookingSearch: [delegate searchBookingHotels]; break;
   case EButton::Call: [delegate call]; break;
   case EButton::Bookmark:

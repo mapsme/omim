@@ -16,7 +16,7 @@
 - (void)removeBookmark;
 
 - (void)call;
-- (void)book:(BOOL)isDecription;
+- (void)book:(BOOL)isDescription withEventName:(NSString *)eventName;
 - (void)searchBookingHotels;
 
 - (void)openPartner;

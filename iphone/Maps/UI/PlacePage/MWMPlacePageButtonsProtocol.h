@@ -11,7 +11,7 @@ typedef UIView * _Nullable (^MWMPlacePageButtonsDismissBlock)(NSInteger);
 - (void)editPlace;
 - (void)addPlace;
 - (void)addBusiness;
-- (void)book:(BOOL)isDescription;
+- (void)book:(BOOL)isDescription withEventName:(NSString *)eventName;
 - (void)editBookmark;
 - (void)orderTaxi:(MWMPlacePageTaxiProvider)provider;
 - (void)showAllFacilities;

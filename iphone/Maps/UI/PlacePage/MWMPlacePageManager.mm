@@ -488,21 +488,12 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   [self.ownerViewController openFullPlaceDescriptionWithHtml:htmlString];
 }
 
-- (void)book:(BOOL)isDescription
+- (void)book:(BOOL)isDescription withEventName:(NSString *)eventName
 {
   auto data = self.data;
   if (!data)
     return;
-  NSString * eventName = nil;
-  if (data.isBooking)
-  {
-    eventName = kStatPlacePageHotelBook;
-  }
-  else if (data.isOpentable)
-  {
-    eventName = kStatPlacePageRestaurantBook;
-  }
-  else
+  if (!data.isBooking && !data.isOpentable)
   {
     NSAssert(false, @"Invalid book case!");
     return;
@@ -526,7 +517,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   auto data = self.data;
   if (!data)
     return;
-  logSponsoredEvent(data, kStatPlacePageHotelSearch);
+  logSponsoredEvent(data, kStatPlacePageHotelBook);
   NSURL * url = data.bookingSearchURL;
   NSAssert(url, @"Search url can't be nil!");
   [UIApplication.sharedApplication openURL:url options:@{} completionHandler:nil];
