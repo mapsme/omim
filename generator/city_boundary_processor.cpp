@@ -25,10 +25,10 @@ CityBoundaryProcessor::CityBoundaryProcessor(std::shared_ptr<OsmIdToBoundariesTa
 
 void CityBoundaryProcessor::UnionEqualPlacesIds(Place const & place)
 {
-  auto const id = place.GetFeature().GetLastOsmId();
+  auto const id = place.GetFeature().GetMostGenericOsmId();
   m_places.ForEachInRect(place.GetLimitRect(), [&](Place const & p) {
     if (p.IsEqual(place))
-      m_boundariesTable->Union(p.GetFeature().GetLastOsmId(), id);
+      m_boundariesTable->Union(p.GetFeature().GetMostGenericOsmId(), id);
   });
 }
 
@@ -48,7 +48,7 @@ void CityBoundaryProcessor::Add(FeatureBuilder1 const & fb)
   if (type == ftype::GetEmptyValue())
     return;
 
-  auto const id = fb.GetLastOsmId();
+  auto const id = fb.GetMostGenericOsmId();
   m_boundariesTable->Append(id, indexer::CityBoundary(fb.GetOuterGeometry()));
   UnionEqualPlacesIds(Place(fb, type, false /* saveParams */));
 }
