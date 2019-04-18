@@ -2,6 +2,7 @@
 
 MONTHS_BEFORE_EXPIRATION_TO_BREAK="3"
 LINUX_DATE_TO_WARNING="3month 2weeks"
+DAYS_WARNING_INTERVAL="14"
 PRIVATE_H=$1
 MODE=$2
 if [[ "MODE" == "" ]]; then\
@@ -32,7 +33,7 @@ read mon day time year tz < <(
 )
 
 if [[ $(uname) == "Darwin" ]]; then
-	warning_timestamp=`LANG=C LC_ALL=C date -j -v "+${MONTHS_BEFORE_EXPIRATION_TO_BREAK}m"  -v"+14d"+%s`
+	warning_timestamp=`LANG=C LC_ALL=C date -j -v "+${MONTHS_BEFORE_EXPIRATION_TO_BREAK}m"  -v "+{DAYS_WARNING_INTERVAL}d"+%s`
 	threshold_timestamp=`LANG=C LC_ALL=C date -j -v "+${MONTHS_BEFORE_EXPIRATION_TO_BREAK}m" +%s`
 	cert_end_timestamp=`LANG=C LC_ALL=C date -j -f "%Y %b %d %H:%M:%S %Z" "$year $mon $day $time $tz" +%s`
 else
