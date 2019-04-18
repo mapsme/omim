@@ -1,8 +1,10 @@
 #!/bin/bash
-exit 0
 
 MONTHS_BEFORE_EXPIRATION_TO_BREAK="3"
+LINUX_DATE_TO_WARNING="3month 2weeks"
 PRIVATE_H=$1
+MODE=$2
+
 if [[ "$PRIVATE_H" == "" ]]; then\
 	PRIVATE_H=$(dirname $0)/../../private.h
 fi
@@ -28,11 +30,19 @@ read mon day time year tz < <(
 )
 
 if [[ $(uname) == "Darwin" ]]; then
+	warning_timestamp=`LANG=C LC_ALL=C date -j -v "+${MONTHS_BEFORE_EXPIRATION_TO_WARNING}m"  -v"+14d"+%s`
 	threshold_timestamp=`LANG=C LC_ALL=C date -j -v "+${MONTHS_BEFORE_EXPIRATION_TO_BREAK}m" +%s`
 	cert_end_timestamp=`LANG=C LC_ALL=C date -j -f "%Y %b %d %H:%M:%S %Z" "$year $mon $day $time $tz" +%s`
 else
+	warning_timestamp=`date --date "+$LINUX_DATE_TO_WARNING" +%s`
 	threshold_timestamp=`date --date "+$MONTHS_BEFORE_EXPIRATION_TO_BREAK months" +%s`
 	cert_end_timestamp=`date --date "$mon $day $year $time $tz" +%s`
+fi
+if [[ "$MODE" == "check" && "$warning_timestamp" -gt "$cert_end_timestamp" ]]; then\
+        echo "Our client certificate end date of $mon $day $time $year $tz is within $LINUX_DATE_TO_WARNING from now."
+        echo "Update this certificate!"
+        echo "Warning"
+        exit 0
 fi
 if [[ "$threshold_timestamp" -gt "$cert_end_timestamp" ]]; then
 	echo "Our client certificate end date of $mon $day $time $year $tz is within $MONTHS_BEFORE_EXPIRATION_TO_BREAK months from now."
