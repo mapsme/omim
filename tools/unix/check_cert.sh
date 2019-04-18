@@ -4,7 +4,9 @@ MONTHS_BEFORE_EXPIRATION_TO_BREAK="3"
 LINUX_DATE_TO_WARNING="3month 2weeks"
 PRIVATE_H=$1
 MODE=$2
-
+if [[ "MODE" == "" ]]; then\
+	exit 0
+fi
 if [[ "$PRIVATE_H" == "" ]]; then\
 	PRIVATE_H=$(dirname $0)/../../private.h
 fi
