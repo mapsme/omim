@@ -935,7 +935,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     mPlacePageController.close();
     RoutingOptions.removeOption(roadType);
-    Statistics.INSTANCE.trackSettingsDriveOptionsChangeEvent(Statistics.EventParam.ROUTE);
     rebuildLastRouteInternal();
   }
 
