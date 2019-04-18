@@ -33,7 +33,7 @@ read mon day time year tz < <(
 )
 
 if [[ $(uname) == "Darwin" ]]; then
-	warning_timestamp=`LANG=C LC_ALL=C date -j -v "+${MONTHS_BEFORE_EXPIRATION_TO_BREAK}m"  -v "+${DAYS_WARNING_INTERVAL}d"+%s`
+	warning_timestamp=`LANG=C LC_ALL=C date -j -v "+${MONTHS_BEFORE_EXPIRATION_TO_BREAK}m" -v "+${DAYS_WARNING_INTERVAL}d" +%s`
 	threshold_timestamp=`LANG=C LC_ALL=C date -j -v "+${MONTHS_BEFORE_EXPIRATION_TO_BREAK}m" +%s`
 	cert_end_timestamp=`LANG=C LC_ALL=C date -j -f "%Y %b %d %H:%M:%S %Z" "$year $mon $day $time $tz" +%s`
 else
