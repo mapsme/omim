@@ -693,8 +693,10 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
 }
 
 - (void)openReviews:(id<MWMReviewsViewModelProtocol> _Nonnull)reviewsViewModel
+         placeTitle:(NSString * _Nonnull)title
 {
-  auto reviewsVC = [[MWMReviewsViewController alloc] initWithViewModel:reviewsViewModel];
+  auto reviewsVC = [[MWMReviewsViewController alloc] initWithViewModel:reviewsViewModel
+                                                                 title:title];
   [[MapViewController sharedController].navigationController pushViewController:reviewsVC animated:YES];
 }
 

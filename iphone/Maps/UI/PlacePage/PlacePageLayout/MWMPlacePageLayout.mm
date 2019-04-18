@@ -585,7 +585,7 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
             [tableView dequeueReusableCellWithCellClass:cls indexPath:indexPath]);
         [c configWithTitle:L(@"placepage_more_reviews_button")
                      action:^{
-                       [delegate openReviews:ugc];
+                       [delegate openReviews:ugc placeTitle:data.title];
                      }
               isInsetButton:NO];
         return c;

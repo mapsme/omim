@@ -27,7 +27,8 @@ typedef UIView * _Nullable (^MWMPlacePageButtonsDismissBlock)(NSInteger);
 
 - (void)openSponsoredURL:(NSURL * _Nullable)url;
 
-- (void)openReviews:(id<MWMReviewsViewModelProtocol> _Nonnull)reviewsViewModel;
+- (void)openReviews:(id<MWMReviewsViewModelProtocol> _Nonnull)reviewsViewModel
+         placeTitle:(NSString * _Nonnull)title;
 
 - (void)showPlaceDescription:(NSString * _Nonnull)htmlString;
 

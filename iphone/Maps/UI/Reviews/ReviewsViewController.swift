@@ -2,9 +2,10 @@
 final class ReviewsViewController: MWMTableViewController {
   private let viewModel: MWMReviewsViewModelProtocol
 
-  @objc init(viewModel: MWMReviewsViewModelProtocol) {
+  @objc init(viewModel: MWMReviewsViewModelProtocol, title: String) {
     self.viewModel = viewModel
     super.init(nibName: toString(type(of: self)), bundle: nil)
+    self.title = title
   }
 
   required init?(coder _: NSCoder) {
