@@ -42,7 +42,7 @@ if [[ "$MODE" == "check" && "$warning_timestamp" -gt "$cert_end_timestamp" ]]; t
         echo "Our client certificate end date of $mon $day $time $year $tz is within $LINUX_DATE_TO_WARNING from now."
         echo "Update this certificate!"
         echo "Warning"
-        exit 0
+        exit 1
 fi
 if [[ "$threshold_timestamp" -gt "$cert_end_timestamp" ]]; then
 	echo "Our client certificate end date of $mon $day $time $year $tz is within $MONTHS_BEFORE_EXPIRATION_TO_BREAK months from now."
