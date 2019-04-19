@@ -671,7 +671,7 @@ if [ -n "${LOCALADS-}" ]; then
     LOCALADS_LOG="$LOG_PATH/localads.log"
     LOCALADS_PATH="$INTDIR/localads"
     mkdir -p "$LOCALADS_PATH"
-    $PYTHON "$LOCALADS_SCRIPT" "$TARGET" --osm2ft "$INTDIR" --version "$COUNTRIES_VERSION" --types "$DATA_PATH/types.txt" --output "$LOCALADS_PATH" >> "$LOCALADS_LOG" 2>&1
+    $PYTHON36 "$LOCALADS_SCRIPT" "$TARGET" --osm2ft "$INTDIR" --version "$COUNTRIES_VERSION" --types "$DATA_PATH/types.txt" --output "$LOCALADS_PATH" >> "$LOCALADS_LOG" 2>&1
     LOCALADS_ARCHIVE="localads_$COUNTRIES_VERSION.tgz"
     cd "$LOCALADS_PATH"
     tar -czf "$LOCALADS_ARCHIVE" *.csv >> "$LOCALADS_LOG" 2>&1
