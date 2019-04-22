@@ -8,9 +8,12 @@ import android.util.Log;
 
 import com.mapswithme.maps.bookmarks.data.PaymentData;
 import com.mapswithme.util.CrashlyticsUtils;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
 
 class BookmarkPaymentDataParser implements PaymentDataParser
 {
+  private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.BILLING);
   private static final String TAG = BookmarkPaymentDataParser.class.getSimpleName();
 
   final static String SERVER_ID = "id";
@@ -45,8 +48,9 @@ class BookmarkPaymentDataParser implements PaymentDataParser
     String parameter = uri.getQueryParameter(name);
     if (TextUtils.isEmpty(parameter))
     {
-      CrashlyticsUtils.logException(
-        new IllegalArgumentException("'" + name + "' parameter is required! URI: " + uri));
+      String errorMessage = "'" + name + "' parameter is required! URI: " + uri;
+      CrashlyticsUtils.logException(new IllegalArgumentException(errorMessage));
+      LOGGER.e(TAG, errorMessage);
       return "";
     }
 
