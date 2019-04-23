@@ -1916,6 +1916,15 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Override
+  public void onStartRouteBuilding()
+  {
+    if (mRoutingPlanInplaceController == null)
+      return;
+
+    mRoutingPlanInplaceController.hideDrivingOptionsView();
+  }
+
+  @Override
   public void onTaxiInfoReceived(@NonNull TaxiInfo info)
   {
     if (mIsTabletLayout)
@@ -1978,9 +1987,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onBuiltRoute()
   {
-    if (mRoutingPlanInplaceController != null)
-      mRoutingPlanInplaceController.hideDrivingOptionsView();
-
     if (!RoutingController.get().isPlanning())
       return;
 
