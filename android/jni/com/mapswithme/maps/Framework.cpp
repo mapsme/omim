@@ -50,6 +50,7 @@
 #include "base/sunrise_sunset.hpp"
 
 #include <cstdint>
+#include <ctime>
 #include <memory>
 #include <string>
 #include <utility>
@@ -90,6 +91,22 @@ android::AndroidVulkanContextFactory * CastFactory(drape_ptr<dp::GraphicsContext
 {
   ASSERT(dynamic_cast<android::AndroidVulkanContextFactory *>(f.get()) != nullptr, ());
   return static_cast<android::AndroidVulkanContextFactory *>(f.get());
+}
+
+bool TestVulkanMode()
+{
+  // Test Vulkan once for a user and only for ~10% of users.
+  auto const coinToss = std::time(nullptr) % 10;
+  if (coinToss != 0)
+    return false;
+
+  static std::string const kTestVulkanMode = "TestVulkanMode";
+  bool alreadyTested;
+  if (settings::Get(kTestVulkanMode, alreadyTested))
+    return false;
+
+  settings::Set(kTestVulkanMode, true);
+  return true;
 }
 }  // namespace
 
@@ -173,7 +190,7 @@ bool Framework::DestroySurfaceOnDetach()
 bool Framework::CreateDrapeEngine(JNIEnv * env, jobject jSurface, int densityDpi, bool firstLaunch,
                                   bool launchByDeepLink, int appVersionCode)
 {
-  if (m_work.LoadPreferredGraphicsAPI() == dp::ApiVersion::Vulkan)
+  if (m_work.LoadPreferredGraphicsAPI() == dp::ApiVersion::Vulkan || TestVulkanMode())
   {
     m_vulkanContextFactory = make_unique_dp<AndroidVulkanContextFactory>(appVersionCode);
     if (!CastFactory(m_vulkanContextFactory)->IsVulkanSupported())
