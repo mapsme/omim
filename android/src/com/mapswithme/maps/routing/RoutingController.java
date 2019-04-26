@@ -106,7 +106,8 @@ public class RoutingController implements TaxiManager.TaxiListener
 
   private boolean mHasContainerSavedState;
   private boolean mContainsCachedResult;
-  private int mLastResultCode;
+  @NonNull
+  private ResultCodesHelper.ResultCode mLastResultCode = ResultCodesHelper.ResultCode.NO_ERROR;
   private String[] mLastMissingMaps;
   @Nullable
   private RoutingInfo mCachedRoutingInfo;
@@ -127,14 +128,14 @@ public class RoutingController implements TaxiManager.TaxiListener
     public void onRoutingEvent(final int resultCode, @Nullable final String[] missingMaps)
     {
       mLogger.d(TAG, "onRoutingEvent(resultCode: " + resultCode + ")");
-      mLastResultCode = resultCode;
+      mLastResultCode = ResultCodesHelper.ResultCode.values()[resultCode];
       mLastMissingMaps = missingMaps;
       mContainsCachedResult = true;
 
-      if (mLastResultCode == ResultCodesHelper.NO_ERROR
+      if (mLastResultCode == ResultCodesHelper.ResultCode.NO_ERROR
           || ResultCodesHelper.isMoreMapsNeeded(mLastResultCode))
         onBuiltRoute();
-      else if (mLastResultCode == ResultCodesHelper.HAS_WARNINGS)
+      else if (mLastResultCode == ResultCodesHelper.ResultCode.HAS_WARNINGS)
         onWarningReceived();
 
       processRoutingEvent();
@@ -198,31 +199,31 @@ public class RoutingController implements TaxiManager.TaxiListener
       return;
 
     mContainsCachedResult = false;
-    if (mLastResultCode == ResultCodesHelper.NO_ERROR || mLastResultCode == ResultCodesHelper.HAS_WARNINGS)
-    {
-      updatePlan();
-      return;
-    }
 
-    if (mLastResultCode == ResultCodesHelper.CANCELLED)
-    {
-      setBuildState(BuildState.NONE);
-      updatePlan();
-      return;
-    }
+    mLastResultCode.processEvent(this);
+  }
 
-    if (ResultCodesHelper.isMoreMapsNeeded(mLastResultCode))
-    {
-      mContainer.onBuildError(mLastResultCode, mLastMissingMaps);
+  void showRouteWarningDialog()
+  {
+    if (mContainer == null)
       return;
-    }
 
+    mContainer.onCalculateRouteError();
+  }
+
+  void invalidateBuildProgress()
+  {
     setBuildState(BuildState.ERROR);
     mLastBuildProgress = 0;
     updateProgress();
+  }
 
-    if (RoutingOptions.hasAnyOptions())
-      mContainer.onCalculateRouteError();
+  void showErrorRoutingDialog()
+  {
+    if (mContainer == null)
+      return;
+
+    mContainer.onBuildError(mLastResultCode.ordinal(),  mLastMissingMaps);
   }
 
   private void setState(State newState)
@@ -234,7 +235,7 @@ public class RoutingController implements TaxiManager.TaxiListener
       mContainer.updateMenu();
   }
 
-  private void setBuildState(BuildState newState)
+  void setBuildState(BuildState newState)
   {
     mLogger.d(TAG, "[B] State: " + mState + ", BuildState: " + mBuildState + " -> " + newState);
     mBuildState = newState;
@@ -664,7 +665,7 @@ public class RoutingController implements TaxiManager.TaxiListener
     builder.show();
   }
 
-  private void updatePlan()
+  void updatePlan()
   {
     updateProgress();
   }

@@ -1,6 +1,7 @@
 package com.mapswithme.maps.routing;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.mapswithme.maps.MwmApplication;
@@ -14,30 +15,82 @@ import java.util.List;
 class ResultCodesHelper
 {
   // Codes correspond to native routing::RouterResultCode in routing/routing_callbacks.hpp
-  static final int NO_ERROR = 0;
-  static final int CANCELLED = 1;
-  static final int NO_POSITION = 2;
-  private static final int INCONSISTENT_MWM_ROUTE = 3;
-  private static final int ROUTING_FILE_NOT_EXIST = 4;
-  private static final int START_POINT_NOT_FOUND = 5;
-  private static final int END_POINT_NOT_FOUND = 6;
-  private static final int DIFFERENT_MWM = 7;
-  private static final int ROUTE_NOT_FOUND = 8;
-  private static final int NEED_MORE_MAPS = 9;
-  private static final int INTERNAL_ERROR = 10;
-  private static final int FILE_TOO_OLD = 11;
-  private static final int INTERMEDIATE_POINT_NOT_FOUND = 12;
-  private static final int TRANSIT_ROUTE_NOT_FOUND_NO_NETWORK = 13;
-  private static final int TRANSIT_ROUTE_NOT_FOUND_TOO_LONG_PEDESTRIAN = 14;
-  private static final int ROUTE_NOT_FOUND_REDRESS_ROUTE_ERROR = 15;
-  static final int HAS_WARNINGS = 16;
+  public enum ResultCode
+  {
+    NO_ERROR
+        {
+          @Override
+          public void processEvent(@NonNull RoutingController controller)
+          {
+            controller.updatePlan();
+          }
+        },
+    CANCELLED
+        {
+          @Override
+          public void processEvent(@NonNull RoutingController controller)
+          {
+            controller.setBuildState(RoutingController.BuildState.NONE);
+            controller.updatePlan();
+          }
+        },
+
+    NO_POSITION,
+    INCONSISTENT_MWM_ROUTE,
+    ROUTING_FILE_NOT_EXIST,
+    START_POINT_NOT_FOUND,
+    END_POINT_NOT_FOUND,
+    DIFFERENT_MWM,
+    ROUTE_NOT_FOUND,
+    NEED_MORE_MAPS
+        {
+          @Override
+          protected void invalidateProgress(@NonNull RoutingController controller)
+          {
+            /* Do nothing */
+          }
+        },
+    INTERNAL_ERROR,
+    FILE_TOO_OLD,
+    INTERMEDIATE_POINT_NOT_FOUND,
+    TRANSIT_ROUTE_NOT_FOUND_NO_NETWORK,
+    TRANSIT_ROUTE_NOT_FOUND_TOO_LONG_PEDESTRIAN,
+    ROUTE_NOT_FOUND_REDRESS_ROUTE_ERROR,
+    HAS_WARNINGS
+        {
+          @Override
+          public void processEvent(@NonNull RoutingController controller)
+          {
+            controller.updatePlan();
+            if (RoutingOptions.hasAnyOptions())
+              controller.showRouteWarningDialog();
+          }
+        };
+
+    public void processEvent(@NonNull RoutingController controller)
+    {
+      invalidateProgress(controller);
+      showDialog(controller);
+    }
+
+    protected void invalidateProgress(@NonNull RoutingController controller)
+    {
+      controller.invalidateBuildProgress();
+    }
+
+    private void showDialog(@NonNull RoutingController controller)
+    {
+      controller.showErrorRoutingDialog();
+    }
+  }
 
   static Pair<String, String> getDialogTitleSubtitle(int errorCode, int missingCount)
   {
     Resources resources = MwmApplication.get().getResources();
     int titleRes = 0;
     List<String> messages = new ArrayList<>();
-    switch (errorCode)
+    ResultCode code = ResultCode.values()[errorCode];
+    switch (code)
     {
     case NO_POSITION:
       if (LocationHelper.INSTANCE.getMyPositionMode() == LocationState.NOT_FOLLOW_NO_POSITION)
@@ -126,7 +179,8 @@ class ResultCodesHelper
     if (missingCount <= 0)
       return false;
 
-    switch (resultCode)
+    ResultCode code = ResultCode.values()[resultCode];
+    switch (code)
     {
       case INCONSISTENT_MWM_ROUTE:
       case ROUTING_FILE_NOT_EXIST:
@@ -139,8 +193,8 @@ class ResultCodesHelper
     return false;
   }
 
-  static boolean isMoreMapsNeeded(int resultCode)
+  static boolean isMoreMapsNeeded(@NonNull ResultCode resultCode)
   {
-    return resultCode == NEED_MORE_MAPS;
+    return resultCode == ResultCode.NEED_MORE_MAPS;
   }
 }
