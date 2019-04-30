@@ -51,6 +51,7 @@ set(
   memory_region.hpp
   mmap_reader.cpp
   mmap_reader.hpp
+  not_intersecting_intervals.hpp
   parse_xml.hpp
   point_coding.cpp
   point_coding.hpp
@@ -63,8 +64,6 @@ set(
   reader_wrapper.hpp
   reader_writer_ops.cpp
   reader_writer_ops.hpp
-  #scanline.cpp
-  #scanline.hpp
   serdes_binary_header.hpp
   serdes_json.hpp
   sha1.cpp

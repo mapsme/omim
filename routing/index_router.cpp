@@ -10,6 +10,7 @@
 #include "routing/index_graph_serialization.hpp"
 #include "routing/index_graph_starter.hpp"
 #include "routing/index_road_graph.hpp"
+#include "routing/leaps_postprocesser.hpp"
 #include "routing/pedestrian_directions.hpp"
 #include "routing/restriction_loader.hpp"
 #include "routing/route.hpp"
@@ -37,8 +38,6 @@
 #include "geometry/mercator.hpp"
 #include "geometry/parametrized_segment.hpp"
 #include "geometry/point2d.hpp"
-
-#include "coding/scanline.hpp"
 
 #include "base/assert.hpp"
 #include "base/exception.hpp"
@@ -577,9 +576,7 @@ RouterResultCode IndexRouter::CalculateSubroute(Checkpoints const & checkpoints,
     if (result != RouterResultCode::NoError)
       return result;
 
-    std::vector<Segment> subrouteWithoutPostprocessing;
-    subrouteWithoutPostprocessing = ProcessJoints(routingResult.m_path, jointStarter);
-    PostprocessLeapsJoints(subrouteWithoutPostprocessing, starter, subroute);
+    subroute = ProcessJoints(routingResult.m_path, jointStarter);
   }
   else
   {
@@ -637,100 +634,14 @@ RouterResultCode IndexRouter::CalculateSubroute(Checkpoints const & checkpoints,
     if (leapsResult != RouterResultCode::NoError)
       return leapsResult;
 
-    PostprocessLeapsJoints(subrouteWithoutPostprocessing, starter, subroute);
+    LeapsPostProcessor leapsPostProcessor(subrouteWithoutPostprocessing, starter);
+    subroute = leapsPostProcessor.GetProcessedPath();
   }
 
   LOG(LINFO, ("Time for routing in mode:", starter.GetGraph().GetMode(), "is",
               timer.ElapsedNano() / 1e6, "ms"));
 
   return RouterResultCode::NoError;
-}
-
-void IndexRouter::PostprocessLeapsJoints(std::vector<Segment> & pathWithoutPostprocessing,
-                                         IndexGraphStarter & starter,
-                                         std::vector<Segment> & output)
-{
-  using Weights = std::map<Segment, std::pair<size_t, double>>;
-  // TODO (@gmoryes) compare vs unordered_map
-  std::map<Segment, size_t> segToNum;
-  std::vector<double> etaSum(pathWithoutPostprocessing.size() + 1, 0.0);
-  for (size_t i = 1; i < pathWithoutPostprocessing.size(); ++i)
-  {
-    auto const & segment = pathWithoutPostprocessing[i];
-    etaSum[i] = etaSum[i - 1] + starter.CalcSegmentETA(segment);
-
-    CHECK_EQUAL(segToNum.count(segment), 0, ());
-    segToNum[segment] = i;
-  }
-
-  size_t constexpr kMaxStep = 5;
-
-  BFS<IndexGraphStarter> bfs(starter);
-  auto const fillIngoingPaths = [&](auto const & start, Weights & weights) {
-    bfs.Run(start, false /* isOutgoing */, [&](auto const & state)
-    {
-      if (weights.count(state.vertex) != 0)
-        return false;
-
-      auto & parent = weights[state.parent];
-      if (parent.second == kMaxStep)
-        return false;
-
-      auto & current = weights[state.vertex];
-      current.first = parent.first + starter.CalcSegmentETA(state.vertex);
-      current.second = parent.second + 1;
-
-      return true;
-    });
-  };
-
-//  coding::ScanLine<size_t> scanLine;
-
-  std::set<
-      std::tuple<double /* win weight */,
-                 size_t /* left */,
-                 size_t /* right */,
-                 std::vector<Segment> /* path */>> answers;
-
-  for (size_t right = kMaxStep; right < pathWithoutPostprocessing.size(); ++right)
-  {
-    Weights weights;
-    auto const & segment = pathWithoutPostprocessing[right];
-    weights[segment] = std::make_pair(0, starter.CalcSegmentETA(segment));
-
-    fillIngoingPaths(segment, weights);
-
-    for (auto const & item : weights)
-    {
-      auto const & visited = item.first;
-      auto const it = segToNum.find(visited);
-      if (it == segToNum.cend())
-        continue;
-
-      size_t left = it->second;
-      if (left >= right || left == 0)
-        continue;
-
-      auto const prevWeight = etaSum[right] - etaSum[left - 1];
-      auto const curWeight = item.second.second;
-      if (prevWeight <= curWeight)
-        continue;
-
-      answers.emplace(curWeight - prevWeight /* win weight */,
-                      left,
-                      right,
-                      bfs.ReconstructPath(visited));
-
-//      scanLine.Add(left, right);
-    }
-  }
-
-//  std::vector<std::pair<size_t, size_t>> canBeFaster = scanLine.GetLongestIntervals();
-//  LOG(LINFO, ("size =", canBeFaster.size()));
-
-  output = pathWithoutPostprocessing;
-
-  //std::map<Segment, RouteWeight> weights;
 }
 
 RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,

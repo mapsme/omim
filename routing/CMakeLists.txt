@@ -68,6 +68,8 @@ set(
   joint_index.hpp
   joint_segment.cpp
   joint_segment.hpp
+  leaps_postprocesser.cpp
+  leaps_postprocesser.hpp
   loaded_path_segment.hpp
   maxspeeds.cpp
   maxspeeds.hpp

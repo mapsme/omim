@@ -1,3 +1,5 @@
+#pragma once
+
 #include <functional>
 #include <map>
 #include <queue>
@@ -26,10 +28,9 @@ public:
            std::function<bool(State const &)> && onVisitCallback);
 
   std::vector<Vertex> ReconstructPath(Vertex from);
+
 private:
-
   Graph & m_graph;
-
   std::map<Vertex, Vertex> m_parents;
 };
 
