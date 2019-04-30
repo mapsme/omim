@@ -5,6 +5,7 @@
 #include "base/assert.hpp"
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
+#include "base/timer.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -53,9 +54,8 @@ LeapsPostProcessor::LeapsPostProcessor(std::vector<Segment> const & path, IndexG
 std::vector<Segment> LeapsPostProcessor::GetProcessedPath()
 {
   base::HighResTimer timer;
-  SCOPED_GUARD(timerGuard, [&timer]() {
-    LOG(LINFO, ("Time for LeapsPostProcessor() is:",
-        leapsPostProcessorTimer.ElapsedNano() / 1e6, "ms"));
+  SCOPE_GUARD(timerGuard, [&timer]() {
+    LOG(LINFO, ("Time for LeapsPostProcessor() is:", timer.ElapsedNano() / 1e6, "ms"));
   });
 
   std::set<PathInterval, std::greater<>> intervalsToRelax =
@@ -92,7 +92,6 @@ LeapsPostProcessor::CalculateIntervalsToRelax()
   std::set<PathInterval, std::greater<>> result;
   for (size_t right = kMaxStep; right < m_path.size(); ++right)
   {
-    starter.GetPoint(pathWithoutPostprocessing[right], true))));
     std::map<Segment, SegmentData> segmentsData;
     auto const & segment = m_path[right];
     segmentsData.emplace(segment, SegmentData(0, m_starter.CalcSegmentETA(segment)));
