@@ -22,6 +22,7 @@ set(
   map_uint32_to_val_tests.cpp
   mem_file_reader_test.cpp
   mem_file_writer_test.cpp
+  not_intersecting_intervals_tests.cpp
   png_decoder_test.cpp
   point_coding_tests.cpp
   reader_cache_test.cpp

@@ -52,6 +52,7 @@ set(
   mmap_reader.cpp
   mmap_reader.hpp
   not_intersecting_intervals.hpp
+  not_intersecting_intervals.cpp
   parse_xml.hpp
   point_coding.cpp
   point_coding.hpp
