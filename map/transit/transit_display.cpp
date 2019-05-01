@@ -395,6 +395,8 @@ bool TransitRouteDisplay::ProcessSubroute(vector<RouteSegment> const & segments,
         {
           symbolName = symbolName.substr(0, symbolName.rfind('-'));
         }
+        if (symbolName.empty())
+          symbolName = "subway";
 
         gateMarkInfo.m_featureId = fid;
         gateMarkInfo.m_symbolName = symbolName;
