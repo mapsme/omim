@@ -19,10 +19,12 @@
 
 #include "storage/storage_helpers.hpp"
 
-#include "drape/pointers.hpp"
-#include "drape/visual_scale.hpp"
 #include "drape_frontend/user_event_stream.hpp"
 #include "drape_frontend/visual_params.hpp"
+
+#include "drape/pointers.hpp"
+#include "drape/support_manager.hpp"
+#include "drape/visual_scale.hpp"
 
 #include "coding/file_container.hpp"
 #include "coding/file_name_utils.hpp"
@@ -190,7 +192,12 @@ bool Framework::DestroySurfaceOnDetach()
 bool Framework::CreateDrapeEngine(JNIEnv * env, jobject jSurface, int densityDpi, bool firstLaunch,
                                   bool launchByDeepLink, int appVersionCode)
 {
-  if (m_work.LoadPreferredGraphicsAPI() == dp::ApiVersion::Vulkan || TestVulkanMode())
+  auto const vulkanForbidden = dp::SupportManager::Instance().IsVulkanForbidden();
+  if (vulkanForbidden)
+    LOG(LWARNING, ("Vulkan API is forbidden on this device."));
+
+  if ((m_work.LoadPreferredGraphicsAPI() == dp::ApiVersion::Vulkan || TestVulkanMode()) &&
+      !vulkanForbidden)
   {
     m_vulkanContextFactory = make_unique_dp<AndroidVulkanContextFactory>(appVersionCode);
     if (!CastFactory(m_vulkanContextFactory)->IsVulkanSupported())
