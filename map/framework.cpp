@@ -1899,6 +1899,15 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
     m_localAdsManager.GetStatistics().RegisterEvents(std::move(statEvents));
   };
 
+  auto onGraphicsContextInitialized = [this]()
+  {
+    GetPlatform().RunTask(Platform::Thread::Gui, [this]()
+    {
+      if (m_onGraphicsContextInitialized)
+        m_onGraphicsContextInitialized();
+    });
+  };
+
   auto isUGCFn = [this](FeatureID const & id)
   {
     auto const ugc = m_ugcApi->GetLoader().GetUGC(id);
@@ -1926,7 +1935,8 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
       move(myPositionModeChangedFn), allow3dBuildings, trafficEnabled,
       params.m_isChoosePositionMode, params.m_isChoosePositionMode, GetSelectedFeatureTriangles(),
       m_routingManager.IsRoutingActive() && m_routingManager.IsRoutingFollowing(),
-      isAutozoomEnabled, simplifiedTrafficColors, move(overlaysShowStatsFn), move(isUGCFn));
+      isAutozoomEnabled, simplifiedTrafficColors, move(overlaysShowStatsFn), move(isUGCFn),
+      move(onGraphicsContextInitialized));
 
   m_drapeEngine = make_unique_dp<df::DrapeEngine>(move(p));
   m_drapeEngine->SetModelViewListener([this](ScreenBase const & screen)
@@ -2037,6 +2047,11 @@ void Framework::SetRenderingDisabled(bool destroySurface)
   m_isRenderingEnabled = false;
   if (m_drapeEngine)
     m_drapeEngine->SetRenderingDisabled(destroySurface);
+}
+
+void Framework::SetGraphicsContextInitializationHandler(df::OnGraphicsContextInitialized && handler)
+{
+  m_onGraphicsContextInitialized = std::move(handler);
 }
 
 void Framework::EnableDebugRectRendering(bool enabled)
