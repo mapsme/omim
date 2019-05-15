@@ -289,7 +289,7 @@ RoutingManager::RoutingManager(Callbacks && callbacks, Delegate & delegate)
   m_routingSession.SetRoutingCallbacks(
       [this](Route const & route, RouterResultCode code) { OnBuildRouteReady(route, code); },
       [this](Route const & route, RouterResultCode code) { OnRebuildRouteReady(route, code); },
-      [this](uint64_t routeId, vector<string> const & absentCountries) {
+      [this](uint64_t routeId, storage::CountriesSet const & absentCountries) {
         OnNeedMoreMaps(routeId, absentCountries);
       },
       [this](RouterResultCode code) { OnRemoveRoute(code); });
@@ -378,7 +378,7 @@ void RoutingManager::OnBuildRouteReady(Route const & route, RouterResultCode cod
                            true /* useVisibleViewport */);
   }
 
-  CallRouteBuilded(hasWarnings ? RouterResultCode::HasWarnings : code, storage::CountriesVec());
+  CallRouteBuilded(hasWarnings ? RouterResultCode::HasWarnings : code, storage::CountriesSet());
 }
 
 void RoutingManager::OnRebuildRouteReady(Route const & route, RouterResultCode code)
@@ -389,10 +389,10 @@ void RoutingManager::OnRebuildRouteReady(Route const & route, RouterResultCode c
     return;
 
   auto const hasWarnings = InsertRoute(route);
-  CallRouteBuilded(hasWarnings ? RouterResultCode::HasWarnings : code, storage::CountriesVec());
+  CallRouteBuilded(hasWarnings ? RouterResultCode::HasWarnings : code, storage::CountriesSet());
 }
 
-void RoutingManager::OnNeedMoreMaps(uint64_t routeId, vector<string> const & absentCountries)
+void RoutingManager::OnNeedMoreMaps(uint64_t routeId, storage::CountriesSet const & absentCountries)
 {
   // No need to inform user about maps needed for the route if the method is called
   // when RoutingSession contains a new route.
@@ -407,7 +407,7 @@ void RoutingManager::OnRemoveRoute(routing::RouterResultCode code)
 {
   HidePreviewSegments();
   RemoveRoute(true /* deactivateFollowing */);
-  CallRouteBuilded(code, vector<string>());
+  CallRouteBuilded(code, storage::CountriesSet());
 }
 
 void RoutingManager::OnRoutePointPassed(RouteMarkType type, size_t intermediateIndex)
@@ -935,7 +935,7 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
   auto routePoints = GetRoutePoints();
   if (routePoints.size() < 2)
   {
-    CallRouteBuilded(RouterResultCode::Cancelled, storage::CountriesVec());
+    CallRouteBuilded(RouterResultCode::Cancelled, storage::CountriesSet());
     CloseRouting(false /* remove route points */);
     return;
   }
@@ -949,7 +949,7 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
     auto const & myPosition = m_bmManager->MyPositionMark();
     if (!myPosition.HasPosition())
     {
-      CallRouteBuilded(RouterResultCode::NoCurrentPosition, storage::CountriesVec());
+      CallRouteBuilded(RouterResultCode::NoCurrentPosition, storage::CountriesSet());
       return;
     }
     p.m_position = myPosition.GetPivot();
@@ -963,7 +963,7 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
     {
       if (routePoints[i].m_position.EqualDxDy(routePoints[j].m_position, kEps))
       {
-        CallRouteBuilded(RouterResultCode::Cancelled, storage::CountriesVec());
+        CallRouteBuilded(RouterResultCode::Cancelled, storage::CountriesSet());
         CloseRouting(false /* remove route points */);
         return;
       }
@@ -1066,7 +1066,7 @@ void RoutingManager::CheckLocationForRouting(location::GpsInfo const & info)
 }
 
 void RoutingManager::CallRouteBuilded(RouterResultCode code,
-                                      storage::CountriesVec const & absentCountries)
+                                      storage::CountriesSet const & absentCountries)
 {
   m_routingBuildingCallback(code, absentCountries);
 }
