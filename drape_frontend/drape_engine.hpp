@@ -239,6 +239,8 @@ public:
 
   void ShowDebugInfo(bool shown);
 
+  void UpdateVisualScale(double vs, bool needStopRendering);
+
 private:
   void AddUserEvent(drape_ptr<UserEvent> && e);
   void PostUserEvent(drape_ptr<UserEvent> && e);
