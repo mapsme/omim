@@ -328,7 +328,7 @@ jobject ToJavaResult(Result & result, search::ProductInfo const & productInfo, b
   {
     jni::TScopedLocalRef name(env, jni::ToJavaString(env, result.GetString()));
     jni::TScopedLocalRef suggest(env, jni::ToJavaString(env, result.GetSuggestionString()));
-    jobject ret = env->NewObject(g_resultClass, g_suggestConstructor, name.get(), suggest.get(), ll.lat, ll.lon, ranges.get());
+    jobject ret = env->NewObject(g_resultClass, g_suggestConstructor, name.get(), suggest.get(), ll.m_lat, ll.m_lon, ranges.get());
     ASSERT(ret, ());
     return ret;
   }
@@ -366,7 +366,7 @@ jobject ToJavaResult(Result & result, search::ProductInfo const & productInfo, b
                                                       g_popularityConstructor,
                                                       static_cast<jint>(result.GetRankingInfo().m_popularity)));
   jobject ret =
-      env->NewObject(g_resultClass, g_resultConstructor, name.get(), desc.get(), ll.lat, ll.lon,
+      env->NewObject(g_resultClass, g_resultConstructor, name.get(), desc.get(), ll.m_lat, ll.m_lon,
                      ranges.get(), result.IsHotel(), productInfo.m_isLocalAdsCustomer,
                      popularity.get());
   ASSERT(ret, ());
