@@ -56,6 +56,10 @@ void TransformAreaToPoint(FeatureBuilder1 & feature)
   feature.ResetGeometry();
   feature.SetOsmId(id);
   feature.SetCenter(center);
+
+  auto & params = feature.GetParams();
+  if (!params.house.IsEmpty())
+    params.SetGeomTypePointEx();
 }
 
 void TransformAreaToLine(FeatureBuilder1 & feature)
