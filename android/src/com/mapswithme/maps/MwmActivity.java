@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -19,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -112,6 +114,7 @@ import com.mapswithme.maps.widget.menu.MyPositionButton;
 import com.mapswithme.maps.widget.placepage.BottomSheetPlacePageController;
 import com.mapswithme.maps.widget.placepage.PlacePageController;
 import com.mapswithme.maps.widget.placepage.RoutingModeListener;
+import com.mapswithme.util.Config;
 import com.mapswithme.util.Counters;
 import com.mapswithme.util.InputUtils;
 import com.mapswithme.util.PermissionsUtils;
@@ -2536,6 +2539,33 @@ public class MwmActivity extends BaseMwmFragmentActivity
     void onPostStatisticMenuItemClick()
     {
       getActivity().startLocationToPoint(null, false);
+    }
+  }
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+    switch (keyCode) {
+      case KeyEvent.KEYCODE_DPAD_DOWN:
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_OUT);
+        AlohaHelper.logClick(AlohaHelper.ZOOM_OUT);
+        MapFragment.nativeScaleMinus();
+        return true;
+      case KeyEvent.KEYCODE_DPAD_UP:
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_IN);
+        AlohaHelper.logClick(AlohaHelper.ZOOM_IN);
+        MapFragment.nativeScalePlus();
+        return true;
+      case KeyEvent.KEYCODE_ESCAPE:
+        if (Config.isWunderLINQEnabled()) {
+          //Go Back To WunderLINQ
+          String callingApp = "wunderlinq://datagrid";
+          Intent intent = new Intent(Intent.ACTION_VIEW);
+          intent.setData(Uri.parse(callingApp));
+          startActivity(intent);
+        }
+        return true;
+      default:
+        return super.onKeyUp(keyCode, event);
     }
   }
 }
