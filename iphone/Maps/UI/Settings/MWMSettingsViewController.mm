@@ -49,6 +49,8 @@ using namespace power_management;
 @property(weak, nonatomic) IBOutlet SettingsTableViewLinkCell * helpCell;
 @property(weak, nonatomic) IBOutlet SettingsTableViewLinkCell * aboutCell;
 
+@property (weak, nonatomic) IBOutlet SettingsTableViewSwitchCell * wunderLINQCell;
+
 @property(nonatomic) BOOL restoringSubscription;
 
 @end
@@ -73,6 +75,7 @@ using namespace power_management;
   [self configCommonSection];
   [self configSubsriptionsSection];
   [self configNavigationSection];
+  [self configAccessibilitySection];
   [self configInfoSection];
 }
 
@@ -205,6 +208,13 @@ using namespace power_management;
   [self.drivingOptionsCell configWithTitle:L(@"driving_options_title") info:@""];
 }
 
+- (void)configAccessibilitySection
+{
+  [self.wunderLINQCell configWithDelegate:self
+                                     title:L(@"pref_wunderlinq_title")
+                                      isOn:[MWMSettings isWunderLINQEnabled]];
+}
+
 - (void)configInfoSection
 {
   [self.helpCell configWithTitle:L(@"help") info:nil];
@@ -304,6 +314,12 @@ using namespace power_management;
     auto & f = GetFramework();
     f.AllowAutoZoom(value);
     f.SaveAutoZoom(value);
+  }
+  else if (cell == self.wunderLINQCell)
+  {
+    [Statistics logEvent:kStatEventName(kStatSettings, kStatToggleWunderLINQSupport)
+          withParameters:@{kStatValue : (value ? kStatVisible : kStatHidden)}];
+    [MWMSettings setWunderLINQEnabled:value];
   }
 }
 
@@ -421,7 +437,8 @@ using namespace power_management;
   case 1: return L(@"general_settings");
   case 2: return L(@"subscriptions_title");
   case 3: return L(@"prefs_group_route");
-  case 4: return L(@"info");
+  case 4: return L(@"prefs_group_accessibility");
+  case 5: return L(@"info");
   default: return nil;
   }
 }
