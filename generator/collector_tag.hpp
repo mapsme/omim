@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <functional>
+#include <sstream>
 #include <string>
 
 struct OsmElement;
@@ -26,12 +27,14 @@ public:
 
   // CollectorInterface overrides:
   void Collect(OsmElement const & el) override;
-  void Save() override {}
+  void Save() override;
 
+  void Merge(CollectorInterface const * collector) override;
+  void MergeInto(CollectorTag * collector) const override;
 private:
-  std::ofstream m_stream;
+  std::stringstream m_stream;
   std::string m_tagKey;
   Validator m_validator;
-  bool m_needCollect;
+  bool m_ignoreIfNotOpen;
 };
 }  // namespace generator

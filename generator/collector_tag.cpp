@@ -9,19 +9,32 @@ namespace generator
 {
 CollectorTag::CollectorTag(std::string const & filename, std::string const & tagKey,
                            Validator const & validator, bool ignoreIfNotOpen)
-  : m_tagKey(tagKey), m_validator(validator), m_needCollect(true)
+  : CollectorInterface(filename)
+  , m_tagKey(tagKey)
+  , m_validator(validator)
+  , m_ignoreIfNotOpen(ignoreIfNotOpen) {}
+
+void CollectorTag::Collect(OsmElement const & el)
 {
-  m_stream.exceptions(std::fstream::failbit | std::fstream::badbit);
+  auto const tag = el.GetTag(m_tagKey);
+  if (!tag.empty() && m_validator(tag))
+    m_stream << GetGeoObjectId(el).GetEncodedId() << "\t" << tag << "\n";
+}
+
+void CollectorTag::Save()
+{
+  std::ofstream stream;
+  stream.exceptions(std::fstream::failbit | std::fstream::badbit);
   try
   {
-    m_stream.open(filename);
+    stream.open(GetFilename());
+    stream << m_stream.str();
   }
   catch (std::ios::failure const & e)
   {
-    if (ignoreIfNotOpen)
+    if (m_ignoreIfNotOpen)
     {
-      m_needCollect = false;
-      LOG(LINFO, ("Сould not open file", filename, ". This was ignored."));
+      LOG(LINFO, ("Сould not open file", GetFilename(), ". This was ignored."));
     }
     else
     {
@@ -30,13 +43,17 @@ CollectorTag::CollectorTag(std::string const & filename, std::string const & tag
   }
 }
 
-void CollectorTag::Collect(OsmElement const & el)
+void CollectorTag::Merge(CollectorInterface const * collector)
 {
-  if (!m_needCollect)
-    return;
+  CHECK(collector, ());
 
-  auto const tag = el.GetTag(m_tagKey);
-  if (!tag.empty() && m_validator(tag))
-    m_stream << GetGeoObjectId(el).GetEncodedId() << "\t" << tag << "\n";
+  collector->MergeInto(const_cast<CollectorTag *>(this));
+}
+
+void CollectorTag::MergeInto(CollectorTag * collector) const
+{
+  CHECK(collector, ());
+
+  collector->m_stream << this->m_stream.str();
 }
 }  // namespace generator

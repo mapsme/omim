@@ -2,9 +2,7 @@
 
 #include "generator/collector_interface.hpp"
 
-#include "coding/file_writer.hpp"
-
-#include <memory>
+#include <sstream>
 #include <string>
 
 namespace generator
@@ -17,9 +15,12 @@ public:
 
   // CollectorInterface overrides:
   void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const &) override;
-  void Save() override {}
+  void Save() override;
+
+  void Merge(CollectorInterface const * collector) override;
+  void MergeInto(CollectorAddresses * collector) const override;
 
 private:
-  std::unique_ptr<FileWriter> m_addrWriter;
+  std::stringstream m_stringStream;
 };
 }  // namespace generator

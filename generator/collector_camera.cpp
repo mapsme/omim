@@ -21,7 +21,11 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
+#include <algorithm>
+#include <iterator>
+
 using namespace feature;
+
 
 namespace routing
 {
@@ -58,13 +62,22 @@ void CameraProcessor::ForEachCamera(Fn && toDo) const
 
 void CameraProcessor::ProcessWay(OsmElement const & element)
 {
-  for (auto const node : element.m_nodes)
-  {
-    if (m_speedCameras.find(node) == m_speedCameras.cend())
-      continue;
+  auto & nodes = m_ways[element.m_id];
+  std::copy(std::begin(element.m_nodes), std::end(element.m_nodes), std::back_inserter(nodes));
+}
 
-    auto & ways = m_cameraToWays[node];
-    ways.push_back(element.m_id);
+void CameraProcessor::FillCameraInWays()
+{
+  for (auto it = std::begin(m_ways); it != std::end(m_ways); ++it)
+  {
+    for (auto const & node : it->second)
+    {
+      if (m_speedCameras.find(node) == m_speedCameras.cend())
+        continue;
+
+      auto & ways = m_cameraToWays[node];
+      ways.push_back(it->first);
+    }
   }
 }
 
@@ -75,8 +88,17 @@ void CameraProcessor::ProcessNode(OsmElement const & element)
   m_speedCameras.emplace(element.m_id, std::move(camera));
 }
 
-CameraCollector::CameraCollector(std::string const & writerFile) :
-  m_fileWriter(writerFile) {}
+void CameraProcessor::Merge(CameraProcessor const & cameraProcessor)
+{
+  auto const & otherCameras = cameraProcessor.m_speedCameras;
+  m_speedCameras.insert(std::begin(otherCameras), std::end(otherCameras));
+
+  auto const & otherWays = cameraProcessor.m_ways;
+  m_ways.insert(std::begin(otherWays), std::end(otherWays));
+}
+
+CameraCollector::CameraCollector(std::string const & filename) :
+  generator::CollectorInterface(filename) {}
 
 void CameraCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const & element)
 {
@@ -99,7 +121,8 @@ void CameraCollector::CollectFeature(FeatureBuilder const & feature, OsmElement 
   }
 }
 
-void CameraCollector::Write(CameraProcessor::CameraInfo const & camera, std::vector<uint64_t> const & ways)
+void CameraCollector::Write(FileWriter & writer, CameraProcessor::CameraInfo const & camera,
+                            std::vector<uint64_t> const & ways)
 {
   std::string maxSpeedStringKmPH = camera.m_speed;
   int32_t maxSpeedKmPH = 0;
@@ -110,23 +133,39 @@ void CameraCollector::Write(CameraProcessor::CameraInfo const & camera, std::vec
 
   uint32_t const lat =
       DoubleToUint32(camera.m_lat, ms::LatLon::kMinLat, ms::LatLon::kMaxLat, kPointCoordBits);
-  WriteToSink(m_fileWriter, lat);
+  WriteToSink(writer, lat);
 
   uint32_t const lon =
       DoubleToUint32(camera.m_lon, ms::LatLon::kMinLon, ms::LatLon::kMaxLon, kPointCoordBits);
-  WriteToSink(m_fileWriter, lon);
+  WriteToSink(writer, lon);
 
-  WriteToSink(m_fileWriter, static_cast<uint32_t>(maxSpeedKmPH));
+  WriteToSink(writer, static_cast<uint32_t>(maxSpeedKmPH));
 
   auto const size = static_cast<uint32_t>(ways.size());
-  WriteToSink(m_fileWriter, size);
+  WriteToSink(writer, size);
   for (auto wayId : ways)
-    WriteToSink(m_fileWriter, wayId);
+    WriteToSink(writer, wayId);
 }
 
 void CameraCollector::Save()
 {
   using namespace std::placeholders;
-  m_processor.ForEachCamera(std::bind(&CameraCollector::Write, this, _1, _2));
+  m_processor.FillCameraInWays();
+  FileWriter writer(GetFilename());
+  m_processor.ForEachCamera(std::bind(&CameraCollector::Write, this, std::ref(writer), _1, _2));
+}
+
+void CameraCollector::Merge(generator::CollectorInterface const * collector)
+{
+  CHECK(collector, ());
+
+  collector->MergeInto(const_cast<CameraCollector *>(this));
+}
+
+void CameraCollector::MergeInto(CameraCollector * collector) const
+{
+  CHECK(collector, ());
+
+  collector->m_processor.Merge(this->m_processor);
 }
 }  // namespace routing

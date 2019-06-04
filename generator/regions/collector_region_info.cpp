@@ -67,7 +67,8 @@ char const * GetLabel(PlaceLevel level)
   UNREACHABLE();
 }
 
-CollectorRegionInfo::CollectorRegionInfo(std::string const & filename) : m_filename(filename) {}
+CollectorRegionInfo::CollectorRegionInfo(std::string const & filename)
+  : CollectorInterface(filename) {}
 
 void CollectorRegionInfo::CollectFeature(const FeatureBuilder &, OsmElement const & el)
 {
@@ -86,10 +87,25 @@ void CollectorRegionInfo::CollectFeature(const FeatureBuilder &, OsmElement cons
 
 void CollectorRegionInfo::Save()
 {
-  FileWriter writer(m_filename);
+  FileWriter writer(GetFilename());
   WriteToSink(writer, kVersion);
   WriteMap(writer, m_mapRegionData);
   WriteMap(writer, m_mapIsoCode);
+}
+
+void CollectorRegionInfo::Merge(CollectorInterface const * collector)
+{
+  CHECK(collector, ());
+
+  collector->MergeInto(const_cast<CollectorRegionInfo *>(this));
+}
+
+void CollectorRegionInfo::MergeInto(CollectorRegionInfo * collector) const
+{
+  CHECK(collector, ());
+
+  collector->m_mapRegionData.insert(std::begin(m_mapRegionData), std::end(m_mapRegionData));
+  collector->m_mapIsoCode.insert(std::begin(m_mapIsoCode), std::end(m_mapIsoCode));
 }
 
 void CollectorRegionInfo::FillRegionData(base::GeoObjectId const & osmId, OsmElement const & el,

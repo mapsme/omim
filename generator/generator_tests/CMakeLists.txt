@@ -17,6 +17,7 @@ set(
   filter_elements_tests.cpp
   intermediate_data_test.cpp
   maxspeeds_tests.cpp
+  merge_collectors_tests.cpp
   metadata_parser_test.cpp
   node_mixer_test.cpp
   osm2meta_test.cpp

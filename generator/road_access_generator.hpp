@@ -13,6 +13,7 @@
 #include <map>
 #include <ostream>
 #include <set>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -31,7 +32,9 @@ public:
 
   explicit RoadAccessTagProcessor(VehicleType vehicleType);
 
-  void Process(OsmElement const & elem, std::ofstream & oss);
+  void Process(FeatureBuilder1 const & fb, OsmElement const & elem);
+  void Write(std::stringstream & stream);
+  void Merge(RoadAccessTagProcessor const & roadAccessTagProcessor);
 
 private:
   bool ShouldIgnoreBarrierWithoutAccess(OsmElement const & osmElement) const;
@@ -49,22 +52,23 @@ private:
   // because we almost always do not need to add penalty for passes through such nodes.
   std::set<OsmElement::Tag> const * m_hwIgnoreBarriersWithoutAccess;
 
-  std::map<uint64_t, RoadAccess::Type> m_barriers;
+  std::unordered_map<uint64_t, RoadAccess::Type> m_barriers;
+  std::unordered_map<uint64_t, RoadAccess::Type> m_wayToAccess;
+  std::unordered_map<uint64_t, std::vector<uint64_t>> m_roads;
 };
 
 class RoadAccessWriter : public generator::CollectorInterface
 {
 public:
-  RoadAccessWriter(std::string const & filePath);
+  RoadAccessWriter(std::string const & filename);
 
   // CollectorInterface overrides:
-  void CollectFeature(feature::FeatureBuilder const &, OsmElement const & elem) override;
-  void Save() override {}
+  void CollectFeature(FeatureBuilder const & fb, OsmElement const & elem) override;
+  void Save() override;
 
+  void Merge(generator::CollectorInterface const * collector) override;
+  void MergeInto(RoadAccessWriter * collector) const override;
 private:
-  void Open(std::string const & filePath);
-  bool IsOpened() const;
-
   std::ofstream m_stream;
   std::vector<RoadAccessTagProcessor> m_tagProcessors;
 };

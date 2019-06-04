@@ -121,6 +121,9 @@ public:
   void CollectFeature(feature::FeatureBuilder const &, OsmElement const & el) override;
   void Save() override;
 
+  void Merge(CollectorInterface const * collector) override;
+  void MergeInto(CollectorRegionInfo * collector) const override;
+
 private:
   template <typename Sink, typename Map>
   void WriteMap(Sink & sink, Map & seq)
@@ -135,7 +138,6 @@ private:
   void FillRegionData(base::GeoObjectId const & osmId, OsmElement const & el, RegionData & rd);
   void FillIsoCode(base::GeoObjectId const & osmId, OsmElement const & el, IsoCode & rd);
 
-  std::string m_filename;
   MapRegionData m_mapRegionData;
   MapIsoCode m_mapIsoCode;
 };

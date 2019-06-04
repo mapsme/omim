@@ -31,4 +31,21 @@ void CollectorCollection::Save()
   for (auto & c : m_collection)
     c->Save();
 }
+
+void CollectorCollection::Merge(CollectorInterface const * collector)
+{
+  CHECK(collector, ());
+
+  collector->MergeInto(const_cast<CollectorCollection *>(this));
+}
+
+void CollectorCollection::MergeInto(CollectorCollection * collector) const
+{
+  CHECK(collector, ());
+
+  auto & otherCollection = collector->m_collection;
+  CHECK_EQUAL(m_collection.size(), otherCollection.size(), ());
+  for (size_t i = 0; i < m_collection.size(); ++i)
+    otherCollection[i]->Merge(m_collection[i].get());
+}
 }  // namespace generator

@@ -90,11 +90,12 @@ namespace routing
 std::string const RestrictionWriter::kNodeString = "node";
 std::string const RestrictionWriter::kWayString = "way";
 
-RestrictionWriter::RestrictionWriter(std::string const & fullPath,
+RestrictionWriter::RestrictionWriter(std::string const & filename,
                                      generator::cache::IntermediateDataReader const & cache)
-  : m_cache(cache)
+  : generator::CollectorInterface(filename)
+  , m_cache(cache)
 {
-  Open(fullPath);
+  m_stream << std::setprecision(20);
 }
 
 //static
@@ -107,17 +108,6 @@ RestrictionWriter::ViaType RestrictionWriter::ConvertFromString(std::string cons
 
   CHECK(false, ("Bad via type in restrictons:", str));
   UNREACHABLE();
-}
-
-void RestrictionWriter::Open(std::string const & fullPath)
-{
-  LOG(LINFO, ("Saving road restrictions in osm id terms to", fullPath));
-  m_stream.open(fullPath, std::ofstream::out);
-
-  if (!IsOpened())
-    LOG(LINFO, ("Cannot open file", fullPath));
-
-  m_stream << std::setprecision(20);
 }
 
 bool ValidateOsmRestriction(std::vector<RelationElement::Member> & from,
@@ -212,7 +202,27 @@ void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
   m_stream << toOsmId << '\n';
 }
 
-bool RestrictionWriter::IsOpened() const { return m_stream && m_stream.is_open(); }
+void RestrictionWriter::Save()
+{
+  std::ofstream stream;
+  stream.exceptions(std::fstream::failbit | std::fstream::badbit);
+  stream.open(GetFilename());
+  stream << m_stream.str();
+}
+
+void RestrictionWriter::Merge(generator::CollectorInterface const * collector)
+{
+  CHECK(collector, ());
+
+  collector->MergeInto(const_cast<RestrictionWriter *>(this));
+}
+
+void RestrictionWriter::MergeInto(RestrictionWriter * collector) const
+{
+  CHECK(collector, ());
+
+  collector->m_stream << m_stream.str();
+}
 
 std::string DebugPrint(RestrictionWriter::ViaType const & type)
 {

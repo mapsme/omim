@@ -10,7 +10,9 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
+#include <algorithm>
 #include <fstream>
+#include <iterator>
 #include <sstream>
 
 using namespace base;
@@ -33,7 +35,10 @@ bool ParseMaxspeedAndWriteToStream(string const & maxspeed, SpeedInUnits & speed
 
 namespace generator
 {
-void MaxspeedsCollector::CollectFeature(FeatureBuilder const &, OsmElement const & p)
+MaxspeedsCollector::MaxspeedsCollector(string const & filename)
+  : CollectorInterface(filename) {}
+
+void MaxspeedsCollector::CollectFeature(FeatureBuilder1 const &, OsmElement const & p)
 {
   if (!p.IsWay())
     return;
@@ -101,26 +106,29 @@ void MaxspeedsCollector::CollectFeature(FeatureBuilder const &, OsmElement const
 
 void MaxspeedsCollector::Save()
 {
-  Flush();
-}
+  LOG(LINFO, ("Saving maxspeed tag values to", GetFilename()));
 
-void MaxspeedsCollector::Flush()
-{
-  LOG(LINFO, ("Saving maxspeed tag values to", m_filePath));
-  ofstream stream(m_filePath);
-
-  if (!stream)
-  {
-    LOG(LERROR, ("Cannot open file", m_filePath));
-    return;
-  }
+  ofstream stream;
+  stream.exceptions(fstream::failbit | fstream::badbit);
+  stream.open(GetFilename());
 
   for (auto const & s : m_data)
     stream << s << '\n';
 
-  if (stream.fail())
-    LOG(LERROR, ("Cannot write to file", m_filePath));
-  else
-    LOG(LINFO, ("Wrote", m_data.size(), "maxspeed tags to", m_filePath));
+  LOG(LINFO, ("Wrote", m_data.size(), "maxspeed tags to", GetFilename()));
+}
+
+void MaxspeedsCollector::Merge(CollectorInterface const * collector)
+{
+  CHECK(collector, ());
+
+  collector->MergeInto(const_cast<MaxspeedsCollector *>(this));
+}
+
+void MaxspeedsCollector::MergeInto(MaxspeedsCollector * collector) const
+{
+  CHECK(collector, ());
+
+  copy(begin(m_data), end(m_data), back_inserter(collector->m_data));
 }
 }  // namespace generator

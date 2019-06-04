@@ -20,85 +20,71 @@
 namespace
 {
 uint8_t const kMetaLinesSectionVersion = 1;
-
-using Ways = std::vector<int32_t>;
-
-/// A string of connected ways.
-class LineString
-{
-  Ways m_ways;
-  uint64_t m_start;
-  uint64_t m_end;
-  bool m_oneway;
-
-public:
-  explicit LineString(OsmElement const & way)
-  {
-    std::string const oneway = way.GetTag("oneway");
-    m_oneway = !oneway.empty() && oneway != "no";
-    int32_t const wayId = base::checked_cast<int32_t>(way.m_id);
-    m_ways.push_back(oneway == "-1" ? -wayId : wayId);
-    CHECK_GREATER_OR_EQUAL(way.Nodes().size(), 2, ());
-    m_start = way.Nodes().front();
-    m_end = way.Nodes().back();
-  }
-
-  Ways const & GetWays() const { return m_ways; }
-
-  void Reverse()
-  {
-    ASSERT(!m_oneway, ("Trying to reverse a one-way road."));
-    std::swap(m_start, m_end);
-    std::reverse(m_ways.begin(), m_ways.end());
-    for (auto & p : m_ways)
-      p = -p;
-  }
-
-  bool Add(LineString & line)
-  {
-    if (m_start == line.m_start || m_end == line.m_end)
-    {
-      if (!line.m_oneway)
-        line.Reverse();
-      else if (!m_oneway)
-        Reverse();
-      else
-        return false;
-    }
-    if (m_end == line.m_start)
-    {
-      m_ways.insert(m_ways.end(), line.m_ways.begin(), line.m_ways.end());
-      m_end = line.m_end;
-      m_oneway = m_oneway || line.m_oneway;
-    }
-    else if (m_start == line.m_end)
-    {
-      m_ways.insert(m_ways.begin(), line.m_ways.begin(), line.m_ways.end());
-      m_start = line.m_start;
-      m_oneway = m_oneway || line.m_oneway;
-    }
-    else
-    {
-      return false;
-    }
-    return true;
-  }
-};
 }  // namespace
 
 namespace feature
 {
+
+LineString::LineString(OsmElement const & way)
+{
+  std::string const oneway = way.GetTag("oneway");
+  m_oneway = !oneway.empty() && oneway != "no";
+  int32_t const wayId = base::checked_cast<int32_t>(way.m_id);
+  m_ways.push_back(oneway == "-1" ? -wayId : wayId);
+  CHECK_GREATER_OR_EQUAL(way.Nodes().size(), 2, ());
+  m_start = way.Nodes().front();
+  m_end = way.Nodes().back();
+}
+
+void LineString::Reverse()
+{
+  ASSERT(!m_oneway, ("Trying to reverse a one-way road."));
+  std::swap(m_start, m_end);
+  std::reverse(m_ways.begin(), m_ways.end());
+  for (auto & p : m_ways)
+    p = -p;
+}
+
+bool LineString::Add(LineString & line)
+{
+  if (m_start == line.m_start || m_end == line.m_end)
+  {
+    if (!line.m_oneway)
+      line.Reverse();
+    else if (!m_oneway)
+      Reverse();
+    else
+      return false;
+  }
+  if (m_end == line.m_start)
+  {
+    m_ways.insert(m_ways.end(), line.m_ways.begin(), line.m_ways.end());
+    m_end = line.m_end;
+    m_oneway = m_oneway || line.m_oneway;
+  }
+  else if (m_start == line.m_end)
+  {
+    m_ways.insert(m_ways.begin(), line.m_ways.begin(), line.m_ways.end());
+    m_start = line.m_start;
+    m_oneway = m_oneway || line.m_oneway;
+  }
+  else
+  {
+    return false;
+  }
+  return true;
+}
+
 /// A list of segments, that is, LineStrings, sharing the same attributes.
 class Segments
 {
   std::list<LineString> m_parts;
 
 public:
-  explicit Segments(OsmElement const & way) { m_parts.emplace_back(way); }
+  explicit Segments(LineString const & way) { m_parts.emplace_back(way); }
 
-  void Add(OsmElement const & way)
+  void Add(LineString & line)
   {
-    LineString line(way);
     auto found = m_parts.end();
     for (auto i = m_parts.begin(); i != m_parts.end(); ++i)
     {
@@ -125,9 +111,9 @@ public:
     }
   }
 
-  std::vector<Ways> GetLongWays() const
+  std::vector<LineString::Ways> GetLongWays() const
   {
-    std::vector<Ways> result;
+    std::vector<LineString::Ways> result;
     for (LineString const & line : m_parts)
     {
       if (line.GetWays().size() > 1)
@@ -140,13 +126,16 @@ public:
 };
 
 // MetalinesBuilder --------------------------------------------------------------------------------
-void MetalinesBuilder::CollectFeature(FeatureBuilder const & feature, OsmElement const & element)
+MetalinesBuilder::MetalinesBuilder(std::string const & filename)
+  : generator::CollectorInterface(filename) {}
+
+void MetalinesBuilder::CollectFeature(FeatureBuilder1 const & feature, OsmElement const & element)
 {
   if (!feature.IsLine())
     return;
 
   auto const & params = feature.GetParams();
-  static uint32_t const highwayType = classif().GetTypeByPath({"highway"});
+  static auto const highwayType = classif().GetTypeByPath({"highway"});
   if (params.FindType(highwayType, 1) == ftype::GetEmptyValue() ||
       element.Nodes().front() == element.Nodes().back())
   {
@@ -159,42 +148,50 @@ void MetalinesBuilder::CollectFeature(FeatureBuilder const & feature, OsmElement
     return;
 
   size_t const key = std::hash<std::string>{}(name + '\0' + params.ref);
-  auto segment = m_data.find(key);
-  if (segment == m_data.cend())
-    m_data.emplace(key, std::make_shared<Segments>(element));
-  else
-    segment->second->Add(element);
+  m_data.emplace(key, element);
 }
 
 void MetalinesBuilder::Save()
 {
-  Flush();
+  std::unordered_map<size_t, Segments> result;
+  for (auto it = std::begin(m_data); it != std::end(m_data); ++it)
+  {
+    auto segment = result.find(it->first);
+    if (segment == result.cend())
+      result.emplace(it->first, it->second);
+    else
+      segment->second.Add(it->second);
+  }
+
+  uint32_t count = 0;
+  FileWriter writer(GetFilename());
+  for (auto const & seg : result)
+  {
+    auto const & longWays = seg.second.GetLongWays();
+    for (auto const & ways : longWays)
+    {
+      uint16_t size = base::checked_cast<uint16_t>(ways.size());
+      WriteToSink(writer, size);
+      for (int32_t const way : ways)
+        WriteToSink(writer, way);
+      ++count;
+    }
+  }
+  LOG_SHORT(LINFO, ("Wrote", count, "metalines with OSM IDs for the entire planet to", m_filePath));
 }
 
-void MetalinesBuilder::Flush()
+void MetalinesBuilder::Merge(generator::CollectorInterface const * collector)
 {
-  try
-  {
-    uint32_t count = 0;
-    FileWriter writer(m_filePath);
-    for (auto const & seg : m_data)
-    {
-      auto const & longWays = seg.second->GetLongWays();
-      for (Ways const & ways : longWays)
-      {
-        uint16_t size = base::checked_cast<uint16_t>(ways.size());
-        WriteToSink(writer, size);
-        for (int32_t const way : ways)
-          WriteToSink(writer, way);
-        ++count;
-      }
-    }
-    LOG_SHORT(LINFO, ("Wrote", count, "metalines with OSM IDs for the entire planet to", m_filePath));
-  }
-  catch (RootException const & e)
-  {
-    LOG(LERROR, ("An exception happened while saving metalines to", m_filePath, ":", e.what()));
-  }
+  CHECK(collector, ());
+
+  collector->MergeInto(const_cast<MetalinesBuilder *>(this));
+}
+
+void MetalinesBuilder::MergeInto(MetalinesBuilder * collector) const
+{
+  CHECK(collector, ());
+
+  collector->m_data.insert(std::begin(m_data), std::end(m_data));
 }
 
 // Functions --------------------------------------------------------------------------------
