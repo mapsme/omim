@@ -98,6 +98,11 @@ RestrictionWriter::RestrictionWriter(std::string const & filename,
   m_stream << std::setprecision(20);
 }
 
+std::shared_ptr<generator::CollectorInterface> RestrictionWriter::Clone() const
+{
+  return std::make_shared<RestrictionWriter>(GetFilename(), m_cache);
+}
+
 //static
 RestrictionWriter::ViaType RestrictionWriter::ConvertFromString(std::string const & str)
 {

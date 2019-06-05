@@ -129,6 +129,11 @@ public:
 MetalinesBuilder::MetalinesBuilder(std::string const & filename)
   : generator::CollectorInterface(filename) {}
 
+std::shared_ptr<generator::CollectorInterface> MetalinesBuilder::Clone() const
+{
+  return std::make_shared<MetalinesBuilder>(GetFilename());
+}
+
 void MetalinesBuilder::CollectFeature(FeatureBuilder1 const & feature, OsmElement const & element)
 {
   if (!feature.IsLine())
@@ -177,7 +182,7 @@ void MetalinesBuilder::Save()
       ++count;
     }
   }
-  LOG_SHORT(LINFO, ("Wrote", count, "metalines with OSM IDs for the entire planet to", m_filePath));
+  LOG_SHORT(LINFO, ("Wrote", count, "metalines with OSM IDs for the entire planet to", GetFilename()));
 }
 
 void MetalinesBuilder::Merge(generator::CollectorInterface const * collector)

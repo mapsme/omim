@@ -2,6 +2,7 @@
 
 #include "generator/collector_interface.hpp"
 
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -14,7 +15,9 @@ public:
   CollectorAddresses(std::string const & filename);
 
   // CollectorInterface overrides:
-  void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const &) override;
+  std::shared_ptr<CollectorInterface> Clone() const override;
+
+  void CollectFeature(FeatureBuilder const & feature, OsmElement const &) override;
   void Save() override;
 
   void Merge(CollectorInterface const * collector) override;

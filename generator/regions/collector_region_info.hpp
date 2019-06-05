@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <ostream>
+#include <memory>
 #include <string>
 #include <type_traits>
 #include <unordered_map>
@@ -118,7 +119,9 @@ public:
   CollectorRegionInfo(std::string const & filename);
 
   // CollectorInterface overrides:
-  void CollectFeature(feature::FeatureBuilder const &, OsmElement const & el) override;
+  std::shared_ptr<CollectorInterface> Clone() const override;
+
+  void CollectFeature(FeatureBuilder const &, OsmElement const & el) override;
   void Save() override;
 
   void Merge(CollectorInterface const * collector) override;

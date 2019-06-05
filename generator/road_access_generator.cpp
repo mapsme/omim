@@ -396,6 +396,10 @@ RoadAccessWriter::RoadAccessWriter(string const & filename)
     m_tagProcessors.emplace_back(static_cast<VehicleType>(i));
 }
 
+std::shared_ptr<generator::CollectorInterface> RoadAccessWriter::Clone() const
+{
+  return std::make_shared<RoadAccessWriter>(GetFilename());
+}
 
 void RoadAccessWriter::CollectFeature(FeatureBuilder1 const & fb, OsmElement const & elem)
 {

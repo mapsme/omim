@@ -100,6 +100,11 @@ void CameraProcessor::Merge(CameraProcessor const & cameraProcessor)
 CameraCollector::CameraCollector(std::string const & filename) :
   generator::CollectorInterface(filename) {}
 
+std::shared_ptr<generator::CollectorInterface> CameraCollector::Clone() const
+{
+ return std::make_shared<CameraCollector>(GetFilename());
+}
+
 void CameraCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const & element)
 {
   switch (element.m_type)

@@ -29,6 +29,8 @@ public:
                     generator::cache::IntermediateDataReader const & cache);
 
   // generator::CollectorInterface overrides:
+  std::shared_ptr<CollectorInterface> Clone() const override;
+
   void CollectRelation(RelationElement const & relationElement) override;
   void Save() override;
 

@@ -38,6 +38,12 @@ namespace generator
 MaxspeedsCollector::MaxspeedsCollector(string const & filename)
   : CollectorInterface(filename) {}
 
+
+std::shared_ptr<CollectorInterface> MaxspeedsCollector::Clone() const
+{
+  return std::make_shared<MaxspeedsCollector>(GetFilename());
+}
+
 void MaxspeedsCollector::CollectFeature(FeatureBuilder1 const &, OsmElement const & p)
 {
   if (!p.IsWay())

@@ -3,6 +3,7 @@
 #include "generator/collector_interface.hpp"
 #include "generator/osm_element.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -18,7 +19,9 @@ public:
   explicit MaxspeedsCollector(std::string const & filename);
 
   // CollectorInterface overrides:
-  void CollectFeature(feature::FeatureBuilder const &, OsmElement const & p) override;
+  std::shared_ptr<CollectorInterface> Clone() const override;
+
+  void CollectFeature(FeatureBuilder const &, OsmElement const & p) override;
   void Save() override;
 
   void Merge(CollectorInterface const * collector) override;

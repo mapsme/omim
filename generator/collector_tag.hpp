@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <functional>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -26,6 +27,8 @@ public:
                         Validator const & validator, bool ignoreIfNotOpen = false);
 
   // CollectorInterface overrides:
+  std::shared_ptr<CollectorInterface> Clone() const override;
+
   void Collect(OsmElement const & el) override;
   void Save() override;
 

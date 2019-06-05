@@ -2,6 +2,7 @@
 
 #include "base/assert.hpp"
 
+#include <memory>
 #include <string>
 
 struct OsmElement;
@@ -45,6 +46,8 @@ public:
   CollectorInterface(std::string const & filename = {}) : m_filename(filename) {}
   virtual ~CollectorInterface() = default;
 
+  virtual std::shared_ptr<CollectorInterface> Clone() const = 0;
+
   virtual void Collect(OsmElement const &) {}
   virtual void CollectRelation(RelationElement const &) {}
   virtual void CollectFeature(feature::FeatureBuilder const &, OsmElement const &) {}
@@ -62,7 +65,7 @@ public:
   virtual void MergeInto(regions::CollectorRegionInfo *) const { FailIfMethodUnsuppirted(); }
   virtual void MergeInto(CollectorCollection *) const { FailIfMethodUnsuppirted(); }
 
-  std::string const & GetFilename() { return m_filename; }
+  std::string const & GetFilename() const { return m_filename; }
 
 private:
   void FailIfMethodUnsuppirted() const { CHECK(false, ("This method is unsupported.")); }

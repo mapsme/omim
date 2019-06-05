@@ -8,6 +8,14 @@ using namespace feature;
 
 namespace generator
 {
+std::shared_ptr<CollectorInterface> CollectorCollection::Clone() const
+{
+  auto p = std::make_shared<CollectorCollection>();
+  for (auto const & c : m_collection)
+   p->Append(c->Clone());
+  return p;
+}
+
 void CollectorCollection::Collect(OsmElement const & element)
 {
   for (auto & c : m_collection)

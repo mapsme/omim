@@ -63,6 +63,8 @@ public:
   RoadAccessWriter(std::string const & filename);
 
   // CollectorInterface overrides:
+  std::shared_ptr<CollectorInterface> Clone() const override;
+
   void CollectFeature(FeatureBuilder const & fb, OsmElement const & elem) override;
   void Save() override;
 

@@ -20,6 +20,8 @@ class CollectorCollection : public CollectionBase<std::shared_ptr<CollectorInter
 {
 public:
   // CollectorInterface overrides:
+  std::shared_ptr<CollectorInterface> Clone() const override;
+
   void Collect(OsmElement const & element) override;
   void CollectRelation(RelationElement const & element) override;
   void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const & element) override;

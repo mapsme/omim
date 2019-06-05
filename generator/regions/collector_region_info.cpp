@@ -70,6 +70,12 @@ char const * GetLabel(PlaceLevel level)
 CollectorRegionInfo::CollectorRegionInfo(std::string const & filename)
   : CollectorInterface(filename) {}
 
+
+std::shared_ptr<CollectorInterface> CollectorRegionInfo::Clone() const
+{
+  return std::make_shared<CollectorRegionInfo>(GetFilename());
+}
+
 void CollectorRegionInfo::CollectFeature(const FeatureBuilder &, OsmElement const & el)
 {
   base::GeoObjectId const osmId = GetGeoObjectId(el);

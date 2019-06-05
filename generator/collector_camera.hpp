@@ -76,6 +76,7 @@ public:
   explicit CameraCollector(std::string const & filename);
 
   // generator::CollectorInterface overrides:
+  std::shared_ptr<CollectorInterface> Clone() const override;
   // We will process all nodes before ways because of o5m format:
   // all nodes are first, then all ways, then all relations.
   void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const & element) override;

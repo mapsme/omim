@@ -14,6 +14,11 @@ CollectorTag::CollectorTag(std::string const & filename, std::string const & tag
   , m_validator(validator)
   , m_ignoreIfNotOpen(ignoreIfNotOpen) {}
 
+std::shared_ptr<CollectorInterface> CollectorTag::Clone() const
+{
+  return std::make_shared<CollectorTag>(GetFilename(), m_tagKey, m_validator, m_ignoreIfNotOpen);
+}
+
 void CollectorTag::Collect(OsmElement const & el)
 {
   auto const tag = el.GetTag(m_tagKey);

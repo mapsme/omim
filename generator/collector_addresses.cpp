@@ -13,6 +13,11 @@ namespace generator
 CollectorAddresses::CollectorAddresses(std::string const & filename)
   : CollectorInterface(filename) {}
 
+std::shared_ptr<CollectorInterface> CollectorAddresses::Clone() const
+{
+  return std::make_shared<CollectorAddresses>(GetFilename());
+}
+
 void CollectorAddresses::CollectFeature(FeatureBuilder const & feature, OsmElement const &)
 {
   std::string addr;
