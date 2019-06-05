@@ -12,6 +12,8 @@
 
 #include "base/file_name_utils.hpp"
 
+#include <memory>
+
 #include "defines.hpp"
 
 using namespace feature;
@@ -23,7 +25,13 @@ namespace
 class CoastlineFilter : public FilterInterface
 {
 public:
-  bool IsAccepted(FeatureBuilder const & feature)
+  // FilterInterface overrides:
+  std::shared_ptr<FilterInterface> Clone() const override
+  {
+    return std::make_shared<CoastlineFilter>();
+  }
+
+  bool IsAccepted(FeatureBuilder1 const & feature) override
   {
     auto const & checker = ftypes::IsCoastlineChecker::Instance();
     return checker(feature.GetTypes());
