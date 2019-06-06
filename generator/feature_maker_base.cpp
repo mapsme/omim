@@ -10,7 +10,8 @@ using namespace feature;
 
 namespace generator
 {
-FeatureMakerBase::FeatureMakerBase(cache::IntermediateDataReader & cache) : m_cache(cache) {}
+FeatureMakerBase::FeatureMakerBase(std::shared_ptr<cache::IntermediateDataReader> const & cache)
+  : m_cache(cache) {}
 
 bool FeatureMakerBase::Add(OsmElement & element)
 {

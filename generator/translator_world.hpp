@@ -22,7 +22,8 @@ namespace generator
 class TranslatorWorld : public Translator
 {
 public:
-  explicit TranslatorWorld(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
+  explicit TranslatorWorld(std::shared_ptr<EmitterInterface> const & emitter,
+                           std::shared_ptr<cache::IntermediateDataReader> const & cache,
                            feature::GenerateInfo const & info);
 
   // TranslatorInterface overrides:
@@ -37,8 +38,8 @@ private:
 class TranslatorWorldWithAds : public TranslatorWorld
 {
 public:
-  explicit TranslatorWorldWithAds(std::shared_ptr<EmitterInterface> emitter,
-                                  cache::IntermediateDataReader & cache,
+  explicit TranslatorWorldWithAds(std::shared_ptr<EmitterInterface> const & emitter,
+                                  std::shared_ptr<cache::IntermediateDataReader> const & cache,
                                   feature::GenerateInfo const & info);
 
   // TranslatorInterface overrides:

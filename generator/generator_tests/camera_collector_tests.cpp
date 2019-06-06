@@ -42,7 +42,8 @@ string const kSpeedCameraTag = "<tag k=\"highway\" v=\"speed_camera\"/>";
 class TranslatorForTest : public Translator
 {
 public:
-  explicit TranslatorForTest(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
+  explicit TranslatorForTest(std::shared_ptr<EmitterInterface> emitter,
+                             std::shared_ptr<generator::cache::IntermediateDataReader> const & cache,
                              feature::GenerateInfo const &)
     : Translator(emitter, cache, std::make_shared<FeatureMaker>(cache)) {}
 };

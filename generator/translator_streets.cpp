@@ -6,8 +6,8 @@
 
 namespace generator
 {
-TranslatorStreets::TranslatorStreets(std::shared_ptr<EmitterInterface> emitter,
-                                     cache::IntermediateDataReader & cache)
+TranslatorStreets::TranslatorStreets(std::shared_ptr<EmitterInterface> const & emitter,
+                                     std::shared_ptr<cache::IntermediateDataReader> const & cache)
   : Translator(emitter, cache, std::make_shared<FeatureMakerSimple>(cache))
 
 {

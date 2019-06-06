@@ -17,7 +17,7 @@ namespace generator
 class TranslatorGeoObjects : public Translator
 {
 public:
-  explicit TranslatorGeoObjects(std::shared_ptr<EmitterInterface> emitter,
-                                cache::IntermediateDataReader & cache);
+  explicit TranslatorGeoObjects(std::shared_ptr<EmitterInterface> const & emitter,
+                                std::shared_ptr<cache::IntermediateDataReader> const & cache);
 };
 }  // namespace generator

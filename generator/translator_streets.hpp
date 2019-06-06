@@ -17,7 +17,7 @@ namespace generator
 class TranslatorStreets : public Translator
 {
 public:
-  explicit TranslatorStreets(std::shared_ptr<EmitterInterface> emitter,
-                             cache::IntermediateDataReader & cache);
+  explicit TranslatorStreets(std::shared_ptr<EmitterInterface> const & emitter,
+                             std::shared_ptr<cache::IntermediateDataReader> const & cache);
 };
 }  // namespace generator

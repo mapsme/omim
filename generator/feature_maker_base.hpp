@@ -19,7 +19,7 @@ class IntermediateDataReader;
 class FeatureMakerBase
 {
 public:
-  explicit FeatureMakerBase(cache::IntermediateDataReader & cache);
+  explicit FeatureMakerBase(std::shared_ptr<cache::IntermediateDataReader> const & cache);
   virtual ~FeatureMakerBase() = default;
 
   bool Add(OsmElement & element);
@@ -35,7 +35,7 @@ protected:
 
   virtual void ParseParams(FeatureParams & params, OsmElement & element) const  = 0;
 
-  cache::IntermediateDataReader & m_cache;
+  std::shared_ptr<cache::IntermediateDataReader> m_cache;
   std::queue<feature::FeatureBuilder> m_queue;
 };
 

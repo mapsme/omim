@@ -33,10 +33,10 @@ void ToLatLon(double lat, double lon, LatLon & ll)
   int64_t const lon64 = lon * kValueOrder;
 
   CHECK(
-      lat64 >= std::numeric_limits<int32_t>::min() && lat64 <= std::numeric_limits<int32_t>::max(),
+      lat64 >= numeric_limits<int32_t>::min() && lat64 <= numeric_limits<int32_t>::max(),
       ("Latitude is out of 32bit boundary:", lat64));
   CHECK(
-      lon64 >= std::numeric_limits<int32_t>::min() && lon64 <= std::numeric_limits<int32_t>::max(),
+      lon64 >= numeric_limits<int32_t>::min() && lon64 <= numeric_limits<int32_t>::max(),
       ("Longitude is out of 32bit boundary:", lon64));
   ll.m_lat = static_cast<int32_t>(lat64);
   ll.m_lon = static_cast<int32_t>(lon64);
@@ -423,6 +423,24 @@ CreatePointStorageWriter(feature::GenerateInfo::NodeStorageType type, string con
     return make_shared<RawMemPointStorageWriter>(name);
   }
   UNREACHABLE();
+}
+
+// static
+std::mutex PointStorageReader::m_mutex;
+// static
+std::unordered_map<std::string, std::shared_ptr<PointStorageReaderInterface>> PointStorageReader::m_readers;
+
+// static
+shared_ptr<PointStorageReaderInterface>
+PointStorageReader::GetOrCreate(feature::GenerateInfo::NodeStorageType type, string const & name)
+{
+  string const k = to_string(static_cast<int>(type)) + name;
+  lock_guard<mutex> lock(m_mutex);
+  if (m_readers.count(k) != 0)
+    return m_readers[k];
+
+  m_readers[k] = CreatePointStorageReader(type, name);
+  return m_readers[k];
 }
 }  // namespace cache
 }  // namespace generator

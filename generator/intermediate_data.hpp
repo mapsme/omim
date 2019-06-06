@@ -17,6 +17,7 @@
 #include <cstdint>
 #include <limits>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <type_traits>
 #include <unordered_map>
@@ -310,5 +311,16 @@ CreatePointStorageReader(feature::GenerateInfo::NodeStorageType type, std::strin
 
 std::shared_ptr<PointStorageWriterInterface>
 CreatePointStorageWriter(feature::GenerateInfo::NodeStorageType type, std::string const & name);
+
+class PointStorageReader
+{
+public:
+  static std::shared_ptr<PointStorageReaderInterface>
+  GetOrCreate(feature::GenerateInfo::NodeStorageType type, std::string const & name);
+
+private:
+  static std::mutex m_mutex;
+  static std::unordered_map<std::string, std::shared_ptr<PointStorageReaderInterface>> m_readers;
+};
 }  // namespace cache
 }  // namespace generator

@@ -40,25 +40,15 @@ public:
   uint64_t Read(char * buffer, uint64_t bufferSize);
 };
 
-class LoaderWrapper
-{
-public:
-  LoaderWrapper(feature::GenerateInfo & info);
-  cache::IntermediateDataReader & GetReader();
-
-private:
-  cache::IntermediateDataReader m_reader;
-};
-
 class CacheLoader
 {
 public:
   CacheLoader(feature::GenerateInfo & info);
-  cache::IntermediateDataReader & GetCache();
+  std::shared_ptr<cache::IntermediateDataReader> GetCache() const;
 
 private:
   feature::GenerateInfo & m_info;
-  std::unique_ptr<LoaderWrapper> m_loader;
+  std::shared_ptr<cache::IntermediateDataReader> m_reader;
 
   DISALLOW_COPY(CacheLoader);
 };

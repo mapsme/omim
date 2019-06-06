@@ -3,6 +3,7 @@
 #include "generator/collector_interface.hpp"
 #include "generator/intermediate_data.hpp"
 
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -26,7 +27,7 @@ public:
   static std::string const kWayString;
 
   RestrictionWriter(std::string const & filename,
-                    generator::cache::IntermediateDataReader const & cache);
+                    std::shared_ptr<generator::cache::IntermediateDataReader> const & cache);
 
   // generator::CollectorInterface overrides:
   std::shared_ptr<CollectorInterface> Clone() const override;
@@ -41,7 +42,7 @@ public:
 
 private:
   std::stringstream m_stream;
-  generator::cache::IntermediateDataReader const & m_cache;
+   std::shared_ptr<generator::cache::IntermediateDataReader> m_cache;
 };
 
 std::string DebugPrint(RestrictionWriter::ViaType const & type);

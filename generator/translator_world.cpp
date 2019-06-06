@@ -15,7 +15,8 @@
 
 namespace generator
 {
-TranslatorWorld::TranslatorWorld(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
+TranslatorWorld::TranslatorWorld(std::shared_ptr<EmitterInterface> const & emitter,
+                                 std::shared_ptr<cache::IntermediateDataReader> const & cache,
                                  feature::GenerateInfo const & info)
   : Translator(emitter, cache, std::make_shared<FeatureMaker>(cache))
   , m_tagAdmixer(info.GetIntermediateFileName("ways", ".csv"), info.GetIntermediateFileName("towns", ".csv"))
@@ -32,8 +33,8 @@ void TranslatorWorld::Preprocess(OsmElement & element)
   m_tagAdmixer(element);
 }
 
-TranslatorWorldWithAds::TranslatorWorldWithAds(std::shared_ptr<EmitterInterface> emitter,
-                                               cache::IntermediateDataReader & cache,
+TranslatorWorldWithAds::TranslatorWorldWithAds(std::shared_ptr<EmitterInterface> const & emitter,
+                                               std::shared_ptr<cache::IntermediateDataReader> const & cache,
                                                feature::GenerateInfo const & info)
   : TranslatorWorld(emitter, cache, info)
   , m_osmTagMixer(base::JoinPath(GetPlatform().ResourcesDir(), MIXED_TAGS_FILE)) {}

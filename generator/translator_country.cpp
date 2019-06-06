@@ -69,7 +69,8 @@ bool WikiDataValidator(std::string const & tagValue)
 }
 }  // namespace
 
-TranslatorCountry::TranslatorCountry(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
+TranslatorCountry::TranslatorCountry(std::shared_ptr<EmitterInterface> const & emitter,
+                                     std::shared_ptr<cache::IntermediateDataReader> const & cache,
                                      feature::GenerateInfo const & info)
   : Translator(emitter, cache, std::make_shared<FeatureMaker>(cache))
   , m_tagAdmixer(info.GetIntermediateFileName("ways", ".csv"), info.GetIntermediateFileName("towns", ".csv"))
@@ -103,13 +104,13 @@ void TranslatorCountry::CollectFromRelations(OsmElement const & element)
 {
   RelationCollector collector(m_collectors);
   if (element.IsNode())
-    m_cache.ForEachRelationByNodeCached(element.m_id, collector);
+    m_cache->ForEachRelationByNodeCached(element.m_id, collector);
   else if (element.IsWay())
-    m_cache.ForEachRelationByWayCached(element.m_id, collector);
+    m_cache->ForEachRelationByWayCached(element.m_id, collector);
 }
 
-TranslatorCountryWithAds::TranslatorCountryWithAds(std::shared_ptr<EmitterInterface> emitter,
-                                                   cache::IntermediateDataReader & cache,
+TranslatorCountryWithAds::TranslatorCountryWithAds(std::shared_ptr<EmitterInterface> const & emitter,
+                                                   std::shared_ptr<cache::IntermediateDataReader> const & cache,
                                                    feature::GenerateInfo const & info)
   : TranslatorCountry(emitter, cache, info)
   , m_osmTagMixer(base::JoinPath(GetPlatform().ResourcesDir(), MIXED_TAGS_FILE)) {}

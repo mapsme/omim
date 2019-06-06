@@ -28,21 +28,24 @@ class IntermediateDataReader;
 class Translator : public TranslatorInterface
 {
 public:
-  explicit Translator(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
-                      std::shared_ptr<FeatureMakerBase> maker, FilterCollection const & filters,
+  explicit Translator(std::shared_ptr<EmitterInterface> const & emitter,
+                      std::shared_ptr<cache::IntermediateDataReader> const & cache,
+                      std::shared_ptr<FeatureMakerBase> const & maker,
+                      FilterCollection const & filters,
                       CollectorCollection const & collectors);
-  explicit Translator(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
-                      std::shared_ptr<FeatureMakerBase> maker);
+  explicit Translator(std::shared_ptr<EmitterInterface> const & emitter,
+                      std::shared_ptr<cache::IntermediateDataReader> const & cache,
+                      std::shared_ptr<FeatureMakerBase> const & maker);
 
   // TranslatorInterface overrides:
   void Emit(OsmElement & element) override;
   bool Finish() override;
   void GetNames(std::vector<std::string> & names) const override;
 
-  void AddCollector(std::shared_ptr<CollectorInterface> collector);
+  void AddCollector(std::shared_ptr<CollectorInterface> const & collector);
   void AddCollectorCollection(CollectorCollection const & collectors);
 
-  void AddFilter(std::shared_ptr<FilterInterface> filter);
+  void AddFilter(std::shared_ptr<FilterInterface> const & filter);
   void AddFilterCollection(FilterCollection const & filters);
 
 protected:
@@ -51,6 +54,6 @@ protected:
   RelationTagsEnricher m_tagsEnricher;
   std::shared_ptr<FeatureMakerBase> m_featureMaker;
   std::shared_ptr<EmitterInterface> m_emitter;
-  cache::IntermediateDataReader & m_cache;
+  std::shared_ptr<cache::IntermediateDataReader> m_cache;
 };
 }  // namespace generator

@@ -21,7 +21,7 @@ namespace generator
 class TranslatorCoastline : public Translator
 {
 public:
-  explicit TranslatorCoastline(std::shared_ptr<EmitterInterface> emitter,
-                               cache::IntermediateDataReader & cache);
+  explicit TranslatorCoastline(std::shared_ptr<EmitterInterface> const & emitter,
+                               std::shared_ptr<cache::IntermediateDataReader> const & cache);
 };
 }  // namespace generator

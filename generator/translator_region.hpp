@@ -21,7 +21,8 @@ namespace generator
 class TranslatorRegion : public Translator
 {
 public:
-  explicit TranslatorRegion(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
+  explicit TranslatorRegion(std::shared_ptr<EmitterInterface> const & emitter,
+                            std::shared_ptr<cache::IntermediateDataReader> const & cache,
                             feature::GenerateInfo const & info);
 };
 }  // namespace generator

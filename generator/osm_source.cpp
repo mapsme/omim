@@ -231,25 +231,18 @@ bool GenerateRaw(feature::GenerateInfo & info, TranslatorInterface & translators
   return true;
 }
 
-LoaderWrapper::LoaderWrapper(feature::GenerateInfo & info)
-  : m_reader(cache::CreatePointStorageReader(info.m_nodeStorageType, info.GetIntermediateFileName(NODES_FILE)), info)
+
+CacheLoader::CacheLoader(feature::GenerateInfo & info)
+  : m_info(info)
 {
-  m_reader.LoadIndex();
+  auto pointReader = cache::PointStorageReader::GetOrCreate(info.m_nodeStorageType, info.GetIntermediateFileName(NODES_FILE));
+  m_reader = std::make_shared<cache::IntermediateDataReader>(pointReader, info);
+  m_reader->LoadIndex();
 }
 
-cache::IntermediateDataReader & LoaderWrapper::GetReader()
+std::shared_ptr<cache::IntermediateDataReader> CacheLoader::GetCache() const
 {
   return m_reader;
-}
-
-CacheLoader::CacheLoader(feature::GenerateInfo & info) : m_info(info) {}
-
-cache::IntermediateDataReader & CacheLoader::GetCache()
-{
-  if (!m_loader)
-    m_loader = std::make_unique<LoaderWrapper>(m_info);
-
-  return m_loader->GetReader();
 }
 
 bool GenerateIntermediateData(feature::GenerateInfo & info)
