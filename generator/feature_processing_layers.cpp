@@ -83,8 +83,7 @@ std::string LayerBase::GetAsStringRecursive() const
   return m_buffer.str();
 }
 
-RepresentationLayer::RepresentationLayer(std::shared_ptr<CityBoundaryProcessor> processor)
-  : m_processor(processor) {}
+RepresentationLayer::RepresentationLayer() {}
 
 void RepresentationLayer::Handle(FeatureBuilder & feature)
 {
@@ -142,9 +141,6 @@ void RepresentationLayer::Handle(FeatureBuilder & feature)
 
 void RepresentationLayer::HandleArea(FeatureBuilder & feature, FeatureParams const & params)
 {
-  if (ftypes::IsCityTownOrVillage(params.m_types))
-    m_processor->Add(feature);
-
   if (CanBeArea(params))
   {
     LayerBase::Handle(feature);

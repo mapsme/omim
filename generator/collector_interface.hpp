@@ -33,6 +33,7 @@ class CollectorAddresses;
 class CollectorCollection;
 class CollectorTag;
 class MaxspeedsCollector;
+class CityBoundaryCollector;
 namespace regions
 {
 class CollectorRegionInfo;
@@ -55,6 +56,7 @@ public:
 
   virtual void Merge(CollectorInterface const *) = 0;
 
+  virtual void MergeInto(CityBoundaryCollector *) const { FailIfMethodUnsuppirted(); }
   virtual void MergeInto(routing::CameraCollector *) const { FailIfMethodUnsuppirted(); }
   virtual void MergeInto(routing::RestrictionWriter *) const { FailIfMethodUnsuppirted(); }
   virtual void MergeInto(routing::RoadAccessWriter *) const { FailIfMethodUnsuppirted(); }

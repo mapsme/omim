@@ -82,7 +82,6 @@ private:
 
 // Responsibility of class RepresentationLayer is converting features from one form to another for countries.
 // Here we can use the knowledge of the rules for drawing objects.
-// The class transfers control to the CityBoundaryProcessor if for the feature it is a city, town or village.
 // Osm object can be represented as feature of following geometry types: point, line, area depending on
 // its types and geometry. Sometimes one osm object can be represented as two features e.g. object with
 // closed geometry with types "leisure=playground" and "barrier=fence" splits into two objects: area object
@@ -90,7 +89,7 @@ private:
 class RepresentationLayer : public LayerBase
 {
 public:
-  explicit RepresentationLayer(std::shared_ptr<CityBoundaryProcessor> processor);
+  explicit RepresentationLayer();
 
   // LayerBase overrides:
   void Handle(feature::FeatureBuilder & feature) override;
@@ -101,8 +100,6 @@ private:
   static bool CanBeLine(FeatureParams const & params);
 
   void HandleArea(feature::FeatureBuilder & feature, FeatureParams const & params);
-
-  std::shared_ptr<CityBoundaryProcessor> m_processor;
 };
 
 // Responsibility of class PrepareFeatureLayer is the removal of unused types and names,

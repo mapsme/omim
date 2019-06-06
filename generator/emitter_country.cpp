@@ -1,6 +1,5 @@
 #include "generator/emitter_country.hpp"
 
-#include "generator/city_boundary_processor.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/feature_processing_layers.hpp"
 #include "generator/generate_info.hpp"
@@ -16,24 +15,12 @@ using namespace feature;
 namespace generator
 {
 EmitterCountry::EmitterCountry(feature::GenerateInfo const & info)
-  : m_cityBoundaryProcessor(std::make_shared<CityBoundaryProcessor>(info.m_boundariesTable))
-  , m_countryMapper(std::make_shared<CountryMapper>(info))
+  : m_countryMapper(std::make_shared<CountryMapper>(info))
   , m_skippedListFilename(info.GetIntermediateFileName("skipped_elements", ".lst"))
 {
-  m_processingChain = std::make_shared<RepresentationLayer>(m_cityBoundaryProcessor);
+  m_processingChain = std::make_shared<RepresentationLayer>();
   m_processingChain->Add(std::make_shared<PrepareFeatureLayer>());
-  m_processingChain->Add(std::make_shared<PromoCatalogLayer>(info.m_promoCatalogCitiesFilename));
-  m_processingChain->Add(std::make_shared<CityBoundaryLayer>(m_cityBoundaryProcessor));
-  m_processingChain->Add(std::make_shared<BookingLayer>(info.m_bookingDataFilename, m_countryMapper));
-  m_processingChain->Add(std::make_shared<OpentableLayer>(info.m_opentableDataFilename, m_countryMapper));
   m_processingChain->Add(std::make_shared<CountryMapperLayer>(m_countryMapper));
-
-  if (info.m_emitCoasts)
-  {
-    auto const geomFilename = info.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom");
-    auto const worldCoastsFilename = info.GetTmpFileName(WORLD_COASTS_FILE_NAME);
-    m_processingChain->Add(std::make_shared<EmitCoastsLayer>(worldCoastsFilename, geomFilename, m_countryMapper));
-  }
 }
 
 void EmitterCountry::Process(FeatureBuilder & feature)
@@ -43,9 +30,6 @@ void EmitterCountry::Process(FeatureBuilder & feature)
 
 bool EmitterCountry::Finish()
 {
-  for (auto & feature : m_cityBoundaryProcessor->GetFeatures())
-    m_countryMapper->RemoveInvalidTypesAndMap(feature);
-
   WriteDump();
   return true;
 }

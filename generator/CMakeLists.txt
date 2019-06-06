@@ -35,6 +35,8 @@ set(SRC
   collection_base.hpp
   collector_addresses.cpp
   collector_addresses.hpp
+  collector_city_boundary.cpp
+  collector_city_boundary.hpp
   collector_camera.cpp
   collector_camera.hpp
   collector_collection.cpp
