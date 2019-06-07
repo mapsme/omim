@@ -6,7 +6,7 @@ CountryParentGetter::CountryParentGetter(std::string const & countriesFile,
                                          std::string const & countriesDir)
 {
   LOG(LINFO, ("CountryParentGetter::CountryParentGetter() countriesFile:", countriesFile,
-      "countriesDir", countriesDir));
+      "countriesDir:", countriesDir));
 
   if (countriesFile.empty())
     m_storage = std::make_shared<Storage>();

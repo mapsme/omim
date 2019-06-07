@@ -129,9 +129,13 @@ Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */,
   , m_downloadMapOnTheMap(nullptr)
   , m_maxMwmSizeBytes(0)
 {
+  LOG(LINFO, ("Storage::Storage(", pathToCountriesFile, ",", dataDir));
   SetLocale(languages::GetCurrentTwine());
   LoadCountriesFile(pathToCountriesFile, m_dataDir);
   CalcMaxMwmSizeBytes();
+
+  LOG(LINFO, ("Storage::Storage() end m_countries.IsEmpty() = ",
+              m_countries.IsEmpty() ? "true" : "false", "m_maxMwmSizeBytes:", m_maxMwmSizeBytes));
 }
 
 Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
