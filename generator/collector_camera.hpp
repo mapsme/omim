@@ -43,7 +43,7 @@ public:
 
   struct CameraInfo
   {
-    CameraInfo(const OsmElement & element);
+    explicit CameraInfo(OsmElement const & element);
 
     uint64_t m_id = 0;
     double m_lon = 0.0;
@@ -57,6 +57,7 @@ public:
   void ForEachCamera(Fn && toDo) const;
   void ProcessNode(OsmElement const & element);
   void ProcessWay(OsmElement const & element);
+  void AddSpeedFromRelation(uint64_t cameraOsmId, std::string const & speed);
 
 private:
   std::unordered_map<uint64_t, CameraInfo> m_speedCameras;
@@ -74,6 +75,7 @@ public:
   // We will process all nodes before ways because of o5m format:
   // all nodes are first, then all ways, then all relations.
   void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const & element) override;
+  void CollectRelation(RelationElement const & element) override;
   void Save() override;
 
 private:

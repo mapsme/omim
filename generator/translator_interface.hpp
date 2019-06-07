@@ -15,6 +15,7 @@ public:
 
   virtual void Preprocess(OsmElement &) {}
   virtual void Emit(OsmElement & element) = 0;
+  virtual void Postprocess(OsmElement &) {}
   virtual bool Finish() = 0;
   virtual void GetNames(std::vector<std::string> & names) const = 0;
 };

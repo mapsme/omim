@@ -96,6 +96,10 @@ void TranslatorCountry::Preprocess(OsmElement & element)
 {
   // Here we can add new tags to the elements!
   m_tagReplacer(element);
+}
+
+void TranslatorCountry::Postprocess(OsmElement & element)
+{
   CollectFromRelations(element);
 }
 

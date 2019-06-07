@@ -37,10 +37,12 @@ std::vector<std::pair<std::string, Restriction::Type>> const kRestrictionTypes =
 /// \returns true if conversion was successful and false otherwise.
 bool TagToType(std::string const & tag, Restriction::Type & type)
 {
-  auto const it = std::find_if(kRestrictionTypes.cbegin(), kRestrictionTypes.cend(),
-                          [&tag](std::pair<std::string, Restriction::Type> const & v) {
-    return v.first == tag;
-  });
+  auto const it =
+    std::find_if(kRestrictionTypes.cbegin(), kRestrictionTypes.cend(),
+                 [&tag](std::pair<std::string, Restriction::Type> const & v) {
+                   return v.first == tag;
+                 });
+
   if (it == kRestrictionTypes.cend())
     return false; // Unsupported restriction type.
 

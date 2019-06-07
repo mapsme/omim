@@ -46,6 +46,8 @@ void Translator::Emit(OsmElement & element)
     m_collectors.CollectFeature(feature, element);
     m_emitter->Process(feature);
   }
+
+  Postprocess(element);
 }
 
 bool Translator::Finish()

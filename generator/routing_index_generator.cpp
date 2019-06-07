@@ -472,12 +472,12 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
 
     using Algorithm = AStarAlgorithm<JointSegment, JointEdge, RouteWeight>;
 
-    Algorithm astar;
     IndexGraphWrapper indexGraphWrapper(graph, enter);
     DijkstraWrapperJoints wrapper(indexGraphWrapper, enter);
     AStarAlgorithm<JointSegment, JointEdge, RouteWeight>::Context context;
     indexGraphWrapper.SetAStarParents(true /* forward */, context.GetParents());
     unordered_map<uint32_t, vector<JointSegment>> visitedVertexes;
+    Algorithm astar;
     astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
                         [&](JointSegment const & vertex)
                         {

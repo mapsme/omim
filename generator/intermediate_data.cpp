@@ -375,7 +375,8 @@ IntermediateDataWriter::IntermediateDataWriter(shared_ptr<PointStorageWriterInte
 void IntermediateDataWriter::AddRelation(Key id, RelationElement const & e)
 {
   static set<string> const types = {"multipolygon", "route", "boundary",
-                                    "associatedStreet", "building", "restriction"};
+                                    "associatedStreet", "building", "restriction",
+                                    "enforcement"};
   string const & relationType = e.GetType();
   if (!types.count(relationType))
     return;

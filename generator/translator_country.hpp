@@ -26,7 +26,10 @@ public:
                              feature::GenerateInfo const & info);
 
   // TranslatorInterface overrides:
+  // @{
   void Preprocess(OsmElement & element) override;
+  void Postprocess(OsmElement & element) override;
+  // @}
 
 private:
   void CollectFromRelations(OsmElement const & element);

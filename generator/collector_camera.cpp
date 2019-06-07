@@ -1,8 +1,9 @@
 #include "generator/collector_camera.hpp"
 
 #include "generator/feature_builder.hpp"
-#include "generator/osm_element.hpp"
+#include "generator/intermediate_data.hpp"
 #include "generator/maxspeeds_parser.hpp"
+#include "generator/osm_element.hpp"
 
 #include "routing/routing_helpers.hpp"
 
@@ -21,7 +22,55 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
+#include <string>
+
+#include "boost/optional.hpp"
+
 using namespace feature;
+
+namespace
+{
+boost::optional<std::string> GetEnforcementMaxSpeed(RelationElement const & element)
+{
+  bool hasMaxSpeed = false;
+  bool hasEnforcementMaxSpeed = false;
+  std::string const * speed = nullptr;
+
+  for (auto const & tag : element.tags)
+  {
+    auto const & key = tag.first;
+    auto const & value = tag.second;
+    if (key == "enforcement" && value == "maxspeed")
+      hasEnforcementMaxSpeed = true;
+
+    if (key == "maxspeed")
+    {
+      hasMaxSpeed = true;
+      speed = &value;
+    }
+
+    if (hasMaxSpeed && hasEnforcementMaxSpeed)
+      break;
+  }
+
+  if (!(hasMaxSpeed && hasEnforcementMaxSpeed))
+    return {};
+
+  CHECK(speed, ());
+  return {*speed};
+}
+
+boost::optional<uint64_t> GetRoleDevice(RelationElement const & element)
+{
+  for (auto const & member : element.nodes)
+  {
+    if (member.second == "device")
+      return {member.first};
+  }
+
+  return {};
+}
+}  // namespace
 
 namespace routing
 {
@@ -56,6 +105,13 @@ void CameraProcessor::ForEachCamera(Fn && toDo) const
   }
 }
 
+void CameraProcessor::ProcessNode(OsmElement const & element)
+{
+  CameraInfo camera(element);
+  CHECK_LESS(camera.m_speed.size(), kMaxSpeedSpeedStringLength, ());
+  m_speedCameras.emplace(element.m_id, std::move(camera));
+}
+
 void CameraProcessor::ProcessWay(OsmElement const & element)
 {
   for (auto const node : element.m_nodes)
@@ -68,11 +124,14 @@ void CameraProcessor::ProcessWay(OsmElement const & element)
   }
 }
 
-void CameraProcessor::ProcessNode(OsmElement const & element)
+void CameraProcessor::AddSpeedFromRelation(uint64_t cameraOsmId, std::string const & speed)
 {
-  CameraInfo camera(element);
-  CHECK_LESS(camera.m_speed.size(), kMaxSpeedSpeedStringLength, ());
-  m_speedCameras.emplace(element.m_id, std::move(camera));
+  auto const it = m_speedCameras.find(cameraOsmId);
+  if (it == m_speedCameras.end())
+    return;
+
+  if (it->second.m_speed.empty())
+    it->second.m_speed = speed;
 }
 
 CameraCollector::CameraCollector(std::string const & writerFile) :
@@ -97,6 +156,22 @@ void CameraCollector::CollectFeature(FeatureBuilder const & feature, OsmElement 
   default:
     break;
   }
+}
+
+void CameraCollector::CollectRelation(RelationElement const & element)
+{
+  auto maxSpeedOp = GetEnforcementMaxSpeed(element);
+  if (!maxSpeedOp)
+    return;
+
+  auto const & speed = *maxSpeedOp;
+
+  auto op = GetRoleDevice(element);
+  if (!op)
+    return;
+
+  uint64_t ref = *op;
+  m_processor.AddSpeedFromRelation(ref, speed);
 }
 
 void CameraCollector::Write(CameraProcessor::CameraInfo const & camera, std::vector<uint64_t> const & ways)
