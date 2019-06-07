@@ -1,5 +1,4 @@
 #include "local_ads/statistics.hpp"
-#include "local_ads/config.hpp"
 #include "local_ads/file_helpers.hpp"
 
 #include "platform/http_client.hpp"

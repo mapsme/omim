@@ -3,7 +3,6 @@
 #include "map/local_ads_mark.hpp"
 
 #include "local_ads/campaign_serialization.hpp"
-#include "local_ads/config.hpp"
 #include "local_ads/file_helpers.hpp"
 #include "local_ads/icons_info.hpp"
 
