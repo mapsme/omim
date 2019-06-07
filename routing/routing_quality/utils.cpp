@@ -77,7 +77,16 @@ private:
     classificator::Load();
     vector<platform::LocalCountryFile> localFiles;
 
+    LOG(LINFO, ("RouteGetter::RouteGetter()"));
+
+    m_cpg->GetStorageForTesting().ForEachCountryFile(
+        [&](platform::CountryFile const & file) { LOG(LINFO, (file)); });
+
     platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max(), localFiles);
+
+    LOG(LINFO, ("RouteGetter::RouteGetter() localFiles.size() =", localFiles.size()));
+
+
     for (auto const & localFile : localFiles)
     {
       UNUSED_VALUE(m_dataSource.RegisterMap(localFile));
