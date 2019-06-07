@@ -10,7 +10,6 @@
 #include "storage/country_info_getter.hpp"
 #include "storage/country_parent_getter.hpp"
 #include "storage/routing_helpers.hpp"
-#include "storage/storage.hpp"
 
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
@@ -77,7 +76,6 @@ private:
 
     classificator::Load();
     vector<platform::LocalCountryFile> localFiles;
-    storage::Storage storage;
 
     platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max(), localFiles);
     for (auto const & localFile : localFiles)
@@ -88,7 +86,7 @@ private:
       CHECK(mwmId.IsAlive(), ());
 
       // Only maps from countries.txt should be used for tests.
-      if (storage.IsLeaf(countryFile.GetName()))
+      if (m_cpg->GetStorageForTesting().IsLeaf(countryFile.GetName()))
         m_numMwmIds->RegisterFile(countryFile);
     }
   }
