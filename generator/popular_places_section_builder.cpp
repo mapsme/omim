@@ -128,7 +128,7 @@ PopularPlaces const & PopularPlacesLoader::GetOrLoad(std::string const & filenam
 
   PopularPlaces places;
   LoadPopularPlaces(filename, places);
-  m_plases[filename].emplace(std::move(places));
+  m_plases.emplace(filename, std::move(places));
   return m_plases[filename];
 }
 }  // namespace generator
