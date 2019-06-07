@@ -3,13 +3,18 @@
 #include "generator/feature_maker.hpp"
 #include "generator/filter_planet.hpp"
 #include "generator/filter_elements.hpp"
+#include "generator/filter_world.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/node_mixer.hpp"
 
+
 #include "platform/platform.hpp"
 
 #include "base/file_name_utils.hpp"
+
+#include <algorithm>
+#include <string>
 
 #include "defines.hpp"
 
@@ -24,6 +29,7 @@ TranslatorWorld::TranslatorWorld(std::shared_ptr<EmitterInterface> const & emitt
 {
   AddFilter(std::make_shared<FilterPlanet>());
   AddFilter(std::make_shared<FilterElements>(base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
+  AddFilter(std::make_shared<FilterWorld>(info.m_popularPlacesFilename));
 }
 
 void TranslatorWorld::Preprocess(OsmElement & element)

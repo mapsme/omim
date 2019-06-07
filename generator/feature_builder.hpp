@@ -54,6 +54,12 @@ public:
   Geometry const & GetGeometry() const { return m_polygons; }
   PointSeq const & GetOuterGeometry() const { return m_polygons.front(); }
   GeomType GetGeomType() const { return m_params.GetGeomType(); }
+  bool HasType(uint32_t t, uint8_t level) const { return m_params.IsTypeExist(t, level); }
+  }
+
+  template <class FnT> bool HasTypesIf(FnT fn) const
+  {
+    return std::any_of(std::begin(m_params.m_types), std::end(m_params.m_types), fn);
   bool IsGeometryClosed() const;
   m2::PointD GetGeometryCenter() const;
   m2::PointD GetKeyPoint() const;

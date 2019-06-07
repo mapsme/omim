@@ -2,6 +2,7 @@
 
 #include "generator/feature_maker_base.hpp"
 #include "generator/feature_merger.hpp"
+#include "generator/filter_world.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/popular_places_section_builder.hpp"
 
@@ -31,8 +32,6 @@ namespace
 {
 class WaterBoundaryChecker
 {
-  uint32_t m_boundaryType;
-
   struct RegionTraits
   {
     m2::RectD const & LimitRect(m2::RegionD const & r) const { return r.GetRect(); }
@@ -47,7 +46,6 @@ class WaterBoundaryChecker
 public:
   WaterBoundaryChecker(std::string const & rawGeometryFileName)
   {
-    m_boundaryType = classif().GetTypeByPath({"boundary", "administrative"});
     LoadWaterGeometry(rawGeometryFileName);
   }
 
@@ -91,7 +89,7 @@ public:
   {
     ++m_totalFeatures;
 
-    if (fb.FindType(m_boundaryType, 2) == ftype::GetEmptyValue())
+    if (!generator::FilterWorld::IsBoundary(fb))
       return false;
 
     ++m_totalBorders;
@@ -250,7 +248,7 @@ class WorldMapGenerator
   FeatureTypesProcessor m_typesCorrector;
   FeatureMergeProcessor m_merger;
   WaterBoundaryChecker m_boundaryChecker;
-  generator::PopularPlaces m_popularPlaces;
+  std::string m_popularPlacesFilename;
 
 public:
   explicit WorldMapGenerator(std::string const & worldFilename, std::string const & rawGeometryFileName,
@@ -258,6 +256,7 @@ public:
     : m_worldBucket(worldFilename)
     , m_merger(kPointCoordBits - (scales::GetUpperScale() - scales::GetUpperWorldScale()) / 2)
     , m_boundaryChecker(rawGeometryFileName)
+    , m_popularPlacesFilename(popularPlacesFilename)
   {
     // Do not strip last types for given tags,
     // for example, do not cut 'admin_level' in  'boundary-administrative-XXX'.
@@ -271,18 +270,14 @@ public:
     char const * arr2[] = {"boundary", "administrative", "4", "state"};
     m_typesCorrector.SetDontNormalizeType(arr2);
 
-    if (!popularPlacesFilename.empty())
-      generator::LoadPopularPlaces(popularPlacesFilename, m_popularPlaces);
-    else
+    if (popularPlacesFilename.empty())
       LOG(LWARNING, ("popular_places_data option not set. Popular atractions will not be added to World.mwm"));
   }
 
   void Process(feature::FeatureBuilder & fb)
   {
-    auto const isPopularAttraction = IsPopularAttraction(fb);
-    auto const isInternationalAirport =
-        fb.HasType(classif().GetTypeByPath({"aeroway", "aerodrome", "international"}));
-    auto const forcePushToWorld = isPopularAttraction || isInternationalAirport;
+    auto const forcePushToWorld = generator::FilterWorld::IsPopularAttraction(fb, m_popularPlacesFilename) ||
+                                  generator::FilterWorld::IsInternationalAirport(fb);
 
     if (!m_worldBucket.NeedPushToWorld(fb) && !forcePushToWorld)
       return;
@@ -346,36 +341,6 @@ public:
   }
 
   void DoMerge() { m_merger.DoMerge(m_worldBucket); }
-
-private:
-  bool IsPopularAttraction(feature::FeatureBuilder const & fb) const
-  {
-    if (fb.GetName().empty())
-      return false;
-
-    auto static const attractionTypes =
-        search::GetCategoryTypes("attractions", "en", GetDefaultCategories());
-    ASSERT(is_sorted(attractionTypes.begin(), attractionTypes.end()), ());
-    auto const & featureTypes = fb.GetTypes();
-    if (!std::any_of(featureTypes.begin(), featureTypes.end(), [](uint32_t t) {
-          return binary_search(attractionTypes.begin(), attractionTypes.end(), t);
-        }))
-    {
-      return false;
-    }
-
-    auto const it = m_popularPlaces.find(fb.GetMostGenericOsmId());
-    if (it == m_popularPlaces.end())
-      return false;
-
-    // todo(@t.yan): adjust
-    uint8_t const kPopularityThreshold = 12;
-    if (it->second < kPopularityThreshold)
-      return false;
-
-    // todo(@t.yan): maybe check place has wikipedia link.
-    return true;
-  }
 };
 
 template <class FeatureOut>

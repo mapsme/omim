@@ -87,6 +87,8 @@ set(SRC
   filter_interface.hpp
   filter_planet.cpp
   filter_planet.hpp
+  filter_world.cpp
+  filter_world.hpp
   gen_mwm_info.hpp
   generate_info.hpp
   geometry_holder.hpp
