@@ -89,6 +89,8 @@ private:
       if (m_cpg->GetStorageForTesting().IsLeaf(countryFile.GetName()))
         m_numMwmIds->RegisterFile(countryFile);
     }
+    LOG(LINFO, ("Content of m_numMwmIds"));
+    m_numMwmIds->ForEachId([&](NumMwmId id){LOG(LINFO, ("id:", id, m_numMwmIds->GetFile(id)));});
   }
 
   DISALLOW_COPY_AND_MOVE(RouteGetter);
