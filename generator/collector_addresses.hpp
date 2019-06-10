@@ -8,6 +8,10 @@
 
 namespace generator
 {
+namespace cache
+{
+class IntermediateDataReader;
+}
 // The class CollectorAddresses is responsible for the collecting addresses to the file.
 class CollectorAddresses : public CollectorInterface
 {
@@ -15,7 +19,8 @@ public:
   CollectorAddresses(std::string const & filename);
 
   // CollectorInterface overrides:
-  std::shared_ptr<CollectorInterface> Clone() const override;
+  std::shared_ptr<CollectorInterface>
+  Clone(std::shared_ptr<cache::IntermediateDataReader> const & = {}) const override;
 
   void CollectFeature(FeatureBuilder const & feature, OsmElement const &) override;
   void Save() override;

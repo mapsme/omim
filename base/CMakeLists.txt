@@ -54,6 +54,7 @@ set(
   observer_list.hpp
   pprof.cpp
   pprof.hpp
+  queue.hpp
   random.cpp
   random.hpp
   range_iterator.hpp

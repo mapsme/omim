@@ -1,6 +1,7 @@
 #include "generator/regions/collector_region_info.hpp"
 
 #include "generator/feature_builder.hpp"
+#include "generator/intermediate_data.hpp"
 #include "generator/osm_element.hpp"
 
 #include "coding/file_writer.hpp"
@@ -71,7 +72,8 @@ CollectorRegionInfo::CollectorRegionInfo(std::string const & filename)
   : CollectorInterface(filename) {}
 
 
-std::shared_ptr<CollectorInterface> CollectorRegionInfo::Clone() const
+std::shared_ptr<CollectorInterface>
+CollectorRegionInfo::Clone(std::shared_ptr<cache::IntermediateDataReader> const &) const
 {
   return std::make_shared<CollectorRegionInfo>(GetFilename());
 }

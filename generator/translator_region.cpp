@@ -49,15 +49,37 @@ public:
 };
 }  // namespace
 
-TranslatorRegion::TranslatorRegion(std::shared_ptr<EmitterInterface> const & emitter,
-                                   std::shared_ptr<cache::IntermediateDataReader> const & cache,
+TranslatorRegion::TranslatorRegion(std::shared_ptr<FeatureProcessorInterface> const & processor,
+                                   std::shared_ptr<cache::IntermediateData> const & cache,
                                    feature::GenerateInfo const & info)
-  : Translator(emitter, cache, std::make_shared<FeatureMakerSimple>(cache))
+  : Translator(processor, cache, std::make_shared<FeatureMakerSimple>(cache))
 
 {
-  AddFilter(std::make_shared<FilterRegions>());
+  SetFilter(std::make_shared<FilterRegions>());
 
   auto filename = info.GetTmpFileName(info.m_fileName, regions::CollectorRegionInfo::kDefaultExt);
-  AddCollector(std::make_shared<regions::CollectorRegionInfo>(filename));
+  SetCollector(std::make_shared<regions::CollectorRegionInfo>(filename));
+}
+
+std::shared_ptr<TranslatorInterface>
+TranslatorRegion::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
+{
+  return std::make_shared<TranslatorRegion>(m_processor->Clone(), cache, m_featureMaker->Clone(),
+                                            m_filter->Clone(), m_collector->Clone(cache->GetCache()));
+}
+
+void TranslatorRegion::Merge(TranslatorInterface const * other)
+{
+  CHECK(other, ());
+
+  other->MergeInto(this);
+}
+
+void TranslatorRegion::MergeInto(TranslatorRegion * other) const
+{
+  CHECK(other, ());
+
+  other->m_collector->Merge(m_collector.get());
+  other->m_processor->Merge(m_processor.get());
 }
 }  // namespace generator

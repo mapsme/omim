@@ -21,6 +21,11 @@ class FileWriter;
 
 namespace generator
 {
+namespace cache
+{
+class IntermediateDataReader;
+}  // namespace cache
+
 namespace regions
 {
 // https://wiki.openstreetmap.org/wiki/Tag:boundary=administrative
@@ -119,7 +124,8 @@ public:
   CollectorRegionInfo(std::string const & filename);
 
   // CollectorInterface overrides:
-  std::shared_ptr<CollectorInterface> Clone() const override;
+  std::shared_ptr<CollectorInterface>
+  Clone(std::shared_ptr<cache::IntermediateDataReader> const & = {}) const override;
 
   void CollectFeature(FeatureBuilder const &, OsmElement const & el) override;
   void Save() override;

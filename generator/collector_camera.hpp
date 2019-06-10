@@ -15,6 +15,14 @@ namespace generator_tests
 {
 class TestCameraCollector;
 }  // namespace generator_tests
+namespace generator
+{
+namespace cache
+{
+class IntermediateDataReader;
+}  // namespace cache
+}  // namespace generator
+
 
 struct OsmElement;
 
@@ -76,7 +84,8 @@ public:
   explicit CameraCollector(std::string const & filename);
 
   // generator::CollectorInterface overrides:
-  std::shared_ptr<CollectorInterface> Clone() const override;
+  std::shared_ptr<CollectorInterface>
+  Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & = {}) const override;
   // We will process all nodes before ways because of o5m format:
   // all nodes are first, then all ways, then all relations.
   void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const & element) override;

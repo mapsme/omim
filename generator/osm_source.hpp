@@ -1,6 +1,6 @@
 #pragma once
 
-#include "generator/emitter_interface.hpp"
+#include "generator/processor_interface.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/translator_interface.hpp"
@@ -40,19 +40,6 @@ public:
   uint64_t Read(char * buffer, uint64_t bufferSize);
 };
 
-class CacheLoader
-{
-public:
-  CacheLoader(feature::GenerateInfo & info);
-  std::shared_ptr<cache::IntermediateDataReader> GetCache() const;
-
-private:
-  feature::GenerateInfo & m_info;
-  std::shared_ptr<cache::IntermediateDataReader> m_reader;
-
-  DISALLOW_COPY(CacheLoader);
-};
-
 
 // This function is needed to generate intermediate data from OSM elements.
 // The translators collection contains translators that translate the OSM element into
@@ -66,7 +53,7 @@ private:
 // ...
 // 2. CacheLoader cacheLoader(genInfo);
 // 3. TranslatorCollection translators;
-// 4. auto emitter = CreateEmitter(EmitterType::Country, genInfo);
+// 4. auto processor = CreateProcessor(ProcessorType::Country, genInfo);
 // 5. translators.Append(CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), genInfo));
 // 6. GenerateRaw(genInfo, translators);
 //
@@ -74,14 +61,14 @@ private:
 // TranslatorCountry is inheritor of Translator.
 //
 // Translator contains several important entities: FeatureMaker, FilterCollection, CollectorCollection
-// and Emitter. In short,
+// and Processor. In short,
 // * FeatureMaker - an object that can create FeatureBuilder1 from OSM element,
 // * FilterCollection - an object that contains a group of filters that may or may not pass OSM elements
 // and FeatureBuilder1s,
 // * CollectorCollection - an object that contains a group of collectors that collect additional
 // information about OSM elements and FeatureBuilder1s (most often it is information that cannot
 // be saved in FeatureBuilder1s from OSM element),
-// * Emitter - an object that converts an element and saves it.
+// * Processor - an object that converts an element and saves it.
 //
 // The most important method is Translator::Emit. Please read it to understand how generation works.
 // The order of calls is very important. First, the FilterCollection will filter the OSM elements,
@@ -97,7 +84,7 @@ private:
 // The emitter is an important entity that needs to transform FeatureBuilder1 and save them in some way.
 // The emitter can filter objects and change the representation of an object based on drawing rules
 // and other application rules.
-// In EmitterCountry stages are divided into layers. The layers are connected in a chain.
+// In ProcessorCountry stages are divided into layers. The layers are connected in a chain.
 // For example, there are RepresentationLayer, which may change the presentation of the FeatureBuilder1
 // depending on the rules of the application, and BookingLayer, which mixes information from booking.
 // You can read a more detailed look into the appropriate class code.

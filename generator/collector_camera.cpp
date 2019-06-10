@@ -1,6 +1,7 @@
 #include "generator/collector_camera.hpp"
 
 #include "generator/feature_builder.hpp"
+#include "generator/intermediate_data.hpp"
 #include "generator/osm_element.hpp"
 #include "generator/maxspeeds_parser.hpp"
 
@@ -100,7 +101,8 @@ void CameraProcessor::Merge(CameraProcessor const & cameraProcessor)
 CameraCollector::CameraCollector(std::string const & filename) :
   generator::CollectorInterface(filename) {}
 
-std::shared_ptr<generator::CollectorInterface> CameraCollector::Clone() const
+std::shared_ptr<generator::CollectorInterface>
+CameraCollector::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const &) const
 {
  return std::make_shared<CameraCollector>(GetFilename());
 }

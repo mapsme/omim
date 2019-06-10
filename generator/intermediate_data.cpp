@@ -446,5 +446,23 @@ PointStorageReader::GetOrCreate(feature::GenerateInfo::NodeStorageType type, str
   m_readers[k] = CreatePointStorageReader(type, name);
   return m_readers[k];
 }
+
+IntermediateData::IntermediateData(feature::GenerateInfo & info)
+  : m_info(info)
+{
+  auto pointReader = PointStorageReader::GetOrCreate(info.m_nodeStorageType, info.GetIntermediateFileName(NODES_FILE));
+  m_reader = make_shared<IntermediateDataReader>(pointReader, info);
+  m_reader->LoadIndex();
+}
+
+shared_ptr<IntermediateDataReader> const & IntermediateData::GetCache() const
+{
+  return m_reader;
+}
+
+std::shared_ptr<IntermediateData> IntermediateData::Clone() const
+{
+  return make_shared<IntermediateData>(m_info);
+}
 }  // namespace cache
 }  // namespace generator

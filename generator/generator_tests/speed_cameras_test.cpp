@@ -1,11 +1,12 @@
 #include "testing/testing.hpp"
 
 #include "generator/camera_info_collector.hpp"
-#include "generator/emitter_factory.hpp"
+#include "generator/processor_factory.hpp"
 #include "generator/feature_sorter.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/generator_tests_support/routing_helpers.hpp"
 #include "generator/generator_tests_support/test_mwm_builder.hpp"
+#include "generator/intermediate_data.hpp"
 #include "generator/maxspeeds_parser.hpp"
 #include "generator/metalines_builder.hpp"
 #include "generator/osm_source.hpp"
@@ -175,10 +176,10 @@ void TestSpeedCameraSectionBuilding(string const & osmContent, CameraMap const &
 
   // Step 2. Generate binary file about cameras.
   {
-    CacheLoader cacheLoader(genInfo);
+    auto cache = std::make_shared<generator::cache::IntermediateData>(genInfo);
     TranslatorCollection translators;
-    auto emitter = CreateEmitter(EmitterType::Country, genInfo);
-    translators.Append(CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), genInfo));
+    auto processor = CreateProcessor(ProcessorType::Country, genInfo);
+    translators.Append(CreateTranslator(TranslatorType::Country, processor, cache->GetCache(), genInfo));
     TEST(GenerateRaw(genInfo, translators), ("Cannot generate features for speed camera"));
   }
 

@@ -10,11 +10,18 @@ using namespace feature;
 
 namespace generator
 {
-FeatureMakerBase::FeatureMakerBase(std::shared_ptr<cache::IntermediateDataReader> const & cache)
+FeatureMakerBase::FeatureMakerBase(std::shared_ptr<cache::IntermediateData> const & cache)
   : m_cache(cache) {}
+
+void FeatureMakerBase::SetCache(std::shared_ptr<cache::IntermediateData> const & cache)
+{
+  m_cache = cache;
+}
 
 bool FeatureMakerBase::Add(OsmElement & element)
 {
+  ASSERT(m_cache, ());
+
   FeatureParams params;
   ParseParams(params, element);
   switch (element.m_type)

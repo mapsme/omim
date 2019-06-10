@@ -1,8 +1,6 @@
 #pragma once
 
-#include "generator/collector_collection.hpp"
 #include "generator/feature_maker_base.hpp"
-#include "generator/filter_collection.hpp"
 #include "generator/filter_interface.hpp"
 #include "generator/relation_tags_enricher.hpp"
 #include "generator/translator_interface.hpp"
@@ -15,12 +13,12 @@ struct OsmElement;
 
 namespace generator
 {
-class EmitterInterface;
+class FeatureProcessorInterface;
 class CollectorInterface;
 
 namespace cache
 {
-class IntermediateDataReader;
+class IntermediateData;
 }  // namespace cache
 
 // Implementing this base class allows an object to create FeatureBuilder1 from OsmElement and then process it.
@@ -28,32 +26,28 @@ class IntermediateDataReader;
 class Translator : public TranslatorInterface
 {
 public:
-  explicit Translator(std::shared_ptr<EmitterInterface> const & emitter,
-                      std::shared_ptr<cache::IntermediateDataReader> const & cache,
+  explicit Translator(std::shared_ptr<FeatureProcessorInterface> const & processor,
+                      std::shared_ptr<cache::IntermediateData> const & cache,
                       std::shared_ptr<FeatureMakerBase> const & maker,
-                      FilterCollection const & filters,
-                      CollectorCollection const & collectors);
-  explicit Translator(std::shared_ptr<EmitterInterface> const & emitter,
-                      std::shared_ptr<cache::IntermediateDataReader> const & cache,
+                      std::shared_ptr<FilterInterface> const & filter,
+                      std::shared_ptr<CollectorInterface> const & collector);
+  explicit Translator(std::shared_ptr<FeatureProcessorInterface> const & processor,
+                      std::shared_ptr<cache::IntermediateData> const & cache,
                       std::shared_ptr<FeatureMakerBase> const & maker);
 
   // TranslatorInterface overrides:
   void Emit(OsmElement & element) override;
   bool Finish() override;
-  void GetNames(std::vector<std::string> & names) const override;
 
-  void AddCollector(std::shared_ptr<CollectorInterface> const & collector);
-  void AddCollectorCollection(CollectorCollection const & collectors);
-
-  void AddFilter(std::shared_ptr<FilterInterface> const & filter);
-  void AddFilterCollection(FilterCollection const & filters);
+  void SetCollector(std::shared_ptr<CollectorInterface> const & collector);
+  void SetFilter(std::shared_ptr<FilterInterface> const & filter);
 
 protected:
-  FilterCollection m_filters;
-  CollectorCollection m_collectors;
+  std::shared_ptr<FilterInterface> m_filter;
+  std::shared_ptr<CollectorInterface> m_collector;
   RelationTagsEnricher m_tagsEnricher;
   std::shared_ptr<FeatureMakerBase> m_featureMaker;
-  std::shared_ptr<EmitterInterface> m_emitter;
-  std::shared_ptr<cache::IntermediateDataReader> m_cache;
+  std::shared_ptr<FeatureProcessorInterface> m_processor;
+  std::shared_ptr<cache::IntermediateData> m_cache;
 };
 }  // namespace generator

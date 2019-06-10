@@ -16,6 +16,7 @@
 #include "geometry/parametrized_segment.hpp"
 #include "geometry/simplification.hpp"
 
+#include "base/assert.hpp"
 #include "base/exception.hpp"
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
@@ -286,5 +287,28 @@ void UnpackBorders(std::string const & baseDir, std::string const & targetDir)
     auto const polygons = ReadPolygonsOfOneBorder(src);
     DumpBorderToPolyFile(targetDir, mwmName, polygons);
   }
+}
+
+// static
+std::mutex PackedBorders::m_mutex;
+// static
+std::unordered_map<std::string, std::shared_ptr<CountriesContainer>> PackedBorders::m_countries = {{"", {}}};
+
+// static
+shared_ptr<CountriesContainer>
+PackedBorders::GetOrCreate(string const & name)
+{
+  if (m_countries.count(name) != 0)
+    return m_countries[name];
+
+  lock_guard<mutex> lock(m_mutex);
+
+  if (m_countries.count(name) != 0)
+    return m_countries[name];
+
+  auto countries = std::make_shared<CountriesContainer>();
+  CHECK(LoadCountriesList(name, *countries), ("Error loading country polygons files."));
+  m_countries.emplace(name, countries);
+  return m_countries[name];
 }
 }  // namespace borders

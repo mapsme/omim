@@ -7,7 +7,7 @@
 #include "generator/city_roads_generator.hpp"
 #include "generator/descriptions_section_builder.hpp"
 #include "generator/dumper.hpp"
-#include "generator/emitter_factory.hpp"
+#include "generator/processor_factory.hpp"
 #include "generator/feature_generator.hpp"
 #include "generator/feature_sorter.hpp"
 #include "generator/generate_info.hpp"
@@ -332,26 +332,26 @@ int GeneratorToolMain(int argc, char ** argv)
     if (FLAGS_dump_cities_boundaries)
       CHECK(FLAGS_generate_features, ());
 
-    CacheLoader cacheLoader(genInfo);
+    auto cache = std::make_shared<generator::cache::IntermediateData>(genInfo);
     TranslatorCollection translators;
     if (FLAGS_generate_features)
     {
-      auto emitter = CreateEmitter(EmitterType::Country, genInfo);
+      auto processor = CreateProcessor(ProcessorType::Country, genInfo);
       auto const translatorType = FLAGS_no_ads ? TranslatorType::Country : TranslatorType::CountryWithAds;
-      translators.Append(CreateTranslator(translatorType, emitter, cacheLoader.GetCache(), genInfo));
+      translators.Append(CreateTranslator(translatorType, processor, cache, genInfo));
     }
 
     if (FLAGS_generate_world)
     {
-      auto emitter = CreateEmitter(EmitterType::World, genInfo);
+      auto processor = CreateProcessor(ProcessorType::World, genInfo);
       auto const translatorType = FLAGS_no_ads ? TranslatorType::World : TranslatorType::WorldWithAds;
-      translators.Append(CreateTranslator(translatorType, emitter, cacheLoader.GetCache(), genInfo));
+      translators.Append(CreateTranslator(translatorType, processor, cache, genInfo));
     }
 
     if (FLAGS_make_coasts)
     {
-      auto emitter = CreateEmitter(EmitterType::Coastline, genInfo);
-      translators.Append(CreateTranslator(TranslatorType::Coastline, emitter, cacheLoader.GetCache()));
+      auto processor = CreateProcessor(ProcessorType::Coastline, genInfo);
+      translators.Append(CreateTranslator(TranslatorType::Coastline, processor, cache));
     }
 
     if (!GenerateRaw(genInfo, translators))
@@ -386,24 +386,24 @@ int GeneratorToolMain(int argc, char ** argv)
 
     genInfo.m_fileName = FLAGS_output;
 
-    CacheLoader cacheLoader(genInfo);
+    auto cache = std::make_shared<generator::cache::IntermediateData>(genInfo);
     TranslatorCollection translators;
     if (FLAGS_generate_region_features)
     {
-      auto emitter = CreateEmitter(EmitterType::SimpleWithPreserialize, genInfo);
-      translators.Append(CreateTranslator(TranslatorType::Regions, emitter, cacheLoader.GetCache(), genInfo));
+      auto processor = CreateProcessor(ProcessorType::SimpleWithPreserialize, genInfo);
+      translators.Append(CreateTranslator(TranslatorType::Regions, processor, cache, genInfo));
     }
 
     if (FLAGS_generate_streets_features)
     {
-      auto emitter = CreateEmitter(EmitterType::SimpleWithPreserialize, genInfo);
-      translators.Append(CreateTranslator(TranslatorType::Streets, emitter, cacheLoader.GetCache()));
+      auto processor = CreateProcessor(ProcessorType::SimpleWithPreserialize, genInfo);
+      translators.Append(CreateTranslator(TranslatorType::Streets, processor, cache));
     }
 
     if (FLAGS_generate_geo_objects_features)
     {
-      auto emitter = CreateEmitter(EmitterType::SimpleWithPreserialize, genInfo);
-      translators.Append(CreateTranslator(TranslatorType::GeoObjects, emitter, cacheLoader.GetCache()));
+      auto processor = CreateProcessor(ProcessorType::SimpleWithPreserialize, genInfo);
+      translators.Append(CreateTranslator(TranslatorType::GeoObjects, processor, cache));
     }
 
     if (!GenerateRaw(genInfo, translators))

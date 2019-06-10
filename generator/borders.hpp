@@ -11,7 +11,10 @@
 
 #include <string>
 
+#include <memory>
+#include <mutex>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #define BORDERS_DIR "borders/"
@@ -86,4 +89,14 @@ std::vector<m2::RegionD> ReadPolygonsOfOneBorder(Source & src)
 void DumpBorderToPolyFile(std::string const & filePath, storage::CountryId const & mwmName,
                           std::vector<m2::RegionD> const & polygons);
 void UnpackBorders(std::string const & baseDir, std::string const & targetDir);
+
+class PackedBorders
+{
+public:
+  static std::shared_ptr<CountriesContainer> GetOrCreate(std::string const & name);
+
+private:
+  static std::mutex m_mutex;
+  static std::unordered_map<std::string, std::shared_ptr<CountriesContainer>> m_countries;
+};
 }  // namespace borders

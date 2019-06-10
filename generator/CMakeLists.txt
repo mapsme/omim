@@ -6,6 +6,7 @@ include_directories(
 )
 
 set(SRC
+  affiliation.hpp
   altitude_generator.cpp
   altitude_generator.hpp
   booking_dataset.cpp
@@ -48,20 +49,20 @@ set(SRC
   descriptions_section_builder.hpp
   dumper.cpp
   dumper.hpp
-  emitter_booking.hpp
-  emitter_coastline.cpp
-  emitter_coastline.hpp
-  emitter_country.cpp
-  emitter_country.hpp
-  emitter_factory.hpp
-  emitter_interface.hpp
-  emitter_noop.hpp
-  emitter_restaurants.cpp
-  emitter_restaurants.hpp
-  emitter_simple.cpp
-  emitter_simple.hpp
-  emitter_world.cpp
-  emitter_world.hpp
+  processor_booking.hpp
+  processor_coastline.cpp
+  processor_coastline.hpp
+  processor_country.cpp
+  processor_country.hpp
+  processor_factory.hpp
+  processor_interface.hpp
+  processor_noop.hpp
+  processor_restaurants.cpp
+  processor_restaurants.hpp
+  processor_simple.cpp
+  processor_simple.hpp
+  processor_world.cpp
+  processor_world.hpp
   factory_utils.hpp
   feature_builder.cpp
   feature_builder.hpp
@@ -131,7 +132,6 @@ set(SRC
   osm_o5m_source.hpp
   osm_source.cpp
   osm_xml_source.hpp
-  polygonizer.hpp
   popularity.cpp
   popularity.hpp
   popular_places_section_builder.cpp

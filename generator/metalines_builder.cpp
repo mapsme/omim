@@ -1,5 +1,6 @@
 #include "generator/metalines_builder.hpp"
 
+#include "generator/intermediate_data.hpp"
 #include "generator/routing_helpers.hpp"
 
 #include "indexer/classificator.hpp"
@@ -129,7 +130,8 @@ public:
 MetalinesBuilder::MetalinesBuilder(std::string const & filename)
   : generator::CollectorInterface(filename) {}
 
-std::shared_ptr<generator::CollectorInterface> MetalinesBuilder::Clone() const
+std::shared_ptr<generator::CollectorInterface>
+MetalinesBuilder::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const &) const
 {
   return std::make_shared<MetalinesBuilder>(GetFilename());
 }

@@ -1,6 +1,7 @@
 #include "generator/collector_city_boundary.hpp"
 
 #include "generator/feature_generator.hpp"
+#include "generator/intermediate_data.hpp"
 
 #include "indexer/ftypes_matcher.hpp"
 
@@ -12,7 +13,8 @@ namespace generator
 CityBoundaryCollector::CityBoundaryCollector(std::string const & filename)
   : CollectorInterface(filename) {}
 
-std::shared_ptr<CollectorInterface> CityBoundaryCollector::Clone() const
+std::shared_ptr<CollectorInterface>
+CityBoundaryCollector::Clone(std::shared_ptr<cache::IntermediateDataReader> const &) const
 {
   return std::make_shared<CityBoundaryCollector>(GetFilename());
 }

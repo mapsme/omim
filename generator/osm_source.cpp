@@ -227,22 +227,7 @@ bool GenerateRaw(feature::GenerateInfo & info, TranslatorInterface & translators
   if (!translators.Finish())
     return false;
 
-  translators.GetNames(info.m_bucketNames);
   return true;
-}
-
-
-CacheLoader::CacheLoader(feature::GenerateInfo & info)
-  : m_info(info)
-{
-  auto pointReader = cache::PointStorageReader::GetOrCreate(info.m_nodeStorageType, info.GetIntermediateFileName(NODES_FILE));
-  m_reader = std::make_shared<cache::IntermediateDataReader>(pointReader, info);
-  m_reader->LoadIndex();
-}
-
-std::shared_ptr<cache::IntermediateDataReader> CacheLoader::GetCache() const
-{
-  return m_reader;
 }
 
 bool GenerateIntermediateData(feature::GenerateInfo & info)

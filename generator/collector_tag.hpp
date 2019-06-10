@@ -16,6 +16,11 @@ class GeoObjectId;
 
 namespace generator
 {
+namespace cache
+{
+class IntermediateDataReader;
+}  // namespace cache
+
 // CollectorTag class collects validated value of a tag and saves it to file with following
 // format: osmId<tab>tagValue.
 class CollectorTag : public CollectorInterface
@@ -27,7 +32,8 @@ public:
                         Validator const & validator, bool ignoreIfNotOpen = false);
 
   // CollectorInterface overrides:
-  std::shared_ptr<CollectorInterface> Clone() const override;
+  std::shared_ptr<CollectorInterface>
+  Clone(std::shared_ptr<cache::IntermediateDataReader> const & = {}) const override;
 
   void Collect(OsmElement const & el) override;
   void Save() override;

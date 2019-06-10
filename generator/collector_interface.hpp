@@ -34,6 +34,10 @@ class CollectorCollection;
 class CollectorTag;
 class MaxspeedsCollector;
 class CityBoundaryCollector;
+namespace cache
+{
+class IntermediateDataReader;
+}  // namespace cache
 namespace regions
 {
 class CollectorRegionInfo;
@@ -47,7 +51,8 @@ public:
   CollectorInterface(std::string const & filename = {}) : m_filename(filename) {}
   virtual ~CollectorInterface() = default;
 
-  virtual std::shared_ptr<CollectorInterface> Clone() const = 0;
+  virtual std::shared_ptr<CollectorInterface>
+  Clone(std::shared_ptr<cache::IntermediateDataReader> const & = {}) const = 0;
 
   virtual void Collect(OsmElement const &) {}
   virtual void CollectRelation(RelationElement const &) {}

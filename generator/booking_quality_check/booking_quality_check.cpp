@@ -1,5 +1,5 @@
 #include "generator/booking_dataset.hpp"
-#include "generator/emitter_booking.hpp"
+#include "generator/processor_booking.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/opentable_dataset.hpp"
 #include "generator/osm_source.hpp"
@@ -330,7 +330,7 @@ void RunImpl(GenerateInfo & info)
 
   CacheLoader cacheLoader(info);
   TranslatorCollection translators;
-  auto emitter = make_shared<EmitterBooking<Dataset>>(dataset, features);
+  auto emitter = make_shared<ProcessorBooking<Dataset>>(dataset, features);
   translators.Append(CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), info));
   GenerateRaw(info, translators);
 

@@ -1,5 +1,6 @@
 #include "generator/collector_tag.hpp"
 
+#include "generator/intermediate_data.hpp"
 #include "generator/osm_element.hpp"
 
 #include "base/geo_object_id.hpp"
@@ -14,7 +15,8 @@ CollectorTag::CollectorTag(std::string const & filename, std::string const & tag
   , m_validator(validator)
   , m_ignoreIfNotOpen(ignoreIfNotOpen) {}
 
-std::shared_ptr<CollectorInterface> CollectorTag::Clone() const
+std::shared_ptr<CollectorInterface>
+CollectorTag::Clone(std::shared_ptr<cache::IntermediateDataReader> const &) const
 {
   return std::make_shared<CollectorTag>(GetFilename(), m_tagKey, m_validator, m_ignoreIfNotOpen);
 }

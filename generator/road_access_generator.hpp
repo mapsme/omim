@@ -20,6 +20,14 @@
 struct OsmElement;
 class FeatureParams;
 
+namespace generator
+{
+namespace cache
+{
+class IntermediateDataReader;
+}  // namespace cache
+}  // namespace generator
+
 // The road accessibility information is collected in the same manner
 // as the restrictions are.
 // See generator/restriction_generator.hpp for details.
@@ -63,7 +71,8 @@ public:
   RoadAccessWriter(std::string const & filename);
 
   // CollectorInterface overrides:
-  std::shared_ptr<CollectorInterface> Clone() const override;
+  std::shared_ptr<CollectorInterface>
+  Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & = {}) const override;
 
   void CollectFeature(FeatureBuilder const & fb, OsmElement const & elem) override;
   void Save() override;

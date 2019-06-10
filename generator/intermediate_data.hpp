@@ -322,5 +322,19 @@ private:
   static std::mutex m_mutex;
   static std::unordered_map<std::string, std::shared_ptr<PointStorageReaderInterface>> m_readers;
 };
+
+class IntermediateData
+{
+public:
+  IntermediateData(feature::GenerateInfo & info);
+  std::shared_ptr<IntermediateDataReader> const & GetCache() const;
+  std::shared_ptr<IntermediateData> Clone() const;
+
+private:
+  feature::GenerateInfo & m_info;
+  std::shared_ptr<IntermediateDataReader> m_reader;
+
+  DISALLOW_COPY(IntermediateData);
+};
 }  // namespace cache
 }  // namespace generator

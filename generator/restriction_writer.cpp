@@ -1,5 +1,6 @@
 #include "generator/restriction_writer.hpp"
 
+#include "generator/intermediate_data.hpp"
 #include "generator/intermediate_elements.hpp"
 #include "generator/osm_element.hpp"
 #include "generator/restriction_collector.hpp"
@@ -98,9 +99,11 @@ RestrictionWriter::RestrictionWriter(std::string const & filename,
   m_stream << std::setprecision(20);
 }
 
-std::shared_ptr<generator::CollectorInterface> RestrictionWriter::Clone() const
+std::shared_ptr<generator::CollectorInterface>
+RestrictionWriter::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & cache) const
 {
-  return std::make_shared<RestrictionWriter>(GetFilename(), m_cache);
+  auto c = cache ? cache : m_cache;
+  return std::make_shared<RestrictionWriter>(GetFilename(), c);
 }
 
 //static

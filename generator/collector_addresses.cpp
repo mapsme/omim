@@ -1,6 +1,7 @@
 #include "generator/collector_addresses.hpp"
 
 #include "generator/feature_builder.hpp"
+#include "generator/intermediate_data.hpp"
 
 #include "indexer/ftypes_matcher.hpp"
 
@@ -13,7 +14,8 @@ namespace generator
 CollectorAddresses::CollectorAddresses(std::string const & filename)
   : CollectorInterface(filename) {}
 
-std::shared_ptr<CollectorInterface> CollectorAddresses::Clone() const
+std::shared_ptr<CollectorInterface>
+CollectorAddresses::Clone(std::shared_ptr<cache::IntermediateDataReader> const &) const
 {
   return std::make_shared<CollectorAddresses>(GetFilename());
 }

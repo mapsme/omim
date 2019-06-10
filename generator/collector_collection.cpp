@@ -8,11 +8,12 @@ using namespace feature;
 
 namespace generator
 {
-std::shared_ptr<CollectorInterface> CollectorCollection::Clone() const
+std::shared_ptr<CollectorInterface>
+CollectorCollection::Clone(std::shared_ptr<cache::IntermediateDataReader> const & cache) const
 {
   auto p = std::make_shared<CollectorCollection>();
   for (auto const & c : m_collection)
-   p->Append(c->Clone());
+   p->Append(c->Clone(cache));
   return p;
 }
 

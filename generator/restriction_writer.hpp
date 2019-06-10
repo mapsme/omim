@@ -9,6 +9,14 @@
 
 class RelationElement;
 
+namespace generator
+{
+namespace cache
+{
+class IntermediateDataReader;
+}  // namespace cache
+}  // namespace generator
+
 namespace routing
 {
 class RestrictionWriter : public generator::CollectorInterface
@@ -30,7 +38,8 @@ public:
                     std::shared_ptr<generator::cache::IntermediateDataReader> const & cache);
 
   // generator::CollectorInterface overrides:
-  std::shared_ptr<CollectorInterface> Clone() const override;
+  std::shared_ptr<CollectorInterface>
+  Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & cache = {}) const override;
 
   void CollectRelation(RelationElement const & relationElement) override;
   void Save() override;
@@ -42,7 +51,7 @@ public:
 
 private:
   std::stringstream m_stream;
-   std::shared_ptr<generator::cache::IntermediateDataReader> m_cache;
+  std::shared_ptr<generator::cache::IntermediateDataReader> m_cache;
 };
 
 std::string DebugPrint(RestrictionWriter::ViaType const & type);
