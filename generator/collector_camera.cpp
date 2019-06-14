@@ -131,7 +131,10 @@ void CameraProcessor::AddSpeedFromRelation(uint64_t cameraOsmId, std::string con
     return;
 
   if (it->second.m_speed.empty())
+  {
+    LOG(LINFO, ("Add new speed:", speed, "for:", cameraOsmId));
     it->second.m_speed = speed;
+  }
 }
 
 CameraCollector::CameraCollector(std::string const & writerFile) :
