@@ -104,4 +104,11 @@ extern "C"
   {
     return env->NewStringUTF(BOOKMARKS_VENDOR);
   }
+
+  JNIEXPORT jobjectArray JNICALL
+  Java_com_mapswithme_maps_PrivateVariables_bookmarkInAppIds(JNIEnv * env, jclass clazz)
+  {
+    std::vector<std::string> items = BOOKMARK_INAPP_IDS;
+    return jni::ToJavaStringArray(env, items);
+  }
 }

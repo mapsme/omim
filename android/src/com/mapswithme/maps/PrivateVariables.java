@@ -35,6 +35,8 @@ public class PrivateVariables
   public static native String[] adsRemovalNotUsedList();
   @NonNull
   public static native String bookmarksVendor();
+  @NonNull
+  public static native String[] bookmarkInAppIds();
   /**
    * @return interval in seconds
    */
