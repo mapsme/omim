@@ -42,10 +42,10 @@ class PolygonLoader
   CountryPolygons m_polygons;
   m2::RectD m_rect;
 
-  CountriesContainer & m_countries;
+  m4::Tree<CountryPolygons> & m_countries;
 
 public:
-  explicit PolygonLoader(CountriesContainer & countries) : m_countries(countries) {}
+  explicit PolygonLoader(m4::Tree<CountryPolygons> & countries) : m_countries(countries) {}
 
   void operator()(std::string const & name, std::vector<m2::RegionD> const & borders)
   {
@@ -222,16 +222,21 @@ bool GetBordersRect(std::string const & baseDir, std::string const & country,
 
 bool LoadCountriesList(std::string const & baseDir, CountriesContainer & countries)
 {
-  countries.Clear();
-
+  m4::Tree<CountryPolygons> regionsTree;
   LOG(LINFO, ("Loading countries."));
 
-  PolygonLoader loader(countries);
+  PolygonLoader loader(regionsTree);
   ForEachCountry(baseDir, loader);
 
-  LOG(LINFO, ("Countries loaded:", countries.GetSize()));
+  LOG(LINFO, ("Countries loaded:", regionsTree.GetSize()));
 
-  return !countries.IsEmpty();
+  if (!regionsTree.IsEmpty())
+  {
+    countries = CountriesContainer(regionsTree);
+    return true;
+  }
+
+  return false;
 }
 
 void GeneratePackedBorders(std::string const & baseDir)
@@ -298,11 +303,7 @@ std::unordered_map<std::string, std::shared_ptr<CountriesContainer>> PackedBorde
 shared_ptr<CountriesContainer>
 PackedBorders::GetOrCreate(string const & name)
 {
-  if (m_countries.count(name) != 0)
-    return m_countries[name];
-
   lock_guard<mutex> lock(m_mutex);
-
   if (m_countries.count(name) != 0)
     return m_countries[name];
 

@@ -55,8 +55,7 @@ TranslatorCoastline::TranslatorCoastline(std::shared_ptr<FeatureProcessorInterfa
 std::shared_ptr<TranslatorInterface>
 TranslatorCoastline::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  return std::make_shared<TranslatorCoastline>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                               m_filter->Clone(), m_collector->Clone(cache->GetCache()));
+  return Translator::CloneBase<TranslatorCoastline>(cache);
 }
 
 void TranslatorCoastline::Merge(TranslatorInterface const * other)

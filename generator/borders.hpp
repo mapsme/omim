@@ -59,7 +59,38 @@ struct CountryPolygons
   mutable int m_index;
 };
 
-using CountriesContainer = m4::Tree<CountryPolygons>;
+class CountriesContainer
+{
+public:
+  CountriesContainer() = default;
+  CountriesContainer(m4::Tree<CountryPolygons> const & tree)
+    : m_regionsTree(tree)
+  {
+    tree.ForEach([&](auto const & region) {
+      m_regions.emplace(region.m_name, region);
+    });
+  }
+
+  template <typename ToDo>
+  void ForEachInRect(m2::RectD const & rect, ToDo && toDo) const
+  {
+    m_regionsTree.ForEachInRect(rect, std::forward<ToDo>(toDo));
+  }
+
+  bool HasRegionByName(std::string const & name) const
+  {
+    return m_regions.count(name) == 0;
+  }
+
+  CountryPolygons const & GetRegionByName(std::string const & name) const
+  {
+    return m_regions.at(name);
+  }
+
+private:
+  m4::Tree<CountryPolygons> m_regionsTree;
+  std::unordered_map<std::string, CountryPolygons> m_regions;
+};
 
 /// @return false if borderFile can't be opened
 bool LoadBorders(std::string const & borderFile, std::vector<m2::RegionD> & outBorders);

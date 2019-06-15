@@ -2,6 +2,7 @@
 
 #include "generator/collector_addresses.hpp"
 #include "generator/collector_camera.hpp"
+#include "generator/collector_city_boundary.hpp"
 #include "generator/collector_collection.hpp"
 #include "generator/collector_interface.hpp"
 #include "generator/collector_tag.hpp"
@@ -89,6 +90,7 @@ TranslatorCountry::TranslatorCountry(std::shared_ptr<FeatureProcessorInterface> 
   collectors->Append(std::make_shared<CollectorTag>(info.m_idToWikidataFilename, "wikidata" /* tagKey */,
                                                     WikiDataValidator, true /* ignoreIfNotOpen */));
   collectors->Append(std::make_shared<feature::MetalinesBuilder>(info.GetIntermediateFileName(METALINES_FILENAME)));
+  collectors->Append(std::make_shared<CityBoundaryCollector>(info.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME)));
 
   // These are the four collector that collect additional information for the future building of routing section.
   collectors->Append(std::make_shared<MaxspeedsCollector>(info.GetIntermediateFileName(MAXSPEEDS_FILENAME)));
@@ -103,11 +105,10 @@ TranslatorCountry::TranslatorCountry(std::shared_ptr<FeatureProcessorInterface> 
 std::shared_ptr<TranslatorInterface>
 TranslatorCountry::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  auto t = std::make_shared<TranslatorCountry>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                               m_filter->Clone(), m_collector->Clone(cache->GetCache()));
-  t->m_tagAdmixer = m_tagAdmixer;
-  t->m_tagReplacer = m_tagReplacer;
-  return t;
+  auto copy = Translator::CloneBase<TranslatorCountry>(cache);
+  copy->m_tagAdmixer = m_tagAdmixer;
+  copy->m_tagReplacer = m_tagReplacer;
+  return copy;
 }
 
 void TranslatorCountry::Preprocess(OsmElement & element)
@@ -151,12 +152,11 @@ TranslatorCountryWithAds::TranslatorCountryWithAds(std::shared_ptr<FeatureProces
 std::shared_ptr<TranslatorInterface>
 TranslatorCountryWithAds::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  auto t = std::make_shared<TranslatorCountryWithAds>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                               m_filter->Clone(), m_collector->Clone(cache->GetCache()));
-  t->m_tagAdmixer = m_tagAdmixer;
-  t->m_tagReplacer = m_tagReplacer;
-  t->m_osmTagMixer = m_osmTagMixer;
-  return t;
+  auto copy = Translator::CloneBase<TranslatorCountryWithAds>(cache);
+  copy->m_tagAdmixer = m_tagAdmixer;
+  copy->m_tagReplacer = m_tagReplacer;
+  copy->m_osmTagMixer = m_osmTagMixer;
+  return copy;
 }
 
 void TranslatorCountryWithAds::Preprocess(OsmElement & element)

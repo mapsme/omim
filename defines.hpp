@@ -104,6 +104,7 @@
 #define METALINES_FILENAME "metalines.bin"
 #define CAMERAS_TO_WAYS_FILENAME "cameras_to_ways.bin"
 #define MAXSPEEDS_FILENAME "maxspeeds.csv"
+#define CITY_BOUNDARIES_TMP_FILENAME "city_boundaries" DATA_FILE_EXTENSION_TMP
 
 #define TRAFFIC_FILE_EXTENSION ".traffic"
 

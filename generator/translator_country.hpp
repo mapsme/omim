@@ -62,7 +62,7 @@ public:
   void Merge(TranslatorInterface const * other) override;
   void MergeInto(TranslatorCountryWithAds * other) const override;
 
-private:
+protected:
   using TranslatorCountry::TranslatorCountry;
 
   OsmTagMixer m_osmTagMixer;

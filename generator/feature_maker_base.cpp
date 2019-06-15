@@ -57,7 +57,6 @@ bool FeatureMakerBase::GetNextFeature(FeatureBuilder & feature)
   return true;
 }
 
-
 void TransformAreaToPoint(FeatureBuilder & feature)
 {
   CHECK(feature.IsArea(), ());

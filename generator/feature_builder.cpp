@@ -691,4 +691,13 @@ string DebugPrint(FeatureBuilder const & fb)
       << " " << ::DebugPrint(fb.GetOsmIds());
   return out.str();
 }
+
+std::vector<FeatureBuilder1> ReadAllDatRawFormat(std::string const & fileName)
+{
+  std::vector<FeatureBuilder1> fbs;
+  ForEachFromDatRawFormat(fileName, [&](auto && fb, auto const &) {
+    fbs.emplace_back(std::move(fb));
+  });
+  return fbs;
+
 }  // namespace feature

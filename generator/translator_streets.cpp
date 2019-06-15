@@ -18,8 +18,7 @@ TranslatorStreets::TranslatorStreets(std::shared_ptr<FeatureProcessorInterface> 
 std::shared_ptr<TranslatorInterface>
 TranslatorStreets::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  return std::make_shared<TranslatorStreets>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                             m_filter->Clone(), m_collector->Clone(cache->GetCache()));
+  return Translator::CloneBase<TranslatorStreets>(cache);
 }
 
 void TranslatorStreets::Merge(TranslatorInterface const * other)

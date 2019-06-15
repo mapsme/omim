@@ -435,11 +435,7 @@ shared_ptr<PointStorageReaderInterface>
 PointStorageReader::GetOrCreate(feature::GenerateInfo::NodeStorageType type, string const & name)
 {
   string const k = to_string(static_cast<int>(type)) + name;
-  if (m_readers.count(k) != 0)
-    return m_readers[k];
-
   lock_guard<mutex> lock(m_mutex);
-
   if (m_readers.count(k) != 0)
     return m_readers[k];
 

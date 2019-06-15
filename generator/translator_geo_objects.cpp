@@ -22,8 +22,7 @@ TranslatorGeoObjects::TranslatorGeoObjects(std::shared_ptr<FeatureProcessorInter
 std::shared_ptr<TranslatorInterface>
 TranslatorGeoObjects::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  return std::make_shared<TranslatorGeoObjects>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                                m_filter->Clone(), m_collector->Clone(cache->GetCache()));
+  return Translator::CloneBase<TranslatorGeoObjects>(cache);
 }
 
 void TranslatorGeoObjects::Merge(TranslatorInterface const * other)

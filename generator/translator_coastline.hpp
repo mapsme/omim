@@ -29,9 +29,10 @@ public:
   Clone(std::shared_ptr<cache::IntermediateData> const & cache) const override;
 
   void Merge(TranslatorInterface const * other) override;
-  void MergeInto(TranslatorCoastline * other) const override;
 
 protected:
   using Translator::Translator;
+
+  void MergeInto(TranslatorCoastline * other) const override;
 };
 }  // namespace generator

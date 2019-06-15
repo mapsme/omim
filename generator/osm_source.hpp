@@ -1,13 +1,22 @@
 #pragma once
 
+#include "generator/feature_generator.hpp"
+#include "generator/final_processor_intermediate_mwm.hpp"
 #include "generator/processor_interface.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/intermediate_data.hpp"
+#include "generator/osm_o5m_source.hpp"
+#include "generator/osm_xml_source.hpp"
+#include "generator/translator_collection.hpp"
 #include "generator/translator_interface.hpp"
+
+#include "base/queue.hpp"
+#include "base/thread_pool_computational.hpp"
 
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <queue>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -96,4 +105,86 @@ bool GenerateIntermediateData(feature::GenerateInfo & info);
 
 void ProcessOsmElementsFromO5M(SourceReader & stream, std::function<void(OsmElement *)> processor);
 void ProcessOsmElementsFromXML(SourceReader & stream, std::function<void(OsmElement *)> processor);
+
+class ProcessorOsmElementsFromO5M
+{
+public:
+  ProcessorOsmElementsFromO5M(SourceReader & stream);
+  bool TryRead(OsmElement & element);
+
+private:
+  SourceReader & m_stream;
+  osm::O5MSource m_dataset;
+  osm::O5MSource::Iterator m_pos;
+};
+
+class TranslatorsPool
+{
+public:
+  explicit TranslatorsPool(std::shared_ptr<TranslatorCollection> const & original,
+                           std::shared_ptr<generator::cache::IntermediateData> const & cache,
+                           size_t copyCount);
+
+  void Emit(std::vector<OsmElement> & elements);
+  bool Finish();
+
+private:
+  std::vector<std::shared_ptr<TranslatorInterface>> m_translators;
+  base::thread_pool::computational::ThreadPool m_threadPool;
+  base::threads::Queue<base::threads::DataWrapper<size_t>> m_freeTranslators;
+};
+
+class RawGeneratorWriter
+{
+public:
+  RawGeneratorWriter(std::shared_ptr<FeatureProcessorQueue> const & queue,
+                     std::string const & path);
+  ~RawGeneratorWriter();
+
+  void Run();
+  std::vector<std::string> GetNames();
+
+private:
+  void Write(ProcessedData const & chank);
+  void Finish();
+
+  std::thread m_thread;
+  std::shared_ptr<FeatureProcessorQueue> m_queue;
+  std::string m_path;
+  std::unordered_map<std::string, std::unique_ptr<feature::FeaturesCollector>> m_collectors;
+};
+
+class RawGenerator
+{
+public:
+  explicit RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount);
+
+  void GenerateCountries(bool disableAds);
+  void GenerateWorld(bool disableAds);
+  void GenerateCoasts();
+  void GenerateRegionFeatures(std::string const & filename);
+  void GenerateStreetsFeatures(std::string const & filename);
+  void GenerateGeoObjectsFeatures(std::string const & filename);
+
+  bool Execute();
+
+private:
+  using FinalProcessorPtr = std::shared_ptr<FinalProcessorIntermediateMwmInteface>;
+  struct FinalProcessorPtrCmp
+  {
+    bool operator()(FinalProcessorPtr const & l, FinalProcessorPtr const & r)
+    {
+      return *l < *r;
+    }
+  };
+
+  bool GenerateFilteredFeatures(size_t threadsCount);
+
+  feature::GenerateInfo & m_genInfo;
+  size_t m_threadsCount;
+  std::shared_ptr<generator::cache::IntermediateData> m_cache;
+  std::shared_ptr<FeatureProcessorQueue> m_queue;
+  std::shared_ptr<TranslatorCollection> m_translators;
+  std::priority_queue<FinalProcessorPtr, std::vector<FinalProcessorPtr>, FinalProcessorPtrCmp> m_finalProcessors;
+};
 }  // namespace generator

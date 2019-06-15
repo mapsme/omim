@@ -158,6 +158,15 @@ public:
   void Handle(feature::FeatureBuilder & feature) override;
 };
 
+class PreserializeLayer : public LayerBase
+{
+public:
+  // LayerBase overrides:
+  std::shared_ptr<LayerBase> Clone() const override;
+
+  void Handle(FeatureBuilder1 & feature) override;
+};
+
 class  AffilationsFeatureLayer : public LayerBase
 {
 public:

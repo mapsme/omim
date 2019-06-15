@@ -307,4 +307,6 @@ void ForEachParallelFromDatRawFormat(size_t threadsCount, std::string const & fi
   for (size_t i = 0; i < threadsCount; ++i)
     threadPool.Submit(concurrentProcessor);
 }
+
+std::vector<FeatureBuilder1> ReadAllDatRawFormat(std::string const & fileName);
 }  // namespace feature

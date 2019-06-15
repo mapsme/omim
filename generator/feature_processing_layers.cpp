@@ -46,13 +46,18 @@ std::string LogBuffer::GetAsString() const
 std::shared_ptr<LayerBase> LayerBase::CloneRecursive() const
 {
   auto temp = shared_from_this();
-  auto l = temp ? temp->Clone() : nullptr;
-  while (temp)
+  std::shared_ptr<LayerBase> clone;
+  if (temp)
   {
-    l->Add(temp->Clone());
+    clone = temp->Clone();
     temp = temp->m_next;
   }
-  return l;
+  while (temp)
+  {
+    clone->Add(temp->Clone());
+    temp = temp->m_next;
+  }
+  return clone;
 }
 
 {
@@ -211,15 +216,12 @@ std::shared_ptr<LayerBase> PrepareFeatureLayer::Clone() const
 
 {
   auto const type = feature.GetGeomType();
-  auto const & types = feature.GetParams().m_types;
-  if (!feature::HasUsefulType(types, type))
-    return;
-
   auto & params = feature.GetParams();
   feature::RemoveUselessTypes(params.m_types, type);
   feature.PreSerializeAndRemoveUselessNamesForIntermediate();
   FixLandType(feature);
-  LayerBase::Handle(feature);
+  if (feature::HasUsefulType(params.m_types, type))
+    LayerBase::Handle(feature);
 }
 
 std::shared_ptr<LayerBase> RepresentationCoastlineLayer::Clone() const
@@ -299,6 +301,18 @@ std::shared_ptr<LayerBase> PrepareCoastlineFeatureLayer::Clone() const
   LayerBase::Handle(feature);
 }
 
+
+std::shared_ptr<LayerBase> PreserializeLayer::Clone() const
+{
+  return std::make_shared<PreserializeLayer>();
+}
+
+void PreserializeLayer::Handle(FeatureBuilder1 & feature)
+{
+  if (feature.PreSerialize())
+    LayerBase::Handle(feature);
+}
+
 AffilationsFeatureLayer::AffilationsFeatureLayer(std::shared_ptr<FeatureProcessorQueue> const & queue,
                                                  std::shared_ptr<feature::AffiliationInterface> const & affilation)
   : m_queue(queue), m_affilation(affilation) {}
@@ -310,7 +324,6 @@ std::shared_ptr<LayerBase> AffilationsFeatureLayer::Clone() const
 
 void AffilationsFeatureLayer::Handle(FeatureBuilder1 & feature)
 {
-  ProcessedData processedData = {feature, m_affilation->GetAffiliations(feature)};
-  m_queue->Push(std::move(processedData));
+  m_queue->Push({{feature, m_affilation->GetAffiliations(feature)}});
 }
 }  // namespace generator

@@ -1,10 +1,7 @@
 #include "generator/translator.hpp"
 
 #include "generator/collector_collection.hpp"
-#include "generator/collector_interface.hpp"
-#include "generator/processor_interface.hpp"
 #include "generator/filter_collection.hpp"
-#include "generator/intermediate_data.hpp"
 #include "generator/osm_element.hpp"
 
 #include "base/assert.hpp"
@@ -25,6 +22,7 @@ Translator::Translator(std::shared_ptr<FeatureProcessorInterface> const & proces
   , m_processor(processor)
   , m_cache(cache)
 {
+  m_featureMaker->SetCache(cache);
 }
 
 Translator::Translator(std::shared_ptr<FeatureProcessorInterface> const & processor,

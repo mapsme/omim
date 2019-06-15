@@ -64,8 +64,7 @@ TranslatorRegion::TranslatorRegion(std::shared_ptr<FeatureProcessorInterface> co
 std::shared_ptr<TranslatorInterface>
 TranslatorRegion::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  return std::make_shared<TranslatorRegion>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                            m_filter->Clone(), m_collector->Clone(cache->GetCache()));
+  return Translator::CloneBase<TranslatorRegion>(cache);
 }
 
 void TranslatorRegion::Merge(TranslatorInterface const * other)

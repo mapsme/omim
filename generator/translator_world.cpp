@@ -32,18 +32,17 @@ TranslatorWorld::TranslatorWorld(std::shared_ptr<FeatureProcessorInterface> cons
   auto filters = std::make_shared<FilterCollection>();
   filters->Append(std::make_shared<FilterPlanet>());
   filters->Append(std::make_shared<FilterElements>(base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
-  filters->Append(std::make_shared<FilterWorld>(info.m_popularPlacesFilename));
+//  filters->Append(std::make_shared<FilterWorld>(info.m_popularPlacesFilename));
   SetFilter(filters);
 }
 
 std::shared_ptr<TranslatorInterface>
 TranslatorWorld::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  auto t = std::make_shared<TranslatorWorld>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                             m_filter->Clone(), m_collector->Clone(cache->GetCache()));
-  t->m_tagAdmixer = m_tagAdmixer;
-  t->m_tagReplacer = m_tagReplacer;
-  return t;
+  auto copy = Translator::CloneBase<TranslatorWorld>(cache);
+  copy->m_tagAdmixer = m_tagAdmixer;
+  copy->m_tagReplacer = m_tagReplacer;
+  return copy;
 }
 
 void TranslatorWorld::Preprocess(OsmElement & element)
@@ -77,12 +76,11 @@ TranslatorWorldWithAds::TranslatorWorldWithAds(std::shared_ptr<FeatureProcessorI
 std::shared_ptr<TranslatorInterface>
 TranslatorWorldWithAds::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  auto t = std::make_shared<TranslatorWorldWithAds>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                                    m_filter->Clone(), m_collector->Clone(cache->GetCache()));
-  t->m_tagAdmixer = m_tagAdmixer;
-  t->m_tagReplacer = m_tagReplacer;
-  t->m_osmTagMixer = m_osmTagMixer;
-  return t;
+  auto copy = Translator::CloneBase<TranslatorWorldWithAds>(cache);
+  copy->m_tagAdmixer = m_tagAdmixer;
+  copy->m_tagReplacer = m_tagReplacer;
+  copy->m_osmTagMixer = m_osmTagMixer;
+  return copy;
 }
 
 void TranslatorWorldWithAds::Preprocess(OsmElement & element)

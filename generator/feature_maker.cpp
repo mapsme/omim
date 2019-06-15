@@ -17,7 +17,7 @@ namespace generator
 {
 std::shared_ptr<FeatureMakerBase> FeatureMakerSimple::Clone() const
 {
-  return std::shared_ptr<FeatureMakerSimple>();
+  return std::make_shared<FeatureMakerSimple>();
 }
 
 void FeatureMakerSimple::ParseParams(FeatureParams & params, OsmElement & p) const
@@ -105,7 +105,7 @@ bool FeatureMakerSimple::BuildFromRelation(OsmElement & p, FeatureParams const &
 
 std::shared_ptr<FeatureMakerBase> FeatureMaker::Clone() const
 {
-  return std::shared_ptr<FeatureMaker>();
+  return std::make_shared<FeatureMaker>();
 }
 
 

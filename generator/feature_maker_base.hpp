@@ -19,8 +19,7 @@ class IntermediateData;
 class FeatureMakerBase
 {
 public:
-  FeatureMakerBase() = default;
-  explicit FeatureMakerBase(std::shared_ptr<cache::IntermediateData> const & cache);
+  explicit FeatureMakerBase(std::shared_ptr<cache::IntermediateData> const & cache = {});
   virtual ~FeatureMakerBase() = default;
 
   virtual std::shared_ptr<FeatureMakerBase> Clone() const = 0;

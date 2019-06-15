@@ -60,7 +60,7 @@ public:
   void Merge(TranslatorInterface const * other) override;
   void MergeInto(TranslatorWorldWithAds * other) const override;
 
-private:
+protected:
   using TranslatorWorld::TranslatorWorld;
 
   OsmTagMixer m_osmTagMixer;
