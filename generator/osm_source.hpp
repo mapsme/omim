@@ -11,7 +11,7 @@
 #include "generator/translator_interface.hpp"
 
 #include "base/queue.hpp"
-#include "base/thread_pool_computational.hpp"
+#include "base/thread_pool_delayed.hpp"
 
 #include <functional>
 #include <iostream>
@@ -130,7 +130,7 @@ public:
 
 private:
   std::vector<std::shared_ptr<TranslatorInterface>> m_translators;
-  base::thread_pool::computational::ThreadPool m_threadPool;
+  base::thread_pool::delayed::ThreadPool m_threadPool;
   base::threads::Queue<base::threads::DataWrapper<size_t>> m_freeTranslators;
 };
 

@@ -3,6 +3,7 @@
 #include "generator/affiliation.hpp"
 #include "generator/booking_dataset.hpp"
 #include "generator/feature_generator.hpp"
+#include "generator/filter_world.hpp"
 #include "generator/opentable_dataset.hpp"
 #include "generator/processor_interface.hpp"
 #include "generator/promo_catalog_cities.hpp"
@@ -156,6 +157,21 @@ public:
   std::shared_ptr<LayerBase> Clone() const override;
 
   void Handle(feature::FeatureBuilder & feature) override;
+};
+
+class WorldFilterLayer : public LayerBase
+{
+public:
+  explicit WorldFilterLayer(std::string const & popularityFilename);
+
+  // LayerBase overrides:
+  std::shared_ptr<LayerBase> Clone() const override;
+
+  void Handle(FeatureBuilder1 & feature) override;
+
+private:
+   std::string m_popularityFilename;
+  FilterWorld m_filter;
 };
 
 class PreserializeLayer : public LayerBase

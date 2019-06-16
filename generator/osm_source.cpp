@@ -25,6 +25,7 @@
 #include "defines.hpp"
 
 using namespace std;
+using namespace base::thread_pool::delayed;
 
 namespace generator
 {
@@ -325,11 +326,11 @@ bool GenerateIntermediateData(feature::GenerateInfo & info)
   return true;
 }
 
-TranslatorsPool::TranslatorsPool(std::shared_ptr<TranslatorCollection> const & original,
-                                 std::shared_ptr<generator::cache::IntermediateData> const & cache,
+TranslatorsPool::TranslatorsPool(shared_ptr<TranslatorCollection> const & original,
+                                 shared_ptr<generator::cache::IntermediateData> const & cache,
                                  size_t copyCount)
   : m_translators({original})
-  , m_threadPool(copyCount + 1)
+  , m_threadPool(copyCount + 1, base::thread_pool::delayed::ThreadPool::Exit::ExecPending)
 {
   m_freeTranslators.Push(0);
   m_translators.reserve(copyCount + 1);
@@ -342,12 +343,12 @@ TranslatorsPool::TranslatorsPool(std::shared_ptr<TranslatorCollection> const & o
   }
 }
 
-void TranslatorsPool::Emit(std::vector<OsmElement> & elements)
+void TranslatorsPool::Emit(vector<OsmElement> & elements)
 {
   base::threads::DataWrapper<size_t> d;
   m_freeTranslators.WaitAndPop(d);
   auto const idx = d.Get();
-  m_threadPool.Submit([&, idx, elements{std::move(elements)}]() mutable {
+  m_threadPool.Push([&, idx, elements{move(elements)}]() mutable {
     for (auto & element : elements)
       m_translators[idx]->Emit(element);
     m_freeTranslators.Push(idx);
@@ -363,8 +364,8 @@ bool TranslatorsPool::Finish()
   return translator->Finish();
 }
 
-RawGeneratorWriter::RawGeneratorWriter(std::shared_ptr<FeatureProcessorQueue> const & queue,
-                                       std::string const & path)
+RawGeneratorWriter::RawGeneratorWriter(shared_ptr<FeatureProcessorQueue> const & queue,
+                                       string const & path)
   : m_queue(queue), m_path(path) {}
 
 
@@ -375,7 +376,7 @@ RawGeneratorWriter::~RawGeneratorWriter()
 
 void RawGeneratorWriter::Run()
 {
-  m_thread = std::thread([&]() {
+  m_thread = thread([&]() {
     while (true)
     {
       FeatureProcessorChank chank;
@@ -387,10 +388,10 @@ void RawGeneratorWriter::Run()
   });
 }
 
-std::vector<std::string> RawGeneratorWriter::GetNames()
+vector<string> RawGeneratorWriter::GetNames()
 {
   Finish();
-  std::vector<std::string> names;
+  vector<string> names;
   names.resize(m_collectors.size());
   for (const auto  & p : m_collectors)
     names.emplace_back(p.first);
@@ -408,7 +409,7 @@ void RawGeneratorWriter::Write(ProcessedData const & chank)
     if (m_collectors.count(affiliation) == 0)
     {
       auto path = base::JoinPath(m_path, affiliation + DATA_FILE_EXTENSION_TMP);
-      m_collectors.emplace(affiliation, std::make_unique<feature::FeaturesCollector>(std::move(path)));
+      m_collectors.emplace(affiliation, make_unique<feature::FeaturesCollector>(move(path)));
     }
 
     m_collectors[affiliation]->Collect(chank.m_fb);
@@ -425,9 +426,9 @@ void RawGeneratorWriter::Finish()
 RawGenerator::RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount)
   : m_genInfo(genInfo)
   , m_threadsCount(threadsCount)
-  , m_cache(std::make_shared<generator::cache::IntermediateData>(genInfo))
-  , m_queue(std::make_shared<FeatureProcessorQueue>())
-  , m_translators(std::make_shared<TranslatorCollection>())
+  , m_cache(make_shared<generator::cache::IntermediateData>(genInfo))
+  , m_queue(make_shared<FeatureProcessorQueue>())
+  , m_translators(make_shared<TranslatorCollection>())
 {
 }
 
@@ -437,30 +438,30 @@ void RawGenerator::GenerateCountries(bool disableAds)
   auto const translatorType = disableAds ? TranslatorType::Country : TranslatorType::CountryWithAds;
   m_translators->Append(CreateTranslator(translatorType, processor, m_cache, m_genInfo));
 
-//  auto finalProcessor = std::make_shared<CountryFinalProcessor>(m_genInfo.m_targetDir, m_genInfo.m_tmpDir,
-//                                                                m_threadsCount);
-//  finalProcessor->NeedBookig(m_genInfo.m_bookingDatafileName);
+  auto finalProcessor = make_shared<CountryFinalProcessor>(m_genInfo.m_targetDir, m_genInfo.m_tmpDir,
+                                                           m_threadsCount);
+  finalProcessor->NeedBookig(m_genInfo.m_bookingDatafileName);
 
-//  auto const cityBountaryTmpFilename = m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME);
-//  finalProcessor->UseCityBoundaries(cityBountaryTmpFilename);
+  auto const cityBountaryTmpFilename = m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME);
+  finalProcessor->UseCityBoundaries(cityBountaryTmpFilename);
 
-//  auto const geomFilename = m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom");
-//  auto const worldCoastsFilename = m_genInfo.GetTmpFileName(WORLD_COASTS_FILE_NAME);
-//  finalProcessor->AddCoastlines(geomFilename, worldCoastsFilename);
+  auto const geomFilename = m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom");
+  auto const worldCoastsFilename = m_genInfo.GetTmpFileName(WORLD_COASTS_FILE_NAME);
+  finalProcessor->AddCoastlines(geomFilename, worldCoastsFilename);
 
-//  m_finalProcessors.emplace(finalProcessor);
+  m_finalProcessors.emplace(finalProcessor);
 }
 
 void RawGenerator::GenerateWorld(bool disableAds)
 {
-  auto processor = CreateProcessor(ProcessorType::World, m_queue);
+  auto processor = CreateProcessor(ProcessorType::World, m_queue, m_genInfo.m_popularPlacesFilename);
   auto const translatorType = disableAds ? TranslatorType::World : TranslatorType::WorldWithAds;
   m_translators->Append(CreateTranslator(translatorType, processor, m_cache, m_genInfo));
 
   auto const worldFilename = m_genInfo.GetTmpFileName(WORLD_FILE_NAME, DATA_FILE_EXTENSION_TMP);
   auto const geomFilename = m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, RAW_GEOM_FILE_EXTENSION);
-  auto finalProcessor = std::make_shared<WorldFinalProcessor>(worldFilename, geomFilename,
-                                                              m_genInfo.m_popularPlacesFilename);
+  auto finalProcessor = make_shared<WorldFinalProcessor>(worldFilename, geomFilename,
+                                                         m_genInfo.m_popularPlacesFilename);
   auto const cityBountaryTmpFilename = m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME);
   finalProcessor->UseCityBoundaries(cityBountaryTmpFilename);
 
@@ -473,7 +474,7 @@ void RawGenerator::GenerateCoasts()
   m_translators->Append(CreateTranslator(TranslatorType::Coastline, processor, m_cache));
 
   auto const worldcoastTmpFilename = m_genInfo.GetTmpFileName(WORLD_COASTS_FILE_NAME, DATA_FILE_EXTENSION_TMP);
-  auto finalProcessor = std::make_shared<CoastlineFinalProcessor>(worldcoastTmpFilename);
+  auto finalProcessor = make_shared<CoastlineFinalProcessor>(worldcoastTmpFilename);
 
   auto const geomFilename = m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom");
   finalProcessor->SetCoastlineGeomFilename(geomFilename);
@@ -484,19 +485,19 @@ void RawGenerator::GenerateCoasts()
   m_finalProcessors.emplace(finalProcessor);
 }
 
-void RawGenerator::GenerateRegionFeatures(std::string const & filename)
+void RawGenerator::GenerateRegionFeatures(string const & filename)
 {
   auto processor = CreateProcessor(ProcessorType::Simple, m_queue, filename);
   m_translators->Append(CreateTranslator(TranslatorType::Regions, processor, m_cache, m_genInfo));
 }
 
-void RawGenerator::GenerateStreetsFeatures(std::string const & filename)
+void RawGenerator::GenerateStreetsFeatures(string const & filename)
 {
   auto processor = CreateProcessor(ProcessorType::Simple, m_queue, filename);
   m_translators->Append(CreateTranslator(TranslatorType::Streets, processor, m_cache));
 }
 
-void RawGenerator::GenerateGeoObjectsFeatures(std::string const & filename)
+void RawGenerator::GenerateGeoObjectsFeatures(string const & filename)
 {
   auto processor = CreateProcessor(ProcessorType::Simple, m_queue, filename);
   m_translators->Append(CreateTranslator(TranslatorType::GeoObjects, processor, m_cache));
@@ -514,14 +515,14 @@ bool RawGenerator::GenerateFilteredFeatures(size_t threadsCount)
 
   size_t const kElementsCount = 1024;
   size_t element_pos = 0;
-  std::vector<OsmElement> elements(kElementsCount);
+  vector<OsmElement> elements(kElementsCount);
   while(o5mProcessor.TryRead(elements[element_pos++]))
   {
     if (element_pos != kElementsCount)
       continue;
 
     translators.Emit(elements);
-    elements = std::vector<OsmElement>(kElementsCount);
+    elements = vector<OsmElement>(kElementsCount);
     element_pos = 0;
   }
 
@@ -534,19 +535,19 @@ bool RawGenerator::GenerateFilteredFeatures(size_t threadsCount)
 }
 
 bool RawGenerator::Execute()
-{
+{  
   if (!GenerateFilteredFeatures(m_threadsCount))
     return false;
 
   while (!m_finalProcessors.empty())
   {
-    base::thread_pool::computational::ThreadPool threadPool(m_threadsCount);
-    auto const finalProcessor = m_finalProcessors.top();
+    ThreadPool threadPool(m_threadsCount, ThreadPool::Exit::ExecPending);
     do
     {
-      threadPool.Submit([finalProcessor]() {
+      auto const finalProcessor = m_finalProcessors.top();
+      threadPool.Push([finalProcessor]() {
         finalProcessor->Process();
-      }).get();
+      });
       m_finalProcessors.pop();
       if (m_finalProcessors.empty() || *finalProcessor != *m_finalProcessors.top())
         break;

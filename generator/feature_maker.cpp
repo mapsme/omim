@@ -108,7 +108,6 @@ std::shared_ptr<FeatureMakerBase> FeatureMaker::Clone() const
   return std::make_shared<FeatureMaker>();
 }
 
-
 void FeatureMaker::ParseParams(FeatureParams & params, OsmElement & p) const
 {
   ftype::GetNameAndType(&p, params);

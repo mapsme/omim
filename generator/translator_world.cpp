@@ -5,7 +5,6 @@
 #include "generator/filter_collection.hpp"
 #include "generator/filter_planet.hpp"
 #include "generator/filter_elements.hpp"
-#include "generator/filter_world.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/node_mixer.hpp"
@@ -32,7 +31,6 @@ TranslatorWorld::TranslatorWorld(std::shared_ptr<FeatureProcessorInterface> cons
   auto filters = std::make_shared<FilterCollection>();
   filters->Append(std::make_shared<FilterPlanet>());
   filters->Append(std::make_shared<FilterElements>(base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
-//  filters->Append(std::make_shared<FilterWorld>(info.m_popularPlacesFilename));
   SetFilter(filters);
 }
 

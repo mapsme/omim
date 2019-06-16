@@ -301,6 +301,23 @@ std::shared_ptr<LayerBase> PrepareCoastlineFeatureLayer::Clone() const
   LayerBase::Handle(feature);
 }
 
+WorldFilterLayer::WorldFilterLayer(std::string const & popularityFilename)
+  : m_popularityFilename(popularityFilename)
+  , m_filter(popularityFilename)
+{
+}
+
+std::shared_ptr<LayerBase> WorldFilterLayer::Clone() const
+{
+  return std::make_shared<WorldFilterLayer>(m_popularityFilename);
+}
+
+void WorldFilterLayer::Handle(FeatureBuilder1 & feature)
+{
+  if (m_filter.IsAccepted(feature))
+    LayerBase::Handle(feature);
+}
+
 
 std::shared_ptr<LayerBase> PreserializeLayer::Clone() const
 {

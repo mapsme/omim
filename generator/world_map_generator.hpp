@@ -89,7 +89,8 @@ public:
   {
     ++m_totalFeatures;
 
-    if (!generator::FilterWorld::IsBoundary(fb))
+    auto static const kBoundaryType = classif().GetTypeByPath({"boundary", "administrative"});
+    if (fb.FindType(kBoundaryType, 2) == ftype::GetEmptyValue())
       return false;
 
     ++m_totalBorders;
@@ -241,7 +242,11 @@ class WorldMapGenerator
       return (scales::GetUpperWorldScale() >= fb.GetMinFeatureDrawScale());
     }
 
-    void PushSure(feature::FeatureBuilder const & fb) { m_output.Collect(fb); }
+    void PushSure(FeatureBuilder1 const & fb)
+    {
+      CalcStatistics(fb);
+      m_output.Collect(fb);
+    }
   };
 
   EmitterImpl m_worldBucket;
@@ -281,8 +286,6 @@ public:
 
     if (!m_worldBucket.NeedPushToWorld(fb) && !forcePushToWorld)
       return;
-
-    m_worldBucket.CalcStatistics(fb);
 
     if (!m_boundaryChecker.IsBoundaries(fb))
     {
