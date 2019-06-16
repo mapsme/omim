@@ -305,7 +305,6 @@ int GeneratorToolMain(int argc, char ** argv)
       !FLAGS_generate_geo_objects_features.empty())
   {
     RawGenerator rawGenerator(genInfo, 8);
-
     if (FLAGS_generate_features)
       rawGenerator.GenerateCountries(FLAGS_no_ads);
     if (FLAGS_generate_world)
