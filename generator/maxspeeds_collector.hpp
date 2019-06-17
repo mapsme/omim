@@ -1,6 +1,7 @@
 #pragma once
 
 #include "generator/collector_interface.hpp"
+#include "generator/feature_builder.hpp"
 #include "generator/osm_element.hpp"
 
 #include <memory>
@@ -27,7 +28,7 @@ public:
   std::shared_ptr<CollectorInterface>
   Clone(std::shared_ptr<cache::IntermediateDataReader> const & = {}) const override;
 
-  void CollectFeature(FeatureBuilder const &, OsmElement const & p) override;
+  void CollectFeature(feature::FeatureBuilder const &, OsmElement const & p) override;
   void Save() override;
 
   void Merge(CollectorInterface const * collector) override;
@@ -57,6 +58,5 @@ private:
   // are converted to an appropriate speed value and macro "none" and "walk" are converted
   // to |kNoneMaxSpeed| and |kWalkMaxSpeed|.
   std::vector<std::string> m_data;
-
 };
 }  // namespace generator

@@ -17,7 +17,7 @@ class CoastlineFeaturesGenerator;
 
 namespace feature
 {
-class FeatureBuilder;
+class feature::FeatureBuilder;
 struct GenerateInfo;
 }  // namespace feature
 
@@ -106,6 +106,7 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
+  void Handle(feature::FeatureBuilder & feature) override;
 
 private:
   static bool CanBeArea(FeatureParams const & params);
@@ -122,20 +123,23 @@ class PrepareFeatureLayer : public LayerBase
 public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
+
+  void Handle(feature::FeatureBuilder & feature) override;
+};
+
 class PromoCatalogLayer : public LayerBase
 {
 public:
   explicit PromoCatalogLayer(std::string const & citiesFinename);
+  explicit PromoCatalogLayer(promo::Cities const & cities);
 
   // LayerBase overrides:
+  std::shared_ptr<LayerBase> Clone() const override;
+
   void Handle(feature::FeatureBuilder & feature) override;
 
 private:
   promo::Cities m_cities;
-};
-
-
-  void Handle(feature::FeatureBuilder & feature) override;
 };
 
 // Responsibility of class RepresentationCoastlineLayer is converting features from one form to
@@ -146,6 +150,7 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
+  void Handle(feature::FeatureBuilder & feature) override;
 };
 
 // Responsibility of class PrepareCoastlineFeatureLayer is the removal of unused types and names,
@@ -167,10 +172,10 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(FeatureBuilder1 & feature) override;
+  void Handle(feature::FeatureBuilder & feature) override;
 
 private:
-   std::string m_popularityFilename;
+  std::string m_popularityFilename;
   FilterWorld m_filter;
 };
 
@@ -180,7 +185,7 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(FeatureBuilder1 & feature) override;
+  void Handle(feature::FeatureBuilder & feature) override;
 };
 
 class  AffilationsFeatureLayer : public LayerBase

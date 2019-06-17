@@ -1,6 +1,5 @@
 #include "generator/regions/collector_region_info.hpp"
 
-#include "generator/feature_builder.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/osm_element.hpp"
 

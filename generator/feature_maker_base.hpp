@@ -13,7 +13,7 @@ namespace cache
 class IntermediateData;
 }  // namespace cache
 
-// Abstract class FeatureMakerBase is responsible for the conversion OsmElement to FeatureBuilder1.
+// Abstract class FeatureMakerBase is responsible for the conversion OsmElement to FeatureBuilder.
 // The main task of this class is to create features of the necessary types.
 // At least one feature should turn out from one OSM element. You can get several features from one element.
 class FeatureMakerBase

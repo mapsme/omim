@@ -1,12 +1,12 @@
 #pragma once
 
+#include "generator/feature_builder.hpp"
 #include "generator/processor_interface.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-class FeatureBuilder1;
 namespace feature
 {
 struct GenerateInfo;
@@ -28,7 +28,7 @@ public:
   // FeatureProcessorInterface overrides:
   std::shared_ptr<FeatureProcessorInterface> Clone() const override;
 
-  void Process(FeatureBuilder1 & feature) override;
+  void Process(feature::FeatureBuilder & feature) override;
   bool Finish() override;
 
   void Merge(FeatureProcessorInterface const * other) override;

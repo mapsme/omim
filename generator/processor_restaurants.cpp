@@ -23,7 +23,7 @@ std::shared_ptr<FeatureProcessorInterface> ProcessorRestaurants::Clone() const
   return std::make_shared<ProcessorRestaurants>(m_queue, m_processingChain->CloneRecursive());
 }
 
-void ProcessorRestaurants::Process(FeatureBuilder1 & fb)
+void ProcessorRestaurants::Process(feature::FeatureBuilder & fb)
 {
   if (!ftypes::IsEatChecker::Instance()(fb.GetParams().m_types) || fb.GetParams().name.IsEmpty())
   {

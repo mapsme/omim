@@ -1,12 +1,12 @@
 #pragma once
 
+#include "generator/feature_builder.hpp"
 #include "generator/processor_interface.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-class FeatureBuilder1;
 class FeatureParams;
 
 namespace generator
@@ -20,7 +20,7 @@ public:
     return std::make_shared<ProcessorNoop>();
   }
 
-  void Process(FeatureBuilder1 &) override  {}
+  void Process(feature::FeatureBuilder &) override  {}
   bool Finish() override { return true; }
 
 

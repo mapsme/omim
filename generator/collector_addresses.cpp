@@ -20,7 +20,7 @@ CollectorAddresses::Clone(std::shared_ptr<cache::IntermediateDataReader> const &
   return std::make_shared<CollectorAddresses>(GetFilename());
 }
 
-void CollectorAddresses::CollectFeature(FeatureBuilder const & feature, OsmElement const &)
+void CollectorAddresses::CollectFeature(feature::FeatureBuilder const & feature, OsmElement const &)
 {
   std::string addr;
   auto const & checker = ftypes::IsBuildingChecker::Instance();

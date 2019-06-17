@@ -44,7 +44,7 @@ class CollectorRegionInfo;
 }  // namespace regions
 
 // Implementing this interface allows an object to collect data from RelationElement,
-// OsmElement and FeatureBuilder1 elements.
+// OsmElement and FeatureBuilder elements.
 class CollectorInterface
 {
 public:

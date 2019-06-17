@@ -289,7 +289,7 @@ RoadAccessTagProcessor::RoadAccessTagProcessor(VehicleType vehicleType)
   }
 }
 
-void RoadAccessTagProcessor::Process(FeatureBuilder1 const & fb, OsmElement const & elem)
+void RoadAccessTagProcessor::Process(FeatureBuilder const & fb, OsmElement const & elem)
 {
   // We will process all nodes before ways because of o5m format:
   // all nodes are first, then all ways, then all relations.
@@ -402,7 +402,7 @@ RoadAccessWriter::Clone(std::shared_ptr<generator::cache::IntermediateDataReader
   return std::make_shared<RoadAccessWriter>(GetFilename());
 }
 
-void RoadAccessWriter::CollectFeature(FeatureBuilder1 const & fb, OsmElement const & elem)
+void RoadAccessWriter::CollectFeature(FeatureBuilder const & fb, OsmElement const & elem)
 {
   for (auto & p : m_tagProcessors)
     p.Process(fb, elem);

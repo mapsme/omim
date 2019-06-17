@@ -192,7 +192,7 @@ public:
 };
 } // namespace
 
-/// Process FeatureBuilder1 for world map. Main functions:
+/// Process FeatureBuilder for world map. Main functions:
 /// - check for visibility in world map
 /// - merge linear features
 template <class FeatureOutT>
@@ -242,7 +242,7 @@ class WorldMapGenerator
       return (scales::GetUpperWorldScale() >= fb.GetMinFeatureDrawScale());
     }
 
-    void PushSure(FeatureBuilder1 const & fb)
+    void PushSure(feature::FeatureBuilder const & fb)
     {
       CalcStatistics(fb);
       m_output.Collect(fb);
@@ -317,7 +317,7 @@ public:
     {
     case feature::GeomType::Line:
     {
-      MergedFeatureBuilder1 * p = m_typesCorrector(fb);
+      MergedFeatureBuilder * p = m_typesCorrector(fb);
       if (p)
         m_merger(p);
       return false;

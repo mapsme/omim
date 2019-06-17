@@ -1,6 +1,7 @@
 #pragma once
 
 #include "generator/collector_interface.hpp"
+#include "generator/feature_builder.hpp"
 
 #include "platform/platform.hpp"
 
@@ -127,7 +128,7 @@ public:
   std::shared_ptr<CollectorInterface>
   Clone(std::shared_ptr<cache::IntermediateDataReader> const & = {}) const override;
 
-  void CollectFeature(FeatureBuilder const &, OsmElement const & el) override;
+  void CollectFeature(feature::FeatureBuilder const &, OsmElement const & el) override;
   void Save() override;
 
   void Merge(CollectorInterface const * collector) override;

@@ -136,7 +136,7 @@ MetalinesBuilder::Clone(std::shared_ptr<generator::cache::IntermediateDataReader
   return std::make_shared<MetalinesBuilder>(GetFilename());
 }
 
-void MetalinesBuilder::CollectFeature(FeatureBuilder1 const & feature, OsmElement const & element)
+void MetalinesBuilder::CollectFeature(FeatureBuilder const & feature, OsmElement const & element)
 {
   if (!feature.IsLine())
     return;

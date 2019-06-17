@@ -17,11 +17,11 @@ public:
   // FilterInterface overrides:
   std::shared_ptr<FilterInterface> Clone() const override;
 
-  bool IsAccepted(FeatureBuilder1 const & feature) override;
+  bool IsAccepted(feature::FeatureBuilder const & feature) override;
 
-  static bool IsInternationalAirport(FeatureBuilder1 const & fb);
-  static bool IsGoogScale(FeatureBuilder1 const & fb);
-  static bool IsPopularAttraction(FeatureBuilder1 const & fb, std::string const & popularityFilename);
+  static bool IsInternationalAirport(feature::FeatureBuilder const & fb);
+  static bool IsGoogScale(feature::FeatureBuilder const & fb);
+  static bool IsPopularAttraction(feature::FeatureBuilder const & fb, std::string const & popularityFilename);
 
 private:
   std::string m_popularityFilename;

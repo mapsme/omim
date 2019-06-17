@@ -20,7 +20,7 @@ ProcessorSimple::ProcessorSimple(std::shared_ptr<FeatureProcessorQueue> const & 
                                  std::shared_ptr<LayerBase> const & processingChain)
   : m_queue(queue), m_processingChain(processingChain) {}
 
-void ProcessorSimple::Process(FeatureBuilder1 & fb)
+void ProcessorSimple::Process(feature::FeatureBuilder & fb)
 {
   m_processingChain->Handle(fb);
 }

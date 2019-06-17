@@ -21,7 +21,7 @@ namespace cache
 class IntermediateData;
 }  // namespace cache
 
-// Implementing this base class allows an object to create FeatureBuilder1 from OsmElement and then process it.
+// Implementing this base class allows an object to create FeatureBuilder from OsmElement and then process it.
 // You can add any collectors and filters.
 class Translator : public TranslatorInterface
 {

@@ -20,7 +20,7 @@ std::shared_ptr<FilterInterface> FilterWorld::Clone() const
   return std::make_shared<FilterWorld>(m_popularityFilename);
 }
 
-bool FilterWorld::IsAccepted(FeatureBuilder1 const & fb)
+bool FilterWorld::IsAccepted(feature::FeatureBuilder const & fb)
 {
   return IsGoogScale(fb) ||
       IsPopularAttraction(fb, m_popularityFilename) ||
@@ -28,21 +28,21 @@ bool FilterWorld::IsAccepted(FeatureBuilder1 const & fb)
 }
 
 // static
-bool FilterWorld::IsInternationalAirport(FeatureBuilder1 const & fb)
+bool FilterWorld::IsInternationalAirport(feature::FeatureBuilder const & fb)
 {
   auto static const kAirport = classif().GetTypeByPath({"aeroway", "aerodrome", "international"});
   return fb.HasType(kAirport);
 }
 
 // static
-bool FilterWorld::IsGoogScale(FeatureBuilder1 const & fb)
+bool FilterWorld::IsGoogScale(feature::FeatureBuilder const & fb)
 {
   // GetMinFeatureDrawScale also checks suitable size for AREA features
   return scales::GetUpperWorldScale() >= fb.GetMinFeatureDrawScale();
 }
 
 // static
-bool FilterWorld::IsPopularAttraction(FeatureBuilder1 const & fb, const std::string & popularityFilename)
+bool FilterWorld::IsPopularAttraction(feature::FeatureBuilder const & fb, const std::string & popularityFilename)
 {
   if (fb.GetName().empty())
     return false;

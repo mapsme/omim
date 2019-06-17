@@ -300,10 +300,10 @@ std::mutex PackedBorders::m_mutex;
 std::unordered_map<std::string, std::shared_ptr<CountriesContainer>> PackedBorders::m_countries = {{"", {}}};
 
 // static
-shared_ptr<CountriesContainer>
-PackedBorders::GetOrCreate(string const & name)
+std::shared_ptr<CountriesContainer>
+PackedBorders::GetOrCreate(std::string const & name)
 {
-  lock_guard<mutex> lock(m_mutex);
+  std::lock_guard<std::mutex> lock(m_mutex);
   if (m_countries.count(name) != 0)
     return m_countries[name];
 

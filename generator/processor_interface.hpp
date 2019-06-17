@@ -20,7 +20,7 @@ class ProcessorRestaurants;
 class ProcessorSimple;
 class ProcessorWorld;
 
-// Implementing this interface allows an object to process FeatureBuilder1 objects and broadcast them.
+// Implementing this interface allows an object to process FeatureBuilder objects and broadcast them.
 class FeatureProcessorInterface
 {
 public:
@@ -29,7 +29,7 @@ public:
   virtual std::shared_ptr<FeatureProcessorInterface> Clone() const = 0;
 
   // This method is used by OsmTranslator to pass |fb| to Processor for further processing.
-  virtual void Process(FeatureBuilder1 & fb) = 0;
+  virtual void Process(feature::FeatureBuilder & fb) = 0;
   // Finish is used in GenerateFeatureImpl to make whatever work is needed after all OsmElements
   // are processed.
   virtual bool Finish() = 0;
@@ -49,7 +49,7 @@ private:
 
 struct ProcessedData
 {
-  FeatureBuilder1 m_fb;
+  feature::FeatureBuilder m_fb;
   std::vector<std::string> m_affiliations;
 };
 

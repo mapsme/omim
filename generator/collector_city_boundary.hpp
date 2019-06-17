@@ -22,13 +22,13 @@ public:
   std::shared_ptr<CollectorInterface>
   Clone(std::shared_ptr<cache::IntermediateDataReader> const & = {}) const override;
 
-  void CollectFeature(FeatureBuilder1 const & feature, OsmElement const &) override;
+  void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const &) override;
   void Save() override;
 
   void Merge(generator::CollectorInterface const * collector) override;
   void MergeInto(CityBoundaryCollector * collector) const override;
 
 private:
-  std::vector<FeatureBuilder1> m_boundaries;
+  std::vector<feature::FeatureBuilder> m_boundaries;
 };
 }  // namespace generator

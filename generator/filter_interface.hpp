@@ -10,7 +10,7 @@ class FeatureBuilder;
 
 namespace generator
 {
-// Implementing this interface allows an object to filter OsmElement and FeatureBuilder1 elements.
+// Implementing this interface allows an object to filter OsmElement and FeatureBuilder elements.
 class FilterInterface
 {
 public:

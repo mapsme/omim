@@ -60,6 +60,7 @@ std::shared_ptr<LayerBase> LayerBase::CloneRecursive() const
   return clone;
 }
 
+void LayerBase::Handle(FeatureBuilder & feature)
 {
   if (m_next)
     m_next->Handle(feature);
@@ -124,6 +125,7 @@ std::shared_ptr<LayerBase> RepresentationLayer::Clone() const
   return std::make_shared<RepresentationLayer>();
 }
 
+void RepresentationLayer::Handle(FeatureBuilder & feature)
 {
   auto const sourceType = feature.GetMostGenericOsmId().GetType();
   auto const geomType = feature.GetGeomType();
@@ -214,6 +216,7 @@ std::shared_ptr<LayerBase> PrepareFeatureLayer::Clone() const
   return std::make_shared<PrepareFeatureLayer>();
 }
 
+void PrepareFeatureLayer::Handle(FeatureBuilder & feature)
 {
   auto const type = feature.GetGeomType();
   auto & params = feature.GetParams();
@@ -224,11 +227,19 @@ std::shared_ptr<LayerBase> PrepareFeatureLayer::Clone() const
     LayerBase::Handle(feature);
 }
 
-std::shared_ptr<LayerBase> RepresentationCoastlineLayer::Clone() const
-
 PromoCatalogLayer::PromoCatalogLayer(std::string const & citiesFinename)
   : m_cities(promo::LoadCities(citiesFinename))
 {
+}
+
+PromoCatalogLayer::PromoCatalogLayer(promo::Cities const & cities)
+  : m_cities(cities)
+{
+}
+
+std::shared_ptr<LayerBase> PromoCatalogLayer::Clone() const
+{
+  return std::make_shared<PromoCatalogLayer>(m_cities);
 }
 
 void PromoCatalogLayer::Handle(FeatureBuilder & feature)
@@ -287,6 +298,7 @@ std::shared_ptr<LayerBase> PrepareCoastlineFeatureLayer::Clone() const
   return std::make_shared<PrepareCoastlineFeatureLayer>();
 }
 
+void PrepareCoastlineFeatureLayer::Handle(FeatureBuilder & feature)
 {
   if (feature.IsArea())
   {
@@ -312,7 +324,7 @@ std::shared_ptr<LayerBase> WorldFilterLayer::Clone() const
   return std::make_shared<WorldFilterLayer>(m_popularityFilename);
 }
 
-void WorldFilterLayer::Handle(FeatureBuilder1 & feature)
+void WorldFilterLayer::Handle(FeatureBuilder & feature)
 {
   if (m_filter.IsAccepted(feature))
     LayerBase::Handle(feature);
@@ -324,7 +336,7 @@ std::shared_ptr<LayerBase> PreserializeLayer::Clone() const
   return std::make_shared<PreserializeLayer>();
 }
 
-void PreserializeLayer::Handle(FeatureBuilder1 & feature)
+void PreserializeLayer::Handle(FeatureBuilder & feature)
 {
   if (feature.PreSerialize())
     LayerBase::Handle(feature);
@@ -339,7 +351,7 @@ std::shared_ptr<LayerBase> AffilationsFeatureLayer::Clone() const
   return std::make_shared<AffilationsFeatureLayer>(m_queue, m_affilation);
 }
 
-void AffilationsFeatureLayer::Handle(FeatureBuilder1 & feature)
+void AffilationsFeatureLayer::Handle(FeatureBuilder & feature)
 {
   m_queue->Push({{feature, m_affilation->GetAffiliations(feature)}});
 }

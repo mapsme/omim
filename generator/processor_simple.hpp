@@ -1,12 +1,11 @@
 #pragma once
 
+#include "generator/feature_builder.hpp"
 #include "generator/processor_interface.hpp"
 
 #include <memory>
 #include <string>
 #include <vector>
-
-class FeatureBuilder1;
 
 namespace generator
 {
@@ -22,7 +21,7 @@ public:
                            std::shared_ptr<LayerBase> const & processingChain);
 
   // FeatureProcessorInterface overrides:
-  void Process(FeatureBuilder1 & fb) override;
+  void Process(feature::FeatureBuilder & fb) override;
   bool Finish() override { return true; }
 
   void Merge(FeatureProcessorInterface const * other) override;

@@ -28,7 +28,7 @@ std::shared_ptr<FeatureProcessorInterface> ProcessorWorld::Clone() const
    return std::make_shared<ProcessorWorld>(m_queue, m_processingChain->CloneRecursive());
 }
 
-void ProcessorWorld::Process(FeatureBuilder1 & feature)
+void ProcessorWorld::Process(feature::FeatureBuilder & feature)
 {
   m_processingChain->Handle(feature);
 }

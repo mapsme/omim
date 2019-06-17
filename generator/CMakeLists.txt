@@ -6,6 +6,7 @@ include_directories(
 )
 
 set(SRC
+  affiliation.cpp
   affiliation.hpp
   altitude_generator.cpp
   altitude_generator.hpp

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "generator/collector_interface.hpp"
+#include "generator/feature_builder.hpp"
 #include "generator/intermediate_elements.hpp"
 #include "generator/osm_element.hpp"
 
@@ -40,7 +41,7 @@ public:
 
   explicit RoadAccessTagProcessor(VehicleType vehicleType);
 
-  void Process(FeatureBuilder1 const & fb, OsmElement const & elem);
+  void Process(feature::FeatureBuilder const & fb, OsmElement const & elem);
   void Write(std::stringstream & stream);
   void Merge(RoadAccessTagProcessor const & roadAccessTagProcessor);
 
@@ -74,7 +75,7 @@ public:
   std::shared_ptr<CollectorInterface>
   Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & = {}) const override;
 
-  void CollectFeature(FeatureBuilder const & fb, OsmElement const & elem) override;
+  void CollectFeature(feature::FeatureBuilder const & fb, OsmElement const & elem) override;
   void Save() override;
 
   void Merge(generator::CollectorInterface const * collector) override;

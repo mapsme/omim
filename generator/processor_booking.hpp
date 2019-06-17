@@ -20,7 +20,7 @@ template <typename Dataset>
 class ProcessorBooking : public FeatureProcessorInterface
 {
 public:
-  ProcessorBooking(Dataset const & dataset, map<base::GeoObjectId, FeatureBuilder1> & features)
+  ProcessorBooking(Dataset const & dataset, map<base::GeoObjectId, feature::FeatureBuilder> & features)
     : m_dataset(dataset), m_features(features)
   {
   }
@@ -32,7 +32,7 @@ public:
   }
 
 
-  void Process(FeatureBuilder1 & fb) override
+  void Process(feature::FeatureBuilder & fb) override
   {
     if (m_dataset.NecessaryMatchingConditionHolds(fb))
       m_features.emplace(fb.GetMostGenericOsmId(), fb);
@@ -51,6 +51,6 @@ public:
 
 private:
   Dataset const & m_dataset;
-  map<base::GeoObjectId, FeatureBuilder1> & m_features;
+  map<base::GeoObjectId, feature::FeatureBuilder> & m_features;
 };
 }  // namespace generator

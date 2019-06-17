@@ -19,7 +19,7 @@ CityBoundaryCollector::Clone(std::shared_ptr<cache::IntermediateDataReader> cons
   return std::make_shared<CityBoundaryCollector>(GetFilename());
 }
 
-void CityBoundaryCollector::CollectFeature(FeatureBuilder1 const & feature, OsmElement const &)
+void CityBoundaryCollector::CollectFeature(feature::FeatureBuilder const & feature, OsmElement const &)
 {
   if (feature.IsArea() && ftypes::IsCityTownOrVillage(feature.GetTypes()))
     m_boundaries.emplace_back(feature);

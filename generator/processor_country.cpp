@@ -31,7 +31,7 @@ std::shared_ptr<FeatureProcessorInterface> ProcessorCountry::Clone() const
   return std::make_shared<ProcessorCountry>(m_queue, m_processingChain->CloneRecursive());
 }
 
-void ProcessorCountry::Process(FeatureBuilder1 & feature)
+void ProcessorCountry::Process(feature::FeatureBuilder & feature)
 {
   m_processingChain->Handle(feature);
 }

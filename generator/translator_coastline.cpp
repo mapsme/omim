@@ -33,7 +33,7 @@ public:
     return std::make_shared<CoastlineFilter>();
   }
 
-  bool IsAccepted(FeatureBuilder1 const & feature) override
+  bool IsAccepted(FeatureBuilder const & feature) override
   {
     auto const & checker = ftypes::IsCoastlineChecker::Instance();
     return checker(feature.GetTypes());

@@ -692,12 +692,12 @@ string DebugPrint(FeatureBuilder const & fb)
   return out.str();
 }
 
-std::vector<FeatureBuilder1> ReadAllDatRawFormat(std::string const & fileName)
+std::vector<FeatureBuilder> ReadAllDatRawFormat(std::string const & fileName)
 {
-  std::vector<FeatureBuilder1> fbs;
+  std::vector<FeatureBuilder> fbs;
   ForEachFromDatRawFormat(fileName, [&](auto && fb, auto const &) {
     fbs.emplace_back(std::move(fb));
   });
   return fbs;
-
+}
 }  // namespace feature

@@ -33,7 +33,7 @@ std::shared_ptr<FeatureProcessorInterface> ProcessorCoastline::Clone() const
   return std::make_shared<ProcessorCoastline>(m_queue, m_processingChain->CloneRecursive());
 }
 
-void ProcessorCoastline::Process(FeatureBuilder1 & feature)
+void ProcessorCoastline::Process(feature::FeatureBuilder & feature)
 {
   m_processingChain->Handle(feature);
 }

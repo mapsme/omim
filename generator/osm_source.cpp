@@ -440,7 +440,7 @@ void RawGenerator::GenerateCountries(bool disableAds)
 
   auto finalProcessor = make_shared<CountryFinalProcessor>(m_genInfo.m_targetDir, m_genInfo.m_tmpDir,
                                                            m_threadsCount);
-  finalProcessor->NeedBookig(m_genInfo.m_bookingDatafileName);
+  finalProcessor->NeedBookig(m_genInfo.m_bookingDataFilename);
 
   auto const cityBountaryTmpFilename = m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME);
   finalProcessor->UseCityBoundaries(cityBountaryTmpFilename);
