@@ -39,9 +39,10 @@ public:
 
   struct Params
   {
+    Params() = default;
     Params(VehicleType type, ms::LatLon const & s, ms::LatLon const & f);
 
-    VehicleType m_type;
+    VehicleType m_type = VehicleType::Car;
     ms::LatLon m_start;
     ms::LatLon m_finish;
   };
