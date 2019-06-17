@@ -46,9 +46,9 @@ RoutesBuilder::RoutesBuilder(size_t threadsNumber)
     auto const & countryFile = localFile.GetCountryFile();
     auto const mwmId = m_dataSource.GetMwmIdByCountryFile(countryFile);
     CHECK(mwmId.IsAlive(), ());
-    // We have to exclude minsk-pass because we can't register mwm which is not from
-    // countries.txt.
-    if (mwmId.GetInfo()->GetType() == MwmInfo::COUNTRY && countryFile.GetName() != "minsk-pass")
+
+    // Only maps from countries.txt should be used for tests.
+    if (m_cpg->GetStorageForTesting().IsLeaf(countryFile.GetName()))
       m_numMwmIds->RegisterFile(countryFile);
   }
 }
