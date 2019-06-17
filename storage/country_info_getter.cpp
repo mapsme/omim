@@ -149,9 +149,9 @@ m2::RectD CountryInfoGetter::CalcLimitRect(std::string const & prefix) const
 
 m2::RectD CountryInfoGetter::GetLimitRectForLeaf(CountryId const & leafCountryId) const
 {
-  auto const it = this->m_countryIndex.find(leafCountryId);
-  ASSERT(it != this->m_countryIndex.end(), ());
-  ASSERT_LESS(it->second, this->m_countries.size(), ());
+  auto const it = m_countryIndex.find(leafCountryId);
+  ASSERT(it != m_countryIndex.end(), ());
+  ASSERT_LESS(it->second, m_countries.size(), ());
   return m_countries[it->second].m_rect;
 }
 
@@ -201,6 +201,24 @@ std::unique_ptr<CountryInfoGetter> CountryInfoReader::CreateCountryInfoReader(
     LOG(LCRITICAL, ("Can't load needed resources for storage::CountryInfoGetter:", e.Msg()));
   }
   return std::unique_ptr<CountryInfoReader>();
+}
+
+// CountryInfoReader -------------------------------------------------------------------------------
+// static
+std::shared_ptr<CountryInfoGetter> CountryInfoReader::CreateCountryInfoReaderShared(
+  Platform const & platform)
+{
+  try
+  {
+    CountryInfoReader * result = new CountryInfoReader(platform.GetReader(PACKED_POLYGONS_FILE),
+                                                       platform.GetReader(COUNTRIES_FILE));
+    return std::shared_ptr<CountryInfoReader>(result);
+  }
+  catch (RootException const & e)
+  {
+    LOG(LCRITICAL, ("Can't load needed resources for storage::CountryInfoGetter:", e.Msg()));
+  }
+  return std::shared_ptr<CountryInfoReader>();
 }
 
 // static

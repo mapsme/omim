@@ -144,6 +144,8 @@ class CountryInfoReader : public CountryInfoGetter
 public:
   /// \returns CountryInfoGetter based on countries.txt and packed_polygons.bin.
   static std::unique_ptr<CountryInfoGetter> CreateCountryInfoReader(Platform const & platform);
+  static std::shared_ptr<CountryInfoGetter> CreateCountryInfoReaderShared(Platform const & platform);
+
 
   /// \returns CountryInfoGetter based on countries_obsolete.txt and packed_polygons_obsolete.bin.
   /// \brief The polygons in CountryInfoGetter() returned by the method was used at the time when
