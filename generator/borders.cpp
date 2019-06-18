@@ -30,6 +30,7 @@
 #include <vector>
 
 #include "base/assert.hpp"
+#include "base/string_utils.hpp"
 
 #include "defines.hpp"
 
@@ -76,7 +77,7 @@ public:
 template <class ToDo>
 void ForEachCountry(std::string const & baseDir, ToDo & toDo)
 {
-  std::string const bordersDir = baseDir + BORDERS_DIR;
+  std::string const bordersDir = base::JoinPath(baseDir, BORDERS_DIR);
   CHECK(Platform::IsFileExistsByFullPath(bordersDir),
         ("Cannot read borders directory", bordersDir));
 

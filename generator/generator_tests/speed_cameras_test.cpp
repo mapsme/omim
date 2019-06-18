@@ -4,6 +4,7 @@
 #include "generator/processor_factory.hpp"
 #include "generator/feature_sorter.hpp"
 #include "generator/generate_info.hpp"
+#include "generator/generator_tests/common.hpp"
 #include "generator/generator_tests_support/routing_helpers.hpp"
 #include "generator/generator_tests_support/test_mwm_builder.hpp"
 #include "generator/intermediate_data.hpp"
@@ -166,6 +167,7 @@ void TestSpeedCameraSectionBuilding(string const & osmContent, CameraMap const &
   genInfo.m_nodeStorageType = feature::GenerateInfo::NodeStorageType::Index;
   genInfo.m_osmFileName = base::JoinPath(tmpDir, osmRelativePath);
   genInfo.m_osmFileType = feature::GenerateInfo::OsmSourceType::XML;
+  genInfo.m_emitCoasts = false;
 
   TEST(GenerateIntermediateData(genInfo), ("Cannot generate intermediate data for speed cam"));
 
@@ -176,11 +178,11 @@ void TestSpeedCameraSectionBuilding(string const & osmContent, CameraMap const &
 
   // Step 2. Generate binary file about cameras.
   {
-    auto cache = std::make_shared<generator::cache::IntermediateData>(genInfo);
-    TranslatorCollection translators;
-    auto processor = CreateProcessor(ProcessorType::Country, genInfo);
-    translators.Append(CreateTranslator(TranslatorType::Country, processor, cache->GetCache(), genInfo));
-    TEST(GenerateRaw(genInfo, translators), ("Cannot generate features for speed camera"));
+    CHECK(generator_tests::MakeFakeBordersFile(testDirFullPath, kTestMwm), ());
+    RawGenerator rawGenerator(genInfo);
+    rawGenerator.ForceReloadCache();
+    rawGenerator.GenerateCountries();
+    TEST(rawGenerator.Execute(), ("Cannot generate features for speed camera"));
   }
 
   TEST(GenerateFinalFeatures(genInfo, country.GetCountryName(),

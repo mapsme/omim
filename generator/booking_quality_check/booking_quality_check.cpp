@@ -332,7 +332,7 @@ void RunImpl(GenerateInfo & info)
   TranslatorCollection translators;
   auto emitter = make_shared<ProcessorBooking<Dataset>>(dataset, features);
   translators.Append(CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), info));
-  GenerateRaw(info, translators);
+  RunTranslator(info, translators);
 
   if (FLAGS_generate)
   {

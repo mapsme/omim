@@ -12,8 +12,6 @@
 #include "geometry/mercator.hpp"
 #include "geometry/tree4d.hpp"
 
-#include "coding/parse_xml.hpp"
-
 #include "base/assert.hpp"
 #include "base/stl_helpers.hpp"
 #include "base/file_name_utils.hpp"
@@ -123,8 +121,13 @@ void BuildIntermediateDataFromXML(SourceReader & stream, cache::IntermediateData
 
 void ProcessOsmElementsFromXML(SourceReader & stream, function<void(OsmElement *)> processor)
 {
-  XMLSource parser([&](OsmElement * element) { processor(element); });
-  ParseXMLSequence(stream, parser);
+  ProcessorXmlElementsFromXml processorXmlElementsFromXml(stream);
+  OsmElement element;
+  while (processorXmlElementsFromXml.TryRead(element))
+  {
+    processor(&element);
+    element = {};
+  }
 }
 
 void BuildIntermediateDataFromO5M(SourceReader & stream, cache::IntermediateDataWriter & cache,
@@ -142,67 +145,14 @@ void BuildIntermediateDataFromO5M(SourceReader & stream, cache::IntermediateData
 
 void ProcessOsmElementsFromO5M(SourceReader & stream, function<void(OsmElement *)> processor)
 {
-  using Type = osm::O5MSource::EntityType;
-
-  osm::O5MSource dataset([&stream](uint8_t * buffer, size_t size)
+  ProcessorOsmElementsFromO5M processorOsmElementsFromO5M(stream);
+  OsmElement element;
+  while (processorOsmElementsFromO5M.TryRead(element))
   {
-    return stream.Read(reinterpret_cast<char *>(buffer), size);
-  });
-
-  auto translate = [](Type t) -> OsmElement::EntityType {
-    switch (t)
-    {
-    case Type::Node: return OsmElement::EntityType::Node;
-    case Type::Way: return OsmElement::EntityType::Way;
-    case Type::Relation: return OsmElement::EntityType::Relation;
-    default: return OsmElement::EntityType::Unknown;
-    }
-  };
-
-  // Be careful, we could call Nodes(), Members(), Tags() from O5MSource::Entity
-  // only once (!). Because these functions read data from file simultaneously with
-  // iterating in loop. Furthermore, into Tags() method calls Nodes.Skip() and Members.Skip(),
-  // thus first call of Nodes (Members) after Tags() will not return any results.
-  // So don not reorder the "for" loops (!).
-
-  for (auto const & entity : dataset)
-  {
-    OsmElement p;
-    p.m_id = entity.id;
-
-    switch (entity.type)
-    {
-    case Type::Node:
-    {
-      p.m_type = OsmElement::EntityType::Node;
-      p.m_lat = entity.lat;
-      p.m_lon = entity.lon;
-      break;
-    }
-    case Type::Way:
-    {
-      p.m_type = OsmElement::EntityType::Way;
-      for (uint64_t nd : entity.Nodes())
-        p.AddNd(nd);
-      break;
-    }
-    case Type::Relation:
-    {
-      p.m_type = OsmElement::EntityType::Relation;
-      for (auto const & member : entity.Members())
-        p.AddMember(member.ref, translate(member.type), member.role);
-      break;
-    }
-    default: break;
-    }
-
-    for (auto const & tag : entity.Tags())
-      p.AddTag(tag.key, tag.value);
-
-    processor(&p);
+    processor(&element);
+    element = {};
   }
 }
-
 
 ProcessorOsmElementsFromO5M::ProcessorOsmElementsFromO5M(SourceReader & stream)
   : m_stream(stream)
@@ -264,35 +214,39 @@ bool ProcessorOsmElementsFromO5M::TryRead(OsmElement & element)
   return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Generate functions implementations.
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-bool GenerateRaw(feature::GenerateInfo & info, TranslatorInterface & translators)
+ProcessorXmlElementsFromXml::ProcessorXmlElementsFromXml(SourceReader & stream)
+  : m_stream(stream)
+  , m_xmlSource([&, this](auto * element) { m_queue.emplace(*element); })
+  , m_parser(m_stream, m_xmlSource)
 {
-  auto const fn = [&](OsmElement * element) {
-    CHECK(element, ());
-    translators.Emit(*element);
-  };
+}
 
-  SourceReader reader = info.m_osmFileName.empty() ? SourceReader() : SourceReader(info.m_osmFileName);
-  switch (info.m_osmFileType)
-  {
-  case feature::GenerateInfo::OsmSourceType::XML:
-    ProcessOsmElementsFromXML(reader, fn);
-    break;
-  case feature::GenerateInfo::OsmSourceType::O5M:
-    ProcessOsmElementsFromO5M(reader, fn);
-    break;
-  }
-
-  LOG(LINFO, ("Processing", info.m_osmFileName, "done."));
-  if (!translators.Finish())
+bool ProcessorXmlElementsFromXml::TryReadFromQueue(OsmElement & element)
+{
+  if (m_queue.empty())
     return false;
-
+  element = m_queue.front();
+  m_queue.pop();
   return true;
 }
 
+bool ProcessorXmlElementsFromXml::TryRead(OsmElement & element)
+{
+  if (TryReadFromQueue(element))
+    return true;
+
+  while (m_parser.Read())
+  {
+    if (TryReadFromQueue(element))
+      return true;
+  }
+
+  return TryReadFromQueue(element);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Generate functions implementations.
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool GenerateIntermediateData(feature::GenerateInfo & info)
 {
   try
@@ -330,7 +284,7 @@ TranslatorsPool::TranslatorsPool(shared_ptr<TranslatorCollection> const & origin
                                  shared_ptr<generator::cache::IntermediateData> const & cache,
                                  size_t copyCount)
   : m_translators({original})
-  , m_threadPool(copyCount + 1, base::thread_pool::delayed::ThreadPool::Exit::ExecPending)
+  , m_threadPool(copyCount + 1, ThreadPool::Exit::ExecPending)
 {
   m_freeTranslators.Push(0);
   m_translators.reserve(copyCount + 1);
@@ -357,6 +311,7 @@ void TranslatorsPool::Emit(vector<OsmElement> & elements)
 
 bool TranslatorsPool::Finish()
 {
+  m_threadPool.ShutdownAndJoin();
   auto const & translator = m_translators.front();
   for (size_t i = 1; i < m_translators.size(); ++i)
     translator->Merge(m_translators[i].get());
@@ -432,24 +387,22 @@ RawGenerator::RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount)
 {
 }
 
+void RawGenerator::ForceReloadCache()
+{
+  m_cache = make_shared<generator::cache::IntermediateData>(m_genInfo, true /* forceReload */);
+}
+
+std::shared_ptr<FeatureProcessorQueue> RawGenerator::GetQueue()
+{
+  return m_queue;
+}
+
 void RawGenerator::GenerateCountries(bool disableAds)
 {
   auto processor = CreateProcessor(ProcessorType::Country, m_queue, m_genInfo.m_targetDir, "");
   auto const translatorType = disableAds ? TranslatorType::Country : TranslatorType::CountryWithAds;
   m_translators->Append(CreateTranslator(translatorType, processor, m_cache, m_genInfo));
-
-  auto finalProcessor = make_shared<CountryFinalProcessor>(m_genInfo.m_targetDir, m_genInfo.m_tmpDir,
-                                                           m_threadsCount);
-  finalProcessor->NeedBookig(m_genInfo.m_bookingDataFilename);
-
-  auto const cityBountaryTmpFilename = m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME);
-  finalProcessor->UseCityBoundaries(cityBountaryTmpFilename);
-
-  auto const geomFilename = m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom");
-  auto const worldCoastsFilename = m_genInfo.GetTmpFileName(WORLD_COASTS_FILE_NAME);
-  finalProcessor->AddCoastlines(geomFilename, worldCoastsFilename);
-
-  m_finalProcessors.emplace(finalProcessor);
+  m_finalProcessors.emplace(CreateCountryFinalProcessor());
 }
 
 void RawGenerator::GenerateWorld(bool disableAds)
@@ -457,32 +410,14 @@ void RawGenerator::GenerateWorld(bool disableAds)
   auto processor = CreateProcessor(ProcessorType::World, m_queue, m_genInfo.m_popularPlacesFilename);
   auto const translatorType = disableAds ? TranslatorType::World : TranslatorType::WorldWithAds;
   m_translators->Append(CreateTranslator(translatorType, processor, m_cache, m_genInfo));
-
-  auto const worldFilename = m_genInfo.GetTmpFileName(WORLD_FILE_NAME, DATA_FILE_EXTENSION_TMP);
-  auto const geomFilename = m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, RAW_GEOM_FILE_EXTENSION);
-  auto finalProcessor = make_shared<WorldFinalProcessor>(worldFilename, geomFilename,
-                                                         m_genInfo.m_popularPlacesFilename);
-  auto const cityBountaryTmpFilename = m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME);
-  finalProcessor->UseCityBoundaries(cityBountaryTmpFilename);
-
-  m_finalProcessors.emplace(finalProcessor);
+  m_finalProcessors.emplace(CreateWorldFinalProcessor());
 }
 
 void RawGenerator::GenerateCoasts()
 {
   auto processor = CreateProcessor(ProcessorType::Coastline, m_queue);
   m_translators->Append(CreateTranslator(TranslatorType::Coastline, processor, m_cache));
-
-  auto const worldcoastTmpFilename = m_genInfo.GetTmpFileName(WORLD_COASTS_FILE_NAME, DATA_FILE_EXTENSION_TMP);
-  auto finalProcessor = make_shared<CoastlineFinalProcessor>(worldcoastTmpFilename);
-
-  auto const geomFilename = m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom");
-  finalProcessor->SetCoastlineGeomFilename(geomFilename);
-
-  auto const rawgeomFilename = m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, RAW_GEOM_FILE_EXTENSION);
-  finalProcessor->SetCoastlineRawGeomFilename(rawgeomFilename);
-
-  m_finalProcessors.emplace(finalProcessor);
+  m_finalProcessors.emplace(CreateCoslineFinalProcessor());
 }
 
 void RawGenerator::GenerateRegionFeatures(string const & filename)
@@ -503,35 +438,16 @@ void RawGenerator::GenerateGeoObjectsFeatures(string const & filename)
   m_translators->Append(CreateTranslator(TranslatorType::GeoObjects, processor, m_cache));
 }
 
-bool RawGenerator::GenerateFilteredFeatures(size_t threadsCount)
+void RawGenerator::GenerateCustom(std::shared_ptr<TranslatorInterface> const & translator)
 {
-  SourceReader reader = m_genInfo.m_osmFileName.empty() ? SourceReader()
-                                                        : SourceReader(m_genInfo.m_osmFileName);
-  ProcessorOsmElementsFromO5M o5mProcessor(reader);
+  m_translators->Append(translator);
+}
 
-  TranslatorsPool translators(m_translators, m_cache, threadsCount - 1);
-  RawGeneratorWriter rawGeneratorWriter(m_queue, m_genInfo.m_tmpDir);
-  rawGeneratorWriter.Run();
-
-  size_t const kElementsCount = 1024;
-  size_t element_pos = 0;
-  vector<OsmElement> elements(kElementsCount);
-  while(o5mProcessor.TryRead(elements[element_pos++]))
-  {
-    if (element_pos != kElementsCount)
-      continue;
-
-    translators.Emit(elements);
-    elements = vector<OsmElement>(kElementsCount);
-    element_pos = 0;
-  }
-
-  LOG(LINFO, ("Input was processed."));
-  if (!translators.Finish())
-    return false;
-
-  LOG(LINFO, ("Names:", rawGeneratorWriter.GetNames()));
-  return true;
+void RawGenerator::GenerateCustom(std::shared_ptr<TranslatorInterface> const & translator,
+                                  std::shared_ptr<FinalProcessorIntermediateMwmInteface> const & finalProcessor)
+{
+  m_translators->Append(translator);
+  m_finalProcessors.emplace(finalProcessor);
 }
 
 bool RawGenerator::Execute()
@@ -555,7 +471,83 @@ bool RawGenerator::Execute()
     while (true);
   }
 
-  LOG(LINFO, ("Final processing is finished."));
+    LOG(LINFO, ("Final processing is finished."));
+  return true;
+}
+
+RawGenerator::FinalProcessorPtr RawGenerator::CreateCoslineFinalProcessor()
+{
+  auto finalProcessor = make_shared<CoastlineFinalProcessor>(
+                          m_genInfo.GetTmpFileName(WORLD_COASTS_FILE_NAME, DATA_FILE_EXTENSION_TMP));
+  finalProcessor->SetCoastlineGeomFilename(m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom"));
+  finalProcessor->SetCoastlineRawGeomFilename(
+        m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, RAW_GEOM_FILE_EXTENSION));
+  return finalProcessor;
+}
+
+RawGenerator::FinalProcessorPtr RawGenerator::CreateCountryFinalProcessor()
+{
+  auto finalProcessor = make_shared<CountryFinalProcessor>(m_genInfo.m_targetDir, m_genInfo.m_tmpDir,
+                                                           m_threadsCount);
+  finalProcessor->NeedBookig(m_genInfo.m_bookingDataFilename);
+  finalProcessor->UseCityBoundaries(m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME));
+  if (m_genInfo.m_emitCoasts)
+  {
+    finalProcessor->AddCoastlines(m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom"),
+                                  m_genInfo.GetTmpFileName(WORLD_COASTS_FILE_NAME));
+  }
+  return finalProcessor;
+}
+
+RawGenerator::FinalProcessorPtr RawGenerator::CreateWorldFinalProcessor()
+{
+  auto finalProcessor = make_shared<WorldFinalProcessor>(
+                          m_genInfo.GetTmpFileName(WORLD_FILE_NAME, DATA_FILE_EXTENSION_TMP),
+                          m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, RAW_GEOM_FILE_EXTENSION),
+                          m_genInfo.m_popularPlacesFilename);
+  finalProcessor->UseCityBoundaries(m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME));
+  return finalProcessor;
+}
+
+bool RawGenerator::GenerateFilteredFeatures(size_t threadsCount)
+{
+  SourceReader reader = m_genInfo.m_osmFileName.empty() ? SourceReader()
+                                                        : SourceReader(m_genInfo.m_osmFileName);
+
+  std::unique_ptr<ProcessorOsmElementsInterface> sourseProcessor;
+  switch (m_genInfo.m_osmFileType) {
+  case feature::GenerateInfo::OsmSourceType::O5M:
+    sourseProcessor = std::make_unique<ProcessorOsmElementsFromO5M>(reader);
+    break;
+  case feature::GenerateInfo::OsmSourceType::XML:
+    sourseProcessor = std::make_unique<ProcessorXmlElementsFromXml>(reader);
+    break;
+  }
+
+  TranslatorsPool translators(m_translators, m_cache, threadsCount - 1);
+  RawGeneratorWriter rawGeneratorWriter(m_queue, m_genInfo.m_tmpDir);
+  rawGeneratorWriter.Run();
+
+  size_t const kElementsCount = 1024;
+  size_t element_pos = 0;
+  vector<OsmElement> elements(kElementsCount);
+  while(sourseProcessor->TryRead(elements[element_pos]))
+  {
+    if (++element_pos != kElementsCount)
+      continue;
+
+    translators.Emit(elements);
+    elements = vector<OsmElement>(kElementsCount);
+    element_pos = 0;
+  }
+  elements.resize(element_pos);
+  translators.Emit(elements);
+
+  LOG(LINFO, ("Input was processed."));
+  if (!translators.Finish())
+    return false;
+
+  LOG(LINFO, ("Names:", rawGeneratorWriter.GetNames()));
   return true;
 }
 }  // namespace generator

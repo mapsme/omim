@@ -432,21 +432,24 @@ std::unordered_map<std::string, std::shared_ptr<PointStorageReaderInterface>> Po
 
 // static
 shared_ptr<PointStorageReaderInterface>
-PointStorageReader::GetOrCreate(feature::GenerateInfo::NodeStorageType type, string const & name)
+PointStorageReader::GetOrCreate(feature::GenerateInfo::NodeStorageType type, string const & name,
+                                bool forceReload)
 {
   string const k = to_string(static_cast<int>(type)) + name;
   lock_guard<mutex> lock(m_mutex);
-  if (m_readers.count(k) != 0)
+  if (!forceReload && m_readers.count(k) != 0)
     return m_readers[k];
 
   m_readers[k] = CreatePointStorageReader(type, name);
   return m_readers[k];
 }
 
-IntermediateData::IntermediateData(feature::GenerateInfo & info)
+IntermediateData::IntermediateData(feature::GenerateInfo & info, bool forceReload)
   : m_info(info)
 {
-  auto pointReader = PointStorageReader::GetOrCreate(info.m_nodeStorageType, info.GetIntermediateFileName(NODES_FILE));
+  auto pointReader = PointStorageReader::GetOrCreate(info.m_nodeStorageType,
+                                                     info.GetIntermediateFileName(NODES_FILE),
+                                                     forceReload);
   m_reader = make_shared<IntermediateDataReader>(pointReader, info);
   m_reader->LoadIndex();
 }

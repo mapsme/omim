@@ -10,6 +10,8 @@
 #include "generator/translator_collection.hpp"
 #include "generator/translator_interface.hpp"
 
+#include "coding/parse_xml.hpp"
+
 #include "base/queue.hpp"
 #include "base/thread_pool_delayed.hpp"
 
@@ -97,25 +99,48 @@ public:
 // For example, there are RepresentationLayer, which may change the presentation of the FeatureBuilder
 // depending on the rules of the application, and BookingLayer, which mixes information from booking.
 // You can read a more detailed look into the appropriate class code.
-bool GenerateRaw(feature::GenerateInfo & info, TranslatorInterface & translators);
-bool GenerateRegionFeatures(feature::GenerateInfo & info);
-bool GenerateGeoObjectsFeatures(feature::GenerateInfo & info);
-
 bool GenerateIntermediateData(feature::GenerateInfo & info);
 
 void ProcessOsmElementsFromO5M(SourceReader & stream, std::function<void(OsmElement *)> processor);
 void ProcessOsmElementsFromXML(SourceReader & stream, std::function<void(OsmElement *)> processor);
 
-class ProcessorOsmElementsFromO5M
+class ProcessorOsmElementsInterface
 {
 public:
-  ProcessorOsmElementsFromO5M(SourceReader & stream);
-  bool TryRead(OsmElement & element);
+  virtual ~ProcessorOsmElementsInterface() = default;
+
+  virtual bool TryRead(OsmElement & element) = 0;
+};
+
+class ProcessorOsmElementsFromO5M : public ProcessorOsmElementsInterface
+{
+public:
+  explicit ProcessorOsmElementsFromO5M(SourceReader & stream);
+
+  // ProcessorOsmElementsInterface overrides:
+  bool TryRead(OsmElement & element) override;
 
 private:
   SourceReader & m_stream;
   osm::O5MSource m_dataset;
   osm::O5MSource::Iterator m_pos;
+};
+
+class ProcessorXmlElementsFromXml : public ProcessorOsmElementsInterface
+{
+public:
+  explicit ProcessorXmlElementsFromXml(SourceReader & stream);
+
+  // ProcessorOsmElementsInterface overrides:
+  bool TryRead(OsmElement & element) override;
+
+private:
+  bool TryReadFromQueue(OsmElement & element);
+
+  SourceReader & m_stream;
+  XMLSource m_xmlSource;
+  ParserXMLSequence<SourceReader, XMLSource> m_parser;
+  std::queue<OsmElement> m_queue;
 };
 
 class TranslatorsPool
@@ -157,19 +182,25 @@ private:
 class RawGenerator
 {
 public:
-  explicit RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount);
+  explicit RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount = 1);
 
-  void GenerateCountries(bool disableAds);
-  void GenerateWorld(bool disableAds);
+  void GenerateCountries(bool disableAds = true);
+  void GenerateWorld(bool disableAds = true);
   void GenerateCoasts();
   void GenerateRegionFeatures(std::string const & filename);
   void GenerateStreetsFeatures(std::string const & filename);
   void GenerateGeoObjectsFeatures(std::string const & filename);
+  void GenerateCustom(std::shared_ptr<TranslatorInterface> const & translator);
+  void GenerateCustom(std::shared_ptr<TranslatorInterface> const & translator,
+                      std::shared_ptr<FinalProcessorIntermediateMwmInteface> const & finalProcessor);
 
   bool Execute();
 
+  void ForceReloadCache();
+  std::shared_ptr<FeatureProcessorQueue> GetQueue();
 private:
   using FinalProcessorPtr = std::shared_ptr<FinalProcessorIntermediateMwmInteface>;
+
   struct FinalProcessorPtrCmp
   {
     bool operator()(FinalProcessorPtr const & l, FinalProcessorPtr const & r)
@@ -177,6 +208,10 @@ private:
       return *l < *r;
     }
   };
+
+  FinalProcessorPtr CreateCoslineFinalProcessor();
+  FinalProcessorPtr CreateCountryFinalProcessor();
+  FinalProcessorPtr CreateWorldFinalProcessor();
 
   bool GenerateFilteredFeatures(size_t threadsCount);
 

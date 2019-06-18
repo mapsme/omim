@@ -316,7 +316,8 @@ class PointStorageReader
 {
 public:
   static std::shared_ptr<PointStorageReaderInterface>
-  GetOrCreate(feature::GenerateInfo::NodeStorageType type, std::string const & name);
+  GetOrCreate(feature::GenerateInfo::NodeStorageType type, std::string const & name,
+              bool forceReload = false);
 
 private:
   static std::mutex m_mutex;
@@ -326,7 +327,7 @@ private:
 class IntermediateData
 {
 public:
-  IntermediateData(feature::GenerateInfo & info);
+  IntermediateData(feature::GenerateInfo & info, bool forceReload = false);
   std::shared_ptr<IntermediateDataReader> const & GetCache() const;
   std::shared_ptr<IntermediateData> Clone() const;
 

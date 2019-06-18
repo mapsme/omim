@@ -63,23 +63,24 @@ void CameraProcessor::ForEachCamera(Fn && toDo) const
 
 void CameraProcessor::ProcessWay(OsmElement const & element)
 {
-  auto & nodes = m_ways[element.m_id];
-  std::copy(std::begin(element.m_nodes), std::end(element.m_nodes), std::back_inserter(nodes));
+  m_ways[element.m_id] = element.m_nodes;
 }
 
 void CameraProcessor::FillCameraInWays()
 {
-  for (auto it = std::begin(m_ways); it != std::end(m_ways); ++it)
+  for (auto const & way : m_ways)
   {
-    for (auto const & node : it->second)
+    for (auto const & node : way.second)
     {
-      if (m_speedCameras.find(node) == m_speedCameras.cend())
+      auto const itCamera = m_speedCameras.find(node);
+      if (itCamera == m_speedCameras.cend())
         continue;
 
-      auto & ways = m_cameraToWays[node];
-      ways.push_back(it->first);
+      m_cameraToWays[itCamera->first].push_back(way.first);
     }
   }
+
+  LOG(LINFO, ("m_cameraToWays", m_cameraToWays));
 }
 
 void CameraProcessor::ProcessNode(OsmElement const & element)
@@ -104,11 +105,12 @@ CameraCollector::CameraCollector(std::string const & filename) :
 std::shared_ptr<generator::CollectorInterface>
 CameraCollector::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const &) const
 {
- return std::make_shared<CameraCollector>(GetFilename());
+  return std::make_shared<CameraCollector>(GetFilename());
 }
 
 void CameraCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const & element)
 {
+  LOG(LINFO, ("+++", feature.GetTypes(), element));
   switch (element.m_type)
   {
   case OsmElement::EntityType::Node:
@@ -156,6 +158,7 @@ void CameraCollector::Write(FileWriter & writer, CameraProcessor::CameraInfo con
 
 void CameraCollector::Save()
 {
+  LOG(LINFO, ("void CameraCollector::Save()"));
   using namespace std::placeholders;
   m_processor.FillCameraInWays();
   FileWriter writer(GetFilename());

@@ -6,6 +6,7 @@
 #include "platform/platform_tests_support/writable_dir_changer.hpp"
 
 #include "generator/collector_camera.hpp"
+#include "generator/filter_planet.hpp"
 #include "generator/processor_factory.hpp"
 #include "generator/feature_maker.hpp"
 #include "generator/generate_info.hpp"
@@ -44,21 +45,23 @@ class TranslatorForTest : public Translator
 public:
   explicit TranslatorForTest(std::shared_ptr<FeatureProcessorInterface> const & processor,
                              std::shared_ptr<generator::cache::IntermediateData> const & cache)
-    : Translator(processor, cache, std::make_shared<FeatureMaker>(cache)) {}
+    : Translator(processor, cache, std::make_shared<FeatureMaker>(cache))
+  {
+    SetFilter(make_shared<FilterPlanet>());
+  }
 
   // TranslatorInterface overrides:
   std::shared_ptr<TranslatorInterface>
-  Clone(std::shared_ptr<cache::IntermediateData> const & cache) const override
+  Clone(std::shared_ptr<cache::IntermediateData> const &) const override
   {
-    return std::make_shared<TranslatorForTest>(m_processor->Clone(), cache, m_featureMaker->Clone(),
-                                               m_filter->Clone(), m_collector->Clone(cache->GetCache()));
+    CHECK(false, ());
+    return {};
   }
 
   void Merge(TranslatorInterface const *) override
   {
     CHECK(false, ());
   }
-
 
 protected:
   using Translator::Translator;
@@ -80,7 +83,7 @@ public:
     classificator::Load();
   }
 
-  bool Test(string const & osmSourceXML, set<pair<uint64_t, uint64_t>> & trueAnswers)
+  bool Test(string const & osmSourceXML, set<pair<uint64_t, uint64_t>> const & trueAnswers)
   {
     Platform & platform = GetPlatform();
     WritableDirChanger writableDirChanger(kTestDir);
@@ -101,12 +104,13 @@ public:
 
     // Test load this data from cached file.
     auto collector = std::make_shared<CameraCollector>(genInfo.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME));
-    auto cache = std::make_shared<generator::cache::IntermediateData>(genInfo);
+    auto cache = std::make_shared<generator::cache::IntermediateData>(genInfo, true /* forceReload */);
     auto processor = CreateProcessor(ProcessorType::Noop);
-    TranslatorForTest translator(processor, cache);
-    translator.SetCollector(collector);
-    CHECK(GenerateRaw(genInfo, translator), ());
-
+    auto translator = std::make_shared<TranslatorForTest>(processor, cache);
+    translator->SetCollector(collector);
+    RawGenerator rawGenerator(genInfo);
+    rawGenerator.GenerateCustom(translator);
+    CHECK(rawGenerator.Execute(), ());
     set<pair<uint64_t, uint64_t>> answers;
     collector->m_processor.ForEachCamera([&](auto const & camera, auto const & ways) {
       for (auto const & w : ways)
@@ -125,28 +129,25 @@ using namespace generator_tests;
 
 UNIT_CLASS_TEST(TestCameraCollector, test_1)
 {
-  string const osmSourceXML = R"(
-                              <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
-
-                              <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-                                                                                                               <node id="2" lat="55.779304" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-                                                                                                                                                                                                <node id="3" lat="55.773084" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-                                                                                                                                                                                                                                                                                 <node id="4" lat="55.773084" lon="37.3699375" version="1"></node>
-
-                                                                                                                                                                                                                                                                                 <way id="10" version="1">
-                                                                                                                                                                                                                                                                                 <nd ref="1"/>
-                                                                                                                                                                                                                                                                                 <nd ref="4"/>
-                                                                                                                                                                                                                                                                                 <tag k="highway" v="unclassified"/>
-                                                                                                                                                                                                                                                                                 </way>
-                                                                                                                                                                                                                                                                                 <way id="20" version="1">
-                                                                                                                                                                                                                                                                                 <nd ref="1"/>
-                                                                                                                                                                                                                                                                                 <nd ref="2"/>
-                                                                                                                                                                                                                                                                                 <nd ref="3"/>
-                                                                                                                                                                                                                                                                                 <tag k="highway" v="unclassified"/>
-                                                                                                                                                                                                                                                                                 </way>
-
-                                                                                                                                                                                                                                                                                 </osm>
-                                                                                                                                                                                                                                                                                 )";
+  string const osmSourceXML =
+      R"(<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+      <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><node id="2" lat="55.779304" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><node id="3" lat="55.773084" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><node id="4" lat="55.773084" lon="37.3699375" version="1">
+      </node>
+      <way id="10" version="1">
+      <nd ref="1"/>
+      <nd ref="4"/>
+      <tag k="highway" v="unclassified"/>
+      </way>
+      <way id="20" version="1">
+      <nd ref="1"/>
+      <nd ref="2"/>
+      <nd ref="3"/>
+      <tag k="highway" v="unclassified"/>
+      </way>
+      </osm>)";
 
   set<pair<uint64_t, uint64_t>> trueAnswers = {
     {1, 10}, {1, 20}, {2, 20}, {3, 20}
@@ -157,35 +158,32 @@ UNIT_CLASS_TEST(TestCameraCollector, test_1)
 
 UNIT_CLASS_TEST(TestCameraCollector, test_2)
 {
-  string const osmSourceXML = R"(
-                              <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
-
-                              <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-                                                                                                               <node id="2" lat="55.779304" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-                                                                                                                                                                                                <node id="3" lat="55.773084" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-                                                                                                                                                                                                                                                                                 <node id="4" lat="55.773024" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-                                                                                                                                                                                                                                                                                                                                                                  <node id="5" lat="55.773014" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <way id="10" version="1">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <nd ref="1"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <nd ref="2"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <tag k="highway" v="unclassified"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   </way>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <way id="20" version="1">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <nd ref="1"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <nd ref="3"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <tag k="highway" v="unclassified"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   </way>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <way id="30" version="1">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <nd ref="1"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <nd ref="3"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <nd ref="4"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <nd ref="5"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   <tag k="highway" v="unclassified"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   </way>
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   </osm>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   )";
+  string const osmSourceXML =
+      R"(<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+      <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><node id="2" lat="55.779304" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><node id="3" lat="55.773084" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><node id="4" lat="55.773024" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><node id="5" lat="55.773014" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node>
+      <way id="10" version="1">
+      <nd ref="1"/>
+      <nd ref="2"/>
+      <tag k="highway" v="unclassified"/>
+      </way>
+      <way id="20" version="1">
+      <nd ref="1"/>
+      <nd ref="3"/>
+      <tag k="highway" v="unclassified"/>
+      </way>
+      <way id="30" version="1">
+      <nd ref="1"/>
+      <nd ref="3"/>
+      <nd ref="4"/>
+      <nd ref="5"/>
+      <tag k="highway" v="unclassified"/>
+      </way>
+      </osm>)";
 
   set<pair<uint64_t, uint64_t>> trueAnswers = {
     {1, 10}, {2, 10}, {1, 20}, {3, 20}, {1, 30}, {3, 30}, {4, 30}, {5, 30}
@@ -196,25 +194,22 @@ UNIT_CLASS_TEST(TestCameraCollector, test_2)
 
 UNIT_CLASS_TEST(TestCameraCollector, test_3)
 {
-  string const osmSourceXML = R"(
-                              <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
-
-                              <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-                                                                                                               <node id="2" lat="55.779384" lon="37.3699375" version="1"></node>
-
-                                                                                                               <way id="10" version="1">
-                                                                                                               <nd ref="1"/>
-                                                                                                               <nd ref="2"/>
-                                                                                                               <tag k="highway" v="unclassified"/>
-                                                                                                               </way>
-                                                                                                               <way id="20" version="1">
-                                                                                                               <nd ref="1"/>
-                                                                                                               <nd ref="2"/>
-                                                                                                               <tag k="highway" v="unclassified"/>
-                                                                                                               </way>
-
-                                                                                                               </osm>
-                                                                                                               )";
+  string const osmSourceXML =
+      R"(<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+      <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><node id="2" lat="55.779384" lon="37.3699375" version="1">
+      </node>
+      <way id="10" version="1">
+      <nd ref="1"/>
+      <nd ref="2"/>
+      <tag k="highway" v="unclassified"/>
+      </way>
+      <way id="20" version="1">
+      <nd ref="1"/>
+      <nd ref="2"/>
+      <tag k="highway" v="unclassified"/>
+      </way>
+      </osm>)";
 
   set<pair<uint64_t, uint64_t>> trueAnswers = {
     {1, 10}, {1, 20}
@@ -225,20 +220,16 @@ UNIT_CLASS_TEST(TestCameraCollector, test_3)
 
 UNIT_CLASS_TEST(TestCameraCollector, test_4)
 {
-  string const osmSourceXML = R"(
-                              <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
-
-                              <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-
-                                                                                                               <way id="10" version="1">
-                                                                                                               <tag k="highway" v="unclassified"/>
-                                                                                                               </way>
-                                                                                                               <way id="20" version="1">
-                                                                                                               <tag k="highway" v="unclassified"/>
-                                                                                                               </way>
-
-                                                                                                               </osm>
-                                                                                                               )";
+  string const osmSourceXML =
+      R"(<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+      <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag +
+      R"(</node><way id="10" version="1">
+      <tag k="highway" v="unclassified"/>
+      </way>
+      <way id="20" version="1">
+      <tag k="highway" v="unclassified"/>
+      </way>
+      </osm>)";
 
   set<pair<uint64_t, uint64_t>> trueAnswers = {};
 
@@ -247,18 +238,14 @@ UNIT_CLASS_TEST(TestCameraCollector, test_4)
 
 UNIT_CLASS_TEST(TestCameraCollector, test_5)
 {
-  string const osmSourceXML = R"(
-                              <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
-
-                              <node id="1" lat="55.779384" lon="37.3699375" version="1"></node>
-
-                              <way id="10" version="1">
-                              <nd ref="1"/>
-                              <tag k="highway" v="unclassified"/>
-                              </way>
-
-                              </osm>
-                              )";
+  string const osmSourceXML =
+      R"(<osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
+      <node id="1" lat="55.779384" lon="37.3699375" version="1"></node>
+      <way id="10" version="1">
+      <nd ref="1"/>
+      <tag k="highway" v="unclassified"/>
+      </way>
+      </osm>)";
 
   set<pair<uint64_t, uint64_t>> trueAnswers = {};
 
