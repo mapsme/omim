@@ -56,12 +56,17 @@ namespace api
 {
 namespace mapbox
 {
-Response MapboxApi::CalculateRoute(VehicleType type,
-                                   ms::LatLon const & start, ms::LatLon const & finish)
+MapboxApi::MapboxApi()
+{
+  SetApiName("Mapbox");
+}
+
+Response MapboxApi::CalculateRoute(Params const & params) const
 {
   Response response;
-  MapboxResponse mapboxResponse = MakeRequest(type, start, finish);
+  MapboxResponse mapboxResponse = MakeRequest(params);
 
+  response.m_params = params;
   response.m_code = mapboxResponse.m_code;
   for (auto const & route : mapboxResponse.m_routes)
   {
@@ -83,17 +88,22 @@ Response MapboxApi::CalculateRoute(VehicleType type,
   return response;
 }
 
-MapboxResponse MapboxApi::MakeRequest(VehicleType type,
-                                      ms::LatLon const & start, ms::LatLon const & finish) const
+uint32_t MapboxApi::GetMaxRPS() const
+{
+  return kMaxRPS;
+}
+
+MapboxResponse MapboxApi::MakeRequest(Params const & params) const
 {
   MapboxResponse mapboxResponse;
-  platform::HttpClient request(GetDirectionsURL(type, start, finish));
+  platform::HttpClient request(GetDirectionsURL(params));
 
   if (request.RunHttpRequest() && !request.WasRedirected() && request.ErrorCode() == 200)
   {
     auto const & response = request.ServerResponse();
     CHECK(!response.empty(), ());
     {
+      mapboxResponse.m_code = ResultCode::OK;
       coding::DeserializerJson des(response);
       des(mapboxResponse);
     }
@@ -107,15 +117,14 @@ MapboxResponse MapboxApi::MakeRequest(VehicleType type,
   return mapboxResponse;
 }
 
-string MapboxApi::GetDirectionsURL(VehicleType type,
-                                   ms::LatLon const & start, ms::LatLon const & finish) const
+string MapboxApi::GetDirectionsURL(Params const & params) const
 {
   CHECK(!GetAccessToken().empty(), ());
 
   ostringstream oss;
   oss << kBaseURL << "directions/" << kDirectionsApiVersion << "/"
-      << VehicleTypeToMapboxType(type) << "/";
-  oss << LatLonsToString({start, finish}) << "?";
+      << VehicleTypeToMapboxType(params.m_type) << "/";
+  oss << LatLonsToString({params.m_start, params.m_finish}) << "?";
   oss << "access_token=" << GetAccessToken() << "&";
   oss << "overview=simplified&"
       << "geometries=geojson";

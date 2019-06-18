@@ -1,3 +1,7 @@
+#include "routing/routes_builder/routes_builder_tool/utils.hpp"
+
+#include "routing/routing_quality/api/mapbox/mapbox_api.hpp"
+
 #include "routing/routes_builder/routes_builder.hpp"
 
 #include "geometry/latlon.hpp"
@@ -28,97 +32,30 @@ DEFINE_string(read_dumped_from, "", "Path were dumped routes are placed. "
 
 DEFINE_string(data_path, "", "Path to dir with mwms.");
 
+DEFINE_string(api_name, "", "Api name, current options: mapbox");
+DEFINE_string(api_token, "", "Token for api_name.");
+
 using namespace routing;
 using namespace routes_builder;
+using namespace routing_quality;
 
-std::vector<RoutesBuilder::Result> BuildRoutes(std::string const & routesPath,
-                                               std::string const & dumpPath)
+bool IsLocalBuild()
 {
-  CHECK(Platform::IsFileExistsByFullPath(routesPath), ("Can not find file:", routesPath));
-
-  std::ifstream input(routesPath);
-  CHECK(input.good(), ("Error during opening:", routesPath));
-
-  std::vector<RoutesBuilder::Result> result;
-  RoutesBuilder routesBuilder(std::thread::hardware_concurrency());
-  ms::LatLon start;
-  ms::LatLon finish;
-
-  std::vector<std::future<RoutesBuilder::Result>> tasks;
-
-  {
-    RoutesBuilder::Params params;
-    params.m_type = VehicleType::Car;
-
-    base::ScopedLogLevelChanger changer(base::LogLevel::LERROR);
-    while (input >> params.m_start.m_lat >> params.m_start.m_lon >> params.m_finish.m_lat >> params.m_finish.m_lon)
-      tasks.emplace_back(routesBuilder.ProcessTaskAsync(params));
-
-    std::cout << "Created: " << tasks.size() << " tasks." << std::endl;
-    for (size_t i = 0; i < tasks.size(); ++i)
-    {
-      auto & task = tasks[i];
-      task.wait();
-
-      result.emplace_back(task.get());
-      if (!dumpPath.empty())
-      {
-        std::string const fullPath = base::JoinPath(dumpPath, std::to_string(i) + ".dump");
-        RoutesBuilder::Result::Dump(result.back(), fullPath);
-      }
-
-      if (i % 5 == 0 || i + 1 == tasks.size())
-        std::cout << i + 1 << " / " << tasks.size() << std::endl;
-    }
-  }
-
-  return result;
+  return !FLAGS_routes_file.empty() && FLAGS_api_name.empty() && FLAGS_api_token.empty();
 }
 
-std::vector<RoutesBuilder::Result> ReadDumpedRoutes(std::string const & dumpDirPath)
+bool IsApiBuild()
 {
-  std::vector<RoutesBuilder::Result> result;
-
-  size_t i = 0;
-  for (;;)
-  {
-    std::string const path = base::JoinPath(dumpDirPath, std::to_string(i) + ".dump");
-    if (!Platform::IsFileExistsByFullPath(path))
-      break;
-
-    result.emplace_back(RoutesBuilder::Result::Load(path));
-    ++i;
-
-    if (i % 5 == 0)
-      std::cout << "Read: " << i << " files" << std::endl;
-  }
-
-  return result;
-}
-
-void PrintResults(std::vector<RoutesBuilder::Result> const & results)
-{
-  for (auto const & result : results)
-  {
-    LOG(LINFO, (result.m_code, result.m_eta));
-  }
+  return !FLAGS_routes_file.empty() && !FLAGS_api_name.empty() && !FLAGS_api_token.empty();
 }
 
 int main(int argc, char ** argv)
 {
   google::ParseCommandLineFlags(&argc, &argv, true);
 
-  if (FLAGS_routes_file.empty() && FLAGS_read_dumped_from.empty())
-  {
-    std::cerr << "--routes_file or --read_dumped_from are required, type --help for more info.\n";
-    return 1;
-  }
-
-  if (!FLAGS_routes_file.empty() && !FLAGS_read_dumped_from.empty())
-  {
-    std::cerr << "Only one option can be used: --routes_file or --read_dumped_from.";
-    return 1;
-  }
+  CHECK(!FLAGS_routes_file.empty(),
+        ("\n\n\t--routes_file is required.",
+         "\n\nType --help for usage."));
 
   if (!FLAGS_data_path.empty())
   {
@@ -126,12 +63,27 @@ int main(int argc, char ** argv)
     pl.SetWritableDirForTests(FLAGS_data_path);
   }
 
+  CHECK(IsLocalBuild() || IsApiBuild(),
+        ("\n\n\t--routes_file empty is:", FLAGS_routes_file.empty(),
+         "\n\t--api_name empty is:", FLAGS_api_name.empty(),
+         "\n\t--api_token empty is:", FLAGS_api_token.empty(),
+         "\n\nType --help for usage."));
+
+  CHECK(!FLAGS_dump_path.empty(),
+        ("\n\n\t--dump_path is empty. It makes no sense to run this tool. No result will be saved.",
+         "\n\nType --help for usage."));
+
   std::vector<RoutesBuilder::Result> results;
-  if (!FLAGS_routes_file.empty())
+  if (IsLocalBuild())
     results = BuildRoutes(FLAGS_routes_file, FLAGS_dump_path);
 
-  if (!FLAGS_read_dumped_from.empty())
-    results = ReadDumpedRoutes(FLAGS_read_dumped_from);
+  if (IsApiBuild())
+  {
+    auto api = CreateRoutingApi(FLAGS_api_name);
+    api->SetAccessToken(FLAGS_api_token);
+
+    BuildRoutesWithApi(std::move(api), FLAGS_routes_file, FLAGS_dump_path);
+  }
 
   return 0;
 }
