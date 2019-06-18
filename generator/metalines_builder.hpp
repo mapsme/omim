@@ -56,7 +56,7 @@ public:
   void MergeInto(MetalinesBuilder * collector) const override;
 
 private:
-  std::unordered_multimap<size_t, LineString> m_data;
+  std::vector<std::pair<size_t, LineString>> m_data;
 };
 
 /// Read an intermediate file from MetalinesBuilder and convert it to an mwm section.

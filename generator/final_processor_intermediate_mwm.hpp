@@ -49,6 +49,7 @@ private:
   bool ProcessBooking();
   bool ProcessCityBoundaries();
   bool ProcessCoasline();
+  bool CleanUp();
 
   std::string m_borderPath;
   std::string m_temproryMwmPath;

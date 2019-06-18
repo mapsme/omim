@@ -84,7 +84,7 @@ class Segments
 public:
   explicit Segments(LineString const & way) { m_parts.emplace_back(way); }
 
-  void Add(LineString & line)
+  void Add(LineString line)
   {
     auto found = m_parts.end();
     for (auto i = m_parts.begin(); i != m_parts.end(); ++i)
@@ -155,7 +155,7 @@ void MetalinesBuilder::CollectFeature(FeatureBuilder const & feature, OsmElement
     return;
 
   size_t const key = std::hash<std::string>{}(name + '\0' + params.ref);
-  m_data.emplace(key, element);
+  m_data.emplace_back(key, element);
 }
 
 void MetalinesBuilder::Save()
@@ -198,7 +198,7 @@ void MetalinesBuilder::MergeInto(MetalinesBuilder * collector) const
 {
   CHECK(collector, ());
 
-  collector->m_data.insert(std::begin(m_data), std::end(m_data));
+  std::copy(std::begin(m_data), std::end(m_data), std::back_inserter(collector->m_data));
 }
 
 // Functions --------------------------------------------------------------------------------

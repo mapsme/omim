@@ -4,6 +4,7 @@
 #include "generator/booking_dataset.hpp"
 #include "generator/city_boundary_processor.hpp"
 #include "generator/feature_builder.hpp"
+#include "generator/feature_merger.hpp"
 #include "generator/type_helper.hpp"
 
 #include "indexer/classificator.hpp"
@@ -107,15 +108,15 @@ public:
     });
   }
 
-  static bool IsCity(FeatureBuilder const & fb)
+  static bool IsPlace(FeatureBuilder const & fb)
   {
     auto const type = GetPlaceType(fb);
-    return type != ftype::GetEmptyValue() && !fb.GetName().empty();
+    return type != ftype::GetEmptyValue();
   }
 
   bool Process(FeatureBuilder const & fb)
   {
-    if (IsCity(fb))
+    if (IsPlace(fb) && !fb.GetName().empty())
     {
       m_processor.Replace(fb);
       return true;
@@ -192,7 +193,8 @@ bool CountryFinalProcessor::Process()
   if (!m_coastlineGeomFilename.empty() && !ProcessCoasline())
     return false;
 
-  return true;
+
+  return CleanUp();
 }
 
 bool CountryFinalProcessor::ProcessBooking()
@@ -249,7 +251,7 @@ bool CountryFinalProcessor::ProcessCityBoundaries()
       FeaturesCollector collector(fullPath);
       for (size_t i = 0; i < fbs.size(); ++i)
       {
-        if (CityBoundariesHelper::IsCity(fbs[i]))
+        if (CityBoundariesHelper::IsPlace(fbs[i]))
           cities.emplace_back(std::move(fbs[i]));
         else
           collector.Collect(std::move(fbs[i]));
@@ -284,6 +286,27 @@ bool CountryFinalProcessor::ProcessCoasline()
   return true;
 }
 
+bool CountryFinalProcessor::CleanUp()
+{
+  auto const affilation = CountriesFilesAffiliation(m_borderPath);
+  delayed::ThreadPool pool(m_threadsCount, delayed::ThreadPool::Exit::ExecPending);
+  ForEachCountry(m_temproryMwmPath, [&](auto const & filename) {
+    pool.Push([&, filename]() {
+      if (!FilenameIsCountry(filename, affilation))
+        return;
+      auto const fullPath = base::JoinPath(m_temproryMwmPath, filename);
+      auto fbs = ReadAllDatRawFormat(fullPath);
+      FeaturesCollector collector(fullPath);
+      for (auto & fb : fbs)
+      {
+        if (fb.RemoveInvalidTypes() && PreprocessForCountryMap(fb))
+          collector.Collect(fb);
+      }
+    });
+  });
+  return true;
+}
+
 WorldFinalProcessor::WorldFinalProcessor(std::string const & worldTmpFilename,
                                          std::string const & coastlineGeomFilename,
                                          std::string const & popularPlacesFilename)
@@ -306,7 +329,10 @@ bool WorldFinalProcessor::Process()
   auto fbs = ReadAllDatRawFormat(m_worldTmpFilename);
   WorldGenerator generator(m_worldTmpFilename, m_coastlineGeomFilename, m_popularPlacesFilename);
   for (auto & fb : fbs)
-    generator.Process(fb);
+  {
+    if (fb.RemoveInvalidTypes())
+      generator.Process(fb);
+  }
   generator.DoMerge();
   return true;
 }
@@ -319,7 +345,7 @@ bool WorldFinalProcessor::ProcessCityBoundaries()
   for (size_t i = 0; i < fbs.size(); ++i)
   {
     auto const & fb = fbs[i];
-    if (CityBoundariesHelper::IsCity(fb))
+    if (CityBoundariesHelper::IsPlace(fb))
     {
       cityBoundariesHelper.Process(fb);
       indexes.emplace(i);

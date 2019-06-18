@@ -214,6 +214,8 @@ DEFINE_string(regions_features, "", "Input tmp.mwm file with regions.");
 
 DEFINE_string(popularity_csv, "", "Output csv for popularity.");
 
+DEFINE_bool(dump_mwm_tmp, false, "Prints features builder objects from .mwm.tmp");
+
 // Common.
 DEFINE_bool(verbose, false, "Provide more detailed output.");
 
@@ -304,7 +306,7 @@ int GeneratorToolMain(int argc, char ** argv)
       !FLAGS_generate_streets_features.empty() || 
       !FLAGS_generate_geo_objects_features.empty())
   {
-    RawGenerator rawGenerator(genInfo, 8);
+    RawGenerator rawGenerator(genInfo, 1);
     if (FLAGS_generate_features)
       rawGenerator.GenerateCountries(FLAGS_no_ads);
     if (FLAGS_generate_world)
@@ -321,6 +323,12 @@ int GeneratorToolMain(int argc, char ** argv)
     if (!rawGenerator.Execute())
       return EXIT_FAILURE;
 
+  }
+
+  if (FLAGS_dump_mwm_tmp)
+  {
+    for (auto const & fb : feature::ReadAllDatRawFormat(genInfo.GetTmpFileName(FLAGS_output)))
+         std::cout << DebugPrint(fb) << std::endl;
   }
 
 
