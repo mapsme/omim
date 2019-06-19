@@ -14,4 +14,4 @@ OsmElement MakeOsmElement(uint64_t id, Tags const & tags, OsmElement::EntityType
 std::string GetFileName();
 
 bool MakeFakeBordersFile(std::string const & intemediatePath, std::string const & filename);
-} // generator_tests
+}  // generator_tests

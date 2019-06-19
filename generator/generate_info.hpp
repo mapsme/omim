@@ -55,7 +55,7 @@ struct GenerateInfo
 
   std::string m_idToWikidataFilename;
 
-  std::shared_ptr<generator::OsmIdToBoundariesTable> m_boundariesTable;
+  std::string m_citiesBoundariesFilename;
 
   uint32_t m_versionDate = 0;
 

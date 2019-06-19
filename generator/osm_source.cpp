@@ -225,6 +225,7 @@ bool ProcessorXmlElementsFromXml::TryReadFromQueue(OsmElement & element)
 {
   if (m_queue.empty())
     return false;
+
   element = m_queue.front();
   m_queue.pop();
   return true;
@@ -249,34 +250,27 @@ bool ProcessorXmlElementsFromXml::TryRead(OsmElement & element)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool GenerateIntermediateData(feature::GenerateInfo & info)
 {
-  try
+  auto nodes = cache::CreatePointStorageWriter(info.m_nodeStorageType,
+                                               info.GetIntermediateFileName(NODES_FILE));
+  cache::IntermediateDataWriter cache(nodes, info);
+  TownsDumper towns;
+  SourceReader reader = info.m_osmFileName.empty() ? SourceReader() : SourceReader(info.m_osmFileName);
+
+  LOG(LINFO, ("Data source:", info.m_osmFileName));
+
+  switch (info.m_osmFileType)
   {
-    auto nodes = cache::CreatePointStorageWriter(info.m_nodeStorageType,
-                                                 info.GetIntermediateFileName(NODES_FILE));
-    cache::IntermediateDataWriter cache(nodes, info);
-    TownsDumper towns;
-    SourceReader reader = info.m_osmFileName.empty() ? SourceReader() : SourceReader(info.m_osmFileName);
-
-    LOG(LINFO, ("Data source:", info.m_osmFileName));
-
-    switch (info.m_osmFileType)
-    {
-    case feature::GenerateInfo::OsmSourceType::XML:
-      BuildIntermediateDataFromXML(reader, cache, towns);
-      break;
-    case feature::GenerateInfo::OsmSourceType::O5M:
-      BuildIntermediateDataFromO5M(reader, cache, towns);
-      break;
-    }
-
-    cache.SaveIndex();
-    towns.Dump(info.GetIntermediateFileName(TOWNS_FILE));
-    LOG(LINFO, ("Added points count =", nodes->GetNumProcessedPoints()));
+  case feature::GenerateInfo::OsmSourceType::XML:
+    BuildIntermediateDataFromXML(reader, cache, towns);
+    break;
+  case feature::GenerateInfo::OsmSourceType::O5M:
+    BuildIntermediateDataFromO5M(reader, cache, towns);
+    break;
   }
-  catch (Writer::Exception const & e)
-  {
-    LOG(LCRITICAL, ("Error with file:", e.what()));
-  }
+
+  cache.SaveIndex();
+  towns.Dump(info.GetIntermediateFileName(TOWNS_FILE));
+  LOG(LINFO, ("Added points count =", nodes->GetNumProcessedPoints()));
   return true;
 }
 
@@ -305,6 +299,7 @@ void TranslatorsPool::Emit(vector<OsmElement> & elements)
   m_threadPool.Push([&, idx, elements{move(elements)}]() mutable {
     for (auto & element : elements)
       m_translators[idx]->Emit(element);
+
     m_freeTranslators.Push(idx);
   });
 }
@@ -326,7 +321,7 @@ RawGeneratorWriter::RawGeneratorWriter(shared_ptr<FeatureProcessorQueue> const &
 
 RawGeneratorWriter::~RawGeneratorWriter()
 {
-  Finish();
+  ShutdownAndJoin();
 }
 
 void RawGeneratorWriter::Run()
@@ -338,6 +333,7 @@ void RawGeneratorWriter::Run()
       m_queue->WaitAndPop(chank);
       if (chank.IsEmpty())
         return;
+
       Write(chank.Get());
     }
   });
@@ -345,9 +341,9 @@ void RawGeneratorWriter::Run()
 
 vector<string> RawGeneratorWriter::GetNames()
 {
-  Finish();
+  ShutdownAndJoin();
   vector<string> names;
-  names.resize(m_collectors.size());
+  names.reserve(m_collectors.size());
   for (const auto  & p : m_collectors)
     names.emplace_back(p.first);
 
@@ -371,7 +367,7 @@ void RawGeneratorWriter::Write(ProcessedData const & chank)
   }
 }
 
-void RawGeneratorWriter::Finish()
+void RawGeneratorWriter::ShutdownAndJoin()
 {
   m_queue->Push({});
   if (m_thread.joinable())
@@ -471,7 +467,7 @@ bool RawGenerator::Execute()
     while (true);
   }
 
-    LOG(LINFO, ("Final processing is finished."));
+  LOG(LINFO, ("Final processing is finished."));
   return true;
 }
 
@@ -491,6 +487,8 @@ RawGenerator::FinalProcessorPtr RawGenerator::CreateCountryFinalProcessor()
                                                            m_threadsCount);
   finalProcessor->NeedBookig(m_genInfo.m_bookingDataFilename);
   finalProcessor->UseCityBoundaries(m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME));
+  finalProcessor->SetPromoCatalog(m_genInfo.m_promoCatalogCitiesFilename);
+  finalProcessor->DumpCityBoundaries(m_genInfo.m_citiesBoundariesFilename);
   if (m_genInfo.m_emitCoasts)
   {
     finalProcessor->AddCoastlines(m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom"),
@@ -502,10 +500,11 @@ RawGenerator::FinalProcessorPtr RawGenerator::CreateCountryFinalProcessor()
 RawGenerator::FinalProcessorPtr RawGenerator::CreateWorldFinalProcessor()
 {
   auto finalProcessor = make_shared<WorldFinalProcessor>(
-                          m_genInfo.GetTmpFileName(WORLD_FILE_NAME, DATA_FILE_EXTENSION_TMP),
+                          m_genInfo.m_tmpDir,
                           m_genInfo.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, RAW_GEOM_FILE_EXTENSION),
                           m_genInfo.m_popularPlacesFilename);
   finalProcessor->UseCityBoundaries(m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME));
+  finalProcessor->SetPromoCatalog(m_genInfo.m_promoCatalogCitiesFilename);
   return finalProcessor;
 }
 

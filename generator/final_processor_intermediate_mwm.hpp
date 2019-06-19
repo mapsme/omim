@@ -10,7 +10,7 @@ namespace generator
 {
 enum class FinalProcessorPriority : unsigned char
 {
-  COUNTRIES_WORLD = 1,
+  COUNTRIES_OR_WORLD = 1,
   WORLDCOASTS = 2
 };
 
@@ -39,6 +39,8 @@ public:
 
   void NeedBookig(std::string const & filename);
   void UseCityBoundaries(std::string const & filename);
+  void SetPromoCatalog(std::string const & filename);
+  void DumpCityBoundaries(std::string const & filename);
   void AddCoastlines(std::string const & coastlineGeomFilename,
                      std::string const & worldCoastsFilename);
 
@@ -47,16 +49,18 @@ public:
 
 private:
   bool ProcessBooking();
-  bool ProcessCityBoundaries();
+  bool ProcessCities();
   bool ProcessCoasline();
   bool CleanUp();
 
   std::string m_borderPath;
   std::string m_temproryMwmPath;
   std::string m_cityBoundariesTmpFilename;
+  std::string m_citiesBoundariesFilename;
   std::string m_hotelsPath;
   std::string m_coastlineGeomFilename;
   std::string m_worldCoastsFilename;
+  std::string m_citiesFinename;
   size_t m_threadsCount;
 };
 
@@ -65,23 +69,25 @@ class WorldFinalProcessor : public FinalProcessorIntermediateMwmInteface
 public:
   using WorldGenerator = WorldMapGenerator<feature::FeaturesCollector>;
 
-  explicit WorldFinalProcessor(std::string const & worldTmpFilename,
+  explicit WorldFinalProcessor(std::string const & temproryMwmPath,
                                std::string const & coastlineGeomFilename,
                                std::string const & popularPlacesFilename);
 
   void UseCityBoundaries(std::string const & filename);
+  void SetPromoCatalog(std::string const & filename);
 
   // FinalProcessorIntermediateMwmInteface overrides:
   bool Process() override;
 
 private:
+  bool ProcessCities();
 
-  bool ProcessCityBoundaries();
-
+  std::string m_temproryMwmPath;
   std::string m_worldTmpFilename;
   std::string m_coastlineGeomFilename;
   std::string m_popularPlacesFilename;
   std::string m_cityBoundariesTmpFilename;
+  std::string m_citiesFinename;
 };
 
 class CoastlineFinalProcessor : public FinalProcessorIntermediateMwmInteface

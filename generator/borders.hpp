@@ -79,7 +79,7 @@ public:
 
   bool HasRegionByName(std::string const & name) const
   {
-    return m_regions.count(name) == 0;
+    return m_regions.count(name) != 0;
   }
 
   CountryPolygons const & GetRegionByName(std::string const & name) const

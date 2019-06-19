@@ -275,7 +275,7 @@ int GeneratorToolMain(int argc, char ** argv)
   genInfo.m_popularPlacesFilename = FLAGS_popular_places_data;
   genInfo.m_brandsFilename = FLAGS_brands_data;
   genInfo.m_brandsTranslationsFilename = FLAGS_brands_translations_data;
-  genInfo.m_boundariesTable = make_shared<generator::OsmIdToBoundariesTable>();
+  genInfo.m_citiesBoundariesFilename = FLAGS_cities_boundaries_data;
   genInfo.m_versionDate = static_cast<uint32_t>(FLAGS_planet_version);
   genInfo.m_splitByPolygons = FLAGS_split_by_polygons;
   genInfo.m_createWorld = FLAGS_generate_world;
@@ -306,7 +306,7 @@ int GeneratorToolMain(int argc, char ** argv)
       !FLAGS_generate_streets_features.empty() || 
       !FLAGS_generate_geo_objects_features.empty())
   {
-    RawGenerator rawGenerator(genInfo, 1);
+    RawGenerator rawGenerator(genInfo, 8);
     if (FLAGS_generate_features)
       rawGenerator.GenerateCountries(FLAGS_no_ads);
     if (FLAGS_generate_world)
@@ -322,7 +322,6 @@ int GeneratorToolMain(int argc, char ** argv)
 
     if (!rawGenerator.Execute())
       return EXIT_FAILURE;
-
   }
 
   if (FLAGS_dump_mwm_tmp)
@@ -330,20 +329,6 @@ int GeneratorToolMain(int argc, char ** argv)
     for (auto const & fb : feature::ReadAllDatRawFormat(genInfo.GetTmpFileName(FLAGS_output)))
          std::cout << DebugPrint(fb) << std::endl;
   }
-
-
-//  if (FLAGS_dump_cities_boundaries)
-//  {
-//    CHECK(!FLAGS_cities_boundaries_data.empty(), ());
-//    LOG(LINFO, ("Dumping cities boundaries to", FLAGS_cities_boundaries_data));
-//    if (!generator::SerializeBoundariesTable(FLAGS_cities_boundaries_data,
-//                                             *genInfo.m_boundariesTable))
-//    {
-//      LOG(LCRITICAL, ("Error serializing boundaries table to", FLAGS_cities_boundaries_data));
-//    }
-//  }
-
-
 
   // Load mwm tree only if we need it
   unique_ptr<storage::CountryParentGetter> countryParentGetter;

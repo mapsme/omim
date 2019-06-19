@@ -79,8 +79,6 @@ void CameraProcessor::FillCameraInWays()
       m_cameraToWays[itCamera->first].push_back(way.first);
     }
   }
-
-  LOG(LINFO, ("m_cameraToWays", m_cameraToWays));
 }
 
 void CameraProcessor::ProcessNode(OsmElement const & element)
@@ -110,7 +108,6 @@ CameraCollector::Clone(std::shared_ptr<generator::cache::IntermediateDataReader>
 
 void CameraCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const & element)
 {
-  LOG(LINFO, ("+++", feature.GetTypes(), element));
   switch (element.m_type)
   {
   case OsmElement::EntityType::Node:

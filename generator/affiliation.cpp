@@ -39,4 +39,9 @@ std::vector<std::string> OneFileAffiliation::GetAffiliations(FeatureBuilder cons
 {
   return {m_filename};
 }
+
+bool OneFileAffiliation::HasRegionByName(std::string const & name) const
+{
+  return name == m_filename;
+}
 }  // namespace feature

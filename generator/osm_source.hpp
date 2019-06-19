@@ -171,7 +171,7 @@ public:
 
 private:
   void Write(ProcessedData const & chank);
-  void Finish();
+  void ShutdownAndJoin();
 
   std::thread m_thread;
   std::shared_ptr<FeatureProcessorQueue> m_queue;
@@ -198,6 +198,7 @@ public:
 
   void ForceReloadCache();
   std::shared_ptr<FeatureProcessorQueue> GetQueue();
+
 private:
   using FinalProcessorPtr = std::shared_ptr<FinalProcessorIntermediateMwmInteface>;
 

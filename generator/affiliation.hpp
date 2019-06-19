@@ -14,6 +14,7 @@ public:
   virtual ~AffiliationInterface() = default;
 
   virtual std::vector<std::string> GetAffiliations(FeatureBuilder const & fb) const = 0;
+  virtual bool HasRegionByName(std::string const & name) const = 0;
 };
 
 class CountriesFilesAffiliation : public AffiliationInterface
@@ -24,7 +25,7 @@ public:
   // AffiliationInterface overrides:
   std::vector<std::string> GetAffiliations(FeatureBuilder const & fb) const override;
 
-  bool HasRegionByName(std::string const & name) const;
+  bool HasRegionByName(std::string const & name) const override;
 
 private:
   std::shared_ptr<borders::CountriesContainer> m_countries;
@@ -37,6 +38,8 @@ public:
 
   // AffiliationInterface overrides:
   std::vector<std::string> GetAffiliations(FeatureBuilder const &) const override;
+
+  bool HasRegionByName(std::string const & name) const override;
 
 private:
   std::string m_filename;
