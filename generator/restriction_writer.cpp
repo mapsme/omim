@@ -154,12 +154,6 @@ bool ValidateOsmRestriction(std::vector<RelationElement::Member> & from,
 
 void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
 {
-  if (!IsOpened())
-  {
-    LOG(LWARNING, ("Tried to write to a closed restrictions writer"));
-    return;
-  }
-
   std::vector<RelationElement::Member> from;
   std::vector<RelationElement::Member> via;
   std::vector<RelationElement::Member> to;
