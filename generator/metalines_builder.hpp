@@ -5,6 +5,7 @@
 #include "generator/osm_element.hpp"
 
 #include <cstdlib>
+#include <map>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -13,13 +14,13 @@ namespace generator
 {
 namespace cache
 {
-  class IntermediateDataReader;
+class IntermediateDataReader;
 }  // namespace cache
 }  // namespace generator
 
 namespace feature
 {
-/// A string of connected ways.
+// A string of connected ways.
 class LineString
 {
 public:
@@ -27,18 +28,35 @@ public:
 
   explicit LineString(OsmElement const & way);
 
-  Ways const & GetWays() const { return m_ways; }
-  void Reverse();
   bool Add(LineString & line);
+  void Reverse();
+
+  Ways const & GetWays() const { return m_ways; }
+  uint64_t GetStart() const { return m_start; }
+  uint64_t GetEnd() const { return m_end; }
 
 private:
-  Ways m_ways;
   uint64_t m_start;
   uint64_t m_end;
   bool m_oneway;
+  Ways m_ways;
 };
 
-/// Merges road segments with similar name and ref values into groups called metalines.
+class LineStringMerger
+{
+public:
+  using LinePtr = std::shared_ptr<LineString>;
+  using InputData = std::unordered_multimap<size_t, LinePtr>;
+  using OutputData = std::map<size_t, std::vector<LinePtr>>;
+  using Buffer = std::unordered_map<uint64_t, LinePtr>;
+
+  static OutputData Merge(InputData const & data);
+  static bool TryMerge(LinePtr const & lineString, Buffer & buffer);
+  static bool TryMergeOne(LinePtr const & lineString, Buffer & buffer);
+  static OutputData OrderData(InputData const & data);
+};
+
+// Merges road segments with similar name and ref values into groups called metalines.
 class MetalinesBuilder : public generator::CollectorInterface
 {
 public:
@@ -56,10 +74,10 @@ public:
   void MergeInto(MetalinesBuilder * collector) const override;
 
 private:
-  std::vector<std::pair<size_t, LineString>> m_data;
+  std::unordered_multimap<size_t, std::shared_ptr<LineString>> m_data;
 };
 
-/// Read an intermediate file from MetalinesBuilder and convert it to an mwm section.
+// Read an intermediate file from MetalinesBuilder and convert it to an mwm section.
 bool WriteMetalinesSection(std::string const & mwmPath, std::string const & metalinesPath,
                            std::string const & osmIdsToFeatureIdsPath);
 }

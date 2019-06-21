@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <iterator>
 
+using namespace feature;
+
 namespace generator
 {
 CityBoundaryCollector::CityBoundaryCollector(std::string const & filename)
@@ -19,7 +21,7 @@ CityBoundaryCollector::Clone(std::shared_ptr<cache::IntermediateDataReader> cons
   return std::make_shared<CityBoundaryCollector>(GetFilename());
 }
 
-void CityBoundaryCollector::CollectFeature(feature::FeatureBuilder const & feature, OsmElement const &)
+void CityBoundaryCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const &)
 {
   if (feature.IsArea() && ftypes::IsCityTownOrVillage(feature.GetTypes()))
     m_boundaries.emplace_back(feature);
@@ -27,11 +29,11 @@ void CityBoundaryCollector::CollectFeature(feature::FeatureBuilder const & featu
 
 void CityBoundaryCollector::Save()
 {
-  feature::FeaturesCollector collector(GetFilename());
+  FeatureBuilderWriter<serialization_policy::MaxAccuracy> collector(GetFilename());
   for (auto & boundary : m_boundaries)
   {
     if (boundary.PreSerialize())
-      collector.Collect(boundary);
+      collector.Write(boundary);
   }
 }
 

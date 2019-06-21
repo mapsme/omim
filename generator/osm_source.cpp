@@ -360,10 +360,10 @@ void RawGeneratorWriter::Write(ProcessedData const & chank)
     if (m_collectors.count(affiliation) == 0)
     {
       auto path = base::JoinPath(m_path, affiliation + DATA_FILE_EXTENSION_TMP);
-      m_collectors.emplace(affiliation, make_unique<feature::FeaturesCollector>(move(path)));
+      m_collectors.emplace(affiliation, make_unique<FeatureBuilderWriter>(move(path)));
     }
 
-    m_collectors[affiliation]->Collect(chank.m_fb);
+    m_collectors[affiliation]->Write(chank.m_fb);
   }
 }
 
@@ -374,9 +374,10 @@ void RawGeneratorWriter::ShutdownAndJoin()
     m_thread.join();
 }
 
-RawGenerator::RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount)
+RawGenerator::RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount, size_t chankSize)
   : m_genInfo(genInfo)
   , m_threadsCount(threadsCount)
+  , m_chankSize(chankSize)
   , m_cache(make_shared<generator::cache::IntermediateData>(genInfo))
   , m_queue(make_shared<FeatureProcessorQueue>())
   , m_translators(make_shared<TranslatorCollection>())
@@ -448,7 +449,7 @@ void RawGenerator::GenerateCustom(std::shared_ptr<TranslatorInterface> const & t
 
 bool RawGenerator::Execute()
 {  
-  if (!GenerateFilteredFeatures(m_threadsCount))
+  if (!GenerateFilteredFeatures())
     return false;
 
   while (!m_finalProcessors.empty())
@@ -508,7 +509,7 @@ RawGenerator::FinalProcessorPtr RawGenerator::CreateWorldFinalProcessor()
   return finalProcessor;
 }
 
-bool RawGenerator::GenerateFilteredFeatures(size_t threadsCount)
+bool RawGenerator::GenerateFilteredFeatures()
 {
   SourceReader reader = m_genInfo.m_osmFileName.empty() ? SourceReader()
                                                         : SourceReader(m_genInfo.m_osmFileName);
@@ -523,20 +524,19 @@ bool RawGenerator::GenerateFilteredFeatures(size_t threadsCount)
     break;
   }
 
-  TranslatorsPool translators(m_translators, m_cache, threadsCount - 1);
+  TranslatorsPool translators(m_translators, m_cache, m_threadsCount - 1 /* copyCount */);
   RawGeneratorWriter rawGeneratorWriter(m_queue, m_genInfo.m_tmpDir);
   rawGeneratorWriter.Run();
 
-  size_t const kElementsCount = 1024;
   size_t element_pos = 0;
-  vector<OsmElement> elements(kElementsCount);
+  vector<OsmElement> elements(m_chankSize);
   while(sourseProcessor->TryRead(elements[element_pos]))
   {
-    if (++element_pos != kElementsCount)
+    if (++element_pos != m_chankSize)
       continue;
 
     translators.Emit(elements);
-    elements = vector<OsmElement>(kElementsCount);
+    elements = vector<OsmElement>(m_chankSize);
     element_pos = 0;
   }
   elements.resize(element_pos);

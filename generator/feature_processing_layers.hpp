@@ -68,7 +68,7 @@ public:
   std::shared_ptr<LayerBase> CloneRecursive() const;
 
   // The function works in linear time from the number of layers that exist after that.
-  virtual void Handle(feature::FeatureBuilder & feature);
+  virtual void Handle(feature::FeatureBuilder & fb);
 
   void Merge(std::shared_ptr<LayerBase> const & other);
   void MergeRecursive(std::shared_ptr<LayerBase> const & other);
@@ -100,20 +100,17 @@ private:
 // with type "leisure=playground" and line object with type "barrier=fence".
 class RepresentationLayer : public LayerBase
 {
-public:
-  explicit RepresentationLayer();
-
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(feature::FeatureBuilder & feature) override;
+  void Handle(feature::FeatureBuilder & fb) override;
 
 private:
   static bool CanBeArea(FeatureParams const & params);
   static bool CanBePoint(FeatureParams const & params);
   static bool CanBeLine(FeatureParams const & params);
 
-  void HandleArea(feature::FeatureBuilder & feature, FeatureParams const & params);
+  void HandleArea(feature::FeatureBuilder & fb, FeatureParams const & params);
 };
 
 // Responsibility of class PrepareFeatureLayer is the removal of unused types and names,
@@ -124,7 +121,7 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(feature::FeatureBuilder & feature) override;
+  void Handle(feature::FeatureBuilder & fb) override;
 };
 
 class PromoCatalogLayer : public LayerBase
@@ -136,7 +133,7 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(feature::FeatureBuilder & feature) override;
+  void Handle(feature::FeatureBuilder & fb) override;
 
 private:
   promo::Cities m_cities;
@@ -150,7 +147,7 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(feature::FeatureBuilder & feature) override;
+  void Handle(feature::FeatureBuilder & fb) override;
 };
 
 // Responsibility of class PrepareCoastlineFeatureLayer is the removal of unused types and names,
@@ -161,22 +158,31 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(feature::FeatureBuilder & feature) override;
+  void Handle(feature::FeatureBuilder & fb) override;
 };
 
-class WorldFilterLayer : public LayerBase
+class WorldLayer : public LayerBase
 {
 public:
-  explicit WorldFilterLayer(std::string const & popularityFilename);
+  explicit WorldLayer(std::string const & popularityFilename);
 
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(feature::FeatureBuilder & feature) override;
+  void Handle(feature::FeatureBuilder & fb) override;
 
 private:
   std::string m_popularityFilename;
   FilterWorld m_filter;
+};
+
+class CountryLayer : public LayerBase
+{
+public:
+  // LayerBase overrides:
+  std::shared_ptr<LayerBase> Clone() const override;
+
+  void Handle(feature::FeatureBuilder & fb) override;
 };
 
 class PreserializeLayer : public LayerBase
@@ -185,7 +191,7 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(feature::FeatureBuilder & feature) override;
+  void Handle(feature::FeatureBuilder & fb) override;
 };
 
 class  AffilationsFeatureLayer : public LayerBase
@@ -197,7 +203,7 @@ public:
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override;
 
-  void Handle(feature::FeatureBuilder & feature) override;
+  void Handle(feature::FeatureBuilder & fb) override;
 
 private:
   std::shared_ptr<FeatureProcessorQueue> m_queue;

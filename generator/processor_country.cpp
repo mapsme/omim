@@ -18,6 +18,7 @@ ProcessorCountry::ProcessorCountry(std::shared_ptr<FeatureProcessorQueue> const 
 {
   m_processingChain = std::make_shared<RepresentationLayer>();
   m_processingChain->Add(std::make_shared<PrepareFeatureLayer>());
+  m_processingChain->Add(std::make_shared<CountryLayer>());
   auto affilation = std::make_shared<feature::CountriesFilesAffiliation>(bordersPath);
   m_processingChain->Add(std::make_shared<AffilationsFeatureLayer>(queue, affilation));
 }

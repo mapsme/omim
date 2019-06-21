@@ -13,8 +13,8 @@ ProcessorWorld::ProcessorWorld(std::shared_ptr<FeatureProcessorQueue> const & qu
                                std::string const & popularityFilename)
 {
   m_processingChain = std::make_shared<RepresentationLayer>();
-  m_processingChain->Add(std::make_shared<WorldFilterLayer>(popularityFilename));
   m_processingChain->Add(std::make_shared<PrepareFeatureLayer>());
+  m_processingChain->Add(std::make_shared<WorldLayer>(popularityFilename));
   auto affilation = std::make_shared<feature::OneFileAffiliation>(WORLD_FILE_NAME);
   m_processingChain->Add(std::make_shared<AffilationsFeatureLayer>(queue, affilation));
 }

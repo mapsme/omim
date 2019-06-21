@@ -14,6 +14,7 @@
 
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
+#include "base/geo_object_id.hpp"
 #include "base/string_utils.hpp"
 #include "base/thread_pool_computational.hpp"
 
@@ -23,6 +24,7 @@
 #include <future>
 #include <iterator>
 #include <memory>
+#include <tuple>
 #include <unordered_set>
 #include <vector>
 
@@ -30,6 +32,7 @@
 
 using namespace base::thread_pool;
 using namespace feature;
+using namespace serialization_policy;
 
 namespace generator
 {
@@ -44,9 +47,9 @@ void ForEachCountry(std::string const & temproryMwmPath, ToDo && toDo)
     toDo(filename);
 }
 
-std::vector<std::vector<std::string>>
-GetAffilations(std::vector<FeatureBuilder> const & fbs, AffiliationInterface const & affilation,
-               size_t threadsCount)
+std::vector<std::vector<std::string>> GetAffilations(std::vector<FeatureBuilder> const & fbs,
+                                                     AffiliationInterface const & affilation,
+                                                     size_t threadsCount)
 {
   computational::ThreadPool pool(threadsCount);
   std::vector<std::future<std::vector<std::string>>> futuresAffilations;
@@ -66,11 +69,12 @@ GetAffilations(std::vector<FeatureBuilder> const & fbs, AffiliationInterface con
   return resultAffilations;
 }
 
-std::vector<std::vector<std::string>>
-AppendFeaturesToCountries(std::string const & temproryMwmPath, std::vector<FeatureBuilder> const & fbs,
-                          AffiliationInterface const & affilation, size_t threadsCount)
+template <class SerializePolicy = MaxAccuracy>
+std::vector<std::vector<std::string>> AppendToCountries(std::vector<FeatureBuilder> const & fbs,
+                                                        std::string const & temproryMwmPath,
+                                                        AffiliationInterface const & affilation,
+                                                        size_t threadsCount)
 {
-
   auto affilations = GetAffilations(fbs, affilation, threadsCount);
   std::unordered_map<std::string, std::vector<FeatureBuilder>> countryToCities;
   for (size_t i = 0; i < fbs.size(); ++i)
@@ -84,13 +88,32 @@ AppendFeaturesToCountries(std::string const & temproryMwmPath, std::vector<Featu
   {
     pool.Push([temproryMwmPath, name{p.first}, countries{std::move(p.second)}]() {
       auto const path = base::JoinPath(temproryMwmPath, name + DATA_FILE_EXTENSION_TMP);
-      FeaturesCollector collector(path, FileWriter::Op::OP_APPEND);
+      FeatureBuilderWriter<SerializePolicy> collector(path, FileWriter::Op::OP_APPEND);
       for (auto && fb : countries)
-        collector.Collect(std::move(fb));
+        collector.Write(std::move(fb));
     });
   }
 
   return affilations;
+}
+
+void Sort(std::vector<FeatureBuilder> & fbs)
+{
+  std::sort(std::begin(fbs), std::end(fbs), [](auto const & l, auto const & r) {
+    auto const lGeomType = static_cast<int8_t>(l.GetGeomType());
+    auto const rGeomType = static_cast<int8_t>(r.GetGeomType());
+
+    auto const lId = l.HasOsmIds() ? l.GetMostGenericOsmId() : base::GeoObjectId();
+    auto const rId = r.HasOsmIds() ? r.GetMostGenericOsmId() : base::GeoObjectId();
+
+    auto const lPointCount = l.GetPointsCount();
+    auto const rPointCount = r.GetPointsCount();
+
+    auto const lKeyPoint = l.GetKeyPoint();
+    auto const rKeyPoint = r.GetKeyPoint();
+
+    return std::tie(lGeomType, lId, lPointCount, lKeyPoint) < std::tie(rGeomType, rId, rPointCount, rKeyPoint);
+  });
 }
 
 bool FilenameIsCountry(std::string filename, AffiliationInterface const & affilation)
@@ -111,7 +134,7 @@ public:
   explicit CityBoundariesHelper(std::string const & filename)
     : CityBoundariesHelper()
   {
-    ForEachFromDatRawFormat(filename, [&](auto const & fb, auto const &) {
+    ForEachFromDatRawFormat<MaxAccuracy>(filename, [&](auto const & fb, auto const &) {
       m_processor.Add(fb);
     });
   }
@@ -124,13 +147,11 @@ public:
 
   bool Process(FeatureBuilder const & fb)
   {
-    if (IsPlace(fb))
-    {
-      m_processor.Replace(fb);
-      return true;
-    }
+    if (!IsPlace(fb))
+      return false;
 
-    return false;
+    m_processor.Replace(fb);
+    return true;
   }
 
   std::vector<FeatureBuilder> GetFeatures() const
@@ -176,14 +197,14 @@ public:
           return cities;
 
         auto const fullPath = base::JoinPath(m_temproryMwmPath, filename);
-        auto fbs = ReadAllDatRawFormat(fullPath);
-        FeaturesCollector collector(fullPath);
+        auto fbs = ReadAllDatRawFormat<MaxAccuracy>(fullPath);
+        FeatureBuilderWriter<MaxAccuracy> writer(fullPath);
         for (size_t i = 0; i < fbs.size(); ++i)
         {
           if (CityBoundariesHelper::IsPlace(fbs[i]))
             cities.emplace_back(std::move(fbs[i]));
           else
-            collector.Collect(std::move(fbs[i]));
+            writer.Write(std::move(fbs[i]));
         }
 
         return cities;
@@ -202,7 +223,7 @@ public:
     if (!m_citiesFinename.empty())
       ProcessForPromoCatalog(fbs);
 
-    AppendFeaturesToCountries(m_temproryMwmPath, fbs, m_affilation, m_threadsCount);
+    AppendToCountries(fbs, m_temproryMwmPath, m_affilation, m_threadsCount);
     return true;
   }
 
@@ -308,19 +329,19 @@ bool CountryFinalProcessor::ProcessBooking()
           return;
 
         auto const fullPath = base::JoinPath(m_temproryMwmPath, filename);
-        auto fbs = ReadAllDatRawFormat(fullPath);
-        FeaturesCollector collector(fullPath);
+        auto fbs = ReadAllDatRawFormat<MaxAccuracy>(fullPath);
+        FeatureBuilderWriter<MaxAccuracy> writer(fullPath);
         for (auto & fb : fbs)
         {
           auto const id = dataset.FindMatchingObjectId(fb);
           if (id == BookingHotel::InvalidObjectId())
           {
-            collector.Collect(fb);
+            writer.Write(fb);
           }
           else
           {
             dataset.PreprocessMatchedOsmObject(id, fb, [&](FeatureBuilder & newFeature) {
-              collector.Collect(newFeature);
+              writer.Write(newFeature);
             });
           }
         }
@@ -331,7 +352,7 @@ bool CountryFinalProcessor::ProcessBooking()
   dataset.BuildOsmObjects([&](auto && fb) {
     fbs.emplace_back(std::move(fb));
   });
-  AppendFeaturesToCountries(m_temproryMwmPath, std::move(fbs), affilation, m_threadsCount);
+  AppendToCountries(fbs, m_temproryMwmPath, affilation, m_threadsCount);
   return true;
 }
 
@@ -363,12 +384,12 @@ bool CountryFinalProcessor::ProcessCoasline()
 {
   auto const affilation = CountriesFilesAffiliation(m_borderPath);
   auto fbs = ReadAllDatRawFormat(m_coastlineGeomFilename);
-  auto const affilations = AppendFeaturesToCountries(m_temproryMwmPath, fbs, affilation, m_threadsCount);
-  FeaturesCollector collector(m_worldCoastsFilename);
+  auto const affilations = AppendToCountries(fbs, m_temproryMwmPath, affilation, m_threadsCount);
+  FeatureBuilderWriter<> collector(m_worldCoastsFilename);
   for (size_t i = 0; i < fbs.size(); ++i)
   {
     fbs[i].AddName("default", strings::JoinStrings(affilations[i], ";"));
-    collector.Collect(fbs[i]);
+    collector.Write(fbs[i]);
   }
 
   return true;
@@ -384,13 +405,11 @@ bool CountryFinalProcessor::CleanUp()
         return;
 
       auto const fullPath = base::JoinPath(m_temproryMwmPath, filename);
-      auto fbs = ReadAllDatRawFormat(fullPath);
-      FeaturesCollector collector(fullPath);
+      auto fbs = ReadAllDatRawFormat<MaxAccuracy>(fullPath);
+      Sort(fbs);
+      FeatureBuilderWriter<> collector(fullPath);
       for (auto & fb : fbs)
-      {
-        if (fb.RemoveInvalidTypes() && PreprocessForCountryMap(fb))
-          collector.Collect(fb);
-      }
+        collector.Write(fb);
     });
   });
 
@@ -423,13 +442,11 @@ bool WorldFinalProcessor::Process()
   if ((!m_cityBoundariesTmpFilename.empty() || !m_citiesFinename.empty()) && !ProcessCities())
     return false;
 
-  auto fbs = ReadAllDatRawFormat(m_worldTmpFilename);
+  auto fbs = ReadAllDatRawFormat<MaxAccuracy>(m_worldTmpFilename);
+  Sort(fbs);
   WorldGenerator generator(m_worldTmpFilename, m_coastlineGeomFilename, m_popularPlacesFilename);
   for (auto & fb : fbs)
-  {
-    if (fb.RemoveInvalidTypes())
-      generator.Process(fb);
-  }
+    generator.Process(fb);
 
   generator.DoMerge();
   return true;
@@ -463,9 +480,10 @@ void CoastlineFinalProcessor::SetCoastlineRawGeomFilename(std::string const & fi
 
 bool CoastlineFinalProcessor::Process()
 {
-  ForEachFromDatRawFormat(m_filename, [&](auto && fb, auto const &) {
+  auto fbs = ReadAllDatRawFormat<MaxAccuracy>(m_filename);
+  Sort(fbs);
+  for (auto && fb : fbs)
     m_generator.Process(std::move(fb));
-  });
 
   FeaturesAndRawGeometryCollector collector(m_coastlineGeomFilename, m_coastlineRawGeomFilename);
   // Check and stop if some coasts were not merged.
@@ -476,14 +494,14 @@ bool CoastlineFinalProcessor::Process()
   size_t totalFeatures = 0;
   size_t totalPoints = 0;
   size_t totalPolygons = 0;
-  vector<FeatureBuilder> features;
-  m_generator.GetFeatures(features);
-  for (auto & feature : features)
+  vector<FeatureBuilder> outputFbs;
+  m_generator.GetFeatures(outputFbs);
+  for (auto & fb : outputFbs)
   {
-    collector.Collect(feature);
+    collector.Collect(fb);
     ++totalFeatures;
-    totalPoints += feature.GetPointsCount();
-    totalPolygons += feature.GetPolygonsCount();
+    totalPoints += fb.GetPointsCount();
+    totalPolygons += fb.GetPolygonsCount();
   }
 
   LOG(LINFO, ("Total features:", totalFeatures, "total polygons:", totalPolygons,

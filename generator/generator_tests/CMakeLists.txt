@@ -19,6 +19,7 @@ set(
   maxspeeds_tests.cpp
   merge_collectors_tests.cpp
   metadata_parser_test.cpp
+  metalines_tests.cpp
   node_mixer_test.cpp
   osm2meta_test.cpp
   osm_o5m_source_test.cpp

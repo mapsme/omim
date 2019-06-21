@@ -170,19 +170,22 @@ public:
   std::vector<std::string> GetNames();
 
 private:
+  using FeatureBuilderWriter = feature::FeatureBuilderWriter<feature::serialization_policy::MaxAccuracy>;
+
   void Write(ProcessedData const & chank);
   void ShutdownAndJoin();
 
   std::thread m_thread;
   std::shared_ptr<FeatureProcessorQueue> m_queue;
   std::string m_path;
-  std::unordered_map<std::string, std::unique_ptr<feature::FeaturesCollector>> m_collectors;
+  std::unordered_map<std::string, std::unique_ptr<FeatureBuilderWriter>> m_collectors;
 };
 
 class RawGenerator
 {
 public:
-  explicit RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount = 1);
+  explicit RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount = 1,
+                        size_t chankSize = 1024);
 
   void GenerateCountries(bool disableAds = true);
   void GenerateWorld(bool disableAds = true);
@@ -214,10 +217,11 @@ private:
   FinalProcessorPtr CreateCountryFinalProcessor();
   FinalProcessorPtr CreateWorldFinalProcessor();
 
-  bool GenerateFilteredFeatures(size_t threadsCount);
+  bool GenerateFilteredFeatures();
 
   feature::GenerateInfo & m_genInfo;
   size_t m_threadsCount;
+  size_t m_chankSize;
   std::shared_ptr<generator::cache::IntermediateData> m_cache;
   std::shared_ptr<FeatureProcessorQueue> m_queue;
   std::shared_ptr<TranslatorCollection> m_translators;

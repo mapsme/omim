@@ -25,7 +25,6 @@ uint8_t const kMetaLinesSectionVersion = 1;
 
 namespace feature
 {
-
 LineString::LineString(OsmElement const & way)
 {
   std::string const oneway = way.GetTag("oneway");
@@ -57,6 +56,7 @@ bool LineString::Add(LineString & line)
     else
       return false;
   }
+
   if (m_end == line.m_start)
   {
     m_ways.insert(m_ways.end(), line.m_ways.begin(), line.m_ways.end());
@@ -76,55 +76,89 @@ bool LineString::Add(LineString & line)
   return true;
 }
 
-/// A list of segments, that is, LineStrings, sharing the same attributes.
-class Segments
+// static
+LineStringMerger::OutputData LineStringMerger::Merge(InputData const & data)
 {
-  std::list<LineString> m_parts;
-
-public:
-  explicit Segments(LineString const & way) { m_parts.emplace_back(way); }
-
-  void Add(LineString line)
+  InputData mergedLines;
+  auto const intermediateData = OrderData(data);
+  for (auto & p : intermediateData)
   {
-    auto found = m_parts.end();
-    for (auto i = m_parts.begin(); i != m_parts.end(); ++i)
+    Buffer buffer;
+    for (auto & lineString : p.second)
+      TryMerge(lineString, buffer);
+
+    std::unordered_set<LinePtr> uniqLineStrings;
+    for (auto const & pb : buffer)
     {
-      if (i->Add(line))
-      {
-        found = i;
-        break;
-      }
-    }
-    // If no LineString accepted the way in its Add method, create a new LineString with it.
-    if (found == m_parts.cend())
-    {
-      m_parts.push_back(line);
-      return;
-    }
-    // Otherwise check if the extended LineString can be merged with some other LineString.
-    for (LineString & part : m_parts)
-    {
-      if (part.Add(*found))
-      {
-        m_parts.erase(found);
-        break;
-      }
+      auto const & ways = pb.second->GetWays();
+      if (uniqLineStrings.emplace(pb.second).second && ways.size() > 1)
+        mergedLines.emplace(p.first, pb.second);
     }
   }
 
-  std::vector<LineString::Ways> GetLongWays() const
+  return OrderData(mergedLines);
+}
+
+// static
+bool LineStringMerger::TryMerge(LinePtr const & lineString, Buffer & buffer)
+{
+  bool merged = false;
+  while(TryMergeOne(lineString, buffer))
+    merged = true;
+
+  buffer.emplace(lineString->GetStart(), lineString);
+  buffer.emplace(lineString->GetEnd(), lineString);
+  return merged;
+}
+
+// static
+bool LineStringMerger::TryMergeOne(LinePtr const & lineString, Buffer & buffer)
+{
+  auto static const kUndef = std::numeric_limits<int>::max();
+  uint64_t index = kUndef;
+  if (buffer.count(lineString->GetStart()) != 0)
+    index = lineString->GetStart();
+  else if (buffer.count(lineString->GetEnd()) != 0)
+    index = lineString->GetEnd();
+
+  if (index != kUndef)
   {
-    std::vector<LineString::Ways> result;
-    for (LineString const & line : m_parts)
+    auto bufferedLineString = buffer[index];
+    buffer.erase(bufferedLineString->GetStart());
+    buffer.erase(bufferedLineString->GetEnd());
+    if (!lineString->Add(*bufferedLineString))
     {
-      if (line.GetWays().size() > 1)
-      {
-        result.push_back(line.GetWays());
-      }
+      buffer.emplace(bufferedLineString->GetStart(), bufferedLineString);
+      buffer.emplace(bufferedLineString->GetEnd(), bufferedLineString);
+
+      buffer.emplace(lineString->GetStart(), lineString);
+      buffer.emplace(lineString->GetEnd(), lineString);
+      return false;
     }
-    return result;
   }
-};
+
+  return index != kUndef;
+}
+
+// static
+LineStringMerger::OutputData LineStringMerger::OrderData(InputData const & data)
+{
+  OutputData intermediateData;
+  for (auto const & p : data)
+    intermediateData[p.first].emplace_back(p.second);
+
+  for (auto & p : intermediateData)
+  {
+    auto & lineStrings = intermediateData[p.first];
+    std::sort(std::begin(lineStrings), std::end(lineStrings), [](auto const & l, auto const & r) {
+      auto const & lways = l->GetWays();
+      auto const & rways = r->GetWays();
+      return lways.size() == rways.size() ? lways.front() < rways.front() : lways.size() > rways.size();
+    });
+  }
+
+  return intermediateData;
+}
 
 // MetalinesBuilder --------------------------------------------------------------------------------
 MetalinesBuilder::MetalinesBuilder(std::string const & filename)
@@ -141,50 +175,41 @@ void MetalinesBuilder::CollectFeature(FeatureBuilder const & feature, OsmElement
   if (!feature.IsLine())
     return;
 
-  auto const & params = feature.GetParams();
   static auto const highwayType = classif().GetTypeByPath({"highway"});
-  if (params.FindType(highwayType, 1) == ftype::GetEmptyValue() ||
-      element.Nodes().front() == element.Nodes().back())
-  {
+  if (!feature.HasType(highwayType, 1 /* level */) || element.Nodes().front() == element.Nodes().back())
     return;
-  }
 
-  std::string name;
-  params.name.GetString(StringUtf8Multilang::kDefaultCode, name);
+  auto const & params = feature.GetParams();
+  auto const name = feature.GetName();
   if (name.empty() && params.ref.empty())
     return;
 
-  size_t const key = std::hash<std::string>{}(name + '\0' + params.ref);
-  m_data.emplace_back(key, element);
+  auto const key = std::hash<std::string>{}(name + '\0' + params.ref);
+  m_data.emplace(key, std::make_shared<LineString>(element));
 }
 
 void MetalinesBuilder::Save()
 {
-  std::unordered_map<size_t, Segments> result;
-  for (auto it = std::begin(m_data); it != std::end(m_data); ++it)
-  {
-    auto segment = result.find(it->first);
-    if (segment == result.cend())
-      result.emplace(it->first, it->second);
-    else
-      segment->second.Add(it->second);
-  }
-
-  uint32_t count = 0;
   FileWriter writer(GetFilename());
-  for (auto const & seg : result)
+  uint32_t countLines = 0;
+  uint32_t countWays = 0;
+  auto const mergedData = LineStringMerger::Merge(m_data);
+  for (auto const & p : mergedData)
   {
-    auto const & longWays = seg.second.GetLongWays();
-    for (auto const & ways : longWays)
+    for (auto const & lineString : p.second)
     {
+      auto const & ways = lineString->GetWays();
       uint16_t size = base::checked_cast<uint16_t>(ways.size());
       WriteToSink(writer, size);
+      countWays += ways.size();
       for (int32_t const way : ways)
         WriteToSink(writer, way);
-      ++count;
+      ++countLines;
     }
   }
-  LOG_SHORT(LINFO, ("Wrote", count, "metalines with OSM IDs for the entire planet to", GetFilename()));
+
+  LOG_SHORT(LINFO, ("Wrote", countLines, "metalines [with",  countWays ,
+                    "ways] with OSM IDs for the entire planet to", GetFilename()));
 }
 
 void MetalinesBuilder::Merge(generator::CollectorInterface const * collector)
@@ -197,8 +222,7 @@ void MetalinesBuilder::Merge(generator::CollectorInterface const * collector)
 void MetalinesBuilder::MergeInto(MetalinesBuilder * collector) const
 {
   CHECK(collector, ());
-
-  std::copy(std::begin(m_data), std::end(m_data), std::back_inserter(collector->m_data));
+  collector->m_data.insert(std::begin(m_data), std::end(m_data));
 }
 
 // Functions --------------------------------------------------------------------------------
