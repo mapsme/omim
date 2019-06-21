@@ -917,4 +917,11 @@ void DrapeEngine::UpdateVisualScale(double vs, bool needStopRendering)
                                   make_unique_dp<RecoverContextDependentResourcesMessage>(),
                                   MessagePriority::Normal);
 }
+
+void DrapeEngine::UpdateMyPositionRoutingOffset(bool useDefault, int offsetY)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
+                                  make_unique_dp<UpdateMyPositionRoutingOffsetMessage>(useDefault, offsetY),
+                                  MessagePriority::Normal);
+}
 }  // namespace df
