@@ -150,7 +150,7 @@ public:
                            std::shared_ptr<generator::cache::IntermediateData> const & cache,
                            size_t copyCount);
 
-  void Emit(std::vector<OsmElement> & elements);
+  void Emit(std::vector<OsmElement> && elements);
   bool Finish();
 
 private:

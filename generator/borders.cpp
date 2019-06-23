@@ -40,25 +40,20 @@ namespace
 {
 class PolygonLoader
 {
-  CountryPolygons m_polygons;
-  m2::RectD m_rect;
-
-  m4::Tree<CountryPolygons> & m_countries;
-
 public:
   explicit PolygonLoader(m4::Tree<CountryPolygons> & countries) : m_countries(countries) {}
 
   void operator()(std::string const & name, std::vector<m2::RegionD> const & borders)
   {
-    if (m_polygons.m_name.empty())
-      m_polygons.m_name = name;
-
+    RegionsContainer regions;
     for (m2::RegionD const & border : borders)
     {
       m2::RectD const rect(border.GetRect());
       m_rect.Add(rect);
-      m_polygons.m_regions.Add(border, rect);
+      regions.Add(border, rect);
     }
+
+    m_polygons = CountryPolygons(name, regions);
   }
 
   void Finish()
@@ -66,12 +61,17 @@ public:
     if (!m_polygons.IsEmpty())
     {
       ASSERT_NOT_EQUAL(m_rect, m2::RectD::GetEmptyRect(), ());
-      m_countries.Add(m_polygons, m_rect);
+      m_countries.Add(std::move(m_polygons), std::move(m_rect));
     }
 
     m_polygons.Clear();
     m_rect.MakeEmpty();
   }
+
+private:
+  m4::Tree<CountryPolygons> & m_countries;
+  CountryPolygons m_polygons;
+  m2::RectD m_rect;
 };
 
 template <class ToDo>

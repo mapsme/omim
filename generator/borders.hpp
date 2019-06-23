@@ -42,32 +42,116 @@ namespace borders
 using Region = m2::RegionD;
 using RegionsContainer = m4::Tree<Region>;
 
-struct CountryPolygons
+class CountryPolygons
 {
-  CountryPolygons(std::string const & name = "") : m_name(name), m_index(-1) {}
+public:
+  CountryPolygons() = default;
+  explicit CountryPolygons(std::string const & name, RegionsContainer const & regions)
+    : m_name(name)
+    , m_regions(regions)
+  {
+    m_regions.ForEach([&](auto const & region) {
+      m_rect.Add(region.GetRect());
+    });
 
+    auto const innerCells = GetInnerCells();
+    for (auto const & cell : innerCells)
+      m_innerRects.Add(cell, cell);
+  }
+
+  CountryPolygons(CountryPolygons && other) = default;
+  CountryPolygons(CountryPolygons const & other) = default;
+
+  CountryPolygons & operator=(CountryPolygons && other) = default;
+  CountryPolygons & operator=(CountryPolygons const & other) = default;
+
+  std::string const & GetName() const { return m_name; }
   bool IsEmpty() const { return m_regions.IsEmpty(); }
   void Clear()
   {
     m_regions.Clear();
     m_name.clear();
-    m_index = -1;
   }
 
-  RegionsContainer m_regions;
+  bool Contains(m2::PointD const & point) const
+  {
+    if (m_innerRects.ForAnyInRect(m2::RectD(point, point), [&](auto const &) { return true; }))
+      return true;
+
+    return Contains_(point);
+  }
+
+private:
+  std::vector<m2::RectD> MakeCells(size_t count)
+  {
+    std::vector<m2::RectD> cells;
+
+    auto const minLen = std::min(m_rect.SizeX(), m_rect.SizeY());
+    auto const step = minLen / count;
+
+    double currY1 = m_rect.minY();
+    double currY2 = m_rect.minY() + step;
+    while (currY1 <= m_rect.maxY())
+    {
+      double currX1 = m_rect.minX();
+      double currX2 = m_rect.minX() + step;
+      while (currX2 <= m_rect.maxX())
+      {
+        m2::RectD cell;
+        cell.setMinX(currX1);
+        cell.setMaxX(currX2);
+        cell.setMinY(currY1);
+        cell.setMaxY(currY2);
+        cells.emplace_back(cell);
+        currX1 = currX2;
+        currX2 += step;
+      }
+      currY1 = currY2;
+      currY2 += step;
+    }
+
+    return cells;
+  }
+
+  std::vector<m2::RectD> GetInnerCells()
+  {
+    std::vector<m2::RectD> innerCells;
+    auto const cells = MakeCells(16/* count */);
+    for (auto const & cell : cells)
+    {
+      if (Contains_(cell.LeftBottom()) &&
+          Contains_(cell.LeftTop()) &&
+          Contains_(cell.RightBottom()) &&
+          Contains_(cell.RightTop()))
+      {
+        innerCells.emplace_back(cell);
+      }
+    }
+    return innerCells;
+  }
+
+  bool Contains_(m2::PointD const & point) const
+  {
+    return m_regions.ForAnyInRect(m2::RectD(point, point), [&](auto const & rgn) {
+      return rgn.Contains(point);
+    });
+  }
+
   std::string m_name;
-  mutable int m_index;
+  RegionsContainer m_regions;
+  m2::RectD m_rect;
+  m4::Tree<m2::RectD> m_innerRects;
 };
 
 class CountriesContainer
 {
 public:
   CountriesContainer() = default;
-  CountriesContainer(m4::Tree<CountryPolygons> const & tree)
+  explicit CountriesContainer(m4::Tree<CountryPolygons> const & tree)
     : m_regionsTree(tree)
   {
     tree.ForEach([&](auto const & region) {
-      m_regions.emplace(region.m_name, region);
+      m_regions.emplace(region.GetName(), region);
     });
   }
 

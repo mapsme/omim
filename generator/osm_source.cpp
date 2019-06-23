@@ -291,7 +291,7 @@ TranslatorsPool::TranslatorsPool(shared_ptr<TranslatorCollection> const & origin
   }
 }
 
-void TranslatorsPool::Emit(vector<OsmElement> & elements)
+void TranslatorsPool::Emit(vector<OsmElement> && elements)
 {
   base::threads::DataWrapper<size_t> d;
   m_freeTranslators.WaitAndPop(d);
@@ -535,12 +535,12 @@ bool RawGenerator::GenerateFilteredFeatures()
     if (++element_pos != m_chankSize)
       continue;
 
-    translators.Emit(elements);
+    translators.Emit(std::move(elements));
     elements = vector<OsmElement>(m_chankSize);
     element_pos = 0;
   }
   elements.resize(element_pos);
-  translators.Emit(elements);
+  translators.Emit(std::move(elements));
 
   LOG(LINFO, ("Input was processed."));
   if (!translators.Finish())

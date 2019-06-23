@@ -12,14 +12,11 @@ std::vector<std::string> CountriesFilesAffiliation::GetAffiliations(FeatureBuild
   std::vector<std::string> countries;
   m_countries->ForEachInRect(fb.GetLimitRect(), [&](auto const & countryPolygons) {
     auto const need = fb.ForAnyGeometryPoint([&](auto const & point) {
-      auto const & regions = countryPolygons.m_regions;
-      return regions.ForAnyInRect(m2::RectD(point, point), [&](auto const & rgn) {
-        return rgn.Contains(point);
-      });
+      return countryPolygons.Contains(point);
     });
 
     if (need)
-      countries.emplace_back(countryPolygons.m_name);
+      countries.emplace_back(countryPolygons.GetName());
   });
 
   return countries;

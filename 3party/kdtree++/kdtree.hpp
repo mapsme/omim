@@ -83,6 +83,8 @@
 #include "node.hpp"
 //#include "region.hpp"
 
+#include "base/logging.hpp"
+
 namespace KDTree
 {
 
@@ -402,9 +404,10 @@ namespace KDTree
 
       template <class ToDo> bool for_any(ToDo toDo) const
       {
+        bool flag = false;
         if (_M_get_root())
-          return _M_for_any(_M_get_root(), 0, toDo);
-        return false;
+          _M_for_any(_M_get_root(), 0, toDo, flag);
+        return flag;
       }
 
       // compares via equality
@@ -666,18 +669,22 @@ namespace KDTree
       }
 
       template <class ToDo>
-      bool _M_for_any(_Link_const_type N, size_type const L, ToDo toDo) const
+      void _M_for_any(_Link_const_type N, size_type const L, ToDo toDo, bool & flag) const
       {
+        if (flag)
+          return;
+
         if (toDo.DoIfIntersects(_S_value(N)))
-          return true;
+        {
+          flag = true;
+          return;
+        }
 
         if (_S_left(N) && toDo.ScanLeft(L, _S_value(N)))
-          return _M_for_any(_S_left(N), L+1, toDo);
+          _M_for_any(_S_left(N), L+1, toDo, flag);
 
         if (_S_right(N) && toDo.ScanRight(L, _S_value(N)))
-          return _M_for_any(_S_right(N), L+1, toDo);
-
-        return false;
+          _M_for_any(_S_right(N), L+1, toDo, flag);
       }
 
 
