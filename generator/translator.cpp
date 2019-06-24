@@ -52,6 +52,11 @@ void Translator::Emit(OsmElement & element)
   }
 }
 
+void Translator::Flush()
+{
+  m_processor->Flush();
+}
+
 bool Translator::Finish()
 {
   m_collector->Save();

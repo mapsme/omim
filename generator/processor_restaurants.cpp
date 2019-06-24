@@ -38,9 +38,13 @@ void ProcessorRestaurants::Process(feature::FeatureBuilder & fb)
   m_affilationsLayer->AddBufferToQueueIfFull(m_queue);
 }
 
-bool ProcessorRestaurants::Finish()
+void ProcessorRestaurants::Flush()
 {
   m_affilationsLayer->AddBufferToQueue(m_queue);
+}
+
+bool ProcessorRestaurants::Finish()
+{
   LOG_SHORT(LINFO, ("Number of restaurants: POI:", m_stats.m_restaurantsPoi,
                     "BUILDING:", m_stats.m_restaurantsBuilding,
                     "INVALID:", m_stats.m_unexpectedFeatures));

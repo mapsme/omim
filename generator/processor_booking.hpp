@@ -38,6 +38,8 @@ public:
       m_features.emplace(fb.GetMostGenericOsmId(), fb);
   }
 
+  void Flush() override {}
+
   bool Finish() override
   {
     LOG_SHORT(LINFO, ("Num of booking elements:", m_features.size()));

@@ -77,7 +77,6 @@ public:
 
   explicit IndexFileReader(std::string const & name);
 
-  void ReadAll();
   bool GetValueByKey(Key key, Value & value) const;
 
   template <typename ToDo>
@@ -105,7 +104,6 @@ private:
   };
 
   std::vector<Element> m_elements;
-  FileReader m_fileReader;
 };
 
 
@@ -135,7 +133,7 @@ public:
   bool Read(Key id, Value & value)
   {
     uint64_t pos = 0;
-    if (!m_offsets.GetValueByKey(id, pos))
+    if (!m_offsets->GetValueByKey(id, pos))
     {
       LOG_SHORT(LWARNING, ("Can't find offset in file", m_name + OFFSET_EXT, "by id", id));
       return false;
@@ -158,11 +156,9 @@ public:
     return true;
   }
 
-  void LoadOffsets();
-
 protected:
   FileReader m_fileReader;
-  IndexFileReader m_offsets;
+  std::shared_ptr<IndexFileReader> m_offsets;
   std::string m_name;
   std::vector<uint8_t> m_data;
   bool m_preload = false;
@@ -207,27 +203,26 @@ public:
   // TODO |GetNode()|, |lat|, |lon| are used as y, x in real.
   bool GetNode(Key id, double & lat, double & lon) const { return m_nodes->GetPoint(id, lat, lon); }
   bool GetWay(Key id, WayElement & e) { return m_ways.Read(id, e); }
-  void LoadIndex();
 
   template <typename ToDo>
   void ForEachRelationByWay(Key id, ToDo && toDo)
   {
     RelationProcessor<ToDo> processor(m_relations, std::forward<ToDo>(toDo));
-    m_wayToRelations.ForEachByKey(id, processor);
+    m_wayToRelations->ForEachByKey(id, processor);
   }
 
   template <typename ToDo>
   void ForEachRelationByWayCached(Key id, ToDo && toDo)
   {
     CachedRelationProcessor<ToDo> processor(m_relations, std::forward<ToDo>(toDo));
-    m_wayToRelations.ForEachByKey(id, processor);
+    m_wayToRelations->ForEachByKey(id, processor);
   }
 
   template <typename ToDo>
   void ForEachRelationByNodeCached(Key id, ToDo && toDo)
   {
     CachedRelationProcessor<ToDo> processor(m_relations, std::forward<ToDo>(toDo));
-    m_nodeToRelations.ForEachByKey(id, processor);
+    m_nodeToRelations->ForEachByKey(id, processor);
   }
 
 private:
@@ -270,8 +265,8 @@ private:
   std::shared_ptr<PointStorageReaderInterface> m_nodes;
   cache::OSMElementCacheReader m_ways;
   cache::OSMElementCacheReader m_relations;
-  cache::IndexFileReader m_nodeToRelations;
-  cache::IndexFileReader m_wayToRelations;
+  std::shared_ptr<cache::IndexFileReader> m_nodeToRelations;
+  std::shared_ptr<cache::IndexFileReader> m_wayToRelations;
 };
 
 class IntermediateDataWriter
@@ -322,6 +317,17 @@ public:
 private:
   static std::mutex m_mutex;
   static std::unordered_map<std::string, std::shared_ptr<PointStorageReaderInterface>> m_readers;
+};
+
+class IndexReader
+{
+public:
+  static std::shared_ptr<cache::IndexFileReader>
+  GetOrCreate(std::string const & name, bool forceReload = false);
+
+private:
+  static std::mutex m_mutex;
+  static std::unordered_map<std::string, std::shared_ptr<IndexFileReader>> m_indexes;
 };
 
 class IntermediateData

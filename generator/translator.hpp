@@ -37,6 +37,7 @@ public:
 
   // TranslatorInterface overrides:
   void Emit(OsmElement & element) override;
+  void Flush() override;
   bool Finish() override;
 
   void SetCollector(std::shared_ptr<CollectorInterface> const & collector);

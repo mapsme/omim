@@ -39,10 +39,14 @@ void ProcessorCountry::Process(feature::FeatureBuilder & feature)
   m_affilationsLayer->AddBufferToQueueIfFull(m_queue);
 }
 
-bool ProcessorCountry::Finish()
+void ProcessorCountry::Flush()
 {
   m_affilationsLayer->AddBufferToQueue(m_queue);
-//  WriteDump();
+}
+
+bool ProcessorCountry::Finish()
+{
+  //  WriteDump();
   return true;
 }
 

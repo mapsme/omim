@@ -32,9 +32,13 @@ void ProcessorWorld::Process(feature::FeatureBuilder & feature)
   m_affilationsLayer->AddBufferToQueueIfFull(m_queue);
 }
 
-bool ProcessorWorld::Finish()
+void ProcessorWorld::Flush()
 {
   m_affilationsLayer->AddBufferToQueue(m_queue);
+}
+
+bool ProcessorWorld::Finish()
+{
   return true;
 }
 

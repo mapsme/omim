@@ -21,6 +21,7 @@ public:
   }
 
   void Process(feature::FeatureBuilder &) override  {}
+  void Flush() override {}
   bool Finish() override { return true; }
 
 

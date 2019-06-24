@@ -33,11 +33,11 @@ void ToLatLon(double lat, double lon, LatLon & ll)
   int64_t const lon64 = lon * kValueOrder;
 
   CHECK(
-      lat64 >= numeric_limits<int32_t>::min() && lat64 <= numeric_limits<int32_t>::max(),
-      ("Latitude is out of 32bit boundary:", lat64));
+        lat64 >= numeric_limits<int32_t>::min() && lat64 <= numeric_limits<int32_t>::max(),
+        ("Latitude is out of 32bit boundary:", lat64));
   CHECK(
-      lon64 >= numeric_limits<int32_t>::min() && lon64 <= numeric_limits<int32_t>::max(),
-      ("Longitude is out of 32bit boundary:", lon64));
+        lon64 >= numeric_limits<int32_t>::min() && lon64 <= numeric_limits<int32_t>::max(),
+        ("Longitude is out of 32bit boundary:", lon64));
   ll.m_lat = static_cast<int32_t>(lat64);
   ll.m_lon = static_cast<int32_t>(lon64);
 }
@@ -261,16 +261,15 @@ private:
 }  // namespace
 
 // IndexFileReader ---------------------------------------------------------------------------------
-IndexFileReader::IndexFileReader(string const & name) : m_fileReader(name.c_str()) {}
-
-void IndexFileReader::ReadAll()
+IndexFileReader::IndexFileReader(string const & name)
 {
+  FileReader fileReader(name.c_str());
   m_elements.clear();
-  size_t fileSize = m_fileReader.Size();
+  size_t fileSize = fileReader.Size();
   if (fileSize == 0)
     return;
 
-  LOG_SHORT(LINFO, ("Offsets reading is started for file", m_fileReader.GetName()));
+  LOG_SHORT(LINFO, ("Offsets reading is started for file", fileReader.GetName()));
   CHECK_EQUAL(0, fileSize % sizeof(Element), ("Damaged file."));
 
   try
@@ -282,7 +281,7 @@ void IndexFileReader::ReadAll()
     LOG(LCRITICAL, ("Insufficient memory for required offset map"));
   }
 
-  m_fileReader.Read(0, &m_elements[0], base::checked_cast<size_t>(fileSize));
+  fileReader.Read(0, &m_elements[0], base::checked_cast<size_t>(fileSize));
 
   sort(m_elements.begin(), m_elements.end(), ElementComparator());
 
@@ -325,7 +324,10 @@ void IndexFileWriter::Add(Key k, Value const & v)
 
 // OSMElementCacheReader ---------------------------------------------------------------------------
 OSMElementCacheReader::OSMElementCacheReader(string const & name, bool preload)
-  : m_fileReader(name), m_offsets(name + OFFSET_EXT), m_name(name), m_preload(preload)
+  : m_fileReader(name)
+  , m_offsets(IndexReader::GetOrCreate(name + OFFSET_EXT))
+  , m_name(name)
+  , m_preload(preload)
 {
   if (!m_preload)
     return;
@@ -333,8 +335,6 @@ OSMElementCacheReader::OSMElementCacheReader(string const & name, bool preload)
   m_data.resize(sz);
   m_fileReader.Read(0, m_data.data(), sz);
 }
-
-void OSMElementCacheReader::LoadOffsets() { m_offsets.ReadAll(); }
 
 // OSMElementCacheWriter ---------------------------------------------------------------------------
 OSMElementCacheWriter::OSMElementCacheWriter(string const & name, bool preload)
@@ -346,31 +346,25 @@ void OSMElementCacheWriter::SaveOffsets() { m_offsets.WriteAll(); }
 
 // IntermediateDataReader
 IntermediateDataReader::IntermediateDataReader(shared_ptr<PointStorageReaderInterface> nodes,
-                                               feature::GenerateInfo & info) :
-    m_nodes(nodes),
-    m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache),
-    m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache),
-    m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)),
-    m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
+                                               feature::GenerateInfo & info)
+  : m_nodes(nodes)
+  , m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache)
+  , m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache)
+  , m_nodeToRelations(IndexReader::GetOrCreate(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)))
+  , m_wayToRelations(IndexReader::GetOrCreate(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT)))
 {}
-
-void IntermediateDataReader::LoadIndex()
-{
-  m_ways.LoadOffsets();
-  m_relations.LoadOffsets();
-
-  m_nodeToRelations.ReadAll();
-  m_wayToRelations.ReadAll();
-}
 
 // IntermediateDataWriter
 IntermediateDataWriter::IntermediateDataWriter(shared_ptr<PointStorageWriterInterface> nodes,
-                                               feature::GenerateInfo & info) :
-    m_nodes(nodes),
-    m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache),
-    m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache),
-    m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)),
-    m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT)) {}
+                                               feature::GenerateInfo & info)
+  : m_nodes(nodes)
+  , m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache)
+  , m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache)
+  , m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT))
+  , m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
+{
+
+}
 
 void IntermediateDataWriter::AddRelation(Key id, RelationElement const & e)
 {
@@ -444,6 +438,22 @@ PointStorageReader::GetOrCreate(feature::GenerateInfo::NodeStorageType type, str
   return m_readers[k];
 }
 
+// static
+std::mutex IndexReader::m_mutex;
+// static
+std::unordered_map<std::string, std::shared_ptr<IndexFileReader>> IndexReader::m_indexes;
+
+// static
+std::shared_ptr<IndexFileReader> IndexReader::GetOrCreate(std::string const & name, bool forceReload)
+{;
+  lock_guard<mutex> lock(m_mutex);
+  if (!forceReload && m_indexes.count(name) != 0)
+    return m_indexes[name];
+
+  m_indexes[name] = std::make_shared<IndexFileReader>(name);
+  return m_indexes[name];
+}
+
 IntermediateData::IntermediateData(feature::GenerateInfo & info, bool forceReload)
   : m_info(info)
 {
@@ -451,7 +461,6 @@ IntermediateData::IntermediateData(feature::GenerateInfo & info, bool forceReloa
                                                      info.GetIntermediateFileName(NODES_FILE),
                                                      forceReload);
   m_reader = make_shared<IntermediateDataReader>(pointReader, info);
-  m_reader->LoadIndex();
 }
 
 shared_ptr<IntermediateDataReader> const & IntermediateData::GetCache() const

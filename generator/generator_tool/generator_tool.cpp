@@ -288,7 +288,7 @@ int GeneratorToolMain(int argc, char ** argv)
   // Use merged style.
   GetStyleReader().SetCurrentStyle(MapStyleMerged);
 
-  classificator::Load();
+
 
   // Generate intermediate files.
   if (FLAGS_preprocess)
@@ -297,6 +297,8 @@ int GeneratorToolMain(int argc, char ** argv)
     if (!GenerateIntermediateData(genInfo))
       return EXIT_FAILURE;
   }
+
+  classificator::Load();
 
   // Generate .mwm.tmp files.
   if (FLAGS_generate_features ||

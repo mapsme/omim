@@ -309,8 +309,12 @@ bool TranslatorsPool::Finish()
   m_threadPool.ShutdownAndJoin();
   auto const & translator = m_translators.front();
   for (size_t i = 1; i < m_translators.size(); ++i)
+  {
+    m_translators[i]->Flush();
     translator->Merge(m_translators[i].get());
+  }
 
+  translator->Flush();
   return translator->Finish();
 }
 
