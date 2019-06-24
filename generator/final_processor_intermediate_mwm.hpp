@@ -35,6 +35,7 @@ class CountryFinalProcessor : public FinalProcessorIntermediateMwmInteface
 public:
   explicit CountryFinalProcessor(std::string const & borderPath,
                                  std::string const & temproryMwmPath,
+                                 bool isMwmsForWholeWorld,
                                  size_t threadsCount);
 
   void NeedBookig(std::string const & filename);
@@ -61,6 +62,7 @@ private:
   std::string m_coastlineGeomFilename;
   std::string m_worldCoastsFilename;
   std::string m_citiesFinename;
+  bool m_isMwmsForWholeWorld;
   size_t m_threadsCount;
 };
 

@@ -135,8 +135,8 @@ DEFINE_bool(generate_cities_boundaries, false, "Generate cities boundaries secti
 DEFINE_string(cities_boundaries_data, "", "File with cities boundaries");
 
 DEFINE_bool(generate_world, false, "Generate separate world file.");
-DEFINE_bool(split_by_polygons, false,
-            "Use countries borders to split planet by regions and countries.");
+DEFINE_bool(mwms_for_whole_world, false, "If it is set to true, the optimization of checking that the "
+                                         "fb belongs to the mwm boundary will be applied.");
 
 DEFINE_string(nodes_list_path, "",
               "Path to file containing list of node ids we need to add to locality index. May be empty.");
@@ -277,7 +277,7 @@ int GeneratorToolMain(int argc, char ** argv)
   genInfo.m_brandsTranslationsFilename = FLAGS_brands_translations_data;
   genInfo.m_citiesBoundariesFilename = FLAGS_cities_boundaries_data;
   genInfo.m_versionDate = static_cast<uint32_t>(FLAGS_planet_version);
-  genInfo.m_splitByPolygons = FLAGS_split_by_polygons;
+  genInfo.m_isMwmsForWholeWorld = FLAGS_mwms_for_whole_world;
   genInfo.m_createWorld = FLAGS_generate_world;
   genInfo.m_makeCoasts = FLAGS_make_coasts;
   genInfo.m_emitCoasts = FLAGS_emit_coasts;

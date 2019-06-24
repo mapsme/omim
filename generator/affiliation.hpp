@@ -20,7 +20,7 @@ public:
 class CountriesFilesAffiliation : public AffiliationInterface
 {
 public:
-  CountriesFilesAffiliation(std::string const & borderPath);
+  CountriesFilesAffiliation(std::string const & borderPath, bool isMwmsForWholeWorld);
 
   // AffiliationInterface overrides:
   std::vector<std::string> GetAffiliations(FeatureBuilder const & fb) const override;
@@ -29,6 +29,7 @@ public:
 
 private:
   std::shared_ptr<borders::CountriesContainer> m_countries;
+  bool m_isMwmsForWholeWorld;
 };
 
 class OneFileAffiliation : public AffiliationInterface

@@ -14,6 +14,7 @@ class DataWrapper
 public:
   DataWrapper() : m_is_empty(true) {}
   DataWrapper(T const & data) : m_data(data), m_is_empty(false) {}
+  DataWrapper(T && data) : m_data(std::move(data)), m_is_empty(false) {}
 
   T const & Get() const { return m_data; }
   T & Get() { return m_data; }

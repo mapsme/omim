@@ -267,10 +267,12 @@ bool FinalProcessorIntermediateMwmInteface::operator!=(FinalProcessorIntermediat
 
 CountryFinalProcessor::CountryFinalProcessor(std::string const & borderPath,
                                              std::string const & temproryMwmPath,
+                                             bool isMwmsForWholeWorld,
                                              size_t threadsCount)
   : FinalProcessorIntermediateMwmInteface(FinalProcessorPriority::COUNTRIES_OR_WORLD)
   , m_borderPath(borderPath)
   , m_temproryMwmPath(temproryMwmPath)
+  , m_isMwmsForWholeWorld(isMwmsForWholeWorld)
   , m_threadsCount(threadsCount)
 {
 }
@@ -319,7 +321,7 @@ bool CountryFinalProcessor::Process()
 bool CountryFinalProcessor::ProcessBooking()
 {
   BookingDataset dataset(m_hotelsPath);
-  auto const affilation = CountriesFilesAffiliation(m_borderPath);
+  auto const affilation = CountriesFilesAffiliation(m_borderPath, m_isMwmsForWholeWorld);
   {
     delayed::ThreadPool pool(m_threadsCount, delayed::ThreadPool::Exit::ExecPending);
     ForEachCountry(m_temproryMwmPath, [&](auto const & filename) {
@@ -358,7 +360,7 @@ bool CountryFinalProcessor::ProcessBooking()
 
 bool CountryFinalProcessor::ProcessCities()
 {
-  auto const affilation = CountriesFilesAffiliation(m_borderPath);
+  auto const affilation = CountriesFilesAffiliation(m_borderPath, m_isMwmsForWholeWorld);
   auto cityBoundariesHelper = m_cityBoundariesTmpFilename.empty()
                               ? CityBoundariesHelper()
                               : CityBoundariesHelper(m_cityBoundariesTmpFilename);
@@ -382,7 +384,7 @@ bool CountryFinalProcessor::ProcessCities()
 
 bool CountryFinalProcessor::ProcessCoasline()
 {
-  auto const affilation = CountriesFilesAffiliation(m_borderPath);
+  auto const affilation = CountriesFilesAffiliation(m_borderPath, m_isMwmsForWholeWorld);
   auto fbs = ReadAllDatRawFormat(m_coastlineGeomFilename);
   auto const affilations = AppendToCountries(fbs, m_temproryMwmPath, affilation, m_threadsCount);
   FeatureBuilderWriter<> collector(m_worldCoastsFilename);
@@ -397,7 +399,7 @@ bool CountryFinalProcessor::ProcessCoasline()
 
 bool CountryFinalProcessor::CleanUp()
 {
-  auto const affilation = CountriesFilesAffiliation(m_borderPath);
+  auto const affilation = CountriesFilesAffiliation(m_borderPath, m_isMwmsForWholeWorld);
   delayed::ThreadPool pool(m_threadsCount, delayed::ThreadPool::Exit::ExecPending);
   ForEachCountry(m_temproryMwmPath, [&](auto const & filename) {
     pool.Push([&, filename]() {

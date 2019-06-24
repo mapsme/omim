@@ -47,11 +47,11 @@ private:
   void FailIfMethodUnsuppirted() const { CHECK(false, ("This method is unsupported.")); }
 };
 
-size_t static const kAffilationsBufferSize = 1024;
+size_t static const kAffilationsBufferSize = 128;
 
 struct ProcessedData
 {
-  ProcessedData(feature::FeatureBuilder::Buffer && buffer, std::vector<std::string>  && affiliations)
+  explicit ProcessedData(feature::FeatureBuilder::Buffer && buffer, std::vector<std::string>  && affiliations)
     : m_buffer(std::move(buffer)), m_affiliations(std::move(affiliations))
   {
   }

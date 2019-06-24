@@ -400,7 +400,8 @@ std::shared_ptr<FeatureProcessorQueue> RawGenerator::GetQueue()
 
 void RawGenerator::GenerateCountries(bool disableAds)
 {
-  auto processor = CreateProcessor(ProcessorType::Country, m_queue, m_genInfo.m_targetDir, "");
+  auto processor = CreateProcessor(ProcessorType::Country, m_queue, m_genInfo.m_targetDir, "",
+                                   m_genInfo.m_isMwmsForWholeWorld);
   auto const translatorType = disableAds ? TranslatorType::Country : TranslatorType::CountryWithAds;
   m_translators->Append(CreateTranslator(translatorType, processor, m_cache, m_genInfo));
   m_finalProcessors.emplace(CreateCountryFinalProcessor());
@@ -489,7 +490,7 @@ RawGenerator::FinalProcessorPtr RawGenerator::CreateCoslineFinalProcessor()
 RawGenerator::FinalProcessorPtr RawGenerator::CreateCountryFinalProcessor()
 {
   auto finalProcessor = make_shared<CountryFinalProcessor>(m_genInfo.m_targetDir, m_genInfo.m_tmpDir,
-                                                           m_threadsCount);
+                                                           m_genInfo.m_isMwmsForWholeWorld, m_threadsCount);
   finalProcessor->NeedBookig(m_genInfo.m_bookingDataFilename);
   finalProcessor->UseCityBoundaries(m_genInfo.GetIntermediateFileName(CITY_BOUNDARIES_TMP_FILENAME));
   finalProcessor->SetPromoCatalog(m_genInfo.m_promoCatalogCitiesFilename);

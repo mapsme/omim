@@ -83,8 +83,6 @@
 #include "node.hpp"
 //#include "region.hpp"
 
-#include "base/logging.hpp"
-
 namespace KDTree
 {
 
@@ -404,10 +402,10 @@ namespace KDTree
 
       template <class ToDo> bool for_any(ToDo toDo) const
       {
-        bool flag = false;
+        bool needExit = false;
         if (_M_get_root())
-          _M_for_any(_M_get_root(), 0, toDo, flag);
-        return flag;
+          return _M_for_any(_M_get_root(), 0, toDo, needExit);
+        return false;
       }
 
       // compares via equality
@@ -669,14 +667,14 @@ namespace KDTree
       }
 
       template <class ToDo>
-      void _M_for_any(_Link_const_type N, size_type const L, ToDo toDo, bool & flag) const
+      void _M_for_any(_Link_const_type N, size_type const L, ToDo toDo, bool & needExit) const
       {
-        if (flag)
+        if (needExit)
           return;
 
         if (toDo.DoIfIntersects(_S_value(N)))
         {
-          flag = true;
+          needExit = true;
           return;
         }
 
@@ -686,7 +684,6 @@ namespace KDTree
         if (_S_right(N) && toDo.ScanRight(L, _S_value(N)))
           _M_for_any(_S_right(N), L+1, toDo, flag);
       }
-
 
       _Link_type
       _M_get_erase_replacement(_Link_type node, size_type const level)

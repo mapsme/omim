@@ -2,8 +2,9 @@
 
 namespace feature
 {
-CountriesFilesAffiliation::CountriesFilesAffiliation(std::string const & borderPath)
+CountriesFilesAffiliation::CountriesFilesAffiliation(std::string const & borderPath, bool isMwmsForWholeWorld)
   : m_countries(borders::PackedBorders::GetOrCreate(borderPath))
+  , m_isMwmsForWholeWorld(isMwmsForWholeWorld)
 {
 }
 
@@ -15,12 +16,14 @@ std::vector<std::string> CountriesFilesAffiliation::GetAffiliations(FeatureBuild
     countriesContainer.emplace_back(countryPolygons);
   });
 
-  if (countriesContainer.size() == 1)
+  if (m_isMwmsForWholeWorld && countriesContainer.size() == 1)
   {
     borders::CountryPolygons const & countryPolygons= countriesContainer.front();
     countries.emplace_back(countryPolygons.GetName());
+    return countries;
   }
-  else if (countriesContainer.size() > 1)
+
+  if (!countriesContainer.empty())
   {
     for (borders::CountryPolygons const & countryPolygons : countriesContainer)
     {
@@ -31,6 +34,7 @@ std::vector<std::string> CountriesFilesAffiliation::GetAffiliations(FeatureBuild
       if (need)
         countries.emplace_back(countryPolygons.GetName());
     }
+    return countries;
   }
 
   return countries;

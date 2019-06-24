@@ -194,7 +194,10 @@ class AffilationsFeatureLayer : public LayerBase
 public:
   AffilationsFeatureLayer(size_t bufferSize, std::shared_ptr<feature::AffiliationInterface> const & affilation)
     : m_bufferSize(bufferSize)
-    , m_affilation(affilation) {}
+    , m_affilation(affilation)
+  {
+    m_buffer.reserve(m_bufferSize);
+  }
 
   // LayerBase overrides:
   std::shared_ptr<LayerBase> Clone() const override
@@ -215,6 +218,7 @@ public:
     {
       queue->Push(std::move(m_buffer));
       m_buffer = {};
+      m_buffer.reserve(m_bufferSize);
       return true;
     }
 

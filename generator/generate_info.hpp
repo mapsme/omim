@@ -62,7 +62,7 @@ struct GenerateInfo
   std::vector<std::string> m_bucketNames;
 
   bool m_createWorld = false;
-  bool m_splitByPolygons = false;
+  bool m_isMwmsForWholeWorld = false;
   bool m_makeCoasts = false;
   bool m_emitCoasts = false;
   bool m_genAddresses = false;
