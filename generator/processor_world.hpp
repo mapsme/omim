@@ -2,6 +2,7 @@
 
 #include "generator/affiliation.hpp"
 #include "generator/feature_builder.hpp"
+#include "generator/feature_processing_layers.hpp"
 #include "generator/processor_interface.hpp"
 
 #include <memory>
@@ -15,17 +16,12 @@ struct GenerateInfo;
 
 namespace generator
 {
-class WorldMapper;
-class LayerBase;
-
 // This class is implementation of EmitterInterface for the world.
 class ProcessorWorld : public FeatureProcessorInterface
 {
 public:
   explicit ProcessorWorld(std::shared_ptr<FeatureProcessorQueue> const & queue,
                           std::string const & popularityFilename);
-  explicit ProcessorWorld(std::shared_ptr<FeatureProcessorQueue> const & queue,
-                          std::shared_ptr<LayerBase> const & processingChain);
 
   // EmitterInterface overrides:
   std::shared_ptr<FeatureProcessorInterface> Clone() const override;
@@ -37,6 +33,8 @@ public:
   void MergeInto(ProcessorWorld * other) const override;
 
 private:
+  std::string m_popularityFilename;
+  std::shared_ptr<AffilationsFeatureLayer<>> m_affilationsLayer;
   std::shared_ptr<FeatureProcessorQueue> m_queue;
   std::shared_ptr<LayerBase> m_processingChain;
 };

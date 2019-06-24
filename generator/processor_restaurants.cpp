@@ -1,7 +1,6 @@
 #include "generator/processor_restaurants.hpp"
 
 #include "generator/feature_builder.hpp"
-#include "generator/feature_processing_layers.hpp"
 
 #include "indexer/ftypes_matcher.hpp"
 
@@ -11,16 +10,13 @@ ProcessorRestaurants::ProcessorRestaurants(std::shared_ptr<FeatureProcessorQueue
   : m_queue(queue)
 {
   auto affilation = std::make_shared<feature::OneFileAffiliation>("");
-  m_processingChain->Add(std::make_shared<AffilationsFeatureLayer>(queue, affilation));
+  m_affilationsLayer = std::make_shared<AffilationsFeatureLayer<>>(kAffilationsBufferSize, affilation);
+  m_processingChain->Add(m_affilationsLayer);
 }
-
-ProcessorRestaurants::ProcessorRestaurants(std::shared_ptr<FeatureProcessorQueue> const & queue,
-                                           std::shared_ptr<LayerBase> const & processingChain)
-  : m_queue(queue), m_processingChain(processingChain) {}
 
 std::shared_ptr<FeatureProcessorInterface> ProcessorRestaurants::Clone() const
 {
-  return std::make_shared<ProcessorRestaurants>(m_queue, m_processingChain->CloneRecursive());
+  return std::make_shared<ProcessorRestaurants>(m_queue);
 }
 
 void ProcessorRestaurants::Process(feature::FeatureBuilder & fb)
@@ -39,10 +35,12 @@ void ProcessorRestaurants::Process(feature::FeatureBuilder & fb)
   }
 
   m_processingChain->Handle(fb);
+  m_affilationsLayer->AddBufferToQueueIfFull(m_queue);
 }
 
 bool ProcessorRestaurants::Finish()
 {
+  m_affilationsLayer->AddBufferToQueue(m_queue);
   LOG_SHORT(LINFO, ("Number of restaurants: POI:", m_stats.m_restaurantsPoi,
                     "BUILDING:", m_stats.m_restaurantsBuilding,
                     "INVALID:", m_stats.m_unexpectedFeatures));

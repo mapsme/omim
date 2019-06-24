@@ -1,18 +1,16 @@
 #include "generator/processor_interface.hpp"
 #include "generator/feature_builder.hpp"
+#include "generator/feature_processing_layers.hpp"
 
 #include <vector>
 #include <string>
 
 namespace generator
 {
-class LayerBase;
 class ProcessorRestaurants : public FeatureProcessorInterface
 {
 public:
   explicit ProcessorRestaurants(std::shared_ptr<FeatureProcessorQueue> const & queue);
-  explicit ProcessorRestaurants(std::shared_ptr<FeatureProcessorQueue> const & queue,
-                                std::shared_ptr<LayerBase> const & processingChain);
 
   // FeatureProcessorInterface overrides:
   std::shared_ptr<FeatureProcessorInterface> Clone() const override;
@@ -40,6 +38,7 @@ private:
     uint32_t m_unexpectedFeatures = 0;
   };
 
+  std::shared_ptr<AffilationsFeatureLayer<>> m_affilationsLayer;
   std::shared_ptr<FeatureProcessorQueue> m_queue;
   std::shared_ptr<LayerBase> m_processingChain;
   Stats m_stats;

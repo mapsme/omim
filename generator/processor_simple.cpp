@@ -2,7 +2,6 @@
 
 #include "generator/affiliation.hpp"
 #include "generator/feature_builder.hpp"
-#include "generator/feature_processing_layers.hpp"
 
 #include "base/macros.hpp"
 
@@ -10,19 +9,30 @@ namespace generator
 {
 ProcessorSimple::ProcessorSimple(std::shared_ptr<FeatureProcessorQueue> const & queue,
                                  std::string const & filename)
+  : m_filename(filename)
+  , m_queue(queue)
 {
-  auto affilation = std::make_shared<feature::OneFileAffiliation>(filename);
   m_processingChain->Add(std::make_shared<PreserializeLayer>());
-  m_processingChain->Add(std::make_shared<AffilationsFeatureLayer>(queue, affilation));
+  auto affilation = std::make_shared<feature::OneFileAffiliation>(filename);
+  m_affilationsLayer = std::make_shared<AffilationsFeatureLayer<feature::serialization_policy::MinSize>>(kAffilationsBufferSize, affilation);
+  m_processingChain->Add(m_affilationsLayer);;
 }
 
-ProcessorSimple::ProcessorSimple(std::shared_ptr<FeatureProcessorQueue> const & queue,
-                                 std::shared_ptr<LayerBase> const & processingChain)
-  : m_queue(queue), m_processingChain(processingChain) {}
+std::shared_ptr<FeatureProcessorInterface>ProcessorSimple::Clone() const
+{
+  return std::make_shared<ProcessorSimple>(m_queue, m_filename);
+}
 
 void ProcessorSimple::Process(feature::FeatureBuilder & fb)
 {
   m_processingChain->Handle(fb);
+  m_affilationsLayer->AddBufferToQueueIfFull(m_queue);
+}
+
+bool ProcessorSimple::Finish()
+{
+  m_affilationsLayer->AddBufferToQueue(m_queue);
+  return true;
 }
 
 void ProcessorSimple::Merge(FeatureProcessorInterface const * other)

@@ -47,13 +47,20 @@ private:
   void FailIfMethodUnsuppirted() const { CHECK(false, ("This method is unsupported.")); }
 };
 
+size_t static const kAffilationsBufferSize = 1024;
+
 struct ProcessedData
 {
-  feature::FeatureBuilder m_fb;
+  ProcessedData(feature::FeatureBuilder::Buffer && buffer, std::vector<std::string>  && affiliations)
+    : m_buffer(std::move(buffer)), m_affiliations(std::move(affiliations))
+  {
+  }
+
+  feature::FeatureBuilder::Buffer m_buffer;
   std::vector<std::string> m_affiliations;
 };
 
-using FeatureProcessorChank = base::threads::DataWrapper<ProcessedData>;
+using FeatureProcessorChank = base::threads::DataWrapper<std::vector<ProcessedData>>;
 using FeatureProcessorQueue = base::threads::Queue<FeatureProcessorChank>;
 
 }  // namespace generator

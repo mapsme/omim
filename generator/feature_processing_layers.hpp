@@ -2,6 +2,7 @@
 
 #include "generator/affiliation.hpp"
 #include "generator/booking_dataset.hpp"
+#include "generator/feature_builder.hpp"
 #include "generator/feature_generator.hpp"
 #include "generator/filter_world.hpp"
 #include "generator/opentable_dataset.hpp"
@@ -17,18 +18,11 @@ class CoastlineFeaturesGenerator;
 
 namespace feature
 {
-class feature::FeatureBuilder;
 struct GenerateInfo;
 }  // namespace feature
 
 namespace generator
 {
-class RepresentationLayer;
-class PrepareFeatureLayer;
-class RepresentationCoastlineLayer;
-class PrepareCoastlineFeatureLayer;
-class AffilationsFeatureLayer;
-
 // Responsibility of the class Log Buffer - encapsulation of the buffer for internal logs.
 class LogBuffer
 {
@@ -194,19 +188,50 @@ public:
   void Handle(feature::FeatureBuilder & fb) override;
 };
 
-class  AffilationsFeatureLayer : public LayerBase
+template <class SerializePolicy = feature::serialization_policy::MaxAccuracy>
+class AffilationsFeatureLayer : public LayerBase
 {
 public:
-  AffilationsFeatureLayer(std::shared_ptr<FeatureProcessorQueue> const & queue,
-                          std::shared_ptr<feature::AffiliationInterface> const & affilation);
+  AffilationsFeatureLayer(size_t bufferSize, std::shared_ptr<feature::AffiliationInterface> const & affilation)
+    : m_bufferSize(bufferSize)
+    , m_affilation(affilation) {}
 
   // LayerBase overrides:
-  std::shared_ptr<LayerBase> Clone() const override;
+  std::shared_ptr<LayerBase> Clone() const override
+  {
+    return std::make_shared<AffilationsFeatureLayer<SerializePolicy>>(m_bufferSize, m_affilation);
+  }
 
-  void Handle(feature::FeatureBuilder & fb) override;
+  void Handle(feature::FeatureBuilder & fb) override
+  {
+    feature::FeatureBuilder::Buffer buffer;
+    SerializePolicy::Serialize(fb, buffer);
+    m_buffer.emplace_back(std::move(buffer), m_affilation->GetAffiliations(fb));
+  }
+
+  bool AddBufferToQueue(std::shared_ptr<FeatureProcessorQueue> const & queue)
+  {
+    if (!m_buffer.empty())
+    {
+      queue->Push(std::move(m_buffer));
+      m_buffer = {};
+      return true;
+    }
+
+    return false;
+  }
+
+  bool AddBufferToQueueIfFull(std::shared_ptr<FeatureProcessorQueue> const & queue)
+  {
+    if (m_buffer.size() >= m_bufferSize)
+      return AddBufferToQueue(queue);
+
+    return false;
+  }
 
 private:
-  std::shared_ptr<FeatureProcessorQueue> m_queue;
+  size_t const m_bufferSize;
+  std::vector<ProcessedData> m_buffer;
   std::shared_ptr<feature::AffiliationInterface> m_affilation;
 };
 }  // namespace generator

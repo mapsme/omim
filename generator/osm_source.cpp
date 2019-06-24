@@ -350,20 +350,24 @@ vector<string> RawGeneratorWriter::GetNames()
   return names;
 }
 
-void RawGeneratorWriter::Write(ProcessedData const & chank)
+void RawGeneratorWriter::Write(std::vector<ProcessedData> const & vecChanks)
 {
-  for (auto const & affiliation : chank.m_affiliations)
+  for (auto const & chank : vecChanks)
   {
-    if (affiliation.empty())
-      continue;
-
-    if (m_collectors.count(affiliation) == 0)
+    for (auto const & affiliation : chank.m_affiliations)
     {
-      auto path = base::JoinPath(m_path, affiliation + DATA_FILE_EXTENSION_TMP);
-      m_collectors.emplace(affiliation, make_unique<FeatureBuilderWriter>(move(path)));
-    }
+      if (affiliation.empty())
+        continue;
 
-    m_collectors[affiliation]->Write(chank.m_fb);
+      if (m_collectors.count(affiliation) == 0)
+      {
+        auto path = base::JoinPath(m_path, affiliation + DATA_FILE_EXTENSION_TMP);
+        m_collectors.emplace(affiliation, make_unique<FileWriter>(move(path)));
+      }
+
+      WriteVarUint(*m_collectors[affiliation], static_cast<uint32_t>(chank.m_buffer.size()));
+      m_collectors[affiliation]->Write(chank.m_buffer.data(), chank.m_buffer.size());
+    }
   }
 }
 

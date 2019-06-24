@@ -2,7 +2,6 @@
 
 #include "generator/city_boundary_processor.hpp"
 #include "generator/coastlines_generator.hpp"
-#include "generator/feature_builder.hpp"
 #include "generator/feature_maker.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/type_helper.hpp"
@@ -348,19 +347,5 @@ void PreserializeLayer::Handle(FeatureBuilder & fb)
 {
   if (fb.PreSerialize())
     LayerBase::Handle(fb);
-}
-
-AffilationsFeatureLayer::AffilationsFeatureLayer(std::shared_ptr<FeatureProcessorQueue> const & queue,
-                                                 std::shared_ptr<feature::AffiliationInterface> const & affilation)
-  : m_queue(queue), m_affilation(affilation) {}
-
-std::shared_ptr<LayerBase> AffilationsFeatureLayer::Clone() const
-{
-  return std::make_shared<AffilationsFeatureLayer>(m_queue, m_affilation);
-}
-
-void AffilationsFeatureLayer::Handle(FeatureBuilder & fb)
-{
-  m_queue->Push({{fb, m_affilation->GetAffiliations(fb)}});
 }
 }  // namespace generator

@@ -2,7 +2,6 @@
 
 #include "generator/coastlines_generator.hpp"
 #include "generator/feature_builder.hpp"
-#include "generator/feature_processing_layers.hpp"
 #include "generator/feature_generator.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/type_helper.hpp"
@@ -21,25 +20,24 @@ ProcessorCoastline::ProcessorCoastline(std::shared_ptr<FeatureProcessorQueue> co
   m_processingChain = std::make_shared<RepresentationCoastlineLayer>();
   m_processingChain->Add(std::make_shared<PrepareCoastlineFeatureLayer>());
   auto affilation = std::make_shared<feature::OneFileAffiliation>(WORLD_COASTS_FILE_NAME);
-  m_processingChain->Add(std::make_shared<AffilationsFeatureLayer>(m_queue, affilation));
+  m_affilationsLayer = std::make_shared<AffilationsFeatureLayer<>>(kAffilationsBufferSize, affilation);
+  m_processingChain->Add(m_affilationsLayer);
 }
-
-ProcessorCoastline::ProcessorCoastline(std::shared_ptr<FeatureProcessorQueue> const & queue,
-                                       std::shared_ptr<LayerBase> const & processingChain)
-  : m_queue(queue), m_processingChain(processingChain) {}
 
 std::shared_ptr<FeatureProcessorInterface> ProcessorCoastline::Clone() const
 {
-  return std::make_shared<ProcessorCoastline>(m_queue, m_processingChain->CloneRecursive());
+  return std::make_shared<ProcessorCoastline>(m_queue);
 }
 
 void ProcessorCoastline::Process(feature::FeatureBuilder & feature)
 {
   m_processingChain->Handle(feature);
+  m_affilationsLayer->AddBufferToQueueIfFull(m_queue);
 }
 
 bool ProcessorCoastline::Finish()
 {
+  m_affilationsLayer->AddBufferToQueue(m_queue);
   return true;
 }
 
