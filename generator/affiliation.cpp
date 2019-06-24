@@ -10,14 +10,28 @@ CountriesFilesAffiliation::CountriesFilesAffiliation(std::string const & borderP
 std::vector<std::string> CountriesFilesAffiliation::GetAffiliations(FeatureBuilder const & fb) const
 {
   std::vector<std::string> countries;
+  std::vector<std::reference_wrapper<borders::CountryPolygons const>> countriesContainer;
   m_countries->ForEachInRect(fb.GetLimitRect(), [&](auto const & countryPolygons) {
-    auto const need = fb.ForAnyGeometryPoint([&](auto const & point) {
-      return countryPolygons.Contains(point);
-    });
-
-    if (need)
-      countries.emplace_back(countryPolygons.GetName());
+    countriesContainer.emplace_back(countryPolygons);
   });
+
+  if (countriesContainer.size() == 1)
+  {
+    borders::CountryPolygons const & countryPolygons= countriesContainer.front();
+    countries.emplace_back(countryPolygons.GetName());
+  }
+  else if (countriesContainer.size() > 1)
+  {
+    for (borders::CountryPolygons const & countryPolygons : countriesContainer)
+    {
+      auto const need = fb.ForAnyGeometryPoint([&](auto const & point) {
+        return countryPolygons.Contains(point);
+      });
+
+      if (need)
+        countries.emplace_back(countryPolygons.GetName());
+    }
+  }
 
   return countries;
 }

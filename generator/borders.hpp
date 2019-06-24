@@ -53,10 +53,6 @@ public:
     m_regions.ForEach([&](auto const & region) {
       m_rect.Add(region.GetRect());
     });
-
-    auto const innerCells = GetInnerCells();
-    for (auto const & cell : innerCells)
-      m_innerRects.Add(cell, cell);
   }
 
   CountryPolygons(CountryPolygons && other) = default;
@@ -82,53 +78,7 @@ public:
   }
 
 private:
-  std::vector<m2::RectD> MakeCells(size_t count)
-  {
-    std::vector<m2::RectD> cells;
 
-    auto const minLen = std::min(m_rect.SizeX(), m_rect.SizeY());
-    auto const step = minLen / count;
-
-    double currY1 = m_rect.minY();
-    double currY2 = m_rect.minY() + step;
-    while (currY1 <= m_rect.maxY())
-    {
-      double currX1 = m_rect.minX();
-      double currX2 = m_rect.minX() + step;
-      while (currX2 <= m_rect.maxX())
-      {
-        m2::RectD cell;
-        cell.setMinX(currX1);
-        cell.setMaxX(currX2);
-        cell.setMinY(currY1);
-        cell.setMaxY(currY2);
-        cells.emplace_back(cell);
-        currX1 = currX2;
-        currX2 += step;
-      }
-      currY1 = currY2;
-      currY2 += step;
-    }
-
-    return cells;
-  }
-
-  std::vector<m2::RectD> GetInnerCells()
-  {
-    std::vector<m2::RectD> innerCells;
-    auto const cells = MakeCells(16/* count */);
-    for (auto const & cell : cells)
-    {
-      if (Contains_(cell.LeftBottom()) &&
-          Contains_(cell.LeftTop()) &&
-          Contains_(cell.RightBottom()) &&
-          Contains_(cell.RightTop()))
-      {
-        innerCells.emplace_back(cell);
-      }
-    }
-    return innerCells;
-  }
 
   bool Contains_(m2::PointD const & point) const
   {
