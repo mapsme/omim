@@ -13,7 +13,10 @@
 
 #include "std/target_os.hpp"
 
+#include <chrono>
 #include <utility>
+
+#include "3party/Alohalytics/src/alohalytics.h"
 
 #include "private.h"
 
@@ -218,6 +221,8 @@ void Purchase::ValidateImpl(std::string const & url, ValidationInfo const & vali
                             std::string const & accessToken, bool startTransaction,
                             uint8_t attemptIndex, uint32_t waitingTimeInSeconds)
 {
+  using namespace std::chrono;
+
   platform::HttpClient request(url);
   request.SetRawHeader("Accept", "application/json");
   request.SetRawHeader("User-Agent", GetPlatform().GetAppUserAgent());
@@ -233,9 +238,14 @@ void Purchase::ValidateImpl(std::string const & url, ValidationInfo const & vali
   }
   request.SetBodyData(std::move(jsonStr), "application/json");
 
+  auto const startTime = steady_clock::now();
   ValidationCode code = ValidationCode::ServerError;
   if (request.RunHttpRequest())
   {
+    auto const latency = duration_cast<milliseconds>(steady_clock::now() - startTime).count();
+    alohalytics::Stats::Instance().LogEvent("Request_Latency", {{"request", "purchase_validation"},
+                                                                {"latency_ms", strings::to_string(latency)}});
+
     auto const resultCode = request.ErrorCode();
     if (resultCode >= 200 && resultCode < 300)
     {
