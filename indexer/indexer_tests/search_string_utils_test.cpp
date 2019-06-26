@@ -47,6 +47,11 @@ bool TestStreetPrefixMatch(char const * s)
   return IsStreetSynonymPrefix(MakeUniString(s));
 }
 
+bool TestStreetSynonymWithMisprints(char const * s)
+{
+  return IsStreetSynonymWithMisprints(MakeUniString(s));
+}
+
 string NormalizeAndSimplifyStringUtf8(string const & s)
 {
   return strings::ToUtf8(NormalizeAndSimplifyString(s));
@@ -106,8 +111,23 @@ UNIT_TEST(StreetSynonym)
 {
   TEST(TestStreetSynonym("street"), ());
   TEST(TestStreetSynonym("улица"), ());
+
   TEST(TestStreetSynonym("strasse"), ());
+  TEST(TestStreetSynonymWithMisprints("strasse"), ());
   TEST(!TestStreetSynonym("strase"), ());
+  TEST(TestStreetSynonymWithMisprints("strase"), ());
+
+  TEST(TestStreetSynonym("boulevard"), ());
+  TEST(TestStreetSynonymWithMisprints("boulevard"), ());
+  TEST(!TestStreetSynonym("boulevrd"), ());
+  TEST(TestStreetSynonymWithMisprints("boulevrd"), ());
+
+  TEST(TestStreetSynonym("avenue"), ());
+  TEST(TestStreetSynonymWithMisprints("avenue"), ());
+  TEST(!TestStreetSynonym("aveneu"), ());
+  TEST(TestStreetSynonymWithMisprints("aveneu"), ());
+
+  TEST(!TestStreetSynonymWithMisprints("abcdefg"), ());
 }
 
 UNIT_TEST(StreetPrefixMatch)
