@@ -76,10 +76,7 @@ TestFeature::TestFeature(vector<m2::PointD> const & boundary, string const & nam
   Init();
 }
 
-void TestFeature::Init()
-{
-  m_metadata.Set(Metadata::FMD_TEST_ID, strings::to_string(m_id));
-}
+void TestFeature::Init() { m_metadata.Set(Metadata::FMD_TEST_ID, strings::to_string(m_id)); }
 
 bool TestFeature::Matches(FeatureType & feature) const
 {

@@ -8,8 +8,10 @@ using namespace feature;
 
 namespace generator
 {
-EmitterSimple::EmitterSimple(feature::GenerateInfo const & info) :
-  m_regionGenerator(std::make_unique<SimpleGenerator>(info)) {}
+EmitterSimple::EmitterSimple(feature::GenerateInfo const & info)
+  : m_regionGenerator(std::make_unique<SimpleGenerator>(info))
+{
+}
 
 void EmitterSimple::GetNames(std::vector<std::string> & names) const
 {
@@ -19,7 +21,8 @@ void EmitterSimple::GetNames(std::vector<std::string> & names) const
 void EmitterSimple::Process(FeatureBuilder & fb)
 {
   auto & polygonizer = m_regionGenerator->Parent();
-  // Emit each feature independently: clear current country names (see Polygonizer::GetCurrentNames()).
+  // Emit each feature independently: clear current country names (see
+  // Polygonizer::GetCurrentNames()).
   polygonizer.Start();
   (*m_regionGenerator)(fb);
   polygonizer.Finish();

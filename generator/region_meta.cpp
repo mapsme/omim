@@ -65,7 +65,8 @@ bool ReadRegionDataImpl(std::string const & countryName, RegionData & data)
     for (json_t * holiday : holidays)
     {
       if (!json_is_array(holiday) || json_array_size(holiday) != 2)
-        MYTHROW(base::Json::Exception, ("Holiday must be an array of two elements in", countryName));
+        MYTHROW(base::Json::Exception,
+                ("Holiday must be an array of two elements in", countryName));
       json_t * reference = json_array_get(holiday, 0);
       int8_t refId = 0;
       if (json_is_integer(reference))
@@ -78,8 +79,9 @@ bool ReadRegionDataImpl(std::string const & countryName, RegionData & data)
       }
       else
       {
-        MYTHROW(base::Json::Exception,
-                ("Holiday month reference should be either a std::string or a number in", countryName));
+        MYTHROW(
+            base::Json::Exception,
+            ("Holiday month reference should be either a std::string or a number in", countryName));
       }
 
       if (refId <= 0)

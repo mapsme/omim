@@ -1,7 +1,7 @@
 #include "generator/emitter_restaurants.hpp"
 
-#include "indexer/ftypes_matcher.hpp"
 #include "generator/feature_builder.hpp"
+#include "indexer/ftypes_matcher.hpp"
 
 using namespace feature;
 
@@ -38,8 +38,7 @@ void EmitterRestaurants::GetNames(std::vector<std::string> & names) const
 bool EmitterRestaurants::Finish()
 {
   LOG_SHORT(LINFO, ("Number of restaurants: POI:", m_stats.m_restaurantsPoi,
-                    "BUILDING:", m_stats.m_restaurantsBuilding,
-                    "TOTAL:", m_features.size(),
+                    "BUILDING:", m_stats.m_restaurantsBuilding, "TOTAL:", m_features.size(),
                     "INVALID:", m_stats.m_unexpectedFeatures));
   return true;
 }

@@ -77,9 +77,7 @@ private:
 class RawFilePointStorageMmapReader : public PointStorageReaderInterface
 {
 public:
-  explicit RawFilePointStorageMmapReader(string const & name) :
-    m_mmapReader(name)
-  {}
+  explicit RawFilePointStorageMmapReader(string const & name) : m_mmapReader(name) {}
 
   // PointStorageReaderInterface overrides:
   bool GetPoint(uint64_t id, double & lat, double & lon) const override
@@ -101,9 +99,7 @@ private:
 class RawFilePointStorageWriter : public PointStorageWriterBase
 {
 public:
-  explicit RawFilePointStorageWriter(string const & name) :
-    m_fileWriter(name)
-  {}
+  explicit RawFilePointStorageWriter(string const & name) : m_fileWriter(name) {}
 
   // PointStorageWriterInterface overrides:
   void AddPoint(uint64_t id, double lat, double lon) override
@@ -126,9 +122,8 @@ private:
 class RawMemPointStorageReader : public PointStorageReaderInterface
 {
 public:
-  explicit RawMemPointStorageReader(string const & name):
-    m_fileReader(name),
-    m_data(kMaxNodesInOSM)
+  explicit RawMemPointStorageReader(string const & name)
+    : m_fileReader(name), m_data(kMaxNodesInOSM)
   {
     static_assert(sizeof(size_t) == 8, "This code is only for 64-bit architectures");
     m_fileReader.Read(0, m_data.data(), m_data.size() * sizeof(LatLon));
@@ -153,16 +148,12 @@ private:
 class RawMemPointStorageWriter : public PointStorageWriterBase
 {
 public:
-  explicit RawMemPointStorageWriter(string const & name) :
-    m_fileWriter(name),
-    m_data(kMaxNodesInOSM)
+  explicit RawMemPointStorageWriter(string const & name)
+    : m_fileWriter(name), m_data(kMaxNodesInOSM)
   {
   }
 
-  ~RawMemPointStorageWriter()
-  {
-    m_fileWriter.Write(m_data.data(), m_data.size() * sizeof(LatLon));
-  }
+  ~RawMemPointStorageWriter() { m_fileWriter.Write(m_data.data(), m_data.size() * sizeof(LatLon)); }
 
   // PointStorageWriterInterface overrides:
   void AddPoint(uint64_t id, double lat, double lon) override
@@ -186,8 +177,7 @@ private:
 class MapFilePointStorageReader : public PointStorageReaderInterface
 {
 public:
-  explicit MapFilePointStorageReader(string const & name) :
-    m_fileReader(name + kShortExtension)
+  explicit MapFilePointStorageReader(string const & name) : m_fileReader(name + kShortExtension)
   {
     LOG(LINFO, ("Nodes reading is started"));
 
@@ -233,10 +223,7 @@ private:
 class MapFilePointStorageWriter : public PointStorageWriterBase
 {
 public:
-  explicit MapFilePointStorageWriter(string const & name) :
-    m_fileWriter(name + kShortExtension)
-  {
-  }
+  explicit MapFilePointStorageWriter(string const & name) : m_fileWriter(name + kShortExtension) {}
 
   // PointStorageWriterInterface overrides:
   void AddPoint(uint64_t id, double lat, double lon) override
@@ -301,10 +288,7 @@ bool IndexFileReader::GetValueByKey(Key key, Value & value) const
 }
 
 // IndexFileWriter ---------------------------------------------------------------------------------
-IndexFileWriter::IndexFileWriter(string const & name) :
-  m_fileWriter(name.c_str())
-{
-}
+IndexFileWriter::IndexFileWriter(string const & name) : m_fileWriter(name.c_str()) {}
 
 void IndexFileWriter::WriteAll()
 {
@@ -346,13 +330,14 @@ void OSMElementCacheWriter::SaveOffsets() { m_offsets.WriteAll(); }
 
 // IntermediateDataReader
 IntermediateDataReader::IntermediateDataReader(shared_ptr<PointStorageReaderInterface> nodes,
-                                               feature::GenerateInfo & info) :
-    m_nodes(nodes),
-    m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache),
-    m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache),
-    m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)),
-    m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
-{}
+                                               feature::GenerateInfo & info)
+  : m_nodes(nodes)
+  , m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache)
+  , m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache)
+  , m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT))
+  , m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
+{
+}
 
 void IntermediateDataReader::LoadIndex()
 {
@@ -365,16 +350,18 @@ void IntermediateDataReader::LoadIndex()
 
 // IntermediateDataWriter
 IntermediateDataWriter::IntermediateDataWriter(shared_ptr<PointStorageWriterInterface> nodes,
-                                               feature::GenerateInfo & info) :
-    m_nodes(nodes),
-    m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache),
-    m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache),
-    m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT)),
-    m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT)) {}
+                                               feature::GenerateInfo & info)
+  : m_nodes(nodes)
+  , m_ways(info.GetIntermediateFileName(WAYS_FILE), info.m_preloadCache)
+  , m_relations(info.GetIntermediateFileName(RELATIONS_FILE), info.m_preloadCache)
+  , m_nodeToRelations(info.GetIntermediateFileName(NODES_FILE, ID2REL_EXT))
+  , m_wayToRelations(info.GetIntermediateFileName(WAYS_FILE, ID2REL_EXT))
+{
+}
 
 void IntermediateDataWriter::AddRelation(Key id, RelationElement const & e)
 {
-  static set<string> const types = {"multipolygon", "route", "boundary",
+  static set<string> const types = {"multipolygon",     "route",    "boundary",
                                     "associatedStreet", "building", "restriction"};
   string const & relationType = e.GetType();
   if (!types.count(relationType))
@@ -395,8 +382,8 @@ void IntermediateDataWriter::SaveIndex()
 }
 
 // Functions
-shared_ptr<PointStorageReaderInterface>
-CreatePointStorageReader(feature::GenerateInfo::NodeStorageType type, string const & name)
+shared_ptr<PointStorageReaderInterface> CreatePointStorageReader(
+    feature::GenerateInfo::NodeStorageType type, string const & name)
 {
   switch (type)
   {
@@ -410,8 +397,8 @@ CreatePointStorageReader(feature::GenerateInfo::NodeStorageType type, string con
   UNREACHABLE();
 }
 
-shared_ptr<PointStorageWriterInterface>
-CreatePointStorageWriter(feature::GenerateInfo::NodeStorageType type, string const & name)
+shared_ptr<PointStorageWriterInterface> CreatePointStorageWriter(
+    feature::GenerateInfo::NodeStorageType type, string const & name)
 {
   switch (type)
   {

@@ -9,7 +9,9 @@ using namespace feature;
 namespace generator
 {
 CollectorAddresses::CollectorAddresses(std::string const & filename)
-  : m_addrWriter(std::make_unique<FileWriter>(filename)) {}
+  : m_addrWriter(std::make_unique<FileWriter>(filename))
+{
+}
 
 void CollectorAddresses::CollectFeature(FeatureBuilder const & feature, OsmElement const &)
 {

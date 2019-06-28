@@ -13,4 +13,4 @@ namespace generator
 {
 uint32_t GetPlaceType(FeatureParams const & params);
 uint32_t GetPlaceType(feature::FeatureBuilder const & feature);
-} // namespace generator
+}  // namespace generator

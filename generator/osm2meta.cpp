@@ -22,7 +22,6 @@ using namespace std;
 
 namespace
 {
-
 constexpr char const * kOSMMultivalueDelimiter = ";";
 
 // https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_the_world
@@ -33,8 +32,7 @@ template <class T>
 void RemoveDuplicatesAndKeepOrder(vector<T> & vec)
 {
   unordered_set<T> seen;
-  auto const predicate = [&seen](T const & value)
-  {
+  auto const predicate = [&seen](T const & value) {
     if (seen.find(value) != seen.end())
       return true;
     seen.insert(value);
@@ -61,6 +59,7 @@ public:
     RemoveDuplicatesAndKeepOrder(m_values);
     return strings::JoinStrings(m_values, kOSMMultivalueDelimiter);
   }
+
 private:
   vector<string> m_values;
 };
@@ -99,15 +98,9 @@ string MetadataTagProcessorImpl::ValidateAndFormat_operator(string const & v) co
   return v;
 }
 
-string MetadataTagProcessorImpl::ValidateAndFormat_url(string const & v) const
-{
-  return v;
-}
+string MetadataTagProcessorImpl::ValidateAndFormat_url(string const & v) const { return v; }
 
-string MetadataTagProcessorImpl::ValidateAndFormat_phone(string const & v) const
-{
-  return v;
-}
+string MetadataTagProcessorImpl::ValidateAndFormat_phone(string const & v) const { return v; }
 
 string MetadataTagProcessorImpl::ValidateAndFormat_opening_hours(string const & v) const
 {
@@ -119,10 +112,7 @@ string MetadataTagProcessorImpl::ValidateAndFormat_ele(string const & v) const
   return measurement_utils::OSMDistanceToMetersString(v);
 }
 
-string MetadataTagProcessorImpl::ValidateAndFormat_turn_lanes(string const & v) const
-{
-  return v;
-}
+string MetadataTagProcessorImpl::ValidateAndFormat_turn_lanes(string const & v) const { return v; }
 
 string MetadataTagProcessorImpl::ValidateAndFormat_turn_lanes_forward(string const & v) const
 {
@@ -134,20 +124,11 @@ string MetadataTagProcessorImpl::ValidateAndFormat_turn_lanes_backward(string co
   return v;
 }
 
-string MetadataTagProcessorImpl::ValidateAndFormat_email(string const & v) const
-{
-  return v;
-}
+string MetadataTagProcessorImpl::ValidateAndFormat_email(string const & v) const { return v; }
 
-string MetadataTagProcessorImpl::ValidateAndFormat_postcode(string const & v) const
-{
-  return v;
-}
+string MetadataTagProcessorImpl::ValidateAndFormat_postcode(string const & v) const { return v; }
 
-string MetadataTagProcessorImpl::ValidateAndFormat_flats(string const & v) const
-{
-  return v;
-}
+string MetadataTagProcessorImpl::ValidateAndFormat_flats(string const & v) const { return v; }
 
 string MetadataTagProcessorImpl::ValidateAndFormat_internet(string v) const
 {
@@ -205,7 +186,8 @@ string MetadataTagProcessorImpl::ValidateAndFormat_cuisine(string v) const
   strings::MakeLowerCaseInplace(v);
   strings::SimpleTokenizer iter(v, ",;");
   MultivalueCollector collector;
-  while (iter) {
+  while (iter)
+  {
     string normalized = *iter;
     strings::Trim(normalized, " ");
     CollapseMultipleConsecutiveCharsIntoOne(' ', normalized);

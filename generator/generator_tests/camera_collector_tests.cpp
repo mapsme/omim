@@ -15,8 +15,8 @@
 #include "generator/translator.hpp"
 
 #include "indexer/classificator_loader.hpp"
-#include "indexer/map_style_reader.hpp"
 #include "indexer/map_style.hpp"
+#include "indexer/map_style_reader.hpp"
 
 #include "base/macros.hpp"
 
@@ -42,9 +42,11 @@ string const kSpeedCameraTag = "<tag k=\"highway\" v=\"speed_camera\"/>";
 class TranslatorForTest : public Translator
 {
 public:
-  explicit TranslatorForTest(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
-                             feature::GenerateInfo const &)
-    : Translator(emitter, cache, std::make_shared<FeatureMaker>(cache)) {}
+  explicit TranslatorForTest(std::shared_ptr<EmitterInterface> emitter,
+                             cache::IntermediateDataReader & cache, feature::GenerateInfo const &)
+    : Translator(emitter, cache, std::make_shared<FeatureMaker>(cache))
+  {
+  }
 };
 }  // namespace
 
@@ -83,7 +85,8 @@ public:
     CHECK(GenerateIntermediateData(genInfo), ());
 
     // Test load this data from cached file.
-    auto collector = std::make_shared<CameraCollector>(genInfo.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME));
+    auto collector = std::make_shared<CameraCollector>(
+        genInfo.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME));
     CacheLoader cacheLoader(genInfo);
     auto emitter = CreateEmitter(EmitterType::Noop);
     TranslatorForTest translator(emitter, cacheLoader.GetCache(), genInfo);
@@ -102,7 +105,7 @@ public:
 
 std::string const TestCameraCollector::kTestDir = "camera_test";
 std::string const TestCameraCollector::kOsmFileName = "planet" OSM_DATA_FILE_EXTENSION;
-} // namespace generator_tests
+}  // namespace generator_tests
 
 using namespace generator_tests;
 
@@ -111,9 +114,12 @@ UNIT_CLASS_TEST(TestCameraCollector, test_1)
   string const osmSourceXML = R"(
 <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
 
-    <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-    <node id="2" lat="55.779304" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-    <node id="3" lat="55.773084" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
+    <node id="1" lat="55.779384" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
+    <node id="2" lat="55.779304" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
+    <node id="3" lat="55.773084" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
     <node id="4" lat="55.773084" lon="37.3699375" version="1"></node>
 
     <way id="10" version="1">
@@ -131,9 +137,7 @@ UNIT_CLASS_TEST(TestCameraCollector, test_1)
   </osm>
 )";
 
-  set<pair<uint64_t, uint64_t>> trueAnswers = {
-    {1, 10}, {1, 20}, {2, 20}, {3, 20}
-  };
+  set<pair<uint64_t, uint64_t>> trueAnswers = {{1, 10}, {1, 20}, {2, 20}, {3, 20}};
 
   TEST(TestCameraCollector::Test(osmSourceXML, trueAnswers), ());
 }
@@ -143,11 +147,16 @@ UNIT_CLASS_TEST(TestCameraCollector, test_2)
   string const osmSourceXML = R"(
 <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
 
-    <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-    <node id="2" lat="55.779304" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-    <node id="3" lat="55.773084" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-    <node id="4" lat="55.773024" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
-    <node id="5" lat="55.773014" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
+    <node id="1" lat="55.779384" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
+    <node id="2" lat="55.779304" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
+    <node id="3" lat="55.773084" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
+    <node id="4" lat="55.773024" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
+    <node id="5" lat="55.773014" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
 
     <way id="10" version="1">
       <nd ref="1"/>
@@ -170,9 +179,8 @@ UNIT_CLASS_TEST(TestCameraCollector, test_2)
   </osm>
 )";
 
-  set<pair<uint64_t, uint64_t>> trueAnswers = {
-    {1, 10}, {2, 10}, {1, 20}, {3, 20}, {1, 30}, {3, 30}, {4, 30}, {5, 30}
-  };
+  set<pair<uint64_t, uint64_t>> trueAnswers = {{1, 10}, {2, 10}, {1, 20}, {3, 20},
+                                               {1, 30}, {3, 30}, {4, 30}, {5, 30}};
 
   TEST(TestCameraCollector::Test(osmSourceXML, trueAnswers), ());
 }
@@ -182,7 +190,8 @@ UNIT_CLASS_TEST(TestCameraCollector, test_3)
   string const osmSourceXML = R"(
 <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
 
-    <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
+    <node id="1" lat="55.779384" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
     <node id="2" lat="55.779384" lon="37.3699375" version="1"></node>
 
     <way id="10" version="1">
@@ -199,9 +208,7 @@ UNIT_CLASS_TEST(TestCameraCollector, test_3)
   </osm>
 )";
 
-  set<pair<uint64_t, uint64_t>> trueAnswers = {
-    {1, 10}, {1, 20}
-  };
+  set<pair<uint64_t, uint64_t>> trueAnswers = {{1, 10}, {1, 20}};
 
   TEST(TestCameraCollector::Test(osmSourceXML, trueAnswers), ());
 }
@@ -211,7 +218,8 @@ UNIT_CLASS_TEST(TestCameraCollector, test_4)
   string const osmSourceXML = R"(
 <osm version="0.6" generator="osmconvert 0.8.4" timestamp="2018-07-16T02:00:00Z">
 
-    <node id="1" lat="55.779384" lon="37.3699375" version="1">)" + kSpeedCameraTag + R"(</node>
+    <node id="1" lat="55.779384" lon="37.3699375" version="1">)" +
+                              kSpeedCameraTag + R"(</node>
 
     <way id="10" version="1">
     <tag k="highway" v="unclassified"/>

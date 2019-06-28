@@ -18,7 +18,7 @@ class EmitterNoop : public EmitterInterface
 {
 public:
   // EmitterInterface overrides:
-  void Process(feature::FeatureBuilder &) override  {}
+  void Process(feature::FeatureBuilder &) override {}
   bool Finish() override { return true; }
   void GetNames(std::vector<std::string> &) const override {}
 };

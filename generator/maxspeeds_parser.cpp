@@ -117,13 +117,13 @@ unordered_map<string, SpeedInUnits> const kRoadCategoryToSpeed = {
     {"SE:trunk", {90, Units::Metric}},
     {"SE:motorway", {110, Units::Metric}},
 
-    {"GB:motorway", {70, Units::Imperial}},   // 70 mph = 112.65408 kmph
-    {"GB:nsl_dual", {70, Units::Imperial}},   // 70 mph = 112.65408 kmph
-    {"GB:nsl_single", {60, Units::Imperial}}, // 60 mph = 96.56064 kmph
+    {"GB:motorway", {70, Units::Imperial}},    // 70 mph = 112.65408 kmph
+    {"GB:nsl_dual", {70, Units::Imperial}},    // 70 mph = 112.65408 kmph
+    {"GB:nsl_single", {60, Units::Imperial}},  // 60 mph = 96.56064 kmph
 
-    {"UK:motorway", {70, Units::Imperial}},   // 70 mph
-    {"UK:nsl_dual", {70, Units::Imperial}},   // 70 mph
-    {"UK:nsl_single", {60, Units::Imperial}}, // 60 mph
+    {"UK:motorway", {70, Units::Imperial}},    // 70 mph
+    {"UK:nsl_dual", {70, Units::Imperial}},    // 70 mph
+    {"UK:nsl_single", {60, Units::Imperial}},  // 60 mph
 
     {"UA:urban", {50, Units::Metric}},
     {"UA:rural", {90, Units::Metric}},
@@ -156,14 +156,14 @@ bool ParseMaxspeedTag(string const & maxspeedValue, SpeedInUnits & speed)
   if (maxspeedValue == "none")
   {
     speed.SetSpeed(kNoneMaxSpeed);
-    speed.SetUnits(Units::Metric); // It's dummy value in case of kNoneMaxSpeed
+    speed.SetUnits(Units::Metric);  // It's dummy value in case of kNoneMaxSpeed
     return true;
   }
 
   if (maxspeedValue == "walk")
   {
     speed.SetSpeed(kWalkMaxSpeed);
-    speed.SetUnits(Units::Metric); // It's dummy value in case of kWalkMaxSpeed
+    speed.SetUnits(Units::Metric);  // It's dummy value in case of kWalkMaxSpeed
     return true;
   }
 
@@ -185,7 +185,8 @@ bool ParseMaxspeedTag(string const & maxspeedValue, SpeedInUnits & speed)
       strings::StartsWith(string(maxspeedValue.begin() + i, maxspeedValue.end()), "kmh"))
   {
     uint64_t kmph = 0;
-    if (!strings::to_uint64(speedStr.c_str(), kmph) || kmph == 0 || kmph > numeric_limits<uint16_t>::max())
+    if (!strings::to_uint64(speedStr.c_str(), kmph) || kmph == 0 ||
+        kmph > numeric_limits<uint16_t>::max())
       return false;
 
     speed.SetSpeed(static_cast<uint16_t>(kmph));
@@ -196,7 +197,8 @@ bool ParseMaxspeedTag(string const & maxspeedValue, SpeedInUnits & speed)
   if (strings::StartsWith(string(maxspeedValue.begin() + i, maxspeedValue.end()), "mph"))
   {
     uint64_t mph = 0;
-    if (!strings::to_uint64(speedStr.c_str(), mph) || mph == 0 || mph > numeric_limits<uint16_t>::max())
+    if (!strings::to_uint64(speedStr.c_str(), mph) || mph == 0 ||
+        mph > numeric_limits<uint16_t>::max())
       return false;
 
     speed.SetSpeed(static_cast<uint16_t>(mph));

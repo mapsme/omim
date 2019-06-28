@@ -1,8 +1,8 @@
 #include "generator/emitter_interface.hpp"
 #include "generator/feature_builder.hpp"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace generator
 {

@@ -11,8 +11,8 @@
 
 #include "geometry/distance_on_sphere.hpp"
 
-#include "base/file_name_utils.hpp"
 #include "base/exception.hpp"
+#include "base/file_name_utils.hpp"
 #include "base/geo_object_id.hpp"
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
@@ -123,7 +123,12 @@ GenerateInfo GetGenerateInfo()
 template <typename Object>
 struct SampleItem
 {
-  enum MatchStatus {Uninitialized, Yes, No};
+  enum MatchStatus
+  {
+    Uninitialized,
+    Yes,
+    No
+  };
   using ObjectId = typename Object::ObjectId;
 
   SampleItem() = default;
@@ -161,8 +166,8 @@ SampleItem<Object> ReadSampleItem(string const & str)
   SampleItem<Object> item;
 
   auto const parts = strings::Tokenize(str, "\t");
-  CHECK_EQUAL(parts.size(), 3, ("Cant't make SampleItem from string:", str,
-                                "due to wrong number of fields."));
+  CHECK_EQUAL(parts.size(), 3,
+              ("Cant't make SampleItem from string:", str, "due to wrong number of fields."));
 
   item.m_osmId = ReadDebuggedPrintedOsmId(parts[0]);
   if (!strings::to_uint(parts[1], item.m_sponsoredId.Get()))
@@ -218,20 +223,17 @@ void GenerateFactors(Dataset const & dataset,
     double const distanceMeters = ms::DistanceOnEarth(center, object.m_latLon);
     auto const matched = score.IsMatched();
 
-    ost << "# ------------------------------------------" << fixed << setprecision(6)
-        << endl;
-    ost << (matched ? 'y' : 'n') << " \t" << DebugPrint(feature.GetMostGenericOsmId())
-        << "\t " << object.m_id
-        << "\tdistance: " << distanceMeters
+    ost << "# ------------------------------------------" << fixed << setprecision(6) << endl;
+    ost << (matched ? 'y' : 'n') << " \t" << DebugPrint(feature.GetMostGenericOsmId()) << "\t "
+        << object.m_id << "\tdistance: " << distanceMeters
         << "\tdistance score: " << score.m_linearNormDistanceScore
         << "\tname score: " << score.m_nameSimilarityScore
-        << "\tresult score: " << score.GetMatchingScore()
-        << endl;
+        << "\tresult score: " << score.GetMatchingScore() << endl;
     ost << "# " << PrintBuilder(feature) << endl;
     ost << "# " << object << endl;
-    ost << "# URL: https://www.openstreetmap.org/?mlat="
-        << object.m_latLon.m_lat << "&mlon=" << object.m_latLon.m_lon << "#map=18/"
-        << object.m_latLon.m_lat << "/" << object.m_latLon.m_lon << endl;
+    ost << "# URL: https://www.openstreetmap.org/?mlat=" << object.m_latLon.m_lat
+        << "&mlon=" << object.m_latLon.m_lon << "#map=18/" << object.m_latLon.m_lat << "/"
+        << object.m_latLon.m_lon << endl;
   }
 }
 
@@ -250,7 +252,8 @@ void GenerateSample(Dataset const & dataset,
   boost::copy(features | boost::adaptors::map_keys, begin(elementIndexes));
 
   // TODO(mgsergio): Try RandomSample (from search:: at the moment of writing).
-  shuffle(elementIndexes.begin(), elementIndexes.end(), minstd_rand(static_cast<uint32_t>(FLAGS_seed)));
+  shuffle(elementIndexes.begin(), elementIndexes.end(),
+          minstd_rand(static_cast<uint32_t>(FLAGS_seed)));
   if (FLAGS_selection_size < elementIndexes.size())
     elementIndexes.resize(FLAGS_selection_size);
 
@@ -259,8 +262,8 @@ void GenerateSample(Dataset const & dataset,
   for (auto osmId : elementIndexes)
   {
     auto const & fb = features.at(osmId);
-    auto const sponsoredIndexes = dataset.GetStorage().GetNearestObjects(
-        MercatorBounds::ToLatLon(fb.GetKeyPoint()));
+    auto const sponsoredIndexes =
+        dataset.GetStorage().GetNearestObjects(MercatorBounds::ToLatLon(fb.GetKeyPoint()));
 
     for (auto const sponsoredId : sponsoredIndexes)
     {
@@ -277,13 +280,12 @@ void GenerateSample(Dataset const & dataset,
                 << "\tdistance: " << distanceMeters
                 << "\tdistance score: " << score.m_linearNormDistanceScore
                 << "\tname score: " << score.m_nameSimilarityScore
-                << "\tresult score: " << score.GetMatchingScore()
-                << endl;
+                << "\tresult score: " << score.GetMatchingScore() << endl;
       outStream << "# " << PrintBuilder(fb) << endl;
       outStream << "# " << object << endl;
-      outStream << "# URL: https://www.openstreetmap.org/?mlat="
-                << object.m_latLon.m_lat << "&mlon=" << object.m_latLon.m_lon
-                << "#map=18/" << object.m_latLon.m_lat << "/" << object.m_latLon.m_lon << endl;
+      outStream << "# URL: https://www.openstreetmap.org/?mlat=" << object.m_latLon.m_lat
+                << "&mlon=" << object.m_latLon.m_lon << "#map=18/" << object.m_latLon.m_lat << "/"
+                << object.m_latLon.m_lon << endl;
     }
     if (!sponsoredIndexes.empty())
       outStream << endl << endl;
@@ -323,7 +325,8 @@ void RunImpl(GenerateInfo & info)
 {
   auto const & dataSetFilePath = GetDatasetFilePath<Dataset>(info);
   Dataset dataset(dataSetFilePath);
-  LOG_SHORT(LINFO, (dataset.GetStorage().Size(), "objects are loaded from a file:", dataSetFilePath));
+  LOG_SHORT(LINFO,
+            (dataset.GetStorage().Size(), "objects are loaded from a file:", dataSetFilePath));
 
   map<base::GeoObjectId, FeatureBuilder> features;
   LOG_SHORT(LINFO, ("OSM data:", FLAGS_osm));
@@ -331,7 +334,8 @@ void RunImpl(GenerateInfo & info)
   CacheLoader cacheLoader(info);
   TranslatorCollection translators;
   auto emitter = make_shared<EmitterBooking<Dataset>>(dataset, features);
-  translators.Append(CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), info));
+  translators.Append(
+      CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), info));
   GenerateRaw(info, translators);
 
   if (FLAGS_generate)

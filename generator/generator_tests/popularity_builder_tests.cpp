@@ -4,8 +4,8 @@
 #include "generator/generator_tests/common.hpp"
 #include "generator/popularity.hpp"
 
-#include "indexer/classificator_loader.hpp"
 #include "indexer/classificator.hpp"
+#include "indexer/classificator_loader.hpp"
 
 #include "platform/platform.hpp"
 
@@ -41,7 +41,7 @@ public:
     {
       FeatureBuilder fb;
       auto const type = m_cl.GetTypeByPath({"tourism", "museum"});
-      auto const checkableType =  m_cl.GetReadableObjectName(type);
+      auto const checkableType = m_cl.GetReadableObjectName(type);
       fb.AddType(m_cl.GetTypeByPath({"building"}));
       fb.AddType(type);
       TEST_EQUAL(PopularityBuilder::GetType(fb), checkableType, ());
@@ -139,19 +139,22 @@ public:
     auto const tree = PopularityBuilder::MakeTree4d(geomPlaces);
 
     {
-      auto const t = PopularityBuilder::FindPopularityGeomPlaceParent(nameToNode.at("1_2")->GetData(), m, tree);
+      auto const t = PopularityBuilder::FindPopularityGeomPlaceParent(
+          nameToNode.at("1_2")->GetData(), m, tree);
       TEST(t, ());
       TEST_EQUAL(*t, nameToNode.at("1"), ());
     }
 
     {
-      auto const t = PopularityBuilder::FindPopularityGeomPlaceParent(nameToNode.at("1_3")->GetData(), m, tree);
+      auto const t = PopularityBuilder::FindPopularityGeomPlaceParent(
+          nameToNode.at("1_3")->GetData(), m, tree);
       TEST(t, ());
       TEST_EQUAL(*t, nameToNode.at("1"), ());
     }
 
     {
-      auto const t = PopularityBuilder::FindPopularityGeomPlaceParent(nameToNode.at("1")->GetData(), m, tree);
+      auto const t =
+          PopularityBuilder::FindPopularityGeomPlaceParent(nameToNode.at("1")->GetData(), m, tree);
       TEST(!t, ());
     }
   }
@@ -191,9 +194,7 @@ public:
 
       auto const tree = PopularityBuilder::MakeTree4d(geomPlaces);
       std::set<base::GeoObjectId> ids;
-      tree.ForEach([&](auto const & id) {
-        ids.insert(id);
-      });
+      tree.ForEach([&](auto const & id) { ids.insert(id); });
 
       TEST_EQUAL(checkableIds, ids, ());
     }
@@ -202,9 +203,7 @@ public:
       std::set<base::GeoObjectId> checkableIds;
       auto const tree = PopularityBuilder::MakeTree4d({});
       std::set<base::GeoObjectId> ids;
-      tree.ForEach([&](auto const & id) {
-        ids.insert(id);
-      });
+      tree.ForEach([&](auto const & id) { ids.insert(id); });
 
       TEST_EQUAL(checkableIds, ids, ());
     }
@@ -231,7 +230,7 @@ public:
     auto const nodes = PopularityBuilder::MakeNodes(v);
     TEST_EQUAL(nodes.size(), v.size(), ());
     for (size_t i = 0; i < v.size(); ++i)
-      TEST_EQUAL(nodes[i]->GetData().GetId(), v[i].GetMostGenericOsmId() , ());
+      TEST_EQUAL(nodes[i]->GetData().GetId(), v[i].GetMostGenericOsmId(), ());
   }
 
   void Build() const
@@ -253,13 +252,11 @@ public:
     for (auto const & line : lines)
       m.emplace(line.m_name, line);
 
-    SCOPE_GUARD(RemoveFile, [&] {
-      Platform::RemoveFileIfExists(filename);
-    });
+    SCOPE_GUARD(RemoveFile, [&] { Platform::RemoveFileIfExists(filename); });
 
     TEST_EQUAL(lines.size(), m_testSet.size(), ());
     TEST(!m.at("1").m_parent, ());
-    TEST_EQUAL(m.at("1").m_type,  typeName, ());
+    TEST_EQUAL(m.at("1").m_type, typeName, ());
 
     TEST(m.at("1_2").m_parent, ());
     TEST_EQUAL(*m.at("1_2").m_parent, m.at("1").m_id, ());
@@ -353,9 +350,9 @@ private:
   static std::vector<FeatureBuilder> FilterArea(std::vector<FeatureBuilder> const & v)
   {
     std::vector<FeatureBuilder> filtered;
-    std::copy_if(std::begin(v), std::end(v), std::back_inserter(filtered), [](auto const & feature) {
-      return feature.IsArea() && feature.IsGeometryClosed();
-    });
+    std::copy_if(
+        std::begin(v), std::end(v), std::back_inserter(filtered),
+        [](auto const & feature) { return feature.IsArea() && feature.IsGeometryClosed(); });
 
     return filtered;
   }
@@ -363,15 +360,14 @@ private:
   static std::vector<FeatureBuilder> FilterPoint(std::vector<FeatureBuilder> const & v)
   {
     std::vector<FeatureBuilder> filtered;
-    std::copy_if(std::begin(v), std::end(v), std::back_inserter(filtered), [](auto const & feature) {
-      return feature.IsPoint();
-    });
+    std::copy_if(std::begin(v), std::end(v), std::back_inserter(filtered),
+                 [](auto const & feature) { return feature.IsPoint(); });
 
     return filtered;
   }
 
-  static std::map<std::string, PopularityBuilder::Node::Ptr>
-  GetPlacesMap(PopularityBuilder::Node::PtrList const & geomPlaces)
+  static std::map<std::string, PopularityBuilder::Node::Ptr> GetPlacesMap(
+      PopularityBuilder::Node::PtrList const & geomPlaces)
   {
     std::map<std::string, PopularityBuilder::Node::Ptr> nameToNode;
     for (auto const & place : geomPlaces)
@@ -380,18 +376,21 @@ private:
     return nameToNode;
   }
 
-  static PopularityBuilder::Node::PtrList MakePopularityGeomPlaces(std::vector<FeatureBuilder> const & v)
+  static PopularityBuilder::Node::PtrList MakePopularityGeomPlaces(
+      std::vector<FeatureBuilder> const & v)
   {
     PopularityBuilder::Node::PtrList nodes;
     nodes.reserve(v.size());
-    std::transform(std::begin(v), std::end(v), std::back_inserter(nodes), [](FeatureBuilder const & f) {
-      return std::make_shared<PopularityBuilder::Node>(PopularityGeomPlace(f));
-    });
+    std::transform(std::begin(v), std::end(v), std::back_inserter(nodes),
+                   [](FeatureBuilder const & f) {
+                     return std::make_shared<PopularityBuilder::Node>(PopularityGeomPlace(f));
+                   });
 
     return nodes;
   }
 
-  static std::vector<FeatureBuilder> AddTypes(std::vector<FeatureBuilder> v, std::vector<uint32_t> const & types)
+  static std::vector<FeatureBuilder> AddTypes(std::vector<FeatureBuilder> v,
+                                              std::vector<uint32_t> const & types)
   {
     for (auto & feature : v)
     {
@@ -449,7 +448,4 @@ UNIT_CLASS_TEST(TestPopularityBuilder, PopularityBuilder_MakeNodes)
   TestPopularityBuilder::MakeNodes();
 }
 
-UNIT_CLASS_TEST(TestPopularityBuilder, PopularityBuilder_Build)
-{
-  TestPopularityBuilder::Build();
-}
+UNIT_CLASS_TEST(TestPopularityBuilder, PopularityBuilder_Build) { TestPopularityBuilder::Build(); }

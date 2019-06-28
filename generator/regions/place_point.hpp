@@ -23,14 +23,13 @@ class PlacePoint : public RegionWithName, public RegionWithData
 {
 public:
   explicit PlacePoint(feature::FeatureBuilder const & fb, RegionDataProxy const & rd)
-    : RegionWithName(fb.GetParams().name),
-      RegionWithData(rd)
+    : RegionWithName(fb.GetParams().name), RegionWithData(rd)
   {
     auto const p = fb.GetKeyPoint();
     m_position = {p.x, p.y};
   }
 
-  BoostPoint GetPosition() const {  return m_position; }
+  BoostPoint GetPosition() const { return m_position; }
 
 private:
   BoostPoint m_position;

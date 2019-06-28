@@ -107,7 +107,6 @@ private:
   FileReader m_fileReader;
 };
 
-
 class IndexFileWriter
 {
 public:
@@ -276,7 +275,8 @@ private:
 class IntermediateDataWriter
 {
 public:
-  IntermediateDataWriter(std::shared_ptr<PointStorageWriterInterface> nodes, feature::GenerateInfo & info);
+  IntermediateDataWriter(std::shared_ptr<PointStorageWriterInterface> nodes,
+                         feature::GenerateInfo & info);
 
   void AddNode(Key id, double lat, double lon) { m_nodes->AddPoint(id, lat, lon); }
   void AddWay(Key id, WayElement const & e) { m_ways.Write(id, e); }
@@ -284,7 +284,8 @@ public:
   void AddRelation(Key id, RelationElement const & e);
   void SaveIndex();
 
-  static void AddToIndex(cache::IndexFileWriter & index, Key relationId, std::vector<uint64_t> const & values)
+  static void AddToIndex(cache::IndexFileWriter & index, Key relationId,
+                         std::vector<uint64_t> const & values)
   {
     for (auto const v : values)
       index.Add(v, relationId);
@@ -305,10 +306,10 @@ private:
   cache::IndexFileWriter m_wayToRelations;
 };
 
-std::shared_ptr<PointStorageReaderInterface>
-CreatePointStorageReader(feature::GenerateInfo::NodeStorageType type, std::string const & name);
+std::shared_ptr<PointStorageReaderInterface> CreatePointStorageReader(
+    feature::GenerateInfo::NodeStorageType type, std::string const & name);
 
-std::shared_ptr<PointStorageWriterInterface>
-CreatePointStorageWriter(feature::GenerateInfo::NodeStorageType type, std::string const & name);
+std::shared_ptr<PointStorageWriterInterface> CreatePointStorageWriter(
+    feature::GenerateInfo::NodeStorageType type, std::string const & name);
 }  // namespace cache
 }  // namespace generator

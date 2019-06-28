@@ -30,11 +30,9 @@ namespace
 {
 using namespace routing;
 
-std::unique_ptr<IndexGraph>
-CreateIndexGraph(std::string const & targetPath,
-                 std::string const & mwmPath,
-                 std::string const & country,
-                 CountryParentNameGetterFn const & countryParentNameGetterFn)
+std::unique_ptr<IndexGraph> CreateIndexGraph(
+    std::string const & targetPath, std::string const & mwmPath, std::string const & country,
+    CountryParentNameGetterFn const & countryParentNameGetterFn)
 {
   std::shared_ptr<VehicleModelInterface> vehicleModel =
       CarModelFactory(countryParentNameGetterFn).GetVehicleModelForCountry(country);
@@ -54,14 +52,13 @@ CreateIndexGraph(std::string const & targetPath,
 
 namespace routing
 {
-std::unique_ptr<RestrictionCollector>
-CreateRestrictionCollectorAndParse(
+std::unique_ptr<RestrictionCollector> CreateRestrictionCollectorAndParse(
     std::string const & targetPath, std::string const & mwmPath, std::string const & country,
     std::string const & restrictionPath, std::string const & osmIdsToFeatureIdsPath,
     CountryParentNameGetterFn const & countryParentNameGetterFn)
 {
   LOG(LDEBUG, ("BuildRoadRestrictions(", targetPath, ", ", restrictionPath, ", ",
-                                         osmIdsToFeatureIdsPath, ");"));
+               osmIdsToFeatureIdsPath, ");"));
 
   std::unique_ptr<IndexGraph> graph =
       CreateIndexGraph(targetPath, mwmPath, country, countryParentNameGetterFn);
@@ -74,16 +71,15 @@ CreateRestrictionCollectorAndParse(
 
   if (!restrictionCollector->HasRestrictions())
   {
-    LOG(LINFO, ("No restrictions for", targetPath, "It's necessary to check that",
-                restrictionPath, "and", osmIdsToFeatureIdsPath, "are available."));
+    LOG(LINFO, ("No restrictions for", targetPath, "It's necessary to check that", restrictionPath,
+                "and", osmIdsToFeatureIdsPath, "are available."));
     return {};
   }
 
   return restrictionCollector;
 }
 
-void SerializeRestrictions(RestrictionCollector & restrictionCollector,
-                           std::string const & mwmPath)
+void SerializeRestrictions(RestrictionCollector & restrictionCollector, std::string const & mwmPath)
 {
   std::vector<Restriction> restrictions = restrictionCollector.StealRestrictions();
   CHECK(std::is_sorted(restrictions.cbegin(), restrictions.cend()), ());
@@ -108,7 +104,7 @@ void SerializeRestrictions(RestrictionCollector & restrictionCollector,
 
     CHECK_GREATER_OR_EQUAL(i, 1, ("Unexpected overflow."));
     auto const prevType = RestrictionHeader::kRestrictionTypes[i - 1];
-    header.SetNumberOf(prevType, 
+    header.SetNumberOf(prevType,
                        base::checked_cast<uint32_t>(std::distance(prevTypeEndIt, firstNextType)));
 
     prevTypeEndIt = firstNextType;
@@ -124,10 +120,8 @@ void SerializeRestrictions(RestrictionCollector & restrictionCollector,
   RestrictionSerializer::Serialize(header, restrictions.begin(), restrictions.end(), w);
 }
 
-bool BuildRoadRestrictions(std::string const & targetPath,
-                           std::string const & mwmPath,
-                           std::string const & country,
-                           std::string const & restrictionPath,
+bool BuildRoadRestrictions(std::string const & targetPath, std::string const & mwmPath,
+                           std::string const & country, std::string const & restrictionPath,
                            std::string const & osmIdsToFeatureIdsPath,
                            CountryParentNameGetterFn const & countryParentNameGetterFn)
 {

@@ -28,10 +28,7 @@ using namespace std;
 
 namespace
 {
-bool IsEqual(double d1, double d2)
-{
-  return base::AlmostEqualAbs(d1, d2, kMwmPointAccuracy);
-}
+bool IsEqual(double d1, double d2) { return base::AlmostEqualAbs(d1, d2, kMwmPointAccuracy); }
 
 bool IsEqual(m2::PointD const & p1, m2::PointD const & p2)
 {
@@ -40,10 +37,8 @@ bool IsEqual(m2::PointD const & p1, m2::PointD const & p2)
 
 bool IsEqual(m2::RectD const & r1, m2::RectD const & r2)
 {
-  return (IsEqual(r1.minX(), r2.minX()) &&
-          IsEqual(r1.minY(), r2.minY()) &&
-          IsEqual(r1.maxX(), r2.maxX()) &&
-          IsEqual(r1.maxY(), r2.maxY()));
+  return (IsEqual(r1.minX(), r2.minX()) && IsEqual(r1.minY(), r2.minY()) &&
+          IsEqual(r1.maxX(), r2.maxX()) && IsEqual(r1.maxY(), r2.maxY()));
 }
 
 bool IsEqual(vector<m2::PointD> const & v1, vector<m2::PointD> const & v2)
@@ -55,11 +50,7 @@ bool IsEqual(vector<m2::PointD> const & v1, vector<m2::PointD> const & v2)
 
 namespace feature
 {
-FeatureBuilder::FeatureBuilder()
-  : m_coastCell(-1)
-{
-  m_polygons.push_back(PointSeq());
-}
+FeatureBuilder::FeatureBuilder() : m_coastCell(-1) { m_polygons.push_back(PointSeq()); }
 
 bool FeatureBuilder::IsGeometryClosed() const
 {
@@ -69,8 +60,8 @@ bool FeatureBuilder::IsGeometryClosed() const
 
 m2::PointD FeatureBuilder::GetGeometryCenter() const
 {
-  //TODO(vng): Check requirements in this assert
-  //ASSERT ( IsGeometryClosed(), () );
+  // TODO(vng): Check requirements in this assert
+  // ASSERT ( IsGeometryClosed(), () );
   m2::PointD ret(0.0, 0.0);
 
   PointSeq const & poly = GetOuterGeometry();
@@ -84,14 +75,10 @@ m2::PointD FeatureBuilder::GetKeyPoint() const
 {
   switch (GetGeomType())
   {
-  case GeomType::Point:
-    return m_center;
+  case GeomType::Point: return m_center;
   case GeomType::Line:
-  case GeomType::Area:
-    return GetGeometryCenter();
-  default:
-    CHECK(false, ());
-    return m2::PointD();
+  case GeomType::Area: return GetGeometryCenter();
+  default: CHECK(false, ()); return m2::PointD();
   }
 }
 
@@ -102,10 +89,7 @@ void FeatureBuilder::SetCenter(m2::PointD const & p)
   m_limitRect.Add(p);
 }
 
-void FeatureBuilder::SetRank(uint8_t rank)
-{
-  m_params.rank = rank;
-}
+void FeatureBuilder::SetRank(uint8_t rank) { m_params.rank = rank; }
 
 void FeatureBuilder::AddHouseNumber(string const & houseNumber)
 {
@@ -142,14 +126,15 @@ void FeatureBuilder::SetHoles(FeatureBuilder::Geometry const & holes)
 {
   m_polygons.resize(1);
 
-  if (holes.empty()) return;
+  if (holes.empty())
+    return;
 
   PointSeq const & poly = GetOuterGeometry();
   m2::Region<m2::PointD> rgn(poly.begin(), poly.end());
 
   for (PointSeq const & points : holes)
   {
-    ASSERT ( !points.empty(), (*this) );
+    ASSERT(!points.empty(), (*this));
 
     size_t j = 0;
     size_t const count = points.size();
@@ -191,8 +176,7 @@ bool FeatureBuilder::RemoveInvalidTypes()
   if (!m_params.FinishAddingTypes())
     return false;
 
-  return RemoveUselessTypes(m_params.m_types, m_params.GetGeomType(),
-                            m_params.IsEmptyNames());
+  return RemoveUselessTypes(m_params.m_types, m_params.GetGeomType(), m_params.IsEmptyNames());
 }
 
 bool FeatureBuilder::FormatFullAddress(string & res) const
@@ -249,8 +233,7 @@ bool FeatureBuilder::PreSerialize()
     m_params.ref.clear();
     break;
 
-  default:
-    return false;
+  default: return false;
   }
 
   return true;
@@ -264,7 +247,7 @@ bool FeatureBuilder::PreSerializeAndRemoveUselessNamesForIntermediate()
   // Clear name for features with invisible texts.
   // AlexZ: Commented this line to enable captions on subway exits, which
   // are not drawn but should be visible in balloons and search results
-  //RemoveNameIfInvisible();
+  // RemoveNameIfInvisible();
   RemoveUselessNames();
 
   return true;
@@ -280,11 +263,10 @@ void FeatureBuilder::RemoveUselessNames()
     //     bool pred(const Type &a);
     // Without it on clang-libc++ on Linux we get:
     // candidate template ignored: substitution failure
-    //      [with _Tp = bool (unsigned int) const]: reference to function type 'bool (unsigned int) const' cannot have 'const'
-    //      qualifier
-    auto const typeRemover = [](uint32_t type)
-    {
-      static TypeSetChecker const checkBoundary({ "boundary", "administrative" });
+    //      [with _Tp = bool (unsigned int) const]: reference to function type 'bool (unsigned int)
+    //      const' cannot have 'const' qualifier
+    auto const typeRemover = [](uint32_t type) {
+      static TypeSetChecker const checkBoundary({"boundary", "administrative"});
       return checkBoundary.IsEqual(type);
     };
 
@@ -378,12 +360,12 @@ void FeatureBuilder::SerializeForIntermediate(Buffer & data) const
   Buffer tmp(data);
   FeatureBuilder fb;
   fb.DeserializeFromIntermediate(tmp);
-  ASSERT ( fb == *this, ("Source feature: ", *this, "Deserialized feature: ", fb) );
+  ASSERT(fb == *this, ("Source feature: ", *this, "Deserialized feature: ", fb));
 #endif
 }
 
 void FeatureBuilder::SerializeBorderForIntermediate(serial::GeometryCodingParams const & params,
-                                              Buffer & data) const
+                                                    Buffer & data) const
 {
   data.clear();
 
@@ -427,7 +409,7 @@ void FeatureBuilder::DeserializeFromIntermediate(Buffer & data)
   {
     m_polygons.clear();
     uint32_t const count = ReadVarUint<uint32_t>(source);
-    ASSERT_GREATER ( count, 0, (*this) );
+    ASSERT_GREATER(count, 0, (*this));
 
     for (uint32_t i = 0; i < count; ++i)
     {
@@ -594,7 +576,7 @@ void FeatureBuilder::SerializeForMwm(SupportingData & data,
   uint8_t trgCount = base::asserted_cast<uint8_t>(data.m_innerTrg.size());
   if (trgCount > 0)
   {
-    ASSERT_GREATER ( trgCount, 2, () );
+    ASSERT_GREATER(trgCount, 2, ());
     trgCount -= 2;
   }
 
@@ -636,7 +618,7 @@ void FeatureBuilder::SerializeForMwm(SupportingData & data,
     }
     else
     {
-      ASSERT_GREATER ( GetOuterGeometry().size(), 2, () );
+      ASSERT_GREATER(GetOuterGeometry().size(), 2, ());
 
       // Store first point once for outer linear features.
       serial::SavePoint(sink, GetOuterGeometry()[0], params);
@@ -686,9 +668,8 @@ string DebugPrint(FeatureBuilder const & fb)
   default: out << "ERROR: unknown geometry type"; break;
   }
 
-  out << " " << DebugPrint(fb.GetLimitRect())
-      << " " << DebugPrint(fb.GetParams())
-      << " " << ::DebugPrint(fb.GetOsmIds());
+  out << " " << DebugPrint(fb.GetLimitRect()) << " " << DebugPrint(fb.GetParams()) << " "
+      << ::DebugPrint(fb.GetOsmIds());
   return out.str();
 }
 }  // namespace feature

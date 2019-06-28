@@ -10,10 +10,8 @@
 #include <string>
 #include <vector>
 
-
 namespace tests
 {
-
 template <size_t N, size_t M>
 inline void AddTypes(FeatureParams & params, char const * (&arr)[N][M])
 {
@@ -36,9 +34,6 @@ inline uint32_t GetType(char const * (&arr)[N])
   return classif().GetTypeByPath(path);
 }
 
-inline uint32_t GetType(base::StringIL const & lst)
-{
-  return classif().GetTypeByPath(lst);
-}
+inline uint32_t GetType(base::StringIL const & lst) { return classif().GetTypeByPath(lst); }
 
-} // namespace tests
+}  // namespace tests

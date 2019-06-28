@@ -46,8 +46,7 @@ void ParseTranslations(json_t * root, set<string> const & keys,
                        unordered_map<uint32_t, string> & idToKey)
 {
   string const empty;
-  auto getKey = [&](string & translation) -> string const &
-  {
+  auto getKey = [&](string & translation) -> string const & {
     strings::MakeLowerCaseInplace(translation);
     translation = strings::Normalize(translation);
     replace(translation.begin(), translation.end(), ' ', '_');

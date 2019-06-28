@@ -21,9 +21,8 @@ bool RelationTagsBase::IsSkipRelation(std::string const & type)
 bool RelationTagsBase::IsKeyTagExists(std::string const & key) const
 {
   auto const & tags = m_current->m_tags;
-  return std::any_of(std::begin(tags), std::end(tags), [&](OsmElement::Tag const & p) {
-    return p.m_key == key;
-  });
+  return std::any_of(std::begin(tags), std::end(tags),
+                     [&](OsmElement::Tag const & p) { return p.m_key == key; });
 }
 
 void RelationTagsBase::AddCustomTag(std::pair<std::string, std::string> const & p)
@@ -46,8 +45,7 @@ void RelationTagsNode::Process(RelationElement const & e)
     // - used in routing information
     // - used in building addresses matching
     if (p.first == "network" || p.first == "operator" || p.first == "route" ||
-        p.first == "maxspeed" ||
-        strings::StartsWith(p.first, "addr:"))
+        p.first == "maxspeed" || strings::StartsWith(p.first, "addr:"))
     {
       if (!Base::IsKeyTagExists(p.first))
         Base::AddCustomTag(p);

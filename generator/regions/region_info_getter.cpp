@@ -9,19 +9,19 @@ namespace generator
 namespace regions
 {
 RegionInfoGetter::RegionInfoGetter(std::string const & indexPath, std::string const & kvPath)
-    : m_index{indexer::ReadIndex<indexer::RegionsIndexBox<IndexReader>, MmapReader>(indexPath)}
-    , m_storage(kvPath, 1'000'000)
+  : m_index{indexer::ReadIndex<indexer::RegionsIndexBox<IndexReader>, MmapReader>(indexPath)}
+  , m_storage(kvPath, 1'000'000)
 {
   m_borders.Deserialize(indexPath);
 }
 
 boost::optional<KeyValue> RegionInfoGetter::FindDeepest(m2::PointD const & point) const
 {
-  return FindDeepest(point, [] (...) { return true; });
+  return FindDeepest(point, [](...) { return true; });
 }
 
-boost::optional<KeyValue> RegionInfoGetter::FindDeepest(
-    m2::PointD const & point, Selector const & selector) const
+boost::optional<KeyValue> RegionInfoGetter::FindDeepest(m2::PointD const & point,
+                                                        Selector const & selector) const
 {
   static_assert(std::is_base_of<ConcurrentGetProcessability, RegionInfoGetter>::value, "");
 
@@ -29,16 +29,18 @@ boost::optional<KeyValue> RegionInfoGetter::FindDeepest(
   return GetDeepest(point, ids, selector);
 }
 
-std::vector<base::GeoObjectId> RegionInfoGetter::SearchObjectsInIndex(m2::PointD const & point) const
+std::vector<base::GeoObjectId> RegionInfoGetter::SearchObjectsInIndex(
+    m2::PointD const & point) const
 {
   std::vector<base::GeoObjectId> ids;
-  auto const emplace = [&ids] (base::GeoObjectId const & osmId) { ids.emplace_back(osmId); };
+  auto const emplace = [&ids](base::GeoObjectId const & osmId) { ids.emplace_back(osmId); };
   m_index.ForEachAtPoint(emplace, point);
   return ids;
 }
 
 boost::optional<KeyValue> RegionInfoGetter::GetDeepest(m2::PointD const & point,
-    std::vector<base::GeoObjectId> const & ids, Selector const & selector) const
+                                                       std::vector<base::GeoObjectId> const & ids,
+                                                       Selector const & selector) const
 {
   // Minimize CPU consumption by minimizing the number of calls to heavy m_borders.IsPointInside().
   std::multimap<int, KeyValue> regionsByRank;
@@ -89,9 +91,6 @@ boost::optional<uint64_t> RegionInfoGetter::GetPid(JsonValue const & json) const
   return static_cast<uint64_t>(FromJSON<int64_t>(pid));
 }
 
-KeyValueStorage const & RegionInfoGetter::GetStorage() const noexcept
-{
-  return m_storage;
-}
+KeyValueStorage const & RegionInfoGetter::GetStorage() const noexcept { return m_storage; }
 }  // namespace regions
 }  // namespace generator

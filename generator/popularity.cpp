@@ -14,8 +14,8 @@
 #include "base/thread_pool_computational.hpp"
 
 #include <algorithm>
-#include <functional>
 #include <fstream>
+#include <functional>
 #include <limits>
 #include <memory>
 
@@ -41,7 +41,7 @@ bool PopularityGeomPlace::Contains(PopularityGeomPlace const & smaller) const
   CHECK(smaller.m_polygon, ());
 
   return GetFeature().GetLimitRect().IsRectInside(smaller.GetFeature().GetLimitRect()) &&
-      boost::geometry::covered_by(*smaller.m_polygon, *m_polygon);
+         boost::geometry::covered_by(*smaller.m_polygon, *m_polygon);
 }
 
 bool PopularityGeomPlace::Contains(m2::PointD const & point) const
@@ -49,11 +49,13 @@ bool PopularityGeomPlace::Contains(m2::PointD const & point) const
   CHECK(m_polygon, ());
 
   return GetFeature().GetLimitRect().IsPointInside(point) &&
-      boost::geometry::covered_by(BoostPoint(point.x, point.y), *m_polygon);
+         boost::geometry::covered_by(BoostPoint(point.x, point.y), *m_polygon);
 }
 
 PopularityBuilder::PopularityBuilder(std::string const & dataFilename)
-  : m_dataFilename(dataFilename) {}
+  : m_dataFilename(dataFilename)
+{
+}
 
 std::vector<PopularityLine> PopularityBuilder::Build() const
 {
@@ -123,8 +125,9 @@ void PopularityBuilder::FillLinesFromPointObjects(std::vector<FeatureBuilder> co
 }
 
 // static
-boost::optional<base::GeoObjectId>
-PopularityBuilder::FindPointParent(m2::PointD const & point, MapIdToNode const & m, Tree4d const & tree)
+boost::optional<base::GeoObjectId> PopularityBuilder::FindPointParent(m2::PointD const & point,
+                                                                      MapIdToNode const & m,
+                                                                      Tree4d const & tree)
 {
   boost::optional<base::GeoObjectId> bestId;
   auto minArea = std::numeric_limits<double>::max();
@@ -144,9 +147,8 @@ PopularityBuilder::FindPointParent(m2::PointD const & point, MapIdToNode const &
 }
 
 // static
-boost::optional<PopularityBuilder::Node::Ptr>
-PopularityBuilder::FindPopularityGeomPlaceParent(PopularityGeomPlace const & place,
-                                                 MapIdToNode const & m, Tree4d const & tree)
+boost::optional<PopularityBuilder::Node::Ptr> PopularityBuilder::FindPopularityGeomPlaceParent(
+    PopularityGeomPlace const & place, MapIdToNode const & m, Tree4d const & tree)
 {
   boost::optional<Node::Ptr> bestPlace;
   auto minArea = std::numeric_limits<double>::max();
@@ -225,7 +227,8 @@ void PopularityBuilder::FillLinesFromGeomObjectPtrs(Node::PtrList const & nodes,
 }
 
 // static
-void PopularityBuilder::LinkGeomPlaces(MapIdToNode const & m, Tree4d const & tree, Node::PtrList & nodes)
+void PopularityBuilder::LinkGeomPlaces(MapIdToNode const & m, Tree4d const & tree,
+                                       Node::PtrList & nodes)
 {
   if (nodes.size() < 2)
     return;
@@ -247,14 +250,14 @@ void PopularityBuilder::LinkGeomPlaces(MapIdToNode const & m, Tree4d const & tre
 }
 
 // static
-PopularityBuilder::Node::PtrList
-PopularityBuilder::MakeNodes(std::vector<FeatureBuilder> const & features)
+PopularityBuilder::Node::PtrList PopularityBuilder::MakeNodes(
+    std::vector<FeatureBuilder> const & features)
 {
   Node::PtrList nodes;
   nodes.reserve(features.size());
-  std::transform(std::begin(features), std::end(features), std::back_inserter(nodes), [](FeatureBuilder const & f) {
-    return std::make_shared<Node>(PopularityGeomPlace(f));
-  });
+  std::transform(
+      std::begin(features), std::end(features), std::back_inserter(nodes),
+      [](FeatureBuilder const & f) { return std::make_shared<Node>(PopularityGeomPlace(f)); });
 
   return nodes;
 }
@@ -265,8 +268,8 @@ std::vector<PopularityLine> BuildPopularitySrcFromData(std::string const & dataF
   return builder.Build();
 }
 
-std::vector<PopularityLine> BuildPopularitySrcFromAllData(std::vector<std::string> const & dataFilenames,
-                                                          size_t cpuCount)
+std::vector<PopularityLine> BuildPopularitySrcFromAllData(
+    std::vector<std::string> const & dataFilenames, size_t cpuCount)
 {
   CHECK_GREATER(cpuCount, 0, ());
 
@@ -274,9 +277,10 @@ std::vector<PopularityLine> BuildPopularitySrcFromAllData(std::vector<std::strin
   std::vector<std::future<std::vector<PopularityLine>>> futures;
   for (auto const & filename : dataFilenames)
   {
-    auto result = threadPool.Submit(
-                    static_cast<std::vector<PopularityLine>(*)(std::string const &)>(BuildPopularitySrcFromData),
-                    filename);
+    auto result =
+        threadPool.Submit(static_cast<std::vector<PopularityLine> (*)(std::string const &)>(
+                              BuildPopularitySrcFromData),
+                          filename);
     futures.emplace_back(std::move(result));
   }
 
@@ -304,8 +308,8 @@ void WriteLines(std::vector<PopularityLine> const & lines, std::string const & o
       stream << *line.m_parent;
 
     auto const center = MercatorBounds::ToLatLon(line.m_center);
-    stream << ";" << center.m_lat << ";" << center.m_lon << ";"
-           << line.m_type << ";" << line.m_name << "\n";
+    stream << ";" << center.m_lat << ";" << center.m_lon << ";" << line.m_type << ";" << line.m_name
+           << "\n";
   }
 }
 

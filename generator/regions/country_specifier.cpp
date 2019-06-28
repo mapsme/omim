@@ -4,8 +4,7 @@ namespace generator
 {
 namespace regions
 {
-void CountrySpecifier::AdjustRegionsLevel(Node::PtrList & outers)
-{ }
+void CountrySpecifier::AdjustRegionsLevel(Node::PtrList & outers) {}
 
 PlaceLevel CountrySpecifier::GetLevel(Region const & region) const
 {
@@ -27,29 +26,21 @@ PlaceLevel CountrySpecifier::GetLevel(PlaceType placeType) const
 {
   switch (placeType)
   {
-  case PlaceType::Country:
-    return PlaceLevel::Country;
+  case PlaceType::Country: return PlaceLevel::Country;
   case PlaceType::State:
-  case PlaceType::Province:
-    return PlaceLevel::Region;
+  case PlaceType::Province: return PlaceLevel::Region;
   case PlaceType::District:
   case PlaceType::County:
-  case PlaceType::Municipality:
-    return PlaceLevel::Subregion;
+  case PlaceType::Municipality: return PlaceLevel::Subregion;
   case PlaceType::City:
   case PlaceType::Town:
   case PlaceType::Village:
-  case PlaceType::Hamlet:
-    return PlaceLevel::Locality;
-  case PlaceType::Suburb:
-    return PlaceLevel::Suburb;
+  case PlaceType::Hamlet: return PlaceLevel::Locality;
+  case PlaceType::Suburb: return PlaceLevel::Suburb;
   case PlaceType::Quarter:
-  case PlaceType::Neighbourhood:
-    return PlaceLevel::Sublocality;
-  case PlaceType::IsolatedDwelling:
-    return PlaceLevel::Sublocality;
-  case PlaceType::Unknown:
-    break;
+  case PlaceType::Neighbourhood: return PlaceLevel::Sublocality;
+  case PlaceType::IsolatedDwelling: return PlaceLevel::Sublocality;
+  case PlaceType::Unknown: break;
   }
 
   return PlaceLevel::Unknown;

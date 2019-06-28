@@ -5,8 +5,9 @@
 
 namespace generator
 {
-RelationTagsEnricher::RelationTagsEnricher(cache::IntermediateDataReader & cache)
-  : m_cache(cache) {}
+RelationTagsEnricher::RelationTagsEnricher(cache::IntermediateDataReader & cache) : m_cache(cache)
+{
+}
 
 void RelationTagsEnricher::operator()(OsmElement & p)
 {

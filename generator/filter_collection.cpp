@@ -11,15 +11,13 @@ namespace generator
 {
 bool FilterCollection::IsAccepted(OsmElement const & element)
 {
-  return std::all_of(std::begin(m_collection), std::end(m_collection), [&] (auto & filter) {
-    return filter->IsAccepted(element);
-  });
+  return std::all_of(std::begin(m_collection), std::end(m_collection),
+                     [&](auto & filter) { return filter->IsAccepted(element); });
 }
 
 bool FilterCollection::IsAccepted(FeatureBuilder const & feature)
 {
-  return std::all_of(std::begin(m_collection), std::end(m_collection), [&] (auto & filter) {
-    return filter->IsAccepted(feature);
-  });
+  return std::all_of(std::begin(m_collection), std::end(m_collection),
+                     [&](auto & filter) { return filter->IsAccepted(feature); });
 }
 }  // namespace generator

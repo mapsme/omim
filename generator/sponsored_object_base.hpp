@@ -21,11 +21,17 @@ struct SponsoredObjectBase
 
   virtual ~SponsoredObjectBase() {}
 
-  template<typename Fields>
-  static constexpr size_t FieldIndex(Fields field) { return static_cast<size_t>(field); }
+  template <typename Fields>
+  static constexpr size_t FieldIndex(Fields field)
+  {
+    return static_cast<size_t>(field);
+  }
 
-  template<typename Fields>
-  static constexpr size_t FieldsCount() { return static_cast<size_t>(Fields::Counter); }
+  template <typename Fields>
+  static constexpr size_t FieldsCount()
+  {
+    return static_cast<size_t>(Fields::Counter);
+  }
 
   bool HasAddresParts() const { return !m_street.empty() || !m_houseNumber.empty(); }
 

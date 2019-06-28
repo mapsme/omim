@@ -108,7 +108,8 @@ private:
 class TestVillage : public TestFeature
 {
 public:
-  TestVillage(m2::PointD const & center, std::string const & name, std::string const & lang, uint8_t rank);
+  TestVillage(m2::PointD const & center, std::string const & name, std::string const & lang,
+              uint8_t rank);
 
   // TestFeature overrides:
   void Serialize(feature::FeatureBuilder & fb) const override;
@@ -121,7 +122,8 @@ private:
 class TestStreet : public TestFeature
 {
 public:
-  TestStreet(std::vector<m2::PointD> const & points, std::string const & name, std::string const & lang);
+  TestStreet(std::vector<m2::PointD> const & points, std::string const & name,
+             std::string const & lang);
   TestStreet(std::vector<m2::PointD> const & points, StringUtf8Multilang const & name);
 
   void SetHighwayType(std::string const & type) { m_highwayType = type; }
@@ -214,7 +216,8 @@ private:
 class TestPark : public TestFeature
 {
 public:
-  TestPark(std::vector<m2::PointD> const & boundary, std::string const & name, std::string const & lang);
+  TestPark(std::vector<m2::PointD> const & boundary, std::string const & name,
+           std::string const & lang);
 
   // TestFeature overrides:
   void Serialize(feature::FeatureBuilder & fb) const override;
@@ -227,7 +230,8 @@ private:
 class TestRoad : public TestFeature
 {
 public:
-  TestRoad(std::vector<m2::PointD> const & points, std::string const & name, std::string const & lang);
+  TestRoad(std::vector<m2::PointD> const & points, std::string const & name,
+           std::string const & lang);
 
   // TestFeature overrides:
   void Serialize(feature::FeatureBuilder & fb) const override;

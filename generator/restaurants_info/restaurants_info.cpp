@@ -63,8 +63,8 @@ void DumpRestaurants(std::vector<FeatureBuilder> const & features, std::ostream 
         });
     auto const center = MercatorBounds::ToLatLon(f.GetKeyPoint());
 
-    out << defaultName << '\t' << strings::JoinStrings(translations, '|') << '\t'
-        << center.m_lat << ' ' << center.m_lon << '\t' << DebugPrint(f.GetGeomType()) << "\n";
+    out << defaultName << '\t' << strings::JoinStrings(translations, '|') << '\t' << center.m_lat
+        << ' ' << center.m_lon << '\t' << DebugPrint(f.GetGeomType()) << "\n";
   }
 }
 }  // namespace
@@ -94,7 +94,8 @@ int main(int argc, char * argv[])
   generator::CacheLoader cacheLoader(info);
   generator::TranslatorCollection translators;
   auto emitter = generator::CreateEmitter(generator::EmitterType::Restaurants, features);
-  translators.Append(generator::CreateTranslator(generator::TranslatorType::Country, emitter, cacheLoader.GetCache(), info));
+  translators.Append(generator::CreateTranslator(generator::TranslatorType::Country, emitter,
+                                                 cacheLoader.GetCache(), info));
   GenerateRaw(info, translators);
 
   {

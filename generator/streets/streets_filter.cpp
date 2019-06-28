@@ -1,7 +1,7 @@
 #include "generator/streets/streets_filter.hpp"
 
-#include "generator/streets/streets_builder.hpp"
 #include "generator/osm_element_helpers.hpp"
+#include "generator/streets/streets_builder.hpp"
 
 using namespace feature;
 
@@ -20,9 +20,6 @@ bool StreetsFilter::IsAccepted(FeatureBuilder const & feature)
 }
 
 // static
-bool StreetsFilter::IsStreet(FeatureBuilder const & fb)
-{
-  return StreetsBuilder::IsStreet(fb);
-}
+bool StreetsFilter::IsStreet(FeatureBuilder const & fb) { return StreetsBuilder::IsStreet(fb); }
 }  // namespace streets
 }  // namespace generator

@@ -56,8 +56,9 @@ class RegionsFixerWithPlacePointApproximation
 public:
   explicit RegionsFixerWithPlacePointApproximation(RegionsBuilder::Regions && regions,
                                                    PlacePointsMap const & placePointsMap)
-    : m_regions(std::move(regions)), m_placePointsMap(placePointsMap) {}
-
+    : m_regions(std::move(regions)), m_placePointsMap(placePointsMap)
+  {
+  }
 
   RegionsBuilder::Regions && GetFixedRegions()
   {
@@ -89,10 +90,8 @@ private:
     case PlaceType::Town:
     case PlaceType::Village:
     case PlaceType::Hamlet:
-    case PlaceType::IsolatedDwelling:
-      return true;
-    default:
-      break;
+    case PlaceType::IsolatedDwelling: return true;
+    default: break;
     }
 
     return false;

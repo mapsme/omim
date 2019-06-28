@@ -12,14 +12,15 @@ namespace generator
 {
 namespace
 {
-std::shared_ptr<OsmIdToBoundariesTable>
-GetOrCreateBoundariesTable(std::shared_ptr<OsmIdToBoundariesTable> boundariesTable)
+std::shared_ptr<OsmIdToBoundariesTable> GetOrCreateBoundariesTable(
+    std::shared_ptr<OsmIdToBoundariesTable> boundariesTable)
 {
   return boundariesTable ? boundariesTable : std::make_shared<OsmIdToBoundariesTable>();
 }
 }  // namespace
 
-CityBoundaryProcessor::CityBoundaryProcessor(std::shared_ptr<OsmIdToBoundariesTable> boundariesTable)
+CityBoundaryProcessor::CityBoundaryProcessor(
+    std::shared_ptr<OsmIdToBoundariesTable> boundariesTable)
   : m_boundariesTable(GetOrCreateBoundariesTable(boundariesTable))
 {
   ASSERT(m_boundariesTable.get(), ());
@@ -37,9 +38,7 @@ void CityBoundaryProcessor::UnionEqualPlacesIds(Place const & place)
 std::vector<FeatureBuilder> CityBoundaryProcessor::GetFeatures() const
 {
   std::vector<FeatureBuilder> result;
-  m_places.ForEach([&result](Place const & p) {
-    result.emplace_back(p.GetFeature());
-  });
+  m_places.ForEach([&result](Place const & p) { result.emplace_back(p.GetFeature()); });
 
   return result;
 }
@@ -60,10 +59,8 @@ void CityBoundaryProcessor::Replace(FeatureBuilder const & fb)
   auto const type = GetPlaceType(fb);
   Place const place(fb, type);
   UnionEqualPlacesIds(place);
-  m_places.ReplaceEqualInRect(place, [](Place const & p1, Place const & p2) {
-    return p1.IsEqual(p2);
-  }, [](Place const & p1, Place const & p2) {
-    return p1.IsBetterThan(p2);
-  });
+  m_places.ReplaceEqualInRect(
+      place, [](Place const & p1, Place const & p2) { return p1.IsEqual(p2); },
+      [](Place const & p1, Place const & p2) { return p1.IsBetterThan(p2); });
 }
 }  // namespace generator

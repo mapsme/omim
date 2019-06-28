@@ -22,8 +22,8 @@ BookingHotel::BookingHotel(std::string const & src)
 {
   std::vector<std::string> rec;
   strings::ParseCSVRow(src, '\t', rec);
-  CHECK_EQUAL(rec.size(), FieldsCount(), ("Error parsing hotels.tsv line:",
-                                          boost::replace_all_copy(src, "\t", "\\t")));
+  CHECK_EQUAL(rec.size(), FieldsCount(),
+              ("Error parsing hotels.tsv line:", boost::replace_all_copy(src, "\t", "\\t")));
 
   CLOG(LDEBUG, strings::to_uint(rec[FieldIndex(Fields::Id)], m_id.Get()), ());
   // TODO(mgsergio): Use ms::LatLon.
@@ -45,7 +45,6 @@ BookingHotel::BookingHotel(std::string const & src)
   m_translations = rec[FieldIndex(Fields::Translations)];
 }
 
-
 // BookingDataset ----------------------------------------------------------------------------------
 template <>
 bool BookingDataset::NecessaryMatchingConditionHolds(FeatureBuilder const & fb) const
@@ -57,8 +56,8 @@ bool BookingDataset::NecessaryMatchingConditionHolds(FeatureBuilder const & fb) 
 }
 
 template <>
-void BookingDataset::PreprocessMatchedOsmObject(ObjectId, FeatureBuilder & fb,
-                                                std::function<void(FeatureBuilder &)> const fn) const
+void BookingDataset::PreprocessMatchedOsmObject(
+    ObjectId, FeatureBuilder & fb, std::function<void(FeatureBuilder &)> const fn) const
 {
   // Turn a hotel into a simple building.
   if (fb.GetGeomType() == GeomType::Area)
@@ -73,8 +72,7 @@ void BookingDataset::PreprocessMatchedOsmObject(ObjectId, FeatureBuilder & fb,
     params.ClearName();
 
     auto const tourism = classif().GetTypeByPath({"tourism"});
-    base::EraseIf(params.m_types, [tourism](uint32_t type)
-    {
+    base::EraseIf(params.m_types, [tourism](uint32_t type) {
       ftype::TruncValue(type, 1);
       return type == tourism;
     });
@@ -130,51 +128,51 @@ void BookingDataset::BuildObject(Object const & hotel,
   // Booking types are listed in the closed API docs.
   switch (hotel.m_type)
   {
-    case 19:
-    case 205: params.AddType(clf.GetTypeByPath({"tourism", "motel"})); break;
+  case 19:
+  case 205: params.AddType(clf.GetTypeByPath({"tourism", "motel"})); break;
 
-    case 21:
-    case 206:
-    case 212: params.AddType(clf.GetTypeByPath({"tourism", "resort"})); break;
+  case 21:
+  case 206:
+  case 212: params.AddType(clf.GetTypeByPath({"tourism", "resort"})); break;
 
-    case 3:
-    case 23:
-    case 24:
-    case 25:
-    case 202:
-    case 207:
-    case 208:
-    case 209:
-    case 210:
-    case 216:
-    case 220:
-    case 223: params.AddType(clf.GetTypeByPath({"tourism", "guest_house"})); break;
+  case 3:
+  case 23:
+  case 24:
+  case 25:
+  case 202:
+  case 207:
+  case 208:
+  case 209:
+  case 210:
+  case 216:
+  case 220:
+  case 223: params.AddType(clf.GetTypeByPath({"tourism", "guest_house"})); break;
 
-    case 14:
-    case 204:
-    case 213:
-    case 218:
-    case 219:
-    case 226:
-    case 222: params.AddType(clf.GetTypeByPath({"tourism", "hotel"})); break;
+  case 14:
+  case 204:
+  case 213:
+  case 218:
+  case 219:
+  case 226:
+  case 222: params.AddType(clf.GetTypeByPath({"tourism", "hotel"})); break;
 
-    case 211:
-    case 224:
-    case 228: params.AddType(clf.GetTypeByPath({"tourism", "chalet"})); break;
+  case 211:
+  case 224:
+  case 228: params.AddType(clf.GetTypeByPath({"tourism", "chalet"})); break;
 
-    case 13:
-    case 225:
-    case 203: params.AddType(clf.GetTypeByPath({"tourism", "hostel"})); break;
+  case 13:
+  case 225:
+  case 203: params.AddType(clf.GetTypeByPath({"tourism", "hostel"})); break;
 
-    case 215:
-    case 221:
-    case 227:
-    case 2:
-    case 201: params.AddType(clf.GetTypeByPath({"tourism", "apartment"})); break;
+  case 215:
+  case 221:
+  case 227:
+  case 2:
+  case 201: params.AddType(clf.GetTypeByPath({"tourism", "apartment"})); break;
 
-    case 214: params.AddType(clf.GetTypeByPath({"tourism", "camp_site"})); break;
+  case 214: params.AddType(clf.GetTypeByPath({"tourism", "camp_site"})); break;
 
-    default: params.AddType(clf.GetTypeByPath({"tourism", "hotel"})); break;
+  default: params.AddType(clf.GetTypeByPath({"tourism", "hotel"})); break;
   }
 
   fn(fb);

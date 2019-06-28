@@ -42,8 +42,8 @@ void BuildPopularitySrcFromData(std::string const & dataFilename, std::string co
 void BuildPopularitySrcFromAllData(std::string const & dataDir, std::string const & outFilename,
                                    size_t cpuCount = 1);
 
-void BuildPopularitySrcFromAllData(std::vector<std::string> const & dataFilenames, std::string const & outFilename,
-                                   size_t cpuCount = 1);
+void BuildPopularitySrcFromAllData(std::vector<std::string> const & dataFilenames,
+                                   std::string const & outFilename, size_t cpuCount = 1);
 
 class PopularityGeomPlace
 {
@@ -91,13 +91,15 @@ private:
 
   static std::string GetType(feature::FeatureBuilder const & feature);
   static std::string GetFeatureName(feature::FeatureBuilder const & feature);
-  static void FillLinesFromPointObjects(std::vector<feature::FeatureBuilder> const & pointObjs, MapIdToNode const & m,
-                                        Tree4d const & tree, std::vector<PopularityLine> & lines);
-  static boost::optional<base::GeoObjectId>
-  FindPointParent(m2::PointD const & point, MapIdToNode const & m, Tree4d const & tree);
-  static boost::optional<Node::Ptr>
-  FindPopularityGeomPlaceParent(PopularityGeomPlace const & place, MapIdToNode const & m,
-                                Tree4d const & tree);
+  static void FillLinesFromPointObjects(std::vector<feature::FeatureBuilder> const & pointObjs,
+                                        MapIdToNode const & m, Tree4d const & tree,
+                                        std::vector<PopularityLine> & lines);
+  static boost::optional<base::GeoObjectId> FindPointParent(m2::PointD const & point,
+                                                            MapIdToNode const & m,
+                                                            Tree4d const & tree);
+  static boost::optional<Node::Ptr> FindPopularityGeomPlaceParent(PopularityGeomPlace const & place,
+                                                                  MapIdToNode const & m,
+                                                                  Tree4d const & tree);
   static MapIdToNode GetAreaMap(Node::PtrList const & nodes);
   static Tree4d MakeTree4d(Node::PtrList const & nodes);
   static void FillLineFromGeomObjectPtr(PopularityLine & line, Node::Ptr const & node);

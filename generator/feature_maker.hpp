@@ -10,7 +10,7 @@ namespace generator
 // Class FeatureMakerSimple is class FeatureMakerBase implementation for simple features building.
 // It is only trying to build a feature and does not filter features in any way,
 // except for bad geometry. This class is suitable for most cases.
-class FeatureMakerSimple: public FeatureMakerBase
+class FeatureMakerSimple : public FeatureMakerBase
 {
 public:
   using FeatureMakerBase::FeatureMakerBase;

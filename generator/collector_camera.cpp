@@ -1,8 +1,8 @@
 #include "generator/collector_camera.hpp"
 
 #include "generator/feature_builder.hpp"
-#include "generator/osm_element.hpp"
 #include "generator/maxspeeds_parser.hpp"
+#include "generator/osm_element.hpp"
 
 #include "routing/routing_helpers.hpp"
 
@@ -37,9 +37,7 @@ std::string ValidateMaxSpeedString(std::string const & maxSpeedString)
 }
 
 CameraProcessor::CameraInfo::CameraInfo(OsmElement const & element)
-  : m_id(element.m_id)
-  , m_lon(element.m_lon)
-  , m_lat(element.m_lat)
+  : m_id(element.m_id), m_lon(element.m_lon), m_lat(element.m_lat)
 {
   auto const maxspeed = element.GetTag("maxspeed");
   if (!maxspeed.empty())
@@ -75,8 +73,7 @@ void CameraProcessor::ProcessNode(OsmElement const & element)
   m_speedCameras.emplace(element.m_id, std::move(camera));
 }
 
-CameraCollector::CameraCollector(std::string const & writerFile) :
-  m_fileWriter(writerFile) {}
+CameraCollector::CameraCollector(std::string const & writerFile) : m_fileWriter(writerFile) {}
 
 void CameraCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const & element)
 {
@@ -94,12 +91,12 @@ void CameraCollector::CollectFeature(FeatureBuilder const & feature, OsmElement 
       m_processor.ProcessWay(element);
     break;
   }
-  default:
-    break;
+  default: break;
   }
 }
 
-void CameraCollector::Write(CameraProcessor::CameraInfo const & camera, std::vector<uint64_t> const & ways)
+void CameraCollector::Write(CameraProcessor::CameraInfo const & camera,
+                            std::vector<uint64_t> const & ways)
 {
   std::string maxSpeedStringKmPH = camera.m_speed;
   int32_t maxSpeedKmPH = 0;

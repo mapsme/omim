@@ -43,8 +43,8 @@ public:
 };
 }  // namespace
 
-TranslatorRegion::TranslatorRegion(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
-                                   GenerateInfo const & info)
+TranslatorRegion::TranslatorRegion(std::shared_ptr<EmitterInterface> emitter,
+                                   cache::IntermediateDataReader & cache, GenerateInfo const & info)
   : Translator(emitter, cache, std::make_shared<FeatureMakerSimple>(cache))
 
 {

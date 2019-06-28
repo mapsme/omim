@@ -50,7 +50,8 @@ SponsoredDataset<SponsoredObject>::SponsoredDataset(std::string const & dataPath
 }
 
 template <typename SponsoredObject>
-void SponsoredDataset<SponsoredObject>::BuildOsmObjects(function<void(feature::FeatureBuilder &)> const & fn) const
+void SponsoredDataset<SponsoredObject>::BuildOsmObjects(
+    function<void(feature::FeatureBuilder &)> const & fn) const
 {
   for (auto const & item : m_storage.GetObjects())
     BuildObject(item.second, fn);

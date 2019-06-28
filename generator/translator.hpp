@@ -23,15 +23,17 @@ namespace cache
 class IntermediateDataReader;
 }  // namespace cache
 
-// Implementing this base class allows an object to create FeatureBuilder1 from OsmElement and then process it.
-// You can add any collectors and filters.
+// Implementing this base class allows an object to create FeatureBuilder1 from OsmElement and then
+// process it. You can add any collectors and filters.
 class Translator : public TranslatorInterface
 {
 public:
-  explicit Translator(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
+  explicit Translator(std::shared_ptr<EmitterInterface> emitter,
+                      cache::IntermediateDataReader & cache,
                       std::shared_ptr<FeatureMakerBase> maker, FilterCollection const & filters,
                       CollectorCollection const & collectors);
-  explicit Translator(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
+  explicit Translator(std::shared_ptr<EmitterInterface> emitter,
+                      cache::IntermediateDataReader & cache,
                       std::shared_ptr<FeatureMakerBase> maker);
 
   // TranslatorInterface overrides:

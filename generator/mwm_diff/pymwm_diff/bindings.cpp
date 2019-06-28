@@ -36,13 +36,9 @@ bool ApplyDiff(string const & oldMwmPath, string const & newMwmPath, string cons
 
   switch (result)
   {
-  case generator::mwm_diff::DiffApplicationResult::Ok:
-    return true;
-  case generator::mwm_diff::DiffApplicationResult::Failed:
-    return false;
-  case generator::mwm_diff::DiffApplicationResult::Cancelled:
-    UNREACHABLE();
-    break;
+  case generator::mwm_diff::DiffApplicationResult::Ok: return true;
+  case generator::mwm_diff::DiffApplicationResult::Failed: return false;
+  case generator::mwm_diff::DiffApplicationResult::Cancelled: UNREACHABLE(); break;
   }
 
   UNREACHABLE();

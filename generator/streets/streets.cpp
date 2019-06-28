@@ -16,8 +16,7 @@ namespace streets
 void GenerateStreets(std::string const & pathInRegionsIndex, std::string const & pathInRegionsKv,
                      std::string const & pathInStreetsTmpMwm,
                      std::string const & pathInGeoObjectsTmpMwm,
-                     std::string const & pathOutStreetsKv,
-                     bool verbose, size_t threadsCount)
+                     std::string const & pathOutStreetsKv, bool verbose, size_t threadsCount)
 {
   LOG(LINFO, ("Start generating streets..."));
   auto timer = base::Timer();

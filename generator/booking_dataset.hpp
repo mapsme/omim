@@ -34,7 +34,10 @@ struct BookingHotel : SponsoredObjectBase
 
   explicit BookingHotel(std::string const & src);
 
-  static constexpr size_t FieldIndex(Fields field) { return SponsoredObjectBase::FieldIndex(field); }
+  static constexpr size_t FieldIndex(Fields field)
+  {
+    return SponsoredObjectBase::FieldIndex(field);
+  }
   static constexpr size_t FieldsCount() { return SponsoredObjectBase::FieldsCount<Fields>(); }
 
   uint32_t m_stars = 0;

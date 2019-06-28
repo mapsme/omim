@@ -48,8 +48,8 @@ namespace generator
 // Brand with id 13 has names in English and Russian. The most popular English name is "McDonalds",
 // the second most popluar one is "Mc Donalds". The most popular Russian name is "Макдоналдс", then
 // "Мак Дональдс", then "Мак Дональд'с".
-// Brand with id 12 has names in English and Russian. Name in English is "Subway". The most popular Russian
-// name is "Сабвей", then "Сабвэй".
+// Brand with id 12 has names in English and Russian. Name in English is "Subway". The most popular
+// Russian name is "Сабвей", then "Сабвэй".
 
 bool LoadBrands(std::string const & brandsFilename, std::string const & translationsFilename,
                 std::unordered_map<base::GeoObjectId, std::string> & brands);

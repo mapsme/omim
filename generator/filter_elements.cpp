@@ -35,8 +35,7 @@ namespace generator
 {
 bool FilterData::IsMatch(Tags const & elementTags, Tags const & tags)
 {
-  auto const fn = [&](OsmElement::Tag const & t)
-  {
+  auto const fn = [&](OsmElement::Tag const & t) {
     auto const pred = [&](OsmElement::Tag const & tag) { return tag.m_key == t.m_key; };
     auto const it = std::find_if(std::begin(elementTags), std::end(elementTags), pred);
     return it == std::end(elementTags) ? false : t.m_value == "*" || it->m_value == t.m_value;
@@ -45,10 +44,7 @@ bool FilterData::IsMatch(Tags const & elementTags, Tags const & tags)
   return std::all_of(std::begin(tags), std::end(tags), fn);
 }
 
-void FilterData::AddSkippedId(uint64_t id)
-{
-  m_skippedIds.insert(id);
-}
+void FilterData::AddSkippedId(uint64_t id) { m_skippedIds.insert(id); }
 
 void FilterData::AddSkippedTags(Tags const & tags)
 {
@@ -160,10 +156,7 @@ FilterElements::FilterElements(std::string const & filename)
     LOG(LERROR, ("Cannot parse file", filename));
 }
 
-bool FilterElements::IsAccepted(OsmElement const & element)
-{
-  return !NeedSkip(element);
-}
+bool FilterElements::IsAccepted(OsmElement const & element) { return !NeedSkip(element); }
 
 bool FilterElements::NeedSkip(OsmElement const & element) const
 {
@@ -176,7 +169,7 @@ bool FilterElements::NeedSkip(OsmElement const & element) const
   }
 }
 
-bool FilterElements::NeedSkip(OsmElement const & element,  FilterData const & fdata) const
+bool FilterElements::NeedSkip(OsmElement const & element, FilterData const & fdata) const
 {
   return fdata.NeedSkipWithId(element.m_id) || fdata.NeedSkipWithTags(element.Tags());
 }

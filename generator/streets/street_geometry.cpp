@@ -46,12 +46,10 @@ m2::RectD StreetGeometry::GetBbox() const
   UNREACHABLE();
 }
 
-void StreetGeometry::SetPin(Pin && pin)
-{
-  m_pin = std::move(pin);
-}
+void StreetGeometry::SetPin(Pin && pin) { m_pin = std::move(pin); }
 
-void StreetGeometry::AddHighwayLine(base::GeoObjectId const & osmId, std::vector<m2::PointD> const & line)
+void StreetGeometry::AddHighwayLine(base::GeoObjectId const & osmId,
+                                    std::vector<m2::PointD> const & line)
 {
   if (!m_highwayGeometry)
     m_highwayGeometry = std::make_unique<HighwayGeometry>();
@@ -59,7 +57,8 @@ void StreetGeometry::AddHighwayLine(base::GeoObjectId const & osmId, std::vector
   m_highwayGeometry->AddLine(osmId, line);
 }
 
-void StreetGeometry::AddHighwayArea(base::GeoObjectId const osmId, std::vector<m2::PointD> const & border)
+void StreetGeometry::AddHighwayArea(base::GeoObjectId const osmId,
+                                    std::vector<m2::PointD> const & border)
 {
   if (!m_highwayGeometry)
     m_highwayGeometry = std::make_unique<HighwayGeometry>();
@@ -75,7 +74,8 @@ void StreetGeometry::AddBinding(base::GeoObjectId const & osmId, m2::PointD cons
   m_bindingsGeometry->Add(osmId, point);
 }
 
-// HighwayGeometry -------------------------------------------------------------------------------------------
+// HighwayGeometry
+// -------------------------------------------------------------------------------------------
 
 Pin HighwayGeometry::ChoosePin() const
 {
@@ -128,8 +128,8 @@ Pin HighwayGeometry::ChooseLinePin(Line const & line, double disposeDistance) co
 Pin HighwayGeometry::ChooseAreaPin() const
 {
   CHECK(!m_areaParts.empty(), ());
-  auto const largestPart = std::max_element(m_areaParts.cbegin(), m_areaParts.cend(),
-                                            base::LessBy(&AreaPart::m_area));
+  auto const largestPart =
+      std::max_element(m_areaParts.cbegin(), m_areaParts.cend(), base::LessBy(&AreaPart::m_area));
   return {largestPart->m_center, largestPart->m_osmId};
 }
 
@@ -139,27 +139,26 @@ void HighwayGeometry::AddLine(base::GeoObjectId const & osmId, std::vector<m2::P
   ExtendLimitRect(line);
 }
 
-void HighwayGeometry::AddArea(base::GeoObjectId const & osmId, std::vector<m2::PointD> const & border)
+void HighwayGeometry::AddArea(base::GeoObjectId const & osmId,
+                              std::vector<m2::PointD> const & border)
 {
   m_areaParts.emplace_back(osmId, border);
   ExtendLimitRect(border);
 }
 
-m2::RectD const & HighwayGeometry::GetBbox() const
-{
-  return m_limitRect;
-}
+m2::RectD const & HighwayGeometry::GetBbox() const { return m_limitRect; }
 
 void HighwayGeometry::ExtendLimitRect(std::vector<m2::PointD> const & points)
 {
   feature::CalcRect(points, m_limitRect);
 }
 
-// HighwayGeometry::MultiLine --------------------------------------------------------------------------------
+// HighwayGeometry::MultiLine
+// --------------------------------------------------------------------------------
 
 void HighwayGeometry::MultiLine::Add(LineSegment && segment)
 {
-  for (auto line = m_lines.begin(), end = m_lines.end(); line != end; ++line) 
+  for (auto line = m_lines.begin(), end = m_lines.end(); line != end; ++line)
   {
     if (line->Add(std::move(segment)))
     {
@@ -183,7 +182,8 @@ bool HighwayGeometry::MultiLine::Recombine(Line && line)
   return false;
 }
 
-// HighwayGeometry::Line -------------------------------------------------------------------------------------
+// HighwayGeometry::Line
+// -------------------------------------------------------------------------------------
 
 bool HighwayGeometry::Line::Concatenate(Line && other)
 {
@@ -197,7 +197,8 @@ bool HighwayGeometry::Line::Concatenate(Line && other)
   auto const & thisEnd = m_segments.back().m_points.back();
 
   CHECK(!other.m_segments.empty(), ());
-  CHECK(!other.m_segments.front().m_points.empty() && !other.m_segments.back().m_points.empty(), ());
+  CHECK(!other.m_segments.front().m_points.empty() && !other.m_segments.back().m_points.empty(),
+        ());
   auto const & otherStart = other.m_segments.front().m_points.front();
   auto const & otherEnd = other.m_segments.back().m_points.back();
 
@@ -292,7 +293,8 @@ double HighwayGeometry::Line::CalculateLength() const noexcept
   return length;
 }
 
-// HighwayGeometry::LineSegment ------------------------------------------------------------------------------
+// HighwayGeometry::LineSegment
+// ------------------------------------------------------------------------------
 
 HighwayGeometry::LineSegment::LineSegment(base::GeoObjectId const & osmId,
                                           std::vector<m2::PointD> const & points)
@@ -313,9 +315,11 @@ double HighwayGeometry::LineSegment::CalculateLength() const noexcept
   return length;
 }
 
-// HighwayGeometry::AreaPart ---------------------------------------------------------------------------------
+// HighwayGeometry::AreaPart
+// ---------------------------------------------------------------------------------
 
-HighwayGeometry::AreaPart::AreaPart(base::GeoObjectId const & osmId, std::vector<m2::PointD> const & polygon)
+HighwayGeometry::AreaPart::AreaPart(base::GeoObjectId const & osmId,
+                                    std::vector<m2::PointD> const & polygon)
   : m_osmId{osmId}
 {
   CHECK_GREATER_OR_EQUAL(polygon.size(), 3, ());
@@ -332,7 +336,8 @@ HighwayGeometry::AreaPart::AreaPart(base::GeoObjectId const & osmId, std::vector
   m_area = boost::geometry::area(boostPolygon);
 }
 
-// BindingsGeometry ------------------------------------------------------------------------------------------
+// BindingsGeometry
+// ------------------------------------------------------------------------------------------
 
 Pin BindingsGeometry::GetCentralBinding() const
 {
@@ -346,10 +351,7 @@ m2::RectD const & BindingsGeometry::GetBbox() const
   return m_limitRect;
 }
 
-void BindingsGeometry::ExtendLimitRect(m2::PointD const & point)
-{
-  m_limitRect.Add(point);
-}
+void BindingsGeometry::ExtendLimitRect(m2::PointD const & point) { m_limitRect.Add(point); }
 
 void BindingsGeometry::Add(base::GeoObjectId const & osmId, m2::PointD const & point)
 {
@@ -362,7 +364,8 @@ void BindingsGeometry::Add(base::GeoObjectId const & osmId, m2::PointD const & p
   }
 
   auto const bboxCenter = GetBbox().Center();
-  auto const centralBindingDistance = MercatorBounds::DistanceOnEarth(m_centralBinding->m_position, bboxCenter);
+  auto const centralBindingDistance =
+      MercatorBounds::DistanceOnEarth(m_centralBinding->m_position, bboxCenter);
   auto const pointDistance = MercatorBounds::DistanceOnEarth(point, bboxCenter);
   if (pointDistance < centralBindingDistance)
     m_centralBinding = Pin{point, osmId};

@@ -63,8 +63,8 @@ class MaxspeedsMwmCollector
 {
 public:
   MaxspeedsMwmCollector(string const & dataPath,
-                       map<uint32_t, base::GeoObjectId> const & featureIdToOsmId,
-                       string const & maxspeedCsvPath);
+                        map<uint32_t, base::GeoObjectId> const & featureIdToOsmId,
+                        string const & maxspeedCsvPath);
 
   vector<FeatureMaxspeed> && StealMaxspeeds();
 
@@ -169,7 +169,8 @@ void SerializeMaxspeeds(string const & dataPath, vector<FeatureMaxspeed> && spee
   FileWriter writer = cont.GetWriter(MAXSPEEDS_FILE_TAG);
 
   MaxspeedsSerializer::Serialize(speeds, writer);
-  LOG(LINFO, ("SerializeMaxspeeds(", dataPath, ", ...) serialized:", speeds.size(), "maxspeed tags."));
+  LOG(LINFO,
+      ("SerializeMaxspeeds(", dataPath, ", ...) serialized:", speeds.size(), "maxspeed tags."));
 }
 
 void BuildMaxspeedsSection(string const & dataPath,
@@ -183,7 +184,8 @@ void BuildMaxspeedsSection(string const & dataPath,
 void BuildMaxspeedsSection(string const & dataPath, string const & osmToFeaturePath,
                            string const & maxspeedsFilename)
 {
-  LOG(LINFO, ("BuildMaxspeedsSection(", dataPath, ",", osmToFeaturePath, ",", maxspeedsFilename, ")"));
+  LOG(LINFO,
+      ("BuildMaxspeedsSection(", dataPath, ",", osmToFeaturePath, ",", maxspeedsFilename, ")"));
 
   map<uint32_t, base::GeoObjectId> featureIdToOsmId;
   CHECK(ParseRoadsFeatureIdToOsmIdMapping(osmToFeaturePath, featureIdToOsmId), ());

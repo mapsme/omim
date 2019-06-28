@@ -47,10 +47,7 @@ bool UGCTranslator::TranslateUGC(base::GeoObjectId const & id, ugc::UGC & ugc)
   return true;
 }
 
-void UGCTranslator::CreateDb(std::string const & data)
-{
-  CHECK(m_db.Exec(data), ());
-}
+void UGCTranslator::CreateDb(std::string const & data) { CHECK(m_db.Exec(data), ()); }
 
 bool GetUgcForFeature(base::GeoObjectId const & osmId, feature::TypesHolder const & th,
                       UGCTranslator & translator, ugc::UGC & result)

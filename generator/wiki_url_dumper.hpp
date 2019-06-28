@@ -28,7 +28,8 @@ class WikiDataFilter
 public:
   explicit WikiDataFilter(std::string const & path, std::vector<std::string> const & dataFiles);
 
-  static void FilterOne(std::string const & path, std::map<base::GeoObjectId, std::string> const & idToWikiData,
+  static void FilterOne(std::string const & path,
+                        std::map<base::GeoObjectId, std::string> const & idToWikiData,
                         std::ostream & stream);
 
   void Filter(size_t cpuCount);

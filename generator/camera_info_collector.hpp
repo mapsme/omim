@@ -43,7 +43,8 @@ private:
   {
     static double constexpr kCoordEqualityEps = 1e-5;
 
-    Camera(m2::PointD const & center, uint8_t maxSpeed, std::vector<routing::SpeedCameraMwmPosition> && ways)
+    Camera(m2::PointD const & center, uint8_t maxSpeed,
+           std::vector<routing::SpeedCameraMwmPosition> && ways)
       : m_data(center, maxSpeed, std::move(ways))
     {
     }
@@ -61,16 +62,19 @@ private:
 
     /// \brief Try to FindClosestSegment in |m_ways|. Look to FindMyself() for more details.
     /// \return true if we could find closest segment. And false if we should use geometry index.
-    bool FindClosestSegmentInInnerWays(FrozenDataSource const & dataSource, MwmSet::MwmId const & mwmId);
+    bool FindClosestSegmentInInnerWays(FrozenDataSource const & dataSource,
+                                       MwmSet::MwmId const & mwmId);
 
     /// \brief Use when |m_ways| is empty. Try to FindClosestSegment using geometry index.
-    void FindClosestSegmentWithGeometryIndex(FrozenDataSource const & dataSource, MwmSet::MwmId const & mwmId);
+    void FindClosestSegmentWithGeometryIndex(FrozenDataSource const & dataSource,
+                                             MwmSet::MwmId const & mwmId);
 
     // Returns empty object, if current feature - |wayId| is not the car road.
-    // Otherwise returns id of segment from feature with id - |wayId|, which starts (or ends) at camera's
-    // center and coefficient - where it placed at the segment: 0.0 (or 1.0).
-    boost::optional<std::pair<double, uint32_t>> FindMyself(
-      uint32_t wayFeatureId, FrozenDataSource const & dataSource, MwmSet::MwmId const & mwmId) const;
+    // Otherwise returns id of segment from feature with id - |wayId|, which starts (or ends) at
+    // camera's center and coefficient - where it placed at the segment: 0.0 (or 1.0).
+    boost::optional<std::pair<double, uint32_t>> FindMyself(uint32_t wayFeatureId,
+                                                            FrozenDataSource const & dataSource,
+                                                            MwmSet::MwmId const & mwmId) const;
 
     void Serialize(FileWriter & writer, uint32_t & prevFeatureId) const;
 

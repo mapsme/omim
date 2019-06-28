@@ -135,8 +135,9 @@ public:
           auto const id = fb.GetMostGenericOsmId();
           if (!holder.TryToMakeStrip(hullPoints))
           {
-            LOG(LWARNING, ("Error while building tringles for object with OSM Id:", id.GetSerialId(),
-                           "Type:", id.GetType(), "points:", points, "hull:", hull.Points()));
+            LOG(LWARNING,
+                ("Error while building tringles for object with OSM Id:", id.GetSerialId(),
+                 "Type:", id.GetType(), "points:", points, "hull:", hull.Points()));
             return 0;
           }
         }
@@ -191,10 +192,10 @@ bool ParseNodes(string nodesFile, set<uint64_t> & nodeIds)
 }
 
 using NeedSerialize = function<bool(FeatureBuilder & fb1)>;
-bool GenerateLocalityDataImpl(FeaturesCollector & collector,
-                              CalculateMidPoints::MinDrawableScalePolicy const & minDrawableScalePolicy,
-                              NeedSerialize const & needSerialize,
-                              string const & featuresFile, string const & dataFile)
+bool GenerateLocalityDataImpl(
+    FeaturesCollector & collector,
+    CalculateMidPoints::MinDrawableScalePolicy const & minDrawableScalePolicy,
+    NeedSerialize const & needSerialize, string const & featuresFile, string const & dataFile)
 {
   // Transform features from raw format to LocalityObject format.
   try
@@ -243,7 +244,7 @@ bool GenerateGeoObjectsData(string const & featuresFile, string const & nodesFil
 
   auto const needSerialize = [&nodeIds](FeatureBuilder & fb) {
     return fb.IsPoint() || fb.IsArea() ||
-        (!fb.GetOsmIds().empty() && nodeIds.count(fb.GetMostGenericOsmId().GetEncodedId()) != 0);
+           (!fb.GetOsmIds().empty() && nodeIds.count(fb.GetMostGenericOsmId().GetEncodedId()) != 0);
   };
 
   DataHeader header;
@@ -267,15 +268,15 @@ bool GenerateRegionsData(string const & featuresFile, string const & dataFile)
   LocalityCollector regionsCollector(dataFile, header,
                                      static_cast<uint32_t>(base::SecondsSinceEpoch()));
   auto const needSerialize = [](FeatureBuilder const & fb) { return fb.IsArea(); };
-  return GenerateLocalityDataImpl(regionsCollector, GetMinDrawableScaleGeometryOnly,
-                                  needSerialize, featuresFile, dataFile);
+  return GenerateLocalityDataImpl(regionsCollector, GetMinDrawableScaleGeometryOnly, needSerialize,
+                                  featuresFile, dataFile);
 }
 
 bool GenerateBorders(string const & featuresFile, string const & dataFile)
 {
   BordersCollector bordersCollector(dataFile);
   auto const needSerialize = [](FeatureBuilder const & fb) { return fb.IsArea(); };
-  return GenerateLocalityDataImpl(bordersCollector, GetMinDrawableScaleGeometryOnly,
-                                  needSerialize, featuresFile, dataFile);
+  return GenerateLocalityDataImpl(bordersCollector, GetMinDrawableScaleGeometryOnly, needSerialize,
+                                  featuresFile, dataFile);
 }
 }  // namespace feature

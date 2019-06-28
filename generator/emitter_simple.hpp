@@ -24,7 +24,8 @@ public:
   bool Finish() override { return true; }
 
 private:
-  using SimpleGenerator = SimpleCountryMapGenerator<feature::Polygonizer<feature::FeaturesCollector>>;
+  using SimpleGenerator =
+      SimpleCountryMapGenerator<feature::Polygonizer<feature::FeaturesCollector>>;
 
   std::unique_ptr<SimpleGenerator> m_regionGenerator;
 };

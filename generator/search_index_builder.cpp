@@ -42,9 +42,9 @@
 #include <fstream>
 #include <map>
 #include <mutex>
+#include <thread>
 #include <unordered_map>
 #include <vector>
-#include <thread>
 
 using namespace std;
 
@@ -79,7 +79,8 @@ public:
           strings::Trim(tokens[i]);
           // For consistency, synonyms should not have any spaces.
           // For example, the hypothetical "Russia" -> "Russian Federation" mapping
-          // would have the feature with name "Russia" match the request "federation". It would be wrong.
+          // would have the feature with name "Russia" match the request "federation". It would be
+          // wrong.
           CHECK(tokens[i].find_first_of(" \t") == string::npos, ());
           m_map.insert(make_pair(tokens[0], tokens[i]));
         }
@@ -187,10 +188,9 @@ struct FeatureNameInserter
     // add synonyms for input native string
     if (m_synonyms)
     {
-      m_synonyms->ForEach(name, [&](string const & utf8str)
-                          {
-                            tokens.push_back(search::NormalizeAndSimplifyString(utf8str));
-                          });
+      m_synonyms->ForEach(name, [&](string const & utf8str) {
+        tokens.push_back(search::NormalizeAndSimplifyString(utf8str));
+      });
     }
 
     static_assert(search::kMaxNumTokens > 0, "");
@@ -203,10 +203,8 @@ struct FeatureNameInserter
 
     if (m_hasStreetType)
     {
-      search::StreetTokensFilter filter([&](strings::UniString const & token, size_t /* tag */)
-                                        {
-                                          AddToken(lang, token);
-                                        });
+      search::StreetTokensFilter filter(
+          [&](strings::UniString const & token, size_t /* tag */) { AddToken(lang, token); });
       for (auto const & token : tokens)
         filter.Put(token, false /* isPrefix */, 0 /* tag */);
 

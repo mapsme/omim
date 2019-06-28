@@ -26,13 +26,13 @@ namespace
 {
 auto const kNotExistingId = std::numeric_limits<uint64_t>::max();
 auto const kOsmElementEmpty = MakeOsmElement(0, {}, OsmElement::EntityType::Relation);
-auto const kOsmElementCity = MakeOsmElement(1, {{"place", "city"},
-                                                {"admin_level", "6"}},
-                                            OsmElement::EntityType::Relation);
-auto const kOsmElementCountry = MakeOsmElement(2, {{"admin_level", "2"},
-                                                   {"ISO3166-1:alpha2", "RU"},
-                                                   {"ISO3166-1:alpha3", "RUS"},
-                                                   {"ISO3166-1:numeric", "643"}},
+auto const kOsmElementCity =
+    MakeOsmElement(1, {{"place", "city"}, {"admin_level", "6"}}, OsmElement::EntityType::Relation);
+auto const kOsmElementCountry = MakeOsmElement(2,
+                                               {{"admin_level", "2"},
+                                                {"ISO3166-1:alpha2", "RU"},
+                                                {"ISO3166-1:alpha3", "RUS"},
+                                                {"ISO3166-1:numeric", "643"}},
                                                OsmElement::EntityType::Relation);
 FeatureBuilder const kEmptyFeature;
 }  // namespace

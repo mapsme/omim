@@ -40,7 +40,7 @@ enum class AdminLevel : uint8_t
 };
 
 // https://wiki.openstreetmap.org/wiki/Key:place
-enum class PlaceType: uint8_t
+enum class PlaceType : uint8_t
 {
   Unknown = 0,
   Country = 1,

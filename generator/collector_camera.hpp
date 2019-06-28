@@ -39,7 +39,7 @@ class CameraProcessor
 {
 public:
   struct CameraInfo;
-  using Fn = std::function<void (CameraInfo const &, std::vector<uint64_t> const &)>;
+  using Fn = std::function<void(CameraInfo const &, std::vector<uint64_t> const &)>;
 
   struct CameraInfo
   {

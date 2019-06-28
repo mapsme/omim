@@ -55,9 +55,11 @@ void LoadDataSource(DataSource & dataSource)
 bool ParseFeatureIdToOsmIdMapping(std::string const & path,
                                   std::unordered_map<uint32_t, base::GeoObjectId> & mapping)
 {
-  return ForEachOsmId2FeatureId(path, [&](base::GeoObjectId const & osmId, uint32_t const featureId) {
-    CHECK(mapping.emplace(featureId, osmId).second, ("Several osm ids for feature", featureId, "in file", path));
-  });
+  return ForEachOsmId2FeatureId(
+      path, [&](base::GeoObjectId const & osmId, uint32_t const featureId) {
+        CHECK(mapping.emplace(featureId, osmId).second,
+              ("Several osm ids for feature", featureId, "in file", path));
+      });
 }
 
 search::CBV GetLocalities(std::string const & dataPath)

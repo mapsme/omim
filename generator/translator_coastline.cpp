@@ -37,6 +37,7 @@ TranslatorCoastline::TranslatorCoastline(std::shared_ptr<EmitterInterface> emitt
 {
   AddFilter(std::make_shared<FilterPlanet>());
   AddFilter(std::make_shared<CoastlineFilter>());
-  AddFilter(std::make_shared<FilterElements>(base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
+  AddFilter(std::make_shared<FilterElements>(
+      base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
 }
 }  // namespace generator

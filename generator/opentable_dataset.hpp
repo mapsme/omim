@@ -30,7 +30,10 @@ struct OpentableRestaurant : SponsoredObjectBase
 
   explicit OpentableRestaurant(std::string const & src);
 
-  static constexpr size_t FieldIndex(Fields field) { return SponsoredObjectBase::FieldIndex(field); }
+  static constexpr size_t FieldIndex(Fields field)
+  {
+    return SponsoredObjectBase::FieldIndex(field);
+  }
   static constexpr size_t FieldsCount() { return SponsoredObjectBase::FieldsCount<Fields>(); }
 
   // string m_translations;

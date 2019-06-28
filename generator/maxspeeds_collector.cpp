@@ -21,7 +21,8 @@ using namespace std;
 
 namespace
 {
-bool ParseMaxspeedAndWriteToStream(string const & maxspeed, SpeedInUnits & speed, ostringstream & ss)
+bool ParseMaxspeedAndWriteToStream(string const & maxspeed, SpeedInUnits & speed,
+                                   ostringstream & ss)
 {
   if (!ParseMaxspeedTag(maxspeed, speed))
     return false;
@@ -99,10 +100,7 @@ void MaxspeedsCollector::CollectFeature(FeatureBuilder const &, OsmElement const
   m_data.push_back(ss.str());
 }
 
-void MaxspeedsCollector::Save()
-{
-  Flush();
-}
+void MaxspeedsCollector::Save() { Flush(); }
 
 void MaxspeedsCollector::Flush()
 {

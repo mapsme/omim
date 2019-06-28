@@ -4,8 +4,8 @@
 #include "generator/feature_builder.hpp"
 #include "generator/generate_info.hpp"
 
-#include "geometry/rect2d.hpp"
 #include "geometry/mercator.hpp"
+#include "geometry/rect2d.hpp"
 
 #include <memory>
 #include <string>
@@ -19,8 +19,7 @@ template <class FeatureOut>
 class Polygonizer
 {
 public:
-  Polygonizer(feature::GenerateInfo const & info)
-    : m_info(info)
+  Polygonizer(feature::GenerateInfo const & info) : m_info(info)
   {
     if (info.m_splitByPolygons)
     {
@@ -33,26 +32,22 @@ public:
       // create only one output file which contains all features.
       auto const rect = MercatorBounds::FullRect();
       auto countries = borders::CountryPolygons(info.m_fileName);
-      std::vector<m2::PointD> points {rect.LeftBottom(), rect.LeftTop(), rect.RightTop(),
-            rect.RightBottom(), rect.LeftBottom()};
+      std::vector<m2::PointD> points{rect.LeftBottom(), rect.LeftTop(), rect.RightTop(),
+                                     rect.RightBottom(), rect.LeftBottom()};
       countries.m_regions.Add(m2::RegionD(std::move(points)), rect);
       m_countries.Add(std::move(countries), rect);
     }
   }
 
-  ~Polygonizer()
-  {
-    Finish();
-  }
+  ~Polygonizer() { Finish(); }
 
   void operator()(FeatureBuilder & fb)
   {
     m_countries.ForEachInRect(fb.GetLimitRect(), [&](auto const & countryPolygons) {
       auto const need = fb.ForAnyGeometryPoint([&](auto const & point) {
         auto const & regions = countryPolygons.m_regions;
-        return regions.ForAnyInRect(m2::RectD(point, point), [&](auto const & rgn) {
-          return rgn.Contains(point);
-        });
+        return regions.ForAnyInRect(m2::RectD(point, point),
+                                    [&](auto const & rgn) { return rgn.Contains(point); });
       });
 
       if (need)
@@ -60,14 +55,9 @@ public:
     });
   }
 
-  void Start()
-  {
-    m_currentNames.clear();
-  }
+  void Start() { m_currentNames.clear(); }
 
-  void Finish()
-  {
-  }
+  void Finish() {}
 
   void EmitFeature(borders::CountryPolygons const & countryPolygons, FeatureBuilder const & fb)
   {
@@ -85,15 +75,9 @@ public:
     m_buckets[countryPolygons.m_index]->Collect(fb);
   }
 
-  std::vector<std::string> const & GetNames() const
-  {
-    return m_names;
-  }
+  std::vector<std::string> const & GetNames() const { return m_names; }
 
-  std::string const & GetCurrentNames() const
-  {
-    return m_currentNames;
-  }
+  std::string const & GetCurrentNames() const { return m_currentNames; }
 
 private:
   feature::GenerateInfo const & m_info;

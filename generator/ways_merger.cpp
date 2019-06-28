@@ -2,10 +2,7 @@
 
 namespace generator
 {
-AreaWayMerger::AreaWayMerger(cache::IntermediateDataReader & cache) :
-  m_cache(cache)
-{
-}
+AreaWayMerger::AreaWayMerger(cache::IntermediateDataReader & cache) : m_cache(cache) {}
 
 void AreaWayMerger::AddWay(uint64_t id)
 {

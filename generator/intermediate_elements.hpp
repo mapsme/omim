@@ -138,8 +138,7 @@ public:
   template <class TWriter>
   void Write(TWriter & writer) const
   {
-    auto StringWriter = [&writer, this](std::string const & str)
-    {
+    auto StringWriter = [&writer, this](std::string const & str) {
       CHECK_LESS(str.size(), std::numeric_limits<uint16_t>::max(),
                  ("Can't store std::string greater then 65535 bytes", Dump()));
       uint16_t sz = static_cast<uint16_t>(str.size());
@@ -147,8 +146,7 @@ public:
       writer.Write(str.data(), sz);
     };
 
-    auto MembersWriter = [&writer, &StringWriter](std::vector<Member> const & members)
-    {
+    auto MembersWriter = [&writer, &StringWriter](std::vector<Member> const & members) {
       uint64_t count = members.size();
       WriteVarUint(writer, count);
       for (auto const & e : members)
@@ -179,16 +177,14 @@ public:
   {
     ReaderSource<TReader> r(reader);
 
-    auto StringReader = [&r](std::string & str)
-    {
+    auto StringReader = [&r](std::string & str) {
       uint16_t sz = 0;
       r.Read(&sz, sizeof(sz));
       str.resize(sz);
       r.Read(&str[0], sz);
     };
 
-    auto MembersReader = [&r, &StringReader](std::vector<Member> & members)
-    {
+    auto MembersReader = [&r, &StringReader](std::vector<Member> & members) {
       uint64_t count = ReadVarUint<uint64_t>(r);
       members.resize(count);
       for (auto & e : members)

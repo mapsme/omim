@@ -68,8 +68,8 @@ void StreetRegionsTracing::TraceUpToNextRegion()
   {
     Meter distanceToNextPoint{};
     auto newNextPathPoint = m_nextPathPoint;
-    auto nextPoint = FollowToNextPoint(m_currentPoint, kRegionBoundarySearchStepDistance, m_nextPathPoint,
-                                       distanceToNextPoint, newNextPathPoint);
+    auto nextPoint = FollowToNextPoint(m_currentPoint, kRegionBoundarySearchStepDistance,
+                                       m_nextPathPoint, distanceToNextPoint, newNextPathPoint);
 
     auto nextPointRegion = m_streetRegionInfoGetter(nextPoint);
     if (!IsSameRegion(nextPointRegion))
@@ -83,7 +83,8 @@ void StreetRegionsTracing::TraceUpToNextRegion()
 }
 
 void StreetRegionsTracing::AdvanceToBoundary(boost::optional<KeyValue> const & newRegion,
-    m2::PointD const newRegionPoint, Meter distance, Path::const_iterator nextPathPoint)
+                                             m2::PointD const newRegionPoint, Meter distance,
+                                             Path::const_iterator nextPathPoint)
 {
   if (m_currentRegion)
     CloseCurrentSegment(newRegionPoint, distance, nextPathPoint);
@@ -147,8 +148,11 @@ void StreetRegionsTracing::ReleaseCurrentSegment()
     m_pathSegments.pop_back();
 }
 
-m2::PointD StreetRegionsTracing::FollowToNextPoint(m2::PointD const & startPoint, Meter stepDistance,
-    Path::const_iterator nextPathPoint, Meter & distance, Path::const_iterator & newNextPathPoint) const
+m2::PointD StreetRegionsTracing::FollowToNextPoint(m2::PointD const & startPoint,
+                                                   Meter stepDistance,
+                                                   Path::const_iterator nextPathPoint,
+                                                   Meter & distance,
+                                                   Path::const_iterator & newNextPathPoint) const
 {
   auto point = startPoint;
   distance = 0.0_m;

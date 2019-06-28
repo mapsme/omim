@@ -96,7 +96,8 @@ void ForEachCountry(std::string const & baseDir, ToDo & toDo)
 class PackedBordersGenerator
 {
 public:
-  explicit PackedBordersGenerator(std::string const & baseDir) : m_writer(baseDir + PACKED_POLYGONS_FILE)
+  explicit PackedBordersGenerator(std::string const & baseDir)
+    : m_writer(baseDir + PACKED_POLYGONS_FILE)
   {
   }
 

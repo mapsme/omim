@@ -30,24 +30,18 @@ enum class EmitterType
 };
 
 template <class... Args>
-std::shared_ptr<EmitterInterface> CreateEmitter(EmitterType type, Args&&... args)
+std::shared_ptr<EmitterInterface> CreateEmitter(EmitterType type, Args &&... args)
 {
   switch (type)
   {
-  case EmitterType::Coastline:
-    return create<EmitterCoastline>(std::forward<Args>(args)...);
-  case EmitterType::Country:
-    return create<EmitterCountry>(std::forward<Args>(args)...);
-  case EmitterType::Simple:
-    return create<EmitterSimple>(std::forward<Args>(args)...);
+  case EmitterType::Coastline: return create<EmitterCoastline>(std::forward<Args>(args)...);
+  case EmitterType::Country: return create<EmitterCountry>(std::forward<Args>(args)...);
+  case EmitterType::Simple: return create<EmitterSimple>(std::forward<Args>(args)...);
   case EmitterType::SimpleWithPreserialize:
     return create<EmitterPreserialize>(std::forward<Args>(args)...);
-  case EmitterType::Restaurants:
-    return create<EmitterRestaurants>(std::forward<Args>(args)...);
-  case EmitterType::World:
-    return create<EmitterWorld>(std::forward<Args>(args)...);
-  case EmitterType::Noop:
-    return create<EmitterNoop>(std::forward<Args>(args)...);
+  case EmitterType::Restaurants: return create<EmitterRestaurants>(std::forward<Args>(args)...);
+  case EmitterType::World: return create<EmitterWorld>(std::forward<Args>(args)...);
+  case EmitterType::Noop: return create<EmitterNoop>(std::forward<Args>(args)...);
   }
   UNREACHABLE();
 }

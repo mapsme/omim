@@ -31,7 +31,8 @@ WeightedBagOfWords MakeWeightedBagOfWords(std::vector<strings::UniString> const 
     result.emplace_back(words[i], kTfIdfScorePlaceholder);
     while (i + 1 < words.size() && words[i] == words[i + 1])
     {
-      result.back().second += kTfIdfScorePlaceholder;  // TODO(mgsergio): tf-idf score for result[i].frist;
+      result.back().second +=
+          kTfIdfScorePlaceholder;  // TODO(mgsergio): tf-idf score for result[i].frist;
       ++i;
     }
   }

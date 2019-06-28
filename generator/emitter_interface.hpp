@@ -11,7 +11,8 @@ class FeatureBuilder;
 
 namespace generator
 {
-// Implementing this interface allows an object to process FeatureBuilder1 objects and broadcast them.
+// Implementing this interface allows an object to process FeatureBuilder1 objects and broadcast
+// them.
 class EmitterInterface
 {
 public:

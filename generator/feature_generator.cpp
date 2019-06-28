@@ -5,9 +5,9 @@
 #include "generator/intermediate_data.hpp"
 #include "generator/intermediate_elements.hpp"
 
+#include "geometry/mercator.hpp"
 #include "indexer/cell_id.hpp"
 #include "indexer/data_header.hpp"
-#include "geometry/mercator.hpp"
 
 #include "coding/varint.hpp"
 
@@ -26,14 +26,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 namespace feature
 {
-
 FeaturesCollector::FeaturesCollector(std::string const & fName)
-  : m_datFile(fName), m_writeBuffer(kBufferSize) {}
-
-FeaturesCollector::~FeaturesCollector()
+  : m_datFile(fName), m_writeBuffer(kBufferSize)
 {
-  FlushBuffer();
 }
+
+FeaturesCollector::~FeaturesCollector() { FlushBuffer(); }
 
 template <typename ValueT, size_t ValueSizeT = sizeof(ValueT) + 1>
 std::pair<char[ValueSizeT], uint8_t> PackValue(ValueT v)
@@ -79,7 +77,8 @@ void FeaturesCollector::Write(char const * src, size_t size)
   } while (size > 0);
 }
 
-uint32_t FeaturesCollector::WriteFeatureBase(std::vector<char> const & bytes, FeatureBuilder const & fb)
+uint32_t FeaturesCollector::WriteFeatureBase(std::vector<char> const & bytes,
+                                             FeatureBuilder const & fb)
 {
   size_t const sz = bytes.size();
   CHECK(sz != 0, ("Empty feature not allowed here!"));
@@ -101,9 +100,11 @@ uint32_t FeaturesCollector::Collect(FeatureBuilder const & fb)
   return featureId;
 }
 
-FeaturesAndRawGeometryCollector::FeaturesAndRawGeometryCollector(std::string const & featuresFileName,
-                                                                 std::string const & rawGeometryFileName)
-  : FeaturesCollector(featuresFileName), m_rawGeometryFileStream(rawGeometryFileName) {}
+FeaturesAndRawGeometryCollector::FeaturesAndRawGeometryCollector(
+    std::string const & featuresFileName, std::string const & rawGeometryFileName)
+  : FeaturesCollector(featuresFileName), m_rawGeometryFileStream(rawGeometryFileName)
+{
+}
 
 FeaturesAndRawGeometryCollector::~FeaturesAndRawGeometryCollector()
 {
@@ -140,4 +141,4 @@ uint32_t CheckedFilePosCast(FileWriter const & f)
                       ("Feature offset is out of 32bit boundary!"));
   return static_cast<uint32_t>(pos);
 }
-}
+}  // namespace feature

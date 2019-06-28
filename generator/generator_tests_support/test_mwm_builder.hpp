@@ -14,7 +14,7 @@ namespace feature
 {
 class FeaturesCollector;
 class FeatureBuilder;
-}
+}  // namespace feature
 namespace platform
 {
 class LocalCountryFile;

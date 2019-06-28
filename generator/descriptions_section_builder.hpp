@@ -66,7 +66,7 @@ public:
   DescriptionsCollectionBuilderStat()
   {
     CHECK_EQUAL(m_langsStat.size(),
-                static_cast<size_t>(StringUtf8Multilang::kMaxSupportedLanguages) , ());
+                static_cast<size_t>(StringUtf8Multilang::kMaxSupportedLanguages), ());
   }
 
   std::string LangStatisticsToString() const;
@@ -121,7 +121,8 @@ public:
       if (!wikiUrl.empty())
       {
         path = MakePathForWikipedia(m_wikipediaDir, wikiUrl);
-        incSource = std::bind(&DescriptionsCollectionBuilderStat::IncNumberWikipediaUrls, std::ref(m_stat));
+        incSource =
+            std::bind(&DescriptionsCollectionBuilderStat::IncNumberWikipediaUrls, std::ref(m_stat));
       }
       else
       {
@@ -130,7 +131,8 @@ public:
         if (wikidataId)
         {
           path = MakePathForWikidata(m_wikipediaDir, *wikidataId);
-          incSource = std::bind(&DescriptionsCollectionBuilderStat::IncNumberWikidataIds, std::ref(m_stat));
+          incSource =
+              std::bind(&DescriptionsCollectionBuilderStat::IncNumberWikidataIds, std::ref(m_stat));
         }
       }
 
@@ -152,7 +154,8 @@ public:
   }
 
   DescriptionsCollectionBuilderStat const & GetStat() const { return m_stat; }
-  static std::string MakePathForWikipedia(std::string const & wikipediaDir, std::string wikipediaUrl);
+  static std::string MakePathForWikipedia(std::string const & wikipediaDir,
+                                          std::string wikipediaUrl);
   static std::string MakePathForWikidata(std::string const & wikipediaDir, std::string wikidataId);
 
 private:
@@ -174,7 +177,8 @@ struct DescriptionsSectionBuilder
   static void Build(std::string const & wikipediaDir, std::string const & mwmFile,
                     std::string const & idToWikidataPath)
   {
-    DescriptionsCollectionBuilder descriptionsCollectionBuilder(wikipediaDir, mwmFile, idToWikidataPath);
+    DescriptionsCollectionBuilder descriptionsCollectionBuilder(wikipediaDir, mwmFile,
+                                                                idToWikidataPath);
     Build(mwmFile, descriptionsCollectionBuilder);
   }
 
@@ -190,7 +194,8 @@ private:
     auto descriptionList = builder.MakeDescriptions<Ft, ForEachFromDatAdapter>();
     auto const & stat = builder.GetStat();
     auto const size = stat.GetTotalSize();
-    LOG(LINFO, ("Added", stat.GetNumberOfWikipediaUrls(), "pages from wikipedia urls for", mwmFile));
+    LOG(LINFO,
+        ("Added", stat.GetNumberOfWikipediaUrls(), "pages from wikipedia urls for", mwmFile));
     LOG(LINFO, ("Added", stat.GetNumberOfWikidataIds(), "pages from wikidata ids for", mwmFile));
     LOG(LINFO, ("Added", stat.GetNumberOfPages(), "pages for", mwmFile));
     LOG(LINFO, ("Total size of added pages (before writing to section):", size));

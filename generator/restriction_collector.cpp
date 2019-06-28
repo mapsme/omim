@@ -56,7 +56,8 @@ RestrictionCollector::RestrictionCollector(std::string const & osmIdsToFeatureId
 {
   CHECK(ParseRoadsOsmIdToFeatureIdMapping(osmIdsToFeatureIdPath, m_osmIdToFeatureId),
         ("An error happened while parsing feature id to "
-         "osm ids mapping from file:", osmIdsToFeatureIdPath));
+         "osm ids mapping from file:",
+         osmIdsToFeatureIdPath));
 }
 
 bool RestrictionCollector::Process(std::string const & restrictionPath)
@@ -70,7 +71,7 @@ bool RestrictionCollector::Process(std::string const & restrictionPath)
 
   if (!ParseRestrictions(restrictionPath))
   {
-    LOG(LWARNING, ("An error happened while parsing restrictions from file:",  restrictionPath));
+    LOG(LWARNING, ("An error happened while parsing restrictions from file:", restrictionPath));
     return false;
   }
 
@@ -169,8 +170,8 @@ bool RestrictionCollector::FeatureHasPointWithCoords(uint32_t featureId,
   return false;
 }
 
-bool RestrictionCollector::FeaturesAreCross(m2::PointD const & coords,
-                                            uint32_t prev, uint32_t cur) const
+bool RestrictionCollector::FeaturesAreCross(m2::PointD const & coords, uint32_t prev,
+                                            uint32_t cur) const
 {
   if (coords == kNoCoords)
     return GetFirstCommonJoint(prev, cur) != Joint::kInvalidId;
@@ -189,8 +190,7 @@ Restriction::Type ConvertUTurnToSimpleRestriction(Restriction::Type type)
   // OsmId of |from| member is differ from |to| member.
   // So we "convert" such no_u_turn to any no_* restriction.
   // And we do the same thing with only_u_turn.
-  return type == Restriction::Type::NoUTurn ? Restriction::Type::No
-                                            : Restriction::Type::Only;
+  return type == Restriction::Type::NoUTurn ? Restriction::Type::No : Restriction::Type::Only;
 }
 
 void ConvertToUTurnIfPossible(Restriction::Type & type, m2::PointD const & coords,
@@ -206,12 +206,11 @@ void ConvertToUTurnIfPossible(Restriction::Type & type, m2::PointD const & coord
   // with the same |from| and |to| member with node as |via|):
   //
   // So we "convert" such relations to no_u_turn or only_u_turn restrictions.
-  if (featureIds.size() == 2 &&
-      featureIds.front() == featureIds.back() &&
+  if (featureIds.size() == 2 && featureIds.front() == featureIds.back() &&
       coords != RestrictionCollector::kNoCoords)
   {
-    type = type == Restriction::Type::No ? Restriction::Type::NoUTurn
-                                         : Restriction::Type::OnlyUTurn;
+    type =
+        type == Restriction::Type::No ? Restriction::Type::NoUTurn : Restriction::Type::OnlyUTurn;
   }
 }
 
@@ -380,8 +379,8 @@ void FromString(std::string const & str, RestrictionWriter::ViaType & type)
     return;
   }
 
-  CHECK(false, ("Invalid line:", str, "expected:", RestrictionWriter::kNodeString,
-                "or", RestrictionWriter::kWayString));
+  CHECK(false, ("Invalid line:", str, "expected:", RestrictionWriter::kNodeString, "or",
+                RestrictionWriter::kWayString));
 }
 
 void FromString(std::string const & str, double & number)

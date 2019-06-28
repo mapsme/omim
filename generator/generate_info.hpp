@@ -114,8 +114,9 @@ struct GenerateInfo
 
   std::string GetAddressesFileName() const
   {
-    return m_genAddresses && !m_fileName.empty() ?
-          GetTargetFileName(m_fileName, ADDR_FILE_EXTENSION) : "";
+    return m_genAddresses && !m_fileName.empty()
+               ? GetTargetFileName(m_fileName, ADDR_FILE_EXTENSION)
+               : "";
   }
 };
 }  // namespace feature

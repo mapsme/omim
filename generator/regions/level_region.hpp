@@ -10,8 +10,7 @@ namespace regions
 class LevelRegion : public Region
 {
 public:
-  LevelRegion(PlaceLevel level, Region const & region)
-      : Region(region), m_level{level} { }
+  LevelRegion(PlaceLevel level, Region const & region) : Region(region), m_level{level} {}
 
   PlaceLevel GetLevel() const noexcept { return m_level; }
   void SetLevel(PlaceLevel level) { m_level = level; }

@@ -36,4 +36,4 @@ private:
 /// Read an intermediate file from MetalinesBuilder and convert it to an mwm section.
 bool WriteMetalinesSection(std::string const & mwmPath, std::string const & metalinesPath,
                            std::string const & osmIdsToFeatureIdsPath);
-}
+}  // namespace feature

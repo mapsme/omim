@@ -166,10 +166,7 @@ void MetalinesBuilder::CollectFeature(FeatureBuilder const & feature, OsmElement
     segment->second->Add(element);
 }
 
-void MetalinesBuilder::Save()
-{
-  Flush();
-}
+void MetalinesBuilder::Save() { Flush(); }
 
 void MetalinesBuilder::Flush()
 {
@@ -189,7 +186,8 @@ void MetalinesBuilder::Flush()
         ++count;
       }
     }
-    LOG_SHORT(LINFO, ("Wrote", count, "metalines with OSM IDs for the entire planet to", m_filePath));
+    LOG_SHORT(LINFO,
+              ("Wrote", count, "metalines with OSM IDs for the entire planet to", m_filePath));
   }
   catch (RootException const & e)
   {

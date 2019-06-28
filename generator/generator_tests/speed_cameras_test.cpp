@@ -103,7 +103,7 @@ vector<CameraMapItem> UnpackMapToVector(CameraMap const & cameraMap)
     for (auto const & vectorIter : mapIter.second)
     {
       result.push_back({{mapIter.first.m_featureId, mapIter.first.m_segmentId},
-                       {vectorIter.m_coef, vectorIter.m_maxSpeedKmPH}});
+                        {vectorIter.m_coef, vectorIter.m_maxSpeedKmPH}});
     }
   }
 
@@ -126,12 +126,13 @@ bool CheckCameraMapsEquality(CameraMap const & lhs, CameraMap const & rhs)
     // It can differ on jenknins and local computer.
     if (!(vectorL[i].first.m_segmentId == vectorR[i].first.m_segmentId &&
           vectorL[i].second.m_maxSpeedKmPH == vectorR[i].second.m_maxSpeedKmPH &&
-          base::AlmostEqualAbs(vectorL[i].second.m_coef, vectorR[i].second.m_coef, kCoefEqualityEpsilonM)))
+          base::AlmostEqualAbs(vectorL[i].second.m_coef, vectorR[i].second.m_coef,
+                               kCoefEqualityEpsilonM)))
     {
-      LOG(LINFO, ("These should be equals:",
-                  "sId:", vectorL[i].first.m_segmentId, vectorR[i].first.m_segmentId,
-                  "speed:", vectorL[i].second.m_maxSpeedKmPH, vectorR[i].second.m_maxSpeedKmPH,
-                  "coef:", vectorL[i].second.m_coef, vectorR[i].second.m_coef));
+      LOG(LINFO, ("These should be equals:", "sId:", vectorL[i].first.m_segmentId,
+                  vectorR[i].first.m_segmentId, "speed:", vectorL[i].second.m_maxSpeedKmPH,
+                  vectorR[i].second.m_maxSpeedKmPH, "coef:", vectorL[i].second.m_coef,
+                  vectorR[i].second.m_coef));
       return false;
     }
   }
@@ -169,7 +170,8 @@ void TestSpeedCameraSectionBuilding(string const & osmContent, CameraMap const &
   TEST(GenerateIntermediateData(genInfo), ("Cannot generate intermediate data for speed cam"));
 
   // Building empty mwm.
-  LocalCountryFile country(base::JoinPath(tmpDir, kTestDir), CountryFile(kTestMwm), 0 /* version */);
+  LocalCountryFile country(base::JoinPath(tmpDir, kTestDir), CountryFile(kTestMwm),
+                           0 /* version */);
   string const mwmRelativePath = base::JoinPath(kTestDir, kTestMwm + DATA_FILE_EXTENSION);
   ScopedFile const scopedMwm(mwmRelativePath, ScopedFile::Mode::Create);
 
@@ -178,23 +180,24 @@ void TestSpeedCameraSectionBuilding(string const & osmContent, CameraMap const &
     CacheLoader cacheLoader(genInfo);
     TranslatorCollection translators;
     auto emitter = CreateEmitter(EmitterType::Country, genInfo);
-    translators.Append(CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), genInfo));
+    translators.Append(
+        CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), genInfo));
     TEST(GenerateRaw(genInfo, translators), ("Cannot generate features for speed camera"));
   }
 
-  TEST(GenerateFinalFeatures(genInfo, country.GetCountryName(),
-                             feature::DataHeader::country), ("Cannot generate final feature"));
+  TEST(GenerateFinalFeatures(genInfo, country.GetCountryName(), feature::DataHeader::country),
+       ("Cannot generate final feature"));
 
   string const & mwmFullPath = scopedMwm.GetFullPath();
 
   // Collecting additional info for building section.
   TEST(BuildOffsetsTable(mwmFullPath), ("Cannot create offsets table"));
 
-  TEST(indexer::BuildIndexFromDataFile(mwmFullPath, testDirFullPath + country.GetCountryName()), ());
+  TEST(indexer::BuildIndexFromDataFile(mwmFullPath, testDirFullPath + country.GetCountryName()),
+       ());
 
   // Step 3. Build section into mwm.
-  string const camerasFilename =
-    genInfo.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME);
+  string const camerasFilename = genInfo.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME);
 
   if (!answer.empty())
   {
@@ -210,7 +213,7 @@ void TestSpeedCameraSectionBuilding(string const & osmContent, CameraMap const &
   }
 
   string const osmToFeatureFilename =
-    genInfo.GetTargetFileName(kTestMwm) + OSM2FEATURE_FILE_EXTENSION;
+      genInfo.GetTargetFileName(kTestMwm) + OSM2FEATURE_FILE_EXTENSION;
 
   BuildCamerasInfo(mwmFullPath, camerasFilename, osmToFeatureFilename);
 
@@ -263,9 +266,7 @@ UNIT_TEST(SpeedCameraGenerationTest_CameraIsOnePointOfFeature_1)
   //                      coef - position on segment (at the beginning of segment) - 0,
   //                      maxSpeed - 100.
 
-  CameraMap const answer = {
-    {SegmentCoord(0, 0), std::vector<RouteSegment::SpeedCamera>{{0, 100}}}
-  };
+  CameraMap const answer = {{SegmentCoord(0, 0), std::vector<RouteSegment::SpeedCamera>{{0, 100}}}};
   TestSpeedCameraSectionBuilding(osmContent, answer);
 }
 
@@ -296,9 +297,7 @@ UNIT_TEST(SpeedCameraGenerationTest_CameraIsOnePointOfFeature_2)
   //                      coef - position on segment (at the beginning of segment) - 0,
   //                      maxSpeed - 100.
 
-  CameraMap const answer = {
-    {SegmentCoord(0, 1), std::vector<RouteSegment::SpeedCamera>{{0, 100}}}
-  };
+  CameraMap const answer = {{SegmentCoord(0, 1), std::vector<RouteSegment::SpeedCamera>{{0, 100}}}};
   TestSpeedCameraSectionBuilding(osmContent, answer);
 }
 
@@ -329,9 +328,7 @@ UNIT_TEST(SpeedCameraGenerationTest_CameraIsOnePointOfFeature_3)
   //                      coef - position on segment (at the end of segment) - 1,
   //                      maxSpeed - 100.
 
-  CameraMap const answer = {
-    {SegmentCoord(0, 1), std::vector<RouteSegment::SpeedCamera>{{1, 100}}}
-  };
+  CameraMap const answer = {{SegmentCoord(0, 1), std::vector<RouteSegment::SpeedCamera>{{1, 100}}}};
   TestSpeedCameraSectionBuilding(osmContent, answer);
 }
 
@@ -385,10 +382,8 @@ UNIT_TEST(SpeedCameraGenerationTest_CameraIsOnePointOfFeature_4)
   //                      coef - position on segment (at the beginning of segment) - 0,
   //                      maxSpeed - 100.
 
-  CameraMap const answer = {
-    {SegmentCoord(0, 1), std::vector<RouteSegment::SpeedCamera>{{1, 100}}},
-    {SegmentCoord(1, 1), std::vector<RouteSegment::SpeedCamera>{{0, 100}}}
-  };
+  CameraMap const answer = {{SegmentCoord(0, 1), std::vector<RouteSegment::SpeedCamera>{{1, 100}}},
+                            {SegmentCoord(1, 1), std::vector<RouteSegment::SpeedCamera>{{0, 100}}}};
   TestSpeedCameraSectionBuilding(osmContent, answer);
 }
 
@@ -415,16 +410,16 @@ UNIT_TEST(SpeedCameraGenerationTest_CameraIsNearFeature_1)
   // Geometry:
   // Feature number 0: <node>--------<node>
   //                             ^___ somewhere here camera, but it is not the point of segment.
-  //                                  We add it with coef close to 0.5 because of points' coords (lat, lon).
-  //                                  Coef was calculated by this program and checked by eye.
+  //                                  We add it with coef close to 0.5 because of points' coords
+  //                                  (lat, lon). Coef was calculated by this program and checked by
+  //                                  eye.
   // Result:
   // {(0, 0), (0.486934, 100)} - featureId - 0, segmentId - 0,
   //                             coef - position on segment (at the half of segment) ~ 0.486934,
   //                             maxSpeed - 100.
 
   CameraMap const answer = {
-    {SegmentCoord(0, 0), std::vector<RouteSegment::SpeedCamera>{{0.48801310, 100}}}
-  };
+      {SegmentCoord(0, 0), std::vector<RouteSegment::SpeedCamera>{{0.48801310, 100}}}};
   TestSpeedCameraSectionBuilding(osmContent, answer);
 }
 
@@ -458,8 +453,7 @@ UNIT_TEST(SpeedCameraGenerationTest_CameraIsNearFeature_2)
   //                                maxSpeed - 100.
 
   CameraMap const answer = {
-    {SegmentCoord(0, 0), std::vector<RouteSegment::SpeedCamera>{{0.2289881, 100}}}
-  };
+      {SegmentCoord(0, 0), std::vector<RouteSegment::SpeedCamera>{{0.2289881, 100}}}};
   TestSpeedCameraSectionBuilding(osmContent, answer);
 }
 

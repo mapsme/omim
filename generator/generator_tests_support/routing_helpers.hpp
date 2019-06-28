@@ -44,7 +44,8 @@ private:
 
 std::shared_ptr<routing::EdgeEstimator> CreateEstimatorForCar(
     traffic::TrafficCache const & trafficCache);
-std::shared_ptr<routing::EdgeEstimator> CreateEstimatorForCar(std::shared_ptr<TrafficStash> trafficStash);
+std::shared_ptr<routing::EdgeEstimator> CreateEstimatorForCar(
+    std::shared_ptr<TrafficStash> trafficStash);
 
 Joint MakeJoint(std::vector<routing::RoadPoint> const & points);
 
@@ -52,4 +53,3 @@ std::unique_ptr<IndexGraph> BuildIndexGraph(std::unique_ptr<TestGeometryLoader> 
                                             std::shared_ptr<EdgeEstimator> estimator,
                                             std::vector<Joint> const & joints);
 }  // namespace routing
-

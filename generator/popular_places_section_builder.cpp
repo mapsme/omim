@@ -25,8 +25,7 @@ void LoadPopularPlaces(std::string const & srcFilename, PopularPlaces & places)
 {
   coding::CSVReader reader;
   auto const fileReader = FileReader(srcFilename);
-  reader.Read(fileReader, [&places, &srcFilename](coding::CSVReader::Row const & row)
-  {
+  reader.Read(fileReader, [&places, &srcFilename](coding::CSVReader::Row const & row) {
     size_t constexpr kOsmIdPos = 0;
     size_t constexpr kPopularityIndexPos = 1;
 
@@ -54,7 +53,8 @@ void LoadPopularPlaces(std::string const & srcFilename, PopularPlaces & places)
     }
 
     base::GeoObjectId id(osmId);
-    auto const result = places.emplace(std::move(id), static_cast<PopularityIndex>(popularityIndex));
+    auto const result =
+        places.emplace(std::move(id), static_cast<PopularityIndex>(popularityIndex));
 
     if (!result.second)
     {
@@ -81,8 +81,7 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
   bool popularPlaceFound = false;
 
   std::vector<PopularityIndex> content;
-  feature::ForEachFromDat(mwmFile, [&](FeatureType const & f, uint32_t featureId)
-  {
+  feature::ForEachFromDat(mwmFile, [&](FeatureType const & f, uint32_t featureId) {
     ASSERT_EQUAL(content.size(), featureId, ());
 
     PopularityIndex rank = 0;
@@ -101,7 +100,7 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
 
     content.emplace_back(rank);
   });
-  
+
   if (!popularPlaceFound)
     return true;
 

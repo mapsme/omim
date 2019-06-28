@@ -14,16 +14,16 @@ bool IsPoi(OsmElement const & osmElement)
 {
   auto const & tags = osmElement.Tags();
   return std::any_of(std::cbegin(tags), std::cend(tags), [](OsmElement::Tag const & t) {
-    return ftypes::IsPoiChecker::kPoiTypes.find(t.m_key) != std::end(ftypes::IsPoiChecker::kPoiTypes);
+    return ftypes::IsPoiChecker::kPoiTypes.find(t.m_key) !=
+           std::end(ftypes::IsPoiChecker::kPoiTypes);
   });
 }
 
 bool IsBuilding(OsmElement const & osmElement)
 {
   auto const & tags = osmElement.Tags();
-  return std::any_of(std::cbegin(tags), std::cend(tags), [](OsmElement::Tag const & t) {
-    return t.m_key == "building";
-  });
+  return std::any_of(std::cbegin(tags), std::cend(tags),
+                     [](OsmElement::Tag const & t) { return t.m_key == "building"; });
 }
 
 bool HasHouse(OsmElement const & osmElement)
@@ -37,9 +37,8 @@ bool HasHouse(OsmElement const & osmElement)
 bool HasStreet(OsmElement const & osmElement)
 {
   auto const & tags = osmElement.Tags();
-  return std::any_of(std::cbegin(tags), std::cend(tags), [](OsmElement::Tag const & t) {
-    return t.m_key == "addr:street";
-  });
+  return std::any_of(std::cbegin(tags), std::cend(tags),
+                     [](OsmElement::Tag const & t) { return t.m_key == "addr:street"; });
 }
 }  // namespace osm_element
 }  // namespace generator

@@ -29,8 +29,7 @@ public:
   static m2::PointD constexpr kNoCoords =
       m2::PointD(std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 
-  RestrictionCollector(string const & osmIdsToFeatureIdPath,
-                       std::unique_ptr<IndexGraph> && graph);
+  RestrictionCollector(string const & osmIdsToFeatureIdPath, std::unique_ptr<IndexGraph> && graph);
 
   bool Process(std::string const & restrictionPath);
 
@@ -71,8 +70,7 @@ private:
   /// junctions.
   bool FeaturesAreCross(m2::PointD const & coords, uint32_t prev, uint32_t cur) const;
 
-  bool IsRestrictionValid(Restriction::Type & restrictionType,
-                          m2::PointD const & coords,
+  bool IsRestrictionValid(Restriction::Type & restrictionType, m2::PointD const & coords,
                           std::vector<uint32_t> & featureIds) const;
 
   bool CheckAndProcessUTurn(Restriction::Type & restrictionType, m2::PointD const & coords,

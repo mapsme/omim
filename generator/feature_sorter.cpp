@@ -37,8 +37,8 @@
 
 #include "defines.hpp"
 
-#include <list>
 #include <limits>
+#include <list>
 #include <memory>
 #include <vector>
 
@@ -104,7 +104,7 @@ public:
 
     // File Writer finalization function with appending to the main mwm file.
     auto const finalizeFn = [this](unique_ptr<TmpFile> w, string const & tag,
-        string const & postfix = string()) {
+                                   string const & postfix = string()) {
       w->Flush();
       m_writer.Write(w->GetName(), tag + postfix);
     };

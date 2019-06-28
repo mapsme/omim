@@ -19,7 +19,9 @@ using namespace feature;
 namespace generator
 {
 WikiUrlDumper::WikiUrlDumper(std::string const & path, std::vector<std::string> const & dataFiles)
-  : m_path(path), m_dataFiles(dataFiles) {}
+  : m_path(path), m_dataFiles(dataFiles)
+{
+}
 
 void WikiUrlDumper::Dump(size_t cpuCount) const
 {
@@ -64,12 +66,12 @@ void WikiUrlDumper::DumpOne(std::string const & path, std::ostream & stream)
     if (wikiUrl.empty())
       return;
 
-    stream << path << "\t" << feature.GetMostGenericOsmId() << "\t" <<  wikiUrl << "\n";
+    stream << path << "\t" << feature.GetMostGenericOsmId() << "\t" << wikiUrl << "\n";
   });
 }
 
 WikiDataFilter::WikiDataFilter(std::string const & path, std::vector<std::string> const & dataFiles)
-  :  m_path(path), m_dataFiles(dataFiles)
+  : m_path(path), m_dataFiles(dataFiles)
 {
   std::ifstream stream;
   stream.exceptions(std::fstream::failbit | std::fstream::badbit);
@@ -85,7 +87,8 @@ WikiDataFilter::WikiDataFilter(std::string const & path, std::vector<std::string
 }
 
 // static
-void WikiDataFilter::FilterOne(std::string const & path, std::map<base::GeoObjectId, std::string> const & idToWikiData,
+void WikiDataFilter::FilterOne(std::string const & path,
+                               std::map<base::GeoObjectId, std::string> const & idToWikiData,
                                std::ostream & stream)
 {
   auto const & needWikiUrl = ftypes::WikiChecker::Instance();

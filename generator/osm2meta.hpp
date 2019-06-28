@@ -1,17 +1,14 @@
 #pragma once
 
-#include "indexer/feature_data.hpp"
 #include "indexer/classificator.hpp"
+#include "indexer/feature_data.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
 #include <string>
 
 struct MetadataTagProcessorImpl
 {
-  MetadataTagProcessorImpl(FeatureParams &params)
-  : m_params(params)
-  {
-  }
+  MetadataTagProcessorImpl(FeatureParams & params) : m_params(params) {}
 
   std::string ValidateAndFormat_maxspeed(std::string const & v) const;
   std::string ValidateAndFormat_stars(std::string const & v) const;
@@ -47,7 +44,7 @@ public:
   /// Since it is used as a functor which stops iteration in ftype::ForEachTag
   /// and the is no need for interrupting it always returns false.
   /// TODO(mgsergio): Move to cpp after merge with https://github.com/mapsme/omim/pull/1314
-  bool operator() (std::string const & k, std::string const & v)
+  bool operator()(std::string const & k, std::string const & v)
   {
     if (v.empty())
       return false;

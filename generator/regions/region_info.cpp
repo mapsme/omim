@@ -12,10 +12,7 @@ namespace generator
 {
 namespace regions
 {
-RegionInfo::RegionInfo(std::string const & filename)
-{
-  ParseFile(filename);
-}
+RegionInfo::RegionInfo(std::string const & filename) { ParseFile(filename); }
 
 RegionInfo::RegionInfo(Platform::FilesList const & filenames)
 {
@@ -44,15 +41,9 @@ ConstRegionDataProxy RegionInfo::Get(base::GeoObjectId const & osmId) const
   return ConstRegionDataProxy(*this, osmId);
 }
 
-RegionInfo & RegionDataProxy::GetCollector()
-{
-  return m_regionInfoCollector;
-}
+RegionInfo & RegionDataProxy::GetCollector() { return m_regionInfoCollector; }
 
-MapRegionData & RegionDataProxy::GetMapRegionData()
-{
-  return GetCollector().m_mapRegionData;
-}
+MapRegionData & RegionDataProxy::GetMapRegionData() { return GetCollector().m_mapRegionData; }
 
 void RegionDataProxy::SetAdminLevel(AdminLevel adminLevel)
 {
@@ -65,8 +56,11 @@ void RegionDataProxy::SetPlaceType(PlaceType placeType)
 }
 
 template <typename T>
-BaseRegionDataProxy<T>::BaseRegionDataProxy(T & regionInfoCollector, base::GeoObjectId const & osmId)
-  : m_regionInfoCollector(regionInfoCollector), m_osmId(osmId) {}
+BaseRegionDataProxy<T>::BaseRegionDataProxy(T & regionInfoCollector,
+                                            base::GeoObjectId const & osmId)
+  : m_regionInfoCollector(regionInfoCollector), m_osmId(osmId)
+{
+}
 
 template <typename T>
 RegionInfo const & BaseRegionDataProxy<T>::GetCollector() const

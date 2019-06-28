@@ -13,7 +13,8 @@
 
 namespace gen
 {
-template <class T> class Accumulator
+template <class T>
+class Accumulator
 {
 protected:
   std::vector<T> m_data;
@@ -23,12 +24,14 @@ public:
 
   void Add(T const & t) { m_data.push_back(t); }
 
-  template <class TSink> void Flush(TSink & sink) const
+  template <class TSink>
+  void Flush(TSink & sink) const
   {
     rw::WriteVectorOfPOD(sink, m_data);
   }
 
-  template <class TSource> void Read(TSource & src)
+  template <class TSource>
+  void Read(TSource & src)
   {
     rw::ReadVectorOfPOD(src, m_data);
   }
@@ -40,13 +43,14 @@ class OsmID2FeatureID : public Accumulator<std::pair<base::GeoObjectId, uint32_t
 
   struct LessID
   {
-    bool operator() (ValueT const & r1, ValueT const & r2) const { return r1.first < r2.first; }
+    bool operator()(ValueT const & r1, ValueT const & r2) const { return r1.first < r2.first; }
     bool operator()(base::GeoObjectId const & r1, ValueT const & r2) const { return r1 < r2.first; }
     bool operator()(ValueT const & r1, base::GeoObjectId const & r2) const { return r1.first < r2; }
   };
 
 public:
-  template <class TSink> void Flush(TSink & sink)
+  template <class TSink>
+  void Flush(TSink & sink)
   {
     std::sort(m_data.begin(), m_data.end());
     BaseT::Flush(sink);
@@ -57,7 +61,7 @@ public:
   {
     auto const it = std::lower_bound(m_data.begin(), m_data.end(), id, LessID());
     if (it == m_data.end() || it->first != id)
-        return false;
+      return false;
 
     result = it->second;
     return true;

@@ -24,7 +24,8 @@ class BaseRegionDataProxy;
 class RegionDataProxy;
 class ConstRegionDataProxy;
 
-// RegionInfo class is responsible for reading and accessing additional information about the regions.
+// RegionInfo class is responsible for reading and accessing additional information about the
+// regions.
 class RegionInfo
 {
 public:

@@ -58,8 +58,7 @@ TestMwmBuilder::TestMwmBuilder(platform::LocalCountryFile & file, DataHeader::Ma
                                uint32_t version)
   : m_file(file)
   , m_type(type)
-  , m_collector(
-        make_unique<FeaturesCollector>(m_file.GetPath(MapOptions::Map) + EXTENSION_TMP))
+  , m_collector(make_unique<FeaturesCollector>(m_file.GetPath(MapOptions::Map) + EXTENSION_TMP))
   , m_version(version)
 {
 }
@@ -109,10 +108,7 @@ bool TestMwmBuilder::Add(FeatureBuilder & fb)
   return true;
 }
 
-void TestMwmBuilder::SetMwmLanguages(vector<string> const & languages)
-{
-  m_languages = languages;
-}
+void TestMwmBuilder::SetMwmLanguages(vector<string> const & languages) { m_languages = languages; }
 
 void TestMwmBuilder::Finish()
 {

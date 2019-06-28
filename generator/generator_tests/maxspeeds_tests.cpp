@@ -6,8 +6,8 @@
 #include "generator/maxspeeds_parser.hpp"
 #include "generator/routing_helpers.hpp"
 
-#include "routing/maxspeeds_serialization.hpp"
 #include "routing/maxspeeds.hpp"
+#include "routing/maxspeeds_serialization.hpp"
 #include "routing/routing_helpers.hpp"
 
 #include "routing_common/maxspeed_conversion.hpp"
@@ -108,7 +108,7 @@ void TestMaxspeedsSection(Features const & roads, string const & maxspeedsCsvCon
 
     auto const itMaxspeedCsv = osmIdToMaxspeed.find(itOsmId->second);
     if (itMaxspeedCsv == osmIdToMaxspeed.cend())
-      return; // No maxspeed for feature |id|.
+      return;  // No maxspeed for feature |id|.
 
     Maxspeed const maxspeedCsv = itMaxspeedCsv->second;
     Maxspeed const maxspeedMwm = maxspeeds->GetMaxspeed(id);
@@ -358,7 +358,7 @@ UNIT_TEST(MaxspeedSection_Big)
                                         300,Imperial,30
                                         400,Imperial,10,20
                                         600,)"
-      "Imperial,50,20\n700,Imperial,10\n";
+                                     "Imperial,50,20\n700,Imperial,10\n";
   map<uint32_t, base::GeoObjectId> const featureIdToOsmId = {
       {0 /* feature id */, base::MakeOsmWay(100)}, {1 /* feature id */, base::MakeOsmWay(200)},
       {2 /* feature id */, base::MakeOsmWay(300)}, {3 /* feature id */, base::MakeOsmWay(400)},

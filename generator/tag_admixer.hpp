@@ -14,7 +14,6 @@
 #include <string>
 #include <utility>
 
-
 class WaysParserHelper
 {
 public:
@@ -30,7 +29,7 @@ public:
       if (pos != std::string::npos)
       {
         uint64_t wayId;
-        CHECK(strings::to_uint64(oneLine.substr(0, pos), wayId),());
+        CHECK(strings::to_uint64(oneLine.substr(0, pos), wayId), ());
         m_ways[wayId] = oneLine.substr(pos + 1, oneLine.length() - pos - 1);
       }
     }
@@ -79,7 +78,8 @@ private:
 class TagAdmixer
 {
 public:
-  TagAdmixer(std::string const & waysFile, std::string const & capitalsFile) : m_ferryTag("route", "ferry")
+  TagAdmixer(std::string const & waysFile, std::string const & capitalsFile)
+    : m_ferryTag("route", "ferry")
   {
     try
     {
@@ -89,7 +89,8 @@ public:
     }
     catch (std::ifstream::failure const &)
     {
-      LOG(LWARNING, ("Can't read the world level ways file! Generating world without roads. Path:", waysFile));
+      LOG(LWARNING, ("Can't read the world level ways file! Generating world without roads. Path:",
+                     waysFile));
       return;
     }
 
@@ -101,7 +102,9 @@ public:
     }
     catch (std::ifstream::failure const &)
     {
-      LOG(LWARNING, ("Can't read the world level capitals file! Generating world without towns admixing. Path:", capitalsFile));
+      LOG(LWARNING, ("Can't read the world level capitals file! Generating world without towns "
+                     "admixing. Path:",
+                     capitalsFile));
       return;
     }
   }
@@ -114,13 +117,13 @@ public:
       if (find(element.Tags().begin(), element.Tags().end(), m_ferryTag) == element.Tags().end())
         element.AddTag("highway", m_ways[element.m_id]);
     }
-    else if (element.m_type == OsmElement::EntityType::Node && m_capitals.find(element.m_id) != m_capitals.end())
+    else if (element.m_type == OsmElement::EntityType::Node &&
+             m_capitals.find(element.m_id) != m_capitals.end())
     {
       // Our goal here - to make some capitals visible in World map.
       // The simplest way is to upgrade population to 45000,
       // according to our visibility rules in mapcss files.
-      element.UpdateTag("population", [] (std::string & v)
-      {
+      element.UpdateTag("population", [](std::string & v) {
         uint64_t n;
         if (!strings::to_uint64(v, n) || n < 45000)
           v = "45000";
@@ -137,6 +140,7 @@ private:
 class TagReplacer
 {
   std::map<OsmElement::Tag, std::vector<std::string>> m_entries;
+
 public:
   TagReplacer(std::string const & filePath)
   {

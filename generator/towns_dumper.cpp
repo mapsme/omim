@@ -41,8 +41,7 @@ void TownsDumper::FilterTowns()
     resultTree.ForEachInRect(
         MercatorBounds::RectByCenterXYAndSizeInMeters(MercatorBounds::FromLatLon(top.point),
                                                       kTownsEqualityMeters),
-        [&top, &isUniq](Town const & candidate)
-        {
+        [&top, &isUniq](Town const & candidate) {
           if (ms::DistanceOnEarth(top.point, candidate.point) < kTownsEqualityMeters)
             isUniq = false;
         });
@@ -51,10 +50,7 @@ void TownsDumper::FilterTowns()
     towns.pop_back();
   }
 
-  resultTree.ForEach([this](Town const & town)
-                     {
-                       m_records.push_back(town);
-                     });
+  resultTree.ForEach([this](Town const & town) { m_records.push_back(town); });
   LOG(LINFO, ("Preprocessing finished. Have", m_records.size(), "towns."));
 }
 
@@ -108,6 +104,7 @@ void TownsDumper::Dump(std::string const & filePath)
   for (auto const & record : m_records)
   {
     std::string const isCapital = record.capital ? "t" : "f";
-    stream << record.point.m_lat << ";" << record.point.m_lon << ";" << record.id << ";" << isCapital <<  std::endl;
+    stream << record.point.m_lat << ";" << record.point.m_lon << ";" << record.id << ";"
+           << isCapital << std::endl;
   }
 }

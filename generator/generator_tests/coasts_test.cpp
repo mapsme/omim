@@ -118,7 +118,7 @@ UNIT_TEST(CellID_CheckRectPoints)
   {
     Id const cell = Id::FromBitsAndLevel(i, level);
     pair<uint32_t, uint32_t> const xy = cell.XY();
-    uint32_t const r = 2*cell.Radius();
+    uint32_t const r = 2 * cell.Radius();
     uint32_t const bound = (1 << level) * r;
 
     double minX, minY, maxX, maxY;

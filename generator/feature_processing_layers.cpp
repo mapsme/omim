@@ -2,10 +2,10 @@
 
 #include "generator/city_boundary_processor.hpp"
 #include "generator/coastlines_generator.hpp"
+#include "generator/emitter_interface.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/feature_maker.hpp"
 #include "generator/generate_info.hpp"
-#include "generator/emitter_interface.hpp"
 #include "generator/type_helper.hpp"
 
 #include "indexer/classificator.hpp"
@@ -39,10 +39,7 @@ void FixLandType(FeatureBuilder & feature)
 }
 }  // namespace
 
-std::string LogBuffer::GetAsString() const
-{
-  return m_buffer.str();
-}
+std::string LogBuffer::GetAsString() const { return m_buffer.str(); }
 
 void LayerBase::Handle(FeatureBuilder & feature)
 {
@@ -50,10 +47,7 @@ void LayerBase::Handle(FeatureBuilder & feature)
     m_next->Handle(feature);
 }
 
-void LayerBase::SetNext(std::shared_ptr<LayerBase> next)
-{
-  m_next = next;
-}
+void LayerBase::SetNext(std::shared_ptr<LayerBase> next) { m_next = next; }
 
 std::shared_ptr<LayerBase> LayerBase::Add(std::shared_ptr<LayerBase> next)
 {
@@ -65,10 +59,7 @@ std::shared_ptr<LayerBase> LayerBase::Add(std::shared_ptr<LayerBase> next)
   return next;
 }
 
-std::string LayerBase::GetAsString() const
-{
-  return m_logBuffer.GetAsString();
-}
+std::string LayerBase::GetAsString() const { return m_logBuffer.GetAsString(); }
 
 std::string LayerBase::GetAsStringRecursive() const
 {
@@ -84,7 +75,9 @@ std::string LayerBase::GetAsStringRecursive() const
 }
 
 RepresentationLayer::RepresentationLayer(std::shared_ptr<CityBoundaryProcessor> processor)
-  : m_processor(processor) {}
+  : m_processor(processor)
+{
+}
 
 void RepresentationLayer::Handle(FeatureBuilder & feature)
 {
@@ -95,9 +88,7 @@ void RepresentationLayer::Handle(FeatureBuilder & feature)
   auto const params = feature.GetParams();
   switch (sourceType)
   {
-  case base::GeoObjectId::Type::ObsoleteOsmNode:
-    LayerBase::Handle(feature);
-    break;
+  case base::GeoObjectId::Type::ObsoleteOsmNode: LayerBase::Handle(feature); break;
   case base::GeoObjectId::Type::ObsoleteOsmWay:
   {
     switch (geomType)
@@ -112,12 +103,8 @@ void RepresentationLayer::Handle(FeatureBuilder & feature)
       }
       break;
     }
-    case feature::GeomType::Line:
-      LayerBase::Handle(feature);
-      break;
-    default:
-      UNREACHABLE();
-      break;
+    case feature::GeomType::Line: LayerBase::Handle(feature); break;
+    default: UNREACHABLE(); break;
     }
     break;
   }
@@ -125,18 +112,12 @@ void RepresentationLayer::Handle(FeatureBuilder & feature)
   {
     switch (geomType)
     {
-    case feature::GeomType::Area:
-      HandleArea(feature, params);
-      break;
-    default:
-      UNREACHABLE();
-      break;
+    case feature::GeomType::Area: HandleArea(feature, params); break;
+    default: UNREACHABLE(); break;
     }
     break;
   }
-  default:
-    UNREACHABLE();
-    break;
+  default: UNREACHABLE(); break;
   }
 }
 
@@ -190,7 +171,9 @@ void PrepareFeatureLayer::Handle(FeatureBuilder & feature)
 }
 
 CityBoundaryLayer::CityBoundaryLayer(std::shared_ptr<CityBoundaryProcessor> processor)
-  : m_processor(processor) {}
+  : m_processor(processor)
+{
+}
 
 void CityBoundaryLayer::Handle(FeatureBuilder & feature)
 {
@@ -203,13 +186,15 @@ void CityBoundaryLayer::Handle(FeatureBuilder & feature)
 
 BookingLayer::~BookingLayer()
 {
-  m_dataset.BuildOsmObjects([&] (FeatureBuilder & feature) {
-    m_countryMapper->RemoveInvalidTypesAndMap(feature);
-  });
+  m_dataset.BuildOsmObjects(
+      [&](FeatureBuilder & feature) { m_countryMapper->RemoveInvalidTypesAndMap(feature); });
 }
 
-BookingLayer::BookingLayer(std::string const & filename, std::shared_ptr<CountryMapper> countryMapper)
-  : m_dataset(filename), m_countryMapper(countryMapper) {}
+BookingLayer::BookingLayer(std::string const & filename,
+                           std::shared_ptr<CountryMapper> countryMapper)
+  : m_dataset(filename), m_countryMapper(countryMapper)
+{
+}
 
 void BookingLayer::Handle(FeatureBuilder & feature)
 {
@@ -226,8 +211,11 @@ void BookingLayer::Handle(FeatureBuilder & feature)
   });
 }
 
-OpentableLayer::OpentableLayer(std::string const & filename, std::shared_ptr<CountryMapper> countryMapper)
-  : m_dataset(filename), m_countryMapper(countryMapper) {}
+OpentableLayer::OpentableLayer(std::string const & filename,
+                               std::shared_ptr<CountryMapper> countryMapper)
+  : m_dataset(filename), m_countryMapper(countryMapper)
+{
+}
 
 void OpentableLayer::Handle(FeatureBuilder & feature)
 {
@@ -243,7 +231,6 @@ void OpentableLayer::Handle(FeatureBuilder & feature)
     m_countryMapper->RemoveInvalidTypesAndMap(newFeature);
   });
 }
-
 
 PromoCatalogLayer::PromoCatalogLayer(std::string const & citiesFinename)
   : m_cities(promo::LoadCities(citiesFinename))
@@ -263,7 +250,9 @@ void PromoCatalogLayer::Handle(FeatureBuilder & feature)
 }
 
 CountryMapperLayer::CountryMapperLayer(std::shared_ptr<CountryMapper> countryMapper)
-  : m_countryMapper(countryMapper) {}
+  : m_countryMapper(countryMapper)
+{
+}
 
 void CountryMapperLayer::Handle(FeatureBuilder & feature)
 {
@@ -277,29 +266,19 @@ void RepresentationCoastlineLayer::Handle(FeatureBuilder & feature)
   auto const geomType = feature.GetGeomType();
   switch (sourceType)
   {
-  case base::GeoObjectId::Type::ObsoleteOsmNode:
-    break;
+  case base::GeoObjectId::Type::ObsoleteOsmNode: break;
   case base::GeoObjectId::Type::ObsoleteOsmWay:
   {
     switch (geomType)
     {
-    case feature::GeomType::Area:
-      LayerBase::Handle(feature);
-      break;
-    case feature::GeomType::Line:
-      LayerBase::Handle(feature);
-      break;
-    default:
-      UNREACHABLE();
-      break;
+    case feature::GeomType::Area: LayerBase::Handle(feature); break;
+    case feature::GeomType::Line: LayerBase::Handle(feature); break;
+    default: UNREACHABLE(); break;
     }
     break;
   }
-  case base::GeoObjectId::Type::ObsoleteOsmRelation:
-    break;
-  default:
-    UNREACHABLE();
-    break;
+  case base::GeoObjectId::Type::ObsoleteOsmRelation: break;
+  default: UNREACHABLE(); break;
   }
 }
 
@@ -315,8 +294,11 @@ void PrepareCoastlineFeatureLayer::Handle(FeatureBuilder & feature)
   LayerBase::Handle(feature);
 }
 
-CoastlineMapperLayer::CoastlineMapperLayer(std::shared_ptr<CoastlineFeaturesGenerator> coastlineMapper)
-  : m_coastlineGenerator(coastlineMapper) {}
+CoastlineMapperLayer::CoastlineMapperLayer(
+    std::shared_ptr<CoastlineFeaturesGenerator> coastlineMapper)
+  : m_coastlineGenerator(coastlineMapper)
+{
+}
 
 void CoastlineMapperLayer::Handle(FeatureBuilder & feature)
 {
@@ -327,14 +309,9 @@ void CoastlineMapperLayer::Handle(FeatureBuilder & feature)
   LayerBase::Handle(feature);
 }
 
-WorldAreaLayer::WorldAreaLayer(std::shared_ptr<WorldMapper> mapper)
-  : m_mapper(mapper) {}
+WorldAreaLayer::WorldAreaLayer(std::shared_ptr<WorldMapper> mapper) : m_mapper(mapper) {}
 
-
-WorldAreaLayer::~WorldAreaLayer()
-{
-  m_mapper->Merge();
-}
+WorldAreaLayer::~WorldAreaLayer() { m_mapper->Merge(); }
 
 void WorldAreaLayer::Handle(FeatureBuilder & feature)
 {
@@ -342,16 +319,18 @@ void WorldAreaLayer::Handle(FeatureBuilder & feature)
   LayerBase::Handle(feature);
 }
 
-EmitCoastsLayer::EmitCoastsLayer(std::string const & worldCoastsFilename, std::string const & geometryFilename,
+EmitCoastsLayer::EmitCoastsLayer(std::string const & worldCoastsFilename,
+                                 std::string const & geometryFilename,
                                  std::shared_ptr<CountryMapper> countryMapper)
   : m_collector(std::make_shared<feature::FeaturesCollector>(worldCoastsFilename))
   , m_countryMapper(countryMapper)
-  , m_geometryFilename(geometryFilename) {}
+  , m_geometryFilename(geometryFilename)
+{
+}
 
 EmitCoastsLayer::~EmitCoastsLayer()
 {
-  feature::ForEachFromDatRawFormat(m_geometryFilename, [&](FeatureBuilder fb, uint64_t)
-  {
+  feature::ForEachFromDatRawFormat(m_geometryFilename, [&](FeatureBuilder fb, uint64_t) {
     auto & emitter = m_countryMapper->Parent();
     emitter.Start();
     m_countryMapper->Map(fb);
@@ -362,18 +341,14 @@ EmitCoastsLayer::~EmitCoastsLayer()
   });
 }
 
-void EmitCoastsLayer::Handle(FeatureBuilder & feature)
-{
-  LayerBase::Handle(feature);
-}
+void EmitCoastsLayer::Handle(FeatureBuilder & feature) { LayerBase::Handle(feature); }
 
 CountryMapper::CountryMapper(feature::GenerateInfo const & info)
-  : m_countries(std::make_unique<CountriesGenerator>(info)) {}
-
-void CountryMapper::Map(FeatureBuilder & feature)
+  : m_countries(std::make_unique<CountriesGenerator>(info))
 {
-  m_countries->Process(feature);
 }
+
+void CountryMapper::Map(FeatureBuilder & feature) { m_countries->Process(feature); }
 
 void CountryMapper::RemoveInvalidTypesAndMap(FeatureBuilder & feature)
 {
@@ -383,10 +358,7 @@ void CountryMapper::RemoveInvalidTypesAndMap(FeatureBuilder & feature)
   m_countries->Process(feature);
 }
 
-CountryMapper::Polygonizer & CountryMapper::Parent()
-{
-  return m_countries->Parent();
-}
+CountryMapper::Polygonizer & CountryMapper::Parent() { return m_countries->Parent(); }
 
 std::vector<std::string> const & CountryMapper::GetNames() const
 {
@@ -395,12 +367,12 @@ std::vector<std::string> const & CountryMapper::GetNames() const
 
 WorldMapper::WorldMapper(std::string const & worldFilename, std::string const & rawGeometryFilename,
                          std::string const & popularPlacesFilename)
-  : m_world(std::make_unique<WorldGenerator>(worldFilename, rawGeometryFilename, popularPlacesFilename)) {}
-
-void WorldMapper::Map(FeatureBuilder & feature)
+  : m_world(
+        std::make_unique<WorldGenerator>(worldFilename, rawGeometryFilename, popularPlacesFilename))
 {
-  m_world->Process(feature);
 }
+
+void WorldMapper::Map(FeatureBuilder & feature) { m_world->Process(feature); }
 
 void WorldMapper::RemoveInvalidTypesAndMap(FeatureBuilder & feature)
 {
@@ -410,8 +382,5 @@ void WorldMapper::RemoveInvalidTypesAndMap(FeatureBuilder & feature)
   m_world->Process(feature);
 }
 
-void WorldMapper::Merge()
-{
-  m_world->DoMerge();
-}
+void WorldMapper::Merge() { m_world->DoMerge(); }
 }  // namespace generator

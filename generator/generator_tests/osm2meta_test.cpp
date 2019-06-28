@@ -12,7 +12,8 @@ UNIT_TEST(ValidateAndFormat_cuisine_test)
   TEST_EQUAL(tagProc.ValidateAndFormat_cuisine("abc      def  gh"), "abc_def_gh", ());
   TEST_EQUAL(tagProc.ValidateAndFormat_cuisine(""), "", ());
   TEST_EQUAL(tagProc.ValidateAndFormat_cuisine(" ; , "), "", ());
-  TEST_EQUAL(tagProc.ValidateAndFormat_cuisine(" Korean bbq;barbeque;grill,bbq; "), "korean_bbq;barbecue;grill", ());
+  TEST_EQUAL(tagProc.ValidateAndFormat_cuisine(" Korean bbq;barbeque;grill,bbq; "),
+             "korean_bbq;barbecue;grill", ());
 }
 
 UNIT_TEST(ValidateAndFormat_ele)
@@ -48,7 +49,8 @@ UNIT_TEST(ValidateAndFormat_building_levels)
   TEST_EQUAL(tp.ValidateAndFormat_building_levels("４"), "4", ());
   TEST_EQUAL(tp.ValidateAndFormat_building_levels("４floors"), "4", ());
   TEST_EQUAL(tp.ValidateAndFormat_building_levels("between 1 and ４"), "", ());
-  TEST_EQUAL(tp.ValidateAndFormat_building_levels("0"), "0", ("OSM has many zero-level buildings."));
+  TEST_EQUAL(tp.ValidateAndFormat_building_levels("0"), "0",
+             ("OSM has many zero-level buildings."));
   TEST_EQUAL(tp.ValidateAndFormat_building_levels("0.0"), "0", ());
   TEST_EQUAL(tp.ValidateAndFormat_building_levels(""), "", ());
   TEST_EQUAL(tp.ValidateAndFormat_building_levels("Level 1"), "", ());

@@ -34,7 +34,8 @@ UNIT_TEST(NodeMixerTests)
   });
   TEST_EQUAL(count4, 1, ());
 
-  std::istringstream stream5("lat=10.0\nlon=-4.8\nid=1\nname=First\n\nid=2\nlat=60\nlon=1\nname=Second\n\n\n");
+  std::istringstream stream5(
+      "lat=10.0\nlon=-4.8\nid=1\nname=First\n\nid=2\nlat=60\nlon=1\nname=Second\n\n\n");
   int count5 = 0;
   generator::MixFakeNodes(stream5, [&](OsmElement & p) {
     count5++;

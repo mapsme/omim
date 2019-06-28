@@ -22,9 +22,11 @@ namespace generator
 {
 namespace regions
 {
-// ConcurrentGetProcessability is marker inteface: concurrent mode capability for any get operations.
+// ConcurrentGetProcessability is marker inteface: concurrent mode capability for any get
+// operations.
 struct ConcurrentGetProcessability
-{ };
+{
+};
 
 class RegionInfoGetter : public ConcurrentGetProcessability
 {
@@ -41,7 +43,8 @@ private:
   using IndexReader = ReaderPtr<Reader>;
 
   std::vector<base::GeoObjectId> SearchObjectsInIndex(m2::PointD const & point) const;
-  boost::optional<KeyValue> GetDeepest(m2::PointD const & point, std::vector<base::GeoObjectId> const & ids,
+  boost::optional<KeyValue> GetDeepest(m2::PointD const & point,
+                                       std::vector<base::GeoObjectId> const & ids,
                                        Selector const & selector) const;
   int GetRank(JsonValue const & json) const;
   // Get parent id of object: optional field `properties.pid` in JSON.

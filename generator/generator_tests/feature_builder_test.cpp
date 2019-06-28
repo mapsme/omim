@@ -7,8 +7,8 @@
 #include "generator/geometry_holder.hpp"
 #include "generator/osm2type.hpp"
 
-#include "indexer/data_header.cpp"
 #include "indexer/classificator_loader.hpp"
+#include "indexer/data_header.cpp"
 #include "indexer/feature_visibility.hpp"
 #include "indexer/locality_object.hpp"
 
@@ -27,18 +27,18 @@ UNIT_CLASS_TEST(TestWithClassificator, FBuilder_ManyTypes)
   FeatureParams params;
 
   char const * arr1[][1] = {
-    { "building" },
+      {"building"},
   };
   AddTypes(params, arr1);
 
   char const * arr2[][2] = {
-    { "place", "country" },
-    { "place", "state" },
-    /// @todo Can't realize is it deprecated or we forgot to add clear styles for it.
-    //{ "place", "county" },
-    { "place", "region" },
-    { "place", "city" },
-    { "place", "town" },
+      {"place", "country"},
+      {"place", "state"},
+      /// @todo Can't realize is it deprecated or we forgot to add clear styles for it.
+      //{ "place", "county" },
+      {"place", "region"},
+      {"place", "city"},
+      {"place", "town"},
   };
   AddTypes(params, arr2);
 
@@ -71,11 +71,8 @@ UNIT_CLASS_TEST(TestWithClassificator, FBuilder_LineTypes)
   FeatureParams params;
 
   char const * arr2[][2] = {
-    { "railway", "rail" },
-    { "highway", "motorway" },
-    { "hwtag", "oneway" },
-    { "psurface", "paved_good" },
-    { "junction", "roundabout" },
+      {"railway", "rail"},        {"highway", "motorway"},    {"hwtag", "oneway"},
+      {"psurface", "paved_good"}, {"junction", "roundabout"},
   };
 
   AddTypes(params, arr2);
@@ -151,8 +148,8 @@ UNIT_CLASS_TEST(TestWithClassificator, FVisibility_RemoveUselessTypes)
 
   {
     vector<uint32_t> types;
-    types.push_back(c.GetTypeByPath({ "building" }));
-    types.push_back(c.GetTypeByPath({ "amenity", "theatre" }));
+    types.push_back(c.GetTypeByPath({"building"}));
+    types.push_back(c.GetTypeByPath({"amenity", "theatre"}));
 
     TEST(RemoveUselessTypes(types, GeomType::Area), ());
     TEST_EQUAL(types.size(), 2, ());
@@ -160,12 +157,12 @@ UNIT_CLASS_TEST(TestWithClassificator, FVisibility_RemoveUselessTypes)
 
   {
     vector<uint32_t> types;
-    types.push_back(c.GetTypeByPath({ "highway", "primary" }));
-    types.push_back(c.GetTypeByPath({ "building" }));
+    types.push_back(c.GetTypeByPath({"highway", "primary"}));
+    types.push_back(c.GetTypeByPath({"building"}));
 
     TEST(RemoveUselessTypes(types, GeomType::Area, true /* emptyName */), ());
     TEST_EQUAL(types.size(), 1, ());
-    TEST_EQUAL(types[0], c.GetTypeByPath({ "building" }), ());
+    TEST_EQUAL(types[0], c.GetTypeByPath({"building"}), ());
   }
 }
 
@@ -173,9 +170,9 @@ UNIT_CLASS_TEST(TestWithClassificator, FBuilder_RemoveUselessNames)
 {
   FeatureParams params;
 
-  char const * arr3[][3] = { { "boundary", "administrative", "2" } };
+  char const * arr3[][3] = {{"boundary", "administrative", "2"}};
   AddTypes(params, arr3);
-  char const * arr2[][2] = { { "barrier", "fence" } };
+  char const * arr2[][2] = {{"barrier", "fence"}};
   AddTypes(params, arr2);
   params.FinishAddingTypes();
 
@@ -237,7 +234,7 @@ UNIT_CLASS_TEST(TestWithClassificator, FeatureBuilder12_SerializeLocalityObjectF
   FeatureParams params;
 
   char const * arr1[][1] = {
-    { "building" },
+      {"building"},
   };
   AddTypes(params, arr1);
 
@@ -256,7 +253,8 @@ UNIT_CLASS_TEST(TestWithClassificator, FeatureBuilder12_SerializeLocalityObjectF
   feature::DataHeader header;
   header.SetGeometryCodingParams(serial::GeometryCodingParams());
   header.SetScales({scales::GetUpperScale()});
-  feature::GeometryHolder holder(fb, header, std::numeric_limits<uint32_t>::max() /* maxTrianglesNumber */);
+  feature::GeometryHolder holder(fb, header,
+                                 std::numeric_limits<uint32_t>::max() /* maxTrianglesNumber */);
 
   auto & buffer = holder.GetBuffer();
   TEST(fb.PreSerializeAndRemoveUselessNamesForMwm(buffer), ());
@@ -267,7 +265,6 @@ UNIT_CLASS_TEST(TestWithClassificator, FeatureBuilder12_SerializeLocalityObjectF
   object.Deserialize(buffer.m_buffer.data());
 
   TEST_EQUAL(LocalityObject::FromStoredId(object.GetStoredId()), base::MakeOsmNode(1), ());
-  object.ForEachPoint([] (auto && point) {
-    TEST(base::AlmostEqualAbs(point, m2::PointD(10.1, 15.8), 1e-7), ());
-  });
+  object.ForEachPoint(
+      [](auto && point) { TEST(base::AlmostEqualAbs(point, m2::PointD(10.1, 15.8), 1e-7), ()); });
 }

@@ -13,17 +13,21 @@ using namespace std;
 namespace feature
 {
 CalculateMidPoints::CalculateMidPoints()
-  : CalculateMidPoints(static_cast<int (*)(TypesHolder const & types, m2::RectD limitRect)>(GetMinDrawableScale))
-{ }
+  : CalculateMidPoints(
+        static_cast<int (*)(TypesHolder const & types, m2::RectD limitRect)>(GetMinDrawableScale))
+{
+}
 
 CalculateMidPoints::CalculateMidPoints(MinDrawableScalePolicy const & minDrawableScalePolicy)
   : m_minDrawableScalePolicy{minDrawableScalePolicy}
-{ }
+{
+}
 
 void CalculateMidPoints::operator()(FeatureBuilder const & ft, uint64_t pos)
 {
   // Reset state.
-  m_midLoc = m2::PointD::Zero();;
+  m_midLoc = m2::PointD::Zero();
+  ;
   m_locCount = 0;
 
   ft.ForEachGeometryPoint(*this);

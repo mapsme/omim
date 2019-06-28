@@ -27,4 +27,4 @@ private:
   std::shared_ptr<OsmIdToBoundariesTable> m_boundariesTable;
   m4::Tree<Place> m_places;
 };
-} // namespace generator
+}  // namespace generator

@@ -14,8 +14,8 @@
 #include "coding/parse_xml.hpp"
 
 #include "base/assert.hpp"
-#include "base/stl_helpers.hpp"
 #include "base/file_name_utils.hpp"
+#include "base/stl_helpers.hpp"
 
 #include <fstream>
 #include <memory>
@@ -80,7 +80,8 @@ void AddElementToCache(cache::IntermediateDataWriter & cache, OsmElement & eleme
     RelationElement relation;
     for (auto const & member : element.Members())
     {
-      switch (member.m_type) {
+      switch (member.m_type)
+      {
       case OsmElement::EntityType::Node:
         relation.nodes.emplace_back(member.m_ref, string(member.m_role));
         break;
@@ -90,8 +91,7 @@ void AddElementToCache(cache::IntermediateDataWriter & cache, OsmElement & eleme
       case OsmElement::EntityType::Relation:
         // we just ignore type == "relation"
         break;
-      default:
-        break;
+      default: break;
       }
     }
 
@@ -103,16 +103,14 @@ void AddElementToCache(cache::IntermediateDataWriter & cache, OsmElement & eleme
 
     break;
   }
-  default:
-    break;
+  default: break;
   }
 }
 
 void BuildIntermediateDataFromXML(SourceReader & stream, cache::IntermediateDataWriter & cache,
                                   TownsDumper & towns)
 {
-  XMLSource parser([&](OsmElement * element)
-  {
+  XMLSource parser([&](OsmElement * element) {
     towns.CheckElement(*element);
     AddElementToCache(cache, *element);
   });
@@ -142,8 +140,7 @@ void ProcessOsmElementsFromO5M(SourceReader & stream, function<void(OsmElement *
 {
   using Type = osm::O5MSource::EntityType;
 
-  osm::O5MSource dataset([&stream](uint8_t * buffer, size_t size)
-  {
+  osm::O5MSource dataset([&stream](uint8_t * buffer, size_t size) {
     return stream.Read(reinterpret_cast<char *>(buffer), size);
   });
 
@@ -212,15 +209,12 @@ bool GenerateRaw(feature::GenerateInfo & info, TranslatorInterface & translators
     translators.Emit(*element);
   };
 
-  SourceReader reader = info.m_osmFileName.empty() ? SourceReader() : SourceReader(info.m_osmFileName);
+  SourceReader reader =
+      info.m_osmFileName.empty() ? SourceReader() : SourceReader(info.m_osmFileName);
   switch (info.m_osmFileType)
   {
-  case feature::GenerateInfo::OsmSourceType::XML:
-    ProcessOsmElementsFromXML(reader, fn);
-    break;
-  case feature::GenerateInfo::OsmSourceType::O5M:
-    ProcessOsmElementsFromO5M(reader, fn);
-    break;
+  case feature::GenerateInfo::OsmSourceType::XML: ProcessOsmElementsFromXML(reader, fn); break;
+  case feature::GenerateInfo::OsmSourceType::O5M: ProcessOsmElementsFromO5M(reader, fn); break;
   }
 
   LOG(LINFO, ("Processing", info.m_osmFileName, "done."));
@@ -232,15 +226,14 @@ bool GenerateRaw(feature::GenerateInfo & info, TranslatorInterface & translators
 }
 
 LoaderWrapper::LoaderWrapper(feature::GenerateInfo & info)
-  : m_reader(cache::CreatePointStorageReader(info.m_nodeStorageType, info.GetIntermediateFileName(NODES_FILE)), info)
+  : m_reader(cache::CreatePointStorageReader(info.m_nodeStorageType,
+                                             info.GetIntermediateFileName(NODES_FILE)),
+             info)
 {
   m_reader.LoadIndex();
 }
 
-cache::IntermediateDataReader & LoaderWrapper::GetReader()
-{
-  return m_reader;
-}
+cache::IntermediateDataReader & LoaderWrapper::GetReader() { return m_reader; }
 
 CacheLoader::CacheLoader(feature::GenerateInfo & info) : m_info(info) {}
 
@@ -260,7 +253,8 @@ bool GenerateIntermediateData(feature::GenerateInfo & info)
                                                  info.GetIntermediateFileName(NODES_FILE));
     cache::IntermediateDataWriter cache(nodes, info);
     TownsDumper towns;
-    SourceReader reader = info.m_osmFileName.empty() ? SourceReader() : SourceReader(info.m_osmFileName);
+    SourceReader reader =
+        info.m_osmFileName.empty() ? SourceReader() : SourceReader(info.m_osmFileName);
 
     LOG(LINFO, ("Data source:", info.m_osmFileName));
 

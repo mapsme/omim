@@ -9,7 +9,7 @@ using generator::KeyValue;
 
 UNIT_TEST(StreetRegionTracingTest_StreetInOneRegion)
 {
-  auto regionGetter = [] (auto &&) { return KeyValue{1, {}}; };
+  auto regionGetter = [](auto &&) { return KeyValue{1, {}}; };
   auto && tracing = StreetRegionsTracing{{{0.0, 0.0}, {1.0, 1.0}}, regionGetter};
   auto && segments = tracing.StealPathSegments();
 
@@ -19,7 +19,7 @@ UNIT_TEST(StreetRegionTracingTest_StreetInOneRegion)
 
 UNIT_TEST(StreetRegionTracingTest_OutgoingStreet)
 {
-  auto regionGetter = [] (auto && point) {
+  auto regionGetter = [](auto && point) {
     if (point.x < 0.001)
       return KeyValue{1, {}};
     return KeyValue{2, {}};
@@ -34,7 +34,7 @@ UNIT_TEST(StreetRegionTracingTest_OutgoingStreet)
 
 UNIT_TEST(StreetRegionTracingTest_IncomingStreet)
 {
-  auto regionGetter = [] (auto && point) {
+  auto regionGetter = [](auto && point) {
     if (point.x < 0.999)
       return KeyValue{1, {}};
     return KeyValue{2, {}};
@@ -49,7 +49,7 @@ UNIT_TEST(StreetRegionTracingTest_IncomingStreet)
 
 UNIT_TEST(StreetRegionTracingTest_StreetWithTransitRegion)
 {
-  auto regionGetter = [] (auto && point) {
+  auto regionGetter = [](auto && point) {
     if (0.5 <= point.x && point.x <= 0.501)
       return KeyValue{2, {}};
     return KeyValue{1, {}};

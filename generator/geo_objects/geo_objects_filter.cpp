@@ -12,7 +12,8 @@ namespace geo_objects
 {
 bool GeoObjectsFilter::IsAccepted(OsmElement const & element)
 {
-  return osm_element::IsBuilding(element) || osm_element::HasHouse(element) || osm_element::IsPoi(element);
+  return osm_element::IsBuilding(element) || osm_element::HasHouse(element) ||
+         osm_element::IsPoi(element);
 }
 
 bool GeoObjectsFilter::IsAccepted(FeatureBuilder const & feature)

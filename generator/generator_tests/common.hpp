@@ -12,4 +12,4 @@ using Tags = std::vector<std::pair<std::string, std::string>>;
 OsmElement MakeOsmElement(uint64_t id, Tags const & tags, OsmElement::EntityType t);
 
 std::string GetFileName();
-} // generator_tests
+}  // namespace generator_tests

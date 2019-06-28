@@ -10,37 +10,35 @@ using namespace feature;
 
 namespace
 {
-  typedef m2::PointD P;
+typedef m2::PointD P;
 
-  class VectorEmitter : public FeatureEmitterIFace
+class VectorEmitter : public FeatureEmitterIFace
+{
+  vector<FeatureBuilder> m_vec;
+
+public:
+  virtual void operator()(FeatureBuilder const & fb) { m_vec.push_back(fb); }
+
+  size_t GetSize() const { return m_vec.size(); }
+
+  void Check(uint32_t type, size_t count) const
   {
-    vector<FeatureBuilder> m_vec;
-  public:
-    virtual void operator() (FeatureBuilder const & fb)
-    {
-      m_vec.push_back(fb);
-    }
+    size_t test = 0;
+    for (size_t i = 0; i < m_vec.size(); ++i)
+      if (m_vec[i].HasType(type))
+        ++test;
 
-    size_t GetSize() const { return m_vec.size(); }
-
-    void Check(uint32_t type, size_t count) const
-    {
-      size_t test = 0;
-      for (size_t i = 0; i < m_vec.size(); ++i)
-        if (m_vec[i].HasType(type))
-          ++test;
-
-      TEST_EQUAL(test, count, ());
-    }
-  };
-}
+    TEST_EQUAL(test, count, ());
+  }
+};
+}  // namespace
 
 UNIT_TEST(FeatureMerger_MultipleTypes)
 {
   classificator::Load();
 
-  P arrPt[] = { P(0, 0), P(1, 1), P(2, 2), P(3, 3) };
-  size_t const count = ARRAY_SIZE(arrPt)-1;
+  P arrPt[] = {P(0, 0), P(1, 1), P(2, 2), P(3, 3)};
+  size_t const count = ARRAY_SIZE(arrPt) - 1;
 
   FeatureBuilder arrF[count];
 
@@ -48,7 +46,7 @@ UNIT_TEST(FeatureMerger_MultipleTypes)
   {
     arrF[i].SetLinear();
     arrF[i].AddPoint(arrPt[i]);
-    arrF[i].AddPoint(arrPt[i+1]);
+    arrF[i].AddPoint(arrPt[i + 1]);
 
     arrF[i].AddType(0);
   }

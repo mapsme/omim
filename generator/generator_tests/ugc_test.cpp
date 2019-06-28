@@ -51,7 +51,7 @@ UNIT_TEST(UGC_SmokeTest)
 
 UNIT_TEST(UGC_TranslateRatingTest)
 {
- auto const ugc = GetUgcForId(9826352);
+  auto const ugc = GetUgcForId(9826352);
 
   TEST_EQUAL(ugc.m_ratings.size(), 2, ());
   TEST_EQUAL(ugc.m_ratings[0].m_key, "2", ());

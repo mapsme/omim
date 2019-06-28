@@ -4,7 +4,6 @@
 #include "generator/regions/specs/rus.hpp"
 
 #include "base/assert.hpp"
-#include "base/thread_pool_computational.hpp"
 #include "base/stl_helpers.hpp"
 #include "base/thread_pool_computational.hpp"
 
@@ -70,7 +69,7 @@ RegionsBuilder::Regions RegionsBuilder::ExtractCountriesOuters(Regions & regions
     return adminLevel == AdminLevel::Two && placeType == PlaceType::Unknown;
   };
   std::copy_if(std::begin(regions), std::end(regions), std::back_inserter(countriesOuters),
-      isCountry);
+               isCountry);
 
   base::EraseIf(regions, isCountry);
 
@@ -96,8 +95,8 @@ RegionsBuilder::StringsList RegionsBuilder::GetCountryNames() const
   return result;
 }
 
-Node::PtrList RegionsBuilder::MakeSelectedRegionsByCountry(Region const & outer,
-    Regions const & allRegions, CountrySpecifier const & countrySpecifier)
+Node::PtrList RegionsBuilder::MakeSelectedRegionsByCountry(
+    Region const & outer, Regions const & allRegions, CountrySpecifier const & countrySpecifier)
 {
   std::vector<LevelRegion> regionsInCountry{{PlaceLevel::Country, outer}};
   for (auto const & region : allRegions)
@@ -124,8 +123,8 @@ Node::PtrList RegionsBuilder::MakeSelectedRegionsByCountry(Region const & outer,
   return nodes;
 }
 
-Node::Ptr RegionsBuilder::BuildCountryRegionTree(Region const & outer,
-    Regions const & allRegions, CountrySpecifier const & countrySpecifier)
+Node::Ptr RegionsBuilder::BuildCountryRegionTree(Region const & outer, Regions const & allRegions,
+                                                 CountrySpecifier const & countrySpecifier)
 {
   auto nodes = MakeSelectedRegionsByCountry(outer, allRegions, countrySpecifier);
   while (nodes.size() > 1)
@@ -157,7 +156,7 @@ Node::Ptr RegionsBuilder::BuildCountryRegionTree(Region const & outer,
 
 // static
 int RegionsBuilder::Compare(LevelRegion const & l, LevelRegion const & r,
-    CountrySpecifier const & countrySpecifier)
+                            CountrySpecifier const & countrySpecifier)
 {
   if (IsAreaLess(r, l) && l.Contains(r))
     return 1;
@@ -171,14 +170,14 @@ int RegionsBuilder::Compare(LevelRegion const & l, LevelRegion const & r,
   auto const rArea = r.GetArea();
   if (0.5 * lArea >= rArea)
   {
-    LOG(LDEBUG, ("Region", l.GetId(), GetRegionNotation(l), "contains partly",
-                 r.GetId(), GetRegionNotation(r)));
+    LOG(LDEBUG, ("Region", l.GetId(), GetRegionNotation(l), "contains partly", r.GetId(),
+                 GetRegionNotation(r)));
     return 1;
   }
   if (0.5 * rArea >= lArea)
   {
-    LOG(LDEBUG, ("Region", r.GetId(), GetRegionNotation(r), "contains partly",
-                 l.GetId(), GetRegionNotation(l)));
+    LOG(LDEBUG, ("Region", r.GetId(), GetRegionNotation(r), "contains partly", l.GetId(),
+                 GetRegionNotation(l)));
     return -1;
   }
 
@@ -211,27 +210,27 @@ void RegionsBuilder::ForEachCountry(CountryFn fn)
 }
 
 Node::PtrList RegionsBuilder::BuildCountryRegionTrees(Regions const & outers,
-    CountrySpecifier const & countrySpecifier)
+                                                      CountrySpecifier const & countrySpecifier)
 {
   std::vector<std::future<Node::Ptr>> buildingTasks;
   {
     base::thread_pool::computational::ThreadPool threadPool(m_threadsCount);
     for (auto const & outer : outers)
     {
-      auto result = threadPool.Submit(
-          &RegionsBuilder::BuildCountryRegionTree,
-          std::cref(outer), std::cref(m_regionsInAreaOrder), std::cref(countrySpecifier));
+      auto result = threadPool.Submit(&RegionsBuilder::BuildCountryRegionTree, std::cref(outer),
+                                      std::cref(m_regionsInAreaOrder), std::cref(countrySpecifier));
       buildingTasks.emplace_back(std::move(result));
     }
   }
   std::vector<Node::Ptr> trees;
   trees.reserve(buildingTasks.size());
-  std::transform(std::begin(buildingTasks), std::end(buildingTasks),
-                 std::back_inserter(trees), [](auto & f) { return f.get(); });
+  std::transform(std::begin(buildingTasks), std::end(buildingTasks), std::back_inserter(trees),
+                 [](auto & f) { return f.get(); });
   return trees;
 }
 
-std::unique_ptr<CountrySpecifier> RegionsBuilder::GetCountrySpecifier(std::string const & countryName)
+std::unique_ptr<CountrySpecifier> RegionsBuilder::GetCountrySpecifier(
+    std::string const & countryName)
 {
   if (countryName == u8"Россия" || countryName == u8"Российская Федерация" || countryName == u8"РФ")
     return std::make_unique<specs::RusSpecifier>();

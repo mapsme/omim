@@ -105,7 +105,7 @@ private:
   Pin ChooseAreaPin() const;
   void ExtendLimitRect(std::vector<m2::PointD> const & points);
 
-  MultiLine m_multiLine; // TODO: cyclic graph
+  MultiLine m_multiLine;  // TODO: cyclic graph
   std::vector<AreaPart> m_areaParts;
   m2::RectD m_limitRect;
 };

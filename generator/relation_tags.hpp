@@ -26,7 +26,7 @@ public:
   void Reset(uint64_t fID, OsmElement * p);
 
   template <class Reader>
-  base::ControlFlow operator() (uint64_t id, Reader & reader)
+  base::ControlFlow operator()(uint64_t id, Reader & reader)
   {
     bool exists = false;
     RelationElement & e = m_cache.Find(id, exists);
@@ -56,7 +56,7 @@ protected:
   void Process(RelationElement const & e) override;
 
 private:
-    using Base = RelationTagsBase;
+  using Base = RelationTagsBase;
 };
 
 class RelationTagsWay : public RelationTagsBase

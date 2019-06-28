@@ -23,21 +23,13 @@ uint8_t const CollectorRegionInfo::kVersion = 0;
 PlaceType EncodePlaceType(std::string const & place)
 {
   static std::map<std::string, PlaceType> const m = {
-    {"country", PlaceType::Country},
-    {"state", PlaceType::State},
-    {"province", PlaceType::Province},
-    {"district", PlaceType::District},
-    {"county", PlaceType::County},
-    {"municipality", PlaceType::Municipality},
-    {"city", PlaceType::City},
-    {"town", PlaceType::Town},
-    {"village", PlaceType::Village},
-    {"suburb", PlaceType::Suburb},
-    {"quarter", PlaceType::Quarter},
-    {"neighbourhood", PlaceType::Neighbourhood},
-    {"hamlet", PlaceType::Hamlet},
-    {"isolated_dwelling", PlaceType::IsolatedDwelling}
-  };
+      {"country", PlaceType::Country},   {"state", PlaceType::State},
+      {"province", PlaceType::Province}, {"district", PlaceType::District},
+      {"county", PlaceType::County},     {"municipality", PlaceType::Municipality},
+      {"city", PlaceType::City},         {"town", PlaceType::Town},
+      {"village", PlaceType::Village},   {"suburb", PlaceType::Suburb},
+      {"quarter", PlaceType::Quarter},   {"neighbourhood", PlaceType::Neighbourhood},
+      {"hamlet", PlaceType::Hamlet},     {"isolated_dwelling", PlaceType::IsolatedDwelling}};
 
   auto const it = m.find(place);
   return it == m.end() ? PlaceType::Unknown : it->second;
@@ -47,22 +39,14 @@ char const * GetLabel(PlaceLevel level)
 {
   switch (level)
   {
-  case PlaceLevel::Country:
-    return "country";
-  case PlaceLevel::Region:
-    return "region";
-  case PlaceLevel:: Subregion:
-    return "subregion";
-  case PlaceLevel::Locality:
-    return "locality";
-  case PlaceLevel::Suburb:
-    return "suburb";
-  case PlaceLevel::Sublocality:
-    return "sublocality";
-  case PlaceLevel::Unknown:
-    return nullptr;
-  case PlaceLevel::Count:
-    UNREACHABLE();
+  case PlaceLevel::Country: return "country";
+  case PlaceLevel::Region: return "region";
+  case PlaceLevel::Subregion: return "subregion";
+  case PlaceLevel::Locality: return "locality";
+  case PlaceLevel::Suburb: return "suburb";
+  case PlaceLevel::Sublocality: return "sublocality";
+  case PlaceLevel::Unknown: return nullptr;
+  case PlaceLevel::Count: UNREACHABLE();
   }
   UNREACHABLE();
 }
@@ -106,8 +90,8 @@ void CollectorRegionInfo::FillRegionData(base::GeoObjectId const & osmId, OsmEle
       auto const adminLevel = std::stoi(al);
       // Administrative level is in the range [1 ... 12].
       // https://wiki.openstreetmap.org/wiki/Tag:boundary=administrative
-      rd.m_adminLevel = (adminLevel >= 1 && adminLevel <= 12) ?
-                          static_cast<AdminLevel>(adminLevel) : AdminLevel::Unknown;
+      rd.m_adminLevel = (adminLevel >= 1 && adminLevel <= 12) ? static_cast<AdminLevel>(adminLevel)
+                                                              : AdminLevel::Unknown;
     }
     catch (std::exception const & e)  // std::invalid_argument, std::out_of_range
     {

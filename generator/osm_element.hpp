@@ -18,20 +18,22 @@ struct OsmElement
   enum class EntityType
   {
     Unknown = 0x0,
-    Node = 0x6F6E, // "no"
-    Way = 0x6177, // "wa"
-    Relation = 0x6572, // "re"
-    Tag = 0x6174, // "ta"
-    Nd = 0x646E, // "nd"
-    Member = 0x656D, // "me"
-    Osm = 0x736F, // "os"
+    Node = 0x6F6E,      // "no"
+    Way = 0x6177,       // "wa"
+    Relation = 0x6572,  // "re"
+    Tag = 0x6174,       // "ta"
+    Nd = 0x646E,        // "nd"
+    Member = 0x656D,    // "me"
+    Osm = 0x736F,       // "os"
   };
 
   struct Member
   {
     Member() = default;
     Member(uint64_t ref, EntityType type, std::string const & role)
-      : m_ref(ref), m_type(type), m_role(role) {}
+      : m_ref(ref), m_type(type), m_role(role)
+    {
+    }
 
     bool operator==(Member const & other) const
     {
@@ -103,18 +105,12 @@ struct OsmElement
 
   bool operator==(OsmElement const & other) const
   {
-    return m_type == other.m_type
-        && m_id == other.m_id
-        && base::AlmostEqualAbs(m_lon, other.m_lon, 1e-7)
-        && base::AlmostEqualAbs(m_lat, other.m_lat, 1e-7)
-        && m_ref == other.m_ref
-        && m_k == other.m_k
-        && m_v == other.m_v
-        && m_memberType == other.m_memberType
-        && m_role == other.m_role
-        && m_nodes == other.m_nodes
-        && m_members == other.m_members
-        && m_tags == other.m_tags;
+    return m_type == other.m_type && m_id == other.m_id &&
+           base::AlmostEqualAbs(m_lon, other.m_lon, 1e-7) &&
+           base::AlmostEqualAbs(m_lat, other.m_lat, 1e-7) && m_ref == other.m_ref &&
+           m_k == other.m_k && m_v == other.m_v && m_memberType == other.m_memberType &&
+           m_role == other.m_role && m_nodes == other.m_nodes && m_members == other.m_members &&
+           m_tags == other.m_tags;
   }
 
   void AddNd(uint64_t ref) { m_nodes.emplace_back(ref); }

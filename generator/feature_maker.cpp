@@ -17,9 +17,7 @@ namespace generator
 {
 void FeatureMakerSimple::ParseParams(FeatureParams & params, OsmElement & p) const
 {
-  ftype::GetNameAndType(&p, params, [] (uint32_t type) {
-    return classif().IsTypeValid(type);
-  });
+  ftype::GetNameAndType(&p, params, [](uint32_t type) { return classif().IsTypeValid(type); });
 }
 
 bool FeatureMakerSimple::BuildFromNode(OsmElement & p, FeatureParams const & params)
@@ -73,8 +71,7 @@ bool FeatureMakerSimple::BuildFromRelation(OsmElement & p, FeatureParams const &
   auto const & holesGeometry = helper.GetHoles();
   auto & outer = helper.GetOuter();
   auto const size = m_queue.size();
-  auto const func = [&](FeatureBuilder::PointSeq const & pts, std::vector<uint64_t> const & ids)
-  {
+  auto const func = [&](FeatureBuilder::PointSeq const & pts, std::vector<uint64_t> const & ids) {
     FeatureBuilder fb;
     for (uint64_t id : ids)
       fb.AddOsmId(base::MakeOsmWay(id));

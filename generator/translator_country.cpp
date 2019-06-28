@@ -17,8 +17,8 @@
 
 #include "platform/platform.hpp"
 
-#include "base/file_name_utils.hpp"
 #include "base/assert.hpp"
+#include "base/file_name_utils.hpp"
 
 #include <cctype>
 #include <cstdint>
@@ -69,24 +69,33 @@ bool WikiDataValidator(std::string const & tagValue)
 }
 }  // namespace
 
-TranslatorCountry::TranslatorCountry(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
+TranslatorCountry::TranslatorCountry(std::shared_ptr<EmitterInterface> emitter,
+                                     cache::IntermediateDataReader & cache,
                                      feature::GenerateInfo const & info)
   : Translator(emitter, cache, std::make_shared<FeatureMaker>(cache))
-  , m_tagAdmixer(info.GetIntermediateFileName("ways", ".csv"), info.GetIntermediateFileName("towns", ".csv"))
+  , m_tagAdmixer(info.GetIntermediateFileName("ways", ".csv"),
+                 info.GetIntermediateFileName("towns", ".csv"))
   , m_tagReplacer(base::JoinPath(GetPlatform().ResourcesDir(), REPLACED_TAGS_FILE))
 {
   AddFilter(std::make_shared<FilterPlanet>());
-  AddFilter(std::make_shared<FilterElements>(base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
+  AddFilter(std::make_shared<FilterElements>(
+      base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
 
   AddCollector(std::make_shared<CollectorTag>(info.m_idToWikidataFilename, "wikidata" /* tagKey */,
                                               WikiDataValidator, true /* ignoreIfNotOpen */));
-  AddCollector(std::make_shared<feature::MetalinesBuilder>(info.GetIntermediateFileName(METALINES_FILENAME)));
+  AddCollector(std::make_shared<feature::MetalinesBuilder>(
+      info.GetIntermediateFileName(METALINES_FILENAME)));
 
-  // These are the four collector that collect additional information for the future building of routing section.
-  AddCollector(std::make_shared<MaxspeedsCollector>(info.GetIntermediateFileName(MAXSPEEDS_FILENAME)));
-  AddCollector(std::make_shared<routing::RestrictionWriter>(info.GetIntermediateFileName(RESTRICTIONS_FILENAME), cache));
-  AddCollector(std::make_shared<routing::RoadAccessWriter>(info.GetIntermediateFileName(ROAD_ACCESS_FILENAME)));
-  AddCollector(std::make_shared<routing::CameraCollector>(info.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME)));
+  // These are the four collector that collect additional information for the future building of
+  // routing section.
+  AddCollector(
+      std::make_shared<MaxspeedsCollector>(info.GetIntermediateFileName(MAXSPEEDS_FILENAME)));
+  AddCollector(std::make_shared<routing::RestrictionWriter>(
+      info.GetIntermediateFileName(RESTRICTIONS_FILENAME), cache));
+  AddCollector(std::make_shared<routing::RoadAccessWriter>(
+      info.GetIntermediateFileName(ROAD_ACCESS_FILENAME)));
+  AddCollector(std::make_shared<routing::CameraCollector>(
+      info.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME)));
 
   if (info.m_genAddresses)
     AddCollector(std::make_shared<CollectorAddresses>(info.GetAddressesFileName()));
@@ -112,7 +121,9 @@ TranslatorCountryWithAds::TranslatorCountryWithAds(std::shared_ptr<EmitterInterf
                                                    cache::IntermediateDataReader & cache,
                                                    feature::GenerateInfo const & info)
   : TranslatorCountry(emitter, cache, info)
-  , m_osmTagMixer(base::JoinPath(GetPlatform().ResourcesDir(), MIXED_TAGS_FILE)) {}
+  , m_osmTagMixer(base::JoinPath(GetPlatform().ResourcesDir(), MIXED_TAGS_FILE))
+{
+}
 
 void TranslatorCountryWithAds::Preprocess(OsmElement & element)
 {

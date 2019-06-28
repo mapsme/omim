@@ -24,22 +24,22 @@ EmitterCountry::EmitterCountry(feature::GenerateInfo const & info)
   m_processingChain->Add(std::make_shared<PrepareFeatureLayer>());
   m_processingChain->Add(std::make_shared<PromoCatalogLayer>(info.m_promoCatalogCitiesFilename));
   m_processingChain->Add(std::make_shared<CityBoundaryLayer>(m_cityBoundaryProcessor));
-  m_processingChain->Add(std::make_shared<BookingLayer>(info.m_bookingDataFilename, m_countryMapper));
-  m_processingChain->Add(std::make_shared<OpentableLayer>(info.m_opentableDataFilename, m_countryMapper));
+  m_processingChain->Add(
+      std::make_shared<BookingLayer>(info.m_bookingDataFilename, m_countryMapper));
+  m_processingChain->Add(
+      std::make_shared<OpentableLayer>(info.m_opentableDataFilename, m_countryMapper));
   m_processingChain->Add(std::make_shared<CountryMapperLayer>(m_countryMapper));
 
   if (info.m_emitCoasts)
   {
     auto const geomFilename = info.GetIntermediateFileName(WORLD_COASTS_FILE_NAME, ".geom");
     auto const worldCoastsFilename = info.GetTmpFileName(WORLD_COASTS_FILE_NAME);
-    m_processingChain->Add(std::make_shared<EmitCoastsLayer>(worldCoastsFilename, geomFilename, m_countryMapper));
+    m_processingChain->Add(
+        std::make_shared<EmitCoastsLayer>(worldCoastsFilename, geomFilename, m_countryMapper));
   }
 }
 
-void EmitterCountry::Process(FeatureBuilder & feature)
-{
-  m_processingChain->Handle(feature);
-}
+void EmitterCountry::Process(FeatureBuilder & feature) { m_processingChain->Handle(feature); }
 
 bool EmitterCountry::Finish()
 {

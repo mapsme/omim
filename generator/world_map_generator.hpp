@@ -53,8 +53,9 @@ public:
 
   ~WaterBoundaryChecker()
   {
-    LOG_SHORT(LINFO, ("Features checked:", m_totalFeatures, "borders checked:", m_totalBorders,
-                "borders skipped:", m_skippedBorders, "selected polygons:", m_selectedPolygons));
+    LOG_SHORT(LINFO,
+              ("Features checked:", m_totalFeatures, "borders checked:", m_totalBorders,
+               "borders skipped:", m_skippedBorders, "selected polygons:", m_selectedPolygons));
   }
 
   void LoadWaterGeometry(std::string const & rawGeometryFileName)
@@ -106,7 +107,8 @@ public:
     Earth
   };
 
-  void ProcessBoundary(feature::FeatureBuilder const & boundary, std::vector<feature::FeatureBuilder> & parts)
+  void ProcessBoundary(feature::FeatureBuilder const & boundary,
+                       std::vector<feature::FeatureBuilder> & parts)
   {
     auto const & line = boundary.GetGeometry().front();
 
@@ -120,8 +122,7 @@ public:
       m2::PointD const & p = line[i];
       m2::RectD r(p.x - kExtension, p.y - kExtension, p.x + kExtension, p.y + kExtension);
       size_t hits = 0;
-      m_tree.ForEachInRect(r, [&](m2::RegionD const & rgn)
-      {
+      m_tree.ForEachInRect(r, [&](m2::RegionD const & rgn) {
         ++m_selectedPolygons;
         hits += rgn.Contains(p) ? 1 : 0;
       });
@@ -191,7 +192,7 @@ public:
       m_skippedBorders++;
   }
 };
-} // namespace
+}  // namespace
 
 /// Process FeatureBuilder1 for world map. Main functions:
 /// - check for visibility in world map
@@ -205,8 +206,7 @@ class WorldMapGenerator
     std::map<uint32_t, size_t> m_mapTypes;
 
   public:
-    explicit EmitterImpl(std::string const & worldFilename)
-      : m_output(worldFilename)
+    explicit EmitterImpl(std::string const & worldFilename) : m_output(worldFilename)
     {
       LOG_SHORT(LINFO, ("Output World file:", worldFilename));
     }
@@ -214,11 +214,11 @@ class WorldMapGenerator
     ~EmitterImpl() override
     {
       Classificator const & c = classif();
-      
+
       std::stringstream ss;
       ss << std::endl;
       for (auto const & p : m_mapTypes)
-        ss << c.GetReadableObjectName(p.first) << " : " <<  p.second << std::endl;
+        ss << c.GetReadableObjectName(p.first) << " : " << p.second << std::endl;
       LOG_SHORT(LINFO, ("World types:", ss.str()));
     }
 
@@ -253,7 +253,8 @@ class WorldMapGenerator
   generator::PopularPlaces m_popularPlaces;
 
 public:
-  explicit WorldMapGenerator(std::string const & worldFilename, std::string const & rawGeometryFileName,
+  explicit WorldMapGenerator(std::string const & worldFilename,
+                             std::string const & rawGeometryFileName,
                              std::string const & popularPlacesFilename)
     : m_worldBucket(worldFilename)
     , m_merger(kPointCoordBits - (scales::GetUpperScale() - scales::GetUpperWorldScale()) / 2)
@@ -274,7 +275,8 @@ public:
     if (!popularPlacesFilename.empty())
       generator::LoadPopularPlaces(popularPlacesFilename, m_popularPlaces);
     else
-      LOG(LWARNING, ("popular_places_data option not set. Popular atractions will not be added to World.mwm"));
+      LOG(LWARNING, ("popular_places_data option not set. Popular atractions will not be added to "
+                     "World.mwm"));
   }
 
   void Process(feature::FeatureBuilder & fb)
@@ -332,8 +334,7 @@ public:
       if (GetPolygonArea(geometry.begin(), geometry.end()) < 0.01)
         return false;
     }
-    default:
-      break;
+    default: break;
     }
 
     if (feature::PreprocessForWorldMap(fb))
@@ -384,10 +385,7 @@ class SimpleCountryMapGenerator
 public:
   SimpleCountryMapGenerator(feature::GenerateInfo const & info) : m_bucket(info) {}
 
-  void operator()(feature::FeatureBuilder & fb)
-  {
-      m_bucket(fb);
-  }
+  void operator()(feature::FeatureBuilder & fb) { m_bucket(fb); }
 
   FeatureOut & Parent() { return m_bucket; }
 
@@ -399,8 +397,10 @@ template <class FeatureOut>
 class CountryMapGenerator : public SimpleCountryMapGenerator<FeatureOut>
 {
 public:
-  CountryMapGenerator(feature::GenerateInfo const & info) :
-    SimpleCountryMapGenerator<FeatureOut>(info) {}
+  CountryMapGenerator(feature::GenerateInfo const & info)
+    : SimpleCountryMapGenerator<FeatureOut>(info)
+  {
+  }
 
   void Process(feature::FeatureBuilder fb)
   {

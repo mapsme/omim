@@ -18,9 +18,8 @@ void TranslatorCollection::Emit(OsmElement /* const */ & element)
 
 bool TranslatorCollection::Finish()
 {
-  return std::all_of(std::begin(m_collection), std::end(m_collection), [](auto & t) {
-    return t->Finish();
-  });
+  return std::all_of(std::begin(m_collection), std::end(m_collection),
+                     [](auto & t) { return t->Finish(); });
 }
 
 void TranslatorCollection::GetNames(std::vector<std::string> & names) const

@@ -1,7 +1,7 @@
 #include "generator/sponsored_scoring.hpp"
 
-#include "generator/opentable_dataset.hpp"
 #include "generator/feature_builder.hpp"
+#include "generator/opentable_dataset.hpp"
 
 using namespace feature;
 

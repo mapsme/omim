@@ -4,15 +4,13 @@
 
 #include "indexer/cell_id.hpp"
 
-#include "geometry/tree4d.hpp"
 #include "geometry/region2d.hpp"
-
+#include "geometry/tree4d.hpp"
 
 namespace feature
 {
 class FeatureBuilder;
 }  // namespace feature
-
 
 class CoastlineFeaturesGenerator
 {

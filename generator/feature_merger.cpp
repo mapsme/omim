@@ -23,7 +23,8 @@ void MergedFeatureBuilder1::SetRound()
   m_roundBounds[0] = m_roundBounds[1] = GetOuterGeometry();
 }
 
-void MergedFeatureBuilder1::AppendFeature(MergedFeatureBuilder1 const & fb, bool fromBegin, bool toBack)
+void MergedFeatureBuilder1::AppendFeature(MergedFeatureBuilder1 const & fb, bool fromBegin,
+                                          bool toBack)
 {
   // Also merge Osm IDs for debugging
   m_osmIds.insert(m_osmIds.end(), fb.m_osmIds.begin(), fb.m_osmIds.end());
@@ -102,7 +103,7 @@ std::pair<m2::PointD, bool> MergedFeatureBuilder1::GetKeyPoint(size_t i) const
   i -= sz;
 
   // 4. return last point
-  ASSERT_EQUAL ( i, 0, () );
+  ASSERT_EQUAL(i, 0, ());
   return std::make_pair(LastPoint(), true);
 }
 
@@ -117,27 +118,23 @@ double MergedFeatureBuilder1::GetPriority() const
 
   double pr = 0.0;
   for (size_t i = 1; i < poly.size(); ++i)
-    pr += poly[i-1].SquaredLength(poly[i]);
+    pr += poly[i - 1].SquaredLength(poly[i]);
   return pr;
 }
-
 
 FeatureMergeProcessor::key_t FeatureMergeProcessor::get_key(m2::PointD const & p)
 {
   return PointToInt64Obsolete(p, m_coordBits);
 }
 
-FeatureMergeProcessor::FeatureMergeProcessor(uint32_t coordBits)
-: m_coordBits(coordBits)
+FeatureMergeProcessor::FeatureMergeProcessor(uint32_t coordBits) : m_coordBits(coordBits) {}
+
+void FeatureMergeProcessor::operator()(FeatureBuilder const & fb)
 {
+  this->operator()(new MergedFeatureBuilder1(fb));
 }
 
-void FeatureMergeProcessor::operator() (FeatureBuilder const & fb)
-{
-  this->operator() (new MergedFeatureBuilder1(fb));
-}
-
-void FeatureMergeProcessor::operator() (MergedFeatureBuilder1 * p)
+void FeatureMergeProcessor::operator()(MergedFeatureBuilder1 * p)
 {
   key_t const k1 = get_key(p->FirstPoint());
   key_t const k2 = get_key(p->LastPoint());
@@ -150,7 +147,8 @@ void FeatureMergeProcessor::operator() (MergedFeatureBuilder1 * p)
     ///@ todo Do it only for small round features!
     p->SetRound();
 
-    p->ForEachMiddlePoints(std::bind(&FeatureMergeProcessor::Insert, this, std::placeholders::_1, p));
+    p->ForEachMiddlePoints(
+        std::bind(&FeatureMergeProcessor::Insert, this, std::placeholders::_1, p));
   }
 }
 
@@ -166,7 +164,8 @@ void FeatureMergeProcessor::Remove(key_t key, MergedFeatureBuilder1 const * p)
   {
     vector_t & v = i->second;
     v.erase(remove(v.begin(), v.end(), p), v.end());
-    if (v.empty()) m_map.erase(i);
+    if (v.empty())
+      m_map.erase(i);
   }
 }
 
@@ -180,9 +179,10 @@ void FeatureMergeProcessor::Remove(MergedFeatureBuilder1 const * p)
     Remove(k2, p);
   else
   {
-    ASSERT ( p->IsRound(), () );
+    ASSERT(p->IsRound(), ());
 
-    p->ForEachMiddlePoints(std::bind(&FeatureMergeProcessor::Remove1, this, std::placeholders::_1, p));
+    p->ForEachMiddlePoints(
+        std::bind(&FeatureMergeProcessor::Remove1, this, std::placeholders::_1, p));
   }
 }
 
@@ -210,7 +210,8 @@ void FeatureMergeProcessor::DoMerge(FeatureEmitterIFace & emitter)
 
     // Iterate through key points while merging.
     size_t ind = 0;
-    while (ind < curr.GetKeyPointsCount())  // GetKeyPointsCount() can be different on each iteration
+    while (ind <
+           curr.GetKeyPointsCount())  // GetKeyPointsCount() can be different on each iteration
     {
       std::pair<m2::PointD, bool> const pt = curr.GetKeyPoint(ind++);
       map_t::const_iterator it = m_map.find(get_key(pt.first));
@@ -227,7 +228,7 @@ void FeatureMergeProcessor::DoMerge(FeatureEmitterIFace & emitter)
           {
             double const pr = pTest->GetPriority();
             // It's not necessery assert, because it's possible in source data
-//            ASSERT_GREATER ( pr, 0.0, () );
+            //            ASSERT_GREATER ( pr, 0.0, () );
             if (pr > bestPr)
             {
               pp = pTest;
@@ -241,7 +242,8 @@ void FeatureMergeProcessor::DoMerge(FeatureEmitterIFace & emitter)
         {
           bool const toBack = pt.second;
           bool fromBegin = true;
-          if ((pt.first.SquaredLength(pp->FirstPoint()) > pt.first.SquaredLength(pp->LastPoint())) == toBack)
+          if ((pt.first.SquaredLength(pp->FirstPoint()) >
+               pt.first.SquaredLength(pp->LastPoint())) == toBack)
             fromBegin = false;
 
           curr.AppendFeature(*pp, fromBegin, toBack);
@@ -273,7 +275,8 @@ void FeatureMergeProcessor::DoMerge(FeatureEmitterIFace & emitter)
     }
 
     // Delete if the feature was removed from map.
-    if (isRemoved) delete p;
+    if (isRemoved)
+      delete p;
   }
 
   if (m_last.NotEmpty())
@@ -289,7 +292,8 @@ uint32_t FeatureTypesProcessor::GetType(char const * arr[], size_t n)
 
 void FeatureTypesProcessor::CorrectType(uint32_t & t) const
 {
-  if (m_dontNormalize.count(t) > 0) return;
+  if (m_dontNormalize.count(t) > 0)
+    return;
 
   // 1. get normalized type:
   // highway-motorway-bridge => highway-motorway
@@ -306,7 +310,7 @@ void FeatureTypesProcessor::SetMappingTypes(char const * arr1[2], char const * a
   m_mapping[GetType(arr1, 2)] = GetType(arr2, 2);
 }
 
-MergedFeatureBuilder1 * FeatureTypesProcessor::operator() (FeatureBuilder const & fb)
+MergedFeatureBuilder1 * FeatureTypesProcessor::operator()(FeatureBuilder const & fb)
 {
   MergedFeatureBuilder1 * p = new MergedFeatureBuilder1(fb);
 
@@ -325,10 +329,8 @@ MergedFeatureBuilder1 * FeatureTypesProcessor::operator() (FeatureBuilder const 
   return p;
 }
 
-
 namespace feature
 {
-
 class RemoveSolver
 {
   int m_lowScale, m_upScale;
@@ -336,7 +338,8 @@ class RemoveSolver
   bool m_doNotRemoveSponsoredTypes;
 
 public:
-  RemoveSolver(int lowScale, int upScale, bool doNotRemoveSpecialTypes, bool doNotRemoveSponsoredTypes)
+  RemoveSolver(int lowScale, int upScale, bool doNotRemoveSpecialTypes,
+               bool doNotRemoveSponsoredTypes)
     : m_lowScale(lowScale)
     , m_upScale(upScale)
     , m_doNotRemoveSpecialTypes(doNotRemoveSpecialTypes)
@@ -344,7 +347,7 @@ public:
   {
   }
 
-  bool operator() (uint32_t type) const
+  bool operator()(uint32_t type) const
   {
     if (m_doNotRemoveSponsoredTypes && ftypes::IsSponsoredChecker::Instance()(type))
       return false;
@@ -394,4 +397,4 @@ bool PreprocessForCountryMap(FeatureBuilder & fb)
 
   return true;
 }
-}
+}  // namespace feature

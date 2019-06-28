@@ -34,30 +34,17 @@ public:
   using ExcludedIdsContainer = std::unordered_set<ObjectId, typename ObjectId::Hash>;
 
   SponsoredObjectStorage(double distanceLimitMeters, size_t maxSelectedElements)
-    : m_distanceLimitMeters(distanceLimitMeters)
-    , m_maxSelectedElements(maxSelectedElements)
+    : m_distanceLimitMeters(distanceLimitMeters), m_maxSelectedElements(maxSelectedElements)
   {
   }
 
-  double GetDistanceLimitInMeters() const
-  {
-    return m_distanceLimitMeters;
-  }
+  double GetDistanceLimitInMeters() const { return m_distanceLimitMeters; }
 
-  size_t GetMaxSelectedElements() const
-  {
-    return m_maxSelectedElements;
-  }
+  size_t GetMaxSelectedElements() const { return m_maxSelectedElements; }
 
-  ObjectsContainer const & GetObjects() const
-  {
-    return m_objects;
-  }
+  ObjectsContainer const & GetObjects() const { return m_objects; }
 
-  size_t Size() const
-  {
-    return m_objects.size();
-  }
+  size_t Size() const { return m_objects.size(); }
 
   void LoadData(std::string const & dataPath)
   {
@@ -71,7 +58,8 @@ public:
       return;
     }
 
-    auto const excludedIdsPath = base::JoinPath(GetPlatform().ResourcesDir(), BOOKING_EXCLUDED_FILE);
+    auto const excludedIdsPath =
+        base::JoinPath(GetPlatform().ResourcesDir(), BOOKING_EXCLUDED_FILE);
 
     LoadData(dataSource, LoadExcludedIds(excludedIdsPath));
   }

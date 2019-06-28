@@ -157,8 +157,7 @@ UNIT_TEST(RoadAccess_Access_Multiple_Vehicle_Types)
   TEST_EQUAL(carRoadAccess.GetFeatureType(1 /* featureId */), RoadAccess::Type::Private, ());
   TEST_EQUAL(carRoadAccess.GetFeatureType(2 /* featureId */), RoadAccess::Type::Private, ());
   TEST_EQUAL(carRoadAccess.GetFeatureType(3 /* featureId */), RoadAccess::Type::Yes, ());
-  TEST_EQUAL(carRoadAccess.GetFeatureType(4 /* featureId */), RoadAccess::Type::Destination,
-             ());
+  TEST_EQUAL(carRoadAccess.GetFeatureType(4 /* featureId */), RoadAccess::Type::Destination, ());
   TEST_EQUAL(bicycleRoadAccess.GetFeatureType(3 /* featureId */), RoadAccess::Type::No, ());
 }
 }  // namespace

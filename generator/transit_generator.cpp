@@ -115,19 +115,22 @@ void CalculateBestPedestrianSegments(string const & mwmPath, CountryId const & c
                                       true /* isOutgoing */, *worldGraph, bestSegment))
       {
         CHECK_EQUAL(bestSegment.GetMwmId(), 0, ());
-        graphData.SetGateBestPedestrianSegment(i, SingleMwmSegment(
-            bestSegment.GetFeatureId(), bestSegment.GetSegmentIdx(), bestSegment.IsForward()));
+        graphData.SetGateBestPedestrianSegment(
+            i, SingleMwmSegment(bestSegment.GetFeatureId(), bestSegment.GetSegmentIdx(),
+                                bestSegment.IsForward()));
       }
     }
     catch (MwmIsNotAliveException const & e)
     {
-      LOG(LCRITICAL, ("Point of a gate belongs to the processed mwm:", countryId, ","
-          "but the mwm is not alive. Gate:", gate, e.what()));
+      LOG(LCRITICAL, ("Point of a gate belongs to the processed mwm:", countryId,
+                      ","
+                      "but the mwm is not alive. Gate:",
+                      gate, e.what()));
     }
     catch (RootException const & e)
     {
       LOG(LCRITICAL, ("Exception while looking for the best segment of a gate. CountryId:",
-          countryId, ". Gate:", gate, e.what()));
+                      countryId, ". Gate:", gate, e.what()));
     }
   }
 }
@@ -137,8 +140,8 @@ namespace routing
 {
 namespace transit
 {
-void DeserializeFromJson(OsmIdToFeatureIdsMap const & mapping,
-                         string const & transitJsonPath, GraphData & data)
+void DeserializeFromJson(OsmIdToFeatureIdsMap const & mapping, string const & transitJsonPath,
+                         GraphData & data)
 {
   Platform::EFileType fileType;
   Platform::EError const errCode = Platform::GetFileType(transitJsonPath, fileType);
@@ -166,7 +169,8 @@ void DeserializeFromJson(OsmIdToFeatureIdsMap const & mapping,
   }
   catch (RootException const & e)
   {
-    LOG(LCRITICAL, ("Exception while parsing transit graph json. Json file path:", transitJsonPath, e.what()));
+    LOG(LCRITICAL,
+        ("Exception while parsing transit graph json. Json file path:", transitJsonPath, e.what()));
   }
 }
 
@@ -203,7 +207,7 @@ void BuildTransit(string const & mwmDir, CountryId const & countryId,
   }
 
   if (jointData.IsEmpty())
-    return; // Empty transit section.
+    return;  // Empty transit section.
 
   ProcessGraph(mwmPath, countryId, mapping, jointData);
   jointData.CheckValidSortedUnique();

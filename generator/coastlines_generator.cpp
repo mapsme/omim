@@ -6,8 +6,8 @@
 
 #include "geometry/region2d/binary_operators.hpp"
 
-#include "base/string_utils.hpp"
 #include "base/logging.hpp"
+#include "base/string_utils.hpp"
 
 #include <condition_variable>
 #include <functional>
@@ -28,60 +28,63 @@ CoastlineFeaturesGenerator::CoastlineFeaturesGenerator(uint32_t coastType)
 
 namespace
 {
-  m2::RectD GetLimitRect(RegionT const & rgn)
+m2::RectD GetLimitRect(RegionT const & rgn)
+{
+  RectT r = rgn.GetRect();
+  return m2::RectD(r.minX(), r.minY(), r.maxX(), r.maxY());
+}
+
+inline PointT D2I(m2::PointD const & p)
+{
+  m2::PointU const pu = PointDToPointU(p, kPointCoordBits);
+  return PointT(static_cast<int32_t>(pu.x), static_cast<int32_t>(pu.y));
+}
+
+template <class Tree>
+class DoCreateRegion
+{
+  Tree & m_tree;
+
+  RegionT m_rgn;
+  m2::PointD m_pt;
+  bool m_exist;
+
+public:
+  template <typename T>
+  DoCreateRegion(T && tree) : m_tree(std::forward<T>(tree)), m_exist(false)
   {
-    RectT r = rgn.GetRect();
-    return m2::RectD(r.minX(), r.minY(), r.maxX(), r.maxY());
   }
 
-  inline PointT D2I(m2::PointD const & p)
+  bool operator()(m2::PointD const & p)
   {
-    m2::PointU const pu = PointDToPointU(p, kPointCoordBits);
-    return PointT(static_cast<int32_t>(pu.x), static_cast<int32_t>(pu.y));
+    // This logic is to skip last polygon point (that is equal to first).
+
+    if (m_exist)
+    {
+      // add previous point to region
+      m_rgn.AddPoint(D2I(m_pt));
+    }
+    else
+      m_exist = true;
+
+    // save current point
+    m_pt = p;
+    return true;
   }
 
-  template <class Tree> class DoCreateRegion
+  void EndRegion()
   {
-    Tree & m_tree;
+    m_tree.Add(m_rgn, GetLimitRect(m_rgn));
 
-    RegionT m_rgn;
-    m2::PointD m_pt;
-    bool m_exist;
-
-  public:
-    template <typename T>
-    DoCreateRegion(T && tree) : m_tree(std::forward<T>(tree)), m_exist(false) {}
-
-    bool operator()(m2::PointD const & p)
-    {
-      // This logic is to skip last polygon point (that is equal to first).
-
-      if (m_exist)
-      {
-        // add previous point to region
-        m_rgn.AddPoint(D2I(m_pt));
-      }
-      else
-        m_exist = true;
-
-      // save current point
-      m_pt = p;
-      return true;
-    }
-
-    void EndRegion()
-    {
-      m_tree.Add(m_rgn, GetLimitRect(m_rgn));
-
-      m_rgn = RegionT();
-      m_exist = false;
-    }
-  };
+    m_rgn = RegionT();
+    m_exist = false;
+  }
+};
 }  // namespace
 
 void CoastlineFeaturesGenerator::AddRegionToTree(FeatureBuilder const & fb)
 {
-  ASSERT ( fb.IsGeometryClosed(), () );
+  ASSERT(fb.IsGeometryClosed(), ());
 
   DoCreateRegion<TTree> createRgn(m_tree);
   fb.ForEachGeometryPointEx(createRgn);
@@ -97,51 +100,44 @@ void CoastlineFeaturesGenerator::Process(FeatureBuilder const & fb)
 
 namespace
 {
-  class DoAddToTree : public FeatureEmitterIFace
+class DoAddToTree : public FeatureEmitterIFace
+{
+  CoastlineFeaturesGenerator & m_rMain;
+  size_t m_notMergedCoastsCount;
+  size_t m_totalNotMergedCoastsPoints;
+
+public:
+  explicit DoAddToTree(CoastlineFeaturesGenerator & rMain)
+    : m_rMain(rMain), m_notMergedCoastsCount(0), m_totalNotMergedCoastsPoints(0)
   {
-    CoastlineFeaturesGenerator & m_rMain;
-    size_t m_notMergedCoastsCount;
-    size_t m_totalNotMergedCoastsPoints;
+  }
 
-  public:
-    explicit DoAddToTree(CoastlineFeaturesGenerator & rMain)
-      : m_rMain(rMain), m_notMergedCoastsCount(0), m_totalNotMergedCoastsPoints(0) {}
-
-    virtual void operator() (FeatureBuilder const & fb)
+  virtual void operator()(FeatureBuilder const & fb)
+  {
+    if (fb.IsGeometryClosed())
+      m_rMain.AddRegionToTree(fb);
+    else
     {
-      if (fb.IsGeometryClosed())
-        m_rMain.AddRegionToTree(fb);
+      base::GeoObjectId const firstWay = fb.GetFirstOsmId();
+      base::GeoObjectId const lastWay = fb.GetLastOsmId();
+      if (firstWay == lastWay)
+        LOG(LINFO, ("Not merged coastline, way", firstWay.GetSerialId(), "(", fb.GetPointsCount(),
+                    "points)"));
       else
-      {
-        base::GeoObjectId const firstWay = fb.GetFirstOsmId();
-        base::GeoObjectId const lastWay = fb.GetLastOsmId();
-        if (firstWay == lastWay)
-          LOG(LINFO, ("Not merged coastline, way", firstWay.GetSerialId(), "(", fb.GetPointsCount(),
-                      "points)"));
-        else
-          LOG(LINFO, ("Not merged coastline, ways", firstWay.GetSerialId(), "to",
-                      lastWay.GetSerialId(), "(", fb.GetPointsCount(), "points)"));
-        ++m_notMergedCoastsCount;
-        m_totalNotMergedCoastsPoints += fb.GetPointsCount();
-      }
+        LOG(LINFO, ("Not merged coastline, ways", firstWay.GetSerialId(), "to",
+                    lastWay.GetSerialId(), "(", fb.GetPointsCount(), "points)"));
+      ++m_notMergedCoastsCount;
+      m_totalNotMergedCoastsPoints += fb.GetPointsCount();
     }
+  }
 
-    bool HasNotMergedCoasts() const
-    {
-      return m_notMergedCoastsCount != 0;
-    }
+  bool HasNotMergedCoasts() const { return m_notMergedCoastsCount != 0; }
 
-    size_t GetNotMergedCoastsCount() const
-    {
-      return m_notMergedCoastsCount;
-    }
+  size_t GetNotMergedCoastsCount() const { return m_notMergedCoastsCount; }
 
-    size_t GetNotMergedCoastsPoints() const
-    {
-      return m_totalNotMergedCoastsPoints;
-    }
-  };
-}
+  size_t GetNotMergedCoastsPoints() const { return m_totalNotMergedCoastsPoints; }
+};
+}  // namespace
 
 bool CoastlineFeaturesGenerator::Finish()
 {
@@ -208,7 +204,7 @@ public:
     }
   }
 };
-}
+}  // namespace
 
 class RegionInCellSplitter final
 {
@@ -234,9 +230,7 @@ protected:
   Context & m_ctx;
   TIndex const & m_index;
 
-  RegionInCellSplitter(Context & ctx,TIndex const & index)
-  : m_ctx(ctx), m_index(index)
-  {}
+  RegionInCellSplitter(Context & ctx, TIndex const & index) : m_ctx(ctx), m_index(index) {}
 
 public:
   static bool Process(size_t numThreads, size_t baseScale, TIndex const & index,
@@ -294,7 +288,8 @@ public:
     while (true)
     {
       unique_lock<mutex> lock(m_ctx.mutexTasks);
-      m_ctx.listCondVar.wait(lock, [this]{return (!m_ctx.listTasks.empty() || m_ctx.inWork == 0);});
+      m_ctx.listCondVar.wait(lock,
+                             [this] { return (!m_ctx.listTasks.empty() || m_ctx.inWork == 0); });
       if (m_ctx.listTasks.empty())
         break;
 
@@ -326,8 +321,8 @@ void CoastlineFeaturesGenerator::GetFeatures(vector<FeatureBuilder> & features)
   mutex featuresMutex;
   RegionInCellSplitter::Process(
       maxThreads, RegionInCellSplitter::kStartLevel, m_tree,
-      [&features, &featuresMutex, this](RegionInCellSplitter::TCell const & cell, DoDifference & cellData)
-      {
+      [&features, &featuresMutex, this](RegionInCellSplitter::TCell const & cell,
+                                        DoDifference & cellData) {
         FeatureBuilder fb;
         fb.SetCoastCell(cell.ToInt64(RegionInCellSplitter::kHighLevel + 1));
 

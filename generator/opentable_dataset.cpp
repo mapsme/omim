@@ -18,13 +18,14 @@ using namespace feature;
 
 namespace generator
 {
-// OpentableRestaurant ------------------------------------------------------------------------------
+// OpentableRestaurant
+// ------------------------------------------------------------------------------
 OpentableRestaurant::OpentableRestaurant(std::string const & src)
 {
   vector<std::string> rec;
   strings::ParseCSVRow(src, '\t', rec);
-  CHECK_EQUAL(rec.size(), FieldsCount(), ("Error parsing restaurants.tsv line:",
-                                          boost::replace_all_copy(src, "\t", "\\t")));
+  CHECK_EQUAL(rec.size(), FieldsCount(),
+              ("Error parsing restaurants.tsv line:", boost::replace_all_copy(src, "\t", "\\t")));
 
   CLOG(LDEBUG, strings::to_uint(rec[FieldIndex(Fields::Id)], m_id.Get()), ());
   CLOG(LDEBUG, strings::to_double(rec[FieldIndex(Fields::Latitude)], m_latLon.m_lat), ());
@@ -35,7 +36,8 @@ OpentableRestaurant::OpentableRestaurant(std::string const & src)
   m_descUrl = rec[FieldIndex(Fields::DescUrl)];
 }
 
-// OpentableDataset ---------------------------------------------------------------------------------
+// OpentableDataset
+// ---------------------------------------------------------------------------------
 template <>
 bool OpentableDataset::NecessaryMatchingConditionHolds(FeatureBuilder const & fb) const
 {
@@ -67,7 +69,8 @@ void OpentableDataset::PreprocessMatchedOsmObject(ObjectId const matchedObjId, F
 }
 
 template <>
-OpentableDataset::ObjectId OpentableDataset::FindMatchingObjectIdImpl(FeatureBuilder const & fb) const
+OpentableDataset::ObjectId OpentableDataset::FindMatchingObjectIdImpl(
+    FeatureBuilder const & fb) const
 {
   auto const name = fb.GetName(StringUtf8Multilang::kDefaultCode);
 

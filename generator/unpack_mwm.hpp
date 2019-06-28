@@ -4,7 +4,6 @@
 
 #include <string>
 
-
 // Unpack each section of mwm into a separate file with name filePath.sectionName
 void UnpackMwm(std::string const & filePath);
 

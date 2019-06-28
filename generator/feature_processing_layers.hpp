@@ -80,13 +80,13 @@ private:
   std::shared_ptr<LayerBase> m_next;
 };
 
-// Responsibility of class RepresentationLayer is converting features from one form to another for countries.
-// Here we can use the knowledge of the rules for drawing objects.
-// The class transfers control to the CityBoundaryProcessor if for the feature it is a city, town or village.
-// Osm object can be represented as feature of following geometry types: point, line, area depending on
-// its types and geometry. Sometimes one osm object can be represented as two features e.g. object with
-// closed geometry with types "leisure=playground" and "barrier=fence" splits into two objects: area object
-// with type "leisure=playground" and line object with type "barrier=fence".
+// Responsibility of class RepresentationLayer is converting features from one form to another for
+// countries. Here we can use the knowledge of the rules for drawing objects. The class transfers
+// control to the CityBoundaryProcessor if for the feature it is a city, town or village. Osm object
+// can be represented as feature of following geometry types: point, line, area depending on its
+// types and geometry. Sometimes one osm object can be represented as two features e.g. object with
+// closed geometry with types "leisure=playground" and "barrier=fence" splits into two objects: area
+// object with type "leisure=playground" and line object with type "barrier=fence".
 class RepresentationLayer : public LayerBase
 {
 public:
@@ -150,7 +150,8 @@ private:
 class OpentableLayer : public LayerBase
 {
 public:
-  explicit OpentableLayer(std::string const & filename, std::shared_ptr<CountryMapper> countryMapper);
+  explicit OpentableLayer(std::string const & filename,
+                          std::shared_ptr<CountryMapper> countryMapper);
 
   // LayerBase overrides:
   void Handle(feature::FeatureBuilder & feature) override;
@@ -189,7 +190,8 @@ private:
 class EmitCoastsLayer : public LayerBase
 {
 public:
-  explicit EmitCoastsLayer(std::string const & worldCoastsFilename, std::string const & geometryFilename,
+  explicit EmitCoastsLayer(std::string const & worldCoastsFilename,
+                           std::string const & geometryFilename,
                            std::shared_ptr<CountryMapper> countryMapper);
 
   // LayerBase overrides:

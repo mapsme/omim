@@ -60,7 +60,7 @@ struct RoughPoint
   int32_t y;
 };
 
-bool operator< (RoughPoint const & l, RoughPoint const & r)
+bool operator<(RoughPoint const & l, RoughPoint const & r)
 {
   if (l.x != r.x)
     return l.x < r.x;
@@ -117,8 +117,8 @@ class Processor
 public:
   generator::SrtmTileManager & m_srtmManager;
   set<RoughPoint> m_uniqueRoadPoints;
-  /// Key is an altitude difference for a feature in meters. If a feature goes up the key is greater then 0.
-  /// Value is a number of features.
+  /// Key is an altitude difference for a feature in meters. If a feature goes up the key is greater
+  /// then 0. Value is a number of features.
   map<TAltitude, uint32_t> m_altitudeDiffs;
   /// Key is a length of a feature in meters. Value is a number of features.
   map<uint32_t, uint32_t> m_featureLength;
@@ -350,10 +350,12 @@ int main(int argc, char ** argv)
   PrintCont(processor.m_featureUp, "Feature go up in meters", " feature(s) go up ", " meter(s)");
   WriteCSV(processor.m_featureUp, "feature_up.csv");
 
-  PrintCont(processor.m_featureDown, "Feature go down in meters", " feature(s) go down ", " meter(s)");
+  PrintCont(processor.m_featureDown, "Feature go down in meters", " feature(s) go down ",
+            " meter(s)");
   WriteCSV(processor.m_featureDown, "feature_down.csv");
 
-  PrintCont(processor.m_diffFromLinear, "Altitude deviation of internal feature points from linear model.",
+  PrintCont(processor.m_diffFromLinear,
+            "Altitude deviation of internal feature points from linear model.",
             " internal feature point(s) deviate from linear model with ", " meter(s)");
 
   PrintCont(processor.m_leastSquaresDiff,

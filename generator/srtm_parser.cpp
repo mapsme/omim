@@ -36,10 +36,7 @@ struct UnzipMemDelegate : public ZipFileReader::Delegate
 }  // namespace
 
 // SrtmTile ----------------------------------------------------------------------------------------
-SrtmTile::SrtmTile()
-{
-  Invalidate();
-}
+SrtmTile::SrtmTile() { Invalidate(); }
 
 SrtmTile::SrtmTile(SrtmTile && rhs) : m_data(move(rhs.m_data)), m_valid(rhs.m_valid)
 {

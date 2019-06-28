@@ -101,17 +101,13 @@ public:
   }
 
 private:
-
   TMockAltitudes m_altitudes;
 };
 
 class MockNoAltitudeGetter : public AltitudeGetter
 {
 public:
-  TAltitude GetAltitude(m2::PointD const &) override
-  {
-    return kInvalidAltitude;
-  }
+  TAltitude GetAltitude(m2::PointD const &) override { return kInvalidAltitude; }
 };
 
 vector<m2::PointD> ExtractPoints(TPoint3DList const & geom3D)
@@ -127,7 +123,8 @@ void BuildMwmWithoutAltitudes(vector<TPoint3DList> const & roads, LocalCountryFi
   generator::tests_support::TestMwmBuilder builder(country, feature::DataHeader::country);
 
   for (TPoint3DList const & geom3D : roads)
-    builder.Add(generator::tests_support::TestStreet(ExtractPoints(geom3D), std::string(), std::string()));
+    builder.Add(
+        generator::tests_support::TestStreet(ExtractPoints(geom3D), std::string(), std::string()));
 }
 
 void TestAltitudes(DataSource const & dataSource, MwmSet::MwmId const & mwmId,
@@ -153,7 +150,8 @@ void TestAltitudes(DataSource const & dataSource, MwmSet::MwmId const & mwmId,
     for (size_t i = 0; i < pointsCount; ++i)
     {
       TAltitude const fromGetter = expectedAltitudes.GetAltitude(f.GetPoint(i));
-      TAltitude const expected = (fromGetter == kInvalidAltitude ? kDefaultAltitudeMeters : fromGetter);
+      TAltitude const expected =
+          (fromGetter == kInvalidAltitude ? kDefaultAltitudeMeters : fromGetter);
       TEST_EQUAL(expected, altitudes[i], ("A wrong altitude"));
     }
   };
@@ -184,10 +182,12 @@ void TestAltitudesBuilding(vector<TPoint3DList> const & roads, bool hasAltitudeE
   auto const regResult = dataSource.RegisterMap(country);
   TEST_EQUAL(regResult.second, MwmSet::RegResult::Success, ());
 
-  TestAltitudes(dataSource, regResult.first /* mwmId */, mwmPath, hasAltitudeExpected, altitudeGetter);
+  TestAltitudes(dataSource, regResult.first /* mwmId */, mwmPath, hasAltitudeExpected,
+                altitudeGetter);
 }
 
-void TestBuildingAllFeaturesHaveAltitude(vector<TPoint3DList> const & roads, bool hasAltitudeExpected)
+void TestBuildingAllFeaturesHaveAltitude(vector<TPoint3DList> const & roads,
+                                         bool hasAltitudeExpected)
 {
   MockAltitudeGetter altitudeGetter(roads);
   TestAltitudesBuilding(roads, hasAltitudeExpected, altitudeGetter);

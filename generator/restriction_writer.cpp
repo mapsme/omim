@@ -20,29 +20,22 @@ namespace
 {
 using namespace routing;
 
-std::vector<std::pair<std::string, Restriction::Type>> const kRestrictionTypes ={
-    {"no_entry", Restriction::Type::No},
-    {"no_exit", Restriction::Type::No},
-    {"no_left_turn", Restriction::Type::No},
-    {"no_right_turn", Restriction::Type::No},
-    {"no_straight_on", Restriction::Type::No},
-    {"no_u_turn", Restriction::Type::NoUTurn},
-    {"only_left_turn", Restriction::Type::Only},
-    {"only_right_turn", Restriction::Type::Only},
-    {"only_straight_on", Restriction::Type::Only},
-    {"only_u_turn", Restriction::Type::OnlyUTurn}
-};
+std::vector<std::pair<std::string, Restriction::Type>> const kRestrictionTypes = {
+    {"no_entry", Restriction::Type::No},           {"no_exit", Restriction::Type::No},
+    {"no_left_turn", Restriction::Type::No},       {"no_right_turn", Restriction::Type::No},
+    {"no_straight_on", Restriction::Type::No},     {"no_u_turn", Restriction::Type::NoUTurn},
+    {"only_left_turn", Restriction::Type::Only},   {"only_right_turn", Restriction::Type::Only},
+    {"only_straight_on", Restriction::Type::Only}, {"only_u_turn", Restriction::Type::OnlyUTurn}};
 
 /// \brief Converts restriction type form string to RestrictionCollector::Type.
 /// \returns true if conversion was successful and false otherwise.
 bool TagToType(std::string const & tag, Restriction::Type & type)
 {
-  auto const it = std::find_if(kRestrictionTypes.cbegin(), kRestrictionTypes.cend(),
-                          [&tag](std::pair<std::string, Restriction::Type> const & v) {
-    return v.first == tag;
-  });
+  auto const it = std::find_if(
+      kRestrictionTypes.cbegin(), kRestrictionTypes.cend(),
+      [&tag](std::pair<std::string, Restriction::Type> const & v) { return v.first == tag; });
   if (it == kRestrictionTypes.cend())
-    return false; // Unsupported restriction type.
+    return false;  // Unsupported restriction type.
 
   type = it->second;
   return true;
@@ -97,7 +90,7 @@ RestrictionWriter::RestrictionWriter(std::string const & fullPath,
   Open(fullPath);
 }
 
-//static
+// static
 RestrictionWriter::ViaType RestrictionWriter::ConvertFromString(std::string const & str)
 {
   if (str == kNodeString)
@@ -140,12 +133,9 @@ bool ValidateOsmRestriction(std::vector<RelationElement::Member> & from,
   // https://wiki.openstreetmap.org/wiki/Relation:restriction#Members
   if (via.size() != 1)
   {
-    bool const allMembersAreWays =
-      std::all_of(via.begin(), via.end(),
-                  [&](auto const & member)
-                  {
-                    return GetType(relationElement, member.first) == OsmElement::EntityType::Way;
-                  });
+    bool const allMembersAreWays = std::all_of(via.begin(), via.end(), [&](auto const & member) {
+      return GetType(relationElement, member.first) == OsmElement::EntityType::Way;
+    });
 
     if (!allMembersAreWays)
       return false;
@@ -181,11 +171,11 @@ void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
   if (!TagToType(tagIt->second, type))
     return;
 
-  auto const viaType =
-      GetType(relationElement, via.back().first) == OsmElement::EntityType::Node ? ViaType::Node
-                                                                                 : ViaType::Way;
+  auto const viaType = GetType(relationElement, via.back().first) == OsmElement::EntityType::Node
+                           ? ViaType::Node
+                           : ViaType::Way;
 
-  auto const printHeader = [&]() { 
+  auto const printHeader = [&]() {
     m_stream << DebugPrint(type) << "," << DebugPrint(viaType) << ",";
   };
 

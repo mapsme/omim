@@ -19,7 +19,8 @@ template <typename Dataset>
 class EmitterBooking : public EmitterInterface
 {
 public:
-  EmitterBooking(Dataset const & dataset, map<base::GeoObjectId, feature::FeatureBuilder> & features)
+  EmitterBooking(Dataset const & dataset,
+                 map<base::GeoObjectId, feature::FeatureBuilder> & features)
     : m_dataset(dataset), m_features(features)
   {
   }
@@ -31,10 +32,7 @@ public:
       m_features.emplace(fb.GetMostGenericOsmId(), fb);
   }
 
-  void GetNames(vector<string> & names) const override
-  {
-    names.clear();
-  }
+  void GetNames(vector<string> & names) const override { names.clear(); }
 
   bool Finish() override
   {

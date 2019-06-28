@@ -9,15 +9,13 @@ using namespace feature;
 
 namespace generator
 {
-Place::Place(FeatureBuilder const & ft, uint32_t type, bool saveParams) :
-  m_ft(ft),
-  m_pt(ft.GetKeyPoint()),
-  m_type(type)
+Place::Place(FeatureBuilder const & ft, uint32_t type, bool saveParams)
+  : m_ft(ft), m_pt(ft.GetKeyPoint()), m_type(type)
 {
   using namespace ftypes;
 
   if (!saveParams)
-    m_ft.SetParams({}/* params */);
+    m_ft.SetParams({} /* params */);
 
   switch (IsLocalityChecker::Instance().GetType(m_type))
   {
@@ -37,8 +35,7 @@ m2::RectD Place::GetLimitRect() const
 
 bool Place::IsEqual(Place const & r) const
 {
-  return (AreTypesEqual(m_type, r.m_type) &&
-          m_ft.GetName() == r.m_ft.GetName() &&
+  return (AreTypesEqual(m_type, r.m_type) && m_ft.GetName() == r.m_ft.GetName() &&
           (IsPoint() || r.IsPoint()) &&
           MercatorBounds::DistanceOnEarth(m_pt, r.m_pt) < m_thresholdM);
 }

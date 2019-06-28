@@ -4,8 +4,8 @@
 
 #include "indexer/classificator_loader.hpp"
 
-#include "coding/writer.hpp"
 #include "coding/reader.hpp"
+#include "coding/writer.hpp"
 
 #include "base/logging.hpp"
 
@@ -72,15 +72,14 @@ UNIT_TEST(Metadata_ValidateAndFormat_stars)
   p("stars", "5s");
   TEST_EQUAL(md.Get(Metadata::FMD_STARS), "5", ());
   md.Drop(Metadata::FMD_STARS);
-
 }
 
 UNIT_TEST(Metadata_ValidateAndFormat_operator)
 {
   classificator::Load();
   Classificator const & c = classif();
-  uint32_t const type_atm = c.GetTypeByPath({ "amenity", "atm" });
-  uint32_t const type_fuel = c.GetTypeByPath({ "amenity", "fuel" });
+  uint32_t const type_atm = c.GetTypeByPath({"amenity", "atm"});
+  uint32_t const type_fuel = c.GetTypeByPath({"amenity", "fuel"});
 
   FeatureParams params;
   MetadataTagProcessor p(params);
@@ -147,9 +146,9 @@ UNIT_TEST(Metadata_ValidateAndFormat_wikipedia)
   Metadata & md = params.GetMetadata();
 
 #ifdef OMIM_OS_MOBILE
-  #define WIKIHOST "m.wikipedia.org"
+#define WIKIHOST "m.wikipedia.org"
 #else
-  #define WIKIHOST "wikipedia.org"
+#define WIKIHOST "wikipedia.org"
 #endif
 
   p(kWikiKey, "en:Bad %20Data");

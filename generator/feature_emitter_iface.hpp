@@ -9,5 +9,5 @@ class FeatureEmitterIFace
 {
 public:
   virtual ~FeatureEmitterIFace() {}
-  virtual void operator() (feature::FeatureBuilder const &) = 0;
+  virtual void operator()(feature::FeatureBuilder const &) = 0;
 };
