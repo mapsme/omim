@@ -1524,7 +1524,7 @@ public class PlacePageView extends NestedScrollView
       refreshTodayOpeningHours((timetables[0].isFullday ? resources.getString(R.string.twentyfour_seven)
                                                         : resources.getString(R.string.daily) + " " + timetables[0].workingTimespan),
                                ThemeUtils.getColor(getContext(), android.R.attr.textColorPrimary));
-      UiUtils.hide(mFullOpeningHours);
+      UiUtils.clearTextAndHide(mFullOpeningHours);
       return;
     }
 
@@ -1983,7 +1983,10 @@ public class PlacePageView extends NestedScrollView
         items.add(mTvPhone.getText().toString());
         break;
       case R.id.ll__place_schedule:
-        items.add(mFullOpeningHours.getText().toString());
+        String text = UiUtils.isVisible(mFullOpeningHours)
+                      ? mFullOpeningHours.getText().toString()
+                      : mTodayOpeningHours.getText().toString();
+        items.add(text);
         break;
       case R.id.ll__place_operator:
         items.add(mTvOperator.getText().toString());
