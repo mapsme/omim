@@ -80,7 +80,6 @@ void ParseCityGallery(std::string const & src, UTM utm, promo::CityGallery & res
 
   auto const meta = json_object_get(root.get(), "meta");
   FromJSONObject(meta, "more", result.m_moreUrl);
-  result.m_moreUrl.insert(0, BOOKMARKS_CATALOG_FRONT_URL);
   result.m_moreUrl = InjectUTM(result.m_moreUrl, utm);
 }
 
