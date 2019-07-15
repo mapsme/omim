@@ -10,6 +10,7 @@
 
 #include "base/assert.hpp"
 #include "base/string_utils.hpp"
+#include "base/url_helpers.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -60,6 +61,7 @@ void ParseCityGallery(std::string const & src, UTM utm, promo::CityGallery & res
     auto const obj = json_array_get(dataArray, i);
     FromJSONObject(obj, "name", item.m_name);
     FromJSONObject(obj, "url", item.m_url);
+    item.m_url = base::url::Join(BOOKMARKS_CATALOG_FRONT_URL, item.m_url);
     FromJSONObject(obj, "access", item.m_access);
     FromJSONObjectOptionalField(obj, "image_url", item.m_imageUrl);
     FromJSONObjectOptionalField(obj, "tier", item.m_tier);

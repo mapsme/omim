@@ -5,6 +5,8 @@
 #import "MWMNetworkPolicy.h"
 #import "MWMPlacePageManager.h"
 #import "MWMPlacePageProtocol.h"
+#import "MWMPromoAfterBooking.h"
+#import "MWMPromoApi.h"
 #import "MWMSearchManager.h"
 #import "MWMSideButtons.h"
 #import "MWMTrafficButtonViewController.h"
@@ -418,8 +420,7 @@ extern NSString * const kAlohalyticsTapEventKey;
   return tutorial;
 }
 
-- (void)showTutorialIfNeeded
-{
+- (void)showAdditionalViewsIfNeeded {
   auto ownerController = self.ownerController;
 
   if ([MWMRouter isRoutingActive] || [MWMRouter hasSavedRoute])
@@ -437,13 +438,46 @@ extern NSString * const kAlohalyticsTapEventKey;
   if (DeepLinkHandler.shared.isLaunchedByDeeplink)
     return;
 
-  if (self.tutorialViewContoller != nil)
+  if ([self showPromoBookingIfNeeded])
     return;
+
+  [self showTutorialIfNeeded];
+}
+
+- (BOOL)showPromoBookingIfNeeded {
+  MWMPromoAfterBooking *afterBooking = [MWMPromoApi afterBooking];
+  
+  if (!afterBooking)
+    return NO;
+
+  MWMVoidBlock ok = ^{
+    auto urlString = afterBooking.promoUrl;
+    auto url = [NSURL URLWithString:urlString];
+    [MapViewController.sharedController openCatalogAbsoluteUrl:url animated:YES utm:MWMUTMNone];
+
+    [self.ownerController dismissViewControllerAnimated:YES completion:nil];
+  };
+  MWMVoidBlock cancel = ^{
+    [self.ownerController dismissViewControllerAnimated:YES completion:nil];
+  };
+  NSString *cityImageUrl = afterBooking.pictureUrl;
+  PromoAfterBookingViewController *alert;
+  alert = [[PromoAfterBookingViewController alloc] initWithCityImageUrl:cityImageUrl okClosure:ok cancelClosure:cancel];
+  [self.ownerController presentViewController:alert animated:YES completion:nil];
+  [MWMEye promoAfterBookingShownWithCityId:afterBooking.promoId];
+  return YES;
+}
+
+- (BOOL)showTutorialIfNeeded {
+  if (self.tutorialViewContoller != nil)
+    return YES;
 
   self.tutorialType = [MWMEye getTipType];
   self.tutorialViewContoller = [self tutorialWithType:self.tutorialType];
   if (!self.tutorialViewContoller)
-    return;
+    return NO;
+
+  auto ownerController = self.ownerController;
 
   [self logTutorialEvent:kStatTipsTricksShow additionalOptions:nil];
   self.hidden = NO;
@@ -452,6 +486,8 @@ extern NSString * const kAlohalyticsTapEventKey;
   self.tutorialViewContoller.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   [ownerController.controlsView addSubview:self.tutorialViewContoller.view];
   [self.tutorialViewContoller didMoveToParentViewController:ownerController];
+
+  return YES;
 }
 
 - (void)didPressCancel:(MWMTutorialViewController *)viewController {

@@ -17,9 +17,12 @@
     android:layout_weight="1"
     android:orientation="vertical"
     android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/turquoise"
+    android:layout_height="match_parent"
+    android:minHeight="@dimen/subs_card_min_height"
+    android:minWidth="@dimen/subs_card_min_width"
+    app:cardBackgroundColor="?attr/bookmarkSubscriptionCardBg"
     app:cardCornerRadius="@dimen/margin_half_plus_eight"
+
     android:layout_marginRight="@dimen/margin_half"
     android:layout_marginEnd="@dimen/margin_half">
     <RelativeLayout
@@ -32,7 +35,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/margin_half_double_plus">
-
         <ImageView
           android:src="@drawable/img_annual_subscription_offer"
           android:layout_gravity="top"
@@ -44,6 +46,7 @@
           android:adjustViewBounds="true"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"/>
+
         <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -55,9 +58,10 @@
           android:layout_marginStart="@dimen/margin_half_double_plus"
           android:layout_marginEnd="@dimen/margin_half_double_plus"
           android:layout_marginLeft="@dimen/margin_half_double_plus"
-          android:textColor="?attr/colorAccent"
+          android:textColor="?attr/bookmarkSubscriptionCardTextColor"
           android:textAppearance="?android:attr/textAppearanceLarge"
           android:gravity="center"
+          android:duplicateParentState="true"
           android:lines="1"
           android:text="@string/annual_subscription_title"
           tools:text="Annual"
@@ -71,8 +75,11 @@
           android:layout_marginLeft="@dimen/margin_half_double_plus"
           android:textAppearance="?android:attr/textAppearance"
           android:fontFamily="@string/robotoRegular"
+          android:duplicateParentState="true"
+          android:lines="2"
+          android:ellipsize="middle"
           android:textStyle="normal"
-          android:textColor="?attr/colorAccent"
+          android:textColor="?attr/bookmarkSubscriptionCardTextColor"
           android:text="@string/annual_subscription_message"
           tools:text="1 month unlimited guides"
           tools:ignore="UnusedAttribute"/>
@@ -93,42 +100,24 @@
             android:textSize="@dimen/text_size_toolbar"
             android:textStyle="bold"
             android:fontFamily="@string/robotoMedium"
-            android:textColor="?attr/colorAccent"
+            android:textColor="?attr/bookmarkSubscriptionCardTextColor"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:gravity="center"
-            android:lines="1"
+            android:duplicateParentState="true"
             android:text="3.99$"
             tools:text="3.99$"
             tools:ignore="UnusedAttribute"/>
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearance"
-            android:fontFamily="@string/robotoRegular"
-            android:textStyle="normal"
-            android:lines="1"
-            android:textColor="?attr/colorAccent"
-            android:text="@string/per_year"
-            tools:text="/ mo"
-            tools:ignore="UnusedAttribute"
-            android:layout_marginStart="@dimen/margin_quarter"
-            android:layout_marginLeft="@dimen/margin_quarter"/>
         </LinearLayout>
       </LinearLayout>
-
-      <FrameLayout
-        android:id="@+id/annual_price_card_edge"
-        android:background="?attr/bookmarkSubscriptionAnnualCardEdge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/annual_price_card_payload"
-        android:layout_alignTop="@id/annual_price_card_payload"
-        android:layout_alignRight="@id/annual_price_card_payload"
-        android:layout_alignEnd="@id/annual_price_card_payload"
-        android:layout_alignStart="@id/annual_price_card_payload"
-        android:layout_alignLeft="@id/annual_price_card_payload"/>
     </RelativeLayout>
+    <FrameLayout
+      android:id="@+id/annual_price_card_edge"
+      android:background="?attr/bookmarkSubscriptionCardEdge"
+      android:duplicateParentState="true"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
   </android.support.v7.widget.CardView>
+
   <android.support.v7.widget.CardView
     android:id="@+id/monthly_price_card"
     android:stateListAnimator="@animator/lift_on_touch"
@@ -138,8 +127,10 @@
     android:layout_weight="1"
     android:orientation="vertical"
     android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    app:cardBackgroundColor="?attr/cardBackground"
+    android:layout_height="match_parent"
+    android:minHeight="@dimen/subs_card_min_height"
+    android:minWidth="@dimen/subs_card_min_width"
+    app:cardBackgroundColor="?attr/bookmarkSubscriptionCardBg"
     app:cardCornerRadius="@dimen/margin_half_plus_eight"
     android:layout_marginStart="@dimen/margin_quarter"
     android:layout_marginLeft="@dimen/margin_quarter">
@@ -171,13 +162,14 @@
         android:layout_marginTop="@dimen/margin_base"
         android:textSize="@dimen/text_size_toolbar"
         android:textStyle="bold"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="?attr/bookmarkSubscriptionCardTextColor"
         android:fontFamily="@string/robotoMedium"
         android:layout_marginRight="@dimen/margin_half_double_plus"
         android:layout_marginStart="@dimen/margin_half_double_plus"
         android:layout_marginEnd="@dimen/margin_half_double_plus"
         android:layout_marginLeft="@dimen/margin_half_double_plus"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:duplicateParentState="true"
         android:gravity="center"
         android:lines="1"
         android:text="@string/montly_subscription_title"
@@ -191,17 +183,19 @@
         android:layout_marginEnd="@dimen/margin_half_double_plus"
         android:layout_marginLeft="@dimen/margin_half_double_plus"
         android:textAppearance="?android:attr/textAppearance"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="?attr/bookmarkSubscriptionCardTextColor"
         android:fontFamily="@string/robotoRegular"
         android:textStyle="normal"
+        android:ellipsize="middle"
+        android:lines="2"
         android:text="@string/montly_subscription_message"
         tools:text="1 month unlimited guides"
         tools:ignore="UnusedAttribute"/>
 
       <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="left|center"
         android:layout_marginTop="@dimen/primary_button_min_height"
         android:layout_marginRight="@dimen/margin_half_double_plus"
         android:layout_marginStart="@dimen/margin_half_double_plus"
@@ -214,39 +208,21 @@
           android:textSize="@dimen/text_size_toolbar"
           android:textStyle="bold"
           android:fontFamily="@string/robotoMedium"
-          android:textColor="?android:attr/textColorSecondary"
+          android:textColor="?attr/bookmarkSubscriptionCardTextColor"
           android:textAppearance="?android:attr/textAppearanceLarge"
           android:gravity="center"
-          android:lines="1"
+          android:duplicateParentState="true"
           android:text="3.99$"
           tools:text="3.99$"
           tools:ignore="UnusedAttribute"/>
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearance"
-          android:textColor="?android:attr/textColorSecondary"
-          android:fontFamily="@string/robotoRegular"
-          android:textStyle="normal"
-          android:lines="1"
-          android:text="@string/per_month"
-          tools:text="/ mo"
-          tools:ignore="UnusedAttribute"
-          android:layout_marginStart="@dimen/margin_quarter"
-          android:layout_marginLeft="@dimen/margin_quarter"/>
       </LinearLayout>
     </LinearLayout>
-      <FrameLayout
-        android:id="@+id/monthly_price_card_edge"
-        android:background="?attr/bookmarkSubscriptionMonthlyCardEdge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/monthly_price_card_payload"
-        android:layout_alignTop="@id/monthly_price_card_payload"
-        android:layout_alignRight="@id/monthly_price_card_payload"
-        android:layout_alignEnd="@id/monthly_price_card_payload"
-        android:layout_alignStart="@id/monthly_price_card_payload"
-        android:layout_alignLeft="@id/monthly_price_card_payload"/>
     </RelativeLayout>
+    <FrameLayout
+      android:id="@+id/monthly_price_card_edge"
+      android:duplicateParentState="true"
+      android:background="?attr/bookmarkSubscriptionCardEdge"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
   </android.support.v7.widget.CardView>
 </LinearLayout>
