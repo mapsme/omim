@@ -2833,7 +2833,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Δεν είναι δυνατή η δημιουργία διαδρομής. Επιλέξτε άλλα σημεία διαδρομής";
 
-"dialog_routing_download_files_carplay" = "Δεν είναι διαθέσιμοι όλοι οι χάρτες για τη δημιουργία της διαδρομής. Κατεβάστε τους από την εφαρμογή στο κινητό σας τηλέφωνο";
+"dialog_routing_download_files_carplay" = "Για να χτίσετε διαδρομή, κατεβάστε χάρτες που λείπουν στη συσκευή";
 
 "dialog_routing_system_error_carplay" = "Παρουσιάστηκε σφάλμα. Κάντε επανεκκίνηση της εφαρμογής";
 
@@ -2844,6 +2844,26 @@
 "ok" = "Καλώς";
 
 "vezet_taxi" = "Vezet";
+
+"avoid_unpaved_carplay_1" = "Χ/χωματόδρ.";
+
+"avoid_unpaved_carplay_2" = "Χ/χωματόδρομους";
+
+"avoid_ferry_carplay_1" = "Χ/πορθμεία";
+
+"avoid_ferry_carplay_2" = "Χωρίς πορθμεία";
+
+"avoid_tolls_carplay_1" = "Χωρίς διόδια";
+
+"avoid_tolls_carplay_2" = "Χωρίς διόδια";
+
+"speedcams_alert_title_carplay_1" = "Κάμερες";
+
+"speedcams_alert_title_carplay_2" = "Πληροφ. γιαόρια";
+
+"download_map_carplay" = "Κάντε λήψη χαρτών στην εφαρμογή MAPS.ME στη συσκευή σας";
+
+"carplay_roundabout_exit" = "%s έξοδος";
 
 
 /**********  Partners  **********/

@@ -1563,11 +1563,21 @@
 	<string name="dialog_routing_change_end_carplay">Det er ikke muligt at beregne rute til din destination. Vælg en anden destination</string>
 	<string name="dialog_routing_check_gps_carplay">Intet GPS signal. Flyt til et område med dækning</string>
 	<string name="dialog_routing_unable_locate_route_carplay">Det er ikke muligt at beregne rute. Vælg andre forbindelses-punkter for ruten</string>
-	<string name="dialog_routing_download_files_carplay">Der mangler kort for at beregne en rute. Download dem på din mobiltelefon</string>
+	<string name="dialog_routing_download_files_carplay">Download manglende kort til din enhed, for at lave ruten</string>
 	<string name="dialog_routing_system_error_carplay">Der opstod en fejl. Genstart programmet</string>
 	<string name="dialog_routing_rebuild_from_current_location_carplay">Rute vil blive beregnet igen, ud fra din nuværende position</string>
 	<string name="dialog_routing_rebuild_for_vehicle_carplay">Rute vil blive ændret til en kørselsrute</string>
 	<string name="ok">Ok</string>
+	<string name="avoid_unpaved_carplay_1">Ingen grus</string>
+	<string name="avoid_unpaved_carplay_2">Undgå grus</string>
+	<string name="avoid_ferry_carplay_1">Ingen færger</string>
+	<string name="avoid_ferry_carplay_2">Undgå færger</string>
+	<string name="avoid_tolls_carplay_1">Ingen betal.</string>
+	<string name="avoid_tolls_carplay_2">Undgå betaling</string>
+	<string name="speedcams_alert_title_carplay_1">Radarkontrol</string>
+	<string name="speedcams_alert_title_carplay_2">Radar advarsel</string>
+	<string name="download_map_carplay">Download kort i MAPS.ME appen, på din enhed</string>
+	<string name="carplay_roundabout_exit">%s exit</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Kabelbanestation</string>

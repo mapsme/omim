@@ -99,7 +99,7 @@ BOOL gIsFirstMyPositionMode = YES;
 @property(strong, nonatomic) IBOutlet NSLayoutConstraint * placePageAreaKeyboard;
 @property(strong, nonatomic) IBOutlet NSLayoutConstraint * sideButtonsAreaBottom;
 @property(strong, nonatomic) IBOutlet NSLayoutConstraint * sideButtonsAreaKeyboard;
-@property(strong, nonatomic) IBOutlet UILabel * carplayPlaceholderLabel;
+@property(strong, nonatomic) IBOutlet UIImageView * carplayPlaceholderLogo;
 
 @property(strong, nonatomic) NSHashTable<id<MWMLocationModeListener>> *listeners;
 
@@ -800,7 +800,7 @@ BOOL gIsFirstMyPositionMode = YES;
 
 - (void)disableCarPlayRepresentation
 {
-  self.carplayPlaceholderLabel.hidden = YES;
+  self.carplayPlaceholderLogo.hidden = YES;
   self.mapView.frame = self.view.bounds;
   [self.view insertSubview:self.mapView atIndex:0];
   [[self.mapView.topAnchor constraintEqualToAnchor:self.view.topAnchor] setActive:YES];
@@ -822,7 +822,7 @@ BOOL gIsFirstMyPositionMode = YES;
   if (!self.controlsView.isHidden) {
     self.controlsView.hidden = YES;
   }
-  self.carplayPlaceholderLabel.hidden = NO;
+  self.carplayPlaceholderLogo.hidden = NO;
 }
 
 @end
