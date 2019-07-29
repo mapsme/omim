@@ -103,6 +103,9 @@ BOOL gIsFirstMyPositionMode = YES;
 
 @property(strong, nonatomic) NSHashTable<id<MWMLocationModeListener>> *listeners;
 
+@property(nonatomic) BOOL needDeferFocusNotification;
+@property(nonatomic) BOOL deferredFocusValue;
+
 @end
 
 @implementation MapViewController
@@ -245,7 +248,13 @@ BOOL gIsFirstMyPositionMode = YES;
 }
 
 - (void)onTerminate { [self.mapView deallocateNative]; }
-- (void)onGetFocus:(BOOL)isOnFocus { [self.mapView setPresentAvailable:isOnFocus]; }
+
+- (void)onGetFocus:(BOOL)isOnFocus {
+  self.needDeferFocusNotification = (self.mapView == nil);
+  self.deferredFocusValue = isOnFocus;
+  [self.mapView setPresentAvailable:isOnFocus];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
@@ -263,6 +272,12 @@ BOOL gIsFirstMyPositionMode = YES;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  // On iOS 10 (it was reproduced, it may be also on others), mapView can be uninitialized
+  // when onGetFocus is called, it can lead to missing of onGetFocus call and a deadlock on the start.
+  // As soon as mapView must exist before onGetFocus, so we have to defer onGetFocus call.
+  if (self.needDeferFocusNotification)
+    [self onGetFocus:self.deferredFocusValue];
 
   [self.mapView setLaunchByDeepLink:DeepLinkHandler.shared.isLaunchedByDeeplink];
   [MWMRouter restoreRouteIfNeeded];
