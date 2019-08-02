@@ -44,23 +44,25 @@
 
 
 /* bridges */
-@bridge_background: #E5E4D5;
-@bridge_casing: #808080;
+@bridge_background: #FFFFFF;
+@bridge_background_hw: #FDF9F5;
+@bridge_casing: #A3A3A3;
+@bridge_casing_hw: #A3A3A3;
 @casing_road:  #F5F3E4; /*#BDBBAF; #FCFCF7; #E3E1D5;*/
 
 /* tunnels */
 
-@primary_tunnel_orange: #FCA462;
-@primary_tunnel_yellow: #FCD767;
-@trunk_tunnel_orange: #FCA462;
-@trunk_tunnel_yellow: #FF8800;
+@primary_tunnel_orange: #F2CA9B;
+@primary_tunnel_yellow: #EED792;
+@trunk_tunnel_orange: #F2CA9B;
+@trunk_tunnel_yellow: #F2CA9B;
 @primary_tunnel_casing: #808080;
 @trunk_tunnel_casing: #808080;
-@secondary_tunnel: #FFFFFF;
+@secondary_tunnel: #F8F2EB;
 @secondary_tunnel_casing:  #808080;
-@tertiary_tunnel: #FFFFFF;
+@tertiary_tunnel: #F8F2EB;
 @tertiary_tunnel_casing:  #808080;
-@unclassified_tunnel: #FFFFFF;
+@unclassified_tunnel: #F8F2EB;
 @unclassified_tunnel_casing: #808080;
 /*roads_links */
 @trunk_link: #FFFFFF;

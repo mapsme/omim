@@ -107,20 +107,22 @@
 
 /* 5.2 Bridges */
 
-@bridge_background: #EDEBDB;
-@bridge_casing: #808080;
+@bridge_background: #FFFFFF;
+@bridge_background_hw: #FDF9F5;
+@bridge_casing: #A3A3A3;
+@bridge_casing_hw: #A3A3A3;
 
 /* 5.3 Tunnels */
 
-@trunk_tunnel_orange: #FCA462;
+@trunk_tunnel_orange: #F2CA9B;
 @trunk_tunnel_casing: #808080;
-@primary_tunnel_orange: #FCA462;
+@primary_tunnel_orange: #F2CA9B;
 @primary_tunnel_casing: #808080;
-@secondary_tunnel: #FFFFFF;
+@secondary_tunnel: #F8F2EB;
 @secondary_tunnel_casing:  #808080;
-@tertiary_tunnel: #FFFFFF;
+@tertiary_tunnel: #F8F2EB;
 @tertiary_tunnel_casing:  #808080;
-@unclassified_tunnel: #FFFFFF;
+@unclassified_tunnel: #F8F2EB;
 @unclassified_tunnel_casing: #808080;
 
 /* 5.4 Piste */

@@ -110,7 +110,9 @@
 /* 5.2 Bridges */
 
 @bridge_background: #121212;
+@bridge_background_hw: #121212;
 @bridge_casing: #0D0D0D;
+@bridge_casing_hw: #0D0D0D;
 @casing_road:  #0D0D0D;
 
 /* 5.3 Tunnels */
