@@ -440,7 +440,10 @@ BSDiffStatus ApplyBinaryPatch(OldReader & old_reader, NewSink & new_sink,
   // We will check whether the application process has been cancelled
   // upon copying every |kCheckCancelledPeriod| bytes from the old file.
   constexpr size_t kCheckCancelledPeriod = 100 * 1024;
+  constexpr size_t kWriteBlockSize = 4 * 1024;
 
+  std::vector<uint8_t> new_buf;
+  new_buf.reserve(kWriteBlockSize);
   while (control_stream_copy_counts.Size() > 0) {
     if (cancellable.IsCancelled())
       return CANCELLED;
@@ -471,7 +474,12 @@ BSDiffStatus ApplyBinaryPatch(OldReader & old_reader, NewSink & new_sink,
         diff_byte = ReadPrimitiveFromSource<uint8_t>(diff_bytes);
       }
       uint8_t byte = old_position[i] + diff_byte;
-      WriteToSink(new_sink, byte);
+      new_buf.push_back(byte);
+      if (new_buf.size() == kWriteBlockSize)
+      {
+        new_sink.Write(new_buf.data(), new_buf.size());
+        new_buf.clear();
+      }
     }
     old_position += copy_count;
 
@@ -479,7 +487,23 @@ BSDiffStatus ApplyBinaryPatch(OldReader & old_reader, NewSink & new_sink,
     if (extra_count > static_cast<size_t>(extra_end - extra_position))
       return UNEXPECTED_ERROR;
 
-    new_sink.Write(extra_position, extra_count);
+    if (new_buf.size() + extra_count >= kWriteBlockSize)
+    {
+      auto const extra_offset = kWriteBlockSize - new_buf.size();
+      std::copy(extra_position, extra_position + extra_offset, std::back_inserter(new_buf));
+      new_sink.Write(new_buf.data(), new_buf.size());
+      extra_position += extra_offset;
+      extra_count -= extra_offset;
+      new_buf.clear();
+
+      while (extra_count >= kWriteBlockSize)
+      {
+        new_sink.Write(extra_position, kWriteBlockSize);
+        extra_position += kWriteBlockSize;
+        extra_count -= kWriteBlockSize;
+      }
+    }
+    std::copy(extra_position, extra_position + extra_count, std::back_inserter(new_buf));
 
     extra_position += extra_count;
 
@@ -504,6 +528,8 @@ BSDiffStatus ApplyBinaryPatch(OldReader & old_reader, NewSink & new_sink,
   if (cancellable.IsCancelled())
     return CANCELLED;
 
+  new_sink.Write(new_buf.data(), new_buf.size());
+  
   return OK;
 }
 }  // namespace bsdiff
