@@ -888,7 +888,8 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
     [Statistics logEvent:kStatPlacepageSponsoredError
           withParameters:@{
                            kStatProvider: kStatMapsmeGuides,
-                           kStatPlacement: kStatPlacePage
+                           kStatPlacement: kStatPlacePage,
+                           kStatError: kStatNoInternet
                            }];
   } else {
     auto const resultHandler = [self](promo::CityGallery const & cityGallery) {
@@ -910,7 +911,8 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
       [Statistics logEvent:kStatPlacepageSponsoredError
             withParameters:@{
                              kStatProvider: kStatMapsmeGuides,
-                             kStatPlacement: kStatPlacePage
+                             kStatPlacement: kStatPlacePage,
+                             kStatError: kStatDownloadError
                              }];
       if (self.refreshPromoCallback) {
         self.refreshPromoCallback();
