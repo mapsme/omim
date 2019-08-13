@@ -25,6 +25,7 @@ omim_link_libraries(
   indexer
   platform
   geometry
+  mwm_diff
   coding
   base
   opening_hours
@@ -33,7 +34,6 @@ omim_link_libraries(
   icu
   jansson
   protobuf
-  mwm_diff
   bsdiff
   stats_client
   minizip
