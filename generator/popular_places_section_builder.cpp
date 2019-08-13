@@ -109,4 +109,23 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
   search::RankTableBuilder::Create(content, cont, POPULARITY_RANKS_FILE_TAG);
   return true;
 }
+
+// static
+std::mutex PopularPlacesLoader::m_mutex;
+// static
+std::unordered_map<std::string, PopularPlaces> PopularPlacesLoader::m_plases = {{"", {}}};
+
+// static
+PopularPlaces const & PopularPlacesLoader::GetOrLoad(std::string const & filename)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  auto const it = m_plases.find(filename);
+  if (it != m_plases.cend())
+    return it->second;
+
+  PopularPlaces places;
+  LoadPopularPlaces(filename, places);
+  auto const eIt = m_plases.emplace(filename, places);
+  return eIt.first->second;
+}
 }  // namespace generator
