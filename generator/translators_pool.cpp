@@ -13,7 +13,7 @@ TranslatorsPool::TranslatorsPool(std::shared_ptr<TranslatorInterface> const & or
   for (size_t i = 0; i < threadCount; ++i)
     m_translators.Push(original->Clone());
 
-  CHECK_EQUAL(m_translators.size(), threadCount + 1, ());
+  CHECK_EQUAL(m_translators.Size(), threadCount + 1, ());
 }
 
 void TranslatorsPool::Emit(std::vector<OsmElement> && elements)
@@ -42,7 +42,7 @@ bool TranslatorsPool::Finish()
     queue.Push(p.get_future());
   }
 
-  base::thread_pool::computational::ThreadPool pool(queue.size() / 2 + 1);
+  base::thread_pool::computational::ThreadPool pool(queue.Size() / 2 + 1);
   while (queue.Size() != 1)
   {
     std::future<TranslatorPtr> left;
