@@ -1,3 +1,5 @@
+import SafariServices
+
 class BookmarksSubscriptionViewController: MWMViewController {
   @IBOutlet private var annualView: UIView!
   @IBOutlet private var monthlyView: UIView!
@@ -67,8 +69,9 @@ class BookmarksSubscriptionViewController: MWMViewController {
 
       let monthlyPrice = subscriptions[0].price
       let annualPrice = subscriptions[1].price
-      let discount = monthlyPrice.multiplying(by: 12).subtracting(annualPrice)
-      let discountString = formatter.string(from: discount)
+
+      let twelveMonthPrice = monthlyPrice.multiplying(by: 12)
+      let discount = twelveMonthPrice.subtracting(annualPrice).dividing(by: twelveMonthPrice).multiplying(by: 100)
 
       self?.monthlyViewController.config(title: L("montly_subscription_title"),
                                          subtitle: L("montly_subscription_message"),
@@ -78,7 +81,7 @@ class BookmarksSubscriptionViewController: MWMViewController {
                                         subtitle: L("annual_subscription_message"),
                                         price: formatter.string(from: annualPrice) ?? "",
                                         image: UIImage(named: "bookmarksSubscriptionYear")!,
-                                        discount: (discountString != nil) ? "- \(discountString!)" : nil)
+                                        discount: "- \(discount.rounding(accordingToBehavior: nil).intValue) %")
     }
   }
 
@@ -122,8 +125,37 @@ class BookmarksSubscriptionViewController: MWMViewController {
     }
   }
 
+  @IBAction func onRestore(_ sender: UIButton) {
+    loadingView.isHidden = false
+    InAppPurchase.bookmarksSubscriptionManager.restore { [weak self] result in
+      self?.loadingView.isHidden = true
+      let alertText: String
+      switch result {
+      case .valid:
+        alertText = L("restore_success_alert")
+      case .notValid:
+        alertText = L("restore_no_subscription_alert")
+      case .serverError, .authError:
+        alertText = L("restore_error_alert")
+      }
+      MWMAlertViewController.activeAlert().presentInfoAlert(L("restore_subscription"), text: alertText)
+    }
+  }
+
   @IBAction func onClose(_ sender: UIButton) {
     onCancel?()
+  }
+
+  @IBAction func onTerms(_ sender: UIButton) {
+    guard let url = URL(string: MWMAuthorizationViewModel.termsOfUseLink()) else { return }
+    let safari = SFSafariViewController(url: url)
+    self.present(safari, animated: true, completion: nil)
+  }
+
+  @IBAction func onPrivacy(_ sender: UIButton) {
+    guard let url = URL(string: MWMAuthorizationViewModel.privacyPolicyLink()) else { return }
+    let safari = SFSafariViewController(url: url)
+    self.present(safari, animated: true, completion: nil)
   }
 }
 
