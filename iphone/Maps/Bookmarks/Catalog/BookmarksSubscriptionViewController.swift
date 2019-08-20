@@ -66,7 +66,9 @@ class BookmarksSubscriptionViewController: MWMViewController {
     continueButton.setTitle(L("current_location_unknown_continue_button").uppercased(), for: .normal)
 
     Statistics.logEvent(kStatInappShow, withParameters: [kStatVendor: MWMPurchaseManager.bookmarksSubscriptionVendorId(),
-                                                         kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId()])
+                                                         kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId(),
+                                                         kStatProduct: BOOKMARKS_SUBSCRIPTION_YEARLY_PRODUCT_ID,
+                                                         kStatFrom: kStatBanner])
     InAppPurchase.bookmarksSubscriptionManager.getAvailableSubscriptions { [weak self] (subscriptions, error) in
       guard let subscriptions = subscriptions, subscriptions.count == 2 else {
         // TODO: hande error
@@ -147,6 +149,7 @@ class BookmarksSubscriptionViewController: MWMViewController {
 
   @IBAction func onRestore(_ sender: UIButton) {
     loadingView.isHidden = false
+    Statistics.logEvent(kStatInappRestore, withParameters: [kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId()])
     InAppPurchase.bookmarksSubscriptionManager.restore { [weak self] result in
       self?.loadingView.isHidden = true
       let alertText: String
@@ -208,6 +211,7 @@ extension BookmarksSubscriptionViewController: SubscriptionManagerListener {
   }
 
   func didSubsribe(_ subscription: ISubscription) {
+    MWMPurchaseManager.setBookmarksSubscriptionActive(true)
   }
 
   func didDefer(_ subscription: ISubscription) {
