@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace omim
+namespace @PROJECT_NAME@
 {
 namespace build_version
 {
