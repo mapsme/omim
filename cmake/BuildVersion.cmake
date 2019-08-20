@@ -54,6 +54,7 @@ endfunction()
 
 function(configure_build_version_hpp)
   message("Configure build version ...")
+  get_cmake_property(_variableNames VARIABLES)
   get_last_git_commit_hash(GIT_HASH)
   get_last_git_commit_timestamp(GIT_TIMESTAMP)
   get_git_tag_name(GIT_TAG)
