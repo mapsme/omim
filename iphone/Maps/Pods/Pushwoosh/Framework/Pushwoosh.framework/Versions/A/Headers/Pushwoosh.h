@@ -15,4 +15,5 @@
     #import "PWRichMediaStyle.h"
     #import "PWInbox.h"
     #import "PWInlineInAppView.h"
+    #import "PWNotificationExtensionManager.h"
 #endif

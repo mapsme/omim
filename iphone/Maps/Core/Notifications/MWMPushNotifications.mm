@@ -10,6 +10,8 @@
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
+#include "base/logging.hpp"
+
 // If you have a "missing header error" here, then please run configure.sh script in the root repo
 // folder.
 #import "private.h"
@@ -39,17 +41,24 @@ NSString * const kPushDeviceTokenLogEvent = @"iOSPushDeviceToken";
 + (void)application:(UIApplication *)application
     didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
+  LOG(LINFO, ("PN Original token: ", [self stringWithDeviceToken:deviceToken].UTF8String));
   PushNotificationManager * pushManager = [PushNotificationManager pushManager];
   [pushManager handlePushRegistration:deviceToken];
-  NSLog(@"Pushwoosh token: %@", [pushManager getPushToken]);
+  LOG(LINFO, ("PN Pushwoosh token: ", [pushManager getPushToken].UTF8String));
   [Alohalytics logEvent:kPushDeviceTokenLogEvent withValue:pushManager.getHWID];
 }
 
 + (void)application:(UIApplication *)application
     didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
+  LOG(LINFO, ("PN Fail to Register: ", error));
   [[PushNotificationManager pushManager] handlePushRegistrationFailure:error];
   [[Crashlytics sharedInstance] recordError:error];
+}
+
++ (NSString *)stringWithDeviceToken:(NSData *)deviceToken {
+  return [[[NSString stringWithFormat:@"%@",deviceToken]
+           stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]] stringByReplacingOccurrencesOfString:@" " withString:@""];
 }
 
 + (void)application:(UIApplication *)application
