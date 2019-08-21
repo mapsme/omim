@@ -16,7 +16,7 @@ struct RoutingSettings
 
 private:
   RoutingSettings(bool matchRoute, bool soundDirection, double matchingThresholdM,
-                  bool keepPedestrianInfo, bool showTurnAfterNext);
+                  bool keepPedestrianInfo, bool showTurnAfterNext, double minSpeedForRouteRebuildMpS);
 
 public:
   /// \brief if m_matchRoute is equal to true the bearing follows the
@@ -41,6 +41,8 @@ public:
   /// \brief if m_showTurnAfterNext is equal to true end users see a notification
   /// about the turn after the next in some cases.
   bool m_showTurnAfterNext;
+
+  double m_minSpeedForRouteRebuildMpS;
 };
 
 RoutingSettings GetRoutingSettings(VehicleType vehicleType);

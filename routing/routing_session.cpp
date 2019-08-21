@@ -1,7 +1,6 @@
 #include "routing/routing_session.hpp"
 
 #include "routing/routing_helpers.hpp"
-#include "routing/speed_camera.hpp"
 
 #include "geometry/mercator.hpp"
 
@@ -21,7 +20,6 @@ using namespace traffic;
 
 namespace
 {
-
 int constexpr kOnRouteMissedCount = 5;
 
 // @TODO(vbykoianko) The distance should depend on the current speed.
@@ -270,24 +268,24 @@ void RoutingSession::SetState(SessionState state)
   m_state = state;
 }
 
-SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
+RoutingSession::UpdatedPositionData RoutingSession::UpdatePosition(GpsInfo const & info)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   ASSERT_NOT_EQUAL(m_state, SessionState::RoutingNotActive, ());
   ASSERT(m_router, ());
 
-  if (m_state == SessionState::RouteNeedRebuild || m_state == SessionState::RouteFinished
-      || m_state == SessionState::RouteBuilding || m_state == SessionState::RouteRebuilding
-      || m_state == SessionState::RouteNotReady || m_state == SessionState::RouteNoFollowing)
-    return m_state;
+  if (m_state != SessionState::OnRoute && m_state != SessionState::RouteNotStarted)
+    return UpdatedPositionData(m_state);
 
   ASSERT(m_route, ());
   ASSERT(m_route->IsValid(), ());
 
   m_turnNotificationsMgr.SetSpeedMetersPerSecond(info.m_speedMpS);
 
-  if (m_route->MoveIterator(info))
+  UpdatedPositionData result(m_state);
+  if (auto const matched = m_route->MatchPosition(info))
   {
+    result.m_matchedPosition = *matched;
     m_moveAwayCounter = 0;
     m_lastDistance = 0.0;
 
@@ -306,7 +304,6 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
     else
     {
       SetState(SessionState::OnRoute);
-
       m_speedCameraManager.OnLocationPositionChanged(info);
     }
 
@@ -320,8 +317,12 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
     auto const & lastGoodPoint = m_route->GetFollowedPolyline().GetCurrentIter().m_pt;
     double const dist = MercatorBounds::DistanceOnEarth(lastGoodPoint,
                                                         MercatorBounds::FromLatLon(info.m_latitude, info.m_longitude));
+    
     if (base::AlmostEqualAbs(dist, m_lastDistance, kRunawayDistanceSensitivityMeters))
-      return m_state;
+      return UpdatedPositionData(m_state);
+
+    if (info.HasSpeed() && info.m_speedMpS < m_routingSettings.m_minSpeedForRouteRebuildMpS)
+      return UpdatedPositionData(m_state);
 
     ++m_moveAwayCounter;
     m_lastDistance = dist;
@@ -345,7 +346,8 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
   if (m_userCurrentPositionValid && m_userFormerPositionValid)
     m_currentDirection = m_userCurrentPosition - m_userFormerPosition;
 
-  return m_state;
+  result.m_state = m_state;
+  return result;
 }
 
 void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info) const
@@ -509,8 +511,7 @@ void RoutingSession::SetRouter(unique_ptr<IRouter> && router,
   m_router->SetRouter(move(router), move(fetcher));
 }
 
-void RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
-                                          location::RouteMatchingInfo & routeMatchingInfo) const
+void RoutingSession::FillRouteMatchingInfo(location::RouteMatchingInfo & routeMatchingInfo) const
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   if (!IsOnRoute())
@@ -518,11 +519,11 @@ void RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
 
   ASSERT(m_route, ());
 
-  m_route->MatchLocationToRoute(location, routeMatchingInfo);
+  m_route->FillRouteMatchingInfo(routeMatchingInfo);
 }
 
-traffic::SpeedGroup RoutingSession::MatchTraffic(
-    location::RouteMatchingInfo const & routeMatchingInfo) const
+traffic::SpeedGroup
+RoutingSession::MatchTraffic(location::RouteMatchingInfo const & routeMatchingInfo) const
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   if (!routeMatchingInfo.IsMatched())

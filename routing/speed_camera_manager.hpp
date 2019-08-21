@@ -31,7 +31,7 @@ enum class SpeedCameraManagerMode
 };
 
 // This class represents manager for speed cameras. On each changing of position
-// called the |OnLocationPositionChanged()| method, that finds cameras on the following
+// called the |UpdatePosition()| method, that finds cameras on the following
 // route and cache them.
 // We use next system of notifications:
 // 3 Modes:

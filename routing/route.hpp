@@ -27,6 +27,8 @@
 #include <utility>
 #include <vector>
 
+#include "boost/optional.hpp"
+
 namespace location
 {
   class GpsInfo;
@@ -324,10 +326,10 @@ public:
 
   void GetCurrentDirectionPoint(m2::PointD & pt) const;
 
-  /// @return true  If position was updated successfully (projection within gps error radius).
-  bool MoveIterator(location::GpsInfo const & info);
+  /// @return "true" If position was matched successfully (projection within gps error radius).
+  boost::optional<location::GpsInfo> MatchPosition(location::GpsInfo const & info);
 
-  void MatchLocationToRoute(location::GpsInfo & location, location::RouteMatchingInfo & routeMatchingInfo) const;
+  void FillRouteMatchingInfo(location::RouteMatchingInfo & routeMatchingInfo) const;
 
   /// Add country name if we have no country filename to make route
   void AddAbsentCountry(std::string const & name);

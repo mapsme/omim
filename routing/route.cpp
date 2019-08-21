@@ -232,13 +232,26 @@ void Route::GetCurrentDirectionPoint(m2::PointD & pt) const
   m_poly.GetCurrentDirectionPoint(pt, kOnEndToleranceM);
 }
 
-bool Route::MoveIterator(location::GpsInfo const & info)
+boost::optional<location::GpsInfo> Route::MatchPosition(location::GpsInfo const & info)
 {
-  m2::RectD const rect = MercatorBounds::MetersToXY(
-        info.m_longitude, info.m_latitude,
-        max(m_routingSettings.m_matchingThresholdM, info.m_horizontalAccuracy));
+  m2::RectD const rect =
+      MercatorBounds::MetersToXY(info.m_longitude, info.m_latitude,
+                                 max(m_routingSettings.m_matchingThresholdM, info.m_horizontalAccuracy));
+
   FollowedPolyline::Iter const res = m_poly.UpdateProjectionByPrediction(rect, -1.0 /* predictDistance */);
-  return res.IsValid();
+  if (res.IsValid())
+  {
+    boost::optional<location::GpsInfo> matched(info);
+    auto const & latlon = MercatorBounds::ToLatLon(res.m_pt);
+    matched->m_latitude = latlon.m_lat;
+    matched->m_longitude = latlon.m_lon;
+    if (m_routingSettings.m_matchRoute)
+      matched->m_bearing = location::AngleToBearing(GetPolySegAngle(res.m_ind));
+
+    return matched;
+  }
+
+  return {};
 }
 
 double Route::GetPolySegAngle(size_t ind) const
@@ -262,22 +275,12 @@ double Route::GetPolySegAngle(size_t ind) const
   return (i == polySz) ? 0 : base::RadToDeg(ang::AngleTo(p1, p2));
 }
 
-void Route::MatchLocationToRoute(location::GpsInfo & location, location::RouteMatchingInfo & routeMatchingInfo) const
+void Route::FillRouteMatchingInfo(location::RouteMatchingInfo & routeMatchingInfo) const
 {
   if (m_poly.IsValid())
   {
     auto const & iter = m_poly.GetCurrentIter();
-    m2::PointD const locationMerc = MercatorBounds::FromLatLon(location.m_latitude, location.m_longitude);
-    double const distFromRouteM = MercatorBounds::DistanceOnEarth(iter.m_pt, locationMerc);
-    if (distFromRouteM < m_routingSettings.m_matchingThresholdM)
-    {
-      location.m_latitude = MercatorBounds::YToLat(iter.m_pt.y);
-      location.m_longitude = MercatorBounds::XToLon(iter.m_pt.x);
-      if (m_routingSettings.m_matchRoute)
-        location.m_bearing = location::AngleToBearing(GetPolySegAngle(iter.m_ind));
-
-      routeMatchingInfo.Set(iter.m_pt, iter.m_ind, GetMercatorDistanceFromBegin());
-    }
+    routeMatchingInfo.Set(iter.m_pt, iter.m_ind, GetMercatorDistanceFromBegin());
   }
 }
 

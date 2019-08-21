@@ -1055,22 +1055,6 @@ bool RoutingManager::DisableFollowMode()
   return disabled;
 }
 
-void RoutingManager::CheckLocationForRouting(location::GpsInfo const & info)
-{
-  if (!IsRoutingActive())
-    return;
-
-  SessionState const state = m_routingSession.OnLocationPositionChanged(info);
-  if (state == SessionState::RouteNeedRebuild)
-  {
-    m_routingSession.RebuildRoute(
-        MercatorBounds::FromLatLon(info.m_latitude, info.m_longitude),
-        [this](Route const & route, RouterResultCode code) { OnRebuildRouteReady(route, code); },
-        nullptr /* needMoreMapsCallback */, nullptr /* removeRouteCallback */, 0 /* timeoutSec */,
-        SessionState::RouteRebuilding, true /* adjustToPrevRoute */);
-  }
-}
-
 void RoutingManager::CallRouteBuilded(RouterResultCode code,
                                       storage::CountriesSet const & absentCountries)
 {
@@ -1083,18 +1067,31 @@ void RoutingManager::CallRouteBuildStart(std::vector<RouteMarkData> const & poin
 }
 
 void RoutingManager::MatchLocationToRoute(location::GpsInfo & location,
-                                          location::RouteMatchingInfo & routeMatchingInfo) const
+                                          location::RouteMatchingInfo & routeMatchingInfo)
 {
   if (!IsRoutingActive())
     return;
 
-  m_routingSession.MatchLocationToRoute(location, routeMatchingInfo);
+  auto const & updatedData = m_routingSession.UpdatePosition(location);
+  if (updatedData.m_state == SessionState::RouteNeedRebuild)
+  {
+    m_routingSession.RebuildRoute(
+        MercatorBounds::FromLatLon(location.m_latitude, location.m_longitude),
+        [this](Route const & route, RouterResultCode code) { OnRebuildRouteReady(route, code); },
+        nullptr /* needMoreMapsCallback */, nullptr /* removeRouteCallback */, 0 /* timeoutSec */,
+        SessionState::RouteRebuilding, true /* adjustToPrevRoute */);
+  }
+
+  if (updatedData.m_matchedPosition.IsValid())
+  {
+    location = updatedData.m_matchedPosition;
+    m_routingSession.FillRouteMatchingInfo(routeMatchingInfo);
+  }
 }
 
 location::RouteMatchingInfo RoutingManager::GetRouteMatchingInfo(location::GpsInfo & info)
 {
   location::RouteMatchingInfo routeMatchingInfo;
-  CheckLocationForRouting(info);
   MatchLocationToRoute(info, routeMatchingInfo);
   return routeMatchingInfo;
 }

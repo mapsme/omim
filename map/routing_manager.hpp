@@ -232,7 +232,6 @@ public:
   void SetRouterImpl(routing::RouterType type);
   void RemoveRoute(bool deactivateFollowing);
 
-  void CheckLocationForRouting(location::GpsInfo const & info);
   void CallRouteBuilded(routing::RouterResultCode code,
                         storage::CountriesSet const & absentCountries);
   void OnBuildRouteReady(routing::Route const & route, routing::RouterResultCode code);
@@ -332,7 +331,7 @@ private:
 
   bool IsTrackingReporterEnabled() const;
   void MatchLocationToRoute(location::GpsInfo & info,
-                            location::RouteMatchingInfo & routeMatchingInfo) const;
+                            location::RouteMatchingInfo & routeMatchingInfo);
   location::RouteMatchingInfo GetRouteMatchingInfo(location::GpsInfo & info);
   uint32_t GenerateRoutePointsTransactionId() const;
 

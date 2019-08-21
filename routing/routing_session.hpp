@@ -94,11 +94,17 @@ public:
   bool GetRouteAltitudesAndDistancesM(std::vector<double> & routeSegDistanceM,
                                       feature::TAltitudes & routeAltitudesM) const;
 
-  SessionState OnLocationPositionChanged(location::GpsInfo const & info);
+  struct UpdatedPositionData
+  {
+    UpdatedPositionData(SessionState state) : m_state(state) {}
+    location::GpsInfo m_matchedPosition;
+    SessionState m_state = routing::SessionState::RoutingNotActive;
+  };
+
+  UpdatedPositionData UpdatePosition(location::GpsInfo const & info);
   void GetRouteFollowingInfo(location::FollowingInfo & info) const;
 
-  void MatchLocationToRoute(location::GpsInfo & location,
-                            location::RouteMatchingInfo & routeMatchingInfo) const;
+  void FillRouteMatchingInfo(location::RouteMatchingInfo & routeMatchingInfo) const;
   // Get traffic speed for the current route position.
   // Returns SpeedGroup::Unknown if any trouble happens: position doesn't match with route or something else.
   traffic::SpeedGroup MatchTraffic(location::RouteMatchingInfo const & routeMatchingInfo) const;
@@ -160,6 +166,8 @@ public:
 
   std::shared_ptr<Route> GetRouteForTests() const { return m_route; }
 
+  bool IsPositionMatchedToTheRoute() const { return m_moveAwayCounter == 0; }
+
 private:
   struct DoReadyCallback
   {
@@ -187,7 +195,6 @@ private:
   SessionState m_state;
   bool m_isFollowing;
   Checkpoints m_checkpoints;
-
 
   /// Current position metrics to check for RouteNeedRebuild state.
   double m_lastDistance = 0.0;

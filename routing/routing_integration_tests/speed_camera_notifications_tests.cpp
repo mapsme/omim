@@ -45,7 +45,7 @@ location::GpsInfo MoveTo(ms::LatLon const & coords, double speed = -1)
 
 void ChangePosition(ms::LatLon const & coords, double speedKmPH, RoutingSession & routingSession)
 {
-  routingSession.OnLocationPositionChanged(MoveTo({coords.m_lat, coords.m_lon}, KMPH2MPS(speedKmPH)));
+  routingSession.UpdatePosition(MoveTo({coords.m_lat, coords.m_lon}, KMPH2MPS(speedKmPH)));
 }
 
 void InitRoutingSession(ms::LatLon const & from, ms::LatLon const & to, RoutingSession & routingSession,

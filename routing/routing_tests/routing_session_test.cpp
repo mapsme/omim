@@ -203,7 +203,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestRouteRebuildingMovingA
                                         *m_session);
       while (info.m_latitude < kTestRoute.back().y)
       {
-        code = m_session->OnLocationPositionChanged(info);
+        code = m_session->UpdatePosition(info);
         TEST_EQUAL(code, SessionState::OnRoute, ());
         info.m_latitude += 0.01;
       }
@@ -232,7 +232,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestRouteRebuildingMovingA
     SessionState code = SessionState::RoutingNotActive;
     for (size_t i = 0; i < 10; ++i)
     {
-      code = m_session->OnLocationPositionChanged(info);
+      code = m_session->UpdatePosition(info);
       info.m_latitude -= 0.1;
     }
     TEST_EQUAL(code, SessionState::RouteNeedRebuild, ());
@@ -281,7 +281,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestRouteRebuildingMovingT
           *m_session);
       for (size_t i = 0; i < 8; ++i)
       {
-        code = m_session->OnLocationPositionChanged(info);
+        code = m_session->UpdatePosition(info);
         info.m_latitude += 0.1;
       }
     }
@@ -328,7 +328,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestFollowRouteFlagPersist
     info.m_latitude = 1.;
     while (info.m_latitude < kTestRoute.back().y)
     {
-      m_session->OnLocationPositionChanged(info);
+      m_session->UpdatePosition(info);
       TEST(m_session->IsOnRoute(), ());
       TEST(m_session->IsFollowing(), ());
       info.m_latitude += 0.01;
@@ -355,7 +355,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestFollowRouteFlagPersist
     SessionState code = SessionState::RoutingNotActive;
     for (size_t i = 0; i < 10; ++i)
     {
-      code = m_session->OnLocationPositionChanged(info);
+      code = m_session->UpdatePosition(info);
       info.m_latitude -= 0.1;
     }
     TEST_EQUAL(code, SessionState::RouteNeedRebuild, ());
@@ -414,25 +414,25 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestFollowRoutePercentTest
     // Go through the route.
     info.m_longitude = 0.;
     info.m_latitude = 1.;
-    m_session->OnLocationPositionChanged(info);
+    m_session->UpdatePosition(info);
     TEST(base::AlmostEqualAbs(m_session->GetCompletionPercent(), 0., 0.5),
          (m_session->GetCompletionPercent()));
 
     info.m_longitude = 0.;
     info.m_latitude = 2.;
-    m_session->OnLocationPositionChanged(info);
+    m_session->UpdatePosition(info);
     TEST(base::AlmostEqualAbs(m_session->GetCompletionPercent(), 33.3, 0.5),
          (m_session->GetCompletionPercent()));
 
     info.m_longitude = 0.;
     info.m_latitude = 3.;
-    m_session->OnLocationPositionChanged(info);
+    m_session->UpdatePosition(info);
     TEST(base::AlmostEqualAbs(m_session->GetCompletionPercent(), 66.6, 0.5),
          (m_session->GetCompletionPercent()));
 
     info.m_longitude = 0.;
     info.m_latitude = 3.99;
-    m_session->OnLocationPositionChanged(info);
+    m_session->UpdatePosition(info);
     TEST(base::AlmostEqualAbs(m_session->GetCompletionPercent(), 100., 0.5),
          (m_session->GetCompletionPercent()));
     checkTimedSignal.Signal();
