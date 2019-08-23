@@ -516,6 +516,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mSearchController = new FloatingSearchToolbarController(this, this);
     mSearchController.getToolbar().getViewTreeObserver().addOnGlobalLayoutListener(new ToolbarLayoutChangeListener());
     mSearchController.setVisibilityListener(this);
+    SearchEngine.INSTANCE.addListener(this);
 
     SharingHelper.INSTANCE.initialize();
 
@@ -1345,7 +1346,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   protected void onStart()
   {
     super.onStart();
-    SearchEngine.INSTANCE.addListener(this);
     Framework.nativeSetMapObjectListener(this);
     BookmarkManager.INSTANCE.addLoadingListener(this);
     BookmarkManager.INSTANCE.addCatalogListener(this);
@@ -1360,7 +1360,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   protected void onStop()
   {
     super.onStop();
-    SearchEngine.INSTANCE.removeListener(this);
     Framework.nativeRemoveMapObjectListener();
     BookmarkManager.INSTANCE.removeLoadingListener(this);
     BookmarkManager.INSTANCE.removeCatalogListener(this);
@@ -1386,6 +1385,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mToggleMapLayerController.detachCore();
     TrafficManager.INSTANCE.detachAll();
     mPlacePageController.destroy();
+    SearchEngine.INSTANCE.removeListener(this);
   }
 
   @Override
