@@ -238,9 +238,8 @@ UNIT_TEST(SelfIntersectedRouteMatchingTest)
                                  location::GpsInfo const & expectedMatchingPos,
                                  size_t expectedIndexInRoute) {
     location::RouteMatchingInfo routeMatchingInfo;
-    route.MatchPosition(pos);
-    location::GpsInfo matchedPos = pos;
-    route.FillRouteMatchingInfo(matchedPos, routeMatchingInfo);
+    auto const matchedPos = *route.MatchPosition(pos);
+    route.FillRouteMatchingInfo(routeMatchingInfo);
     TEST_LESS(MercatorBounds::DistanceOnEarth(
                   m2::PointD(matchedPos.m_latitude, matchedPos.m_longitude),
                   m2::PointD(expectedMatchingPos.m_latitude, expectedMatchingPos.m_longitude)),

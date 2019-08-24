@@ -203,7 +203,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestRouteRebuildingMovingA
                                         *m_session);
       while (info.m_latitude < kTestRoute.back().y)
       {
-        code = m_session->UpdatePosition(info);
+        code = (m_session->UpdatePosition(info)).m_state;
         TEST_EQUAL(code, SessionState::OnRoute, ());
         info.m_latitude += 0.01;
       }
@@ -232,7 +232,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestRouteRebuildingMovingA
     SessionState code = SessionState::RoutingNotActive;
     for (size_t i = 0; i < 10; ++i)
     {
-      code = m_session->UpdatePosition(info);
+      code = (m_session->UpdatePosition(info)).m_state;
       info.m_latitude -= 0.1;
     }
     TEST_EQUAL(code, SessionState::RouteNeedRebuild, ());
@@ -281,7 +281,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestRouteRebuildingMovingT
           *m_session);
       for (size_t i = 0; i < 8; ++i)
       {
-        code = m_session->UpdatePosition(info);
+        code = (m_session->UpdatePosition(info)).m_state;
         info.m_latitude += 0.1;
       }
     }
@@ -355,7 +355,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestFollowRouteFlagPersist
     SessionState code = SessionState::RoutingNotActive;
     for (size_t i = 0; i < 10; ++i)
     {
-      code = m_session->UpdatePosition(info);
+      code = (m_session->UpdatePosition(info)).m_state;
       info.m_latitude -= 0.1;
     }
     TEST_EQUAL(code, SessionState::RouteNeedRebuild, ());
