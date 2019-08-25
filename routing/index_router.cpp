@@ -1316,7 +1316,6 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
   for (size_t i = 0; i + 1 < numPoints; ++i)
   {
     time += starter.CalcSegmentETA(segments[i]);
-    LOG(LINFO, (time, starter.CalcSegmentETA(segments[i])));
     times.emplace_back(static_cast<uint32_t>(i + 1), time);
   }
 

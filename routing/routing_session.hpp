@@ -166,8 +166,6 @@ public:
 
   std::shared_ptr<Route> GetRouteForTests() const { return m_route; }
 
-  bool IsPositionMatchedToTheRoute() const { return m_moveAwayCounter == 0; }
-
 private:
   struct DoReadyCallback
   {
