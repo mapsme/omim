@@ -999,7 +999,7 @@ Java_com_mapswithme_maps_Framework_nativeSetMapObjectListener(JNIEnv * env, jcla
                                                  "(Lcom/mapswithme/maps/bookmarks/data/MapObject;)V");
   // void onDismiss(boolean switchFullScreenMode);
   jmethodID const dismissId = jni::GetMethodID(env, g_mapObjectListener, "onDismiss", "(Z)V");
-  frm()->SetMapSelectionListeners([activatedId](place_page::Info const & info)
+  frm()->SetPlacePageListenners([activatedId](place_page::Info const & info)
   {
     JNIEnv * env = jni::GetEnv();
     g_framework->SetPlacePageInfo(info);
@@ -1010,7 +1010,8 @@ Java_com_mapswithme_maps_Framework_nativeSetMapObjectListener(JNIEnv * env, jcla
     JNIEnv * env = jni::GetEnv();
     g_framework->SetPlacePageInfo({});
     env->CallVoidMethod(g_mapObjectListener, dismissId, switchFullScreenMode);
-  });
+  },
+  {} /* onUpdate */);
 }
 
 JNIEXPORT void JNICALL
@@ -1019,7 +1020,7 @@ Java_com_mapswithme_maps_Framework_nativeRemoveMapObjectListener(JNIEnv * env, j
   if (g_mapObjectListener == nullptr)
     return;
 
-  frm()->SetMapSelectionListeners({}, {});
+  frm()->SetPlacePageListenners({} /* onOpen */, {} /* onClose */, {} /* onUpdate */);
   LOG(LINFO, ("Remove global map object listener"));
   env->DeleteGlobalRef(g_mapObjectListener);
   g_mapObjectListener = nullptr;
