@@ -500,7 +500,7 @@ NSString * const kHotelFacilitiesSegue = @"Map2FacilitiesSegue";
 {
   for (UIViewController * vc in self.navigationController.viewControllers)
   {
-    if ([vc isMemberOfClass:MWMBookmarksTabViewController.class])
+    if ([vc isMemberOfClass:MWMCatalogWebViewController.class])
     {
       auto alert = [[BookmarksLoadedViewController alloc] init];
       alert.onViewBlock = ^{
