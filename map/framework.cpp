@@ -2409,7 +2409,8 @@ void Framework::UpdatePlacePageInfoForCurrentSelection()
 
   SetPlacePageLocation(info);
 
-  ActivateMapSelection(false, obj, info);
+  if (m_onPlacePageUpdate)
+    m_onPlacePageUpdate(info);
 }
 
 void Framework::InvalidateUserMarks()
