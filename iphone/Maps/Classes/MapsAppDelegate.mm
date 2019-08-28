@@ -248,7 +248,11 @@ using namespace osm_auth_ios;
   [UNUserNotificationCenter currentNotificationCenter].delegate = self.notificationManager;
 
   if ([MWMFrameworkHelper isWiFiConnected]) {
-    [[InAppPurchase bookmarksSubscriptionManager] validateWithCompletion:nil];
+    [[InAppPurchase bookmarksSubscriptionManager] validateWithCompletion:^(MWMValidationResult result) {
+      if (result == MWMValidationResultNotValid) {
+        [MWMPurchaseManager setBookmarksSubscriptionActive:NO];
+      }
+    }];
     [[InAppPurchase adsRemovalSubscriptionManager] validateWithCompletion:^(MWMValidationResult result) {
       [MWMPurchaseManager setAdsDisabled:result != MWMValidationResultNotValid];
     }];
@@ -571,13 +575,14 @@ continueUserActivity:(NSUserActivity *)userActivity
   [UIButton appearance].exclusiveTouch = YES;
 
   [self customizeAppearanceForNavigationBar:[UINavigationBar appearance]];
-
-  UIBarButtonItem * barBtn = [UIBarButtonItem appearance];
-  [barBtn setTitleTextAttributes:[self navigationBarTextAttributes] forState:UIControlStateNormal];
-  [barBtn setTitleTextAttributes:@{
-    NSForegroundColorAttributeName : [UIColor lightGrayColor],
-  }
-                        forState:UIControlStateDisabled];
+  
+  UIBarButtonItem *barButtonApperance = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UINavigationBar class]]];
+  [barButtonApperance setTitleTextAttributes:[self navigationBarTextAttributes]
+                                    forState:UIControlStateNormal];
+  [barButtonApperance setTitleTextAttributes:@{
+                                               NSForegroundColorAttributeName : [UIColor lightGrayColor],
+                                               }
+                                    forState:UIControlStateDisabled];
   [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UINavigationBar class]]].tintColor = [UIColor whitePrimaryText];
 
   UIPageControl * pageControl = [UIPageControl appearance];
@@ -859,8 +864,8 @@ didDisconnectCarInterfaceController:(CPInterfaceController *)interfaceController
 - (void)updateAppearanceFromWindow:(UIWindow *)sourceWindow
                           toWindow:(UIWindow *)destinationWindow
                 isCarplayActivated:(BOOL)isCarplayActivated {
-  CGFloat sourceContentScale = sourceWindow.screen.nativeScale;
-  CGFloat destinationContentScale = destinationWindow.screen.nativeScale;
+  CGFloat sourceContentScale = sourceWindow.screen.scale;
+  CGFloat destinationContentScale = destinationWindow.screen.scale;
   if (ABS(sourceContentScale - destinationContentScale) > 0.1) {
     if (isCarplayActivated) {
       [self updateVisualScale:destinationContentScale];

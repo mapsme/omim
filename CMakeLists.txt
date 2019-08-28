@@ -9,7 +9,6 @@ get_filename_component(OMIM_ROOT . ABSOLUTE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${OMIM_ROOT}/cmake")
 
 include(OmimHelpers)
-include(BuildVersion)
 include(BundledBoost)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
@@ -47,6 +46,11 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   add_definitions(-DDEBUG)
 elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
   add_definitions(-DRELEASE)
+elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
+  add_definitions(-DRELEASE)
+  add_compile_options(
+    "-fno-omit-frame-pointer"
+  )
 else()
   message(FATAL_ERROR "Unknown build type: " ${CMAKE_BUILD_TYPE})
 endif()
@@ -338,8 +342,10 @@ if (PLATFORM_ANDROID)
 endif()
 
 add_custom_target(BuildVersion ALL
-  COMMAND
-  ${CMAKE_COMMAND}
-  -DOMIM_ROOT="${OMIM_ROOT}"
+  COMMAND ${CMAKE_COMMAND}
+  ARGS
+  -D MAPSME_CURRENT_PROJECT_ROOT=${OMIM_ROOT}
+  -D PATH_WITH_BUILD_VERSION_HPP=${OMIM_ROOT}
+  -D PROJECT_NAME=${PROJECT_NAME}
   -P ${OMIM_ROOT}/cmake/BuildVersion.cmake
 )

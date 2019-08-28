@@ -15,8 +15,8 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * infoToBottomConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint * infoHeightConstraint;
 
-@property (copy, nonatomic) NSAttributedString * info;
-@property (copy, nonatomic) NSString * shortInfo;
+@property(copy, nonatomic) NSAttributedString *info;
+@property(copy, nonatomic) NSString *shortInfo;
 @property (weak, nonatomic) id<MWMCategoryInfoCellDelegate> delegate;
 
 @end

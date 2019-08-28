@@ -113,7 +113,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
 
   if (!self.layout)
   {
-    self.layout = [[MWMPlacePageLayout alloc] initWithOwnerView:self.ownerViewController.view
+    self.layout = [[MWMPlacePageLayout alloc] initWithOwnerView:self.ownerViewController.controlsView
                                                        delegate:self
                                                      dataSource:self];
   }
@@ -127,6 +127,10 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   
   // Call for the first time to produce changes
   [self processCountryEvent:[self.data countryId]];
+}
+
+- (BOOL)isPPShown {
+  return self.data != nil;
 }
 
 - (void)dismiss
@@ -285,6 +289,19 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   parameters[kStatConnection] = [Statistics connectionTypeString];
   parameters[kStatTags] = data.statisticsTags;
   [Statistics logEvent:kStatPlacepageSponsoredOpen withParameters:parameters];
+}
+
+- (void)logStateChangeEventWithValue:(NSNumber *)value {
+  MWMPlacePageData * data = self.data;
+  if (data == nil) return;
+  
+  NSString *types = data.statisticsTags;
+  NSNumber *lat = [NSNumber numberWithFloat:data.latLon.m_lat];
+  NSNumber *lon = [NSNumber numberWithFloat:data.latLon.m_lon];
+  [Statistics logEvent:kStatPlacePageChangeState withParameters:@{kStatTypes: types,
+                                                                  kStatLat: lat,
+                                                                  kStatLon: lon,
+                                                                  kStatValue: value}];
 }
 
 #pragma mark - MWMLocationObserver

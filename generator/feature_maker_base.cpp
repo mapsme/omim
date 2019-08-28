@@ -10,10 +10,18 @@ using namespace feature;
 
 namespace generator
 {
-FeatureMakerBase::FeatureMakerBase(cache::IntermediateDataReader & cache) : m_cache(cache) {}
+FeatureMakerBase::FeatureMakerBase(std::shared_ptr<cache::IntermediateData> const & cache)
+  : m_cache(cache) {}
+
+void FeatureMakerBase::SetCache(std::shared_ptr<cache::IntermediateData> const & cache)
+{
+  m_cache = cache;
+}
 
 bool FeatureMakerBase::Add(OsmElement & element)
 {
+  ASSERT(m_cache, ());
+
   FeatureParams params;
   ParseParams(params, element);
   switch (element.m_type)
@@ -49,7 +57,6 @@ bool FeatureMakerBase::GetNextFeature(FeatureBuilder & feature)
   return true;
 }
 
-
 void TransformAreaToPoint(FeatureBuilder & feature)
 {
   CHECK(feature.IsArea(), ());
@@ -58,6 +65,9 @@ void TransformAreaToPoint(FeatureBuilder & feature)
   feature.ResetGeometry();
   feature.SetOsmId(id);
   feature.SetCenter(center);
+  auto & params = feature.GetParams();
+  if (!params.house.IsEmpty())
+    params.SetGeomTypePointEx();
 }
 
 void TransformAreaToLine(FeatureBuilder & feature)

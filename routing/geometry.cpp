@@ -13,6 +13,7 @@
 #include "geometry/mercator.hpp"
 
 #include "base/assert.hpp"
+#include "base/string_utils.hpp"
 
 #include <algorithm>
 #include <string>
@@ -25,6 +26,34 @@ namespace
 // @TODO(bykoianko) Consider setting cache size based on available memory.
 // Maximum road geometry cache size in items.
 size_t constexpr kRoadsCacheSize = 5000;
+
+double CalcFerryDurationHours(string const & durationHours, double roadLenKm)
+{
+  // Look for more info: https://confluence.mail.ru/display/MAPSME/Ferries
+  // Shortly: the coefs were received from statistic about ferries with durations in OSM.
+  double constexpr kIntercept = 0.2490726747447476;
+  double constexpr kSlope = 0.02078913;
+
+  if (durationHours.empty())
+    return kIntercept + kSlope * roadLenKm;
+
+  double durationH = 0.0;
+  CHECK(strings::to_double(durationHours.c_str(), durationH), (durationHours));
+
+  // See: https://confluence.mail.ru/download/attachments/249123157/image2019-8-22_16-15-53.png
+  // Shortly: we drop some points: (x: lengthKm, y: durationH), that are upper or lower these two lines.
+  double constexpr kUpperBoundIntercept = 4.0;
+  double constexpr kUpperBoundSlope = 0.037;
+  if (kUpperBoundIntercept + kUpperBoundSlope * roadLenKm - durationH < 0)
+    return kIntercept + kSlope * roadLenKm;
+
+  double constexpr kLowerBoundIntercept = -2.0;
+  double constexpr kLowerBoundSlope = 0.015;
+  if (kLowerBoundIntercept + kLowerBoundSlope * roadLenKm - durationH > 0)
+    return kIntercept + kSlope * roadLenKm;
+
+  return durationH;
+}
 
 // GeometryLoaderImpl ------------------------------------------------------------------------------
 class GeometryLoaderImpl final : public GeometryLoader
@@ -178,6 +207,17 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
                              altitudes ? (*altitudes)[i] : feature::kDefaultAltitudeMeters);
   }
 
+  if (m_routingOptions.Has(RoutingOptions::Road::Ferry))
+  {
+    auto const durationHours = feature.GetMetadata().Get(feature::Metadata::FMD_DURATION);
+    auto const roadLenKm = GetRoadLengthM() / 1000.0;
+    double durationH = CalcFerryDurationHours(durationHours, roadLenKm);
+
+    CHECK(!base::AlmostEqualAbs(durationH, 0.0, 1e-5), (durationH));
+    m_forwardSpeed = m_backwardSpeed =
+        SpeedKMpH(std::min(vehicleModel.GetMaxWeightSpeed(), roadLenKm / durationH));
+  }
+
   if (m_valid && (!m_forwardSpeed.IsValid() || !m_backwardSpeed.IsValid()))
   {
     auto const & id = feature.GetID();
@@ -194,6 +234,18 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
 SpeedKMpH const & RoadGeometry::GetSpeed(bool forward) const
 {
   return forward ? m_forwardSpeed : m_backwardSpeed;
+}
+
+double RoadGeometry::GetRoadLengthM() const
+{
+  double lenM = 0.0;
+  for (size_t i = 1; i < GetPointsCount(); ++i)
+  {
+    lenM +=
+        MercatorBounds::DistanceOnEarth(m_junctions[i - 1].GetPoint(), m_junctions[i].GetPoint());
+  }
+
+  return lenM;
 }
 
 // Geometry ----------------------------------------------------------------------------------------

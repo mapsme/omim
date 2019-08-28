@@ -50,7 +50,7 @@
 - (instancetype)initWithAuthURL:(NSURL *)url onSuccessAuth:(MWMStringBlock)success
                       onFailure:(MWMVoidBlock)failure
 {
-  self = [super init];
+  self = [super initWithNibName:nil bundle:nil];
   if (self)
   {
     _m_url = url;
@@ -93,6 +93,10 @@
   self.webView.backgroundColor = UIColor.whiteColor;
   self.webView.allowsLinkPreview = NO;
 
+  [self performURLRequest];
+}
+
+- (void)performURLRequest {
   __weak __typeof(self) ws = self;
   [self willLoadUrl:^(BOOL load, NSDictionary<NSString *, NSString *> *headers) {
     __typeof(self) self = ws;
@@ -107,7 +111,7 @@
         for (NSString *header in headers.allKeys) {
           [request setValue:headers[header] forHTTPHeaderField:header];
         }
-
+        
         [request setValue:@(GetPlatform().GetAppUserAgent().Get().c_str()) forHTTPHeaderField:@"User-Agent"];
         if (self.shouldAddAccessToken)
         {

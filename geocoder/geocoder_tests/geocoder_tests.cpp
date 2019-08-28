@@ -287,6 +287,26 @@ UNIT_TEST(Geocoder_LocalityBuilding)
   TestGeocoder(geocoder, "Zelenograd 2", {{building2, 1.0}});
 }
 
+// Geocoder_Subregion* -----------------------------------------------------------------------------
+UNIT_TEST(Geocoder_SubregionInLocality)
+{
+  string const kData = R"#(
+10 {"properties": {"locales": {"default": {"address": {"region": "Москва"}}}, "rank": 2}}
+11 {"properties": {"locales": {"default": {"address": {"locality": "Москва", "region": "Москва"}}}, "rank": 4}}
+12 {"properties": {"locales": {"default": {"address": {"subregion": "Северный административный округ", "locality": "Москва", "region": "Москва"}}}, "rank": 3}}
+  ScopedFile const regionsJsonFile("regions.jsonl", kData);
+  Geocoder geocoder(regionsJsonFile.GetFullPath());
+)#";
+
+  ScopedFile const regionsJsonFile("regions.jsonl", kData);
+  Geocoder geocoder(regionsJsonFile.GetFullPath());
+
+  TestGeocoder(geocoder, "Северный административный округ", {{Id{0x12}, 1.0}});
+  TestGeocoder(geocoder, "Москва, Северный административный округ",
+               {{Id{0x12}, 1.0}, {Id{0x10}, 0.294118}, {Id{0x11}, 0.176471}});
+  TestGeocoder(geocoder, "Москва", {{Id{0x10}, 1.0}, {Id{0x11}, 0.6}});
+}
+
 // Geocoder_NumericalSuburb* ----------------------------------------------------------------------
 UNIT_TEST(Geocoder_NumericalSuburbRelevance)
 {
@@ -308,7 +328,6 @@ UNIT_TEST(Geocoder_NumericalSuburbRelevance)
   TestGeocoder(geocoder, "Metro Manila, 60", {{Id{0x10}, 1.0}});
   TestGeocoder(geocoder, "Белгород, Щорса, 60", {{Id{0x22}, 1.0}});
 }
-
 //--------------------------------------------------------------------------------------------------
 UNIT_TEST(Geocoder_EmptyFileConcurrentRead)
 {

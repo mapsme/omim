@@ -1,3 +1,5 @@
+import SafariServices
+
 class BookmarksSubscriptionViewController: MWMViewController {
   @IBOutlet private var annualView: UIView!
   @IBOutlet private var monthlyView: UIView!
@@ -24,6 +26,19 @@ class BookmarksSubscriptionViewController: MWMViewController {
     get { return UIColor.isNightMode() ? .lightContent : .default }
   }
 
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    InAppPurchase.bookmarksSubscriptionManager.addListener(self)
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+  deinit {
+    InAppPurchase.bookmarksSubscriptionManager.removeListener(self)
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
@@ -41,18 +56,27 @@ class BookmarksSubscriptionViewController: MWMViewController {
 
     annualViewController.config(title: L("annual_subscription_title"),
                                 subtitle: L("annual_subscription_message"),
-                                price: "",
-                                image: UIImage(named: "bookmarksSubscriptionYear")!)
+                                price: "...",
+                                image: UIImage(named: "bookmarksSubscriptionYear")!,
+                                discount: "...")
     monthlyViewController.config(title: L("montly_subscription_title"),
                                 subtitle: L("montly_subscription_message"),
-                                price: "",
+                                price: "...",
                                 image: UIImage(named: "bookmarksSubscriptionMonth")!)
     annualViewController.setSelected(true, animated: false)
     continueButton.setTitle(L("current_location_unknown_continue_button").uppercased(), for: .normal)
-    InAppPurchase.bookmarksSubscriptionManager.addListener(self)
+    continueButton.isEnabled = false
+    scrollView.isUserInteractionEnabled = false
+
+    Statistics.logEvent(kStatInappShow, withParameters: [kStatVendor: MWMPurchaseManager.bookmarksSubscriptionVendorId(),
+                                                         kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId(),
+                                                         kStatProduct: BOOKMARKS_SUBSCRIPTION_YEARLY_PRODUCT_ID,
+                                                         kStatFrom: kStatBanner])
     InAppPurchase.bookmarksSubscriptionManager.getAvailableSubscriptions { [weak self] (subscriptions, error) in
       guard let subscriptions = subscriptions, subscriptions.count == 2 else {
-        // TODO: hande error
+        MWMAlertViewController.activeAlert().presentInfoAlert(L("price_error_title"),
+                                                              text: L("price_error_subtitle"))
+        self?.onCancel?()
         return
       }
 
@@ -67,8 +91,9 @@ class BookmarksSubscriptionViewController: MWMViewController {
 
       let monthlyPrice = subscriptions[0].price
       let annualPrice = subscriptions[1].price
-      let discount = monthlyPrice.multiplying(by: 12).subtracting(annualPrice)
-      let discountString = formatter.string(from: discount)
+
+      let twelveMonthPrice = monthlyPrice.multiplying(by: 12)
+      let discount = twelveMonthPrice.subtracting(annualPrice).dividing(by: twelveMonthPrice).multiplying(by: 100)
 
       self?.monthlyViewController.config(title: L("montly_subscription_title"),
                                          subtitle: L("montly_subscription_message"),
@@ -78,7 +103,9 @@ class BookmarksSubscriptionViewController: MWMViewController {
                                         subtitle: L("annual_subscription_message"),
                                         price: formatter.string(from: annualPrice) ?? "",
                                         image: UIImage(named: "bookmarksSubscriptionYear")!,
-                                        discount: (discountString != nil) ? "- \(discountString!)" : nil)
+                                        discount: "- \(discount.rounding(accordingToBehavior: nil).intValue) %")
+      self?.continueButton.isEnabled = true
+      self?.scrollView.isUserInteractionEnabled = true
     }
   }
 
@@ -90,6 +117,8 @@ class BookmarksSubscriptionViewController: MWMViewController {
     annualViewController.setSelected(true, animated: true)
     monthlyViewController.setSelected(false, animated: true)
     scrollView.scrollRectToVisible(annualView.convert(annualView.bounds, to: scrollView), animated: true)
+    Statistics.logEvent(kStatInappSelect, withParameters: [kStatProduct: selectedSubscription!.productId,
+                                                           kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId()])
   }
 
   @IBAction func onMonthlyViewTap(_ sender: UITapGestureRecognizer) {
@@ -100,30 +129,70 @@ class BookmarksSubscriptionViewController: MWMViewController {
     annualViewController.setSelected(false, animated: true)
     monthlyViewController.setSelected(true, animated: true)
     scrollView.scrollRectToVisible(monthlyView.convert(monthlyView.bounds, to: scrollView), animated: true)
+    Statistics.logEvent(kStatInappSelect, withParameters: [kStatProduct: selectedSubscription!.productId,
+                                                           kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId()])
   }
 
   @IBAction func onContinue(_ sender: UIButton) {
-    loadingView.isHidden = false
-    MWMBookmarksManager.shared().ping { [weak self] (success) in
-      guard success else {
-        self?.loadingView.isHidden = true
-        let errorDialog = BookmarksSubscriptionFailViewController { [weak self] in
-          self?.dismiss(animated: true)
+    signup(anchor: sender) { [weak self] success in
+      guard success else { return }
+      self?.loadingView.isHidden = false
+      MWMBookmarksManager.shared().ping { success in
+        guard success else {
+          self?.loadingView.isHidden = true
+          let errorDialog = BookmarksSubscriptionFailViewController { [weak self] in
+            self?.dismiss(animated: true)
+          }
+          self?.present(errorDialog, animated: true)
+          return
         }
-        self?.present(errorDialog, animated: true)
-        return
-      }
 
-      guard let subscription = self?.selectedSubscription else {
-        return
+        guard let subscription = self?.selectedSubscription else {
+          return
+        }
+
+        InAppPurchase.bookmarksSubscriptionManager.subscribe(to: subscription)
       }
-      
-      InAppPurchase.bookmarksSubscriptionManager.subscribe(to: subscription)
+    }
+    Statistics.logEvent(kStatInappPay, withParameters: [kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId()])
+  }
+
+  @IBAction func onRestore(_ sender: UIButton) {
+    Statistics.logEvent(kStatInappRestore, withParameters: [kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId()])
+    signup(anchor: sender) { [weak self] (success) in
+      guard success else { return }
+      self?.loadingView.isHidden = false
+      InAppPurchase.bookmarksSubscriptionManager.restore { result in
+        self?.loadingView.isHidden = true
+        let alertText: String
+        switch result {
+        case .valid:
+          alertText = L("restore_success_alert")
+        case .notValid:
+          alertText = L("restore_no_subscription_alert")
+        case .serverError, .authError:
+          alertText = L("restore_error_alert")
+        }
+        MWMAlertViewController.activeAlert().presentInfoAlert(L("restore_subscription"), text: alertText)
+      }
     }
   }
 
   @IBAction func onClose(_ sender: UIButton) {
     onCancel?()
+    Statistics.logEvent(kStatInappCancel, withParameters: [kStatPurchase: MWMPurchaseManager.bookmarksSubscriptionServerId()])
+  }
+
+  @IBAction func onTerms(_ sender: UIButton) {
+    guard let url = URL(string: MWMAuthorizationViewModel.termsOfUseLink()) else { return }
+    let safari = SFSafariViewController(url: url)
+    self.present(safari, animated: true, completion: nil)
+  }
+
+  @IBAction func onPrivacy(_ sender: UIButton) {
+    guard let url = URL(string: MWMAuthorizationViewModel.privacyPolicyLink()) else { return }
+    let safari = SFSafariViewController(url: url)
+    self.present(safari, animated: true, completion: nil)
   }
 }
 
@@ -155,6 +224,7 @@ extension BookmarksSubscriptionViewController: SubscriptionManagerListener {
   }
 
   func didSubsribe(_ subscription: ISubscription) {
+    MWMPurchaseManager.setBookmarksSubscriptionActive(true)
   }
 
   func didDefer(_ subscription: ISubscription) {

@@ -21,10 +21,8 @@ class CoastlineFeaturesGenerator
   using TTree = m4::Tree<m2::RegionI>;
   TTree m_tree;
 
-  uint32_t m_coastType;
-
 public:
-  CoastlineFeaturesGenerator(uint32_t coastType);
+  CoastlineFeaturesGenerator();
 
   void AddRegionToTree(feature::FeatureBuilder const & fb);
 

@@ -145,6 +145,13 @@ pair<NameScores, size_t> GetNameScores(FeatureType & ft, Geocoder::Params const 
     });
   }
 
+  if (type == Model::TYPE_STREET)
+  {
+    auto const roadNumber = ft.GetRoadNumber();
+    if (!roadNumber.empty())
+      UpdateNameScores(roadNumber, sliceNoCategories, bestScores);
+  }
+
   return make_pair(bestScores, matchedLength);
 }
 
@@ -183,7 +190,7 @@ void RemoveDuplicatingLinear(vector<RankerResult> & results)
       return t1 < t2;
 
     // After unique, the better feature should be kept.
-    return r1.GetDistance() < r2.GetDistance();
+    return r1.GetLinearModelRank() > r2.GetLinearModelRank();
   };
 
   auto equalCmp = [](RankerResult const & r1, RankerResult const & r2) -> bool {

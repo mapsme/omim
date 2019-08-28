@@ -3,14 +3,16 @@
 
 #include <cstdint>
 
-namespace omim
+namespace @PROJECT_NAME@
 {
 namespace build_version
 {
 namespace git
 {
 constexpr char const * const kHash = "@GIT_HASH@";
+constexpr char const * const kTag = "@GIT_TAG@";
 constexpr uint64_t kTimestamp = @GIT_TIMESTAMP@;
+constexpr char const * const kProjectName = "@PROJECT_NAME@";
 }  // namespace git
 }  // namespace build_version
-}  // namespace omim
+}  // namespace @PROJECT_NAME@

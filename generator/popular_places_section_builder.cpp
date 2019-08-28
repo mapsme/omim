@@ -16,6 +16,7 @@
 
 #include <cstdint>
 #include <limits>
+#include <mutex>
 #include <utility>
 #include <vector>
 
@@ -108,5 +109,22 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
   FilesContainerW cont(mwmFile, FileWriter::OP_WRITE_EXISTING);
   search::RankTableBuilder::Create(content, cont, POPULARITY_RANKS_FILE_TAG);
   return true;
+}
+
+
+PopularPlaces const & GetOrLoadPopularPlaces(std::string const & filename)
+{
+  static std::mutex m;
+  static std::unordered_map<std::string, PopularPlaces> placesStorage;
+
+  std::lock_guard<std::mutex> lock(m);
+  auto const it = placesStorage.find(filename);
+  if (it != placesStorage.cend())
+    return it->second;
+
+  PopularPlaces places;
+  LoadPopularPlaces(filename, places);
+  auto const eIt = placesStorage.emplace(filename, places);
+  return eIt.first->second;
 }
 }  // namespace generator

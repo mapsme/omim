@@ -1,16 +1,20 @@
 #import "BookmarksVC.h"
-#import "CircleView.h"
-#import "ColorPickerView.h"
+#import "BookmarksSection.h"
+#import "InfoSection.h"
 #import "MWMBookmarksManager.h"
-#import "MWMLocationHelpers.h"
-#import "MWMLocationObserver.h"
-#import "MWMSearchManager.h"
 #import "MWMCategoryInfoCell.h"
+#import "MWMCommon.h"
+#import "MWMKeyboard.h"
+#import "MWMLocationObserver.h"
+#import "MWMSearchNoResults.h"
 #import "SwiftBridge.h"
+#import "TracksSection.h"
 
 #include "Framework.h"
 
-#include "geometry/distance_on_sphere.hpp"
+#include "map/bookmarks_search_params.hpp"
+
+#include "geometry/mercator.hpp"
 
 #include "coding/zip_creator.hpp"
 #include "coding/internal/file_data.hpp"
@@ -21,325 +25,178 @@
 
 using namespace std;
 
-namespace
-{
-enum class Section
-{
-  Info,
-  Track,
-  Bookmark
-};
+@interface BookmarksVC () <UITableViewDataSource,
+                           UITableViewDelegate,
+                           UISearchBarDelegate,
+                           MWMBookmarksObserver,
+                           MWMLocationObserver,
+                           MWMKeyboardObserver,
+                           InfoSectionDelegate,
+                           BookmarksSharingViewControllerDelegate,
+                           CategorySettingsViewControllerDelegate>
 
-CGFloat const kPinDiameter = 18.0f;
-}  // namespace
+@property(strong, nonatomic) NSMutableArray<id<TableSectionDataSource>> *defaultSections;
+@property(strong, nonatomic) NSMutableArray<id<TableSectionDataSource>> *searchSections;
+@property(strong, nonatomic) InfoSection *infoSection;
 
-@interface BookmarksVC() <UITableViewDataSource,
-                          UITableViewDelegate,
-                          MWMBookmarksObserver,
-                          MWMLocationObserver,
-                          MWMCategoryInfoCellDelegate,
-                          BookmarksSharingViewControllerDelegate,
-                          CategorySettingsViewControllerDelegate>
-{
-  vector<Section> m_sections;
-}
+@property(nonatomic) NSUInteger lastSearchId;
+@property(nonatomic) NSUInteger lastSortId;
 
-@property(nonatomic) BOOL infoExpanded;
+@property(weak, nonatomic) IBOutlet UIView *statusBarBackground;
+@property(weak, nonatomic) IBOutlet UISearchBar *searchBar;
+@property(weak, nonatomic) IBOutlet UIView *noResultsContainer;
+@property(weak, nonatomic) IBOutlet NSLayoutConstraint *noResultsBottom;
+@property(nonatomic) MWMSearchNoResults *noResultsView;
+
+@property(nonatomic) UIActivityIndicatorView *spinner;
+@property(nonatomic) UIImageView *searchIcon;
+@property(weak, nonatomic) IBOutlet NSLayoutConstraint *hideSearchBar;
+@property(weak, nonatomic) IBOutlet NSLayoutConstraint *showSearchBar;
+
 @property(weak, nonatomic) IBOutlet UITableView * tableView;
+
 @property(weak, nonatomic) IBOutlet UIToolbar * myCategoryToolbar;
 @property(weak, nonatomic) IBOutlet UIToolbar * downloadedCategoryToolbar;
 @property(weak, nonatomic) IBOutlet UIBarButtonItem * viewOnMapItem;
-@property(weak, nonatomic) IBOutlet UIBarButtonItem * sharingOptionsItem;
+
+@property(nonatomic) UIActivityIndicatorView *sortSpinner;
+@property(weak, nonatomic) IBOutlet UIBarButtonItem *sortItem;
+@property(weak, nonatomic) IBOutlet UIBarButtonItem *sortSpinnerItem;
+
 @property(weak, nonatomic) IBOutlet UIBarButtonItem * moreItem;
 
 @end
 
 @implementation BookmarksVC
 
-- (instancetype)initWithCategory:(MWMMarkGroupID)index
-{
+- (instancetype)initWithCategory:(MWMMarkGroupID)categoryId {
   self = [super init];
   if (self)
   {
-    m_categoryId = index;
-    [self calculateSections];
+    _categoryId = categoryId;
   }
   return self;
 }
 
-- (kml::MarkId)getBookmarkIdByRow:(NSInteger)row
-{
-  auto const & bm = GetFramework().GetBookmarkManager();
-  auto const & bookmarkIds = bm.GetUserMarkIds(m_categoryId);
-  ASSERT_LESS(row, bookmarkIds.size(), ());
-  auto it = bookmarkIds.begin();
-  advance(it, row);
-  return *it;
+- (BOOL)isEditable {
+  return [[MWMBookmarksManager sharedManager] isCategoryEditable:self.categoryId];
 }
 
-- (kml::TrackId)getTrackIdByRow:(NSInteger)row
+- (InfoSection *)cachedInfoSection
 {
-  auto const & bm = GetFramework().GetBookmarkManager();
-  auto const & trackIds = bm.GetTrackIds(m_categoryId);
-  ASSERT_LESS(row, trackIds.size(), ());
-  auto it = trackIds.begin();
-  advance(it, row);
-  return *it;
+  if (self.infoSection == nil)
+  {
+    self.infoSection = [[InfoSection alloc] initWithCategoryId:self.categoryId
+                                                      expanded:NO
+                                                      observer:self];
+  }
+  return self.infoSection;
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-  return m_sections.size();
+- (NSMutableArray<id<TableSectionDataSource>> *)currentSections {
+  if (self.searchSections != nil)
+    return self.searchSections;
+  return self.defaultSections;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-  auto const & bm = GetFramework().GetBookmarkManager();
-  switch (m_sections.at(section))
-  {
-  case Section::Info:
-    return 1;
-  case Section::Track:
-    return bm.GetTrackIds(m_categoryId).size();
-  case Section::Bookmark:
-    return bm.GetUserMarkIds(m_categoryId).size();
-  }
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-  switch (m_sections.at(section))
-  {
-  case Section::Info:
-    return L(@"placepage_place_description");
-  case Section::Track:
-    return L(@"tracks_title");
-  case Section::Bookmark:
-    return L(@"bookmarks");
-  }
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  auto & f = GetFramework();
-  auto const & bm = f.GetBookmarkManager();
-  if (!bm.HasBmCategory(m_categoryId))
-    return nil;
-
-  UITableViewCell * cell = nil;
-  switch (m_sections.at(indexPath.section))
-  {
-  case Section::Info:
-  {
-    cell = [tableView dequeueReusableCellWithCellClass:MWMCategoryInfoCell.class indexPath:indexPath];
-    auto infoCell = (MWMCategoryInfoCell *)cell;
-    auto const & categoryData = bm.GetCategoryData(m_categoryId);
-    [infoCell updateWithCategoryData:categoryData delegate:self];
-    infoCell.expanded = self.infoExpanded;
-    break;
-  }
-  case Section::Track:
-  {
-    cell = [tableView dequeueReusableCellWithIdentifier:@"TrackCell"];
-    if (!cell)
-      cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"TrackCell"];
-
-    kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
-    Track const * tr = bm.GetTrack(trackId);
-    cell.textLabel.text = @(tr->GetName().c_str());
-    string dist;
-    if (measurement_utils::FormatDistance(tr->GetLengthMeters(), dist))
-      //Change Length before release!!!
-      cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", L(@"length"), @(dist.c_str())];
-    else
-      cell.detailTextLabel.text = nil;
-    dp::Color const c = tr->GetColor(0);
-    cell.imageView.image = [CircleView createCircleImageWith:kPinDiameter
-                                                    andColor:[UIColor colorWithRed:c.GetRed()/255.f
-                                                                             green:c.GetGreen()/255.f
-                                                                              blue:c.GetBlue()/255.f
-                                                                             alpha:1.f]];
-    break;
-  }
-  case Section::Bookmark:
-  {
-    cell = [tableView dequeueReusableCellWithIdentifier:@"BookmarksVCBookmarkItemCell"];
-    if (!cell)
-      cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                    reuseIdentifier:@"BookmarksVCBookmarkItemCell"];
-
-    kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
-    Bookmark const * bookmark = bm.GetBookmark(bmId);
-    CHECK(cell, ("NULL bookmark"));
-    cell.textLabel.text = @(bookmark->GetPreferredName().c_str());
-    cell.imageView.image = [CircleView createCircleImageWith:kPinDiameter
-                                                    andColor:[ColorPickerView getUIColor:bookmark->GetColor()]];
-
-    CLLocation * lastLocation = [MWMLocationManager lastLocation];
-    if (lastLocation)
-    {
-      double north = location_helpers::headingToNorthRad([MWMLocationManager lastHeading]);
-      string distance;
-      double azimut = -1.0;
-      f.GetDistanceAndAzimut(bookmark->GetPivot(), lastLocation.coordinate.latitude,
-                              lastLocation.coordinate.longitude, north, distance, azimut);
-
-      cell.detailTextLabel.text = @(distance.c_str());
-    }
-    else
-    {
-      cell.detailTextLabel.text = nil;
-    }
-
-    break;
-  }
-  }
-
-  cell.backgroundColor = [UIColor white];
-  cell.textLabel.textColor = [UIColor blackPrimaryText];
-  cell.detailTextLabel.textColor = [UIColor blackSecondaryText];
-  return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  // Remove cell selection
-  [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-  auto & f = GetFramework();
-  auto & bm = f.GetBookmarkManager();
-  bool const categoryExists = bm.HasBmCategory(m_categoryId);
-  CHECK(categoryExists, ("Nonexistent category"));
-  switch (m_sections.at(indexPath.section))
-  {
-  case Section::Info:
-    break;
-  case Section::Track:
-  {
-    kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
-    f.ShowTrack(trackId);
-    [self.navigationController popToRootViewControllerAnimated:YES];
-    break;
-  }
-  case Section::Bookmark:
-  {
-    kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
-    [Statistics logEvent:kStatEventName(kStatBookmarks, kStatShowOnMap)];
-    // Same as "Close".
-    [MWMSearchManager manager].state = MWMSearchManagerStateHidden;
-    f.ShowBookmark(bmId);
-    [self.navigationController popToRootViewControllerAnimated:YES];
-    break;
-  }
-  }
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  auto const s = m_sections.at(indexPath.section);
-  return [[MWMBookmarksManager sharedManager] isCategoryEditable:m_categoryId] && s != Section::Info;
-}
-
-- (void)tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  self.editing = YES;
-}
-
-- (void)tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  self.editing = NO;
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  auto const s = m_sections.at(indexPath.section);
-  if (s == Section::Info)
-    return;
-
-  auto & bm = GetFramework().GetBookmarkManager();
-  if (!bm.HasBmCategory(m_categoryId))
-    return;
-
-  if (editingStyle == UITableViewCellEditingStyleDelete)
-  {
-    if (s == Section::Track)
-    {
-      kml::TrackId const trackId = [self getTrackIdByRow:indexPath.row];
-      bm.GetEditSession().DeleteTrack(trackId);
-    }
-    else
-    {
-      kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
-      [[MWMBookmarksManager sharedManager] deleteBookmark:bmId];
-    }
-  }
-
-  auto const previousNumberOfSections = m_sections.size();
-  [self calculateSections];
-
-  //We can delete the row with animation, if number of sections stay the same.
-  if (previousNumberOfSections == m_sections.size())
-    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+- (void)setCategorySections {
+  if (self.defaultSections == nil)
+    self.defaultSections = [[NSMutableArray alloc] init];
   else
-    [self.tableView reloadData];
+    [self.defaultSections removeAllObjects];
 
-  if (bm.GetUserMarkIds(m_categoryId).size() + bm.GetTrackIds(m_categoryId).size() == 0)
-  {
-    self.navigationItem.rightBarButtonItem = nil;
-    [self setEditing:NO animated:YES];
+  if ([[MWMBookmarksManager sharedManager] isCategoryFromCatalog:self.categoryId]) {
+    [self.defaultSections addObject:[self cachedInfoSection]];
+  }
+
+  MWMTrackIDCollection trackIds = [[MWMBookmarksManager sharedManager] trackIdsForCategory:self.categoryId];
+  if (trackIds.count > 0) {
+    [self.defaultSections addObject:[[TracksSection alloc]
+                                      initWithTitle:L(@"tracks_title")
+                                           trackIds:trackIds
+                                         isEditable:[self isEditable]]];
+  }
+
+  MWMMarkIDCollection markIds = [[MWMBookmarksManager sharedManager] bookmarkIdsForCategory:self.categoryId];
+  if (markIds.count > 0) {
+    [self.defaultSections addObject:[[BookmarksSection alloc] initWithTitle:L(@"bookmarks")
+                                                                    markIds:markIds
+                                                                 isEditable:[self isEditable]]];
   }
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
-{
-  auto header = (UITableViewHeaderFooterView *)view;
-  header.textLabel.textColor = [UIColor blackSecondaryText];
-  header.textLabel.font = [UIFont medium14];
+- (void)setSortedSections:(BookmarkManager::SortedBlocksCollection const &)sortResults {
+  if (self.defaultSections == nil)
+    self.defaultSections = [[NSMutableArray alloc] init];
+  else
+    [self.defaultSections removeAllObjects];
+
+  for (auto const &block : sortResults) {
+    if (!block.m_markIds.empty()) {
+      [self.defaultSections addObject:[[BookmarksSection alloc] initWithTitle:@(block.m_blockName.c_str())
+                                                                      markIds:[BookmarksVC bookmarkIds:block.m_markIds]
+                                                                   isEditable:[self isEditable]]];
+    } else if (!block.m_trackIds.empty()) {
+      [self.defaultSections addObject:[[TracksSection alloc] initWithTitle:@(block.m_blockName.c_str())
+                                                                  trackIds:[BookmarksVC trackIds:block.m_trackIds]
+                                                                isEditable:[self isEditable]]];
+    }
+  }
 }
 
-#pragma mark - MWMCategoryInfoCellDelegate
+- (void)setSearchSection:(search::BookmarksSearchParams::Results const &)searchResults {
+  if (self.searchSections == nil) {
+    self.searchSections = [[NSMutableArray alloc] init];
+  } else {
+    [self.searchSections removeAllObjects];
+  }
 
-- (void)categoryInfoCellDidPressMore:(MWMCategoryInfoCell *)cell
-{
-  [self.tableView beginUpdates];
-  cell.expanded = YES;
-  [self.tableView endUpdates];
-  self.infoExpanded = YES;
+  [self.searchSections addObject:[[BookmarksSection alloc] initWithTitle:nil
+                                                                 markIds:[BookmarksVC bookmarkIds:searchResults]
+                                                              isEditable:[self isEditable]]];
 }
 
-#pragma mark - MWMLocationObserver
-
-- (void)onLocationUpdate:(location::GpsInfo const &)info
-{
-  // Refresh distance
-  auto const & bm = GetFramework().GetBookmarkManager();
-  if (!bm.HasBmCategory(m_categoryId))
+- (void)refreshDefaultSections {
+  if (self.defaultSections != nil)
     return;
 
-  [self.tableView.visibleCells enumerateObjectsUsingBlock:^(UITableViewCell * cell, NSUInteger idx, BOOL * stop)
-  {
-    auto indexPath = [self.tableView indexPathForCell:cell];
-    auto const s = self->m_sections.at(indexPath.section);
-    if (s != Section::Bookmark)
-      return;
+  [self setCategorySections];
+  [self updateControlsVisibility];
 
-    kml::MarkId const bmId = [self getBookmarkIdByRow:indexPath.row];
-    Bookmark const * bookmark = bm.GetBookmark(bmId);
-    if (!bookmark)
-      return;
-
-    m2::PointD const center = bookmark->GetPivot();
-    double const metres = ms::DistanceOnEarth(info.m_latitude, info.m_longitude,
-                                              MercatorBounds::YToLat(center.y), MercatorBounds::XToLon(center.x));
-    cell.detailTextLabel.text = location_helpers::formattedDistance(metres);
-  }];
+  auto const &bm = GetFramework().GetBookmarkManager();
+  BookmarkManager::SortingType lastSortingType;
+  if (bm.GetLastSortingType(self.categoryId, lastSortingType)) {
+    auto const availableSortingTypes = [self availableSortingTypes];
+    for (auto availableType : availableSortingTypes) {
+      if (availableType == lastSortingType) {
+        [self sort:lastSortingType];
+        break;
+      }
+    }
+  }
 }
 
-//*********** End of Location manager callbacks ********************
-//******************************************************************
+- (void)updateControlsVisibility {
+  if ([self isEditable] && [[MWMBookmarksManager sharedManager] isCategoryNotEmpty:self.categoryId]) {
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.sortItem.enabled = YES;
+  } else {
+    self.navigationItem.rightBarButtonItem = nil;
+    self.sortItem.enabled = NO;
+  }
+}
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
   [super viewDidLoad];
+
+  UIColor *searchBarColor = [UIColor primary];
+  self.searchBar.delegate = self;
+  self.statusBarBackground.backgroundColor = self.searchBar.barTintColor = searchBarColor;
+  self.searchBar.backgroundImage = [UIImage imageWithColor:searchBarColor];
+  self.searchBar.placeholder = L(@"search");
+
+  [self.noResultsView setTranslatesAutoresizingMaskIntoConstraints:NO];
+
   self.tableView.estimatedRowHeight = 44;
   [self.tableView registerWithCellClass:MWMCategoryInfoCell.class];
   self.tableView.separatorColor = [UIColor blackDividers];
@@ -350,58 +207,52 @@ CGFloat const kPinDiameter = 18.0f;
                                    NSForegroundColorAttributeName: [UIColor linkBlue] };
 
   [self.moreItem setTitleTextAttributes:moreTitleAttributes forState:UIControlStateNormal];
-  [self.sharingOptionsItem setTitleTextAttributes:regularTitleAttributes forState:UIControlStateNormal];
+  [self.sortItem setTitleTextAttributes:regularTitleAttributes forState:UIControlStateNormal];
   [self.viewOnMapItem setTitleTextAttributes:regularTitleAttributes forState:UIControlStateNormal];
 
   self.moreItem.title = L(@"placepage_more_button");
-  self.sharingOptionsItem.title = L(@"sharing_options");
+  self.sortItem.title = L(@"sort");
+  self.sortSpinnerItem.customView = self.sortSpinner;
   self.viewOnMapItem.title = L(@"search_show_on_map");
 
   self.myCategoryToolbar.barTintColor = [UIColor white];
   self.downloadedCategoryToolbar.barTintColor = [UIColor white];
+
+  [self showSpinner:NO];
+
+  [self refreshDefaultSections];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
   [MWMLocationManager addObserver:self];
 
-  // Display Edit button only if table is not empty
-  if ([[MWMBookmarksManager sharedManager] isCategoryEditable:m_categoryId])
-  {
+  BOOL searchAllowed = NO;
+  if ([self isEditable]) {
+    if ([[MWMBookmarksManager sharedManager] isCategoryNotEmpty:self.categoryId])
+      searchAllowed = YES;
     self.myCategoryToolbar.hidden = NO;
     self.downloadedCategoryToolbar.hidden = YES;
-    if ([[MWMBookmarksManager sharedManager] isCategoryNotEmpty:m_categoryId])
-    {
-      self.navigationItem.rightBarButtonItem = self.editButtonItem;
-      self.sharingOptionsItem.enabled = YES;
-    }
-    else
-    {
-      self.sharingOptionsItem.enabled = NO;
-    }
-  }
-  else
-  {
+  } else {
     self.myCategoryToolbar.hidden = YES;
     self.downloadedCategoryToolbar.hidden = NO;
   }
+  self.showSearchBar.priority = searchAllowed ? UILayoutPriorityRequired : UILayoutPriorityDefaultLow;
+  self.hideSearchBar.priority = searchAllowed ? UILayoutPriorityDefaultLow : UILayoutPriorityRequired;
 
   [super viewWillAppear:animated];
 
-  auto const & bm = GetFramework().GetBookmarkManager();
-  self.title = @(bm.GetCategoryName(m_categoryId).c_str());
+  auto const &bm = GetFramework().GetBookmarkManager();
+  self.title = @(bm.GetCategoryName(self.categoryId).c_str());
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
   [MWMLocationManager removeObserver:self];
 
   // Save possibly edited set name
   [super viewWillDisappear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
   // Disable all notifications in BM on appearance of this view.
   // It allows to significantly improve performance in case of bookmarks
   // modification. All notifications will be sent on controller's disappearance.
@@ -410,44 +261,26 @@ CGFloat const kPinDiameter = 18.0f;
   [super viewDidAppear:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{
+- (void)viewDidDisappear:(BOOL)animated {
   // Allow to send all notifications in BM.
   [[MWMBookmarksManager sharedManager] setNotificationsEnabled: YES];
   
   [super viewDidDisappear:animated];
 }
 
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated
-{
-  [super setEditing:editing animated:animated];
-  [self.tableView setEditing:editing animated:animated];
-}
-
-- (NSString *)categoryFileName
-{
-  return @(GetFramework().GetBookmarkManager().GetCategoryFileName(m_categoryId).c_str());
-}
-
-- (void)calculateSections
-{
-  m_sections.clear();
-  auto const & bm = GetFramework().GetBookmarkManager();
-  if (bm.IsCategoryFromCatalog(m_categoryId))
-    m_sections.emplace_back(Section::Info);
-
-  if (bm.GetTrackIds(m_categoryId).size() > 0)
-    m_sections.emplace_back(Section::Track);
-
-  if (bm.GetUserMarkIds(m_categoryId).size() > 0)
-    m_sections.emplace_back(Section::Bookmark);
-}
-
-- (IBAction)onMore:(UIBarButtonItem *)sender
-{
+- (IBAction)onMore:(UIBarButtonItem *)sender {
   auto actionSheet = [UIAlertController alertControllerWithTitle:nil
                                                          message:nil
                                                   preferredStyle:UIAlertControllerStyleActionSheet];
+
+  [actionSheet addAction:[UIAlertAction actionWithTitle:L(@"sharing_options")
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction *_Nonnull action) {
+                                                  [self shareCategory];
+                                                  [Statistics logEvent:kStatBookmarksListItemSettings
+                                                        withParameters:@{kStatOption: kStatSharingOptions}];
+                                                }]];
+
   [actionSheet addAction:[UIAlertAction actionWithTitle:L(@"search_show_on_map")
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction * _Nonnull action)
@@ -476,7 +309,7 @@ CGFloat const kPinDiameter = 18.0f;
                                                style:UIAlertActionStyleDestructive
                                              handler:^(UIAlertAction * _Nonnull action)
                        {
-                         [[MWMBookmarksManager sharedManager] deleteCategory:self->m_categoryId];
+                         [[MWMBookmarksManager sharedManager] deleteCategory:self.categoryId];
                          [self.delegate bookmarksVCdidDeleteCategory:self];
                          [Statistics logEvent:kStatBookmarksListItemMoreClick withParameters:@{kStatOption : kStatDelete}];
                        }];
@@ -494,64 +327,437 @@ CGFloat const kPinDiameter = 18.0f;
   [Statistics logEvent:kStatBookmarksListItemSettings withParameters:@{kStatOption : kStatMore}];
 }
 
-- (IBAction)onSharingOptions:(UIBarButtonItem *)sender
-{
-  [self shareCategory];
-  [Statistics logEvent:kStatBookmarksListItemSettings withParameters:@{kStatOption : kStatSharingOptions}];
-}
-
-- (IBAction)onViewOnMap:(UIBarButtonItem *)sender
-{
+- (IBAction)onViewOnMap:(UIBarButtonItem *)sender {
   [self viewOnMap];
 }
 
-- (void)openCategorySettings
-{
+- (void)openCategorySettings {
   auto storyboard = [UIStoryboard instance:MWMStoryboardCategorySettings];
   auto settingsController = (CategorySettingsViewController *)[storyboard instantiateInitialViewController];
   settingsController.delegate = self;
-  settingsController.category = [[MWMBookmarksManager sharedManager] categoryWithId:m_categoryId];
+  settingsController.category = [[MWMBookmarksManager sharedManager] categoryWithId:self.categoryId];
   [self.navigationController pushViewController:settingsController animated:YES];
 }
 
-- (void)exportFile
-{
+- (void)exportFile {
   [[MWMBookmarksManager sharedManager] addObserver:self];
-  [[MWMBookmarksManager sharedManager] shareCategory:m_categoryId];
+  [[MWMBookmarksManager sharedManager] shareCategory:self.categoryId];
 }
 
-- (void)shareCategory
-{
+- (void)shareCategory {
   auto storyboard = [UIStoryboard instance:MWMStoryboardSharing];
   auto shareController = (BookmarksSharingViewController *)[storyboard instantiateInitialViewController];
   shareController.delegate = self;
-  shareController.category = [[MWMBookmarksManager sharedManager] categoryWithId:m_categoryId];
+  shareController.category = [[MWMBookmarksManager sharedManager] categoryWithId:self.categoryId];
   [self.navigationController pushViewController:shareController animated:YES];
 }
 
-- (void)viewOnMap
-{
+- (void)viewOnMap {
   [self.navigationController popToRootViewControllerAnimated:YES];
-  GetFramework().ShowBookmarkCategory(m_categoryId);
+  GetFramework().ShowBookmarkCategory(self.categoryId);
+}
+
+- (IBAction)onSort:(UIBarButtonItem *)sender {
+  auto actionSheet = [UIAlertController alertControllerWithTitle:nil
+                                                         message:nil
+                                                  preferredStyle:UIAlertControllerStyleActionSheet];
+
+  auto const sortingTypes = [self availableSortingTypes];
+
+  for (auto type : sortingTypes) {
+    [actionSheet addAction:[UIAlertAction actionWithTitle:[BookmarksVC localizedSortingType:type]
+                                                    style:UIAlertActionStyleDefault
+                                                  handler:^(UIAlertAction *_Nonnull action) {
+                                                    auto &bm = GetFramework().GetBookmarkManager();
+                                                    bm.SetLastSortingType(self.categoryId, type);
+                                                    [self sort:type];
+                                                  }]];
+  }
+
+  [actionSheet addAction:[UIAlertAction actionWithTitle:L(@"sort_default")
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction *_Nonnull action) {
+                                                  [self sortDefault];
+                                                }]];
+
+  [actionSheet addAction:[UIAlertAction actionWithTitle:L(@"cancel") style:UIAlertActionStyleCancel handler:nil]];
+
+  actionSheet.popoverPresentationController.barButtonItem = self.sortItem;
+  [self presentViewController:actionSheet
+                     animated:YES
+                   completion:^{
+                     actionSheet.popoverPresentationController.passthroughViews = nil;
+                   }];
+}
+
+- (std::vector<BookmarkManager::SortingType>)availableSortingTypes {
+  CLLocation *lastLocation = [MWMLocationManager lastLocation];
+  bool const hasMyPosition = lastLocation != nil;
+  auto const &bm = GetFramework().GetBookmarkManager();
+  auto const sortingTypes = bm.GetAvailableSortingTypes(self.categoryId, hasMyPosition);
+  return sortingTypes;
+}
+
+- (void)sortDefault {
+  auto &bm = GetFramework().GetBookmarkManager();
+  bm.ResetLastSortingType(self.categoryId);
+  [self setCategorySections];
+  [self.tableView reloadData];
+}
+
+- (void)sort:(BookmarkManager::SortingType)type {
+  bool hasMyPosition = false;
+  m2::PointD myPosition = m2::PointD::Zero();
+
+  if (type == BookmarkManager::SortingType::ByDistance) {
+    CLLocation *lastLocation = [MWMLocationManager lastLocation];
+    if (!lastLocation)
+      return;
+    hasMyPosition = true;
+    myPosition = MercatorBounds::FromLatLon(lastLocation.coordinate.latitude, lastLocation.coordinate.longitude);
+  }
+
+  auto const sortId = ++self.lastSortId;
+  __weak auto weakSelf = self;
+
+  auto &bm = GetFramework().GetBookmarkManager();
+  BookmarkManager::SortParams sortParams;
+  sortParams.m_groupId = self.categoryId;
+  sortParams.m_sortingType = type;
+  sortParams.m_hasMyPosition = hasMyPosition;
+  sortParams.m_myPosition = myPosition;
+  sortParams.m_onResults = [weakSelf, sortId](BookmarkManager::SortedBlocksCollection &&sortedBlocks,
+                                              BookmarkManager::SortParams::Status status) {
+    __strong auto self = weakSelf;
+    if (!self || sortId != self.lastSortId)
+      return;
+
+    [self showSortSpinner:NO];
+    self.sortItem.enabled = YES;
+
+    if (status == BookmarkManager::SortParams::Status::Completed) {
+      [self setSortedSections:sortedBlocks];
+      [self.tableView reloadData];
+    }
+  };
+
+  [self showSortSpinner:YES];
+  self.sortItem.enabled = NO;
+
+  bm.GetSortedBookmarks(sortParams);
+}
+
+- (UIActivityIndicatorView *)sortSpinner {
+  if (!_sortSpinner) {
+    _sortSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    _sortSpinner.hidesWhenStopped = YES;
+  }
+  return _sortSpinner;
+}
+
+- (void)showSortSpinner:(BOOL)show {
+  if (show)
+    [self.sortSpinner startAnimating];
+  else
+    [self.sortSpinner stopAnimating];
+}
+
+- (void)cancelSearch {
+  GetFramework().CancelSearch(search::Mode::Bookmarks);
+
+  [self showNoResultsView:NO];
+  [self showSpinner:NO];
+
+  self.searchSections = nil;
+  [self refreshDefaultSections];
+  [self.tableView reloadData];
+}
+
+- (MWMSearchNoResults *)noResultsView {
+  if (!_noResultsView) {
+    _noResultsView = [MWMSearchNoResults viewWithImage:[UIImage imageNamed:@"img_search_not_found"]
+                                                 title:L(@"search_not_found")
+                                                  text:L(@"search_not_found_query")];
+  }
+  return _noResultsView;
+}
+
+- (void)showNoResultsView:(BOOL)show {
+  if (!show) {
+    self.tableView.hidden = NO;
+    self.noResultsContainer.hidden = YES;
+    [self.noResultsView removeFromSuperview];
+  } else {
+    self.tableView.hidden = YES;
+    self.noResultsContainer.hidden = NO;
+    [self.noResultsContainer addSubview:self.noResultsView];
+    self.noResultsView.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+      [self.noResultsView.topAnchor constraintEqualToAnchor:self.noResultsContainer.topAnchor],
+      [self.noResultsView.leftAnchor constraintEqualToAnchor:self.noResultsContainer.leftAnchor],
+      [self.noResultsView.bottomAnchor constraintEqualToAnchor:self.noResultsContainer.bottomAnchor],
+      [self.noResultsView.rightAnchor constraintEqualToAnchor:self.noResultsContainer.rightAnchor],
+    ]];
+    [self onKeyboardAnimation];
+  }
+}
+
+- (UIActivityIndicatorView *)spinner {
+  if (!_spinner) {
+    _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    _spinner.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+    _spinner.hidesWhenStopped = YES;
+  }
+  return _spinner;
+}
+
+- (UIImageView *)searchIcon {
+  if (!_searchIcon) {
+    _searchIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_search"]];
+    _searchIcon.mwm_coloring = MWMImageColoringBlack;
+  }
+  return _searchIcon;
+}
+
+- (void)showSpinner:(BOOL)show {
+  UITextField *textField = [self.searchBar valueForKey:@"searchField"];
+  if (!show) {
+    textField.leftView = self.searchIcon;
+    [self.spinner stopAnimating];
+  } else {
+    self.spinner.bounds = textField.leftView.bounds;
+    textField.leftView = self.spinner;
+    [self.spinner startAnimating];
+  }
+}
+
+- (NSString *)categoryFileName {
+  return @(GetFramework().GetBookmarkManager().GetCategoryFileName(self.categoryId).c_str());
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+  setStatusBarBackgroundColor(UIColor.clearColor);
+  return UIStatusBarStyleLightContent;
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+  [super setEditing:editing animated:animated];
+  [self.tableView setEditing:editing animated:animated];
+}
+
+#pragma mark - MWMBookmarkVC
+
++ (MWMMarkIDCollection)bookmarkIds:(std::vector<kml::MarkId> const &)markIds {
+  NSMutableArray<NSNumber *> *collection = [[NSMutableArray alloc] initWithCapacity:markIds.size()];
+  for (auto const &markId : markIds) {
+    [collection addObject:@(markId)];
+  }
+  return collection.copy;
+}
+
++ (MWMTrackIDCollection)trackIds:(std::vector<kml::TrackId> const &)trackIds {
+  NSMutableArray<NSNumber *> *collection = [[NSMutableArray alloc] initWithCapacity:trackIds.size()];
+  for (auto const &trackId : trackIds) {
+    [collection addObject:@(trackId)];
+  }
+  return collection.copy;
+}
+
++ (NSString *)localizedSortingType:(BookmarkManager::SortingType)type {
+  switch (type) {
+    case BookmarkManager::SortingType::ByTime:
+      return L(@"sort_date");
+    case BookmarkManager::SortingType::ByDistance:
+      return L(@"sort_distance");
+    case BookmarkManager::SortingType::ByType:
+      return L(@"sort_type");
+  }
+  UNREACHABLE();
+}
+
+#pragma mark - UISearchBarDelegate
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+  [self.searchBar setShowsCancelButton:YES animated:YES];
+  [self.navigationController setNavigationBarHidden:YES animated:YES];
+  self.tableView.contentInset = self.tableView.scrollIndicatorInsets = {};
+
+  // Allow to send all notifications in BM.
+  [[MWMBookmarksManager sharedManager] setNotificationsEnabled:YES];
+
+  return YES;
+}
+
+- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar {
+  [self.searchBar setShowsCancelButton:NO animated:YES];
+  [self.navigationController setNavigationBarHidden:NO animated:YES];
+  self.tableView.contentInset = self.tableView.scrollIndicatorInsets = {};
+
+  // Disable all notifications in BM.
+  [[MWMBookmarksManager sharedManager] setNotificationsEnabled:NO];
+
+  return YES;
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+  self.searchBar.text = @"";
+  [self.searchBar resignFirstResponder];
+  [self cancelSearch];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+  if (!searchText || searchText.length == 0) {
+    [self cancelSearch];
+    return;
+  }
+
+  search::BookmarksSearchParams searchParams;
+  searchParams.m_query = searchText.UTF8String;
+  searchParams.m_groupId = self.categoryId;
+
+  auto const searchId = ++self.lastSearchId;
+  __weak auto weakSelf = self;
+  searchParams.m_onStarted = [] {};
+  searchParams.m_onResults = [weakSelf, searchId](search::BookmarksSearchParams::Results const &results,
+                                                  search::BookmarksSearchParams::Status status) {
+    __strong auto self = weakSelf;
+    if (!self || searchId != self.lastSearchId)
+      return;
+
+    auto const &bm = GetFramework().GetBookmarkManager();
+    auto filteredResults = results;
+    bm.FilterInvalidBookmarks(filteredResults);
+    [self setSearchSection:filteredResults];
+
+    if (status == search::BookmarksSearchParams::Status::Cancelled) {
+      [self showSpinner:NO];
+    } else if (status == search::BookmarksSearchParams::Status::Completed) {
+      [self showNoResultsView:results.empty()];
+      [self showSpinner:NO];
+    }
+
+    [self.tableView reloadData];
+  };
+
+  [self showSpinner:YES];
+
+  GetFramework().SearchInBookmarks(searchParams);
+}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+  return [[self currentSections] count];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+  return [[self currentSections][section] numberOfRows];
+}
+
+- (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+  return [[self currentSections][section] title];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+  UITableViewCell *cell = [[self currentSections][indexPath.section] tableView:tableView cellForRow:indexPath.row];
+
+  cell.backgroundColor = [UIColor white];
+  cell.textLabel.textColor = [UIColor blackPrimaryText];
+  cell.detailTextLabel.textColor = [UIColor blackSecondaryText];
+  return cell;
+}
+
+- (nullable NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  if ([[self currentSections][indexPath.section] canSelect])
+    return indexPath;
+  return nil;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  // Remove cell selection
+  [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+  [[self currentSections][indexPath.section] didSelectRow:indexPath.row];
+  [self.searchBar resignFirstResponder];
+  [self.navigationController popToRootViewControllerAnimated:NO];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+  return [[self currentSections][indexPath.section] canEdit];
+}
+
+- (void)tableView:(UITableView *)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+  self.editing = YES;
+}
+
+- (void)tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(nullable NSIndexPath *)indexPath {
+  self.editing = NO;
+}
+
+- (void)tableView:(UITableView *)tableView
+  commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+   forRowAtIndexPath:(NSIndexPath *)indexPath {
+  if (![[self currentSections][indexPath.section] canEdit])
+    return;
+
+  if (editingStyle == UITableViewCellEditingStyleDelete) {
+    [[self currentSections][indexPath.section] deleteRow:indexPath.row];
+    // In the case of search section editing reset cached default sections.
+    if (self.searchSections != nil)
+      self.defaultSections = nil;
+    [self updateControlsVisibility];
+  }
+
+  if ([[self currentSections][indexPath.section] numberOfRows] == 0) {
+    [[self currentSections] removeObjectAtIndex:indexPath.section];
+    auto indexSet = [NSIndexSet indexSetWithIndex:indexPath.section];
+    [self.tableView deleteSections:indexSet withRowAnimation:UITableViewRowAnimationFade];
+  } else {
+    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+  }
+
+  auto const &bm = GetFramework().GetBookmarkManager();
+  if (bm.GetUserMarkIds(self.categoryId).size() + bm.GetTrackIds(self.categoryId).size() == 0) {
+    self.navigationItem.rightBarButtonItem = nil;
+    [self setEditing:NO animated:YES];
+  }
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+  auto header = (UITableViewHeaderFooterView *)view;
+  header.textLabel.textColor = [UIColor blackSecondaryText];
+  header.textLabel.font = [UIFont medium14];
+}
+
+#pragma mark - InfoSectionDelegate
+
+- (void)infoSectionUpdates:(void (^)(void))updates {
+  [self.tableView update:updates];
+}
+
+#pragma mark - MWMLocationObserver
+
+- (void)onLocationUpdate:(location::GpsInfo const &)info {
+  CLLocation *location = [[CLLocation alloc] initWithLatitude:info.m_latitude longitude:info.m_longitude];
+  [self.tableView.visibleCells enumerateObjectsUsingBlock:^(UITableViewCell *cell, NSUInteger idx, BOOL *stop) {
+    auto const indexPath = [self.tableView indexPathForCell:cell];
+    auto const &section = [self currentSections][indexPath.section];
+    if ([section respondsToSelector:@selector(updateCell:forRow:withNewLocation:)])
+      [section updateCell:cell forRow:indexPath.row withNewLocation:location];
+  }];
 }
 
 #pragma mark - MWMBookmarksObserver
 
-- (void)onBookmarksCategoryFilePrepared:(MWMBookmarksShareStatus)status
-{
-  switch (status)
-  {
-    case MWMBookmarksShareStatusSuccess:
-    {
-      auto shareController =
-      [MWMActivityViewController shareControllerForURL:[MWMBookmarksManager sharedManager].shareCategoryURL
-                                               message:L(@"share_bookmarks_email_body")
-                                     completionHandler:^(UIActivityType  _Nullable activityType,
-                                                         BOOL completed,
-                                                         NSArray * _Nullable returnedItems,
-                                                         NSError * _Nullable activityError) {
-                                       [[MWMBookmarksManager sharedManager] finishShareCategory];
-                                     }];
+- (void)onBookmarksCategoryFilePrepared:(MWMBookmarksShareStatus)status {
+  switch (status) {
+    case MWMBookmarksShareStatusSuccess: {
+      auto shareController = [MWMActivityViewController
+        shareControllerForURL:[MWMBookmarksManager sharedManager].shareCategoryURL
+                      message:L(@"share_bookmarks_email_body")
+            completionHandler:^(UIActivityType _Nullable activityType, BOOL completed, NSArray *_Nullable returnedItems,
+                                NSError *_Nullable activityError) {
+              [[MWMBookmarksManager sharedManager] finishShareCategory];
+            }];
       [shareController presentInParentViewController:self anchorView:self.view];
       break;
     }
@@ -570,23 +776,33 @@ CGFloat const kPinDiameter = 18.0f;
 
 #pragma mark - BookmarksSharingViewControllerDelegate
 
-- (void)didShareCategory
-{
+- (void)didShareCategory {
   [self.tableView reloadData];
 }
 
 #pragma mark - CategorySettingsViewControllerDelegate
 
-- (void)categorySettingsController:(CategorySettingsViewController *)viewController didDelete:(MWMMarkGroupID)categoryId
-{
+- (void)categorySettingsController:(CategorySettingsViewController *)viewController
+                         didDelete:(MWMMarkGroupID)categoryId {
   [self.delegate bookmarksVCdidDeleteCategory:self];
 }
 
-- (void)categorySettingsController:(CategorySettingsViewController *)viewController didEndEditing:(MWMMarkGroupID)categoryId
-{
+- (void)categorySettingsController:(CategorySettingsViewController *)viewController
+                     didEndEditing:(MWMMarkGroupID)categoryId {
   [self.navigationController popViewControllerAnimated:YES];
   [self.delegate bookmarksVCdidUpdateCategory:self];
   [self.tableView reloadData];
+}
+
+#pragma mark - MWMKeyboard
+
+- (void)onKeyboardAnimation {
+  self.noResultsBottom.constant = 0;
+  CGFloat const keyboardHeight = [MWMKeyboard keyboardHeight];
+  if (keyboardHeight >= self.noResultsContainer.height)
+    return;
+
+  self.noResultsBottom.constant = -keyboardHeight;
 }
 
 @end

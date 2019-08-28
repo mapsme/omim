@@ -1,6 +1,8 @@
 #include "generator/translator_coastline.hpp"
 
+#include "generator/collector_interface.hpp"
 #include "generator/feature_maker.hpp"
+#include "generator/filter_collection.hpp"
 #include "generator/filter_elements.hpp"
 #include "generator/filter_planet.hpp"
 #include "generator/generate_info.hpp"
@@ -37,12 +39,30 @@ public:
 };
 }  // namespace
 
-TranslatorCoastline::TranslatorCoastline(std::shared_ptr<EmitterInterface> emitter,
-                                         cache::IntermediateDataReader & cache)
-  : Translator(emitter, cache, std::make_shared<FeatureMaker>(cache))
+TranslatorCoastline::TranslatorCoastline(std::shared_ptr<FeatureProcessorInterface> const & processor,
+                                         std::shared_ptr<cache::IntermediateData> const & cache)
+  : Translator(processor, cache, std::make_shared<FeatureMaker>(cache))
 {
-  AddFilter(std::make_shared<FilterPlanet>());
-  AddFilter(std::make_shared<CoastlineFilter>());
-  AddFilter(std::make_shared<FilterElements>(base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
+  auto filters = std::make_shared<FilterCollection>();
+  filters->Append(std::make_shared<FilterPlanet>());
+  filters->Append(std::make_shared<CoastlineFilter>());
+  filters->Append(std::make_shared<FilterElements>(base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
+  SetFilter(filters);
+}
+
+std::shared_ptr<TranslatorInterface>
+TranslatorCoastline::Clone() const
+{
+  return Translator::CloneBase<TranslatorCoastline>();
+}
+
+void TranslatorCoastline::Merge(TranslatorInterface const & other)
+{
+  other.MergeInto(*this);
+}
+
+void TranslatorCoastline::MergeInto(TranslatorCoastline & other) const
+{
+  MergeIntoBase(other);
 }
 }  // namespace generator

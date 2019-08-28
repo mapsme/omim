@@ -31,6 +31,7 @@ final class CarPlayService: NSObject {
     return interfaceController?.rootTemplate as? CPMapTemplate
   }
   var preparedToPreviewTrips: [CPTrip] = []
+  var isUserPanMap: Bool = false
   
   @objc func setup(window: CPWindow, interfaceController: CPInterfaceController) {
     isCarplayActivated = true
@@ -310,6 +311,7 @@ extension CarPlayService: CPSessionConfigurationDelegate {
 @available(iOS 12.0, *)
 extension CarPlayService: CPMapTemplateDelegate {
   public func mapTemplateDidShowPanningInterface(_ mapTemplate: CPMapTemplate) {
+    isUserPanMap = false
     MapTemplateBuilder.configurePanUI(mapTemplate: mapTemplate)
     FrameworkHelper.stopLocationFollow()
   }
@@ -332,6 +334,7 @@ extension CarPlayService: CPMapTemplateDelegate {
     if direction.contains(.left) { offset.horizontal += offsetStep }
     if direction.contains(.right) { offset.horizontal -= offsetStep }
     FrameworkHelper.moveMap(offset)
+    isUserPanMap = true
   }
   
   func mapTemplate(_ mapTemplate: CPMapTemplate, panWith direction: CPMapTemplate.PanDirection) {
@@ -342,6 +345,7 @@ extension CarPlayService: CPMapTemplateDelegate {
     if direction.contains(.left) { offset.horizontal += offsetStep }
     if direction.contains(.right) { offset.horizontal -= offsetStep }
     FrameworkHelper.moveMap(offset)
+    isUserPanMap = true
   }
   
   func mapTemplate(_ mapTemplate: CPMapTemplate, startedTrip trip: CPTrip, using routeChoice: CPRouteChoice) {
@@ -397,9 +401,12 @@ extension CarPlayService: CPMapTemplateDelegate {
     guard let info = routeChoice.userInfo as? RouteInfo,
       let estimates = createEstimates(routeInfo: info) else {
       applyUndefinedEstimates(template: mapTemplate, trip: trip)
+      router?.rebuildRoute()
       return
     }
     mapTemplate.updateEstimates(estimates, for: trip)
+    routeChoice.userInfo = nil
+    router?.rebuildRoute()
   }
 }
 
@@ -474,6 +481,7 @@ extension CarPlayService: CPSearchTemplateDelegate {
       }
       completionHandler(items)
     })
+    Alohalytics.logEvent(kStatCarplayKeyboardSearch)
   }
   
   func searchTemplate(_ searchTemplate: CPSearchTemplate, selectedResult item: CPListItem, completionHandler: @escaping () -> Void) {

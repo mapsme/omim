@@ -1015,6 +1015,7 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
   m_drapeEngine.SafeCall(&df::DrapeEngine::SetModelViewRect, rect, true /* applyRotation */,
                          -1 /* zoom */, true /* isAnim */, true /* useVisibleViewport */);
 
+  m_routingSession.ClearPositionAccumulator();
   m_routingSession.SetUserCurrentPosition(routePoints.front().m_position);
 
   vector<m2::PointD> points;
@@ -1027,6 +1028,8 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
 
 void RoutingManager::SetUserCurrentPosition(m2::PointD const & position)
 {
+  m_routingSession.PushPositionAccumulator(position);
+
   if (IsRoutingActive())
     m_routingSession.SetUserCurrentPosition(position);
 

@@ -14,4 +14,6 @@ void LoadPopularPlaces(std::string const & srcFilename, PopularPlaces & places);
 
 bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string const & mwmFile,
                                   std::string const & osmToFeatureFilename);
+
+PopularPlaces const & GetOrLoadPopularPlaces(std::string const & filename);
 }  // namespace generator

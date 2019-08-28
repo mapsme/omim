@@ -22,7 +22,7 @@ using namespace traffic;
 namespace
 {
 
-int constexpr kOnRouteMissedCount = 5;
+int constexpr kOnRouteMissedCount = 10;
 
 // @TODO(vbykoianko) The distance should depend on the current speed.
 double constexpr kShowLanesDistInMeters = 500.;
@@ -109,9 +109,13 @@ void RoutingSession::RebuildRoute(m2::PointD const & startPoint,
   m_lastCompletionPercent = 0;
   m_checkpoints.SetPointFrom(startPoint);
 
+  auto const & direction = 
+      m_routingSettings.m_useDirectionForRouteBuilding ? m_positionAccumulator.GetDirection()
+                                                       : m2::PointD::Zero();
+
   // Use old-style callback construction, because lambda constructs buggy function on Android
   // (callback param isn't captured by value).
-  m_router->CalculateRoute(m_checkpoints, m_currentDirection, adjustToPrevRoute,
+  m_router->CalculateRoute(m_checkpoints, direction, adjustToPrevRoute,
                            DoReadyCallback(*this, readyCallback),
                            needMoreMapsCallback, removeRouteCallback, m_progressCallback, timeoutSec);
 }
@@ -323,7 +327,11 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
     if (base::AlmostEqualAbs(dist, m_lastDistance, kRunawayDistanceSensitivityMeters))
       return m_state;
 
-    ++m_moveAwayCounter;
+    if (!info.HasSpeed() || info.m_speedMpS < m_routingSettings.m_minSpeedForRouteRebuildMpS)
+      m_moveAwayCounter += 1;
+    else
+      m_moveAwayCounter += 2;
+
     m_lastDistance = dist;
 
     if (m_moveAwayCounter > kOnRouteMissedCount)
@@ -341,9 +349,6 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
                                             MercatorBounds::XToLon(lastGoodPoint.x)));
     }
   }
-
-  if (m_userCurrentPositionValid && m_userFormerPositionValid)
-    m_currentDirection = m_userCurrentPosition - m_userFormerPosition;
 
   return m_state;
 }
@@ -610,12 +615,22 @@ void RoutingSession::SetChangeSessionStateCallback(
 void RoutingSession::SetUserCurrentPosition(m2::PointD const & position)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
-  // All methods which read/write m_userCurrentPosition*, m_userFormerPosition*  work in RoutingManager thread
-  m_userFormerPosition = m_userCurrentPosition;
-  m_userFormerPositionValid = m_userCurrentPositionValid;
 
   m_userCurrentPosition = position;
   m_userCurrentPositionValid = true;
+}
+
+void RoutingSession::PushPositionAccumulator(m2::PointD const & position)
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+
+  m_positionAccumulator.PushNextPoint(position);
+}
+void RoutingSession::ClearPositionAccumulator()
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+
+  m_positionAccumulator.Clear();
 }
 
 void RoutingSession::EnableTurnNotifications(bool enable)

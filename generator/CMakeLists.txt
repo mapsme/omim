@@ -7,6 +7,8 @@ include_directories(
 
 set(
   SRC
+  affiliation.cpp
+  affiliation.hpp
   altitude_generator.cpp
   altitude_generator.hpp
   booking_dataset.cpp
@@ -38,29 +40,19 @@ set(
   collector_addresses.hpp
   collector_camera.cpp
   collector_camera.hpp
+  collector_city_area.cpp
+  collector_city_area.hpp
   collector_collection.cpp
   collector_collection.hpp
   collector_interface.hpp
   collector_tag.cpp
   collector_tag.hpp
+  data_version.cpp
+  data_version.hpp
   descriptions_section_builder.cpp
   descriptions_section_builder.hpp
   dumper.cpp
   dumper.hpp
-  emitter_booking.hpp
-  emitter_coastline.cpp
-  emitter_coastline.hpp
-  emitter_country.cpp
-  emitter_country.hpp
-  emitter_factory.hpp
-  emitter_interface.hpp
-  emitter_noop.hpp
-  emitter_restaurants.cpp
-  emitter_restaurants.hpp
-  emitter_simple.cpp
-  emitter_simple.hpp
-  emitter_world.cpp
-  emitter_world.hpp
   factory_utils.hpp
   feature_builder.cpp
   feature_builder.hpp
@@ -79,6 +71,7 @@ set(
   feature_processing_layers.hpp
   feature_sorter.cpp
   feature_sorter.hpp
+  features_processing_helpers.hpp
   filter_collection.cpp
   filter_collection.hpp
   filter_elements.cpp
@@ -86,16 +79,20 @@ set(
   filter_interface.hpp
   filter_planet.cpp
   filter_planet.hpp
+  filter_world.cpp
+  filter_world.hpp
+  final_processor_intermediate_mwm.cpp
+  final_processor_intermediate_mwm.hpp
   gen_mwm_info.hpp
   generate_info.hpp
-  geo_objects/geo_objects_generator.cpp
-  geo_objects/geo_objects_generator.hpp
-  geo_objects/geo_objects_maintainer.cpp
-  geo_objects/geo_objects_maintainer.hpp
   geo_objects/geo_objects.cpp
   geo_objects/geo_objects.hpp
   geo_objects/geo_objects_filter.cpp
   geo_objects/geo_objects_filter.hpp
+  geo_objects/geo_objects_generator.cpp
+  geo_objects/geo_objects_generator.hpp
+  geo_objects/geo_objects_maintainer.cpp
+  geo_objects/geo_objects_maintainer.hpp
   geometry_holder.hpp
   holes.cpp
   holes.hpp
@@ -132,19 +129,34 @@ set(
   osm_xml_source.hpp
   place.cpp
   place.hpp
+  place_node.hpp
   place_processor.cpp
   place_processor.hpp
-  place_node.hpp
   platform_helpers.cpp
   platform_helpers.hpp
-  polygonizer.hpp
   popular_places_section_builder.cpp
   popular_places_section_builder.hpp
   popularity.cpp
   popularity.hpp
+  processor_booking.hpp
+  processor_coastline.cpp
+  processor_coastline.hpp
+  processor_country.cpp
+  processor_country.hpp
+  processor_factory.hpp
+  processor_interface.hpp
+  processor_noop.hpp
+  processor_simple.cpp
+  processor_simple.hpp
+  processor_world.cpp
+  processor_world.hpp
   promo_catalog_cities.hpp
   ratings_section_builder.cpp
   ratings_section_builder.hpp
+  raw_generator.cpp
+  raw_generator.hpp
+  raw_generator_writer.cpp
+  raw_generator_writer.hpp
   region_meta.cpp
   region_meta.hpp
   regions/admin_suburbs_marker.cpp
@@ -218,12 +230,12 @@ set(
   tesselator.hpp
   towns_dumper.cpp
   towns_dumper.hpp
-  translation.hpp
-  translation.cpp
   traffic_generator.cpp
   traffic_generator.hpp
   transit_generator.cpp
   transit_generator.hpp
+  translation.cpp
+  translation.hpp
   translator.cpp
   translator.hpp
   translator_coastline.cpp
@@ -242,6 +254,8 @@ set(
   translator_streets.hpp
   translator_world.cpp
   translator_world.hpp
+  translators_pool.cpp
+  translators_pool.hpp
   type_helper.cpp
   type_helper.hpp
   ugc_db.cpp
@@ -265,6 +279,7 @@ omim_add_library(${PROJECT_NAME} ${SRC})
 
 omim_add_test_subdirectory(generator_tests_support)
 omim_add_test_subdirectory(generator_tests)
+omim_add_test_subdirectory(generator_integration_tests)
 
 add_subdirectory(generator_tool)
 add_subdirectory(booking_quality_check)

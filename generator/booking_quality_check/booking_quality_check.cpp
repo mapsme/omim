@@ -1,8 +1,10 @@
 #include "generator/booking_dataset.hpp"
-#include "generator/emitter_booking.hpp"
+
 #include "generator/feature_builder.hpp"
 #include "generator/opentable_dataset.hpp"
 #include "generator/osm_source.hpp"
+#include "generator/processor_booking.hpp"
+#include "generator/raw_generator.hpp"
 #include "generator/sponsored_scoring.hpp"
 #include "generator/translator_collection.hpp"
 #include "generator/translator_factory.hpp"
@@ -328,11 +330,12 @@ void RunImpl(GenerateInfo & info)
   map<base::GeoObjectId, FeatureBuilder> features;
   LOG_SHORT(LINFO, ("OSM data:", FLAGS_osm));
 
-  CacheLoader cacheLoader(info);
-  TranslatorCollection translators;
-  auto emitter = make_shared<EmitterBooking<Dataset>>(dataset, features);
-  translators.Append(CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), info));
-  GenerateRaw(info, translators);
+  generator::cache::IntermediateData cacheLoader(info);
+  auto translators = make_shared<TranslatorCollection>();
+  auto processor = make_shared<ProcessorBooking<Dataset>>(dataset, features);
+  translators->Append(CreateTranslator(TranslatorType::Country, processor, cacheLoader.GetCache(), info));
+  RawGenerator generator(info);
+  generator.GenerateCustom(translators);
 
   if (FLAGS_generate)
   {

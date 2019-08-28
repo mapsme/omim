@@ -827,15 +827,26 @@ kml::MarkGroupId Framework::AddCategory(string const & categoryName)
   return GetBookmarkManager().CreateBookmarkCategory(categoryName);
 }
 
+void Framework::FillPointInfoForBookmark(Bookmark const & bmk, place_page::Info & info) const
+{
+  auto types = feature::TypesHolder::FromTypesIndexes(bmk.GetData().m_featureTypes);
+  FillPointInfo(info, bmk.GetPivot(), {}, [&types](FeatureType & ft)
+  {
+    return !types.Empty() && feature::TypesHolder(ft).Equals(types);
+  });
+}
+
 void Framework::FillBookmarkInfo(Bookmark const & bmk, place_page::Info & info) const
 {
   info.SetBookmarkCategoryName(GetBookmarkManager().GetCategoryName(bmk.GetGroupId()));
   info.SetBookmarkData(bmk.GetData());
   info.SetBookmarkId(bmk.GetId());
   info.SetBookmarkCategoryId(bmk.GetGroupId());
-  info.SetOpeningMode(bmk.GetDescription().empty() ? place_page::OpeningMode::Preview
-                                                   : place_page::OpeningMode::PreviewPlus);
-  FillPointInfo(bmk.GetPivot(), {} /* customTitle */, info);
+  auto openingMode = (m_routingManager.IsRoutingActive() || bmk.GetDescription().empty())
+      ? place_page::OpeningMode::Preview
+      : place_page::OpeningMode::PreviewPlus;
+  info.SetOpeningMode(openingMode);
+  FillPointInfoForBookmark(bmk, info);
 }
 
 void Framework::ResetBookmarkInfo(Bookmark const & bmk, place_page::Info & info) const
@@ -845,7 +856,7 @@ void Framework::ResetBookmarkInfo(Bookmark const & bmk, place_page::Info & info)
   info.SetBookmarkId(kml::kInvalidMarkId);
   info.SetBookmarkCategoryId(kml::kInvalidMarkGroupId);
   info.SetOpeningMode(place_page::OpeningMode::Preview);
-  FillPointInfo(bmk.GetPivot(), {} /* customTitle */, info);
+  FillPointInfoForBookmark(bmk, info);
 }
 
 search::ReverseGeocoder::Address Framework::GetAddressAtPoint(m2::PointD const & pt) const
@@ -872,9 +883,11 @@ void Framework::FillFeatureInfo(FeatureID const & fid, place_page::Info & info) 
   FillInfoFromFeatureType(*ft, info);
 }
 
-void Framework::FillPointInfo(m2::PointD const & mercator, string const & customTitle, place_page::Info & info) const
+void Framework::FillPointInfo(place_page::Info & info, m2::PointD const & mercator,
+                              string const & customTitle /* = {} */,
+                              FeatureMatcher && matcher /* = nullptr */) const
 {
-  auto const fid = GetFeatureAtPoint(mercator);
+  auto const fid = GetFeatureAtPoint(mercator, move(matcher));
 
   if (fid.IsValid())
   {
@@ -979,7 +992,9 @@ void Framework::FillInfoFromFeatureType(FeatureType & ft, place_page::Info & inf
   }
   else if (ftypes::IsPromoCatalogChecker::Instance()(ft))
   {
-    info.SetOpeningMode(place_page::OpeningMode::PreviewPlus);
+    info.SetOpeningMode(m_routingManager.IsRoutingActive()
+                        ? place_page::OpeningMode::Preview
+                        : place_page::OpeningMode::PreviewPlus);
     info.SetSponsoredType(SponsoredType::PromoCatalog);
   }
 
@@ -1037,7 +1052,7 @@ void Framework::FillInfoFromFeatureType(FeatureType & ft, place_page::Info & inf
 
 void Framework::FillApiMarkInfo(ApiMarkPoint const & api, place_page::Info & info) const
 {
-  FillPointInfo(api.GetPivot(), {} /* customTitle */, info);
+  FillPointInfo(info, api.GetPivot());
   string const & name = api.GetName();
   if (!name.empty())
     info.SetCustomName(name);
@@ -1050,7 +1065,7 @@ void Framework::FillSearchResultInfo(SearchMarkPoint const & smp, place_page::In
   if (smp.GetFeatureID().IsValid())
     FillFeatureInfo(smp.GetFeatureID(), info);
   else
-    FillPointInfo(smp.GetPivot(), smp.GetMatchedName(), info);
+    FillPointInfo(info, smp.GetPivot(), smp.GetMatchedName());
 }
 
 void Framework::FillMyPositionInfo(place_page::Info & info, df::TapInfo const & tapInfo) const
@@ -1073,7 +1088,7 @@ void Framework::FillMyPositionInfo(place_page::Info & info, df::TapInfo const & 
 
 void Framework::FillRouteMarkInfo(RouteMarkPoint const & rmp, place_page::Info & info) const
 {
-  FillPointInfo(rmp.GetPivot(), {} /* customTitle */, info);
+  FillPointInfo(info, rmp.GetPivot());
   info.SetIsRoutePoint();
   info.SetRouteMarkType(rmp.GetRoutePointType());
   info.SetIntermediateIndex(rmp.GetIntermediateIndex());
@@ -1174,7 +1189,7 @@ void Framework::ShowFeatureByMercator(m2::PointD const & pt)
   place_page::Info info;
   std::string name;
   GetBookmarkManager().SelectionMark().SetPtOrg(pt);
-  FillPointInfo(pt, name, info);
+  FillPointInfo(info, pt, name);
   ActivateMapSelection(false, df::SelectionShape::OBJECT_POI, info);
   m_lastTapEvent = MakeTapEvent(info.GetMercator(), info.GetID(), TapEvent::Source::Other);
 }
@@ -1687,7 +1702,7 @@ void Framework::SelectSearchResult(search::Result const & result, bool animation
     break;
 
   case Result::Type::LatLon:
-    FillPointInfo(result.GetFeatureCenter(), result.GetString(), info);
+    FillPointInfo(info, result.GetFeatureCenter(), result.GetString());
     scale = scales::GetUpperComfortScale();
     break;
 
@@ -2262,7 +2277,7 @@ bool Framework::ShowMapForURL(string const & url)
       else
       {
         GetBookmarkManager().SelectionMark().SetPtOrg(point);
-        FillPointInfo(point, name, info);
+        FillPointInfo(info, point, name);
         ActivateMapSelection(false, df::SelectionShape::OBJECT_POI, info);
       }
       m_lastTapEvent = MakeTapEvent(info.GetMercator(), info.GetID(), TapEvent::Source::Other);
@@ -2299,12 +2314,24 @@ url_scheme::SearchRequest Framework::GetParsedSearchRequest() const
   return m_ParsedMapApi.GetSearchRequest();
 }
 
-FeatureID Framework::GetFeatureAtPoint(m2::PointD const & mercator) const
+FeatureID Framework::GetFeatureAtPoint(m2::PointD const & mercator,
+                                       FeatureMatcher && matcher /* = nullptr */) const
 {
-  FeatureID poi, line, area;
-  bool haveBuilding = false;
+  FeatureID fullMatch, poi, line, area;
+  auto haveBuilding = false;
+  auto closestDistanceToCenter = numeric_limits<double>::max();
+  auto currentDistance = numeric_limits<double>::max();
   indexer::ForEachFeatureAtPoint(m_model.GetDataSource(), [&](FeatureType & ft)
   {
+    if (fullMatch.IsValid())
+      return;
+
+    if (matcher && matcher(ft))
+    {
+      fullMatch = ft.GetID();
+      return;
+    }
+
     switch (ft.GetGeomType())
     {
     case feature::GeomType::Point:
@@ -2320,8 +2347,14 @@ FeatureID Framework::GetFeatureAtPoint(m2::PointD const & mercator) const
       // Skip/ignore coastlines.
       if (feature::TypesHolder(ft).Has(classif().GetCoastType()))
         return;
-      area = ft.GetID();
       haveBuilding = ftypes::IsBuildingChecker::Instance()(ft);
+      currentDistance = MercatorBounds::DistanceOnEarth(mercator, feature::GetCenter(ft));
+      // Choose the first matching building or, if no buildings are matched,
+      // the first among the closest matching non-buildings.
+      if (!haveBuilding && currentDistance >= closestDistanceToCenter)
+        return;
+      area = ft.GetID();
+      closestDistanceToCenter = currentDistance;
       break;
     case feature::GeomType::Undefined:
       ASSERT(false, ("case feature::Undefined"));
@@ -2329,7 +2362,7 @@ FeatureID Framework::GetFeatureAtPoint(m2::PointD const & mercator) const
     }
   }, mercator);
 
-  return poi.IsValid() ? poi : (area.IsValid() ? area : line);
+  return fullMatch.IsValid() ? fullMatch : (poi.IsValid() ? poi : (area.IsValid() ? area : line));
 }
 
 osm::MapObject Framework::GetMapObjectByID(FeatureID const & fid) const
@@ -2579,7 +2612,7 @@ df::SelectionShape::ESelectedObject Framework::OnTapEventImpl(TapEvent const & t
   bool showMapSelection = false;
   if (tapInfo.m_isLong || tapEvent.m_source == TapEvent::Source::Search)
   {
-    FillPointInfo(tapInfo.m_mercator, {} /* customTitle */, outInfo);
+    FillPointInfo(outInfo, tapInfo.m_mercator);
     if (!outInfo.IsFeature() && featureTapped.IsValid())
       FillFeatureInfo(featureTapped, outInfo);
     showMapSelection = true;
@@ -3877,7 +3910,9 @@ void Framework::FillDescription(FeatureType & ft, place_page::Info & info) const
   if (m_descriptionsLoader->GetDescription(ft.GetID(), langPriority, description))
   {
     info.SetDescription(std::move(description));
-    info.SetOpeningMode(place_page::OpeningMode::PreviewPlus);
+    info.SetOpeningMode(m_routingManager.IsRoutingActive()
+                        ? place_page::OpeningMode::Preview
+                        : place_page::OpeningMode::PreviewPlus);
   }
 }
 

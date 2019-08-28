@@ -60,6 +60,7 @@
 #define LOCALITY_DATA_FILE_TAG "locdata"
 #define GEO_OBJECTS_INDEX_FILE_TAG "locidx"
 #define REGIONS_INDEX_FILE_TAG "regidx"
+#define INDEX_GENERATOR_DATA_VERSION_FILE_TAG "index_data_version"
 #define BORDERS_FILE_TAG "borders"
 
 #define READY_FILE_EXTENSION ".ready"
@@ -105,6 +106,7 @@
 #define METALINES_FILENAME "metalines.bin"
 #define CAMERAS_TO_WAYS_FILENAME "cameras_to_ways.bin"
 #define MAXSPEEDS_FILENAME "maxspeeds.csv"
+#define CITIES_AREAS_TMP_FILENAME "cities_areas" DATA_FILE_EXTENSION_TMP
 
 #define TRAFFIC_FILE_EXTENSION ".traffic"
 

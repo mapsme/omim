@@ -17,7 +17,8 @@ CGFloat const kMinOffset = 1;
 typedef NS_ENUM(NSUInteger, MWMOffsetState) {
   MWMOffsetStatePreview,
   MWMOffsetStatePreviewPlus,
-  MWMOffsetStateOpen
+  MWMOffsetStateOpen,
+  MWMOffsetStateFullScreen
 };
 
 typedef NS_ENUM(NSUInteger, MWMScrollDirection) {
@@ -109,7 +110,7 @@ typedef NS_ENUM(NSUInteger, MWMScrollDirection) {
   if (delegate == nil) { return; }
   [delegate onPlacePageTopBoundChanged:self.scrollView.contentOffset.y];
   CGFloat previewOffset = [delegate isPreviewPlus] ? self.previewPlusContentOffset : self.previewContentOffset;
-  [self setAnimatedContentOffset:self.state == MWMOffsetStateOpen ? self.topContentOffset : previewOffset];
+  [self setAnimatedContentOffset:(self.state == MWMOffsetStateOpen || self.state == MWMOffsetStateFullScreen) ? self.topContentOffset : previewOffset];
 }
 
 - (void)updateContentLayout {
@@ -143,7 +144,9 @@ typedef NS_ENUM(NSUInteger, MWMScrollDirection) {
 - (CGFloat)openContentOffset {
   CGSize size = self.ownerView.size;
   CGFloat offset = self.isPortrait ? MAX(size.width, size.height) : MIN(size.width, size.height);
-  return offset * kTopPlacePageStopValue;
+  CGFloat actionBarHeight = self.actionBar.height;
+  offset -= actionBarHeight;
+  return offset * kTopPlacePageStopValue + actionBarHeight;
 }
 
 - (CGFloat)topContentOffset {
@@ -155,7 +158,9 @@ typedef NS_ENUM(NSUInteger, MWMScrollDirection) {
 - (CGFloat)previewPlusContentOffset {
   CGSize size = self.ownerView.size;
   CGFloat offset = self.isPortrait ? MAX(size.width, size.height) : MIN(size.width, size.height);
-  CGFloat previewPlusOffset = offset * kExpandedPlacePageStopValue;
+  CGFloat actionBarHeight = self.actionBar.height;
+  offset -= actionBarHeight;
+  CGFloat previewPlusOffset = offset * kExpandedPlacePageStopValue + actionBarHeight;
   CGFloat previewOffset = [self previewContentOffset];
   if (previewPlusOffset < previewOffset + kLuftDraggingOffset) {
     return previewOffset + kLuftDraggingOffset;
@@ -232,7 +237,7 @@ typedef NS_ENUM(NSUInteger, MWMScrollDirection) {
   } else if (actualOffset < previewOffset) {
     (*targetContentOffset).y = 0;
   } else {
-    self.state = MWMOffsetStateOpen;
+    self.state = MWMOffsetStateFullScreen;
   }
 }
 
@@ -277,13 +282,17 @@ typedef NS_ENUM(NSUInteger, MWMScrollDirection) {
       });
     }
   } else {
-    self.state = MWMOffsetStateOpen;
+    self.state = MWMOffsetStateFullScreen;
   }
 }
 
 - (void)setState:(MWMOffsetState)state {
+  if (_state != state) {
+    NSNumber *value = [NSNumber numberWithUnsignedInteger:state];
+    [self.delegate logStateChangeEventWithValue:value];
+  }
   _state = state;
-  BOOL isTop = state == MWMOffsetStateOpen;
+  BOOL isTop = (state == MWMOffsetStateOpen || self.state == MWMOffsetStateFullScreen);
   self.placePageView.anchorImage.transform = isTop ? CGAffineTransformMakeRotation(M_PI)
   : CGAffineTransformIdentity;
   [self.previewLayoutHelper layoutInOpenState:isTop];
@@ -303,7 +312,7 @@ typedef NS_ENUM(NSUInteger, MWMScrollDirection) {
   }
 
   CGFloat offset = 0;
-  if (self.state == MWMOffsetStateOpen) {
+  if (self.state == MWMOffsetStateOpen || self.state == MWMOffsetStateFullScreen) {
     BOOL isPreviewPlus = [self.delegate isPreviewPlus];
     self.state = isPreviewPlus ? MWMOffsetStatePreviewPlus : MWMOffsetStatePreview;
     offset = isPreviewPlus ? self.previewPlusContentOffset : self.previewContentOffset;

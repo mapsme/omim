@@ -1,6 +1,8 @@
 #import "MWMViewController.h"
 #import "MWMTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class BookmarksVC;
 
 @protocol BookmarksVCDelegate
@@ -11,12 +13,12 @@
 @end
 
 @interface BookmarksVC : MWMViewController <UITextFieldDelegate>
-{
-  MWMMarkGroupID m_categoryId;
-}
 
+@property (nonatomic) MWMMarkGroupID categoryId;
 @property (weak, nonatomic) id<BookmarksVCDelegate> delegate;
 
-- (instancetype)initWithCategory:(MWMMarkGroupID)index;
+- (instancetype)initWithCategory:(MWMMarkGroupID)categoryId;
 
 @end
+
+NS_ASSUME_NONNULL_END
