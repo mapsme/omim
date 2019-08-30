@@ -196,6 +196,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestRouteRebuildingMovingA
     info.m_verticalAccuracy = 0.01;
     info.m_longitude = 0.;
     info.m_latitude = 1.;
+    info.m_speedMpS = routing::KMPH2MPS(60);
     SessionState code = SessionState::RoutingNotActive;
 
     {
@@ -274,6 +275,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestRouteRebuildingMovingT
   GetPlatform().RunTask(Platform::Thread::Gui, [&checkTimedSignalAway, &info, this]() {
     info.m_longitude = 0.0;
     info.m_latitude = 0.0;
+    info.m_speedMpS = routing::KMPH2MPS(60);
     SessionState code = SessionState::RoutingNotActive;
     {
       SessionStateTest sessionStateTest(
@@ -326,6 +328,7 @@ UNIT_CLASS_TEST(AsyncGuiThreadTestWithRoutingSession, TestFollowRouteFlagPersist
     info.m_verticalAccuracy = 0.01;
     info.m_longitude = 0.;
     info.m_latitude = 1.;
+    info.m_speedMpS = routing::KMPH2MPS(60);
     while (info.m_latitude < kTestRoute.back().y)
     {
       m_session->OnLocationPositionChanged(info);
