@@ -478,14 +478,17 @@ void Processor::Search(SearchParams const & params)
     case Mode::Bookmarks: SearchBookmarks(params.m_bookmarksGroupId); break;
     case Mode::Count: ASSERT(false, ("Invalid mode")); break;
     }
+
+    // Emit finish marker to client.
+    m_geocoder.Finish(false /* cancelled */);
   }
   catch (CancelException const &)
   {
     LOG(LDEBUG, ("Search has been cancelled."));
-  }
 
-  // Emit finish marker to client.
-  m_geocoder.Finish(IsCancelled());
+    // Emit finish marker to client.
+    m_geocoder.Finish(true /* cancelled */);
+  }
 
   if (!viewportSearch && !IsCancelled())
     SendStatistics(params, viewport, m_emitter.GetResults());
