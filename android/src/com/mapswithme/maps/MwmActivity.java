@@ -1014,8 +1014,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     MapTask mapTask = target -> showBookmarkCategory(category);
     addTask(mapTask);
-    if (!mPlacePageController.isClosed())
-      mPlacePageController.close();
+    closePlacePage();
   }
 
   private boolean showBookmarkCategory(@NonNull BookmarkCategory category)
