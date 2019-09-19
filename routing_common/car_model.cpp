@@ -22,7 +22,7 @@ namespace
 
 InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {
     {117.8 /* weigth */, 104.7 /* eta */} /* in city */,
-    {-1.00 /* weight */, 117.07 /* eta */} /* out city */};
+    {123.4 /* weight */, 117.07 /* eta */} /* out city */};
 
 //  // Names must be the same with country names from countries.txt
 std::array<char const *, 41> constexpr kCountries = {"Australia",
