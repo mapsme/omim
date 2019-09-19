@@ -62,8 +62,11 @@ VehicleModel::AdditionalRoadType::AdditionalRoadType(Classificator const & c,
 
 VehicleModel::VehicleModel(Classificator const & c, LimitsInitList const & featureTypeLimits,
                            SurfaceInitList const & featureTypeSurface,
-                           HighwayBasedInfo const & info)
-  : m_onewayType(c.GetTypeByPath({"hwtag", "oneway"})), m_highwayBasedInfo(info)
+                           HighwayBasedInfo const & info,
+                           InOutCitySpeedKMpH const & formerModelMaxSpeed)
+  : m_onewayType(c.GetTypeByPath({"hwtag", "oneway"}))
+  , m_highwayBasedInfo(info)
+  , m_maxModelSpeed(formerModelMaxSpeed)
 {
   CHECK_EQUAL(m_surfaceFactors.size(), 4,
               ("If you want to change the size of the container please take into account that it's "
@@ -91,6 +94,8 @@ VehicleModel::VehicleModel(Classificator const & c, LimitsInitList const & featu
     CHECK_GREATER(speedFactor.m_eta, 0.0, ());
     m_surfaceFactors[i++] = {c.GetTypeByPath(v.m_types), v.m_factor};
   }
+
+  CHECK(m_maxModelSpeed.IsValid(), (m_maxModelSpeed));
 }
 
 void VehicleModel::SetAdditionalRoadTypes(Classificator const & c,

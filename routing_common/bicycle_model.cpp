@@ -28,6 +28,10 @@ namespace
 // As result of such heuristic road is not totally the shortest, but it avoids non bicycle roads, which were
 // not marked as "hwtag=nobicycle" in OSM.
 
+InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {
+    {30.0 /* weigth */, 20.0 /* eta */} /* in city */,
+    {30.0 /* weight */, 20.0 /* eta */} /* out city */};
+
 HighwayBasedFactors const kDefaultFactors{};
 
 HighwayBasedMeanSpeeds const kDefaultSpeeds = {
@@ -398,13 +402,14 @@ namespace routing
 {
 BicycleModel::BicycleModel()
   : VehicleModel(classif(), kBicycleOptionsDefault, kBicycleSurface,
-                 {kDefaultSpeeds, kDefaultFactors})
+                 {kDefaultSpeeds, kDefaultFactors}, kFormerModelMaxSpeed)
 {
   Init();
 }
 
 BicycleModel::BicycleModel(VehicleModel::LimitsInitList const & speedLimits)
-  : VehicleModel(classif(), speedLimits, kBicycleSurface, {kDefaultSpeeds, kDefaultFactors})
+  : VehicleModel(classif(), speedLimits, kBicycleSurface, {kDefaultSpeeds, kDefaultFactors},
+                 kFormerModelMaxSpeed)
 {
   Init();
 }
@@ -418,7 +423,7 @@ void BicycleModel::Init()
   m_bidirBicycleType = classif().GetTypeByPath({"hwtag", "bidir_bicycle"});
 
   vector<AdditionalRoadTags> const additionalTags = {
-      {hwtagYesBicycle, m_maxModelSpeed},
+      {hwtagYesBicycle, GetMaxModelSpeedKMpH()},
       {{"route", "ferry"}, kDefaultSpeeds.at(HighwayType::RouteFerry)},
       {{"man_made", "pier"}, kDefaultSpeeds.at(HighwayType::ManMadePier)}};
 

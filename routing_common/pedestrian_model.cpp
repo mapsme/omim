@@ -28,6 +28,10 @@ namespace
 // As result of such heuristic road is not totally the shortest, but it avoids non pedestrian roads, which were
 // not marked as "foot=no" in OSM.
 
+InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {
+    {7.0 /* weigth */, 20.0 /* eta */} /* in city */,
+    {7.0 /* weight */, 20.0 /* eta */} /* out city */};
+
 HighwayBasedFactors const kDefaultFactors{};
 
 HighwayBasedMeanSpeeds const kDefaultSpeeds = {
@@ -277,13 +281,14 @@ namespace routing
 {
 PedestrianModel::PedestrianModel()
   : VehicleModel(classif(), kPedestrianOptionsDefault, kPedestrianSurface,
-                 {kDefaultSpeeds, kDefaultFactors})
+                 {kDefaultSpeeds, kDefaultFactors}, kFormerModelMaxSpeed)
 {
   Init();
 }
 
 PedestrianModel::PedestrianModel(VehicleModel::LimitsInitList const & speedLimits)
-  : VehicleModel(classif(), speedLimits, kPedestrianSurface, {kDefaultSpeeds, kDefaultFactors})
+  : VehicleModel(classif(), speedLimits, kPedestrianSurface, {kDefaultSpeeds, kDefaultFactors},
+                 kFormerModelMaxSpeed)
 {
   Init();
 }
@@ -303,7 +308,7 @@ void PedestrianModel::Init()
   m_yesFootType = classif().GetTypeByPath(hwtagYesFoot);
 
   vector<AdditionalRoadTags> const additionalTags = {
-      {hwtagYesFoot, m_maxModelSpeed},
+      {hwtagYesFoot, GetMaxModelSpeedKMpH()},
       {{"route", "ferry"}, kDefaultSpeeds.at(HighwayType::RouteFerry)},
       {{"man_made", "pier"}, kDefaultSpeeds.at(HighwayType::ManMadePier)}};
 

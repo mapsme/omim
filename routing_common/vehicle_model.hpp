@@ -155,6 +155,8 @@ struct InOutCitySpeedKMpH
 
   SpeedKMpH const & GetSpeed(bool isCity) const { return isCity ? m_inCity : m_outCity; }
 
+  bool IsValid() const { return m_inCity.IsValid() && m_outCity.IsValid(); }
+
   SpeedKMpH m_inCity;
   SpeedKMpH m_outCity;
 };
@@ -254,7 +256,7 @@ class VehicleModelFactoryInterface
 {
 public:
   virtual ~VehicleModelFactoryInterface() = default;
-  /// @return Default vehicle model which corresponds for all countrines,
+  /// @return Default vehicle model which corresponds for all countries,
   /// but it may be non optimal for some countries
   virtual std::shared_ptr<VehicleModelInterface> GetVehicleModel() const = 0;
 
@@ -303,7 +305,8 @@ public:
   using SurfaceInitList = std::initializer_list<FeatureTypeSurface>;
 
   VehicleModel(Classificator const & c, LimitsInitList const & featureTypeLimits,
-               SurfaceInitList const & featureTypeSurface, HighwayBasedInfo const & info);
+               SurfaceInitList const & featureTypeSurface, HighwayBasedInfo const & info,
+               InOutCitySpeedKMpH const & formerModelMaxSpeed);
 
   /// VehicleModelInterface overrides:
   SpeedKMpH GetSpeed(FeatureType & f, SpeedParams const & speedParams) const override;
@@ -355,9 +358,7 @@ protected:
 
   SpeedKMpH GetSpeedWihtoutMaxspeed(FeatureType & f, SpeedParams const & speedParams) const;
 
-  /// \brief maximum within all the speed limits set in a model (car model, bicycle modle and so on).
-  /// It shouldn't be mixed with maxspeed value tag which defines maximum legal speed on a feature.
-  InOutCitySpeedKMpH m_maxModelSpeed;
+  InOutCitySpeedKMpH const & GetMaxModelSpeedKMpH() const { return m_maxModelSpeed;}
 
 private:
   struct AdditionalRoadType final
@@ -418,6 +419,10 @@ private:
   uint32_t m_onewayType;
 
   HighwayBasedInfo const m_highwayBasedInfo;
+
+  /// \brief maximum within all the speed limits set in a model (car model, bicycle modle and so on).
+  /// It shouldn't be mixed with maxspeed value tag which defines maximum legal speed on a feature.
+  InOutCitySpeedKMpH m_maxModelSpeed;
 };
 
 class VehicleModelFactory : public VehicleModelFactoryInterface
