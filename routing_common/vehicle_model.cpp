@@ -141,7 +141,8 @@ double VehicleModel::GetMaxWeightSpeed() const
 
 void VehicleModel::TuneMaxModelSpeed(InOutCitySpeedKMpH const & formerModelMaxSpeed)
 {
-  m_maxModelSpeed = Max(m_maxModelSpeed, formerModelMaxSpeed);
+  m_maxModelSpeed = {Pick<min>(m_maxModelSpeed.m_inCity, formerModelMaxSpeed.m_inCity),
+                     Pick<min>(m_maxModelSpeed.m_outCity, formerModelMaxSpeed.m_outCity)};
 }
 
 boost::optional<HighwayType> VehicleModel::GetHighwayType(uint32_t type) const
