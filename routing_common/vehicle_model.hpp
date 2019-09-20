@@ -305,8 +305,7 @@ public:
   using SurfaceInitList = std::initializer_list<FeatureTypeSurface>;
 
   VehicleModel(Classificator const & c, LimitsInitList const & featureTypeLimits,
-               SurfaceInitList const & featureTypeSurface, HighwayBasedInfo const & info,
-               InOutCitySpeedKMpH const & formerModelMaxSpeed);
+               SurfaceInitList const & featureTypeSurface, HighwayBasedInfo const & info);
 
   /// VehicleModelInterface overrides:
   SpeedKMpH GetSpeed(FeatureType & f, SpeedParams const & speedParams) const override;
@@ -359,6 +358,18 @@ protected:
   SpeedKMpH GetSpeedWihtoutMaxspeed(FeatureType & f, SpeedParams const & speedParams) const;
 
   InOutCitySpeedKMpH const & GetMaxModelSpeedKMpH() const { return m_maxModelSpeed;}
+
+  /// \brief Increases |m_maxModelSpeed| if it's less than |formerModelMaxSpeed|.
+  /// \note It's necessary because speeds in car model, pedestrian model and so on
+  /// are changed during application life. Based on this speeds cross_mwm sections
+  /// are generated. So the old speeds in old models affect old mwms. But old mwms
+  /// may be used in a new version of the app. Section cross_mwm is used for cross mwm
+  /// routing in LeapsOnly mode. For calculation cross mwm route A* with a heuristic
+  /// based on the quickest time needed to get from one point to another is used.
+  /// For calculation the quickest time |m_maxModelSpeed| is used.
+  /// Because of it's important that |m_maxModelSpeed| is maximum speed for all period
+  /// when mwm supported.
+  void TuneMaxModelSpeed(InOutCitySpeedKMpH const & formerModelMaxSpeed);
 
 private:
   struct AdditionalRoadType final

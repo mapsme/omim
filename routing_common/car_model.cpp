@@ -20,6 +20,7 @@ namespace
 // See road types here:
 //   https://wiki.openstreetmap.org/wiki/Key:highway
 
+// Maximum speed for former version. Please see VehicleModel::TuneMaxModelSpeed(...) for details.
 InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {
     {117.8 /* weigth */, 104.7 /* eta */} /* in city */,
     {123.4 /* weight */, 117.07 /* eta */} /* out city */};
@@ -208,13 +209,13 @@ namespace routing
 {
 CarModel::CarModel()
   : VehicleModel(classif(), kCarOptionsDefault, kCarSurface,
-                 {kGlobalHighwayBasedMeanSpeeds, kGlobalHighwayBasedFactors}, kFormerModelMaxSpeed)
+                 {kGlobalHighwayBasedMeanSpeeds, kGlobalHighwayBasedFactors})
 {
   Init();
 }
 
 CarModel::CarModel(VehicleModel::LimitsInitList const & roadLimits, HighwayBasedInfo const & info)
-  : VehicleModel(classif(), roadLimits, kCarSurface, info, kFormerModelMaxSpeed)
+  : VehicleModel(classif(), roadLimits, kCarSurface, info)
 {
   Init();
 }
@@ -227,6 +228,7 @@ void CarModel::Init()
   m_yesCarType = classif().GetTypeByPath({"hwtag", "yescar"});
 
   SetAdditionalRoadTypes(classif(), kAdditionalTags);
+  TuneMaxModelSpeed(kFormerModelMaxSpeed);
 }
 
 VehicleModelInterface::RoadAvailability CarModel::GetRoadAvailability(feature::TypesHolder const & types) const

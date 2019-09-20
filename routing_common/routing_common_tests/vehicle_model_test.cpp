@@ -67,8 +67,7 @@ class TestVehicleModel : public VehicleModel
 public:
   TestVehicleModel()
     : VehicleModel(classif(), kTestLimits, kCarSurface,
-                   {kDefaultSpeeds, kDefaultSpeeds, kDefaultFactors, kDefaultFactors},
-                   InOutCitySpeedKMpH())
+                   {kDefaultSpeeds, kDefaultSpeeds, kDefaultFactors, kDefaultFactors})
   {
   }
 

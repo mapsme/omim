@@ -28,6 +28,7 @@ namespace
 // As result of such heuristic road is not totally the shortest, but it avoids non bicycle roads, which were
 // not marked as "hwtag=nobicycle" in OSM.
 
+// Maximum speed for former version. Please see VehicleModel::TuneMaxModelSpeed(...) for details.
 InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {
     {30.0 /* weigth */, 20.0 /* eta */} /* in city */,
     {30.0 /* weight */, 20.0 /* eta */} /* out city */};
@@ -402,14 +403,13 @@ namespace routing
 {
 BicycleModel::BicycleModel()
   : VehicleModel(classif(), kBicycleOptionsDefault, kBicycleSurface,
-                 {kDefaultSpeeds, kDefaultFactors}, kFormerModelMaxSpeed)
+                 {kDefaultSpeeds, kDefaultFactors})
 {
   Init();
 }
 
 BicycleModel::BicycleModel(VehicleModel::LimitsInitList const & speedLimits)
-  : VehicleModel(classif(), speedLimits, kBicycleSurface, {kDefaultSpeeds, kDefaultFactors},
-                 kFormerModelMaxSpeed)
+  : VehicleModel(classif(), speedLimits, kBicycleSurface, {kDefaultSpeeds, kDefaultFactors})
 {
   Init();
 }
@@ -428,6 +428,7 @@ void BicycleModel::Init()
       {{"man_made", "pier"}, kDefaultSpeeds.at(HighwayType::ManMadePier)}};
 
   SetAdditionalRoadTypes(classif(), additionalTags);
+  TuneMaxModelSpeed(kFormerModelMaxSpeed);
 }
 
 VehicleModelInterface::RoadAvailability BicycleModel::GetRoadAvailability(feature::TypesHolder const & types) const

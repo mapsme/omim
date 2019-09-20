@@ -28,9 +28,9 @@ namespace
 // As result of such heuristic road is not totally the shortest, but it avoids non pedestrian roads, which were
 // not marked as "foot=no" in OSM.
 
-InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {
-    {7.0 /* weigth */, 20.0 /* eta */} /* in city */,
-    {7.0 /* weight */, 20.0 /* eta */} /* out city */};
+// Maximum speed for former version. Please see VehicleModel::TuneMaxModelSpeed(...) for details.
+InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {{7.0 /* weigth */, 20.0 /* eta */} /* in city */,
+                                                     {7.0 /* weight */, 20.0 /* eta */} /* out city */};
 
 HighwayBasedFactors const kDefaultFactors{};
 
@@ -281,14 +281,13 @@ namespace routing
 {
 PedestrianModel::PedestrianModel()
   : VehicleModel(classif(), kPedestrianOptionsDefault, kPedestrianSurface,
-                 {kDefaultSpeeds, kDefaultFactors}, kFormerModelMaxSpeed)
+                 {kDefaultSpeeds, kDefaultFactors})
 {
   Init();
 }
 
 PedestrianModel::PedestrianModel(VehicleModel::LimitsInitList const & speedLimits)
-  : VehicleModel(classif(), speedLimits, kPedestrianSurface, {kDefaultSpeeds, kDefaultFactors},
-                 kFormerModelMaxSpeed)
+  : VehicleModel(classif(), speedLimits, kPedestrianSurface, {kDefaultSpeeds, kDefaultFactors})
 {
   Init();
 }
@@ -313,6 +312,7 @@ void PedestrianModel::Init()
       {{"man_made", "pier"}, kDefaultSpeeds.at(HighwayType::ManMadePier)}};
 
   SetAdditionalRoadTypes(classif(), additionalTags);
+  TuneMaxModelSpeed(kFormerModelMaxSpeed);
 }
 
 VehicleModelInterface::RoadAvailability PedestrianModel::GetRoadAvailability(feature::TypesHolder const & types) const

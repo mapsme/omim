@@ -62,11 +62,9 @@ VehicleModel::AdditionalRoadType::AdditionalRoadType(Classificator const & c,
 
 VehicleModel::VehicleModel(Classificator const & c, LimitsInitList const & featureTypeLimits,
                            SurfaceInitList const & featureTypeSurface,
-                           HighwayBasedInfo const & info,
-                           InOutCitySpeedKMpH const & formerModelMaxSpeed)
+                           HighwayBasedInfo const & info)
   : m_onewayType(c.GetTypeByPath({"hwtag", "oneway"}))
   , m_highwayBasedInfo(info)
-  , m_maxModelSpeed(formerModelMaxSpeed)
 {
   CHECK_EQUAL(m_surfaceFactors.size(), 4,
               ("If you want to change the size of the container please take into account that it's "
@@ -139,6 +137,11 @@ HighwayType VehicleModel::GetHighwayType(FeatureType & f) const
 double VehicleModel::GetMaxWeightSpeed() const
 {
   return max(m_maxModelSpeed.m_inCity.m_weight, m_maxModelSpeed.m_outCity.m_weight);
+}
+
+void VehicleModel::TuneMaxModelSpeed(InOutCitySpeedKMpH const & formerModelMaxSpeed)
+{
+  m_maxModelSpeed = Max(m_maxModelSpeed, formerModelMaxSpeed);
 }
 
 boost::optional<HighwayType> VehicleModel::GetHighwayType(uint32_t type) const
