@@ -101,6 +101,11 @@ void FeaturePlace::Append(FeatureBuilder const & fb)
 
 FeatureBuilder const & FeaturePlace::GetFb() const
 {
+  if (m_bestIndex >= m_fbs.size())
+  {
+    LOG(LINFO, ("m_bestIndex =", m_bestIndex, "m_fbs.size() =", m_fbs.size(), "rect =", m_limitRect));
+
+  }
   CHECK_LESS(m_bestIndex, m_fbs.size(), ());
   return m_fbs[m_bestIndex];
 }
@@ -158,15 +163,11 @@ void PlaceProcessor::FillTable(FeaturePlaces::const_iterator start, FeaturePlace
 {
   CHECK(m_boundariesTable, ());
   base::GeoObjectId lastId;
-//  bool allPoints = true;
   for (auto outerIt = start; outerIt != end; ++outerIt)
   {
     auto const & fbs = outerIt->GetFbs();
     for (auto const & fb : fbs)
     {
-//      if (!fb.IsPoint())
-//        allPoints = false;
-
       if (!(fb.IsArea() && ftypes::IsCityTownOrVillage(fb.GetTypes())))
         continue;
 
@@ -181,28 +182,6 @@ void PlaceProcessor::FillTable(FeaturePlaces::const_iterator start, FeaturePlace
 
   if (lastId != base::GeoObjectId())
     m_boundariesTable->Union(lastId, best->GetFb().GetMostGenericOsmId());
-//  }
-//  else
-//  {
-//    if (!allPoints)
-//      return;
-//
-//    auto const & fb = best->GetFb();
-//    auto const center = fb.GetGeometryCenter();
-//    feature::TypesHolder types;
-//    for (auto const t : fb.GetTypes())
-//      types.Add(t);
-//
-//    double radius = 0.0;
-//    ftypes::LocalityType placeType = ftypes::IsLocalityChecker::Instance().GetType(types);
-//
-//    switch (placeType)
-//    {
-//    case ftypes::LocalityType::Country: return;
-//    case ftypes::LocalityType::State: return;
-//    case ftypes::LocalityType::City: radius = ftypes::
-//    }
-//  }
 }
 
 std::vector<PlaceProcessor::PlaceWithIds> PlaceProcessor::ProcessPlaces()
