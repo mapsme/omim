@@ -22,7 +22,7 @@ namespace
 
 // Maximum speed for former version. Please see VehicleModel::TuneMaxModelSpeed(...) for details.
 InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {
-    {117.8 /* weigth */, 104.7 /* eta */} /* in city */,
+    {117.8 /* weight */, 104.7 /* eta */} /* in city */,
     {123.4 /* weight */, 117.07 /* eta */} /* out city */};
 
 //  // Names must be the same with country names from countries.txt

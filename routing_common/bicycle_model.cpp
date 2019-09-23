@@ -30,7 +30,7 @@ namespace
 
 // Maximum speed for former version. Please see VehicleModel::TuneMaxModelSpeed(...) for details.
 InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {
-    {30.0 /* weigth */, 20.0 /* eta */} /* in city */,
+    {30.0 /* weight */, 20.0 /* eta */} /* in city */,
     {30.0 /* weight */, 20.0 /* eta */} /* out city */};
 
 HighwayBasedFactors const kDefaultFactors{};

@@ -360,15 +360,21 @@ protected:
   InOutCitySpeedKMpH const & GetMaxModelSpeedKMpH() const { return m_maxModelSpeed;}
 
   /// \brief Increases |m_maxModelSpeed| if it's less than |formerModelMaxSpeed|.
-  /// \note It's necessary because speeds in car model, pedestrian model and so on
-  /// are changed during application life. Based on this speeds cross_mwm sections
-  /// are generated. So the old speeds in old models affect old mwms. But old mwms
-  /// may be used in a new version of the app. Section cross_mwm is used for cross mwm
-  /// routing in LeapsOnly mode. For calculation cross mwm route A* with a heuristic
-  /// based on the quickest time needed to get from one point to another is used.
-  /// For calculation the quickest time |m_maxModelSpeed| is used.
-  /// Because of it's important that |m_maxModelSpeed| is maximum speed for all period
-  /// when mwm supported.
+  /// \note
+  ///  1) We use maxspeed for calculation time between two points (dist / modelMaxSpeed)
+  ///  2) We use maxspeed for calculation time on the fastest road (highway-motorway)
+  ///      C
+  ///    /   \
+  ///   /     \
+  ///  A ----- B
+  ///      For A* is essential that time(A, B) <= time(A, C) + time(C, B). When we use LeapsOnly
+  ///  mode we calculate weights of leaps (path from enter to exit of mwm) during map generation.
+  ///  Let's consider A is enter and B is exit, and A -> B is very small leap consists of 1 road of type
+  ///  highway-motorway. So, let us assume that the weight of A -> B is calculated with maxspeed = 100mps
+  ///  and saved this data to mwm, and let us assume we update the code and increase the maxspeed to 110 mps,
+  ///  so it could happened that exists point C so: time(A, B) > time(A, C) + time(C, B). Because time(A, B)
+  ///  was calculated in the past with maxspeed 100 mps, and time(A, C) and time(C, B) are calculated with new
+  ///  maxspeed = 110 mps.
   void TuneMaxModelSpeed(InOutCitySpeedKMpH const & formerModelMaxSpeed);
 
 private:

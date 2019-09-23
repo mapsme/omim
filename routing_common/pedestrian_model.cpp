@@ -29,7 +29,7 @@ namespace
 // not marked as "foot=no" in OSM.
 
 // Maximum speed for former version. Please see VehicleModel::TuneMaxModelSpeed(...) for details.
-InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {{7.0 /* weigth */, 20.0 /* eta */} /* in city */,
+InOutCitySpeedKMpH constexpr kFormerModelMaxSpeed = {{7.0 /* weight */, 20.0 /* eta */} /* in city */,
                                                      {7.0 /* weight */, 20.0 /* eta */} /* out city */};
 
 HighwayBasedFactors const kDefaultFactors{};
