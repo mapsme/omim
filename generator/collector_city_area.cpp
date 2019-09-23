@@ -40,16 +40,12 @@ void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElemen
     return;
 
   auto copy = feature;
-  LOG(LINFO, ("here"));
   if (feature.IsPoint())
   {
-    LOG(LINFO, ("is point:", osmElement.m_id, osmElement.Tags()));
     std::string populationStr = osmElement.GetTag("population");
-    LOG(LINFO, ("populationStr =", populationStr));
     if (populationStr.empty())
       return;
 
-    LOG(LINFO, ("start parse:", populationStr));
     uint32_t const population = ParsePopulationSting(populationStr);
     if (!population)
       return;
@@ -75,7 +71,6 @@ void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElemen
     copy.AddPoint(rect.RightTop());
     copy.AddPoint(rect.RightBottom());
     copy.AddPoint(rect.LeftBottom());
-    LOG(LINFO, ("create area:", osmElement.m_lat, osmElement.m_lon));
   }
 
   if (!copy.IsArea())
@@ -110,7 +105,6 @@ void CityAreaCollector::MergeInto(CityAreaCollector & collector) const
 
 uint32_t ParsePopulationSting(std::string const & populationStr)
 {
-  LOG(LINFO, ("populationStr =", populationStr));
   std::string number;
   for (auto const c : populationStr)
   {
@@ -122,10 +116,11 @@ uint32_t ParsePopulationSting(std::string const & populationStr)
       break;
   }
 
-  LOG(LINFO, ("number =", number));
+  if (number.empty())
+    return 0;
+
   uint32_t result = 0;
   CHECK(strings::to_uint(number, result), (number));
-  LOG(LINFO, ("result =", result));
   return result;
 }
 }  // namespace generator

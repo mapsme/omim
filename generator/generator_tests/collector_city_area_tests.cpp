@@ -69,3 +69,18 @@ UNIT_TEST(CollectorCityArea_Merge)
   TEST(HasRelationWithId(fbs, 2 /* id */), ());
   TEST(HasRelationWithId(fbs, 3 /* id */), ());
 }
+// uint32_t ParsePopulationSting(std::string const & populationStr);
+UNIT_TEST(ParsePopulation)
+{
+  TEST_EQUAL(generator::ParsePopulationSting("123"), 123, ());
+  TEST_EQUAL(generator::ParsePopulationSting("123 123"), 123123, ());
+  TEST_EQUAL(generator::ParsePopulationSting("12,300"), 12300, ());
+  TEST_EQUAL(generator::ParsePopulationSting("000"), 0, ());
+  TEST_EQUAL(generator::ParsePopulationSting("123.321"), 123321, ());
+  TEST_EQUAL(generator::ParsePopulationSting("123 000 000 (Moscow Info)"), 123000000, ());
+  TEST_EQUAL(generator::ParsePopulationSting("123 000 000 (123)"), 123000000, ());
+  TEST_EQUAL(generator::ParsePopulationSting(""), 0, ());
+  TEST_EQUAL(generator::ParsePopulationSting("  "), 0, ());
+  TEST_EQUAL(generator::ParsePopulationSting("asd"), 0, ());
+  TEST_EQUAL(generator::ParsePopulationSting("sfa843r"), 0, ());
+}
