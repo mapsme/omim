@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <iterator>
 #include <tuple>
+#include <utility>
 
 using namespace feature;
 
@@ -150,18 +151,22 @@ m2::RectD GetLimitRect(FeaturePlace const & fp)
 }
 
 PlaceProcessor::PlaceProcessor(std::shared_ptr<OsmIdToBoundariesTable> boundariesTable)
-  : m_boundariesTable(boundariesTable) {}
+  : m_boundariesTable(std::move(boundariesTable)) {}
 
 void PlaceProcessor::FillTable(FeaturePlaces::const_iterator start, FeaturePlaces::const_iterator end,
                                FeaturePlaces::const_iterator best) const
 {
   CHECK(m_boundariesTable, ());
   base::GeoObjectId lastId;
+//  bool allPoints = true;
   for (auto outerIt = start; outerIt != end; ++outerIt)
   {
     auto const & fbs = outerIt->GetFbs();
     for (auto const & fb : fbs)
     {
+//      if (!fb.IsPoint())
+//        allPoints = false;
+
       if (!(fb.IsArea() && ftypes::IsCityTownOrVillage(fb.GetTypes())))
         continue;
 
@@ -176,6 +181,28 @@ void PlaceProcessor::FillTable(FeaturePlaces::const_iterator start, FeaturePlace
 
   if (lastId != base::GeoObjectId())
     m_boundariesTable->Union(lastId, best->GetFb().GetMostGenericOsmId());
+//  }
+//  else
+//  {
+//    if (!allPoints)
+//      return;
+//
+//    auto const & fb = best->GetFb();
+//    auto const center = fb.GetGeometryCenter();
+//    feature::TypesHolder types;
+//    for (auto const t : fb.GetTypes())
+//      types.Add(t);
+//
+//    double radius = 0.0;
+//    ftypes::LocalityType placeType = ftypes::IsLocalityChecker::Instance().GetType(types);
+//
+//    switch (placeType)
+//    {
+//    case ftypes::LocalityType::Country: return;
+//    case ftypes::LocalityType::State: return;
+//    case ftypes::LocalityType::City: radius = ftypes::
+//    }
+//  }
 }
 
 std::vector<PlaceProcessor::PlaceWithIds> PlaceProcessor::ProcessPlaces()

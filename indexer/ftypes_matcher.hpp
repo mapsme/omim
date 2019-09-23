@@ -391,12 +391,19 @@ public:
 };
 
 template <typename Types>
-bool IsCityTownOrVillage(Types const & types)
+LocalityType GetPlaceType(Types const & types)
 {
   feature::TypesHolder h;
   for (auto const t : types)
     h.Add(t);
-  auto const type = IsLocalityChecker::Instance().GetType(h);
+
+  return IsLocalityChecker::Instance().GetType(h);
+}
+
+template <typename Types>
+bool IsCityTownOrVillage(Types const & types)
+{
+  auto const type = GetPlaceType(types);
   return type == LocalityType ::City || type == LocalityType ::Town || type == LocalityType ::Village;
 }
 

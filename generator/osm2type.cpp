@@ -886,8 +886,8 @@ void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32
          uint64_t n;
          if (strings::to_uint64(v, n))
            params.rank = feature::PopulationToRank(n);
-         k.clear();
-         v.clear();
+//         k.clear();
+//         v.clear();
        }},
       {"ref", "*",
        [&params](string & k, string & v) {
