@@ -15,6 +15,8 @@ public:
   struct Params
   {
     Params() {}
+    explicit Params(bool readHeader, char delimiter) : m_readHeader(readHeader), m_delimiter(delimiter) {}
+
     bool m_readHeader = false;
     char m_delimiter = ',';
   };

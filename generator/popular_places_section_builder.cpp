@@ -56,13 +56,12 @@ void LoadPopularPlaces(std::string const & srcFilename, PopularPlaces & places)
 
     base::GeoObjectId id(osmId);
     auto const result = places.emplace(std::move(id), static_cast<PopularityIndex>(popularityIndex));
-
     if (!result.second)
     {
       LOG(LERROR, ("Popular place duplication in file:", srcFilename, "parsed row:", row));
       return;
     }
-  });
+  }, coding::CSVReader::Params(true /* readHeader */, ',' /* delimiter */));
 }
 
 bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string const & mwmFile,
