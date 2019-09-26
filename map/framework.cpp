@@ -2424,7 +2424,11 @@ void Framework::ActivateMapSelection(bool needAnimation, df::SelectionShape::ESe
   m_selectedFeature = info.GetID();
   if (m_drapeEngine != nullptr)
   {
+#if defined(OMIM_OS_DESKTOP)
+    bool isGeometrySelectionAllowed = false;
+#else
     bool isGeometrySelectionAllowed = (tapSource == TapEvent::Source::Search);
+#endif  // defined(OMIM_OS_DESKTOP)
     m_drapeEngine->SelectObject(selectionType, info.GetMercator(), info.GetID(), needAnimation,
                                 isGeometrySelectionAllowed);
   }
