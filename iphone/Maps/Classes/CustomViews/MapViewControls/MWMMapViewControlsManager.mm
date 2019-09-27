@@ -603,8 +603,4 @@ extern NSString * const kAlohalyticsTapEventKey;
   [Statistics logEvent:eventName withParameters:params];
 }
 
-- (void)didBecomeActive {
-  [self.placePageManager didBecomeActive];
-}
-
 @end
