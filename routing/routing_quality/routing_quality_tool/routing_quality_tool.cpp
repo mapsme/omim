@@ -113,16 +113,6 @@ void RunComparison(std::vector<std::pair<RoutesBuilder::Result, std::string>> &&
     auto const & anotherResult = anotherResultPair.first;
     auto const & anotherFile = anotherResultPair.second;
 
-    if (FLAGS_copy_intersection)
-    {
-      auto const mapsmeCopyPath = base::JoinPath(intersectionPath, "mapsme", std::to_string(intersectionCount) + ".mapsme.dump");
-      auto const oldMapsmeCopyPath = base::JoinPath(intersectionPath, "old_mapsme", std::to_string(intersectionCount) + ".mapsme.dump");
-
-      base::CopyFileX(mapsmeFile, mapsmeCopyPath);
-      base::CopyFileX(anotherFile, oldMapsmeCopyPath);
-      ++intersectionCount;
-    }
-
     auto const & startLatLon = MercatorBounds::ToLatLon(anotherResult.GetStartPoint());
     auto const & finishLatLon = MercatorBounds::ToLatLon(anotherResult.GetFinishPoint());
 
@@ -137,6 +127,16 @@ void RunComparison(std::vector<std::pair<RoutesBuilder::Result, std::string>> &&
       routesSaver.PushRivalError(startLatLon, finishLatLon);
       ++apiErrors;
       continue;
+    }
+
+    if (FLAGS_copy_intersection)
+    {
+      auto const mapsmeCopyPath = base::JoinPath(intersectionPath, "mapsme", std::to_string(intersectionCount) + ".mapsme.dump");
+      auto const oldMapsmeCopyPath = base::JoinPath(intersectionPath, "old_mapsme", std::to_string(intersectionCount) + ".mapsme.dump");
+
+      base::CopyFileX(mapsmeFile, mapsmeCopyPath);
+      base::CopyFileX(anotherFile, oldMapsmeCopyPath);
+      ++intersectionCount;
     }
 
     auto maxSimilarity = std::numeric_limits<Similarity>::min();
