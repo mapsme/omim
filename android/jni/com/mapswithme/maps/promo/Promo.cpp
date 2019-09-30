@@ -51,7 +51,8 @@ void PrepareClassRefs(JNIEnv * env)
   g_placeClass =
     jni::GetGlobalClassRef(env, "com/mapswithme/maps/promo/PromoCityGallery$Place");
   g_placeConstructor =
-    jni::GetConstructorID(env, g_placeClass, "(Ljava/lang/String;Ljava/lang/String;)V");
+    jni::GetConstructorID(env, g_placeClass, "(Ljava/lang/String;Ljava/lang/String;"
+                                             "Ljava/lang/String;)V");
   g_authorClass =
       jni::GetGlobalClassRef(env, "com/mapswithme/maps/promo/PromoCityGallery$Author");
   g_authorConstructor =
@@ -116,13 +117,15 @@ jobject MakeCityGallery(JNIEnv * env, promo::CityGallery const & gallery)
     jni::TScopedLocalRef tier(env, jni::ToJavaString(env, item.m_tier));
     jni::TScopedLocalRef placeName(env, jni::ToJavaString(env, item.m_place.m_name));
     jni::TScopedLocalRef placeDescription(env, jni::ToJavaString(env, item.m_place.m_description));
+    jni::TScopedLocalRef placeUrl(env, jni::ToJavaString(env, item.m_place.m_url));
     jni::TScopedLocalRef authorId(env, jni::ToJavaString(env, item.m_author.m_id));
     jni::TScopedLocalRef authorName(env, jni::ToJavaString(env, item.m_author.m_name));
     jni::TScopedLocalRef luxCategoryName(env, jni::ToJavaString(env, item.m_luxCategory.m_name));
     jni::TScopedLocalRef luxCategoryColor(env, jni::ToJavaString(env, item.m_luxCategory.m_color));
 
     jni::TScopedLocalRef place(
-      env, env->NewObject(g_placeClass, g_placeConstructor, placeName.get(), placeDescription.get()));
+      env, env->NewObject(g_placeClass, g_placeConstructor, placeName.get(), placeDescription.get(),
+                          placeUrl.get()));
     jni::TScopedLocalRef author(
         env, env->NewObject(g_authorClass, g_authorConstructor, authorId.get(), authorName.get()));
     jni::TScopedLocalRef luxCategory(

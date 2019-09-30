@@ -70,6 +70,7 @@ void ParseCityGallery(std::string const & src, UTM utm, promo::CityGallery & res
     {
       FromJSONObject(placeObj, "name", item.m_place.m_name);
       FromJSONObject(placeObj, "description", item.m_place.m_description);
+      FromJSONObject(placeObj, "url", item.m_place.m_url);
     }
 
     auto const authorObj = json_object_get(obj, "author");

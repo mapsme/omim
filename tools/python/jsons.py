@@ -597,7 +597,8 @@ PROMO_GALLERY_CITY_SINGLE = """
             "tier": "price.tier",
             "place": {
                 "name": "Bookmark name",
-                "description": "Bookmark description"
+                "description": "Bookmark description",
+                "url": "https://maps.me"
             }
         }
     ],

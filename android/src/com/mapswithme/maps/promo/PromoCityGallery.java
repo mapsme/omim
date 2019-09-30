@@ -130,10 +130,14 @@ public final class PromoCityGallery
     @NonNull
     private String mDescription;
 
-    Place(@NonNull String name, @NonNull String description)
+    @NonNull
+    private String mUrl;
+
+    Place(@NonNull String name, @NonNull String description, @NonNull String url)
     {
       mName = name;
       mDescription = description;
+      mUrl = url;
     }
 
     @NonNull
@@ -146,6 +150,12 @@ public final class PromoCityGallery
     public String getDescription()
     {
       return mDescription;
+    }
+
+    @NonNull
+    public String getUrl()
+    {
+      return mUrl;
     }
   }
 

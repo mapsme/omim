@@ -18,10 +18,11 @@ namespace promo
 {
 struct Place
 {
-  bool IsEmpty() const { return m_name.empty() || m_description.empty(); }
+  bool IsEmpty() const { return m_name.empty() || m_description.empty() || m_url.empty(); }
 
   std::string m_name;
   std::string m_description;
+  std::string m_url;
 };
 struct Author
 {
