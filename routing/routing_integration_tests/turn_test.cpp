@@ -2,1045 +2,527 @@
 
 #include "routing/routing_integration_tests/routing_test_tools.hpp"
 
+#include "generator/collector_city_area.hpp"
+#include "indexer/ftypes_matcher.hpp"
+
 #include "routing/route.hpp"
 #include "routing/routing_callbacks.hpp"
 
+
+#include <iostream>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <map>
+#include <algorithm>
+#include <chrono>
+#include <random>
+
+#include "boost/optional.hpp"
 
 using namespace routing;
 using namespace routing::turns;
+using namespace std;
 
-UNIT_TEST(RussiaMoscowNagatinoUturnTurnTest)
+void AddPointWithRadius(ofstream & output, ms::LatLon const & latlon, double r)
 {
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.67251, 37.63604), {0.01, -0.01},
-                                  MercatorBounds::FromLatLon(55.67293, 37.63507));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-
-  integration::GetNthTurn(route, 0)
-      .TestValid()
-      .TestDirection(CarDirection::UTurnLeft);
-
-  integration::TestRouteLength(route, 248.0);
+  output << latlon.m_lat << " " << latlon.m_lon << " " << r << std::endl;
 }
 
-// Secondary should be preferred against residential.
-UNIT_TEST(StPetersburgSideRoadPenaltyTest)
+double FindPolygonArea(std::vector<m2::PointD> const & points, bool convertToMeters = true)
 {
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(59.85157, 30.28033), {0., 0.},
-                                  MercatorBounds::FromLatLon(59.84268, 30.27589));
+  if (points.empty())
+    return 0.0;
 
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
+  double result = 0.0;
+  for (size_t i = 0; i < points.size(); ++i)
+  {
+    auto const & prev = i == 0 ? points.back() : points[i - 1];
+    auto const & cur = points[i];
 
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
+    static m2::PointD const kZero = m2::PointD::Zero();
+    auto const prevLen =
+        convertToMeters ? MercatorBounds::DistanceOnEarth(kZero, prev) : prev.Length();
+    auto const curLen =
+        convertToMeters ? MercatorBounds::DistanceOnEarth(kZero, cur) : cur.Length();
 
-UNIT_TEST(RussiaMoscowLenigradskiy39UturnTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.79683, 37.5379), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.80212, 37.5389));
+    if (base::AlmostEqualAbs(prevLen, 0.0, 1e-20) || base::AlmostEqualAbs(curLen, 0.0, 1e-20))
+      continue;
 
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
+    double sinAlpha = CrossProduct(prev, cur) / (prev.Length() * cur.Length());
 
-  integration::TestTurnCount(route, 3 /* expectedTurnCount */);
+    result += prevLen * curLen * sinAlpha / 2.0;
+  }
 
-  integration::GetNthTurn(route, 0)
-      .TestValid()
-      .TestDirection(CarDirection::UTurnLeft);
-  integration::GetNthTurn(route, 1)
-      .TestValid()
-      .TestDirection(CarDirection::TurnRight);
-  integration::GetNthTurn(route, 2).TestValid().TestDirection(CarDirection::TurnLeft);
-
-  integration::TestRouteLength(route, 2050.);
-}
-
-UNIT_TEST(RussiaMoscowSalameiNerisUturnTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.85182, 37.39533), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.84386, 37.39250));
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 5 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0)
-      .TestValid()
-      .TestPoint({37.38848, 67.63338}, 20.)
-      .TestDirection(CarDirection::TurnSlightRight);
-  integration::GetNthTurn(route, 1)
-      .TestValid()
-      .TestPoint({37.38711, 67.63336}, 20.)
-      .TestDirection(CarDirection::TurnLeft);
-  integration::GetNthTurn(route, 2)
-      .TestValid()
-      .TestPoint({37.38738, 67.63278}, 20.)
-      .TestDirection(CarDirection::TurnLeft);
-  integration::GetNthTurn(route, 3)
-      .TestValid().TestDirection(CarDirection::TurnSlightRight);
-  integration::GetNthTurn(route, 4)
-      .TestValid()
-      .TestPoint({37.39052, 67.63310}, 20.)
-      .TestDirection(CarDirection::TurnRight);
-
-  integration::TestRouteLength(route, 1637.);
-}
-
-// Fails because consider service roads are roundabout exits.
-UNIT_TEST(RussiaMoscowTrikotagniAndPohodniRoundaboutTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.83118, 37.40515), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.83384, 37.40521));
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-
-  integration::GetNthTurn(route, 0)
-      .TestValid()
-      .TestDirection(CarDirection::EnterRoundAbout)
-      .TestRoundAboutExitNum(2);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::LeaveRoundAbout);
-
-  integration::TestRouteLength(route, 387.);
-}
-
-UNIT_TEST(SwedenBarlangeRoundaboutTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(60.48278, 15.42356), {0., 0.},
-                                  MercatorBounds::FromLatLon(60.48462, 15.42120));
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-
-  integration::GetNthTurn(route, 0)
-      .TestValid()
-      .TestDirection(CarDirection::EnterRoundAbout)
-      .TestRoundAboutExitNum(2);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::LeaveRoundAbout);
-
-  integration::TestRouteLength(route, 255.);
-}
-
-UNIT_TEST(RussiaMoscowPlanetnayaOnlyStraightTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.80215, 37.54663), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.80186, 37.5496));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 5 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnRight);
-  integration::GetNthTurn(route, 2).TestValid().TestDirection(CarDirection::TurnLeft);
-  integration::GetNthTurn(route, 3).TestValid().TestDirection(CarDirection::TurnSlightRight);
-  integration::GetNthTurn(route, 4).TestValid().TestDirection(CarDirection::TurnRight);
-
-  integration::TestRouteLength(route, 418.0);
-}
-
-UNIT_TEST(RussiaMoscowNoTurnsOnMKADTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.84656, 37.39163), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.56661, 37.69254));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0)
-      .TestValid()
-      .TestPoint({37.68276, 67.14062})
-      .TestDirection(CarDirection::ExitHighwayToRight);
-
-  integration::TestRouteLength(route, 43233.7);
-}
-
-UNIT_TEST(RussiaMoscowTTKVarshavskoeShosseOutTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.70160, 37.60632), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.69349, 37.62122));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-UNIT_TEST(RussiaMoscowTTKUTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.792848, 37.624424), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.792544, 37.624914));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 3 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestOneOfDirections(
-      {CarDirection::TurnSlightRight, CarDirection::TurnRight});
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::UTurnLeft);
-  integration::GetNthTurn(route, 2).TestValid().TestDirection(CarDirection::TurnSlightLeft);
-}
-
-UNIT_TEST(RussiaMoscowParallelResidentalUTurnAvoiding)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.66192, 37.62852), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.66189, 37.63254));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-  // Checking a turn in case going from a not-link to a link
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnLeft);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnLeft);
-}
-
-UNIT_TEST(RussiaMoscowPankratevskiPerBolshaySuharedskazPloschadTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.77177, 37.63556), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.77224, 37.63748));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-
-  std::vector<turns::TurnItem> t;
-  route.GetTurnsForTesting(t);
-  // It's not possible to get destination with less number of turns due to oneway roads.
-  TEST_GREATER_OR_EQUAL(t.size(), 5, ());
-}
-
-UNIT_TEST(RussiaMoscowMKADPutilkovskeShosseTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.85305, 37.39414), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.85099, 37.39105));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-UNIT_TEST(RussiaMoscowPetushkovaShodniaReverTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.84104, 37.40591), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.83929, 37.40855));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
-
-UNIT_TEST(RussiaHugeRoundaboutTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.80141, 37.32581), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.80075, 37.32536));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0)
-      .TestValid()
-      .TestDirection(CarDirection::EnterRoundAbout)
-      .TestRoundAboutExitNum(5);
-  integration::GetNthTurn(route, 1)
-      .TestValid()
-      .TestDirection(CarDirection::LeaveRoundAbout)
-      .TestRoundAboutExitNum(5);
-}
-
-UNIT_TEST(BelarusMiskProspNezavisimostiMKADTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(53.93642, 27.65857), {0., 0.},
-                                  MercatorBounds::FromLatLon(53.93933, 27.67046));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-// Test case: turning form one street to another one with the same name.
-// An end user shall be informed about this manoeuvre.
-UNIT_TEST(RussiaMoscowPetushkovaPetushkovaTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.83636, 37.40555), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.83707, 37.40489));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnLeft);
-}
-
-// Test case: a route goes straight along a unnamed big link road when joined a small road.
-// An end user shall not be informed about such manoeuvres.
-UNIT_TEST(RussiaMoscowMKADLeningradkaTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.87961, 37.43838), {0.0, 0.0},
-                                  MercatorBounds::FromLatLon(55.87854, 37.44865));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-UNIT_TEST(BelarusMKADShosseinai)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.31541, 29.43123), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.31656, 29.42626));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
-
-// Test case: a route goes straight along a big road when joined small road.
-// An end user shall not be informed about such manoeuvres.
-// But at the end of the route an end user shall be informed about junction of two big roads.
-UNIT_TEST(ThailandPhuketNearPrabarameeRoad)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(7.91797, 98.36937), {0., 0.},
-                                  MercatorBounds::FromLatLon(7.90724, 98.3679));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightLeft);
-}
-
-// Test case: a route goes in Moscow from Varshavskoe shosse (from the city center direction)
-// to MKAD (the outer side). A turn instruction (to leave Varshavskoe shosse)
-// shall be generated.
-UNIT_TEST(RussiaMoscowVarshavskoeShosseMKAD)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.58210, 37.59695), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.57514, 37.61020));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-UNIT_TEST(RussiaMoscowBolshayaNikitskayaOkhotnyRyadTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.75509, 37.61067), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.75737, 37.61601));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnLeft);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightRight);
-}
-
-UNIT_TEST(RussiaMoscowTverskajaOkhotnyRyadTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.75765, 37.61355), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.75737, 37.61601));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnLeft);
-}
-
-UNIT_TEST(RussiaMoscowBolshoyKislovskiyPerBolshayaNikitinskayaUlTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.75574, 37.60702), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.75586, 37.60819));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
-}
-
-// Test case: a route goes in Moscow along Leningradskiy Prpt (towards city center).
-UNIT_TEST(RussiaMoscowLeningradskiyPrptToTheCenterUTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.79231, 37.54951), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.79280, 37.55028));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::UTurnLeft);
-}
-
-UNIT_TEST(SwitzerlandSamstagernBergstrasseTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(47.19307, 8.67594), {0., 0.},
-                                  MercatorBounds::FromLatLon(47.19162, 8.67590));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightLeft);
-}
-
-UNIT_TEST(RussiaMoscowMikoiankNoUTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.79041, 37.53770), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.79182, 37.53008));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
-
-UNIT_TEST(RussiaMoscowLeningradskiyPrptToTTKTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.78926, 37.55706), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.78925, 37.57110));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-  // @TODO(bykoianko) It's a case when two possible ways go slight left.
-  // A special processing should be implemented for such cases.
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightLeft);
-}
-
-UNIT_TEST(RussiaMoscowLeningradskiyPrptDublToTTKTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.79054, 37.55335), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.78925, 37.57110));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightLeft);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightLeft);
-}
-
-UNIT_TEST(RussiaMoscowSvobodaStTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.82484, 37.45151), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.81941, 37.45073));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightLeft);
-}
-
-UNIT_TEST(RussiaTiinskTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(54.37738, 49.63878), {0., 0.},
-                                  MercatorBounds::FromLatLon(54.3967, 49.64924));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestOneOfDirections(
-      {CarDirection::TurnSlightLeft, CarDirection::TurnLeft});
-}
-
-UNIT_TEST(NetherlandsGorinchemBridgeTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(51.84131, 4.94825), {0., 0.},
-                                  MercatorBounds::FromLatLon(51.81518, 4.93773));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
-
-UNIT_TEST(RussiaVoronezhProspTrudaTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(51.67205, 39.16334), {0., 0.},
-                                  MercatorBounds::FromLatLon(51.67193, 39.15636));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-
-  integration::GetNthTurn(route, 0).TestValid().TestOneOfDirections(
-      {CarDirection::TurnSlightRight, CarDirection::TurnRight});
-}
-
-UNIT_TEST(GermanyFrankfurtAirportTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(50.07094, 8.61299), {0., 0.},
-                                  MercatorBounds::FromLatLon(50.05807, 8.59542));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightRight);
+  return std::abs(result);
 }
 
 
-UNIT_TEST(GermanyFrankfurtAirport2Test)
+enum class Locality
 {
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(50.03249, 8.50814), {0., 0.},
-                                  MercatorBounds::FromLatLon(50.02079, 8.49445));
+  City,
+  Town,
+  Village,
+  Undef,
+};
 
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
+Locality FromStringMisha(string const & str)
+{
+  if (str == "city")
+    return Locality::City;
+  if (str == "town")
+    return Locality::Town;
+  if (str == "village")
+    return Locality::Village;
 
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnSlightLeft);
+  return Locality::Undef;
 }
 
-
-// Test on absence of unnecessary turn which may appear between two turns in the test.
-UNIT_TEST(RussiaKubinkaTest)
+struct Node
 {
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.58533, 36.83779), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.58365, 36.8333));
+  ms::LatLon m_latlon;
+  m2::PointD m_point;
+  Locality m_locality = Locality::Undef;
+  size_t m_population = 0;
+  size_t m_id;
+};
 
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-  integration::GetNthTurn(route, 1).TestValid().TestOneOfDirections(
-      {CarDirection::TurnSlightLeft, CarDirection::TurnLeft});
-}
-
-// Test on absence of unnecessary turn.
-UNIT_TEST(AustriaKitzbuhelTest)
+struct Way
 {
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(47.46894, 12.3841), {0., 0.},
-                                  MercatorBounds::FromLatLon(47.46543, 12.38599));
+  size_t m_id;
+  std::vector<m2::PointD> m_points;
+};
 
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
-
-// Test on absence of unnecessary turn.
-UNIT_TEST(AustriaKitzbuhel2Test)
+struct Relation
 {
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(47.45119, 12.3841), {0., 0.},
-                                  MercatorBounds::FromLatLon(47.45021, 12.382));
+  size_t m_id;
+  double m_area = 0.0;
+  Locality m_locality = Locality::Undef;
+  size_t m_label = 0;
+};
 
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
-
-// Test on absence of unnecessary turn in case of fake ingoing segment.
-UNIT_TEST(AustriaKitzbuhel3Test)
+class FileReaderMisha
 {
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(47.45362, 12.38709), {0., 0.},
-                                  MercatorBounds::FromLatLon(47.45255, 12.38498));
+public:
 
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
+  enum class Type
+  {
+    Node,
+    Way,
+    Relation,
+    Undef,
+  };
 
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
+  explicit FileReaderMisha(string const & path) : m_path(path), m_input(m_path), m_pointOfstream("/tmp/points")
+  {
+    CHECK(m_input.good(), (path));
+  }
 
-// Test on absence of unnecessary turn.
-UNIT_TEST(AustriaBrixentalStrasseTest)
+  boost::optional<string> GetNextLine()
+  {
+    static size_t all = 0;
+    string line;
+    if (!all)
+    {
+      size_t cached = 0;
+      {
+        ifstream input("/tmp/lines");
+        if (input.good())
+          input >> cached;
+      }
+
+      if (!cached)
+      {
+        ifstream input(m_path);
+        size_t n = 0;
+        while (getline(input, line))
+        {
+          if (n % 100000 == 0)
+            std::cout << n << "\r";
+          ++n;
+        }
+        all = n;
+        {
+          ofstream output("/tmp/lines");
+          output << all;
+        }
+      } else all = cached;
+      std::cout << std::endl;
+    }
+
+    static size_t kReaded = 0;
+    ++kReaded;
+    if (kReaded % 300000 == 0)
+    {
+      double percent = static_cast<double>(kReaded) / all * 100;
+      std::cout << kReaded << " / " << all << " (" << percent << "%)                      \r";
+    }
+
+    if (getline(m_input, line))
+      return {std::move(line)};
+    return {};
+  }
+
+  void ParseLine(string const & line)
+  {
+    size_t pos = 0;
+    Type const type = GetType(line, pos);
+    switch (type)
+    {
+    case Type::Node: return ParseNode(line);
+    case Type::Way: return ParseWay(line);
+    case Type::Relation: return ParseRelation(line);
+    case Type::Undef: return;
+    }
+  }
+
+  void PrintTooBigRelations(Locality type)
+  {
+    std::cout << "PrintTooBigRelations()" << std::endl;
+    double all = 0;
+    double part = 0;
+    double circleLess = 0;
+    double circleMore = 0;
+    for (auto const & item : m_relations)
+    {
+      all += 1;
+      size_t const id = item.first;
+
+      auto const & relation = item.second;
+
+      if (relation.m_label == 0)
+        continue;
+
+      if (relation.m_locality != Locality::Undef)
+        continue;
+
+      part += 1;
+
+      auto const & node = m_nodes[relation.m_label];
+      if (node.m_population == 0)
+        continue;
+
+      if (node.m_locality != type)
+        continue;
+
+      double const r = ftypes::GetRadiusByPopulation(node.m_population);
+      double const circleArea = M_PI * r*r;
+      if (circleArea < relation.m_area)
+      {
+        circleLess += 1;
+      }
+      else
+      {
+        AddPointWithRadius(m_pointOfstream, node.m_latlon, r);
+        AddUrl(id, Type::Relation);
+        circleMore += 1;
+      }
+    }
+
+    std::cout << "All: " << all << ", with label && without place=city|town|village: " << part
+              << ", circleArea < relation.m_area:" << circleLess
+              << ", circleArea > relation.m_area:" << circleMore << std::endl;
+  }
+
+  void DumpUrls(size_t size)
+  {
+    static string kPath = "/tmp";
+    auto const seed = std::chrono::system_clock::now().time_since_epoch().count();
+    shuffle(m_urls.begin(), m_urls.end(), std::default_random_engine(static_cast<uint32_t>(seed)));
+    size = min(size, m_urls.size());
+    std::cout << "Have: " << m_urls.size() << " urls. Open: " << size << " urls" << std::endl;
+    for (size_t i = 0; i < size; ++i)
+    {
+      ofstream output(kPath + "/" + std::to_string(i) + ".html");
+      output << "<head><meta http-equiv=\"Refresh\" content=\"5; url=" << m_urls[i] << "\"></head>";
+    }
+  }
+
+private:
+
+  void AddUrl(size_t id, Type type)
+  {
+    string url = "https://www.openstreetmap.org/"; //relation/3959622";
+    switch (type)
+    {
+    case Type::Node:
+    {
+      url += "node/";
+      break;
+    }
+    case Type::Way:
+    {
+      url += "way/";
+      break;
+    }
+    case Type::Relation:
+    {
+      url += "relation/";
+      break;
+    }
+    default: CHECK(false, (id));
+    }
+
+    url += std::to_string(id);
+    m_urls.emplace_back(std::move(url));
+  }
+
+  void ParseNode(string const & line)
+  {
+    static bool was = false;
+    if (!was)
+    {
+      std::cout << "PARSE NODES                                                    " << std::endl;
+      was = true;
+    }
+
+    size_t pos = 0;
+    size_t id = 0;
+    Parse(line, "id=", pos, id);
+
+    double lat = 0.0;
+    double lon = 0.0;
+    Parse(line, "lat=", pos, lat);
+    Parse(line, "lon=", pos, lon);
+
+    ms::LatLon latlon(lat, lon);
+
+    Node node;
+    node.m_latlon = latlon;
+    node.m_point = MercatorBounds::FromLatLon(latlon);
+    node.m_id = id;
+
+    if (GetPos(line, "/>", pos, false /* mustFind */))
+    {
+      m_nodes[id] = node;
+      return;
+    }
+
+    boost::optional<string> newLineOp;
+    while ((newLineOp = GetNextLine()))
+    {
+      auto const & newLine = *newLineOp;
+      if (IsSubstr(newLine, "</node>"))
+        break;
+
+      if (IsSubstr(newLine, "<tag"))
+      {
+        string key;
+        string value;
+        pos = 0;
+        Parse(newLine, "k=", pos, key);
+
+        if (key == "place")
+        {
+          Parse(newLine, "v=", pos, value);
+          node.m_locality = FromStringMisha(value);
+        } else if (key == "population")
+        {
+          Parse(newLine, "v=", pos, value);
+          size_t const population = generator::ParsePopulationSting(value);
+          node.m_population = population;
+        }
+      }
+    }
+
+    m_nodes[id] = node;
+  }
+
+  void ParseWay(string const & line)
+  {
+    static bool was = false;
+    if (!was)
+    {
+      std::cout << "PARSE WAYS                                                    " << std::endl;
+      was = true;
+    }
+
+    Way way;
+    size_t pos = 0;
+    size_t id = 0;
+    Parse(line, "id=", pos, id);
+    way.m_id = id;
+
+    boost::optional<string> newLine;
+    while ((newLine = GetNextLine()))
+    {
+      if (IsSubstr(*newLine, "</way>"))
+        break;
+
+      if (IsSubstr(*newLine, "<nd"))
+      {
+        size_t ref;
+        size_t tmp = 0;
+        Parse(*newLine, "ref=", tmp, ref);
+        auto const it = m_nodes.find(ref);
+        if (it == m_nodes.cend())
+          continue;
+
+        auto const & node = it->second;
+        way.m_points.emplace_back(node.m_point);
+      }
+    }
+
+    m_ways.emplace(id, std::move(way));
+  }
+
+  void ParseRelation(string const & line)
+  {
+    static bool was = false;
+    if (!was)
+    {
+      std::cout << "PARSE RELATIONS                                                    " << std::endl;
+      was = true;
+    }
+
+    Relation relation;
+    size_t pos = 0;
+    size_t id;
+    Parse(line, "id=", pos, id);
+    relation.m_id = id;
+
+    bool add = false;
+
+    boost::optional<string> newLine;
+    std::vector<m2::PointD> points;
+    while ((newLine = GetNextLine()))
+    {
+      if (IsSubstr(*newLine, "</relation>"))
+        break;
+
+      if (IsSubstr(*newLine, "<member"))
+      {
+        string type;
+        pos = 0;
+        Parse(*newLine, "type=", pos, type);
+        size_t ref;
+        Parse(*newLine, "ref=", pos, ref);
+        string role;
+        Parse(*newLine, "role=", pos, role);
+
+        if (role == "outer")
+        {
+          auto const it = m_ways.find(ref);
+          if (it == m_ways.cend())
+            continue;
+
+          auto const & way = it->second;
+          points.insert(points.end(), way.m_points.begin(), way.m_points.end());
+        }
+        else if (type == "node" && role == "label")
+        {
+          relation.m_label = ref;
+        }
+      }
+      else if (IsSubstr(*newLine, "<tag"))
+      {
+        string key;
+        string value;
+        pos = 0;
+        Parse(*newLine, "k=", pos, key);
+
+        if (key == "place")
+        {
+          Parse(*newLine, "v=", pos, value);
+          relation.m_locality = FromStringMisha(value);
+        }
+        else if (key == "boundary")
+        {
+          Parse(*newLine, "v=", pos, value);
+          if (value == "administrative")
+            add = true;
+        }
+      }
+    }
+
+    relation.m_area = FindPolygonArea(points, true /* convertToMeters */);
+
+    if (add)
+      m_relations.emplace(id, relation);
+  }
+
+  static bool IsSubstr(string const & line, string const & substr)
+  {
+    return line.find(substr) != string::npos;
+  }
+
+  template <typename T>
+  void Parse(string const & line, string const & subline, size_t & pos, T & result)
+  {
+    GetPos(line, subline, pos);
+    size_t start = pos + subline.size() + 1;
+    pos = start;
+    while (line[pos] != '"')
+      ++pos;
+    string sub(line.begin() + start, line.begin() + pos);
+    stringstream ss;
+    ss << sub;
+    ss >> result;
+  }
+
+  static bool GetPos(string const & line, string const & subline, size_t & pos, bool mustFind = true)
+  {
+    for (size_t i = pos; i < line.size(); ++i)
+    {
+      bool good = true;
+      for (size_t j = 0; j < subline.size(); ++j)
+      {
+        if (line[i + j] != subline[j])
+        {
+          good = false;
+          break;
+        }
+      }
+
+      if (good)
+      {
+        pos = i;
+        return true;
+      }
+    }
+
+    if (mustFind)
+      CHECK(false, (line, subline, pos));
+
+    return false;
+  }
+
+  Type GetType(string const & line, size_t & pos)
+  {
+    if (IsSubstr(line, "<node"))
+      return Type::Node;
+    if (IsSubstr(line, "<way"))
+      return Type::Way;
+    if (IsSubstr(line, "<relation"))
+      return Type::Relation;
+
+    return Type::Undef;
+  }
+
+  string m_path;
+  ifstream m_input;
+  unordered_map<size_t, Node> m_nodes;
+  unordered_map<size_t, Way> m_ways;
+  unordered_map<size_t, Relation> m_relations;
+  vector<string> m_urls;
+  ofstream m_pointOfstream;
+};
+
+UNIT_TEST(Toolsa)
 {
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(47.45091, 12.33453), {0., 0.},
-                                  MercatorBounds::FromLatLon(47.45038, 12.32592));
+  CHECK(std::getenv("PATH") && !std::string(std::getenv("PATH")).empty(), ());
+  std::cout << std::unitbuf;
+  std::string path = std::string(std::getenv("PATH"));
 
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
+  FileReaderMisha reader(path);
+  boost::optional<string> line;
+  while ((line = reader.GetNextLine()))
+  {
+    reader.ParseLine(*line);
+  }
 
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightRight);
+  std::cout << std::endl;
+
+  reader.PrintTooBigRelations(Locality::Town);
+  reader.DumpUrls(100);
 }
-
-UNIT_TEST(RussiaMoscowLeningradkaToMKADTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.87192, 37.45772), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.87594, 37.45266));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-UNIT_TEST(RussiaMoscowMKADToSvobodaTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.8801, 37.43862), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.87583, 37.43046));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-// Test that there's no turns if to follow MKAD.
-UNIT_TEST(RussiaMoscowMKADTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(52.15866, 5.56538), {0., 0.},
-                                  MercatorBounds::FromLatLon(52.16668, 5.55665));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-}
-
-UNIT_TEST(NetherlandsBarneveldTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(52.15866, 5.56538), {0., 0.},
-                                  MercatorBounds::FromLatLon(52.16667, 5.55663));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightRight);
-}
-
-UNIT_TEST(BelorussiaMinskTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(53.90991, 27.57946), {0., 0.},
-                                  MercatorBounds::FromLatLon(53.91552, 27.58211));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-  // @TODO(bykoianko) In this case it's better to get GoStraight direction or not get
-  // direction at all. But the turn generator generates TurnSlightRight based on road geometry.
-  // It's so because the turn generator does not take into account the significant number of lanes
-  // of the roads at the crossing. While turn generation number of lanes should be taken into account.
-  integration::GetNthTurn(route, 0).TestValid().TestOneOfDirections(
-      {CarDirection::GoStraight, CarDirection::TurnSlightRight});
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnRight);
-}
-
-// Test on building route from a point close to mwm border to a point close to a mwm border.
-UNIT_TEST(EnglandLondonExitToLeftTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(51.603582, 0.266995), {0.0, 0.0},
-                                  MercatorBounds::FromLatLon(51.606785, 0.264055));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToLeft);
-}
-
-// Test on the route from Leninsky prospect to its frontage road and turns generated on the route.
-UNIT_TEST(RussiaMoscowLeninskyProspTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.69035, 37.54948), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.69188, 37.55293));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnLeft);
-}
-
-// Test on the route from TTK (primary) to a link.
-UNIT_TEST(RussiaMoscowTTKToLinkTest)
-{
-TRouteResult const routeResult =
-    integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                MercatorBounds::FromLatLon(55.78594, 37.56656), {0., 0.},
-                                MercatorBounds::FromLatLon(55.78598, 37.56737));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-// Test on the turn from TTK (primary) to a secondary road.
-UNIT_TEST(RussiaMoscowTTKToBegovayAlleyaTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.77946, 37.55779), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.77956, 37.55891));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
-}
-
-// Test on the turn from TTK (primary) to a service road. The angle of the turn is not slight.
-UNIT_TEST(RussiaMoscowTTKToServiceTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.78856, 37.57017), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.78869, 37.57133));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
-}
-
-// Test on a turn from TTK (primary) to an unclassified road. The angle of the turn is slight.
-UNIT_TEST(RussiaMoscowTTKToNMaslovkaTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.79057, 37.57292), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.79132, 37.57481));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::ExitHighwayToRight);
-}
-
-UNIT_TEST(RussiaMoscowComplicatedTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.68412, 37.60166), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.68426, 37.59854));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 2 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestOneOfDirections(
-      {CarDirection::GoStraight, CarDirection::TurnSlightLeft});
-  integration::GetNthTurn(route, 1).TestValid().TestDirection(CarDirection::TurnRight);
-}
-
-UNIT_TEST(USATampaTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(28.04875, -82.58292), {0., 0.},
-                                  MercatorBounds::FromLatLon(28.04459, -82.58448));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestOneOfDirections(
-      {CarDirection::TurnSlightRight, CarDirection::TurnRight});
-}
-
-// Test on go straight direction if it's possible to go through a roundabout.
-UNIT_TEST(RussiaMoscowMinskia1TurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.7355, 37.48717), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.73694, 37.48587));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
-
-UNIT_TEST(RussiaMoscowMinskia2TurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.74244, 37.4808), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.74336, 37.48124));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
-}
-
-// This test on getting correct (far enough) outgoing turn point (result of method GetPointForTurn())
-// despite the fact that a small road adjoins immediately after the turn point.
-UNIT_TEST(RussiaMoscowBarikadnaiTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.75979, 37.58502), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.75936, 37.58286));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
-}
-
-// This test on getting correct (far enough) outgoing turn point (result of method GetPointForTurn()).
-UNIT_TEST(RussiaMoscowKomsomolskyTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.73442, 37.59391), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.73485, 37.59543));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnRight);
-}
-
-// Test on no go straight direction in case of a route along a big road and pass smaller ones.
-UNIT_TEST(RussiaMoscowTTKNoGoStraightTurnTest)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.78949, 37.5711), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.78673, 37.56726));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 0 /* expectedTurnCount */);
-}
-
-UNIT_TEST(RussiaMoscowLeninskyProsp2Test)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.80376, 37.52048), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.80442, 37.51802));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestTurnCount(route, 1 /* expectedTurnCount */);
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::TurnSlightRight);
-}
-
-/*
-UNIT_TEST(RussiaMoscow_OnlyUTurnTest_1)
-{
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.90382, 37.40219), {0.0, 0.0},
-                                  MercatorBounds::FromLatLon(55.90278, 37.40354));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::TestRouteLength(route, 3854.44);
-}
-
-UNIT_TEST(RussiaMoscow_OnlyUTurnTest_1_WithDirection)
-{
-  auto const startDir = MercatorBounds::FromLatLon(55.90423, 37.40176);
-  auto const endDir = MercatorBounds::FromLatLon(55.90218, 37.40433);
-  auto const direction = endDir - startDir;
-
-  TRouteResult const routeResult =
-      integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.90382, 37.40219), direction,
-                                  MercatorBounds::FromLatLon(55.90278, 37.40354));
-
-  Route const & route = *routeResult.first;
-  RouterResultCode const result = routeResult.second;
-
-  TEST_EQUAL(result, RouterResultCode::NoError, ());
-  integration::GetNthTurn(route, 0).TestValid().TestDirection(CarDirection::UTurnLeft);
-}
-*/

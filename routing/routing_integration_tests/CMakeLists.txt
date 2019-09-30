@@ -9,19 +9,19 @@ project(routing_integration_tests)
 
 set(
   SRC
-  bicycle_route_test.cpp
-  bicycle_turn_test.cpp
-  get_altitude_test.cpp
-  online_cross_tests.cpp
-  pedestrian_route_test.cpp
-  road_graph_tests.cpp
-  route_test.cpp
+  #bicycle_route_test.cpp
+  #bicycle_turn_test.cpp
+  #get_altitude_test.cpp
+  #online_cross_tests.cpp
+  #pedestrian_route_test.cpp
+  #road_graph_tests.cpp
+  #route_test.cpp
   routing_test_tools.cpp
   routing_test_tools.hpp
-  small_routes.cpp
-  speed_camera_notifications_tests.cpp
-  street_names_test.cpp
-  transit_route_test.cpp
+  #small_routes.cpp
+  #speed_camera_notifications_tests.cpp
+  #street_names_test.cpp
+  #transit_route_test.cpp
   turn_test.cpp
 )
 
@@ -31,6 +31,7 @@ omim_link_libraries(
   ${PROJECT_NAME}
   editor_tests_support
   map
+  generator
   routing
   search
   storage
