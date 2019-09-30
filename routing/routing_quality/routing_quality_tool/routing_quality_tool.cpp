@@ -118,9 +118,9 @@ void RunComparison(std::vector<std::pair<RoutesBuilder::Result, std::string>> &&
       auto const mapsmeCopyPath = base::JoinPath(intersectionPath, "mapsme", std::to_string(intersectionCount) + ".mapsme.dump");
       auto const oldMapsmeCopyPath = base::JoinPath(intersectionPath, "old_mapsme", std::to_string(intersectionCount) + ".mapsme.dump");
 
-      std::cout << "from =" << mapsmeFile << ", to = " << mapsmeCopyPath << std::endl;
       base::CopyFileX(mapsmeFile, mapsmeCopyPath);
       base::CopyFileX(anotherFile, oldMapsmeCopyPath);
+      ++intersectionCount;
     }
 
     auto const & startLatLon = MercatorBounds::ToLatLon(anotherResult.GetStartPoint());
