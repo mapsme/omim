@@ -205,7 +205,14 @@ public:
       if (node.m_locality != type)
         continue;
 
-      double const r = ftypes::GetRadiusByPopulation(node.m_population);
+      double r = ftypes::GetRadiusByPopulation(node.m_population);
+      switch (node.m_locality)
+      {
+      case Locality::Town: r /= 2.0; break;
+      case Locality::Village: r /= 3.0; break;
+      default: r /= 1.0;
+      }
+
       double const circleArea = M_PI * r*r;
       if (circleArea < relation.m_area)
       {
