@@ -8,6 +8,7 @@
 #include "routing/route.hpp"
 #include "routing/routing_callbacks.hpp"
 
+#include "geometry/convex_hull.hpp"
 
 #include <iostream>
 #include <vector>
@@ -99,6 +100,7 @@ struct Relation
   double m_area = 0.0;
   Locality m_locality = Locality::Undef;
   size_t m_label = 0;
+  size_t m_admin_centre = 0;
 };
 
 class FileReaderMisha
@@ -127,8 +129,14 @@ public:
       size_t cached = 0;
       {
         ifstream input("/tmp/lines");
+        string path(getenv("PATH"));
+        string pathInInput;
         if (input.good())
-          input >> cached;
+        {
+          input >> pathInInput >> cached;
+          if (path != pathInInput)
+            cached = 0;
+        }
       }
 
       if (!cached)
@@ -144,7 +152,8 @@ public:
         all = n;
         {
           ofstream output("/tmp/lines");
-          output << all;
+          string path(getenv("PATH"));
+          output << path << " " << all;
         }
       } else all = cached;
       std::cout << std::endl;
@@ -173,6 +182,93 @@ public:
     case Type::Way: return ParseWay(line);
     case Type::Relation: return ParseRelation(line);
     case Type::Undef: return;
+    }
+  }
+
+  void JoinLanduse()
+  {
+    double const kLimitMeters = 300;
+    auto const isClose = [kLimitMeters](auto const & area1, auto const & area2) {
+      double minDist = std::numeric_limits<double>::max();
+      for (auto const & point1 : area1) {
+        for (size_t i = 0; i < area2.size() - 1; ++i)
+        {
+          m2::ParametrizedSegment<m2::PointD> segment(area2[i], area2[i + 1]);
+          auto const closest = segment.ClosestPointTo(point1);
+          minDist = std::min(minDist, MercatorBounds::DistanceOnEarth(point1, closest));
+          if (minDist < kLimitMeters)
+            return true;
+        }
+      }
+      return false;
+    };
+    std::vector<std::vector<m2::PointD>> areasPrev;
+    for (auto const & item : m_ways)
+    {
+      auto const & way = item.second;
+      areasPrev.emplace_back(way.m_points);
+    }
+
+    for (;;)
+    {
+      std::vector<std::vector<m2::PointD>> areasCur;
+      unordered_set<size_t> used;
+      bool was = false;
+      std::cout << "areasPrev.size() = " << areasPrev.size() << std::endl;
+      for (size_t i = 0; i < areasPrev.size(); ++i)
+      {
+        if (used.count(i) != 0)
+          continue;
+
+        for (size_t j = i + 1; j < areasPrev.size(); ++j)
+        {
+          if (used.count(j) != 0)
+            continue;
+
+          if (isClose(areasPrev[i], areasPrev[j]))
+          {
+            was = true;
+            areasPrev[i].insert(areasPrev[i].end(), areasPrev[j].begin(), areasPrev[j].end());
+            used.emplace(j);
+          }
+        }
+
+        areasCur.emplace_back(std::move(areasPrev[i]));
+      }
+
+      areasPrev = std::move(areasCur);
+      areasCur.clear();
+      for (auto const & polygon : areasPrev)
+      {
+        m2::ConvexHull convexHull(polygon, 1e-9);
+        areasCur.emplace_back(convexHull.Points());
+      }
+      areasPrev = std::move(areasCur);
+
+      if (!was)
+        break;
+
+    }
+
+    ofstream output("/tmp/points");
+    output << std::setprecision(20);
+    std::cout << std::setprecision(20);
+    for (auto const & polygon : areasPrev)
+    {
+      m2::ConvexHull convexHull(polygon, 1e-9);
+      output << convexHull.Points().size() << std::endl;
+      if (convexHull.Points().size() == 2)
+      {
+        std::cout << polygon.size() << std::endl;
+        for (auto const & point : polygon)
+          std::cout << "{" << point.x << "," << point.y << "}, ";
+        std::cout << std::endl;
+      }
+      for (auto const & point : convexHull.Points())
+      {
+        auto const latlon = MercatorBounds::ToLatLon(point);
+        output << latlon.m_lat << " " << latlon.m_lon << std::endl;
+      }
     }
   }
 
@@ -231,6 +327,70 @@ public:
               << ", circleArea > relation.m_area:" << circleMore << std::endl;
   }
 
+  void ShowSmallestRealtionsWithAdminCentre(bool filterByArea = false)
+  {
+    unordered_map<size_t, std::vector<Relation>> nodeToRelations;
+    for (auto const & item : m_relations)
+    {
+      auto const & relation = item.second;
+
+      if (relation.m_admin_centre == 0)
+        continue;
+
+      auto const it = m_nodes.find(relation.m_admin_centre);
+      if (it == m_nodes.cend())
+        continue;
+      auto const & node = it->second;
+      Locality adminCentreType = node.m_locality;
+      if (adminCentreType != Locality::City)
+        continue;
+
+      nodeToRelations[node.m_id].emplace_back(relation);
+    }
+
+    size_t filtered = 0;
+    size_t all = 0;
+    size_t no_population = 0;
+    for (auto const & item : nodeToRelations)
+    {
+      ++all;
+      size_t minIndex = 0;
+      double minArea = numeric_limits<double>::max();
+
+      for (size_t i = 0; i < item.second.size(); ++i)
+      {
+        auto const & r = item.second[i];
+        if (minArea > r.m_area)
+        {
+          minArea = r.m_area;
+          minIndex = i;
+        }
+      }
+
+      if (filterByArea)
+      {
+        size_t const population = GetPopulation(item.second[minIndex]);
+        if (population == 0)
+        {
+          ++no_population;
+          continue;
+        }
+        if (minArea > ftypes::GetRadiusByPopulation(population))
+        {
+          ++filtered;
+          continue;
+        }
+      }
+
+      AddUrl(item.second[minIndex].m_id, Type::Relation);
+    }
+
+    std::cout << "Relations with min area and admin_centre: " << all;
+    if (filterByArea)
+      std::cout << ", filtered by area: " << filtered << ", no_population: " << no_population;
+    std::cout << std::endl;
+  }
+
   void DumpUrls(size_t size)
   {
     static string kPath = "/tmp";
@@ -246,6 +406,22 @@ public:
   }
 
 private:
+
+  size_t GetPopulation(Relation const & relation)
+  {
+    size_t nodeId = 0;
+    if (relation.m_label)
+      nodeId = relation.m_label;
+    else if (relation.m_admin_centre)
+      nodeId = relation.m_admin_centre;
+    else
+      return 0;
+
+    auto const it = m_nodes.find(nodeId);
+    if (it == m_nodes.cend())
+      return 0;
+    return it->second.m_population;
+  }
 
   void AddUrl(size_t id, Type type)
   {
@@ -323,7 +499,8 @@ private:
         {
           Parse(newLine, "v=", pos, value);
           node.m_locality = FromStringMisha(value);
-        } else if (key == "population")
+        }
+        else if (key == "population")
         {
           Parse(newLine, "v=", pos, value);
           size_t const population = generator::ParsePopulationSting(value);
@@ -419,6 +596,10 @@ private:
         else if (type == "node" && role == "label")
         {
           relation.m_label = ref;
+        }
+        else if (type == "node" && role == "admin_centre")
+        {
+          relation.m_admin_centre = ref;
         }
       }
       else if (IsSubstr(*newLine, "<tag"))
@@ -530,6 +711,8 @@ UNIT_TEST(Toolsa)
 
   std::cout << std::endl;
 
-  reader.PrintTooBigRelations(Locality::Town);
+  reader.ShowSmallestRealtionsWithAdminCentre(true /* filterByArea */);
+//  reader.JoinLanduse();
+//  reader.PrintTooBigRelations(Locality::Town);
   reader.DumpUrls(100);
 }
