@@ -137,7 +137,7 @@ public:
     uint64_t pos = 0;
     if (!m_offsetsReader.GetValueByKey(id, pos))
     {
-      LOG_SHORT(LWARNING, ("Can't find offset in file", m_name + OFFSET_EXT, "by id", id));
+//      LOG_SHORT(LWARNING, ("Can't find offset in file", m_name + OFFSET_EXT, "by id", id));
       return false;
     }
 

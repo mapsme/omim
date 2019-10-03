@@ -117,6 +117,7 @@ public:
 
   explicit FileReaderMisha(string const & path) : m_path(path), m_input(m_path), m_pointOfstream("/tmp/points")
   {
+    ofstream point_fh("/tmp/cpp_points");
     CHECK(m_input.good(), (path));
   }
 
@@ -360,7 +361,7 @@ public:
       for (size_t i = 0; i < item.second.size(); ++i)
       {
         auto const & r = item.second[i];
-        if (minArea > r.m_area)
+        if (r.m_area > 1 && minArea > r.m_area)
         {
           minArea = r.m_area;
           minIndex = i;
@@ -369,17 +370,29 @@ public:
 
       if (filterByArea)
       {
-        size_t const population = GetPopulation(item.second[minIndex]);
+        auto const it = m_nodes.find(item.first);
+        if (it == m_nodes.cend())
+          continue;
+
+        size_t const population = it->second.m_population;
         if (population == 0)
         {
           ++no_population;
           continue;
         }
-        if (minArea > ftypes::GetRadiusByPopulation(population))
+
+        double r = ftypes::GetRadiusByPopulationForRouting(population);
+        if (minArea > M_PI * r *r)
         {
           ++filtered;
+          ofstream point_fh("/tmp/cpp_points", ofstream::app);
+          point_fh << setprecision(20);
+          point_fh << it->second.m_latlon.m_lat << " " << it->second.m_latlon.m_lon << " " << r << std::endl;
           continue;
         }
+
+        ofstream output("/tmp/population_to_area", ofstream::app);
+        output << item.second[minIndex].m_id << " " << minArea << " " << population << endl;
       }
 
       AddUrl(item.second[minIndex].m_id, Type::Relation);
@@ -675,7 +688,7 @@ private:
     return false;
   }
 
-  Type GetType(string const & line, size_t & pos)
+  static Type GetType(string const & line, size_t & pos)
   {
     if (IsSubstr(line, "<node"))
       return Type::Node;
@@ -705,9 +718,7 @@ UNIT_TEST(Toolsa)
   FileReaderMisha reader(path);
   boost::optional<string> line;
   while ((line = reader.GetNextLine()))
-  {
     reader.ParseLine(*line);
-  }
 
   std::cout << std::endl;
 

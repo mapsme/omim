@@ -46,6 +46,10 @@ struct MercatorBounds
 
   static double MetersToMercator(double meters) { return meters * kDegreesInMeter; }
   static double MercatorToMeters(double mercator) { return mercator * kMetersInDegree; }
+  static double MercatorSqrToMetersSqr(double mercatorSqr)
+  {
+    return mercatorSqr * kMetersInDegree * kMetersInDegree;
+  }
 
   /// @name Get rect for center point (lon, lat) and dimensions in metres.
   //@{

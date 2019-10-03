@@ -44,7 +44,9 @@ void Translator::Emit(OsmElement & element)
 {
   Preprocess(element);
   if (!m_filter->IsAccepted(element))
+  {
     return;
+  }
 
   m_tagsEnricher(element);
   m_collector->Collect(element);
@@ -53,7 +55,9 @@ void Translator::Emit(OsmElement & element)
   while (m_featureMaker->GetNextFeature(feature))
   {
     if (!m_filter->IsAccepted(feature))
+    {
       continue;
+    }
 
     m_collector->CollectFeature(feature, element);
     m_processor->Process(feature);

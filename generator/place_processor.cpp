@@ -189,6 +189,7 @@ std::vector<PlaceProcessor::PlaceWithIds> PlaceProcessor::ProcessPlaces()
   std::vector<PlaceWithIds> finalPlaces;
   for (auto & nameToGeoObjectIdToFeaturePlaces : m_nameToPlaces)
   {
+    LOG(LINFO, (nameToGeoObjectIdToFeaturePlaces.first));
     std::vector<FeaturePlace> places;
     places.reserve(nameToGeoObjectIdToFeaturePlaces.second.size());
     for (auto const & geoObjectIdToFeaturePlaces : nameToGeoObjectIdToFeaturePlaces.second)

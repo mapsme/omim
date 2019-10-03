@@ -113,6 +113,7 @@ void SerializeBoundariesTable(std::string const & path, OsmIdToBoundariesTable &
         allBoundaries.push_back(boundaries);
       });
 
+  LOG(LINFO, (allIds.size()));
   CHECK_EQUAL(allIds.size(), allBoundaries.size(), ());
 
   FileWriter sink(path);

@@ -694,6 +694,11 @@ double GetRadiusByPopulation(uint64_t p)
   return pow(static_cast<double>(p), 0.277778) * 550.0;
 }
 
+double GetRadiusByPopulationForRouting(uint64_t p)
+{
+  return pow(static_cast<double>(p), 0.192307) * 630.0;
+}
+
 uint64_t GetPopulationByRadius(double r)
 {
   return base::SignedRound(pow(r / 550.0, 3.6));
