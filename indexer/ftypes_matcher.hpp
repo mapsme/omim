@@ -29,15 +29,14 @@ namespace ftypes
 class BaseChecker
 {
 protected:
-  uint8_t const m_level;
+  size_t const m_level;
   std::vector<uint32_t> m_types;
 
-  BaseChecker(uint8_t level = 2) : m_level(level) {}
+  BaseChecker(size_t level = 2) : m_level(level) {}
   virtual ~BaseChecker() = default;
 
 public:
   virtual bool IsMatched(uint32_t type) const;
-  virtual void ForEachType(std::function<void(uint32_t)> && fn) const;
 
   bool operator()(feature::TypesHolder const & types) const;
   bool operator()(FeatureType & ft) const;
@@ -45,6 +44,12 @@ public:
   bool operator()(uint32_t type) const { return IsMatched(type); }
 
   static uint32_t PrepareToMatch(uint32_t type, uint8_t level);
+
+  template <typename TFn>
+  void ForEachType(TFn && fn) const
+  {
+    std::for_each(m_types.cbegin(), m_types.cend(), std::forward<TFn>(fn));
+  }
 };
 
 class IsPeakChecker : public BaseChecker
@@ -234,6 +239,13 @@ public:
   DECLARE_CHECKER_INSTANCE(IsTunnelChecker);
 };
 
+class IsPopularityPlaceChecker : public BaseChecker
+{
+  IsPopularityPlaceChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsPopularityPlaceChecker);
+};
+
 class IsIslandChecker : public BaseChecker
 {
   IsIslandChecker();
@@ -412,7 +424,7 @@ bool IsCityTownOrVillage(Types const & types)
 //@{
 uint64_t GetPopulation(FeatureType & ft);
 double GetRadiusByPopulation(uint64_t p);
-double GetRadiusByPopulationForRouting(uint64_t p);
+double GetRadiusByPopulationForRouting(uint64_t p, LocalityType localityType);
 uint64_t GetPopulationByRadius(double r);
 //@}
 

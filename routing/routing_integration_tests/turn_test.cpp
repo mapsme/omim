@@ -9,6 +9,7 @@
 #include "routing/routing_callbacks.hpp"
 
 #include "geometry/convex_hull.hpp"
+#include "geometry/polygon.hpp"
 
 #include <iostream>
 #include <vector>
@@ -36,16 +37,17 @@ double FindPolygonArea(std::vector<m2::PointD> const & points, bool convertToMet
     return 0.0;
 
   double result = 0.0;
+  m2::PointD const & zero = points.front();
   for (size_t i = 0; i < points.size(); ++i)
   {
     auto const & prev = i == 0 ? points.back() : points[i - 1];
     auto const & cur = points[i];
 
-    static m2::PointD const kZero = m2::PointD::Zero();
+//    static m2::PointD const kZero = m2::PointD::Zero();
     auto const prevLen =
-        convertToMeters ? MercatorBounds::DistanceOnEarth(kZero, prev) : prev.Length();
+        convertToMeters ? MercatorBounds::DistanceOnEarth(zero, prev) : prev.Length();
     auto const curLen =
-        convertToMeters ? MercatorBounds::DistanceOnEarth(kZero, cur) : cur.Length();
+        convertToMeters ? MercatorBounds::DistanceOnEarth(zero, cur) : cur.Length();
 
     if (base::AlmostEqualAbs(prevLen, 0.0, 1e-20) || base::AlmostEqualAbs(curLen, 0.0, 1e-20))
       continue;
@@ -66,6 +68,17 @@ enum class Locality
   Village,
   Undef,
 };
+
+ftypes::LocalityType ConvertFromLocality(Locality locality)
+{
+  switch (locality)
+  {
+  case Locality::City: return ftypes::LocalityType::City;
+  case Locality::Town: return ftypes::LocalityType::Town;
+  case Locality::Village: return ftypes::LocalityType::Village;
+  default: UNREACHABLE();
+  }
+}
 
 Locality FromStringMisha(string const & str)
 {
@@ -91,7 +104,7 @@ struct Node
 struct Way
 {
   size_t m_id;
-  std::vector<m2::PointD> m_points;
+  std::vector<Node> m_points;
 };
 
 struct Relation
@@ -207,7 +220,10 @@ public:
     for (auto const & item : m_ways)
     {
       auto const & way = item.second;
-      areasPrev.emplace_back(way.m_points);
+      std::vector<m2::PointD> pointsToAdd;
+      for (auto const & point : way.m_points)
+        pointsToAdd.emplace_back(point.m_point);
+      areasPrev.emplace_back(std::move(pointsToAdd));
     }
 
     for (;;)
@@ -328,7 +344,7 @@ public:
               << ", circleArea > relation.m_area:" << circleMore << std::endl;
   }
 
-  void ShowSmallestRealtionsWithAdminCentre(bool filterByArea = false)
+  void ShowSmallestRealtionsWithAdminCentre(bool filterByArea = false, Locality filter = Locality::City)
   {
     unordered_map<size_t, std::vector<Relation>> nodeToRelations;
     for (auto const & item : m_relations)
@@ -343,7 +359,7 @@ public:
         continue;
       auto const & node = it->second;
       Locality adminCentreType = node.m_locality;
-      if (adminCentreType != Locality::City)
+      if (adminCentreType != filter)
         continue;
 
       nodeToRelations[node.m_id].emplace_back(relation);
@@ -381,15 +397,23 @@ public:
           continue;
         }
 
-        double r = ftypes::GetRadiusByPopulationForRouting(population);
-        if (minArea > M_PI * r *r)
+        auto const locality = it->second.m_locality;
+        double r = ftypes::GetRadiusByPopulationForRouting(population, ConvertFromLocality(locality));
+        if (it->second.m_id == 2939672577)
+        {
+          PushDebugPoint(it->second.m_latlon, r);
+          LOG(LINFO, ("r =", r, "pir^2 =", M_PI * r *r, "minArea =", minArea));
+          auto mr = MercatorBounds::MetersToMercator(r);
+          LOG(LINFO, ("mercator_pir^2 =", M_PI * mr * mr));
+        }
+
+        if (minArea > M_PI * r * r)
         {
           ++filtered;
-          ofstream point_fh("/tmp/cpp_points", ofstream::app);
-          point_fh << setprecision(20);
-          point_fh << it->second.m_latlon.m_lat << " " << it->second.m_latlon.m_lon << " " << r << std::endl;
           continue;
         }
+
+//        PushDebugPoint(it->second.m_latlon, r);
 
         ofstream output("/tmp/population_to_area", ofstream::app);
         output << item.second[minIndex].m_id << " " << minArea << " " << population << endl;
@@ -419,6 +443,16 @@ public:
   }
 
 private:
+
+  void PushDebugPoint(ms::LatLon const & latlon, double r = 0)
+  {
+    ofstream point_fh("/tmp/cpp_points", ofstream::app);
+    point_fh << setprecision(20);
+    point_fh << latlon.m_lat << " " << latlon.m_lon;
+    if (r > 0)
+      point_fh << " " << r;
+    point_fh << std::endl;
+  }
 
   size_t GetPopulation(Relation const & relation)
   {
@@ -556,7 +590,7 @@ private:
           continue;
 
         auto const & node = it->second;
-        way.m_points.emplace_back(node.m_point);
+        way.m_points.emplace_back(node);
       }
     }
 
@@ -581,7 +615,8 @@ private:
     bool add = false;
 
     boost::optional<string> newLine;
-    std::vector<m2::PointD> points;
+    std::vector<std::vector<m2::PointD>> points;
+    std::unordered_set<uint64_t> usedNodeIds;
     while ((newLine = GetNextLine()))
     {
       if (IsSubstr(*newLine, "</relation>"))
@@ -604,7 +639,27 @@ private:
             continue;
 
           auto const & way = it->second;
-          points.insert(points.end(), way.m_points.begin(), way.m_points.end());
+          bool hasIntersection = false;
+          for (auto const & point : way.m_points)
+          {
+            if (usedNodeIds.count(point.m_id))
+            {
+              hasIntersection = true;
+              break;
+            }
+          }
+
+          if (!hasIntersection)
+          {
+            usedNodeIds.clear();
+            points.emplace_back();
+          }
+
+          for (auto const & point : way.m_points)
+          {
+            points.back().emplace_back(point.m_point);
+            usedNodeIds.emplace(point.m_id);
+          }
         }
         else if (type == "node" && role == "label")
         {
@@ -636,7 +691,35 @@ private:
       }
     }
 
-    relation.m_area = FindPolygonArea(points, true /* convertToMeters */);
+    size_t i = 0;
+    size_t best = 0;
+    for (auto const & polygon : points)
+    {
+      auto a = GetPolygonArea(polygon.begin(), polygon.end());
+      a = MercatorBounds::MercatorSqrToMetersSqr(a);
+      if (relation.m_area < a)
+      {
+        relation.m_area = a;
+        best = i;
+      }
+      ++i;
+    }
+
+    if (id == 9656805)
+    {
+      auto const & polygon = points[best];
+      LOG(LINFO, ("GetPolygonArea(polygon.begin(), polygon.end()) =", GetPolygonArea(polygon.begin(), polygon.end())));
+      LOG(LINFO, ("FindPolygonArea(polygon) =", FindPolygonArea(polygon, false), "m^2 =", FindPolygonArea(polygon)));
+      for (auto const & point : polygon)
+        PushDebugPoint(MercatorBounds::ToLatLon(point), 0.0000001);
+
+      m2::ConvexHull convexHull(polygon, 1e-9);
+      double area = 0;
+      auto const & base = polygon.front();
+      for (size_t i = 1; i < polygon.size() - 1; ++i)
+        area += MercatorBounds::AreaOnEarth(base, polygon[i], polygon[i + 1]);
+      LOG(LINFO, ("AreaOnEarth =", area));
+    }
 
     if (add)
       m_relations.emplace(id, relation);
@@ -722,7 +805,7 @@ UNIT_TEST(Toolsa)
 
   std::cout << std::endl;
 
-  reader.ShowSmallestRealtionsWithAdminCentre(true /* filterByArea */);
+  reader.ShowSmallestRealtionsWithAdminCentre(true /* filterByArea */, Locality::Town);
 //  reader.JoinLanduse();
 //  reader.PrintTooBigRelations(Locality::Town);
   reader.DumpUrls(100);

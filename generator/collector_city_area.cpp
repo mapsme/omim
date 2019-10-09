@@ -45,10 +45,10 @@ uint64_t GetPopulation(OsmElement const & element)
   return generator::ParsePopulationSting(populationStr);
 }
 
-std::vector<m2::PointD> CreateCircleGeometry(m2::PointD const & center, double r, double angleStep)
+std::vector<m2::PointD> CreateCircleGeometry(m2::PointD const & center, double r, double angleStepDegree)
 {
   std::vector<m2::PointD> result;
-  double const radStep = base::DegToRad(angleStep);
+  double const radStep = base::DegToRad(angleStepDegree);
   for (double angleRad = 0; angleRad <= 2 * M_PI; angleRad += radStep)
     result.emplace_back(center.x + r * cos(angleRad), center.y + r * sin(angleRad));
   return result;
@@ -141,13 +141,13 @@ void CityAreaCollector::Save()
     if (localityData.m_population == 0)
       continue;
 
-    double const r = ftypes::GetRadiusByPopulationForRouting(localityData.m_population);
+    double const r = ftypes::GetRadiusByPopulationForRouting(localityData.m_population, localityData.m_place);
     double const areaUpperBound = M_PI * r * r;
 
     if (minArea > areaUpperBound)
     {
       auto const circleGeometry =
-          CreateCircleGeometry(localityData.m_position, r, 1 /* angleStep */);
+          CreateCircleGeometry(localityData.m_position, r, 1.0 /* angleStepDegree */);
 
       bestFeatureBuilder.SetArea();
       bestFeatureBuilder.ResetGeometry();
