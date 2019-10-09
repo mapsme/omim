@@ -21,6 +21,7 @@
 		39B2B9701FB4680500AB85A1 /* diamond_box.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 39B2B96E1FB4680500AB85A1 /* diamond_box.hpp */; };
 		39B2B9711FB4680500AB85A1 /* diamond_box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B96F1FB4680500AB85A1 /* diamond_box.cpp */; };
 		39B2B9731FB4681400AB85A1 /* line2d.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 39B2B9721FB4681400AB85A1 /* line2d.hpp */; };
+		446531E2234DEEF3000C348F /* point3d.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 446531E1234DEEF3000C348F /* point3d.hpp */; };
 		45A2D9BE1F7526E6003310A0 /* bounding_box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45A2D9B71F7526E6003310A0 /* bounding_box.cpp */; };
 		45A2D9BF1F7526E6003310A0 /* bounding_box.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 45A2D9B81F7526E6003310A0 /* bounding_box.hpp */; };
 		45A2D9C01F7526E6003310A0 /* calipers_box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45A2D9B91F7526E6003310A0 /* calipers_box.cpp */; };
@@ -131,6 +132,7 @@
 		39B2B96E1FB4680500AB85A1 /* diamond_box.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = diamond_box.hpp; sourceTree = "<group>"; };
 		39B2B96F1FB4680500AB85A1 /* diamond_box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = diamond_box.cpp; sourceTree = "<group>"; };
 		39B2B9721FB4681400AB85A1 /* line2d.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = line2d.hpp; sourceTree = "<group>"; };
+		446531E1234DEEF3000C348F /* point3d.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = point3d.hpp; sourceTree = "<group>"; };
 		45A2D9B71F7526E6003310A0 /* bounding_box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bounding_box.cpp; sourceTree = "<group>"; };
 		45A2D9B81F7526E6003310A0 /* bounding_box.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bounding_box.hpp; sourceTree = "<group>"; };
 		45A2D9B91F7526E6003310A0 /* calipers_box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = calipers_box.cpp; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 		675344931A3F684600A0A8C3 /* geometry */ = {
 			isa = PBXGroup;
 			children = (
+				446531E1234DEEF3000C348F /* point3d.hpp */,
 				671C2D5422AFD904008B2B8B /* meter.hpp */,
 				39396ECB210B2E590054AC20 /* parametrized_segment.hpp */,
 				39B2B9721FB4681400AB85A1 /* line2d.hpp */,
@@ -391,6 +394,7 @@
 				675344D21A3F687400A0A8C3 /* screenbase.hpp in Headers */,
 				E92D8BD51C15AFAA00A98D17 /* mercator.hpp in Headers */,
 				56D5456B1C74A46D00E3719C /* algorithm.hpp in Headers */,
+				446531E2234DEEF3000C348F /* point3d.hpp in Headers */,
 				345C55F61C93140A00B6783F /* clipping.hpp in Headers */,
 				675344BF1A3F687400A0A8C3 /* avg_vector.hpp in Headers */,
 				675344D31A3F687400A0A8C3 /* simplification.hpp in Headers */,
