@@ -255,7 +255,7 @@ public:
       "аллея", "бульвар", "набережная", "переулок", "площадь", "проезд", "проспект", "шоссе", "тупик", "улица", "тракт", "ал", "бул", "наб", "пер", "пл", "пр", "просп", "ш", "туп", "ул", "тр",
 
       // English
-      "street", "avenue", "square", "road", "boulevard", "drive", "highway", "lane", "way", "circle", "st", "av", "ave", "sq", "rd", "blvd", "dr", "hwy", "ln",
+      "street", "avenue", "square", "road", "boulevard", "drive", "highway", "lane", "way", "circle", "place", "st", "av", "ave", "sq", "rd", "blvd", "dr", "hwy", "ln",
 
       // Lithuanian
       "g", "pr", "pl", "kel",
