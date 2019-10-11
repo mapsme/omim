@@ -27,27 +27,6 @@ using namespace routing;
 using namespace routing::turns;
 using namespace std;
 
-void AddPointWithRadius(ofstream & output, ms::LatLon const & latlon, double r)
-{
-  output << latlon.m_lat << " " << latlon.m_lon << " " << r << std::endl;
-}
-
-double FindPolygonAreaMeters(std::vector<m2::PointD> const & points)
-{
-  if (points.empty() || points.size() < 3)
-    return 0.0;
-
-  m2::ConvexHull convexHull(points, 1e-9);
-  auto const & convexHullPoints = convexHull.Points();
-  double area = 0.0;
-  auto const & base = convexHullPoints.front();
-  for (size_t i = 1; i < convexHullPoints.size() - 1; ++i)
-    area += MercatorBounds::AreaOnEarth(base, convexHullPoints[i], convexHullPoints[i + 1]);
-  
-  return area;
-}
-
-
 enum class Locality
 {
   City,
@@ -625,7 +604,12 @@ private:
     if (!add)
       return;
 
-    relation.m_area = FindPolygonAreaMeters(points);
+    std::vector<ms::LatLon> latlons;
+    latlons.reserve(points.size());
+    for (auto const & point : points)
+      latlons.emplace_back(MercatorBounds::ToLatLon(point));
+
+    relation.m_area = ms::AreaOnEarth(latlons);
 
     if (add)
       m_relations.emplace(id, relation);
@@ -711,8 +695,8 @@ UNIT_TEST(Toolsa)
 
   std::cout << std::endl;
 
-  reader.ShowSmallestRealtionsWithAdminCentre(true /* filterByArea */, Locality::City);
+  reader.ShowSmallestRealtionsWithAdminCentre(false /* filterByArea */, Locality::City);
 //  reader.JoinLanduse();
 //  reader.PrintTooBigRelations(Locality::Town);
-  reader.DumpUrls(100);
+  reader.DumpUrls(200);
 }

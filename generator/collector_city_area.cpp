@@ -67,6 +67,7 @@ CityAreaCollector::Clone(std::shared_ptr<cache::IntermediateDataReader> const &)
   return std::make_shared<CityAreaCollector>(GetFilename());
 }
 
+size_t relationsWithAdminCentre = 0;
 void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const & osmElement)
 {
   if (feature.IsArea() && ftypes::GetPlaceType(feature.GetTypes()) == ftypes::LocalityType::City)
@@ -83,6 +84,7 @@ void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElemen
     if (!op)
       return;
 
+    ++relationsWithAdminCentre;
     auto const adminCentreOsmId = *op;
     m_nodeOsmIdToBoundaries[adminCentreOsmId].emplace_back(feature);
     return;
@@ -102,6 +104,7 @@ void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElemen
 
 void CityAreaCollector::Finish()
 {
+  LOG(LINFO, ("relationsWithAdminCentre =", relationsWithAdminCentre));
   m_writer.reset({});
 }
 
