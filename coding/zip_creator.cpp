@@ -14,7 +14,7 @@
 #include <ctime>
 #include <vector>
 
-#include "3party/minizip/zip.h"
+#include <minizip/zip.h>
 
 using namespace std;
 

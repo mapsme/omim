@@ -34,65 +34,20 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  platform_tests_support
-  metrics_tests_support
-  search_tests_support
-  editor_tests_support
-  generator_tests_support
-  generator
-  map
-  drape_frontend
-  shaders
-  drape
-  routing
-  traffic
-  transit
-  tracking
-  routing_common
-  search
-  storage
-  metrics
-  mwm_diff
-  bsdiff
-  descriptions
-  ugc
-  partners_api
-  local_ads
-  kml
-  editor
-  indexer
-  platform
-  geometry
-  coding
   base
-
-  agg
-  expat
-  freetype
-  icu
-  jansson
-  minizip
-  oauthcpp
-  opening_hours
-  protobuf
-  pugixml
-  sdf_image
-  stb_image
-  succinct
-  tess2
-  stats_client
-  vulkan_wrapper
-  ${Qt5Widgets_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${LIBZ}
+  coding
+  drape_frontend
+  generator
+  generator_tests_support
+  geometry
+  indexer
+  map
+  metrics
+  metrics_tests_support
+  partners_api
+  platform
+  platform_tests_support
+  search
+  search_tests_support
+  storage
 )
-
-if (PLATFORM_LINUX)
-  omim_link_libraries(
-    ${PROJECT_NAME}
-    dl
-  )
-endif()
-
-link_opengl(${PROJECT_NAME})
-link_qt5_core(${PROJECT_NAME})

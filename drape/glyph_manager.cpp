@@ -1,5 +1,4 @@
 #include "drape/glyph_manager.hpp"
-#include "3party/sdf_image/sdf_image.h"
 
 #include "platform/platform.hpp"
 
@@ -18,6 +17,7 @@
 #include <utility>
 
 #include <ft2build.h>
+#include <sdf_image/sdf_image.h>
 #include FT_TYPES_H
 #include FT_SYSTEM_H
 #include FT_FREETYPE_H

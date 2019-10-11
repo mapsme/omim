@@ -9,7 +9,7 @@
 
 #include <algorithm>
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 namespace
 {

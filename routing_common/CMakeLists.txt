@@ -1,9 +1,5 @@
 project(routing_common)
 
-include_directories(
-  ${OMIM_ROOT}/3party/jansson/src
-)
-
 set(
   SRC
   bicycle_model.cpp
@@ -21,4 +17,18 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  indexer
+  platform
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+)
+
 omim_add_test_subdirectory(routing_common_tests)

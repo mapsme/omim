@@ -13,7 +13,7 @@
 
 #include "private.h"
 
-#include "3party/liboauthcpp/include/liboauthcpp/liboauthcpp.h"
+#include <liboauthcpp/liboauthcpp.h>
 
 using namespace std;
 

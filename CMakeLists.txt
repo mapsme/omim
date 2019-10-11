@@ -220,6 +220,9 @@ include_directories(
   ${CMAKE_HOME_DIRECTORY}
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Network_INCLUDE_DIRS}
+  ${OMIM_ROOT}/3party
+  ${OMIM_ROOT}/3party/utfcpp/source/utf8
+  ${OMIM_ROOT}/3party/Alohalytics/src
 )
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
@@ -255,17 +258,18 @@ add_subdirectory(3party/bsdiff-courgette)
 add_subdirectory(3party/expat)
 add_subdirectory(3party/freetype)
 add_subdirectory(3party/gflags)
+add_subdirectory(3party/glm)
 add_subdirectory(3party/icu)
 add_subdirectory(3party/jansson)
 add_subdirectory(3party/liboauthcpp)
 add_subdirectory(3party/minizip)
+add_subdirectory(3party/open-location-code)
 add_subdirectory(3party/opening_hours)
 add_subdirectory(3party/protobuf)
 add_subdirectory(3party/pugixml)
 add_subdirectory(3party/sdf_image)
 add_subdirectory(3party/stb_image)
 add_subdirectory(3party/succinct)
-add_subdirectory(3party/open-location-code)
 add_subdirectory(3party/vulkan_wrapper)
 
 if (PLATFORM_DESKTOP)

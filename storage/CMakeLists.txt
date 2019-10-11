@@ -1,7 +1,5 @@
 project(storage)
 
-include_directories(${OMIM_ROOT}/3party/jansson/src)
-
 set(
   SRC
   country.hpp
@@ -46,6 +44,23 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  mwm_diff
+  platform
+  routing_common
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+  stats_client
+)
 
 omim_add_test_subdirectory(storage_tests)
 omim_add_test_subdirectory(storage_integration_tests)

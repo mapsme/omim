@@ -9,37 +9,10 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  map
-  search_tests_support
+  base
   editor_tests_support
   generator_tests_support
-  generator
-  routing
-  routing_common
+  map
   search
-  storage
-  stats_client
-  editor
-  indexer
-  metrics
-  platform
-  mwm_diff
-  bsdiff
-  geometry
-  coding
-  base
-  oauthcpp
-  tess2
-  protobuf
-  jansson
-  succinct
-  pugixml
-  opening_hours
-  icu
-  traffic
-  ${CMAKE_DL_LIBS}
-  ${Qt5Network_LIBRARIES}
-  ${LIBZ}
+  search_tests_support
 )
-
-link_qt5_core(${PROJECT_NAME})

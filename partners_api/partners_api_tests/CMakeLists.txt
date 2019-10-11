@@ -24,29 +24,19 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  platform_tests_support
+  base
+  geometry
+  indexer
+  metrics
   metrics_tests_support
   partners_api
-  metrics
-  storage
-  indexer
   platform
-  editor
-  mwm_diff
-  bsdiff
-  geometry 
-  coding
-  base
-  jansson
-  stats_client
-  pugixml
-  protobuf
-  oauthcpp
-  opening_hours
-  icu
-  ${LIBZ}
-  ${Qt5Widgets_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
+  platform_tests_support
+  platform_tests_support
 )
 
-link_qt5_core(${PROJECT_NAME})
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+)

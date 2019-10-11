@@ -2,9 +2,10 @@
 
 #include "base/logging.hpp"
 
-#include "3party/icu/common/unicode/ubidi.h"
-#include "3party/icu/common/unicode/unistr.h"
-#include "3party/icu/common/unicode/ushape.h"
+#include "icu/common/unicode/utypes.h"
+#include "icu/common/unicode/ubidi.h"
+#include "icu/common/unicode/unistr.h"
+#include "icu/common/unicode/ushape.h"
 
 namespace bidi
 {

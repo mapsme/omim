@@ -40,6 +40,23 @@ set(
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  indexer
+  platform
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  opening_hours
+  pugixml
+  stats_client
+)
+
 omim_add_test_subdirectory(editor_tests)
 omim_add_test_subdirectory(editor_tests_support)
 omim_add_test_subdirectory(osm_auth_tests)

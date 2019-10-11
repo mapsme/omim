@@ -1,12 +1,5 @@
 project(map)
 
-include_directories(
-  ${OMIM_ROOT}/3party/protobuf/protobuf/src
-  ${OMIM_ROOT}/3party/freetype/include
-  ${OMIM_ROOT}/3party/jansson/src
-  ${OMIM_ROOT}/3party/glm
-)
-
 set(
   SRC
   ../api/src/c/api-client.c
@@ -141,6 +134,39 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  descriptions
+  drape
+  drape_frontend
+  editor
+  geometry
+  indexer
+  kml
+  local_ads
+  metrics
+  partners_api
+  platform
+  routing
+  routing_common
+  search
+  storage
+  tracking
+  traffic
+  ugc
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  opening_hours
+  jansson
+  agg
+  stats_client
+)
 
 omim_add_test_subdirectory(map_integration_tests)
 omim_add_test_subdirectory(map_tests)

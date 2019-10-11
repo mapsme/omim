@@ -4,7 +4,7 @@
 #include "platform/platform.hpp"
 #include "platform/socket.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 #include "base/logging.hpp"
 #include "base/timer.hpp"

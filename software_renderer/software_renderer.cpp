@@ -14,18 +14,18 @@
 
 #include "base/logging.hpp"
 
-#include "3party/agg/agg_bounding_rect.h"
-#include "3party/agg/agg_conv_contour.h"
-#include "3party/agg/agg_conv_curve.h"
-#include "3party/agg/agg_conv_dash.h"
-#include "3party/agg/agg_conv_stroke.h"
-#include "3party/agg/agg_ellipse.h"
-#include "3party/agg/agg_path_storage.h"
-#include "3party/agg/agg_rasterizer_scanline_aa.h"
-#include "3party/agg/agg_scanline_p.h"
-#include "3party/agg/agg_vcgen_dash.cpp"
-#include "3party/agg/agg_vcgen_stroke.cpp"
-#include "3party/stb_image/stb_image_write.h"
+#include <agg/agg_bounding_rect.h>
+#include <agg/agg_conv_contour.h>
+#include <agg/agg_conv_curve.h>
+#include <agg/agg_conv_dash.h>
+#include <agg/agg_conv_stroke.h>
+#include <agg/agg_ellipse.h>
+#include <agg/agg_path_storage.h>
+#include <agg/agg_rasterizer_scanline_aa.h>
+#include <agg/agg_scanline_p.h>
+#include <agg/agg_vcgen_dash.cpp>
+#include <agg/agg_vcgen_stroke.cpp>
+#include <stb_image/stb_image_write.h>
 
 using namespace std;
 

@@ -11,16 +11,8 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  local_ads
-  platform_tests_support
-  platform
-  coding
-  geometry
   base
-  jansson
-  oauthcpp
-  stats_client
-  ${LIBZ}
+  local_ads
+  platform
+  platform_tests_support
 )
-
-link_qt5_core(${PROJECT_NAME})

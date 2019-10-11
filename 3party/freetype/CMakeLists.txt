@@ -14,8 +14,6 @@ add_gcc_compile_options(
   "-Wno-unused-function"
 )
 
-include_directories(include)
-
 set(
   SRC
   src/autofit/afangles.c
@@ -123,3 +121,15 @@ set(
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC
+  include
+)
+
+# 3party libraries or external dependencies
+target_link_libraries(
+  ${PROJECT_NAME}
+  ${LIBZ}
+)

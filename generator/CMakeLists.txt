@@ -1,10 +1,5 @@
 project(generator)
 
-include_directories(
-  ${OMIM_ROOT}/3party/gflags/src
-  ${OMIM_ROOT}/3party/jansson/src
-)
-
 set(
   SRC
   affiliation.cpp
@@ -227,6 +222,33 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  descriptions
+  geometry
+  indexer
+  platform
+  routing
+  routing_common
+  search
+  storage
+  traffic
+  transit
+  ugc
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+  sqlite3
+  succinct
+  tess2
+  ${CMAKE_DL_LIBS}
+)
 
 omim_add_test_subdirectory(generator_tests_support)
 omim_add_test_subdirectory(generator_tests)

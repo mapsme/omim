@@ -1,7 +1,5 @@
 project(routes_builder)
 
-include_directories(${OMIM_ROOT}/3party/gflags/src)
-
 set(
   SRC
   data_source_storage.cpp
@@ -12,7 +10,17 @@ set(
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 
-add_subdirectory(routes_builder_tool)
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  indexer
+  platform
+  routing
+  routing_common
+  storage
+  traffic
+)
 
-link_qt5_core(${PROJECT_NAME})
-link_qt5_network(${PROJECT_NAME})
+add_subdirectory(routes_builder_tool)

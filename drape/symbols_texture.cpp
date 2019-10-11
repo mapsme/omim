@@ -1,5 +1,4 @@
 #include "drape/symbols_texture.hpp"
-#include "3party/stb_image/stb_image.h"
 
 #include "indexer/map_style_reader.hpp"
 
@@ -11,8 +10,10 @@
 #include "base/string_utils.hpp"
 
 #ifdef DEBUG
-#include "3party/glm/glm/gtx/bit.hpp"
+#include <glm/gtx/bit.hpp>
 #endif
+
+#include <stb_image/stb_image.h>
 
 #include <functional>
 #include <utility>

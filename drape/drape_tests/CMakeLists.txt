@@ -5,12 +5,6 @@ add_definitions(
   -DGTEST_DONT_DEFINE_TEST
 )
 
-include_directories(
-  ${OMIM_ROOT}/3party/gmock/include
-  ${OMIM_ROOT}/3party/gmock/gtest/include
-  ${OMIM_ROOT}/3party/freetype/include
-)
-
 set(
   SRC
   attribute_provides_tests.cpp
@@ -43,38 +37,28 @@ omim_add_executable(${PROJECT_NAME} ${DRAPE_COMMON_SRC} ${VULKAN_SRC} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  qt_tstfrm
+  base
+  drape
   indexer
   platform
-  coding
-  geometry
-  base
-  icu
-  expat
-  stats_client
-  freetype
-  gmock
-  stb_image
-  sdf_image
-  vulkan_wrapper
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Widgets_LIBRARIES}
-  ${LIBZ}
+  qt_tstfrm
 )
 
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  gmock
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
+)
+
+link_opengl(${PROJECT_NAME})
 link_qt5_core(${PROJECT_NAME})
 
-if (PLATFORM_MAC)
-  omim_link_libraries(
-    ${PROJECT_NAME}
-    "-framework CoreLocation"
-  )
-endif()
-
 if (PLATFORM_LINUX)
+  # 3party libraries or external dependencies
   omim_link_libraries(
     ${PROJECT_NAME}
-    dl
+    ${CMAKE_DL_LIBS}
   )
 endif()

@@ -16,7 +16,7 @@
 #include <iostream>
 #include <string>
 
-#include "3party/gflags/src/gflags/gflags.h"
+#include <gflags/gflags.h>
 
 #pragma mark Define options
 //----------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ void DrawFrame(Framework & framework,
 
   int const upperScale = scales::GetUpperScale();
 
-  framework.GetIndex().ForEachInRect([&doDraw](FeatureType & ft) { doDraw(ft); }, selectRect, min(upperScale, drawScale));
+  framework.GetDataSource().ForEachInRect([&doDraw](FeatureType & ft) { doDraw(ft); }, selectRect, std::min(upperScale, drawScale));
 
   cpuDrawer->Flush();
   //cpuDrawer->DrawMyPosition(screen.GtoP(center));

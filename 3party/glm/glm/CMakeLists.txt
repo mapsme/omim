@@ -28,8 +28,6 @@ source_group("GTX Files" FILES ${GTX_SOURCE})
 source_group("GTX Files" FILES ${GTX_INLINE})
 source_group("GTX Files" FILES ${GTX_HEADER})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
-
 if(GLM_TEST_ENABLE)
 	add_executable(${NAME} ${ROOT_TEXT}
 		${ROOT_SOURCE}    ${ROOT_INLINE}    ${ROOT_HEADER}
@@ -38,5 +36,11 @@ if(GLM_TEST_ENABLE)
 		${GTX_SOURCE}     ${GTX_INLINE}     ${GTX_HEADER})
 endif(GLM_TEST_ENABLE)
 
-#add_library(glm STATIC glm.cpp)
+add_library(glm STATIC detail/glm.cpp)
 #add_library(glm_shared SHARED glm.cpp)
+
+target_include_directories(
+  glm
+  PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
+)

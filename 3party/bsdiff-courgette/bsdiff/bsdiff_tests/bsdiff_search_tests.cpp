@@ -1,7 +1,5 @@
 #include "testing/testing.hpp"
 
-#include "base/macros.hpp"
-
 #include <cstring>
 #include <string>
 #include <vector>

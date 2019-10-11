@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include "3party/pugixml/src/pugixml.hpp"
+#include <pugixml/src/pugixml.hpp>
 
 using namespace editor;
 

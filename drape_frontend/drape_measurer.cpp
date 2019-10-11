@@ -4,9 +4,9 @@
 
 #include "geometry/mercator.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
-
 #include <iomanip>
+
+#include <Alohalytics/src/alohalytics.h>
 
 namespace df
 {

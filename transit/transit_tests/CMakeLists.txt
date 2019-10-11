@@ -12,15 +12,7 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  indexer
-  transit
-  platform
-  coding
-  geometry
   base
-  jansson
-  stats_client
-  ${LIBZ}
+  coding
+  transit
 )
-
-link_qt5_core(${PROJECT_NAME})

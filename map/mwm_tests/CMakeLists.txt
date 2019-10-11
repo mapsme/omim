@@ -8,39 +8,12 @@ set(
 )
 
 omim_add_test(${PROJECT_NAME} ${SRC})
+
 omim_link_libraries(
   ${PROJECT_NAME}
-  map
-  search
-  storage
-  kml
-  editor
-  indexer
-  metrics
-  platform
-  geometry
-  coding
   base
-  opening_hours
-  freetype
-  icu
-  agg
-  expat
-  oauthcpp
-  protobuf
-  jansson
-  succinct
-  pugixml
-  stats_client
-  ${LIBZ}
+  geometry
+  indexer
+  map
+  platform
 )
-
-link_qt5_core(${PROJECT_NAME})
-link_opengl(${PROJECT_NAME})
-
-if (PLATFORM_MAC)
-  omim_link_libraries(
-    ${PROJECT_NAME}
-    "-framework QuartzCore"
-  )
-endif()

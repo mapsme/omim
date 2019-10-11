@@ -51,15 +51,18 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  platform_tests_support
-  platform
-  coding
   base
+  coding
   geometry
-  jansson
-  minizip
-  succinct
-  stats_client
-  ${Qt5Widgets_LIBRARIES}
-  ${LIBZ}
+  platform
+  platform_tests_support
 )
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  succinct
+)
+
+# Also depends on:
+#   3party/utfcpp

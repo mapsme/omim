@@ -1,10 +1,5 @@
 project(routing)
 
-include_directories(
-  .
-  ${OMIM_ROOT}/3party/jansson/src
-)
-
 set(
   SRC
   async_router.cpp
@@ -159,6 +154,26 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  indexer
+  platform
+  routing_common
+  traffic
+  transit
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+  stats_client
+  succinct
+)
 
 if (PLATFORM_DESKTOP)
   add_subdirectory(routing_quality)

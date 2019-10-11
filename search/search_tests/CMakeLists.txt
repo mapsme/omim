@@ -1,7 +1,5 @@
 project(search_tests)
 
-include_directories(${OMIM_ROOT}/3party/jansson/src)
-
 set(
   SRC
   algos_tests.cpp
@@ -33,27 +31,13 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  search_tests_support
-  generator_tests_support
-  platform_tests_support
-  kml
-  search
-  editor
-  indexer
-  storage
-  platform
-  geometry
-  coding
   base
-  jansson
-  oauthcpp
-  opening_hours
-  protobuf
-  pugixml
-  stats_client
-  succinct
-  icu
-  ${LIBZ}
+  coding
+  generator
+  generator_tests_support
+  geometry
+  indexer
+  platform
+  platform_tests_support
+  search
 )
-
-link_qt5_core(${PROJECT_NAME})

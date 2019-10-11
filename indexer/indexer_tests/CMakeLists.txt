@@ -42,32 +42,11 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  generator_tests_support
-  search_tests_support
-  platform_tests_support
-  generator
-  search
-  routing
-  routing_common
-  indexer
-  storage
-  editor
-  platform
-  coding
-  geometry
   base
-  stats_client
-  icu
-  jansson
-  tess2
-  protobuf
-  succinct
-  opening_hours
-  oauthcpp
-  pugixml
-  traffic
-  ${CMAKE_DL_LIBS}
-  ${LIBZ}
+  coding
+  generator
+  generator_tests_support
+  geometry
+  indexer
+  platform
 )
-
-link_qt5_core(${PROJECT_NAME})

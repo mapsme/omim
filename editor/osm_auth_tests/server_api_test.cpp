@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <string>
 
-#include "3party/pugixml/src/pugixml.hpp"
+#include <pugixml/src/pugixml.hpp>
 
 using osm::ServerApi06;
 using osm::OsmOAuth;

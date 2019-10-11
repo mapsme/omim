@@ -1,13 +1,5 @@
 project(software_renderer)
 
-include_directories(
-  .
-  ${OMIM_ROOT}/3party/protobuf/protobuf/src
-  ${OMIM_ROOT}/3party/expat/lib
-  ${OMIM_ROOT}/3party/freetype/include
-  ${OMIM_ROOT}/3party/glm
-)
-
 set(
   SRC
   area_info.hpp
@@ -41,3 +33,21 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  drape
+  drape_frontend
+  geometry
+  indexer
+  platform
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  agg
+  stb_image
+)

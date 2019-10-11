@@ -1,7 +1,5 @@
 project(partners_api)
 
-include_directories(${OMIM_ROOT}/3party/jansson/src)
-
 set(
   SRC
   ads_base.cpp
@@ -62,5 +60,22 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  indexer
+  metrics
+  platform
+  storage
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+)
 
 omim_add_test_subdirectory(partners_api_tests)

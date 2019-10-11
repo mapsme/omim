@@ -21,28 +21,24 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  platform_tests_support
-  platform
-  coding
   base
-  jansson
-  minizip
-  oauthcpp
-  stats_client
-  ${LIBZ}
+  coding
+  platform
+  platform_tests_support
 )
 
-if (PLATFORM_MAC)
-  omim_link_libraries(
-    ${PROJECT_NAME}
-    ${Qt5Widgets_LIBRARIES}
-    "-framework QuartzCore"
-  )
-endif()
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+)
 
-if (PLATFORM_WIN OR PLATFORM_LINUX)
+link_qt5_core(${PROJECT_NAME})
+
+if (PLATFORM_LINUX)
+  # 3party libraries or external dependencies
   omim_link_libraries(
     ${PROJECT_NAME}
-    ${Qt5Widgets_LIBRARIES}
+    ${CMAKE_DL_LIBS}
   )
 endif()

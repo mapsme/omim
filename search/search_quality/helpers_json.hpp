@@ -7,7 +7,7 @@
 
 #include <boost/optional.hpp>
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 namespace m2
 {

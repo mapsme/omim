@@ -5,7 +5,7 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "3party/minizip/unzip.h"
+#include <minizip/unzip.h>
 
 using namespace std;
 

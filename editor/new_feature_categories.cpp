@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <utility>
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 namespace osm
 {

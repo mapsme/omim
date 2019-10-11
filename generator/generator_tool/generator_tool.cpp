@@ -67,7 +67,7 @@
 #include "build_version.hpp"
 #include "defines.hpp"
 
-#include "3party/gflags/src/gflags/gflags.h"
+#include <gflags/gflags.h>
 
 using namespace std;
 

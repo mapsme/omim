@@ -3,7 +3,7 @@
 #import "MWMCustomFacebookEvents.h"
 #import "MWMSettings.h"
 
-#import "3party/Alohalytics/src/alohalytics.h"
+#import <Alohalytics/src/alohalytics.h>
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 #import "Flurry.h"
 #import <MyTrackerSDK/MRMyTracker.h>

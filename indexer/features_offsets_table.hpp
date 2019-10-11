@@ -15,8 +15,8 @@
 #pragma clang diagnostic ignored "-Wunused-private-field"
 #endif
 
-#include "3party/succinct/elias_fano.hpp"
-#include "3party/succinct/mapper.hpp"
+#include <succinct/elias_fano.hpp>
+#include <succinct/mapper.hpp>
 
 #if defined(__clang__)
 #pragma clang diagnostic pop

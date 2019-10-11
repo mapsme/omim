@@ -15,8 +15,6 @@
 #include "map/utils.hpp"
 #include "map/viewport_search_params.hpp"
 
-#include "generator/borders.hpp"
-
 #include "routing/city_roads.hpp"
 #include "routing/index_router.hpp"
 #include "routing/online_absent_fetcher.hpp"
@@ -112,7 +110,7 @@
 #include "defines.hpp"
 #include "private.h"
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 using namespace location;
 using namespace notifications;

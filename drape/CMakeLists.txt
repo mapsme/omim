@@ -4,15 +4,6 @@ get_filename_component(DRAPE_ROOT ${PROJECT_SOURCE_DIR} ABSOLUTE)
 
 add_definitions(-DU_DISABLE_RENAMING)
 
-include_directories(
-  ${OMIM_ROOT}/3party/freetype/include
-  ${OMIM_ROOT}/3party/glm
-  ${OMIM_ROOT}/3party/icu/common
-  ${OMIM_ROOT}/3party/icu/i18n
-  ${OMIM_ROOT}/3party/Vulkan-Headers/include
-  ${OMIM_ROOT}/3party/vulkan_wrapper
-)
-
 set(
   DRAPE_COMMON_SRC
   ${DRAPE_ROOT}/attribute_buffer_mutator.cpp
@@ -176,5 +167,37 @@ append(
 )
 
 omim_add_library(${PROJECT_NAME} ${DRAPE_COMMON_SRC} ${SRC} ${VULKAN_SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  indexer
+  platform
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  freetype
+  glm
+  icu
+  sdf_image
+  stats_client
+  stb_image
+  vulkan_wrapper
+)
+
+link_opengl(${PROJECT_NAME})
+
+if (PLATFORM_MAC)
+  # 3party libraries or external dependencies
+  omim_link_libraries(
+    ${PROJECT_NAME}
+    "-framework Foundation"
+    "-framework QuartzCore"
+  )
+endif()
 
 omim_add_test_subdirectory(drape_tests)

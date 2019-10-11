@@ -2,8 +2,6 @@ project(bsdiff)
 
 add_clang_compile_options("-Wno-shorten-64-to-32")
 
-include_directories(bsdiff divsufsort)
-
 set(
   SRC
   bsdiff/bsdiff.h
@@ -17,4 +15,13 @@ set(
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC
+  bsdiff
+  divsufsort
+  .
+)
+
 omim_add_test_subdirectory(bsdiff/bsdiff_tests)

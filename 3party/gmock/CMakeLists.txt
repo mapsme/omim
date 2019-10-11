@@ -1,7 +1,5 @@
 project(gmock)
 
-include_directories(. gtest gtest/include include)
-
 set(
   SRC
   gtest/src/gtest-all.cc
@@ -37,3 +35,12 @@ set(
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC
+  . 
+  gtest 
+  gtest/include 
+  include
+)

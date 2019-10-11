@@ -11,7 +11,7 @@
 
 #include "base/string_utils.hpp"
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 #include <algorithm>
 #include <iostream>

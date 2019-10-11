@@ -13,7 +13,7 @@
 #include <string>
 #include <type_traits>
 
-#include "3party/utfcpp/source/utf8/unchecked.h"
+#include <utfcpp/source/utf8/unchecked.h>
 
 /// All methods work with strings in utf-8 format
 namespace strings

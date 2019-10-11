@@ -16,11 +16,11 @@
 
 #include "base/string_utils.hpp"
 
-#include "3party/agg/agg_rendering_buffer.h"
-#include "3party/agg/agg_pixfmt_rgba.h"
-#include "3party/agg/agg_renderer_scanline.h"
-#include "3party/agg/agg_renderer_primitives.h"
-#include "3party/agg/agg_path_storage.h"
+#include <agg/agg_rendering_buffer.h>
+#include <agg/agg_pixfmt_rgba.h>
+#include <agg/agg_renderer_scanline.h>
+#include <agg/agg_renderer_primitives.h>
+#include <agg/agg_path_storage.h>
 
 #include <cstdint>
 #include <map>
@@ -114,7 +114,7 @@ public:
 
 private:
   std::unique_ptr<GlyphCache> m_glyphCache;
-  std::map<string, m2::RectU> m_symbolsIndex;
+  std::map<std::string, m2::RectU> m_symbolsIndex;
   std::vector<uint8_t> m_symbolsSkin;
   uint32_t m_skinWidth, m_skinHeight;
 

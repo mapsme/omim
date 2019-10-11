@@ -1,9 +1,5 @@
 project(openlr)
 
-include_directories(
-  ${OMIM_ROOT}/3party/jansson/src
-)
-
 set(
   SRC
   cache_line_size.hpp
@@ -41,6 +37,19 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  geometry
+  indexer
+  platform
+  routing
+  routing_common
+  storage
+)
+
 add_subdirectory(openlr_match_quality)
 add_subdirectory(openlr_stat)
+
 omim_add_test_subdirectory(openlr_tests)

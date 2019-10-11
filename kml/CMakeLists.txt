@@ -16,5 +16,14 @@ set(
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  indexer
+  platform
+)
+
 omim_add_pybindings_subdirectory(pykmlib)
 omim_add_test_subdirectory(kml_tests)

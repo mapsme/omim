@@ -45,31 +45,16 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  map
-  routing
-  platform_tests_support
-  traffic
-  routing_common
-  transit
-  kml
-  descriptions
+  base
+  coding
+  generator
+  generator_tests_support
+  geometry
   indexer
   platform
-  geometry
-  coding
-  base
-  agg
-  jansson
-  oauthcpp
-  opening_hours
-  protobuf
-  pugixml
-  succinct
-  stats_client
-  icu
-  generator_tests_support
-
-  ${LIBZ}
+  platform_tests_support
+  routing
+  routing_common
+  traffic
+  transit
 )
-
-link_qt5_core(${PROJECT_NAME})

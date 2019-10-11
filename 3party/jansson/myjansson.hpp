@@ -1,7 +1,5 @@
 #pragma once
 
-#include "jansson_handle.hpp"
-
 #include "base/exception.hpp"
 #include "base/string_utils.hpp"
 
@@ -12,6 +10,7 @@
 
 #include <boost/optional.hpp>
 
+#include "3party/jansson/jansson_handle.hpp"
 #include "3party/jansson/src/jansson.h"
 
 namespace base

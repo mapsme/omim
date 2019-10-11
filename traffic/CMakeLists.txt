@@ -12,5 +12,20 @@ set(
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  indexer
+  platform
+  routing_common
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  stats_client
+)
+
 omim_add_pybindings_subdirectory(pytraffic)
 omim_add_test_subdirectory(traffic_tests)

@@ -39,8 +39,8 @@
 #include "base/scope_guard.hpp"
 #include "base/string_utils.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
-#include "3party/jansson/myjansson.hpp"
+#include <Alohalytics/src/alohalytics.h>
+#include <jansson/myjansson.hpp>
 
 #include <iomanip>
 #include <ios>

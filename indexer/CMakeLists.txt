@@ -1,7 +1,5 @@
 project(indexer)
 
-include_directories(${OMIM_ROOT}/3party/protobuf/protobuf/src)
-
 set(
   SRC
   altitude_loader.cpp
@@ -137,5 +135,24 @@ set(
 file(COPY ${OTHER_FILES} DESTINATION ${CMAKE_BINARY_DIR})
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  platform
+  search
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  protobuf
+  succinct
+)
+
+# Also depends on:
+#   3party/utfcpp
 
 omim_add_test_subdirectory(indexer_tests)

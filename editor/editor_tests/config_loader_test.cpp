@@ -7,7 +7,7 @@
 
 #include "base/atomic_shared_ptr.hpp"
 
-#include "3party/pugixml/src/pugixml.hpp"
+#include <pugixml/src/pugixml.hpp>
 
 namespace
 {

@@ -25,7 +25,7 @@
 #include <thread>
 #include <tuple>
 
-#include "boost/optional.hpp"
+#include <boost/optional.hpp>
 
 using namespace routing_quality;
 

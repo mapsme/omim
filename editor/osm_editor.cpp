@@ -39,9 +39,9 @@
 #include <array>
 #include <sstream>
 
-#include "3party/Alohalytics/src/alohalytics.h"
-#include "3party/opening_hours/opening_hours.hpp"
-#include "3party/pugixml/src/pugixml.hpp"
+#include <Alohalytics/src/alohalytics.h>
+#include <opening_hours/opening_hours.hpp>
+#include <pugixml/src/pugixml.hpp>
 
 using namespace std;
 

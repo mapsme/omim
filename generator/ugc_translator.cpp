@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 namespace generator
 {

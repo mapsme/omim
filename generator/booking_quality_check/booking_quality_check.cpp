@@ -27,7 +27,7 @@
 #include <numeric>
 #include <random>
 
-#include "3party/gflags/src/gflags/gflags.h"
+#include <gflags/gflags.h>
 
 #include "boost/range/adaptor/map.hpp"
 #include "boost/range/algorithm/copy.hpp"

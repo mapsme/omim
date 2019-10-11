@@ -14,3 +14,16 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  editor
+  editor_tests_support
+  generator
+  geometry
+  indexer
+  platform
+  search
+  storage
+)

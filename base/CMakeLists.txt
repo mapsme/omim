@@ -108,4 +108,7 @@ set(
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 
+# Also depends on:
+#   3party/utfcpp
+
 omim_add_test_subdirectory(base_tests)

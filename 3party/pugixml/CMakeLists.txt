@@ -1,7 +1,5 @@
 project(pugixml)
 
-include_directories(src)
-
 set(
   SRC
   src/pugiconfig.hpp
@@ -11,3 +9,9 @@ set(
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC
+  src
+)

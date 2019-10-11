@@ -9,7 +9,7 @@
 
 #include <QtWidgets/QApplication>
 
-#include "3party/gflags/src/gflags/gflags.h"
+#include <gflags/gflags.h>
 
 DEFINE_string(resources_path, "", "Path to resources directory");
 DEFINE_string(data_path, "", "Path to data directory");

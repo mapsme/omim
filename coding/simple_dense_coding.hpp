@@ -8,7 +8,7 @@
   #pragma clang diagnostic ignored "-Wunused-private-field"
 #endif
  
-#include "3party/succinct/elias_fano_compressed_list.hpp"
+#include <succinct/elias_fano_compressed_list.hpp>
  
 #if defined(__clang__)
   #pragma clang diagnostic pop

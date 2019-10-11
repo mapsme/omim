@@ -7,6 +7,10 @@ set(
 
 omim_add_test(${PROJECT_NAME} ${SRC})
 
+include_directories(
+  ${OMIM_ROOT}/3party
+)
+
 omim_link_libraries(
   ${PROJECT_NAME}
   bsdiff

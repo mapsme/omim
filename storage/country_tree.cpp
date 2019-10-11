@@ -13,7 +13,7 @@
 #include <cstdint>
 #include <utility>
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 using namespace std;
 using platform::CountryFile;

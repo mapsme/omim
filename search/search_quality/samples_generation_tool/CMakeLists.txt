@@ -1,36 +1,21 @@
 project(samples_generation_tool)
 
-include_directories(${OMIM_ROOT}/3party/gflags/src)
-
 set(SRC samples_generation_tool.cpp)
 
 omim_add_executable(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  search_quality
-  search_tests_support
-  search
-  storage
-  editor
+  base
+  geometry
   indexer
   platform
-  mwm_diff
-  bsdiff
-  geometry
-  coding
-  base
-  oauthcpp
+  search
+  search_quality
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
   gflags
-  jansson
-  protobuf
-  stats_client
-  minizip
-  succinct
-  opening_hours
-  pugixml
-  icu
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${LIBZ}
 )

@@ -43,7 +43,7 @@ FeatureProcessor::FeatureProcessor(ref_ptr<CPUDrawer> drawer,
 //  ASSERT_GREATER(m_zoom, scales::GetUpperWorldScale(), ());
 }
 
-bool FeatureProcessor::operator()(FeatureType const & f)
+bool FeatureProcessor::operator()(FeatureType & f)
 {
   FeatureData data;
   data.m_id = f.GetID();
@@ -63,7 +63,7 @@ bool FeatureProcessor::operator()(FeatureType const & f)
 
   switch (data.m_styler.m_geometryType)
   {
-  case feature::GEOM_POINT:
+  case base::Underlying(feature::GeomType::Point):
   {
     typedef one_point functor_t;
 
@@ -82,7 +82,7 @@ bool FeatureProcessor::operator()(FeatureType const & f)
     break;
   }
 
-  case feature::GEOM_AREA:
+  case base::Underlying(feature::GeomType::Area):
   {
     typedef filter_screenpts_adapter<area_tess_points> functor_t;
 
@@ -106,8 +106,7 @@ bool FeatureProcessor::operator()(FeatureType const & f)
     if (!data.m_styler.m_hasLineStyles)
       break;
   }
-
-  case feature::GEOM_LINE:
+  case base::Underlying(feature::GeomType::Line):
     {
       if (data.m_styler.m_hasPathText)
       {

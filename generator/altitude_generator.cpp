@@ -32,9 +32,9 @@
 #include <utility>
 #include <vector>
 
-#include "3party/succinct/elias_fano.hpp"
-#include "3party/succinct/mapper.hpp"
-#include "3party/succinct/rs_bit_vector.hpp"
+#include <succinct/elias_fano.hpp>
+#include <succinct/mapper.hpp>
+#include <succinct/rs_bit_vector.hpp>
 
 using namespace feature;
 

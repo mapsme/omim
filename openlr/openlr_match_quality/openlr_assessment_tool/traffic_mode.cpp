@@ -8,7 +8,7 @@
 #include "base/assert.hpp"
 #include "base/scope_guard.hpp"
 
-#include "3party/pugixml/src/utils.hpp"
+#include <pugixml/src/utils.hpp>
 
 #include <QItemSelection>
 #include <QMessageBox>

@@ -27,8 +27,8 @@
 #include <map>
 #include <utility>
 
-#include "3party/Alohalytics/src/alohalytics.h"
-#include "3party/jansson/myjansson.hpp"
+#include <Alohalytics/src/alohalytics.h>
+#include <jansson/myjansson.hpp>
 
 #include <boost/optional/optional.hpp>
 

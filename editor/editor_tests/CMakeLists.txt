@@ -20,31 +20,22 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  editor_tests_support
-  platform_tests_support
-  generator_tests_support
-  generator
-  routing
-  routing_common
-  search
-  editor
-  indexer
-  storage
-  platform
-  geometry
-  coding
   base
-  stats_client
-  opening_hours
+  editor
+  editor_tests_support
+  generator
+  generator_tests_support
+  geometry
+  indexer
+  map
+  platform
+  platform_tests_support
+  search
+  storage
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
   pugixml
-  tess2
-  jansson
-  succinct
-  icu
-  protobuf
-  oauthcpp
-  traffic
-  ${CMAKE_DL_LIBS}
-  ${LIBZ}
-  ${Qt5Widgets_LIBRARIES}
 )

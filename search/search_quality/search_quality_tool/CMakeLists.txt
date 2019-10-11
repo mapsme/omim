@@ -1,37 +1,23 @@
 project(search_quality_tool)
 
-include_directories(${OMIM_ROOT}/3party/gflags/src)
-include_directories(${OMIM_ROOT}/3party/jansson/src)
-
 set(SRC search_quality_tool.cpp)
 
 omim_add_executable(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  search_quality
-  search_tests_support
-  search
-  storage
-  editor
+  base
+  geometry
   indexer
   platform
-  mwm_diff
-  bsdiff
-  geometry
-  coding
-  base
-  oauthcpp
+  search
+  search_quality
+  search_tests_support
+  storage
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
   gflags
-  jansson
-  protobuf
-  stats_client
-  minizip
-  succinct
-  opening_hours
-  pugixml
-  icu
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${LIBZ}
 )

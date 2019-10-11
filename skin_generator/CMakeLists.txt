@@ -1,11 +1,5 @@
 project(skin_generator_tool)
 
-include_directories(
-  ${OMIM_ROOT}/3party/gflags/src
-  ${OMIM_ROOT}/3party/freetype/include
-  ${Boost_INCLUDE_DIRS}
-)
-
 set(
   SRC
   generator.cpp
@@ -21,15 +15,26 @@ omim_add_executable(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  geometry
-  coding
   base
-  freetype
-  gflags
-  Boost::boost
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Widgets_LIBRARIES}
-  ${Qt5Xml_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${LIBZ}
+  coding
+  geometry
 )
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  gflags
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Svg_LIBRARIES}
+  ${Qt5Xml_LIBRARIES}
+)
+
+link_opengl(${PROJECT_NAME})
+link_qt5_core(${PROJECT_NAME})
+
+if (PLATFORM_LINUX)
+  omim_link_libraries(
+    ${PROJECT_NAME}
+    ${CMAKE_DL_LIBS}
+  )
+endif()

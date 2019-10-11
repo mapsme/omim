@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-#include "3party/kdtree++/kdtree.hpp"
+#include <kdtree++/kdtree.hpp>
 
 namespace m4
 {

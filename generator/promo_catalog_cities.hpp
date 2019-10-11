@@ -8,7 +8,7 @@
 #include <string>
 #include <unordered_set>
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 namespace promo
 {

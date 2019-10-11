@@ -6,7 +6,7 @@
 
 #include "base/math.hpp"
 
-#include "3party/glm/glm/gtx/bit.hpp"
+#include <glm/gtx/bit.hpp>
 
 namespace dp
 {

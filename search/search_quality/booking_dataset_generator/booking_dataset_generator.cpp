@@ -33,7 +33,7 @@
 #include <string>
 #include <vector>
 
-#include "3party/gflags/src/gflags/gflags.h"
+#include <gflags/gflags.h>
 
 #include "defines.hpp"
 

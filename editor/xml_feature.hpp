@@ -12,7 +12,7 @@
 #include <iostream>
 #include <vector>
 
-#include "3party/pugixml/src/pugixml.hpp"
+#include <pugixml/src/pugixml.hpp>
 
 namespace osm
 {

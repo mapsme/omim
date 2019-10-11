@@ -171,6 +171,27 @@ set(
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  editor
+  geometry
+  indexer
+  kml
+  platform
+  storage
+  ugc
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  opening_hours
+  openlocationcode
+  stats_client
+)
+
 if (PLATFORM_DESKTOP)
   add_subdirectory(search_quality)
   add_subdirectory(search_tests_support)
@@ -179,7 +200,3 @@ omim_add_pybindings_subdirectory(pysearch)
 omim_add_test_subdirectory(search_tests)
 omim_add_test_subdirectory(search_integration_tests)
 
-target_link_libraries(
-  ${PROJECT_NAME}
-  openlocationcode
-)

@@ -13,7 +13,7 @@
 
 #include <algorithm>
 
-#include "3party/succinct/mapper.hpp"
+#include <succinct/mapper.hpp>
 
 using namespace std;
 

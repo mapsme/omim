@@ -10,13 +10,9 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  tracking
+  base
+  coding
   platform
   platform_tests_support
-  coding
-  base
-  geometry
-  stats_client
-  ${LIBZ}
-  ${Qt5Widgets_LIBRARIES}
+  tracking
 )

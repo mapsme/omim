@@ -7,12 +7,6 @@ QT5_ADD_RESOURCES(RES_SOURCES res/resources.qrc)
 
 set_property(SOURCE qrc_resources.cpp PROPERTY SKIP_AUTOGEN ON)
 
-include_directories(
-  ${OMIM_ROOT}/3party/glm
-  ${OMIM_ROOT}/3party/gflags/src
-  ${OMIM_ROOT}/3party/jansson/src
-)
-
 set(
   SRC
   about.cpp
@@ -66,64 +60,42 @@ omim_add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RES_SOURCES} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  qt_common
-  map
+  base
+  coding
+  drape
   drape_frontend
-  shaders
+  editor
   generator
+  geometry
+  indexer
+  kml
+  map
+  platform
+  qt_common
   routing
   search
   storage
-  mwm_diff
-  bsdiff
-  tracking
-  traffic
-  routing_common
-  transit
-  descriptions
-  ugc
-  drape
-  partners_api
-  local_ads
-  kml
-  editor
-  indexer
-  metrics
-  platform
-  geometry
-  coding
-  base
-  freetype
-  expat
-  gflags
-  icu
-  agg
-  jansson
-  protobuf
-  stats_client
-  minizip
-  succinct
-  pugixml
-  oauthcpp
-  opening_hours
-  stb_image
-  sdf_image
-  vulkan_wrapper
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${Qt5Widgets_LIBRARIES}
-  ${LIBZ}
 )
 
-if (PLATFORM_LINUX)
-  omim_link_libraries(
-    ${PROJECT_NAME}
-    dl
-  )
-endif()
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  gflags
+  jansson
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
+)
 
 link_opengl(${PROJECT_NAME})
 link_qt5_core(${PROJECT_NAME})
+
+if (PLATFORM_LINUX)
+  # 3party libraries or external dependencies
+  omim_link_libraries(
+    ${PROJECT_NAME}
+    ${CMAKE_DL_LIBS}
+  )
+endif()
 
 if (BUILD_DESIGNER)
   set(BUNDLE_NAME "MAPS.ME.Designer")
@@ -220,15 +192,6 @@ elseif(PLATFORM_LINUX)
 endif()
 
 if (PLATFORM_MAC)
-  target_link_libraries(
-    ${PROJECT_NAME}
-    "-framework Foundation"
-    "-framework CoreLocation"
-    "-framework CoreWLAN"
-    "-framework SystemConfiguration"
-    "-framework CFNetwork"
-  )
-
   if (NOT APP_VERSION)
     set(BUNDLE_VERSION "UNKNOWN")
   else()

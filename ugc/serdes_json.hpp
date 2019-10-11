@@ -4,7 +4,7 @@
 
 #include "base/exception.hpp"
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 #include <cstdint>
 #include <cstdlib>

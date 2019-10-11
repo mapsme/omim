@@ -1,10 +1,5 @@
 project(feature_segments_checker)
 
-include_directories(
-  ${OMIM_ROOT}/3party/gflags/src
-  ${OMIM_ROOT}/3party/jansson/src
-)
-
 set(
   SRC
   feature_segments_checker.cpp
@@ -14,23 +9,16 @@ omim_add_executable(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
+  base
   generator
-  routing
-  traffic
-  routing_common
+  geometry
   indexer
   platform
-  geometry
-  coding
-  base
-  gflags
-  icu
-  jansson
-  minizip
-  oauthcpp
-  protobuf
-  stats_client
-  ${LIBZ}
+  routing_common
 )
 
-link_qt5_core(${PROJECT_NAME})
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  gflags
+)

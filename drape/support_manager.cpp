@@ -6,13 +6,13 @@
 
 #include "base/logging.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
-
 #include "std/target_os.hpp"
 
 #include <algorithm>
 #include <string>
 #include <vector>
+
+#include <Alohalytics/src/alohalytics.h>
 
 namespace dp
 {

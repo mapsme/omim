@@ -52,14 +52,6 @@ function(omim_add_executable executable)
   endif()
 endfunction()
 
-function(omim_add_library library)
-  add_library(${library} ${ARGN})
-  add_dependencies(${library} BuildVersion)
-  if (USE_PCH)
-    add_precompiled_headers_to_target(${library} ${OMIM_PCH_TARGET_NAME})
-  endif()
-endfunction()
-
 function(omim_add_test executable)
   if (NOT SKIP_TESTS)
     omim_add_executable(
@@ -67,6 +59,30 @@ function(omim_add_test executable)
       ${ARGN}
       ${OMIM_ROOT}/testing/testingmain.cpp
      )
+  endif()
+
+  # 3party libraries or external dependencies
+  omim_link_libraries(
+    ${executable}
+    ${Qt5Gui_LIBRARIES}
+    ${Qt5Widgets_LIBRARIES}
+  )
+
+  link_qt5_core(${executable})
+  if (PLATFORM_LINUX)
+    # 3party libraries or external dependencies
+    omim_link_libraries(
+      ${executable}
+      ${CMAKE_DL_LIBS}
+    )
+  endif()
+endfunction()
+
+function(omim_add_library library)
+  add_library(${library} ${ARGN})
+  add_dependencies(${library} BuildVersion)
+  if (USE_PCH)
+    add_precompiled_headers_to_target(${library} ${OMIM_PCH_TARGET_NAME})
   endif()
 endfunction()
 
@@ -86,25 +102,9 @@ function(omim_add_pybindings_subdirectory subdir)
   endif()
 endfunction()
 
-function(omim_link_platform_deps target)
-  if ("${ARGN}" MATCHES "platform")
-    if (PLATFORM_MAC)
-      target_link_libraries(
-        ${target}
-        "-framework CFNetwork"
-        "-framework Foundation"
-        "-framework IOKit"
-        "-framework SystemConfiguration"
-        "-framework Security"
-      )
-    endif()
-  endif()
-endfunction()
-
 function(omim_link_libraries target)
   if (TARGET ${target})
     target_link_libraries(${target} ${ARGN} ${CMAKE_THREAD_LIBS_INIT})
-    omim_link_platform_deps(${target} ${ARGN})
   else()
     message("~> Skipping linking the libraries to the target ${target} as it"
             " does not exist")

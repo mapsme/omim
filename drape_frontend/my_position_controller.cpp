@@ -13,13 +13,13 @@
 
 #include "base/math.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
-
 #include <algorithm>
 #include <chrono>
 #include <string>
 #include <vector>
 #include <utility>
+
+#include <Alohalytics/src/alohalytics.h>
 
 namespace df
 {

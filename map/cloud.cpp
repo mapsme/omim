@@ -22,7 +22,7 @@
 #include <chrono>
 #include <sstream>
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 #include "private.h"
 

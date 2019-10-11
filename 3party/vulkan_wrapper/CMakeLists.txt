@@ -5,8 +5,6 @@ add_gcc_compile_options("-Wno-deprecated-declarations")
 
 set(CMAKE_PREFIX_PATH ./)
 
-include_directories(../Vulkan-Headers/include)
-
 set(
   SRC
   vulkan_wrapper.cpp
@@ -14,3 +12,10 @@ set(
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC
+  ../Vulkan-Headers/include
+  .
+)

@@ -5,14 +5,14 @@
 
 #include <algorithm>
 
-#include "3party/agg/agg_conv_curve.h"
-#include "3party/agg/agg_conv_stroke.h"
-#include "3party/agg/agg_path_storage.h"
-#include "3party/agg/agg_pixfmt_rgba.h"
-#include "3party/agg/agg_rasterizer_scanline_aa.h"
-#include "3party/agg/agg_renderer_primitives.h"
-#include "3party/agg/agg_renderer_scanline.h"
-#include "3party/agg/agg_scanline_p.h"
+#include <agg/agg_conv_curve.h>
+#include <agg/agg_conv_stroke.h>
+#include <agg/agg_path_storage.h>
+#include <agg/agg_pixfmt_rgba.h>
+#include <agg/agg_rasterizer_scanline_aa.h>
+#include <agg/agg_renderer_primitives.h>
+#include <agg/agg_renderer_scanline.h>
+#include <agg/agg_scanline_p.h>
 
 using namespace std;
 

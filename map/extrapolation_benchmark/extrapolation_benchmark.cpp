@@ -22,8 +22,8 @@
 #include <utility>
 #include <vector>
 
-#include "3party/gflags/src/gflags/gflags.h"
-#include "3party/gflags/src/gflags/gflags_declare.h"
+#include <gflags/gflags.h>
+#include <gflags/gflags_declare.h>
 
 // This tool is written to estimate quality of location extrapolation. To launch the benchmark
 // you need tracks in csv file with the format described below. To generate the csv file

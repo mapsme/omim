@@ -12,7 +12,7 @@
 #include <memory>
 #include <queue>
 
-#include "3party/libtess2/Include/tesselator.h"
+#include <libtess2/Include/tesselator.h>
 
 namespace tesselator
 {

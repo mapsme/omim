@@ -16,7 +16,7 @@
 #include <map>
 #include <string>
 
-#include "3party/gflags/src/gflags/gflags.h"
+#include <gflags/gflags.h>
 
 using namespace routing;
 using namespace std;

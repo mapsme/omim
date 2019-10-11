@@ -13,7 +13,7 @@
 #include <string>
 #include <utility>
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 #include "private.h"
 

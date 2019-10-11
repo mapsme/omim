@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <sstream>
 
-#include "3party/pugixml/src/pugixml.hpp"
+#include <pugixml/src/pugixml.hpp>
 
 namespace
 {

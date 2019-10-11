@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 
-#include "3party/succinct/elias_fano.hpp"
+#include <succinct/elias_fano.hpp>
 
 class DataSource;
 

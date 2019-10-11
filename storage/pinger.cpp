@@ -8,7 +8,7 @@
 #include "base/stl_helpers.hpp"
 #include "base/thread_pool_delayed.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 #include <sstream>
 #include <utility>

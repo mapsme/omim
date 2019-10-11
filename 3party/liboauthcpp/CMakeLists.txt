@@ -1,7 +1,5 @@
 project(oauthcpp)
 
-include_directories(include src)
-
 add_clang_compile_options("-Wno-shorten-64-to-32")
 
 set(
@@ -15,3 +13,10 @@ set(
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC
+  include
+  src
+)

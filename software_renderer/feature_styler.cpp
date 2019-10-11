@@ -6,6 +6,7 @@
 
 #include "indexer/drawing_rules.hpp"
 #include "indexer/feature.hpp"
+#include "indexer/feature_data.hpp"
 #include "indexer/feature_visibility.hpp"
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/scales.hpp"
@@ -50,7 +51,7 @@ void DrawRule::SetID(size_t threadSlot, uint32_t id) const
   m_rule->SetID(threadSlot, id);
 }
 
-FeatureStyler::FeatureStyler(FeatureType const & f,
+FeatureStyler::FeatureStyler(FeatureType & f,
                              int const zoom,
                              double const visualScale,
                              GlyphCache * glyphCache,
@@ -63,7 +64,7 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
     m_rect(rect)
 {
   drule::KeysT keys;
-  std::pair<int, bool> type = feature::GetDrawRule(f, zoom, keys);
+  std::pair<int, bool> type = feature::GetDrawRule(feature::TypesHolder(f), zoom, keys);
 
   // don't try to do anything to invisible feature
   if (keys.empty())
@@ -109,11 +110,11 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
   else
   {
     double const upperBound = 3.0E6;
-    m_popRank = min(upperBound, population) / upperBound / 4;
+    m_popRank = std::min(upperBound, population) / upperBound / 4;
   }
 
   double area = 0.0;
-  if (m_geometryType != feature::GEOM_POINT)
+  if (m_geometryType != base::Underlying(feature::GeomType::Point))
   {
     m2::RectD const bbox = f.GetLimitRect(zoom);
     area = bbox.SizeX() * bbox.SizeY();
@@ -123,7 +124,7 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
   if (area != 0)
   {
     // making area larger so it's not lost on double conversions
-    priorityModifier = min(1.0, area * 10000.0);
+    priorityModifier = std::min(1.0, area * 10000.0);
   }
   else
   {
@@ -179,7 +180,7 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
       // show labels of larger objects first
       depth += priorityModifier;
       // show labels of nodes first
-      if (m_geometryType == feature::GEOM_POINT)
+      if (m_geometryType == base::Underlying(feature::GeomType::Point))
         ++depth;
     }
     else if (keys[i].m_type == drule::area)
@@ -199,12 +200,12 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
     CaptionDefProto const * pCap0 = m_rules[i].m_rule->GetCaption(0);
     if (pCap0)
     {
-      if (!m_hasPathText && hasName && (m_geometryType == feature::GEOM_LINE))
+      if (!m_hasPathText && hasName && (m_geometryType == base::Underlying(feature::GeomType::Line)))
       {
         m_hasPathText = true;
 
         if (!FilterTextSize(m_rules[i].m_rule))
-          m_fontSize = max(m_fontSize, GetTextFontSize(m_rules[i].m_rule));
+          m_fontSize = std::max(m_fontSize, GetTextFontSize(m_rules[i].m_rule));
       }
 
       if (keys[i].m_type == drule::caption)
@@ -213,7 +214,7 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
   }
 
   // User's language name is better if we don't have secondary text draw rule.
-  if (!hasSecondaryText && !m_secondaryText.empty() && (m_geometryType != feature::GEOM_LINE))
+  if (!hasSecondaryText && !m_secondaryText.empty() && (m_geometryType != base::Underlying(feature::GeomType::Line)))
   {
     f.GetReadableName(m_primaryText);
     if (m_primaryText == m_secondaryText)
@@ -223,7 +224,7 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
   // Get or concat house number if feature has one.
   if (!houseNumber.empty())
   {
-    if (m_primaryText.empty() || houseNumber.find(m_primaryText) != string::npos)
+    if (m_primaryText.empty() || houseNumber.find(m_primaryText) != std::string::npos)
       houseNumber.swap(m_primaryText);
     else
       m_primaryText = m_primaryText + " (" + houseNumber + ")";
@@ -263,12 +264,12 @@ FeatureStyler::FeatureStyler(FeatureType const & f,
     }
   }
 
-  sort(m_rules.begin(), m_rules.end(), less_depth());
+  std::sort(m_rules.begin(), m_rules.end(), less_depth());
 }
 
 typedef std::pair<double, double> RangeT;
 template <class IterT> class RangeIterT :
-    public boost::iterator_facade<RangeIterT<IterT>, RangeT, forward_traversal_tag, RangeT>
+    public boost::iterator_facade<RangeIterT<IterT>, RangeT, boost::forward_traversal_tag, RangeT>
 {
   IterT m_iter;
 public:
@@ -307,7 +308,7 @@ void FeatureStyler::LayoutTexts(double pathLength)
 {
   double const textLength = m_glyphCache->getTextLength(m_fontSize, GetPathName());
   /// @todo Choose best constant for minimal space.
-  double const emptySize = max(200 * m_visualScale, textLength);
+  double const emptySize = std::max(200 * m_visualScale, textLength);
   // multiply on factor because tiles will be rendered in smaller scales
   double const minPeriodSize = 1.5 * (emptySize + textLength);
 
@@ -332,7 +333,7 @@ void FeatureStyler::LayoutTexts(double pathLength)
       if (deadZoneStart > m_intervals.back())
         break;
 
-      deadZones.push_back(make_pair(deadZoneStart, deadZoneEnd));
+      deadZones.push_back(std::make_pair(deadZoneStart, deadZoneEnd));
     }
 
     if (!deadZones.empty())
@@ -341,9 +342,9 @@ void FeatureStyler::LayoutTexts(double pathLength)
 
       // accumulate text layout intervals with cliping intervals
       typedef RangeIterT<ClipIntervalsT::iterator> IterT;
-      AccumulateIntervals1With2(IterT(m_intervals.begin()), IterT(m_intervals.end()),
-                                deadZones.begin(), deadZones.end(),
-                                RangeInserter<ClipIntervalsT>(res));
+      base::AccumulateIntervals1With2(IterT(m_intervals.begin()), IterT(m_intervals.end()),
+                                      deadZones.begin(), deadZones.end(),
+                                      RangeInserter<ClipIntervalsT>(res));
 
       m_intervals = res;
       ASSERT_EQUAL(m_intervals.size() % 2, 0, ());
@@ -377,7 +378,7 @@ void FeatureStyler::LayoutTexts(double pathLength)
   }
 }
 
-string const FeatureStyler::GetPathName() const
+std::string const FeatureStyler::GetPathName() const
 {
   // Always concat names for linear features because we process only one draw rule now.
   if (m_secondaryText.empty())

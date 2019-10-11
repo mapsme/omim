@@ -1,7 +1,5 @@
 project(search_quality)
 
-include_directories(${OMIM_ROOT}/3party/jansson/src)
-
 set(SRC
   helpers.cpp
   helpers.hpp
@@ -14,6 +12,24 @@ set(SRC
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+  indexer
+  platform
+  search
+  search_tests_support
+  storage
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+)
 
 if (NOT SKIP_DESKTOP)
   add_subdirectory(assessment_tool)

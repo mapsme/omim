@@ -34,7 +34,7 @@
 
 #include "defines.hpp"
 
-#include "3party/jansson/src/jansson.h"
+#include <jansson/myjansson.hpp>
 
 using namespace generator;
 using namespace platform;

@@ -6,12 +6,12 @@
 #include "base/macros.hpp"
 #include "base/mem_trie.hpp"
 
-#include "3party/utfcpp/source/utf8/unchecked.h"
-
 #include <algorithm>
 #include <memory>
 #include <queue>
 #include <vector>
+
+#include <utfcpp/source/utf8/unchecked.h>
 
 using namespace std;
 using namespace strings;

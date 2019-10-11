@@ -1,36 +1,22 @@
 project(booking_dataset_generator)
 
-include_directories(${OMIM_ROOT}/3party/gflags/src)
-
 set(SRC booking_dataset_generator.cpp)
 
 omim_add_executable(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  search_quality
-  search_tests_support
-  search
-  storage
-  editor
+  base
+  geometry
   indexer
   platform
-  mwm_diff
-  bsdiff
-  geometry
-  coding
-  base
-  oauthcpp
+  search
+  search_quality
+  storage
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
   gflags
-  jansson
-  protobuf
-  stats_client
-  minizip
-  succinct
-  opening_hours
-  pugixml
-  icu
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${LIBZ}
 )

@@ -12,7 +12,7 @@
 #include "base/geo_object_id.hpp"
 #include "base/visitor.hpp"
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 #include <cstdint>
 #include <cstring>

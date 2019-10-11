@@ -32,7 +32,7 @@ struct DrawRule
 struct FeatureStyler
 {
   FeatureStyler() = default;
-  FeatureStyler(FeatureType const & f,
+  FeatureStyler(FeatureType & f,
                 int const zoom,
                 double const visualScale,
                 GlyphCache * glyphCache,
@@ -50,9 +50,9 @@ struct FeatureStyler
 
   double m_visualScale;
 
-  string m_primaryText;
-  string m_secondaryText;
-  string m_refText;
+  std::string m_primaryText;
+  std::string m_secondaryText;
+  std::string m_refText;
 
   typedef buffer_vector<double, 16> ClipIntervalsT;
   ClipIntervalsT m_intervals;
@@ -70,7 +70,7 @@ struct FeatureStyler
 
   bool IsEmpty() const;
 
-  string const GetPathName() const;
+  std::string const GetPathName() const;
 
   bool FilterTextSize(drule::BaseRule const * pRule) const;
 

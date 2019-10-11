@@ -10,19 +10,13 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  editor
-  indexer
-  platform
-  platform_tests_support
-  geometry
-  coding
   base
+  editor
+  geometry
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
   pugixml
-  protobuf
-  jansson
-  icu
-  oauthcpp
-  stats_client
-  ${LIBZ}
-  ${Qt5Widgets_LIBRARIES}
 )

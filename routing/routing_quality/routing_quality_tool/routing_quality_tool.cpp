@@ -17,7 +17,7 @@
 #include <utility>
 #include <vector>
 
-#include "3party/gflags/src/gflags/gflags.h"
+#include <gflags/gflags.h>
 
 DEFINE_string(mapsme_old_results, "", "Path to directory with previous mapsme router results.");
 DEFINE_string(mapsme_results, "", "Path to directory with mapsme router results.");

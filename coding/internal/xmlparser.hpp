@@ -11,7 +11,7 @@
 #include <string>
 
 #define XML_STATIC
-#include "3party/expat/expat_impl.h"
+#include <expat/expat_impl.h>
 
 #if defined(__clang__)
 #pragma clang diagnostic pop

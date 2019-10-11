@@ -1,7 +1,5 @@
 project(ugc_tests)
 
-include_directories(${OMIM_ROOT}/3party/jansson/src)
-
 option(UGC_MIGRATION "Build migration file for ugc" OFF)
 
 set(
@@ -28,31 +26,18 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  generator_tests_support
-  generator
-  search
-  routing
-  routing_common
-  ugc
-  editor
-  indexer
-  storage
-  platform
-  platform_tests_support
-  coding
-  geometry
   base
-  icu
-  jansson
-  stats_client
-  pugixml
-  tess2
-  protobuf
-  succinct
-  opening_hours
-  oauthcpp
-  traffic
-  ${CMAKE_DL_LIBS}
-  ${LIBZ}
+  coding
+  generator
+  generator_tests_support
+  indexer
+  platform
+  storage
+  ugc
 )
-link_qt5_core(${PROJECT_NAME})
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+)

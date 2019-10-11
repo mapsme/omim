@@ -15,3 +15,17 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  editor
+  generator
+  geometry
+  indexer
+  platform
+  routing
+  routing_common
+  storage
+)

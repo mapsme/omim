@@ -62,4 +62,13 @@ set(
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+)
+
+# Also depends on:
+#   3party/robust
+#   3party/kdtree++
+
 omim_add_test_subdirectory(geometry_tests)

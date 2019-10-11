@@ -21,7 +21,7 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "3party/jansson/myjansson.hpp"
+#include <jansson/myjansson.hpp>
 
 #include <functional>
 #include <memory>

@@ -51,45 +51,17 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  generator_tests_support
-  platform_tests_support
-  generator
-  routing
-  search
-  storage
-  traffic
-  routing_common
+  base
+  coding
   descriptions
-  transit
-  editor
+  generator
+  generator_tests_support
+  geometry
   indexer
   platform
-  geometry
-  coding
-  base
-  expat
-  icu
-  jansson
-  protobuf
-  stats_client
-  minizip
-  succinct
-  pugixml
-  tess2
-  gflags
-  oauthcpp
-  opening_hours
+  platform_tests_support
+  routing
+  routing_common
   ugc
-  # TODO(syershov): Use FindPackage.
-  sqlite3
-  ${LIBZ}
 )
 
-if (PLATFORM_LINUX)
-  omim_link_libraries(
-    ${PROJECT_NAME}
-    dl
-  )
-endif()
-
-link_qt5_core(${PROJECT_NAME})

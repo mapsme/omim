@@ -5,7 +5,7 @@
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
 
-#include "3party/gflags/src/gflags/gflags.h"
+#include <gflags/gflags.h>
 
 #include <string>
 

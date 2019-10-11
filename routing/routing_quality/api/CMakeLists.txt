@@ -17,22 +17,10 @@ omim_add_library(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  routing
-  traffic
-  routing_common
-  transit
-  storage
-  indexer
-  platform
-  mwm_diff
-  bsdiff
-  geometry
-  coding
   base
-  icu
-  jansson
-  oauthcpp
-  protobuf
-  stats_client
-  ${LIBZ}
+  coding
+  geometry
+  platform
+  routing
+  routing_quality
 )

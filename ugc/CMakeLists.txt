@@ -1,10 +1,5 @@
 project(ugc)
 
-include_directories(
-  ${OMIM_ROOT}/3party/jansson/src
-  ${OMIM_ROOT}/Alohalytics/src
-)
-
 set(
   SRC
   api.cpp
@@ -28,4 +23,22 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  editor
+  geometry
+  indexer
+  platform
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+  stats_client
+)
+
 omim_add_test_subdirectory(ugc_tests)

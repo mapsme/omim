@@ -2,16 +2,8 @@ project(coding)
 
 add_definitions(-DU_DISABLE_RENAMING)
 
-include_directories(
-  ${OMIM_ROOT}/coding
-  ${OMIM_ROOT}/3party/expat
-  ${OMIM_ROOT}/3party/icu/common
-  ${OMIM_ROOT}/3party/icu/i18n
-)
-
 set(
   SRC
-  ${OMIM_ROOT}/3party/expat/expat_impl.h
   base64.cpp
   base64.hpp
   bit_streams.hpp
@@ -99,5 +91,23 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  geometry
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  expat
+  icu
+  jansson
+  minizip
+  oauthcpp
+  succinct
+  ${LIBZ}
+)
 
 omim_add_test_subdirectory(coding_tests)

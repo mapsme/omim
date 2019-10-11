@@ -28,7 +28,7 @@
 
 #include <limits>
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 using namespace downloader;
 using namespace generator::mwm_diff;

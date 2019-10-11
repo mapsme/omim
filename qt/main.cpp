@@ -18,8 +18,8 @@
 #include <cstdlib>
 #include <sstream>
 
-#include "3party/Alohalytics/src/alohalytics.h"
-#include "3party/gflags/src/gflags/gflags.h"
+#include <Alohalytics/src/alohalytics.h>
+#include <gflags/gflags.h>
 
 #include <QtCore/QDir>
 #include <QtWidgets/QMessageBox>

@@ -18,41 +18,20 @@ set(
 
 omim_add_test(${PROJECT_NAME} ${SRC})
 
-if (PLATFORM_MAC)
-  omim_link_libraries(
-    ${PROJECT_NAME}
-    ${Qt5Widgets_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-  )
-endif()
-
 omim_link_libraries(
   ${PROJECT_NAME}
-  qt_tstfrm
-  shaders
+  base
   drape
   platform
-  indexer
-  geometry
-  coding
-  base
-  expat
-  stats_client
-  freetype
-  stb_image
-  sdf_image
-  icu
-  vulkan_wrapper
-  ${LIBZ}
+  qt_tstfrm
+  shaders
 )
+
+link_qt5_core(${PROJECT_NAME})
 
 if (PLATFORM_LINUX)
   omim_link_libraries(
     ${PROJECT_NAME}
-    dl
+    ${CMAKE_DL_LIBS}
   )
 endif()
-
-link_opengl(${PROJECT_NAME})
-link_qt5_core(${PROJECT_NAME})

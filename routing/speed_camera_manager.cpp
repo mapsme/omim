@@ -2,7 +2,7 @@
 
 #include "routing/speed_camera.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 #include <cmath>
 

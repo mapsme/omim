@@ -1,7 +1,5 @@
 project(jansson)
 
-include_directories(src ../../)
-
 set(
   SRC
   jansson_handle.cpp
@@ -30,3 +28,11 @@ set(
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC
+  ../../
+  ../../3party
+  src
+)

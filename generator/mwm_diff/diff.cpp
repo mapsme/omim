@@ -17,7 +17,7 @@
 #include <iterator>
 #include <vector>
 
-#include "3party/bsdiff-courgette/bsdiff/bsdiff.h"
+#include <bsdiff/bsdiff.h>
 
 using namespace std;
 

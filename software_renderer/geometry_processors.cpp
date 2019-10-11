@@ -1,11 +1,13 @@
 #include "software_renderer/geometry_processors.hpp"
 
+#include "base/logging.hpp"
+
 #include <functional>
 
 namespace software_renderer
 {
 base_screen::base_screen(params const & p)
-  : base(p)
+  : gp_base(p)
 {
   m_convertor->GtoP(*p.m_rect, m_rect);
 }
@@ -52,7 +54,7 @@ void get_path_intervals::operator()(m2::PointD const & pt)
       }
       else
       {
-        if (base::AlmostEqualULPs(m_intervals->back(), clipStart))
+        if (::base::AlmostEqualULPs(m_intervals->back(), clipStart))
           m_intervals->back() = clipEnd;
         else
         {
@@ -109,7 +111,7 @@ void cut_path_intervals::operator()(m2::PointD const & pt)
         push_point(m_prev + dir * (end - m_length));
 #ifdef DEBUG
         double const len = m_points.back().GetLength();
-        ASSERT_LESS_OR_EQUAL ( fabs(len - (end - start)), 1.0E-4, (len, end - start) );
+        ASSERT_LESS_OR_EQUAL ( std::fabs(len - (end - start)), 1.0E-4, (len, end - start) );
 #endif
       }
     }

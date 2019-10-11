@@ -1,7 +1,5 @@
 project(platform)
 
-include_directories(${OMIM_ROOT}/3party/jansson/src ${OMIM_ROOT}/platform)
-
 set(CMAKE_AUTOMOC ON)
 
 set(
@@ -151,12 +149,46 @@ add_subdirectory(platform_tests_support)
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 
+omim_link_libraries(
+  ${PROJECT_NAME}
+  base
+  coding
+  geometry
+)
+
+# 3party libraries or external dependencies
+omim_link_libraries(
+  ${PROJECT_NAME}
+  jansson
+  stats_client
+)
+
+link_qt5_core(${PROJECT_NAME})
+
 if (APPLE)
   target_compile_options(${PROJECT_NAME} PUBLIC "-fobjc-arc")
 endif()
 
 if (PLATFORM_LINUX)
+  # 3party libraries or external dependencies
+  omim_link_libraries(
+    ${PROJECT_NAME}
+    ${CMAKE_DL_LIBS}
+  )
+
   link_qt5_network(${PROJECT_NAME})
+elseif (PLATFORM_MAC)
+  # 3party libraries or external dependencies
+  omim_link_libraries(
+    ${PROJECT_NAME}
+    "-framework CFNetwork"
+    "-framework CoreFoundation"
+    "-framework CoreLocation"
+    "-framework Foundation"
+    "-framework IOKit"
+    "-framework Security"
+    "-framework SystemConfiguration"
+  )
 endif()
 
 omim_add_test_subdirectory(platform_tests)

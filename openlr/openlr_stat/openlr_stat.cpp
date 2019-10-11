@@ -27,8 +27,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "3party/gflags/src/gflags/gflags.h"
-#include "3party/pugixml/src/pugixml.hpp"
+#include <gflags/gflags.h>
+#include <pugixml/src/pugixml.hpp>
 
 DEFINE_string(input, "", "Path to OpenLR file.");
 DEFINE_string(spark_output, "", "Path to output file in spark-oriented format");

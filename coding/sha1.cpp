@@ -7,8 +7,8 @@
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 
-#include "3party/liboauthcpp/src/SHA1.h"
-#include "3party/liboauthcpp/src/base64.h"
+#include <liboauthcpp/src/SHA1.h>
+#include <liboauthcpp/src/base64.h>
 
 #include <algorithm>
 #include <vector>

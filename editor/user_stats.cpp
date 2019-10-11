@@ -10,7 +10,7 @@
 #include "base/thread.hpp"
 #include "base/timer.hpp"
 
-#include "3party/pugixml/src/pugixml.hpp"
+#include <pugixml/src/pugixml.hpp>
 
 namespace
 {

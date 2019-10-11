@@ -1,7 +1,5 @@
 project(stats_client)
 
-include_directories(${OMIM_ROOT} ${OMIM_ROOT}/3party/Alohalytics/src)
-
 set(
   SRC
   ${OMIM_ROOT}/3party/Alohalytics/src/cpp/alohalytics.cc
@@ -45,6 +43,11 @@ elseif(${PLATFORM_ANDROID})
 endif()
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_link_libraries(
+  ${PROJECT_NAME}
+  ${LIBZ}
+)
 
 if (${PLATFORM_IPHONE} OR ${PLATFORM_MAC})
   target_compile_options(${PROJECT_NAME} PUBLIC "-fobjc-arc")

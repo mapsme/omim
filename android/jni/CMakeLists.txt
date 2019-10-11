@@ -3,18 +3,6 @@ cmake_minimum_required(VERSION 3.2)
 project(mapswithme C CXX)
 
 include_directories(
-  ${OMIM_ROOT}/3party/jansson/src
-  ${OMIM_ROOT}/3party/boost
-  ${OMIM_ROOT}/3party/protobuf/protobuf/src
-  ${OMIM_ROOT}/3party/glm
-  ${OMIM_ROOT}/3party/succinct
-  ${OMIM_ROOT}/3party/agg
-  ${OMIM_ROOT}/3party/icu/common
-  ${OMIM_ROOT}/3party/icu/i18n
-  ${OMIM_ROOT}/3party/stb_image
-  ${OMIM_ROOT}/3party/sdf_image
-  ${OMIM_ROOT}/3party/Vulkan-Headers/include
-  ${OMIM_ROOT}/3party/vulkan_wrapper
   ${OMIM_ROOT}/android/jni
 )
 
@@ -101,53 +89,33 @@ set(
 omim_add_library(mapswithme SHARED ${SRC})
 
 target_link_libraries(
-  mapswithme
-  # Android libs
+  ${PROJECT_NAME}
+  base
+  coding
+  drape
+  drape_frontend
+  editor
+  geometry
+  indexer
+  local_ads
+  map
+  metrics
+  partners_api
+  platform
+  routing
+  search
+  storage
+)
+
+# 3party libraries or external dependencies
+target_link_libraries(
+  ${PROJECT_NAME}
+  opening_hours
+   # Android libs
   log
   android
   EGL
   GLESv2
   atomic
   z
-  # MapsWithMe libs
-  map
-  tracking
-  routing
-  traffic
-  routing_common
-  transit
-  drape_frontend
-  shaders
-  search
-  storage
-  descriptions
-  ugc
-  drape
-  kml
-  editor
-  indexer
-  metrics
-  platform
-  partners_api
-  local_ads
-  mwm_diff
-  bsdiff
-  geometry
-  coding
-  base
-  opening_hours
-  pugixml
-  oauthcpp
-  expat
-  freetype
-  minizip
-  jansson
-  protobuf
-  stats_client
-  succinct
-  stb_image
-  sdf_image
-  icu
-  agg
-  vulkan_wrapper
 )

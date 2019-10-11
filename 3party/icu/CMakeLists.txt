@@ -1,22 +1,10 @@
 project(icu)
 
-add_definitions(
-  -DU_CHARSET_IS_UTF8=1
-  -DU_STATIC_IMPLEMENTATION
-  -DU_COMMON_IMPLEMENTATION
-  -DU_I18N_IMPLEMENTATION
-  -DU_NO_DEFAULT_INCLUDE_UTF_HEADERS
-  -DU_DISABLE_RENAMING
-  -DU_ENABLE_DYLOAD=0
-)
-
 add_clang_compile_options("-Wno-deprecated-declarations")
 add_clang_compile_options("-Wno-enum-compare")
 add_gcc_compile_options("-Wno-deprecated-declarations")
 
 set(CMAKE_PREFIX_PATH ./)
-
-include_directories(common i18n common/unicode ./)
 
 set(
   SRC
@@ -818,3 +806,22 @@ set(
 )
 
 add_library(${PROJECT_NAME} ${SRC})
+
+target_compile_definitions(
+  ${PROJECT_NAME}
+  PUBLIC
+  -DU_HAVE_STD_STRING=1
+  -DU_STATIC_IMPLEMENTATION
+  -DU_COMMON_IMPLEMENTATION
+  -DU_I18N_IMPLEMENTATION
+  -DU_NO_DEFAULT_INCLUDE_UTF_HEADERS
+  -DU_DISABLE_RENAMING
+  -DU_ENABLE_DYLOAD=0
+)
+
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC
+  common
+  i18n
+)

@@ -12,7 +12,7 @@
 
 #include "platform/platform.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
+#include <Alohalytics/src/alohalytics.h>
 
 using namespace std::chrono;
 
