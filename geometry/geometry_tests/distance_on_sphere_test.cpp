@@ -71,6 +71,8 @@ UNIT_TEST(AreaOnEarth_ThreePoints)
   TEST_ALMOST_EQUAL_ABS(ms::AreaOnEarth({90.0, 0.0}, {0.0, 90.0}, {0.0, -90.0}),
                         kEarthSurfaceArea / 4.0,
                         1e-1, ());
+
+  TEST_ALMOST_EQUAL_ABS(ms::AreaOnEarth({49.006118, 14.3888561}, {49.008854, 14.5019343}, {48.9402578, 14.4683352}), 1.0, 1.0, ());
 }
 
 UNIT_TEST(AngleOnEarth)

@@ -736,15 +736,15 @@ uint64_t GetPopulation(FeatureType & ft)
 
 double GetRadiusByPopulation(uint64_t p)
 {
-  return pow(static_cast<double>(p), 0.277778) * 550.0;
+  return pow(static_cast<double>(p), 1 / 3.6) * 550.0;
 }
 
 double GetRadiusByPopulationForRouting(uint64_t p, LocalityType localityType)
 {
   switch (localityType)
   {
-  case LocalityType::City: return pow(static_cast<double>(p), 0.192307) * 630.0;
-  case LocalityType::Town: return pow(static_cast<double>(p), 0.2) * 330.0;
+  case LocalityType::City: return pow(static_cast<double>(p), 1.0 / 2.3) * 30;
+  case LocalityType::Town: return pow(static_cast<double>(p), 1.0 / 3.1) * 120.0;
   default: UNREACHABLE();
   }
 }
