@@ -16,6 +16,12 @@ namespace math
 double constexpr pi = 3.14159265358979323846;
 double constexpr pi2 = pi / 2.0;
 double constexpr pi4 = pi / 4.0;
+namespace high_accuracy
+{
+long double constexpr pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164;
+long double constexpr pi2 = pi / 2.0L;
+long double constexpr pi4 = pi / 4.0L;
+}
 }  // namespace math
 
 namespace base
