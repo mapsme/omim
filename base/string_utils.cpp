@@ -103,6 +103,16 @@ bool to_int64(char const * s, int64_t & i)
   return *stop == 0 && s != stop;
 }
 
+bool to_size_t(char const * s, size_t & i, int base)
+{
+  uint64_t num = 0;
+  if (!to_uint64(s, num, base))
+    return false;
+
+  i = static_cast<size_t>(num);
+  return true;
+}
+
 bool to_float(char const * s, float & f)
 {
   char * stop;
