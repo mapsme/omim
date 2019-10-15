@@ -26,6 +26,11 @@ set(
   classificator.hpp
   classificator_loader.cpp
   classificator_loader.hpp
+  complex/hierarchy_entry.cpp
+  complex/hierarchy_entry.hpp
+  complex/tree_node.hpp
+  composite_id.cpp
+  composite_id.hpp
   cuisines.cpp
   cuisines.hpp
   data_factory.cpp
@@ -118,7 +123,6 @@ set(
   string_slice.hpp
   succinct_trie_builder.hpp
   succinct_trie_reader.hpp
-  tree_node.hpp
   tree_structure.hpp
   trie.hpp
   trie_builder.hpp

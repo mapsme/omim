@@ -25,6 +25,7 @@
 #include "generator/utils.hpp"
 
 #include "indexer/classificator_loader.hpp"
+#include "indexer/complex/hierarchy_entry.hpp"
 #include "indexer/map_style_reader.hpp"
 
 #include "platform/platform.hpp"
@@ -100,13 +101,12 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
   if (FLAGS_debug)
   {
     finalProcessor->SetPrintFunction(
-        static_cast<std::string (*)(generator::hierarchy::HierarchyEntry const &)>(
-            generator::hierarchy::DebugPrint));
+        static_cast<std::string (*)(indexer::HierarchyEntry const &)>(indexer::DebugPrint));
   }
   else
   {
     finalProcessor->SetPrintFunction([](auto const & entry) {
-      return generator::hierarchy::popularity::HierarchyEntryToCsvString(entry);
+      return indexer::popularity::HierarchyEntryToCsvString(entry);
     });
   }
   rawGenerator.GenerateCustom(translator, finalProcessor);

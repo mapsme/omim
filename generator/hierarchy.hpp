@@ -6,8 +6,10 @@
 #include "generator/utils.hpp"
 
 #include "indexer/classificator.hpp"
+#include "indexer/complex/hierarchy_entry.hpp"
+#include "indexer/complex/tree_node.hpp"
+#include "indexer/composite_id.hpp"
 #include "indexer/ftypes_matcher.hpp"
-#include "indexer/tree_node.hpp"
 
 #include "geometry/point2d.hpp"
 #include "geometry/tree4d.hpp"
@@ -33,16 +35,14 @@ namespace generator
 {
 namespace hierarchy
 {
-struct HierarchyEntry;
-
 using GetMainType = std::function<uint32_t(FeatureParams::Types const &)>;
 using GetName = std::function<std::string(StringUtf8Multilang const &)>;
-using PrintFunction = std::function<std::string(HierarchyEntry const &)>;
+using PrintFunction = std::function<std::string(indexer::HierarchyEntry const &)>;
 
 // These are dummy functions.
 uint32_t GetTypeDefault(FeatureParams::Types const &);
 std::string GetNameDefault(StringUtf8Multilang const &);
-std::string PrintDefault(HierarchyEntry const &);
+std::string PrintDefault(indexer::HierarchyEntry const &);
 
 // The HierarchyPlace class is an abstraction of FeatureBuilder to build a hierarchy of objects.
 // It allows you to work with the geometry of points and areas.
@@ -52,7 +52,7 @@ public:
   explicit HierarchyPlace(feature::FeatureBuilder const & fb);
 
   double GetArea() const { return m_area; }
-  CompositeId const & GetCompositeId() const { return m_id; }
+  indexer::CompositeId const & GetCompositeId() const { return m_id; }
   StringUtf8Multilang const & GetName() const { return m_name; }
   FeatureParams::Types const & GetTypes() const { return m_types; }
   m2::RectD const & GetLimitRect() const { return m_rect; }
@@ -65,7 +65,7 @@ public:
 private:
   bool Contains(m2::PointD const & point) const;
 
-  CompositeId m_id;
+  indexer::CompositeId m_id;
   StringUtf8Multilang m_name;
   feature::FeatureBuilder::PointSeq m_polygon;
   FeatureParams::Types m_types;
@@ -122,26 +122,12 @@ class HierarchyLineEnricher
 public:
   HierarchyLineEnricher(std::string const & osm2FtIdsPath, std::string const & countryFullPath);
 
-  boost::optional<m2::PointD> GetFeatureCenter(CompositeId const & id) const;
+  boost::optional<m2::PointD> GetFeatureCenter(indexer::CompositeId const & id) const;
 
 private:
   OsmID2FeatureID m_osm2FtIds;
   FeatureGetter m_featureGetter;
 };
-
-// Intermediate view for hierarchy node.
-struct HierarchyEntry
-{
-  CompositeId m_id;
-  boost::optional<CompositeId> m_parentId;
-  size_t m_depth = 0;
-  std::string m_name;
-  std::string m_countryName;
-  m2::PointD m_center;
-  uint32_t m_type = ftype::GetEmptyValue();
-};
-
-std::string DebugPrint(HierarchyEntry const & line);
 
 class HierarchyLinesBuilder
 {
@@ -153,11 +139,11 @@ public:
   void SetCountryName(std::string const & name);
   void SetHierarchyLineEnricher(std::shared_ptr<HierarchyLineEnricher> const & enricher);
 
-  std::vector<HierarchyEntry> GetHierarchyLines();
+  std::vector<indexer::HierarchyEntry> GetHierarchyLines();
 
 private:
   m2::PointD GetCenter(HierarchyBuilder::Node::Ptr const & node);
-  HierarchyEntry Transform(HierarchyBuilder::Node::Ptr const & node);
+  indexer::HierarchyEntry Transform(HierarchyBuilder::Node::Ptr const & node);
 
   HierarchyBuilder::Node::PtrList m_nodes;
   GetMainType m_getMainType = GetTypeDefault;
@@ -165,14 +151,5 @@ private:
   std::string m_countryName;
   std::shared_ptr<HierarchyLineEnricher> m_enricher;
 };
-
-namespace popularity
-{
-uint32_t GetMainType(FeatureParams::Types const & types);
-std::string GetName(StringUtf8Multilang const & str);
-
-std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delimiter=';');
-HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row);
-}  // namespace popularity
 }  // namespace hierarchy
 }  // namespace generator
