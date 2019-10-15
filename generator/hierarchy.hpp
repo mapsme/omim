@@ -17,6 +17,8 @@
 #include "base/geo_object_id.hpp"
 #include "base/thread_pool_computational.hpp"
 
+#include "coding/csv_reader.hpp"
+
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -168,7 +170,9 @@ namespace popularity
 {
 uint32_t GetMainType(FeatureParams::Types const & types);
 std::string GetName(StringUtf8Multilang const & str);
-std::string Print(HierarchyEntry const & line);
+
+std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delimiter=';');
+HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row);
 }  // namespace popularity
 }  // namespace hierarchy
 }  // namespace generator

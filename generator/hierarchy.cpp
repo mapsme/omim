@@ -1,8 +1,5 @@
 #include "generator/hierarchy.hpp"
 
-#include "generator/boost_helpers.hpp"
-#include "generator/place_processor.hpp"
-
 #include "indexer/classificator.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/feature_utils.hpp"
@@ -299,26 +296,52 @@ uint32_t GetMainType(FeatureParams::Types const & types)
 
 std::string GetName(StringUtf8Multilang const & str) { return GetRussianName(str); }
 
-std::string Print(HierarchyEntry const & line)
+std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delimiter)
 {
   std::stringstream stream;
   stream << std::fixed << std::setprecision(7);
-  stream << line.m_id.m_mainId.GetEncodedId() << '|' << line.m_id.m_additionalId.GetEncodedId()
-         << ';';
+  stream << line.m_id.ToString() << delimiter;
   if (line.m_parentId)
   {
     auto const parentId = *line.m_parentId;
-    stream << parentId.m_mainId.GetEncodedId() << '|' << parentId.m_additionalId.GetEncodedId()
-           << ';';
+    stream << parentId.ToString();
   }
-  stream << ';';
-  stream << line.m_center.x << ';';
-  stream << line.m_center.y << ';';
-  stream << classif().GetReadableObjectName(line.m_type) << ';';
-  stream << line.m_name;
+  stream << delimiter;
+  stream << line.m_depth << delimiter;
+  stream << line.m_center.x << delimiter;
+  stream << line.m_center.y << delimiter;
+  stream << classif().GetReadableObjectName(line.m_type) << delimiter;
+  stream << line.m_name << delimiter;
+  stream << line.m_countryName;
   return stream.str();
 }
 
+HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row)
+{
+  CHECK_EQUAL(row.size(), 8, (row));
+
+  auto const & id = row[0];
+  auto const & parentId = row[1];
+  auto const & depth = row[2];
+  auto const & x = row[3];
+  auto const & y = row[4];
+  auto const & type = row[5];
+  auto const & name = row[6];
+  auto const & country = row[7];
+
+  HierarchyEntry entry;
+  entry.m_id = CompositeId(id);
+  if (!parentId.empty())
+    entry.m_parentId = CompositeId(parentId);
+
+  CHECK(strings::to_size_t(depth, entry.m_depth), (row));
+  CHECK(strings::to_double(x, entry.m_center.x), (row));
+  CHECK(strings::to_double(y, entry.m_center.y), (row));
+  entry.m_type = classif().GetTypeByReadableObjectName(type);
+  entry.m_name = name;
+  entry.m_countryName = country;
+  return entry;
+}
 }  // namespace popularity
 }  // namespace hierarchy
 }  // namespace generator

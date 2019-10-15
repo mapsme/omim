@@ -103,6 +103,12 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
         static_cast<std::string (*)(generator::hierarchy::HierarchyEntry const &)>(
             generator::hierarchy::DebugPrint));
   }
+  else
+  {
+    finalProcessor->SetPrintFunction([](auto const & entry) {
+      return generator::hierarchy::popularity::HierarchyEntryToCsvString(entry);
+    });
+  }
   rawGenerator.GenerateCustom(translator, finalProcessor);
   CHECK(rawGenerator.Execute(), ());
   return EXIT_SUCCESS;
