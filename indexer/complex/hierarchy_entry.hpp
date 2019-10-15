@@ -1,6 +1,7 @@
 #pragma once
 
 #include "indexer/classificator.hpp"
+#include "indexer/complex/tree_node.hpp"
 #include "indexer/composite_id.hpp"
 #include "indexer/feature_data.hpp"
 
@@ -10,6 +11,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include <boost/optional.hpp>
 
@@ -28,12 +30,16 @@ struct HierarchyEntry
 
 std::string DebugPrint(HierarchyEntry const & line);
 
-namespace popularity
+namespace hierarchy
 {
+static char const kCsvDelimiter = ';';
+
 uint32_t GetMainType(FeatureParams::Types const & types);
 std::string GetName(StringUtf8Multilang const & str);
 
-std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delimiter=';');
+std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delimiter = kCsvDelimiter);
 HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row);
-}  // namespace popularity
+
+std::vector<tree_node::types::Ptr<HierarchyEntry>> LoadHierachy(std::string const & filename);
+}  // namespace hierarchy
 }  // namespace indexer

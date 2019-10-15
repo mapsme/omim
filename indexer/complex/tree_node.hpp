@@ -2,9 +2,11 @@
 
 #include <algorithm>
 #include <memory>
+#include <sstream>
 #include <utility>
 #include <vector>
 
+#include "base/control_flow.hpp"
 #include "base/stl_helpers.hpp"
 
 namespace tree_node
@@ -59,6 +61,30 @@ private:
 };
 
 template <typename Data>
+decltype(auto) MakeTreeNode(Data && data)
+{
+  return std::make_shared<TreeNode<Data>>(std::forward<Data>(data));
+}
+
+template <typename Data>
+class Forest
+{
+public:
+  void Append(types::Ptr<Data> const & tree) { m_trees.emplace_back(tree); }
+
+  size_t Size() const { return m_trees.size(); }
+
+  template <typename Fn>
+  void ForEachTree(Fn && fn) const
+  {
+    std::for_each(std::cbegin(m_trees), std::cend(m_trees), std::forward<Fn>(fn));
+  }
+
+private:
+  types::PtrList<Data> m_trees;
+};
+
+template <typename Data>
 void Link(types::Ptr<Data> const & node, types::Ptr<Data> const & parent)
 {
   parent->AddChild(node);
@@ -75,5 +101,85 @@ size_t GetDepth(types::Ptr<Data> node)
     ++depth;
   }
   return depth;
+}
+
+template <typename Data, typename Fn>
+void PreOrderVisit(types::Ptr<Data> const & node, Fn && fn)
+{
+  base::ControlFlowWrapper<Fn> wrapper(std::forward<Fn>(fn));
+  std::function<void(types::Ptr<Data> const &)> PreOrderVisitDetail;
+  PreOrderVisitDetail = [&](types::Ptr<Data> const & node) {
+    if (wrapper(node) == base::ControlFlow::Break)
+      return;
+
+    for (auto const & ch : node->GetChildren())
+      PreOrderVisitDetail(ch);
+  };
+  PreOrderVisitDetail(node);
+}
+
+template <typename Data, typename Fn>
+size_t CountIf(types::Ptr<Data> const & node, Fn && fn)
+{
+  size_t count = 0;
+  PreOrderVisit(node, [&](auto const & node) {
+    if (fn(node->GetData()))
+      ++count;
+  });
+  return count;
+}
+
+template <typename Data, typename Fn>
+decltype(auto) FindIf(types::Ptr<Data> const & node, Fn && fn)
+{
+  types::Ptr<Data> res;
+  PreOrderVisit(node, [&](auto const & node) {
+    if (fn(node->GetData()))
+    {
+      res = node;
+      return true;
+    }
+    return false;
+  });
+  return res;
+}
+
+template <typename Data>
+size_t Size(types::Ptr<Data> const & node)
+{
+  size_t size = 0;
+  PreOrderVisit(node, [&](auto const &) { ++size; });
+  return size;
+}
+
+template <typename Data>
+void Print(types::Ptr<Data> const & node, std::ostream & stream,
+           std::string prefix = "", bool isTail = true)
+{
+  stream << prefix;
+  if (isTail)
+  {
+    stream << "└───";
+    prefix += "    ";
+  }
+  else
+  {
+    stream << "├───";
+    prefix += "│   ";
+  }
+  auto str = DebugPrint(node->GetData());
+  std::replace(std::begin(str), std::end(str), '\n', '|');
+  stream << str << '\n';
+  auto const & children = node->GetChildren();
+  for (size_t i = 0, size = children.size(); i < size; ++i)
+      Print(children[i], stream, prefix, i == size - 1);
+}
+
+template <typename Data>
+std::string DebugPrint(types::Ptr<Data> const & node)
+{
+  std::stringstream stream;
+  Print(node, stream);
+  return stream.str();
 }
 }  // namespace tree_node

@@ -26,6 +26,8 @@ set(
   classificator.hpp
   classificator_loader.cpp
   classificator_loader.hpp
+  complex/complex.cpp
+  complex/complex.hpp
   complex/hierarchy_entry.cpp
   complex/hierarchy_entry.hpp
   complex/tree_node.hpp

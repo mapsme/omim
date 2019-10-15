@@ -553,16 +553,16 @@ void ComplexFinalProcessor::Process()
       strings::ReplaceLast(countryName, DATA_FILE_EXTENSION_TMP, "");
 
       hierarchy::HierarchyBuilder builder(base::JoinPath(m_mwmTmpPath, filename));
-      builder.SetGetMainTypeFunction(indexer::popularity::GetMainType);
-      builder.SetGetNameFunction(indexer::popularity::GetName);
+      builder.SetGetMainTypeFunction(indexer::hierarchy::GetMainType);
+      builder.SetGetNameFunction(indexer::hierarchy::GetName);
       auto nodes = builder.Build();
 
       auto const enricher = CreateEnricher(countryName);
       hierarchy::HierarchyLinesBuilder linesBuilder(std::move(nodes));
       linesBuilder.SetHierarchyLineEnricher(enricher);
       linesBuilder.SetCountryName(countryName);
-      linesBuilder.SetGetMainTypeFunction(indexer::popularity::GetMainType);
-      linesBuilder.SetGetNameFunction(indexer::popularity::GetName);
+      linesBuilder.SetGetMainTypeFunction(indexer::hierarchy::GetMainType);
+      linesBuilder.SetGetNameFunction(indexer::hierarchy::GetName);
       return linesBuilder.GetHierarchyLines();
     });
     futures.emplace_back(std::move(future));

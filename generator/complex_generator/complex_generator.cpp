@@ -106,7 +106,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
   else
   {
     finalProcessor->SetPrintFunction([](auto const & entry) {
-      return indexer::popularity::HierarchyEntryToCsvString(entry);
+      return indexer::hierarchy::HierarchyEntryToCsvString(entry);
     });
   }
   rawGenerator.GenerateCustom(translator, finalProcessor);
