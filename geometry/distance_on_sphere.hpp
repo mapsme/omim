@@ -19,14 +19,4 @@ double DistanceOnEarth(double lat1Deg, double lon1Deg, double lat2Deg, double lo
 double DistanceOnEarth(LatLon const & ll1, LatLon const & ll2);
 
 m3::PointD GetPointOnSphere(LatLon const & ll, double sphereRadius);
-
-// Returns angle in rads at ∠(lla, llb, llc).
-long double AngleOnEarth(LatLon const & lla, LatLon const & llb, LatLon const & llc);
-
-// Returns polygon area on earth.
-double AreaOnEarth(std::vector<LatLon> const & latlons);
-// Returns area of triangle on earth.
-double AreaOnEarth(LatLon const & ll1, LatLon const & ll2, LatLon const & ll3);
-
-double CircleAreaOnEarth(double distanceOnSphereRadius);
 }  // namespace ms

@@ -183,3 +183,5 @@ template <class TIter> double GetPolygonArea(TIter beg, TIter end)
 
   return 0.5 * fabs(area);
 }
+
+

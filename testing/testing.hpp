@@ -52,11 +52,11 @@ void Notify();
 struct CommandLineOptions
 {
   CommandLineOptions()
-    : m_filterRegExp(nullptr)
-    , m_suppressRegExp(nullptr)
-    , m_dataPath(nullptr)
-    , m_resourcePath(nullptr)
-    , m_help(false)
+      : m_filterRegExp(nullptr)
+      , m_suppressRegExp(nullptr)
+      , m_dataPath(nullptr)
+      , m_resourcePath(nullptr)
+      , m_help(false)
   {
   }
 
