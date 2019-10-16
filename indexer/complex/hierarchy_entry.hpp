@@ -25,8 +25,10 @@ struct HierarchyEntry
   std::string m_name;
   std::string m_countryName;
   m2::PointD m_center;
-  uint32_t m_type = ftype::GetEmptyValue();
+  uint32_t m_type = ftype::GetEmptyValue(); 
 };
+
+bool operator==(HierarchyEntry const & lhs, HierarchyEntry const & rhs);
 
 std::string DebugPrint(HierarchyEntry const & line);
 
@@ -37,9 +39,11 @@ static char const kCsvDelimiter = ';';
 uint32_t GetMainType(FeatureParams::Types const & types);
 std::string GetName(StringUtf8Multilang const & str);
 
-std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delimiter = kCsvDelimiter);
+coding::CSVReader::Row HierarchyEntryToCsvRow(HierarchyEntry const & line);
 HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row);
 
-std::vector<tree_node::types::Ptr<HierarchyEntry>> LoadHierachy(std::string const & filename);
+std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delim = kCsvDelimiter);
+
+tree_node::types::PtrList<HierarchyEntry> LoadHierachy(std::string const & filename);
 }  // namespace hierarchy
 }  // namespace indexer

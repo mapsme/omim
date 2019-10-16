@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <tuple>
 
 namespace
 {
@@ -29,6 +30,13 @@ std::string GetRussianName(StringUtf8Multilang const & str)
 
 namespace indexer
 {
+bool operator==(HierarchyEntry const & lhs, HierarchyEntry const & rhs)
+{
+  return base::AlmostEqualAbs(lhs.m_center, rhs.m_center, 1e-7) &&
+      (std::tie(lhs.m_id, lhs.m_parentId, lhs.m_depth, lhs.m_name, lhs.m_countryName, lhs.m_type) ==
+       std::tie(rhs.m_id, rhs.m_parentId, rhs.m_depth, rhs.m_name, rhs.m_countryName, rhs.m_type));
+}
+
 std::string DebugPrint(HierarchyEntry const & line)
 {
   std::stringstream stream;
@@ -66,24 +74,22 @@ uint32_t GetMainType(FeatureParams::Types const & types)
 
 std::string GetName(StringUtf8Multilang const & str) { return GetRussianName(str); }
 
-std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delimiter)
+coding::CSVReader::Row HierarchyEntryToCsvRow(HierarchyEntry const & line)
 {
-  std::stringstream stream;
-  stream << std::fixed << std::setprecision(7);
-  stream << line.m_id.ToString() << delimiter;
+  coding::CSVReader::Row row;
+  row.emplace_back(line.m_id.ToString());
+  std::string parentId;
   if (line.m_parentId)
-  {
-    auto const parentId = *line.m_parentId;
-    stream << parentId.ToString();
-  }
-  stream << delimiter;
-  stream << line.m_depth << delimiter;
-  stream << line.m_center.x << delimiter;
-  stream << line.m_center.y << delimiter;
-  stream << classif().GetReadableObjectName(line.m_type) << delimiter;
-  stream << line.m_name << delimiter;
-  stream << line.m_countryName;
-  return stream.str();
+    parentId = (*line.m_parentId).ToString();
+
+  row.emplace_back(parentId);
+  row.emplace_back(strings::to_string(line.m_depth));
+  row.emplace_back(strings::to_string_dac(line.m_center.x, 7));
+  row.emplace_back(strings::to_string_dac(line.m_center.y, 7));
+  row.emplace_back(strings::to_string(classif().GetReadableObjectName(line.m_type)));
+  row.emplace_back(strings::to_string(line.m_name));
+  row.emplace_back(strings::to_string(line.m_countryName));
+  return row;
 }
 
 HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row)
@@ -113,7 +119,12 @@ HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row)
   return entry;
 }
 
-std::vector<tree_node::types::Ptr<HierarchyEntry>> LoadHierachy(std::string const & filename)
+std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delim)
+{
+  return strings::JoinStrings(HierarchyEntryToCsvRow(line), delim);
+}
+
+tree_node::types::PtrList<HierarchyEntry> LoadHierachy(std::string const & filename)
 {
   std::unordered_map<indexer::CompositeId, tree_node::types::Ptr<indexer::HierarchyEntry>> nodes;
   for (auto const & row : coding::CSVRunner(

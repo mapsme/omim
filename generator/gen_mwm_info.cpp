@@ -48,7 +48,7 @@ boost::optional<uint32_t> OsmID2FeatureID::GetFeatureId(indexer::CompositeId con
   if (it == std::cend(m_data) || it->first != id)
     return {};
 
-  CHECK_NOT_EQUAL(std::next(it)->first, id, (id));
+//  CHECK_NOT_EQUAL(std::next(it)->first, id, (id));
   return it->second;
 }
 

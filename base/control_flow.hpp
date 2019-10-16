@@ -40,6 +40,14 @@ public:
     return ControlFlow::Continue;
   }
 
+  template <typename... Args>
+  std::enable_if_t<std::is_same<std::result_of_t<Fn(Args...)>, bool>::value,
+                   base::ControlFlow>
+  operator()(Args &&... args)
+  {
+    return m_fn(std::forward<Args>(args)...) ? ControlFlow::Break : ControlFlow::Continue;
+  }
+
 private:
   Fn m_fn;
 };
