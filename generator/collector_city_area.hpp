@@ -48,6 +48,9 @@ public:
   void MergeInto(CityAreaCollector & collector) const override;
 
 private:
+
+
+
   std::unordered_map<uint64_t, LocalityData> m_nodeOsmIdToLocalityData;
   std::unordered_map<uint64_t, std::vector<feature::FeatureBuilder>> m_nodeOsmIdToBoundaries;
   std::unique_ptr<feature::FeatureBuilderWriter<feature::serialization_policy::MaxAccuracy>> m_writer;

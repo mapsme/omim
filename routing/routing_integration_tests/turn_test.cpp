@@ -8,9 +8,11 @@
 #include "routing/route.hpp"
 #include "routing/routing_callbacks.hpp"
 
+#include "geometry/area_on_earth.hpp"
 #include "geometry/convex_hull.hpp"
 #include "geometry/distance_on_sphere.hpp"
 #include "geometry/polygon.hpp"
+#include "geometry/segment2d.hpp"
 
 #include <iostream>
 #include <vector>
@@ -26,6 +28,22 @@
 using namespace routing;
 using namespace routing::turns;
 using namespace std;
+
+template <class TIter>
+bool ShouldReverse(TIter beg, TIter end)
+{
+  double area = 0.0;
+
+  TIter curr = beg;
+  while (curr != end)
+  {
+    TIter next = base::NextIterInCycle(curr, beg, end);
+    area += ((*curr).x * (*next).y - (*curr).y * (*next).x);
+    ++curr;
+  }
+
+  return area < 0;
+}
 
 enum class Locality
 {
@@ -67,6 +85,126 @@ struct Node
   size_t m_id;
 };
 
+void FilterForOneLine(vector<Node> & points)
+{
+  if (points.size() < 3)
+    return;
+
+  auto const check = [&](auto const & p1, auto const & p2, auto const & p3) {
+    auto a = p2.m_point - p1.m_point;
+    auto b = p3.m_point - p2.m_point;
+    a = a.Normalize();
+    b = b.Normalize();
+    double oneLineCondition = abs(m2::CrossProduct(a, b));
+    if (abs(oneLineCondition) < 0.05)
+      return true;
+
+    return false;
+  };
+
+  vector<Node> newPoints;
+  newPoints.emplace_back(points[0]);
+  newPoints.emplace_back(points[1]);
+  for (size_t i = 2; i < points.size(); ++i)
+  {
+    auto & prev = *(newPoints.end() - 1);
+    auto const & prevPrev = *(newPoints.end() - 2);
+    if (check(prevPrev, prev, points[i]))
+    {
+      prev = points[i];
+      continue;
+    }
+
+    newPoints.emplace_back(points[i]);
+  }
+
+  while (newPoints.size() > 3)
+  {
+    auto const prevIt = newPoints.end() - 1;
+    auto const prevPrevIt = newPoints.cend() - 2;
+
+    auto const beginIt = newPoints.begin();
+    auto const nextBeginIt = newPoints.begin() + 1;
+
+    if (check(*prevPrevIt, *prevIt, *beginIt) || check(*prevIt, *beginIt, *nextBeginIt))
+    {
+      newPoints.erase(beginIt);
+      continue;
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  points = std::move(newPoints);
+}
+
+bool Intersects(vector<Node> const & points, m2::PointD const & newPoint)
+{
+  if (points.size() < 3)
+    return false;
+  m2::PointD const & prevPoint = points.back().m_point;
+  for (size_t i = 0; i < points.size() - 2; ++i)
+  {
+    if (m2::SegmentsIntersect(points[i].m_point, points[i + 1].m_point, prevPoint, newPoint))
+      return true;
+  }
+
+  return false;
+}
+
+void FilterByInterval(vector<Node> & points, double interval)
+{
+  if (points.size() < 3)
+    return;
+
+  vector<Node> newPoints;
+  newPoints.emplace_back(points[0]);
+  double d;
+  for (size_t i = 1; i < points.size(); ++i)
+  {
+    auto const & point = points[i];
+    d = ms::DistanceOnEarth(newPoints.back().m_latlon, point.m_latlon);
+    if (d > interval)
+    {
+      while (Intersects(newPoints, point.m_point))
+        newPoints.pop_back();
+
+      newPoints.emplace_back(point);
+    }
+  }
+
+  if (newPoints.size() > 2)
+  {
+    d = ms::DistanceOnEarth(newPoints.back().m_latlon, newPoints.front().m_latlon);
+    while (d < interval && newPoints.size() > 2)
+    {
+      newPoints.pop_back();
+      d = ms::DistanceOnEarth(newPoints.back().m_latlon, newPoints.front().m_latlon);
+      //          pointLatLon = newPoints.back().m_latlon;
+    }
+  }
+
+  points = std::move(newPoints);
+}
+
+void FilterUniquePoints(vector<Node> & points)
+{
+  unordered_set<uint64_t> used;
+  vector<Node> newPoints;
+  for (const auto & point : points)
+  {
+    if (used.count(point.m_id) == 0)
+    {
+      newPoints.emplace_back(point);
+      used.emplace(point.m_id);
+    }
+  }
+
+  points = std::move(newPoints);
+}
+
 struct Way
 {
   size_t m_id;
@@ -97,6 +235,7 @@ public:
   explicit FileReaderMisha(string const & path) : m_path(path), m_input(m_path), m_pointOfstream("/tmp/points")
   {
     ofstream point_fh("/tmp/cpp_points");
+    ofstream output("/tmp/population_to_area");
     CHECK(m_input.good(), (path));
   }
 
@@ -109,7 +248,7 @@ public:
       size_t cached = 0;
       {
         ifstream input("/tmp/lines");
-        string path(getenv("PATH"));
+        string path(getenv("FILE_PATH"));
         string pathInInput;
         if (input.good())
         {
@@ -132,7 +271,7 @@ public:
         all = n;
         {
           ofstream output("/tmp/lines");
-          string path(getenv("PATH"));
+          string path(getenv("FILE_PATH"));
           output << path << " " << all;
         }
       } else all = cached;
@@ -281,7 +420,7 @@ public:
     size_t no_population = 0;
     for (auto const & item : nodeToRelations)
     {
-      auto const adminCentreId = item.first;
+//      auto const adminCentreId = item.first;
       auto const & relations = item.second;
 
       ++all;
@@ -323,13 +462,13 @@ public:
           continue;
         }
 
-        PushDebugPoint(it->second.m_latlon, r);
+//        PushDebugPoint(it->second.m_latlon, r);
       }
 
       ofstream output("/tmp/population_to_area", ofstream::app);
       output << item.second[minIndex].m_id << " " << minArea << " " << population << endl;
 
-      PushDebugPoint(it->second.m_latlon);
+//      PushDebugPoint(it->second.m_latlon);
 
       AddUrl(item.second[minIndex].m_id, Type::Relation);
     }
@@ -356,16 +495,84 @@ public:
 
 private:
 
+  double CalculateArea(vector<Node> const & pointsCopy, uint64_t id)
+  {
+    vector<Node> points = pointsCopy;
+    FilterUniquePoints(points);
+    size_t beforeFilter;
+    size_t afterFilter;
+    do
+    {
+      beforeFilter = points.size();
+      FilterByInterval(points, 300);
+      FilterForOneLine(points);
+      afterFilter = points.size();
+    } while (beforeFilter != afterFilter);
+
+    std::vector<ms::LatLon> latlons;
+    std::vector<m2::PointD> pointsCoords;
+    latlons.reserve(points.size());
+    for (auto const & point : points)
+    {
+      pointsCoords.emplace_back(point.m_point);
+      latlons.emplace_back(point.m_latlon);
+    }
+
+    if (ShouldReverse(pointsCoords.begin(), pointsCoords.end()))
+    {
+      reverse(pointsCoords.begin(), pointsCoords.end());
+      reverse(latlons.begin(), latlons.end());
+    }
+
+    uint64_t debug = 0;
+    if (std::getenv("DEBUG") && !string(getenv("DEBUG")).empty())
+    {
+      stringstream ss;
+      ss << string(getenv("DEBUG"));
+      ss >> debug;
+    }
+
+    if (id == debug)
+      PushDebugLine(pointsCoords);
+
+    if (latlons.size() > 4)
+    {
+      return ms::area_on_sphere_details::AreaOnEarth(latlons);
+    }
+    else
+    {
+      if (points.size() < 3)
+        return 0.0;
+
+      m2::ConvexHull convexHull(pointsCoords, 1e-9);
+      auto const & base = convexHull.Points().front();
+      double area = 0.0;
+      for (size_t i = 1; i < convexHull.Points().size() - 1; ++i)
+      {
+        auto const ll1 = MercatorBounds::ToLatLon(base);
+        auto const ll2 = MercatorBounds::ToLatLon(convexHull.Points()[i]);
+        auto const ll3 = MercatorBounds::ToLatLon(convexHull.Points()[i + 1]);
+
+        area += ms::AreaOnEarth(ll1, ll2, ll3);
+      }
+
+      return area;
+    }
+  }
+
   void PushDebugLine(vector<m2::PointD> const & points)
   {
     ofstream point_fh("/tmp/cpp_points", ofstream::app);
     point_fh << setprecision(20);
-    point_fh << points.size() << endl;
+    point_fh << points.size() + 1 << endl;
     for (auto const & point : points)
     {
       auto const latlon = MercatorBounds::ToLatLon(point);
       point_fh << latlon.m_lat << " " << latlon.m_lon << endl;
     }
+
+    auto const latlon = MercatorBounds::ToLatLon(points.front());
+    point_fh << latlon.m_lat << " " << latlon.m_lon << endl;
   }
 
   void PushDebugPoint(ms::LatLon const & latlon, double r = 0)
@@ -536,20 +743,33 @@ private:
     Parse(line, "id=", pos, id);
     relation.m_id = id;
 
-    if (id == 441226)
+    uint64_t debug = 0;
+    if (std::getenv("DEBUG") && !string(getenv("DEBUG")).empty())
+    {
+      stringstream ss;
+      ss << string(getenv("DEBUG"));
+      ss >> debug;
+    }
+
+    if (id == debug)
     {
       int asd = 123;
       (void)asd;
     }
 
     bool add = false;
+    bool forceSkip = false;
 
     boost::optional<string> newLine;
-    std::vector<m2::PointD> points;
+    std::vector<Node> points;
+    unordered_set<uint64_t> usedNodes;
     while ((newLine = GetNextLine()))
     {
       if (IsSubstr(*newLine, "</relation>"))
         break;
+
+      if (forceSkip)
+        continue;
 
       if (IsSubstr(*newLine, "<member"))
       {
@@ -568,8 +788,39 @@ private:
             continue;
 
           auto const & way = it->second;
-          for (auto const & point : way.m_points)
-            points.emplace_back(point.m_point);
+          if (points.empty() || points.back().m_id == way.m_points.front().m_id)
+          {
+            for (auto const & point : way.m_points)
+              points.emplace_back(point);
+          }
+          else if (points.back().m_id == way.m_points.back().m_id)
+          {
+            for (auto itWay = way.m_points.rbegin(); itWay != way.m_points.rend(); ++itWay)
+            {
+              auto const & point = *itWay;
+              points.emplace_back(point);
+            }
+          }
+          else if (points.front().m_id == way.m_points.front().m_id)
+          {
+            reverse(points.begin(), points.end());
+            for (auto const & point : way.m_points)
+              points.emplace_back(point);
+          }
+          else if (points.front().m_id == way.m_points.back().m_id)
+          {
+            reverse(points.begin(), points.end());
+            for (auto itWay = way.m_points.rbegin(); itWay != way.m_points.rend(); ++itWay)
+            {
+              auto const & point = *itWay;
+              points.emplace_back(point);
+            }
+          }
+          else
+          {
+            forceSkip = true;
+            continue;
+          }
         }
         else if (type == "node" && role == "label")
         {
@@ -601,15 +852,28 @@ private:
       }
     }
 
-    if (!add)
+    if (!add || forceSkip)
       return;
 
-    std::vector<ms::LatLon> latlons;
-    latlons.reserve(points.size());
-    for (auto const & point : points)
-      latlons.emplace_back(MercatorBounds::ToLatLon(point));
+//    static int cnt = -1;
+//    cnt++;
+//    {
+//      cout << setprecision(20);
+//      cout << cnt << " => " << id << " points.size() = " << points.size() << " area = " << ms::AreaOnEarth(latlons) << endl;
+//    }
 
-    relation.m_area = ms::AreaOnEarth(latlons);
+    std::vector<m2::PointD> coords;
+    coords.reserve(points.size());
+
+    for (auto const & point : points)
+      coords.emplace_back(point.m_point);
+    if (relation.m_id == debug)
+    {
+      PushDebugLine(coords);
+    }
+    relation.m_area = ms::AreaOnEarth(coords, relation.m_id);
+//    relation.m_area = CalculateArea(points, relation.m_id);
+    CHECK(relation.m_area >= 0, ("relation.id =", relation.m_id, "area =", relation.m_area));
 
     if (add)
       m_relations.emplace(id, relation);
@@ -684,9 +948,9 @@ private:
 
 UNIT_TEST(Toolsa)
 {
-  CHECK(std::getenv("PATH") && !std::string(std::getenv("PATH")).empty(), ());
+  CHECK(std::getenv("FILE_PATH") && !std::string(std::getenv("FILE_PATH")).empty(), ());
   std::cout << std::unitbuf;
-  std::string path = std::string(std::getenv("PATH"));
+  std::string path = std::string(std::getenv("FILE_PATH"));
 
   FileReaderMisha reader(path);
   boost::optional<string> line;
@@ -695,8 +959,8 @@ UNIT_TEST(Toolsa)
 
   std::cout << std::endl;
 
-  reader.ShowSmallestRealtionsWithAdminCentre(false /* filterByArea */, Locality::City);
+  reader.ShowSmallestRealtionsWithAdminCentre(true /* filterByArea */, Locality::Village);
 //  reader.JoinLanduse();
 //  reader.PrintTooBigRelations(Locality::Town);
-  reader.DumpUrls(200);
+  reader.DumpUrls(100);
 }

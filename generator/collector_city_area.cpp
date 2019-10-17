@@ -6,10 +6,9 @@
 #include "indexer/classificator.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
-#include "platform/platform.hpp"
-
 #include "coding/internal/file_data.hpp"
 
+#include "geometry/area_on_earth.hpp"
 #include "geometry/mercator.hpp"
 #include "geometry/polygon.hpp"
 
@@ -25,13 +24,26 @@ using namespace feature::serialization_policy;
 
 namespace
 {
-boost::optional<uint64_t> GetAdminCentreFromMembers(OsmElement const & element)
+boost::optional<uint64_t> GetAdminNodeFromMembers(OsmElement const & element)
 {
+  uint64_t adminCentreRef = 0;
+  uint64_t labelRef = 0;
   for (auto const & member : element.m_members)
   {
-    if (member.m_type == OsmElement::EntityType::Node && member.m_role == "admin_centre")
-      return {member.m_ref};
+    if (member.m_type == OsmElement::EntityType::Node)
+    {
+      if (member.m_role == "admin_centre")
+        adminCentreRef = member.m_ref;
+      else if (member.m_role == "label")
+        labelRef = member.m_ref;
+    }
   }
+
+  if (labelRef)
+    return {labelRef};
+
+  if (adminCentreRef)
+    return {adminCentreRef};
 
   return {};
 }
@@ -45,13 +57,28 @@ uint64_t GetPopulation(OsmElement const & element)
   return generator::ParsePopulationSting(populationStr);
 }
 
-std::vector<m2::PointD> CreateCircleGeometry(m2::PointD const & center, double r, double angleStepDegree)
+std::vector<m2::PointD> CreateCircleGeometry(m2::PointD const & center, double radiusMercator,
+                                             double angleStepDegree)
 {
   std::vector<m2::PointD> result;
   double const radStep = base::DegToRad(angleStepDegree);
-  for (double angleRad = 0; angleRad <= 2 * M_PI; angleRad += radStep)
-    result.emplace_back(center.x + r * cos(angleRad), center.y + r * sin(angleRad));
+  for (double angleRad = 0; angleRad <= 2 * math::pi; angleRad += radStep)
+  {
+    result.emplace_back(center.x + radiusMercator * cos(angleRad),
+                        center.y + radiusMercator * sin(angleRad));
+  }
   return result;
+}
+
+bool IsSuitablePlaceType(ftypes::LocalityType localityType)
+{
+  switch (localityType)
+  {
+  case ftypes::LocalityType::City:
+  case ftypes::LocalityType::Town:
+  case ftypes::LocalityType::Village: return true;
+  default: return false;
+  }
 }
 }  // namespace
 
@@ -67,10 +94,9 @@ CityAreaCollector::Clone(std::shared_ptr<cache::IntermediateDataReader> const &)
   return std::make_shared<CityAreaCollector>(GetFilename());
 }
 
-size_t relationsWithAdminCentre = 0;
 void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const & osmElement)
 {
-  if (feature.IsArea() && ftypes::GetPlaceType(feature.GetTypes()) == ftypes::LocalityType::City)
+  if (feature.IsArea() && IsSuitablePlaceType(ftypes::GetPlaceType(feature.GetTypes())))
   {
     auto copy = feature;
     if (copy.PreSerialize())
@@ -80,13 +106,12 @@ void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElemen
 
   if (feature.IsArea())
   {
-    auto const op = GetAdminCentreFromMembers(osmElement);
+    auto const op = GetAdminNodeFromMembers(osmElement);
     if (!op)
       return;
 
-    ++relationsWithAdminCentre;
-    auto const adminCentreOsmId = *op;
-    m_nodeOsmIdToBoundaries[adminCentreOsmId].emplace_back(feature);
+    auto const nodeOsmId = *op;
+    m_nodeOsmIdToBoundaries[nodeOsmId].emplace_back(feature);
     return;
   }
   else if (feature.IsPoint())
@@ -104,7 +129,6 @@ void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElemen
 
 void CityAreaCollector::Finish()
 {
-  LOG(LINFO, ("relationsWithAdminCentre =", relationsWithAdminCentre));
   m_writer.reset({});
 }
 
@@ -116,7 +140,6 @@ void CityAreaCollector::Save()
   {
     uint64_t const nodeOsmId = item.first;
     auto const & featureBuilders = item.second;
-    LOG(LINFO, (nodeOsmId));
 
     auto const it = m_nodeOsmIdToLocalityData.find(nodeOsmId);
     if (it == m_nodeOsmIdToLocalityData.cend())
@@ -128,11 +151,15 @@ void CityAreaCollector::Save()
     double minArea = std::numeric_limits<double>::max();
     for (size_t i = 0; i < featureBuilders.size(); ++i)
     {
-      auto const & geomentry = featureBuilders[i].GetOuterGeometry();
-      double const area = MercatorBounds::MercatorSqrToMetersSqr(
-          GetPolygonArea(geomentry.cbegin(), geomentry.cend()));
+      auto const & geometry = featureBuilders[i].GetOuterGeometry();
+      double const area = ms::AreaOnEarth(geometry);
+      if (area < 0)
+      {
+        LOG(LINFO, ("area =", area, "id =", featureBuilders[i].GetFirstOsmId().GetSerialId()));
+        continue;
+      }
 
-      if (area > 0 && minArea > area)
+      if (minArea > area)
       {
         minArea = area;
         bestIndex = i;
@@ -144,13 +171,15 @@ void CityAreaCollector::Save()
     if (localityData.m_population == 0)
       continue;
 
-    double const r = ftypes::GetRadiusByPopulationForRouting(localityData.m_population, localityData.m_place);
-    double const areaUpperBound = M_PI * r * r;
+    double const radiusMeters =
+        ftypes::GetRadiusByPopulationForRouting(localityData.m_population, localityData.m_place);
+    double const areaUpperBound = ms::CircleAreaOnEarth(radiusMeters);
 
     if (minArea > areaUpperBound)
     {
-      auto const circleGeometry =
-          CreateCircleGeometry(localityData.m_position, r, 1.0 /* angleStepDegree */);
+      auto const circleGeometry = CreateCircleGeometry(localityData.m_position,
+                                                       MercatorBounds::MetersToMercator(radiusMeters),
+                                                       1.0 /* angleStepDegree */);
 
       bestFeatureBuilder.SetArea();
       bestFeatureBuilder.ResetGeometry();
@@ -158,8 +187,14 @@ void CityAreaCollector::Save()
         bestFeatureBuilder.AddPoint(point);
     }
 
-    static uint32_t const kCityType = classif().GetTypeByPath({"place", "city"});
-    bestFeatureBuilder.AddType(kCityType);
+    static std::unordered_map<ftypes::LocalityType, uint32_t> const kLocalityTypeToClassifType = {
+        {ftypes::LocalityType::City, classif().GetTypeByPath({"place", "city"})},
+        {ftypes::LocalityType::Town, classif().GetTypeByPath({"place", "town"})},
+        {ftypes::LocalityType::Village, classif().GetTypeByPath({"place", "village"})},
+    };
+
+    CHECK_NOT_EQUAL(kLocalityTypeToClassifType.count(localityData.m_place), 0, ());
+    bestFeatureBuilder.AddType(kLocalityTypeToClassifType.at(localityData.m_place));
 
     if (bestFeatureBuilder.PreSerialize())
       m_writer->Write(bestFeatureBuilder);
