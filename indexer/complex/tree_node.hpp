@@ -41,7 +41,7 @@ public:
   void AddChild(Ptr const & child) { m_children.push_back(child); }
   void AddChildren(PtrList && children)
   {
-    std::move(std::begin(children), std::end(children), std::end(m_children));
+    std::move(std::begin(children), std::end(children), std::back_inserter(m_children));
   }
 
   void SetChildren(PtrList && children) { m_children = std::move(children); }
