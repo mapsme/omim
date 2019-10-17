@@ -2,12 +2,6 @@
 
 namespace generator
 {
-indexer::CompositeId MakeCompositeId(feature::FeatureBuilder const & fb)
-{
-  CHECK(fb.HasOsmIds(), (fb));
-  return indexer::CompositeId(fb.GetMostGenericOsmId(), fb.GetFirstOsmId());
-}
-
 // static
 uint32_t const OsmID2FeatureID::kHeaderMagic;
 

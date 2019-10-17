@@ -1,5 +1,6 @@
 #pragma once
 
+#include "indexer/composite_id.hpp"
 #include "indexer/feature_data.hpp"
 
 #include "coding/file_reader.hpp"
@@ -129,6 +130,7 @@ public:
   bool IsArea() const { return GetGeomType() == GeomType::Area; }
 
   // To work with types.
+  void ClearTypes() { m_params.m_types.clear(); }
   void SetType(uint32_t type) { m_params.SetType(type); }
   void AddType(uint32_t type) { m_params.AddType(type); }
   bool PopExactType(uint32_t type) { return m_params.PopExactType(type); }
@@ -151,6 +153,7 @@ public:
   void AddStreet(std::string const & streetName);
   void AddPostcode(std::string const & postcode);
   bool AddName(std::string const & lang, std::string const & name);
+  void ClearName() { m_params.ClearName(); }
   void SetParams(FeatureParams const & params) { m_params.SetParams(params); }
 
   FeatureParams const & GetParams() const { return m_params; }
@@ -413,4 +416,6 @@ public:
 private:
   Writer m_writer;
 };
+
+indexer::CompositeId MakeCompositeId(FeatureBuilder const & fb);
 }  // namespace feature

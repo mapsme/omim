@@ -117,6 +117,9 @@ std::string LayerBase::GetAsStringRecursive() const
 
 void RepresentationLayer::Handle(FeatureBuilder & fb)
 {
+  if (NeedSaveOutline(fb))
+    AddOutlineObject(fb);
+
   auto const sourceType = fb.GetMostGenericOsmId().GetType();
   auto const geomType = fb.GetGeomType();
   // There is a copy of params here, if there is a reference here, then the params can be
@@ -181,6 +184,32 @@ void RepresentationLayer::HandleArea(FeatureBuilder & fb, FeatureParams const & 
     auto featurePoint = MakePointFromArea(fb);
     LayerBase::Handle(featurePoint);
   }
+}
+
+void RepresentationLayer::SetComplexSet(std::unordered_set<indexer::CompositeId> && complexSet)
+{
+  m_complexSet = std::move(complexSet);
+}
+
+bool RepresentationLayer::NeedSaveOutline(feature::FeatureBuilder const & fb)
+{
+  if (!fb.HasOsmIds() || m_complexSet.count(feature::MakeCompositeId(fb)) == 0)
+    return false;
+
+  if (CanBeLine(fb.GetParams()))
+    return false;
+
+  return fb.IsArea();
+}
+
+void RepresentationLayer::AddOutlineObject(feature::FeatureBuilder fb)
+{
+  fb.ClearName();
+  fb.ClearTypes();
+  static auto const outline = classif().GetTypeByPath({"outline"});
+  fb.AddType(outline);
+  fb.SetLinear();
+  LayerBase::Handle(fb);
 }
 
 // static

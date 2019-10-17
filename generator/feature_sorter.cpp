@@ -239,7 +239,7 @@ public:
       }
 
       if (fb.HasOsmIds())
-        m_osm2ft.AddIds(generator::MakeCompositeId(fb), featureId);
+        m_osm2ft.AddIds(feature::MakeCompositeId(fb), featureId);
     };
     return featureId;
   }

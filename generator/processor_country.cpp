@@ -3,6 +3,8 @@
 #include "generator/feature_builder.hpp"
 #include "generator/generate_info.hpp"
 
+#include "indexer/complex/complex.hpp"
+
 #include "base/logging.hpp"
 
 #include <fstream>
@@ -12,17 +14,25 @@ namespace generator
 ProcessorCountry::ProcessorCountry(std::shared_ptr<FeatureProcessorQueue> const & queue,
                                    std::string const & bordersPath,
                                    std::string const & layerLogFilename,
-                                   bool haveBordersForWholeWorld)
+                                   bool haveBordersForWholeWorld,
+                                   std::string const & complexFilename)
   : m_bordersPath(bordersPath)
   , m_layerLogFilename(layerLogFilename)
+  , m_complexFilename(complexFilename)
   , m_queue(queue)
   , m_haveBordersForWholeWorld(haveBordersForWholeWorld)
 {
-  m_processingChain = std::make_shared<RepresentationLayer>();
+  auto representationLayer = std::make_shared<RepresentationLayer>();
+  if (!complexFilename.empty())
+  {
+    auto const & loader = indexer::GetOrCreateComplexLoader(m_complexFilename);
+    representationLayer->SetComplexSet(loader.GetIdsSet());
+  }
+  m_processingChain = representationLayer;
   m_processingChain->Add(std::make_shared<PrepareFeatureLayer>());
   m_processingChain->Add(std::make_shared<CountryLayer>());
   auto affiliation = std::make_shared<feature::CountriesFilesIndexAffiliation>(
-      bordersPath, haveBordersForWholeWorld);
+      m_bordersPath, m_haveBordersForWholeWorld);
   m_affiliationsLayer =
       std::make_shared<AffiliationsFeatureLayer<>>(kAffiliationsBufferSize, affiliation, m_queue);
   m_processingChain->Add(m_affiliationsLayer);
@@ -31,7 +41,7 @@ ProcessorCountry::ProcessorCountry(std::shared_ptr<FeatureProcessorQueue> const 
 std::shared_ptr<FeatureProcessorInterface> ProcessorCountry::Clone() const
 {
   return std::make_shared<ProcessorCountry>(m_queue, m_bordersPath, m_layerLogFilename,
-                                            m_haveBordersForWholeWorld);
+                                            m_haveBordersForWholeWorld, m_complexFilename);
 }
 
 void ProcessorCountry::Process(feature::FeatureBuilder & feature)

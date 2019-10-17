@@ -57,6 +57,8 @@ struct GenerateInfo
 
   std::string m_citiesBoundariesFilename;
 
+  std::string m_complexFilename;
+
   uint32_t m_versionDate = 0;
 
   std::vector<std::string> m_bucketNames;
@@ -69,6 +71,8 @@ struct GenerateInfo
   bool m_failOnCoasts = false;
   bool m_preloadCache = false;
   bool m_verbose = false;
+  bool m_addAds = false;
+
 
   GenerateInfo() = default;
 

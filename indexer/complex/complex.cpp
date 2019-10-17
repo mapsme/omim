@@ -8,6 +8,7 @@
 #include "base/stl_helpers.hpp"
 
 #include <memory>
+#include <mutex>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -82,5 +83,32 @@ tree_node::Forest<indexer::HierarchyEntry> const & ComplexLoader::GetForest(std:
   static tree_node::Forest<indexer::HierarchyEntry> const kEmpty;
   auto const it = m_forests.find(country);
   return it == std::cend(m_forests) ? kEmpty : it->second;
+}
+
+std::unordered_set<indexer::CompositeId> ComplexLoader::GetIdsSet() const
+{
+  std::unordered_set<indexer::CompositeId> set;
+  ForEach([&](auto const &, auto const & forest) {
+    forest.ForEachTree([&] (auto const & tree) {
+      tree_node::ForEach(tree, [&](auto const & entry) {
+        set.emplace(entry.m_id);
+      });
+    });
+  });
+  return set;
+}
+
+ComplexLoader const & GetOrCreateComplexLoader(std::string const & filename)
+{
+  static std::mutex m;
+  static std::unordered_map<std::string, ComplexLoader> complexLoaders;
+
+  std::lock_guard<std::mutex> lock(m);
+  auto const it = complexLoaders.find(filename);
+  if (it != std::cend(complexLoaders))
+    return it->second;
+
+  auto const eIt = complexLoaders.emplace(filename, ComplexLoader(filename));
+  return eIt.first->second;
 }
 }  // namespace indexer

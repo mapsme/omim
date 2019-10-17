@@ -21,7 +21,7 @@ class ProcessorCountry : public FeatureProcessorInterface
 public:
   explicit ProcessorCountry(std::shared_ptr<FeatureProcessorQueue> const & queue,
                             std::string const & bordersPath, std::string const & layerLogFilename,
-                            bool haveBordersForWholeWorld);
+                            bool haveBordersForWholeWorld, std::string const & complexFilename);
 
   // FeatureProcessorInterface overrides:
   std::shared_ptr<FeatureProcessorInterface> Clone() const override;
@@ -37,6 +37,7 @@ private:
 
   std::string m_bordersPath;
   std::string m_layerLogFilename;
+  std::string m_complexFilename;
   std::shared_ptr<AffiliationsFeatureLayer<>> m_affiliationsLayer;
   std::shared_ptr<FeatureProcessorQueue> m_queue;
   std::shared_ptr<LayerBase> m_processingChain;

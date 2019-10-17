@@ -11,6 +11,8 @@
 #include "generator/promo_catalog_cities.hpp"
 #include "generator/world_map_generator.hpp"
 
+#include "indexer/composite_id.hpp"
+
 #include <memory>
 #include <sstream>
 #include <string>
@@ -93,15 +95,23 @@ private:
 // with type "leisure=playground" and line object with type "barrier=fence".
 class RepresentationLayer : public LayerBase
 {
+public:
   // LayerBase overrides:
   void Handle(feature::FeatureBuilder & fb) override;
+
+  void SetComplexSet(std::unordered_set<indexer::CompositeId> && complexSet);
 
 private:
   static bool CanBeArea(FeatureParams const & params);
   static bool CanBePoint(FeatureParams const & params);
   static bool CanBeLine(FeatureParams const & params);
 
+  void AddOutlineObject(feature::FeatureBuilder fb);
+  bool NeedSaveOutline(feature::FeatureBuilder const & fb);
+
   void HandleArea(feature::FeatureBuilder & fb, FeatureParams const & params);
+
+  std::unordered_set<indexer::CompositeId> m_complexSet;
 };
 
 // Responsibility of class PrepareFeatureLayer is the removal of unused types and names,

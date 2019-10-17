@@ -6,6 +6,7 @@
 #include <functional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace indexer
 {
@@ -27,7 +28,11 @@ public:
       fn(pair.first, pair.second);
   }
 
+  std::unordered_set<indexer::CompositeId> GetIdsSet() const;
+
 private:
   std::unordered_map<std::string, tree_node::Forest<indexer::HierarchyEntry>> m_forests;
 };
+
+ComplexLoader const & GetOrCreateComplexLoader(std::string const & filename);
 }  // namespace indexer

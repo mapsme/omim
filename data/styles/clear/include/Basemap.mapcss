@@ -27,6 +27,7 @@
 /* 1.Z-INDEX BASE MAP */
 
 area[natural=coastline]
+line[outline]
 {z-index: -10;}
 
 area[natural=land],
@@ -645,3 +646,9 @@ line|z18-[barrier=fence],
 line|z18-[barrier=hedge],
 line|z18-[historic=citywalls],
 {width: 1.4;dashes: 0.3,0.3;}
+
+/* 8.4 Complex */
+
+line|z16-[outline]
+{color: @background; width: 0.1; opacity: 0.1}
+

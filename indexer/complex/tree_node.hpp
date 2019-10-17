@@ -119,6 +119,14 @@ void PreOrderVisit(types::Ptr<Data> const & node, Fn && fn)
 }
 
 template <typename Data, typename Fn>
+void ForEach(types::Ptr<Data> const & node, Fn && fn)
+{
+  PreOrderVisit(node, [&](auto const & node) {
+    fn(node->GetData());
+  });
+}
+
+template <typename Data, typename Fn>
 size_t CountIf(types::Ptr<Data> const & node, Fn && fn)
 {
   size_t count = 0;

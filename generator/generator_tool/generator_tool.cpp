@@ -161,6 +161,9 @@ DEFINE_string(popular_places_data, "",
               "Input Popular Places source file name. Needed both for World intermediate features "
               "generation (2nd pass for World) and popular places section generation (5th pass for "
               "countries).");
+
+DEFINE_string(complex_data, "", "Input source file name for building complex.");
+
 DEFINE_string(brands_data, "", "Path to json with OSM objects to brand ID map.");
 DEFINE_string(brands_translations_data, "", "Path to json with brands translations and synonyms.");
 
@@ -257,6 +260,8 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   genInfo.m_fileName = FLAGS_output;
   genInfo.m_genAddresses = FLAGS_generate_addresses_file;
   genInfo.m_idToWikidataFilename = FLAGS_idToWikidata;
+  genInfo.m_complexFilename = FLAGS_complex_data;
+  genInfo.m_addAds = FLAGS_add_ads;
 
   // Use merged style.
   GetStyleReader().SetCurrentStyle(MapStyleMerged);
@@ -276,9 +281,9 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   {
     RawGenerator rawGenerator(genInfo, threadsCount);
     if (FLAGS_generate_features)
-      rawGenerator.GenerateCountries(FLAGS_add_ads);
+      rawGenerator.GenerateCountries();
     if (FLAGS_generate_world)
-      rawGenerator.GenerateWorld(FLAGS_add_ads);
+      rawGenerator.GenerateWorld();
     if (FLAGS_make_coasts)
       rawGenerator.GenerateCoasts();
 

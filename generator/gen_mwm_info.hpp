@@ -22,8 +22,6 @@
 
 namespace generator
 {
-indexer::CompositeId MakeCompositeId(feature::FeatureBuilder const & fb);
-
 class OsmID2FeatureID
 {
 public:

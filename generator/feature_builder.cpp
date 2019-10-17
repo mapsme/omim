@@ -792,4 +792,10 @@ TypeSerializationVersion const MinSize::kSerializationVersion;
 // static
 TypeSerializationVersion const MaxAccuracy::kSerializationVersion;
 }  // namespace serialization_policy
+
+indexer::CompositeId MakeCompositeId(FeatureBuilder const & fb)
+{
+  CHECK(fb.HasOsmIds(), (fb));
+  return indexer::CompositeId(fb.GetMostGenericOsmId(), fb.GetFirstOsmId());
+}
 }  // namespace feature
