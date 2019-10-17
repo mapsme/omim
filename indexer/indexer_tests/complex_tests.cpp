@@ -177,7 +177,7 @@ UNIT_CLASS_TEST(TestWithClassificator, Complex_ComplexLoader)
 {
   auto const filename = "test.csv";
   ScopedFile sf(filename, kCsv1);
-  indexer::ComplexLoader const loader(sf.GetFullPath());
+  indexer::SourceComplexesLoader const loader(sf.GetFullPath());
   auto const forest = loader.GetForest("Russia_Moscow");
   TEST_EQUAL(forest.Size(), 1, ());
   forest.ForEachTree([](auto const & tree) {

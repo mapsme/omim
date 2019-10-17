@@ -70,7 +70,7 @@ std::string GetCountry(tree_node::types::Ptr<indexer::HierarchyEntry> const & tr
   return tree->GetData().m_countryName;
 }
 
-ComplexLoader::ComplexLoader(std::string const & filename)
+SourceComplexesLoader::SourceComplexesLoader(std::string const & filename)
 {
   auto trees = hierarchy::LoadHierachy(filename);
   base::EraseIf(trees, base::NotFn(IsComplex));
@@ -78,14 +78,14 @@ ComplexLoader::ComplexLoader(std::string const & filename)
     m_forests[GetCountry(tree)].Append(tree);
 }
 
-tree_node::Forest<indexer::HierarchyEntry> const & ComplexLoader::GetForest(std::string const & country) const
+tree_node::Forest<indexer::HierarchyEntry> const & SourceComplexesLoader::GetForest(std::string const & country) const
 {
   static tree_node::Forest<indexer::HierarchyEntry> const kEmpty;
   auto const it = m_forests.find(country);
   return it == std::cend(m_forests) ? kEmpty : it->second;
 }
 
-std::unordered_set<indexer::CompositeId> ComplexLoader::GetIdsSet() const
+std::unordered_set<indexer::CompositeId> SourceComplexesLoader::GetIdsSet() const
 {
   std::unordered_set<indexer::CompositeId> set;
   ForEach([&](auto const &, auto const & forest) {
@@ -98,17 +98,17 @@ std::unordered_set<indexer::CompositeId> ComplexLoader::GetIdsSet() const
   return set;
 }
 
-ComplexLoader const & GetOrCreateComplexLoader(std::string const & filename)
+SourceComplexesLoader const & GetOrCreateSourceComplexesLoader(std::string const & filename)
 {
   static std::mutex m;
-  static std::unordered_map<std::string, ComplexLoader> complexLoaders;
+  static std::unordered_map<std::string, SourceComplexesLoader> complexLoaders;
 
   std::lock_guard<std::mutex> lock(m);
   auto const it = complexLoaders.find(filename);
   if (it != std::cend(complexLoaders))
     return it->second;
 
-  auto const eIt = complexLoaders.emplace(filename, ComplexLoader(filename));
+  auto const eIt = complexLoaders.emplace(filename, SourceComplexesLoader(filename));
   return eIt.first->second;
 }
 }  // namespace indexer

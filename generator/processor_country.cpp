@@ -25,7 +25,7 @@ ProcessorCountry::ProcessorCountry(std::shared_ptr<FeatureProcessorQueue> const 
   auto representationLayer = std::make_shared<RepresentationLayer>();
   if (!complexFilename.empty())
   {
-    auto const & loader = indexer::GetOrCreateComplexLoader(m_complexFilename);
+    auto const & loader = indexer::GetOrCreateSourceComplexesLoader(m_complexFilename);
     representationLayer->SetComplexSet(loader.GetIdsSet());
   }
   m_processingChain = representationLayer;

@@ -10,14 +10,10 @@
 
 namespace indexer
 {
-bool IsComplex(tree_node::types::Ptr<indexer::HierarchyEntry> const & tree);
-
-std::string GetCountry(tree_node::types::Ptr<indexer::HierarchyEntry> const & tree);
-
-class ComplexLoader
+class SourceComplexesLoader
 {
 public:
-  explicit ComplexLoader(std::string const & filename);
+  explicit SourceComplexesLoader(std::string const & filename);
 
   tree_node::Forest<indexer::HierarchyEntry> const & GetForest(std::string const & country) const;
 
@@ -34,5 +30,9 @@ private:
   std::unordered_map<std::string, tree_node::Forest<indexer::HierarchyEntry>> m_forests;
 };
 
-ComplexLoader const & GetOrCreateComplexLoader(std::string const & filename);
+bool IsComplex(tree_node::types::Ptr<indexer::HierarchyEntry> const & tree);
+
+std::string GetCountry(tree_node::types::Ptr<indexer::HierarchyEntry> const & tree);
+
+SourceComplexesLoader const & GetOrCreateSourceComplexesLoader(std::string const & filename);
 }  // namespace indexer
