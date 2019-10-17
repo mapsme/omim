@@ -15,6 +15,8 @@
 
 namespace
 {
+size_t const kNumRequiredTypes = 3;
+
 std::unordered_set<uint32_t> GetRequiredComplexTypes()
 {
   std::vector<std::vector<std::string>> const kRequiredComplexPaths =
@@ -57,7 +59,9 @@ namespace indexer
 bool IsComplex(tree_node::types::Ptr<indexer::HierarchyEntry> const & tree)
 {
   static auto const kTypes = GetRequiredComplexTypes();
-  return tree_node::CountIf(tree, [&](auto const & e) { return kTypes.count(e.m_type) != 0; }) >= 3;
+  return tree_node::CountIf(tree, [&](auto const & e) {
+    return kTypes.count(e.m_type) != 0;
+  }) >= kNumRequiredTypes;
 }
 
 std::string GetCountry(tree_node::types::Ptr<indexer::HierarchyEntry> const & tree)

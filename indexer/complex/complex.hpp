@@ -1,3 +1,5 @@
+#pragma once
+
 #include "indexer/complex/hierarchy_entry.hpp"
 #include "indexer/complex/tree_node.hpp"
 

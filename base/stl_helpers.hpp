@@ -142,10 +142,10 @@ bool AnyOf(Cont && c, Fn && fn)
   return std::any_of(c.cbegin(), c.cend(), std::forward<Fn>(fn));
 }
 
-template <typename Cont, typename OIter, typename Fn>
-decltype(auto) Transform(Cont && c, OIter && it, Fn && fn)
+template <typename Cont, typename OutIt, typename Fn>
+decltype(auto) Transform(Cont && c, OutIt && it, Fn && fn)
 {
-  return std::transform(std::cbegin(c), std::cend(c), std::forward<OIter>(it), std::forward<Fn>(fn));
+  return std::transform(std::cbegin(c), std::cend(c), std::forward<OutIt>(it), std::forward<Fn>(fn));
 }
 
 template <typename Cont, typename Fn>

@@ -1,7 +1,10 @@
-#include "base/assert.hpp"
 #include "base/string_utils.hpp"
 
+#include "base/assert.hpp"
+#include "base/checked_cast.hpp"
+
 #include "std/target_os.hpp"
+
 
 #include <algorithm>
 #include <cmath>
@@ -109,7 +112,7 @@ bool to_size_t(char const * s, size_t & i, int base)
   if (!to_uint64(s, num, base))
     return false;
 
-  i = static_cast<size_t>(num);
+  i = base::checked_cast<size_t>(num);
   return true;
 }
 

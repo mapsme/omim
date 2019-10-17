@@ -11,6 +11,8 @@
 #include "indexer/composite_id.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
+#include "coding/csv_reader.hpp"
+
 #include "geometry/point2d.hpp"
 #include "geometry/tree4d.hpp"
 
@@ -18,8 +20,6 @@
 #include "base/file_name_utils.hpp"
 #include "base/geo_object_id.hpp"
 #include "base/thread_pool_computational.hpp"
-
-#include "coding/csv_reader.hpp"
 
 #include <cstddef>
 #include <memory>

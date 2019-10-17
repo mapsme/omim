@@ -107,15 +107,15 @@ template <typename Data, typename Fn>
 void PreOrderVisit(types::Ptr<Data> const & node, Fn && fn)
 {
   base::ControlFlowWrapper<Fn> wrapper(std::forward<Fn>(fn));
-  std::function<void(types::Ptr<Data> const &)> PreOrderVisitDetail;
-  PreOrderVisitDetail = [&](types::Ptr<Data> const & node) {
+  std::function<void(types::Ptr<Data> const &)> preOrderVisitDetail;
+  preOrderVisitDetail = [&](auto const & node) {
     if (wrapper(node) == base::ControlFlow::Break)
       return;
 
     for (auto const & ch : node->GetChildren())
-      PreOrderVisitDetail(ch);
+      preOrderVisitDetail(ch);
   };
-  PreOrderVisitDetail(node);
+  preOrderVisitDetail(node);
 }
 
 template <typename Data, typename Fn>
@@ -137,9 +137,9 @@ decltype(auto) FindIf(types::Ptr<Data> const & node, Fn && fn)
     if (fn(node->GetData()))
     {
       res = node;
-      return true;
+      return base::ControlFlow::Break;
     }
-    return false;
+    return base::ControlFlow::Continue;
   });
   return res;
 }
@@ -171,8 +171,9 @@ void Print(types::Ptr<Data> const & node, std::ostream & stream,
   std::replace(std::begin(str), std::end(str), '\n', '|');
   stream << str << '\n';
   auto const & children = node->GetChildren();
-  for (size_t i = 0, size = children.size(); i < size; ++i)
-      Print(children[i], stream, prefix, i == size - 1);
+  size_t size = children.size();
+  for (size_t i = 0; i < size; ++i)
+    Print(children[i], stream, prefix, i == size - 1 /* isTail */);
 }
 
 template <typename Data>

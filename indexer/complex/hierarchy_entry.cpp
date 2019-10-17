@@ -13,6 +13,8 @@
 #include <sstream>
 #include <tuple>
 
+#include "3party/jansson/myjansson.hpp"
+
 namespace
 {
 // GetRussianName returns a russian feature name if it's possible.
@@ -39,19 +41,20 @@ bool operator==(HierarchyEntry const & lhs, HierarchyEntry const & rhs)
 
 std::string DebugPrint(HierarchyEntry const & line)
 {
-  std::stringstream stream;
-  stream << std::fixed << std::setprecision(7);
-  stream << DebugPrint(line.m_id) << ';';
+  auto obj = base::NewJSONObject();
+  ToJSONObject(*obj, "id", DebugPrint(line.m_id));
   if (line.m_parentId)
-    stream << DebugPrint(*line.m_parentId);
-  stream << ';';
-  stream << line.m_depth << ';';
-  stream << line.m_center.x << ';';
-  stream << line.m_center.y << ';';
-  stream << classif().GetReadableObjectName(line.m_type) << ';';
-  stream << line.m_name << ';';
-  stream << line.m_countryName;
-  return stream.str();
+    ToJSONObject(*obj, "parentId", DebugPrint(*line.m_parentId));
+  ToJSONObject(*obj, "depth", line.m_depth);
+  ToJSONObject(*obj, "type", classif().GetReadableObjectName(line.m_type));
+  ToJSONObject(*obj, "name", line.m_name);
+  ToJSONObject(*obj, "country", line.m_countryName);
+
+  auto center = base::NewJSONObject();
+  ToJSONObject(*center, "x", line.m_center.x);
+  ToJSONObject(*center, "y", line.m_center.y);
+  ToJSONObject(*obj, "center", center);
+  return DumpToString(obj);
 }
 namespace hierarchy
 {
@@ -74,21 +77,21 @@ uint32_t GetMainType(FeatureParams::Types const & types)
 
 std::string GetName(StringUtf8Multilang const & str) { return GetRussianName(str); }
 
-coding::CSVReader::Row HierarchyEntryToCsvRow(HierarchyEntry const & line)
+coding::CSVReader::Row HierarchyEntryToCsvRow(HierarchyEntry const & entry)
 {
   coding::CSVReader::Row row;
-  row.emplace_back(line.m_id.ToString());
+  row.emplace_back(entry.m_id.ToString());
   std::string parentId;
-  if (line.m_parentId)
-    parentId = (*line.m_parentId).ToString();
+  if (entry.m_parentId)
+    parentId = (*entry.m_parentId).ToString();
 
   row.emplace_back(parentId);
-  row.emplace_back(strings::to_string(line.m_depth));
-  row.emplace_back(strings::to_string_dac(line.m_center.x, 7));
-  row.emplace_back(strings::to_string_dac(line.m_center.y, 7));
-  row.emplace_back(strings::to_string(classif().GetReadableObjectName(line.m_type)));
-  row.emplace_back(strings::to_string(line.m_name));
-  row.emplace_back(strings::to_string(line.m_countryName));
+  row.emplace_back(strings::to_string(entry.m_depth));
+  row.emplace_back(strings::to_string_dac(entry.m_center.x, 7));
+  row.emplace_back(strings::to_string_dac(entry.m_center.y, 7));
+  row.emplace_back(strings::to_string(classif().GetReadableObjectName(entry.m_type)));
+  row.emplace_back(strings::to_string(entry.m_name));
+  row.emplace_back(strings::to_string(entry.m_countryName));
   return row;
 }
 
@@ -110,18 +113,18 @@ HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row)
   if (!parentId.empty())
     entry.m_parentId = CompositeId(parentId);
 
-  CHECK(strings::to_size_t(depth, entry.m_depth), (row));
-  CHECK(strings::to_double(x, entry.m_center.x), (row));
-  CHECK(strings::to_double(y, entry.m_center.y), (row));
+  VERIFY(strings::to_size_t(depth, entry.m_depth), (row));
+  VERIFY(strings::to_double(x, entry.m_center.x), (row));
+  VERIFY(strings::to_double(y, entry.m_center.y), (row));
   entry.m_type = classif().GetTypeByReadableObjectName(type);
   entry.m_name = name;
   entry.m_countryName = country;
   return entry;
 }
 
-std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delim)
+std::string HierarchyEntryToCsvString(HierarchyEntry const & entry, char delim)
 {
-  return strings::JoinStrings(HierarchyEntryToCsvRow(line), delim);
+  return strings::JoinStrings(HierarchyEntryToCsvRow(entry), delim);
 }
 
 tree_node::types::PtrList<HierarchyEntry> LoadHierachy(std::string const & filename)

@@ -39,10 +39,10 @@ static char const kCsvDelimiter = ';';
 uint32_t GetMainType(FeatureParams::Types const & types);
 std::string GetName(StringUtf8Multilang const & str);
 
-coding::CSVReader::Row HierarchyEntryToCsvRow(HierarchyEntry const & line);
+coding::CSVReader::Row HierarchyEntryToCsvRow(HierarchyEntry const & entry);
 HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row);
 
-std::string HierarchyEntryToCsvString(HierarchyEntry const & line, char delim = kCsvDelimiter);
+std::string HierarchyEntryToCsvString(HierarchyEntry const & entry, char delim = kCsvDelimiter);
 
 tree_node::types::PtrList<HierarchyEntry> LoadHierachy(std::string const & filename);
 }  // namespace hierarchy
