@@ -96,6 +96,11 @@ CityAreaCollector::Clone(std::shared_ptr<cache::IntermediateDataReader> const &)
 
 void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElement const & osmElement)
 {
+  if (osmElement.m_id == 162337)
+  {
+    int asd = 123;
+    (void)asd;
+  }
   if (feature.IsArea() && IsSuitablePlaceType(ftypes::GetPlaceType(feature.GetTypes())))
   {
     auto copy = feature;
@@ -117,7 +122,7 @@ void CityAreaCollector::CollectFeature(FeatureBuilder const & feature, OsmElemen
   else if (feature.IsPoint())
   {
     ftypes::LocalityType placeType = ftypes::GetPlaceType(feature.GetTypes());
-    if (placeType != ftypes::LocalityType::City)
+    if (!IsSuitablePlaceType(placeType))
       return;
 
     uint64_t const population = GetPopulation(osmElement);

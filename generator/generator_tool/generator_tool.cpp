@@ -193,6 +193,8 @@ DEFINE_bool(dump_mwm_tmp, false, "Prints feature builder objects from .mwm.tmp")
 // Common.
 DEFINE_bool(verbose, false, "Provide more detailed output.");
 
+DEFINE_uint64(threads_count, 0, "");
+
 using namespace generator;
 
 MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
@@ -206,7 +208,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   google::ParseCommandLineFlags(&argc, &argv, true);
 
   Platform & pl = GetPlatform();
-  auto threadsCount = pl.CpuCores();
+  auto threadsCount = FLAGS_threads_count ? FLAGS_threads_count : pl.CpuCores();
 
   if (!FLAGS_user_resource_path.empty())
   {

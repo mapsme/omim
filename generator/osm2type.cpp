@@ -464,6 +464,11 @@ string MatchCity(OsmElement const * p)
 
 string DetermineSurface(OsmElement * p)
 {
+  if (p->m_id == 47001885)
+  {
+    int asd = 123;
+    (void)asd;
+  }
   string surface;
   string smoothness;
   string surface_grade;
