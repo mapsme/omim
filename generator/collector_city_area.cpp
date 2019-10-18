@@ -160,7 +160,7 @@ void CityAreaCollector::Save()
       double const area = ms::AreaOnEarth(geometry);
       if (area < 0)
       {
-        LOG(LINFO, ("area =", area, "id =", featureBuilders[i].GetFirstOsmId().GetSerialId()));
+        LOG(LINFO, ("area =", area, "id =", featureBuilders[i].GetMostGenericOsmId().GetSerialId()));
         continue;
       }
 
