@@ -34,7 +34,10 @@ public:
   using WeakPtr = types::WeakPtr<Data>;
   using PtrList = types::PtrList<Data>;
 
-  explicit TreeNode(Data && data) : m_data(std::move(data)) {}
+  template <typename T, typename Fn>
+  friend void OrderBy(types::Ptr<T> const & node, Fn && fn);
+
+  explicit TreeNode(Data && data) : m_data(std::forward<Data>(data)) {}
 
   bool HasChildren() const { return !m_children.empty(); }
   PtrList const & GetChildren() const { return m_children; }
@@ -70,6 +73,20 @@ template <typename Data>
 class Forest
 {
 public:
+  bool operator==(Forest<Data> const & other) const
+  {
+    auto const size = Size();
+    if (size != other.Size())
+      return false;
+
+    for (size_t i = 0; i < size; ++i)
+    {
+      if (!IsEqual(m_trees[i], other.m_trees[i]))
+        return false;
+    }
+    return true;
+  }
+
   void Append(types::Ptr<Data> const & tree) { m_trees.emplace_back(tree); }
 
   size_t Size() const { return m_trees.size(); }
@@ -116,6 +133,33 @@ void PreOrderVisit(types::Ptr<Data> const & node, Fn && fn)
       preOrderVisitDetail(ch);
   };
   preOrderVisitDetail(node);
+}
+
+template <typename Data, typename Fn>
+void OrderBy(types::Ptr<Data> const & node, Fn && fn)
+{
+  PreOrderVisit(node, [&](auto const & n) {
+    std::sort(std::cbegin(n->m_children), std::cend(n->m_children), std::forward<Fn>(fn));
+  });
+}
+
+template <typename Data>
+bool IsEqual(types::Ptr<Data> const & lhs, types::Ptr<Data> const & rhs)
+{
+  if (lhs->GetData() != rhs->GetData())
+    return false;
+
+  auto const & lhsCh = lhs->GetChildren();
+  auto const & rhsCh = rhs->GetChildren();
+  if (lhsCh.size() != rhsCh.size())
+    return false;
+
+  for (size_t i = 0; i < lhsCh.size(); ++i)
+  {
+    if (!IsEqual(lhsCh[i], rhsCh[i]))
+      return false;
+  }
+  return true;
 }
 
 template <typename Data, typename Fn>
@@ -189,6 +233,16 @@ std::string DebugPrint(types::Ptr<Data> const & node)
 {
   std::stringstream stream;
   Print(node, stream);
+  return stream.str();
+}
+
+template <typename Data>
+std::string DebugPrint(Forest<Data> const & forest)
+{
+  std::stringstream stream;
+  forest.ForEachTree([&](auto const & tree) {
+    stream << DebugPrint(tree) << "\n";
+  });
   return stream.str();
 }
 }  // namespace tree_node

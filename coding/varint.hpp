@@ -184,6 +184,34 @@ T ReadVarInt(TSource & src)
   return bits::ZigZagDecode(ReadVarUint<std::make_unsigned_t<T>>(src));
 }
 
+template <typename T, typename Sink,
+          typename std::enable_if_t<std::is_integral<T>::value && std::is_unsigned<T>::value, int> = 0>
+void WriteVarIntegral(Sink & dst, T value)
+{
+  WriteVarUint(dst, value);
+}
+
+template <typename T, typename Sink,
+          typename std::enable_if_t<std::is_integral<T>::value && std::is_signed<T>::value, int> = 0>
+void WriteVarIntegral(Sink & dst, T value)
+{
+  WriteVarInt(dst, value);
+}
+
+template <typename T, typename Source,
+          typename std::enable_if_t<std::is_integral<T>::value && std::is_unsigned<T>::value, int> = 0>
+T ReadVarIntegral(Source & src)
+{
+  return ReadVarUint<T>(src);
+}
+
+template <typename T, typename Source,
+          typename std::enable_if_t<std::is_integral<T>::value && std::is_signed<T>::value, int> = 0>
+T ReadVarIntegral(Source & src)
+{
+  return ReadVarInt<T>(src);
+}
+
 DECLARE_EXCEPTION(ReadVarIntException, RootException);
 
 namespace impl

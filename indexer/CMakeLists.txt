@@ -30,6 +30,8 @@ set(
   complex/complex.hpp
   complex/hierarchy_entry.cpp
   complex/hierarchy_entry.hpp
+  complex/serdes.cpp
+  complex/serdes.hpp
   complex/tree_node.hpp
   composite_id.cpp
   composite_id.hpp

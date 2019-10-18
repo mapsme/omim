@@ -6,6 +6,7 @@
 #include "indexer/classificator_loader.hpp"
 #include "indexer/complex/complex.hpp"
 #include "indexer/complex/hierarchy_entry.hpp"
+#include "indexer/complex/serdes.hpp"
 #include "indexer/complex/tree_node.hpp"
 #include "indexer/composite_id.hpp"
 
@@ -180,8 +181,41 @@ UNIT_CLASS_TEST(TestWithClassificator, Complex_ComplexLoader)
   indexer::SourceComplexesLoader const loader(sf.GetFullPath());
   auto const forest = loader.GetForest("Russia_Moscow");
   TEST_EQUAL(forest.Size(), 1, ());
-  forest.ForEachTree([](auto const & tree) {
-      TEST_EQUAL(tree_node::Size(tree), 7, ());
-  });
+  forest.ForEachTree([](auto const & tree) { TEST_EQUAL(tree_node::Size(tree), 7, ()); });
+}
+
+UNIT_CLASS_TEST(TestWithClassificator, Complex_Serdes)
+{
+  auto tree1 = tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(1);
+  auto node11 = tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(11);
+  tree_node::Link(tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(111), node11);
+  tree_node::Link(tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(112), node11);
+  tree_node::Link(tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(113), node11);
+  tree_node::Link(node11, tree1);
+  tree_node::Link(tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(12), tree1);
+
+  auto tree2 = tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(2);
+  tree_node::Link(tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(21), tree2);
+  tree_node::Link(tree_node::MakeTreeNode<indexer::ComplexSerdes::Id>(22), tree2);
+
+
+  tree_node::Forest<indexer::ComplexSerdes::Id> expectedForest;
+  expectedForest.Append(tree1);
+  expectedForest.Append(tree2);
+
+  using ByteVector = std::vector<uint8_t>;
+
+  ByteVector buffer;
+  MemWriter<decltype(buffer)> writer(buffer);
+  WriterSink<decltype(writer)> sink(writer);
+  indexer::ComplexSerdes::Serialize(sink, indexer::ComplexSerdes::Version::V0, expectedForest);
+
+  MemReader reader(buffer.data(), buffer.size());
+  ReaderSource<decltype(reader)> src(reader);
+  tree_node::Forest<indexer::ComplexSerdes::Id> forest;
+  TEST(indexer::ComplexSerdes::Deserialize(src, indexer::ComplexSerdes::Version::V0, forest), ());
+  LOG(LINFO, (forest));
+  LOG(LINFO, (expectedForest));
+  TEST_EQUAL(forest, expectedForest, ());
 }
 }  // namespace
