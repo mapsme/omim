@@ -10,6 +10,11 @@
 
 namespace indexer
 {
+namespace complex
+{
+using Id = uint32_t;
+}  // namespace complex
+
 class SourceComplexesLoader
 {
 public:
@@ -35,4 +40,15 @@ bool IsComplex(tree_node::types::Ptr<indexer::HierarchyEntry> const & tree);
 std::string GetCountry(tree_node::types::Ptr<indexer::HierarchyEntry> const & tree);
 
 SourceComplexesLoader const & GetOrCreateSourceComplexesLoader(std::string const & filename);
+
+template <typename Fn>
+tree_node::Forest<complex::Id> TraformToComplexForest(
+    tree_node::Forest<HierarchyEntry> const & forest, Fn && fn)
+{
+  tree_node::Forest<complex::Id> res;
+  forest.ForEachTree([&](auto const & tree) {
+    res.Append(tree_node::TransformToTree(tree, std::forward<Fn>(fn)));
+  });
+  return res;
+}
 }  // namespace indexer

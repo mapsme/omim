@@ -143,6 +143,16 @@ void OrderBy(types::Ptr<Data> const & node, Fn && fn)
   });
 }
 
+template <typename Data, typename Fn>
+types::Ptr<typename std::result_of<Fn(Data const &)>::type> TransformToTree(
+    types::Ptr<Data> const & node, Fn && fn)
+{
+  auto n = MakeTreeNode(fn(node->GetData()));
+  for (auto const & ch : node->GetChildren())
+    n->AddChild(TransformToTree(ch, fn));
+  return n;
+}
+
 template <typename Data>
 bool IsEqual(types::Ptr<Data> const & lhs, types::Ptr<Data> const & rhs)
 {

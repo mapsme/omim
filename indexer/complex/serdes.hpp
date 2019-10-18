@@ -17,7 +17,7 @@ namespace indexer
 class ComplexSerdes
 {
 public:
-  using Id = uint32_t;
+  using Id = complex::Id;
 
   enum class Version : uint8_t
   {

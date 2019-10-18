@@ -218,4 +218,26 @@ UNIT_CLASS_TEST(TestWithClassificator, Complex_Serdes)
   LOG(LINFO, (expectedForest));
   TEST_EQUAL(forest, expectedForest, ());
 }
+
+UNIT_CLASS_TEST(TestWithClassificator, Complex_TransformToTree)
+{
+  auto const filename = "test.csv";
+  ScopedFile sf(filename, kCsv1);
+  auto const forest = indexer::hierarchy::LoadHierachy(sf.GetFullPath());
+  TEST(!forest.empty(), ());
+  auto const & tree = forest.front();
+  auto transformedTree = tree_node::TransformToTree(tree, [](auto const & entry) {
+    return entry.m_name;
+  });
+
+  auto expectedTree = tree_node::MakeTreeNode<std::string>("Lomonosov Moscow State Univesity");
+  tree_node::Link(tree_node::MakeTreeNode<std::string>("Николай Егорович Жуковский"), expectedTree);
+  auto const node1 = tree_node::MakeTreeNode<std::string>("Ботанический сад МГУ");
+  tree_node::Link(tree_node::MakeTreeNode<std::string>("Отдел флоры"), node1);
+  tree_node::Link(tree_node::MakeTreeNode<std::string>("Дендрарий Ботанического сада МГУ"), node1);
+  tree_node::Link(node1, expectedTree);
+  tree_node::Link(tree_node::MakeTreeNode<std::string>("Александр Иванович Герцен"), expectedTree);
+  tree_node::Link(tree_node::MakeTreeNode<std::string>("Николай Гаврилович Чернышевский"), expectedTree);
+  TEST(tree_node::IsEqual(transformedTree, expectedTree), ());
+}
 }  // namespace
