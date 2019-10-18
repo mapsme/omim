@@ -37,7 +37,8 @@ void BuildComplexSection(std::string const & mwmFilename,
 
    FilesContainerW cont(mwmFilename, FileWriter::OP_WRITE_EXISTING);
    auto writer = cont.GetWriter(COMPLEXES_FILE_TAG);
+   auto const start = writer->Pos();
    indexer::ComplexSerdes::Serialize(*writer, complexForest);
-   LOG(LINFO, ("Section", COMPLEXES_FILE_TAG, "was written. Total size is", writer->Size()));
+   LOG(LINFO, ("Section", COMPLEXES_FILE_TAG, "was written. Total size is", writer->Pos() - start));
 }
 }  // namespace generator
