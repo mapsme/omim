@@ -32,6 +32,7 @@ public:
   };
 
   OsmID2FeatureID();
+  OsmID2FeatureID(std::string const & filename);
 
   bool ReadFromFile(std::string const & filename);
 

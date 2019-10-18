@@ -6,6 +6,7 @@
 #include "generator/cities_boundaries_builder.hpp"
 #include "generator/cities_ids_builder.hpp"
 #include "generator/city_roads_generator.hpp"
+#include "generator/complex_section_builder.hpp"
 #include "generator/descriptions_section_builder.hpp"
 #include "generator/dumper.hpp"
 #include "generator/feature_builder.hpp"
@@ -162,6 +163,7 @@ DEFINE_string(popular_places_data, "",
               "generation (2nd pass for World) and popular places section generation (5th pass for "
               "countries).");
 
+DEFINE_bool(generate_complex, false, "Generate section with complexes.");
 DEFINE_string(complex_data, "", "Input source file name for building complex.");
 
 DEFINE_string(brands_data, "", "Path to json with OSM objects to brand ID map.");
@@ -525,6 +527,9 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       if (!traffic::GenerateTrafficKeysFromDataFile(datFile))
         LOG(LCRITICAL, ("Error generating traffic keys."));
     }
+
+    if (FLAGS_generate_complex)
+      BuildComplexSection(datFile, osmToFeatureFilename, FLAGS_complex_data);
   }
 
   string const datFile = base::JoinPath(path, FLAGS_output + DATA_FILE_EXTENSION);

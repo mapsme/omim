@@ -7,10 +7,17 @@ uint32_t const OsmID2FeatureID::kHeaderMagic;
 
 OsmID2FeatureID::OsmID2FeatureID() : m_version(Version::V1) {}
 
+OsmID2FeatureID::OsmID2FeatureID(std::string const & filename)
+  : OsmID2FeatureID()
+{
+  ReadFromFile(filename);
+}
+
 OsmID2FeatureID::Version OsmID2FeatureID::GetVersion() const { return m_version; }
 
 bool OsmID2FeatureID::ReadFromFile(std::string const & filename)
 {
+  m_data.clear();
   try
   {
     FileReader reader(filename);
