@@ -442,26 +442,26 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
     DijkstraWrapperJoints wrapper(indexGraphWrapper, enter);
     AStarAlgorithm<JointSegment, JointEdge, RouteWeight>::Context context(wrapper);
     unordered_map<uint32_t, vector<JointSegment>> visitedVertexes;
-    astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
-                        [&](JointSegment const & vertex)
-                        {
-                          if (vertex.IsFake())
-                          {
-                            Segment start = wrapper.GetSegmentOfFakeJoint(vertex, true /* start */);
-                            Segment end = wrapper.GetSegmentOfFakeJoint(vertex, false /* start */);
-                            if (start.IsForward() != end.IsForward())
-                              return true;
-
-                            visitedVertexes[end.GetFeatureId()].emplace_back(start, end);
-                          }
-                          else
-                          {
-                            visitedVertexes[vertex.GetFeatureId()].emplace_back(vertex);
-                          }
-
-                            return true;
-                          } /* visitVertex */,
-                          context);
+//    astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
+//                        [&](JointSegment const & vertex)
+//                        {
+//                          if (vertex.IsFake())
+//                          {
+//                            Segment start = wrapper.GetSegmentOfFakeJoint(vertex, true /* start */);
+//                            Segment end = wrapper.GetSegmentOfFakeJoint(vertex, false /* start */);
+//                            if (start.IsForward() != end.IsForward())
+//                              return true;
+//
+//                            visitedVertexes[end.GetFeatureId()].emplace_back(start, end);
+//                          }
+//                          else
+//                          {
+//                            visitedVertexes[vertex.GetFeatureId()].emplace_back(vertex);
+//                          }
+//
+//                            return true;
+//                          } /* visitVertex */,
+//                          context);
 
     for (Segment const & exit : connector.GetExits())
     {
