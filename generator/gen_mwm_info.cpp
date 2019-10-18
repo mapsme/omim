@@ -10,7 +10,7 @@ OsmID2FeatureID::OsmID2FeatureID() : m_version(Version::V1) {}
 OsmID2FeatureID::OsmID2FeatureID(std::string const & filename)
   : OsmID2FeatureID()
 {
-  ReadFromFile(filename);
+  CHECK(ReadFromFile(filename), (filename));
 }
 
 OsmID2FeatureID::Version OsmID2FeatureID::GetVersion() const { return m_version; }
@@ -42,15 +42,16 @@ void OsmID2FeatureID::AddIds(indexer::CompositeId const & osmId, uint32_t featur
   m_data.emplace_back(osmId, featureId);
 }
 
-boost::optional<uint32_t> OsmID2FeatureID::GetFeatureId(indexer::CompositeId const & id) const
+std::vector<uint32_t> OsmID2FeatureID::GetFeatureIds(indexer::CompositeId const & id) const
 {
-  auto const it = std::lower_bound(std::cbegin(m_data), std::cend(m_data), id,
-                                   [](auto const & l, auto const & r) { return l.first < r; });
-  if (it == std::cend(m_data) || it->first != id)
-    return {};
-
-//  CHECK_NOT_EQUAL(std::next(it)->first, id, (id));
-  return it->second;
+  auto const begin = std::lower_bound(std::cbegin(m_data), std::cend(m_data), id,
+                                      [](auto const & l, auto const & r) { return l.first < r; });
+  auto const end = std::upper_bound(std::cbegin(m_data), std::cend(m_data), id,
+                                   [](auto const & l, auto const & r) { return l < r.first; });
+  std::vector<uint32_t> ids;
+  ids.reserve(static_cast<size_t>(std::distance(begin, end)));
+  std::transform(begin, end, std::back_inserter(ids), base::RetrieveSecond());
+  return ids;
 }
 
 std::vector<uint32_t> OsmID2FeatureID::GetFeatureIds(base::GeoObjectId mainId) const

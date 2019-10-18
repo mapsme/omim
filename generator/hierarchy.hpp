@@ -151,5 +151,7 @@ private:
   std::string m_countryName;
   std::shared_ptr<HierarchyLineEnricher> m_enricher;
 };
+
+uint32_t GetIdWitBestGeom(std::vector<uint32_t> const & ids, FeatureGetter const & ftGetter);
 }  // namespace hierarchy
 }  // namespace generator

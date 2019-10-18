@@ -1,5 +1,6 @@
 #include "generator/complex_section_builder.hpp"
 
+#include "generator/hierarchy.hpp"
 #include "generator/utils.hpp"
 
 #include "indexer/complex/complex.hpp"
@@ -23,11 +24,12 @@ void BuildComplexSection(std::string const & mwmFilename,
    indexer::SourceComplexesLoader loader(complecSrcFilename);
    auto const srcForest = loader.GetForest(base::GetNameFromFullPathWithoutExt(mwmFilename));
    auto const complexForest = indexer::TraformToComplexForest(srcForest, [&](auto const & entry) {
-     auto const ftId = osmToFtIds.GetFeatureId(entry.m_id);
-     CHECK(ftId, (ftId, entry.m_id));
-     auto const ft = ftGetter.GetFeatureByIndex(*ftId);
+     auto const ids = osmToFtIds.GetFeatureIds(entry.m_id);
+     CHECK(!ids.empty(), (entry.m_id));
+     auto const ftId = hierarchy::GetIdWitBestGeom(ids, ftGetter);
+     auto const ft = ftGetter.GetFeatureByIndex(ftId);
      CHECK(ft, (ftId, entry.m_id));
-     return *ftId;
+     return ftId;
    });
 
    if (complexForest.Size() == 0)
@@ -36,6 +38,6 @@ void BuildComplexSection(std::string const & mwmFilename,
    FilesContainerW cont(mwmFilename, FileWriter::OP_WRITE_EXISTING);
    auto writer = cont.GetWriter(COMPLEXES_FILE_TAG);
    indexer::ComplexSerdes::Serialize(*writer, complexForest);
-   LOG(LINFO, ("Section", COMPLEXES_FILE_TAG, "was written. Total size is" writer->Size()));
+   LOG(LINFO, ("Section", COMPLEXES_FILE_TAG, "was written. Total size is", writer->Size()));
 }
 }  // namespace generator

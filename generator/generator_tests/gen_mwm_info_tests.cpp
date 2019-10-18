@@ -38,7 +38,7 @@ UNIT_TEST(OsmID2FeatureID_AddIds)
   TEST_EQUAL(index, answer.size(), ());
 }
 
-UNIT_TEST(OsmID2FeatureID_GetFeatureId)
+UNIT_TEST(OsmID2FeatureID_GetFeatureIds)
 {
   generator::OsmID2FeatureID mapping;
   mapping.AddIds(kCid1, kId1);
@@ -58,10 +58,20 @@ UNIT_TEST(OsmID2FeatureID_GetFeatureId)
     };
     TEST_EQUAL(mapping.GetFeatureIds(kCid1.m_additionalId), answer, ());
   }
-  TEST_EQUAL(*mapping.GetFeatureId(kCid1), kId1, ());
-  TEST_EQUAL(*mapping.GetFeatureId(kCid2), kId2, ());
-  TEST_EQUAL(*mapping.GetFeatureId(kCid3), kId3, ());
-  TEST(!mapping.GetFeatureId(indexer::CompositeId(base::GeoObjectId())), ());
+  auto ids = mapping.GetFeatureIds(kCid1);
+  TEST_EQUAL(ids.size(), 1, ());
+  TEST_EQUAL(ids.front(), kId1, ());
+
+  ids = mapping.GetFeatureIds(kCid2);
+  TEST_EQUAL(ids.size(), 1, ());
+  TEST_EQUAL(ids.front(), kId2, ());
+
+  ids = mapping.GetFeatureIds(kCid3);
+  TEST_EQUAL(ids.size(), 1, ());
+  TEST_EQUAL(ids.front(), kId3, ());
+
+  ids = mapping.GetFeatureIds(indexer::CompositeId(base::GeoObjectId()));
+  TEST(ids.empty(), ());
 }
 
 UNIT_TEST(OsmID2FeatureID_ReadWrite)

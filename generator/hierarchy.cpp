@@ -174,11 +174,12 @@ HierarchyLineEnricher::HierarchyLineEnricher(std::string const & osm2FtIdsPath,
 
 boost::optional<m2::PointD> HierarchyLineEnricher::GetFeatureCenter(indexer::CompositeId const & id) const
 {
-  auto const optId = m_osm2FtIds.GetFeatureId(id);
-  if (!optId)
+  auto const ids = m_osm2FtIds.GetFeatureIds(id);
+  if (ids.empty())
     return {};
 
-  auto const ftPtr = m_featureGetter.GetFeatureByIndex(*optId);
+  auto const ftId = GetIdWitBestGeom(ids, m_featureGetter);
+  auto const ftPtr = m_featureGetter.GetFeatureByIndex(ftId);
   return ftPtr ? feature::GetCenter(*ftPtr) : boost::optional<m2::PointD>();
 }
 
@@ -236,6 +237,26 @@ indexer::HierarchyEntry HierarchyLinesBuilder::Transform(HierarchyBuilder::Node:
   line.m_type = m_getMainType(data.GetTypes());
   line.m_center = GetCenter(node);
   return line;
+}
+
+uint32_t GetIdWitBestGeom(std::vector<uint32_t> const & ids, FeatureGetter const & ftGetter)
+{
+  auto bestGeom = GeomType::Undefined;
+  uint32_t bestId = 0;
+  for (auto id : ids)
+  {
+    auto const ftPtr = ftGetter.GetFeatureByIndex(id);
+    if (!ftPtr)
+      continue;
+
+    auto const geom = ftPtr->GetGeomType();
+    if (base::Underlying(geom) > base::Underlying(bestGeom))
+    {
+      bestId = id;
+      bestGeom = geom;
+    }
+  }
+  return bestId;
 }
 }  // namespace hierarchy
 }  // namespace generator
