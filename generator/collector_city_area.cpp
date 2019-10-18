@@ -139,6 +139,8 @@ void CityAreaCollector::Finish()
 
 void CityAreaCollector::Save()
 {
+  uint32_t pointToCircle = 0;
+  uint32_t matchBoundary = 0;
   m_writer = std::make_unique<FeatureBuilderWriter<MaxAccuracy>>(GetTmpFilename(),
                                                                  FileWriter::Op::OP_APPEND);
   for (auto const & item : m_nodeOsmIdToBoundaries)
@@ -182,6 +184,7 @@ void CityAreaCollector::Save()
 
     if (minArea > areaUpperBound)
     {
+      ++pointToCircle;
       auto const circleGeometry = CreateCircleGeometry(localityData.m_position,
                                                        MercatorBounds::MetersToMercator(radiusMeters),
                                                        1.0 /* angleStepDegree */);
@@ -190,6 +193,10 @@ void CityAreaCollector::Save()
       bestFeatureBuilder.ResetGeometry();
       for (auto const & point : circleGeometry)
         bestFeatureBuilder.AddPoint(point);
+    }
+    else
+    {
+      ++matchBoundary;
     }
 
     static std::unordered_map<ftypes::LocalityType, uint32_t> const kLocalityTypeToClassifType = {
@@ -207,6 +214,7 @@ void CityAreaCollector::Save()
 
   m_writer.reset({});
   CHECK(base::CopyFileX(GetTmpFilename(), GetFilename()), ());
+  LOG(LINFO, ("pointToCircle =", pointToCircle, "matchBoundary =", matchBoundary));
 }
 
 void CityAreaCollector::Merge(generator::CollectorInterface const & collector)
