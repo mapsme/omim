@@ -54,6 +54,7 @@ def stage_update_planet(env, **kwargs):
 def stage_download_external(env):
     download_external({
         settings.SUBWAY_URL: env.subway_path,
+        settings.COMPLEXES_PATH: env.complexes_path
     })
 
 
@@ -88,7 +89,9 @@ def stage_features(env):
         extra["brands_translations_data"] = env.food_translations_path
     if env.is_accepted_stage(stage_coastline):
         extra["emit_coasts"]=True
-        
+
+    # todo(m.andrianov): Move it under 'if env.is_accepted_stage(stage_download_production_external):'.
+    extra["complex_data"] = env.complexes_path
     stages.stage_features(env, **extra)
     if os.path.exists(env.packed_polygons_path):
         shutil.copy2(env.packed_polygons_path, env.mwm_path)
@@ -138,6 +141,11 @@ def stage_ugc(env, country, **kwargs):
 
 
 @country_stage
+def stage_complex(env, country, **kwargs):
+    stages.stage_complex(env, country, **kwargs)
+
+
+@country_stage
 def stage_popularity(env, country, **kwargs):
     stages.stage_popularity(env, country, **kwargs)
 
@@ -164,6 +172,7 @@ def stage_mwm(env):
         stage_ugc(env, country)
         stage_popularity(env, country)
         stage_srtm(env, country)
+        stage_complex(env, country)
         stage_routing(env, country)
         stage_routing_transit(env, country)
         env.finish_mwm(country)
@@ -328,7 +337,7 @@ def stage_cleanup(env):
 MWM_STAGE = stage_mwm.__name__
 COUNTRIES_STAGES = [s.__name__ for s in
                     (stage_index, stage_ugc, stage_popularity, stage_srtm,
-                     stage_routing, stage_routing_transit)]
+                     stage_complex, stage_routing, stage_routing_transit)]
 STAGES = [s.__name__ for s in
           (stage_download_external, stage_download_production_external,
            stage_download_and_convert_planet, stage_update_planet,

@@ -163,7 +163,7 @@ DEFINE_string(popular_places_data, "",
               "generation (2nd pass for World) and popular places section generation (5th pass for "
               "countries).");
 
-DEFINE_bool(generate_complex, false, "Generate section with complexes.");
+DEFINE_bool(make_complex, false, "Generate section with complexes.");
 DEFINE_string(complex_data, "", "Input source file name for building complex.");
 
 DEFINE_string(brands_data, "", "Path to json with OSM objects to brand ID map.");
@@ -528,7 +528,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
         LOG(LCRITICAL, ("Error generating traffic keys."));
     }
 
-    if (FLAGS_generate_complex)
+    if (FLAGS_make_complex)
       BuildComplexSection(datFile, osmToFeatureFilename, FLAGS_complex_data);
   }
 

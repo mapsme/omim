@@ -27,6 +27,7 @@ OSM_TOOLS_PATH: ~/osmctools
 # PLANET_URL:
 # PLANET_MD5_URL:
 # PLANET_COASTS_URL:
+# COMPLEXES_PATH:
 SUBWAY_URL: http://osm-subway.maps.me/mapsme/latest.json
 # UGC_URL:
 # HOTELS_URL:

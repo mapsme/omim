@@ -212,6 +212,10 @@ class Env:
                             "mapsme_osm_subways.transit.json")
 
     @property
+    def complexes_path(self):
+        return os.path.join(self.intermediate_path, "complexes.csv")
+
+    @property
     def food_paths(self):
         return os.path.join(self.intermediate_path, "ids_food.json")
 
