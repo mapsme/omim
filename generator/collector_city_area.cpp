@@ -162,7 +162,16 @@ void CityAreaCollector::Save()
       double const area = ms::AreaOnEarth(geometry);
       if (area < 0)
       {
-        LOG(LINFO, ("area =", area, "id =", featureBuilders[i].GetMostGenericOsmId().GetSerialId()));
+        LOG(LINFO, ("area =", area, "id =", featureBuilders[i]));
+        static int cnt = 0;
+        std::ofstream output("/home/m.gorbushin/tmp/" + std::to_string(cnt) + ".points");
+        output << std::setprecision(20);
+        cnt++;
+        for (auto const & point : geometry)
+        {
+          auto const latlon = MercatorBounds::ToLatLon(point);
+          output << latlon.m_lat << " " << latlon.m_lon << std::endl;
+        }
         continue;
       }
 

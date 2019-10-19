@@ -285,7 +285,7 @@ double AreaOnEarth(std::vector<m2::PointD> const & points, uint64_t id)
   } while (beforeFilter != afterFilter);
 
   static uint64_t debugId = GetId();
-  if (id == debugId)
+  if (id != 0 && id == debugId)
   {
     PushDebugLine(pointsCopy);
   }
