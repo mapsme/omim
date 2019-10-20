@@ -101,6 +101,11 @@ namespace osm
 class EditableMapObject;
 }
 
+namespace indexer
+{
+class ComplexManager;
+}
+
 namespace search
 {
 struct EverywhereSearchParams;
@@ -926,4 +931,10 @@ public:
   void OnPowerSchemeChanged(power_management::Scheme const actualScheme) override;
 
   notifications::NotificationManager & GetNotificationManager();
+
+private:
+    std::unique_ptr<indexer::ComplexManager> m_complexManager;
+
+public:
+    indexer::ComplexManager const & GetComplexManager() const { return *m_complexManager; }
 };

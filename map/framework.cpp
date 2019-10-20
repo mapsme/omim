@@ -52,6 +52,7 @@
 #include "indexer/categories_holder.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
+#include "indexer/complex/complex_manager.hpp"
 #include "indexer/drawing_rules.hpp"
 #include "indexer/editable_map_object.hpp"
 #include "indexer/feature.hpp"
@@ -376,6 +377,7 @@ Framework::Framework(FrameworkParams const & params)
   , m_descriptionsLoader(std::make_unique<descriptions::Loader>(m_featuresFetcher.GetDataSource()))
   , m_purchase(std::make_unique<Purchase>([this] { m_user.ResetAccessToken(); }))
   , m_tipsApi(static_cast<TipsApi::Delegate &>(*this))
+  , m_complexManager(std::make_unique<indexer::ComplexManager>(m_featuresFetcher.GetDataSource()))
 {
   CHECK(IsLittleEndian(), ("Only little-endian architectures are supported."));
 
@@ -450,6 +452,8 @@ Framework::Framework(FrameworkParams const & params)
   InitCityFinder();
   InitDiscoveryManager();
   InitTaxiEngine();
+
+  m_featuresFetcher.GetDataSource().AddObserver(*m_complexManager);
 
   RegisterAllMaps();
   LOG(LDEBUG, ("Maps initialized"));

@@ -94,7 +94,12 @@ public:
   template <typename Fn>
   void ForEachTree(Fn && fn) const
   {
-    std::for_each(std::cbegin(m_trees), std::cend(m_trees), std::forward<Fn>(fn));
+    base::ControlFlowWrapper<Fn> wrapper(std::forward<Fn>(fn));
+    for (auto const & tree : m_trees)
+    {
+      if (wrapper(tree) == base::ControlFlow::Break)
+        return;
+    }
   }
 
 private:
@@ -106,6 +111,14 @@ void Link(types::Ptr<Data> const & node, types::Ptr<Data> const & parent)
 {
   parent->AddChild(node);
   node->SetParent(parent);
+}
+
+template <typename Data>
+decltype(auto) GetRoot(types::Ptr<Data> node)
+{
+  while (node->HasParent())
+    node = node->GetParent();
+  return node;
 }
 
 template <typename Data>
@@ -194,7 +207,7 @@ size_t CountIf(types::Ptr<Data> const & node, Fn && fn)
 template <typename Data, typename Fn>
 decltype(auto) FindIf(types::Ptr<Data> const & node, Fn && fn)
 {
-  types::Ptr<Data> res;
+  types::Ptr<Data> res = nullptr;
   PreOrderVisit(node, [&](auto const & node) {
     if (fn(node->GetData()))
     {
@@ -202,6 +215,17 @@ decltype(auto) FindIf(types::Ptr<Data> const & node, Fn && fn)
       return base::ControlFlow::Break;
     }
     return base::ControlFlow::Continue;
+  });
+  return res;
+}
+
+template <typename Data, typename Fn>
+decltype(auto) FindIf(Forest<Data> const & forest, Fn && fn)
+{
+  types::Ptr<Data> res = nullptr;
+  forest.ForEachTree([&](auto const & tree) {
+    res = FindIf(tree, fn);
+    return res ? base::ControlFlow::Break : base::ControlFlow::Continue;
   });
   return res;
 }

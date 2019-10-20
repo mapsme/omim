@@ -175,7 +175,7 @@ private:
       LOG(LERROR, ("Unable to deserialize complexes: wrong header magic."));
       return {};
     }
-    auto const magic = ReadVarIntegral<decltype(kHeaderMagic)>(src);
+    auto const magic = ReadVarIntegral<std::decay<decltype(kHeaderMagic)>::type>(src);
     if (magic != kHeaderMagic)
     {
       LOG(LERROR, ("Unable to deserialize complexes: wrong header magic", magic, "( Ecpected",
