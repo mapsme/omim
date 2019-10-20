@@ -4,6 +4,8 @@
 
 #include <QtWidgets/QDialog>
 
+#include <QtDebug>
+
 namespace place_page
 {
 class Info;
@@ -16,7 +18,10 @@ public:
   PlacePageDialog(QWidget * parent, place_page::Info const & info,
                   search::ReverseGeocoder::Address const & address);
 
-private slots:
-  void OnClose();
-  void OnEdit();
+signals:
+  void EditSignal();
+  void CloseSignal();
+
+private:
+  void closeEvent(QCloseEvent * e) override;
 };

@@ -625,13 +625,19 @@ void DrawWidget::ShowPlacePage()
     address = m_framework.GetAddressAtPoint(info.GetMercator());
   }
 
-  PlacePageDialog dlg(this, info, address);
-  if (dlg.exec() == QDialog::Accepted)
-  {
+  m_placePage = std::make_unique<PlacePageDialog>(nullptr /* parent */, info, address);
+  connect(m_placePage.get(), &PlacePageDialog::CloseSignal, this, [this]() {
+    m_placePage.reset();
+    m_framework.DeactivateMapSelection(false);
+  });
+
+  connect(m_placePage.get(), &PlacePageDialog::EditSignal, this, [this]() {
     osm::EditableMapObject emo;
+    auto const & info = m_framework.GetCurrentPlacePageInfo();
     if (m_framework.GetEditableMapObject(info.GetID(), emo))
     {
       EditorDialog dlg(this, emo);
+      m_placePage.reset();
       int const result = dlg.exec();
       if (result == QDialog::Accepted)
       {
@@ -647,8 +653,9 @@ void DrawWidget::ShowPlacePage()
     {
       LOG(LERROR, ("Error while trying to edit feature."));
     }
-  }
-  m_framework.DeactivateMapSelection(false);
+    m_framework.DeactivateMapSelection(false);
+  });
+  m_placePage->show();
 }
 
 void DrawWidget::SetRouter(routing::RouterType routerType)

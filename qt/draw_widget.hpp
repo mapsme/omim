@@ -26,6 +26,7 @@
 
 class Framework;
 class QQuickWindow;
+class PlacePageDialog;
 
 namespace qt
 {
@@ -149,5 +150,6 @@ private:
   RouteMarkType m_routePointAddMode = RouteMarkType::Finish;
 
   std::unique_ptr<Screenshoter> m_screenshoter;
+  std::unique_ptr<PlacePageDialog> m_placePage;
 };
 }  // namespace qt
