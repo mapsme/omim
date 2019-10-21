@@ -6,6 +6,8 @@
 
 #include "base/math.hpp"
 
+#include <fstream>
+#include <iomanip>
 #include <iostream>
 
 namespace
@@ -333,4 +335,24 @@ UNIT_TEST(AreaOnEarth_WithFiltering)
   TEST_ALMOST_EQUAL_ABS(CalculateEarthAreaForConvexPolygon(latlonsAfterFilter),
                         ms::AreaOnEarth(points),
                         1.0, ());
+}
+
+UNIT_TEST(AreaOnEarth_FromFile)
+{
+  CHECK(std::getenv("FILE_PATH") && !std::string(std::getenv("FILE_PATH")).empty(), ());
+  std::string path = std::string(std::getenv("FILE_PATH"));
+  std::ifstream input(path);
+  std::vector<m2::PointD> points;
+  size_t n;
+  input >> n;
+  points.resize(n);
+  for (size_t i = 0; i < n; ++i)
+  {
+    double lat, lon;
+    input >> lat >> lon;
+    points[i] = MercatorBounds::FromLatLon(lat, lon);
+  }
+
+  std::cout << std::setprecision(20);
+  std::cout << ms::AreaOnEarth(points) << std::endl;
 }
