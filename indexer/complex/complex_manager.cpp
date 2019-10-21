@@ -8,40 +8,45 @@ namespace indexer
 {
 ComplexManager::ComplexManager(DataSource const & dataSource) : m_dataSource(dataSource) {}
 
-std::vector<FeatureID> ComplexManager::GetPath(FeatureID const & id) const
+std::vector<ComplexManager::Ids> ComplexManager::GetPath(FeatureID const & id) const
 {
-  std::vector<FeatureID> path;
+  std::vector<Ids> path;
   auto node = FindNode(id);
   if (!node)
     return path;
 
   while ((node = node->GetParent()))
-    path.emplace_back(FeatureID(id.m_mwmId, node->GetData()));
+    path.emplace_back(MakeFeatureIDs(node->GetData(), id.m_mwmId));
   return path;
 }
 
-std::vector<FeatureID> ComplexManager::GetFamily(FeatureID const & id) const
+std::vector<ComplexManager::Ids> ComplexManager::GetFamily(FeatureID const & id) const
 {
-  std::vector<FeatureID> family;
+  std::vector<Ids> family;
   auto const node = FindNode(id);
   if (!node)
     return family;
 
   auto const root = tree_node::GetRoot(node);
-  tree_node::ForEach(root, [&](auto ftId) {
-    family.emplace_back(FeatureID(id.m_mwmId, ftId));
+  tree_node::ForEach(root, [&](auto const & ftIds) {
+    family.emplace_back(MakeFeatureIDs(ftIds, id.m_mwmId));
   });
   return family;
 }
 
-tree_node::types::Ptr<complex::Id> ComplexManager::FindNode(FeatureID const & id) const
+tree_node::types::Ptr<complex::Ids> ComplexManager::FindNode(FeatureID const & id) const
 {
   auto const it = m_complexes.find(id.m_mwmId);
   if (it == std::cend(m_complexes))
     return nullptr;
 
   auto const & forest = it->second;
-  return tree_node::FindIf(forest, [&](auto ftId) { return id.m_index == ftId; });
+  return tree_node::FindIf(forest, [&](auto const & ftIds) {
+    auto const it = base::FindIf(ftIds, [&](auto ftId) {
+      return id.m_index == ftId;
+    });
+    return it != std::cend(ftIds);
+  });
 }
 
 void ComplexManager::OnMapRegistered(platform::LocalCountryFile const & localFile)
@@ -56,7 +61,7 @@ void ComplexManager::OnMapRegistered(platform::LocalCountryFile const & localFil
     return;
 
   auto readerPtr = value.m_cont.GetReader(COMPLEXES_FILE_TAG);
-  tree_node::Forest<complex::Id> forest;
+  tree_node::Forest<complex::Ids> forest;
   if (!ComplexSerdes::Deserialize(*readerPtr.GetPtr(), forest))
     return;
 
@@ -68,5 +73,13 @@ void ComplexManager::OnMapDeregistered(platform::LocalCountryFile const & localF
 {
   auto const mwmId = m_dataSource.GetMwmIdByCountryFile(localFile.GetCountryFile());
   m_complexes.erase(mwmId);
+}
+
+ComplexManager::Ids MakeFeatureIDs(complex::Ids const & ids, MwmSet::MwmId const & mwmId)
+{
+  ComplexManager::Ids res;
+  res.reserve(ids.size());
+  base::Transform(ids, std::back_inserter(res), [&](auto id) { return FeatureID(mwmId, id); });
+  return res;
 }
 }  // namespace  indexer

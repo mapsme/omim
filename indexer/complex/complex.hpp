@@ -7,12 +7,13 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 namespace indexer
 {
 namespace complex
 {
-using Id = uint32_t;
+using Ids = std::vector<uint32_t>;
 }  // namespace complex
 
 class SourceComplexesLoader
@@ -42,10 +43,10 @@ std::string GetCountry(tree_node::types::Ptr<indexer::HierarchyEntry> const & tr
 SourceComplexesLoader const & GetOrCreateSourceComplexesLoader(std::string const & filename);
 
 template <typename Fn>
-tree_node::Forest<complex::Id> TraformToComplexForest(
+tree_node::Forest<complex::Ids> TraformToComplexForest(
     tree_node::Forest<HierarchyEntry> const & forest, Fn && fn)
 {
-  tree_node::Forest<complex::Id> res;
+  tree_node::Forest<complex::Ids> res;
   forest.ForEachTree([&](auto const & tree) {
     res.Append(tree_node::TransformToTree(tree, std::forward<Fn>(fn)));
   });

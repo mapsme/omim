@@ -17,7 +17,7 @@ namespace indexer
 class ComplexSerdes
 {
 public:
-  using Id = complex::Id;
+  using Ids = complex::Ids;
 
   enum class Version : uint8_t
   {
@@ -29,14 +29,14 @@ public:
   static Version const kLatestVersion;
 
   template <typename Sink>
-  static void Serialize(Sink & sink, tree_node::Forest<Id> const & forest)
+  static void Serialize(Sink & sink, tree_node::Forest<Ids> const & forest)
   {
     SerializeVersion(sink);
     Serialize(sink, kLatestVersion, forest);
   }
 
   template <typename Reader>
-  static bool Deserialize(Reader & reader, tree_node::Forest<Id> & forest)
+  static bool Deserialize(Reader & reader, tree_node::Forest<Ids> & forest)
   {
     ReaderSource<decltype(reader)> src(reader);
     auto const version = DeserializeVersion(src);
@@ -44,7 +44,7 @@ public:
   }
 
   template <typename Sink>
-  static void Serialize(Sink & sink, Version version, tree_node::Forest<Id> const & forest)
+  static void Serialize(Sink & sink, Version version, tree_node::Forest<Ids> const & forest)
   {
     switch (version)
     {
@@ -55,7 +55,7 @@ public:
   }
 
   template <typename Src>
-  static bool Deserialize(Src & src, Version version, tree_node::Forest<Id> & forest)
+  static bool Deserialize(Src & src, Version version, tree_node::Forest<Ids> & forest)
   {
     switch (version)
     {
@@ -72,7 +72,7 @@ private:
   {
   public:
     template <typename Sink>
-    static void Serialize(Sink & sink, tree_node::Forest<Id> const & forest)
+    static void Serialize(Sink & sink, tree_node::Forest<Ids> const & forest)
     {
       ByteVector forestBuffer;
       MemWriter<decltype(forestBuffer)> forestWriter(forestBuffer);
@@ -82,7 +82,7 @@ private:
     }
 
     template <typename Src>
-    static bool Deserialize(Src & src, tree_node::Forest<Id> & forest)
+    static bool Deserialize(Src & src, tree_node::Forest<Ids> & forest)
     {
       ByteVector forestBuffer;
       rw::ReadCollectionOfIntegral(src, forestBuffer);
@@ -90,7 +90,7 @@ private:
       ReaderSource<decltype(forestReader)> forestSrc(forestReader);
       while (forestSrc.Size() > 0)
       {
-        tree_node::types::Ptr<Id> tree;
+        tree_node::types::Ptr<Ids> tree;
         if (!Deserialize(forestSrc, tree))
           return false;
 
@@ -101,34 +101,35 @@ private:
 
   private:
     template <typename Sink>
-    static void Serialize(Sink & sink, tree_node::types::Ptr<Id> const & tree)
+    static void Serialize(Sink & sink, tree_node::types::Ptr<Ids> const & tree)
     {
       ByteVector treeBuffer;
       MemWriter<decltype(treeBuffer)> treeWriter(treeBuffer);
       WriterSink<decltype(treeWriter)> treeMemSink(treeWriter);
       tree_node::PreOrderVisit(tree, [&](auto const & node) {
-        WriteVarIntegral(treeMemSink, node->GetData());
+        rw::WriteCollectionOfIntegral(treeMemSink, node->GetData());
         WriteVarIntegral(treeMemSink, node->GetChildren().size());
       });
       rw::WriteCollectionOfIntegral(sink, treeBuffer);
     }
 
     template <typename Src>
-    static bool Deserialize(Src & src, tree_node::types::Ptr<Id> & tree)
+    static bool Deserialize(Src & src, tree_node::types::Ptr<Ids> & tree)
     {
       ByteVector treeBuffer;
       rw::ReadCollectionOfIntegral(src, treeBuffer);
       MemReader treeReader(treeBuffer.data(), treeBuffer.size());
       ReaderSource<decltype(treeReader)> treeSrc(treeReader);
-      std::function<bool(tree_node::types::Ptr<Id> &)> deserializeTree;
+      std::function<bool(tree_node::types::Ptr<Ids> &)> deserializeTree;
       deserializeTree = [&](auto & tree) {
-        using ChildrenType = tree_node::types::PtrList<Id>;
+        using ChildrenType = tree_node::types::PtrList<Ids>;
         using ChildrenSizeType = typename ChildrenType::size_type;
-
         if (treeSrc.Size() == 0)
           return true;
 
-        tree = tree_node::MakeTreeNode(ReadVarIntegral<Id>(treeSrc));
+        Ids ids;
+        rw::ReadCollectionOfIntegral(treeSrc, ids);
+        tree = tree_node::MakeTreeNode(std::move(ids));
         ChildrenType children(ReadVarIntegral<ChildrenSizeType>(treeSrc));
         for (auto & n : children)
         {
@@ -147,13 +148,13 @@ private:
   {
   public:
     template <typename Sink>
-    static void Serialize(Sink &, tree_node::Forest<Id> const &)
+    static void Serialize(Sink &, tree_node::Forest<Ids> const &)
     {
       LOG(LCRITICAL, ("Not implemented."));
     }
 
     template <typename Src>
-    static bool Deserialize(Src &, tree_node::Forest<Id> &)
+    static bool Deserialize(Src &, tree_node::Forest<Ids> &)
     {
       LOG(LCRITICAL, ("Not implemented."));
       return true;
@@ -190,9 +191,9 @@ private:
     return static_cast<Version>(ReadPrimitiveFromSource<std::underlying_type<Version>::type>(src));
   }
 
-  static std::vector<Id> GetChildrenData(tree_node::types::PtrList<Id> const & ch)
+  static std::vector<Ids> GetChildrenData(tree_node::types::PtrList<Ids> const & ch)
   {
-    std::vector<Id> res;
+    std::vector<Ids> res;
     res.reserve(ch.size());
     base::Transform(ch, std::back_inserter(res), [](auto const & node) { return node->GetData(); });
     return res;

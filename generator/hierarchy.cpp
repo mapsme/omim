@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <iterator>
 #include <limits>
+#include <numeric>
 
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/register/point.hpp>
@@ -21,6 +22,24 @@ BOOST_GEOMETRY_REGISTER_POINT_2D(m2::PointD, double, boost::geometry::cs::cartes
 BOOST_GEOMETRY_REGISTER_RING(std::vector<m2::PointD>);
 
 using namespace feature;
+
+namespace
+{
+double CalculateOverlapPercentage(std::vector<m2::PointD> const & lhs,
+                                  std::vector<m2::PointD> const & rhs)
+{
+  if (!boost::geometry::intersects(lhs, rhs))
+    return 0.0;
+
+  using BoostPolygon = boost::geometry::model::polygon<m2::PointD>;
+  std::vector<BoostPolygon> coll;
+  boost::geometry::intersection(lhs, rhs, coll);
+  auto const min = std::min(boost::geometry::area(lhs), boost::geometry::area(rhs));
+  auto const binOp = [](double x, BoostPolygon const & y) { return x + boost::geometry::area(y); };
+  auto const sum = std::accumulate(std::begin(coll), std::end(coll), 0.0, binOp);
+  return sum * 100 / min;
+}
+}  // namespace
 
 namespace generator
 {
@@ -59,8 +78,8 @@ bool HierarchyPlace::Contains(HierarchyPlace const & smaller) const
   if (smaller.IsPoint())
     return Contains(smaller.GetCenter());
 
-  return m_rect.IsRectInside(smaller.GetLimitRect()) &&
-         boost::geometry::covered_by(smaller.m_polygon, m_polygon);
+  return smaller.GetArea() <= GetArea() &&
+      CalculateOverlapPercentage(m_polygon, smaller.m_polygon) > 95.0;
 }
 
 bool HierarchyPlace::Contains(m2::PointD const & point) const
@@ -144,14 +163,14 @@ std::vector<feature::FeatureBuilder> HierarchyBuilder::ReadFeatures(
 {
   std::vector<feature::FeatureBuilder> fbs;
   ForEachFromDatRawFormat<serialization_policy::MaxAccuracy>(
-      dataFilename, [&](FeatureBuilder const & fb, uint64_t /* currPos */) {
-        if (m_getMainType(fb.GetTypes()) != ftype::GetEmptyValue() &&
-            !m_getName(fb.GetMultilangName()).empty() && !fb.GetOsmIds().empty() &&
-            (fb.IsPoint() || fb.IsArea()))
-        {
-          fbs.emplace_back(fb);
-        }
-      });
+        dataFilename, [&](FeatureBuilder const & fb, uint64_t /* currPos */) {
+    if (m_getMainType(fb.GetTypes()) != ftype::GetEmptyValue() &&
+        !m_getName(fb.GetMultilangName()).empty() && !fb.GetOsmIds().empty() &&
+        (fb.IsPoint() || fb.IsArea()))
+    {
+      fbs.emplace_back(fb);
+    }
+  });
   return fbs;
 }
 
@@ -250,13 +269,59 @@ uint32_t GetIdWitBestGeom(std::vector<uint32_t> const & ids, FeatureGetter const
       continue;
 
     auto const geom = ftPtr->GetGeomType();
-    if (base::Underlying(geom) > base::Underlying(bestGeom))
+    switch (geom)
+    {
+    case GeomType::Point:
+      return bestId;
+    case GeomType::Line:
+    {
+      if (bestGeom != GeomType::Point && bestGeom != GeomType::Area)
+      {
+        bestId = id;
+        bestGeom = geom;
+      }
+    }
+      break;
+    case GeomType::Area:
     {
       bestId = id;
       bestGeom = geom;
     }
+      break;
+    default:
+      UNREACHABLE();
+    }
   }
   return bestId;
+}
+
+void OrderIds(std::vector<uint32_t> & ids, FeatureGetter const & ftGetter)
+{
+  auto idx = std::numeric_limits<size_t>::max();
+  for (size_t i = 0; i <  ids.size(); ++i)
+  {
+    std::unique_ptr<FeatureType> ft = ftGetter.GetFeatureByIndex(ids[i]);
+    if (!ft)
+      continue;
+
+    if (ft->GetGeomType() == GeomType::Line)
+      idx = i;
+
+    bool hasOutlineType = false;
+    ft->ForEachType([&](auto t) {
+      static auto const outline = classif().GetTypeByPath({"outline"});
+      if (t == outline)
+        hasOutlineType = true;
+    });
+    if (hasOutlineType)
+    {
+      idx = i;
+      break;
+    }
+  }
+
+  if (idx < ids.size())
+    std::swap(ids[idx], ids[0]);
 }
 }  // namespace hierarchy
 }  // namespace generator

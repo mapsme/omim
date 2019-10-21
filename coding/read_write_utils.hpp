@@ -150,9 +150,6 @@ namespace rw
 
     static_assert(std::is_integral<SizeType>::value, "");
 
-    if (container.empty())
-      return;
-
     WriteVarIntegral(sink, container.size());
     for (auto value : container)
       WriteVarIntegral(sink, value);
@@ -185,9 +182,6 @@ namespace rw
     using SizeType = typename Cont::size_type;
 
     static_assert(std::is_integral<SizeType>::value, "");
-
-    if (container.empty())
-      return;
 
     WriteVarIntegral(sink, container.size());
     for (auto value : container)

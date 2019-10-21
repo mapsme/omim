@@ -24,12 +24,13 @@ void BuildComplexSection(std::string const & mwmFilename,
    indexer::SourceComplexesLoader loader(complecSrcFilename);
    auto const srcForest = loader.GetForest(base::GetNameFromFullPathWithoutExt(mwmFilename));
    auto const complexForest = indexer::TraformToComplexForest(srcForest, [&](auto const & entry) {
-     auto const ids = osmToFtIds.GetFeatureIds(entry.m_id);
+     auto ids = osmToFtIds.GetFeatureIds(entry.m_id);
      CHECK(!ids.empty(), (entry.m_id));
-     auto const ftId = hierarchy::GetIdWitBestGeom(ids, ftGetter);
-     auto const ft = ftGetter.GetFeatureByIndex(ftId);
-     CHECK(ft, (ftId, entry.m_id));
-     return ftId;
+     hierarchy::OrderIds(ids, ftGetter);
+     CHECK(base::AllOf(ids, [&](auto id) {
+       return static_cast<bool>(ftGetter.GetFeatureByIndex(id));
+     }), (ids));
+     return ids;
    });
 
    if (complexForest.Size() == 0)

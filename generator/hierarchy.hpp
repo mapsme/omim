@@ -153,5 +153,7 @@ private:
 };
 
 uint32_t GetIdWitBestGeom(std::vector<uint32_t> const & ids, FeatureGetter const & ftGetter);
+
+void OrderIds(std::vector<uint32_t> & ids, FeatureGetter const & ftGetter);
 }  // namespace hierarchy
 }  // namespace generator
