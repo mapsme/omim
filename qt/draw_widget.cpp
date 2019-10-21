@@ -59,6 +59,8 @@ DrawWidget::DrawWidget(Framework & framework, bool apiOpenGLES3, std::unique_ptr
   , m_rubberBand(nullptr)
   , m_emulatingLocation(false)
 {
+  qApp->installEventFilter(this);
+  setFocusPolicy(Qt::StrongFocus);
   m_framework.SetPlacePageListeners([this]() { ShowPlacePage(); },
                                     {} /* onClose */, {} /* onUpdate */);
 
@@ -209,6 +211,8 @@ void DrawWidget::mousePressEvent(QMouseEvent * e)
   {
     if (IsShiftModifier(e))
       SubmitRoutingPoint(pt);
+    else if (m_ruler.IsActive() && IsAltModifier(e))
+      SubmitRulerPoint(e);
     else if (IsAltModifier(e))
       SubmitFakeLocationPoint(pt);
     else
@@ -399,7 +403,6 @@ void DrawWidget::keyPressEvent(QKeyEvent * e)
   if (m_screenshotMode)
     return;
 
-  TBase::keyPressEvent(e);
   if (IsLeftButton(QGuiApplication::mouseButtons()) &&
       e->key() == Qt::Key_Control)
   {
@@ -419,8 +422,6 @@ void DrawWidget::keyReleaseEvent(QKeyEvent * e)
 {
   if (m_screenshotMode)
     return;
-
-  TBase::keyReleaseEvent(e);
 
   if (IsLeftButton(QGuiApplication::mouseButtons()) &&
       e->key() == Qt::Key_Control)
@@ -517,6 +518,14 @@ void DrawWidget::SubmitFakeLocationPoint(m2::PointD const & pt)
                  "Turn:", routing::turns::GetTurnString(loc.m_turn), "(", loc.m_distToTurn, loc.m_turnUnitsSuffix,
                  ") Roundabout exit number:", loc.m_exitNum));
   }
+}
+
+void DrawWidget::SubmitRulerPoint(QMouseEvent * e)
+{
+  m2::PointD const pt = GetDevicePoint(e);
+  m2::PointD const point = GetCoordsFromSettingsIfExists(true /* start */, pt);
+  m_ruler.AddPoint(point);
+  m_ruler.DrawLine(m_framework.GetDrapeApi());
 }
 
 void DrawWidget::SubmitRoutingPoint(m2::PointD const & pt)
@@ -654,6 +663,13 @@ void DrawWidget::ShowPlacePage()
 void DrawWidget::SetRouter(routing::RouterType routerType)
 {
   m_framework.GetRoutingManager().SetRouter(routerType);
+}
+
+void DrawWidget::SetRuler(bool enabled)
+{
+  if(!enabled)
+    m_ruler.EraseLine(m_framework.GetDrapeApi());
+  m_ruler.SetActive(enabled);
 }
 
 // static
