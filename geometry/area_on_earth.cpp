@@ -144,8 +144,8 @@ bool AlmostAtOneLineEps(m2::PointD const & p1, m2::PointD const & p2, m2::PointD
   auto b = p3 - p2;
   a = a.Normalize();
   b = b.Normalize();
-  double const oneLineCondition = abs(m2::CrossProduct(a, b));
-  return abs(oneLineCondition) < epsRad;
+  double const oneLineCondition = std::abs(m2::CrossProduct(a, b));
+  return std::abs(oneLineCondition) < epsRad;
 }
 
 std::vector<m2::PointD> DropAlmostAtOneLinePointsEps(std::vector<m2::PointD> const & points,
@@ -333,7 +333,7 @@ double AreaOnEarth(LatLon const & ll1, LatLon const & ll2, LatLon const & ll3)
   double const halfSolidAngle = atan(tanFromHalfSolidAngle);
   double const solidAngle = halfSolidAngle * 2.0;
   double const area = solidAngle * kEarthRadiusMetersSquared;
-  return abs(area);
+  return std::abs(area);
 }
 
 // Look to https://en.wikipedia.org/wiki/Solid_angle for details.
