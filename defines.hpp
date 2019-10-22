@@ -57,6 +57,7 @@
 #define CITY_ROADS_FILE_TAG "city_roads"
 #define DESCRIPTIONS_FILE_TAG "descriptions"
 #define MAXSPEEDS_FILE_TAG "maxspeeds"
+#define COMPLEXES_FILE_TAG "complexes"
 
 #define READY_FILE_EXTENSION ".ready"
 #define RESUME_FILE_EXTENSION ".resume"

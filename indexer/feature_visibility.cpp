@@ -256,6 +256,8 @@ namespace
     static uint32_t const wheelchair = classif().GetTypeByPath({"wheelchair"});
     static uint32_t const cuisine = classif().GetTypeByPath({"cuisine"});
     static uint32_t const sponsored = classif().GetTypeByPath({"sponsored"});
+    static uint32_t const outline = classif().GetTypeByPath({"outline"});
+
     // Reserved for custom event processing, e.g. fc2018.
     // static uint32_t const event = classif().GetTypeByPath({"event" });
 
@@ -279,6 +281,9 @@ namespace
       return true;
 
     if (g != GeomType::Line && type == sponsored)
+      return true;
+
+    if (type == outline)
       return true;
 
     // Reserved for custom event processing, e.g. fc2018.
@@ -373,10 +378,7 @@ bool IsUsefulType(uint32_t t, GeomType geomType, bool emptyName)
 
 bool HasUsefulType(vector<uint32_t> const & types, GeomType geomType, bool emptyName)
 {
-  if (types.empty())
-    return false;
-
-  return any_of(types.begin(), types.end(), [&](uint32_t t) {
+  return base::AnyOf(types, [&](uint32_t t) {
     return IsUsefulType(t, geomType, emptyName);
   });
 }

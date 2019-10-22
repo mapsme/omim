@@ -142,6 +142,12 @@ bool AnyOf(Cont && c, Fn && fn)
   return std::any_of(c.cbegin(), c.cend(), std::forward<Fn>(fn));
 }
 
+template <typename Cont, typename OutIt, typename Fn>
+decltype(auto) Transform(Cont && c, OutIt && it, Fn && fn)
+{
+  return std::transform(std::cbegin(c), std::cend(c), std::forward<OutIt>(it), std::forward<Fn>(fn));
+}
+
 template <typename Cont, typename Fn>
 decltype(auto) FindIf(Cont && c, Fn && fn)
 {
@@ -477,4 +483,11 @@ struct RetrieveSecond
     return pair.second;
   }
 };
+
+template <typename Fn>
+decltype(auto) NotFn(Fn && fn)
+{
+  using namespace std::placeholders;
+  return std::bind(std::logical_not<bool>(), std::bind(fn, _1));
+}
 }  // namespace base

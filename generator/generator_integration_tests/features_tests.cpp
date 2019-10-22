@@ -137,6 +137,7 @@ public:
     m_genInfo.m_citiesBoundariesFilename =
         m_genInfo.GetIntermediateFileName("citiesboundaries.bin");
     m_genInfo.m_bookingDataFilename = m_genInfo.GetIntermediateFileName("hotels.csv");
+    m_genInfo.m_addAds = true;
 
     auto const northAuckland = m_genInfo.GetTmpFileName("New Zealand North_Auckland");
     auto const northWellington = m_genInfo.GetTmpFileName("New Zealand North_Wellington");
@@ -149,8 +150,8 @@ public:
 
     generator::RawGenerator rawGenerator(m_genInfo, m_threadCount);
     rawGenerator.GenerateCoasts();
-    rawGenerator.GenerateCountries(true /* needMixTagsAndNodes */);
-    rawGenerator.GenerateWorld(true /* needMixTags */);
+    rawGenerator.GenerateCountries();
+    rawGenerator.GenerateWorld();
     TEST(rawGenerator.Execute(), ());
 
     TestCountry(northAuckland, 1812060 /* fbsCnt */, 12195237 /* geometryPointsCnt */,

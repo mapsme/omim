@@ -131,7 +131,7 @@ optional arguments:
                         preprocess, features, mwm, descriptions,
                         countries_txt, external_resources, localads,
                         statistics, cleanup, index, ugc, popularity, srtm,
-                        routing, routing_transit.
+                        complex, routing, routing_transit.
   --from_stage FROM_STAGE
                         Stage from which maps will be rebuild. Available
                         stages: download_external,
@@ -140,7 +140,7 @@ optional arguments:
                         preprocess, features, mwm, descriptions,
                         countries_txt, external_resources, localads,
                         statistics, cleanup, index, ugc, popularity, srtm,
-                        routing, routing_transit.
+                        complex, routing, routing_transit.
   --coasts              Build only WorldCoasts.raw and WorldCoasts.rawgeom
                         files
   --production          Build production maps. In another case, 'osm only

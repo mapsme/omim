@@ -21,6 +21,7 @@
 #include "storage/country_decl.hpp"
 #include "storage/storage_defines.hpp"
 
+#include "indexer/complex/complex_manager.hpp"
 #include "indexer/editable_map_object.hpp"
 
 #include "platform/settings.hpp"
@@ -60,13 +61,13 @@ DrawWidget::DrawWidget(Framework & framework, bool apiOpenGLES3, std::unique_ptr
   , m_emulatingLocation(false)
 {
   m_framework.SetPlacePageListeners([this]() { ShowPlacePage(); },
-                                    {} /* onClose */, {} /* onUpdate */);
+  {} /* onClose */, {} /* onUpdate */);
 
   m_framework.GetRoutingManager().SetRouteBuildingListener(
-      [](routing::RouterResultCode, storage::CountriesSet const &) {});
+        [](routing::RouterResultCode, storage::CountriesSet const &) {});
 
   m_framework.GetRoutingManager().SetRouteRecommendationListener(
-    [this](RoutingManager::Recommendation r)
+        [this](RoutingManager::Recommendation r)
   {
     OnRouteRecommendation(r);
   });
@@ -611,6 +612,57 @@ void DrawWidget::OnRouteRecommendation(RoutingManager::Recommendation recommenda
   }
 }
 
+void DrawWidget::ClearComplex()
+{
+  auto & drape = m_framework.GetDrapeApi();
+  for (auto const & lId : m_complexeLines)
+    drape.RemoveLine(lId);
+  m_complexeLines.clear();
+}
+
+void DrawWidget::ShowComplex()
+{
+  if (!m_framework.IsPlacePageOpened())
+    return;
+
+  auto const & info = m_framework.GetCurrentPlacePageInfo();
+  auto const & featureId = info.GetID();
+  if (!featureId.IsValid())
+    return;
+
+  auto const & manager = m_framework.GetComplexManager();
+  auto const family = manager.GetFamily(featureId);
+  FeaturesLoaderGuard guard(m_framework.GetDataSource(), featureId.m_mwmId);
+  for (auto const & ids : family)
+  {
+    for (auto id : ids)
+    {
+      auto ftPtr = guard.GetFeatureByIndex(id.m_index);
+      if (!ftPtr)
+      {
+        LOG(LWARNING, ("Feature", id, "was not found."));
+        continue;
+      }
+
+      auto const geom = ftPtr->GetGeomType();
+      if (geom != feature::GeomType::Line && geom != feature::GeomType::Point)
+        continue;
+
+      std::vector<m2::PointD> points;
+      ftPtr->ForEachPoint([&](auto const & point) {
+        points.emplace_back(point);
+      }, FeatureType::BEST_GEOMETRY);
+      points.emplace_back(points.front());
+
+      auto & drape = m_framework.GetDrapeApi();
+      auto const dId = std::to_string(id.m_index) + "_cmpl_" + guard.GetCountryFileName();
+      auto const line = df::DrapeApiLineData(points, dp::Color(0, 0, 255, 200)).Width(4);
+      drape.AddLine(dId, line);
+      m_complexeLines.emplace_back(dId);
+    }
+  }
+}
+
 void DrawWidget::ShowPlacePage()
 {
   place_page::Info const & info = m_framework.GetCurrentPlacePageInfo();
@@ -625,13 +677,22 @@ void DrawWidget::ShowPlacePage()
     address = m_framework.GetAddressAtPoint(info.GetMercator());
   }
 
-  PlacePageDialog dlg(this, info, address);
-  if (dlg.exec() == QDialog::Accepted)
-  {
+  ClearComplex();
+  m_placePage = std::make_unique<PlacePageDialog>(nullptr /* parent */, info, address);
+  connect(m_placePage.get(), &PlacePageDialog::CloseSignal, this, [this]() {
+    ClearComplex();
+    m_placePage.reset();
+    m_framework.DeactivateMapSelection(false);
+  });
+
+  connect(m_placePage.get(), &PlacePageDialog::EditSignal, this, [this]() {
     osm::EditableMapObject emo;
+    auto const & info = m_framework.GetCurrentPlacePageInfo();
     if (m_framework.GetEditableMapObject(info.GetID(), emo))
     {
       EditorDialog dlg(this, emo);
+      ClearComplex();
+      m_placePage.reset();
       int const result = dlg.exec();
       if (result == QDialog::Accepted)
       {
@@ -647,8 +708,10 @@ void DrawWidget::ShowPlacePage()
     {
       LOG(LERROR, ("Error while trying to edit feature."));
     }
-  }
-  m_framework.DeactivateMapSelection(false);
+    m_framework.DeactivateMapSelection(false);
+  });
+  m_placePage->show();
+  ShowComplex();
 }
 
 void DrawWidget::SetRouter(routing::RouterType routerType)

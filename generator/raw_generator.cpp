@@ -29,21 +29,21 @@ void RawGenerator::ForceReloadCache()
 
 std::shared_ptr<FeatureProcessorQueue> RawGenerator::GetQueue() { return m_queue; }
 
-void RawGenerator::GenerateCountries(bool addAds)
+void RawGenerator::GenerateCountries()
 {
   auto processor = CreateProcessor(ProcessorType::Country, m_queue, m_genInfo.m_targetDir, "",
-                                   m_genInfo.m_haveBordersForWholeWorld);
+                                   m_genInfo.m_haveBordersForWholeWorld, m_genInfo.m_complexFilename);
   m_translators->Append(
-      CreateTranslator(TranslatorType::Country, processor, m_cache, m_genInfo, addAds));
-  m_finalProcessors.emplace(CreateCountryFinalProcessor(addAds));
+      CreateTranslator(TranslatorType::Country, processor, m_cache, m_genInfo, m_genInfo.m_addAds));
+  m_finalProcessors.emplace(CreateCountryFinalProcessor(m_genInfo.m_addAds));
 }
 
-void RawGenerator::GenerateWorld(bool addAds)
+void RawGenerator::GenerateWorld()
 {
   auto processor =
       CreateProcessor(ProcessorType::World, m_queue, m_genInfo.m_popularPlacesFilename);
   m_translators->Append(
-      CreateTranslator(TranslatorType::World, processor, m_cache, m_genInfo, addAds));
+      CreateTranslator(TranslatorType::World, processor, m_cache, m_genInfo, m_genInfo.m_addAds));
   m_finalProcessors.emplace(CreateWorldFinalProcessor());
 }
 
@@ -101,7 +101,7 @@ RawGenerator::FinalProcessorPtr RawGenerator::CreateCoslineFinalProcessor()
   return finalProcessor;
 }
 
-RawGenerator::FinalProcessorPtr RawGenerator::CreateCountryFinalProcessor(bool addAds)
+RawGenerator::FinalProcessorPtr RawGenerator::CreateCountryFinalProcessor(bool needMixNodes)
 {
   auto finalProcessor =
       make_shared<CountryFinalProcessor>(m_genInfo.m_targetDir, m_genInfo.m_tmpDir,
@@ -109,7 +109,7 @@ RawGenerator::FinalProcessorPtr RawGenerator::CreateCountryFinalProcessor(bool a
   finalProcessor->SetBooking(m_genInfo.m_bookingDataFilename);
   finalProcessor->SetCitiesAreas(m_genInfo.GetIntermediateFileName(CITIES_AREAS_TMP_FILENAME));
   finalProcessor->SetPromoCatalog(m_genInfo.m_promoCatalogCitiesFilename);
-  if (addAds)
+  if (needMixNodes)
     finalProcessor->SetFakeNodes(base::JoinPath(GetPlatform().ResourcesDir(), MIXED_NODES_FILE));
 
   if (m_genInfo.m_emitCoasts)

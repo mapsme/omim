@@ -41690,6 +41690,41 @@ cont {
   }
 }
 cont {
+  name: "outline"
+  element {
+    scale: 16
+    lines {
+      width: 0.1
+      color: 3858759680
+      priority: 993
+    }
+  }
+  element {
+    scale: 17
+    lines {
+      width: 0.1
+      color: 3858759680
+      priority: 993
+    }
+  }
+  element {
+    scale: 18
+    lines {
+      width: 0.1
+      color: 3858759680
+      priority: 993
+    }
+  }
+  element {
+    scale: 19
+    lines {
+      width: 0.1
+      color: 3858759680
+      priority: 993
+    }
+  }
+}
+cont {
   name: "piste:lift-j-bar"
   element {
     scale: 12

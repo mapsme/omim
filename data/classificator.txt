@@ -678,6 +678,7 @@ world  +
         transport_tram  -
         water_sport  -
         {}
+    outline  -
     piste:lift  +
         j-bar  -
         magic_carpet  -

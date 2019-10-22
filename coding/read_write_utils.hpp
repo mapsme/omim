@@ -1,5 +1,6 @@
 #pragma once
 
+#include "coding/reader.hpp"
 #include "coding/varint.hpp"
 
 #include "base/buffer_vector.hpp"
@@ -119,6 +120,72 @@ namespace rw
 
     if (count > 0)
       sink.Write(&v[0], count * sizeof(ValueT));
+  }
+
+  template <typename Source, typename Cont,
+            typename std::enable_if_t<std::is_integral<typename Cont::value_type>::value &&
+                                      !(std::is_same<typename Cont::value_type, int8_t>::value ||
+                                        std::is_same<typename Cont::value_type, uint8_t>::value), int> = 0>
+  void ReadCollectionOfIntegral(Source & src, Cont & container)
+  {
+    using SizeType = typename Cont::size_type;
+    using ValueType = typename Cont::value_type;
+
+    static_assert(std::is_integral<SizeType>::value, "");
+
+    auto size = ReadVarIntegral<SizeType>(src);
+    auto inserter = std::inserter(container, std::end(container));
+    while (size--)
+      *inserter++ = ReadVarIntegral<ValueType>(src);
+   }
+
+
+  template <typename Sink, typename Cont,
+            typename std::enable_if_t<std::is_integral<typename Cont::value_type>::value &&
+                                      !(std::is_same<typename Cont::value_type, int8_t>::value ||
+                                        std::is_same<typename Cont::value_type, uint8_t>::value), int> = 0>
+  void WriteCollectionOfIntegral(Sink & sink, Cont const & container)
+  {
+    using SizeType = typename Cont::size_type;
+
+    static_assert(std::is_integral<SizeType>::value, "");
+
+    WriteVarIntegral(sink, container.size());
+    for (auto value : container)
+      WriteVarIntegral(sink, value);
+  }
+
+  template <typename Source, typename Cont,
+            typename std::enable_if_t<std::is_integral<typename Cont::value_type>::value &&
+                                      (std::is_same<typename Cont::value_type, int8_t>::value ||
+                                       std::is_same<typename Cont::value_type, uint8_t>::value), int> = 0>
+  void ReadCollectionOfIntegral(Source & src, Cont & container)
+  {
+    using SizeType = typename Cont::size_type;
+    using ValueType = typename Cont::value_type;
+
+    static_assert(std::is_integral<SizeType>::value, "");
+
+    auto size = ReadVarIntegral<SizeType>(src);
+    auto inserter = std::inserter(container, std::end(container));
+    while (size--)
+      *inserter++ = ReadPrimitiveFromSource<ValueType>(src);
+   }
+
+
+  template <typename Sink, typename Cont,
+            typename std::enable_if_t<std::is_integral<typename Cont::value_type>::value &&
+                                      (std::is_same<typename Cont::value_type, int8_t>::value ||
+                                       std::is_same<typename Cont::value_type, uint8_t>::value), int> = 0>
+  void WriteCollectionOfIntegral(Sink & sink, Cont const & container)
+  {
+    using SizeType = typename Cont::size_type;
+
+    static_assert(std::is_integral<SizeType>::value, "");
+
+    WriteVarIntegral(sink, container.size());
+    for (auto value : container)
+      WriteToSink(sink, value);
   }
 
   template <class ReaderT, class WriterT>

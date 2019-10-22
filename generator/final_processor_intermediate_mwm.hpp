@@ -5,6 +5,8 @@
 #include "generator/hierarchy.hpp"
 #include "generator/world_map_generator.hpp"
 
+#include "indexer/complex/hierarchy_entry.hpp"
+
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -141,7 +143,7 @@ public:
 private:
   std::shared_ptr<hierarchy::HierarchyLineEnricher> CreateEnricher(
       std::string const & countryName) const;
-  void WriteLines(std::vector<hierarchy::HierarchyEntry> const & lines);
+  void WriteLines(std::vector<indexer::HierarchyEntry> const & lines);
 
   hierarchy::PrintFunction m_printFunction = hierarchy::PrintDefault;
   std::string m_mwmTmpPath;

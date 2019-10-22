@@ -2,6 +2,8 @@
 
 #include "generator/feature_builder.hpp"
 
+#include "indexer/composite_id.hpp"
+
 #include "coding/file_reader.hpp"
 #include "coding/read_write_utils.hpp"
 #include "coding/write_to_sink.hpp"
@@ -12,52 +14,11 @@
 
 #include <algorithm>
 #include <iterator>
+#include <string>
 #include <utility>
 #include <vector>
 
-#include <boost/functional/hash.hpp>
 #include <boost/optional.hpp>
-
-namespace generator
-{
-// This struct represents a composite Id.
-// This will be useful if we want to distinguish between polygons in a multipolygon.
-struct CompositeId
-{
-  CompositeId() = default;
-  explicit CompositeId(std::string const & str);
-  explicit CompositeId(base::GeoObjectId mainId, base::GeoObjectId additionalId);
-  explicit CompositeId(base::GeoObjectId mainId);
-
-  bool operator<(CompositeId const & other) const;
-  bool operator==(CompositeId const & other) const;
-  bool operator!=(CompositeId const & other) const;
-
-  std::string ToString() const;
-
-  base::GeoObjectId m_mainId;
-  base::GeoObjectId m_additionalId;
-};
-
-CompositeId MakeCompositeId(feature::FeatureBuilder const & fb);
-
-std::string DebugPrint(CompositeId const & id);
-}  // namespace generator
-
-namespace std
-{
-template <>
-struct hash<generator::CompositeId>
-{
-  std::size_t operator()(generator::CompositeId const & id) const
-  {
-    std::size_t seed = 0;
-    boost::hash_combine(seed, std::hash<base::GeoObjectId>()(id.m_mainId));
-    boost::hash_combine(seed, std::hash<base::GeoObjectId>()(id.m_additionalId));
-    return seed;
-  }
-};
-}  // namespace std
 
 namespace generator
 {
@@ -71,11 +32,12 @@ public:
   };
 
   OsmID2FeatureID();
+  OsmID2FeatureID(std::string const & filename);
 
   bool ReadFromFile(std::string const & filename);
 
-  void AddIds(CompositeId const & osmId, uint32_t featureId);
-  boost::optional<uint32_t> GetFeatureId(CompositeId const & id) const;
+  void AddIds(indexer::CompositeId const & osmId, uint32_t featureId);
+  std::vector<uint32_t> GetFeatureIds(indexer::CompositeId const & id) const;
   std::vector<uint32_t> GetFeatureIds(base::GeoObjectId mainId) const;
 
   Version GetVersion() const;
@@ -125,7 +87,7 @@ public:
       rw::ReadVectorOfPOD(src, data);
       m_data.reserve(data.size());
       for (auto const & pair : data)
-        m_data.emplace_back(CompositeId(pair.first), pair.second);
+        m_data.emplace_back(indexer::CompositeId(pair.first), pair.second);
 
       m_version = Version::V0;
     }
@@ -135,6 +97,6 @@ public:
 private:
   static uint32_t const kHeaderMagic = 0xFFFFFFFF;
   Version m_version;
-  std::vector<std::pair<CompositeId, uint32_t>> m_data;
+  std::vector<std::pair<indexer::CompositeId, uint32_t>> m_data;
 };
 }  // namespace generator

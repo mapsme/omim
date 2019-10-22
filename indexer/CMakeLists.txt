@@ -26,6 +26,17 @@ set(
   classificator.hpp
   classificator_loader.cpp
   classificator_loader.hpp
+  complex/complex.cpp
+  complex/complex.hpp
+  complex/complex_manager.cpp
+  complex/complex_manager.hpp
+  complex/hierarchy_entry.cpp
+  complex/hierarchy_entry.hpp
+  complex/serdes.cpp
+  complex/serdes.hpp
+  complex/tree_node.hpp
+  composite_id.cpp
+  composite_id.hpp
   cuisines.cpp
   cuisines.hpp
   data_factory.cpp

@@ -26,6 +26,7 @@
 
 class Framework;
 class QQuickWindow;
+class PlacePageDialog;
 
 namespace qt
 {
@@ -108,6 +109,8 @@ private:
   void SubmitRoutingPoint(m2::PointD const & pt);
   void SubmitBookmark(m2::PointD const & pt);
   void ShowPlacePage();
+  void ShowComplex();
+  void ClearComplex();
 
   void UpdateCountryStatus(storage::CountryId const & countryId);
 
@@ -149,5 +152,7 @@ private:
   RouteMarkType m_routePointAddMode = RouteMarkType::Finish;
 
   std::unique_ptr<Screenshoter> m_screenshoter;
+  std::unique_ptr<PlacePageDialog> m_placePage;
+  std::vector<std::string> m_complexeLines;
 };
 }  // namespace qt

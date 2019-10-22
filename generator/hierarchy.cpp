@@ -1,17 +1,9 @@
 #include "generator/hierarchy.hpp"
 
-#include "generator/boost_helpers.hpp"
-#include "generator/place_processor.hpp"
-
-#include "indexer/classificator.hpp"
 #include "indexer/feature_algo.hpp"
-#include "indexer/feature_utils.hpp"
 
 #include "geometry/mercator.hpp"
 #include "geometry/rect2d.hpp"
-
-#include "base/stl_helpers.hpp"
-#include "base/string_utils.hpp"
 
 #include <algorithm>
 #include <fstream>
@@ -19,6 +11,7 @@
 #include <iomanip>
 #include <iterator>
 #include <limits>
+#include <numeric>
 
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/register/point.hpp>
@@ -30,30 +23,33 @@ BOOST_GEOMETRY_REGISTER_RING(std::vector<m2::PointD>);
 
 using namespace feature;
 
+namespace
+{
+double CalculateOverlapPercentage(std::vector<m2::PointD> const & lhs,
+                                  std::vector<m2::PointD> const & rhs)
+{
+  if (!boost::geometry::intersects(lhs, rhs))
+    return 0.0;
+
+  using BoostPolygon = boost::geometry::model::polygon<m2::PointD>;
+  std::vector<BoostPolygon> coll;
+  boost::geometry::intersection(lhs, rhs, coll);
+  auto const min = std::min(boost::geometry::area(lhs), boost::geometry::area(rhs));
+  auto const binOp = [](double x, BoostPolygon const & y) { return x + boost::geometry::area(y); };
+  auto const sum = std::accumulate(std::begin(coll), std::end(coll), 0.0, binOp);
+  return sum * 100 / min;
+}
+}  // namespace
+
 namespace generator
 {
 namespace hierarchy
 {
-namespace
-{
-// GetRussianName returns a russian feature name if it's possible.
-// Otherwise, GetRussianName function returns a name that GetReadableName returns.
-std::string GetRussianName(StringUtf8Multilang const & str)
-{
-  auto const deviceLang = StringUtf8Multilang::GetLangIndex("ru");
-  std::string result;
-  GetReadableName({} /* regionData */, str, deviceLang, false /* allowTranslit */, result);
-  for (auto const & ch : {';', '\n', '\t'})
-    std::replace(std::begin(result), std::end(result), ch, ',');
-  return result;
-}
-}  // namespace
-
 uint32_t GetTypeDefault(FeatureParams::Types const &) { return ftype::GetEmptyValue(); }
 
 std::string GetNameDefault(StringUtf8Multilang const &) { return {}; }
 
-std::string PrintDefault(HierarchyEntry const &) { return {}; }
+std::string PrintDefault(indexer::HierarchyEntry const &) { return {}; }
 
 HierarchyPlace::HierarchyPlace(FeatureBuilder const & fb)
   : m_id(MakeCompositeId(fb))
@@ -82,8 +78,8 @@ bool HierarchyPlace::Contains(HierarchyPlace const & smaller) const
   if (smaller.IsPoint())
     return Contains(smaller.GetCenter());
 
-  return m_rect.IsRectInside(smaller.GetLimitRect()) &&
-         boost::geometry::covered_by(smaller.m_polygon, m_polygon);
+  return smaller.GetArea() <= GetArea() &&
+      CalculateOverlapPercentage(m_polygon, smaller.m_polygon) > 80.0;
 }
 
 bool HierarchyPlace::Contains(m2::PointD const & point) const
@@ -167,14 +163,14 @@ std::vector<feature::FeatureBuilder> HierarchyBuilder::ReadFeatures(
 {
   std::vector<feature::FeatureBuilder> fbs;
   ForEachFromDatRawFormat<serialization_policy::MaxAccuracy>(
-      dataFilename, [&](FeatureBuilder const & fb, uint64_t /* currPos */) {
-        if (m_getMainType(fb.GetTypes()) != ftype::GetEmptyValue() &&
-            !m_getName(fb.GetMultilangName()).empty() && !fb.GetOsmIds().empty() &&
-            (fb.IsPoint() || fb.IsArea()))
-        {
-          fbs.emplace_back(fb);
-        }
-      });
+        dataFilename, [&](FeatureBuilder const & fb, uint64_t /* currPos */) {
+    if (m_getMainType(fb.GetTypes()) != ftype::GetEmptyValue() &&
+        !fb.GetOsmIds().empty() &&
+        (fb.IsPoint() || fb.IsArea()))
+    {
+      fbs.emplace_back(fb);
+    }
+  });
   return fbs;
 }
 
@@ -195,31 +191,15 @@ HierarchyLineEnricher::HierarchyLineEnricher(std::string const & osm2FtIdsPath,
   CHECK(m_osm2FtIds.ReadFromFile(osm2FtIdsPath), (osm2FtIdsPath));
 }
 
-boost::optional<m2::PointD> HierarchyLineEnricher::GetFeatureCenter(CompositeId const & id) const
+boost::optional<m2::PointD> HierarchyLineEnricher::GetFeatureCenter(indexer::CompositeId const & id) const
 {
-  auto const optId = m_osm2FtIds.GetFeatureId(id);
-  if (!optId)
+  auto const ids = m_osm2FtIds.GetFeatureIds(id);
+  if (ids.empty())
     return {};
 
-  auto const ftPtr = m_featureGetter.GetFeatureByIndex(*optId);
+  auto const ftId = GetIdWitBestGeom(ids, m_featureGetter);
+  auto const ftPtr = m_featureGetter.GetFeatureByIndex(ftId);
   return ftPtr ? feature::GetCenter(*ftPtr) : boost::optional<m2::PointD>();
-}
-
-std::string DebugPrint(HierarchyEntry const & line)
-{
-  std::stringstream stream;
-  stream << std::fixed << std::setprecision(7);
-  stream << DebugPrint(line.m_id) << ';';
-  if (line.m_parentId)
-    stream << DebugPrint(*line.m_parentId);
-  stream << ';';
-  stream << line.m_depth << ';';
-  stream << line.m_center.x << ';';
-  stream << line.m_center.y << ';';
-  stream << classif().GetReadableObjectName(line.m_type) << ';';
-  stream << line.m_name << ';';
-  stream << line.m_countryName;
-  return stream.str();
 }
 
 HierarchyLinesBuilder::HierarchyLinesBuilder(HierarchyBuilder::Node::PtrList && nodes)
@@ -242,9 +222,9 @@ void HierarchyLinesBuilder::SetHierarchyLineEnricher(
   m_enricher = enricher;
 }
 
-std::vector<HierarchyEntry> HierarchyLinesBuilder::GetHierarchyLines()
+std::vector<indexer::HierarchyEntry> HierarchyLinesBuilder::GetHierarchyLines()
 {
-  std::vector<HierarchyEntry> lines;
+  std::vector<indexer::HierarchyEntry> lines;
   lines.reserve(m_nodes.size());
   std::transform(std::cbegin(m_nodes), std::cend(m_nodes), std::back_inserter(lines),
                  [&](auto const & n) { return Transform(n); });
@@ -261,9 +241,9 @@ m2::PointD HierarchyLinesBuilder::GetCenter(HierarchyBuilder::Node::Ptr const & 
   return optCenter ? *optCenter : data.GetCenter();
 }
 
-HierarchyEntry HierarchyLinesBuilder::Transform(HierarchyBuilder::Node::Ptr const & node)
+indexer::HierarchyEntry HierarchyLinesBuilder::Transform(HierarchyBuilder::Node::Ptr const & node)
 {
-  HierarchyEntry line;
+  indexer::HierarchyEntry line;
   auto const & data = node->GetData();
   line.m_id = data.GetCompositeId();
   auto const parent = node->GetParent();
@@ -278,47 +258,70 @@ HierarchyEntry HierarchyLinesBuilder::Transform(HierarchyBuilder::Node::Ptr cons
   return line;
 }
 
-namespace popularity
+uint32_t GetIdWitBestGeom(std::vector<uint32_t> const & ids, FeatureGetter const & ftGetter)
 {
-uint32_t GetMainType(FeatureParams::Types const & types)
-{
-  auto const & airportChecker = ftypes::IsAirportChecker::Instance();
-  auto it = base::FindIf(types, airportChecker);
-  if (it != std::cend(types))
-    return *it;
-
-  auto const & attractChecker = ftypes::AttractionsChecker::Instance();
-  auto const type = attractChecker.GetBestType(types);
-  if (type != ftype::GetEmptyValue())
-    return type;
-
-  auto const & eatChecker = ftypes::IsEatChecker::Instance();
-  it = base::FindIf(types, eatChecker);
-  return it != std::cend(types) ? *it : ftype::GetEmptyValue();
-}
-
-std::string GetName(StringUtf8Multilang const & str) { return GetRussianName(str); }
-
-std::string Print(HierarchyEntry const & line)
-{
-  std::stringstream stream;
-  stream << std::fixed << std::setprecision(7);
-  stream << line.m_id.m_mainId.GetEncodedId() << '|' << line.m_id.m_additionalId.GetEncodedId()
-         << ';';
-  if (line.m_parentId)
+  auto bestGeom = GeomType::Undefined;
+  uint32_t bestId = 0;
+  for (auto id : ids)
   {
-    auto const parentId = *line.m_parentId;
-    stream << parentId.m_mainId.GetEncodedId() << '|' << parentId.m_additionalId.GetEncodedId()
-           << ';';
+    auto const ftPtr = ftGetter.GetFeatureByIndex(id);
+    if (!ftPtr)
+      continue;
+
+    auto const geom = ftPtr->GetGeomType();
+    switch (geom)
+    {
+    case GeomType::Point:
+      return bestId;
+    case GeomType::Line:
+    {
+      if (bestGeom != GeomType::Point && bestGeom != GeomType::Area)
+      {
+        bestId = id;
+        bestGeom = geom;
+      }
+    }
+      break;
+    case GeomType::Area:
+    {
+      bestId = id;
+      bestGeom = geom;
+    }
+      break;
+    default:
+      UNREACHABLE();
+    }
   }
-  stream << ';';
-  stream << line.m_center.x << ';';
-  stream << line.m_center.y << ';';
-  stream << classif().GetReadableObjectName(line.m_type) << ';';
-  stream << line.m_name;
-  return stream.str();
+  return bestId;
 }
 
-}  // namespace popularity
+void OrderIds(std::vector<uint32_t> & ids, FeatureGetter const & ftGetter)
+{
+  auto idx = std::numeric_limits<size_t>::max();
+  for (size_t i = 0; i <  ids.size(); ++i)
+  {
+    std::unique_ptr<FeatureType> ft = ftGetter.GetFeatureByIndex(ids[i]);
+    if (!ft)
+      continue;
+
+    if (ft->GetGeomType() == GeomType::Line)
+      idx = i;
+
+    bool hasOutlineType = false;
+    ft->ForEachType([&](auto t) {
+      static auto const outline = classif().GetTypeByPath({"outline"});
+      if (t == outline)
+        hasOutlineType = true;
+    });
+    if (hasOutlineType)
+    {
+      idx = i;
+      break;
+    }
+  }
+
+  if (idx < ids.size())
+    std::swap(ids[idx], ids[0]);
+}
 }  // namespace hierarchy
 }  // namespace generator
