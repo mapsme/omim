@@ -79,7 +79,7 @@ bool HierarchyPlace::Contains(HierarchyPlace const & smaller) const
     return Contains(smaller.GetCenter());
 
   return smaller.GetArea() <= GetArea() &&
-      CalculateOverlapPercentage(m_polygon, smaller.m_polygon) > 95.0;
+      CalculateOverlapPercentage(m_polygon, smaller.m_polygon) > 80.0;
 }
 
 bool HierarchyPlace::Contains(m2::PointD const & point) const
@@ -165,7 +165,7 @@ std::vector<feature::FeatureBuilder> HierarchyBuilder::ReadFeatures(
   ForEachFromDatRawFormat<serialization_policy::MaxAccuracy>(
         dataFilename, [&](FeatureBuilder const & fb, uint64_t /* currPos */) {
     if (m_getMainType(fb.GetTypes()) != ftype::GetEmptyValue() &&
-        !m_getName(fb.GetMultilangName()).empty() && !fb.GetOsmIds().empty() &&
+        !fb.GetOsmIds().empty() &&
         (fb.IsPoint() || fb.IsArea()))
     {
       fbs.emplace_back(fb);
