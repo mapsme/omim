@@ -340,19 +340,28 @@ UNIT_TEST(AreaOnEarth_WithFiltering)
 UNIT_TEST(AreaOnEarth_FromFile)
 {
   CHECK(std::getenv("FILE_PATH") && !std::string(std::getenv("FILE_PATH")).empty(), ());
-  std::string path = std::string(std::getenv("FILE_PATH"));
-  std::ifstream input(path);
-  std::vector<m2::PointD> points;
-  size_t n;
-  input >> n;
-  points.resize(n);
-  for (size_t i = 0; i < n; ++i)
-  {
-    double lat, lon;
-    input >> lat >> lon;
-    points[i] = MercatorBounds::FromLatLon(lat, lon);
-  }
+  std::string dirPath = std::string(std::getenv("FILE_PATH"));
 
-  std::cout << std::setprecision(20);
-  std::cout << ms::AreaOnEarth(points) << std::endl;
+  for (size_t i = 0; i < 34492; i++)
+  {
+    if (i % 1000 == 0)
+      LOG(LINFO, (i));
+    std::string path = dirPath + "/" + std::to_string(i) + ".points";
+    std::ifstream input(path);
+    std::vector<m2::PointD> points;
+    size_t n;
+    input >> n;
+    points.resize(n);
+    for (size_t i = 0; i < n; ++i)
+    {
+      double lat, lon;
+      input >> lat >> lon;
+      points[i] = MercatorBounds::FromLatLon(lat, lon);
+    }
+
+    double area = ms::AreaOnEarth(points, 1);
+//    std::cout << std::setprecision(20);
+//    std::cout << area << std::endl;
+    CHECK_GREATER(area, 0, ());
+  }
 }
