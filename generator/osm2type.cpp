@@ -12,7 +12,9 @@
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
 
+#include <array>
 #include <initializer_list>
+#include <map>
 #include <set>
 #include <string>
 #include <vector>
@@ -288,10 +290,7 @@ public:
       m_types[static_cast<size_t>(kv.first)] = c.GetTypeByPath(kv.second);
   }
 
-  uint32_t Get(CachedTypes::Type t) const
-  {
-    return m_types[static_cast<size_t>(t)];
-  }
+  uint32_t Get(CachedTypes::Type t) const { return m_types[static_cast<size_t>(t)]; }
 
   bool IsHighway(uint32_t t) const
   {
@@ -544,6 +543,34 @@ string DetermineSurface(OsmElement * p)
   return psurface;
 }
 
+// Sets oneway=yes for ways with two lanes one of which is reserved for PSV.
+// We do not handle ways with more than 2 lanes or other psv-tags because of inconsistency of those
+// tags in OSM. ~50% of combinations of lanes:bus:backward, psv:lanes and similar tags is not set
+// correctly.
+void SetOnewayForSpecialRoads(OsmElement * p)
+{
+  bool hasPsvLane = false;
+  bool hasTwoLanes = false;
+  static array<std::string, 2> const psvKeys{"lanes:bus", "lanes:psv"};
+
+  for (auto const & tag : p->m_tags)
+  {
+    if (tag.m_key == "oneway")
+      return;
+
+    if (find(psvKeys.cbegin(), psvKeys.cend(), tag.m_key) != psvKeys.cend() && tag.m_value == "1")
+      hasPsvLane = true;
+    else if (tag.m_key == "lanes" && tag.m_value == "2")
+      hasTwoLanes = true;
+  }
+
+  if (hasTwoLanes && hasPsvLane)
+  {
+    LOG(LINFO, ("Set oneway=yes for road with id", p->m_id));
+    p->AddTag("oneway", "yes");
+  }
+}
+
 void PreprocessElement(OsmElement * p)
 {
   bool hasLayer = false;
@@ -578,6 +605,8 @@ void PreprocessElement(OsmElement * p)
     if (!city.empty())
       p->AddTag("city", city);
   }
+  // Sets oneway=yes for two-lanes roads with one lane designated for PSV.
+  SetOnewayForSpecialRoads(p);
 
   p->AddTag("psurface", DetermineSurface(p));
 
@@ -593,7 +622,8 @@ void PreprocessElement(OsmElement * p)
         else
           p->AddTag("highway", "platform");
       }
-      else if (tag.m_value == "stop_position" && isTram && p->m_type == OsmElement::EntityType::Node)
+      else if (tag.m_value == "stop_position" && isTram &&
+               p->m_type == OsmElement::EntityType::Node)
       {
         p->AddTag("railway", "tram_stop");
       }
@@ -660,7 +690,8 @@ void PreprocessElement(OsmElement * p)
       value = "specified";
   });
 
-  // todo(@t.yan): remove this code from osm2meta.cpp when types'll be used for cuisines translation.
+  // todo(@t.yan): remove this code from osm2meta.cpp when types'll be used for cuisines
+  // translation.
   string const kCuisineKey = "cuisine";
   auto cuisines = p->GetTag(kCuisineKey);
   if (!cuisines.empty())
@@ -723,8 +754,10 @@ void PostprocessElement(OsmElement * p, FeatureParams & params)
       {"wheelchair", "designated",
        [&params] { params.AddType(types.Get(CachedTypes::Type::WheelchairYes)); }},
       {"wifi", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::Wlan)); }},
-      {"building:part", "no", [&params] { params.AddType(types.Get(CachedTypes::Type::HasParts)); }},
-      {"building:parts", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::HasParts)); }},
+      {"building:part", "no",
+       [&params] { params.AddType(types.Get(CachedTypes::Type::HasParts)); }},
+      {"building:parts", "~",
+       [&params] { params.AddType(types.Get(CachedTypes::Type::HasParts)); }},
   });
 
   bool highwayDone = false;
@@ -751,25 +784,30 @@ void PostprocessElement(OsmElement * p, FeatureParams & params)
           {"oneway", "!", [&noOneway] { noOneway = true; }},
           {"junction", "roundabout", [&addOneway] { addOneway = true; }},
 
-          {"access", "private", [&params] { params.AddType(types.Get(CachedTypes::Type::Private)); }},
+          {"access", "private",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::Private)); }},
           {"access", "!", [&params] { params.AddType(types.Get(CachedTypes::Type::Private)); }},
 
-          {"barrier", "gate", [&params] { params.AddType(types.Get(CachedTypes::Type::BarrierGate)); }},
+          {"barrier", "gate",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::BarrierGate)); }},
 
           {"lit", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::Lit)); }},
           {"toll", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::Toll)); }},
 
           {"foot", "!", [&params] { params.AddType(types.Get(CachedTypes::Type::NoFoot)); }},
-          {"foot", "use_sidepath", [&params] { params.AddType(types.Get(CachedTypes::Type::NoFoot)); }},
+          {"foot", "use_sidepath",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::NoFoot)); }},
           {"foot", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::YesFoot)); }},
           {"sidewalk", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::YesFoot)); }},
 
           {"bicycle", "!", [&params] { params.AddType(types.Get(CachedTypes::Type::NoBicycle)); }},
           {"bicycle", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::YesBicycle)); }},
-          {"cycleway", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::YesBicycle)); }},
+          {"cycleway", "~",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::YesBicycle)); }},
           {"cycleway:right", "~",
            [&params] { params.AddType(types.Get(CachedTypes::Type::YesBicycle)); }},
-          {"cycleway:left", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::YesBicycle)); }},
+          {"cycleway:left", "~",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::YesBicycle)); }},
           {"oneway:bicycle", "!",
            [&params] { params.AddType(types.Get(CachedTypes::Type::BicycleBidir)); }},
           {"cycleway", "opposite",
@@ -777,9 +815,12 @@ void PostprocessElement(OsmElement * p, FeatureParams & params)
 
           {"motor_vehicle", "private",
            [&params] { params.AddType(types.Get(CachedTypes::Type::NoCar)); }},
-          {"motor_vehicle", "!", [&params] { params.AddType(types.Get(CachedTypes::Type::NoCar)); }},
-          {"motor_vehicle", "yes", [&params] { params.AddType(types.Get(CachedTypes::Type::YesCar)); }},
-          {"motorcar", "private", [&params] { params.AddType(types.Get(CachedTypes::Type::NoCar)); }},
+          {"motor_vehicle", "!",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::NoCar)); }},
+          {"motor_vehicle", "yes",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::YesCar)); }},
+          {"motorcar", "private",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::NoCar)); }},
           {"motorcar", "!", [&params] { params.AddType(types.Get(CachedTypes::Type::NoCar)); }},
           {"motorcar", "yes", [&params] { params.AddType(types.Get(CachedTypes::Type::YesCar)); }},
       });
