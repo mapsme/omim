@@ -52,11 +52,6 @@ UNIT_TEST(Mopub_GetBanner)
   }
   {
     feature::TypesHolder holder;
-    holder.Assign(c.GetTypeByPath({"sponsored", "opentable"}));
-    TEST_EQUAL(mopub.GetBannerId(holder, "Denmark", "ru"), mopub.GetBannerIdForOtherTypes(), ());
-  }
-  {
-    feature::TypesHolder holder;
     holder.Assign(c.GetTypeByPath({"sponsored", "booking"}));
     TEST_EQUAL(mopub.GetBannerId(holder, "India", "ru"), "", ());
   }

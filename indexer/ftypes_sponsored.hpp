@@ -28,7 +28,6 @@ public:
 
 // Checkers.
 SPONSORED_CHECKER(IsBookingChecker, "booking");
-SPONSORED_CHECKER(IsOpentableChecker, "opentable");
 SPONSORED_CHECKER(IsHolidayChecker, "holiday");
 SPONSORED_CHECKER(IsPromoCatalogChecker, "promo_catalog");
 

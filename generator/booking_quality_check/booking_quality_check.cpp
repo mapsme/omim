@@ -1,7 +1,6 @@
 #include "generator/booking_dataset.hpp"
 
 #include "generator/feature_builder.hpp"
-#include "generator/opentable_dataset.hpp"
 #include "generator/osm_source.hpp"
 #include "generator/processor_booking.hpp"
 #include "generator/raw_generator.hpp"
@@ -36,7 +35,6 @@ using namespace std;
 
 DEFINE_string(osm, "", "Input .o5m file");
 DEFINE_string(booking, "", "Path to booking data in .tsv format");
-DEFINE_string(opentable, "", "Path to opentable data in .tsv format");
 DEFINE_string(factors, "", "Factors output path");
 DEFINE_string(sample, "", "Path so sample file");
 
@@ -110,7 +108,6 @@ GenerateInfo GetGenerateInfo()
 {
   GenerateInfo info;
   info.m_bookingDataFilename = FLAGS_booking;
-  info.m_opentableDataFilename = FLAGS_opentable;
   info.m_osmFileName = FLAGS_osm;
   info.SetNodeStorageType("map");
   info.SetOsmFileType("o5m");
@@ -240,7 +237,6 @@ void GenerateFactors(Dataset const & dataset,
 enum class DatasetType
 {
   Booking,
-  Opentable
 };
 
 template <typename Dataset, typename Object = typename Dataset::Object>
@@ -314,12 +310,6 @@ string GetDatasetFilePath<BookingDataset>(GenerateInfo const & info)
   return info.m_bookingDataFilename;
 }
 
-template <>
-string GetDatasetFilePath<OpentableDataset>(GenerateInfo const & info)
-{
-  return info.m_opentableDataFilename;
-}
-
 template <typename Dataset, typename Object = typename Dataset::Object>
 void RunImpl(GenerateInfo & info)
 {
@@ -357,7 +347,6 @@ void Run(DatasetType const datasetType, GenerateInfo & info)
   switch (datasetType)
   {
   case DatasetType::Booking: RunImpl<BookingDataset>(info); break;
-  case DatasetType::Opentable: RunImpl<OpentableDataset>(info); break;
   }
 }
 }  // namespace
@@ -376,12 +365,10 @@ int main(int argc, char * argv[])
 
   CHECK(!FLAGS_sample.empty(), ("Please specify sample path."));
   CHECK(!FLAGS_osm.empty(), ("Please specify osm path."));
-  CHECK(!FLAGS_booking.empty() ^ !FLAGS_opentable.empty(),
-        ("Please specify either booking or opentable path."));
   CHECK(!FLAGS_factors.empty() ^ FLAGS_generate, ("Please either specify factors path"
                                                   "or use -generate."));
 
-  auto const datasetType = FLAGS_booking.empty() ? DatasetType::Opentable : DatasetType::Booking;
+  auto const datasetType = DatasetType::Booking;
 
   classificator::Load();
 

@@ -92,7 +92,6 @@
 #include "geometry/triangle2d.hpp"
 
 #include "partners_api/ads_engine.hpp"
-#include "partners_api/opentable_api.hpp"
 #include "partners_api/partners.hpp"
 
 #include "base/file_name_utils.hpp"
@@ -874,14 +873,6 @@ void Framework::FillInfoFromFeatureType(FeatureType & ft, place_page::Info & inf
       urlSetter(bind(&Info::GetSponsoredDeepLink, &info),
                 bind(&Info::SetSponsoredDeepLink, &info, _1));
     }
-  }
-  else if (ftypes::IsOpentableChecker::Instance()(ft))
-  {
-    info.SetSponsoredType(SponsoredType::Opentable);
-    auto const & sponsoredId = info.GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID);
-    auto const & url = opentable::Api::GetBookTableUrl(sponsoredId);
-    info.SetSponsoredUrl(url);
-    info.SetSponsoredDescriptionUrl(url);
   }
   else if (ftypes::IsHotelChecker::Instance()(ft))
   {

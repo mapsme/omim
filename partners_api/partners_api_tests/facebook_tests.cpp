@@ -51,12 +51,6 @@ UNIT_TEST(Facebook_GetBanner)
   }
   {
     feature::TypesHolder holder;
-    holder.Assign(c.GetTypeByPath({"sponsored", "opentable"}));
-    auto const bannerId = facebook.GetBannerIdForOtherTypes();
-    TEST_EQUAL(facebook.GetBannerId(holder, "Denmark", "ru"), bannerId, ());
-  }
-  {
-    feature::TypesHolder holder;
     holder.Assign(c.GetTypeByPath({"sponsored", "booking"}));
     TEST_EQUAL(facebook.GetBannerId(holder, "India", "ru"), "", ());
   }

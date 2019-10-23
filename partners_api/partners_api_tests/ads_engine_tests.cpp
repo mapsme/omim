@@ -115,22 +115,6 @@ UNIT_TEST(AdsEngine_Smoke)
   }
   {
     feature::TypesHolder holder;
-    holder.Assign(c.GetTypeByPath({"sponsored", "opentable"}));
-    TEST(engine.HasBanner(holder, {"Brazil"}, "en"), ());
-    auto result = engine.GetBanners(holder, {"Brazil"}, "en");
-    CheckIds(result, {mopub.GetBannerIdForOtherTypes()});
-    TEST_EQUAL(result[0].m_type, ads::Banner::Type::Mopub, ());
-  }
-  {
-    feature::TypesHolder holder;
-    holder.Assign(c.GetTypeByPath({"sponsored", "opentable"}));
-    TEST(engine.HasBanner(holder, {"Brazil"}, "ru"), ());
-    auto result = engine.GetBanners(holder, {"Brazil"}, "ru");
-    CheckCountAndTypes(result);
-    CheckIds(result, {rb.GetBannerIdForOtherTypes(), mopub.GetBannerIdForOtherTypes()});
-  }
-  {
-    feature::TypesHolder holder;
     holder.Assign(c.GetTypeByPath({"sponsored", "booking"}));
     TEST(!engine.HasBanner(holder, {"Russian Federation"}, "ru"), ());
     auto result = engine.GetBanners(holder, {"Russian Federation"}, "ru");
