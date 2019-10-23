@@ -277,8 +277,8 @@ double AreaOnEarth(std::vector<m2::PointD> const & points, uint64_t id)
   do
   {
     beforeFilter = pointsCopy.size();
-    double constexpr kIntervalBetweenPointsMeters = 700.0;
-    double constexpr kAlmostOneLineEpsRad = 0.05;
+    double constexpr kIntervalBetweenPointsMeters = 2000.0;
+    double constexpr kAlmostOneLineEpsRad = 0.01;
     pointsCopy = area_on_sphere_details::DropClosePoints(pointsCopy, kIntervalBetweenPointsMeters);
     pointsCopy = area_on_sphere_details::DropAlmostAtOneLinePointsEps(pointsCopy, kAlmostOneLineEpsRad);
     afterFilter = pointsCopy.size();
@@ -351,3 +351,4 @@ double CircleAreaOnEarth(double distanceOnSphereRadius)
   return kConst * 2 * sinValue * sinValue;
 }
 }  // namespace ms
+
