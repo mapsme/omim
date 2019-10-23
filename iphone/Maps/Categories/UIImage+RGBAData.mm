@@ -1,6 +1,6 @@
 #import "UIImage+RGBAData.h"
 
-#include <CoreApi/Framework.h>
+#include "Framework.h"
 
 static void releaseCallback(void *info, const void *data, size_t size) {
   CFDataRef cfData = (CFDataRef)info;
