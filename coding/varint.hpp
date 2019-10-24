@@ -141,12 +141,18 @@ uint64_t ReadVarUint(TSource & src, uint64_t const *)
   }
 }
 
+template <typename TSource>
+size_t ReadVarUint(TSource & src, size_t const *)
+{
+    static_assert((sizeof(size_t) == sizeof(uint64_t)), "");
+    return static_cast<size_t>(ReadVarUint(src, static_cast<uint64_t const *>(nullptr)));
+}
 }
 
 template <typename T, typename TSource>
 T ReadVarUint(TSource & src)
 {
-  static_assert((std::is_same<T, uint32_t>::value || std::is_same<T, uint64_t>::value), "");
+  static_assert((std::is_same<T, uint32_t>::value || std::is_same<T, uint64_t>::value || std::is_same<T, size_t>::value), "");
   return ::impl::ReadVarUint(src, static_cast<T const *>(NULL));
 
   /* Generic code commented out.
