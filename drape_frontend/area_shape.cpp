@@ -1,4 +1,5 @@
 #include "drape_frontend/area_shape.hpp"
+
 #include "drape_frontend/render_state_extension.hpp"
 
 #include "shaders/programs.hpp"
@@ -6,17 +7,72 @@
 #include "drape/attribute_provider.hpp"
 #include "drape/batcher.hpp"
 #include "drape/texture_manager.hpp"
-#include "drape/utils/vertex_decl.hpp"
-
-#include "indexer/map_style_reader.hpp"
 
 #include "base/buffer_vector.hpp"
 #include "base/logging.hpp"
+#include "base/stl_helpers.hpp"
 
 #include <algorithm>
 
 namespace df
 {
+Area3dShapeHandle::Area3dShapeHandle(FeatureID const & featureId, uint32_t verticesCount,
+                                     PaletteColor color, ref_ptr<dp::TextureManager> textureManager)
+  : OverlayHandle(featureId, dp::Anchor::Center, 0 /* priority */, 1 /* minVisibleScale */, false)
+  , m_verticesCount(verticesCount)
+{
+  SetHighlightColor(color, textureManager);
+}
+
+void Area3dShapeHandle::GetAttributeMutation(ref_ptr<dp::AttributeBufferMutator> mutator) const
+{
+  if (!m_needUpdate)
+    return;
+
+  auto const & node = GetOffsetNode(gpu::Area3dDynamicVertex::GetDynamicStreamID());
+  ASSERT(node.first.GetElementSize() == sizeof(gpu::Area3dDynamicVertex), ());
+  ASSERT(node.second.m_count == m_verticesCount, ());
+
+  auto const bytesCount = static_cast<uint32_t>(m_verticesCount * sizeof(gpu::Area3dDynamicVertex));
+  auto buffer = static_cast<gpu::Area3dDynamicVertex *>(mutator->AllocateMutationBuffer(bytesCount));
+  for (uint32_t i = 0; i < m_verticesCount; ++i)
+    buffer[i].m_highlightingTexCoord = m_texCoord;
+
+  dp::MutateNode mutateNode;
+  mutateNode.m_region = node.second;
+  mutateNode.m_data = make_ref(buffer);
+  mutator->AddMutation(node.first, mutateNode);
+
+  m_needUpdate = false;
+}
+
+bool Area3dShapeHandle::Update(ScreenBase const & screen)
+{
+  UNUSED_VALUE(screen);
+  return true;
+}
+
+m2::RectD Area3dShapeHandle::GetPixelRect(ScreenBase const & screen, bool perspective) const
+{
+  UNUSED_VALUE(screen);
+  UNUSED_VALUE(perspective);
+  return {};
+}
+
+void Area3dShapeHandle::GetPixelShape(ScreenBase const & screen, bool perspective, Rects & rects) const
+{
+  UNUSED_VALUE(screen);
+  UNUSED_VALUE(perspective);
+}
+
+bool Area3dShapeHandle::IndexesRequired() const { return false; }
+
+void Area3dShapeHandle::SetHighlightColor(PaletteColor color, ref_ptr<dp::TextureManager> textureManager)
+{
+  m_texCoord = glsl::ToVec2(textureManager->GetPaletteTexCoords(base::Underlying(color)));
+  m_needUpdate = true;
+}
+
 AreaShape::AreaShape(std::vector<m2::PointD> && triangleList, BuildingOutline && buildingOutline,
                      AreaViewParams const & params)
   : m_vertexes(std::move(triangleList))
@@ -40,7 +96,7 @@ void AreaShape::Draw(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Batcher> 
   }
 
   if (m_params.m_is3D)
-    DrawArea3D(context, batcher, colorUv, outlineUv, region.GetTexture());
+    DrawArea3D(context, batcher, colorUv, outlineUv, textures, region.GetTexture());
   else if (m_params.m_hatching)
     DrawHatchingArea(context, batcher, colorUv, region.GetTexture(), textures->GetHatchingTexture());
   else
@@ -132,7 +188,7 @@ void AreaShape::DrawHatchingArea(ref_ptr<dp::GraphicsContext> context, ref_ptr<d
 
 void AreaShape::DrawArea3D(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Batcher> batcher,
                            m2::PointD const & colorUv, m2::PointD const & outlineUv,
-                           ref_ptr<dp::Texture> texture) const
+                           ref_ptr<dp::TextureManager> textureManager, ref_ptr<dp::Texture> texture) const
 {
   ASSERT(!m_buildingOutline.m_indices.empty(), ());
   ASSERT(!m_buildingOutline.m_normals.empty(), ());
@@ -169,14 +225,25 @@ void AreaShape::DrawArea3D(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Bat
     vertexes.emplace_back(glsl::vec3(pt, -m_params.m_posZ), normal, uv);
   }
 
+  std::vector<gpu::Area3dDynamicVertex> dynamicVertices(vertexes.size());
+  for (auto & v : dynamicVertices)
+  {
+    v.m_highlightingTexCoord =
+      glsl::ToVec2(textureManager->GetPaletteTexCoords(base::Underlying(PaletteColor::NoSelection)));
+  }
+
   auto state = CreateRenderState(gpu::Program::Area3d, DepthLayer::Geometry3dLayer);
   state.SetDepthTestEnabled(m_params.m_depthTestEnabled);
   state.SetColorTexture(texture);
   state.SetBlending(dp::Blending(false /* isEnabled */));
 
-  dp::AttributeProvider provider(1, static_cast<uint32_t>(vertexes.size()));
+  drape_ptr<dp::OverlayHandle> handle = make_unique_dp<Area3dShapeHandle>(m_params.m_id,
+    static_cast<uint32_t>(dynamicVertices.size()), PaletteColor::NoSelection, textureManager);
+
+  dp::AttributeProvider provider(2, static_cast<uint32_t>(vertexes.size()));
   provider.InitStream(0, gpu::Area3dVertex::GetBindingInfo(), make_ref(vertexes.data()));
-  batcher->InsertTriangleList(context, state, make_ref(&provider));
+  provider.InitStream(1, gpu::Area3dDynamicVertex::GetBindingInfo(), make_ref(dynamicVertices.data()));
+  batcher->InsertTriangleList(context, state, make_ref(&provider), std::move(handle));
 
   // Generate outline.
   if (m_buildingOutline.m_generateOutline)
@@ -198,9 +265,21 @@ void AreaShape::DrawArea3D(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Bat
       vertices.emplace_back(gpu::AreaVertex(glsl::vec3(pos, -m_params.m_posZ), ouv));
     }
 
-    dp::AttributeProvider outlineProvider(1, static_cast<uint32_t>(vertices.size()));
+    std::vector<gpu::Area3dDynamicVertex> dynamicVertices(vertices.size());
+    for (auto & v : dynamicVertices)
+    {
+      v.m_highlightingTexCoord =
+        glsl::ToVec2(textureManager->GetPaletteTexCoords(base::Underlying(PaletteColor::NoSelection)));
+    }
+
+    drape_ptr<dp::OverlayHandle> handle = make_unique_dp<Area3dShapeHandle>(m_params.m_id,
+      static_cast<uint32_t>(dynamicVertices.size()), PaletteColor::NoSelection, textureManager);
+
+    dp::AttributeProvider outlineProvider(2, static_cast<uint32_t>(vertices.size()));
     outlineProvider.InitStream(0, gpu::AreaVertex::GetBindingInfo(), make_ref(vertices.data()));
-    batcher->InsertLineRaw(context, outlineState, make_ref(&outlineProvider), m_buildingOutline.m_indices);
+    outlineProvider.InitStream(1, gpu::Area3dDynamicVertex::GetBindingInfo(), make_ref(dynamicVertices.data()));
+    batcher->InsertLineRaw(context, outlineState, make_ref(&outlineProvider), m_buildingOutline.m_indices,
+                           std::move(handle));
   }
 }
 }  // namespace df

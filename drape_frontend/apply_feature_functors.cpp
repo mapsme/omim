@@ -828,6 +828,7 @@ void ApplyAreaFeature::ProcessAreaRule(Stylist::TRuleWrapper const & rule)
   if (areaRule && !m_triangles.empty())
   {
     AreaViewParams params;
+    params.m_id = m_id;
     params.m_tileCenter = m_tileRect.Center();
     params.m_depth = depth;
     params.m_color = ToDrapeColor(areaRule->color());

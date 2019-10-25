@@ -1,6 +1,8 @@
 #include "drape_frontend/frontend_renderer.hpp"
+
 #include "drape_frontend/animation/interpolation_holder.hpp"
 #include "drape_frontend/animation_system.hpp"
+#include "drape_frontend/area_shape.hpp"
 #include "drape_frontend/debug_rect_renderer.hpp"
 #include "drape_frontend/drape_measurer.hpp"
 #include "drape_frontend/drape_notifier.hpp"
@@ -531,6 +533,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
                                                     true /* isAnim */, true /* useVisibleViewport */,
                                                     nullptr /* parallelAnimCreator */));
         }
+        m_needUpdateSelectionForBuildings = true;
       }
       break;
     }
@@ -1336,7 +1339,8 @@ void FrontendRenderer::ProcessSelection(ref_ptr<SelectObjectMessage> msg)
       for (ref_ptr<dp::OverlayHandle> handle : selectResult)
         offsetZ = std::max(offsetZ, handle->GetPivotZ());
     }
-    m_selectionShape->Show(msg->GetSelectedObject(), msg->GetPosition(), offsetZ, msg->IsAnim());
+    m_selectionShape->Show(msg->GetSelectedObject(), msg->GetFeatureID(), msg->GetPosition(),
+                           offsetZ, msg->IsAnim());
     if (!m_myPositionController->IsModeChangeViewport())
     {
       m2::PointD startPosition;
@@ -1352,6 +1356,30 @@ void FrontendRenderer::ProcessSelection(ref_ptr<SelectObjectMessage> msg)
                                 MessagePriority::Normal);
     }
   }
+  m_needUpdateSelectionForBuildings = true;
+}
+
+void FrontendRenderer::UpdateBuildingSelection(std::vector<drape_ptr<RenderGroup>> & groups)
+{
+  if (!m_needUpdateSelectionForBuildings)
+    return;
+
+  auto const hasSelection = (m_selectionShape != nullptr &&
+    m_selectionShape->GetSelectedObject() != SelectionShape::OBJECT_EMPTY &&
+    m_selectionShape->IsComplexSelection());
+  for (auto & g : groups)
+  {
+    auto overlays = g->CollectOverlay(hasSelection ? m_selectionShape->GetSelectedFeatures() :
+                                                     std::set<FeatureID>());
+    for (auto & overlay : overlays)
+    {
+      ASSERT(dynamic_cast<Area3dShapeHandle *>(overlay.get()) != nullptr, ());
+      auto handle = static_cast<Area3dShapeHandle *>(overlay.get());
+      handle->SetHighlightColor(hasSelection ? PaletteColor::Selection : PaletteColor::NoSelection, m_texMng);
+    }
+  }
+
+  m_needUpdateSelectionForBuildings = false;
 }
 
 void FrontendRenderer::BeginUpdateOverlayTree(ScreenBase const & modelView)
@@ -1535,6 +1563,7 @@ void FrontendRenderer::PreRender3dLayer(ScreenBase const & modelView)
   m_viewport.Apply(m_context);
   
   layer.Sort(make_ref(m_overlayTree));
+  UpdateBuildingSelection(layer.m_renderGroups);
   for (drape_ptr<RenderGroup> const & group : layer.m_renderGroups)
     RenderSingleGroup(m_context, modelView, make_ref(group));
 }
@@ -1560,6 +1589,7 @@ void FrontendRenderer::Render3dLayer(ScreenBase const & modelView)
     m_context->Clear(dp::ClearBits::DepthBit, dp::kClearBitsStoreAll);
     
     layer.Sort(make_ref(m_overlayTree));
+    UpdateBuildingSelection(layer.m_renderGroups);
     for (drape_ptr<RenderGroup> const & group : layer.m_renderGroups)
       RenderSingleGroup(m_context, modelView, make_ref(group));
   }

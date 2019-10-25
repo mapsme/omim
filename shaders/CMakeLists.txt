@@ -55,7 +55,9 @@ add_library(${PROJECT_NAME} ${SRC})
 set(
   GL_SHADERS_SRC
   GL/area.vsh.glsl
+  GL/area3d.fsh.glsl
   GL/area3d.vsh.glsl
+  GL/area3d_outline.fsh.glsl
   GL/area3d_outline.vsh.glsl
   GL/arrow3d.fsh.glsl
   GL/arrow3d.vsh.glsl
@@ -112,7 +114,6 @@ set(
   GL/text_outlined_gui.vsh.glsl
   GL/texturing.fsh.glsl
   GL/texturing.vsh.glsl
-  GL/texturing3d.fsh.glsl
   GL/texturing_billboard.vsh.glsl
   GL/texturing_gui.vsh.glsl
   GL/traffic.fsh.glsl

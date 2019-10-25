@@ -62,6 +62,7 @@ struct PoiSymbolViewParams : CommonOverlayViewParams
 
 struct AreaViewParams : CommonViewParams
 {
+  FeatureID m_id;
   dp::Color m_color;
   dp::Color m_outlineColor = dp::Color::Transparent();
   float m_minPosZ = 0.0f;

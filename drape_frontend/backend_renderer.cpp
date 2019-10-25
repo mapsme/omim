@@ -722,6 +722,10 @@ void BackendRenderer::InitContextDependentResources()
   params.m_colors = "colors.txt";
   params.m_patterns = "patterns.txt";
 #endif // BUILD_DESIGNER
+  params.m_colorGetter = make_unique_dp<df::ColorGetter>();
+  params.m_palette.resize(base::Underlying(df::PaletteColor::Count));
+  for (uint32_t i = 0; i < params.m_palette.size(); ++i)
+    params.m_palette[i] = GetPaletteColorName(static_cast<PaletteColor>(i));
   params.m_glyphMngParams.m_uniBlocks = "unicode_blocks.txt";
   params.m_glyphMngParams.m_whitelist = "fonts_whitelist.txt";
   params.m_glyphMngParams.m_blacklist = "fonts_blacklist.txt";
@@ -730,7 +734,7 @@ void BackendRenderer::InitContextDependentResources()
   GetPlatform().GetFontNames(params.m_glyphMngParams.m_fonts);
 
   CHECK(m_context != nullptr, ());
-  m_texMng->Init(m_context, params);
+  m_texMng->Init(m_context, std::move(params));
 
   // Send some textures to frontend renderer.
   drape_ptr<PostprocessStaticTextures> textures = make_unique_dp<PostprocessStaticTextures>();

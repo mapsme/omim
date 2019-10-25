@@ -55,6 +55,7 @@ typedef struct
   float3 a_position [[attribute(0)]];
   float3 a_normal [[attribute(1)]];
   float2 a_texCoords [[attribute(2)]];
+  float2 a_highlightingTexCoords [[attribute(3)]];
 } Area3dVertex_T;
 
 typedef struct
@@ -65,7 +66,7 @@ typedef struct
 } Area3dFragment_T;
 
 vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
-                                 constant Uniforms_T & uniforms [[buffer(1)]],
+                                 constant Uniforms_T & uniforms [[buffer(2)]],
                                  texture2d<half> u_colorTex [[texture(0)]],
                                  sampler u_colorTexSampler [[sampler(0)]])
 {
@@ -92,6 +93,8 @@ vertex Area3dFragment_T vsArea3d(const Area3dVertex_T in [[stage_in]],
   
   half4 color = u_colorTex.sample(u_colorTexSampler, in.a_texCoords);
   color.a = (half)uniforms.u_opacity;
+  half4 highlighting = u_colorTex.sample(u_colorTexSampler, in.a_highlightingTexCoords);
+  color.rgb = mix(color.rgb, highlighting.rgb, highlighting.a);
   out.color = color;
   
   return out;
@@ -108,10 +111,11 @@ typedef struct
 {
   float3 a_position [[attribute(0)]];
   float2 a_texCoords [[attribute(1)]];
+  float2 a_highlightingTexCoords [[attribute(2)]];
 } Area3dOutlineVertex_T;
 
 vertex AreaFragment_T vsArea3dOutline(const Area3dOutlineVertex_T in [[stage_in]],
-                                      constant Uniforms_T & uniforms [[buffer(1)]],
+                                      constant Uniforms_T & uniforms [[buffer(2)]],
                                       texture2d<half> u_colorTex [[texture(0)]],
                                       sampler u_colorTexSampler [[sampler(0)]])
 {
@@ -124,6 +128,8 @@ vertex AreaFragment_T vsArea3dOutline(const Area3dOutlineVertex_T in [[stage_in]
   
   half4 color = u_colorTex.sample(u_colorTexSampler, in.a_texCoords);
   color.a *= uniforms.u_opacity;
+  half4 highlighting = u_colorTex.sample(u_colorTexSampler, in.a_highlightingTexCoords);
+  color.rgb = mix(color.rgb, highlighting.rgb, highlighting.a);
   out.color = color;
   return out;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "drape/color.hpp"
+#include "drape/color_getter.hpp"
 #include "drape/glyph_generator.hpp"
 #include "drape/glyph_manager.hpp"
 #include "drape/pointers.hpp"
@@ -85,13 +86,15 @@ public:
     double m_visualScale = 1.0;
     std::string m_colors;
     std::string m_patterns;
+    drape_ptr<ColorGetter> m_colorGetter;
+    std::vector<std::string> m_palette;
     GlyphManager::Params m_glyphMngParams;
   };
 
   explicit TextureManager(ref_ptr<GlyphGenerator> glyphGenerator);
   void Release();
 
-  void Init(ref_ptr<dp::GraphicsContext> context, Params const & params);
+  void Init(ref_ptr<dp::GraphicsContext> context, Params && params);
   void OnSwitchMapStyle(ref_ptr<dp::GraphicsContext> context);
   void GetTexturesToCleanup(std::vector<drape_ptr<HWTexture>> & textures);
 
@@ -123,6 +126,9 @@ public:
   ref_ptr<Texture> GetHatchingTexture() const;
   ref_ptr<Texture> GetSMAAAreaTexture() const;
   ref_ptr<Texture> GetSMAASearchTexture() const;
+
+  // This method can be safely called from FR and BR.
+  m2::PointF GetPaletteTexCoords(uint32_t colorIndex) const;
 
 private:
   struct GlyphGroup
@@ -218,6 +224,8 @@ private:
   void UpdateGlyphTextures(ref_ptr<dp::GraphicsContext> context);
   bool HasAsyncRoutines() const;
 
+  void UpdatePalette();
+
   static constexpr size_t GetInvalidGlyphGroup();
 
 private:
@@ -241,6 +249,11 @@ private:
   buffer_vector<HybridGlyphGroup, 4> m_hybridGlyphGroups;
 
   std::vector<drape_ptr<HWTexture>> m_texturesToCleanup;
+
+  // This palette must be used on FR if we need to have texture coordinates there,
+  // and may be used on BR (it has to be more efficient than GetColorRegion).
+  std::vector<std::pair<std::string, m2::PointF>> m_palette;
+  drape_ptr<ColorGetter> m_colorGetter;
 
   base::Timer m_uploadTimer;
   std::atomic_flag m_nothingToUpload;

@@ -13,6 +13,7 @@
 
 #include <memory>
 #include <vector>
+#include <set>
 #include <string>
 
 class ScreenBase;
@@ -57,6 +58,7 @@ public:
 
   void Update(ScreenBase const & modelView);
   void CollectOverlay(ref_ptr<dp::OverlayTree> tree);
+  std::vector<ref_ptr<dp::OverlayHandle>> CollectOverlay(std::set<FeatureID> const & filterFeatures);
   bool HasOverlayHandles() const;
   void RemoveOverlay(ref_ptr<dp::OverlayTree> tree);
   void SetOverlayVisibility(bool isVisible);

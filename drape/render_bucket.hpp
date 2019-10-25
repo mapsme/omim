@@ -2,6 +2,8 @@
 
 #include "drape/pointers.hpp"
 
+#include "indexer/feature.hpp"
+
 #include <limits>
 #include <vector>
 
@@ -31,6 +33,8 @@ public:
 
   void Update(ScreenBase const & modelView);
   void CollectOverlayHandles(ref_ptr<OverlayTree> tree);
+  void CollectOverlayHandles(std::set<FeatureID> const & filterFeatures,
+                             std::vector<ref_ptr<dp::OverlayHandle>> & collection);
   bool HasOverlayHandles() const;
   void RemoveOverlayHandles(ref_ptr<OverlayTree> tree);
   void SetOverlayVisibility(bool isVisible);

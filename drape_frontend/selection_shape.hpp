@@ -10,6 +10,9 @@
 #include "geometry/point2d.hpp"
 #include "geometry/screenbase.hpp"
 
+#include "indexer/feature.hpp"
+
+#include <set>
 #include <vector>
 
 namespace dp
@@ -38,7 +41,8 @@ public:
   SelectionShape(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::TextureManager> mng);
 
   void SetPosition(m2::PointD const & position) { m_position = position; }
-  void Show(ESelectedObject obj, m2::PointD const & position, double positionZ, bool isAnimate);
+  void Show(ESelectedObject obj, FeatureID const & fid, m2::PointD const & position, double positionZ,
+            bool isAnimate);
   void Hide();
   void Render(ref_ptr<dp::GraphicsContext> context, ref_ptr<gpu::ProgramManager> mng, ScreenBase const & screen,
               int zoomLevel, FrameValues const & frameValues);
@@ -54,6 +58,11 @@ public:
   m2::RectD GetSelectionGeometryBoundingBox() const;
   bool HasSelectionGeometry() const { return !m_selectionGeometry.empty(); }
 
+  bool IsComplexSelection() const;
+  void AddSelectedFeature(FeatureID const & featureId);
+  void ClearSelectedFeatures();
+  std::set<FeatureID> const & GetSelectedFeatures() const;
+
 private:
   m2::PointD m_position;
   double m_positionZ;
@@ -66,5 +75,7 @@ private:
 
   std::vector<drape_ptr<RenderNode>> m_selectionGeometry;
   int m_recacheId = -1;
+
+  std::set<FeatureID> m_selectedFeatures;
 };
 }  // namespace df

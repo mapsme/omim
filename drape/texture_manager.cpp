@@ -424,7 +424,7 @@ size_t TextureManager::FindHybridGlyphsGroup(TMultilineText const & text, int fi
   return FindHybridGlyphsGroup(combinedString, fixedHeight);
 }
 
-void TextureManager::Init(ref_ptr<dp::GraphicsContext> context, Params const & params)
+void TextureManager::Init(ref_ptr<dp::GraphicsContext> context, Params && params)
 {
   CHECK(!m_isInitialized, ());
   
@@ -490,6 +490,11 @@ void TextureManager::Init(ref_ptr<dp::GraphicsContext> context, Params const & p
   for (auto it = colors.begin(); it != colors.end(); ++it)
     colorTex->ReserveColor(*it);
 
+  m_colorGetter = std::move(params.m_colorGetter);
+  m_palette.resize(params.m_palette.size());
+  for (size_t i = 0; i < m_palette.size(); ++i)
+    m_palette[i].first = params.m_palette[i];
+
   // Initialize glyphs.
   m_glyphManager = make_unique_dp<GlyphManager>(params.m_glyphMngParams);
   uint32_t const textureSquare = kGlyphsTextureSize * kGlyphsTextureSize;
@@ -499,6 +504,9 @@ void TextureManager::Init(ref_ptr<dp::GraphicsContext> context, Params const & p
   m_maxGlypsCount = static_cast<uint32_t>(ceil(kGlyphAreaCoverage * textureSquare / averageGlyphSquare));
 
   m_isInitialized = true;
+
+  UpdatePalette();
+
   m_nothingToUpload.clear();
 }
 
@@ -520,6 +528,8 @@ void TextureManager::OnSwitchMapStyle(ref_ptr<dp::GraphicsContext> context)
     else
       symbolsTexture->Invalidate(context, m_resPostfix, make_ref(m_textureAllocator), m_texturesToCleanup);
   }
+
+  UpdatePalette();
 }
 
 void TextureManager::GetTexturesToCleanup(std::vector<drape_ptr<HWTexture>> & textures)
@@ -647,5 +657,22 @@ ref_ptr<Texture> TextureManager::GetSMAASearchTexture() const
 constexpr size_t TextureManager::GetInvalidGlyphGroup()
 {
   return kInvalidGlyphGroup;
+}
+
+m2::PointF TextureManager::GetPaletteTexCoords(uint32_t colorIndex) const
+{
+  CHECK_LESS(colorIndex, m_palette.size(), ());
+  return m_palette[colorIndex].second;
+}
+
+void TextureManager::UpdatePalette()
+{
+  CHECK(m_colorGetter != nullptr, ());
+  for (uint32_t i = 0; i < m_palette.size(); ++i)
+  {
+    dp::TextureManager::ColorRegion region;
+    GetColorRegion(m_colorGetter->GetColor(m_palette[i].first), region);
+    m_palette[i].second = region.GetTexRect().Center();
+  }
 }
 }  // namespace dp

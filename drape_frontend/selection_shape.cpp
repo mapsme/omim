@@ -37,7 +37,8 @@ SelectionShape::SelectionShape(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp:
   m_mapping.AddRangePoint(1.0, m_radius);
 }
 
-void SelectionShape::Show(ESelectedObject obj, m2::PointD const & position, double positionZ, bool isAnimate)
+void SelectionShape::Show(ESelectedObject obj, FeatureID const & fid, m2::PointD const & position,
+                          double positionZ, bool isAnimate)
 {
   m_animation.Hide();
   m_position = position;
@@ -49,6 +50,7 @@ void SelectionShape::Show(ESelectedObject obj, m2::PointD const & position, doub
     m_animation.Show();
   m_recacheId++;
   m_selectionGeometry.clear();
+  AddSelectedFeature(fid);
 }
 
 void SelectionShape::Hide()
@@ -57,6 +59,7 @@ void SelectionShape::Hide()
   m_selectedObject = OBJECT_EMPTY;
   m_recacheId++;
   m_selectionGeometry.clear();
+  ClearSelectedFeatures();
 }
 
 bool SelectionShape::IsVisible(ScreenBase const & screen, m2::PointD & pxPos) const
@@ -152,5 +155,26 @@ m2::RectD SelectionShape::GetSelectionGeometryBoundingBox() const
   for (auto const & geometry : m_selectionGeometry)
     rect.Add(geometry->GetBoundingBox());
   return rect;
+}
+
+bool SelectionShape::IsComplexSelection() const
+{
+  // TODO(@darina): Return real value when complex selection will be implemented.
+  return true;
+}
+
+void SelectionShape::AddSelectedFeature(FeatureID const & featureId)
+{
+  m_selectedFeatures.insert(featureId);
+}
+
+void SelectionShape::ClearSelectedFeatures()
+{
+  m_selectedFeatures.clear();
+}
+
+std::set<FeatureID> const & SelectionShape::GetSelectedFeatures() const
+{
+  return m_selectedFeatures;
 }
 }  // namespace df

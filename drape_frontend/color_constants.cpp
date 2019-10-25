@@ -32,7 +32,7 @@ public:
     auto const & colors = isDarkStyle ? m_nightColors : m_clearColors;
     auto const it = colors.find(name);
     if (it == colors.cend())
-      return dp::Color();
+      return {};
     return it->second;
   }
 
@@ -90,7 +90,7 @@ private:
     if (strings::to_uint(colorStr, color, 16))
       return df::ToDrapeColor(static_cast<uint32_t>(color));
     LOG(LWARNING, ("Color parsing failed:", colorStr));
-    return dp::Color();
+    return {};
   }
 
   map<string, dp::Color> m_clearColors;
@@ -136,5 +136,17 @@ dp::Color GetColorConstant(ColorConstant const & constant)
 void LoadTransitColors()
 {
   TransitColors().Load();
+}
+
+ColorConstant GetPaletteColorName(PaletteColor c)
+{
+  switch (c)
+  {
+  case PaletteColor::NoSelection: return {};
+  case PaletteColor::Selection: return "Selection";
+  case PaletteColor::Count:
+    CHECK(false, ("Invalid palette color"));
+  }
+  UNREACHABLE();
 }
 }  // namespace df

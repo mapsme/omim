@@ -40,6 +40,17 @@ struct Area3dVertex : BaseVertex
   static dp::BindingInfo const & GetBindingInfo();
 };
 
+struct Area3dDynamicVertex : BaseVertex
+{
+  Area3dDynamicVertex();
+  explicit Area3dDynamicVertex(TTexCoord const & highlightingTexCoord);
+
+  TTexCoord m_highlightingTexCoord;
+
+  static dp::BindingInfo const & GetBindingInfo();
+  static uint32_t GetDynamicStreamID();
+};
+
 struct HatchingAreaVertex : BaseVertex
 {
   using TMaskTexCoord = glsl::vec2;

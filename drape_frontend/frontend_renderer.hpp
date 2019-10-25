@@ -270,6 +270,7 @@ private:
   void PullToBoundArea(bool randomPlace, bool applyZoom);
 
   void ProcessSelection(ref_ptr<SelectObjectMessage> msg);
+  void UpdateBuildingSelection(std::vector<drape_ptr<RenderGroup>> & groups);
 
   void OnPrepareRouteArrows(dp::DrapeID subrouteIndex, std::vector<ArrowBorders> && borders);
   void OnCacheRouteArrows(dp::DrapeID subrouteIndex, std::vector<ArrowBorders> const & borders);
@@ -303,6 +304,7 @@ private:
     m2::PointI m_snapSides = m2::PointI::Zero();
   };
   boost::optional<SelectionTrackInfo> m_selectionTrackInfo;
+  bool m_needUpdateSelectionForBuildings = false;
 
   drape_ptr<RouteRenderer> m_routeRenderer;
   drape_ptr<TrafficRenderer> m_trafficRenderer;

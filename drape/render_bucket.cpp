@@ -74,6 +74,19 @@ void RenderBucket::CollectOverlayHandles(ref_ptr<OverlayTree> tree)
     tree->Add(make_ref(overlayHandle));
 }
 
+void RenderBucket::CollectOverlayHandles(std::set<FeatureID> const & filterFeatures,
+                                         std::vector<ref_ptr<dp::OverlayHandle>> & collection)
+{
+  for (auto const & overlayHandle : m_overlay)
+  {
+    if (filterFeatures.empty() ||
+        filterFeatures.find(overlayHandle->GetOverlayID().m_featureId) != filterFeatures.end())
+    {
+      collection.emplace_back(make_ref(overlayHandle));
+    }
+  }
+}
+
 bool RenderBucket::HasOverlayHandles() const
 {
   return !m_overlay.empty();

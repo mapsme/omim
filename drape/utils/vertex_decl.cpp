@@ -8,6 +8,7 @@ enum VertexType
 {
   Area,
   Area3d,
+  Area3dDynamic,
   HatchingArea,
   SolidTexturing,
   MaskedTexturing,
@@ -52,6 +53,16 @@ dp::BindingInfo Area3dBindingInit()
   filler.FillDecl<Area3dVertex::TPosition>("a_position");
   filler.FillDecl<Area3dVertex::TNormal3d>("a_normal");
   filler.FillDecl<Area3dVertex::TTexCoord>("a_colorTexCoords");
+
+  return filler.m_info;
+}
+
+dp::BindingInfo Area3dDynamicBindingInit()
+{
+  static_assert(sizeof(Area3dDynamicVertex) == sizeof(Area3dDynamicVertex::TTexCoord), "");
+
+  dp::BindingFiller<Area3dDynamicVertex> filler(1, Area3dDynamicVertex::GetDynamicStreamID());
+  filler.FillDecl<Area3dDynamicVertex::TTexCoord>("a_highlightingTexCoords");
 
   return filler.m_info;
 }
@@ -212,6 +223,7 @@ TInitFunction g_initFunctions[TypeCount] =
 {
   &AreaBindingInit,
   &Area3dBindingInit,
+  &Area3dDynamicBindingInit,
   &HatchingAreaBindingInit,
   &SolidTexturingBindingInit,
   &MaskedTexturingBindingInit,
@@ -269,6 +281,24 @@ Area3dVertex::Area3dVertex(TPosition const & position, TPosition const & normal,
 dp::BindingInfo const & Area3dVertex::GetBindingInfo()
 {
   return GetBinding(Area3d);
+}
+
+Area3dDynamicVertex::Area3dDynamicVertex()
+  : m_highlightingTexCoord(0.0, 0.0)
+{}
+
+Area3dDynamicVertex::Area3dDynamicVertex(TTexCoord const & highlightingTexCoord)
+  : m_highlightingTexCoord(highlightingTexCoord)
+{}
+
+dp::BindingInfo const & Area3dDynamicVertex::GetBindingInfo()
+{
+  return GetBinding(Area3dDynamic);
+}
+
+uint32_t Area3dDynamicVertex::GetDynamicStreamID()
+{
+  return 0x7F;
 }
 
 HatchingAreaVertex::HatchingAreaVertex()

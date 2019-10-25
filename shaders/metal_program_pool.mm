@@ -59,8 +59,8 @@ std::array<ProgramInfo, static_cast<size_t>(Program::ProgramsCount)> const kMeta
   ProgramInfo("vsTextOutlinedGui", "fsTextOutlinedGui", {{0, 2}, {3, 4}}),  // TextOutlinedGui
   ProgramInfo("vsArea", "fsArea", {{0, 1}}),  // Area
   ProgramInfo("vsArea", "fsArea", {{0, 1}}),  // AreaOutline
-  ProgramInfo("vsArea3d", "fsArea3d", {{0, 2}}),  // Area3d
-  ProgramInfo("vsArea3dOutline", "fsArea", {{0, 1}}),  // Area3dOutline
+  ProgramInfo("vsArea3d", "fsArea3d", {{0, 2}, {3, 3}}),  // Area3d
+  ProgramInfo("vsArea3dOutline", "fsArea", {{0, 1}, {2, 2}}),  // Area3dOutline
   ProgramInfo("vsLine", "fsLine", {{0, 2}}),  // Line
   ProgramInfo("vsCapJoin", "fsCapJoin", {{0, 2}}),  // CapJoin
   ProgramInfo("vsTransitCircle", "fsTransitCircle", {{0, 2}}),  // TransitCircle

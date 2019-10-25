@@ -47,6 +47,17 @@ void RenderGroup::CollectOverlay(ref_ptr<dp::OverlayTree> tree)
     renderBucket->CollectOverlayHandles(tree);
 }
 
+std::vector<ref_ptr<dp::OverlayHandle>> RenderGroup::CollectOverlay(std::set<FeatureID> const & filterFeatures)
+{
+  if (CanBeDeleted())
+    return {};
+
+  std::vector<ref_ptr<dp::OverlayHandle>> collection;
+  for (auto & renderBucket : m_renderBuckets)
+    renderBucket->CollectOverlayHandles(filterFeatures, collection);
+  return collection;
+}
+
 bool RenderGroup::HasOverlayHandles() const
 {
   for (auto & renderBucket : m_renderBuckets)

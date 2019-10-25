@@ -14,7 +14,6 @@
 #include "indexer/scales.hpp"
 
 #include "base/buffer_vector.hpp"
-#include "base/macros.hpp"
 #include "base/math.hpp"
 
 #include <algorithm>
@@ -24,7 +23,6 @@ namespace df
 {
 namespace
 {
-df::ColorConstant const kSelectionColor = "Selection";
 double const kPointEqualityEps = 1e-7;
 float const kLeftSide = 1.0f;
 float const kCenter = 0.0f;
@@ -126,7 +124,7 @@ drape_ptr<RenderNode> SelectionShapeGenerator::GenerateSelectionMarker(ref_ptr<d
   auto const etalonSector = static_cast<float>(2.0 * math::pi / kTriangleCount);
 
   dp::TextureManager::ColorRegion color;
-  mng->GetColorRegion(df::GetColorConstant(df::kSelectionColor), color);
+  mng->GetColorRegion(df::GetColorConstant(GetPaletteColorName(PaletteColor::Selection)), color);
   auto const colorCoord = glsl::ToVec2(color.GetTexRect().Center());
 
   buffer_vector<MarkerVertex, kTriangleCount> buffer;
@@ -207,7 +205,7 @@ drape_ptr<RenderNode> SelectionShapeGenerator::GenerateSelectionGeometry(ref_ptr
   pivot = rect.Center();
 
   dp::TextureManager::ColorRegion color;
-  mng->GetColorRegion(df::GetColorConstant(df::kSelectionColor), color);
+  mng->GetColorRegion(df::GetColorConstant(GetPaletteColorName(PaletteColor::Selection)), color);
   auto const colorCoord = glsl::ToVec2(color.GetTexRect().Center());
 
   // Construct segments.
