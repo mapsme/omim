@@ -172,7 +172,7 @@ bool ProcessorOsmElementsFromO5M::TryRead(OsmElement & element)
     }
   };
 
-  element = {};
+  element.Clear();
 
   // Be careful, we could call Nodes(), Members(), Tags() from O5MSource::Entity
   // only once (!). Because these functions read data from file simultaneously with
