@@ -2,6 +2,7 @@
 
 #include "generator/osm2meta.hpp"
 #include "generator/osm_element.hpp"
+#include "generator/osm_element_helpers.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/feature_impl.hpp"
@@ -885,11 +886,9 @@ void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32
       {"population", "*",
        [&params](string & k, string & v) {
          // Get population rank.
-         uint64_t n;
-         if (strings::to_uint64(v, n))
-           params.rank = feature::PopulationToRank(n);
-         k.clear();
-         v.clear();
+         uint64_t const population = generator::osm_element::GetPopulation(v);
+         if (population != 0)
+           params.rank = feature::PopulationToRank(population);
        }},
       {"ref", "*",
        [&params](string & k, string & v) {
