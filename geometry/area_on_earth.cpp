@@ -30,6 +30,11 @@ m3::PointD GetPointOnSphere(ms::LatLon const & ll, double sphereRadius)
 
 namespace ms
 {
+double AreaOnEarth(std::vector<m2::PointD> const & points)
+{
+  // TODO (@gmoryes) implement.
+  return std::numeric_limits<double>::max();
+}
 // Look to https://en.wikipedia.org/wiki/Solid_angle for more details.
 // Shortly:
 // It's possible to calculate area of triangle on sphere with it's solid angle.

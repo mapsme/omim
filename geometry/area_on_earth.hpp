@@ -3,8 +3,13 @@
 #include "geometry/latlon.hpp"
 #include "geometry/point2d.hpp"
 
+#include <vector>
+
 namespace ms
 {
+// Note: This function is not implemented yet.
+// Returns polygon area on earth.
+double AreaOnEarth(std::vector<m2::PointD> const & points);
 // Returns area of triangle on earth.
 double AreaOnEarth(LatLon const & ll1, LatLon const & ll2, LatLon const & ll3);
 
