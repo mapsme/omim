@@ -45,7 +45,6 @@ enum class SponsoredType
 {
   None,
   Booking,
-  Opentable,
   Partner,
   Holiday,
   PromoCatalogCity,

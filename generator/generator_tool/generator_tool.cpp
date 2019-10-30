@@ -146,7 +146,6 @@ DEFINE_bool(generate_maxspeed, false, "Generate section with maxspeed of road fe
 
 // Sponsored-related.
 DEFINE_string(booking_data, "", "Path to booking data in tsv format.");
-DEFINE_string(opentable_data, "", "Path to opentable data in tsv format.");
 DEFINE_string(promo_catalog_cities, "",
               "Path to list geo object ids of cities which contain promo catalog in json format.");
 
@@ -243,7 +242,6 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   genInfo.m_failOnCoasts = FLAGS_fail_on_coasts;
   genInfo.m_preloadCache = FLAGS_preload_cache;
   genInfo.m_bookingDataFilename = FLAGS_booking_data;
-  genInfo.m_opentableDataFilename = FLAGS_opentable_data;
   genInfo.m_promoCatalogCitiesFilename = FLAGS_promo_catalog_cities;
   genInfo.m_popularPlacesFilename = FLAGS_popular_places_data;
   genInfo.m_brandsFilename = FLAGS_brands_data;

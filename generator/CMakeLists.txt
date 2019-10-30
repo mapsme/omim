@@ -114,9 +114,6 @@ set(
   metalines_builder.hpp
   node_mixer.cpp
   node_mixer.hpp
-  opentable_dataset.cpp
-  opentable_dataset.hpp
-  opentable_scoring.cpp
   osm2meta.cpp
   osm2meta.hpp
   osm2type.cpp

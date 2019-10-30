@@ -30,8 +30,6 @@ set(
   megafon_countries.hpp
   mopub_ads.cpp
   mopub_ads.hpp
-  opentable_api.cpp
-  opentable_api.hpp
   partners.cpp
   partners.hpp
   promo_api.cpp
