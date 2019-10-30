@@ -23,6 +23,7 @@ vector<uint8_t> CreateDataPacketImpl(Container const & points,
   {
   case tracking::Protocol::PacketType::DataV0: version = 0; break;
   case tracking::Protocol::PacketType::DataV1: version = 1; break;
+  case tracking::Protocol::PacketType::DataV2: version = 2; break;
   case tracking::Protocol::PacketType::AuthV0: ASSERT(false, ("Not a DATA packet.")); break;
   }
 
@@ -92,7 +93,8 @@ string Protocol::DecodeAuthPacket(Protocol::PacketType type, vector<uint8_t> con
   {
   case Protocol::PacketType::AuthV0: return string(begin(data), end(data));
   case Protocol::PacketType::DataV0:
-  case Protocol::PacketType::DataV1: ASSERT(false, ("Not an AUTH packet.")); break;
+  case Protocol::PacketType::DataV1:
+  case Protocol::PacketType::DataV2: ASSERT(false, ("Not an AUTH packet.")); break;
   }
   return string();
 }
@@ -110,6 +112,9 @@ Protocol::DataElementsVec Protocol::DecodeDataPacket(PacketType type, vector<uin
     break;
   case Protocol::PacketType::DataV1:
     Encoder::DeserializeDataPoints(1 /* version */, src, points);
+    break;
+  case Protocol::PacketType::DataV2:
+    Encoder::DeserializeDataPoints(2 /* version */, src, points);
     break;
   case Protocol::PacketType::AuthV0: ASSERT(false, ("Not a DATA packet.")); break;
   }
@@ -138,6 +143,7 @@ string DebugPrint(Protocol::PacketType type)
   case Protocol::PacketType::AuthV0: return "AuthV0";
   case Protocol::PacketType::DataV0: return "DataV0";
   case Protocol::PacketType::DataV1: return "DataV1";
+  case Protocol::PacketType::DataV2: return "DataV2";
   }
   stringstream ss;
   ss << "Unknown(" << static_cast<uint32_t>(type) << ")";

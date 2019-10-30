@@ -19,7 +19,7 @@ BOOST_PYTHON_MODULE(pytracking)
 
   // Register the to-python converters.
   pair_to_python_converter<Protocol::PacketType, size_t>();
-  to_python_converter<vector<uint8_t>, vector_uint8t_to_str>();
+  to_python_converter<std::vector<uint8_t>, vector_uint8t_to_str>();
   vector_uint8t_from_python_str();
 
   class_<Protocol::DataElementsVec>("DataElementsVec")
@@ -33,19 +33,21 @@ BOOST_PYTHON_MODULE(pytracking)
       .def(init<uint64_t, ms::LatLon const &, uint8_t>())
       .def_readwrite("timestamp", &coding::TrafficGPSEncoder::DataPoint::m_timestamp)
       .def_readwrite("coords", &coding::TrafficGPSEncoder::DataPoint::m_latLon)
-      .def_readwrite("traffic", &coding::TrafficGPSEncoder::DataPoint::m_traffic);
+      .def_readwrite("traffic", &coding::TrafficGPSEncoder::DataPoint::m_traffic)
+      .def_readwrite("trackType", &coding::TrafficGPSEncoder::DataPoint::m_trackType);
 
   enum_<Protocol::PacketType>("PacketType")
       .value("AuthV0", Protocol::PacketType::AuthV0)
       .value("DataV0", Protocol::PacketType::DataV0)
       .value("DataV1", Protocol::PacketType::DataV1)
+      .value("DataV2", Protocol::PacketType::DataV2)
       .value("CurrentAuth", Protocol::PacketType::CurrentAuth)
       .value("CurrentData", Protocol::PacketType::CurrentData);
 
-  vector<uint8_t> (*CreateDataPacket1)(Protocol::DataElementsCirc const &,
+  std::vector<uint8_t> (*CreateDataPacket1)(Protocol::DataElementsCirc const &,
                                        tracking::Protocol::PacketType) =
       &Protocol::CreateDataPacket;
-  vector<uint8_t> (*CreateDataPacket2)(Protocol::DataElementsVec const &,
+  std::vector<uint8_t> (*CreateDataPacket2)(Protocol::DataElementsVec const &,
                                        tracking::Protocol::PacketType) =
       &Protocol::CreateDataPacket;
 

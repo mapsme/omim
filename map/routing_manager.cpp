@@ -1250,8 +1250,11 @@ bool RoutingManager::IsTrackingReporterEnabled() const
   if (!pm.IsFacilityEnabled(power_management::Facility::GpsTrackingForTraffic))
     return false;
 
-  if (m_currentRouterType != RouterType::Vehicle)
+  if (m_currentRouterType != RouterType::Vehicle && m_currentRouterType != RouterType::Bicycle &&
+      m_currentRouterType != RouterType::Pedestrian)
+  {
     return false;
+  }
 
   if (!m_routingSession.IsFollowing())
     return false;
@@ -1476,7 +1479,10 @@ void RoutingManager::OnExtrapolatedLocationUpdate(location::GpsInfo const & info
                          routeMatchingInfo);
 
   if (IsTrackingReporterEnabled())
-    m_trackingReporter.AddLocation(gpsInfo, m_routingSession.MatchTraffic(routeMatchingInfo));
+  {
+    m_trackingReporter.AddLocation(gpsInfo, m_routingSession.MatchTraffic(routeMatchingInfo),
+                                   m_currentRouterType);
+  }
 }
 
 void RoutingManager::DeleteSavedRoutePoints()

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "routing/router.hpp"
+
 #include "tracking/connection.hpp"
 
 #include "traffic/speed_groups.hpp"
@@ -40,7 +42,8 @@ public:
            std::chrono::milliseconds pushDelay);
   ~Reporter();
 
-  void AddLocation(location::GpsInfo const & info, traffic::SpeedGroup traffic);
+  void AddLocation(location::GpsInfo const & info, traffic::SpeedGroup traffic,
+                   routing::RouterType routerType);
 
   void SetAllowSendingPoints(bool allow) { m_allowSendingPoints = allow; }
 

@@ -1,9 +1,12 @@
 #include "testing/testing.hpp"
 
+#include "routing/router.hpp"
+
+#include "traffic/speed_groups.hpp"
+
 #include "coding/traffic.hpp"
 
 #include "geometry/mercator.hpp"
-#include "geometry/point2d.hpp"
 
 #include "base/logging.hpp"
 #include "base/math.hpp"
@@ -65,7 +68,10 @@ void Test(vector<TrafficGPSEncoder::DataPoint> & points)
 UNIT_TEST(Traffic_Serialization_Smoke)
 {
   vector<TrafficGPSEncoder::DataPoint> data = {
-      {0, ms::LatLon(0.0, 1.0), 1}, {0, ms::LatLon(0.0, 2.0), 2},
+      {0, ms::LatLon(0.0, 1.0), static_cast<uint8_t>(traffic::SpeedGroup::G1),
+       static_cast<uint8_t>(routing::RouterType::Vehicle)},
+      {0, ms::LatLon(0.0, 2.0), static_cast<uint8_t>(traffic::SpeedGroup::G2),
+       static_cast<uint8_t>(routing::RouterType::Vehicle)},
   };
   Test(data);
 }
@@ -79,7 +85,10 @@ UNIT_TEST(Traffic_Serialization_EmptyPath)
 UNIT_TEST(Traffic_Serialization_StraightLine100m)
 {
   vector<TrafficGPSEncoder::DataPoint> path = {
-      {0, ms::LatLon(0.0, 0.0), 1}, {0, ms::LatLon(0.0, 1e-3), 2},
+      {0, ms::LatLon(0.0, 0.0), static_cast<uint8_t>(traffic::SpeedGroup::G1),
+       static_cast<uint8_t>(routing::RouterType::Bicycle)},
+      {0, ms::LatLon(0.0, 1e-3), static_cast<uint8_t>(traffic::SpeedGroup::G2),
+       static_cast<uint8_t>(routing::RouterType::Bicycle)},
   };
   Test(path);
 }
@@ -87,7 +96,10 @@ UNIT_TEST(Traffic_Serialization_StraightLine100m)
 UNIT_TEST(Traffic_Serialization_StraightLine50Km)
 {
   vector<TrafficGPSEncoder::DataPoint> path = {
-      {0, ms::LatLon(0.0, 0.0), 1}, {0, ms::LatLon(0.0, 0.5), 2},
+      {0, ms::LatLon(0.0, 0.0), static_cast<uint8_t>(traffic::SpeedGroup::G1),
+       static_cast<uint8_t>(routing::RouterType::Pedestrian)},
+      {0, ms::LatLon(0.0, 0.5), static_cast<uint8_t>(traffic::SpeedGroup::G2),
+       static_cast<uint8_t>(routing::RouterType::Pedestrian)},
   };
   Test(path);
 }
@@ -99,7 +111,9 @@ UNIT_TEST(Traffic_Serialization_Zigzag500m)
   {
     double const x = i * 1e-3;
     double const y = i % 2 == 0 ? 0 : 1e-3;
-    path.emplace_back(TrafficGPSEncoder::DataPoint(0, ms::LatLon(y, x), 3));
+    path.emplace_back(TrafficGPSEncoder::DataPoint(
+        0, ms::LatLon(y, x), static_cast<uint8_t>(traffic::SpeedGroup::G3),
+        static_cast<uint8_t>(routing::RouterType::Vehicle)));
   }
   Test(path);
 }
@@ -111,7 +125,9 @@ UNIT_TEST(Traffic_Serialization_Zigzag10Km)
   {
     double const x = i * 1e-2;
     double const y = i % 2 == 0 ? 0 : 1e-2;
-    path.emplace_back(TrafficGPSEncoder::DataPoint(0, ms::LatLon(y, x), 0));
+    path.emplace_back(TrafficGPSEncoder::DataPoint(
+        0, ms::LatLon(y, x), static_cast<uint8_t>(traffic::SpeedGroup::G0),
+        static_cast<uint8_t>(routing::RouterType::Vehicle)));
   }
   Test(path);
 }
@@ -123,7 +139,9 @@ UNIT_TEST(Traffic_Serialization_Zigzag100Km)
   {
     double const x = i * 1e-1;
     double const y = i % 2 == 0 ? 0 : 1e-1;
-    path.emplace_back(TrafficGPSEncoder::DataPoint(0, ms::LatLon(y, x), 0));
+    path.emplace_back(TrafficGPSEncoder::DataPoint(
+        0, ms::LatLon(y, x), static_cast<uint8_t>(traffic::SpeedGroup::G0),
+        static_cast<uint8_t>(routing::RouterType::Vehicle)));
   }
   Test(path);
 }
@@ -138,7 +156,9 @@ UNIT_TEST(Traffic_Serialization_Circle20KmRadius)
     double const radius = 0.25;
     double const x = radius * cos(alpha);
     double const y = radius * sin(alpha);
-    path.emplace_back(TrafficGPSEncoder::DataPoint(0, ms::LatLon(y, x), 0));
+    path.emplace_back(TrafficGPSEncoder::DataPoint(
+        0, ms::LatLon(y, x), static_cast<uint8_t>(traffic::SpeedGroup::G0),
+        static_cast<uint8_t>(routing::RouterType::Vehicle)));
   }
   Test(path);
 }
@@ -146,7 +166,10 @@ UNIT_TEST(Traffic_Serialization_Circle20KmRadius)
 UNIT_TEST(Traffic_Serialization_ExtremeLatLon)
 {
   vector<TrafficGPSEncoder::DataPoint> path = {
-      {0, ms::LatLon(-90, -180), 0}, {0, ms::LatLon(90, 180), 0},
+      {0, ms::LatLon(-90, -180), static_cast<uint8_t>(traffic::SpeedGroup::G0),
+       static_cast<uint8_t>(routing::RouterType::Vehicle)},
+      {0, ms::LatLon(90, 180), static_cast<uint8_t>(traffic::SpeedGroup::G0),
+       static_cast<uint8_t>(routing::RouterType::Vehicle)},
   };
   Test(path);
 }

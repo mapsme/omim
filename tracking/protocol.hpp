@@ -35,9 +35,10 @@ public:
     AuthV0 = 0x81,
     DataV0 = 0x82,
     DataV1 = 0x92,
+    DataV2 = 0x93,
 
     CurrentAuth = AuthV0,
-    CurrentData = DataV1
+    CurrentData = DataV2
   };
 
   static std::vector<uint8_t> CreateHeader(PacketType type, uint32_t payloadSize);

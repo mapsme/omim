@@ -4,12 +4,10 @@
 #include "platform/platform.hpp"
 #include "platform/socket.hpp"
 
-#include "3party/Alohalytics/src/alohalytics.h"
-
 #include "base/logging.hpp"
 #include "base/timer.hpp"
 
-#include "std/target_os.hpp"
+#include "3party/Alohalytics/src/alohalytics.h"
 
 #include <cmath>
 
@@ -54,7 +52,8 @@ Reporter::~Reporter()
   m_thread.join();
 }
 
-void Reporter::AddLocation(location::GpsInfo const & info, traffic::SpeedGroup traffic)
+void Reporter::AddLocation(location::GpsInfo const & info, traffic::SpeedGroup traffic,
+                           routing::RouterType routerType)
 {
   lock_guard<mutex> lg(m_mutex);
 
@@ -80,7 +79,8 @@ void Reporter::AddLocation(location::GpsInfo const & info, traffic::SpeedGroup t
   m_lastGpsTime = info.m_timestamp;
   m_input.push_back(
       DataPoint(info.m_timestamp, ms::LatLon(info.m_latitude, info.m_longitude),
-                static_cast<std::underlying_type<traffic::SpeedGroup>::type>(traffic)));
+                static_cast<std::underlying_type<traffic::SpeedGroup>::type>(traffic),
+                static_cast<std::underlying_type<routing::RouterType>::type>(routerType)));
 }
 
 void Reporter::Run()

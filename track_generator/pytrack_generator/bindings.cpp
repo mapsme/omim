@@ -1,6 +1,6 @@
 #include "routing/route.hpp"
 #include "routing/routing_callbacks.hpp"
-#include "routing/routing_quality/utils.hpp"
+#include "routing/routing_quality/routing_quality_tool/utils.hpp"
 
 #include "platform/platform.hpp"
 

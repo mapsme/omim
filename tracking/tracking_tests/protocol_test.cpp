@@ -36,8 +36,8 @@ UNIT_TEST(Protocol_CreateDataPacket)
 {
   using Container = Protocol::DataElementsCirc;
   Container buffer(5);
-  buffer.push_back(Container::value_type(1, ms::LatLon(10, 10), 1));
-  buffer.push_back(Container::value_type(2, ms::LatLon(15, 15), 2));
+  buffer.push_back(Container::value_type(1, ms::LatLon(10, 10), 1, 0));
+  buffer.push_back(Container::value_type(2, ms::LatLon(15, 15), 2, 0));
 
   auto packetV0 = Protocol::CreateDataPacket(buffer, Protocol::PacketType::DataV0);
   TEST_EQUAL(packetV0.size(), 26, ());
@@ -60,6 +60,17 @@ UNIT_TEST(Protocol_CreateDataPacket)
   TEST_EQUAL(packetV1[4], 1, ());
   TEST_EQUAL(packetV1[5], 227, ());
   TEST_EQUAL(packetV1[6], 241, ());
+
+  auto packetV2 = Protocol::CreateDataPacket(buffer, Protocol::PacketType::DataV2);
+  TEST_EQUAL(packetV2.size(), 30, ());
+  TEST_EQUAL(Protocol::PacketType(packetV2[0]), Protocol::PacketType::DataV2, ());
+  TEST_EQUAL(packetV2[1], 0x00, ());
+  TEST_EQUAL(packetV2[2], 0x00, ());
+  TEST_EQUAL(packetV2[3], 26, ());
+
+  TEST_EQUAL(packetV2[4], 1, ());
+  TEST_EQUAL(packetV2[5], 227, ());
+  TEST_EQUAL(packetV2[6], 241, ());
 }
 
 UNIT_TEST(Protocol_DecodeAuthPacket)
@@ -107,4 +118,5 @@ UNIT_TEST(Protocol_DecodeDataPacket)
 
   DecodeDataPacketVersionTest(points, Protocol::PacketType::DataV0);
   DecodeDataPacketVersionTest(points, Protocol::PacketType::DataV1);
+  DecodeDataPacketVersionTest(points, Protocol::PacketType::DataV2);
 }
