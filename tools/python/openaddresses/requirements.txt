@@ -1,0 +1,3 @@
+postal==1.1.8
+python-Levenshtein==0.12.0
+requests==2.19.1
