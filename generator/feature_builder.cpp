@@ -129,13 +129,16 @@ void FeatureBuilder::AddHouseNumber(string const & houseNumber)
   m_params.AddHouseNumber(houseNumber);
 }
 
-void FeatureBuilder::AddStreet(string const & streetName) { m_params.AddStreet(streetName); }
+void FeatureBuilder::AddStreet(string streetName)
+{
+  // Replace \n with spaces because we write addresses to txt file.
+  replace(streetName.begin(), streetName.end(), '\n', ' ');
+  m_addrTags.Add(feature::AddressData::Type::Street, streetName);
+}
 
 void FeatureBuilder::AddPostcode(string const & postcode)
 {
-  m_params.AddPostcode(postcode);
-  // todo @t.yan: remove when we stop to add postcodes to metadata
-  m_params.GetMetadata().Set(Metadata::FMD_POSTCODE, postcode);
+  m_addrTags.Add(feature::AddressData::Type::Postcode, postcode);
 }
 
 void FeatureBuilder::AddPoint(m2::PointD const & p)
@@ -365,17 +368,6 @@ bool FeatureBuilder::IsExactEq(FeatureBuilder const & fb) const
       m_coastCell == fb.m_coastCell;
 }
 
-void FeatureBuilder::SerializeBase(Buffer & data, serial::GeometryCodingParams const & params,
-                                   bool saveAddInfo) const
-{
-  PushBackByteSink<Buffer> sink(data);
-
-  m_params.Write(sink, saveAddInfo);
-
-  if (m_params.GetGeomType() == GeomType::Point)
-    serial::SavePoint(sink, m_center, params);
-}
-
 void FeatureBuilder::SerializeForIntermediate(Buffer & data) const
 {
   CHECK(IsValid(), (*this));
@@ -384,11 +376,17 @@ void FeatureBuilder::SerializeForIntermediate(Buffer & data) const
 
   serial::GeometryCodingParams cp;
 
-  SerializeBase(data, cp, true /* store additional info from FeatureParams */);
-
   PushBackByteSink<Buffer> sink(data);
 
-  if (m_params.GetGeomType() != GeomType::Point)
+  m_params.Write(sink);
+  m_metadata.Serialize(sink);
+  m_addrTags.Serialize(sink);
+
+  if (m_params.GetGeomType() == GeomType::Point)
+  {
+    serial::SavePoint(sink, m_center, cp);
+  }
+  else
   {
     WriteVarUint(sink, static_cast<uint32_t>(m_polygons.size()));
 
@@ -442,6 +440,8 @@ void FeatureBuilder::DeserializeFromIntermediate(Buffer & data)
 
   ArrayByteSource source(&data[0]);
   m_params.Read(source);
+  m_metadata.Deserialize(source);
+  m_addrTags.Deserialize(source);
 
   m_limitRect.MakeEmpty();
 
@@ -478,7 +478,9 @@ void FeatureBuilder::SerializeAccuratelyForIntermediate(Buffer & data) const
 
   data.clear();
   PushBackByteSink<Buffer> sink(data);
-  m_params.Write(sink, true /* store additional info from FeatureParams */);
+  m_params.Write(sink);
+  m_metadata.Serialize(sink);
+  m_addrTags.Serialize(sink);
   if (IsPoint())
   {
     WritePOD(sink, m_center);
@@ -508,6 +510,8 @@ void FeatureBuilder::DeserializeAccuratelyFromIntermediate(Buffer & data)
 {
   ArrayByteSource source(&data[0]);
   m_params.Read(source);
+  m_metadata.Deserialize(source);
+  m_addrTags.Deserialize(source);
   m_limitRect.MakeEmpty();
   if (IsPoint())
   {
@@ -675,10 +679,15 @@ void FeatureBuilder::SerializeForMwm(SupportingData & data,
 {
   data.m_buffer.clear();
 
-  // header data serialization
-  SerializeBase(data.m_buffer, params, false /* don't store additional info from FeatureParams*/);
-
   PushBackByteSink<Buffer> sink(data.m_buffer);
+
+  m_params.Write(sink);
+
+  if (m_params.GetGeomType() == GeomType::Point)
+  {
+    serial::SavePoint(sink, m_center, params);
+    return;
+  }
 
   uint8_t const ptsCount = base::asserted_cast<uint8_t>(data.m_innerPts.size());
   uint8_t trgCount = base::asserted_cast<uint8_t>(data.m_innerTrg.size());

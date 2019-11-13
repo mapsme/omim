@@ -293,9 +293,8 @@ private:
 
   static Feature MakeFeature(std::string const & url)
   {
-    FeatureParams params;
-    MetadataTagProcessor p(params);
-    feature::Metadata & md = params.GetMetadata();
+    feature::Metadata md;
+    MetadataTagProcessor p({} /*types*/, md);
     p("wikipedia", url);
     Feature ft;
     ft.SetMetadata(md);

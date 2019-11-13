@@ -1,6 +1,7 @@
 #pragma once
 
 #include "indexer/feature_data.hpp"
+#include "indexer/feature_meta.hpp"
 
 #include "coding/file_reader.hpp"
 #include "coding/file_writer.hpp"
@@ -150,7 +151,7 @@ public:
   // To work with additional information.
   void SetRank(uint8_t rank);
   void AddHouseNumber(std::string const & houseNumber);
-  void AddStreet(std::string const & streetName);
+  void AddStreet(std::string streetName);
   void AddPostcode(std::string const & postcode);
   bool AddName(std::string const & lang, std::string const & name);
   void SetParams(FeatureParams const & params) { m_params.SetParams(params); }
@@ -159,11 +160,12 @@ public:
   FeatureParams & GetParams() { return m_params; }
   std::string GetName(int8_t lang = StringUtf8Multilang::kDefaultCode) const;
   StringUtf8Multilang const & GetMultilangName() const { return m_params.name; }
+  std::string GetStreet() const { return m_addrTags.Get(feature::AddressData::Type::Street); }
   uint8_t GetRank() const { return m_params.rank; }
-  AddressData const & GetAddressData() const { return m_params.GetAddressData(); }
+  AddressData const & GetAddressData() const { return m_addrTags; }
 
-  Metadata const & GetMetadata() const { return m_params.GetMetadata(); }
-  Metadata & GetMetadata() { return m_params.GetMetadata(); }
+  Metadata const & GetMetadata() const { return m_metadata; }
+  Metadata & GetMetadata() { return m_metadata; }
 
   // To work with types and names based on drawing.
   // Check classificator types for their compatibility with feature geometry type.
@@ -178,8 +180,6 @@ public:
 
   // Serialization.
   bool PreSerialize();
-  void SerializeBase(Buffer & data, serial::GeometryCodingParams const & params,
-                     bool saveAddInfo) const;
 
   bool PreSerializeAndRemoveUselessNamesForIntermediate();
   void SerializeForIntermediate(Buffer & data) const;
@@ -238,6 +238,8 @@ protected:
   m2::RectD m_limitRect;
   std::vector<base::GeoObjectId> m_osmIds;
   FeatureParams m_params;
+  feature::Metadata m_metadata;
+  feature::AddressData m_addrTags;
   /// Not used in GEOM_POINTs
   int64_t m_coastCell;
 };

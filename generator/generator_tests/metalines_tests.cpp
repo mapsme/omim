@@ -42,7 +42,7 @@ OsmElement MakeHighway(uint64_t id, std::string const & name, std::vector<uint64
 feature::FeatureBuilder MakeFbForTest(OsmElement element)
 {
   feature::FeatureBuilder result;
-  ftype::GetNameAndType(&element, result.GetParams());
+  ftype::GetNameAndType(&element, result);
   result.SetLinear();
   return result;
 }

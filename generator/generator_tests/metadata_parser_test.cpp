@@ -10,12 +10,12 @@
 using namespace generator::tests_support;
 
 using feature::Metadata;
+using namespace generator::tests_support;
 
 UNIT_TEST(Metadata_ValidateAndFormat_stars)
 {
-  FeatureParams params;
-  MetadataTagProcessor p(params);
-  Metadata & md = params.GetMetadata();
+  Metadata md;
+  MetadataTagProcessor p({} /* types */, md);
 
   // Ignore incorrect values.
   p("stars", "0");
@@ -75,39 +75,43 @@ UNIT_TEST(Metadata_ValidateAndFormat_stars)
 
 UNIT_CLASS_TEST(TestWithClassificator, Metadata_ValidateAndFormat_operator)
 {
-  uint32_t const type_atm = classif().GetTypeByPath({ "amenity", "atm" });
-  uint32_t const type_fuel = classif().GetTypeByPath({ "amenity", "fuel" });
-
-  FeatureParams params;
-  MetadataTagProcessor p(params);
-  Metadata & md = params.GetMetadata();
+  uint32_t const type_atm = classif().GetTypeByPath({"amenity", "atm"});
+  uint32_t const type_fuel = classif().GetTypeByPath({"amenity", "fuel"});
 
   // Ignore tag 'operator' if feature have inappropriate type.
-  p("operator", "Some");
-  TEST(md.Empty(), ());
+  {
+    Metadata md;
+    MetadataTagProcessor p({} /* types */, md);
+    p("operator", "Some");
+    TEST(md.Empty(), ());
+  }
 
-  params.SetType(type_atm);
-  p("operator", "Some");
-  TEST_EQUAL(md.Get(Metadata::FMD_OPERATOR), "Some", ());
-  md.Drop(Metadata::FMD_OPERATOR);
+  {
+    Metadata md;
+    MetadataTagProcessor p({type_atm}, md);
+    p("operator", "Some");
+    TEST_EQUAL(md.Get(Metadata::FMD_OPERATOR), "Some", ());
+  }
 
-  params.SetType(type_fuel);
-  p("operator", "Some");
-  TEST_EQUAL(md.Get(Metadata::FMD_OPERATOR), "Some", ());
-  md.Drop(Metadata::FMD_OPERATOR);
+  {
+    Metadata md;
+    MetadataTagProcessor p({type_fuel}, md);
+    p("operator", "Some");
+    TEST_EQUAL(md.Get(Metadata::FMD_OPERATOR), "Some", ());
+  }
 
-  params.SetType(type_atm);
-  params.AddType(type_fuel);
-  p("operator", "Some");
-  TEST_EQUAL(md.Get(Metadata::FMD_OPERATOR), "Some", ());
-  md.Drop(Metadata::FMD_OPERATOR);
+  {
+    Metadata md;
+    MetadataTagProcessor p({type_atm, type_fuel}, md);
+    p("operator", "Some");
+    TEST_EQUAL(md.Get(Metadata::FMD_OPERATOR), "Some", ());
+  }
 }
 
 UNIT_TEST(Metadata_ValidateAndFormat_height)
 {
-  FeatureParams params;
-  MetadataTagProcessor p(params);
-  Metadata & md = params.GetMetadata();
+  Metadata md;
+  MetadataTagProcessor p({} /* types*/, md);
 
   p("height", "0");
   TEST(md.Empty(), ());
@@ -138,9 +142,8 @@ UNIT_TEST(Metadata_ValidateAndFormat_wikipedia)
 {
   char const * kWikiKey = "wikipedia";
 
-  FeatureParams params;
-  MetadataTagProcessor p(params);
-  Metadata & md = params.GetMetadata();
+  Metadata md;
+  MetadataTagProcessor p({} /* types*/, md);
 
 #ifdef OMIM_OS_MOBILE
   #define WIKIHOST "m.wikipedia.org"
@@ -203,10 +206,9 @@ UNIT_TEST(Metadata_ValidateAndFormat_wikipedia)
 
 UNIT_CLASS_TEST(TestWithClassificator, Metadata_ValidateAndFormat_duration)
 {
-  FeatureParams params;
-  params.AddType(classif().GetTypeByPath({"route", "ferry"}));
-  MetadataTagProcessor p(params);
-  Metadata & md = params.GetMetadata();
+  Metadata md;
+  std::vector<uint32_t> types = {classif().GetTypeByPath({"route", "ferry"})};
+  MetadataTagProcessor p(types, md);
 
   auto const test = [&](std::string const & osm, std::string const & expected) {
     p("duration", osm);

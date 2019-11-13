@@ -21,13 +21,13 @@ public:
 
 protected:
   // FeatureMaker overrides:
-  void ParseParams(FeatureParams & params, OsmElement & element) const override;
+  void ParseNameAndTypes(feature::FeatureBuilder & fb, OsmElement & element) const override;
 
 private:
   // FeatureMaker overrides:
-  bool BuildFromNode(OsmElement & element, FeatureParams const & params) override;
-  bool BuildFromWay(OsmElement & element, FeatureParams const & params) override;
-  bool BuildFromRelation(OsmElement & element, FeatureParams const & params) override;
+  bool BuildFromNode(OsmElement & element, feature::FeatureBuilder && fb) override;
+  bool BuildFromWay(OsmElement & element, feature::FeatureBuilder && fb) override;
+  bool BuildFromRelation(OsmElement & element, feature::FeatureBuilder && fb) override;
 };
 
 // The difference between class FeatureMakerSimple and class FeatureMaker is that
@@ -42,6 +42,6 @@ public:
 
 private:
   // FeatureMaker overrides:
-  void ParseParams(FeatureParams & params, OsmElement & element) const override;
+  void ParseNameAndTypes(feature::FeatureBuilder & fb, OsmElement & element) const override;
 };
 }  // namespace generator

@@ -36,12 +36,10 @@ public:
     OsmElement e;
     e.AddTag(tag.first, tag.second);
 
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
-    params.AddName("en", "xxx");
-
     FeatureBuilder fb;
-    fb.SetParams(params);
+    ftype::GetNameAndType(&e, fb);
+    fb.AddName("en", "xxx");
+
     fb.SetCenter(pt);
     fb.GetMetadata().Set(Metadata::FMD_TEST_ID, strings::to_string(m_lastId));
     ++m_lastId;

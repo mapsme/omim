@@ -97,7 +97,7 @@ string MetadataTagProcessorImpl::ValidateAndFormat_operator(string const & v) co
   auto const & isATM = ftypes::IsATMChecker::Instance();
   auto const & isFuelStation = ftypes::IsFuelStationChecker::Instance();
 
-  if (!(isATM(m_params.m_types) || isFuelStation(m_params.m_types)))
+  if (!(isATM(m_types) || isFuelStation(m_types)))
     return string();
 
   return v;
@@ -286,7 +286,7 @@ string MetadataTagProcessorImpl::ValidateAndFormat_airport_iata(string const & v
 
 string MetadataTagProcessorImpl::ValidateAndFormat_duration(string const & v) const
 {
-  if (!ftypes::IsFerryChecker::Instance()(m_params.m_types))
+  if (!ftypes::IsFerryChecker::Instance()(m_types))
     return {};
 
   auto const format = [](double hours) -> string {

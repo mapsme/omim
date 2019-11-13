@@ -35,10 +35,10 @@ namespace
     OsmElement e;
     FillXmlElement(arr, count, &e);
 
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    feature::FeatureBuilder fb;
+    ftype::GetNameAndType(&e, fb);
 
-    DumpTypes(params.m_types);
+    DumpTypes(fb.GetParams().m_types);
   }
 
   void TestSurfaceTypes(std::string const & surface, std::string const & smoothness,
@@ -50,9 +50,10 @@ namespace
     e.AddTag("smoothness", smoothness);
     e.AddTag("surface:grade", grade);
 
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    feature::FeatureBuilder fb;
+    ftype::GetNameAndType(&e, fb);
 
+    auto const & params = fb.GetParams();
     TEST_EQUAL(params.m_types.size(), 2, (params));
     TEST(params.IsTypeExist(GetType({"highway", "unclassified"})), ());
     std::string psurface;
@@ -69,11 +70,15 @@ FeatureParams GetFeatureParams(char const * arr[][2], size_t count)
   {
     OsmElement e;
     FillXmlElement(arr, count, &e);
-    FeatureParams params;
+    feature::FeatureBuilder fb;
 
-    ftype::GetNameAndType(&e, params);
-    return params;
+    TagReplacer tagReplacer(GetPlatform().ResourcesDir() + REPLACED_TAGS_FILE);
+    tagReplacer.Process(e);
+
+    ftype::GetNameAndType(&e, fb);
+    return fb.GetParams();
   }
+
 }  // namespace
 
 UNIT_CLASS_TEST(TestWithClassificator, OsmType_SkipDummy)
@@ -232,8 +237,9 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_AlabamaRiver)
   FillXmlElement(arr2, ARRAY_SIZE(arr2), &e);
   FillXmlElement(arr3, ARRAY_SIZE(arr3), &e);
 
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  feature::FeatureBuilder fb;
+  ftype::GetNameAndType(&e, fb);
+  auto const & params = fb.GetParams();
 
   TEST_EQUAL(params.m_types.size(), 1, (params));
   TEST(params.IsTypeExist(GetType({"waterway", "river"})), ());
@@ -253,14 +259,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Synonyms)
       { "drinkable", "yes"},
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    TagReplacer tagReplacer(GetPlatform().ResourcesDir() + REPLACED_TAGS_FILE);
-    tagReplacer.Process(e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     char const * arrT1[] = { "building" };
     char const * arrT2[] = { "amenity", "atm" };
@@ -759,14 +758,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Entrance)
       { "barrier", "entrance" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    TagReplacer tagReplacer(GetPlatform().ResourcesDir() + REPLACED_TAGS_FILE);
-    tagReplacer.Process(e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 2, (params));
     TEST(params.IsTypeExist(GetType({"entrance"})), (params));

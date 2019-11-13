@@ -833,10 +833,13 @@ void PostprocessElement(OsmElement * p, FeatureParams & params)
 }
 }  // namespace
 
-void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32_t)> filterType)
+void GetNameAndType(OsmElement * p, feature::FeatureBuilder & fb,
+                    function<bool(uint32_t)> filterType)
 {
   // Stage1: Preprocess tags.
   PreprocessElement(p);
+
+  auto & params = fb.GetParams();
 
   // Stage2: Process feature name on all languages.
   ForEachTag<bool>(p, NamesExtractor(params));
@@ -856,8 +859,8 @@ void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32
          v.clear();
        }},
       {"addr:street", "*",
-       [&params](string & k, string & v) {
-         params.AddStreet(v);
+       [&fb](string & k, string & v) {
+         fb.AddStreet(v);
          k.clear();
          v.clear();
        }},
@@ -868,12 +871,11 @@ void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32
       // v.clear(); }},
 
       {"addr:postcode", "*",
-       [&params](string & k, string & v) {
-         params.AddPostcode(v);
-         k.clear();
-         v.clear();
+        [&fb](string & k, string & v) {
+          fb.AddPostcode(v);
+          k.clear();
+          v.clear();
       }},
-
       {"population", "*",
        [&params](string & k, string & v) {
          // Get population rank.
@@ -910,6 +912,6 @@ void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32
 
   // Stage6: Collect additional information about feature such as
   // hotel stars, opening hours, cuisine, ...
-  ForEachTag<bool>(p, MetadataTagProcessor(params));
+  ForEachTag<bool>(p, MetadataTagProcessor(fb.GetTypes(), fb.GetMetadata()));
 }
 }  // namespace ftype

@@ -43,7 +43,7 @@ feature::FeatureBuilder MakeAreaFeatureBuilder(OsmElement element,
 {
   feature::FeatureBuilder result;
   auto const filterType = [](uint32_t) { return true; };
-  ftype::GetNameAndType(&element, result.GetParams(), filterType);
+  ftype::GetNameAndType(&element, result, filterType);
   result.SetOsmId(base::MakeOsmRelation(element.m_id));
   auto polygon = geometry;
   result.AddPolygon(polygon);
@@ -55,7 +55,7 @@ feature::FeatureBuilder MakeNodeFeatureBuilder(OsmElement element)
 {
   feature::FeatureBuilder result;
   auto const filterType = [](uint32_t) { return true; };
-  ftype::GetNameAndType(&element, result.GetParams(), filterType);
+  ftype::GetNameAndType(&element, result, filterType);
   result.SetOsmId(base::MakeOsmNode(element.m_id));
   result.SetCenter(mercator::FromLatLon(element.m_lat, element.m_lon));
   return result;

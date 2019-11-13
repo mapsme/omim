@@ -335,45 +335,6 @@ bool FeatureParams::AddHouseNumber(string houseNumber)
   return false;
 }
 
-void FeatureParams::AddStreet(string s)
-{
-  // Replace \n with spaces because we write addresses to txt file.
-  replace(s.begin(), s.end(), '\n', ' ');
-
-  m_addrTags.Add(AddressData::Type::Street, s);
-}
-
-void FeatureParams::AddAddress(string const & s)
-{
-  size_t i = s.find_first_of("\t ");
-  if (i != string::npos)
-  {
-    string const house = s.substr(0, i);
-    if (feature::IsHouseNumber(house))
-    {
-      AddHouseNumber(house);
-      i = s.find_first_not_of("\t ", i);
-    }
-    else
-    {
-      i = 0;
-    }
-  }
-  else
-  {
-    i = 0;
-  }
-
-  AddStreet(s.substr(i));
-}
-
-void FeatureParams::AddPostcode(string const & s)
-{
-  m_addrTags.Add(AddressData::Type::Postcode, s);
-}
-
-string FeatureParams::GetStreet() const { return m_addrTags.Get(AddressData::Type::Street); }
-
 void FeatureParams::SetGeomType(feature::GeomType t)
 {
   switch (t)

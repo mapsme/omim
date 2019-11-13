@@ -47,8 +47,7 @@ string const kSpeedCameraTag = "<tag k=\"highway\" v=\"speed_camera\"/>";
 feature::FeatureBuilder MakeFeatureBuilderWithParams(OsmElement & element)
 {
   feature::FeatureBuilder fb;
-  auto & params = fb.GetParams();
-  ftype::GetNameAndType(&element, params);
+  ftype::GetNameAndType(&element, fb);
   return fb;
 }
 

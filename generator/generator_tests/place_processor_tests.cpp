@@ -57,7 +57,7 @@ feature::FeatureBuilder MakeFbForTest(Tags const & tags, OsmElement::EntityType 
 {
   auto element = MakeOsmElement(GetIdGen().GetId(), tags, t);
   feature::FeatureBuilder result;
-  ftype::GetNameAndType(&element, result.GetParams());
+  ftype::GetNameAndType(&element, result);
   if (element.IsNode())
   {
     CHECK_EQUAL(points.size(), 1, ());

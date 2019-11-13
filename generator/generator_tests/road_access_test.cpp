@@ -137,7 +137,7 @@ OsmElement MakeOsmElementWithNodes(uint64_t id, generator_tests::Tags const & ta
 feature::FeatureBuilder MakeFbForTest(OsmElement element)
 {
   feature::FeatureBuilder result;
-  ftype::GetNameAndType(&element, result.GetParams());
+  ftype::GetNameAndType(&element, result);
   return result;
 }
 

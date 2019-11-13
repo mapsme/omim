@@ -218,9 +218,6 @@ class FeatureParams : public FeatureParamsBase
 
   feature::HeaderGeomType m_geomType = feature::HeaderGeomType::Point;
 
-  feature::Metadata m_metadata;
-  feature::AddressData m_addrTags;
-
 public:
   using Types = std::vector<uint32_t>;
   Types m_types;
@@ -235,17 +232,6 @@ public:
   bool AddHouseName(std::string const & s);
   bool AddHouseNumber(std::string houseNumber);
 
-  /// @name Used in storing full street address only.
-  //@{
-  void AddStreet(std::string s);
-  void AddPostcode(std::string const & s);
-  void AddAddress(std::string const & s);
-  //@}
-
-  /// Used for testing purposes now.
-  std::string GetStreet() const;
-  feature::AddressData const & GetAddressData() const { return m_addrTags; }
-
   /// Assign parameters except geometry type.
   /// Geometry is independent state and it's set by FeatureType's geometry functions.
   void SetParams(FeatureParams const & rhs)
@@ -253,8 +239,6 @@ public:
     Base::operator=(rhs);
 
     m_types = rhs.m_types;
-    m_addrTags = rhs.m_addrTags;
-    m_metadata = rhs.m_metadata;
     m_reverseGeometry = rhs.m_reverseGeometry;
   }
 
@@ -287,13 +271,8 @@ public:
 
   uint8_t GetHeader() const;
 
-  feature::Metadata const & GetMetadata() const { return m_metadata; }
-  feature::Metadata & GetMetadata() { return m_metadata; }
-
-  /// @param[in] fullStoring \n
-  /// - true when saving in temporary files after first generation step \n
-  /// - false when final mwm saving
-  template <class TSink> void Write(TSink & sink, bool fullStoring) const
+  template <class TSink>
+  void Write(TSink & sink) const
   {
     uint8_t const header = GetHeader();
 
@@ -301,12 +280,6 @@ public:
 
     for (size_t i = 0; i < m_types.size(); ++i)
       WriteVarUint(sink, GetIndexForType(m_types[i]));
-
-    if (fullStoring)
-    {
-      m_metadata.Serialize(sink);
-      m_addrTags.Serialize(sink);
-    }
 
     Base::Write(sink, header);
   }
@@ -321,9 +294,6 @@ public:
     size_t const count = (header & HEADER_MASK_TYPE) + 1;
     for (size_t i = 0; i < count; ++i)
       m_types.push_back(GetTypeForIndex(ReadVarUint<uint32_t>(src)));
-
-    m_metadata.Deserialize(src);
-    m_addrTags.Deserialize(src);
 
     Base::Read(src, header);
   }

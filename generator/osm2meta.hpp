@@ -6,8 +6,8 @@
 
 struct MetadataTagProcessorImpl
 {
-  MetadataTagProcessorImpl(FeatureParams &params)
-  : m_params(params)
+  MetadataTagProcessorImpl(FeatureParams::Types const & types, feature::Metadata & metadata)
+    : m_types(types), m_metadata(metadata)
   {
   }
 
@@ -34,7 +34,8 @@ struct MetadataTagProcessorImpl
   std::string ValidateAndFormat_duration(std::string const & v) const;
 
 protected:
-  FeatureParams & m_params;
+  FeatureParams::Types m_types;
+  feature::Metadata & m_metadata;
 };
 
 class MetadataTagProcessor : private MetadataTagProcessorImpl
@@ -51,7 +52,6 @@ public:
       return false;
 
     using feature::Metadata;
-    Metadata & md = m_params.GetMetadata();
 
     Metadata::EType mdType;
     if (!Metadata::TypeFromString(k, mdType))
@@ -60,8 +60,8 @@ public:
       if (k == "building:min_level")
       {
         // Converting this attribute into height only if min_height has not been already set.
-        if (!md.Has(Metadata::FMD_MIN_HEIGHT))
-          md.Set(Metadata::FMD_MIN_HEIGHT, ValidateAndFormat_building_levels(v));
+        if (!m_metadata.Has(Metadata::FMD_MIN_HEIGHT))
+          m_metadata.Set(Metadata::FMD_MIN_HEIGHT, ValidateAndFormat_building_levels(v));
       }
       return false;
     }
@@ -104,7 +104,7 @@ public:
     case Metadata::FMD_TEST_ID:
     case Metadata::FMD_COUNT: CHECK(false, (mdType, "should not be parsed from OSM."));
     }
-    md.Set(mdType, valid);
+    m_metadata.Set(mdType, valid);
     return false;
   }
 };

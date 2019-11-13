@@ -27,16 +27,13 @@ bool FeatureMakerBase::Add(OsmElement & element)
 {
   ASSERT(m_cache, ());
 
-  FeatureParams params;
-  ParseParams(params, element);
+  FeatureBuilder fb;
+  ParseNameAndTypes(fb, element);
   switch (element.m_type)
   {
-  case OsmElement::EntityType::Node:
-    return BuildFromNode(element, params);
-  case OsmElement::EntityType::Way:
-    return BuildFromWay(element, params);
-  case OsmElement::EntityType::Relation:
-    return BuildFromRelation(element, params);
+  case OsmElement::EntityType::Node: return BuildFromNode(element, std::move(fb));
+  case OsmElement::EntityType::Way: return BuildFromWay(element, std::move(fb));
+  case OsmElement::EntityType::Relation: return BuildFromRelation(element, std::move(fb));
   default:
     return false;
   }

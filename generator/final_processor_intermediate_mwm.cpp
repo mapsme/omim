@@ -447,9 +447,9 @@ void CountryFinalProcessor::AddFakeNodes()
   std::vector<feature::FeatureBuilder> fbs;
   MixFakeNodes(m_fakeNodesFilename, [&](auto & element) {
     FeatureBuilder fb;
+    ftype::GetNameAndType(&element, fb);
     fb.SetCenter(mercator::FromLatLon(element.m_lat, element.m_lon));
     fb.SetOsmId(base::MakeOsmNode(element.m_id));
-    ftype::GetNameAndType(&element, fb.GetParams());
     fbs.emplace_back(std::move(fb));
   });
   auto const affiliation = CountriesFilesIndexAffiliation(m_borderPath, m_haveBordersForWholeWorld);

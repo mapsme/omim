@@ -203,18 +203,6 @@ UNIT_CLASS_TEST(TestWithClassificator, FeatureParams_Parsing)
 {
   {
     FeatureParams params;
-    params.AddStreet("Embarcadero\nstreet");
-    TEST_EQUAL(params.GetStreet(), "Embarcadero street", ());
-  }
-
-  {
-    FeatureParams params;
-    params.AddAddress("165 \t\t Dolliver Street");
-    TEST_EQUAL(params.GetStreet(), "Dolliver Street", ());
-  }
-
-  {
-    FeatureParams params;
 
     params.MakeZero();
     TEST(params.AddHouseNumber("123"), ());
@@ -244,6 +232,7 @@ UNIT_CLASS_TEST(TestWithClassificator, FeatureBuilder_SerializeLocalityObjectFor
   params.AddHouseNumber("75");
   params.AddHouseName("Best House");
   params.AddName("default", "Name");
+  fb.AddStreet("Embarcadero\nstreet");
 
   fb.AddOsmId(base::MakeOsmNode(1));
   fb.SetParams(params);
