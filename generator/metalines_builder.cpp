@@ -167,7 +167,7 @@ MetalinesBuilder::MetalinesBuilder(std::string const & filename)
   : generator::CollectorInterface(filename) {}
 
 std::shared_ptr<generator::CollectorInterface>
-MetalinesBuilder::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const &) const
+MetalinesBuilder::Clone(std::shared_ptr<generator::cache::IntermediateData> const &) const
 {
   return std::make_shared<MetalinesBuilder>(GetFilename());
 }

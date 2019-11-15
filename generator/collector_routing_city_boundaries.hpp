@@ -16,7 +16,7 @@ namespace generator
 {
 namespace cache
 {
-class IntermediateDataReader;
+class IntermediateData;
 }  // namespace cache
 
 class RoutingCityBoundariesWriter;
@@ -45,7 +45,7 @@ public:
 
   // CollectorInterface overrides:
   std::shared_ptr<CollectorInterface> Clone(
-      std::shared_ptr<cache::IntermediateDataReader> const & = {}) const override;
+      std::shared_ptr<cache::IntermediateData> const & cache = {}) const override;
 
   void Collect(OsmElement const & osmElement) override;
   void Finish() override;

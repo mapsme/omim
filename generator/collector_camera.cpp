@@ -127,7 +127,7 @@ CameraCollector::CameraCollector(std::string const & filename) :
   generator::CollectorInterface(filename), m_processor(GetTmpFilename()) {}
 
 std::shared_ptr<generator::CollectorInterface>
-CameraCollector::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const &) const
+CameraCollector::Clone(std::shared_ptr<generator::cache::IntermediateData> const &) const
 {
   return std::make_shared<CameraCollector>(GetFilename());
 }

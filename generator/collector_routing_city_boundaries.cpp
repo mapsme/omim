@@ -112,11 +112,9 @@ RoutingCityBoundariesCollector::RoutingCityBoundariesCollector(
 }
 
 std::shared_ptr<CollectorInterface> RoutingCityBoundariesCollector::Clone(
-    std::shared_ptr<cache::IntermediateDataReader> const &) const
+    std::shared_ptr<cache::IntermediateData> const & cache) const
 {
-  return m_cache ? std::make_shared<RoutingCityBoundariesCollector>(GetFilename(), m_cache->Clone())
-                 : std::make_shared<RoutingCityBoundariesCollector>(
-                       GetFilename(), std::shared_ptr<cache::IntermediateData>());
+  return std::make_shared<RoutingCityBoundariesCollector>(GetFilename(), cache ? cache : m_cache);
 }
 
 void RoutingCityBoundariesCollector::Collect(OsmElement const & osmElement)

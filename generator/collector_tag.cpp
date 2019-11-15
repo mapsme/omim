@@ -24,7 +24,7 @@ CollectorTag::CollectorTag(std::string const & filename, std::string const & tag
 }
 
 std::shared_ptr<CollectorInterface>
-CollectorTag::Clone(std::shared_ptr<cache::IntermediateDataReader> const &) const
+CollectorTag::Clone(std::shared_ptr<cache::IntermediateData> const &) const
 {
   return std::make_shared<CollectorTag>(GetFilename(), m_tagKey, m_validator);
 }

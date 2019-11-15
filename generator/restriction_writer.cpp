@@ -96,7 +96,7 @@ std::string const RestrictionWriter::kNodeString = "node";
 std::string const RestrictionWriter::kWayString = "way";
 
 RestrictionWriter::RestrictionWriter(std::string const & filename,
-                                     std::shared_ptr<generator::cache::IntermediateDataReader> const & cache)
+                                     std::shared_ptr<generator::cache::IntermediateData> const & cache)
   : generator::CollectorInterface(filename)
   , m_cache(cache)
 {
@@ -106,7 +106,7 @@ RestrictionWriter::RestrictionWriter(std::string const & filename,
 }
 
 std::shared_ptr<generator::CollectorInterface>
-RestrictionWriter::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & cache) const
+RestrictionWriter::Clone(std::shared_ptr<generator::cache::IntermediateData> const & cache) const
 { 
   return std::make_shared<RestrictionWriter>(GetFilename(), cache ? cache : m_cache);
 }
@@ -198,7 +198,7 @@ void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
     double y = 0.0;
     double x = 0.0;
     uint64_t const viaNodeOsmId = via.back().first;
-    if (!m_cache->GetNode(viaNodeOsmId, y, x))
+    if (!m_cache->GetCache()->GetNode(viaNodeOsmId, y, x))
       return;
 
     printHeader();

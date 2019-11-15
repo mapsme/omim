@@ -111,7 +111,7 @@ TranslatorCountry::TranslatorCountry(std::shared_ptr<FeatureProcessorInterface> 
   collectors->Append(
       std::make_shared<MaxspeedsCollector>(info.GetIntermediateFileName(MAXSPEEDS_FILENAME)));
   collectors->Append(std::make_shared<routing::RestrictionWriter>(
-      info.GetIntermediateFileName(RESTRICTIONS_FILENAME), cache->GetCache()));
+      info.GetIntermediateFileName(RESTRICTIONS_FILENAME), cache));
   collectors->Append(std::make_shared<routing::RoadAccessWriter>(
       info.GetIntermediateFileName(ROAD_ACCESS_FILENAME)));
   collectors->Append(std::make_shared<routing::CameraCollector>(

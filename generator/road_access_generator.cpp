@@ -399,7 +399,7 @@ RoadAccessWriter::~RoadAccessWriter()
 }
 
 shared_ptr<generator::CollectorInterface>
-RoadAccessWriter::Clone(shared_ptr<generator::cache::IntermediateDataReader> const &) const
+RoadAccessWriter::Clone(shared_ptr<generator::cache::IntermediateData> const &) const
 {
   return make_shared<RoadAccessWriter>(GetFilename());
 }

@@ -33,7 +33,7 @@ CrossMwmOsmWaysCollector::CrossMwmOsmWaysCollector(
 }
 
 std::shared_ptr<CollectorInterface>
-CrossMwmOsmWaysCollector::Clone(std::shared_ptr<cache::IntermediateDataReader> const &) const
+CrossMwmOsmWaysCollector::Clone(std::shared_ptr<cache::IntermediateData> const &) const
 {
   return std::make_shared<CrossMwmOsmWaysCollector>(m_intermediateDir, m_affiliation);
 }

@@ -27,7 +27,7 @@ namespace generator
 {
 namespace cache
 {
-class IntermediateDataReader;
+class IntermediateData;
 }  // namespace cache
 }  // namespace generator
 
@@ -77,7 +77,7 @@ public:
   ~RoadAccessWriter() override;
 
   std::shared_ptr<CollectorInterface>
-  Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & = {}) const override;
+  Clone(std::shared_ptr<generator::cache::IntermediateData> const & = {}) const override;
 
   void CollectFeature(feature::FeatureBuilder const & fb, OsmElement const & elem) override;
   void Finish() override;

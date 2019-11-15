@@ -22,7 +22,7 @@ namespace generator
 {
 namespace cache
 {
-class IntermediateDataReader;
+class IntermediateData;
 }  // namespace cache
 }  // namespace generator
 
@@ -94,7 +94,7 @@ public:
 
   // generator::CollectorInterface overrides:
   std::shared_ptr<CollectorInterface>
-  Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & = {}) const override;
+  Clone(std::shared_ptr<generator::cache::IntermediateData> const & = {}) const override;
   // We will process all nodes before ways because of o5m format:
   // all nodes are first, then all ways, then all relations.
   void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const & element) override;

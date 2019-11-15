@@ -24,7 +24,7 @@ namespace generator
 {
 namespace cache
 {
-class IntermediateDataReader;
+class IntermediateData;
 }  // namespace cache
 
 class MiniRoundaboutProcessor
@@ -59,7 +59,7 @@ public:
 
   // CollectorInterface overrides:
   std::shared_ptr<CollectorInterface> Clone(
-      std::shared_ptr<generator::cache::IntermediateDataReader> const & = {}) const override;
+      std::shared_ptr<generator::cache::IntermediateData> const & = {}) const override;
 
   void Collect(OsmElement const & element) override;
   void CollectFeature(feature::FeatureBuilder const & feature, OsmElement const & element) override;

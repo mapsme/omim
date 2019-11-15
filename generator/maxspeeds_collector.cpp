@@ -46,7 +46,7 @@ MaxspeedsCollector::MaxspeedsCollector(string const & filename)
 
 
 shared_ptr<CollectorInterface>
-MaxspeedsCollector::Clone(shared_ptr<cache::IntermediateDataReader> const &) const
+MaxspeedsCollector::Clone(shared_ptr<cache::IntermediateData> const &) const
 {
   return make_shared<MaxspeedsCollector>(GetFilename());
 }

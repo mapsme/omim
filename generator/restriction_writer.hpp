@@ -13,7 +13,7 @@ namespace generator
 {
 namespace cache
 {
-class IntermediateDataReader;
+class IntermediateData;
 }  // namespace cache
 }  // namespace generator
 
@@ -35,11 +35,11 @@ public:
   static std::string const kWayString;
 
   RestrictionWriter(std::string const & filename,
-                    std::shared_ptr<generator::cache::IntermediateDataReader> const & cache);
+                    std::shared_ptr<generator::cache::IntermediateData> const & cache);
 
   // generator::CollectorInterface overrides:
   std::shared_ptr<CollectorInterface>
-  Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & cache = {}) const override;
+  Clone(std::shared_ptr<generator::cache::IntermediateData> const & cache = {}) const override;
 
   void CollectRelation(RelationElement const & relationElement) override;
   void Finish() override;
@@ -52,7 +52,7 @@ public:
 
 private:
   std::ofstream m_stream;
-  std::shared_ptr<generator::cache::IntermediateDataReader> m_cache;
+  std::shared_ptr<generator::cache::IntermediateData> m_cache;
 };
 
 std::string DebugPrint(RestrictionWriter::ViaType const & type);

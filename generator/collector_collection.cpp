@@ -9,7 +9,7 @@ using namespace feature;
 namespace generator
 {
 std::shared_ptr<CollectorInterface>
-CollectorCollection::Clone(std::shared_ptr<cache::IntermediateDataReader> const & cache) const
+CollectorCollection::Clone(std::shared_ptr<cache::IntermediateData> const & cache) const
 {
   auto p = std::make_shared<CollectorCollection>();
   for (auto const & c : m_collection)

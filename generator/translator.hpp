@@ -51,7 +51,7 @@ protected:
     auto processor = m_processor->Clone();
     auto featureMaker = m_featureMaker->Clone();
     auto filter = m_filter->Clone();
-    auto collector = m_collector->Clone(cache->GetCache());
+    auto collector = m_collector->Clone(cache);
     return std::make_shared<T>(processor, cache, featureMaker, filter, collector);
   }
 
