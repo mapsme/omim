@@ -3,13 +3,13 @@ package com.mapswithme.maps.downloader;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmDialogFragment;
-import com.mapswithme.maps.news.BaseNewsFragment;
+import com.mapswithme.maps.onboarding.BaseNewsFragment;
 import com.mapswithme.maps.widget.WheelProgressView;
 import com.mapswithme.util.Constants;
 import com.mapswithme.util.StringUtils;
@@ -172,7 +172,7 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
     else
     {
       result = Framework.nativeToDoAfterUpdate();
-      if (result == Framework.DO_AFTER_UPDATE_MIGRATE || result == Framework.DO_AFTER_UPDATE_NOTHING)
+      if (result == Framework.DO_AFTER_UPDATE_NOTHING)
         return false;
 
       Statistics.INSTANCE.trackDownloaderDialogEvent(DOWNLOADER_DIALOG_SHOW,

@@ -12,7 +12,7 @@
 
 #include "geometry/point2d.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/point_coding.hpp"
 #include "coding/reader.hpp"
 
@@ -245,7 +245,7 @@ private:
     if (!handle.IsAlive())
       MYTHROW(RoutingException, ("Mwm", m_numMwmIds->GetFile(numMwmId), "cannot be loaded."));
 
-    MwmValue * value = handle.GetValue<MwmValue>();
+    MwmValue const * value = handle.GetValue();
     CHECK(value != nullptr, ("Country file:", m_numMwmIds->GetFile(numMwmId)));
 
     FilesContainerR::TReader const reader =

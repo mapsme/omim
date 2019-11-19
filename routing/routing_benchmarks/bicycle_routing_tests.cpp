@@ -22,37 +22,36 @@ std::set<std::string> const kMapFiles = {"Russia_Moscow"};
 class BicycleTest : public RoutingTest
 {
 public:
-  BicycleTest() : RoutingTest(routing::IRoadGraph::Mode::ObeyOnewayTag, kMapFiles) {}
+  BicycleTest()
+    : RoutingTest(routing::IRoadGraph::Mode::ObeyOnewayTag, routing::VehicleType::Bicycle, kMapFiles)
+  {
+  }
 
 protected:
   // RoutingTest overrides:
   std::unique_ptr<routing::IDirectionsEngine> CreateDirectionsEngine(
       std::shared_ptr<routing::NumMwmIds> numMwmIds) override
   {
-    std::unique_ptr<routing::IDirectionsEngine> engine(
-        new routing::BicycleDirectionsEngine(m_dataSource, numMwmIds));
-    return engine;
+    return std::make_unique<routing::BicycleDirectionsEngine>(m_dataSource, numMwmIds);
   }
 
   std::unique_ptr<routing::VehicleModelFactoryInterface> CreateModelFactory() override
   {
-    std::unique_ptr<routing::VehicleModelFactoryInterface> factory(
-        new SimplifiedModelFactory<routing::BicycleModel>());
-    return factory;
+    return std::make_unique<SimplifiedModelFactory<routing::BicycleModel>>();
   }
 };
 
 UNIT_CLASS_TEST(BicycleTest, Smoke)
 {
-  m2::PointD const start = MercatorBounds::FromLatLon(55.79181, 37.56513);
-  m2::PointD const final = MercatorBounds::FromLatLon(55.79369, 37.56054);
+  m2::PointD const start = mercator::FromLatLon(55.79181, 37.56513);
+  m2::PointD const final = mercator::FromLatLon(55.79369, 37.56054);
   TestRouters(start, final);
 }
 
 UNIT_CLASS_TEST(BicycleTest, RussiaMoscow_Test1)
 {
-  m2::PointD const start = MercatorBounds::FromLatLon(55.79828, 37.53710);
-  m2::PointD const final = MercatorBounds::FromLatLon(55.79956, 37.54115);
+  m2::PointD const start = mercator::FromLatLon(55.79828, 37.53710);
+  m2::PointD const final = mercator::FromLatLon(55.79956, 37.54115);
   TestRouters(start, final);
 }
 }  // namespace

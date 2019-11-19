@@ -232,8 +232,12 @@ drape_ptr<df::Subroute> CreateDrapeSubroute(vector<RouteSegment> const & segment
   subroute->m_baseDistance = baseDistance;
   subroute->m_baseDepthIndex = baseDepth;
 
+  auto constexpr kBias = 1.0;
+
   if (isTransit)
   {
+    subroute->m_headFakeDistance = -kBias;
+    subroute->m_tailFakeDistance = kBias;
     subroute->m_polyline.Add(startPt);
     return subroute;
   }
@@ -248,6 +252,51 @@ drape_ptr<df::Subroute> CreateDrapeSubroute(vector<RouteSegment> const & segment
   {
     LOG(LWARNING, ("Invalid subroute. Points number =", points.size()));
     return nullptr;
+  }
+
+  // We support visualization of fake edges only in the head and in the tail of subroute.
+  auto constexpr kInvalidId = std::numeric_limits<size_t>::max();
+  auto firstReal = kInvalidId;
+  auto lastReal = kInvalidId;
+  for (size_t i = 0; i < segments.size(); ++i)
+  {
+    if (!segments[i].GetSegment().IsRealSegment())
+      continue;
+
+    if (firstReal == kInvalidId)
+      firstReal = i;
+    lastReal = i;
+  }
+
+  if (firstReal == kInvalidId)
+  {
+    // All segments are fake.
+    subroute->m_headFakeDistance = 0.0;
+    subroute->m_tailFakeDistance = 0.0;
+  }
+  else
+  {
+    CHECK_NOT_EQUAL(firstReal, kInvalidId, ());
+    CHECK_NOT_EQUAL(lastReal, kInvalidId, ());
+
+    auto constexpr kEps = 1e-5;
+
+    // To prevent visual artefacts, in the case when all head segments are real
+    // m_headFakeDistance must be less than 0.0.
+    auto const headLen = (firstReal > 0) ? segments[firstReal - 1].GetDistFromBeginningMerc() - baseDistance : 0.0;
+    if (base::AlmostEqualAbs(headLen, 0.0, kEps))
+      subroute->m_headFakeDistance = -kBias;
+    else
+      subroute->m_headFakeDistance = headLen;
+
+    // To prevent visual artefacts, in the case when all tail segments are real
+    // m_tailFakeDistance must be greater than the length of the subroute.
+    auto const subrouteLen = segments.back().GetDistFromBeginningMerc() - baseDistance;
+    auto const tailLen = segments[lastReal].GetDistFromBeginningMerc() - baseDistance;
+    if (base::AlmostEqualAbs(tailLen, subrouteLen, kEps))
+      subroute->m_tailFakeDistance = subrouteLen + kBias;
+    else
+      subroute->m_tailFakeDistance = tailLen;
   }
 
   subroute->m_polyline = m2::PolylineD(points);
@@ -321,6 +370,9 @@ RoutingManager::RoutingManager(Callbacks && callbacks, Delegate & delegate)
   {
     GetPlatform().RunTask(Platform::Thread::Gui, [this, point, cameraSpeedKmPH]()
     {
+      if (m_routeSpeedCamShowCallback)
+        m_routeSpeedCamShowCallback(point, cameraSpeedKmPH);
+      
       auto editSession = m_bmManager->GetEditSession();
       auto mark = editSession.CreateUserMark<SpeedCameraMark>(point);
 
@@ -345,6 +397,8 @@ RoutingManager::RoutingManager(Callbacks && callbacks, Delegate & delegate)
     GetPlatform().RunTask(Platform::Thread::Gui, [this]()
     {
       m_bmManager->GetEditSession().ClearGroup(UserMark::Type::SPEED_CAM);
+      if (m_routeSpeedCamsClearCallback)
+        m_routeSpeedCamsClearCallback();
     });
   });
 }
@@ -1010,6 +1064,7 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
   m_drapeEngine.SafeCall(&df::DrapeEngine::SetModelViewRect, rect, true /* applyRotation */,
                          -1 /* zoom */, true /* isAnim */, true /* useVisibleViewport */);
 
+  m_routingSession.ClearPositionAccumulator();
   m_routingSession.SetUserCurrentPosition(routePoints.front().m_position);
 
   vector<m2::PointD> points;
@@ -1022,6 +1077,8 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
 
 void RoutingManager::SetUserCurrentPosition(m2::PointD const & position)
 {
+  m_routingSession.PushPositionAccumulator(position);
+
   if (IsRoutingActive())
     m_routingSession.SetUserCurrentPosition(position);
 
@@ -1059,7 +1116,7 @@ void RoutingManager::CheckLocationForRouting(location::GpsInfo const & info)
   if (state == SessionState::RouteNeedRebuild)
   {
     m_routingSession.RebuildRoute(
-        MercatorBounds::FromLatLon(info.m_latitude, info.m_longitude),
+        mercator::FromLatLon(info.m_latitude, info.m_longitude),
         [this](Route const & route, RouterResultCode code) { OnRebuildRouteReady(route, code); },
         nullptr /* needMoreMapsCallback */, nullptr /* removeRouteCallback */, 0 /* timeoutSec */,
         SessionState::RouteRebuilding, true /* adjustToPrevRoute */);
@@ -1451,7 +1508,7 @@ m2::RectD RoutingManager::ShowPreviewSegments(vector<RouteMarkData> const & rout
 {
   df::DrapeEngineLockGuard lock(m_drapeEngine);
   if (!lock)
-    return MercatorBounds::FullRect();
+    return mercator::Bounds::FullRect();
 
   m2::RectD rect;
   for (size_t pointIndex = 0; pointIndex + 1 < routePoints.size(); pointIndex++)

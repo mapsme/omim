@@ -7,6 +7,14 @@
 
 namespace generator
 {
+std::shared_ptr<TranslatorInterface> TranslatorCollection::Clone() const
+{
+  auto p = std::make_shared<TranslatorCollection>();
+  for (auto const & c : m_collection)
+    p->Append(c->Clone());
+  return p;
+}
+
 void TranslatorCollection::Emit(OsmElement /* const */ & element)
 {
   for (auto & t : m_collection)
@@ -16,20 +24,25 @@ void TranslatorCollection::Emit(OsmElement /* const */ & element)
   }
 }
 
-bool TranslatorCollection::Finish()
-{
-  return std::all_of(std::begin(m_collection), std::end(m_collection), [](auto & t) {
-    return t->Finish();
-  });
-}
-
-void TranslatorCollection::GetNames(std::vector<std::string> & names) const
+void TranslatorCollection::Finish()
 {
   for (auto & t : m_collection)
-  {
-    std::vector<std::string> temp;
-    t->GetNames(temp);
-    std::move(std::begin(temp), std::end(temp), std::back_inserter(names));
-  }
+    t->Finish();
+}
+
+bool TranslatorCollection::Save()
+{
+  return std::all_of(std::begin(m_collection), std::end(m_collection),
+                     [](auto & t) { return t->Save(); });
+}
+
+void TranslatorCollection::Merge(TranslatorInterface const & other) { other.MergeInto(*this); }
+
+void TranslatorCollection::MergeInto(TranslatorCollection & other) const
+{
+  auto & otherCollection = other.m_collection;
+  CHECK_EQUAL(m_collection.size(), otherCollection.size(), ());
+  for (size_t i = 0; i < m_collection.size(); ++i)
+    otherCollection[i]->Merge(*m_collection[i]);
 }
 }  // namespace generator

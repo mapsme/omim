@@ -2,12 +2,9 @@
 #import "MWMCoreUnits.h"
 #import "MWMMapViewControlsManager.h"
 #import "SwiftBridge.h"
-#import "3party/Alohalytics/src/alohalytics_objc.h"
 #import "Flurry.h"
 
-#include "Framework.h"
-
-#include "platform/settings.hpp"
+#include <CoreApi/Framework.h>
 
 namespace
 {
@@ -128,6 +125,16 @@ NSString * const kCrashReportingDisabled = @"CrashReportingDisabled";
 
 + (MWMTheme)theme
 {
+  if (@available(iOS 12.0, *)) {
+    if ([MWMCarPlayService shared].isCarplayActivated) {
+      UIUserInterfaceStyle style = [[MWMCarPlayService shared] interfaceStyle];
+      switch (style) {
+      case UIUserInterfaceStyleLight: return MWMThemeDay;
+      case UIUserInterfaceStyleDark: return MWMThemeNight;
+      case UIUserInterfaceStyleUnspecified: break;
+      }
+    }
+  }
   auto ud = NSUserDefaults.standardUserDefaults;
   if (![ud boolForKey:kUDAutoNightModeOff])
     return MWMThemeAuto;

@@ -1,10 +1,8 @@
 #import "MWMAlertViewController+CPP.h"
-#import "MWMCommon.h"
 #import "MWMController.h"
 #import "MWMDownloadTransitMapAlert.h"
 #import "MWMLocationAlert.h"
 #import "MWMLocationNotFoundAlert.h"
-#import "MWMMobileInternetAlert.h"
 #import "MWMSearchNoResultsAlert.h"
 #import "MapViewController.h"
 #import "MapsAppDelegate.h"
@@ -51,10 +49,10 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
 #pragma mark - Actions
 
 - (void)presentRateAlert { [self displayAlert:[MWMAlert rateAlert]]; }
-- (void)presentLocationAlert
+- (void)presentLocationAlertWithCancelBlock:(MWMVoidBlock)cancelBlock
 {
   if (![MapViewController sharedController].welcomePageController)
-    [self displayAlert:[MWMAlert locationAlert]];
+    [self displayAlert:[MWMAlert locationAlertWithCancelBlock: cancelBlock]];
 }
 - (void)presentPoint2PointAlertWithOkBlock:(nonnull MWMVoidBlock)okBlock
                              needToRebuild:(BOOL)needToRebuild
@@ -73,7 +71,6 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
 }
 
 - (void)presentNoConnectionAlert { [self displayAlert:[MWMAlert noConnectionAlert]]; }
-- (void)presentMigrationProhibitedAlert { [self displayAlert:[MWMAlert migrationProhibitedAlert]]; }
 - (void)presentDeleteMapProhibitedAlert { [self displayAlert:[MWMAlert deleteMapProhibitedAlert]]; }
 - (void)presentUnsavedEditsAlertWithOkBlock:(nonnull MWMVoidBlock)okBlock
 {
@@ -95,11 +92,6 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
 - (void)presentInvalidUserNameOrPasswordAlert
 {
   [self displayAlert:[MWMAlert invalidUserNameOrPasswordAlert]];
-}
-
-- (void)presentRoutingMigrationAlertWithOkBlock:(MWMVoidBlock)okBlock
-{
-  [self displayAlert:[MWMAlert routingMigrationAlertWithOkBlock:okBlock]];
 }
 
 - (void)presentDownloaderAlertWithCountries:(storage::CountriesSet const &)countries
@@ -202,7 +194,7 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
   [alert update];
 }
 
-- (void)presentMobileInternetAlertWithBlock:(nonnull MWMVoidBlock)block
+- (void)presentMobileInternetAlertWithBlock:(nonnull MWMMobileInternetAlertCompletionBlock)block
 {
   [self displayAlert:[MWMMobileInternetAlert alertWithBlock:block]];
 }
@@ -276,6 +268,12 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
 
 - (void)displayAlert:(MWMAlert *)alert
 {
+  UIViewController *ownerVC = self.ownerViewController;
+  BOOL isOwnerLoaded = ownerVC.isViewLoaded;
+  if (!isOwnerLoaded) {
+    return;
+  }
+  
   // TODO(igrechuhin): Remove this check on location manager refactoring.
   // Workaround for current location manager duplicate error alerts.
   if ([alert isKindOfClass:[MWMLocationAlert class]])
@@ -300,7 +298,7 @@ static NSString * const kAlertControllerNibIdentifier = @"MWMAlertViewController
 
   [self removeFromParentViewController];
   alert.alertController = self;
-  [self.ownerViewController addChildViewController:self];
+  [ownerVC addChildViewController:self];
   alert.alpha = 0.;
   CGFloat const scale = 1.1;
   alert.transform = CGAffineTransformMakeScale(scale, scale);

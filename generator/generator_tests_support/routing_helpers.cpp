@@ -20,10 +20,11 @@ void ReEncodeOsmIdsToFeatureIdsMapping(std::string const & mappingContent, std::
 {
   strings::SimpleTokenizer lineIter(mappingContent, "\n\r" /* line delimiters */);
 
-  gen::Accumulator<std::pair<base::GeoObjectId, uint32_t>> osmIdsToFeatureIds;
+  std::vector<std::pair<base::GeoObjectId, uint32_t>> osmIdsToFeatureIds;
   for (; lineIter; ++lineIter)
   {
-    strings::SimpleTokenizer idIter(*lineIter, ", \t" /* id delimiters */);
+    auto const & line = *lineIter;
+    strings::SimpleTokenizer idIter(line, ", \t" /* id delimiters */);
     uint64_t osmId = 0;
     TEST(idIter, ());
     TEST(strings::to_uint64(*idIter, osmId), ("Cannot convert to uint64_t:", *idIter));
@@ -33,13 +34,13 @@ void ReEncodeOsmIdsToFeatureIdsMapping(std::string const & mappingContent, std::
     uint32_t featureId = 0;
     TEST(idIter, ());
     TEST(strings::to_uint(*idIter, featureId), ("Cannot convert to uint:", *idIter));
-    osmIdsToFeatureIds.Add(std::make_pair(base::MakeOsmWay(osmId), featureId));
+    osmIdsToFeatureIds.emplace_back(base::MakeOsmWay(osmId), featureId);
     ++idIter;
     TEST(!idIter, ());
   }
 
   FileWriter osm2ftWriter(outputFilePath);
-  osmIdsToFeatureIds.Flush(osm2ftWriter);
+  rw::WriteVectorOfPOD(osm2ftWriter, osmIdsToFeatureIds);
 }
 }  // namespace generator
 
@@ -70,7 +71,7 @@ void TestGeometryLoader::SetPassThroughAllowed(uint32_t featureId, bool passThro
   m_roads[featureId].SetPassThroughAllowedForTests(passThroughAllowed);
 }
 
-std::shared_ptr<EdgeEstimator> CreateEstimatorForCar(shared_ptr<TrafficStash> trafficStash)
+std::shared_ptr<EdgeEstimator> CreateEstimatorForCar(std::shared_ptr<TrafficStash> trafficStash)
 {
   auto const carModel = CarModelFactory({}).GetVehicleModel();
   return EdgeEstimator::Create(VehicleType::Car, *carModel, trafficStash);

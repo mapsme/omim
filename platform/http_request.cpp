@@ -1,9 +1,8 @@
-#include "platform/chunks_download_strategy.hpp"
 #include "platform/http_request.hpp"
+
+#include "platform/chunks_download_strategy.hpp"
 #include "platform/http_thread_callback.hpp"
 #include "platform/platform.hpp"
-
-#include "defines.hpp"
 
 #ifdef DEBUG
 #include "base/thread.hpp"
@@ -15,10 +14,14 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/list.hpp"
-#include "std/unique_ptr.hpp"
+#include <list>
+#include <memory>
+
+#include "defines.hpp"
 
 #include "3party/Alohalytics/src/alohalytics.h"
+
+using namespace std;
 
 class HttpThread;
 
@@ -273,8 +276,7 @@ class FileHttpRequest : public HttpRequest, public IHttpThreadCallback
 
       // Rename finished file to it's original name.
       Platform::RemoveFileIfExists(m_filePath);
-      CHECK(base::RenameFileX(m_filePath + DOWNLOADING_FILE_EXTENSION, m_filePath),
-            (m_filePath, strerror(errno)));
+      base::RenameFileX(m_filePath + DOWNLOADING_FILE_EXTENSION, m_filePath);
 
       Platform::DisableBackupForFile(m_filePath);
     }
@@ -325,8 +327,6 @@ public:
 
     // Create file and reserve needed size.
     unique_ptr<FileWriter> writer(new FileWriter(filePath + DOWNLOADING_FILE_EXTENSION, openMode));
-    // Reserving disk space is very slow on a device.
-    //writer->Reserve(fileSize);
 
     // Assign here, because previous functions can throw an exception.
     m_writer.swap(writer);
@@ -418,4 +418,4 @@ string DebugPrint(HttpRequest::Status status)
   }
   UNREACHABLE();
 }
-} // namespace downloader
+}  // namespace downloader

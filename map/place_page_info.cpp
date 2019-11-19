@@ -94,7 +94,7 @@ void Info::SetFromFeatureType(FeatureType & ft)
   m_hotelType = ftypes::IsHotelChecker::Instance().GetHotelType(ft);
 }
 
-string Info::FormatSubtitle(bool withType) const
+std::string Info::FormatSubtitle(bool withType) const
 {
   std::vector<std::string> subtitle;
 
@@ -104,31 +104,31 @@ string Info::FormatSubtitle(bool withType) const
   if (withType)
     subtitle.push_back(GetLocalizedType());
   // Flats.
-  string const flats = GetFlats();
+  std::string const flats = GetFlats();
   if (!flats.empty())
     subtitle.push_back(flats);
 
   // Cuisines.
-  for (string const & cuisine : GetLocalizedCuisines())
+  for (std::string const & cuisine : GetLocalizedCuisines())
     subtitle.push_back(cuisine);
 
   // Airport IATA code.
-  string const iata = GetAirportIata();
+  std::string const iata = GetAirportIata();
   if (!iata.empty())
     subtitle.push_back(iata);
 
   // Stars.
-  string const stars = FormatStars();
+  std::string const stars = FormatStars();
   if (!stars.empty())
     subtitle.push_back(stars);
 
   // Operator.
-  string const op = GetOperator();
+  std::string const op = GetOperator();
   if (!op.empty())
     subtitle.push_back(op);
 
   // Elevation.
-  string const eleStr = GetElevationFormatted();
+  std::string const eleStr = GetElevationFormatted();
   if (!eleStr.empty())
     subtitle.push_back(kMountainSymbol + eleStr);
   if (HasWifi())
@@ -180,6 +180,13 @@ void Info::SetCustomName(std::string const & name)
   m_customName = name;
 }
 
+void Info::SetCustomNames(std::string const & title, std::string const & subtitle)
+{
+  m_uiTitle = title;
+  m_uiSubtitle = subtitle;
+  m_customName = title;
+}
+
 void Info::SetCustomNameWithCoordinates(m2::PointD const & mercator, std::string const & name)
 {
   if (IsBookmark())
@@ -189,8 +196,8 @@ void Info::SetCustomNameWithCoordinates(m2::PointD const & mercator, std::string
   else
   {
     m_uiTitle = name;
-    m_uiSubtitle = measurement_utils::FormatLatLon(MercatorBounds::YToLat(mercator.y),
-                                                   MercatorBounds::XToLon(mercator.x),
+    m_uiSubtitle = measurement_utils::FormatLatLon(
+        mercator::YToLat(mercator.y), mercator::XToLon(mercator.x),
                                                    true /* withSemicolon */);
   }
   m_customName = name;
@@ -242,9 +249,9 @@ kml::LocalizableString Info::FormatNewBookmarkName() const
   return bookmarkName;
 }
 
-string Info::FormatStars() const
+std::string Info::FormatStars() const
 {
-  string stars;
+  std::string stars;
   for (int i = 0; i < GetStars(); ++i)
     stars.append(kStarSymbol);
   return stars;
@@ -257,11 +264,11 @@ void Info::SetTitlesForBookmark()
   std::vector<std::string> subtitle;
   subtitle.push_back(m_bookmarkCategoryName);
   if (!m_bookmarkData.m_featureTypes.empty())
-    subtitle.push_back(GetLocalizedBookmarkType(m_bookmarkData.m_featureTypes));
+    subtitle.push_back(GetLocalizedFeatureType(m_bookmarkData.m_featureTypes));
   m_uiSubtitle = strings::JoinStrings(subtitle, kSubtitleSeparator);
 }
 
-string Info::GetFormattedCoordinate(bool isDMS) const
+std::string Info::GetFormattedCoordinate(bool isDMS) const
 {
   auto const & ll = GetLatLon();
   return isDMS ? measurement_utils::FormatLatLon(ll.m_lat, ll.m_lon, true)
@@ -282,16 +289,16 @@ float Info::GetRatingRawValue() const
   return raw;
 }
 
-string Info::GetApproximatePricing() const
+std::string Info::GetApproximatePricing() const
 {
   if (!IsSponsored())
-    return string();
+    return std::string();
 
   int pricing;
   if (!strings::to_int(GetMetadata().Get(feature::Metadata::FMD_PRICE_RATE), pricing))
-    return string();
+    return std::string();
 
-  string result;
+  std::string result;
   for (auto i = 0; i < pricing; i++)
     result.append(kPricingSymbol);
 
@@ -318,7 +325,7 @@ bool Info::HasBanner() const
   return m_adsEngine->HasBanner(m_types, m_topmostCountryIds, languages::GetCurrentNorm());
 }
 
-vector<ads::Banner> Info::GetBanners() const
+std::vector<ads::Banner> Info::GetBanners() const
 {
   if (!m_adsEngine)
     return {};

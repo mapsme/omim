@@ -5,13 +5,13 @@
 #include "search/categories_cache.hpp"
 #include "search/downloader_search_callback.hpp"
 #include "search/mwm_context.hpp"
-#include "search/utils.hpp"
 
 #include "storage/storage.hpp"
 
 #include "indexer/data_source.hpp"
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/mwm_set.hpp"
+#include "indexer/utils.hpp"
 
 #include "coding/string_utf8_multilang.hpp"
 
@@ -34,12 +34,12 @@ UNIT_TEST(CountriesNamesTest)
   auto & storage = f.GetStorage();
   auto const & synonyms = storage.GetCountryNameSynonyms();
 
-  auto handle = search::FindWorld(f.GetDataSource());
+  auto handle = indexer::FindWorld(f.GetDataSource());
   TEST(handle.IsAlive(), ());
 
   FeaturesLoaderGuard g(f.GetDataSource(), handle.GetId());
 
-  auto & value = *handle.GetValue<MwmValue>();
+  auto & value = *handle.GetValue();
   TEST(value.HasSearchIndex(), ());
   search::MwmContext const mwmContext(move(handle));
   base::Cancellable const cancellable;
@@ -54,15 +54,25 @@ UNIT_TEST(CountriesNamesTest)
                                    "Nagorno-Karabakh Republic",
                                    // MAPSME-10611
                                    "Mayorca Residencial",
-                                   "Magnolias Residencial"};
+                                   "Magnolias Residencial",
+                                   "Residencial Magnolias",
+                                   // It's relevant only for relase-92.
+                                   "Municipio Guanarito",
+                                   "Municipio Esteller",
+                                   "Municipio Turén",
+                                   "Municipio Araure",
+                                   "Municipio Páez",
+                                   "Municipio Agua Blanca",
+                                   "Municipio Onoto",
+                                   "Municipio Santa Rosalía"};
 
   auto const features = cache.Get(mwmContext);
   features.ForEach([&](uint64_t fid) {
     auto ft = g.GetFeatureByIndex(base::asserted_cast<uint32_t>(fid));
     TEST(ft, ());
 
-    ftypes::Type const type = ftypes::IsLocalityChecker::Instance().GetType(*ft);
-    if (type != ftypes::COUNTRY)
+    ftypes::LocalityType const type = ftypes::IsLocalityChecker::Instance().GetType(*ft);
+    if (type != ftypes::LocalityType::Country)
       return;
 
     TEST(any_of(langIndices.begin(), langIndices.end(),

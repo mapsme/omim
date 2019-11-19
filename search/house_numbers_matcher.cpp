@@ -9,10 +9,12 @@
 #include <limits>
 #include <sstream>
 
-#include "std/transform_iterator.hpp"
+#include <boost/iterator/transform_iterator.hpp>
 
 using namespace std;
 using namespace strings;
+
+using boost::make_transform_iterator;
 
 namespace search
 {
@@ -553,7 +555,8 @@ bool HouseNumbersMatch(strings::UniString const & houseNumber, vector<Token> con
     if (parse.empty())
       continue;
     if (parse[0] == queryParse[0] &&
-        IsSubsequence(parse.begin() + 1, parse.end(), queryParse.begin() + 1, queryParse.end()))
+        (IsSubsequence(parse.begin() + 1, parse.end(), queryParse.begin() + 1, queryParse.end()) ||
+         IsSubsequence(queryParse.begin() + 1, queryParse.end(), parse.begin() + 1, parse.end())))
     {
       return true;
     }

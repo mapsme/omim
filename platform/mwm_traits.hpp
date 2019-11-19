@@ -2,7 +2,7 @@
 
 #include "platform/mwm_version.hpp"
 
-#include "std/string.hpp"
+#include <string>
 
 namespace version
 {
@@ -20,7 +20,7 @@ public:
 
     // A compressed bit vector of feature indices is
     // stored behind every node of the search trie.
-    // This format corresponds to ValueList<FeatureIndexValue>.
+    // This format corresponds to ValueList<Uint64IndexValue>.
     CompressedBitVector,
   };
 
@@ -41,11 +41,22 @@ public:
     Unknown
   };
 
+  enum class CentersTableFormat
+  {
+    // Centers table encoded without any header. Coding params from mwm header are used.
+    PlainEliasFanoMap,
+
+    // Centers table has its own header with version and coding params.
+    EliasFanoMapWithHeader,
+  };
+
   explicit MwmTraits(MwmVersion const & version);
 
   SearchIndexFormat GetSearchIndexFormat() const;
 
   HouseToStreetTableFormat GetHouseToStreetTableFormat() const;
+
+  CentersTableFormat GetCentersTableFormat() const;
 
   bool HasOffsetsTable() const;
 
@@ -64,6 +75,7 @@ private:
   MwmVersion m_version;
 };
 
-string DebugPrint(MwmTraits::SearchIndexFormat format);
-string DebugPrint(MwmTraits::HouseToStreetTableFormat format);
+std::string DebugPrint(MwmTraits::SearchIndexFormat format);
+std::string DebugPrint(MwmTraits::HouseToStreetTableFormat format);
+std::string DebugPrint(MwmTraits::CentersTableFormat format);
 }  // namespace version

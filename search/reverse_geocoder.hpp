@@ -4,6 +4,8 @@
 
 #include "indexer/feature_decl.hpp"
 
+#include "storage/storage_defines.hpp"
+
 #include "coding/string_utf8_multilang.hpp"
 
 #include "base/string_utils.hpp"
@@ -19,9 +21,16 @@
 class FeatureType;
 class DataSource;
 
+namespace storage
+{
+class CountryInfoGetter;
+}  // namespace storage
+
 namespace search
 {
 class MwmContext;
+class CityFinder;
+class RegionInfoGetter;
 
 class ReverseGeocoder
 {
@@ -91,6 +100,20 @@ public:
     std::string FormatAddress() const;
   };
 
+  struct RegionAddress
+  {
+    // CountryId is set in case when FeatureID is not found or belongs to World.wmw
+    // and we can't get country name from it.
+    storage::CountryId m_countryId;
+    FeatureID m_featureId;
+
+    bool IsValid() const;
+    std::string GetCountryName() const;
+    bool operator==(RegionAddress const & rhs) const;
+    bool operator!=(RegionAddress const & rhs) const;
+    bool operator<(RegionAddress const & rhs) const;
+  };
+
   friend std::string DebugPrint(Address const & addr);
 
   /// Returns a feature id of street from |streets| whose name best matches |keyName|
@@ -125,6 +148,13 @@ public:
   /// @returns false if  can't extruct address or ft have no house number.
   bool GetExactAddress(FeatureType & ft, Address & addr) const;
   bool GetExactAddress(FeatureID const & fid, Address & addr) const;
+
+  /// Returns the nearest region address where mwm or exact city is known.
+  static RegionAddress GetNearbyRegionAddress(m2::PointD const & center,
+                                              storage::CountryInfoGetter const & infoGetter,
+                                              CityFinder & cityFinder);
+  std::string GetLocalizedRegionAddress(RegionAddress const & addr,
+                                        RegionInfoGetter const & nameGetter) const;
 
 private:
   /// Helper class to incapsulate house 2 street table reloading.

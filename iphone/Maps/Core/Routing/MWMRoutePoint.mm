@@ -5,9 +5,6 @@
 
 #include "platform/measurement_utils.hpp"
 
-#include "geometry/mercator.hpp"
-#include "geometry/point2d.hpp"
-
 @interface MWMRoutePoint ()
 
 @property(nonatomic, readonly) m2::PointD point;
@@ -79,6 +76,21 @@
   return self;
 }
 
+- (instancetype)initWithCGPoint:(CGPoint)point
+                          title:(NSString *)title
+                       subtitle:(NSString *)subtitle
+                           type:(MWMRoutePointType)type
+              intermediateIndex:(size_t)intermediateIndex
+{
+  auto const pointD = m2::PointD(point.x, point.y);
+  self = [self initWithPoint:pointD
+                       title:title
+                    subtitle:subtitle
+                        type:type intermediateIndex:intermediateIndex];
+  return self;
+}
+
+
 - (instancetype)initWithPoint:(m2::PointD const &)point
                         title:(NSString *)title
                      subtitle:(NSString *)subtitle
@@ -105,8 +117,8 @@
   NSAssert(_intermediateIndex >= 0 && _intermediateIndex <= 2, @"Invalid intermediateIndex");
 }
 
-- (double)latitude { return MercatorBounds::YToLat(self.point.y); }
-- (double)longitude { return MercatorBounds::XToLon(self.point.x); }
+- (double)latitude { return mercator::YToLat(self.point.y); }
+- (double)longitude { return mercator::XToLon(self.point.x); }
 
 - (NSString *)latLonString
 {

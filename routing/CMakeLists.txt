@@ -47,6 +47,7 @@ set(
   fake_vertex.hpp
   features_road_graph.cpp
   features_road_graph.hpp
+  following_info.hpp
   geometry.cpp
   geometry.hpp
   index_graph.cpp
@@ -83,6 +84,8 @@ set(
   online_cross_fetcher.hpp
   pedestrian_directions.cpp
   pedestrian_directions.hpp
+  position_accumulator.cpp
+  position_accumulator.hpp
   restriction_loader.cpp
   restriction_loader.hpp
   restrictions_serialization.cpp
@@ -159,6 +162,7 @@ omim_add_library(${PROJECT_NAME} ${SRC})
 
 if (PLATFORM_DESKTOP)
   add_subdirectory(routing_quality)
+  add_subdirectory(routes_builder)
 endif()
 
 omim_add_test_subdirectory(routing_benchmarks)

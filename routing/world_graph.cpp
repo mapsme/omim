@@ -4,7 +4,8 @@
 
 namespace routing
 {
-void WorldGraph::GetTwins(Segment const & segment, bool isOutgoing, std::vector<SegmentEdge> & edges)
+void WorldGraph::GetTwins(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
+                          std::vector<SegmentEdge> & edges)
 {
   std::vector<Segment> twins;
   GetTwinsInner(segment, isOutgoing, twins);
@@ -33,7 +34,7 @@ void WorldGraph::GetTwins(Segment const & segment, bool isOutgoing, std::vector<
   SetMode(WorldGraphMode::SingleMwm);
 
   for (Segment const & twin : twins)
-    GetEdgeList(twin, isOutgoing, edges);
+    GetEdgeList(twin, isOutgoing, useRoutingOptions, edges);
 
   SetMode(prevMode);
 }
@@ -55,6 +56,7 @@ std::vector<RouteSegment::SpeedCamera> WorldGraph::GetSpeedCamInfo(Segment const
 
 void WorldGraph::SetAStarParents(bool forward, std::map<Segment, Segment> & parents) {}
 void WorldGraph::SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents) {}
+void WorldGraph::DropAStarParents() {}
 
 bool WorldGraph::AreWavesConnectible(ParentSegments & forwardParents, Segment const & commonVertex,
                                      ParentSegments & backwardParents,

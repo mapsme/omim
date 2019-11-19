@@ -1432,7 +1432,6 @@
 	<string name="restore_success_alert">The subscription has been successfully restored</string>
 	<string name="restore_error_alert">An error occurred while restoring the subscription</string>
 	<string name="restore_no_subscription_alert">There are no active subscriptions</string>
-	<string name="subscription_terms">Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.</string>
 	<string name="subscriptions_title">Subscriptions</string>
 	<string name="manage_subscription">Manage subscription</string>
 	<string name="taxi">Taxi</string>
@@ -1471,7 +1470,7 @@
 	<string name="unable_upload_errorr_title">File upload failed</string>
 	<string name="unable_upload_error_subtitle_edited">This file has been edited via the web app</string>
 	<string name="unable_upload_error_subtitle_broken">This file is damaged and couldn\'t be uploaded. Please upload another file.</string>
-	<string name="buy_btn">Buy for %s</string>
+	<string name="buy_btn">Buy this one for %s</string>
 	<string name="download_guide_progress">Downloading your guide…</string>
 	<string name="price_error_title">Could not get a price</string>
 	<string name="price_error_subtitle">Please try again in a few minutes</string>
@@ -1625,13 +1624,164 @@
 	<string name="dialog_routing_change_end_carplay">Unable to build a route to your destination. Please choose another point</string>
 	<string name="dialog_routing_check_gps_carplay">No GPS signal. Please move to an open area</string>
 	<string name="dialog_routing_unable_locate_route_carplay">Unable to build a route. Please specify other route points</string>
-	<string name="dialog_routing_download_files_carplay">Some maps required for planning the route are not present. Please, download them on your mobile device</string>
+	<string name="dialog_routing_download_files_carplay">To create a route, download missing maps on your device</string>
 	<string name="dialog_routing_system_error_carplay">An error occurred. Please restart the application</string>
 	<string name="dialog_routing_rebuild_from_current_location_carplay">The route will be rebuilt from your current location</string>
 	<string name="dialog_routing_rebuild_for_vehicle_carplay">The route will be converted into an automobile one</string>
 	<string name="ok">Ok</string>
 	<string name="vezet_taxi">Vezet</string>
-	<string name="booking_button_toolbar">Search 2 million accommodations</string>
+	<string name="booking_button_toolbar">Pick a hotel on the map</string>
+	<string name="popup_booking_download_guides_title">Booked a hotel?</string>
+	<string name="popup_booking_download_guides_message">Plan your route with ready-made guides from MAPS.ME</string>
+	<string name="popup_mwm_download_guides_title">Offline city guides</string>
+	<string name="popup_mwm_download_guides_cta">Choose one</string>
+	<string name="popup_mwm_download_guides_cta_1">Take a look</string>
+	<string name="gallery_pp_download_guides_offline_title">Plan your vacation with MAPS.ME!</string>
+	<string name="gallery_pp_download_guides_offline_subtitle">Don\'t miss anything with guides made by experienced travellers</string>
+	<string name="gallery_pp_download_guides_offline_cta">Turn on the Internet</string>
+	<string name="gallery_pp_download_guides_title">Guides</string>
+	<string name="native_screen_subscription_title">Unlimited access to 2000+ travel guides!</string>
+	<string name="native_screen_subscription_message">A great vacation wherever you travel and whoever goes with you</string>
+	<string name="annual_subscription_title">Annual</string>
+	<string name="montly_subscription_title">Monthly</string>
+	<string name="annual_subscription_message">12 months of unlimited access</string>
+	<string name="montly_subscription_message">1 month of unlimited access</string>
+	<string name="annual_save_component">- %d%%</string>
+	<string name="subscription_success_dialog_title">Thanks for subscribing!</string>
+	<string name="subscription_success_dialog_message">Now you have unlimited access to the whole guides catalog</string>
+	<string name="renewal_screen_title">Your subscription has expired</string>
+	<string name="renewal_screen_message">All the guides downloaded by subscription are going to be deleted. Do you want to resume the subscription and keep them?</string>
+	<string name="renewal_screen_button_restore">Yes, renew</string>
+	<string name="renewal_screen_button_cancel">No, delete guides</string>
+	<string name="subscription_error_ping_title">Purchase has failed</string>
+	<string name="subscription_error_message">The service is currently unavailable in your region. Please try again later</string>
+	<string name="subscription_error_button">Got it</string>
+	<string name="timeout_error_title">Oops, time is up!</string>
+	<string name="timeout_error_message">Our servers don\'t respond. Please check the internet connection and try again.</string>
+	<string name="per_month">/mo</string>
+	<string name="per_year">/year</string>
+	<string name="buy_btn_for_subscription">Unlimited access from %s</string>
+	<string name="buy_btn_for_subscription_1">Buy ALL guides for %s</string>
+	<string name="buy_btn_for_subscription_ios_only_mo">Unlimited access for %s/mo</string>
+	<string name="buy_btn_for_subscription_ios_only_year">Unlimited access for %s/year</string>
+	<string name="subscription_terms_guides">Payment will be charged to your iTunes account after purchase confirmation. The subscription will automatically renew unless the auto-renew feature is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off the auto-renew feature in your Apple ID account settings at any time of your purchase. You can only use guides downloaded by subscription until its expiration date. After 30 days from the subscription expiry date guides with bookmarks will be automatically deleted.</string>
+	<string name="subscription_terms">Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.</string>
+	<string name="whatsnew_carplay_title">MAPS.ME car navigation in CarPlay!</string>
+	<string name="whatsnew_carplay_message">Bookmarks, search, speed cameras and routing options are available offline</string>
+	<string name="whatsnew_subscription_title">The whole world by subscription!</string>
+	<string name="whatsnew_subscription_message">Unlimited access to the guides catalog is more profitable than a one-time purchase</string>
+	<string name="whatsnew_carnavi_fixes_for_android_title">Navigation update</string>
+	<string name="whatsnew_carnavi_fixes_for_android_message">We improved route planning to points, which are located far away from roads</string>
+	<string name="avoid_unpaved_carplay_1">No dirt road</string>
+	<string name="avoid_unpaved_carplay_2">Avoid unpaved</string>
+	<string name="avoid_ferry_carplay_1">No ferries</string>
+	<string name="avoid_ferry_carplay_2">Avoid ferries</string>
+	<string name="avoid_tolls_carplay_1">No toll road</string>
+	<string name="avoid_tolls_carplay_2">Avoid toll road</string>
+	<string name="speedcams_alert_title_carplay_1">Speedсams</string>
+	<string name="speedcams_alert_title_carplay_2">Speed warnings</string>
+	<string name="download_map_carplay">Please download maps in MAPS.ME app on your device</string>
+	<string name="carplay_roundabout_exit">%s exit</string>
+	<!-- max. 10 symbols, both iOS and Android -->
+	<string name="sort">Sort…</string>
+	<!-- Android, title, max 20-22 symbols -->
+	<string name="sort_bookmarks">Sort bookmarks</string>
+	<!-- iOS -->
+	<string name="sort_default">Sort by default</string>
+	<string name="sort_type">Sort by type</string>
+	<string name="sort_distance">Sort by distance</string>
+	<string name="sort_date">Sort by date</string>
+	<!-- Android -->
+	<string name="by_default">By default</string>
+	<!-- Android -->
+	<string name="by_type">By type</string>
+	<!-- Android -->
+	<string name="by_distance">By distance</string>
+	<!-- Android -->
+	<string name="by_date">By date</string>
+	<string name="week_ago_sorttype">A week ago</string>
+	<string name="month_ago_sorttype">A month ago</string>
+	<string name="moremonth_ago_sorttype">More than a month ago</string>
+	<string name="moreyear_ago_sorttype">More than a year ago</string>
+	<string name="near_me_sorttype">Near me</string>
+	<string name="others_sorttype">Others</string>
+	<string name="food_places">Food</string>
+	<string name="tourist_places">Sights</string>
+	<string name="museums">Museums</string>
+	<string name="parks">Parks</string>
+	<string name="swim_places">Swim</string>
+	<string name="mountains">Mountains</string>
+	<string name="animals">Animals</string>
+	<string name="hotels">Hotels</string>
+	<string name="buildings">Buildings</string>
+	<string name="money">Money</string>
+	<string name="shops">Shops</string>
+	<string name="parkings">Parkings</string>
+	<string name="fuel_places">Gas stations</string>
+	<string name="water">Water</string>
+	<string name="medicine">Medicine</string>
+	<string name="search_in_the_list">Search in the list</string>
+	<string name="view_on_map_bookmarks">On map</string>
+	<string name="more_bookmarks">More…</string>
+	<string name="no_items_found">No items found</string>
+	<!-- Android, max 18 symbols -->
+	<string name="bookmarks_edit_list">Edit list</string>
+	<!-- Android, max 18 symbols -->
+	<string name="bookmarks_delete_list">Delete list</string>
+	<string name="whatsnew_bookmarks_search_sort_title">Good order in bookmarks makes a journey comfortable</string>
+	<string name="whatsnew_bookmarks_search_sort_message">Sort favorite places by category, location, and in chronological order, as well as quickly find specific bookmarks by their name</string>
+	<string name="popup_subscription_success_map_title">Woohoo, you\'re subscribed!</string>
+	<string name="popup_subscription_success_map_message">Now discover the best touristic highlights in MAPS.ME catalog</string>
+	<string name="popup_subscription_success_map_start_button">Start browsing</string>
+	<string name="popup_subscription_success_map_not_now_button">Not now</string>
+	<string name="religious_places">Religious places</string>
+	<string name="subscription_terms_android">When you confirm a purchase, the payment will be charged to your Google Play account. The subscription will automatically renew unless the auto-renew feature is turned off at least 24 hours before the end of the current period. Your account will be charged pursuant to your renewal plan within 24 hours before the end of the current period. You can manage or turn off the auto-renew feature in Account Settings after purchase. You can only use guides downloaded by subscription until the end of the billing period. After 30 days from the subscription expiry date, downloaded guides will be automatically deleted.</string>
+	<string name="select_list">Select list</string>
+	<string name="pp_discovery_place_related_header">This place in the guides catalog</string>
+	<string name="pp_discovery_place_related_header_1">This place is featured in a guide</string>
+	<string name="pp_discovery_place_related_cta_button">View</string>
+	<string name="pp_discovery_place_related_tag_header">Guides by tag “%s”</string>
+	<string name="pp_discovery_place_related_tag_header_1">You may also like</string>
+	<string name="buy_btn_for_subscription_version_2">ALL guides just for %s/mo</string>
+	<string name="buy_btn_for_subscription_version_3">Entire catalog for %s/mo</string>
+	<string name="buy_btn_for_subscription_ios_only_mo_version_2">Access to catalog for %s/mo</string>
+	<string name="buy_btn_for_subscription_ios_only_year_version_2">Access to catalog for %s/year</string>
+	<string name="subscription_screen_native_title_version_2">Access to guides with bookmarks!</string>
+	<string name="subscription_screen_native_message_version_2">Be ready for any journey in 600+ cities and 100+ countries</string>
+	<string name="catalog_no_internet_title">No internet connection</string>
+	<string name="catalog_no_internet_button">Try again</string>
+	<string name="whatsnew_map_updates_title">Lightning-fast map updates</string>
+	<string name="whatsnew_map_updates_message">From now on we update the data twice as fast</string>
+	<!-- FIXME -->
+	<string name="all_pass_subscription_header">all_pass_subscription_header</string>
+	<!-- FIXME -->
+	<string name="all_pass_subscription_subheader">all_pass_subscription_subheader</string>
+	<!-- FIXME -->
+	<string name="all_pass_subscription_message_title">all_pass_subscription_message_title</string>
+	<!-- FIXME -->
+	<string name="all_pass_subscription_message_subtitle">all_pass_subscription_message_subtitle</string>
+	<!-- FIXME -->
+	<string name="all_pass_subscription_message_title_2">all_pass_subscription_message_title_2</string>
+	<!-- FIXME -->
+	<string name="all_pass_subscription_message_subtitle_2">all_pass_subscription_message_subtitle_2</string>
+	<!-- FIXME -->
+	<string name="all_pass_subscription_message_title_3">all_pass_subscription_message_subtitle_3</string>
+	<!-- FIXME -->
+	<string name="all_pass_subscription_message_subtitle_3">all_pass_subscription_message_subtitle_3</string>
+	<!-- FIXME -->
+	<string name="sightseeing_subscription_header_sightseeing">sightseeing_subscription_header_sightseeing</string>
+	<!-- FIXME -->
+	<string name="sightseeing_subscription_header_subscription">sightseeing_subscription_header_subscription</string>
+	<!-- FIXME -->
+	<string name="sightseeing_subscription_message">bookmarks_public_access</string>
+	<!-- FIXME -->
+	<string name="sightseeing_subscription_message_2">sightseeing_subscription_message_2</string>
+	<!-- FIXME -->
+	<string name="sightseeing_subscription_message_3">sightseeing_subscription_message_3</string>
+	<!-- FIXME -->
+	<string name="subscription_success_dialog_title_sightseeing_pass">subscription_success_dialog_title_sightseeing_pass</string>
+	<!-- FIXME -->
+	<string name="subscription_success_dialog_message_sightseeing_pass">subscription_success_dialog_message_sightseeing_pass</string>
 
 	<!-- SECTION:  Partners  -->
 	<string name="sponsored_partner1_action">Outlets</string>
@@ -1717,6 +1867,10 @@
 	<string name="type.amenity.parking.private">Parking</string>
 	<string name="type.amenity.parking.underground">Parking</string>
 	<string name="type.amenity.parking.underground.fee">Parking</string>
+	<string name="type.amenity.parking_space">Parking space</string>
+	<string name="type.amenity.parking_space.permissive">Parking space</string>
+	<string name="type.amenity.parking_space.private">Parking space</string>
+	<string name="type.amenity.parking_space.underground">Parking space</string>
 	<string name="type.amenity.payment_terminal">Payment Terminal</string>
 	<string name="type.amenity.pharmacy">Pharmacy</string>
 	<string name="type.amenity.place_of_worship">Place of Worship</string>
@@ -1730,7 +1884,7 @@
 	<string name="type.amenity.police">Police</string>
 	<string name="type.amenity.post_box">Postbox</string>
 	<string name="type.amenity.post_office">Post</string>
-	<string name="type.amenity.prison">amenity-prison</string>
+	<string name="type.amenity.prison">Prison</string>
 	<string name="type.amenity.pub">Pub</string>
 	<string name="type.amenity.public_bookcase">Book Exchange</string>
 	<string name="type.amenity.recycling">Recycling Center</string>
@@ -1743,10 +1897,10 @@
 	<string name="type.amenity.telephone">Phone</string>
 	<string name="type.amenity.theatre">Theatre</string>
 	<string name="type.amenity.toilets">Toilet</string>
-	<string name="type.amenity.townhall">Town Hall</string>
+	<string name="type.amenity.townhall">Town hall</string>
 	<string name="type.amenity.university">University</string>
-	<string name="type.amenity.vending_machine">amenity-vending_machine</string>
-	<string name="type.amenity.vending_machine.cigarettes">Cigarette Dispenser</string>
+	<string name="type.amenity.vending_machine">Vending machine</string>
+	<string name="type.amenity.vending_machine.cigarettes">Cigarette dispenser</string>
 	<string name="type.amenity.vending_machine.drinks">Drink Dispenser</string>
 	<string name="type.amenity.vending_machine.parking_tickets">Parking Tickets</string>
 	<string name="type.amenity.vending_machine.public_transport_tickets">Vending machine for public transport tickets</string>
@@ -1754,22 +1908,22 @@
 	<string name="type.amenity.waste_basket">Trash Bin</string>
 	<string name="type.amenity.waste_disposal">Dumpster</string>
 	<string name="type.amenity.water_point">Water Point</string>
-	<string name="type.barrier">barrier</string>
+	<string name="type.barrier">Barrier</string>
 	<string name="type.barrier.block">Block</string>
 	<string name="type.barrier.bollard">Pillar</string>
 	<string name="type.barrier.border_control">Border Control</string>
-	<string name="type.barrier.city_wall">barrier-city_wall</string>
-	<string name="type.barrier.cycle_barrier">barrier-cycle_barrier</string>
+	<string name="type.barrier.city_wall">City wall</string>
+	<string name="type.barrier.cycle_barrier">Cycle barrier</string>
 	<string name="type.barrier.entrance">Entrance</string>
-	<string name="type.barrier.fence">barrier-fence</string>
+	<string name="type.barrier.fence">Fence</string>
 	<string name="type.barrier.gate">Gate</string>
-	<string name="type.barrier.hedge">barrier-hedge</string>
-	<string name="type.barrier.lift_gate">Lift Gate</string>
-	<string name="type.barrier.retaining_wall">barrier-retaining_wall</string>
+	<string name="type.barrier.hedge">Hedge</string>
+	<string name="type.barrier.lift_gate">Lift gate</string>
+	<string name="type.barrier.retaining_wall">Retaining wall</string>
 	<string name="type.barrier.stile">Stile</string>
 	<string name="type.barrier.toll_booth">Toll Booth</string>
-	<string name="type.barrier.wall">barrier-wall</string>
-	<string name="type.boundary">boundary</string>
+	<string name="type.barrier.wall">Wall</string>
+	<string name="type.boundary">Boundary</string>
 	<string name="type.boundary.administrative">boundary-administrative</string>
 	<string name="type.boundary.administrative.10">boundary-administrative-10</string>
 	<string name="type.boundary.administrative.11">boundary-administrative-11</string>
@@ -2025,7 +2179,7 @@
 	<string name="type.highway.world_towns_level">highway-world_towns_level</string>
 	<string name="type.historic">historic</string>
 	<string name="type.historic.archaeological_site">Archaeological Site</string>
-	<string name="type.historic.battlefield">historic-battlefield</string>
+	<string name="type.historic.battlefield">Battlefield</string>
 	<string name="type.historic.boundary_stone">historic-boundary_stone</string>
 	<string name="type.historic.castle">Castle</string>
 	<string name="type.historic.castle.defensive">Castle</string>
@@ -2062,19 +2216,20 @@
 	<string name="type.landuse">landuse</string>
 	<string name="type.landuse.allotments">Allotments</string>
 	<string name="type.landuse.basin">Water</string>
-	<string name="type.landuse.brownfield">landuse-brownfield</string>
+	<string name="type.landuse.brownfield">Brownfield</string>
 	<string name="type.landuse.cemetery">Graveyard</string>
-	<string name="type.landuse.cemetery.christian">Graveyard</string>
+	<string name="type.landuse.cemetery.christian">Christian graveyard</string>
+	<string name="type.landuse.churchyard">landuse-churchyard</string>
 	<string name="type.landuse.commercial">landuse-commercial</string>
-	<string name="type.landuse.construction">landuse-construction</string>
+	<string name="type.landuse.construction">Construction</string>
 	<string name="type.landuse.farm">Farm</string>
 	<string name="type.landuse.farmland">Farmland</string>
 	<string name="type.landuse.farmyard">Farmyard</string>
 	<string name="type.landuse.field">Field</string>
 	<string name="type.landuse.forest">Forest</string>
-	<string name="type.landuse.forest.coniferous">Forest</string>
-	<string name="type.landuse.forest.deciduous">Forest</string>
-	<string name="type.landuse.forest.mixed">Forest</string>
+	<string name="type.landuse.forest.coniferous">Coniferous forest</string>
+	<string name="type.landuse.forest.deciduous">Deciduous forest</string>
+	<string name="type.landuse.forest.mixed">Mixed forest</string>
 	<string name="type.landuse.garages">Garages</string>
 	<string name="type.landuse.grass">Lawn</string>
 	<string name="type.landuse.greenfield">landuse-greenfield</string>
@@ -2168,6 +2323,7 @@
 	<string name="type.natural.glacier">Glacier</string>
 	<string name="type.natural.grassland">Field</string>
 	<string name="type.natural.heath">Heath</string>
+	<string name="type.natural.hot_spring">Hot spring</string>
 	<string name="type.natural.lake">Lake</string>
 	<string name="type.natural.land">natural-land</string>
 	<string name="type.natural.meadow">Meadow</string>
@@ -2414,7 +2570,7 @@
 	<string name="type.shop.kiosk">Kiosk</string>
 	<string name="type.shop.laundry">Laundry</string>
 	<string name="type.shop.mall">Mall</string>
-	<string name="type.shop.massage">Massage Parlour</string>
+	<string name="type.shop.massage">Massage salon</string>
 	<string name="type.shop.mobile_phone">Cell Phones</string>
 	<string name="type.shop.money_lender">Shop</string>
 	<string name="type.shop.motorcycle">Motorcycle Shop</string>

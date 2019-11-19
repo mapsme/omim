@@ -19,6 +19,8 @@
 
 #include "partners_api/booking_api.hpp"
 #include "partners_api/locals_api.hpp"
+#include "partners_api/promo_api.hpp"
+#include "partners_api/utm.hpp"
 
 #include "platform/country_defines.hpp"
 #include "platform/location.hpp"
@@ -78,8 +80,6 @@ namespace android
     TransitReadManager::TransitStateChangedFn m_onTransitStateChangedFn;
 
     bool m_isChoosePositionMode;
-
-    place_page::Info m_info;
 
   public:
     Framework();
@@ -183,20 +183,12 @@ namespace android
     void ApplyWidgets();
     void CleanWidgets();
 
-    void SetPlacePageInfo(place_page::Info const & info);
     place_page::Info & GetPlacePageInfo();
     void RequestBookingMinPrice(JNIEnv * env, jobject policy, booking::BlockParams && params,
                                 booking::BlockAvailabilityCallback const & callback);
     void RequestBookingInfo(JNIEnv * env, jobject policy, 
                             std::string const & hotelId, std::string const & lang,
                             booking::GetHotelInfoCallback const & callback);
-
-    bool HasSpaceForMigration();
-    storage::CountryId PreMigrate(
-        ms::LatLon const & position,
-        storage::Storage::ChangeCountryFunction const & statusChangeListener,
-        storage::Storage::ProgressFunction const & progressListener);
-    void Migrate(bool keepOldMaps);
 
     bool IsAutoRetryDownloadFailed();
     bool IsDownloadOn3gEnabled();
@@ -218,6 +210,15 @@ namespace android
     uint64_t GetLocals(JNIEnv * env, jobject policy, double lat, double lon,
                        locals::LocalsSuccessCallback const & successFn,
                        locals::LocalsErrorCallback const & errorFn);
+    void GetPromoCityGallery(JNIEnv * env, jobject policy, m2::PointD const & point, UTM utm,
+                             promo::CityGalleryCallback const & onSuccess,
+                             promo::OnError const & onError);
+    void GetPromoPoiGallery(JNIEnv * env, jobject policy, m2::PointD const & point,
+                            promo::Tags const & tags, bool useCoordinates, UTM utm,
+                            promo::CityGalleryCallback const & onSuccess,
+                            promo::OnError const & onError);
+    promo::AfterBooking GetPromoAfterBooking(JNIEnv * env, jobject policy);
+    std::string GetPromoCityUrl(JNIEnv * env, jobject policy, jdouble lat, jdouble lon);
 
     void LogLocalAdsEvent(local_ads::EventType event, double lat, double lon, uint16_t accuracy);
 
@@ -227,4 +228,4 @@ namespace android
   };
 }
 
-extern unique_ptr<android::Framework> g_framework;
+extern std::unique_ptr<android::Framework> g_framework;

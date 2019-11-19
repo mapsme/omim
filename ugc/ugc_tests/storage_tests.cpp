@@ -19,16 +19,17 @@
 
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
-#include "platform/platform_tests_support/scoped_file.hpp"
 
 #include "coding/internal/file_data.hpp"
 #include "coding/writer.hpp"
 #include "coding/zlib.hpp"
 
 #include "base/file_name_utils.hpp"
+#include "base/scope_guard.hpp"
 
 #include <chrono>
 #include <functional>
+#include <ostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -48,7 +49,7 @@ string const kTestMwmName = "ugc storage test";
 bool DeleteIndexFile(ugc::IndexVersion v = ugc::IndexVersion::Latest)
 {
   if (v == ugc::IndexVersion::Latest)
-    return base::DeleteFileX(base::JoinPath(GetPlatform().SettingsDir(), "index.json"));
+    return base::DeleteFileX(Storage::GetIndexFilePath());
 
   string version;
   switch (v)
@@ -61,7 +62,7 @@ bool DeleteIndexFile(ugc::IndexVersion v = ugc::IndexVersion::Latest)
     break;
   }
 
-  return base::DeleteFileX(base::JoinPath(GetPlatform().SettingsDir(), "index.json." + version));
+  return base::DeleteFileX(Storage::GetIndexFilePath() + "." + version);
 }
 
 bool DeleteUGCFile(ugc::IndexVersion v = ugc::IndexVersion::Latest)
@@ -140,7 +141,7 @@ public:
   ~MwmBuilder()
   {
     platform::CountryIndexes::DeleteFromDisk(m_testMwm);
-    m_testMwm.DeleteFromDisk(MapOptions::Map);
+    m_testMwm.DeleteFromDisk(MapFileType::Map);
   }
 
 private:
@@ -148,14 +149,15 @@ private:
 
   MwmSet::MwmId BuildMwm(BuilderFn const & fn)
   {
-    if (m_testMwm.OnDisk(MapOptions::Map))
+    if (m_testMwm.OnDisk(MapFileType::Map))
       Cleanup(m_testMwm);
 
     m_testMwm = platform::LocalCountryFile(GetPlatform().WritableDir(),
                                            platform::CountryFile(kTestMwmName),
                                            kMinVersionForMigration);
     {
-      generator::tests_support::TestMwmBuilder builder(m_testMwm, feature::DataHeader::country);
+      generator::tests_support::TestMwmBuilder builder(m_testMwm,
+                                                       feature::DataHeader::MapType::Country);
       fn(builder);
     }
 
@@ -175,7 +177,7 @@ private:
   template<typename Checker>
   FeatureID FeatureIdForPoint(m2::PointD const & mercator, Checker const & checker)
   {
-    m2::RectD const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(mercator, 0.2 /* rect width */);
+    m2::RectD const rect = mercator::RectByCenterXYAndSizeInMeters(mercator, 0.2 /* rect width */);
     FeatureID id;
     auto const fn = [&id, &checker](FeatureType & featureType) {
       if (checker(featureType))
@@ -190,7 +192,7 @@ private:
   {
     m_dataSource.DeregisterMap(map.GetCountryFile());
     platform::CountryIndexes::DeleteFromDisk(map);
-    map.DeleteFromDisk(MapOptions::Map);
+    map.DeleteFromDisk(MapFileType::Map);
   }
 
   FrozenDataSource m_dataSource;
@@ -462,7 +464,13 @@ UNIT_CLASS_TEST(StorageTest, GetNumberOfUnsentSeparately)
 
 UNIT_TEST(UGC_IndexMigrationFromV0ToV1Smoke)
 {
-  platform::tests_support::ScopedFile dummyUgcUpdate("ugc.update.bin", "some test content");
+  auto const dummyUgcUpdate = Storage::GetUGCFilePath();
+  SCOPE_GUARD(deleteFileGuard, bind(&FileWriter::DeleteFileX, cref(dummyUgcUpdate)));
+  {
+    ofstream stream;
+    stream.open(dummyUgcUpdate);
+    stream << "some test content";
+  }
   LOG(LINFO, ("Created dummy ugc update", dummyUgcUpdate));
 
   auto & p = GetPlatform();

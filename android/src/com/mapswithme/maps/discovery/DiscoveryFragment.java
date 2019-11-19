@@ -1,18 +1,19 @@
 package com.mapswithme.maps.discovery;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.IdRes;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.CallSuper;
+import androidx.annotation.IdRes;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,13 +27,16 @@ import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.gallery.GalleryAdapter;
 import com.mapswithme.maps.gallery.ItemSelectedListener;
 import com.mapswithme.maps.gallery.Items;
-import com.mapswithme.maps.gallery.RegularAdapterStrategy;
 import com.mapswithme.maps.gallery.impl.Factory;
 import com.mapswithme.maps.gallery.impl.LoggableItemSelectedListener;
 import com.mapswithme.maps.metrics.UserActionsLogger;
+import com.mapswithme.maps.promo.PromoCityGallery;
+import com.mapswithme.maps.promo.PromoEntity;
 import com.mapswithme.maps.search.SearchResult;
 import com.mapswithme.maps.widget.PlaceholderView;
 import com.mapswithme.maps.widget.ToolbarController;
+import com.mapswithme.maps.widget.placepage.ErrorCatalogPromoListener;
+import com.mapswithme.maps.gallery.impl.RegularCatalogPromoListener;
 import com.mapswithme.maps.widget.recycler.ItemDecoratorFactory;
 import com.mapswithme.util.ConnectionState;
 import com.mapswithme.util.Language;
@@ -47,6 +51,7 @@ import static com.mapswithme.util.statistics.Destination.PLACEPAGE;
 import static com.mapswithme.util.statistics.Destination.ROUTING;
 import static com.mapswithme.util.statistics.GalleryPlacement.DISCOVERY;
 import static com.mapswithme.util.statistics.GalleryType.LOCAL_EXPERTS;
+import static com.mapswithme.util.statistics.GalleryType.PROMO;
 import static com.mapswithme.util.statistics.GalleryType.SEARCH_ATTRACTIONS;
 import static com.mapswithme.util.statistics.GalleryType.SEARCH_HOTELS;
 import static com.mapswithme.util.statistics.GalleryType.SEARCH_RESTAURANTS;
@@ -57,7 +62,7 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
   private static final int[] ITEM_TYPES = { DiscoveryParams.ITEM_TYPE_HOTELS,
                                             DiscoveryParams.ITEM_TYPE_ATTRACTIONS,
                                             DiscoveryParams.ITEM_TYPE_CAFES,
-                                            DiscoveryParams.ITEM_TYPE_LOCAL_EXPERTS };
+                                            DiscoveryParams.ITEM_TYPE_PROMO};
   private boolean mOnlineMode;
   @Nullable
   private CustomNavigateUpListener mNavigateUpListener;
@@ -73,7 +78,7 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
         return;
 
       if (ConnectionState.isConnected())
-        requestDiscoveryInfoAndInitAdapters();
+        NetworkPolicy.checkNetworkPolicy(getFragmentManager(), DiscoveryFragment.this::onNetworkPolicyResult);
     }
   };
 
@@ -122,9 +127,10 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
     setLayoutManagerAndItemDecoration(getContext(), getGallery(R.id.food));
   }
 
-  private void initLocalExpertsGallery()
+  private void initCatalogPromoGallery()
   {
-    setLayoutManagerAndItemDecoration(getContext(), getGallery(R.id.localGuides));
+    RecyclerView catalogPromoRecycler = getGallery(R.id.catalog_promo_recycler);
+    setLayoutManagerAndItemDecoration(requireContext(), catalogPromoRecycler);
   }
 
   private static void setLayoutManagerAndItemDecoration(@NonNull Context context,
@@ -175,20 +181,16 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
     initHotelGallery();
     initAttractionsGallery();
     initFoodGallery();
-    initLocalExpertsGallery();
     initSearchBasedAdapters();
-    initCatalogPromoGallery(view);
-    requestDiscoveryInfoAndInitAdapters();
+    initCatalogPromoGallery();
+    NetworkPolicy.checkNetworkPolicy(getFragmentManager(), this::onNetworkPolicyResult);
   }
 
-  private void requestDiscoveryInfoAndInitAdapters()
+  private void onNetworkPolicyResult(@NonNull NetworkPolicy policy)
   {
-    NetworkPolicy.checkNetworkPolicy(getFragmentManager(), policy ->
-    {
-      mOnlineMode = policy.canUseNetwork();
-      initNetworkBasedAdapters();
-      requestDiscoveryInfo();
-    });
+    mOnlineMode = policy.canUseNetwork();
+    initNetworkBasedAdapters();
+    requestDiscoveryInfo();
   }
 
   private void initSearchBasedAdapters()
@@ -200,30 +202,16 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
 
   private void initNetworkBasedAdapters()
   {
-    UiUtils.showIf(mOnlineMode, getRootView(), R.id.localGuidesTitle, R.id.localGuides);
-    if (mOnlineMode)
-    {
-      RecyclerView localGuides = getGallery(R.id.localGuides);
-      localGuides.setAdapter(Factory.createLocalExpertsLoadingAdapter());
-      RecyclerView promoRecycler = getGallery(R.id.catalog_promo_recycler);
-      promoRecycler.setAdapter(Factory.createCatalogPromoLoadingAdapter());
-      return;
-    }
+    RecyclerView promoRecycler = getGallery(R.id.catalog_promo_recycler);
+    ItemSelectedListener<Items.Item> listener = mOnlineMode
+                                                ?
+                                                new CatalogPromoSelectedListener(requireActivity())
+                                                : new ErrorCatalogPromoListener<>(requireActivity(),
+                                                                                  this::onNetworkPolicyResult);
 
-    // It means that the user doesn't permit mobile network usage, so network based galleries UI
-    // should be hidden in this case.
-    UiUtils.showIf(ConnectionState.isMobileConnected(), getView(), R.id.localGuidesTitle,
-                   R.id.localGuides);
-  }
-
-
-  private void initCatalogPromoGallery(@NonNull View root)
-  {
-    RecyclerView catalogPromoRecycler = root.findViewById(R.id.catalog_promo_recycler);
-    setLayoutManagerAndItemDecoration(requireContext(), catalogPromoRecycler);
-    View titleView = root.findViewById(R.id.catalog_promo_title);
-    titleView.setVisibility(View.VISIBLE);
-    catalogPromoRecycler.setVisibility(View.VISIBLE);
+    GalleryAdapter adapter = mOnlineMode ? Factory.createCatalogPromoLoadingAdapter()
+                                         : Factory.createCatalogPromoErrorAdapter(listener);
+    promoRecycler.setAdapter(adapter);
   }
 
   private void requestDiscoveryInfo()
@@ -237,7 +225,8 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
     else
     {
       params = new DiscoveryParams(Utils.getCurrencyCode(), Language.getDefaultLocale(),
-                                   ITEMS_COUNT, DiscoveryParams.ITEM_TYPE_HOTELS,
+                                   ITEMS_COUNT,
+                                   DiscoveryParams.ITEM_TYPE_HOTELS,
                                    DiscoveryParams.ITEM_TYPE_ATTRACTIONS,
                                    DiscoveryParams.ITEM_TYPE_CAFES);
     }
@@ -298,13 +287,19 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
     gallery.setAdapter(adapter);
   }
 
-  public void onCatalogPromoReceived(@NonNull RegularAdapterStrategy.Item[] experts)
+  @Override
+  public void onCatalogPromoResultReceived(@NonNull PromoCityGallery gallery)
   {
-    updateViewsVisibility(experts, R.id.catalog_promo_title, R.id.catalog_promo_recycler);
-    String url = "";
+    updateViewsVisibility(gallery.getItems(), R.id.catalog_promo_recycler,
+                          R.id.catalog_promo_title);
+    if (gallery.getItems().length == 0)
+      return;
 
-    ItemSelectedListener<RegularAdapterStrategy.Item> listener = new CatalogPromoSelectedListener();
-    GalleryAdapter adapter = Factory.createCatalogPromoAdapter(experts, url, listener, DISCOVERY);
+    String url = gallery.getMoreUrl();
+    ItemSelectedListener<PromoEntity> listener =
+        new RegularCatalogPromoListener(requireActivity(), DISCOVERY);
+    GalleryAdapter adapter = Factory.createCatalogPromoAdapter(requireContext(), gallery, url,
+                                                               listener, DISCOVERY);
     RecyclerView recycler = getGallery(R.id.catalog_promo_recycler);
     recycler.setAdapter(adapter);
   }
@@ -329,6 +324,13 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
       case LOCAL_EXPERTS:
         getGallery(R.id.localGuides).setAdapter(Factory.createLocalExpertsErrorAdapter());
         Statistics.INSTANCE.trackGalleryError(LOCAL_EXPERTS, DISCOVERY, null);
+        break;
+      case PROMO:
+        GalleryAdapter adapter = Factory.createCatalogPromoErrorAdapter(new ErrorCatalogPromoListener<>(requireActivity(),
+                                                                                                        this::onNetworkPolicyResult));
+        RecyclerView gallery = getGallery(R.id.catalog_promo_recycler);
+        gallery.setAdapter(adapter);
+        Statistics.INSTANCE.trackGalleryError(PROMO, DISCOVERY, null);
         break;
       default:
         throw new AssertionError("Unknown item type: " + type);
@@ -516,24 +518,22 @@ public class DiscoveryFragment extends BaseMwmToolbarFragment implements Discove
     void onShowSimilarObjects(@NonNull Items.SearchItem item, @NonNull ItemType type);
   }
 
-  private static class CatalogPromoSelectedListener implements ItemSelectedListener<RegularAdapterStrategy.Item>
+
+  private static class CatalogPromoSelectedListener extends LoggableItemSelectedListener<Items.Item>
   {
-    @Override
-    public void onItemSelected(@NonNull RegularAdapterStrategy.Item item, int position)
+    public CatalogPromoSelectedListener(@NonNull Activity activity)
     {
-
+      super(activity, ItemType.PROMO);
     }
 
     @Override
-    public void onMoreItemSelected(@NonNull RegularAdapterStrategy.Item item)
+    protected void onMoreItemSelectedInternal(@NonNull Items.Item item)
     {
-
     }
 
     @Override
-    public void onActionButtonSelected(@NonNull RegularAdapterStrategy.Item item, int position)
+    protected void onItemSelectedInternal(@NonNull Items.Item item, int position)
     {
-
     }
   }
 }

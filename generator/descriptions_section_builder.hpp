@@ -6,7 +6,7 @@
 #include "indexer/feature_processor.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/file_writer.hpp"
 #include "coding/string_utf8_multilang.hpp"
 
@@ -109,8 +109,8 @@ public:
   {
     descriptions::DescriptionsCollection descriptionList;
     auto fn = [&](Ft & f, uint32_t featureId) {
-      auto const & wikiChecker = ftypes::WikiChecker::Instance();
-      if (!wikiChecker.NeedFeature(f))
+      auto const & attractionsChecker = ftypes::AttractionsChecker::Instance();
+      if (!attractionsChecker.NeedFeature(f))
         return;
 
       std::function<void()> incSource = []() {};
@@ -202,9 +202,9 @@ private:
     }
 
     FilesContainerW cont(mwmFile, FileWriter::OP_WRITE_EXISTING);
-    FileWriter writer = cont.GetWriter(DESCRIPTIONS_FILE_TAG);
+    auto writer = cont.GetWriter(DESCRIPTIONS_FILE_TAG);
     descriptions::Serializer serializer(std::move(descriptionList));
-    serializer.Serialize(writer);
+    serializer.Serialize(*writer);
 
     LOG(LINFO, ("Section", DESCRIPTIONS_FILE_TAG, "is built for", mwmFile));
     LOG(LINFO, (stat.LangStatisticsToString()));

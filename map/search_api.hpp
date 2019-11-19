@@ -2,6 +2,7 @@
 
 #include "map/booking_filter_params.hpp"
 #include "map/bookmark.hpp"
+#include "map/bookmark_helpers.hpp"
 #include "map/everywhere_search_callback.hpp"
 #include "map/search_product_info.hpp"
 #include "map/viewport_search_callback.hpp"
@@ -13,8 +14,6 @@
 #include "search/result.hpp"
 #include "search/search_params.hpp"
 
-#include "kml/type_utils.hpp"
-
 #include "geometry/point2d.hpp"
 #include "geometry/rect2d.hpp"
 
@@ -23,6 +22,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -145,9 +145,34 @@ public:
   void FilterAllHotelsInViewport(m2::RectD const & viewport,
                                  booking::filter::Tasks const & filterTasks) override;
 
-  void OnBookmarksCreated(std::vector<std::pair<kml::MarkId, kml::BookmarkData>> const & marks);
-  void OnBookmarksUpdated(std::vector<std::pair<kml::MarkId, kml::BookmarkData>> const & marks);
+  void EnableIndexingOfBookmarksDescriptions(bool enable);
+
+  // A hint on the maximum number of bookmarks that can be stored in the
+  // search index for bookmarks. It is advisable that the client send
+  // OnBookmarksDeleted if the limit is crossed.
+  // The limit is not enforced by the Search API.
+  static size_t GetMaximumPossibleNumberOfBookmarksToIndex();
+
+  // By default all created bookmarks are saved in BookmarksProcessor
+  // but we do not index them in an attempt to save time and memory.
+  // This method must be used to enable or disable indexing all current and future
+  // bookmarks belonging to |groupId|.
+  void EnableIndexingOfBookmarkGroup(kml::MarkGroupId const & groupId, bool enable);
+  bool IsIndexingOfBookmarkGroupEnabled(kml::MarkGroupId const & groupId);
+  std::unordered_set<kml::MarkGroupId> const & GetIndexableGroups() const;
+
+  // Returns the bookmarks search to its default, pre-launch state.
+  // This includes dropping all bookmark data for created bookmarks (efficiently
+  // calling OnBookmarksDeleted with all known bookmarks as an argument),
+  // clearing the bookmark search index, and resetting all parameters to
+  // their default values.
+  void ResetBookmarksEngine();
+
+  void OnBookmarksCreated(std::vector<BookmarkInfo> const & marks);
+  void OnBookmarksUpdated(std::vector<BookmarkInfo> const & marks);
   void OnBookmarksDeleted(std::vector<kml::MarkId> const & marks);
+  void OnBookmarksAttached(std::vector<BookmarkGroupInfo> const & groupInfos);
+  void OnBookmarksDetached(std::vector<BookmarkGroupInfo> const & groupInfos);
 
 private:
   struct SearchIntent
@@ -183,4 +208,9 @@ private:
   // Viewport search callback should be changed every time when SearchAPI::PokeSearchInViewport
   // is called and we need viewport search params to construct it.
   search::ViewportSearchParams m_viewportParams;
+
+  // Same as the one in bookmarks::Processor. Duplicated here because
+  // it is easier than obtaining the information about a group asynchronously
+  // from |m_engine|.
+  std::unordered_set<kml::MarkGroupId> m_indexableGroups;
 };

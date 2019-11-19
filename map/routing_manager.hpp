@@ -6,6 +6,7 @@
 #include "map/transit/transit_display.hpp"
 #include "map/transit/transit_reader.hpp"
 
+#include "routing/following_info.hpp"
 #include "routing/route.hpp"
 #include "routing/routing_callbacks.hpp"
 #include "routing/routing_session.hpp"
@@ -102,6 +103,10 @@ public:
 
   using RouteBuildingCallback =
       std::function<void(routing::RouterResultCode, storage::CountriesSet const &)>;
+  using RouteSpeedCamShowCallback =
+      std::function<void(m2::PointD const &, double)>;
+  using RouteSpeedCamsClearCallback =
+      std::function<void()>;
 
   using RouteStartBuildCallback = std::function<void(std::vector<RouteMarkData> const & points)>;
 
@@ -132,7 +137,7 @@ public:
   bool IsOnRoute() const { return m_routingSession.IsOnRoute(); }
   bool IsRoutingFollowing() const { return m_routingSession.IsFollowing(); }
   bool IsRouteValid() const { return m_routingSession.IsRouteValid(); }
-  void BuildRoute(uint32_t timeoutSec);
+  void BuildRoute(uint32_t timeoutSec = routing::RouterDelegate::kNoTimeout);
   void SetUserCurrentPosition(m2::PointD const & position);
   void ResetRoutingSession() { m_routingSession.Reset(); }
   // FollowRoute has a bug where the router follows the route even if the method hads't been called.
@@ -144,6 +149,17 @@ public:
   {
     m_routingBuildingCallback = buildingCallback;
   }
+
+  void SetRouteSpeedCamShowListener(RouteSpeedCamShowCallback const & speedCamShowCallback)
+  {
+    m_routeSpeedCamShowCallback = speedCamShowCallback;
+  }
+    
+  void SetRouteSpeedCamsClearListener(RouteSpeedCamsClearCallback const & speedCamsClearCallback)
+  {
+    m_routeSpeedCamsClearCallback = speedCamsClearCallback;
+  }
+  
   void SetRouteStartBuildListener(RouteStartBuildCallback const & startBuildCallback)
   {
     m_routingStartBuildCallback = startBuildCallback;
@@ -159,7 +175,7 @@ public:
   }
   void FollowRoute();
   void CloseRouting(bool removeRoutePoints);
-  void GetRouteFollowingInfo(location::FollowingInfo & info) const
+  void GetRouteFollowingInfo(routing::FollowingInfo & info) const
   {
     m_routingSession.GetRouteFollowingInfo(info);
   }
@@ -337,6 +353,8 @@ private:
   void OnExtrapolatedLocationUpdate(location::GpsInfo const & info);
 
   RouteBuildingCallback m_routingBuildingCallback;
+  RouteSpeedCamShowCallback m_routeSpeedCamShowCallback;
+  RouteSpeedCamsClearCallback m_routeSpeedCamsClearCallback;
   RouteRecommendCallback m_routeRecommendCallback;
   RouteStartBuildCallback m_routingStartBuildCallback;
   Callbacks m_callbacks;

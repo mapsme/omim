@@ -20,12 +20,12 @@ class AreaWayMerger
   using WayMapIterator = WayMap::iterator;
 
 public:
-  explicit AreaWayMerger(cache::IntermediateDataReader & cache);
+  explicit AreaWayMerger(std::shared_ptr<cache::IntermediateDataReader> const & cache);
 
   void AddWay(uint64_t id);
 
   template <class ToDo>
-  void ForEachArea(bool collectID, ToDo toDo)
+  void ForEachArea(bool collectID, ToDo && toDo)
   {
     while (!m_map.empty())
     {
@@ -46,7 +46,7 @@ public:
         e->ForEachPointOrdered(id, [this, &points](uint64_t id)
         {
           m2::PointD pt;
-          if (m_cache.GetNode(id, pt.y, pt.x))
+          if (m_cache->GetNode(id, pt.y, pt.x))
             points.push_back(pt);
         });
 
@@ -76,7 +76,7 @@ public:
   }
 
 private:
-  cache::IntermediateDataReader & m_cache;
+  std::shared_ptr<cache::IntermediateDataReader> m_cache;
   WayMap m_map;
 };
 }  // namespace generator

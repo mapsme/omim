@@ -1,7 +1,7 @@
 #pragma once
 
 #include "coding/endianness.hpp"
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/memory_region.hpp"
 #include "coding/reader.hpp"
 #include "coding/succinct_mapper.hpp"
@@ -33,6 +33,10 @@
 #include <unordered_map>
 #include <vector>
 
+// A data structure that allows storing a map from small 32-bit integers (the main use
+// case is feature ids of a single mwm) to arbitrary values and accessing this map
+// with a small RAM footprint.
+//
 // Format:
 // File offset (bytes)  Field name          Field size (bytes)
 // 0                    version             2
@@ -44,24 +48,23 @@
 // positions offset     positions table     variables offset - positions offset
 // variables offset     variables blocks    end of section - variables offset
 //
-// Version and endianness is always in stored little-endian format.  0
-// value of endianness means little endian, whereas 1 means big
-// endian.
+// Version and endianness are always stored in the little-endian format.
+// 0 value of endianness means little-endian, whereas 1 means big-endian.
 //
-// All offsets are in little-endian format.
+// All offsets are in the little-endian format.
 //
 // Identifiers table is a bit-vector with rank-select table, where set
-// bits denote that centers for the corresponding features are in
+// bits denote that values for the corresponding features are in the
 // table.  Identifiers table is stored in the native endianness.
 //
-// Positions table is a Elias-Fano table, where each entry corresponds
+// Positions table is an Elias-Fano table where each entry corresponds
 // to the start position of the variables block. Positions table is
 // stored in the native endianness.
 //
 // Variables is a sequence of blocks, where each block (with the
 // exception of the last one) is a sequence of kBlockSize variables
 // encoded by block encoding callback.
-
+//
 // On Get call kBlockSize consecutive variables are decoded and cached in RAM.
 
 template <typename Value>
@@ -199,6 +202,21 @@ public:
       return {};
     return table;
   }
+
+  template <typename Fn>
+  void ForEach(Fn && fn)
+  {
+    for (uint64_t i = 0; i < m_ids.num_ones(); ++i)
+    {
+      auto const j = static_cast<uint32_t>(m_ids.select(i));
+      Value value;
+      bool const ok = Get(j, value);
+      CHECK(ok, ());
+      fn(j, value);
+    }
+  }
+
+  uint64_t Count() const { return m_ids.num_ones(); }
 
 private:
   bool Init()

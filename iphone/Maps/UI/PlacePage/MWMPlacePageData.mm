@@ -1,28 +1,14 @@
 #import "MWMPlacePageData.h"
-#import "AppInfo.h"
-#import "LocaleTranslator.h"
+#import "MWMDiscoveryCityGalleryObjects.h"
+#import "MWMDiscoveryGuideViewModel.h"
 #import "MWMBannerHelpers.h"
-#import "MWMBookmarksManager.h"
-#import "MWMNetworkPolicy.h"
 #import "MWMUGCViewModel.h"
-#import "SwiftBridge.h"
 
-#include "Framework.h"
+#import <CoreApi/CoreApi.h>
 
-#include "local_ads/event.hpp"
-
-#include "map/bookmark_helpers.hpp"
 #include "map/utils.hpp"
 
-#include "platform/preferred_languages.hpp"
-
-#include "partners_api/booking_api.hpp"
-#include "partners_api/booking_block_params.hpp"
-
 #include "3party/opening_hours/opening_hours.hpp"
-
-#include <string>
-#include <utility>
 
 using namespace place_page;
 
@@ -38,6 +24,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 @property(copy, nonatomic) NSArray<MWMGalleryItemModel *> * photos;
 @property(nonatomic) NSNumberFormatter * currencyFormatter;
 @property(nonatomic, readwrite) MWMUGCViewModel * ugc;
+@property(nonatomic, readwrite) MWMDiscoveryCityGalleryObjects *promoGallery;
 @property(nonatomic) NSInteger bookingDiscount;
 @property(nonatomic) BOOL isSmartDeal;
 
@@ -45,8 +32,6 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
 @implementation MWMPlacePageData
 {
-  Info m_info;
-
   std::vector<Sections> m_sections;
   std::vector<PreviewRows> m_previewRows;
   std::vector<MetainfoRows> m_metainfoRows;
@@ -56,20 +41,12 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   std::vector<HotelDescriptionRow> m_hotelDescriptionRows;
   std::vector<HotelFacilitiesRow> m_hotelFacilitiesRows;
   std::vector<HotelReviewsRow> m_hotelReviewsRows;
+  std::vector<PromoCatalogRow> m_promoCatalogRows;
 
   booking::HotelInfo m_hotelInfo;
 }
 
-- (instancetype)initWithPlacePageInfo:(Info const &)info
-{
-  self = [super init];
-  if (self)
-    m_info = info;
-
-  return self;
-}
-
-- (place_page::Info const &)getRawData { return m_info; }
+- (place_page::Info const &)getRawData { return GetFramework().GetCurrentPlacePageInfo(); }
 
 #pragma mark - Filling sections
 
@@ -87,12 +64,15 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
   m_sections.push_back(Sections::Preview);
   [self fillPreviewSection];
-
-  if ([[self placeDescription] length] && ![[self bookmarkDescription] length])
+  
+  if ([[self placeDescription] length] && ![[self bookmarkDescription] length] && !self.isPromoCatalog) {
     m_sections.push_back(Sections::Description);
+  }
+
+  place_page::Info const & info = [self getRawData];
   
   // It's bookmark.
-  if (m_info.IsBookmark())
+  if (info.IsBookmark())
     m_sections.push_back(Sections::Bookmark);
 
   // There is always at least coordinate meta field.
@@ -119,24 +99,25 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
     [Statistics logEvent:kStatPlacepageTaxiShow withParameters:@{ @"provider" : provider }];
   }
 
-  if (m_info.ShouldShowAddPlace() || m_info.ShouldShowEditPlace() ||
-      m_info.ShouldShowAddBusiness() || m_info.IsSponsored())
+  if (info.ShouldShowAddPlace() || info.ShouldShowEditPlace() ||
+      info.ShouldShowAddBusiness() || info.IsSponsored())
   {
     m_sections.push_back(Sections::Buttons);
     [self fillButtonsSection];
   }
 
-  if (m_info.ShouldShowUGC())
+  if (info.ShouldShowUGC())
     [self addUGCSections];
 }
 
 - (void)addUGCSections
 {
-  NSAssert(m_info.ShouldShowUGC(), @"");
+  place_page::Info const & info = [self getRawData];
+  NSAssert(info.ShouldShowUGC(), @"");
 
   __weak auto wself = self;
   GetFramework().GetUGC(
-      m_info.GetID(), [wself](ugc::UGC const & ugc, ugc::UGCUpdate const & update) {
+      info.GetID(), [wself](ugc::UGC const & ugc, ugc::UGCUpdate const & update) {
         __strong auto self = wself;
         self.ugc = [[MWMUGCViewModel alloc] initWithUGC:ugc update:update];
 
@@ -191,45 +172,43 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
 - (void)requestBookingData
 {
-  network_policy::CallPartnersApi([self](auto const & canUseNetwork) {
-    auto const api = GetFramework().GetBookingApi(canUseNetwork);
-    if (!api)
+  auto const api = GetFramework().GetBookingApi(platform::GetCurrentNetworkPolicy());
+  if (!api)
+    return;
+
+  std::string const currency = self.currencyFormatter.currencyCode.UTF8String;
+
+  auto const func = [self, currency](std::string const & hotelId,
+                                     booking::Blocks const & blocks) {
+    if (currency != blocks.m_currency)
       return;
 
-    std::string const currency = self.currencyFormatter.currencyCode.UTF8String;
+    NSNumberFormatter * decimalFormatter = [[NSNumberFormatter alloc] init];
+    decimalFormatter.numberStyle = NSNumberFormatterDecimalStyle;
 
-    auto const func = [self, currency](std::string const & hotelId,
-                                       booking::Blocks const & blocks) {
-      if (currency != blocks.m_currency)
-        return;
+    auto const price = blocks.m_totalMinPrice == booking::BlockInfo::kIncorrectPrice
+                            ? ""
+                            : std::to_string(blocks.m_totalMinPrice);
 
-      NSNumberFormatter * decimalFormatter = [[NSNumberFormatter alloc] init];
-      decimalFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    NSNumber * currencyNumber = [decimalFormatter
+                                 numberFromString:[@(price.c_str())
+                                                   stringByReplacingOccurrencesOfString:@"."
+                                                   withString:decimalFormatter
+                                                   .decimalSeparator]];
+    NSString * currencyString = [self.currencyFormatter stringFromNumber:currencyNumber];
 
-      auto const price = blocks.m_totalMinPrice == booking::BlockInfo::kIncorrectPrice
-                              ? ""
-                              : std::to_string(blocks.m_totalMinPrice);
+    self.cachedMinPrice = [NSString stringWithCoreFormat:L(@"place_page_starting_from")
+                                               arguments:@[currencyString]];
+    self.bookingDiscount = blocks.m_maxDiscount;
+    self.isSmartDeal = blocks.m_hasSmartDeal;
+    if (self.bookingDataUpdatedCallback)
+      self.bookingDataUpdatedCallback();
+  };
 
-      NSNumber * currencyNumber = [decimalFormatter
-                                   numberFromString:[@(price.c_str())
-                                                     stringByReplacingOccurrencesOfString:@"."
-                                                     withString:decimalFormatter
-                                                     .decimalSeparator]];
-      NSString * currencyString = [self.currencyFormatter stringFromNumber:currencyNumber];
-
-      self.cachedMinPrice = [NSString stringWithCoreFormat:L(@"place_page_starting_from")
-                                                 arguments:@[currencyString]];
-      self.bookingDiscount = blocks.m_maxDiscount;
-      self.isSmartDeal = blocks.m_hasSmartDeal;
-      if (self.bookingDataUpdatedCallback)
-        self.bookingDataUpdatedCallback();
-    };
-
-    auto params = booking::BlockParams::MakeDefault();
-    params.m_hotelId = self.sponsoredId.UTF8String;
-    params.m_currency = currency;
-    api->GetBlockAvailability(std::move(params), func);
-  });
+  auto params = booking::BlockParams::MakeDefault();
+  params.m_hotelId = self.sponsoredId.UTF8String;
+  params.m_currency = currency;
+  api->GetBlockAvailability(std::move(params), func);
 }
 
 - (void)fillPreviewSection
@@ -254,11 +233,12 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   m_previewRows.push_back(PreviewRows::Space);
   NSAssert(!m_previewRows.empty(), @"Preview row's can't be empty!");
 
-  if (network_policy::CanUseNetwork() && m_info.HasBanner())
+  place_page::Info const & info = [self getRawData];
+  if ([MWMNetworkPolicy sharedPolicy].canUseNetwork && info.HasBanner())
   {
     __weak auto wSelf = self;
     [[MWMBannersCache cache]
-        getWithCoreBanners:banner_helpers::MatchPriorityBanners(m_info.GetBanners())
+        getWithCoreBanners:banner_helpers::MatchPriorityBanners(info.GetBanners())
                  cacheOnly:NO
                    loadNew:YES
                 completion:^(id<MWMBanner> ad, BOOL isAsync) {
@@ -277,7 +257,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (void)fillMetaInfoSection
 {
   using namespace osm;
-  auto const availableProperties = m_info.AvailableProperties();
+  auto const availableProperties = [self getRawData].AvailableProperties();
   // We can't match each metadata property to its UI field and thats why we need to use our own
   // enum.
   for (auto const p : availableProperties)
@@ -305,13 +285,14 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
     }
   }
 
-  auto const address = m_info.GetAddress();
+  place_page::Info const & info = [self getRawData];
+  auto const address = info.GetAddress();
   if (!address.empty())
     m_metainfoRows.push_back(MetainfoRows::Address);
 
   m_metainfoRows.push_back(MetainfoRows::Coordinate);
 
-  switch (m_info.GetLocalAdsStatus())
+  switch (info.GetLocalAdsStatus())
   {
   case place_page::LocalAdsStatus::NotAvailable: break;
   case place_page::LocalAdsStatus::Candidate:
@@ -319,6 +300,9 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
     break;
   case place_page::LocalAdsStatus::Customer:
     m_metainfoRows.push_back(MetainfoRows::LocalAdsCustomer);
+    [self logLocalAdsEvent:local_ads::EventType::OpenInfo];
+    break;
+  case place_page::LocalAdsStatus::Hidden:
     [self logLocalAdsEvent:local_ads::EventType::OpenInfo];
     break;
   }
@@ -333,19 +317,22 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
     return;
   }
 
-  if (m_info.ShouldShowAddPlace())
+  place_page::Info const & info = [self getRawData];
+  
+  if (info.ShouldShowAddPlace())
     m_buttonsRows.push_back(ButtonsRows::AddPlace);
 
-  if (m_info.ShouldShowEditPlace())
+  if (info.ShouldShowEditPlace())
     m_buttonsRows.push_back(ButtonsRows::EditPlace);
 
-  if (m_info.ShouldShowAddBusiness())
+  if (info.ShouldShowAddBusiness())
     m_buttonsRows.push_back(ButtonsRows::AddBusiness);
 }
 
 - (float)ratingRawValue
 {
-  return m_info.GetRatingRawValue();
+  place_page::Info const & info = [self getRawData];
+  return info.GetRatingRawValue();
 }
 
 - (void)fillOnlineBookingSections
@@ -353,85 +340,91 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   if (!self.isBooking)
     return;
 
-  network_policy::CallPartnersApi([self](auto const & canUseNetwork) {
-    auto api = GetFramework().GetBookingApi(canUseNetwork);
-    if (!api)
-      return;
+  auto api = GetFramework().GetBookingApi(platform::GetCurrentNetworkPolicy());
+  if (!api)
+    return;
 
-    std::string const hotelId = self.sponsoredId.UTF8String;
-    __weak auto wSelf = self;
-    api->GetHotelInfo(
-        hotelId, [[AppInfo sharedInfo] twoLetterLanguageId].UTF8String,
-        [wSelf, hotelId](booking::HotelInfo const & hotelInfo) {
-          __strong auto self = wSelf;
-          if (!self || hotelId != hotelInfo.m_hotelId)
-            return;
+  std::string const hotelId = self.sponsoredId.UTF8String;
+  __weak auto wSelf = self;
+  api->GetHotelInfo(
+      hotelId, [[AppInfo sharedInfo] twoLetterLanguageId].UTF8String,
+      [wSelf, hotelId](booking::HotelInfo const & hotelInfo) {
+        __strong auto self = wSelf;
+        if (!self || hotelId != hotelInfo.m_hotelId)
+          return;
 
-          dispatch_async(dispatch_get_main_queue(), [self, hotelInfo] {
-            m_hotelInfo = hotelInfo;
+        dispatch_async(dispatch_get_main_queue(), [self, hotelInfo] {
+          m_hotelInfo = hotelInfo;
 
-            auto & sections = self->m_sections;
-            auto const begin = sections.begin();
-            auto const end = sections.end();
+          auto & sections = self->m_sections;
+          auto const begin = sections.begin();
+          auto const end = sections.end();
 
-            NSUInteger const position = find(begin, end, Sections::Bookmark) != end ? 2 : 1;
-            NSUInteger length = 0;
-            auto it = m_sections.begin() + position;
+          NSUInteger const position = find(begin, end, Sections::Bookmark) != end ? 2 : 1;
+          NSUInteger length = 0;
+          auto it = m_sections.begin() + position;
 
-            if (!hotelInfo.m_photos.empty())
+          if (!hotelInfo.m_photos.empty())
+          {
+            it = sections.insert(it, Sections::HotelPhotos) + 1;
+            m_hotelPhotosRows.emplace_back(HotelPhotosRow::Regular);
+            length++;
+          }
+
+          if (!hotelInfo.m_description.empty())
+          {
+            it = sections.insert(it, Sections::HotelDescription) + 1;
+            m_hotelDescriptionRows.emplace_back(HotelDescriptionRow::Regular);
+            m_hotelDescriptionRows.emplace_back(HotelDescriptionRow::ShowMore);
+            length++;
+          }
+
+          auto const & facilities = hotelInfo.m_facilities;
+          if (!facilities.empty())
+          {
+            it = sections.insert(it, Sections::HotelFacilities) + 1;
+            auto & facilitiesRows = self->m_hotelFacilitiesRows;
+            auto const size = facilities.size();
+            auto constexpr maxNumberOfHotelCellsInPlacePage = 3UL;
+
+            if (size > maxNumberOfHotelCellsInPlacePage)
             {
-              it = sections.insert(it, Sections::HotelPhotos) + 1;
-              m_hotelPhotosRows.emplace_back(HotelPhotosRow::Regular);
-              length++;
+              facilitiesRows.insert(facilitiesRows.begin(), maxNumberOfHotelCellsInPlacePage,
+                                    HotelFacilitiesRow::Regular);
+              facilitiesRows.emplace_back(HotelFacilitiesRow::ShowMore);
+            }
+            else
+            {
+              facilitiesRows.insert(facilitiesRows.begin(), size, HotelFacilitiesRow::Regular);
             }
 
-            if (!hotelInfo.m_description.empty())
-            {
-              it = sections.insert(it, Sections::HotelDescription) + 1;
-              m_hotelDescriptionRows.emplace_back(HotelDescriptionRow::Regular);
-              m_hotelDescriptionRows.emplace_back(HotelDescriptionRow::ShowMore);
-              length++;
-            }
+            length++;
+          }
 
-            auto const & facilities = hotelInfo.m_facilities;
-            if (!facilities.empty())
-            {
-              it = sections.insert(it, Sections::HotelFacilities) + 1;
-              auto & facilitiesRows = self->m_hotelFacilitiesRows;
-              auto const size = facilities.size();
-              auto constexpr maxNumberOfHotelCellsInPlacePage = 3UL;
+          auto const & reviews = hotelInfo.m_reviews;
+          if (!reviews.empty())
+          {
+            sections.insert(it, Sections::HotelReviews);
+            auto const size = reviews.size();
+            auto & reviewsRows = self->m_hotelReviewsRows;
 
-              if (size > maxNumberOfHotelCellsInPlacePage)
-              {
-                facilitiesRows.insert(facilitiesRows.begin(), maxNumberOfHotelCellsInPlacePage,
-                                      HotelFacilitiesRow::Regular);
-                facilitiesRows.emplace_back(HotelFacilitiesRow::ShowMore);
-              }
-              else
-              {
-                facilitiesRows.insert(facilitiesRows.begin(), size, HotelFacilitiesRow::Regular);
-              }
+            reviewsRows.emplace_back(HotelReviewsRow::Header);
+            reviewsRows.insert(reviewsRows.end(), size, HotelReviewsRow::Regular);
+            reviewsRows.emplace_back(HotelReviewsRow::ShowMore);
+            length++;
+          }
 
-              length++;
-            }
-
-            auto const & reviews = hotelInfo.m_reviews;
-            if (!reviews.empty())
-            {
-              sections.insert(it, Sections::HotelReviews);
-              auto const size = reviews.size();
-              auto & reviewsRows = self->m_hotelReviewsRows;
-
-              reviewsRows.emplace_back(HotelReviewsRow::Header);
-              reviewsRows.insert(reviewsRows.end(), size, HotelReviewsRow::Regular);
-              reviewsRows.emplace_back(HotelReviewsRow::ShowMore);
-              length++;
-            }
-
-            self.sectionsAreReadyCallback({position, length}, self, YES /* It's a section */);
-          });
+          self.sectionsAreReadyCallback({position, length}, self, YES /* It's a section */);
         });
-  });
+      });
+}
+
+- (NSInteger)bookmarkSectionPosition {
+  if (self.promoGallery != nil) {
+    return 2;
+  } else {
+    return 1;
+  }
 }
 
 #pragma mark - Update bookmark status
@@ -440,30 +433,36 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 {
   auto & f = GetFramework();
   auto & bmManager = f.GetBookmarkManager();
+  place_page::Info const & info = [self getRawData];
   if (isBookmark)
   {
     auto const categoryId = f.LastEditedBMCategory();
     kml::BookmarkData bmData;
-    bmData.m_name = m_info.FormatNewBookmarkName();
+    bmData.m_name = info.FormatNewBookmarkName();
     bmData.m_color.m_predefinedColor = f.LastEditedBMColor();
     bmData.m_point = self.mercator;
-    if (m_info.IsFeature())
-      SaveFeatureTypes(m_info.GetTypes(), bmData);
+    if (info.IsFeature())
+      SaveFeatureTypes(info.GetTypes(), bmData);
     auto editSession = bmManager.GetEditSession();
     auto const * bookmark = editSession.CreateBookmark(std::move(bmData), categoryId);
-    f.FillBookmarkInfo(*bookmark, m_info);
-    m_sections.insert(m_sections.begin() + 1, Sections::Bookmark);
+
+    auto buildInfo = info.GetBuildInfo();
+    buildInfo.m_match = place_page::BuildInfo::Match::Everything;
+    buildInfo.m_userMarkId = bookmark->GetId();
+    f.UpdatePlacePageInfoForCurrentSelection(buildInfo);
+    
+    m_sections.insert(m_sections.begin() + [self bookmarkSectionPosition], Sections::Bookmark);
   }
   else
   {
-    auto const bookmarkId = m_info.GetBookmarkId();
-    auto const * bookmark = bmManager.GetBookmark(bookmarkId);
-    if (bookmark)
-    {
-      f.ResetBookmarkInfo(*bookmark, m_info);
-      [[MWMBookmarksManager sharedManager] deleteBookmark:bookmarkId];
-    }
+    auto const bookmarkId = info.GetBookmarkId();
+    [[MWMBookmarksManager sharedManager] deleteBookmark:bookmarkId];
 
+    auto buildInfo = info.GetBuildInfo();
+    buildInfo.m_match = place_page::BuildInfo::Match::FeatureOnly;
+    buildInfo.m_userMarkId = kml::kInvalidMarkId;
+    f.UpdatePlacePageInfoForCurrentSelection(buildInfo);
+    
     m_sections.erase(remove(m_sections.begin(), m_sections.end(), Sections::Bookmark));
   }
 }
@@ -481,14 +480,14 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
 #pragma mark - Getters
 
-- (BOOL)isPopular { return m_info.GetPopularity() > 0; }
-- (storage::CountryId const &)countryId { return m_info.GetCountryId(); }
-- (FeatureID const &)featureId { return m_info.GetID(); }
-- (NSString *)title { return @(m_info.GetTitle().c_str()); }
-- (NSString *)subtitle { return @(m_info.GetSubtitle().c_str()); }
+- (BOOL)isPopular { return [self getRawData].GetPopularity() > 0; }
+- (storage::CountryId const &)countryId { return [self getRawData].GetCountryId(); }
+- (FeatureID const &)featureId { return [self getRawData].GetID(); }
+- (NSString *)title { return @([self getRawData].GetTitle().c_str()); }
+- (NSString *)subtitle { return @([self getRawData].GetSubtitle().c_str()); }
 - (NSString *)placeDescription
 {
-  NSString * descr = @(m_info.GetDescription().c_str());
+  NSString * descr = @([self getRawData].GetDescription().c_str());
   if (descr.length > 0)
     descr = [NSString stringWithFormat:@"<html><body>%@</body></html>", descr];
 
@@ -498,7 +497,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (place_page::OpeningHours)schedule;
 {
   using type = place_page::OpeningHours;
-  auto const raw = m_info.GetOpeningHours();
+  auto const raw = [self getRawData].GetOpeningHours();
   if (raw.empty())
     return type::Unknown;
 
@@ -522,7 +521,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 {
   if (!self.isBooking)
     return nil;
-  auto const ratingRaw = m_info.GetRatingRawValue();
+  auto const ratingRaw = [self getRawData].GetRatingRawValue();
   return [[MWMUGCRatingValueType alloc]
       initWithValue:@(rating::GetRatingFormatted(ratingRaw).c_str())
                type:[MWMPlacePageData ratingValueType:rating::GetImpress(ratingRaw)]];
@@ -531,15 +530,16 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (NSString *)bookingPricing
 {
   ASSERT(self.isBooking, ("Only for booking.com hotels"));
-  return self.cachedMinPrice.length ? self.cachedMinPrice : @(m_info.GetApproximatePricing().c_str());
+  return self.cachedMinPrice.length ? self.cachedMinPrice : @([self getRawData].GetApproximatePricing().c_str());
 }
 
 - (NSURL *)sponsoredURL
 {
+  place_page::Info const & info = [self getRawData];
   // There are sponsors without URL. For such psrtners we do not show special button.
-  if (m_info.IsSponsored() && !m_info.GetSponsoredUrl().empty())
+  if (info.IsSponsored() && !info.GetSponsoredUrl().empty())
   {
-    auto urlString = [@(m_info.GetSponsoredUrl().c_str())
+    auto urlString = [@(info.GetSponsoredUrl().c_str())
         stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet
                                                                .URLQueryAllowedCharacterSet];
     auto url = [NSURL URLWithString:urlString];
@@ -550,8 +550,9 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
 - (NSURL *)deepLink
 {
-  auto const & link = m_info.GetSponsoredDeepLink();
-  if (m_info.IsSponsored() && !link.empty())
+  place_page::Info const & info = [self getRawData];
+  auto const & link = info.GetSponsoredDeepLink();
+  if (info.IsSponsored() && !link.empty())
     return [NSURL URLWithString:@(link.c_str())];
   
   return nil;
@@ -559,35 +560,39 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
 - (NSURL *)sponsoredDescriptionURL
 {
-  return m_info.IsSponsored()
-             ? [NSURL URLWithString:@(m_info.GetSponsoredDescriptionUrl().c_str())]
+  place_page::Info const & info = [self getRawData];
+  return info.IsSponsored()
+             ? [NSURL URLWithString:@(info.GetSponsoredDescriptionUrl().c_str())]
              : nil;
 }
 
 - (NSURL *)sponsoredMoreURL
 {
-  return m_info.IsSponsored()
-             ? [NSURL URLWithString:@(m_info.GetSponsoredMoreUrl().c_str())]
+  place_page::Info const & info = [self getRawData];
+  return info.IsSponsored()
+             ? [NSURL URLWithString:@(info.GetSponsoredMoreUrl().c_str())]
              : nil;
 }
 
 - (NSURL *)sponsoredReviewURL
 {
-  return m_info.IsSponsored()
-             ? [NSURL URLWithString:@(m_info.GetSponsoredReviewUrl().c_str())]
+  place_page::Info const & info = [self getRawData];
+  return info.IsSponsored()
+             ? [NSURL URLWithString:@(info.GetSponsoredReviewUrl().c_str())]
              : nil;
 }
 
 - (NSURL *)bookingSearchURL
 {
-  auto const & url = m_info.GetBookingSearchUrl();
+  auto const & url = [self getRawData].GetBookingSearchUrl();
   return url.empty() ? nil : [NSURL URLWithString:@(url.c_str())];
 }
 
 - (NSString *)sponsoredId
 {
-  return m_info.IsSponsored()
-             ? @(m_info.GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID).c_str())
+  place_page::Info const & info = [self getRawData];
+  return info.IsSponsored()
+             ? @(info.GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID).c_str())
              : nil;
 }
 
@@ -610,7 +615,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (std::vector<booking::HotelReview> const &)hotelReviews { return m_hotelInfo.m_reviews; }
 - (NSUInteger)numberOfHotelReviews { return m_hotelInfo.m_scoreCount; }
 
-- (NSURL *)URLToAllReviews { return [NSURL URLWithString:@(m_info.GetSponsoredReviewUrl().c_str())]; }
+- (NSURL *)URLToAllReviews { return [NSURL URLWithString:@([self getRawData].GetSponsoredReviewUrl().c_str())]; }
 - (NSArray<MWMGalleryItemModel *> *)photos
 {
   if (_photos)
@@ -634,40 +639,41 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
 - (boost::optional<int>)hotelRawApproximatePricing
 {
-  return m_info.GetRawApproximatePricing();
+  return [self getRawData].GetRawApproximatePricing();
 }
 
 - (boost::optional<ftypes::IsHotelChecker::Type>)hotelType
 {
-  return m_info.GetHotelType();
+  return [self getRawData].GetHotelType();
 }
 
 #pragma mark - Partners
 
 - (NSString *)partnerName
 {
-  return self.isPartner ? @(m_info.GetPartnerName().c_str()) : nil;
+  return self.isPartner ? @([self getRawData].GetPartnerName().c_str()) : nil;
 }
 
 - (int)partnerIndex
 {
-  return self.isPartner ? m_info.GetPartnerIndex() : -1;
+  return self.isPartner ? [self getRawData].GetPartnerIndex() : -1;
 }
 
 #pragma mark - UGC
 
-- (ftraits::UGCRatingCategories)ugcRatingCategories { return m_info.GetRatingCategories(); }
+- (ftraits::UGCRatingCategories)ugcRatingCategories { return [self getRawData].GetRatingCategories(); }
 
-- (void)setUGCUpdateFrom:(MWMUGCReviewModel *)reviewModel resultHandler:(void (^)(BOOL))resultHandler 
-{
+- (void)setUGCUpdateFrom:(MWMUGCReviewModel *)reviewModel
+                language:(NSString *)language
+           resultHandler:(void (^)(BOOL))resultHandler {
   using namespace ugc;
   auto appInfo = AppInfo.sharedInfo;
   auto const locale =
       static_cast<uint8_t>(StringUtf8Multilang::GetLangIndex(appInfo.twoLetterLanguageId.UTF8String));
   std::vector<uint8_t> keyboardLanguages;
   // TODO: Set the list of used keyboard languages (not only the recent one).
-  auto lastInputLanguage = appInfo.twoLetterInputLanguage;
-  keyboardLanguages.emplace_back(StringUtf8Multilang::GetLangIndex(lastInputLanguage.UTF8String));
+  auto twoLetterInputLanguage = languages::Normalize(language.UTF8String);
+  keyboardLanguages.emplace_back(StringUtf8Multilang::GetLangIndex(twoLetterInputLanguage));
 
   KeyboardText t{reviewModel.text.UTF8String, locale, keyboardLanguages};
   Ratings r;
@@ -676,8 +682,9 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
   UGCUpdate update{r, t, std::chrono::system_clock::now()};
   
-  GetFramework().GetUGCApi()->SetUGCUpdate(m_info.GetID(), update,
-  [resultHandler, info = m_info](Storage::SettingResult const result)
+  place_page::Info const & info = [self getRawData];
+  GetFramework().GetUGCApi()->SetUGCUpdate(info.GetID(), update,
+  [resultHandler, info](Storage::SettingResult const result)
   {
     if (result != Storage::SettingResult::Success)
     {
@@ -697,32 +704,38 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
 - (NSString *)externalTitle
 {
-  return m_info.GetSecondaryTitle().empty() ? nil : @(m_info.GetSecondaryTitle().c_str());
+  place_page::Info const & info = [self getRawData];
+  return info.GetSecondaryTitle().empty() ? nil : @(info.GetSecondaryTitle().c_str());
 }
 
 - (kml::PredefinedColor)bookmarkColor
 {
-  return m_info.IsBookmark() ? m_info.GetBookmarkData().m_color.m_predefinedColor : kml::PredefinedColor::None;
+  place_page::Info const & info = [self getRawData];
+  return info.IsBookmark() ? info.GetBookmarkData().m_color.m_predefinedColor : kml::PredefinedColor::None;
 }
 
 - (NSString *)bookmarkDescription
 {
-  return m_info.IsBookmark() ? @(GetPreferredBookmarkStr(m_info.GetBookmarkData().m_description).c_str()) : nil;
+  place_page::Info const & info = [self getRawData];
+  return info.IsBookmark() ? @(GetPreferredBookmarkStr(info.GetBookmarkData().m_description).c_str()) : nil;
 }
 
 - (NSString *)bookmarkCategory
 {
-  return m_info.IsBookmark() ? @(m_info.GetBookmarkCategoryName().c_str()) : nil;
+  place_page::Info const & info = [self getRawData];
+  return info.IsBookmark() ? @(info.GetBookmarkCategoryName().c_str()) : nil;
 }
 
 - (kml::MarkId)bookmarkId
 {
-  return m_info.GetBookmarkId();
+  place_page::Info const & info = [self getRawData];
+  return info.GetBookmarkId();
 }
 
 - (kml::MarkGroupId)bookmarkCategoryId
 {
-  return m_info.GetBookmarkCategoryId();
+  place_page::Info const & info = [self getRawData];
+  return info.GetBookmarkCategoryId();
 }
 
 - (BOOL)isBookmarkEditable
@@ -731,12 +744,14 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 }
 
 #pragma mark - Local Ads
-- (NSString *)localAdsURL { return @(m_info.GetLocalAdsUrl().c_str()); }
+- (NSString *)localAdsURL { return @([self getRawData].GetLocalAdsUrl().c_str()); }
 - (void)logLocalAdsEvent:(local_ads::EventType)type
 {
-  if (m_info.GetLocalAdsStatus() != place_page::LocalAdsStatus::Customer)
+  place_page::Info const & info = [self getRawData];
+  auto const status = info.GetLocalAdsStatus();
+  if (status != place_page::LocalAdsStatus::Customer && status != place_page::LocalAdsStatus::Hidden)
     return;
-  auto const featureID = m_info.GetID();
+  auto const featureID = info.GetID();
   auto const & mwmInfo = featureID.m_mwmId.GetInfo();
   if (!mwmInfo)
     return;
@@ -752,15 +767,15 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 #pragma mark - Taxi
 - (std::vector<taxi::Provider::Type> const &)taxiProviders
 {
-  return m_info.ReachableByTaxiProviders();
+  return [self getRawData].ReachableByTaxiProviders();
 }
 
 #pragma mark - Getters
 
-- (RouteMarkType)routeMarkType { return m_info.GetRouteMarkType(); }
-- (size_t)intermediateIndex { return m_info.GetIntermediateIndex(); }
-- (NSString *)address { return @(m_info.GetAddress().c_str()); }
-- (NSString *)apiURL { return @(m_info.GetApiUrl().c_str()); }
+- (RouteMarkType)routeMarkType { return [self getRawData].GetRouteMarkType(); }
+- (size_t)intermediateIndex { return [self getRawData].GetIntermediateIndex(); }
+- (NSString *)address { return @([self getRawData].GetAddress().c_str()); }
+- (NSString *)apiURL { return @([self getRawData].GetApiUrl().c_str()); }
 - (std::vector<Sections> const &)sections { return m_sections; }
 - (std::vector<PreviewRows> const &)previewRows { return m_previewRows; }
 - (std::vector<MetainfoRows> const &)metainfoRows { return m_metainfoRows; }
@@ -773,43 +788,47 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (std::vector<HotelReviewsRow> const &)hotelReviewsRows { return m_hotelReviewsRows; }
 - (NSString *)stringForRow:(MetainfoRows)row
 {
+  place_page::Info const & info = [self getRawData];
   switch (row)
   {
   case MetainfoRows::ExtendedOpeningHours: return nil;
-  case MetainfoRows::OpeningHours: return @(m_info.GetOpeningHours().c_str());
-  case MetainfoRows::Phone: return @(m_info.GetPhone().c_str());
-  case MetainfoRows::Address: return @(m_info.GetAddress().c_str());
-  case MetainfoRows::Website: return @(m_info.GetWebsite().c_str());
-  case MetainfoRows::Email: return @(m_info.GetEmail().c_str());
+  case MetainfoRows::OpeningHours: return @(info.GetOpeningHours().c_str());
+  case MetainfoRows::Phone: return @(info.GetPhone().c_str());
+  case MetainfoRows::Address: return @(info.GetAddress().c_str());
+  case MetainfoRows::Website: return @(info.GetWebsite().c_str());
+  case MetainfoRows::Email: return @(info.GetEmail().c_str());
   case MetainfoRows::Cuisine:
-    return @(strings::JoinStrings(m_info.GetLocalizedCuisines(), Info::kSubtitleSeparator).c_str());
-  case MetainfoRows::Operator: return @(m_info.GetOperator().c_str());
+    return @(strings::JoinStrings(info.GetLocalizedCuisines(), Info::kSubtitleSeparator).c_str());
+  case MetainfoRows::Operator: return @(info.GetOperator().c_str());
   case MetainfoRows::Internet: return L(@"WiFi_available");
   case MetainfoRows::LocalAdsCandidate: return L(@"create_campaign_button");
   case MetainfoRows::LocalAdsCustomer: return L(@"view_campaign_button");
   case MetainfoRows::Coordinate:
-    return @(m_info
-                 .GetFormattedCoordinate(
+    return @(info.GetFormattedCoordinate(
                      [NSUserDefaults.standardUserDefaults boolForKey:kUserDefaultsLatLonAsDMSKey])
                  .c_str());
   }
 }
+- (std::vector<place_page::PromoCatalogRow> const &)promoCatalogRows { return m_promoCatalogRows; }
 
 #pragma mark - Helpers
 
-- (NSString *)phoneNumber { return @(m_info.GetPhone().c_str()); }
-- (BOOL)isBookmark { return m_info.IsBookmark(); }
-- (BOOL)isApi { return m_info.HasApiUrl(); }
-- (BOOL)isBooking { return m_info.GetSponsoredType() == SponsoredType::Booking; }
-- (BOOL)isOpentable { return m_info.GetSponsoredType() == SponsoredType::Opentable; }
-- (BOOL)isPartner { return m_info.GetSponsoredType() == SponsoredType::Partner; }
-- (BOOL)isHolidayObject { return m_info.GetSponsoredType() == SponsoredType::Holiday; }
-- (BOOL)isBookingSearch { return !m_info.GetBookingSearchUrl().empty(); }
-- (BOOL)isMyPosition { return m_info.IsMyPosition(); }
-- (BOOL)isHTMLDescription { return strings::IsHTML(GetPreferredBookmarkStr(m_info.GetBookmarkData().m_description)); }
-- (BOOL)isRoutePoint { return m_info.IsRoutePoint(); }
-- (RoadWarningMarkType)roadType { return m_info.GetRoadType(); }
-- (BOOL)isPreviewPlus { return m_info.GetOpeningMode() == place_page::OpeningMode::PreviewPlus; }
+- (NSString *)phoneNumber { return @([self getRawData].GetPhone().c_str()); }
+- (BOOL)isBookmark { return [self getRawData].IsBookmark(); }
+- (BOOL)isApi { return [self getRawData].HasApiUrl(); }
+- (BOOL)isBooking { return [self getRawData].GetSponsoredType() == SponsoredType::Booking; }
+- (BOOL)isOpentable { return [self getRawData].GetSponsoredType() == SponsoredType::Opentable; }
+- (BOOL)isPartner { return [self getRawData].GetSponsoredType() == SponsoredType::Partner; }
+- (BOOL)isHolidayObject { return [self getRawData].GetSponsoredType() == SponsoredType::Holiday; }
+- (BOOL)isPromoCatalog { return self.isLargeToponim || self.isSightseeing; }
+- (BOOL)isLargeToponim { return [self getRawData].GetSponsoredType() == SponsoredType::PromoCatalogCity; }
+- (BOOL)isSightseeing { return [self getRawData].GetSponsoredType() == SponsoredType::PromoCatalogSightseeings; }
+- (BOOL)isBookingSearch { return ![self getRawData].GetBookingSearchUrl().empty(); }
+- (BOOL)isMyPosition { return [self getRawData].IsMyPosition(); }
+- (BOOL)isHTMLDescription { return strings::IsHTML(GetPreferredBookmarkStr([self getRawData].GetBookmarkData().m_description)); }
+- (BOOL)isRoutePoint { return [self getRawData].IsRoutePoint(); }
+- (RoadWarningMarkType)roadType { return [self getRawData].GetRoadType(); }
+- (BOOL)isPreviewPlus { return [self getRawData].GetOpeningMode() == place_page::OpeningMode::PreviewPlus; }
 - (BOOL)isPartnerAppInstalled
 {
   // TODO(): Load list of registered schemas from plist.
@@ -830,8 +849,8 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 }
 #pragma mark - Coordinates
 
-- (m2::PointD const &)mercator { return m_info.GetMercator(); }
-- (ms::LatLon)latLon { return m_info.GetLatLon(); }
+- (m2::PointD const &)mercator { return [self getRawData].GetMercator(); }
+- (ms::LatLon)latLon { return [self getRawData].GetLatLon(); }
 + (void)toggleCoordinateSystem
 {
   // TODO: Move changing latlon's mode to the settings.
@@ -845,9 +864,114 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (NSString *)statisticsTags
 {
   NSMutableArray<NSString *> * result = [@[] mutableCopy];
-  for (auto const & s : m_info.GetRawTypes())
+  for (auto const & s : [self getRawData].GetRawTypes())
     [result addObject:@(s.c_str())];
   return [result componentsJoinedByString:@", "];
+}
+
+#pragma mark - Promo Gallery
+
+- (void)fillPromoCatalogSection {
+  if (!self.isPromoCatalog || self.isBookmark || [self bookmarkDescription].length > 0) {
+    return;
+  }
+  
+  [self reguestPromoCatalog];
+}
+
+- (void)reguestPromoCatalog {
+  auto const canUseNetwork = platform::GetCurrentNetworkPolicy();
+  auto const api = GetFramework().GetPromoApi(canUseNetwork);
+  m_promoCatalogRows.clear();
+  
+  auto const row = canUseNetwork.CanUse() ? PromoCatalogRow::GuidesRequestError : PromoCatalogRow::GuidesNoInternetError;
+  if (!api) {
+    m_promoCatalogRows.push_back(row);
+    m_sections.insert(m_sections.begin() + 1, Sections::Description);
+    if (self.refreshPromoCallback) {
+      self.refreshPromoCallback([NSIndexSet indexSetWithIndex:1]);
+    }
+    [Statistics logEvent:kStatPlacepageSponsoredError
+          withParameters:@{
+                           kStatProvider: kStatMapsmeGuides,
+                           kStatPlacement: kStatPlacePage,
+                           kStatError: kStatNoInternet
+                           }];
+  } else {
+    __weak __typeof(self) weakSelf = self;
+    auto const resultHandler = [weakSelf](promo::CityGallery const & cityGallery) {
+      __strong __typeof(self) self = weakSelf;
+      if (self == nil) {
+        return;
+      }
+
+      if (cityGallery.IsEmpty()) {
+        if ([[self placeDescription] length] && ![[self bookmarkDescription] length]) {
+          m_sections.insert(m_sections.begin() + 1, Sections::Description);
+          if (self.refreshPromoCallback) {
+            self.refreshPromoCallback([NSIndexSet indexSetWithIndex:1]);
+          }
+        }
+      } else {
+        self.promoGallery = [[MWMDiscoveryCityGalleryObjects alloc] initWithGalleryResults:cityGallery];
+        m_sections.insert(m_sections.begin() + 1, Sections::PromoCatalog);
+        m_promoCatalogRows.push_back(PromoCatalogRow::Guides);
+        [Statistics logEvent:kStatPlacepageSponsoredShow
+              withParameters:@{
+                               kStatProvider: kStatMapsmeGuides,
+                               kStatPlacement: self.isLargeToponim ? kStatPlacePageToponims : kStatPlacePageSightSeeing,
+                               kStatState: kStatOnline,
+                               kStatCount: @(cityGallery.m_items.size())
+                               }];
+        NSMutableIndexSet *insertedSections = [NSMutableIndexSet indexSetWithIndex:1];
+        if (self.promoGallery.count > 1 && [[self placeDescription] length] && ![[self bookmarkDescription] length]) {
+          NSInteger infoIndex = self.isBookmark ? 3 : 2;
+          m_sections.insert(m_sections.begin() + infoIndex, Sections::Description);
+          [insertedSections addIndex:infoIndex];
+        }
+        if (self.refreshPromoCallback) {
+          self.refreshPromoCallback([insertedSections copy]);
+        }
+      }
+    };
+    
+    auto const errorHandler = [weakSelf]() {
+      __strong __typeof(self) self = weakSelf;
+      if (self == nil) {
+        return;
+      }
+
+      if ([[self placeDescription] length] && ![[self bookmarkDescription] length]) {
+        m_sections.insert(m_sections.begin() + 1, Sections::Description);
+        if (self.refreshPromoCallback) {
+          self.refreshPromoCallback([NSIndexSet indexSetWithIndex:1]);
+        }
+      }
+    };
+
+    auto appInfo = AppInfo.sharedInfo;
+    auto locale = appInfo.twoLetterLanguageId.UTF8String;
+    place_page::Info const & info = [self getRawData];
+    if (info.GetSponsoredType() == SponsoredType::PromoCatalogCity) {
+      api->GetCityGallery(self.mercator, locale, UTM::LargeToponymsPlacepageGallery, resultHandler, errorHandler);
+    } else {
+      api->GetPoiGallery(self.mercator, locale,
+                         info.GetRawTypes(),
+                         [MWMFrameworkHelper isWiFiConnected],
+                         UTM::SightseeingsPlacepageGallery,
+                         resultHandler,
+                         errorHandler);
+    }
+  }
+}
+
+- (MWMDiscoveryGuideViewModel *)guideAtIndex:(NSUInteger)index {
+  promo::CityGallery::Item const &item = [self.promoGallery galleryItemAtIndex:index];
+  return [[MWMDiscoveryGuideViewModel alloc] initWithTitle:@(item.m_name.c_str())
+                                                  subtitle:@(item.m_author.m_name.c_str())
+                                                     label:@(item.m_luxCategory.m_name.c_str())
+                                             labelHexColor:@(item.m_luxCategory.m_color.c_str())
+                                                  imageURL:@(item.m_imageUrl.c_str())];
 }
 
 @end

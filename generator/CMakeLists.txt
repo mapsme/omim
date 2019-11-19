@@ -5,7 +5,10 @@ include_directories(
   ${OMIM_ROOT}/3party/jansson/src
 )
 
-set(SRC
+set(
+  SRC
+  affiliation.cpp
+  affiliation.hpp
   altitude_generator.cpp
   altitude_generator.hpp
   booking_dataset.cpp
@@ -13,11 +16,13 @@ set(SRC
   booking_scoring.cpp
   boost_helpers.hpp
   borders.cpp
-  borders.hpp  
+  borders.hpp
   brands_loader.cpp
   brands_loader.hpp
   camera_info_collector.cpp
   camera_info_collector.hpp
+  cells_merger.cpp
+  cells_merger.hpp
   centers_table_builder.cpp
   centers_table_builder.hpp
   check_model.cpp
@@ -26,40 +31,36 @@ set(SRC
   cities_boundaries_builder.hpp
   cities_boundaries_checker.cpp
   cities_boundaries_checker.hpp
-  city_boundary_processor.cpp
-  city_boundary_processor.hpp
+  cities_ids_builder.cpp
+  cities_ids_builder.hpp
   city_roads_generator.cpp
   city_roads_generator.hpp
   coastlines_generator.cpp
   coastlines_generator.hpp
   collection_base.hpp
-  collector_addresses.cpp
-  collector_addresses.hpp
   collector_camera.cpp
   collector_camera.hpp
+  collector_city_area.cpp
+  collector_city_area.hpp
   collector_collection.cpp
   collector_collection.hpp
   collector_interface.hpp
+  collector_mini_roundabout.cpp
+  collector_mini_roundabout.hpp
+  collector_routing_city_boundaries.cpp
+  collector_routing_city_boundaries.hpp
   collector_tag.cpp
   collector_tag.hpp
+  complex_loader.cpp
+  complex_loader.hpp
+  composite_id.cpp
+  composite_id.hpp
+  cross_mwm_osm_ways_collector.cpp
+  cross_mwm_osm_ways_collector.hpp
   descriptions_section_builder.cpp
   descriptions_section_builder.hpp
   dumper.cpp
   dumper.hpp
-  emitter_booking.hpp
-  emitter_coastline.cpp
-  emitter_coastline.hpp
-  emitter_country.cpp
-  emitter_country.hpp
-  emitter_factory.hpp
-  emitter_interface.hpp
-  emitter_noop.hpp
-  emitter_restaurants.cpp
-  emitter_restaurants.hpp
-  emitter_simple.cpp
-  emitter_simple.hpp
-  emitter_world.cpp
-  emitter_world.hpp
   factory_utils.hpp
   feature_builder.cpp
   feature_builder.hpp
@@ -78,31 +79,35 @@ set(SRC
   feature_processing_layers.hpp
   feature_sorter.cpp
   feature_sorter.hpp
+  features_processing_helpers.hpp
   filter_collection.cpp
   filter_collection.hpp
+  filter_complex.cpp
+  filter_complex.hpp
   filter_elements.cpp
   filter_elements.hpp
   filter_interface.hpp
   filter_planet.cpp
   filter_planet.hpp
+  filter_roads.cpp
+  filter_roads.hpp
+  filter_world.cpp
+  filter_world.hpp
+  final_processor_intermediate_mwm.cpp
+  final_processor_intermediate_mwm.hpp
+  gen_mwm_info.cpp
   gen_mwm_info.hpp
   generate_info.hpp
   geometry_holder.hpp
-  geo_objects/geo_objects.cpp
-  geo_objects/geo_objects.hpp
-  geo_objects/geo_object_info_getter.cpp
-  geo_objects/geo_object_info_getter.hpp
-  geo_objects/geo_objects_filter.cpp
-  geo_objects/geo_objects_filter.hpp
+  hierarchy.cpp
+  hierarchy.hpp
+  hierarchy_entry.cpp
+  hierarchy_entry.hpp
   holes.cpp
   holes.hpp
   intermediate_data.cpp
   intermediate_data.hpp
   intermediate_elements.hpp
-  key_value_storage.cpp
-  key_value_storage.hpp
-  locality_sorter.cpp
-  locality_sorter.hpp
   maxspeeds_builder.cpp
   maxspeeds_builder.hpp
   maxspeeds_collector.cpp
@@ -111,6 +116,10 @@ set(SRC
   maxspeeds_parser.hpp
   metalines_builder.cpp
   metalines_builder.hpp
+  mini_roundabout_info.cpp
+  mini_roundabout_info.hpp
+  mini_roundabout_transformer.cpp
+  mini_roundabout_transformer.hpp
   node_mixer.cpp
   node_mixer.hpp
   opentable_dataset.cpp
@@ -127,46 +136,39 @@ set(SRC
   osm_o5m_source.hpp
   osm_source.cpp
   osm_xml_source.hpp
-  polygonizer.hpp
-  popularity.cpp
-  popularity.hpp
-  popular_places_section_builder.cpp
-  popular_places_section_builder.hpp
-  place.hpp
-  place.cpp
-  place_node.hpp
+  place_processor.cpp
+  place_processor.hpp
   platform_helpers.cpp
   platform_helpers.hpp
+  popular_places_section_builder.cpp
+  popular_places_section_builder.hpp
+  processor_booking.hpp
+  processor_coastline.cpp
+  processor_coastline.hpp
+  processor_complex.cpp
+  processor_complex.hpp
+  processor_country.cpp
+  processor_country.hpp
+  processor_factory.hpp
+  processor_interface.hpp
+  processor_noop.hpp
+  processor_simple.cpp
+  processor_simple.hpp
+  processor_world.cpp
+  processor_world.hpp
+  promo_catalog_cities.hpp
   ratings_section_builder.cpp
   ratings_section_builder.hpp
+  raw_generator.cpp
+  raw_generator.hpp
+  raw_generator_writer.cpp
+  raw_generator_writer.hpp
+  region_meta.cpp
+  region_meta.hpp
   relation_tags.cpp
   relation_tags.hpp
   relation_tags_enricher.cpp
   relation_tags_enricher.hpp
-  region_meta.cpp
-  region_meta.hpp
-  regions/collector_region_info.cpp
-  regions/collector_region_info.hpp
-  regions/level_region.hpp
-  regions/node.cpp
-  regions/node.hpp
-  regions/place_point.hpp
-  regions/region.cpp
-  regions/region.hpp
-  regions/region_base.cpp
-  regions/region_base.hpp
-  regions/region_info.cpp
-  regions/region_info.hpp
-  regions/region_info_getter.cpp
-  regions/region_info_getter.hpp
-  regions/regions.cpp
-  regions/regions.hpp
-  regions/regions_builder.cpp
-  regions/regions_builder.hpp
-  regions/regions_fixer.cpp
-  regions/regions_fixer.hpp
-  regions/to_string_policy.cpp
-  regions/to_string_policy.hpp
   restriction_collector.cpp
   restriction_collector.hpp
   restriction_generator.cpp
@@ -175,6 +177,8 @@ set(SRC
   restriction_writer.hpp
   road_access_generator.cpp
   road_access_generator.hpp
+  routing_city_boundaries_processor.cpp
+  routing_city_boundaries_processor.hpp
   routing_helpers.cpp
   routing_helpers.hpp
   routing_index_generator.cpp
@@ -191,12 +195,6 @@ set(SRC
   srtm_parser.hpp
   statistics.cpp
   statistics.hpp
-  streets/streets.cpp
-  streets/streets.hpp
-  streets/streets_builder.cpp
-  streets/streets_builder.hpp
-  streets/streets_filter.cpp
-  streets/streets_filter.hpp
   tag_admixer.hpp
   tesselator.cpp
   tesselator.hpp
@@ -212,18 +210,16 @@ set(SRC
   translator_coastline.hpp
   translator_collection.cpp
   translator_collection.hpp
+  translator_complex.cpp
+  translator_complex.hpp
   translator_country.cpp
   translator_country.hpp
   translator_factory.hpp
-  translator_geo_objects.cpp
-  translator_geo_objects.hpp
   translator_interface.hpp
-  translator_region.cpp
-  translator_region.hpp
-  translator_streets.cpp
-  translator_streets.hpp
   translator_world.cpp
   translator_world.hpp
+  translators_pool.cpp
+  translators_pool.hpp
   type_helper.cpp
   type_helper.hpp
   ugc_db.cpp
@@ -236,8 +232,8 @@ set(SRC
   unpack_mwm.hpp
   utils.cpp
   utils.hpp
-  ways_merger.hpp
   ways_merger.cpp
+  ways_merger.hpp
   wiki_url_dumper.cpp
   wiki_url_dumper.hpp
   world_map_generator.hpp
@@ -247,10 +243,10 @@ omim_add_library(${PROJECT_NAME} ${SRC})
 
 omim_add_test_subdirectory(generator_tests_support)
 omim_add_test_subdirectory(generator_tests)
+omim_add_test_subdirectory(generator_integration_tests)
 
 add_subdirectory(generator_tool)
+add_subdirectory(complex_generator)
 add_subdirectory(booking_quality_check)
-add_subdirectory(extract_addr)
 add_subdirectory(feature_segments_checker)
-add_subdirectory(restaurants_info)
 add_subdirectory(srtm_coverage_checker)

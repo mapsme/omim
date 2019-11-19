@@ -13,12 +13,13 @@
 
 DEFINE_string(resources_path, "", "Path to resources directory");
 DEFINE_string(data_path, "", "Path to data directory");
+DEFINE_string(samples_path, "", "Path to the file with samples to open on startup");
 
 int main(int argc, char ** argv)
 {
   search::search_quality::ChangeMaxNumberOfOpenFiles(search::search_quality::kMaxOpenFiles);
 
-  google::SetUsageMessage("Features collector tool.");
+  google::SetUsageMessage("Assessment tool.");
   google::ParseCommandLineFlags(&argc, &argv, true);
 
   Platform & platform = GetPlatform();
@@ -41,5 +42,9 @@ int main(int argc, char ** argv)
   view.SetModel(model);
 
   view.showMaximized();
+
+  if (!FLAGS_samples_path.empty())
+    model.Open(FLAGS_samples_path);
+
   return app.exec();
 }

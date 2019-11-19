@@ -32,7 +32,7 @@ void SupportManager::Init(ref_ptr<GraphicsContext> context)
   alohalytics::Stats::Instance().LogEvent("GPU", m_rendererName);
 
   m_isSamsungGoogleNexus = (m_rendererName == "PowerVR SGX 540" &&
-                            m_rendererVersion.find("GOOGLENEXUS.ED945322") != string::npos);
+                            m_rendererVersion.find("GOOGLENEXUS.ED945322") != std::string::npos);
   if (m_isSamsungGoogleNexus)
     LOG(LINFO, ("Samsung Google Nexus detected."));
 
@@ -107,6 +107,43 @@ bool SupportManager::IsVulkanForbidden() const
   if (!settings::Get(kVulkanForbidden, forbidden))
     forbidden = false;
   return forbidden;
+}
+
+bool SupportManager::IsVulkanForbidden(std::string const & deviceName,
+                                       Version apiVersion, Version driverVersion) const
+{
+  // On these configurations we've detected fatal driver-specific Vulkan errors.
+  struct Configuration
+  {
+    std::string m_deviceName;
+    Version m_apiVersion;
+    Version m_driverVersion;
+  };
+
+  static std::vector<std::string> const kBannedDevices = {"PowerVR Rogue GE8100",
+                                                          "PowerVR Rogue GE8300"};
+
+  static std::vector<Configuration> const kBannedConfigurations = {
+    {"Adreno (TM) 506", {1, 0, 31}, {42, 264, 975}},
+    {"Adreno (TM) 506", {1, 1, 66}, {512, 313, 0}},
+    {"Adreno (TM) 530", {1, 1, 66}, {512, 313, 0}},
+  };
+
+  for (auto const & d : kBannedDevices)
+  {
+    if (d == deviceName)
+      return true;
+  }
+
+  for (auto const & c : kBannedConfigurations)
+  {
+    if (c.m_deviceName == deviceName && c.m_apiVersion == apiVersion &&
+        c.m_driverVersion == driverVersion)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 SupportManager & SupportManager::Instance()

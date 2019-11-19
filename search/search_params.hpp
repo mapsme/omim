@@ -1,5 +1,7 @@
 #pragma once
 
+#include "search/bookmarks/types.hpp"
+
 #include "search/hotels_filter.hpp"
 #include "search/mode.hpp"
 
@@ -21,6 +23,7 @@ class Tracer;
 struct SearchParams
 {
   static size_t const kDefaultNumBookmarksResults = 1000;
+  static size_t const kDefaultBatchSizeEverywhere = 10;
   static size_t const kDefaultNumResultsEverywhere = 30;
   static size_t const kDefaultNumResultsInViewport = 200;
 
@@ -32,6 +35,24 @@ struct SearchParams
   void Clear() { m_query.clear(); }
 
   OnStarted m_onStarted;
+
+  // This function may be called an arbitrary number of times during
+  // the search session. The argument to every call except the first must contain
+  // as its prefix the argument of the previous call, i.e. |m_onResults| is
+  // always called for the whole array of results found so far but new results
+  // are only appended to the end.
+  //
+  // The function may be called several times with the same arguments.
+  // The reasoning is as follows: we could either 1) rearrange results
+  // between calls if a better ranked result is found after the first
+  // emit has happened or 2) only append as we do now but never call
+  // the function twice with the same array of results.
+  // We decided against the option 1) so as not to annoy the user by
+  // rearranging.
+  // We do not guarantee the option 2) because an efficient client
+  // would only need to redraw the appended part and therefore would
+  // be fast enough if the two calls are the same. The implementation of
+  // the search may decide against duplicating calls but no guarantees are given.
   OnResults m_onResults;
 
   std::string m_query;
@@ -40,6 +61,7 @@ struct SearchParams
   boost::optional<m2::PointD> m_position;
   m2::RectD m_viewport;
 
+  size_t m_batchSize = kDefaultBatchSizeEverywhere;
   size_t m_maxNumResults = kDefaultNumResultsEverywhere;
 
   // Minimal distance between search results in mercators, needed for
@@ -58,6 +80,8 @@ struct SearchParams
   bool m_needHighlighting = false;
 
   std::shared_ptr<hotels_filter::Rule> m_hotelsFilter;
+
+  bookmarks::GroupId m_bookmarksGroupId = bookmarks::kInvalidGroupId;
 
   std::shared_ptr<Tracer> m_tracer;
 };

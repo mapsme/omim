@@ -20,6 +20,7 @@ set(
   maxspeeds_tests.cpp
   nearest_edge_finder_tests.cpp
   online_cross_fetcher_test.cpp
+  position_accumulator_tests.cpp
   restriction_test.cpp
   road_access_test.cpp
   road_graph_builder.cpp
@@ -36,6 +37,8 @@ set(
   turns_generator_test.cpp
   turns_sound_test.cpp
   turns_tts_text_tests.cpp
+  uturn_restriction_tests.cpp
+  world_graph_builder.cpp
 )
 
 omim_add_test(${PROJECT_NAME} ${SRC})

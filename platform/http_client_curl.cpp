@@ -118,12 +118,12 @@ std::string GetTmpFileName()
   return GetPlatform().TmpPathForFile(ss.str());
 }
 
-using Headers = std::vector<std::pair<std::string, std::string>>;
+using HeadersVector = std::vector<std::pair<std::string, std::string>>;
 
-Headers ParseHeaders(std::string const & raw)
+HeadersVector ParseHeaders(std::string const & raw)
 {
   std::istringstream stream(raw);
-  Headers headers;
+  HeadersVector headers;
   std::string line;
   while (getline(stream, line))
   {
@@ -158,7 +158,13 @@ std::string Decompress(std::string const & compressed, std::string const & encod
   if (encoding == "deflate")
   {
     ZLib::Inflate inflate(ZLib::Inflate::Format::ZLib);
-    inflate(compressed, back_inserter(decompressed));
+
+    // We do not check return value of inflate here.
+    // It may return false if compressed data is broken or if there is some unconsumed data
+    // at the end of buffer. The second case considered as ok by some http clients.
+    // For example, server we use for AsyncGuiThread_GetHotelInfo test adds '\n' to the end of the buffer
+    // and MacOS client and some versions of curl return no error.
+    UNUSED_VALUE(inflate(compressed, back_inserter(decompressed)));
   }
   else
   {
@@ -232,18 +238,18 @@ bool HttpClient::RunHttpRequest()
   }
 
   m_headers.clear();
-  Headers const headers = ParseHeaders(ReadFileAsString(headers_deleter.m_fileName));
+  auto const headers = ParseHeaders(ReadFileAsString(headers_deleter.m_fileName));
   std::string serverCookies;
   std::string headerKey;
   for (auto const & header : headers)
   {
-    if (header.first == "Set-Cookie")
+    if (strings::EqualNoCase(header.first, "Set-Cookie"))
     {
       serverCookies += header.second + ", ";
     }
     else
     {
-      if (header.first == "Location")
+      if (strings::EqualNoCase(header.first, "Location"))
         m_urlReceived = header.second;
 
       if (m_loadHeaders)
@@ -285,13 +291,16 @@ bool HttpClient::RunHttpRequest()
     m_serverResponse = move(redirect.m_serverResponse);
   }
 
-  auto const it = m_headers.find("content-encoding");
-  if (it != m_headers.end())
+  for (auto const & header : headers)
   {
-    m_serverResponse = Decompress(m_serverResponse, it->second);
-    LOG(LDEBUG, ("Response with", it->second, "is decompressed."));
+    if (strings::EqualNoCase(header.first, "content-encoding") &&
+        !strings::EqualNoCase(header.second, "identity"))
+    {
+      m_serverResponse = Decompress(m_serverResponse, header.second);
+      LOG(LDEBUG, ("Response with", header.second, "is decompressed."));
+      break;
+    }
   }
-
   return true;
 }
 }  // namespace platform

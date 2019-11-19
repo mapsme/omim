@@ -11,6 +11,8 @@
 
 #include "platform/settings.hpp"
 
+#include <unordered_map>
+
 using namespace std::placeholders;
 
 namespace df
@@ -80,6 +82,7 @@ DrapeEngine::DrapeEngine(Params && params)
                                     std::bind(&DrapeEngine::ModelViewChanged, this, _1),
                                     std::bind(&DrapeEngine::TapEvent, this, _1),
                                     std::bind(&DrapeEngine::UserPositionChanged, this, _1, _2),
+                                    std::bind(&DrapeEngine::UserPositionPendingTimeout, this),
                                     make_ref(m_requestedTiles),
                                     std::move(params.m_overlaysShowStatsCallback),
                                     params.m_allow3dBuildings,
@@ -242,116 +245,123 @@ void DrapeEngine::InvalidateUserMarks()
 
 void DrapeEngine::UpdateUserMarks(UserMarksProvider * provider, bool firstTime)
 {
-  auto const dirtyGroupIds = firstTime ? provider->GetAllGroupIds() : provider->GetDirtyGroupIds();
-  if (dirtyGroupIds.empty())
+  auto const updatedGroupIds = firstTime ? provider->GetAllGroupIds()
+                                         : provider->GetUpdatedGroupIds();
+  if (updatedGroupIds.empty())
     return;
 
   auto marksRenderCollection = make_unique_dp<UserMarksRenderCollection>();
   auto linesRenderCollection = make_unique_dp<UserLinesRenderCollection>();
-  auto createdIdCollection = make_unique_dp<IDCollections>();
+  auto justCreatedIdCollection = make_unique_dp<IDCollections>();
   auto removedIdCollection = make_unique_dp<IDCollections>();
 
-  if (!firstTime)
+  std::unordered_map<kml::MarkGroupId, drape_ptr<IDCollections>> groupsVisibleIds;
+
+  auto const groupFilter = [&](kml::MarkGroupId groupId)
   {
-    kml::MarkGroupId lastGroupId = *dirtyGroupIds.begin();
-    bool visibilityChanged = provider->IsGroupVisibilityChanged(lastGroupId);
-    bool groupIsVisible = provider->IsGroupVisible(lastGroupId);
+    return provider->IsGroupVisible(groupId) &&
+      (provider->GetBecameVisibleGroupIds().count(groupId) == 0);
+  };
 
-    auto const handleMark = [&](
-      kml::MarkId markId,
-      UserMarksRenderCollection & renderCollection,
-      kml::MarkIdCollection *idCollection)
-    {
-      auto const *mark = provider->GetUserPointMark(markId);
-      if (!mark->IsDirty())
-        return;
-      auto const groupId = mark->GetGroupId();
-      if (groupId != lastGroupId)
-      {
-        lastGroupId = groupId;
-        visibilityChanged = provider->IsGroupVisibilityChanged(groupId);
-        groupIsVisible = provider->IsGroupVisible(groupId);
-      }
-      if (!visibilityChanged && groupIsVisible)
-      {
-        if (idCollection)
-          idCollection->push_back(markId);
-        renderCollection.emplace(markId, GenerateMarkRenderInfo(mark));
-      }
-    };
+  using GroupFilter = std::function<bool(kml::MarkGroupId groupId)>;
 
-    for (auto markId : provider->GetCreatedMarkIds())
-      handleMark(markId, *marksRenderCollection, &createdIdCollection->m_markIds);
-
-    for (auto markId : provider->GetUpdatedMarkIds())
-      handleMark(markId, *marksRenderCollection, nullptr);
-
-    auto const & removedMarkIds = provider->GetRemovedMarkIds();
-    removedIdCollection->m_markIds.reserve(removedMarkIds.size());
-    removedIdCollection->m_markIds.assign(removedMarkIds.begin(), removedMarkIds.end());
-
-    auto const & removedLineIds = provider->GetRemovedLineIds();
-    removedIdCollection->m_lineIds.reserve(removedLineIds.size());
-    removedIdCollection->m_lineIds.assign(removedLineIds.begin(), removedLineIds.end());
-  }
-
-  std::map<kml::MarkGroupId, drape_ptr<IDCollections>> dirtyMarkIds;
-  for (auto groupId : dirtyGroupIds)
+  auto const collectIds = [&](kml::MarkIdSet const & markIds, kml::TrackIdSet const & lineIds,
+                              GroupFilter const & filter, IDCollections & collection)
   {
-    auto & idCollection = *(dirtyMarkIds.emplace(groupId, make_unique_dp<IDCollections>()).first->second);
-    bool const visibilityChanged = provider->IsGroupVisibilityChanged(groupId);
-    bool const groupIsVisible = provider->IsGroupVisible(groupId);
-    if (!groupIsVisible && !visibilityChanged)
-      continue;
-
-    auto const & markIds = provider->GetGroupPointIds(groupId);
-    auto const & lineIds = provider->GetGroupLineIds(groupId);
-    if (groupIsVisible)
+    for (auto const markId : markIds)
     {
-      idCollection.m_markIds.reserve(markIds.size());
-      idCollection.m_markIds.assign(markIds.begin(), markIds.end());
-      idCollection.m_lineIds.reserve(lineIds.size());
-      idCollection.m_lineIds.assign(lineIds.begin(), lineIds.end());
-
-      for (auto lineId : lineIds)
-      {
-        auto const * line = provider->GetUserLineMark(lineId);
-        if (visibilityChanged || line->IsDirty())
-          linesRenderCollection->emplace(lineId, GenerateLineRenderInfo(line));
-      }
-      if (visibilityChanged || firstTime)
-      {
-        for (auto markId : markIds)
-        {
-          marksRenderCollection->emplace(
-            markId, GenerateMarkRenderInfo(provider->GetUserPointMark(markId)));
-        }
-      }
+      if (filter == nullptr || filter(provider->GetUserPointMark(markId)->GetGroupId()))
+        collection.m_markIds.push_back(markId);
     }
-    else if (!firstTime)
+
+    for (auto const lineId : lineIds)
     {
-      auto & points = removedIdCollection->m_markIds;
-      points.reserve(points.size() + markIds.size());
-      points.insert(points.end(), markIds.begin(), markIds.end());
-      auto & lines = removedIdCollection->m_lineIds;
-      lines.reserve(lines.size() + lineIds.size());
-      lines.insert(lines.end(), lineIds.begin(), lineIds.end());
+      if (filter == nullptr || filter(provider->GetUserLineMark(lineId)->GetGroupId()))
+        collection.m_lineIds.push_back(lineId);
+    }
+  };
+
+  auto const collectRenderData = [&](kml::MarkIdSet const & markIds, kml::TrackIdSet const & lineIds,
+                                     GroupFilter const & filter)
+  {
+    for (auto const markId : markIds)
+    {
+      auto const mark = provider->GetUserPointMark(markId);
+      if (filter == nullptr || filter(mark->GetGroupId()))
+        marksRenderCollection->emplace(markId, GenerateMarkRenderInfo(mark));
+    }
+
+    for (auto const lineId : lineIds)
+    {
+      auto const line = provider->GetUserLineMark(lineId);
+      if (filter == nullptr || filter(line->GetGroupId()))
+        linesRenderCollection->emplace(lineId, GenerateLineRenderInfo(line));
+    }
+  };
+
+  if (firstTime)
+  {
+    for (auto groupId : provider->GetAllGroupIds())
+    {
+      auto visibleIdCollection = make_unique_dp<IDCollections>();
+
+      if (provider->IsGroupVisible(groupId))
+      {
+        collectIds(provider->GetGroupPointIds(groupId), provider->GetGroupLineIds(groupId),
+                   nullptr /* filter */, *visibleIdCollection);
+        collectRenderData(provider->GetGroupPointIds(groupId), provider->GetGroupLineIds(groupId),
+                          nullptr /* filter */);
+      }
+      groupsVisibleIds.emplace(groupId, std::move(visibleIdCollection));
+    }
+  }
+  else
+  {
+    for (auto groupId : provider->GetUpdatedGroupIds())
+    {
+      auto visibleIdCollection = make_unique_dp<IDCollections>();
+      if (provider->IsGroupVisible(groupId))
+      {
+        collectIds(provider->GetGroupPointIds(groupId), provider->GetGroupLineIds(groupId),
+                   nullptr /* filter */, *visibleIdCollection);
+      }
+      groupsVisibleIds.emplace(groupId, std::move(visibleIdCollection));
+    }
+
+    collectIds(provider->GetCreatedMarkIds(), provider->GetCreatedLineIds(),
+               groupFilter, *justCreatedIdCollection);
+    collectIds(provider->GetRemovedMarkIds(), provider->GetRemovedLineIds(),
+               nullptr /* filter */, *removedIdCollection);
+
+    collectRenderData(provider->GetCreatedMarkIds(), provider->GetCreatedLineIds(), groupFilter);
+    collectRenderData(provider->GetUpdatedMarkIds(), {} /* lineIds */, groupFilter);
+
+    for (auto const groupId : provider->GetBecameVisibleGroupIds())
+    {
+      collectRenderData(provider->GetGroupPointIds(groupId), provider->GetGroupLineIds(groupId),
+                        nullptr /* filter */);
+    }
+
+    for (auto const groupId : provider->GetBecameInvisibleGroupIds())
+    {
+      collectIds(provider->GetGroupPointIds(groupId), provider->GetGroupLineIds(groupId),
+                 nullptr /* filter */, *removedIdCollection);
     }
   }
 
   if (!marksRenderCollection->empty() || !linesRenderCollection->empty() ||
-      !removedIdCollection->IsEmpty() || !createdIdCollection->IsEmpty())
+      !removedIdCollection->IsEmpty() || !justCreatedIdCollection->IsEmpty())
   {
     m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                     make_unique_dp<UpdateUserMarksMessage>(
-                                      std::move(createdIdCollection),
+                                      std::move(justCreatedIdCollection),
                                       std::move(removedIdCollection),
                                       std::move(marksRenderCollection),
                                       std::move(linesRenderCollection)),
                                     MessagePriority::Normal);
   }
 
-  for (auto & v : dirtyMarkIds)
+  for (auto & v : groupsVisibleIds)
   {
     m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                     make_unique_dp<UpdateUserMarkGroupMessage>(
@@ -426,8 +436,8 @@ void DrapeEngine::AddUserEvent(drape_ptr<UserEvent> && e)
 
 void DrapeEngine::ModelViewChanged(ScreenBase const & screen)
 {
-  if (m_modelViewChanged != nullptr)
-    m_modelViewChanged(screen);
+  if (m_modelViewChangedHandler != nullptr)
+    m_modelViewChangedHandler(screen);
 }
 
 void DrapeEngine::MyPositionModeChanged(location::EMyPositionMode mode, bool routingActive)
@@ -439,14 +449,20 @@ void DrapeEngine::MyPositionModeChanged(location::EMyPositionMode mode, bool rou
 
 void DrapeEngine::TapEvent(TapInfo const & tapInfo)
 {
-  if (m_tapListener != nullptr)
-    m_tapListener(tapInfo);
+  if (m_tapEventInfoHandler != nullptr)
+    m_tapEventInfoHandler(tapInfo);
 }
 
 void DrapeEngine::UserPositionChanged(m2::PointD const & position, bool hasPosition)
 {
-  if (m_userPositionChanged != nullptr)
-    m_userPositionChanged(position, hasPosition);
+  if (m_userPositionChangedHandler != nullptr)
+    m_userPositionChangedHandler(position, hasPosition);
+}
+
+void DrapeEngine::UserPositionPendingTimeout()
+{
+  if (m_userPositionPendingTimeoutHandler != nullptr)
+    m_userPositionPendingTimeoutHandler();
 }
 
 void DrapeEngine::ResizeImpl(int w, int h)
@@ -503,13 +519,13 @@ void DrapeEngine::FollowRoute(int preferredZoomLevel, int preferredZoomLevel3d, 
                                   MessagePriority::Normal);
 }
 
-void DrapeEngine::SetModelViewListener(TModelViewListenerFn && fn)
+void DrapeEngine::SetModelViewListener(ModelViewChangedHandler && fn)
 {
-  m_modelViewChanged = std::move(fn);
+  m_modelViewChangedHandler = std::move(fn);
 }
 
 #if defined(OMIM_OS_MAC) || defined(OMIM_OS_LINUX)
-void DrapeEngine::NotifyGraphicsReady(TGraphicsReadyFn const & fn)
+void DrapeEngine::NotifyGraphicsReady(GraphicsReadyHandler const & fn)
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                   make_unique_dp<NotifyGraphicsReadyMessage>(fn),
@@ -517,21 +533,27 @@ void DrapeEngine::NotifyGraphicsReady(TGraphicsReadyFn const & fn)
 }
 #endif
 
-void DrapeEngine::SetTapEventInfoListener(TTapEventInfoFn && fn)
+void DrapeEngine::SetTapEventInfoListener(TapEventInfoHandler && fn)
 {
-  m_tapListener = std::move(fn);
+  m_tapEventInfoHandler = std::move(fn);
 }
 
-void DrapeEngine::SetUserPositionListener(TUserPositionChangedFn && fn)
+void DrapeEngine::SetUserPositionListener(UserPositionChangedHandler && fn)
 {
-  m_userPositionChanged = std::move(fn);
+  m_userPositionChangedHandler = std::move(fn);
+}
+
+void DrapeEngine::SetUserPositionPendingTimeoutListener(UserPositionPendingTimeoutHandler && fn)
+{
+  m_userPositionPendingTimeoutHandler = std::move(fn);
 }
 
 void DrapeEngine::SelectObject(SelectionShape::ESelectedObject obj, m2::PointD const & pt,
-                               FeatureID const & featureId, bool isAnim)
+                               FeatureID const & featureId, bool isAnim, bool isGeometrySelectionAllowed)
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
-                                  make_unique_dp<SelectObjectMessage>(obj, pt, featureId, isAnim),
+                                  make_unique_dp<SelectObjectMessage>(obj, pt, featureId,
+                                    isAnim, isGeometrySelectionAllowed),
                                   MessagePriority::Normal);
 }
 
@@ -786,7 +808,7 @@ void DrapeEngine::SetFontScaleFactor(double scaleFactor)
   double const kMinScaleFactor = 0.5;
   double const kMaxScaleFactor = 2.0;
 
-  scaleFactor = base::clamp(scaleFactor, kMinScaleFactor, kMaxScaleFactor);
+  scaleFactor = base::Clamp(scaleFactor, kMinScaleFactor, kMaxScaleFactor);
 
   VisualParams::Instance().SetFontScale(scaleFactor);
 }
@@ -922,6 +944,13 @@ void DrapeEngine::UpdateVisualScale(double vs, bool needStopRendering)
   RecacheMapShapes();
   m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
                                   make_unique_dp<RecoverContextDependentResourcesMessage>(),
+                                  MessagePriority::Normal);
+}
+
+void DrapeEngine::UpdateMyPositionRoutingOffset(bool useDefault, int offsetY)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
+                                  make_unique_dp<UpdateMyPositionRoutingOffsetMessage>(useDefault, offsetY),
                                   MessagePriority::Normal);
 }
 }  // namespace df

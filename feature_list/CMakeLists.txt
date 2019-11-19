@@ -8,13 +8,14 @@ omim_add_executable(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  map
+  generator
+  routing
   traffic
+  routing_common
   search_quality
   search_tests_support
   search
   storage
-  ugc
   kml
   editor
   indexer
@@ -33,6 +34,7 @@ omim_link_libraries(
   pugixml
   stats_client
   succinct
+  ${CMAKE_DL_LIBS}
   ${LIBZ}
 )
 

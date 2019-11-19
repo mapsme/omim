@@ -2,9 +2,9 @@ package com.mapswithme.maps.location;
 
 import android.app.Activity;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -136,27 +136,20 @@ public enum LocationHelper
       mLogger.d(TAG, "onMyPositionModeChanged mode = " + LocationState.nameOf(newMode));
 
       if (mUiCallback == null)
-      {
         mLogger.d(TAG, "UI is not ready to listen my position changes, i.e. it's not attached yet.");
-        return;
-      }
+    }
+  };
 
-      switch (newMode)
-      {
-        case LocationState.NOT_FOLLOW_NO_POSITION:
-          // In the first run mode, the NOT_FOLLOW_NO_POSITION state doesn't mean that location
-          // is actually not found.
-          if (mInFirstRun)
-          {
-            mLogger.i(TAG, "It's the first run, so this state should be skipped");
-            return;
-          }
-
-          stop();
-          if (LocationUtils.areLocationServicesTurnedOn())
-            notifyLocationNotFound();
-          break;
-      }
+  @SuppressWarnings("FieldCanBeLocal")
+  private final LocationState.LocationPendingTimeoutListener mLocationPendingTimeoutListener =
+      new LocationState.LocationPendingTimeoutListener()
+  {
+    @Override
+    public void onLocationPendingTimeout()
+    {
+      stop();
+      if (LocationUtils.areLocationServicesTurnedOn())
+        notifyLocationNotFound();
     }
   };
 
@@ -165,6 +158,7 @@ public enum LocationHelper
   {
     initProvider();
     LocationState.nativeSetListener(mMyPositionModeListener);
+    LocationState.nativeSetLocationPendingTimeoutListener(mLocationPendingTimeoutListener);
     MwmApplication.backgroundTracker().addListener(mOnTransition);
   }
 
@@ -525,12 +519,6 @@ public enum LocationHelper
     //noinspection ConstantConditions
     mLocationProvider.start();
     mLogger.d(TAG, mLocationProvider.isActive() ? "SUCCESS" : "FAILURE");
-
-    if (mLocationProvider.isActive())
-    {
-      if (!mInFirstRun && getMyPositionMode() == LocationState.NOT_FOLLOW_NO_POSITION)
-        switchToNextMode();
-    }
   }
 
   private void checkProviderInitialization()

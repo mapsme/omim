@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -106,7 +106,7 @@ abstract class BaseRoutingErrorDialogFragment extends BaseMwmDialogFragment
     ((TextView) countryView.findViewById(R.id.tv__title)).setText(map.name);
 
     final TextView szView = (TextView) countryView.findViewById(R.id.tv__size);
-    szView.setText(MapManager.nativeIsLegacyMode() ? "" : StringUtils.getFileSizeString(map.totalSize));
+    szView.setText(StringUtils.getFileSizeString(map.totalSize));
     ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) szView.getLayoutParams();
     lp.rightMargin = 0;
     szView.setLayoutParams(lp);
@@ -155,7 +155,6 @@ abstract class BaseRoutingErrorDialogFragment extends BaseMwmDialogFragment
   {
     List<Map<String, String>> countries = new ArrayList<>();
     long size = 0;
-    boolean legacy = MapManager.nativeIsLegacyMode();
 
     for (CountryItem item: mMissingMaps)
     {
@@ -163,13 +162,12 @@ abstract class BaseRoutingErrorDialogFragment extends BaseMwmDialogFragment
       data.put(COUNTRY_NAME, item.name);
       countries.add(data);
 
-      if (!legacy)
-        size += item.totalSize;
+      size += item.totalSize;
     }
 
     Map<String, String> group = new HashMap<>();
     group.put(GROUP_NAME, getString(R.string.maps) + " (" + mMissingMaps.size() + ") ");
-    group.put(GROUP_SIZE, (legacy ? "" : StringUtils.getFileSizeString(size)));
+    group.put(GROUP_SIZE, StringUtils.getFileSizeString(size));
 
     List<Map<String, String>> groups = new ArrayList<>();
     groups.add(group);

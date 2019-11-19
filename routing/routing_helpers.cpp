@@ -1,8 +1,11 @@
 #include "routing/routing_helpers.hpp"
+
 #include "routing/road_point.hpp"
 #include "routing/segment.hpp"
 
 #include "traffic/traffic_info.hpp"
+
+#include "geometry/point2d.hpp"
 
 #include "base/stl_helpers.hpp"
 
@@ -82,7 +85,7 @@ void FillSegmentInfo(vector<Segment> const & segments, vector<Junction> const & 
     }
 
     routeLengthMeters +=
-      MercatorBounds::DistanceOnEarth(junctions[i].GetPoint(), junctions[i + 1].GetPoint());
+      mercator::DistanceOnEarth(junctions[i].GetPoint(), junctions[i + 1].GetPoint());
     routeLengthMerc += junctions[i].GetPoint().Length(junctions[i + 1].GetPoint());
 
     routeSegment.emplace_back(
@@ -159,5 +162,47 @@ Segment ConvertEdgeToSegment(NumMwmIds const & numMwmIds, Edge const & edge)
       numMwmIds.GetId(edge.GetFeatureId().m_mwmId.GetInfo()->GetLocalFile().GetCountryFile());
 
   return Segment(numMwmId, edge.GetFeatureId().m_index, edge.GetSegId(), edge.IsForward());
+}
+
+bool SegmentCrossesRect(m2::Segment2D const & segment, m2::RectD const & rect)
+{
+  double constexpr kEps = 1e-6;
+  bool isSideIntersected = false;
+  rect.ForEachSide([&segment, &isSideIntersected](m2::PointD const & a, m2::PointD const & b) {
+    if (isSideIntersected)
+      return;
+
+    m2::Segment2D const rectSide(a, b);
+    isSideIntersected =
+        m2::Intersect(segment, rectSide, kEps).m_type != m2::IntersectionResult::Type::Zero;
+  });
+
+  return isSideIntersected;
+}
+
+bool RectCoversPolyline(IRoadGraph::JunctionVec const & junctions, m2::RectD const & rect)
+{
+  if (junctions.empty())
+    return false;
+
+  if (junctions.size() == 1)
+    return rect.IsPointInside(junctions.front().GetPoint());
+
+  for (auto const & junction : junctions)
+  {
+    if (rect.IsPointInside(junction.GetPoint()))
+      return true;
+  }
+
+  // No point of polyline |junctions| lays inside |rect| but may be segments of the polyline
+  // cross |rect| borders.
+  for (size_t i = 1; i < junctions.size(); ++i)
+  {
+    m2::Segment2D const polylineSegment(junctions[i - 1].GetPoint(), junctions[i].GetPoint());
+    if (SegmentCrossesRect(polylineSegment, rect))
+      return true;
+  }
+
+  return false;
 }
 }  // namespace routing

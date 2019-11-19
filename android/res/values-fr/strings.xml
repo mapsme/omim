@@ -293,6 +293,8 @@
 	<string name="show_on_backscreen">Afficher sur l\'arrière-plan</string>
 	<!-- Prints version number in About dialog -->
 	<string name="version">Version : %s</string>
+	<!-- Data version in «About» screen -->
+	<string name="data_version">Version de données: %d</string>
 	<!-- Confirmation in downloading countries dialog -->
 	<string name="are_you_sure">Êtes-vous certain de vouloir continuer ?</string>
 	<!-- Title for tracks category in bookmarks manager -->
@@ -301,6 +303,8 @@
 	<string name="length">Longueur</string>
 	<string name="share_my_location">Partager ma position</string>
 	<string name="menu_search">Rechercher</string>
+	<!-- Settings general group in settings screen -->
+	<string name="prefs_group_general">Paramètres généraux</string>
 	<!-- Settings screen: "Map" category title -->
 	<string name="prefs_group_map">Carte</string>
 	<!-- Settings screen: "Miscellaneous" category title -->
@@ -885,6 +889,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Description</string>
 	<string name="placepage_more_button">Plus</string>
+	<string name="placepage_more_reviews_button">Plus d\'avis</string>
 	<string name="book_button">Réserver</string>
 	<string name="placepage_call_button">Appeler</string>
 	<string name="placepage_edit_bookmark_button">Éditer le signet</string>
@@ -964,6 +969,7 @@
 	<string name="something_is_not_working">Quelque chose ne fonctionne pas</string>
 	<!-- For the first routing -->
 	<string name="accept">Accepter</string>
+	<string name="accept_and_continue">Accepter et continuer</string>
 	<!-- For the first routing -->
 	<string name="decline">Refuser</string>
 	<string name="whats_new_route_profile_title">C\'est en se bougeant que l\'on trouve des solutions</string>
@@ -1348,6 +1354,10 @@
 	<string name="whats_new_hot_offers_title">Des offres attractives d\'hôtels</string>
 	<string name="whats_new_hot_offers_message">Vous pouvez les rechercher en utilisant la catégorie «Hôtels» dans la recherche. Les offres seront marquées par le symbole du pourcentage sur la carte et dans les résultats de la recherche.</string>
 	<string name="error_already_downloaded">Cette liste a déjà été téléchargée</string>
+	<string name="popular_place">Populaire</string>
+	<string name="download_routes">Télécharger itinéraires</string>
+	<string name="bookmarks_downloaded_title">Signets téléchargés avec succès</string>
+	<string name="bookmarks_downloaded_subtitle">Appuyez sur \'Rechercher sur la carte\' pour explorer les endroits sur la liste</string>
 	<string name="guides">Guides</string>
 	<string name="guide_downloaded_title">Le guide a été téléchargé avec succès</string>
 	<string name="download_guides">Télécharger les guides</string>
@@ -1389,7 +1399,6 @@
 	<string name="restore_success_alert">L\'abonnement a été restauré avec succès</string>
 	<string name="restore_error_alert">Une erreur s\'est produite lors de la restauration de l\'abonnement</string>
 	<string name="restore_no_subscription_alert">Il n\'y a aucun abonnement actif</string>
-	<string name="subscription_terms">Le paiement sera débité de votre compte iTunes lors de la confirmation d\'achat. L\'abonnement sera automatiquement renouvelé à moins que le renouvellement automatique ne soit désactivé au moins 24 heures avant la fin de la période en cours. Votre compte sera débité selon votre forfait pour un renouvellement dans les 24 heures précédant la fin de la période en cours. Vous pouvez gérer ou désactiver le renouvellement automatique depuis les paramètres de votre compte Apple ID à tout moment lors de votre achat.</string>
 	<string name="subscriptions_title">Abonnements</string>
 	<string name="manage_subscription">Gérer l\'abonnement</string>
 	<string name="sharing_options">Options de partage</string>
@@ -1421,7 +1430,7 @@
 	<string name="unable_upload_errorr_title">Échec du téléchargement du fichier</string>
 	<string name="unable_upload_error_subtitle_edited">Ce fichier a été édité via l\'application Web</string>
 	<string name="unable_upload_error_subtitle_broken">Ce fichier est endommagé et n\'a pas pu être téléchargé. S\'il vous plaît télécharger un autre fichier.</string>
-	<string name="buy_btn">Acheter pour %s</string>
+	<string name="buy_btn">Achetez celui-ci à %s</string>
 	<string name="download_guide_progress">Télécharger votre guide…</string>
 	<string name="price_error_title">Impossible d\'obtenir un prix</string>
 	<string name="price_error_subtitle">S\'il vous plaît, réessayez dans quelques minutes</string>
@@ -1574,11 +1583,132 @@
 	<string name="dialog_routing_change_end_carplay">Impossible de créer un itinéraire jusqu\'au point final. Choisissez un autre</string>
 	<string name="dialog_routing_check_gps_carplay">Pas de signal GPS. Passez sur le site ouvert</string>
 	<string name="dialog_routing_unable_locate_route_carplay">Impossible de calculer l\'itinéraire. Sélectionnez les autres points d\'itinéraire</string>
-	<string name="dialog_routing_download_files_carplay">Pas toutes les cartes sont disponibles pour tracer un itinéraire. Téléchargez-les dans l\'application sur le téléphone</string>
+	<string name="dialog_routing_download_files_carplay">Pour créer la route, téléchargez les cartes sur votre appareil</string>
 	<string name="dialog_routing_system_error_carplay">Une erreur est survenue. Redémarrez l\'application</string>
 	<string name="dialog_routing_rebuild_from_current_location_carplay">L\'itinéraire sera reconstruit à partir de votre position actuelle</string>
 	<string name="dialog_routing_rebuild_for_vehicle_carplay">L\'itinéraire sera changé en mode Voiture</string>
 	<string name="ok">Ok</string>
+	<string name="booking_button_toolbar">Choisissez un hôtel sur la carte</string>
+	<string name="popup_booking_download_guides_title">Avez-vous réservé un hôtel ?</string>
+	<string name="popup_booking_download_guides_message">Planifiez votre itinéraire avec des guides prêts à l\'emploi fait par MAPS.ME</string>
+	<string name="popup_mwm_download_guides_title">Guides hors ligne</string>
+	<string name="popup_mwm_download_guides_cta">Choisissez un</string>
+	<string name="popup_mwm_download_guides_cta_1">Jetez un coup d\'oeil</string>
+	<string name="gallery_pp_download_guides_offline_title">Planifiez vos vacances avec MAPS.ME !</string>
+	<string name="gallery_pp_download_guides_offline_subtitle">Ne manquez rien avec les guides faits par des voyageurs expérimentés</string>
+	<string name="gallery_pp_download_guides_offline_cta">Allumez l\'Internet</string>
+	<string name="gallery_pp_download_guides_title">Guides</string>
+	<string name="native_screen_subscription_title">Accès illimité à plus de 2000 guides de voyage !</string>
+	<string name="native_screen_subscription_message">Des vacances mémorables où que vous soyez et avec qui vous voyagez</string>
+	<string name="annual_subscription_title">Annuel</string>
+	<string name="montly_subscription_title">Mensuel</string>
+	<string name="annual_subscription_message">12 mois d\'accès illimité</string>
+	<string name="montly_subscription_message">1 mois d\'accès illimité</string>
+	<string name="subscription_success_dialog_title">Merci de vous être abonné !</string>
+	<string name="subscription_success_dialog_message">À présent, vous avez un accès illimité à l\'ensemble du catalogue des guides</string>
+	<string name="renewal_screen_title">Votre abonnement a expiré</string>
+	<string name="renewal_screen_message">Tous les guides téléchargés sur l\'abonnement vont être supprimés. Voulez-vous reprendre l\'abonnement et les conserver ?</string>
+	<string name="renewal_screen_button_restore">Oui, renouveler</string>
+	<string name="renewal_screen_button_cancel">Non, supprimer les guides</string>
+	<string name="subscription_error_ping_title">L\'achat a échoué</string>
+	<string name="subscription_error_message">Le service est présentement non disponible dans votre région. Veuillez réessayer ultérieurement</string>
+	<string name="subscription_error_button">Entendu</string>
+	<string name="timeout_error_title">Oups, le temps est écoulé !</string>
+	<string name="timeout_error_message">Nos serveurs ne répondent pas. Veuillez vérifiez la connexion Internet et réessayez.</string>
+	<string name="per_month">/mois</string>
+	<string name="per_year">/année</string>
+	<string name="buy_btn_for_subscription">Accès illimité de %s</string>
+	<string name="buy_btn_for_subscription_1">Acheter TOUS les guides à %s</string>
+	<string name="buy_btn_for_subscription_ios_only_mo">Accès illimité à %s/mois</string>
+	<string name="buy_btn_for_subscription_ios_only_year">Accès illimité à %s/an</string>
+	<string name="subscription_terms_guides">Le paiement sera débité de votre compte iTunes après confirmation de l\'achat. L\'abonnement sera renouvelé automatiquement, sauf si la fonction de renouvellement automatique est désactivée au moins 24 heures avant la fin de la période en cours. Votre compte sera débité en fonction de votre plan de renouvellement dans les 24 heures précédant la fin de la période en cours. Vous pouvez gérer ou désactiver la fonction de renouvellement automatique dans les paramètres de votre compte Apple ID à tout moment de votre achat. Vous ne pouvez utiliser que les guides téléchargés sur abonnement jusqu\'à leur date d\'expiration. Dans les 30 jours suivant la date d\'expiration de l\'abonnement, les guides contenant des signets seront automatiquement supprimés.</string>
+	<string name="subscription_terms">Le paiement sera débité de votre compte iTunes lors de la confirmation d\'achat. L\'abonnement sera automatiquement renouvelé à moins que le renouvellement automatique ne soit désactivé au moins 24 heures avant la fin de la période en cours. Votre compte sera débité selon votre forfait pour un renouvellement dans les 24 heures précédant la fin de la période en cours. Vous pouvez gérer ou désactiver le renouvellement automatique depuis les paramètres de votre compte Apple ID à tout moment lors de votre achat.</string>
+	<string name="whatsnew_carplay_title">Navigation MAPS.ME pour automobile en mode CarPlay !</string>
+	<string name="whatsnew_carplay_message">Les signets, la recherche, les radars et les options de routage sont disponibles hors ligne</string>
+	<string name="whatsnew_subscription_title">Le monde entier par abonnement !</string>
+	<string name="whatsnew_subscription_message">L\'accès illimité au catalogue des guides est plus rentable qu\'un achat ponctuel</string>
+	<string name="whatsnew_carnavi_fixes_for_android_title">Mise à jour de la navigation</string>
+	<string name="whatsnew_carnavi_fixes_for_android_message">Nous avons amélioré la planification des itinéraires vers les destinations éloignés des routes</string>
+	<string name="avoid_unpaved_carplay_1">Route de ter</string>
+	<string name="avoid_unpaved_carplay_2">Route de terre</string>
+	<string name="avoid_ferry_carplay_1">Sans navires</string>
+	<string name="avoid_ferry_carplay_2">Sans navires</string>
+	<string name="avoid_tolls_carplay_1">Sans péage</string>
+	<string name="avoid_tolls_carplay_2">Sans péage</string>
+	<string name="speedcams_alert_title_carplay_1">Caméras</string>
+	<string name="speedcams_alert_title_carplay_2">Info Caméras</string>
+	<string name="download_map_carplay">Téléchargez des cartes dans l\'application MAPS.ME sur votre appareil</string>
+	<string name="carplay_roundabout_exit">%s sortie</string>
+	<!-- max. 10 symbols, both iOS and Android -->
+	<string name="sort">Trier…</string>
+	<!-- Android, title, max 20-22 symbols -->
+	<string name="sort_bookmarks">Trier les signets</string>
+	<!-- iOS -->
+	<string name="sort_default">Trier par défaut</string>
+	<string name="sort_type">Trier par type</string>
+	<string name="sort_distance">Trier par distance</string>
+	<string name="sort_date">Classer pa date</string>
+	<!-- Android -->
+	<string name="by_default">Par défaut</string>
+	<!-- Android -->
+	<string name="by_type">Par type</string>
+	<!-- Android -->
+	<string name="by_distance">Par distance</string>
+	<!-- Android -->
+	<string name="by_date">Par date</string>
+	<string name="week_ago_sorttype">Il y a une semaine</string>
+	<string name="month_ago_sorttype">Il y a un mois</string>
+	<string name="moremonth_ago_sorttype">Il y a plus d\'un mois</string>
+	<string name="moreyear_ago_sorttype">Il y a plus d\'un an</string>
+	<string name="near_me_sorttype">Près de moi</string>
+	<string name="others_sorttype">Autres</string>
+	<string name="food_places">Aliments</string>
+	<string name="tourist_places">Choses à voir</string>
+	<string name="museums">Musées</string>
+	<string name="parks">Parcs</string>
+	<string name="swim_places">Natation</string>
+	<string name="mountains">Montagnes</string>
+	<string name="animals">Animaux</string>
+	<string name="hotels">Hotels</string>
+	<string name="buildings">Batiments</string>
+	<string name="money">Argent</string>
+	<string name="shops">Magasins</string>
+	<string name="parkings">Parkings</string>
+	<string name="fuel_places">Stations d\'essence</string>
+	<string name="water">Eau</string>
+	<string name="medicine">Médicament</string>
+	<string name="search_in_the_list">Chercher dans la liste</string>
+	<string name="view_on_map_bookmarks">Sur plan</string>
+	<string name="more_bookmarks">Plus…</string>
+	<string name="no_items_found">Aucun article trouvé</string>
+	<!-- Android, max 18 symbols -->
+	<string name="bookmarks_edit_list">Modifier la liste</string>
+	<!-- Android, max 18 symbols -->
+	<string name="bookmarks_delete_list">Supprimer la liste</string>
+	<string name="whatsnew_bookmarks_search_sort_title">Commander dans les signets rend un voyage confortable</string>
+	<string name="whatsnew_bookmarks_search_sort_message">Triez les endroits préférés par catégorie, emplacement et ordre chronologique, ainsi que trouver rapidement des signets spécifiques par leur nom</string>
+	<string name="popup_subscription_success_map_title">Hourra ! Vous êtes abonné !</string>
+	<string name="popup_subscription_success_map_message">Explorez maintenant les meilleures attractions touristiques du catalogue MAPS.ME</string>
+	<string name="popup_subscription_success_map_start_button">Regarder</string>
+	<string name="popup_subscription_success_map_not_now_button">Pas maintenant</string>
+	<string name="religious_places">Lieux saints</string>
+	<string name="subscription_terms_android">Le paiement sera effectué à partir de votre compte Google Play lors de la confirmation de l\'achat. L\'abonnement sera automatiquement renouvelé, sauf si le renouvellement automatique est désactivé au moins 24 heures avant la fin de la période en cours. Les fonds seront débités de votre compte conformément à votre plan de renouvellement dans les 24 heures avant la fin de la période en cours. Vous pouvez gérer le renouvellement automatique ou le désactiver dans les paramètres de votre compte après l\'achat. Vous pouvez utiliser les guides téléchargés par abonnement uniquement pendant la durée de votre abonnement. 30 jours après la fin de votre abonnement, les guides seront automatiquement supprimés.</string>
+	<string name="select_list">Sélectionner une liste</string>
+	<string name="pp_discovery_place_related_header">Cet endroit dans les guide</string>
+	<string name="pp_discovery_place_related_header_1">Vu dans le guide</string>
+	<string name="pp_discovery_place_related_cta_button">Voir plus</string>
+	<string name="pp_discovery_place_related_tag_header">Guide avec le tag « %s »</string>
+	<string name="pp_discovery_place_related_tag_header_1">Vous aimeriez aussi</string>
+	<string name="buy_btn_for_subscription_version_2">TOUS les guides pour seulement %s/mois</string>
+	<string name="buy_btn_for_subscription_version_3">Le catalogue entier pour %s/mois</string>
+	<string name="buy_btn_for_subscription_ios_only_mo_version_2">Accès au catalogue pour %s/mois</string>
+	<string name="buy_btn_for_subscription_ios_only_year_version_2">Accès au catalogue pour %s/an</string>
+	<string name="subscription_screen_native_title_version_2">Accès aux guides de voyage avec des tags sur la carte!</string>
+	<string name="subscription_screen_native_message_version_2">Préparez-vous pour n\'importe quel voyage dans plus de 600 villes et plus de 100 pays</string>
+	<string name="catalog_no_internet_title">Pas de connexion internet</string>
+	<string name="catalog_no_internet_button">Essayer à nouveau</string>
+	<string name="whatsnew_map_updates_title">Mises à jour très rapides des cartes</string>
+	<string name="whatsnew_map_updates_message">Maintenant, nous mettons à jour les données 2 fois plus rapidement</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Remontées mécaniques</string>

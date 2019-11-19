@@ -28,7 +28,7 @@ void StreetVicinityLoader::SetContext(MwmContext * context)
 
   m_context = context;
   auto const scaleRange = m_context->m_value.GetHeader().GetScaleRange();
-  m_scale = base::clamp(m_scale, scaleRange.first, scaleRange.second);
+  m_scale = base::Clamp(m_scale, scaleRange.first, scaleRange.second);
 }
 
 void StreetVicinityLoader::OnQueryFinished() { m_cache.ClearIfNeeded(); }
@@ -68,7 +68,7 @@ void StreetVicinityLoader::LoadStreet(uint32_t featureId, Street & street)
   ASSERT(!points.empty(), ());
 
   for (auto const & point : points)
-    street.m_rect.Add(MercatorBounds::RectByCenterXYAndSizeInMeters(point, m_offsetMeters));
+    street.m_rect.Add(mercator::RectByCenterXYAndSizeInMeters(point, m_offsetMeters));
 
   covering::CoveringGetter coveringGetter(street.m_rect, covering::ViewportWithLowLevels);
   auto const & intervals = coveringGetter.Get<RectId::DEPTH_LEVELS>(m_scale);

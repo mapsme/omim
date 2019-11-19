@@ -294,7 +294,8 @@ jobject ToJavaResult(Result & result, search::ProductInfo const & productInfo, b
 {
   JNIEnv * env = jni::GetEnv();
 
-  jni::TScopedLocalIntArrayRef ranges(env, env->NewIntArray(result.GetHighlightRangesCount() * 2));
+  jni::TScopedLocalIntArrayRef ranges(
+      env, env->NewIntArray(static_cast<jsize>(result.GetHighlightRangesCount() * 2)));
   jint * rawArr = env->GetIntArrayElements(ranges, nullptr);
   for (int i = 0; i < result.GetHighlightRangesCount(); i++)
   {
@@ -311,12 +312,12 @@ jobject ToJavaResult(Result & result, search::ProductInfo const & productInfo, b
   if (result.HasPoint())
   {
     auto const center = result.GetFeatureCenter();
-    ll = MercatorBounds::ToLatLon(center);
+    ll = mercator::ToLatLon(center);
     if (hasPosition)
     {
       distanceInMeters = ms::DistanceOnEarth(lat, lon,
-                                             MercatorBounds::YToLat(center.y),
-                                             MercatorBounds::XToLon(center.x));
+                                             mercator::YToLat(center.y),
+                                             mercator::XToLon(center.x));
       measurement_utils::FormatDistance(distanceInMeters, distance);
     }
   }
@@ -402,9 +403,9 @@ jobjectArray BuildJavaMapResults(vector<storage::DownloaderSearchResult> const &
 {
   JNIEnv * env = jni::GetEnv();
 
-  int const count = results.size();
+  auto const count = static_cast<jsize>(results.size());
   jobjectArray const res = env->NewObjectArray(count, g_mapResultClass, nullptr);
-  for (int i = 0; i < count; i++)
+  for (jsize i = 0; i < count; i++)
   {
     jni::TScopedLocalRef country(env, jni::ToJavaString(env, results[i].m_countryId));
     jni::TScopedLocalRef matched(env, jni::ToJavaString(env, results[i].m_matchedName));
@@ -441,9 +442,12 @@ void OnBookmarksSearchResults(search::BookmarksSearchParams::Results const & res
 
   JNIEnv * env = jni::GetEnv();
 
-  jni::ScopedLocalRef<jlongArray> jResults(env, env->NewLongArray(results.size()));
-  vector<jlong> const tmp(results.cbegin(), results.cend());
-  env->SetLongArrayRegion(jResults.get(), 0, tmp.size(), tmp.data());
+  auto filteredResults = results;
+  g_framework->NativeFramework()->GetBookmarkManager().FilterInvalidBookmarks(filteredResults);
+  jni::ScopedLocalRef<jlongArray> jResults(
+      env, env->NewLongArray(static_cast<jsize>(filteredResults.size())));
+  vector<jlong> const tmp(filteredResults.cbegin(), filteredResults.cend());
+  env->SetLongArrayRegion(jResults.get(), 0, static_cast<jsize>(tmp.size()), tmp.data());
 
   auto const method = (status == search::BookmarksSearchParams::Status::InProgress) ?
                       g_updateBookmarksResultsId : g_endBookmarksResultsId;
@@ -523,10 +527,12 @@ public:
       return result;
 
     jlong const jcheckin = env->GetLongField(bookingFilterParams, m_checkinMillisecId) / 1000;
-    result.m_checkin = booking::AvailabilityParams::Clock::from_time_t(jcheckin);
+    result.m_checkin =
+        booking::AvailabilityParams::Clock::from_time_t(static_cast<time_t>(jcheckin));
 
     jlong const jcheckout = env->GetLongField(bookingFilterParams, m_checkoutMillisecId) / 1000;
-    result.m_checkout = booking::AvailabilityParams::Clock::from_time_t(jcheckout);
+    result.m_checkout =
+        booking::AvailabilityParams::Clock::from_time_t(static_cast<time_t>(jcheckout));
 
     jobjectArray const jrooms =
         static_cast<jobjectArray>(env->GetObjectField(bookingFilterParams, m_roomsId));
@@ -536,7 +542,7 @@ public:
     result.m_rooms.resize(length);
     for (size_t i = 0; i < length; ++i)
     {
-      jobject jroom = env->GetObjectArrayElement(jrooms, i);
+      jobject jroom = env->GetObjectArrayElement(jrooms, static_cast<jsize>(i));
 
       booking::AvailabilityParams::Room room;
       room.SetAdultsCount(static_cast<uint8_t>(env->GetIntField(jroom, m_roomAdultsCountId)));
@@ -617,10 +623,10 @@ jobjectArray BuildSearchResults(Results const & results,
 
   g_results = results;
 
-  int const count = g_results.GetCount();
+  auto const count = static_cast<jsize>(g_results.GetCount());
   jobjectArray const jResults = env->NewObjectArray(count, g_resultClass, nullptr);
 
-  for (int i = 0; i < count; i++)
+  for (jsize i = 0; i < count; i++)
   {
     jni::TScopedLocalRef jRes(env,
                               ToJavaResult(g_results[i], productInfo[i], hasPosition, lat, lon));
@@ -660,9 +666,9 @@ extern "C"
     g_mapResultCtor = jni::GetConstructorID(env, g_mapResultClass, "(Ljava/lang/String;Ljava/lang/String;)V");
 
     g_updateBookmarksResultsId =
-      jni::GetMethodID(env, g_javaListener, "onBookmarksResultsUpdate", "([JJ)V");
+      jni::GetMethodID(env, g_javaListener, "onBookmarkSearchResultsUpdate", "([JJ)V");
     g_endBookmarksResultsId =
-      jni::GetMethodID(env, g_javaListener, "onBookmarksResultsEnd", "([JJ)V");
+      jni::GetMethodID(env, g_javaListener, "onBookmarkSearchResultsEnd", "([JJ)V");
 
     g_onFilterHotels = jni::GetMethodID(env, g_javaListener, "onFilterHotels",
                                                    "(I[Lcom/mapswithme/maps/bookmarks/data/FeatureId;)V");
@@ -733,16 +739,19 @@ extern "C"
       g_queryTimestamp = timestamp;
   }
 
-  JNIEXPORT void JNICALL Java_com_mapswithme_maps_search_SearchEngine_nativeRunSearchInBookmarks(
-      JNIEnv * env, jclass clazz, jbyteArray query, jlong timestamp)
+  JNIEXPORT jboolean JNICALL Java_com_mapswithme_maps_search_SearchEngine_nativeRunSearchInBookmarks(
+      JNIEnv * env, jclass clazz, jbyteArray query, jlong catId, jlong timestamp)
   {
     search::BookmarksSearchParams params;
     params.m_query = jni::ToNativeString(env, query);
+    params.m_groupId = static_cast<kml::MarkGroupId>(catId);
     params.m_onStarted = bind(&OnBookmarksSearchStarted);
     params.m_onResults = bind(&OnBookmarksSearchResults, _1, _2, timestamp);
 
-    if (g_framework->NativeFramework()->SearchInBookmarks(params))
+    bool const searchStarted = g_framework->NativeFramework()->SearchInBookmarks(params);
+    if (searchStarted)
       g_queryTimestamp = timestamp;
+    return searchStarted;
   }
 
   JNIEXPORT void JNICALL

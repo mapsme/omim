@@ -2,7 +2,7 @@
 
 #import <Crashlytics/Crashlytics.h>
 
-#import "Framework.h"
+#include <CoreApi/Framework.h>
 #import "Statistics.h"
 #import "MapViewController.h"
 #import "MapsAppDelegate.h"
@@ -87,7 +87,7 @@
         // will not notify subscribers when search view is shown.
         if (!request.m_isSearchOnMap)
         {
-          auto const center = MercatorBounds::FromLatLon(request.m_centerLat, request.m_centerLon);
+          auto const center = mercator::FromLatLon(request.m_centerLat, request.m_centerLon);
           auto const rect = df::GetRectForDrawScale(kSearchInViewportZoom, center);
           f.GetSearchAPI().OnViewportChanged(rect);
         }
@@ -102,10 +102,10 @@
       break;
     }
     case ParsedMapApi::ParsingResult::Catalogue:
-      [MapViewController.sharedController openCatalogDeeplink:url animated:NO];
+      [MapViewController.sharedController openCatalogDeeplink:url animated:NO utm:MWMUTMNone];
       break;
     case ParsedMapApi::ParsingResult::CataloguePath:
-      [MapViewController.sharedController openCatalogDeeplink:url animated:NO];
+      [MapViewController.sharedController openCatalogDeeplink:url animated:NO utm:MWMUTMNone];
       break;
     case ParsedMapApi::ParsingResult::Lead: break;
   }

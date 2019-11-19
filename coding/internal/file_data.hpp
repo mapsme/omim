@@ -1,4 +1,5 @@
 #pragma once
+
 #include "coding/internal/file64_api.hpp"
 
 #include "base/base.hpp"
@@ -69,6 +70,8 @@ bool RenameFileX(std::string const & fOld, std::string const & fNew);
 bool WriteToTempAndRenameToFile(std::string const & dest,
                                 std::function<bool(std::string const &)> const & write,
                                 std::string const & tmp = "");
+
+void AppendFileToFile(std::string const & fromFilename, std::string const & toFilename);
 
 /// @return false if copy fails. DO NOT THROWS exceptions
 bool CopyFileX(std::string const & fOld, std::string const & fNew);

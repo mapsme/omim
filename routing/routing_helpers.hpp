@@ -2,6 +2,7 @@
 
 #include "routing/directions_engine.hpp"
 #include "routing/index_road_graph.hpp"
+#include "routing/road_graph.hpp"
 #include "routing/route.hpp"
 #include "routing/traffic_stash.hpp"
 
@@ -10,6 +11,9 @@
 #include "routing_common/bicycle_model.hpp"
 #include "routing_common/car_model.hpp"
 #include "routing_common/pedestrian_model.hpp"
+
+#include "geometry/rect2d.hpp"
+#include "geometry/segment2d.hpp"
 
 #include "base/cancellable.hpp"
 
@@ -28,12 +32,18 @@ bool IsCarRoad(Types const & types)
   return CarModel::AllLimitsInstance().HasRoadType(types);
 }
 
+template <typename Types>
+bool IsBicycleRoad(Types const & types)
+{
+  return BicycleModel::AllLimitsInstance().HasRoadType(types);
+}
+
 /// \returns true when there exists a routing mode where the feature with |types| can be used.
 template <typename Types>
 bool IsRoad(Types const & types)
 {
   return IsCarRoad(types) || PedestrianModel::AllLimitsInstance().HasRoadType(types) ||
-         BicycleModel::AllLimitsInstance().HasRoadType(types);
+         IsBicycleRoad(types);
 }
 
 void FillSegmentInfo(std::vector<Segment> const & segments, std::vector<Junction> const & junctions,
@@ -50,18 +60,24 @@ void ReconstructRoute(IDirectionsEngine & engine, IndexRoadGraph const & graph,
 /// \returns Segment() if mwm of |edge| is not alive.
 Segment ConvertEdgeToSegment(NumMwmIds const & numMwmIds, Edge const & edge);
 
+/// \returns true if |segment| crosses any side of |rect|.
+bool SegmentCrossesRect(m2::Segment2D const & segment, m2::RectD const & rect);
+
+// \returns true if any part of polyline |junctions| lay in |rect| and false otherwise.
+bool RectCoversPolyline(IRoadGraph::JunctionVec const & junctions, m2::RectD const & rect);
+
 /// \brief Checks is edge connected with world graph. Function does BFS while it finds some number
 /// of edges,
 /// if graph ends before this number is reached then junction is assumed as not connected to the
 /// world graph.
-template <typename Graph, typename GetVertexByEdgeFn, typename GetOutgoingEdgesFn>
-bool CheckGraphConnectivity(typename Graph::Vertex const & start, size_t limit, Graph & graph,
-                            GetVertexByEdgeFn && getVertexByEdgeFn, GetOutgoingEdgesFn && getOutgoingEdgesFn)
+template <typename Graph>
+bool CheckGraphConnectivity(typename Graph::Vertex const & start, bool isOutgoing,
+                            bool useRoutingOptions, size_t limit, Graph & graph,
+                            std::set<typename Graph::Vertex> & marked)
 {
   std::queue<typename Graph::Vertex> q;
   q.push(start);
 
-  std::set<typename Graph::Vertex> marked;
   marked.insert(start);
 
   std::vector<typename Graph::Edge> edges;
@@ -71,10 +87,13 @@ bool CheckGraphConnectivity(typename Graph::Vertex const & start, size_t limit, 
     q.pop();
 
     edges.clear();
-    getOutgoingEdgesFn(graph, u, edges);
+
+    // Note. If |isOutgoing| == true outgoing edges are looked for.
+    // If |isOutgoing| == false it's the finish. So ingoing edges are looked for.
+    graph.GetEdgeList(u, isOutgoing, useRoutingOptions, edges);
     for (auto const & edge : edges)
     {
-      auto const & v = getVertexByEdgeFn(edge);
+      auto const & v = edge.GetTarget();
       if (marked.count(v) == 0)
       {
         q.push(v);

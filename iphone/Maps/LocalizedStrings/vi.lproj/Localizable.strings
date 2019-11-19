@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "Không có đăng ký đang hoạt động";
 
-"subscription_terms" = "Thanh toán sẽ được tính vào tài khoản iTunes của bạn khi xác nhận mua. Đăng ký sẽ tự động gia hạn trừ khi tính năng tự động gia hạn được tắt ít nhất 24 giờ trước khi kết thúc kỳ đăng ký hiện tại. Tài khoản của bạn sẽ được tính phí theo gói gia hạn trong vòng 24 giờ trước khi kết thúc kỳ đăng ký hiện tại. Bạn có thể quản lý hoặc tắt tính năng tự động gia hạn trong cài đặt tài khoản Apple ID của mình bất kỳ lúc nào sau khi mua.";
-
 "subscriptions_title" = "Đăng ký";
 
 "manage_subscription" = "Quản lý đăng ký";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "Tập tin này bị hỏng và không thể tải lên được. Vui lòng tải lên một tập tin khác.";
 
-"buy_btn" = "Mua với %s";
+"buy_btn" = "Mua sách hướng dẫn với %s";
 
 "download_guide_progress" = "Đang tải xuống hướng dẫn của bạn…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Không thể tạo tuyến đường. Hãy chọn những điểm khác cho tuyến đường";
 
-"dialog_routing_download_files_carplay" = "Không phải tất cả bản đồ đều khả dụng để tạo tuyến đường. Hãy tải ứng dụng về điện thoại của bạn";
+"dialog_routing_download_files_carplay" = "Để tạo tuyến đường, hãy tải xuống các bản đồ còn thiếu về thiết bị";
 
 "dialog_routing_system_error_carplay" = "Đã xảy ra lỗi. Khởi động lại ứng dụng";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Lựa chọn khách sạn trên bản đồ";
+
+"popup_booking_download_guides_title" = "Đặt phòng khách sạn?";
+
+"popup_booking_download_guides_message" = "Lên kế hoạch chô lộ trình du lịch cùng với những sách hướng dẫn sẵn có từ MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Hướng dẫn ngoại tuyến";
+
+"popup_mwm_download_guides_cta" = "Lựa chọn";
+
+"popup_mwm_download_guides_cta_1" = "Xem";
+
+"gallery_pp_download_guides_offline_title" = "Lên kết hoạch nghỉ ngơi cùng MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Đừng bỏ lỡ những thứ quan trọng cùng với các tuyến được những du khách có kinh nghiệm đề xuất";
+
+"gallery_pp_download_guides_offline_cta" = "Bật kết nối Internet";
+
+"gallery_pp_download_guides_title" = "Sách hướng dẫn";
+
+"native_screen_subscription_title" = "Truy cập đầy đủ tới 2000+ sách hướng dẫn!";
+
+"native_screen_subscription_message" = "Một kỳ nghỉ đáng nhớ, ở đâu và cùng với ai bạn sẽ không đi du lịch";
+
+"annual_subscription_title" = "Một năm";
+
+"montly_subscription_title" = "Một tháng";
+
+"annual_subscription_message" = "12 tháng truy cập không giới hạn";
+
+"montly_subscription_message" = "1 tháng truy cập không giới hạn";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Cảm ơn vì đã đăng ký!";
+
+"subscription_success_dialog_message" = "Giờ thì bạn đã có thể truy cập không giới hạn vào danh mục sách hướng dẫn";
+
+"renewal_screen_title" = "Thời hạn đăng ký đã hết";
+
+"renewal_screen_message" = "Tất cả những sách hướng dẫn đã tải về khi đăng ký sẽ bị xóa hết. Bạn có muốn khôi phục việc đăng ký và lưu chúng lại không?";
+
+"renewal_screen_button_restore" = "Có, khôi phục";
+
+"renewal_screen_button_cancel" = "Không, xóa sách hướng dẫn";
+
+"subscription_error_ping_title" = "Mua không thành công";
+
+"subscription_error_message" = "Hiện tại server không khả dụng tại khu vực của bạn. Xin vui lòng thử lại sau";
+
+"subscription_error_button" = "Đã hiểu";
+
+"timeout_error_title" = "Rất tiếc, đã hết giờ!";
+
+"timeout_error_message" = "Máy chủ của chúng tôi không hồi đáp. Xin vui lòng kiểm tra lại kết nối internet và thử lại.";
+
+"per_month" = "/tháng.";
+
+"per_year" = "/năm";
+
+"buy_btn_for_subscription" = "Truy cập toàn bộ từ %s";
+
+"buy_btn_for_subscription_1" = "Mua TẤT CẢ sách hướng dẫn với %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Truy cập toàn với %s/tháng";
+
+"buy_btn_for_subscription_ios_only_year" = "Truy cập toàn với %s/năm";
+
+"subscription_terms_guides" = "Thanh toán sẽ được thực hiện từ tài khoản iTunes khi xác nhận mua. Việc đăng ký sẽ tự động gia hạn nếu như tự động gia hạn không bị tắt ít nhất 24h trước khi kết thúc kỳ đăng ký hiện tại. Tiền sẽ được trừ từ tài khoản của bạn tương ứng với gói dịch vụ bạn chọn và kéo dài trong 24h đồng hồ đến khi kết thúc kỳ đăng ký hiện tại. Bạn cũng có thể điều chỉnh việc tự động gia hạn hoặc tắt nó đi trong phần cài đặt tài khoản Apple ID vào bất cứ thời gian nào sau khi mua. Bạn chỉ có thể sử dụng các sách hướng dẫn đã tải khi đăng ký trong thời gian chúng có hiệu lực. Sau thời hạn 30 ngày kể từ khi kết thúc việc đăng ký, các sách hướng dẫn cùng với phần đánh dấu trang sẽ được xóa một cách tự động.";
+
+"subscription_terms" = "Thanh toán sẽ được tính vào tài khoản iTunes của bạn khi xác nhận mua. Đăng ký sẽ tự động gia hạn trừ khi tính năng tự động gia hạn được tắt ít nhất 24 giờ trước khi kết thúc kỳ đăng ký hiện tại. Tài khoản của bạn sẽ được tính phí theo gói gia hạn trong vòng 24 giờ trước khi kết thúc kỳ đăng ký hiện tại. Bạn có thể quản lý hoặc tắt tính năng tự động gia hạn trong cài đặt tài khoản Apple ID của mình bất kỳ lúc nào sau khi mua.";
+
+"whatsnew_carplay_title" = "Điều hướng tự động MAPS.ME trong CarPlay!";
+
+"whatsnew_carplay_message" = "Đánh dấu, tìm kiếm, camera tốc độ và thiết lập đi vòng, đường tránh – tất cả đều hoạt động mà không cần Internet";
+
+"whatsnew_subscription_title" = "Hãy mở cánh cửa thế giới bằng cách đăng ký!";
+
+"whatsnew_subscription_message" = "Truy cập không giới hạn tới cả danh mục các tuyến đường có lợi hơn là mua từng tuyến một";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Cập nhận định hướng";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Chúng tôi đã cải thiện việc xây dựng các tuyến đường tới cả những điểm ở xa các thành phố";
+
+"avoid_unpaved_carplay_1" = "Trừ đườg đất";
+
+"avoid_unpaved_carplay_2" = "Trừ khôg trnhựa";
+
+"avoid_ferry_carplay_1" = "Không có phà";
+
+"avoid_ferry_carplay_2" = "Trừ phà";
+
+"avoid_tolls_carplay_1" = "Khôg đgcóphí";
+
+"avoid_tolls_carplay_2" = "Trừ đg có phí";
+
+"speedcams_alert_title_carplay_1" = "Сam tốc độ";
+
+"speedcams_alert_title_carplay_2" = "Cảnh báo tốc độ";
+
+"download_map_carplay" = "Vui lòng tải xuống bản đồ trong ứng dụng MAPS.ME trên thiết bị của bạn";
+
+"carplay_roundabout_exit" = "Lối ra %s của vòng xuyến";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Sắp xếp…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Sắp xếp dấu trang";
+
+/* iOS */
+"sort_default" = "Sắp xếp theo mặc định";
+
+"sort_type" = "Sắp xếp theo kiểu";
+
+"sort_distance" = "Sắp xếp theo khoảng cách";
+
+"sort_date" = "Sắp xếp theo ngày";
+
+/* Android */
+"by_default" = "Theo mặc định";
+
+/* Android */
+"by_type" = "Theo kiểu";
+
+/* Android */
+"by_distance" = "Theo khoảng cách";
+
+/* Android */
+"by_date" = "Theo ngày";
+
+"week_ago_sorttype" = "Tuần trước";
+
+"month_ago_sorttype" = "Tháng trước";
+
+"moremonth_ago_sorttype" = "Hơn một tháng trước";
+
+"moreyear_ago_sorttype" = "Hơn một năm trước";
+
+"near_me_sorttype" = "Ở gần tôi";
+
+"others_sorttype" = "Khác";
+
+"food_places" = "Đồ ăn";
+
+"tourist_places" = "Danh lam thắng cảnh";
+
+"museums" = "Bảo tàng";
+
+"parks" = "Công viên";
+
+"swim_places" = "Bơi lội";
+
+"mountains" = "Núi non";
+
+"animals" = "Động vật";
+
+"hotels" = "Khách sạn";
+
+"buildings" = "Tòa nhà";
+
+"money" = "Tiền";
+
+"shops" = "Cửa hàng";
+
+"parkings" = "Bãi đậu xe";
+
+"fuel_places" = "Trạm xăng dầu";
+
+"water" = "Nước";
+
+"medicine" = "Y tế";
+
+"search_in_the_list" = "Tìm trong danh sách";
+
+"view_on_map_bookmarks" = "Trên bản đồ";
+
+"more_bookmarks" = "Thêm…";
+
+"no_items_found" = "Không tìm thấy gì cả";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Chỉnh sửa";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Xóa dánh sách";
+
+"whatsnew_bookmarks_search_sort_title" = "Trật tự trong các dấu trang – đó là sự tiện nghi, thoải mái cho chuyến du lịch";
+
+"whatsnew_bookmarks_search_sort_message" = "Hãy sắp xếp các địa điểm yêu thích theo thể loại, thời gian thêm vào và vị trí địa lý, đồng thời bạn cũng sẽ nhanh chóng tìm thấy các dấu trang cụ thể theo tên gọi";
+
+"popup_subscription_success_map_title" = "Ura! Bạn đã đăng ký mua!";
+
+"popup_subscription_success_map_message" = "Bây giờ hãy khám phá những điểm du lịch tốt nhất trong danh mục của MAPS.ME";
+
+"popup_subscription_success_map_start_button" = "Xem xét";
+
+"popup_subscription_success_map_not_now_button" = "Không phải bây giờ";
+
+"religious_places" = "Những nơi tôn nghiêm";
+
+"subscription_terms_android" = "Việc thanh toán sẽ được thực hiện từ tài khoản Google Play của bạn sau khi xác nhận mua. Việc đăng ký mua sẽ được tự động tiếp tục nếu chế độ tự động gia hạn không bị tắt trong thời gian ít nhất 24h trước khi kết thúc kỳ hiện tại. Tiền sẽ được trừ vào tài khoản của bạn tương ứng với gói cước gia hạn đã định trong thời gian 24h trước khi kết thúc kỳ hiện tại. Bạn có thể điều chỉnh tự động gia hạn hoặc tắt chế độ này trong phần thiết lập tài khoản sau khi mua. Bạn chỉ có thể sử dụng hướng dẫn đã tải theo gói cước đã mua trong thời gian nó còn hiệu lực. Sau 30 ngày khi kết thúc đăng ký mua, các hướng dẫn sẽ tự động bị xóa bỏ.";
+
+"select_list" = "Chọn danh sách";
+
+"pp_discovery_place_related_header" = "Địa điểm này trong danh mục hướng dẫn";
+
+"pp_discovery_place_related_header_1" = "Địa điểm này có trong hướng dẫn";
+
+"pp_discovery_place_related_cta_button" = "Xem";
+
+"pp_discovery_place_related_tag_header" = "Hướng dẫn theo thẻ \"%s\"";
+
+"pp_discovery_place_related_tag_header_1" = "Bạn có thể cũng sẽ thích";
+
+"buy_btn_for_subscription_version_2" = "TẤT CẢ hướng dẫn chỉ với %s/tháng";
+
+"buy_btn_for_subscription_version_3" = "Cả danh mục chỉ với %s/tháng";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Truy cập vào danh mục với %s/tháng";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Truy cập vào danh mục với %s/năm";
+
+"subscription_screen_native_title_version_2" = "Truy cập vào các hướng dẫn cùng với dấu trang trên bản đồ!";
+
+"subscription_screen_native_message_version_2" = "Hãy sẵn sàng cho mọi chuyến đi tới hơn 600 thành phố và hơn 100 quốc gia";
+
+"catalog_no_internet_title" = "Không có kết nối internet";
+
+"catalog_no_internet_button" = "Thử lại";
+
+"whatsnew_map_updates_title" = "Cập nhật bản đồ siêu nhanh";
+
+"whatsnew_map_updates_message" = "Giờ thì dữ liệu sẽ được cập nhật nhanh hơn gấp 2 lần";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "đỗ xe";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Thiết bị thanh toán";
 
 "type.amenity.pharmacy" = "3Hiệu thuốc";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Bưu điện";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Quán rượu";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Nhà hát";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Máy bán thuốc lá";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Điểm cấp nước";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Khối";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Biên Phòng";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Lối vào";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Cổng";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Thanh Chắn";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Trụ chắn";
 
 "type.barrier.toll_booth" = "Quầy Soát Vé";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Điểm khảo cổ";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Nước";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Bãi tha ma";
 
 "type.landuse.cemetery.christian" = "Bãi tha ma";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Cánh đồng";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Hồ";
 

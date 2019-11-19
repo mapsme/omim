@@ -2,11 +2,6 @@ project(routing_quality)
 
 set(
   SRC
-  mapbox/api.cpp
-  mapbox/api.hpp
-  mapbox/types.hpp
-  utils.cpp
-  utils.hpp
   waypoints.cpp
   waypoints.hpp
 )
@@ -15,7 +10,7 @@ omim_add_library(${PROJECT_NAME} ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  generator
+  routes_builder
   routing
   traffic
   routing_common
@@ -36,6 +31,7 @@ omim_link_libraries(
   ${LIBZ}
 )
 
+add_subdirectory(api)
 add_subdirectory(routing_quality_tool)
 
 omim_add_test_subdirectory(routing_quality_tests)

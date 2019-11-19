@@ -2,6 +2,7 @@
 #include "routing_common/car_model_coefs.hpp"
 
 #include "indexer/classificator.hpp"
+#include "indexer/feature.hpp"
 
 #include "base/macros.hpp"
 
@@ -62,7 +63,13 @@ std::array<char const *, 41> constexpr kCountries = {"Australia",
                                                      "United States of America",
                                                      "Venezuela"};
 
-double constexpr kSpeedOffroadKMpH = 10.0;
+// |kSpeedOffroadKMpH| is a speed which is used for edges that don't lie on road features.
+// For example for pure fake edges. In car routing, off road speed for calculation ETA is not used.
+// The weight of such edges is considered as 0 seconds. It's especially actual when an airport is
+// a start or finish. On the other hand, while route calculation the fake edges are considered
+// as quite heavy. The idea behind that is to use the closest edge for the start and the finish
+// of the route except for some edge cases.
+SpeedKMpH constexpr kSpeedOffroadKMpH = {0.01 /* weight */, kNotUsed /* eta */};
 
 VehicleModel::LimitsInitList const kCarOptionsDefault = {
     // {{roadType, roadType}  passThroughAllowed}
@@ -176,7 +183,7 @@ VehicleModel::SurfaceInitList const kCarSurface = {
   // {{surfaceType, surfaceType}, {weightFactor, etaFactor}}
   {{"psurface", "paved_good"}, {1.0, 1.0}},
   {{"psurface", "paved_bad"}, {0.5, 0.5}},
-  {{"psurface", "unpaved_good"}, {0.8, 0.8}},
+  {{"psurface", "unpaved_good"}, {0.5, 0.8}},
   {{"psurface", "unpaved_bad"}, {0.3, 0.3}}
 };
 
@@ -199,20 +206,34 @@ CarModel::CarModel()
   : VehicleModel(classif(), kCarOptionsDefault, kCarSurface,
                  {kGlobalHighwayBasedMeanSpeeds, kGlobalHighwayBasedFactors})
 {
-  InitAdditionalRoadTypes();
+  Init();
 }
 
 CarModel::CarModel(VehicleModel::LimitsInitList const & roadLimits, HighwayBasedInfo const & info)
   : VehicleModel(classif(), roadLimits, kCarSurface, info)
 {
-  InitAdditionalRoadTypes();
+  Init();
 }
 
-double CarModel::GetOffroadSpeed() const { return kSpeedOffroadKMpH; }
+SpeedKMpH const & CarModel::GetOffroadSpeed() const { return kSpeedOffroadKMpH; }
 
-void CarModel::InitAdditionalRoadTypes()
+void CarModel::Init()
 {
+  m_noCarType = classif().GetTypeByPath({"hwtag", "nocar"});
+  m_yesCarType = classif().GetTypeByPath({"hwtag", "yescar"});
+
   SetAdditionalRoadTypes(classif(), kAdditionalTags);
+}
+
+VehicleModelInterface::RoadAvailability CarModel::GetRoadAvailability(feature::TypesHolder const & types) const
+{
+  if (types.Has(m_yesCarType))
+    return RoadAvailability::Available;
+
+  if (types.Has(m_noCarType))
+    return RoadAvailability::NotAvailable;
+
+  return RoadAvailability::Unknown;
 }
 
 // static

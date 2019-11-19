@@ -1,9 +1,8 @@
 #import "MWMCircularProgressView.h"
-#import "MWMCommon.h"
 #import "SwiftBridge.h"
 #import "UIImageView+Coloring.h"
 
-#include "std/map.hpp"
+#include <map>
 
 namespace
 {
@@ -32,8 +31,8 @@ CGFloat angleWithProgress(CGFloat progress) { return 2.0 * M_PI * progress - M_P
 
 @implementation MWMCircularProgressView
 {
-  map<MWMCircularProgressState, MWMButtonColoring> m_buttonColoring;
-  map<MWMCircularProgressState, NSString *> m_images;
+  std::map<MWMCircularProgressState, MWMButtonColoring> m_buttonColoring;
+  std::map<MWMCircularProgressState, NSString *> m_images;
 }
 
 - (void)awakeFromNib

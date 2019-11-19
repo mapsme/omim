@@ -45,7 +45,7 @@ using Relevance = search::Sample::Result::Relevance;
 
 namespace
 {
-char const kJSON[] = "JSON files (*.json)";
+char const kJSON[] = "JSON Lines files (*.jsonl)";
 }  // namespace
 
 MainView::MainView(Framework & framework) : m_framework(framework)
@@ -58,8 +58,9 @@ MainView::MainView(Framework & framework) : m_framework(framework)
   InitDocks();
   InitMenuBar();
 
-  m_framework.SetMapSelectionListeners(
-      [this](place_page::Info const & info) {
+  m_framework.SetPlacePageListeners(
+      [this]() {
+        auto const & info = m_framework.GetCurrentPlacePageInfo();
         auto const & selectedFeature = info.GetID();
         if (!selectedFeature.IsValid())
           return;
@@ -79,7 +80,8 @@ MainView::MainView(Framework & framework) : m_framework(framework)
         FeatureInfoDialog dialog(this /* parent */, mapObject, address, m_sampleLocale);
         dialog.exec();
       },
-      [this](bool /* switchFullScreenMode */) { m_selectedFeature = FeatureID(); });
+      [this](bool /* switchFullScreenMode */) { m_selectedFeature = FeatureID(); },
+      {} /* onUpdate */);
 }
 
 MainView::~MainView()
@@ -168,7 +170,7 @@ void MainView::MoveViewportToResult(search::Sample::Result const & result)
 {
   int constexpr kViewportAroundResultSizeM = 100;
   auto const rect =
-      MercatorBounds::RectByCenterXYAndSizeInMeters(result.m_pos, kViewportAroundResultSizeM);
+      mercator::RectByCenterXYAndSizeInMeters(result.m_pos, kViewportAroundResultSizeM);
   MoveViewportToRect(rect);
 }
 

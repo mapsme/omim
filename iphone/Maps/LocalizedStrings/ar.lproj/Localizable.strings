@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "لا توجد اشتراكات نشطة";
 
-"subscription_terms" = "سيتم خصم المبلغ من حساب iTunes الخاص بك عند تأكيد عملية الشراء. سيتم تجديد الاشتراك تلقائياً ما لم يتم إيقاف التجديد التلقائي قبل 24 ساعة على الأقل من نهاية الفترة الحالية. سيتم الخصم من حسابك وفقاً لخطة التجديد الخاصة بك وذلك خلال 24 ساعة قبل انتهاء الفترة الحالية. يمكنك إدارة أو إيقاف التجديد التلقائي عبر إعدادات حساب Apple ID الخاص بك في أي وقت عند الشراء.";
-
 "subscriptions_title" = "الاشتراكات";
 
 "manage_subscription" = "إدارة الاشتراك";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "هذا الملف تالف ولا يمكن تحميله. يرجى تحميل ملف آخر.";
 
-"buy_btn" = "شراء لـ%s";
+"buy_btn" = "اشتري مقابل %s";
 
 "download_guide_progress" = "تحميل الدليل الخاص بك…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "لا يمكن تحديد طريق. يرجى تحديد أماكن أخرى على الطريق";
 
-"dialog_routing_download_files_carplay" = "لا تتواجد جميع الخرائط من أجل تحديد طريق. يرجى تحميلهم على هاتفك المحمول";
+"dialog_routing_download_files_carplay" = "كي تُنشئ مساراً، يجب أن تحمل الخرائط المفقودة على جهازك";
 
 "dialog_routing_system_error_carplay" = "حدث خطأ. يرجى إعادة تشغيل التطبيق";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "اختر فندقًا على الخريطة";
+
+"popup_booking_download_guides_title" = "هل حجزت فندقًا؟";
+
+"popup_booking_download_guides_message" = "خطط لوجهتك باستخدام دلائل جاهزة من MAPS.ME";
+
+"popup_mwm_download_guides_title" = "أدلة المدينة غير متصلة";
+
+"popup_mwm_download_guides_cta" = "اختر واحدة";
+
+"popup_mwm_download_guides_cta_1" = "الق نظرة";
+
+"gallery_pp_download_guides_offline_title" = "خطط لعطلتك مع MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "لا تفوت أي شىء مع دلائل تم اعدادها بواسطة خبراء السفر";
+
+"gallery_pp_download_guides_offline_cta" = "فعل الانترنت";
+
+"gallery_pp_download_guides_title" = "الدلائل";
+
+"native_screen_subscription_title" = "وصول غير محدود لأكثر من 2000 دليل سفر!";
+
+"native_screen_subscription_message" = "ذكرى مميزة لعطلتك في أي مكان وبصحبة أي شخص";
+
+"annual_subscription_title" = "سنوي";
+
+"montly_subscription_title" = "شهري";
+
+"annual_subscription_message" = "12 شهرًا من الوصول الغير محدود";
+
+"montly_subscription_message" = "شهرًا واحدًا من الوصول الغير محدود";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "شكرًا لاشتراكك!";
+
+"subscription_success_dialog_message" = "تمتلك الآن وصولًا غير محدود لكل الدلائل";
+
+"renewal_screen_title" = "انتهت فترة صلاحية اشتراكك";
+
+"renewal_screen_message" = "سيتم حذف جميع الدلائل التي تم تحميلها بواسطة الاشتراك. هل تريد اعادة الاشتراك والاحتفاظ بهم؟";
+
+"renewal_screen_button_restore" = "نعم، جدد الاشتراك";
+
+"renewal_screen_button_cancel" = "لا، احذف الدلائل";
+
+"subscription_error_ping_title" = "فشل عملية الشراء";
+
+"subscription_error_message" = "الخدمة غير متوفرة حاليا فى منطقتك. يرجى المحاولة في وقت لاحق";
+
+"subscription_error_button" = "حسنًا";
+
+"timeout_error_title" = "آسف، انتهى الوقت!";
+
+"timeout_error_message" = "خوادمنا لا تستجيب. يرجى التحقق من اتصال الانترنت والمحاولة مجددًا.";
+
+"per_month" = "شهر/";
+
+"per_year" = "سنة/";
+
+"buy_btn_for_subscription" = "وصول غير محدود من %s";
+
+"buy_btn_for_subscription_1" = "اشتري جميع الدلائل مقابل %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "وصول غير محدود %s/شهر";
+
+"buy_btn_for_subscription_ios_only_year" = "وصول غير محدود %s/سنة";
+
+"subscription_terms_guides" = "سيتم خصم المدفوعات من حساب iTunes الخاص بك مع تأكيد عملية الشراء. سيتم تجديد الاشتراك تلقائيًا ما لم يتم تعطيل خاصية التجديد التلقائي قبل 24 ساعة من انتهاء فترة الاشتراك الحالية. سيتم خصم قيمة الاشتراك طبقًا لخطة الاشتراك الخاصة بك للتجديد خلال 24 ساعة قبل انتهاء فترة الاشتراك الحالية. يمكنك ادارة أو تعطيل خاصية التجديد التلقائي في حساب Apple ID الخاص بك في أي وقت بعد شرائك. يمكنك استخدام الدلائل التي تم تحميلها فقط عن طريق اشتراكك حتى تاريخ انتهاء الاشتراك  سيتم حذف الدلائل والعلامات المميزة عليها تلقائيًا بعد 30 يومًا من انتهاء فترة الاشتراك.";
+
+"subscription_terms" = "سيتم خصم المبلغ من حساب iTunes الخاص بك عند تأكيد عملية الشراء. سيتم تجديد الاشتراك تلقائياً ما لم يتم إيقاف التجديد التلقائي قبل 24 ساعة على الأقل من نهاية الفترة الحالية. سيتم الخصم من حسابك وفقاً لخطة التجديد الخاصة بك وذلك خلال 24 ساعة قبل انتهاء الفترة الحالية. يمكنك إدارة أو إيقاف التجديد التلقائي عبر إعدادات حساب Apple ID الخاص بك في أي وقت عند الشراء.";
+
+"whatsnew_carplay_title" = "نظام ملاحة السيارات MAPS.ME في CarPlay!";
+
+"whatsnew_carplay_message" = "خصائص تحديد علامات الأماكن، والبحث، وكاميرات السرعة والمسارات متاحة بدون اتصال بالانترنت";
+
+"whatsnew_subscription_title" = "كل العالم بواسطة الاشتراك!";
+
+"whatsnew_subscription_message" = "الوصول الغير محدود لفهرس الدلائل مربح أكثر من الشراء لمرة واحدة";
+
+"whatsnew_carnavi_fixes_for_android_title" = "تحديث الملاحة";
+
+"whatsnew_carnavi_fixes_for_android_message" = "لقد طورنا تخطيط المسارات لأماكن موجودة بعيدة عن الطرق";
+
+"avoid_unpaved_carplay_1" = "غير ترابي";
+
+"avoid_unpaved_carplay_2" = "تجنب غير الممهد";
+
+"avoid_ferry_carplay_1" = "بدون عبََارة";
+
+"avoid_ferry_carplay_2" = "تجنب العبََارة";
+
+"avoid_tolls_carplay_1" = "بدون رسوم";
+
+"avoid_tolls_carplay_2" = "تجنب الرسوم";
+
+"speedcams_alert_title_carplay_1" = "كاميرا سريعة";
+
+"speedcams_alert_title_carplay_2" = "تحذير سريع";
+
+"download_map_carplay" = "يُرجى تحميل الخرائط في تطبيق MAPS.ME على جهازك";
+
+"carplay_roundabout_exit" = "المخرج رقم %s";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "تريتب…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "رتب العلامات المرجعية";
+
+/* iOS */
+"sort_default" = "رتب افتراضي";
+
+"sort_type" = "رتب حسب النوع";
+
+"sort_distance" = "رتب حسب المسافة";
+
+"sort_date" = "رتب حسب التاريخ";
+
+/* Android */
+"by_default" = "افتراضي";
+
+/* Android */
+"by_type" = "حسب النوع";
+
+/* Android */
+"by_distance" = "حسب المسافة";
+
+/* Android */
+"by_date" = "حسب التاريخ";
+
+"week_ago_sorttype" = "منذ أسبوع";
+
+"month_ago_sorttype" = "منذ شهر";
+
+"moremonth_ago_sorttype" = "منذ أكثر من شهر";
+
+"moreyear_ago_sorttype" = "منذ أكثر من سنة";
+
+"near_me_sorttype" = "قريب مني";
+
+"others_sorttype" = "أخرى";
+
+"food_places" = "طعام";
+
+"tourist_places" = "مشاهد";
+
+"museums" = "متاحف";
+
+"parks" = "حدائق";
+
+"swim_places" = "سباحة";
+
+"mountains" = "جبال";
+
+"animals" = "حيوانات";
+
+"hotels" = "فنادق";
+
+"buildings" = "بنايات";
+
+"money" = "نقود";
+
+"shops" = "متاجر";
+
+"parkings" = "مواقف سيارات";
+
+"fuel_places" = "محطات وقود";
+
+"water" = "ماء";
+
+"medicine" = "دواء";
+
+"search_in_the_list" = "بحث في القائمة";
+
+"view_on_map_bookmarks" = "على الخريطة";
+
+"more_bookmarks" = "المزيد…";
+
+"no_items_found" = "لم يتم العثور على عناصر";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "تحرير القائمة";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "حذف القائمة";
+
+"whatsnew_bookmarks_search_sort_title" = "ترتيب الإشارات المرجعية لرحلة مريحة";
+
+"whatsnew_bookmarks_search_sort_message" = "رتب الأماكن المفضلة حسب الفئة والموقع وترتيبها الزمني، وكذلك البحث عن إشارات مرجعية محددة بسرعة حسب اسمهم";
+
+"popup_subscription_success_map_title" = "يا للروعة، لقد قمت بالاشتراك!";
+
+"popup_subscription_success_map_message" = "اكتشف الآن أفضل المعالم السياحية في كتالوج MAPS.ME";
+
+"popup_subscription_success_map_start_button" = "ابدأ البحث";
+
+"popup_subscription_success_map_not_now_button" = "ليس الآن";
+
+"religious_places" = "أماكن دينية";
+
+"subscription_terms_android" = "عندما تؤكد عملية الشراء، سيتم الدفع عبر حسابك في Google Play سيتم تجديد الاشتراك تلقائياً ما لم يتم إيقاف تشغيل ميزة التجديد التلقائي قبل 24 ساعة على الأقل من نهاية الفترة الحالية. سيتم فرض رسوم على حسابك وفقاً لخطة التجديد الخاصة بك في غضون 24 ساعة قبل نهاية الفترة الحالية. يمكنك إدارة أو إيقاف تشغيل ميزة التجديد التلقائي في إعدادات الحساب بعد الشراء. يمكنك استخدام الأدلة التي تم تنزيلها عن طريق الاشتراك حتى تاريخ انتهاء الصلاحية فقط. بعد 30 يوماً من تاريخ انتهاء الاشتراك سيتم حذف الأدلة التي تم تنزيلها تلقائياً.";
+
+"select_list" = "اختر القائمة";
+
+"pp_discovery_place_related_header" = "هذا المكان في كاتالوج أدلة السفر";
+
+"pp_discovery_place_related_header_1" = "يتم العثور على هذا المكان في أدلة السفر";
+
+"pp_discovery_place_related_cta_button" = "مشاهدة";
+
+"pp_discovery_place_related_tag_header" = "أدلة السفرحسب العلامة “%s”";
+
+"pp_discovery_place_related_tag_header_1" = "سوف تعجبك كذلك";
+
+"buy_btn_for_subscription_version_2" = "جميع الأدلة فقط من أجل %s /شهر";
+
+"buy_btn_for_subscription_version_3" = "كامل الكتالوج من أجل %s /شهر";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "الوصول إلى الكاتالوج من أجل %s /شهر";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "الوصول إلى الكاتالوج من أجل %s /سنة";
+
+"subscription_screen_native_title_version_2" = "الوصول إلى الأدلة مع الإشارات المرجعية!";
+
+"subscription_screen_native_message_version_2" = "كن مستعداً لأي رحلة إلى أكثر من 600 مدينة و100 دولة";
+
+"catalog_no_internet_title" = "غير متصل";
+
+"catalog_no_internet_button" = "حاول مرة أخرى";
+
+"whatsnew_map_updates_title" = "تحديث الخارطة بشكل سريع جداً";
+
+"whatsnew_map_updates_message" = "منالآن فصاعداً نقوم بتحديث البيانات مرتين بسرعة";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "موقف سيارات";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "محطة دفع";
 
 "type.amenity.pharmacy" = "متجر أدوية";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "بريد";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "بار";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "جامعة";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "ماكينة بيع سجائر";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "نقطة مائية";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "حاجز";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "أمن الحدود";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "مدخل الحاجز";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "بوابة";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "حاجز بوابة";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "ممر عبور";
 
 "type.barrier.toll_booth" = "كشك رسوم عبور";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "موقع أثري";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "مياه";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "مقبرة";
 
 "type.landuse.cemetery.christian" = "مقبرة";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "ملعب";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "بحيرة";
 

@@ -1,16 +1,16 @@
 package com.mapswithme.maps.permissions;
 
 import android.content.DialogInterface;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.mapswithme.maps.R;
 
@@ -36,7 +36,7 @@ public class PermissionsDialogFragment extends BasePermissionsDialogFragment
   @Override
   protected int getImageRes()
   {
-    return R.drawable.img_permissions;
+    return R.drawable.img_permission_explanation;
   }
 
   @StringRes
@@ -64,7 +64,7 @@ public class PermissionsDialogFragment extends BasePermissionsDialogFragment
   @Override
   protected int getFirstActionButton()
   {
-    return R.id.btn__learn_more;
+    return R.id.decline_btn;
   }
 
   @Override
@@ -77,7 +77,7 @@ public class PermissionsDialogFragment extends BasePermissionsDialogFragment
   @Override
   protected int getContinueActionButton()
   {
-    return R.id.btn__continue;
+    return R.id.accept_btn;
   }
 
   @Override

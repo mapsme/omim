@@ -69,6 +69,7 @@ public:
 
   // Sends a signal to the thread to shut down and waits for completion.
   void ShutdownAndJoin();
+  bool IsShutDown();
 
   static TimePoint Now() { return Clock::now(); }
 
@@ -111,7 +112,7 @@ private:
 
   void ProcessTasks();
 
-  std::vector<threads::SimpleThread> m_threads;
+  std::vector<::threads::SimpleThread> m_threads;
   std::mutex m_mu;
   std::condition_variable m_cv;
 

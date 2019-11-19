@@ -6,7 +6,8 @@ typedef NS_ENUM(NSUInteger, MWMValidationResult)
 {
   MWMValidationResultValid,
   MWMValidationResultNotValid,
-  MWMValidationResultError,
+  MWMValidationResultServerError,
+  MWMValidationResultAuthError
 };
 
 typedef void (^ValidateReceiptCallback)(NSString * serverId, MWMValidationResult validationResult);
@@ -15,17 +16,25 @@ typedef void (^StartTransactionCallback)(BOOL success, NSString * serverId);
 
 @interface MWMPurchaseManager : NSObject
 
++ (NSString *)bookmarksSubscriptionServerId;
++ (NSString *)bookmarksSubscriptionVendorId;
++ (NSArray<NSString *> *)bookmakrsProductIds;
 + (NSString *)adsRemovalServerId;
 + (NSString *)adsRemovalVendorId;
 + (NSArray<NSString *> *)productIds;
++ (NSString *)allPassSubscriptionServerId;
++ (NSString *)allPassSubscriptionVendorId;
++ (NSArray<NSString *> *)allPassProductIds;
 + (NSArray<NSString *> *)legacyProductIds;
-+ (MWMPurchaseManager *)sharedManager;
++ (NSArray<NSString *> *)bookmarkInappIds;
++ (void)setAdsDisabled:(BOOL)disabled;
++ (void)setBookmarksSubscriptionActive:(BOOL)active;
 
+- (instancetype)initWithVendorId:(NSString *)vendorId;
 - (void)validateReceipt:(NSString *)serverId
          refreshReceipt:(BOOL)refresh
                callback:(ValidateReceiptCallback)callback;
 - (void)startTransaction:(NSString *)serverId callback:(StartTransactionCallback)callback;
-- (void)setAdsDisabled:(BOOL)disabled;
 - (void)refreshReceipt;
 
 @end

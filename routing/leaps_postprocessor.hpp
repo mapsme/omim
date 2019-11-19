@@ -21,15 +21,17 @@ namespace routing
 ///                         |   ↑
 ///                        f4  f5
 ///                         ↓   |
-///                           *   <------- intermediate point.
+///                           *   <------- mwm exit.
 ///
 /// As you can see, we can go from f3 to f6 but because of heuristic searching of intermediate
-/// points in LeapsOnly routing algorithm, we build route through this point and received next path:
+/// points (mwms' exists) in LeapsOnly routing algorithm, we build route through this point
+/// and received next path:
 /// {..., f3, f4, f5, f6, ... } - this is Loop.
 /// So next class provides local optimization and relax such paths:
 /// (... f3 -> f4 -> f5 -> f6 ...) to (... f3 -> f6 ...).
 ///
-/// Works for: O(N). Where N it is path's length.
+/// Works for: |kMaxStep| * N. Where N it is path's length.
+/// Thus it is O(N), but we should not increase |kMaxStep| much.
 class LeapsPostProcessor
 {
 public:
@@ -67,10 +69,12 @@ private:
     double m_summaryETA = 0.0;
   };
 
+  void Init();
+
   std::set<PathInterval, PathInterval::GreaterByWeight> CalculateIntervalsToRelax();
   void FillIngoingPaths(Segment const & start, std::map<Segment, SegmentData> & segmentsData);
 
-  std::vector<Segment> const & m_path;
+  std::vector<Segment> m_path;
   IndexGraphStarter & m_starter;
 
   BFS<IndexGraphStarter> m_bfs;

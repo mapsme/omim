@@ -2,8 +2,15 @@
 
 #include "map/framework.hpp"
 
-#include "std/unordered_map.hpp"
-#include "std/vector.hpp"
+#include "base/thread_checker.hpp"
+
+#include <cstdint>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
+#include <boost/optional.hpp>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
@@ -37,28 +44,44 @@ namespace qt
   private slots:
     void OnItemClick(QTreeWidgetItem * item, int column);
     void OnCloseClick();
-    void OnTextChanged(QString const & text);
+    void OnLocaleTextChanged(QString const & text);
+    void OnQueryTextChanged(QString const & text);
 
   private:
-    void FillTree(string const & filter);
+    // CountryId to its ranking position and matched string (assuming no duplicates).
+    using Filter = std::unordered_map<storage::CountryId, std::pair<size_t, std::string>>;
+
+    void RefillTree();
+    void StartSearchInDownloader();
+
+    // Adds only those countries present in |filter|.
+    // Calls whose timestamp is not the latest are discarded.
+    void FillTree(boost::optional<Filter> const & filter, uint64_t timestamp);
     void FillTreeImpl(QTreeWidgetItem * parent, storage::CountryId const & countryId,
-                      string const & filter);
+                      boost::optional<Filter> const & filter);
+
     void UpdateRowWithCountryInfo(storage::CountryId const & countryId);
     void UpdateRowWithCountryInfo(QTreeWidgetItem * item, storage::CountryId const & countryId);
     QString GetNodeName(storage::CountryId const & countryId);
 
-    QTreeWidgetItem * CreateTreeItem(storage::CountryId const & countryId,
-                                     QTreeWidgetItem * parent);
-    vector<QTreeWidgetItem *> GetTreeItemsByCountryId(storage::CountryId const & countryId);
+    QTreeWidgetItem * CreateTreeItem(storage::CountryId const & countryId, size_t posInRanking,
+                                     std::string matchedBy, QTreeWidgetItem * parent);
+    std::vector<QTreeWidgetItem *> GetTreeItemsByCountryId(storage::CountryId const & countryId);
     storage::CountryId GetCountryIdByTreeItem(QTreeWidgetItem *);
 
-  private:
     inline storage::Storage & GetStorage() const { return m_framework.GetStorage(); }
 
     QTreeWidget * m_tree;
     Framework & m_framework;
     int m_observerSlotId;
 
-    unordered_multimap<storage::CountryId, QTreeWidgetItem *> m_treeItemByCountryId;
+    // Params of the queries to the search engine.
+    std::string m_query;
+    std::string m_locale = "en";
+    uint64_t m_fillTreeTimestamp = 0;
+
+    std::unordered_multimap<storage::CountryId, QTreeWidgetItem *> m_treeItemByCountryId;
+
+    DECLARE_THREAD_CHECKER(m_threadChecker);
   };
-} // namespace qt
+}  // namespace qt

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "routing/edge_estimator.hpp"
 #include "routing/geometry.hpp"
 #include "routing/index_graph.hpp"
 #include "routing/joint_segment.hpp"
@@ -45,7 +46,7 @@ public:
 
   virtual ~WorldGraph() = default;
 
-  virtual void GetEdgeList(Segment const & segment, bool isOutgoing,
+  virtual void GetEdgeList(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
                            std::vector<SegmentEdge> & edges) = 0;
   virtual void GetEdgeList(JointSegment const & vertex, Segment const & segment, bool isOutgoing,
                            std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights) = 0;
@@ -73,13 +74,16 @@ public:
   virtual RouteWeight HeuristicCostEstimate(m2::PointD const & from, m2::PointD const & to) = 0;
   virtual RouteWeight HeuristicCostEstimate(Segment const & from, m2::PointD const & to) = 0;
 
-  virtual RouteWeight CalcSegmentWeight(Segment const & segment) = 0;
+  virtual RouteWeight CalcSegmentWeight(Segment const & segment,
+                                        EdgeEstimator::Purpose purpose) = 0;
 
   virtual RouteWeight CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const = 0;
 
-  virtual RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to) const = 0;
+  virtual RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to,
+                                        EdgeEstimator::Purpose purpose) const = 0;
 
-  virtual double CalcSegmentETA(Segment const & segment) = 0;
+  virtual double CalculateETA(Segment const & from, Segment const & to) = 0;
+  virtual double CalculateETAWithoutPenalty(Segment const & segment) = 0;
 
   /// \returns transitions for mwm with id |numMwmId|.
   virtual std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter);
@@ -93,6 +97,7 @@ public:
 
   virtual void SetAStarParents(bool forward, ParentSegments & parents);
   virtual void SetAStarParents(bool forward, ParentJoints & parents);
+  virtual void DropAStarParents();
 
   virtual bool AreWavesConnectible(ParentSegments & forwardParents, Segment const & commonVertex,
                                   ParentSegments & backwardParents,
@@ -109,7 +114,8 @@ public:
   virtual IndexGraph & GetIndexGraph(NumMwmId numMwmId) = 0;
 
 protected:
-  void GetTwins(Segment const & segment, bool isOutgoing, std::vector<SegmentEdge> & edges);
+  void GetTwins(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
+                std::vector<SegmentEdge> & edges);
   virtual void GetTwinsInner(Segment const & segment, bool isOutgoing,
                              std::vector<Segment> & twins) = 0;
 };

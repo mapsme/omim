@@ -1,9 +1,6 @@
 #import "MWMFrameworkListener.h"
 
-#include "Framework.h"
-
-#include "storage/storage.hpp"
-#include "storage/storage_defines.hpp"
+#include <CoreApi/Framework.h>
 
 namespace
 {
@@ -122,6 +119,18 @@ void loopWrappers(Observers * observers, TLoopBlock block)
     loopWrappers(observers, [rec](TRouteBuildingObserver observer) {
       if ([observer respondsToSelector:@selector(processRouteRecommendation:)])
         [observer processRouteRecommendation:rec];
+    });
+  });
+  rm.SetRouteSpeedCamShowListener([observers](m2::PointD const & point, double cameraSpeedKmPH) {
+    loopWrappers(observers, [cameraSpeedKmPH](TRouteBuildingObserver observer) {
+      if ([observer respondsToSelector:@selector(speedCameraShowedUpOnRoute:)])
+          [observer speedCameraShowedUpOnRoute:cameraSpeedKmPH];
+    });
+  });
+  rm.SetRouteSpeedCamsClearListener([observers]() {
+    loopWrappers(observers, ^(TRouteBuildingObserver observer) {
+      if ([observer respondsToSelector:@selector(speedCameraLeftVisibleArea)])
+          [observer speedCameraLeftVisibleArea];
     });
   });
 }

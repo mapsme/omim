@@ -1,14 +1,15 @@
 package com.mapswithme.maps.bookmarks;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.MenuRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.CallSuper;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.MenuRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -16,9 +17,12 @@ import com.cocosw.bottomsheet.BottomSheet;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.adapter.OnItemClickListener;
 import com.mapswithme.maps.base.BaseMwmRecyclerFragment;
+import com.mapswithme.maps.bookmarks.data.AbstractCategoriesSnapshot;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.BookmarkSharingResult;
+import com.mapswithme.maps.base.DataChangedListener;
+import com.mapswithme.maps.bookmarks.data.FilterStrategy;
 import com.mapswithme.maps.dialog.EditTextDialogFragment;
 import com.mapswithme.maps.ugc.routes.UgcRouteEditSettingsActivity;
 import com.mapswithme.maps.ugc.routes.UgcRouteSharingOptionsActivity;
@@ -29,6 +33,8 @@ import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.sharing.SharingHelper;
 import com.mapswithme.util.statistics.Analytics;
 import com.mapswithme.util.statistics.Statistics;
+
+import java.util.List;
 
 public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFragment<BookmarkCategoriesAdapter>
     implements EditTextDialogFragment.EditTextDialogInterface,
@@ -41,9 +47,12 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
                OnItemLongClickListener<BookmarkCategory>
 
 {
+  static final int REQ_CODE_CATALOG = 101;
+  private static final int REQ_CODE_DELETE_CATEGORY = 102;
+
   private static final int MAX_CATEGORY_NAME_LENGTH = 60;
 
-  @NonNull
+  @Nullable
   private BookmarkCategory mSelectedCategory;
   @Nullable
   private CategoryEditor mCategoryEditor;
@@ -54,6 +63,10 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   @SuppressWarnings("NullableProblems")
   @NonNull
   private BookmarkManager.BookmarksCatalogListener mCatalogListener;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private DataChangedListener mCategoriesAdapterObserver;
 
   @Override
   @LayoutRes
@@ -66,7 +79,10 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   @Override
   protected BookmarkCategoriesAdapter createAdapter()
   {
-    return new BookmarkCategoriesAdapter(getActivity());
+    FilterStrategy strategy = getType().getFilterStrategy();
+    List<BookmarkCategory> items = BookmarkManager.INSTANCE.getCategoriesSnapshot(strategy)
+                                                           .getItems();
+    return new BookmarkCategoriesAdapter(requireContext(), getType(), items);
   }
 
   @CallSuper
@@ -88,6 +104,8 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
         .createVerticalDefaultDecorator(getContext());
     rw.addItemDecoration(decor);
     mCatalogListener = new CatalogListenerDecorator(createCatalogListener(), this);
+    mCategoriesAdapterObserver = new CategoriesAdapterObserver(this);
+    BookmarkManager.INSTANCE.addCategoriesUpdatesListener(mCategoriesAdapterObserver);
   }
 
   protected void onPrepareControllers(@NonNull View view)
@@ -145,6 +163,13 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   }
 
   @Override
+  public void onDestroyView()
+  {
+    super.onDestroyView();
+    BookmarkManager.INSTANCE.removeCategoriesUpdatesListener(mCategoriesAdapterObserver);
+  }
+
+  @Override
   public boolean onMenuItemClick(MenuItem item)
   {
     MenuItemClickProcessorWrapper processor = MenuItemClickProcessorWrapper
@@ -152,11 +177,10 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
     processor
         .mInternalProcessor
-        .process(this, mSelectedCategory);
+        .process(this, getSelectedCategory());
     Statistics.INSTANCE.trackBookmarkListSettingsClick(processor.getAnalytics());
     return true;
   }
-
 
   protected final void showBottomMenu(@NonNull BookmarkCategory item)
   {
@@ -263,17 +287,21 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     return new CategoryValidator();
   }
 
+  @NonNull
+  protected abstract BookmarkCategory.Type getType();
+
   @Override
   public void onItemClick(@NonNull View v, @NonNull BookmarkCategory category)
   {
-    startActivity(makeBookmarksListIntent(category));
+    mSelectedCategory = category;
+    startActivityForResult(makeBookmarksListIntent(category), REQ_CODE_DELETE_CATEGORY);
   }
 
   @NonNull
   private Intent makeBookmarksListIntent(@NonNull BookmarkCategory category)
   {
     return new Intent(getActivity(), BookmarkListActivity.class)
-                      .putExtra(BookmarksListFragment.EXTRA_CATEGORY, category);
+        .putExtra(BookmarksListFragment.EXTRA_CATEGORY, category);
   }
 
   protected void onShareActionSelected(@NonNull BookmarkCategory category)
@@ -281,11 +309,33 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
     SharingHelper.INSTANCE.prepareBookmarkCategoryForSharing(getActivity(), category.getId());
   }
 
-  @CallSuper
-  protected void onDeleteActionSelected(@NonNull BookmarkCategory category)
+  private void onDeleteActionSelected(@NonNull BookmarkCategory category)
   {
     BookmarkManager.INSTANCE.deleteCategory(category.getId());
     getAdapter().notifyDataSetChanged();
+    onDeleteActionSelected();
+  }
+
+  protected void onDeleteActionSelected()
+  {
+    // Do nothing.
+  }
+
+  protected void onActivityResultInternal(int requestCode, int resultCode, @NonNull Intent data)
+  {
+    // Do nothing.
+  }
+
+  @Override
+  public final void onActivityResult(int requestCode, int resultCode, Intent data)
+  {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode == Activity.RESULT_OK && requestCode == REQ_CODE_DELETE_CATEGORY)
+    {
+      onDeleteActionSelected(getSelectedCategory());
+      return;
+    }
+    onActivityResultInternal(requestCode, resultCode, data);
   }
 
   @Override
@@ -320,6 +370,8 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
   @NonNull
   protected BookmarkCategory getSelectedCategory()
   {
+    if (mSelectedCategory == null)
+      throw new AssertionError("Invalid attempt to use null selected category.");
     return mSelectedCategory;
   }
 
@@ -496,6 +548,41 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
       {
         UgcRouteEditSettingsActivity.startForResult(frag.getActivity(), category);
       }
+    }
+  }
+
+  private static class CategoriesAdapterObserver implements DataChangedListener<BaseBookmarkCategoriesFragment>
+  {
+    @Nullable
+    private BaseBookmarkCategoriesFragment mFragment;
+
+    CategoriesAdapterObserver(@NonNull BaseBookmarkCategoriesFragment fragment)
+    {
+      mFragment = fragment;
+    }
+
+    @Override
+    public void attach(@NonNull BaseBookmarkCategoriesFragment object)
+    {
+      mFragment = object;
+    }
+
+    @Override
+    public void detach()
+    {
+      mFragment = null;
+    }
+
+    @Override
+    public void onChanged()
+    {
+      if (mFragment == null)
+        return;
+
+      FilterStrategy strategy = mFragment.getType().getFilterStrategy();
+      AbstractCategoriesSnapshot.Default snapshot =
+          BookmarkManager.INSTANCE.getCategoriesSnapshot(strategy);
+      mFragment.getAdapter().setItems(snapshot.getItems());
     }
   }
 }

@@ -11,6 +11,8 @@
 #include "transit/transit_graph_data.hpp"
 #include "transit/transit_types.hpp"
 
+#include "routing_common/num_mwm_id.hpp"
+
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -32,7 +34,7 @@ public:
   TransitGraph(NumMwmId numMwmId, std::shared_ptr<EdgeEstimator> estimator);
 
   Junction const & GetJunction(Segment const & segment, bool front) const;
-  RouteWeight CalcSegmentWeight(Segment const & segment) const;
+  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) const;
   RouteWeight GetTransferPenalty(Segment const & from, Segment const & to) const;
   void GetTransitEdges(Segment const & segment, bool isOutgoing,
                        std::vector<SegmentEdge> & edges) const;

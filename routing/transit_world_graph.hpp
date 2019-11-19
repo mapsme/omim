@@ -34,8 +34,13 @@ public:
   // WorldGraph overrides:
   ~TransitWorldGraph() override = default;
 
-  void GetEdgeList(Segment const & segment, bool isOutgoing,
+  void GetEdgeList(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
                    std::vector<SegmentEdge> & edges) override;
+  void GetEdgeList(JointSegment const & parentJoint,
+                   Segment const & segment, bool isOutgoing,
+                   std::vector<JointEdge> & edges,
+                   std::vector<RouteWeight> & parentWeights) override;
+
   bool CheckLength(RouteWeight const & weight, double startToFinishDistanceM) const override
   {
     return weight.GetWeight() - weight.GetTransitTime() <=
@@ -55,16 +60,14 @@ public:
   RouteWeight HeuristicCostEstimate(Segment const & from, Segment const & to) override;
   RouteWeight HeuristicCostEstimate(m2::PointD const & from, m2::PointD const & to) override;
   RouteWeight HeuristicCostEstimate(Segment const & from, m2::PointD const & to) override;
-  RouteWeight CalcSegmentWeight(Segment const & segment) override;
+  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) override;
   RouteWeight CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const override;
-  RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to) const override;
-  double CalcSegmentETA(Segment const & segment) override;
-  std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) override;
+  RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to,
+                                EdgeEstimator::Purpose purpose) const override;
+  double CalculateETA(Segment const & from, Segment const & to) override;
+  double CalculateETAWithoutPenalty(Segment const & segment) override;
 
-  void GetEdgeList(JointSegment const & parentJoint,
-                   Segment const & segment, bool isOutgoing,
-                   std::vector<JointEdge> & edges,
-                   std::vector<RouteWeight> & parentWeights) override;
+  std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) override;
 
   IndexGraph & GetIndexGraph(NumMwmId numMwmId) override
   {
@@ -83,7 +86,8 @@ private:
   }
 
   RoadGeometry const & GetRealRoadGeometry(NumMwmId mwmId, uint32_t featureId);
-  void AddRealEdges(Segment const & segment, bool isOutgoing, vector<SegmentEdge> & edges);
+  void AddRealEdges(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
+                    std::vector<SegmentEdge> & edges);
   TransitGraph & GetTransitGraph(NumMwmId mwmId);
 
   std::unique_ptr<CrossMwmGraph> m_crossMwmGraph;

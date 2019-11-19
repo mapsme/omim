@@ -3,6 +3,7 @@
 #include "search/cbv.hpp"
 #include "search/geocoder_context.hpp"
 #include "search/idf_map.hpp"
+#include "search/retrieval.hpp"
 #include "search/token_slice.hpp"
 #include "search/utils.hpp"
 
@@ -21,6 +22,8 @@
 using namespace std;
 using namespace strings;
 
+using PrefixDFA = PrefixDFAModifier<LevenshteinDFA>;
+
 namespace search
 {
 namespace
@@ -29,7 +32,7 @@ class IdfMapDelegate : public IdfMap::Delegate
 {
 public:
   IdfMapDelegate(vector<pair<LevenshteinDFA, uint64_t>> const & tokensToDf,
-                 vector<pair<PrefixDFAModifier<LevenshteinDFA>, uint64_t>> const & prefixToDf)
+                 vector<pair<PrefixDFA, uint64_t>> const & prefixToDf)
     : m_tokensToDf(tokensToDf), m_prefixToDf(prefixToDf)
   {
   }
@@ -62,7 +65,7 @@ public:
 
 private:
   vector<pair<LevenshteinDFA, uint64_t>> const & m_tokensToDf;
-  vector<pair<PrefixDFAModifier<LevenshteinDFA>, uint64_t>> const & m_prefixToDf;
+  vector<pair<PrefixDFA, uint64_t>> const & m_prefixToDf;
 };
 }  // namespace
 
@@ -91,19 +94,21 @@ void LocalityScorer::GetTopLocalities(MwmSet::MwmId const & countryId, BaseConte
 
   localities.clear();
 
-  vector<CBV> intersections(ctx.m_numTokens);
+  vector<Retrieval::ExtendedFeatures> intersections(ctx.m_numTokens);
   vector<pair<LevenshteinDFA, uint64_t>> tokensToDf;
-  vector<pair<PrefixDFAModifier<LevenshteinDFA>, uint64_t>> prefixToDf;
+  vector<pair<PrefixDFA, uint64_t>> prefixToDf;
   bool const havePrefix = ctx.m_numTokens > 0 && m_params.LastTokenIsPrefix();
   size_t const nonPrefixTokens = havePrefix ? ctx.m_numTokens - 1 : ctx.m_numTokens;
   for (size_t i = 0; i < nonPrefixTokens; ++i)
   {
-    intersections[i] = filter.Intersect(ctx.m_features[i]);
-    auto const df = intersections.back().PopCount();
+    intersections[i] = ctx.m_features[i].Intersect(filter);
+    auto const df = intersections[i].m_features.PopCount();
     if (df != 0)
     {
-      m_params.GetToken(i).ForEach([&tokensToDf, &df](UniString const & s) {
-        tokensToDf.emplace_back(BuildLevenshteinDFA(s), df);
+      auto const & token = m_params.GetToken(i);
+      tokensToDf.emplace_back(BuildLevenshteinDFA(token.GetOriginal()), df);
+      token.ForEachSynonym([&tokensToDf, &df](UniString const & s) {
+        tokensToDf.emplace_back(strings::LevenshteinDFA(s, 0 /* maxErrors */), df);
       });
     }
   }
@@ -111,13 +116,14 @@ void LocalityScorer::GetTopLocalities(MwmSet::MwmId const & countryId, BaseConte
   if (havePrefix)
   {
     auto const count = ctx.m_numTokens - 1;
-    intersections[count] = filter.Intersect(ctx.m_features[count]);
-    auto const prefixDf = intersections.back().PopCount();
+    intersections[count] = ctx.m_features[count].Intersect(filter);
+    auto const prefixDf = intersections[count].m_features.PopCount();
     if (prefixDf != 0)
     {
-      m_params.GetToken(count).ForEach([&prefixToDf, &prefixDf](UniString const & s) {
-        prefixToDf.emplace_back(PrefixDFAModifier<LevenshteinDFA>(BuildLevenshteinDFA(s)),
-                                prefixDf);
+      auto const & token = m_params.GetToken(count);
+      prefixToDf.emplace_back(PrefixDFA(BuildLevenshteinDFA(token.GetOriginal())), prefixDf);
+      token.ForEachSynonym([&prefixToDf, &prefixDf](UniString const & s) {
+        prefixToDf.emplace_back(PrefixDFA(strings::LevenshteinDFA(s, 0 /* maxErrors */)), prefixDf);
       });
     }
   }
@@ -130,8 +136,8 @@ void LocalityScorer::GetTopLocalities(MwmSet::MwmId const & countryId, BaseConte
     auto intersection = intersections[startToken];
     QueryVec::Builder builder;
 
-    for (size_t endToken = startToken + 1; endToken <= ctx.m_numTokens && !intersection.IsEmpty();
-         ++endToken)
+    for (size_t endToken = startToken + 1;
+         endToken <= ctx.m_numTokens && !intersection.m_features.IsEmpty(); ++endToken)
     {
       auto const curToken = endToken - 1;
       auto const & token = m_params.GetToken(curToken).GetOriginal();
@@ -144,9 +150,9 @@ void LocalityScorer::GetTopLocalities(MwmSet::MwmId const & countryId, BaseConte
       // Skip locality candidates that match only numbers.
       if (!m_params.IsNumberTokens(tokenRange))
       {
-        intersection.ForEach([&](uint64_t bit) {
-          auto const featureId = base::asserted_cast<uint32_t>(bit);
-          localities.emplace_back(countryId, featureId, tokenRange, QueryVec(idfs, builder));
+        intersection.ForEach([&](uint32_t featureId, bool exactMatch) {
+          localities.emplace_back(countryId, featureId, tokenRange, QueryVec(idfs, builder),
+                                  exactMatch);
         });
       }
 
@@ -172,8 +178,8 @@ void LocalityScorer::LeaveTopLocalities(IdfMap & idfs, size_t limit,
 
   // We don't want to read too many names for localities, so this is
   // the best effort - select the best features by available params -
-  // query norm and rank.
-  LeaveTopByNormAndRank(max(limit, kDefaultReadLimit) /* limitUniqueIds */, els);
+  // exactMatch, query norm and rank.
+  LeaveTopByExactMatchNormAndRank(max(limit, kDefaultReadLimit) /* limitUniqueIds */, els);
 
   sort(els.begin(), els.end(),
        [](ExLocality const & lhs, ExLocality const & rhs) { return lhs.GetId() < rhs.GetId(); });
@@ -206,9 +212,12 @@ void LocalityScorer::LeaveTopLocalities(IdfMap & idfs, size_t limit,
   ASSERT_LESS_OR_EQUAL(localities.size(), limit, ());
 }
 
-void LocalityScorer::LeaveTopByNormAndRank(size_t limitUniqueIds, vector<ExLocality> & els) const
+void LocalityScorer::LeaveTopByExactMatchNormAndRank(size_t limitUniqueIds,
+                                                     vector<ExLocality> & els) const
 {
   sort(els.begin(), els.end(), [](ExLocality const & lhs, ExLocality const & rhs) {
+    if (lhs.m_locality.m_exactMatch != rhs.m_locality.m_exactMatch)
+      return lhs.m_locality.m_exactMatch;
     auto const ln = lhs.m_queryNorm;
     auto const rn = rhs.m_queryNorm;
     if (ln != rn)

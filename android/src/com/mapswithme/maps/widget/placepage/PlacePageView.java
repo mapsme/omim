@@ -1,23 +1,23 @@
 package com.mapswithme.maps.widget.placepage;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -43,11 +43,9 @@ import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.adapter.OnItemClickListener;
 import com.mapswithme.maps.ads.LocalAdInfo;
 import com.mapswithme.maps.api.ParsedMwmRequest;
-import com.mapswithme.maps.bookmarks.PlaceDescriptionActivity;
-import com.mapswithme.maps.bookmarks.PlaceDescriptionFragment;
+import com.mapswithme.maps.base.Detachable;
 import com.mapswithme.maps.bookmarks.data.Bookmark;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.DistanceAndAzimut;
@@ -61,10 +59,14 @@ import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.editor.OpeningHours;
 import com.mapswithme.maps.editor.data.TimeFormatUtils;
 import com.mapswithme.maps.editor.data.Timetable;
+import com.mapswithme.maps.gallery.Constants;
 import com.mapswithme.maps.gallery.FullScreenGalleryActivity;
 import com.mapswithme.maps.gallery.GalleryActivity;
-import com.mapswithme.maps.gallery.impl.Factory;
 import com.mapswithme.maps.location.LocationHelper;
+import com.mapswithme.maps.metrics.UserActionsLogger;
+import com.mapswithme.maps.promo.CatalogPromoController;
+import com.mapswithme.maps.promo.PromoCityGallery;
+import com.mapswithme.maps.promo.PromoEntity;
 import com.mapswithme.maps.review.Review;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.search.FilterUtils;
@@ -119,7 +121,9 @@ public class PlacePageView extends NestedScrollView
                LineCountTextView.OnLineCountCalculatedListener,
                RecyclerClickListener,
                NearbyAdapter.OnItemClickListener,
-               EditBookmarkFragment.EditBookmarkListener
+               EditBookmarkFragment.EditBookmarkListener,
+               Detachable<Activity>
+
 {
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = PlacePageView.class.getSimpleName();
@@ -216,6 +220,10 @@ public class PlacePageView extends NestedScrollView
   @NonNull
   private UGCController mUgcController;
 
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private CatalogPromoController mCatalogPromoController;
+
   // Data
   @Nullable
   private MapObject mMapObject;
@@ -309,9 +317,6 @@ public class PlacePageView extends NestedScrollView
     }
   };
 
-  @SuppressWarnings("NullableProblems")
-  @NonNull
-  private PlacePageButtonsListener mPlacePageButtonsListener;
   @Nullable
   private Closable mClosable;
 
@@ -320,7 +325,7 @@ public class PlacePageView extends NestedScrollView
 
   @SuppressWarnings("NullableProblems")
   @NonNull
-  private RecyclerView mCatalogPromoRecycler;
+  private View mCatalogPromoTitleView;
 
   void setScrollable(boolean scrollable)
   {
@@ -348,6 +353,18 @@ public class PlacePageView extends NestedScrollView
   public boolean onInterceptTouchEvent(MotionEvent event)
   {
     return mScrollable && super.onInterceptTouchEvent(event);
+  }
+
+  @Override
+  public void attach(@NonNull Activity object)
+  {
+    mCatalogPromoController.attach(object);
+  }
+
+  @Override
+  public void detach()
+  {
+    mCatalogPromoController.detach();
   }
 
   public interface SetMapObjectListener
@@ -461,7 +478,8 @@ public class PlacePageView extends NestedScrollView
     initHotelGalleryView();
     initHotelNearbyView();
     initHotelRatingView();
-    initCatalogPromoView();
+
+    mCatalogPromoController = new CatalogPromoController(this);
 
     mUgcController = new UGCController(this);
 
@@ -481,9 +499,8 @@ public class PlacePageView extends NestedScrollView
     initPlaceDescriptionView();
   }
 
-  public void initButtons(@NonNull ViewGroup buttons, @NonNull PlacePageButtonsListener listener)
+  public void initButtons(@NonNull ViewGroup buttons)
   {
-    mPlacePageButtonsListener = listener;
     mButtons = new PlacePageButtons(this, buttons, new PlacePageButtons.ItemListener()
     {
       public void onPrepareVisibleView(@NonNull PlacePageButtons.PlacePageButton item,
@@ -620,7 +637,6 @@ public class PlacePageView extends NestedScrollView
     Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_BOOKMARK);
     AlohaHelper.logClick(AlohaHelper.PP_BOOKMARK);
     toggleIsBookmark(mMapObject);
-    mPlacePageButtonsListener.onBookmarkSet(mBookmarkSet);
   }
 
   private void onShareBtnClicked()
@@ -632,7 +648,7 @@ public class PlacePageView extends NestedScrollView
     }
     Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_SHARE);
     AlohaHelper.logClick(AlohaHelper.PP_SHARE);
-    ShareOption.ANY.shareMapObject(getActivity(), mMapObject, mSponsored);
+    ShareOption.AnyShareOption.ANY.shareMapObject(getActivity(), mMapObject, mSponsored);
   }
 
   private void onBackBtnClicked()
@@ -737,7 +753,7 @@ public class PlacePageView extends NestedScrollView
     mRoutingModeListener.toggleRouteSettings(roadType);
     Statistics.INSTANCE.trackEvent(Statistics.EventName.PP_DRIVING_OPTIONS_ACTION,
                                    Statistics.params().add(Statistics.EventParam.TYPE,
-                                                                         roadType.name()));
+                                                           roadType.name()));
   }
 
   private void initPlaceDescriptionView()
@@ -750,12 +766,9 @@ public class PlacePageView extends NestedScrollView
 
   private void showDescriptionScreen()
   {
-    Statistics.INSTANCE.trackEvent(Statistics.EventName.PLACEPAGE_DESCRIPTION_MORE);
     Context context = mPlaceDescriptionContainer.getContext();
     String description = Objects.requireNonNull(mMapObject).getDescription();
-    Intent intent = new Intent(context, PlaceDescriptionActivity.class)
-        .putExtra(PlaceDescriptionFragment.EXTRA_DESCRIPTION, description);
-    context.startActivity(intent);
+    PlaceDescriptionActivity.start(context, description, Statistics.ParamValue.WIKIPEDIA);
   }
 
   private void initEditMapObjectBtn()
@@ -813,24 +826,6 @@ public class PlacePageView extends NestedScrollView
     mRvHotelGallery.addItemDecoration(decor);
     mGalleryAdapter.setListener(this);
     mRvHotelGallery.setAdapter(mGalleryAdapter);
-  }
-
-  private void initCatalogPromoView()
-  {
-    mCatalogPromoRecycler = findViewById(R.id.catalog_promo_recycler);
-    mCatalogPromoRecycler.setVisibility(VISIBLE);
-    View titleView = findViewById(R.id.catalog_promo_title);
-    titleView.setVisibility(VISIBLE);
-    com.mapswithme.maps.gallery.GalleryAdapter adapter = Factory.createCatalogPromoLoadingAdapter();
-    mCatalogPromoRecycler.setNestedScrollingEnabled(false);
-    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
-                                                                LinearLayoutManager.HORIZONTAL,
-                                                                false);
-    mCatalogPromoRecycler.setLayoutManager(layoutManager);
-    RecyclerView.ItemDecoration decor =
-        ItemDecoratorFactory.createSponsoredGalleryDecorator(getContext(), LinearLayoutManager.HORIZONTAL);
-    mCatalogPromoRecycler.addItemDecoration(decor);
-    mCatalogPromoRecycler.setAdapter(adapter);
   }
 
   private void initHotelFacilitiesView()
@@ -1044,21 +1039,29 @@ public class PlacePageView extends NestedScrollView
                 if (book)
                 {
                   partnerAppOpenMode = Utils.PartnerAppOpenMode.Direct;
+                  UserActionsLogger.logBookingBookClicked();
                   Statistics.INSTANCE.trackBookHotelEvent(info, mMapObject);
+                }
+                else if (isDetails)
+                {
+                  UserActionsLogger.logBookingDetailsClicked();
+                  Statistics.INSTANCE.trackHotelEvent(PP_SPONSORED_DETAILS, info, mMapObject);
                 }
                 else
                 {
-                  String event = isDetails ? PP_SPONSORED_DETAILS : PP_HOTEL_DESCRIPTION_LAND;
-                  Statistics.INSTANCE.trackHotelEvent(event, info, mMapObject);
+                  UserActionsLogger.logBookingMoreClicked();
+                  Statistics.INSTANCE.trackHotelEvent(PP_HOTEL_DESCRIPTION_LAND, info, mMapObject);
                 }
                 break;
               case Sponsored.TYPE_OPENTABLE:
                 if (mMapObject != null)
-                  Statistics.INSTANCE.trackRestaurantEvent(PP_SPONSORED_OPENTABLE, info, mMapObject);
+                  Statistics.INSTANCE.trackRestaurantEvent(PP_SPONSORED_OPENTABLE, info,
+                                                           mMapObject);
                 break;
               case Sponsored.TYPE_PARTNER:
                 if (mMapObject != null && !info.getPartnerName().isEmpty())
-                  Statistics.INSTANCE.trackSponsoredObjectEvent(PP_SPONSORED_ACTION, info, mMapObject);
+                  Statistics.INSTANCE.trackSponsoredObjectEvent(PP_SPONSORED_ACTION, info,
+                                                                mMapObject);
                 break;
               case Sponsored.TYPE_NONE:
                 break;
@@ -1079,7 +1082,7 @@ public class PlacePageView extends NestedScrollView
                   Utils.openUrl(getContext(), info.getUrl());
                 else
                   Utils.openUrl(getContext(), isDetails ? info.getDescriptionUrl()
-                                                            : info.getMoreUrl());
+                                                        : info.getMoreUrl());
               }
             }
             catch (ActivityNotFoundException e)
@@ -1179,18 +1182,18 @@ public class PlacePageView extends NestedScrollView
       if (country != null && !RoutingController.get().isNavigating())
         attachCountry(country);
     }
-
     refreshViews(policy);
   }
 
   private void processSponsored(@NonNull NetworkPolicy policy)
   {
+    mCatalogPromoController.updateCatalogPromo(policy, mMapObject);
+
     if (mSponsored == null || mMapObject == null)
       return;
 
     mSponsored.updateId(mMapObject);
     mSponsoredPrice = mSponsored.getPrice();
-
     String currencyCode = Utils.getCurrencyCode();
 
     if (mSponsored.getId() == null || TextUtils.isEmpty(currencyCode))
@@ -1221,6 +1224,7 @@ public class PlacePageView extends NestedScrollView
     refreshHotelDetailViews(policy);
     refreshViewsInternal(mMapObject);
     mUgcController.getUGC(mMapObject);
+    mCatalogPromoController.updateCatalogPromo(policy, mMapObject);
   }
 
   private void refreshViewsInternal(@NonNull MapObject mapObject)
@@ -1256,8 +1260,23 @@ public class PlacePageView extends NestedScrollView
 
   private void setPlaceDescription(@NonNull MapObject mapObject)
   {
-    boolean isDescriptionAbsent = TextUtils.isEmpty(mapObject.getDescription());
-    UiUtils.hideIf(isDescriptionAbsent, mPlaceDescriptionContainer);
+    if (TextUtils.isEmpty(mapObject.getDescription()))
+    {
+      UiUtils.hide(mPlaceDescriptionContainer);
+      return;
+    }
+
+    if (MapObject.isOfType(MapObject.BOOKMARK, mapObject))
+    {
+      Bookmark bmk = (Bookmark) mapObject;
+      if (!TextUtils.isEmpty(bmk.getBookmarkDescription()))
+      {
+        UiUtils.hide(mPlaceDescriptionContainer);
+        return;
+      }
+    }
+
+    UiUtils.show(mPlaceDescriptionContainer);
     mPlaceDescriptionView.setText(Html.fromHtml(mapObject.getDescription()));
   }
 
@@ -1298,7 +1317,8 @@ public class PlacePageView extends NestedScrollView
       refreshSponsoredViews(mapObject, priceInfo);
   }
 
-  private void refreshSponsoredViews(@NonNull MapObject mapObject, @Nullable HotelPriceInfo priceInfo)
+  private void refreshSponsoredViews(@NonNull MapObject mapObject,
+                                     @Nullable HotelPriceInfo priceInfo)
   {
     boolean isPriceEmpty = TextUtils.isEmpty(mSponsoredPrice);
     @SuppressWarnings("ConstantConditions")
@@ -1358,10 +1378,7 @@ public class PlacePageView extends NestedScrollView
 
     showTaxiOffer(mapObject);
 
-    boolean inRouting = RoutingController.get().isNavigating() ||
-                        RoutingController.get().isPlanning();
-
-    if (inRouting || MapManager.nativeIsLegacyMode())
+    if (RoutingController.get().isNavigating() || RoutingController.get().isPlanning())
     {
       UiUtils.hide(mEditPlace, mAddOrganisation, mAddPlace, mLocalAd, mEditTopSpace);
     }
@@ -1439,7 +1456,7 @@ public class PlacePageView extends NestedScrollView
   {
     LocalAdInfo localAdInfo = mapObject.getLocalAdInfo();
     boolean isLocalAdAvailable = localAdInfo != null && localAdInfo.isAvailable();
-    if (isLocalAdAvailable && !TextUtils.isEmpty(localAdInfo.getUrl()))
+    if (isLocalAdAvailable && !TextUtils.isEmpty(localAdInfo.getUrl()) && !localAdInfo.isHidden())
     {
       mTvLocalAd.setText(localAdInfo.isCustomer() ? R.string.view_campaign_button
                                                   : R.string.create_campaign_button);
@@ -1468,7 +1485,7 @@ public class PlacePageView extends NestedScrollView
       refreshTodayOpeningHours((timetables[0].isFullday ? resources.getString(R.string.twentyfour_seven)
                                                         : resources.getString(R.string.daily) + " " + timetables[0].workingTimespan),
                                ThemeUtils.getColor(getContext(), android.R.attr.textColorPrimary));
-      UiUtils.hide(mFullOpeningHours);
+      UiUtils.clearTextAndHide(mFullOpeningHours);
       return;
     }
 
@@ -1839,6 +1856,7 @@ public class PlacePageView extends NestedScrollView
           //null checking is done in 'isSponsored' method
           //noinspection ConstantConditions
           Utils.openUrl(getContext(), mSponsored.getReviewUrl());
+          UserActionsLogger.logBookingReviewsClicked();
           if (mMapObject != null)
             Statistics.INSTANCE.trackHotelEvent(PP_HOTEL_REVIEWS_LAND, mSponsored, mMapObject);
         }
@@ -1927,7 +1945,10 @@ public class PlacePageView extends NestedScrollView
         items.add(mTvPhone.getText().toString());
         break;
       case R.id.ll__place_schedule:
-        items.add(mFullOpeningHours.getText().toString());
+        String text = UiUtils.isVisible(mFullOpeningHours)
+                      ? mFullOpeningHours.getText().toString()
+                      : mTodayOpeningHours.getText().toString();
+        items.add(text);
         break;
       case R.id.ll__place_operator:
         items.add(mTvOperator.getText().toString());
@@ -2056,9 +2077,9 @@ public class PlacePageView extends NestedScrollView
   }
 
   @Override
-  public void onBookmarkSaved(long bookmarkId)
+  public void onBookmarkSaved(long bookmarkId, boolean movedFromCategory)
   {
-    setMapObject(BookmarkManager.INSTANCE.getBookmark(bookmarkId), null);
+    setMapObject(BookmarkManager.INSTANCE.updateBookmarkPlacePage(bookmarkId), null);
     NetworkPolicy policy = NetworkPolicy.newInstance(NetworkPolicy.getCurrentNetworkUsageStatus());
     refreshViews(policy);
   }
@@ -2068,13 +2089,26 @@ public class PlacePageView extends NestedScrollView
     return mPreview.getHeight();
   }
 
-  private static class MoreClickListener implements OnItemClickListener<String>
+  public void toggleCatalogPromoGallery(boolean enabled)
   {
-    @Override
-    public void onItemClick(@NonNull View v, @NonNull String item)
-    {
+    UiUtils.showIf(enabled, this, R.id.catalog_promo_container);
+  }
 
+  @NonNull
+  public static List<PromoEntity> toEntities(@NonNull PromoCityGallery gallery)
+  {
+    List<PromoEntity> items = new ArrayList<>();
+    for (PromoCityGallery.Item each : gallery.getItems())
+    {
+      PromoEntity item = new PromoEntity(Constants.TYPE_PRODUCT,
+                                         each.getName(),
+                                         each.getAuthor().getName(),
+                                         each.getUrl(),
+                                         each.getLuxCategory(),
+                                         each.getImageUrl());
+      items.add(item);
     }
+    return items;
   }
 
   private class EditBookmarkClickListener implements OnClickListener

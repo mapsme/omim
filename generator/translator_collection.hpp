@@ -8,12 +8,19 @@
 namespace generator
 {
 // This class allows you to work with a group of translators as with one.
-class TranslatorCollection : public CollectionBase<std::shared_ptr<TranslatorInterface>>, public TranslatorInterface
+class TranslatorCollection : public CollectionBase<std::shared_ptr<TranslatorInterface>>,
+                             public TranslatorInterface
 {
 public:
   // TranslatorInterface overrides:
+  std::shared_ptr<TranslatorInterface> Clone() const override;
+
   void Emit(OsmElement /* const */ & element) override;
-  bool Finish() override;
-  void GetNames(std::vector<std::string> & names) const override;
+
+  void Finish() override;
+  bool Save() override;
+
+  void Merge(TranslatorInterface const & other) override;
+  void MergeInto(TranslatorCollection & other) const override;
 };
 }  // namespace generator

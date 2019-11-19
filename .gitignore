@@ -8,6 +8,7 @@ Makefile.Debug
 Makefile.Release
 object_script.*.Debug
 object_script.*.Release
+compile_commands.json
 
 stxxl.errlog
 stxxl.log
@@ -159,6 +160,7 @@ tizen/*/crash-info/*
 
 # Private repository files.
 .private_repository_url
+.private_repository_branch
 private.h
 routing_common/car_model_coefs.hpp
 tools/android/mapswithme.keystore

@@ -15,9 +15,9 @@ uint8_t constexpr kFeatureSorterPointCoordBits = 27;
 // another we consider the points equal. In other words, |kMwmPointAccuracy| may
 // be used as the eps value for both x and y in Point::EqualDxDy, base::AlmostEqualAbs and such.
 //
-// The constant is loosely tied to MercatorBounds::kRangeX / (1 << kPointCoordBits):
+// The constant is loosely tied to mercator::Bounds::kRangeX / (1 << kPointCoordBits):
 //   The range of possible values for point coordinates
-//      MercatorBounds::kRangeX = 360.0
+//      mercator::Bounds::kRangeX = 360.0
 //   The number of distinct values for each coordinate after encoding
 //      (1 << kPointCoordBits) = 1073741824 ≈ 1e9
 //   Distance between two discernible points in the uniform case
@@ -44,7 +44,15 @@ m2::PointU PointDToPointU(double x, double y, uint8_t coordBits);
 
 m2::PointU PointDToPointU(m2::PointD const & pt, uint8_t coordBits);
 
+m2::PointU PointDToPointU(m2::PointD const & pt, uint8_t coordBits, m2::RectD const & limitRect);
+
 m2::PointD PointUToPointD(m2::PointU const & p, uint8_t coordBits);
+
+m2::PointD PointUToPointD(m2::PointU const & pt, uint8_t coordBits, m2::RectD const & limitRect);
+
+// Returns coordBits needed to encode point from given rect with given absolute precision.
+// If 32 bits are not enough returns 0. It's caller's responsibility to check it.
+uint8_t GetCoordBits(m2::RectD const & limitRect, double accuracy);
 
 // All functions below are deprecated and are left
 // only for backward compatibility.

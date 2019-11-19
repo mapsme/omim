@@ -1,15 +1,14 @@
 package com.mapswithme.maps.purchase;
 
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mapswithme.maps.PrivateVariables;
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.dialog.AlertDialog;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.statistics.Statistics;
 
@@ -51,9 +50,9 @@ enum AdsRemovalPaymentState
           View image = view.findViewById(R.id.image);
           alignPayButtonBelow(view, image == null ? R.id.title : R.id.image);
           dialog.updatePaymentButtons();
-          Statistics.INSTANCE.trackPurchasePreviewShow(PrivateVariables.adsRemovalServerId(),
-                                                       PrivateVariables.adsRemovalVendor(),
-                                                       PrivateVariables.adsRemovalYearlyProductId());
+          Statistics.INSTANCE.trackPurchasePreviewShow(SubscriptionType.ADS_REMOVAL.getServerId(),
+                                                       SubscriptionType.ADS_REMOVAL.getVendor(),
+                                                       SubscriptionType.ADS_REMOVAL.getYearlyProductId());
         }
       },
   EXPLANATION
@@ -89,14 +88,7 @@ enum AdsRemovalPaymentState
         @Override
         void activate(@NonNull AdsRemovalPurchaseDialog dialog)
         {
-
-          AlertDialog alertDialog = new AlertDialog.Builder()
-              .setReqCode(AdsRemovalPurchaseDialog.REQ_CODE_PAYMENT_FAILURE)
-              .setTitleId(R.string.bookmarks_convert_error_title)
-              .setMessageId(R.string.purchase_error_subtitle)
-              .setPositiveBtnId(R.string.back)
-              .build();
-          alertDialog.show(dialog, name());
+          PurchaseUtils.showPaymentFailureDialog(dialog, name());
         }
       },
   PRODUCT_DETAILS_FAILURE
@@ -104,13 +96,7 @@ enum AdsRemovalPaymentState
         @Override
         void activate(@NonNull AdsRemovalPurchaseDialog dialog)
         {
-          AlertDialog alertDialog = new AlertDialog.Builder()
-              .setReqCode(AdsRemovalPurchaseDialog.REQ_CODE_PRODUCT_DETAILS_FAILURE)
-              .setTitleId(R.string.bookmarks_convert_error_title)
-              .setMessageId(R.string.discovery_button_other_error_message)
-              .setPositiveBtnId(R.string.ok)
-              .build();
-          alertDialog.show(dialog, name());
+          PurchaseUtils.showProductDetailsFailureDialog(dialog, name());
         }
       },
   VALIDATION_FINISH

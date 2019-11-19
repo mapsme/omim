@@ -34,7 +34,7 @@ public:
   // @{
   ~SingleVehicleWorldGraph() override = default;
 
-  void GetEdgeList(Segment const & segment, bool isOutgoing,
+  void GetEdgeList(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
                    std::vector<SegmentEdge> & edges) override;
 
   void GetEdgeList(JointSegment const & parentJoint, Segment const & parent, bool isOutgoing,
@@ -59,10 +59,12 @@ public:
   RouteWeight HeuristicCostEstimate(m2::PointD const & from, m2::PointD const & to) override;
   RouteWeight HeuristicCostEstimate(Segment const & from, m2::PointD const & to) override;
 
-  RouteWeight CalcSegmentWeight(Segment const & segment) override;
+  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) override;
   RouteWeight CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const override;
-  RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to) const override;
-  double CalcSegmentETA(Segment const & segment) override;
+  RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to,
+                                EdgeEstimator::Purpose purpose) const override;
+  double CalculateETA(Segment const & from, Segment const & to) override;
+  double CalculateETAWithoutPenalty(Segment const & segment) override;
 
   std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter) override;
 
@@ -81,6 +83,7 @@ public:
 
   void SetAStarParents(bool forward, ParentSegments & parents) override;
   void SetAStarParents(bool forward, ParentJoints & parents) override;
+  void DropAStarParents() override;
 
   bool AreWavesConnectible(ParentSegments & forwardParents, Segment const & commonVertex,
                            ParentSegments & backwardParents,

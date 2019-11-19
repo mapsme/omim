@@ -6,6 +6,8 @@
 #include "base/bits.hpp"
 #include "base/math.hpp"
 
+#include <algorithm>
+
 namespace
 {
 double CoordSize(uint8_t coordBits)
@@ -19,7 +21,8 @@ uint32_t DoubleToUint32(double x, double min, double max, uint8_t coordBits)
 {
   ASSERT_GREATER_OR_EQUAL(coordBits, 1, ());
   ASSERT_LESS_OR_EQUAL(coordBits, 32, ());
-  x = base::clamp(x, min, max);
+  ASSERT_LESS_OR_EQUAL(min, max, ());
+  x = base::Clamp(x, min, max);
   return static_cast<uint32_t>(0.5 + (x - min) / (max - min) * bits::GetFullMask(coordBits));
 }
 
@@ -32,13 +35,13 @@ double Uint32ToDouble(uint32_t x, double min, double max, uint8_t coordBits)
 
 m2::PointU PointDToPointU(double x, double y, uint8_t coordBits)
 {
-  x = base::clamp(x, MercatorBounds::kMinX, MercatorBounds::kMaxX);
-  y = base::clamp(y, MercatorBounds::kMinY, MercatorBounds::kMaxY);
+  x = base::Clamp(x, mercator::Bounds::kMinX, mercator::Bounds::kMaxX);
+  y = base::Clamp(y, mercator::Bounds::kMinY, mercator::Bounds::kMaxY);
 
   uint32_t const ix = static_cast<uint32_t>(
-      0.5 + (x - MercatorBounds::kMinX) / MercatorBounds::kRangeX * CoordSize(coordBits));
+      0.5 + (x - mercator::Bounds::kMinX) / mercator::Bounds::kRangeX * CoordSize(coordBits));
   uint32_t const iy = static_cast<uint32_t>(
-      0.5 + (y - MercatorBounds::kMinY) / MercatorBounds::kRangeY * CoordSize(coordBits));
+      0.5 + (y - mercator::Bounds::kMinY) / mercator::Bounds::kRangeY * CoordSize(coordBits));
 
   ASSERT_LESS_OR_EQUAL(ix, CoordSize(coordBits), ());
   ASSERT_LESS_OR_EQUAL(iy, CoordSize(coordBits), ());
@@ -51,12 +54,40 @@ m2::PointU PointDToPointU(m2::PointD const & pt, uint8_t coordBits)
   return PointDToPointU(pt.x, pt.y, coordBits);
 }
 
+m2::PointU PointDToPointU(m2::PointD const & pt, uint8_t coordBits, m2::RectD const & limitRect)
+{
+  ASSERT_GREATER_OR_EQUAL(coordBits, 1, ());
+  ASSERT_LESS_OR_EQUAL(coordBits, 32, ());
+  auto const x = DoubleToUint32(pt.x, limitRect.minX(), limitRect.maxX(), coordBits);
+  auto const y = DoubleToUint32(pt.y, limitRect.minY(), limitRect.maxY(), coordBits);
+  return m2::PointU(x, y);
+}
+
 m2::PointD PointUToPointD(m2::PointU const & pt, uint8_t coordBits)
 {
-  return m2::PointD(static_cast<double>(pt.x) * MercatorBounds::kRangeX / CoordSize(coordBits) +
-                        MercatorBounds::kMinX,
-                    static_cast<double>(pt.y) * MercatorBounds::kRangeY / CoordSize(coordBits) +
-                        MercatorBounds::kMinY);
+  return m2::PointD(
+      static_cast<double>(pt.x) * mercator::Bounds::kRangeX / CoordSize(coordBits) +
+          mercator::Bounds::kMinX,
+      static_cast<double>(pt.y) * mercator::Bounds::kRangeY / CoordSize(coordBits) +
+          mercator::Bounds::kMinY);
+}
+
+m2::PointD PointUToPointD(m2::PointU const & pt, uint8_t coordBits, m2::RectD const & limitRect)
+{
+  return m2::PointD(Uint32ToDouble(pt.x, limitRect.minX(), limitRect.maxX(), coordBits),
+                    Uint32ToDouble(pt.y, limitRect.minY(), limitRect.maxY(), coordBits));
+}
+
+uint8_t GetCoordBits(m2::RectD const & limitRect, double accuracy)
+{
+  auto const range = std::max(limitRect.SizeX(), limitRect.SizeY());
+  auto const valuesNumber = 1.0 + range / accuracy;
+  for (uint8_t coordBits = 1; coordBits <= 32; ++coordBits)
+  {
+    if (CoordSize(coordBits) >= valuesNumber)
+      return coordBits;
+  }
+  return 0;
 }
 
 // Obsolete functions ------------------------------------------------------------------------------

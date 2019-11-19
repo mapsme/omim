@@ -1,3 +1,4 @@
+NS_ASSUME_NONNULL_BEGIN
 @interface UIFont (MapsMeFonts)
 
 + (UIFont *)regular9;
@@ -38,10 +39,17 @@
 + (UIFont *)bold22;
 + (UIFont *)bold24;
 + (UIFont *)bold28;
++ (UIFont *)bold34;
 + (UIFont *)bold36;
 + (UIFont *)bold48;
 + (UIFont *)italic16;
++ (UIFont *)semibold12;
++ (UIFont *)semibold14;
++ (UIFont *)semibold15;
++ (UIFont *)semibold16;
++ (UIFont *)fredokaRegular25;
 
 + (UIFont *)fontWithName:(NSString *)fontName;
 
 @end
+NS_ASSUME_NONNULL_END

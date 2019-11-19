@@ -37,7 +37,8 @@ void SweepNearbyResults(double eps, set<FeatureID> const & prevEmit, vector<PreR
     uint8_t const rank = results[i].GetInfo().m_rank;
     uint8_t const popularity = results[i].GetInfo().m_popularity;
     uint8_t const prevCount = prevEmit.count(results[i].GetId()) ? 1 : 0;
-    uint8_t const priority = max({rank, prevCount, popularity});
+    uint8_t const exactMatch = results[i].GetInfo().m_exactMatch ? 1 : 0;
+    uint8_t const priority = max({rank, prevCount, popularity, exactMatch});
     sweeper.Add(p.x, p.y, i, priority);
   }
 
@@ -67,9 +68,6 @@ void PreRanker::Init(Params const & params)
 
 void PreRanker::Finish(bool cancelled)
 {
-  if (!cancelled)
-    UpdateResults(true /* lastUpdate */);
-
   m_ranker.Finish(cancelled);
 }
 
@@ -85,7 +83,6 @@ void PreRanker::FillMissingFieldsInPreResults()
 
   ForEach([&](PreRankerResult & r) {
     FeatureID const & id = r.GetId();
-    PreRankingInfo & info = r.GetInfo();
     if (id.m_mwmId != mwmId)
     {
       mwmId = id.m_mwmId;
@@ -94,11 +91,11 @@ void PreRanker::FillMissingFieldsInPreResults()
       centers.reset();
       if (mwmHandle.IsAlive())
       {
-        ranks = RankTable::Load(mwmHandle.GetValue<MwmValue>()->m_cont, SEARCH_RANKS_FILE_TAG);
-        popularityRanks = RankTable::Load(mwmHandle.GetValue<MwmValue>()->m_cont,
+        ranks = RankTable::Load(mwmHandle.GetValue()->m_cont, SEARCH_RANKS_FILE_TAG);
+        popularityRanks = RankTable::Load(mwmHandle.GetValue()->m_cont,
                                           POPULARITY_RANKS_FILE_TAG);
-        ratings = RankTable::Load(mwmHandle.GetValue<MwmValue>()->m_cont, RATINGS_FILE_TAG);
-        centers = make_unique<LazyCentersTable>(*mwmHandle.GetValue<MwmValue>());
+        ratings = RankTable::Load(mwmHandle.GetValue()->m_cont, RATINGS_FILE_TAG);
+        centers = make_unique<LazyCentersTable>(*mwmHandle.GetValue());
       }
       if (!ranks)
         ranks = make_unique<DummyRankTable>();
@@ -108,17 +105,15 @@ void PreRanker::FillMissingFieldsInPreResults()
         ratings = make_unique<DummyRankTable>();
     }
 
-    info.m_rank = ranks->Get(id.m_index);
-    info.m_popularity = popularityRanks->Get(id.m_index);
-    info.m_rating = ugc::UGC::UnpackRating(ratings->Get(id.m_index));
+    r.SetRank(ranks->Get(id.m_index));
+    r.SetPopularity(popularityRanks->Get(id.m_index));
+    r.SetRating(ugc::UGC::UnpackRating(ratings->Get(id.m_index)));
 
     m2::PointD center;
     if (centers && centers->Get(id.m_index, center))
     {
-      info.m_distanceToPivot =
-          MercatorBounds::DistanceOnEarth(m_params.m_accuratePivotCenter, center);
-      info.m_center = center;
-      info.m_centerLoaded = true;
+      r.SetDistanceToPivot(mercator::DistanceOnEarth(m_params.m_accuratePivotCenter, center));
+      r.SetCenter(center);
     }
     else
     {
@@ -127,7 +122,7 @@ void PreRanker::FillMissingFieldsInPreResults()
         m_pivotFeatures.SetPosition(m_params.m_accuratePivotCenter, m_params.m_scale);
         pivotFeaturesInitialized = true;
       }
-      info.m_distanceToPivot = m_pivotFeatures.GetDistanceToFeatureMeters(id);
+      r.SetDistanceToPivot(m_pivotFeatures.GetDistanceToFeatureMeters(id));
     }
   });
 }
@@ -147,11 +142,13 @@ void PreRanker::Filter(bool viewportSearch)
     if (lhs.GetId() != rhs.GetId())
       return lhs.GetId() < rhs.GetId();
 
-    auto const & linfo = lhs.GetInfo();
-    auto const & rinfo = rhs.GetInfo();
-    if (linfo.GetNumTokens() != rinfo.GetNumTokens())
-      return linfo.GetNumTokens() > rinfo.GetNumTokens();
-    return linfo.InnermostTokenRange().Begin() < rinfo.InnermostTokenRange().Begin();
+    if (lhs.GetInnermostTokensNumber() != rhs.GetInnermostTokensNumber())
+      return lhs.GetInnermostTokensNumber() > rhs.GetInnermostTokensNumber();
+
+    if (lhs.GetMatchedTokensNumber() != rhs.GetMatchedTokensNumber())
+      return lhs.GetMatchedTokensNumber() > rhs.GetMatchedTokensNumber();
+
+    return lhs.GetInfo().InnermostTokenRange().Begin() < rhs.GetInfo().InnermostTokenRange().Begin();
   };
 
   sort(m_results.begin(), m_results.end(), comparePreRankerResults);
@@ -214,6 +211,10 @@ void PreRanker::Filter(bool viewportSearch)
     {
       nth_element(m_results.begin(), m_results.begin() + numResults, m_results.end(),
                   &PreRankerResult::LessRankAndPopularity);
+      filtered.insert(m_results.begin(), m_results.begin() + numResults);
+      nth_element(m_results.begin(), m_results.begin() + numResults, m_results.end(),
+                  &PreRankerResult::LessByExactMatch);
+      filtered.insert(m_results.begin(), m_results.begin() + numResults);
     }
     else
     {
@@ -221,14 +222,13 @@ void PreRanker::Filter(bool viewportSearch)
       PreRankerResult::CategoriesComparator comparator;
       comparator.m_positionIsInsideViewport =
           m_params.m_position && m_params.m_viewport.IsPointInside(*m_params.m_position);
-      comparator.m_detailedScale = MercatorBounds::DistanceOnEarth(
-                                       m_params.m_viewport.LeftTop(),
-                                       m_params.m_viewport.RightBottom()) < 2 * kPedestrianRadiusMeters;
+      comparator.m_detailedScale = mercator::DistanceOnEarth(m_params.m_viewport.LeftTop(),
+                                                             m_params.m_viewport.RightBottom()) <
+                                   2 * kPedestrianRadiusMeters;
       comparator.m_viewport = m_params.m_viewport;
       nth_element(m_results.begin(), m_results.begin() + numResults, m_results.end(), comparator);
+      filtered.insert(m_results.begin(), m_results.begin() + numResults);
     }
-
-    filtered.insert(m_results.begin(), m_results.begin() + numResults);
   }
 
   m_results.assign(filtered.begin(), filtered.end());
@@ -283,10 +283,10 @@ void PreRanker::FilterForViewportSearch()
   {
     auto const & p = m_results[i].GetInfo().m_center;
     int dx = static_cast<int>((p.x - viewport.minX()) / sizeX * kNumXSlots);
-    dx = base::clamp(dx, 0, static_cast<int>(kNumXSlots) - 1);
+    dx = base::Clamp(dx, 0, static_cast<int>(kNumXSlots) - 1);
 
     int dy = static_cast<int>((p.y - viewport.minY()) / sizeY * kNumYSlots);
-    dy = base::clamp(dy, 0, static_cast<int>(kNumYSlots) - 1);
+    dy = base::Clamp(dy, 0, static_cast<int>(kNumYSlots) - 1);
 
     buckets[dx * kNumYSlots + dy].push_back(i);
   }

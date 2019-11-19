@@ -1,5 +1,7 @@
 #include "map/purchase.hpp"
 
+#include "web_api/utils.hpp"
+
 #include "platform/http_client.hpp"
 #include "platform/platform.hpp"
 
@@ -9,6 +11,7 @@
 
 #include "base/assert.hpp"
 #include "base/logging.hpp"
+#include "base/stl_helpers.hpp"
 #include "base/visitor.hpp"
 
 #include "std/target_os.hpp"
@@ -29,23 +32,25 @@ std::string const kReceiptType = "google";
 std::string const kReceiptType {};
 #endif
 
+std::array<std::string, static_cast<size_t>(SubscriptionType::Count)> const kSubscriptionSuffix =
+{
+  "",  // RemoveAds (empty string for back compatibility)
+  "_BookmarkCatalog",  // BookmarkCatalog
+};
+
 uint32_t constexpr kFirstWaitingTimeInSec = 1;
 uint32_t constexpr kWaitingTimeScaleFactor = 2;
 uint8_t constexpr kMaxAttemptIndex = 2;
 
-std::string GetClientIdHash()
+std::string GetSubscriptionId(SubscriptionType type)
 {
-  return coding::SHA1::CalculateBase64ForString(GetPlatform().UniqueClientId());
+  return coding::SHA1::CalculateBase64ForString(GetPlatform().UniqueClientId() +
+    kSubscriptionSuffix[base::Underlying(type)]);
 }
 
-std::string GetSubscriptionId()
+std::string GetSubscriptionKey(SubscriptionType type)
 {
-  return GetClientIdHash();
-}
-
-std::string GetDeviceId()
-{
-  return GetClientIdHash();
+  return kSubscriptionId + kSubscriptionSuffix[base::Underlying(type)];
 }
 
 std::string ValidationUrl()
@@ -108,12 +113,17 @@ struct ValidationResult
 Purchase::Purchase(InvalidTokenHandler && onInvalidToken)
   : m_onInvalidToken(std::move(onInvalidToken))
 {
-  std::string id;
-  if (GetPlatform().GetSecureStorage().Load(kSubscriptionId, id))
-    m_removeAdsSubscriptionData.m_subscriptionId = id;
+  for (size_t i = 0; i < base::Underlying(SubscriptionType::Count); ++i)
+  {
+    auto const t = static_cast<SubscriptionType>(i);
 
-  m_removeAdsSubscriptionData.m_isActive =
-    (GetSubscriptionId() == m_removeAdsSubscriptionData.m_subscriptionId);
+    std::string id;
+    UNUSED_VALUE(GetPlatform().GetSecureStorage().Load(GetSubscriptionKey(t), id));
+
+    auto const sid = GetSubscriptionId(t);
+    m_subscriptionData.emplace_back(std::make_unique<SubscriptionData>(id == sid, sid));
+  }
+  CHECK_EQUAL(m_subscriptionData.size(), base::Underlying(SubscriptionType::Count), ());
 }
 
 void Purchase::RegisterSubscription(SubscriptionListener * listener)
@@ -137,36 +147,37 @@ void Purchase::SetStartTransactionCallback(StartTransactionCallback && callback)
 
 bool Purchase::IsSubscriptionActive(SubscriptionType type) const
 {
-  switch (type)
-  {
-  case SubscriptionType::RemoveAds: return m_removeAdsSubscriptionData.m_isActive;
-  }
-  UNREACHABLE();
+  CHECK(type != SubscriptionType::Count, ());
+  return m_subscriptionData[base::Underlying(type)]->m_isActive;
 }
 
 void Purchase::SetSubscriptionEnabled(SubscriptionType type, bool isEnabled)
 {
-  switch (type)
-  {
-  case SubscriptionType::RemoveAds:
-  {
-    m_removeAdsSubscriptionData.m_isActive = isEnabled;
-    if (isEnabled)
-    {
-      m_removeAdsSubscriptionData.m_subscriptionId = GetSubscriptionId();
-      GetPlatform().GetSecureStorage().Save(kSubscriptionId,
-                                            m_removeAdsSubscriptionData.m_subscriptionId);
-    }
-    else
-    {
-      GetPlatform().GetSecureStorage().Remove(kSubscriptionId);
-    }
-    break;
-  }
-  }
+  CHECK(type != SubscriptionType::Count, ());
+
+  auto & data = m_subscriptionData[base::Underlying(type)];
+  data->m_isActive = isEnabled;
+  if (isEnabled)
+    GetPlatform().GetSecureStorage().Save(GetSubscriptionKey(type), data->m_subscriptionId);
+  else
+    GetPlatform().GetSecureStorage().Remove(GetSubscriptionKey(type));
 
   for (auto & listener : m_listeners)
     listener->OnSubscriptionChanged(type, isEnabled);
+
+  auto const nowStr = GetPlatform().GetMarketingService().GetPushWooshTimestamp();
+  if (type == SubscriptionType::BookmarkCatalog)
+  {
+    GetPlatform().GetMarketingService().SendPushWooshTag(isEnabled ?
+      marketing::kBookmarkCatalogSubscriptionEnabled :
+      marketing::kBookmarkCatalogSubscriptionDisabled, nowStr);
+  }
+  else if (type == SubscriptionType::RemoveAds)
+  {
+    GetPlatform().GetMarketingService().SendPushWooshTag(isEnabled ?
+      marketing::kRemoveAdsSubscriptionEnabled :
+      marketing::kRemoveAdsSubscriptionDisabled, nowStr);
+  }
 }
 
 void Purchase::Validate(ValidationInfo const & validationInfo, std::string const & accessToken)
@@ -229,7 +240,7 @@ void Purchase::ValidateImpl(std::string const & url, ValidationInfo const & vali
     using Sink = MemWriter<std::string>;
     Sink sink(jsonStr);
     coding::SerializerJson<Sink> serializer(sink);
-    serializer(ValidationData(validationInfo, kReceiptType, GetDeviceId()));
+    serializer(ValidationData(validationInfo, kReceiptType, web_api::DeviceId()));
   }
   request.SetBodyData(std::move(jsonStr), "application/json");
 

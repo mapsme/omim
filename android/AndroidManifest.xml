@@ -87,14 +87,6 @@
         android:name="${PW_PROJECT_ID_KEY}"
         android:value="@string/pw_project_id"/>
 
-    <meta-data
-      android:name="ru.mail.libnotify.application_name"
-      android:value="${LIBNOTIFY_APP_ID}"/>
-
-    <meta-data
-      android:name="ru.mail.libnotify.server_id"
-      android:value="${LIBNOTIFY_PROJECT_ID}"/>
-
     <!--meta-data
         android:name="PW_LOG_LEVEL"
         android:value="ERROR" /-->
@@ -329,7 +321,6 @@
         android:name="com.mapswithme.maps.editor.EditorActivity"
         android:configChanges="orientation|screenLayout|screenSize"
         android:label="@string/edit_place"
-        android:theme="@style/MwmTheme.EditorActivity"
         android:parentActivityName="com.mapswithme.maps.MwmActivity">
       <!-- The meta-data element is needed for versions lower than 4.1 -->
       <meta-data
@@ -461,7 +452,7 @@
       android:name="com.mapswithme.maps.ugc.routes.UgcRoutePropertiesActivity"
       android:label="@string/select_properties"/>
     <activity
-      android:name="com.mapswithme.maps.bookmarks.PlaceDescriptionActivity"
+      android:name="com.mapswithme.maps.widget.placepage.PlaceDescriptionActivity"
       android:label="@string/place_description_title"/>
     <activity
       android:name="com.mapswithme.maps.ugc.routes.EditCategoryNameActivity"
@@ -472,6 +463,18 @@
     <activity
       android:name="com.mapswithme.maps.settings.DrivingOptionsActivity"
       android:label="@string/driving_options_title"/>
+    <activity
+      android:name="com.mapswithme.maps.purchase.BookmarkSubscriptionActivity"
+      android:screenOrientation="portrait"
+      android:configChanges="orientation|screenLayout|screenSize|keyboardHidden"/>
+    <activity
+      android:name="com.mapswithme.maps.purchase.BookmarksAllSubscriptionActivity"
+      android:screenOrientation="portrait"
+      android:configChanges="orientation|screenLayout|screenSize|keyboardHidden"/>
+    <activity
+      android:name="com.mapswithme.maps.purchase.BookmarksSightsSubscriptionActivity"
+      android:screenOrientation="portrait"
+      android:configChanges="orientation|screenLayout|screenSize|keyboardHidden"/>
     <service
       android:name="com.mapswithme.maps.background.WorkerService"
       android:permission="android.permission.BIND_JOB_SERVICE"
@@ -591,7 +594,7 @@
       </intent-filter>
     </receiver>
     <provider
-      android:name="android.support.v4.content.FileProvider"
+      android:name="androidx.core.content.FileProvider"
       android:authorities="${FILE_PROVIDER_PLACEHOLDER}"
       android:exported="false"
       android:grantUriPermissions="true">

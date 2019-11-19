@@ -1,7 +1,7 @@
 #import "MWMDefaultAlert.h"
 #import "Statistics.h"
 
-#include "Framework.h"
+#include <CoreApi/Framework.h>
 
 static CGFloat const kDividerTopConstant = -8.;
 
@@ -84,18 +84,6 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                   leftButtonTitle:nil
                 rightButtonAction:nil
                   statisticsEvent:@"No Connection Alert"];
-  [alert setNeedsCloseAlertAfterEnterBackground];
-  return alert;
-}
-
-+ (instancetype)migrationProhibitedAlert
-{
-  MWMDefaultAlert * alert = [self defaultAlertWithTitle:L(@"no_migration_during_navigation")
-                                                message:nil
-                                       rightButtonTitle:L(@"ok")
-                                        leftButtonTitle:nil
-                                      rightButtonAction:nil
-                                        statisticsEvent:@"Migration Prohibited Alert"];
   [alert setNeedsCloseAlertAfterEnterBackground];
   return alert;
 }
@@ -347,17 +335,6 @@ static NSString * const kDefaultAlertNibName = @"MWMDefaultAlert";
                                       rightButtonAction:okBlock
                                         statisticsEvent:@"Downloader Need Update Alert"];
   [alert setNeedsCloseAlertAfterEnterBackground];
-  return alert;
-}
-
-+ (instancetype)routingMigrationAlertWithOkBlock:(MWMVoidBlock)okBlock
-{
-  MWMDefaultAlert * alert = [self defaultAlertWithTitle:L(@"downloader_update_maps")
-                                                message:L(@"downloader_mwm_migration_dialog")
-                                       rightButtonTitle:L(@"ok")
-                                        leftButtonTitle:L(@"cancel")
-                                      rightButtonAction:okBlock
-                                        statisticsEvent:@"Routing Need Migration Alert"];
   return alert;
 }
 

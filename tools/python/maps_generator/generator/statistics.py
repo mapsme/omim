@@ -19,7 +19,7 @@ RE_TIME_DELTA = re.compile(r'^(?:(?P<days>-?\d+) (days?, )?)?'
                            r'(?P<seconds>-?\d+)'
                            r'(?:\.(?P<microseconds>\d{1,6})\d{0,6})?$')
 
-RE_FINISH_STAGE = re.compile(r"(.*)Stage (\w+): finished in (.+)$")
+RE_FINISH_STAGE = re.compile(r"(.*)Stage (.+): finished in (.+)$")
 
 
 def read_stat(f):
@@ -106,7 +106,7 @@ def parse_time(time_str):
     return datetime.timedelta(**time_params)
 
 
-def get_stages_info(log_path):
+def get_stages_info(log_path, ignored_stages=frozenset()):
     result = defaultdict(lambda: defaultdict(dict))
     for file in os.listdir(log_path):
         path = os.path.join(log_path, file)
@@ -117,7 +117,7 @@ def get_stages_info(log_path):
                     continue
                 stage_name = m.group(2)
                 dt = parse_time(m.group(3))
-                if file.startswith("stage_"):
+                if file.startswith("stage_") and stage_name not in ignored_stages:
                     result["stages"][stage_name] = dt
                 else:
                     country = file.split(".")[0]

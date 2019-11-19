@@ -1,5 +1,7 @@
 #include "followed_polyline.hpp"
 
+#include "base/assert.hpp"
+
 #include <algorithm>
 #include <limits>
 
@@ -37,11 +39,11 @@ double FollowedPolyline::GetDistanceM(Iter const & it1, Iter const & it2) const
   ASSERT_LESS(it2.m_ind, m_poly.GetSize(), ());
 
   if (it1.m_ind == it2.m_ind)
-    return MercatorBounds::DistanceOnEarth(it1.m_pt, it2.m_pt);
+    return mercator::DistanceOnEarth(it1.m_pt, it2.m_pt);
 
-  return (MercatorBounds::DistanceOnEarth(it1.m_pt, m_poly.GetPoint(it1.m_ind + 1)) +
+  return (mercator::DistanceOnEarth(it1.m_pt, m_poly.GetPoint(it1.m_ind + 1)) +
           m_segDistance[it2.m_ind - 1] - m_segDistance[it1.m_ind] +
-          MercatorBounds::DistanceOnEarth(m_poly.GetPoint(it2.m_ind), it2.m_pt));
+          mercator::DistanceOnEarth(m_poly.GetPoint(it2.m_ind), it2.m_pt));
 }
 
 double FollowedPolyline::GetTotalDistanceMeters() const
@@ -64,7 +66,7 @@ double FollowedPolyline::GetDistanceFromStartMeters() const
   }
 
   return (m_current.m_ind > 0 ? m_segDistance[m_current.m_ind - 1] : 0.0) +
-         MercatorBounds::DistanceOnEarth(m_current.m_pt, m_poly.GetPoint(m_current.m_ind));
+         mercator::DistanceOnEarth(m_current.m_pt, m_poly.GetPoint(m_current.m_ind));
 }
 
 double FollowedPolyline::GetDistanceToEndMeters() const
@@ -98,7 +100,7 @@ void FollowedPolyline::Update()
     m2::PointD const & p1 = m_poly.GetPoint(i);
     m2::PointD const & p2 = m_poly.GetPoint(i + 1);
 
-    dist += MercatorBounds::DistanceOnEarth(p1, p2);
+    dist += mercator::DistanceOnEarth(p1, p2);
 
     m_segDistance.emplace_back(dist);
     m_segProj.emplace_back(p1, p2);
@@ -113,7 +115,7 @@ Iter FollowedPolyline::GetBestProjection(m2::RectD const & posRect,
 {
   CHECK_EQUAL(m_segProj.size() + 1, m_poly.GetSize(), ());
   // At first trying to find a projection to two closest route segments of route which is close
-  // enough to |posRect| center. If m_current is right before intermediate point we can get closestIter
+  // enough to |posRect| center. If |m_current| is right before intermediate point we can get |closestIter|
   // right after intermediate point (in next subroute).
   size_t const hoppingBorderIdx = min(m_segProj.size(), m_current.m_ind + 2);
   Iter const closestIter =
@@ -126,24 +128,32 @@ Iter FollowedPolyline::GetBestProjection(m2::RectD const & posRect,
   return GetClosestProjectionInInterval(posRect, distFn, hoppingBorderIdx, m_nextCheckpointIndex);
 }
 
-Iter FollowedPolyline::UpdateProjectionByPrediction(m2::RectD const & posRect,
-                                                    double predictDistance)
+FollowedPolyline::UpdatedProjection FollowedPolyline::GetBestMatchingProjection(m2::RectD const & posRect) const
+{
+  CHECK_EQUAL(m_segProj.size() + 1, m_poly.GetSize(), ());
+  // At first trying to find a projection to two closest route segments of route which is close
+  // enough to |posRect| center. If |m_current| is right before intermediate point we can get |closestIter|
+  // right after intermediate point (in next subroute).
+  size_t const hoppingBorderIdx = min(m_segProj.size(), m_current.m_ind + 3);
+  auto const res = GetClosestMatchingProjectionInInterval(posRect, m_current.m_ind, hoppingBorderIdx);
+  if (res.m_iter.IsValid() || res.m_closerToUnmatching)
+    return UpdatedProjection{res.m_iter, res.m_closerToUnmatching};
+
+  // If a projection to the 3 closest route segments is not found tries to find projection to other route
+  // segments of current subroute.
+  return GetClosestMatchingProjectionInInterval(posRect, hoppingBorderIdx, m_nextCheckpointIndex);
+}
+
+FollowedPolyline::UpdatedProjectionInfo FollowedPolyline::UpdateMatchingProjection(m2::RectD const & posRect)
 {
   ASSERT(m_current.IsValid(), ());
   ASSERT_LESS(m_current.m_ind, m_poly.GetSize() - 1, ());
 
-  if (predictDistance <= 0.0)
-    return UpdateProjection(posRect);
+  auto const res = GetBestMatchingProjection(posRect);
 
-  Iter res;
-  res = GetBestProjection(posRect, [&](Iter const & it)
-  {
-    return fabs(GetDistanceM(m_current, it) - predictDistance);
-  });
-
-  if (res.IsValid())
-    m_current = res;
-  return res;
+  if (res.m_iter.IsValid())
+    m_current = res.m_iter;
+  return UpdatedProjectionInfo{res.m_iter.IsValid(), res.m_closerToUnmatching};
 }
 
 Iter FollowedPolyline::UpdateProjection(m2::RectD const & posRect)
@@ -155,12 +165,18 @@ Iter FollowedPolyline::UpdateProjection(m2::RectD const & posRect)
   m2::PointD const currPos = posRect.Center();
   res = GetBestProjection(posRect, [&](Iter const & it)
   {
-    return MercatorBounds::DistanceOnEarth(it.m_pt, currPos);
+    return mercator::DistanceOnEarth(it.m_pt, currPos);
   });
 
   if (res.IsValid())
     m_current = res;
   return res;
+}
+
+void FollowedPolyline::SetUnmatchingSegmentIndexes(vector<size_t> && unmatchingSegmentIndexes)
+{
+  ASSERT(is_sorted(unmatchingSegmentIndexes.cbegin(), unmatchingSegmentIndexes.cend()), ());
+  m_unmatchingSegmentIndexes = move(unmatchingSegmentIndexes);
 }
 
 double FollowedPolyline::GetDistFromCurPointToRoutePointMerc() const
@@ -176,7 +192,7 @@ double FollowedPolyline::GetDistFromCurPointToRoutePointMeters() const
   if (!m_current.IsValid())
     return 0.0;
 
-  return MercatorBounds::DistanceOnEarth(m_poly.GetPoint(m_current.m_ind), m_current.m_pt);
+  return mercator::DistanceOnEarth(m_poly.GetPoint(m_current.m_ind), m_current.m_pt);
 }
 
 void FollowedPolyline::GetCurrentDirectionPoint(m2::PointD & pt, double toleranceM) const
@@ -186,10 +202,50 @@ void FollowedPolyline::GetCurrentDirectionPoint(m2::PointD & pt, double toleranc
   m2::PointD point = m_poly.GetPoint(currentIndex);
   for (; currentIndex < m_poly.GetSize() - 1; point = m_poly.GetPoint(++currentIndex))
   {
-    if (MercatorBounds::DistanceOnEarth(point, m_current.m_pt) > toleranceM)
+    if (mercator::DistanceOnEarth(point, m_current.m_pt) > toleranceM)
       break;
   }
 
   pt = point;
+}
+
+FollowedPolyline::UpdatedProjection FollowedPolyline::GetClosestMatchingProjectionInInterval(m2::RectD const & posRect,
+                                                          size_t startIdx, size_t endIdx) const
+{
+  CHECK_LESS_OR_EQUAL(endIdx, m_segProj.size(), ());
+  CHECK_LESS_OR_EQUAL(startIdx, endIdx, ());
+  Iter nearestIter;
+  double minDist = std::numeric_limits<double>::max();
+  double minDistUnmatching = minDist;
+
+  m2::PointD const currPos = posRect.Center();
+
+  for (size_t i = startIdx; i < endIdx; ++i)
+  {
+    m2::PointD const pt = m_segProj[i].ClosestPointTo(currPos);
+
+    if (!posRect.IsPointInside(pt))
+      continue;
+
+    Iter it(pt, i);
+    double const dp = mercator::DistanceOnEarth(it.m_pt, currPos);
+    if (dp >= minDistUnmatching && dp >= minDist)
+      continue;
+
+    if (!std::binary_search(m_unmatchingSegmentIndexes.begin(), m_unmatchingSegmentIndexes.end(), it.m_ind))
+    {
+      if (minDist > dp) // Overwrites the best matching for matched segment.
+      {
+        minDist = dp;
+        nearestIter = it;
+      }
+    }
+    else
+    {
+      if (minDistUnmatching > dp)
+        minDistUnmatching = dp;
+    }
+  }
+  return UpdatedProjection{nearestIter, minDistUnmatching < minDist /* m_closerToUnmatching */};
 }
 }  //  namespace routing

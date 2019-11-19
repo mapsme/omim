@@ -3,13 +3,15 @@ package com.mapswithme.maps.gallery;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,10 +23,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.mapswithme.HotelUtils;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.promo.PromoCityGallery;
+import com.mapswithme.maps.promo.PromoEntity;
 import com.mapswithme.maps.search.Popularity;
 import com.mapswithme.maps.ugc.Impress;
 import com.mapswithme.maps.ugc.UGC;
 import com.mapswithme.maps.widget.RatingView;
+import com.mapswithme.util.ConnectionState;
+import com.mapswithme.util.NetworkPolicy;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 
@@ -334,11 +340,9 @@ public class Holders
       implements View.OnClickListener
   {
     @NonNull
-    ProgressBar mProgressBar;
+    final ProgressBar mProgressBar;
     @NonNull
-    TextView mSubtitle;
-    @NonNull
-    TextView mMore;
+    final TextView mSubtitle;
 
     LoadingViewHolder(@NonNull View itemView, @NonNull List<Items.Item> items,
                       @Nullable ItemSelectedListener<Items.Item> listener)
@@ -346,7 +350,6 @@ public class Holders
       super(itemView, items, listener);
       mProgressBar = (ProgressBar) itemView.findViewById(R.id.pb__progress);
       mSubtitle = (TextView) itemView.findViewById(R.id.tv__subtitle);
-      mMore = (TextView) itemView.findViewById(R.id.button);
     }
 
     @CallSuper
@@ -417,46 +420,131 @@ public class Holders
     @Override
     protected void onItemSelected(@NonNull Items.Item item, int position)
     {
-      ItemSelectedListener<Items.Item> listener = getListener();
-      if (listener == null)
+
+    }
+  }
+
+  public static class CatalogPromoHolder extends BaseViewHolder<PromoEntity>
+  {
+    @NonNull
+    private final ImageView mImage;
+
+    @NonNull
+    private final TextView mSubTitle;
+
+    @NonNull
+    private final TextView mProLabel;
+
+    public CatalogPromoHolder(@NonNull View itemView,
+                              @NonNull List<PromoEntity> items,
+                              @Nullable ItemSelectedListener<PromoEntity> listener)
+    {
+      super(itemView, items, listener);
+      mImage = itemView.findViewById(R.id.image);
+      mSubTitle = itemView.findViewById(R.id.subtitle);
+      mProLabel = itemView.findViewById(R.id.label);
+    }
+
+    @Override
+    public void bind(@NonNull PromoEntity item)
+    {
+      super.bind(item);
+
+      bindProLabel(item);
+      bindSubTitle(item);
+      bindImage(item);
+    }
+
+    private void bindSubTitle(@NonNull PromoEntity item)
+    {
+      mSubTitle.setText(item.getSubtitle());
+    }
+
+    private void bindImage(@NonNull PromoEntity item)
+    {
+      Glide.with(itemView.getContext())
+           .load(Uri.parse(item.getImageUrl()))
+           .placeholder(R.drawable.img_guides_gallery_placeholder)
+           .into(mImage);
+    }
+
+    private void bindProLabel(@NonNull PromoEntity item)
+    {
+      PromoCityGallery.LuxCategory category = item.getCategory();
+      UiUtils.showIf(category != null && !TextUtils.isEmpty(category.getName()), mProLabel);
+      if (item.getCategory() == null)
         return;
 
-      listener.onActionButtonSelected(item, position);
+      mProLabel.setText(item.getCategory().getName());
+      ShapeDrawable shapeDrawable = new ShapeDrawable(new RectShape());
+      shapeDrawable.getPaint().setColor(item.getCategory().getColor());
+      mProLabel.setBackgroundDrawable(shapeDrawable);
     }
   }
 
   public static class CrossPromoLoadingHolder extends SimpleViewHolder
   {
+    @NonNull
+    private final TextView mSubTitle;
+
+    @NonNull
+    private final TextView mButton;
+
     public CrossPromoLoadingHolder(@NonNull View itemView, @NonNull List<Items.Item> items,
                                    @Nullable ItemSelectedListener<Items.Item> listener)
     {
       super(itemView, items, listener);
-      TextView subtitle = itemView.findViewById(R.id.subtitle);
-      subtitle.setText("");
+      mSubTitle = itemView.findViewById(R.id.subtitle);
+      mButton = itemView.findViewById(R.id.button);
     }
-  }
 
-  public static class CatalogPromoHolder extends BaseViewHolder<RegularAdapterStrategy.Item>
-  {
     @NonNull
-    private final ImageView mImage;
-
-    public CatalogPromoHolder(@NonNull View itemView,
-                              @NonNull List<RegularAdapterStrategy.Item> items,
-                              @Nullable ItemSelectedListener<RegularAdapterStrategy.Item> listener)
+    protected TextView getButton()
     {
-      super(itemView, items, listener);
-      mImage = itemView.findViewById(R.id.image);
+      return mButton;
     }
 
     @Override
-    public void bind(@NonNull RegularAdapterStrategy.Item item)
+    public void bind(@NonNull Items.Item item)
     {
       super.bind(item);
-      Glide.with(itemView.getContext())
-           .load(Uri.parse(item.getUrl()))
-           .placeholder(R.drawable.img_guides_gallery_placeholder)
-           .into(mImage);
+      getTitle().setText(R.string.gallery_pp_download_guides_offline_title);
+      mSubTitle.setText(R.string.gallery_pp_download_guides_offline_subtitle);
+      UiUtils.invisible(getButton());
+    }
+  }
+
+  public static class CatalogErrorHolder extends CrossPromoLoadingHolder
+  {
+    public CatalogErrorHolder(@NonNull View itemView, @NonNull List<Items.Item> items,
+                              @Nullable ItemSelectedListener<Items.Item> listener)
+    {
+      super(itemView, items, listener);
+      View progress = itemView.findViewById(R.id.progress);
+      UiUtils.invisible(progress);
+    }
+
+    public void bind(@NonNull Items.Item item)
+    {
+      super.bind(item);
+      getButton().setText(R.string.gallery_pp_download_guides_offline_cta);
+      boolean isBtnInvisible = ConnectionState.isConnected() &&
+                               NetworkPolicy.newInstance(NetworkPolicy.getCurrentNetworkUsageStatus()).canUseNetwork();
+
+      if (isBtnInvisible)
+        UiUtils.invisible(getButton());
+      else
+        UiUtils.show(getButton());
+    }
+
+    @Override
+    protected void onItemSelected(@NonNull Items.Item item, int position)
+    {
+      ItemSelectedListener<Items.Item> listener = getListener();
+      if (listener == null)
+        return;
+
+      listener.onItemSelected(item, position);
     }
   }
 }

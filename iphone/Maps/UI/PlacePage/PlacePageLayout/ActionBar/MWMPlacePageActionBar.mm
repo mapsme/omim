@@ -1,5 +1,5 @@
 #import "MWMPlacePageActionBar.h"
-#import "AppInfo.h"
+#import <CoreApi/AppInfo.h>
 #import "MWMActionBarButton.h"
 #import "MWMCircularProgress.h"
 #import "MWMNavigationDashboardManager.h"
@@ -10,8 +10,8 @@
 
 @interface MWMPlacePageActionBar ()<MWMActionBarButtonDelegate>
 {
-  vector<EButton> m_visibleButtons;
-  vector<EButton> m_additionalButtons;
+  std::vector<EButton> m_visibleButtons;
+  std::vector<EButton> m_additionalButtons;
 }
 
 @property(nonatomic) NSLayoutConstraint * visibleConstraint;
@@ -49,7 +49,7 @@
 
 - (void)setFirstButton:(MWMPlacePageData *)data
 {
-  vector<EButton> buttons;
+  std::vector<EButton> buttons;
 
   if (self.isAreaNotDownloaded)
   {
@@ -93,7 +93,7 @@
 
 - (void)setSecondButton:(MWMPlacePageData *)data
 {
-  vector<EButton> buttons;
+  std::vector<EButton> buttons;
   BOOL const isCanAddIntermediatePoint = [MWMRouter canAddIntermediatePoint];
   BOOL const isNavigationReady =
       [MWMNavigationDashboardManager manager].state == MWMNavigationDashboardStateReady;

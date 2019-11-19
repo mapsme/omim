@@ -17,8 +17,8 @@ UNIT_TEST(RoutingQuality_RussiaMoscowTushino)
 
 UNIT_TEST(RoutingQuality_TurkeyIzmirArea)
 {
-  TEST(CheckCarRoute({38.80146, 26.97696} /* start */, {39.06835, 26.88686} /* finish */,
-                     {{{39.08146, 27.11798}}} /* reference track */),
+  TEST(CheckCarRoute({38.80146, 26.97696} /* start */, {39.0837, 26.90977} /* finish */,
+                     {{{39.08124, 27.11829}}} /* reference track */),
        ());
 }
 
@@ -60,7 +60,7 @@ UNIT_TEST(RoutingQuality_IranSouth)
 UNIT_TEST(RoutingQuality_EindhovenNetherlands)
 {
   TEST(CheckCarRoute({50.91974, 5.33535} /* start */, {51.92532, 5.49066} /* finish */,
-                     {{{51.42016, 5.42881}, {51.44316, 5.42723}, {51.50230, 5.47485}}} /* reference track */),
+                     {{{51.42016, 5.42881}, {51.44316, 5.42723}}} /* reference track */),
        ());
 }
 
@@ -81,7 +81,7 @@ UNIT_TEST(RoutingQuality_CigilTurkey)
 UNIT_TEST(RoutingQuality_KatowicePoland)
 {
   TEST(CheckCarRoute({50.37282, 18.75667} /* start */, {50.83499, 19.14612} /* finish */,
-                     {{{50.422229, 19.04746}, {50.48831, 19.21423}}} /* reference track */),
+                     {{{50.422229, 19.04746}}} /* reference track */),
        ());
 }
 
@@ -118,8 +118,15 @@ UNIT_TEST(RoutingQuality_LenOblBadPaving)
 
 UNIT_TEST(RoutingQuality_MosOblBadPaving)
 {
-  TEST(CheckCarRoute({55.93849, 36.02792} /* start */, {55.93566, 36.05074} /* finish */,
+  TEST(CheckCarRoute({55.93849, 36.02792} /* start */, {55.93567, 36.0533} /* finish */,
                      {{{55.92321, 36.04630}}} /* reference track */),
+       ());
+}
+
+UNIT_TEST(RoutingQuality_LatviaUnpaved)
+{
+  TEST(CheckCarRoute({56.62992, 25.77175} /* start */, {56.61453, 25.78400} /* finish */,
+                     {{{56.62377, 25.81015}, {56.61755, 25.80894}}} /* reference track */),
        ());
 }
 }  // namespace

@@ -3,20 +3,22 @@ import os
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 from .generator import settings
-from .generator.env import Env, find_last_build_dir, WORLDS_NAMES
+from .generator.env import (Env, find_last_build_dir, WORLDS_NAMES,
+                            WORLD_NAME, WORLD_COASTS_NAME)
 from .generator.exceptions import ContinueError, SkipError, ValidationError
 from .maps_generator import (generate_maps, generate_coasts, reset_to_stage,
                              ALL_STAGES, stage_download_production_external,
                              stage_descriptions, stage_ugc, stage_popularity,
-                             stage_localads, stage_statistics,
-                             stages_as_string)
+                             stage_localads, stage_statistics, stage_srtm,
+                             stages_as_string, stage_as_string, stage_coastline,
+                             stage_update_planet)
 from .utils.collections import unique
 
 logger = logging.getLogger("maps_generator")
 
 
 examples = """Examples:
-1) Non-standard planet
+1) Non-standard planet with coastlines
     If you want to generate maps for Japan you must complete the following steps:
     1. Open https://download.geofabrik.de/asia/japan.html and copy url of osm.pbf
      and md5sum files.
@@ -34,7 +36,7 @@ examples = """Examples:
     ...
     
     3. Run
-    python$ python3.6 -m maps_generator --countries="World, WorldCoasts, Japan_*" --skip="update_planet"
+    python$ python3.6 -m maps_generator --countries="World, WorldCoasts, Japan_*"
 
     You must skip the step of updating the planet, because it is a non-standard planet.
 2) Rebuild stages:
@@ -42,6 +44,26 @@ examples = """Examples:
     You must have previous generation. You may regenerate from stage routing only for two mwms:
     
     python$ python3.6 -m maps_generator -c --from_stage="routing" --countries="Japan_Kinki Region_Osaka_Osaka, Japan_Chugoku Region_Tottori"
+    
+    Note: To generate maps with the coastline, you need more time and you need the planet to contain a continuous coastline.
+
+3) Non-standard planet without coastlines
+    If you want to generate maps for Moscow you must complete the following steps:
+    1. Open https://download.geofabrik.de/russia/central-fed-district.html and copy url of osm.pbf and md5sum files.
+    2. Edit ini file:
+    maps_generator$ vim var/etc/map_generator.ini
+    ...
+    [Main]
+    ...
+    DEBUG: 0
+    ...
+    [External]
+    PLANET_URL: https://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf
+    PLANET_MD5_URL: https://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf.md5
+    ...
+    
+    3. Run
+    python$ python3.6 -m maps_generator --countries="Russia_Moscow" --skip="coastline"
 """
 
 
@@ -69,6 +91,11 @@ def parse_options():
              "in omim/data/borders. It is necessary to set names without "
              "any extension.")
     parser.add_argument(
+        "--without_countries",
+        type=str,
+        default="",
+        help="List of regions to exclude them from generation. Syntax is the same as for --countries.")
+    parser.add_argument(
         "--skip",
         type=str,
         default="",
@@ -85,13 +112,19 @@ def parse_options():
         "--coasts",
         default=False,
         action="store_true",
-        help="Build WorldCoasts.raw and WorldCoasts.rawgeom files")
+        help="Build only WorldCoasts.raw and WorldCoasts.rawgeom files")
     parser.add_argument(
         "--production",
         default=False,
         action="store_true",
         help="Build production maps. In another case, 'osm only maps' are built"
              " - maps without additional data and advertising.")
+    parser.add_argument(
+        "--order",
+        type=str,
+        default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "var/etc/file_generation_order.txt"),
+        help="Mwm generation order.")
     return vars(parser.parse_args())
 
 
@@ -110,18 +143,16 @@ def main():
     options["build_name"] = build_name
 
     countries_line = ""
+    without_countries_line = ""
     if "COUNTRIES" in os.environ:
         countries_line = os.environ["COUNTRIES"]
     if options["countries"]:
         countries_line = options["countries"]
-    raw_countries = []
-    if os.path.isfile(countries_line):
-        with open(countries_line) as f:
-            raw_countries = [x.strip() for x in f]
-    if countries_line:
-        raw_countries = [
-            x.strip() for x in countries_line.replace(";", ",").split(",")
-        ]
+    else:
+        countries_line = "*"
+
+    if options["without_countries"]:
+      without_countries_line = options["without_countries"]
 
     borders_path = os.path.join(settings.USER_RESOURCE_PATH, "borders")
     all_countries = [
@@ -129,8 +160,6 @@ def main():
         if os.path.isfile(os.path.join(borders_path, f))
     ]
     all_countries += list(WORLDS_NAMES)
-    countries = []
-    used_countries = set()
 
     def end_star_compare(prefix, full):
         return full.startswith(prefix)
@@ -138,23 +167,61 @@ def main():
     def compare(a, b):
         return a == b
 
-    for raw_country in raw_countries:
-        cmp = compare
-        _raw_country = raw_country[:]
-        if _raw_country and _raw_country[-1] == "*":
-            _raw_country = _raw_country.replace("*", "")
-            cmp = end_star_compare
+    def get_countries_set_from_line(line):
+      countries = []
+      used_countries = set()
+      countries_list = []
+      if os.path.isfile(line):
+          with open(line) as f:
+              countries_list = [x.strip() for x in f]
+      elif line:
+          countries_list = [
+              x.strip() for x in line.replace(";", ",").split(",")
+          ]
 
-        for country in all_countries:
+      for country_item in countries_list:
+          cmp = compare
+          _raw_country = country_item[:]
+          if _raw_country and _raw_country[-1] == "*":
+              _raw_country = _raw_country.replace("*", "")
+              cmp = end_star_compare
+
+          for country in all_countries:
             if cmp(_raw_country, country):
-                used_countries.add(raw_country)
+                used_countries.add(country_item)
                 countries.append(country)
 
-    countries = unique(countries)
-    diff = set(raw_countries) - used_countries
-    if diff:
-        raise ValidationError(f"Bad input countries {', '.join(diff)}")
+      countries = unique(countries)
+      diff = set(countries_list) - used_countries
+      if diff:
+          raise ValidationError(f"Bad input countries {', '.join(diff)}")
+      return set(countries)
+
+    countries = get_countries_set_from_line(countries_line)
+    without_countries = get_countries_set_from_line(without_countries_line)
+    countries -= without_countries
+    countries = list(countries)
     options["countries"] = countries if countries else all_countries
+
+    options["build_all_countries"] = False
+    if len(countries) == len(all_countries):
+      options["build_all_countries"] = True
+
+    if options["order"]:
+        ordered_countries = []
+        countries = set(options["countries"])
+        with open(options["order"]) as file:
+            for c in file:
+                if c.strip().startswith("#"):
+                    continue
+                c = c.split("\t")[0].strip()
+                if c in countries:
+                    ordered_countries.append(c)
+                    countries.remove(c)
+            if countries:
+                raise ValueError(f"{options['order']} does not have an order "
+                                 f"for {countries}.")
+        options["countries"] = ordered_countries
 
     options_skip = []
     if options["skip"]:
@@ -168,6 +235,7 @@ def main():
             stage_download_production_external,
             stage_ugc,
             stage_popularity,
+            stage_srtm,
             stage_descriptions,
             stage_localads,
             stage_statistics
@@ -175,6 +243,16 @@ def main():
     if not all(s in ALL_STAGES for s in options["skip"]):
         raise SkipError(f"Stages {set(options['skip']) - set(ALL_STAGES)} "
                         f"not found.")
+
+    if settings.PLANET_URL != settings.DEFAULT_PLANET_URL:
+        options["skip"] += stages_as_string(stage_update_planet)
+
+    if stage_as_string(stage_coastline) in options["skip"]:
+        worlds_names = [x for x in options["countries"] if x in WORLDS_NAMES]
+        if worlds_names:
+            raise SkipError(f"You can not skip {stages_as_string(stage_coastline)}"
+                            f" if you want to generate {WORLDS_NAMES}."
+                            f" You can exclude them with --without_countries option.")
 
     env = Env(options)
     if env.from_stage:

@@ -2,11 +2,11 @@ package com.mapswithme.maps.bookmarks;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.auth.TargetFragmentCallback;
 import com.mapswithme.maps.base.BaseMwmFragment;
+import com.mapswithme.maps.dialog.AlertDialogCallback;
+import com.mapswithme.maps.purchase.PurchaseUtils;
 import com.mapswithme.util.SharedPropertiesUtils;
 import com.mapswithme.util.statistics.Statistics;
 
@@ -22,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
-    implements TargetFragmentCallback
+    implements TargetFragmentCallback, AlertDialogCallback, AuthCompleteListener
 {
   final static String ARG_CATEGORIES_PAGE = "arg_categories_page";
   final static String ARG_CATALOG_DEEPLINK = "arg_catalog_deeplink";
@@ -37,6 +39,14 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
   @NonNull
   private BookmarksDownloadFragmentDelegate mDelegate;
 
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private AlertDialogCallback mInvalidSubsDialogCallback;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private ViewPager mViewPager;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState)
   {
@@ -49,6 +59,7 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
       return;
 
     mCatalogDeeplink = args.getString(ARG_CATALOG_DEEPLINK);
+    mInvalidSubsDialogCallback = new InvalidSubscriptionAlertDialogCallback(this);
   }
 
   @Override
@@ -71,17 +82,17 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
                            @Nullable Bundle savedInstanceState)
   {
     View root = inflater.inflate(R.layout.fragment_bookmark_categories_pager, container, false);
-    ViewPager viewPager = root.findViewById(R.id.viewpager);
+    mViewPager = root.findViewById(R.id.viewpager);
     TabLayout tabLayout = root.findViewById(R.id.sliding_tabs_layout);
 
     FragmentManager fm = getActivity().getSupportFragmentManager();
     List<BookmarksPageFactory> dataSet = getAdapterDataSet();
     mAdapter = new BookmarksPagerAdapter(getContext(), fm, dataSet);
-    viewPager.setAdapter(mAdapter);
-    viewPager.setCurrentItem(saveAndGetInitialPage());
-    tabLayout.setupWithViewPager(viewPager);
-    viewPager.addOnPageChangeListener(new PageChangeListener());
-
+    mViewPager.setAdapter(mAdapter);
+    mViewPager.setCurrentItem(saveAndGetInitialPage());
+    tabLayout.setupWithViewPager(mViewPager);
+    mViewPager.addOnPageChangeListener(new PageChangeListener());
+    mDelegate.onCreateView(savedInstanceState);
     return root;
   }
 
@@ -98,10 +109,31 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
   }
 
   @Override
+  public void onResume()
+  {
+    super.onResume();
+    mDelegate.onResume();
+  }
+
+  @Override
+  public void onPause()
+  {
+    super.onPause();
+    mDelegate.onPause();
+  }
+
+  @Override
   public void onStop()
   {
     super.onStop();
     mDelegate.onStop();
+  }
+
+  @Override
+  public void onDestroyView()
+  {
+    super.onDestroyView();
+    mDelegate.onDestroyView();
   }
 
   private int saveAndGetInitialPage()
@@ -133,6 +165,33 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
   public boolean isTargetAdded()
   {
     return mDelegate.isTargetAdded();
+  }
+
+  @Override
+  public void onAlertDialogPositiveClick(int requestCode, int which)
+  {
+    mInvalidSubsDialogCallback.onAlertDialogPositiveClick(requestCode, which);
+  }
+
+  @Override
+  public void onAlertDialogNegativeClick(int requestCode, int which)
+  {
+    if (PurchaseUtils.REQ_CODE_CHECK_INVALID_SUBS_DIALOG == requestCode)
+      mViewPager.setAdapter(mAdapter);
+
+    mInvalidSubsDialogCallback.onAlertDialogNegativeClick(requestCode, which);
+  }
+
+  @Override
+  public void onAlertDialogCancel(int requestCode)
+  {
+    mInvalidSubsDialogCallback.onAlertDialogCancel(requestCode);
+  }
+
+  @Override
+  public void onAuthCompleted()
+  {
+    mViewPager.setAdapter(mAdapter);
   }
 
   private class PageChangeListener extends ViewPager.SimpleOnPageChangeListener

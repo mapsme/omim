@@ -10,11 +10,11 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
+#include "std/target_os.hpp"
+
 #include <algorithm>
 #include <random>
 #include <thread>
-
-#include "std/target_os.hpp"
 
 #include "private.h"
 
@@ -329,21 +329,23 @@ unsigned Platform::CpuCores() const
 void Platform::ShutdownThreads()
 {
   ASSERT(m_networkThread && m_fileThread && m_backgroundThread, ());
+  ASSERT(!m_networkThread->IsShutDown(), ());
+  ASSERT(!m_fileThread->IsShutDown(), ());
+  ASSERT(!m_backgroundThread->IsShutDown(), ());
 
   m_batteryTracker.UnsubscribeAll();
 
   m_networkThread->ShutdownAndJoin();
   m_fileThread->ShutdownAndJoin();
   m_backgroundThread->ShutdownAndJoin();
-
-  m_networkThread.reset();
-  m_fileThread.reset();
-  m_backgroundThread.reset();
 }
 
 void Platform::RunThreads()
 {
-  ASSERT(!m_networkThread && !m_fileThread && !m_backgroundThread, ());
+  ASSERT(!m_networkThread || (m_networkThread && m_networkThread->IsShutDown()), ());
+  ASSERT(!m_fileThread || (m_fileThread && m_fileThread->IsShutDown()), ());
+  ASSERT(!m_backgroundThread || (m_backgroundThread && m_backgroundThread->IsShutDown()), ());
+
   m_networkThread = make_unique<base::thread_pool::delayed::ThreadPool>();
   m_fileThread = make_unique<base::thread_pool::delayed::ThreadPool>();
   m_backgroundThread = make_unique<base::thread_pool::delayed::ThreadPool>();

@@ -117,6 +117,11 @@ public:
     m_graph.SetAStarParents(forward, parents);
   }
 
+  void DropAStarParents() override
+  {
+    m_graph.DropAStarParents();
+  }
+
   bool AreWavesConnectible(std::map<Vertex, Vertex> & forwardParents, Vertex const & commonVertex,
                            std::map<Vertex, Vertex> & backwardParents) override
   {
@@ -129,8 +134,9 @@ public:
     return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */), to);
   }
 
-  RouteWeight CalcSegmentWeight(Segment const & segment) const;
-  double CalcSegmentETA(Segment const & segment) const;
+  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) const;
+  double CalculateETA(Segment const & from, Segment const & to) const;
+  double CalculateETAWithoutPenalty(Segment const & segment) const;
 
   // For compatibility with IndexGraphStarterJoints
   // @{
@@ -151,6 +157,11 @@ public:
   bool IsJoint(Segment const & segment, bool fromStart)
   {
     return GetGraph().GetIndexGraph(segment.GetMwmId()).IsJoint(segment.GetRoadPoint(fromStart));
+  }
+
+  bool IsJointOrEnd(Segment const & segment, bool fromStart)
+  {
+    return GetGraph().GetIndexGraph(segment.GetMwmId()).IsJointOrEnd(segment, fromStart);
   }
   // @}
 

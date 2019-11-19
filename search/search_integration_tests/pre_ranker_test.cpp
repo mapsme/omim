@@ -144,14 +144,14 @@ UNIT_CLASS_TEST(PreRankerTest, Smoke)
   vector<double> distances(pois.size());
   vector<bool> emit(pois.size());
 
-  FeaturesVectorTest fv(mwmId.GetInfo()->GetLocalFile().GetPath(MapOptions::Map));
+  FeaturesVectorTest fv(mwmId.GetInfo()->GetLocalFile().GetPath(MapFileType::Map));
   fv.GetVector().ForEach([&](FeatureType & ft, uint32_t index) {
     FeatureID id(mwmId, index);
     ResultTracer::Provenance provenance;
     preRanker.Emplace(id, PreRankingInfo(Model::TYPE_POI, TokenRange(0, 1)), provenance);
 
     TEST_LESS(index, pois.size(), ());
-    distances[index] = MercatorBounds::DistanceOnEarth(feature::GetCenter(ft), kPivot);
+    distances[index] = mercator::DistanceOnEarth(feature::GetCenter(ft), kPivot);
     emit[index] = true;
   });
 
@@ -168,7 +168,7 @@ UNIT_CLASS_TEST(PreRankerTest, Smoke)
     TEST_LESS(index, pois.size(), ());
 
     TEST(!checked[index], (index));
-    TEST(base::AlmostEqualAbs(distances[index], results[i].GetDistance(), 1e-3),
+    TEST(base::AlmostEqualAbs(distances[index], results[i].GetDistance(), 1.0),
          (distances[index], results[i].GetDistance()));
     checked[index] = true;
   }

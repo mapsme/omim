@@ -11,7 +11,7 @@
 
 #include "indexer/data_source.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 
 #include "base/assert.hpp"
 #include "base/timer.hpp"
@@ -114,7 +114,7 @@ auto IndexGraphLoaderImpl::ReceiveSpeedCamsFromMwm(NumMwmId numMwmId) -> decltyp
   if (!handle.IsAlive())
     MYTHROW(RoutingException, ("Can't get mwm handle for", file));
 
-  MwmValue const & mwmValue = *handle.GetValue<MwmValue>();
+  MwmValue const & mwmValue = *handle.GetValue();
   if (!mwmValue.m_cont.IsExist(CAMERAS_INFO_FILE_TAG))
   {
     LOG(LINFO, ("No section about speed cameras"));
@@ -205,7 +205,7 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateIndexGraph(
 
   graph.m_indexGraph = make_unique<IndexGraph>(graph.m_geometry, m_estimator, m_avoidRoutingOptions);
   base::Timer timer;
-  MwmValue const & mwmValue = *handle.GetValue<MwmValue>();
+  MwmValue const & mwmValue = *handle.GetValue();
   DeserializeIndexGraph(mwmValue, m_vehicleType, *graph.m_indexGraph);
   LOG(LINFO, (ROUTING_FILE_TAG, "section for", file.GetName(), "loaded in", timer.ElapsedSeconds(),
       "seconds"));
@@ -256,7 +256,10 @@ void DeserializeIndexGraph(MwmValue const & mwmValue, VehicleType vehicleType, I
   IndexGraphSerializer::Deserialize(graph, src, GetVehicleMask(vehicleType));
   RestrictionLoader restrictionLoader(mwmValue, graph);
   if (restrictionLoader.HasRestrictions())
+  {
     graph.SetRestrictions(restrictionLoader.StealRestrictions());
+    graph.SetUTurnRestrictions(restrictionLoader.StealNoUTurnRestrictions());
+  }
 
   RoadAccess roadAccess;
   if (ReadRoadAccessFromMwm(mwmValue, vehicleType, roadAccess))

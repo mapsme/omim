@@ -1,6 +1,6 @@
 package com.mapswithme.maps.purchase;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.Purchase;
@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface PlayStoreBillingCallback
 {
-  void onPurchaseDetailsLoaded(@NonNull List<SkuDetails> details);
+  void onProductDetailsLoaded(@NonNull List<SkuDetails> details);
   void onPurchaseSuccessful(@NonNull List<Purchase> purchases);
   void onPurchaseFailure(@BillingClient.BillingResponse int error);
-  void onPurchaseDetailsFailure();
+  void onProductDetailsFailure();
   void onStoreConnectionFailed();
   void onPurchasesLoaded(@NonNull List<Purchase> purchases);
   void onConsumptionSuccess();

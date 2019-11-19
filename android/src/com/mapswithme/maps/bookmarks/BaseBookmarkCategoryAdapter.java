@@ -1,11 +1,10 @@
 package com.mapswithme.maps.bookmarks;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
-import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 
 import java.util.List;
 
@@ -14,10 +13,19 @@ public abstract class BaseBookmarkCategoryAdapter<V extends RecyclerView.ViewHol
 {
   @NonNull
   private final Context mContext;
+  @NonNull
+  private List<BookmarkCategory> mItems;
 
-  BaseBookmarkCategoryAdapter(@NonNull Context context)
+  BaseBookmarkCategoryAdapter(@NonNull Context context, @NonNull List<BookmarkCategory> items)
   {
     mContext = context;
+    mItems = items;
+  }
+
+  public void setItems(@NonNull List<BookmarkCategory> items)
+  {
+    mItems = items;
+    notifyDataSetChanged();
   }
 
   @NonNull
@@ -29,7 +37,7 @@ public abstract class BaseBookmarkCategoryAdapter<V extends RecyclerView.ViewHol
   @NonNull
   public List<BookmarkCategory> getBookmarkCategories()
   {
-    return BookmarkManager.INSTANCE.getOwnedCategoriesSnapshot().getItems();
+    return mItems;
   }
 
   @Override

@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <functional>
 #include <initializer_list>
+#include <limits>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -24,6 +25,8 @@ namespace feature { class TypesHolder; }
 
 namespace routing
 {
+double constexpr kNotUsed = std::numeric_limits<double>::max();
+
 struct InOutCityFactor;
 struct InOutCitySpeedKMpH;
 
@@ -85,7 +88,7 @@ struct SpeedParams
   Maxspeed m_maxspeed;
 };
 
-/// \brief Speeds which are used for edge weight and ETA esimations.
+/// \brief Speeds which are used for edge weight and ETA estimations.
 struct SpeedKMpH
 {
   constexpr SpeedKMpH() = default;
@@ -223,13 +226,15 @@ public:
   /// @param inCity is true if |f| lies in a city of town.
   virtual SpeedKMpH GetSpeed(FeatureType & f, SpeedParams const & speedParams) const = 0;
 
+  virtual HighwayType GetHighwayType(FeatureType & f) const = 0;
+
   /// @return Maximum model weight speed.
   /// All speeds which the model returns must be less than or equal to this speed.
   virtual double GetMaxWeightSpeed() const = 0;
 
   /// @return Offroad speed in KMpH for vehicle. This speed should be used for non-feature routing
   /// e.g. to connect start point to nearest feature.
-  virtual double GetOffroadSpeed() const = 0;
+  virtual SpeedKMpH const & GetOffroadSpeed() const = 0;
 
   virtual bool IsOneWay(FeatureType & f) const = 0;
 
@@ -302,6 +307,7 @@ public:
 
   /// VehicleModelInterface overrides:
   SpeedKMpH GetSpeed(FeatureType & f, SpeedParams const & speedParams) const override;
+  HighwayType GetHighwayType(FeatureType & f) const override;
   double GetMaxWeightSpeed() const override;
   bool IsOneWay(FeatureType & f) const override;
   bool IsRoad(FeatureType & f) const override;
@@ -391,14 +397,14 @@ private:
     SpeedFactor m_factor;
   };
 
-  void GetHighwayType(uint32_t type, boost::optional<HighwayType> & hwType) const;
+  boost::optional<HighwayType> GetHighwayType(uint32_t type) const;
   void GetSurfaceFactor(uint32_t type, SpeedFactor & factor) const;
   void GetAdditionalRoadSpeed(uint32_t type, bool isCityRoad, boost::optional<SpeedKMpH> & speed) const;
 
-  SpeedKMpH GetSpeedOnFeatureWithoutMaxspeed(boost::optional<HighwayType> const & type,
-      SpeedParams const & speedParams) const;
-  SpeedKMpH GetSpeedOnFeatureWithMaxspeed(boost::optional<HighwayType> const & type,
-      SpeedParams const & speedParams) const;
+  SpeedKMpH GetSpeedOnFeatureWithoutMaxspeed(HighwayType const & type,
+                                             SpeedParams const & speedParams) const;
+  SpeedKMpH GetSpeedOnFeatureWithMaxspeed(HighwayType const & type,
+                                          SpeedParams const & speedParams) const;
 
   std::vector<AdditionalRoadType>::const_iterator FindAdditionalRoadType(uint32_t type) const;
 

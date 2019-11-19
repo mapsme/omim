@@ -1,17 +1,15 @@
 #import "MWMPushNotifications.h"
 #import <Crashlytics/Crashlytics.h>
 #import <Pushwoosh/PushNotificationManager.h>
-#import <UserNotifications/UserNotifications.h>
-#import "MWMCommon.h"
 #import "Statistics.h"
+
+#include "platform/marketing_service.hpp"
+#include "platform/platform.hpp"
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
 // If you have a "missing header error" here, then please run configure.sh script in the root repo
 // folder.
-#import "private.h"
-
-#include "std/string.hpp"
 
 namespace
 {
@@ -20,11 +18,9 @@ NSString * const kPushDeviceTokenLogEvent = @"iOSPushDeviceToken";
 
 @implementation MWMPushNotifications
 
-+ (void)setup:(NSDictionary *)launchOptions
++ (void)setup
 {
   PushNotificationManager * pushManager = [PushNotificationManager pushManager];
-
-  [pushManager handlePushReceived:launchOptions];
 
   // make sure we count app open in Pushwoosh stats
   [pushManager sendAppOpen];
@@ -54,8 +50,6 @@ NSString * const kPushDeviceTokenLogEvent = @"iOSPushDeviceToken";
           fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
   [Statistics logEvent:kStatEventName(kStatApplication, kStatPushReceived) withParameters:userInfo];
-  if (![self handleURLPush:userInfo])
-    [[PushNotificationManager pushManager] handlePushReceived:userInfo];
   completionHandler(UIBackgroundFetchResultNoData);
 }
 
@@ -90,6 +84,10 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
   [[PushNotificationManager pushManager].notificationCenterDelegate userNotificationCenter:center
                                                             didReceiveNotificationResponse:response
                                                                      withCompletionHandler:completionHandler];
+}
+
++ (NSString * _Nonnull)formattedTimestamp {
+  return @(GetPlatform().GetMarketingService().GetPushWooshTimestamp().c_str());
 }
 
 @end

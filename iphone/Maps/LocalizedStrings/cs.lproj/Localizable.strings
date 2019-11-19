@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "Neexistuje žádné aktivní předplatné";
 
-"subscription_terms" = "Platba bude automaticky zaúčtována na váš účet iTunes v době potvrzení nákupu. Předplatné se automaticky obnoví, pokud automatické obnovení nevypnete nejméně 24 hodin před koncem aktuálního období. Váš účet bude zpoplatněn podle plánu období během 24 hodin před koncem aktuálního období. Automatické obnovení můžete vypnout nebo spravovat kdykoliv v nastavení účtu Apple ID.";
-
 "subscriptions_title" = "Předplatné";
 
 "manage_subscription" = "Spravovat předplatné";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "Soubor je poškozen a nemůže být nahrán. Nahrajte prosím jiný soubor.";
 
-"buy_btn" = "Koupit za %s";
+"buy_btn" = "Kupte tento za %s";
 
 "download_guide_progress" = "Průvodce se načítá…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Nelze sestavit trasu. Specifikujte prosím další body trasy";
 
-"dialog_routing_download_files_carplay" = "K sestavení trasy nejsou přítomny žádné mapy. Stáhněte si je prosím na váš mobilní telefon";
+"dialog_routing_download_files_carplay" = "K vytvoření trasy si stáhněte chybějící mapy do vašeho zařízení";
 
 "dialog_routing_system_error_carplay" = "Vyskytla se chyba. Restartujte prosím aplikaci";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Vyberte si hotel na mapě";
+
+"popup_booking_download_guides_title" = "Zamluvili jste si hotel?";
+
+"popup_booking_download_guides_message" = "Naplánujte si trasu pomocí ready-made průvodců z MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Offline průvodci";
+
+"popup_mwm_download_guides_cta" = "Zvolte jedno";
+
+"popup_mwm_download_guides_cta_1" = "Podívejte se";
+
+"gallery_pp_download_guides_offline_title" = "Plánujte svou dovolenou s MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Nenechte si ujít nic s průvodci od zkušených cestovatelů";
+
+"gallery_pp_download_guides_offline_cta" = "Zapněte Internetové";
+
+"gallery_pp_download_guides_title" = "Průvodce";
+
+"native_screen_subscription_title" = "Neomezený přístup k více než 2000 cestovních průvodců!";
+
+"native_screen_subscription_message" = "Nezapomenutelná dovolená, kdekoli a s kýmkoli cestujete";
+
+"annual_subscription_title" = "Roční";
+
+"montly_subscription_title" = "Měsíční";
+
+"annual_subscription_message" = "12 měsíců neomezeného přístupu";
+
+"montly_subscription_message" = "1 měsíc neomezeného přístupu";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Děkujeme za předplacení!";
+
+"subscription_success_dialog_message" = "Nyní máte neomezený přístup k celému katalogu průvodců";
+
+"renewal_screen_title" = "Vaše předplatné vypršelo";
+
+"renewal_screen_message" = "Všichni průvodci stažení s předplatným budou smazáni. Chcete pokračovat v předplatném a udržet si je?";
+
+"renewal_screen_button_restore" = "Ano, obnovit";
+
+"renewal_screen_button_cancel" = "Ne, smazat průvodce";
+
+"subscription_error_ping_title" = "Koupě selhala";
+
+"subscription_error_message" = "Služba je aktuálně ve vašem kraji nedostupná. Zkuste to prosím později";
+
+"subscription_error_button" = "Získat";
+
+"timeout_error_title" = "Ejhle, čas vypršel!";
+
+"timeout_error_message" = "Naše servery neodpovídají. Zkontrolujte prosím internetové připojení a zkuste to později.";
+
+"per_month" = "/měs";
+
+"per_year" = "/rok";
+
+"buy_btn_for_subscription" = "Neomezený přístup od %s";
+
+"buy_btn_for_subscription_1" = "Kupte VŠECHNY průvodce za %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Neomezený přístup za %s/měs";
+
+"buy_btn_for_subscription_ios_only_year" = "Neomezený přístup za %s/rok";
+
+"subscription_terms_guides" = "Platba bude účtována na účet iTunes po potvrzení nákupu. Předplatné se automaticky obnoví, pokud není funkce automatického obnovení vypnuta alespoň 24 hodin před koncem aktuálního období. Váš účet bude zpoplatněn podle vašeho plánu pro obnovení do 24 hodin před koncem aktuálního období. Funkci automatického obnovení můžete v nastavení účtu Apple ID kdykoli spravovat nebo vypnout. Průvodce stažené podle předplatného můžete používat pouze do data expirace. Po 30 dnech od data vypršení předplatného budou automaticky odstraněni průvodci se záložkami.";
+
+"subscription_terms" = "Platba bude automaticky zaúčtována na váš účet iTunes v době potvrzení nákupu. Předplatné se automaticky obnoví, pokud automatické obnovení nevypnete nejméně 24 hodin před koncem aktuálního období. Váš účet bude zpoplatněn podle plánu období během 24 hodin před koncem aktuálního období. Automatické obnovení můžete vypnout nebo spravovat kdykoliv v nastavení účtu Apple ID.";
+
+"whatsnew_carplay_title" = "Auto navigace MAPS.ME v CarPlay!";
+
+"whatsnew_carplay_message" = "Záložky, vyhledávání, rychlostní kamery a možnosti řízení jsou dostupné v režimu offline";
+
+"whatsnew_subscription_title" = "Celý svět za předplatné!";
+
+"whatsnew_subscription_message" = "Neomezený přístup ke katalogu průvodců je výhodnější než jednorázová koupě";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Aktualizace navigace";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Zlepšili jsme plánování cesty do míst, která jsou vzdálená od silnic";
+
+"avoid_unpaved_carplay_1" = "Bez pr. cest";
+
+"avoid_unpaved_carplay_2" = "Vyhnout se nezp";
+
+"avoid_ferry_carplay_1" = "Bez trajektů";
+
+"avoid_ferry_carplay_2" = "Vyh. se traj.";
+
+"avoid_tolls_carplay_1" = "Bez pl.sil.";
+
+"avoid_tolls_carplay_2" = "Vyh. se pl. sil";
+
+"speedcams_alert_title_carplay_1" = "Rych. kam.";
+
+"speedcams_alert_title_carplay_2" = "Rych. varování";
+
+"download_map_carplay" = "Stáhněte si prosím mapy do aplikace MAPS.ME ve vašem zařízení";
+
+"carplay_roundabout_exit" = "%s výjezd";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Třídit…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Třídit záložky";
+
+/* iOS */
+"sort_default" = "Třídit ve výchozím nastavení";
+
+"sort_type" = "Třídit dle typu";
+
+"sort_distance" = "Třídit dle vzdálenosti";
+
+"sort_date" = "Třídit dle data";
+
+/* Android */
+"by_default" = "Podle výchozího stavu";
+
+/* Android */
+"by_type" = "Podle typu";
+
+/* Android */
+"by_distance" = "Podle vzdálenosti";
+
+/* Android */
+"by_date" = "Podle data";
+
+"week_ago_sorttype" = "Před týdnem";
+
+"month_ago_sorttype" = "Před měsícem";
+
+"moremonth_ago_sorttype" = "Více než před měsícem";
+
+"moreyear_ago_sorttype" = "Více než před rokem";
+
+"near_me_sorttype" = "Blízko mě";
+
+"others_sorttype" = "Ostatní";
+
+"food_places" = "Jídlo";
+
+"tourist_places" = "Památky";
+
+"museums" = "Muzea";
+
+"parks" = "Parky";
+
+"swim_places" = "Plavat";
+
+"mountains" = "Hory";
+
+"animals" = "Zvířata";
+
+"hotels" = "Hotely";
+
+"buildings" = "Budovy";
+
+"money" = "Peníze";
+
+"shops" = "Obchody";
+
+"parkings" = "Parkoviště";
+
+"fuel_places" = "Čerpací stanice";
+
+"water" = "Voda";
+
+"medicine" = "Medicína";
+
+"search_in_the_list" = "Vyhledat v seznamu";
+
+"view_on_map_bookmarks" = "Na mapě";
+
+"more_bookmarks" = "Více…";
+
+"no_items_found" = "Nebyly nalezeny žádné položky";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Upravit seznam";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Odstranit seznam";
+
+"whatsnew_bookmarks_search_sort_title" = "Pořadí v záložkách tvoří pohodlnou cestu";
+
+"whatsnew_bookmarks_search_sort_message" = "Seřaďte oblíbená místa podle kategorie, umístění a chronologického pořadí a také rychle najděte konkrétní záložky podle jejich názvu";
+
+"popup_subscription_success_map_title" = "Woohoo, máte přeplaceno!";
+
+"popup_subscription_success_map_message" = "Objevte nyní ty nejlepší turistické atrakce v katalogu MAPS.ME";
+
+"popup_subscription_success_map_start_button" = "Začít s prohlížením";
+
+"popup_subscription_success_map_not_now_button" = "Nyní ne";
+
+"religious_places" = "Posvátná místa";
+
+"subscription_terms_android" = "Po potvrzení nákupu bude platba naúčtována na Váš účet Google Play. Předplatné bude automaticky obnoveno, pokud nedojde ke zrušení funkce automatického obnovení nejméně 24 hodin před koncem aktuálního období. Částka bude naúčtována na Váš účet dle Vašeho plánu obnovy v průběhu 24 hodin před koncem aktuálního období. Funkci automatického obnovení lze po nákupu spravovat nebo vypnout v nastavení účtu. Používat můžete pouze průvodce stažené pomocí předplatného, a to do doby skončení platnosti. Po 30 dnech od skončení předplatného budou stažené průvodce automaticky smazány.";
+
+"select_list" = "Vybrat seznam";
+
+"pp_discovery_place_related_header" = "Toto místo se nachází v katalogu průvodců";
+
+"pp_discovery_place_related_header_1" = "Toto místo je uvedeno v katalogu";
+
+"pp_discovery_place_related_cta_button" = "Náhled";
+
+"pp_discovery_place_related_tag_header" = "Průvodci podle tagu „%s“";
+
+"pp_discovery_place_related_tag_header_1" = "Možná se vám bude také líbit";
+
+"buy_btn_for_subscription_version_2" = "VŠICHNI průvodci pouze za %s/měs";
+
+"buy_btn_for_subscription_version_3" = "Celý katalog za %s/měs";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Přístup do katalogu za %s/měs";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Přístup do katalogu za %s/rok";
+
+"subscription_screen_native_title_version_2" = "Přístup k průvodcům se záložkami!";
+
+"subscription_screen_native_message_version_2" = "Buďte připraveni na jakoukoli cestu do více než 600 měst a více než 100 zemí";
+
+"catalog_no_internet_title" = "Připojení k internetu není k dispozici";
+
+"catalog_no_internet_button" = "Zkusit znovu";
+
+"whatsnew_map_updates_title" = "Bleskové aktualizace mapy";
+
+"whatsnew_map_updates_message" = "Od nynějška aktualizujeme údaje dvakrát rychleji";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Parkoviště";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Platební terminál";
 
 "type.amenity.pharmacy" = "Lékárna";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Pošta";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Hospoda";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Univerzita";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Automat na cigarety";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Vodní zdroj";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Blok";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Pohraniční kontrola";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Vstup";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Brána";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Závora";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Sloupek";
 
 "type.barrier.toll_booth" = "Mýtné";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Vykopávky";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Voda";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Hřbitov";
 
 "type.landuse.cemetery.christian" = "Hřbitov";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Pole";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Jezero";
 

@@ -1,12 +1,7 @@
-#import "MWMCommon.h"
 #import "MWMSearchCell.h"
 #import "Statistics.h"
 
-#include "Framework.h"
-
-#include "base/logging.hpp"
-
-#include <string>
+#include <CoreApi/Framework.h>
 
 @interface MWMSearchCell ()
 
@@ -40,7 +35,7 @@
   size_t const rangesCount = result.GetHighlightRangesCount();
   for (size_t i = 0; i < rangesCount; ++i)
   {
-    pair<uint16_t, uint16_t> const & range = result.GetHighlightRange(i);
+    std::pair<uint16_t, uint16_t> const & range = result.GetHighlightRange(i);
 
     if (range.first + range.second <= title.length)
     {

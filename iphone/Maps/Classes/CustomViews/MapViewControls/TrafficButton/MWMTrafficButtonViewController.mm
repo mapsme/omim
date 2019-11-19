@@ -1,10 +1,11 @@
 #import "MWMTrafficButtonViewController.h"
+
+#import <CoreApi/MWMTrafficManager.h>
+
 #import "MWMAlertViewController.h"
 #import "MWMButton.h"
-#import "MWMCommon.h"
 #import "MWMMapViewControlsCommon.h"
 #import "MWMMapViewControlsManager.h"
-#import "MWMTrafficManager.h"
 #import "MapViewController.h"
 #import "SwiftBridge.h"
 
@@ -54,7 +55,7 @@ NSArray<UIImage *> * imagesWithName(NSString * name)
   {
     MapViewController * ovc = [MapViewController sharedController];
     [ovc addChildViewController:self];
-    [ovc.view addSubview:self.view];
+    [ovc.controlsView addSubview:self.view];
     [self configLayout];
     [self refreshAppearance];
     [MWMTrafficManager addObserver:self];

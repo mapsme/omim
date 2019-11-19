@@ -9,11 +9,11 @@
 #include "base/logging.hpp"
 #include "base/math.hpp"
 
-#include "std/cstdint.hpp"
-#include "std/map.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
-#include "std/vector.hpp"
+#include <cstdint>
+#include <map>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "pyhelpers/module_version.hpp"
 #include "pyhelpers/vector_list_conversion.hpp"
@@ -22,6 +22,8 @@
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+
+using namespace std;
 
 namespace
 {
@@ -40,7 +42,7 @@ struct SegmentSpeeds
   double m_weight = 0;
 };
 
-using SegmentMapping = map<traffic::TrafficInfo::RoadSegmentId, SegmentSpeeds>;
+using SegmentMapping = std::map<traffic::TrafficInfo::RoadSegmentId, SegmentSpeeds>;
 
 string SegmentSpeedsRepr(SegmentSpeeds const & v)
 {
@@ -81,7 +83,7 @@ traffic::TrafficInfo::Coloring TransformToSpeedGroups(SegmentMapping const & seg
     else
     {
       double p = 100.0 * u / v;
-      p = base::clamp(p, 0.0, 100.0);
+      p = base::Clamp(p, 0.0, 100.0);
       result[kv.first] = traffic::GetSpeedGroupByPercentage(p);
     }
   }

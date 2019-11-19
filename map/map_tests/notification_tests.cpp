@@ -10,6 +10,7 @@
 #include "platform/platform.hpp"
 
 #include <memory>
+#include <string>
 #include <utility>
 
 using namespace notifications;
@@ -28,7 +29,7 @@ public:
       UNREACHABLE();
     }
 
-    string GetAddress(m2::PointD const & pt) override
+    std::string GetAddress(m2::PointD const & pt) override
     {
       return {};
     }
@@ -147,13 +148,13 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckRouteToInSam
   NotificationManagerForTesting notificationManager;
 
   eye::MapObject mapObject;
-  mapObject.SetPos(MercatorBounds::FromLatLon({59.909299, 10.769807}));
+  mapObject.SetPos(mercator::FromLatLon({59.909299, 10.769807}));
   mapObject.SetReadableName("Visiting a Bjarne");
   mapObject.SetBestType("amenity-bar");
 
   eye::MapObject::Event event;
   event.m_type = eye::MapObject::Event::Type::RouteToCreated;
-  event.m_userPos = MercatorBounds::FromLatLon({59.920333, 10.780793});
+  event.m_userPos = mercator::FromLatLon({59.920333, 10.780793});
   event.m_eventTime = notifications::Clock::now() - std::chrono::hours(25);
   mapObject.GetEditableEvents().push_back(event);
   notificationManager.OnMapObjectEvent(mapObject);
@@ -177,14 +178,14 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckUgcNotSavedT
   NotificationManagerForTesting notificationManager;
 
   eye::MapObject mapObject;
-  mapObject.SetPos(MercatorBounds::FromLatLon({59.909299, 10.769807}));
+  mapObject.SetPos(mercator::FromLatLon({59.909299, 10.769807}));
   mapObject.SetReadableName("Visiting a Bjarne");
   mapObject.SetBestType("amenity-bar");
 
   {
     eye::MapObject::Event event;
     event.m_type = eye::MapObject::Event::Type::Open;
-    event.m_userPos = MercatorBounds::FromLatLon({59.920333, 10.780793});
+    event.m_userPos = mercator::FromLatLon({59.920333, 10.780793});
     event.m_eventTime = notifications::Clock::now() - std::chrono::hours(25);
     mapObject.GetEditableEvents().push_back(event);
     notificationManager.OnMapObjectEvent(mapObject);
@@ -195,7 +196,7 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckUgcNotSavedT
   {
     eye::MapObject::Event event;
     event.m_type = eye::MapObject::Event::Type::UgcEditorOpened;
-    event.m_userPos = MercatorBounds::FromLatLon({59.920333, 10.780793});
+    event.m_userPos = mercator::FromLatLon({59.920333, 10.780793});
     event.m_eventTime = notifications::Clock::now() - std::chrono::hours(25);
     mapObject.GetEditableEvents().push_back(event);
     notificationManager.OnMapObjectEvent(mapObject);
@@ -221,7 +222,7 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckUgcNotSavedT
   {
     eye::MapObject::Event event;
     event.m_type = eye::MapObject::Event::Type::UgcEditorOpened;
-    event.m_userPos = MercatorBounds::FromLatLon({59.920333, 10.780793});
+    event.m_userPos = mercator::FromLatLon({59.920333, 10.780793});
     event.m_eventTime = notifications::Clock::now() - std::chrono::hours(25);
     mapObject.GetEditableEvents().push_back(event);
     notificationManager.OnMapObjectEvent(mapObject);
@@ -230,7 +231,7 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckUgcNotSavedT
   {
     eye::MapObject::Event event;
     event.m_type = eye::MapObject::Event::Type::UgcSaved;
-    event.m_userPos = MercatorBounds::FromLatLon({59.920333, 10.780793});
+    event.m_userPos = mercator::FromLatLon({59.920333, 10.780793});
     event.m_eventTime = notifications::Clock::now() - std::chrono::hours(25);
     mapObject.GetEditableEvents().push_back(event);
     notificationManager.OnMapObjectEvent(mapObject);
@@ -245,14 +246,14 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckPlannedTripT
   NotificationManagerForTesting notificationManager;
 
   eye::MapObject mapObject;
-  mapObject.SetPos(MercatorBounds::FromLatLon({59.909299, 10.769807}));
+  mapObject.SetPos(mercator::FromLatLon({59.909299, 10.769807}));
   mapObject.SetReadableName("Visiting a Bjarne");
   mapObject.SetBestType("amenity-bar");
 
   {
     eye::MapObject::Event event;
     event.m_type = eye::MapObject::Event::Type::Open;
-    event.m_userPos = MercatorBounds::FromLatLon({54.637300, 19.877731});
+    event.m_userPos = mercator::FromLatLon({54.637300, 19.877731});
     event.m_eventTime = notifications::Clock::now() - std::chrono::hours(25);
     mapObject.GetEditableEvents().push_back(event);
     notificationManager.OnMapObjectEvent(mapObject);
@@ -263,7 +264,7 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckPlannedTripT
   {
     eye::MapObject::Event event;
     event.m_type = eye::MapObject::Event::Type::Open;
-    event.m_userPos = MercatorBounds::FromLatLon({54.637310, 19.877735});
+    event.m_userPos = mercator::FromLatLon({54.637310, 19.877735});
     event.m_eventTime = notifications::Clock::now() - std::chrono::hours(25);
     mapObject.GetEditableEvents().push_back(event);
     notificationManager.OnMapObjectEvent(mapObject);
@@ -274,7 +275,7 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckPlannedTripT
   {
     eye::MapObject::Event event;
     event.m_type = eye::MapObject::Event::Type::Open;
-    event.m_userPos = MercatorBounds::FromLatLon({59.920333, 10.780793});
+    event.m_userPos = mercator::FromLatLon({59.920333, 10.780793});
     event.m_eventTime = notifications::Clock::now() - std::chrono::hours(25);
     mapObject.GetEditableEvents().push_back(event);
     notificationManager.OnMapObjectEvent(mapObject);

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "std/function.hpp"
-#include "std/map.hpp"
-#include "std/string.hpp"
-#include "std/utility.hpp"
-#include "std/vector.hpp"
+#include <functional>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace marketing
 {
@@ -30,6 +30,10 @@ extern char const * const kEditorEditDiscovered;
 extern char const * const kTrafficDiscovered;
 extern char const * const kDiscoveryButtonDiscovered;
 extern char const * const kBookHotelOnBookingComDiscovered;
+extern char const * const kBookmarkCatalogSubscriptionEnabled;
+extern char const * const kBookmarkCatalogSubscriptionDisabled;
+extern char const * const kRemoveAdsSubscriptionEnabled;
+extern char const * const kRemoveAdsSubscriptionDisabled;
 
 // Events.
 extern char const * const kDownloaderMapActionFinished;
@@ -50,18 +54,23 @@ extern char const * const kKeyword;
 class MarketingService
 {
 public:
-  using PushWooshSenderFn = function<void(string const & tag, vector<string> const & values)>;
-  using MarketingSenderFn = function<void(string const & tag, map<string, string> const & params)>;
+  using PushWooshSenderFn = std::function<void(std::string const & tag,
+    std::vector<std::string> const & values)>;
+  using MarketingSenderFn = std::function<void(std::string const & tag,
+    std::map<std::string, std::string> const & params)>;
 
   void ProcessFirstLaunch();
 
   void SetPushWooshSender(PushWooshSenderFn const & fn) { m_pushwooshSender = fn; }
-  void SendPushWooshTag(string const & tag);
-  void SendPushWooshTag(string const & tag, string const & value);
-  void SendPushWooshTag(string const & tag, vector<string> const & values);
+  void SendPushWooshTag(std::string const & tag);
+  void SendPushWooshTag(std::string const & tag, std::string const & value);
+  void SendPushWooshTag(std::string const & tag, std::vector<std::string> const & values);
+
+  std::string GetPushWooshTimestamp();
 
   void SetMarketingSender(MarketingSenderFn const & fn) { m_marketingSender = fn; }
-  void SendMarketingEvent(string const & tag, map<string, string> const & params);
+  void SendMarketingEvent(std::string const & tag,
+                          std::map<std::string, std::string> const & params);
 
 private:
   /// Callback fucntion for setting PushWoosh tags.

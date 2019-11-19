@@ -110,6 +110,8 @@ void Trim(std::string & s, char const * anyOf);
 // to - A substitute string
 bool ReplaceFirst(std::string & str, std::string const & from, std::string const & to);
 
+bool ReplaceLast(std::string & str, std::string const & from, std::string const & to);
+
 void MakeLowerCaseInplace(std::string & s);
 std::string MakeLowerCase(std::string const & s);
 bool EqualNoCase(std::string const & s1, std::string const & s2);
@@ -118,6 +120,7 @@ UniString MakeUniString(std::string const & utf8s);
 std::string ToUtf8(UniString const & s);
 bool IsASCIIString(std::string const & str);
 bool IsASCIIDigit(UniChar c);
+bool IsASCIINumeric(std::string const & str);
 bool IsASCIISpace(UniChar c);
 bool IsASCIILatin(UniChar c);
 
@@ -340,7 +343,7 @@ void Tokenize(std::string const & str, char const * delims, TFunctor && f)
   }
 }
 
-template <template <typename ...> class Collection = std::vector>
+template <template <typename...> class Collection = std::vector>
 Collection<std::string> Tokenize(std::string const & str, char const * delims)
 {
   Collection<std::string> c;
@@ -359,7 +362,7 @@ void ParseCSVRow(std::string const & s, char const delimiter, std::vector<std::s
 UniChar LastUniChar(std::string const & s);
 
 template <class T, size_t N, class TT>
-bool IsInArray(T(&arr)[N], TT const & t)
+bool IsInArray(T (&arr)[N], TT const & t)
 {
   for (size_t i = 0; i < N; ++i)
     if (arr[i] == t)
@@ -371,8 +374,9 @@ bool IsInArray(T(&arr)[N], TT const & t)
 //@{
 WARN_UNUSED_RESULT bool to_int(char const * s, int & i, int base = 10);
 WARN_UNUSED_RESULT bool to_uint(char const * s, unsigned int & i, int base = 10);
-WARN_UNUSED_RESULT bool to_uint64(char const * s, uint64_t & i);
+WARN_UNUSED_RESULT bool to_uint64(char const * s, uint64_t & i, int base = 10);
 WARN_UNUSED_RESULT bool to_int64(char const * s, int64_t & i);
+WARN_UNUSED_RESULT bool to_size_t(char const * s, size_t & i, int base = 10);
 WARN_UNUSED_RESULT bool to_float(char const * s, float & f);
 WARN_UNUSED_RESULT bool to_double(char const * s, double & d);
 
@@ -382,16 +386,35 @@ WARN_UNUSED_RESULT inline bool is_number(std::string const & s)
   return to_int64(s.c_str(), dummy);
 }
 
-WARN_UNUSED_RESULT inline bool to_int(std::string const & s, int & i, int base = 10) { return to_int(s.c_str(), i, base); }
+WARN_UNUSED_RESULT inline bool to_int(std::string const & s, int & i, int base = 10)
+{
+  return to_int(s.c_str(), i, base);
+}
 WARN_UNUSED_RESULT inline bool to_uint(std::string const & s, unsigned int & i, int base = 10)
 {
   return to_uint(s.c_str(), i, base);
 }
 
-WARN_UNUSED_RESULT inline bool to_uint64(std::string const & s, uint64_t & i) { return to_uint64(s.c_str(), i); }
-WARN_UNUSED_RESULT inline bool to_int64(std::string const & s, int64_t & i) { return to_int64(s.c_str(), i); }
-WARN_UNUSED_RESULT inline bool to_float(std::string const & s, float & f) { return to_float(s.c_str(), f); }
-WARN_UNUSED_RESULT inline bool to_double(std::string const & s, double & d) { return to_double(s.c_str(), d); }
+WARN_UNUSED_RESULT inline bool to_uint64(std::string const & s, uint64_t & i, int base = 10)
+{
+  return to_uint64(s.c_str(), i, base);
+}
+WARN_UNUSED_RESULT inline bool to_int64(std::string const & s, int64_t & i)
+{
+  return to_int64(s.c_str(), i);
+}
+WARN_UNUSED_RESULT inline bool to_size_t(std::string const & s, size_t & i)
+{
+  return to_size_t(s.c_str(), i);
+}
+WARN_UNUSED_RESULT inline bool to_float(std::string const & s, float & f)
+{
+  return to_float(s.c_str(), f);
+}
+WARN_UNUSED_RESULT inline bool to_double(std::string const & s, double & d)
+{
+  return to_double(s.c_str(), d);
+}
 //@}
 
 /// @name From numeric to string.
@@ -406,9 +429,18 @@ std::string to_string(T t)
   return ss.str();
 }
 
+template <typename T>
+struct ToString { std::string operator()(T const & v) { return to_string(v); } };
+
 WARN_UNUSED_RESULT inline bool to_any(std::string const & s, int & i) { return to_int(s, i); }
-WARN_UNUSED_RESULT inline bool to_any(std::string const & s, unsigned int & i) { return to_uint(s, i); }
-WARN_UNUSED_RESULT inline bool to_any(std::string const & s, uint64_t & i) { return to_uint64(s, i); }
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, unsigned int & i)
+{
+  return to_uint(s, i);
+}
+WARN_UNUSED_RESULT inline bool to_any(std::string const & s, uint64_t & i)
+{
+  return to_uint64(s, i);
+}
 WARN_UNUSED_RESULT inline bool to_any(std::string const & s, int64_t & i) { return to_int64(s, i); }
 WARN_UNUSED_RESULT inline bool to_any(std::string const & s, float & f) { return to_float(s, f); }
 WARN_UNUSED_RESULT inline bool to_any(std::string const & s, double & d) { return to_double(s, d); }
@@ -474,7 +506,7 @@ std::string to_string_unsigned(T i)
   char * beg = to_string_digits(end, i);
   return std::string(beg, end - beg);
 }
-}
+}  // namespace impl
 
 inline std::string to_string(int32_t i) { return impl::to_string_signed(i); }
 inline std::string to_string(int64_t i) { return impl::to_string_signed(i); }
@@ -482,7 +514,10 @@ inline std::string to_string(uint64_t i) { return impl::to_string_unsigned(i); }
 /// Use this function to get string with fixed count of
 /// "Digits after comma".
 std::string to_string_dac(double d, int dac);
-inline std::string to_string_with_digits_after_comma(double d, int dac) { return to_string_dac(d, dac); }
+inline std::string to_string_with_digits_after_comma(double d, int dac)
+{
+  return to_string_dac(d, dac);
+}
 //@}
 
 template <typename IterT1, typename IterT2>
@@ -501,6 +536,8 @@ bool StartsWith(UniString const & s, UniString const & p);
 bool StartsWith(std::string const & s1, char const * s2);
 
 bool StartsWith(std::string const & s1, std::string const & s2);
+
+bool EndsWith(UniString const & s1, UniString const & s2);
 
 bool EndsWith(std::string const & s1, char const * s2);
 
@@ -532,6 +569,34 @@ template <typename Container, typename Delimiter>
 typename Container::value_type JoinStrings(Container const & container, Delimiter const & delimiter)
 {
   return JoinStrings(begin(container), end(container), delimiter);
+}
+
+template <typename Iterator, typename Delimiter, typename Converter>
+std::string JoinAny(Iterator first, Iterator last, Delimiter const & delimiter,
+                    Converter const & converter)
+{
+  if (first == last)
+    return {};
+
+  std::string result(converter(*first));
+  ++first;
+
+  for (; first != last; ++first)
+  {
+    result += delimiter;
+    result += converter(*first);
+  }
+  return result;
+}
+
+template <typename Container, typename Delimiter = char const>
+std::string JoinAny(Container const & container,
+                    Delimiter const & delimiter = ',',
+                    std::function<
+                        std::string (typename Container::value_type const & v)> const & converter =
+                          ToString<typename Container::value_type>())
+{
+  return JoinAny(std::cbegin(container), std::cend(container), delimiter, converter);
 }
 
 template <typename Fn>

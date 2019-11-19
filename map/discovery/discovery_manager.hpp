@@ -95,7 +95,7 @@ public:
       }
       case ItemType::LocalExperts:
       {
-        auto const latLon = MercatorBounds::ToLatLon(params.m_viewportCenter);
+        auto const latLon = mercator::ToLatLon(params.m_viewportCenter);
         auto constexpr pageNumber = 1;
         m_localsApi.GetLocals(
             latLon.m_lat, latLon.m_lon, params.m_lang, params.m_itemsCount, pageNumber,
@@ -114,16 +114,15 @@ public:
       case ItemType::Promo:
       {
         m_promoApi.GetCityGallery(
-            params.m_viewportCenter,
-            [this, requestId, onResult, onError, type](promo::CityGallery const & cityGallery)
-        {
-          CHECK_THREAD_CHECKER(m_threadChecker, ());
-
-          if (cityGallery.m_items.empty())
-            onError(requestId, type);
-          else
-            onResult(requestId, cityGallery);
-        });
+            params.m_viewportCenter, params.m_lang, UTM::DiscoveryPageGallery,
+            [this, requestId, onResult](promo::CityGallery const & cityGallery) {
+              CHECK_THREAD_CHECKER(m_threadChecker, ());
+              onResult(requestId, cityGallery);
+            },
+            [this, requestId, onError, type]() {
+              CHECK_THREAD_CHECKER(m_threadChecker, ());
+              onError(requestId, type);
+            });
         break;
       }
       }

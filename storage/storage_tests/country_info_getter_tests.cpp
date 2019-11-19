@@ -1,3 +1,4 @@
+#include "testing/benchmark.hpp"
 #include "testing/testing.hpp"
 
 #include "storage/storage_tests/helpers.hpp"
@@ -16,11 +17,14 @@
 
 #include "base/assert.hpp"
 #include "base/logging.hpp"
+#include "base/stats.hpp"
+#include "base/timer.hpp"
 
 #include <map>
 #include <memory>
 #include <random>
 #include <string>
+#include <utility>
 #include <vector>
 
 using namespace storage;
@@ -34,44 +38,80 @@ bool IsEmptyName(map<string, CountryInfo> const & id2info, string const & id)
   TEST(it != id2info.end(), ());
   return it->second.m_name.empty();
 }
+
+// A helper class to sample random points from mwms uniformly.
+class RandomPointGenerator
+{
+public:
+  explicit RandomPointGenerator(mt19937 & randomEngine, vector<m2::RegionD> const & regions)
+    : m_randomEngine(randomEngine), m_regions(regions)
+  {
+    CHECK(!m_regions.empty(), ());
+    vector<double> areas(m_regions.size());
+    for (size_t i = 0; i < m_regions.size(); ++i)
+      areas[i] = m_regions[i].CalculateArea();
+
+    m_distr = discrete_distribution<size_t>(areas.begin(), areas.end());
+  }
+
+  m2::PointD operator()()
+  {
+    auto const i = m_distr(m_randomEngine);
+    return m_regions[i].GetRandomPoint(m_randomEngine);
+  }
+
+private:
+  mt19937 m_randomEngine;
+
+  vector<m2::RegionD> m_regions;
+  discrete_distribution<size_t> m_distr;
+};
+
+template <typename Cont>
+Cont Flatten(vector<Cont> const & cs)
+{
+  Cont res;
+  for (auto const & c : cs)
+    res.insert(res.end(), c.begin(), c.end());
+  return res;
+}
 }  // namespace
 
 UNIT_TEST(CountryInfoGetter_GetByPoint_Smoke)
 {
-  auto const getter = CreateCountryInfoGetterObsolete();
+  auto const getter = CreateCountryInfoGetter();
 
   CountryInfo info;
 
   // Minsk
-  getter->GetRegionInfo(MercatorBounds::FromLatLon(53.9022651, 27.5618818), info);
-  TEST_EQUAL(info.m_name, "Belarus", ());
+  getter->GetRegionInfo(mercator::FromLatLon(53.9022651, 27.5618818), info);
+  TEST_EQUAL(info.m_name, "Belarus, Minsk Region", ());
 
-  getter->GetRegionInfo(MercatorBounds::FromLatLon(-6.4146288, -38.0098101), info);
-  TEST_EQUAL(info.m_name, "Brazil, Northeast", ());
+  getter->GetRegionInfo(mercator::FromLatLon(-6.4146288, -38.0098101), info);
+  TEST_EQUAL(info.m_name, "Brazil, Rio Grande do Norte", ());
 
-  getter->GetRegionInfo(MercatorBounds::FromLatLon(34.6509, 135.5018), info);
-  TEST_EQUAL(info.m_name, "Japan, Kinki", ());
+  getter->GetRegionInfo(mercator::FromLatLon(34.6509, 135.5018), info);
+  TEST_EQUAL(info.m_name, "Japan, Kinki Region_Osaka_Osaka", ());
 }
 
 UNIT_TEST(CountryInfoGetter_GetRegionsCountryIdByRect_Smoke)
 {
-  auto const getter = CreateCountryInfoGetterObsolete();
+  auto const getter = CreateCountryInfoGetter();
 
-  m2::PointD const p = MercatorBounds::FromLatLon(53.9022651, 27.5618818);
+  m2::PointD const p = mercator::FromLatLon(52.537695, 32.203884);
 
-  // Inside mwm.
+  // Single mwm.
   m2::PointD const halfSize = m2::PointD(0.1, 0.1);
   auto const countries =
       getter->GetRegionsCountryIdByRect(m2::RectD(p - halfSize, p + halfSize), false /* rough */);
-  TEST_EQUAL(countries, vector<storage::CountryId>{"Belarus"}, ());
+  TEST_EQUAL(countries, vector<storage::CountryId>{"Russia_Bryansk Oblast"}, ());
 
   // Several countries.
-  m2::PointD const halfSize2 = m2::PointD(5.0, 5.0);
+  m2::PointD const halfSize2 = m2::PointD(0.5, 0.5);
   auto const countries2 =
       getter->GetRegionsCountryIdByRect(m2::RectD(p - halfSize2, p + halfSize2), false /* rough */);
   auto const expected = vector<storage::CountryId>{
-      "Belarus", "Latvia", "Lithuania", "Poland", "Russia_Central", "Russia_Northwestern",
-      "Ukraine"};
+      "Belarus_Homiel Region", "Russia_Bryansk Oblast", "Ukraine_Chernihiv Oblast"};
   TEST_EQUAL(countries2, expected, ());
 
   // No one found.
@@ -82,21 +122,16 @@ UNIT_TEST(CountryInfoGetter_GetRegionsCountryIdByRect_Smoke)
   // Inside mwm (rough).
   auto const countries4 =
       getter->GetRegionsCountryIdByRect(m2::RectD(p - halfSize, p + halfSize), true /* rough */);
-  TEST_EQUAL(countries, vector<storage::CountryId>{"Belarus"}, ());
+  TEST_EQUAL(countries, vector<storage::CountryId>{"Russia_Bryansk Oblast"}, ());
 
   // Several countries (rough).
   auto const countries5 =
       getter->GetRegionsCountryIdByRect(m2::RectD(p - halfSize2, p + halfSize2), true /* rough */);
-  auto const expected2 = vector<storage::CountryId>{"Belarus",
-                                                    "Latvia",
-                                                    "Lithuania",
-                                                    "Poland",
-                                                    "Russia_Central",
-                                                    "Russia_Far Eastern",
-                                                    "Russia_Northwestern",
-                                                    "Sweden",
-                                                    "Ukraine",
-                                                    "USA_Alaska"};
+  auto const expected2 = vector<storage::CountryId>{"Belarus_Homiel Region",
+                                                    "Belarus_Maglieu Region",
+                                                    "Russia_Bryansk Oblast",
+                                                    "Ukraine_Chernihiv Oblast",
+                                                    "US_Alaska"};
   TEST_EQUAL(countries5, expected2, ());
 }
 
@@ -106,26 +141,17 @@ UNIT_TEST(CountryInfoGetter_ValidName_Smoke)
   ReaderPtr<Reader>(GetPlatform().GetReader(COUNTRIES_FILE)).ReadAsString(buffer);
 
   map<string, CountryInfo> id2info;
-  bool isSingleMwm;
-  storage::LoadCountryFile2CountryInfo(buffer, id2info, isSingleMwm);
+  storage::LoadCountryFile2CountryInfo(buffer, id2info);
 
   Storage storage;
 
-  if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
-  {
-    TEST(!IsEmptyName(id2info, "Belgium_West Flanders"), ());
-    TEST(!IsEmptyName(id2info, "France_Ile-de-France_Paris"), ());
-  }
-  else
-  {
-    TEST(!IsEmptyName(id2info, "Germany_Baden-Wurttemberg"), ());
-    TEST(!IsEmptyName(id2info, "France_Paris & Ile-de-France"), ());
-  }
+  TEST(!IsEmptyName(id2info, "Belgium_West Flanders"), ());
+  TEST(!IsEmptyName(id2info, "France_Ile-de-France_Paris"), ());
 }
 
 UNIT_TEST(CountryInfoGetter_SomeRects)
 {
-  auto const getter = CreateCountryInfoGetterObsolete();
+  auto const getter = CreateCountryInfoGetter();
 
   m2::RectD rects[3];
   getter->CalcUSALimitRect(rects);
@@ -141,7 +167,7 @@ UNIT_TEST(CountryInfoGetter_HitsInRadius)
 {
   auto const getter = CreateCountryInfoGetter();
   CountriesVec results;
-  getter->GetRegionsCountryId(MercatorBounds::FromLatLon(56.1702, 28.1505), results);
+  getter->GetRegionsCountryId(mercator::FromLatLon(56.1702, 28.1505), results);
   TEST_EQUAL(results.size(), 3, ());
   TEST(find(results.begin(), results.end(), "Belarus_Vitebsk Region") != results.end(), ());
   TEST(find(results.begin(), results.end(), "Latvia") != results.end(), ());
@@ -152,7 +178,7 @@ UNIT_TEST(CountryInfoGetter_HitsOnLongLine)
 {
   auto const getter = CreateCountryInfoGetter();
   CountriesVec results;
-  getter->GetRegionsCountryId(MercatorBounds::FromLatLon(62.2507, -102.0753), results);
+  getter->GetRegionsCountryId(mercator::FromLatLon(62.2507, -102.0753), results);
   TEST_EQUAL(results.size(), 2, ());
   TEST(find(results.begin(), results.end(), "Canada_Northwest Territories_East") != results.end(),
        ());
@@ -163,7 +189,7 @@ UNIT_TEST(CountryInfoGetter_HitsInTheMiddleOfNowhere)
 {
   auto const getter = CreateCountryInfoGetter();
   CountriesVec results;
-  getter->GetRegionsCountryId(MercatorBounds::FromLatLon(62.2900, -103.9423), results);
+  getter->GetRegionsCountryId(mercator::FromLatLon(62.2900, -103.9423), results);
   TEST_EQUAL(results.size(), 1, ());
   TEST(find(results.begin(), results.end(), "Canada_Northwest Territories_East") != results.end(),
        ());
@@ -172,26 +198,10 @@ UNIT_TEST(CountryInfoGetter_HitsInTheMiddleOfNowhere)
 UNIT_TEST(CountryInfoGetter_GetLimitRectForLeafSingleMwm)
 {
   auto const getter = CreateCountryInfoGetter();
-  Storage storage(COUNTRIES_FILE);
-  if (!version::IsSingleMwm(storage.GetCurrentDataVersion()))
-    return;
+  Storage storage;
 
   m2::RectD const boundingBox = getter->GetLimitRectForLeaf("Angola");
   m2::RectD const expectedBoundingBox = {9.205259 /* minX */, -18.34456 /* minY */,
-                                         24.08212 /* maxX */, -4.393187 /* maxY */};
-
-  TEST(AlmostEqualRectsAbs(boundingBox, expectedBoundingBox), ());
-}
-
-UNIT_TEST(CountryInfoGetter_GetLimitRectForLeafTwoComponentMwm)
-{
-  auto const getter = CreateCountryInfoGetterObsolete();
-  Storage storage(COUNTRIES_FILE);
-  if (version::IsSingleMwm(storage.GetCurrentDataVersion()))
-    return;
-
-  m2::RectD const boundingBox = getter->GetLimitRectForLeaf("Angola");
-  m2::RectD const expectedBoundingBox = {11.50151 /* minX */, -18.344569 /* minY */,
                                          24.08212 /* maxX */, -4.393187 /* maxY */};
 
   TEST(AlmostEqualRectsAbs(boundingBox, expectedBoundingBox), ());
@@ -203,7 +213,7 @@ UNIT_TEST(CountryInfoGetter_RegionRects)
   CHECK(getterRaw != nullptr, ());
   CountryInfoReader const * const getter = static_cast<CountryInfoReader const *>(getterRaw.get());
 
-  Storage storage(COUNTRIES_FILE);
+  Storage storage;
 
   auto const & countries = getter->GetCountries();
 
@@ -227,7 +237,7 @@ UNIT_TEST(CountryInfoGetter_Countries_And_Polygons)
   CHECK(getterRaw != nullptr, ());
   CountryInfoReader const * const getter = static_cast<CountryInfoReader const *>(getterRaw.get());
 
-  Storage storage(COUNTRIES_FILE);
+  Storage storage;
 
   double const kRectSize = 10;
 
@@ -248,12 +258,153 @@ UNIT_TEST(CountryInfoGetter_Countries_And_Polygons)
     TEST_GREATER(storageLeaves.count(countryDef.m_countryId), 0, (countryDef.m_countryId));
 
     auto const & p = countryDef.m_rect.Center();
-    auto const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(p.x, p.y, kRectSize, kRectSize);
+    auto const rect = mercator::RectByCenterXYAndSizeInMeters(p.x, p.y, kRectSize, kRectSize);
     auto vec = getter->GetRegionsCountryIdByRect(rect, false /* rough */);
     for (auto const & countryId : vec)
     {
       // This call fails a CHECK if |countryId| is not found.
       storage.GetCountryFile(countryId);
     }
+  }
+}
+
+BENCHMARK_TEST(CountryInfoGetter_RegionsByRect)
+{
+  auto const getterRaw = CountryInfoReader::CreateCountryInfoReader(GetPlatform());
+  CountryInfoReader * getter = static_cast<CountryInfoReader *>(getterRaw.get());
+
+  Storage storage;
+
+  auto const & countryDefs = getter->GetCountries();
+
+  base::Timer timer;
+
+  double const kRectSize = 10;
+
+  mt19937 rng(0);
+
+  vector<vector<m2::RegionD>> allRegions;
+  allRegions.reserve(countryDefs.size());
+  for (size_t i = 0; i < countryDefs.size(); ++i)
+  {
+    vector<m2::RegionD> regions;
+    getter->LoadRegionsFromDisk(i, regions);
+    allRegions.emplace_back(move(regions));
+  }
+
+  size_t totalPoints = 0;
+  for (auto const & regs : allRegions)
+  {
+    for (auto const & reg : regs)
+      totalPoints += reg.Size();
+  }
+  LOG(LINFO, ("Total points:", totalPoints));
+
+  {
+    size_t const kNumIterations = 1000;
+
+    double const t0 = timer.ElapsedSeconds();
+
+    // Antarctica's rect is too large and skews the random point generation.
+    vector<vector<m2::RegionD>> regionsWithoutAnarctica;
+    for (size_t i = 0; i < allRegions.size(); ++i)
+    {
+      if (countryDefs[i].m_countryId == "Antarctica")
+        continue;
+
+      regionsWithoutAnarctica.emplace_back(allRegions[i]);
+    }
+
+    RandomPointGenerator pointGen(rng, Flatten(regionsWithoutAnarctica));
+    vector<m2::PointD> points;
+    for (size_t i = 0; i < kNumIterations; i++)
+      points.emplace_back(pointGen());
+
+    map<CountryId, int> hits;
+    for (auto const & pt : points)
+    {
+      auto const rect = mercator::RectByCenterXYAndSizeInMeters(pt.x, pt.y, kRectSize, kRectSize);
+      auto vec = getter->GetRegionsCountryIdByRect(rect, false /* rough */);
+      for (auto const & countryId : vec)
+        ++hits[countryId];
+    }
+    double const t1 = timer.ElapsedSeconds();
+
+    LOG(LINFO, ("hits:", hits.size(), "/", countryDefs.size(), t1 - t0));
+  }
+
+  {
+    map<CountryId, vector<double>> timesByCountry;
+    map<CountryId, double> avgTimeByCountry;
+    size_t kNumPointsPerCountry = 1;
+    CountryId longest;
+    for (size_t countryDefId = 0; countryDefId < countryDefs.size(); ++countryDefId)
+    {
+      RandomPointGenerator pointGen(rng, allRegions[countryDefId]);
+      auto const & countryId = countryDefs[countryDefId].m_countryId;
+
+      vector<double> & times = timesByCountry[countryId];
+      times.resize(kNumPointsPerCountry);
+      for (size_t i = 0; i < times.size(); ++i)
+      {
+        auto const pt = pointGen();
+        auto const rect = mercator::RectByCenterXYAndSizeInMeters(pt.x, pt.y, kRectSize, kRectSize);
+        double const t0 = timer.ElapsedSeconds();
+        auto vec = getter->GetRegionsCountryIdByRect(rect, false /* rough */);
+        double const t1 = timer.ElapsedSeconds();
+        times[i] = t1 - t0;
+      }
+
+      avgTimeByCountry[countryId] =
+          base::AverageStats<double>(times.begin(), times.end()).GetAverage();
+
+      if (longest.empty() || avgTimeByCountry[longest] < avgTimeByCountry[countryId])
+        longest = countryId;
+    }
+
+    LOG(LINFO, ("Slowest country for CountryInfoGetter (random point)", longest,
+                avgTimeByCountry[longest]));
+  }
+
+  {
+    map<CountryId, vector<double>> timesByCountry;
+    map<CountryId, double> avgTimeByCountry;
+    size_t kNumSidesPerCountry = 1;
+    CountryId longest;
+    for (size_t countryDefId = 0; countryDefId < countryDefs.size(); ++countryDefId)
+    {
+      auto const & countryId = countryDefs[countryDefId].m_countryId;
+
+      vector<pair<m2::PointD, m2::PointD>> sides;
+      for (auto const & region : allRegions[countryDefId])
+      {
+        auto const & points = region.Data();
+        for (size_t i = 0; i < points.size(); ++i)
+          sides.emplace_back(points[i], points[(i + 1) % points.size()]);
+      }
+
+      CHECK(!sides.empty(), ());
+      uniform_int_distribution<size_t> distr(0, sides.size() - 1);
+      vector<double> & times = timesByCountry[countryId];
+      times.resize(kNumSidesPerCountry);
+      for (size_t i = 0; i < times.size(); ++i)
+      {
+        auto const & side = sides[distr(rng)];
+        auto const pt = side.first.Mid(side.second);
+        auto const rect = mercator::RectByCenterXYAndSizeInMeters(pt.x, pt.y, kRectSize, kRectSize);
+        double const t0 = timer.ElapsedSeconds();
+        auto vec = getter->GetRegionsCountryIdByRect(rect, false /* rough */);
+        double const t1 = timer.ElapsedSeconds();
+        times[i] = t1 - t0;
+      }
+
+      avgTimeByCountry[countryId] =
+          base::AverageStats<double>(times.begin(), times.end()).GetAverage();
+
+      if (longest.empty() || avgTimeByCountry[longest] < avgTimeByCountry[countryId])
+        longest = countryId;
+    }
+    LOG(LINFO, ("Slowest country for CountryInfoGetter (point on a random side)", longest,
+                avgTimeByCountry[longest]));
   }
 }

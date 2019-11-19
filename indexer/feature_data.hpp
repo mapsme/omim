@@ -61,6 +61,8 @@ namespace feature
     explicit TypesHolder(GeomType geomType) : m_geomType(geomType) {}
     explicit TypesHolder(FeatureType & f);
 
+    static TypesHolder FromTypesIndexes(std::vector<uint32_t> const & indexes);
+
     void Assign(uint32_t type)
     {
       m_types[0] = type;
@@ -236,11 +238,8 @@ public:
   /// @name Used in storing full street address only.
   //@{
   void AddStreet(std::string s);
-  void AddPlace(std::string const & s);
   void AddPostcode(std::string const & s);
   void AddAddress(std::string const & s);
-
-  bool FormatFullAddress(m2::PointD const & pt, std::string & res) const;
   //@}
 
   /// Used for testing purposes now.
@@ -280,6 +279,7 @@ public:
   bool PopAnyType(uint32_t & t);
   bool PopExactType(uint32_t t);
   bool IsTypeExist(uint32_t t) const;
+  bool IsTypeExist(uint32_t comp, uint8_t level) const;
 
   /// Find type that matches "comp" with "level" in classificator hierarchy.
   uint32_t FindType(uint32_t comp, uint8_t level) const;

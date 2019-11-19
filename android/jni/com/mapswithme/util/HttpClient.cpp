@@ -98,8 +98,7 @@ void GetInt(ScopedEnv & env, jobject const params, jfieldID const fieldId, int &
   RethrowOnJniException(env);
 }
 
-void SetHeaders(ScopedEnv & env, jobject const params,
-                std::unordered_map<std::string, std::string> const & headers)
+void SetHeaders(ScopedEnv & env, jobject const params, platform::HttpClient::Headers const & headers)
 {
   if (headers.empty())
     return;
@@ -114,7 +113,7 @@ void SetHeaders(ScopedEnv & env, jobject const params,
   RethrowOnJniException(env);
 }
 
-void LoadHeaders(ScopedEnv & env, jobject const params, std::unordered_map<std::string, std::string> & headers)
+void LoadHeaders(ScopedEnv & env, jobject const params, platform::HttpClient::Headers & headers)
 {
   static jmethodID const getHeaders =
       env->GetMethodID(g_httpParamsClazz, "getHeaders", "()[Ljava/lang/Object;");
@@ -191,12 +190,13 @@ bool HttpClient::RunHttpRequest()
   static jfieldID const dataField = env->GetFieldID(g_httpParamsClazz, "data", "[B");
   if (!m_bodyData.empty())
   {
-    jni::ScopedLocalRef<jbyteArray> const jniPostData(env.get(),
-                                                      env->NewByteArray(m_bodyData.size()));
+    jni::ScopedLocalRef<jbyteArray> const jniPostData(
+        env.get(), env->NewByteArray(static_cast<jsize>(m_bodyData.size())));
+
     if (jni::HandleJavaException(env.get()))
       return false;
 
-    env->SetByteArrayRegion(jniPostData.get(), 0, m_bodyData.size(),
+    env->SetByteArrayRegion(jniPostData.get(), 0, static_cast<jsize>(m_bodyData.size()),
                             reinterpret_cast<const jbyte *>(m_bodyData.data()));
     if (jni::HandleJavaException(env.get()))
       return false;

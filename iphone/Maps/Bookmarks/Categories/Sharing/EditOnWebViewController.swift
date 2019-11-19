@@ -63,7 +63,7 @@ final class EditOnWebViewController: MWMViewController {
     sendMeLinkButton.setTitle(nil, for: .normal)
     MWMBookmarksManager.shared().uploadCategory(withId: category.categoryId, progress: { (progress) in
 
-    }) { [weak self] (url, error) in
+    }) { [weak self] (error) in
       guard let self = self else { return }
       self.activityIndicator.isHidden = true
       self.sendMeLinkButton.isEnabled = true
@@ -97,7 +97,8 @@ final class EditOnWebViewController: MWMViewController {
   }
 
   private func presentSharingOptions() {
-    guard let url = MWMBookmarksManager.shared().webEditorUrl(forCategoryId: category.categoryId) else {
+    guard let url = MWMBookmarksManager.shared().webEditorUrl(forCategoryId: category.categoryId,
+                                                              language: AppInfo.shared()?.twoLetterLanguageId ?? "en") else {
       assert(false, "Unexpected empty url for category \(category.title)")
       return
     }

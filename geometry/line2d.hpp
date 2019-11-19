@@ -9,6 +9,7 @@
 
 namespace m2
 {
+
 struct Line2D
 {
   Line2D() = default;
@@ -21,28 +22,7 @@ struct Line2D
   PointD m_direction;
 };
 
-struct LineIntersector
-{
-  struct Result
-  {
-    enum class Type
-    {
-      Zero,
-      One,
-      Infinity
-    };
-
-    explicit Result(Type type) : m_type(type) { ASSERT_NOT_EQUAL(m_type, Type::One, ()); }
-    explicit Result(PointD const & point) : m_point(point), m_type(Type::One) {}
-
-    PointD m_point;
-    Type m_type;
-  };
-
-  static Result Intersect(Line2D const & lhs, Line2D const & rhs, double eps);
-};
+IntersectionResult Intersect(Line2D const & lhs, Line2D const & rhs, double eps);
 
 std::string DebugPrint(Line2D const & line);
-std::string DebugPrint(LineIntersector::Result::Type type);
-std::string DebugPrint(LineIntersector::Result const & result);
 }  // namespace m2

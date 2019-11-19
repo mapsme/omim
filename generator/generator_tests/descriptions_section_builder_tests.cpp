@@ -214,7 +214,7 @@ public:
 
 private:
   template <class ToDo>
-  static void ForEachFromDatMock(string const &, ToDo && toDo)
+  static void ForEachFromDatMock(std::string const &, ToDo && toDo)
   {
     for (size_t i = 0; i < kWikiData.size(); ++i)
     {
@@ -300,11 +300,11 @@ private:
     Feature ft;
     ft.SetMetadata(md);
 
-    auto const & wikiChecker = ftypes::WikiChecker::Instance();
-    CHECK(!wikiChecker.kTypesForWiki.empty(), ());
-    auto const itFirst = std::begin(wikiChecker.kTypesForWiki);
-    auto const type = classif().GetTypeByPath({itFirst->first, itFirst->second});
-    ft.SetTypes({type});
+    auto const & attractionsChecker = ftypes::AttractionsChecker::Instance();
+    CHECK(!attractionsChecker.m_primaryTypes.empty(), ());
+    CHECK(!attractionsChecker.m_additionalTypes.empty(), ());
+    auto const itFirst = std::begin(attractionsChecker.m_primaryTypes);
+    ft.SetTypes({*itFirst});
     return ft;
   }
 

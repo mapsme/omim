@@ -243,7 +243,7 @@ bool RuleDrawer::CheckCoastlines(FeatureType & f, Stylist const & s)
       zoomLevel > scales::GetUpperWorldScale() &&
       f.GetID().m_mwmId.GetInfo()->GetType() == MwmInfo::COASTS)
   {
-    string name;
+    std::string name;
     if (f.GetName(StringUtf8Multilang::kDefaultCode, name))
     {
       ASSERT(!name.empty(), ());
@@ -293,13 +293,13 @@ void RuleDrawer::ProcessAreaStyle(FeatureType & f, Stylist const & s,
     double const heightInMeters = GetBuildingHeightInMeters(f);
     double const minHeightInMeters = GetBuildingMinHeightInMeters(f);
     featureCenter = feature::GetCenter(f, zoomLevel);
-    double const lon = MercatorBounds::XToLon(featureCenter.x);
-    double const lat = MercatorBounds::YToLat(featureCenter.y);
+    double const lon = mercator::XToLon(featureCenter.x);
+    double const lat = mercator::YToLat(featureCenter.y);
 
-    m2::RectD rectMercator = MercatorBounds::MetersToXY(lon, lat, heightInMeters);
+    m2::RectD rectMercator = mercator::MetersToXY(lon, lat, heightInMeters);
     areaHeight = static_cast<float>((rectMercator.SizeX() + rectMercator.SizeY()) * 0.5);
 
-    rectMercator = MercatorBounds::MetersToXY(lon, lat, minHeightInMeters);
+    rectMercator = mercator::MetersToXY(lon, lat, minHeightInMeters);
     areaMinHeight = static_cast<float>((rectMercator.SizeX() + rectMercator.SizeY()) * 0.5);
   }
   else

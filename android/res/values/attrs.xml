@@ -76,6 +76,12 @@
   <attr name="adsRemovalOptionsBg" format="reference"/>
   <attr name="adsRemovalOptionsDivider" format="color"/>
   <attr name="icClearRounded" format="reference"/>
+  <attr name="bookmarkSubscriptionScreenBg" format="reference"/>
+  <attr name="bookmarkSubscriptionCardEdge" format="reference"/>
+  <attr name="bookmarkSubscriptionCardBg" format="color"/>
+  <attr name="bookmarkSubscriptionCardTextColor" format="color"/>
+
+  <attr name="imgPromoBookingTitle" format="reference"/>
 
   <declare-styleable name="AnchorBottomSheetBehavior_Layout">
     <attr name="behavior_anchorOffset" format="dimension" />
@@ -86,5 +92,18 @@
       <enum name="anchored" value="6" />
     </attr>
     <attr name="behavior_skipAnchored" format="boolean" />
+  </declare-styleable>
+
+  <declare-styleable name="ParallaxViewPagerBg">
+    <attr name="autoScroll" format="boolean" />
+    <attr name="scrollPeriod" format="integer" />
+  </declare-styleable>
+  <declare-styleable name="SubscriptionButton">
+    <attr name="buttonBackground" />
+    <attr name="buttonTextColor" />
+    <attr name="saleBackground" format="reference" />
+    <attr name="saleTextColor" format="color" />
+    <attr name="showSale" format="boolean" />
+    <attr name="progressColor" />
   </declare-styleable>
 </resources>

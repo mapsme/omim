@@ -1,15 +1,13 @@
 #import "MWMObjectsCategorySelectorController.h"
 #import "MWMAuthorizationCommon.h"
 #import "MWMObjectsCategorySelectorDataSource.h"
-#import "MWMCommon.h"
 #import "MWMEditorViewController.h"
 #import "MWMKeyboard.h"
 #import "MWMTableViewCell.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
-#import "UIViewController+Navigation.h"
 
-#include "Framework.h"
+#include <CoreApi/Framework.h>
 
 using namespace osm;
 
@@ -58,14 +56,13 @@ NSString * const kToEditorSegue = @"CategorySelectorToEditorSegue";
          forCellReuseIdentifier:[UITableViewCell className]];
 }
 
-- (void)setSelectedCategory:(string const &)type
+- (void)setSelectedCategory:(std::string const &)type
 {
   self.selectedType = @(type.c_str());
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-  setStatusBarBackgroundColor(UIColor.clearColor);
   return UIStatusBarStyleLightContent;
 }
 
@@ -74,9 +71,6 @@ NSString * const kToEditorSegue = @"CategorySelectorToEditorSegue";
 {
   self.searchBar.backgroundImage = [UIImage imageWithColor:[UIColor primary]];
   self.searchBar.placeholder = L(@"search");
-  UITextField * textFiled = [self.searchBar valueForKey:@"searchField"];
-  UILabel * placeholder = [textFiled valueForKey:@"_placeholderLabel"];
-  placeholder.textColor = [UIColor blackHintText];
 }
 
 - (void)onDone

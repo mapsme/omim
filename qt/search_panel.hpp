@@ -31,7 +31,7 @@ class SearchPanel : public QWidget
 
   QPixmap m_busyIcon;
 
-  vector<search::Result> m_results;
+  std::vector<search::Result> m_results;
 
   search::EverywhereSearchParams m_params;
   uint64_t m_timestamp;
@@ -58,7 +58,6 @@ private slots:
 
   bool TryChangeRouterCmd(QString const & str);
   bool Try3dModeCmd(QString const & str);
-  bool TryMigrate(QString const & str);
   bool TryDisplacementModeCmd(QString const & str);
   bool TryTrafficSimplifiedColorsCmd(QString const & str);
 };

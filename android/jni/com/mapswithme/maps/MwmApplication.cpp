@@ -28,7 +28,7 @@ extern "C"
   Java_com_mapswithme_maps_MwmApplication_nativeInitFramework(JNIEnv * env, jclass clazz)
   {
     if (!g_framework)
-      g_framework = make_unique<android::Framework>();
+      g_framework = std::make_unique<android::Framework>();
   }
 
   // static void nativeProcessTask(long taskPointer);
@@ -44,5 +44,14 @@ extern "C"
   {
     g_framework->AddString(jni::ToNativeString(env, name),
                            jni::ToNativeString(env, value));
+  }
+
+  JNIEXPORT void JNICALL
+  Java_com_mapswithme_maps_MwmApplication_nativeOnTransit(JNIEnv *, jclass, jboolean foreground)
+  {
+    if (static_cast<bool>(foreground))
+      g_framework->NativeFramework()->EnterForeground();
+    else
+      g_framework->NativeFramework()->EnterBackground();
   }
 }

@@ -82,6 +82,11 @@ world  +
                 fee  -
                 {}
             {}
+        parking_space  +
+            permissive  -
+            private  -
+            underground  -
+            {}
         payment_terminal  -
         pharmacy  -
         place_of_worship  +
@@ -499,6 +504,7 @@ world  +
         cemetery  +
             christian  -
             {}
+        churchyard  -
         commercial  -
         construction  -
         farm  -
@@ -618,6 +624,7 @@ world  +
         glacier  -
         grassland  -
         heath  -
+        hot_spring  -
         lake  -
         land  -
         meadow  -

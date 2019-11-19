@@ -1,7 +1,7 @@
 package com.mapswithme.maps.purchase;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.SkuDetails;
@@ -44,7 +44,7 @@ class QueryProductDetailsRequest extends PlayStoreBillingRequest<PlayStoreBillin
     {
       LOGGER.w(TAG, "Unsuccessful request");
       if (getCallback() != null)
-        getCallback().onPurchaseDetailsFailure();
+        getCallback().onProductDetailsFailure();
       return;
     }
 
@@ -52,12 +52,12 @@ class QueryProductDetailsRequest extends PlayStoreBillingRequest<PlayStoreBillin
     {
       LOGGER.w(TAG, "Purchase details not found");
       if (getCallback() != null)
-        getCallback().onPurchaseDetailsFailure();
+        getCallback().onProductDetailsFailure();
       return;
     }
 
     LOGGER.i(TAG, "Purchase details obtained: " + skuDetails);
     if (getCallback() != null)
-      getCallback().onPurchaseDetailsLoaded(skuDetails);
+      getCallback().onProductDetailsLoaded(skuDetails);
   }
 }

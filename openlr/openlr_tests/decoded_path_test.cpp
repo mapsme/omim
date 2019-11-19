@@ -72,7 +72,7 @@ void TestSerializeDeserialize(openlr::Path const & path, DataSource const & data
   openlr::Path restoredPath;
   openlr::PathFromXML(doc, dataSource, restoredPath);
 
-  // Fix MercatorBounds::From/ToLatLon floating point error
+  // Fix mercator::From/ToLatLon floating point error
   // for we could use TEST_EQUAL on result.
   RoughJunctionsInPath(restoredPath);
 
@@ -128,7 +128,7 @@ void WithRoad(vector<m2::PointD> const & points, Func && fn)
                            ScopedFile::Mode::Create);
 
   {
-    TestMwmBuilder builder(country, feature::DataHeader::country);
+    TestMwmBuilder builder(country, feature::DataHeader::MapType::Country);
     builder.Add(TestRoad(points, "Interstate 60", "en"));
   }
 

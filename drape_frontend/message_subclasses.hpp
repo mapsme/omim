@@ -12,6 +12,7 @@
 #include "drape_frontend/my_position.hpp"
 #include "drape_frontend/overlay_batcher.hpp"
 #include "drape_frontend/postprocess_renderer.hpp"
+#include "drape_frontend/render_node.hpp"
 #include "drape_frontend/render_state_extension.hpp"
 #include "drape_frontend/route_builder.hpp"
 #include "drape_frontend/selection_shape.hpp"
@@ -240,11 +241,11 @@ private:
 class UpdateUserMarksMessage : public Message
 {
 public:
-  UpdateUserMarksMessage(drape_ptr<IDCollections> && createdIds,
+  UpdateUserMarksMessage(drape_ptr<IDCollections> && justCreatedIds,
                          drape_ptr<IDCollections> && removedIds,
                          drape_ptr<UserMarksRenderCollection> && marksRenderParams,
                          drape_ptr<UserLinesRenderCollection> && linesRenderParams)
-    : m_createdIds(std::move(createdIds))
+    : m_justCreatedIds(std::move(justCreatedIds))
     , m_removedIds(std::move(removedIds))
     , m_marksRenderParams(std::move(marksRenderParams))
     , m_linesRenderParams(std::move(linesRenderParams))
@@ -255,10 +256,10 @@ public:
   drape_ptr<UserMarksRenderCollection> AcceptMarkRenderParams() { return std::move(m_marksRenderParams); }
   drape_ptr<UserLinesRenderCollection> AcceptLineRenderParams() { return std::move(m_linesRenderParams); }
   drape_ptr<IDCollections> AcceptRemovedIds() { return std::move(m_removedIds); }
-  drape_ptr<IDCollections> AcceptCreatedIds() { return std::move(m_createdIds); }
+  drape_ptr<IDCollections> AcceptJustCreatedIds() { return std::move(m_justCreatedIds); }
 
 private:
-  drape_ptr<IDCollections> m_createdIds;
+  drape_ptr<IDCollections> m_justCreatedIds;
   drape_ptr<IDCollections> m_removedIds;
   drape_ptr<UserMarksRenderCollection> m_marksRenderParams;
   drape_ptr<UserLinesRenderCollection> m_linesRenderParams;
@@ -357,6 +358,24 @@ public:
 
 private:
   gui::TWidgetsLayoutInfo m_layoutInfo;
+};
+
+class UpdateMyPositionRoutingOffsetMessage: public Message
+{
+public:
+  UpdateMyPositionRoutingOffsetMessage(bool useDefault, int offsetY)
+    : m_useDefault(useDefault)
+    , m_offsetY(offsetY)
+  {}
+
+  Type GetType() const override { return Type::UpdateMyPositionRoutingOffset; }
+
+  bool UseDefault() const { return m_useDefault; }
+  int GetOffsetY() const { return m_offsetY; }
+
+private:
+  bool m_useDefault;
+  int m_offsetY;
 };
 
 class ShowChoosePositionMarkMessage : public Message
@@ -515,12 +534,14 @@ public:
   {}
 
   SelectObjectMessage(SelectionShape::ESelectedObject selectedObject,
-                      m2::PointD const & glbPoint, FeatureID const & featureID, bool isAnim)
+                      m2::PointD const & glbPoint, FeatureID const & featureID,
+                      bool isAnim, bool isGeometrySelectionAllowed)
     : m_selected(selectedObject)
     , m_glbPoint(glbPoint)
     , m_featureID(featureID)
     , m_isAnim(isAnim)
     , m_isDismiss(false)
+    , m_isGeometrySelectionAllowed(isGeometrySelectionAllowed)
   {}
 
   Type GetType() const override { return Type::SelectObject; }
@@ -531,6 +552,7 @@ public:
   FeatureID const & GetFeatureID() const { return m_featureID; }
   bool IsAnim() const { return m_isAnim; }
   bool IsDismiss() const { return m_isDismiss; }
+  bool IsGeometrySelectionAllowed() const { return m_isGeometrySelectionAllowed; }
 
 private:
   SelectionShape::ESelectedObject m_selected;
@@ -538,6 +560,41 @@ private:
   FeatureID m_featureID;
   bool m_isAnim;
   bool m_isDismiss;
+  bool m_isGeometrySelectionAllowed;
+};
+
+class CheckSelectionGeometryMessage : public Message
+{
+public:
+  CheckSelectionGeometryMessage(FeatureID const & feature, int recacheId)
+    : m_feature(feature)
+    , m_recacheId(recacheId)
+  {}
+
+  Type GetType() const override { return Type::CheckSelectionGeometry; }
+
+  FeatureID const & GetFeature() const { return m_feature; };
+  int GetRecacheId() const { return m_recacheId; }
+
+private:
+  FeatureID const m_feature;
+  int const m_recacheId;
+};
+
+using BaseFlushSelectionGeometryMessage = FlushRenderDataMessage<drape_ptr<RenderNode>,
+                                                                 Message::Type::FlushSelectionGeometry>;
+class FlushSelectionGeometryMessage : public BaseFlushSelectionGeometryMessage
+{
+public:
+  FlushSelectionGeometryMessage(drape_ptr<RenderNode> && renderNode, int recacheId)
+    : BaseFlushSelectionGeometryMessage(std::move(renderNode))
+    , m_recacheId(recacheId)
+  {}
+
+  int GetRecacheId() const { return m_recacheId; }
+
+private:
+  int const m_recacheId;
 };
 
 class AddSubrouteMessage : public Message
@@ -948,7 +1005,7 @@ public:
   }
 
 private:
-  std::vector<string> m_symbols;
+  std::vector<std::string> m_symbols;
   RequestSymbolsSizeCallback m_callback;
 };
 
@@ -1132,18 +1189,18 @@ private:
 class DrapeApiRemoveMessage : public Message
 {
 public:
-  explicit DrapeApiRemoveMessage(string const & id, bool removeAll = false)
+  explicit DrapeApiRemoveMessage(std::string const & id, bool removeAll = false)
     : m_id(id)
     , m_removeAll(removeAll)
   {}
 
   Type GetType() const override { return Type::DrapeApiRemove; }
 
-  string const & GetId() const { return m_id; }
+  std::string const & GetId() const { return m_id; }
   bool NeedRemoveAll() const { return m_removeAll; }
 
 private:
-  string m_id;
+  std::string m_id;
   bool m_removeAll;
 };
 

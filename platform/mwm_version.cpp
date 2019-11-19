@@ -1,6 +1,6 @@
 #include "mwm_version.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/reader_wrapper.hpp"
 #include "coding/varint.hpp"
 #include "coding/writer.hpp"
@@ -64,7 +64,7 @@ bool MwmVersion::IsEditableMap() const
   return m_secondsSinceEpoch + kMaxSecondsTillNoEdits > base::SecondsSinceEpoch();
 }
 
-string DebugPrint(Format f)
+std::string DebugPrint(Format f)
 {
   return "v" + strings::to_string(static_cast<uint32_t>(f) + 1);
 }
@@ -104,5 +104,16 @@ bool IsSingleMwm(int64_t version)
 {
   int64_t constexpr kMinSingleMwmVersion = 160302;
   return version >= kMinSingleMwmVersion || version == 0 /* Version of mwm in the root directory. */;
+}
+
+MwmType GetMwmType(MwmVersion const & version)
+{
+  if (!IsSingleMwm(version.GetVersion()))
+    return MwmType::SeparateMwms;
+  if (version.GetFormat() < Format::v8)
+    return MwmType::SeparateMwms;
+  if (version.GetFormat() > Format::v8)
+    return MwmType::SingleMwm;
+  return MwmType::Unknown;
 }
 }  // namespace version

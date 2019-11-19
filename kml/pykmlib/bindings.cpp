@@ -248,7 +248,7 @@ boost::python::list VectorAdapter<m2::PointD>::Get(std::vector<m2::PointD> const
   std::vector<ms::LatLon> latLonArray;
   latLonArray.reserve(points.size());
   for (size_t i = 0; i < points.size(); ++i)
-    latLonArray.emplace_back(MercatorBounds::YToLat(points[i].y), MercatorBounds::XToLon(points[i].x));
+    latLonArray.emplace_back(mercator::YToLat(points[i].y), mercator::XToLon(points[i].x));
   return std_vector_to_python_list(latLonArray);
 }
 
@@ -262,14 +262,14 @@ void VectorAdapter<m2::PointD>::Set(std::vector<m2::PointD> & v, boost::python::
   auto const latLon = python_list_to_std_vector<ms::LatLon>(iterable);
   v.reserve(latLon.size());
   for (size_t i = 0; i < latLon.size(); ++i)
-    v.emplace_back(MercatorBounds::LonToX(latLon[i].m_lon), MercatorBounds::LatToY(latLon[i].m_lat));
+    v.emplace_back(mercator::LonToX(latLon[i].m_lon), mercator::LatToY(latLon[i].m_lat));
 }
 
 std::string LatLonToString(ms::LatLon const & latLon);
 template<>
 void VectorAdapter<m2::PointD>::PrintType(std::ostringstream & out, m2::PointD const & pt)
 {
-  ms::LatLon const latLon(MercatorBounds::YToLat(pt.y), MercatorBounds::XToLon(pt.x));
+  ms::LatLon const latLon(mercator::YToLat(pt.y), mercator::XToLon(pt.x));
   out << LatLonToString(latLon);
 }
 
@@ -371,7 +371,7 @@ std::string LatLonToString(ms::LatLon const & latLon)
 std::string BookmarkDataToString(BookmarkData const & bm)
 {
   std::ostringstream out;
-  ms::LatLon const latLon(MercatorBounds::YToLat(bm.m_point.y), MercatorBounds::XToLon(bm.m_point.x));
+  ms::LatLon const latLon(mercator::YToLat(bm.m_point.y), mercator::XToLon(bm.m_point.x));
   out << "["
       << "name:" << LocalizableStringAdapter::ToString(bm.m_name) << ", "
       << "description:" << LocalizableStringAdapter::ToString(bm.m_description) << ", "
@@ -382,7 +382,10 @@ std::string BookmarkDataToString(BookmarkData const & bm)
       << "viewport_scale:" << static_cast<uint32_t>(bm.m_viewportScale) << ", "
       << "timestamp:" << DebugPrint(bm.m_timestamp) << ", "
       << "point:" << LatLonToString(latLon) << ", "
-      << "bound_tracks:" << VectorAdapter<uint8_t>::ToString(bm.m_boundTracks)
+      << "bound_tracks:" << VectorAdapter<uint8_t>::ToString(bm.m_boundTracks) << ", "
+      << "visible:" << (bm.m_visible ? "True" : "False") << ", "
+      << "nearest_toponym:'" << bm.m_nearestToponym << "', "
+      << "properties:" << PropertiesAdapter::ToString(bm.m_properties)
       << "]";
   return out.str();
 }
@@ -406,7 +409,10 @@ std::string TrackDataToString(TrackData const & t)
       << "description:" << LocalizableStringAdapter::ToString(t.m_description) << ", "
       << "timestamp:" << DebugPrint(t.m_timestamp) << ", "
       << "layers:" << VectorAdapter<TrackLayer>::ToString(t.m_layers) << ", "
-      << "points:" << VectorAdapter<m2::PointD>::ToString(t.m_points)
+      << "points:" << VectorAdapter<m2::PointD>::ToString(t.m_points) << ", "
+      << "visible:" << (t.m_visible ? "True" : "False") << ", "
+      << "nearest_toponyms:" << VectorAdapter<std::string>::ToString(t.m_nearestToponyms) << ", "
+      << "properties:" << PropertiesAdapter::ToString(t.m_properties)
       << "]";
   return out.str();
 }
@@ -441,7 +447,7 @@ std::string CategoryDataToString(CategoryData const & c)
       << "reviews_number:" << c.m_reviewsNumber << ", "
       << "access_rules:" << AccessRulesToString(c.m_accessRules) << ", "
       << "tags:" << VectorAdapter<std::string>::ToString(c.m_tags) << ", "
-      << "cities:" << VectorAdapter<m2::PointD>::ToString(c.m_cities) << ", "
+      << "toponyms:" << VectorAdapter<std::string>::ToString(c.m_toponyms) << ", "
       << "languages:" << LanguagesListToString(c.m_languageCodes) << ", "
       << "properties:" << PropertiesAdapter::ToString(c.m_properties)
       << "]";
@@ -503,7 +509,7 @@ struct LatLonConverter
   static void construct(PyObject * objPtr, converter::rvalue_from_python_stage1_data * data)
   {
     ms::LatLon latLon = extract<ms::LatLon>(objPtr);
-    m2::PointD pt(MercatorBounds::LonToX(latLon.m_lon), MercatorBounds::LatToY(latLon.m_lat));
+    m2::PointD pt(mercator::LonToX(latLon.m_lon), mercator::LatToY(latLon.m_lat));
     void * storage =
       reinterpret_cast<converter::rvalue_from_python_storage<m2::PointD> *>(data)->storage.bytes;
     new (storage) m2::PointD(pt);
@@ -738,6 +744,16 @@ BOOST_PYTHON_MODULE(pykmlib)
 
   class_<Timestamp>("Timestamp");
 
+  class_<Properties>("Properties")
+    .def("__len__", &Properties::size)
+    .def("clear", &Properties::clear)
+    .def("__getitem__", &PropertiesAdapter::Get, return_value_policy<copy_const_reference>())
+    .def("__setitem__", &PropertiesAdapter::Set, with_custodian_and_ward<1,2>())
+    .def("__delitem__", &PropertiesAdapter::Delete)
+    .def("get_dict", &PropertiesAdapter::GetDict)
+    .def("set_dict", &PropertiesAdapter::SetDict)
+    .def("__str__", &PropertiesAdapter::ToString);
+
   class_<BookmarkData>("BookmarkData")
     .def_readwrite("name", &BookmarkData::m_name)
     .def_readwrite("description", &BookmarkData::m_description)
@@ -749,6 +765,9 @@ BOOST_PYTHON_MODULE(pykmlib)
     .def_readwrite("timestamp", &BookmarkData::m_timestamp)
     .def_readwrite("point", &BookmarkData::m_point)
     .def_readwrite("bound_tracks", &BookmarkData::m_boundTracks)
+    .def_readwrite("visible", &BookmarkData::m_visible)
+    .def_readwrite("nearest_toponym", &BookmarkData::m_nearestToponym)
+    .def_readwrite("properties", &BookmarkData::m_properties)
     .def("__eq__", &BookmarkData::operator==)
     .def("__ne__", &BookmarkData::operator!=)
     .def("__str__", &BookmarkDataToString);
@@ -782,6 +801,9 @@ BOOST_PYTHON_MODULE(pykmlib)
     .def_readwrite("timestamp", &TrackData::m_timestamp)
     .def_readwrite("layers", &TrackData::m_layers)
     .def_readwrite("points", &TrackData::m_points)
+    .def_readwrite("visible", &TrackData::m_visible)
+    .def_readwrite("nearest_toponyms", &TrackData::m_nearestToponyms)
+    .def_readwrite("properties", &TrackData::m_properties)
     .def("__eq__", &TrackData::operator==)
     .def("__ne__", &TrackData::operator!=)
     .def("__str__", &TrackDataToString);
@@ -791,16 +813,6 @@ BOOST_PYTHON_MODULE(pykmlib)
     .def("get_list", &GetLanguages)
     .def("set_list", &SetLanguages)
     .def("__str__", &LanguagesListToString);
-
-  class_<Properties>("Properties")
-    .def("__len__", &Properties::size)
-    .def("clear", &Properties::clear)
-    .def("__getitem__", &PropertiesAdapter::Get, return_value_policy<copy_const_reference>())
-    .def("__setitem__", &PropertiesAdapter::Set, with_custodian_and_ward<1,2>())
-    .def("__delitem__", &PropertiesAdapter::Delete)
-    .def("get_dict", &PropertiesAdapter::GetDict)
-    .def("set_dict", &PropertiesAdapter::SetDict)
-    .def("__str__", &PropertiesAdapter::ToString);
 
   class_<CategoryData>("CategoryData")
     .def_readwrite("name", &CategoryData::m_name)
@@ -815,7 +827,7 @@ BOOST_PYTHON_MODULE(pykmlib)
     .def_readwrite("reviews_number", &CategoryData::m_reviewsNumber)
     .def_readwrite("access_rules", &CategoryData::m_accessRules)
     .def_readwrite("tags", &CategoryData::m_tags)
-    .def_readwrite("cities", &CategoryData::m_cities)
+    .def_readwrite("toponyms", &CategoryData::m_toponyms)
     .def_readwrite("languages", &CategoryData::m_languageCodes)
     .def_readwrite("properties", &CategoryData::m_properties)
     .def("__eq__", &CategoryData::operator==)
@@ -846,7 +858,7 @@ BOOST_PYTHON_MODULE(pykmlib)
   def("get_supported_languages", GetSupportedLanguages);
   def("get_language_index", GetLanguageIndex);
   def("timestamp_to_int", &ToSecondsSinceEpoch);
-  def("point_to_latlon", &MercatorBounds::ToLatLon);
+  def("point_to_latlon", &mercator::ToLatLon);
 
   def("export_kml", ExportKml);
   def("import_kml", ImportKml);

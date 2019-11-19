@@ -7,7 +7,7 @@
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 
 #include "base/scope_guard.hpp"
 
@@ -63,31 +63,6 @@ namespace feature
     TEST_EQUAL(static_cast<size_t>(5), table->GetFeatureIndexbyOffset(510), ());
     TEST_EQUAL(static_cast<size_t>(6), table->GetFeatureIndexbyOffset(513), ());
     TEST_EQUAL(static_cast<size_t>(7), table->GetFeatureIndexbyOffset(1024), ());
-  }
-
-  UNIT_TEST(FeaturesOffsetsTable_CreateIfNotExistsAndLoad)
-  {
-    string const testFileName = "minsk-pass";
-
-    LocalCountryFile localFile = LocalCountryFile::MakeForTesting(testFileName);
-    string const indexFile = CountryIndexes::GetPath(localFile, CountryIndexes::Index::Offsets);
-    FileWriter::DeleteFileX(indexFile);
-
-    unique_ptr<FeaturesOffsetsTable> table = FeaturesOffsetsTable::CreateIfNotExistsAndLoad(localFile);
-    SCOPE_GUARD(deleteTestFileIndexGuard, bind(&FileWriter::DeleteFileX, cref(indexFile)));
-    TEST(table.get(), ());
-
-    uint64_t builderSize = 0;
-    FilesContainerR cont(GetPlatform().GetReader(testFileName + DATA_FILE_EXTENSION));
-    FeaturesVectorTest(cont).GetVector().ForEach([&builderSize](FeatureType const &, uint32_t)
-    {
-      ++builderSize;
-    });
-    TEST_EQUAL(builderSize, table->size(), ());
-
-    table = unique_ptr<FeaturesOffsetsTable>();
-    table = unique_ptr<FeaturesOffsetsTable>(FeaturesOffsetsTable::Load(indexFile));
-    TEST_EQUAL(builderSize, table->size(), ());
   }
 
   UNIT_TEST(FeaturesOffsetsTable_ReadWrite)

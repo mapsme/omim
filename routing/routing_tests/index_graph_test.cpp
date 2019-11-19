@@ -84,7 +84,7 @@ void TestEdges(IndexGraph & graph, Segment const & segment, vector<Segment> cons
          ());
 
   vector<SegmentEdge> edges;
-  graph.GetEdgeList(segment, isOutgoing, edges);
+  graph.GetEdgeList(segment, isOutgoing, true /* useRoutingOptions */, edges);
 
   vector<Segment> targets;
   for (SegmentEdge const & edge : edges)
@@ -393,11 +393,11 @@ UNIT_TEST(RoadSpeed)
                                        {kTestNumMwmId, 0, 3, true},
                                        {kTestNumMwmId, 1, 3, true}});
   double const expectedWeight =
-      MercatorBounds::DistanceOnEarth({0.5, 0.0}, {1.0, 0.0}) / KMPH2MPS(1.0) +
-      MercatorBounds::DistanceOnEarth({1.0, 0.0}, {2.0, -1.0}) / KMPH2MPS(10.0) +
-      MercatorBounds::DistanceOnEarth({2.0, -1.0}, {4.0, -1.0}) / KMPH2MPS(10.0) +
-      MercatorBounds::DistanceOnEarth({4.0, -1.0}, {5.0, 0.0}) / KMPH2MPS(10.0) +
-      MercatorBounds::DistanceOnEarth({5.0, 0.0}, {5.5, 0.0}) / KMPH2MPS(1.0);
+      mercator::DistanceOnEarth({0.5, 0.0}, {1.0, 0.0}) / KMPH2MPS(1.0) +
+      mercator::DistanceOnEarth({1.0, 0.0}, {2.0, -1.0}) / KMPH2MPS(10.0) +
+      mercator::DistanceOnEarth({2.0, -1.0}, {4.0, -1.0}) / KMPH2MPS(10.0) +
+      mercator::DistanceOnEarth({4.0, -1.0}, {5.0, 0.0}) / KMPH2MPS(10.0) +
+      mercator::DistanceOnEarth({5.0, 0.0}, {5.5, 0.0}) / KMPH2MPS(1.0);
   TestRoute(start, finish, expectedRoute.size(), &expectedRoute, expectedWeight, *worldGraph);
 }
 
@@ -428,13 +428,12 @@ UNIT_TEST(OneSegmentWay)
   {
     for (auto const finishIsForward : tf)
     {
-      auto const start = MakeFakeEnding(Segment(kTestNumMwmId, 0, 0, startIsForward),
+      auto const start = MakeFakeEnding({Segment(kTestNumMwmId, 0, 0, startIsForward)},
                                         m2::PointD(1.0, 0.0), *worldGraph);
-      auto const finish = MakeFakeEnding(Segment(kTestNumMwmId, 0, 0, finishIsForward),
+      auto const finish = MakeFakeEnding({Segment(kTestNumMwmId, 0, 0, finishIsForward)},
                                          m2::PointD(2.0, 0.0), *worldGraph);
 
-      auto const expectedWeight =
-          MercatorBounds::DistanceOnEarth({1.0, 0.0}, {2.0, 0.0}) / KMPH2MPS(1.0);
+      auto const expectedWeight = mercator::DistanceOnEarth({1.0, 0.0}, {2.0, 0.0}) / KMPH2MPS(1.0);
       TestRoute(start, finish, expectedRoute.size(), &expectedRoute, expectedWeight, *worldGraph);
     }
   }
@@ -502,9 +501,9 @@ UNIT_TEST(FakeSegmentCoordinates)
   {
     for (auto const finishIsForward : tf)
     {
-      auto const start = MakeFakeEnding(Segment(kTestNumMwmId, 0, 0, startIsForward),
+      auto const start = MakeFakeEnding({Segment(kTestNumMwmId, 0, 0, startIsForward)},
                                         m2::PointD(1, 0), *worldGraph);
-      auto const finish = MakeFakeEnding(Segment(kTestNumMwmId, 1, 0, finishIsForward),
+      auto const finish = MakeFakeEnding({Segment(kTestNumMwmId, 1, 0, finishIsForward)},
                                          m2::PointD(3, 0), *worldGraph);
 
       auto starter = MakeStarter(start, finish, *worldGraph);
@@ -545,9 +544,9 @@ UNIT_TEST(FakeEndingAStarInvariant)
   auto const finish = MakeFakeEnding(0, 0, m2::PointD(2.0, 1.0), *worldGraph);
 
   auto const expectedWeight =
-      estimator->CalcOffroadWeight({1.0, 1.0}, {1.0, 0.0}) +
-      MercatorBounds::DistanceOnEarth({1.0, 0.0}, {2.0, 0.0}) / KMPH2MPS(1.0) +
-      estimator->CalcOffroadWeight({2.0, 0.0}, {2.0, 1.0});
+      estimator->CalcOffroad({1.0, 1.0}, {1.0, 0.0}, EdgeEstimator::Purpose::Weight) +
+      mercator::DistanceOnEarth({1.0, 0.0}, {2.0, 0.0}) / KMPH2MPS(1.0) +
+          estimator->CalcOffroad({2.0, 0.0}, {2.0, 1.0}, EdgeEstimator::Purpose::Weight);
   TestRoute(start, finish, expectedRoute.size(), &expectedRoute, expectedWeight, *worldGraph);
 }
 
@@ -685,13 +684,13 @@ UNIT_CLASS_TEST(RestrictionTest, LoopGraph)
                                          {kTestNumMwmId, 2, 0, true}};
 
   auto const expectedWeight =
-      MercatorBounds::DistanceOnEarth({0.0002, 0.0}, {0.0002, 0.0001}) / KMPH2MPS(100.0) +
-      MercatorBounds::DistanceOnEarth({0.0002, 0.0001}, {0.00015, 0.0001}) / KMPH2MPS(100.0) +
-      MercatorBounds::DistanceOnEarth({0.00015, 0.0001}, {0.0001, 0.0001}) / KMPH2MPS(100.0) +
-      MercatorBounds::DistanceOnEarth({0.0001, 0.0001}, {0.00005, 0.00015}) / KMPH2MPS(100.0) +
-      MercatorBounds::DistanceOnEarth({0.00005, 0.00015}, {0.00005, 0.0002}) / KMPH2MPS(100.0) +
-      MercatorBounds::DistanceOnEarth({0.00005, 0.0002}, {0.00005, 0.0003}) / KMPH2MPS(100.0) +
-      MercatorBounds::DistanceOnEarth({0.00005, 0.0003}, {0.00005, 0.0004}) / KMPH2MPS(100.0);
+      mercator::DistanceOnEarth({0.0002, 0.0}, {0.0002, 0.0001}) / KMPH2MPS(100.0) +
+      mercator::DistanceOnEarth({0.0002, 0.0001}, {0.00015, 0.0001}) / KMPH2MPS(100.0) +
+      mercator::DistanceOnEarth({0.00015, 0.0001}, {0.0001, 0.0001}) / KMPH2MPS(100.0) +
+      mercator::DistanceOnEarth({0.0001, 0.0001}, {0.00005, 0.00015}) / KMPH2MPS(100.0) +
+      mercator::DistanceOnEarth({0.00005, 0.00015}, {0.00005, 0.0002}) / KMPH2MPS(100.0) +
+      mercator::DistanceOnEarth({0.00005, 0.0002}, {0.00005, 0.0003}) / KMPH2MPS(100.0) +
+      mercator::DistanceOnEarth({0.00005, 0.0003}, {0.00005, 0.0004}) / KMPH2MPS(100.0);
   TestRoute(start, finish, expectedRoute.size(), &expectedRoute, expectedWeight, *m_graph);
 }
 
@@ -843,9 +842,9 @@ UNIT_TEST(FinishNearZeroEdge)
   traffic::TrafficCache const trafficCache;
   shared_ptr<EdgeEstimator> estimator = CreateEstimatorForCar(trafficCache);
   unique_ptr<WorldGraph> worldGraph = BuildWorldGraph(move(loader), estimator, joints);
-  auto const start = MakeFakeEnding(Segment(kTestNumMwmId, 0, 0, true /* forward */),
+  auto const start = MakeFakeEnding({Segment(kTestNumMwmId, 0, 0, true /* forward */)},
                                     m2::PointD(1.0, 0.0), *worldGraph);
-  auto const finish = MakeFakeEnding(Segment(kTestNumMwmId, 1, 0, false /* forward */),
+  auto const finish = MakeFakeEnding({Segment(kTestNumMwmId, 1, 0, false /* forward */)},
                                      m2::PointD(5.0, 0.0), *worldGraph);
   auto starter = MakeStarter(start, finish, *worldGraph);
 

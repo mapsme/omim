@@ -2,14 +2,14 @@ package com.mapswithme.maps.base;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.CallSuper;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +97,14 @@ public abstract class BaseMwmRecyclerFragment<T extends RecyclerView.Adapter> ex
   public RecyclerView getRecyclerView()
   {
     return mRecycler;
+  }
+
+  @NonNull
+  public PlaceholderView requirePlaceholder()
+  {
+    if (mPlaceholder != null)
+      return mPlaceholder;
+    throw new IllegalStateException("Placeholder not found in layout");
   }
 
   @Override

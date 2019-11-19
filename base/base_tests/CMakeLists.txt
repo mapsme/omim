@@ -6,10 +6,12 @@ set(
   SRC
   assert_test.cpp
   beam_tests.cpp
+  bidirectional_map_tests.cpp
   bits_test.cpp
   buffer_vector_test.cpp
   bwt_tests.cpp
   cache_test.cpp
+  cancellable_tests.cpp
   clustering_map_tests.cpp
   collection_cast_test.cpp
   condition_test.cpp
@@ -41,11 +43,13 @@ set(
   thread_pool_computational_tests.cpp
   thread_pool_delayed_tests.cpp
   thread_pool_tests.cpp
+  thread_safe_queue_tests.cpp
   threaded_list_test.cpp
   threads_test.cpp
   timegm_test.cpp
   timer_test.cpp
   uni_string_dfa_test.cpp
+  url_helpers_tests.cpp
   visitor_tests.cpp
 )
 

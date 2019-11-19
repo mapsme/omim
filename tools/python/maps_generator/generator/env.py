@@ -120,6 +120,9 @@ class Env:
 
         self.coastline_tmp_path = os.path.join(self.coastline_path, "tmp")
         self._create_if_not_exist(self.coastline_tmp_path)
+        
+        self.srtm_path = settings.SRTM_PATH
+
         self._subprocess_out = None
         self._subprocess_countries_out = {}
 
@@ -137,23 +140,27 @@ class Env:
 
     def get_mwm_names(self):
         tmp_ext = ".mwm.tmp"
-        mwm_names = []
+        existing_names = set()
         for f in os.listdir(self.intermediate_tmp_path):
             path = os.path.join(self.intermediate_tmp_path, f)
             if f.endswith(tmp_ext) and os.path.isfile(path):
                 name = f.replace(tmp_ext, "")
                 if name in self.countries:
-                    mwm_names.append(name)
-        return mwm_names
+                    existing_names.add(name)
+        return [c for c in self.countries if c in existing_names]
 
-    def is_accepted_stage(self, stage_name):
-        return stage_name not in self._skipped_stages
+    def is_accepted_stage(self, stage):
+        return stage.__name__ not in self._skipped_stages
 
     @property
     def descriptions_path(self):
         path = os.path.join(self.intermediate_path, "descriptions")
-        self._create_if_not_exist(self.descriptions_path)
+        self._create_if_not_exist(path)
         return path
+
+    @property
+    def packed_polygons_path(self):
+        return os.path.join(self.intermediate_path, "packed_polygons.bin")
 
     @property
     def localads_path(self):
@@ -192,6 +199,15 @@ class Env:
         return os.path.join(self.intermediate_path, "hotels.csv")
 
     @property
+    def promo_catalog_cities_path(self):
+        return os.path.join(self.intermediate_path, "promo_catalog_cities.json")
+
+    @property
+    def promo_catalog_countries_path(self):
+        return os.path.join(self.intermediate_path,
+                            "promo_catalog_countries.json")
+
+    @property
     def popularity_path(self):
         return os.path.join(self.intermediate_path, "popular_places.csv")
 
@@ -207,6 +223,10 @@ class Env:
     @property
     def food_translations_path(self):
         return os.path.join(self.intermediate_path, "translations_food.json")
+
+    @property
+    def postcodes_path(self):
+        return os.path.join(self.intermediate_path, "postcodes")
 
     @property
     def cities_boundaries_path(self):
@@ -286,7 +306,7 @@ class Env:
         ]
 
         logger.info("Check osm tools ...")
-        if Env._create_if_not_exist(path):
+        if not Env._create_if_not_exist(path):
             tmp_paths = [os.path.join(path, t) for t in osm_tool_names]
             if all([is_executable(t) for t in tmp_paths]):
                 osm_tool_paths = dict(zip(osm_tool_names, tmp_paths))

@@ -13,6 +13,8 @@ enum class NodeStatus;
 
 - (void)onExpanded;
 
+- (void)logStateChangeEventWithValue:(NSNumber *)value;
+
 @end
 
 @protocol MWMPlacePageLayoutDataSource<NSObject>
@@ -34,6 +36,7 @@ enum class NodeStatus;
                        dataSource:(id<MWMPlacePageLayoutDataSource>)dataSource;
 
 - (void)showWithData:(MWMPlacePageData *)data;
+- (void)updateWithData:(MWMPlacePageData *)data;
 - (void)close;
 
 - (void)mwm_refreshUI;

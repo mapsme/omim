@@ -1,7 +1,10 @@
 #include "map/bookmark_catalog.hpp"
+
 #include "map/bookmark_helpers.hpp"
 
-#include "platform/http_client.hpp"
+#include "web_api/request_headers.hpp"
+#include "web_api/utils.hpp"
+
 #include "platform/http_uploader.hpp"
 #include "platform/platform.hpp"
 #include "platform/preferred_languages.hpp"
@@ -68,6 +71,20 @@ std::string BuildWebEditorUrl(std::string const & serverId, std::string const & 
   if (kCatalogEditorServer.empty())
     return {};
   return kCatalogEditorServer + "webeditor/" + language + "/edit/" + serverId;
+}
+
+std::string BuildPingUrl()
+{
+  if (kCatalogFrontendServer.empty())
+    return {};
+  return kCatalogFrontendServer + "storage/ping";
+}
+
+std::string BuildDeleteRequestUrl()
+{
+  if (kCatalogFrontendServer.empty())
+    return {};
+  return kCatalogFrontendServer + "storage/kmls_to_delete";
 }
 
 struct SubtagData
@@ -150,6 +167,31 @@ struct HashResponseData
   DECLARE_VISITOR(visitor(m_hash, "hash"))
 };
 
+struct DeleteRequestData
+{
+  DeleteRequestData(std::string const & deviceId, std::string const & userId,
+                    std::vector<std::string> const & serverIds)
+    : m_deviceId(deviceId)
+    , m_userId(userId)
+    , m_serverIds(serverIds)
+  {}
+
+  std::string m_deviceId;
+  std::string m_userId;
+  std::vector<std::string> m_serverIds;
+
+  DECLARE_VISITOR(visitor(m_deviceId, "device_id"),
+                  visitor(m_userId, "user_id"),
+                  visitor(m_serverIds, "server_ids"))
+};
+
+struct DeleteRequestResponseData
+{
+  std::vector<std::string> m_serverIds;
+
+  DECLARE_VISITOR(visitor(m_serverIds))
+};
+
 int constexpr kInvalidHash = -1;
 
 int RequestNewServerId(std::string const & accessToken,
@@ -159,8 +201,8 @@ int RequestNewServerId(std::string const & accessToken,
   if (hashUrl.empty())
     return kInvalidHash;
   platform::HttpClient request(hashUrl);
+  request.SetRawHeaders(web_api::GetDefaultCatalogHeaders());
   request.SetRawHeader("Accept", "application/json");
-  request.SetRawHeader("User-Agent", GetPlatform().GetAppUserAgent());
   request.SetRawHeader("Authorization", "Bearer " + accessToken);
   request.SetHttpMethod("POST");
   if (request.RunHttpRequest())
@@ -282,9 +324,9 @@ std::string BookmarkCatalog::GetWebEditorUrl(std::string const & serverId,
   return BuildWebEditorUrl(serverId, language);
 }
 
-std::string BookmarkCatalog::GetFrontendUrl() const
+std::string BookmarkCatalog::GetFrontendUrl(UTM utm) const
 {
-  return kCatalogFrontendServer + languages::GetCurrentNorm() + "/v2/mobilefront/";
+  return InjectUTM(kCatalogFrontendServer + languages::GetCurrentNorm() + "/v2/mobilefront/", utm);
 }
 
 void BookmarkCatalog::RequestTagGroups(std::string const & language,
@@ -301,8 +343,8 @@ void BookmarkCatalog::RequestTagGroups(std::string const & language,
   GetPlatform().RunTask(Platform::Thread::Network, [tagsUrl, callback = std::move(callback)]()
   {
     platform::HttpClient request(tagsUrl);
+    request.SetRawHeaders(web_api::GetDefaultCatalogHeaders());
     request.SetRawHeader("Accept", "application/json");
-    request.SetRawHeader("User-Agent", GetPlatform().GetAppUserAgent());
     if (request.RunHttpRequest())
     {
       auto const resultCode = request.ErrorCode();
@@ -370,8 +412,8 @@ void BookmarkCatalog::RequestCustomProperties(std::string const & language,
   GetPlatform().RunTask(Platform::Thread::Network, [url, callback = std::move(callback)]()
   {
     platform::HttpClient request(url);
+    request.SetRawHeaders(web_api::GetDefaultCatalogHeaders());
     request.SetRawHeader("Accept", "application/json");
-    request.SetRawHeader("User-Agent", GetPlatform().GetAppUserAgent());
     if (request.RunHttpRequest())
     {
       auto const resultCode = request.ErrorCode();
@@ -591,7 +633,108 @@ void BookmarkCatalog::Upload(UploadData uploadData, std::string const & accessTo
   });
 }
 
+void BookmarkCatalog::Ping(PingCallback && callback) const
+{
+  auto const url = BuildPingUrl();
+  if (url.empty())
+  {
+    if (callback)
+      callback(false /* isSuccessful */);
+    return;
+  }
+
+  GetPlatform().RunTask(Platform::Thread::Network, [url, callback = std::move(callback)]()
+  {
+    platform::HttpClient request(url);
+    request.SetRawHeaders(web_api::GetDefaultCatalogHeaders());
+    uint32_t constexpr kPingTimeoutInSec = 10;
+    request.SetTimeout(kPingTimeoutInSec);
+    if (request.RunHttpRequest())
+    {
+      auto constexpr kExpectedResponse = "pong";
+      auto const resultCode = request.ErrorCode();
+      if (callback && resultCode >= 200 && resultCode < 300 &&
+          request.ServerResponse() == kExpectedResponse)
+      {
+        callback(true /* isSuccessful */);
+        return;
+      }
+    }
+    if (callback)
+      callback(false /* isSuccessful */);
+  });
+}
+
+void BookmarkCatalog::RequestBookmarksToDelete(std::string const & accessToken, std::string const & userId,
+                                               std::vector<std::string> const & serverIds,
+                                               BookmarksToDeleteCallback && callback) const
+{
+  auto const url = BuildDeleteRequestUrl();
+  if (url.empty())
+  {
+    if (callback)
+      callback({});
+    return;
+  }
+
+  GetPlatform().RunTask(Platform::Thread::Network,
+                        [url, accessToken, userId, serverIds, callback = std::move(callback)]()
+  {
+    platform::HttpClient request(url);
+    request.SetRawHeaders(web_api::GetDefaultCatalogHeaders());
+    request.SetRawHeader("Accept", "application/json");
+    if (!accessToken.empty())
+      request.SetRawHeader("Authorization", "Bearer " + accessToken);
+    request.SetHttpMethod("POST");
+
+    std::string jsonStr;
+    {
+      using Sink = MemWriter<std::string>;
+      Sink sink(jsonStr);
+      coding::SerializerJson<Sink> serializer(sink);
+      serializer(DeleteRequestData(web_api::DeviceId(), userId, serverIds));
+    }
+    request.SetBodyData(std::move(jsonStr), "application/json");
+
+    uint32_t constexpr kTimeoutInSec = 5;
+    request.SetTimeout(kTimeoutInSec);
+    if (request.RunHttpRequest())
+    {
+      auto const resultCode = request.ErrorCode();
+      if (resultCode >= 200 && resultCode < 300)
+      {
+        DeleteRequestResponseData responseData;
+        try
+        {
+          coding::DeserializerJson des(request.ServerResponse());
+          des(responseData);
+        }
+        catch (coding::DeserializerJson::Exception const & ex)
+        {
+          LOG(LERROR, ("Bookmarks-to-delete request deserialization error:", ex.Msg()));
+          callback({});
+          return;
+        }
+
+        callback(responseData.m_serverIds);
+        return;
+      }
+    }
+    callback({});
+  });
+}
+
 void BookmarkCatalog::SetInvalidTokenHandler(InvalidTokenHandler && onInvalidToken)
 {
   m_onInvalidToken = std::move(onInvalidToken);
+}
+
+void BookmarkCatalog::SetHeadersProvider(HeadersProvider const & provider)
+{
+  m_headersProvider = provider;
+}
+
+platform::HttpClient::Headers BookmarkCatalog::GetHeaders() const
+{
+  return m_headersProvider();
 }

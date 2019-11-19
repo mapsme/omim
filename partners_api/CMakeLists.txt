@@ -36,6 +36,8 @@ set(
   partners.hpp
   promo_api.cpp
   promo_api.hpp
+  promo_catalog_types.cpp
+  promo_catalog_types.hpp
   rb_ads.cpp
   rb_ads.hpp
   rutaxi_api.cpp
@@ -54,6 +56,7 @@ set(
   uber_api.hpp
   utils.cpp
   utils.hpp
+  utm.hpp
   yandex_api.cpp
   yandex_api.hpp
 )

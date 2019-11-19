@@ -1,8 +1,8 @@
 package com.mapswithme.maps.gallery;
 
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +12,15 @@ import com.mapswithme.maps.MwmApplication;
 public abstract class SimpleSingleItemAdapterStrategy<T extends Holders.BaseViewHolder<Items.Item>>
     extends SingleItemAdapterStrategy<T>
 {
+  protected SimpleSingleItemAdapterStrategy(@Nullable ItemSelectedListener<Items.Item> listener,
+                                            @Nullable String url)
+  {
+    super(url, listener);
+  }
+
   protected SimpleSingleItemAdapterStrategy(@Nullable ItemSelectedListener<Items.Item> listener)
   {
-    super(null, listener);
+    this(listener, null);
   }
 
   @Override

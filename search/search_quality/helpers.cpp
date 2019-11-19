@@ -38,15 +38,15 @@ namespace
 {
 uint64_t ReadVersionFromHeader(platform::LocalCountryFile const & mwm)
 {
-  vector<string> const kSpecialFiles = {WORLD_FILE_NAME, WORLD_COASTS_FILE_NAME,
-                                        WORLD_COASTS_OBSOLETE_FILE_NAME};
+  vector<string> const kSpecialFiles = {WORLD_FILE_NAME, WORLD_COASTS_FILE_NAME};
   for (auto const & name : kSpecialFiles)
   {
     if (mwm.GetCountryName() == name)
       return mwm.GetVersion();
   }
 
-  ModelReaderPtr reader = FilesContainerR(mwm.GetPath(MapOptions::Map)).GetReader(VERSION_FILE_TAG);
+  ModelReaderPtr reader =
+      FilesContainerR(mwm.GetPath(MapFileType::Map)).GetReader(VERSION_FILE_TAG);
   ReaderSrc src(reader.GetPtr());
 
   version::MwmVersion version;
@@ -133,9 +133,9 @@ void InitViewport(string viewportName, m2::RectD & viewport)
 {
   map<string, m2::RectD> const kViewports = {
       {"default", m2::RectD(m2::PointD(0.0, 0.0), m2::PointD(1.0, 1.0))},
-      {"moscow", MercatorBounds::RectByCenterLatLonAndSizeInMeters(55.7, 37.7, 5000)},
-      {"london", MercatorBounds::RectByCenterLatLonAndSizeInMeters(51.5, 0.0, 5000)},
-      {"zurich", MercatorBounds::RectByCenterLatLonAndSizeInMeters(47.4, 8.5, 5000)}};
+      {"moscow", mercator::RectByCenterLatLonAndSizeInMeters(55.7, 37.7, 5000)},
+      {"london", mercator::RectByCenterLatLonAndSizeInMeters(51.5, 0.0, 5000)},
+      {"zurich", mercator::RectByCenterLatLonAndSizeInMeters(47.4, 8.5, 5000)}};
 
   auto it = kViewports.find(viewportName);
   if (it == kViewports.end())
@@ -181,8 +181,11 @@ void InitStorageData(storage::Affiliations & affiliations,
   auto const countriesFile = base::JoinPath(GetPlatform().ResourcesDir(), COUNTRIES_FILE);
 
   storage::CountryTree countries;
+  storage::MwmTopCityGeoIds mwmTopCityGeoIds;
+  storage::MwmTopCountryGeoIds mwmTopCountryGeoIds;
   auto const rv =
-      storage::LoadCountriesFromFile(countriesFile, countries, affiliations, countryNameSynonyms);
+      storage::LoadCountriesFromFile(COUNTRIES_FILE, countries, affiliations, countryNameSynonyms,
+                                     mwmTopCityGeoIds, mwmTopCountryGeoIds);
   CHECK(rv != -1, ("Can't load countries from:", countriesFile));
 }
 

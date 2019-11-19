@@ -15,7 +15,7 @@ SearchTest::SearchTest()
   : m_scopedLog(LDEBUG)
   , m_engine(m_dataSource, make_unique<storage::CountryInfoGetterForTesting>(), Engine::Params{})
 {
-  SetViewport(MercatorBounds::FullRect());
+  SetViewport(mercator::Bounds::FullRect());
 }
 
 void SearchTest::RegisterCountry(string const & name, m2::RectD const & rect)
@@ -62,6 +62,13 @@ bool SearchTest::ResultsMatch(SearchParams const & params, Rules const & rules)
 bool SearchTest::ResultMatches(search::Result const & result, Rule const & rule)
 {
   return tests_support::ResultMatches(m_dataSource, rule, result);
+}
+
+bool SearchTest::AlternativeMatch(string const & query, vector<Rules> const & rulesList)
+{
+  tests_support::TestSearchRequest request(m_engine, query, "en", Mode::Everywhere, m_viewport);
+  request.Run();
+  return tests_support::AlternativeMatch(m_dataSource, rulesList, request.Results());
 }
 
 size_t SearchTest::GetResultsNumber(string const & query, string const & locale)

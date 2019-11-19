@@ -1,64 +1,54 @@
 #include "platform/country_file.hpp"
-#include "platform/mwm_version.hpp"
 
-#include "defines.hpp"
+#include "platform/mwm_version.hpp"
 
 #include "base/assert.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
+
+#include "defines.hpp"
+
+using namespace std;
 
 namespace
 {
 /// \returns file name (m_name) with extension dependent on the file param.
 /// The extension could be .mwm.routing or just .mwm.
 /// The method is used for old (two components) mwm support.
-string GetNameWithExt(string const & countryFile, MapOptions file)
+string GetNameWithExt(string const & countryFile, MapFileType file)
 {
   switch (file)
   {
-    case MapOptions::Map:
-      return countryFile + DATA_FILE_EXTENSION;
-    case MapOptions::CarRouting:
-      return countryFile + DATA_FILE_EXTENSION + ROUTING_FILE_EXTENSION;
-    case MapOptions::Diff:
-      return countryFile + DIFF_FILE_EXTENSION;
-    default:
-      ASSERT(false, ("Can't get name for:", file));
-      return string();
+  case MapFileType::Map: return countryFile + DATA_FILE_EXTENSION;
+  case MapFileType::Diff: return countryFile + DIFF_FILE_EXTENSION;
+  case MapFileType::Count: CHECK(false, (countryFile));
   }
+
+  UNREACHABLE();
 }
-} //  namespace
+}  //  namespace
 
 namespace platform
 {
-CountryFile::CountryFile() : m_mapSize(0), m_routingSize(0) {}
+CountryFile::CountryFile() : m_mapSize(0) {}
 
-CountryFile::CountryFile(string const & name) : m_name(name), m_mapSize(0), m_routingSize(0) {}
+CountryFile::CountryFile(string const & name) : m_name(name), m_mapSize(0) {}
 
 string const & CountryFile::GetName() const { return m_name; }
 
-void CountryFile::SetRemoteSizes(MwmSize mapSize, MwmSize routingSize)
+void CountryFile::SetRemoteSize(MwmSize mapSize)
 {
   m_mapSize = mapSize;
-  m_routingSize = routingSize;
 }
 
-MwmSize CountryFile::GetRemoteSize(MapOptions filesMask) const
+MwmSize CountryFile::GetRemoteSize() const
 {
-  uint32_t size = 0;
-  if (HasOptions(filesMask, MapOptions::Map))
-    size += m_mapSize;
-  if (HasOptions(filesMask, MapOptions::CarRouting))
-    size += m_routingSize;
-  return size;
+  return m_mapSize;
 }
 
-string GetFileName(string const & countryFile, MapOptions opt, int64_t version)
+string GetFileName(string const & countryFile, MapFileType type)
 {
-  if (version::IsSingleMwm(version))
-    opt = opt == MapOptions::Diff ? MapOptions::Diff : MapOptions::Map;
-
-  return GetNameWithExt(countryFile, opt);
+  return GetNameWithExt(countryFile, type);
 }
 
 string DebugPrint(CountryFile const & file)

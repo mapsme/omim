@@ -6,17 +6,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceCategory;
-import android.support.v7.preference.PreferenceScreen;
-import android.support.v7.preference.TwoStatePreference;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.TwoStatePreference;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -296,15 +296,16 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
-    mAdsRemovalPurchaseController = PurchaseFactory.createAdsRemovalPurchaseController(getContext());
-    mAdsRemovalPurchaseController.initialize(getActivity());
+    mAdsRemovalPurchaseController = PurchaseFactory.createAdsRemovalPurchaseController(requireContext());
+    mAdsRemovalPurchaseController.initialize(requireActivity());
     return super.onCreateView(inflater, container, savedInstanceState);
   }
 
   @Override
   public void onDestroyView()
   {
-    mAdsRemovalPurchaseController.destroy();
+    if (mAdsRemovalPurchaseController != null)
+      mAdsRemovalPurchaseController.destroy();
     super.onDestroyView();
   }
 
@@ -433,7 +434,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     if (pref == null)
       return;
 
-    if (Framework.nativeHasActiveRemoveAdsSubscription())
+    if (Framework.nativeHasActiveSubscription(Framework.SUBSCRIPTION_TYPE_REMOVE_ADS))
     {
       removePreference(getString(R.string.pref_settings_general), pref);
       return;
@@ -520,10 +521,10 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     if (mobilePref == null)
       return;
 
-    int curValue = Config.getUseMobileDataSettings();
+    NetworkPolicy.Type curValue = Config.getUseMobileDataSettings();
 
-    if (curValue != NetworkPolicy.NOT_TODAY && curValue != NetworkPolicy.TODAY
-        && curValue != NetworkPolicy.NONE)
+    if (curValue != NetworkPolicy.Type.NOT_TODAY && curValue != NetworkPolicy.Type.TODAY
+        && curValue != NetworkPolicy.Type.NONE)
     {
       mobilePref.setValue(String.valueOf(curValue));
       mobilePref.setSummary(mobilePref.getEntry());
@@ -538,19 +539,20 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
       public boolean onPreferenceChange(Preference preference, Object newValue)
       {
         String valueStr = (String)newValue;
-        switch (Integer.parseInt(valueStr))
+        int value = Integer.parseInt(valueStr);
+        NetworkPolicy.Type type = NetworkPolicy.Type.values()[value];
+
+        if (type == NetworkPolicy.Type.ALWAYS
+            || type == NetworkPolicy.Type.ASK
+            || type == NetworkPolicy.Type.NEVER)
         {
-          case NetworkPolicy.ASK:
-            Config.setUseMobileDataSettings(NetworkPolicy.ASK);
-            break;
-          case NetworkPolicy.ALWAYS:
-            Config.setUseMobileDataSettings(NetworkPolicy.ALWAYS);
-            break;
-          case NetworkPolicy.NEVER:
-            Config.setUseMobileDataSettings(NetworkPolicy.NEVER);
-            break;
-          default:
-            throw new AssertionError("Wrong NetworkPolicy type!");
+          Config.setUseMobileDataSettings(type);
+          Statistics.INSTANCE.trackNetworkUsageAlert(Statistics.EventName.SETTINGS_MOBILE_INTERNET_CHANGE,
+                                                     type.toStatisticValue());
+        }
+        else
+        {
+          throw new AssertionError("Wrong NetworkPolicy type, value = " + valueStr);
         }
 
         UiThread.runLater(new Runnable()
@@ -736,6 +738,9 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
           root.setSummary(enabled ? R.string.on : R.string.off);
         pref.setTitle(enabled ? R.string.on : R.string.off);
 
+        Statistics.ParameterBuilder builder =
+            new Statistics.ParameterBuilder().add(Statistics.EventParam.VALUE, value);
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.SETTINGS_RECENT_TRACK_CHANGE, builder);
         UiThread.runLater(new Runnable()
         {
           @Override

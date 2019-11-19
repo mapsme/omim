@@ -11,6 +11,7 @@
 
 #include <functional>
 #include <mutex>
+#include <string>
 #include <utility>
 
 namespace base
@@ -27,17 +28,9 @@ class Manager final
 public:
   struct ApplyDiffParams
   {
-    string m_diffReadyPath;
+    std::string m_diffReadyPath;
     LocalFilePtr m_diffFile;
     LocalFilePtr m_oldMwmFile;
-  };
-
-  class Observer
-  {
-  public:
-    virtual ~Observer() = default;
-
-    virtual void OnDiffStatusReceived(Status const status) = 0;
   };
 
   using OnDiffApplicationFinished = std::function<void(generator::mwm_diff::DiffApplicationResult)>;
@@ -54,7 +47,6 @@ public:
   bool SizeToDownloadFor(storage::CountryId const & countryId, uint64_t & size) const;
 
   bool VersionFor(storage::CountryId const & countryId, uint64_t & version) const;
-  bool IsPossibleToAutoupdate() const;
 
   // Checks whether the diff for |countryId| is available for download or
   // has been downloaded.
@@ -66,18 +58,14 @@ public:
 
   Status GetStatus() const;
 
-  void Load(LocalMapsInfo && info);
-  void ApplyDiff(ApplyDiffParams && p, base::Cancellable const & cancellable,
-                 OnDiffApplicationFinished const & task);
-
-  bool AddObserver(Observer & observer) { return m_observers.Add(observer); }
-  bool RemoveObserver(Observer const & observer) { return m_observers.Remove(observer); }
+  void Load(NameDiffInfoMap && info);
+  static void ApplyDiff(ApplyDiffParams && p, base::Cancellable const & cancellable,
+                        OnDiffApplicationFinished const & task);
 
 private:
   template <typename Fn>
   bool WithNotAppliedDiff(storage::CountryId const & countryId, Fn && fn) const
   {
-    std::lock_guard<std::mutex> lock(m_mutex);
     if (m_status != Status::Available)
       return false;
 
@@ -89,12 +77,8 @@ private:
     return true;
   }
 
-  mutable std::mutex m_mutex;
   Status m_status = Status::Undefined;
   NameDiffInfoMap m_diffs;
-  LocalMapsInfo m_localMapsInfo;
-  base::ObserverListUnsafe<Observer> m_observers;
-  base::thread_pool::delayed::ThreadPool m_workerThread;
 };
 }  // namespace diffs
 }  // namespace storage

@@ -4,6 +4,7 @@
 #include "drape_frontend/shape_view_params.hpp"
 #include "drape_frontend/tile_utils.hpp"
 #include "drape_frontend/traffic_generator.hpp"
+#include "drape_frontend/visual_params.hpp"
 
 #include "shaders/programs.hpp"
 
@@ -201,7 +202,7 @@ void RouteShape::PrepareGeometry(std::vector<m2::PointD> const & path, m2::Point
   geometryBufferData.emplace_back(GeometryBufferData<GeometryBuffer>());
 
   uint32_t constexpr kMinVertices = 5000;
-  double constexpr kMinExtent = MercatorBounds::kRangeX / (1 << 10);
+  double constexpr kMinExtent = mercator::Bounds::kRangeX / (1 << 10);
 
   float depth = baseDepth;
   float const depthStep = kRouteDepth / (1 + segments.size());
@@ -521,6 +522,7 @@ void RouteShape::CacheRouteArrows(ref_ptr<dp::GraphicsContext> context,
   GetArrowTextureRegion(mng, region);
   auto state = CreateRenderState(gpu::Program::RouteArrow, DepthLayer::GeometryLayer);
   state.SetColorTexture(region.GetTexture());
+  state.SetTextureIndex(region.GetTextureIndex());
 
   // Generate arrow geometry.
   auto depth = static_cast<float>(baseDepthIndex * kDepthPerSubroute) + kArrowsDepth;
@@ -534,7 +536,6 @@ void RouteShape::CacheRouteArrows(ref_ptr<dp::GraphicsContext> context,
                          depth, geometryData);
   }
 
-  double constexpr kBoundingBoxScale = 1.2;
   geometryData.m_boundingBox.Scale(kBoundingBoxScale);
 
   BatchGeometry(context, state, make_ref(geometryData.m_geometry.data()),
@@ -606,7 +607,6 @@ drape_ptr<df::SubrouteData> RouteShape::CacheRoute(ref_ptr<dp::GraphicsContext> 
                                  gpu::Program::RouteDash : gpu::Program::Route, DepthLayer::GeometryLayer);
   state.SetColorTexture(textures->GetSymbolsTexture());
 
-  double constexpr kBoundingBoxScale = 1.2;
   for (auto & data : geometryBufferData)
   {
     data.m_boundingBox.Scale(kBoundingBoxScale);
@@ -677,8 +677,8 @@ void RouteShape::BatchGeometry(ref_ptr<dp::GraphicsContext> context, dp::RenderS
   uint32_t constexpr kMaxBatchSize = 65000;
   uint32_t constexpr kIndicesScalar = 2;
 
-  verticesCount = base::clamp(verticesCount, kMinBatchSize, kMaxBatchSize);
-  auto const indicesCount = base::clamp(verticesCount * kIndicesScalar, kMinBatchSize, kMaxBatchSize);
+  verticesCount = base::Clamp(verticesCount, kMinBatchSize, kMaxBatchSize);
+  auto const indicesCount = base::Clamp(verticesCount * kIndicesScalar, kMinBatchSize, kMaxBatchSize);
 
   dp::Batcher batcher(indicesCount, verticesCount);
   batcher.SetBatcherHash(static_cast<uint64_t>(BatcherBucket::Routing));

@@ -1,7 +1,7 @@
 package com.mapswithme.maps.gallery.impl;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,20 +10,23 @@ import com.mapswithme.maps.R;
 import com.mapswithme.maps.gallery.Holders;
 import com.mapswithme.maps.gallery.ItemSelectedListener;
 import com.mapswithme.maps.gallery.RegularAdapterStrategy;
+import com.mapswithme.maps.promo.PromoEntity;
 
 import java.util.List;
 
-class CatalogPromoAdapterStrategy extends RegularAdapterStrategy<RegularAdapterStrategy.Item>
+class CatalogPromoAdapterStrategy extends RegularAdapterStrategy<PromoEntity>
 {
-  CatalogPromoAdapterStrategy(@NonNull List<Item> items, @Nullable Item moreItem,
-                              @Nullable ItemSelectedListener<Item> listener)
+  private static final int MAX_ITEMS = 3;
+
+  CatalogPromoAdapterStrategy(@NonNull List<PromoEntity> items, @Nullable PromoEntity moreItem,
+                              @Nullable ItemSelectedListener<PromoEntity> listener)
   {
-    super(items, moreItem, listener);
+    super(items, moreItem, listener, MAX_ITEMS);
   }
 
   @NonNull
   @Override
-  protected Holders.BaseViewHolder<Item> createProductViewHolder(@NonNull ViewGroup parent,
+  protected Holders.BaseViewHolder<PromoEntity> createProductViewHolder(@NonNull ViewGroup parent,
                                                                  int viewType)
   {
     View view = LayoutInflater.from(parent.getContext())
@@ -35,7 +38,7 @@ class CatalogPromoAdapterStrategy extends RegularAdapterStrategy<RegularAdapterS
 
   @NonNull
   @Override
-  protected Holders.BaseViewHolder<Item> createMoreProductsViewHolder(@NonNull ViewGroup parent,
+  protected Holders.BaseViewHolder<PromoEntity> createMoreProductsViewHolder(@NonNull ViewGroup parent,
                                                                       int viewType)
   {
     LayoutInflater inflater = LayoutInflater.from(parent.getContext());

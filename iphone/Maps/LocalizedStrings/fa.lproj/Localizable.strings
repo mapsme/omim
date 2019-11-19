@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "There are no active subscriptions";
 
-"subscription_terms" = "Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.";
-
 "subscriptions_title" = "Subscriptions";
 
 "manage_subscription" = "Manage subscription";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "این فایل آسیب دیده است و امکان بارگذاری آن وجود ندارد. لطفا فایل دیگری را بارگذاری نمایید.";
 
-"buy_btn" = "با s% خرید نمایید";
+"buy_btn" = "این را با %s بخرید";
 
 "download_guide_progress" = "Downloading your guide…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "امکان ایجاد مسیر نیست. لطفاً نقاط مسیر دیگری را مشخص کنید";
 
-"dialog_routing_download_files_carplay" = "همه نقشه ها برای ایجاد یک مسیر موجود نیست. لطفا آنها را بر روی تلفن همراه خود دانلود کنید";
+"dialog_routing_download_files_carplay" = "برای ایجاد مسیر، نقشه های ناقص را روی دستگاه خود را دانلود کنید";
 
 "dialog_routing_system_error_carplay" = "خطایی رخ داد. لطفاً برنامه را دوباره اجرا کنید";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "یک هتل را بر روی نقشه انتخاب کنید";
+
+"popup_booking_download_guides_title" = "هتل رزرو کرده‌اید؟";
+
+"popup_booking_download_guides_message" = "مسیر خود را با راهنماهای آماده MAPS.ME برنامه ریزی کنید";
+
+"popup_mwm_download_guides_title" = "راهنماهای آفلاین شهر";
+
+"popup_mwm_download_guides_cta" = "یکی را انتخاب کنید";
+
+"popup_mwm_download_guides_cta_1" = "نگاهی کنید";
+
+"gallery_pp_download_guides_offline_title" = "تعطیلات خود را با MAPS.ME برنامه ریزی کنید!";
+
+"gallery_pp_download_guides_offline_subtitle" = "با استفاده از راهنماهای تهیه شده توسط مسافران با تجربه، هیچ چیز را از دست ندهید";
+
+"gallery_pp_download_guides_offline_cta" = "اینترنت را متصل کنید";
+
+"gallery_pp_download_guides_title" = "راهنماها";
+
+"native_screen_subscription_title" = "دسترسی نامحدود به بیش از 2000 راهنمای سفر!";
+
+"native_screen_subscription_message" = "تعطیلات به یاد ماندنی در هر کجا و با هر کسی که سفر می کنید";
+
+"annual_subscription_title" = "سالانه";
+
+"montly_subscription_title" = "ماهانه";
+
+"annual_subscription_message" = "12 ماه دسترسی نامحدود";
+
+"montly_subscription_message" = "1 ماه دسترسی نامحدود";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "با تشکر برای اشتراک!";
+
+"subscription_success_dialog_message" = "اکنون شما به تمام کاتالوگ راهنما دسترسی نامحدود دارید";
+
+"renewal_screen_title" = "اشتراک شما به پایان رسیده است";
+
+"renewal_screen_message" = "تمام راهنماهای دانلود شده با اشتراک حذف خواهند شد. آیا تمایل به ادامه اشتراک و حفظ آنها دارید؟";
+
+"renewal_screen_button_restore" = "بله، تمدید کن";
+
+"renewal_screen_button_cancel" = "نه، حذف راهنماها";
+
+"subscription_error_ping_title" = "خرید ناموفق بود";
+
+"subscription_error_message" = "این سرویس در حال حاضر در منطقه شما در دسترس نیست. لطفا بعداً دوباره امتحان کنید";
+
+"subscription_error_button" = "متوجه شدم";
+
+"timeout_error_title" = "اوه، زمان به پایان رسید!";
+
+"timeout_error_message" = "سرورهای ما پاسخ نمی دهند. لطفا اتصال اینترنت را بررسی و دوباره امتحان کنید.";
+
+"per_month" = "ماه/";
+
+"per_year" = "سال/";
+
+"buy_btn_for_subscription" = "دسترسی نامحدود از %s";
+
+"buy_btn_for_subscription_1" = "تمامی راهنماها را با %s بخرید";
+
+"buy_btn_for_subscription_ios_only_mo" = "دسترسی نامحدود %s\ماه";
+
+"buy_btn_for_subscription_ios_only_year" = "دسترسی نامحدود %s\سال";
+
+"subscription_terms_guides" = "پس از تأیید خرید پرداخت از طریق حساب iTunes انجام خواهد شد. اشتراک به صورت خودکار تمدید خواهد شد مگر اینکه ویژگی تمدید خودکار حداقل 24 ساعت قبل از پایان دوره فعلی غیر فعال شود. با توجه به طرح تمدیدی شما، 24 ساعت پیش از اتمام دوره اشتراک، هزینه از حساب شما کسر می شود. شما می توانید در هر زمانی ویژگی تمدید خودکار را در تنظیمات حساب Apple ID خود مدیریت یا غیر فعال کنید. شما می توانید راهنماهای دانلود شده توسط اشتراک را تنها تا تاریخ انقضا استفاده کنید. 30 روز پس از تاریخ اتمام اشتراک، راهنما ها با بوک مارک ها به طور خودکار حذف خواهند شد.";
+
+"subscription_terms" = "Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.";
+
+"whatsnew_carplay_title" = "مسیر یابی خودرو MAPS.ME در CarPlay!";
+
+"whatsnew_carplay_message" = "نشانه ها، جستجو، دوربین های سرعت و گزینه های رانندگی در حالت آفلاین در دسترس هستند";
+
+"whatsnew_subscription_title" = "تمام جهان با اشتراک!";
+
+"whatsnew_subscription_message" = "دسترسی نامحدود به تمام کاتالوگ راهنما به صرفه تر از خرید یک بار مصرف است";
+
+"whatsnew_carnavi_fixes_for_android_title" = "به روز رسانی مسیریابی";
+
+"whatsnew_carnavi_fixes_for_android_message" = "مسیر برنامه ریزی به نقاطی دور از جاده‌ها بهبود داده ایم";
+
+"avoid_unpaved_carplay_1" = "بی جاده خاکی";
+
+"avoid_unpaved_carplay_2" = "پرهیز از خاکی";
+
+"avoid_ferry_carplay_1" = "بدون بزرگراه";
+
+"avoid_ferry_carplay_2" = "پرهیز از اتوبان";
+
+"avoid_tolls_carplay_1" = "بدون عوارضی";
+
+"avoid_tolls_carplay_2" = "اجتناب از عوارض";
+
+"speedcams_alert_title_carplay_1" = "دوربین سرعت";
+
+"speedcams_alert_title_carplay_2" = "هشدارهای سرعت";
+
+"download_map_carplay" = "لطفا نقشه ها را در نرم افزار MAPS.ME روی دستگاه خود دانلود کنید";
+
+"carplay_roundabout_exit" = "خروجی %s";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "مرتب سازی…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "مرتب سازی نشانهها";
+
+/* iOS */
+"sort_default" = "مرتب سازی بر اساس پیش فرض";
+
+"sort_type" = "مرتب سازی بر اساس نوع";
+
+"sort_distance" = "مرتب سازی بر اساس فاصله";
+
+"sort_date" = "مرتب سازی بر اساس تاریخ";
+
+/* Android */
+"by_default" = "به صورت پیش فرض";
+
+/* Android */
+"by_type" = "بر اساس تاریخ";
+
+/* Android */
+"by_distance" = "بر اساس فاصله";
+
+/* Android */
+"by_date" = "بر اساس تاریخ";
+
+"week_ago_sorttype" = "یک هفته قبل";
+
+"month_ago_sorttype" = "یک ماه قبل";
+
+"moremonth_ago_sorttype" = "بیش از یک ماه قبل";
+
+"moreyear_ago_sorttype" = "بیش از یک سال قبل";
+
+"near_me_sorttype" = "نزدیک من";
+
+"others_sorttype" = "دیگران";
+
+"food_places" = "غذا";
+
+"tourist_places" = "مناظر";
+
+"museums" = "موزهها";
+
+"parks" = "پارکها";
+
+"swim_places" = "شنا";
+
+"mountains" = "کوهها";
+
+"animals" = "حیوانات";
+
+"hotels" = "هتلها";
+
+"buildings" = "ساختمانها";
+
+"money" = "پول";
+
+"shops" = "مراکز خرید";
+
+"parkings" = "پارکینگها";
+
+"fuel_places" = "پمپ بنزین";
+
+"water" = "آب";
+
+"medicine" = "پزشکی";
+
+"search_in_the_list" = "جستجو در لیست";
+
+"view_on_map_bookmarks" = "روی نقشه";
+
+"more_bookmarks" = "بیشتر…";
+
+"no_items_found" = "هیچ موردی یافت نشد";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "ویرایش فهرست";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "حذف همه";
+
+"whatsnew_bookmarks_search_sort_title" = "سفارش در نشانهها سفری آسوده را رقم می زند";
+
+"whatsnew_bookmarks_search_sort_message" = "مکانهای مورد علاقه را بر اساس طبقه بندی ، موقعیت مکانی و ترتیب زمانی مرتب کنید، همچنین نشانههای خاص را به سرعت از روی نام بیابید";
+
+"popup_subscription_success_map_title" = "هورا، شما مشترک شدید!";
+
+"popup_subscription_success_map_message" = "اکنون بهترین مکان های برجسته گردشگری را در کاتالوگ MAPS.ME کشف کنید";
+
+"popup_subscription_success_map_start_button" = "شروع جستجو";
+
+"popup_subscription_success_map_not_now_button" = "حالا نه";
+
+"religious_places" = "اماکن مقدس";
+
+"subscription_terms_android" = "هنگامی که خرید را تأیید کنید، هزینه آن از حساب Google Play شما پرداخت می شود. اشتراک به طور خودکار تمدید خواهد شد مگر اینکه ویژگی تمدید خودکار حداقل 24 ساعت قبل از پایان دوره فعلی خاموش باشد. حساب شما طبق برنامه تمدید، 24 ساعت پیش از پایان دوره جاری، شارژ می شود. شما می توانید ویژگی تمدید خودکار را در تنظیمات حساب پس از خرید مدیریت یا غیر فعال کنید. شما مجاز به استفاده از راهنماهای دانلود شده با اشتراک تنها تا تاریخ انقضا آن هستید. 30 روز پس از تاریخ انقضای اشتراک، راهنماهای دانلود شده به طور خودکار حذف خواهند";
+
+"select_list" = "انتخاب فهرست";
+
+"pp_discovery_place_related_header" = "این مکان در کاتالوگ راهنماها موجود است";
+
+"pp_discovery_place_related_header_1" = "این مکان در راهنما متمایز است";
+
+"pp_discovery_place_related_cta_button" = "مشاهده";
+
+"pp_discovery_place_related_tag_header" = "به راهنماهایی با برچسب \"%s\"";
+
+"pp_discovery_place_related_tag_header_1" = "همچنین ممکن است شما،";
+
+"buy_btn_for_subscription_version_2" = "تمامی راهنماها تنها با %s د";
+
+"buy_btn_for_subscription_version_3" = "کلیه کاتالوگ ها با %s در ماه";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "دسترسی به کاتالوگ با %s در ماه";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "دسترسی به کاتالوگ با %s در سال";
+
+"subscription_screen_native_title_version_2" = "Access to guides with bookmarks!";
+
+"subscription_screen_native_message_version_2" = "برای هر سفر به بیش از 600 شهر و بیش از 100 کشور آماده باش";
+
+"catalog_no_internet_title" = "اتصال به اینترنت برقرار نیست";
+
+"catalog_no_internet_button" = "تلاش مجدد";
+
+"whatsnew_map_updates_title" = "بروزرسانی بسیار سریع ن";
+
+"whatsnew_map_updates_message" = "از این پس سرعت بروزرسانی اطلاعات دو برابر است";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "پارکینگ";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "دستگاه کارتخوان";
 
 "type.amenity.pharmacy" = "داروخانه";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "پست";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "میکده";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "دانشگاه";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "ماشین سیگار فروشی";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "شیر آب قابل شرب";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "بلوک";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "کنترل مرزی";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "ورودی";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "ورودی";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "اسانسور";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "پلکان";
 
 "type.barrier.toll_booth" = "گیشه عوارضی";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "گردشگری";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "اب";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "قبرستان";
 
 "type.landuse.cemetery.christian" = "قبرستان";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "کشتزار";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "دریاچه";
 

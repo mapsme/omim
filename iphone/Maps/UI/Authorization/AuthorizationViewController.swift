@@ -99,17 +99,16 @@ final class AuthorizationViewController: MWMViewController {
   }
 
   @IBAction private func phoneSignIn() {
-    dismiss(animated: true) {
-      let url = ViewModel.phoneAuthURL()!
-      let wv = WebViewController(authURL: url, onSuccessAuth: { (token: String?) in
-        self.process(token: token!, type: .phone)
-      }, onFailure: {
-        self.process(error: NSError(domain: kMapsmeErrorDomain, code: 0), type: .phone)
-        self.errorHandler?(.cancelled)
-      })
-
-      MapViewController.topViewController().navigationController?.pushViewController(wv!, animated: true)
-    }
+    let authVC = PhoneNumberAuthorizationViewController(success: { [unowned self] token in
+      self.dismiss(animated: true)
+      self.process(token: token!, type: .phone)
+    }, failure: { [unowned self] in
+      self.dismiss(animated: true)
+      self.process(error: NSError(domain: kMapsmeErrorDomain, code: 0), type: .phone)
+      self.errorHandler?(.cancelled)
+    })
+    let navVC = MWMNavigationController(rootViewController: authVC)
+    self.present(navVC, animated: true)
   }
   
   @IBOutlet private weak var phoneSignInButton: UIButton! {
@@ -154,8 +153,8 @@ final class AuthorizationViewController: MWMViewController {
   @IBOutlet private weak var privacyPolicyTextView: UITextView! {
     didSet {
       let htmlString = String(coreFormat: L("sign_agree_pp_gdpr"), arguments: [ViewModel.privacyPolicyLink()])
-      let attributes: [NSAttributedStringKey : Any] = [NSAttributedStringKey.font: UIFont.regular16(),
-                                                       NSAttributedStringKey.foregroundColor: UIColor.blackPrimaryText()]
+      let attributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font: UIFont.regular16(),
+                                                       NSAttributedString.Key.foregroundColor: UIColor.blackPrimaryText()]
       privacyPolicyTextView.attributedText = NSAttributedString.string(withHtml: htmlString,
                                                                        defaultAttributes: attributes)
       privacyPolicyTextView.delegate = self
@@ -165,8 +164,8 @@ final class AuthorizationViewController: MWMViewController {
   @IBOutlet private weak var termsOfUseTextView: UITextView! {
     didSet {
       let htmlString = String(coreFormat: L("sign_agree_tof_gdpr"), arguments: [ViewModel.termsOfUseLink()])
-      let attributes: [NSAttributedStringKey : Any] = [NSAttributedStringKey.font: UIFont.regular16(),
-                                                       NSAttributedStringKey.foregroundColor: UIColor.blackPrimaryText()]
+      let attributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font: UIFont.regular16(),
+                                                       NSAttributedString.Key.foregroundColor: UIColor.blackPrimaryText()]
       termsOfUseTextView.attributedText = NSAttributedString.string(withHtml: htmlString,
                                                                     defaultAttributes: attributes)
       termsOfUseTextView.delegate = self
@@ -176,8 +175,8 @@ final class AuthorizationViewController: MWMViewController {
   @IBOutlet private weak var latestNewsTextView: UITextView! {
     didSet {
       let text = L("sign_agree_news_gdpr")
-      let attributes: [NSAttributedStringKey : Any] = [NSAttributedStringKey.font: UIFont.regular16(),
-                                                       NSAttributedStringKey.foregroundColor: UIColor.blackPrimaryText()]
+      let attributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font: UIFont.regular16(),
+                                                       NSAttributedString.Key.foregroundColor: UIColor.blackPrimaryText()]
       latestNewsTextView.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
   }

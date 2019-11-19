@@ -6,6 +6,8 @@
 #include "geometry/point2d.hpp"
 #include "geometry/simplification.hpp"
 
+#include "indexer/feature_data.hpp"
+#include "indexer/feature_visibility.hpp"
 #include "indexer/scales.hpp"
 
 #include "base/assert.hpp"
@@ -13,22 +15,25 @@
 
 #include <cmath>
 #include <cstdint>
+#include <functional>
 #include <limits>
 #include <utility>
 #include <vector>
 
-class FeatureBuilder1;
-
 namespace feature
 {
+class FeatureBuilder;
+
 class CalculateMidPoints
 {
 public:
   using CellAndOffset = std::pair<uint64_t, uint64_t>;
+  using MinDrawableScalePolicy = std::function<int(TypesHolder const & types, m2::RectD limitRect)>;
 
-  CalculateMidPoints() = default;
+  CalculateMidPoints();
+  CalculateMidPoints(MinDrawableScalePolicy const & minDrawableScalePolicy);
 
-  void operator()(FeatureBuilder1 const & ft, uint64_t pos);
+  void operator()(FeatureBuilder const & ft, uint64_t pos);
   bool operator()(m2::PointD const & p);
 
   m2::PointD GetCenter() const;
@@ -42,6 +47,7 @@ private:
   size_t m_locCount = 0;
   size_t m_allCount = 0;
   uint8_t m_coordBits = serial::GeometryCodingParams().GetCoordBits();
+  MinDrawableScalePolicy m_minDrawableScalePolicy;
   std::vector<CellAndOffset> m_vec;
 };
 

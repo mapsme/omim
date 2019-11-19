@@ -1,14 +1,17 @@
 #include "software_renderer/feature_processor.hpp"
+
 #include "software_renderer/geometry_processors.hpp"
 #include "software_renderer/feature_styler.hpp"
 #include "software_renderer/cpu_drawer.hpp"
 
+#include "indexer/feature.hpp"
 #include "indexer/feature_impl.hpp"
 #include "indexer/feature_algo.hpp"
 
+#include "base/assert.hpp"
+
 namespace software_renderer
 {
-
 namespace
 {
   template <class TSrc> void assign_point(FeatureData & data, TSrc & src)
@@ -28,7 +31,7 @@ namespace
     ASSERT(!data.m_areas.empty(), ());
     data.m_areas.back().SetCenter(src.GetCenter());
   }
-}
+}  // namespace
 
 FeatureProcessor::FeatureProcessor(ref_ptr<CPUDrawer> drawer,
                                    m2::RectD const & r,
@@ -43,7 +46,7 @@ FeatureProcessor::FeatureProcessor(ref_ptr<CPUDrawer> drawer,
 //  ASSERT_GREATER(m_zoom, scales::GetUpperWorldScale(), ());
 }
 
-bool FeatureProcessor::operator()(FeatureType const & f)
+bool FeatureProcessor::operator()(FeatureType & f)
 {
   FeatureData data;
   data.m_id = f.GetID();
@@ -63,7 +66,7 @@ bool FeatureProcessor::operator()(FeatureType const & f)
 
   switch (data.m_styler.m_geometryType)
   {
-  case feature::GEOM_POINT:
+  case feature::GeomType::Point:
   {
     typedef one_point functor_t;
 
@@ -82,7 +85,7 @@ bool FeatureProcessor::operator()(FeatureType const & f)
     break;
   }
 
-  case feature::GEOM_AREA:
+  case feature::GeomType::Area:
   {
     typedef filter_screenpts_adapter<area_tess_points> functor_t;
 
@@ -107,7 +110,7 @@ bool FeatureProcessor::operator()(FeatureType const & f)
       break;
   }
 
-  case feature::GEOM_LINE:
+  case feature::GeomType::Line:
     {
       if (data.m_styler.m_hasPathText)
       {
@@ -165,5 +168,4 @@ bool FeatureProcessor::operator()(FeatureType const & f)
 
   return true;
 }
-
-}
+}  // namespace software_renderer

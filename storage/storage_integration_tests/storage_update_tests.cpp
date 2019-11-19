@@ -15,9 +15,11 @@
 
 #include "base/file_name_utils.hpp"
 
-#include "std/unique_ptr.hpp"
+#include <memory>
+#include <string>
 
 using namespace platform;
+using namespace std;
 using namespace storage;
 
 namespace
@@ -26,11 +28,11 @@ static FrameworkParams const kFrameworkParams(false /* m_enableLocalAds */, fals
 
 string const kCountriesTxtFile = COUNTRIES_FILE;
 
-string const kMwmVersion1 = "160316";
-size_t const kCountriesTxtFileSize1 = 353091;
+string const kMwmVersion1 = "190830";
+size_t const kCountriesTxtFileSize1 = 420632;
 
-string const kMwmVersion2 = "160317";
-size_t const kCountriesTxtFileSize2 = 348972;
+string const kMwmVersion2 = "190910";
+size_t const kCountriesTxtFileSize2 = 420634;
 
 string const kGroupCountryId = "Belarus";
 
@@ -92,14 +94,13 @@ UNIT_TEST(SmallMwms_Update_Test)
     Framework f(kFrameworkParams);
     auto & storage = f.GetStorage();
     string const version = strings::to_string(storage.GetCurrentDataVersion());
-    TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
     TEST_EQUAL(version, kMwmVersion1, ());
     auto onChangeCountryFn = [&](CountryId const & countryId) {
       if (!storage.IsDownloadInProgress())
         testing::StopEventLoop();
     };
     storage.Subscribe(onChangeCountryFn, onProgressFn);
-    storage.SetDownloadingUrlsForTesting({kTestWebServer});
+    storage.SetDownloadingServersForTesting({kTestWebServer});
 
     CountriesVec children;
     storage.GetChildren(kGroupCountryId, children);
@@ -129,14 +130,13 @@ UNIT_TEST(SmallMwms_Update_Test)
     Framework f(kFrameworkParams);
     auto & storage = f.GetStorage();
     string const version = strings::to_string(storage.GetCurrentDataVersion());
-    TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
     TEST_EQUAL(version, kMwmVersion2, ());
     auto onChangeCountryFn = [&](CountryId const & countryId) {
       if (!storage.IsDownloadInProgress())
         testing::StopEventLoop();
     };
     storage.Subscribe(onChangeCountryFn, onProgressFn);
-    storage.SetDownloadingUrlsForTesting({kTestWebServer});
+    storage.SetDownloadingServersForTesting({kTestWebServer});
 
     CountriesVec children;
     storage.GetChildren(kGroupCountryId, children);

@@ -1,12 +1,8 @@
 #import "MWMOpeningHoursLayoutHelper.h"
-#import "MWMCommon.h"
 #import "MWMOpeningHours.h"
 #import "MWMPlacePageData.h"
 #import "MWMTableViewCell.h"
 #import "SwiftBridge.h"
-
-#include <array>
-#include <vector>
 
 @interface MWMPlacePageData()
 

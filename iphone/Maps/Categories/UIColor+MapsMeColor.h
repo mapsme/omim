@@ -1,5 +1,7 @@
 #import "UIColor+PartnerColor.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface UIColor (MapsMeColor)
 
 + (UIColor *)primaryDark;
@@ -48,8 +50,23 @@
 + (UIColor *)ratingLightGreen;
 + (UIColor *)ratingGreen;
 + (UIColor *)border;
++ (UIColor *)speedLimitRed;
++ (UIColor *)speedLimitGeen;
++ (UIColor *)speedLimitWhite;
++ (UIColor *)speedLimitLightGray;
++ (UIColor *)speedLimitDarkGray;
++ (UIColor *)shadowColorBlue;
++ (UIColor *)shadowColorPurple;
++ (UIColor *)subscriptionCellBorder;
++ (UIColor *)subscriptionCellBackground;
++ (UIColor *)subscriptionCellTitle;
++ (UIColor *)discountBackground;
++ (UIColor *)bookmarkSubscriptionScrollBackground;
++ (UIColor *)bookmarkSubscriptionBackground;
++ (UIColor *)bookmarkSubscriptionFooterBackground;
 
 + (UIColor *)colorWithName:(NSString *)colorName;
++ (UIColor *)colorFromHexString:(NSString *)hexString;
 
 + (void)setNightMode:(BOOL)mode;
 + (BOOL)isNightMode;
@@ -60,3 +77,5 @@
 + (UIColor *)facebookButtonBackgroundDisabled;
 
 @end
+
+NS_ASSUME_NONNULL_END

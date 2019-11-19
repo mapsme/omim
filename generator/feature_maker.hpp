@@ -2,6 +2,7 @@
 
 #include "generator/feature_builder.hpp"
 #include "generator/feature_maker_base.hpp"
+#include "generator/intermediate_data.hpp"
 
 struct OsmElement;
 
@@ -14,6 +15,9 @@ class FeatureMakerSimple: public FeatureMakerBase
 {
 public:
   using FeatureMakerBase::FeatureMakerBase;
+
+  // FeatureMaker overrides:
+  std::shared_ptr<FeatureMakerBase> Clone() const override;
 
 protected:
   // FeatureMaker overrides:
@@ -32,6 +36,9 @@ class FeatureMaker : public FeatureMakerSimple
 {
 public:
   using FeatureMakerSimple::FeatureMakerSimple;
+
+  // FeatureMaker overrides:
+  std::shared_ptr<FeatureMakerBase> Clone() const override;
 
 private:
   // FeatureMaker overrides:

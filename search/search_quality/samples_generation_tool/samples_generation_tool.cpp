@@ -46,8 +46,8 @@ size_t constexpr kMaxSamplesPerMwm = 20;
 
 DEFINE_string(data_path, "", "Path to data directory (resources dir).");
 DEFINE_string(mwm_path, "", "Path to mwm files (writable dir).");
-DEFINE_string(out_buildings_path, "buildings.json", "Path to output file for buildings samples.");
-DEFINE_string(out_cafes_path, "cafes.json", "Path to output file for cafes samples.");
+DEFINE_string(out_buildings_path, "buildings.jsonl", "Path to output file for buildings samples.");
+DEFINE_string(out_cafes_path, "cafes.jsonl", "Path to output file for cafes samples.");
 DEFINE_double(max_distance_to_object, kMaxDistanceToObjectM,
               "Maximal distance from user position to object (meters).");
 DEFINE_double(min_viewport_size, kMinViewportSizeM, "Minimal size of viewport (meters).");
@@ -207,13 +207,13 @@ m2::PointD GenerateNearbyPosition(m2::PointD const & point)
 {
   auto const maxDistance = FLAGS_max_distance_to_object;
   uniform_real_distribution<double> dis(-maxDistance, maxDistance);
-  return MercatorBounds::GetSmPoint(point, dis(g_rng) /* dX */, dis(g_rng) /* dY */);
+  return mercator::GetSmPoint(point, dis(g_rng) /* dX */, dis(g_rng) /* dY */);
 }
 
 m2::RectD GenerateNearbyViewport(m2::PointD const & point)
 {
   uniform_real_distribution<double> dis(FLAGS_min_viewport_size, FLAGS_max_viewport_size);
-  return MercatorBounds::RectByCenterXYAndSizeInMeters(GenerateNearbyPosition(point), dis(g_rng));
+  return mercator::RectByCenterXYAndSizeInMeters(GenerateNearbyPosition(point), dis(g_rng));
 }
 
 bool GetBuildingInfo(FeatureType & ft, search::ReverseGeocoder const & coder, string & street)
@@ -429,7 +429,7 @@ int main(int argc, char * argv[])
     mwmInfo->GetRegionData().GetLanguages(mwmLangCodes);
 
     auto handle = dataSource.GetMwmHandleById(mwmId);
-    auto & value = *handle.GetValue<MwmValue>();
+    auto & value = *handle.GetValue();
     // WorldCoasts.
     if (!value.HasSearchIndex())
       continue;

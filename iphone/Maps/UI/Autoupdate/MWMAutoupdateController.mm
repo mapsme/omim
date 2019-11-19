@@ -1,17 +1,13 @@
 #import "MWMAutoupdateController.h"
 #import "MWMCircularProgress.h"
-#import "MWMCommon.h"
 #import "MWMFrameworkListener.h"
 #import "MWMStorage.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
-#import "UIButton+RuntimeAttributes.h"
-
-#include <unordered_set>
 
 namespace
 {
-string RootId() { return GetFramework().GetStorage().GetRootId(); }
+std::string RootId() { return GetFramework().GetStorage().GetRootId(); }
 enum class State
 {
   Downloading,

@@ -156,6 +156,12 @@ void ThreadPool::ShutdownAndJoin()
   }
   m_threads.clear();
 }
+
+bool ThreadPool::IsShutDown()
+{
+  lock_guard<mutex> lk(m_mu);
+  return m_shutdown;
+}
 }  // namespace delayed
 }  // namespace thread_pool
 }  // namespace base

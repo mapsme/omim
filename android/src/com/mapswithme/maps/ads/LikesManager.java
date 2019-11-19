@@ -1,16 +1,15 @@
 package com.mapswithme.maps.ads;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import android.util.SparseArray;
 
 import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.downloader.DownloaderFragment;
 import com.mapswithme.maps.downloader.MapManager;
-import com.mapswithme.maps.downloader.MigrationFragment;
 import com.mapswithme.maps.editor.EditorHostFragment;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.search.SearchFragment;
@@ -71,7 +70,6 @@ public enum LikesManager
     sFragments.add(SearchFragment.class);
     sFragments.add(EditorHostFragment.class);
     sFragments.add(DownloaderFragment.class);
-    sFragments.add(MigrationFragment.class);
   }
 
   private final boolean mIsNewUser = (Counters.getFirstInstallVersion() == BuildConfig.VERSION_CODE);

@@ -2,6 +2,8 @@
 
 #include "ugc/types.hpp"
 
+#include "indexer/search_string_utils.hpp"
+
 #include <iomanip>
 #include <limits>
 #include <sstream>
@@ -14,32 +16,32 @@ namespace
 {
 // See search/search_quality/scoring_model.py for details.  In short,
 // these coeffs correspond to coeffs in a linear model.
-double constexpr kDistanceToPivot = -1.0000000;
+double constexpr kDistanceToPivot = -0.6874177;
 double constexpr kRank = 1.0000000;
 // todo: (@t.yan) Adjust.
 double constexpr kPopularity = 0.0500000;
 // todo: (@t.yan) Adjust.
 double constexpr kRating = 0.0500000;
-double constexpr kFalseCats = -0.3691859;
-double constexpr kErrorsMade = -0.0579812;
-double constexpr kAllTokensUsed = 0.0000000;
+double constexpr kFalseCats = -1.0000000;
+double constexpr kErrorsMade = -0.1676639;
+double constexpr kMatchedFraction = 0.3178023;
+double constexpr kAllTokensUsed = 0.5873744;
 double constexpr kHasName = 0.5;
-
 double constexpr kNameScore[NameScore::NAME_SCORE_COUNT] = {
-  -0.7245815 /* Zero */,
-  0.1853727 /* Substring */,
-  0.2046046 /* Prefix */,
-  0.3346041 /* Full Match */
+  0.0152243 /* Zero */,
+  -0.0259815 /* Substring */,
+  -0.0287346 /* Prefix */,
+  0.0394918 /* Full Match */
 };
 double constexpr kType[Model::TYPE_COUNT] = {
-  -0.4458349 /* POI */,
-  -0.4458349 /* Building */,
-  -0.3001181 /* Street */,
-  -0.3299295 /* Unclassified */,
-  -0.3530548 /* Village */,
-  0.4506418 /* City */,
-  0.2889073 /* State */,
-  0.6893882 /* Country */
+  -0.2041635 /* POI */,
+  -0.2041635 /* Building */,
+  -0.1595715 /* Street */,
+  -0.1821077 /* Unclassified */,
+  -0.1371902 /* Village */,
+  0.1800898 /* City */,
+  0.2355436 /* State */,
+  0.2673996 /* Country */
 };
 
 // Coeffs sanity checks.
@@ -81,10 +83,13 @@ void RankingInfo::PrintCSVHeader(ostream & os)
      << ",Rating"
      << ",NameScore"
      << ",ErrorsMade"
+     << ",MatchedFraction"
      << ",SearchType"
      << ",PureCats"
      << ",FalseCats"
-     << ",AllTokensUsed";
+     << ",AllTokensUsed"
+     << ",IsCategorialRequest"
+     << ",HasName";
 }
 
 string DebugPrint(RankingInfo const & info)
@@ -99,6 +104,8 @@ string DebugPrint(RankingInfo const & info)
      << "]";
   os << ", m_nameScore:" << DebugPrint(info.m_nameScore);
   os << ", m_errorsMade:" << DebugPrint(info.m_errorsMade);
+  os << ", m_numTokens:" << info.m_numTokens;
+  os << ", m_matchedFraction:" << info.m_matchedFraction;
   os << ", m_type:" << DebugPrint(info.m_type);
   os << ", m_pureCats:" << info.m_pureCats;
   os << ", m_falseCats:" << info.m_falseCats;
@@ -117,7 +124,8 @@ void RankingInfo::ToCSV(ostream & os) const
   os << static_cast<int>(m_popularity) << ",";
   os << TransformRating(m_rating) << ",";
   os << DebugPrint(m_nameScore) << ",";
-  os << GetErrorsMade() << ",";
+  os << GetErrorsMadePerToken() << ",";
+  os << m_matchedFraction << ",";
   os << DebugPrint(m_type) << ",";
   os << m_pureCats << ",";
   os << m_falseCats << ",";
@@ -159,7 +167,8 @@ double RankingInfo::GetLinearModelRank() const
   {
     result += kType[m_type];
     result += kNameScore[nameScore];
-    result += kErrorsMade * GetErrorsMade();
+    result += kErrorsMade * GetErrorsMadePerToken();
+    result += kMatchedFraction * m_matchedFraction;
     result += (m_allTokensUsed ? 1 : 0) * kAllTokensUsed;
   }
   else
@@ -169,8 +178,19 @@ double RankingInfo::GetLinearModelRank() const
   return result;
 }
 
-size_t RankingInfo::GetErrorsMade() const
+// We build LevensteinDFA based on feature tokens to match query.
+// Feature tokens can be longer than query tokens that's why every query token can be
+// matched to feature token with maximal supported errors number.
+// As maximal errors number depends only on tokens number (not tokens length),
+// errorsMade per token is supposed to be a good metric.
+double RankingInfo::GetErrorsMadePerToken() const
 {
-  return m_errorsMade.IsValid() ? m_errorsMade.m_errorsMade : 0;
+  size_t static const kMaxErrorsPerToken =
+      GetMaxErrorsForTokenLength(numeric_limits<size_t>::max());
+  if (!m_errorsMade.IsValid())
+    return static_cast<double>(kMaxErrorsPerToken);
+
+  CHECK_GREATER(m_numTokens, 0, ());
+  return static_cast<double>(m_errorsMade.m_errorsMade) / static_cast<double>(m_numTokens);
 }
 }  // namespace search

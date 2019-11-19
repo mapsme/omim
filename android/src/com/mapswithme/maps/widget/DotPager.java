@@ -1,11 +1,12 @@
 package com.mapswithme.maps.widget;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,6 +47,11 @@ public class DotPager implements ViewPager.OnPageChangeListener
   private final Context mContext;
   @Nullable
   private final OnPageChangedListener mListener;
+  @StringRes
+  private final int mActiveDotDrawableResId;
+  @StringRes
+  private final int mInactiveDotDrawableResId;
+
 
   private DotPager(@NonNull Builder builder)
   {
@@ -55,6 +61,8 @@ public class DotPager implements ViewPager.OnPageChangeListener
     mIndicator = builder.mIndicatorContainer;
     mListener = builder.mListener;
     mDots = new ImageView[mAdapter.getCount()];
+    mActiveDotDrawableResId = builder.mActiveDotDrawableResId;
+    mInactiveDotDrawableResId = builder.mInactiveDotDrawableResId;
   }
 
   public void show()
@@ -72,7 +80,6 @@ public class DotPager implements ViewPager.OnPageChangeListener
   private void configurePager()
   {
     mPager.setAdapter(mAdapter);
-    mPager.clearOnPageChangeListeners();
     mPager.addOnPageChangeListener(this);
   }
 
@@ -119,7 +126,7 @@ public class DotPager implements ViewPager.OnPageChangeListener
       if (ThemeUtils.isNightTheme())
         dotDrawable = isCurPage ? R.drawable.news_marker_active_night : R.drawable.news_marker_inactive_night;
       else
-        dotDrawable = isCurPage ? R.drawable.news_marker_active : R.drawable.news_marker_inactive;
+        dotDrawable = isCurPage ? mActiveDotDrawableResId : mInactiveDotDrawableResId;
       mDots[i].setImageResource(dotDrawable);
     }
   }
@@ -148,6 +155,10 @@ public class DotPager implements ViewPager.OnPageChangeListener
     private final Context mContext;
     @Nullable
     private OnPageChangedListener mListener;
+    @DrawableRes
+    private int mActiveDotDrawableResId = R.drawable.news_marker_active;
+    @DrawableRes
+    private int mInactiveDotDrawableResId = R.drawable.news_marker_inactive;
 
     public Builder(@NonNull Context context, @NonNull ViewPager pager, @NonNull PagerAdapter adapter)
     {
@@ -165,6 +176,20 @@ public class DotPager implements ViewPager.OnPageChangeListener
     public Builder setPageChangedListener(@Nullable OnPageChangedListener listener)
     {
       mListener = listener;
+      return this;
+    }
+
+    @NonNull
+    public Builder setActiveDotDrawable(@DrawableRes int resId)
+    {
+      mActiveDotDrawableResId = resId;
+      return this;
+    }
+
+    @NonNull
+    public Builder setInactiveDotDrawable(@DrawableRes int resId)
+    {
+      mInactiveDotDrawableResId = resId;
       return this;
     }
 

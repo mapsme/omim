@@ -11,17 +11,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.AnyRes;
-import android.support.annotation.AttrRes;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DimenRes;
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -38,6 +27,17 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.AnyRes;
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 
@@ -278,6 +278,12 @@ public final class UiUtils
   {
     tv.setText(text);
     showIf(!TextUtils.isEmpty(text), tv);
+  }
+
+  public static void clearTextAndHide(TextView tv)
+  {
+    tv.setText("");
+    hide(tv);
   }
 
   public static void showHomeUpButton(Toolbar toolbar)
@@ -526,6 +532,12 @@ public final class UiUtils
                   rect.bottom += bottom;
                   parent.setTouchDelegate(new TouchDelegate(rect, view));
                 });
+  }
+
+  @ColorInt
+  public static int getNotificationColor(@NonNull Context context)
+  {
+    return context.getResources().getColor(R.color.notification);
   }
 
   // utility class

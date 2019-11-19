@@ -29,12 +29,15 @@ std::string DebugPrint(Message::Type msgType)
   case Message::Type::GuiLayerRecached: return "GuiLayerRecached";
   case Message::Type::GuiRecache: return "GuiRecache";
   case Message::Type::GuiLayerLayout: return "GuiLayerLayout";
+  case Message::Type::UpdateMyPositionRoutingOffset: return "UpdateMyPositionRoutingOffset";
   case Message::Type::MapShapesRecache: return "MapShapesRecache";
   case Message::Type::MapShapes: return "MapShapes";
   case Message::Type::ChangeMyPositionMode: return "ChangeMyPositionMode";
   case Message::Type::CompassInfo: return "CompassInfo";
   case Message::Type::GpsInfo: return "GpsInfo";
   case Message::Type::SelectObject: return "SelectObject";
+  case Message::Type::CheckSelectionGeometry: return "CheckSelectionGeometry";
+  case Message::Type::FlushSelectionGeometry: return "FlushSelectionGeometry";
   case Message::Type::AddSubroute: return "AddSubroute";
   case Message::Type::RemoveSubroute: return "RemoveSubroute";
   case Message::Type::PrepareSubrouteArrows: return "PrepareSubrouteArrows";

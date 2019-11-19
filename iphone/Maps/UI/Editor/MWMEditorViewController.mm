@@ -10,7 +10,6 @@
 #import "MWMEditorAdditionalNamesTableViewController.h"
 #import "MWMEditorCategoryCell.h"
 #import "MWMEditorCellType.h"
-#import "MWMEditorCommon.h"
 #import "MWMEditorNotesFooter.h"
 #import "MWMEditorSelectTableViewCell.h"
 #import "MWMEditorSwitchTableViewCell.h"
@@ -23,12 +22,7 @@
 #import "MapViewController.h"
 #import "SwiftBridge.h"
 
-#include "Framework.h"
-
-#include "editor/osm_editor.hpp"
-
-#include "indexer/classificator.hpp"
-#include "indexer/feature_source.hpp"
+#include <CoreApi/Framework.h>
 
 #include "platform/localization.hpp"
 
@@ -54,14 +48,14 @@ typedef NS_ENUM(NSUInteger, MWMEditorSection) {
   MWMEditorSectionButton
 };
 
-vector<MWMEditorCellType> const kSectionCategoryCellTypes{MWMEditorCellTypeCategory};
-vector<MWMEditorCellType> const kSectionAddressCellTypes{
+std::vector<MWMEditorCellType> const kSectionCategoryCellTypes{MWMEditorCellTypeCategory};
+std::vector<MWMEditorCellType> const kSectionAddressCellTypes{
     MWMEditorCellTypeStreet, MWMEditorCellTypeBuilding, MWMEditorCellTypeZipCode};
 
-vector<MWMEditorCellType> const kSectionNoteCellTypes{MWMEditorCellTypeNote};
-vector<MWMEditorCellType> const kSectionButtonCellTypes{MWMEditorCellTypeReportButton};
+std::vector<MWMEditorCellType> const kSectionNoteCellTypes{MWMEditorCellTypeNote};
+std::vector<MWMEditorCellType> const kSectionButtonCellTypes{MWMEditorCellTypeReportButton};
 
-using MWMEditorCellTypeClassMap = map<MWMEditorCellType, Class>;
+using MWMEditorCellTypeClassMap = std::map<MWMEditorCellType, Class>;
 MWMEditorCellTypeClassMap const kCellType2Class{
     {MWMEditorCellTypeCategory, [MWMEditorCategoryCell class]},
     {MWMEditorCellTypeAdditionalName, [MWMEditorAdditionalNameTableViewCell class]},
@@ -89,8 +83,8 @@ Class cellClass(MWMEditorCellType cellType)
   return it->second;
 }
 
-void cleanupAdditionalLanguages(vector<osm::LocalizedName> const & names,
-                                vector<NSInteger> & newAdditionalLanguages)
+void cleanupAdditionalLanguages(std::vector<osm::LocalizedName> const & names,
+                                std::vector<NSInteger> & newAdditionalLanguages)
 {
   newAdditionalLanguages.erase(
       remove_if(newAdditionalLanguages.begin(), newAdditionalLanguages.end(),
@@ -103,11 +97,11 @@ void cleanupAdditionalLanguages(vector<osm::LocalizedName> const & names,
       newAdditionalLanguages.end());
 }
 
-vector<MWMEditorCellType> cellsForAdditionalNames(osm::NamesDataSource const & ds,
-                                                  vector<NSInteger> const & newAdditionalLanguages,
+std::vector<MWMEditorCellType> cellsForAdditionalNames(osm::NamesDataSource const & ds,
+                                                  std::vector<NSInteger> const & newAdditionalLanguages,
                                                   BOOL showAdditionalNames)
 {
-  vector<MWMEditorCellType> res;
+  std::vector<MWMEditorCellType> res;
   auto const allNamesSize = ds.names.size() + newAdditionalLanguages.size();
   if (allNamesSize != 0)
   {
@@ -127,10 +121,10 @@ vector<MWMEditorCellType> cellsForAdditionalNames(osm::NamesDataSource const & d
   return res;
 }
 
-vector<MWMEditorCellType> cellsForProperties(vector<osm::Props> const & props)
+std::vector<MWMEditorCellType> cellsForProperties(std::vector<osm::Props> const & props)
 {
   using namespace osm;
-  vector<MWMEditorCellType> res;
+  std::vector<MWMEditorCellType> res;
   for (auto const p : props)
   {
     switch (p)
@@ -154,7 +148,7 @@ vector<MWMEditorCellType> cellsForProperties(vector<osm::Props> const & props)
   return res;
 }
 
-void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableView * tv)
+void registerCellsForTableView(std::vector<MWMEditorCellType> const & cells, UITableView * tv)
 {
   for (auto const c : cells)
     [tv registerWithCellClass:cellClass(c)];
@@ -181,10 +175,10 @@ void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableV
 
 @implementation MWMEditorViewController
 {
-  vector<MWMEditorSection> m_sections;
-  map<MWMEditorSection, vector<MWMEditorCellType>> m_cells;
+  std::vector<MWMEditorSection> m_sections;
+  std::map<MWMEditorSection, std::vector<MWMEditorCellType>> m_cells;
   osm::EditableMapObject m_mapObject;
-  vector<NSInteger> m_newAdditionalLanguages;
+  std::vector<NSInteger> m_newAdditionalLanguages;
 }
 
 - (void)viewDidLoad
@@ -308,7 +302,7 @@ void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableV
 
 - (void)showDropDown
 {
-  MWMDropDown * dd = [[MWMDropDown alloc] initWithSuperview:[MapViewController sharedController].view];
+  MWMDropDown * dd = [[MWMDropDown alloc] initWithSuperview:[MapViewController sharedController].controlsView];
   [dd showWithMessage:L(@"editor_edits_sent_message")];
 }
 
@@ -557,7 +551,7 @@ void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableV
       NSInteger const newAdditionalNameIndex = indexPath.row - localizedNames.size();
       NSInteger const langCode = m_newAdditionalLanguages[newAdditionalNameIndex];
 
-      string name;
+      std::string name;
       // Default name can be changed in advanced mode.
       if (langCode == StringUtf8Multilang::kDefaultCode)
       {
@@ -869,7 +863,7 @@ void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableV
   NSAssert(changeText != nil, @"String can't be nil!");
   NSIndexPath * indexPath = [self.tableView indexPathForRowAtPoint:cell.center];
   MWMEditorCellType const cellType = [self cellTypeForIndexPath:indexPath];
-  string const val = changeText.UTF8String;
+  std::string const val = changeText.UTF8String;
   BOOL isFieldValid = YES;
   switch (cellType)
   {
@@ -955,7 +949,7 @@ void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableV
 
   auto placeDoesntExistAction = ^{
     [self.alertController presentPlaceDoesntExistAlertWithBlock:^(NSString * additionalMessage) {
-      string const additional = additionalMessage.length ? additionalMessage.UTF8String : "";
+      std::string const additional = additionalMessage.length ? additionalMessage.UTF8String : "";
       [Statistics logEvent:kStatEditorProblemReport
             withParameters:@{
               kStatEditorMWMName : @(fid.GetMwmName().c_str()),
@@ -1031,13 +1025,13 @@ void registerCellsForTableView(vector<MWMEditorCellType> const & cells, UITableV
 
 #pragma mark - MWMCuisineEditorProtocol
 
-- (vector<string>)selectedCuisines { return m_mapObject.GetCuisines(); }
-- (void)setSelectedCuisines:(vector<string> const &)cuisines { m_mapObject.SetCuisines(cuisines); }
+- (std::vector<std::string>)selectedCuisines { return m_mapObject.GetCuisines(); }
+- (void)setSelectedCuisines:(std::vector<std::string> const &)cuisines { m_mapObject.SetCuisines(cuisines); }
 #pragma mark - MWMStreetEditorProtocol
 
 - (void)setNearbyStreet:(osm::LocalizedStreet const &)street { m_mapObject.SetStreet(street); }
 - (osm::LocalizedStreet const &)currentStreet { return m_mapObject.GetStreet(); }
-- (vector<osm::LocalizedStreet> const &)nearbyStreets { return m_mapObject.GetNearbyStreets(); }
+- (std::vector<osm::LocalizedStreet> const &)nearbyStreets { return m_mapObject.GetNearbyStreets(); }
 #pragma mark - Segue
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

@@ -8,10 +8,10 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.cocosw.bottomsheet.BottomSheet;
@@ -225,7 +225,7 @@ public enum SharingHelper
       case BookmarkSharingResult.FILE_ERROR:
         DialogUtils.showAlertDialog(context, R.string.dialog_routing_system_error,
                                     R.string.bookmarks_error_message_share_general);
-        String catName = BookmarkManager.INSTANCE.getCategoryName(result.getCategoryId());
+        String catName = BookmarkManager.INSTANCE.getCategoryById(result.getCategoryId()).getName();
         LOGGER.e(TAG, "Failed to share bookmark category '" + catName + "', error code: "
                       + result.getCode());
         break;

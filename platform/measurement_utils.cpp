@@ -62,6 +62,20 @@ double ToSpeedKmPH(double speed, measurement_utils::Units units)
   UNREACHABLE();
 }
 
+bool FormatDistanceWithLocalization(double m, string & res, char const * high, char const * low)
+{
+  auto units = Units::Metric;
+  TryGet(settings::kMeasurementUnits, units);
+
+  /// @todo Put string units resources.
+  switch (units)
+  {
+  case Units::Imperial: return FormatDistanceImpl(m, res, high, low, 1609.344, 0.3048);
+  case Units::Metric: return FormatDistanceImpl(m, res, high, low, 1000.0, 1.0);
+  }
+  UNREACHABLE();
+}
+  
 bool FormatDistance(double m, string & res)
 {
   auto units = Units::Metric;
@@ -96,7 +110,7 @@ string FormatLatLonAsDMSImpl(double value, char positive, char negative, int dac
   // Seconds
   d = d * 60.0;
   if (dac == 0)
-    d = rounds(d);
+    d = SignedRound(d);
 
   d = modf(d, &i);
   sstream << setw(2) << i;
@@ -107,7 +121,7 @@ string FormatLatLonAsDMSImpl(double value, char positive, char negative, int dac
   sstream << "″";
 
   // This condition is too heavy for production purposes (but more correct).
-  //if (base::rounds(value * 3600.0 * pow(10, dac)) != 0)
+  //if (base::SignedRound(value * 3600.0 * pow(10, dac)) != 0)
   if (!AlmostEqualULPs(value, 0.0))
   {
     char postfix = positive;
@@ -134,13 +148,13 @@ void FormatLatLonAsDMS(double lat, double lon, string & latText, string & lonTex
 
 void FormatMercatorAsDMS(m2::PointD const & mercator, string & lat, string & lon, int dac)
 {
-  lat = FormatLatLonAsDMSImpl(MercatorBounds::YToLat(mercator.y), 'N', 'S', dac);
-  lon = FormatLatLonAsDMSImpl(MercatorBounds::XToLon(mercator.x), 'E', 'W', dac);
+  lat = FormatLatLonAsDMSImpl(mercator::YToLat(mercator.y), 'N', 'S', dac);
+  lon = FormatLatLonAsDMSImpl(mercator::XToLon(mercator.x), 'E', 'W', dac);
 }
 
 string FormatMercatorAsDMS(m2::PointD const & mercator, int dac)
 {
-  return FormatLatLonAsDMS(MercatorBounds::YToLat(mercator.y), MercatorBounds::XToLon(mercator.x), dac);
+  return FormatLatLonAsDMS(mercator::YToLat(mercator.y), mercator::XToLon(mercator.x), dac);
 }
 
 // @TODO take into account decimal points or commas as separators in different locales
@@ -162,13 +176,13 @@ void FormatLatLon(double lat, double lon, string & latText, string & lonText, in
 
 string FormatMercator(m2::PointD const & mercator, int dac)
 {
-  return FormatLatLon(MercatorBounds::YToLat(mercator.y), MercatorBounds::XToLon(mercator.x), dac);
+  return FormatLatLon(mercator::YToLat(mercator.y), mercator::XToLon(mercator.x), dac);
 }
 
 void FormatMercator(m2::PointD const & mercator, string & lat, string & lon, int dac)
 {
-  lat = to_string_dac(MercatorBounds::YToLat(mercator.y), dac);
-  lon = to_string_dac(MercatorBounds::XToLon(mercator.x), dac);
+  lat = to_string_dac(mercator::YToLat(mercator.y), dac);
+  lon = to_string_dac(mercator::XToLon(mercator.x), dac);
 }
 
 string FormatAltitude(double altitudeInMeters)
@@ -209,6 +223,17 @@ string FormatSpeed(double metersPerSecond, Units units)
   {
   case Units::Imperial: unitsPerHour = MetersToMiles(metersPerSecond) * kSecondsPerHour; break;
   case Units::Metric: unitsPerHour = metersPerSecond * kSecondsPerHour / metersPerKilometer; break;
+  }
+  return ToStringPrecision(unitsPerHour, unitsPerHour >= 10.0 ? 0 : 1);
+}
+  
+string FormatSpeedLimit(double kilometersPerHour, Units units)
+{
+  double unitsPerHour;
+  switch (units)
+  {
+      case Units::Imperial: unitsPerHour = 0.621371192 * kilometersPerHour; break;
+      case Units::Metric: unitsPerHour = kilometersPerHour; break;
   }
   return ToStringPrecision(unitsPerHour, unitsPerHour >= 10.0 ? 0 : 1);
 }

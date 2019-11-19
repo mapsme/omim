@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "Nincs aktív előfizetés";
 
-"subscription_terms" = "A vásárlás megerősítésekor az összeg az iTunes számládra lesz terhelve. Az előfizetés automatikusan megújul, ha csak az automatikus megújítást 24 órával a jelenlegi időszak vége előtt ki nem kapcsolod. A számlád az előfizetésednek megfelelően a jelenlegi időszak lejárta előtti 24 órában lesz megterhelve. Az automatikus megújítást az Apple ID fiókod beállításaidban az előfizetés bármely szakaszában kikapcsolhatod.";
-
 "subscriptions_title" = "Előfizetések";
 
 "manage_subscription" = "Előfizetés kezelése";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "A fájl sérült és nem lehet feltölteni. Kérjük, más fájlt töltsön fel.";
 
-"buy_btn" = "%s- ért vásárolni";
+"buy_btn" = "Vedd meg ezt ennyiért: %s";
 
 "download_guide_progress" = "Az útikalauz töltődik…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Nem lehet útvonalat tervezni. Kérjük határozz meg más útvonal lehetőségeket";
 
-"dialog_routing_download_files_carplay" = "Nincs meg minden térkép egy útvonal tervezéséhez. Kérjük töltsd le a mobiltelefonodra őket";
+"dialog_routing_download_files_carplay" = "Útvonal létrehozásához töltsd le a hiányzó térképeket az eszközre";
 
 "dialog_routing_system_error_carplay" = "Hiba történt. Kérjük indítsd újra az alkalmazást";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Válassz egy hotelt a térképeb";
+
+"popup_booking_download_guides_title" = "Foglaltál egy hotelben?";
+
+"popup_booking_download_guides_message" = "Tervezd meg az útvonaladat a naprakész útikönyvekkel a MAPS.ME-től";
+
+"popup_mwm_download_guides_title" = "Offline városi útikönyvek";
+
+"popup_mwm_download_guides_cta" = "Válassz egyet";
+
+"popup_mwm_download_guides_cta_1" = "Vess rá egy pillantást";
+
+"gallery_pp_download_guides_offline_title" = "Tervezd meg a nyaralásodat MAPS.ME-vel!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Ne mulassz el semmit az útikönyvekkel, amiket tapasztalt utazók készítettek";
+
+"gallery_pp_download_guides_offline_cta" = "Kapcsold be az internetet";
+
+"gallery_pp_download_guides_title" = "Útikönyvek";
+
+"native_screen_subscription_title" = "Korlátlan hozzáférés 2000+ utazási útikönyvhöz!";
+
+"native_screen_subscription_message" = "Egy emlékezetes nyaralás, bármivel és bárkivel is utazol";
+
+"annual_subscription_title" = "Éves";
+
+"montly_subscription_title" = "Havi";
+
+"annual_subscription_message" = "12 hónap korlátlan hozzáférés";
+
+"montly_subscription_message" = "1 hónap korlátlan hozzáférés";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Köszönjük az előfizetést!";
+
+"subscription_success_dialog_message" = "Most már korlátlan hozzáférésed van a teljes útikönyv katalógushoz";
+
+"renewal_screen_title" = "Az előfizetésed lejárt";
+
+"renewal_screen_message" = "Minden, az előfizetéssel letöltött útikönyv törölve lesz. Szeretnéd folytatni az előfizetést és megtartani őket?";
+
+"renewal_screen_button_restore" = "Igen, megújítás";
+
+"renewal_screen_button_cancel" = "Nem, útikönyvek törlése";
+
+"subscription_error_ping_title" = "Vásárlás sikertelen";
+
+"subscription_error_message" = "A szolgáltatás jelenleg nem elérhető a régiódban. Kérjük próbálja újra később";
+
+"subscription_error_button" = "Értem";
+
+"timeout_error_title" = "Hoppá, lejárt az idő!";
+
+"timeout_error_message" = "A szervereink nem válaszolnak. Kérjük ellenírizd az internetkapcsolatot és próbáld újra.";
+
+"per_month" = "/hó";
+
+"per_year" = "/év";
+
+"buy_btn_for_subscription" = "Korlátlan hozzáférés %s-től";
+
+"buy_btn_for_subscription_1" = "Az ÖSSZES útikönyv megvásárlása %s-ért";
+
+"buy_btn_for_subscription_ios_only_mo" = "Korlátlan hozzáférés %s/hó-ért";
+
+"buy_btn_for_subscription_ios_only_year" = "Korlátlan hozzáférés %s/év-ért";
+
+"subscription_terms_guides" = "A fizetség az iTunes fiókodat fogja megterhelni a fizetés megerősítése után. Az előfizetés automatikusan meg fog újulni, hacsak az automatikus megújítás ki nem lesz kapcsolva legalább 24 órával a jelenlegi időszak vége előtt. A fiókod meg lesz terhelve a megújítási tervednek megfelelően, 24 órával a jelenlegi időszak vége előtt. Kezelheted vagy bármikor kikapcsolhatod a vásárlásod automatikus megújítás funkcióját az Apple ID fiókbeállításaidban Az előfizetéssel letöltött útikönyveket azok lejárati idejéig használhatod. Harminc nappal az előfizetés lejárta után a könyvjelzőkkel ellátott útikönyvek automatikusan törölve lesznek.";
+
+"subscription_terms" = "A vásárlás megerősítésekor az összeg az iTunes számládra lesz terhelve. Az előfizetés automatikusan megújul, ha csak az automatikus megújítást 24 órával a jelenlegi időszak vége előtt ki nem kapcsolod. A számlád az előfizetésednek megfelelően a jelenlegi időszak lejárta előtti 24 órában lesz megterhelve. Az automatikus megújítást az Apple ID fiókod beállításaidban az előfizetés bármely szakaszában kikapcsolhatod.";
+
+"whatsnew_carplay_title" = "MAPS.ME autós navigáció CarPlayben!";
+
+"whatsnew_carplay_message" = "Könyvjelzők, keresés, traffipax és útvonalválasztási lehetőség offline is elérhető";
+
+"whatsnew_subscription_title" = "Az egész világ az előfizetésed által!";
+
+"whatsnew_subscription_message" = "A korlátlan hozzáférés az útikönyvkatalógushoz sokkal gazdaságosabb, mint az egyszeri vásárlás";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Navigációs frissítés";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Fejlesztettük az útvonaltervezést olyan pontokhoz, melyek távol esnek az utaktól";
+
+"avoid_unpaved_carplay_1" = "Nem földút";
+
+"avoid_unpaved_carplay_2" = "Földút kerülése";
+
+"avoid_ferry_carplay_1" = "Komp nélkül";
+
+"avoid_ferry_carplay_2" = "Kompok kerülése";
+
+"avoid_tolls_carplay_1" = "Nincs útdíj";
+
+"avoid_tolls_carplay_2" = "Útdíj kerülése";
+
+"speedcams_alert_title_carplay_1" = "Traffipaxok";
+
+"speedcams_alert_title_carplay_2" = "Sebességjelzés";
+
+"download_map_carplay" = "Kérjük, töltsd le a térképeket a MAPS.ME alkalmazásban az eszközödre";
+
+"carplay_roundabout_exit" = "%s kijárat";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Rendezd…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Könyvelzők rendezése";
+
+/* iOS */
+"sort_default" = "Alapértelmezés szerint";
+
+"sort_type" = "Típus szerint";
+
+"sort_distance" = "Távolság szerint";
+
+"sort_date" = "Dátum szerint";
+
+/* Android */
+"by_default" = "Alapértelmezés szerint";
+
+/* Android */
+"by_type" = "Típus szerint";
+
+/* Android */
+"by_distance" = "Távolság szerint";
+
+/* Android */
+"by_date" = "Dátum szerint";
+
+"week_ago_sorttype" = "Egy hete";
+
+"month_ago_sorttype" = "Egy hónapja";
+
+"moremonth_ago_sorttype" = "Több mint egy hónapja";
+
+"moreyear_ago_sorttype" = "Több mint egy éve";
+
+"near_me_sorttype" = "Hozzám közel";
+
+"others_sorttype" = "Más";
+
+"food_places" = "Étel";
+
+"tourist_places" = "Látnivalók";
+
+"museums" = "Múzeumok";
+
+"parks" = "Parkok";
+
+"swim_places" = "Úszás";
+
+"mountains" = "Hegyek";
+
+"animals" = "Állatok";
+
+"hotels" = "Hotelek";
+
+"buildings" = "Épületek";
+
+"money" = "Pénz";
+
+"shops" = "Üzletek";
+
+"parkings" = "Parkolók";
+
+"fuel_places" = "Benzinkutak";
+
+"water" = "Víz";
+
+"medicine" = "Gyógyszer";
+
+"search_in_the_list" = "Keresés a listában";
+
+"view_on_map_bookmarks" = "Térképen";
+
+"more_bookmarks" = "Továbbiak…";
+
+"no_items_found" = "Nincs találat";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Lista szerkesztése";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Lista törlése";
+
+"whatsnew_bookmarks_search_sort_title" = "A könyvjelzők rendezése kényelmes utazást tesz lehetővé";
+
+"whatsnew_bookmarks_search_sort_message" = "Rendezze kedvenc helyeit kategóriánként, helyenként és időrendbe, és találja meg őket gyorsan a nevük alapján";
+
+"popup_subscription_success_map_title" = "Hohó, előfizettél!";
+
+"popup_subscription_success_map_message" = "Most már felfedezheted a legjobb turisztikai dolgokat a MAPS.ME katalógusban";
+
+"popup_subscription_success_map_start_button" = "Böngészés megkezdése";
+
+"popup_subscription_success_map_not_now_button" = "Ne most";
+
+"religious_places" = "Vallási helyek";
+
+"subscription_terms_android" = "Amikor megerősíted a vásárlást, a fizetség a Google Play fiókodat fogja megterhelni. Az előfizetés automatikusan megújul, hacsak az automatikus megújulás funkció ki nem lesz kapcsolva legalább 24 órával a jelenlegi időszak vége előtt. A fiókod a megújítási terved értelmében a jelenlegi időszak vége előtt 24 órán belül meg lesz terhelve. Az automatikus megújítás funkciót kezelheted vagy kikapcsolhatod vásárlás után a Fiókbeállításokban. Az előfizetéssel letöltött útikönyveket csak annak lejárati idejéig használhatod. A letöltött útikönyvek 30 nappal az előfizetés lejárati dátuma után automatikusan törölve lesznek.";
+
+"select_list" = "Lista kiválasztása";
+
+"pp_discovery_place_related_header" = "Ez a hely az útikönyv katalógusban van";
+
+"pp_discovery_place_related_header_1" = "Ez a hely kiemelt az útikönyvben";
+
+"pp_discovery_place_related_cta_button" = "Megnézés";
+
+"pp_discovery_place_related_tag_header" = "„%s” címkéjű útikönyvek";
+
+"pp_discovery_place_related_tag_header_1" = "Tetszhet még";
+
+"buy_btn_for_subscription_version_2" = "Az ÖSSZES útikönyv csak %s/hó";
+
+"buy_btn_for_subscription_version_3" = "A teljes katalógus %s/hó";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Hozzáférés a katalógushoz %s/hó";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Hozzáférés a katalógushoz %s/év";
+
+"subscription_screen_native_title_version_2" = "Férj hozzá az útikönyvekhez könyvjelzőkkel!";
+
+"subscription_screen_native_message_version_2" = "Állj készen bármilyen utazásra 600+ városba és 100+ országba";
+
+"catalog_no_internet_title" = "Nincs internetkapcsolat";
+
+"catalog_no_internet_button" = "Próbáld újra";
+
+"whatsnew_map_updates_title" = "Reaktív térkép frissítések";
+
+"whatsnew_map_updates_message" = "Mostantól kétszer olyan gyorsan frissítjük az adatokat";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Parkoló";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Fizető terminál";
 
 "type.amenity.pharmacy" = "Gyógyszertár";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Posta";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Kocsma";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Egyetem";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Cigarettaautomata";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Vízvételi pont";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Blokk";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Határállomás";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Bejárat";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Kapu";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Sorompó";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Átjáró";
 
 "type.barrier.toll_booth" = "Díjfizető kapu";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Ásatás";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Víz";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Temető";
 
 "type.landuse.cemetery.christian" = "Temető";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Mező";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Tó";
 

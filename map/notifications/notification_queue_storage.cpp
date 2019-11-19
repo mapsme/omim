@@ -32,7 +32,7 @@ bool QueueStorage::Save(std::vector<int8_t> const & src)
     return false;
   }
 
-  return base::WriteToTempAndRenameToFile(GetFilePath(), [&src](string const & fileName)
+  return base::WriteToTempAndRenameToFile(GetFilePath(), [&src](std::string const & fileName)
   {
     try
     {
@@ -64,9 +64,8 @@ bool QueueStorage::Load(std::vector<int8_t> & dst)
   catch (FileReader::Exception const &)
   {
     dst.clear();
-    return false;
   }
 
-  return true;
+  return !dst.empty();
 }
 }  // namespace notifications

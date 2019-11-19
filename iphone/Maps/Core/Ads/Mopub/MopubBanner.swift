@@ -46,7 +46,7 @@ final class MopubBanner: NSObject, Banner {
 
   var type: BannerType { return .mopub(bannerID) }
   var mwmType: MWMBannerType { return type.mwmType }
-  var bannerID: String! { return placementID }
+  var bannerID: String { return placementID }
 
   var statisticsDescription: [String: String] {
     return [kStatBanner: bannerID, kStatProvider: kStatMopub]
@@ -59,11 +59,11 @@ final class MopubBanner: NSObject, Banner {
     let center = NotificationCenter.default
     center.addObserver(self,
                        selector: #selector(enterForeground),
-                       name: .UIApplicationWillEnterForeground,
+                       name: UIApplication.willEnterForegroundNotification,
                        object: nil)
     center.addObserver(self,
                        selector: #selector(enterBackground),
-                       name: .UIApplicationDidEnterBackground,
+                       name: UIApplication.didEnterBackgroundNotification,
                        object: nil)
   }
 

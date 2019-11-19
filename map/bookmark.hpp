@@ -5,6 +5,8 @@
 
 #include "kml/types.hpp"
 
+#include "search/region_address_getter.hpp"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -19,6 +21,9 @@ public:
 
   void SetData(kml::BookmarkData const & data);
   kml::BookmarkData const & GetData() const;
+
+  search::ReverseGeocoder::RegionAddress const & GetAddress() const;
+  void SetAddress(search::ReverseGeocoder::RegionAddress const & address);
 
   bool HasCreationAnimation() const override;
 
@@ -58,6 +63,8 @@ public:
 private:
   kml::BookmarkData m_data;
   kml::MarkGroupId m_groupId;
+  search::ReverseGeocoder::RegionAddress m_address;
+  std::string m_customImageName;
 };
 
 class BookmarkCategory : public UserMarkLayer
@@ -89,6 +96,7 @@ public:
 
   bool IsCategoryFromCatalog() const;
   std::string GetCatalogDeeplink() const;
+  std::string GetCatalogPublicLink() const;
 
   void SetAuthor(std::string const & name, std::string const & id);
   void SetAccessRules(kml::AccessRules accessRules);

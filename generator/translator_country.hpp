@@ -1,6 +1,6 @@
 #pragma once
 
-#include "generator/emitter_interface.hpp"
+#include "generator/processor_interface.hpp"
 #include "generator/tag_admixer.hpp"
 #include "generator/translator.hpp"
 
@@ -13,7 +13,7 @@ struct GenerateInfo;
 
 namespace cache
 {
-class IntermediateDataReader;
+class IntermediateData;
 }  // namespace cache
 
 namespace generator
@@ -22,32 +22,25 @@ namespace generator
 class TranslatorCountry : public Translator
 {
 public:
-  explicit TranslatorCountry(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
-                             feature::GenerateInfo const & info);
+  explicit TranslatorCountry(std::shared_ptr<FeatureProcessorInterface> const & processor,
+                             std::shared_ptr<cache::IntermediateData> const & cache,
+                             feature::GenerateInfo const & info, bool needMixTags = false);
 
   // TranslatorInterface overrides:
   void Preprocess(OsmElement & element) override;
 
-private:
+  std::shared_ptr<TranslatorInterface> Clone() const override;
+
+  void Merge(TranslatorInterface const & other) override;
+  void MergeInto(TranslatorCountry & other) const override;
+
+protected:
+  using Translator::Translator;
+
   void CollectFromRelations(OsmElement const & element);
 
-  TagAdmixer m_tagAdmixer;
-  TagReplacer m_tagReplacer;
-};
-
-// The TranslatorCountryWithAds class implements translator for building countries with advertising.
-class TranslatorCountryWithAds : public TranslatorCountry
-{
-public:
-  explicit TranslatorCountryWithAds(std::shared_ptr<EmitterInterface> emitter,
-                                    cache::IntermediateDataReader & cache,
-                                    feature::GenerateInfo const & info);
-
-  // TranslatorInterface overrides:
-  void Preprocess(OsmElement & element) override;
-  bool Finish() override;
-
-private:
-  OsmTagMixer m_osmTagMixer;
+  std::shared_ptr<TagAdmixer> m_tagAdmixer;
+  std::shared_ptr<TagReplacer> m_tagReplacer;
+  std::shared_ptr<OsmTagMixer> m_osmTagMixer;
 };
 }  // namespace generator

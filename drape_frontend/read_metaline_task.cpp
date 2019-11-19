@@ -6,7 +6,7 @@
 #include "drape_frontend/metaline_manager.hpp"
 #include "drape_frontend/threads_commutator.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/reader_wrapper.hpp"
 #include "coding/varint.hpp"
 
@@ -35,7 +35,7 @@ std::vector<MetalineData> ReadMetalinesFromFile(MwmSet::MwmId const & mwmId)
   try
   {
     std::vector<MetalineData> model;
-    ModelReaderPtr reader = FilesContainerR(mwmId.GetInfo()->GetLocalFile().GetPath(MapOptions::Map))
+    ModelReaderPtr reader = FilesContainerR(mwmId.GetInfo()->GetLocalFile().GetPath(MapFileType::Map))
                                             .GetReader(METALINES_FILE_TAG);
     ReaderSrc src(reader.GetPtr());
     auto const version = ReadPrimitiveFromSource<uint8_t>(src);
@@ -100,7 +100,7 @@ std::map<FeatureID, std::vector<m2::PointD>> ReadPoints(df::MapDataProvider & mo
     return {};
 
   return result;
-};
+}
 
 std::vector<m2::PointD> MergePoints(std::map<FeatureID, std::vector<m2::PointD>> const & points,
                                     std::vector<FeatureID> const & featuresOrder)

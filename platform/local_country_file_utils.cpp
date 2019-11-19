@@ -11,40 +11,22 @@
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
+#include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/cctype.hpp"
-#include "std/regex.hpp"
-#include "std/sstream.hpp"
-#include "std/unique_ptr.hpp"
-#include "std/unordered_set.hpp"
+#include <algorithm>
+#include <cctype>
+#include <memory>
+#include <regex>
+#include <sstream>
+#include <unordered_set>
 
 #include "defines.hpp"
 
+using namespace std;
+
 namespace platform
 {
-namespace migrate
-{
-// Set of functions to support migration between different versions of MWM
-// with totaly incompatible formats.
-// 160302 - Migrate to small single file MWM
-uint32_t constexpr kMinRequiredVersion = 160302;
-bool NeedMigrate()
-{
-  uint32_t version;
-  if (!settings::Get("LastMigration", version))
-    return true;
-
-  if (version >= kMinRequiredVersion)
-    return false;
-
-  return true;
-}
-
-void SetMigrationFlag() { settings::Set("LastMigration", kMinRequiredVersion); }
-}  // namespace migrate
-
 namespace
 {
 char const kBitsExt[] = ".bftsegbits";
@@ -133,9 +115,9 @@ void FindAllDiffsInDirectory(string const & dir, vector<LocalCountryFile> & diff
 }
 
 string GetFilePath(int64_t version, string const & dataDir, CountryFile const & countryFile,
-                   MapOptions options)
+                   MapFileType type)
 {
-  string const filename = GetFileName(countryFile.GetName(), options, version);
+  string const filename = GetFileName(countryFile.GetName(), type);
   string const dir = GetDataDirFullPath(dataDir);
   if (version == 0)
     return base::JoinPath(dir, filename);
@@ -151,9 +133,10 @@ void DeleteDownloaderFilesForCountry(int64_t version, CountryFile const & countr
 void DeleteDownloaderFilesForCountry(int64_t version, string const & dataDir,
                                      CountryFile const & countryFile)
 {
-  for (MapOptions opt : {MapOptions::Map, MapOptions::CarRouting, MapOptions::Diff})
+  for (size_t type = 0; type < base::Underlying(MapFileType::Count); ++type)
   {
-    string const path = GetFileDownloadPath(version, dataDir, countryFile, opt);
+    string const path = GetFileDownloadPath(version, dataDir, countryFile,
+                                            static_cast<MapFileType>(type));
     ASSERT(strings::EndsWith(path, READY_FILE_EXTENSION), ());
     Platform::RemoveFileIfExists(path);
     Platform::RemoveFileIfExists(path + RESUME_FILE_EXTENSION);
@@ -162,7 +145,7 @@ void DeleteDownloaderFilesForCountry(int64_t version, string const & dataDir,
 
   // Delete the diff that was downloaded but wasn't applied.
   {
-    string const path = GetFilePath(version, dataDir, countryFile, MapOptions::Diff);
+    string const path = GetFilePath(version, dataDir, countryFile, MapFileType::Diff);
     Platform::RemoveFileIfExists(path);
   }
 }
@@ -199,16 +182,6 @@ void FindAllLocalMapsInDirectoryAndCleanup(string const & directory, int64_t ver
     base::GetNameWithoutExt(name);
     names.insert(name);
     LocalCountryFile localFile(directory, CountryFile(name), version);
-
-    // Delete Brazil.mwm and Japan.mwm maps, because they were
-    // replaced with smaller regions after osrm routing
-    // implementation.
-    if (name == "Japan" || name == "Brazil")
-    {
-      localFile.SyncWithDisk();
-      localFile.DeleteFromDisk(MapOptions::MapWithCarRouting);
-      continue;
-    }
 
     localFiles.push_back(localFile);
   }
@@ -274,8 +247,7 @@ void FindAllLocalMapsAndCleanup(int64_t latestVersion, string const & dataDir,
   // World and WorldCoasts can be stored in app bundle or in resources
   // directory, thus it's better to get them via Platform.
   string const world(WORLD_FILE_NAME);
-  string const worldCoasts(migrate::NeedMigrate() ? WORLD_COASTS_OBSOLETE_FILE_NAME
-                                                  : WORLD_COASTS_FILE_NAME);
+  string const worldCoasts(WORLD_COASTS_FILE_NAME);
   for (string const & file : {world, worldCoasts})
   {
     auto i = localFiles.begin();
@@ -293,7 +265,7 @@ void FindAllLocalMapsAndCleanup(int64_t latestVersion, string const & dataDir,
 
       // Assume that empty path means the resource file.
       LocalCountryFile worldFile{string(), CountryFile(file), version::ReadVersionDate(reader)};
-      worldFile.m_files = MapOptions::Map;
+      worldFile.m_files[base::Underlying(MapFileType::Map)] = 1;
       if (i != localFiles.end())
       {
         // Always use resource World files instead of local on disk.
@@ -353,24 +325,22 @@ shared_ptr<LocalCountryFile> PreparePlaceForCountryFiles(int64_t version, string
   return make_shared<LocalCountryFile>(directory, countryFile, version);
 }
 
-string GetFileDownloadPath(int64_t version, CountryFile const & countryFile, MapOptions options)
+string GetFileDownloadPath(int64_t version, CountryFile const & countryFile, MapFileType type)
 {
-  return GetFileDownloadPath(version, string(), countryFile, options);
+  return GetFileDownloadPath(version, string(), countryFile, type);
 }
 
 string GetFileDownloadPath(int64_t version, string const & dataDir, CountryFile const & countryFile,
-                           MapOptions options)
+                           MapFileType type)
 {
-  string const readyFile =
-      GetFileName(countryFile.GetName(), options, version) + READY_FILE_EXTENSION;
+  string const readyFile = GetFileName(countryFile.GetName(), type) + READY_FILE_EXTENSION;
   string const dir = GetDataDirFullPath(dataDir);
   if (version == 0)
     return base::JoinPath(dir, readyFile);
   return base::JoinPath(dir, strings::to_string(version), readyFile);
 }
 
-unique_ptr<ModelReader> GetCountryReader(platform::LocalCountryFile const & file,
-                                         MapOptions options)
+unique_ptr<ModelReader> GetCountryReader(platform::LocalCountryFile const & file, MapFileType type)
 {
   Platform & platform = GetPlatform();
   // See LocalCountryFile comment for explanation.
@@ -379,7 +349,7 @@ unique_ptr<ModelReader> GetCountryReader(platform::LocalCountryFile const & file
     return platform.GetReader(file.GetCountryName() + DATA_FILE_EXTENSION,
                               GetSpecialFilesSearchScope());
   }
-  return platform.GetReader(file.GetPath(options), "f");
+  return platform.GetReader(file.GetPath(type), "f");
 }
 
 // static

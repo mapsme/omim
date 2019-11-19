@@ -31,9 +31,9 @@ public:
     TransitKeyStop,
     SpeedCamera,
     RoadWarning,
-    RoadWarningFirstFerry,
     RoadWarningFirstDirty,
     RoadWarningFirstToll,
+    RoadWarningFirstFerry,
   };
 
   enum Type : uint32_t
@@ -152,4 +152,4 @@ private:
   ColoredSymbolZoomInfo m_coloredSymbols;
 };
 
-string DebugPrint(UserMark::Type type);
+std::string DebugPrint(UserMark::Type type);

@@ -97,6 +97,11 @@ public:
       else
         MatchBuildingsWithStreets(child, parent, std::forward<Fn>(fn));
       break;
+    case Model::TYPE_SUBURB:
+      // todo(@t.yan): match pois and buildings with suburbs
+      ASSERT(child.m_type == Model::TYPE_STREET, ("Invalid child layer type:", child.m_type));
+      MatchStreetsWithSuburbs(child, parent, std::forward<Fn>(fn));
+      break;
     }
   }
 
@@ -142,7 +147,7 @@ private:
       {
         auto const center = feature::GetCenter(*buildingFt, FeatureType::WORST_GEOMETRY);
         buildingRects.emplace_back(
-            MercatorBounds::RectByCenterXYAndSizeInMeters(center, kBuildingRadiusMeters),
+            mercator::RectByCenterXYAndSizeInMeters(center, kBuildingRadiusMeters),
             i /* id */);
       }
       else
@@ -173,15 +178,19 @@ private:
     for (size_t i = 0; i < pois.size(); ++i)
     {
       m_context->ForEachFeature(
-          MercatorBounds::RectByCenterXYAndSizeInMeters(poiCenters[i].m_point, kBuildingRadiusMeters),
+          mercator::RectByCenterXYAndSizeInMeters(poiCenters[i].m_point,
+                                                  kBuildingRadiusMeters),
           [&](FeatureType & ft) {
-            if (m_postcodes && !m_postcodes->HasBit(ft.GetID().m_index))
+            if (m_postcodes && !m_postcodes->HasBit(ft.GetID().m_index) &&
+                !m_postcodes->HasBit(GetMatchingStreet(ft)))
+            {
               return;
+            }
             if (house_numbers::HouseNumbersMatch(strings::MakeUniString(ft.GetHouseNumber()),
                                                  queryParse))
             {
               double const distanceM =
-                  MercatorBounds::DistanceOnEarth(feature::GetCenter(ft), poiCenters[i].m_point);
+                  mercator::DistanceOnEarth(feature::GetCenter(ft), poiCenters[i].m_point);
               if (distanceM < kBuildingRadiusMeters)
                 fn(pois[i], ft.GetID().m_index);
             }
@@ -230,8 +239,8 @@ private:
       // Any point is good enough here, and feature::GetCenter would re-read the geometry.
       if (streetFt->GetPointsCount() > 0)
       {
-        inflationRect = MercatorBounds::RectByCenterXYAndSizeInMeters(streetFt->GetPoint(0),
-                                                                      0.5 * kStreetRadiusMeters);
+        inflationRect = mercator::RectByCenterXYAndSizeInMeters(streetFt->GetPoint(0),
+                                                                0.5 * kStreetRadiusMeters);
       }
 
       for (size_t j = 0; j + 1 < streetFt->GetPointsCount(); ++j)
@@ -294,21 +303,21 @@ private:
     ParseQuery(child.m_subQuery, child.m_lastTokenIsPrefix, queryParse);
 
     uint32_t numFilterInvocations = 0;
-    auto houseNumberFilter = [&](uint32_t id, std::unique_ptr<FeatureType> & feature,
-                                 bool & loaded) -> bool {
+    auto houseNumberFilter = [&](uint32_t houseId, uint32_t streetId,
+                                 std::unique_ptr<FeatureType> & feature, bool & loaded) -> bool {
       ++numFilterInvocations;
       if ((numFilterInvocations & 0xFF) == 0)
         BailIfCancelled(m_cancellable);
 
-      if (std::binary_search(buildings.begin(), buildings.end(), id))
+      if (std::binary_search(buildings.begin(), buildings.end(), houseId))
         return true;
 
-      if (m_postcodes && !m_postcodes->HasBit(id))
+      if (m_postcodes && !m_postcodes->HasBit(houseId) && !m_postcodes->HasBit(streetId))
         return false;
 
       if (!loaded)
       {
-        feature = GetByIndex(id);
+        feature = GetByIndex(houseId);
         loaded = feature != nullptr;
       }
 
@@ -323,13 +332,14 @@ private:
     };
 
     std::unordered_map<uint32_t, bool> cache;
-    auto cachingHouseNumberFilter = [&](uint32_t id, std::unique_ptr<FeatureType> & feature,
+    auto cachingHouseNumberFilter = [&](uint32_t houseId, uint32_t streetId,
+                                        std::unique_ptr<FeatureType> & feature,
                                         bool & loaded) -> bool {
-      auto const it = cache.find(id);
+      auto const it = cache.find(houseId);
       if (it != cache.cend())
         return it->second;
-      bool const result = houseNumberFilter(id, feature, loaded);
-      cache[id] = result;
+      bool const result = houseNumberFilter(houseId, streetId, feature, loaded);
+      cache[houseId] = result;
       return result;
     };
 
@@ -345,7 +355,7 @@ private:
       {
         std::unique_ptr<FeatureType> feature;
         bool loaded = false;
-        if (!cachingHouseNumberFilter(houseId, feature, loaded))
+        if (!cachingHouseNumberFilter(houseId, streetId, feature, loaded))
           continue;
 
         if (!loaded)
@@ -358,6 +368,18 @@ private:
           fn(houseId, streetId);
       }
     }
+  }
+
+  template <typename Fn>
+  void MatchStreetsWithSuburbs(FeaturesLayer const & child, FeaturesLayer const & parent, Fn && fn)
+  {
+    // We have pre-matched streets from geocoder.
+    auto const & streets = *child.m_sortedFeatures;
+    CHECK_EQUAL(parent.m_sortedFeatures->size(), 1, ());
+    auto const & suburb = parent.m_sortedFeatures->front();
+
+    for (auto const & street : streets)
+      fn(street, suburb);
   }
 
   // Returns id of a street feature corresponding to a |houseId|/|houseFeature|, or

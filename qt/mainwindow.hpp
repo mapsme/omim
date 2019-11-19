@@ -47,8 +47,10 @@ class MainWindow : public QMainWindow, location::LocationObserver
   QAction * m_pSearchAction = nullptr;
   QAction * m_trafficEnableAction = nullptr;
   QAction * m_bookmarksAction = nullptr;
+  QAction * m_rulerAction = nullptr;
   QAction * m_selectionCityBoundariesMode = nullptr;
   QAction * m_selectionCityRoadsMode = nullptr;
+  QAction * m_selectionMwmsBordersMode = nullptr;
   QToolButton * m_routePointsToolButton = nullptr;
   QAction * m_selectStartRoutePoint = nullptr;
   QAction * m_selectFinishRoutePoint = nullptr;
@@ -72,7 +74,7 @@ public:
   static void SetDefaultSurfaceFormat(bool apiOpenGLES3);
 
 protected:
-  string GetIniFile();
+  std::string GetIniFile();
 
   void OnLocationError(location::TLocationError errorCode) override;
   void OnLocationUpdated(location::GpsInfo const & info) override;
@@ -112,9 +114,11 @@ protected Q_SLOTS:
   void OnSwitchSelectionMode();
   void OnSwitchCityBoundariesSelectionMode();
   void OnSwitchCityRoadsSelectionMode();
+  void OnSwitchMwmsBordersSelectionMode();
   void OnClearSelection();
 
   void OnTrafficEnabled();
+  void OnRulerEnabled();
   void OnStartPointSelected();
   void OnFinishPointSelected();
   void OnIntermediatePointSelected();

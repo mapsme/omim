@@ -9,8 +9,8 @@
 
 #include "base/file_name_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/unique_ptr.hpp"
+#include <algorithm>
+#include <string>
 
 #include "defines.hpp"
 
@@ -19,7 +19,7 @@ using namespace storage;
 
 namespace
 {
-string const kCountryId = "Germany"; // Germany has 3-levels hierachy
+std::string const kCountryId = "Germany";  // Germany has 3-levels hierachy
 
 int GetLevelCount(Storage & storage, CountryId const & countryId)
 {
@@ -27,10 +27,9 @@ int GetLevelCount(Storage & storage, CountryId const & countryId)
   storage.GetChildren(countryId, children);
   int level = 0;
   for (auto const & child : children)
-    level = max(level, GetLevelCount(storage, child));
+    level = std::max(level, GetLevelCount(storage, child));
   return 1 + level;
 }
-
 } // namespace
 
 UNIT_TEST(SmallMwms_3levels_Test)
@@ -41,12 +40,11 @@ UNIT_TEST(SmallMwms_3levels_Test)
 
   Framework f(FrameworkParams(false /* m_enableLocalAds */, false /* m_enableDiffs */));
   auto & storage = f.GetStorage();
-  string const version = strings::to_string(storage.GetCurrentDataVersion());
-  TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
+  std::string const version = strings::to_string(storage.GetCurrentDataVersion());
 
   TEST_EQUAL(3, GetLevelCount(storage, kCountryId), ());
 
-  string const mapDir = base::JoinPath(platform.WritableDir(), version);
+  std::string const mapDir = base::JoinPath(platform.WritableDir(), version);
 
   auto onProgressFn = [&](CountryId const & countryId, LocalAndRemoteSize const & mapSize) {};
 
@@ -56,7 +54,7 @@ UNIT_TEST(SmallMwms_3levels_Test)
   };
 
   storage.Subscribe(onChangeCountryFn, onProgressFn);
-  storage.SetDownloadingUrlsForTesting({kTestWebServer});
+  storage.SetDownloadingServersForTesting({kTestWebServer});
 
   NodeAttrs attrs;
   storage.GetNodeAttrs(kCountryId, attrs);

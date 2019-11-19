@@ -2,8 +2,8 @@ package com.mapswithme.maps.purchase;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.Purchase;
@@ -84,7 +84,7 @@ abstract class AbstractPurchaseController<V, B, UiCallback extends PurchaseCallb
   }
 
   @Override
-  public void queryPurchaseDetails()
+  public void queryProductDetails()
   {
     if (mProductIds == null)
       throw new IllegalStateException("Product ids must be non-null!");
@@ -158,7 +158,7 @@ abstract class AbstractPurchaseController<V, B, UiCallback extends PurchaseCallb
     }
 
     @Override
-    public void onPurchaseDetailsLoaded(@NonNull List<SkuDetails> details)
+    public void onProductDetailsLoaded(@NonNull List<SkuDetails> details)
     {
       if (getUiCallback() != null)
         getUiCallback().onProductDetailsLoaded(details);
@@ -172,7 +172,7 @@ abstract class AbstractPurchaseController<V, B, UiCallback extends PurchaseCallb
     }
 
     @Override
-    public void onPurchaseDetailsFailure()
+    public void onProductDetailsFailure()
     {
       if (getUiCallback() != null)
         getUiCallback().onProductDetailsFailure();

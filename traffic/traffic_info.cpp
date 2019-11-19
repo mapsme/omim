@@ -10,7 +10,7 @@
 
 #include "coding/bit_streams.hpp"
 #include "coding/elias_coder.hpp"
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/reader.hpp"
 #include "coding/url_encode.hpp"
 #include "coding/varint.hpp"
@@ -23,16 +23,17 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/limits.hpp"
-#include "std/sstream.hpp"
-#include "std/string.hpp"
+#include <algorithm>
+#include <limits>
+#include <sstream>
+#include <string>
 
 #include "defines.hpp"
-
 #include "private.h"
 
 #include "3party/Alohalytics/src/alohalytics.h"
+
+using namespace std;
 
 namespace traffic
 {
@@ -103,7 +104,7 @@ TrafficInfo::TrafficInfo(MwmSet::MwmId const & mwmId, int64_t currentDataVersion
     LOG(LWARNING, ("Attempt to create a traffic info for dead mwm."));
     return;
   }
-  string const mwmPath = mwmId.GetInfo()->GetLocalFile().GetPath(MapOptions::Map);
+  string const mwmPath = mwmId.GetInfo()->GetLocalFile().GetPath(MapFileType::Map);
   try
   {
     FilesContainerR rcont(mwmPath);

@@ -25,8 +25,7 @@ namespace df
 {
 namespace
 {
-int const kPositionOffsetY = 104;
-int const kPositionOffsetYIn3D = 104;
+int const kPositionRoutingOffsetY = 104;
 double const kGpsBearingLifetimeSec = 5.0;
 double const kMinSpeedThresholdMps = 1.0;
 
@@ -152,7 +151,7 @@ MyPositionController::MyPositionController(Params && params, ref_ptr<DrapeNotifi
   , m_autoScale3d(m_autoScale2d)
   , m_lastGPSBearing(false)
   , m_lastLocationTimestamp(0.0)
-  , m_positionYOffset(kPositionOffsetY)
+  , m_positionRoutingOffsetY(kPositionRoutingOffsetY)
   , m_isDirtyViewport(false)
   , m_isDirtyAutoZoom(false)
   , m_isPendingAnimation(false)
@@ -162,7 +161,6 @@ MyPositionController::MyPositionController(Params && params, ref_ptr<DrapeNotifi
   , m_positionIsObsolete(false)
   , m_allowToFollowAfterObsoletePosition(true)
   , m_needBlockAutoZoom(false)
-  , m_notFollowAfterPending(false)
   , m_locationWaitingNotifyId(DrapeNotifier::kInvalidId)
   , m_routingNotFollowNotifyId(DrapeNotifier::kInvalidId)
   , m_blockAutoZoomNotifyId(DrapeNotifier::kInvalidId)
@@ -195,7 +193,6 @@ void MyPositionController::UpdatePosition()
 void MyPositionController::OnUpdateScreen(ScreenBase const & screen)
 {
   m_pixelRect = screen.PixelRectIn3d();
-  m_positionYOffset = screen.isPerspective() ? kPositionOffsetYIn3D : kPositionOffsetY;
   if (m_visiblePixelRect.IsEmptyInterior())
     m_visiblePixelRect = m_pixelRect;
 }
@@ -241,7 +238,7 @@ void MyPositionController::DragStarted()
 
   m_allowToFollowAfterObsoletePosition = false;
   if (m_mode == location::PendingPosition)
-    m_notFollowAfterPending = true;
+    ChangeMode(location::NotFollowNoPosition);
 }
 
 void MyPositionController::DragEnded(m2::PointD const & distance)
@@ -261,7 +258,7 @@ void MyPositionController::ScaleStarted()
 
   m_allowToFollowAfterObsoletePosition = false;
   if (m_mode == location::PendingPosition)
-    m_notFollowAfterPending = true;
+    ChangeMode(location::NotFollowNoPosition);
 }
 
 void MyPositionController::ScaleEnded()
@@ -282,7 +279,7 @@ void MyPositionController::Rotated()
   m_allowToFollowAfterObsoletePosition = false;
 
   if (m_mode == location::PendingPosition)
-    m_notFollowAfterPending = true;
+    ChangeMode(location::NotFollowNoPosition);
   else if (m_mode == location::FollowAndRotate)
     m_wasRotationInScaling = true;
 }
@@ -349,7 +346,6 @@ void MyPositionController::NextMode(ScreenBase const & screen)
   // Skip switching to next mode while we are waiting for position.
   if (IsWaitingForLocation())
   {
-    m_notFollowAfterPending = false;
     m_desiredInitMode = location::Follow;
 
     alohalytics::LogEvent(kAlohalyticsClickEvent,
@@ -362,7 +358,6 @@ void MyPositionController::NextMode(ScreenBase const & screen)
   // Start looking for location.
   if (m_mode == location::NotFollowNoPosition)
   {
-    m_pendingTimer.Reset();
     ResetNotification(m_locationWaitingNotifyId);
     ChangeMode(location::PendingPosition);
     return;
@@ -410,11 +405,11 @@ void MyPositionController::OnLocationUpdate(location::GpsInfo const & info, bool
   m2::PointD const oldPos = GetDrawablePosition();
   double const oldAzimut = GetDrawableAzimut();
 
-  m2::RectD const rect = MercatorBounds::MetersToXY(info.m_longitude, info.m_latitude,
-                                                    info.m_horizontalAccuracy);
+  m2::RectD const rect =
+      mercator::MetersToXY(info.m_longitude, info.m_latitude, info.m_horizontalAccuracy);
   // Use FromLatLon instead of rect.Center() since in case of large info.m_horizontalAccuracy
   // there is significant difference between the real location and the estimated one.
-  m_position = MercatorBounds::FromLatLon(info.m_latitude, info.m_longitude);
+  m_position = mercator::FromLatLon(info.m_latitude, info.m_longitude);
   m_errorRadius = rect.SizeX() * 0.5;
   m_horizontalAccuracy = info.m_horizontalAccuracy;
 
@@ -457,26 +452,15 @@ void MyPositionController::OnLocationUpdate(location::GpsInfo const & info, bool
     m_positionIsObsolete = false;
   }
 
-  // If we are on the start, the first known location is obsolete, the new one has come and
-  // we didn't touch the map. In this case we allow to go from NotFollow to Follow.
-  bool canChangeNotFollowMode = false;
-  if (m_allowToFollowAfterObsoletePosition && !m_notFollowAfterPending &&
-      previousPositionIsObsolete && !m_positionIsObsolete)
-  {
-    canChangeNotFollowMode = true;
-    m_allowToFollowAfterObsoletePosition = false;
-  }
-
   if (!m_isPositionAssigned)
   {
     // If the position was never assigned, the new mode will be desired one except the case when
-    // we touch the map during the pending of position. In this case the new mode will be NotFollow to
-    // prevent spontaneous map snapping.
+    // we touch the map during the pending of position. In this case the current mode must be
+    // NotFollowNoPosition, new mode will be NotFollow to prevent spontaneous map snapping.
     location::EMyPositionMode newMode = m_desiredInitMode;
-    if (m_notFollowAfterPending && m_mode == location::PendingPosition)
+    if (m_mode == location::NotFollowNoPosition)
     {
       ResetRoutingNotFollowTimer();
-      m_notFollowAfterPending = false;
       newMode = location::NotFollow;
     }
     ChangeMode(newMode);
@@ -495,8 +479,7 @@ void MyPositionController::OnLocationUpdate(location::GpsInfo const & info, bool
       }
     }
   }
-  else if (m_mode == location::PendingPosition ||
-          (m_mode == location::NotFollow && canChangeNotFollowMode))
+  else if (m_mode == location::PendingPosition)
   {
     if (m_isInRouting)
     {
@@ -505,35 +488,37 @@ void MyPositionController::OnLocationUpdate(location::GpsInfo const & info, bool
     }
     else
     {
-      if (m_notFollowAfterPending && m_mode == location::PendingPosition)
+      ChangeMode(location::Follow);
+      if (m_hints.m_isFirstLaunch)
       {
-        // Here we prevent to go to Follow mode in the case when we touch the map
-        // during the pending of position.
-        ResetRoutingNotFollowTimer();
-        m_notFollowAfterPending = false;
-        ChangeMode(location::NotFollow);
+        if (!AnimationSystem::Instance().AnimationExists(Animation::Object::MapPlane))
+          ChangeModelView(m_position, kDoNotChangeZoom);
       }
       else
       {
-        ChangeMode(location::Follow);
-        if (m_hints.m_isFirstLaunch)
+        if (GetZoomLevel(screen, m_position, m_errorRadius) <= kMaxScaleZoomLevel)
         {
-          if (!AnimationSystem::Instance().AnimationExists(Animation::Object::MapPlane))
-            ChangeModelView(m_position, kDoNotChangeZoom);
+          m2::PointD const size(m_errorRadius, m_errorRadius);
+          ChangeModelView(m2::RectD(m_position - size, m_position + size));
         }
         else
         {
-          if (GetZoomLevel(screen, m_position, m_errorRadius) <= kMaxScaleZoomLevel)
-          {
-            m2::PointD const size(m_errorRadius, m_errorRadius);
-            ChangeModelView(m2::RectD(m_position - size, m_position + size));
-          }
-          else
-          {
-            ChangeModelView(m_position, kMaxScaleZoomLevel);
-          }
+          ChangeModelView(m_position, kMaxScaleZoomLevel);
         }
       }
+    }
+  }
+  else if (m_mode == location::NotFollow)
+  {
+    // If we are on the start, the first known location is obsolete, the new one has come and
+    // we didn't touch the map. In this case we allow to go from NotFollow to Follow.
+    if (!m_hints.m_isFirstLaunch && m_allowToFollowAfterObsoletePosition &&
+        previousPositionIsObsolete && !m_positionIsObsolete)
+    {
+      ChangeMode(location::Follow);
+      ChangeModelView(m_position, kDoNotChangeZoom);
+
+      m_allowToFollowAfterObsoletePosition = false;
     }
   }
   else if (m_mode == location::NotFollowNoPosition)
@@ -571,7 +556,6 @@ void MyPositionController::LoseLocation()
 
   if (m_mode == location::Follow || m_mode == location::FollowAndRotate)
   {
-    m_pendingTimer.Reset();
     ResetNotification(m_locationWaitingNotifyId);
     ChangeMode(location::PendingPosition);
   }
@@ -679,6 +663,16 @@ void MyPositionController::ChangeMode(location::EMyPositionMode newMode)
   if (m_isInRouting && (m_mode != newMode) && (newMode == location::FollowAndRotate))
     ResetBlockAutoZoomTimer();
 
+  if (newMode == location::PendingPosition)
+  {
+    m_pendingTimer.Reset();
+    m_pendingStarted = true;
+  }
+  else if (newMode != location::NotFollowNoPosition)
+  {
+    m_pendingStarted = false;
+  }
+
   m_mode = newMode;
   if (m_modeChangeCallback != nullptr)
     m_modeChangeCallback(m_mode, m_isInRouting);
@@ -702,7 +696,9 @@ void MyPositionController::StopLocationFollow()
   m_desiredInitMode = location::NotFollow;
 
   if (m_mode == location::PendingPosition)
-    m_notFollowAfterPending = true;
+    ChangeMode(location::NotFollowNoPosition);
+
+  m_allowToFollowAfterObsoletePosition = false;
 
   ResetRoutingNotFollowTimer();
 }
@@ -800,7 +796,12 @@ m2::PointD MyPositionController::GetRotationPixelCenter() const
 m2::PointD MyPositionController::GetRoutingRotationPixelCenter() const
 {
   return {m_visiblePixelRect.Center().x,
-          m_visiblePixelRect.maxY() - m_positionYOffset * VisualParams::Instance().GetVisualScale()};
+          m_visiblePixelRect.maxY() - m_positionRoutingOffsetY * VisualParams::Instance().GetVisualScale()};
+}
+
+void MyPositionController::UpdateRoutingOffsetY(bool useDefault, int offsetY)
+{
+  m_positionRoutingOffsetY = useDefault ? kPositionRoutingOffsetY : offsetY + Arrow3d::GetMaxBottomSize();
 }
 
 m2::PointD MyPositionController::GetDrawablePosition()
@@ -928,11 +929,16 @@ void MyPositionController::DeactivateRouting()
 
 void MyPositionController::CheckIsWaitingForLocation()
 {
-  if (IsWaitingForLocation())
+  if (IsWaitingForLocation() || m_mode == location::NotFollowNoPosition)
   {
     CHECK_ON_TIMEOUT(m_locationWaitingNotifyId, kMaxPendingLocationTimeSec, CheckIsWaitingForLocation);
-    if (m_pendingTimer.ElapsedSeconds() >= kMaxPendingLocationTimeSec)
+    if (m_pendingStarted && m_pendingTimer.ElapsedSeconds() >= kMaxPendingLocationTimeSec)
+    {
+      m_pendingStarted = false;
       ChangeMode(location::NotFollowNoPosition);
+      if (m_listener)
+        m_listener->PositionPendingTimeout();
+    }
   }
 }
 

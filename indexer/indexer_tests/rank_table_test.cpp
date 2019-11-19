@@ -9,7 +9,7 @@
 #include "platform/local_country_file.hpp"
 #include "platform/platform.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/file_writer.hpp"
 #include "coding/internal/file_data.hpp"
 #include "coding/writer.hpp"
@@ -87,7 +87,7 @@ UNIT_TEST(RankTableBuilder_EndToEnd)
 
   platform::LocalCountryFile localFile =
       platform::LocalCountryFile::MakeForTesting("minsk-pass-copy");
-  TEST(localFile.OnDisk(MapOptions::Map), ());
+  TEST(localFile.OnDisk(MapFileType::Map), ());
 
   vector<uint8_t> ranks;
   {

@@ -10,6 +10,7 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 omim_link_libraries(
   ${PROJECT_NAME}
   map
+  web_api
   search_tests_support
   editor_tests_support
   generator_tests_support
@@ -37,6 +38,7 @@ omim_link_libraries(
   opening_hours
   icu
   traffic
+  ${CMAKE_DL_LIBS}
   ${Qt5Network_LIBRARIES}
   ${LIBZ}
 )

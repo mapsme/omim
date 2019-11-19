@@ -192,9 +192,10 @@ FrontendRenderer::FrontendRenderer(Params && params)
   , m_choosePositionMode(false)
   , m_screenshotMode(params.m_myPositionParams.m_hints.m_screenshotMode)
   , m_viewport(params.m_viewport)
-  , m_modelViewChangedFn(params.m_modelViewChangedFn)
-  , m_tapEventInfoFn(params.m_tapEventFn)
-  , m_userPositionChangedFn(params.m_positionChangedFn)
+  , m_modelViewChangedHandler(std::move(params.m_modelViewChangedHandler))
+  , m_tapEventInfoHandler(std::move(params.m_tapEventHandler))
+  , m_userPositionChangedHandler(std::move(params.m_positionChangedHandler))
+  , m_userPositionPendingTimeoutHandler(std::move(params.m_userPositionPendingTimeoutHandler))
   , m_requestedTiles(params.m_requestedTiles)
   , m_maxGeneration(0)
   , m_maxUserMarksGeneration(0)
@@ -215,8 +216,10 @@ FrontendRenderer::FrontendRenderer(Params && params)
   m_isTeardowned = false;
 #endif
 
-  ASSERT(m_tapEventInfoFn, ());
-  ASSERT(m_userPositionChangedFn, ());
+  ASSERT(m_modelViewChangedHandler, ());
+  ASSERT(m_tapEventInfoHandler, ());
+  ASSERT(m_userPositionChangedHandler, ());
+  ASSERT(m_userPositionPendingTimeoutHandler, ());
 
   m_gpsTrackRenderer = make_unique_dp<GpsTrackRenderer>([this](uint32_t pointsCount)
   {
@@ -423,6 +426,14 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       break;
     }
 
+  case Message::Type::UpdateMyPositionRoutingOffset:
+    {
+      ref_ptr<UpdateMyPositionRoutingOffsetMessage> msg = message;
+      m_myPositionController->UpdateRoutingOffsetY(msg->UseDefault(), msg->GetOffsetY());
+      m_myPositionController->UpdatePosition();
+      break;
+    }
+
   case Message::Type::MapShapes:
     {
       ref_ptr<MapShapesMessage> msg = message;
@@ -435,8 +446,8 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
         m_selectObjectMessage.reset();
         AddUserEvent(make_unique_dp<SetVisibleViewportEvent>(m_userEventStream.GetVisibleViewport()));
       }
+      break;
     }
-    break;
 
   case Message::Type::ChangeMyPositionMode:
     {
@@ -495,12 +506,32 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
       if (m_selectionShape == nullptr)
       {
         m_selectObjectMessage = make_unique_dp<SelectObjectMessage>(msg->GetSelectedObject(), msg->GetPosition(),
-                                                                    msg->GetFeatureID(), msg->IsAnim());
+                                                                    msg->GetFeatureID(), msg->IsAnim(),
+                                                                    msg->IsGeometrySelectionAllowed());
         break;
       }
       ProcessSelection(msg);
       AddUserEvent(make_unique_dp<SetVisibleViewportEvent>(m_userEventStream.GetVisibleViewport()));
 
+      break;
+    }
+
+  case Message::Type::FlushSelectionGeometry:
+    {
+      ref_ptr<FlushSelectionGeometryMessage> msg = message;
+      if (m_selectionShape != nullptr)
+      {
+        m_selectionShape->AddSelectionGeometry(msg->AcceptRenderData(), msg->GetRecacheId());
+        if (m_selectionShape->HasSelectionGeometry())
+        {
+          auto bbox = m_selectionShape->GetSelectionGeometryBoundingBox();
+          CHECK(bbox.IsValid(), ());
+          bbox.Scale(kBoundingBoxScale);
+          AddUserEvent(make_unique_dp<SetRectEvent>(bbox, true /* rotate */, kDoNotChangeZoom,
+                                                    true /* isAnim */, true /* useVisibleViewport */,
+                                                    nullptr /* parallelAnimCreator */));
+        }
+      }
       break;
     }
 
@@ -1312,6 +1343,14 @@ void FrontendRenderer::ProcessSelection(ref_ptr<SelectObjectMessage> msg)
       m_selectionShape->IsVisible(modelView, startPosition);
       m_selectionTrackInfo = SelectionTrackInfo(modelView.GlobalRect(), startPosition);
     }
+
+    if (msg->IsGeometrySelectionAllowed())
+    {
+      m_commutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
+                                make_unique_dp<CheckSelectionGeometryMessage>(
+                                  msg->GetFeatureID(), m_selectionShape->GetRecacheId()),
+                                MessagePriority::Normal);
+    }
   }
 }
 
@@ -1950,8 +1989,8 @@ void FrontendRenderer::OnTap(m2::PointD const & pt, bool isLongTap)
       mercator = m_myPositionController->Position();
   }
 
-  ASSERT(m_tapEventInfoFn != nullptr, ());
-  m_tapEventInfoFn({mercator, isLongTap, isMyPosition, GetVisiblePOI(selectRect)});
+  ASSERT(m_tapEventInfoHandler != nullptr, ());
+  m_tapEventInfoHandler({mercator, isLongTap, isMyPosition, GetVisiblePOI(selectRect)});
 }
 
 void FrontendRenderer::OnForceTap(m2::PointD const & pt)
@@ -2090,23 +2129,36 @@ bool FrontendRenderer::OnNewVisibleViewport(m2::RectD const & oldViewport, m2::R
 
   m2::RectD rect(pos, pos);
   m2::RectD targetRect(targetPos, targetPos);
-
-  if (m_overlayTree->IsNeedUpdate())
-    BuildOverlayTree(screen);
-
-  if (!(m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_POI &&
-        m_overlayTree->GetSelectedFeatureRect(screen, rect) &&
-        m_overlayTree->GetSelectedFeatureRect(targetScreen, targetRect)))
+  if (m_selectionShape->HasSelectionGeometry())
   {
-    double const r = m_selectionShape->GetRadius();
-    rect.Inflate(r, r);
-    targetRect.Inflate(r, r);
+    auto r = m_selectionShape->GetSelectionGeometryBoundingBox();
+    r.Scale(kBoundingBoxScale);
+    
+    m2::RectD pixelRect;
+    pixelRect.Add(screen.PtoP3d(screen.GtoP(r.LeftTop())));
+    pixelRect.Add(screen.PtoP3d(screen.GtoP(r.RightBottom())));
+    
+    rect.Inflate(pixelRect.SizeX(), pixelRect.SizeY());
+    targetRect.Inflate(pixelRect.SizeX(), pixelRect.SizeY());
   }
-  double const ptZ = m_selectionShape->GetPositionZ();
+  else
+  {
+    if (m_overlayTree->IsNeedUpdate())
+      BuildOverlayTree(screen);
 
-  double const kOffset = 50 * VisualParams::Instance().GetVisualScale();
-  rect.Inflate(kOffset, kOffset);
-  targetRect.Inflate(kOffset, kOffset);
+    if (!(m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_POI &&
+          m_overlayTree->GetSelectedFeatureRect(screen, rect) &&
+          m_overlayTree->GetSelectedFeatureRect(targetScreen, targetRect)))
+    {
+      double const r = m_selectionShape->GetRadius();
+      rect.Inflate(r, r);
+      targetRect.Inflate(r, r);
+    }
+    
+    double const kOffset = 50 * VisualParams::Instance().GetVisualScale();
+    rect.Inflate(kOffset, kOffset);
+    targetRect.Inflate(kOffset, kOffset);
+  }
 
   if (newViewport.SizeX() < rect.SizeX() || newViewport.SizeY() < rect.SizeY())
     return false;
@@ -2140,6 +2192,8 @@ bool FrontendRenderer::OnNewVisibleViewport(m2::RectD const & oldViewport, m2::R
       m_selectionTrackInfo.get().m_snapSides.y = 1;
     }
   }
+  
+  double const ptZ = m_selectionShape->GetPositionZ();
   gOffset = screen.PtoG(screen.P3dtoP(pos + pOffset, ptZ)) - screen.PtoG(screen.P3dtoP(pos, ptZ));
   return true;
 }
@@ -2410,7 +2464,12 @@ void FrontendRenderer::AddUserEvent(drape_ptr<UserEvent> && event)
 
 void FrontendRenderer::PositionChanged(m2::PointD const & position, bool hasPosition)
 {
-  m_userPositionChangedFn(position, hasPosition);
+  m_userPositionChangedHandler(position, hasPosition);
+}
+
+void FrontendRenderer::PositionPendingTimeout()
+{
+  m_userPositionPendingTimeoutHandler();
 }
 
 void FrontendRenderer::ChangeModelView(m2::PointD const & center, int zoomLevel,
@@ -2507,7 +2566,7 @@ void FrontendRenderer::UpdateScene(ScreenBase const & modelView)
 
 void FrontendRenderer::EmitModelViewChanged(ScreenBase const & modelView) const
 {
-  m_modelViewChangedFn(modelView);
+  m_modelViewChangedHandler(modelView);
 }
 
 #if defined(OMIM_OS_MAC) || defined(OMIM_OS_LINUX)
@@ -2590,15 +2649,17 @@ void FrontendRenderer::RenderLayer::Sort(ref_ptr<dp::OverlayTree> overlayTree)
   }
 }
 
-m2::AnyRectD TapInfo::GetDefaultSearchRect(ScreenBase const & screen) const
+// static
+m2::AnyRectD TapInfo::GetDefaultSearchRect(m2::PointD const & mercator, ScreenBase const & screen)
 {
   m2::AnyRectD result;
   double const halfSize = VisualParams::Instance().GetTouchRectRadius();
-  screen.GetTouchRect(screen.GtoP(m_mercator), halfSize, result);
+  screen.GetTouchRect(screen.GtoP(mercator), halfSize, result);
   return result;
 }
 
-m2::AnyRectD TapInfo::GetBookmarkSearchRect(ScreenBase const & screen) const
+// static
+m2::AnyRectD TapInfo::GetBookmarkSearchRect(m2::PointD const & mercator, ScreenBase const & screen)
 {
   static int constexpr kBmTouchPixelIncrease = 20;
 
@@ -2607,19 +2668,26 @@ m2::AnyRectD TapInfo::GetBookmarkSearchRect(ScreenBase const & screen) const
   double const halfSize = VisualParams::Instance().GetTouchRectRadius();
   double const pxWidth = halfSize;
   double const pxHeight = halfSize + bmAddition;
-  screen.GetTouchRect(screen.GtoP(m_mercator) + m2::PointD(0, bmAddition),
+  screen.GetTouchRect(screen.GtoP(mercator) + m2::PointD(0, bmAddition),
                       pxWidth, pxHeight, result);
   return result;
 }
 
-m2::AnyRectD TapInfo::GetRoutingPointSearchRect(ScreenBase const & screen) const
+// static
+m2::AnyRectD TapInfo::GetRoutingPointSearchRect(m2::PointD const & mercator, ScreenBase const & screen)
 {
   static int constexpr kRoutingPointTouchPixelIncrease = 20;
 
   m2::AnyRectD result;
   double const bmAddition = kRoutingPointTouchPixelIncrease * VisualParams::Instance().GetVisualScale();
   double const halfSize = VisualParams::Instance().GetTouchRectRadius();
-  screen.GetTouchRect(screen.GtoP(m_mercator), halfSize + bmAddition, result);
+  screen.GetTouchRect(screen.GtoP(mercator), halfSize + bmAddition, result);
   return result;
+}
+
+// static
+m2::AnyRectD TapInfo::GetPreciseSearchRect(m2::PointD const & mercator, double const eps)
+{
+  return m2::AnyRectD(mercator, ang::AngleD(0.0) /* angle */, m2::RectD(-eps, -eps, eps, eps));
 }
 }  // namespace df

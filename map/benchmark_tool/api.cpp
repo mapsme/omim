@@ -1,15 +1,15 @@
 #include "map/benchmark_tool/api.hpp"
 
-#include "std/iostream.hpp"
-#include "std/numeric.hpp"
-#include "std/algorithm.hpp"
-#include "std/iomanip.hpp"
-#include "std/iterator.hpp"
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <numeric>
 
+using namespace std;
 
 namespace bench
 {
-
 void Result::PrintAllTimes()
 {
   sort(m_time.begin(), m_time.end());
@@ -53,5 +53,4 @@ void AllResult::Print()
             " summ:" << m_all << " ]" << endl;
   }
 }
-
-}
+}  // namespace bench

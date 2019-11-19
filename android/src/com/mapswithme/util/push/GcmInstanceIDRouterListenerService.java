@@ -1,6 +1,6 @@
 package com.mapswithme.util.push;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -10,8 +10,6 @@ import com.mapswithme.util.log.LoggerFactory;
 import com.pushwoosh.PushwooshFcmHelper;
 
 import java.io.IOException;
-
-import ru.mail.libnotify.api.NotificationFactory;
 
 public class GcmInstanceIDRouterListenerService extends InstanceIDListenerService
 {
@@ -37,7 +35,6 @@ public class GcmInstanceIDRouterListenerService extends InstanceIDListenerServic
   {    
     String token = getRefreshedToken();
     PushwooshFcmHelper.onTokenRefresh(this, token);
-    NotificationFactory.refreshGcmToken(this);
   }
 
   @Nullable

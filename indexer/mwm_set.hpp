@@ -104,6 +104,8 @@ private:
   std::weak_ptr<feature::FeaturesOffsetsTable> m_table;
 };
 
+class MwmValue;
+
 class MwmSet
 {
 public:
@@ -136,12 +138,6 @@ public:
   explicit MwmSet(size_t cacheSize = 64) : m_cacheSize(cacheSize) {}
   virtual ~MwmSet() = default;
 
-  class MwmValueBase
-  {
-  public:
-    virtual ~MwmValueBase() = default;
-  };
-
   // Mwm handle, which is used to refer to mwm and prevent it from
   // deletion when its FileContainer is used.
   class MwmHandle
@@ -152,11 +148,7 @@ public:
     ~MwmHandle();
 
     // Returns a non-owning ptr.
-    template <typename T>
-    T * GetValue() const
-    {
-      return static_cast<T *>(m_value.get());
-    }
+    MwmValue const * GetValue() const { return m_value.get(); }
 
     bool IsAlive() const { return m_value.get() != nullptr; }
     MwmId const & GetId() const { return m_mwmId; }
@@ -170,10 +162,10 @@ public:
   private:
     friend class MwmSet;
 
-    MwmHandle(MwmSet & mwmSet, MwmId const & mwmId, std::unique_ptr<MwmValueBase> && value);
+    MwmHandle(MwmSet & mwmSet, MwmId const & mwmId, std::unique_ptr<MwmValue> && value);
 
     MwmSet * m_mwmSet;
-    std::unique_ptr<MwmValueBase> m_value;
+    std::unique_ptr<MwmValue> m_value;
 
     DISALLOW_COPY(MwmHandle);
   };
@@ -184,7 +176,6 @@ public:
     {
       TYPE_REGISTERED,
       TYPE_DEREGISTERED,
-      TYPE_UPDATED,
     };
 
     Event() = default;
@@ -248,18 +239,11 @@ public:
   public:
     virtual ~Observer() = default;
 
-    // Called when a map is registered for a first time and can be
-    // used.
-    virtual void OnMapRegistered(platform::LocalCountryFile const & /*localFile*/) {}
-
-    // Called when a map is updated to a newer version. Feel free to
-    // treat it as combined OnMapRegistered(newFile) +
-    // OnMapDeregistered(oldFile).
-    virtual void OnMapUpdated(platform::LocalCountryFile const & /*newFile*/,
-                              platform::LocalCountryFile const & /*oldFile*/) {}
+    // Called when a map is registered for the first time and can be used.
+    virtual void OnMapRegistered(platform::LocalCountryFile const & /* localFile */) {}
 
     // Called when a map is deregistered and can no longer be used.
-    virtual void OnMapDeregistered(platform::LocalCountryFile const & /*localFile*/) {}
+    virtual void OnMapDeregistered(platform::LocalCountryFile const & /* localFile */) {}
   };
 
   /// Registers a new map.
@@ -326,10 +310,10 @@ public:
 
 protected:
   virtual std::unique_ptr<MwmInfo> CreateInfo(platform::LocalCountryFile const & localFile) const = 0;
-  virtual std::unique_ptr<MwmValueBase> CreateValue(MwmInfo & info) const = 0;
+  virtual std::unique_ptr<MwmValue> CreateValue(MwmInfo & info) const = 0;
 
 private:
-  using Cache = std::deque<std::pair<MwmId, std::unique_ptr<MwmValueBase>>>;
+  using Cache = std::deque<std::pair<MwmId, std::unique_ptr<MwmValue>>>;
 
   // This is the only valid way to take |m_lock| and use *Impl()
   // functions. The reason is that event processing requires
@@ -358,10 +342,10 @@ private:
   /// @precondition This function is always called under mutex m_lock.
   MwmHandle GetMwmHandleByIdImpl(MwmId const & id, EventList & events);
 
-  std::unique_ptr<MwmValueBase> LockValue(MwmId const & id);
-  std::unique_ptr<MwmValueBase> LockValueImpl(MwmId const & id, EventList & events);
-  void UnlockValue(MwmId const & id, std::unique_ptr<MwmValueBase> p);
-  void UnlockValueImpl(MwmId const & id, std::unique_ptr<MwmValueBase> p, EventList & events);
+  std::unique_ptr<MwmValue> LockValue(MwmId const & id);
+  std::unique_ptr<MwmValue> LockValueImpl(MwmId const & id, EventList & events);
+  void UnlockValue(MwmId const & id, std::unique_ptr<MwmValue> p);
+  void UnlockValueImpl(MwmId const & id, std::unique_ptr<MwmValue> p, EventList & events);
 
   /// Do the cleaning for [beg, end) without acquiring the mutex.
   /// @precondition This function is always called under mutex m_lock.
@@ -386,7 +370,7 @@ private:
   base::ObserverListSafe<Observer> m_observers;
 }; // class MwmSet
 
-class MwmValue : public MwmSet::MwmValueBase
+class MwmValue
 {
 public:
   FilesContainerR const m_cont;
@@ -403,8 +387,8 @@ public:
   version::MwmVersion const & GetMwmVersion() const { return m_factory.GetMwmVersion(); }
   std::string const & GetCountryFileName() const { return m_file.GetCountryFile().GetName(); }
 
-  bool HasSearchIndex() { return m_cont.IsExist(SEARCH_INDEX_FILE_TAG); }
-  bool HasGeometryIndex() { return m_cont.IsExist(INDEX_FILE_TAG); }
+  bool HasSearchIndex() const { return m_cont.IsExist(SEARCH_INDEX_FILE_TAG); }
+  bool HasGeometryIndex() const { return m_cont.IsExist(INDEX_FILE_TAG); }
 }; // class MwmValue
 
 

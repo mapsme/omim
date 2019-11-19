@@ -1,36 +1,21 @@
 #import "MWMPlacePageManager.h"
 #import "CLLocation+Mercator.h"
-#import "MWMAPIBar.h"
 #import "MWMActivityViewController.h"
-#import "MWMBookmarksManager.h"
 #import "MWMFrameworkListener.h"
-#import "MWMFrameworkObservers.h"
 #import "MWMLocationHelpers.h"
-#import "MWMLocationManager.h"
 #import "MWMLocationObserver.h"
 #import "MWMPlacePageData.h"
 #import "MWMPlacePageLayout.h"
 #import "MWMRoutePoint+CPP.h"
-#import "MWMRouter.h"
 #import "MWMSearchManager+Filter.h"
 #import "MWMStorage.h"
-#import "MWMUGCViewModel.h"
-#import "MapViewController.h"
-#import "Statistics.h"
 #import "SwiftBridge.h"
 
-#include "Framework.h"
+#import <CoreApi/CoreApi.h>
 
-#include "map/bookmark.hpp"
 #include "map/utils.hpp"
 
 #include "geometry/distance_on_sphere.hpp"
-
-#include "base/assert.hpp"
-#include "base/logging.hpp"
-#include "base/stl_helpers.hpp"
-
-#include <utility>
 
 namespace
 {
@@ -89,20 +74,18 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
 
 @implementation MWMPlacePageManager
 
-- (void)showReview:(place_page::Info const &)info
-{
-  [self show:info];
+- (void)showReview {
+  [self show];
   [self showUGCAddReview:MWMRatingSummaryViewValueTypeNoValue
               fromSource:MWMUGCReviewSourceNotification];
 }
 
-- (void)show:(place_page::Info const &)info
-{
+- (void)show {
   self.isSponsoredOpenLogged = NO;
   self.currentDownloaderStatus = storage::NodeStatus::Undefined;
   [MWMFrameworkListener addObserver:self];
 
-  self.data = [[MWMPlacePageData alloc] initWithPlacePageInfo:info];
+  self.data = [[MWMPlacePageData alloc] init];
   [self.data fillSections];
 
   if (!self.layout)
@@ -121,6 +104,20 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   
   // Call for the first time to produce changes
   [self processCountryEvent:[self.data countryId]];
+}
+
+- (void)update {
+  if (!self.isPPShown)
+    return;
+
+  self.data = [[MWMPlacePageData alloc] init];
+  [self.data fillSections];
+  [self setupSpeedAndDistance];
+  [self.layout updateWithData:self.data];
+}
+
+- (BOOL)isPPShown {
+  return self.data != nil;
 }
 
 - (void)dismiss
@@ -184,11 +181,29 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   auto data = self.data;
   if (!lastLocation || !data)
     return @"";
-  string distance;
+  std::string distance;
   CLLocationCoordinate2D const & coord = lastLocation.coordinate;
   ms::LatLon const & target = data.latLon;
-  measurement_utils::FormatDistance(
-      ms::DistanceOnEarth(coord.latitude, coord.longitude, target.m_lat, target.m_lon), distance);
+  double meters = ms::DistanceOnEarth(coord.latitude, coord.longitude, target.m_lat, target.m_lon);
+  if (meters < 0.)
+    return nil;
+  
+  auto units = measurement_utils::Units::Metric;
+  settings::TryGet(settings::kMeasurementUnits, units);
+  
+  std::string s;
+  switch (units) {
+    case measurement_utils::Units::Imperial:
+      measurement_utils::FormatDistanceWithLocalization(meters,
+                                                        distance,
+                                                        [[@" " stringByAppendingString:L(@"mile")] UTF8String],
+                                                        [[@" " stringByAppendingString:L(@"foot")] UTF8String]);
+    case measurement_utils::Units::Metric:
+      measurement_utils::FormatDistanceWithLocalization(meters,
+                                                        distance,
+                                                        [[@" " stringByAppendingString:L(@"kilometer")] UTF8String],
+                                                        [[@" " stringByAppendingString:L(@"meter")] UTF8String]);
+  }
   return @(distance.c_str());
 }
 
@@ -255,10 +270,25 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
     parameters[kStatProvider] = data.partnerName;
   else if (data.isHolidayObject)
     parameters[kStatProvider] = kStatHoliday;
+  else if (data.isPromoCatalog)
+    parameters[kStatProvider] = kStatMapsmeGuides;
 
   parameters[kStatConnection] = [Statistics connectionTypeString];
   parameters[kStatTags] = data.statisticsTags;
   [Statistics logEvent:kStatPlacepageSponsoredOpen withParameters:parameters];
+}
+
+- (void)logStateChangeEventWithValue:(NSNumber *)value {
+  MWMPlacePageData * data = self.data;
+  if (data == nil) return;
+  
+  NSString *types = data.statisticsTags;
+  NSNumber *lat = [NSNumber numberWithFloat:data.latLon.m_lat];
+  NSNumber *lon = [NSNumber numberWithFloat:data.latLon.m_lon];
+  [Statistics logEvent:kStatPlacePageChangeState withParameters:@{kStatTypes: types,
+                                                                  kStatLat: lat,
+                                                                  kStatLon: lon,
+                                                                  kStatValue: value}];
 }
 
 #pragma mark - MWMLocationObserver
@@ -500,6 +530,9 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   NSAssert(url, @"Sponsored url can't be nil!");
   
   [UIApplication.sharedApplication openURL:url options:@{} completionHandler:nil];
+
+  if (data.isBooking)
+    [MWMEye transitionToBookingWithPos:CGPointMake(data.mercator.x, data.mercator.y)];
 }
 
 - (void)book
@@ -544,6 +577,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   logSponsoredEvent(data, kStatPlacePageHotelMore);
   [UIApplication.sharedApplication openURL:data.sponsoredMoreURL
                                    options:@{} completionHandler:nil];
+  [MWMEye transitionToBookingWithPos:CGPointMake(data.mercator.x, data.mercator.y)];
 }
 
 - (void)openReviewUrl
@@ -755,7 +789,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
 
 - (MapViewController *)ownerViewController { return [MapViewController sharedController]; }
 
-- (void)saveUgcWithModel:(MWMUGCReviewModel *)model resultHandler:(void (^)(BOOL))resultHandler
+- (void)saveUgcWithModel:(MWMUGCReviewModel *)model language:(NSString *)language resultHandler:(void (^)(BOOL))resultHandler
 {
   auto data = self.data;
   if (!data)
@@ -765,7 +799,17 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
     return;
   }
   
-  [data setUGCUpdateFrom:model resultHandler:resultHandler];
+  [data setUGCUpdateFrom:model language:language resultHandler:resultHandler];
+}
+
+#pragma mark - MWMPlacePagePromoProtocol
+
+- (void)openCatalogForURL:(NSURL *)url {
+  // NOTE: UTM is already into URL, core part does it for Placepage Gallery.
+  MWMCatalogWebViewController *catalog = [MWMCatalogWebViewController catalogFromAbsoluteUrl:url utm:MWMUTMNone];
+  NSMutableArray<UIViewController *> * controllers = [self.ownerViewController.navigationController.viewControllers mutableCopy];
+  [controllers addObjectsFromArray:@[catalog]];
+  [self.ownerViewController.navigationController setViewControllers:controllers animated:YES];
 }
 
 @end

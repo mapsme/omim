@@ -1,5 +1,9 @@
+#import "CatalogPromoItem+Core.h"
 #import "MWMPlacePageLayout.h"
 #import "MWMBookmarkCell.h"
+#import "MWMDiscoveryCityGalleryObjects.h"
+#import "MWMDiscoveryCollectionView.h"
+#import "MWMDiscoveryGuideViewModel.h"
 #import "MWMPlaceDescriptionCell.h"
 #import "MWMOpeningHoursLayoutHelper.h"
 #import "MWMPPPreviewLayoutHelper.h"
@@ -14,17 +18,16 @@
 #import "MWMiPhonePlacePageLayoutImpl.h"
 #import "MapViewController.h"
 #import "SwiftBridge.h"
-#import "Statistics.h"
 
 #include "partners_api/booking_api.hpp"
 
-#include "storage/storage_defines.hpp"
+#import <CoreApi/CoreApi.h>
 
 namespace
 {
 using place_page::MetainfoRows;
 
-map<MetainfoRows, Class> const kMetaInfoCells = {
+std::map<MetainfoRows, Class> const kMetaInfoCells = {
     {MetainfoRows::Website, [MWMPlacePageLinkCell class]},
     {MetainfoRows::Address, [MWMPlacePageInfoCell class]},
     {MetainfoRows::Email, [MWMPlacePageLinkCell class]},
@@ -35,10 +38,13 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
     {MetainfoRows::Internet, [MWMPlacePageInfoCell class]}};
 }  // namespace
 
-@interface MWMPlacePageLayout ()<UITableViewDataSource, MWMPlacePageCellUpdateProtocol,
+@interface MWMPlacePageLayout ()<UITableViewDataSource,
+                                 UICollectionViewDataSource,
+                                 UICollectionViewDelegate,
+                                 MWMPlacePageCellUpdateProtocol,
                                  MWMPlacePageViewUpdateProtocol>
 
-@property(weak, nonatomic) MWMPlacePageData * data;
+@property(strong, nonatomic) MWMPlacePageData * data;
 
 @property(weak, nonatomic) UIView * ownerView;
 @property(weak, nonatomic)
@@ -102,6 +108,8 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
   [tv registerWithCellClass:[MWMUGCAddReviewCell class]];
   [tv registerWithCellClass:[MWMUGCYourReviewCell class]];
   [tv registerWithCellClass:[MWMUGCReviewCell class]];
+  [tv registerWithCellClass:[MWMDiscoveryGuideCollectionHolderCell class]];
+  [tv registerWithCellClass:[CatalogSingleItemCell class]];
 
   // Register all meta info cells.
   for (auto const & pair : kMetaInfoCells)
@@ -118,6 +126,18 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
 
   dispatch_async(dispatch_get_main_queue(), ^{
     [data fillOnlineBookingSections];
+    [data fillPromoCatalogSection];
+  });
+}
+
+- (void)updateWithData:(MWMPlacePageData *)data;
+{
+  self.data = data;
+  [self checkCellsVisible];
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [data fillOnlineBookingSections];
+    [data fillPromoCatalogSection];
   });
 }
 
@@ -187,8 +207,9 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
   if (!tv)
     return;
   [tv update:^{
+    NSUInteger const position = [data bookmarkSectionPosition];
     auto set =
-        [NSIndexSet indexSetWithIndex:static_cast<NSInteger>(place_page::Sections::Bookmark)];
+        [NSIndexSet indexSetWithIndex:position];
     if (isBookmark)
       [tv insertSections:set withRowAnimation:UITableViewRowAnimationAutomatic];
     else
@@ -297,6 +318,7 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
   case Sections::UGCRating: return data.ugc.ratingCellsCount;
   case Sections::UGCAddReview: return data.ugc.addReviewCellsCount;
   case Sections::UGCReviews: return data.ugc.reviewRows.size();
+  case Sections::PromoCatalog: return 1;
   }
 }
 
@@ -407,17 +429,18 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
           [tableView dequeueReusableCellWithCellClass:cls indexPath:indexPath]);
       auto const row = data.buttonsRows[indexPath.row];
 
-      [c configForRow:row
-            withAction:^{
-              switch (row)
-              {
-              case ButtonsRows::AddPlace: [delegate addPlace]; break;
-              case ButtonsRows::EditPlace: [delegate editPlace]; break;
-              case ButtonsRows::AddBusiness: [delegate addBusiness]; break;
-              case ButtonsRows::HotelDescription: [delegate openDescriptionUrl]; break;
-              case ButtonsRows::Other: NSAssert(false, @"Incorrect row");
-              }
-            }];
+      __weak __typeof(self) ws = self;
+      [c configForRow:row withAction:^{
+        __strong __typeof(self) self = ws;
+        switch (row)
+        {
+          case ButtonsRows::AddPlace: [delegate addPlace]; break;
+          case ButtonsRows::EditPlace: [delegate editPlace]; break;
+          case ButtonsRows::AddBusiness: [delegate addBusiness]; break;
+          case ButtonsRows::HotelDescription: [delegate openDescriptionUrl]; break;
+          case ButtonsRows::Other: NSAssert(false, @"Incorrect row");
+        }
+      }];
       // Hotel description button is always enabled.
       c.enabled = self.buttonsSectionEnabled || (row == ButtonsRows::HotelDescription);
       return c;
@@ -593,6 +616,56 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
       }
       }
     }
+    case Sections::PromoCatalog:
+    {
+      auto rows = self.data.promoCatalogRows;
+      if (self.data.promoGallery.count == 1) {
+        CatalogSingleItemCell *cell = (CatalogSingleItemCell *)
+          [tableView dequeueReusableCellWithCellClass:CatalogSingleItemCell.class indexPath:indexPath];
+        CatalogPromoItem *item = [[CatalogPromoItem alloc] initWithCoreItem:[data.promoGallery galleryItemAtIndex:0]];
+        [cell config:item];
+        __weak __typeof(self) ws = self;
+        cell.onMore = ^{
+          __strong __typeof(self) self = ws;
+          [Statistics logEvent:kStatPlacepageSponsoredItemSelected
+                withParameters:@{
+                                 kStatProvider: kStatMapsmeGuides,
+                                 kStatPlacement: kStatPlacePageSightSeeing,
+                                 kStatItem: @(0),
+                                 kStatDestination: kStatCatalogue
+                                 }];
+          NSURL *url = [NSURL URLWithString:item.catalogUrl];
+          NSURL *patchedUrl = [[MWMBookmarksManager sharedManager] injectCatalogUTMContent:url content:MWMUTMContentMore];
+          [self.delegate openCatalogForURL:patchedUrl];
+        };
+        cell.onView = ^{
+          __strong __typeof(self) self = ws;
+          [Statistics logEvent:kStatPlacepageSponsoredItemSelected
+                withParameters:@{
+                                 kStatProvider: kStatMapsmeGuides,
+                                 kStatPlacement: kStatPlacePageSightSeeing,
+                                 kStatItem: @(0),
+                                 kStatDestination: kStatCatalogue
+                                 }];
+          NSURL *url = [NSURL URLWithString:item.catalogUrl];
+          NSURL *patchedUrl = [[MWMBookmarksManager sharedManager] injectCatalogUTMContent:url content:MWMUTMContentView];
+          [self.delegate openCatalogForURL:patchedUrl];
+        };
+        return cell;
+      } else {
+        Class cls = [MWMDiscoveryGuideCollectionHolderCell class];
+        MWMDiscoveryGuideCollectionHolderCell *cell = (MWMDiscoveryGuideCollectionHolderCell *)
+          [tableView dequeueReusableCellWithCellClass:cls indexPath:indexPath];
+        MWMDiscoveryCollectionView *collection = (MWMDiscoveryCollectionView *)cell.collectionView;
+        [cell config:[NSString stringWithCoreFormat:L(@"pp_discovery_place_related_tag_header")
+                                          arguments:@[self.data.promoGallery.tagString]]];
+        collection.delegate = self;
+        collection.dataSource = self;
+        collection.itemType = discovery::ItemType::Promo;
+        [collection reloadData];
+        return cell;
+      }
+    }
   }
 }
 
@@ -606,7 +679,7 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
     if (!cell)
       return;
     auto taxiBottom = CGPointMake(cell.width / 2, cell.height);
-    auto mainView = [MapViewController sharedController].view;
+    auto mainView = [MapViewController sharedController].controlsView;
     auto actionBar = self.actionBar;
     BOOL const isInMainView =
         [mainView pointInside:[cell convertPoint:taxiBottom toView:mainView] withEvent:nil];
@@ -704,7 +777,9 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
   if (!data)
     return;
 
+  __weak __typeof(self) ws = self;
   data.refreshPreviewCallback = ^{
+    __strong __typeof(self) self = ws;
     auto tv = self.placePageView.tableView;
     [tv reloadSections:[NSIndexSet indexSetWithIndex:0]
         withRowAnimation:UITableViewRowAnimationFade];
@@ -714,6 +789,7 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
   };
 
   data.sectionsAreReadyCallback = ^(NSRange const & range, MWMPlacePageData * d, BOOL isSection) {
+    __strong __typeof(self) self = ws;
     if (![self.data isEqual:d])
       return;
     
@@ -733,7 +809,13 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
   };
 
   data.bannerIsReadyCallback = ^{
+    __strong __typeof(self) self = ws;
     [self.previewLayoutHelper insertRowAtTheEnd];
+  };
+
+  data.refreshPromoCallback = ^(NSIndexSet *insertedSections) {
+    __strong __typeof(self) self = ws;
+    [self.placePageView.tableView insertSections:insertedSections withRowAnimation:UITableViewRowAnimationNone];
   };
 
   [self.actionBar configureWithData:data];
@@ -747,6 +829,90 @@ map<MetainfoRows, Class> const kMetaInfoCells = {
   [self.placePageView.tableView reloadData];
 
   self.buttonsSectionEnabled = YES;
+}
+
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)collectionView:(MWMDiscoveryCollectionView *)collectionView
+     numberOfItemsInSection:(NSInteger)section
+{
+  NSInteger count = self.data.promoGallery.count;
+  return count > 0 ? count + 1 : 0;
+}
+
+- (UICollectionViewCell *)collectionView:(MWMDiscoveryCollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+  auto data = self.data;
+  if (!data) {
+    return [[UICollectionViewCell alloc] init];
+  }
+  
+  if (indexPath.row == self.data.promoGallery.count) {
+    Class cls = [MWMDiscoveryMoreCell class];
+    MWMDiscoveryMoreCell *cell = (MWMDiscoveryMoreCell *)[collectionView
+                                                          dequeueReusableCellWithCellClass:cls
+                                                          indexPath:indexPath];
+    return cell;
+  }
+  
+  Class cls = [MWMDiscoveryGuideCell class];
+  MWMDiscoveryGuideCell *cell = (MWMDiscoveryGuideCell *)
+  [collectionView dequeueReusableCellWithCellClass:cls indexPath:indexPath];
+  MWMDiscoveryGuideViewModel *objectVM = [self.data guideAtIndex:indexPath.item];
+  __weak __typeof__(self) weakSelf = self;
+  [cell configWithAvatarURL:objectVM.imagePath
+                      title:objectVM.title
+                   subtitle:objectVM.subtitle
+                      label:objectVM.label
+              labelHexColor:objectVM.labelHexColor
+                  onDetails:^{
+                    __strong __typeof__(weakSelf) strongSelf = weakSelf;
+                    if (!strongSelf) { return; }
+                    promo::CityGallery::Item const &item = [strongSelf.data.promoGallery galleryItemAtIndex:indexPath.row];
+                    NSString *itemPath = @(item.m_url.c_str());
+                    if (!itemPath || itemPath.length == 0) {
+                      return;
+                    }
+                    NSURL *url = [NSURL URLWithString:itemPath];
+                    [strongSelf.delegate openCatalogForURL:url];
+                    [Statistics logEvent:kStatPlacepageSponsoredItemSelected
+                          withParameters:@{
+                                           kStatProvider: kStatMapsmeGuides,
+                                           kStatPlacement: kStatPlacePage,
+                                           kStatItem: @(indexPath.item + 1),
+                                           kStatDestination: kStatCatalogue
+                                           }];
+                  }];
+  return cell;
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+  if (indexPath.item == self.data.promoGallery.count) {
+    NSURL *url = [self.data.promoGallery moreURL];
+    [self.delegate openCatalogForURL:url];
+    [Statistics logEvent:kStatPlacepageSponsoredMoreSelected
+          withParameters:@{
+                           kStatProvider: kStatMapsmeGuides,
+                           kStatPlacement: self.data.isLargeToponim ? kStatPlacePageToponims : kStatPlacePageSightSeeing,
+                           }];
+  } else {
+    promo::CityGallery::Item const &item = [self.data.promoGallery galleryItemAtIndex:indexPath.row];
+    NSString *itemPath = @(item.m_url.c_str());
+    if (!itemPath || itemPath.length == 0) {
+      return;
+    }
+    NSURL *url = [NSURL URLWithString:itemPath];
+    [self.delegate openCatalogForURL:url];
+    [Statistics logEvent:kStatPlacepageSponsoredItemSelected
+          withParameters:@{
+                           kStatProvider: kStatMapsmeGuides,
+                           kStatPlacement: self.data.isLargeToponim ? kStatPlacePageToponims : kStatPlacePageSightSeeing,
+                           kStatItem: @(indexPath.item + 1),
+                           kStatDestination: kStatCatalogue
+                           }];
+  }
 }
 
 @end

@@ -77,8 +77,11 @@ public:
   void SearchCoordinates();
   // Tries to parse a plus code from |m_query| and generate a (lat, lon) result.
   void SearchPlusCode();
+  // Tries to parse a postcode from |m_query| and generate a (lat, lon) result based on
+  // POSTCODE_POINTS section.
+  void SearchPostcode();
 
-  void SearchBookmarks() const;
+  void SearchBookmarks(bookmarks::GroupId const & groupId);
 
   void InitParams(QueryParams & params) const;
 
@@ -94,9 +97,18 @@ public:
   void LoadCitiesBoundaries();
   void LoadCountriesTree();
 
+  void EnableIndexingOfBookmarksDescriptions(bool enable);
+  void EnableIndexingOfBookmarkGroup(bookmarks::GroupId const & groupId, bool enable);
+
+  void ResetBookmarks();
+
   void OnBookmarksCreated(std::vector<std::pair<bookmarks::Id, bookmarks::Doc>> const & marks);
   void OnBookmarksUpdated(std::vector<std::pair<bookmarks::Id, bookmarks::Doc>> const & marks);
   void OnBookmarksDeleted(std::vector<bookmarks::Id> const & marks);
+  void OnBookmarksAttachedToGroup(bookmarks::GroupId const & groupId,
+                                  std::vector<bookmarks::Id> const & marks);
+  void OnBookmarksDetachedFromGroup(bookmarks::GroupId const & groupId,
+                                    std::vector<bookmarks::Id> const & marks);
 
 protected:
   Locales GetCategoryLocales() const;
@@ -129,6 +141,8 @@ protected:
   // Suggestions language code, not the same as we use in mwm data
   int8_t m_inputLocaleCode = StringUtf8Multilang::kUnsupportedLanguageCode;
   int8_t m_currentLocaleCode = StringUtf8Multilang::kUnsupportedLanguageCode;
+
+  DataSource const & m_dataSource;
 
   VillagesCache m_villagesCache;
   LocalitiesCache m_localitiesCache;

@@ -7,12 +7,16 @@ set(
   angles.cpp
   angles.hpp
   any_rect2d.hpp
+  area_on_earth.cpp
+  area_on_earth.hpp
   avg_vector.hpp
   bounding_box.cpp
   bounding_box.hpp
   calipers_box.cpp
   calipers_box.hpp
   cellid.hpp
+  circle_on_earth.cpp
+  circle_on_earth.hpp
   clipping.cpp
   clipping.hpp
   convex_hull.cpp
@@ -29,12 +33,16 @@ set(
   line2d.hpp
   mercator.cpp
   mercator.hpp
+  meter.hpp
   nearby_points_sweeper.cpp
   nearby_points_sweeper.hpp
+  oblate_spheroid.cpp
+  oblate_spheroid.hpp
   packer.cpp
   packer.hpp
   parametrized_segment.hpp
   point2d.hpp
+  point3d.hpp
   polygon.hpp
   polyline2d.hpp
   rect2d.hpp

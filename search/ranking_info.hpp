@@ -26,7 +26,7 @@ struct RankingInfo
   // correspond to important features.
   double GetLinearModelRank() const;
 
-  size_t GetErrorsMade() const;
+  double GetErrorsMadePerToken() const;
 
   // Distance from the feature to the pivot point.
   double m_distanceToPivot = kMaxDistMeters;
@@ -43,12 +43,20 @@ struct RankingInfo
   // Score for the feature's name.
   NameScore m_nameScore = NAME_SCORE_ZERO;
 
-  // Number of typos.
+  // Number of misprints.
   ErrorsMade m_errorsMade;
+  // Query tokens number.
+  size_t m_numTokens;
+
+  // Fraction of characters from original query matched to feature.
+  double m_matchedFraction = 0.0;
 
   // True iff all tokens that are not stop-words
   // were used when retrieving the feature.
   bool m_allTokensUsed = true;
+
+  // True iff all tokens retrieved from search index were matched without misprints.
+  bool m_exactMatch = true;
 
   // Search type for the feature.
   Model::Type m_type = Model::TYPE_COUNT;

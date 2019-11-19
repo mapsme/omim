@@ -4,9 +4,10 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_height="wrap_content"
   android:layout_width="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:padding="@dimen/margin_quarter"
   android:clipToPadding="false">
-  <android.support.v7.widget.CardView
+  <androidx.cardview.widget.CardView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <LinearLayout
@@ -59,5 +60,25 @@
         android:layout_gravity="bottom"
         android:text="@string/details"/>
     </LinearLayout>
-  </android.support.v7.widget.CardView>
+    <TextView
+      android:id="@+id/label"
+      android:elevation="@dimen/default_elevation"
+      android:layout_gravity="top"
+      android:paddingTop="@dimen/margin_eighth"
+      android:paddingBottom="@dimen/margin_eighth"
+      android:paddingLeft="@dimen/margin_half_plus"
+      android:paddingStart="@dimen/margin_half_plus"
+      android:paddingRight="@dimen/margin_half_plus"
+      android:paddingEnd="@dimen/margin_half_plus"
+      android:layout_marginTop="@dimen/pro_label_margin"
+      android:textColor="@android:color/white"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      app:fontFamily="@string/robotoMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:background="@color/base_accent_night"
+      tools:text="PRO"
+      tools:visibility="visible"
+      tools:targetApi="lollipop"/>
+  </androidx.cardview.widget.CardView>
 </FrameLayout>

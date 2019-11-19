@@ -44,6 +44,8 @@ set(
   main.cpp
   mainwindow.cpp
   mainwindow.hpp
+  mwms_borders_selection.cpp
+  mwms_borders_selection.hpp
   osm_auth_dialog.cpp
   osm_auth_dialog.hpp
   place_page_dialog.cpp
@@ -52,6 +54,8 @@ set(
   preferences_dialog.hpp
   routing_settings_dialog.cpp
   routing_settings_dialog.hpp
+  ruler.cpp
+  ruler.hpp
   screenshoter.cpp
   screenshoter.hpp
   search_panel.cpp
@@ -68,6 +72,7 @@ omim_link_libraries(
   map
   drape_frontend
   shaders
+  generator
   routing
   search
   storage
@@ -81,6 +86,7 @@ omim_link_libraries(
   ugc
   drape
   partners_api
+  web_api
   local_ads
   kml
   editor
@@ -177,7 +183,6 @@ copy_resources(
   colors.txt
   copyright.html
   countries.txt
-  countries_obsolete.txt
   drules_proto_clear.bin
   drules_proto_dark.bin
   drules_proto_vehicle_clear.bin
@@ -186,14 +191,12 @@ copy_resources(
   fonts_blacklist.txt
   fonts_whitelist.txt
   packed_polygons.bin
-  packed_polygons_obsolete.bin
   patterns.txt
   transit_colors.txt
   types.txt
   unicode_blocks.txt
   World.mwm
   WorldCoasts.mwm
-  WorldCoasts_obsolete.mwm
   icudt57l.dat
   local_ads_symbols.txt
 
@@ -309,7 +312,7 @@ if (BUILD_DESIGNER)
 elseif (BUILD_STANDALONE)
   add_custom_command(TARGET desktop POST_BUILD
     COMMAND "${QT_PATH}/bin/macdeployqt" ${BUNDLE_FOLDER}
-    COMMAND python "${OMIM_ROOT}/tools/macdeployqtfix/macdeployqtfix.py" -q -nl ${BUNDLE_FOLDER}/Contents/MacOS/${BUNDLE_NAME} ${QT_PATH}
+    COMMAND ${PYTHON_EXECUTABLE} "${OMIM_ROOT}/tools/macdeployqtfix/macdeployqtfix.py" -q -nl ${BUNDLE_FOLDER}/Contents/MacOS/${BUNDLE_NAME} ${QT_PATH}
     COMMAND echo "Fixing Qt dependencies finished."
     VERBATIM
     COMMENT "Fixing Qt dependencies for standalone desktop app"

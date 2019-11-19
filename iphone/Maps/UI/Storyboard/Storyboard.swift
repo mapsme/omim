@@ -11,6 +11,7 @@ enum Storyboard: Int {
   case sharing
   case categorySettings
   case drivingOptions
+  case carPlay
 }
 
 extension UIStoryboard {
@@ -26,7 +27,13 @@ extension UIStoryboard {
     case .sharing: name = "BookmarksSharingFlow"
     case .categorySettings: name = "CategorySettings"
     case .drivingOptions: name = "DrivingOptions"
+    case .carPlay: name = "CarPlayStoryboard"
     }
     return UIStoryboard(name: name, bundle: nil)
+  }
+
+  func instantiateViewController<T: UIViewController>(ofType: T.Type) -> T {
+    let name = String(describing: ofType);
+    return self.instantiateViewController(withIdentifier: name) as! T;
   }
 }

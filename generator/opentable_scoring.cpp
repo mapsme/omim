@@ -3,6 +3,8 @@
 #include "generator/opentable_dataset.hpp"
 #include "generator/feature_builder.hpp"
 
+using namespace feature;
+
 namespace
 {
 // Calculated with tools/python/booking_hotels_quality.py.
@@ -27,11 +29,11 @@ bool MatchStats<OpentableRestaurant>::IsMatched() const
 }
 
 template <>
-MatchStats<OpentableRestaurant> Match(OpentableRestaurant const & r, FeatureBuilder1 const & fb)
+MatchStats<OpentableRestaurant> Match(OpentableRestaurant const & r, FeatureBuilder const & fb)
 {
   MatchStats<OpentableRestaurant> score;
 
-  auto const fbCenter = MercatorBounds::ToLatLon(fb.GetKeyPoint());
+  auto const fbCenter = mercator::ToLatLon(fb.GetKeyPoint());
   auto const distance = ms::DistanceOnEarth(fbCenter, r.m_latLon);
   score.m_linearNormDistanceScore =
       impl::GetLinearNormDistanceScore(distance, OpentableDataset::kDistanceLimitInMeters);

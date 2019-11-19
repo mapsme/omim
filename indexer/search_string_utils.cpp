@@ -2,12 +2,16 @@
 #include "indexer/string_set.hpp"
 
 #include "base/assert.hpp"
+#include "base/dfa_helpers.hpp"
 #include "base/macros.hpp"
 #include "base/mem_trie.hpp"
 
 #include "3party/utfcpp/source/utf8/unchecked.h"
 
 #include <algorithm>
+#include <memory>
+#include <queue>
+#include <vector>
 
 using namespace std;
 using namespace strings;
@@ -16,6 +20,17 @@ namespace search
 {
 namespace
 {
+vector<strings::UniString> const kAllowedMisprints = {
+    strings::MakeUniString("ckq"),
+    strings::MakeUniString("eyjiu"),
+    strings::MakeUniString("gh"),
+    strings::MakeUniString("pf"),
+    strings::MakeUniString("vw"),
+    strings::MakeUniString("ао"),
+    strings::MakeUniString("еиэ"),
+    strings::MakeUniString("шщ"),
+};
+
 // Replaces '#' followed by an end-of-string or a digit with space.
 void RemoveNumeroSigns(UniString & s)
 {
@@ -41,6 +56,31 @@ void RemoveNumeroSigns(UniString & s)
   }
 }
 }  // namespace
+
+size_t GetMaxErrorsForTokenLength(size_t length)
+{
+  if (length < 4)
+    return 0;
+  if (length < 8)
+    return 1;
+  return 2;
+}
+
+size_t GetMaxErrorsForToken(strings::UniString const & token)
+{
+  bool const digitsOnly = all_of(token.begin(), token.end(), ::isdigit);
+  if (digitsOnly)
+    return 0;
+  return GetMaxErrorsForTokenLength(token.size());
+}
+
+strings::LevenshteinDFA BuildLevenshteinDFA(strings::UniString const & s)
+{
+  // In search we use LevenshteinDFAs for fuzzy matching. But due to
+  // performance reasons, we limit prefix misprints to fixed set of substitutions defined in
+  // kAllowedMisprints and skipped letters.
+  return strings::LevenshteinDFA(s, 1 /* prefixSize */, kAllowedMisprints, GetMaxErrorsForToken(s));
+}
 
 UniString NormalizeAndSimplifyString(string const & s)
 {
@@ -100,6 +140,10 @@ UniString NormalizeAndSimplifyString(string const & s)
   });
 
   RemoveNumeroSigns(uniString);
+
+  // Replace sequence of spaces with single one.
+  auto const spacesChecker = [](UniChar lhs, UniChar rhs) { return (lhs == rhs) && (lhs == ' '); };
+  uniString.erase(unique(uniString.begin(), uniString.end(), spacesChecker), uniString.end());
 
   return uniString;
 
@@ -205,6 +249,8 @@ public:
     bool m_empty;
   };
 
+  using Trie = base::MemTrie<UniString, BooleanSum, base::VectorMoves>;
+
   StreetsSynonymsHolder()
   {
     char const * affics[] =
@@ -231,13 +277,13 @@ public:
       "allee", "al", "brücke", "br", "chaussee", "gasse", "gr", "pfad", "straße", "str", "weg", "platz",
 
       // Español - Spanish
-      "avenida", "avd", "avda", "bulevar", "bulev", "calle", "calleja", "cllja", "callejón", "callej", "cjon", "cllon", "callejuela", "cjla", "callizo", "cllzo", "calzada", "czada", "costera", "coste", "plza", "pza", "plazoleta", "pzta", "plazuela", "plzla", "tránsito", "trans", "transversal", "trval", "trasera", "tras", "travesía", "trva",
+      "avenida", "avd", "avda", "bulevar", "bulev", "calle", "calleja", "cllja", "callejón", "callej", "cjon", "callejuela", "cjla", "callizo", "cllzo", "calzada", "czada", "costera", "coste", "plza", "pza", "plazoleta", "pzta", "plazuela", "plzla", "tránsito", "trans", "transversal", "trval", "trasera", "tras", "travesía", "trva",
 
       // Français - French
       "rue", "avenue", "carré", "cercle", "route", "boulevard", "drive", "autoroute", "lane", "chemin",
 
        // Italiano - Italian
-      "corso", "piazza", "strada", "via", "viale",
+      "corso", "piazza", "piazzale", "strada", "via", "viale",
 
       // Nederlands - Dutch
       "laan", "ln.", "straat", "steenweg", "stwg", "st",
@@ -264,7 +310,7 @@ public:
       "väg", "vägen", "gatan", "gränd", "gränden", "stig", "stigen", "plats", "platsen",
 
       // Türkçe - Turkish
-      "sokak", "sk", "sok", "sokağı", "cadde", "cd", "caddesi", "bulvar", "bulvarı",
+      "sokak", "sk", "sok", "sokağı", "cadde", "cad", "cd", "caddesi", "bulvar", "bulvarı",
 
       // Tiếng Việt – Vietnamese
       "quốc lộ", "ql", "tỉnh lộ", "tl", "Đại lộ", "Đl", "Đường", "Đ", "Đường sắt", "Đs", "Đường phố", "Đp", "vuông", "con Đường", "Đại lộ", "Đường cao tốc",
@@ -283,8 +329,42 @@ public:
   bool MatchPrefix(UniString const & s) const { return m_strings.HasPrefix(s); }
   bool FullMatch(UniString const & s) const { return m_strings.HasKey(s); }
 
+  template <typename DFA>
+  bool MatchWithMisprints(DFA const & dfa) const
+  {
+    using TrieIt = Trie::Iterator;
+    using State = pair<TrieIt, typename DFA::Iterator>;
+
+    auto const trieRoot = m_strings.GetRootIterator();
+
+    queue<State> q;
+    q.emplace(trieRoot, dfa.Begin());
+
+    while (!q.empty())
+    {
+      auto const p = q.front();
+      q.pop();
+
+      auto const & currTrieIt = p.first;
+      auto const & currDfaIt = p.second;
+
+      if (currDfaIt.Accepts())
+        return true;
+
+      currTrieIt.ForEachMove([&q, &currDfaIt](UniChar const & c, TrieIt const & nextTrieIt) {
+        auto nextDfaIt = currDfaIt;
+        nextDfaIt.Move(c);
+        strings::DFAMove(nextDfaIt, nextTrieIt.GetLabel());
+        if (!nextDfaIt.Rejects())
+          q.emplace(nextTrieIt, nextDfaIt);
+      });
+    }
+
+    return false;
+  }
+
 private:
-  base::MemTrie<UniString, BooleanSum, base::VectorMoves> m_strings;
+  Trie m_strings;
 };
 
 StreetsSynonymsHolder g_streets;
@@ -342,6 +422,18 @@ bool IsStreetSynonymPrefix(UniString const & s)
   return g_streets.MatchPrefix(s);
 }
 
+bool IsStreetSynonymWithMisprints(UniString const & s)
+{
+  auto const dfa = BuildLevenshteinDFA(s);
+  return g_streets.MatchWithMisprints(dfa);
+}
+
+bool IsStreetSynonymPrefixWithMisprints(UniString const & s)
+{
+  auto const dfa = strings::PrefixDFAModifier<strings::LevenshteinDFA>(BuildLevenshteinDFA(s));
+  return g_streets.MatchWithMisprints(dfa);
+}
+
 bool ContainsNormalized(string const & str, string const & substr)
 {
   UniString const ustr = NormalizeAndSimplifyString(str);
@@ -352,7 +444,14 @@ bool ContainsNormalized(string const & str, string const & substr)
 // StreetTokensFilter ------------------------------------------------------------------------------
 void StreetTokensFilter::Put(strings::UniString const & token, bool isPrefix, size_t tag)
 {
-  if ((isPrefix && IsStreetSynonymPrefix(token)) || (!isPrefix && IsStreetSynonym(token)))
+  using IsStreetChecker = std::function<bool(strings::UniString const &)>;
+
+  IsStreetChecker isStreet = m_withMisprints ? IsStreetSynonymWithMisprints : IsStreetSynonym;
+  IsStreetChecker isStreetPrefix =
+      m_withMisprints ? IsStreetSynonymPrefixWithMisprints : IsStreetSynonymPrefix;
+
+  auto const isStreetSynonym = isStreet(token);
+  if ((isPrefix && isStreetPrefix(token)) || (!isPrefix && isStreetSynonym))
   {
     ++m_numSynonyms;
     if (m_numSynonyms == 1)
@@ -361,7 +460,9 @@ void StreetTokensFilter::Put(strings::UniString const & token, bool isPrefix, si
       m_delayedTag = tag;
       return;
     }
-    if (m_numSynonyms == 2)
+
+    // Do not emit delayed token for incomplete street synonym.
+    if ((!isPrefix || isStreetSynonym) && m_numSynonyms == 2)
       EmitToken(m_delayedToken, m_delayedTag);
   }
   EmitToken(token, tag);

@@ -8,6 +8,8 @@
 #include "map/place_page_info.hpp"
 #include "map/routing_mark.hpp"
 
+#include "platform/network_policy.hpp"
+
 #include <vector>
 
 #include <boost/optional.hpp>
@@ -40,6 +42,7 @@ class Info;
 enum class Sections
 {
   Preview,
+  PromoCatalog,
   Bookmark,
   Description,
   HotelPhotos,
@@ -128,14 +131,25 @@ enum class OpeningHours
   Closed,
   Unknown
 };
+  
+enum class PromoCatalogRow
+{
+  Guides,
+  GuidesNoInternetError,
+  GuidesRequestError
+};
 
 using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * data, BOOL isSection);
 }  // namespace place_page
+
+typedef void (^RefreshPromoCallbackBlock)(NSIndexSet *insertedSections);
 
 @class MWMGalleryItemModel;
 @class MWMUGCViewModel;
 @class MWMUGCReviewModel;
 @class MWMUGCRatingValueType;
+@class MWMDiscoveryCityGalleryObjects;
+@class MWMDiscoveryGuideViewModel;
 @protocol MWMBanner;
 
 /// ViewModel for place page.
@@ -145,13 +159,12 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 @property(copy, nonatomic) place_page::NewSectionsAreReady sectionsAreReadyCallback;
 @property(copy, nonatomic) MWMVoidBlock bannerIsReadyCallback;
 @property(copy, nonatomic) MWMVoidBlock bookingDataUpdatedCallback;
+@property(copy, nonatomic) RefreshPromoCallbackBlock refreshPromoCallback;
 @property(nonatomic, readonly) MWMUGCViewModel * ugc;
+@property(nonatomic, readonly) MWMDiscoveryCityGalleryObjects *promoGallery;
 @property(nonatomic, readonly) NSInteger bookingDiscount;
 @property(nonatomic, readonly) BOOL isSmartDeal;
 @property(nonatomic, readonly) BOOL isPopular;
-
-// ready callback will be called from main queue.
-- (instancetype)initWithPlacePageInfo:(place_page::Info const &)info;
 
 - (place_page::Info const &)getRawData;
 
@@ -184,8 +197,8 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 - (NSURL *)bookingSearchURL;
 - (NSString *)sponsoredId;
 - (NSString *)hotelDescription;
-- (vector<booking::HotelFacility> const &)facilities;
-- (vector<booking::HotelReview> const &)hotelReviews;
+- (std::vector<booking::HotelFacility> const &)facilities;
+- (std::vector<booking::HotelReview> const &)hotelReviews;
 - (NSUInteger)numberOfHotelReviews;
 - (NSURL *)URLToAllReviews;
 - (NSArray<MWMGalleryItemModel *> *)photos;
@@ -200,8 +213,8 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 // UGC
 - (ftraits::UGCRatingCategories)ugcRatingCategories;
 - (void)setUGCUpdateFrom:(MWMUGCReviewModel *)reviewModel
+                language:(NSString *)language
            resultHandler:(void (^)(BOOL))resultHandler;
-
 // Route points
 - (RouteMarkType)routeMarkType;
 - (size_t)intermediateIndex;
@@ -228,6 +241,10 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 - (NSString *)localAdsURL;
 - (void)logLocalAdsEvent:(local_ads::EventType)type;
 
+// Promo Catalog
+- (void)fillPromoCatalogSection;
+- (MWMDiscoveryGuideViewModel *)guideAtIndex:(NSUInteger)index;
+
 // Table view's data
 - (std::vector<place_page::Sections> const &)sections;
 - (std::vector<place_page::PreviewRows> const &)previewRows;
@@ -238,6 +255,7 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 - (std::vector<place_page::MetainfoRows> const &)metainfoRows;
 - (std::vector<place_page::AdRows> const &)adRows;
 - (std::vector<place_page::ButtonsRows> const &)buttonsRows;
+- (std::vector<place_page::PromoCatalogRow> const &)promoCatalogRows;
 
 // Table view metainfo rows
 - (NSString *)stringForRow:(place_page::MetainfoRows)row;
@@ -250,6 +268,9 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 - (BOOL)isOpentable;
 - (BOOL)isPartner;
 - (BOOL)isHolidayObject;
+- (BOOL)isPromoCatalog;
+- (BOOL)isLargeToponim;
+- (BOOL)isSightseeing;
 - (BOOL)isBookingSearch;
 - (BOOL)isHTMLDescription;
 - (BOOL)isMyPosition;
@@ -268,5 +289,8 @@ using NewSectionsAreReady = void (^)(NSRange const & range, MWMPlacePageData * d
 
 // TODO(Vlad): Use MWMSettings to store coordinate format.
 + (void)toggleCoordinateSystem;
+
+- (void)reguestPromoCatalog;
+- (NSInteger)bookmarkSectionPosition;
 
 @end

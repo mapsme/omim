@@ -8,10 +8,10 @@
 #include "generator/region_meta.hpp"
 #include "generator/tesselator.hpp"
 
+#include "routing/routing_helpers.hpp"
 #include "routing/speed_camera_prohibition.hpp"
 
 #include "indexer/classificator.hpp"
-#include "indexer/data_header.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/feature_impl.hpp"
 #include "indexer/feature_processor.hpp"
@@ -22,7 +22,7 @@
 #include "platform/country_file.hpp"
 #include "platform/mwm_version.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/internal/file_data.hpp"
 #include "coding/point_coding.hpp"
 
@@ -36,8 +36,8 @@
 
 #include "defines.hpp"
 
-#include <list>
 #include <limits>
+#include <list>
 #include <memory>
 #include <vector>
 
@@ -79,21 +79,21 @@ public:
   {
     // write version information
     {
-      FileWriter w = m_writer.GetWriter(VERSION_FILE_TAG);
-      version::WriteVersion(w, m_versionDate);
+      auto w = m_writer.GetWriter(VERSION_FILE_TAG);
+      version::WriteVersion(*w, m_versionDate);
     }
 
     // write own mwm header
     m_header.SetBounds(m_bounds);
     {
-      FileWriter w = m_writer.GetWriter(HEADER_FILE_TAG);
-      m_header.Save(w);
+      auto w = m_writer.GetWriter(HEADER_FILE_TAG);
+      m_header.Save(*w);
     }
 
     // write region info
     {
-      FileWriter w = m_writer.GetWriter(REGION_INFO_FILE_TAG);
-      m_regionData.Serialize(w);
+      auto w = m_writer.GetWriter(REGION_INFO_FILE_TAG);
+      m_regionData.Serialize(*w);
     }
 
     // assume like we close files
@@ -103,7 +103,7 @@ public:
 
     // File Writer finalization function with appending to the main mwm file.
     auto const finalizeFn = [this](unique_ptr<TmpFile> w, string const & tag,
-        string const & postfix = string()) {
+                                   string const & postfix = string()) {
       w->Flush();
       m_writer.Write(w->GetName(), tag + postfix);
     };
@@ -117,11 +117,11 @@ public:
 
     {
       /// @todo Replace this mapping vector with succint structure.
-      FileWriter w = m_writer.GetWriter(METADATA_INDEX_FILE_TAG);
+      auto w = m_writer.GetWriter(METADATA_INDEX_FILE_TAG);
       for (auto const & v : m_metadataOffset)
       {
-        WriteToSink(w, v.first);
-        WriteToSink(w, v.second);
+        WriteToSink(*w, v.first);
+        WriteToSink(*w, v.second);
       }
     }
 
@@ -130,16 +130,17 @@ public:
 
     m_writer.Finish();
 
-    if (m_header.GetType() == DataHeader::country || m_header.GetType() == DataHeader::world)
+    if (m_header.GetType() == DataHeader::MapType::Country ||
+        m_header.GetType() == DataHeader::MapType::World)
     {
       FileWriter osm2ftWriter(m_writer.GetFileName() + OSM2FEATURE_FILE_EXTENSION);
-      m_osm2ft.Flush(osm2ftWriter);
+      m_osm2ft.Write(osm2ftWriter);
     }
   }
 
   void SetBounds(m2::RectD bounds) { m_bounds = bounds; }
 
-  uint32_t operator()(FeatureBuilder2 & fb)
+  uint32_t operator()(FeatureBuilder & fb)
   {
     GeometryHolder holder([this](int i) -> FileWriter & { return *m_geoFile[i]; },
                           [this](int i) -> FileWriter & { return *m_trgFile[i]; }, fb, m_header);
@@ -160,7 +161,7 @@ public:
         Points points;
 
         // Do not change linear geometry for the upper scale.
-        if (isLine && i == scalesStart && IsCountry() && fb.IsRoad())
+        if (isLine && i == scalesStart && IsCountry() && routing::IsRoad(fb.GetTypes()))
           points = holder.GetSourcePoints();
         else
           SimplifyPoints(level, isCoast, rect, holder.GetSourcePoints(), points);
@@ -218,9 +219,9 @@ public:
 
     uint32_t featureId = kInvalidFeatureId;
     auto & buffer = holder.GetBuffer();
-    if (fb.PreSerializeAndRemoveUselessNames(buffer))
+    if (fb.PreSerializeAndRemoveUselessNamesForMwm(buffer))
     {
-      fb.Serialize(buffer, m_header.GetDefGeometryCodingParams());
+      fb.SerializeForMwm(buffer, m_header.GetDefGeometryCodingParams());
 
       featureId = WriteFeatureBase(buffer.m_buffer, fb);
 
@@ -237,11 +238,8 @@ public:
         fb.GetMetadata().Serialize(*w);
       }
 
-      if (!fb.GetOsmIds().empty())
-      {
-        base::GeoObjectId const osmId = fb.GetMostGenericOsmId();
-        m_osm2ft.Add(make_pair(osmId, featureId));
-      }
+      if (fb.HasOsmIds())
+        m_osm2ft.AddIds(generator::MakeCompositeId(fb), featureId);
     };
     return featureId;
   }
@@ -279,7 +277,7 @@ private:
     return scales::IsGoodForLevel(level, r);
   }
 
-  bool IsCountry() const { return m_header.GetType() == feature::DataHeader::country; }
+  bool IsCountry() const { return m_header.GetType() == feature::DataHeader::MapType::Country; }
 
   void SimplifyPoints(int level, bool isCoast, m2::RectD const & rect, Points const & in,
                       Points & out)
@@ -306,18 +304,13 @@ private:
   RegionData m_regionData;
   uint32_t m_versionDate;
 
-  gen::OsmID2FeatureID m_osm2ft;
+  generator::OsmID2FeatureID m_osm2ft;
 
   DISALLOW_COPY_AND_MOVE(FeaturesCollector2);
 };
 
-/// Simplify geometry for the upper scale.
-FeatureBuilder2 & GetFeatureBuilder2(FeatureBuilder1 & fb)
-{
-  return static_cast<FeatureBuilder2 &>(fb);
-}
-
-bool GenerateFinalFeatures(feature::GenerateInfo const & info, string const & name, int mapType)
+bool GenerateFinalFeatures(feature::GenerateInfo const & info, string const & name,
+                           feature::DataHeader::MapType mapType)
 {
   string const srcFilePath = info.GetTmpFileName(name);
   string const datFilePath = info.GetTargetFileName(name);
@@ -328,7 +321,7 @@ bool GenerateFinalFeatures(feature::GenerateInfo const & info, string const & na
   bool const speedCamerasProhibitedMwm = routing::AreSpeedCamerasProhibited(country);
   uint32_t const speedCameraType = classif().GetTypeByPath({"highway", "speed_camera"});
   ForEachFromDatRawFormat(srcFilePath, [&speedCamerasProhibitedMwm, &speedCameraType, &midPoints](
-                                           FeatureBuilder1 const & ft, uint64_t pos) {
+                                           FeatureBuilder const & ft, uint64_t pos) {
     // Removing point features with speed cameras type from geometry index for some countries.
     if (speedCamerasProhibitedMwm && ft.IsPoint() && ft.HasType(speedCameraType))
       return;
@@ -343,7 +336,7 @@ bool GenerateFinalFeatures(feature::GenerateInfo const & info, string const & na
   {
     FileReader reader(srcFilePath);
 
-    bool const isWorld = (mapType != DataHeader::country);
+    bool const isWorld = (mapType != DataHeader::MapType::Country);
 
     // Fill mwm header.
     DataHeader header;
@@ -379,11 +372,11 @@ bool GenerateFinalFeatures(feature::GenerateInfo const & info, string const & na
         ReaderSource<FileReader> src(reader);
         src.Skip(point.second);
 
-        FeatureBuilder1 f;
-        ReadFromSourceRawFormat(src, f);
+        FeatureBuilder fb;
+        ReadFromSourceRawFormat(src, fb);
 
         // emit the feature
-        collector(GetFeatureBuilder2(f));
+        collector(fb);
       }
 
       // Update bounds with the limit rect corresponding to region borders.

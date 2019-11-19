@@ -1,6 +1,8 @@
 #pragma once
 
 #include "routing/async_router.hpp"
+#include "routing/following_info.hpp"
+#include "routing/position_accumulator.hpp"
 #include "routing/route.hpp"
 #include "routing/router.hpp"
 #include "routing/routing_callbacks.hpp"
@@ -95,7 +97,7 @@ public:
                                       feature::TAltitudes & routeAltitudesM) const;
 
   SessionState OnLocationPositionChanged(location::GpsInfo const & info);
-  void GetRouteFollowingInfo(location::FollowingInfo & info) const;
+  void GetRouteFollowingInfo(FollowingInfo & info) const;
 
   void MatchLocationToRoute(location::GpsInfo & location,
                             location::RouteMatchingInfo & routeMatchingInfo) const;
@@ -104,6 +106,9 @@ public:
   traffic::SpeedGroup MatchTraffic(location::RouteMatchingInfo const & routeMatchingInfo) const;
 
   void SetUserCurrentPosition(m2::PointD const & position);
+
+  void PushPositionAccumulator(m2::PointD const & position);
+  void ClearPositionAccumulator();
 
   void ActivateAdditionalFeatures() {}
 
@@ -190,23 +195,21 @@ private:
   bool m_isFollowing;
   Checkpoints m_checkpoints;
 
-
   /// Current position metrics to check for RouteNeedRebuild state.
   double m_lastDistance = 0.0;
   int m_moveAwayCounter = 0;
   m2::PointD m_lastGoodPosition;
-  // |m_currentDirection| is a vector from the position before last good position to last good position.
-  m2::PointD m_currentDirection;
+
   m2::PointD m_userCurrentPosition;
-  m2::PointD m_userFormerPosition;
   bool m_userCurrentPositionValid = false;
-  bool m_userFormerPositionValid = false;
 
   // Sound turn notification parameters.
   turns::sound::NotificationManager m_turnNotificationsMgr;
 
   SpeedCameraManager m_speedCameraManager;
   RoutingSettings m_routingSettings;
+
+  PositionAccumulator m_positionAccumulator;
 
   ReadyCallback m_buildReadyCallback;
   ReadyCallback m_rebuildReadyCallback;

@@ -404,6 +404,7 @@ namespace KDTree
       {
         if (_M_get_root())
           return _M_for_any(_M_get_root(), 0, toDo);
+
         return false;
       }
 
@@ -671,15 +672,14 @@ namespace KDTree
         if (toDo.DoIfIntersects(_S_value(N)))
           return true;
 
-        if (_S_left(N) && toDo.ScanLeft(L, _S_value(N)))
-          return _M_for_any(_S_left(N), L+1, toDo);
+        if (_S_left(N) && toDo.ScanLeft(L, _S_value(N)) && _M_for_any(_S_left(N), L+1, toDo))
+          return true;
 
-        if (_S_right(N) && toDo.ScanRight(L, _S_value(N)))
-          return _M_for_any(_S_right(N), L+1, toDo);
+        if (_S_right(N) && toDo.ScanRight(L, _S_value(N)) && _M_for_any(_S_right(N), L+1, toDo))
+          return true;
 
         return false;
       }
-
 
       _Link_type
       _M_get_erase_replacement(_Link_type node, size_type const level)

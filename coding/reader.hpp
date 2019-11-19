@@ -5,8 +5,6 @@
 #include "base/assert.hpp"
 #include "base/exception.hpp"
 
-#include "std/shared_array.hpp"
-
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -194,6 +192,11 @@ public:
     return (m_reader.Size() - m_pos);
   }
 
+  void SetPosition(uint64_t pos)
+  {
+    m_pos = pos;
+  }
+
 private:
   void CheckPosition() const
   {
@@ -244,6 +247,15 @@ public:
   }
 
   TReader SubReader() { return SubReader(Size()); }
+
+  std::unique_ptr<Reader> CreateSubReader(uint64_t size)
+  {
+    uint64_t const pos = m_pos;
+    Skip(size);
+    return m_reader.CreateSubReader(pos, size);
+  }
+
+  std::unique_ptr<Reader> CreateSubReader() { return CreateSubReader(Size()); }
 
 private:
   bool AssertPosition() const

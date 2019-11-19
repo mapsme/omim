@@ -4,7 +4,7 @@
 
 #include "testing/testing.hpp"
 
-#include "map/feature_vec_model.hpp"
+#include "map/features_fetcher.hpp"
 
 #include "storage/routing_helpers.hpp"
 
@@ -28,6 +28,7 @@
 #include "geometry/latlon.hpp"
 
 #include "base/math.hpp"
+#include "base/stl_helpers.hpp"
 
 #include "private.h"
 
@@ -63,22 +64,16 @@ void ChangeMaxNumberOfOpenFiles(size_t n)
 
 namespace integration
 {
-shared_ptr<model::FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles)
+shared_ptr<FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles)
 {
   size_t const maxOpenFileNumber = 4096;
   ChangeMaxNumberOfOpenFiles(maxOpenFileNumber);
-  shared_ptr<model::FeaturesFetcher> featuresFetcher(new model::FeaturesFetcher);
+  shared_ptr<FeaturesFetcher> featuresFetcher(new FeaturesFetcher);
   featuresFetcher->InitClassificator();
 
   for (LocalCountryFile const & localFile : localFiles)
-  {
-    auto p = featuresFetcher->RegisterMap(localFile);
-    if (p.second != MwmSet::RegResult::Success)
-    {
-      ASSERT(false, ("Can't register", localFile));
-      return nullptr;
-    }
-  }
+    featuresFetcher->RegisterMap(localFile);
+
   return featuresFetcher;
 }
 
@@ -102,18 +97,21 @@ unique_ptr<IndexRouter> CreateVehicleRouter(DataSource & dataSource,
     return infoGetter.GetLimitRectForLeaf(countryId);
   };
 
+  auto countryParentGetter = std::make_unique<storage::CountryParentGetter>();
+  CHECK(countryParentGetter, ());
+
   auto numMwmIds = make_shared<NumMwmIds>();
   for (auto const & f : localFiles)
   {
     auto const & countryFile = f.GetCountryFile();
     auto const mwmId = dataSource.GetMwmIdByCountryFile(countryFile);
-    CHECK(mwmId.IsAlive(), ());
-    if (mwmId.GetInfo()->GetType() == MwmInfo::COUNTRY && countryFile.GetName() != "minsk-pass")
+
+    if (!mwmId.IsAlive())
+      continue;
+
+    if (countryParentGetter->GetStorageForTesting().IsLeaf(countryFile.GetName()))
       numMwmIds->RegisterFile(countryFile);
   }
-
-  auto countryParentGetter = std::make_unique<storage::CountryParentGetter>();
-  CHECK(countryParentGetter, ());
 
   bool const loadAltitudes = vehicleType != VehicleType::Car;
   auto indexRouter = make_unique<IndexRouter>(vehicleType, loadAltitudes,
@@ -134,7 +132,6 @@ void GetAllLocalFiles(vector<LocalCountryFile> & localFiles)
   if (options.m_resourcePath)
     pl.SetResourceDir(options.m_resourcePath);
 
-  platform::migrate::SetMigrationFlag();
   platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max() /* latestVersion */,
                                        localFiles);
   for (auto & file : localFiles)
@@ -315,8 +312,7 @@ void TestOnlineFetcher(ms::LatLon const & startPoint, ms::LatLon const & finalPo
     return false;
   };
   routing::OnlineAbsentCountriesFetcher fetcher(countryFileGetter, localFileChecker);
-  fetcher.GenerateRequest(Checkpoints(MercatorBounds::FromLatLon(startPoint),
-                                      MercatorBounds::FromLatLon(finalPoint)));
+  fetcher.GenerateRequest(Checkpoints(mercator::FromLatLon(startPoint), mercator::FromLatLon(finalPoint)));
   set<string> absent;
   fetcher.GetAbsentCountries(absent);
   if (expected.size() < 2)
@@ -338,8 +334,7 @@ void TestOnlineCrosses(ms::LatLon const & startPoint, ms::LatLon const & finalPo
     return routerComponents.GetCountryInfoGetter().GetRegionCountryId(p);
   };
   routing::OnlineCrossFetcher fetcher(countryFileGetter, OSRM_ONLINE_SERVER_URL,
-                                      Checkpoints(MercatorBounds::FromLatLon(startPoint),
-                                                  MercatorBounds::FromLatLon(finalPoint)));
+                                      Checkpoints(mercator::FromLatLon(startPoint), mercator::FromLatLon(finalPoint)));
   fetcher.Do();
   vector<m2::PointD> const & points = fetcher.GetMwmPoints();
   set<string> foundMwms;

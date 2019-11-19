@@ -1,6 +1,6 @@
 #pragma once
 
-#include "generator/emitter_interface.hpp"
+#include "generator/processor_interface.hpp"
 #include "generator/tag_admixer.hpp"
 #include "generator/translator.hpp"
 
@@ -13,7 +13,7 @@ struct GenerateInfo;
 
 namespace cache
 {
-class IntermediateDataReader;
+class IntermediateData;
 }  // namespace cache
 
 namespace generator
@@ -22,30 +22,23 @@ namespace generator
 class TranslatorWorld : public Translator
 {
 public:
-  explicit TranslatorWorld(std::shared_ptr<EmitterInterface> emitter, cache::IntermediateDataReader & cache,
-                           feature::GenerateInfo const & info);
+  explicit TranslatorWorld(std::shared_ptr<FeatureProcessorInterface> const & processor,
+                           std::shared_ptr<cache::IntermediateData> const & cache,
+                           feature::GenerateInfo const & info, bool needMixTags = false);
 
   // TranslatorInterface overrides:
   void Preprocess(OsmElement & element) override;
 
-private:
-  TagAdmixer m_tagAdmixer;
-  TagReplacer m_tagReplacer;
-};
+  std::shared_ptr<TranslatorInterface> Clone() const override;
 
-// The TranslatorWorldWithAds class implements translator for building the world with advertising.
-class TranslatorWorldWithAds : public TranslatorWorld
-{
-public:
-  explicit TranslatorWorldWithAds(std::shared_ptr<EmitterInterface> emitter,
-                                  cache::IntermediateDataReader & cache,
-                                  feature::GenerateInfo const & info);
+  void Merge(TranslatorInterface const & other) override;
+  void MergeInto(TranslatorWorld & other) const override;
 
-  // TranslatorInterface overrides:
-  void Preprocess(OsmElement & element) override;
-  bool Finish() override;
+protected:
+  using Translator::Translator;
 
-private:
-  OsmTagMixer m_osmTagMixer;
+  std::shared_ptr<TagAdmixer> m_tagAdmixer;
+  std::shared_ptr<TagReplacer> m_tagReplacer;
+  std::shared_ptr<OsmTagMixer> m_osmTagMixer;
 };
 }  // namespace generator

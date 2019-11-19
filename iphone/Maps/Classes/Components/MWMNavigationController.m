@@ -1,5 +1,4 @@
 #import "MWMNavigationController.h"
-#import "MWMCommon.h"
 #import "MWMController.h"
 
 #import <SafariServices/SafariServices.h>
@@ -12,7 +11,6 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-  setStatusBarBackgroundColor(UIColor.clearColor);
   return UIStatusBarStyleLightContent;
 }
 

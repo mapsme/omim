@@ -4,28 +4,18 @@
 #import "MWMCoreRouterType.h"
 #import "MWMFrameworkListener.h"
 #import "MWMLocationHelpers.h"
-#import "MWMLocationManager.h"
 #import "MWMLocationObserver.h"
 #import "MWMMapViewControlsManager.h"
 #import "MWMNavigationDashboardManager+Entity.h"
 #import "MWMRoutePoint+CPP.h"
-#import "MWMRouterRecommendation.h"
 #import "MWMStorage.h"
-#import "MapViewController.h"
 #import "MapsAppDelegate.h"
-#import "Statistics.h"
 #import "SwiftBridge.h"
 #import "UIImage+RGBAData.h"
 
-#include "Framework.h"
-
-#include "indexer/feature_altitude.hpp"
+#include <CoreApi/Framework.h>
 
 #include "platform/local_country_file_utils.hpp"
-
-#include <cstdint>
-#include <memory>
-#include <vector>
 
 using namespace routing;
 
@@ -38,6 +28,7 @@ using namespace routing;
 @property(nonatomic) uint32_t routeManagerTransactionId;
 @property(nonatomic) BOOL canAutoAddLastLocation;
 @property(nonatomic) BOOL isAPICall;
+@property(nonatomic) BOOL isRestoreProcessCompleted;
 @property(strong, nonatomic) MWMRoutingOptions * routingOptions;
 
 + (MWMRouter *)router;
@@ -85,7 +76,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   static MWMRouter * router;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    router = [[super alloc] initRouter];
+    router = [[self alloc] initRouter];
   });
   return router;
 }
@@ -230,8 +221,21 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
     [MWMFrameworkListener addObserver:self];
     _canAutoAddLastLocation = YES;
     _routingOptions = [MWMRoutingOptions new];
+    _isRestoreProcessCompleted = NO;
   }
   return self;
+}
+
++ (void)subscribeToEvents
+{
+  [MWMFrameworkListener addObserver:[MWMRouter router]];
+  [MWMLocationManager addObserver:[MWMRouter router]];
+}
+
++ (void)unsubscribeFromEvents
+{
+  [MWMFrameworkListener removeObserver:[MWMRouter router]];
+  [MWMLocationManager removeObserver:[MWMRouter router]];
 }
 
 + (void)setType:(MWMRouterType)type
@@ -297,7 +301,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
 + (NSArray<NSString *> *)turnNotifications
 {
   NSMutableArray<NSString *> * turnNotifications = [@[] mutableCopy];
-  vector<string> notifications;
+  std::vector<std::string> notifications;
   GetFramework().GetRoutingManager().GenerateNotifications(notifications);
 
   for (auto const & text : notifications)
@@ -423,7 +427,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
     self.type = routerType(rm.GetBestRouter(points.front().m_position, points.back().m_position));
 
   [[MWMMapViewControlsManager manager] onRouteRebuild];
-  rm.BuildRoute(0 /* timeoutSec */);
+  rm.BuildRoute();
 }
 
 + (void)start
@@ -507,7 +511,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   // Don't save taxi routing type as default.
   if ([MWMRouter isTaxi])
     GetFramework().GetRoutingManager().SetRouter(routing::RouterType::Vehicle);
-  [[MWMMapViewControlsManager manager] onRouteStop];
+  [self hideNavigationMapControls];
   [MWMRouter router].canAutoAddLastLocation = YES;
 }
 
@@ -526,7 +530,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   if (![MWMRouter isRoutingActive])
     return;
   auto const & rm = GetFramework().GetRoutingManager();
-  location::FollowingInfo info;
+  routing::FollowingInfo info;
   rm.GetRouteFollowingInfo(info);
   auto navManager = [MWMNavigationDashboardManager manager];
   if (!info.IsValid())
@@ -563,7 +567,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
     NSData * imageData = router.altitudeImagesData[sizeValue];
     if (!imageData)
     {
-      vector<uint8_t> imageRGBAData;
+      std::vector<uint8_t> imageRGBAData;
       int32_t minRouteAltitude = 0;
       int32_t maxRouteAltitude = 0;
       measurement_utils::Units units = measurement_utils::Units::Metric;
@@ -583,7 +587,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
       imageData = [NSData dataWithBytes:imageRGBAData.data() length:imageRGBAData.size()];
       router.altitudeImagesData[sizeValue] = imageData;
 
-      string heightString;
+      std::string heightString;
       measurement_utils::FormatDistance(maxRouteAltitude - minRouteAltitude, heightString);
       router.altitudeElevation = @(heightString.c_str());
     }
@@ -612,9 +616,10 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   if (![MWMRouter isRoutingActive])
     return;
   auto tts = [MWMTextToSpeech tts];
+  NSArray<NSString *> *turnNotifications = [MWMRouter turnNotifications];
   if ([MWMRouter isOnRoute] && tts.active)
   {
-    [tts playTurnNotifications];
+    [tts playTurnNotifications:turnNotifications];
     [tts playWarningSound];
   }
 
@@ -707,15 +712,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
                      countries:(storage::CountriesSet const &)countries
 {
   MWMAlertViewController * activeAlertController = [MWMAlertViewController activeAlertController];
-  if (platform::migrate::NeedMigrate())
-  {
-    [activeAlertController presentRoutingMigrationAlertWithOkBlock:^{
-      [Statistics logEvent:kStatDownloaderMigrationDialogue
-            withParameters:@{kStatFrom : kStatRouting}];
-      [[MapViewController sharedController] openMigration];
-    }];
-  }
-  else if (!countries.empty())
+  if (!countries.empty())
   {
     [activeAlertController presentDownloaderAlertWithCountries:countries
         code:code
@@ -763,12 +760,15 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   if ([MapsAppDelegate theApp].isDrapeEngineCreated)
   {
     auto & rm = GetFramework().GetRoutingManager();
-    if ([self isRoutingActive] || ![self hasSavedRoute])
+    if ([self isRoutingActive] || ![self hasSavedRoute]) {
+      self.router.isRestoreProcessCompleted = YES;
       return;
+    }
     rm.LoadRoutePoints([self](bool success)
     {
       if (success)
         [self rebuildWithBestRouter:YES];
+      self.router.isRestoreProcessCompleted = YES;
     });
   }
   else
@@ -777,6 +777,11 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
       [self restoreRouteIfNeeded];
     });
   }
+}
+
++ (BOOL)isRestoreProcessCompleted
+{
+  return self.router.isRestoreProcessCompleted;
 }
 
 + (BOOL)hasSavedRoute
@@ -814,6 +819,14 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   }
   [options save];
   [self rebuildWithBestRouter:YES];
+}
+
++ (void)showNavigationMapControls {
+  [[MWMMapViewControlsManager manager] onRouteStart];
+}
+
++ (void)hideNavigationMapControls {
+  [[MWMMapViewControlsManager manager] onRouteStop];
 }
 
 @end

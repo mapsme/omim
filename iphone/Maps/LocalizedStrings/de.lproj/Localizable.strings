@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "Es gibt keine aktiven Abonnements";
 
-"subscription_terms" = "Die Zahlung erfolgt nach Kaufbestätigung über Ihr iTunes-Konto. Das Abonnement wird automatisch verlängert, sofern Sie die automatische Verlängerung nicht 24 Stunden vor Ende des aktuellen Zeitraums abgestellt haben. Ihr Konto wird gemäß Ihres Plans für die Verlängerung innerhalb von 24 Stunden vor dem Ende des aktuellen Zeitraums belastet. Sie können bei Kauf die automatisch Verlängerung über Ihre Apple-ID-Kontoeinstellungen jederzeit verwalten oder abstellen.";
-
 "subscriptions_title" = "Abonnements";
 
 "manage_subscription" = "Abonnements verwalten";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "Datei ist beschädigt und kann nicht geladen werden. Bitte laden Sie eine andere Datei.";
 
-"buy_btn" = "Für %s kaufen";
+"buy_btn" = "Reiseführer für %s kaufen";
 
 "download_guide_progress" = "Reiseführer wird geladen…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Es ist unmöglich, eine Route zu planen. Wählen Sie andere Routenpunkte";
 
-"dialog_routing_download_files_carplay" = "Nicht alle Karten sind für Routenplanung zugänglich. Laden Sie sie in der App auf Ihrem Handy herunter";
+"dialog_routing_download_files_carplay" = "Laden Sie die fehlenden Karten hoch, um die Route zu erstellen";
 
 "dialog_routing_system_error_carplay" = "Fehler aufgetreten. Starten Sie Applikation neu";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Hotel auf der Karte suchen";
+
+"popup_booking_download_guides_title" = "Hotel gebucht?";
+
+"popup_booking_download_guides_message" = "Planen Sie die Route mit fertigen Reiseführern von MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Offline-Reiseführer";
+
+"popup_mwm_download_guides_cta" = "Auswählen";
+
+"popup_mwm_download_guides_cta_1" = "Anschauen";
+
+"gallery_pp_download_guides_offline_title" = "Planen Sie Ihren Urlaub mit MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Verpassen Sie das wichtigste mit den Routen von erfahrenen Reisenden nicht";
+
+"gallery_pp_download_guides_offline_cta" = "Internet ein";
+
+"gallery_pp_download_guides_title" = "Reiseführer";
+
+"native_screen_subscription_title" = "Uneingeschränkter Zugriff auf 2000+ Reiseführer!";
+
+"native_screen_subscription_message" = "Unvergesslicher Urlaub, wohin und mit wem würden Sie nicht reisen";
+
+"annual_subscription_title" = "Jährliche";
+
+"montly_subscription_title" = "Monatliche";
+
+"annual_subscription_message" = "12 Monate uneingeschränkten Zugriffs";
+
+"montly_subscription_message" = "1 Monat uneingeschränkten Zugriffs";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Danke für die Subskription!";
+
+"subscription_success_dialog_message" = "Jetzt haben sie einen uneingeschränkten Zugriff auf den Reiseführer-Katalog";
+
+"renewal_screen_title" = "Die Subskriptionfrist ist abgelaufen";
+
+"renewal_screen_message" = "Alle Reiseführer, die in Subskription heruntergeladen wurden, werden gelöscht. Möchten Sie die Subskription erneuern und sie behalten?";
+
+"renewal_screen_button_restore" = "Ja, erneuern";
+
+"renewal_screen_button_cancel" = "Nein, Reiseführer löschen";
+
+"subscription_error_ping_title" = "Der Erwerb war nicht erfolgreich";
+
+"subscription_error_message" = "Der Service ist momentan in Ihrer Region nicht verfügbar. Bitte, versuchen Sie es später noch einmal";
+
+"subscription_error_button" = "OK";
+
+"timeout_error_title" = "Ups, die Session ist abgelaufen!";
+
+"timeout_error_message" = "Unsere Server antworten nicht. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es noch einmal.";
+
+"per_month" = "/Monat";
+
+"per_year" = "/Jahr";
+
+"buy_btn_for_subscription" = "Uneingeschränkter Zugriff ab %s";
+
+"buy_btn_for_subscription_1" = "ALLE Reiseführer für %s kaufen";
+
+"buy_btn_for_subscription_ios_only_mo" = "Uneingeschränkter Zugriff für %s/Monat";
+
+"buy_btn_for_subscription_ios_only_year" = "Uneingeschränkter Zugriff für %s/Jahr";
+
+"subscription_terms_guides" = "Der Betrag wird von Ihrem iTunes-Konto bei der Kaufbestätigung abgebucht. Die Subskription wird automatisch erneuert, wenn die automatische Erneuerung wenigstens 24 Stunden vor Ablauf des laufenden Zeitraums nicht deaktiviert wird. Der Betrag wird von ihrem Konto gemäß Ihrem Verlängerungstarifplan innerhalb von 24 Stunden bis zum Ablauf des laufenden Zeitraums abgebucht. Sie können die automatische Verlängerung in den Kontoeinstellungen Apple ID jederzeit nach dem Kauf aktivieren oder deaktivieren. Sie können Reiseführer, die in Subskription heruntergeladen wurden, nur innerhalb der Subskriptionfrist benutzen. Nach 30 Tagen ab dem Ablaufdatum der Subskription werden die Reiseführer mit allen Lesezeichen automatisch gelöscht.";
+
+"subscription_terms" = "Die Zahlung erfolgt nach Kaufbestätigung über Ihr iTunes-Konto. Das Abonnement wird automatisch verlängert, sofern Sie die automatische Verlängerung nicht 24 Stunden vor Ende des aktuellen Zeitraums abgestellt haben. Ihr Konto wird gemäß Ihres Plans für die Verlängerung innerhalb von 24 Stunden vor dem Ende des aktuellen Zeitraums belastet. Sie können bei Kauf die automatisch Verlängerung über Ihre Apple-ID-Kontoeinstellungen jederzeit verwalten oder abstellen.";
+
+"whatsnew_carplay_title" = "Autonavigation MAPS.ME in CarPlay!";
+
+"whatsnew_carplay_message" = "Lesezeichengruppen, Suche, Geschwindigkeitskameras und Einstellung des Umweges – all das funktioniert ohne Internet";
+
+"whatsnew_subscription_title" = "Entdecke die Welt mit Subskription!";
+
+"whatsnew_subscription_message" = "Uneingeschränkter Zugriff auf den Routenkatalog ist günstiger als Einmalkauf";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Navigation Update";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Wir haben den Routenaufbau bis zu den von den Straßen weit entfernten Orten verbessert";
+
+"avoid_unpaved_carplay_1" = "Ohne Landstr";
+
+"avoid_unpaved_carplay_2" = "Ohne Landstr.";
+
+"avoid_ferry_carplay_1" = "Ohne Fähren";
+
+"avoid_ferry_carplay_2" = "Ohne Fähren";
+
+"avoid_tolls_carplay_1" = "Ohne kpf Str";
+
+"avoid_tolls_carplay_2" = "Ohne kpfl. Str.";
+
+"speedcams_alert_title_carplay_1" = "Blitzer";
+
+"speedcams_alert_title_carplay_2" = "Blitzerwarnung";
+
+"download_map_carplay" = "Laden Sie Karten in der App MAPS.ME auf Ihrem Gerät herunter";
+
+"carplay_roundabout_exit" = "%s Ausfahrt";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Sortieren…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Lesezeichen sortieren";
+
+/* iOS */
+"sort_default" = "Default Sortierung";
+
+"sort_type" = "Sortierung nach Kategorien";
+
+"sort_distance" = "Sortieren nach Entfernung";
+
+"sort_date" = "Sortieren nach Datum";
+
+/* Android */
+"by_default" = "Default";
+
+/* Android */
+"by_type" = "Nach Kategorie";
+
+/* Android */
+"by_distance" = "Nach Entfernung";
+
+/* Android */
+"by_date" = "Nach Datum";
+
+"week_ago_sorttype" = "Vor einer Woche";
+
+"month_ago_sorttype" = "Vor einem Monat";
+
+"moremonth_ago_sorttype" = "Vor über einem Monat";
+
+"moreyear_ago_sorttype" = "Vor über einem Jahr";
+
+"near_me_sorttype" = "In der Nähe";
+
+"others_sorttype" = "Sonstiges";
+
+"food_places" = "Essen";
+
+"tourist_places" = "Sehenswürdigkeiten";
+
+"museums" = "Museen";
+
+"parks" = "Parks";
+
+"swim_places" = "Schwimmmöglichkeiten";
+
+"mountains" = "Berge";
+
+"animals" = "Tiere";
+
+"hotels" = "Hotels";
+
+"buildings" = "Gebäude";
+
+"money" = "Geld";
+
+"shops" = "Ladengeschäfte";
+
+"parkings" = "Parkplätze";
+
+"fuel_places" = "Tankstellen";
+
+"water" = "Wasser";
+
+"medicine" = "Medizin";
+
+"search_in_the_list" = "In der Liste suchen";
+
+"view_on_map_bookmarks" = "Auf der Karte";
+
+"more_bookmarks" = "Mehr…";
+
+"no_items_found" = "Keine Einträge gefunden";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Korrigieren";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Liste löschen";
+
+"whatsnew_bookmarks_search_sort_title" = "Ordnung in den Lesezeichen – Handlichkeit während der Reise";
+
+"whatsnew_bookmarks_search_sort_message" = "Sortieren Sie die gewählten Orte nach Kategorie, Hinzufügungszeit und Geolokation. Sie können Lesezeichen schnell nach Lesezeichenname suchen";
+
+"popup_subscription_success_map_title" = "Hurra! Sie haben erfolgreich abonniert!";
+
+"popup_subscription_success_map_message" = "Entdecken Sie die besten touristischen Sehenswürdigkeiten im MAPS.ME-Katalog";
+
+"popup_subscription_success_map_start_button" = "Ansehen";
+
+"popup_subscription_success_map_not_now_button" = "Nicht jetzt";
+
+"religious_places" = "Heilige Orte";
+
+"subscription_terms_android" = "Der Betrag wird von Ihrem Google Play Konto bei der Bestätigung der Transaktion abgebucht. Die Subskription wird automatisch verlängert, wenn die automatische Verlängerung mindestens 24 Stunden vor Ablauf des laufenden Zeitraums nicht deaktiviert wurde. Der Betrag wird von Ihrem Account gemäß Ihrem Verlängerungstarifplan innerhalb von 24 Stunden vor zum Ablauf des laufenden Zeitraums abgebucht. Sie können die automatische Verlängerung verwalten oder diese in den Account-Einstellungen nach dem Erwerb deaktivieren. Sie können Reiseführer, die mit einer gültigen Subskription heruntergeladen wurden, nur innerhalb deren Gültigkeitsdauer benutzen. 30 Tage nach Ablauf der Subskription werden die Reiseführer automatisch gelöscht.";
+
+"select_list" = "Wählen Sie die Liste";
+
+"pp_discovery_place_related_header" = "Dieser Ort im Reiseführerkatalog";
+
+"pp_discovery_place_related_header_1" = "Dieser Ort ist im Reiseführer vorhanden";
+
+"pp_discovery_place_related_cta_button" = "Ansehen";
+
+"pp_discovery_place_related_tag_header" = "Reiseführernach Tag „%s“";
+
+"pp_discovery_place_related_tag_header_1" = "Das könnte Ihnen auch gefallen";
+
+"buy_btn_for_subscription_version_2" = "ALLE Reiseführer für nur %s/Monat";
+
+"buy_btn_for_subscription_version_3" = "Das ganze Katalog für %s/Monat";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Zugriff auf das Katalog für %s/Monat";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Zugriff auf das Katalog für %s/Jahr";
+
+"subscription_screen_native_title_version_2" = "Zugriff auf Reiseführer mit Lesezeichen auf der Karte!";
+
+"subscription_screen_native_message_version_2" = "Seien Sie für jede Reise in 600+ Städten und 100+ Ländern bereit";
+
+"catalog_no_internet_title" = "Keine Internetverbindung";
+
+"catalog_no_internet_button" = "Noch einmal versuchen";
+
+"whatsnew_map_updates_title" = "Raketenschnelles Kartenupdate";
+
+"whatsnew_map_updates_message" = "Von nun an werden die Daten doppelt so schnell upgedatet";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Tiefgarage";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Bezahlterminal";
 
 "type.amenity.pharmacy" = "Apotheke";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Post";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Kneipe";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Universität";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Zigarettenautomat";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Wasseranschluss";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Block";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Grenzkontrolle";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Durchgang";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Tor";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Schranke";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Zaunübertritt";
 
 "type.barrier.toll_booth" = "Mautstelle";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Ausgrabungsstätte";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Wasserfläche";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Friedhof";
 
 "type.landuse.cemetery.christian" = "Friedhof";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3775,7 +4016,7 @@
 
 "type.leisure.common" = "leisure-common";
 
-"type.leisure.dog_park" = "Platz für Hundesauflauf";
+"type.leisure.dog_park" = "Hundeauslauffläche";
 
 "type.leisure.dog_park.tennis" = "Hundezone";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Grasland";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "See";
 

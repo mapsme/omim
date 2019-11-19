@@ -4,6 +4,7 @@
 #include "search/model.hpp"
 #include "search/token_range.hpp"
 
+#include "indexer/feature_decl.hpp"
 #include "indexer/mwm_set.hpp"
 
 #include "storage/country_info_getter.hpp"
@@ -21,8 +22,12 @@ class IdfMap;
 struct Locality
 {
   Locality(MwmSet::MwmId const & countryId, uint32_t featureId, TokenRange const & tokenRange,
-           QueryVec const & queryVec)
-    : m_countryId(countryId), m_featureId(featureId), m_tokenRange(tokenRange), m_queryVec(queryVec)
+           QueryVec const & queryVec, bool exactMatch)
+    : m_countryId(countryId)
+    , m_featureId(featureId)
+    , m_tokenRange(tokenRange)
+    , m_queryVec(queryVec)
+    , m_exactMatch(exactMatch)
   {
   }
 
@@ -32,6 +37,7 @@ struct Locality
   uint32_t m_featureId = 0;
   TokenRange m_tokenRange;
   QueryVec m_queryVec;
+  bool m_exactMatch;
 };
 
 // This struct represents a country or US- or Canadian- state.  It
@@ -72,6 +78,17 @@ struct City : public Locality
 #if defined(DEBUG)
   std::string m_defaultName;
 #endif
+};
+
+struct Suburb
+{
+  Suburb(FeatureID const & featureId, TokenRange const & tokenRange)
+    : m_featureId(featureId), m_tokenRange(tokenRange)
+  {
+  }
+
+  FeatureID m_featureId;
+  TokenRange m_tokenRange;
 };
 
 std::string DebugPrint(Locality const & locality);

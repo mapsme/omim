@@ -3,13 +3,18 @@
 #include "base/thread_checker.hpp"
 
 #include <atomic>
+#include <cstdint>
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 
-enum class SubscriptionType
+enum class SubscriptionType : uint8_t
 {
-  RemoveAds
+  RemoveAds = 0,
+  BookmarkCatalog,
+
+  Count
 };
 
 class SubscriptionListener
@@ -65,12 +70,18 @@ private:
                     std::string const & accessToken, bool startTransaction,
                     uint8_t attemptIndex, uint32_t waitingTimeInSeconds);
 
-  struct RemoveAdsSubscriptionData
+  // This structure is used in multithreading environment, so
+  // fields must be either constant or atomic.
+  struct SubscriptionData
   {
     std::atomic<bool> m_isActive;
-    std::string m_subscriptionId;
+    std::string const m_subscriptionId;
+
+    SubscriptionData(bool isActive, std::string const & id)
+      : m_isActive(isActive), m_subscriptionId(id)
+    {}
   };
-  RemoveAdsSubscriptionData m_removeAdsSubscriptionData;
+  std::vector<std::unique_ptr<SubscriptionData>> m_subscriptionData;
 
   std::vector<SubscriptionListener *> m_listeners;
 

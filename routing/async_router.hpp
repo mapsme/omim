@@ -53,7 +53,7 @@ public:
                       NeedMoreMapsCallback const & needMoreMapsCallback,
                       RemoveRouteCallback const & removeRouteCallback,
                       ProgressCallback const & progressCallback,
-                      uint32_t timeoutSec);
+                      uint32_t timeoutSec = RouterDelegate::kNoTimeout);
 
   /// Interrupt routing and clear buffers
   void ClearState();
@@ -115,7 +115,7 @@ private:
   Checkpoints m_checkpoints;
   m2::PointD m_startDirection = m2::PointD::Zero();
   bool m_adjustToPrevRoute = false;
-  std::shared_ptr<RouterDelegateProxy> m_delegate;
+  std::shared_ptr<RouterDelegateProxy> m_delegateProxy;
   std::shared_ptr<IOnlineFetcher> m_absentFetcher;
   std::shared_ptr<IRouter> m_router;
 

@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "Nu există abonamente active";
 
-"subscription_terms" = "Plata va fi percepută din contul dvs. iTunes la confirmarea achiziției. Abonamentul va fi reînnoit în mod automat, cu excepția cazului în care reînnoirea automată este oprită cu cel puțin 24 de ore înainte de sfârșitul perioadei curente. Plata va fi percepută din contul dvs. în conformitate cu planul dvs. de reînnoire într-un interval de timp de 24 de ore înainte de încheierea perioadei curente. Puteți administra sau dezactiva reînnoirea automată din setările contului dvs. Apple ID în orice moment al achiziției.";
-
 "subscriptions_title" = "Abonamente";
 
 "manage_subscription" = "Administrare abonament";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "Fișierul a fost deteriorat și nu poate fi încărcat. Vă rugăm, alegeți alt fișier.";
 
-"buy_btn" = "Cumpărați pentru %s";
+"buy_btn" = "Cumpără un ghid la preț de %s";
 
 "download_guide_progress" = "Ghidul de călătorie se încarcă…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Este imposibil de elaborat un traseu. Selectați alte puncte ale traseului";
 
-"dialog_routing_download_files_carplay" = "Nu toate hărțile sunt accesibile pentru elaborarea traseului. Descărcați-le în aplicația de pe telefon";
+"dialog_routing_download_files_carplay" = "Pentru noi trasee, încărcați hărțile lipsa pe dispozitivul dvs.";
 
 "dialog_routing_system_error_carplay" = "Eroare. Restartați aplicația";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Selectează hotel pe hartă";
+
+"popup_booking_download_guides_title" = "Rezervare hotel?";
+
+"popup_booking_download_guides_message" = "Planificați traseul cu ghidurile MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Ghiduri offline";
+
+"popup_mwm_download_guides_cta" = "Selectează";
+
+"popup_mwm_download_guides_cta_1" = "Privește";
+
+"gallery_pp_download_guides_offline_title" = "Planifică odihna ta cu MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Nu ratați cel mai important cu traseele de la călători experimentați";
+
+"gallery_pp_download_guides_offline_cta" = "Conectare Internet";
+
+"gallery_pp_download_guides_title" = "Ghiduri";
+
+"native_screen_subscription_title" = "Acces la 2000+ghiduri!";
+
+"native_screen_subscription_message" = "O călătorie de neuitat, oriunde și cu oricine ai călători";
+
+"annual_subscription_title" = "Anual";
+
+"montly_subscription_title" = "Lunar";
+
+"annual_subscription_message" = "12 luni de acces nelimitat";
+
+"montly_subscription_message" = "1 lună de acces nelimitat";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Vă mulțumim pentru abonare!";
+
+"subscription_success_dialog_message" = "Acum aveți un acces nelimitat la catalogul de ghiduri";
+
+"renewal_screen_title" = "Termenul de valabilitate a abonării a expirat";
+
+"renewal_screen_message" = "Toate ghidurile, descărcate la abonare vor fi eliminate. Doriți să restabiliți abonarea și să le păstrați?";
+
+"renewal_screen_button_restore" = "Da, restabilire";
+
+"renewal_screen_button_cancel" = "Nu, eliminare ghiduri";
+
+"subscription_error_ping_title" = "Nu a fost posibil de făcut cumpărătura";
+
+"subscription_error_message" = "Acum serviciul nu este disponibil în regiunea dvs. Vă rugăm să încercați mai târziu";
+
+"subscription_error_button" = "Clar";
+
+"timeout_error_title" = "Ups, timpul a expirat!";
+
+"timeout_error_message" = "Server-ul nostru nu răspunde. Vă rugăm să verificați conectarea la Internet și să încercați din nou.";
+
+"per_month" = "/lună";
+
+"per_year" = "/an";
+
+"buy_btn_for_subscription" = "Acces complet de la %s";
+
+"buy_btn_for_subscription_1" = "Cumpără toate ghidurile la preț de %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Acces complet de %s/lună";
+
+"buy_btn_for_subscription_ios_only_year" = "Acces complet de %s/an";
+
+"subscription_terms_guides" = "Plata se va efectua de pe contul dvs. iTunes la confirmarea cumpărăturii. Abonamentul va fi reînnoit automat, cu excepția cazului în care reînnoirea automată este oprită cu cel puțin 24 de ore înainte de sfârșitul perioadei curente. Banii vor fi debitați din contul dvs. în conformitate cu planul dvs. de tarifare de reînnoire în termen de 24 de ore de la sfârșitul perioadei curente. Aveți posibilitatea să gestionați reînnoirea automată sau s-o dezactivați în setările contului dvs. Apple ID în orice moment după cumpărare. Veți putea utiliza ghidurile descărcate prin abonament numai în perioada de valabilitate a acestuia. La expirarea a 30 de zile de la încheierea abonamentului, ghidurile cu toate marcajele vor fi șterse automat.";
+
+"subscription_terms" = "Plata va fi percepută din contul dvs. iTunes la confirmarea achiziției. Abonamentul va fi reînnoit în mod automat, cu excepția cazului în care reînnoirea automată este oprită cu cel puțin 24 de ore înainte de sfârșitul perioadei curente. Plata va fi percepută din contul dvs. în conformitate cu planul dvs. de reînnoire într-un interval de timp de 24 de ore înainte de încheierea perioadei curente. Puteți administra sau dezactiva reînnoirea automată din setările contului dvs. Apple ID în orice moment al achiziției.";
+
+"whatsnew_carplay_title" = "Autonavigare MAPS.ME în CarPlay!";
+
+"whatsnew_carplay_message" = "Marcaje, căutare, camere-radar și setări de ocolire - totul funcționează fără Internet";
+
+"whatsnew_subscription_title" = "Descoperă lumea la abonament!";
+
+"whatsnew_subscription_message" = "Acces nelimitat la catalogul traseelor sunt mai convenabile decât achizițiile unice";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Actualizarea navigării";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Am îmbunătățit elaborarea traseelor până la punctele, amplasate departe de drum";
+
+"avoid_unpaved_carplay_1" = "Fără neasfal";
+
+"avoid_unpaved_carplay_2" = "Fără neasfaltat";
+
+"avoid_ferry_carplay_1" = "Fără bacuri";
+
+"avoid_ferry_carplay_2" = "Fără bacuri";
+
+"avoid_tolls_carplay_1" = "Gratis";
+
+"avoid_tolls_carplay_2" = "Gratis";
+
+"speedcams_alert_title_carplay_1" = "Cameră video";
+
+"speedcams_alert_title_carplay_2" = "Info camere";
+
+"download_map_carplay" = "Vă rugăm să descărcați hărțile în aplicația MAPS.ME de pe dispozitivul dvs.";
+
+"carplay_roundabout_exit" = "%s ieșire";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Sortați…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Sortați inscripțiile";
+
+/* iOS */
+"sort_default" = "Sortați la modul implicit";
+
+"sort_type" = "Sortați după dip";
+
+"sort_distance" = "Sortați după distanță";
+
+"sort_date" = "Sortați după dată";
+
+/* Android */
+"by_default" = "Mod implicit";
+
+/* Android */
+"by_type" = "După tip";
+
+/* Android */
+"by_distance" = "După distanță";
+
+/* Android */
+"by_date" = "După dată";
+
+"week_ago_sorttype" = "O săptămână în urmă";
+
+"month_ago_sorttype" = "O lună în urmă";
+
+"moremonth_ago_sorttype" = "Mai mult de o lună în urmă";
+
+"moreyear_ago_sorttype" = "Mai mult de un an în urmă";
+
+"near_me_sorttype" = "Alături de mine";
+
+"others_sorttype" = "Altele";
+
+"food_places" = "Mâncare";
+
+"tourist_places" = "Locuri faimoase";
+
+"museums" = "Muzeu";
+
+"parks" = "Parcuri";
+
+"swim_places" = "Înot";
+
+"mountains" = "Munți";
+
+"animals" = "Animale";
+
+"hotels" = "Hoteluri";
+
+"buildings" = "Clădiri";
+
+"money" = "Bani";
+
+"shops" = "Magazine";
+
+"parkings" = "Parcări";
+
+"fuel_places" = "Benzinării";
+
+"water" = "Apă";
+
+"medicine" = "Medicină";
+
+"search_in_the_list" = "Căutați în listă";
+
+"view_on_map_bookmarks" = "Pe hartă";
+
+"more_bookmarks" = "Încă…";
+
+"no_items_found" = "Nu a fost găsit nimic";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Redactați";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Ștergeți lista";
+
+"whatsnew_bookmarks_search_sort_title" = "Ordine în inscripții – comoditate în călătorie";
+
+"whatsnew_bookmarks_search_sort_message" = "Sortați locurile preferate după categorie, ora adăugării și geolocalizarea și găsiți rapid inscripțiile după nume";
+
+"popup_subscription_success_map_title" = "Ura! Sunteți abonat!";
+
+"popup_subscription_success_map_message" = "Explorați acum cele mai faimoase obiective turistice în catalogul MAPS.ME";
+
+"popup_subscription_success_map_start_button" = "Uitați-vă";
+
+"popup_subscription_success_map_not_now_button" = "Nu acum";
+
+"religious_places" = "Locuri sfinte";
+
+"subscription_terms_android" = "Plata se va face din contul dvs. Google Play la confirmarea achiziției. Abonamentul se va reînnoi automat, dacă reînnoirea automată nu este oprită cu cel puțin 24 de ore înainte de încheierea perioadei curente. Banii vor fi luați din contul dvs. în conformitate cu planul dvs. de reînnoire în termen de 24 de ore până la sfârșitul perioadei curente. Puteți gestiona reînnoirea automată sau o puteți dezactiva în setările contului dvs. după cumpărare. Veți putea utiliza ghidurile descărcate prin abonament doar în perioada de valabilitate. După 30 de zile de la terminarea abonamentului, ghidurile vor fi șterse automat.";
+
+"select_list" = "Alegeți lista";
+
+"pp_discovery_place_related_header" = "Acest loc în catalogul ghidurilor";
+
+"pp_discovery_place_related_header_1" = "Acest loc poate fi întâlnit în ghid";
+
+"pp_discovery_place_related_cta_button" = "De văzut";
+
+"pp_discovery_place_related_tag_header" = "Ghiduri după tag „%s”";
+
+"pp_discovery_place_related_tag_header_1" = "V-ar putea plăcea de asemenea";
+
+"buy_btn_for_subscription_version_2" = "TOATE ghidurile pentru doar %s/lună";
+
+"buy_btn_for_subscription_version_3" = "Tot catalogul pentru %s/lună";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Acces la catalog pentru %s/lună";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Acces la catalog pentru %s/an";
+
+"subscription_screen_native_title_version_2" = "Acces la ghiduri cu înscripții pe hartă!";
+
+"subscription_screen_native_message_version_2" = "Fiți pregătiți pentru orice călătorie în peste 600+ orașe și în peste 100+ țări";
+
+"catalog_no_internet_title" = "Fără conexiune la internet";
+
+"catalog_no_internet_button" = "Încercați din nou";
+
+"whatsnew_map_updates_title" = "Actualizarea reactiva a hărților";
+
+"whatsnew_map_updates_message" = "Acum actualizam hărțile de 2 ori mai repede";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Parcare";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Terminal de plăți";
 
 "type.amenity.pharmacy" = "Farmacie";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Poştă";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Pub";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Universitate";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Automat de țigări";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Punct de alimentare cu apă";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Bloc";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Control vamal";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Intrare";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Poartă";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Barieră cu braț";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Barieră";
 
 "type.barrier.toll_booth" = "Cabină de taxare";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Sit arheologic";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Apă";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Cimitir";
 
 "type.landuse.cemetery.christian" = "Cimitir";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Câmp";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Lac";
 

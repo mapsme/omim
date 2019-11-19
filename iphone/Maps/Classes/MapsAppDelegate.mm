@@ -4,7 +4,6 @@
 #import "EAGLView.h"
 #import "LocalNotificationManager.h"
 #import "MWMAuthorizationCommon.h"
-#import "MWMCommon.h"
 #import "MWMCoreRouterType.h"
 #import "MWMFrameworkListener.h"
 #import "MWMFrameworkObservers.h"
@@ -24,12 +23,14 @@
 #import <CoreSpotlight/CoreSpotlight.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <UserNotifications/UserNotifications.h>
+#import <CarPlay/CarPlay.h>
 
 #import <AppsFlyerLib/AppsFlyerTracker.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Fabric/Fabric.h>
 
-#include "Framework.h"
+#include <CoreApi/Framework.h>
+#import <CoreApi/MWMFrameworkHelper.h>
 
 #include "map/framework_light.hpp"
 #include "map/gps_tracker.hpp"
@@ -43,10 +44,8 @@
 // If you have a "missing header error" here, then please run configure.sh script in the root repo
 // folder.
 
-extern NSString * const MapsStatusChangedNotification = @"MapsStatusChangedNotification";
 // Alert keys.
 extern NSString * const kUDAlreadyRatedKey = @"UserAlreadyRatedApp";
-extern NSString * const kUDAlreadySharedKey = @"UserAlreadyShared";
 
 namespace
 {
@@ -70,6 +69,7 @@ void InitLocalizedStrings()
   f.AddString("core_my_places", L(@"core_my_places").UTF8String);
   f.AddString("core_my_position", L(@"core_my_position").UTF8String);
   f.AddString("core_placepage_unknown_place", L(@"core_placepage_unknown_place").UTF8String);
+  f.AddString("postal_code", L(@"postal_code").UTF8String);
   f.AddString("wifi", L(@"wifi").UTF8String);
 }
 
@@ -107,7 +107,10 @@ void OverrideUserAgent()
 
 using namespace osm_auth_ios;
 
-@interface MapsAppDelegate ()<MWMFrameworkStorageObserver, NotificationManagerDelegate, AppsFlyerTrackerDelegate>
+@interface MapsAppDelegate ()<MWMFrameworkStorageObserver,
+                              NotificationManagerDelegate,
+                              AppsFlyerTrackerDelegate,
+                              CPApplicationDelegate>
 
 @property(nonatomic) NSInteger standbyCounter;
 @property(nonatomic) MWMBackgroundFetchScheduler * backgroundFetchScheduler;
@@ -153,7 +156,12 @@ using namespace osm_auth_ios;
 
 - (BOOL)isDrapeEngineCreated
 {
-  return ((EAGLView *)self.mapViewController.view).drapeEngineCreated;
+  return self.mapViewController.mapView.drapeEngineCreated;
+}
+
+- (BOOL)isGraphicContextInitialized
+{
+  return self.mapViewController.mapView.graphicContextInitialized;
 }
 
 - (void)searchText:(NSString *)searchString
@@ -227,7 +235,7 @@ using namespace osm_auth_ios;
     [self incrementSessionsCountAndCheckForAlert];
 
     //For first launch setup is called by FirstLaunchController
-    [MWMPushNotifications setup:launchOptions];
+    [MWMPushNotifications setup];
   }
   [self enableTTSForTheFirstTime];
 
@@ -238,8 +246,15 @@ using namespace osm_auth_ios;
   self.notificationManager.delegate = self;
   [UNUserNotificationCenter currentNotificationCenter].delegate = self.notificationManager;
 
-  if ([MWMFrameworkHelper canUseNetwork]) {
-    [[SubscriptionManager shared] validate];
+  if ([MWMFrameworkHelper isWiFiConnected]) {
+    [[InAppPurchase bookmarksSubscriptionManager] validateWithCompletion:^(MWMValidationResult result) {
+      if (result == MWMValidationResultNotValid) {
+        [MWMPurchaseManager setBookmarksSubscriptionActive:NO];
+      }
+    }];
+    [[InAppPurchase adsRemovalSubscriptionManager] validateWithCompletion:^(MWMValidationResult result) {
+      [MWMPurchaseManager setAdsDisabled:result != MWMValidationResultNotValid];
+    }];
     self.pendingTransactionHandler = [InAppPurchase pendingTransactionsHandler];
     __weak __typeof(self) ws = self;
     [self.pendingTransactionHandler handlePendingTransactions:^(PendingTransactionsStatus) {
@@ -413,8 +428,8 @@ using namespace osm_auth_ios;
   // because of new OpenGL driver powered by Metal.
   if ([AppInfo sharedInfo].openGLDriver == MWMOpenGLDriverMetalPre103)
   {
-    m2::PointU const size = ((EAGLView *)self.mapViewController.view).pixelSize;
-    f.OnRecoverSurface(static_cast<int>(size.x), static_cast<int>(size.y), true /* recreateContextDependentResources */);
+    CGSize const objcSize = self.mapViewController.mapView.pixelSize;
+    f.OnRecoverSurface(static_cast<int>(objcSize.width), static_cast<int>(objcSize.height), true /* recreateContextDependentResources */);
   }
   [MWMLocationManager applicationDidBecomeActive];
   [MWMSearch addCategoriesToSpotlight];
@@ -559,13 +574,14 @@ continueUserActivity:(NSUserActivity *)userActivity
   [UIButton appearance].exclusiveTouch = YES;
 
   [self customizeAppearanceForNavigationBar:[UINavigationBar appearance]];
-
-  UIBarButtonItem * barBtn = [UIBarButtonItem appearance];
-  [barBtn setTitleTextAttributes:[self navigationBarTextAttributes] forState:UIControlStateNormal];
-  [barBtn setTitleTextAttributes:@{
-    NSForegroundColorAttributeName : [UIColor lightGrayColor],
-  }
-                        forState:UIControlStateDisabled];
+  
+  UIBarButtonItem *barButtonApperance = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UINavigationBar class]]];
+  [barButtonApperance setTitleTextAttributes:[self navigationBarTextAttributes]
+                                    forState:UIControlStateNormal];
+  [barButtonApperance setTitleTextAttributes:@{
+                                               NSForegroundColorAttributeName : [UIColor lightGrayColor],
+                                               }
+                                    forState:UIControlStateDisabled];
   [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UINavigationBar class]]].tintColor = [UIColor whitePrimaryText];
 
   UIPageControl * pageControl = [UIPageControl appearance];
@@ -579,6 +595,10 @@ continueUserActivity:(NSUserActivity *)userActivity
 
   UISearchBar * searchBar = [UISearchBar appearance];
   searchBar.barTintColor = [UIColor primary];
+
+  UIBarButtonItem *searchButtonApperance = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]];
+  searchButtonApperance.tintColor = [UIColor whitePrimaryText];
+
   UITextField * textFieldInSearchBar =
       [UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]];
 
@@ -621,7 +641,7 @@ continueUserActivity:(NSUserActivity *)userActivity
   auto & s = GetFramework().GetStorage();
   storage::Storage::UpdateInfo updateInfo{};
   s.GetUpdateInfo(s.GetRootId(), updateInfo);
-  return updateInfo.m_numberOfMwmFilesToUpdate + (platform::migrate::NeedMigrate() ? 1 : 0);
+  return updateInfo.m_numberOfMwmFilesToUpdate;
 }
 
 #pragma mark - MWMFrameworkStorageObserver
@@ -641,6 +661,10 @@ continueUserActivity:(NSUserActivity *)userActivity
 - (MapViewController *)mapViewController
 {
   return [(UINavigationController *)self.window.rootViewController viewControllers].firstObject;
+}
+
+- (MWMCarPlayService *)carplayService {
+  return [MWMCarPlayService shared];
 }
 
 #pragma mark - TTS
@@ -782,9 +806,8 @@ continueUserActivity:(NSUserActivity *)userActivity
   {
     [Statistics logEvent:kStatUGCReviewNotificationClicked];
     ReviewNotification * reviewNotification = (ReviewNotification *)notification;
-    place_page::Info info;
-    if (GetFramework().MakePlacePageInfo(reviewNotification.notificationWrapper.notificationCandidate, info))
-      [[MapViewController sharedController].controlsManager showPlacePageReview:info];
+    if (GetFramework().MakePlacePageForNotification(reviewNotification.notificationWrapper.notificationCandidate))
+      [[MapViewController sharedController].controlsManager showPlacePageReview];
   }
   else if (notification.class == AuthNotification.class)
   {
@@ -813,6 +836,65 @@ continueUserActivity:(NSUserActivity *)userActivity
   dispatch_async(dispatch_get_main_queue(), ^{
     [Crashlytics.sharedInstance recordError:error];
   });
+}
+
+#pragma mark - CPApplicationDelegate implementation
+
+- (void)application:(UIApplication *)application
+didConnectCarInterfaceController:(CPInterfaceController *)interfaceController
+           toWindow:(CPWindow *)window API_AVAILABLE(ios(12.0)) {
+  [self.carplayService setupWithWindow:window
+                   interfaceController:interfaceController];
+  [self updateAppearanceFromWindow:self.window
+                          toWindow:window
+                isCarplayActivated:YES];
+
+  [Statistics logEvent:kStatCarplayActivated];
+}
+
+- (void)application:(UIApplication *)application
+didDisconnectCarInterfaceController:(CPInterfaceController *)interfaceController
+         fromWindow:(CPWindow *)window API_AVAILABLE(ios(12.0)) {
+  [self.carplayService destroy];
+  [self updateAppearanceFromWindow:window
+                          toWindow:self.window
+                isCarplayActivated:NO];
+
+  [Statistics logEvent:kStatCarplayDeactivated];
+}
+
+- (void)updateAppearanceFromWindow:(UIWindow *)sourceWindow
+                          toWindow:(UIWindow *)destinationWindow
+                isCarplayActivated:(BOOL)isCarplayActivated {
+  CGFloat sourceContentScale = sourceWindow.screen.scale;
+  CGFloat destinationContentScale = destinationWindow.screen.scale;
+  if (ABS(sourceContentScale - destinationContentScale) > 0.1) {
+    if (isCarplayActivated) {
+      [self updateVisualScale:destinationContentScale];
+    } else {
+      [self updateVisualScaleToMain];
+    }
+  }
+}
+
+- (void)updateVisualScale:(CGFloat)scale {
+  if ([self isGraphicContextInitialized]) {
+    [self.mapViewController.mapView updateVisualScaleTo:scale];
+  } else {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self updateVisualScale:scale];
+    });
+  }
+}
+
+- (void)updateVisualScaleToMain {
+  if ([self isGraphicContextInitialized]) {
+    [self.mapViewController.mapView updateVisualScaleToMain];
+  } else {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self updateVisualScaleToMain];
+    });
+  }
 }
 
 @end

@@ -28,10 +28,6 @@ class MwmInfo;
 
 namespace search
 {
-size_t GetMaxErrorsForToken(strings::UniString const & token);
-
-strings::LevenshteinDFA BuildLevenshteinDFA(strings::UniString const & s);
-
 template <typename ToDo>
 void ForEachCategoryType(StringSliceBase const & slice, Locales const & locales,
                          CategoriesHolder const & categories, ToDo && todo)
@@ -122,10 +118,6 @@ bool FillCategories(QuerySliceOnRawStrings<T> const & slice, Locales const & loc
 std::vector<uint32_t> GetCategoryTypes(std::string const & name, std::string const & locale,
                                        CategoriesHolder const & categories);
 
-MwmSet::MwmHandle FindWorld(DataSource const & dataSource,
-                            std::vector<std::shared_ptr<MwmInfo>> const & infos);
-MwmSet::MwmHandle FindWorld(DataSource const & dataSource);
-
 using FeatureIndexCallback = std::function<void(FeatureID const &)>;
 // Applies |fn| to each feature index of type from |types| in |rect|.
 void ForEachOfTypesInRect(DataSource const & dataSource, std::vector<uint32_t> const & types,
@@ -133,4 +125,14 @@ void ForEachOfTypesInRect(DataSource const & dataSource, std::vector<uint32_t> c
 
 // Returns true iff |query| contains |categoryEn| synonym.
 bool IsCategorialRequestFuzzy(std::string const & query, std::string const & categoryName);
+
+template <typename DFA>
+void FillRequestFromToken(QueryParams::Token const & token, SearchTrieRequest<DFA> & request)
+{
+  request.m_names.emplace_back(BuildLevenshteinDFA(token.GetOriginal()));
+  // Allow misprints for original token only.
+  token.ForEachSynonym([&request](strings::UniString const & s) {
+    request.m_names.emplace_back(strings::LevenshteinDFA(s, 0 /* maxErrors */));
+  });
+}
 }  // namespace search

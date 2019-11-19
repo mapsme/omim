@@ -14,9 +14,9 @@
 
 #include "build_style/build_style.h"
 
-#include "std/cstdio.hpp"
-#include "std/cstdlib.hpp"
-#include "std/sstream.hpp"
+#include <cstdio>
+#include <cstdlib>
+#include <sstream>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 #include "3party/gflags/src/gflags/gflags.h"
@@ -36,6 +36,8 @@ DEFINE_string(lang, "", "Device language.");
 DEFINE_int32(width, 0, "Screenshot width.");
 DEFINE_int32(height, 0, "Screenshot height.");
 DEFINE_double(dpi_scale, 0.0, "Screenshot dpi scale.");
+
+using namespace std;
 
 namespace
 {
@@ -179,19 +181,39 @@ int main(int argc, char * argv[])
 #endif
     qt::MainWindow::SetDefaultSurfaceFormat(apiOpenGLES3);
 
+    FrameworkParams frameworkParams;
+
 #ifdef BUILD_DESIGNER
     if (argc >= 2 && platform.IsFileExistsByFullPath(argv[1]))
         mapcssFilePath = argv[1];
     if (0 == mapcssFilePath.length())
     {
-      mapcssFilePath = QFileDialog::getOpenFileName(nullptr, "Open MapCSS file", "~/",
+      mapcssFilePath = QFileDialog::getOpenFileName(nullptr, "Open style.mapcss file", "~/",
                                                     "MapCSS Files (*.mapcss)");
     }
     if (mapcssFilePath.isEmpty())
       return returnCode;
+
+    try
+    {
+      build_style::BuildIfNecessaryAndApply(mapcssFilePath);
+    }
+    catch (std::exception const & e)
+    {
+      QMessageBox msgBox;
+      msgBox.setWindowTitle("Error");
+      msgBox.setText(e.what());
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.setDefaultButton(QMessageBox::Ok);
+      msgBox.exec();
+      return returnCode;
+    }
+
+    // Designer tool can regenerate geometry index, so local ads can't work.
+    frameworkParams.m_enableLocalAds = false;
 #endif // BUILD_DESIGNER
 
-    Framework framework;
+    Framework framework(frameworkParams);
     qt::MainWindow w(framework, apiOpenGLES3, std::move(screenshotParams), mapcssFilePath);
     w.show();
     returnCode = a.exec();

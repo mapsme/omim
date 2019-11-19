@@ -74,6 +74,33 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
   jointEdges.insert(jointEdges.end(), newCrossMwmEdges.begin(), newCrossMwmEdges.end());
 }
 
+void SingleVehicleWorldGraph::GetEdgeList(Segment const & segment, bool isOutgoing,
+                                          bool useRoutingOptions, vector<SegmentEdge> & edges)
+{
+  if (m_mode == WorldGraphMode::LeapsOnly)
+  {
+    CHECK(m_crossMwmGraph, ());
+    // Ingoing edges listing is not supported for leaps because we do not have enough information
+    // to calculate |segment| weight. See https://jira.mail.ru/browse/MAPSME-5743 for details.
+    CHECK(isOutgoing, ("Ingoing edges listing is not supported for LeapsOnly mode."));
+    if (m_crossMwmGraph->IsTransition(segment, isOutgoing))
+      GetTwins(segment, isOutgoing, useRoutingOptions, edges);
+    else
+      m_crossMwmGraph->GetOutgoingEdgeList(segment, edges);
+
+    return;
+  }
+
+  ASSERT(m_parentsForSegments.forward && m_parentsForSegments.backward,
+         ("m_parentsForSegments was not initialized in SingleVehicleWorldGraph."));
+  auto & parents = isOutgoing ? *m_parentsForSegments.forward : *m_parentsForSegments.backward;
+  IndexGraph & indexGraph = m_loader->GetIndexGraph(segment.GetMwmId());
+  indexGraph.GetEdgeList(segment, isOutgoing, useRoutingOptions, edges, parents);
+
+  if (m_mode != WorldGraphMode::SingleMwm && m_crossMwmGraph && m_crossMwmGraph->IsTransition(segment, isOutgoing))
+    GetTwins(segment, isOutgoing, useRoutingOptions, edges);
+}
+
 void SingleVehicleWorldGraph::GetEdgeList(JointSegment const & parentJoint,
                                           Segment const & parent, bool isOutgoing,
                                           vector<JointEdge> & jointEdges,
@@ -92,33 +119,6 @@ void SingleVehicleWorldGraph::GetEdgeList(JointSegment const & parentJoint,
 
   if (m_mode != WorldGraphMode::JointSingleMwm)
     CheckAndProcessTransitFeatures(parent, jointEdges, parentWeights, isOutgoing);
-}
-
-void SingleVehicleWorldGraph::GetEdgeList(Segment const & segment, bool isOutgoing,
-                                          vector<SegmentEdge> & edges)
-{
-  if (m_mode == WorldGraphMode::LeapsOnly)
-  {
-    CHECK(m_crossMwmGraph, ());
-    // Ingoing edges listing is not supported for leaps because we do not have enough information
-    // to calculate |segment| weight. See https://jira.mail.ru/browse/MAPSME-5743 for details.
-    CHECK(isOutgoing, ("Ingoing edges listing is not supported for LeapsOnly mode."));
-    if (m_crossMwmGraph->IsTransition(segment, isOutgoing))
-      GetTwins(segment, isOutgoing, edges);
-    else
-      m_crossMwmGraph->GetOutgoingEdgeList(segment, edges);
-
-    return;
-  }
-
-  ASSERT(m_parentsForSegments.forward && m_parentsForSegments.backward,
-         ("m_parentsForSegments was not initialized in SingleVehicleWorldGraph."));
-  auto & parents = isOutgoing ? *m_parentsForSegments.forward : *m_parentsForSegments.backward;
-  IndexGraph & indexGraph = m_loader->GetIndexGraph(segment.GetMwmId());
-  indexGraph.GetEdgeList(segment, isOutgoing, edges, parents);
-
-  if (m_mode != WorldGraphMode::SingleMwm && m_crossMwmGraph && m_crossMwmGraph->IsTransition(segment, isOutgoing))
-    GetTwins(segment, isOutgoing, edges);
 }
 
 Junction const & SingleVehicleWorldGraph::GetJunction(Segment const & segment, bool front)
@@ -146,14 +146,14 @@ void SingleVehicleWorldGraph::GetOutgoingEdgesList(Segment const & segment,
                                                    vector<SegmentEdge> & edges)
 {
   edges.clear();
-  GetEdgeList(segment, true /* isOutgoing */, edges);
+  GetEdgeList(segment, true /* isOutgoing */, true /* useRoutingOptions */, edges);
 }
 
 void SingleVehicleWorldGraph::GetIngoingEdgesList(Segment const & segment,
                                                   vector<SegmentEdge> & edges)
 {
   edges.clear();
-  GetEdgeList(segment, false /* isOutgoing */, edges);
+  GetEdgeList(segment, false /* isOutgoing */, true /* useRoutingOptions */, edges);
 }
 
 RouteWeight SingleVehicleWorldGraph::HeuristicCostEstimate(Segment const & from, Segment const & to)
@@ -173,10 +173,11 @@ RouteWeight SingleVehicleWorldGraph::HeuristicCostEstimate(m2::PointD const & fr
   return RouteWeight(m_estimator->CalcHeuristic(from, to));
 }
 
-RouteWeight SingleVehicleWorldGraph::CalcSegmentWeight(Segment const & segment)
+RouteWeight SingleVehicleWorldGraph::CalcSegmentWeight(Segment const & segment,
+                                                       EdgeEstimator::Purpose purpose)
 {
   return RouteWeight(m_estimator->CalcSegmentWeight(
-      segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId())));
+      segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()), purpose));
 }
 
 RouteWeight SingleVehicleWorldGraph::CalcLeapWeight(m2::PointD const & from,
@@ -186,14 +187,26 @@ RouteWeight SingleVehicleWorldGraph::CalcLeapWeight(m2::PointD const & from,
 }
 
 RouteWeight SingleVehicleWorldGraph::CalcOffroadWeight(m2::PointD const & from,
-                                                       m2::PointD const & to) const
+                                                       m2::PointD const & to,
+                                                       EdgeEstimator::Purpose purpose) const
 {
-  return RouteWeight(m_estimator->CalcOffroadWeight(from, to));
+  return RouteWeight(m_estimator->CalcOffroad(from, to, purpose));
 }
 
-double SingleVehicleWorldGraph::CalcSegmentETA(Segment const & segment)
+double SingleVehicleWorldGraph::CalculateETA(Segment const & from, Segment const & to)
 {
-  return m_estimator->CalcSegmentETA(segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()));
+  if (from.GetMwmId() != to.GetMwmId())
+    return CalculateETAWithoutPenalty(to);
+
+  auto & indexGraph = m_loader->GetIndexGraph(from.GetMwmId());
+  return indexGraph.CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, true /* isOutgoing */, from, to).GetWeight();
+}
+
+double SingleVehicleWorldGraph::CalculateETAWithoutPenalty(Segment const & segment)
+{
+  return m_estimator->CalcSegmentWeight(segment,
+                                        GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()),
+                                        EdgeEstimator::Purpose::ETA);
 }
 
 vector<Segment> const & SingleVehicleWorldGraph::GetTransitions(NumMwmId numMwmId, bool isEnter)
@@ -248,6 +261,15 @@ void SingleVehicleWorldGraph::SetAStarParents(bool forward, map<JointSegment, Jo
     m_parentsForJoints.forward = &parents;
   else
     m_parentsForJoints.backward = &parents;
+}
+
+void SingleVehicleWorldGraph::DropAStarParents()
+{
+  m_parentsForJoints.backward = &AStarParents<JointSegment>::kEmpty;
+  m_parentsForJoints.forward = &AStarParents<JointSegment>::kEmpty;
+
+  m_parentsForSegments.backward = &AStarParents<Segment>::kEmpty;
+  m_parentsForSegments.forward = &AStarParents<Segment>::kEmpty;
 }
 
 template <typename VertexType>

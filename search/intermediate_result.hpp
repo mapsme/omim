@@ -9,13 +9,14 @@
 
 #include "indexer/feature_data.hpp"
 
+#include "geometry/point2d.hpp"
+
 #include <cstdint>
 #include <string>
 #include <utility>
 #include <vector>
 
 class FeatureType;
-class CategoriesHolder;
 
 namespace storage
 {
@@ -35,8 +36,9 @@ public:
   PreRankerResult(FeatureID const & id, PreRankingInfo const & info,
                   std::vector<ResultTracer::Branch> const & provenance);
 
-  static bool LessRankAndPopularity(PreRankerResult const & r1, PreRankerResult const & r2);
-  static bool LessDistance(PreRankerResult const & r1, PreRankerResult const & r2);
+  static bool LessRankAndPopularity(PreRankerResult const & lhs, PreRankerResult const & rhs);
+  static bool LessDistance(PreRankerResult const & lhs, PreRankerResult const & rhs);
+  static bool LessByExactMatch(PreRankerResult const & lhs, PreRankerResult const & rhs);
 
   struct CategoriesComparator
   {
@@ -52,15 +54,28 @@ public:
   uint8_t GetRank() const { return m_info.m_rank; }
   uint8_t GetPopularity() const { return m_info.m_popularity; }
   std::pair<uint8_t, float> GetRating() const { return m_info.m_rating; }
-  PreRankingInfo & GetInfo() { return m_info; }
   PreRankingInfo const & GetInfo() const { return m_info; }
   std::vector<ResultTracer::Branch> const & GetProvenance() const { return m_provenance; }
+  size_t GetInnermostTokensNumber() const { return m_info.InnermostTokenRange().Size(); }
+  size_t GetMatchedTokensNumber() const { return m_matchedTokensNumber; }
+
+  void SetRank(uint8_t rank) { m_info.m_rank = rank; }
+  void SetPopularity(uint8_t popularity) { m_info.m_popularity = popularity; }
+  void SetRating(std::pair<uint8_t, float> const & rating) { m_info.m_rating = rating; }
+  void SetDistanceToPivot(double distance) { m_info.m_distanceToPivot = distance; }
+  void SetCenter(m2::PointD const & center)
+  {
+    m_info.m_center = center;
+    m_info.m_centerLoaded = true;
+  }
 
 private:
   friend class RankerResult;
 
   FeatureID m_id;
   PreRankingInfo m_info;
+
+  size_t m_matchedTokensNumber = 0;
 
   // The call path in the Geocoder that leads to this result.
   std::vector<ResultTracer::Branch> m_provenance;
@@ -71,19 +86,23 @@ private:
 class RankerResult
 {
 public:
-  enum Type
+  enum class Type
   {
-    TYPE_LATLON,
-    TYPE_FEATURE,
-    TYPE_BUILDING  //!< Buildings are not filtered out in duplicates filter.
+    LatLon,
+    Feature,
+    Building,  //!< Buildings are not filtered out in duplicates filter.
+    Postcode
   };
 
-  /// For RESULT_FEATURE and RESULT_BUILDING.
+  /// For Type::Feature and Type::Building.
   RankerResult(FeatureType & f, m2::PointD const & center, m2::PointD const & pivot,
                std::string const & displayName, std::string const & fileName);
 
-  /// For RESULT_LATLON.
+  /// For Type::LatLon.
   RankerResult(double lat, double lon);
+
+  /// For Type::Postcode.
+  RankerResult(m2::PointD const & coord, std::string const & postcode);
 
   bool IsStreet() const;
 

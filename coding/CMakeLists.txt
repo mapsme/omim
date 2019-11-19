@@ -16,6 +16,8 @@ set(
   base64.hpp
   bit_streams.hpp
   buffer_reader.hpp
+  buffered_file_writer.cpp
+  buffered_file_writer.hpp
   bwt_coder.hpp
   byte_stream.hpp
   compressed_bit_vector.cpp
@@ -27,13 +29,13 @@ set(
   diff.hpp
   elias_coder.hpp
   endianness.hpp
-  file_container.cpp
-  file_container.hpp
   file_reader.cpp
   file_reader.hpp
   file_sort.hpp
   file_writer.cpp
   file_writer.hpp
+  files_container.cpp
+  files_container.hpp
   fixed_bits_ddvector.hpp
   geometry_coding.cpp
   geometry_coding.hpp

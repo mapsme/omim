@@ -19,9 +19,8 @@
 
 #include "geometry/mercator.hpp"
 
-#include "base/scope_guard.hpp"
+#include "base/checked_cast.hpp"
 #include "base/string_utils.hpp"
-#include "base/timer.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -38,10 +37,12 @@ namespace
 using BookmarkIdDoc = pair<bookmarks::Id, bookmarks::Doc>;
 
 double const kDistEqualQueryMeters = 100.0;
-double const kDistEqualQueryMercator = MercatorBounds::MetersToMercator(kDistEqualQueryMeters);
+double const kDistEqualQueryMercator = mercator::MetersToMercator(kDistEqualQueryMeters);
 
 // 200 squared kilometers.
 double const kMaxAreaToLoadAllHotelsInViewport = 2e8;
+
+size_t const kMaximumPossibleNumberOfBookmarksToIndex = 5000;
 
 // Cancels search query by |handle|.
 void CancelQuery(weak_ptr<ProcessorHandle> & handle)
@@ -51,7 +52,7 @@ void CancelQuery(weak_ptr<ProcessorHandle> & handle)
   handle.reset();
 }
 
-bookmarks::Id MarkIDToBookmarkId(kml::MarkId id)
+bookmarks::Id KmlMarkIdToSearchBookmarkId(kml::MarkId id)
 {
   static_assert(is_integral<kml::MarkId>::value, "");
   static_assert(is_integral<bookmarks::Id>::value, "");
@@ -59,30 +60,45 @@ bookmarks::Id MarkIDToBookmarkId(kml::MarkId id)
   static_assert(is_unsigned<kml::MarkId>::value, "");
   static_assert(is_unsigned<bookmarks::Id>::value, "");
 
-  static_assert(sizeof(bookmarks::Id) >= sizeof(kml::MarkId), "");
+  static_assert(sizeof(bookmarks::Id) == sizeof(kml::MarkId), "");
 
-  return static_cast<bookmarks::Id>(id);
+  return base::asserted_cast<bookmarks::Id>(id);
 }
 
-kml::MarkId BookmarkIdToMarkID(bookmarks::Id id) { return static_cast<kml::MarkId>(id); }
+bookmarks::GroupId KmlGroupIdToSearchGroupId(kml::MarkGroupId id)
+{
+  static_assert(is_integral<kml::MarkGroupId>::value, "");
+  static_assert(is_integral<bookmarks::GroupId>::value, "");
 
-void AppendBookmarkIdDocs(vector<pair<kml::MarkId, kml::BookmarkData>> const & marks,
-                          vector<BookmarkIdDoc> & result)
+  static_assert(is_unsigned<kml::MarkGroupId>::value, "");
+  static_assert(is_unsigned<bookmarks::GroupId>::value, "");
+
+  static_assert(sizeof(bookmarks::GroupId) >= sizeof(kml::MarkGroupId), "");
+
+  if (id == kml::kInvalidMarkGroupId)
+    return bookmarks::kInvalidGroupId;
+
+  return base::asserted_cast<bookmarks::GroupId>(id);
+}
+
+kml::MarkId SearchBookmarkIdToKmlMarkId(bookmarks::Id id) { return static_cast<kml::MarkId>(id); }
+
+void AppendBookmarkIdDocs(vector<BookmarkInfo> const & marks, vector<BookmarkIdDoc> & result)
 {
   result.reserve(result.size() + marks.size());
 
+  auto const locale = languages::GetCurrentOrig();
   for (auto const & mark : marks)
   {
-    auto const & id = mark.first;
-    auto const & data = mark.second;
-    result.emplace_back(MarkIDToBookmarkId(id), bookmarks::Doc(data));
+    result.emplace_back(KmlMarkIdToSearchBookmarkId(mark.m_bookmarkId),
+                        bookmarks::Doc(mark.m_bookmarkData, locale));
   }
 }
 
 void AppendBookmarkIds(vector<kml::MarkId> const & marks, vector<bookmarks::Id> & result)
 {
   result.reserve(result.size() + marks.size());
-  transform(marks.begin(), marks.end(), back_inserter(result), MarkIDToBookmarkId);
+  transform(marks.begin(), marks.end(), back_inserter(result), KmlMarkIdToSearchBookmarkId);
 }
 
 class BookmarksSearchCallback
@@ -115,7 +131,7 @@ public:
     ASSERT_LESS_OR_EQUAL(m_results.size(), rs.size(), ());
 
     for (size_t i = m_results.size(); i < rs.size(); ++i)
-      m_results.emplace_back(BookmarkIdToMarkID(rs[i].m_id));
+      m_results.emplace_back(SearchBookmarkIdToKmlMarkId(rs[i].m_id));
     if (m_onResults)
       m_onResults(m_results, m_status);
   }
@@ -188,11 +204,6 @@ bool SearchAPI::SearchEverywhere(EverywhereSearchParams const & params)
 
   m_delegate.OnBookingFilterParamsUpdate(params.m_bookingFilterTasks);
 
-  LOG(LINFO, ("Search everywhere started."));
-  base::Timer timer;
-  SCOPE_GUARD(printDuration, [&timer]() {
-    LOG(LINFO, ("Search everywhere ended. Time:", timer.ElapsedSeconds(), "seconds."));
-  });
   return Search(p, true /* forceSearch */);
 }
 
@@ -265,6 +276,8 @@ bool SearchAPI::SearchInBookmarks(search::BookmarksSearchParams const & params)
     if (onStarted)
       RunUITask([onStarted]() { onStarted(); });
   };
+
+  p.m_bookmarksGroupId = params.m_groupId;
 
   auto const onResults = params.m_onResults;
   p.m_onResults = BookmarksSearchCallback([this, onResults](
@@ -355,7 +368,7 @@ void SearchAPI::FilterResultsForHotelsQuery(booking::filter::Tasks const & filte
 void SearchAPI::FilterAllHotelsInViewport(m2::RectD const & viewport,
                                           booking::filter::Tasks const & filterTasks)
 {
-  if (MercatorBounds::AreaOnEarth(viewport) > kMaxAreaToLoadAllHotelsInViewport)
+  if (mercator::AreaOnEarth(viewport) > kMaxAreaToLoadAllHotelsInViewport)
     return;
 
   auto constexpr kMaxHotelFeatures = booking::RawApi::GetMaxHotelsInAvailabilityRequest();
@@ -373,14 +386,51 @@ void SearchAPI::FilterAllHotelsInViewport(m2::RectD const & viewport,
     m_delegate.FilterHotels(filterTasks, move(featureIds));
 }
 
-void SearchAPI::OnBookmarksCreated(vector<pair<kml::MarkId, kml::BookmarkData>> const & marks)
+void SearchAPI::EnableIndexingOfBookmarksDescriptions(bool enable)
+{
+  m_engine.EnableIndexingOfBookmarksDescriptions(enable);
+}
+
+// static
+size_t SearchAPI::GetMaximumPossibleNumberOfBookmarksToIndex()
+{
+  return kMaximumPossibleNumberOfBookmarksToIndex;
+}
+
+void SearchAPI::EnableIndexingOfBookmarkGroup(kml::MarkGroupId const & groupId, bool enable)
+{
+  if (enable)
+    m_indexableGroups.insert(groupId);
+  else
+    m_indexableGroups.erase(groupId);
+
+  m_engine.EnableIndexingOfBookmarkGroup(KmlGroupIdToSearchGroupId(groupId), enable);
+}
+
+bool SearchAPI::IsIndexingOfBookmarkGroupEnabled(kml::MarkGroupId const & groupId)
+{
+  return m_indexableGroups.count(groupId) > 0;
+}
+
+unordered_set<kml::MarkGroupId> const & SearchAPI::GetIndexableGroups() const
+{
+  return m_indexableGroups;
+}
+
+void SearchAPI::ResetBookmarksEngine()
+{
+  m_indexableGroups.clear();
+  m_engine.ResetBookmarks();
+}
+
+void SearchAPI::OnBookmarksCreated(vector<BookmarkInfo> const & marks)
 {
   vector<BookmarkIdDoc> data;
   AppendBookmarkIdDocs(marks, data);
   m_engine.OnBookmarksCreated(data);
 }
 
-void SearchAPI::OnBookmarksUpdated(vector<pair<kml::MarkId, kml::BookmarkData>> const & marks)
+void SearchAPI::OnBookmarksUpdated(vector<BookmarkInfo> const & marks)
 {
   vector<BookmarkIdDoc> data;
   AppendBookmarkIdDocs(marks, data);
@@ -392,6 +442,26 @@ void SearchAPI::OnBookmarksDeleted(vector<kml::MarkId> const & marks)
   vector<bookmarks::Id> data;
   AppendBookmarkIds(marks, data);
   m_engine.OnBookmarksDeleted(data);
+}
+
+void SearchAPI::OnBookmarksAttached(vector<BookmarkGroupInfo> const & groupInfos)
+{
+  for (auto const & info : groupInfos)
+  {
+    vector<bookmarks::Id> data;
+    AppendBookmarkIds(info.m_bookmarkIds, data);
+    m_engine.OnBookmarksAttachedToGroup(KmlGroupIdToSearchGroupId(info.m_groupId), data);
+  }
+}
+
+void SearchAPI::OnBookmarksDetached(vector<BookmarkGroupInfo> const & groupInfos)
+{
+  for (auto const & info : groupInfos)
+  {
+    vector<bookmarks::Id> data;
+    AppendBookmarkIds(info.m_bookmarkIds, data);
+    m_engine.OnBookmarksDetachedFromGroup(KmlGroupIdToSearchGroupId(info.m_groupId), data);
+  }
 }
 
 bool SearchAPI::Search(SearchParams const & params, bool forceSearch)
@@ -452,7 +522,7 @@ bool SearchAPI::QueryMayBeSkipped(SearchParams const & prevParams,
   }
 
   if (prevParams.m_position && currParams.m_position &&
-      MercatorBounds::DistanceOnEarth(*prevParams.m_position, *currParams.m_position) >
+      mercator::DistanceOnEarth(*prevParams.m_position, *currParams.m_position) >
           kDistEqualQueryMercator)
   {
     return false;

@@ -4,7 +4,9 @@
 
 #include "base/string_utils.hpp"
 
-#include "std/sstream.hpp"
+#include <sstream>
+
+using namespace std;
 
 namespace platform
 {
@@ -90,6 +92,12 @@ HttpClient & HttpClient::SetRawHeader(string const & key, string const & value)
   return *this;
 }
 
+HttpClient & HttpClient::SetRawHeaders(Headers const & headers)
+{
+  m_headers.insert(headers.begin(), headers.end());
+  return *this;
+}
+
 void HttpClient::SetTimeout(double timeoutSec)
 {
   m_timeoutSec = timeoutSec;
@@ -158,7 +166,7 @@ void HttpClient::LoadHeaders(bool loadHeaders)
   m_loadHeaders = loadHeaders;
 }
 
-unordered_map<string, string> const & HttpClient::GetHeaders() const
+HttpClient::Headers const & HttpClient::GetHeaders() const
 {
   return m_headers;
 }
@@ -205,4 +213,4 @@ string DebugPrint(HttpClient const & request)
     ostr << " response: " << request.ServerResponse();
   return ostr.str();
 }
-}
+}  // namespace platform

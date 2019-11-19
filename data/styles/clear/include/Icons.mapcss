@@ -30,7 +30,9 @@
 
 node|z17-[leisure],
 node|z16[amenity=parking],
-area|z16[amenity=parking]
+area|z16[amenity=parking],
+node|z16[amenity=parking_space],
+area|z16[amenity=parking_space]
 {z-index: 6;}
 
 node|z17-[leisure=golf_course],
@@ -43,6 +45,8 @@ area[amenity=fountain]
 {z-index: 2000;}
 node[natural=spring],
 area[natural=spring],
+node[natural=hot_spring],
+area[natural=hot_spring],
 node[natural=geyser],
 area[natural=geyser],
 node[amenity=drinking_water],
@@ -648,6 +652,8 @@ node|z13-[natural=peak],
 area|z13-[natural=peak],
 node|z14-[natural=spring],
 area|z14-[natural=spring],
+node|z14-[natural=hot_spring],
+area|z14-[natural=hot_spring],
 node|z14-[natural=geyser],
 area|z14-[natural=geyser],
 node|z16-[natural=beach],
@@ -779,10 +785,14 @@ area|z16-[landuse=forest]
 {fill-color: @forest;icon-image: nparkf-m.svg;text-offset: 1;font-size: 12;text-halo-opacity: 0.9;}
 
 node|z14[natural=spring],
-area|z14[natural=spring]
+area|z14[natural=spring],
+node|z14[natural=hot_spring],
+area|z14[natural=hot_spring]
 {icon-image: drinking-water-s.svg;text-offset:6;font-size: 10;icon-min-distance: 24;text-optional: true;}
 node|z15-[natural=spring],
-area|z15-[natural=spring]
+area|z15-[natural=spring],
+node|z15-[natural=hot_spring],
+area|z15-[natural=hot_spring]
 {icon-image: drinking-water-m.svg;text-offset:8;font-size: 10;icon-min-distance: 24;text-optional: true;}
 
 node|z14[natural=geyser],
@@ -2053,8 +2063,9 @@ line|z16-[barrier=gate],
 line|z16-[barrier=stile],
 {icon-image: dot-m.svg;font-size: 11;}
 
+node|z16-[highway=ford],
 line|z16-[power=tower]
-shelter{icon-image: dot-m.svg;}
+{icon-image: dot-m.svg;}
 
 node|z16-[amenity=taxi],
 area|z16-[amenity=taxi]
@@ -2642,6 +2653,8 @@ node|z17-[amenity=car_wash],
 area|z17-[amenity=car_wash],
 node|z18-[amenity=parking],
 area|z18-[amenity=parking],
+node|z18-[amenity=parking_space],
+area|z18-[amenity=parking_space],
 node|z18-[amenity=car_rental],
 area|z18-[amenity=car_rental],
 node|z18-[amenity=car_sharing],
@@ -2695,20 +2708,35 @@ area|z18-[amenity=car_sharing]
 /* 7.1 Parking */
 
 node|z16[amenity=parking],
-area|z16[amenity=parking]
+area|z16[amenity=parking],
+node|z16[amenity=parking_space],
+area|z16[amenity=parking_space]
 {icon-image: parking-s.svg;icon-min-distance: 25;}
 node|z16[amenity=parking][access=permissive],
-node|z16[amenity=parking][access=private]
+node|z16[amenity=parking][access=private],
+node|z16[amenity=parking_space][access=permissive],
+area|z16[amenity=parking_space][access=permissive],
+node|z16[amenity=parking_space][access=private],
+area|z16[amenity=parking_space][access=private]
 {icon-image: zero-icon.svg;}
 
-node|z17[amenity=parking], area|z17[amenity=parking]
+node|z17[amenity=parking], 
+area|z17[amenity=parking],
+node|z17[amenity=parking_space], 
+area|z17[amenity=parking_space]
 {icon-image: parking-m.svg;}
 node|z17[amenity=parking][access=permissive],
-node|z17[amenity=parking][access=private]
+node|z17[amenity=parking][access=private],
+node|z17[amenity=parking_space][access=permissive],
+area|z17[amenity=parking_space][access=permissive],
+node|z17[amenity=parking_space][access=private],
+area|z17[amenity=parking_space][access=private]
 {icon-image: zero-icon.svg;}
 
 node|z18-[amenity=parking],
-area|z18-[amenity=parking]
+area|z18-[amenity=parking],
+node|z18-[amenity=parking_space],
+area|z18-[amenity=parking_space]
 {icon-image: parking-m.svg;font-size: 11;text-optional: true;}
 
 node|z17-[amenity=bicycle_parking],
@@ -2727,6 +2755,9 @@ node|z18-[amenity=motorcycle_parking],
 area|z18-[amenity=motorcycle_parking]
 {icon-image: motorcycle-parking-m.svg;icon-min-distance: 20;text-optional: true;}
 
+node|z16-[amenity=parking_space][parking=underground],
+area|z16-[amenity=parking_space][parking=underground]
+{icon-image: zero-icon.svg;}
 
 /* 8 Sponsored */
 

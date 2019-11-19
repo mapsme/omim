@@ -10,10 +10,15 @@
 
 #include "platform/platform.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 
 #include "base/macros.hpp"
 #include "base/stl_helpers.hpp"
+
+#include <string>
+#include <vector>
+
+using namespace std;
 
 UNIT_TEST(BuildIndexTest)
 {
@@ -27,7 +32,7 @@ UNIT_TEST(BuildIndexTest)
   {
     FeaturesVectorTest features(originalContainer);
 
-    MemWriter<vector<char> > serialWriter(serialIndex);
+    MemWriter<vector<char>> serialWriter(serialIndex);
     indexer::BuildIndex(features.GetHeader(), features.GetVector(), serialWriter, "build_index_test");
   }
 

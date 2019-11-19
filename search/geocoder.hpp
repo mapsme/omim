@@ -16,6 +16,7 @@
 #include "search/model.hpp"
 #include "search/mwm_context.hpp"
 #include "search/nested_rects_cache.hpp"
+#include "search/postcode_points.hpp"
 #include "search/pre_ranking_info.hpp"
 #include "search/query_params.hpp"
 #include "search/ranking_utils.hpp"
@@ -125,11 +126,13 @@ public:
   void ClearCaches();
 
 private:
-  enum RectId
+  enum class RectId
   {
-    RECT_ID_PIVOT,
-    RECT_ID_LOCALITY,
-    RECT_ID_COUNT
+    Pivot,
+    Locality,
+    Postcode,
+    Suburb,
+    Count
   };
 
   struct Postcodes
@@ -137,11 +140,22 @@ private:
     void Clear()
     {
       m_tokenRange.Clear();
-      m_features.Reset();
+      m_countryFeatures.Reset();
+      m_worldFeatures.Reset();
     }
 
+    bool Has(uint32_t id, bool searchWorld = false) const
+    {
+      if (searchWorld)
+        return m_worldFeatures.HasBit(id);
+      return m_countryFeatures.HasBit(id);
+    }
+
+    bool IsEmpty() const { return m_countryFeatures.IsEmpty() && m_worldFeatures.IsEmpty(); }
+
     TokenRange m_tokenRange;
-    CBV m_features;
+    CBV m_countryFeatures;
+    CBV m_worldFeatures;
   };
 
   // Sets search query params for categorial search.
@@ -166,6 +180,8 @@ private:
   void FillLocalitiesTable(BaseContext const & ctx);
 
   void FillVillageLocalities(BaseContext const & ctx);
+
+  bool CityHasPostcode(BaseContext const & ctx) const;
 
   template <typename Fn>
   void ForEachCountry(std::vector<std::shared_ptr<MwmInfo>> const & infos, Fn && fn);
@@ -201,6 +217,8 @@ private:
   // Tries to match some adjacent tokens in the query as streets and
   // then performs geocoding in street vicinities.
   void GreedilyMatchStreets(BaseContext & ctx);
+  // Matches suburbs and streets inside suburbs like |GreedilyMatchStreets|.
+  void GreedilyMatchStreetsWithSuburbs(BaseContext & ctx);
 
   void CreateStreetsLayerAndMatchLowerLayers(BaseContext & ctx,
                                              StreetsMatcher::Prediction const & prediction);
@@ -225,9 +243,9 @@ private:
   // Forms result and feeds it to |m_preRanker|.
   void EmitResult(BaseContext & ctx, MwmSet::MwmId const & mwmId, uint32_t ftId, Model::Type type,
                   TokenRange const & tokenRange, IntersectionResult const * geoParts,
-                  bool allTokensUsed);
+                  bool allTokensUsed, bool exactMatch);
   void EmitResult(BaseContext & ctx, Region const & region, TokenRange const & tokenRange,
-                  bool allTokensUsed);
+                  bool allTokensUsed, bool exactMatch);
   void EmitResult(BaseContext & ctx, City const & city, TokenRange const & tokenRange,
                   bool allTokensUsed);
 
@@ -247,11 +265,20 @@ private:
   WARN_UNUSED_RESULT bool GetTypeInGeocoding(BaseContext const & ctx, uint32_t featureId,
                                              Model::Type & type);
 
+  // Reorders maps in a way that prefix consists of "best" maps to search and suffix consists of all
+  // other maps ordered by minimum distance from pivot. Returns number of maps in prefix.
+  // For viewport mode prefix consists of maps intersecting with pivot ordered by distance from pivot
+  // center.
+  // For non-viewport search mode prefix consists of maps intersecting with pivot, map with user location
+  // and maps with cities matched to the query, sorting prefers mwms that contain the user's position.
+  size_t OrderCountries(bool inViewport, std::vector<std::shared_ptr<MwmInfo>> & infos);
+
   DataSource const & m_dataSource;
   storage::CountryInfoGetter const & m_infoGetter;
   CategoriesHolder const & m_categories;
 
   StreetsCache m_streetsCache;
+  SuburbsCache m_suburbsCache;
   VillagesCache & m_villagesCache;
   LocalitiesCache & m_localitiesCache;
   HotelsCache m_hotelsCache;
@@ -286,9 +313,13 @@ private:
   // TokenToLocalities because the latter are quite lightweight and not
   // all of them are needed.
   PivotRectsCache m_pivotRectsCache;
+  PivotRectsCache m_postcodesRectsCache;
+  PivotRectsCache m_suburbsRectsCache;
   LocalityRectsCache m_localityRectsCache;
 
-  // Postcodes features in the mwm that is currently being processed.
+  PostcodePointsCache m_postcodePointsCache;
+
+  // Postcodes features in the mwm that is currently being processed and World.mwm.
   Postcodes m_postcodes;
 
   // This filter is used to throw away excess features.

@@ -5,6 +5,7 @@ final class InAppPurchase: NSObject {
     let validation = MWMPurchaseValidation(vendorId: BOOKMARKS_VENDOR)
     let billing = InAppBilling()
     return PaidRoutePurchase(serverId: serverId,
+                             vendorId: BOOKMARKS_VENDOR,
                              productId: productId,
                              purchaseValidation: validation,
                              billing: billing)
@@ -21,4 +22,26 @@ final class InAppPurchase: NSObject {
     let pendingTransaction = BillingPendingTransaction()
     return PendingTransactionsHandler(validation: validation, pendingTransaction: pendingTransaction)
   }
+
+  static func inAppBilling() -> IInAppBilling {
+    return InAppBilling()
+  }
+
+  @objc static var adsRemovalSubscriptionManager: ISubscriptionManager = {
+    return SubscriptionManager(productIds: MWMPurchaseManager.productIds(),
+                               serverId: MWMPurchaseManager.adsRemovalServerId(),
+                               vendorId: MWMPurchaseManager.adsRemovalVendorId())
+  } ()
+
+  @objc static var bookmarksSubscriptionManager: ISubscriptionManager = {
+    return SubscriptionManager(productIds: MWMPurchaseManager.bookmakrsProductIds(),
+                               serverId: MWMPurchaseManager.bookmarksSubscriptionServerId(),
+                               vendorId: MWMPurchaseManager.bookmarksSubscriptionVendorId())
+  } ()
+
+  @objc static var allPassSubscriptionManager: ISubscriptionManager = {
+    return SubscriptionManager(productIds: MWMPurchaseManager.allPassProductIds(),
+                               serverId: MWMPurchaseManager.allPassSubscriptionServerId(),
+                               vendorId: MWMPurchaseManager.allPassSubscriptionVendorId())
+  } ()
 }

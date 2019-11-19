@@ -22,17 +22,17 @@
 /// redundant serialization-deserialization or sorting.
 
 // A wrapper around feature index.
-struct FeatureIndexValue
+struct Uint64IndexValue
 {
-  FeatureIndexValue() = default;
+  Uint64IndexValue() = default;
 
-  explicit FeatureIndexValue(uint64_t featureId) : m_featureId(featureId) {}
+  explicit Uint64IndexValue(uint64_t featureId) : m_featureId(featureId) {}
 
-  bool operator<(FeatureIndexValue const & o) const { return m_featureId < o.m_featureId; }
+  bool operator<(Uint64IndexValue const & o) const { return m_featureId < o.m_featureId; }
 
-  bool operator==(FeatureIndexValue const & o) const { return m_featureId == o.m_featureId; }
+  bool operator==(Uint64IndexValue const & o) const { return m_featureId == o.m_featureId; }
 
-  void Swap(FeatureIndexValue & o) { std::swap(m_featureId, o.m_featureId); }
+  void Swap(Uint64IndexValue & o) { std::swap(m_featureId, o.m_featureId); }
 
   uint64_t m_featureId = 0;
 };
@@ -40,48 +40,10 @@ struct FeatureIndexValue
 namespace std
 {
 template <>
-struct hash<FeatureIndexValue>
+struct hash<Uint64IndexValue>
 {
 public:
-  size_t operator()(FeatureIndexValue const & value) const
-  {
-    return std::hash<uint64_t>{}(value.m_featureId);
-  }
-};
-}  // namespace std
-
-struct FeatureWithRankAndCenter
-{
-  FeatureWithRankAndCenter() = default;
-
-  FeatureWithRankAndCenter(m2::PointD const & pt, uint32_t featureId, uint8_t rank)
-    : m_pt(pt), m_featureId(featureId), m_rank(rank)
-  {
-  }
-
-  bool operator<(FeatureWithRankAndCenter const & o) const { return m_featureId < o.m_featureId; }
-
-  bool operator==(FeatureWithRankAndCenter const & o) const { return m_featureId == o.m_featureId; }
-
-  void Swap(FeatureWithRankAndCenter & o)
-  {
-    std::swap(m_pt, o.m_pt);
-    std::swap(m_featureId, o.m_featureId);
-    std::swap(m_rank, o.m_rank);
-  }
-
-  m2::PointD m_pt;           // Center point of the feature.
-  uint32_t m_featureId = 0;  // Feature identifier.
-  uint8_t m_rank = 0;        // Rank of the feature.
-};
-
-namespace std
-{
-template <>
-struct hash<FeatureWithRankAndCenter>
-{
-public:
-  size_t operator()(FeatureWithRankAndCenter const & value) const
+  size_t operator()(Uint64IndexValue const & value) const
   {
     return std::hash<uint64_t>{}(value.m_featureId);
   }
@@ -92,53 +54,12 @@ template <typename Value>
 class SingleValueSerializer;
 
 template <>
-class SingleValueSerializer<FeatureWithRankAndCenter>
+class SingleValueSerializer<Uint64IndexValue>
 {
 public:
-  using Value = FeatureWithRankAndCenter;
-
-  SingleValueSerializer(serial::GeometryCodingParams const & codingParams)
-    : m_codingParams(codingParams)
-  {
-  }
-
-  template <typename Sink>
-  void Serialize(Sink & sink, Value const & v) const
-  {
-    serial::SavePoint(sink, v.m_pt, m_codingParams);
-    WriteToSink(sink, v.m_featureId);
-    WriteToSink(sink, v.m_rank);
-  }
-
-  template <typename Reader>
-  void Deserialize(Reader & reader, Value & v) const
-  {
-    ReaderSource<Reader> source(reader);
-    DeserializeFromSource(source, v);
-  }
-
-  template <typename Source>
-  void DeserializeFromSource(Source & source, Value & v) const
-  {
-    v.m_pt = serial::LoadPoint(source, m_codingParams);
-    v.m_featureId = ReadPrimitiveFromSource<uint32_t>(source);
-    v.m_rank = ReadPrimitiveFromSource<uint8_t>(source);
-  }
-
-private:
-  serial::GeometryCodingParams m_codingParams;
-};
-
-template <>
-class SingleValueSerializer<FeatureIndexValue>
-{
-public:
-  using Value = FeatureIndexValue;
+  using Value = Uint64IndexValue;
 
   SingleValueSerializer() = default;
-
-  // todo(@mpimenov). Remove.
-  SingleValueSerializer(serial::GeometryCodingParams const & /* codingParams */) {}
 
   // The serialization and deserialization is needed for StringsFile.
   // Use ValueList for group serialization in CBVs.
@@ -167,23 +88,23 @@ public:
 template <typename Value>
 class ValueList;
 
-// ValueList<FeatureIndexValue> serializes a group of feature
+// ValueList<Uint64IndexValue> serializes a group of feature
 // indices as a compressed bit vector.
 template <>
-class ValueList<FeatureIndexValue>
+class ValueList<Uint64IndexValue>
 {
 public:
-  using Value = FeatureIndexValue;
+  using Value = Uint64IndexValue;
 
   ValueList() = default;
 
-  ValueList(ValueList<FeatureIndexValue> const & o)
+  ValueList(ValueList<Uint64IndexValue> const & o)
   {
     if (o.m_cbv)
       m_cbv = o.m_cbv->Clone();
   }
 
-  void Init(std::vector<FeatureIndexValue> const & values)
+  void Init(std::vector<Uint64IndexValue> const & values)
   {
     std::vector<uint64_t> ids(values.size());
     for (size_t i = 0; i < ids.size(); ++i)
@@ -192,7 +113,7 @@ public:
   }
 
   // This method returns number of values in the current instance of
-  // ValueList<FeatureIndexValue>, but as these values are actually
+  // ValueList<Uint64IndexValue>, but as these values are actually
   // features indices and can be dumped as a single serialized
   // compressed bit vector, this method returns 1 when there're at
   // least one feature's index in the list - so, compressed bit
@@ -252,57 +173,66 @@ private:
   std::unique_ptr<coding::CompressedBitVector> m_cbv;
 };
 
-/// ValueList<FeatureWithRankAndCenter> sequentially serializes
-/// encoded features infos.
-template <>
-class ValueList<FeatureWithRankAndCenter>
+class SingleUint64Value
 {
 public:
-  using Value = FeatureWithRankAndCenter;
-  using Serializer = SingleValueSerializer<Value>;
+  using Value = Uint64IndexValue;
 
-  void Init(std::vector<Value> const & values) { m_values = values; }
+  SingleUint64Value() = default;
 
-  size_t Size() const { return m_values.size(); }
+  SingleUint64Value(SingleUint64Value const & o)
+  {
+    m_empty = o.m_empty;
+    m_val = o.m_val;
+  }
 
-  bool IsEmpty() const { return m_values.empty(); }
+  void Init(std::vector<Uint64IndexValue> const & values)
+  {
+    CHECK_LESS_OR_EQUAL(values.size(), 1, ());
+    m_empty = values.empty();
+    if (!m_empty)
+      m_val = values[0].m_featureId;
+  }
+
+  size_t Size() const { return m_empty ? 0 : 1; }
+
+  bool IsEmpty() const { return m_empty; }
 
   template <typename Sink>
-  void Serialize(Sink & sink, SingleValueSerializer<Value> const & serializer) const
+  void Serialize(Sink & sink, SingleValueSerializer<Value> const & /* serializer */) const
   {
-    for (auto const & value : m_values)
-      serializer.Serialize(sink, value);
+    if (m_empty)
+      return;
+    WriteVarUint(sink, m_val);
   }
 
   template <typename Source>
-  void Deserialize(Source & src, uint32_t valueCount,
-                   SingleValueSerializer<Value> const & serializer)
+  void Deserialize(Source & src, uint64_t valueCount,
+                   SingleValueSerializer<Value> const & /* serializer */)
   {
-    m_values.resize(valueCount);
-    for (size_t i = 0; i < valueCount; ++i)
-      serializer.DeserializeFromSource(src, m_values[i]);
+    CHECK_LESS_OR_EQUAL(valueCount, 1, ());
+    m_empty = valueCount == 0;
+    if (!m_empty)
+      m_val = ReadVarUint<uint64_t>(src);
   }
 
-  // When valueCount is not known, Deserialize reads
-  // until the source is exhausted.
   template <typename Source>
-  void Deserialize(Source & src, SingleValueSerializer<Value> const & serializer)
+  void Deserialize(Source & src, SingleValueSerializer<Value> const & /* serializer */)
   {
-    m_values.clear();
-    while (src.Size() > 0)
-    {
-      m_values.emplace_back();
-      serializer.DeserializeFromSource(src, m_values.back());
-    }
+    m_empty = src.Size() == 0;
+    if (!m_empty)
+      m_val = ReadVarUint<uint64_t>(src);
   }
 
   template <typename ToDo>
   void ForEach(ToDo && toDo) const
   {
-    for (auto const & value : m_values)
-      toDo(value);
+    if (IsEmpty())
+      return;
+    toDo(Value(m_val));
   }
 
 private:
-  std::vector<Value> m_values;
+  uint64_t m_val;
+  bool m_empty = false;
 };

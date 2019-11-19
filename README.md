@@ -1,6 +1,6 @@
 # MAPS.ME
 
-[MAPS.ME](http://maps.me) is an open source cross-platform offline maps application,
+[MAPS.ME](https://maps.me) is an open source cross-platform offline maps application,
 built on top of crowd-sourced OpenStreetMap data. It was publicly released
 for [iOS](https://itunes.apple.com/app/id510623322) and
 [Android](https://play.google.com/store/apps/details?id=com.mapswithme.maps.pro).
@@ -25,15 +25,9 @@ and Android debug packages.
 For detailed installation instructions and Android/iOS building process,
 see [INSTALL.md](https://github.com/mapsme/omim/tree/master/docs/INSTALL.md).
 
-Nightly builds for Android are published to [osmz.ru](http://osmz.ru/mwm/)
-and Dropbox: [release](http://maps.me/release), [debug](http://maps.me/debug).
-
 ## Building maps
 
-To create one or many map files, first build the project, then use `generate_mwm.sh` script from
-`tools/unix` to create a single mwm file from pbf/o5m/bz2 source, or `generate_planet.sh`
-to generate multiple countries at once from a planet o5m file. See detailed instructions
-in [MAPS.md](https://github.com/mapsme/omim/tree/master/docs/MAPS.md).
+To create one or many map files, first build the project, then use python module [maps_generator](https://github.com/mapsme/omim/tree/master/tools/python/maps_generator).
 
 ## Map styles
 
@@ -54,7 +48,7 @@ format description, instructions on building a style and some links.
 You would need Qt 5 for development, most other libraries are included into the
 repository: see `3party` directory. The team uses mostly XCode and Qt Creator,
 though these are not mandatory. We have an established
-[coding style](https://github.com/mapsme/omim/blob/master/docs/CPP_STYLE.md).
+[c++ coding style](https://github.com/mapsme/omim/blob/master/docs/CPP_STYLE.md) and [Objective-C coding style](https://github.com/mapsme/omim/blob/master/docs/OBJC_STYLE.md).
 
 See [CONTRIBUTING.md](https://github.com/mapsme/omim/blob/master/docs/CONTRIBUTING.md)
 for the repository initialization process, the description of all the directories
@@ -70,6 +64,6 @@ or by mail to bugs@maps.me.
 
 ## Authors and License
 
-This source code is Copyright (C) 2015 My.com B.V. (Mail.Ru Group), published under Apache Public License 2.0,
+This source code is Copyright (C) 2019 My.com B.V. (Mail.Ru Group), published under Apache Public License 2.0,
 except third-party libraries. See [NOTICE](https://github.com/mapsme/omim/blob/master/NOTICE)
 and [data/copyright.html](http://htmlpreview.github.io/?https://github.com/mapsme/omim/blob/master/data/copyright.html) files for more information.

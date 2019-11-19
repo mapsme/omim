@@ -1,9 +1,9 @@
 package com.mapswithme.maps.widget.placepage;
 
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import android.text.TextUtils;
 
 import com.mapswithme.maps.bookmarks.data.MapObject;
@@ -28,9 +28,13 @@ public final class Sponsored
   public static final int TYPE_OPENTABLE = 2;
   public static final int TYPE_PARTNER = 3;
   public static final int TYPE_HOLIDAY = 4;
+  public static final int TYPE_PROMO_CATALOG_CITY = 5;
+  public static final int TYPE_PROMO_CATALOG_SIGHTSEEINGS = 6;
+  public static final int TYPE_PROMO_CATALOG_OUTDOOR = 7;
 
   @Retention(RetentionPolicy.SOURCE)
-  @IntDef({ TYPE_NONE, TYPE_BOOKING, TYPE_OPENTABLE, TYPE_PARTNER, TYPE_HOLIDAY })
+  @IntDef({ TYPE_NONE, TYPE_BOOKING, TYPE_OPENTABLE, TYPE_PARTNER, TYPE_HOLIDAY,
+            TYPE_PROMO_CATALOG_CITY, TYPE_PROMO_CATALOG_SIGHTSEEINGS, TYPE_PROMO_CATALOG_OUTDOOR })
   public @interface SponsoredType {}
 
   static class FacilityType

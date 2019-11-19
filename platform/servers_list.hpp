@@ -1,12 +1,12 @@
 #pragma once
 
-#include "std/vector.hpp"
-#include "std/string.hpp"
-
+#include <string>
+#include <vector>
 
 namespace downloader
 {
-  class HttpRequest;
+class HttpRequest;
 
-  void GetServerListFromRequest(HttpRequest const & request, vector<string> & urls);
-}
+void GetServersList(std::string const & src, std::vector<std::string> & urls);
+void GetServersList(HttpRequest const & request, std::vector<std::string> & urls);
+}  // namespace downloader

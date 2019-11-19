@@ -17,15 +17,15 @@ void MoveRoute(Route & route, ms::LatLon const & coords)
   info.m_verticalAccuracy = 0.01;
   info.m_longitude = coords.m_lon;
   info.m_latitude = coords.m_lat;
-  route.MoveIterator(info);
+  route.MoveIteratorToReal(info);
 }
 
 UNIT_TEST(RussiaTulskayaToPaveletskayaStreetNamesTest)
 {
   TRouteResult const routeResult =
       integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                  MercatorBounds::FromLatLon(55.70839, 37.62145), {0., 0.},
-                                  MercatorBounds::FromLatLon(55.73198, 37.63945));
+                                  mercator::FromLatLon(55.70839, 37.62145), {0., 0.},
+                                  mercator::FromLatLon(55.73198, 37.63945));
 
   Route & route = *routeResult.first;
   RouterResultCode const result = routeResult.second;
@@ -52,11 +52,11 @@ UNIT_TEST(RussiaTulskayaToPaveletskayaStreetNamesTest)
   MoveRoute(route, ms::LatLon(55.73034, 37.63099));
 
   integration::TestCurrentStreetName(route, "Валовая улица");
-  integration::TestNextStreetName(route, "");
+  integration::TestNextStreetName(route, "улица Зацепский Вал");
 
   MoveRoute(route, ms::LatLon(55.730912, 37.636191));
 
-  integration::TestCurrentStreetName(route, "Валовая улица");
+  integration::TestCurrentStreetName(route, "улица Зацепский Вал");
   integration::TestNextStreetName(route, "");
 
   integration::TestRouteLength(route, 3390.);

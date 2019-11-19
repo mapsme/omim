@@ -1,6 +1,7 @@
 #include "generator/routing_index_generator.hpp"
 
 #include "generator/borders.hpp"
+#include "generator/cross_mwm_osm_ways_collector.hpp"
 #include "generator/routing_helpers.hpp"
 
 #include "routing/base/astar_algorithm.hpp"
@@ -28,7 +29,7 @@
 #include "indexer/feature.hpp"
 #include "indexer/feature_processor.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/geometry_coding.hpp"
 #include "coding/point_coding.hpp"
 #include "coding/reader.hpp"
@@ -172,12 +173,23 @@ public:
     CHECK(false, ("This method exists only for compatibility with IndexGraphStarterJoints"));
     return GetAStarWeightZero<RouteWeight>();
   }
+
   bool AreWavesConnectible(map<JointSegment, JointSegment> const & /* forwardParents */,
                            JointSegment const & /* commonVertex */,
                            map<JointSegment, JointSegment> const & /* backwardParents */,
                            function<uint32_t(JointSegment const &)> && /* fakeFeatureConverter */)
   {
     return true;
+  }
+
+  void SetAStarParents(bool /* forward */, map<JointSegment, JointSegment> & parents)
+  {
+    m_AStarParents = &parents;
+  }
+
+  void DropAStarParents()
+  {
+    m_AStarParents = nullptr;
   }
   // @}
 
@@ -186,14 +198,9 @@ public:
     return m_graph.GetPoint(s, forward);
   }
 
-  void SetAStarParents(bool /* forward */, map<JointSegment, JointSegment> & parents)
-  {
-    m_AStarParents = &parents;
-  }
-
   void GetEdgesList(Segment const & child, bool isOutgoing, vector<SegmentEdge> & edges)
   {
-    m_graph.GetEdgeList(child, isOutgoing, edges);
+    m_graph.GetEdgeList(child, isOutgoing, true /* useRoutingOptions */, edges);
   }
 
   void GetEdgeList(JointSegment const & parentJoint, Segment const & parent, bool isOutgoing,
@@ -205,14 +212,12 @@ public:
 
   bool IsJoint(Segment const & segment, bool fromStart) const
   {
-    if (m_graph.IsJoint(segment.GetRoadPoint(fromStart)))
-      return true;
+    return IsJointOrEnd(segment, fromStart);
+  }
 
-    // For features, that ends out of mwm. In this case |m_graph.IsJoint| returns false, but we should
-    // think, that it's Joint anyway.
-    uint32_t const pointId = segment.GetPointId(fromStart);
-    uint32_t const pointsNumber = m_graph.GetGeometry().GetRoad(segment.GetFeatureId()).GetPointsCount();
-    return pointId == 0 || pointId + 1 == pointsNumber;
+  bool IsJointOrEnd(Segment const & segment, bool fromStart) const
+  {
+    return m_graph.IsJointOrEnd(segment, fromStart);
   }
 
   template <typename Vertex>
@@ -243,46 +248,12 @@ public:
   }
 };
 
-// Calculate distance from the starting border point to the transition along the border.
-// It could be measured clockwise or counterclockwise, direction doesn't matter.
-template <typename CrossMwmId>
-double CalcDistanceAlongTheBorders(vector<m2::RegionD> const & borders,
-                                   CrossMwmConnectorSerializer::Transition<CrossMwmId> const & transition)
-{
-  auto distance = GetAStarWeightZero<double>();
-
-  for (m2::RegionD const & region : borders)
-  {
-    vector<m2::PointD> const & points = region.Data();
-    CHECK(!points.empty(), ());
-    m2::PointD const * prev = &points.back();
-
-    for (m2::PointD const & curr : points)
-    {
-      m2::PointD intersection;
-      if (m2::RegionD::IsIntersect(transition.GetBackPoint(), transition.GetFrontPoint(), *prev,
-                                   curr, intersection))
-      {
-        distance += prev->Length(intersection);
-        return distance;
-      }
-
-      distance += prev->Length(curr);
-      prev = &curr;
-    }
-  }
-
-  CHECK(false, ("Intersection not found, feature:", transition.GetFeatureId(), "segment:",
-                transition.GetSegmentIdx(), "back:", transition.GetBackPoint(), "front:",
-                transition.GetFrontPoint()));
-  return distance;
-}
-
 /// \brief Fills |transitions| for osm id case. That means |Transition::m_roadMask| for items in
 /// |transitions| will be combination of |VehicleType::Pedestrian|, |VehicleType::Bicycle|
 /// and |VehicleType::Car|.
 void CalcCrossMwmTransitions(
-    string const & mwmFile, string const & mappingFile, vector<m2::RegionD> const & borders,
+    string const & mwmFile, string const & intermediateDir,
+    string const & mappingFile, vector<m2::RegionD> const & borders,
     string const & country, CountryParentNameGetterFn const & countryParentNameGetterFn,
     vector<CrossMwmConnectorSerializer::Transition<base::GeoObjectId>> & transitions)
 {
@@ -291,14 +262,13 @@ void CalcCrossMwmTransitions(
   CHECK(ParseRoadsFeatureIdToOsmIdMapping(mappingFile, featureIdToOsmId),
         ("Can't parse feature id to osm id mapping. File:", mappingFile));
 
+  auto const & path = base::JoinPath(intermediateDir, CROSS_MWM_OSM_WAYS_DIR, country);
+  auto const crossMwmOsmIdWays =
+      generator::CrossMwmOsmWaysCollector::CrossMwmInfo::LoadFromFileToSet(path);
+
   ForEachFromDat(mwmFile, [&](FeatureType & f, uint32_t featureId) {
     VehicleMask const roadMask = maskMaker.CalcRoadMask(f);
     if (roadMask == 0)
-      return;
-
-    f.ParseGeometry(FeatureType::BEST_GEOMETRY);
-    size_t const pointsCount = f.GetPointsCount();
-    if (pointsCount == 0)
       return;
 
     auto const it = featureIdToOsmId.find(featureId);
@@ -306,33 +276,37 @@ void CalcCrossMwmTransitions(
     auto const osmId = it->second;
     CHECK(osmId.GetType() == base::GeoObjectId::Type::ObsoleteOsmWay, ());
 
-    bool prevPointIn = m2::RegionsContain(borders, f.GetPoint(0));
+    auto const crossMwmWayInfoIt =
+        crossMwmOsmIdWays.find(generator::CrossMwmOsmWaysCollector::CrossMwmInfo(osmId.GetEncodedId()));
 
-    for (size_t i = 1; i < pointsCount; ++i)
+    if (crossMwmWayInfoIt != crossMwmOsmIdWays.cend())
     {
-      bool const currPointIn = m2::RegionsContain(borders, f.GetPoint(i));
-      if (currPointIn == prevPointIn)
-        continue;
+      f.ParseGeometry(FeatureType::BEST_GEOMETRY);
 
-      auto const segmentIdx = base::asserted_cast<uint32_t>(i - 1);
       VehicleMask const oneWayMask = maskMaker.CalcOneWayMask(f);
 
-      transitions.emplace_back(osmId, featureId, segmentIdx, roadMask, oneWayMask, currPointIn,
-                               f.GetPoint(i - 1), f.GetPoint(i));
+      auto const & crossMwmWayInfo = *crossMwmWayInfoIt;
+      for (auto const & segmentInfo : crossMwmWayInfo.m_crossMwmSegments)
+      {
+        uint32_t const segmentId = segmentInfo.m_segmentId;
+        bool const forwardIsEnter = segmentInfo.m_forwardIsEnter;
 
-      prevPointIn = currPointIn;
+        transitions.emplace_back(osmId, featureId, segmentId, roadMask, oneWayMask, forwardIsEnter);
+      }
     }
   });
 }
 
 /// \brief Fills |transitions| for transit case. That means Transition::m_roadMask for items in
 /// |transitions| will be equal to VehicleType::Transit after call of this method.
-void CalcCrossMwmTransitions(string const & mwmFile, string const & mappingFile,
+void CalcCrossMwmTransitions(string const & mwmFile, string const & intermediateDir,
+                             string const & mappingFile,
                              vector<m2::RegionD> const & borders, string const & country,
                              CountryParentNameGetterFn const & /* countryParentNameGetterFn */,
                              vector<CrossMwmConnectorSerializer::Transition<connector::TransitId>> & transitions)
 {
   CHECK(mappingFile.empty(), ());
+  CHECK(intermediateDir.empty(), ());
   try
   {
     FilesContainerR cont(mwmFile);
@@ -373,8 +347,7 @@ void CalcCrossMwmTransitions(string const & mwmFile, string const & mappingFile,
       // Note. One way mask is set to kTransitMask because all transit edges are one way edges.
       transitions.emplace_back(connector::TransitId(e.GetStop1Id(), e.GetStop2Id(), e.GetLineId()),
                                i /* feature id */, 0 /* segment index */, kTransitMask,
-                               kTransitMask /* one way mask */, stop2In /* forward is enter */,
-                               stop1Point, stop2Point);
+                               kTransitMask /* one way mask */, stop2In /* forward is enter */);
     }
   }
   catch (Reader::OpenException const & e)
@@ -390,7 +363,7 @@ void CalcCrossMwmTransitions(string const & mwmFile, string const & mappingFile,
 /// And |VehicleType::Transit| is applicable for |connector::TransitId|.
 template <typename CrossMwmId>
 void CalcCrossMwmConnectors(
-    string const & path, string const & mwmFile, string const & country,
+    string const & path, string const & mwmFile, string const & intermediateDir, string const & country,
     CountryParentNameGetterFn const & countryParentNameGetterFn, string const & mappingFile,
     vector<CrossMwmConnectorSerializer::Transition<CrossMwmId>> & transitions,
     CrossMwmConnectorPerVehicleType<CrossMwmId> & connectors)
@@ -410,20 +383,12 @@ void CalcCrossMwmConnectors(
   // Note 2. Taking into account note 1 it's clear that field |Transition<TransitId>::m_roadMask|
   // is always set to |VehicleType::Transit| and field |Transition<OsmId>::m_roadMask| can't have
   // |VehicleType::Transit| value.
-  CalcCrossMwmTransitions(mwmFile, mappingFile, borders, country, countryParentNameGetterFn,
+  CalcCrossMwmTransitions(mwmFile, intermediateDir, mappingFile, borders, country, countryParentNameGetterFn,
                           transitions);
   LOG(LINFO, ("Transitions finished, transitions:", transitions.size(),
       ", elapsed:", timer.ElapsedSeconds(), "seconds"));
 
   timer.Reset();
-  sort(transitions.begin(), transitions.end(),
-       [&](CrossMwmConnectorSerializer::Transition<CrossMwmId> const & lhs,
-           CrossMwmConnectorSerializer::Transition<CrossMwmId> const & rhs) {
-         return CalcDistanceAlongTheBorders(borders, lhs) <
-                CalcDistanceAlongTheBorders(borders, rhs);
-       });
-
-  LOG(LINFO, ("Transition sorted in", timer.ElapsedSeconds(), "seconds"));
 
   for (auto const & transition : transitions)
   {
@@ -475,8 +440,7 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
     Algorithm astar;
     IndexGraphWrapper indexGraphWrapper(graph, enter);
     DijkstraWrapperJoints wrapper(indexGraphWrapper, enter);
-    AStarAlgorithm<JointSegment, JointEdge, RouteWeight>::Context context;
-    indexGraphWrapper.SetAStarParents(true /* forward */, context.GetParents());
+    AStarAlgorithm<JointSegment, JointEdge, RouteWeight>::Context context(wrapper);
     unordered_map<uint32_t, vector<JointSegment>> visitedVertexes;
     astar.PropagateWave(wrapper, wrapper.GetStartJoint(),
                         [&](JointSegment const & vertex)
@@ -568,12 +532,6 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
   LOG(LINFO, ("Leaps finished, elapsed:", timer.ElapsedSeconds(), "seconds, routes found:",
               foundCount, ", not found:", notFoundCount));
 }
-
-serial::GeometryCodingParams LoadGeometryCodingParams(string const & mwmFile)
-{
-  DataHeader const dataHeader(mwmFile);
-  return dataHeader.GetDefGeometryCodingParams();
-}
 }  // namespace
 
 namespace routing
@@ -591,11 +549,11 @@ bool BuildRoutingIndex(string const & filename, string const & country,
     processor.BuildGraph(graph);
 
     FilesContainerW cont(filename, FileWriter::OP_WRITE_EXISTING);
-    FileWriter writer = cont.GetWriter(ROUTING_FILE_TAG);
+    auto writer = cont.GetWriter(ROUTING_FILE_TAG);
 
-    auto const startPos = writer.Pos();
-    IndexGraphSerializer::Serialize(graph, processor.GetMasks(), writer);
-    auto const sectionSize = writer.Pos() - startPos;
+    auto const startPos = writer->Pos();
+    IndexGraphSerializer::Serialize(graph, processor.GetMasks(), *writer);
+    auto const sectionSize = writer->Pos() - startPos;
 
     LOG(LINFO, ("Routing section created:", sectionSize, "bytes,", graph.GetNumRoads(), "roads,",
                 graph.GetNumJoints(), "joints,", graph.GetNumPoints(), "points"));
@@ -617,18 +575,17 @@ void SerializeCrossMwm(string const & mwmFile, string const & sectionName,
                        CrossMwmConnectorPerVehicleType<CrossMwmId> const & connectors,
                        vector<CrossMwmConnectorSerializer::Transition<CrossMwmId>> const & transitions)
 {
-  serial::GeometryCodingParams const codingParams = LoadGeometryCodingParams(mwmFile);
   FilesContainerW cont(mwmFile, FileWriter::OP_WRITE_EXISTING);
   auto writer = cont.GetWriter(sectionName);
-  auto const startPos = writer.Pos();
-  CrossMwmConnectorSerializer::Serialize(transitions, connectors, codingParams, writer);
-  auto const sectionSize = writer.Pos() - startPos;
+  auto const startPos = writer->Pos();
+  CrossMwmConnectorSerializer::Serialize(transitions, connectors, *writer);
+  auto const sectionSize = writer->Pos() - startPos;
 
   LOG(LINFO, ("Cross mwm section generated, size:", sectionSize, "bytes"));
 }
 
 void BuildRoutingCrossMwmSection(string const & path, string const & mwmFile,
-                                 string const & country,
+                                 string const & country, string const & intermediateDir,
                                  CountryParentNameGetterFn const & countryParentNameGetterFn,
                                  string const & osmToFeatureFile, bool disableCrossMwmProgress)
 {
@@ -637,7 +594,7 @@ void BuildRoutingCrossMwmSection(string const & path, string const & mwmFile,
   CrossMwmConnectorPerVehicleType<CrossMwmId> connectors;
   vector<CrossMwmConnectorSerializer::Transition<CrossMwmId>> transitions;
 
-  CalcCrossMwmConnectors(path, mwmFile, country, countryParentNameGetterFn, osmToFeatureFile,
+  CalcCrossMwmConnectors(path, mwmFile, intermediateDir, country, countryParentNameGetterFn, osmToFeatureFile,
                          transitions, connectors);
 
   // We use leaps for cars only. To use leaps for other vehicle types add weights generation
@@ -658,7 +615,8 @@ void BuildTransitCrossMwmSection(string const & path, string const & mwmFile,
   CrossMwmConnectorPerVehicleType<CrossMwmId> connectors;
   vector<CrossMwmConnectorSerializer::Transition<CrossMwmId>> transitions;
 
-  CalcCrossMwmConnectors(path, mwmFile, country, countryParentNameGetterFn, "" /* mapping file */,
+  CalcCrossMwmConnectors(path, mwmFile, "" /* intermediateDir */, country,
+                         countryParentNameGetterFn, "" /* mapping file */,
                          transitions, connectors);
 
   CHECK(connectors[static_cast<size_t>(VehicleType::Pedestrian)].IsEmpty(), ());

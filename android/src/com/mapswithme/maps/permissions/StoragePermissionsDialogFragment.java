@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -66,8 +66,15 @@ public class StoragePermissionsDialogFragment extends BaseMwmDialogFragment impl
 
     View content = View.inflate(getActivity(), R.layout.fragment_storage_permissions, null);
     res.setContentView(content);
-    content.findViewById(R.id.btn__exit).setOnClickListener(this);
-    content.findViewById(R.id.btn__settings).setOnClickListener(this);
+
+    TextView acceptBtn = content.findViewById(R.id.accept_btn);
+    acceptBtn.setOnClickListener(this);
+    acceptBtn.setText(R.string.settings);
+
+    TextView declineBtn = content.findViewById(R.id.decline_btn);
+    declineBtn.setOnClickListener(this);
+    declineBtn.setText(R.string.back);
+
     ImageView image = (ImageView) content.findViewById(R.id.iv__image);
     image.setImageResource(R.drawable.img_no_storage_permission);
     TextView title = (TextView) content.findViewById(R.id.tv__title);
@@ -83,11 +90,11 @@ public class StoragePermissionsDialogFragment extends BaseMwmDialogFragment impl
   {
     switch (v.getId())
     {
-      case R.id.btn__exit:
+      case R.id.decline_btn:
         getActivity().finish();
         break;
 
-      case R.id.btn__settings:
+      case R.id.accept_btn:
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getContext().getPackageName(), null);

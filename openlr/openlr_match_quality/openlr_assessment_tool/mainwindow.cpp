@@ -34,6 +34,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <memory>
 #include <vector>
 
 using namespace openlr;
@@ -116,7 +117,7 @@ private:
 bool PointsMatch(m2::PointD const & a, m2::PointD const & b)
 {
   auto constexpr kToleranceDistanceM = 1.0;
-  return MercatorBounds::DistanceOnEarth(a, b) < kToleranceDistanceM;
+  return mercator::DistanceOnEarth(a, b) < kToleranceDistanceM;
 }
 
 class PointsControllerDelegate : public PointsControllerDelegateBase
@@ -126,7 +127,7 @@ public:
     : m_framework(framework)
     , m_dataSource(framework.GetDataSource())
     , m_roadGraph(m_dataSource, routing::IRoadGraph::Mode::ObeyOnewayTag,
-                  make_unique<routing::CarModelFactory>(storage::CountryParentGetter{}))
+                  std::make_unique<routing::CarModelFactory>(storage::CountryParentGetter{}))
   {
   }
 
@@ -179,7 +180,7 @@ public:
         for (size_t i = 0; i < ft.GetPointsCount(); ++i)
         {
           auto const & fp = ft.GetPoint(i);
-          auto const distance = MercatorBounds::DistanceOnEarth(fp, p);
+          auto const distance = mercator::DistanceOnEarth(fp, p);
           if (PointsMatch(fp, p) && distance < minDistance)
           {
             bestPointIndex = i;
@@ -306,12 +307,12 @@ MainWindow::MainWindow(Framework & framework)
   m_ignorePathAction->setEnabled(false /* enabled */);
 }
 
-void MainWindow::CreateTrafficPanel(string const & dataFilePath)
+void MainWindow::CreateTrafficPanel(std::string const & dataFilePath)
 {
   m_trafficMode = new TrafficMode(dataFilePath,
                                   m_framework.GetDataSource(),
-                                  make_unique<TrafficDrawerDelegate>(m_framework),
-                                  make_unique<PointsControllerDelegate>(m_framework));
+                                  std::make_unique<TrafficDrawerDelegate>(m_framework),
+                                  std::make_unique<PointsControllerDelegate>(m_framework));
 
   connect(m_mapWidget, &MapWidget::TrafficMarkupClick,
           m_trafficMode, &TrafficMode::OnClick);

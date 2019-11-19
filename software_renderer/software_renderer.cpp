@@ -1,4 +1,5 @@
 #include "software_renderer/software_renderer.hpp"
+
 #include "software_renderer/proto_to_styles.hpp"
 
 #include "drape/symbols_texture.hpp"
@@ -13,25 +14,23 @@
 
 #include "base/logging.hpp"
 
+#include "3party/agg/agg_bounding_rect.h"
+#include "3party/agg/agg_conv_contour.h"
+#include "3party/agg/agg_conv_curve.h"
+#include "3party/agg/agg_conv_dash.h"
+#include "3party/agg/agg_conv_stroke.h"
+#include "3party/agg/agg_ellipse.h"
+#include "3party/agg/agg_path_storage.h"
 #include "3party/agg/agg_rasterizer_scanline_aa.h"
 #include "3party/agg/agg_scanline_p.h"
-#include "3party/agg/agg_path_storage.h"
-#include "3party/agg/agg_conv_stroke.h"
-#include "3party/agg/agg_conv_dash.h"
-#include "3party/agg/agg_ellipse.h"
-#include "3party/agg/agg_conv_curve.h"
-#include "3party/agg/agg_conv_stroke.h"
-#include "3party/agg/agg_conv_contour.h"
-#include "3party/agg/agg_bounding_rect.h"
-
-#include "3party/agg/agg_vcgen_stroke.cpp"
 #include "3party/agg/agg_vcgen_dash.cpp"
-
+#include "3party/agg/agg_vcgen_stroke.cpp"
 #include "3party/stb_image/stb_image_write.h"
+
+using namespace std;
 
 namespace software_renderer
 {
-
 #define BLENDER_TYPE agg::comp_op_src_over
 
 class agg_symbol_renderer : public ml::text_renderer
@@ -350,13 +349,13 @@ void SoftwareRenderer::DrawText(m2::PointD const & pt, dp::Anchor anchor, dp::Fo
   l.apply_font(face);
 
   ml::rect_d bounds = l.calc_bounds(face);
-  vector<ml::point_d> base;
-  base.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
-  base.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
+  vector<ml::point_d> basePoints;
+  basePoints.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
+  basePoints.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
 
   ml::text_options opt(face);
   AlignText(opt, anchor);
-  l.warp(base, opt);
+  l.warp(basePoints, opt);
 
   agg_symbol_renderer ren(m_baseRenderer, primFont.m_color, primFont.m_outlineColor);
   if (HasOutline(primFont))
@@ -378,13 +377,13 @@ void SoftwareRenderer::DrawText(m2::PointD const & pt, dp::Anchor anchor,
   prim.apply_font(primFace);
 
   ml::rect_d bounds = prim.calc_bounds(primFace);
-  vector<ml::point_d> base;
-  base.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
-  base.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
+  vector<ml::point_d> basePoints;
+  basePoints.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
+  basePoints.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
 
   ml::text_options opt(primFace);
   AlignText(opt, anchor);
-  prim.warp(base, opt);
+  prim.warp(basePoints, opt);
   bounds = prim.calc_bounds(primFace);
 
   agg_symbol_renderer ren(m_baseRenderer, primFont.m_color, primFont.m_outlineColor);
@@ -400,15 +399,15 @@ void SoftwareRenderer::DrawText(m2::PointD const & pt, dp::Anchor anchor,
   ml::face & secFace = m_textEngine.get_face(0, "default", secFont.m_size);
   sec.apply_font(secFace);
 
-  base.clear();
+  basePoints.clear();
   ml::rect_d boundsSec = sec.calc_bounds(secFace);
   double currX = (bounds.min.x + bounds.max.x) / 2;
-  base.push_back(ml::point_d(currX - boundsSec.width() / 2, bounds.max.y + boundsSec.height() / 2));
-  base.push_back(ml::point_d(currX + boundsSec.width() / 2, bounds.max.y + boundsSec.height() / 2));
+  basePoints.push_back(ml::point_d(currX - boundsSec.width() / 2, bounds.max.y + boundsSec.height() / 2));
+  basePoints.push_back(ml::point_d(currX + boundsSec.width() / 2, bounds.max.y + boundsSec.height() / 2));
 
   ml::text_options secOpt(secFace);
   AlignText(secOpt, dp::Center);
-  sec.warp(base, secOpt);
+  sec.warp(basePoints, secOpt);
 
   agg_symbol_renderer ren2(m_baseRenderer, secFont.m_color, secFont.m_outlineColor);
   if (HasOutline(secFont))
@@ -452,13 +451,13 @@ void SoftwareRenderer::CalculateTextMetric(m2::PointD const & pt, dp::Anchor anc
   l.apply_font(face);
 
   ml::rect_d bounds = l.calc_bounds(face);
-  vector<ml::point_d> base;
-  base.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
-  base.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
+  vector<ml::point_d> basePoints;
+  basePoints.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
+  basePoints.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
 
   ml::text_options opt(face);
   AlignText(opt, anchor);
-  l.warp(base, opt);
+  l.warp(basePoints, opt);
   bounds = l.calc_bounds(face);
   result = m2::RectD(bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y);
 }
@@ -474,28 +473,28 @@ void SoftwareRenderer::CalculateTextMetric(m2::PointD const & pt, dp::Anchor anc
   prim.apply_font(primFace);
 
   ml::rect_d bounds = prim.calc_bounds(primFace);
-  vector<ml::point_d> base;
-  base.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
-  base.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
+  vector<ml::point_d> basePoints;
+  basePoints.push_back(ml::point_d(pt.x - bounds.width() / 2, pt.y));
+  basePoints.push_back(ml::point_d(pt.x + bounds.width() / 2, pt.y));
 
   ml::text_options opt(primFace);
   AlignText(opt, anchor);
-  prim.warp(base, opt);
+  prim.warp(basePoints, opt);
   bounds = prim.calc_bounds(primFace);
 
   ml::text sec(primText);
   ml::face & secFace = m_textEngine.get_face(0, "default", secFont.m_size);
   sec.apply_font(secFace);
 
-  base.clear();
+  basePoints.clear();
   ml::rect_d boundsSec = sec.calc_bounds(secFace);
   double currX = (bounds.min.x + bounds.max.x) / 2;
-  base.push_back(ml::point_d(currX - boundsSec.width() / 2, bounds.max.y + boundsSec.height() / 2));
-  base.push_back(ml::point_d(currX + boundsSec.width() / 2, bounds.max.y + boundsSec.height() / 2));
+  basePoints.push_back(ml::point_d(currX - boundsSec.width() / 2, bounds.max.y + boundsSec.height() / 2));
+  basePoints.push_back(ml::point_d(currX + boundsSec.width() / 2, bounds.max.y + boundsSec.height() / 2));
 
   ml::text_options secOpt(secFace);
   AlignText(secOpt, dp::Center);
-  sec.warp(base, secOpt);
+  sec.warp(basePoints, secOpt);
   boundsSec = sec.calc_bounds(secFace);
 
   bounds.extend(boundsSec);
@@ -509,18 +508,18 @@ void SoftwareRenderer::CalculateTextMetric(PathInfo const & geometry, dp::FontDe
   ml::face & face = m_textEngine.get_face(0, "default", font.m_size);
   l.apply_font(face);
 
-  vector<ml::point_d> base(geometry.m_path.size());
+  vector<ml::point_d> basePoints(geometry.m_path.size());
   size_t i = 0;
   for (auto const & p : geometry.m_path)
   {
-    base[i].x = p.x;
-    base[i].y = p.y;
+    basePoints[i].x = p.x;
+    basePoints[i].y = p.y;
     ++i;
   }
 
   ml::text_options opt(face);
   AlignText(opt, dp::Center);
-  l.warp(base, opt);
+  l.warp(basePoints, opt);
   l.calc_bounds(face);
   for (auto const & sym : l.symbols())
     rects.emplace_back(sym.bounds().min.x, sym.bounds().min.y, sym.bounds().max.x,
@@ -534,18 +533,18 @@ void SoftwareRenderer::DrawPathText(PathInfo const & geometry, dp::FontDecl cons
   ml::face & face = m_textEngine.get_face(0, "default", font.m_size);
   l.apply_font(face);
 
-  vector<ml::point_d> base(geometry.m_path.size());
+  vector<ml::point_d> basePoints(geometry.m_path.size());
   size_t i = 0;
   for (auto const & p : geometry.m_path)
   {
-    base[i].x = p.x;
-    base[i].y = p.y;
+    basePoints[i].x = p.x;
+    basePoints[i].y = p.y;
     ++i;
   }
 
   ml::text_options opt(face);
   AlignText(opt, dp::Center);
-  l.warp(base, opt);
+  l.warp(basePoints, opt);
 
   agg_symbol_renderer ren(m_baseRenderer, font.m_color, font.m_outlineColor);
   if (HasOutline(font))
@@ -712,5 +711,4 @@ void PathWrapper::Render(SoftwareRenderer::TSolidRenderer & renderer,
     }
   }
 }
-
-}
+}  // namespace software_renderer

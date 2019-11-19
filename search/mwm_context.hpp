@@ -32,9 +32,9 @@ class MwmContext
 public:
   explicit MwmContext(MwmSet::MwmHandle handle);
 
-  inline MwmSet::MwmId const & GetId() const { return m_handle.GetId(); }
-  inline string const & GetName() const { return GetInfo()->GetCountryName(); }
-  inline std::shared_ptr<MwmInfo> const & GetInfo() const { return GetId().GetInfo(); }
+  MwmSet::MwmId const & GetId() const { return m_handle.GetId(); }
+  std::string const & GetName() const { return GetInfo()->GetCountryName(); }
+  std::shared_ptr<MwmInfo> const & GetInfo() const { return GetId().GetInfo(); }
 
   template <typename Fn>
   void ForEachIndex(covering::Intervals const & intervals, uint32_t scale, Fn && fn) const
@@ -86,7 +86,7 @@ public:
   }
 
   MwmSet::MwmHandle m_handle;
-  MwmValue & m_value;
+  MwmValue const & m_value;
 
 private:
   FeatureStatus GetEditedStatus(uint32_t index) const
@@ -97,7 +97,9 @@ private:
   template <class Fn>
   void ForEachIndexImpl(covering::Intervals const & intervals, uint32_t scale, Fn && fn) const
   {
-    CheckUniqueIndexes checkUnique(m_value.GetHeader().GetFormat() >= version::Format::v5);
+    CHECK_GREATER_OR_EQUAL(m_value.GetHeader().GetFormat(), version::Format::v5,
+                           ("Old maps should not be registered."));
+    CheckUniqueIndexes checkUnique;
     for (auto const & i : intervals)
       m_index.ForEachInIntervalAndScale(i.first, i.second, scale,
           [&](uint64_t /* key */, uint32_t value)

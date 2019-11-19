@@ -2,7 +2,7 @@ package com.mapswithme.maps.downloader;
 
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -214,8 +214,7 @@ public class CountrySuggestFragment extends BaseMwmFragment implements View.OnCl
       break;
 
     case R.id.btn__select_map:
-      if (!RoutingController.get().checkMigration(getMwmActivity()))
-        getMwmActivity().replaceFragment(DownloaderFragment.class, null, null);
+      getMwmActivity().replaceFragment(DownloaderFragment.class, null, null);
       break;
 
     case R.id.wpv__download_progress:

@@ -7,7 +7,7 @@
 #include "platform/mwm_version.hpp"
 
 #include "coding/file_writer.hpp"
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/internal/file_data.hpp"
 
 #include "base/timer.hpp"
@@ -17,7 +17,7 @@ namespace platform
 {
 namespace tests_support
 {
-ScopedMwm::ScopedMwm(string const & relativePath) : m_file(relativePath, ScopedFile::Mode::Create)
+ScopedMwm::ScopedMwm(std::string const & relativePath) : m_file(relativePath, ScopedFile::Mode::Create)
 {
   DataHeader header;
   {
@@ -25,12 +25,12 @@ ScopedMwm::ScopedMwm(string const & relativePath) : m_file(relativePath, ScopedF
 
     // Each writer must be in it's own scope to avoid conflicts on the final write.
     {
-      FileWriter versionWriter = container.GetWriter(VERSION_FILE_TAG);
-      version::WriteVersion(versionWriter, base::SecondsSinceEpoch());
+      auto versionWriter = container.GetWriter(VERSION_FILE_TAG);
+      version::WriteVersion(*versionWriter, base::SecondsSinceEpoch());
     }
 
-    FileWriter w = container.GetWriter(HEADER_FILE_TAG);
-    header.Save(w);
+    auto w = container.GetWriter(HEADER_FILE_TAG);
+    header.Save(*w);
   }
 }
 }  // namespace tests_support

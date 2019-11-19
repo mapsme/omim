@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "没有有效订阅";
 
-"subscription_terms" = "确认购买后将向您的iTunes账户收费。除非在当前周期结束前至少24小时关闭自动续订，订购会自动延续。在当前周期结束前24小时内，我们会根据您的方案向您的账户收费。您能在购买后在Apple ID账户设置中随时管理或关闭自动续订。";
-
 "subscriptions_title" = "订购";
 
 "manage_subscription" = "管理订购";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "该文件已损坏，无法上传。请上传其他文件。";
 
-"buy_btn" = "购买%s";
+"buy_btn" = "购买%s的旅行指南";
 
 "download_guide_progress" = "指南正在加载......";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "无法建立路线。请选择其他路线点";
 
-"dialog_routing_download_files_carplay" = "并非所有地图都可用于创建路线。请在手机的应用程序中下载它们";
+"dialog_routing_download_files_carplay" = "为了创建线路，请在您的设备中下载所缺少的地图";
 
 "dialog_routing_system_error_carplay" = "发生了错误。请重新启动程序";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "在地图上选择酒店";
+
+"popup_booking_download_guides_title" = "已预订酒店？";
+
+"popup_booking_download_guides_message" = "和MAPS.ME一起规划行程吧";
+
+"popup_mwm_download_guides_title" = "在线指南";
+
+"popup_mwm_download_guides_cta" = "选择";
+
+"popup_mwm_download_guides_cta_1" = "查看";
+
+"gallery_pp_download_guides_offline_title" = "和 MAPS.ME一起规划你的假期吧！";
+
+"gallery_pp_download_guides_offline_subtitle" = "不要错过资深驴友提供线路中最重要的内容";
+
+"gallery_pp_download_guides_offline_cta" = "开启网络";
+
+"gallery_pp_download_guides_title" = "旅行指南";
+
+"native_screen_subscription_title" = "2000+ 旅行指南向您完全开放！";
+
+"native_screen_subscription_message" = "令人回味无穷的旅行，和新旅伴探索新世界";
+
+"annual_subscription_title" = "按年订阅";
+
+"montly_subscription_title" = "按月订阅";
+
+"annual_subscription_message" = "12个月内无限使用";
+
+"montly_subscription_message" = "1个月内无限使用";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "谢谢订阅！";
+
+"subscription_success_dialog_message" = "您现在已经可以无限使用旅行指南目录了";
+
+"renewal_screen_title" = "订阅有效期已结束";
+
+"renewal_screen_message" = "所有通过订阅下载的旅行指南将被删除。希望恢复订阅并保存它们？";
+
+"renewal_screen_button_restore" = "是的，恢复";
+
+"renewal_screen_button_cancel" = "不，删除旅行指南";
+
+"subscription_error_ping_title" = "未能成功购买";
+
+"subscription_error_message" = "无法在您所在的地区使用。请稍后再试";
+
+"subscription_error_button" = "明白";
+
+"timeout_error_title" = "糟糕，时间到了！";
+
+"timeout_error_message" = "我们的服务器无法响应。请检查网络连接状况并重试。";
+
+"per_month" = "/月";
+
+"per_year" = "/年";
+
+"buy_btn_for_subscription" = "%s起可自由访问";
+
+"buy_btn_for_subscription_1" = "在%s内购买全部旅行指南";
+
+"buy_btn_for_subscription_ios_only_mo" = "%s/月起可自由访问";
+
+"buy_btn_for_subscription_ios_only_year" = "%s/年起可自由访问";
+
+"subscription_terms_guides" = "在确认购买后，将通过您的 iTunes账户完成付款。如果在当前使用期限结束前的24小时内未关闭自动延长功能，则订阅将自动更新。在当前使用期限结束前的24小时内，将根据您所选择的套餐计划，从您的账户中扣除相应金额。您可在购买后的任意时间内，在Apple ID的账户设置中调节或关闭自动延长功能。 您只能在订阅有效期内使用通过订阅下载的旅行指南。在订阅结束后的30天内，旅行指南和全部书签将被自动删除。";
+
+"subscription_terms" = "确认购买后将向您的iTunes账户收费。除非在当前周期结束前至少24小时关闭自动续订，订购会自动延续。在当前周期结束前24小时内，我们会根据您的方案向您的账户收费。您能在购买后在Apple ID账户设置中随时管理或关闭自动续订。";
+
+"whatsnew_carplay_title" = "MAPS.ME 自动导航已被纳入CarPlay系统中！";
+
+"whatsnew_carplay_message" = "可在无网络的条件下使用标记、搜索、车速摄像头和绕道设置";
+
+"whatsnew_subscription_title" = "订阅我们的服务，探索新世界！";
+
+"whatsnew_subscription_message" = "无限次使用线路目录比一次性购买更划算";
+
+"whatsnew_carnavi_fixes_for_android_title" = "导航更新";
+
+"whatsnew_carnavi_fixes_for_android_message" = "我们优化了距离道路较远的目标地点的线路设置";
+
+"avoid_unpaved_carplay_1" = "无土路路段";
+
+"avoid_unpaved_carplay_2" = "无土路路段";
+
+"avoid_ferry_carplay_1" = "无渡船";
+
+"avoid_ferry_carplay_2" = "无渡船";
+
+"avoid_tolls_carplay_1" = "无付费路段";
+
+"avoid_tolls_carplay_2" = "无付费路段";
+
+"speedcams_alert_title_carplay_1" = "摄像头";
+
+"speedcams_alert_title_carplay_2" = "摄像头信息";
+
+"download_map_carplay" = "将MAPS.ME软件中的地图下载至个人设备中";
+
+"carplay_roundabout_exit" = "%s号坡道";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "分类……";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "分类标签";
+
+/* iOS */
+"sort_default" = "默认排序";
+
+"sort_type" = "按类型排序";
+
+"sort_distance" = "按距离排序";
+
+"sort_date" = "按日期排序";
+
+/* Android */
+"by_default" = "默认情况下";
+
+/* Android */
+"by_type" = "按类型";
+
+/* Android */
+"by_distance" = "按距离";
+
+/* Android */
+"by_date" = "按时间";
+
+"week_ago_sorttype" = "一周前";
+
+"month_ago_sorttype" = "一月前";
+
+"moremonth_ago_sorttype" = "一个多月前";
+
+"moreyear_ago_sorttype" = "一年多以前";
+
+"near_me_sorttype" = "在我旁边";
+
+"others_sorttype" = "其他";
+
+"food_places" = "美食";
+
+"tourist_places" = "名胜";
+
+"museums" = "博物馆";
+
+"parks" = "公园";
+
+"swim_places" = "游泳";
+
+"mountains" = "山";
+
+"animals" = "动物";
+
+"hotels" = "酒店";
+
+"buildings" = "建筑物";
+
+"money" = "货币";
+
+"shops" = "商店";
+
+"parkings" = "停车场";
+
+"fuel_places" = "加油站";
+
+"water" = "水";
+
+"medicine" = "医疗";
+
+"search_in_the_list" = "在列表中搜索";
+
+"view_on_map_bookmarks" = "在地图上";
+
+"more_bookmarks" = "更多……";
+
+"no_items_found" = "未搜索到内容";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "编辑";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "删除列表";
+
+"whatsnew_bookmarks_search_sort_title" = "标签中的顺序 – 便于旅行";
+
+"whatsnew_bookmarks_search_sort_message" = "请根据类别、添加时间和地理位置对您喜欢的地点进行排序，还可以按名称快速查找具体的标签";
+
+"popup_subscription_success_map_title" = "耶！您已订阅！";
+
+"popup_subscription_success_map_message" = "现在在MAPS.ME画册中探索最佳的旅游景点";
+
+"popup_subscription_success_map_start_button" = "浏览";
+
+"popup_subscription_success_map_not_now_button" = "不是现在";
+
+"religious_places" = "圣地";
+
+"subscription_terms_android" = "在确认购买时，将从您的Google Play帐户付款。如果在本期订阅结束前24小时内没有取消自动续订，续订将自动延续。资金将在本期订阅结束前24小时内根据续订计划从您的帐户中扣除。您可以在购买后管理自动续订或在帐户设置中将其停用。您只能在有效期内使用订阅下载的指南。订阅结束30天后，指南将自动删除。";
+
+"select_list" = "选择列表";
+
+"pp_discovery_place_related_header" = "这是指南目录中标记的位置";
+
+"pp_discovery_place_related_header_1" = "这个位置在指南中出现过";
+
+"pp_discovery_place_related_cta_button" = "查看";
+
+"pp_discovery_place_related_tag_header" = "指南和按标记 “%s”";
+
+"pp_discovery_place_related_tag_header_1" = "您会喜欢这样的";
+
+"buy_btn_for_subscription_version_2" = "所有指南%s/月";
+
+"buy_btn_for_subscription_version_3" = "整个画册%s/月";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "访问画册%s/月";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "访问画册%s/年";
+
+"subscription_screen_native_title_version_2" = "在地图上访问带有标记的指南！";
+
+"subscription_screen_native_message_version_2" = "请为600多个城市和100多个国家的任何旅行做好准备";
+
+"catalog_no_internet_title" = "没有网络连接";
+
+"catalog_no_internet_button" = "请再试一次";
+
+"whatsnew_map_updates_title" = "地图的超快更新";
+
+"whatsnew_map_updates_message" = "现在的数据更新速度提高了2倍";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "停车";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "支付终端";
 
 "type.amenity.pharmacy" = "药店";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "邮政";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "酒馆";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "大学";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "自动售烟机";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "取水点";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "障碍";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "边检";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "入口";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "门";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "水栅门";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "台阶";
 
 "type.barrier.toll_booth" = "收费亭";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "考古遗址";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "水";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "墓地";
 
 "type.landuse.cemetery.christian" = "墓地";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "田野";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "湖";
 

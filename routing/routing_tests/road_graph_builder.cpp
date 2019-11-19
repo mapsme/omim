@@ -49,9 +49,9 @@ private:
     info->m_version.SetFormat(version::Format::lastFormat);
     return info;
   }
-  unique_ptr<MwmValueBase> CreateValue(MwmInfo &) const override
+  unique_ptr<MwmValue> CreateValue(MwmInfo & info) const override
   {
-    return make_unique<MwmValueBase>();
+    return make_unique<MwmValue>(info.GetLocalFile());
   }
   //@}
 
@@ -93,14 +93,6 @@ void RoadGraphMockSource::ForEachFeatureClosestToCross(m2::PointD const & /* cro
     edgesLoader(MakeTestFeatureID(base::checked_cast<uint32_t>(roadId)), m_roads[roadId]
         .m_junctions, m_roads[roadId].m_bidirectional);
   }
-}
-
-void RoadGraphMockSource::FindClosestEdges(m2::PointD const & point, uint32_t count,
-                                           vector<pair<Edge, Junction>> & vicinities) const
-{
-  UNUSED_VALUE(point);
-  UNUSED_VALUE(count);
-  UNUSED_VALUE(vicinities);
 }
 
 void RoadGraphMockSource::GetFeatureTypes(FeatureID const & featureId, feature::TypesHolder & types) const

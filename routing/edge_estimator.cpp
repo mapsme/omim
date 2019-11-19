@@ -5,6 +5,8 @@
 #include "traffic/speed_groups.hpp"
 #include "traffic/traffic_info.hpp"
 
+#include "geometry/mercator.hpp"
+
 #include "indexer/feature_altitude.hpp"
 
 #include "base/assert.hpp"
@@ -20,18 +22,12 @@ namespace
 {
 feature::TAltitude constexpr kMountainSicknessAltitudeM = 2500;
 
-enum class Purpose
-{
-  Weight,
-  ETA
-};
-
 double TimeBetweenSec(m2::PointD const & from, m2::PointD const & to, double speedMpS)
 {
   CHECK_GREATER(speedMpS, 0.0,
-                ("from:", MercatorBounds::ToLatLon(from), "to:", MercatorBounds::ToLatLon(to)));
+                ("from:", mercator::ToLatLon(from), "to:", mercator::ToLatLon(to)));
 
-  double const distanceM = MercatorBounds::DistanceOnEarth(from, to);
+  double const distanceM = mercator::DistanceOnEarth(from, to);
   return distanceM / speedMpS;
 }
 
@@ -78,16 +74,18 @@ double GetBicycleClimbPenalty(double tangent, feature::TAltitude altitudeM)
 double GetCarClimbPenalty(double /* tangent */, feature::TAltitude /* altitude */) { return 1.0; }
 
 template <typename GetClimbPenalty>
-double CalcClimbSegment(Purpose purpose, Segment const & segment, RoadGeometry const & road,
-                              GetClimbPenalty && getClimbPenalty)
+double CalcClimbSegment(EdgeEstimator::Purpose purpose, Segment const & segment,
+                        RoadGeometry const & road, GetClimbPenalty && getClimbPenalty)
 {
   Junction const & from = road.GetJunction(segment.GetPointId(false /* front */));
   Junction const & to = road.GetJunction(segment.GetPointId(true /* front */));
   SpeedKMpH const & speed = road.GetSpeed(segment.IsForward());
 
-  double const distance = MercatorBounds::DistanceOnEarth(from.GetPoint(), to.GetPoint());
-  double const speedMpS = KMPH2MPS(purpose == Purpose::Weight ? speed.m_weight : speed.m_eta);
-  CHECK_GREATER(speedMpS, 0.0, ());
+  double const distance = mercator::DistanceOnEarth(from.GetPoint(), to.GetPoint());
+  double const speedMpS = KMPH2MPS(purpose == EdgeEstimator::Purpose::Weight ? speed.m_weight : speed.m_eta);
+  CHECK_GREATER(speedMpS, 0.0,
+                ("from:", mercator::ToLatLon(from.GetPoint()),
+                 "to:", mercator::ToLatLon(to.GetPoint()), "speed:", speed));
   double const timeSec = distance / speedMpS;
 
   if (base::AlmostEqualAbs(distance, 0.0, 0.1))
@@ -102,11 +100,15 @@ double CalcClimbSegment(Purpose purpose, Segment const & segment, RoadGeometry c
 namespace routing
 {
 // EdgeEstimator -----------------------------------------------------------------------------------
-EdgeEstimator::EdgeEstimator(double maxWeightSpeedKMpH, double offroadSpeedKMpH)
-  : m_maxWeightSpeedMpS(KMPH2MPS(maxWeightSpeedKMpH)), m_offroadSpeedMpS(KMPH2MPS(offroadSpeedKMpH))
+EdgeEstimator::EdgeEstimator(double maxWeightSpeedKMpH, SpeedKMpH const & offroadSpeedKMpH)
+  : m_maxWeightSpeedMpS(KMPH2MPS(maxWeightSpeedKMpH)), m_offroadSpeedKMpH(offroadSpeedKMpH)
 {
-  CHECK_GREATER(m_offroadSpeedMpS, 0.0, ());
-  CHECK_GREATER_OR_EQUAL(m_maxWeightSpeedMpS, m_offroadSpeedMpS, ());
+  CHECK_GREATER(m_offroadSpeedKMpH.m_weight, 0.0, ());
+  CHECK_GREATER(m_offroadSpeedKMpH.m_eta, 0.0, ());
+  CHECK_GREATER_OR_EQUAL(m_maxWeightSpeedMpS, KMPH2MPS(m_offroadSpeedKMpH.m_weight), ());
+
+  if (m_offroadSpeedKMpH.m_eta != kNotUsed)
+    CHECK_GREATER_OR_EQUAL(m_maxWeightSpeedMpS, KMPH2MPS(m_offroadSpeedKMpH.m_eta), ());
 }
 
 double EdgeEstimator::CalcHeuristic(m2::PointD const & from, m2::PointD const & to) const
@@ -123,31 +125,43 @@ double EdgeEstimator::CalcLeapWeight(m2::PointD const & from, m2::PointD const &
   return TimeBetweenSec(from, to, m_maxWeightSpeedMpS / 2.0);
 }
 
-double EdgeEstimator::CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to) const
+double EdgeEstimator::CalcOffroad(m2::PointD const & from, m2::PointD const & to,
+                                  Purpose purpose) const
 {
-  return TimeBetweenSec(from, to, m_offroadSpeedMpS);
+  auto const offroadSpeedKMpH = purpose == Purpose::Weight ? m_offroadSpeedKMpH.m_weight
+                                                            : m_offroadSpeedKMpH.m_eta;
+  if (offroadSpeedKMpH == kNotUsed)
+    return 0.0;
+
+  return TimeBetweenSec(from, to, KMPH2MPS(offroadSpeedKMpH));
 }
 
 // PedestrianEstimator -----------------------------------------------------------------------------
 class PedestrianEstimator final : public EdgeEstimator
 {
 public:
-  PedestrianEstimator(double maxWeightSpeedKMpH, double offroadSpeedKMpH)
+  PedestrianEstimator(double maxWeightSpeedKMpH, SpeedKMpH const & offroadSpeedKMpH)
     : EdgeEstimator(maxWeightSpeedKMpH, offroadSpeedKMpH)
   {
   }
 
   // EdgeEstimator overrides:
-  double GetUTurnPenalty() const override { return 0.0 /* seconds */; }
-
-  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const override
+  double GetUTurnPenalty(Purpose /* purpose */) const override { return 0.0 /* seconds */; }
+  // Based on: https://confluence.mail.ru/display/MAPSME/Ferries
+  double GetFerryLandingPenalty(Purpose purpose) const override
   {
-    return CalcClimbSegment(Purpose::Weight, segment, road, GetPedestrianClimbPenalty);
+    switch (purpose)
+    {
+    case Purpose::Weight: return 20.0 * 60.0;  // seconds
+    case Purpose::ETA: return 8.0 * 60.0;  // seconds
+    }
+    UNREACHABLE();
   }
 
-  double CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const override
+  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
+                           Purpose purpose) const override
   {
-    return CalcClimbSegment(Purpose::ETA, segment, road, GetPedestrianClimbPenalty);
+    return CalcClimbSegment(purpose, segment, road, GetPedestrianClimbPenalty);
   }
 };
 
@@ -155,22 +169,28 @@ public:
 class BicycleEstimator final : public EdgeEstimator
 {
 public:
-  BicycleEstimator(double maxWeightSpeedKMpH, double offroadSpeedKMpH)
+  BicycleEstimator(double maxWeightSpeedKMpH, SpeedKMpH const & offroadSpeedKMpH)
     : EdgeEstimator(maxWeightSpeedKMpH, offroadSpeedKMpH)
   {
   }
 
   // EdgeEstimator overrides:
-  double GetUTurnPenalty() const override { return 20.0 /* seconds */; }
-
-  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const override
+  double GetUTurnPenalty(Purpose /* purpose */) const override { return 20.0 /* seconds */; }
+  // Based on: https://confluence.mail.ru/display/MAPSME/Ferries
+  double GetFerryLandingPenalty(Purpose purpose) const override
   {
-    return CalcClimbSegment(Purpose::Weight, segment, road, GetBicycleClimbPenalty);
+    switch (purpose)
+    {
+    case Purpose::Weight: return 20 * 60;  // seconds
+    case Purpose::ETA: return 8 * 60;  // seconds
+    }
+    UNREACHABLE();
   }
 
-  double CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const override
+  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
+                           Purpose purpose) const override
   {
-    return CalcClimbSegment(Purpose::ETA, segment, road, GetBicycleClimbPenalty);
+    return CalcClimbSegment(purpose, segment, road, GetBicycleClimbPenalty);
   }
 };
 
@@ -179,12 +199,13 @@ class CarEstimator final : public EdgeEstimator
 {
 public:
   CarEstimator(shared_ptr<TrafficStash> trafficStash, double maxWeightSpeedKMpH,
-               double offroadSpeedKMpH);
+               SpeedKMpH const & offroadSpeedKMpH);
 
   // EdgeEstimator overrides:
-  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const override;
-  double CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const override;
-  double GetUTurnPenalty() const override;
+  double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
+                           Purpose purpose) const override;
+  double GetUTurnPenalty(Purpose /* purpose */) const override;
+  double GetFerryLandingPenalty(Purpose purpose) const override;
 
 private:
   double CalcSegment(Purpose purpose, Segment const & segment, RoadGeometry const & road) const;
@@ -192,27 +213,34 @@ private:
 };
 
 CarEstimator::CarEstimator(shared_ptr<TrafficStash> trafficStash, double maxWeightSpeedKMpH,
-                           double offroadSpeedKMpH)
+                           SpeedKMpH const & offroadSpeedKMpH)
   : EdgeEstimator(maxWeightSpeedKMpH, offroadSpeedKMpH), m_trafficStash(move(trafficStash))
 {
 }
 
-double CarEstimator::CalcSegmentWeight(Segment const & segment, RoadGeometry const & road) const
+double CarEstimator::CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
+                                       Purpose purpose) const
 {
-  return CalcSegment(Purpose::Weight, segment, road);
+  return CalcSegment(purpose, segment, road);
 }
 
-double CarEstimator::CalcSegmentETA(Segment const & segment, RoadGeometry const & road) const
-{
-  return CalcSegment(Purpose::ETA, segment, road);
-}
-
-double CarEstimator::GetUTurnPenalty() const
+double CarEstimator::GetUTurnPenalty(Purpose /* purpose */) const
 {
   // Adds 2 minutes penalty for U-turn. The value is quite arbitrary
   // and needs to be properly selected after a number of real-world
   // experiments.
   return 2 * 60;  // seconds
+}
+
+double CarEstimator::GetFerryLandingPenalty(Purpose purpose) const
+{
+  switch (purpose)
+  {
+  case Purpose::Weight: return 40 * 60;  // seconds
+  // Based on https://confluence.mail.ru/display/MAPSME/Ferries
+  case Purpose::ETA: return 20 * 60;  // seconds
+  }
+  UNREACHABLE();
 }
 
 double CarEstimator::CalcSegment(Purpose purpose, Segment const & segment, RoadGeometry const & road) const
@@ -242,7 +270,7 @@ double CarEstimator::CalcSegment(Purpose purpose, Segment const & segment, RoadG
 // EdgeEstimator -----------------------------------------------------------------------------------
 // static
 shared_ptr<EdgeEstimator> EdgeEstimator::Create(VehicleType vehicleType, double maxWeighSpeedKMpH,
-                                                double offroadSpeedKMpH,
+                                                SpeedKMpH const & offroadSpeedKMpH,
                                                 shared_ptr<TrafficStash> trafficStash)
 {
   switch (vehicleType)

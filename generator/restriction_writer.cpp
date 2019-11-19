@@ -1,10 +1,15 @@
 #include "generator/restriction_writer.hpp"
 
+#include "generator/intermediate_data.hpp"
 #include "generator/intermediate_elements.hpp"
 #include "generator/osm_element.hpp"
 #include "generator/restriction_collector.hpp"
 
 #include "routing/restrictions_serialization.hpp"
+
+#include "platform/platform.hpp"
+
+#include "coding/internal/file_data.hpp"
 
 #include "base/assert.hpp"
 #include "base/geo_object_id.hpp"
@@ -26,11 +31,11 @@ std::vector<std::pair<std::string, Restriction::Type>> const kRestrictionTypes =
     {"no_left_turn", Restriction::Type::No},
     {"no_right_turn", Restriction::Type::No},
     {"no_straight_on", Restriction::Type::No},
-    {"no_u_turn", Restriction::Type::No},
+    {"no_u_turn", Restriction::Type::NoUTurn},
     {"only_left_turn", Restriction::Type::Only},
     {"only_right_turn", Restriction::Type::Only},
     {"only_straight_on", Restriction::Type::Only},
-    {"only_u_turn", Restriction::Type::Only}
+    {"only_u_turn", Restriction::Type::OnlyUTurn}
 };
 
 /// \brief Converts restriction type form string to RestrictionCollector::Type.
@@ -90,11 +95,20 @@ namespace routing
 std::string const RestrictionWriter::kNodeString = "node";
 std::string const RestrictionWriter::kWayString = "way";
 
-RestrictionWriter::RestrictionWriter(std::string const & fullPath,
-                                     generator::cache::IntermediateDataReader const & cache)
-  : m_cache(cache)
+RestrictionWriter::RestrictionWriter(std::string const & filename,
+                                     std::shared_ptr<generator::cache::IntermediateDataReader> const & cache)
+  : generator::CollectorInterface(filename)
+  , m_cache(cache)
 {
-  Open(fullPath);
+  m_stream.exceptions(std::fstream::failbit | std::fstream::badbit);
+  m_stream.open(GetTmpFilename());
+  m_stream << std::setprecision(20);
+}
+
+std::shared_ptr<generator::CollectorInterface>
+RestrictionWriter::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & cache) const
+{ 
+  return std::make_shared<RestrictionWriter>(GetFilename(), cache ? cache : m_cache);
 }
 
 //static
@@ -109,53 +123,51 @@ RestrictionWriter::ViaType RestrictionWriter::ConvertFromString(std::string cons
   UNREACHABLE();
 }
 
-void RestrictionWriter::Open(std::string const & fullPath)
+bool ValidateOsmRestriction(std::vector<RelationElement::Member> & from,
+                            std::vector<RelationElement::Member> & via,
+                            std::vector<RelationElement::Member> & to,
+                            RelationElement const & relationElement)
 {
-  LOG(LINFO, ("Saving road restrictions in osm id terms to", fullPath));
-  m_stream.open(fullPath, std::ofstream::out);
-
-  if (!IsOpened())
-    LOG(LINFO, ("Cannot open file", fullPath));
-
-  m_stream << std::setprecision(20);
-}
-
-void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
-{
-  if (!IsOpened())
-  {
-    LOG(LWARNING, ("Tried to write to a closed restrictions writer"));
-    return;
-  }
-
   if (relationElement.GetType() != "restriction")
-    return;
+    return false;
 
-  auto const from = GetMembersByTag(relationElement, "from");
-  auto const to = GetMembersByTag(relationElement, "to");
-  auto const via = GetMembersByTag(relationElement, "via");
+  from = GetMembersByTag(relationElement, "from");
+  to = GetMembersByTag(relationElement, "to");
+  via = GetMembersByTag(relationElement, "via");
 
   // TODO (@gmoryes) |from| and |to| can have size more than 1 in case of "no_entry", "no_exit"
   if (from.size() != 1 || to.size() != 1 || via.empty())
-    return;
-
-  uint64_t const fromOsmId = from.back().first;
-  uint64_t const toOsmId = to.back().first;
+    return false;
 
   // Either single node is marked as via or one or more ways are marked as via.
   // https://wiki.openstreetmap.org/wiki/Relation:restriction#Members
   if (via.size() != 1)
   {
     bool const allMembersAreWays =
-        std::all_of(via.begin(), via.end(),
-                    [&](auto const & member)
-                    {
-                      return GetType(relationElement, member.first) == OsmElement::EntityType::Way;
-                    });
+      std::all_of(via.begin(), via.end(),
+                  [&](auto const & member)
+                  {
+                    return GetType(relationElement, member.first) == OsmElement::EntityType::Way;
+                  });
 
     if (!allMembersAreWays)
-      return;
+      return false;
   }
+
+  return true;
+}
+
+void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
+{
+  std::vector<RelationElement::Member> from;
+  std::vector<RelationElement::Member> via;
+  std::vector<RelationElement::Member> to;
+
+  if (!ValidateOsmRestriction(from, via, to, relationElement))
+    return;
+
+  uint64_t const fromOsmId = from.back().first;
+  uint64_t const toOsmId = to.back().first;
 
   // Extracting type of restriction.
   auto const tagIt = relationElement.tags.find("restriction");
@@ -170,10 +182,13 @@ void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
       GetType(relationElement, via.back().first) == OsmElement::EntityType::Node ? ViaType::Node
                                                                                  : ViaType::Way;
 
-  m_stream << DebugPrint(type) << "," << DebugPrint(viaType) << ",";
+  auto const printHeader = [&]() { 
+    m_stream << DebugPrint(type) << "," << DebugPrint(viaType) << ",";
+  };
 
   if (viaType == ViaType::Way)
   {
+    printHeader();
     m_stream << fromOsmId << ",";
     for (auto const & viaMember : via)
       m_stream << viaMember.first << ",";
@@ -183,9 +198,10 @@ void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
     double y = 0.0;
     double x = 0.0;
     uint64_t const viaNodeOsmId = via.back().first;
-    if (!m_cache.GetNode(viaNodeOsmId, y, x))
+    if (!m_cache->GetNode(viaNodeOsmId, y, x))
       return;
 
+    printHeader();
     m_stream << x << "," << y << ",";
     m_stream << fromOsmId << ",";
   }
@@ -193,7 +209,29 @@ void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
   m_stream << toOsmId << '\n';
 }
 
-bool RestrictionWriter::IsOpened() const { return m_stream && m_stream.is_open(); }
+void RestrictionWriter::Finish()
+{
+  if (m_stream.is_open())
+    m_stream.close();
+}
+
+void RestrictionWriter::Save()
+{
+  CHECK(!m_stream.is_open(), ("Finish() has not been called."));
+  if (Platform::IsFileExistsByFullPath(GetTmpFilename()))
+    CHECK(base::CopyFileX(GetTmpFilename(), GetFilename()), ());
+}
+
+void RestrictionWriter::Merge(generator::CollectorInterface const & collector)
+{
+  collector.MergeInto(*this);
+}
+
+void RestrictionWriter::MergeInto(RestrictionWriter & collector) const
+{
+  CHECK(!m_stream.is_open() || !collector.m_stream.is_open(), ("Finish() has not been called."));
+  base::AppendFileToFile(GetTmpFilename(), collector.GetTmpFilename());
+}
 
 std::string DebugPrint(RestrictionWriter::ViaType const & type)
 {

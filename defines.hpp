@@ -9,7 +9,6 @@
 #define FONT_FILE_EXTENSION ".ttf"
 #define OSM2FEATURE_FILE_EXTENSION ".osm2ft"
 #define EXTENSION_TMP ".tmp"
-#define ADDR_FILE_EXTENSION ".addr"
 #define RAW_GEOM_FILE_EXTENSION ".rawgeom"
 #define LOC_IDX_FILE_EXTENSION ".locidx"
 #define LOC_DATA_FILE_EXTENSION ".locdata"
@@ -29,7 +28,9 @@
 #define INDEX_FILE_TAG "idx"
 #define SEARCH_INDEX_FILE_TAG "sdx"
 #define SEARCH_ADDRESS_FILE_TAG "addr"
+#define POSTCODE_POINTS_FILE_TAG "postcode_points"
 #define CITIES_BOUNDARIES_FILE_TAG "cities_boundaries"
+#define FEATURE_TO_OSM_FILE_TAG "feature_to_osm"
 #define HEADER_FILE_TAG "header"
 #define VERSION_FILE_TAG "version"
 #define METADATA_FILE_TAG "meta"
@@ -56,11 +57,6 @@
 #define DESCRIPTIONS_FILE_TAG "descriptions"
 #define MAXSPEEDS_FILE_TAG "maxspeeds"
 
-#define LOCALITY_DATA_FILE_TAG "locdata"
-#define GEO_OBJECTS_INDEX_FILE_TAG "locidx"
-#define REGIONS_INDEX_FILE_TAG "regidx"
-#define BORDERS_FILE_TAG "borders"
-
 #define READY_FILE_EXTENSION ".ready"
 #define RESUME_FILE_EXTENSION ".resume"
 #define DOWNLOADING_FILE_EXTENSION ".downloading"
@@ -79,11 +75,9 @@
 
 #define COUNTRIES_FILE "countries.txt"
 #define COUNTRIES_META_FILE "countries_meta.txt"
-#define COUNTRIES_OBSOLETE_FILE "countries_obsolete.txt"
 
 #define WORLD_FILE_NAME "World"
 #define WORLD_COASTS_FILE_NAME "WorldCoasts"
-#define WORLD_COASTS_OBSOLETE_FILE_NAME "WorldCoasts_obsolete"
 
 #define SETTINGS_FILE_NAME "settings.ini"
 #define MARKETING_SETTINGS_FILE_NAME "marketing_settings.ini"
@@ -94,16 +88,22 @@
 
 #define PACKED_POLYGONS_INFO_TAG "info"
 #define PACKED_POLYGONS_FILE "packed_polygons.bin"
-#define PACKED_POLYGONS_OBSOLETE_FILE "packed_polygons_obsolete.bin"
 
 #define EXTERNAL_RESOURCES_FILE "external_resources.txt"
 
 #define GPS_TRACK_FILENAME "gps_track.dat"
 #define RESTRICTIONS_FILENAME "restrictions.csv"
 #define ROAD_ACCESS_FILENAME "road_access.csv"
+
+#define MINI_ROUNDABOUT_ROADS_EXTENSION ".mini_roundabouts_roads_ids"
 #define METALINES_FILENAME "metalines.bin"
 #define CAMERAS_TO_WAYS_FILENAME "cameras_to_ways.bin"
+#define MINI_ROUNDABOUTS_FILENAME "mini_roundabouts.bin"
 #define MAXSPEEDS_FILENAME "maxspeeds.csv"
+#define CITIES_AREAS_TMP_FILENAME "cities_areas" DATA_FILE_EXTENSION_TMP
+#define ROUTING_CITY_BOUNDARIES_TMP_FILENAME "routing_city_boundaries" DATA_FILE_EXTENSION_TMP
+#define ROUTING_CITY_BOUNDARIES_DUMP_FILENAME "routing_city_boundaries.bin"
+#define CROSS_MWM_OSM_WAYS_DIR "cross_mwm_osm_ways"
 
 #define TRAFFIC_FILE_EXTENSION ".traffic"
 

@@ -49,6 +49,7 @@ area[amenity=doctors]
 
 area[landuse=industrial],
 area[landuse=construction],
+area[landuse=churchyard],
 area[landuse=landfill],
 area[landuse=railway],
 area[landuse=quarry]
@@ -161,6 +162,7 @@ line[barrier=fence],
 line[barrier=hedge],
 line[historic=citywalls],
 area[amenity=parking],
+area[amenity=parking_space]
 {z-index: 950;}
 
 /* 2.LAND */
@@ -426,11 +428,13 @@ area|z14-[landuse=cemetery],
 area|z14-[amenity=university],
 area|z15-[landuse=industrial],
 area|z15-[landuse=construction],
+area|z15-[landuse=churchyard],
 area|z15-[landuse=landfill],
 area|z15-[landuse=railway],
 area|z15-[landuse=quarry],
 area|z15-[leisure=stadium],
 area|z15-[amenity=parking],
+area|z15-[amenity=parking_space],
 area|z16-[public_transport=platform],
 area|z16-[amenity=place_of_worship],
 area|z16-[railway=platform],
@@ -509,11 +513,18 @@ area|z15-19[aeroway=airport],
 area|z15-19[aeroway=aerodrome]
 {fill-color: @aerodrome5; fill-opacity: 1;}
 
+/* 7.7 Religion */
+area|z15-[landuse=churchyard]
+{fill-color: @background; fill-opacity: 1;}
+
+
 /* Parking */
 
-area|z15-[amenity=parking]
+area|z15-[amenity=parking],
+area|z15-[amenity=parking_space]
 {fill-color: @parking;fill-opacity: 1;}
-area|z17-[amenity=parking]
+area|z17-[amenity=parking],
+area|z17-[amenity=parking_space]
 {fill-color: @parking_l;fill-opacity: 1;}
 
 /* 8.BUILDINGS */

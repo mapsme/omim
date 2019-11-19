@@ -2,12 +2,12 @@ package com.mapswithme.maps;
 
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.support.annotation.IntDef;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.Size;
-import android.support.annotation.UiThread;
+import androidx.annotation.IntDef;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.Size;
+import androidx.annotation.UiThread;
 import android.text.TextUtils;
 
 import com.mapswithme.maps.ads.Banner;
@@ -67,14 +67,12 @@ public class Framework
   public static final int ROUTER_TYPE_TRANSIT = 4;
 
   @Retention(RetentionPolicy.SOURCE)
-  @IntDef({DO_AFTER_UPDATE_NOTHING, DO_AFTER_UPDATE_AUTO_UPDATE, DO_AFTER_UPDATE_ASK_FOR_UPDATE,
-           DO_AFTER_UPDATE_MIGRATE})
+  @IntDef({DO_AFTER_UPDATE_NOTHING, DO_AFTER_UPDATE_AUTO_UPDATE, DO_AFTER_UPDATE_ASK_FOR_UPDATE})
   public @interface DoAfterUpdate {}
 
   public static final int DO_AFTER_UPDATE_NOTHING = 0;
   public static final int DO_AFTER_UPDATE_AUTO_UPDATE = 1;
   public static final int DO_AFTER_UPDATE_ASK_FOR_UPDATE = 2;
-  public static final int DO_AFTER_UPDATE_MIGRATE = 3;
 
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({ROUTE_REBUILD_AFTER_POINTS_LOADING})
@@ -103,6 +101,12 @@ public class Framework
   public static final int PURCHASE_NOT_VERIFIED = 1;
   public static final int PURCHASE_VALIDATION_SERVER_ERROR = 2;
   public static final int PURCHASE_VALIDATION_AUTH_ERROR = 3;
+
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({ SUBSCRIPTION_TYPE_REMOVE_ADS, SUBSCRIPTION_TYPE_BOOKMARK_CATALOG })
+  public @interface SubscriptionType {}
+  public static final int SUBSCRIPTION_TYPE_REMOVE_ADS = 0;
+  public static final int SUBSCRIPTION_TYPE_BOOKMARK_CATALOG = 1;
 
   @SuppressWarnings("unused")
   public interface MapObjectListener
@@ -197,7 +201,7 @@ public class Framework
                                       @NonNull MapObject mapObject)
   {
     LocalAdInfo info = mapObject.getLocalAdInfo();
-    if (info == null || !info.isCustomer())
+    if (info == null || (!info.isCustomer() && !info.isHidden()))
       return;
 
     Location location = LocationHelper.INSTANCE.getLastKnownLocation();
@@ -322,6 +326,8 @@ public class Framework
 
   public static native String nativeGetUserAgent();
 
+  public static native String nativeGetDeviceId();
+
   @Nullable
   public static native RoutingInfo nativeGetRouteFollowingInfo();
 
@@ -419,9 +425,6 @@ public class Framework
   @NonNull
   public static native MapObject nativeDeleteBookmarkFromMapObject();
 
-  // TODO remove that hack after bookmarks will be refactored completely
-  public static native void nativeOnBookmarkCategoryChanged(long cat, long bmk);
-
   public static native void nativeZoomToPoint(double lat, double lon, int zoom, boolean animate);
 
   /**
@@ -499,10 +502,11 @@ public class Framework
   public static native void nativeSetPurchaseValidationListener(@Nullable
     PurchaseValidationListener listener);
 
-  public static native boolean nativeHasActiveRemoveAdsSubscription();
-  public static native void nativeSetActiveRemoveAdsSubscription(boolean isActive);
+  public static native boolean nativeHasActiveSubscription(@SubscriptionType int type);
+  public static native void nativeSetActiveSubscription(@SubscriptionType int type,
+                                                        boolean isActive);
 
-  public static native int nativeGetCurrentTipsApi();
+  public static native int nativeGetCurrentTipIndex();
 
   private static native void nativeDisableAdProvider(int provider, int bannerPlace);
 
@@ -523,6 +527,8 @@ public class Framework
   public static native void nativeStopLocationFollow();
 
   public static native void nativeSetSearchViewport(double lat, double lon, int zoom);
+
+  public static native boolean nativeNeedToShowCrown();
 
   public enum LocalAdsEventType
   {

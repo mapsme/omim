@@ -1,7 +1,8 @@
 #include "com/mapswithme/core/jni_helper.hpp"
-#include "com/mapswithme/maps/discovery/Locals.hpp"
 #include "com/mapswithme/maps/Framework.hpp"
 #include "com/mapswithme/maps/SearchEngine.hpp"
+#include "com/mapswithme/maps/discovery/Locals.hpp"
+#include "com/mapswithme/maps/promo/Promo.hpp"
 
 #include "map/discovery/discovery_manager.hpp"
 #include "map/search_product_info.hpp"
@@ -27,6 +28,7 @@ jclass g_discoveryManagerClass = nullptr;
 jfieldID g_discoveryManagerInstanceField;
 jmethodID g_onResultReceivedMethod;
 jmethodID g_onLocalExpertsReceivedMethod;
+jmethodID g_onCityGalleryReceivedMethod;
 jmethodID g_onErrorMethod;
 uint32_t g_lastRequestId = 0;
 
@@ -49,7 +51,9 @@ void PrepareClassRefs(JNIEnv * env)
   g_onLocalExpertsReceivedMethod = jni::GetMethodID(env, discoveryManagerInstance,
                                                     "onLocalExpertsReceived",
                                                     "([Lcom/mapswithme/maps/discovery/LocalExpert;)V");
-
+  g_onCityGalleryReceivedMethod = jni::GetMethodID(env, discoveryManagerInstance,
+                                                   "onPromoCityGalleryReceived",
+                                                   "(Lcom/mapswithme/maps/promo/PromoCityGallery;)V");
   g_onErrorMethod = jni::GetMethodID(env, discoveryManagerInstance, "onError", "(I)V");
 }
 
@@ -65,8 +69,8 @@ struct DiscoveryCallback
     ASSERT(g_discoveryManagerClass != nullptr, ());
     JNIEnv * env = jni::GetEnv();
 
-    auto const lat = MercatorBounds::YToLat(viewportCenter.y);
-    auto const lon = MercatorBounds::XToLon(viewportCenter.x);
+    auto const lat = mercator::YToLat(viewportCenter.y);
+    auto const lon = mercator::XToLon(viewportCenter.x);
     jni::TScopedLocalObjectArrayRef jResults(
         env, BuildSearchResults(results, productInfo, true /* hasPosition */, lat, lon));
     jobject discoveryManagerInstance = env->GetStaticObjectField(g_discoveryManagerClass,
@@ -98,7 +102,15 @@ struct DiscoveryCallback
     if (g_lastRequestId != requestId)
       return;
 
-    // Dummy. Please add code here.
+    ASSERT(g_discoveryManagerClass != nullptr, ());
+    JNIEnv * env = jni::GetEnv();
+
+    jni::TScopedLocalRef gallery(env, promo::MakeCityGallery(env, cityGallery));
+    jobject discoveryManagerInstance =
+        env->GetStaticObjectField(g_discoveryManagerClass, g_discoveryManagerInstanceField);
+    env->CallVoidMethod(discoveryManagerInstance, g_onCityGalleryReceivedMethod, gallery.get());
+
+    jni::HandleJavaException(env);
   }
 };
 
@@ -131,7 +143,7 @@ Java_com_mapswithme_maps_discovery_DiscoveryManager_nativeDiscover(JNIEnv * env,
   static auto const currencyField = env->GetFieldID(paramsClass, "mCurrency", "Ljava/lang/String;");
   {
     auto const currency = static_cast<jstring>(env->GetObjectField(params, currencyField));
-    string const res = jni::ToNativeString(env, currency);
+    std::string const res = jni::ToNativeString(env, currency);
     if (!res.empty())
       p.m_currency = res;
   }
@@ -139,7 +151,7 @@ Java_com_mapswithme_maps_discovery_DiscoveryManager_nativeDiscover(JNIEnv * env,
   static auto const langField = env->GetFieldID(paramsClass, "mLang", "Ljava/lang/String;");
   {
     auto const lang = static_cast<jstring>(env->GetObjectField(params, langField));
-    string const res = languages::Normalize(jni::ToNativeString(env, lang));
+    std::string const res = languages::Normalize(jni::ToNativeString(env, lang));
     if (!res.empty())
       p.m_lang = res;
   }

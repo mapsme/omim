@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "У вас нет активных подписок";
 
-"subscription_terms" = "Оплата будет списана с вашего счета iTunes при подтверждении покупки. Подписка автоматически возобновится, если автоматическое продление не будет отключено по крайней мере за 24 часа до окончания текущего периода. Деньги будут списываться с вашей учетной записи в соответствии с вашим планом продления в течение 24 часов до конца текущего периода. Вы можете управлять или отключать автоматическое продление в настройках учетной записи Apple ID в любое время после покупки.";
-
 "subscriptions_title" = "Подписки";
 
 "manage_subscription" = "Управление подпиской";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "Файл поврежден и не может быть загружен. Пожалуйста, загрузите другой файл.";
 
-"buy_btn" = "Купить за %s";
+"buy_btn" = "Купить путеводитель за %s";
 
 "download_guide_progress" = "Путеводитель загружается…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Невозможно построить маршрут. Выберите другие точки маршрута";
 
-"dialog_routing_download_files_carplay" = "Не все карты, необходимые для построения маршрута, доступны. Пожалуйста, скачайте их в приложении на мобильном устройстве";
+"dialog_routing_download_files_carplay" = "Чтобы построить маршрут, загрузите недостающие карты на своем устройстве";
 
 "dialog_routing_system_error_carplay" = "Произошла ошибка. Перезапустите приложение";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Везет";
 
-"booking_button_toolbar" = "Поиск по 2 миллионам гостиниц";
+"booking_button_toolbar" = "Подобрать отель на карте";
+
+"popup_booking_download_guides_title" = "Забронирован отель?";
+
+"popup_booking_download_guides_message" = "Спланируйте маршрут с готовыми путеводителями MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Офлайн путеводители";
+
+"popup_mwm_download_guides_cta" = "Выбрать";
+
+"popup_mwm_download_guides_cta_1" = "Посмотреть";
+
+"gallery_pp_download_guides_offline_title" = "Планируйте свой отдых с MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Не упустите самое важное с маршрутами от опытных путешественников";
+
+"gallery_pp_download_guides_offline_cta" = "Включить Интернет";
+
+"gallery_pp_download_guides_title" = "Путеводители";
+
+"native_screen_subscription_title" = "Полный доступ к 2000+ путеводителям!";
+
+"native_screen_subscription_message" = "Запоминающийся отдых, куда бы и с кем бы вы ни путешествовали";
+
+"annual_subscription_title" = "Годовая";
+
+"montly_subscription_title" = "Месячная";
+
+"annual_subscription_message" = "12 месяцев безлимитного доступа";
+
+"montly_subscription_message" = "1 месяц безлимитного доступа";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Спасибо за подписку!";
+
+"subscription_success_dialog_message" = "Теперь у вас неограниченный доступ к каталогу путеводителей";
+
+"renewal_screen_title" = "Срок действия подписки истек";
+
+"renewal_screen_message" = "Все путеводители, скачанные по подписке, будут удалены. Хотите восстановить подписку и сохранить их?";
+
+"renewal_screen_button_restore" = "Да, восстановить";
+
+"renewal_screen_button_cancel" = "Нет, удалить путеводители";
+
+"subscription_error_ping_title" = "Не удалось совершить покупку";
+
+"subscription_error_message" = "Сейчас сервис недоступен в вашем регионе. Пожалуйста, попробуйте позже";
+
+"subscription_error_button" = "Понятно";
+
+"timeout_error_title" = "Упс, время вышло!";
+
+"timeout_error_message" = "Наши серверы не отвечают. Пожалуйста, проверьте интернет-соединение и повторите попытку.";
+
+"per_month" = "/мес.";
+
+"per_year" = "/год";
+
+"buy_btn_for_subscription" = "Полный доступ от %s";
+
+"buy_btn_for_subscription_1" = "Купить ВСЕ путеводители за %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Полный доступ за %s/мес.";
+
+"buy_btn_for_subscription_ios_only_year" = "Полный доступ за %s/год";
+
+"subscription_terms_guides" = "Оплата будет произведена с вашего счета iTunes при подтверждении покупки. Подписка автоматически возобновится, если автоматическое продление не будет отключено по крайней мере за 24 часа до окончания текущего периода. Денежные средства будут списываться с вашей учетной записи в соответствии с вашим тарифным планом продления в течение 24 часов до конца текущего периода. Вы можете управлять автоматическим продлением или отключать его в настройках учетной записи Apple ID в любое время после покупки. Вы сможете использовать путеводители, скачанные по подписке, только в течение ее срока действия. По истечении 30 дней после окончания подписки путеводители со всеми закладками будут автоматически удалены.";
+
+"subscription_terms" = "Оплата будет списана с вашего счета iTunes при подтверждении покупки. Подписка автоматически возобновится, если автоматическое продление не будет отключено по крайней мере за 24 часа до окончания текущего периода. Деньги будут списываться с вашей учетной записи в соответствии с вашим планом продления в течение 24 часов до конца текущего периода. Вы можете управлять или отключать автоматическое продление в настройках учетной записи Apple ID в любое время после покупки.";
+
+"whatsnew_carplay_title" = "Автонавигация MAPS.ME в CarPlay!";
+
+"whatsnew_carplay_message" = "Метки, поиск, камеры скорости и настройки объезда — все работает без Интернета";
+
+"whatsnew_subscription_title" = "Открой мир по подписке!";
+
+"whatsnew_subscription_message" = "Неограниченный доступ к каталогу маршрутов выгоднее одноразовой покупки";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Обновление навигации";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Мы улучшили построение маршрутов до точек, расположенных далеко от дорог";
+
+"avoid_unpaved_carplay_1" = "Без грунт.";
+
+"avoid_unpaved_carplay_2" = "Без грунтовых";
+
+"avoid_ferry_carplay_1" = "Без паромов";
+
+"avoid_ferry_carplay_2" = "Без паромов";
+
+"avoid_tolls_carplay_1" = "Без платных";
+
+"avoid_tolls_carplay_2" = "Без платных";
+
+"speedcams_alert_title_carplay_1" = "Камеры";
+
+"speedcams_alert_title_carplay_2" = "Инфо о камерах";
+
+"download_map_carplay" = "Скачайте карты в приложении MAPS.ME на своем устройстве";
+
+"carplay_roundabout_exit" = "%s съезд";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Сортировать…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Сортировать метки";
+
+/* iOS */
+"sort_default" = "Сортировать по умолчанию";
+
+"sort_type" = "Сортировать по типу";
+
+"sort_distance" = "Сортировать по расстоянию";
+
+"sort_date" = "Сортировать по дате";
+
+/* Android */
+"by_default" = "По умолчанию";
+
+/* Android */
+"by_type" = "По типу";
+
+/* Android */
+"by_distance" = "По расстоянию";
+
+/* Android */
+"by_date" = "По дате";
+
+"week_ago_sorttype" = "Неделю назад";
+
+"month_ago_sorttype" = "Месяц назад";
+
+"moremonth_ago_sorttype" = "Больше месяца назад";
+
+"moreyear_ago_sorttype" = "Больше года назад";
+
+"near_me_sorttype" = "Рядом со мной";
+
+"others_sorttype" = "Другие";
+
+"food_places" = "Еда";
+
+"tourist_places" = "Достопримечательности";
+
+"museums" = "Музеи";
+
+"parks" = "Парки";
+
+"swim_places" = "Плавание";
+
+"mountains" = "Горы";
+
+"animals" = "Животные";
+
+"hotels" = "Отели";
+
+"buildings" = "Здания";
+
+"money" = "Деньги";
+
+"shops" = "Магазины";
+
+"parkings" = "Парковки";
+
+"fuel_places" = "Заправки";
+
+"water" = "Вода";
+
+"medicine" = "Медицина";
+
+"search_in_the_list" = "Искать в списке";
+
+"view_on_map_bookmarks" = "На карте";
+
+"more_bookmarks" = "Еще…";
+
+"no_items_found" = "Ничего не найдено";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Редактировать";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Удалить список";
+
+"whatsnew_bookmarks_search_sort_title" = "Порядок в метках — удобство в путешествии";
+
+"whatsnew_bookmarks_search_sort_message" = "Сортируйте избранные места по категориям, времени добавления и геолокации, а также быстро находите конкретные метки по названию";
+
+"popup_subscription_success_map_title" = "Ура! Вы подписаны!";
+
+"popup_subscription_success_map_message" = "Теперь исследуйте лучшие туристические достопримечательности в каталоге MAPS.ME";
+
+"popup_subscription_success_map_start_button" = "Просмотреть";
+
+"popup_subscription_success_map_not_now_button" = "Не сейчас";
+
+"religious_places" = "Святые места";
+
+"subscription_terms_android" = "Оплата будет произведена с вашего счета Google Play при подтверждении покупки. Подписка автоматически возобновится, если автоматическое продление не будет отключено по крайней мере за 24 часа до окончания текущего периода. Денежные средства будут списываться с вашей учетной записи в соответствии с вашим тарифным планом продления в течение 24 часов до конца текущего периода. Вы можете управлять автоматическим продлением или отключать его в настройках учетной записи после покупки. Вы сможете использовать путеводители, скачанные по подписке, только в течение ее срока действия. По истечении 30 дней после окончания подписки путеводители будут автоматически удалены.";
+
+"select_list" = "Выбрать список";
+
+"pp_discovery_place_related_header" = "Это место в каталоге путеводителей";
+
+"pp_discovery_place_related_header_1" = "Это место встречается в путеводителе";
+
+"pp_discovery_place_related_cta_button" = "Посмотреть";
+
+"pp_discovery_place_related_tag_header" = "Путеводители по тегу «%s»";
+
+"pp_discovery_place_related_tag_header_1" = "Вам также могут понравиться";
+
+"buy_btn_for_subscription_version_2" = "ВСЕ путеводители всего за %s/мес.";
+
+"buy_btn_for_subscription_version_3" = "Весь каталог за %s/мес.";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Доступ к каталогу за %s/мес.";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Доступ к каталогу за %s/год";
+
+"subscription_screen_native_title_version_2" = "Доступ к путеводителям с метками на карте!";
+
+"subscription_screen_native_message_version_2" = "Будьте готовы к любому путешествию в 600+ городах и 100+ странах";
+
+"catalog_no_internet_title" = "Нет интернет-подключения";
+
+"catalog_no_internet_button" = "Попробовать снова";
+
+"whatsnew_map_updates_title" = "Реактивные обновления карт";
+
+"whatsnew_map_updates_message" = "Теперь обновляем данные в 2 раза быстрее";
 
 
 /**********  Partners  **********/
@@ -2963,7 +3194,7 @@
 
 "type.amenity.fire_station" = "Пожарная часть";
 
-"type.amenity.food_court" = "Food court";
+"type.amenity.food_court" = "Ресторанный дворик";
 
 "type.amenity.fountain" = "Фонтан";
 
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Парковка";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Терминал оплаты";
 
 "type.amenity.pharmacy" = "Аптека";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Почта";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Тюрьма";
 
 "type.amenity.pub" = "Паб";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Университет";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Торговый автомат";
 
 "type.amenity.vending_machine.cigarettes" = "Сигаретный автомат";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Выдача питьевой воды";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Преграда";
 
 "type.barrier.block" = "Блок";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Погранконтроль";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "Городская стена";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Ограждение, предотвращающее проезд велосипедов";
 
 "type.barrier.entrance" = "Проход";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Забор";
 
 "type.barrier.gate" = "Ворота";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Живая изгородь";
 
 "type.barrier.lift_gate" = "Шлагбаум";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Стена, удерживающая от осыпания";
 
 "type.barrier.stile" = "Перелаз";
 
 "type.barrier.toll_booth" = "Пункт оплаты";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Стена";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Граница";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Раскопки";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Место исторического сражения";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3701,37 +3940,39 @@
 
 "type.landuse" = "landuse";
 
-"type.landuse.allotments" = "Allotments";
+"type.landuse.allotments" = "Земельные участки";
 
 "type.landuse.basin" = "Водоём";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Земли для застройки";
 
 "type.landuse.cemetery" = "Кладбище";
 
-"type.landuse.cemetery.christian" = "Кладбище";
+"type.landuse.cemetery.christian" = "Христианское кладбище";
+
+"type.landuse.churchyard" = "landuse-churchyard";
 
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Стройка";
 
-"type.landuse.farm" = "Farm";
+"type.landuse.farm" = "Ферма";
 
 "type.landuse.farmland" = "Сельскохозяйственная земля";
 
-"type.landuse.farmyard" = "Farmyard";
+"type.landuse.farmyard" = "Сельскохозяйственная земля";
 
-"type.landuse.field" = "Field";
+"type.landuse.field" = "Поле";
 
 "type.landuse.forest" = "Лес";
 
-"type.landuse.forest.coniferous" = "Лес";
+"type.landuse.forest.coniferous" = "Хвойный лес";
 
-"type.landuse.forest.deciduous" = "Лес";
+"type.landuse.forest.deciduous" = "Лиственный лес";
 
-"type.landuse.forest.mixed" = "Лес";
+"type.landuse.forest.mixed" = "Смешанный лес";
 
-"type.landuse.garages" = "Garages";
+"type.landuse.garages" = "Гаражи";
 
 "type.landuse.grass" = "Газон";
 
@@ -3739,15 +3980,15 @@
 
 "type.landuse.greenhouse_horticulture" = "landuse-greenhouse_horticulture";
 
-"type.landuse.industrial" = "Industrial land";
+"type.landuse.industrial" = "Промзона";
 
 "type.landuse.landfill" = "Свалка";
 
-"type.landuse.meadow" = "Meadow";
+"type.landuse.meadow" = "Луг";
 
 "type.landuse.military" = "Military area";
 
-"type.landuse.orchard" = "Orchard";
+"type.landuse.orchard" = "Сад";
 
 "type.landuse.quarry" = "Quarry";
 
@@ -3907,7 +4148,7 @@
 
 "type.natural.cliff" = "Cliff";
 
-"type.natural.coastline" = "Coastline";
+"type.natural.coastline" = "Береговая линия";
 
 "type.natural.geyser" = "Гейзер";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Поле";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Горячий источник";
 
 "type.natural.lake" = "Озеро";
 

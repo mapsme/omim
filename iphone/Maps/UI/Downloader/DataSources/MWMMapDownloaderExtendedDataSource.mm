@@ -2,9 +2,7 @@
 #import "CLLocation+Mercator.h"
 #import "MWMLocationManager.h"
 
-#include "Framework.h"
-
-#include "storage/country_info_getter.hpp"
+#include <CoreApi/Framework.h>
 
 using namespace storage;
 
@@ -29,7 +27,7 @@ auto constexpr extraSection = MWMMapDownloaderDataSourceExtraSection::NearMe;
 
 @implementation MWMMapDownloaderExtendedDataSource
 {
-  vector<MWMMapDownloaderDataSourceExtraSection> m_extraSections;
+  std::vector<MWMMapDownloaderDataSourceExtraSection> m_extraSections;
 }
 
 - (void)load

@@ -9,6 +9,7 @@
 
 #include "base/scope_guard.hpp"
 #include "base/stl_helpers.hpp"
+#include "base/timer.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -158,6 +159,27 @@ void Engine::LoadCountriesTree()
               [](Processor & processor) { processor.LoadCountriesTree(); });
 }
 
+void Engine::EnableIndexingOfBookmarksDescriptions(bool enable)
+{
+  PostMessage(Message::TYPE_BROADCAST, [enable](Processor & processor) {
+    processor.EnableIndexingOfBookmarksDescriptions(enable);
+  });
+}
+
+void Engine::EnableIndexingOfBookmarkGroup(bookmarks::GroupId const & groupId, bool enable)
+{
+  PostMessage(Message::TYPE_BROADCAST, [=](Processor & processor) {
+    processor.EnableIndexingOfBookmarkGroup(groupId, enable);
+  });
+}
+
+void Engine::ResetBookmarks()
+{
+  PostMessage(Message::TYPE_BROADCAST, [](Processor & processor) {
+    processor.ResetBookmarks();
+  });
+}
+
 void Engine::OnBookmarksCreated(vector<pair<bookmarks::Id, bookmarks::Doc>> const & marks)
 {
   PostMessage(Message::TYPE_BROADCAST,
@@ -174,6 +196,22 @@ void Engine::OnBookmarksDeleted(vector<bookmarks::Id> const & marks)
 {
   PostMessage(Message::TYPE_BROADCAST,
               [marks](Processor & processor) { processor.OnBookmarksDeleted(marks); });
+}
+
+void Engine::OnBookmarksAttachedToGroup(bookmarks::GroupId const & groupId,
+                                        vector<bookmarks::Id> const & marks)
+{
+  PostMessage(Message::TYPE_BROADCAST, [groupId, marks](Processor & processor) {
+    processor.OnBookmarksAttachedToGroup(groupId, marks);
+  });
+}
+
+void Engine::OnBookmarksDetachedFromGroup(bookmarks::GroupId const & groupId,
+                                          vector<bookmarks::Id> const & marks)
+{
+  PostMessage(Message::TYPE_BROADCAST, [groupId, marks](Processor & processor) {
+    processor.OnBookmarksDetachedFromGroup(groupId, marks);
+  });
 }
 
 void Engine::MainLoop(Context & context)
@@ -245,6 +283,12 @@ void Engine::PostMessage(Args &&... args)
 void Engine::DoSearch(SearchParams const & params, shared_ptr<ProcessorHandle> handle,
                       Processor & processor)
 {
+  LOG(LINFO, ("Search started."));
+  base::Timer timer;
+  SCOPE_GUARD(printDuration, [&timer]() {
+    LOG(LINFO, ("Search ended. Time:", timer.ElapsedSeconds(), "seconds."));
+  });
+
   processor.Reset();
   handle->Attach(processor);
   SCOPE_GUARD(detach, [&handle] { handle->Detach(); });

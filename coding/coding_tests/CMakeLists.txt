@@ -11,9 +11,9 @@ set(
   diff_test.cpp
   elias_coder_test.cpp
   endianness_test.cpp
-  file_container_test.cpp
   file_data_test.cpp
   file_sort_test.cpp
+  files_container_tests.cpp
   fixed_bits_ddvector_test.cpp
   geometry_coding_test.cpp
   hex_test.cpp
@@ -27,6 +27,7 @@ set(
   reader_test.cpp
   reader_test.hpp
   reader_writer_ops_test.cpp
+  serdes_json_test.cpp
   simple_dense_coding_test.cpp
   string_utf8_multilang_tests.cpp
   succinct_mapper_test.cpp
@@ -55,6 +56,7 @@ omim_link_libraries(
   coding
   base
   geometry
+  jansson
   minizip
   succinct
   stats_client

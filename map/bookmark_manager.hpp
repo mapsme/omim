@@ -17,17 +17,31 @@
 #include "base/macros.hpp"
 #include "base/strings_bundle.hpp"
 #include "base/thread_checker.hpp"
+#include "base/visitor.hpp"
 
 #include <atomic>
 #include <functional>
 #include <list>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
 #include <boost/optional.hpp>
 
+namespace search
+{
+class RegionAddressGetter;
+}  // namespace search
+
+namespace storage
+{
+class CountryInfoGetter;
+}  // namespace storage
+
+class DataSource;
+class SearchAPI;
 class User;
 
 class BookmarkManager final
@@ -42,6 +56,8 @@ class BookmarkManager final
 public:
   using KMLDataCollection = std::vector<std::pair<std::string, std::unique_ptr<kml::FileData>>>;
   using KMLDataCollectionPtr = std::shared_ptr<KMLDataCollection>;
+
+  using BookmarksChangedCallback = std::function<void()>;
 
   using AsyncLoadingStartedCallback = std::function<void()>;
   using AsyncLoadingFinishedCallback = std::function<void()>;
@@ -58,23 +74,39 @@ public:
   struct Callbacks
   {
     using GetStringsBundleFn = std::function<StringsBundle const &()>;
-    using CreatedBookmarksCallback = std::function<void(std::vector<std::pair<kml::MarkId, kml::BookmarkData>> const &)>;
-    using UpdatedBookmarksCallback = std::function<void(std::vector<std::pair<kml::MarkId, kml::BookmarkData>> const &)>;
+    using GetSeacrhAPIFn = std::function<SearchAPI &()>;
+    using CreatedBookmarksCallback = std::function<void(std::vector<BookmarkInfo> const &)>;
+    using UpdatedBookmarksCallback = std::function<void(std::vector<BookmarkInfo> const &)>;
     using DeletedBookmarksCallback = std::function<void(std::vector<kml::MarkId> const &)>;
+    using AttachedBookmarksCallback = std::function<void(std::vector<BookmarkGroupInfo> const &)>;
+    using DetachedBookmarksCallback = std::function<void(std::vector<BookmarkGroupInfo> const &)>;
 
-    template <typename StringsBundleGetter, typename CreateListener, typename UpdateListener, typename DeleteListener>
-    Callbacks(StringsBundleGetter && stringsBundleGetter, CreateListener && createListener,
-              UpdateListener && updateListener, DeleteListener && deleteListener)
-        : m_getStringsBundle(std::forward<StringsBundleGetter>(stringsBundleGetter))
-        , m_createdBookmarksCallback(std::forward<CreateListener>(createListener))
-        , m_updatedBookmarksCallback(std::forward<UpdateListener>(updateListener))
-        , m_deletedBookmarksCallback(std::forward<DeleteListener>(deleteListener))
+    template <typename StringsBundleProvider, typename SearchAPIProvider,
+              typename CatalogHeadersProvider, typename CreateListener, typename UpdateListener,
+              typename DeleteListener, typename AttachListener, typename DetachListener>
+    Callbacks(StringsBundleProvider && stringsBundleProvider,
+              SearchAPIProvider && searchAPIProvider, CatalogHeadersProvider && catalogHeaders,
+              CreateListener && createListener, UpdateListener && updateListener,
+              DeleteListener && deleteListener, AttachListener && attachListener,
+              DetachListener && detachListener)
+      : m_getStringsBundle(std::forward<StringsBundleProvider>(stringsBundleProvider))
+      , m_getSearchAPI(std::forward<SearchAPIProvider>(searchAPIProvider))
+      , m_catalogHeadersProvider(std::forward<BookmarkCatalog::HeadersProvider>(catalogHeaders))
+      , m_createdBookmarksCallback(std::forward<CreateListener>(createListener))
+      , m_updatedBookmarksCallback(std::forward<UpdateListener>(updateListener))
+      , m_deletedBookmarksCallback(std::forward<DeleteListener>(deleteListener))
+      , m_attachedBookmarksCallback(std::forward<AttachListener>(attachListener))
+      , m_detachedBookmarksCallback(std::forward<DetachListener>(detachListener))
     {}
 
     GetStringsBundleFn m_getStringsBundle;
+    GetSeacrhAPIFn m_getSearchAPI;
+    BookmarkCatalog::HeadersProvider m_catalogHeadersProvider;
     CreatedBookmarksCallback m_createdBookmarksCallback;
     UpdatedBookmarksCallback m_updatedBookmarksCallback;
     DeletedBookmarksCallback m_deletedBookmarksCallback;
+    AttachedBookmarksCallback m_attachedBookmarksCallback;
+    DetachedBookmarksCallback m_detachedBookmarksCallback;
   };
 
   class EditSession
@@ -105,7 +137,7 @@ public:
     void DeleteUserMarks(UserMark::Type type, F && deletePredicate)
     {
       return m_bmManager.DeleteUserMarks<UserMarkT>(type, std::move(deletePredicate));
-    };
+    }
 
     void DeleteUserMark(kml::MarkId markId);
     void DeleteBookmark(kml::MarkId bmId);
@@ -142,6 +174,11 @@ public:
 
   void SetDrapeEngine(ref_ptr<df::DrapeEngine> engine);
 
+  void InitRegionAddressGetter(DataSource const & dataSource,
+                               storage::CountryInfoGetter const & infoGetter);
+  void ResetRegionAddressGetter();
+
+  void SetBookmarksChangedCallback(BookmarksChangedCallback && callback);
   void SetAsyncLoadingCallbacks(AsyncLoadingCallbacks && callbacks);
   bool IsAsyncLoadingInProgress() const { return m_asyncLoadingInProgress; }
 
@@ -172,6 +209,52 @@ public:
   kml::MarkIdSet const & GetUserMarkIds(kml::MarkGroupId groupId) const;
   kml::TrackIdSet const & GetTrackIds(kml::MarkGroupId groupId) const;
 
+  // Do not change the order.
+  enum class SortingType
+  {
+    ByType,
+    ByDistance,
+    ByTime
+  };
+
+  struct SortedBlock
+  {
+    bool operator==(SortedBlock const & other) const;
+
+    std::string m_blockName;
+    kml::MarkIdCollection m_markIds;
+    kml::MarkIdCollection m_trackIds;
+  };
+  using SortedBlocksCollection = std::vector<SortedBlock>;
+
+  struct SortParams
+  {
+    enum class Status
+    {
+      Completed,
+      Cancelled
+    };
+
+    using OnResults = std::function<void(SortedBlocksCollection && sortedBlocks, Status status)>;
+
+    kml::MarkGroupId m_groupId = kml::kInvalidMarkGroupId;
+    SortingType m_sortingType = SortingType::ByType;
+    bool m_hasMyPosition = false;
+    m2::PointD m_myPosition = {0.0, 0.0};
+    OnResults m_onResults;
+  };
+
+  std::vector<SortingType> GetAvailableSortingTypes(kml::MarkGroupId groupId,
+                                                    bool hasMyPosition) const;
+  void GetSortedCategory(SortParams const & params);
+
+  bool GetLastSortingType(kml::MarkGroupId groupId, SortingType & sortingType) const;
+  void SetLastSortingType(kml::MarkGroupId groupId, SortingType sortingType);
+  void ResetLastSortingType(kml::MarkGroupId groupId);
+
+  bool IsSearchAllowed(kml::MarkGroupId groupId) const;
+  void PrepareForSearch(kml::MarkGroupId groupId);
+
   bool IsVisible(kml::MarkGroupId groupId) const;
 
   kml::MarkGroupId CreateBookmarkCategory(kml::CategoryData && data, bool autoSave = true);
@@ -192,8 +275,8 @@ public:
   void SetLastEditedBmCategory(kml::MarkGroupId groupId);
   void SetLastEditedBmColor(kml::PredefinedColor color);
 
-  using TTouchRectHolder = function<m2::AnyRectD(UserMark::Type)>;
-  using TFindOnlyVisibleChecker = function<bool(UserMark::Type)>;
+  using TTouchRectHolder = std::function<m2::AnyRectD(UserMark::Type)>;
+  using TFindOnlyVisibleChecker = std::function<bool(UserMark::Type)>;
   UserMark const * FindNearestUserMark(TTouchRectHolder const & holder,
                                        TFindOnlyVisibleChecker const & findOnlyVisible) const;
   UserMark const * FindNearestUserMark(m2::AnyRectD const & rect) const;
@@ -235,10 +318,6 @@ public:
       ArchiveError,
       FileError
     };
-    kml::MarkGroupId m_categoryId;
-    Code m_code;
-    std::string m_sharingPath;
-    std::string m_errorString;
 
     SharingResult(kml::MarkGroupId categoryId, std::string const & sharingPath)
       : m_categoryId(categoryId)
@@ -256,6 +335,11 @@ public:
       , m_code(code)
       , m_errorString(errorString)
     {}
+
+    kml::MarkGroupId m_categoryId;
+    Code m_code;
+    std::string m_sharingPath;
+    std::string m_errorString;
   };
 
   using SharingHandler = platform::SafeCallback<void(SharingResult const & result)>;
@@ -317,9 +401,24 @@ public:
   bool IsCategoryFromCatalog(kml::MarkGroupId categoryId) const;
   std::string GetCategoryServerId(kml::MarkGroupId categoryId) const;
   std::string GetCategoryCatalogDeeplink(kml::MarkGroupId categoryId) const;
+  std::string GetCategoryCatalogPublicLink(kml::MarkGroupId categoryId) const;
   BookmarkCatalog const & GetCatalog() const;
 
   bool IsMyCategory(kml::MarkGroupId categoryId) const;
+
+  // CheckInvalidCategories checks invalid categories asynchronously, it prepares a state for following
+  // functions calls.
+  using CheckInvalidCategoriesHandler = std::function<void(bool hasInvalidCategories)>;
+  void CheckInvalidCategories(CheckInvalidCategoriesHandler && handler);
+
+  // The following 2 functions allow to delete invalid categories or forget about them.
+  // These functions are stateful, so they must be called after finishing CheckInvalidCategoriesHandler.
+  // ResetInvalidCategories resets internal state.
+  void DeleteInvalidCategories();
+  void ResetInvalidCategories();
+
+  void FilterInvalidBookmarks(kml::MarkIdCollection & bookmarks) const;
+  void FilterInvalidTracks(kml::TrackIdCollection & tracks) const;
 
   /// These functions are public for unit tests only. You shouldn't call them from client code.
   void EnableTestMode(bool enable);
@@ -332,12 +431,33 @@ public:
   static std::string GenerateValidAndUniqueFilePathForKMB(std::string const & fileName);
   static std::string GetActualBookmarksDirectory();
   static bool IsMigrated();
+  static std::string GetTracksSortedBlockName();
+  static std::string GetOthersSortedBlockName();
+  static std::string GetNearMeSortedBlockName();
+  enum class SortedByTimeBlockType : uint32_t
+  {
+    WeekAgo,
+    MonthAgo,
+    MoreThanMonthAgo,
+    MoreThanYearAgo,
+    Others
+  };
+  static std::string GetSortedByTimeBlockName(SortedByTimeBlockType blockType);
+  std::string GetLocalizedRegionAddress(m2::PointD const & pt);
+
+  using AccessRulesFilter = std::function<bool(kml::AccessRules)>;
+  std::vector<std::string> GetCategoriesFromCatalog(AccessRulesFilter && filter) const;
+  static bool IsGuide(kml::AccessRules accessRules);
 
 private:
   class MarksChangesTracker : public df::UserMarksProvider
   {
   public:
-    explicit MarksChangesTracker(BookmarkManager & bmManager) : m_bmManager(bmManager) {}
+    explicit MarksChangesTracker(BookmarkManager * bmManager)
+      : m_bmManager(bmManager)
+    {
+      CHECK(m_bmManager != nullptr, ());
+    }
 
     void OnAddMark(kml::MarkId markId);
     void OnDeleteMark(kml::MarkId markId);
@@ -349,26 +469,45 @@ private:
     void OnAddGroup(kml::MarkGroupId groupId);
     void OnDeleteGroup(kml::MarkGroupId groupId);
 
-    bool CheckChanges();
+    void OnAttachBookmark(kml::MarkId markId, kml::MarkGroupId catId);
+    void OnDetachBookmark(kml::MarkId markId, kml::MarkGroupId catId);
+
+    void AcceptDirtyItems();
+    bool HasChanges() const;
+    bool HasBookmarksChanges() const;
     void ResetChanges();
+    void AddChanges(MarksChangesTracker const & changes);
+
+    using GroupMarkIdSet = std::map<kml::MarkGroupId, kml::MarkIdSet>;
+    GroupMarkIdSet const & GetAttachedBookmarks() const { return m_attachedBookmarks; }
+    GroupMarkIdSet const & GetDetachedBookmarks() const { return m_detachedBookmarks; }
 
     // UserMarksProvider
     kml::GroupIdSet GetAllGroupIds() const override;
-    kml::GroupIdSet const & GetDirtyGroupIds() const override { return m_dirtyGroups; }
+    kml::GroupIdSet const & GetUpdatedGroupIds() const override { return m_updatedGroups; }
     kml::GroupIdSet const & GetRemovedGroupIds() const override { return m_removedGroups; }
     kml::MarkIdSet const & GetCreatedMarkIds() const override { return m_createdMarks; }
     kml::MarkIdSet const & GetRemovedMarkIds() const override { return m_removedMarks; }
     kml::MarkIdSet const & GetUpdatedMarkIds() const override { return m_updatedMarks; }
+    kml::TrackIdSet const & GetCreatedLineIds() const override { return m_createdLines; }
     kml::TrackIdSet const & GetRemovedLineIds() const override { return m_removedLines; }
+    kml::GroupIdSet const & GetBecameVisibleGroupIds() const override { return m_becameVisibleGroups; }
+    kml::GroupIdSet const & GetBecameInvisibleGroupIds() const override { return m_becameInvisibleGroups; }
     bool IsGroupVisible(kml::MarkGroupId groupId) const override;
-    bool IsGroupVisibilityChanged(kml::MarkGroupId groupId) const override;
     kml::MarkIdSet const & GetGroupPointIds(kml::MarkGroupId groupId) const override;
     kml::TrackIdSet const & GetGroupLineIds(kml::MarkGroupId groupId) const override;
     df::UserPointMark const * GetUserPointMark(kml::MarkId markId) const override;
     df::UserLineMark const * GetUserLineMark(kml::TrackId lineId) const override;
 
   private:
-    BookmarkManager & m_bmManager;
+    void OnUpdateGroup(kml::MarkGroupId groupId);
+    void OnBecomeVisibleGroup(kml::MarkGroupId groupId);
+    void OnBecomeInvisibleGroup(kml::MarkGroupId groupId);
+
+    void InsertBookmark(kml::MarkId markId, kml::MarkGroupId catId,
+                        GroupMarkIdSet & setToInsert, GroupMarkIdSet & setToErase);
+
+    BookmarkManager * m_bmManager;
 
     kml::MarkIdSet m_createdMarks;
     kml::MarkIdSet m_removedMarks;
@@ -377,9 +516,15 @@ private:
     kml::TrackIdSet m_createdLines;
     kml::TrackIdSet m_removedLines;
 
-    kml::GroupIdSet m_dirtyGroups;
     kml::GroupIdSet m_createdGroups;
     kml::GroupIdSet m_removedGroups;
+
+    kml::GroupIdSet m_updatedGroups;
+    kml::GroupIdSet m_becameVisibleGroups;
+    kml::GroupIdSet m_becameInvisibleGroups;
+
+    GroupMarkIdSet m_attachedBookmarks;
+    GroupMarkIdSet m_detachedBookmarks;
   };
 
   template <typename UserMarkT>
@@ -421,7 +566,7 @@ private:
     // Delete after iterating to avoid iterators invalidation issues.
     for (auto markId : marksToDelete)
       DeleteUserMark(markId);
-  };
+  }
 
   UserMark * GetUserMarkForEdit(kml::MarkId markId);
   void DeleteUserMark(kml::MarkId markId);
@@ -471,6 +616,12 @@ private:
 
   void SaveState() const;
   void LoadState();
+
+  void SaveMetadata();
+  void LoadMetadata();
+  void CleanupInvalidMetadata();
+  std::string GetMetadataEntryName(kml::MarkGroupId groupId) const;
+
   void NotifyAboutStartAsyncLoading();
   void NotifyAboutFinishAsyncLoading(KMLDataCollectionPtr && collection);
   boost::optional<std::string> GetKMLPath(std::string const & filePath);
@@ -482,13 +633,16 @@ private:
                                      KmlFileType fileType, BookmarksChecker const & checker,
                                      std::vector<std::string> & cloudFilePaths);
 
-  void CollectDirtyGroups(kml::GroupIdSet & dirtyGroups);
-
+  void GetDirtyGroups(kml::GroupIdSet & dirtyGroups) const;
   void UpdateBmGroupIdList();
 
-  void SendBookmarksChanges();
-  void GetBookmarksData(kml::MarkIdSet const & markIds,
-                        std::vector<std::pair<kml::MarkId, kml::BookmarkData>> & data) const;
+  void NotifyBookmarksChanged();
+
+  void SendBookmarksChanges(MarksChangesTracker const & changesTracker);
+  void GetBookmarksInfo(kml::MarkIdSet const & marks, std::vector<BookmarkInfo> & bookmarks);
+  void GetBookmarkGroupsInfo(MarksChangesTracker::GroupMarkIdSet const & groups,
+                             std::vector<BookmarkGroupInfo> & groupsInfo);
+
   kml::MarkGroupId CheckAndCreateDefaultCategory();
   void CheckAndResetLastIds();
 
@@ -508,12 +662,76 @@ private:
 
   bool HasDuplicatedIds(kml::FileData const & fileData) const;
   bool CheckVisibility(CategoryFilterType const filter, bool isVisible) const;
+
+  struct SortBookmarkData
+  {
+    SortBookmarkData() = default;
+    SortBookmarkData(kml::BookmarkData const & bmData,
+                     search::ReverseGeocoder::RegionAddress const & address)
+      : m_id(bmData.m_id)
+      , m_point(bmData.m_point)
+      , m_type(GetBookmarkBaseType(bmData.m_featureTypes))
+      , m_timestamp(bmData.m_timestamp)
+      , m_address(address)
+    {}
+
+    kml::MarkId m_id;
+    m2::PointD m_point;
+    BookmarkBaseType m_type;
+    kml::Timestamp m_timestamp;
+    search::ReverseGeocoder::RegionAddress m_address;
+  };
+
+  struct SortTrackData
+  {
+    SortTrackData() = default;
+    SortTrackData(kml::TrackData const & trackData)
+      : m_id(trackData.m_id)
+      , m_timestamp(trackData.m_timestamp)
+    {}
+
+    kml::TrackId m_id;
+    kml::Timestamp m_timestamp;
+  };
+
+  void GetSortedCategoryImpl(SortParams const & params,
+                             std::vector<SortBookmarkData> const & bookmarksForSort,
+                             std::vector<SortTrackData> const & tracksForSort,
+                             SortedBlocksCollection & sortedBlocks);
+
+  void SortByDistance(std::vector<SortBookmarkData> const & bookmarksForSort,
+                      std::vector<SortTrackData> const & tracksForSort,
+                      m2::PointD const & myPosition, SortedBlocksCollection & sortedBlocks);
+  void SortByTime(std::vector<SortBookmarkData> const & bookmarksForSort,
+                  std::vector<SortTrackData> const & tracksForSort,
+                  SortedBlocksCollection & sortedBlocks) const;
+  void SortByType(std::vector<SortBookmarkData> const & bookmarksForSort,
+                  std::vector<SortTrackData> const & tracksForSort,
+                  SortedBlocksCollection & sortedBlocks) const;
+
+  using AddressesCollection = std::vector<std::pair<kml::MarkId, search::ReverseGeocoder::RegionAddress>>;
+  void PrepareBookmarksAddresses(std::vector<SortBookmarkData> & bookmarksForSort, AddressesCollection & newAddresses);
+  void FilterInvalidData(SortedBlocksCollection & sortedBlocks, AddressesCollection & newAddresses) const;
+  void SetBookmarksAddresses(AddressesCollection const & addresses);
+  void AddTracksSortedBlock(std::vector<SortTrackData> const & sortedTracks,
+                            SortedBlocksCollection & sortedBlocks) const;
+  void SortTracksByTime(std::vector<SortTrackData> & tracks) const;
+
+  std::vector<std::string> GetAllPaidCategoriesIds() const;
+
   ThreadChecker m_threadChecker;
 
   User & m_user;
   Callbacks m_callbacks;
   MarksChangesTracker m_changesTracker;
+  MarksChangesTracker m_bookmarksChangesTracker;
+  MarksChangesTracker m_drapeChangesTracker;
   df::DrapeEngineSafePtr m_drapeEngine;
+
+  std::unique_ptr<search::RegionAddressGetter> m_regionAddressGetter;
+  std::mutex m_regionAddressMutex;
+
+  BookmarksChangedCallback m_categoriesChangedCallback;
   AsyncLoadingCallbacks m_asyncLoadingCallbacks;
   std::atomic<bool> m_needTeardown;
   size_t m_openedEditSessionsCount = 0;
@@ -544,12 +762,13 @@ private:
   bool m_asyncLoadingInProgress = false;
   struct BookmarkLoaderInfo
   {
-    std::string m_filename;
-    bool m_isTemporaryFile = false;
     BookmarkLoaderInfo() = default;
     BookmarkLoaderInfo(std::string const & filename, bool isTemporaryFile)
       : m_filename(filename), m_isTemporaryFile(isTemporaryFile)
     {}
+
+    std::string m_filename;
+    bool m_isTemporaryFile = false;
   };
   std::list<BookmarkLoaderInfo> m_bookmarkLoadingQueue;
 
@@ -573,6 +792,32 @@ private:
     kml::AccessRules m_accessRules;
   };
   std::map<std::string, RestoringCache> m_restoringCache;
+
+  std::vector<kml::MarkGroupId> m_invalidCategories;
+
+
+  struct Properties
+  {
+    DECLARE_VISITOR_AND_DEBUG_PRINT(Properties, visitor(m_values, "values"))
+
+    bool GetProperty(std::string const & propertyName, std::string & value) const;
+
+    std::map<std::string, std::string> m_values;
+  };
+
+  struct Metadata
+  {
+    DECLARE_VISITOR_AND_DEBUG_PRINT(Metadata, visitor(m_entriesProperties, "entriesProperties"),
+                                    visitor(m_commonProperties, "commonProperties"))
+
+    bool GetEntryProperty(std::string const & entryName, std::string const & propertyName,
+                          std::string & value) const;
+
+    std::map<std::string, Properties> m_entriesProperties;
+    Properties m_commonProperties;
+  };
+
+  Metadata m_metadata;
 
   bool m_testModeEnabled = false;
 

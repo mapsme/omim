@@ -32,6 +32,13 @@ void GetNameFromFullPath(string & name)
     name = name.substr(i+1);
 }
 
+std::string GetNameFromFullPath(std::string const & path)
+{
+  std::string name = path;
+  GetNameFromFullPath(name);
+  return name;
+}
+
 string GetNameFromFullPathWithoutExt(string const & path)
 {
   string name = path;

@@ -1,4 +1,4 @@
-#include "mwm_traits.hpp"
+#include "platform/mwm_traits.hpp"
 
 #include "base/logging.hpp"
 #include "base/macros.hpp"
@@ -26,6 +26,18 @@ MwmTraits::HouseToStreetTableFormat MwmTraits::GetHouseToStreetTableFormat() con
   return HouseToStreetTableFormat::EliasFanoMap;
 }
 
+MwmTraits::CentersTableFormat MwmTraits::GetCentersTableFormat() const
+{
+  if (GetFormat() < version::Format::v9)
+    return CentersTableFormat::PlainEliasFanoMap;
+
+  uint32_t constexpr kLastVersionWithPlainEliasFanoMap = 191019;
+  if (GetVersion() <= kLastVersionWithPlainEliasFanoMap)
+    return CentersTableFormat::PlainEliasFanoMap;
+
+  return CentersTableFormat::EliasFanoMapWithHeader;
+}
+
 bool MwmTraits::HasOffsetsTable() const { return GetFormat() >= version::Format::v6; }
 
 bool MwmTraits::HasCrossMwmSection() const { return GetFormat() >= version::Format::v9; }
@@ -42,7 +54,7 @@ bool MwmTraits::HasCuisineTypes() const
   return GetVersion() >= kFirstVersionWithCuisineTypes;
 }
 
-string DebugPrint(MwmTraits::SearchIndexFormat format)
+std::string DebugPrint(MwmTraits::SearchIndexFormat format)
 {
   switch (format)
   {
@@ -54,7 +66,7 @@ string DebugPrint(MwmTraits::SearchIndexFormat format)
   UNREACHABLE();
 }
 
-string DebugPrint(MwmTraits::HouseToStreetTableFormat format)
+std::string DebugPrint(MwmTraits::HouseToStreetTableFormat format)
 {
   switch (format)
   {
@@ -64,6 +76,16 @@ string DebugPrint(MwmTraits::HouseToStreetTableFormat format)
     return "EliasFanoMap";
   case MwmTraits::HouseToStreetTableFormat::Unknown:
     return "Unknown";
+  }
+  UNREACHABLE();
+}
+
+std::string DebugPrint(MwmTraits::CentersTableFormat format)
+{
+  switch (format)
+  {
+  case MwmTraits::CentersTableFormat::PlainEliasFanoMap: return "PlainEliasFanoMap";
+  case MwmTraits::CentersTableFormat::EliasFanoMapWithHeader: return "EliasFanoMapWithHeader";
   }
   UNREACHABLE();
 }

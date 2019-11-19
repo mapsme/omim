@@ -108,9 +108,19 @@ public:
   // Posts request to load countries tree.
   void LoadCountriesTree();
 
+  void EnableIndexingOfBookmarksDescriptions(bool enable);
+  void EnableIndexingOfBookmarkGroup(bookmarks::GroupId const & groupId, bool enable);
+
+  // Clears all bookmarks data and caches for all processors.
+  void ResetBookmarks();
+
   void OnBookmarksCreated(std::vector<std::pair<bookmarks::Id, bookmarks::Doc>> const & marks);
   void OnBookmarksUpdated(std::vector<std::pair<bookmarks::Id, bookmarks::Doc>> const & marks);
   void OnBookmarksDeleted(std::vector<bookmarks::Id> const & marks);
+  void OnBookmarksAttachedToGroup(bookmarks::GroupId const & groupId,
+                                  std::vector<bookmarks::Id> const & marks);
+  void OnBookmarksDetachedFromGroup(bookmarks::GroupId const & groupId,
+                                    std::vector<bookmarks::Id> const & marks);
 
 private:
   struct Message

@@ -6,14 +6,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.R;
 import com.mapswithme.util.StringUtils;
+import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.statistics.Statistics;
 
 import java.lang.annotation.Retention;
@@ -151,8 +152,8 @@ public final class Notifier
 
     return new NotificationCompat.Builder(mContext, channel)
         .setAutoCancel(true)
-        .setSmallIcon(R.drawable.ic_notification)
-        .setColor(mContext.getResources().getColor(R.color.base_accent))
+        .setSmallIcon(R.drawable.pw_notification)
+        .setColor(UiUtils.getNotificationColor(mContext))
         .setContentTitle(title)
         .setContentText(content)
         .setTicker(getTicker(title, content))

@@ -4,26 +4,24 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.SkuDetails;
 import com.mapswithme.maps.PrivateVariables;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmDialogFragment;
 import com.mapswithme.maps.dialog.AlertDialogCallback;
-import com.mapswithme.util.CrashlyticsUtils;
 import com.mapswithme.util.Graphics;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
@@ -43,11 +41,6 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
   private final static String EXTRA_CURRENT_STATE = "extra_current_state";
   private final static String EXTRA_PRODUCT_DETAILS = "extra_product_details";
   private final static String EXTRA_ACTIVATION_RESULT = "extra_activation_result";
-  private final static int WEEKS_IN_YEAR = 52;
-  private final static int MONTHS_IN_YEAR = 12;
-  final static int REQ_CODE_PRODUCT_DETAILS_FAILURE = 1;
-  final static int REQ_CODE_PAYMENT_FAILURE = 2;
-  final static int REQ_CODE_VALIDATION_SERVER_ERROR = 3;
 
   private boolean mActivationResult;
   @Nullable
@@ -180,22 +173,22 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
 
   void queryPurchaseDetails()
   {
-    getControllerOrThrow().queryPurchaseDetails();
+    getControllerOrThrow().queryProductDetails();
   }
 
   void onYearlyProductClicked()
   {
-    launchPurchaseFlowForPeriod(Period.P1Y);
+    launchPurchaseFlowForPeriod(PurchaseUtils.Period.P1Y);
   }
 
   void onMonthlyProductClicked()
   {
-    launchPurchaseFlowForPeriod(Period.P1M);
+    launchPurchaseFlowForPeriod(PurchaseUtils.Period.P1M);
   }
 
   void onWeeklyProductClicked()
   {
-    launchPurchaseFlowForPeriod(Period.P1W);
+    launchPurchaseFlowForPeriod(PurchaseUtils.Period.P1W);
   }
 
   void onOptionsClicked()
@@ -206,15 +199,14 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
                    R.id.weekly_button);
   }
 
-  private void launchPurchaseFlowForPeriod(@NonNull Period period)
+  private void launchPurchaseFlowForPeriod(@NonNull PurchaseUtils.Period period)
   {
     ProductDetails details = getProductDetailsForPeriod(period);
     getControllerOrThrow().launchPurchaseFlow(details.getProductId());
-    String purchaseId = PrivateVariables.adsRemovalServerId();
-    Statistics.INSTANCE.trackPurchasePreviewSelect(PrivateVariables.adsRemovalServerId(),
-                                                   details.getProductId());
+    String purchaseId = SubscriptionType.ADS_REMOVAL.getServerId();
+    Statistics.INSTANCE.trackPurchasePreviewSelect(purchaseId, details.getProductId());
     Statistics.INSTANCE.trackPurchaseEvent(Statistics.EventName.INAPP_PURCHASE_PREVIEW_PAY,
-                                           purchaseId);
+                                           purchaseId, Statistics.STATISTICS_CHANNEL_REALTIME);
   }
 
   void onExplanationClick()
@@ -262,7 +254,7 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
   {
     super.onCancel(dialog);
     Statistics.INSTANCE.trackPurchaseEvent(Statistics.EventName.INAPP_PURCHASE_PREVIEW_CANCEL,
-                                           PrivateVariables.adsRemovalServerId());
+                                           SubscriptionType.ADS_REMOVAL.getServerId());
   }
 
   @Override
@@ -294,7 +286,7 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
 
   private void updateYearlyButton()
   {
-    ProductDetails details = getProductDetailsForPeriod(Period.P1Y);
+    ProductDetails details = getProductDetailsForPeriod(PurchaseUtils.Period.P1Y);
     String price = Utils.formatCurrencyString(details.getPrice(), details.getCurrencyCode());
     TextView priceView = mYearlyButton.findViewById(R.id.price);
     priceView.setText(getString(R.string.paybtn_title, price));
@@ -305,7 +297,7 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
 
   private void updateMonthlyButton()
   {
-    ProductDetails details = getProductDetailsForPeriod(Period.P1M);
+    ProductDetails details = getProductDetailsForPeriod(PurchaseUtils.Period.P1M);
     String price = Utils.formatCurrencyString(details.getPrice(), details.getCurrencyCode());
     String saving = Utils.formatCurrencyString(calculateMonthlySaving(), details.getCurrencyCode());
     mMonthlyButton.setText(getString(R.string.options_dropdown_item1, price, saving));
@@ -313,13 +305,13 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
 
   private void updateWeeklyButton()
   {
-    ProductDetails details = getProductDetailsForPeriod(Period.P1W);
+    ProductDetails details = getProductDetailsForPeriod(PurchaseUtils.Period.P1W);
     String price = Utils.formatCurrencyString(details.getPrice(), details.getCurrencyCode());
     mWeeklyButton.setText(getString(R.string.options_dropdown_item2, price));
   }
 
   @NonNull
-  private ProductDetails getProductDetailsForPeriod(@NonNull Period period)
+  private ProductDetails getProductDetailsForPeriod(@NonNull PurchaseUtils.Period period)
   {
     if (mProductDetails == null)
       throw new AssertionError("Product details must be exist at this moment!");
@@ -328,16 +320,16 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
 
   private float calculateYearlySaving()
   {
-    float pricePerWeek = getProductDetailsForPeriod(Period.P1W).getPrice();
-    float pricePerYear = getProductDetailsForPeriod(Period.P1Y).getPrice();
-    return pricePerWeek * WEEKS_IN_YEAR - pricePerYear;
+    float pricePerWeek = getProductDetailsForPeriod(PurchaseUtils.Period.P1W).getPrice();
+    float pricePerYear = getProductDetailsForPeriod(PurchaseUtils.Period.P1Y).getPrice();
+    return pricePerWeek * PurchaseUtils.WEEKS_IN_YEAR - pricePerYear;
   }
 
   private float calculateMonthlySaving()
   {
-    float pricePerWeek = getProductDetailsForPeriod(Period.P1W).getPrice();
-    float pricePerMonth = getProductDetailsForPeriod(Period.P1M).getPrice();
-    return pricePerWeek * WEEKS_IN_YEAR - pricePerMonth * MONTHS_IN_YEAR;
+    float pricePerWeek = getProductDetailsForPeriod(PurchaseUtils.Period.P1W).getPrice();
+    float pricePerMonth = getProductDetailsForPeriod(PurchaseUtils.Period.P1M).getPrice();
+    return pricePerWeek * PurchaseUtils.WEEKS_IN_YEAR - pricePerMonth * PurchaseUtils.MONTHS_IN_YEAR;
   }
 
   @Override
@@ -362,11 +354,11 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
   {
     switch (requestCode)
     {
-      case REQ_CODE_PRODUCT_DETAILS_FAILURE:
-      case REQ_CODE_VALIDATION_SERVER_ERROR:
+      case PurchaseUtils.REQ_CODE_PRODUCT_DETAILS_FAILURE:
+      case PurchaseUtils.REQ_CODE_VALIDATION_SERVER_ERROR:
         dismissAllowingStateLoss();
         break;
-      case REQ_CODE_PAYMENT_FAILURE:
+      case PurchaseUtils.REQ_CODE_PAYMENT_FAILURE:
         activateState(AdsRemovalPaymentState.PRICE_SELECTION);
         break;
     }
@@ -374,10 +366,10 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
 
   private void handleProductDetails(@NonNull List<SkuDetails> details)
   {
-    mProductDetails = new ProductDetails[Period.values().length];
+    mProductDetails = new ProductDetails[PurchaseUtils.Period.values().length];
     for (SkuDetails sku: details)
     {
-      Period period = Period.valueOf(sku.getSubscriptionPeriod());
+      PurchaseUtils.Period period = PurchaseUtils.Period.valueOf(sku.getSubscriptionPeriod());
       mProductDetails[period.ordinal()] = PurchaseUtils.toProductDetails(sku);
     }
   }
@@ -398,7 +390,7 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
     @Override
     public void onProductDetailsLoaded(@NonNull List<SkuDetails> details)
     {
-      if (hasIncorrectSkuDetails(details))
+      if (PurchaseUtils.hasIncorrectSkuDetails(details))
       {
         activateStateSafely(AdsRemovalPaymentState.PRODUCT_DETAILS_FAILURE);
         return;
@@ -411,25 +403,10 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
       activateStateSafely(AdsRemovalPaymentState.PRICE_SELECTION);
     }
 
-    private static boolean hasIncorrectSkuDetails(@NonNull List<SkuDetails> skuDetails)
-    {
-      for (SkuDetails each : skuDetails)
-      {
-        if (AdsRemovalPurchaseDialog.Period.getInstance(each.getSubscriptionPeriod()) == null)
-        {
-          String msg = "Unsupported subscription period: '" + each.getSubscriptionPeriod() + "'";
-          CrashlyticsUtils.logException(new IllegalStateException(msg));
-          LOGGER.e(TAG, msg);
-          return true;
-        }
-      }
-      return false;
-    }
-
     @Override
     public void onPaymentFailure(@BillingClient.BillingResponse int error)
     {
-      Statistics.INSTANCE.trackPurchaseStoreError(PrivateVariables.adsRemovalServerId(), error);
+      Statistics.INSTANCE.trackPurchaseStoreError(SubscriptionType.ADS_REMOVAL.getServerId(), error);
       activateStateSafely(AdsRemovalPaymentState.PAYMENT_FAILURE);
     }
 
@@ -449,7 +426,7 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
     public void onValidationStarted()
     {
       Statistics.INSTANCE.trackPurchaseEvent(Statistics.EventName.INAPP_PURCHASE_STORE_SUCCESS,
-                                             PrivateVariables.adsRemovalServerId());
+                                             SubscriptionType.ADS_REMOVAL.getServerId());
       activateStateSafely(AdsRemovalPaymentState.VALIDATION);
     }
 
@@ -478,25 +455,6 @@ public class AdsRemovalPurchaseDialog extends BaseMwmDialogFragment
         uiObject.handleActivationResult(mPendingActivationResult);
         mPendingActivationResult = null;
       }
-    }
-  }
-
-  enum Period
-  {
-    // Order is important.
-    P1Y,
-    P1M,
-    P1W;
-
-    @Nullable
-    static Period getInstance(@Nullable String subscriptionPeriod)
-    {
-      for (Period each : values())
-      {
-        if (TextUtils.equals(each.name(), subscriptionPeriod))
-          return each;
-      }
-      return null;
     }
   }
 }

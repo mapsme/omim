@@ -1,8 +1,10 @@
 #include "generator/booking_dataset.hpp"
-#include "generator/emitter_booking.hpp"
+
 #include "generator/feature_builder.hpp"
 #include "generator/opentable_dataset.hpp"
 #include "generator/osm_source.hpp"
+#include "generator/processor_booking.hpp"
+#include "generator/raw_generator.hpp"
 #include "generator/sponsored_scoring.hpp"
 #include "generator/translator_collection.hpp"
 #include "generator/translator_factory.hpp"
@@ -43,10 +45,11 @@ DEFINE_uint64(selection_size, 1000, "Selection size");
 DEFINE_bool(generate, false, "Generate unmarked sample");
 
 using namespace generator;
+using namespace feature;
 
 namespace
 {
-string PrintBuilder(FeatureBuilder1 const & fb)
+string PrintBuilder(FeatureBuilder const & fb)
 {
   ostringstream s;
 
@@ -68,12 +71,12 @@ string PrintBuilder(FeatureBuilder1 const & fb)
   if (!address.empty())
     s << "Address: " << address << '\t';
 
-  auto const center = MercatorBounds::ToLatLon(fb.GetKeyPoint());
+  auto const center = mercator::ToLatLon(fb.GetKeyPoint());
   s << "lat: " << center.m_lat << " lon: " << center.m_lon << '\t';
 
-  if (fb.GetGeomType() == feature::GeomType::Point)
+  if (fb.GetGeomType() == GeomType::Point)
     s << "GeomType: Point";
-  else if (fb.GetGeomType() == feature::GeomType::Area)
+  else if (fb.GetGeomType() == GeomType::Area)
     s << "GeomType: Area";
   else
     CHECK(false, ());
@@ -103,11 +106,11 @@ base::GeoObjectId ReadDebuggedPrintedOsmId(string const & str)
   MYTHROW(ParseError, ("Can't make osmId from string", str));
 }
 
-feature::GenerateInfo GetGenerateInfo()
+GenerateInfo GetGenerateInfo()
 {
-  feature::GenerateInfo info;
-  info.m_bookingDatafileName = FLAGS_booking;
-  info.m_opentableDatafileName = FLAGS_opentable;
+  GenerateInfo info;
+  info.m_bookingDataFilename = FLAGS_booking;
+  info.m_opentableDataFilename = FLAGS_opentable;
   info.m_osmFileName = FLAGS_osm;
   info.SetNodeStorageType("map");
   info.SetOsmFileType("o5m");
@@ -203,7 +206,7 @@ vector<SampleItem<Object>> ReadSampleFromFile(string const & name)
 
 template <typename Dataset, typename Object = typename Dataset::Object>
 void GenerateFactors(Dataset const & dataset,
-                     map<base::GeoObjectId, FeatureBuilder1> const & features,
+                     map<base::GeoObjectId, FeatureBuilder> const & features,
                      vector<SampleItem<Object>> const & sampleItems, ostream & ost)
 {
   for (auto const & item : sampleItems)
@@ -213,7 +216,7 @@ void GenerateFactors(Dataset const & dataset,
 
     auto const score = generator::sponsored_scoring::Match(object, feature);
 
-    auto const center = MercatorBounds::ToLatLon(feature.GetKeyPoint());
+    auto const center = mercator::ToLatLon(feature.GetKeyPoint());
     double const distanceMeters = ms::DistanceOnEarth(center, object.m_latLon);
     auto const matched = score.IsMatched();
 
@@ -242,7 +245,7 @@ enum class DatasetType
 
 template <typename Dataset, typename Object = typename Dataset::Object>
 void GenerateSample(Dataset const & dataset,
-                    map<base::GeoObjectId, FeatureBuilder1> const & features, ostream & ost)
+                    map<base::GeoObjectId, FeatureBuilder> const & features, ostream & ost)
 {
   LOG_SHORT(LINFO, ("Num of elements:", features.size()));
   vector<base::GeoObjectId> elementIndexes(features.size());
@@ -258,15 +261,14 @@ void GenerateSample(Dataset const & dataset,
   for (auto osmId : elementIndexes)
   {
     auto const & fb = features.at(osmId);
-    auto const sponsoredIndexes = dataset.GetStorage().GetNearestObjects(
-        MercatorBounds::ToLatLon(fb.GetKeyPoint()));
+    auto const sponsoredIndexes = dataset.GetStorage().GetNearestObjects(mercator::ToLatLon(fb.GetKeyPoint()));
 
     for (auto const sponsoredId : sponsoredIndexes)
     {
       auto const & object = dataset.GetStorage().GetObjectById(sponsoredId);
       auto const score = sponsored_scoring::Match(object, fb);
 
-      auto const center = MercatorBounds::ToLatLon(fb.GetKeyPoint());
+      auto const center = mercator::ToLatLon(fb.GetKeyPoint());
       double const distanceMeters = ms::DistanceOnEarth(center, object.m_latLon);
       auto const matched = score.IsMatched();
 
@@ -303,35 +305,36 @@ void GenerateSample(Dataset const & dataset,
 }
 
 template <typename Dataset>
-string GetDatasetFilePath(feature::GenerateInfo const & info);
+string GetDatasetFilePath(GenerateInfo const & info);
 
 template <>
-string GetDatasetFilePath<BookingDataset>(feature::GenerateInfo const & info)
+string GetDatasetFilePath<BookingDataset>(GenerateInfo const & info)
 {
-  return info.m_bookingDatafileName;
+  return info.m_bookingDataFilename;
 }
 
 template <>
-string GetDatasetFilePath<OpentableDataset>(feature::GenerateInfo const & info)
+string GetDatasetFilePath<OpentableDataset>(GenerateInfo const & info)
 {
-  return info.m_opentableDatafileName;
+  return info.m_opentableDataFilename;
 }
 
 template <typename Dataset, typename Object = typename Dataset::Object>
-void RunImpl(feature::GenerateInfo & info)
+void RunImpl(GenerateInfo & info)
 {
   auto const & dataSetFilePath = GetDatasetFilePath<Dataset>(info);
   Dataset dataset(dataSetFilePath);
   LOG_SHORT(LINFO, (dataset.GetStorage().Size(), "objects are loaded from a file:", dataSetFilePath));
 
-  map<base::GeoObjectId, FeatureBuilder1> features;
+  map<base::GeoObjectId, FeatureBuilder> features;
   LOG_SHORT(LINFO, ("OSM data:", FLAGS_osm));
 
-  CacheLoader cacheLoader(info);
-  TranslatorCollection translators;
-  auto emitter = make_shared<EmitterBooking<Dataset>>(dataset, features);
-  translators.Append(CreateTranslator(TranslatorType::Country, emitter, cacheLoader.GetCache(), info));
-  GenerateRaw(info, translators);
+  generator::cache::IntermediateData cacheLoader(info);
+  auto translators = make_shared<TranslatorCollection>();
+  auto processor = make_shared<ProcessorBooking<Dataset>>(dataset, features);
+  translators->Append(CreateTranslator(TranslatorType::Country, processor, cacheLoader.GetCache(), info));
+  RawGenerator generator(info);
+  generator.GenerateCustom(translators);
 
   if (FLAGS_generate)
   {
@@ -348,7 +351,7 @@ void RunImpl(feature::GenerateInfo & info)
   }
 }
 
-void Run(DatasetType const datasetType, feature::GenerateInfo & info)
+void Run(DatasetType const datasetType, GenerateInfo & info)
 {
   switch (datasetType)
   {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "routing/road_graph.hpp"
+#include "routing/routing_callbacks.hpp"
 
 #include "routing_common/maxspeed_conversion.hpp"
 #include "routing_common/vehicle_model.hpp"
@@ -34,8 +35,9 @@ private:
 
     // VehicleModelInterface overrides:
     SpeedKMpH GetSpeed(FeatureType & f, SpeedParams const & speedParams) const override;
+    HighwayType GetHighwayType(FeatureType & f) const override;
     double GetMaxWeightSpeed() const override { return m_maxSpeed; };
-    double GetOffroadSpeed() const override;
+    SpeedKMpH const & GetOffroadSpeed() const override;
     bool IsOneWay(FeatureType & f) const override;
     bool IsRoad(FeatureType & f) const override;
     bool IsPassThroughAllowed(FeatureType & f) const override;
@@ -47,7 +49,7 @@ private:
 
     std::shared_ptr<VehicleModelFactoryInterface> const m_vehicleModelFactory;
     double const m_maxSpeed;
-    double const m_offroadSpeedKMpH;
+    SpeedKMpH const m_offroadSpeedKMpH;
 
     mutable std::map<MwmSet::MwmId, std::shared_ptr<VehicleModelInterface>> m_cache;
   };
@@ -65,6 +67,8 @@ private:
   };
 
 public:
+  static double constexpr kClosestEdgesRadiusM = 150.0;
+
   FeaturesRoadGraph(DataSource const & dataSource, IRoadGraph::Mode mode,
                     std::shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory);
 
@@ -76,14 +80,17 @@ public:
   double GetMaxSpeedKMpH() const override;
   void ForEachFeatureClosestToCross(m2::PointD const & cross,
                                     ICrossEdgesLoader & edgesLoader) const override;
-  void FindClosestEdges(m2::PointD const & point, uint32_t count,
+  void FindClosestEdges(m2::RectD const & rect, uint32_t count,
                         std::vector<std::pair<Edge, Junction>> & vicinities) const override;
+  std::vector<IRoadGraph::FullRoadInfo>
+  FindRoads(m2::RectD const & rect, IsGoodFeatureFn const & isGoodFeature) const override;
   void GetFeatureTypes(FeatureID const & featureId, feature::TypesHolder & types) const override;
   void GetJunctionTypes(Junction const & junction, feature::TypesHolder & types) const override;
   IRoadGraph::Mode GetMode() const override;
   void ClearState() override;
 
   bool IsRoad(FeatureType & ft) const;
+  IRoadGraph::JunctionVec GetRoadGeom(FeatureType & ft) const;
 
 private:
   friend class CrossFeaturesLoader;
@@ -125,5 +132,4 @@ private:
 // with start point s such as that |s - p| < d, and edge is considered outgouing from p.
 // Symmetrically for ingoing edges.
 double GetRoadCrossingRadiusMeters();
-
 }  // namespace routing

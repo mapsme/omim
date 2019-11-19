@@ -1,10 +1,10 @@
 #import "MWMMapDownloaderTableViewCell.h"
-#import "MWMCommon.h"
 #import "MWMCircularProgress.h"
 #import "MWMMapDownloaderLargeCountryTableViewCell.h"
 #import "NSString+Categories.h"
 
-#include "Framework.h"
+#include <CoreApi/Framework.h>
+#import <CoreApi/MWMCommon.h>
 
 @interface MWMMapDownloaderTableViewCell ()<MWMCircularProgressProtocol>
 
@@ -45,8 +45,8 @@
   [attrTitle addAttributes:unselectedAttrs range:{0, str.length}];
   if (!self.searchQuery)
     return [attrTitle copy];
-  for (auto const & range : [str rangesOfString:self.searchQuery])
-    [attrTitle addAttributes:selectedAttrs range:range];
+  for (NSValue *range : [str rangesOfString:self.searchQuery])
+    [attrTitle addAttributes:selectedAttrs range:range.rangeValue];
   return [attrTitle copy];
 }
 

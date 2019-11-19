@@ -1,17 +1,28 @@
 #include "generator/feature_maker_base.hpp"
 
+#include "generator/intermediate_data.hpp"
 #include "generator/osm_element.hpp"
 
 #include "base/assert.hpp"
 
 #include <utility>
 
+using namespace feature;
+
 namespace generator
 {
-FeatureMakerBase::FeatureMakerBase(cache::IntermediateDataReader & cache) : m_cache(cache) {}
+FeatureMakerBase::FeatureMakerBase(std::shared_ptr<cache::IntermediateDataReader> const & cache)
+  : m_cache(cache) {}
+
+void FeatureMakerBase::SetCache(std::shared_ptr<cache::IntermediateDataReader> const & cache)
+{
+  m_cache = cache;
+}
 
 bool FeatureMakerBase::Add(OsmElement & element)
 {
+  ASSERT(m_cache, ());
+
   FeatureParams params;
   ParseParams(params, element);
   switch (element.m_type)
@@ -37,7 +48,7 @@ bool FeatureMakerBase::Empty() const
   return m_queue.empty();
 }
 
-bool FeatureMakerBase::GetNextFeature(FeatureBuilder1 & feature)
+bool FeatureMakerBase::GetNextFeature(FeatureBuilder & feature)
 {
   if (m_queue.empty())
     return false;
@@ -47,33 +58,33 @@ bool FeatureMakerBase::GetNextFeature(FeatureBuilder1 & feature)
   return true;
 }
 
-
-void TransformAreaToPoint(FeatureBuilder1 & feature)
+void TransformAreaToPoint(FeatureBuilder & feature)
 {
   CHECK(feature.IsArea(), ());
   auto const center = feature.GetGeometryCenter();
-  auto const id = feature.GetLastOsmId();
   feature.ResetGeometry();
-  feature.SetOsmId(id);
   feature.SetCenter(center);
+  auto & params = feature.GetParams();
+  if (!params.house.IsEmpty())
+    params.SetGeomTypePointEx();
 }
 
-void TransformAreaToLine(FeatureBuilder1 & feature)
+void TransformAreaToLine(FeatureBuilder & feature)
 {
   CHECK(feature.IsArea(), ());
   feature.SetLinear(feature.GetParams().m_reverseGeometry);
 }
 
-FeatureBuilder1 MakePointFromArea(FeatureBuilder1 const & feature)
+FeatureBuilder MakePointFromArea(FeatureBuilder const & feature)
 {
-  FeatureBuilder1 tmp(feature);
+  FeatureBuilder tmp(feature);
   TransformAreaToPoint(tmp);
   return tmp;
 }
 
-FeatureBuilder1 MakeLineFromArea(FeatureBuilder1 const & feature)
+FeatureBuilder MakeLineFromArea(FeatureBuilder const & feature)
 {
-  FeatureBuilder1 tmp(feature);
+  FeatureBuilder tmp(feature);
   TransformAreaToLine(tmp);
   return tmp;
 }

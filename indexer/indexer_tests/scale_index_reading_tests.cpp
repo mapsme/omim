@@ -17,7 +17,7 @@
 #include "platform/country_defines.hpp"
 #include "platform/local_country_file.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/mmap_reader.hpp"
 #include "coding/reader.hpp"
 
@@ -91,7 +91,7 @@ UNIT_CLASS_TEST(ScaleIndexReadingTest, Mmap)
 
   TEST(id.IsAlive(), ());
 
-  auto const path = id.GetInfo()->GetLocalFile().GetPath(MapOptions::Map);
+  auto const path = id.GetInfo()->GetLocalFile().GetPath(MapFileType::Map);
 
   FilesContainerR cont(path);
   feature::DataHeader header(cont);

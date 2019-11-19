@@ -34,7 +34,6 @@
 #pragma once
 
 #include "generator/filter_interface.hpp"
-#include "generator/osm_element.hpp"
 
 #include <cstdint>
 #include <functional>
@@ -75,6 +74,8 @@ public:
   explicit FilterElements(const std::string & filename);
 
   // FilterInterface overrides:
+  std::shared_ptr<FilterInterface> Clone() const override;
+
   bool IsAccepted(OsmElement const & element) override;
 
   bool NeedSkip(OsmElement const & element) const;
@@ -86,6 +87,8 @@ private:
 
   bool NeedSkip(OsmElement const & element, FilterData const & fdata) const;
   bool ParseString(std::string const & str);
+
+  std::string m_filename;
 
   FilterData m_nodes;
   FilterData m_ways;

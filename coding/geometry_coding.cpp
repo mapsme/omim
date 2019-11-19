@@ -16,14 +16,14 @@ namespace
 inline m2::PointU ClampPoint(m2::PointU const & maxPoint, m2::Point<double> const & point)
 {
   using uvalue_t = m2::PointU::value_type;
-  // return m2::PointU(base::clamp(static_cast<uvalue_t>(point.x), static_cast<uvalue_t>(0),
+  // return m2::PointU(base::Clamp(static_cast<uvalue_t>(point.x), static_cast<uvalue_t>(0),
   // maxPoint.x),
-  //                  base::clamp(static_cast<uvalue_t>(point.y), static_cast<uvalue_t>(0),
+  //                  base::Clamp(static_cast<uvalue_t>(point.y), static_cast<uvalue_t>(0),
   //                  maxPoint.y));
 
   return m2::PointU(
-      static_cast<uvalue_t>(base::clamp(point.x, 0.0, static_cast<double>(maxPoint.x))),
-      static_cast<uvalue_t>(base::clamp(point.y, 0.0, static_cast<double>(maxPoint.y))));
+      static_cast<uvalue_t>(base::Clamp(point.x, 0.0, static_cast<double>(maxPoint.x))),
+      static_cast<uvalue_t>(base::Clamp(point.y, 0.0, static_cast<double>(maxPoint.y))));
 }
 
 struct edge_less_p0
@@ -326,14 +326,14 @@ m2::PointU D2U(m2::PointD const & p, uint32_t coordBits) { return PointDToPointU
 m2::PointD U2D(m2::PointU const & p, uint32_t coordBits)
 {
   m2::PointD const pt = PointUToPointD(p, coordBits);
-  ASSERT(MercatorBounds::kMinX <= pt.x && pt.y <= MercatorBounds::kMaxX, (p, pt, coordBits));
-  ASSERT(MercatorBounds::kMinY <= pt.x && pt.y <= MercatorBounds::kMaxY, (p, pt, coordBits));
+  ASSERT(mercator::Bounds::kMinX <= pt.x && pt.y <= mercator::Bounds::kMaxX, (p, pt, coordBits));
+  ASSERT(mercator::Bounds::kMinY <= pt.x && pt.y <= mercator::Bounds::kMaxY, (p, pt, coordBits));
   return pt;
 }
 
 m2::PointU GetMaxPoint(GeometryCodingParams const & params)
 {
-  return D2U(m2::PointD(MercatorBounds::kMaxX, MercatorBounds::kMaxY), params.GetCoordBits());
+  return D2U(m2::PointD(mercator::Bounds::kMaxX, mercator::Bounds::kMaxY), params.GetCoordBits());
 }
 
 m2::PointU GetBasePoint(GeometryCodingParams const & params) { return params.GetBasePoint(); }

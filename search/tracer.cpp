@@ -21,7 +21,8 @@ Tracer::Parse::Parse(vector<TokenType> const & types, bool category) : m_categor
     auto j = i + 1;
     while (j != types.size() && types[j] == type)
       ++j;
-    m_ranges[type] = TokenRange(i, j);
+    if (type < TokenType::TOKEN_TYPE_COUNT)
+      m_ranges[type] = TokenRange(i, j);
     i = j;
   }
 }
@@ -93,6 +94,8 @@ string DebugPrint(ResultTracer::Branch branch)
   case ResultTracer::Branch::MatchAroundPivot: return "MatchAroundPivot";
   case ResultTracer::Branch::MatchPOIsAndBuildings: return "MatchPOIsAndBuildings";
   case ResultTracer::Branch::GreedilyMatchStreets: return "GreedilyMatchStreets";
+  case ResultTracer::Branch::GreedilyMatchStreetsWithSuburbs:
+    return "GreedilyMatchStreetsWithSuburbs";
   case ResultTracer::Branch::WithPostcodes: return "WithPostcodes";
   case ResultTracer::Branch::MatchUnclassified: return "MatchUnclassified";
   case ResultTracer::Branch::Relaxed: return "Relaxed";

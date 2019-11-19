@@ -130,6 +130,30 @@ void EraseIf(Cont & c, Fn && fn)
   c.erase(remove_if(c.begin(), c.end(), std::forward<Fn>(fn)), c.end());
 }
 
+template <typename Cont, typename Fn>
+bool AllOf(Cont && c, Fn && fn)
+{
+  return std::all_of(c.cbegin(), c.cend(), std::forward<Fn>(fn));
+}
+
+template <typename Cont, typename Fn>
+bool AnyOf(Cont && c, Fn && fn)
+{
+  return std::any_of(c.cbegin(), c.cend(), std::forward<Fn>(fn));
+}
+
+template <typename Cont, typename OutIt, typename Fn>
+decltype(auto) Transform(Cont && c, OutIt && it, Fn && fn)
+{
+  return std::transform(std::cbegin(c), std::cend(c), std::forward<OutIt>(it), std::forward<Fn>(fn));
+}
+
+template <typename Cont, typename Fn>
+decltype(auto) FindIf(Cont && c, Fn && fn)
+{
+  return std::find_if(c.begin(), c.end(), std::forward<Fn>(fn));
+}
+
 // Creates a comparer being able to compare two instances of class C
 // (given by reference or pointer) by a field or const method of C.
 // For example, to create comparer that is able to compare pairs of
@@ -299,6 +323,23 @@ bool IsSortedAndUnique(Iter beg, Iter end)
   return IsSortedAndUnique(beg, end, std::less<typename std::iterator_traits<Iter>::value_type>());
 }
 
+// See std::includes() C++20.
+template <typename Iter1, typename Iter2>
+bool Includes(Iter1 first1, Iter1 last1, Iter2 first2, Iter2 last2)
+{
+  assert(std::is_sorted(first1, last1));
+  assert(std::is_sorted(first2, last2));
+
+  for (; first2 != last2; ++first1)
+  {
+    if (first1 == last1 || *first2 < *first1)
+      return false;
+    if (!(*first1 < *first2))
+      ++first2;
+  }
+  return true;
+}
+
 struct DeleteFunctor
 {
   template <typename T>
@@ -422,6 +463,24 @@ struct EnumClassHash
   size_t operator()(T const & t) const noexcept
   {
     return static_cast<size_t>(t);
+  }
+};
+
+struct RetrieveFirst
+{
+  template <typename T>
+  typename T::first_type const & operator()(T const & pair) const
+  {
+    return pair.first;
+  }
+};
+
+struct RetrieveSecond
+{
+  template <typename T>
+  typename T::second_type const & operator()(T const & pair) const
+  {
+    return pair.second;
   }
 };
 }  // namespace base

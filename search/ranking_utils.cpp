@@ -1,4 +1,5 @@
 #include "search/ranking_utils.hpp"
+
 #include "search/token_slice.hpp"
 #include "search/utils.hpp"
 
@@ -7,13 +8,15 @@
 #include "indexer/categories_holder.hpp"
 #include "indexer/feature_data.hpp"
 
-#include "std/transform_iterator.hpp"
-
 #include <algorithm>
 #include <sstream>
 
+#include <boost/iterator/transform_iterator.hpp>
+
 using namespace std;
 using namespace strings;
+
+using boost::make_transform_iterator;
 
 namespace search
 {
@@ -68,32 +71,32 @@ string DebugPrint(ErrorsMade const & errorsMade)
 
 namespace impl
 {
-bool FullMatch(QueryParams::Token const & token, UniString const & text)
+ErrorsMade GetErrorsMade(QueryParams::Token const & token, strings::UniString const & text)
 {
-  return token.AnyOf([&text](UniString const & s) { return s == text; });
-}
+  if (token.AnyOfSynonyms([&text](strings::UniString const & s) { return text == s; }))
+    return ErrorsMade(0);
 
-bool PrefixMatch(QueryParams::Token const & token, UniString const & text)
-{
-  return token.AnyOf([&text](UniString const & s) { return StartsWith(text, s); });
-}
-
-ErrorsMade GetMinErrorsMade(vector<strings::UniString> const & tokens,
-                            strings::UniString const & text)
-{
   auto const dfa = BuildLevenshteinDFA(text);
+  auto it = dfa.Begin();
+  strings::DFAMove(it, token.GetOriginal().begin(), token.GetOriginal().end());
+  if (it.Accepts())
+    return ErrorsMade(it.ErrorsMade());
 
-  ErrorsMade errorsMade;
+  return {};
+}
 
-  for (auto const & token : tokens)
-  {
-    auto it = dfa.Begin();
-    strings::DFAMove(it, token.begin(), token.end());
-    if (it.Accepts())
-      errorsMade = ErrorsMade::Min(errorsMade, ErrorsMade(it.ErrorsMade()));
-  }
+ErrorsMade GetPrefixErrorsMade(QueryParams::Token const & token, strings::UniString const & text)
+{
+  if (token.AnyOfSynonyms([&text](strings::UniString const & s) { return StartsWith(text, s); }))
+    return ErrorsMade(0);
 
-  return errorsMade;
+  auto const dfa = PrefixDFAModifier<LevenshteinDFA>(BuildLevenshteinDFA(text));
+  auto it = dfa.Begin();
+  strings::DFAMove(it, token.GetOriginal().begin(), token.GetOriginal().end());
+  if (!it.Rejects())
+    return ErrorsMade(it.PrefixErrorsMade());
+
+  return {};
 }
 }  // namespace impl
 
@@ -131,5 +134,12 @@ string DebugPrint(NameScore score)
   case NAME_SCORE_COUNT: return "Count";
   }
   return "Unknown";
+}
+
+string DebugPrint(NameScores scores)
+{
+  ostringstream os;
+  os << "[ " << DebugPrint(scores.m_nameScore) << ", " << DebugPrint(scores.m_errorsMade) << " ]";
+  return os.str();
 }
 }  // namespace search

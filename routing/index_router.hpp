@@ -11,11 +11,11 @@
 #include "routing/features_road_graph.hpp"
 #include "routing/index_graph_starter_joints.hpp"
 #include "routing/joint.hpp"
+#include "routing/nearest_edge_finder.hpp"
 #include "routing/router.hpp"
 #include "routing/routing_callbacks.hpp"
 #include "routing/segment.hpp"
 #include "routing/segmented_route.hpp"
-#include "routing/world_graph.hpp"
 
 #include "routing_common/num_mwm_id.hpp"
 #include "routing_common/vehicle_model.hpp"
@@ -24,12 +24,15 @@
 
 #include "platform/country_file.hpp"
 
+#include "geometry/point2d.hpp"
+#include "geometry/rect2d.hpp"
 #include "geometry/tree4d.hpp"
 
 #include <functional>
 #include <memory>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 class DataSource;
@@ -58,10 +61,10 @@ public:
     /// are almost collinear and co-directional if the angle between them is less than 14 degrees.
     bool IsAlmostCodirectional(Edge const & edge) const;
 
-  private:
     /// \returns the square of shortest distance from |m_point| to |edge| in mercator.
     double GetSquaredDist(Edge const & edge) const;
 
+  private:
     m2::PointD const m_point;
     m2::PointD const m_direction;
   };
@@ -73,8 +76,14 @@ public:
               traffic::TrafficCache const & trafficCache, DataSource & dataSource);
 
   std::unique_ptr<WorldGraph> MakeSingleMwmWorldGraph();
-  bool FindBestSegment(m2::PointD const & point, m2::PointD const & direction,
-                       bool isOutgoing, WorldGraph & worldGraph, Segment & bestSegment);
+  bool FindBestSegments(m2::PointD const & point, m2::PointD const & direction, bool isOutgoing,
+                        WorldGraph & worldGraph, std::vector<Segment> & bestSegments);
+  bool FindBestEdges(m2::PointD const & point,
+                     platform::CountryFile const & pointCountryFile,
+                     m2::PointD const & direction, bool isOutgoing,
+                     double closestEdgesRadiusM, WorldGraph & worldGraph,
+                     std::vector<Edge> & bestEdges,
+                     bool & bestSegmentIsAlmostCodirectional) const;
 
   // IRouter overrides:
   std::string GetName() const override { return m_name; }
@@ -82,6 +91,8 @@ public:
   RouterResultCode CalculateRoute(Checkpoints const & checkpoints, m2::PointD const & startDirection,
                                   bool adjustToPrevRoute, RouterDelegate const & delegate,
                                   Route & route) override;
+
+  VehicleType GetVehicleType() const { return m_vehicleType; }
 
 private:
   RouterResultCode DoCalculateRoute(Checkpoints const & checkpoints,
@@ -97,29 +108,55 @@ private:
 
   std::unique_ptr<WorldGraph> MakeWorldGraph();
 
-  /// \brief Finds the best segment (edge) which may be considered as the start of the finish of the route.
-  /// According to current implementation if a segment is near |point| and is almost codirectional
-  /// to |direction|, the segment will be better than others. If there's no almost codirectional
-  /// segment in the neighbourhood then the closest segment to |point| will be chosen.
+  /// \brief Removes all roads from |roads| which goes to dead ends and all road which
+  /// is not good according to |worldGraph|. For car routing it's roads with hwtag nocar.
+  void EraseIfDeadEnd(WorldGraph & worldGraph,
+                      std::vector<IRoadGraph::FullRoadInfo> & roads) const;
+
+  /// \returns true if a segment (|point|, |edgeProjection.second|) crosses one of segments
+  /// in |fences| except for a one which has the same geometry with |edgeProjection.first|.
+  bool IsFencedOff(m2::PointD const & point, std::pair<Edge, Junction> const & edgeProjection,
+                   std::vector<IRoadGraph::FullRoadInfo> const & fences) const;
+
+  void RoadsToNearestEdges(m2::PointD const & point,
+                           std::vector<IRoadGraph::FullRoadInfo> const & roads,
+                           IsEdgeProjGood const & isGood,
+                           std::vector<std::pair<Edge, Junction>> & edgeProj) const;
+
+  Segment GetSegmentByEdge(Edge const & edge) const;
+
+  /// \brief Fills |closestCodirectionalEdge| with a codirectional edge which is closet to
+  /// |point| and returns true if there's any. If not returns false.
+  bool FindClosestCodirectionalEdge(m2::PointD const & point, m2::PointD const & direction,
+                                    std::vector<std::pair<Edge, Junction>> const & candidates,
+                                    Edge & closestCodirectionalEdge) const;
+
+  /// \brief Finds the best segments (edges) which may be considered as starts or finishes
+  /// of the route. According to current implementation the closest to |point| segment which
+  /// is almost codirectianal to |direction| is the best.
+  /// If there's no an almost codirectional segment in the neighbourhood then all not dead end
+  /// candidates which may be reached without crossing road graph will be added to |bestSegments|.
   /// \param isOutgoing == true if |point| is considered as the start of the route.
   /// isOutgoing == false if |point| is considered as the finish of the route.
   /// \param bestSegmentIsAlmostCodirectional is filled with true if |bestSegment| is chosen
   /// because |direction| and direction of |bestSegment| are almost equal and with false otherwise.
   /// \return true if the best segment is found and false otherwise.
-  bool FindBestSegment(m2::PointD const & point, m2::PointD const & direction, bool isOutgoing,
-                       WorldGraph & worldGraph, Segment & bestSegment,
-                       bool & bestSegmentIsAlmostCodirectional) const;
+  /// \note Candidates in |bestSegments| are sorted from better to worse.
+  bool FindBestSegments(m2::PointD const & point, m2::PointD const & direction, bool isOutgoing,
+                        WorldGraph & worldGraph, std::vector<Segment> & bestSegments,
+                        bool & bestSegmentIsAlmostCodirectional) const;
 
   // Input route may contains 'leaps': shortcut edges from mwm border enter to exit.
   // ProcessLeaps replaces each leap with calculated route through mwm.
-  RouterResultCode ProcessLeapsJoints(vector<Segment> const & input, RouterDelegate const & delegate,
-                                      WorldGraphMode prevMode, IndexGraphStarter & starter,
-                                      AStarProgress & progress, vector<Segment> & output);
+  RouterResultCode ProcessLeapsJoints(std::vector<Segment> const & input,
+                                      RouterDelegate const & delegate, WorldGraphMode prevMode,
+                                      IndexGraphStarter & starter, AStarProgress & progress,
+                                      std::vector<Segment> & output);
   RouterResultCode RedressRoute(std::vector<Segment> const & segments,
-                                RouterDelegate const & delegate, IndexGraphStarter & starter,
+                                base::Cancellable const & cancellable, IndexGraphStarter & starter,
                                 Route & route) const;
 
-  bool AreMwmsNear(std::set<NumMwmId> const & mwmIds) const;
+  bool AreMwmsNear(IndexGraphStarter const & starter) const;
   bool DoesTransitSectionExist(NumMwmId numMwmId) const;
 
   RouterResultCode ConvertTransitResult(std::set<NumMwmId> const & mwmIds,

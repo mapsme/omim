@@ -73,6 +73,7 @@
 		34F558451DBF2E7600A4FC11 /* libopening_hours.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34F558441DBF2E7600A4FC11 /* libopening_hours.a */; };
 		34F558471DBF2E8100A4FC11 /* libsuccinct.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34F558461DBF2E8100A4FC11 /* libsuccinct.a */; };
 		34F558491DBF2EC700A4FC11 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34F558481DBF2EC700A4FC11 /* libz.tbd */; };
+		39066C5622EA03550053E9E1 /* types.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39066C5522EA03540053E9E1 /* types.cpp */; };
 		3913DA511F9FCC88004AA681 /* suggest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3913DA501F9FCC88004AA681 /* suggest.cpp */; };
 		392688C320B2D1D600721762 /* bookmarks_processor_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 392688B420B2D1BF00721762 /* bookmarks_processor_tests.cpp */; };
 		392688C420B2D1D600721762 /* mem_search_index_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 392688B520B2D1BF00721762 /* mem_search_index_tests.cpp */; };
@@ -168,6 +169,9 @@
 		40AC86EA214A96EC003A96D1 /* cuisine_filter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 40AC86E8214A96EB003A96D1 /* cuisine_filter.hpp */; };
 		40AC86EB214A96EC003A96D1 /* cuisine_filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40AC86E9214A96EB003A96D1 /* cuisine_filter.cpp */; };
 		40DF582A2170F63E00E4E0FC /* localities_source_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40DF58292170F63E00E4E0FC /* localities_source_tests.cpp */; };
+		40EAD7DF2329310B0025013B /* postcode_points.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 40EAD7DD2329310A0025013B /* postcode_points.hpp */; };
+		40EAD7E02329310B0025013B /* postcode_points.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40EAD7DE2329310B0025013B /* postcode_points.cpp */; };
+		40EAD7E2232931420025013B /* postcode_points_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40EAD7E1232931410025013B /* postcode_points_tests.cpp */; };
 		453C623B2004BABE00467120 /* region_info_getter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 453C62392004BABE00467120 /* region_info_getter.hpp */; };
 		453C623C2004BABE00467120 /* region_info_getter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 453C623A2004BABE00467120 /* region_info_getter.cpp */; };
 		456E1B3E1F9A3C8E009C32E1 /* cities_boundaries_table.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 456E1B3C1F9A3C8D009C32E1 /* cities_boundaries_table.cpp */; };
@@ -229,6 +233,8 @@
 		6796249D1D10138400AE4E3C /* test_search_request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 679624931D10137D00AE4E3C /* test_search_request.cpp */; };
 		67BC92F81D22E45900A4A378 /* ranker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67BC92F61D22E45900A4A378 /* ranker.cpp */; };
 		67BC92F91D22E45900A4A378 /* ranker.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67BC92F71D22E45900A4A378 /* ranker.hpp */; };
+		931469E822E09D210048495E /* region_address_getter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 931469E622E09D210048495E /* region_address_getter.cpp */; };
+		931469E922E09D210048495E /* region_address_getter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 931469E722E09D210048495E /* region_address_getter.hpp */; };
 		A1347D511B8758C3009050FF /* query_saver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1347D4F1B8758C3009050FF /* query_saver.cpp */; };
 		A1347D521B8758C3009050FF /* query_saver.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A1347D501B8758C3009050FF /* query_saver.hpp */; };
 		A1347D551B8758E9009050FF /* query_saver_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1347D541B8758E9009050FF /* query_saver_tests.cpp */; };
@@ -370,6 +376,7 @@
 		34F558441DBF2E7600A4FC11 /* libopening_hours.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopening_hours.a; path = "../../../omim-xcode-build/Debug/libopening_hours.a"; sourceTree = "<group>"; };
 		34F558461DBF2E8100A4FC11 /* libsuccinct.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsuccinct.a; path = "../../../omim-xcode-build/Debug/libsuccinct.a"; sourceTree = "<group>"; };
 		34F558481DBF2EC700A4FC11 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		39066C5522EA03540053E9E1 /* types.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = types.cpp; sourceTree = "<group>"; };
 		3913DA501F9FCC88004AA681 /* suggest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = suggest.cpp; sourceTree = "<group>"; };
 		392688B420B2D1BF00721762 /* bookmarks_processor_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bookmarks_processor_tests.cpp; sourceTree = "<group>"; };
 		392688B520B2D1BF00721762 /* mem_search_index_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mem_search_index_tests.cpp; sourceTree = "<group>"; };
@@ -432,6 +439,9 @@
 		40AC86E8214A96EB003A96D1 /* cuisine_filter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cuisine_filter.hpp; sourceTree = "<group>"; };
 		40AC86E9214A96EB003A96D1 /* cuisine_filter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cuisine_filter.cpp; sourceTree = "<group>"; };
 		40DF58292170F63E00E4E0FC /* localities_source_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = localities_source_tests.cpp; sourceTree = "<group>"; };
+		40EAD7DD2329310A0025013B /* postcode_points.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = postcode_points.hpp; sourceTree = "<group>"; };
+		40EAD7DE2329310B0025013B /* postcode_points.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = postcode_points.cpp; sourceTree = "<group>"; };
+		40EAD7E1232931410025013B /* postcode_points_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = postcode_points_tests.cpp; sourceTree = "<group>"; };
 		453C62392004BABE00467120 /* region_info_getter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = region_info_getter.hpp; sourceTree = "<group>"; };
 		453C623A2004BABE00467120 /* region_info_getter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = region_info_getter.cpp; sourceTree = "<group>"; };
 		456E1B3C1F9A3C8D009C32E1 /* cities_boundaries_table.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cities_boundaries_table.cpp; sourceTree = "<group>"; };
@@ -497,6 +507,8 @@
 		679624941D10137D00AE4E3C /* test_search_request.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = test_search_request.hpp; sourceTree = "<group>"; };
 		67BC92F61D22E45900A4A378 /* ranker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ranker.cpp; sourceTree = "<group>"; };
 		67BC92F71D22E45900A4A378 /* ranker.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ranker.hpp; sourceTree = "<group>"; };
+		931469E622E09D210048495E /* region_address_getter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = region_address_getter.cpp; sourceTree = "<group>"; };
+		931469E722E09D210048495E /* region_address_getter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = region_address_getter.hpp; sourceTree = "<group>"; };
 		A1347D4F1B8758C3009050FF /* query_saver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = query_saver.cpp; sourceTree = "<group>"; };
 		A1347D501B8758C3009050FF /* query_saver.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = query_saver.hpp; sourceTree = "<group>"; };
 		A1347D541B8758E9009050FF /* query_saver_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = query_saver_tests.cpp; sourceTree = "<group>"; };
@@ -641,6 +653,7 @@
 		0831F24D200E56100034C365 /* bookmarks */ = {
 			isa = PBXGroup;
 			children = (
+				39066C5522EA03540053E9E1 /* types.cpp */,
 				0831F24E200E56100034C365 /* results.hpp */,
 				0831F24F200E56100034C365 /* processor.cpp */,
 				0831F250200E56100034C365 /* data.cpp */,
@@ -706,6 +719,7 @@
 		39B387691FB4609700964D61 /* search_integration_tests */ = {
 			isa = PBXGroup;
 			children = (
+				40EAD7E1232931410025013B /* postcode_points_tests.cpp */,
 				405DB10620FF472300EE3824 /* utils_test.cpp */,
 				39B2B94E1FB4620800AB85A1 /* smoke_test.cpp */,
 				39B2B94D1FB4620800AB85A1 /* tracer_tests.cpp */,
@@ -892,6 +906,8 @@
 				F652D8D91CFDE21900FC29A0 /* nested_rects_cache.cpp */,
 				F652D8DA1CFDE21900FC29A0 /* nested_rects_cache.hpp */,
 				39AEF8371FB4597E00943FC9 /* point_rect_matcher.hpp */,
+				40EAD7DE2329310B0025013B /* postcode_points.cpp */,
+				40EAD7DD2329310A0025013B /* postcode_points.hpp */,
 				F659FC6B1CF4A30B000A06B1 /* pre_ranker.cpp */,
 				F659FC6C1CF4A30B000A06B1 /* pre_ranker.hpp */,
 				F652D8DB1CFDE21900FC29A0 /* pre_ranking_info.cpp */,
@@ -910,6 +926,8 @@
 				F652D8E01CFDE21900FC29A0 /* ranking_info.hpp */,
 				F652D8E11CFDE21900FC29A0 /* ranking_utils.cpp */,
 				F652D8E21CFDE21900FC29A0 /* ranking_utils.hpp */,
+				931469E622E09D210048495E /* region_address_getter.cpp */,
+				931469E722E09D210048495E /* region_address_getter.hpp */,
 				453C623A2004BABE00467120 /* region_info_getter.cpp */,
 				453C62392004BABE00467120 /* region_info_getter.hpp */,
 				675346D31A40560D00A0A8C3 /* result.cpp */,
@@ -975,6 +993,7 @@
 				3461C9A51D79949600E6E6F5 /* utils.hpp in Headers */,
 				345C8DB01D2D15A50037E3A6 /* cbv.hpp in Headers */,
 				F652D90C1CFDE21900FC29A0 /* street_vicinity_loader.hpp in Headers */,
+				40EAD7DF2329310B0025013B /* postcode_points.hpp in Headers */,
 				F652D9011CFDE21900FC29A0 /* nested_rects_cache.hpp in Headers */,
 				670F88751CE4C032003F68BA /* types_skipper.hpp in Headers */,
 				0831F254200E56110034C365 /* inverted_list.hpp in Headers */,
@@ -1040,6 +1059,7 @@
 				F652D8EB1CFDE21900FC29A0 /* features_layer_matcher.hpp in Headers */,
 				3936A61120EA2F5F00A68C09 /* dictionary.hpp in Headers */,
 				347F331B1C4540A8009758CC /* interval_set.hpp in Headers */,
+				931469E922E09D210048495E /* region_address_getter.hpp in Headers */,
 				F652D8C01CFDE1E800FC29A0 /* engine.hpp in Headers */,
 				39AEF84D1FB45D7800943FC9 /* feature_loader.hpp in Headers */,
 				675346DF1A40560D00A0A8C3 /* feature_offset_match.hpp in Headers */,
@@ -1246,6 +1266,7 @@
 				34586B8C1DCB1E8300CF7FC9 /* locality_scorer_test.cpp in Sources */,
 				34EEAD721E55AE5C00E95575 /* utils.cpp in Sources */,
 				345C8DB11D2D15A50037E3A6 /* geocoder_context.cpp in Sources */,
+				40EAD7E2232931420025013B /* postcode_points_tests.cpp in Sources */,
 				39B2B9491FB4620200AB85A1 /* pre_ranker_test.cpp in Sources */,
 				3461C9A31D79949600E6E6F5 /* editor_delegate.cpp in Sources */,
 				39BBC13B1F9FD65C009D1687 /* highlighting.cpp in Sources */,
@@ -1253,6 +1274,7 @@
 				F652D8BF1CFDE1E800FC29A0 /* engine.cpp in Sources */,
 				675346DD1A40560D00A0A8C3 /* approximate_string_match.cpp in Sources */,
 				405DB10720FF472300EE3824 /* utils_test.cpp in Sources */,
+				931469E822E09D210048495E /* region_address_getter.cpp in Sources */,
 				34586B8B1DCB1E8300CF7FC9 /* interval_set_test.cpp in Sources */,
 				0810EC361D6D9D2E00ABFEE7 /* displayed_categories.cpp in Sources */,
 				675346E51A40560D00A0A8C3 /* intermediate_result.cpp in Sources */,
@@ -1274,6 +1296,7 @@
 				675346F11A40560D00A0A8C3 /* result.cpp in Sources */,
 				F652D8C11CFDE1E800FC29A0 /* features_filter.cpp in Sources */,
 				39B2B94A1FB4620200AB85A1 /* processor_test.cpp in Sources */,
+				40EAD7E02329310B0025013B /* postcode_points.cpp in Sources */,
 				F652D8F81CFDE21900FC29A0 /* intersection_result.cpp in Sources */,
 				34586B891DCB1E8300CF7FC9 /* hotels_filter_test.cpp in Sources */,
 				453C623C2004BABE00467120 /* region_info_getter.cpp in Sources */,
@@ -1323,6 +1346,7 @@
 				675346E71A40560D00A0A8C3 /* keyword_lang_matcher.cpp in Sources */,
 				0831F258200E56110034C365 /* data.cpp in Sources */,
 				406B98DA229C3EDA0062EBEC /* feature_offset_match_tests.cpp in Sources */,
+				39066C5622EA03550053E9E1 /* types.cpp in Sources */,
 				3453BD5A1DAF91C100380ECB /* hotels_filter.cpp in Sources */,
 				345C8DB31D2D15A50037E3A6 /* streets_matcher.cpp in Sources */,
 				456E1B3E1F9A3C8E009C32E1 /* cities_boundaries_table.cpp in Sources */,

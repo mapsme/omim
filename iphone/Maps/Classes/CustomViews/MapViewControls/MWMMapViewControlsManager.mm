@@ -1,8 +1,8 @@
 #import "MWMMapViewControlsManager.h"
 #import "MWMAddPlaceNavigationBar.h"
 #import "MWMBottomMenuControllerProtocol.h"
-#import "MWMCommon.h"
-#import "MWMNetworkPolicy.h"
+#import "MWMMapDownloadDialog.h"
+#import "MWMNetworkPolicy+UI.h"
 #import "MWMPlacePageManager.h"
 #import "MWMPlacePageProtocol.h"
 #import "MWMSearchManager.h"
@@ -12,7 +12,8 @@
 #import "MapsAppDelegate.h"
 #import "SwiftBridge.h"
 
-#include "Framework.h"
+#include <CoreApi/Framework.h>
+#import <CoreApi/MWMFrameworkHelper.h>
 
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
@@ -26,12 +27,11 @@ namespace
 NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
 }  // namespace
 
-extern NSString * const kAlohalyticsTapEventKey;
-
 @interface MWMMapViewControlsManager ()<MWMBottomMenuControllerProtocol, MWMSearchManagerObserver, MWMTutorialViewControllerDelegate>
 
 @property(nonatomic) MWMSideButtons * sideButtons;
 @property(nonatomic) MWMTrafficButtonViewController * trafficButton;
+@property(nonatomic) UIButton * promoButton;
 @property(nonatomic) MWMBottomMenuViewController * menuController;
 @property(nonatomic) id<MWMPlacePageProtocol> placePageManager;
 @property(nonatomic) MWMNavigationDashboardManager * navigationManager;
@@ -42,6 +42,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 @property(nonatomic) BOOL disableStandbyOnRouteFollowing;
 @property(nonatomic) MWMTip tutorialType;
 @property(nonatomic) MWMTutorialViewController * tutorialViewContoller;
+@property(nonatomic) PromoDiscoveryCampaign * promoDiscoveryCampaign;
 
 @end
 
@@ -61,6 +62,14 @@ extern NSString * const kAlohalyticsTapEventKey;
   self.trafficButtonHidden = NO;
   self.isDirectionViewHidden = YES;
   self.menuRestoreState = MWMBottomMenuStateInactive;
+  self.promoDiscoveryCampaign = [PromoCampaignManager manager].promoDiscoveryCampaign;
+  if (_promoDiscoveryCampaign.enabled){
+    [controller.controlsView addSubview:self.promoButton];
+    self.promoButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:
+     @[[self.promoButton.centerXAnchor constraintEqualToAnchor:self.trafficButton.view.centerXAnchor],
+       [self.promoButton.topAnchor constraintEqualToAnchor:self.sideButtons.view.topAnchor]]];
+  }
   return self;
 }
 
@@ -79,8 +88,6 @@ extern NSString * const kAlohalyticsTapEventKey;
                                          isDirectionViewUnderStatusBar ||
                                          isMenuViewUnderStatusBar || isAddPlaceUnderStatusBar;
 
-  setStatusBarBackgroundColor(isSomethingUnderStatusBar ? UIColor.clearColor
-                                                        : [UIColor statusBarBackground]);
   return isSomethingUnderStatusBar || isNightMode ? UIStatusBarStyleLightContent
                                                   : UIStatusBarStyleDefault;
 }
@@ -100,6 +107,7 @@ extern NSString * const kAlohalyticsTapEventKey;
   [self.searchManager mwm_refreshUI];
   [self.menuController mwm_refreshUI];
   [self.placePageManager mwm_refreshUI];
+  [self.promoButton mwm_refreshUI];
   [self.ownerController setNeedsStatusBarAppearanceUpdate];
 }
 
@@ -119,20 +127,22 @@ extern NSString * const kAlohalyticsTapEventKey;
   [self.placePageManager dismiss];
 }
 
-- (void)showPlacePage:(place_page::Info const &)info
-{
-  network_policy::CallPartnersApi([self, info](auto const & /* canUseNetwork */) {
+- (void)showPlacePage {
+  [[MWMNetworkPolicy sharedPolicy] callOnlineApi:^(BOOL) {
     self.trafficButtonHidden = YES;
-    [self.placePageManager show:info];
-  });
+    [self.placePageManager show];
+  }];
 }
 
-- (void)showPlacePageReview:(place_page::Info const &)info
-{
-  network_policy::CallPartnersApi([self, info](auto const & /* canUseNetwork */) {
+- (void)updatePlacePage {
+  [self.placePageManager update];
+}
+
+- (void)showPlacePageReview {
+  [[MWMNetworkPolicy sharedPolicy] callOnlineApi:^(BOOL) {
     self.trafficButtonHidden = YES;
-    [self.placePageManager showReview:info];
-  });
+    [self.placePageManager showReview];
+  }];
 }
 
 - (void)searchTextOnMap:(NSString *)text forInputLocale:(NSString *)locale
@@ -162,26 +172,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 
 - (void)actionDownloadMaps:(MWMMapDownloaderMode)mode
 {
-  MapViewController * ownerController = self.ownerController;
-  if (platform::migrate::NeedMigrate())
-  {
-    if ([MWMRouter isRoutingActive])
-    {
-      [Statistics logEvent:kStatDownloaderMigrationProhibitedDialogue
-            withParameters:@{kStatFrom : kStatDownloader}];
-      [[MWMAlertViewController activeAlertController] presentMigrationProhibitedAlert];
-    }
-    else
-    {
-      [Statistics logEvent:kStatDownloaderMigrationDialogue
-            withParameters:@{kStatFrom : kStatDownloader}];
-      [ownerController openMigration];
-    }
-  }
-  else
-  {
-    [ownerController openMapsDownloader:mode];
-  }
+  [self.ownerController openMapsDownloader:mode];
 }
 
 - (void)didFinishAddingPlace
@@ -248,6 +239,7 @@ extern NSString * const kAlohalyticsTapEventKey;
   auto nm = self.navigationManager;
   [nm onRoutePrepare];
   [nm onRoutePointsUpdated];
+  self.promoButton.hidden = YES;
 }
 
 - (void)onRouteRebuild
@@ -256,12 +248,14 @@ extern NSString * const kAlohalyticsTapEventKey;
     self.searchManager.state = MWMSearchManagerStateHidden;
 
   [self.navigationManager onRoutePlanning];
+  self.promoButton.hidden = YES;
 }
 
 - (void)onRouteReady:(BOOL)hasWarnings
 {
   self.searchManager.state = MWMSearchManagerStateHidden;
   [self.navigationManager onRouteReady:hasWarnings];
+  self.promoButton.hidden = YES;
 }
 
 - (void)onRouteStart
@@ -272,6 +266,7 @@ extern NSString * const kAlohalyticsTapEventKey;
   self.disableStandbyOnRouteFollowing = YES;
   self.trafficButtonHidden = YES;
   [self.navigationManager onRouteStart];
+  self.promoButton.hidden = YES;
 }
 
 - (void)onRouteStop
@@ -281,14 +276,25 @@ extern NSString * const kAlohalyticsTapEventKey;
   [self.navigationManager onRouteStop];
   self.disableStandbyOnRouteFollowing = NO;
   self.trafficButtonHidden = NO;
+  self.promoButton.hidden = NO;
 }
 
+
 #pragma mark - Properties
+
+- (UIButton *)promoButton {
+  if (!_promoButton) {
+    PromoCoordinator * coordinator = [[PromoCoordinator alloc] initWithViewController:self.ownerController
+                                                                             campaign:_promoDiscoveryCampaign];
+    _promoButton = [[PromoButton alloc] initWithCoordinator:coordinator];
+  }
+  return _promoButton;
+}
 
 - (MWMSideButtons *)sideButtons
 {
   if (!_sideButtons)
-    _sideButtons = [[MWMSideButtons alloc] initWithParentView:self.ownerController.view];
+    _sideButtons = [[MWMSideButtons alloc] initWithParentView:self.ownerController.controlsView];
   return _sideButtons;
 }
 
@@ -319,7 +325,7 @@ extern NSString * const kAlohalyticsTapEventKey;
 {
   if (!_navigationManager)
     _navigationManager =
-        [[MWMNavigationDashboardManager alloc] initWithParentView:self.ownerController.view];
+        [[MWMNavigationDashboardManager alloc] initWithParentView:self.ownerController.controlsView];
   return _navigationManager;
 }
 
@@ -418,8 +424,7 @@ extern NSString * const kAlohalyticsTapEventKey;
   return tutorial;
 }
 
-- (void)showTutorialIfNeeded
-{
+- (void)showAdditionalViewsIfNeeded {
   auto ownerController = self.ownerController;
 
   if ([MWMRouter isRoutingActive] || [MWMRouter hasSavedRoute])
@@ -437,21 +442,60 @@ extern NSString * const kAlohalyticsTapEventKey;
   if (DeepLinkHandler.shared.isLaunchedByDeeplink)
     return;
 
-  if (self.tutorialViewContoller != nil)
+  if ([self showPromoBookingIfNeeded])
     return;
+
+  [self showTutorialIfNeeded];
+}
+
+- (BOOL)showPromoBookingIfNeeded {
+  PromoAfterBookingCampaign * afterBooking = [PromoCampaignManager manager].promoAfterBookingCampaign;
+
+  if (!afterBooking.enabled)
+    return NO;
+
+  MWMVoidBlock ok = ^{
+    auto urlString = afterBooking.promoUrl;
+    auto url = [NSURL URLWithString:urlString];
+    [MapViewController.sharedController openCatalogAbsoluteUrl:url animated:YES utm:MWMUTMBookingPromo];
+
+    [self.ownerController dismissViewControllerAnimated:YES completion:nil];
+  };
+  MWMVoidBlock cancel = ^{
+    [self.ownerController dismissViewControllerAnimated:YES completion:nil];
+  };
+  NSString *cityImageUrl = afterBooking.pictureUrl;
+  PromoAfterBookingViewController *alert;
+  alert = [[PromoAfterBookingViewController alloc] initWithCityImageUrl:cityImageUrl okClosure:ok cancelClosure:cancel];
+  [self.ownerController presentViewController:alert animated:YES completion:nil];
+  [MWMEye promoAfterBookingShownWithCityId:afterBooking.promoId];
+  return YES;
+}
+
+- (BOOL)showTutorialIfNeeded {
+  if (self.tutorialViewContoller != nil)
+    return YES;
+  
+  auto ownerController = self.ownerController;
+  
+  if ([self.placePageManager isPPShown] || ownerController.downloadDialog.superview != nil) {
+    return NO;
+  }
 
   self.tutorialType = [MWMEye getTipType];
   self.tutorialViewContoller = [self tutorialWithType:self.tutorialType];
   if (!self.tutorialViewContoller)
-    return;
+    return NO;
 
   [self logTutorialEvent:kStatTipsTricksShow additionalOptions:nil];
   self.hidden = NO;
   [ownerController addChildViewController:self.tutorialViewContoller];
   self.tutorialViewContoller.view.frame = ownerController.view.bounds;
   self.tutorialViewContoller.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  [ownerController.view addSubview:self.tutorialViewContoller.view];
+  [ownerController.controlsView addSubview:self.tutorialViewContoller.view];
   [self.tutorialViewContoller didMoveToParentViewController:ownerController];
+
+  return YES;
 }
 
 - (void)didPressCancel:(MWMTutorialViewController *)viewController {

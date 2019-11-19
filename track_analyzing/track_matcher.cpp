@@ -29,7 +29,7 @@ double DistanceToSegment(m2::PointD const & segmentBegin, m2::PointD const & seg
 {
   m2::ParametrizedSegment<m2::PointD> const segment(segmentBegin, segmentEnd);
   m2::PointD const projectionPoint = segment.ClosestPointTo(point);
-  return MercatorBounds::DistanceOnEarth(point, projectionPoint);
+  return mercator::DistanceOnEarth(point, projectionPoint);
 }
 
 double DistanceToSegment(Segment const & segment, m2::PointD const & point, IndexGraph & indexGraph)
@@ -71,7 +71,7 @@ TrackMatcher::TrackMatcher(storage::Storage const & storage, NumMwmId mwmId,
                                                    false /* loadAltitudes */)),
       EdgeEstimator::Create(VehicleType::Car, *m_vehicleModel, nullptr /* trafficStash */));
 
-  DeserializeIndexGraph(*handle.GetValue<MwmValue>(), VehicleType::Car, *m_graph);
+  DeserializeIndexGraph(*handle.GetValue(), VehicleType::Car, *m_graph);
 }
 
 void TrackMatcher::MatchTrack(vector<DataPoint> const & track, vector<MatchedTrack> & matchedTracks)
@@ -129,7 +129,7 @@ void TrackMatcher::MatchTrack(vector<DataPoint> const & track, vector<MatchedTra
 
 // TrackMatcher::Step ------------------------------------------------------------------------------
 TrackMatcher::Step::Step(DataPoint const & dataPoint)
-  : m_dataPoint(dataPoint), m_point(MercatorBounds::FromLatLon(dataPoint.m_latLon))
+  : m_dataPoint(dataPoint), m_point(mercator::FromLatLon(dataPoint.m_latLon))
 {
 }
 
@@ -169,7 +169,7 @@ void TrackMatcher::Step::FillCandidatesWithNearbySegments(
           }
         }
       },
-      MercatorBounds::RectByCenterXYAndSizeInMeters(m_point, kMatchingRange),
+      mercator::RectByCenterXYAndSizeInMeters(m_point, kMatchingRange),
       scales::GetUpperScale());
 }
 
@@ -183,7 +183,7 @@ void TrackMatcher::Step::FillCandidates(Step const & previousStep, IndexGraph & 
     m_candidates.emplace_back(segment, DistanceToSegment(segment, m_point, graph));
 
     edges.clear();
-    graph.GetEdgeList(segment, true /* isOutgoing */, edges);
+    graph.GetEdgeList(segment, true /* isOutgoing */, true /* useRoutingOptions */, edges);
 
     for (SegmentEdge const & edge : edges)
     {
@@ -209,7 +209,8 @@ void TrackMatcher::Step::ChooseSegment(Step const & nextStep, IndexGraph & index
   double minDistance = numeric_limits<double>::max();
 
   vector<SegmentEdge> edges;
-  indexGraph.GetEdgeList(nextStep.m_segment, false /* isOutgoing */, edges);
+  indexGraph.GetEdgeList(nextStep.m_segment, false /* isOutgoing */, true /* useRoutingOptions */,
+                         edges);
   edges.emplace_back(nextStep.m_segment, GetAStarWeightZero<RouteWeight>());
 
   for (Candidate const & candidate : m_candidates)

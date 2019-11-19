@@ -16,6 +16,7 @@
 
 #include <cstdint>
 #include <limits>
+#include <mutex>
 #include <utility>
 #include <vector>
 
@@ -23,9 +24,7 @@ namespace generator
 {
 void LoadPopularPlaces(std::string const & srcFilename, PopularPlaces & places)
 {
-  coding::CSVReader reader;
-  auto const fileReader = FileReader(srcFilename);
-  reader.Read(fileReader, [&places, &srcFilename](coding::CSVReader::Row const & row)
+  for (auto const & row : coding::CSVRunner(coding::CSVReader(srcFilename)))
   {
     size_t constexpr kOsmIdPos = 0;
     size_t constexpr kPopularityIndexPos = 1;
@@ -61,7 +60,7 @@ void LoadPopularPlaces(std::string const & srcFilename, PopularPlaces & places)
       LOG(LERROR, ("Popular place duplication in file:", srcFilename, "parsed row:", row));
       return;
     }
-  });
+  }
 }
 
 bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string const & mwmFile,
@@ -108,5 +107,22 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
   FilesContainerW cont(mwmFile, FileWriter::OP_WRITE_EXISTING);
   search::RankTableBuilder::Create(content, cont, POPULARITY_RANKS_FILE_TAG);
   return true;
+}
+
+
+PopularPlaces const & GetOrLoadPopularPlaces(std::string const & filename)
+{
+  static std::mutex m;
+  static std::unordered_map<std::string, PopularPlaces> placesStorage;
+
+  std::lock_guard<std::mutex> lock(m);
+  auto const it = placesStorage.find(filename);
+  if (it != placesStorage.cend())
+    return it->second;
+
+  PopularPlaces places;
+  LoadPopularPlaces(filename, places);
+  auto const eIt = placesStorage.emplace(filename, places);
+  return eIt.first->second;
 }
 }  // namespace generator

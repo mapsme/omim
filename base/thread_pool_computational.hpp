@@ -67,21 +67,37 @@ public:
   template <typename F, typename... Args>
   auto Submit(F && func, Args &&... args) -> std::future<decltype(func(args...))>
   {
-    {
-      std::unique_lock<std::mutex> lock(m_mutex);
-      if (m_done)
-        return {};
-    }
     using ResultType = decltype(func(args...));
     std::packaged_task<ResultType()> task(std::bind(std::forward<F>(func),
                                                     std::forward<Args>(args)...));
     std::future<ResultType> result(task.get_future());
     {
       std::unique_lock<std::mutex> lock(m_mutex);
+      if (m_done)
+        return {};
+
       m_queue.emplace(std::move(task));
     }
     m_condition.notify_one();
     return result;
+  }
+
+  // Submit work for execution.
+  // func - task to be performed.
+  // args - arguments for func
+  // Warning: If the thread pool is stopped then the call will be ignored.
+  template <typename F, typename... Args>
+  void SubmitWork(F && func, Args &&... args)
+  {
+    auto f = std::bind(std::forward<F>(func), std::forward<Args>(args)...);
+    {
+      std::unique_lock<std::mutex> lock(m_mutex);
+      if (m_done)
+        return;
+
+      m_queue.emplace(std::move(f));
+    }
+    m_condition.notify_one();
   }
 
   // Stop a ThreadPool.
@@ -97,6 +113,16 @@ public:
       m_done = true;
     }
     m_condition.notify_all();
+  }
+
+  void WaitingStop()
+  {
+    {
+      std::unique_lock<std::mutex> lock(m_mutex);
+      m_done = true;
+    }
+    m_condition.notify_all();
+    m_joiner.Join();
   }
 
 private:

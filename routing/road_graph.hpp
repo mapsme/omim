@@ -9,15 +9,21 @@
 #include "indexer/feature_data.hpp"
 
 #include "geometry/point2d.hpp"
+#include "geometry/rect2d.hpp"
 
 #include "base/string_utils.hpp"
 
+#include <functional>
 #include <initializer_list>
 #include <map>
+#include <string>
+#include <utility>
 #include <vector>
 
 namespace routing
 {
+using IsGoodFeatureFn = std::function<bool(FeatureID const &)>;
+
 double constexpr kPointsEqualEpsilon = 1e-6;
 
 /// The Junction class represents a node description on a road network graph
@@ -37,7 +43,7 @@ public:
   inline feature::TAltitude GetAltitude() const { return m_altitude; }
 
 private:
-  friend string DebugPrint(Junction const & r);
+  friend std::string DebugPrint(Junction const & r);
 
   // Point of the junction
   m2::PointD m_point;
@@ -110,7 +116,7 @@ private:
        bool forward, uint32_t segId, Junction const & startJunction,
        Junction const & endJunction);
 
-  friend string DebugPrint(Edge const & r);
+  friend std::string DebugPrint(Edge const & r);
 
   Type m_type = Type::FakeWithoutRealPart;
 
@@ -191,6 +197,18 @@ public:
     JunctionVec m_junctions;
     double m_speedKMPH;
     bool m_bidirectional;
+  };
+
+  struct FullRoadInfo
+  {
+    FullRoadInfo(FeatureID const & featureId, RoadInfo const & roadInfo)
+      : m_featureId(featureId)
+      , m_roadInfo(roadInfo)
+    {
+    }
+
+    FeatureID m_featureId;
+    RoadInfo m_roadInfo;
   };
 
   /// This class is responsible for loading edges in a cross.
@@ -302,11 +320,17 @@ public:
   virtual void ForEachFeatureClosestToCross(m2::PointD const & cross,
                                             ICrossEdgesLoader & edgesLoader) const = 0;
 
-  /// Finds the closest edges to the point.
+  /// Finds the closest edges to the center of |rect|.
   /// @return Array of pairs of Edge and projection point on the Edge. If there is no the closest edges
   /// then returns empty array.
-  virtual void FindClosestEdges(m2::PointD const & point, uint32_t count,
-                                std::vector<std::pair<Edge, Junction>> & vicinities) const = 0;
+  virtual void FindClosestEdges(m2::RectD const & rect, uint32_t count,
+                                std::vector<std::pair<Edge, Junction>> & vicinities) const {};
+
+  /// \returns Vector of pairs FeatureID and corresponding RoadInfo for road features
+  /// lying in |rect|.
+  /// \note |RoadInfo::m_speedKMPH| is set to |kInvalidSpeedKMPH|.
+  virtual std::vector<FullRoadInfo> FindRoads(
+      m2::RectD const & rect, IsGoodFeatureFn const & isGoodFeature) const { return {}; }
 
   /// @return Types for the specified feature
   virtual void GetFeatureTypes(FeatureID const & featureId, feature::TypesHolder & types) const = 0;
@@ -353,7 +377,7 @@ private:
   std::map<Junction, EdgeVector> m_fakeOutgoingEdges;
 };
 
-string DebugPrint(IRoadGraph::Mode mode);
+std::string DebugPrint(IRoadGraph::Mode mode);
 
 IRoadGraph::RoadInfo MakeRoadInfoForTesting(bool bidirectional, double speedKMPH,
                                             std::initializer_list<m2::PointD> const & points);

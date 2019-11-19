@@ -105,6 +105,9 @@ struct RouteProgramParams
   glsl::vec2 m_angleCosSin;
   float m_arrowHalfWidth = 0.0f;
   float m_opacity = 1.0f;
+  glsl::vec2 m_fakeBorders;
+  glsl::vec4 m_fakeColor;
+  glsl::vec4 m_fakeOutlineColor;
 
   BIND_PROGRAMS(RouteProgramParams,
     Program::Route,
@@ -170,13 +173,15 @@ struct ShapesProgramParams
   glsl::mat4 m_pivotTransform;
   glsl::vec3 m_position;
   float m_accuracy = 0.0;
+  glsl::vec2 m_lineParams;
   float m_zScale = 1.0f;
   float m_opacity = 1.0f;
   float m_azimut = 0.0;
 
   BIND_PROGRAMS(ShapesProgramParams,
     Program::Accuracy,
-    Program::MyPosition)
+    Program::MyPosition,
+    Program::SelectionLine)
 } ALIGNMENT;
 
 struct Arrow3dProgramParams

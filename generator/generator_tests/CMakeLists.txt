@@ -3,28 +3,39 @@ project(generator_tests)
 set(
   SRC
   altitude_test.cpp
+  booking_tests.cpp
   brands_loader_test.cpp
   camera_collector_tests.cpp
-  check_mwms.cpp
+  cells_merger_tests.cpp
   cities_boundaries_checker_tests.cpp
+  cities_ids_tests.cpp
   city_roads_tests.cpp
+  cluster_finder_tests.cpp
   coasts_test.cpp
+  collector_city_area_tests.cpp
+  collector_routing_city_boundaries_tests.cpp
   common.cpp
   common.hpp
+  complex_loader_tests.cpp
+  cross_mwm_osm_ways_collector_tests.cpp
   descriptions_section_builder_tests.cpp
   feature_builder_test.cpp
   feature_merger_test.cpp
   filter_elements_tests.cpp
+  gen_mwm_info_tests.cpp
+  hierarchy_entry_tests.cpp
   intermediate_data_test.cpp
   maxspeeds_tests.cpp
+  merge_collectors_tests.cpp
   metadata_parser_test.cpp
+  metalines_tests.cpp
+  mini_roundabout_tests.cpp
   node_mixer_test.cpp
   osm2meta_test.cpp
+  osm_element_helpers_tests.cpp
   osm_o5m_source_test.cpp
   osm_type_test.cpp
-  popularity_builder_tests.cpp
-  region_info_collector_tests.cpp
-  regions_tests.cpp
+  place_processor_tests.cpp
   restriction_collector_test.cpp
   restriction_test.cpp
   road_access_test.cpp
@@ -48,28 +59,21 @@ omim_link_libraries(
   generator_tests_support
   platform_tests_support
   generator
-  drape_frontend
-  shaders
-  map
   routing
   search
   storage
-  drape
   traffic
   routing_common
   descriptions
   transit
-  kml
   editor
   indexer
   platform
   geometry
   coding
   base
-  freetype
   expat
   icu
-  agg
   jansson
   protobuf
   stats_client
@@ -80,9 +84,7 @@ omim_link_libraries(
   gflags
   oauthcpp
   opening_hours
-  stb_image
-  sdf_image
-  vulkan_wrapper
+  ugc
   # TODO(syershov): Use FindPackage.
   sqlite3
   ${LIBZ}

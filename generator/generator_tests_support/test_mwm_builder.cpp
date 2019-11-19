@@ -1,6 +1,7 @@
 #include "generator/generator_tests_support/test_mwm_builder.hpp"
 
 #include "generator/centers_table_builder.hpp"
+#include "generator/cities_ids_builder.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/feature_generator.hpp"
 #include "generator/feature_sorter.hpp"
@@ -16,6 +17,8 @@
 #include "indexer/index_builder.hpp"
 #include "indexer/rank_table.hpp"
 
+#include "storage/country_info_getter.hpp"
+
 #include "platform/local_country_file.hpp"
 
 #include "coding/internal/file_data.hpp"
@@ -27,6 +30,7 @@
 #include <memory>
 
 using namespace std;
+using namespace feature;
 
 namespace
 {
@@ -35,10 +39,10 @@ bool WriteRegionDataForTests(string const & path, vector<string> const & languag
   try
   {
     FilesContainerW writer(path, FileWriter::OP_WRITE_EXISTING);
-    feature::RegionData regionData;
+    RegionData regionData;
     regionData.SetLanguages(languages);
-    FileWriter w = writer.GetWriter(REGION_INFO_FILE_TAG);
-    regionData.Serialize(w);
+    auto w = writer.GetWriter(REGION_INFO_FILE_TAG);
+    regionData.Serialize(*w);
   }
   catch (Writer::Exception const & e)
   {
@@ -53,12 +57,12 @@ namespace generator
 {
 namespace tests_support
 {
-TestMwmBuilder::TestMwmBuilder(platform::LocalCountryFile & file, feature::DataHeader::MapType type,
+TestMwmBuilder::TestMwmBuilder(platform::LocalCountryFile & file, DataHeader::MapType type,
                                uint32_t version)
   : m_file(file)
   , m_type(type)
   , m_collector(
-        make_unique<feature::FeaturesCollector>(m_file.GetPath(MapOptions::Map) + EXTENSION_TMP))
+        make_unique<FeaturesCollector>(m_file.GetPath(MapFileType::Map) + EXTENSION_TMP))
   , m_version(version)
 {
 }
@@ -71,20 +75,20 @@ TestMwmBuilder::~TestMwmBuilder()
 
 void TestMwmBuilder::Add(TestFeature const & feature)
 {
-  FeatureBuilder1 fb;
+  FeatureBuilder fb;
   feature.Serialize(fb);
   CHECK(Add(fb), (fb));
 }
 
-bool TestMwmBuilder::Add(FeatureBuilder1 & fb)
+bool TestMwmBuilder::Add(FeatureBuilder & fb)
 {
   CHECK(m_collector, ("It's not possible to add features after call to Finish()."));
 
-  if (ftypes::IsCityTownOrVillage(fb.GetTypes()) && fb.GetGeomType() == feature::GeomType::Area)
+  if (ftypes::IsCityTownOrVillage(fb.GetTypes()) && fb.GetGeomType() == GeomType::Area)
   {
     auto const & metadata = fb.GetMetadata();
     uint64_t testId;
-    CHECK(strings::to_uint64(metadata.Get(feature::Metadata::FMD_TEST_ID), testId), ());
+    CHECK(strings::to_uint64(metadata.Get(Metadata::FMD_TEST_ID), testId), ());
     m_boundariesTable.Append(testId, indexer::CityBoundary(fb.GetOuterGeometry()));
 
     auto const center = fb.GetGeometryCenter();
@@ -92,7 +96,7 @@ bool TestMwmBuilder::Add(FeatureBuilder1 & fb)
     fb.SetCenter(center);
   }
 
-  if (!fb.PreSerializeAndRemoveUselessNames())
+  if (!fb.PreSerializeAndRemoveUselessNamesForIntermediate())
   {
     LOG(LWARNING, ("Can't pre-serialize feature."));
     return false;
@@ -108,6 +112,13 @@ bool TestMwmBuilder::Add(FeatureBuilder1 & fb)
   return true;
 }
 
+void TestMwmBuilder::SetPostcodesData(
+    string const & postcodesPath, shared_ptr<storage::CountryInfoGetter> const & countryInfoGetter)
+{
+  m_postcodesPath = postcodesPath;
+  m_postcodesCountryInfoGetter = countryInfoGetter;
+}
+
 void TestMwmBuilder::SetMwmLanguages(vector<string> const & languages)
 {
   m_languages = languages;
@@ -115,12 +126,12 @@ void TestMwmBuilder::SetMwmLanguages(vector<string> const & languages)
 
 void TestMwmBuilder::Finish()
 {
-  string const tmpFilePath = m_collector->GetFilePath();
-
   CHECK(m_collector, ("Finish() already was called."));
+
+  string const tmpFilePath = m_collector->GetFilePath();
   m_collector.reset();
 
-  feature::GenerateInfo info;
+  GenerateInfo info;
   info.m_targetDir = m_file.GetDirectory();
   info.m_tmpDir = m_file.GetDirectory();
   info.m_versionDate = static_cast<uint32_t>(base::YYMMDDToSecondsSinceEpoch(m_version));
@@ -129,18 +140,29 @@ void TestMwmBuilder::Finish()
 
   CHECK(base::DeleteFileX(tmpFilePath), ());
 
-  string const path = m_file.GetPath(MapOptions::Map);
+  string const path = m_file.GetPath(MapFileType::Map);
   (void)base::DeleteFileX(path + OSM2FEATURE_FILE_EXTENSION);
 
-  CHECK(feature::BuildOffsetsTable(path), ("Can't build feature offsets table."));
+  CHECK(BuildOffsetsTable(path), ("Can't build feature offsets table."));
 
   CHECK(indexer::BuildIndexFromDataFile(path, path), ("Can't build geometry index."));
 
   CHECK(indexer::BuildSearchIndexFromDataFile(path, true /* forceRebuild */, 1 /* threadsCount */),
         ("Can't build search index."));
 
-  if (m_type == feature::DataHeader::world)
+  if (!m_postcodesPath.empty() && m_postcodesCountryInfoGetter)
+  {
+    CHECK(indexer::BuildPostcodesWithInfoGetter(m_file.GetDirectory(), m_file.GetCountryName(),
+                                                m_postcodesPath, true /* forceRebuild */,
+                                                *m_postcodesCountryInfoGetter),
+          ("Can't build postcodes section."));
+  }
+
+  if (m_type == DataHeader::MapType::World)
+  {
     CHECK(generator::BuildCitiesBoundariesForTesting(path, m_boundariesTable), ());
+    CHECK(generator::BuildCitiesIdsForTesting(path), ());
+  }
 
   CHECK(indexer::BuildCentersTableFromDataFile(path, true /* forceRebuild */),
         ("Can't build centers table."));

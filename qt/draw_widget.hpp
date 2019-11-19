@@ -1,6 +1,7 @@
 #pragma once
 
 #include "qt/qt_common/map_widget.hpp"
+#include "qt/ruler.hpp"
 
 #include "map/everywhere_search_params.hpp"
 #include "map/place_page_info.hpp"
@@ -15,13 +16,16 @@
 #include "drape_frontend/drape_engine.hpp"
 
 #include <condition_variable>
+#include <functional>
 #include <memory>
 #include <mutex>
+#include <string>
+
+#include "boost/optional.hpp"
 
 #include <QtWidgets/QRubberBand>
 
 class Framework;
-class QQuickWindow;
 
 namespace qt
 {
@@ -52,7 +56,7 @@ public:
   ~DrawWidget() override;
 
   bool Search(search::EverywhereSearchParams const & params);
-  string GetDistance(search::Result const & res) const;
+  std::string GetDistance(search::Result const & res) const;
   void ShowSearchResult(search::Result const & res);
 
   void CreateFeature();
@@ -69,16 +73,14 @@ public:
 
   void SetRouter(routing::RouterType routerType);
 
-  using TCurrentCountryChanged = function<void(storage::CountryId const &, string const &,
-                                               storage::Status, uint64_t, uint8_t)>;
+  void SetRuler(bool enabled);
+
+  using TCurrentCountryChanged = std::function<void(storage::CountryId const &, std::string const &,
+                                                    storage::Status, uint64_t, uint8_t)>;
   void SetCurrentCountryChangedListener(TCurrentCountryChanged const & listener);
 
   void DownloadCountry(storage::CountryId const & countryId);
   void RetryToDownloadCountry(storage::CountryId const & countryId);
-
-  void SetSelectionMode(bool mode);
-  void SetCityBoundariesSelectionMode(bool mode);
-  void SetCityRoadsSelectionMode(bool mode);
 
   RouteMarkType GetRoutePointAddMode() const { return m_routePointAddMode; }
   void SetRoutePointAddMode(RouteMarkType mode) { m_routePointAddMode = mode; }
@@ -98,18 +100,23 @@ protected:
   void mousePressEvent(QMouseEvent * e) override;
   void mouseMoveEvent(QMouseEvent * e) override;
   void mouseReleaseEvent(QMouseEvent * e) override;
+  void OnViewportChanged(ScreenBase const & screen) override;
+  //@}
+
   void keyPressEvent(QKeyEvent * e) override;
   void keyReleaseEvent(QKeyEvent * e) override;
 
-  void OnViewportChanged(ScreenBase const & screen) override;
-  //@}
 private:
   void SubmitFakeLocationPoint(m2::PointD const & pt);
+  void SubmitRulerPoint(QMouseEvent * e);
   void SubmitRoutingPoint(m2::PointD const & pt);
   void SubmitBookmark(m2::PointD const & pt);
-  void ShowPlacePage(place_page::Info const & info);
+  void ShowPlacePage();
 
   void UpdateCountryStatus(storage::CountryId const & countryId);
+
+  void VisualizeMwmsBordersInRect(m2::RectD const & rect, bool withVertices,
+                                  bool fromPackedPolygon, bool boundingBox);
 
   m2::PointD GetCoordsFromSettingsIfExists(bool start, m2::PointD const & pt);
 
@@ -121,11 +128,31 @@ private:
   TCurrentCountryChanged m_currentCountryChanged;
   storage::CountryId m_countryId;
 
-  bool m_selectionMode = false;
-  bool m_cityBoundariesSelectionMode = false;
-  bool m_cityRoadsSelectionMode = false;
+public:
+  enum class SelectionMode
+  {
+    Features,
+    CityBoundaries,
+    CityRoads,
+    MwmsBordersByPolyFiles,
+    MwmsBordersWithVerticesByPolyFiles,
+    MwmsBordersByPackedPolygon,
+    MwmsBordersWithVerticesByPackedPolygon,
+    BoundingBoxByPolyFiles,
+    BoundingBoxByPackedPolygon,
+  };
+
+  void SetSelectionMode(SelectionMode mode) { m_currentSelectionMode = {mode}; }
+  void DropSelectionMode() { m_currentSelectionMode = {}; }
+  bool SelectionModeIsSet() { return static_cast<bool>(m_currentSelectionMode); }
+  SelectionMode GetSelectionMode() const { return *m_currentSelectionMode; }
+
+private:
+  void ProcessSelectionMode();
+  boost::optional<SelectionMode> m_currentSelectionMode;
   RouteMarkType m_routePointAddMode = RouteMarkType::Finish;
 
   std::unique_ptr<Screenshoter> m_screenshoter;
+  Ruler m_ruler;
 };
 }  // namespace qt

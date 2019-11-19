@@ -9,11 +9,11 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.GestureDetectorCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -27,10 +27,11 @@ import com.mapswithme.maps.ads.CompoundNativeAdLoader;
 import com.mapswithme.maps.ads.DefaultAdTracker;
 import com.mapswithme.maps.ads.MwmNativeAd;
 import com.mapswithme.maps.bookmarks.data.MapObject;
+import com.mapswithme.maps.bookmarks.data.RoadWarningMarkType;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationListener;
+import com.mapswithme.maps.promo.Promo;
 import com.mapswithme.maps.purchase.AdsRemovalPurchaseControllerProvider;
-import com.mapswithme.maps.bookmarks.data.RoadWarningMarkType;
 import com.mapswithme.util.Graphics;
 import com.mapswithme.util.NetworkPolicy;
 import com.mapswithme.util.UiUtils;
@@ -43,10 +44,10 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
                                                        View.OnLayoutChangeListener,
                                                        BannerController.BannerStateRequester,
                                                        BannerController.BannerStateListener,
-                                                       PlacePageButtonsListener,
                                                        Closable
 {
   private static final float ANCHOR_RATIO = 0.3f;
+  private static final float PREVIEW_PLUS_RATIO = 0.45f;
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = BottomSheetPlacePageController.class.getSimpleName();
   private static final String EXTRA_MAP_OBJECT = "extra_map_object";
@@ -258,7 +259,7 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
 
     mButtonsLayout = mActivity.findViewById(R.id.pp_buttons_layout);
     ViewGroup buttons = mButtonsLayout.findViewById(R.id.container);
-    mPlacePage.initButtons(buttons, this);
+    mPlacePage.initButtons(buttons);
     UiUtils.bringViewToFrontOf(mButtonsLayout, mPlacePage);
     UiUtils.bringViewToFrontOf(mActivity.findViewById(R.id.app_bar), mPlacePage);
     mPlacePageTracker = new PlacePageTracker(mPlacePage, mButtonsLayout);
@@ -330,7 +331,7 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
     if (mBannerRatio > 0)
       return;
 
-    final int peekHeight = getPeekHeight();
+    final int peekHeight = calculatePeekHeight();
     if (peekHeight == mPlacePageBehavior.getPeekHeight())
       return;
 
@@ -393,9 +394,23 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
     mPlacePageBehavior.setAnchorOffset((int) (parent.getHeight() * ANCHOR_RATIO));
   }
 
-  private int getPeekHeight()
+  private int calculatePeekHeight()
   {
-    return mPlacePage.getPreviewHeight() + mButtonsLayout.getHeight();
+    final int organicPeekHeight = mPlacePage.getPreviewHeight() + mButtonsLayout.getHeight();
+    final MapObject object = mPlacePage.getMapObject();
+    if (object != null)
+    {
+      @MapObject.OpeningMode
+      int mode = object.getOpeningMode();
+      if (mode == MapObject.OPENING_MODE_PREVIEW_PLUS)
+      {
+        View parent = (View) mPlacePage.getParent();
+        int promoPeekHeight = (int) (parent.getHeight() * PREVIEW_PLUS_RATIO);
+        return promoPeekHeight <= organicPeekHeight ? organicPeekHeight : promoPeekHeight;
+      }
+    }
+
+    return organicPeekHeight;
   }
 
   @Override
@@ -538,13 +553,13 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
   @Override
   public void onActivityCreated(Activity activity, Bundle savedInstanceState)
   {
-    // No op.
   }
 
   @Override
   public void onActivityStarted(Activity activity)
   {
     mBannerController.attach();
+    mPlacePage.attach(activity);
   }
 
   @Override
@@ -563,6 +578,7 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
   public void onActivityStopped(Activity activity)
   {
     mBannerController.detach();
+    mPlacePage.detach();
   }
 
   @Override
@@ -574,7 +590,7 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
   @Override
   public void onActivityDestroyed(Activity activity)
   {
-    // No op.
+    Promo.INSTANCE.setListener(null);
   }
 
   private static boolean isSettlingState(@AnchorBottomSheetBehavior.State int state)
@@ -632,20 +648,6 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
   public void onBannerPreview(@NonNull MwmNativeAd ad)
   {
     mPlacePageTracker.onBannerPreview(ad);
-  }
-
-  @Override
-  public void onBookmarkSet(boolean isSet)
-  {
-    if (!isSet)
-      return;
-
-    @AnchorBottomSheetBehavior.State
-    int state = mPlacePageBehavior.getState();
-    if (!isCollapsedState(state))
-      return;
-
-    mPlacePageBehavior.setState(AnchorBottomSheetBehavior.STATE_ANCHORED);
   }
 
   @Override

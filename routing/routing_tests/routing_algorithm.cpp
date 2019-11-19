@@ -79,7 +79,7 @@ inline double TimeBetweenSec(Junction const & j1, Junction const & j2, double sp
   ASSERT_NOT_EQUAL(j1.GetAltitude(), feature::kInvalidAltitude, ());
   ASSERT_NOT_EQUAL(j2.GetAltitude(), feature::kInvalidAltitude, ());
 
-  double const distanceM = MercatorBounds::DistanceOnEarth(j1.GetPoint(), j2.GetPoint());
+  double const distanceM = mercator::DistanceOnEarth(j1.GetPoint(), j2.GetPoint());
   double const altitudeDiffM =
       static_cast<double>(j2.GetAltitude()) - static_cast<double>(j1.GetAltitude());
   return sqrt(distanceM * distanceM + altitudeDiffM * altitudeDiffM) / speedMPS;
@@ -192,9 +192,10 @@ TestAStarBidirectionalAlgo::Result TestAStarBidirectionalAlgo::CalculateRoute(
     RoutingResult<IRoadGraph::Vertex, IRoadGraph::Weight> & path)
 {
   RoadGraph roadGraph(graph);
-  base::Cancellable const cancellable;
+  base::Cancellable cancellable;
   Algorithm::Params params(roadGraph, startPos, finalPos, {} /* prevRoute */,
-                           cancellable, {} /* onVisitJunctionFn */, {} /* checkLength */);
+                           cancellable, {} /* onVisitJunctionFn */,
+                           {} /* checkLength */);
   Algorithm::Result const res = Algorithm().FindPathBidirectional(params, path);
   return Convert(res);
 }

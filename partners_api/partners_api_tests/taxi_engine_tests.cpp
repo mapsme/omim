@@ -114,7 +114,7 @@ std::vector<taxi::Product> GetUberSynchronous(ms::LatLon const & from, ms::LatLo
   maker.SetTimes(reqId, times);
   maker.SetPrices(reqId, prices);
   maker.MakeProducts(
-      reqId, [&uberProducts](vector<taxi::Product> const & products) { uberProducts = products; },
+      reqId, [&uberProducts](std::vector<taxi::Product> const & products) { uberProducts = products; },
       [](taxi::ErrorCode const code) { TEST(false, (code)); });
 
   return uberProducts;
@@ -149,7 +149,7 @@ std::vector<taxi::Product> GetMaximSynchronous(ms::LatLon const & from, ms::LatL
 std::vector<taxi::Product> GetRutaxiSynchronous(ms::LatLon const & from, ms::LatLon const & to,
                                                 taxi::Delegate & delegate, std::string const & url)
 {
-  auto const city = delegate.GetCityName(MercatorBounds::FromLatLon(from));
+  auto const city = delegate.GetCityName(mercator::FromLatLon(from));
 
   std::string fromHttpResult;
   TEST(taxi::rutaxi::RawApi::GetNearObject(from, city, fromHttpResult, url), ());
@@ -230,7 +230,7 @@ bool CompareProviders(taxi::ProvidersContainer const & lhs, taxi::ProvidersConta
 
   auto const m = lhs.size();
 
-  vector<bool> used(m);
+  std::vector<bool> used(m);
   // TODO (@y) Change it to algorithm, based on bipartite graphs.
   for (auto const & rItem : rhs)
   {
@@ -457,25 +457,25 @@ UNIT_CLASS_TEST(AsyncGuiThread, TaxiEngine_Smoke)
 
   {
     {
-      lock_guard<mutex> lock(resultsMutex);
+      std::lock_guard<std::mutex> lock(resultsMutex);
       reqId = engine.GetAvailableProducts(ms::LatLon(55.753960, 37.624513),
                                           ms::LatLon(55.765866, 37.661270), standardCallback,
                                           errorPossibleCallback);
     }
     {
-      lock_guard<mutex> lock(resultsMutex);
+      std::lock_guard<std::mutex> lock(resultsMutex);
       reqId = engine.GetAvailableProducts(ms::LatLon(59.922445, 30.367201),
                                           ms::LatLon(59.943675, 30.361123), standardCallback,
                                           errorPossibleCallback);
     }
     {
-      lock_guard<mutex> lock(resultsMutex);
+      std::lock_guard<std::mutex> lock(resultsMutex);
       reqId = engine.GetAvailableProducts(ms::LatLon(52.509621, 13.450067),
                                           ms::LatLon(52.510811, 13.409490), standardCallback,
                                           errorPossibleCallback);
     }
     {
-      lock_guard<mutex> lock(resultsMutex);
+      std::lock_guard<std::mutex> lock(resultsMutex);
       reqId = engine.GetAvailableProducts(from, to, lastCallback, errorCallback);
     }
   }
@@ -515,8 +515,7 @@ UNIT_TEST(TaxiEngine_GetProvidersAtPos)
 
   engine.SetDelegate(std::make_unique<UsaDelegate>());
   providers = engine.GetProvidersAtPos(latlon);
-  TEST_EQUAL(providers.size(), 1, ());
-  TEST_EQUAL(providers[0], taxi::Provider::Type::Uber, ());
+  TEST(providers.empty(), ());
 
   engine.SetDelegate(std::make_unique<RussiaSochiDelegate>());
   providers = engine.GetProvidersAtPos(latlon);

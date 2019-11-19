@@ -4,6 +4,7 @@
 #include "generator/utils.hpp"
 
 #include "routing/index_router.hpp"
+#include "routing/road_graph.hpp"
 #include "routing/routing_exceptions.hpp"
 #include "routing/vehicle_mask.hpp"
 
@@ -20,6 +21,7 @@
 
 #include "coding/file_writer.hpp"
 
+#include "platform/country_file.hpp"
 #include "platform/platform.hpp"
 
 #include "base/assert.hpp"
@@ -27,6 +29,7 @@
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
 
+#include <algorithm>
 #include <vector>
 
 #include "defines.hpp"
@@ -52,8 +55,8 @@ void LoadBorders(string const & dir, CountryId const & countryId, vector<m2::Reg
 void FillOsmIdToFeatureIdsMap(string const & osmIdToFeatureIdsPath, OsmIdToFeatureIdsMap & mapping)
 {
   CHECK(ForEachOsmId2FeatureId(osmIdToFeatureIdsPath,
-                               [&mapping](base::GeoObjectId const & osmId, uint32_t featureId) {
-                                 mapping[osmId].push_back(featureId);
+                               [&mapping](auto const & compositeId, auto featureId) {
+                                 mapping[compositeId.m_mainId].push_back(featureId);
                                }),
         (osmIdToFeatureIdsPath));
 }
@@ -103,20 +106,38 @@ void CalculateBestPedestrianSegments(string const & mwmPath, CountryId const & c
     auto const & gate = gates[i];
     if (countryFileGetter(gate.GetPoint()) != countryId)
       continue;
-    // Note. For pedestrian routing all the segments are considered as twoway segments so
-    // IndexRouter.FindBestSegment() method finds the same segment for |isOutgoing| == true
+
+    // Note. For pedestrian routing all the segments are considered as two way segments so
+    // IndexRouter::FindBestSegments() method finds the same segments for |isOutgoing| == true
     // and |isOutgoing| == false.
-    Segment bestSegment;
+    vector<routing::Edge> bestEdges;
     try
     {
       if (countryFileGetter(gate.GetPoint()) != countryId)
         continue;
-      if (indexRouter.FindBestSegment(gate.GetPoint(), m2::PointD::Zero() /* direction */,
-                                      true /* isOutgoing */, *worldGraph, bestSegment))
+
+      bool dummy = false;
+      if (indexRouter.FindBestEdges(gate.GetPoint(), platform::CountryFile(countryId),
+                                    m2::PointD::Zero() /* direction */, true /* isOutgoing */,
+                                    FeaturesRoadGraph::kClosestEdgesRadiusM,
+                                    *worldGraph, bestEdges, dummy))
       {
-        CHECK_EQUAL(bestSegment.GetMwmId(), 0, ());
+        CHECK(!bestEdges.empty(), ());
+        IndexRouter::BestEdgeComparator bestEdgeComparator(gate.GetPoint(),
+                                                           m2::PointD::Zero() /* direction */);
+        // Looking for the edge which is the closest to |gate.GetPoint()|.
+        // @TODO It should be considered to change the format of transit section to keep all
+        // candidates for every gate.
+        auto const & bestEdge = *min_element(
+            bestEdges.cbegin(), bestEdges.cend(),
+            [&bestEdgeComparator](routing::Edge const & lhs, routing::Edge const & rhs) {
+              return bestEdgeComparator.Compare(lhs, rhs) < 0;
+            });
+
+        CHECK(bestEdge.GetFeatureId().IsValid(), ());
+
         graphData.SetGateBestPedestrianSegment(i, SingleMwmSegment(
-            bestSegment.GetFeatureId(), bestSegment.GetSegmentIdx(), bestSegment.IsForward()));
+            bestEdge.GetFeatureId().m_index, bestEdge.GetSegId(), bestEdge.IsForward()));
       }
     }
     catch (MwmIsNotAliveException const & e)
@@ -209,8 +230,8 @@ void BuildTransit(string const & mwmDir, CountryId const & countryId,
   jointData.CheckValidSortedUnique();
 
   FilesContainerW cont(mwmPath, FileWriter::OP_WRITE_EXISTING);
-  FileWriter writer = cont.GetWriter(TRANSIT_FILE_TAG);
-  jointData.Serialize(writer);
+  auto writer = cont.GetWriter(TRANSIT_FILE_TAG);
+  jointData.Serialize(*writer);
 }
 }  // namespace transit
 }  // namespace routing

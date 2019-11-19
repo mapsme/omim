@@ -1,4 +1,4 @@
-#include "mwm_url.hpp"
+#include "map/mwm_url.hpp"
 
 #include "map/api_mark_point.hpp"
 #include "map/bookmark_manager.hpp"
@@ -16,10 +16,9 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "std/algorithm.hpp"
-#include "std/bind.hpp"
-
 #include <array>
+
+using namespace std;
 
 namespace url_scheme
 {
@@ -100,12 +99,12 @@ namespace catalogue
 {
 char const * kId = "id";
 char const * kName = "name";
-}
+}  // namespace catalogue
 
 namespace cataloguePath
 {
   char const * kUrl = "url";
-}
+}  // namespace cataloguePath
 
 namespace
 {
@@ -160,14 +159,13 @@ bool ParseLatLon(string const & key, string const & value, double & lat, double 
     return false;
   }
 
-  if (!MercatorBounds::ValidLat(lat) || !MercatorBounds::ValidLon(lon))
+  if (!mercator::ValidLat(lat) || !mercator::ValidLon(lon))
   {
     LOG(LWARNING, ("Map API: incorrect value for lat and/or lon", key, value, lat, lon));
     return false;
   }
   return true;
 }
-
 }  // namespace
 
 void ParsedMapApi::SetBookmarkManager(BookmarkManager * manager)
@@ -213,7 +211,7 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
       auto editSession = m_bmManager->GetEditSession();
       for (auto const & p : points)
       {
-        m2::PointD glPoint(MercatorBounds::FromLatLon(p.m_lat, p.m_lon));
+        m2::PointD glPoint(mercator::FromLatLon(p.m_lat, p.m_lon));
         auto * mark = editSession.CreateUserMark<ApiMarkPoint>(glPoint);
         mark->SetName(p.m_name);
         mark->SetApiID(p.m_id);
@@ -328,7 +326,7 @@ bool ParsedMapApi::RouteKeyValue(string const & key, string const & value, vecto
       return false;
 
     RoutePoint p;
-    p.m_org = MercatorBounds::FromLatLon(lat, lon);
+    p.m_org = mercator::FromLatLon(lat, lon);
     m_routePoints.push_back(p);
   }
   else if (key == kSourceName || key == kDestName)
@@ -552,5 +550,4 @@ ApiMarkPoint const * ParsedMapApi::GetSinglePoint() const
 
   return static_cast<ApiMarkPoint const *>(m_bmManager->GetUserMark(*markIds.begin()));
 }
-
-}
+}  // namespace url_scheme

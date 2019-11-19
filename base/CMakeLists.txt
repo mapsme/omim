@@ -8,11 +8,13 @@ set(
   base.cpp
   base.hpp
   beam.hpp
+  bidirectional_map.hpp
   bits.hpp
   buffer_vector.hpp
   bwt.cpp
   bwt.hpp
   cache.hpp
+  cancellable.cpp
   cancellable.hpp
   checked_cast.hpp
   clustering_map.hpp
@@ -89,6 +91,7 @@ set(
   thread_pool_computational.hpp
   thread_pool_delayed.cpp
   thread_pool_delayed.hpp
+  thread_safe_queue.hpp
   thread_utils.hpp
   threaded_container.cpp
   threaded_container.hpp

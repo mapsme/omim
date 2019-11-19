@@ -3,11 +3,11 @@ package com.mapswithme.maps.downloader;
 import android.app.Activity;
 import android.app.Application;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.annotation.UiThread;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.annotation.UiThread;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 
 import com.mapswithme.maps.R;
@@ -49,14 +49,6 @@ public final class MapManager
   interface CurrentCountryChangedListener
   {
     void onCurrentCountryChanged(String countryId);
-  }
-
-  @SuppressWarnings("unused")
-  interface MigrationListener
-  {
-    void onComplete();
-    void onProgress(int percent);
-    void onError(int code);
   }
 
   private static WeakReference<AlertDialog> sCurrentErrorDialog;
@@ -278,11 +270,6 @@ public final class MapManager
   public static native boolean nativeMoveFile(String oldFile, String newFile);
 
   /**
-   * Returns {@code true} if there is enough storage space to perform migration. Or {@code false} otherwise.
-   */
-  public static native boolean nativeHasSpaceForMigration();
-
-  /**
    * Returns {@code true} if there is enough storage space to download specified amount of data. Or {@code false} otherwise.
    */
   public static native boolean nativeHasSpaceToDownloadAmount(long bytes);
@@ -296,29 +283,6 @@ public final class MapManager
    * Returns {@code true} if there is enough storage space to update maps with specified {@code root}. Or {@code false} otherwise.
    */
   public static native boolean nativeHasSpaceToUpdate(String root);
-
-  /**
-   * Determines whether the legacy (large MWMs) mode is used.
-   */
-  public static native boolean nativeIsLegacyMode();
-
-  /**
-   * Quickly determines if the migration is needed. In the most cases you should use {@link #nativeIsLegacyMode()} instead.
-   */
-  public static native boolean nativeNeedMigrate();
-
-  /**
-   * Performs migration from old (large MWMs) mode.
-   * @return Name of the country to be loaded during the prefetch.
-   *         Or {@code null} if maps were queued to downloader and migration process is complete.
-   *         In the latter case {@link MigrationListener#onComplete()} will be called before return from {@code nativeMigrate()}.
-   */
-  public static native @Nullable String nativeMigrate(MigrationListener listener, double lat, double lon, boolean hasLocation, boolean keepOldMaps);
-
-  /**
-   * Aborts migration. Affects only prefetch process.
-   */
-  public static native void nativeCancelMigration();
 
   /**
    * Return count of fully downloaded maps (excluding fake MWMs).

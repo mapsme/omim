@@ -12,7 +12,7 @@
 #include "platform/local_country_file_utils.hpp"
 
 #include "coding/endianness.hpp"
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/file_writer.hpp"
 #include "coding/memory_region.hpp"
 #include "coding/reader.hpp"
@@ -247,7 +247,7 @@ uint8_t CalcSearchRank(FeatureType & ft)
   auto const transportRank = CalcTransportRank(ft);
   auto const populationRank = feature::PopulationToRank(ftypes::GetPopulation(ft));
 
-  return base::clamp(eventRank + transportRank + populationRank, 0,
+  return base::Clamp(eventRank + transportRank + populationRank, 0,
                      static_cast<int>(numeric_limits<uint8_t>::max()));
 }
 
@@ -327,7 +327,7 @@ bool SearchRankTableBuilder::CreateIfNotExists(platform::LocalCountryFile const 
 
     unique_ptr<RankTable> table;
     {
-      ModelReaderPtr reader = platform::GetCountryReader(localFile, MapOptions::Map);
+      ModelReaderPtr reader = platform::GetCountryReader(localFile, MapFileType::Map);
       if (!reader.GetPtr())
         return false;
 

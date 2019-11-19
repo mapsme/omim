@@ -18,16 +18,15 @@ namespace
 class Utf8StreetTokensFilter
 {
 public:
-  explicit Utf8StreetTokensFilter(vector<pair<string, size_t>> & cont)
+  explicit Utf8StreetTokensFilter(vector<pair<string, size_t>> & cont, bool withMisprints = false)
     : m_cont(cont)
-    , m_filter([&](UniString const & token, size_t tag)
-               {
-                 m_cont.emplace_back(ToUtf8(token), tag);
-               })
+    , m_filter(
+          [&](UniString const & token, size_t tag) { m_cont.emplace_back(ToUtf8(token), tag); },
+          withMisprints)
   {
   }
 
-  inline void Put(string const & token, bool isPrefix, size_t tag)
+  void Put(string const & token, bool isPrefix, size_t tag)
   {
     m_filter.Put(MakeUniString(token), isPrefix, tag);
   }
@@ -45,6 +44,16 @@ bool TestStreetSynonym(char const * s)
 bool TestStreetPrefixMatch(char const * s)
 {
   return IsStreetSynonymPrefix(MakeUniString(s));
+}
+
+bool TestStreetSynonymWithMisprints(char const * s)
+{
+  return IsStreetSynonymWithMisprints(MakeUniString(s));
+}
+
+bool TestStreetPrefixMatchWithMisprints(char const * s)
+{
+  return IsStreetSynonymPrefixWithMisprints(MakeUniString(s));
 }
 
 string NormalizeAndSimplifyStringUtf8(string const & s)
@@ -83,6 +92,7 @@ UNIT_TEST(NormalizeAndSimplifyStringWithOurTambourines)
                         "aaaaaooooeeeeiduuuuyaadeoou",  // Vietnamese
                         "ăâț", "aat",                   // Romanian
                         "Триу́мф-Пала́с", "триумф-палас", // Russian accent
+                        "  a   b  c d ", " a b c d ",   // Multiple spaces
                        };
 
   for (size_t i = 0; i < ARRAY_SIZE(arr); i += 2)
@@ -106,8 +116,23 @@ UNIT_TEST(StreetSynonym)
 {
   TEST(TestStreetSynonym("street"), ());
   TEST(TestStreetSynonym("улица"), ());
+
   TEST(TestStreetSynonym("strasse"), ());
+  TEST(TestStreetSynonymWithMisprints("strasse"), ());
   TEST(!TestStreetSynonym("strase"), ());
+  TEST(TestStreetSynonymWithMisprints("strase"), ());
+
+  TEST(TestStreetSynonym("boulevard"), ());
+  TEST(TestStreetSynonymWithMisprints("boulevard"), ());
+  TEST(!TestStreetSynonym("boulevrd"), ());
+  TEST(TestStreetSynonymWithMisprints("boulevrd"), ());
+
+  TEST(TestStreetSynonym("avenue"), ());
+  TEST(TestStreetSynonymWithMisprints("avenue"), ());
+  TEST(!TestStreetSynonym("aveneu"), ());
+  TEST(TestStreetSynonymWithMisprints("aveneu"), ());
+
+  TEST(!TestStreetSynonymWithMisprints("abcdefg"), ());
 }
 
 UNIT_TEST(StreetPrefixMatch)
@@ -119,15 +144,29 @@ UNIT_TEST(StreetPrefixMatch)
   TEST(TestStreetPrefixMatch("проез"), ());
   TEST(TestStreetPrefixMatch("проезд"), ());
   TEST(!TestStreetPrefixMatch("проездд"), ());
+
+  TEST(TestStreetPrefixMatchWithMisprints("пр"), ());
+  TEST(!TestStreetPrefixMatch("пре"), ());
+  TEST(!TestStreetPrefixMatchWithMisprints("пре"), ());
+  TEST(!TestStreetPrefixMatch("преу"), ());
+  TEST(TestStreetPrefixMatchWithMisprints("преу"), ());
+  TEST(!TestStreetPrefixMatch("преул"), ());
+  TEST(TestStreetPrefixMatchWithMisprints("преул"), ());
+  TEST(!TestStreetPrefixMatch("преуло"), ());
+  TEST(TestStreetPrefixMatchWithMisprints("преуло"), ());
+  TEST(!TestStreetPrefixMatch("преулок"), ());
+  TEST(TestStreetPrefixMatchWithMisprints("преулок"), ());
+  TEST(!TestStreetPrefixMatch("преулак"), ());
+  TEST(!TestStreetPrefixMatchWithMisprints("преулак"), ());
 }
 
 UNIT_TEST(StreetTokensFilter)
 {
-  using TList = vector<pair<string, size_t>>;
+  using List = vector<pair<string, size_t>>;
 
   {
-    TList expected = {};
-    TList actual;
+    List expected = {};
+    List actual;
 
     Utf8StreetTokensFilter filter(actual);
     filter.Put("ули", true /* isPrefix */, 0 /* tag */);
@@ -136,8 +175,8 @@ UNIT_TEST(StreetTokensFilter)
   }
 
   {
-    TList expected = {};
-    TList actual;
+    List expected = {};
+    List actual;
 
     Utf8StreetTokensFilter filter(actual);
     filter.Put("улица", false /* isPrefix */, 0 /* tag */);
@@ -146,8 +185,8 @@ UNIT_TEST(StreetTokensFilter)
   }
 
   {
-    TList expected = {{"генерала", 1}, {"антонова", 2}};
-    TList actual;
+    List expected = {{"генерала", 1}, {"антонова", 2}};
+    List actual;
 
     Utf8StreetTokensFilter filter(actual);
     filter.Put("ул", false /* isPrefix */, 0 /* tag */);
@@ -158,8 +197,8 @@ UNIT_TEST(StreetTokensFilter)
   }
 
   {
-    TList expected = {{"улица", 100}, {"набережная", 50}};
-    TList actual;
+    List expected = {{"улица", 100}, {"набережная", 50}};
+    List actual;
 
     Utf8StreetTokensFilter filter(actual);
     filter.Put("улица", false /* isPrefix */, 100 /* tag */);
@@ -169,8 +208,8 @@ UNIT_TEST(StreetTokensFilter)
   }
 
   {
-    TList expected = {{"улица", 0}, {"набережная", 1}, {"проспект", 2}};
-    TList actual;
+    List expected = {{"улица", 0}, {"набережная", 1}, {"проспект", 2}};
+    List actual;
 
     Utf8StreetTokensFilter filter(actual);
     filter.Put("улица", false /* isPrefix */, 0 /* tag */);
@@ -179,13 +218,49 @@ UNIT_TEST(StreetTokensFilter)
 
     TEST_EQUAL(expected, actual, ());
   }
+
+  {
+    List expectedWithMisprints = {{"ленинский", 0}};
+    List expectedWithoutMisprints = {{"ленинский", 0}, {"пропект", 1}};
+    List actualWithMisprints;
+    List actualWithoutMisprints;
+
+    Utf8StreetTokensFilter filterWithMisprints(actualWithMisprints, true /* withMisprints */);
+    Utf8StreetTokensFilter filterWithoutMisprints(actualWithoutMisprints,
+                                                  false /* withMisprints */);
+    filterWithMisprints.Put("ленинский", false /* isPrefix */, 0 /* tag */);
+    filterWithoutMisprints.Put("ленинский", false /* isPrefix */, 0 /* tag */);
+    filterWithMisprints.Put("пропект", false /* isPrefix */, 1 /* tag */);
+    filterWithoutMisprints.Put("пропект", false /* isPrefix */, 1 /* tag */);
+
+    TEST_EQUAL(expectedWithMisprints, actualWithMisprints, ());
+    TEST_EQUAL(expectedWithoutMisprints, actualWithoutMisprints, ());
+  }
+
+  {
+    List expectedWithMisprints = {{"улица", 0}, {"набрежная", 1}};
+    List expectedWithoutMisprints = {{"набрежная", 1}};
+    List actualWithMisprints;
+    List actualWithoutMisprints;
+
+    Utf8StreetTokensFilter filterWithMisprints(actualWithMisprints, true /* withMisprints */);
+    Utf8StreetTokensFilter filterWithoutMisprints(actualWithoutMisprints,
+                                                  false /* withMisprints */);
+    filterWithMisprints.Put("улица", false /* isPrefix */, 0 /* tag */);
+    filterWithoutMisprints.Put("улица", false /* isPrefix */, 0 /* tag */);
+    filterWithMisprints.Put("набрежная", false /* isPrefix */, 1 /* tag */);
+    filterWithoutMisprints.Put("набрежная", false /* isPrefix */, 1 /* tag */);
+
+    TEST_EQUAL(expectedWithMisprints, actualWithMisprints, ());
+    TEST_EQUAL(expectedWithoutMisprints, actualWithoutMisprints, ());
+  }
 }
 
 UNIT_TEST(NormalizeAndSimplifyString_Numero)
 {
-  TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Зона №51"), "зона  51", ());
-  TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Зона № 51"), "зона   51", ());
-  TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Area #51"), "area  51", ());
-  TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Area # "), "area   ", ());
+  TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Зона №51"), "зона 51", ());
+  TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Зона № 51"), "зона 51", ());
+  TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Area #51"), "area 51", ());
+  TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Area # "), "area ", ());
   TEST_EQUAL(NormalizeAndSimplifyStringUtf8("Area #One"), "area #one", ());
 }

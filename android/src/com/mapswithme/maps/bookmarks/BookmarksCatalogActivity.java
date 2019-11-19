@@ -3,15 +3,14 @@ package com.mapswithme.maps.bookmarks;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 
 import com.mapswithme.maps.base.BaseToolbarActivity;
 
 public class BookmarksCatalogActivity extends BaseToolbarActivity
 {
-  public static final int REQ_CODE_CATALOG = 101;
   public static final String EXTRA_DOWNLOADED_CATEGORY = "extra_downloaded_category";
 
   public static void startForResult(@NonNull Fragment fragment, int requestCode,
@@ -27,12 +26,7 @@ public class BookmarksCatalogActivity extends BaseToolbarActivity
     context.startActivityForResult(makeLaunchIntent(context, catalogUrl), requestCode);
   }
 
-  public static void startByGuidesPageDeeplink(@NonNull Activity context, @NonNull String deeplink)
-  {
-    BookmarksCatalogActivity.start(context, deeplink);
-  }
-
-  public static void start(@NonNull Activity context, @NonNull String catalogUrl)
+  public static void start(@NonNull Context context, @NonNull String catalogUrl)
   {
     context.startActivity(makeLaunchIntent(context, catalogUrl));
   }

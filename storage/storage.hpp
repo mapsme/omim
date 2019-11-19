@@ -6,7 +6,6 @@
 #include "storage/diff_scheme/diff_manager.hpp"
 #include "storage/downloading_policy.hpp"
 #include "storage/map_files_downloader.hpp"
-#include "storage/pinger.hpp"
 #include "storage/queued_country.hpp"
 #include "storage/storage_defines.hpp"
 
@@ -48,7 +47,7 @@ struct NodeAttrs
 {
   NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_downloadingMwmCounter(0),
     m_mwmSize(0), m_localMwmSize(0), m_downloadingMwmSize(0),
-    m_downloadingProgress(make_pair(0, 0)),
+    m_downloadingProgress(std::make_pair(0, 0)),
     m_status(NodeStatus::Undefined), m_error(NodeErrorCode::NoError), m_present(false) {}
 
   /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
@@ -147,7 +146,7 @@ struct NodeStatuses
 // Downloading of only one mwm at a time is supported, so while the
 // mwm at the top of the queue is being downloaded (or updated by
 // applying a diff file) all other mwms have to wait.
-class Storage : public diffs::Manager::Observer
+class Storage
 {
 public:
   struct StatusCallback;
@@ -216,7 +215,7 @@ private:
   /// @name Communicate with GUI
   //@{
 
-  int m_currentSlotId;
+  int m_currentSlotId = 0;
 
   struct CountryObservers
   {
@@ -241,10 +240,6 @@ private:
   // downloading maps to a special place but not for continue working with them from this place.
   std::string m_dataDir;
 
-  // A list of urls for downloading maps. It's necessary for storage integration tests.
-  // For example {"http://new-search.mapswithme.com/"}.
-  std::vector<std::string> m_downloadingUrlsForTesting;
-
   bool m_integrityValidationEnabled = true;
 
   // |m_downloadMapOnTheMap| is called when an end user clicks on download map or retry button
@@ -253,19 +248,18 @@ private:
 
   CountryNameGetter m_countryNameGetter;
 
-  std::unique_ptr<Storage> m_prefetchStorage;
-
   // |m_affiliations| is a mapping from countryId to the list of names of
   // geographical objects (such as countries) that encompass this countryId.
   // Note. Affiliations is inherited from ancestors of the countryId in country tree.
   // |m_affiliations| is filled during Storage initialization or during migration process.
   // It is filled with data of countries.txt (field "affiliations").
   // Once filled |m_affiliations| is not changed.
-  // Note. |m_affiliations| is empty in case of countries_obsolete.txt.
   Affiliations m_affiliations;
   CountryNameSynonyms m_countryNameSynonyms;
+  MwmTopCityGeoIds m_mwmTopCityGeoIds;
+  MwmTopCountryGeoIds m_mwmTopCountryGeoIds;
 
-  MwmSize m_maxMwmSizeBytes;
+  MwmSize m_maxMwmSizeBytes = 0;
 
   ThreadChecker m_threadChecker;
 
@@ -273,14 +267,12 @@ private:
   std::vector<platform::LocalCountryFile> m_notAppliedDiffs;
 
   bool m_needToStartDeferredDownloading = false;
-  boost::optional<std::vector<std::string>> m_sessionServerList;
 
   StartDownloadingCallback m_startDownloadingCallback;
 
   void DownloadNextCountryFromQueue();
 
-  void LoadCountriesFile(std::string const & pathToCountriesFile, std::string const & dataDir,
-                         OldMwmMapping * mapping = nullptr);
+  void LoadCountriesFile(std::string const & pathToCountriesFile);
 
   void ReportProgress(CountryId const & countryId, MapFilesDownloader::Progress const & p);
   void ReportProgressForHierarchy(CountryId const & countryId,
@@ -299,10 +291,10 @@ private:
   /// during the downloading process.
   void OnMapFileDownloadProgress(MapFilesDownloader::Progress const & progress);
 
-  void RegisterDownloadedFiles(CountryId const & countryId, MapOptions files);
+  void RegisterDownloadedFiles(CountryId const & countryId, MapFileType type);
 
   void OnMapDownloadFinished(CountryId const & countryId, downloader::HttpRequest::Status status,
-                             MapOptions files);
+                             MapFileType type);
 
   /// Initiates downloading of the next file from the queue.
   void DownloadNextFile(QueuedCountry const & country);
@@ -325,7 +317,7 @@ public:
 
   /// \brief This constructor should be used for testing only.
   Storage(std::string const & referenceCountriesTxtJsonForTesting,
-          unique_ptr<MapFilesDownloader> mapDownloaderForTesting);
+          std::unique_ptr<MapFilesDownloader> mapDownloaderForTesting);
 
   void Init(UpdateCallback const & didDownload, DeleteCallback const & willDelete);
 
@@ -430,7 +422,7 @@ public:
   /// \note This method works quicklier than GetNodeAttrs().
   void GetNodeStatuses(CountryId const & countryId, NodeStatuses & nodeStatuses) const;
 
-  string GetNodeLocalName(CountryId const & countryId) const
+  std::string GetNodeLocalName(CountryId const & countryId) const
   {
     return m_countryNameGetter(countryId);
   }
@@ -472,6 +464,9 @@ public:
 
   CountryNameSynonyms const & GetCountryNameSynonyms() const { return m_countryNameSynonyms; }
 
+  MwmTopCityGeoIds const & GetMwmTopCityGeoIds() const { return m_mwmTopCityGeoIds; }
+  std::vector<base::GeoObjectId> GetTopCountryGeoIds(CountryId const & countryId) const;
+
   /// \brief Calls |toDo| for each node for subtree with |root|.
   /// For example ForEachInSubtree(GetRootId()) calls |toDo| for every node including
   /// the result of GetRootId() call.
@@ -502,14 +497,6 @@ public:
   /// Delete local maps and aggregate their Id if needed
   void DeleteAllLocalMaps(CountriesVec * existedCountries = nullptr);
 
-  /// Prefetch MWMs before migrate
-  Storage * GetPrefetchStorage();
-  void PrefetchMigrateData();
-
-  /// Switch on new storage version, remove old mwm
-  /// and add required mwm's into download queue.
-  void Migrate(CountriesVec const & existedCountries);
-
   // Clears local files registry and downloader's queue.
   void Clear();
 
@@ -537,7 +524,7 @@ public:
   Country const & CountryLeafByCountryId(CountryId const & countryId) const;
   Country const & CountryByCountryId(CountryId const & countryId) const;
 
-  CountryId FindCountryIdByFile(string const & name) const;
+  CountryId FindCountryIdByFile(std::string const & name) const;
 
   // Returns true iff |countryId| exists as a node in the tree.
   bool IsNode(CountryId const & countryId) const;
@@ -548,8 +535,8 @@ public:
   // Returns true iff |countryId| is an inner node of the tree.
   bool IsInnerNode(CountryId const & countryId) const;
 
-  LocalAndRemoteSize CountrySizeInBytes(CountryId const & countryId, MapOptions opt) const;
-  MwmSize GetRemoteSize(platform::CountryFile const & file, MapOptions opt, int64_t version) const;
+  LocalAndRemoteSize CountrySizeInBytes(CountryId const & countryId) const;
+  MwmSize GetRemoteSize(platform::CountryFile const & file, int64_t version) const;
   platform::CountryFile const & GetCountryFile(CountryId const & countryId) const;
   LocalFilePtr GetLatestLocalFile(platform::CountryFile const & countryFile) const;
   LocalFilePtr GetLatestLocalFile(CountryId const & countryId) const;
@@ -560,41 +547,37 @@ public:
   /// Puts country denoted by countryId into the downloader's queue.
   /// During downloading process notifies observers about downloading
   /// progress and status changes.
-  void DownloadCountry(CountryId const & countryId, MapOptions opt);
+  void DownloadCountry(CountryId const & countryId, MapFileType type);
 
   /// Removes country files (for all versions) from the device.
   /// Notifies observers about country status change.
-  void DeleteCountry(CountryId const & countryId, MapOptions opt);
+  void DeleteCountry(CountryId const & countryId, MapFileType type);
 
   /// Removes country files of a particular version from the device.
   /// Notifies observers about country status change.
   void DeleteCustomCountryVersion(platform::LocalCountryFile const & localFile);
 
-  /// \brief Deletes countryId from the downloader's queue.
-  void DeleteFromDownloader(CountryId const & countryId);
   bool IsDownloadInProgress() const;
 
   CountryId GetCurrentDownloadingCountryId() const;
   void EnableKeepDownloadingQueue(bool enable) {m_keepDownloadingQueue = enable;}
-  /// get download url by base url & queued country
-  std::string GetFileDownloadUrl(std::string const & baseUrl,
-                                 QueuedCountry const & queuedCountry) const;
-  std::string GetFileDownloadUrl(std::string const & baseUrl, std::string const & fileName) const;
+
+  std::string GetDownloadRelativeUrl(CountryId const & countryId, MapFileType type) const;
 
   /// @param[out] res Populated with oudated countries.
-  void GetOutdatedCountries(vector<Country const *> & countries) const;
+  void GetOutdatedCountries(std::vector<Country const *> & countries) const;
 
   /// Sets and gets locale, which is used to get localized counries names
-  void SetLocale(string const & locale);
-  string GetLocale() const;
+  void SetLocale(std::string const & locale);
+  std::string GetLocale() const;
 
   MwmSize GetMaxMwmSizeBytes() const { return m_maxMwmSizeBytes; }
 
   // for testing:
   void SetEnabledIntegrityValidationForTesting(bool enabled);
-  void SetDownloaderForTesting(std::unique_ptr<MapFilesDownloader> && downloader);
+  void SetDownloaderForTesting(std::unique_ptr<MapFilesDownloader> downloader);
   void SetCurrentDataVersionForTesting(int64_t currentVersion);
-  void SetDownloadingUrlsForTesting(std::vector<std::string> const & downloadingUrls);
+  void SetDownloadingServersForTesting(std::vector<std::string> const & downloadingUrls);
   void SetLocaleForTesting(std::string const & jsonBuffer, std::string const & locale);
 
   /// Returns true if the diff scheme is available and all local outdated maps can be updated via
@@ -605,17 +588,9 @@ public:
 
 private:
   friend struct UnitClass_StorageTest_DeleteCountry;
-  friend struct UnitClass_TwoComponentStorageTest_DeleteCountry;
 
   void SaveDownloadQueue();
   void RestoreDownloadQueue();
-
-  Status CountryStatusWithoutFailed(CountryId const & countryId) const;
-  Status CountryStatusFull(CountryId const & countryId, Status const status) const;
-
-  // Modifies file set of file to deletion - always adds (marks for
-  // removal) a routing file when map file is marked for deletion.
-  MapOptions NormalizeDeleteFileSet(MapOptions options) const;
 
   // Returns a pointer to a country in the downloader's queue.
   QueuedCountry * FindCountryInQueue(CountryId const & countryId);
@@ -652,7 +627,7 @@ private:
   void RegisterFakeCountryFiles(platform::LocalCountryFile const & localFile);
 
   // Removes disk files for all versions of a country.
-  void DeleteCountryFiles(CountryId const & countryId, MapOptions opt, bool deferredDelete);
+  void DeleteCountryFiles(CountryId const & countryId, MapFileType type, bool deferredDelete);
 
   // Removes country files from downloader.
   bool DeleteCountryFilesFromDownloader(CountryId const & countryId);
@@ -663,9 +638,9 @@ private:
 
   // Returns a path to a place on disk downloader can use for
   // downloaded files.
-  std::string GetFileDownloadPath(CountryId const & countryId, MapOptions file) const;
+  std::string GetFileDownloadPath(CountryId const & countryId, MapFileType file) const;
 
-  void CountryStatusEx(CountryId const & countryId, Status & status, MapOptions & options) const;
+  void CountryStatusEx(CountryId const & countryId, Status & status, MapFileType & type) const;
 
   /// Fast version, doesn't check if country is out of date
   Status CountryStatus(CountryId const & countryId) const;
@@ -718,11 +693,7 @@ private:
 
   // Should be called once on startup, downloading process should be suspended until this method
   // was not called. Do not call this method manually.
-  void OnDiffStatusReceived(diffs::Status const status) override;
-
-  void LoadServerListForSession();
-  void LoadServerListForTesting();
-  void PingServerList(std::vector<std::string> const & urls);
+  void OnDiffStatusReceived(diffs::NameDiffInfoMap && diffs);
 };
 
 void GetQueuedCountries(Storage::Queue const & queue, CountriesSet & resultCountries);

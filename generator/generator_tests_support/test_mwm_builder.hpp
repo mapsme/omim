@@ -13,13 +13,16 @@
 namespace feature
 {
 class FeaturesCollector;
+class FeatureBuilder;
 }
 namespace platform
 {
 class LocalCountryFile;
 }
-class FeatureBuilder1;
-
+namespace storage
+{
+class CountryInfoGetter;
+}
 namespace generator
 {
 namespace tests_support
@@ -35,7 +38,9 @@ public:
   ~TestMwmBuilder();
 
   void Add(TestFeature const & feature);
-  bool Add(FeatureBuilder1 & fb);
+  bool Add(feature::FeatureBuilder & fb);
+  void SetPostcodesData(std::string const & postcodesPath,
+                        std::shared_ptr<storage::CountryInfoGetter> const & countryInfoGetter);
   void SetMwmLanguages(std::vector<std::string> const & languages);
 
   void Finish();
@@ -46,6 +51,8 @@ private:
   std::vector<std::string> m_languages;
   std::unique_ptr<feature::FeaturesCollector> m_collector;
   TestIdToBoundariesTable m_boundariesTable;
+  std::shared_ptr<storage::CountryInfoGetter> m_postcodesCountryInfoGetter;
+  std::string m_postcodesPath;
   uint32_t m_version = 0;
 };
 }  // namespace tests_support

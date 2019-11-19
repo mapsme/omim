@@ -8,8 +8,8 @@ import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
@@ -78,6 +78,8 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
   private final SearchWheel mSearchWheel;
   @NonNull
   private final View mSpeedViewContainer;
+  @NonNull
+  private final View mCrownBtn;
 
   private boolean mShowTimeLeft = true;
 
@@ -135,6 +137,7 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
 
     mSearchButtonFrame = activity.findViewById(R.id.search_button_frame);
     mSearchWheel = new SearchWheel(mSearchButtonFrame);
+    mCrownBtn = activity.findViewById(R.id.subs_screen_btn);
 
     ImageView bookmarkButton = (ImageView) mSearchButtonFrame.findViewById(R.id.btn_bookmarks);
     bookmarkButton.setImageDrawable(Graphics.tint(bookmarkButton.getContext(),
@@ -352,7 +355,8 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
 
   public void updateSearchButtonsTranslation(float translation)
   {
-    mSearchButtonFrame.setTranslationY(translation);
+    int offset = UiUtils.isVisible(mCrownBtn) ? mCrownBtn.getHeight() : 0;
+    mSearchButtonFrame.setTranslationY(translation + offset);
   }
 
   public void fadeInSearchButtons()

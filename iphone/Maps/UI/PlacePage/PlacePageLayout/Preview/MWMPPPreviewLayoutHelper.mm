@@ -1,6 +1,5 @@
 #import "MWMPPPreviewLayoutHelper.h"
 #import <Crashlytics/Crashlytics.h>
-#import "MWMCommon.h"
 #import "MWMDirectionView.h"
 #import "MWMPlacePageData.h"
 #import "MWMPlacePageManagerHelper.h"
@@ -387,7 +386,13 @@ std::array<Class, 9> const kPreviewCells = {{[_MWMPPPTitle class],
                                    ? [MWMAdBanner detailedBannerExcessHeight]
                                    : 0;
 
-  return height + gapBannerHeight - excessHeight;
+  CGFloat safeArea = 0.0;
+  if (@available(iOS 11.0, *)) {
+    UIWindow *window = UIApplication.sharedApplication.keyWindow;
+    safeArea = window.safeAreaInsets.bottom;
+  }
+
+  return height + gapBannerHeight - excessHeight + safeArea;
 }
 
 - (void)layoutInOpenState:(BOOL)isOpen

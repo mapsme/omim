@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "Tidak ada langganan yang aktif";
 
-"subscription_terms" = "Pembayaran akan dibebankan ke akun iTunes Anda pada konfirmasi pembelian. Langganan akan diperbarui secara otomatis kecuali jika langganan otomatis dinonaktifkan setidaknya 24 jam sebelum akhir periode berjalan. Akun Anda akan dikenakan biaya sesuai dengan paket langganan Anda untuk perpanjangan dalam 24 jam sebelum akhir periode berjalan. Anda dapat mengelola atau menonaktifkan perpanjangan otomatis pada pengaturan akun ID Apple Anda kapan saja dari pembelian Anda.";
-
 "subscriptions_title" = "Langganan";
 
 "manage_subscription" = "Kelola langganan";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "File rusak dan tidak dapat diunggah. Silakan unggah file lain.";
 
-"buy_btn" = "Beli seharga %s";
+"buy_btn" = "Beli dengan harga %s";
 
 "download_guide_progress" = "Mengunduh panduan Anda…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Tidak dapat membuat rute. Harap tentukan titik rute lainnya";
 
-"dialog_routing_download_files_carplay" = "Tidak semua peta dapat dibuat rute. Silakan unduh peta ke ponsel Anda";
+"dialog_routing_download_files_carplay" = "Untuk membuat rute, unduh peta baru di perangkat anda";
 
 "dialog_routing_system_error_carplay" = "Terjadi kesalahan. Harap mulai ulang aplikasi";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Pilih hotel yang ada di peta";
+
+"popup_booking_download_guides_title" = "Pesan kamar hotel?";
+
+"popup_booking_download_guides_message" = "Rencanakan rute perjalanan anda bersama panduan dari MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Panduan kota offline";
+
+"popup_mwm_download_guides_cta" = "Pilih salah satu";
+
+"popup_mwm_download_guides_cta_1" = "Lihat";
+
+"gallery_pp_download_guides_offline_title" = "Rencanakan liburan anda bersama MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Jangan lewatkan panduan panduan yang telah dibuat oleh para pelancong";
+
+"gallery_pp_download_guides_offline_cta" = "Hidupkan internet";
+
+"gallery_pp_download_guides_title" = "Panduan";
+
+"native_screen_subscription_title" = "Akses tak terbatas ke 2000 lebih panduan perjalanan!";
+
+"native_screen_subscription_message" = "Liburan tak terlupakan dengan siapa pun dan kapan pun dimana saja";
+
+"annual_subscription_title" = "Tahunan";
+
+"montly_subscription_title" = "Bulanan";
+
+"annual_subscription_message" = "12 bulan akses tanpa batas";
+
+"montly_subscription_message" = "1 bulan akses tanpa batas";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Terima kasih telah berlangganan!";
+
+"subscription_success_dialog_message" = "Kini anda mendapatkan akses tanpa batas ke seluruh katalog panduan";
+
+"renewal_screen_title" = "Masa berlangganan anda telah berakhir";
+
+"renewal_screen_message" = "Semua panduan yang telah diunduh pada masa berlangganan akan dihapus. Apakah anda ingin memperbaharui langganan dan menyimpan panduannya?";
+
+"renewal_screen_button_restore" = "Iya, perbaharui";
+
+"renewal_screen_button_cancel" = "Tidak, hapus panduan";
+
+"subscription_error_ping_title" = "Pembayaran gagal";
+
+"subscription_error_message" = "Layanan ini saat ini tidak tersedia di wilayah anda. Silakan coba lagi";
+
+"subscription_error_button" = "Mengerti";
+
+"timeout_error_title" = "Oops, waktu habis!";
+
+"timeout_error_message" = "Server kami tidak merespon. Mohon periksa sambungan internetnya dan silakan coba lagi.";
+
+"per_month" = "/bln";
+
+"per_year" = "/thn";
+
+"buy_btn_for_subscription" = "Akses tanpa batas dari %s";
+
+"buy_btn_for_subscription_1" = "Beli SEMUA panduan seharga %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Akses tanpa batas seharga %s/bln";
+
+"buy_btn_for_subscription_ios_only_year" = "Akses tanpa batas seharga %s/tahun";
+
+"subscription_terms_guides" = "Pembayaran akan dibebankan pada akun iTunes anda setelah dilakukan pembelian. Program berlangganan akan diperbarui secara otomatis selama fitur pembaruan otomatis tetap menyala dalam waktu 24 jam sebelum waktu berlangganan berakhir. Anda akan dikenai biaya sesuai dengan program berlangganan anda yang baru dalam waktu 24 jam sebelum masa berlangganan yang lama berakhir. Anda setiap waktu bisa mengatur atau mematikan fitur perbarui otomatis di pengaturan akun Apple ID anda. Anda hanya bisa menggunakan panduan yang telah diunduh lewat program berlangganan sampai masa berlangganan tersebut habis. Setelah 30 hari dari habisnya masa berlangganan, panduan dengan bookmark akan dihapus secara otomatis.";
+
+"subscription_terms" = "Pembayaran akan dibebankan ke akun iTunes Anda pada konfirmasi pembelian. Langganan akan diperbarui secara otomatis kecuali jika langganan otomatis dinonaktifkan setidaknya 24 jam sebelum akhir periode berjalan. Akun Anda akan dikenakan biaya sesuai dengan paket langganan Anda untuk perpanjangan dalam 24 jam sebelum akhir periode berjalan. Anda dapat mengelola atau menonaktifkan perpanjangan otomatis pada pengaturan akun ID Apple Anda kapan saja dari pembelian Anda.";
+
+"whatsnew_carplay_title" = "Navigasi MAPS.ME ada di CarPlay!";
+
+"whatsnew_carplay_message" = "Kini fitur penanda, pencarian, kamera kecepatan dan pemilihan rute bisa dilakukan secara offline";
+
+"whatsnew_subscription_title" = "Dapatkan semua akses dengan berlangganan!";
+
+"whatsnew_subscription_message" = "Lebih hemat dengan akses tanpa batas ke katalog panduan tanpa harus membelinya";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Pembaruan navigasi";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Kami meningkatkan perencanaan rute hingga ke titik titik yang jauh lokasinya dengan jalan";
+
+"avoid_unpaved_carplay_1" = "Jalan aspal";
+
+"avoid_unpaved_carplay_2" = "Hindari tanah";
+
+"avoid_ferry_carplay_1" = "Tanpa feri";
+
+"avoid_ferry_carplay_2" = "Hindari feri";
+
+"avoid_tolls_carplay_1" = "Tanpa tol";
+
+"avoid_tolls_carplay_2" = "Hindari tol";
+
+"speedcams_alert_title_carplay_1" = "Speedcam";
+
+"speedcams_alert_title_carplay_2" = "Info kecepatan";
+
+"download_map_carplay" = "Silakan unduh peta di apl MAPS.ME pada perangkat Anda";
+
+"carplay_roundabout_exit" = "Jalan keluar ke %s";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Urutkan…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Urutkan bookmark";
+
+/* iOS */
+"sort_default" = "Urutkan standar";
+
+"sort_type" = "Urutkan per tipe";
+
+"sort_distance" = "Urutkan per jarak";
+
+"sort_date" = "Urutkan per tanggal";
+
+/* Android */
+"by_default" = "Standar";
+
+/* Android */
+"by_type" = "Per tipe";
+
+/* Android */
+"by_distance" = "Per jarak";
+
+/* Android */
+"by_date" = "Per tanggal";
+
+"week_ago_sorttype" = "Seminggu yang lalu";
+
+"month_ago_sorttype" = "Sebulan yang lalu";
+
+"moremonth_ago_sorttype" = "Lebih dari sebulan yang lalu";
+
+"moreyear_ago_sorttype" = "Lebih dari setahun yang lalu";
+
+"near_me_sorttype" = "Dekat dengan saya";
+
+"others_sorttype" = "Lainnya";
+
+"food_places" = "Makanan";
+
+"tourist_places" = "Tempat Rekreasi";
+
+"museums" = "Museum";
+
+"parks" = "Taman";
+
+"swim_places" = "Kolam renang";
+
+"mountains" = "Pegunungan";
+
+"animals" = "Kebun binatang";
+
+"hotels" = "Hotel";
+
+"buildings" = "Gedung";
+
+"money" = "Uang";
+
+"shops" = "Pusat perbelanjaan";
+
+"parkings" = "Parkir";
+
+"fuel_places" = "SPBU";
+
+"water" = "Air";
+
+"medicine" = "Obat";
+
+"search_in_the_list" = "Cari dalam daftar";
+
+"view_on_map_bookmarks" = "Di peta";
+
+"more_bookmarks" = "Lainnya…";
+
+"no_items_found" = "Item tidak ditemukan";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Ubah daftar";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Hapus daftar";
+
+"whatsnew_bookmarks_search_sort_title" = "Bookmark yang rapi membuat perjalanan menjadi nyaman";
+
+"whatsnew_bookmarks_search_sort_message" = "Urutkan tempat favorit berdasarkan kategori, lokasi dan waktu kunjungan, serta temukan bookmark secara cepat hanya dengan menggunakan nama";
+
+"popup_subscription_success_map_title" = "Woohoo, anda telah berlangganan!";
+
+"popup_subscription_success_map_message" = "Kini saatnya menemukan tempat wisata terbaik di katalog MAPS.ME";
+
+"popup_subscription_success_map_start_button" = "Mulai menjelajah";
+
+"popup_subscription_success_map_not_now_button" = "Jangan sekarang";
+
+"religious_places" = "Tempat ibadah";
+
+"subscription_terms_android" = "Setelah anda mengkonfirmasi pembelian, pembayaran akan diteruskan ke akun Google Play anda. Program langganan akan diperbaharui secara otomatis kecuali jika fitur pembaruan otomatis dimatikan dalam waktu 24 jam sebelum periode tersebut berakhir. Akun anda akan dikenakan biaya sesuai dengan rencana perpanjangan dalam waktu 24 jam sebelum akhir periode berjalan. Anda bisa mengatur dan mematikan fitur pembaruan otomatis di Pengaturan Akun setelah melakukan pembayaran. Anda hanya bisa menggunakan panduan yang didownload lewat program berlangganan sampai akhir masa berlaku. Setelah 30 hari dari masa berakhirnya program langganan, panduan yang telah didownload akan dihapus secara otomatis.";
+
+"select_list" = "Pilih daftar";
+
+"pp_discovery_place_related_header" = "Tempat ini ada dalam katalog panduan";
+
+"pp_discovery_place_related_header_1" = "Tempat ini terdapat dalam panduan";
+
+"pp_discovery_place_related_cta_button" = "Lihat";
+
+"pp_discovery_place_related_tag_header" = "Panduan dengan tag \"%s\"";
+
+"pp_discovery_place_related_tag_header_1" = "Anda mungkin menyukai";
+
+"buy_btn_for_subscription_version_2" = "Dapatkan SEMUA panduan hanya dengan %s/bln";
+
+"buy_btn_for_subscription_version_3" = "Katalog lengkap hanya dengan %s/bln";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Akses ke katalog hanya dengan %s/bln";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Akses ke katalog hanya dengan %s/tahun";
+
+"subscription_screen_native_title_version_2" = "Akses ke panduan dengan penanda!";
+
+"subscription_screen_native_message_version_2" = "Bersiaplah untuk melakukan perjalanan di lebih dari 600 kota dan 100 negara";
+
+"catalog_no_internet_title" = "Tidak ada sambungan internet";
+
+"catalog_no_internet_button" = "Coba lagi";
+
+"whatsnew_map_updates_title" = "Pembaruan peta secara cepat";
+
+"whatsnew_map_updates_message" = "Mulai sekarang kami memperbarui data dua kali lebih cepat";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Parkir";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Terminal Pembayaran";
 
 "type.amenity.pharmacy" = "Apotek";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Pos";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Pub";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Universitas";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Mesin rokok";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Titik Air";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Blok";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Gerbang perbatasan";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Pintu masuk";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Gerbang";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Polisi tidur";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Undakan";
 
 "type.barrier.toll_booth" = "Gerbang tol";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Situs arkeologi";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Air";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Pemakaman";
 
 "type.landuse.cemetery.christian" = "Pemakaman";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Ladang";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Danau";
 

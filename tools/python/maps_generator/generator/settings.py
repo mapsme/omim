@@ -40,15 +40,19 @@ MAIN_OUT_PATH = os.path.join(WORK_PATH, "generation")
 VERSION_FILE_NAME = "version.txt"
 
 # External resources
-PLANET_URL = "https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf"
-PLANET_MD5_URL = PLANET_URL + ".md5"
+DEFAULT_PLANET_URL = "https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf"
+DEFAULT_PLANET_MD5_URL = DEFAULT_PLANET_URL + ".md5"
 PLANET_COASTS_URL = ""
 UGC_URL = ""
 HOTELS_URL = ""
+PROMO_CATALOG_CITIES_URL = ""
+PROMO_CATALOG_COUNTRIES_URL = ""
 POPULARITY_URL= ""
 SUBWAY_URL = ""
 FOOD_URL = ""
 FOOD_TRANSLATIONS_URL = ""
+POSTCODES_URL = ""
+SRTM_PATH = ""
 
 STATS_TYPES_CONFIG = ""
 
@@ -111,16 +115,20 @@ OSM_TOOLS_PATH = _get_opt_path(config, "Osm tools", "OSM_TOOLS_PATH", OSM_TOOLS_
 LOG_FILE_PATH = _get_opt_path(config, "Logging", "MAIN_LOG", LOG_FILE_PATH)
 os.makedirs(os.path.dirname(os.path.abspath(LOG_FILE_PATH)), exist_ok=True)
 
-PLANET_URL = _get_opt_path(config, "External", "PLANET_URL", PLANET_URL)
-PLANET_MD5_URL = _get_opt_path(config, "External", "PLANET_MD5_URL", PLANET_MD5_URL)
+PLANET_URL = _get_opt_path(config, "External", "PLANET_URL", DEFAULT_PLANET_URL)
+PLANET_MD5_URL = _get_opt_path(config, "External", "PLANET_MD5_URL", DEFAULT_PLANET_MD5_URL)
 PLANET_COASTS_URL = _get_opt_path(config, "External", "PLANET_COASTS_URL", PLANET_COASTS_URL)
 UGC_URL = _get_opt_path(config, "External", "UGC_URL", UGC_URL)
 HOTELS_URL = _get_opt_path(config, "External", "HOTELS_URL", HOTELS_URL)
+PROMO_CATALOG_CITIES_URL = _get_opt_path(config, "External", "PROMO_CATALOG_CITIES_URL", PROMO_CATALOG_CITIES_URL)
+PROMO_CATALOG_COUNTRIES_URL = _get_opt_path(config, "External", "PROMO_CATALOG_COUNTRIES_URL", PROMO_CATALOG_COUNTRIES_URL)
 POPULARITY_URL = _get_opt_path(config, "External", "POPULARITY_URL", POPULARITY_URL)
 SUBWAY_URL = _get_opt(config, "External", "SUBWAY_URL", SUBWAY_URL)
 FOOD_URL = _get_opt(config, "External", "FOOD_URL", FOOD_URL)
+POSTCODES_URL = _get_opt(config, "External", "POSTCODES_URL", POSTCODES_URL)
 FOOD_TRANSLATIONS_URL = _get_opt(config, "External", "FOOD_TRANSLATIONS_URL", 
                                  FOOD_TRANSLATIONS_URL)
+SRTM_PATH = _get_opt_path(config, "External", "SRTM_PATH", SRTM_PATH)
 
 STATS_TYPES_CONFIG = _get_opt_path(config, "Stats", "STATS_TYPES_CONFIG",
                                    STATS_TYPES_CONFIG)

@@ -193,6 +193,14 @@ public:
     size_t m_endSegmentIdx = 0;
   };
 
+  struct MovedIteratorInfo
+  {
+    // Indicator of setting the iterator to one of real segments.
+    bool m_movedIterator;
+    // Indicator of the presence of the fake segment which is the nearest to the given point.
+    bool m_closerToFake;
+  };
+
   /// \brief For every subroute some attributes are kept in the following structure.
   struct SubrouteSettings final
   {
@@ -323,9 +331,8 @@ public:
   bool GetNextTurns(std::vector<turns::TurnItemDist> & turns) const;
 
   void GetCurrentDirectionPoint(m2::PointD & pt) const;
-
-  /// @return true  If position was updated successfully (projection within gps error radius).
-  bool MoveIterator(location::GpsInfo const & info);
+  
+  MovedIteratorInfo MoveIteratorToReal(location::GpsInfo const & info);
 
   void MatchLocationToRoute(location::GpsInfo & location, location::RouteMatchingInfo & routeMatchingInfo) const;
 
@@ -389,6 +396,8 @@ public:
   /// \returns mwm list which is crossed by the route and where there are restrictions on warning
   /// about speed cameras.
   std::vector<platform::CountryFile> const & GetMwmsPartlyProhibitedForSpeedCams() const;
+
+  void SetFakeSegmentsOnPolyline();
 
 private:
   friend std::string DebugPrint(Route const & r);

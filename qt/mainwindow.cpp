@@ -2,6 +2,7 @@
 #include "qt/bookmark_dialog.hpp"
 #include "qt/draw_widget.hpp"
 #include "qt/mainwindow.hpp"
+#include "qt/mwms_borders_selection.hpp"
 #include "qt/osm_auth_dialog.hpp"
 #include "qt/preferences_dialog.hpp"
 #include "qt/qt_common/helpers.hpp"
@@ -12,6 +13,8 @@
 
 #include "platform/settings.hpp"
 #include "platform/platform.hpp"
+
+#include "base/assert.hpp"
 
 #include "defines.hpp"
 
@@ -56,6 +59,91 @@
 #include <QtCore/QFile>
 
 #endif // NO_DOWNLOADER
+
+namespace
+{
+using namespace qt;
+
+struct button_t
+{
+  QString name;
+  char const * icon;
+  char const * slot;
+};
+
+void add_buttons(QToolBar * pBar, button_t buttons[], size_t count, QObject * pReceiver)
+{
+  for (size_t i = 0; i < count; ++i)
+  {
+    if (buttons[i].icon)
+      pBar->addAction(QIcon(buttons[i].icon), buttons[i].name, pReceiver, buttons[i].slot);
+    else
+      pBar->addSeparator();
+  }
+}
+
+void FormatMapSize(uint64_t sizeInBytes, std::string & units, size_t & sizeToDownload)
+{
+  int const mbInBytes = 1024 * 1024;
+  int const kbInBytes = 1024;
+  if (sizeInBytes > mbInBytes)
+  {
+    sizeToDownload = (sizeInBytes + mbInBytes - 1) / mbInBytes;
+    units = "MB";
+  }
+  else if (sizeInBytes > kbInBytes)
+  {
+    sizeToDownload = (sizeInBytes + kbInBytes -1) / kbInBytes;
+    units = "KB";
+  }
+  else
+  {
+    sizeToDownload = sizeInBytes;
+    units = "B";
+  }
+}
+
+DrawWidget::SelectionMode ConvertFromMwmsBordersSelection(qt::MwmsBordersSelection::Response mode)
+{
+  switch (mode)
+  {
+  case MwmsBordersSelection::Response::MwmsBordersByPolyFiles:
+  {
+    return DrawWidget::SelectionMode::MwmsBordersByPolyFiles;
+  }
+  case MwmsBordersSelection::Response::MwmsBordersWithVerticesByPolyFiles:
+  {
+    return DrawWidget::SelectionMode::MwmsBordersWithVerticesByPolyFiles;
+  }
+  case MwmsBordersSelection::Response::MwmsBordersByPackedPolygon:
+  {
+    return DrawWidget::SelectionMode::MwmsBordersByPackedPolygon;
+  }
+  case MwmsBordersSelection::Response::MwmsBordersWithVerticesByPackedPolygon:
+  {
+    return DrawWidget::SelectionMode::MwmsBordersWithVerticesByPackedPolygon;
+  }
+  case MwmsBordersSelection::Response::BoundingBoxByPolyFiles:
+  {
+    return DrawWidget::SelectionMode::BoundingBoxByPolyFiles;
+  }
+  case MwmsBordersSelection::Response::BoundingBoxByPackedPolygon:
+  {
+    return DrawWidget::SelectionMode::BoundingBoxByPackedPolygon;
+  }
+  default:
+    UNREACHABLE();
+  }
+}
+
+bool IsMwmsBordersSelectionMode(DrawWidget::SelectionMode mode)
+{
+  return mode == DrawWidget::SelectionMode::MwmsBordersByPolyFiles ||
+         mode == DrawWidget::SelectionMode::MwmsBordersWithVerticesByPolyFiles ||
+         mode == DrawWidget::SelectionMode::MwmsBordersByPackedPolygon ||
+         mode == DrawWidget::SelectionMode::MwmsBordersWithVerticesByPackedPolygon;
+}
+}  // namespace
 
 namespace qt
 {
@@ -153,14 +241,14 @@ MainWindow::MainWindow(Framework & framework, bool apiOpenGLES3,
 #ifndef NO_DOWNLOADER
   // Show intro dialog if necessary
   bool bShow = true;
-  string const showWelcome = "ShowWelcome";
+  std::string const showWelcome = "ShowWelcome";
   settings::TryGet(showWelcome, bShow);
 
   if (bShow)
   {
     bool bShowUpdateDialog = true;
 
-    string text;
+    std::string text;
     try
     {
       ReaderPtr<Reader> reader = GetPlatform().GetReader("welcome.html");
@@ -227,48 +315,6 @@ void MainWindow::LocationStateModeChanged(location::EMyPositionMode mode)
   m_pMyPositionAction->setIcon(QIcon(":/navig64/location.png"));
   m_pMyPositionAction->setToolTip(tr("My Position"));
 }
-
-namespace
-{
-struct button_t
-{
-  QString name;
-  char const * icon;
-  char const * slot;
-};
-
-void add_buttons(QToolBar * pBar, button_t buttons[], size_t count, QObject * pReceiver)
-{
-  for (size_t i = 0; i < count; ++i)
-  {
-    if (buttons[i].icon)
-      pBar->addAction(QIcon(buttons[i].icon), buttons[i].name, pReceiver, buttons[i].slot);
-    else
-      pBar->addSeparator();
-  }
-}
-
-void FormatMapSize(uint64_t sizeInBytes, string & units, size_t & sizeToDownload)
-{
-  int const mbInBytes = 1024 * 1024;
-  int const kbInBytes = 1024;
-  if (sizeInBytes > mbInBytes)
-  {
-    sizeToDownload = (sizeInBytes + mbInBytes - 1) / mbInBytes;
-    units = "MB";
-  }
-  else if (sizeInBytes > kbInBytes)
-  {
-    sizeToDownload = (sizeInBytes + kbInBytes -1) / kbInBytes;
-    units = "KB";
-  }
-  else
-  {
-    sizeToDownload = sizeInBytes;
-    units = "B";
-  }
-}
-}  // namespace
 
 void MainWindow::CreateNavigationBar()
 {
@@ -375,11 +421,13 @@ void MainWindow::CreateNavigationBar()
                             this, SLOT(OnSwitchCityRoadsSelectionMode()));
     m_selectionCityRoadsMode->setCheckable(true);
 
-    m_clearSelection = pToolBar->addAction(QIcon(":/navig64/clear.png"), tr("Clear selection"),
-                                           this, SLOT(OnClearSelection()));
-    m_clearSelection->setToolTip(tr("Clear selection"));
+    m_selectionMwmsBordersMode =
+      pToolBar->addAction(QIcon(":/navig64/borders_selection.png"), tr("MWMs borders selection mode"),
+                          this, SLOT(OnSwitchMwmsBordersSelectionMode()));
+    m_selectionMwmsBordersMode->setCheckable(true);
 
     pToolBar->addSeparator();
+
 #endif // NOT BUILD_DESIGNER
 
     // Add search button with "checked" behavior.
@@ -388,6 +436,17 @@ void MainWindow::CreateNavigationBar()
     m_pSearchAction->setCheckable(true);
     m_pSearchAction->setToolTip(tr("Offline Search"));
     m_pSearchAction->setShortcut(QKeySequence::Find);
+
+    m_rulerAction = pToolBar->addAction(QIcon(":/navig64/ruler.png"), tr("Ruler"),
+                                        this, SLOT(OnRulerEnabled()));
+    m_rulerAction->setCheckable(true);
+    m_rulerAction->setChecked(false);
+
+    pToolBar->addSeparator();
+
+    m_clearSelection = pToolBar->addAction(QIcon(":/navig64/clear.png"), tr("Clear selection"),
+                                           this, SLOT(OnClearSelection()));
+    m_clearSelection->setToolTip(tr("Clear selection"));
 
     pToolBar->addSeparator();
 
@@ -495,7 +554,7 @@ void MainWindow::CreateCountryStatusControls()
   m_pDrawWidget->setLayout(mainLayout);
 
   m_pDrawWidget->SetCurrentCountryChangedListener([this](storage::CountryId const & countryId,
-                                                         string const & countryName,
+                                                         std::string const & countryName,
                                                          storage::Status status,
                                                          uint64_t sizeInBytes, uint8_t progress) {
     m_lastCountry = countryId;
@@ -513,7 +572,7 @@ void MainWindow::CreateCountryStatusControls()
         m_retryButton->setVisible(false);
         m_downloadingStatusLabel->setVisible(false);
 
-        string units;
+        std::string units;
         size_t sizeToDownload = 0;
         FormatMapSize(sizeInBytes, units, sizeToDownload);
         std::stringstream str;
@@ -603,34 +662,53 @@ void MainWindow::OnCreateFeatureClicked()
 void MainWindow::OnSwitchSelectionMode()
 {
   m_selectionCityBoundariesMode->setChecked(false);
-  m_pDrawWidget->SetCityBoundariesSelectionMode(false);
-
   m_selectionCityRoadsMode->setChecked(false);
-  m_pDrawWidget->SetCityRoadsSelectionMode(false);
+  m_selectionMwmsBordersMode->setChecked(false);
 
-  m_pDrawWidget->SetSelectionMode(m_selectionMode->isChecked());
+  m_pDrawWidget->SetSelectionMode(DrawWidget::SelectionMode::Features);
 }
 
 void MainWindow::OnSwitchCityBoundariesSelectionMode()
 {
   m_selectionMode->setChecked(false);
-  m_pDrawWidget->SetSelectionMode(false);
-
   m_selectionCityRoadsMode->setChecked(false);
-  m_pDrawWidget->SetCityRoadsSelectionMode(false);
+  m_selectionMwmsBordersMode->setChecked(false);
 
-  m_pDrawWidget->SetCityBoundariesSelectionMode(m_selectionCityBoundariesMode->isChecked());
+  m_pDrawWidget->SetSelectionMode(DrawWidget::SelectionMode::CityBoundaries);
 }
 
 void MainWindow::OnSwitchCityRoadsSelectionMode()
 {
   m_selectionMode->setChecked(false);
-  m_pDrawWidget->SetSelectionMode(false);
-
   m_selectionCityBoundariesMode->setChecked(false);
-  m_pDrawWidget->SetCityBoundariesSelectionMode(false);
+  m_selectionMwmsBordersMode->setChecked(false);
 
-  m_pDrawWidget->SetCityRoadsSelectionMode(m_selectionCityRoadsMode->isChecked());
+  m_pDrawWidget->SetSelectionMode(DrawWidget::SelectionMode::CityRoads);
+}
+
+void MainWindow::OnSwitchMwmsBordersSelectionMode()
+{
+  MwmsBordersSelection dlg(this);
+  auto const response = dlg.ShowModal();
+  if (response == MwmsBordersSelection::Response::Cancelled)
+  {
+    if (m_pDrawWidget->SelectionModeIsSet() &&
+        IsMwmsBordersSelectionMode(m_pDrawWidget->GetSelectionMode()))
+    {
+      m_pDrawWidget->DropSelectionMode();
+    }
+
+    m_selectionMwmsBordersMode->setChecked(false);
+    return;
+  }
+
+  m_selectionMode->setChecked(false);
+  m_selectionCityBoundariesMode->setChecked(false);
+  m_selectionCityRoadsMode->setChecked(false);
+
+  m_selectionMwmsBordersMode->setChecked(true);
+
+  m_pDrawWidget->SetSelectionMode(ConvertFromMwmsBordersSelection(response));
 }
 
 void MainWindow::OnClearSelection()
@@ -654,7 +732,7 @@ void MainWindow::OnLoginMenuItem()
 
 void MainWindow::OnUploadEditsMenuItem()
 {
-  string key, secret;
+  std::string key, secret;
   if (!settings::Get(kTokenKeySetting, key) || key.empty() ||
       !settings::Get(kTokenSecretSetting, secret) || secret.empty())
   {
@@ -691,7 +769,7 @@ void MainWindow::OnBuildStyle()
   try
   {
     build_style::BuildAndApply(m_mapcssFilePath);
-    // m_pDrawWidget->RefreshDrawingRules();
+    m_pDrawWidget->RefreshDrawingRules();
 
     bool enabled;
     if (!settings::Get(kEnabledAutoRegenGeomIndex, enabled))
@@ -891,6 +969,11 @@ void MainWindow::OnTrafficEnabled()
   bool const enabled = m_trafficEnableAction->isChecked();
   m_pDrawWidget->GetFramework().GetTrafficManager().SetEnabled(enabled);
   m_pDrawWidget->GetFramework().SaveTrafficEnabled(enabled);
+}
+
+void MainWindow::OnRulerEnabled()
+{
+  m_pDrawWidget->SetRuler(m_rulerAction->isChecked());
 }
 
 void MainWindow::OnStartPointSelected()

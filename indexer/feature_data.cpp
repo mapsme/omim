@@ -44,6 +44,18 @@ TypesHolder::TypesHolder(FeatureType & f) : m_size(0), m_geomType(f.GetGeomType(
   });
 }
 
+// static
+TypesHolder TypesHolder::FromTypesIndexes(std::vector<uint32_t> const & indexes)
+{
+  TypesHolder result;
+  for (auto index : indexes)
+  {
+    result.Add(classif().GetTypeForIndex(index));
+  }
+
+  return result;
+}
+
 void TypesHolder::Remove(uint32_t type)
 {
   UNUSED_VALUE(RemoveIf(base::EqualFunctor<uint32_t>(type)));
@@ -51,6 +63,9 @@ void TypesHolder::Remove(uint32_t type)
 
 bool TypesHolder::Equals(TypesHolder const & other) const
 {
+  if (m_size != other.m_size)
+    return false;
+
   vector<uint32_t> my(this->begin(), this->end());
   vector<uint32_t> his(other.begin(), other.end());
 
@@ -108,6 +123,7 @@ private:
         {"amenity", "bench"},
         {"amenity", "shelter"},
         {"amenity", "toilets"},
+        {"amenity", "drinking_water"},
         {"building", "address"},
         {"building", "has_parts"},
     };
@@ -325,7 +341,7 @@ void FeatureParams::AddStreet(string s)
   // Replace \n with spaces because we write addresses to txt file.
   replace(s.begin(), s.end(), '\n', ' ');
 
-  m_addrTags.Add(AddressData::STREET, s);
+  m_addrTags.Add(AddressData::Type::Street, s);
 }
 
 void FeatureParams::AddAddress(string const & s)
@@ -352,34 +368,12 @@ void FeatureParams::AddAddress(string const & s)
   AddStreet(s.substr(i));
 }
 
-void FeatureParams::AddPlace(string const & s)
-{
-  m_addrTags.Add(AddressData::PLACE, s);
-}
-
 void FeatureParams::AddPostcode(string const & s)
 {
-  m_addrTags.Add(AddressData::POSTCODE, s);
+  m_addrTags.Add(AddressData::Type::Postcode, s);
 }
 
-bool FeatureParams::FormatFullAddress(m2::PointD const & pt, string & res) const
-{
-  string const street = GetStreet();
-  if (!street.empty() && !house.IsEmpty())
-  {
-    res = street + "|" + house.Get() + "|"
-        + strings::to_string_dac(MercatorBounds::YToLat(pt.y), 8) + "|"
-        + strings::to_string_dac(MercatorBounds::XToLon(pt.x), 8) + '\n';
-    return true;
-  }
-
-  return false;
-}
-
-string FeatureParams::GetStreet() const
-{
-  return m_addrTags.Get(AddressData::STREET);
-}
+string FeatureParams::GetStreet() const { return m_addrTags.Get(AddressData::Type::Street); }
 
 void FeatureParams::SetGeomType(feature::GeomType t)
 {
@@ -539,6 +533,11 @@ bool FeatureParams::PopExactType(uint32_t t)
 bool FeatureParams::IsTypeExist(uint32_t t) const
 {
   return (find(m_types.begin(), m_types.end(), t) != m_types.end());
+}
+
+bool FeatureParams::IsTypeExist(uint32_t comp, uint8_t level) const
+{
+  return FindType(comp, level) != ftype::GetEmptyValue();
 }
 
 uint32_t FeatureParams::FindType(uint32_t comp, uint8_t level) const

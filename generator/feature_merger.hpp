@@ -9,24 +9,24 @@
 #include <vector>
 
 /// Feature builder class that used while feature type processing and merging.
-class MergedFeatureBuilder1 : public FeatureBuilder1
+class MergedFeatureBuilder : public feature::FeatureBuilder
 {
   bool m_isRound;
 
   PointSeq m_roundBounds[2];
 
 public:
-  MergedFeatureBuilder1() : m_isRound(false) {}
-  MergedFeatureBuilder1(FeatureBuilder1 const & fb);
+  MergedFeatureBuilder() : m_isRound(false) {}
+  MergedFeatureBuilder(feature::FeatureBuilder const & fb);
 
   void SetRound();
   bool IsRound() const { return m_isRound; }
 
   void ZeroParams() { m_params.MakeZero(); }
 
-  void AppendFeature(MergedFeatureBuilder1 const & fb, bool fromBegin, bool toBack);
+  void AppendFeature(MergedFeatureBuilder const & fb, bool fromBegin, bool toBack);
 
-  bool EqualGeometry(MergedFeatureBuilder1 const & fb) const;
+  bool EqualGeometry(MergedFeatureBuilder const & fb) const;
 
   inline bool NotEmpty() const { return !GetOuterGeometry().empty(); }
 
@@ -57,31 +57,31 @@ public:
 /// Feature merger.
 class FeatureMergeProcessor
 {
-  typedef int64_t key_t;
-  key_t get_key(m2::PointD const & p);
+  using Key = int64_t ;
+  Key GetKey(m2::PointD const & p);
 
-  MergedFeatureBuilder1 m_last;
+  MergedFeatureBuilder m_last;
 
-  typedef std::vector<MergedFeatureBuilder1 *> vector_t;
-  typedef std::map<key_t, vector_t> map_t;
-  map_t m_map;
+  using MergedFeatureBuilders = std::vector<MergedFeatureBuilder *>;
+  using KeyToMergedFeatureBuilders = std::map<Key, MergedFeatureBuilders>;
+  KeyToMergedFeatureBuilders m_map;
 
-  void Insert(m2::PointD const & pt, MergedFeatureBuilder1 * p);
+  void Insert(m2::PointD const & pt, MergedFeatureBuilder * p);
 
-  void Remove(key_t key, MergedFeatureBuilder1 const * p);
-  inline void Remove1(m2::PointD const & pt, MergedFeatureBuilder1 const * p)
+  void Remove(Key key, MergedFeatureBuilder const * p);
+  inline void Remove1(m2::PointD const & pt, MergedFeatureBuilder const * p)
   {
-    Remove(get_key(pt), p);
+    Remove(GetKey(pt), p);
   }
-  void Remove(MergedFeatureBuilder1 const * p);
+  void Remove(MergedFeatureBuilder const * p);
 
   uint8_t m_coordBits;
 
 public:
   FeatureMergeProcessor(uint32_t coordBits);
 
-  void operator() (FeatureBuilder1 const & fb);
-  void operator() (MergedFeatureBuilder1 * p);
+  void operator() (feature::FeatureBuilder const & fb);
+  void operator() (MergedFeatureBuilder * p);
 
   void DoMerge(FeatureEmitterIFace & emitter);
 };
@@ -115,14 +115,14 @@ public:
     m_dontNormalize.insert(GetType(arr, N));
   }
 
-  MergedFeatureBuilder1 * operator() (FeatureBuilder1 const & fb);
+  MergedFeatureBuilder * operator() (feature::FeatureBuilder const & fb);
 };
 
 namespace feature
 {
   /// @return false If fb became invalid (no any suitable types).
   //@{
-  bool PreprocessForWorldMap(FeatureBuilder1 & fb);
-  bool PreprocessForCountryMap(FeatureBuilder1 & fb);
+  bool PreprocessForWorldMap(FeatureBuilder & fb);
+  bool PreprocessForCountryMap(FeatureBuilder & fb);
   //@}
 }

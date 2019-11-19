@@ -51,8 +51,8 @@ final class BookmarksSharingViewController: MWMTableViewController {
     didSet {
       let htmlString = String(coreFormat: L("ugc_routes_user_agreement"),
                               arguments: [MWMAuthorizationViewModel.termsOfUseLink()])
-      let attributes: [NSAttributedStringKey : Any] = [NSAttributedStringKey.font: UIFont.regular14(),
-                                                       NSAttributedStringKey.foregroundColor: UIColor.blackSecondaryText()]
+      let attributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font: UIFont.regular14(),
+                                                       NSAttributedString.Key.foregroundColor: UIColor.blackSecondaryText()]
       licenseAgreementTextView.attributedText = NSAttributedString.string(withHtml: htmlString,
                                                                           defaultAttributes: attributes)
       licenseAgreementTextView.delegate = self
@@ -100,7 +100,7 @@ final class BookmarksSharingViewController: MWMTableViewController {
   }
   
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return UITableViewAutomaticDimension
+    return UITableView.automaticDimension
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -233,7 +233,7 @@ final class BookmarksSharingViewController: MWMTableViewController {
                                 with: .automatic)
     }
 
-    manager.uploadAndPublishCategory(withId: category.categoryId, progress: nil) { (_, error) in
+    manager.uploadAndPublishCategory(withId: category.categoryId, progress: nil) { (error) in
       if let error = error as NSError? {
         self.uploadAndPublishCell.cellState = .normal
         self.showErrorAlert(error)
@@ -277,7 +277,7 @@ final class BookmarksSharingViewController: MWMTableViewController {
                                               section: s.privateSectionIndex)],
                                with: .automatic)
       }
-      s.manager.uploadAndGetDirectLinkCategory(withId: s.category.categoryId, progress: nil) { (_, error) in
+      s.manager.uploadAndGetDirectLinkCategory(withId: s.category.categoryId, progress: nil) { (error) in
         if let error = error as NSError? {
           s.getDirectLinkCell.cellState = .normal
           s.showErrorAlert(error)
@@ -299,7 +299,7 @@ final class BookmarksSharingViewController: MWMTableViewController {
   }
   
   private func performAfterValidation(anchor: UIView, action: @escaping MWMVoidBlock) {
-    if MWMFrameworkHelper.isNetworkConnected() {
+    if FrameworkHelper.isNetworkConnected() {
       signup(anchor: anchor, onComplete: { success in
         if success {
           action()
@@ -455,7 +455,17 @@ extension BookmarksSharingViewController: UITextViewDelegate {
 
 extension BookmarksSharingViewController: UploadActionCellDelegate {
   func cellDidPressShareButton(_ cell: UploadActionCell, senderView: UIView) {
-    guard let url = manager.sharingUrl(forCategoryId: category.categoryId) else {
+    if cell == uploadAndPublishCell {
+      share(manager.publicLink(forCategoryId: category.categoryId), senderView: senderView)
+    } else if cell == getDirectLinkCell {
+      share(manager.deeplink(forCategoryId: category.categoryId), senderView: senderView)
+    } else {
+      assert(false, "unsupported cell")
+    }
+  }
+  
+  func share(_ url: URL?, senderView: UIView) {
+    guard let url = url else {
       assert(false, "must provide guide url")
       return
     }

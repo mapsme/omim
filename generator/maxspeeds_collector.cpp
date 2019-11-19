@@ -4,18 +4,23 @@
 
 #include "routing_common/maxspeed_conversion.hpp"
 
-#include "coding/file_writer.hpp"
+#include "platform/platform.hpp"
 
+#include "coding/internal/file_data.hpp"
+
+#include "base/assert.hpp"
 #include "base/geo_object_id.hpp"
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include <fstream>
+#include <algorithm>
+#include <iterator>
 #include <sstream>
 
 using namespace base;
 using namespace generator;
 using namespace routing;
+using namespace feature;
 using namespace std;
 
 namespace
@@ -32,7 +37,21 @@ bool ParseMaxspeedAndWriteToStream(string const & maxspeed, SpeedInUnits & speed
 
 namespace generator
 {
-void MaxspeedsCollector::CollectFeature(FeatureBuilder1 const &, OsmElement const & p)
+MaxspeedsCollector::MaxspeedsCollector(string const & filename)
+  : CollectorInterface(filename)
+{
+  m_stream.exceptions(fstream::failbit | fstream::badbit);
+  m_stream.open(GetTmpFilename());
+}
+
+
+shared_ptr<CollectorInterface>
+MaxspeedsCollector::Clone(shared_ptr<cache::IntermediateDataReader> const &) const
+{
+  return make_shared<MaxspeedsCollector>(GetFilename());
+}
+
+void MaxspeedsCollector::CollectFeature(FeatureBuilder const &, OsmElement const & p)
 {
   if (!p.IsWay())
     return;
@@ -52,7 +71,7 @@ void MaxspeedsCollector::CollectFeature(FeatureBuilder1 const &, OsmElement cons
       SpeedInUnits dummySpeed;
       if (!ParseMaxspeedAndWriteToStream(t.m_value, dummySpeed, ss))
         return;
-      m_data.push_back(ss.str());
+      m_stream << ss.str() << '\n';
       return;
     }
 
@@ -95,31 +114,31 @@ void MaxspeedsCollector::CollectFeature(FeatureBuilder1 const &, OsmElement cons
     ss << "," << strings::to_string(maxspeedBackward.GetSpeed());
   }
 
-  m_data.push_back(ss.str());
+  m_stream << ss.str() << '\n';
+}
+
+void MaxspeedsCollector::Finish()
+{
+  if (m_stream.is_open())
+    m_stream.close();
 }
 
 void MaxspeedsCollector::Save()
 {
-  Flush();
+  CHECK(!m_stream.is_open(), ("Finish() has not been called."));
+  LOG(LINFO, ("Saving maxspeed tag values to", GetFilename()));
+  if (Platform::IsFileExistsByFullPath(GetTmpFilename()))
+    CHECK(CopyFileX(GetTmpFilename(), GetFilename()), ());
 }
 
-void MaxspeedsCollector::Flush()
+void MaxspeedsCollector::Merge(CollectorInterface const & collector)
 {
-  LOG(LINFO, ("Saving maxspeed tag values to", m_filePath));
-  ofstream stream(m_filePath);
+  collector.MergeInto(*this);
+}
 
-  if (!stream)
-  {
-    LOG(LERROR, ("Cannot open file", m_filePath));
-    return;
-  }
-
-  for (auto const & s : m_data)
-    stream << s << '\n';
-
-  if (stream.fail())
-    LOG(LERROR, ("Cannot write to file", m_filePath));
-  else
-    LOG(LINFO, ("Wrote", m_data.size(), "maxspeed tags to", m_filePath));
+void MaxspeedsCollector::MergeInto(MaxspeedsCollector & collector) const
+{
+  CHECK(!m_stream.is_open() || !collector.m_stream.is_open(), ("Finish() has not been called."));
+  base::AppendFileToFile(GetTmpFilename(), collector.GetTmpFilename());
 }
 }  // namespace generator

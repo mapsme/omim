@@ -117,7 +117,6 @@ void ResultMaker::DecrementRequestCount()
 Engine::Engine(std::vector<ProviderUrl> urls /* = {} */)
 {
   AddApi<yandex::Api>(urls, Provider::Type::Yandex);
-  AddApi<uber::Api>(urls, Provider::Type::Uber);
   AddApi<maxim::Api>(urls, Provider::Type::Maxim);
   AddApi<rutaxi::Api>(urls, Provider::Type::Rutaxi);
 }
@@ -150,7 +149,7 @@ uint64_t Engine::GetAvailableProducts(ms::LatLon const & from, ms::LatLon const 
 
   auto const reqId = ++m_requestId;
   auto const maker = m_maker;
-  auto const pointFrom = MercatorBounds::FromLatLon(from);
+  auto const pointFrom = mercator::FromLatLon(from);
 
   maker->Reset(reqId, m_apis.size(), successFn, errorFn);
   for (auto const & api : m_apis)
@@ -196,7 +195,7 @@ RideRequestLinks Engine::GetRideRequestLinks(Provider::Type type, std::string co
 std::vector<Provider::Type> Engine::GetProvidersAtPos(ms::LatLon const & pos) const
 {
   std::vector<Provider::Type> result;
-  auto const point = MercatorBounds::FromLatLon(pos);
+  auto const point = mercator::FromLatLon(pos);
 
   for (auto const & api : m_apis)
   {

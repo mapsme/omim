@@ -1,9 +1,12 @@
 #include "map/track.hpp"
+
 #include "map/bookmark_helpers.hpp"
 #include "map/user_mark_id_storage.hpp"
 
 #include "geometry/distance_on_sphere.hpp"
 #include "geometry/mercator.hpp"
+
+#include <utility>
 
 Track::Track(kml::TrackData && data)
   : Base(data.m_id == kml::kInvalidTrackId ? UserMarkIdStorage::Instance().GetNextTrackId() : data.m_id)
@@ -14,7 +17,7 @@ Track::Track(kml::TrackData && data)
   ASSERT_GREATER(m_data.m_points.size(), 1, ());
 }
 
-string Track::GetName() const
+std::string Track::GetName() const
 {
   return GetPreferredBookmarkStr(m_data.m_name);
 }
@@ -32,12 +35,12 @@ double Track::GetLengthMeters() const
   double res = 0.0;
 
   auto it = m_data.m_points.begin();
-  double lat1 = MercatorBounds::YToLat(it->y);
-  double lon1 = MercatorBounds::XToLon(it->x);
+  double lat1 = mercator::YToLat(it->y);
+  double lon1 = mercator::XToLon(it->x);
   for (++it; it != m_data.m_points.end(); ++it)
   {
-    double const lat2 = MercatorBounds::YToLat(it->y);
-    double const lon2 = MercatorBounds::XToLon(it->x);
+    double const lat2 = mercator::YToLat(it->y);
+    double const lon2 = mercator::XToLon(it->x);
     res += ms::DistanceOnEarth(lat1, lon1, lat2, lon2);
     lat1 = lat2;
     lon1 = lon2;

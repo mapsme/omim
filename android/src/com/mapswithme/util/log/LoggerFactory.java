@@ -2,8 +2,8 @@ package com.mapswithme.util.log;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,7 +13,6 @@ import com.mapswithme.maps.R;
 import com.mapswithme.util.StorageUtils;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
-import ru.mail.notify.core.utils.LogReceiver;
 
 import java.io.File;
 import java.util.EnumMap;
@@ -158,11 +157,6 @@ public class LoggerFactory
     return mFileLoggerExecutor;
   }
 
-  @NonNull
-  public LogReceiver createLibnotifyLogger()
-  {
-    return new LibnotifyLogReceiver();
-  }
   // Called from JNI.
   @SuppressWarnings("unused")
   private static void logCoreMessage(int level, String msg)

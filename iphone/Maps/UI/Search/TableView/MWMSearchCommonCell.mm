@@ -4,16 +4,8 @@
 
 #include "map/place_page_info.hpp"
 
-#include "search/result.hpp"
-
-#include "indexer/classificator.hpp"
-
-#include "geometry/mercator.hpp"
-
 #include "platform/localization.hpp"
 #include "platform/measurement_utils.hpp"
-
-#include "defines.hpp"
 
 namespace
 {
@@ -106,8 +98,8 @@ bool PopularityHasHigherPriority(bool hasPosition, double distanceInMeters)
     if (result.HasPoint())
     {
       distanceInMeters =
-          MercatorBounds::DistanceOnEarth(lastLocation.mercator, result.GetFeatureCenter());
-      string distanceStr;
+          mercator::DistanceOnEarth(lastLocation.mercator, result.GetFeatureCenter());
+      std::string distanceStr;
       measurement_utils::FormatDistance(distanceInMeters, distanceStr);
 
       self.distanceLabel.text = @(distanceStr.c_str());

@@ -1,6 +1,6 @@
 #include "testing/testing.hpp"
 
-#include "map/feature_vec_model.hpp"
+#include "map/features_fetcher.hpp"
 
 #include "indexer/scales.hpp"
 
@@ -16,7 +16,7 @@ using namespace std;
 
 namespace
 {
-  typedef model::FeaturesFetcher SourceT;
+  using SourceT = FeaturesFetcher;
 
   class FeaturesLoader : public threads::IRoutine
   {
@@ -73,7 +73,7 @@ namespace
     m2::RectD const r = src.GetWorldRect();
     TEST ( r.IsValid(), () );
 
-    m2::RectD world(MercatorBounds::FullRect());
+    m2::RectD world(mercator::Bounds::FullRect());
     world.Inflate(-10.0, -10.0);
 
     TEST ( world.IsRectInside(r), () );

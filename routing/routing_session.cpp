@@ -22,7 +22,7 @@ using namespace traffic;
 namespace
 {
 
-int constexpr kOnRouteMissedCount = 5;
+int constexpr kOnRouteMissedCount = 10;
 
 // @TODO(vbykoianko) The distance should depend on the current speed.
 double constexpr kShowLanesDistInMeters = 500.;
@@ -109,9 +109,13 @@ void RoutingSession::RebuildRoute(m2::PointD const & startPoint,
   m_lastCompletionPercent = 0;
   m_checkpoints.SetPointFrom(startPoint);
 
+  auto const & direction = 
+      m_routingSettings.m_useDirectionForRouteBuilding ? m_positionAccumulator.GetDirection()
+                                                       : m2::PointD::Zero();
+
   // Use old-style callback construction, because lambda constructs buggy function on Android
   // (callback param isn't captured by value).
-  m_router->CalculateRoute(m_checkpoints, m_currentDirection, adjustToPrevRoute,
+  m_router->CalculateRoute(m_checkpoints, direction, adjustToPrevRoute,
                            DoReadyCallback(*this, readyCallback),
                            needMoreMapsCallback, removeRouteCallback, m_progressCallback, timeoutSec);
 }
@@ -286,7 +290,9 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
 
   m_turnNotificationsMgr.SetSpeedMetersPerSecond(info.m_speedMpS);
 
-  if (m_route->MoveIterator(info))
+  auto const iteratorAction = m_route->MoveIteratorToReal(info);
+
+  if (iteratorAction.m_movedIterator)
   {
     m_moveAwayCounter = 0;
     m_lastDistance = 0.0;
@@ -312,18 +318,25 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
 
     if (m_userCurrentPositionValid)
       m_lastGoodPosition = m_userCurrentPosition;
+
+    return m_state;
   }
-  else
+
+  if (!iteratorAction.m_closerToFake)
   {
     // Distance from the last known projection on route
     // (check if we are moving far from the last known projection).
     auto const & lastGoodPoint = m_route->GetFollowedPolyline().GetCurrentIter().m_pt;
-    double const dist = MercatorBounds::DistanceOnEarth(lastGoodPoint,
-                                                        MercatorBounds::FromLatLon(info.m_latitude, info.m_longitude));
+    double const dist = mercator::DistanceOnEarth(lastGoodPoint,
+                                                  mercator::FromLatLon(info.m_latitude, info.m_longitude));
     if (base::AlmostEqualAbs(dist, m_lastDistance, kRunawayDistanceSensitivityMeters))
       return m_state;
 
-    ++m_moveAwayCounter;
+    if (!info.HasSpeed() || info.m_speedMpS < m_routingSettings.m_minSpeedForRouteRebuildMpS)
+      m_moveAwayCounter += 1;
+    else
+      m_moveAwayCounter += 2;
+
     m_lastDistance = dist;
 
     if (m_moveAwayCounter > kOnRouteMissedCount)
@@ -337,13 +350,10 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
           {"rebuildCount", strings::to_string(m_routingRebuildCount)}};
       alohalytics::LogEvent(
           "RouteTracking_RouteNeedRebuild", params,
-          alohalytics::Location::FromLatLon(MercatorBounds::YToLat(lastGoodPoint.y),
-                                            MercatorBounds::XToLon(lastGoodPoint.x)));
+          alohalytics::Location::FromLatLon(mercator::YToLat(lastGoodPoint.y),
+                                            mercator::XToLon(lastGoodPoint.x)));
     }
   }
-
-  if (m_userCurrentPositionValid && m_userFormerPositionValid)
-    m_currentDirection = m_userCurrentPosition - m_userFormerPosition;
 
   return m_state;
 }
@@ -411,7 +421,7 @@ void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info) const
   // Pedestrian info
   m2::PointD pos;
   m_route->GetCurrentDirectionPoint(pos);
-  info.m_pedestrianDirectionPos = MercatorBounds::ToLatLon(pos);
+  info.m_pedestrianDirectionPos = mercator::ToLatLon(pos);
   info.m_pedestrianTurn =
       (distanceToTurnMeters < kShowPedestrianTurnInMeters) ? turn.m_pedestrianTurn : turns::PedestrianDirection::None;
 }
@@ -431,7 +441,7 @@ double RoutingSession::GetCompletionPercent() const
   if (percent - m_lastCompletionPercent > kCompletionPercentAccuracy)
   {
     auto const lastGoodPoint =
-        MercatorBounds::ToLatLon(m_route->GetFollowedPolyline().GetCurrentIter().m_pt);
+        mercator::ToLatLon(m_route->GetFollowedPolyline().GetCurrentIter().m_pt);
     alohalytics::Stats::Instance().LogEvent(
         "RouteTracking_PercentUpdate", {{"percent", strings::to_string(percent)}},
         alohalytics::Location::FromLatLon(lastGoodPoint.m_lat, lastGoodPoint.m_lon));
@@ -610,12 +620,22 @@ void RoutingSession::SetChangeSessionStateCallback(
 void RoutingSession::SetUserCurrentPosition(m2::PointD const & position)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
-  // All methods which read/write m_userCurrentPosition*, m_userFormerPosition*  work in RoutingManager thread
-  m_userFormerPosition = m_userCurrentPosition;
-  m_userFormerPositionValid = m_userCurrentPositionValid;
 
   m_userCurrentPosition = position;
   m_userCurrentPositionValid = true;
+}
+
+void RoutingSession::PushPositionAccumulator(m2::PointD const & position)
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+
+  m_positionAccumulator.PushNextPoint(position);
+}
+void RoutingSession::ClearPositionAccumulator()
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+
+  m_positionAccumulator.Clear();
 }
 
 void RoutingSession::EnableTurnNotifications(bool enable)
@@ -667,7 +687,7 @@ void RoutingSession::EmitCloseRoutingEvent() const
     return;
   }
   auto const lastGoodPoint =
-      MercatorBounds::ToLatLon(m_route->GetFollowedPolyline().GetCurrentIter().m_pt);
+      mercator::ToLatLon(m_route->GetFollowedPolyline().GetCurrentIter().m_pt);
   alohalytics::Stats::Instance().LogEvent(
       "RouteTracking_RouteClosing",
       {{"percent", strings::to_string(GetCompletionPercent())},

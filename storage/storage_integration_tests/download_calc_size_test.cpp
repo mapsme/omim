@@ -13,8 +13,6 @@ using namespace storage;
 void InitStorage(Storage & storage, Storage::UpdateCallback const & didDownload,
                  Storage::ProgressFunction const & progress)
 {
-  TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
-
   auto const changeCountryFunction = [&](CountryId const & /* countryId */) {
     if (!storage.IsDownloadInProgress())
     {
@@ -46,7 +44,7 @@ UNIT_TEST(DownloadingTests_CalcOverallProgress)
   
   for (auto const &country : kTestCountries)
   {
-    baseProgress.second += s.CountrySizeInBytes(country, MapOptions::MapWithCarRouting).second;
+    baseProgress.second += s.CountrySizeInBytes(country, MapOptions::Map).second;
   }
 
   auto progressChanged = [&s, &kTestCountries, &baseProgress](CountryId const & id,

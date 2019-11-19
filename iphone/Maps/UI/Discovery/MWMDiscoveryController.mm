@@ -1,36 +1,20 @@
 #import "MWMDiscoveryController.h"
 
-#import "Framework.h"
+#import <CoreApi/CoreApi.h>
+
+#import "MWMDiscoveryControllerViewModel.h"
+#import "MWMDiscoveryCityGalleryObjects.h"
+#import "MWMDiscoveryMapObjects.h"
 #import "MWMDiscoveryTableManager.h"
 #import "MWMDiscoveryTapDelegate.h"
-#import "MWMEye.h"
 #import "MWMMapViewControlsManager.h"
 #import "MWMRoutePoint+CPP.h"
 #import "MWMRouter.h"
 #import "MWMSearchManager+Filter.h"
 #import "Statistics.h"
-#import "UIKitCategories.h"
-
-#include "DiscoveryControllerViewModel.hpp"
-
-#include "map/discovery/discovery_client_params.hpp"
-#include "map/search_product_info.hpp"
-
-#include "search/result.hpp"
-
-#include "partners_api/locals_api.hpp"
-#include "partners_api/promo_api.hpp"
+#import "SwiftBridge.h"
 
 #include "platform/localization.hpp"
-#include "platform/platform.hpp"
-
-#include "geometry/point2d.hpp"
-
-#include "base/assert.hpp"
-
-#include <functional>
-#include <utility>
-#include <vector>
 
 using namespace std;
 using namespace std::placeholders;
@@ -49,28 +33,28 @@ struct Callback
     m_setSearchResults(results, productInfo, viewportCenter, type);
     m_refreshSection(type);
   }
-
+  
   void operator()(uint32_t const requestId, vector<locals::LocalExpert> const & experts) const
   {
-    CHECK(m_setLocalExperts, ());
-    CHECK(m_refreshSection, ());
-    m_setLocalExperts(experts);
-    m_refreshSection(ItemType::LocalExperts);
+    // TODO: Please add correct implementation here.
   }
   
   void operator()(uint32_t const requestId, promo::CityGallery const & experts) const
   {
-    // TODO: Please add correct implementation here.
+    CHECK(m_setPromoCityGallery, ());
+    CHECK(m_refreshSection, ());
+    m_setPromoCityGallery(experts);
+    m_refreshSection(ItemType::Promo);
   }
 
   using SetSearchResults =
       function<void(search::Results const & res, vector<search::ProductInfo> const & productInfo,
                     m2::PointD const & viewportCenter, ItemType const type)>;
-  using SetLocalExperts = function<void(vector<locals::LocalExpert> const & experts)>;
+  using SetPromoCityGallery = function<void(promo::CityGallery const & experts)>;
   using RefreshSection = function<void(ItemType const type)>;
 
   SetSearchResults m_setSearchResults;
-  SetLocalExperts m_setLocalExperts;
+  SetPromoCityGallery m_setPromoCityGallery;
   RefreshSection m_refreshSection;
 };
 }  // namespace
@@ -78,54 +62,67 @@ struct Callback
 @interface MWMDiscoveryController ()<MWMDiscoveryTapDelegate>
 {
   Callback m_callback;
-  DiscoveryControllerViewModel m_model;
 }
 
 @property(weak, nonatomic) IBOutlet UITableView * tableView;
 @property(nonatomic) MWMDiscoveryTableManager * tableManager;
+@property(nonatomic) MWMDiscoveryControllerViewModel *viewModel;
 @property(nonatomic) BOOL canUseNetwork;
 
 @end
 
 @implementation MWMDiscoveryController
 
-+ (instancetype)instanceWithConnection:(BOOL)canUseNetwork
-{
++ (instancetype)instanceWithConnection:(BOOL)canUseNetwork {
   auto instance = [[MWMDiscoveryController alloc] initWithNibName:self.className bundle:nil];
   instance.title = L(@"discovery_button_title");
   instance.canUseNetwork = canUseNetwork;
   return instance;
 }
 
-- (instancetype)initWithNibName:(NSString *)name bundle:(NSBundle *)bundle
-{
+- (instancetype)initWithNibName:(NSString *)name bundle:(NSBundle *)bundle {
   self = [super initWithNibName:name bundle:bundle];
-  if (self)
-  {
+  if (self) {
+    _viewModel = [[MWMDiscoveryControllerViewModel alloc] init];
     auto & cb = m_callback;
-    cb.m_setLocalExperts = bind(&DiscoveryControllerViewModel::SetExperts, &m_model, _1);
-    cb.m_setSearchResults =
-        bind(&DiscoveryControllerViewModel::SetSearchResults, &m_model, _1, _2, _3, _4);
-    cb.m_refreshSection = [self](ItemType const type) { [self.tableManager reloadItem:type]; };
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+     __weak __typeof__(self) weakSelf = self;
+    cb.m_setSearchResults = [weakSelf](search::Results const & res, vector<search::ProductInfo> const & productInfo, m2::PointD const & viewportCenter, ItemType const type) {
+      __strong __typeof__(weakSelf) strongSelf = weakSelf;
+      if (!strongSelf) { return; }
+      MWMDiscoveryMapObjects *objects = [[MWMDiscoveryMapObjects alloc] initWithSearchResults:res
+                                                                                 productInfos:productInfo
+                                                                               viewPortCenter:viewportCenter];
+      [strongSelf.viewModel updateMapObjects:objects forType:type];
+    };
+    cb.m_setPromoCityGallery = [weakSelf](promo::CityGallery const & experts) {
+      __strong __typeof__(weakSelf) strongSelf = weakSelf;
+      if (!strongSelf) { return; }
+      MWMDiscoveryCityGalleryObjects *objects = [[MWMDiscoveryCityGalleryObjects alloc] initWithGalleryResults:experts];
+      [strongSelf.viewModel updateCityGalleryObjects:objects];
+    };
+    cb.m_refreshSection = [weakSelf](ItemType const type) {
+      __strong __typeof__(weakSelf) strongSelf = weakSelf;
+      if (!strongSelf) { return; }
+      [strongSelf.tableManager reloadItem:type];
+    };
+#pragma clang diagnostic pop
   }
   return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
   [super viewDidLoad];
-  auto callback = [self]() -> DiscoveryControllerViewModel const & { return self->m_model; };
-  self.tableManager = [[MWMDiscoveryTableManager alloc] initWithTableView:self.tableView
-                                                                 delegate:self
-                                                                    model:move(callback)];
-
-  auto getTypes = [](BOOL canUseNetwork) -> vector<ItemType> {
-    if (canUseNetwork)
-      return {ItemType::Hotels, ItemType::Attractions, ItemType::Cafes, ItemType::LocalExperts};
-    return {ItemType::Hotels, ItemType::Attractions, ItemType::Cafes};
+  __weak __typeof__(self) weakSelf = self;
+  MWMGetModelCallback callback = ^{
+    return weakSelf.viewModel;
   };
-
-  vector<ItemType> types = getTypes(self.canUseNetwork);
+  self.tableManager = [[MWMDiscoveryTableManager alloc] initWithTableView:self.tableView
+                                                            canUseNetwork:self.canUseNetwork
+                                                                 delegate:self
+                                                                    model:callback];
+  vector<ItemType> types = {ItemType::Promo, ItemType::Attractions, ItemType::Cafes, ItemType::Hotels};
   [self.tableManager loadItems:types];
   ClientParams p;
   p.m_itemTypes = move(types);
@@ -134,95 +131,100 @@ struct Callback
                             [self.tableManager errorAtItem:type];
                           });
   [MWMEye discoveryShown];
+  
+  [NSNotificationCenter.defaultCenter addObserver:self
+                                         selector:@selector(didBecomeActive)
+                                             name:UIApplicationDidBecomeActiveNotification
+                                           object:nil];
 }
 
 #pragma mark - MWMDiscoveryTapDelegate
 
-- (void)showSearchResult:(const search::Result &)item
-{
+- (void)showSearchResult:(const search::Result &)item {
   GetFramework().ShowSearchResult(item);
   [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)tapOnItem:(ItemType const)type atIndex:(size_t const)index
-{
+- (void)tapOnItem:(ItemType const)type atIndex:(NSInteger)index {
   NSString * dest = @"";
   NSString * event = kStatPlacepageSponsoredItemSelected;
   MWMEyeDiscoveryEvent eyeEvent;
-  switch (type)
-  {
-  case ItemType::LocalExperts:
-    if (index == m_model.GetItemsCount(type))
-    {
-      [self openURLForItem:type];
-      event = kStatPlacepageSponsoredMoreSelected;
-      eyeEvent = MWMEyeDiscoveryEventMoreLocals;
-    }
-    else
-    {
-      [self openUrl:[NSURL URLWithString:@(m_model.GetExpertAt(index).m_pageUrl.c_str())]];
-      eyeEvent = MWMEyeDiscoveryEventLocals;
-    }
-    dest = kStatExternal;
-    break;
-  case ItemType::Attractions:
-    if (index == m_model.GetItemsCount(type))
-    {
-      [self searchTourism];
-      eyeEvent = MWMEyeDiscoveryEventMoreAttractions;
-    }
-    else
-    {
-      [self showSearchResult:m_model.GetAttractionAt(index)];
-      eyeEvent = MWMEyeDiscoveryEventAttractions;
-    }
-
-    dest = kStatPlacePage;
-    break;
-  case ItemType::Cafes:
-    if (index == m_model.GetItemsCount(type))
-    {
-      [self searchFood];
-      eyeEvent = MWMEyeDiscoveryEventMoreCafes;
-    }
-    else
-    {
-      [self showSearchResult:m_model.GetCafeAt(index)];
-      eyeEvent = MWMEyeDiscoveryEventCafes;
-    }
-
-    dest = kStatPlacePage;
-    break;
-  case ItemType::Hotels:
-    if (index == m_model.GetItemsCount(type))
-    {
-      [self openFilters];
-      event = kStatPlacepageSponsoredMoreSelected;
-      dest = kStatSearchFilterOpen;
-      eyeEvent = MWMEyeDiscoveryEventMoreHotels;
-    }
-    else
-    {
-      [self showSearchResult:m_model.GetHotelAt(index)];
+  switch (type) {
+    case ItemType::Attractions:
+      if (index == [self.viewModel itemsCountForType:type]) {
+        [self searchTourism];
+        event = kStatPlacepageSponsoredMoreSelected;
+        eyeEvent = MWMEyeDiscoveryEventMoreAttractions;
+      } else {
+        [self showSearchResult:[self.viewModel.attractions searchResultAtIndex:index]];
+        eyeEvent = MWMEyeDiscoveryEventAttractions;
+      }
+      
       dest = kStatPlacePage;
-      eyeEvent = MWMEyeDiscoveryEventHotels;
-    }
-    break;
+      break;
+    case ItemType::Cafes:
+      if (index == [self.viewModel itemsCountForType:type]) {
+        [self searchFood];
+        event = kStatPlacepageSponsoredMoreSelected;
+        eyeEvent = MWMEyeDiscoveryEventMoreCafes;
+      } else {
+        [self showSearchResult:[self.viewModel.cafes searchResultAtIndex:index]];
+        eyeEvent = MWMEyeDiscoveryEventCafes;
+      }
+      
+      dest = kStatPlacePage;
+      break;
+    case ItemType::Hotels:
+      if (index == [self.viewModel itemsCountForType:type]) {
+        [self openFilters];
+        event = kStatPlacepageSponsoredMoreSelected;
+        dest = kStatSearchFilterOpen;
+        eyeEvent = MWMEyeDiscoveryEventMoreHotels;
+      } else {
+        [self showSearchResult:[self.viewModel.hotels searchResultAtIndex:index]];
+        dest = kStatPlacePage;
+        eyeEvent = MWMEyeDiscoveryEventHotels;
+      }
+      break;
+    case ItemType::Promo:
+      if (index == [self.viewModel itemsCountForType:type]) {
+        [self openURLForItem:ItemType::Promo];
+        [Statistics logEvent:kStatPlacepageSponsoredMoreSelected
+              withParameters:@{
+                               kStatProvider: StatProvider(type),
+                               kStatPlacement: kStatDiscovery
+                               }];
+      } else {
+        [self openURLForItem:ItemType::Promo atIndex:index];
+      }
+      
+      return;
+    case ItemType::LocalExperts:
+      return;
   }
-
-  NSAssert(dest.length > 0, @"");
-  [Statistics logEvent:kStatPlacepageSponsoredItemSelected
-        withParameters:@{
-          kStatProvider: StatProvider(type),
-          kStatPlacement: kStatDiscovery,
-          kStatItem: @(index + 1),
-          kStatDestination: dest
-        }];
+  
+  [self logEvent:event
+            type:type
+           index:index
+     destination:dest];
   [MWMEye discoveryItemClickedWithEvent:eyeEvent];
 }
 
-- (void)openFilters
-{
+- (void)logEvent:(NSString *)eventName
+            type:(ItemType const)type
+           index:(NSInteger)index
+     destination:(NSString *)destination {
+  NSAssert(destination.length > 0, @"");
+  [Statistics logEvent:eventName
+        withParameters:@{
+                         kStatProvider: StatProvider(type),
+                         kStatPlacement: kStatDiscovery,
+                         kStatItem: @(index + 1),
+                         kStatDestination: destination
+                         }];
+}
+
+- (void)openFilters {
   [self.navigationController popViewControllerAnimated:YES];
   [[MWMSearchManager manager] showHotelFilterWithParams:nil
                                        onFinishCallback:^{
@@ -232,22 +234,19 @@ struct Callback
                                        }];
 }
 
-- (void)searchFood
-{
+- (void)searchFood {
   [self.navigationController popViewControllerAnimated:YES];
   [MWMMapViewControlsManager.manager searchTextOnMap:[L(@"eat") stringByAppendingString:@" "]
                                       forInputLocale:[NSLocale currentLocale].localeIdentifier];
 }
 
-- (void)searchTourism
-{
+- (void)searchTourism {
   [self.navigationController popViewControllerAnimated:YES];
   [MWMMapViewControlsManager.manager searchTextOnMap:[L(@"tourism") stringByAppendingString:@" "]
                                       forInputLocale:[NSLocale currentLocale].localeIdentifier];
 }
 
-- (void)routeToItem:(ItemType const)type atIndex:(size_t const)index
-{
+- (void)routeToItem:(ItemType const)type atIndex:(NSInteger)index {
   __block m2::PointD point;
   __block NSString * title;
   __block NSString * subtitle;
@@ -262,16 +261,19 @@ struct Callback
     title = item.GetString().empty() ? subtitle : @(item.GetString().c_str());
   };
 
-  switch (type)
-  {
-  case ItemType::Attractions: getRoutePointInfo(m_model.GetAttractionAt(index)); break;
-  case ItemType::Cafes: getRoutePointInfo(m_model.GetCafeAt(index)); break;
-  case ItemType::Hotels: getRoutePointInfo(m_model.GetHotelAt(index)); break;
-  case ItemType::LocalExperts:
-    CHECK(false, ("Attempt to route to item with type:", static_cast<int>(type)));
-    break;
-  // TODO: Add correct code here.
-  case ItemType::Promo: break;
+  switch (type) {
+    case ItemType::Attractions:
+      getRoutePointInfo([self.viewModel.attractions searchResultAtIndex:index]);
+      break;
+    case ItemType::Cafes:
+      getRoutePointInfo([self.viewModel.cafes searchResultAtIndex:index]);
+      break;
+    case ItemType::Hotels:
+      getRoutePointInfo([self.viewModel.hotels searchResultAtIndex:index]);
+      break;
+    case ItemType::Promo:
+    case ItemType::LocalExperts:
+      return;
   }
 
   MWMRoutePoint * pt = [[MWMRoutePoint alloc] initWithPoint:point
@@ -283,22 +285,61 @@ struct Callback
   [MWMRouter buildToPoint:pt bestRouter:NO];
   [self.navigationController popViewControllerAnimated:YES];
 
-  [Statistics logEvent:kStatPlacepageSponsoredItemSelected
-        withParameters:@{
-          kStatProvider: StatProvider(type),
-          kStatPlacement: kStatDiscovery,
-          kStatItem: @(index + 1),
-          kStatDestination: kStatRouting
-        }];
+  [self logEvent:kStatPlacepageSponsoredItemSelected
+            type:type
+           index:index
+     destination:kStatRouting];
 }
 
-- (void)openURLForItem:(discovery::ItemType const)type
+- (void)openURLForItem:(ItemType const)type atIndex:(NSInteger)index {
+  switch (type) {
+    case ItemType::Attractions:
+    case ItemType::Cafes:
+    case ItemType::Hotels:
+    case ItemType::LocalExperts:
+      break;
+    case ItemType::Promo:
+      promo::CityGallery::Item const &item = [self.viewModel.guides galleryItemAtIndex:index];
+      NSString *itemPath = @(item.m_url.c_str());
+      if (!itemPath || itemPath.length == 0) {
+        return;
+      }
+      NSURL *url = [NSURL URLWithString:itemPath];
+      [self openCatalogForURL:url];
+      
+      [self logEvent:kStatPlacepageSponsoredItemSelected
+                type:type
+               index:index
+         destination:kStatCatalogue];
+      break;
+  }
+}
+
+- (void)openURLForItem:(ItemType const)type {
+  switch (type) {
+    case ItemType::Attractions:
+    case ItemType::Cafes:
+    case ItemType::Hotels:
+    case ItemType::LocalExperts:
+      break;
+    case ItemType::Promo:
+      NSURL *url = [self.viewModel.guides moreURL];
+      [self openCatalogForURL:url];
+      break;
+  }
+}
+
+- (void)openCatalogForURL:(NSURL *)url {
+  // NOTE: UTM is already into URL, core part does it for Discovery page.
+  MWMCatalogWebViewController *catalog = [MWMCatalogWebViewController catalogFromAbsoluteUrl:url utm:MWMUTMNone];
+  NSMutableArray<UIViewController *> * controllers = [self.navigationController.viewControllers mutableCopy];
+  [controllers addObjectsFromArray:@[catalog]];
+  [self.navigationController setViewControllers:controllers animated:YES];
+}
+
+- (void)didBecomeActive
 {
-  CHECK(type == ItemType::LocalExperts,
-        ("Attempt to open url for item with type:", static_cast<int>(type)));
-  auto & f = GetFramework();
-  auto const url = f.GetDiscoveryLocalExpertsUrl();
-  [self openUrl:[NSURL URLWithString:@(url.c_str())]];
+  [self.tableManager reloadGuidesIfNeeded];
 }
 
 @end

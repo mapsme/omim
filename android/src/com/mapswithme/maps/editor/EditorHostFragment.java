@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,8 +207,8 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
   protected void editTimetable()
   {
     final Bundle args = new Bundle();
-    args.putString(TimetableFragment.EXTRA_TIME, Editor.nativeGetOpeningHours());
-    editWithFragment(Mode.OPENING_HOURS, R.string.editor_time_title, args, TimetableFragment.class, false);
+    args.putString(TimetableContainerFragment.EXTRA_TIME, Editor.nativeGetOpeningHours());
+    editWithFragment(Mode.OPENING_HOURS, R.string.editor_time_title, args, TimetableContainerFragment.class, false);
   }
 
   protected void editStreet()
@@ -268,7 +268,7 @@ public class EditorHostFragment extends BaseMwmToolbarFragment
       switch (mMode)
       {
       case OPENING_HOURS:
-        final String timetables = ((TimetableFragment) getChildFragmentManager().findFragmentByTag(TimetableFragment.class.getName())).getTimetable();
+        final String timetables = ((TimetableContainerFragment) getChildFragmentManager().findFragmentByTag(TimetableContainerFragment.class.getName())).getTimetable();
         if (OpeningHours.nativeIsTimetableStringValid(timetables))
         {
           Editor.nativeSetOpeningHours(timetables);

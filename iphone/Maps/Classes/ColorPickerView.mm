@@ -2,7 +2,7 @@
 #import "CircleView.h"
 #import <QuartzCore/QuartzCore.h>
 
-#include "Framework.h"
+#include <CoreApi/Framework.h>
 
 #define BUTTONMARGIN 7
 #define BUTTONMARGINHEIGHT 16
@@ -17,16 +17,15 @@ struct Tcolor
   float rgb[3];
 };
 
-static Tcolor const g_color [] =
-{
-  {kml::PredefinedColor::Red, {255, 51, 51}},
-  {kml::PredefinedColor::Yellow, {255, 255, 51}},
-  {kml::PredefinedColor::Blue, {51, 204, 255}},
-  {kml::PredefinedColor::Green, {102, 255, 51}},
-  {kml::PredefinedColor::Purple, {153, 51, 255}},
-  {kml::PredefinedColor::Orange, {255, 102, 0}},
-  {kml::PredefinedColor::Brown, {102, 51, 0}},
-  {kml::PredefinedColor::Pink, {255, 51, 255}},
+static Tcolor const g_color[] = {
+  {kml::PredefinedColor::Red, {229, 27, 35}},
+  {kml::PredefinedColor::Yellow, {255, 200, 0}},
+  {kml::PredefinedColor::Blue, {0, 110, 199}},
+  {kml::PredefinedColor::Green, {56, 142, 60}},
+  {kml::PredefinedColor::Purple, {156, 39, 176}},
+  {kml::PredefinedColor::Orange, {255, 160, 0}},
+  {kml::PredefinedColor::Brown, {121, 85, 72}},
+  {kml::PredefinedColor::Pink, {255, 65, 130}},
 };
 
 @implementation ColorPickerView

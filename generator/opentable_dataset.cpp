@@ -9,17 +9,22 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
+#include <functional>
 #include <iomanip>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "boost/algorithm/string/replace.hpp"
+
+using namespace feature;
 
 namespace generator
 {
 // OpentableRestaurant ------------------------------------------------------------------------------
 OpentableRestaurant::OpentableRestaurant(std::string const & src)
 {
-  vector<std::string> rec;
+  std::vector<std::string> rec;
   strings::ParseCSVRow(src, '\t', rec);
   CHECK_EQUAL(rec.size(), FieldsCount(), ("Error parsing restaurants.tsv line:",
                                           boost::replace_all_copy(src, "\t", "\\t")));
@@ -35,7 +40,7 @@ OpentableRestaurant::OpentableRestaurant(std::string const & src)
 
 // OpentableDataset ---------------------------------------------------------------------------------
 template <>
-bool OpentableDataset::NecessaryMatchingConditionHolds(FeatureBuilder1 const & fb) const
+bool OpentableDataset::NecessaryMatchingConditionHolds(FeatureBuilder const & fb) const
 {
   if (fb.GetName(StringUtf8Multilang::kDefaultCode).empty())
     return false;
@@ -44,12 +49,12 @@ bool OpentableDataset::NecessaryMatchingConditionHolds(FeatureBuilder1 const & f
 }
 
 template <>
-void OpentableDataset::PreprocessMatchedOsmObject(ObjectId const matchedObjId, FeatureBuilder1 & fb,
-                                                  function<void(FeatureBuilder1 &)> const fn) const
+void OpentableDataset::PreprocessMatchedOsmObject(ObjectId const matchedObjId, FeatureBuilder & fb,
+                                                  std::function<void(FeatureBuilder &)> const fn) const
 {
   auto const & restaurant = m_storage.GetObjectById(matchedObjId);
   auto & metadata = fb.GetMetadata();
-  metadata.Set(feature::Metadata::FMD_SPONSORED_ID, strings::to_string(restaurant.m_id.Get()));
+  metadata.Set(Metadata::FMD_SPONSORED_ID, strings::to_string(restaurant.m_id.Get()));
 
   FeatureParams & params = fb.GetParams();
   // params.AddAddress(restaurant.address);
@@ -65,7 +70,7 @@ void OpentableDataset::PreprocessMatchedOsmObject(ObjectId const matchedObjId, F
 }
 
 template <>
-OpentableDataset::ObjectId OpentableDataset::FindMatchingObjectIdImpl(FeatureBuilder1 const & fb) const
+OpentableDataset::ObjectId OpentableDataset::FindMatchingObjectIdImpl(FeatureBuilder const & fb) const
 {
   auto const name = fb.GetName(StringUtf8Multilang::kDefaultCode);
 
@@ -73,7 +78,7 @@ OpentableDataset::ObjectId OpentableDataset::FindMatchingObjectIdImpl(FeatureBui
     return Object::InvalidObjectId();
 
   // Find |kMaxSelectedElements| nearest values to a point.
-  auto const nearbyIds = m_storage.GetNearestObjects(MercatorBounds::ToLatLon(fb.GetKeyPoint()));
+  auto const nearbyIds = m_storage.GetNearestObjects(mercator::ToLatLon(fb.GetKeyPoint()));
 
   for (auto const objId : nearbyIds)
   {

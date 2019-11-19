@@ -66,7 +66,7 @@ bool Matcher::Matches(Sample::Result const & golden, FeatureType & ft)
   }
   else
   {
-    ft.ForEachName([&golden, &nameMatches](int8_t /* lang */, string const & name) {
+    ft.ForEachName([&golden, &nameMatches](int8_t /* lang */, std::string const & name) {
       if (NormalizeAndSimplifyString(ToUtf8(golden.m_name)) == NormalizeAndSimplifyString(name))
       {
         nameMatches = true;
@@ -81,8 +81,7 @@ bool Matcher::Matches(Sample::Result const & golden, FeatureType & ft)
     houseNumberMatches = golden.m_houseNumber == houseNumber;
 
   return nameMatches && houseNumberMatches &&
-         MercatorBounds::DistanceOnEarth(golden.m_pos, center) <
-             kToleranceMeters;
+         mercator::DistanceOnEarth(golden.m_pos, center) < kToleranceMeters;
 }
 
 bool Matcher::Matches(Sample::Result const & golden, search::Result const & actual)

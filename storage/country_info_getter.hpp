@@ -9,7 +9,7 @@
 #include "geometry/point2d.hpp"
 #include "geometry/region2d.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 
 #include "base/cache.hpp"
 
@@ -33,7 +33,6 @@ public:
   using RegionId = size_t;
   using RegionIdVec = std::vector<RegionId>;
 
-  explicit CountryInfoGetterBase(bool isSingleMwm) : m_isSingleMwm(isSingleMwm) {}
   virtual ~CountryInfoGetterBase() = default;
 
   // Returns country file name without an extension for a country |pt|
@@ -59,19 +58,12 @@ protected:
 
   // List of all known countries.
   std::vector<CountryDef> m_countries;
-
-  // m_isSingleMwm == true if the system is currently working with single (small) mwms
-  // and false otherwise.
-  // @TODO(bykoianko) Init m_isSingleMwm correctly.
-  bool m_isSingleMwm;
 };
 
 // *NOTE* This class is thread-safe.
 class CountryInfoGetter : public CountryInfoGetterBase
 {
 public:
-  explicit CountryInfoGetter(bool isSingleMwm) : CountryInfoGetterBase(isSingleMwm) {}
-
   // Returns vector of countries file names without extension for
   // countries belonging to |rect|. When |rough| is equal to true, the
   // method is much faster but the result is less precise.
@@ -81,7 +73,8 @@ public:
   // |closestCoutryIds| is filled with country ids of mwms that cover |pt| or are close to it
   // with the exception of World.mwm and custom user-provided mwms.
   // The result may be empty, for example if |pt| is somewhere in an ocean.
-  void GetRegionsCountryId(m2::PointD const & pt, CountriesVec & closestCoutryIds);
+  void GetRegionsCountryId(m2::PointD const & pt, CountriesVec & closestCoutryIds,
+                           double lookupRadiusM = 30000.0 /* 30 km */);
 
   // Fills info for the region |pt| belongs to.
   void GetRegionInfo(m2::PointD const & pt, CountryInfo & info) const;
@@ -112,7 +105,7 @@ public:
   void SetAffiliations(Affiliations const * affiliations);
 
 protected:
-  CountryInfoGetter() : CountryInfoGetterBase(true /* isSingleMwm */ ) {};
+  CountryInfoGetter() = default;
 
   // Invokes |toDo| on each country whose name starts with |prefix|.
   template <typename ToDo>
@@ -144,13 +137,6 @@ class CountryInfoReader : public CountryInfoGetter
 public:
   /// \returns CountryInfoGetter based on countries.txt and packed_polygons.bin.
   static std::unique_ptr<CountryInfoGetter> CreateCountryInfoReader(Platform const & platform);
-
-  /// \returns CountryInfoGetter based on countries_obsolete.txt and packed_polygons_obsolete.bin.
-  /// \brief The polygons in CountryInfoGetter() returned by the method was used at the time when
-  /// routing and map data were in different files.
-  /// \note This method should be used before migration to single-component and for tests.
-  static std::unique_ptr<CountryInfoGetter> CreateCountryInfoReaderObsolete(
-      Platform const & platform);
 
   // Loads all regions for country number |id| from |m_reader|.
   void LoadRegionsFromDisk(size_t id, std::vector<m2::RegionD> & regions) const;

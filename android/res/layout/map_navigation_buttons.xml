@@ -52,4 +52,29 @@
     android:layout_alignParentTop="true"
     android:layout_alignParentRight="true"
     android:layout_alignParentEnd="true"/>
+
+  <FrameLayout
+    android:id="@+id/subs_screen_btn_container"
+    android:layout_centerVertical="true"
+    android:layout_alignBottom="@id/nav_zoom_in"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/dog_btn_bg"
+      android:layout_gravity="center"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      style="@style/MwmWidget.MapButton.Traffic"
+      android:src="?attr/bg_dog_btn"/>
+
+    <ImageView
+      android:id="@+id/subs_screen_btn"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_gravity="center"
+      android:src="@drawable/ic_dog"/>
+  </FrameLayout>
 </RelativeLayout>

@@ -32,7 +32,7 @@ m2::PointD const & UserMark::GetPivot() const
 
 ms::LatLon UserMark::GetLatLon() const
 {
-  return MercatorBounds::ToLatLon(m_ptOrg);
+  return mercator::ToLatLon(m_ptOrg);
 }
 
 StaticMarkPoint::StaticMarkPoint(m2::PointD const & ptOrg)
@@ -93,7 +93,7 @@ drape_ptr<df::UserPointMark::ColoredSymbolZoomInfo> ColoredMarkPoint::GetColored
   return make_unique_dp<ColoredSymbolZoomInfo>(m_coloredSymbols);
 }
 
-string DebugPrint(UserMark::Type type)
+std::string DebugPrint(UserMark::Type type)
 {
   switch (type)
   {

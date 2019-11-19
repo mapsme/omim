@@ -64,6 +64,16 @@ namespace
     }
     TEST(params.IsTypeExist(GetType({"psurface", value})), ("Surface:", surface, "Smoothness:", smoothness, "Grade:", grade, "Expected:", value, "Got:", psurface));
   }
+
+FeatureParams GetFeatureParams(char const * arr[][2], size_t count)
+  {
+    OsmElement e;
+    FillXmlElement(arr, count, &e);
+    FeatureParams params;
+
+    ftype::GetNameAndType(&e, params);
+    return params;
+  }
 }  // namespace
 
 UNIT_CLASS_TEST(TestWithClassificator, OsmType_SkipDummy)
@@ -75,11 +85,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_SkipDummy)
     { "ref", "E51" }
   };
 
-  OsmElement e;
-  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
   TEST_EQUAL(params.m_types.size(), 1, (params));
   TEST_EQUAL(params.m_types[0], GetType(arr[1]), ());
@@ -130,11 +136,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Combined)
     { "name", "Гимназия 15" }
   };
 
-  OsmElement e;
-  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
   TEST_EQUAL(params.m_types.size(), 2, (params));
   TEST(params.IsTypeExist(GetType(arr[3])), ());
@@ -159,11 +161,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Address)
     { "uir_adr:ADRESA_KOD", "21717036" }
   };
 
-  OsmElement e;
-  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
   TEST_EQUAL(params.m_types.size(), 1, (params));
   TEST(params.IsTypeExist(GetType({"building", "address"})), ());
@@ -185,11 +183,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_PlaceState)
     { "ref", "CA" }
   };
 
-  OsmElement e;
-  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
   TEST_EQUAL(params.m_types.size(), 1, (params));
   TEST(params.IsTypeExist(GetType({"place", "state", "USA"})), ());
@@ -251,19 +245,20 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Synonyms)
   {
     char const * arr[][2] = {
       { "building", "yes" },
-      { "shop", "yes" },
       { "atm", "yes" },
-      { "toilets", "yes" },
+      { "shop", "yes" },
       { "restaurant", "yes" },
       { "hotel", "yes" },
+      { "toilets", "yes" },
+      { "drinkable", "yes"},
     };
 
     OsmElement e;
     FillXmlElement(arr, ARRAY_SIZE(arr), &e);
 
     TagReplacer tagReplacer(GetPlatform().ResourcesDir() + REPLACED_TAGS_FILE);
-    tagReplacer(e);
-    
+    tagReplacer.Process(e);
+
     FeatureParams params;
     ftype::GetNameAndType(&e, params);
 
@@ -273,7 +268,8 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Synonyms)
     char const * arrT4[] = { "amenity", "restaurant" };
     char const * arrT5[] = { "tourism", "hotel" };
     char const * arrT6[] = { "amenity", "toilets" };
-    TEST_EQUAL(params.m_types.size(), 6, (params));
+    char const * arrT7[] = { "amenity", "drinking_water" };
+    TEST_EQUAL(params.m_types.size(), 7, (params));
 
     TEST(params.IsTypeExist(GetType(arrT1)), ());
     TEST(params.IsTypeExist(GetType(arrT2)), ());
@@ -281,6 +277,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Synonyms)
     TEST(params.IsTypeExist(GetType(arrT4)), ());
     TEST(params.IsTypeExist(GetType(arrT5)), ());
     TEST(params.IsTypeExist(GetType(arrT6)), ());
+    TEST(params.IsTypeExist(GetType(arrT7)), ());
   }
 
   // Duplicating test.
@@ -290,11 +287,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Synonyms)
       { "atm", "yes" }
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"amenity", "atm"})), ());
@@ -308,11 +301,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Synonyms)
       { "atm", "no" }
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"building"})), ());
@@ -328,11 +317,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Capital)
       { "place", "city" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"place", "city", "capital", "6"})), ());
@@ -345,11 +330,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Capital)
       { "place", "city" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"place", "city"})), ());
@@ -364,11 +345,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Capital)
       { "place", "city" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 2, (params));
     TEST(params.IsTypeExist(GetType({"place", "city", "capital", "2"})), ());
@@ -384,11 +361,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Route)
       { "ref", "I 95" }
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType(arr[0])), ());
@@ -405,11 +378,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Layer)
       { "layer", "2" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"highway", "motorway", "bridge"})), ());
@@ -423,11 +392,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Layer)
       { "layer", "-1" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"highway", "trunk", "tunnel"})), ());
@@ -440,11 +405,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Layer)
       { "bridge", "yes" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"highway", "secondary", "bridge"})), ());
@@ -457,11 +418,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Layer)
       { "tunnel", "yes" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"highway", "primary", "tunnel"})), ());
@@ -473,11 +430,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Layer)
       { "highway", "living_street" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType(arr[0])), ());
@@ -493,11 +446,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Amenity)
       { "fuel", "wood" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType(arr[0])), ());
@@ -518,11 +467,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Hwtag)
       { "oneway", "true" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType(arr[0])), ());
@@ -539,11 +484,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Hwtag)
         {"oneway:bicycle", "no"},
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 6, (params));
     TEST(params.IsTypeExist(GetType(arr[1])), ());
@@ -559,11 +500,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Hwtag)
         {"foot", "yes"}, {"cycleway", "lane"}, {"highway", "primary"},
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 3, (params));
     TEST(params.IsTypeExist(GetType(arr[2])), ());
@@ -603,11 +540,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Ferry)
     { "route", "ferry" },
   };
 
-  OsmElement e;
-  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
   TEST_EQUAL(params.m_types.size(), 3, (params));
 
@@ -627,6 +560,49 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Ferry)
   TEST(params.IsTypeExist(type), ());
 }
 
+UNIT_CLASS_TEST(TestWithClassificator, OsmType_YesCarNoCar)
+{
+  routing::CarModel const & carModel = routing::CarModel::AllLimitsInstance();
+
+  {
+    char const* arr[][2] = {
+        {"highway", "secondary"},
+    };
+
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
+
+    TEST_EQUAL(params.m_types.size(), 1, (params));
+    TEST(!params.IsTypeExist(carModel.GetNoCarTypeForTesting()), ());
+    TEST(!params.IsTypeExist(carModel.GetYesCarTypeForTesting()), ());
+  }
+
+  {
+    char const * arr[][2] = {
+        {"highway", "cycleway"},
+        {"motorcar", "yes"},
+    };
+
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
+
+    TEST_EQUAL(params.m_types.size(), 2, (params));
+    TEST(!params.IsTypeExist(carModel.GetNoCarTypeForTesting()), ());
+    TEST(params.IsTypeExist(carModel.GetYesCarTypeForTesting()), ());
+  }
+
+  {
+    char const* arr[][2] = {
+        {"highway", "secondary"},
+        {"motor_vehicle", "no"},
+    };
+
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
+
+    TEST_EQUAL(params.m_types.size(), 2, (params));
+    TEST(params.IsTypeExist(carModel.GetNoCarTypeForTesting()), ());
+    TEST(!params.IsTypeExist(carModel.GetYesCarTypeForTesting()), ());
+  }
+}
+
 UNIT_CLASS_TEST(TestWithClassificator, OsmType_Boundary)
 {
   char const * arr[][2] = {
@@ -636,11 +612,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Boundary)
     { "boundary", "administrative" },
   };
 
-  OsmElement e;
-  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
   TEST_EQUAL(params.m_types.size(), 2, (params));
   TEST(params.IsTypeExist(GetType({"boundary", "administrative", "2"})), ());
@@ -661,11 +633,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Dibrugarh)
     { "website", "http://www.hotelvishal.in" },
   };
 
-  OsmElement e;
-  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
   TEST_EQUAL(params.m_types.size(), 1, (params));
   TEST(params.IsTypeExist(GetType({"place", "city"})), (params));
@@ -685,11 +653,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Subway)
       { "transport", "subway" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"railway", "station", "subway", "moscow"})), (params));
@@ -704,11 +668,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Subway)
       { "route", "subway" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 2, (params));
     TEST(params.IsTypeExist(GetType({"railway", "station", "subway", "newyork"})), (params));
@@ -724,11 +684,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Subway)
       { "station", "light_rail" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"railway", "station", "light_rail"})), (params));
@@ -746,11 +702,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Subway)
       { "transport", "monorail" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"railway", "station", "monorail"})), (params));
@@ -765,11 +717,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Subway)
       { "railway", "station" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"railway", "station", "subway", "london"})), (params));
@@ -783,11 +731,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Hospital)
       { "building", "hospital" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"building"})), (params));
@@ -799,11 +743,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Hospital)
       { "amenity", "hospital" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 2, (params));
     TEST(params.IsTypeExist(GetType({"building"})), (params));
@@ -823,7 +763,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Entrance)
     FillXmlElement(arr, ARRAY_SIZE(arr), &e);
 
     TagReplacer tagReplacer(GetPlatform().ResourcesDir() + REPLACED_TAGS_FILE);
-    tagReplacer(e);
+    tagReplacer.Process(e);
 
     FeatureParams params;
     ftype::GetNameAndType(&e, params);
@@ -858,11 +798,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Moscow)
       { "wikipedia", "ru:Москва" },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"place", "city", "capital", "2"})), (params));
@@ -883,11 +819,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Translations)
     { "population", "2243833" }
   };
 
-  OsmElement e;
-  FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-  FeatureParams params;
-  ftype::GetNameAndType(&e, params);
+  FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
   TEST_EQUAL(params.m_types.size(), 1, (params));
   TEST(params.IsTypeExist(GetType({"place", "city"})), ());
@@ -909,11 +841,7 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Cuisine)
       { "cuisine", "indian ; steak,coffee  shop " },
     };
 
-    OsmElement e;
-    FillXmlElement(arr, ARRAY_SIZE(arr), &e);
-
-    FeatureParams params;
-    ftype::GetNameAndType(&e, params);
+    FeatureParams const params = GetFeatureParams(arr, ARRAY_SIZE(arr));
 
     TEST_EQUAL(params.m_types.size(), 3, (params));
     TEST(params.IsTypeExist(GetType({"cuisine", "indian"})), (params));

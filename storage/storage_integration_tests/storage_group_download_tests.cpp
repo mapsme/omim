@@ -15,12 +15,10 @@
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
 
-#include "std/condition_variable.hpp"
-#include "std/mutex.hpp"
-#include "std/set.hpp"
-#include "std/unique_ptr.hpp"
+#include <string>
 
 using namespace platform;
+using namespace std;
 using namespace storage;
 
 namespace
@@ -252,9 +250,7 @@ void TestDownloadDelete(bool downloadOneByOne, bool deleteOneByOne)
 {
   WritableDirChanger writableDirChanger(kMapTestDir);
 
-  Storage storage(COUNTRIES_FILE);
-
-  TEST(version::IsSingleMwm(storage.GetCurrentDataVersion()), ());
+  Storage storage;
   string const version = strings::to_string(storage.GetCurrentDataVersion());
 
   auto onUpdatedFn = [&](CountryId const &, storage::LocalFilePtr const localCountryFile) {
@@ -264,7 +260,7 @@ void TestDownloadDelete(bool downloadOneByOne, bool deleteOneByOne)
 
   storage.Init(onUpdatedFn, [](CountryId const &, storage::LocalFilePtr const) { return false; });
   storage.RegisterAllLocalMaps(false /* enableDiffs */);
-  storage.SetDownloadingUrlsForTesting({kTestWebServer});
+  storage.SetDownloadingServersForTesting({kTestWebServer});
 
   tests_support::ScopedDir cleanupVersionDir(version);
 

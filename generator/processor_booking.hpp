@@ -1,0 +1,50 @@
+#pragma once
+
+#include "generator/feature_builder.hpp"
+#include "generator/feature_generator.hpp"
+#include "generator/processor_interface.hpp"
+
+#include "indexer/feature_data.hpp"
+
+#include "base/assert.hpp"
+#include "base/geo_object_id.hpp"
+
+#include <map>
+#include <memory>
+
+namespace generator
+{
+using namespace std;
+
+template <typename Dataset>
+class ProcessorBooking : public FeatureProcessorInterface
+{
+public:
+  ProcessorBooking(Dataset const & dataset,
+                   std::map<base::GeoObjectId, feature::FeatureBuilder> & features)
+    : m_dataset(dataset), m_features(features)
+  {
+  }
+
+  // FeatureProcessorInterface overrides:
+  virtual std::shared_ptr<FeatureProcessorInterface> Clone() const override
+  {
+    CHECK(false, ());
+    return {};
+  }
+
+  void Process(feature::FeatureBuilder & fb) override
+  {
+    if (m_dataset.NecessaryMatchingConditionHolds(fb))
+      m_features.emplace(fb.GetMostGenericOsmId(), fb);
+  }
+
+  void Finish() override {}
+
+  void Merge(FeatureProcessorInterface const &) override { CHECK(false, ()); }
+
+private:
+  Dataset const & m_dataset;
+  std::map<base::GeoObjectId, feature::FeatureBuilder> & m_features;
+};
+}  // namespace generator

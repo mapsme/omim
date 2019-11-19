@@ -1,6 +1,10 @@
 #include "search/reverse_geocoder.hpp"
 
+#include "search/city_finder.hpp"
 #include "search/mwm_context.hpp"
+#include "search/region_info_getter.hpp"
+
+#include "storage/country_info_getter.hpp"
 
 #include "editor/osm_editor.hpp"
 
@@ -36,7 +40,7 @@ using FillStreets =
 
 m2::RectD GetLookupRect(m2::PointD const & center, double radiusM)
 {
-  return MercatorBounds::RectByCenterXYAndSizeInMeters(center, radiusM);
+  return mercator::RectByCenterXYAndSizeInMeters(center, radiusM);
 }
 
 void AddStreet(FeatureType & ft, m2::PointD const & center, bool includeSquaresAndSuburbs,
@@ -81,7 +85,7 @@ string Join(string const & s, Args &&... args)
 ReverseGeocoder::ReverseGeocoder(DataSource const & dataSource) : m_dataSource(dataSource) {}
 
 // static
-boost::optional<uint32_t> ReverseGeocoder::GetMatchedStreetIndex(std::string const & keyName,
+boost::optional<uint32_t> ReverseGeocoder::GetMatchedStreetIndex(string const & keyName,
                                                                  vector<Street> const & streets)
 {
   auto matchStreet = [&](bool ignoreStreetSynonyms) -> boost::optional<uint32_t> {
@@ -285,6 +289,7 @@ bool ReverseGeocoder::GetNearbyAddress(HouseTable & table, Building const & bld,
   case HouseToStreetTable::StreetIdType::FeatureId:
   {
     FeatureID streetFeature(bld.m_id.m_mwmId, streetId);
+    CHECK(bld.m_id.m_mwmId.IsAlive(), (bld.m_id.m_mwmId));
     m_dataSource.ReadFeature(
         [&bld, &addr](FeatureType & ft) {
           string streetName;
@@ -293,7 +298,7 @@ bool ReverseGeocoder::GetNearbyAddress(HouseTable & table, Building const & bld,
           addr.m_street = Street(ft.GetID(), distance, streetName, ft.GetNames());
         },
         streetFeature);
-    CHECK(!addr.m_street.m_name.empty(), ());
+    CHECK(!addr.m_street.m_multilangName.IsEmpty(), (bld.m_id.m_mwmId, streetId));
     addr.m_building = bld;
     return true;
   }
@@ -322,6 +327,52 @@ void ReverseGeocoder::GetNearbyBuildings(m2::PointD const & center, double radiu
 }
 
 // static
+ReverseGeocoder::RegionAddress ReverseGeocoder::GetNearbyRegionAddress(
+    m2::PointD const & center, storage::CountryInfoGetter const & infoGetter,
+    CityFinder & cityFinder)
+{
+  RegionAddress addr;
+  addr.m_featureId = cityFinder.GetCityFeatureID(center);
+  if (!addr.m_featureId.IsValid() ||
+      addr.m_featureId.m_mwmId.GetInfo()->GetType() == MwmInfo::WORLD)
+  {
+    addr.m_countryId = infoGetter.GetRegionCountryId(center);
+  }
+  return addr;
+}
+
+string ReverseGeocoder::GetLocalizedRegionAddress(RegionAddress const & addr,
+                                                  RegionInfoGetter const & nameGetter) const
+{
+  if (!addr.IsValid())
+    return {};
+
+  string addrStr;
+  if (addr.m_featureId.IsValid())
+  {
+    m_dataSource.ReadFeature([&addrStr](FeatureType & ft) { ft.GetReadableName(addrStr); },
+                             addr.m_featureId);
+
+    auto const countryName = addr.GetCountryName();
+    if (!countryName.empty())
+    {
+      vector<string> nameParts;
+      nameGetter.GetLocalizedFullName(countryName, nameParts);
+      nameParts.insert(nameParts.begin(), addrStr);
+      nameParts.erase(unique(nameParts.begin(), nameParts.end()), nameParts.end());
+      addrStr = strings::JoinStrings(nameParts, ", ");
+    }
+  }
+  else
+  {
+    ASSERT(storage::IsCountryIdValid(addr.m_countryId), ());
+    addrStr = nameGetter.GetLocalizedFullName(addr.m_countryId);
+  }
+
+  return addrStr;
+}
+
+// static
 ReverseGeocoder::Building ReverseGeocoder::FromFeature(FeatureType & ft, double distMeters)
 {
   return { ft.GetID(), distMeters, ft.GetHouseNumber(), feature::GetCenter(ft) };
@@ -342,7 +393,7 @@ bool ReverseGeocoder::HouseTable::Get(FeatureID const & fid,
       LOG(LWARNING, ("MWM", fid, "is dead"));
       return false;
     }
-    m_table = search::HouseToStreetTable::Load(*m_handle.GetValue<MwmValue>());
+    m_table = search::HouseToStreetTable::Load(*m_handle.GetValue());
   }
 
   type = m_table->GetStreetIdType();
@@ -360,6 +411,35 @@ string ReverseGeocoder::Address::FormatAddress() const
     return {};
 
   return Join(m_street.m_name, m_building.m_name);
+}
+
+bool ReverseGeocoder::RegionAddress::IsValid() const
+{
+  return storage::IsCountryIdValid(m_countryId) || m_featureId.IsValid();
+}
+
+string ReverseGeocoder::RegionAddress::GetCountryName() const
+{
+  if (m_featureId.IsValid() && m_featureId.m_mwmId.GetInfo()->GetType() != MwmInfo::WORLD)
+    return m_featureId.m_mwmId.GetInfo()->GetCountryName();
+  return m_countryId;
+}
+
+bool ReverseGeocoder::RegionAddress::operator==(RegionAddress const & rhs) const
+{
+  return m_countryId == rhs.m_countryId && m_featureId == rhs.m_featureId;
+}
+
+bool ReverseGeocoder::RegionAddress::operator!=(RegionAddress const & rhs) const
+{
+  return !(*this == rhs);
+}
+
+bool ReverseGeocoder::RegionAddress::operator<(RegionAddress const & rhs) const
+{
+  if (m_countryId != rhs.m_countryId)
+    return m_countryId < rhs.m_countryId;
+  return m_featureId < rhs.m_featureId;
 }
 
 string DebugPrint(ReverseGeocoder::Object const & obj)

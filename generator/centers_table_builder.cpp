@@ -7,7 +7,7 @@
 #include "indexer/features_offsets_table.hpp"
 #include "indexer/features_vector.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 
 #include "platform/mwm_traits.hpp"
 
@@ -52,7 +52,7 @@ bool BuildCentersTableFromDataFile(std::string const & filename, bool forceRebui
       feature::DataHeader const header(rcont);
       FeaturesVector const features(rcont, header, table.get());
 
-      builder.SetGeometryCodingParams(header.GetDefGeometryCodingParams());
+      builder.SetGeometryParams(header.GetBounds());
       features.ForEach([&](FeatureType & ft, uint32_t featureId) {
         builder.Put(featureId, feature::GetCenter(ft));
       });
@@ -60,8 +60,8 @@ bool BuildCentersTableFromDataFile(std::string const & filename, bool forceRebui
 
     {
       FilesContainerW writeContainer(filename, FileWriter::OP_WRITE_EXISTING);
-      FileWriter writer = writeContainer.GetWriter(CENTERS_FILE_TAG);
-      builder.Freeze(writer);
+      auto writer = writeContainer.GetWriter(CENTERS_FILE_TAG);
+      builder.Freeze(*writer);
     }
   }
   catch (RootException const & e)

@@ -1,16 +1,16 @@
 package com.mapswithme.maps.metrics;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.mapswithme.maps.discovery.DiscoveryUserEvent;
-import com.mapswithme.maps.tips.TipsAction;
-import com.mapswithme.maps.tips.TipsApi;
+import com.mapswithme.maps.tips.TutorialAction;
+import com.mapswithme.maps.tips.Tutorial;
 
 public class UserActionsLogger
 {
-  public static void logTipClickedEvent(@NonNull TipsApi provider, @NonNull TipsAction action)
+  public static void logTipClickedEvent(@NonNull Tutorial tutorial, @NonNull TutorialAction action)
   {
-    nativeTipClicked(provider.ordinal(), action.ordinal());
+    nativeTipClicked(tutorial.ordinal(), action.ordinal());
   }
 
   public static void logBookingFilterUsedEvent()
@@ -48,6 +48,33 @@ public class UserActionsLogger
     nativeUgcSaved();
   }
 
+  public static void logBookingBookClicked()
+  {
+    nativeBookingBookClicked();
+  }
+  public static void logBookingMoreClicked()
+  {
+    nativeBookingMoreClicked();
+  }
+  public static void logBookingReviewsClicked()
+  {
+    nativeBookingReviewsClicked();
+  }
+  public static void logBookingDetailsClicked()
+  {
+    nativeBookingDetailsClicked();
+  }
+
+  public static void logPromoAfterBookingShown(@NonNull String id)
+  {
+    nativePromoAfterBookingShown(id);
+  }
+
+  public static void logCrownClicked()
+  {
+    nativeCrownClicked();
+  }
+
   private static native void nativeTipClicked(int type, int event);
   private static native void nativeBookingFilterUsed();
   private static native void nativeBookmarksCatalogShown();
@@ -56,4 +83,10 @@ public class UserActionsLogger
   private static native void nativeAddToBookmark();
   private static native void nativeUgcEditorOpened();
   private static native void nativeUgcSaved();
+  private static native void nativeBookingBookClicked();
+  private static native void nativeBookingMoreClicked();
+  private static native void nativeBookingReviewsClicked();
+  private static native void nativeBookingDetailsClicked();
+  private static native void nativePromoAfterBookingShown(@NonNull String id);
+  private static native void nativeCrownClicked();
 }

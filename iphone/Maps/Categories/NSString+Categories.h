@@ -1,5 +1,3 @@
-#include "std/vector.hpp"
-
 @interface NSString (MapsMeSize)
 
 - (CGSize)sizeWithDrawSize:(CGSize)size font:(UIFont *)font;
@@ -8,6 +6,6 @@
 
 @interface NSString (MapsMeRanges)
 
-- (vector<NSRange>)rangesOfString:(NSString *)aString;
+- (NSArray<NSValue *> *)rangesOfString:(NSString *)aString;
 
 @end

@@ -11,17 +11,21 @@ logger = logging.getLogger("maps_generator")
 
 class GenTool:
     OPTIONS = {
+        "add_ads": bool,
         "disable_cross_mwm_progress": bool,
         "dump_cities_boundaries": bool,
         "emit_coasts": bool,
         "fail_on_coasts": bool,
         "generate_cameras": bool,
+        "generate_cities_boundaries": bool,
+        "generate_cities_ids": bool,
         "generate_features": bool,
-        "generate_geometry": bool,
         "generate_geo_objects_features": bool,
         "generate_geo_objects_index": bool,
+        "generate_geometry": bool,
         "generate_index": bool,
         "generate_maxspeed": bool,
+        "generate_packed_borders": bool,
         "generate_popular_places": bool,
         "generate_region_features": bool,
         "generate_regions": bool,
@@ -29,17 +33,19 @@ class GenTool:
         "generate_search_index": bool,
         "generate_traffic_keys": bool,
         "generate_world": bool,
+        "have_borders_for_whole_world": bool,
         "make_city_roads": bool,
         "make_coasts": bool,
         "make_cross_mwm": bool,
         "make_routing_index": bool,
         "make_transit_cross_mwm": bool,
-        "no_ads": bool,
         "preprocess": bool,
         "split_by_polygons": bool,
         "type_statistics": bool,
+        "version": bool,
         "planet_version": int,
         "booking_data": str,
+        "promo_catalog_cities": str,
         "brands_data": str,
         "brands_translations_data": str,
         "cities_boundaries_data": str,
@@ -56,9 +62,11 @@ class GenTool:
         "osm_file_type": str,
         "output": str,
         "popular_places_data": str,
+        "postcodes_dataset": str,
         "regions_features": str,
         "regions_index": str,
         "regions_key_value": str,
+        "srtm_path": str,
         "transit_path": str,
         "ugc_data": str,
         "user_resource_path": str,
@@ -103,7 +111,8 @@ class GenTool:
         self.subprocess = subprocess.Popen(cmd, stdout=self.output,
                                            stderr=self.error, env=os.environ)
 
-        self.logger.info(f"Run command  {' '.join(cmd)}")
+        self.logger.info(f"Run generator tool [{self.get_build_version()}]:"
+                         f" {' '.join(cmd)} ")
         return self
 
     def wait(self):
@@ -120,6 +129,14 @@ class GenTool:
         c.options = copy.deepcopy(self.options)
         return c
 
+    def get_build_version(self):
+        p = subprocess.Popen([self.name_executable, "--version"],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             env=os.environ)
+        wait_and_raise_if_fail(p)
+        out, err = p.communicate()
+        return out.decode("utf-8").replace("\n", " ").strip()
+
     def _collect_cmd(self):
         options = ["".join(["--", k, "=", str(v)]) for k, v in
                    self.options.items()]
@@ -128,3 +145,4 @@ class GenTool:
 
 def run_gen_tool(*args, **kwargs):
     GenTool(*args, **kwargs).run()
+

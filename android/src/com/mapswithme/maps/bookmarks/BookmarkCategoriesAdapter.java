@@ -1,9 +1,9 @@
 package com.mapswithme.maps.bookmarks;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +13,8 @@ import com.mapswithme.maps.adapter.OnItemClickListener;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.util.UiUtils;
+
+import java.util.List;
 
 import static com.mapswithme.maps.bookmarks.Holders.CategoryViewHolder;
 import static com.mapswithme.maps.bookmarks.Holders.HeaderViewHolder;
@@ -37,16 +39,12 @@ public class BookmarkCategoriesAdapter extends BaseBookmarkCategoryAdapter<Recyc
   @NonNull
   private final BookmarkCategory.Type mType;
 
-  BookmarkCategoriesAdapter(@NonNull Context context, @NonNull BookmarkCategory.Type type)
+  BookmarkCategoriesAdapter(@NonNull Context context, @NonNull BookmarkCategory.Type type,
+                            @NonNull List<BookmarkCategory> categories)
   {
-    super(context.getApplicationContext());
+    super(context.getApplicationContext(), categories);
     mType = type;
     mResProvider = type.getFactory().getResProvider();
-  }
-
-  BookmarkCategoriesAdapter(@NonNull Context context)
-  {
-    this(context, BookmarkCategory.Type.PRIVATE);
   }
 
   public void setOnClickListener(@Nullable OnItemClickListener<BookmarkCategory> listener)

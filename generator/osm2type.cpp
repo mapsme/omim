@@ -2,6 +2,7 @@
 
 #include "generator/osm2meta.hpp"
 #include "generator/osm_element.hpp"
+#include "generator/osm_element_helpers.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/feature_impl.hpp"
@@ -311,6 +312,13 @@ private:
   buffer_vector<uint32_t, static_cast<size_t>(Type::Count)> m_types;
 };
 
+// This function tries to match osm tags with classificator types:
+//   amenity=parking + parking=underground + fee=yes -> amenity-parking-underground-fee.
+// Now it works wrong with some tags combinations:
+//   place=quarter + country=MX -> place-country
+//   emergency=yes + phone=7777777 -> emergency-phone
+//   route=ferry + car=yes + foot=yes -> route-ferry-car
+// See https://jira.mail.ru/browse/MAPSME-10611.
 void MatchTypes(OsmElement * p, FeatureParams & params, function<bool(uint32_t)> filterType)
 {
   set<int> skipRows;
@@ -472,15 +480,18 @@ string DetermineSurface(OsmElement * p)
       surface_grade = tag.m_value;
     else if (tag.m_key == "highway")
       isHighway = true;
+    else if (tag.m_key == "4wd_only" && (tag.m_value == "yes" || tag.m_value == "recommended"))
+      return "unpaved_bad";
   }
 
   if (!isHighway || (surface.empty() && smoothness.empty()))
     return {};
 
   static base::StringIL pavedSurfaces = {
-      "paved",    "asphalt",        "cobblestone",     "cobblestone:flattened", "sett",
-      "concrete", "concrete:lanes", "concrete:plates", "paving_stones",         "metal",
-      "wood"};
+      "paved",         "asphalt",  "cobblestone",    "cobblestone:flattened",
+      "sett",          "concrete", "concrete:lanes", "concrete:plates",
+      "paving_stones", "metal",    "wood",           "chipseal"};
+
   static base::StringIL badSurfaces = {"cobblestone", "sett", "metal", "wood", "grass",
                                        "gravel",      "mud",  "sand",  "snow", "woodchips"};
   static base::StringIL badSmoothness = {
@@ -832,18 +843,6 @@ void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32
 
   // Stage3: Process base feature tags.
   TagProcessor(p).ApplyRules<void(string &, string &)>({
-      {"addr:city", "*",
-       [&params](string & k, string & v) {
-         params.AddPlace(v);
-         k.clear();
-         v.clear();
-       }},
-      {"addr:place", "*",
-       [&params](string & k, string & v) {
-         params.AddPlace(v);
-         k.clear();
-         v.clear();
-       }},
       {"addr:housenumber", "*",
        [&params](string & k, string & v) {
          params.AddHouseName(v);
@@ -868,18 +867,20 @@ void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32
       //{ "addr:full", "*", [&params](string & k, string & v) { params.AddAddress(v); k.clear();
       // v.clear(); }},
 
-      // addr:postcode must be passed to the metadata processor.
-      // { "addr:postcode", "*", [&params](string & k, string & v) { params.AddPostcode(v);
-      // k.clear(); v.clear(); }},
+      {"addr:postcode", "*",
+       [&params](string & k, string & v) {
+         params.AddPostcode(v);
+         // todo @t.yan: uncomment when we stop to add postcodes to metadata
+         // k.clear();
+         // v.clear();
+      }},
 
       {"population", "*",
        [&params](string & k, string & v) {
          // Get population rank.
-         uint64_t n;
-         if (strings::to_uint64(v, n))
-           params.rank = feature::PopulationToRank(n);
-         k.clear();
-         v.clear();
+         uint64_t const population = generator::osm_element::GetPopulation(v);
+         if (population != 0)
+           params.rank = feature::PopulationToRank(population);
        }},
       {"ref", "*",
        [&params](string & k, string & v) {
@@ -895,7 +896,7 @@ void GetNameAndType(OsmElement * p, FeatureParams & params, function<bool(uint32
          {
            params.layer = atoi(v.c_str());
            int8_t const bound = 10;
-           params.layer = base::clamp(params.layer, static_cast<int8_t>(-bound), bound);
+           params.layer = base::Clamp(params.layer, static_cast<int8_t>(-bound), bound);
          }
        }},
   });

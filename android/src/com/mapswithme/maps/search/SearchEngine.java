@@ -1,8 +1,8 @@
 package com.mapswithme.maps.search;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.api.ParsedMwmRequest;
@@ -11,15 +11,21 @@ import com.mapswithme.maps.bookmarks.data.FeatureId;
 import com.mapswithme.util.Language;
 import com.mapswithme.util.Listeners;
 import com.mapswithme.util.concurrency.UiThread;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 
 public enum SearchEngine implements NativeSearchListener,
                                     NativeMapSearchListener,
+                                    NativeBookmarkSearchListener,
                                     NativeBookingFilterListener,
                                     Initializable
 {
   INSTANCE;
+
+  private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
+  private static final String TAG = SearchEngine.class.getSimpleName();
 
   // Query, which results are shown on the map.
   @Nullable
@@ -62,14 +68,18 @@ public enum SearchEngine implements NativeSearchListener,
         });
   }
 
-  public void onBookmarksResultsUpdate(@Nullable long[] bookmarkIds, long timestamp)
+  public void onBookmarkSearchResultsUpdate(@Nullable long[] bookmarkIds, long timestamp)
   {
-    // Dummy. Will be implemented soon.
+    for (NativeBookmarkSearchListener listener : mBookmarkListeners)
+      listener.onBookmarkSearchResultsUpdate(bookmarkIds, timestamp);
+    mBookmarkListeners.finishIterate();
   }
 
-  public void onBookmarksResultsEnd(@Nullable long[] bookmarkIds, long timestamp)
+  public void onBookmarkSearchResultsEnd(@Nullable long[] bookmarkIds, long timestamp)
   {
-    // Dummy. Will be implemented soon.
+    for (NativeBookmarkSearchListener listener : mBookmarkListeners)
+      listener.onBookmarkSearchResultsEnd(bookmarkIds, timestamp);
+    mBookmarkListeners.finishIterate();
   }
 
   @Override
@@ -88,6 +98,8 @@ public enum SearchEngine implements NativeSearchListener,
   private final Listeners<NativeSearchListener> mListeners = new Listeners<>();
   @NonNull
   private final Listeners<NativeMapSearchListener> mMapListeners = new Listeners<>();
+  @NonNull
+  private final Listeners<NativeBookmarkSearchListener> mBookmarkListeners = new Listeners<>();
   @NonNull
   private final Listeners<NativeBookingFilterListener> mHotelListeners = new Listeners<>();
 
@@ -109,6 +121,16 @@ public enum SearchEngine implements NativeSearchListener,
   public void removeMapListener(NativeMapSearchListener listener)
   {
     mMapListeners.unregister(listener);
+  }
+
+  public void addBookmarkListener(NativeBookmarkSearchListener listener)
+  {
+    mBookmarkListeners.register(listener);
+  }
+
+  public void removeBookmarkListener(NativeBookmarkSearchListener listener)
+  {
+    mBookmarkListeners.unregister(listener);
   }
 
   public void addHotelListener(@NonNull NativeBookingFilterListener listener)
@@ -169,6 +191,19 @@ public enum SearchEngine implements NativeSearchListener,
     } catch (UnsupportedEncodingException ignored) { }
   }
 
+  @MainThread
+  public boolean searchInBookmarks(@NonNull String query, long categoryId, long timestamp)
+  {
+    try
+    {
+      return nativeRunSearchInBookmarks(query.getBytes("utf-8"), categoryId, timestamp);
+    } catch (UnsupportedEncodingException ex)
+    {
+      LOGGER.w(TAG, "Unsupported encoding in bookmarks search.", ex);
+    }
+    return false;
+  }
+
   public void setQuery(@Nullable String query)
   {
     mQuery = query;
@@ -186,6 +221,7 @@ public enum SearchEngine implements NativeSearchListener,
     cancelApiCall();
     cancelAllSearches();
   }
+
   @MainThread
   private static void cancelApiCall()
   {
@@ -246,6 +282,8 @@ public enum SearchEngine implements NativeSearchListener,
    * @param bytes utf-8 formatted query bytes
    */
   private static native void nativeRunSearchMaps(byte[] bytes, String language, long timestamp);
+
+  private static native boolean nativeRunSearchInBookmarks(byte[] bytes, long categoryId, long timestamp);
 
   private static native void nativeShowResult(int index);
 

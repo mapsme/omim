@@ -20,6 +20,7 @@ final class TagsCollectionViewLayout: UICollectionViewLayout {
   @IBInspectable var itemWidth: CGFloat = 50
   @IBInspectable var lineSpacing: CGFloat = 10
   @IBInspectable var elementsSpacing: CGFloat = 10
+  @IBInspectable var showHeaders: Bool = true
 
   override func prepare() {
     super.prepare()
@@ -39,10 +40,10 @@ final class TagsCollectionViewLayout: UICollectionViewLayout {
       
       let indexPath = IndexPath(item: 0, section: section)
       
-      if collectionView.numberOfSections > 0 {
+      if showHeaders {
         let headerSize = headersCache[indexPath]?.size ?? CGSize(width: contentWidth, height: itemHeight)
         let frame = CGRect(x: 0, y: yOffset, width: headerSize.width, height: headerSize.height)
-        let attr = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, with: indexPath)
+        let attr = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, with: indexPath)
         attr.frame = frame
         headersCache[indexPath] = attr
         
@@ -98,7 +99,7 @@ final class TagsCollectionViewLayout: UICollectionViewLayout {
     //dont validate layout if original width already equals to contentWidth - it's the best deal we can offer to cell
     if preferredAttributes.size.height != originalAttributes.size.height ||
       (preferredAttributes.size.width != originalAttributes.size.width && originalAttributes.size.width < contentWidth) {
-      if preferredAttributes.representedElementKind == UICollectionElementKindSectionHeader {
+      if preferredAttributes.representedElementKind == UICollectionView.elementKindSectionHeader {
         headersCache[originalAttributes.indexPath]?.size = preferredAttributes.size
       } else {
         cellsCache[originalAttributes.indexPath]?.size = CGSize(width: min(preferredAttributes.size.width, contentWidth),

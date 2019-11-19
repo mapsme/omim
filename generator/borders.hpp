@@ -1,12 +1,20 @@
 #pragma once
 
+#include "generator/feature_builder.hpp"
+
+#include "storage/storage_defines.hpp"
+
+#include "coding/geometry_coding.hpp"
+#include "coding/reader.hpp"
+
 #include "geometry/rect2d.hpp"
 #include "geometry/region2d.hpp"
 #include "geometry/tree4d.hpp"
 
+#include <memory>
+#include <mutex>
 #include <string>
-
-#include <string>
+#include <unordered_map>
 #include <vector>
 
 #define BORDERS_DIR "borders/"
@@ -34,24 +42,93 @@ namespace borders
 using Region = m2::RegionD;
 using RegionsContainer = m4::Tree<Region>;
 
-struct CountryPolygons
+class CountryPolygons
 {
-  CountryPolygons(std::string const & name = "") : m_name(name), m_index(-1) {}
+public:
+  CountryPolygons() = default;
+  explicit CountryPolygons(std::string const & name, RegionsContainer const & regions)
+    : m_name(name)
+    , m_regions(regions)
+  {
+  }
 
+  CountryPolygons(CountryPolygons && other) = default;
+  CountryPolygons(CountryPolygons const & other) = default;
+
+  CountryPolygons & operator=(CountryPolygons && other) = default;
+  CountryPolygons & operator=(CountryPolygons const & other) = default;
+
+  std::string const & GetName() const { return m_name; }
   bool IsEmpty() const { return m_regions.IsEmpty(); }
   void Clear()
   {
     m_regions.Clear();
     m_name.clear();
-    m_index = -1;
   }
 
-  RegionsContainer m_regions;
+  bool Contains(m2::PointD const & point) const
+  {
+    return m_regions.ForAnyInRect(m2::RectD(point, point), [&](auto const & rgn) {
+      return rgn.Contains(point);
+    });
+  }
+
+  template <typename Do>
+  bool ForAnyRegionGeometry(Do && fn) const
+  {
+    return m_regions.ForAny([&](auto const & region) {
+      return fn(region.Data());
+    });
+  }
+
+private:
   std::string m_name;
-  mutable int m_index;
+  RegionsContainer m_regions;
 };
 
-using CountriesContainer = m4::Tree<CountryPolygons>;
+class CountriesContainer
+{
+public:
+  CountriesContainer() = default;
+  explicit CountriesContainer(m4::Tree<CountryPolygons> const & tree)
+    : m_regionsTree(tree)
+  {
+  }
+
+  template <typename ToDo>
+  void ForEachInRect(m2::RectD const & rect, ToDo && toDo) const
+  {
+    m_regionsTree.ForEachInRect(rect, std::forward<ToDo>(toDo));
+  }
+
+  bool HasRegionByName(std::string const & name) const
+  {
+    return m_regionsTree.FindNode([&](auto const & countryPolygons) {
+      return countryPolygons.GetName() == name;
+    });
+  }
+
+  CountryPolygons const & GetRegionByName(std::string const & name) const
+  {
+    ASSERT(HasRegionByName(name), ());
+
+    CountryPolygons const * country = nullptr;
+    m_regionsTree.FindNode([&](auto const & countryPolygons) {
+      if (countryPolygons.GetName() == name)
+      {
+        country = &countryPolygons;
+        return true;
+      }
+
+      return false;
+    });
+
+    return *country;
+  }
+
+private:
+  m4::Tree<CountryPolygons> m_regionsTree;
+};
 
 /// @return false if borderFile can't be opened
 bool LoadBorders(std::string const & borderFile, std::vector<m2::RegionD> & outBorders);
@@ -62,5 +139,33 @@ bool GetBordersRect(std::string const & baseDir, std::string const & country,
 bool LoadCountriesList(std::string const & baseDir, CountriesContainer & countries);
 
 void GeneratePackedBorders(std::string const & baseDir);
+
+template <typename Source>
+std::vector<m2::RegionD> ReadPolygonsOfOneBorder(Source & src)
+{
+  auto const count = ReadVarUint<uint32_t>(src);
+  std::vector<m2::RegionD> result(count);
+  for (size_t i = 0; i < count; ++i)
+  {
+    std::vector<m2::PointD> points;
+    serial::LoadOuterPath(src, serial::GeometryCodingParams(), points);
+    result[i] = m2::RegionD(std::move(points));
+  }
+
+  return result;
+}
+
+void DumpBorderToPolyFile(std::string const & filePath, storage::CountryId const & mwmName,
+                          std::vector<m2::RegionD> const & polygons);
 void UnpackBorders(std::string const & baseDir, std::string const & targetDir);
+
+class PackedBorders
+{
+public:
+  static CountriesContainer const & GetOrCreate(std::string const & name);
+
+private:
+  static std::mutex m_mutex;
+  static std::unordered_map<std::string, CountriesContainer> m_countries;
+};
 }  // namespace borders

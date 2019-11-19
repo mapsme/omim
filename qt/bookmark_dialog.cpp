@@ -129,13 +129,17 @@ void BookmarkDialog::OnCloseClick()
 
 void BookmarkDialog::OnImportClick()
 {
-  auto const name = QFileDialog::getOpenFileName(this /* parent */, tr("Open KML/KMZ..."),
-                                                 QString() /* dir */, "KML/KMZ files (*.kml *.kmz)");
-  auto const file = name.toStdString();
-  if (file.empty())
-    return;
+  auto const files = QFileDialog::getOpenFileNames(this /* parent */, tr("Open KML/KMZ..."),
+                                                   QString() /* dir */, "KML/KMZ files (*.kml *.kmz)");
 
-  m_framework.GetBookmarkManager().LoadBookmark(file, false /* isTemporaryFile */);
+  for (auto const & name : files)
+  {
+    auto const file = name.toStdString();
+    if (file.empty())
+      continue;
+
+    m_framework.GetBookmarkManager().LoadBookmark(file, false /* isTemporaryFile */);
+  }
 }
 
 void BookmarkDialog::OnExportClick()
@@ -278,8 +282,8 @@ void BookmarkDialog::FillTree()
         auto name = GetPreferredBookmarkStr(bookmark->GetName());
         if (name.empty())
         {
-          name = measurement_utils::FormatLatLon(MercatorBounds::YToLat(bookmark->GetPivot().y),
-                                                 MercatorBounds::XToLon(bookmark->GetPivot().x),
+          name = measurement_utils::FormatLatLon(mercator::YToLat(bookmark->GetPivot().y),
+                                                 mercator::XToLon(bookmark->GetPivot().x),
                                                  true /* withSemicolon */);
         }
         auto bookmarkItem = CreateTreeItem(name + " (Bookmark)", categoryItem);

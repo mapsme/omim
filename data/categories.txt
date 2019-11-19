@@ -215,7 +215,7 @@ it:Shopping|Negozio
 ja:ショッピング|買い物
 ko:쇼핑
 nb:Shopping|Butikk
-pl:Shopping|Sklep
+pl:Zakupy|Sklep
 pt:Compras
 pt-BR:Compras|Loja
 ro:Cumpărături|Magazin
@@ -755,20 +755,37 @@ sw:Kituo cha kuwoka mikate
 fa:نانوایی
 
 shop
-en:U+1F3EA|U+1F3EC
+en:Shop|U+1F3EA|U+1F3EC
+ru:Магазин
 ar:متجر
-da:forretning
-de:3Verbrauchermarkt
-ja:お買い物|ショップ|商店|雑貨
+cs:Obchod
+da:Butik|forretning
+de:3Verbrauchermarkt|Geschäft|Laden
+el:Κατάστημα
+es:Tienda
+fa:مرکزخرید
+fi:Kauppa
+fr:Magasin
+he:חנות
+hu:Bolt
+id:Toko
+it:Negozio
+ja:お買い物|ショップ|商店|雑貨|買い物
 ko:가게
-pl:towary
+nb:Butikk
+nl:Winkel
+pl:sklep|towary
 pt:2Loja
 pt-BR:2Loja|compras
-uk:2Магазин
+ro:Magazin
+sk:Obchod
+sv:Butik|Affär
+sw:Duka
+th:ร้านค้า
+tr:Mağaza
+uk:2Магазин|Крамниця
 zh-Hans:商店
 zh-Hant:1購物|店鋪|商店|雜貨店|便利商店
-el:Κατάστημα
-fa:مرکزخرید
 
 shop-cosmetics|@shopping
 en:4Beauty Care|home care|U+1F3EC|U+1F3EA
@@ -1014,7 +1031,7 @@ it:Enoteca
 ja:酒屋|お買い物|ショップ|商店|雑貨
 ko:주류 샵|가게
 nb:Vinmonopol|brennevin
-pl:Monopolowy|towary
+pl:Sklep monopolowy|towary
 pt:Loja de bebidas|bebidas alcoólicas|2loja
 pt-BR:Loja de bebidas|bebidas alcoólicas|2loja|compras
 ro:Băuturi alcoolice
@@ -1626,7 +1643,7 @@ it:3Mercato
 ja:1市場|お買い物|食料品
 ko:1시장
 nb:2Torg
-pl:Targ|targowisko
+pl:Targ|bazar|targowisko
 pt:3Mercado|mercado|loja
 pt-BR:3Mercado|mercadão|feira-livre|loja
 es:3Mercado
@@ -1931,24 +1948,6 @@ el:Μετρό|υπόγειος|ηλεκτρικός|σιδηρόδρομος|μ�
 sk:3Metro|podzemná doprava
 sw:Reli ya chini
 fa:ایستگاه مترو
-
-railway-level_crossing
-en:Level Crossing
-ru:Железнодорожный переезд
-fr:Passage à niveau
-de:Bahnübergang
-it:Passaggio a livello
-es:Paso a nivel
-pt:Passagem de nível
-pt-BR:Passagem em nível
-pl:Przejazd kolejowy
-cs:Železniční přejezd
-nl:Overweg
-da:Jernbaneoverskæring
-fi:Tasoristeys
-hu:Vasúti átjáró
-fa:تقاطع هم سطح با راه اهن
-el:Ισόπεδη σιδηροδρομική διάβαση|Πασάγιο
 
 amenity-ferry_terminal|@transport
 en:3Ferry|terminal|U+1F6A2|U+1F6A4|U+2693
@@ -2619,7 +2618,7 @@ it:Memoriale|monumento
 ja:追悼|1記念碑|追悼碑
 ko:1기념비
 nb:3Minnesmerke
-pl:3Pomnik
+pl:3Pomnik|Miejsce pamięci
 pt:Memorial|monumento
 pt-BR:Memorial|monumento|atração
 ro:3Comemorare
@@ -2706,12 +2705,14 @@ historic-ship|@tourism
 en:Ship|boat
 ru:Корабль|судно|лодка
 nl:Schip|boot
+pl:Łódź|okręt
 de:Schiff|Boot
 
 historic-tomb|@tourism
 en:Tomb|grave|memorial
 ru:Гробница|склеп|захоронение|могила|кладбище
 nl:Tombe|graf|gedenkteken
+pl:Grób|grobowiec
 de:Grab|Gedenkstätte
 
 leisure-dog_park
@@ -2719,7 +2720,8 @@ en:3Dog area|Dog park
 ru:Место для выгула собак|Площадка для собак|4Собачья площадка
 cs:3Psí hřiště
 nl:4Hondenpark|Hondengebied
-de:4Hundezone|Hundeauslaufzone
+pl:Park dla psów|Wyprowadzanie psów
+de:4Hundezone|Hundeauslaufzone|Hundeauslauffläche
 fi:Koirapuisto
 he:גינת כלבים
 ja:ドッグラン
@@ -2841,7 +2843,7 @@ ja:カーシェアリング
 ko:카셰어링
 nb:Kjøre sammen
 nl:3Carpool|Carpoolen|Auto delen|Autodelen
-pl:Carsharing
+pl:Współdzielenie samochodów|Wypożyczanie samochodów|samochód
 pt:Partilha de carro
 pt-BR:Compartilhamento de carro
 ro:Car Sharing
@@ -2937,7 +2939,7 @@ it:3Teatro
 ja:1劇場|シアター
 ko:1연극
 nb:Teater
-pl:3Teatr
+pl:3Teatr|przedstawienia
 pt:3Teatro
 pt-BR:3Teatro
 ro:Teatru
@@ -3178,6 +3180,7 @@ el:Συντριβάνι
 sk:Fontána
 fa:فواره
 
+# landuse-cemetery skipped if empty name
 amenity-grave_yard|landuse-cemetery
 en:Graveyard|cemetery
 ru:Кладбище
@@ -3351,6 +3354,7 @@ it:Dentista|studio odontoiatrico
 ja:歯科医|歯医者
 ko:치과
 nb:Tannlege
+pl:Dentysta
 pt:Dentista
 pt-BR:Dentista|cirurgião dentista|centro odontológico
 ro:Dentist
@@ -3529,6 +3533,7 @@ fr:dispensaire
 de:Apotheke|Drogerie
 ja:ドラッグストア|薬剤師|調剤|薬屋
 ko:약물 매장|약종상
+pl:Apteka
 pt:3Farmacêutico
 pt-BR:3drogaria
 es:3Farmacia
@@ -3615,7 +3620,7 @@ nl:3Postkantoor
 fr:3comptoir postal
 de:Postamt
 id:Kantor pos
-pl:listy
+pl:Poczta|listy
 pt-BR:3Correios
 ro:Oficiul postal
 es:4Oficina de correos|3post
@@ -3676,6 +3681,7 @@ it:Centro di riciclaggio
 ja:リサクルセンター
 ko:재활용센터
 nb:Resirkuleringssenter|innsamlingsstasjon
+pl:Przetwarzanie odpadów
 pt:Centro de reciclagem
 pt-BR:Reciclagem|descarte seletivo
 ro:Centru de reciclare
@@ -3909,6 +3915,7 @@ sk:Kontinent|svetadiel
 sw:Bara
 fa:قاره
 
+# Skipped if empty name
 place-country
 en:Country
 ru:Страна
@@ -3942,6 +3949,7 @@ sk:Krajina
 sw:Nchi
 fa:کشور
 
+# Skipped if empty name
 place-city
 en:City|town
 ru:Город
@@ -3975,6 +3983,7 @@ sk:Mesto
 sw:Mji
 fa:شهر
 
+# Skipped if empty name
 place-town
 en:Town|city
 ru:Город
@@ -4041,6 +4050,7 @@ sk:Hlavné mesto|metropole
 sw:Mji mkuu
 fa:پایتخت
 
+# Skipped if empty name
 place-county
 en:County
 ru:Округ|графство
@@ -4073,6 +4083,7 @@ el:Δήμος
 sk:Krajina
 fa:بخش
 
+# Skipped if empty name
 place-state
 en:State|province
 ru:Штат|провинция
@@ -4089,7 +4100,7 @@ it:Provincia|stato
 ja:州
 ko:1상태|지역
 nb:Stat
-pl:3Stan|4region|5prowincja
+pl:3Stan|4region|5prowincja|5województwo
 pt:Estado|província
 pt-BR:Estado|província
 ro:Stat
@@ -4106,6 +4117,7 @@ sk:Štát|kraj
 sw:Jimbo
 fa:ایالت
 
+# Skipped if empty name
 place-region
 en:Region
 ru:Район
@@ -4172,6 +4184,7 @@ sk:Ostrov
 sw:Kisiwa
 fa:جزیره
 
+# Skipped if empty name
 place-suburb|landuse-residential|place-neighbourhood
 en:Suburb|district
 ru:Район|микрорайон|округ|квартал
@@ -4337,6 +4350,7 @@ sk:Farma
 sw:Shamba
 fa:مزرعه
 
+# Skipped if empty name
 waterway-river|waterway-stream|waterway-riverbank
 en:River
 ru:Река
@@ -4370,6 +4384,7 @@ sk:Rieka
 sw:Mto
 fa:رودخانه
 
+# Skipped if empty name
 waterway-canal
 en:Canal
 ru:Канал
@@ -4435,6 +4450,7 @@ el:Πίστα αγώνων
 sk:Pretekárska dráha
 fa:کانال
 
+# Skipped if empty name
 highway-path|highway-footway|highway-steps
 en:Path
 ru:Дорожка
@@ -4468,6 +4484,7 @@ sk:Cesta
 sw:Jia
 fa:مسیر
 
+# Skipped if empty name
 highway-pedestrian|highway-primary|highway-primary_link|highway-residential|highway-secondary|highway-secondary_link|highway-tertiary|highway-tertiary_link|highway-service|highway-road|highway-track|highway-trunk|highway-trunk_link|highway-living_street|highway-unclassified|highway-motorway_link|highway-motorway
 en:Street|st|str|ave|road|rd
 ru:Улица|переулок|проезд|тракт|проспект|ул
@@ -4501,6 +4518,7 @@ sk:Ulica|cesta|ul
 sw:Barabara|mtaa|barabara kuu
 fa:جاده
 
+# Skipped if empty name
 highway-motorway_junction
 en:3Exit|3junction
 ru:3Съезд
@@ -4515,7 +4533,7 @@ hu:4Kijárat|4csatlakozás
 id:Keluar
 ja:1ジャンクション|料金所|高速道路|インターチェンジ
 nb:Utgang|kryss
-pl:3Wyjazd|wyjście
+pl:3Wyjazd|wyjście|zjazd
 pt:4Saída|3junção
 pt-BR:2Saída|3junção
 ro:Ieșire
@@ -4532,6 +4550,7 @@ sk:Dopravný uzol|3diaľnica
 sw:Njia panda
 fa:تقاطع
 
+# Skipped if empty name
 natural-peak
 en:Peak|mountain|mount|U+1F5FB|U+1F304
 ru:Гора|вершина|пик
@@ -4565,6 +4584,7 @@ sk:Hora|pohorie
 sw:Kilele|mlima
 fa:قله|کوه|کوهستان
 
+# Skipped if empty name
 natural-water|landuse-basin|landuse-reservoir
 en:Water
 ru:Водоём
@@ -4598,6 +4618,7 @@ sk:Voda
 sw:Maji
 fa:اب
 
+# Skipped if empty name
 natural-pond
 en:Pond|water
 ru:Пруд|водоём
@@ -4614,7 +4635,7 @@ it:Stagno|bacino
 ja:1池
 ko:1연못이|연못
 nb:Dam|vann
-pl:3Źródło|woda
+pl:3Staw|woda
 pt:Lagoa|água
 pt-BR:Lagoa|água
 ro:Heleșteu
@@ -4631,6 +4652,7 @@ sk:Rybník|vodná nádrž|voda
 sw:Bwawa
 fa:تالاب
 
+# Skipped if empty name
 natural-lake
 en:Lake|water
 ru:Озеро|водоём
@@ -4664,6 +4686,7 @@ sk:Jazero|vodná nádrž|voda
 sw:Ziwa
 fa:دریاچه
 
+# Skipped if empty name
 natural-wood|landuse-forest
 en:Forest|U+1F332|U+1F333
 ru:Лес
@@ -4775,7 +4798,7 @@ de:Gasthaus
 hu:Szálloda|hotel|motel|szállás
 it:albergo
 ja:宿|宿泊|旅館
-pl:motel
+pl:Hotel
 pt:motel
 pt-BR:motel
 es:motel
@@ -4906,7 +4929,7 @@ pl:4Fryzjer
 pt:Cabeleireiro
 pt-BR:Cabeleireiro|barbeiro
 ro:Coafor
-es:4Peluquero
+es:4Peluquería
 sv:3Frisör
 th:3ช่างทำผม
 tr:3Kuaför
@@ -4968,7 +4991,7 @@ it:Stadio|4sport
 ja:1スタジアム|競技場|運動場
 ko:1경기장|스포츠
 nb:Stadion
-pl:4Stadion
+pl:4Stadion|sport
 pt:Estádio|desporto
 pt-BR:Estádio|esporte
 ro:Stadion
@@ -5034,7 +5057,7 @@ it:Centro sportivo|sport
 ja:1スポーツセンター|スポーツ|体育館|総合体育館
 ko:1스포츠 센터|스포츠
 nb:Sportssenter
-pl:Cebtrum sportowe|sport
+pl:Centrum sportowe|sport
 pt:Desporto|sport
 pt-BR:Centro esportivo|clube|esporte
 ro:Sport
@@ -5154,6 +5177,7 @@ sport-equestrian
 en:Equestrian Sports
 ru:Конный спорт
 nl:Paardensport|ruitersport
+pl:Jazda konna
 fr:Sport équestre
 hu:Lovassportok
 de:Pferdesport
@@ -5167,6 +5191,7 @@ ru:Баскетбол
 de:Basketball
 es:Baloncesto
 nl:Basketbal
+pl:Koszykówka|basketball
 fi:Koripallo
 fr:Basket-ball
 de:Basketball
@@ -5182,6 +5207,7 @@ en:Athletics
 ru:Лёгкая атлетика
 es:Atletismo
 nl:Atletiek
+pl:Lekkoatletyka
 fi:Yleisurheilu
 fr:Athlétisme
 de:Leichtathletik
@@ -5190,7 +5216,8 @@ hu:Atlétika
 pt-BR:Atletismo
 el:Στίβος
 
-building|building-address
+# Skipped if empty name
+building
 en:Building|U+1F3E0|U+1F3E1|U+1F3E2
 ru:Здание
 ar:مبنى
@@ -5266,7 +5293,7 @@ de:Polizeiwache|Polizei
 it:Posto di polizia
 ja:1屯所|ポリス|交番|お巡りさん|おまわりさん|通報
 ko:보안대|경찰
-pl:komisariat
+pl:Policja|komisariat|posterunek
 pt-BR:Polícia
 sv:Polisstation
 uk:4Поліція
@@ -5308,6 +5335,7 @@ sk:4Veľvyslanectvo|4ambasáda
 sw:Ubalozi
 fa:سفارت
 
+# Skipped if empty name
 natural-bay
 en:Bay
 ru:Залив
@@ -5423,7 +5451,7 @@ ja:1キャンプ場|キャンプ|キャンピング|バーベキュー|テント
 ko:1캠핑|캠프|캠프장|캠핑을
 nb:Overnatting i bobiler
 pl:4Kamping|pole kempingowe
-pt:4Acampamento|área de acampamento|local de acampamento
+pt:4Campismo|Acampamento|área de acampamento|local de acampamento
 pt-BR:4Local de acampamento|área de acampamento|camping
 ro:Camping
 es:4Campamento|cámping|acampar|acampada
@@ -5455,7 +5483,7 @@ it:Area per campeggiatori
 ja:1キャラバンサイト
 ko:1대상 사이트
 nb:Camping
-pl:4Pole namiotowe
+pl:4Pole namiotowe|5karawaning
 pt:4Parque de campismo|caravanismo
 pt-BR:4Área de trailers|caravanismo|acampamento
 ro:Teren pentru campare
@@ -5504,6 +5532,7 @@ sk:Kancelária|úrad
 sw:Ofisi|kampuni
 fa:اداره
 
+# Skipped if empty name
 office-company
 en:Company Office
 ru:Организация
@@ -5520,6 +5549,7 @@ it:Ufficio aziendale
 ja:会社事務所
 ko:회사
 nb:Firmakontor
+pl:Biuro przedsiębiorstwa
 pt:Escritório da empresa
 pt-BR:Escritório de empresa
 ro:Sediu companei
@@ -5551,6 +5581,7 @@ it:Ufficio governativo|ufficio amministrativo
 ja:官庁
 ko:관공서
 nb:Offentlig kontor
+pl:Biuro instytucji rządowej
 pt:Gabinete governamental
 pt-BR:Gabinete governamental|órgão público
 ro:Birou guvernamental
@@ -5583,6 +5614,7 @@ it:Studio legale
 ja:弁護士事務所
 ko:법률 사무소
 nb:Advokatkontor
+pl:Adwokat|prawnik|radca prawny
 pt:Escritório de advogados
 pt-BR:Escritório de advogado|advocacia
 ro:Firmă de avocatură
@@ -5614,6 +5646,7 @@ it:Operatore di telefonia mobile
 ja:携帯電話事業者|キャリア
 ko:이동통신 사업자
 nb:Mobiloperatør
+pl:Operator sieci komórkowej
 pt:Operadora móvel
 pt-BR:Operadora de telecomunicações|telefonia|móvel
 ro:Operator de telefonie mobilă
@@ -5645,6 +5678,7 @@ it:Birrificio
 ja:醸造所
 ko:양조장
 nb:Bryggeri
+pl:Browar|piwo
 pt:Cervejeira
 pt-BR:Cervejaria
 ro:Berărie
@@ -5676,6 +5710,7 @@ it:Falegname
 ja:大工
 ko:목수
 nb:Snekker
+pl:Stolarz|cieśla
 pt:Carpinteiro
 pt-BR:Carpinteiro
 ro:Tâmplar
@@ -5707,6 +5742,7 @@ it:Elettricista
 ja:電気技師
 ko:전기기술자
 nb:Elektriker
+pl:Elektryk
 pt:Eletricista
 pt-BR:Eletricista
 ro:Electrician
@@ -5721,68 +5757,6 @@ zh-Hant:電工
 el:Ηλεκτρολόγος
 sk:Elektrikár
 fa:برق کار
-
-craft-gardener
-en:Gardener|Landscaper
-ru:Садовник
-ar:مهندس مناظر
-cs:Zahradník
-da:Gartner
-nl:Tuinarchitect|landschapsarchitect|tuinman
-fi:Puutarhuri
-fr:Paysagiste
-de:Landschaftsgärtner|Gärtner
-hu:Kertész
-id:Tukang kebun
-it:Giardiniere|architetto di esterni
-ja:造園家
-ko:조경사
-nb:Anleggsgartner
-pt:Paisagista
-pt-BR:Jardineiro|paisagista
-ro:Peisagist
-es:Paisajista
-sv:Trädgårdsmästare|landskapsarkitekt
-th:คนจัดสวน
-tr:Bahçe düzenleyici|peyzaj
-uk:Садівник
-vi:Người thiết kế và xây dựng cảnh quan
-zh-Hans:园林设计师
-zh-Hant:園藝師
-el:Κηπουρός|Κηποτέχνης
-sk:Záhradníctvo
-fa:باغبان
-
-craft-hvac
-en:Hvac|Air Conditioner
-ru:Кондиционеры
-ar:تكييف|مكيف هواء
-cs:HVAC|montér vzduchotechniky
-da:Blikkenslager|klimaanlæg
-nl:Airconditioning|luchtbehandeling|airco
-fi:Ilmastointilaite
-fr:Climatiseur
-de:Heizung|Lüftung|Klima|Installateur|Klimaanlage
-hu:Hűtés-fűtés szerelő|légkondicionáló
-id:Hvac
-it:Impianti HVAC|aria condizionata
-ja:冷暖房空調|エアコン
-ko:냉난방기|에어컨
-nb:Klimaanlegg|aircondition
-pl:Klimatyzacja
-pt:Ar-condicionado
-pt-BR:Ar-condicionado
-ro:Hvac|aparate de aer condiționat
-es:Aire acondicionado
-sv:Vvs|luftkonditionering
-th:ระบบปรับอากาศ|เครื่องปรับอากาศ
-tr:Klimacı
-uk:Кондиціонери
-vi:Điều hòa nhiệt độ
-zh-Hans:暖通工程师
-zh-Hant:空調設備
-el:Ψυκτικός|κλιματισμός
-sk:Vzduchotechnika
 
 craft-metal_construction
 en:Metal Worker
@@ -5800,6 +5774,7 @@ it:Fabbro
 ja:金属工
 ko:금속공
 nb:Metallarbeider
+pl:Kowal|obróbka metali
 pt:Metalúrgico
 pt-BR:Serralheiro|metalúrgico
 ro:Metalurgist
@@ -5814,37 +5789,6 @@ zh-Hant:鐵工
 el:Μεταλλουργός
 sk:Kovorobotník|kovospracovanie
 fa:اهن کار
-
-craft-painter
-en:Painter
-ru:Маляр|мастерская маляра
-ar:رسام
-cs:Malíř
-da:Maler
-nl:Schilder
-fi:Maalari
-fr:Peintre
-de:Maler
-hu:Festő
-id:Tukang cat
-it:Imbianchino|pittore
-ja:塗装工
-ko:페인트공
-nb:Maler
-pt:Pintor
-pt-BR:Pintor
-ro:Pictor
-es:Pintor
-sv:Målare
-th:ช่างทาสี
-tr:Boyacı
-uk:Маляр|малярська майстерня
-vi:Họa sỹ
-zh-Hans:油漆匠
-zh-Hant:油漆工
-el:Μπογιατζής|χρωματιστής
-sk:Maliar natierač
-fa:نقاش
 
 craft-photographer
 en:Photographer|photography Studio
@@ -5878,37 +5822,6 @@ el:Φωτογράφος|Στούντιο φωτογραφίας
 sk:Fotograf|fotoateliér
 fa:عکاس
 
-craft-plumber
-en:Plumber
-ru:Сантехник
-ar:سمكري
-cs:Instalatér
-da:VVS-mand
-nl:Loodgieter
-fi:Putkimies
-fr:Plombier
-de:Installateur|Klempner
-hu:Vízvezeték-szerelő
-id:Tukang pipa
-it:Idraulico|tubista
-ja:配管工
-ko:배관공
-nb:Rørlegger
-pt:Canalizador
-pt-BR:Encanador|bombeiro hidráulico
-ro:Instalator
-es:Fontanero
-sv:Vvs-montör|rörmokare
-th:ช่างประปา
-tr:Sıhhi tesisatçı|tesisatçı
-uk:Сантехнік
-vi:Thợ đường ống
-zh-Hans:管道工
-zh-Hant:水管工人|水電工
-el:Υδραυλικός
-sk:Klampiarstvo
-fa:لوله کش
-
 craft-shoemaker
 en:Shoe Repair
 ru:Ремонт обуви
@@ -5925,6 +5838,7 @@ it:Calzolaio|Riparazione di calzature
 ja:靴修理
 ko:구두수선
 nb:Skoreparasjon
+pl:Szewc|naprawa butów|obuwie
 pt:Sapateiro
 pt-BR:Sapateiro
 ro:Reparații încălțăminte
@@ -5956,6 +5870,7 @@ it:Sarto
 ja:仕立て屋
 ko:양복점
 nb:Skredder
+pl:Krawiec
 pt:Alfaiate
 pt-BR:Alfaiate|costureiro|conserto de roupas
 ro:Croitor
@@ -5971,6 +5886,7 @@ el:Ράφτης|ράπτης
 sk:Krajčírstvo
 fa:خیاطی
 
+# Skipped if empty name
 area:highway-footway|area:highway-pedestrian|area:highway-steps|place-square
 en:Square
 ru:Площадь
@@ -6166,38 +6082,6 @@ el:Παραλία|ακρογιαλιά
 sw:Pwani
 fa:ساحل
 
-highway-speed_camera
-en:3Speed Camera
-ru:Камера скорости
-ar:كاميرا لرصد السرعة
-cs:Rychlostní kamera
-da:Automatisk Trafikkontrol
-nl:Flitspaal
-fi:Nopeusvalvontakamera
-fr:Radar de vitesse
-de:Blitzer
-hu:Traffipax
-id:Kamera Kecepatan
-it:Autovelox
-ja:オービス
-ko:스피드 카메라
-nb:Fotoboks
-pl:Fotoradar
-pt:Radar de velocidade
-pt-BR:Radar de velocidade|Câmera de velocidade
-ro:Detector de viteză
-es:Radar de velocidad
-sv:Hastighetskamera|fartkamera
-th:กล้องตรวจจับความเร็ว
-tr:Hız Kamerası
-uk:Камера безпеки дорожнього руху
-vi:Camera bắn tốc độ
-zh-Hans:测速照相机
-zh-Hant:測速照相機
-el:Κάμερα ταχύτητας|ραντάρ
-sk:Rýchlostná kamera
-fa:دوربین سرعت سنج
-
 man_made-lighthouse
 en:Lighthouse
 ru:Маяк
@@ -6309,7 +6193,7 @@ it:Agenzia viaggi|tour
 ja:旅行会社|ツアー
 ko:여행사|투어
 nb:Reisebyrå|rundreiser
-pl:Agencja turystyczna|wycieczki
+pl:Agencja turystyczna|Biuro podróży|wycieczki
 pt:Agência de viagem
 pt-BR:Agência de viagem
 ro:Agenție de voiaj|tururi
@@ -6404,7 +6288,7 @@ it:Gommista
 ja:タイヤ専門店|ショップ
 ko:타이어 상점|상점
 nb:Dekkforretning
-pl:Wulkanizacja|punkt
+pl:Wulkanizacja|opony|punkt
 pt:Borracheiro|comércio
 pt-BR:Loja de pneus|borracharia|borracheiro|comércio
 ro:Magazin anvelope
@@ -6453,8 +6337,8 @@ sk:Autoumývareň
 fa:کارواش
 
 amenity-veterinary
-en:Veterinary Doctor
-ru:Ветеринарная клиника
+en:Veterinary Doctor|veterinary
+ru:Ветеринарная клиника|ветеринар
 ar:طبيب بيطري
 cs:Veterinář
 da:Dyrlæge
@@ -6532,7 +6416,7 @@ it:Asilo|cura dell'infanzia
 ja:託児所|保育園
 ko:보육|탁아
 nb:Førskole|Barnehage
-pl:Żłobek|Przedszkole
+pl:Opieka nad dzieckiem
 pt:Creche|jardim de infância
 pt-BR:Creche|jardim de infância
 ro:De îngrijire a copilului|Grădiniță|Îngrijire copii
@@ -6790,7 +6674,7 @@ it:Negozio di detersivi
 ja:化学薬品店
 ko:드럭 스토어
 nb:Husholdningsartikler
-pl:Drogeria
+pl:Drogeria|Chemia domowa
 pt:Drogaria
 pt-BR:Drogaria|farmácia
 ro:Mercerie
@@ -6889,7 +6773,7 @@ it:Ufficio turistico
 ja:観光案内所
 ko:관광정보센터
 nb:Turistkontor
-pl:Biuro podróży
+pl:Biuro informacji turystycznej
 pt:Gabinete de turismo
 pt-BR:Escritório de turismo
 ro:Birou de informații turistice
@@ -6921,7 +6805,7 @@ it:Centro ricreativo
 ja:コミュニティセンター
 ko:커뮤니티센터
 nb:Samfunnshus
-pl:Dom kultury
+pl:Centrum społeczności
 pt:Centro comunitário
 pt-BR:Centro comunitário
 ro:Centru comunitar
@@ -7033,6 +6917,7 @@ el:Αυτόματος πωλητής ποτών
 sk:Nápojový automat
 fa:ماشین فروش نوشیدنی
 
+# Skipped if empty name
 building-garage
 en:Garage
 ru:Гараж
@@ -7049,7 +6934,7 @@ it:Garage
 ja:車庫
 ko:정비소
 nb:Verksted
-pl:Warsztat samochodowy
+pl:Garaż samochodowy
 pt:Garagem
 pt-BR:Garagem
 ro:Garaj
@@ -7081,7 +6966,7 @@ it:Area di sosta
 ja:休憩所
 ko:휴게소
 nb:Rasteplass
-pl:Miejsce wypoczynku
+pl:Miejsce odpoczynku
 pt:Área de descanso
 pt-BR:Área de descanso
 ro:Zonă de odihnă
@@ -7096,38 +6981,7 @@ zh-Hant:休息區
 el:Χώρος ανάπαυσης αυτοκινητιστών
 sk:Odpočívadlo
 
-highway-traffic_signals
-en:Traffic Lights
-ru:Светофор
-ar:إشارات مرور
-cs:Semafor
-da:Trafiklys
-nl:Verkeerslichten
-fi:Liikennevalot
-fr:Feux de circulation
-de:Verkehrsampel
-hu:Jelzőlámpák|Közlekedési lámpák
-id:Lampu lalu lintas
-it:Semaforo
-ja:交通信号
-ko:신호등
-nb:Trafikklys
-pl:Sygnalizacja świetlna
-pt:Semáforos
-pt-BR:Semáforo|sinaleira|sinal de trânsito|farol
-ro:Semafoare
-es:Semáforos
-sv:Trafikljus
-th:สัญญาณไฟจราจร
-tr:Feux de circulation
-uk:Світлофор
-vi:Đèn Giao Thông
-zh-Hans:交通信号灯
-zh-Hant:紅綠燈
-el:Φανάρια κυκλοφορίας
-sk:Semafor
-fa:چراغ راهنما
-
+# Skipped if empty name
 man_made-chimney
 en:Factory Chimney
 ru:Заводская труба
@@ -7191,37 +7045,6 @@ el:Πύργος
 sk:Veža
 fa:برج
 
-power-substation
-en:Substation
-ru:Подстанция
-ar:محطة كهرباء فرعية
-cs:Rozvodna
-da:Transformerstation
-nl:Onderstation
-fi:Muuntoasema
-fr:Sous-station
-de:Umspannwerk
-hu:Alállomás
-id:Stasiun bawah tanah
-it:Sottostazione elettrica
-ja:変電所
-ko:변전소
-nb:Trafo
-pl:Podstacja
-pt:Subestação
-pt-BR:Subestação
-ro:Stație subterană
-es:Subestación
-sv:Ställverk
-th:สถานีไฟฟ้า
-tr:Sous-station
-uk:Підстанція
-vi:Trạm biến áp
-zh-Hans:变电站
-zh-Hant:變電所
-el:Υποσταθμός
-sk:Rozvodňa
-
 shop-bookmaker
 en:Bookmaker
 ru:Букмекерская контора
@@ -7270,7 +7093,7 @@ it:Pescivendolo
 ja:魚屋
 ko:생선가게
 nb:Fiskehandler
-pl:Sklep rybny
+pl:Sklep rybny|Owoce morza
 pt:Peixaria
 pt-BR:Peixaria
 ro:Pescărie
@@ -7334,7 +7157,7 @@ it:Negozio di alcolici
 ja:ワイン|酒屋|ワインショップ
 ko:와인 샵
 nb:Alkoholutsalg
-pl:Sklep monopolowy
+pl:Sklep z winami
 pt:Vinho|Loja de Vinhos
 pt-BR:Loja de vinhos|bebidas
 ro:Magazin de băuturi alcolice
@@ -7574,70 +7397,6 @@ el:Εισιτήρια στάθμευσης
 sk:Automat na výdaj parkovacích lístkov
 fa:پارکو متر
 
-barrier-block
-en:Block
-ru:Блок
-ar:حاجز
-cs:Blok
-da:Blokering
-nl:Blok
-fi:Este
-fr:Bloc
-de:Block
-hu:Blokk
-id:Blok
-it:Blocco
-ja:ブロック
-ko:블록
-nb:Blokk
-pl:Blok
-pt:Bloqueio
-pt-BR:Bloqueio
-ro:Bloc
-es:Bloque
-sv:Blockering
-th:บล็อก
-tr:Bloc
-uk:Блок
-vi:Khối
-zh-Hans:障碍
-zh-Hant:街區
-el:Εμπόδιο
-sk:Blok
-fa:بلوک|حفاظ
-
-barrier-bollard
-en:Pillar
-ru:Столбик
-ar:عمود حاجز قصير
-cs:Pilíř
-da:Søjle|pæl
-nl:Pilaar
-fi:Tolppa
-fr:Pilier
-de:Poller
-hu:Oszlop
-id:Pilar
-it:Pilastro
-ja:柱
-ko:기둥
-nb:Pullert
-pl:Kolumna
-pt:Pilar
-pt-BR:Pilar
-ro:Stâlp
-es:Bolardo
-sv:Stolpe
-th:เสา
-tr:Pilier
-uk:Стовпчик
-vi:Trụ
-zh-Hans:柱子
-zh-Hant:柱
-el:Πυλώνας
-sk:Pilier
-fa:ستون
-
 barrier-border_control
 en:Border Control
 ru:Погранконтроль
@@ -7669,198 +7428,6 @@ zh-Hant:邊境管制
 el:Έλεγχος συνόρων
 sk:Hraničná kontrola
 fa:کنترل مرزی
-
-barrier-entrance
-en:Entrance
-ru:Проход
-ar:مدخل الحاجز
-cs:Vstup
-da:Gennemgang
-nl:Ingang
-fi:Sisäänkäynti
-fr:Entrée
-de:Durchgang
-hu:Bejárat
-id:Pintu masuk
-it:Ingresso
-ja:エントランス
-ko:입구
-nb:Inngangspassasje
-pl:Wejście
-pt:Entrada
-pt-BR:Entrada
-ro:Intrare
-es:Entrada
-sv:Ingång
-th:ทางเข้า
-tr:Entrée
-uk:Прохід
-vi:Lối vào
-zh-Hans:入口
-zh-Hant:入口
-el:Είσοδος
-sk:Vstup
-fa:ورودی
-
-barrier-gate
-en:Gate
-ru:Ворота
-ar:بوابة
-cs:Brána
-da:Port|led|låge
-nl:Poort
-fi:Portti
-fr:Porte
-de:Tor
-hu:Kapu
-id:Gerbang
-it:Cancello
-ja:ゲート
-ko:게이트
-nb:Port
-pl:Brama
-pt:Portão
-pt-BR:Portão
-ro:Poartă
-es:Puerta
-sv:Grind
-th:ประตู
-tr:Porte
-uk:Ворота
-vi:Cổng
-zh-Hans:门
-zh-Hant:大門
-el:Πύλη
-sk:Brána
-fa:ورودی
-
-barrier-lift_gate
-en:Lift Gate
-ru:Шлагбаум
-ar:حاجز بوابة
-cs:Závora
-da:Bom
-nl:Slagboom
-fi:Puomi
-fr:Barrière levante
-de:Schranke
-hu:Emelkedő sorompó
-id:Polisi tidur
-it:Barriera ferroviaria
-ja:ブームバリア
-ko:차량차단기
-nb:Bom
-pl:Szlaban
-pt:Barreira
-pt-BR:Cancela
-ro:Barieră cu braț
-es:Barrera
-sv:Bom
-th:ไม้กั้น
-tr:Barrière levante
-uk:Шлагбаум
-vi:Thanh Chắn
-zh-Hans:水栅门
-zh-Hant:遮斷機
-el:Ανυψούμενη μπάρα
-sk:Závora
-fa:اسانسور
-
-barrier-stile
-en:Stile
-ru:Перелаз
-ar:ممر عبور
-cs:Sloupek
-da:Gærdebro
-nl:Tourniquet
-fi:Portaat
-fr:Échalier
-de:Zaunübertritt
-hu:Átjáró
-id:Undakan
-it:Scaletta per recinzioni
-ja:回転扉
-ko:디딤대
-nb:Sperre
-pl:Przełaz
-pt:Elevação
-pt-BR:Travessia em cerca ou muro
-ro:Barieră
-es:Escalón
-sv:Stätta
-th:บันไดข้าม
-tr:Échalier
-uk:Перелаз
-vi:Trụ chắn
-zh-Hans:台阶
-zh-Hant:梯磴
-el:Τουρνικέ
-sk:Turniket
-fa:پلکان
-
-barrier-toll_booth
-en:Toll Booth
-ru:Пункт оплаты
-ar:كشك رسوم عبور
-cs:Mýtné
-da:Betalingsstation
-nl:Tolhuisje|Tolhokje
-fi:Tietulliasema
-fr:Poste de péage
-de:Mautstelle
-hu:Díjfizető kapu
-id:Gerbang tol
-it:Casello di pedaggio
-ja:料金所
-ko:톨게이트
-nb:Bomstasjon
-pl:Kasa
-pt:Cabina de portagem
-pt-BR:Cabine de pedágio
-ro:Cabină de taxare
-es:Peaje
-sv:Tullhus
-th:ด่านเก็บเงิน
-tr:Poste de péage
-uk:Пункт оплати
-vi:Quầy Soát Vé
-zh-Hans:收费亭
-zh-Hant:收費站
-el:Σταθμός διοδίων
-sk:Mýtne
-fa:گیشه عوارضی
-
-entrance
-en:Entrance
-ru:Вход
-ar:مدخل
-cs:Vchod
-da:Indgang
-nl:Ingang
-fi:Sisäänkäynti
-fr:Entrée
-de:Eingang
-hu:Bejárat
-id:Pintu masuk
-it:Ingresso
-ja:エントランス
-ko:입구
-nb:Inngang
-pl:Wejście
-pt:Entrada
-pt-BR:Entrada
-ro:Intrare
-es:Entrada
-sv:Entré|ingång
-th:ทางเข้า
-tr:Entrée
-uk:Вхід
-vi:Lối vào
-zh-Hans:入口
-zh-Hant:入口
-el:Είσοδος
-sk:Vstup
-fa:ورودی
 
 leisure-water_park|@tourism|@children
 en:Water Park
@@ -7910,7 +7477,7 @@ it:Cisterna per acqua
 ja:給水塔
 ko:급수탑
 nb:Vanntårn
-pl:Wieża wodna
+pl:Wieża ciśnień
 pt:Torre de água
 pt-BR:Torre de água|caixa de água
 ro:Turn de apă
@@ -7942,7 +7509,7 @@ it:Mulino a vento
 ja:風車
 ko:풍차
 nb:Vindmølle
-pl:Wiatrak
+pl:Młyn wiatrowy
 pt:Moinho de vento
 pt-BR:Moinho de vento
 ro:Moară de vânt
@@ -7958,38 +7525,41 @@ el:Ανεμόμυλος
 sk:Veterný mlyn
 fa:توربین بادی
 
-military-bunker
-en:Bunker
-ru:Бункер
-ar:مأوى
-cs:Bunkr
-da:Bunker
-nl:Bunker
-fi:Bunkkeri
-fr:Bunker
-de:Bunker
-hu:Bunker
-id:Bunker
-it:Bunker
-ja:掩蔽壕
-ko:벙커
-nb:Bunker
-pl:Bunkier
-pt:Bunker
-pt-BR:Bunker
-ro:Buncăr
-es:Búnker
-sv:Bunker
-th:บังเกอร์
-tr:Bunker
-uk:Бункер
-vi:Boongke
-zh-Hans:地堡
-zh-Hant:地堡
-el:Στρατιωτική αποθήκη
-sk:Bunker
-fa:پناهگاه
+# We do not have bunkers now because we do not have styles to display them.
+# Consider adding after adding styles for bunker
+# military-bunker
+# en:Bunker
+# ru:Бункер
+# ar:مأوى
+# cs:Bunkr
+# da:Bunker
+# nl:Bunker
+# fi:Bunkkeri
+# fr:Bunker
+# de:Bunker
+# hu:Bunker
+# id:Bunker
+# it:Bunker
+# ja:掩蔽壕
+# ko:벙커
+# nb:Bunker
+# pl:Bunkier
+# pt:Bunker
+# pt-BR:Bunker
+# ro:Buncăr
+# es:Búnker
+# sv:Bunker
+# th:บังเกอร์
+# tr:Bunker
+# uk:Бункер
+# vi:Boongke
+# zh-Hans:地堡
+# zh-Hant:地堡
+# el:Στρατιωτική αποθήκη
+# sk:Bunker
+# fa:پناهگاه
 
+# Skipped if empty name
 natural-cave_entrance
 en:Cave Entrance
 ru:Пещера
@@ -8022,6 +7592,7 @@ el:Είσοδος σπηλαίου
 sk:Vstup do jaskyne
 fa:ورودی غار
 
+# Skipped if empty name
 natural-tree
 en:Tree
 ru:Дерево
@@ -8118,38 +7689,7 @@ el:Κτηματομεσίτης|Μεσίτης
 sk:Realitný agent
 fa:بنگاه معاملات ملکی
 
-power-pole|power-tower
-en:Power Tower
-ru:Опора ЛЭП
-ar:عمود كهرباء
-cs:Sloup elektrického vedení
-da:El-pol
-nl:Elektriciteitspaal
-fi:Sähköpylväs
-fr:Poteau électrique
-de:Freileitungsmast|Strommast
-hu:Távvezetékoszlop
-id:Menara listrik
-it:Palo elettrico
-ja:電柱
-ko:전봇대
-nb:Strømmast
-pl:Słup elektryczny
-pt:Poste de eletricidade
-pt-BR:Poste de eletricidade
-ro:Stâlp de electricitate
-es:Poste eléctrico
-sv:Elstolpe
-th:เสาไฟฟ้า
-tr:Poteau électrique
-uk:Стовп ЛЕП
-vi:Trụ Điện
-zh-Hans:电线杆
-zh-Hant:電塔
-el:Πυλώνες μεταφοράς ρεύματος
-sk:Stĺp elektrického vedenia
-fa:برج قدرت
-
+# Skipped if empty name
 waterway-lock_gate
 en:Lock Gate
 ru:Шлюз
@@ -8197,7 +7737,7 @@ it:Libreria|Scambio libri
 ja:書棚|図書交換
 ko:책장, 도서 교환
 nb:Bokhylle|bokbytte
-pl:Biblioteka|wymiana książek
+pl:Wymiana książek|Półka książkowa
 pt:Biblioteca livre|troca de livros
 pt-BR:Biblioteca livre|troca de livros
 ro:Bibliotecă|Schimb de cărți
@@ -8260,7 +7800,7 @@ it:Poligono di tiro
 ja:射撃場
 ko:발사 범위
 nb:Skytebane
-pl:Strzelnica
+pl:Strzelnica sportowa
 pt:Clube de tiro
 pt-BR:Clube de tiro
 ro:Tir
@@ -8292,7 +7832,7 @@ it:Centro natatorio
 ja:スイミングセンター
 ko:수영 센터
 nb:Svømmehall
-pl:Basen
+pl:Basen|Pływalnia
 pt:Centro de natação
 pt-BR:Centro de natação
 ro:Piscină
@@ -8519,7 +8059,7 @@ ja:インターネットカフェ
 ko:인터넷 카페
 nb:Internettkafé
 nl:Internetcafé
-pl:Kafejka internetowa
+pl:Kafejka internetowa|Kawiarenka internetowa
 pt:Cibercafé
 pt-BR:Cibercafé
 ro:Internet Cafe
@@ -8618,7 +8158,7 @@ ja:決済端末
 ko:결제 단말기
 nb:Betalingsterminal
 nl:Betaalautomaat
-pl:Wpłatomat
+pl:Wpłatomat|Terminal płatniczy
 pt:Terminal de pagamento
 pt-BR:Terminal de pagamento
 ro:Terminal de plăți
@@ -8717,7 +8257,7 @@ ja:除細動器
 ko:제세동기
 nb:Hjertestarter
 nl:AED|Defibrillator
-pl:Defibrylator
+pl:Defibrylator|AED
 pt:Desfibrilador
 pt-BR:Desfibrilador
 ro:Defibrilator
@@ -8783,7 +8323,7 @@ ja:フィットネスステーション
 ko:피트니스 센터
 nb:Treningssenter
 nl:Fitness-Station
-pl:Stacja fitness
+pl:Stacja fitness|Przyrządy do ćwiczeń
 pt:Estação de Fitness
 pt-BR:Estação de fitness
 ro:Sală de fitness
@@ -8797,39 +8337,6 @@ vi:Trạm tập thể hình
 zh-Hans:健身驿站
 zh-Hant:健身房
 fa:پارک سلامت
-
-man_made-surveillance
-en:Surveillance Camera
-ru:Камера наблюдения
-ar:كاميرا مراقبة
-cs:Bezpečnostní kamera
-da:Overvågningskamera
-de:Überwachungskamera
-el:Κάμερα παρακολούθησης
-es:Cámara de vigilancia
-fi:Valvontakamera
-fr:Caméra de surveillance
-hu:Térfigyelő kamera
-id:Kamera Pengawas
-it:Videocamera di sorveglianza
-ja:監視カメラ
-ko:감시 카메라
-nb:Overvåkingskamera
-nl:Bewakingscamera
-pl:Kamera monitoringu
-pt:Câmara de vigilância
-pt-BR:Câmara de vigilância
-ro:Cameră de supraveghere
-sk:Bezpečnostná kamera
-sv:Övervakningskamera
-sw:Kamera za Usalama
-th:กล้องวงจรปิด
-tr:Güvenlik Kamerası
-uk:Камера спостереження
-vi:Camera giám sát
-zh-Hans:监控摄像头
-zh-Hant:監控攝影機
-fa:دوربین نظارتی
 
 man_made-water_tap
 en:Water Tap
@@ -8897,6 +8404,7 @@ zh-Hans:保险机构
 zh-Hant:保險公司
 fa:دفتر بیمه
 
+# Skipped if empty name
 office-ngo
 en:NGO Office
 ru:Офис НКО
@@ -8948,7 +8456,7 @@ ja:アダルトショップ
 ko:성인용품 가게
 nb:Erotisk butikk
 nl:Erotiekwinkel
-pl:Sex shop
+pl:Sex shop|Artykuły erotyczne
 pt:Sex Shop
 pt-BR:Sex Shop
 ro:Magazin erotic
@@ -8963,41 +8471,8 @@ zh-Hans:成人用品店
 zh-Hant:情趣用品店
 fa:فروشگاه لوازم جنسی
 
-shop-funeral_directors
-en:Funeral Directors
-ru:Ритуальные услуги
-ar:منظموا الجنازات
-cs:Pohřební služba
-da:Bedemand
-de:Bestattungsinstitut
-el:Γραφεία τελετών|γραφείο κηδειών
-es:Funeraria
-fi:Hautaustoimisto
-fr:Pompes funèbres
-hu:Temetkezési iroda
-id:Direktur Pemakaman
-it:Pompe funebri
-ja:葬儀屋
-ko:장의사
-nb:Begravelsebyrå
-nl:Begrafenisondernemer
-pl:Celebranci pogrzebowi
-pt:Funerária
-pt-BR:Funerária
-ro:Pompe funebre
-sk:Pohrebníctvo
-sv:Begravningsentreprenörer
-sw:Wapangaji Mazishi
-th:สัปเหร่อ
-tr:Cenaze Levazımcısı
-uk:Ритуальна служба
-vi:Tổ chức tang lễ
-zh-Hans:殡仪馆
-zh-Hant:葬儀社
-fa:مسئول تشییع جنازه
-
 shop-massage
-en:Massage Parlour|massage|spa|massage center|massage therapy|massage services|massage salon|spa treatment|spa services
+en:Massage salon|Massage Parlour|massage|spa|massage center|massage therapy|massage services|spa treatment|spa services
 ru:Массажный салон|массаж|спа|спа-салон|салон красоты|массажный кабинет
 ar:قاعة تدليك
 cs:Masážní salon
@@ -9265,6 +8740,7 @@ en:Gallery|museum
 ru:Галерея|музей|картины|картинная галерея
 de:Galerie|Museum
 nl:Galerij|museum
+pl:Galeria|muzeum
 fa:گالری|موزه
 
 tourism-theme_park|@tourism|@children
@@ -9275,6 +8751,7 @@ fr:Parc d'attractions|Parc de loisirs
 es:Parque de atracciones
 fi:Huvipuisto
 nl:Pretpark|Attractiepark
+pl:Park tematyczny
 pt:Parque de diversão
 
 boundary-national_park|@tourism
@@ -9342,6 +8819,7 @@ vi:Giữ chỗ
 zh-Hans:野生动物园
 zh-Hant:自然保護區
 
+# Skipped if empty name
 natural-cape
 en:Cape
 ru:Мыс
@@ -9408,6 +8886,7 @@ zh-Hans:间歇泉
 zh-Hant:間歇泉
 fa:چشمه آب گرم
 
+# Skipped if empty name
 natural-glacier|@tourism
 en:Glacier
 ru:Ледник
@@ -9444,3 +8923,4 @@ fa:یخچال طبیعی
 highway-ford
 en:Ford
 ru:Брод
+pl:Bród

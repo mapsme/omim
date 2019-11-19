@@ -4,21 +4,15 @@
 #import "MWMBottomMenuControllerProtocol.h"
 #import "MWMBottomMenuLayout.h"
 #import "MWMButton.h"
-#import "MWMCommon.h"
 #import "MWMDiscoveryController.h"
 #import "MWMMapViewControlsManager.h"
-#import "MWMNetworkPolicy.h"
+#import "MWMNetworkPolicy+UI.h"
 #import "MapViewController.h"
 #import "MapsAppDelegate.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
 
-#include "Framework.h"
-
-#include "platform/platform.hpp"
-
-extern NSString * const kAlohalyticsTapEventKey;
-extern NSString * const kSearchStateKey;
+#include <CoreApi/Framework.h>
 
 namespace
 {
@@ -81,7 +75,11 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
     _mapViewController = controller;
     _delegate = delegate;
     [controller addChildViewController:self];
-    [controller.view addSubview:self.view];
+    self.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                  UIViewAutoresizingFlexibleTopMargin |
+                                  UIViewAutoresizingFlexibleBottomMargin |
+                                  UIViewAutoresizingFlexibleHeight);
+    [controller.controlsView addSubview:self.view];
     [controller.view layoutIfNeeded];
   }
   return self;
@@ -246,12 +244,12 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
 {
   [Statistics logEvent:kStatToolbarMenuClick withParameters:@{kStatItem : kStatDownloadGuides}];
   self.state = self.restoreState;
-  [self.mapViewController openCatalogAnimated:YES];
+  [self.mapViewController openCatalogAnimated:YES utm:MWMUTMToolbarButton];
 }
 
 - (void)menuActionBookingSearch
 {
-  [Statistics logEvent:kStatToolbarClick withParameters:@{kStatButton : kStatSearch}];
+  [Statistics logEvent:kStatToolbarMenuClick withParameters:@{kStatButton : kStatBooking}];
   self.state = MWMBottomMenuStateInactive;
   [MWMMapViewControlsManager.manager searchTextOnMap:[L(@"booking_hotel") stringByAppendingString:@" "]
                                       forInputLocale:[NSLocale currentLocale].localeIdentifier];
@@ -318,13 +316,12 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
 - (IBAction)discoveryTap
 {
   [Statistics logEvent:kStatToolbarClick withParameters:@{kStatButton : kStatDiscovery}];
-
   self.state = self.restoreState;
 
-  network_policy::CallPartnersApi([self](auto const & canUseNetwork) {
-    auto discovery = [MWMDiscoveryController instanceWithConnection:canUseNetwork.CanUse()];
+  [[MWMNetworkPolicy sharedPolicy] callOnlineApi:^(BOOL canUseNetwork) {
+    MWMDiscoveryController *discovery = [MWMDiscoveryController instanceWithConnection:canUseNetwork];
     [self.mapViewController.navigationController pushViewController:discovery animated:YES];
-  });
+  }];
 }
 
 - (IBAction)bookmarksButtonTouchUpInside
@@ -393,7 +390,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
   });
   BOOL const menuActive = (state == MWMBottomMenuStateActive);
   if (menuActive)
-    [self.mapViewController.view bringSubviewToFront:self.menuView];
+    [self.mapViewController.controlsView bringSubviewToFront:self.menuView];
 
   [self.dimBackground setVisible:menuActive completion:nil];
   self.menuView.state = state;

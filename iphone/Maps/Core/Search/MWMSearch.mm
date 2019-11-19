@@ -1,24 +1,11 @@
 #import "MWMSearch.h"
-#import <Crashlytics/Crashlytics.h>
 #import "MWMBannerHelpers.h"
 #import "MWMFrameworkListener.h"
 #import "SwiftBridge.h"
 
-#include "Framework.h"
+#include <CoreApi/Framework.h>
 
-#include "partners_api/booking_availability_params.hpp"
 #include "partners_api/ads_engine.hpp"
-
-#include "map/everywhere_search_params.hpp"
-#include "map/viewport_search_params.hpp"
-
-#include "map/booking_filter_params.hpp"
-
-#include "platform/network_policy.hpp"
-
-#include <chrono>
-#include <memory>
-#include <utility>
 
 namespace
 {
@@ -96,7 +83,7 @@ booking::filter::Tasks MakeBookingFilterTasks(booking::filter::Params && availab
   static MWMSearch * manager;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    manager = [[super alloc] initManager];
+    manager = [[self alloc] initManager];
   });
   return manager;
 }
@@ -118,8 +105,8 @@ booking::filter::Tasks MakeBookingFilterTasks(booking::filter::Params && availab
   if (availabilityTaskIt != tasks.end())
   {
     availabilityTaskIt->m_filterParams.m_callback =
-    [self, filterType](shared_ptr<booking::ParamsBase> const & apiParams,
-                        std::vector<FeatureID> const & sortedFeatures)
+    [self, filterType](std::shared_ptr<booking::ParamsBase> const & apiParams,
+                       std::vector<FeatureID> const & sortedFeatures)
     {
       auto & t = self->m_everywhereParams.m_bookingFilterTasks;
       auto const it = t.Find(filterType);
@@ -180,7 +167,7 @@ booking::filter::Tasks MakeBookingFilterTasks(booking::filter::Params && availab
 
 - (void)updateFilters
 {
-  shared_ptr<search::hotels_filter::Rule> const hotelsRules = self.filter ? [self.filter rules] : nullptr;
+  std::shared_ptr<search::hotels_filter::Rule> const hotelsRules = self.filter ? [self.filter rules] : nullptr;
   m_viewportParams.m_hotelsFilter = hotelsRules;
   m_everywhereParams.m_hotelsFilter = hotelsRules;
   
@@ -233,10 +220,10 @@ booking::filter::Tasks MakeBookingFilterTasks(booking::filter::Params && availab
   if (!query || query.length == 0)
     return;
 
-  string const locale = (!inputLocale || inputLocale.length == 0)
+  std::string const locale = (!inputLocale || inputLocale.length == 0)
                             ? [MWMSearch manager]->m_everywhereParams.m_inputLocale
                             : inputLocale.UTF8String;
-  string const text = query.precomposedStringWithCompatibilityMapping.UTF8String;
+  std::string const text = query.precomposedStringWithCompatibilityMapping.UTF8String;
   GetFramework().SaveSearchQuery(make_pair(locale, text));
 }
 
@@ -248,12 +235,12 @@ booking::filter::Tasks MakeBookingFilterTasks(booking::filter::Params && availab
   MWMSearch * manager = [MWMSearch manager];
   if (inputLocale.length != 0)
   {
-    string const locale = inputLocale.UTF8String;
+    std::string const locale = inputLocale.UTF8String;
     manager->m_everywhereParams.m_inputLocale = locale;
     manager->m_viewportParams.m_inputLocale = locale;
   }
   manager.lastQuery = query.precomposedStringWithCompatibilityMapping;
-  string const text = manager.lastQuery.UTF8String;
+  std::string const text = manager.lastQuery.UTF8String;
   manager->m_everywhereParams.m_query = text;
   manager->m_viewportParams.m_query = text;
   manager.textChanged = YES;

@@ -49,7 +49,7 @@ void TestAltitudeOfAllMwmFeatures(string const & countryId, TAltitude const alti
 
   LocalCountryFile const country = GetLocalCountryFileByCountryId(CountryFile(countryId));
   TEST_NOT_EQUAL(country, LocalCountryFile(), ());
-  TEST_NOT_EQUAL(country.GetFiles(), MapOptions::Nothing, (country));
+  TEST(country.HasFiles(), (country));
 
   pair<MwmSet::MwmId, MwmSet::RegResult> const regResult = dataSource.RegisterMap(country);
   TEST_EQUAL(regResult.second, MwmSet::RegResult::Success, ());
@@ -58,7 +58,7 @@ void TestAltitudeOfAllMwmFeatures(string const & countryId, TAltitude const alti
   unique_ptr<AltitudeLoader> altitudeLoader =
       make_unique<AltitudeLoader>(dataSource, regResult.first /* mwmId */);
 
-  ForEachFromDat(country.GetPath(MapOptions::Map), [&](FeatureType & f, uint32_t const & id) {
+  ForEachFromDat(country.GetPath(MapFileType::Map), [&](FeatureType & f, uint32_t const & id) {
     if (!routing::IsRoad(TypesHolder(f)))
       return;
 
@@ -73,7 +73,7 @@ void TestAltitudeOfAllMwmFeatures(string const & countryId, TAltitude const alti
 
     for (auto const altitude : altitudes)
     {
-      TEST_EQUAL(base::clamp(altitude, altitudeLowerBoundMeters, altitudeUpperBoundMeters), altitude,
+      TEST_EQUAL(base::Clamp(altitude, altitudeLowerBoundMeters, altitudeUpperBoundMeters), altitude,
                  ("Unexpected altitude. MWM:", countryId, ", feature id:", id, ", altitudes:", altitudes));
     }
   });

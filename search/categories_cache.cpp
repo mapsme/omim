@@ -52,15 +52,20 @@ CBV CategoriesCache::Load(MwmContext const & context) const
   });
 
   Retrieval retrieval(context, m_cancellable);
-  return CBV(retrieval.RetrieveAddressFeatures(request).m_features);
+  return retrieval.RetrieveAddressFeatures(request).m_features;
 }
 
 // StreetsCache ------------------------------------------------------------------------------------
 StreetsCache::StreetsCache(base::Cancellable const & cancellable)
-  : CategoriesCache(ftypes::IsStreetOrSuburbChecker::Instance(), cancellable)
+  : CategoriesCache(ftypes::IsStreetOrSquareChecker::Instance(), cancellable)
 {
 }
 
+// SuburbsCache ------------------------------------------------------------------------------------
+SuburbsCache::SuburbsCache(base::Cancellable const & cancellable)
+  : CategoriesCache(ftypes::IsSuburbChecker::Instance(), cancellable)
+{
+}
 // VillagesCache -----------------------------------------------------------------------------------
 VillagesCache::VillagesCache(base::Cancellable const & cancellable)
   : CategoriesCache(ftypes::IsVillageChecker::Instance(), cancellable)

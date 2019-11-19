@@ -45,7 +45,7 @@ public:
   {
     for (auto const & edge : routeEdges)
     {
-      m_routeLength += MercatorBounds::DistanceOnEarth(edge.GetStartJunction().GetPoint(),
+      m_routeLength += mercator::DistanceOnEarth(edge.GetStartJunction().GetPoint(),
                                                        edge.GetEndJunction().GetPoint());
     }
   }
@@ -57,7 +57,7 @@ public:
                         size_t & ingoingCount, TurnCandidates & outgoingTurns) const override
   {
     CHECK(!segmentRange.IsEmpty(), ("SegmentRange presents a fake feature.",
-                                    "junctionPoint:", MercatorBounds::ToLatLon(junctionPoint)));
+                                    "junctionPoint:", mercator::ToLatLon(junctionPoint)));
 
     ingoingCount = 0;
     outgoingTurns.candidates.clear();
@@ -178,7 +178,7 @@ bool BicycleDirectionsEngine::Generate(IndexRoadGraph const & graph, vector<Junc
   streetNames.clear();
   routeGeometry.clear();
   segments.clear();
-  
+
   size_t const pathSize = path.size();
   // Note. According to Route::IsValid() method route of zero or one point is invalid.
   if (pathSize <= 1)
@@ -199,9 +199,8 @@ bool BicycleDirectionsEngine::Generate(IndexRoadGraph const & graph, vector<Junc
     return false;
 
   ::RoutingResult resultGraph(routeEdges, m_adjacentEdges, m_pathSegments);
-  RouterDelegate delegate;
-
-  MakeTurnAnnotation(resultGraph, *m_numMwmIds, delegate, routeGeometry, turns, streetNames, segments);
+  MakeTurnAnnotation(resultGraph, *m_numMwmIds, cancellable, routeGeometry, turns, streetNames,
+                     segments);
   CHECK_EQUAL(routeGeometry.size(), pathSize, ());
   // In case of bicycle routing |m_pathSegments| may have an empty
   // |LoadedPathSegment::m_segments| fields. In that case |segments| is empty
@@ -276,7 +275,7 @@ void BicycleDirectionsEngine::GetSegmentRangeAndAdjacentEdges(
 
     if (inEdge.GetFeatureId().m_mwmId == edge.GetFeatureId().m_mwmId)
     {
-      ASSERT_LESS(MercatorBounds::DistanceOnEarth(junctionPoint, edge.GetStartJunction().GetPoint()),
+      ASSERT_LESS(mercator::DistanceOnEarth(junctionPoint, edge.GetStartJunction().GetPoint()),
                   turns::kFeaturesNearTurnMeters, ());
       m2::PointD const & outgoingPoint = edge.GetEndJunction().GetPoint();
       angle = base::RadToDeg(turns::PiMinusTwoVectorsAngle(junctionPoint, ingoingPoint, outgoingPoint));

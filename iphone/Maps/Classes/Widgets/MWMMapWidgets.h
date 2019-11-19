@@ -1,4 +1,4 @@
-#include "Framework.h"
+#include <CoreApi/Framework.h>
 
 @interface MWMMapWidgets : NSObject
 
@@ -8,5 +8,7 @@
 
 - (void)resize:(CGSize)size;
 - (void)updateAvailableArea:(CGRect)frame;
+- (void)updateLayout:(CGRect)frame;
+- (void)updateLayoutForAvailableArea;
 
 @end

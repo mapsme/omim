@@ -12,7 +12,7 @@
 #include "indexer/feature_processor.hpp"
 #include "indexer/features_offsets_table.hpp"
 
-#include "coding/file_container.hpp"
+#include "coding/files_container.hpp"
 #include "coding/file_writer.hpp"
 
 #include <vector>
@@ -30,8 +30,8 @@ bool GenerateTrafficKeysFromDataFile(std::string const & mwmPath)
     TrafficInfo::SerializeTrafficKeys(keys, buf);
 
     FilesContainerW writeContainer(mwmPath, FileWriter::OP_WRITE_EXISTING);
-    FileWriter writer = writeContainer.GetWriter(TRAFFIC_KEYS_FILE_TAG);
-    writer.Write(buf.data(), buf.size());
+    auto writer = writeContainer.GetWriter(TRAFFIC_KEYS_FILE_TAG);
+    writer->Write(buf.data(), buf.size());
   }
   catch (RootException const & e)
   {

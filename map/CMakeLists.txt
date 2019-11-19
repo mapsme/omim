@@ -32,10 +32,14 @@ set(
   bookmark_manager.hpp
   bookmarks_search_params.hpp
   caching_address_getter.hpp
+  catalog_headers_provider.cpp
+  catalog_headers_provider.hpp
   chart_generator.cpp
   chart_generator.hpp
   cloud.cpp
   cloud.hpp
+  crown.cpp
+  crown.hpp
   discovery/discovery_client_params.hpp
   discovery/discovery_manager.cpp
   discovery/discovery_manager.hpp
@@ -51,8 +55,8 @@ set(
   everywhere_search_params.hpp
   extrapolation/extrapolator.cpp
   extrapolation/extrapolator.hpp
-  feature_vec_model.cpp
-  feature_vec_model.hpp
+  features_fetcher.cpp
+  features_fetcher.hpp
   framework.cpp
   framework.hpp
   framework_light.cpp
@@ -89,12 +93,16 @@ set(
   notifications/notification_queue_serdes.hpp
   notifications/notification_queue_storage.cpp
   notifications/notification_queue_storage.hpp
+  onboarding.cpp
+  onboarding.hpp
   place_page_info.cpp
   place_page_info.hpp
+  position_provider.hpp
   power_management/power_manager.cpp
   power_management/power_manager.hpp
   power_management/power_management_schemas.cpp
   power_management/power_management_schemas.hpp
+  promo_catalog_poi_checker.hpp
   promo_delegate.cpp
   promo_delegate.hpp
   purchase.cpp

@@ -2,7 +2,7 @@
 
 @interface MWMPushNotifications : NSObject
 
-+ (void)setup:(NSDictionary *)launchOptions;
++ (void)setup;
 
 + (void)application:(UIApplication *)application
     didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
@@ -17,5 +17,7 @@
 + (void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void(^)(void))completionHandler;
+
++ (NSString * _Nonnull)formattedTimestamp;
 
 @end

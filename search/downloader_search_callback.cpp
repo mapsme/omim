@@ -14,6 +14,7 @@
 
 #include <set>
 #include <string>
+#include <utility>
 
 namespace
 {
@@ -54,7 +55,7 @@ DownloaderSearchCallback::DownloaderSearchCallback(Delegate & delegate,
   , m_dataSource(dataSource)
   , m_infoGetter(infoGetter)
   , m_storage(storage)
-  , m_params(move(params))
+  , m_params(std::move(params))
 {
 }
 
@@ -79,9 +80,9 @@ void DownloaderSearchCallback::operator()(search::Results const & results)
         continue;
       }
 
-      ftypes::Type const type = ftypes::IsLocalityChecker::Instance().GetType(*ft);
+      ftypes::LocalityType const type = ftypes::IsLocalityChecker::Instance().GetType(*ft);
 
-      if (type == ftypes::COUNTRY || type == ftypes::STATE)
+      if (type == ftypes::LocalityType::Country || type == ftypes::LocalityType::State)
       {
         std::string groupFeatureName;
         if (GetGroupCountryIdFromFeature(m_storage, *ft, groupFeatureName))

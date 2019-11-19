@@ -3,16 +3,21 @@
 #include "generator/holes.hpp"
 #include "generator/osm2type.hpp"
 #include "generator/osm_element.hpp"
-#include "generator/type_helper.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/feature_visibility.hpp"
-#include "indexer/ftypes_matcher.hpp"
 
 #include <utility>
 
+using namespace feature;
+
 namespace generator
 {
+std::shared_ptr<FeatureMakerBase> FeatureMakerSimple::Clone() const
+{
+  return std::make_shared<FeatureMakerSimple>();
+}
+
 void FeatureMakerSimple::ParseParams(FeatureParams & params, OsmElement & p) const
 {
   ftype::GetNameAndType(&p, params, [] (uint32_t type) {
@@ -22,8 +27,8 @@ void FeatureMakerSimple::ParseParams(FeatureParams & params, OsmElement & p) con
 
 bool FeatureMakerSimple::BuildFromNode(OsmElement & p, FeatureParams const & params)
 {
-  FeatureBuilder1 fb;
-  fb.SetCenter(MercatorBounds::FromLatLon(p.m_lat, p.m_lon));
+  FeatureBuilder fb;
+  fb.SetCenter(mercator::FromLatLon(p.m_lat, p.m_lon));
   fb.SetOsmId(base::MakeOsmNode(p.m_id));
   fb.SetParams(params);
   m_queue.push(std::move(fb));
@@ -36,11 +41,11 @@ bool FeatureMakerSimple::BuildFromWay(OsmElement & p, FeatureParams const & para
   if (nodes.size() < 2)
     return false;
 
-  FeatureBuilder1 fb;
+  FeatureBuilder fb;
   m2::PointD pt;
   for (uint64_t ref : nodes)
   {
-    if (!m_cache.GetNode(ref, pt.y, pt.x))
+    if (!m_cache->GetNode(ref, pt.y, pt.x))
       return false;
 
     fb.AddPoint(pt);
@@ -51,8 +56,9 @@ bool FeatureMakerSimple::BuildFromWay(OsmElement & p, FeatureParams const & para
   if (fb.IsGeometryClosed())
   {
     HolesProcessor processor(p.m_id, m_cache);
-    m_cache.ForEachRelationByWay(p.m_id, processor);
-    fb.SetAreaAddHoles(processor.GetHoles());
+    m_cache->ForEachRelationByWay(p.m_id, processor);
+    fb.SetHoles(processor.GetHoles());
+    fb.SetArea();
   }
   else
   {
@@ -70,9 +76,9 @@ bool FeatureMakerSimple::BuildFromRelation(OsmElement & p, FeatureParams const &
   auto const & holesGeometry = helper.GetHoles();
   auto & outer = helper.GetOuter();
   auto const size = m_queue.size();
-  auto const func = [&](FeatureBuilder1::PointSeq const & pts, std::vector<uint64_t> const & ids)
+  auto func = [&](FeatureBuilder::PointSeq const & pts, std::vector<uint64_t> const & ids)
   {
-    FeatureBuilder1 fb;
+    FeatureBuilder fb;
     for (uint64_t id : ids)
       fb.AddOsmId(base::MakeOsmWay(id));
 
@@ -83,13 +89,19 @@ bool FeatureMakerSimple::BuildFromRelation(OsmElement & p, FeatureParams const &
     if (!fb.IsGeometryClosed())
       return;
 
-    fb.SetAreaAddHoles(holesGeometry);
+    fb.SetHoles(holesGeometry);
     fb.SetParams(params);
+    fb.SetArea();
     m_queue.push(std::move(fb));
   };
 
-  outer.ForEachArea(true /* collectID */, func);
+  outer.ForEachArea(true /* collectID */, std::move(func));
   return size != m_queue.size();
+}
+
+std::shared_ptr<FeatureMakerBase> FeatureMaker::Clone() const
+{
+  return std::make_shared<FeatureMaker>();
 }
 
 void FeatureMaker::ParseParams(FeatureParams & params, OsmElement & p) const

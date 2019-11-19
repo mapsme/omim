@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "Δεν υπάρχουν ενεργές συνδρομές";
 
-"subscription_terms" = "Η πληρωμή θα χρεωθεί στον iTunes λογαριασμό σας κατά την επιβεβαίωση της αγοράς. Η συνδρομή θα ανανεωθεί αυτόματα εκτός εάν η αυτόματη ανανέωση είναι απενεργοποιημένη τουλάχιστον 24 ώρες πριν από το τέλος της τρέχουσας περιόδου. Ο λογαριασμός σας θα χρεωθεί σύμφωνα με το σχέδιο ανανέωσής σας εντός 24 ωρών πριν από το τέλος της τρέχουσας περιόδου. Μπορείτε να διαχειριστείτε ή να απενεργοποιήσετε την αυτόματη ανανέωση στις ρυθμίσεις του Apple ID λογαριασμού σας ανά πάσα στιγμή κατά την αγορά σας.";
-
 "subscriptions_title" = "Συνδρομές";
 
 "manage_subscription" = "Διαχείριση συνδρομής";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "Το αρχείο είναι κατεστραμμένο και δεν μπόρεσε να ανέβει. Παρακαλώ ανεβάστε ένα άλλο αρχείο.";
 
-"buy_btn" = "Αγοράστε για %s";
+"buy_btn" = "Αγορά οδηγού για %s";
 
 "download_guide_progress" = "Κατεβάζοντας τον οδηγό σας…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Δεν είναι δυνατή η δημιουργία διαδρομής. Επιλέξτε άλλα σημεία διαδρομής";
 
-"dialog_routing_download_files_carplay" = "Δεν είναι διαθέσιμοι όλοι οι χάρτες για τη δημιουργία της διαδρομής. Κατεβάστε τους από την εφαρμογή στο κινητό σας τηλέφωνο";
+"dialog_routing_download_files_carplay" = "Για να χτίσετε διαδρομή, κατεβάστε χάρτες που λείπουν στη συσκευή";
 
 "dialog_routing_system_error_carplay" = "Παρουσιάστηκε σφάλμα. Κάντε επανεκκίνηση της εφαρμογής";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Επιλέξτε ξενοδοχείο στον χάρτη";
+
+"popup_booking_download_guides_title" = "Έχετε κράτηση ξενοδοχείου;";
+
+"popup_booking_download_guides_message" = "Προγραμματίστε τη διαδρομή σας με τους έτοιμους οδηγούς MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Οδηγοί εκτός σύνδεσης";
+
+"popup_mwm_download_guides_cta" = "Επιλογή";
+
+"popup_mwm_download_guides_cta_1" = "Προβολή";
+
+"gallery_pp_download_guides_offline_title" = "Προγραμματίστε τις διακοπές σας με το MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Μην χάσετε τα πιο σημαντικά πράγματα με τη χρήση των διαδρομών από έμπειρους ταξιδιώτες";
+
+"gallery_pp_download_guides_offline_cta" = "Ενεργοποίηση της σύνδεσης με το διαδίκτυο";
+
+"gallery_pp_download_guides_title" = "Ταξιδιωτικοί οδηγοί";
+
+"native_screen_subscription_title" = "Πλήρης πρόσβαση σε 2000+ ταξιδιωτικούς οδηγούς!";
+
+"native_screen_subscription_message" = "Οι αξέχαστες διακοπές, όπου και με όποια παρέα κι αν ταξιδέψετε";
+
+"annual_subscription_title" = "Ετήσια";
+
+"montly_subscription_title" = "Μηνιαία";
+
+"annual_subscription_message" = "12 μήνες απεριόριστης πρόσβασης";
+
+"montly_subscription_message" = "1 μήνας απεριόριστης πρόσβασης";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Ευχαριστούμε για τη συνδρομή σας!";
+
+"subscription_success_dialog_message" = "Τώρα έχετε την απεριόριστη πρόσβαση στον κατάλογο των ταξιδιωτικών οδηγών";
+
+"renewal_screen_title" = "Η συνδρομή σας έχει λήξει";
+
+"renewal_screen_message" = "Όλοι οι ταξιδιωτικοί οδηγοί που κατεβάσατε με τη συνδρομή θα διαγραφτούν. Θέλετε να επαναφέρετε τη συνδρομή σας και να τους διατηρήσετε;";
+
+"renewal_screen_button_restore" = "Ναι, επαναφορά";
+
+"renewal_screen_button_cancel" = "Όχι, διαγραφή των οδηγών";
+
+"subscription_error_ping_title" = "Η αγορά δεν πραγματοποιήθηκε";
+
+"subscription_error_message" = "Η υπηρεσία δεν είναι διαθέσιμη στην περιοχή σας αυτή τη στιγμή. Παρακαλούμε, δοκιμάστε ξανά αργότερα";
+
+"subscription_error_button" = "Κατανοητό";
+
+"timeout_error_title" = "Ουπς, ο χρόνος έληξε!";
+
+"timeout_error_message" = "Οι διακομιστές μας δεν ανταποκρίνονται. Παρακαλούμε, ελέγξτε τη σύνδεσή σας με το διαδίκτυο και δοκιμάστε ξανά.";
+
+"per_month" = "/μήνας";
+
+"per_year" = "/έτος";
+
+"buy_btn_for_subscription" = "Πλήρης πρόσβαση από %s";
+
+"buy_btn_for_subscription_1" = "Αγορά ΟΛΩΝ οδηγών για %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Πλήρης πρόσβαση για %s/μην.";
+
+"buy_btn_for_subscription_ios_only_year" = "Πλήρης πρόσβαση για %s/το έτος";
+
+"subscription_terms_guides" = "Η πληρωμή θα πραγματοποιηθεί από το λογαριασμό σας στο iTunes μετά την επιβεβαίωση αγοράς. Η συνδρομή σας θα ανανεώνεται αυτόματα εκτός εάν η αυτόματη ανανέωση απενεργοποιηθεί τουλάχιστον 24 ώρες πριν από τη λήξη της τρέχουσας περιόδου. Τα ποσά θα χρεώνονται στο λογαριασμό σας σύμφωνα με το πρόγραμμα ανανέωσής σας εντός των 24 ωρών πριν από τη λήξη της τρέχουσας περιόδου. Μπορείτε να διαχειριστείτε την αυτόματη ανανέωση ή να την απενεργοποιήσετε στις ρυθμίσεις λογαριασμού Apple ID οποιαδήποτε στιγμή μετά την αγορά. Θα μπορείτε να χρησιμοποιήσετε τους οδηγούς που έχετε κατεβάσει με τη συνδρομή μόνο κατά τη διάρκεια της περιόδου ισχύος της. Οι οδηγοί με όλους τους σελιδοδείκτες θα διαγραφτούν αυτόματα αφού περάσουν 30 ημέρες μετά τη λήξη της συνδρομής.";
+
+"subscription_terms" = "Η πληρωμή θα χρεωθεί στον iTunes λογαριασμό σας κατά την επιβεβαίωση της αγοράς. Η συνδρομή θα ανανεωθεί αυτόματα εκτός εάν η αυτόματη ανανέωση είναι απενεργοποιημένη τουλάχιστον 24 ώρες πριν από το τέλος της τρέχουσας περιόδου. Ο λογαριασμός σας θα χρεωθεί σύμφωνα με το σχέδιο ανανέωσής σας εντός 24 ωρών πριν από το τέλος της τρέχουσας περιόδου. Μπορείτε να διαχειριστείτε ή να απενεργοποιήσετε την αυτόματη ανανέωση στις ρυθμίσεις του Apple ID λογαριασμού σας ανά πάσα στιγμή κατά την αγορά σας.";
+
+"whatsnew_carplay_title" = "Αυτοπλοήγηση MAPS.ME στο CarPlay!";
+
+"whatsnew_carplay_message" = "Ετικέτες, αναζήτηση, κάμερες ταχύτητας και ρυθμίσεις παράκαμψης — όλα λειτουργούν χωρίς την πρόσβαση στο διαδίκτυο";
+
+"whatsnew_subscription_title" = "Ανακάλυψε τον κόσμο με συνδρομή!";
+
+"whatsnew_subscription_message" = "Η απεριόριστη πρόσβαση στον κατάλογο των διαδρομών συμφέρει πιο πολύ από μια μεμονωμένη αγορά";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Ενημέρωση πλοήγησης";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Έχουμε βελτιώσει τη δημιουργία διαδρομών έως τα σημεία που βρίσκονται μακριά από τους δρόμους";
+
+"avoid_unpaved_carplay_1" = "Χ/χωματόδρ.";
+
+"avoid_unpaved_carplay_2" = "Χ/χωματόδρομους";
+
+"avoid_ferry_carplay_1" = "Χ/πορθμεία";
+
+"avoid_ferry_carplay_2" = "Χωρίς πορθμεία";
+
+"avoid_tolls_carplay_1" = "Χωρίς διόδια";
+
+"avoid_tolls_carplay_2" = "Χωρίς διόδια";
+
+"speedcams_alert_title_carplay_1" = "Κάμερες";
+
+"speedcams_alert_title_carplay_2" = "Πληροφ. γιαόρια";
+
+"download_map_carplay" = "Κάντε λήψη χαρτών στην εφαρμογή MAPS.ME στη συσκευή σας";
+
+"carplay_roundabout_exit" = "%s έξοδος";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Ταξινόμηση";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Ταξινόμηση σελιδοδ/τών";
+
+/* iOS */
+"sort_default" = "Ταξινόμηση κατά προεπιλογή";
+
+"sort_type" = "Ταξινόμηση ανά τύπο";
+
+"sort_distance" = "Ταξινόμηση κατά απόσταση";
+
+"sort_date" = "Ταξινόμηση κατά ημερομηνία";
+
+/* Android */
+"by_default" = "Προεπιλογή";
+
+/* Android */
+"by_type" = "Ανά τύπο";
+
+/* Android */
+"by_distance" = "Κατά απόσταση";
+
+/* Android */
+"by_date" = "Κατά ημερομηνία";
+
+"week_ago_sorttype" = "Μια βδομάδα πριν";
+
+"month_ago_sorttype" = "Ένας μήνας πριν";
+
+"moremonth_ago_sorttype" = "Περισσότερο από έναν μήνα πριν";
+
+"moreyear_ago_sorttype" = "Περισσότερο από ένα έτος πριν";
+
+"near_me_sorttype" = "Δίπλα μου";
+
+"others_sorttype" = "Άλλα";
+
+"food_places" = "Εστίαση";
+
+"tourist_places" = "Αξιοθέατα";
+
+"museums" = "Μουσεία";
+
+"parks" = "Πάρκα";
+
+"swim_places" = "Κολύμβηση";
+
+"mountains" = "Βουνά";
+
+"animals" = "Ζώα";
+
+"hotels" = "Διαμονή";
+
+"buildings" = "Κτήρια";
+
+"money" = "Χρήματα";
+
+"shops" = "Καταστήματα";
+
+"parkings" = "Χώροι στάθμευσης";
+
+"fuel_places" = "Πρατήρια βενζίνης";
+
+"water" = "Νερό";
+
+"medicine" = "Γιατρική βοήθεια";
+
+"search_in_the_list" = "Αναζήτηση στη λίστα";
+
+"view_on_map_bookmarks" = "Στον χάρτη";
+
+"more_bookmarks" = "Περισσότερα…";
+
+"no_items_found" = "Δεν βρέθηκε τίποτα";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Επεξεργασία";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Διαγραφή λίστας";
+
+"whatsnew_bookmarks_search_sort_title" = "Τάξη στους σελιδοδείκτες κάνει το ταξίδι άνετο";
+
+"whatsnew_bookmarks_search_sort_message" = "Ταξινόμηση των αγαπημένων σας τοποθεσιών ανά κατηγορία, ώρα προσθήκης και γεωγραφική κατανομή και γρήγορη εύρεση συγκεκριμένων σελιδοδεικτών με το όνομα";
+
+"popup_subscription_success_map_title" = "Ζήτω! Είστε συνδρομητής!";
+
+"popup_subscription_success_map_message" = "Τώρα μελετήστε τα καλύτερα τουριστικά αξιοθέατα στον κατάλογο MAPS.ME";
+
+"popup_subscription_success_map_start_button" = "Προβολή";
+
+"popup_subscription_success_map_not_now_button" = "Όχι τώρα";
+
+"religious_places" = "Άγιοι τόποι";
+
+"subscription_terms_android" = "Μετά την επιβεβαίωση αγοράς η πληρωμή θα χρεωθεί στο λογαριασμό σας στο Google Play. Η συνδρομή θα ανανεώνεται αυτόματα εκτός εάν η λειτουργία αυτόματης ανανέωσης απενεργοποιηθεί τουλάχιστον 24 ώρες πριν από το τέλος της τρέχουσας περιόδου. Ο λογαριασμός σας θα χρεώνεται σύμφωνα με το σχέδιο ανανέωσης συνδρομής σας εντός 24 ωρών πριν από το τέλος της τρέχουσας περιόδου. Μπορείτε να διαχειριστείτε ή να απενεργοποιήσετε τη δυνατότητα αυτόματης ανανέωσης στις Ρυθμίσεις λογαριασμού σας μετά την αγορά. Θα μπορέσετε να χρησιμοποιείτε τους οδηγούς που έχουν ληφθεί με τη συνδρομή μόνο μέχρι τη λήξη της. Μετά το πέρασμα 30 ημερών από τη λήξη της συνδρομής οι οδηγοί θα διαγραφούν αυτόματα.";
+
+"select_list" = "Επιλογή λίστας";
+
+"pp_discovery_place_related_header" = "Αυτό το μέρος υπάρχει στον κατάλογο οδηγών";
+
+"pp_discovery_place_related_header_1" = "Αυτό το μέρος υπάρχει στον οδηγό";
+
+"pp_discovery_place_related_cta_button" = "Προβολή";
+
+"pp_discovery_place_related_tag_header" = "Οδηγοί με ετικέτα «%s»";
+
+"pp_discovery_place_related_tag_header_1" = "Μπορεί επίσης να σας αρέσουν";
+
+"buy_btn_for_subscription_version_2" = "ΟΛΟΙ οι οδηγοί μόνο με %s/μήνα";
+
+"buy_btn_for_subscription_version_3" = "Ολόκληρος κατάλογος με %s/μήνα";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Πρόσβαση στον κατάλογο με %s/μήνα";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Πρόσβαση στον κατάλογο με %s/χρόνο";
+
+"subscription_screen_native_title_version_2" = "Πρόσβαση σε οδηγούς με τα Αγαπημένα!";
+
+"subscription_screen_native_message_version_2" = "Για να είστε έτοιμοι για κάθε ταξίδι σε 600+ πόλεις και 100+ χώρες";
+
+"catalog_no_internet_title" = "Δεν υπάρχει σύνδεση στο διαδίκτυο";
+
+"catalog_no_internet_button" = "Δοκιμάστε ξανά";
+
+"whatsnew_map_updates_title" = "Αεριωθούμενες ενημερώσεις χαρτών";
+
+"whatsnew_map_updates_message" = "Από εδώ και πέρα ενημερώνουμε τα δεδομένα 2 φορές πιο γρήγορα";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Χώρος στάθμευσης";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Τερματικό πληρωμών";
 
 "type.amenity.pharmacy" = "Φαρμακείο";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Ταχυδρομείο";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Παμπ";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Πανεπιστήμιο";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Αυτόματος πωλητής τσιγάρων";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Παροχή νερού";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Εμπόδιο";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Έλεγχος συνόρων";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Είσοδος";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Πύλη";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Ανυψούμενη μπάρα";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Τουρνικέ";
 
 "type.barrier.toll_booth" = "Σταθμός διοδίων";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Αρχαιολογικός χώρος";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Νερό";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Νεκροταφείο";
 
 "type.landuse.cemetery.christian" = "Νεκροταφείο";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Λιβάδι";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Λίμνη";
 

@@ -4,16 +4,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatDialog;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +32,7 @@ public class AlertDialog extends BaseMwmDialogFragment
   private static final String ARG_POSITIVE_BUTTON_ID = "arg_positive_button_id";
   private static final String ARG_NEGATIVE_BUTTON_ID = "arg_negative_button_id";
   private static final String ARG_IMAGE_RES_ID = "arg_image_res_id";
+  private static final String ARG_NEGATIVE_BTN_TEXT_COLOR_RES_ID = "arg_neg_btn_text_color_res_id";
   private static final String ARG_REQ_CODE = "arg_req_code";
   private static final String ARG_FRAGMENT_MANAGER_STRATEGY_INDEX = "arg_fragment_manager_strategy_index";
   private static final String ARG_DIALOG_VIEW_STRATEGY_INDEX = "arg_dialog_view_strategy_index";
@@ -41,14 +42,13 @@ public class AlertDialog extends BaseMwmDialogFragment
   @Nullable
   private AlertDialogCallback mTargetCallback;
 
-  @SuppressWarnings("NullableProblems")
   @NonNull
   private ResolveFragmentManagerStrategy mFragmentManagerStrategy = new ChildFragmentManagerStrategy();
 
   @NonNull
   private ResolveDialogViewStrategy mDialogViewStrategy = new AlertDialogStrategy();
 
-  public void show(@NonNull Fragment parent, @NonNull String tag)
+  public void show(@NonNull Fragment parent, @Nullable String tag)
   {
     FragmentManager fm = mFragmentManagerStrategy.resolve(parent);
     if (fm.findFragmentByTag(tag) != null)
@@ -57,7 +57,7 @@ public class AlertDialog extends BaseMwmDialogFragment
     showInternal(tag, fm);
   }
 
-  public void show(@NonNull FragmentActivity activity, @NonNull String tag)
+  public void show(@NonNull FragmentActivity activity, @Nullable String tag)
   {
     FragmentManager fm = mFragmentManagerStrategy.resolve(activity);
     if (fm.findFragmentByTag(tag) != null)
@@ -66,7 +66,7 @@ public class AlertDialog extends BaseMwmDialogFragment
     showInternal(tag, fm);
   }
 
-  private void showInternal(@NonNull String tag, @NonNull FragmentManager fm)
+  private void showInternal(@Nullable String tag, @NonNull FragmentManager fm)
   {
     FragmentTransaction transaction = fm.beginTransaction();
     transaction.add(this, tag);
@@ -76,7 +76,7 @@ public class AlertDialog extends BaseMwmDialogFragment
   @LayoutRes
   protected int getLayoutId()
   {
-    throw new UnsupportedOperationException("By default, you" +
+    throw new UnsupportedOperationException("By default, you " +
                                             "shouldn't implement this method." +
                                             " AlertDialog.Builder will do everything by itself. " +
                                             "But if you want to use this method, " +
@@ -99,10 +99,17 @@ public class AlertDialog extends BaseMwmDialogFragment
     }
   }
 
-  protected void onAttachInternal()
+  private void onAttachInternal()
   {
     mTargetCallback = (AlertDialogCallback) (getParentFragment() == null ? getTargetFragment()
                                                                          : getParentFragment());
+    if (mTargetCallback != null)
+      return;
+
+    if (!(getActivity() instanceof AlertDialogCallback))
+      return;
+
+    mTargetCallback = (AlertDialogCallback) getActivity();
   }
 
   @Override
@@ -170,6 +177,7 @@ public class AlertDialog extends BaseMwmDialogFragment
     args.putInt(ARG_NEGATIVE_BUTTON_ID, builder.getNegativeBtnId());
     args.putInt(ARG_REQ_CODE, builder.getReqCode());
     args.putInt(ARG_IMAGE_RES_ID, builder.getImageResId());
+    args.putInt(ARG_NEGATIVE_BTN_TEXT_COLOR_RES_ID, builder.getNegativeBtnTextColor());
 
     FragManagerStrategyType fragManagerStrategyType = builder.getFragManagerStrategyType();
     args.putInt(ARG_FRAGMENT_MANAGER_STRATEGY_INDEX, fragManagerStrategyType.ordinal());
@@ -215,10 +223,19 @@ public class AlertDialog extends BaseMwmDialogFragment
     @NonNull
     private DialogFactory mDialogFactory = new DefaultDialogFactory();
 
+    private int mNegativeBtnTextColor = INVALID_ID;
+
     @NonNull
     public Builder setReqCode(int reqCode)
     {
       mReqCode = reqCode;
+      return this;
+    }
+
+    @NonNull
+    public Builder setNegativeBtnTextColor(int negativeBtnTextColor)
+    {
+      mNegativeBtnTextColor = negativeBtnTextColor;
       return this;
     }
 
@@ -277,6 +294,11 @@ public class AlertDialog extends BaseMwmDialogFragment
     int getNegativeBtnId()
     {
       return mNegativeBtn;
+    }
+
+    int getNegativeBtnTextColor()
+    {
+      return mNegativeBtnTextColor;
     }
 
     @NonNull
@@ -382,7 +404,7 @@ public class AlertDialog extends BaseMwmDialogFragment
       int messageId = args.getInt(ARG_MESSAGE_ID);
       int positiveButtonId = args.getInt(ARG_POSITIVE_BUTTON_ID);
       int negativeButtonId = args.getInt(ARG_NEGATIVE_BUTTON_ID);
-      android.support.v7.app.AlertDialog.Builder builder =
+      androidx.appcompat.app.AlertDialog.Builder builder =
           DialogUtils.buildAlertDialog(instance.getContext(), titleId, messageId);
       builder.setPositiveButton(positiveButtonId,
                                 (dialog, which) -> instance.onPositiveClicked(which));
@@ -405,9 +427,17 @@ public class AlertDialog extends BaseMwmDialogFragment
       View root = inflater.inflate(fragment.getLayoutId(), null, false);
 
       TextView declineBtn = root.findViewById(R.id.decline_btn);
-      declineBtn.setText(args.getInt(ARG_NEGATIVE_BUTTON_ID));
-      declineBtn.setOnClickListener(
-          v -> fragment.onNegativeClicked(DialogInterface.BUTTON_NEGATIVE));
+      int declineBtnTextId = args.getInt(ARG_NEGATIVE_BUTTON_ID);
+      if (declineBtnTextId != INVALID_ID)
+      {
+        declineBtn.setText(args.getInt(ARG_NEGATIVE_BUTTON_ID));
+        declineBtn.setOnClickListener(
+            v -> fragment.onNegativeClicked(DialogInterface.BUTTON_NEGATIVE));
+      }
+      else
+      {
+        UiUtils.hide(declineBtn);
+      }
 
       TextView acceptBtn = root.findViewById(R.id.accept_btn);
       acceptBtn.setText(args.getInt(ARG_POSITIVE_BUTTON_ID));
@@ -426,6 +456,13 @@ public class AlertDialog extends BaseMwmDialogFragment
 
       imageView.setImageDrawable(hasImage ? fragment.getResources().getDrawable(imageResId)
                                           : null);
+
+      int negativeBtnTextColor = args.getInt(ARG_NEGATIVE_BTN_TEXT_COLOR_RES_ID);
+      boolean hasNegativeBtnCustomColor = negativeBtnTextColor != INVALID_ID;
+
+      if (hasNegativeBtnCustomColor)
+        declineBtn.setTextColor(fragment.getResources().getColor(negativeBtnTextColor));
+
       UiUtils.showIf(hasImage, imageView);
       appCompatDialog.setContentView(root);
       return appCompatDialog;
@@ -446,7 +483,7 @@ public class AlertDialog extends BaseMwmDialogFragment
     }
 
     @NonNull
-    private ResolveFragmentManagerStrategy getValue()
+    public ResolveFragmentManagerStrategy getValue()
     {
       return mStrategy;
     }

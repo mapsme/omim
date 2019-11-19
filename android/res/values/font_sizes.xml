@@ -6,9 +6,11 @@
   <!-- we use slightly greater font sizes, then in default material styles -->
   <dimen name="text_size_display_2">40sp</dimen>
   <dimen name="text_size_display_1">36sp</dimen>
+  <dimen name="text_size_display_0">34sp</dimen>
   <dimen name="text_size_headline">28sp</dimen>
   <dimen name="text_size_title">24sp</dimen>
   <dimen name="text_size_toolbar">20sp</dimen>
+  <dimen name="text_size_body_0">18sp</dimen>
   <dimen name="text_size_body_1">16sp</dimen>
   <dimen name="text_size_body_2">16sp</dimen>
   <dimen name="text_size_body_3">14sp</dimen>
@@ -18,6 +20,9 @@
   <dimen name="text_size_icon_title">10sp</dimen>
   <dimen name="text_size_button">16sp</dimen>
   <dimen name="text_size_alert_dialog_title">20sp</dimen>
+  <dimen name="line_spacing_extra_0">2sp</dimen>
+  <dimen name="line_spacing_extra_1">4sp</dimen>
+  <dimen name="line_spacing_extra_2">6sp</dimen>
 
   <!-- BASE TEXT SIZES -->
 
@@ -47,4 +52,5 @@
   <dimen name="text_size_nav_dimension">20sp</dimen>
 
   <dimen name="text_size_banner">8sp</dimen>
+  <dimen name="terms_of_use_line_spacing">2sp</dimen>
 </resources>

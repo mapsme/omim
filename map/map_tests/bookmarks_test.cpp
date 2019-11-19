@@ -22,6 +22,7 @@
 
 #include <array>
 #include <fstream>
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -141,9 +142,14 @@ BookmarkManager::Callbacks const bmCallbacks(
     static StringsBundle dummyBundle;
     return dummyBundle;
   },
+  static_cast<BookmarkManager::Callbacks::GetSeacrhAPIFn>(nullptr),
+  static_cast<BookmarkCatalog::HeadersProvider>(nullptr),
   static_cast<BookmarkManager::Callbacks::CreatedBookmarksCallback>(nullptr),
   static_cast<BookmarkManager::Callbacks::UpdatedBookmarksCallback>(nullptr),
-  static_cast<BookmarkManager::Callbacks::DeletedBookmarksCallback>(nullptr));
+  static_cast<BookmarkManager::Callbacks::DeletedBookmarksCallback>(nullptr),
+  static_cast<BookmarkManager::Callbacks::AttachedBookmarksCallback>(nullptr),
+  static_cast<BookmarkManager::Callbacks::DetachedBookmarksCallback>(nullptr)
+);
 
 void CheckBookmarks(BookmarkManager const & bmManager, kml::MarkGroupId groupId)
 {
@@ -167,8 +173,8 @@ void CheckBookmarks(BookmarkManager const & bmManager, kml::MarkGroupId groupId)
   m2::PointD org = bm->GetPivot();
 
   double const kEps = 1e-6;
-  TEST(base::AlmostEqualAbs(MercatorBounds::XToLon(org.x), 27.566765, kEps), ());
-  TEST(base::AlmostEqualAbs(MercatorBounds::YToLat(org.y), 53.900047, kEps), ());
+  TEST(base::AlmostEqualAbs(mercator::XToLon(org.x), 27.566765, kEps), ());
+  TEST(base::AlmostEqualAbs(mercator::YToLat(org.y), 53.900047, kEps), ());
   TEST_EQUAL(kml::GetDefaultStr(bm->GetName()), "From: Минск, Минская область, Беларусь", ());
   TEST_EQUAL(bm->GetColor(), kml::PredefinedColor::Blue, ());
   TEST_EQUAL(bm->GetDescription(), "", ());
@@ -176,8 +182,8 @@ void CheckBookmarks(BookmarkManager const & bmManager, kml::MarkGroupId groupId)
 
   bm = bmManager.GetBookmark(*it++);
   org = bm->GetPivot();
-  TEST(base::AlmostEqualAbs(MercatorBounds::XToLon(org.x), 27.551532, kEps), ());
-  TEST(base::AlmostEqualAbs(MercatorBounds::YToLat(org.y), 53.89306, kEps), ());
+  TEST(base::AlmostEqualAbs(mercator::XToLon(org.x), 27.551532, kEps), ());
+  TEST(base::AlmostEqualAbs(mercator::YToLat(org.y), 53.89306, kEps), ());
   TEST_EQUAL(kml::GetDefaultStr(bm->GetName()), "<MWM & Sons>", ());
   TEST_EQUAL(bm->GetDescription(), "Amps & <brackets>", ());
   TEST_EQUAL(kml::ToSecondsSinceEpoch(bm->GetTimeStamp()), 0, ());
@@ -446,7 +452,7 @@ namespace
 void CheckPlace(Framework const & fm, shared_ptr<MwmInfo> mwmInfo, double lat, double lon,
                 StringUtf8Multilang const & streetNames, string const & houseNumber)
 {
-  auto const info = fm.GetAddressAtPoint(MercatorBounds::FromLatLon(lat, lon));
+  auto const info = fm.GetAddressAtPoint(mercator::FromLatLon(lat, lon));
 
   string streetName;
   auto const deviceLang = StringUtf8Multilang::GetLangIndex(languages::GetCurrentNorm());
@@ -584,6 +590,354 @@ UNIT_TEST(Bookmarks_AddingMoving)
   TEST_EQUAL(mark->GetColor(), kml::PredefinedColor::Blue, ());
 
   DeleteCategoryFiles(arrCat);
+}
+
+UNIT_TEST(Bookmarks_Sorting)
+{
+  Framework fm(kFrameworkParams);
+  fm.DeregisterAllMaps();
+  fm.RegisterMap(platform::LocalCountryFile::MakeForTesting("World"));
+
+  BookmarkManager & bmManager = fm.GetBookmarkManager();
+  bmManager.EnableTestMode(true);
+
+  auto const kDay = std::chrono::hours(24);
+  auto const kWeek = 7 * kDay;
+  auto const kMonth = 31 * kDay;
+  auto const kYear = 365 * kDay;
+  auto const kUnknownTime = std::chrono::hours(0);
+  auto const currentTime = std::chrono::system_clock::now();
+
+  auto const & c = classif();
+  auto const setFeatureTypes = [&c](std::vector<std::string> const & readableTypes, kml::BookmarkData & bmData)
+  {
+    for (auto const & readableType : readableTypes)
+    {
+      auto const type = c.GetTypeByReadableObjectName(readableType);
+      if (c.IsTypeValid(type))
+      {
+        auto const typeInd = c.GetIndexForType(type);
+        bmData.m_featureTypes.push_back(typeInd);
+      }
+    }
+  };
+
+  struct TestMarkData
+  {
+    kml::MarkId m_markId;
+    m2::PointD m_position;
+    std::chrono::hours m_hoursSinceCreation;
+    std::vector<std::string> m_types;
+  };
+
+  struct TestTrackData
+  {
+    kml::TrackId m_trackId;
+    std::chrono::hours m_hoursSinceCreation;
+  };
+
+  auto const kMoscowCenter = mercator::FromLatLon(55.750441, 37.6175138);
+
+  auto const addrMoscow = fm.GetBookmarkManager().GetLocalizedRegionAddress(kMoscowCenter);
+
+  double constexpr kNearR = 20 * 1000;
+  m2::PointD const myPos = mercator::GetSmPoint(kMoscowCenter, -kNearR, 0.0);
+
+  std::vector<TestMarkData> testMarksData = {
+    {0, mercator::GetSmPoint(myPos, kNearR * 0.07, 0.0), kDay + std::chrono::hours(1), {"historic-ruins"}},
+    {1, mercator::GetSmPoint(myPos, kNearR * 0.06, 0.0), kUnknownTime, {"amenity-restaurant", "cuisine-sushi"}},
+    {2, mercator::GetSmPoint(myPos, kNearR * 0.05, 0.0), kUnknownTime, {"shop-music", "shop-gift"}},
+    {3, mercator::GetSmPoint(myPos, kNearR * 1.01, 0.0), kWeek + std::chrono::hours(2), {"historic-castle"}},
+    {4, mercator::GetSmPoint(myPos, kNearR * 0.04, 0.0), kWeek + std::chrono::hours(3), {"amenity-fast_food"}},
+    {5, mercator::GetSmPoint(myPos, kNearR * 1.02, 0.0), kMonth + std::chrono::hours(1), {"historic-memorial"}},
+    {6, mercator::GetSmPoint(myPos, kNearR * 0.03, 0.0), kMonth + std::chrono::hours(2), {"shop-music"}},
+    {7, mercator::GetSmPoint(myPos, kNearR * 1.05, 0.0), kUnknownTime, {"amenity-cinema"}},
+    {8, mercator::GetSmPoint(myPos, kNearR * 0.02, 0.0), std::chrono::hours(1), {"leisure-stadium"}},
+    {9, mercator::GetSmPoint(myPos, kNearR * 1.06, 0.0), kDay + std::chrono::hours(3), {"amenity-bar"}},
+    {10, mercator::GetSmPoint(myPos, kNearR * 1.03, 0.0), kYear + std::chrono::hours(3), {"historic-castle"}},
+    {11, m2::PointD(0.0, 0.0), kWeek + std::chrono::hours(1), {}},
+    {12, mercator::GetSmPoint(myPos, kNearR * 1.04, 0.0), kDay + std::chrono::hours(2), {"shop-music"}},
+  };
+
+  std::vector<TestTrackData> testTracksData = {
+    {0, kDay + std::chrono::hours(1)},
+    {1, kUnknownTime},
+    {2, kMonth + std::chrono::hours(1)}
+  };
+
+  BookmarkManager::SortedBlocksCollection expectedSortedByDistance = {
+    {BookmarkManager::GetTracksSortedBlockName(), {}, {0, 1, 2}},
+    {BookmarkManager::GetNearMeSortedBlockName(), {8, 6, 4, 2, 1, 0}, {}},
+    {addrMoscow, {3, 5, 10, 12, 7, 9}, {}},
+    {BookmarkManager::GetOthersSortedBlockName(), {11}, {}}};
+
+  BookmarkManager::SortedBlocksCollection expectedSortedByTime = {
+    {BookmarkManager::GetTracksSortedBlockName(), {}, {0, 2, 1}},
+    {BookmarkManager::GetSortedByTimeBlockName(BookmarkManager::SortedByTimeBlockType::WeekAgo), {8, 0, 12, 9}, {}},
+    {BookmarkManager::GetSortedByTimeBlockName(BookmarkManager::SortedByTimeBlockType::MonthAgo), {11, 3, 4}, {}},
+    {BookmarkManager::GetSortedByTimeBlockName(BookmarkManager::SortedByTimeBlockType::MoreThanMonthAgo), {5, 6}, {}},
+    {BookmarkManager::GetSortedByTimeBlockName(BookmarkManager::SortedByTimeBlockType::MoreThanYearAgo), {10}, {}},
+    {BookmarkManager::GetSortedByTimeBlockName(BookmarkManager::SortedByTimeBlockType::Others), {7, 2, 1}, {}}};
+
+  BookmarkManager::SortedBlocksCollection expectedSortedByType = {
+    {BookmarkManager::GetTracksSortedBlockName(), {}, {0, 1, 2}},
+    {GetLocalizedBookmarkBaseType(BookmarkBaseType::Sights), {0, 3, 5, 10}, {}},
+    {GetLocalizedBookmarkBaseType(BookmarkBaseType::Food), {9, 4, 1}, {}},
+    {GetLocalizedBookmarkBaseType(BookmarkBaseType::Shop), {12, 6, 2}, {}},
+    {BookmarkManager::GetOthersSortedBlockName(), {8, 11, 7}, {}}};
+
+  auto const kBerlin1 = mercator::FromLatLon(52.5038994, 13.3982282);
+  auto const kBerlin2 = mercator::FromLatLon(52.5007139, 13.4005403);
+  auto const kBerlin3 = mercator::FromLatLon(52.437256, 13.3026692);
+  auto const kMinsk1 = mercator::FromLatLon(53.9040184, 27.5567595);
+  auto const kMinsk2 = mercator::FromLatLon(53.9042397, 27.5593612);
+  auto const kMinsk3 = mercator::FromLatLon(53.9005419, 27.5416291);
+  auto const kMoscow1 = mercator::FromLatLon(55.7640256, 37.5922593);
+  auto const kMoscow2 = mercator::FromLatLon(55.7496148, 37.6137586);
+  auto const kGreenland = mercator::FromLatLon(62.730205, -46.939619);
+  auto const kWashington = mercator::FromLatLon(38.9005971, -77.0385621);
+  auto const kKathmandu = mercator::FromLatLon(27.6739262, 85.3255313);
+  auto const kVladimir = mercator::FromLatLon(56.2102137, 40.5195297);
+  auto const kBermuda = mercator::FromLatLon(32.2946391, -64.7820014);
+
+  std::vector<TestMarkData> testMarksData2 = {
+    {100,  kBerlin1, kUnknownTime, {"amenity", "building", "wheelchair-yes", "tourism-museum"}},
+    {101,  kGreenland, kUnknownTime, {}},
+    {102,  kVladimir, kUnknownTime, {"tourism-artwork"}},
+    {103,  kKathmandu, kUnknownTime, {"internet_access-wlan", "wheelchair-no", "amenity-cafe"}},
+    {104,  kMinsk1, kUnknownTime, {"amenity-place_of_worship"}},
+    {105,  kBerlin2, kUnknownTime, {"building", "amenity-place_of_worship-christian"}},
+    {106,  kMoscow2, kUnknownTime, {"tourism-museum"}},
+    {107,  kMinsk2, kUnknownTime, {"amenity-restaurant"}},
+    {108,  kMinsk3, kUnknownTime, {"amenity-place_of_worship-jewish"}},
+    {109,  kWashington, kUnknownTime, {"amenity-restaurant"}},
+    {110, kBerlin3, kUnknownTime, {"tourism-museum"}},
+    {111, kBermuda, kUnknownTime, {"amenity-cafe"}},
+    {112, kMoscow1, kUnknownTime, {"leisure-park"}},
+  };
+
+  m2::PointD const myPos2 = mercator::GetSmPoint(kVladimir, 2.0 * kNearR, 2.0 * kNearR);
+
+  auto const addrBerlin = fm.GetBookmarkManager().GetLocalizedRegionAddress(kBerlin1);
+  auto const addrMinsk = fm.GetBookmarkManager().GetLocalizedRegionAddress(kMinsk1);
+  auto const addrGreenland = fm.GetBookmarkManager().GetLocalizedRegionAddress(kGreenland);
+  auto const addrWashington = fm.GetBookmarkManager().GetLocalizedRegionAddress(kWashington);
+  auto const addrKathmandu = fm.GetBookmarkManager().GetLocalizedRegionAddress(kKathmandu);
+  auto const addrVladimir = fm.GetBookmarkManager().GetLocalizedRegionAddress(kVladimir);
+  auto const addrBermuda = fm.GetBookmarkManager().GetLocalizedRegionAddress(kBermuda);
+
+  BookmarkManager::SortedBlocksCollection expectedSortedByDistance2 = {
+    {addrVladimir, {102}},
+    {addrMoscow, {106, 112}},
+    {addrMinsk, {107, 104, 108}},
+    {addrBerlin, {100, 105, 110}},
+    {addrGreenland, {101}},
+    {addrKathmandu, {103}},
+    {addrWashington, {109}},
+    {addrBermuda, {111}}};
+
+  BookmarkManager::SortedBlocksCollection expectedSortedByType2 = {
+    {GetLocalizedBookmarkBaseType(BookmarkBaseType::Food), {111, 109, 107, 103}, {}},
+    {GetLocalizedBookmarkBaseType(BookmarkBaseType::Museum), {110, 106, 100}, {}},
+    {GetLocalizedBookmarkBaseType(BookmarkBaseType::ReligiousPlace), {108, 105, 104}, {}},
+    {BookmarkManager::GetOthersSortedBlockName(), {112, 102, 101}, {}}};
+
+  std::vector<TestMarkData> testMarksData3 = {
+    {200,  {0.0, 0.0}, kUnknownTime, {"tourism-museum"}},
+    {201,  {0.0, 0.0}, kUnknownTime, {"leisure-park"}},
+    {202,  {0.0, 0.0}, kUnknownTime, {"tourism-artwork"}},
+    {203,  {0.0, 0.0}, kUnknownTime, {"amenity-cafe"}},
+    {204,  {0.0, 0.0}, kUnknownTime, {"amenity-place_of_worship"}},
+    {205,  {0.0, 0.0}, kUnknownTime, {"amenity-place_of_worship-christian"}},
+  };
+
+  std::vector<TestMarkData> testMarksData4 = {
+    {300,  {0.0, 0.0}, kUnknownTime, {"tourism-museum"}},
+    {301,  {0.0, 0.0}, kUnknownTime, {"leisure-park"}},
+    {302,  {0.0, 0.0}, kUnknownTime, {"tourism-artwork"}},
+    {303,  {0.0, 0.0}, kUnknownTime, {"amenity-cafe"}},
+    {304,  {0.0, 0.0}, kUnknownTime, {"amenity-place_of_worship"}},
+    {305,  {0.0, 0.0}, kUnknownTime, {"tourism-hotel"}},
+  };
+
+  BookmarkManager::SortedBlocksCollection expectedSortedByType4 = {
+    {GetLocalizedBookmarkBaseType(BookmarkBaseType::Hotel), {305}},
+    {BookmarkManager::GetOthersSortedBlockName(), {304, 303, 302, 301, 300}, {}}};
+
+  std::vector<TestTrackData> testTracksData5 = {
+    {40, kUnknownTime},
+    {41, kUnknownTime},
+    {42, std::chrono::hours(1)},
+    {43, kUnknownTime}
+  };
+
+  BookmarkManager::SortedBlocksCollection expectedSortedByTime5 = {
+    {BookmarkManager::GetTracksSortedBlockName(), {}, {42, 40, 41, 43}}};
+
+  std::vector<TestTrackData> testTracksData6 = {
+    {50, kUnknownTime},
+    {51, kUnknownTime},
+    {52, kUnknownTime}
+  };
+
+  auto const fillCategory = [&](kml::MarkGroupId cat,
+                                std::vector<TestMarkData> const & marksData,
+                                std::vector<TestTrackData> const & tracksData)
+  {
+    auto es = bmManager.GetEditSession();
+    for (auto const & testMarkData : marksData)
+    {
+      kml::BookmarkData bmData;
+      bmData.m_id = testMarkData.m_markId;
+      bmData.m_point = testMarkData.m_position;
+      if (testMarkData.m_hoursSinceCreation != kUnknownTime)
+        bmData.m_timestamp = currentTime - testMarkData.m_hoursSinceCreation;
+      setFeatureTypes(testMarkData.m_types, bmData);
+      auto const * bm = es.CreateBookmark(std::move(bmData));
+      es.AttachBookmark(bm->GetId(), cat);
+    }
+    for (auto const & testTrackData : tracksData)
+    {
+      kml::TrackData trackData;
+      trackData.m_id = testTrackData.m_trackId;
+      trackData.m_points = {{0.0, 0.0}, {1.0, 0.0}};
+      if (testTrackData.m_hoursSinceCreation != kUnknownTime)
+        trackData.m_timestamp = currentTime - testTrackData.m_hoursSinceCreation;
+      auto const * track = es.CreateTrack(std::move(trackData));
+      es.AttachTrack(track->GetId(), cat);
+    }
+  };
+
+  auto const printBlocks = [](std::string const & name, BookmarkManager::SortedBlocksCollection const & blocks)
+  {
+    // Uncomment for debug output.
+    /*
+    LOG(LINFO, ("\nvvvvvvvvvv   ", name, "   vvvvvvvvvv"));
+    for (auto const & block : blocks)
+    {
+      LOG(LINFO, ("========== ", block.m_blockName));
+      for (auto const trackId : block.m_trackIds)
+        LOG(LINFO, ("   track", trackId));
+      for (auto const markId : block.m_markIds)
+        LOG(LINFO, ("   bookmark", markId));
+    }
+    */
+  };
+
+  auto const getSortedBokmarks = [&bmManager](kml::MarkGroupId groupId, BookmarkManager::SortingType sortingType,
+                                              bool hasMyPosition, m2::PointD const & myPosition)
+  {
+    BookmarkManager::SortedBlocksCollection sortedBlocks;
+    BookmarkManager::SortParams params;
+    params.m_groupId = groupId;
+    params.m_sortingType = sortingType;
+    params.m_hasMyPosition = hasMyPosition;
+    params.m_myPosition = myPosition;
+    params.m_onResults = [&sortedBlocks](BookmarkManager::SortedBlocksCollection && results,
+                                         BookmarkManager::SortParams::Status status)
+    {
+      sortedBlocks = std::move(results);
+    };
+    bmManager.GetSortedCategory(params);
+    return sortedBlocks;
+  };
+
+  {
+    kml::MarkGroupId catId = bmManager.CreateBookmarkCategory("test", false);
+    fillCategory(catId, testMarksData, testTracksData);
+
+    std::vector<BookmarkManager::SortingType> expectedSortingTypes = {
+      BookmarkManager::SortingType::ByType,
+      BookmarkManager::SortingType::ByDistance,
+      BookmarkManager::SortingType::ByTime};
+
+    auto const sortingTypes = bmManager.GetAvailableSortingTypes(catId, true);
+    TEST(sortingTypes == expectedSortingTypes, ());
+
+    auto const sortedByTime = getSortedBokmarks(catId, BookmarkManager::SortingType::ByTime, true, myPos);
+    printBlocks("Sorted by time", sortedByTime);
+    TEST(sortedByTime == expectedSortedByTime, ());
+
+    auto const sortedByType = getSortedBokmarks(catId, BookmarkManager::SortingType::ByType, true, myPos);
+    printBlocks("Sorted by type", sortedByType);
+    TEST(sortedByType == expectedSortedByType, ());
+
+
+    auto const sortedByDistance = getSortedBokmarks(catId, BookmarkManager::SortingType::ByDistance, true, myPos);
+    printBlocks("Sorted by distance", sortedByDistance);
+    TEST(sortedByDistance == expectedSortedByDistance, ());
+  }
+
+  {
+    kml::MarkGroupId catId2 = bmManager.CreateBookmarkCategory("test2", false);
+    fillCategory(catId2, testMarksData2, {} /* tracksData */);
+
+    std::vector<BookmarkManager::SortingType> expectedSortingTypes2 = {
+      BookmarkManager::SortingType::ByType,
+      BookmarkManager::SortingType::ByDistance};
+
+    auto const sortingTypes2 = bmManager.GetAvailableSortingTypes(catId2, true);
+    TEST(sortingTypes2 == expectedSortingTypes2, ());
+
+    std::vector<BookmarkManager::SortingType> expectedSortingTypes2_2 = {
+      BookmarkManager::SortingType::ByType};
+
+    auto const sortingTypes2_2 = bmManager.GetAvailableSortingTypes(catId2, false);
+    TEST(sortingTypes2_2 == expectedSortingTypes2_2, ());
+
+    auto const sortedByType2 = getSortedBokmarks(catId2, BookmarkManager::SortingType::ByType, false, {});
+    printBlocks("Sorted by type 2", sortedByType2);
+    TEST(sortedByType2 == expectedSortedByType2, ());
+
+    auto const sortedByDistance2 = getSortedBokmarks(catId2, BookmarkManager::SortingType::ByDistance,
+                                                                  true, myPos2);
+    printBlocks("Sorted by distance 2", sortedByDistance2);
+    TEST(sortedByDistance2 == expectedSortedByDistance2, ());
+  }
+
+  {
+    kml::MarkGroupId catId3 = bmManager.CreateBookmarkCategory("test3", false);
+    fillCategory(catId3, testMarksData3, {} /* tracksData */);
+
+    std::vector<BookmarkManager::SortingType> expectedSortingTypes3 = {};
+    auto const sortingTypes3 = bmManager.GetAvailableSortingTypes(catId3, false);
+    TEST(sortingTypes3 == expectedSortingTypes3, ());
+  }
+
+  {
+    kml::MarkGroupId catId4 = bmManager.CreateBookmarkCategory("test4", false);
+    fillCategory(catId4, testMarksData4, {} /* tracksData */);
+
+    std::vector<BookmarkManager::SortingType> expectedSortingTypes4 = { BookmarkManager::SortingType::ByType };
+    auto const sortingTypes4 = bmManager.GetAvailableSortingTypes(catId4, false);
+    TEST(sortingTypes4 == expectedSortingTypes4, ());
+
+    auto const sortedByType4 = getSortedBokmarks(catId4, BookmarkManager::SortingType::ByType, false, {});
+    printBlocks("Sorted by type 4", sortedByType4);
+    TEST(sortedByType4 == expectedSortedByType4, ());
+  }
+
+  {
+    kml::MarkGroupId catId5 = bmManager.CreateBookmarkCategory("test5", false);
+    fillCategory(catId5, {} /* marksData */, testTracksData5);
+    std::vector<BookmarkManager::SortingType> expectedSortingTypes5 = { BookmarkManager::SortingType::ByTime };
+
+    auto const sortingTypes5 = bmManager.GetAvailableSortingTypes(catId5, false);
+    TEST(sortingTypes5 == expectedSortingTypes5, ());
+
+    auto const sortedByTime5 = getSortedBokmarks(catId5, BookmarkManager::SortingType::ByTime, false, {});
+    printBlocks("Sorted by time 5", sortedByTime5);
+    TEST(sortedByTime5 == expectedSortedByTime5, ());
+  }
+
+  {
+    kml::MarkGroupId catId6 = bmManager.CreateBookmarkCategory("test6", false);
+    fillCategory(catId6, {} /* marksData */, testTracksData6);
+    std::vector<BookmarkManager::SortingType> expectedSortingTypes6 = {};
+
+    auto const sortingTypes6 = bmManager.GetAvailableSortingTypes(catId6, false);
+    TEST(sortingTypes6 == expectedSortingTypes6, ());
+  }
 }
 
 namespace
@@ -808,40 +1162,57 @@ UNIT_CLASS_TEST(Runner, TrackParsingTest_2)
 
 UNIT_CLASS_TEST(Runner, Bookmarks_Listeners)
 {
-  set<kml::MarkId> createdMarksResult;
-  set<kml::MarkId> updatedMarksResult;
-  set<kml::MarkId> deletedMarksResult;
-  set<kml::MarkId> createdMarks;
-  set<kml::MarkId> updatedMarks;
-  set<kml::MarkId> deletedMarks;
-
-  auto const checkNotifications = [&]()
+  struct Changes
   {
-    TEST_EQUAL(createdMarks, createdMarksResult, ());
-    TEST_EQUAL(updatedMarks, updatedMarksResult, ());
-    TEST_EQUAL(deletedMarks, deletedMarksResult, ());
-
-    createdMarksResult.clear();
-    updatedMarksResult.clear();
-    deletedMarksResult.clear();
-    createdMarks.clear();
-    updatedMarks.clear();
-    deletedMarks.clear();
+    set<kml::MarkId> m_createdMarks;
+    set<kml::MarkId> m_updatedMarks;
+    set<kml::MarkId> m_deletedMarks;
+    map<kml::MarkGroupId, kml::MarkIdSet> m_attachedMarks;
+    map<kml::MarkGroupId, kml::MarkIdSet> m_detachedMarks;
   };
 
-  auto const onCreate = [&createdMarksResult](std::vector<std::pair<kml::MarkId, kml::BookmarkData>> const &marks)
+  Changes resultChanges;
+  auto const checkNotifications = [&resultChanges](Changes & changes)
   {
-    for (auto const & markPair : marks)
-      createdMarksResult.insert(markPair.first);
+    TEST_EQUAL(changes.m_createdMarks, resultChanges.m_createdMarks, ());
+    TEST_EQUAL(changes.m_updatedMarks, resultChanges.m_updatedMarks, ());
+    TEST_EQUAL(changes.m_deletedMarks, resultChanges.m_deletedMarks, ());
+    TEST_EQUAL(changes.m_attachedMarks, resultChanges.m_attachedMarks, ());
+    TEST_EQUAL(changes.m_detachedMarks, resultChanges.m_detachedMarks, ());
+    changes = Changes();
+    resultChanges = Changes();
   };
-  auto const onUpdate = [&updatedMarksResult](std::vector<std::pair<kml::MarkId, kml::BookmarkData>> const &marks)
+
+  bool bookmarksChanged = false;
+  auto const checkBookmarksChanges = [&bookmarksChanged](bool expected)
   {
-    for (auto const & markPair : marks)
-      updatedMarksResult.insert(markPair.first);
+    TEST_EQUAL(bookmarksChanged, expected, ());
+    bookmarksChanged = false;
   };
-  auto const onDelete = [&deletedMarksResult](std::vector<kml::MarkId> const &marks)
+
+  auto const onCreate = [&resultChanges](vector<BookmarkInfo> const & marks)
   {
-    deletedMarksResult.insert(marks.begin(), marks.end());
+    for (auto const & mark : marks)
+      resultChanges.m_createdMarks.insert(mark.m_bookmarkId);
+  };
+  auto const onUpdate = [&resultChanges](vector<BookmarkInfo> const & marks)
+  {
+    for (auto const & mark : marks)
+      resultChanges.m_updatedMarks.insert(mark.m_bookmarkId);
+  };
+  auto const onDelete = [&resultChanges](vector<kml::MarkId> const & marks)
+  {
+    resultChanges.m_deletedMarks.insert(marks.begin(), marks.end());
+  };
+  auto const onAttach = [&resultChanges](vector<BookmarkGroupInfo> const & groupMarksCollection)
+  {
+    for (auto const & group : groupMarksCollection)
+      resultChanges.m_attachedMarks[group.m_groupId].insert(group.m_bookmarkIds.begin(), group.m_bookmarkIds.end());
+  };
+  auto const onDetach = [&resultChanges](vector<BookmarkGroupInfo> const & groupMarksCollection)
+  {
+    for (auto const & group : groupMarksCollection)
+      resultChanges.m_detachedMarks[group.m_groupId].insert(group.m_bookmarkIds.begin(), group.m_bookmarkIds.end());
   };
 
   BookmarkManager::Callbacks callbacks(
@@ -850,13 +1221,15 @@ UNIT_CLASS_TEST(Runner, Bookmarks_Listeners)
       static StringsBundle dummyBundle;
       return dummyBundle;
     },
-    onCreate,
-    onUpdate,
-    onDelete);
+    static_cast<BookmarkManager::Callbacks::GetSeacrhAPIFn>(nullptr),
+    static_cast<BookmarkCatalog::HeadersProvider>(nullptr),
+    onCreate, onUpdate, onDelete, onAttach, onDetach);
 
   User user;
   BookmarkManager bmManager(user, std::move(callbacks));
+  bmManager.SetBookmarksChangedCallback([&bookmarksChanged]() { bookmarksChanged = true; });
   bmManager.EnableTestMode(true);
+  Changes expectedChanges;
 
   auto const catId = bmManager.CreateBookmarkCategory("Default", false /* autoSave */);
 
@@ -867,38 +1240,75 @@ UNIT_CLASS_TEST(Runner, Bookmarks_Listeners)
     data0.m_point = m2::PointD(0.0, 0.0);
     auto * bookmark0 = editSession.CreateBookmark(std::move(data0));
     editSession.AttachBookmark(bookmark0->GetId(), catId);
-    createdMarks.insert(bookmark0->GetId());
+    expectedChanges.m_createdMarks.insert(bookmark0->GetId());
+    expectedChanges.m_attachedMarks[catId].insert(bookmark0->GetId());
 
     kml::BookmarkData data1;
     kml::SetDefaultStr(data1.m_name, "name 1");
     auto * bookmark1 = editSession.CreateBookmark(std::move(data1));
     editSession.AttachBookmark(bookmark1->GetId(), catId);
-    createdMarks.insert(bookmark1->GetId());
 
-    createdMarks.erase(bookmark1->GetId());
     editSession.DeleteBookmark(bookmark1->GetId());
   }
-  checkNotifications();
+  checkNotifications(expectedChanges);
+  checkBookmarksChanges(true);
 
   auto const markId0 = *bmManager.GetUserMarkIds(catId).begin();
   bmManager.GetEditSession().GetBookmarkForEdit(markId0)->SetName("name 3", kml::kDefaultLangCode);
-  updatedMarks.insert(markId0);
+  expectedChanges.m_updatedMarks.insert(markId0);
 
-  checkNotifications();
+  checkNotifications(expectedChanges);
+  checkBookmarksChanges(true);
 
   {
     auto editSession = bmManager.GetEditSession();
     editSession.GetBookmarkForEdit(markId0)->SetName("name 4", kml::kDefaultLangCode);
     editSession.DeleteBookmark(markId0);
-    deletedMarks.insert(markId0);
+    expectedChanges.m_deletedMarks.insert(markId0);
+    expectedChanges.m_detachedMarks[catId].insert(markId0);
 
     kml::BookmarkData data;
     kml::SetDefaultStr(data.m_name, "name 5");
     data.m_point = m2::PointD(0.0, 0.0);
     auto * bookmark1 = editSession.CreateBookmark(std::move(data));
-    createdMarks.insert(bookmark1->GetId());
+    expectedChanges.m_createdMarks.insert(bookmark1->GetId());
   }
-  checkNotifications();
+  checkNotifications(expectedChanges);
+  checkBookmarksChanges(true);
+
+  // Test postponed notifications.
+  bmManager.SetNotificationsEnabled(false);
+
+  Changes postponedChanges;
+  {
+    auto editSession = bmManager.GetEditSession();
+    kml::BookmarkData data;
+    kml::SetDefaultStr(data.m_name, "name 6");
+    data.m_point = m2::PointD(0.0, 0.0);
+    auto * bookmark = editSession.CreateBookmark(std::move(data));
+    editSession.AttachBookmark(bookmark->GetId(), catId);
+    postponedChanges.m_createdMarks.insert(bookmark->GetId());
+    postponedChanges.m_attachedMarks[catId].insert(bookmark->GetId());
+  }
+  checkNotifications(expectedChanges);
+  checkBookmarksChanges(true);
+
+  {
+    auto editSession = bmManager.GetEditSession();
+    kml::BookmarkData data;
+    kml::SetDefaultStr(data.m_name, "name 7");
+    data.m_point = m2::PointD(0.0, 0.0);
+    auto * bookmark = editSession.CreateBookmark(std::move(data));
+    editSession.AttachBookmark(bookmark->GetId(), catId);
+    postponedChanges.m_createdMarks.insert(bookmark->GetId());
+    postponedChanges.m_attachedMarks[catId].insert(bookmark->GetId());
+  }
+  checkNotifications(expectedChanges);
+  checkBookmarksChanges(true);
+
+  bmManager.SetNotificationsEnabled(true);
+  checkNotifications(postponedChanges);
+  checkBookmarksChanges(false);
 }
 
 UNIT_CLASS_TEST(Runner, Bookmarks_AutoSave)

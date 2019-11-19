@@ -1,6 +1,5 @@
 #import "MWMRoutePreview.h"
 #import "MWMCircularProgress.h"
-#import "MWMCommon.h"
 #import "MWMLocationManager.h"
 #import "MWMNavigationDashboardEntity.h"
 #import "MWMNavigationDashboardManager.h"
@@ -18,6 +17,7 @@ static CGFloat const kDrivingOptionsHeight = 48;
 @interface MWMRoutePreview ()<MWMCircularProgressProtocol>
 
 @property(nonatomic) BOOL isVisible;
+@property(nonatomic) BOOL actualVisibilityValue;
 @property(weak, nonatomic) IBOutlet UIButton * backButton;
 @property(weak, nonatomic) IBOutlet UIView * bicycle;
 @property(weak, nonatomic) IBOutlet UIView * contentView;
@@ -32,12 +32,13 @@ static CGFloat const kDrivingOptionsHeight = 48;
 
 @implementation MWMRoutePreview
 {
-  map<MWMRouterType, MWMCircularProgress *> m_progresses;
+  std::map<MWMRouterType, MWMCircularProgress *> m_progresses;
 }
 
 - (void)awakeFromNib
 {
   [super awakeFromNib];
+  self.actualVisibilityValue = NO;
   self.translatesAutoresizingMaskIntoConstraints = NO;
   [self setupProgresses];
   [self.backButton matchInterfaceOrientation];
@@ -150,6 +151,8 @@ static CGFloat const kDrivingOptionsHeight = 48;
     if (prg.second != progress)
       continue;
     auto const routerType = prg.first;
+    if ([MWMRouter type] == routerType)
+      return;
     [self selectRouter:routerType];
     [MWMRouter setType:routerType];
     [MWMRouter rebuildWithBestRouter:NO];
@@ -174,12 +177,16 @@ static CGFloat const kDrivingOptionsHeight = 48;
     return;
   [superview addSubview:self];
   [self setupConstraints];
+  self.actualVisibilityValue = YES;
   dispatch_async(dispatch_get_main_queue(), ^{
     self.isVisible = YES;
   });
 }
 
-- (void)remove { self.isVisible = NO; }
+- (void)remove {
+  self.actualVisibilityValue = NO;
+  self.isVisible = NO;
+}
 
 - (void)setupConstraints {}
 
@@ -209,6 +216,7 @@ static CGFloat const kDrivingOptionsHeight = 48;
 
 - (void)setIsVisible:(BOOL)isVisible
 {
+  if (isVisible != self.actualVisibilityValue) { return; }
   _isVisible = isVisible;
   auto sv = self.superview;
   [sv setNeedsLayout];

@@ -1,6 +1,5 @@
 #import "MWMAlert+CPP.h"
 #import "MWMAlertViewController.h"
-#import "MWMCommon.h"
 #import "MWMDefaultAlert.h"
 #import "MWMDownloadTransitMapAlert.h"
 #import "MWMEditorViralAlert.h"
@@ -15,7 +14,10 @@
 @implementation MWMAlert
 
 + (MWMAlert *)rateAlert { return [MWMRateAlert alert]; }
-+ (MWMAlert *)locationAlert { return [MWMLocationAlert alert]; }
++ (MWMAlert *)locationAlertWithCancelBlock:(MWMVoidBlock)cancelBlock {
+  return [MWMLocationAlert alertWithCancelBlock:cancelBlock];
+}
+
 + (MWMAlert *)point2PointAlertWithOkBlock:(MWMVoidBlock)block needToRebuild:(BOOL)needToRebuild
 {
   return [MWMDefaultAlert point2PointAlertWithOkBlock:block needToRebuild:needToRebuild];
@@ -33,7 +35,6 @@
 }
 
 + (MWMAlert *)noConnectionAlert { return [MWMDefaultAlert noConnectionAlert]; }
-+ (MWMAlert *)migrationProhibitedAlert { return [MWMDefaultAlert migrationProhibitedAlert]; }
 + (MWMAlert *)deleteMapProhibitedAlert { return [MWMDefaultAlert deleteMapProhibitedAlert]; }
 + (MWMAlert *)unsavedEditsAlertWithOkBlock:(MWMVoidBlock)okBlock
 {
@@ -43,11 +44,6 @@
 + (MWMAlert *)locationServiceNotSupportedAlert
 {
   return [MWMDefaultAlert locationServiceNotSupportedAlert];
-}
-
-+ (MWMAlert *)routingMigrationAlertWithOkBlock:(MWMVoidBlock)okBlock
-{
-  return [MWMDefaultAlert routingMigrationAlertWithOkBlock:okBlock];
 }
 
 + (MWMAlert *)downloaderAlertWithAbsentCountries:(storage::CountriesSet const &)countries

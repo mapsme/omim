@@ -28,6 +28,7 @@ set(
   com/mapswithme/core/ScopedLocalRef.hpp
   com/mapswithme/maps/discovery/Locals.hpp
   com/mapswithme/maps/Framework.hpp
+  com/mapswithme/maps/promo/Promo.hpp
   com/mapswithme/maps/SearchEngine.hpp
   com/mapswithme/opengl/android_gl_utils.hpp
   com/mapswithme/opengl/androidoglcontext.hpp
@@ -40,7 +41,6 @@ set(
   com/mapswithme/core/jni_helper.cpp
   com/mapswithme/core/logging.cpp
   com/mapswithme/maps/analytics/ExternalLibrariesMediator.cpp
-  com/mapswithme/maps/bookmarks/data/Bookmark.cpp
   com/mapswithme/maps/bookmarks/data/BookmarkManager.cpp
   com/mapswithme/maps/discovery/DiscoveryManager.cpp
   com/mapswithme/maps/discovery/Locals.cpp
@@ -57,7 +57,9 @@ set(
   com/mapswithme/maps/MapManager.cpp
   com/mapswithme/maps/MwmApplication.cpp
   com/mapswithme/maps/metrics/UserActionsLogger.cpp
+  com/mapswithme/maps/onboarding/Onboarding.cpp
   com/mapswithme/maps/PrivateVariables.cpp
+  com/mapswithme/maps/promo/Promo.cpp
   com/mapswithme/maps/routing/RoutingOptions.cpp
   com/mapswithme/maps/SearchEngine.cpp
   com/mapswithme/maps/SearchRecents.cpp
@@ -85,6 +87,7 @@ set(
   com/mapswithme/platform/SecureStorage.cpp
   com/mapswithme/platform/SocketImpl.cpp
   com/mapswithme/util/Config.cpp
+  com/mapswithme/util/GeoUtils.cpp
   com/mapswithme/util/HttpClient.cpp
   com/mapswithme/util/HttpUploader.cpp
   com/mapswithme/util/Language.cpp
@@ -127,6 +130,7 @@ target_link_libraries(
   metrics
   platform
   partners_api
+  web_api
   local_ads
   mwm_diff
   bsdiff

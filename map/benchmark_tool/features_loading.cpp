@@ -1,6 +1,6 @@
 #include "map/benchmark_tool/api.hpp"
 
-#include "map/feature_vec_model.hpp"
+#include "map/features_fetcher.hpp"
 
 #include "indexer/feature_visibility.hpp"
 #include "indexer/scales.hpp"
@@ -11,9 +11,13 @@
 #include "base/macros.hpp"
 #include "base/timer.hpp"
 
+#include <utility>
+#include <vector>
+
+using namespace std;
+
 namespace bench
 {
-
 namespace
 {
   class Accumulator
@@ -55,7 +59,7 @@ namespace
     }
   };
 
-  void RunBenchmark(model::FeaturesFetcher const & src, m2::RectD const & rect,
+  void RunBenchmark(FeaturesFetcher const & src, m2::RectD const & rect,
                     pair<int, int> const & scaleRange, AllResult & res)
   {
     ASSERT_LESS_OR_EQUAL(scaleRange.first, scaleRange.second, ());
@@ -103,7 +107,7 @@ void RunFeaturesLoadingBenchmark(string const & file, pair<int, int> scaleRange,
   platform::LocalCountryFile localFile =
       platform::LocalCountryFile::MakeForTesting(fileName);
 
-  model::FeaturesFetcher src;
+  FeaturesFetcher src;
   auto const r = src.RegisterMap(localFile);
   if (r.second != MwmSet::RegResult::Success)
     return;
@@ -120,5 +124,4 @@ void RunFeaturesLoadingBenchmark(string const & file, pair<int, int> scaleRange,
 
   RunBenchmark(src, r.first.GetInfo()->m_bordersRect, scaleRange, res);
 }
-
-}
+}  // namespace bench

@@ -2,6 +2,7 @@
 
 #include "platform/local_country_file.hpp"
 
+#include "geometry/mercator.hpp"
 #include "geometry/point2d.hpp"
 
 #include "indexer/classificator_loader.hpp"
@@ -15,6 +16,8 @@
 
 #include "routing/routing_integration_tests/routing_test_tools.hpp"
 
+#include <memory>
+#include <utility>
 #include <vector>
 
 using namespace routing;
@@ -33,16 +36,16 @@ UNIT_TEST(FakeEdgesCombinatorialExplosion)
 
   FrozenDataSource dataSource;
   for (auto const & file : localFiles)
-  {
-    auto const result = dataSource.Register(file);
-    TEST_EQUAL(result.second, MwmSet::RegResult::Success, ());
-  }
+    dataSource.Register(file);
 
   FeaturesRoadGraph graph(dataSource, IRoadGraph::Mode::ObeyOnewayTag,
-                          make_shared<CarModelFactory>(CountryParentNameGetterFn()));
-  Junction const j(m2::PointD(MercatorBounds::FromLatLon(50.73208, -1.21279)), feature::kDefaultAltitudeMeters);
+                          std::make_shared<CarModelFactory>(CountryParentNameGetterFn()));
+  Junction const j(m2::PointD(mercator::FromLatLon(50.73208, -1.21279)),
+                   feature::kDefaultAltitudeMeters);
   std::vector<std::pair<routing::Edge, routing::Junction>> sourceVicinity;
-  graph.FindClosestEdges(j.GetPoint(), 20 /* count */, sourceVicinity);
+  graph.FindClosestEdges(mercator::RectByCenterXYAndSizeInMeters(
+                             j.GetPoint(), FeaturesRoadGraph::kClosestEdgesRadiusM),
+                         20 /* count */, sourceVicinity);
   // In case of the combinatorial explosion mentioned above all the memory was consumed for
   // FeaturesRoadGraph::m_fakeIngoingEdges and FeaturesRoadGraph::m_fakeOutgoingEdges fields.
   graph.AddFakeEdges(j, sourceVicinity);

@@ -103,6 +103,21 @@ string DebugPrint(HighwayClass const cls)
   return out.str();
 }
 
+std::string DebugPrint(LocalityType const localityType)
+{
+  switch (localityType)
+  {
+  case LocalityType::None: return "None";
+  case LocalityType::Country: return "Country";
+  case LocalityType::State: return "State";
+  case LocalityType::City: return "City";
+  case LocalityType::Town: return "Town";
+  case LocalityType::Village: return "Village";
+  case LocalityType::Count: return "Count";
+  }
+  UNREACHABLE();
+}
+
 HighwayClass GetHighwayClass(feature::TypesHolder const & types)
 {
   uint8_t constexpr kTruncLevel = 2;
@@ -128,6 +143,11 @@ uint32_t BaseChecker::PrepareToMatch(uint32_t type, uint8_t level)
 bool BaseChecker::IsMatched(uint32_t type) const
 {
   return (find(m_types.begin(), m_types.end(), PrepareToMatch(type, m_level)) != m_types.end());
+}
+
+void BaseChecker::ForEachType(function<void(uint32_t)> && fn) const
+{
+  for_each(m_types.cbegin(), m_types.cend(), move(fn));
 }
 
 bool BaseChecker::operator()(feature::TypesHolder const & types) const
@@ -173,6 +193,12 @@ IsSpeedCamChecker::IsSpeedCamChecker()
 {
   Classificator const & c = classif();
   m_types.push_back(c.GetTypeByPath({"highway", "speed_camera"}));
+}
+
+IsPostBoxChecker::IsPostBoxChecker()
+{
+  Classificator const & c = classif();
+  m_types.push_back(c.GetTypeByPath({"amenity", "post_box"}));
 }
 
 IsFuelStationChecker::IsFuelStationChecker()
@@ -243,13 +269,11 @@ IsWayChecker::IsWayChecker()
     m_types.push_back(c.GetTypeByPath({p[0], p[1]}));
 }
 
-IsStreetOrSuburbChecker::IsStreetOrSuburbChecker()
+IsStreetOrSquareChecker::IsStreetOrSquareChecker()
 {
-  for (auto const t : IsWayChecker::Instance().m_types)
+  for (auto const t : IsWayChecker::Instance().GetTypes())
     m_types.push_back(t);
-  for (auto const t : IsSquareChecker::Instance().m_types)
-    m_types.push_back(t);
-  for (auto const t : IsSuburbChecker::Instance().m_types)
+  for (auto const t : IsSquareChecker::Instance().GetTypes())
     m_types.push_back(t);
 }
 
@@ -327,36 +351,88 @@ IsPoiChecker::IsPoiChecker() : BaseChecker(1 /* level */)
     m_types.push_back(classif().GetTypeByPath({type}));
 }
 
-// static
-set<pair<string, string>> const WikiChecker::kTypesForWiki = {
-  {"amenity", "place_of_worship"},
-  {"historic", "archaeological_site"},
-  {"historic", "castle"},
-  {"historic", "memorial"},
-  {"historic", "monument"},
-  {"historic", "museum"},
-  {"historic", "ruins"},
-  {"historic", "ship"},
-  {"historic", "tomb"},
-  {"tourism", "artwork"},
-  {"tourism", "attraction"},
-  {"tourism", "museum"},
-  {"tourism", "gallery"},
-  {"tourism", "viewpoint"},
-  {"tourism", "zoo"},
-  {"tourism", "theme_park"},
-  {"leisure", "park"},
-  {"leisure", "water_park"},
-  {"highway", "pedestrian"},
-  {"man_made", "lighthouse"},
-  {"waterway", "waterfall"},
-  {"leisure", "garden"},
-};
-
-WikiChecker::WikiChecker() : BaseChecker(2 /* level */)
+AttractionsChecker::AttractionsChecker() : BaseChecker(2 /* level */)
 {
-  for (auto const & t : kTypesForWiki)
-    m_types.push_back(classif().GetTypeByPath({t.first, t.second}));
+  set<pair<string, string>> const primaryAttractionTypes = {
+      {"amenity", "grave_yard"},
+      {"amenity", "fountain"},
+      {"amenity", "place_of_worship"},
+      {"amenity", "theatre"},
+      {"amenity", "townhall"},
+      {"amenity", "university"},
+      {"boundary", "national_park"},
+      {"building", "train_station"},
+      {"highway", "pedestrian"},
+      {"historic", "archaeological_site"},
+      {"historic", "boundary_stone"},
+      {"historic", "castle"},
+      {"historic", "fort"},
+      {"historic", "memorial"},
+      {"historic", "monument"},
+      {"historic", "museum"},
+      {"historic", "ruins"},
+      {"historic", "ship"},
+      {"historic", "tomb"},
+      {"historic", "wayside_cross"},
+      {"historic", "wayside_shrine"},
+      {"landuse", "cemetery"},
+      {"leisure", "garden"},
+      {"leisure", "nature_reserve"},
+      {"leisure", "park"},
+      {"leisure", "water_park"},
+      {"man_made", "lighthouse"},
+      {"man_made", "tower"},
+      {"natural", "beach"},
+      {"natural", "cave_entrance"},
+      {"natural", "geyser"},
+      {"natural", "glacier"},
+      {"natural", "hot_spring"},
+      {"natural", "peak"},
+      {"natural", "volcano"},
+      {"place", "square"},
+      {"tourism", "artwork"},
+      {"tourism", "museum"},
+      {"tourism", "gallery"},
+      {"tourism", "zoo"},
+      {"tourism", "theme_park"},
+      {"waterway", "waterfall"},
+  };
+
+  set<pair<string, string>> const additionalAttractionTypes = {
+      {"tourism", "viewpoint"},
+      {"tourism", "attraction"},
+  };
+
+  for (auto const & t : primaryAttractionTypes)
+  {
+    auto const type = classif().GetTypeByPath({t.first, t.second});
+    m_types.push_back(type);
+    m_primaryTypes.push_back(type);
+  }
+  sort(m_primaryTypes.begin(), m_primaryTypes.end());
+
+  for (auto const & t : additionalAttractionTypes)
+  {
+    auto const type = classif().GetTypeByPath({t.first, t.second});
+    m_types.push_back(type);
+    m_additionalTypes.push_back(type);
+  }
+  sort(m_additionalTypes.begin(), m_additionalTypes.end());
+}
+
+uint32_t AttractionsChecker::GetBestType(FeatureParams::Types const & types) const
+{
+  auto additionalType = ftype::GetEmptyValue();
+  for (auto type : types)
+  {
+    type = PrepareToMatch(type, m_level);
+    if (binary_search(m_primaryTypes.begin(), m_primaryTypes.end(), type))
+      return type;
+
+    if (binary_search(m_additionalTypes.begin(), m_additionalTypes.end(), type))
+      additionalType = type;
+  }
+  return additionalType;
 }
 
 IsPlaceChecker::IsPlaceChecker() : BaseChecker(1 /* level */)
@@ -424,56 +500,6 @@ unsigned IsHotelChecker::GetHotelTypesMask(FeatureType & ft) const
   }
 
   return mask;
-}
-
-IsPopularityPlaceChecker::IsPopularityPlaceChecker()
-{
-  vector<pair<string, string>> const popularityPlaceTypes = {
-    {"amenity", "bar"},
-    {"amenity", "biergarten"},
-    {"amenity", "cafe"},
-    {"amenity", "casino"},
-    {"amenity", "cinema"},
-    {"amenity", "fast_food"},
-    {"amenity", "fountain"},
-    {"amenity", "grave_yard"},
-    {"amenity", "marketplace"},
-    {"amenity", "nightclub"},
-    {"amenity", "place_of_worship"},
-    {"amenity", "pub"},
-    {"amenity", "restaurant"},
-    {"amenity", "theatre"},
-    {"amenity", "townhall"},
-    {"highway", "pedestrian"},
-    {"historic", "archaeological_site"},
-    {"historic", "castle"},
-    {"historic", "memorial"},
-    {"historic", "monument"},
-    {"historic", "museum"},
-    {"historic", "ruins"},
-    {"historic", "ship"},
-    {"historic", "tomb"},
-    {"landuse", "cemetery"},
-    {"leisure", "garden"},
-    {"leisure", "park"},
-    {"leisure", "water_park"},
-    {"man_made", "lighthouse"},
-    {"natural", "geyser"},
-    {"natural", "peak"},
-    {"shop", "bakery"},
-    {"tourism", "artwork"},
-    {"tourism", "attraction"},
-    {"tourism", "gallery"},
-    {"tourism", "museum"},
-    {"tourism", "theme_park"},
-    {"tourism", "viewpoint"},
-    {"tourism", "zoo"},
-    {"waterway", "waterfall"}
-  };
-
-  Classificator const & c = classif();
-  for (auto const & t : popularityPlaceTypes)
-    m_types.push_back(c.GetTypeByPath({t.first, t.second}));
 }
 
 IsIslandChecker::IsIslandChecker()
@@ -607,6 +633,18 @@ IsPublicTransportStopChecker::IsPublicTransportStopChecker()
   m_types.push_back(classif().GetTypeByPath({"railway", "tram_stop"}));
 }
 
+IsMotorwayJunctionChecker::IsMotorwayJunctionChecker()
+{
+  Classificator const & c = classif();
+  m_types.push_back(c.GetTypeByPath({"highway", "motorway_junction"}));
+}
+
+IsFerryChecker::IsFerryChecker()
+{
+  Classificator const & c = classif();
+  m_types.push_back(c.GetTypeByPath({"route", "ferry"}));
+}
+
 IsLocalityChecker::IsLocalityChecker()
 {
   Classificator const & c = classif();
@@ -625,34 +663,34 @@ IsLocalityChecker::IsLocalityChecker()
     m_types.push_back(c.GetTypeByPath(vector<string>(arr[i], arr[i] + 2)));
 }
 
-Type IsLocalityChecker::GetType(uint32_t t) const
+LocalityType IsLocalityChecker::GetType(uint32_t t) const
 {
   ftype::TruncValue(t, 2);
 
-  size_t j = COUNTRY;
-  for (; j < LOCALITY_COUNT; ++j)
+  auto j = static_cast<size_t>(LocalityType::Country);
+  for (; j < static_cast<size_t>(LocalityType::Count); ++j)
     if (t == m_types[j])
-      return static_cast<Type>(j);
+      return static_cast<LocalityType>(j);
 
   for (; j < m_types.size(); ++j)
     if (t == m_types[j])
-      return VILLAGE;
+      return LocalityType::Village;
 
-  return NONE;
+  return LocalityType::None;
 }
 
-Type IsLocalityChecker::GetType(feature::TypesHolder const & types) const
+LocalityType IsLocalityChecker::GetType(feature::TypesHolder const & types) const
 {
   for (uint32_t t : types)
   {
-    Type const type = GetType(t);
-    if (type != NONE)
+    LocalityType const type = GetType(t);
+    if (type != LocalityType::None)
       return type;
   }
-  return NONE;
+  return LocalityType::None;
 }
 
-Type IsLocalityChecker::GetType(FeatureType & f) const
+LocalityType IsLocalityChecker::GetType(FeatureType & f) const
 {
   feature::TypesHolder types(f);
   return GetType(types);
@@ -666,11 +704,11 @@ uint64_t GetPopulation(FeatureType & ft)
   {
     switch (IsLocalityChecker::Instance().GetType(ft))
     {
-    case CITY:
-    case TOWN:
+    case LocalityType::City:
+    case LocalityType::Town:
       population = 10000;
       break;
-    case VILLAGE:
+    case LocalityType::Village:
       population = 100;
       break;
     default:
@@ -683,12 +721,29 @@ uint64_t GetPopulation(FeatureType & ft)
 
 double GetRadiusByPopulation(uint64_t p)
 {
-  return pow(static_cast<double>(p), 0.277778) * 550.0;
+  return pow(static_cast<double>(p), 1 / 3.6) * 550.0;
+}
+
+// Look to: https://confluence.mail.ru/pages/viewpage.action?pageId=287950469
+// for details about factors.
+// Shortly, we assume: radius = (population ^ (1 / base)) * mult
+// We knew area info about some cities|towns|villages and did grid search.
+// Interval for base: [0.1, 100].
+// Interval for mult: [10, 1000].
+double GetRadiusByPopulationForRouting(uint64_t p, LocalityType localityType)
+{
+  switch (localityType)
+  {
+  case LocalityType::City: return pow(static_cast<double>(p), 1.0 / 2.6) * 50;
+  case LocalityType::Town: return pow(static_cast<double>(p), 1.0 / 4.4) * 210.0;
+  case LocalityType::Village: return pow(static_cast<double>(p), 1.0 / 15.3) * 730.0;
+  default: UNREACHABLE();
+  }
 }
 
 uint64_t GetPopulationByRadius(double r)
 {
-  return base::rounds(pow(r / 550.0, 3.6));
+  return base::SignedRound(pow(r / 550.0, 3.6));
 }
 
 bool IsTypeConformed(uint32_t type, base::StringIL const & path)

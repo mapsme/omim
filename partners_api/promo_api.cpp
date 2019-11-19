@@ -1,20 +1,23 @@
 #include "partners_api/promo_api.hpp"
 
-#include "indexer/classificator.hpp"
-#include "indexer/ftypes_matcher.hpp"
-
 #include "platform/http_client.hpp"
 #include "platform/platform.hpp"
 #include "platform/preferred_languages.hpp"
 #include "platform/settings.hpp"
 
 #include "base/assert.hpp"
+#include "base/string_utils.hpp"
+#include "base/url_helpers.hpp"
 
 #include <algorithm>
 #include <chrono>
+#include <cstdint>
+#include <sstream>
 #include <utility>
 
 #include "3party/jansson/myjansson.hpp"
+
+using namespace base;
 
 using namespace std::chrono;
 
@@ -43,9 +46,9 @@ bool NeedToShowImpl(std::string const & bookingPromoAwaitingForId, eye::Eye::Inf
          timeSinceLastShown > kShowPromoNotRaterThan;
 }
 
-void ParseCityGallery(std::string const & src, promo::CityGallery & result)
+void ParseCityGallery(std::string const & src, UTM utm, promo::CityGallery & result)
 {
-  base::Json root(src.c_str());
+  Json root(src.c_str());
   auto const dataArray = json_object_get(root.get(), "data");
 
   auto const size = json_array_size(dataArray);
@@ -53,86 +56,176 @@ void ParseCityGallery(std::string const & src, promo::CityGallery & result)
   result.m_items.reserve(size);
   for (size_t i = 0; i < size; ++i)
   {
-    promo::CityGalleryItem item;
+    promo::CityGallery::Item item;
     auto const obj = json_array_get(dataArray, i);
     FromJSONObject(obj, "name", item.m_name);
     FromJSONObject(obj, "url", item.m_url);
-
-    auto const imageUrlObj = json_object_get(obj, "image_url");
-    if (!json_is_null(imageUrlObj))
-      FromJSON(imageUrlObj, item.m_imageUrl);
-
+    item.m_url = InjectUTM(url::Join(BOOKMARKS_CATALOG_FRONT_URL, item.m_url), utm);
     FromJSONObject(obj, "access", item.m_access);
+    FromJSONObjectOptionalField(obj, "image_url", item.m_imageUrl);
+    FromJSONObjectOptionalField(obj, "tier", item.m_tier);
 
-    auto const tierObj = json_object_get(obj, "tier");
-    if (!json_is_null(tierObj))
-      FromJSON(tierObj, item.m_tier);
+    auto const placeObj = json_object_get(obj, "place");
+    if (json_is_object(placeObj))
+    {
+      FromJSONObject(placeObj, "name", item.m_place.m_name);
+      FromJSONObject(placeObj, "description", item.m_place.m_description);
+    }
 
     auto const authorObj = json_object_get(obj, "author");
     FromJSONObject(authorObj, "key_id", item.m_author.m_id);
     FromJSONObject(authorObj, "name", item.m_author.m_name);
 
     auto const luxCategoryObj = json_object_get(obj, "lux_category");
-    if (!json_is_null(luxCategoryObj))
+    if (json_is_object(luxCategoryObj))
     {
-      auto const luxCategoryNameobj = json_object_get(luxCategoryObj, "name");
-      if (!json_is_null(luxCategoryNameobj))
-        FromJSON(luxCategoryNameobj, item.m_luxCategory.m_name);
-
-      FromJSONObject(luxCategoryObj, "color", item.m_luxCategory.m_color);
+      FromJSONObjectOptionalField(luxCategoryObj, "name", item.m_luxCategory.m_name);
+      FromJSONObjectOptionalField(luxCategoryObj, "color", item.m_luxCategory.m_color);
     }
 
     result.m_items.emplace_back(std::move(item));
   }
 
   auto const meta = json_object_get(root.get(), "meta");
-  FromJSONObject(meta, "more", result.m_moreUrl);
+  FromJSONObjectOptionalField(meta, "more", result.m_moreUrl);
+  result.m_moreUrl = InjectUTM(url::Join(BOOKMARKS_CATALOG_FRONT_URL, result.m_moreUrl), utm);
+  FromJSONObjectOptionalField(meta, "category", result.m_category);
+}
+
+std::string ToSignedId(std::string const & id)
+{
+  uint64_t unsignedId;
+  if (!strings::to_uint64(id, unsignedId))
+    unsignedId = 0;
+
+  return strings::to_string(static_cast<int64_t>(unsignedId));
 }
 
 std::string MakeCityGalleryUrl(std::string const & baseUrl, std::string const & id,
                                std::string const & lang)
 {
-  return baseUrl + id + "/?lang=" + lang;
-}
+  // Support empty baseUrl for opensource build.
+  if (id.empty() || baseUrl.empty())
+    return {};
 
-void GetPromoCityGalleryImpl(std::string const & baseUrl, std::string const & id,
-                             CityGalleryCallback const & cb)
-{
-  ASSERT(!baseUrl.empty(), ());
   ASSERT_EQUAL(baseUrl.back(), '/', ());
 
-  CityGallery result;
-  std::string httpResult;
-  if (id.empty() || !WebApi::GetCityGalleryById(baseUrl, id, languages::GetCurrentNorm(), httpResult))
+  url::Params params = {{"city_id", ToSignedId(id)}, {"lang", lang}};
+  return url::Make(url::Join(baseUrl, "gallery/v1/search/"), params);
+}
+
+std::string MakePoiGalleryUrl(std::string const & baseUrl, std::string const & id,
+                              m2::PointD const & point, std::string const & lang,
+                              std::vector<std::string> const & tags, bool useCoordinates)
+{
+  // Support opensource build.
+  if (baseUrl.empty())
+    return {};
+    
+  url::Params params;
+
+  if (!id.empty())
+    params.emplace_back("city_id", ToSignedId(id));
+
+  if (id.empty() || useCoordinates)
   {
-    cb({});
+    auto const latLon = mercator::ToLatLon(point);
+    std::ostringstream os;
+    os << std::fixed << std::setprecision(6) << latLon.m_lat << "," << latLon.m_lon;
+    params.emplace_back("lat_lon", os.str());
+  }
+
+  params.emplace_back("tags", strings::JoinStrings(tags, ","));
+  params.emplace_back("lang", lang);
+
+  return url::Make(url::Join(baseUrl, "gallery/v1/search/"), params);
+}
+
+std::string GetPictureUrl(std::string const & baseUrl, std::string const & id)
+{
+  // Support opensource build.
+  if (baseUrl.empty())
+    return {};
+
+  ASSERT_EQUAL(baseUrl.back(), '/', ());
+
+  return baseUrl + "bookmarks_catalogue/city/" + ToSignedId(id) + ".jpg";
+}
+
+std::string GetCityCatalogueUrl(std::string const & baseUrl, std::string const & id)
+{
+  // Support opensource build.
+  if (baseUrl.empty())
+    return {};
+
+  ASSERT_EQUAL(baseUrl.back(), '/', ());
+
+  return baseUrl + "v2/mobilefront/city/" + ToSignedId(id);
+}
+
+void GetPromoGalleryImpl(std::string const & url, platform::HttpClient::Headers const & headers,
+                         UTM utm, CityGalleryCallback const & onSuccess, OnError const & onError)
+{
+  if (url.empty())
+  {
+    onSuccess({});
     return;
   }
 
-  try
+  GetPlatform().RunTask(Platform::Thread::Network, [url, headers, utm, onSuccess, onError]()
   {
-    ParseCityGallery(httpResult, result);
-  }
-  catch (base::Json::Exception const & e)
+    CityGallery result;
+    std::string httpResult;
+    platform::HttpClient request(url);
+    request.SetTimeout(5 /* timeoutSec */);
+    request.SetRawHeaders(headers);
+    if (!request.RunHttpRequest(httpResult))
+    {
+      onError();
+      return;
+    }
+
+    try
+    {
+      ParseCityGallery(httpResult, utm, result);
+    }
+    catch (Json::Exception const & e)
+    {
+      LOG(LERROR, (e.Msg(), httpResult));
+      onError();
+      return;
+    }
+
+    onSuccess(result.IsEmpty() ? CityGallery{} : std::move(result));
+  });
+}
+
+std::string LoadPromoIdForBooking(eye::Eye::InfoType const & eyeInfo)
+{
+  std::string bookingPromoAwaitingForId;
+  settings::TryGet("BookingPromoAwaitingForId", bookingPromoAwaitingForId);
+
+  if (bookingPromoAwaitingForId.empty())
+    return bookingPromoAwaitingForId;
+
+  auto const timeSinceLastTransitionToBooking =
+    eye::Clock::now() - eyeInfo->m_promo.m_transitionToBookingTime;
+
+  if (timeSinceLastTransitionToBooking < kMinMinutesAfterBooking ||
+      timeSinceLastTransitionToBooking > kMaxMinutesAfterBooking)
   {
-    LOG(LERROR, (e.Msg()));
-    result.m_items.clear();
+    settings::Delete("BookingPromoAwaitingForId");
+    bookingPromoAwaitingForId.clear();
   }
 
-  cb(std::move(result));
+  return bookingPromoAwaitingForId;
 }
 }  // namespace
 
-// static
-bool WebApi::GetCityGalleryById(std::string const & baseUrl, std::string const & id,
-                                std::string const & lang, std::string & result)
-{
-  platform::HttpClient request(MakeCityGalleryUrl(baseUrl, id, lang));
-  return request.RunHttpRequest(result);
-}
-
-Api::Api(std::string const & baseUrl /* = "https://routes.maps.me/gallery/v1/city/" */)
+Api::Api(std::string const & baseUrl /* = BOOKMARKS_CATALOG_FRONT_URL */,
+         std::string const & basePicturesUrl /* = PICTURES_URL */)
   : m_baseUrl(baseUrl)
+  , m_basePicturesUrl(basePicturesUrl)
 {
 }
 
@@ -141,81 +234,58 @@ void Api::SetDelegate(std::unique_ptr<Delegate> delegate)
   m_delegate = std::move(delegate);
 }
 
-void Api::OnEnterForeground()
-{
-  m_bookingPromoAwaitingForId.clear();
-  settings::TryGet("BookingPromoAwaitingForId", m_bookingPromoAwaitingForId);
-
-  if (m_bookingPromoAwaitingForId.empty())
-    return;
-
-  auto const eyeInfo = eye::Eye::Instance().GetInfo();
-  auto const timeSinceLastTransitionToBooking =
-      eye::Clock::now() - eyeInfo->m_promo.m_transitionToBookingTime;
-
-  if (timeSinceLastTransitionToBooking < kMinMinutesAfterBooking ||
-      timeSinceLastTransitionToBooking > kMaxMinutesAfterBooking)
-  {
-    settings::Delete("BookingPromoAwaitingForId");
-    m_bookingPromoAwaitingForId.clear();
-  }
-}
-
-bool Api::NeedToShowAfterBooking() const
-{
-  return NeedToShowImpl(m_bookingPromoAwaitingForId, eye::Eye::Instance().GetInfo());
-}
-
-std::string Api::GetPromoLinkAfterBooking() const
+AfterBooking Api::GetAfterBooking(std::string const & lang) const
 {
   auto const eyeInfo = eye::Eye::Instance().GetInfo();
 
-  if (!NeedToShowImpl(m_bookingPromoAwaitingForId, eyeInfo))
-    return "";
+  auto const promoId = LoadPromoIdForBooking(eyeInfo);
 
-  return MakeCityGalleryUrl(m_baseUrl, m_bookingPromoAwaitingForId, languages::GetCurrentNorm());
+  if (!NeedToShowImpl(promoId, eyeInfo))
+    return {};
+
+  return {promoId, InjectUTM(GetCityCatalogueUrl(m_baseUrl, promoId), UTM::BookingPromo),
+          GetPictureUrl(m_basePicturesUrl, promoId)};
 }
 
-void Api::GetCityGallery(std::string const & id, CityGalleryCallback const & cb) const
+std::string Api::GetLinkForDownloader(std::string const & id) const
 {
-  GetPromoCityGalleryImpl(m_baseUrl, id, cb);
+  return InjectUTM(GetCityCatalogueUrl(m_baseUrl, id), UTM::DownloadMwmBanner);
 }
 
-void Api::GetCityGallery(m2::PointD const & point, CityGalleryCallback const & cb) const
+std::string Api::GetCityUrl(m2::PointD const & point) const
+{
+  auto const id = m_delegate->GetCityId(point);
+
+  if (id.empty())
+    return {};
+
+  return GetCityCatalogueUrl(m_baseUrl, id);
+}
+
+void Api::GetCityGallery(m2::PointD const & point, std::string const & lang, UTM utm,
+                         CityGalleryCallback const & onSuccess, OnError const & onError) const
+{
+  CHECK(m_delegate, ());
+  auto const url = MakeCityGalleryUrl(m_baseUrl, m_delegate->GetCityId(point), lang);
+  auto const headers = m_delegate->GetHeaders();
+  GetPromoGalleryImpl(url, headers, utm, onSuccess, onError);
+}
+
+void Api::GetPoiGallery(m2::PointD const & point, std::string const & lang, Tags const & tags,
+                        bool useCoordinates, UTM utm, CityGalleryCallback const & onSuccess,
+                        OnError const & onError) const
 {
   CHECK(m_delegate, ());
 
-  GetPromoCityGalleryImpl(m_baseUrl, m_delegate->GetCityId(point), cb);
+  auto const url =
+      MakePoiGalleryUrl(m_baseUrl, m_delegate->GetCityId(point), point, lang, tags, useCoordinates);
+  auto const headers = m_delegate->GetHeaders();
+  GetPromoGalleryImpl(url, headers, utm, onSuccess, onError);
 }
 
-void Api::OnMapObjectEvent(eye::MapObject const & mapObject)
+void Api::OnTransitionToBooking(m2::PointD const & hotelPos)
 {
-  CHECK(!mapObject.GetEvents().empty(), ());
-
-  auto const bestType = classif().GetTypeByReadableObjectName(mapObject.GetBestType());
-
-  if (!ftypes::IsHotelChecker::Instance()(bestType) &&
-      !ftypes::IsBookingHotelChecker::Instance()(bestType))
-  {
-    return;
-  }
-
-  m2::PointD pos;
-  bool found = false;
-  switch (mapObject.GetEvents().back().m_type)
-  {
-  case eye::MapObject::Event::Type::BookingBook:
-  case eye::MapObject::Event::Type::BookingMore:
-  case eye::MapObject::Event::Type::BookingReviews:
-  case eye::MapObject::Event::Type::BookingDetails:
-  {
-    pos = mapObject.GetPos();
-    found = true;
-  }
-  default: /* do nothing */;
-  }
-
-  auto const id = found ? m_delegate->GetCityId(pos) : "";
+  auto const id = m_delegate->GetCityId(hotelPos);
 
   if (!id.empty())
     settings::Set("BookingPromoAwaitingForId", id);

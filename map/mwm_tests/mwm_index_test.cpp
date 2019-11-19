@@ -1,17 +1,19 @@
 #include "testing/testing.hpp"
 
-#include "map/feature_vec_model.hpp"
+#include "map/features_fetcher.hpp"
 
 #include "indexer/scales.hpp"
 #include "indexer/classificator_loader.hpp"
 
+#include <string>
+#include <vector>
+
+using namespace std;
 
 namespace
 {
-
 class CheckNonEmptyGeometry
 {
-  int m_scale;
 public:
   vector<FeatureID> m_ids;
 
@@ -34,11 +36,14 @@ public:
     m_ids.clear();
     m_scale = scale;
   }
+
+private:
+  int m_scale;
 };
 
 bool RunTest(string const & countryFileName, int lowS, int highS)
 {
-  model::FeaturesFetcher src;
+  FeaturesFetcher src;
   auto p = src.RegisterMap(platform::LocalCountryFile::MakeForTesting(countryFileName));
   if (p.second != MwmSet::RegResult::Success)
     return false;
@@ -54,13 +59,13 @@ bool RunTest(string const & countryFileName, int lowS, int highS)
   for (int scale = lowS; scale <= highS; ++scale)
   {
     doCheck.SetScale(scale);
-    src.ForEachFeatureID(MercatorBounds::FullRect(), doCheck, scale);
+    src.ForEachFeatureID(mercator::Bounds::FullRect(), doCheck, scale);
     src.ReadFeatures(doCheck, doCheck.m_ids);
   }
 
   return true;
 }
-}
+}  // namespace
 
 UNIT_TEST(ForEachFeatureID_Test)
 {

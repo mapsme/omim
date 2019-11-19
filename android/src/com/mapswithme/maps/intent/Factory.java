@@ -3,10 +3,10 @@ package com.mapswithme.maps.intent;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
@@ -28,7 +28,7 @@ import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.FeatureId;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.location.LocationHelper;
-import com.mapswithme.maps.news.IntroductionScreenFactory;
+import com.mapswithme.maps.onboarding.IntroductionScreenFactory;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.search.SearchActivity;
 import com.mapswithme.maps.search.SearchEngine;
@@ -37,6 +37,7 @@ import com.mapswithme.maps.ugc.UGC;
 import com.mapswithme.maps.ugc.UGCEditorActivity;
 import com.mapswithme.util.Constants;
 import com.mapswithme.util.StorageUtils;
+import com.mapswithme.util.UTM;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.concurrency.ThreadPool;
 import com.mapswithme.util.log.Logger;
@@ -145,7 +146,7 @@ public class Factory
   @NonNull
   private static String convertUrlToGuidesPageDeeplink(@NonNull String url)
   {
-    String baseCatalogUrl = BookmarkManager.INSTANCE.getCatalogFrontendUrl();
+    String baseCatalogUrl = BookmarkManager.INSTANCE.getCatalogFrontendUrl(UTM.UTM_NONE);
     String relativePath = Uri.parse(url).getQueryParameter("url");
     return Uri.parse(baseCatalogUrl)
               .buildUpon().appendEncodedPath(relativePath).toString();
@@ -712,7 +713,7 @@ public class Factory
     public boolean run(@NonNull MwmActivity target)
     {
       String deeplink = convertUrlToGuidesPageDeeplink(getUrl());
-      BookmarksCatalogActivity.startByGuidesPageDeeplink(target, deeplink);
+      BookmarksCatalogActivity.start(target, deeplink);
       return true;
     }
   }
@@ -830,7 +831,7 @@ public class Factory
 
   public static class ShowCountryTask implements MapTask
   {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 256630934543189768L;
     private final String mCountryId;
 
     public ShowCountryTask(String countryId)
@@ -846,10 +847,26 @@ public class Factory
     }
   }
 
+  public static class ShowBookmarkCategoryTask implements MapTask
+  {
+    private static final long serialVersionUID = 8285565041410550281L;
+    final long mCategoryId;
+
+    public ShowBookmarkCategoryTask(long categoryId)
+    {
+      mCategoryId = categoryId;
+    }
+
+    public boolean run(@NonNull MwmActivity target)
+    {
+      BookmarkManager.INSTANCE.showBookmarkCategoryOnMap(mCategoryId);
+      return true;
+    }
+  }
+
   static abstract class BaseUserMarkTask implements MapTask
   {
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -3348320422813422144L;
     final long mCategoryId;
     final long mId;
 

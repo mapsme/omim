@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "There are no active subscriptions";
 
-"subscription_terms" = "Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.";
-
 "subscriptions_title" = "Subscriptions";
 
 "manage_subscription" = "Manage subscription";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "Denne filen er skadet og kan ikke lastes opp. Vennligst last opp en annen fil.";
 
-"buy_btn" = "Kjøp for %s";
+"buy_btn" = "Kjøpe en guide for %s";
 
 "download_guide_progress" = "Laster ned guiden din…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Kan ikke planlegge rute. Vennligst spesifiser en annen posisjon for rute";
 
-"dialog_routing_download_files_carplay" = "Ikke alle kart tilgjengeliig for å planlegge rute. Vennligst last dem ned på din mobil";
+"dialog_routing_download_files_carplay" = "For å beregne rute last ned manglende kart på enheten din";
 
 "dialog_routing_system_error_carplay" = "Feil oppstod. Vennligst restart appen";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Finne en hotell på kortet";
+
+"popup_booking_download_guides_title" = "Du har booket en hotell?";
+
+"popup_booking_download_guides_message" = "Planlegg en rute ved hjelp av ferdige guider fra MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Uten nett-guider";
+
+"popup_mwm_download_guides_cta" = "Velge";
+
+"popup_mwm_download_guides_cta_1" = "Se";
+
+"gallery_pp_download_guides_offline_title" = "Planlegg din ferie sammen med MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Ikke gå glipp av det viktigste og bruk ruter laget av erfarte reisende";
+
+"gallery_pp_download_guides_offline_cta" = "Koble til Internett";
+
+"gallery_pp_download_guides_title" = "Guider";
+
+"native_screen_subscription_title" = "Full adgang til flere enn 2000 guider!";
+
+"native_screen_subscription_message" = "En minneverdig ferie uavhengig av hvor du reiser og hvem du tar med";
+
+"annual_subscription_title" = "Årlig";
+
+"montly_subscription_title" = "Månedlig";
+
+"annual_subscription_message" = "12 måneder av ubegrenset tilgang";
+
+"montly_subscription_message" = "1 måned av ubegrenset tilgang";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Takk for abonnementet!";
+
+"subscription_success_dialog_message" = "Nå har du fått ubegrenset tilgang til guider";
+
+"renewal_screen_title" = "Abonnementet er utløpt";
+
+"renewal_screen_message" = "Alle guidene som ble lastet ned med abonnementet vil bli fjernet. Ville du gjenopprette abonnementet og lagre dem?";
+
+"renewal_screen_button_restore" = "Ja, forny";
+
+"renewal_screen_button_cancel" = "Nei, slett guider";
+
+"subscription_error_ping_title" = "Det oppsto en feil under kjøpet";
+
+"subscription_error_message" = "Tjenesten er for tiden ikke tilgjengelig i din region. Vennligst prøv igjen senere";
+
+"subscription_error_button" = "Klart";
+
+"timeout_error_title" = "Oops, tiden har utløpt!";
+
+"timeout_error_message" = "Våre servere svar ikke. Vennligst sjekk din Internett-tilkobling og prøv igjen.";
+
+"per_month" = "/måned";
+
+"per_year" = "/år";
+
+"buy_btn_for_subscription" = "Full adgang fra %s";
+
+"buy_btn_for_subscription_1" = "Kjøpe ALLE guider for %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Full adgang for %s pr. måned";
+
+"buy_btn_for_subscription_ios_only_year" = "Full adgang for %s pr. år";
+
+"subscription_terms_guides" = "Betalingen vil belastes iTunes-kontoen din ved kjøpsbekreftelsen. Abonnementet vil automatisk fornyes med mindre automatisk fornyelse slås av minst 24 timer før slutten av den inneværende perioden. Kontoen din vil belastes i henhold til avtalen din for fornyelse 24 timer innen slutten av den inneværende perioden. Du kan når som helst etter kjøpet administrere eller slå av automatisk fornyelse i Apple ID-kontoinnstillingene dine. Du kan bruke guider som ble lastet ned med abonnementet kun i løpet av dets gyldighetsperiode. Guidene med alle bokmerker vil bli fjernet automatisk om 30 dager etter slutten av abonnementet.";
+
+"subscription_terms" = "Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.";
+
+"whatsnew_carplay_title" = "Autonavigering MAPS.ME i CarPlay!";
+
+"whatsnew_carplay_message" = "Bokmerker, søk, hastighets kameraer og omvei innstilinger- alt fungerer uten Internett";
+
+"whatsnew_subscription_title" = "Åpen verden rundt deg med abonnement!";
+
+"whatsnew_subscription_message" = "Ubegrenset tilgang til rutekatalogen er mer lønnsom enn engangs kjøp";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Navigerings fornyelse";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Vi har forbedret måten å lage ruter på til punkter, som ligger langt fra veier";
+
+"avoid_unpaved_carplay_1" = "Ikke grusvei";
+
+"avoid_unpaved_carplay_2" = "Ikke uasfaltert";
+
+"avoid_ferry_carplay_1" = "Ingen ferger";
+
+"avoid_ferry_carplay_2" = "Unngå ferger";
+
+"avoid_tolls_carplay_1" = "Ingen bomvei";
+
+"avoid_tolls_carplay_2" = "Unngå bomvei";
+
+"speedcams_alert_title_carplay_1" = "Kamera-info";
+
+"speedcams_alert_title_carplay_2" = "Kamera-advarsel";
+
+"download_map_carplay" = "Vennligst last ned kart i MAPS.ME appen på enheten din";
+
+"carplay_roundabout_exit" = "%s avkjøring";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Sortere…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Sortere merker";
+
+/* iOS */
+"sort_default" = "Sortere som standard";
+
+"sort_type" = "Sortere etter type";
+
+"sort_distance" = "Sortere etter avstand";
+
+"sort_date" = "Sortere etter dato";
+
+/* Android */
+"by_default" = "Som standard";
+
+/* Android */
+"by_type" = "Etter type";
+
+/* Android */
+"by_distance" = "Etter avstand";
+
+/* Android */
+"by_date" = "Etter dato";
+
+"week_ago_sorttype" = "For en uke siden";
+
+"month_ago_sorttype" = "For en måned siden";
+
+"moremonth_ago_sorttype" = "Mer enn en måned siden";
+
+"moreyear_ago_sorttype" = "Mer enn ett år siden";
+
+"near_me_sorttype" = "Nær meg";
+
+"others_sorttype" = "Andre";
+
+"food_places" = "Mat";
+
+"tourist_places" = "Severdigheter";
+
+"museums" = "Museer";
+
+"parks" = "Parker";
+
+"swim_places" = "Svømming";
+
+"mountains" = "Fjell";
+
+"animals" = "Dyr";
+
+"hotels" = "Hoteller";
+
+"buildings" = "Bygninger";
+
+"money" = "Penger";
+
+"shops" = "Butikker";
+
+"parkings" = "Parkeringer";
+
+"fuel_places" = "Bensinstasjoner";
+
+"water" = "Vann";
+
+"medicine" = "Medisin";
+
+"search_in_the_list" = "Søk på lista";
+
+"view_on_map_bookmarks" = "På kartet";
+
+"more_bookmarks" = "Mer…";
+
+"no_items_found" = "Ingenting funnet";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Endre";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Slette lista";
+
+"whatsnew_bookmarks_search_sort_title" = "Orden i merker- lett å reise";
+
+"whatsnew_bookmarks_search_sort_message" = "Sorter favoritter etter kategorier, tidspunkt de er lagt inn og geografisk lokasjon, samt finn bestemte merker fort etter navn";
+
+"popup_subscription_success_map_title" = "Hurra! Du har abonnert!";
+
+"popup_subscription_success_map_message" = "Nå kan du utforske de beste turistseverdighetene i MAPS.ME-katalogen";
+
+"popup_subscription_success_map_start_button" = "Ta en titt";
+
+"popup_subscription_success_map_not_now_button" = "Ikke nå";
+
+"religious_places" = "Hellige steder";
+
+"subscription_terms_android" = "Betaling utføres fra din Google Play-konto ved innkjøpsbekreftelse. Anonnementet blir automatisk oppdatert dersom den automatiske forlengelsen ikke slås av om minst 24 timer før gjeldende periode er ute. Penger blir overført fra din konto i henhold til din forlengelse-tariffplanen i løpet av 24 timer før gjeldende periode er ute. Du kan styre automatisk forlengelse eller slå den av i kontoinnstillinger etter kjøpet. Du kan bruke guider som ble lastet ned med abonnment kun i løpet av varighetsperiode. Når 30-dagers varighetsperiode er ute, blir guidene slettet.";
+
+"select_list" = "Velge liste";
+
+"pp_discovery_place_related_header" = "Dette stedet er i guidekatalogen";
+
+"pp_discovery_place_related_header_1" = "Dette stedet finnes i guidekatalogen";
+
+"pp_discovery_place_related_cta_button" = "Se";
+
+"pp_discovery_place_related_tag_header" = "Guider på tag «%s»";
+
+"pp_discovery_place_related_tag_header_1" = "Du kan også like";
+
+"buy_btn_for_subscription_version_2" = "ALLE guider for bare %s/md.";
+
+"buy_btn_for_subscription_version_3" = "Hele katalogen for %s/md.";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Tilgang til katalogen for %s/md.";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Tilgang til katalogen for %s/år";
+
+"subscription_screen_native_title_version_2" = "Tilgang til guider med bokmerker på kartet!";
+
+"subscription_screen_native_message_version_2" = "Bli klar til hvilken som helst reise i 600+ byer og 100+ land";
+
+"catalog_no_internet_title" = "Ingen Internett-forbindelse";
+
+"catalog_no_internet_button" = "Prøve igjen";
+
+"whatsnew_map_updates_title" = "Reaktive kartoppdateringer";
+
+"whatsnew_map_updates_message" = "Nå kan data bli oppdatert 2 ganger fortere";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Parkering";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Betalingsterminal";
 
 "type.amenity.pharmacy" = "Apotek";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Post";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Pub";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Universitet";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Sigarettautomat";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Vannpunkt";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Blokk";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Grensekontroll";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Inngangspassasje";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Port";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Bom";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Sperre";
 
 "type.barrier.toll_booth" = "Bomstasjon";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Arkeologisk område";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Vann";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Gravplass";
 
 "type.landuse.cemetery.christian" = "Gravplass";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Slette";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Innsjø";
 

@@ -4,9 +4,18 @@ shelter=yes : amenity=shelter
 toilets=yes : amenity=toilets
 restaurant=yes : amenity=restaurant
 hotel=yes : tourism=hotel
+ford=boat : highway=ford
+ford=intermittent : highway=ford
+ford=seasonal : highway=ford
+ford=stream : highway=ford
+ford=stepping_stones : highway=ford
 ford=yes : highway=ford
 ruins=yes : historic=ruins
+drinkable=yes : amenity=drinking_water
 building=entrance : entrance=yes
+
+ice_road=yes : highway=ice_road
+winter_road=yes : highway=ice_road
 
 natural=marsh : natural=wetland, wetland=marsh
 natural=waterfall : waterway=waterfall
@@ -38,7 +47,6 @@ diet=vegan : cuisine=vegan
 aerodrome:type=international : aerodrome=international
 
 amenity=parking_entrance : amenity=parking
-amenity=parking_space : amenity=parking
 amenity=garages : building=garage
 amenity=garage : building=garage
 building=garages : building=garage

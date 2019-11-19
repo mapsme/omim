@@ -1,5 +1,6 @@
 #import "MWMAlert.h"
 #import "MWMViewController.h"
+#import "MWMMobileInternetAlert.h"
 
 @interface MWMAlertViewController : MWMViewController
 
@@ -8,17 +9,15 @@
 @property(weak, nonatomic, readonly) UIViewController * _Null_unspecified ownerViewController;
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController;
-- (void)presentRoutingMigrationAlertWithOkBlock:(nonnull MWMVoidBlock)okBlock;
 - (void)presentRateAlert;
 - (void)presentPoint2PointAlertWithOkBlock:(nonnull MWMVoidBlock)okBlock
                              needToRebuild:(BOOL)needToRebuild;
 - (void)presentRoutingDisclaimerAlertWithOkBlock:(nonnull nonnull MWMVoidBlock)block;
 - (void)presentDisabledLocationAlert;
-- (void)presentLocationAlert;
+- (void)presentLocationAlertWithCancelBlock:(MWMVoidBlock)cancelBlock;
 - (void)presentLocationServiceNotSupportedAlert;
 - (void)presentLocationNotFoundAlertWithOkBlock:(nonnull MWMVoidBlock)okBlock;
 - (void)presentNoConnectionAlert;
-- (void)presentMigrationProhibitedAlert;
 - (void)presentDeleteMapProhibitedAlert;
 - (void)presentUnsavedEditsAlertWithOkBlock:(nonnull MWMVoidBlock)okBlock;
 - (void)presentNoWiFiAlertWithOkBlock:(nullable MWMVoidBlock)okBlock andCancelBlock:(nullable MWMVoidBlock)cancelBlock;
@@ -41,7 +40,7 @@
 - (void)presentPersonalInfoWarningAlertWithBlock:(nonnull MWMVoidBlock)block;
 - (void)presentTrackWarningAlertWithCancelBlock:(nonnull MWMVoidBlock)block;
 - (void)presentSearchNoResultsAlert;
-- (void)presentMobileInternetAlertWithBlock:(nonnull MWMVoidBlock)block;
+- (void)presentMobileInternetAlertWithBlock:(nonnull MWMMobileInternetAlertCompletionBlock)block;
 - (void)presentInfoAlert:(nonnull NSString *)title text:(nonnull NSString *)text;
 - (void)presentCreateBookmarkCategoryAlertWithMaxCharacterNum:(NSUInteger)max
                                               minCharacterNum:(NSUInteger)min

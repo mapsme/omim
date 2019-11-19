@@ -30,6 +30,11 @@ class DownloadedBookmarksViewController: MWMViewController {
     tableView.tableHeaderView = bottomView
     tableView.registerNib(cell: CatalogCategoryCell.self)
     tableView.registerNibForHeaderFooterView(BMCCategoriesHeader.self)
+    checkInvalidSubscription { [weak self] deleted in
+      if deleted {
+        self?.reloadData()
+      }
+    }
     if #available(iOS 11, *) { return } // workaround for https://jira.mail.ru/browse/MAPSME-8101
     reloadData()
   }
@@ -37,6 +42,9 @@ class DownloadedBookmarksViewController: MWMViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     reloadData()
+    
+    Statistics.logEvent(kStatGuidesShown, withParameters: [kStatServerIds : dataSource.guideIds],
+                        with: .realtime)
   }
 
   override func viewDidLayoutSubviews() {
@@ -51,16 +59,9 @@ class DownloadedBookmarksViewController: MWMViewController {
   }
 
   @IBAction func onDownloadBookmarks(_ sender: Any) {
-    if MWMPlatform.networkConnectionType() == .none {
-      MWMAlertViewController.activeAlert().presentNoConnectionAlert();
-      Statistics.logEvent("Bookmarks_Downloaded_Catalogue_error",
-                          withParameters: [kStatError : "no_internet"])
-      return
-    }
     Statistics.logEvent(kStatCatalogOpen, withParameters: [kStatFrom: kStatDownloaded])
-    let webViewController = CatalogWebViewController()
-    MapViewController.topViewController().navigationController?.pushViewController(webViewController,
-                                                                                   animated: true)
+    let webViewController = CatalogWebViewController.catalogFromAbsoluteUrl(nil, utm: .bookmarksPageCatalogButton)
+    MapViewController.topViewController().navigationController?.pushViewController(webViewController, animated: true)
   }
 
   private func reloadData() {
@@ -119,11 +120,16 @@ extension DownloadedBookmarksViewController: UITableViewDelegate {
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
-    let category = dataSource.category(at: indexPath.row)
-    if let bmViewController = BookmarksVC(category: category.categoryId) {
-      MapViewController.topViewController().navigationController?.pushViewController(bmViewController,
-                                                                                     animated: true)
+    
+    if (dataSource.isGuide(at: indexPath.row)) {
+      Statistics.logEvent(kStatGuidesOpen, withParameters: [kStatServerId : dataSource.getServerId(at: indexPath.row)],
+                          with: .realtime)
     }
+    
+    let category = dataSource.category(at: indexPath.row)
+    let bmViewController = BookmarksVC(category: category.categoryId)
+    MapViewController.topViewController().navigationController?.pushViewController(bmViewController,
+                                                                                   animated: true)
   }
 }
 

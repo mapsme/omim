@@ -14,15 +14,24 @@ public:
   CarModel(VehicleModel::LimitsInitList const & roadLimits, HighwayBasedInfo const & info);
 
   // VehicleModelInterface overrides:
-  double GetOffroadSpeed() const override;
+  SpeedKMpH const & GetOffroadSpeed() const override;
 
   static CarModel const & AllLimitsInstance();
   static LimitsInitList const & GetOptions();
   static std::vector<AdditionalRoadTags> const & GetAdditionalTags();
   static VehicleModel::SurfaceInitList const & GetSurfaces();
 
+  uint32_t GetNoCarTypeForTesting() const { return m_noCarType; }
+  uint32_t GetYesCarTypeForTesting() const { return m_yesCarType; }
+
+protected:
+  RoadAvailability GetRoadAvailability(feature::TypesHolder const & types) const override;
+
 private:
-  void InitAdditionalRoadTypes();
+  void Init();
+
+  uint32_t m_noCarType = 0;
+  uint32_t m_yesCarType = 0;
 };
 
 class CarModelFactory : public VehicleModelFactory

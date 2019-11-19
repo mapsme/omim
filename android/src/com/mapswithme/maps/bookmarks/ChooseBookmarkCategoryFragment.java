@@ -2,10 +2,10 @@ package com.mapswithme.maps.bookmarks;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,10 +44,11 @@ public class ChooseBookmarkCategoryFragment extends BaseMwmDialogFragment
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
   {
-    mRecycler = (RecyclerView) inflater.inflate(R.layout.recycler_default, container, false);
+    View root = inflater.inflate(R.layout.choose_bookmark_category_fragment, container, false);
+    mRecycler = root.findViewById(R.id.recycler);
     mRecycler.setLayoutManager(new org.solovyev.android.views.llm.LinearLayoutManager(getActivity()));
 
-    return mRecycler;
+    return root;
   }
 
   @Override
@@ -57,7 +58,8 @@ public class ChooseBookmarkCategoryFragment extends BaseMwmDialogFragment
 
     final Bundle args = getArguments();
     final int catPosition = args.getInt(CATEGORY_POSITION, 0);
-    mAdapter = new ChooseBookmarkCategoryAdapter(getActivity(), catPosition);
+    List<BookmarkCategory> items = BookmarkManager.INSTANCE.getOwnedCategoriesSnapshot().getItems();
+    mAdapter = new ChooseBookmarkCategoryAdapter(getActivity(), catPosition, items);
     mAdapter.setListener(this);
     mRecycler.setAdapter(mAdapter);
   }

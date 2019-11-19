@@ -42,6 +42,8 @@ std::string GetBookmarkIconType(kml::BookmarkIcon const & icon)
   }
   UNREACHABLE();
 }
+
+std::string const kCustomImageProperty = "CustomImage";
 }  // namespace
 
 Bookmark::Bookmark(m2::PointD const & ptOrg)
@@ -58,6 +60,10 @@ Bookmark::Bookmark(kml::BookmarkData && data)
   , m_groupId(kml::kInvalidMarkGroupId)
 {
   m_data.m_id = GetId();
+
+  auto const it = m_data.m_properties.find(kCustomImageProperty);
+  if (it != m_data.m_properties.end())
+    m_customImageName = it->second;
 }
 
 void Bookmark::SetData(kml::BookmarkData const & data)
@@ -71,6 +77,17 @@ kml::BookmarkData const & Bookmark::GetData() const
   return m_data;
 }
 
+search::ReverseGeocoder::RegionAddress const & Bookmark::GetAddress() const
+{
+  return m_address;
+}
+
+void Bookmark::SetAddress(search::ReverseGeocoder::RegionAddress const & address)
+{
+  SetDirty();
+  m_address = address;
+}
+
 dp::Anchor Bookmark::GetAnchor() const
 {
   return dp::Bottom;
@@ -79,6 +96,12 @@ dp::Anchor Bookmark::GetAnchor() const
 drape_ptr<df::UserPointMark::SymbolNameZoomInfo> Bookmark::GetSymbolNames() const
 {
   auto symbol = make_unique_dp<SymbolNameZoomInfo>();
+  if (!m_customImageName.empty())
+  {
+    symbol->insert(std::make_pair(1 /* zoomLevel */, m_customImageName));
+    return symbol;
+  }
+
   symbol->insert(std::make_pair(1 /* zoomLevel */, "bookmark-default-xs"));
   symbol->insert(std::make_pair(8 /* zoomLevel */, "bookmark-default-s"));
   auto const iconType = GetBookmarkIconType(m_data.m_icon);
@@ -295,6 +318,16 @@ std::string BookmarkCategory::GetCatalogDeeplink() const
 
   std::ostringstream ss;
   ss << kDeepLinkUrl << "catalogue?id=" << m_serverId << "&name=" << UrlEncode(GetName());
+  return ss.str();
+}
+
+std::string BookmarkCategory::GetCatalogPublicLink() const
+{
+  if (kDeepLinkUrl.empty())
+    return {};
+
+  std::ostringstream ss;
+  ss << kDeepLinkUrl << "guides_page?url=route%2F" << m_serverId;
   return ss.str();
 }
 

@@ -31,8 +31,6 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <cstdint>
-#include <utility>
 #include <vector>
 
 using namespace std;
@@ -113,9 +111,9 @@ private:
     auto & editor = Editor::Instance();
     for (auto const index : features)
     {
-      auto emo = editor.GetEditedFeature(FeatureID(m_id, index));
-      CHECK(emo, ());
-      fn(*emo, index);
+      // Ignore feature load errors related to mwm removal and feature parse errors from editor.
+      if (auto emo = editor.GetEditedFeature(FeatureID(m_id, index)))
+        fn(*emo, index);
     }
   }
 
@@ -125,14 +123,23 @@ private:
   vector<uint32_t> m_created;
 };
 
-Retrieval::ExtendedFeatures SortFeaturesAndBuildCBV(vector<uint64_t> && features,
-                                                    vector<uint64_t> && exactlyMatchedFeatures)
+Retrieval::ExtendedFeatures SortFeaturesAndBuildResult(vector<uint64_t> && features,
+                                                       vector<uint64_t> && exactlyMatchedFeatures)
 {
   using Builder = coding::CompressedBitVectorBuilder;
   base::SortUnique(features);
   base::SortUnique(exactlyMatchedFeatures);
-  return {Builder::FromBitPositions(move(features)),
-          Builder::FromBitPositions(move(exactlyMatchedFeatures))};
+  auto featuresCBV = CBV(Builder::FromBitPositions(move(features)));
+  auto exactlyMatchedFeaturesCBV = CBV(Builder::FromBitPositions(move(exactlyMatchedFeatures)));
+  return Retrieval::ExtendedFeatures(move(featuresCBV), move(exactlyMatchedFeaturesCBV));
+}
+
+Retrieval::ExtendedFeatures SortFeaturesAndBuildResult(vector<uint64_t> && features)
+{
+  using Builder = coding::CompressedBitVectorBuilder;
+  base::SortUnique(features);
+  auto const featuresCBV = CBV(Builder::FromBitPositions(move(features)));
+  return Retrieval::ExtendedFeatures(featuresCBV);
 }
 
 template <typename DFA>
@@ -182,26 +189,28 @@ pair<bool, bool> MatchFeatureByNameAndType(EditableMapObject const & emo,
 {
   auto const & th = emo.GetTypes();
 
-  pair<bool, bool> matched = {false, false};
+  pair<bool, bool> matchedByType = MatchesByType(th, request.m_categories);
+
+  // Exactly matched by type.
+  if (matchedByType.second)
+    return {true, true};
+
+  pair<bool, bool> matchedByName = {false, false};
   emo.GetNameMultilang().ForEach([&](int8_t lang, string const & name) {
     if (name.empty() || !request.HasLang(lang))
       return base::ControlFlow::Continue;
 
     vector<UniString> tokens;
     NormalizeAndTokenizeString(name, tokens, Delimiters());
-    auto const matchesByName = MatchesByName(tokens, request.m_names);
-    auto const matchesByType =
-        matchesByName.second ? make_pair(false, false) : MatchesByType(th, request.m_categories);
-
-    matched = {matchesByName.first || matchesByType.first,
-               matchesByName.second || matchesByType.second};
-    if (!matched.first)
+    auto const matched = MatchesByName(tokens, request.m_names);
+    matchedByName = {matchedByName.first || matched.first, matchedByName.second || matched.second};
+    if (!matchedByName.second)
       return base::ControlFlow::Continue;
 
     return base::ControlFlow::Break;
   });
 
-  return matched;
+  return {matchedByType.first || matchedByName.first, matchedByType.second || matchedByName.second};
 }
 
 bool MatchFeatureByPostcode(EditableMapObject const & emo, TokenSlice const & slice)
@@ -254,7 +263,7 @@ Retrieval::ExtendedFeatures RetrieveAddressFeaturesImpl(Retrieval::TrieRoot<Valu
     }
   });
 
-  return SortFeaturesAndBuildCBV(move(features), move(exactlyMatchedFeatures));
+  return SortFeaturesAndBuildResult(move(features), move(exactlyMatchedFeatures));
 }
 
 template <typename Value>
@@ -280,7 +289,7 @@ Retrieval::ExtendedFeatures RetrievePostcodeFeaturesImpl(Retrieval::TrieRoot<Val
       features.push_back(index);
   });
 
-  return SortFeaturesAndBuildCBV(move(features), {});
+  return SortFeaturesAndBuildResult(move(features));
 }
 
 Retrieval::ExtendedFeatures RetrieveGeometryFeaturesImpl(MwmContext const & context,
@@ -304,7 +313,7 @@ Retrieval::ExtendedFeatures RetrieveGeometryFeaturesImpl(MwmContext const & cont
     if (rect.IsPointInside(center))
       features.push_back(index);
   });
-  return SortFeaturesAndBuildCBV(move(features), move(exactlyMatchedFeatures));
+  return SortFeaturesAndBuildResult(move(features), move(exactlyMatchedFeatures));
 }
 
 template <typename T>
@@ -328,12 +337,10 @@ struct RetrievePostcodeFeaturesAdaptor
 };
 
 template <typename Value>
-unique_ptr<Retrieval::TrieRoot<Value>> ReadTrie(MwmValue & value, ModelReaderPtr & reader)
+unique_ptr<Retrieval::TrieRoot<Value>> ReadTrie(MwmValue const & value, ModelReaderPtr & reader)
 {
-  serial::GeometryCodingParams params(
-      trie::GetGeometryCodingParams(value.GetHeader().GetDefGeometryCodingParams()));
   return trie::ReadTrie<SubReaderWrapper<Reader>, ValueList<Value>>(
-      SubReaderWrapper<Reader>(reader.GetPtr()), SingleValueSerializer<Value>(params));
+      SubReaderWrapper<Reader>(reader.GetPtr()), SingleValueSerializer<Value>());
 }
 }  // namespace
 
@@ -342,20 +349,13 @@ Retrieval::Retrieval(MwmContext const & context, base::Cancellable const & cance
   , m_cancellable(cancellable)
   , m_reader(context.m_value.m_cont.GetReader(SEARCH_INDEX_FILE_TAG))
 {
-  auto & value = context.m_value;
+  auto const & value = context.m_value;
 
   version::MwmTraits mwmTraits(value.GetMwmVersion());
-  m_format = mwmTraits.GetSearchIndexFormat();
-
-  switch (m_format)
-  {
-  case version::MwmTraits::SearchIndexFormat::FeaturesWithRankAndCenter:
-    m_root0 = ReadTrie<FeatureWithRankAndCenter>(value, m_reader);
-    break;
-  case version::MwmTraits::SearchIndexFormat::CompressedBitVector:
-    m_root1 = ReadTrie<FeatureIndexValue>(value, m_reader);
-    break;
-  }
+  auto const format = mwmTraits.GetSearchIndexFormat();
+  // We do not support mwms older than November 2015.
+  CHECK_EQUAL(format, version::MwmTraits::SearchIndexFormat::CompressedBitVector, ());
+  m_root = ReadTrie<Uint64IndexValue>(value, m_reader);
 }
 
 Retrieval::ExtendedFeatures Retrieval::RetrieveAddressFeatures(
@@ -395,21 +395,8 @@ Retrieval::Features Retrieval::RetrieveGeometryFeatures(m2::RectD const & rect, 
 template <template <typename> class R, typename... Args>
 Retrieval::ExtendedFeatures Retrieval::Retrieve(Args &&... args) const
 {
-  switch (m_format)
-  {
-  case version::MwmTraits::SearchIndexFormat::FeaturesWithRankAndCenter:
-  {
-    R<FeatureWithRankAndCenter> r;
-    ASSERT(m_root0, ());
-    return r(*m_root0, m_context, m_cancellable, forward<Args>(args)...);
-  }
-  case version::MwmTraits::SearchIndexFormat::CompressedBitVector:
-  {
-    R<FeatureIndexValue> r;
-    ASSERT(m_root1, ());
-    return r(*m_root1, m_context, m_cancellable, forward<Args>(args)...);
-  }
-  }
-  UNREACHABLE();
+  R<Uint64IndexValue> r;
+  ASSERT(m_root, ());
+  return r(*m_root, m_context, m_cancellable, forward<Args>(args)...);
 }
 }  // namespace search

@@ -50,7 +50,7 @@ public:
     int8_t m_currentLocaleCode = CategoriesHolder::kEnglishCode;
     m2::RectD m_viewport;
     m2::PointD m_pivot;
-    string m_pivotRegion;
+    std::string m_pivotRegion;
     std::vector<uint32_t> m_preferredTypes;
     bool m_suggestsEnabled = false;
     bool m_needAddress = false;
@@ -72,8 +72,8 @@ public:
 
     Locales m_categoryLocales;
 
-    // Default batch size. Override if needed.
-    size_t m_batchSize = 10;
+    // The maximum number of results in a single emit.
+    size_t m_batchSize = 0;
 
     // The maximum total number of results to be emitted in all batches.
     size_t m_limit = 0;

@@ -1,5 +1,7 @@
 #include "indexer/data_source.hpp"
 
+#include "platform/mwm_version.hpp"
+
 #include "base/logging.hpp"
 
 #include <algorithm>
@@ -34,14 +36,16 @@ public:
   {
     auto src = m_factory(handle);
 
-    MwmValue const * mwmValue = handle.GetValue<MwmValue>();
+    MwmValue const * mwmValue = handle.GetValue();
     if (mwmValue)
     {
       // Untouched (original) features reading. Applies covering |cov| to geometry index, gets
       // feature ids from it, gets untouched features by ids from |src| and applies |m_fn| by
       // ProcessElement.
       feature::DataHeader const & header = mwmValue->GetHeader();
-      CheckUniqueIndexes checkUnique(header.GetFormat() >= version::Format::v5);
+      CHECK_GREATER_OR_EQUAL(header.GetFormat(), version::Format::v5,
+                             ("Old maps should not be registered."));
+      CheckUniqueIndexes checkUnique;
 
       // In case of WorldCoasts we should pass correct scale in ForEachInIntervalAndScale.
       auto const lastScale = header.GetLastScale();
@@ -107,7 +111,7 @@ string FeaturesLoaderGuard::GetCountryFileName() const
   if (!m_handle.IsAlive())
     return string();
 
-  return m_handle.GetValue<MwmValue>()->GetCountryFileName();
+  return m_handle.GetValue()->GetCountryFileName();
 }
 
 bool FeaturesLoaderGuard::IsWorld() const
@@ -115,7 +119,8 @@ bool FeaturesLoaderGuard::IsWorld() const
   if (!m_handle.IsAlive())
     return false;
 
-  return m_handle.GetValue<MwmValue>()->GetHeader().GetType() == feature::DataHeader::world;
+  return m_handle.GetValue()->GetHeader().GetType() ==
+         feature::DataHeader::MapType::World;
 }
 
 unique_ptr<FeatureType> FeaturesLoaderGuard::GetOriginalOrEditedFeatureByIndex(uint32_t index) const
@@ -152,6 +157,9 @@ unique_ptr<MwmInfo> DataSource::CreateInfo(platform::LocalCountryFile const & lo
 {
   MwmValue value(localFile);
 
+  if (version::GetMwmType(value.GetMwmVersion()) != version::MwmType::SingleMwm)
+    return nullptr;
+
   feature::DataHeader const & h = value.GetHeader();
   if (!h.IsMWMSuitable())
     return nullptr;
@@ -170,14 +178,17 @@ unique_ptr<MwmInfo> DataSource::CreateInfo(platform::LocalCountryFile const & lo
   return unique_ptr<MwmInfo>(move(info));
 }
 
-unique_ptr<MwmSet::MwmValueBase> DataSource::CreateValue(MwmInfo & info) const
+unique_ptr<MwmValue> DataSource::CreateValue(MwmInfo & info) const
 {
   // Create a section with rank table if it does not exist.
   platform::LocalCountryFile const & localFile = info.GetLocalFile();
   unique_ptr<MwmValue> p(new MwmValue(localFile));
+  if (!p || version::GetMwmType(p->GetMwmVersion()) != version::MwmType::SingleMwm)
+    return nullptr;
+
   p->SetTable(dynamic_cast<MwmInfoEx &>(info));
   ASSERT(p->GetHeader().IsMWMSuitable(), ());
-  return unique_ptr<MwmSet::MwmValueBase>(move(p));
+  return unique_ptr<MwmValue>(move(p));
 }
 
 pair<MwmSet::MwmId, MwmSet::RegResult> DataSource::RegisterMap(LocalCountryFile const & localFile)
@@ -244,7 +255,7 @@ void DataSource::ForEachInRect(FeatureCallback const & f, m2::RectD const & rect
 void DataSource::ForClosestToPoint(FeatureCallback const & f, StopSearchCallback const & stop,
                                    m2::PointD const & center, double sizeM, int scale) const
 {
-  auto const rect = MercatorBounds::RectByCenterXYAndSizeInMeters(center, sizeM);
+  auto const rect = mercator::RectByCenterXYAndSizeInMeters(center, sizeM);
 
   auto readFeatureType = [&f](uint32_t index, FeatureSource & src) {
     ReadFeatureType(f, src, index);

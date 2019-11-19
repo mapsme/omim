@@ -1,5 +1,7 @@
 #include "platform/settings.hpp"
+
 #include "platform/location.hpp"
+#include "platform/measurement_utils.hpp"
 #include "platform/platform.hpp"
 
 #include "defines.hpp"
@@ -14,9 +16,11 @@
 
 #include "base/logging.hpp"
 
-#include "std/cmath.hpp"
-#include "std/iostream.hpp"
-#include "std/sstream.hpp"
+#include <cmath>
+#include <iostream>
+#include <sstream>
+
+using namespace std;
 
 namespace settings
 {

@@ -31,8 +31,6 @@ struct PreRankingInfo
     return m_tokenRange[m_type];
   }
 
-  size_t GetNumTokens() const { return InnermostTokenRange().Size(); }
-
   // An abstract distance from the feature to the pivot.  Measurement
   // units do not matter here.
   double m_distanceToPivot = 0;
@@ -53,6 +51,9 @@ struct PreRankingInfo
   // True iff all tokens that are not stop-words
   // were used when retrieving the feature.
   bool m_allTokensUsed = true;
+
+  // True iff all tokens retrieved from search index were matched without misprints.
+  bool m_exactMatch = true;
 
   // Rank of the feature.
   uint8_t m_rank = 0;

@@ -1,5 +1,7 @@
-#include "base/assert.hpp"
 #include "base/string_utils.hpp"
+
+#include "base/assert.hpp"
+#include "base/checked_cast.hpp"
 
 #include "std/target_os.hpp"
 
@@ -34,10 +36,7 @@ SimpleDelimiter::SimpleDelimiter(char const * delims)
     m_delims.push_back(utf8::unchecked::next(it));
 }
 
-SimpleDelimiter::SimpleDelimiter(char delim)
-{
-  m_delims.push_back(delim);
-}
+SimpleDelimiter::SimpleDelimiter(char delim) { m_delims.push_back(delim); }
 
 bool SimpleDelimiter::operator()(UniChar c) const
 {
@@ -71,7 +70,7 @@ bool IntegerCheck(char const * start, char const * stop, T x, TResult & out)
 bool to_int(char const * start, int & i, int base /*= 10*/)
 {
   char * stop;
-  errno = 0; // Library functions do not reset it.
+  errno = 0;  // Library functions do not reset it.
   long const v = strtol(start, &stop, base);
   return IntegerCheck(start, stop, v, i);
 }
@@ -79,18 +78,18 @@ bool to_int(char const * start, int & i, int base /*= 10*/)
 bool to_uint(char const * start, unsigned int & i, int base /*= 10*/)
 {
   char * stop;
-  errno = 0; // Library functions do not reset it.
+  errno = 0;  // Library functions do not reset it.
   unsigned long const v = strtoul(start, &stop, base);
   return IntegerCheck(start, stop, v, i);
 }
 
-bool to_uint64(char const * s, uint64_t & i)
+bool to_uint64(char const * s, uint64_t & i, int base /*= 10*/)
 {
   char * stop;
 #ifdef OMIM_OS_WINDOWS_NATIVE
-  i = _strtoui64(s, &stop, 10);
+  i = _strtoui64(s, &stop, base);
 #else
-  i = strtoull(s, &stop, 10);
+  i = strtoull(s, &stop, base);
 #endif
   return *stop == 0 && s != stop;
 }
@@ -104,6 +103,16 @@ bool to_int64(char const * s, int64_t & i)
   i = strtoll(s, &stop, 10);
 #endif
   return *stop == 0 && s != stop;
+}
+
+bool to_size_t(char const * s, size_t & i, int base)
+{
+  uint64_t num = 0;
+  if (!to_uint64(s, num, base))
+    return false;
+
+  i = static_cast<size_t>(num);
+  return i == num;
 }
 
 bool to_float(char const * s, float & f)
@@ -219,7 +228,7 @@ char ascii_to_lower(char in)
     return (in + diff);
   return in;
 }
-}
+}  // namespace
 
 void AsciiToLower(std::string & s) { transform(s.begin(), s.end(), s.begin(), &ascii_to_lower); }
 void Trim(std::string & s) { boost::trim(s); }
@@ -228,6 +237,16 @@ void Trim(std::string & s, char const * anyOf) { boost::trim_if(s, boost::is_any
 bool ReplaceFirst(std::string & str, std::string const & from, std::string const & to)
 {
   auto const pos = str.find(from);
+  if (pos == std::string::npos)
+    return false;
+
+  str.replace(pos, from.length(), to);
+  return true;
+}
+
+bool ReplaceLast(std::string & str, std::string const & from, std::string const & to)
+{
+  auto const pos = str.rfind(from);
   if (pos == std::string::npos)
     return false;
 
@@ -269,6 +288,13 @@ bool IsASCIISpace(UniChar c)
   return c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v';
 }
 
+bool IsASCIINumeric(std::string const & str)
+{
+  if (str.empty())
+    return false;
+  return std::all_of(str.begin(), str.end(), strings::IsASCIIDigit);
+}
+
 bool IsASCIILatin(UniChar c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'); }
 
 bool StartsWith(UniString const & s, UniString const & p)
@@ -276,9 +302,23 @@ bool StartsWith(UniString const & s, UniString const & p)
   return StartsWith(s.begin(), s.end(), p.begin(), p.end());
 }
 
-bool StartsWith(std::string const & s1, char const * s2) { return (s1.compare(0, strlen(s2), s2) == 0); }
+bool StartsWith(std::string const & s1, char const * s2)
+{
+  return (s1.compare(0, strlen(s2), s2) == 0);
+}
 
-bool StartsWith(std::string const & s1, std::string const & s2) { return (s1.compare(0, s2.length(), s2) == 0); }
+bool StartsWith(std::string const & s1, std::string const & s2)
+{
+  return (s1.compare(0, s2.length(), s2) == 0);
+}
+
+bool EndsWith(UniString const & s1, UniString const & s2)
+{
+  if (s1.size() < s2.size())
+    return false;
+
+  return std::equal(s1.end() - s2.size(), s1.end(), s2.begin());
+}
 
 bool EndsWith(std::string const & s1, char const * s2)
 {
@@ -348,13 +388,15 @@ bool IsHTML(std::string const & utf8)
 
 bool AlmostEqual(std::string const & str1, std::string const & str2, size_t mismatchedCount)
 {
-  std::pair<std::string::const_iterator, std::string::const_iterator> mis(str1.begin(), str2.begin());
+  std::pair<std::string::const_iterator, std::string::const_iterator> mis(str1.begin(),
+                                                                          str2.begin());
   auto const str1End = str1.end();
   auto const str2End = str2.end();
 
   for (size_t i = 0; i <= mismatchedCount; ++i)
   {
-    auto const end = mis.first + std::min(distance(mis.first, str1End), distance(mis.second, str2End));
+    auto const end =
+        mis.first + std::min(distance(mis.first, str1End), distance(mis.second, str2End));
     mis = mismatch(mis.first, end, mis.second);
     if (mis.first == str1End && mis.second == str2End)
       return true;

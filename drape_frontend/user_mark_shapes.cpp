@@ -401,7 +401,10 @@ void CacheUserMarks(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
         textures->GetSymbolRegion(symbolName, region);
         auto const backgroundSymbol = GetBackgroundForSymbol(symbolName, textures);
         if (!backgroundSymbol.empty())
+        {
           textures->GetSymbolRegion(backgroundSymbol, backgroundRegion);
+          CHECK_EQUAL(region.GetTextureIndex(), backgroundRegion.GetTextureIndex(), ());
+        }
 
         m2::RectF const & texRect = region.GetTexRect();
         m2::RectF const & bgTexRect = backgroundRegion.GetTexRect();
@@ -461,6 +464,7 @@ void CacheUserMarks(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
         state.SetColorTexture(region.GetTexture());
         state.SetTextureFilter(dp::TextureFilter::Nearest);
         state.SetDepthTestEnabled(renderInfo.m_depthTestEnabled);
+        state.SetTextureIndex(region.GetTextureIndex());
 
         dp::AttributeProvider attribProvider(1, static_cast<uint32_t>(buffer.size()));
         attribProvider.InitStream(0, UPV::GetBinding(), make_ref(buffer.data()));
@@ -546,7 +550,7 @@ void CacheUserLines(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
 
     m2::RectD const tileRect = tileKey.GetGlobalRect();
 
-    double const maxLength = MercatorBounds::kRangeX / (1 << (tileKey.m_zoomLevel - 1));
+    double const maxLength = mercator::Bounds::kRangeX / (1 << (tileKey.m_zoomLevel - 1));
 
     bool intersected = false;
     ProcessSplineSegmentRects(renderInfo.m_spline, maxLength,

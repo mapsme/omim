@@ -3,9 +3,9 @@ package com.mapswithme.maps.bookmarks;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -53,6 +53,8 @@ public class BookmarkBackupController implements Authorizer.Callback,
   @NonNull
   private final Authorizer mAuthorizer;
   @NonNull
+  private final AuthCompleteListener mAuthCompleteListener;
+  @NonNull
   private final View.OnClickListener mSignInClickListener = new View.OnClickListener()
   {
     @Override
@@ -88,11 +90,13 @@ public class BookmarkBackupController implements Authorizer.Callback,
   };
 
   BookmarkBackupController(@NonNull FragmentActivity context, @NonNull BookmarkBackupView backupView,
-                           @NonNull Authorizer authorizer)
+                           @NonNull Authorizer authorizer,
+                           @NonNull AuthCompleteListener authCompleteListener)
   {
     mContext = context;
     mBackupView = backupView;
     mAuthorizer = authorizer;
+    mAuthCompleteListener = authCompleteListener;
   }
 
   private void requestRestoring()
@@ -229,6 +233,7 @@ public class BookmarkBackupController implements Authorizer.Callback,
       notifier.cancelNotification(Notifier.ID_IS_NOT_AUTHENTICATED);
       BookmarkManager.INSTANCE.setCloudEnabled(true);
       Statistics.INSTANCE.trackEvent(Statistics.EventName.BM_SYNC_PROPOSAL_ENABLED);
+      mAuthCompleteListener.onAuthCompleted();
     }
     else
     {

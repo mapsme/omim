@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "有効なサブスクリプションはありません";
 
-"subscription_terms" = "ご購入確定時にお客様のiTunesアカウントにお支払いが請求されます。現在のご利用期間が終了する最低でも24時間前に自動更新が解除されなければ、サブスクリプションは自動的に更新されます。現在のご利用期間が終了する24時間以内に、ご利用プランの更新がアカウントに請求されます。ご購入期間中にApple IDアカウント設定より自動更新を管理または解除することができます。";
-
 "subscriptions_title" = "サブスクリプション";
 
 "manage_subscription" = "サブスクリプション管理";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "このファイルは損傷しており、アップロードできませんでした。別のファイルをアップロードしてください。";
 
-"buy_btn" = "%sで購入";
+"buy_btn" = "%sでこれを購入";
 
 "download_guide_progress" = "ガイドをダウンロードしています…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "ルートが構築できません。別のルート地点を設定して下さい";
 
-"dialog_routing_download_files_carplay" = "ルートを構築するために全てのマップが表示されているわけではありません。携帯電話にそれらをダウンロードしてください";
+"dialog_routing_download_files_carplay" = "ルートを作成するには、地図に表示されていない部分を端末でダウンロードします";
 
 "dialog_routing_system_error_carplay" = "エラーが発生しました。アプリを再起動してください";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "マップ上のホテルを選択";
+
+"popup_booking_download_guides_title" = "ホテルを予約しましたか？";
+
+"popup_booking_download_guides_message" = "MAPS.MEのレディメイドなガイドでルートを計画しましょう";
+
+"popup_mwm_download_guides_title" = "オフライン都市ガイド";
+
+"popup_mwm_download_guides_cta" = "1つ選択してください";
+
+"popup_mwm_download_guides_cta_1" = "ご覧ください";
+
+"gallery_pp_download_guides_offline_title" = "MAPS.MEで休暇の計画をたてましょう!";
+
+"gallery_pp_download_guides_offline_subtitle" = "熟練の旅行者が作ったガイドをお見逃しなく";
+
+"gallery_pp_download_guides_offline_cta" = "インターネットを起動";
+
+"gallery_pp_download_guides_title" = "ガイド";
+
+"native_screen_subscription_title" = "2000旅行ガイドへの無制限のアクセス！";
+
+"native_screen_subscription_message" = "誰とでも何処へ行くにしても忘れられない休暇にしましょう";
+
+"annual_subscription_title" = "年ごと";
+
+"montly_subscription_title" = "月ごと";
+
+"annual_subscription_message" = "12ケ月の無制限アクセス";
+
+"montly_subscription_message" = "1ケ月の無制限アクセス";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "ご登録ありがとうございます！";
+
+"subscription_success_dialog_message" = "これで全てのガイドカタログにアクセスできるようになりました";
+
+"renewal_screen_title" = "サブスクリプションの期限が切れました";
+
+"renewal_screen_message" = "サブスクリプションでダウンロードされた全てのガイドが削除されます。サブスクリプションを継続してガイドを維持しますか？";
+
+"renewal_screen_button_restore" = "はい、更新します";
+
+"renewal_screen_button_cancel" = "いいえ、ガイドを削除します";
+
+"subscription_error_ping_title" = "購入できませんでした";
+
+"subscription_error_message" = "このサービスはあなたの地域では現在利用できません。後ほどもう一度お試しください";
+
+"subscription_error_button" = "分かりました";
+
+"timeout_error_title" = "おっと、時間切れです！";
+
+"timeout_error_message" = "当社のサービスが応答しません。インターネット接続を確認して、もう一度お試しください。";
+
+"per_month" = "/月";
+
+"per_year" = "/年";
+
+"buy_btn_for_subscription" = "%sから無制限のアクセス";
+
+"buy_btn_for_subscription_1" = "%sで全てのガイドを購入";
+
+"buy_btn_for_subscription_ios_only_mo" = "%s/月で無制限のアクセス";
+
+"buy_btn_for_subscription_ios_only_year" = "%s/年で無制限のアクセス";
+
+"subscription_terms_guides" = "支払いは購入の確認後にiTunesのアカウントに請求されます。サブスクリプションは、現在の有効期限が失効する24時間前までに自動更新機能を無効にしていない限り、自動的に更新されます。あなたのアカウントは現在の有効期限が失効する24時間前までの更新計画に基づいて請求されます。自動更新機能はApple IDのアカウント設定からにいつでも無効化する事ができます。ダウンロードしたガイドはサブスクリプションの失効日までしか利用できません。サブスクリプションの消失から30日でブックマークの付いたガイドは自動的に削除されます。";
+
+"subscription_terms" = "ご購入確定時にお客様のiTunesアカウントにお支払いが請求されます。現在のご利用期間が終了する最低でも24時間前に自動更新が解除されなければ、サブスクリプションは自動的に更新されます。現在のご利用期間が終了する24時間以内に、ご利用プランの更新がアカウントに請求されます。ご購入期間中にApple IDアカウント設定より自動更新を管理または解除することができます。";
+
+"whatsnew_carplay_title" = "CarPlay対応MAPS.MEのカーナビゲーションです！";
+
+"whatsnew_carplay_message" = "ブックマークや、検索、自動速度違反取締装置、運転オプションがオフラインで利用できます";
+
+"whatsnew_subscription_title" = "サブスクライブすれば世界中で利用できます！";
+
+"whatsnew_subscription_message" = "ガイドのカタログへの無制限のアクセスはワンタイム購入よりもお得です";
+
+"whatsnew_carnavi_fixes_for_android_title" = "ナビゲーションの更新";
+
+"whatsnew_carnavi_fixes_for_android_message" = "道から遠く離れた地点へのルート計画を改善しました";
+
+"avoid_unpaved_carplay_1" = "未舗装道路無し";
+
+"avoid_unpaved_carplay_2" = "未舗装道路無し";
+
+"avoid_ferry_carplay_1" = "フェリー無し";
+
+"avoid_ferry_carplay_2" = "フェリーを回避";
+
+"avoid_tolls_carplay_1" = "有料道路無し";
+
+"avoid_tolls_carplay_2" = "有料道路を回避";
+
+"speedcams_alert_title_carplay_1" = "速度警告";
+
+"speedcams_alert_title_carplay_2" = "速度警告";
+
+"download_map_carplay" = "あなたの機器のMAPS.MEのアプリにマップをダウンロードしてください";
+
+"carplay_roundabout_exit" = "第%s出口";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "並び替え中…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "ブックマークの並び替え";
+
+/* iOS */
+"sort_default" = "デフォルトで並び替え";
+
+"sort_type" = "タイプで並び替え";
+
+"sort_distance" = "距離で並び替え";
+
+"sort_date" = "日付で並び替え";
+
+/* Android */
+"by_default" = "デフォルトで";
+
+/* Android */
+"by_type" = "タイプで";
+
+/* Android */
+"by_distance" = "距離で";
+
+/* Android */
+"by_date" = "日付で";
+
+"week_ago_sorttype" = "1週間前";
+
+"month_ago_sorttype" = "1ケ月前";
+
+"moremonth_ago_sorttype" = "1ケ月以上前";
+
+"moreyear_ago_sorttype" = "1年以上前";
+
+"near_me_sorttype" = "近隣";
+
+"others_sorttype" = "その他";
+
+"food_places" = "食べ物";
+
+"tourist_places" = "観光地";
+
+"museums" = "博物館";
+
+"parks" = "公園";
+
+"swim_places" = "水泳";
+
+"mountains" = "山";
+
+"animals" = "動物園";
+
+"hotels" = "ホテル";
+
+"buildings" = "ビル";
+
+"money" = "金銭";
+
+"shops" = "ショップ";
+
+"parkings" = "駐車場";
+
+"fuel_places" = "ガソリンスタンド";
+
+"water" = "水";
+
+"medicine" = "医薬品";
+
+"search_in_the_list" = "リスト内で検索";
+
+"view_on_map_bookmarks" = "マップ上";
+
+"more_bookmarks" = "更に…";
+
+"no_items_found" = "何も見つかりませんでした";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "リストの編集";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "リストの削除";
+
+"whatsnew_bookmarks_search_sort_title" = "ブックマークの順番で快適な旅ができます";
+
+"whatsnew_bookmarks_search_sort_message" = "お気に入りの場所をカテゴリーや、位置、時系列順で並び替えたり、名前で素早く特定のブックマークを検索しましょう。";
+
+"popup_subscription_success_map_title" = "おめでとうございます、サブスクライブしました!";
+
+"popup_subscription_success_map_message" = "MAPS.MEのカタログで最高の観光地を見つけましょう";
+
+"popup_subscription_success_map_start_button" = "ブラウジングを開始";
+
+"popup_subscription_success_map_not_now_button" = "今はしない";
+
+"religious_places" = "宗教に関連した場所";
+
+"subscription_terms_android" = "購入を確認すると支払いはGoogle Playのアカウントに請求されます。サブスクリプションは、自動更新機能が現在の有効期限の24時間前までに無効化されない限り自動的に更新されます。現在の有効期限の終了の24時間以内に更新プランに従ってあなたのアカウントに対して請求されます。購入後にアカウント設定から自動更新機能を管理または無効化する事ができます。有効期限までにサブスクリプションでダウンロードしたガイドだけしか利用する事はできません。サブスクリプションの失効から30日が経過するとダウンロードしたガイドは自動的に削除されます。";
+
+"select_list" = "リストを選択";
+
+"pp_discovery_place_related_header" = "この場所はガイドカタログに記載されています";
+
+"pp_discovery_place_related_header_1" = "この場所はガイドで特集されています";
+
+"pp_discovery_place_related_cta_button" = "閲覧";
+
+"pp_discovery_place_related_tag_header" = "「%s」のタグが付いたガイド";
+
+"pp_discovery_place_related_tag_header_1" = "こちらもいかがですか";
+
+"buy_btn_for_subscription_version_2" = "全てのガイドがたったの月%s";
+
+"buy_btn_for_subscription_version_3" = "カタログ全体が月々%s";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "カタログへのアクセスが月々%s";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "カタログへのアクセスが年間%s";
+
+"subscription_screen_native_title_version_2" = "ブックマーク付きのガイドにアクセスしましょう！";
+
+"subscription_screen_native_message_version_2" = "600以上の都市と100以上の国々への旅の準備を整えましょう";
+
+"catalog_no_internet_title" = "インターネット接続がありません";
+
+"catalog_no_internet_button" = "もう一度お試しください";
+
+"whatsnew_map_updates_title" = "高速のマップ更新";
+
+"whatsnew_map_updates_message" = "これからは更新速度が二倍になります";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "駐車場";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "決済端末";
 
 "type.amenity.pharmacy" = "薬局";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "郵便局";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "バー";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "大学";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "たばこ自動販売機";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "給水所";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "ブロック";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "国境管理";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "エントランス";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "ゲート";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "ブームバリア";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "回転扉";
 
 "type.barrier.toll_booth" = "料金所";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "考古遺跡";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "水地";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "墓地";
 
 "type.landuse.cemetery.christian" = "墓地";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "野原";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "湖";
 

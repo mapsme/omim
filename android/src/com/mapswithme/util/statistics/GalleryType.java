@@ -1,6 +1,6 @@
 package com.mapswithme.util.statistics;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public enum GalleryType
 {
@@ -38,6 +38,15 @@ public enum GalleryType
         public String getProvider()
         {
           return Statistics.ParamValue.BOOKING_COM;
+        }
+      },
+  PROMO
+      {
+        @NonNull
+        @Override
+        public String getProvider()
+        {
+          return Statistics.ParamValue.MAPSME_GUIDES;
         }
       };
 

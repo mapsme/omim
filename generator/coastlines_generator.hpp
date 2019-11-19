@@ -7,8 +7,12 @@
 #include "geometry/tree4d.hpp"
 #include "geometry/region2d.hpp"
 
+#include <vector>
 
-class FeatureBuilder1;
+namespace feature
+{
+class FeatureBuilder;
+}  // namespace feature
 
 class CoastlineFeaturesGenerator
 {
@@ -17,16 +21,14 @@ class CoastlineFeaturesGenerator
   using TTree = m4::Tree<m2::RegionI>;
   TTree m_tree;
 
-  uint32_t m_coastType;
-
 public:
-  CoastlineFeaturesGenerator(uint32_t coastType);
+  CoastlineFeaturesGenerator();
 
-  void AddRegionToTree(FeatureBuilder1 const & fb);
+  void AddRegionToTree(feature::FeatureBuilder const & fb);
 
-  void Process(FeatureBuilder1 const & fb);
+  void Process(feature::FeatureBuilder const & fb);
   /// @return false if coasts are not merged and FLAG_fail_on_coasts is set
   bool Finish();
 
-  void GetFeatures(vector<FeatureBuilder1> & vecFb);
+  void GetFeatures(std::vector<feature::FeatureBuilder> & vecFb);
 };

@@ -1,9 +1,6 @@
 #import "MWMSearchChangeModeView.h"
 #import "MWMButton.h"
-#import "MWMSearch.h"
 #import "UIButton+RuntimeAttributes.h"
-
-extern NSString * const kSearchStateKey;
 
 @interface MWMSearchChangeModeView ()<MWMSearchObserver>
 

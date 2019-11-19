@@ -213,7 +213,7 @@ public:
       return;
     }
     m2::PointD const & center = FindCenter(f);
-    ms::LatLon const & ll = MercatorBounds::ToLatLon(center);
+    ms::LatLon const & ll = mercator::ToLatLon(center);
     osm::MapObject obj;
     obj.SetFromFeatureType(f);
 
@@ -297,8 +297,8 @@ void PrintHeader()
 bool ParseFeatureIdToOsmIdMapping(string const & path, map<uint32_t, base::GeoObjectId> & mapping)
 {
   return generator::ForEachOsmId2FeatureId(
-      path, [&](base::GeoObjectId const & osmId, uint32_t const featureId) {
-        mapping[featureId] = osmId;
+      path, [&](auto const & compositeId, uint32_t const featureId) {
+        mapping[featureId] = compositeId.m_mainId;
       });
 }
 

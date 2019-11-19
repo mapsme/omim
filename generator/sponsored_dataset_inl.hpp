@@ -13,6 +13,7 @@
 #include "base/stl_helpers.hpp"
 #include "base/string_utils.hpp"
 
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -31,7 +32,7 @@ public:
   void operator()(SponsoredObject & object)
   {
     search::ReverseGeocoder::Address addr;
-    m_coder->GetNearbyAddress(MercatorBounds::FromLatLon(object.m_latLon), addr);
+    m_coder->GetNearbyAddress(mercator::FromLatLon(object.m_latLon), addr);
     object.m_street = addr.GetStreetName();
     object.m_houseNumber = addr.GetHouseNumber();
   }
@@ -50,7 +51,7 @@ SponsoredDataset<SponsoredObject>::SponsoredDataset(std::string const & dataPath
 }
 
 template <typename SponsoredObject>
-void SponsoredDataset<SponsoredObject>::BuildOsmObjects(function<void(FeatureBuilder1 &)> const & fn) const
+void SponsoredDataset<SponsoredObject>::BuildOsmObjects(std::function<void(feature::FeatureBuilder &)> const & fn) const
 {
   for (auto const & item : m_storage.GetObjects())
     BuildObject(item.second, fn);
@@ -58,7 +59,7 @@ void SponsoredDataset<SponsoredObject>::BuildOsmObjects(function<void(FeatureBui
 
 template <typename SponsoredObject>
 typename SponsoredDataset<SponsoredObject>::ObjectId
-SponsoredDataset<SponsoredObject>::FindMatchingObjectId(FeatureBuilder1 const & fb) const
+SponsoredDataset<SponsoredObject>::FindMatchingObjectId(feature::FeatureBuilder const & fb) const
 {
   if (NecessaryMatchingConditionHolds(fb))
     return FindMatchingObjectIdImpl(fb);

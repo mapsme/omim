@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "No hay suscripciones activas";
 
-"subscription_terms" = "El pago se cobrará en tu cuenta de iTunes a la confirmación de la compra. La suscripción se renovará automáticamente a menos que se desactive la renovación automática al menos 24 horas antes del final del periodo actual. Se cobrará en tu cuenta según tu plan de renovación dentro de las 24 horas antes del final del periodo actual. Puedes gestionar o desactivar la renovación automática en los ajustes de cuenta de tu Apple ID en cualquier momento de tu compra.";
-
 "subscriptions_title" = "Suscripciones";
 
 "manage_subscription" = "Gestionar suscripción";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "El archivo está dañado y no se puede cargar. Por favor, suba otro archivo.";
 
-"buy_btn" = "Comprar por %s";
+"buy_btn" = "Comprar la guía por %s";
 
 "download_guide_progress" = "Guía de viajes cargando…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "No se puede construir una ruta. Elige otros puntos de ruta";
 
-"dialog_routing_download_files_carplay" = "No todos los mapas están disponibles para trazar una ruta. Descárgalos en la aplicación de tu teléfono";
+"dialog_routing_download_files_carplay" = "Al construir ruta, descarga los mapas ausentes en tu dispositivo";
 
 "dialog_routing_system_error_carplay" = "Ocurrió un error. Reinicia la aplicación";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Elegir hotel en el mapa";
+
+"popup_booking_download_guides_title" = "¿Hotel reservado?";
+
+"popup_booking_download_guides_message" = "Planea tu ruta con las guías listas de MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Guías sin conexión";
+
+"popup_mwm_download_guides_cta" = "Elegir";
+
+"popup_mwm_download_guides_cta_1" = "Más información";
+
+"gallery_pp_download_guides_offline_title" = "¡Planea tus vacaciones con MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "No te pierdas lo más importante con las rutas de viajeros experimentados";
+
+"gallery_pp_download_guides_offline_cta" = "Activar internet";
+
+"gallery_pp_download_guides_title" = "Guías";
+
+"native_screen_subscription_title" = "¡Acceso completo a más de 2000 guías!";
+
+"native_screen_subscription_message" = "Unas vacaciones inolvidables, dónde y con quien sea que viajes";
+
+"annual_subscription_title" = "Anual";
+
+"montly_subscription_title" = "Mensual";
+
+"annual_subscription_message" = "12 meses de acceso ilimitado";
+
+"montly_subscription_message" = "1 mes de acceso ilimitado";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "¡Gracias por suscribirte!";
+
+"subscription_success_dialog_message" = "Ahora tienes acceso ilimitado al catálogo de guías";
+
+"renewal_screen_title" = "La suscripción expiró";
+
+"renewal_screen_message" = "Todas las guías descargadas por suscripción serán eliminadas. ¿Quieres restaurar tu suscripción y guardarla?";
+
+"renewal_screen_button_restore" = "Sí, restaurarla";
+
+"renewal_screen_button_cancel" = "No, eliminar las guías";
+
+"subscription_error_ping_title" = "No se pudo realizar la compra";
+
+"subscription_error_message" = "Ahora el servicio no está disponible en tu área. Por favor intenta de nuevo más tarde";
+
+"subscription_error_button" = "Listo";
+
+"timeout_error_title" = "Lo siento, ¡se acabó el tiempo!";
+
+"timeout_error_message" = "Nuestros servidores no están respondiendo. Por favor, comprueba tu conexión a Internet y vuelve a intentarlo.";
+
+"per_month" = "/mes";
+
+"per_year" = "/año";
+
+"buy_btn_for_subscription" = "Acceso completo desde %s";
+
+"buy_btn_for_subscription_1" = "Comprar TODAS las guías por %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Acceso completo por %s/mes";
+
+"buy_btn_for_subscription_ios_only_year" = "Acceso completo por %s/año";
+
+"subscription_terms_guides" = "El pago se realizará desde tu cuenta de iTunes después de la confirmación de la compra. La suscripción se renovará automáticamente, a menos que la renovación automática se desactive, por las menos 24 horas antes del final del período actual. Los fondos se debitarán de tu cuenta de acuerdo con tu plan de tarifas de renovación, dentro de las 24 horas posteriores al final del período actual. Puedes administrar la renovación automática o deshabilitarla en la configuración de tu cuenta de Apple ID, en cualquier momento después de la compra. Podrás usar las guías, descargadas por suscripción, solo durante su período de validez. Al término de los 30 días posteriores al final de la suscripción, las guías con todos los marcadores se eliminarán automáticamente.";
+
+"subscription_terms" = "El pago se cobrará en tu cuenta de iTunes a la confirmación de la compra. La suscripción se renovará automáticamente a menos que se desactive la renovación automática al menos 24 horas antes del final del periodo actual. Se cobrará en tu cuenta según tu plan de renovación dentro de las 24 horas antes del final del periodo actual. Puedes gestionar o desactivar la renovación automática en los ajustes de cuenta de tu Apple ID en cualquier momento de tu compra.";
+
+"whatsnew_carplay_title" = "¡Navegación en coche de MAPS.ME en CarPlay!";
+
+"whatsnew_carplay_message" = "Marcadores, búsqueda, cámaras de la velocidad y configuración de desvíos: todo funciona sin Internet";
+
+"whatsnew_subscription_title" = "¡Abre el mundo por suscripción!";
+
+"whatsnew_subscription_message" = "El acceso ilimitado al catálogo de rutas es más rentable que una compra por vez única";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Actualización de navegación";
+
+"whatsnew_carnavi_fixes_for_android_message" = "Hemos mejorado la construcción de rutas a puntos ubicados lejos de las carreteras";
+
+"avoid_unpaved_carplay_1" = "Sin de grava";
+
+"avoid_unpaved_carplay_2" = "Sin de grava";
+
+"avoid_ferry_carplay_1" = "Sin ferri";
+
+"avoid_ferry_carplay_2" = "Sin ferri";
+
+"avoid_tolls_carplay_1" = "Sin peaje";
+
+"avoid_tolls_carplay_2" = "Sin peaje";
+
+"speedcams_alert_title_carplay_1" = "Cám.velocid.";
+
+"speedcams_alert_title_carplay_2" = "Alerta velocid.";
+
+"download_map_carplay" = "Descarga mapas en la aplicación MAPS.ME en tu dispositivo";
+
+"carplay_roundabout_exit" = "%s desviación";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Ordenar…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Ordenar etiquetas";
+
+/* iOS */
+"sort_default" = "Ordenar por defecto";
+
+"sort_type" = "Ordenar por tipo";
+
+"sort_distance" = "Ordenar por distancia";
+
+"sort_date" = "Ordenar por fecha";
+
+/* Android */
+"by_default" = "Por defecto";
+
+/* Android */
+"by_type" = "Por tipo";
+
+/* Android */
+"by_distance" = "Por distancia";
+
+/* Android */
+"by_date" = "Por fecha";
+
+"week_ago_sorttype" = "Hace una semana";
+
+"month_ago_sorttype" = "Hace un mes";
+
+"moremonth_ago_sorttype" = "Hace más de un mes";
+
+"moreyear_ago_sorttype" = "Hace más de un año";
+
+"near_me_sorttype" = "Cerca a mí";
+
+"others_sorttype" = "Otros";
+
+"food_places" = "Comida";
+
+"tourist_places" = "Sitios de interés";
+
+"museums" = "Museos";
+
+"parks" = "Parques";
+
+"swim_places" = "Natación";
+
+"mountains" = "Montañas";
+
+"animals" = "Animales";
+
+"hotels" = "Hoteles";
+
+"buildings" = "Edificios";
+
+"money" = "Dinero";
+
+"shops" = "Tiendas";
+
+"parkings" = "Estacionamiento";
+
+"fuel_places" = "Gasolinera";
+
+"water" = "Agua";
+
+"medicine" = "Medicina";
+
+"search_in_the_list" = "Buscar en la lista";
+
+"view_on_map_bookmarks" = "En el mapa";
+
+"more_bookmarks" = "Más…";
+
+"no_items_found" = "No encontrado";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Editar";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Eliminar lista";
+
+"whatsnew_bookmarks_search_sort_title" = "El orden en las etiquetas, significa facilidad de viaje";
+
+"whatsnew_bookmarks_search_sort_message" = "Ordena tus lugares favoritos por categoría, tiempo de adición y geolocalización, y también encuentra rápidamente etiquetas específicas por nombre";
+
+"popup_subscription_success_map_title" = "¡Genial, te has suscrito!";
+
+"popup_subscription_success_map_message" = "Ahora descubre las mejores atracciones turísticas en el catálogo MAPS.ME";
+
+"popup_subscription_success_map_start_button" = "Ver más";
+
+"popup_subscription_success_map_not_now_button" = "Luego";
+
+"religious_places" = "Lugares sagrados";
+
+"subscription_terms_android" = "El pago se realizará desde tu cuenta de Google Play al confirmar la compra. La suscripción se renovará automáticamente excepto si la renovación automática se desactive al menos 24 horas antes del final del período actual. Los fondos se restarán de tu cuenta de acuerdo con tu plan de renovación dentro de las 24 horas antes del final del período actual. Puedes administrar o desactivar la función de renovación automática en configuración de la cuenta después de la compra. Solo puedes usar las guías descargadas por suscripción hasta su fecha de vencimiento. Después de 30 días a partir de la fecha de vencimiento de la suscripción, las guías descargadas se eliminarán automáticamente.";
+
+"select_list" = "Seleccionar lista";
+
+"pp_discovery_place_related_header" = "Es un lugar en el directorio de guías";
+
+"pp_discovery_place_related_header_1" = "Este lugar aparece en la guía";
+
+"pp_discovery_place_related_cta_button" = "Ver más";
+
+"pp_discovery_place_related_tag_header" = "Guías por etiqueta “%s”";
+
+"pp_discovery_place_related_tag_header_1" = "También te puede gustar";
+
+"buy_btn_for_subscription_version_2" = "TODAS las guías en solo %s/mens.";
+
+"buy_btn_for_subscription_version_3" = "Todo el catálogo por %s/mens.";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Acceso al catálogo por %s/mens.";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Acceso al catálogo por %s/anuales";
+
+"subscription_screen_native_title_version_2" = "¡Acceso a guías con etiquetas en el mapa!";
+
+"subscription_screen_native_message_version_2" = "Prepárate para cualquier viaje en más de 600 ciudades y más de 100 países";
+
+"catalog_no_internet_title" = "Sin conexión a internet";
+
+"catalog_no_internet_button" = "Intentar nuevamente";
+
+"whatsnew_map_updates_title" = "Actualizaciones aceleradas de mapas";
+
+"whatsnew_map_updates_message" = "A partir de ahora actualizamos los datos el doble de rápido";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Aparcamiento";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Terminal de pago";
 
 "type.amenity.pharmacy" = "Farmacia";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Oficina de correos";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Pub";
 
@@ -3071,7 +3310,7 @@
 
 "type.amenity.university" = "Universidad";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
 "type.amenity.vending_machine.cigarettes" = "Máquina expendedora de tabaco";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Fuente de agua potable";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Bloque";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Control de fronteras";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Entrada";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Puerta";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
 "type.barrier.lift_gate" = "Barrera";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Escalón";
 
 "type.barrier.toll_booth" = "Peaje";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Yacimiento arqueológico";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Cuenca";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Cementerio";
 
 "type.landuse.cemetery.christian" = "Cementerio";
 
+"type.landuse.churchyard" = "landuse-churchyard";
+
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Campo";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Lago";
 
@@ -4397,7 +4640,7 @@
 
 "type.shop.greengrocer" = "Frutería";
 
-"type.shop.hairdresser" = "Peluquero";
+"type.shop.hairdresser" = "Peluquería";
 
 "type.shop.hardware" = "Ferretería";
 

@@ -28,10 +28,12 @@
 #include <set>
 #include <string>
 
-#include "std/transform_iterator.hpp"
+#include <boost/iterator/transform_iterator.hpp>
 
 using namespace std;
 using namespace std::placeholders;
+
+using boost::make_transform_iterator;
 
 namespace search
 {
@@ -48,9 +50,9 @@ void Houses2KML(ostream & s, map<search::House, double> const & m)
       << "<name>" << it->first.GetNumber() <<  "</name>"
 
       << "<Point><coordinates>"
-            << MercatorBounds::XToLon(pt.x)
+            << mercator::XToLon(pt.x)
             << ","
-            << MercatorBounds::YToLat(pt.y)
+            << mercator::YToLat(pt.y)
 
       << "</coordinates></Point>"
       << "</Placemark>" << endl;
@@ -65,7 +67,7 @@ void Street2KML(ostream & s, vector<m2::PointD> const & pts, char const * color)
   s << "<LineString><coordinates>" << endl;
 
   for (size_t i = 0; i < pts.size(); ++i)
-    s << MercatorBounds::XToLon(pts[i].x) << "," << MercatorBounds::YToLat(pts[i].y) << "," << "0.0" << endl;
+    s << mercator::XToLon(pts[i].x) << "," << mercator::YToLat(pts[i].y) << "," << "0.0" << endl;
 
   s << "</coordinates></LineString>" << endl;
 
@@ -130,7 +132,7 @@ bool LessStreetDistance(HouseProjection const & p1, HouseProjection const & p2)
 
 double GetDistanceMeters(m2::PointD const & p1, m2::PointD const & p2)
 {
-  return MercatorBounds::DistanceOnEarth(p1, p2);
+  return mercator::DistanceOnEarth(p1, p2);
 }
 
 pair<double, double> GetConnectionAngleAndDistance(bool & isBeg, Street const * s1, Street const * s2)
@@ -718,7 +720,7 @@ m2::RectD Street::GetLimitRect(double offsetMeters) const
 {
   m2::RectD rect;
   for (size_t i = 0; i < m_points.size(); ++i)
-    rect.Add(MercatorBounds::RectByCenterXYAndSizeInMeters(m_points[i], offsetMeters));
+    rect.Add(mercator::RectByCenterXYAndSizeInMeters(m_points[i], offsetMeters));
   return rect;
 }
 
@@ -757,7 +759,7 @@ HouseDetector::HouseDetector(DataSource const & dataSource)
   : m_loader(dataSource), m_streetNum(0)
 {
   // Default value for conversions.
-  SetMetersToMercator(MercatorBounds::kDegreesInMeter);
+  SetMetersToMercator(mercator::Bounds::kDegreesInMeter);
 }
 
 HouseDetector::~HouseDetector() { ClearCaches(); }

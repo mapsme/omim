@@ -1,17 +1,21 @@
 #pragma once
 
-struct OsmElement;
-class FeatureBuilder1;
+#include "generator/feature_builder.hpp"
+#include "generator/osm_element.hpp"
+
+#include <memory>
 
 namespace generator
 {
-// Implementing this interface allows an object to filter OsmElement and FeatureBuilder1 elements.
+// Implementing this interface allows an object to filter OsmElement and FeatureBuilder elements.
 class FilterInterface
 {
 public:
   virtual ~FilterInterface() = default;
 
+  virtual std::shared_ptr<FilterInterface> Clone() const = 0;
+
   virtual bool IsAccepted(OsmElement const &) { return true; }
-  virtual bool IsAccepted(FeatureBuilder1 const &) { return true; }
+  virtual bool IsAccepted(feature::FeatureBuilder const &) { return true; }
 };
 }  // namespace generator

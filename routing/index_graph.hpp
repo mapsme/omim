@@ -45,7 +45,8 @@ public:
 
   static std::map<Segment, Segment> kEmptyParentsSegments;
   // Put outgoing (or ingoing) egdes for segment to the 'edges' vector.
-  void GetEdgeList(Segment const & segment, bool isOutgoing, std::vector<SegmentEdge> & edges,
+  void GetEdgeList(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
+                   std::vector<SegmentEdge> & edges,
                    std::map<Segment, Segment> & parents = kEmptyParentsSegments);
 
   void GetEdgeList(JointSegment const & parentJoint,
@@ -74,6 +75,7 @@ public:
   void Import(std::vector<Joint> const & joints);
 
   void SetRestrictions(RestrictionVec && restrictions);
+  void SetUTurnRestrictions(std::vector<RestrictionUTurn> && noUTurnRestrictions);
   void SetRoadAccess(RoadAccess && roadAccess);
 
   void PushFromSerializer(Joint::Id jointId, RoadPoint const & rp)
@@ -94,6 +96,7 @@ public:
   }
 
   bool IsJoint(RoadPoint const & roadPoint) const;
+  bool IsJointOrEnd(Segment const & segment, bool fromStart);
   void GetLastPointsForJoint(std::vector<Segment> const & children, bool isOutgoing,
                              std::vector<uint32_t> & lastPoints);
 
@@ -113,16 +116,32 @@ public:
                     std::map<Parent, Parent> & parents) const;
 
   bool IsUTurnAndRestricted(Segment const & parent, Segment const & child, bool isOutgoing) const;
+
+  RouteWeight CalculateEdgeWeight(EdgeEstimator::Purpose purpose, bool isOutgoing,
+                                  Segment const & from, Segment const & to);
+
 private:
-
-  RouteWeight CalcSegmentWeight(Segment const & segment);
-
   void GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
-                           std::vector<SegmentEdge> & edges, std::map<Segment, Segment> & parents);
+                           bool useRoutingOptions, std::vector<SegmentEdge> & edges,
+                           std::map<Segment, Segment> & parents);
   void GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
                           std::vector<SegmentEdge> & edges, std::map<Segment, Segment> & parents);
-  RouteWeight GetPenalties(Segment const & u, Segment const & v);
 
+  struct PenaltyData
+  {
+    PenaltyData(bool passThroughAllowed, bool isFerry)
+      : m_passThroughAllowed(passThroughAllowed),
+        m_isFerry(isFerry) {}
+
+    bool m_passThroughAllowed;
+    bool m_isFerry;
+  };
+
+  PenaltyData GetRoadPenaltyData(Segment const & segment);
+  RouteWeight GetPenalties(EdgeEstimator::Purpose purpose, Segment const & u, Segment const & v);
+
+  void GetSegmentCandidateForRoadPoint(RoadPoint const & rp, NumMwmId numMwmId,
+                                       bool isOutgoing, std::vector<Segment> & children);
   void GetSegmentCandidateForJoint(Segment const & parent, bool isOutgoing, std::vector<Segment> & children);
   void ReconstructJointSegment(JointSegment const & parentJoint,
                                Segment const & parent,
@@ -137,8 +156,23 @@ private:
   std::shared_ptr<EdgeEstimator> m_estimator;
   RoadIndex m_roadIndex;
   JointIndex m_jointIndex;
+
   Restrictions m_restrictionsForward;
   Restrictions m_restrictionsBackward;
+
+  // u_turn can be in both sides of feature.
+  struct UTurnEnding
+  {
+    bool m_atTheBegin = false;
+    bool m_atTheEnd = false;
+  };
+  // Stored featureId and it's UTurnEnding, which shows where is
+  // u_turn restriction is placed - at the beginning or at the ending of feature.
+  //
+  // If m_noUTurnRestrictions.count(featureId) == 0, that means, that there are no any
+  // no_u_turn restriction at the feature with id = featureId.
+  std::unordered_map<uint32_t, UTurnEnding> m_noUTurnRestrictions;
+
   RoadAccess m_roadAccess;
   RoutingOptions m_avoidRoutingOptions;
 };

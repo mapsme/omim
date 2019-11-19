@@ -78,22 +78,23 @@ public:
       bool const isPrefixToken = m_params.IsPrefixToken(i);
 
       vector<uint64_t> ids;
-      token.ForEach([&](UniString const & name) {
+      token.ForOriginalAndSynonyms([&](UniString const & synonym) {
         if (isPrefixToken)
         {
-          m_searchIndex.ForEachInSubtree(name,
+          m_searchIndex.ForEachInSubtree(synonym,
                                          [&](UniString const & /* prefix */, uint32_t featureId) {
                                            ids.push_back(featureId);
                                          });
         }
         else
         {
-          m_searchIndex.ForEachInNode(name, [&](uint32_t featureId) { ids.push_back(featureId); });
+          m_searchIndex.ForEachInNode(synonym,
+                                      [&](uint32_t featureId) { ids.push_back(featureId); });
         }
       });
 
       base::SortUnique(ids);
-      ctx.m_features.emplace_back(coding::CompressedBitVectorBuilder::FromBitPositions(ids));
+      ctx.m_features.emplace_back(CBV(coding::CompressedBitVectorBuilder::FromBitPositions(ids)));
     }
 
     CBV filter;

@@ -71,24 +71,46 @@ PreRankerResult::PreRankerResult(FeatureID const & id, PreRankingInfo const & in
   : m_id(id), m_info(info), m_provenance(provenance)
 {
   ASSERT(m_id.IsValid(), ());
+
+  m_matchedTokensNumber = 0;
+  for (auto const & r : m_info.m_tokenRange)
+    m_matchedTokensNumber += r.Size();
 }
 
 // static
-bool PreRankerResult::LessRankAndPopularity(PreRankerResult const & r1, PreRankerResult const & r2)
+bool PreRankerResult::LessRankAndPopularity(PreRankerResult const & lhs,
+                                            PreRankerResult const & rhs)
 {
-  if (r1.m_info.m_rank != r2.m_info.m_rank)
-    return r1.m_info.m_rank > r2.m_info.m_rank;
-  if (r1.m_info.m_popularity != r2.m_info.m_popularity)
-    return r1.m_info.m_popularity > r2.m_info.m_popularity;
-  return r1.m_info.m_distanceToPivot < r2.m_info.m_distanceToPivot;
+  if (lhs.m_info.m_rank != rhs.m_info.m_rank)
+    return lhs.m_info.m_rank > rhs.m_info.m_rank;
+  if (lhs.m_info.m_popularity != rhs.m_info.m_popularity)
+    return lhs.m_info.m_popularity > rhs.m_info.m_popularity;
+  return lhs.m_info.m_distanceToPivot < rhs.m_info.m_distanceToPivot;
 }
 
 // static
-bool PreRankerResult::LessDistance(PreRankerResult const & r1, PreRankerResult const & r2)
+bool PreRankerResult::LessDistance(PreRankerResult const & lhs, PreRankerResult const & rhs)
 {
-  if (r1.m_info.m_distanceToPivot != r2.m_info.m_distanceToPivot)
-    return r1.m_info.m_distanceToPivot < r2.m_info.m_distanceToPivot;
-  return r1.m_info.m_rank > r2.m_info.m_rank;
+  if (lhs.m_info.m_distanceToPivot != rhs.m_info.m_distanceToPivot)
+    return lhs.m_info.m_distanceToPivot < rhs.m_info.m_distanceToPivot;
+  return lhs.m_info.m_rank > rhs.m_info.m_rank;
+}
+
+// static
+bool PreRankerResult::LessByExactMatch(PreRankerResult const & lhs, PreRankerResult const & rhs)
+{
+  auto const lhsScore = lhs.m_info.m_exactMatch && lhs.m_info.m_allTokensUsed;
+  auto const rhsScore = rhs.m_info.m_exactMatch && rhs.m_info.m_allTokensUsed;
+  if (lhsScore != rhsScore)
+    return lhsScore;
+
+  if (lhs.GetInnermostTokensNumber() != rhs.GetInnermostTokensNumber())
+    return lhs.GetInnermostTokensNumber() > rhs.GetInnermostTokensNumber();
+
+  if (lhs.GetMatchedTokensNumber() != rhs.GetMatchedTokensNumber())
+    return lhs.GetMatchedTokensNumber() > rhs.GetMatchedTokensNumber();
+
+  return LessDistance(lhs, rhs);
 }
 
 bool PreRankerResult::CategoriesComparator::operator()(PreRankerResult const & lhs,
@@ -115,7 +137,7 @@ RankerResult::RankerResult(FeatureType & f, m2::PointD const & center, m2::Point
   : m_id(f.GetID())
   , m_types(f)
   , m_str(displayName)
-  , m_resultType(ftypes::IsBuildingChecker::Instance()(m_types) ? TYPE_BUILDING : TYPE_FEATURE)
+  , m_resultType(ftypes::IsBuildingChecker::Instance()(m_types) ? Type::Building : Type::Feature)
   , m_geomType(f.GetGeomType())
 {
   ASSERT(m_id.IsValid(), ());
@@ -130,9 +152,15 @@ RankerResult::RankerResult(FeatureType & f, m2::PointD const & center, m2::Point
 }
 
 RankerResult::RankerResult(double lat, double lon)
-  : m_str("(" + measurement_utils::FormatLatLon(lat, lon) + ")"), m_resultType(TYPE_LATLON)
+  : m_str("(" + measurement_utils::FormatLatLon(lat, lon) + ")"), m_resultType(Type::LatLon)
 {
-  m_region.SetParams(string(), MercatorBounds::FromLatLon(lat, lon));
+  m_region.SetParams(string(), mercator::FromLatLon(lat, lon));
+}
+
+RankerResult::RankerResult(m2::PointD const & coord, string const & postcode)
+  : m_str(postcode), m_resultType(Type::Postcode)
+{
+  m_region.SetParams(string(), coord);
 }
 
 bool RankerResult::GetCountryId(storage::CountryInfoGetter const & infoGetter, uint32_t ftype,
@@ -158,7 +186,7 @@ bool RankerResult::IsEqualCommon(RankerResult const & r) const
   return checker(bestType) && checker(rBestType);
 }
 
-bool RankerResult::IsStreet() const { return ftypes::IsStreetOrSuburbChecker::Instance()(m_types); }
+bool RankerResult::IsStreet() const { return ftypes::IsStreetOrSquareChecker::Instance()(m_types); }
 
 uint32_t RankerResult::GetBestType(vector<uint32_t> const & preferredTypes) const
 {
@@ -230,7 +258,7 @@ void ProcessMetadata(FeatureType & ft, Result::Metadata & meta)
   }
 
   if (strings::to_int(src.Get(feature::Metadata::FMD_STARS), meta.m_stars))
-    meta.m_stars = base::clamp(meta.m_stars, 0, 5);
+    meta.m_stars = base::Clamp(meta.m_stars, 0, 5);
   else
     meta.m_stars = 0;
 

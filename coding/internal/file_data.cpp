@@ -19,7 +19,7 @@
 #include <vector>
 
 #ifdef OMIM_OS_WINDOWS
-  #include <io.h>
+#include <io.h>
 #endif
 
 #ifdef OMIM_OS_TIZEN
@@ -31,7 +31,7 @@ using namespace std;
 namespace base
 {
 FileData::FileData(string const & fileName, Op op)
-    : m_FileName(fileName), m_Op(op)
+  : m_FileName(fileName), m_Op(op)
 {
   char const * const modes [] = {"rb", "wb", "r+b", "ab"};
 #ifdef OMIM_OS_TIZEN
@@ -291,6 +291,21 @@ bool WriteToTempAndRenameToFile(string const & dest, function<bool(string const 
   return true;
 }
 
+void AppendFileToFile(string const & fromFilename, string const & toFilename)
+{
+  ifstream from;
+  from.exceptions(fstream::failbit | fstream::badbit);
+  from.open(fromFilename, ios::binary);
+
+  ofstream to;
+  to.exceptions(fstream::badbit);
+  to.open(toFilename, ios::binary | ios::app);
+
+  auto * buffer = from.rdbuf();
+  if (from.peek() != ifstream::traits_type::eof())
+    to << buffer;
+}
+
 bool CopyFileX(string const & fOld, string const & fNew)
 {
   try
@@ -300,6 +315,9 @@ bool CopyFileX(string const & fOld, string const & fNew)
 
     if (ifs.is_open() && ofs.is_open())
     {
+      if (ifs.peek() == ifstream::traits_type::eof())
+        return true;
+
       ofs << ifs.rdbuf();
       ofs.flush();
 

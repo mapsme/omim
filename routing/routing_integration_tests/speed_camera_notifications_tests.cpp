@@ -53,8 +53,8 @@ void InitRoutingSession(ms::LatLon const & from, ms::LatLon const & to, RoutingS
 {
   TRouteResult const routeResult =
     integration::CalculateRoute(integration::GetVehicleComponents(VehicleType::Car),
-                                MercatorBounds::FromLatLon(from), m2::PointD::Zero(),
-                                MercatorBounds::FromLatLon(to));
+                                mercator::FromLatLon(from), m2::PointD::Zero(),
+                                mercator::FromLatLon(to));
 
   Route & route = *routeResult.first;
   RouterResultCode const result = routeResult.second;
@@ -322,7 +322,7 @@ UNIT_TEST(SpeedCameraNotification_AutoAlwaysMode_7)
 
     // Intermediate Move for correct calculating of passedDistance.
     {
-      double const speedKmPH = 40.0;
+      double const speedKmPH = 20.0;
       ChangePosition({55.76559, 37.59016}, speedKmPH, routingSession);
       TEST_EQUAL(CheckZone(routingSession, speedKmPH), SpeedCameraManager::Interval::VoiceNotificationZone, ());
       TEST(!CheckVoiceNotification(routingSession), ());
@@ -333,7 +333,7 @@ UNIT_TEST(SpeedCameraNotification_AutoAlwaysMode_7)
     // so now we make BeedSignal.
     {
       double const speedKmPH = 40.0;
-      ChangePosition({55.76527, 37.58970}, speedKmPH, routingSession);
+      ChangePosition({55.76573, 37.59030}, speedKmPH, routingSession);
       TEST_EQUAL(CheckZone(routingSession, speedKmPH), SpeedCameraManager::Interval::BeepSignalZone, ());
       TEST(!CheckVoiceNotification(routingSession), ());
       TEST(CheckBeepSignal(routingSession), ());

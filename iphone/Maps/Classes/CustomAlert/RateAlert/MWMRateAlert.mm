@@ -1,5 +1,7 @@
 #import "MWMRateAlert.h"
-#import "AppInfo.h"
+
+#import <CoreApi/AppInfo.h>
+
 #import "MWMAlertViewController.h"
 #import "MWMMailViewController.h"
 #import "Statistics.h"
@@ -9,8 +11,8 @@
 #include "platform/platform.hpp"
 
 extern NSString * const kUDAlreadyRatedKey;
-extern NSString * const kLocaleUsedInSupportEmails;
-extern NSString * const kRateAlertEventName = @"rateAlertEvent";
+
+static NSString * const kRateAlertEventName = @"rateAlertEvent";
 static NSString * const kRateAlertNibName = @"MWMRateAlert";
 static NSString * const kRateEmail = @"rating@maps.me";
 

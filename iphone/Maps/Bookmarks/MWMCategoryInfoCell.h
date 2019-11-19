@@ -1,5 +1,7 @@
 #import "MWMTableViewCell.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 namespace kml
 {
 struct CategoryData;
@@ -21,3 +23,5 @@ struct CategoryData;
                       delegate:(id<MWMCategoryInfoCellDelegate>)delegate;
 
 @end
+
+NS_ASSUME_NONNULL_END

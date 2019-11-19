@@ -1,16 +1,17 @@
 #include "platform/http_thread_qt.hpp"
+
 #include "platform/http_thread_callback.hpp"
 
 #include "platform/platform.hpp"
 
 #include "base/logging.hpp"
 
-#include "std/string.hpp"
-
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QSslError>
 #include <QUrl>
+
+using namespace std;
 
 HttpThread::HttpThread(string const & url,
                        downloader::IHttpThreadCallback & cb,
@@ -138,8 +139,11 @@ void HttpThread::OnDownloadFinished()
 {
   if (m_reply->error() != QNetworkReply::NetworkError::NoError)
   {
-    LOG(LWARNING, ("Download has finished with error:", m_reply->errorString().toUtf8().constData()));
-    m_callback.OnFinish(m_reply->error(), m_begRange, m_endRange);
+    auto const httpStatusCode =
+        m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    LOG(LWARNING, ("Download has finished with code:", httpStatusCode,
+                   "error:", m_reply->errorString().toUtf8().constData()));
+    m_callback.OnFinish(httpStatusCode, m_begRange, m_endRange);
   }
   else
   {
@@ -164,6 +168,5 @@ void DeleteNativeHttpThread(HttpThread * request)
 {
   delete request;
 }
-
 } // namespace downloader
 

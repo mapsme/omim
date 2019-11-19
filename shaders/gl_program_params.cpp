@@ -116,6 +116,9 @@ void GLProgramParamsSetter::Apply(ref_ptr<dp::GraphicsContext> context,
   Parameter::CheckApply(guard, "u_angleCosSin", params.m_angleCosSin);
   Parameter::CheckApply(guard, "u_arrowHalfWidth", params.m_arrowHalfWidth);
   Parameter::CheckApply(guard, "u_opacity", params.m_opacity);
+  Parameter::CheckApply(guard, "u_fakeBorders", params.m_fakeBorders);
+  Parameter::CheckApply(guard, "u_fakeColor", params.m_fakeColor);
+  Parameter::CheckApply(guard, "u_fakeOutlineColor", params.m_fakeOutlineColor);
 }
 
 void GLProgramParamsSetter::Apply(ref_ptr<dp::GraphicsContext> context,
@@ -179,6 +182,7 @@ void GLProgramParamsSetter::Apply(ref_ptr<dp::GraphicsContext> context,
   Parameter::CheckApply(guard, "u_pivotTransform", params.m_pivotTransform);
   Parameter::CheckApply(guard, "u_position", params.m_position);
   Parameter::CheckApply(guard, "u_accuracy", params.m_accuracy);
+  Parameter::CheckApply(guard, "u_lineParams", params.m_lineParams);
   Parameter::CheckApply(guard, "u_zScale", params.m_zScale);
   Parameter::CheckApply(guard, "u_opacity", params.m_opacity);
   Parameter::CheckApply(guard, "u_azimut", params.m_azimut);

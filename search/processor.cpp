@@ -7,6 +7,7 @@
 #include "search/intermediate_result.hpp"
 #include "search/latlon_match.hpp"
 #include "search/mode.hpp"
+#include "search/postcode_points.hpp"
 #include "search/pre_ranking_info.hpp"
 #include "search/query_params.hpp"
 #include "search/ranking_info.hpp"
@@ -27,6 +28,7 @@
 #include "indexer/feature_impl.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/ftypes_matcher.hpp"
+#include "indexer/postcodes_matcher.hpp"
 #include "indexer/scales.hpp"
 #include "indexer/search_delimiters.hpp"
 #include "indexer/search_string_utils.hpp"
@@ -72,7 +74,27 @@ enum LanguageTier
 m2::RectD GetRectAroundPosition(m2::PointD const & position)
 {
   double constexpr kMaxPositionRadiusM = 50.0 * 1000;
-  return MercatorBounds::RectByCenterXYAndSizeInMeters(position, kMaxPositionRadiusM);
+  return mercator::RectByCenterXYAndSizeInMeters(position, kMaxPositionRadiusM);
+}
+
+string GetStatisticsMode(SearchParams const & params)
+{
+  switch (params.m_mode)
+  {
+  case Mode::Viewport:
+    return "Viewport";
+  case Mode::Everywhere:
+    return "Everywhere";
+  case Mode::Downloader:
+    return "Downloader";
+  case Mode::Bookmarks:
+    if (params.m_bookmarksGroupId != bookmarks::kInvalidGroupId)
+      return "BookmarksList";
+    return "Bookmarks";
+  case Mode::Count:
+    UNREACHABLE();
+  }
+  UNREACHABLE();
 }
 
 void SendStatistics(SearchParams const & params, m2::RectD const & viewport, Results const & res)
@@ -100,6 +122,7 @@ void SendStatistics(SearchParams const & params, m2::RectD const & viewport, Res
       {"query", params.m_query},
       {"locale", params.m_inputLocale},
       {"results", resultString},
+      {"mode", GetStatisticsMode(params)}
   };
   alohalytics::LogEvent("searchEmitResultsAndCoords", stats);
   GetPlatform().GetMarketingService().SendMarketingEvent(marketing::kSearchEmitResultsAndCoords, {});
@@ -131,15 +154,16 @@ Processor::Processor(DataSource const & dataSource, CategoriesHolder const & cat
                      storage::CountryInfoGetter const & infoGetter)
   : m_categories(categories)
   , m_infoGetter(infoGetter)
+  , m_dataSource(dataSource)
   , m_villagesCache(static_cast<base::Cancellable const &>(*this))
   , m_localitiesCache(static_cast<base::Cancellable const &>(*this))
-  , m_citiesBoundaries(dataSource)
+  , m_citiesBoundaries(m_dataSource)
   , m_keywordsScorer(LanguageTier::LANGUAGE_TIER_COUNT)
-  , m_ranker(dataSource, m_citiesBoundaries, infoGetter, m_keywordsScorer, m_emitter, categories,
+  , m_ranker(m_dataSource, m_citiesBoundaries, infoGetter, m_keywordsScorer, m_emitter, categories,
              suggests, m_villagesCache, static_cast<base::Cancellable const &>(*this))
-  , m_preRanker(dataSource, m_ranker)
-  , m_geocoder(dataSource, infoGetter, categories, m_citiesBoundaries, m_preRanker, m_villagesCache,
-               m_localitiesCache, static_cast<base::Cancellable const &>(*this))
+  , m_preRanker(m_dataSource, m_ranker)
+  , m_geocoder(m_dataSource, infoGetter, categories, m_citiesBoundaries, m_preRanker,
+               m_villagesCache, m_localitiesCache, static_cast<base::Cancellable const &>(*this))
   , m_bookmarksProcessor(m_emitter, static_cast<base::Cancellable const &>(*this))
 {
   // Current and input langs are to be set later.
@@ -159,7 +183,7 @@ void Processor::SetViewport(m2::RectD const & viewport)
   if (m_viewport.IsValid())
   {
     double constexpr kEpsMeters = 10.0;
-    double const kEps = MercatorBounds::MetersToMercator(kEpsMeters);
+    double const kEps = mercator::MetersToMercator(kEpsMeters);
     if (IsEqualMercator(m_viewport, viewport, kEps))
       return;
   }
@@ -189,8 +213,8 @@ void Processor::SetInputLocale(string const & locale)
   if (locale.empty())
     return;
 
-  LOG(LDEBUG, ("New input locale:", locale));
   int8_t const code = StringUtf8Multilang::GetLangIndex(languages::Normalize(locale));
+  LOG(LDEBUG, ("New input locale:", locale, "locale code:", code));
   m_keywordsScorer.SetLanguages(LanguageTier::LANGUAGE_TIER_INPUT, {code});
   m_inputLocaleCode = CategoriesHolder::MapLocaleToInteger(locale);
 }
@@ -324,6 +348,21 @@ void Processor::LoadCitiesBoundaries()
 
 void Processor::LoadCountriesTree() { m_ranker.LoadCountriesTree(); }
 
+void Processor::EnableIndexingOfBookmarksDescriptions(bool enable)
+{
+  m_bookmarksProcessor.EnableIndexingOfDescriptions(enable);
+}
+
+void Processor::EnableIndexingOfBookmarkGroup(bookmarks::GroupId const & groupId, bool enable)
+{
+  m_bookmarksProcessor.EnableIndexingOfBookmarkGroup(groupId, enable);
+}
+
+void Processor::ResetBookmarks()
+{
+  m_bookmarksProcessor.Reset();
+}
+
 void Processor::OnBookmarksCreated(vector<pair<bookmarks::Id, bookmarks::Doc>> const & marks)
 {
   for (auto const & idDoc : marks)
@@ -333,16 +372,27 @@ void Processor::OnBookmarksCreated(vector<pair<bookmarks::Id, bookmarks::Doc>> c
 void Processor::OnBookmarksUpdated(vector<pair<bookmarks::Id, bookmarks::Doc>> const & marks)
 {
   for (auto const & idDoc : marks)
-  {
-    m_bookmarksProcessor.Erase(idDoc.first /* id */);
-    m_bookmarksProcessor.Add(idDoc.first /* id */, idDoc.second /* doc */);
-  }
+    m_bookmarksProcessor.Update(idDoc.first /* id */, idDoc.second /* doc */);
 }
 
 void Processor::OnBookmarksDeleted(vector<bookmarks::Id> const & marks)
 {
   for (auto const & id : marks)
     m_bookmarksProcessor.Erase(id);
+}
+
+void Processor::OnBookmarksAttachedToGroup(bookmarks::GroupId const & groupId,
+                                           vector<bookmarks::Id> const & marks)
+{
+  for (auto const & id : marks)
+    m_bookmarksProcessor.AttachToGroup(id, groupId);
+}
+
+void Processor::OnBookmarksDetachedFromGroup(bookmarks::GroupId const & groupId,
+                                             vector<bookmarks::Id> const & marks)
+{
+  for (auto const & id : marks)
+    m_bookmarksProcessor.DetachFromGroup(id, groupId);
 }
 
 Locales Processor::GetCategoryLocales() const
@@ -402,21 +452,24 @@ void Processor::Search(SearchParams const & params)
   SetQuery(params.m_query);
   SetViewport(viewport);
 
-  Geocoder::Params geocoderParams;
-  InitGeocoder(geocoderParams, params);
-  InitPreRanker(geocoderParams, params);
-  InitRanker(geocoderParams, params);
   InitEmitter(params);
 
-  try
+  switch (params.m_mode)
   {
-    switch (params.m_mode)
+  case Mode::Everywhere:  // fallthrough
+  case Mode::Viewport:    // fallthrough
+  case Mode::Downloader:
+  {
+    Geocoder::Params geocoderParams;
+    InitGeocoder(geocoderParams, params);
+    InitPreRanker(geocoderParams, params);
+    InitRanker(geocoderParams, params);
+
+    try
     {
-    case Mode::Everywhere:  // fallthrough
-    case Mode::Viewport:    // fallthrough
-    case Mode::Downloader:
       SearchCoordinates();
       SearchPlusCode();
+      SearchPostcode();
       if (viewportSearch)
       {
         m_geocoder.GoInViewport();
@@ -427,18 +480,19 @@ void Processor::Search(SearchParams const & params)
           m_ranker.SuggestStrings();
         m_geocoder.GoEverywhere();
       }
-      break;
-    case Mode::Bookmarks: SearchBookmarks(); break;
-    case Mode::Count: ASSERT(false, ("Invalid mode")); break;
     }
-  }
-  catch (CancelException const &)
-  {
-    LOG(LDEBUG, ("Search has been cancelled."));
-  }
+    catch (CancelException const &)
+    {
+      LOG(LDEBUG, ("Search has been cancelled."));
+    }
 
-  // Emit finish marker to client.
-  m_geocoder.Finish(IsCancelled());
+    // Emit finish marker to client.
+    m_geocoder.Finish(IsCancelled());
+    break;
+  }
+  case Mode::Bookmarks: SearchBookmarks(params.m_bookmarksGroupId); break;
+  case Mode::Count: ASSERT(false, ("Invalid mode")); break;
+  }
 
   if (!viewportSearch && !IsCancelled())
     SendStatistics(params, viewport, m_emitter.GetResults());
@@ -470,7 +524,7 @@ void Processor::SearchPlusCode()
   {
     if (!m_position)
       return;
-    ms::LatLon const latLon = MercatorBounds::ToLatLon(*m_position);
+    ms::LatLon const latLon = mercator::ToLatLon(*m_position);
     code = openlocationcode::RecoverNearest(query, {latLon.m_lat, latLon.m_lon});
   }
 
@@ -484,11 +538,62 @@ void Processor::SearchPlusCode()
   m_emitter.Emit();
 }
 
-void Processor::SearchBookmarks() const
+void Processor::SearchPostcode()
 {
-  QueryParams params;
+  // Create a copy of the query to trim it in-place.
+  string query(m_query);
+  strings::Trim(query);
+
+  if (!LooksLikePostcode(query, !m_prefix.empty()))
+    return;
+
+  vector<shared_ptr<MwmInfo>> infos;
+  m_dataSource.GetMwmsInfo(infos);
+
+  for (auto const & info : infos)
+  {
+    auto handle = m_dataSource.GetMwmHandleById(MwmSet::MwmId(info));
+    if (!handle.IsAlive())
+      continue;
+    auto & value = *handle.GetValue();
+    if (!value.m_cont.IsExist(POSTCODE_POINTS_FILE_TAG))
+      continue;
+
+    PostcodePoints postcodes(value);
+
+    vector<m2::PointD> points;
+    postcodes.Get(NormalizeAndSimplifyString(query), points);
+    if (points.empty())
+      continue;
+
+    m2::RectD r;
+    for (auto const & p : points)
+      r.Add(p);
+
+    m_emitter.AddResultNoChecks(m_ranker.MakeResult(
+        RankerResult(r.Center(), query), true /* needAddress */, false /* needHighlighting */));
+    m_emitter.Emit();
+    return;
+  }
+}
+
+void Processor::SearchBookmarks(bookmarks::GroupId const & groupId)
+{
+  bookmarks::Processor::Params params;
   InitParams(params);
-  m_bookmarksProcessor.Search(params);
+  params.m_groupId = groupId;
+
+  try
+  {
+    m_bookmarksProcessor.Search(params);
+  }
+  catch (CancelException const &)
+  {
+    LOG(LDEBUG, ("Bookmarks search has been cancelled."));
+  }
+
+  // Emit finish marker to client.
+  m_bookmarksProcessor.Finish(IsCancelled());
 }
 
 void Processor::InitParams(QueryParams & params) const
@@ -590,6 +695,7 @@ void Processor::InitRanker(Geocoder::Params const & geocoderParams,
   if (viewportSearch)
     params.m_viewport = GetViewport();
 
+  params.m_batchSize = searchParams.m_batchSize;
   params.m_limit = searchParams.m_maxNumResults;
   params.m_pivot = m_position ? *m_position : GetViewport().Center();
   params.m_pivotRegion = GetPivotRegion();

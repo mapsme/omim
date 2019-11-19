@@ -3,11 +3,10 @@ package com.mapswithme.maps.bookmarks;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.PluralsRes;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.PluralsRes;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.Layout;
 import android.text.Spanned;
@@ -28,11 +27,6 @@ import com.mapswithme.maps.widget.recycler.RecyclerClickListener;
 import com.mapswithme.maps.widget.recycler.RecyclerLongClickListener;
 import com.mapswithme.util.Graphics;
 import com.mapswithme.util.UiUtils;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Holders
 {
@@ -209,14 +203,6 @@ public class Holders
 
   static abstract class BaseBookmarkHolder extends RecyclerView.ViewHolder
   {
-    static final int SECTION_TRACKS = 0;
-    static final int SECTION_BMKS = 1;
-    static final int SECTION_DESC = 2;
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({ SECTION_TRACKS, SECTION_BMKS, SECTION_DESC})
-    public @interface Section {}
-
     @NonNull
     private final View mView;
 
@@ -226,79 +212,8 @@ public class Holders
       mView = itemView;
     }
 
-    abstract void bind(int position, @NonNull BookmarkCategory category);
-
-    static int calculateTrackPosition(@NonNull BookmarkCategory category, int position)
-    {
-      return position
-             - (isSectionEmpty(category, SECTION_TRACKS) ? 0 : 1)
-             - getDescItemCount(category);
-    }
-
-    static boolean isSectionEmpty(@NonNull BookmarkCategory category, @Section int section)
-    {
-      switch (section)
-      {
-        case SECTION_TRACKS:
-          return category.getTracksCount() == 0;
-        case SECTION_BMKS:
-          return category.getBookmarksCount() == 0;
-        case SECTION_DESC:
-          return TextUtils.isEmpty(category.getDescription()) && TextUtils.isEmpty(category.getAnnotation());
-        default:
-          throw new IllegalArgumentException("There is no section with index " + section);
-      }
-    }
-
-    static int getSectionForPosition(@NonNull BookmarkCategory category, int position)
-    {
-      if (position == getDescSectionPosition(category))
-        return SECTION_DESC;
-      if (position == getTracksSectionPosition(category))
-        return SECTION_TRACKS;
-      if (position == getBookmarksSectionPosition(category))
-        return SECTION_BMKS;
-
-      throw new IllegalArgumentException("There is no section in position " + position);
-    }
-
-    static int getDescSectionPosition(@NonNull BookmarkCategory category)
-    {
-      if (isSectionEmpty(category, SECTION_DESC))
-        return RecyclerView.NO_POSITION;
-
-      return 0;
-    }
-
-    static int getTracksSectionPosition(@NonNull BookmarkCategory category)
-    {
-      if (isSectionEmpty(category, SECTION_TRACKS))
-        return RecyclerView.NO_POSITION;
-
-      return getDescItemCount(category);
-    }
-
-    static int getBookmarksSectionPosition(@NonNull BookmarkCategory category)
-    {
-      if (isSectionEmpty(category, SECTION_BMKS))
-        return RecyclerView.NO_POSITION;
-
-      int beforeCurrentSectionItemsCount = getTracksSectionPosition(category);
-      return (beforeCurrentSectionItemsCount == RecyclerView.NO_POSITION
-              ? getDescItemCount(category)
-              : beforeCurrentSectionItemsCount)
-             + getTrackItemCount(category);
-    }
-
-    private static int getTrackItemCount(@NonNull BookmarkCategory category)
-    {
-      return category.getTracksCount() + (isSectionEmpty(category, SECTION_TRACKS) ? 0 : 1);
-    }
-
-    static int getDescItemCount(@NonNull BookmarkCategory category)
-    {
-      return isSectionEmpty(category, SECTION_DESC) ? 0 : /* section header */  1 + /* non empty desc */ 1;
-    }
+    abstract void bind(@NonNull BookmarkListAdapter.SectionPosition position,
+                       @NonNull BookmarkListAdapter.SectionsDataSource sectionsDataSource);
 
     void setOnClickListener(@Nullable RecyclerClickListener listener)
     {
@@ -310,14 +225,11 @@ public class Holders
 
     void setOnLongClickListener(@Nullable RecyclerLongClickListener listener)
     {
-      mView.setOnLongClickListener(v -> onOpenActionMenu(v, listener));
-    }
-
-    boolean onOpenActionMenu(@NonNull View v, @Nullable RecyclerLongClickListener listener)
-    {
-      if (listener != null)
-        listener.onLongItemClick(v, getAdapterPosition());
-      return true;
+      mView.setOnLongClickListener(v -> {
+        if (listener != null)
+          listener.onLongItemClick(v, getAdapterPosition());
+        return true;
+      });
     }
   }
 
@@ -329,6 +241,8 @@ public class Holders
     private final TextView mName;
     @NonNull
     private final TextView mDistance;
+    @NonNull
+    private View mMore;
 
     BookmarkViewHolder(@NonNull View itemView)
     {
@@ -336,37 +250,43 @@ public class Holders
       mIcon = itemView.findViewById(R.id.iv__bookmark_color);
       mName = itemView.findViewById(R.id.tv__bookmark_name);
       mDistance = itemView.findViewById(R.id.tv__bookmark_distance);
+      mMore = itemView.findViewById(R.id.more);
     }
 
     @Override
-    void setOnLongClickListener(@Nullable RecyclerLongClickListener listener)
+    void bind(@NonNull BookmarkListAdapter.SectionPosition position,
+              @NonNull BookmarkListAdapter.SectionsDataSource sectionsDataSource)
     {
-      super.setOnLongClickListener(listener);
-    }
-
-    @Override
-    void bind(int position, @NonNull BookmarkCategory category)
-    {
-      int pos = calculateBookmarkPosition(category, position);
-      final long bookmarkId = BookmarkManager.INSTANCE.getBookmarkIdByPosition(category.getId(), pos);
-      BookmarkInfo bookmark = new BookmarkInfo(category.getId(), bookmarkId);
-      mName.setText(bookmark.getTitle());
+      final long bookmarkId = sectionsDataSource.getBookmarkId(position);
+      BookmarkInfo bookmark = new BookmarkInfo(sectionsDataSource.getCategory().getId(),
+                                               bookmarkId);
+      mName.setText(bookmark.getName());
       final Location loc = LocationHelper.INSTANCE.getSavedLocation();
 
-      String distanceValue = loc == null ? null : bookmark.getDistance(loc.getLatitude(),
-                                                                       loc.getLongitude(), 0.0);
-      mDistance.setText(distanceValue);
-      UiUtils.hideIf(TextUtils.isEmpty(distanceValue), mDistance);
-      mIcon.setImageResource(bookmark.getIcon().getSelectedResId());
+      String distanceValue = loc == null ? "" : bookmark.getDistance(loc.getLatitude(),
+                                                                     loc.getLongitude(), 0.0);
+      String separator = "";
+      if (!distanceValue.isEmpty() && !bookmark.getFeatureType().isEmpty())
+        separator = " • ";
+      String subtitleValue = distanceValue.concat(separator).concat(bookmark.getFeatureType());
+      mDistance.setText(subtitleValue);
+      UiUtils.hideIf(TextUtils.isEmpty(subtitleValue), mDistance);
+
+      mIcon.setImageResource(bookmark.getIcon().getResId());
+      Drawable circle = Graphics.drawCircleAndImage(bookmark.getIcon().argb(),
+                                                    R.dimen.track_circle_size,
+                                                    bookmark.getIcon().getResId(),
+                                                    R.dimen.bookmark_icon_size,
+                                                    mIcon.getContext().getResources());
+      mIcon.setImageDrawable(circle);
     }
 
-    static int calculateBookmarkPosition(@NonNull BookmarkCategory category, int position)
+    void setMoreListener(@Nullable RecyclerClickListener listener)
     {
-      // Since bookmarks are always below tracks and header we should take it into account
-      // during the bookmark's position calculation.
-      return  calculateTrackPosition(category, position)
-              - category.getTracksCount()
-              - (isSectionEmpty(category, SECTION_BMKS) ? 0 : 1);
+      mMore.setOnClickListener(v -> {
+        if (listener != null)
+          listener.onItemClick(v, getAdapterPosition());
+      });
     }
   }
 
@@ -388,10 +308,10 @@ public class Holders
     }
 
     @Override
-    void bind(int position, @NonNull BookmarkCategory category)
+    void bind(@NonNull BookmarkListAdapter.SectionPosition position,
+              @NonNull BookmarkListAdapter.SectionsDataSource sectionsDataSource)
     {
-      int relativePos = calculateTrackPosition(category, position);
-      final long trackId = BookmarkManager.INSTANCE.getTrackIdByPosition(category.getId(), relativePos);
+      final long trackId = sectionsDataSource.getTrackId(position);
       Track track = BookmarkManager.INSTANCE.getTrack(trackId);
       mName.setText(track.getName());
       mDistance.setText(new StringBuilder().append(mDistance.getContext()
@@ -417,19 +337,10 @@ public class Holders
     }
 
     @Override
-    void bind(int position, @NonNull BookmarkCategory category)
+    void bind(@NonNull BookmarkListAdapter.SectionPosition position,
+              @NonNull BookmarkListAdapter.SectionsDataSource sectionsDataSource)
     {
-      final int sectionIndex = getSectionForPosition(category, position);
-      mView.setText(getSections().get(sectionIndex));
-    }
-
-    private List<String> getSections()
-    {
-      final List<String> sections = new ArrayList<>();
-      sections.add(mView.getContext().getString(R.string.tracks_title));
-      sections.add(mView.getContext().getString(R.string.bookmarks));
-      sections.add(mView.getContext().getString(R.string.description));
-      return sections;
+      mView.setText(sectionsDataSource.getTitle(position.getSectionIndex(), mView.getResources()));
     }
   }
 
@@ -468,11 +379,12 @@ public class Holders
     }
 
     @Override
-    void bind(int position, @NonNull BookmarkCategory category)
+    void bind(@NonNull BookmarkListAdapter.SectionPosition position,
+              @NonNull BookmarkListAdapter.SectionsDataSource sectionsDataSource)
     {
-      mTitle.setText(category.getName());
-      bindAuthor(category);
-      bindDescriptionIfEmpty(category);
+      mTitle.setText(sectionsDataSource.getCategory().getName());
+      bindAuthor(sectionsDataSource.getCategory());
+      bindDescriptionIfEmpty(sectionsDataSource.getCategory());
     }
 
     private void bindDescriptionIfEmpty(@NonNull BookmarkCategory category)

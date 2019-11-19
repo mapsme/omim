@@ -69,8 +69,8 @@ CountryInfoGetterBase::RegionId CountryInfoGetterBase::FindFirstCountry(m2::Poin
 }
 
 // CountryInfoGetter -------------------------------------------------------------------------------
-vector<CountryId> CountryInfoGetter::GetRegionsCountryIdByRect(m2::RectD const & rect,
-                                                               bool rough) const
+std::vector<CountryId> CountryInfoGetter::GetRegionsCountryIdByRect(m2::RectD const & rect,
+                                                                    bool rough) const
 {
   std::vector<CountryId> result;
   for (size_t id = 0; id < m_countries.size(); ++id)
@@ -88,17 +88,16 @@ vector<CountryId> CountryInfoGetter::GetRegionsCountryIdByRect(m2::RectD const &
   return result;
 }
 
-void CountryInfoGetter::GetRegionsCountryId(m2::PointD const & pt, CountriesVec & closestCoutryIds)
+void CountryInfoGetter::GetRegionsCountryId(m2::PointD const & pt, CountriesVec & closestCoutryIds,
+                                            double lookupRadiusM)
 {
-  double const kLookupRadiusM = 30 /* km */ * 1000;
-
   closestCoutryIds.clear();
 
-  m2::RectD const lookupRect = MercatorBounds::RectByCenterXYAndSizeInMeters(pt, kLookupRadiusM);
+  m2::RectD const lookupRect = mercator::RectByCenterXYAndSizeInMeters(pt, lookupRadiusM);
 
   for (size_t id = 0; id < m_countries.size(); ++id)
   {
-    if (m_countries[id].m_rect.IsIntersect(lookupRect) && IsCloseEnough(id, pt, kLookupRadiusM))
+    if (m_countries[id].m_rect.IsIntersect(lookupRect) && IsCloseEnough(id, pt, lookupRadiusM))
       closestCoutryIds.emplace_back(m_countries[id].m_countryId);
   }
 }
@@ -149,9 +148,9 @@ m2::RectD CountryInfoGetter::CalcLimitRect(std::string const & prefix) const
 
 m2::RectD CountryInfoGetter::GetLimitRectForLeaf(CountryId const & leafCountryId) const
 {
-  auto const it = this->m_countryIndex.find(leafCountryId);
-  ASSERT(it != this->m_countryIndex.end(), ());
-  ASSERT_LESS(it->second, this->m_countries.size(), ());
+  auto const it = m_countryIndex.find(leafCountryId);
+  ASSERT(it != m_countryIndex.end(), ());
+  ASSERT_LESS(it->second, m_countries.size(), ());
   return m_countries[it->second].m_rect;
 }
 
@@ -203,23 +202,6 @@ std::unique_ptr<CountryInfoGetter> CountryInfoReader::CreateCountryInfoReader(
   return std::unique_ptr<CountryInfoReader>();
 }
 
-// static
-std::unique_ptr<CountryInfoGetter> CountryInfoReader::CreateCountryInfoReaderObsolete(
-    Platform const & platform)
-{
-  try
-  {
-    CountryInfoReader * result = new CountryInfoReader(platform.GetReader(PACKED_POLYGONS_OBSOLETE_FILE),
-                                                       platform.GetReader(COUNTRIES_OBSOLETE_FILE));
-    return std::unique_ptr<CountryInfoReader>(result);
-  }
-  catch (RootException const & e)
-  {
-    LOG(LCRITICAL, ("Can't load needed resources for storage::CountryInfoGetter:", e.Msg()));
-  }
-  return std::unique_ptr<CountryInfoReader>();
-}
-
 void CountryInfoReader::LoadRegionsFromDisk(size_t id, std::vector<m2::RegionD> & regions) const
 {
   regions.clear();
@@ -235,7 +217,7 @@ void CountryInfoReader::LoadRegionsFromDisk(size_t id, std::vector<m2::RegionD> 
 }
 
 CountryInfoReader::CountryInfoReader(ModelReaderPtr polyR, ModelReaderPtr countryR)
-  : CountryInfoGetter(true), m_reader(polyR), m_cache(3 /* logCacheSize */)
+  : m_reader(polyR), m_cache(3 /* logCacheSize */)
 
 {
   ReaderSource<ModelReaderPtr> src(m_reader.GetReader(PACKED_POLYGONS_INFO_TAG));
@@ -247,7 +229,7 @@ CountryInfoReader::CountryInfoReader(ModelReaderPtr polyR, ModelReaderPtr countr
 
   std::string buffer;
   countryR.ReadAsString(buffer);
-  LoadCountryFile2CountryInfo(buffer, m_idToInfo, m_isSingleMwm);
+  LoadCountryFile2CountryInfo(buffer, m_idToInfo);
 }
 
 void CountryInfoReader::ClearCachesImpl() const
@@ -318,7 +300,7 @@ bool CountryInfoReader::IsIntersectedByRegion(m2::RectD const & rect, size_t id)
 
 bool CountryInfoReader::IsCloseEnough(size_t id, m2::PointD const & pt, double distance)
 {
-  m2::RectD const lookupRect = MercatorBounds::RectByCenterXYAndSizeInMeters(pt, distance);
+  m2::RectD const lookupRect = mercator::RectByCenterXYAndSizeInMeters(pt, distance);
   auto isCloseEnough = [&](std::vector<m2::RegionD> const & regions) {
     for (auto const & region : regions)
     {
@@ -333,7 +315,6 @@ bool CountryInfoReader::IsCloseEnough(size_t id, m2::PointD const & pt, double d
 
 // CountryInfoGetterForTesting ---------------------------------------------------------------------
 CountryInfoGetterForTesting::CountryInfoGetterForTesting(std::vector<CountryDef> const & countries)
-  : CountryInfoGetter(true)
 {
   for (auto const & country : countries)
     AddCountry(country);
@@ -381,7 +362,7 @@ bool CountryInfoGetterForTesting::IsCloseEnough(size_t id, m2::PointD const & pt
   rgn.AddPoint(m_countries[id].m_rect.LeftBottom());
   rgn.AddPoint(m_countries[id].m_rect.LeftTop());
 
-  m2::RectD const lookupRect = MercatorBounds::RectByCenterXYAndSizeInMeters(pt, distance);
+  m2::RectD const lookupRect = mercator::RectByCenterXYAndSizeInMeters(pt, distance);
   return rgn.Contains(pt) || rgn.AtBorder(pt, lookupRect.SizeX() / 2);
 }
 }  // namespace storage

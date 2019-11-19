@@ -2367,7 +2367,7 @@
 
 "error_already_downloaded" = "This list has already been downloaded";
 
-"popular_place" = "TOP";
+"popular_place" = "Popular";
 
 "download_routes" = "Download routes";
 
@@ -2459,8 +2459,6 @@
 
 "restore_no_subscription_alert" = "There are no active subscriptions";
 
-"subscription_terms" = "Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.";
-
 "subscriptions_title" = "Subscriptions";
 
 "manage_subscription" = "Manage subscription";
@@ -2534,7 +2532,7 @@
 
 "unable_upload_error_subtitle_broken" = "This file is damaged and couldn't be uploaded. Please upload another file.";
 
-"buy_btn" = "Buy for %s";
+"buy_btn" = "Buy this one for %s";
 
 "download_guide_progress" = "Downloading your guide…";
 
@@ -2833,7 +2831,7 @@
 
 "dialog_routing_unable_locate_route_carplay" = "Unable to build a route. Please specify other route points";
 
-"dialog_routing_download_files_carplay" = "Some maps required for planning the route are not present. Please, download them on your mobile device";
+"dialog_routing_download_files_carplay" = "To create a route, download missing maps on your device";
 
 "dialog_routing_system_error_carplay" = "An error occurred. Please restart the application";
 
@@ -2845,7 +2843,240 @@
 
 "vezet_taxi" = "Vezet";
 
-"booking_button_toolbar" = "Search 2 million accommodations";
+"booking_button_toolbar" = "Pick a hotel on the map";
+
+"popup_booking_download_guides_title" = "Booked a hotel?";
+
+"popup_booking_download_guides_message" = "Plan your route with ready-made guides from MAPS.ME";
+
+"popup_mwm_download_guides_title" = "Offline city guides";
+
+"popup_mwm_download_guides_cta" = "Choose one";
+
+"popup_mwm_download_guides_cta_1" = "Take a look";
+
+"gallery_pp_download_guides_offline_title" = "Plan your vacation with MAPS.ME!";
+
+"gallery_pp_download_guides_offline_subtitle" = "Don't miss anything with guides made by experienced travellers";
+
+"gallery_pp_download_guides_offline_cta" = "Turn on the Internet";
+
+"gallery_pp_download_guides_title" = "Guides";
+
+"native_screen_subscription_title" = "Unlimited access to 2000+ travel guides!";
+
+"native_screen_subscription_message" = "A great vacation wherever you travel and whoever goes with you";
+
+"annual_subscription_title" = "Annual";
+
+"montly_subscription_title" = "Monthly";
+
+"annual_subscription_message" = "12 months of unlimited access";
+
+"montly_subscription_message" = "1 month of unlimited access";
+
+"annual_save_component" = "- %d%";
+
+"subscription_success_dialog_title" = "Thanks for subscribing!";
+
+"subscription_success_dialog_message" = "Now you have unlimited access to the whole guides catalog";
+
+"renewal_screen_title" = "Your subscription has expired";
+
+"renewal_screen_message" = "All the guides downloaded by subscription are going to be deleted. Do you want to resume the subscription and keep them?";
+
+"renewal_screen_button_restore" = "Yes, renew";
+
+"renewal_screen_button_cancel" = "No, delete guides";
+
+"subscription_error_ping_title" = "Purchase has failed";
+
+"subscription_error_message" = "The service is currently unavailable in your region. Please try again later";
+
+"subscription_error_button" = "Got it";
+
+"timeout_error_title" = "Oops, time is up!";
+
+"timeout_error_message" = "Our servers don't respond. Please check the internet connection and try again.";
+
+"per_month" = "/mo";
+
+"per_year" = "/year";
+
+"buy_btn_for_subscription" = "Unlimited access from %s";
+
+"buy_btn_for_subscription_1" = "Buy ALL guides for %s";
+
+"buy_btn_for_subscription_ios_only_mo" = "Unlimited access for %s/mo";
+
+"buy_btn_for_subscription_ios_only_year" = "Unlimited access for %s/year";
+
+"subscription_terms_guides" = "Payment will be charged to your iTunes account after purchase confirmation. The subscription will automatically renew unless the auto-renew feature is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off the auto-renew feature in your Apple ID account settings at any time of your purchase. You can only use guides downloaded by subscription until its expiration date. After 30 days from the subscription expiry date guides with bookmarks will be automatically deleted.";
+
+"subscription_terms" = "Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.";
+
+"whatsnew_carplay_title" = "MAPS.ME car navigation in CarPlay!";
+
+"whatsnew_carplay_message" = "Bookmarks, search, speed cameras and routing options are available offline";
+
+"whatsnew_subscription_title" = "The whole world by subscription!";
+
+"whatsnew_subscription_message" = "Unlimited access to the guides catalog is more profitable than a one-time purchase";
+
+"whatsnew_carnavi_fixes_for_android_title" = "Navigation update";
+
+"whatsnew_carnavi_fixes_for_android_message" = "We improved route planning to points, which are located far away from roads";
+
+"avoid_unpaved_carplay_1" = "No dirt road";
+
+"avoid_unpaved_carplay_2" = "Avoid unpaved";
+
+"avoid_ferry_carplay_1" = "No ferries";
+
+"avoid_ferry_carplay_2" = "Avoid ferries";
+
+"avoid_tolls_carplay_1" = "No toll road";
+
+"avoid_tolls_carplay_2" = "Avoid toll road";
+
+"speedcams_alert_title_carplay_1" = "Speedсams";
+
+"speedcams_alert_title_carplay_2" = "Speed warnings";
+
+"download_map_carplay" = "Please download maps in MAPS.ME app on your device";
+
+"carplay_roundabout_exit" = "%s exit";
+
+/* max. 10 symbols, both iOS and Android */
+"sort" = "Sort…";
+
+/* Android, title, max 20-22 symbols */
+"sort_bookmarks" = "Sort bookmarks";
+
+/* iOS */
+"sort_default" = "Sort by default";
+
+"sort_type" = "Sort by type";
+
+"sort_distance" = "Sort by distance";
+
+"sort_date" = "Sort by date";
+
+/* Android */
+"by_default" = "By default";
+
+/* Android */
+"by_type" = "By type";
+
+/* Android */
+"by_distance" = "By distance";
+
+/* Android */
+"by_date" = "By date";
+
+"week_ago_sorttype" = "A week ago";
+
+"month_ago_sorttype" = "A month ago";
+
+"moremonth_ago_sorttype" = "More than a month ago";
+
+"moreyear_ago_sorttype" = "More than a year ago";
+
+"near_me_sorttype" = "Near me";
+
+"others_sorttype" = "Others";
+
+"food_places" = "Food";
+
+"tourist_places" = "Sights";
+
+"museums" = "Museums";
+
+"parks" = "Parks";
+
+"swim_places" = "Swim";
+
+"mountains" = "Mountains";
+
+"animals" = "Animals";
+
+"hotels" = "Hotels";
+
+"buildings" = "Buildings";
+
+"money" = "Money";
+
+"shops" = "Shops";
+
+"parkings" = "Parkings";
+
+"fuel_places" = "Gas stations";
+
+"water" = "Water";
+
+"medicine" = "Medicine";
+
+"search_in_the_list" = "Search in the list";
+
+"view_on_map_bookmarks" = "On map";
+
+"more_bookmarks" = "More…";
+
+"no_items_found" = "No items found";
+
+/* Android, max 18 symbols */
+"bookmarks_edit_list" = "Edit list";
+
+/* Android, max 18 symbols */
+"bookmarks_delete_list" = "Delete list";
+
+"whatsnew_bookmarks_search_sort_title" = "Good order in bookmarks makes a journey comfortable";
+
+"whatsnew_bookmarks_search_sort_message" = "Sort favorite places by category, location, and in chronological order, as well as quickly find specific bookmarks by their name";
+
+"popup_subscription_success_map_title" = "Woohoo, you're subscribed!";
+
+"popup_subscription_success_map_message" = "Now discover the best touristic highlights in MAPS.ME catalog";
+
+"popup_subscription_success_map_start_button" = "Start browsing";
+
+"popup_subscription_success_map_not_now_button" = "Not now";
+
+"religious_places" = "Religious places";
+
+"subscription_terms_android" = "When you confirm a purchase, the payment will be charged to your Google Play account. The subscription will automatically renew unless the auto-renew feature is turned off at least 24 hours before the end of the current period. Your account will be charged pursuant to your renewal plan within 24 hours before the end of the current period. You can manage or turn off the auto-renew feature in Account Settings after purchase. You can only use guides downloaded by subscription until the end of the billing period. After 30 days from the subscription expiry date, downloaded guides will be automatically deleted.";
+
+"select_list" = "Select list";
+
+"pp_discovery_place_related_header" = "This place in the guides catalog";
+
+"pp_discovery_place_related_header_1" = "This place is featured in a guide";
+
+"pp_discovery_place_related_cta_button" = "View";
+
+"pp_discovery_place_related_tag_header" = "Guides by tag “%s”";
+
+"pp_discovery_place_related_tag_header_1" = "You may also like";
+
+"buy_btn_for_subscription_version_2" = "ALL guides just for %s/mo";
+
+"buy_btn_for_subscription_version_3" = "Entire catalog for %s/mo";
+
+"buy_btn_for_subscription_ios_only_mo_version_2" = "Access to catalog for %s/mo";
+
+"buy_btn_for_subscription_ios_only_year_version_2" = "Access to catalog for %s/year";
+
+"subscription_screen_native_title_version_2" = "Access to guides with bookmarks!";
+
+"subscription_screen_native_message_version_2" = "Be ready for any journey in 600+ cities and 100+ countries";
+
+"catalog_no_internet_title" = "No internet connection";
+
+"catalog_no_internet_button" = "Try again";
+
+"whatsnew_map_updates_title" = "Lightning-fast map updates";
+
+"whatsnew_map_updates_message" = "From now on we update the data twice as fast";
 
 
 /**********  Partners  **********/
@@ -3015,6 +3246,14 @@
 
 "type.amenity.parking.underground.fee" = "Parking";
 
+"type.amenity.parking_space" = "Parking space";
+
+"type.amenity.parking_space.permissive" = "Parking space";
+
+"type.amenity.parking_space.private" = "Parking space";
+
+"type.amenity.parking_space.underground" = "Parking space";
+
 "type.amenity.payment_terminal" = "Payment Terminal";
 
 "type.amenity.pharmacy" = "Pharmacy";
@@ -3041,7 +3280,7 @@
 
 "type.amenity.post_office" = "Post";
 
-"type.amenity.prison" = "amenity-prison";
+"type.amenity.prison" = "Prison";
 
 "type.amenity.pub" = "Pub";
 
@@ -3067,13 +3306,13 @@
 
 "type.amenity.toilets" = "Toilet";
 
-"type.amenity.townhall" = "Town Hall";
+"type.amenity.townhall" = "Town hall";
 
 "type.amenity.university" = "University";
 
-"type.amenity.vending_machine" = "amenity-vending_machine";
+"type.amenity.vending_machine" = "Vending machine";
 
-"type.amenity.vending_machine.cigarettes" = "Cigarette Dispenser";
+"type.amenity.vending_machine.cigarettes" = "Cigarette dispenser";
 
 "type.amenity.vending_machine.drinks" = "Drink Dispenser";
 
@@ -3089,7 +3328,7 @@
 
 "type.amenity.water_point" = "Water Point";
 
-"type.barrier" = "barrier";
+"type.barrier" = "Barrier";
 
 "type.barrier.block" = "Block";
 
@@ -3097,29 +3336,29 @@
 
 "type.barrier.border_control" = "Border Control";
 
-"type.barrier.city_wall" = "barrier-city_wall";
+"type.barrier.city_wall" = "City wall";
 
-"type.barrier.cycle_barrier" = "barrier-cycle_barrier";
+"type.barrier.cycle_barrier" = "Cycle barrier";
 
 "type.barrier.entrance" = "Entrance";
 
-"type.barrier.fence" = "barrier-fence";
+"type.barrier.fence" = "Fence";
 
 "type.barrier.gate" = "Gate";
 
-"type.barrier.hedge" = "barrier-hedge";
+"type.barrier.hedge" = "Hedge";
 
-"type.barrier.lift_gate" = "Lift Gate";
+"type.barrier.lift_gate" = "Lift gate";
 
-"type.barrier.retaining_wall" = "barrier-retaining_wall";
+"type.barrier.retaining_wall" = "Retaining wall";
 
 "type.barrier.stile" = "Stile";
 
 "type.barrier.toll_booth" = "Toll Booth";
 
-"type.barrier.wall" = "barrier-wall";
+"type.barrier.wall" = "Wall";
 
-"type.boundary" = "boundary";
+"type.boundary" = "Boundary";
 
 "type.boundary.administrative" = "boundary-administrative";
 
@@ -3631,7 +3870,7 @@
 
 "type.historic.archaeological_site" = "Archaeological Site";
 
-"type.historic.battlefield" = "historic-battlefield";
+"type.historic.battlefield" = "Battlefield";
 
 "type.historic.boundary_stone" = "historic-boundary_stone";
 
@@ -3705,15 +3944,17 @@
 
 "type.landuse.basin" = "Water";
 
-"type.landuse.brownfield" = "landuse-brownfield";
+"type.landuse.brownfield" = "Brownfield";
 
 "type.landuse.cemetery" = "Graveyard";
 
-"type.landuse.cemetery.christian" = "Graveyard";
+"type.landuse.cemetery.christian" = "Christian graveyard";
+
+"type.landuse.churchyard" = "landuse-churchyard";
 
 "type.landuse.commercial" = "landuse-commercial";
 
-"type.landuse.construction" = "landuse-construction";
+"type.landuse.construction" = "Construction";
 
 "type.landuse.farm" = "Farm";
 
@@ -3725,11 +3966,11 @@
 
 "type.landuse.forest" = "Forest";
 
-"type.landuse.forest.coniferous" = "Forest";
+"type.landuse.forest.coniferous" = "Coniferous forest";
 
-"type.landuse.forest.deciduous" = "Forest";
+"type.landuse.forest.deciduous" = "Deciduous forest";
 
-"type.landuse.forest.mixed" = "Forest";
+"type.landuse.forest.mixed" = "Mixed forest";
 
 "type.landuse.garages" = "Garages";
 
@@ -3916,6 +4157,8 @@
 "type.natural.grassland" = "Field";
 
 "type.natural.heath" = "Heath";
+
+"type.natural.hot_spring" = "Hot spring";
 
 "type.natural.lake" = "Lake";
 
@@ -4409,7 +4652,7 @@
 
 "type.shop.mall" = "Mall";
 
-"type.shop.massage" = "Massage Parlour";
+"type.shop.massage" = "Massage salon";
 
 "type.shop.mobile_phone" = "Cell Phones";
 

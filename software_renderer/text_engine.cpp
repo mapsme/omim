@@ -1,6 +1,7 @@
-#include "text_engine.h"
+#include "software_renderer/text_engine.h"
 
 #include <sstream>
+
 #include <boost/format.hpp>
 
 extern "C" const char default_font_data[741536];
@@ -425,7 +426,7 @@ FT_Glyph face::glyph(unsigned int code, unsigned int prev_code, ml::point_d * ke
 
 ml::face & text_engine::get_face(size_t font_key, std::string const & name, size_t size)
 {
-  pair<size_t, size_t> key(font_key, size);
+  std::pair<size_t, size_t> key(font_key, size);
   face_cache_type::iterator entry = m_cache.find(key);
   if (entry == m_cache.end())
   {
@@ -459,4 +460,4 @@ text_engine::text_engine()
   load_face("default", default_font_data, sizeof(default_font_data));
   //        face("default",16);
 }
-}
+}  // namespace ml

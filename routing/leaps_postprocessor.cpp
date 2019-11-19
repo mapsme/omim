@@ -41,16 +41,69 @@ namespace routing
 // static
 size_t const LeapsPostProcessor::kMaxStep = 5;
 
-LeapsPostProcessor::LeapsPostProcessor(std::vector<Segment> const & path, IndexGraphStarter & starter)
-  : m_path(path),
-    m_starter(starter),
-    m_bfs(starter),
-    m_prefixSumETA(path.size(), 0.0)
+/// \brief It is assumed that there in no cycles in path.
+/// But sometimes it's wrong (because of heuristic searching of intermediate
+/// points (mwms' exists) in LeapsOnly routing algorithm).
+/// Look here for screenshots of such problem: https://github.com/mapsme/omim/pull/11091
+/// This code removes cycles from path before |Init()|.
+/// The algorithm saves jumps between the same segments, so if we have such loop:
+/// s1, s2, ... , s10, s1, s11, s12, ... , s100, where "s3" means segment number 3.
+/// ^------------------^ <--- loop (from s1 to s1).
+/// Thus if we look at the first s1, we will find out that a jump to second s1 exists
+/// and we will skip all segments between first and second s1 and the result path will be:
+/// s1, s11, s12, ... , s100
+LeapsPostProcessor::LeapsPostProcessor(std::vector<Segment> const & path,
+                                       IndexGraphStarter & starter)
+  : m_starter(starter),
+    m_bfs(starter)
 {
-  for (size_t i = 1; i < path.size(); ++i)
+  std::map<size_t, size_t> jumps;
+  std::map<Segment, size_t> segmentToIndex;
+
+  for (size_t i = 0; i < path.size(); ++i)
   {
-    auto const & segment = path[i];
-    m_prefixSumETA[i] = m_prefixSumETA[i - 1] + starter.CalcSegmentETA(segment);
+    auto const it = segmentToIndex.find(path[i]);
+    if (it == segmentToIndex.cend())
+    {
+      segmentToIndex[path[i]] = i;
+      continue;
+    }
+
+    auto const prevIndex = it->second;
+    jumps[prevIndex] = i;
+    it->second = i;
+  }
+
+  for (size_t i = 0; i < path.size(); ++i)
+  {
+    auto it = jumps.find(i);
+    if (it == jumps.end())
+    {
+      m_path.emplace_back(path[i]);
+      continue;
+    }
+
+    while (it != jumps.end())
+    {
+      i = it->second;
+      it = jumps.find(i);
+    }
+
+    CHECK_LESS(i, path.size(), ());
+    m_path.emplace_back(path[i]);
+  }
+
+  Init();
+}
+
+void LeapsPostProcessor::Init()
+{
+  m_prefixSumETA = std::vector<double>(m_path.size(), 0.0);
+
+  for (size_t i = 1; i < m_path.size(); ++i)
+  {
+    auto const & segment = m_path[i];
+    m_prefixSumETA[i] = m_prefixSumETA[i - 1] + m_starter.CalculateETAWithoutPenalty(segment);
 
     CHECK_EQUAL(m_segmentToIndex.count(segment), 0, ());
     m_segmentToIndex[segment] = i;
@@ -93,7 +146,7 @@ auto LeapsPostProcessor::CalculateIntervalsToRelax() -> std::set<PathInterval, P
   {
     std::map<Segment, SegmentData> segmentsData;
     auto const & segment = m_path[right];
-    segmentsData.emplace(segment, SegmentData(0, m_starter.CalcSegmentETA(segment)));
+    segmentsData.emplace(segment, SegmentData(0, m_starter.CalculateETAWithoutPenalty(segment)));
 
     FillIngoingPaths(segment, segmentsData);
 
@@ -139,7 +192,7 @@ void LeapsPostProcessor::FillIngoingPaths(
 
               auto & current = segmentsData[state.m_vertex];
               current.m_summaryETA =
-                  parent.m_summaryETA + m_starter.CalcSegmentETA(state.m_vertex);
+                  parent.m_summaryETA + m_starter.CalculateETAWithoutPenalty(state.m_vertex);
 
               current.m_steps = parent.m_steps + 1;
 
@@ -162,7 +215,8 @@ bool LeapsPostProcessor::PathInterval::GreaterByWeight::operator()(PathInterval 
 
 bool LeapsPostProcessor::PathInterval::operator<(PathInterval const & rhs) const
 {
-  CHECK(m_left > rhs.m_right || m_right < rhs.m_left,
+  CHECK(m_left > rhs.m_right || m_right < rhs.m_left ||
+        (m_left == rhs.m_left && m_right == rhs.m_right),
         ("Intervals shouldn't intersect.", *this, rhs));
 
   return m_right < rhs.m_left;
