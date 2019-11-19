@@ -69,6 +69,7 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
     [NSLayoutConstraint activateConstraints:
      @[[self.promoButton.centerXAnchor constraintEqualToAnchor:self.trafficButton.view.centerXAnchor],
        [self.promoButton.topAnchor constraintEqualToAnchor:self.sideButtons.view.topAnchor]]];
+    [Statistics logEvent:kStatMapSponsoredButtonShow withParameters:@{kStatTarget : kStatGuidesSubscription}];
   }
   return self;
 }
