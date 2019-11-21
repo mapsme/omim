@@ -857,14 +857,14 @@ NSString * const kHotelFacilitiesSegue = @"Map2FacilitiesSegue";
    GetFramework().Scale(Framework::SCALE_MAG, true);                                                                                                     
 }                                                                                                                                                       
                                                                                                                                                           
-- (void)goBack {                                                                                                                                        
-   if ([MWMSettings isWunderLINQEnabled]){                                                                                                               
-     //Launch WunderLINQ                                                                                                                                 
-     NSString *wunderlinqAppURL = @"wunderlinq://";                                                                                                      
-     BOOL canOpenURL = [[UIApplication sharedApplication]                                                                                                
-                      canOpenURL:[NSURL URLWithString:wunderlinqAppURL]];                                                                                
-     if ( canOpenURL ) [[UIApplication sharedApplication]                                                                                                
-                      openURL:[NSURL URLWithString:wunderlinqAppURL] options:@{} completionHandler:nil];                                                 
+- (void)goBack {
+   if ([MWMSettings isWunderLINQEnabled]){
+     //Launch WunderLINQ
+     NSString *wunderlinqAppURL = @"wunderlinq://";
+     BOOL canOpenURL = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:wunderlinqAppURL]];
+     if ( canOpenURL ){
+       [[UIApplication sharedApplication] openURL:[NSURL URLWithString:wunderlinqAppURL] options:@{} completionHandler:nil];
+     }
    }
 }
 
