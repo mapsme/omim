@@ -166,6 +166,9 @@ typedef void (^RefreshPromoCallbackBlock)(NSIndexSet *insertedSections);
 @property(nonatomic, readonly) BOOL isSmartDeal;
 @property(nonatomic, readonly) BOOL isPopular;
 
+// ready callback will be called from main queue.
+- (instancetype)init;
+
 - (place_page::Info const &)getRawData;
 
 - (void)fillSections;

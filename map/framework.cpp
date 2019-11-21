@@ -773,6 +773,16 @@ void Framework::FillBookmarkInfo(Bookmark const & bmk, place_page::Info & info) 
   FillPointInfoForBookmark(bmk, info);
 }
 
+void Framework::ResetBookmarkInfo(Bookmark const & bmk, place_page::Info & info) const
+{
+  info.SetBookmarkCategoryName("");
+  info.SetBookmarkData({});
+  info.SetBookmarkId(kml::kInvalidMarkId);
+  info.SetBookmarkCategoryId(kml::kInvalidMarkGroupId);
+  info.SetOpeningMode(place_page::OpeningMode::Preview);
+  FillPointInfoForBookmark(bmk, info);
+}
+
 search::ReverseGeocoder::Address Framework::GetAddressAtPoint(m2::PointD const & pt) const
 {
   return m_addressGetter.GetAddressAtPoint(m_featuresFetcher.GetDataSource(), pt);
