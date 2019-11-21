@@ -709,12 +709,14 @@ private:
   void FillRouteMarkInfo(RouteMarkPoint const & rmp, place_page::Info & info) const;
   void FillRoadTypeMarkInfo(RoadWarningMark const & roadTypeMark, place_page::Info & info) const;
   void FillPointInfoForBookmark(Bookmark const & bmk, place_page::Info & info) const;
-  void FillBookmarkInfo(Bookmark const & bmk, place_page::Info & info) const;
   void SetPlacePageLocation(place_page::Info & info);
   void FillLocalExperts(FeatureType & ft, place_page::Info & info) const;
   void FillDescription(FeatureType & ft, place_page::Info & info) const;
 
 public:
+  void FillBookmarkInfo(Bookmark const & bmk, place_page::Info & info) const;
+  void ResetBookmarkInfo(Bookmark const & bmk, place_page::Info & info) const;
+
   search::ReverseGeocoder::Address GetAddressAtPoint(m2::PointD const & pt) const;
 
   /// Get "best for the user" feature at given point even if it's invisible on the screen.
