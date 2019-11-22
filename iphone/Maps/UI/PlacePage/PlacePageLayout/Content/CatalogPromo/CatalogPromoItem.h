@@ -8,6 +8,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy) NSString *catalogUrl;
 @property(nonatomic, copy) NSString *guideName;
 @property(nonatomic, copy) NSString *guideAuthor;
+@property(nonatomic, copy) NSString *label;
+@property(nonatomic, copy) NSString *labelHexColor;
 
 @end
 
