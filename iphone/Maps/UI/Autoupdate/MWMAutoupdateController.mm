@@ -5,6 +5,10 @@
 #import "Statistics.h"
 #import "SwiftBridge.h"
 
+#include "platform/downloader_defines.hpp"
+
+#include <unordered_set>
+
 namespace
 {
 std::string RootId() { return GetFramework().GetStorage().GetRootId(); }
@@ -313,7 +317,7 @@ enum class State
 }
 
 - (void)processCountry:(CountryId const &)countryId
-              progress:(MapFilesDownloader::Progress const &)progress
+              progress:(downloader::Progress const &)progress
 {
   if (m_updatingCountries.find(countryId) != m_updatingCountries.end())
     [self updateProcessStatus:countryId];

@@ -4,6 +4,7 @@
 
 #include "storage/storage.hpp"
 
+#include "platform/downloader_defines.hpp"
 #include "platform/mwm_version.hpp"
 #include "platform/platform.hpp"
 #include "platform/platform_tests_support/writable_dir_changer.hpp"
@@ -37,7 +38,7 @@ UNIT_TEST(DownloadingTests_CalcOverallProgress)
   Storage s;
   
   s.SetDownloadingUrlsForTesting({storage::kTestWebServer});
-  MapFilesDownloader::Progress baseProgress = s.GetOverallProgress(kTestCountries);
+  auto baseProgress = s.GetOverallProgress(kTestCountries);
 
   TEST_EQUAL(baseProgress.first, 0, ());
   TEST_EQUAL(baseProgress.second, 0, ());
@@ -49,7 +50,7 @@ UNIT_TEST(DownloadingTests_CalcOverallProgress)
 
   auto progressChanged = [&s, &kTestCountries, &baseProgress](CountryId const & id,
                                                               LocalAndRemoteSize const & sz) {
-    MapFilesDownloader::Progress currentProgress = s.GetOverallProgress(kTestCountries);
+    auto const currentProgress = s.GetOverallProgress(kTestCountries);
     LOG_SHORT(LINFO, (id, "downloading progress:", currentProgress));
     
     TEST_GREATER_OR_EQUAL(currentProgress.first, baseProgress.first, ());

@@ -6,6 +6,8 @@
 #include <CoreApi/Framework.h>
 #import <CoreApi/MWMCommon.h>
 
+#include "platform/downloader_defines.hpp"
+
 @interface MWMMapDownloaderTableViewCell ()<MWMCircularProgressProtocol>
 
 @property(nonatomic) MWMCircularProgress * progress;
@@ -144,7 +146,7 @@
 }
 
 - (void)processCountry:(CountryId const &)countryId
-              progress:(MapFilesDownloader::Progress const &)progress
+              progress:(downloader::Progress const &)progress
 {
   if (countryId != m_countryId)
     return;

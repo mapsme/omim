@@ -2,6 +2,8 @@
 
 #include <CoreApi/Framework.h>
 
+#include "platform/downloader_defines.hpp"
+
 namespace
 {
 using Observer = id<MWMFrameworkObserver>;
@@ -146,7 +148,7 @@ void loopWrappers(Observers * observers, TLoopBlock block)
         for (TStorageObserver observer in observers)
           [observer processCountryEvent:countryId];
       },
-      [observers](CountryId const & countryId, MapFilesDownloader::Progress const & progress) {
+      [observers](CountryId const & countryId, downloader::Progress const & progress) {
         for (TStorageObserver observer in observers)
         {
           if ([observer respondsToSelector:@selector(processCountry:progress:)])
