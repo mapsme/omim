@@ -2,8 +2,11 @@
 
 #include "routing/router.hpp"
 #include "routing/routing_callbacks.hpp"
+
 #include "storage/storage.hpp"
 #include "storage/storage_defines.hpp"
+
+#include "platform/downloader_defines.hpp"
 
 using namespace storage;
 
@@ -27,12 +30,12 @@ using namespace storage;
 
 @protocol MWMFrameworkStorageObserver<MWMFrameworkObserver>
 
-- (void)processCountryEvent:(CountryId const &)countryId;
+- (void)processCountryEvent:(storage::CountryId const &)countryId;
 
 @optional
 
-- (void)processCountry:(CountryId const &)countryId
-              progress:(MapFilesDownloader::Progress const &)progress;
+- (void)processCountry:(storage::CountryId const &)countryId
+              progress:(downloader::Progress const &)progress;
 
 @end
 
@@ -40,7 +43,7 @@ using namespace storage;
 
 @optional
 
-- (void)processViewportCountryEvent:(CountryId const &)countryId;
+- (void)processViewportCountryEvent:(storage::CountryId const &)countryId;
 - (void)processViewportChangedEvent;
 
 @end

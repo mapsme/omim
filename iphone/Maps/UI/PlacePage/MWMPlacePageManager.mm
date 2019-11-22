@@ -16,6 +16,8 @@
 
 #include "map/utils.hpp"
 
+#include "platform/downloader_defines.hpp"
+
 #include "geometry/distance_on_sphere.hpp"
 
 namespace
@@ -234,7 +236,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
 }
 
 - (void)processCountry:(CountryId const &)countryId
-              progress:(MapFilesDownloader::Progress const &)progress
+              progress:(downloader::Progress const &)progress
 {
   auto data = self.data;
   if (!data || countryId == kInvalidCountryId || [data countryId] != countryId)

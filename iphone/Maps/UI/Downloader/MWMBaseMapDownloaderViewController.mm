@@ -15,6 +15,8 @@
 
 #include <CoreApi/Framework.h>
 
+#include "platform/downloader_defines.hpp"
+
 namespace
 {
 typedef NS_OPTIONS(NSUInteger, ActionButtons) {
@@ -172,7 +174,7 @@ using namespace storage;
 }
 
 - (void)processCountry:(CountryId const &)countryId
-              progress:(MapFilesDownloader::Progress const &)progress
+              progress:(downloader::Progress const &)progress
 {
   for (UITableViewCell * cell in self.tableView.visibleCells)
   {
