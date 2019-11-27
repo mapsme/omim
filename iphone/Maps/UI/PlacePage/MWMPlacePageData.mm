@@ -803,9 +803,10 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 - (BOOL)isOpentable { return m_info.GetSponsoredType() == SponsoredType::Opentable; }
 - (BOOL)isPartner { return m_info.GetSponsoredType() == SponsoredType::Partner; }
 - (BOOL)isHolidayObject { return m_info.GetSponsoredType() == SponsoredType::Holiday; }
-- (BOOL)isPromoCatalog { return self.isLargeToponim || self.isSightseeing; }
-- (BOOL)isLargeToponim { return m_info.GetSponsoredType() == SponsoredType::PromoCatalogCity; }
+- (BOOL)isPromoCatalog { return self.isLargeToponym || self.isSightseeing || self.isOutdoor; }
+- (BOOL)isLargeToponym { return m_info.GetSponsoredType() == SponsoredType::PromoCatalogCity; }
 - (BOOL)isSightseeing { return m_info.GetSponsoredType() == SponsoredType::PromoCatalogSightseeings; }
+- (BOOL)isOutdoor { return m_info.GetSponsoredType() == SponsoredType::PromoCatalogOutdoor; }
 - (BOOL)isBookingSearch { return !m_info.GetBookingSearchUrl().empty(); }
 - (BOOL)isMyPosition { return m_info.IsMyPosition(); }
 - (BOOL)isHTMLDescription { return strings::IsHTML(GetPreferredBookmarkStr(m_info.GetBookmarkData().m_description)); }
@@ -898,7 +899,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
         [Statistics logEvent:kStatPlacepageSponsoredShow
               withParameters:@{
                                kStatProvider: kStatMapsmeGuides,
-                               kStatPlacement: self.isLargeToponim ? kStatPlacePageToponims : kStatPlacePageSightSeeing,
+                               kStatPlacement: self.isLargeToponym ? kStatPlacePageToponims : kStatPlacePageSightSeeing,
                                kStatState: kStatOnline,
                                kStatCount: @(cityGallery.m_items.size())
                                }];
@@ -930,13 +931,13 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
 
     auto appInfo = AppInfo.sharedInfo;
     auto locale = appInfo.twoLetterLanguageId.UTF8String;
-    if (m_info.GetSponsoredType() == SponsoredType::PromoCatalogCity) {
+    if (self.isLargeToponym) {
       api->GetCityGallery(self.mercator, locale, UTM::LargeToponymsPlacepageGallery, resultHandler, errorHandler);
     } else {
       api->GetPoiGallery(self.mercator, locale,
                          m_info.GetRawTypes(),
                          [MWMFrameworkHelper isWiFiConnected],
-                         UTM::SightseeingsPlacepageGallery,
+                         self.isOutdoor ? UTM::OutdoorPlacepageGallery : UTM::SightseeingsPlacepageGallery,
                          resultHandler,
                          errorHandler);
     }
