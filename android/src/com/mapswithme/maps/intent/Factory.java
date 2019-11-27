@@ -31,6 +31,7 @@ import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.onboarding.IntroductionScreenFactory;
 import com.mapswithme.maps.purchase.BookmarksAllSubscriptionActivity;
 import com.mapswithme.maps.purchase.BookmarksSightsSubscriptionActivity;
+import com.mapswithme.maps.purchase.PurchaseUtils;
 import com.mapswithme.maps.purchase.SubscriptionType;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.search.SearchActivity;
@@ -731,7 +732,7 @@ public class Factory
     public boolean run(@NonNull MwmActivity target)
     {
       Uri uri = Uri.parse(mUrl);
-      String serverId = uri.getQueryParameter("deliverable");
+      String serverId = uri.getQueryParameter(PurchaseUtils.GROUPS);
       if (TextUtils.isEmpty(serverId))
         return false;
 
