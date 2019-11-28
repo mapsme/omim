@@ -819,6 +819,21 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   return [UIApplication.sharedApplication canOpenURL:self.deepLink];
 }
 
+- (nonnull NSString*)statPlacement
+{
+  switch (m_info.GetSponsoredType())
+  {
+  case SponsoredType::PromoCatalogCity:
+    return kStatPlacePageToponims;
+  case SponsoredType::PromoCatalogSightseeings:
+    return kStatPlacePageSightSeeing;
+  case SponsoredType:: PromoCatalogOutdoor:
+    return kStatPlacePageOutdoor;
+  default:
+     return kStatUnknownError;
+  }
+}
+
 + (MWMRatingSummaryViewValueType)ratingValueType:(rating::Impress)impress
 {
   switch (impress)
@@ -899,7 +914,7 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
         [Statistics logEvent:kStatPlacepageSponsoredShow
               withParameters:@{
                                kStatProvider: kStatMapsmeGuides,
-                               kStatPlacement: self.isLargeToponym ? kStatPlacePageToponims : kStatPlacePageSightSeeing,
+                               kStatPlacement: [self statPlacement],
                                kStatState: kStatOnline,
                                kStatCount: @(cityGallery.m_items.size())
                                }];
