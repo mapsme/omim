@@ -282,6 +282,7 @@ typedef void (^RefreshPromoCallbackBlock)(NSIndexSet *insertedSections);
 - (RoadWarningMarkType)roadType;
 - (BOOL)isPreviewPlus;
 - (BOOL)isPartnerAppInstalled;
+- (nonnull NSString*)statPlacement;
 
 + (MWMRatingSummaryViewValueType)ratingValueType:(place_page::rating::Impress)impress;
 
