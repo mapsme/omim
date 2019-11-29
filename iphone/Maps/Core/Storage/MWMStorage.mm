@@ -71,6 +71,8 @@ using namespace storage;
   {
     f.GetStorage().DeleteNode(countryId);
   }
+
+  f.GetNotificationManager().DeleteCandidatesForCountry(countryId);
 }
 
 + (void)cancelDownloadNode:(CountryId const &)countryId
