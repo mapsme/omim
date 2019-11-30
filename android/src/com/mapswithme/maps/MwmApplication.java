@@ -87,6 +87,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   @NonNull
   private GeofenceRegistry mGeofenceRegistry;
   private boolean mFirstLaunch;
+  private String mBackUrl;
 
   @NonNull
   public SubwayManager getSubwayManager()
@@ -397,6 +398,16 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   public boolean isFirstLaunch()
   {
     return mFirstLaunch;
+  }
+
+  public void setBackUrl(String backUrl)
+  {
+    mBackUrl = backUrl;
+  }
+
+  public String backUrl()
+  {
+    return mBackUrl;
   }
 
   @Override

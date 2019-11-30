@@ -67,8 +67,6 @@
   <string name="pref_traffic_simplified_colors" translatable="false">TrafficSimplifiedColors</string>
   <string name="pref_settings_general" translatable="false">GeneralSettings</string>
   <string name="pref_navigation" translatable="false">Navigation</string>
-  <string name="pref_accessibility" translatable="false">Accessibility</string>
-  <string name="pref_wunderlinq" translatable="false">WunderLINQEnabled</string>
   <string name="pref_information" translatable="false">Information</string>
   <string name="pref_transliteration" translatable="false">Transliteration</string>
   <string name="pref_power_management" translatable="false">PowerManagment</string>

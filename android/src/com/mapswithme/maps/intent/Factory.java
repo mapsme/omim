@@ -781,6 +781,10 @@ public class Factory
     {
       Utils.checkNotNull(url);
       mUrl = url;
+
+      Uri mUri = Uri.parse(mUrl);
+      String mBackUrl = mUri.getQueryParameter("backurl");
+      MwmApplication.get().setBackUrl(mBackUrl);
     }
 
     @Override

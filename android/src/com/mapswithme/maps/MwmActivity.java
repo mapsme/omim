@@ -122,7 +122,6 @@ import com.mapswithme.maps.widget.menu.MyPositionButton;
 import com.mapswithme.maps.widget.placepage.BottomSheetPlacePageController;
 import com.mapswithme.maps.widget.placepage.PlacePageController;
 import com.mapswithme.maps.widget.placepage.RoutingModeListener;
-import com.mapswithme.util.Config;
 import com.mapswithme.util.Counters;
 import com.mapswithme.util.InputUtils;
 import com.mapswithme.util.NetworkPolicy;
@@ -2447,6 +2446,34 @@ public class MwmActivity extends BaseMwmFragmentActivity
     IntroductionDialogFragment.show(getSupportFragmentManager(), deepLink, factory);
   }
 
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event)
+  {
+    switch (keyCode)
+    {
+      case KeyEvent.KEYCODE_DPAD_DOWN:
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_OUT);
+        MapFragment.nativeScaleMinus();
+        return true;
+      case KeyEvent.KEYCODE_DPAD_UP:
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_IN);
+        MapFragment.nativeScalePlus();
+        return true;
+      case KeyEvent.KEYCODE_ESCAPE:
+        if (MwmApplication.get().backUrl() != null)
+        {
+          String backUrl = MwmApplication.get().backUrl();
+          //Utils.openUrl(this,backUrl);
+          Intent intent = new Intent(Intent.ACTION_VIEW);
+          intent.setData(Uri.parse(backUrl));
+          startActivity(intent);
+        }
+        return true;
+      default:
+        return super.onKeyUp(keyCode, event);
+    }
+  }
+
   private class CurrentPositionClickListener implements OnClickListener
   {
     @Override
@@ -2729,21 +2756,18 @@ public class MwmActivity extends BaseMwmFragmentActivity
       switch (keyCode) {                                                                                                                             
         case KeyEvent.KEYCODE_DPAD_DOWN:                                                                                                             
           Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_OUT);                                                                             
-          AlohaHelper.logClick(AlohaHelper.ZOOM_OUT);                                                                                                
           MapFragment.nativeScaleMinus();                                                                                                            
           return true;                                                                                                                               
         case KeyEvent.KEYCODE_DPAD_UP:                                                                                                               
           Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_IN);                                                                              
-          AlohaHelper.logClick(AlohaHelper.ZOOM_IN);                                                                                                 
           MapFragment.nativeScalePlus();                                                                                                             
           return true;                                                                                                                               
         case KeyEvent.KEYCODE_ESCAPE:                                                                                                                
           if (Config.isWunderLINQEnabled()) {                                                                                                        
             //Go Back To WunderLINQ                                                                                                                  
-            String callingApp = "wunderlinq://datagrid";                                                                                             
-            Intent intent = new Intent(Intent.ACTION_VIEW);                                                                                          
-            intent.setData(Uri.parse(callingApp));                                                                                                   
-            startActivity(intent);                                                                                                                   
+            String callingApp = "wunderlinq://datagrid";
+
+	    Utils.openUrl(callingApp);                                                                                             
           }                                                                                                                                          
           return true;                                                                                                                               
         default:                                                                                                                                     

@@ -25,7 +25,6 @@ public final class Config
   private static final String KEY_PREF_ZOOM_BUTTONS = "ZoomButtonsEnabled";
   static final String KEY_PREF_STATISTICS = "StatisticsEnabled";
   private static final String KEY_PREF_USE_GS = "UseGoogleServices";
-  private static final String KEY_PREF_WUNDERLINQ = "WunderLINQEnabled";
 
   private static final String KEY_MISC_DISCLAIMER_ACCEPTED = "IsDisclaimerApproved";
   private static final String KEY_MISC_KITKAT_MIGRATED = "KitKatMigrationCompleted";
@@ -296,17 +295,6 @@ public final class Config
   {
     nativeSetTransliteration(value);
   }
-
-  public static boolean isWunderLINQEnabled()
-  {
-    return getBool(KEY_PREF_WUNDERLINQ, false);
-  }
-
-  public static void setWunderLINQEnabled(boolean show)
-  {
-    setBool(KEY_PREF_WUNDERLINQ, show);
-  }
-
 
   private static native boolean nativeGetBoolean(String name, boolean defaultValue);
   private static native void nativeSetBoolean(String name, boolean value);

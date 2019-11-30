@@ -341,7 +341,6 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     initEmulationBadStorage();
     initUseMobileDataPrefsCallbacks();
     initPowerManagementPrefsCallbacks();
-    initWunderLINQPrefsCallbacks();
     initOptOut();
     updateTts();
   }
@@ -882,25 +881,6 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
       {
         Statistics.INSTANCE.trackEvent(Statistics.EventName.Settings.ZOOM);
         Config.setShowZoomButtons((Boolean) newValue);
-        return true;
-      }
-    });
-  }
-
-  private void initWunderLINQPrefsCallbacks()
-  {
-    Preference pref = findPreference(getString(R.string.pref_wunderlinq));
-    if (pref == null)
-      return;
-
-    ((TwoStatePreference)pref).setChecked(Config.showZoomButtons());
-    pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-    {
-      @Override
-      public boolean onPreferenceChange(Preference preference, Object newValue)
-      {
-        Statistics.INSTANCE.trackEvent(Statistics.EventName.Settings.WUNDERLINQ);
-        Config.setWunderLINQEnabled((Boolean) newValue);
         return true;
       }
     });

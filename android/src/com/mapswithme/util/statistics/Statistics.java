@@ -576,7 +576,6 @@ public enum Statistics
       public static final String COPYRIGHT = "Settings. Copyright.";
       public static final String UNITS = "Settings. Change units.";
       public static final String ZOOM = "Settings. Switch zoom.";
-      public static final String WUNDERLINQ = "Settings. Enable WunderLINQ.";
       public static final String MAP_STYLE = "Settings. Map style.";
       public static final String VOICE_ENABLED = "Settings. Switch voice.";
       public static final String VOICE_LANGUAGE = "Settings. Voice language.";
