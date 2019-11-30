@@ -2751,27 +2751,4 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
   }
 
-  @Override                                                                                                                                        
-    public boolean onKeyUp(int keyCode, KeyEvent event) {                                                                                            
-      switch (keyCode) {                                                                                                                             
-        case KeyEvent.KEYCODE_DPAD_DOWN:                                                                                                             
-          Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_OUT);                                                                             
-          MapFragment.nativeScaleMinus();                                                                                                            
-          return true;                                                                                                                               
-        case KeyEvent.KEYCODE_DPAD_UP:                                                                                                               
-          Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_IN);                                                                              
-          MapFragment.nativeScalePlus();                                                                                                             
-          return true;                                                                                                                               
-        case KeyEvent.KEYCODE_ESCAPE:                                                                                                                
-          if (Config.isWunderLINQEnabled()) {                                                                                                        
-            //Go Back To WunderLINQ                                                                                                                  
-            String callingApp = "wunderlinq://datagrid";
-
-	    Utils.openUrl(callingApp);                                                                                             
-          }                                                                                                                                          
-          return true;                                                                                                                               
-        default:                                                                                                                                     
-          return super.onKeyUp(keyCode, event);
-     }
-  }
 }
