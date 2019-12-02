@@ -33,7 +33,7 @@ NS_SWIFT_NAME(FrameworkHelper)
 + (void)uploadUGC:(void (^)(UIBackgroundFetchResult))completionHandler;
 + (NSString *)userAccessToken;
 + (NSString *)userAgent;
-+ (NSNumber *)dataVersion;
++ (int64_t)dataVersion;
 
 @end
 
