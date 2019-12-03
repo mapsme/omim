@@ -647,8 +647,9 @@ RouterResultCode IndexRouter::CalculateSubrouteLeapsOnlyMode(
   Visitor visitor(leapsGraph, delegate, kVisitPeriodForLeaps, progress);
 
   AStarAlgorithm<Vertex, Edge, Weight>::Params<Visitor, AStarLengthChecker> params(
-      leapsGraph, starter.GetStartSegment(), starter.GetFinishSegment(), nullptr /* prevRoute */,
-      delegate.GetCancellable(), move(visitor), AStarLengthChecker(starter));
+      leapsGraph, leapsGraph.GetStartSegment(), leapsGraph.GetFinishSegment(),
+      nullptr /* prevRoute */, delegate.GetCancellable(), move(visitor),
+      AStarLengthChecker(starter));
 
   RoutingResult<Vertex, Weight> routingResult;
   RouterResultCode const result =
@@ -670,7 +671,7 @@ RouterResultCode IndexRouter::CalculateSubrouteLeapsOnlyMode(
   LeapsPostProcessor leapsPostProcessor(subrouteWithoutPostprocessing, starter);
   subroute = leapsPostProcessor.GetProcessedPath();
 
-  return leapsResult;
+  return RouterResultCode::NoError;
 }
 
 RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
