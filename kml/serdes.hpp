@@ -2,6 +2,8 @@
 
 #include "kml/types.hpp"
 
+#include "geometry/point_with_altitude.hpp"
+
 #include "coding/parse_xml.hpp"
 #include "coding/reader.hpp"
 #include "coding/writer.hpp"
@@ -83,6 +85,8 @@ private:
   };
 
   void ResetPoint();
+  bool ParsePoint(std::string const & s, char const * delim, m2::PointD & pt,
+                  geometry::Altitude & altitude);
   bool ParsePoint(std::string const & s, char const * delim, m2::PointD & pt);
   void SetOrigin(std::string const & s);
   void ParseLineCoordinates(std::string const & s, char const * blockSeparator,
@@ -97,6 +101,7 @@ private:
   std::vector<std::string> m_tags;
   GeometryType m_geometryType;
   std::vector<m2::PointD> m_points;
+  std::vector<geometry::PointWithAltitude> m_pointsWithAltitude;
   uint32_t m_color;
 
   std::string m_styleId;

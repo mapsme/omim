@@ -546,7 +546,8 @@ void KmlParser::ResetPoint()
   m_geometryType = GEOMETRY_TYPE_UNKNOWN;
 }
 
-bool KmlParser::ParsePoint(std::string const & s, char const * delim, m2::PointD & pt)
+bool KmlParser::ParsePoint(std::string const & s, char const * delim,
+                           m2::PointD & pt, geometry::Altitude & altitude)
 {
   // Order in string is: lon, lat, z.
   strings::SimpleTokenizer iter(s, delim);
@@ -557,13 +558,25 @@ bool KmlParser::ParsePoint(std::string const & s, char const * delim, m2::PointD
   if (strings::to_double(*iter, lon) && mercator::ValidLon(lon) && ++iter)
   {
     double lat;
-    if (strings::to_double(*iter, lat) && mercator::ValidLat(lat))
+    if (strings::to_double(*iter, lat) && mercator::ValidLat(lat) && ++iter)
     {
       pt = mercator::FromLatLon(lat, lon);
+      altitude = geometry::kInvalidAltitude;
+
+      double rawAltitude;
+      if (strings::to_double(*iter, rawAltitude))
+        altitude = static_cast<geometry::Altitude>(rawAltitude);
+
       return true;
     }
   }
   return false;
+}
+
+bool KmlParser::ParsePoint(std::string const & s, char const * delim, m2::PointD & pt)
+{
+  geometry::Altitude dummyAltitude;
+  return ParsePoint(s, delim, pt, dummyAltitude);
 }
 
 void KmlParser::SetOrigin(std::string const & s)
@@ -584,10 +597,14 @@ void KmlParser::ParseLineCoordinates(std::string const & s, char const * blockSe
   while (tupleIter)
   {
     m2::PointD pt;
-    if (ParsePoint(*tupleIter, coordSeparator, pt))
+    geometry::Altitude altitude;
+    if (ParsePoint(*tupleIter, coordSeparator, pt, altitude))
     {
       if (m_points.empty() || !pt.EqualDxDy(m_points.back(), 1e-5 /* eps */))
+      {
+        m_pointsWithAltitude.emplace_back(pt, altitude);
         m_points.push_back(std::move(pt));
+      }
     }
     ++tupleIter;
   }

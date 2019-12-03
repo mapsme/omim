@@ -81,6 +81,11 @@ std::vector<m2::PointD> const & Track::GetPoints() const
   return m_data.m_points;
 }
 
+std::vector<geometry::PointWithAltitude> const & Track::GetPointsWithAltitudes() const
+{
+  return m_data.m_pointsWithAltitudes;
+}
+
 void Track::Attach(kml::MarkGroupId groupId)
 {
   ASSERT(!m_groupID, ());

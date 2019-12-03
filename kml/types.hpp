@@ -261,6 +261,7 @@ struct TrackData
     return m_id == data.m_id && m_localId == data.m_localId && m_name == data.m_name &&
            m_description == data.m_description && m_layers == data.m_layers &&
            IsEqual(m_timestamp, data.m_timestamp) && IsEqual(m_points, data.m_points) &&
+           IsEqual(m_pointsWithAltitudes, data.m_pointsWithAltitudes) &&
            m_visible == data.m_visible && m_nearestToponyms == data.m_nearestToponyms &&
            m_properties == data.m_properties;
   }
@@ -281,6 +282,8 @@ struct TrackData
   Timestamp m_timestamp = {};
   // Points.
   std::vector<m2::PointD> m_points;
+  // Points with altitudes.
+  std::vector<geometry::PointWithAltitude> m_pointsWithAltitudes;
   // Visibility.
   bool m_visible = true;
   // Nearest toponyms.

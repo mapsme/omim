@@ -27,6 +27,25 @@ bool IsEqual(std::vector<m2::PointD> const & v1, std::vector<m2::PointD> const &
   return true;
 }
 
+bool IsEqual(std::vector<geometry::PointWithAltitude> const & v1,
+             std::vector<geometry::PointWithAltitude> const & v2)
+{
+  if (v1.size() != v2.size())
+    return false;
+
+  double constexpr kEps = 1e-5;
+  for (size_t i = 0; i < v1.size(); ++i)
+  {
+    if (!v1[i].GetPoint().EqualDxDy(v2[i].GetPoint(), kEps) ||
+        v1[i].GetAltitude() != v2[i].GetAltitude())
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 std::string GetPreferredBookmarkStr(LocalizableString const & name, std::string const & languageNorm)
 {
   if (name.size() == 1)

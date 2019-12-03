@@ -22,6 +22,7 @@ public:
   std::string GetName() const;
   m2::RectD GetLimitRect() const;
   double GetLengthMeters() const;
+  std::vector<geometry::PointWithAltitude> const & GetPointsWithAltitudes() const;
 
   int GetMinZoom() const override { return 1; }
   df::DepthLayer GetDepthLayer() const override;
