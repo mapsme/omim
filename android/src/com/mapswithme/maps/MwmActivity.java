@@ -62,6 +62,7 @@ import com.mapswithme.maps.editor.ReportFragment;
 import com.mapswithme.maps.gallery.Items;
 import com.mapswithme.maps.intent.Factory;
 import com.mapswithme.maps.intent.MapTask;
+import com.mapswithme.maps.intent.RegularMapTask;
 import com.mapswithme.maps.location.CompassData;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.maplayer.MapLayerCompositeController;
@@ -1031,7 +1032,17 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (category == null)
       throw new IllegalArgumentException("Category not found in bundle");
 
-    MapTask mapTask = target -> showBookmarkCategory(category);
+    MapTask mapTask = new RegularMapTask()
+    {
+      private static final long serialVersionUID = -7417385158050827655L;
+
+      @Override
+      public boolean run(@NonNull MwmActivity target)
+      {
+        target.showBookmarkCategory(category);
+        return true;
+      }
+    };
     addTask(mapTask);
     closePlacePage();
   }
@@ -1119,22 +1130,34 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onRouteToDiscoveredObject(@NonNull final MapObject object)
   {
-    addTask((MapTask) target ->
+    addTask(new RegularMapTask()
     {
-      RoutingController.get().attach(this);
-      RoutingController.get().setRouterType(Framework.ROUTER_TYPE_PEDESTRIAN);
-      RoutingController.get().prepare(true, object);
-      return false;
+      private static final long serialVersionUID = -219799471997583494L;
+
+      @Override
+      public boolean run(@NonNull MwmActivity target)
+      {
+        RoutingController.get().attach(target);
+        RoutingController.get().setRouterType(Framework.ROUTER_TYPE_PEDESTRIAN);
+        RoutingController.get().prepare(true, object);
+        return false;
+      }
     });
   }
 
   @Override
   public void onShowDiscoveredObject(@NonNull final MapObject object)
   {
-    addTask((MapTask) target ->
+    addTask(new RegularMapTask()
     {
-      Framework.nativeShowFeatureByLatLon(object.getLat(), object.getLon());
-      return false;
+      private static final long serialVersionUID = 7499190617762270631L;
+
+      @Override
+      public boolean run(@NonNull MwmActivity target)
+      {
+        Framework.nativeShowFeatureByLatLon(object.getLat(), object.getLon());
+        return false;
+      }
     });
   }
 
@@ -1941,8 +1964,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void adjustCompassAndTraffic(final int offsetY)
   {
-    addTask(new MapTask()
+    addTask(new RegularMapTask()
     {
+      private static final long serialVersionUID = 9177064181621376624L;
+
       @Override
       public boolean run(@NonNull MwmActivity target)
       {
