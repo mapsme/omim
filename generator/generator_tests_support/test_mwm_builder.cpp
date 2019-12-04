@@ -6,6 +6,7 @@
 #include "generator/feature_generator.hpp"
 #include "generator/feature_sorter.hpp"
 #include "generator/generator_tests_support/test_feature.hpp"
+#include "generator/postcodes_section_builder.hpp"
 #include "generator/search_index_builder.hpp"
 
 #include "indexer/city_boundary.hpp"
@@ -23,6 +24,7 @@
 
 #include "coding/internal/file_data.hpp"
 
+#include "base/macros.hpp"
 #include "base/string_utils.hpp"
 
 #include "defines.hpp"
@@ -141,13 +143,16 @@ void TestMwmBuilder::Finish()
   CHECK(base::DeleteFileX(tmpFilePath), ());
 
   string const path = m_file.GetPath(MapFileType::Map);
-  (void)base::DeleteFileX(path + OSM2FEATURE_FILE_EXTENSION);
+  UNUSED_VALUE(base::DeleteFileX(path + OSM2FEATURE_FILE_EXTENSION));
 
   CHECK(BuildOffsetsTable(path), ("Can't build feature offsets table."));
 
   CHECK(indexer::BuildIndexFromDataFile(path, path), ("Can't build geometry index."));
 
-  CHECK(indexer::BuildSearchIndexFromDataFile(path, true /* forceRebuild */, 1 /* threadsCount */),
+  CHECK(BuildPostcodesSection(path), ("Can't build postcodes section."));
+
+  CHECK(indexer::BuildSearchIndexFromDataFile(m_file.GetDirectory(), m_file.GetCountryName(),
+                                              true /* forceRebuild */, 1 /* threadsCount */),
         ("Can't build search index."));
 
   if (!m_postcodesPath.empty() && m_postcodesCountryInfoGetter)
@@ -157,6 +162,8 @@ void TestMwmBuilder::Finish()
                                                 *m_postcodesCountryInfoGetter),
           ("Can't build postcodes section."));
   }
+
+  UNUSED_VALUE(base::DeleteFileX(path + TEMP_ADDR_FILENAME));
 
   if (m_type == DataHeader::MapType::World)
   {

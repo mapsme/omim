@@ -57,13 +57,13 @@ std::vector<RelationElement::Member> GetMembersByTag(RelationElement const & rel
                                                      std::string const & tag)
 {
   std::vector<RelationElement::Member> result;
-  for (auto const & member : relationElement.ways)
+  for (auto const & member : relationElement.m_ways)
   {
     if (member.second == tag)
       result.emplace_back(member);
   }
 
-  for (auto const & member : relationElement.nodes)
+  for (auto const & member : relationElement.m_nodes)
   {
     if (member.second == tag)
       result.emplace_back(member);
@@ -74,13 +74,13 @@ std::vector<RelationElement::Member> GetMembersByTag(RelationElement const & rel
 
 OsmElement::EntityType GetType(RelationElement const & relationElement, uint64_t osmId)
 {
-  for (auto const & member : relationElement.ways)
+  for (auto const & member : relationElement.m_ways)
   {
     if (member.first == osmId)
       return OsmElement::EntityType::Way;
   }
 
-  for (auto const & member : relationElement.nodes)
+  for (auto const & member : relationElement.m_nodes)
   {
     if (member.first == osmId)
       return OsmElement::EntityType::Node;
@@ -95,18 +95,18 @@ namespace routing
 std::string const RestrictionWriter::kNodeString = "node";
 std::string const RestrictionWriter::kWayString = "way";
 
-RestrictionWriter::RestrictionWriter(std::string const & filename,
-                                     std::shared_ptr<generator::cache::IntermediateDataReader> const & cache)
-  : generator::CollectorInterface(filename)
-  , m_cache(cache)
+RestrictionWriter::RestrictionWriter(
+    std::string const & filename,
+    std::shared_ptr<generator::cache::IntermediateDataReaderInterface> const & cache)
+  : generator::CollectorInterface(filename), m_cache(cache)
 {
   m_stream.exceptions(std::fstream::failbit | std::fstream::badbit);
   m_stream.open(GetTmpFilename());
   m_stream << std::setprecision(20);
 }
 
-std::shared_ptr<generator::CollectorInterface>
-RestrictionWriter::Clone(std::shared_ptr<generator::cache::IntermediateDataReader> const & cache) const
+std::shared_ptr<generator::CollectorInterface> RestrictionWriter::Clone(
+    std::shared_ptr<generator::cache::IntermediateDataReaderInterface> const & cache) const
 { 
   return std::make_shared<RestrictionWriter>(GetFilename(), cache ? cache : m_cache);
 }
@@ -170,8 +170,8 @@ void RestrictionWriter::CollectRelation(RelationElement const & relationElement)
   uint64_t const toOsmId = to.back().first;
 
   // Extracting type of restriction.
-  auto const tagIt = relationElement.tags.find("restriction");
-  if (tagIt == relationElement.tags.end())
+  auto const tagIt = relationElement.m_tags.find("restriction");
+  if (tagIt == relationElement.m_tags.end())
     return;
 
   Restriction::Type type = Restriction::Type::No;

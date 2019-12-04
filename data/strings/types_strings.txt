@@ -1975,7 +1975,37 @@
 
   [type.amenity.parking_space]
     en = Parking space
+    ru = Парковочное место
+    ar = مكان لوقوف السيارات
+    cs = Prostor pro parkování
+    da = Parkeringsplads
+    nl = Parkeerplaats
+    fi = Parkkipaikka
+    fr = Parking
+    de = Parkplatz
+    hu = Parkolóhely
+    id = Tempat parkir
+    it = Parcheggio
+    ja = 駐車スペース
+    ko = 주차장
+    nb = Parkeringsplass
     pl = Miejsce parkingowe
+    pt = Lugar de estacionamento
+    pt-BR = Estacionamento
+    ro = Loc de parcare
+    es = Plaza de aparcamiento
+    es-MX = Plaza de aparcamiento
+    sv = Parkeringsplats
+    th = พื้นที่จอดรถ
+    tr = Park alanı
+    uk = Паркувальне місце
+    vi = Chỗ để xe
+    sw = Sehemu ya maegesho
+    zh-Hans = 停车地点
+    zh-Hant = 停車地點
+    el = Χώρος στάθμευσης
+    sk = Parkovacie miesto
+    fa = جای پارک
 
   [type.amenity.parking_space.permissive]
     en = Parking space
@@ -10787,8 +10817,38 @@
     fa = قبرستان
 
   [type.landuse.churchyard]
-    en = landuse-churchyard
+    en = Churchyard
+    ru = Церковный двор
+    ar = فناء الكنيسة
+    cs = Nádvoří kostela
+    da = Kirkegård
+    nl = Kerkhof
+    fi = Kirkon piha
+    fr = Cour d'église
+    de = Kirchenhof
+    hu = Templomtér
+    id = Halaman gereja
+    it = Sagrato della chiesa
+    ja = 教会付属墓地
+    ko = 교회
+    nb = Kirkegård
     pl = Teren kościelny
+    pt = Adro
+    pt-BR = Igreja
+    ro = Curtea Bisericii
+    es = Camposanto
+    es-MX = Camposanto
+    sv = Kyrkogård
+    th = บริเวณโบสถ์
+    tr = Kilise Bölgesi
+    uk = Церковний двір
+    vi = Nhà thờ
+    sw = Sehemu ya kanisa
+    zh-Hans = 教堂庭院
+    zh-Hant = 教堂庭院
+    el = Αυλόγυρος εκκλησίας
+    sk = Cintorín
+    fa = حیاط کلیسا
 
   [type.landuse.commercial]
     en = landuse-commercial

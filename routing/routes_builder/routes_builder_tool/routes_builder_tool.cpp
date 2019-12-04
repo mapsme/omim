@@ -37,6 +37,10 @@ DEFINE_uint64(start_from, 0, "The line number from which the tool should start r
 DEFINE_int32(timeout, 10 * 60, "Timeout in seconds for each route building. "
                                "0 means without timeout (default: 10 minutes).");
 
+DEFINE_bool(verbose, false, "Verbose logging (default: false)");
+
+DEFINE_int32(launches_number, 1, "Number of launches of routes buildings. Needs for benchmarking (default: 1)");
+
 using namespace routing;
 using namespace routes_builder;
 using namespace routing_quality;
@@ -86,13 +90,25 @@ int Main(int argc, char ** argv)
         ("\n\n\t--dump_path is empty. It makes no sense to run this tool. No result will be saved.",
          "\n\nType --help for usage."));
 
+  CHECK_GREATER_OR_EQUAL(FLAGS_launches_number, 1, ());
+
   if (Platform::IsFileExistsByFullPath(FLAGS_dump_path))
     CheckDirExistence(FLAGS_dump_path);
   else
     CHECK_EQUAL(Platform::MkDir(FLAGS_dump_path), Platform::EError::ERR_OK,());
 
   if (IsLocalBuild())
-    BuildRoutes(FLAGS_routes_file, FLAGS_dump_path, FLAGS_start_from, FLAGS_threads, FLAGS_timeout);
+  {
+    auto const launchesNumber = static_cast<uint32_t>(FLAGS_launches_number);
+    if (launchesNumber > 1)
+    {
+      LOG(LINFO,
+          ("Benchmark mode is activated. Each route will be built", launchesNumber, "times."));
+    }
+
+    BuildRoutes(FLAGS_routes_file, FLAGS_dump_path, FLAGS_start_from, FLAGS_threads, FLAGS_timeout,
+                FLAGS_verbose, launchesNumber);
+  }
 
   if (IsApiBuild())
   {

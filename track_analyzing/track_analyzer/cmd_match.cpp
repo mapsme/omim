@@ -1,3 +1,5 @@
+#include "track_analyzing/track_analyzer/utils.hpp"
+
 #include "track_analyzing/serialization.hpp"
 #include "track_analyzing/track.hpp"
 #include "track_analyzing/track_analyzer/utils.hpp"
@@ -21,6 +23,7 @@
 #include "base/timer.hpp"
 
 #include <algorithm>
+#include <exception>
 #include <memory>
 #include <string>
 #include <thread>
@@ -90,10 +93,12 @@ void MatchTracks(MwmToTracks const & mwmToTracks, storage::Storage const & stora
 
 namespace track_analyzing
 {
-void CmdMatch(string const & logFile, string const & trackFile, shared_ptr<NumMwmIds> const & numMwmIds, Storage const & storage)
+void CmdMatch(string const & logFile, string const & trackFile,
+              shared_ptr<NumMwmIds> const & numMwmIds, Storage const & storage, Stats & stat)
 {
   MwmToTracks mwmToTracks;
   ParseTracks(logFile, numMwmIds, mwmToTracks);
+  AddStat(mwmToTracks, *numMwmIds, storage, stat);
 
   MwmToMatchedTracks mwmToMatchedTracks;
   MatchTracks(mwmToTracks, storage, *numMwmIds, mwmToMatchedTracks);
@@ -110,10 +115,14 @@ void CmdMatch(string const & logFile, string const & trackFile)
   Storage storage;
   storage.RegisterAllLocalMaps(false /* enableDiffs */);
   shared_ptr<NumMwmIds> numMwmIds = CreateNumMwmIds(storage);
-  CmdMatch(logFile, trackFile, numMwmIds, storage);
+
+  Stats stat;
+  CmdMatch(logFile, trackFile, numMwmIds, storage, stat);
+  LOG(LINFO, ("DataPoint distribution by mwms and countries."));
+  LOG(LINFO, (stat));
 }
 
-void UnzipAndMatch(Iter begin, Iter end, string const & trackExt)
+void UnzipAndMatch(Iter begin, Iter end, string const & trackExt, Stats & stats)
 {
   Storage storage;
   storage.RegisterAllLocalMaps(false /* enableDiffs */);
@@ -143,13 +152,13 @@ void UnzipAndMatch(Iter begin, Iter end, string const & trackExt)
       FileWriter w(file);
       w.Write(track.data(), track.size());
     }
-    catch (FileWriter::WriteException const & e)
+    catch (std::exception const & e)
     {
       LOG(LWARNING, (e.what()));
       continue;
     }
 
-    CmdMatch(file, file + trackExt, numMwmIds, storage);
+    CmdMatch(file, file + trackExt, numMwmIds, storage, stats);
     FileWriter::DeleteFileX(file);
   }
 }
@@ -192,16 +201,24 @@ void CmdMatchDir(string const & logDir, string const & trackExt)
   auto const threadsCount = min(size, hardwareConcurrency);
   auto const blockSize = size / threadsCount;
   vector<thread> threads(threadsCount - 1);
+  vector<Stats> stats(threadsCount);
   auto begin = filesList.begin();
   for (size_t i = 0; i < threadsCount - 1; ++i)
   {
     auto end = begin + blockSize;
-    threads[i] = thread(UnzipAndMatch, begin, end, trackExt);
+    threads[i] = thread(UnzipAndMatch, begin, end, trackExt, ref(stats[i]));
     begin = end;
   }
 
-  UnzipAndMatch(begin, filesList.end(), trackExt);
+  UnzipAndMatch(begin, filesList.end(), trackExt, ref(stats[threadsCount - 1]));
   for (auto & t : threads)
     t.join();
+
+  Stats statSum;
+  for (auto const & s : stats)
+    statSum.Add(s);
+
+  LOG(LINFO, ("DataPoint distribution by mwms and countries."));
+  LOG(LINFO, (statSum));
 }
 }  // namespace track_analyzing

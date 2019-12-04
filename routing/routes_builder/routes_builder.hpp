@@ -62,6 +62,7 @@ public:
     VehicleType m_type = VehicleType::Car;
     Checkpoints m_checkpoints;
     uint32_t m_timeoutSeconds = RouterDelegate::kNoTimeout;
+    uint32_t m_launchesNumber = 1;
   };
 
   struct Route
@@ -92,6 +93,7 @@ public:
     RouterResultCode m_code = RouterResultCode::RouteNotFound;
     Params m_params;
     std::vector<Route> m_routes;
+    double m_buildTimeSeconds = 0.0;
   };
 
   Result ProcessTask(Params const & params);

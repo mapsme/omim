@@ -15,12 +15,13 @@ namespace generator
 class FeatureMakerBase
 {
 public:
-  explicit FeatureMakerBase(std::shared_ptr<cache::IntermediateDataReader> const & cache = {});
+  explicit FeatureMakerBase(
+      std::shared_ptr<cache::IntermediateDataReaderInterface> const & cache = {});
   virtual ~FeatureMakerBase() = default;
 
   virtual std::shared_ptr<FeatureMakerBase> Clone() const = 0;
 
-  void SetCache(std::shared_ptr<cache::IntermediateDataReader> const & cache);
+  void SetCache(std::shared_ptr<cache::IntermediateDataReaderInterface> const & cache);
 
   // Reference on element is non const because ftype::GetNameAndType will be call.
   virtual bool Add(OsmElement & element);
@@ -36,13 +37,13 @@ protected:
 
   virtual void ParseParams(FeatureParams & params, OsmElement & element) const  = 0;
 
-  std::shared_ptr<cache::IntermediateDataReader> m_cache;
+  std::shared_ptr<cache::IntermediateDataReaderInterface> m_cache;
   std::queue<feature::FeatureBuilder> m_queue;
 };
 
-void TransformAreaToPoint(feature::FeatureBuilder & feature);
-void TransformAreaToLine(feature::FeatureBuilder & feature);
+void TransformToPoint(feature::FeatureBuilder & feature);
+void TransformToLine(feature::FeatureBuilder & feature);
 
-feature::FeatureBuilder MakePointFromArea(feature::FeatureBuilder const & feature);
-feature::FeatureBuilder MakeLineFromArea(feature::FeatureBuilder const & feature);
+feature::FeatureBuilder MakePoint(feature::FeatureBuilder const & feature);
+feature::FeatureBuilder MakeLine(feature::FeatureBuilder const & feature);
 }  // namespace generator

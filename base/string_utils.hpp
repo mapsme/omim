@@ -430,7 +430,7 @@ std::string to_string(T t)
 }
 
 template <typename T>
-struct ToString { std::string operator()(T const & v) { return to_string(v); } };
+struct ToStringConverter { std::string operator()(T const & v) { return to_string(v); } };
 
 WARN_UNUSED_RESULT inline bool to_any(std::string const & s, int & i) { return to_int(s, i); }
 WARN_UNUSED_RESULT inline bool to_any(std::string const & s, unsigned int & i)
@@ -571,9 +571,10 @@ typename Container::value_type JoinStrings(Container const & container, Delimite
   return JoinStrings(begin(container), end(container), delimiter);
 }
 
-template <typename Iterator, typename Delimiter, typename Converter>
+template <typename Iterator, typename Delimiter>
 std::string JoinAny(Iterator first, Iterator last, Delimiter const & delimiter,
-                    Converter const & converter)
+                    std::function<
+                      std::string (typename Iterator::value_type const & v)> const & converter)
 {
   if (first == last)
     return {};
@@ -594,7 +595,7 @@ std::string JoinAny(Container const & container,
                     Delimiter const & delimiter = ',',
                     std::function<
                         std::string (typename Container::value_type const & v)> const & converter =
-                          ToString<typename Container::value_type>())
+                          ToStringConverter<typename Container::value_type>())
 {
   return JoinAny(std::cbegin(container), std::cend(container), delimiter, converter);
 }

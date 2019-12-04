@@ -12,7 +12,24 @@
 #include <iostream>
 #include <map>
 #include <queue>
+#include <type_traits>
+#include <utility>
 #include <vector>
+
+namespace
+{
+template <typename Vertex>
+struct DefaultVisitor
+{
+  void operator()(Vertex const & /* from */, Vertex const & /* to */) const {};
+};
+
+template <typename Weight>
+struct DefaultLengthChecker
+{
+  bool operator()(Weight const & /* weight */) const { return true; }
+};
+}
 
 namespace routing
 {
@@ -47,28 +64,24 @@ public:
     return os;
   }
 
-  using OnVisitedVertexCallback = std::function<void(Vertex const &, Vertex const &)>;
-  // Callback used to check path length from start/finish to the edge (including the edge itself)
-  // before adding the edge to AStar queue.
-  // Can be used to clip some path which does not meet restrictions.
-  using CheckLengthCallback = std::function<bool(Weight const &)>;
-
+  // |LengthChecker| callback used to check path length from start/finish to the edge (including the
+  // edge itself) before adding the edge to AStar queue. Can be used to clip some path which does
+  // not meet restrictions.
+  template <typename Visitor = DefaultVisitor<Vertex>,
+            typename LengthChecker = DefaultLengthChecker<Weight>>
   struct Params
   {
     Params(Graph & graph, Vertex const & startVertex, Vertex const & finalVertex,
            std::vector<Edge> const * prevRoute, base::Cancellable const & cancellable,
-           OnVisitedVertexCallback const & onVisitedVertexCallback,
-           CheckLengthCallback const & checkLengthCallback)
+           Visitor && onVisitedVertexCallback = DefaultVisitor<Vertex>(),
+           LengthChecker && checkLengthCallback = DefaultLengthChecker<Weight>())
       : m_graph(graph)
       , m_startVertex(startVertex)
       , m_finalVertex(finalVertex)
       , m_prevRoute(prevRoute)
       , m_cancellable(cancellable)
-      , m_onVisitedVertexCallback(onVisitedVertexCallback ? onVisitedVertexCallback
-                                                          : [](Vertex const &, Vertex const &) {})
-      , m_checkLengthCallback(checkLengthCallback
-                                  ? checkLengthCallback
-                                  : [](Weight const & /* weight */) { return true; })
+      , m_onVisitedVertexCallback(std::forward<Visitor>(onVisitedVertexCallback))
+      , m_checkLengthCallback(std::forward<LengthChecker>(checkLengthCallback))
     {
     }
 
@@ -79,23 +92,21 @@ public:
     // Used for AdjustRoute.
     std::vector<Edge> const * const m_prevRoute;
     base::Cancellable const & m_cancellable;
-    OnVisitedVertexCallback const m_onVisitedVertexCallback;
-    CheckLengthCallback const m_checkLengthCallback;
+    Visitor m_onVisitedVertexCallback;
+    LengthChecker const m_checkLengthCallback;
   };
 
+  template <typename LengthChecker = DefaultLengthChecker<Weight>>
   struct ParamsForTests
   {
     ParamsForTests(Graph & graph, Vertex const & startVertex, Vertex const & finalVertex,
                    std::vector<Edge> const * prevRoute,
-                   CheckLengthCallback const & checkLengthCallback)
+                   LengthChecker && checkLengthCallback = DefaultLengthChecker<Weight>())
       : m_graph(graph)
       , m_startVertex(startVertex)
       , m_finalVertex(finalVertex)
       , m_prevRoute(prevRoute)
-      , m_onVisitedVertexCallback([](Vertex const &, Vertex const &) {})
-      , m_checkLengthCallback(checkLengthCallback
-                                  ? checkLengthCallback
-                                  : [](Weight const & /* weight */) { return true; })
+      , m_checkLengthCallback(std::forward<LengthChecker>(checkLengthCallback))
     {
     }
 
@@ -106,8 +117,8 @@ public:
     // Used for AdjustRoute.
     std::vector<Edge> const * const m_prevRoute;
     base::Cancellable const m_cancellable;
-    OnVisitedVertexCallback const m_onVisitedVertexCallback;
-    CheckLengthCallback const m_checkLengthCallback;
+    DefaultVisitor<Vertex> const m_onVisitedVertexCallback = DefaultVisitor<Vertex>();
+    LengthChecker const m_checkLengthCallback;
   };
   class Context final
   {
@@ -227,12 +238,17 @@ private:
   // comment for FindPath for more information.
   struct State
   {
-    State(Vertex const & vertex, Weight const & distance) : vertex(vertex), distance(distance) {}
+    State(Vertex const & vertex, Weight const & distance, Weight const & heuristic)
+      : vertex(vertex), distance(distance), heuristic(heuristic)
+    {
+    }
+    State(Vertex const & vertex, Weight const & distance) : State(vertex, distance, Weight()) {}
 
     inline bool operator>(State const & rhs) const { return distance > rhs.distance; }
 
     Vertex vertex;
     Weight distance;
+    Weight heuristic;
   };
 
   // BidirectionalStepContext keeps all the information that is needed to
@@ -246,8 +262,6 @@ private:
       , startVertex(startVertex)
       , finalVertex(finalVertex)
       , graph(graph)
-      , m_piRT(graph.HeuristicCostEstimate(finalVertex, startVertex))
-      , m_piFS(graph.HeuristicCostEstimate(startVertex, finalVertex))
     {
       bestVertex = forward ? startVertex : finalVertex;
       pS = ConsistentHeuristic(bestVertex);
@@ -265,9 +279,17 @@ private:
       return bestDistance.at(queue.top().vertex);
     }
 
-    // p_f(v) = 0.5*(π_f(v) - π_r(v)) + 0.5*π_r(t)
-    // p_r(v) = 0.5*(π_r(v) - π_f(v)) + 0.5*π_f(s)
-    // p_r(v) + p_f(v) = const. Note: this condition is called consistence.
+    // p_f(v) = 0.5*(π_f(v) - π_r(v))
+    // p_r(v) = 0.5*(π_r(v) - π_f(v))
+    // p_r(v) + p_f(v) = const. This condition is called consistence.
+    //
+    // Note. Adding constant terms to p_f(v) or p_r(v) does
+    // not violate the consistence so a common choice is
+    //     p_f(v) = 0.5*(π_f(v) - π_r(v)) + 0.5*π_r(t)
+    //     p_r(v) = 0.5*(π_r(v) - π_f(v)) + 0.5*π_f(s)
+    // which leads to p_f(t) = 0 and p_r(s) = 0.
+    // However, with constants set to zero understanding
+    // particular routes when debugging turned out to be easier.
     Weight ConsistentHeuristic(Vertex const & v) const
     {
       auto const piF = graph.HeuristicCostEstimate(v, finalVertex);
@@ -277,12 +299,12 @@ private:
         /// @todo careful: with this "return" here and below in the Backward case
         /// the heuristic becomes inconsistent but still seems to work.
         /// return HeuristicCostEstimate(v, finalVertex);
-        return 0.5 * (piF - piR + m_piRT);
+        return 0.5 * (piF - piR);
       }
       else
       {
         // return HeuristicCostEstimate(v, startVertex);
-        return 0.5 * (piR - piF + m_piFS);
+        return 0.5 * (piR - piF);
       }
     }
 
@@ -300,8 +322,6 @@ private:
     Vertex const & startVertex;
     Vertex const & finalVertex;
     Graph & graph;
-    Weight const m_piRT;
-    Weight const m_piFS;
 
     std::priority_queue<State, std::vector<State>, std::greater<State>> queue;
     std::map<Vertex, Weight> bestDistance;
@@ -501,10 +521,10 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   auto bestPathRealLength = kZeroDistance;
 
   forward.bestDistance[startVertex] = kZeroDistance;
-  forward.queue.push(State(startVertex, kZeroDistance));
+  forward.queue.push(State(startVertex, kZeroDistance, forward.ConsistentHeuristic(startVertex)));
 
   backward.bestDistance[finalVertex] = kZeroDistance;
-  backward.queue.push(State(finalVertex, kZeroDistance));
+  backward.queue.push(State(finalVertex, kZeroDistance, backward.ConsistentHeuristic(finalVertex)));
 
   // To use the search code both for backward and forward directions
   // we keep the pointers to everything related to the search in the
@@ -556,7 +576,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
       // We do not yet have the proof that we will not miss a good path by doing so.
 
       // The shortest reduced path corresponds to the shortest real path
-      // because the heuristics we use are consistent.
+      // because the heuristic we use are consistent.
       // It would be a mistake to make a decision based on real path lengths because
       // several top states in a priority queue may have equal reduced path lengths and
       // different real path lengths.
@@ -575,6 +595,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
                                      cur->forward ? cur->finalVertex : cur->startVertex);
 
     cur->GetAdjacencyList(stateV.vertex, adj);
+    auto const & pV = stateV.heuristic;
     for (auto const & edge : adj)
     {
       State stateW(edge.GetTarget(), kZeroDistance);
@@ -583,7 +604,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         continue;
 
       auto const weight = edge.GetWeight();
-      auto const pV = cur->ConsistentHeuristic(stateV.vertex);
       auto const pW = cur->ConsistentHeuristic(stateW.vertex);
       auto const reducedWeight = weight + pW - pV;
 
@@ -601,6 +621,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         continue;
 
       stateW.distance = newReducedDist;
+      stateW.heuristic = pW;
       cur->bestDistance[stateW.vertex] = newReducedDist;
       cur->parent[stateW.vertex] = stateV.vertex;
 
@@ -651,8 +672,9 @@ typename AStarAlgorithm<Vertex, Edge, Weight>::Result
 
   CHECK(!prevRoute.empty(), ());
 
-  CHECK(params.m_checkLengthCallback != nullptr,
-        ("CheckLengthCallback expected to be set to limit wave propagation."));
+  static_assert(
+      !std::is_same<decltype(params.m_checkLengthCallback), DefaultLengthChecker<Weight>>::value,
+      "CheckLengthCallback expected to be set to limit wave propagation.");
 
   result.Clear();
 

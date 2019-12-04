@@ -1251,10 +1251,10 @@ void Framework::SetViewportListener(TViewportChangedFn const & fn)
 }
 
 #if defined(OMIM_OS_MAC) || defined(OMIM_OS_LINUX)
-void Framework::NotifyGraphicsReady(TGraphicsReadyFn const & fn)
+void Framework::NotifyGraphicsReady(TGraphicsReadyFn const & fn, bool needInvalidate)
 {
   if (m_drapeEngine != nullptr)
-    m_drapeEngine->NotifyGraphicsReady(fn);
+    m_drapeEngine->NotifyGraphicsReady(fn, needInvalidate);
 }
 #endif
 
@@ -2258,6 +2258,11 @@ Framework::ParsedRoutingData Framework::GetParsedRoutingData() const
 url_scheme::SearchRequest Framework::GetParsedSearchRequest() const
 {
   return m_ParsedMapApi.GetSearchRequest();
+}
+
+url_scheme::Subscription Framework::GetParsedSubscription() const
+{
+  return m_ParsedMapApi.GetSubscription();
 }
 
 FeatureID Framework::GetFeatureAtPoint(m2::PointD const & mercator,

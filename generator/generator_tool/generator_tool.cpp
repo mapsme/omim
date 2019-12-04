@@ -17,6 +17,7 @@
 #include "generator/osm_source.hpp"
 #include "generator/platform_helpers.hpp"
 #include "generator/popular_places_section_builder.hpp"
+#include "generator/postcodes_section_builder.hpp"
 #include "generator/processor_factory.hpp"
 #include "generator/ratings_section_builder.hpp"
 #include "generator/raw_generator.hpp"
@@ -343,6 +344,9 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       if (!feature::BuildOffsetsTable(datFile))
         continue;
 
+      if (!BuildPostcodesSection(datFile))
+        LOG(LCRITICAL, ("Error generating postcodes section."));
+
       if (mapType == MapType::Country)
       {
         string const metalinesFilename = genInfo.GetIntermediateFileName(METALINES_FILENAME);
@@ -366,7 +370,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       LOG(LINFO, ("Generating search index for", datFile));
 
       /// @todo Make threads count according to environment (single mwm build or planet build).
-      if (!indexer::BuildSearchIndexFromDataFile(datFile, true /* forceRebuild */,
+      if (!indexer::BuildSearchIndexFromDataFile(path, country, true /* forceRebuild */,
                                                  1 /* threadsCount */))
       {
         LOG(LCRITICAL, ("Error generating search index."));

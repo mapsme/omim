@@ -12,6 +12,7 @@
 
 #include "map/bookmarks_search_params.hpp"
 #include "map/search_api.hpp"
+#include "map/search_product_info.hpp"
 #include "map/viewport_search_params.hpp"
 
 #include "storage/country_info_getter.hpp"
@@ -130,6 +131,63 @@ UNIT_CLASS_TEST(SearchAPITest, MultipleViewportsRequests)
   future1.wait();
 }
 
+UNIT_CLASS_TEST(SearchAPITest, Cancellation)
+{
+  TestCafe cafe(m2::PointD(0, 0), "cafe", "en");
+
+  auto const id = BuildCountry("Wonderland", [&](TestMwmBuilder & builder) { builder.Add(cafe); });
+
+  EverywhereSearchParams params;
+  params.m_query = "cafe ";
+  params.m_inputLocale = "en";
+
+  {
+    promise<void> promise;
+    auto future = promise.get_future();
+
+    params.m_onResults = [&](Results const & results, vector<ProductInfo> const &) {
+      TEST(!results.IsEndedCancelled(), ());
+
+      if (!results.IsEndMarker())
+        return;
+
+      Rules const rules = {ExactMatch(id, cafe)};
+      TEST(MatchResults(m_dataSource, rules, results), ());
+
+      promise.set_value();
+    };
+
+    m_api.OnViewportChanged(m2::RectD(0.0, 0.0, 1.0, 1.0));
+    m_api.SearchEverywhere(params);
+    future.wait();
+  }
+
+  {
+    promise<void> promise;
+    auto future = promise.get_future();
+
+    params.m_timeout = chrono::seconds(-1);
+
+    params.m_onResults = [&](Results const & results, vector<ProductInfo> const &) {
+      // The deadline has fired but Search API does not expose it.
+      TEST(!results.IsEndedCancelled(), ());
+
+      if (!results.IsEndMarker())
+        return;
+
+      Rules const rules = {ExactMatch(id, cafe)};
+      TEST(MatchResults(m_dataSource, rules, results), ());
+
+      promise.set_value();
+    };
+
+    // Force the search by changing the viewport.
+    m_api.OnViewportChanged(m2::RectD(0.0, 0.0, 2.0, 2.0));
+    m_api.SearchEverywhere(params);
+    future.wait();
+  }
+}
+
 UNIT_CLASS_TEST(SearchAPITest, BookmarksSearch)
 {
   vector<BookmarkInfo> marks;
@@ -152,8 +210,8 @@ UNIT_CLASS_TEST(SearchAPITest, BookmarksSearch)
 
   auto runTest = [&](string const & query, kml::MarkGroupId const & groupId,
                      vector<kml::MarkId> const & expected) {
-    promise<vector<kml::MarkId>> promise;
-    auto future = promise.get_future();
+    promise<vector<kml::MarkId>> idsPromise;
+    auto idsFuture = idsPromise.get_future();
 
     BookmarksSearchParams params;
     params.m_query = query;
@@ -161,13 +219,13 @@ UNIT_CLASS_TEST(SearchAPITest, BookmarksSearch)
                              BookmarksSearchParams::Status status) {
       if (status != BookmarksSearchParams::Status::Completed)
         return;
-      promise.set_value(results);
+      idsPromise.set_value(results);
     };
     params.m_groupId = groupId;
 
     m_api.SearchInBookmarks(params);
 
-    auto const ids = future.get();
+    auto const ids = idsFuture.get();
     TEST_EQUAL(ids, expected, ());
   };
 

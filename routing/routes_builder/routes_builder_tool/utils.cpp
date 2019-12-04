@@ -19,7 +19,6 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
-#include <fstream>
 #include <future>
 #include <iostream>
 #include <thread>
@@ -53,7 +52,9 @@ void BuildRoutes(std::string const & routesPath,
                  std::string const & dumpPath,
                  uint64_t startFrom,
                  uint64_t threadsNumber,
-                 uint32_t timeoutPerRouteSeconds)
+                 uint32_t timeoutPerRouteSeconds,
+                 bool verbose,
+                 uint32_t launchesNumber)
 {
   CHECK(Platform::IsFileExistsByFullPath(routesPath), ("Can not find file:", routesPath));
   CHECK(!dumpPath.empty(), ("Empty dumpPath."));
@@ -76,8 +77,9 @@ void BuildRoutes(std::string const & routesPath,
     RoutesBuilder::Params params;
     params.m_type = VehicleType::Car;
     params.m_timeoutSeconds = timeoutPerRouteSeconds;
+    params.m_launchesNumber = launchesNumber;
 
-    base::ScopedLogLevelChanger changer(base::LogLevel::LERROR);
+    base::ScopedLogLevelChanger changer(verbose ? base::LogLevel::LINFO : base::LogLevel::LERROR);
     ms::LatLon start;
     ms::LatLon finish;
     size_t startFromCopy = startFrom;
@@ -97,6 +99,7 @@ void BuildRoutes(std::string const & routesPath,
     }
 
     LOG_FORCE(LINFO, ("Created:", tasks.size(), "tasks"));
+    base::Timer timer;
     for (size_t i = 0; i < tasks.size(); ++i)
     {
       size_t shiftIndex = i + startFrom;
@@ -121,6 +124,7 @@ void BuildRoutes(std::string const & routesPath,
         LOG_FORCE(LINFO, ("Progress:", lastPercent, "%"));
       }
     }
+    LOG_FORCE(LINFO, ("BuildRoutes() took:", timer.ElapsedSeconds(), "seconds."));
   }
 }
 

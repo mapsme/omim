@@ -6,6 +6,7 @@
 #include "geometry/rect2d.hpp"
 
 #include "base/assert.hpp"
+
 #include <algorithm>
 #include <cmath>
 #include <fstream>
@@ -90,12 +91,6 @@ bool HierarchyPlace::Contains(m2::PointD const & point) const
   return boost::geometry::covered_by(point, m_polygon);
 }
 
-bool HierarchyPlace::IsEqualGeometry(HierarchyPlace const & other) const
-{
-  return IsPoint() ? boost::geometry::equals(m_center, other.m_center)
-                   : boost::geometry::equals(m_polygon, other.m_polygon);
-}
-
 HierarchyLinker::HierarchyLinker(Node::Ptrs && nodes)
   : m_nodes(std::move(nodes)), m_tree(MakeTree4d(m_nodes))
 {
@@ -115,20 +110,23 @@ HierarchyLinker::Node::Ptr HierarchyLinker::FindPlaceParent(HierarchyPlace const
   Node::Ptr parent = nullptr;
   auto minArea = std::numeric_limits<double>::max();
   auto const point = place.GetCenter();
-  m_tree.ForEachInRect({point, point}, [&](auto const & candidatePtr) {
-    auto const & candidate = candidatePtr->GetData();
+  m_tree.ForEachInRect({point, point}, [&](auto const & candidateNode) {
+    auto const & candidate = candidateNode->GetData();
     if (place.GetCompositeId() == candidate.GetCompositeId())
       return;
-    // Sometimes there can be two places with the same geometry. We must compare their ids
-    // to avoid cyclic connections.
-    if (place.IsEqualGeometry(candidate))
+    if (candidate.GetArea() < minArea && candidate.Contains(place))
     {
-      if (place.GetCompositeId() < candidate.GetCompositeId())
-        parent = candidatePtr;
-    }
-    else if (candidate.GetArea() < minArea && candidate.Contains(place))
-    {
-      parent = candidatePtr;
+      // Sometimes there can be two places with the same geometry. We must check place node and
+      // its parents to avoid cyclic connections.
+      auto node = candidateNode;
+      while (node->HasParent())
+      {
+        node = node->GetParent();
+        if (node->GetData().GetCompositeId() == place.GetCompositeId())
+          return;
+      }
+
+      parent = candidateNode;
       minArea = candidate.GetArea();
     }
   });
@@ -195,12 +193,36 @@ HierarchyLineEnricher::HierarchyLineEnricher(std::string const & osm2FtIdsPath,
 
 boost::optional<m2::PointD> HierarchyLineEnricher::GetFeatureCenter(CompositeId const & id) const
 {
-  auto const optId = m_osm2FtIds.GetFeatureId(id);
-  if (!optId)
+  auto const optIds = m_osm2FtIds.GetFeatureIds(id);
+  if (optIds.empty())
     return {};
 
-  auto const ftPtr = m_featureGetter.GetFeatureByIndex(*optId);
-  return ftPtr ? feature::GetCenter(*ftPtr) : boost::optional<m2::PointD>();
+  // A CompositeId id may correspond to several feature ids. These features can be represented by
+  // three types of geometry. Logically, their centers coincide, but in practice they don’t,
+  // because the centers are calculated differently. For example, for an object with a type area,
+  // the area will be computed using the triangles geometry, but for an object with a type line,
+  // the area will be computed using the outer geometry of a polygon.
+  std::unordered_map<std::underlying_type_t<feature::GeomType>, m2::PointD> m;
+  for (auto optId : optIds)
+  {
+    auto const ftPtr = m_featureGetter.GetFeatureByIndex(optId);
+    if (!ftPtr)
+      continue;
+
+    CHECK(m.emplace(base::Underlying(ftPtr->GetGeomType()), feature::GetCenter(*ftPtr)).second,
+          (id, optIds));
+  }
+
+  for (auto type : {
+       base::Underlying(feature::GeomType::Point),
+       base::Underlying(feature::GeomType::Area),
+       base::Underlying(feature::GeomType::Line)})
+  {
+    if (m.count(type) != 0)
+        return m[type];
+  }
+
+  return {};
 }
 
 HierarchyLinesBuilder::HierarchyLinesBuilder(HierarchyBuilder::Node::Ptrs && nodes)

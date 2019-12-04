@@ -11,10 +11,14 @@ using namespace feature;
 
 namespace generator
 {
-FeatureMakerBase::FeatureMakerBase(std::shared_ptr<cache::IntermediateDataReader> const & cache)
-  : m_cache(cache) {}
+FeatureMakerBase::FeatureMakerBase(
+    std::shared_ptr<cache::IntermediateDataReaderInterface> const & cache)
+  : m_cache(cache)
+{
+}
 
-void FeatureMakerBase::SetCache(std::shared_ptr<cache::IntermediateDataReader> const & cache)
+void FeatureMakerBase::SetCache(
+    std::shared_ptr<cache::IntermediateDataReaderInterface> const & cache)
 {
   m_cache = cache;
 }
@@ -58,9 +62,11 @@ bool FeatureMakerBase::GetNextFeature(FeatureBuilder & feature)
   return true;
 }
 
-void TransformAreaToPoint(FeatureBuilder & feature)
+void TransformToPoint(FeatureBuilder & feature)
 {
-  CHECK(feature.IsArea(), ());
+  if (!feature.IsArea() && !feature.IsLine())
+    return;
+
   auto const center = feature.GetGeometryCenter();
   feature.ResetGeometry();
   feature.SetCenter(center);
@@ -69,23 +75,26 @@ void TransformAreaToPoint(FeatureBuilder & feature)
     params.SetGeomTypePointEx();
 }
 
-void TransformAreaToLine(FeatureBuilder & feature)
+void TransformToLine(FeatureBuilder & feature)
 {
-  CHECK(feature.IsArea(), ());
+  if (feature.IsLine())
+    return;
+
+  CHECK(feature.IsArea(), (feature));
   feature.SetLinear(feature.GetParams().m_reverseGeometry);
 }
 
-FeatureBuilder MakePointFromArea(FeatureBuilder const & feature)
+FeatureBuilder MakePoint(FeatureBuilder const & feature)
 {
   FeatureBuilder tmp(feature);
-  TransformAreaToPoint(tmp);
+  TransformToPoint(tmp);
   return tmp;
 }
 
-FeatureBuilder MakeLineFromArea(FeatureBuilder const & feature)
+FeatureBuilder MakeLine(FeatureBuilder const & feature)
 {
   FeatureBuilder tmp(feature);
-  TransformAreaToLine(tmp);
+  TransformToLine(tmp);
   return tmp;
 }
 }  // namespace generator

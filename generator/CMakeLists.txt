@@ -38,6 +38,8 @@ set(
   coastlines_generator.cpp
   coastlines_generator.hpp
   collection_base.hpp
+  collector_boundary_postcode.cpp
+  collector_boundary_postcode.hpp
   collector_camera.cpp
   collector_camera.hpp
   collector_city_area.cpp
@@ -142,6 +144,8 @@ set(
   platform_helpers.hpp
   popular_places_section_builder.cpp
   popular_places_section_builder.hpp
+  postcodes_section_builder.cpp
+  postcodes_section_builder.hpp
   processor_booking.hpp
   processor_coastline.cpp
   processor_coastline.hpp

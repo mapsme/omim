@@ -17,7 +17,8 @@ namespace routing
 using namespace std;
 using namespace traffic;
 
-void FillSegmentInfo(vector<Segment> const & segments, vector<Junction> const & junctions,
+void FillSegmentInfo(vector<Segment> const & segments,
+                     vector<geometry::PointWithAltitude> const & junctions,
                      Route::TTurns const & turns, Route::TStreets const & streets,
                      Route::TTimes const & times, shared_ptr<TrafficStash> const & trafficStash,
                      vector<RouteSegment> & routeSegment)
@@ -98,8 +99,9 @@ void FillSegmentInfo(vector<Segment> const & segments, vector<Junction> const & 
 
 void ReconstructRoute(IDirectionsEngine & engine, IndexRoadGraph const & graph,
                       shared_ptr<TrafficStash> const & trafficStash,
-                      base::Cancellable const & cancellable, vector<Junction> const & path,
-                      Route::TTimes && times, Route & route)
+                      base::Cancellable const & cancellable,
+                      vector<geometry::PointWithAltitude> const & path, Route::TTimes && times,
+                      Route & route)
 {
   if (path.empty())
   {
@@ -110,7 +112,7 @@ void ReconstructRoute(IDirectionsEngine & engine, IndexRoadGraph const & graph,
   CHECK_EQUAL(path.size(), times.size(), ());
 
   Route::TTurns turnsDir;
-  vector<Junction> junctions;
+  vector<geometry::PointWithAltitude> junctions;
   Route::TStreets streetNames;
   vector<Segment> segments;
 
@@ -180,7 +182,7 @@ bool SegmentCrossesRect(m2::Segment2D const & segment, m2::RectD const & rect)
   return isSideIntersected;
 }
 
-bool RectCoversPolyline(IRoadGraph::JunctionVec const & junctions, m2::RectD const & rect)
+bool RectCoversPolyline(IRoadGraph::PointWithAltitudeVec const & junctions, m2::RectD const & rect)
 {
   if (junctions.empty())
     return false;
@@ -204,5 +206,25 @@ bool RectCoversPolyline(IRoadGraph::JunctionVec const & junctions, m2::RectD con
   }
 
   return false;
+}
+
+// AStarLengthChecker ------------------------------------------------------------------------------
+
+AStarLengthChecker::AStarLengthChecker(IndexGraphStarter & starter) : m_starter(starter) {}
+
+bool AStarLengthChecker::operator()(RouteWeight const & weight) const
+{
+  return m_starter.CheckLength(weight);
+}
+
+// AdjustLengthChecker -----------------------------------------------------------------------------
+
+AdjustLengthChecker::AdjustLengthChecker(IndexGraphStarter & starter) : m_starter(starter) {}
+
+bool AdjustLengthChecker::operator()(RouteWeight const & weight) const
+{
+  // Limit of adjust in seconds.
+  double constexpr kAdjustLimitSec = 5 * 60;
+  return weight <= RouteWeight(kAdjustLimitSec) && m_starter.CheckLength(weight);
 }
 }  // namespace routing

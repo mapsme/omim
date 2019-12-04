@@ -29,6 +29,7 @@
 #define SEARCH_INDEX_FILE_TAG "sdx"
 #define SEARCH_ADDRESS_FILE_TAG "addr"
 #define POSTCODE_POINTS_FILE_TAG "postcode_points"
+#define POSTCODES_FILE_TAG "postcodes"
 #define CITIES_BOUNDARIES_FILE_TAG "cities_boundaries"
 #define FEATURE_TO_OSM_FILE_TAG "feature_to_osm"
 #define HEADER_FILE_TAG "header"
@@ -47,8 +48,6 @@
 #define REGION_INFO_FILE_TAG "rgninfo"
 #define METALINES_FILE_TAG "metalines"
 #define CAMERAS_INFO_FILE_TAG "speedcams"
-// Temporary addresses section that is used in search index generation.
-#define SEARCH_TOKENS_FILE_TAG "addrtags"
 #define TRAFFIC_KEYS_FILE_TAG "traffic"
 #define TRANSIT_CROSS_MWM_FILE_TAG "transit_cross_mwm"
 #define TRANSIT_FILE_TAG "transit"
@@ -100,10 +99,12 @@
 #define CAMERAS_TO_WAYS_FILENAME "cameras_to_ways.bin"
 #define MINI_ROUNDABOUTS_FILENAME "mini_roundabouts.bin"
 #define MAXSPEEDS_FILENAME "maxspeeds.csv"
+#define BOUNDARY_POSTCODE_TMP_FILENAME "boundary_postcode" DATA_FILE_EXTENSION_TMP
 #define CITIES_AREAS_TMP_FILENAME "cities_areas" DATA_FILE_EXTENSION_TMP
 #define ROUTING_CITY_BOUNDARIES_TMP_FILENAME "routing_city_boundaries" DATA_FILE_EXTENSION_TMP
 #define ROUTING_CITY_BOUNDARIES_DUMP_FILENAME "routing_city_boundaries.bin"
 #define CROSS_MWM_OSM_WAYS_DIR "cross_mwm_osm_ways"
+#define TEMP_ADDR_FILENAME "tempaddr"
 
 #define TRAFFIC_FILE_EXTENSION ".traffic"
 

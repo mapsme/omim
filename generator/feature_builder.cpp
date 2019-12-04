@@ -88,8 +88,6 @@ bool FeatureBuilder::IsGeometryClosed() const
 
 m2::PointD FeatureBuilder::GetGeometryCenter() const
 {
-  //TODO(vng): Check requirements in this assert
-  //ASSERT ( IsGeometryClosed(), () );
   m2::PointD ret(0.0, 0.0);
 
   PointSeq const & poly = GetOuterGeometry();
@@ -136,8 +134,6 @@ void FeatureBuilder::AddStreet(string const & streetName) { m_params.AddStreet(s
 void FeatureBuilder::AddPostcode(string const & postcode)
 {
   m_params.AddPostcode(postcode);
-  // todo @t.yan: remove when we stop to add postcodes to metadata
-  m_params.GetMetadata().Set(Metadata::FMD_POSTCODE, postcode);
 }
 
 void FeatureBuilder::AddPoint(m2::PointD const & p)
@@ -218,7 +214,7 @@ bool FeatureBuilder::RemoveInvalidTypes()
 
 TypesHolder FeatureBuilder::GetTypesHolder() const
 {
-  Check(*this);
+  CHECK(IsValid(), (*this));
 
   TypesHolder holder(m_params.GetGeomType());
   for (auto const t : m_params.m_types)
@@ -380,7 +376,7 @@ void FeatureBuilder::SerializeBase(Buffer & data, serial::GeometryCodingParams c
 
 void FeatureBuilder::SerializeForIntermediate(Buffer & data) const
 {
-  Check(*this);
+  CHECK(IsValid(), (*this));
 
   data.clear();
 
@@ -471,12 +467,13 @@ void FeatureBuilder::DeserializeFromIntermediate(Buffer & data)
 
   rw::ReadVectorOfPOD(source, m_osmIds);
 
-  Check(*this);
+  CHECK(IsValid(), (*this));
 }
 
 void FeatureBuilder::SerializeAccuratelyForIntermediate(Buffer & data) const
 {
-  Check(*this);
+  CHECK(IsValid(), (*this));
+
   data.clear();
   PushBackByteSink<Buffer> sink(data);
   m_params.Write(sink, true /* store additional info from FeatureParams */);
@@ -531,7 +528,8 @@ void FeatureBuilder::DeserializeAccuratelyFromIntermediate(Buffer & data)
   }
 
   rw::ReadVectorOfPOD(source, m_osmIds);
-  Check(*this);
+
+  CHECK(IsValid(), (*this));
 }
 
 void FeatureBuilder::AddOsmId(base::GeoObjectId id) { m_osmIds.push_back(id); }
@@ -749,19 +747,24 @@ void FeatureBuilder::SerializeForMwm(SupportingData & data,
   }
 }
 
-// Functions
-void Check(FeatureBuilder const fb)
+bool FeatureBuilder::IsValid() const
 {
-  CHECK(fb.GetParams().CheckValid(), (fb));
+  if (!GetParams().IsValid())
+    return false;
 
-  if (fb.IsLine())
-    CHECK(fb.GetOuterGeometry().size() >= 2, (fb));
+  if (IsLine() && GetOuterGeometry().size() < 2)
+    return false;
 
-  if (fb.IsArea())
+  if (IsArea())
   {
-    for (auto const & points : fb.GetGeometry())
-      CHECK(points.size() >= 3, (fb));
+    for (auto const & points : GetGeometry())
+    {
+      if (points.size() < 3)
+        return false;
+    }
   }
+
+  return true;
 }
 
 string DebugPrint(FeatureBuilder const & fb)

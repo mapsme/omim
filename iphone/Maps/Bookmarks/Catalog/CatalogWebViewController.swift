@@ -4,8 +4,9 @@ struct CatalogCategoryInfo {
   var author: String?
   var productId: String?
   var imageUrl: String?
+  var subscriptionType: SubscriptionGroupType
 
-  init?(_ components: [String : String]) {
+  init?(_ components: [String : String], type: SubscriptionGroupType) {
     guard let id = components["id"],
       let name = components["name"] else { return nil }
     self.id = id
@@ -13,6 +14,7 @@ struct CatalogCategoryInfo {
     author = components["author_name"]
     productId = components["tier"]
     imageUrl = components["img"]
+    subscriptionType = type
   }
 }
 
@@ -166,7 +168,7 @@ final class CatalogWebViewController: WebViewController {
     }
 
     if url.path.contains(subscribePath) {
-      showSubscribe(type: .sightseeing)
+      showSubscribe(type: SubscriptionGroupType(catalogURL: url))
       decisionHandler(.cancel);
       return
     }
@@ -202,26 +204,15 @@ final class CatalogWebViewController: WebViewController {
                         withParameters: [kStatError : kStatUnknown])
   }
 
-  private func showSubscribe(type: SubscriptionScreenType) {
-    let subscribeViewController: BaseSubscriptionViewController
-    switch type {
-    case .allPass:
-      subscribeViewController = AllPassSubscriptionViewController()
-    case .sightseeing:
-      subscribeViewController = BookmarksSubscriptionViewController()
+  private func showSubscribe(type: SubscriptionGroupType) {
+    let subscribeViewController = SubscriptionViewBuilder.build(type: type,
+                                                                parentViewController: self,
+                                                                source: kStatWebView,
+                                                                openCatalog: false) { [weak self] (success) in
+                                                                  if (success) {
+                                                                    self?.webView.reloadFromOrigin()
+                                                                  }
     }
-    subscribeViewController.onSubscribe = { [weak self] in
-      self?.webView.reloadFromOrigin()
-      self?.dismiss(animated: true)
-      let successDialog = SubscriptionSuccessViewController(type) { [weak self] in
-        self?.dismiss(animated: true)
-      }
-      self?.present(successDialog, animated: true)
-    }
-    subscribeViewController.onCancel = { [weak self] in
-      self?.dismiss(animated: true)
-    }
-
     present(subscribeViewController, animated: true)
   }
 
@@ -286,7 +277,7 @@ final class CatalogWebViewController: WebViewController {
     guard let components = urlComponents.queryItems?.reduce(into: [:], { $0[$1.name] = $1.value })
       else { return nil }
 
-    return CatalogCategoryInfo(components)
+    return CatalogCategoryInfo(components, type: SubscriptionGroupType(catalogURL: url))
   }
 
   func processDeeplink(_ url: URL) {
@@ -379,6 +370,7 @@ final class CatalogWebViewController: WebViewController {
     let paymentVC = PaidRouteViewController(name: productInfo.name,
                                             author: productInfo.author,
                                             imageUrl: URL(string: productInfo.imageUrl ?? ""),
+                                            subscriptionType: productInfo.subscriptionType,
                                             purchase: purchase,
                                             statistics: stats)
     paymentVC.delegate = self

@@ -12,7 +12,8 @@
 enum class SubscriptionType : uint8_t
 {
   RemoveAds = 0,
-  BookmarkCatalog,
+  BookmarksAll,
+  BookmarksSights,
 
   Count
 };

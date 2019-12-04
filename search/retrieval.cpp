@@ -1,4 +1,4 @@
-#include "retrieval.hpp"
+#include "search/retrieval.hpp"
 
 #include "search/cancel_exception.hpp"
 #include "search/feature_offset_match.hpp"
@@ -59,15 +59,25 @@ public:
   {
     if ((++m_counter & 0xFF) == 0)
       BailIfCancelled(m_cancellable);
+
     m_features.emplace_back(value.m_featureId);
     if (exactMatch)
       m_exactlyMatchedFeatures.emplace_back(value.m_featureId);
   }
 
-  void operator()(uint32_t feature) { m_features.emplace_back(feature); }
+  void operator()(uint32_t feature)
+  {
+    if ((++m_counter & 0xFF) == 0)
+      BailIfCancelled(m_cancellable);
+
+    m_features.emplace_back(feature);
+  }
 
   void operator()(uint64_t feature, bool exactMatch)
   {
+    if ((++m_counter & 0xFF) == 0)
+      BailIfCancelled(m_cancellable);
+
     m_features.emplace_back(feature);
     if (exactMatch)
       m_exactlyMatchedFeatures.emplace_back(feature);
@@ -215,7 +225,7 @@ pair<bool, bool> MatchFeatureByNameAndType(EditableMapObject const & emo,
 
 bool MatchFeatureByPostcode(EditableMapObject const & emo, TokenSlice const & slice)
 {
-  string const postcode = emo.GetMetadata().Get(feature::Metadata::FMD_POSTCODE);
+  string const postcode = emo.GetPostcode();
   vector<UniString> tokens;
   NormalizeAndTokenizeString(postcode, tokens, Delimiters());
   if (slice.Size() > tokens.size())

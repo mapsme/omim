@@ -25,6 +25,7 @@
 #include "platform/country_file.hpp"
 
 #include "geometry/point2d.hpp"
+#include "geometry/point_with_altitude.hpp"
 #include "geometry/rect2d.hpp"
 #include "geometry/tree4d.hpp"
 
@@ -95,11 +96,26 @@ public:
   VehicleType GetVehicleType() const { return m_vehicleType; }
 
 private:
+  RouterResultCode CalculateSubrouteJointsMode(IndexGraphStarter & starter,
+                                               RouterDelegate const & delegate,
+                                               std::shared_ptr<AStarProgress> const & progress,
+                                               std::vector<Segment> & subroute);
+  RouterResultCode CalculateSubrouteNoLeapsMode(IndexGraphStarter & starter,
+                                                RouterDelegate const & delegate,
+                                                std::shared_ptr<AStarProgress> const & progress,
+                                                std::vector<Segment> & subroute);
+  RouterResultCode CalculateSubrouteLeapsOnlyMode(Checkpoints const & checkpoints,
+                                                  size_t subrouteIdx, IndexGraphStarter & starter,
+                                                  RouterDelegate const & delegate,
+                                                  std::shared_ptr<AStarProgress> const & progress,
+                                                  std::vector<Segment> & subroute);
+
   RouterResultCode DoCalculateRoute(Checkpoints const & checkpoints,
                                     m2::PointD const & startDirection,
                                     RouterDelegate const & delegate, Route & route);
   RouterResultCode CalculateSubroute(Checkpoints const & checkpoints, size_t subrouteIdx,
-                                     RouterDelegate const & delegate, AStarProgress & progress,
+                                     RouterDelegate const & delegate,
+                                     std::shared_ptr<AStarProgress> const & progress,
                                      IndexGraphStarter & graph, std::vector<Segment> & subroute);
 
   RouterResultCode AdjustRoute(Checkpoints const & checkpoints,
@@ -115,21 +131,23 @@ private:
 
   /// \returns true if a segment (|point|, |edgeProjection.second|) crosses one of segments
   /// in |fences| except for a one which has the same geometry with |edgeProjection.first|.
-  bool IsFencedOff(m2::PointD const & point, std::pair<Edge, Junction> const & edgeProjection,
+  bool IsFencedOff(m2::PointD const & point,
+                   std::pair<Edge, geometry::PointWithAltitude> const & edgeProjection,
                    std::vector<IRoadGraph::FullRoadInfo> const & fences) const;
 
-  void RoadsToNearestEdges(m2::PointD const & point,
-                           std::vector<IRoadGraph::FullRoadInfo> const & roads,
-                           IsEdgeProjGood const & isGood,
-                           std::vector<std::pair<Edge, Junction>> & edgeProj) const;
+  void RoadsToNearestEdges(
+      m2::PointD const & point, std::vector<IRoadGraph::FullRoadInfo> const & roads,
+      IsEdgeProjGood const & isGood,
+      std::vector<std::pair<Edge, geometry::PointWithAltitude>> & edgeProj) const;
 
   Segment GetSegmentByEdge(Edge const & edge) const;
 
   /// \brief Fills |closestCodirectionalEdge| with a codirectional edge which is closet to
   /// |point| and returns true if there's any. If not returns false.
-  bool FindClosestCodirectionalEdge(m2::PointD const & point, m2::PointD const & direction,
-                                    std::vector<std::pair<Edge, Junction>> const & candidates,
-                                    Edge & closestCodirectionalEdge) const;
+  bool FindClosestCodirectionalEdge(
+      m2::PointD const & point, m2::PointD const & direction,
+      std::vector<std::pair<Edge, geometry::PointWithAltitude>> const & candidates,
+      Edge & closestCodirectionalEdge) const;
 
   /// \brief Finds the best segments (edges) which may be considered as starts or finishes
   /// of the route. According to current implementation the closest to |point| segment which
@@ -150,7 +168,8 @@ private:
   // ProcessLeaps replaces each leap with calculated route through mwm.
   RouterResultCode ProcessLeapsJoints(std::vector<Segment> const & input,
                                       RouterDelegate const & delegate, WorldGraphMode prevMode,
-                                      IndexGraphStarter & starter, AStarProgress & progress,
+                                      IndexGraphStarter & starter,
+                                      std::shared_ptr<AStarProgress> const & progress,
                                       std::vector<Segment> & output);
   RouterResultCode RedressRoute(std::vector<Segment> const & segments,
                                 base::Cancellable const & cancellable, IndexGraphStarter & starter,
@@ -179,9 +198,9 @@ private:
     UNREACHABLE();
   }
 
-  template <typename Vertex, typename Edge, typename Weight>
+  template <typename Vertex, typename Edge, typename Weight, typename AStarParams>
   RouterResultCode FindPath(
-      typename AStarAlgorithm<Vertex, Edge, Weight>::Params & params, std::set<NumMwmId> const & mwmIds,
+      AStarParams & params, std::set<NumMwmId> const & mwmIds,
       RoutingResult<Vertex, Weight> & routingResult, WorldGraphMode mode) const
   {
     AStarAlgorithm<Vertex, Edge, Weight> algorithm;
@@ -193,6 +212,8 @@ private:
     return ConvertTransitResult(
         mwmIds, ConvertResult<Vertex, Edge, Weight>(algorithm.FindPathBidirectional(params, routingResult)));
   }
+
+  void SetupAlgorithmMode(IndexGraphStarter & starter);
 
   VehicleType m_vehicleType;
   bool m_loadAltitudes;

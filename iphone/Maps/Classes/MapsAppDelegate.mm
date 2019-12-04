@@ -252,6 +252,11 @@ using namespace osm_auth_ios;
         [MWMPurchaseManager setBookmarksSubscriptionActive:NO];
       }
     }];
+    [[InAppPurchase allPassSubscriptionManager] validateWithCompletion:^(MWMValidationResult result) {
+      if (result == MWMValidationResultNotValid) {
+        [MWMPurchaseManager setAllPassSubscriptionActive:NO];
+      }
+    }];
     [[InAppPurchase adsRemovalSubscriptionManager] validateWithCompletion:^(MWMValidationResult result) {
       [MWMPurchaseManager setAdsDisabled:result != MWMValidationResultNotValid];
     }];
@@ -826,7 +831,8 @@ continueUserActivity:(NSUserActivity *)userActivity
     NSURL *deeplinkUrl = [NSURL URLWithString:deeplink];
     if (deeplinkUrl != nil) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        [[DeepLinkHandler shared] applicationDidReceiveUniversalLink:deeplinkUrl];
+        [[DeepLinkHandler shared] applicationDidReceiveUniversalLink: deeplinkUrl
+                                                            provider: DeepLinkProviderAppsflyer];
       });
     }
   }
