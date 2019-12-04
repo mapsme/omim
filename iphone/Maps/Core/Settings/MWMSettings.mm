@@ -14,6 +14,7 @@ char const * kZoomButtonsEnabledKey = "ZoomButtonsEnabled";
 char const * kCompassCalibrationEnabledKey = "CompassCalibrationEnabled";
 char const * kRoutingDisclaimerApprovedKey = "IsDisclaimerApproved";
 char const * kStatisticsEnabledSettingsKey = "StatisticsEnabled";
+char const * kWunderLINQEnabledKey = "WunderLINQEnabled";
 
 // TODO(igrechuhin): Remove outdated kUDAutoNightModeOff
 NSString * const kUDAutoNightModeOff = @"AutoNightModeOff";
@@ -73,6 +74,18 @@ NSString * const kCrashReportingDisabled = @"CrashReportingDisabled";
 {
   settings::Set(kZoomButtonsEnabledKey, static_cast<bool>(zoomButtonsEnabled));
   [MWMMapViewControlsManager manager].zoomHidden = !zoomButtonsEnabled;
+}
+
++ (BOOL)isWunderLINQEnabled
+{
+  bool enabled = false;
+  UNUSED_VALUE(settings::Get(kWunderLINQEnabledKey, enabled));
+  return enabled;
+}
+
++ (void)setWunderLINQEnabled:(BOOL)wunderLINQEnabled
+{
+  settings::Set(kWunderLINQEnabledKey, static_cast<bool>(wunderLINQEnabled));
 }
 
 + (BOOL)compassCalibrationEnabled

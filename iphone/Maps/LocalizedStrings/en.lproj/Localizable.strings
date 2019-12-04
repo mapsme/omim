@@ -549,6 +549,10 @@
 
 "pref_track_ios_subcaption" = "Please select the time range of saving the track.";
 
+"prefs_group_accessibility" = "Accessibility";
+
+"pref_wunderlinq_title" = "WunderLINQ Support";
+
 "placepage_distance" = "Distance";
 
 "placepage_coordinates" = "Coordinates";

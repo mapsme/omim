@@ -835,4 +835,37 @@ NSString * const kHotelFacilitiesSegue = @"Map2FacilitiesSegue";
   self.carplayPlaceholderLogo.hidden = NO;
 }
 
+- (BOOL)canBecomeFirstResponder {                                                                                                                       
+    return YES;                                                                                                                                           
+  }                                                                                                                                                       
+                                                                                                                                                          
+- (NSArray *)keyCommands {                                                                                                                              
+   return @[[UIKeyCommand keyCommandWithInput:UIKeyInputDownArrow modifierFlags:0 action:@selector(zoomOut) discoverabilityTitle:@"Zoom Out"],           
+            [UIKeyCommand keyCommandWithInput:UIKeyInputUpArrow modifierFlags:0 action:@selector(zoomIn) discoverabilityTitle:@"Zoom In"],               
+            [UIKeyCommand keyCommandWithInput:UIKeyInputEscape modifierFlags:0 action:@selector(goBack) discoverabilityTitle:@"Go Back"]];               
+}                                                                                                                                                       
+                                                                                                                                                          
+- (void)zoomOut {                                                                                                                                       
+   [Statistics logEvent:kStatEventName(kStatZoom, kStatOut)];                                                                                            
+   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"-"];                                                                                        
+   GetFramework().Scale(Framework::SCALE_MIN, true);                                                                                                     
+}                                                                                                                                                       
+                                                                                                                                                          
+- (void)zoomIn {                                                                                                                                        
+   [Statistics logEvent:kStatEventName(kStatZoom, kStatIn)];                                                                                             
+   [Alohalytics logEvent:kAlohalyticsTapEventKey withValue:@"+"];                                                                                        
+   GetFramework().Scale(Framework::SCALE_MAG, true);                                                                                                     
+}                                                                                                                                                       
+                                                                                                                                                          
+- (void)goBack {
+   if ([MWMSettings isWunderLINQEnabled]){
+     //Launch WunderLINQ
+     NSString *wunderlinqAppURL = @"wunderlinq://";
+     BOOL canOpenURL = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:wunderlinqAppURL]];
+     if ( canOpenURL ){
+       [[UIApplication sharedApplication] openURL:[NSURL URLWithString:wunderlinqAppURL] options:@{} completionHandler:nil];
+     }
+   }
+}
+
 @end

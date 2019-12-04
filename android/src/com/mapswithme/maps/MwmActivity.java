@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -2442,6 +2444,34 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                                 @NonNull IntroductionScreenFactory factory)
   {
     IntroductionDialogFragment.show(getSupportFragmentManager(), deepLink, factory);
+  }
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event)
+  {
+    switch (keyCode)
+    {
+      case KeyEvent.KEYCODE_DPAD_DOWN:
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_OUT);
+        MapFragment.nativeScaleMinus();
+        return true;
+      case KeyEvent.KEYCODE_DPAD_UP:
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_IN);
+        MapFragment.nativeScalePlus();
+        return true;
+      case KeyEvent.KEYCODE_ESCAPE:
+        if (MwmApplication.get().backUrl() != null)
+        {
+          String backUrl = MwmApplication.get().backUrl();
+          //Utils.openUrl(this,backUrl);
+          Intent intent = new Intent(Intent.ACTION_VIEW);
+          intent.setData(Uri.parse(backUrl));
+          startActivity(intent);
+        }
+        return true;
+      default:
+        return super.onKeyUp(keyCode, event);
+    }
   }
 
   private class CurrentPositionClickListener implements OnClickListener

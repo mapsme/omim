@@ -483,6 +483,7 @@ static NSString * const kStatTracks = @"tracks";
 static NSString * const kStatTraffic = @"Traffic";
 static NSString * const kStatType = @"type";
 static NSString * const kStatTypes = @"types";
+static NSString * const kStatToggleWunderLINQSupport = @"Toggle WunderLINQ Support";
 static NSString * const kStatUGCReviewAuthDeclined = @"UGC_Auth_declined";
 static NSString * const kStatUGCReviewAuthError = @"UGC_Auth_error";
 static NSString * const kStatUGCReviewAuthExternalRequestSuccess =

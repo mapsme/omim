@@ -12,6 +12,9 @@
 + (BOOL)zoomButtonsEnabled;
 + (void)setZoomButtonsEnabled:(BOOL)zoomButtonsEnabled;
 
++ (BOOL)isWunderLINQEnabled;
++ (void)setWunderLINQEnabled:(BOOL)wunderLINQEnabled;
+
 + (BOOL)compassCalibrationEnabled;
 + (void)setCompassCalibrationEnabled:(BOOL)compassCalibrationEnabled;
 
