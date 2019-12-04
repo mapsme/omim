@@ -296,6 +296,7 @@ public final class Config
     nativeSetTransliteration(value);
   }
 
+
   private static native boolean nativeGetBoolean(String name, boolean defaultValue);
   private static native void nativeSetBoolean(String name, boolean value);
   private static native int nativeGetInt(String name, int defaultValue);

@@ -2750,5 +2750,4 @@ public class MwmActivity extends BaseMwmFragmentActivity
                               : UiUtils.getStatusBarHeight(getApplicationContext()));
     }
   }
-
 }
