@@ -26,8 +26,8 @@ public:
   // outgoing edges, fills segment to vertex mapping. Fills real to fake and fake to real
   // mapping if isPartOfReal is true.
   void AddVertex(SegmentType const & existentSegment, SegmentType const & newSegment,
-                 VertexType const & newVertex, bool isOutgoing, bool isPartOfReal,
-                 SegmentType const & real)
+                 VertexType const & newVertex, bool isOutgoing, bool isPartOfReal = false,
+                 SegmentType const & real = SegmentType())
   {
     AddStandaloneVertex(newSegment, newVertex);
     auto const & segmentFrom = isOutgoing ? existentSegment : newSegment;

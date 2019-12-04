@@ -36,7 +36,7 @@ ConstructFakeGraph(uint32_t numerationStart, uint32_t numFake, uint32_t numReal)
   for (uint32_t prevNumber = numerationStart; prevNumber + 1 < numerationStart + numFake + numReal;
        ++prevNumber)
   {
-    bool const newIsReal = prevNumber + 1 < numerationStart + numFake ? false : true;
+    bool const newIsReal = prevNumber + 1 < numerationStart + numFake;
     int32_t const prevSegment = prevNumber;
     int32_t const newSegment = prevNumber + 1;
     auto const newVertex = m2::PointD(prevNumber + 1, prevNumber + 1);
