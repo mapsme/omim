@@ -16,6 +16,7 @@
 
 #include "routing_common/num_mwm_id.hpp"
 
+#include "geometry/latlon.hpp"
 #include "geometry/point_with_altitude.hpp"
 
 #include <cstddef>
@@ -135,6 +136,11 @@ public:
   // @}
 
   RouteWeight HeuristicCostEstimate(Vertex const & from, m2::PointD const & to) const
+  {
+    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */), to);
+  }
+
+  RouteWeight HeuristicCostEstimate(Vertex const & from, ms::LatLon const & to) const
   {
     return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */), to);
   }

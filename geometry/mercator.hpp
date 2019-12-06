@@ -72,6 +72,8 @@ m2::RectD ToLatLonRect(m2::RectD const & mercatorRect);
 
 /// Calculates distance on Earth in meters between two mercator points.
 double DistanceOnEarth(m2::PointD const & p1, m2::PointD const & p2);
+double DistanceOnEarth(m2::PointD const & p1, ms::LatLon const & p2);
+double DistanceOnEarth(ms::LatLon const & p1, m2::PointD const & p2);
 
 /// Calculates area of a triangle on Earth in m² by three mercator points.
 double AreaOnEarth(m2::PointD const & p1, m2::PointD const & p2, m2::PointD const & p3);

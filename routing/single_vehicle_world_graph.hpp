@@ -59,9 +59,13 @@ public:
   RouteWeight HeuristicCostEstimate(Segment const & from, Segment const & to) override;
   RouteWeight HeuristicCostEstimate(m2::PointD const & from, m2::PointD const & to) override;
   RouteWeight HeuristicCostEstimate(Segment const & from, m2::PointD const & to) override;
+  RouteWeight HeuristicCostEstimate(m2::PointD const & from, ms::LatLon const & to) override;
 
   RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) override;
-  RouteWeight CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const override;
+
+  RouteWeight CalcLeapWeight(ms::LatLon const & from, m2::PointD const & to) const override;
+  RouteWeight CalcLeapWeight(m2::PointD const & from, ms::LatLon const & to) const override;
+
   RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to,
                                 EdgeEstimator::Purpose purpose) const override;
   double CalculateETA(Segment const & from, Segment const & to) override;

@@ -33,6 +33,24 @@ double TimeBetweenSec(m2::PointD const & from, m2::PointD const & to, double spe
   return distanceM / speedMpS;
 }
 
+double TimeBetweenSec(m2::PointD const & from, ms::LatLon const & to, double speedMpS)
+{
+  CHECK_GREATER(speedMpS, 0.0,
+                ("from:", mercator::ToLatLon(from), "to:", to));
+
+  double const distanceM = mercator::DistanceOnEarth(from, to);
+  return distanceM / speedMpS;
+}
+
+double TimeBetweenSec(ms::LatLon const & from, m2::PointD const & to, double speedMpS)
+{
+  CHECK_GREATER(speedMpS, 0.0,
+                ("from:", from, "to:", mercator::ToLatLon(to)));
+
+  double const distanceM = mercator::DistanceOnEarth(from, to);
+  return distanceM / speedMpS;
+}
+
 double CalcTrafficFactor(SpeedGroup speedGroup)
 {
   if (speedGroup == SpeedGroup::TempBlock)
@@ -119,7 +137,21 @@ double EdgeEstimator::CalcHeuristic(m2::PointD const & from, m2::PointD const & 
   return TimeBetweenSec(from, to, m_maxWeightSpeedMpS);
 }
 
-double EdgeEstimator::CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const
+double EdgeEstimator::CalcHeuristic(m2::PointD const & from, ms::LatLon const & to) const
+{
+  return TimeBetweenSec(from, to, m_maxWeightSpeedMpS);
+}
+
+double EdgeEstimator::CalcLeapWeight(ms::LatLon const & from, m2::PointD const & to) const
+{
+  // Let us assume for the time being that
+  // leap edges will be added with a half of max speed.
+  // @TODO(bykoianko) It's necessary to gather statistics to calculate better factor(s) instead of
+  // one below.
+  return TimeBetweenSec(from, to, m_maxWeightSpeedMpS / 2.0);
+}
+
+double EdgeEstimator::CalcLeapWeight(m2::PointD const & from, ms::LatLon const & to) const
 {
   // Let us assume for the time being that
   // leap edges will be added with a half of max speed.

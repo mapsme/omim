@@ -162,6 +162,12 @@ RouteWeight SingleVehicleWorldGraph::HeuristicCostEstimate(m2::PointD const & fr
   return RouteWeight(m_estimator->CalcHeuristic(from, to));
 }
 
+RouteWeight SingleVehicleWorldGraph::HeuristicCostEstimate(m2::PointD const & from,
+                                                           ms::LatLon const & to)
+{
+  return RouteWeight(m_estimator->CalcHeuristic(from, to));
+}
+
 RouteWeight SingleVehicleWorldGraph::CalcSegmentWeight(Segment const & segment,
                                                        EdgeEstimator::Purpose purpose)
 {
@@ -169,8 +175,14 @@ RouteWeight SingleVehicleWorldGraph::CalcSegmentWeight(Segment const & segment,
       segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()), purpose));
 }
 
-RouteWeight SingleVehicleWorldGraph::CalcLeapWeight(m2::PointD const & from,
+RouteWeight SingleVehicleWorldGraph::CalcLeapWeight(ms::LatLon const & from,
                                                     m2::PointD const & to) const
+{
+  return RouteWeight(m_estimator->CalcLeapWeight(from, to));
+}
+
+RouteWeight SingleVehicleWorldGraph::CalcLeapWeight(m2::PointD const & from,
+                                                    ms::LatLon const & to) const
 {
   return RouteWeight(m_estimator->CalcLeapWeight(from, to));
 }

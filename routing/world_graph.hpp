@@ -13,6 +13,7 @@
 
 #include "routing_common/num_mwm_id.hpp"
 
+#include "geometry/latlon.hpp"
 #include "geometry/point2d.hpp"
 #include "geometry/point_with_altitude.hpp"
 
@@ -75,11 +76,13 @@ public:
   virtual RouteWeight HeuristicCostEstimate(Segment const & from, Segment const & to) = 0;
   virtual RouteWeight HeuristicCostEstimate(m2::PointD const & from, m2::PointD const & to) = 0;
   virtual RouteWeight HeuristicCostEstimate(Segment const & from, m2::PointD const & to) = 0;
+  virtual RouteWeight HeuristicCostEstimate(m2::PointD const & from, ms::LatLon const & to) = 0;
 
   virtual RouteWeight CalcSegmentWeight(Segment const & segment,
                                         EdgeEstimator::Purpose purpose) = 0;
 
-  virtual RouteWeight CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const = 0;
+  virtual RouteWeight CalcLeapWeight(ms::LatLon const & from, m2::PointD const & to) const = 0;
+  virtual RouteWeight CalcLeapWeight(m2::PointD const & from, ms::LatLon const & to) const = 0;
 
   virtual RouteWeight CalcOffroadWeight(m2::PointD const & from, m2::PointD const & to,
                                         EdgeEstimator::Purpose purpose) const = 0;

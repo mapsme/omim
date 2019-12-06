@@ -1,6 +1,6 @@
 #include "routing/leaps_graph.hpp"
 
-#include "routing_common/num_mwm_id.hpp"
+#include "geometry/mercator.hpp"
 
 #include "base/assert.hpp"
 
@@ -10,8 +10,10 @@ namespace routing
 {
 LeapsGraph::LeapsGraph(IndexGraphStarter & starter) : m_starter(starter)
 {
-  m_startPoint = m_starter.GetPoint(m_starter.GetStartSegment(), true /* front */);
-  m_finishPoint = m_starter.GetPoint(m_starter.GetFinishSegment(), true /* front */);
+  m_startPoint =
+      mercator::ToLatLon(m_starter.GetPoint(m_starter.GetStartSegment(), true /* front */));
+  m_finishPoint =
+      mercator::ToLatLon(m_starter.GetPoint(m_starter.GetFinishSegment(), true /* front */));
   m_startSegment = m_starter.GetStartSegment();
   m_finishSegment = m_starter.GetFinishSegment();
 }
@@ -30,7 +32,6 @@ void LeapsGraph::GetIngoingEdgesList(Segment const & segment,
 
 RouteWeight LeapsGraph::HeuristicCostEstimate(Segment const & from, Segment const & to)
 {
-  // Can not use two const & to m2::PointD at the same moment.
   ASSERT(to == m_startSegment || to == m_finishSegment, ());
   bool const toFinish = to == m_finishSegment;
   auto const & toPoint = toFinish ? m_finishPoint : m_startPoint;
@@ -76,9 +77,8 @@ void LeapsGraph::GetEdgesListFromStart(Segment const & segment, bool isOutgoing,
   {
     // Connect start to all exits (|isEnter| == false).
     auto const & exits = m_starter.GetGraph().GetTransitions(mwmId, false /* isEnter */);
-    for (uint32_t exitId = 0; exitId < static_cast<uint32_t>(exits.size()); ++exitId)
+    for (auto const & exit : exits)
     {
-      auto const & exit = exits[exitId];
       auto const & exitFrontPoint = m_starter.GetPoint(exit, true /* front */);
       auto const weight = m_starter.GetGraph().CalcLeapWeight(m_startPoint, exitFrontPoint);
 
@@ -95,9 +95,8 @@ void LeapsGraph::GetEdgesListToFinish(Segment const & segment, bool isOutgoing,
   {
     // Connect finish to all enters (|isEnter| == true).
     auto const & enters = m_starter.GetGraph().GetTransitions(mwmId, true /* isEnter */);
-    for (uint32_t enterId = 0; enterId < static_cast<uint32_t>(enters.size()); ++enterId)
+    for (auto const & enter : enters)
     {
-      auto const & enter = enters[enterId];
       auto const & enterFrontPoint = m_starter.GetPoint(enter, true /* front */);
       auto const weight = m_starter.GetGraph().CalcLeapWeight(enterFrontPoint, m_finishPoint);
 

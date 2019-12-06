@@ -50,6 +50,16 @@ double DistanceOnEarth(m2::PointD const & p1, m2::PointD const & p2)
   return ms::DistanceOnEarth(ToLatLon(p1), ToLatLon(p2));
 }
 
+double DistanceOnEarth(m2::PointD const & p1, ms::LatLon const & p2)
+{
+  return ms::DistanceOnEarth(ToLatLon(p1), p2);
+}
+
+double DistanceOnEarth(ms::LatLon const & p1, m2::PointD const & p2)
+{
+  return ms::DistanceOnEarth(p1, ToLatLon(p2));
+}
+
 double AreaOnEarth(m2::PointD const & p1, m2::PointD const & p2, m2::PointD const & p3)
 {
   return ms::AreaOnEarth(ToLatLon(p1), ToLatLon(p2), ToLatLon(p3));

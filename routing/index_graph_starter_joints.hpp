@@ -7,6 +7,8 @@
 #include "routing/joint_segment.hpp"
 #include "routing/segment.hpp"
 
+#include "geometry/latlon.hpp"
+#include "geometry/mercator.hpp"
 #include "geometry/point2d.hpp"
 
 #include "base/assert.hpp"
@@ -181,8 +183,8 @@ private:
   Segment m_startSegment;
   Segment m_endSegment;
 
-  m2::PointD m_startPoint;
-  m2::PointD m_endPoint;
+  ms::LatLon m_startPoint;
+  ms::LatLon m_endPoint;
 
   // See comments in |GetEdgeList()| about |m_savedWeight|.
   std::map<JointSegment, Weight> m_savedWeight;
@@ -232,7 +234,7 @@ IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph,
 
   m_endSegment = Segment();
   m_endJoint = JointSegment();
-  m_endPoint = m2::PointD::Zero();
+  m_endPoint = ms::LatLon();
 
   m_init = true;
 }
@@ -253,7 +255,7 @@ void IndexGraphStarterJoints<Graph>::InitEnding(Segment const & ending, bool sta
   segment = ending;
 
   auto & point = start ? m_startPoint : m_endPoint;
-  point = m_graph.GetPoint(ending, true /* front */);
+  point = mercator::ToLatLon(m_graph.GetPoint(ending, true /* front */));
 
   auto & endingJoint = start ? m_startJoint : m_endJoint;
   if (IsRealSegment(ending))
@@ -284,7 +286,7 @@ RouteWeight IndexGraphStarterJoints<Graph>::HeuristicCostEstimate(JointSegment c
                                                                   JointSegment const & to)
 {
   ASSERT(to == m_startJoint || to == m_endJoint, ("Invariant violated."));
-  bool toEnd = to == m_endJoint;
+  bool const toEnd = to == m_endJoint;
 
   Segment fromSegment;
   if (from.IsFake() || IsInvisible(from))

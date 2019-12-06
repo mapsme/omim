@@ -7,6 +7,7 @@
 #include "routing/segment.hpp"
 
 #include "geometry/point2d.hpp"
+#include "geometry/latlon.hpp"
 
 #include <vector>
 
@@ -37,11 +38,8 @@ private:
   void GetEdgesListToFinish(Segment const & segment, bool isOutgoing,
                              std::vector<SegmentEdge> & edges);
 
-  static LeapSegment const kStart;
-  static LeapSegment const kFinish;
-
-  m2::PointD m_startPoint;
-  m2::PointD m_finishPoint;
+  ms::LatLon m_startPoint;
+  ms::LatLon m_finishPoint;
 
   Segment m_startSegment;
   Segment m_finishSegment;

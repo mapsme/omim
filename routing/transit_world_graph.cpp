@@ -134,6 +134,11 @@ RouteWeight TransitWorldGraph::HeuristicCostEstimate(m2::PointD const & from, m2
   return RouteWeight(m_estimator->CalcHeuristic(from, to));
 }
 
+RouteWeight TransitWorldGraph::HeuristicCostEstimate(m2::PointD const & from, ms::LatLon const & to)
+{
+  return RouteWeight(m_estimator->CalcHeuristic(from, to));
+}
+
 RouteWeight TransitWorldGraph::CalcSegmentWeight(Segment const & segment,
                                                  EdgeEstimator::Purpose purpose)
 {
@@ -147,7 +152,12 @@ RouteWeight TransitWorldGraph::CalcSegmentWeight(Segment const & segment,
       segment, GetRealRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()), purpose));
 }
 
-RouteWeight TransitWorldGraph::CalcLeapWeight(m2::PointD const & from, m2::PointD const & to) const
+RouteWeight TransitWorldGraph::CalcLeapWeight(ms::LatLon const & from, m2::PointD const & to) const
+{
+  return RouteWeight(m_estimator->CalcLeapWeight(from, to));
+}
+
+RouteWeight TransitWorldGraph::CalcLeapWeight(m2::PointD const & from, ms::LatLon const & to) const
 {
   return RouteWeight(m_estimator->CalcLeapWeight(from, to));
 }
