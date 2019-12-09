@@ -1,5 +1,8 @@
 #include "qt/bookmark_dialog.hpp"
 
+#include "qt/altitude_bitmap.hpp"
+
+#include "map/bookmark_helpers.hpp"
 #include "map/bookmark_manager.hpp"
 #include "map/framework.hpp"
 
@@ -15,18 +18,19 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QVBoxLayout>
 
 #include <functional>
+#include <utility>
+#include <vector>
 
 using namespace std::placeholders;
 
 namespace qt
 {
 BookmarkDialog::BookmarkDialog(QWidget * parent, Framework & framework)
-  : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
-  , m_framework(framework)
+  : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint), m_framework(framework)
 {
   setWindowModality(Qt::WindowModal);
 
@@ -40,6 +44,10 @@ BookmarkDialog::BookmarkDialog(QWidget * parent, Framework & framework)
   QPushButton * importButton = new QPushButton(tr("Import KML/KMZ"), this);
   connect(importButton, SIGNAL(clicked()), this, SLOT(OnImportClick()));
 
+  QPushButton * importAndShowChartButton =
+      new QPushButton(tr("Build altitude charts for KML"), this);
+  connect(importAndShowChartButton, SIGNAL(clicked()), this, SLOT(OnImportAndShowChartClick()));
+
   QPushButton * exportButton = new QPushButton(tr("Export KMZ"), this);
   connect(exportButton, SIGNAL(clicked()), this, SLOT(OnExportClick()));
 
@@ -49,10 +57,12 @@ BookmarkDialog::BookmarkDialog(QWidget * parent, Framework & framework)
   columnLabels << tr("Bookmarks and tracks") << "";
   m_tree->setHeaderLabels(columnLabels);
   m_tree->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectItems);
-  connect(m_tree, SIGNAL(itemClicked(QTreeWidgetItem *, int)), this, SLOT(OnItemClick(QTreeWidgetItem *, int)));
+  connect(m_tree, SIGNAL(itemClicked(QTreeWidgetItem *, int)), this,
+          SLOT(OnItemClick(QTreeWidgetItem *, int)));
 
   QHBoxLayout * horizontalLayout = new QHBoxLayout();
   horizontalLayout->addStretch();
+  horizontalLayout->addWidget(importAndShowChartButton);
   horizontalLayout->addWidget(importButton);
   horizontalLayout->addWidget(exportButton);
   horizontalLayout->addWidget(deleteButton);
@@ -74,23 +84,15 @@ BookmarkDialog::BookmarkDialog(QWidget * parent, Framework & framework)
   m_framework.GetBookmarkManager().SetAsyncLoadingCallbacks(std::move(callbacks));
 }
 
-void BookmarkDialog::OnAsyncLoadingStarted()
-{
-  FillTree();
-}
+void BookmarkDialog::OnAsyncLoadingStarted() { FillTree(); }
 
-void BookmarkDialog::OnAsyncLoadingFinished()
-{
-  FillTree();
-}
+void BookmarkDialog::OnAsyncLoadingFinished() { FillTree(); }
 
 void BookmarkDialog::OnAsyncLoadingFileSuccess(std::string const & fileName, bool isTemporaryFile)
 {
 }
 
-void BookmarkDialog::OnAsyncLoadingFileError(std::string const & fileName, bool isTemporaryFile)
-{
-}
+void BookmarkDialog::OnAsyncLoadingFileError(std::string const & fileName, bool isTemporaryFile) {}
 
 void BookmarkDialog::OnItemClick(QTreeWidgetItem * item, int column)
 {
@@ -122,15 +124,12 @@ void BookmarkDialog::OnItemClick(QTreeWidgetItem * item, int column)
   }
 }
 
-void BookmarkDialog::OnCloseClick()
-{
-  done(0);
-}
+void BookmarkDialog::OnCloseClick() { done(0); }
 
 void BookmarkDialog::OnImportClick()
 {
-  auto const files = QFileDialog::getOpenFileNames(this /* parent */, tr("Open KML/KMZ..."),
-                                                   QString() /* dir */, "KML/KMZ files (*.kml *.kmz)");
+  auto const files = QFileDialog::getOpenFileNames(
+      this /* parent */, tr("Open KML/KMZ..."), QString() /* dir */, "KML/KMZ files (*.kml *.kmz)");
 
   for (auto const & name : files)
   {
@@ -139,6 +138,38 @@ void BookmarkDialog::OnImportClick()
       continue;
 
     m_framework.GetBookmarkManager().LoadBookmark(file, false /* isTemporaryFile */);
+  }
+}
+
+void BookmarkDialog::OnImportAndShowChartClick()
+{
+  auto const files = QFileDialog::getOpenFileNames(this /* parent */, tr("Open KML..."),
+                                                   QString() /* dir */, "KML files (*.kml)");
+  for (auto const & name : files)
+  {
+    auto const file = name.toStdString();
+    if (file.empty())
+      continue;
+
+    BookmarkManager::KMLDataCollection kmlDataCollection;
+    kmlDataCollection.emplace_back(file, LoadKmlFile(file, KmlFileType::Text));
+
+    auto const routes = ExtractTracksData(kmlDataCollection);
+    auto const bitmapsWithTitles =
+        GenerateBitmapsForRoutes(routes, m_framework.GetRoutingManager());
+
+    auto * tabs = new QTabWidget;
+
+    for (auto const & imgAndTitle : bitmapsWithTitles)
+    {
+      auto * imageLabel = new QLabel();
+      imageLabel->setPixmap(QPixmap::fromImage(imgAndTitle.first));
+      tabs->addTab(imageLabel, tr(imgAndTitle.second.c_str()));
+    }
+
+    tabs->show();
+
+    break;
   }
 }
 
@@ -170,28 +201,27 @@ void BookmarkDialog::OnExportClick()
   if (name.isEmpty())
     return;
 
-  m_framework.GetBookmarkManager().PrepareFileForSharing(categoryIt->second,
-    [this, name](BookmarkManager::SharingResult const & result)
-  {
-    if (result.m_code == BookmarkManager::SharingResult::Code::Success)
-    {
-      QFile::rename(QString(result.m_sharingPath.c_str()), name);
+  m_framework.GetBookmarkManager().PrepareFileForSharing(
+      categoryIt->second, [this, name](BookmarkManager::SharingResult const & result) {
+        if (result.m_code == BookmarkManager::SharingResult::Code::Success)
+        {
+          QFile::rename(QString(result.m_sharingPath.c_str()), name);
 
-      QMessageBox ask(this);
-      ask.setIcon(QMessageBox::Information);
-      ask.setText(tr("Bookmarks successfully exported."));
-      ask.addButton(tr("OK"), QMessageBox::NoRole);
-      ask.exec();
-    }
-    else
-    {
-      QMessageBox ask(this);
-      ask.setIcon(QMessageBox::Critical);
-      ask.setText(tr("Could not export bookmarks: ") + result.m_errorString.c_str());
-      ask.addButton(tr("OK"), QMessageBox::NoRole);
-      ask.exec();
-    }
-  });
+          QMessageBox ask(this);
+          ask.setIcon(QMessageBox::Information);
+          ask.setText(tr("Bookmarks successfully exported."));
+          ask.addButton(tr("OK"), QMessageBox::NoRole);
+          ask.exec();
+        }
+        else
+        {
+          QMessageBox ask(this);
+          ask.setIcon(QMessageBox::Critical);
+          ask.setText(tr("Could not export bookmarks: ") + result.m_errorString.c_str());
+          ask.addButton(tr("OK"), QMessageBox::NoRole);
+          ask.exec();
+        }
+      });
 }
 
 void BookmarkDialog::OnDeleteClick()
@@ -242,7 +272,8 @@ void BookmarkDialog::OnDeleteClick()
   ask.exec();
 }
 
-QTreeWidgetItem * BookmarkDialog::CreateTreeItem(std::string const & title, QTreeWidgetItem * parent)
+QTreeWidgetItem * BookmarkDialog::CreateTreeItem(std::string const & title,
+                                                 QTreeWidgetItem * parent)
 {
   QStringList labels;
   labels << QString(title.c_str()) << tr(parent != nullptr ? "Show on the map" : "");

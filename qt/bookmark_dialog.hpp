@@ -29,7 +29,10 @@ public:
 private slots:
   void OnItemClick(QTreeWidgetItem * item, int column);
   void OnCloseClick();
+  // Imports KML file and draws altitude chart.
   void OnImportClick();
+  // Generates charts for the first selected KML file.
+  void OnImportAndShowChartClick();
   void OnExportClick();
   void OnDeleteClick();
 

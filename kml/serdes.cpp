@@ -754,6 +754,7 @@ void KmlParser::Pop(std::string const & tag)
         data.m_layers = std::move(m_trackLayers);
         data.m_timestamp = m_timestamp;
         data.m_points = m_points;
+        data.m_pointsWithAltitudes = m_pointsWithAltitude;
         data.m_visible = m_visible;
         data.m_nearestToponyms = std::move(m_nearestToponyms);
         data.m_properties = std::move(m_properties);

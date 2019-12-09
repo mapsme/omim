@@ -15,6 +15,8 @@ include_directories(
 
 set(
   SRC
+  altitude_bitmap.cpp
+  altitude_bitmap.hpp
   about.cpp
   about.hpp
   bookmark_dialog.cpp
