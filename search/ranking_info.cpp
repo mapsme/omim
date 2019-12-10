@@ -18,6 +18,11 @@ namespace
 // these coeffs correspond to coeffs in a linear model.
 double constexpr kHasName = 0.5;
 double constexpr kCategoriesPopularity = 0.05;
+double constexpr kCategoriesDistanceToPivot = -0.6874177;
+double constexpr kCategoriesRank = 1.0000000;
+double constexpr kCategoriesRating = 0.0500000;
+double constexpr kCategoriesFalseCats = -1.0000000;
+
 double constexpr kDistanceToPivot = -0.2123693;
 double constexpr kRank = 0.1065355;
 double constexpr kPopularity = 1.0000000;
@@ -158,13 +163,13 @@ double RankingInfo::GetLinearModelRank() const
   }
 
   double result = 0.0;
-  result += kDistanceToPivot * distanceToPivot;
-  result += kRank * rank;
-  result += kCategoriesPopularity * popularity;
-  result += kRating * rating;
-  result += m_falseCats * kFalseCats;
   if (!m_categorialRequest)
   {
+    result += kDistanceToPivot * distanceToPivot;
+    result += kRank * rank;
+    result += kPopularity * popularity;
+    result += kRating * rating;
+    result += m_falseCats * kFalseCats;
     result += kType[m_type];
     result += kNameScore[nameScore];
     result += kErrorsMade * GetErrorsMadePerToken();
@@ -173,6 +178,11 @@ double RankingInfo::GetLinearModelRank() const
   }
   else
   {
+    result += kCategoriesDistanceToPivot * distanceToPivot;
+    result += kCategoriesRank * rank;
+    result += kCategoriesPopularity * popularity;
+    result += kCategoriesRating * rating;
+    result += kCategoriesFalseCats * kFalseCats;
     result += m_hasName * kHasName;
   }
   return result;
