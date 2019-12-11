@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import androidx.annotation.NonNull;
 
+import androidx.annotation.Nullable;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.util.LocationUtils;
 
@@ -136,7 +137,7 @@ class SensorHelper implements SensorEventListener
       mSensorManager.unregisterListener(this);
   }
 
-  void resetMagneticField(Location oldLocation, Location newLocation)
+  void resetMagneticField(@Nullable Location oldLocation, @NonNull Location newLocation)
   {
     if (mSensorManager == null)
       return;
