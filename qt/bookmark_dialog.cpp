@@ -164,6 +164,7 @@ void BookmarkDialog::OnImportAndShowChartClick()
     {
       auto * imageLabel = new QLabel();
       imageLabel->setPixmap(QPixmap::fromImage(imgAndTitle.first));
+      imageLabel->setAlignment(Qt::AlignCenter);
       tabs->addTab(imageLabel, tr(imgAndTitle.second.c_str()));
     }
 

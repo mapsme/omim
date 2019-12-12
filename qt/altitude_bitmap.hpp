@@ -16,7 +16,7 @@
 
 namespace qt
 {
-size_t constexpr kMaxChartsCount = 5;
+size_t constexpr kMaxChartsCount = 1;
 
 struct RouteData
 {

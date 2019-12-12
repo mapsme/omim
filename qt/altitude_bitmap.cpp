@@ -56,8 +56,8 @@ std::vector<std::pair<QImage, std::string>> GenerateBitmapsForRoutes(
 {
   std::vector<std::pair<QImage, std::string>> res;
 
-  size_t constexpr width = 600;
-  size_t constexpr height = 300;
+  size_t constexpr width = 900;
+  size_t constexpr height = 400;
 
   for (auto const & route : routes)
   {
