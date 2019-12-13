@@ -25,7 +25,7 @@ public:
   RouteWeight GetAStarWeightEpsilon() override;
   // @}
 
-  m2::PointD const & GetPoint(Segment const & segment, bool front);
+  ms::LatLon const & GetPoint(Segment const & segment, bool front);
   Segment const & GetStartSegment() const;
   Segment const & GetFinishSegment() const;
 

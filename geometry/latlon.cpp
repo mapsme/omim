@@ -29,3 +29,12 @@ std::string DebugPrint(LatLon const & t)
   return out.str();
 }
 }  // namespace ms
+
+namespace base
+{
+bool AlmostEqualAbs(ms::LatLon const & ll1, ms::LatLon const & ll2, double const & eps)
+{
+  return base::AlmostEqualAbs(ll1.m_lat, ll2.m_lat, eps) &&
+         base::AlmostEqualAbs(ll1.m_lon, ll2.m_lon, eps);
+}
+}  // namespace base

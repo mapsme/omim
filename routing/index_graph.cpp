@@ -373,8 +373,8 @@ void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bo
   if (m_roadAccess.GetPointType(rp) == RoadAccess::Type::No)
     return;
 
-  RouteWeight weight = CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing, from, to);
-  edges.emplace_back(to, std::move(weight));
+  auto const weight = CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing, from, to);
+  edges.emplace_back(to, weight);
 }
 
 IndexGraph::PenaltyData IndexGraph::GetRoadPenaltyData(Segment const & segment)

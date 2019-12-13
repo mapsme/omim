@@ -36,3 +36,8 @@ public:
 
 std::string DebugPrint(LatLon const & t);
 }  // namespace ms
+
+namespace base
+{
+bool AlmostEqualAbs(ms::LatLon const & ll1, ms::LatLon const & ll2, double const & eps);
+}  // namespace base

@@ -108,7 +108,7 @@ public:
                              LastPoints & lastPoints);
 
   WorldGraphMode GetMode() const;
-  m2::PointD const & GetPoint(Segment const & segment, bool front)
+  ms::LatLon const & GetPoint(Segment const & segment, bool front)
   {
     return GetGeometry().GetRoad(segment.GetFeatureId()).GetPoint(segment.GetPointId(front));
   }

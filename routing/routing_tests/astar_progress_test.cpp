@@ -8,9 +8,9 @@ using namespace routing;
 
 UNIT_TEST(DirectedAStarProgressCheck)
 {
-  m2::PointD start = m2::PointD(0, 1);
-  m2::PointD finish = m2::PointD(0, 3);
-  m2::PointD middle = m2::PointD(0, 2);
+  ms::LatLon start = ms::LatLon(0, 1);
+  ms::LatLon finish = ms::LatLon(0, 3);
+  ms::LatLon middle = ms::LatLon(0, 2);
 
   AStarProgress progress;
   progress.AppendSubProgress({start, finish, 1.0 /* contributionCoef */});
@@ -28,9 +28,9 @@ UNIT_TEST(DirectedAStarProgressCheck)
 
 UNIT_TEST(DirectedAStarDegradationCheck)
 {
-  m2::PointD start = m2::PointD(0, 1);
-  m2::PointD finish = m2::PointD(0, 3);
-  m2::PointD middle = m2::PointD(0, 2);
+  ms::LatLon start = ms::LatLon(0, 1);
+  ms::LatLon finish = ms::LatLon(0, 3);
+  ms::LatLon middle = ms::LatLon(0, 2);
 
   AStarProgress progressFirst;
   progressFirst.AppendSubProgress({start, finish, 1.0 /* contributionCoef */});
@@ -49,10 +49,10 @@ UNIT_TEST(DirectedAStarDegradationCheck)
 
 UNIT_TEST(RangeCheckTest)
 {
-  m2::PointD start = m2::PointD(0, 1);
-  m2::PointD finish = m2::PointD(0, 3);
-  m2::PointD preStart = m2::PointD(0, 0);
-  m2::PointD postFinish = m2::PointD(0, 6);
+  ms::LatLon start = ms::LatLon(0, 1);
+  ms::LatLon finish = ms::LatLon(0, 3);
+  ms::LatLon preStart = ms::LatLon(0, 0);
+  ms::LatLon postFinish = ms::LatLon(0, 6);
 
   AStarProgress progress;
   progress.AppendSubProgress({start, finish, 1.0 /* contributionCoef */});
@@ -65,10 +65,10 @@ UNIT_TEST(RangeCheckTest)
 
 UNIT_TEST(BidirectedAStarProgressCheck)
 {
-  m2::PointD start = m2::PointD(0, 0);
-  m2::PointD finish = m2::PointD(0, 4);
-  m2::PointD fWave = m2::PointD(0, 1);
-  m2::PointD bWave = m2::PointD(0, 3);
+  ms::LatLon start = ms::LatLon(0, 0);
+  ms::LatLon finish = ms::LatLon(0, 4);
+  ms::LatLon fWave = ms::LatLon(0, 1);
+  ms::LatLon bWave = ms::LatLon(0, 3);
 
   AStarProgress progress;
   progress.AppendSubProgress({start, finish, 1.0 /* contributionCoef */});
