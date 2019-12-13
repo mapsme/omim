@@ -20,8 +20,6 @@ UIImage * image(routing::turns::CarDirection t, bool isNextTurn)
 {
   if (![MWMLocationManager lastLocation])
     return nil;
-  if ([MWMRouter type] == MWMRouterTypePedestrian)
-    return [UIImage imageNamed:@"ic_direction"];
 
   using namespace routing::turns;
   NSString * imageName;
