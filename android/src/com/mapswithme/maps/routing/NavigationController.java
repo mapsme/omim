@@ -221,19 +221,12 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
 
   private void updatePedestrian(RoutingInfo info)
   {
-    Location next = info.pedestrianNextDirection;
-    Location location = LocationHelper.INSTANCE.getSavedLocation();
-    DistanceAndAzimut da = Framework.nativeGetDistanceAndAzimuthFromLatLon(next.getLatitude(), next.getLongitude(),
-                                                                           location.getLatitude(), location.getLongitude(),
-                                                                           mNorth);
-    String[] splitDistance = da.getDistance().split(" ");
+    info.carDirection.setTurnDrawable(mNextTurnImage);
     mNextTurnDistance.setText(Utils.formatUnitsText(mFrame.getContext(),
-                                                    R.dimen.text_size_nav_number,
-                                                    R.dimen.text_size_nav_dimension,
-                                                    splitDistance[0],
-                                                    splitDistance[1]));
-    if (info.pedestrianTurnDirection != null)
-      RoutingInfo.PedestrianTurnDirection.setTurnDrawable(mNextTurnImage, da);
+            R.dimen.text_size_nav_number,
+            R.dimen.text_size_nav_dimension,
+            info.distToTurn,
+            info.turnUnits));
   }
 
   public void updateNorth(double north)
