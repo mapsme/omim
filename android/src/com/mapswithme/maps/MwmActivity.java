@@ -2468,7 +2468,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
           try
           {
             Intent backIntent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(back_uri));
+            backIntent.setData(Uri.parse(back_uri));
             startActivity(backIntent);
           } catch (ActivityNotFoundException e){
 
