@@ -96,6 +96,12 @@ public class Factory
   }
 
   @NonNull
+  public static IntentProcessor createBackLinkAdapterProcessor()
+  {
+    return new DlinkBackIntentProcessor();
+  }
+
+  @NonNull
   public static IntentProcessor createOldLeadUrlProcessor()
   {
     return new OldLeadUrlIntentProcessor();
@@ -383,6 +389,38 @@ public class Factory
 
       String host = data.getHost();
       return DlinkBookmarkCatalogueIntentProcessor.CATALOGUE.equals(host);
+    }
+  }
+
+  public static class DlinkBackIntentProcessor extends DlinkIntentProcessor
+  {
+    private static final String SCHEME_CORE = "mapsme";
+    private static final String BACK_ARG = "back_uri";
+
+    @Override
+    boolean isLinkSupported(@NonNull Uri data)
+    {
+      return (data.getQueryParameter(BACK_ARG)!=null);
+    }
+
+    @Nullable
+    @Override
+    MapTask createIntroductionTask(@NonNull String url)
+    {
+      return null;
+    }
+
+    @NonNull
+    @Override
+    protected MapTask createTargetTask(@NonNull String url)
+    {
+      // Transform deeplink to the core expected format,
+      // i.e https://host/path?query -> mapsme:///path?query.
+      Uri uri = Uri.parse(url);
+      Uri coreUri = uri.buildUpon()
+                       .scheme(SCHEME_CORE)
+                       .authority("").build();
+      return new BackOpenUrlTask(coreUri.toString());
     }
   }
 
@@ -787,6 +825,76 @@ public class Factory
     public boolean run(@NonNull MwmActivity target)
     {
       final @ParsedUrlMwmRequest.ParsingResult int result = Framework.nativeParseAndSetApiUrl(mUrl);
+      switch (result)
+      {
+        case ParsedUrlMwmRequest.RESULT_INCORRECT:
+          // TODO: Kernel recognizes "mapsme://", "mwm://" and "mapswithme://" schemas only!!!
+          return MapFragment.nativeShowMapForUrl(mUrl);
+
+        case ParsedUrlMwmRequest.RESULT_MAP:
+          return MapFragment.nativeShowMapForUrl(mUrl);
+
+        case ParsedUrlMwmRequest.RESULT_ROUTE:
+          final ParsedRoutingData data = Framework.nativeGetParsedRoutingData();
+          RoutingController.get().setRouterType(data.mRouterType);
+          final RoutePoint from = data.mPoints[0];
+          final RoutePoint to = data.mPoints[1];
+          RoutingController.get().prepare(MapObject.createMapObject(FeatureId.EMPTY, MapObject.API_POINT,
+                                                                    from.mName, "", from.mLat, from.mLon),
+                                          MapObject.createMapObject(FeatureId.EMPTY, MapObject.API_POINT,
+                                                                    to.mName, "", to.mLat, to.mLon), true);
+          return true;
+        case ParsedUrlMwmRequest.RESULT_SEARCH:
+          final ParsedSearchRequest request = Framework.nativeGetParsedSearchRequest();
+          if (request.mLat != 0.0 || request.mLon != 0.0)
+          {
+            Framework.nativeStopLocationFollow();
+            Framework.nativeSetViewportCenter(request.mLat, request.mLon, SEARCH_IN_VIEWPORT_ZOOM,
+                                              false);
+            // We need to update viewport for search api manually because of drape engine
+            // will not notify subscribers when search activity is shown.
+            if (!request.mIsSearchOnMap)
+              Framework.nativeSetSearchViewport(request.mLat, request.mLon, SEARCH_IN_VIEWPORT_ZOOM);
+          }
+          SearchActivity.start(target, request.mQuery, request.mLocale, request.mIsSearchOnMap,
+                               null, null);
+          return true;
+        case ParsedUrlMwmRequest.RESULT_LEAD:
+          return true;
+      }
+
+      return false;
+    }
+  }
+
+  public static class BackOpenUrlTask implements MapTask
+  {
+    private static final int SEARCH_IN_VIEWPORT_ZOOM = 16;
+    private final String mUrl;
+
+    BackOpenUrlTask(String url)
+    {
+      Utils.checkNotNull(url);
+      mUrl = url;
+    }
+
+    @Override
+    public boolean run(@NonNull MwmActivity target)
+    {
+      Uri mUri = Uri.parse(mUrl);
+      final Set<String> params = mUri.getQueryParameterNames();
+      final Uri.Builder newUri = mUri.buildUpon().clearQuery();
+      for (String param : params) {
+        if (!param.equals("back_uri")) {
+          newUri.appendQueryParameter(param, mUri.getQueryParameter(param));
+        } else {
+          target.getIntent().putExtra(MwmActivity.EXTRA_BACK_URI ,mUri.getQueryParameter(param));
+        }
+      }
+      Uri mCleanUri = newUri.build();
+
+      final @ParsedUrlMwmRequest.ParsingResult int result = Framework.nativeParseAndSetApiUrl(mCleanUri.toString().replace("%2C",","));
+
       switch (result)
       {
         case ParsedUrlMwmRequest.RESULT_INCORRECT:

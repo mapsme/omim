@@ -176,6 +176,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public static final String EXTRA_TASK = "map_task";
   public static final String EXTRA_LAUNCH_BY_DEEP_LINK = "launch_by_deep_link";
+  public static final String EXTRA_BACK_URI = "back_uri";
   private static final String EXTRA_CONSUMED = "mwm.extra.intent.processed";
 
   private static final String[] DOCKED_FRAGMENTS = { SearchFragment.class.getName(),
@@ -2460,13 +2461,19 @@ public class MwmActivity extends BaseMwmFragmentActivity
         MapFragment.nativeScalePlus();
         return true;
       case KeyEvent.KEYCODE_ESCAPE:
-        if (MwmApplication.get().backUrl() != null)
+        Intent currIntent = getIntent();
+        String back_uri = currIntent.getStringExtra(EXTRA_BACK_URI);
+        if (back_uri != null)
         {
-          String backUrl = MwmApplication.get().backUrl();
           //Utils.openUrl(this,backUrl);
-          Intent intent = new Intent(Intent.ACTION_VIEW);
-          intent.setData(Uri.parse(backUrl));
-          startActivity(intent);
+          try
+          {
+            Intent backIntent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(back_uri));
+            startActivity(backIntent);
+          } catch (ActivityNotFoundException e){
+
+          }
         }
         return true;
       default:
