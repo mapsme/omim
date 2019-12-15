@@ -2463,9 +2463,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
       case KeyEvent.KEYCODE_ESCAPE:
         Intent currIntent = getIntent();
         String back_uri = currIntent.getStringExtra(EXTRA_BACK_URI);
-        if (back_uri != null)
+        if (!TextUtils.isEmpty(back_uri))
         {
-          //Utils.openUrl(this,backUrl);
           try
           {
             Intent backIntent = new Intent(Intent.ACTION_VIEW);
