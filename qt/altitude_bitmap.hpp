@@ -11,6 +11,7 @@
 #include <QtGui/QImage>
 
 #include <cstdint>
+#include <string>
 #include <utility>
 #include <vector>
 

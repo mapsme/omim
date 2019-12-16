@@ -4,8 +4,6 @@
 
 #include <QtGui/QBitmap>
 
-#include <string>
-
 namespace qt
 {
 RouteData ExtractTrackData(kml::TrackData const & kmlData)
@@ -13,7 +11,7 @@ RouteData ExtractTrackData(kml::TrackData const & kmlData)
   RouteData data;
   m2::PolylineD polyLine;
 
-  for (auto point : kmlData.m_pointsWithAltitudes)
+  for (auto const & point : kmlData.m_pointsWithAltitudes)
   {
     data.m_altitudes.push_back(point.GetAltitude());
     polyLine.Add(point.GetPoint());
@@ -31,7 +29,6 @@ std::vector<RouteData> ExtractTracksData(BookmarkManager::KMLDataCollection cons
 {
   std::vector<RouteData> routes;
 
-  // Finds
   for (auto const & kmlData : collection)
   {
     for (auto const & track : kmlData.second->m_tracksData)
@@ -73,7 +70,7 @@ std::vector<std::pair<QImage, std::string>> GenerateBitmapsForRoutes(
     std::string chartTitle = GetTitleForChart(route.m_trackId, maxRouteAltitude - minRouteAltitude);
 
     res.emplace_back(QImage(imageRGBAData.data(), width, height, QImage::Format::Format_RGBA8888,
-                            nullptr, nullptr),
+                            nullptr /* cleanupFunction */, nullptr /* cleanupInfo */),
                      chartTitle);
   }
 
