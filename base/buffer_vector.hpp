@@ -70,7 +70,7 @@ public:
     resize(n, c);
   }
 
-  explicit buffer_vector(std::initializer_list<T> const & initList) : m_size(0)
+  buffer_vector(std::initializer_list<T> const & initList) : m_size(0)
   {
     assign(initList.begin(), initList.end());
   }

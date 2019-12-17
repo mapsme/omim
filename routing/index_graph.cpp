@@ -81,13 +81,12 @@ void IndexGraph::GetEdgeList(Segment const & segment, bool isOutgoing, bool useR
   }
 }
 
-void IndexGraph::GetLastPointsForJoint(vector<Segment> const & children,
+void IndexGraph::GetLastPointsForJoint(PossibleChildren const & children,
                                        bool isOutgoing,
-                                       vector<uint32_t> & lastPoints)
+                                       LastPoints & lastPoints)
 {
   CHECK(lastPoints.empty(), ());
 
-  lastPoints.reserve(children.size());
   for (auto const & child : children)
   {
     uint32_t const startPointId = child.GetPointId(!isOutgoing /* front */);
@@ -126,12 +125,11 @@ void IndexGraph::GetEdgeList(JointSegment const & parentJoint,
                              Segment const & parent, bool isOutgoing, vector<JointEdge> & edges,
                              vector<RouteWeight> & parentWeights, ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & parents)
 {
-  vector<Segment> possibleChildren;
+  PossibleChildren possibleChildren;
   GetSegmentCandidateForJoint(parent, isOutgoing, possibleChildren);
 
-  vector<uint32_t> lastPoints;
+  LastPoints lastPoints;
   GetLastPointsForJoint(possibleChildren, isOutgoing, lastPoints);
-
 
   ReconstructJointSegment(parentJoint, parent, possibleChildren, lastPoints,
                           isOutgoing, edges, parentWeights, parents);
@@ -141,13 +139,13 @@ boost::optional<JointEdge>
 IndexGraph::GetJointEdgeByLastPoint(Segment const & parent, Segment const & firstChild,
                                     bool isOutgoing, uint32_t lastPoint)
 {
-  vector<Segment> const possibleChilds = {firstChild};
-  vector<uint32_t> const lastPoints = {lastPoint};
+  PossibleChildren const possibleChildren = {firstChild};
+  LastPoints const lastPoints = {lastPoint};
 
   vector<JointEdge> edges;
   vector<RouteWeight> parentWeights;
   ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> emptyParents;
-  ReconstructJointSegment({} /* parentJoint */, parent, possibleChilds, lastPoints,
+  ReconstructJointSegment({} /* parentJoint */, parent, possibleChildren, lastPoints,
                           isOutgoing, edges, parentWeights, emptyParents);
 
   CHECK_LESS_OR_EQUAL(edges.size(), 1, ());
@@ -232,7 +230,7 @@ void IndexGraph::GetNeighboringEdges(Segment const & from, RoadPoint const & rp,
 }
 
 void IndexGraph::GetSegmentCandidateForRoadPoint(RoadPoint const & rp, NumMwmId numMwmId,
-                                                 bool isOutgoing, std::vector<Segment> & children)
+                                                 bool isOutgoing, PossibleChildren & children)
 {
   RoadGeometry const & road = m_geometry->GetRoad(rp.GetFeatureId());
   if (!road.IsValid())
@@ -252,7 +250,7 @@ void IndexGraph::GetSegmentCandidateForRoadPoint(RoadPoint const & rp, NumMwmId 
 }
 
 void IndexGraph::GetSegmentCandidateForJoint(Segment const & parent, bool isOutgoing,
-                                             vector<Segment> & children)
+                                             PossibleChildren & children)
 {
   RoadPoint const roadPoint = parent.GetRoadPoint(isOutgoing);
   Joint::Id const jointId = m_roadIndex.GetJointId(roadPoint);
@@ -275,8 +273,8 @@ void IndexGraph::GetSegmentCandidateForJoint(Segment const & parent, bool isOutg
 ///                                   from parent to firstChildren.
 void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
                                          Segment const & parent,
-                                         vector<Segment> const & firstChildren,
-                                         vector<uint32_t> const & lastPointIds,
+                                         PossibleChildren const & firstChildren,
+                                         LastPoints const & lastPointIds,
                                          bool isOutgoing,
                                          vector<JointEdge> & jointEdges,
                                          vector<RouteWeight> & parentWeights,
