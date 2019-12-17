@@ -14,6 +14,8 @@
 
 #include "geometry/point2d.hpp"
 
+#include "base/buffer_vector.hpp"
+
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -36,6 +38,11 @@ public:
   using Vertex = Segment;
   using Edge = SegmentEdge;
   using Weight = RouteWeight;
+
+  // Aliases for JointEdge retrieving. The number of elems in such structures is usually 3-4 items.
+  // So we use buffer_vector instead of std::vector to excludes to many operator new(...) invocations.
+  using PossibleChildren = buffer_vector<Segment, 16>;
+  using LastPoints = buffer_vector<uint32_t, 16>;
 
   using Restrictions = std::unordered_map<uint32_t, std::vector<std::vector<uint32_t>>>;
 
@@ -97,8 +104,8 @@ public:
 
   bool IsJoint(RoadPoint const & roadPoint) const;
   bool IsJointOrEnd(Segment const & segment, bool fromStart);
-  void GetLastPointsForJoint(std::vector<Segment> const & children, bool isOutgoing,
-                             std::vector<uint32_t> & lastPoints);
+  void GetLastPointsForJoint(PossibleChildren const & children, bool isOutgoing,
+                             LastPoints & lastPoints);
 
   WorldGraphMode GetMode() const;
   m2::PointD const & GetPoint(Segment const & segment, bool front)
@@ -141,12 +148,12 @@ private:
   RouteWeight GetPenalties(EdgeEstimator::Purpose purpose, Segment const & u, Segment const & v);
 
   void GetSegmentCandidateForRoadPoint(RoadPoint const & rp, NumMwmId numMwmId,
-                                       bool isOutgoing, std::vector<Segment> & children);
-  void GetSegmentCandidateForJoint(Segment const & parent, bool isOutgoing, std::vector<Segment> & children);
+                                       bool isOutgoing, PossibleChildren & children);
+  void GetSegmentCandidateForJoint(Segment const & parent, bool isOutgoing, PossibleChildren & children);
   void ReconstructJointSegment(JointSegment const & parentJoint,
                                Segment const & parent,
-                               std::vector<Segment> const & firstChildren,
-                               std::vector<uint32_t> const & lastPointIds,
+                               PossibleChildren const & firstChildren,
+                               LastPoints const & lastPointIds,
                                bool isOutgoing,
                                std::vector<JointEdge> & jointEdges,
                                std::vector<RouteWeight> & parentWeights,

@@ -54,7 +54,7 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
 
       auto & twinIndexGraph = GetIndexGraph(twinMwmId);
 
-      vector<uint32_t> lastPoints;
+      IndexGraph::LastPoints lastPoints;
       twinIndexGraph.GetLastPointsForJoint({start}, isOutgoing, lastPoints);
       ASSERT_EQUAL(lastPoints.size(), 1, ());
 
