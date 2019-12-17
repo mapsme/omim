@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -34,7 +30,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kTd-fr-ia7">
-                            <rect key="frame" x="166.5" y="264.5" width="42" height="136.5"/>
+                            <rect key="frame" x="166.5" y="265.5" width="42" height="136.5"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_route_manager_trash" translatesAutoresizingMaskIntoConstraints="NO" id="ZEN-kK-2CA">
                                     <rect key="frame" x="-3" y="40" width="48" height="48"/>
@@ -93,12 +89,12 @@
             </connections>
             <point key="canvasLocation" x="288" y="-49"/>
         </view>
-        <view contentMode="scaleToFill" id="TKX-qe-h4F" propertyAccessControl="all">
+        <view contentMode="scaleToFill" id="TKX-qe-h4F" propertyAccessControl="none">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
             <subviews>
                 <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i5M-Pr-FkT">
-                    <rect key="frame" x="0.0" y="563" width="375" height="104"/>
+                    <rect key="frame" x="0.0" y="571" width="375" height="96"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s0L-ul-gog" customClass="RouteManagerHeaderView" customModule="maps_me" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
@@ -126,7 +122,7 @@
                                     </constraints>
                                 </view>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstItem="MJB-bK-y5c" firstAttribute="leading" secondItem="s0L-ul-gog" secondAttribute="leading" constant="16" id="0en-v6-Ij2"/>
                                 <constraint firstItem="0Fo-Ae-QrQ" firstAttribute="top" secondItem="s0L-ul-gog" secondAttribute="top" id="8Bf-WP-AF2"/>
@@ -150,7 +146,7 @@
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="or0-Gy-0su">
                                     <rect key="frame" x="-100" y="0.0" width="575" height="148"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pjx-6o-NWS">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
@@ -213,13 +209,12 @@
                             </connections>
                         </tableView>
                     </subviews>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <accessibility key="accessibilityConfiguration" identifier="ManagerView"/>
                     <constraints>
                         <constraint firstAttribute="width" priority="750" constant="375" id="6Nm-Md-fZo"/>
                         <constraint firstItem="Zqd-YQ-ksD" firstAttribute="top" secondItem="s0L-ul-gog" secondAttribute="bottom" id="9N3-Ti-W95"/>
                         <constraint firstItem="mqc-M4-MPb" firstAttribute="top" secondItem="Zqd-YQ-ksD" secondAttribute="bottom" id="A2s-eg-1CW"/>
-                        <constraint firstAttribute="bottomMargin" secondItem="mqc-M4-MPb" secondAttribute="bottom" id="JoD-oZ-xgY"/>
                         <constraint firstAttribute="trailingMargin" secondItem="s0L-ul-gog" secondAttribute="trailing" constant="-8" id="Ndx-K2-qQ5"/>
                         <constraint firstAttribute="trailingMargin" secondItem="mqc-M4-MPb" secondAttribute="trailing" constant="-8" id="WgX-mu-BCG"/>
                         <constraint firstAttribute="trailing" secondItem="Zqd-YQ-ksD" secondAttribute="trailing" id="XkJ-fe-lyj"/>
@@ -228,6 +223,9 @@
                         <constraint firstItem="mqc-M4-MPb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leadingMargin" constant="-8" id="gvJ-kF-Ylk"/>
                         <constraint firstItem="s0L-ul-gog" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="ub9-gl-pdn"/>
                     </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
+                    </userDefinedRuntimeAttributes>
                 </view>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -236,6 +234,7 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="Bnz-SA-yXA"/>
                 <constraint firstItem="i5M-Pr-FkT" firstAttribute="leading" secondItem="TKX-qe-h4F" secondAttribute="leading" id="Pui-FF-qOT"/>
+                <constraint firstItem="hNI-dt-MwJ" firstAttribute="bottom" secondItem="mqc-M4-MPb" secondAttribute="bottom" id="T57-ty-A8L"/>
                 <constraint firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="qXL-Hf-8X6"/>
                 <constraint firstItem="i5M-Pr-FkT" firstAttribute="top" relation="greaterThanOrEqual" secondItem="TKX-qe-h4F" secondAttribute="top" constant="72" id="sYB-lu-PhM"/>
             </constraints>

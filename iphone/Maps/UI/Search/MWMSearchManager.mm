@@ -81,6 +81,7 @@ using Observers = NSHashTable<Observer>;
   [self.actionBarView mwm_refreshUI];
   [self.tableViewController mwm_refreshUI];
   [self.noMapsController mwm_refreshUI];
+  [self.contentView mwm_refreshUI];
 }
 
 - (void)beginSearch

@@ -35,6 +35,20 @@ NSTimeInterval constexpr kOnSearchCompletedDelay = 0.2;
   return rect;
 }
 
+#pragma mark - Draw
+- (void)drawPlaceholderInRect:(CGRect)rect
+{
+  [[self placeholder] drawInRect:rect withAttributes:@{NSFontAttributeName: self.font,
+                                                       NSForegroundColorAttributeName: [UIColor blackSecondaryText]}];
+}
+
+- (void)mwm_refreshUI
+{
+  self.textColor = [UIColor blackSecondaryText];
+  [self layoutIfNeeded];
+  [self updateIcon];
+}
+
 #pragma mark - Properties
 
 - (void)setIsSearching:(BOOL)isSearching
@@ -42,20 +56,28 @@ NSTimeInterval constexpr kOnSearchCompletedDelay = 0.2;
   if (_isSearching == isSearching)
     return;
   _isSearching = isSearching;
-  if (isSearching)
-  {
-    UIActivityIndicatorView * view = [[UIActivityIndicatorView alloc]
-        initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    view.autoresizingMask =
-        UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
-    [view startAnimating];
-    view.bounds = self.leftView.bounds;
-    self.leftView = view;
-  }
-  else
-  {
+  [self updateIcon];
+}
+
+- (void)updateIcon
+{
+  if (_isSearching) {
+    [self setActivityIcon];
+  } else {
     [self setStaticIcon];
   }
+}
+
+- (void)setActivityIcon
+{
+  UIActivityIndicatorView * view = [[UIActivityIndicatorView alloc]
+                                    initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  view.autoresizingMask =
+  UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
+  view.activityIndicatorViewStyle = [UIColor isNightMode] ? UIActivityIndicatorViewStyleWhite : UIActivityIndicatorViewStyleGray;
+  [view startAnimating];
+  view.bounds = self.leftView.bounds;
+  self.leftView = view;
 }
 
 - (void)setStaticIcon
