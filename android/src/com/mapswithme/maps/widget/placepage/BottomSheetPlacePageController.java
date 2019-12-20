@@ -526,7 +526,10 @@ public class BottomSheetPlacePageController implements PlacePageController, Loca
       return;
 
     MapObject object = inState.getParcelable(EXTRA_MAP_OBJECT);
-    if (object == null)
+    // In case of the app was dumped by system to the hard drive, map object can be
+    // restored from parcelable, but c++ framework is created from scratch and internal
+    // place page object is not initialized. So, do not restore place page in this case.
+    if (object == null || !Framework.nativeIsPlacePageOpened())
       return;
 
     @AnchorBottomSheetBehavior.State
