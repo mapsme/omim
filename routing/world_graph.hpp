@@ -86,8 +86,8 @@ public:
   virtual RoutingOptions GetRoutingOptions(Segment const & /* segment */);
   virtual void SetRoutingOptions(RoutingOptions /* routingOptions */);
 
-  using ParentSegments = std::map<Segment, Segment>;
-  using ParentJoints = std::map<JointSegment, JointSegment>;
+  using ParentSegments = ska::flat_hash_map<Segment, Segment, Segment::Hash>;
+  using ParentJoints = ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash>;
 
   virtual void SetAStarParents(bool forward, ParentSegments & parents);
   virtual void SetAStarParents(bool forward, ParentJoints & parents);

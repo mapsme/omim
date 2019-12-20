@@ -466,6 +466,9 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     auto const result =
         CalculateSubroute(checkpoints, i, delegate, progress, subrouteStarter, subroute);
 
+    LOG(LINFO, ("JointSegment::kAll:", JointSegment::kAll,
+                "JointSegment::kCompute:", JointSegment::kCompute));
+
     if (result != RouterResultCode::NoError)
       return result;
 

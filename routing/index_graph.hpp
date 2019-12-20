@@ -43,15 +43,15 @@ public:
   IndexGraph(std::shared_ptr<Geometry> geometry, std::shared_ptr<EdgeEstimator> estimator,
              RoutingOptions routingOptions = RoutingOptions());
 
-  static std::map<Segment, Segment> kEmptyParentsSegments;
+  inline static ska::flat_hash_map<Segment, Segment, Segment::Hash> kEmptyParentsSegments = {};
   // Put outgoing (or ingoing) egdes for segment to the 'edges' vector.
   void GetEdgeList(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
                    std::vector<SegmentEdge> & edges,
-                   std::map<Segment, Segment> & parents = kEmptyParentsSegments);
+                   ska::flat_hash_map<Segment, Segment, Segment::Hash> & parents = kEmptyParentsSegments);
 
   void GetEdgeList(JointSegment const & parentJoint,
                    Segment const & parent, bool isOutgoing, std::vector<JointEdge> & edges,
-                   std::vector<RouteWeight> & parentWeights, std::map<JointSegment, JointSegment> & parents);
+                   std::vector<RouteWeight> & parentWeights, ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & parents);
 
   boost::optional<JointEdge> GetJointEdgeByLastPoint(Segment const & parent, Segment const & firstChild,
                                                      bool isOutgoing, uint32_t lastPoint);
@@ -113,7 +113,7 @@ public:
   bool IsRestricted(Parent const & parent,
                     uint32_t parentFeatureId,
                     uint32_t currentFeatureId, bool isOutgoing,
-                    std::map<Parent, Parent> & parents) const;
+                    ska::flat_hash_map<Parent, Parent, typename Parent::Hash> & parents) const;
 
   bool IsUTurnAndRestricted(Segment const & parent, Segment const & child, bool isOutgoing) const;
 
@@ -123,9 +123,9 @@ public:
 private:
   void GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
                            bool useRoutingOptions, std::vector<SegmentEdge> & edges,
-                           std::map<Segment, Segment> & parents);
+                           ska::flat_hash_map<Segment, Segment, Segment::Hash> & parents);
   void GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
-                          std::vector<SegmentEdge> & edges, std::map<Segment, Segment> & parents);
+                          std::vector<SegmentEdge> & edges, ska::flat_hash_map<Segment, Segment, Segment::Hash> & parents);
 
   struct PenaltyData
   {
@@ -150,7 +150,7 @@ private:
                                bool isOutgoing,
                                std::vector<JointEdge> & jointEdges,
                                std::vector<RouteWeight> & parentWeights,
-                               std::map<JointSegment, JointSegment> & parents);
+                               ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & parents);
 
   std::shared_ptr<Geometry> m_geometry;
   std::shared_ptr<EdgeEstimator> m_estimator;
@@ -182,7 +182,7 @@ bool IndexGraph::IsRestricted(Parent const & parent,
                               uint32_t parentFeatureId,
                               uint32_t currentFeatureId,
                               bool isOutgoing,
-                              std::map<Parent, Parent> & parents) const
+                              ska::flat_hash_map<Parent, Parent, typename Parent::Hash> & parents) const
 {
   if (parentFeatureId == currentFeatureId)
     return false;

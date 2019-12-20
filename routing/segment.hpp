@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <ios>
+#include <optional>
 #include <string>
 
 namespace routing
@@ -54,11 +55,19 @@ public:
 
   void Next(bool forward) { forward ? ++m_segmentIdx : --m_segmentIdx; }
 
+  size_t GetHash() const;
+
+  struct Hash
+  {
+    size_t operator()(Segment const & segment) const { return segment.GetHash(); }
+  };
+
 private:
   uint32_t m_featureId = 0;
   uint32_t m_segmentIdx = 0;
   NumMwmId m_mwmId = kFakeNumMwmId;
   bool m_forward = false;
+  mutable std::optional<size_t> m_hash;
 };
 
 class SegmentEdge final

@@ -6,6 +6,7 @@
 
 #include "base/assert.hpp"
 #include "base/cancellable.hpp"
+#include "base/logging.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -15,6 +16,8 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+
+#include "3party/flat_hash_map.hpp"
 
 namespace
 {
@@ -177,14 +180,14 @@ public:
       return it->second;
     }
 
-    std::map<Vertex, Vertex> & GetParents() { return m_parents; }
+    typename Graph::Parents & GetParents() { return m_parents; }
 
     void ReconstructPath(Vertex const & v, std::vector<Vertex> & path) const;
 
   private:
     Graph & m_graph;
     std::map<Vertex, Weight> m_distanceMap;
-    std::map<Vertex, Vertex> m_parents;
+    typename Graph::Parents m_parents;
   };
 
   // VisitVertex returns true: wave will continue
@@ -317,7 +320,9 @@ private:
         graph.GetIngoingEdgesList(v, adj);
     }
 
-    std::map<Vertex, Vertex> & GetParents() { return parent; }
+    using Parents = ska::flat_hash_map<Vertex, Vertex, typename Vertex::Hash>;
+
+    Parents & GetParents() { return parent; }
 
     bool const forward;
     Vertex const & startVertex;
@@ -325,18 +330,18 @@ private:
     Graph & graph;
 
     std::priority_queue<State, std::vector<State>, std::greater<State>> queue;
-    std::map<Vertex, Weight> bestDistance;
-    std::map<Vertex, Vertex> parent;
+    ska::flat_hash_map<Vertex, Weight, typename Vertex::Hash> bestDistance;
+    Parents parent;
     Vertex bestVertex;
 
     Weight pS;
   };
 
-  static void ReconstructPath(Vertex const & v, std::map<Vertex, Vertex> const & parent,
+  static void ReconstructPath(Vertex const & v, typename BidirectionalStepContext::Parents const & parent,
                               std::vector<Vertex> & path);
   static void ReconstructPathBidirectional(Vertex const & v, Vertex const & w,
-                                           std::map<Vertex, Vertex> const & parentV,
-                                           std::map<Vertex, Vertex> const & parentW,
+                                           typename BidirectionalStepContext::Parents const & parentV,
+                                           typename BidirectionalStepContext::Parents const & parentW,
                                            std::vector<Vertex> & path);
 };
 
@@ -592,8 +597,11 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     State const stateV = cur->queue.top();
     cur->queue.pop();
 
-    if (stateV.distance > cur->bestDistance[stateV.vertex])
-      continue;
+    {
+      auto it = cur->bestDistance.find(stateV.vertex);
+      if (it != cur->bestDistance.end() && stateV.distance > it->second)
+        continue;
+    }
 
     params.m_onVisitedVertexCallback(stateV.vertex,
                                      cur->forward ? cur->finalVertex : cur->startVertex);
@@ -626,8 +634,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
 
       stateW.distance = newReducedDist;
       stateW.heuristic = pW;
-      cur->bestDistance[stateW.vertex] = newReducedDist;
-      cur->parent[stateW.vertex] = stateV.vertex;
+      cur->bestDistance.insert_or_assign(stateW.vertex, newReducedDist);
+      cur->parent.insert_or_assign(stateW.vertex, stateV.vertex);
 
       auto const itNxt = nxt->bestDistance.find(stateW.vertex);
       if (itNxt != nxt->bestDistance.end())
@@ -765,7 +773,7 @@ typename AStarAlgorithm<Vertex, Edge, Weight>::Result
 // static
 template <typename Vertex, typename Edge, typename Weight>
 void AStarAlgorithm<Vertex, Edge, Weight>::ReconstructPath(Vertex const & v,
-                                                           std::map<Vertex, Vertex> const & parent,
+                                                           typename BidirectionalStepContext::Parents const & parent,
                                                            std::vector<Vertex> & path)
 {
   path.clear();
@@ -786,8 +794,8 @@ void AStarAlgorithm<Vertex, Edge, Weight>::ReconstructPath(Vertex const & v,
 template <typename Vertex, typename Edge, typename Weight>
 void
 AStarAlgorithm<Vertex, Edge, Weight>::ReconstructPathBidirectional(Vertex const & v, Vertex const & w,
-                                                                   std::map<Vertex, Vertex> const & parentV,
-                                                                   std::map<Vertex, Vertex> const & parentW,
+                                                                   typename BidirectionalStepContext::Parents const & parentV,
+                                                                   typename BidirectionalStepContext::Parents const & parentW,
                                                                    std::vector<Vertex> & path)
 {
   std::vector<Vertex> pathV;

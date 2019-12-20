@@ -33,8 +33,6 @@ bool IsBoarding(bool prevIsFerry, bool nextIsFerry)
   return !prevIsFerry && nextIsFerry;
 }
 
-std::map<Segment, Segment> IndexGraph::kEmptyParentsSegments = {};
-
 IndexGraph::IndexGraph(shared_ptr<Geometry> geometry, shared_ptr<EdgeEstimator> estimator,
                        RoutingOptions routingOptions)
   : m_geometry(move(geometry)),
@@ -66,7 +64,7 @@ bool IndexGraph::IsJointOrEnd(Segment const & segment, bool fromStart)
 }
 
 void IndexGraph::GetEdgeList(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
-                             vector<SegmentEdge> & edges, map<Segment, Segment> & parents)
+                             vector<SegmentEdge> & edges, ska::flat_hash_map<Segment, Segment, Segment::Hash> & parents)
 {
   RoadPoint const roadPoint = segment.GetRoadPoint(isOutgoing);
   Joint::Id const jointId = m_roadIndex.GetJointId(roadPoint);
@@ -126,7 +124,7 @@ void IndexGraph::GetLastPointsForJoint(vector<Segment> const & children,
 
 void IndexGraph::GetEdgeList(JointSegment const & parentJoint,
                              Segment const & parent, bool isOutgoing, vector<JointEdge> & edges,
-                             vector<RouteWeight> & parentWeights, map<JointSegment, JointSegment> & parents)
+                             vector<RouteWeight> & parentWeights, ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & parents)
 {
   vector<Segment> possibleChildren;
   GetSegmentCandidateForJoint(parent, isOutgoing, possibleChildren);
@@ -148,7 +146,7 @@ IndexGraph::GetJointEdgeByLastPoint(Segment const & parent, Segment const & firs
 
   vector<JointEdge> edges;
   vector<RouteWeight> parentWeights;
-  map<JointSegment, JointSegment> emptyParents;
+  ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> emptyParents;
   ReconstructJointSegment({} /* parentJoint */, parent, possibleChilds, lastPoints,
                           isOutgoing, edges, parentWeights, emptyParents);
 
@@ -206,7 +204,7 @@ void IndexGraph::SetRoadAccess(RoadAccess && roadAccess) { m_roadAccess = move(r
 
 void IndexGraph::GetNeighboringEdges(Segment const & from, RoadPoint const & rp, bool isOutgoing,
                                      bool useRoutingOptions, vector<SegmentEdge> & edges,
-                                     map<Segment, Segment> & parents)
+                                     ska::flat_hash_map<Segment, Segment, Segment::Hash> & parents)
 {
   RoadGeometry const & road = m_geometry->GetRoad(rp.GetFeatureId());
 
@@ -282,7 +280,7 @@ void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
                                          bool isOutgoing,
                                          vector<JointEdge> & jointEdges,
                                          vector<RouteWeight> & parentWeights,
-                                         map<JointSegment, JointSegment> & parents)
+                                         ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & parents)
 {
   CHECK_EQUAL(firstChildren.size(), lastPointIds.size(), ());
 
@@ -362,7 +360,7 @@ void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
 }
 
 void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bool isOutgoing,
-                                    vector<SegmentEdge> & edges, map<Segment, Segment> & parents)
+                                    vector<SegmentEdge> & edges, ska::flat_hash_map<Segment, Segment, Segment::Hash> & parents)
 {
   if (IsUTurn(from, to) && IsUTurnAndRestricted(from, to, isOutgoing))
     return;

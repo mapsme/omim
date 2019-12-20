@@ -222,7 +222,7 @@ RoutingOptions SingleVehicleWorldGraph::GetRoutingOptions(Segment const & segmen
   return geometry.GetRoutingOptions();
 }
 
-void SingleVehicleWorldGraph::SetAStarParents(bool forward, map<Segment, Segment> & parents)
+void SingleVehicleWorldGraph::SetAStarParents(bool forward, ska::flat_hash_map<Segment, Segment, Segment::Hash> & parents)
 {
   if (forward)
     m_parentsForSegments.forward = &parents;
@@ -230,7 +230,7 @@ void SingleVehicleWorldGraph::SetAStarParents(bool forward, map<Segment, Segment
     m_parentsForSegments.backward = &parents;
 }
 
-void SingleVehicleWorldGraph::SetAStarParents(bool forward, map<JointSegment, JointSegment> & parents)
+void SingleVehicleWorldGraph::SetAStarParents(bool forward, ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & parents)
 {
   if (forward)
     m_parentsForJoints.forward = &parents;
@@ -267,13 +267,13 @@ NumMwmId GetCommonMwmInChain(vector<VertexType> const & chain)
 
 template <typename VertexType>
 bool 
-SingleVehicleWorldGraph::AreWavesConnectibleImpl(map<VertexType, VertexType> const & forwardParents,
+SingleVehicleWorldGraph::AreWavesConnectibleImpl(ska::flat_hash_map<VertexType, VertexType, typename VertexType::Hash> const & forwardParents,
                                                  VertexType const & commonVertex,
-                                                 map<VertexType, VertexType> const & backwardParents,
+                                                 ska::flat_hash_map<VertexType, VertexType, typename VertexType::Hash> const & backwardParents,
                                                  function<uint32_t(VertexType const &)> && fakeFeatureConverter)
 {
   vector<VertexType> chain;
-  auto const fillUntilNextFeatureId = [&](VertexType const & cur, map<VertexType, VertexType> const & parents)
+  auto const fillUntilNextFeatureId = [&](VertexType const & cur, auto const & parents)
   {
     auto startFeatureId = cur.GetFeatureId();
     auto it = parents.find(cur);
@@ -290,7 +290,7 @@ SingleVehicleWorldGraph::AreWavesConnectibleImpl(map<VertexType, VertexType> con
     return true;
   };
 
-  auto const fillParents = [&](VertexType const & start, map<VertexType, VertexType> const & parents)
+  auto const fillParents = [&](VertexType const & start, auto const & parents)
   {
     VertexType current = start;
     static uint32_t constexpr kStepCountOneSide = 3;
@@ -323,7 +323,7 @@ SingleVehicleWorldGraph::AreWavesConnectibleImpl(map<VertexType, VertexType> con
   if (mwmId == kFakeNumMwmId)
     return true;
 
-  map<VertexType, VertexType> parents;
+  ska::flat_hash_map<VertexType, VertexType, typename VertexType::Hash> parents;
   for (size_t i = 1; i < chain.size(); ++i)
     parents[chain[i]] = chain[i - 1];
 

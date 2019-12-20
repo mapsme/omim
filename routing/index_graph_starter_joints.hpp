@@ -11,6 +11,8 @@
 
 #include "base/assert.hpp"
 
+#include "3party/flat_hash_map.hpp"
+
 #include <algorithm>
 #include <limits>
 #include <map>
@@ -54,7 +56,7 @@ public:
     GetEdgeList(vertex, false /* isOutgoing */, edges);
   }
 
-  void SetAStarParents(bool forward, std::map<Vertex, Vertex> & parents) override
+  void SetAStarParents(bool forward, Parents & parents) override
   {
     m_graph.SetAStarParents(forward, parents);
   }
@@ -64,8 +66,8 @@ public:
     m_graph.DropAStarParents();
   }
 
-  bool AreWavesConnectible(std::map<Vertex, Vertex> & forwardParents, Vertex const & commonVertex,
-                          std::map<Vertex, Vertex> & backwardParents) override
+  bool AreWavesConnectible(Parents & forwardParents, Vertex const & commonVertex,
+                          Parents & backwardParents) override
   {
     auto converter = [&](JointSegment const & vertex)
     {
@@ -185,13 +187,13 @@ private:
   m2::PointD m_endPoint;
 
   // See comments in |GetEdgeList()| about |m_savedWeight|.
-  std::map<JointSegment, Weight> m_savedWeight;
+  ska::flat_hash_map<JointSegment, Weight, JointSegment::Hash> m_savedWeight;
 
   // JointSegment consists of two segments of one feature.
   // FakeJointSegment consists of two segments of different features.
   // So we create an invalid JointSegment (see |ToFake()| method), that
   // converts to FakeJointSegments. This std::map is converter.
-  std::map<JointSegment, FakeJointSegment> m_fakeJointSegments;
+  ska::flat_hash_map<JointSegment, FakeJointSegment, JointSegment::Hash> m_fakeJointSegments;
 
   struct ReconstructedPath
   {
@@ -364,7 +366,12 @@ void IndexGraphStarterJoints<Graph>::AddFakeJoints(Segment const & segment, bool
     // The one end of FakeJointSegment is start/finish and the opposite end is real segment.
     // So we check, whether |segment| is equal to the real segment of FakeJointSegment.
     // If yes, that means, that we can go from |segment| to start/finish.
-    Segment const & firstSegment = m_fakeJointSegments[edge.GetTarget()].GetSegment(!opposite /* start */);
+    auto const it = m_fakeJointSegments.find(edge.GetTarget());
+    if (it == m_fakeJointSegments.cend())
+      continue;
+
+    auto const & fakeJointSegment = it->second;
+    Segment const & firstSegment = fakeJointSegment.GetSegment(!opposite /* start */);
     if (firstSegment == segment)
     {
       edges.emplace_back(edge);
@@ -518,7 +525,7 @@ void IndexGraphStarterJoints<Graph>::GetEdgeList(JointSegment const & vertex, bo
     auto const it = m_savedWeight.find(vertex);
     CHECK(it != m_savedWeight.cend(), ("Can not find weight for:", vertex));
 
-    Weight const & weight = it->second;
+    Weight const weight = it->second;
     for (size_t i = 0; i < edges.size(); ++i)
     {
       // Saving weight of current edges for returning in the next iterations.
@@ -532,7 +539,7 @@ void IndexGraphStarterJoints<Graph>::GetEdgeList(JointSegment const & vertex, bo
     }
 
     // Delete useless weight of parent JointSegment.
-    m_savedWeight.erase(it);
+    m_savedWeight.erase(vertex);
   }
   else
   {

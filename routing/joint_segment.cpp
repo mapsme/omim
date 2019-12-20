@@ -6,6 +6,8 @@
 
 #include <sstream>
 
+#include "3party/boost/boost/container_hash/hash.hpp"
+
 namespace routing
 {
 bool IsRealSegmentSimple(Segment const & segment)
@@ -56,6 +58,30 @@ bool JointSegment::IsFake() const
   return result;
 }
 
+Segment JointSegment::GetSegment(bool start) const
+{
+  return {m_numMwmId, m_featureId, start ? m_startSegmentId : m_endSegmentId, m_forward};
+}
+
+size_t JointSegment::GetHash() const
+{
+  ++kAll;
+  if (m_hash)
+    return *m_hash;
+
+  ++kCompute;
+  size_t seed = 0;
+//  seed <<= 32;
+//  seed |= m_featureId;
+  boost::hash_combine(seed, m_numMwmId);
+  boost::hash_combine(seed, m_featureId);
+  boost::hash_combine(seed, m_startSegmentId);
+  boost::hash_combine(seed, m_endSegmentId);
+  boost::hash_combine(seed, m_forward);
+  m_hash = seed;
+  return seed;
+}
+
 bool JointSegment::operator<(JointSegment const & rhs) const
 {
   if (m_featureId != rhs.GetFeatureId())
@@ -78,6 +104,11 @@ bool JointSegment::operator==(JointSegment const & rhs) const
   return m_featureId == rhs.m_featureId && m_forward == rhs.m_forward &&
          m_startSegmentId == rhs.m_startSegmentId && m_endSegmentId == rhs.m_endSegmentId &&
          m_numMwmId == rhs.m_numMwmId;
+}
+
+bool JointSegment::operator!=(JointSegment const & rhs) const
+{
+  return !(*this == rhs);
 }
 
 std::string DebugPrint(JointSegment const & jointSegment)

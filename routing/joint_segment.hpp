@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <limits>
+#include <optional>
 #include <string>
 
 namespace routing
@@ -33,25 +34,27 @@ public:
   bool IsFake() const;
   bool IsRealSegment() const { return !IsFake(); }
 
-  Segment GetSegment(bool start) const
-  {
-    return {m_numMwmId, m_featureId, start ? m_startSegmentId : m_endSegmentId, m_forward};
-  }
+  Segment GetSegment(bool start) const;
+  size_t GetHash() const;
 
   bool operator<(JointSegment const & rhs) const;
   bool operator==(JointSegment const & rhs) const;
+  bool operator!=(JointSegment const & rhs) const;
 
-  bool operator!=(JointSegment const & rhs) const
+  struct Hash
   {
-    return !(*this == rhs);
-  }
+    size_t operator()(JointSegment const & jointSegment) const { return jointSegment.GetHash(); }
+  };
 
+  inline static uint64_t kAll = 0;
+  inline static uint64_t kCompute = 0;
 private:
   uint32_t m_featureId = kInvalidId;
   uint32_t m_startSegmentId = kInvalidId;
   uint32_t m_endSegmentId = kInvalidId;
   NumMwmId m_numMwmId = kFakeNumMwmId;
   bool m_forward = false;
+  mutable std::optional<size_t> m_hash;
 };
 
 class JointEdge

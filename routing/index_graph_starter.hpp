@@ -115,7 +115,7 @@ public:
                                          GetPoint(to, true /* front */));
   }
 
-  void SetAStarParents(bool forward, std::map<Segment, Segment> & parents) override
+  void SetAStarParents(bool forward, ska::flat_hash_map<Vertex, Vertex, Vertex::Hash> & parents) override
   {
     m_graph.SetAStarParents(forward, parents);
   }
@@ -125,8 +125,8 @@ public:
     m_graph.DropAStarParents();
   }
 
-  bool AreWavesConnectible(std::map<Vertex, Vertex> & forwardParents, Vertex const & commonVertex,
-                           std::map<Vertex, Vertex> & backwardParents) override
+  bool AreWavesConnectible(ska::flat_hash_map<Vertex, Vertex, Vertex::Hash> & forwardParents, Vertex const & commonVertex,
+                           ska::flat_hash_map<Vertex, Vertex, Vertex::Hash> & backwardParents) override
   {
     return m_graph.AreWavesConnectible(forwardParents, commonVertex, backwardParents, nullptr);
   }
@@ -145,14 +145,14 @@ public:
 
   // For compatibility with IndexGraphStarterJoints
   // @{
-  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents)
+  void SetAStarParents(bool forward, ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & parents)
   {
     m_graph.SetAStarParents(forward, parents);
   }
 
-  bool AreWavesConnectible(std::map<JointSegment, JointSegment> & forwardParents,
+  bool AreWavesConnectible(ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & forwardParents,
                            JointSegment const & commonVertex,
-                           std::map<JointSegment, JointSegment> & backwardParents,
+                           ska::flat_hash_map<JointSegment, JointSegment, JointSegment::Hash> & backwardParents,
                            std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter)
   {
     return m_graph.AreWavesConnectible(forwardParents, commonVertex, backwardParents,

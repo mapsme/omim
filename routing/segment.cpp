@@ -4,6 +4,8 @@
 
 #include <sstream>
 
+#include "3party/boost/boost/container_hash/hash.hpp"
+
 namespace routing
 {
 // Segment -----------------------------------------------------------------------------------------
@@ -43,6 +45,20 @@ bool Segment::IsInverse(Segment const & seg) const
 bool Segment::IsRealSegment() const
 {
   return m_mwmId != kFakeNumMwmId && !FakeFeatureIds::IsTransitFeature(m_featureId);
+}
+
+size_t Segment::GetHash() const
+{
+  if (m_hash)
+    return *m_hash;
+
+  size_t seed = 0;
+  boost::hash_combine(seed, m_featureId);
+  boost::hash_combine(seed, m_segmentIdx);
+  boost::hash_combine(seed, m_mwmId);
+  boost::hash_combine(seed, m_forward);
+  m_hash = seed;
+  return seed;
 }
 
 // SegmentEdge -------------------------------------------------------------------------------------

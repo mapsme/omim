@@ -6,6 +6,7 @@
 #include <functional>
 #include <unordered_map>
 
+#include "3party/flat_hash_map.hpp"
 #include <boost/circular_buffer.hpp>
 
 template<class Key, class Value>
@@ -47,7 +48,7 @@ public:
 private:
   size_t Size() const { return m_map.size(); }
 
-  std::unordered_map<Key, Value> m_map;
+  ska::flat_hash_map<Key, Value> m_map;
   boost::circular_buffer<Key> m_fifo;
   size_t m_capacity;
   Loader m_loader;

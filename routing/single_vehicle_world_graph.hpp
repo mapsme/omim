@@ -105,9 +105,9 @@ private:
   /// \return The result chain of fetureIds are used to find restrictions on it and understand whether
   ///         waves are connectable or not.
   template <typename VertexType>
-  bool AreWavesConnectibleImpl(std::map<VertexType, VertexType> const & forwardParents,
+  bool AreWavesConnectibleImpl(ska::flat_hash_map<VertexType, VertexType, typename VertexType::Hash> const & forwardParents,
                                VertexType const & commonVertex,
-                               std::map<VertexType, VertexType> const & backwardParents,
+                               ska::flat_hash_map<VertexType, VertexType, typename VertexType::Hash> const & backwardParents,
                                std::function<uint32_t(VertexType const &)> && fakeFeatureConverter);
 
   // Retrieves the same |jointEdges|, but into others mwms.
@@ -130,7 +130,7 @@ private:
   template <typename Vertex>
   struct AStarParents
   {
-    using ParentType = std::map<Vertex, Vertex>;
+    using ParentType = ska::flat_hash_map<Vertex, Vertex, typename Vertex::Hash>;
     static ParentType kEmpty;
     ParentType * forward = &kEmpty;
     ParentType * backward = &kEmpty;

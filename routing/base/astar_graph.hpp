@@ -2,6 +2,8 @@
 
 #include "routing/base/astar_weight.hpp"
 
+#include "3party/flat_hash_map.hpp"
+
 #include <map>
 #include <vector>
 
@@ -16,7 +18,7 @@ public:
   using Edge = EdgeType;
   using Weight = WeightType;
 
-  using Parents = std::map<Vertex, Vertex>;
+  using Parents = ska::flat_hash_map<Vertex, Vertex, typename Vertex::Hash>;
 
   virtual Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to) = 0;
 
@@ -35,7 +37,7 @@ public:
 
 template <typename VertexType, typename EdgeType, typename WeightType>
 void AStarGraph<VertexType, EdgeType, WeightType>::SetAStarParents(bool /* forward */,
-                                                                   std::map<Vertex, Vertex> & /* parents */) {}
+                                                                   Parents & /* parents */) {}
 
 template <typename VertexType, typename EdgeType, typename WeightType>
 void AStarGraph<VertexType, EdgeType, WeightType>::DropAStarParents() {}
