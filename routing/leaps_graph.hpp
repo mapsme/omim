@@ -35,8 +35,8 @@ private:
   void GetEdgesListFromStart(Segment const & segment, std::vector<SegmentEdge> & edges);
   void GetEdgesListToFinish(Segment const & segment, std::vector<SegmentEdge> & edges);
 
-  m2::PointD m_startPoint;
-  m2::PointD m_finishPoint;
+  ms::LatLon m_startPoint;
+  ms::LatLon m_finishPoint;
 
   Segment m_startSegment;
   Segment m_finishSegment;
