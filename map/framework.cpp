@@ -2366,13 +2366,13 @@ void Framework::SetPlacePageListeners(PlacePageEvent::OnOpen const & onOpen,
 
 place_page::Info const & Framework::GetCurrentPlacePageInfo() const
 {
-  CHECK(IsPlacePageOpened(), ());
+  CHECK(HasPlacePageInfo(), ());
   return m_currentPlacePageInfo.get();
 }
 
 place_page::Info & Framework::GetCurrentPlacePageInfo()
 {
-  CHECK(IsPlacePageOpened(), ());
+  CHECK(HasPlacePageInfo(), ());
   return m_currentPlacePageInfo.get();
 }
 
