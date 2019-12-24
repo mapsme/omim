@@ -18,11 +18,11 @@ allprojects {
     google()
     mavenCentral()
     jcenter()
-    maven { url 'https://www.jitpack.io' }
   }
 }
 
 repositories {
+  maven { url 'https://www.jitpack.io' }
   maven {
     url 'https://maven.fabric.io/public'
   }
