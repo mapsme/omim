@@ -56,6 +56,9 @@ bool IgnoreTag(string const & k, string const & v)
   if (k.empty())
     return true;
 
+  if (k == "country")
+    return true;
+
   // Process special keys.
   for (auto const & key : processedKeys)
   {
