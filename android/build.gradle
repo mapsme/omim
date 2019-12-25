@@ -22,13 +22,13 @@ allprojects {
 }
 
 repositories {
-  maven { url 'https://www.jitpack.io' }
   maven {
     url 'https://maven.fabric.io/public'
   }
   maven {
     url 'https://s3.amazonaws.com/moat-sdk-builds'
   }
+  maven { url 'https://www.jitpack.io' }
   maven { url 'https://maven.google.com' }
   maven { url 'https://dl.bintray.com/google/flexbox-layout/' }
   maven { url 'https://dl.bintray.com/google/exoplayer/' }
