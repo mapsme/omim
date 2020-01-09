@@ -2549,14 +2549,6 @@ boost::optional<place_page::Info> Framework::BuildPlacePageInfo(place_page::Buil
 
   outInfo.SetBuildInfo(buildInfo);
 
-  if (buildInfo.m_isMyPosition)
-  {
-    outInfo.SetSelectedObject(df::SelectionShape::OBJECT_MY_POSITION);
-    FillMyPositionInfo(outInfo, buildInfo);
-    SetPlacePageLocation(outInfo);
-    return outInfo;
-  }
-
   if (m_purchase && !m_purchase->IsSubscriptionActive(SubscriptionType::RemoveAds))
     outInfo.SetAdsEngine(m_adsEngine.get());
 
@@ -2592,6 +2584,14 @@ boost::optional<place_page::Info> Framework::BuildPlacePageInfo(place_page::Buil
                                         outInfo);
       return outInfo;
     }
+  }
+
+  if (buildInfo.m_isMyPosition)
+  {
+    outInfo.SetSelectedObject(df::SelectionShape::OBJECT_MY_POSITION);
+    FillMyPositionInfo(outInfo, buildInfo);
+    SetPlacePageLocation(outInfo);
+    return outInfo;
   }
 
   if (!buildInfo.m_postcode.empty())
