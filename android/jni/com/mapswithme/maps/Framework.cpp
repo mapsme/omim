@@ -1749,6 +1749,9 @@ Java_com_mapswithme_maps_Framework_nativeZoomToPoint(JNIEnv * env, jclass, jdoub
 JNIEXPORT jobject JNICALL
 Java_com_mapswithme_maps_Framework_nativeDeleteBookmarkFromMapObject(JNIEnv * env, jclass)
 {
+  if (!frm()->HasPlacePageInfo())
+    return nullptr;
+
   place_page::Info const & info = g_framework->GetPlacePageInfo();
   auto const bookmarkId = info.GetBookmarkId();
   frm()->GetBookmarkManager().GetEditSession().DeleteBookmark(bookmarkId);
@@ -1765,7 +1768,10 @@ Java_com_mapswithme_maps_Framework_nativeDeleteBookmarkFromMapObject(JNIEnv * en
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_Framework_nativeTurnOnChoosePositionMode(JNIEnv *, jclass, jboolean isBusiness, jboolean applyPosition)
 {
-  g_framework->SetChoosePositionMode(true, isBusiness, applyPosition, applyPosition ? g_framework->GetPlacePageInfo().GetMercator() : m2::PointD());
+  auto const pos = applyPosition && frm()->HasPlacePageInfo()
+      ? g_framework->GetPlacePageInfo().GetMercator()
+      : m2::PointD();
+  g_framework->SetChoosePositionMode(true, isBusiness, applyPosition, pos);
 }
 
 JNIEXPORT void JNICALL
