@@ -770,8 +770,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
     ImageButton trafficBtn = frame.findViewById(R.id.traffic);
     TrafficButton traffic = new TrafficButton(trafficBtn);
     View subway = frame.findViewById(R.id.subway);
-    View isoLineView = frame.findViewById(R.id.iso_line);
-    mToggleMapLayerController = new MapLayerCompositeController(traffic, subway, isoLineView,this);
+    View isoLines = frame.findViewById(R.id.isolines);
+    mToggleMapLayerController = new MapLayerCompositeController(traffic, subway, isoLines,this);
     mToggleMapLayerController.attachCore();
   }
 
@@ -1214,7 +1214,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onIsoLinesLayerSelected()
   {
-    mToggleMapLayerController.toggleMode(Mode.ISO_LINE);
+    mToggleMapLayerController.toggleMode(Mode.ISOLINES);
   }
 
   @Override
