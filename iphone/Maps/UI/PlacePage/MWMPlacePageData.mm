@@ -126,6 +126,9 @@ NSString * const kUserDefaultsLatLonAsDMSKey = @"UserDefaultsLatLonAsDMS";
   __weak auto wself = self;
   GetFramework().GetUGC(
       m_info.GetID(), [wself](ugc::UGC const & ugc, ugc::UGCUpdate const & update) {
+        if (!wself) {
+          return;
+        }
         __strong auto self = wself;
         self.ugc = [[MWMUGCViewModel alloc] initWithUGC:ugc update:update];
 

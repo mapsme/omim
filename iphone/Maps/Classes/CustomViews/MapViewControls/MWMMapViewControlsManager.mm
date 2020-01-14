@@ -131,6 +131,9 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
 
 - (void)showPlacePage {
   [[MWMNetworkPolicy sharedPolicy] callOnlineApi:^(BOOL) {
+    if (![self.placePageManager canShowPlacePage]) {
+      return;
+    }
     self.trafficButtonHidden = YES;
     [self.placePageManager show];
   }];
@@ -142,6 +145,9 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
 
 - (void)showPlacePageReview {
   [[MWMNetworkPolicy sharedPolicy] callOnlineApi:^(BOOL) {
+    if (![self.placePageManager canShowPlacePage]) {
+      return;
+    }
     self.trafficButtonHidden = YES;
     [self.placePageManager showReview];
   }];
