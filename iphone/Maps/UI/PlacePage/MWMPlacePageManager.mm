@@ -83,6 +83,10 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
               fromSource:MWMUGCReviewSourceNotification];
 }
 
+- (BOOL)canShowPlacePage {
+  return GetFramework().HasPlacePageInfo();
+}
+
 - (void)show {
   self.isSponsoredOpenLogged = NO;
   self.currentDownloaderStatus = storage::NodeStatus::Undefined;
