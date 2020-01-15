@@ -271,8 +271,8 @@ void Info::SetTitlesForBookmark()
 std::string Info::GetFormattedCoordinate(bool isDMS) const
 {
   auto const & ll = GetLatLon();
-  return isDMS ? measurement_utils::FormatLatLon(ll.m_lat, ll.m_lon, true)
-               : measurement_utils::FormatLatLonAsDMS(ll.m_lat, ll.m_lon, 2);
+  return isDMS ? measurement_utils::FormatLatLonAsDMS(ll.m_lat, ll.m_lon, 2)
+               : measurement_utils::FormatLatLon(ll.m_lat, ll.m_lon, true);
 }
 
 float Info::GetRatingRawValue() const
