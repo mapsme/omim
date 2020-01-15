@@ -798,6 +798,9 @@ public:
   bool LoadTransitSchemeEnabled();
   void SaveTransitSchemeEnabled(bool enabled);
 
+  void EnableIsolines(bool enable);
+  bool IsolinesEnabled() const;
+
   dp::ApiVersion LoadPreferredGraphicsAPI();
   void SavePreferredGraphicsAPI(dp::ApiVersion apiVersion);
 
