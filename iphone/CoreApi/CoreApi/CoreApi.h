@@ -17,6 +17,6 @@ FOUNDATION_EXPORT const unsigned char CoreApiVersionString[];
 #import <CoreApi/MWMSearchFrameworkHelper.h>
 #import <CoreApi/MWMTag.h>
 #import <CoreApi/MWMTagGroup.h>
-#import <CoreApi/MWMTrafficManager.h>
+#import <CoreApi/MWMMapOverlayManager.h>
 #import <CoreApi/MWMTypes.h>
 #import <CoreApi/MWMUTM.h>
