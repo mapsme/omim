@@ -347,7 +347,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   if ([MWMRouter isOnRoute])
     [MWMRouter stopRouting];
   
-  if ([MWMTrafficManager transitEnabled])
+  if ([MWMMapOverlayManager transitEnabled])
     [MWMRouter setType:MWMRouterTypePublicTransport];
   
   MWMRoutePoint * point = [self routePointWithType:MWMRoutePointTypeFinish intermediateIndex:0];
