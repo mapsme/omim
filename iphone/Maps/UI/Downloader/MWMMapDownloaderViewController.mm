@@ -60,9 +60,7 @@ using namespace storage;
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  UIColor * searchBarColor = [UIColor primary];
-  self.statusBarBackground.backgroundColor = self.searchBar.barTintColor = searchBarColor;
-  self.searchBar.backgroundImage = [UIImage imageWithColor:searchBarColor];
+  [self.statusBarBackground setStyleAndApply:@"SearchBarView"];
 }
 
 - (void)configViews

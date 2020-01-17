@@ -88,3 +88,4 @@
 #import "MapsAppDelegate.h"
 #import "DeepLinkRouteStrategyAdapter.h"
 #import "MWMMapViewControlsManager.h"
+#import "SwizzleStyle.h"

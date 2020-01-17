@@ -289,7 +289,6 @@ BOOL defaultOrientation(CGSize const & size)
   {
     [self setTurnsViewVisible:YES];
     self.nextTurnImageView.image = info.turnImage;
-    self.nextTurnImageView.mwm_coloring = MWMImageColoringWhite;
 
     if (info.roundExitNumber == 0)
     {
@@ -323,7 +322,6 @@ BOOL defaultOrientation(CGSize const & size)
     {
       self.secondTurnView.hidden = NO;
       self.secondTurnImageView.image = info.nextTurnImage;
-      self.secondTurnImageView.mwm_coloring = MWMImageColoringBlack;
     }
     else
     {
@@ -523,7 +521,6 @@ BOOL defaultOrientation(CGSize const & size)
   [self setNeedsLayout];
   if (isVisible)
   {
-    self.bookmarksButton.imageName = @"ic_routing_bookmark";
     [self setSearchState:NavigationSearchState::MinimizedNormal animated:NO];
     self.turnsWidth.constant = IPAD ? kTurnsiPadWidth : kTurnsiPhoneWidth;
     UIView * sv = self.ownerView;
@@ -560,4 +557,10 @@ BOOL defaultOrientation(CGSize const & size)
       }];
 }
 
+//MARK: Update Theme
+- (void)applyTheme
+{
+  [self setSearchState:_searchState];
+
+}
 @end

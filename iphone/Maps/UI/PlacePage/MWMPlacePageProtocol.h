@@ -55,7 +55,6 @@ struct HotelFacility;
 - (void)showReview;
 - (BOOL)isPPShown;
 - (void)dismiss;
-- (void)mwm_refreshUI;
 - (BOOL)canShowPlacePage;
 
 @end
