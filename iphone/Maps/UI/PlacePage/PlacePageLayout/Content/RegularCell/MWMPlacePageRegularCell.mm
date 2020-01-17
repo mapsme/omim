@@ -1,7 +1,7 @@
 #import "MWMPlacePageRegularCell.h"
 #import "MapViewController.h"
 #import "Statistics.h"
-#import "UIImageView+Coloring.h"
+#import "SwiftBridge.h"
 
 #include "local_ads/event.hpp"
 
@@ -86,9 +86,9 @@
   UIImage * image =
       [UIImage imageNamed:[NSString stringWithFormat:@"%@%@", @"ic_placepage_", name]];
   self.icon.image = image;
-  self.icon.mwm_coloring = [self.textContainer isKindOfClass:[UITextView class]]
-                               ? MWMImageColoringBlue
-                               : MWMImageColoringBlack;
+  self.icon.styleName = [self.textContainer isKindOfClass:[UITextView class]]
+                               ? @"MWMBlue"
+                               : @"MWMBlack";
   [self changeText:data];
   UILongPressGestureRecognizer * longTap =
       [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longTap:)];

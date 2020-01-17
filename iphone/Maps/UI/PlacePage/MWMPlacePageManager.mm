@@ -328,7 +328,6 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type, place_page:
   [self setupSpeedAndDistance];
 }
 
-- (void)mwm_refreshUI { [self.layout mwm_refreshUI]; }
 - (void)routeFrom
 {
   [Statistics logEvent:kStatEventName(kStatPlacePage, kStatBuildRoute)

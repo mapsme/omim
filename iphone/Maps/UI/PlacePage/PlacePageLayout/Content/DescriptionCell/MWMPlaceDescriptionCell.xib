@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,7 +13,7 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="178"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="Nyp-bg-ADZ" id="g5P-Il-QmR">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="177.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="178"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="HsW-qJ-7Mr">
@@ -29,9 +27,7 @@
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                         <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES"/>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular16"/>
-                            <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackPrimaryText"/>
-                            <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background:regular16:blackPrimaryText"/>
                             <userDefinedRuntimeAttribute type="number" keyPath="textContainer.lineFragmentPadding">
                                 <integer key="value" value="0"/>
                             </userDefinedRuntimeAttribute>
@@ -47,11 +43,8 @@
                         <state key="normal" title="more"/>
                         <state key="highlighted" backgroundImage="dialog_btn_press"/>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular16"/>
-                            <userDefinedRuntimeAttribute type="string" keyPath="textColorName" value="linkBlue"/>
-                            <userDefinedRuntimeAttribute type="string" keyPath="textColorHighlightedName" value="linkBlueHighlighted"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="MoreButton"/>
                             <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="text_more_button"/>
-                            <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
                         </userDefinedRuntimeAttributes>
                         <connections>
                             <action selector="moreButtonPressed:" destination="Nyp-bg-ADZ" eventType="touchUpInside" id="7Zx-hs-Qoa"/>

@@ -1,25 +1,8 @@
 @objc(MWMPlacePageTaxiCell)
 final class PlacePageTaxiCell: MWMTableViewCell {
   @IBOutlet private weak var icon: UIImageView!
-  @IBOutlet private weak var title: UILabel! {
-    didSet {
-      title.font = UIFont.bold14()
-      title.textColor = UIColor.blackPrimaryText()
-    }
-  }
-
-  @IBOutlet private weak var orderButton: UIButton! {
-    didSet {
-      let l = orderButton.layer
-      l.cornerRadius = 8
-      l.borderColor = UIColor.linkBlue().cgColor
-      l.borderWidth = 1
-      orderButton.setTitle(L("taxi_order"), for: .normal)
-      orderButton.setTitleColor(UIColor.white, for: .normal)
-      orderButton.titleLabel?.font = UIFont.bold14()
-      orderButton.backgroundColor = UIColor.linkBlue()
-    }
-  }
+  @IBOutlet private weak var title: UILabel!
+  @IBOutlet private weak var orderButton: UIButton!
 
   private weak var delegate: MWMPlacePageButtonsProtocol!
   private var type: MWMPlacePageTaxiProvider!

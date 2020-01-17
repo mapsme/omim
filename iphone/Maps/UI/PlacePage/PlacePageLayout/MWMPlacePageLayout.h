@@ -39,8 +39,6 @@ enum class NodeStatus;
 - (void)updateWithData:(MWMPlacePageData *)data;
 - (void)close;
 
-- (void)mwm_refreshUI;
-
 - (UIView *)shareAnchor;
 
 - (void)reloadBookmarkSection:(BOOL)isBookmark;

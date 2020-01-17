@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="_MWMPPPSchedule" id="HVA-4K-8ma" customClass="_MWMPPPSchedule" propertyAccessControl="all">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="_MWMPPPSchedule" id="HVA-4K-8ma" customClass="_MWMPPPSchedule" propertyAccessControl="none">
             <rect key="frame" x="0.0" y="0.0" width="320" height="24"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HVA-4K-8ma" id="Vj6-NH-gE1">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="23.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="24"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BQA-1t-HxB" userLabel="Distance Box">
-                        <rect key="frame" x="284" y="3" width="20" height="20.5"/>
+                        <rect key="frame" x="284" y="3" width="20" height="21"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AH1-ti-uSf" userLabel="Distance">
-                                <rect key="frame" x="20" y="0.0" width="0.0" height="20.5"/>
+                                <rect key="frame" x="20" y="0.0" width="0.0" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="linkBlue"/>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium14"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="medium14:linkBlueText"/>
                                 </userDefinedRuntimeAttributes>
                             </label>
                             <imageView autoresizesSubviews="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_direction_light" translatesAutoresizingMaskIntoConstraints="NO" id="Mh6-ds-8hz">
@@ -43,7 +39,7 @@
                                 </userDefinedRuntimeAttributes>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yNm-lW-0oC">
-                                <rect key="frame" x="-5" y="-5" width="30" height="30.5"/>
+                                <rect key="frame" x="-5" y="-5" width="30" height="31"/>
                                 <connections>
                                     <action selector="tap" destination="HVA-4K-8ma" eventType="touchUpInside" id="hq0-gd-ARQ"/>
                                 </connections>
@@ -64,13 +60,12 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalCompressionResistancePriority="400" text="Schedule" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fDX-g2-0au">
-                        <rect key="frame" x="16" y="4" width="288" height="19"/>
+                        <rect key="frame" x="16" y="4" width="289" height="19.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackSecondaryText"/>
-                            <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular14"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular14:blackSecondaryText"/>
                         </userDefinedRuntimeAttributes>
                     </label>
                 </subviews>
@@ -92,7 +87,7 @@
                 <outlet property="schedule" destination="fDX-g2-0au" id="rW6-nt-fFa"/>
                 <outlet property="trailing" destination="mdD-gF-WZW" id="ded-ot-J3q"/>
             </connections>
-            <point key="canvasLocation" x="327" y="645"/>
+            <point key="canvasLocation" x="473.91304347826093" y="431.91964285714283"/>
         </tableViewCell>
     </objects>
     <resources>

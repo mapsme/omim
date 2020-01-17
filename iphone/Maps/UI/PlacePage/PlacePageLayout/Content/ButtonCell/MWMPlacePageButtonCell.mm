@@ -24,8 +24,6 @@
 - (void)awakeFromNib
 {
   [super awakeFromNib];
-  [self.titleButton setTitleColor:[UIColor linkBlueHighlighted] forState:UIControlStateDisabled];
-  [self.titleButton setTitleColor:[UIColor linkBlue] forState:UIControlStateNormal];
 }
 
 - (void)setEnabled:(BOOL)enabled { self.titleButton.enabled = enabled; }
@@ -117,6 +115,12 @@
 
     btnLayer.borderWidth = 0;
   }
+}
+
+- (void)applyTheme
+{
+  [super applyTheme];
+  [self setIsInsetButton:self.isInsetButton];
 }
 
 @end

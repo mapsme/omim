@@ -188,7 +188,6 @@ using namespace storage;
 - (void)configTable
 {
   UITableView * tv = self.tableView;
-  tv.separatorColor = [UIColor blackDividers];
   [tv registerWithCellClass:[MWMMapDownloaderAdsTableViewCell class]];
   [tv registerWithCellClass:[MWMMapDownloaderButtonTableViewCell class]];
   [tv registerWithCellClass:[MWMMapDownloaderTableViewCell class]];

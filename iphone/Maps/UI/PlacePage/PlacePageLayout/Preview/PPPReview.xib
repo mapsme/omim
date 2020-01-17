@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,20 +13,17 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="38"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ngD-jq-BYV" id="Zth-C7-aXm">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="37.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="38"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="67u-jC-41D" customClass="RatingSummaryView" customModule="maps_me" customModuleProvider="target">
-                        <rect key="frame" x="12" y="8" width="48" height="21.5"/>
+                        <rect key="frame" x="12" y="8" width="48" height="22"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="48" placeholder="YES" id="Ebr-Th-1jm"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="image" keyPath="normalImage" value="ic_12px_rating_normal"/>
-                            <userDefinedRuntimeAttribute type="image" keyPath="excellentImage" value="ic_12px_rating_excellent"/>
-                            <userDefinedRuntimeAttribute type="image" keyPath="goodImage" value="ic_12px_rating_good"/>
-                            <userDefinedRuntimeAttribute type="image" keyPath="horribleImage" value="ic_12px_rating_horrible"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="RatingSummaryView12"/>
                             <userDefinedRuntimeAttribute type="number" keyPath="topOffset">
                                 <real key="value" value="3"/>
                             </userDefinedRuntimeAttribute>
@@ -47,7 +42,6 @@
                             <userDefinedRuntimeAttribute type="number" keyPath="textSize">
                                 <real key="value" value="12"/>
                             </userDefinedRuntimeAttribute>
-                            <userDefinedRuntimeAttribute type="image" keyPath="badImage" value="ic_12px_rating_bad"/>
                         </userDefinedRuntimeAttributes>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalCompressionResistancePriority="499" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsLetterSpacingToFitWidth="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XaG-Vf-CwT">
@@ -55,36 +49,42 @@
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular14:blackSecondaryText"/>
+                        </userDefinedRuntimeAttributes>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" verticalHuggingPriority="252" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ga0-6D-Ttl">
-                        <rect key="frame" x="186" y="8" width="118" height="21"/>
+                        <rect key="frame" x="186" y="8" width="118" height="22"/>
                         <inset key="contentEdgeInsets" minX="8" minY="2" maxX="8" maxY="2"/>
                         <state key="normal" title="+ Leave review"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="leave_a_review"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="FlatNormalButton"/>
+                        </userDefinedRuntimeAttributes>
                         <connections>
                             <action selector="addReview" destination="ngD-jq-BYV" eventType="touchUpInside" id="P2B-73-A6f"/>
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$$$" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Thk-j3-Or0">
-                        <rect key="frame" x="272" y="8" width="32" height="20.5"/>
+                        <rect key="frame" x="272" y="9" width="32" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium16"/>
-                            <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackPrimaryText"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular14:blackPrimaryText"/>
                         </userDefinedRuntimeAttributes>
                     </label>
                     <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="separator_image" translatesAutoresizingMaskIntoConstraints="NO" id="t1Z-Sp-Xi5">
-                        <rect key="frame" x="0.0" y="36" width="320" height="1"/>
+                        <rect key="frame" x="0.0" y="37" width="320" height="1"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="LZA-3w-U5e"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="coloring" value="MWMSeparator"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="MWMSeparator"/>
                         </userDefinedRuntimeAttributes>
                     </imageView>
                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vIX-W5-Cye">
-                        <rect key="frame" x="308" y="8" width="20" height="20"/>
+                        <rect key="frame" x="308" y="9" width="20" height="20"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aAP-XV-Kvr">
                                 <rect key="frame" x="4" y="0.0" width="12" height="20"/>
@@ -92,8 +92,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium12"/>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="white"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="medium12:whiteText"/>
                                 </userDefinedRuntimeAttributes>
                             </label>
                         </subviews>
@@ -107,10 +106,7 @@
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="20" id="r42-aa-VVp"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="linkBlue"/>
-                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                <integer key="value" value="10"/>
-                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="PPReviewDiscountView"/>
                         </userDefinedRuntimeAttributes>
                     </view>
                 </subviews>
@@ -148,11 +144,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="ic_12px_rating_bad" width="12" height="12"/>
-        <image name="ic_12px_rating_excellent" width="12" height="12"/>
-        <image name="ic_12px_rating_good" width="12" height="12"/>
-        <image name="ic_12px_rating_horrible" width="12" height="12"/>
-        <image name="ic_12px_rating_normal" width="12" height="12"/>
         <image name="separator_image" width="1" height="1"/>
     </resources>
 </document>

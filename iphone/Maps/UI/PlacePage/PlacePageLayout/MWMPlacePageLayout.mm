@@ -192,12 +192,6 @@ std::map<MetainfoRows, Class> const kMetaInfoCells = {
   [self.layoutImpl onClose];
 }
 
-- (void)mwm_refreshUI
-{
-  [self.placePageView mwm_refreshUI];
-  [self.actionBar mwm_refreshUI];
-}
-
 - (void)reloadBookmarkSection:(BOOL)isBookmark
 {
   auto data = self.data;
