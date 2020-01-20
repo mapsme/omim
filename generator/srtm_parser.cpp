@@ -97,8 +97,8 @@ feature::TAltitude SrtmTile::GetHeight(ms::LatLon const & coord)
     lt += 1;
   lt = 1 - lt;  // from North to South
 
-  size_t const row = kArcSecondsInDegree * lt;
-  size_t const col = kArcSecondsInDegree * ln;
+  size_t const row = kArcSecondsInDegree * lt + 0.5;
+  size_t const col = kArcSecondsInDegree * ln + 0.5;
 
   size_t const ix = row * (kArcSecondsInDegree + 1) + col;
 
@@ -147,8 +147,10 @@ void SrtmTile::Invalidate()
 SrtmTileManager::SrtmTileManager(std::string const & dir) : m_dir(dir) {}
 feature::TAltitude SrtmTileManager::GetHeight(ms::LatLon const & coord)
 {
-  std::string const base = SrtmTile::GetBase(coord);
-  auto it = m_tiles.find(base);
+  uint64_t const key = (static_cast<uint64_t>(floor(coord.m_lat)) << 32u) |
+    static_cast<uint64_t>(floor(coord.m_lon));
+
+  auto it = m_tiles.find(key);
   if (it == m_tiles.end())
   {
     SrtmTile tile;
@@ -158,12 +160,13 @@ feature::TAltitude SrtmTileManager::GetHeight(ms::LatLon const & coord)
     }
     catch (RootException const & e)
     {
+      std::string const base = SrtmTile::GetBase(coord);
       LOG(LINFO, ("Can't init SRTM tile:", base, "reason:", e.Msg()));
     }
 
     // It's OK to store even invalid tiles and return invalid height
     // for them later.
-    it = m_tiles.emplace(base, std::move(tile)).first;
+    it = m_tiles.emplace(key, std::move(tile)).first;
   }
 
   return it->second.GetHeight(coord);

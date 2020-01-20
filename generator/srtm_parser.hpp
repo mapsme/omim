@@ -50,7 +50,7 @@ public:
 
 private:
   std::string m_dir;
-  std::unordered_map<std::string, SrtmTile> m_tiles;
+  std::unordered_map<uint64_t, SrtmTile> m_tiles;
 
   DISALLOW_COPY(SrtmTileManager);
 };
