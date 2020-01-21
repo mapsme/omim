@@ -613,6 +613,11 @@ void Framework::SetTransitSchemeListener(TransitReadManager::TransitStateChanged
   m_onTransitStateChangedFn = function;
 }
 
+void Framework::SetIsolinesListener(TransitReadManager::TransitStateChangedFn const & function)
+{
+  m_onIsolinesStateChangedFn = function;
+}
+
 bool Framework::IsTrafficEnabled()
 {
   return m_work.GetTrafficManager().IsEnabled();
