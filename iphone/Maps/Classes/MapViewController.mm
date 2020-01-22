@@ -74,7 +74,7 @@ NSString * const kHotelFacilitiesSegue = @"Map2FacilitiesSegue";
 
 @interface MapViewController ()<MWMFrameworkDrapeObserver, MWMFrameworkStorageObserver,
                                 MWMWelcomePageControllerProtocol, MWMKeyboardObserver,
-                                RemoveAdsViewControllerDelegate>
+                                RemoveAdsViewControllerDelegate, MWMBookmarksObserver>
 
 @property(nonatomic, readwrite) MWMMapViewControlsManager * controlsManager;
 
@@ -399,8 +399,14 @@ NSString * const kHotelFacilitiesSegue = @"Map2FacilitiesSegue";
   });
 
   self.userTouchesAction = UserTouchesActionNone;
+  [[MWMBookmarksManager sharedManager] addObserver: self];
   [[MWMBookmarksManager sharedManager] loadBookmarks];
   [MWMFrameworkListener addObserver:self];
+}
+
+- (void)dealloc {
+  [[MWMBookmarksManager sharedManager] removeObserver: self];
+  [MWMFrameworkListener removeObserver:self];
 }
 
 - (void)addListener:(id<MWMLocationModeListener>)listener {
@@ -833,6 +839,16 @@ NSString * const kHotelFacilitiesSegue = @"Map2FacilitiesSegue";
     self.controlsView.hidden = YES;
   }
   self.carplayPlaceholderLogo.hidden = NO;
+}
+
+#pragma mark - MWMBookmarksObserver
+- (void)onBookmarksFileLoadSuccess {
+  [[MWMAlertViewController activeAlertController] presentInfoAlert:L(@"load_kmz_title") text:L(@"load_kmz_successful")];
+  [Statistics logEvent:kStatEventName(kStatApplication, kStatImport) withParameters:@{kStatValue : kStatImport}];
+}
+
+- (void)onBookmarksFileLoadError {
+  [[MWMAlertViewController activeAlertController] presentInfoAlert:L(@"load_kmz_title") text:L(@"load_kmz_failed")];
 }
 
 @end
