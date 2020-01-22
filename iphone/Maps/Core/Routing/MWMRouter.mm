@@ -462,7 +462,9 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
       {
         rm.FollowRoute();
         [[MWMMapViewControlsManager manager] onRouteStart];
-        [MWMThemeManager setAutoUpdates:YES];
+       if (@available(iOS 13.0, *)) {} else {
+         [MWMThemeManager setAutoUpdates:YES];
+       }
       }
       else
       {
@@ -521,7 +523,9 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   GetFramework().GetRoutingManager().CloseRouting(removeRoutePoints);
   if (removeRoutePoints)
     GetFramework().GetRoutingManager().DeleteSavedRoutePoints();
-  [MWMThemeManager setAutoUpdates:NO];
+  if (@available(iOS 13.0, *)) {} else {
+    [MWMThemeManager setAutoUpdates:NO];
+  }
   [[MapsAppDelegate theApp] showAlertIfRequired];
 }
 

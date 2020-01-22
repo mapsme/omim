@@ -1,4 +1,3 @@
-import UIKit
 
 final class PhotoViewController: UIViewController {
   let scalingView = PhotoScalingView()
