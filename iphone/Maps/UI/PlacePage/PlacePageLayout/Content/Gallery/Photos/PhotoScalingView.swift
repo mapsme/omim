@@ -1,4 +1,3 @@
-import UIKit
 
 final class PhotoScalingView: UIScrollView {
   private(set) lazy var imageView: UIImageView = {

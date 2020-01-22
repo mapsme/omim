@@ -1,4 +1,3 @@
-import UIKit
 
 final class PhotosInteractionAnimator: NSObject {
   private enum Settings {

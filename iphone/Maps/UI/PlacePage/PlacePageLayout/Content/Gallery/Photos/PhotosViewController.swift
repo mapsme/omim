@@ -1,4 +1,3 @@
-import UIKit
 
 @objc(MWMPhotosViewController)
 final class PhotosViewController: MWMViewController {

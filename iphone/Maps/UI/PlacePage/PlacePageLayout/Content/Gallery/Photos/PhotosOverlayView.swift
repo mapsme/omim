@@ -1,4 +1,3 @@
-import UIKit
 
 final class PhotosOverlayView: UIView {
   private var navigationBar: UINavigationBar!
