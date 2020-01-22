@@ -412,6 +412,11 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
                                             target:(UIControl *)self.trafficButton.view
                                           delegate:self];
     break;
+  case MWMTipIsolines:
+    tutorial = [MWMTutorialViewController tutorial:MWMTutorialTypeIsolines
+                                            target:(UIControl *)self.trafficButton.view
+                                          delegate:self];
+    break;
   case MWMTipNone:
       tutorial = nil;
     break;
@@ -535,6 +540,9 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
       break;
     case MWMTipSubway:
       statTutorialType = @3;
+      break;
+    case MWMTipIsolines:
+      statTutorialType = @4;
       break;
     case MWMTipNone:
       return;
