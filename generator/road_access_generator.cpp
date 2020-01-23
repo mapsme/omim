@@ -116,8 +116,7 @@ TagMapping const kDefaultTagMapping = {
   {OsmElement::Tag("access", "permissive"), RoadAccess::Type::Yes},
   {OsmElement::Tag("access", "no"), RoadAccess::Type::No},
   {OsmElement::Tag("access", "private"), RoadAccess::Type::Private},
-  {OsmElement::Tag("access", "destination"), RoadAccess::Type::Destination},
-  {OsmElement::Tag("highway", "ford"), RoadAccess::Type::No}
+  {OsmElement::Tag("access", "destination"), RoadAccess::Type::Destination}
 };
 
 set<OsmElement::Tag> const kHighwaysWhereIgnorePrivateAccessForCar = {
