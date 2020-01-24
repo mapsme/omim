@@ -48,6 +48,7 @@ public:
   SrtmTileManager(std::string const & dir);
 
   feature::TAltitude GetHeight(ms::LatLon const & coord);
+  bool HasValidTile(ms::LatLon const & coord) const;
 
 private:
   std::string m_dir;
