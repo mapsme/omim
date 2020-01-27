@@ -1,13 +1,15 @@
 package com.mapswithme.maps.maplayer.traffic;
 
+import android.text.TextUtils;
+
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-
+import com.mapswithme.util.statistics.StatisticValueConverter;
 import com.mapswithme.util.statistics.Statistics;
 
 import java.util.List;
 
-enum TrafficState
+enum TrafficState implements StatisticValueConverter<String>
 {
   DISABLED
       {
@@ -18,7 +20,7 @@ enum TrafficState
         }
       },
 
-  ENABLED(Statistics.ParamValue.SUCCESS)
+  ENABLED
       {
         @Override
         protected void activateInternal(@NonNull TrafficManager.TrafficCallback callback)
@@ -45,21 +47,35 @@ enum TrafficState
         }
       },
 
-  NO_DATA(Statistics.ParamValue.UNAVAILABLE)
+  NO_DATA
       {
         @Override
         protected void activateInternal(@NonNull TrafficManager.TrafficCallback callback)
         {
           callback.onNoData();
         }
+
+        @NonNull
+        @Override
+        public String toStatisticValue()
+        {
+          return Statistics.ParamValue.UNAVAILABLE;
+        }
       },
 
-  NETWORK_ERROR(Statistics.EventParam.ERROR)
+  NETWORK_ERROR
       {
         @Override
         protected void activateInternal(@NonNull TrafficManager.TrafficCallback callback)
         {
           callback.onNetworkError();
+        }
+
+        @NonNull
+        @Override
+        public String toStatisticValue()
+        {
+          return Statistics.EventParam.ERROR;
         }
       },
 
@@ -82,31 +98,19 @@ enum TrafficState
       };
 
   @NonNull
-  private final String mAnalyticsParamName;
-
-  TrafficState()
+  @Override
+  public String toStatisticValue()
   {
-    mAnalyticsParamName = name();
-  }
-
-  TrafficState(@NonNull String analyticsParamName)
-  {
-    mAnalyticsParamName = analyticsParamName;
-  }
-
-  @NonNull
-  private String getAnalyticsParamName()
-  {
-    return mAnalyticsParamName;
+    return "";
   }
 
   public void activate(@NonNull List<TrafficManager.TrafficCallback> trafficCallbacks)
   {
     for (TrafficManager.TrafficCallback callback : trafficCallbacks)
-    {
       activateInternal(callback);
-    }
-    Statistics.INSTANCE.trackTrafficEvent(getAnalyticsParamName());
+
+    if (!TextUtils.isEmpty(toStatisticValue()))
+      Statistics.INSTANCE.trackTrafficEvent(toStatisticValue());
   }
 
   protected abstract void activateInternal(@NonNull TrafficManager.TrafficCallback callback);

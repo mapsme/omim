@@ -2,9 +2,9 @@ package com.mapswithme.maps.maplayer.traffic;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
+import com.mapswithme.util.statistics.Statistics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +49,7 @@ public enum TrafficManager
   {
     mLogger.d(TAG, "Enable traffic");
     TrafficState.nativeEnable();
+    Statistics.INSTANCE.trackTrafficEvent(Statistics.ParamValue.SUCCESS);
   }
 
   private void disable()
