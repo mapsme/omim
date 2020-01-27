@@ -108,6 +108,8 @@ set(
   intermediate_data.cpp
   intermediate_data.hpp
   intermediate_elements.hpp
+  isolines_generator.cpp
+  isolines_generator.hpp
   maxspeeds_builder.cpp
   maxspeeds_builder.hpp
   maxspeeds_collector.cpp

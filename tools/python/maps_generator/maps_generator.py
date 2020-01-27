@@ -89,7 +89,7 @@ def stage_features(env):
         extra["brands_translations_data"] = env.food_translations_path
     if env.is_accepted_stage(stage_coastline):
         extra["emit_coasts"]=True
-        
+    extra["isolines_path"] = env.isolines_path
     stages.stage_features(env, **extra)
     if os.path.exists(env.packed_polygons_path):
         shutil.copy2(env.packed_polygons_path, env.mwm_path)
