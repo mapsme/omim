@@ -1,11 +1,11 @@
 package com.mapswithme.util;
 
 import android.os.Build;
+import android.text.TextUtils;
+import android.util.Base64;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
-
-import android.util.Base64;
 import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.util.log.Logger;
@@ -206,13 +206,13 @@ public final class HttpUploader
     mHeaders.add(new KeyValue("Content-Type", "multipart/form-data; boundary=" + mBoundary));
     mHeaders.add(new KeyValue("Content-Length", String.valueOf(bodyLength)));
     for (KeyValue header : mHeaders)
-      connection.setRequestProperty(header.mKey, header.mValue);
+      connection.setRequestProperty(header.getKey(), header.getValue());
   }
 
   private void fillBodyParams(@NonNull StringBuilder builder)
   {
     for (KeyValue field : mParams)
-      addParam(builder, field.mKey, field.mValue);
+      addParam(builder, field.getKey(), field.getValue());
   }
 
   private void addParam(@NonNull StringBuilder builder, @NonNull String key, @NonNull String value)

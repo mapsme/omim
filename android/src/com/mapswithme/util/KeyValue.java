@@ -4,6 +4,11 @@ import androidx.annotation.NonNull;
 
 public final class KeyValue
 {
+  @NonNull
+  private final String mKey;
+  @NonNull
+  private final String mValue;
+
   public KeyValue(@NonNull String key, @NonNull String value)
   {
     mKey = key;
@@ -11,7 +16,14 @@ public final class KeyValue
   }
 
   @NonNull
-  public final String mKey;
+  public String getKey()
+  {
+    return mKey;
+  }
+
   @NonNull
-  public final String mValue;
+  public String getValue()
+  {
+    return mValue;
+  }
 }
