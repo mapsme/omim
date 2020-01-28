@@ -472,6 +472,9 @@ void RoutingManager::OnRoutePointPassed(RouteMarkType type, size_t intermediateI
   RoutePointsLayout routePoints(*m_bmManager);
   routePoints.PassRoutePoint(type, intermediateIndex);
 
+  if (type != RouteMarkType::Start && type != RouteMarkType::Finish)
+    routePoints.RemoveRoutePoint(type, intermediateIndex);
+
   if (type == RouteMarkType::Finish)
     RemoveRoute(false /* deactivateFollowing */);
 
