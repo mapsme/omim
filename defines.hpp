@@ -47,6 +47,7 @@
 #define REGION_INFO_FILE_TAG "rgninfo"
 #define METALINES_FILE_TAG "metalines"
 #define CAMERAS_INFO_FILE_TAG "speedcams"
+#define ISOLINES_INFO_FILE_TAG "isolines_info"
 // Temporary addresses section that is used in search index generation.
 #define SEARCH_TOKENS_FILE_TAG "addrtags"
 #define TRAFFIC_KEYS_FILE_TAG "traffic"
