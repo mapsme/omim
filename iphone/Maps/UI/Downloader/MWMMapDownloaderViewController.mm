@@ -60,7 +60,6 @@ using namespace storage;
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  [self.statusBarBackground setStyleAndApply:@"SearchBarView"];
 }
 
 - (void)configViews
