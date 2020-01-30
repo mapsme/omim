@@ -1,6 +1,7 @@
 #import "MWMActionBarButton.h"
 #import "MWMButton.h"
 #import "MWMCircularProgress.h"
+#import "SwiftBridge.h"
 
 NSString * titleForPartner(int partnerIndex)
 {
@@ -98,6 +99,7 @@ UIColor * backgroundColorForPartner(int partnerIndex)
     }
     case EButton::Booking:
       [self.button setImage:[UIImage imageNamed:@"ic_booking_logo"] forState:UIControlStateNormal];
+      self.label.styleName = @"regular10";
       self.label.textColor = UIColor.whiteColor;
       self.backgroundColor = [UIColor bookingBackground];
       if (!IPAD)
@@ -109,6 +111,7 @@ UIColor * backgroundColorForPartner(int partnerIndex)
     case EButton::BookingSearch:
       [self.button setImage:[UIImage imageNamed:@"ic_booking_search"]
                    forState:UIControlStateNormal];
+      self.label.styleName = @"regular10";
       self.label.textColor = UIColor.whiteColor;
       self.backgroundColor = [UIColor bookingBackground];
       if (!IPAD)
@@ -119,6 +122,7 @@ UIColor * backgroundColorForPartner(int partnerIndex)
       break;
     case EButton::Opentable:
       [self.button setImage:[UIImage imageNamed:@"ic_opentable"] forState:UIControlStateNormal];
+      self.label.styleName = @"regular10";
       self.label.textColor = UIColor.whiteColor;
       self.backgroundColor = [UIColor opentableBackground];
       if (!IPAD)
