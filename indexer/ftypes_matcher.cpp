@@ -329,6 +329,11 @@ IsBuildingChecker::IsBuildingChecker() : BaseChecker(1 /* level */)
   m_types.push_back(classif().GetTypeByPath({"building"}));
 }
 
+IsIsolineChecker::IsIsolineChecker() : BaseChecker(1 /* level */)
+{
+  m_types.push_back(classif().GetTypeByPath({"isoline"}));
+}
+
 // static
 set<string> const IsPoiChecker::kPoiTypes = {
   "amenity",
