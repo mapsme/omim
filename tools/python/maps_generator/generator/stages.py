@@ -200,6 +200,20 @@ def stage_srtm(env, country, **kwargs):
         **kwargs
     )
 
+def stage_isolines_info(env, country, **kwargs):
+    run_gen_tool_with_recovery_country(
+        env,
+        env.gen_tool,
+        out=env.get_subprocess_out(country),
+        err=env.get_subprocess_out(country),
+        data_path=env.mwm_path,
+        intermediate_data_path=env.intermediate_path,
+        user_resource_path=env.user_resource_path,
+        generate_isolines_info=True,
+        isolines_path=env.isolines_path,
+        output=country,
+        **kwargs
+    )
 
 def stage_routing(env, country, **kwargs):
     run_gen_tool_with_recovery_country(

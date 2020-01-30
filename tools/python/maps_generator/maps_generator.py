@@ -147,6 +147,9 @@ def stage_popularity(env, country, **kwargs):
 def stage_srtm(env, country, **kwargs):
     stages.stage_srtm(env, country, **kwargs)
 
+@country_stage
+def stage_isolines_info(env, country, **kwargs):
+    stages.stage_isolines_info(env, country, **kwargs)
 
 @country_stage
 def stage_routing(env, country, **kwargs):
@@ -165,6 +168,7 @@ def stage_mwm(env):
         stage_ugc(env, country)
         stage_popularity(env, country)
         stage_srtm(env, country)
+        stage_isolines_info(env, country)
         stage_routing(env, country)
         stage_routing_transit(env, country)
         env.finish_mwm(country)
@@ -330,7 +334,7 @@ def stage_cleanup(env):
 MWM_STAGE = stage_mwm.__name__
 COUNTRIES_STAGES = [s.__name__ for s in
                     (stage_index, stage_ugc, stage_popularity, stage_srtm,
-                     stage_routing, stage_routing_transit)]
+                     stage_isolines_info, stage_routing, stage_routing_transit)]
 STAGES = [s.__name__ for s in
           (stage_download_external, stage_download_production_external,
            stage_download_and_convert_planet, stage_update_planet,
