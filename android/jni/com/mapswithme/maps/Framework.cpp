@@ -121,6 +121,7 @@ Framework::Framework()
 {
   m_work.GetTrafficManager().SetStateListener(bind(&Framework::TrafficStateChanged, this, _1));
   m_work.GetTransitManager().SetStateListener(bind(&Framework::TransitSchemeStateChanged, this, _1));
+  m_work.GetIsolinesManager().SetStateListener(bind(&Framework::IsolinesSchemeStateChanged, this, _1));
   m_work.GetPowerManager().Subscribe(this);
 }
 
@@ -169,6 +170,12 @@ void Framework::TransitSchemeStateChanged(TransitReadManager::TransitSchemeState
 {
   if (m_onTransitStateChangedFn)
     m_onTransitStateChangedFn(state);
+}
+
+void Framework::IsolinesSchemeStateChanged(IsolinesManager::IsolinesState state)
+{
+  if (m_onIsolinesStateChangedFn)
+    m_onIsolinesStateChangedFn(state);
 }
 
 bool Framework::DestroySurfaceOnDetach()
@@ -613,7 +620,7 @@ void Framework::SetTransitSchemeListener(TransitReadManager::TransitStateChanged
   m_onTransitStateChangedFn = function;
 }
 
-void Framework::SetIsolinesListener(TransitReadManager::TransitStateChangedFn const & function)
+void Framework::SetIsolinesListener(IsolinesManager::IsolinesStateChangedFn const & function)
 {
   m_onIsolinesStateChangedFn = function;
 }
