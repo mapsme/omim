@@ -134,7 +134,8 @@ FollowedPolyline::UpdatedProjection FollowedPolyline::GetBestMatchingProjection(
   // At first trying to find a projection to two closest route segments of route which is close
   // enough to |posRect| center. If |m_current| is right before intermediate point we can get |closestIter|
   // right after intermediate point (in next subroute).
-  size_t const hoppingBorderIdx = min(m_segProj.size(), m_current.m_ind + 3);
+  size_t const hoppingBorderIdx =
+      min(m_nextCheckpointIndex, min(m_segProj.size(), m_current.m_ind + 3));
   auto const res = GetClosestMatchingProjectionInInterval(posRect, m_current.m_ind, hoppingBorderIdx);
   if (res.m_iter.IsValid() || res.m_closerToUnmatching)
     return UpdatedProjection{res.m_iter, res.m_closerToUnmatching};
