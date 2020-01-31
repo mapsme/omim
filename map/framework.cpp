@@ -314,6 +314,11 @@ TransitReadManager & Framework::GetTransitManager()
   return m_transitManager;
 }
 
+IsolinesManager & Framework::GetIsolinesManager()
+{
+  return m_isolinesManager;
+}
+
 void Framework::OnUserPositionChanged(m2::PointD const & position, bool hasPosition)
 {
   GetBookmarkManager().MyPositionMark().SetUserPosition(position, hasPosition);
@@ -340,6 +345,7 @@ void Framework::OnViewportChanged(ScreenBase const & screen)
   m_trafficManager.UpdateViewport(m_currentModelView);
   m_localAdsManager.UpdateViewport(m_currentModelView);
   m_transitManager.UpdateViewport(m_currentModelView);
+  m_isolinesManager.UpdateViewport(m_currentModelView);
 
   if (m_viewportChangedFn != nullptr)
     m_viewportChangedFn(screen);
@@ -357,6 +363,8 @@ Framework::Framework(FrameworkParams const & params)
                        return m_featuresFetcher.ReadFeatures(fn, features);
                      },
                      bind(&Framework::GetMwmsByRect, this, _1, false /* rough */))
+  , m_isolinesManager(m_featuresFetcher.GetDataSource(),
+                      bind(&Framework::GetMwmsByRect, this, _1, false /* rough */))
   , m_routingManager(
         RoutingManager::Callbacks(
             [this]() -> DataSource & { return m_featuresFetcher.GetDataSource(); },
@@ -499,6 +507,8 @@ Framework::Framework(FrameworkParams const & params)
   m_trafficManager.SetSimplifiedColorScheme(LoadTrafficSimplifiedColors());
   m_trafficManager.SetEnabled(LoadTrafficEnabled());
 
+  m_isolinesManager.SetEnabled(LoadIsolinesEnabled());
+
   m_adsEngine = make_unique<ads::Engine>();
 
   InitTransliteration();
@@ -626,6 +636,7 @@ void Framework::OnCountryFileDownloaded(storage::CountryId const & countryId,
   }
   m_trafficManager.Invalidate();
   m_transitManager.Invalidate();
+  m_isolinesManager.Invalidate();
   m_localAdsManager.OnDownloadCountry(countryId);
   InvalidateRect(rect);
   GetSearchAPI().ClearCaches();
@@ -663,6 +674,7 @@ void Framework::OnMapDeregistered(platform::LocalCountryFile const & localFile)
   {
     m_localAdsManager.OnMwmDeregistered(localFile);
     m_transitManager.OnMwmDeregistered(localFile);
+    m_isolinesManager.OnMwmDeregistered(localFile);
     m_trafficManager.OnMwmDeregistered(localFile);
     m_popularityLoader.OnMwmDeregistered(localFile);
 
@@ -1873,6 +1885,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
 
   bool const isAutozoomEnabled = LoadAutoZoom();
   bool const trafficEnabled = m_trafficManager.IsEnabled();
+  auto const isolinesEnabled = m_isolinesManager.IsEnabled();
   bool const simplifiedTrafficColors = m_trafficManager.HasSimplifiedColorScheme();
   double const fontsScaleFactor = LoadLargeFontsSize() ? kLargeFontsScaleFactor : 1.0;
 
@@ -1883,7 +1896,7 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
                           move(isCountryLoadedByNameFn), move(updateCurrentCountryFn)),
       params.m_hints, params.m_visualScale, fontsScaleFactor, move(params.m_widgetsInitInfo),
       make_pair(params.m_initialMyPositionState, params.m_hasMyPositionState),
-      move(myPositionModeChangedFn), allow3dBuildings, trafficEnabled,
+      move(myPositionModeChangedFn), allow3dBuildings, trafficEnabled, isolinesEnabled,
       params.m_isChoosePositionMode, params.m_isChoosePositionMode, GetSelectedFeatureTriangles(),
       m_routingManager.IsRoutingActive() && m_routingManager.IsRoutingFollowing(),
       isAutozoomEnabled, simplifiedTrafficColors, move(overlaysShowStatsFn), move(isUGCFn),
@@ -1929,12 +1942,13 @@ void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFac
   m_routingManager.SetDrapeEngine(make_ref(m_drapeEngine), allow3d);
   m_trafficManager.SetDrapeEngine(make_ref(m_drapeEngine));
   m_transitManager.SetDrapeEngine(make_ref(m_drapeEngine));
+  m_isolinesManager.SetDrapeEngine(make_ref(m_drapeEngine));
   m_localAdsManager.SetDrapeEngine(make_ref(m_drapeEngine));
   m_searchMarks.SetDrapeEngine(make_ref(m_drapeEngine));
 
   InvalidateUserMarks();
 
-  bool const transitSchemeEnabled = LoadTransitSchemeEnabled();
+  auto const transitSchemeEnabled = LoadTransitSchemeEnabled();
   m_transitManager.EnableTransitSchemeMode(transitSchemeEnabled);
 
   // Show debug info if it's enabled in the config.
@@ -1962,6 +1976,7 @@ void Framework::OnRecoverSurface(int width, int height, bool recreateContextDepe
 
   m_trafficManager.OnRecoverSurface();
   m_transitManager.Invalidate();
+  m_isolinesManager.Invalidate();
   m_localAdsManager.Invalidate();
 }
 
@@ -1995,6 +2010,7 @@ void Framework::DestroyDrapeEngine()
     m_routingManager.SetDrapeEngine(nullptr, false);
     m_trafficManager.SetDrapeEngine(nullptr);
     m_transitManager.SetDrapeEngine(nullptr);
+    m_isolinesManager.SetDrapeEngine(nullptr);
     m_localAdsManager.SetDrapeEngine(nullptr);
     m_searchMarks.SetDrapeEngine(nullptr);
     GetBookmarkManager().SetDrapeEngine(nullptr);
@@ -2848,18 +2864,17 @@ void Framework::SaveTransitSchemeEnabled(bool enabled)
   settings::Set(kTransitSchemeEnabledKey, enabled);
 }
 
-void Framework::EnableIsolines(bool enable)
-{
-  // TODO(darina): Implement.
-  settings::Set(kIsolinesEnabledKey, enable);
-}
-
-bool Framework::IsolinesEnabled() const
+bool Framework::LoadIsolinesEnabled()
 {
   bool enabled;
   if (!settings::Get(kIsolinesEnabledKey, enabled))
     enabled = false;
   return enabled;
+}
+
+void Framework::SaveIsolonesEnabled(bool enabled)
+{
+  settings::Set(kIsolinesEnabledKey, enabled);
 }
 
 void Framework::EnableChoosePositionMode(bool enable, bool enableBounds, bool applyPosition,
@@ -2984,6 +2999,16 @@ bool Framework::ParseDrapeDebugCommand(string const & query)
   if (query == "?no-scheme")
   {
     m_transitManager.EnableTransitSchemeMode(false /* enable */);
+    return true;
+  }
+  if (query == "?isolines")
+  {
+    m_isolinesManager.SetEnabled(true /* enable */);
+    return true;
+  }
+  if (query == "?no-isolines")
+  {
+    m_isolinesManager.SetEnabled(false /* enable */);
     return true;
   }
   if (query == "?debug-info")
