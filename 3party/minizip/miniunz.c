@@ -10,6 +10,9 @@
 
          Modifications for Zip64 support on both zip and unzip
          Copyright (C) 2009-2010 Mathias Svensson ( http://result42.com )
+   Changes
+         Feb-2019 - 'm' prefix is added for all methods with external linking. Renaming is needed to avoid
+                    collisions with different versions of this library.
 */
 
 #if (!defined(_WIN32)) && (!defined(WIN32)) && (!defined(__APPLE__))
@@ -238,9 +241,9 @@ int do_list(uf)
     unz_global_info64 gi;
     int err;
 
-    err = unzGetGlobalInfo64(uf,&gi);
+    err = munzGetGlobalInfo64(uf,&gi);
     if (err!=UNZ_OK)
-        printf("error %d with zipfile in unzGetGlobalInfo \n",err);
+        printf("error %d with zipfile in munzGetGlobalInfo \n",err);
     printf("  Length  Method     Size Ratio   Date    Time   CRC-32     Name\n");
     printf("  ------  ------     ---- -----   ----    ----   ------     ----\n");
     for (i=0;i<gi.number_entry;i++)
@@ -250,10 +253,10 @@ int do_list(uf)
         uLong ratio=0;
         const char *string_method;
         char charCrypt=' ';
-        err = unzGetCurrentFileInfo64(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
+        err = munzGetCurrentFileInfo64(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
         if (err!=UNZ_OK)
         {
-            printf("error %d with zipfile in unzGetCurrentFileInfo\n",err);
+            printf("error %d with zipfile in munzGetCurrentFileInfo\n",err);
             break;
         }
         if (file_info.uncompressed_size>0)
@@ -296,10 +299,10 @@ int do_list(uf)
                 (uLong)file_info.crc,filename_inzip);
         if ((i+1)<gi.number_entry)
         {
-            err = unzGoToNextFile(uf);
+            err = munzGoToNextFile(uf);
             if (err!=UNZ_OK)
             {
-                printf("error %d with zipfile in unzGoToNextFile\n",err);
+                printf("error %d with zipfile in munzGoToNextFile\n",err);
                 break;
             }
         }
@@ -325,11 +328,11 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
 
     unz_file_info64 file_info;
     uLong ratio=0;
-    err = unzGetCurrentFileInfo64(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
+    err = munzGetCurrentFileInfo64(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
 
     if (err!=UNZ_OK)
     {
-        printf("error %d with zipfile in unzGetCurrentFileInfo\n",err);
+        printf("error %d with zipfile in munzGetCurrentFileInfo\n",err);
         return err;
     }
 
@@ -367,10 +370,10 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
         else
             write_filename = filename_withoutpath;
 
-        err = unzOpenCurrentFilePassword(uf,password);
+        err = munzOpenCurrentFilePassword(uf,password);
         if (err!=UNZ_OK)
         {
-            printf("error %d with zipfile in unzOpenCurrentFilePassword\n",err);
+            printf("error %d with zipfile in munzOpenCurrentFilePassword\n",err);
         }
 
         if (((*popt_overwrite)==0) && (err==UNZ_OK))
@@ -432,10 +435,10 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
 
             do
             {
-                err = unzReadCurrentFile(uf,buf,size_buf);
+                err = munzReadCurrentFile(uf,buf,size_buf);
                 if (err<0)
                 {
-                    printf("error %d with zipfile in unzReadCurrentFile\n",err);
+                    printf("error %d with zipfile in munzReadCurrentFile\n",err);
                     break;
                 }
                 if (err>0)
@@ -460,11 +463,11 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
             err = unzCloseCurrentFile (uf);
             if (err!=UNZ_OK)
             {
-                printf("error %d with zipfile in unzCloseCurrentFile\n",err);
+                printf("error %d with zipfile in munzCloseCurrentFile\n",err);
             }
         }
         else
-            unzCloseCurrentFile(uf); /* don't lose the error */
+            munzCloseCurrentFile(uf); /* don't lose the error */
     }
 
     free(buf);
@@ -485,7 +488,7 @@ int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
 
     err = unzGetGlobalInfo64(uf,&gi);
     if (err!=UNZ_OK)
-        printf("error %d with zipfile in unzGetGlobalInfo \n",err);
+        printf("error %d with zipfile in munzGetGlobalInfo \n",err);
 
     for (i=0;i<gi.number_entry;i++)
     {
@@ -496,10 +499,10 @@ int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
 
         if ((i+1)<gi.number_entry)
         {
-            err = unzGoToNextFile(uf);
+            err = munzGoToNextFile(uf);
             if (err!=UNZ_OK)
             {
-                printf("error %d with zipfile in unzGoToNextFile\n",err);
+                printf("error %d with zipfile in munzGoToNextFile\n",err);
                 break;
             }
         }
@@ -516,7 +519,7 @@ int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite,passwo
     const char* password;
 {
     int err = UNZ_OK;
-    if (unzLocateFile(uf,filename,CASESENSITIVITY)!=UNZ_OK)
+    if (minizipLocateFile(uf,filename,CASESENSITIVITY)!=UNZ_OK)
     {
         printf("file %s not found in the zipfile\n",filename);
         return 2;
@@ -612,17 +615,17 @@ int main(argc,argv)
 
 #        ifdef USEWIN32IOAPI
         fill_win32_filefunc64A(&ffunc);
-        uf = unzOpen2_64(zipfilename,&ffunc);
+        uf = munzOpen2_64(zipfilename,&ffunc);
 #        else
-        uf = unzOpen64(zipfilename);
+        uf = munzOpen64(zipfilename);
 #        endif
         if (uf==NULL)
         {
             strcat(filename_try,".zip");
 #            ifdef USEWIN32IOAPI
-            uf = unzOpen2_64(filename_try,&ffunc);
+            uf = munzOpen2_64(filename_try,&ffunc);
 #            else
-            uf = unzOpen64(filename_try);
+            uf = munzOpen64(filename_try);
 #            endif
         }
     }
@@ -654,7 +657,7 @@ int main(argc,argv)
             ret_value = do_extract_onefile(uf, filename_to_extract, opt_do_extract_withoutpath, opt_overwrite, password);
     }
 
-    unzClose(uf);
+    munzClose(uf);
 
     return ret_value;
 }

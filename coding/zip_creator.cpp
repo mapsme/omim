@@ -27,13 +27,13 @@ class ZipHandle
 public:
   explicit ZipHandle(std::string const & filePath)
   {
-    m_zipFileHandle = zipOpen(filePath.c_str(), 0);
+    m_zipFileHandle = mzipOpen(filePath.c_str(), 0);
   }
 
   ~ZipHandle()
   {
     if (m_zipFileHandle)
-      zipClose(m_zipFileHandle, NULL);
+      mzipClose(m_zipFileHandle, NULL);
   }
 
   zipFile Handle() const { return m_zipFileHandle; }
@@ -85,7 +85,7 @@ bool CreateZipFromPathDeflatedAndDefaultCompression(std::string const & filePath
   if (!strings::IsASCIIString(fileName))
     fileName = "MapsMe.kml";
 
-  if (zipOpenNewFileInZip(zip.Handle(), fileName.c_str(), &zipInfo, nullptr, 0, nullptr, 0,
+  if (mzipOpenNewFileInZip(zip.Handle(), fileName.c_str(), &zipInfo, nullptr, 0, nullptr, 0,
                           "ZIP from MapsWithMe", Z_DEFLATED, Z_DEFAULT_COMPRESSION) < 0)
   {
     return false;
@@ -105,7 +105,7 @@ bool CreateZipFromPathDeflatedAndDefaultCompression(std::string const & filePath
           std::min(ZIP_FILE_BUFFER_SIZE, static_cast<unsigned int>(fileSize - currSize));
       file.Read(currSize, buffer, toRead);
 
-      if (ZIP_OK != zipWriteInFileInZip(zip.Handle(), buffer, toRead))
+      if (ZIP_OK != mzipWriteInFileInZip(zip.Handle(), buffer, toRead))
         return false;
 
       currSize += toRead;
@@ -137,7 +137,7 @@ bool CreateZipFromFiles(std::vector<std::string> const & files, std::string cons
   {
     for (auto const & filePath : files)
     {
-      if (zipOpenNewFileInZip(zip.Handle(), filePath.c_str(), &fileInfo, nullptr, 0, nullptr, 0, "",
+      if (mzipOpenNewFileInZip(zip.Handle(), filePath.c_str(), &fileInfo, nullptr, 0, nullptr, 0, "",
                               Z_DEFLATED, compressionLevel) != Z_OK)
       {
         return false;
@@ -154,7 +154,7 @@ bool CreateZipFromFiles(std::vector<std::string> const & files, std::string cons
             std::min(ZIP_FILE_BUFFER_SIZE, static_cast<unsigned int>(fileSize - writtenSize));
         file.Read(writtenSize, bufferForZip.data(), filePartSize);
 
-        if (zipWriteInFileInZip(zip.Handle(), bufferForZip.data(), filePartSize) != ZIP_OK)
+        if (mzipWriteInFileInZip(zip.Handle(), bufferForZip.data(), filePartSize) != ZIP_OK)
           return false;
 
         writtenSize += filePartSize;

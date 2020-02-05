@@ -373,9 +373,9 @@ int main(argc,argv)
 #        ifdef USEWIN32IOAPI
         zlib_filefunc64_def ffunc;
         fill_win32_filefunc64A(&ffunc);
-        zf = zipOpen2_64(filename_try,(opt_overwrite==2) ? 2 : 0,NULL,&ffunc);
+        zf = mzipOpen2_64(filename_try,(opt_overwrite==2) ? 2 : 0,NULL,&ffunc);
 #        else
-        zf = zipOpen64(filename_try,(opt_overwrite==2) ? 2 : 0);
+        zf = mzipOpen64(filename_try,(opt_overwrite==2) ? 2 : 0);
 #        endif
 
         if (zf == NULL)
@@ -411,7 +411,7 @@ int main(argc,argv)
                 filetime(filenameinzip,&zi.tmz_date,&zi.dosDate);
 
 /*
-                err = zipOpenNewFileInZip(zf,filenameinzip,&zi,
+                err = mzipOpenNewFileInZip(zf,filenameinzip,&zi,
                                  NULL,0,NULL,0,NULL / * comment * /,
                                  (opt_compress_level != 0) ? Z_DEFLATED : 0,
                                  opt_compress_level);
@@ -448,7 +448,7 @@ int main(argc,argv)
                  }
 
                  /**/
-                err = zipOpenNewFileInZip3_64(zf,savefilenameinzip,&zi,
+                err = mzipOpenNewFileInZip3_64(zf,savefilenameinzip,&zi,
                                  NULL,0,NULL,0,NULL /* comment*/,
                                  (opt_compress_level != 0) ? Z_DEFLATED : 0,
                                  opt_compress_level,0,
@@ -482,7 +482,7 @@ int main(argc,argv)
 
                         if (size_read>0)
                         {
-                            err = zipWriteInFileInZip (zf,buf,size_read);
+                            err = mzipWriteInFileInZip (zf,buf,size_read);
                             if (err<0)
                             {
                                 printf("error in writing %s in the zipfile\n",
@@ -499,14 +499,14 @@ int main(argc,argv)
                     err=ZIP_ERRNO;
                 else
                 {
-                    err = zipCloseFileInZip(zf);
+                    err = mzipCloseFileInZip(zf);
                     if (err!=ZIP_OK)
                         printf("error in closing %s in the zipfile\n",
                                     filenameinzip);
                 }
             }
         }
-        errclose = zipClose(zf,NULL);
+        errclose = mzipClose(zf,NULL);
         if (errclose != ZIP_OK)
             printf("error in closing %s\n",filename_try);
     }

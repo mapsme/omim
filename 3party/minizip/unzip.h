@@ -150,7 +150,7 @@ typedef struct unz_file_info_s
     tm_unz tmu_date;
 } unz_file_info;
 
-extern int ZEXPORT unzStringFileNameCompare OF ((const char* fileName1,
+extern int ZEXPORT munzStringFileNameCompare OF ((const char* fileName1,
                                                  const char* fileName2,
                                                  int iCaseSensitivity));
 /*
@@ -163,8 +163,8 @@ extern int ZEXPORT unzStringFileNameCompare OF ((const char* fileName1,
 */
 
 
-extern unzFile ZEXPORT unzOpen OF((const char *path));
-extern unzFile ZEXPORT unzOpen64 OF((const void *path));
+extern unzFile ZEXPORT munzOpen OF((const char *path));
+extern unzFile ZEXPORT munzOpen64 OF((const void *path));
 /*
   Open a Zip file. path contain the full pathname (by example,
      on a Windows XP computer "c:\\zlib\\zlib113.zip" or on an Unix computer
@@ -181,31 +181,31 @@ extern unzFile ZEXPORT unzOpen64 OF((const void *path));
 */
 
 
-extern unzFile ZEXPORT unzOpen2 OF((const char *path,
+extern unzFile ZEXPORT munzOpen2 OF((const char *path,
                                     zlib_filefunc_def* pzlib_filefunc_def));
 /*
-   Open a Zip file, like unzOpen, but provide a set of file low level API
+   Open a Zip file, like munzOpen, but provide a set of file low level API
       for read/write the zip file (see ioapi.h)
 */
 
-extern unzFile ZEXPORT unzOpen2_64 OF((const void *path,
+extern unzFile ZEXPORT munzOpen2_64 OF((const void *path,
                                     zlib_filefunc64_def* pzlib_filefunc_def));
 /*
-   Open a Zip file, like unz64Open, but provide a set of file low level API
+   Open a Zip file, like munz64Open, but provide a set of file low level API
       for read/write the zip file (see ioapi.h)
 */
 
-extern int ZEXPORT unzClose OF((unzFile file));
+extern int ZEXPORT munzClose OF((unzFile file));
 /*
-  Close a ZipFile opened with unzOpen.
-  If there is files inside the .Zip opened with unzOpenCurrentFile (see later),
-    these files MUST be closed with unzCloseCurrentFile before call unzClose.
+  Close a ZipFile opened with munzOpen.
+  If there is files inside the .Zip opened with munzOpenCurrentFile (see later),
+    these files MUST be closed with munzCloseCurrentFile before call munzClose.
   return UNZ_OK if there is no problem. */
 
-extern int ZEXPORT unzGetGlobalInfo OF((unzFile file,
+extern int ZEXPORT munzGetGlobalInfo OF((unzFile file,
                                         unz_global_info *pglobal_info));
 
-extern int ZEXPORT unzGetGlobalInfo64 OF((unzFile file,
+extern int ZEXPORT munzGetGlobalInfo64 OF((unzFile file,
                                         unz_global_info64 *pglobal_info));
 /*
   Write info about the ZipFile in the *pglobal_info structure.
@@ -213,7 +213,7 @@ extern int ZEXPORT unzGetGlobalInfo64 OF((unzFile file,
   return UNZ_OK if there is no problem. */
 
 
-extern int ZEXPORT unzGetGlobalComment OF((unzFile file,
+extern int ZEXPORT munzGetGlobalComment OF((unzFile file,
                                            char *szComment,
                                            uLong uSizeBuf));
 /*
@@ -226,25 +226,25 @@ extern int ZEXPORT unzGetGlobalComment OF((unzFile file,
 /***************************************************************************/
 /* Unzip package allow you browse the directory of the zipfile */
 
-extern int ZEXPORT unzGoToFirstFile OF((unzFile file));
+extern int ZEXPORT munzGoToFirstFile OF((unzFile file));
 /*
   Set the current file of the zipfile to the first file.
   return UNZ_OK if there is no problem
 */
 
-extern int ZEXPORT unzGoToNextFile OF((unzFile file));
+extern int ZEXPORT munzGoToNextFile OF((unzFile file));
 /*
   Set the current file of the zipfile to the next file.
   return UNZ_OK if there is no problem
   return UNZ_END_OF_LIST_OF_FILE if the actual file was the latest.
 */
 
-extern int ZEXPORT unzLocateFile OF((unzFile file,
+extern int ZEXPORT munzLocateFile OF((unzFile file,
                      const char *szFileName,
                      int iCaseSensitivity));
 /*
-  Try locate the file szFileName in the zipfile.
-  For the iCaseSensitivity signification, see unzStringFileNameCompare
+  Try locate the file szFileName in the zipfile.x
+  For the iCaseSensitivity signification, see munzStringFileNameCompare
 
   return value :
   UNZ_OK if the file is found. It becomes the current file.
@@ -261,11 +261,11 @@ typedef struct unz_file_pos_s
     uLong num_of_file;            /* # of file */
 } unz_file_pos;
 
-extern int ZEXPORT unzGetFilePos(
+extern int ZEXPORT munzGetFilePos(
     unzFile file,
     unz_file_pos* file_pos);
 
-extern int ZEXPORT unzGoToFilePos(
+extern int ZEXPORT munzGoToFilePos(
     unzFile file,
     unz_file_pos* file_pos);
 
@@ -285,7 +285,7 @@ extern int ZEXPORT unzGoToFilePos64(
 
 /* ****************************************** */
 
-extern int ZEXPORT unzGetCurrentFileInfo64 OF((unzFile file,
+extern int ZEXPORT munzGetCurrentFileInfo64 OF((unzFile file,
                          unz_file_info64 *pfile_info,
                          char *szFileName,
                          uLong fileNameBufferSize,
@@ -294,7 +294,7 @@ extern int ZEXPORT unzGetCurrentFileInfo64 OF((unzFile file,
                          char *szComment,
                          uLong commentBufferSize));
 
-extern int ZEXPORT unzGetCurrentFileInfo OF((unzFile file,
+extern int ZEXPORT munzGetCurrentFileInfo OF((unzFile file,
                          unz_file_info *pfile_info,
                          char *szFileName,
                          uLong fileNameBufferSize,
@@ -318,7 +318,7 @@ extern int ZEXPORT unzGetCurrentFileInfo OF((unzFile file,
 
 /** Addition for GDAL : START */
 
-extern ZPOS64_T ZEXPORT unzGetCurrentFileZStreamPos64 OF((unzFile file));
+extern ZPOS64_T ZEXPORT munzGetCurrentFileZStreamPos64 OF((unzFile file));
 
 /** Addition for GDAL : END */
 
@@ -328,13 +328,13 @@ extern ZPOS64_T ZEXPORT unzGetCurrentFileZStreamPos64 OF((unzFile file));
    from it, and close it (you can close it before reading all the file)
    */
 
-extern int ZEXPORT unzOpenCurrentFile OF((unzFile file));
+extern int ZEXPORT munzOpenCurrentFile OF((unzFile file));
 /*
   Open for reading data the current file in the zipfile.
   If there is no error, the return value is UNZ_OK.
 */
 
-extern int ZEXPORT unzOpenCurrentFilePassword OF((unzFile file,
+extern int ZEXPORT munzOpenCurrentFilePassword OF((unzFile file,
                                                   const char* password));
 /*
   Open for reading data the current file in the zipfile.
@@ -342,12 +342,12 @@ extern int ZEXPORT unzOpenCurrentFilePassword OF((unzFile file,
   If there is no error, the return value is UNZ_OK.
 */
 
-extern int ZEXPORT unzOpenCurrentFile2 OF((unzFile file,
+extern int ZEXPORT munzOpenCurrentFile2 OF((unzFile file,
                                            int* method,
                                            int* level,
                                            int raw));
 /*
-  Same than unzOpenCurrentFile, but open for read raw the file (not uncompress)
+  Same than munzOpenCurrentFile, but open for read raw the file (not uncompress)
     if raw==1
   *method will receive method of compression, *level will receive level of
      compression
@@ -355,13 +355,13 @@ extern int ZEXPORT unzOpenCurrentFile2 OF((unzFile file,
          but you CANNOT set method parameter as NULL
 */
 
-extern int ZEXPORT unzOpenCurrentFile3 OF((unzFile file,
+extern int ZEXPORT munzOpenCurrentFile3 OF((unzFile file,
                                            int* method,
                                            int* level,
                                            int raw,
                                            const char* password));
 /*
-  Same than unzOpenCurrentFile, but open for read raw the file (not uncompress)
+  Same than munzOpenCurrentFile, but open for read raw the file (not uncompress)
     if raw==1
   *method will receive method of compression, *level will receive level of
      compression
@@ -370,17 +370,17 @@ extern int ZEXPORT unzOpenCurrentFile3 OF((unzFile file,
 */
 
 
-extern int ZEXPORT unzCloseCurrentFile OF((unzFile file));
+extern int ZEXPORT munzCloseCurrentFile OF((unzFile file));
 /*
-  Close the file in zip opened with unzOpenCurrentFile
+  Close the file in zip opened with munzOpenCurrentFile
   Return UNZ_CRCERROR if all the file was read but the CRC is not good
 */
 
-extern int ZEXPORT unzReadCurrentFile OF((unzFile file,
+extern int ZEXPORT munzReadCurrentFile OF((unzFile file,
                       voidp buf,
                       unsigned len));
 /*
-  Read bytes from the current file (opened by unzOpenCurrentFile)
+  Read bytes from the current file (opened by munzOpenCurrentFile)
   buf contain buffer where data must be copied
   len the size of buf.
 
@@ -390,23 +390,23 @@ extern int ZEXPORT unzReadCurrentFile OF((unzFile file,
     (UNZ_ERRNO for IO error, or zLib error for uncompress error)
 */
 
-extern z_off_t ZEXPORT unztell OF((unzFile file));
+extern z_off_t ZEXPORT munztell OF((unzFile file));
 
-extern ZPOS64_T ZEXPORT unztell64 OF((unzFile file));
+extern ZPOS64_T ZEXPORT munztell64 OF((unzFile file));
 /*
   Give the current position in uncompressed data
 */
 
-extern int ZEXPORT unzeof OF((unzFile file));
+extern int ZEXPORT munzeof OF((unzFile file));
 /*
   return 1 if the end of file was reached, 0 elsewhere
 */
 
-extern int ZEXPORT unzGetLocalExtrafield OF((unzFile file,
+extern int ZEXPORT munzGetLocalExtrafield OF((unzFile file,
                                              voidp buf,
                                              unsigned len));
 /*
-  Read extra field from the current file (opened by unzOpenCurrentFile)
+  Read extra field from the current file (opened by munzOpenCurrentFile)
   This is the local-header version of the extra field (sometimes, there is
     more info in the local-header version than in the central-header)
 
@@ -421,12 +421,12 @@ extern int ZEXPORT unzGetLocalExtrafield OF((unzFile file,
 /***************************************************************************/
 
 /* Get the current file offset */
-extern ZPOS64_T ZEXPORT unzGetOffset64 (unzFile file);
-extern uLong ZEXPORT unzGetOffset (unzFile file);
+extern ZPOS64_T ZEXPORT munzGetOffset64 (unzFile file);
+extern uLong ZEXPORT munzGetOffset (unzFile file);
 
 /* Set the current file offset */
-extern int ZEXPORT unzSetOffset64 (unzFile file, ZPOS64_T pos);
-extern int ZEXPORT unzSetOffset (unzFile file, uLong pos);
+extern int ZEXPORT munzSetOffset64 (unzFile file, ZPOS64_T pos);
+extern int ZEXPORT munzSetOffset (unzFile file, uLong pos);
 
 
 
