@@ -849,6 +849,10 @@ std::string Framework::GetPromoCityUrl(JNIEnv * env, jobject policy, jdouble lat
 
 void Framework::LogLocalAdsEvent(local_ads::EventType type, double lat, double lon, uint16_t accuracy)
 {
+  ::Framework * frm = g_framework->NativeFramework();
+  if (!frm->HasPlacePageInfo())
+    return;
+
   auto const & info = g_framework->GetPlacePageInfo();
   auto const & featureID = info.GetID();
   auto const & mwmInfo = featureID.m_mwmId.GetInfo();
@@ -1822,6 +1826,10 @@ Java_com_mapswithme_maps_Framework_nativeIsDownloadedMapAtScreenCenter(JNIEnv *,
 JNIEXPORT jstring JNICALL
 Java_com_mapswithme_maps_Framework_nativeGetActiveObjectFormattedCuisine(JNIEnv * env, jclass)
 {
+  ::Framework * frm = g_framework->NativeFramework();
+  if (!frm->HasPlacePageInfo())
+    return {};
+
   return jni::ToJavaString(env, g_framework->GetPlacePageInfo().FormatCuisines());
 }
 
