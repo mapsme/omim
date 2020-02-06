@@ -51,6 +51,7 @@ public:
   void Write(TSink & sink)
   {
     std::sort(std::begin(m_data), std::end(m_data));
+    ASSERT(std::unique(std::begin(m_data), std::end(m_data)) == std::end(m_data), ());
     WriteToSink(sink, kHeaderMagic);
     WriteToSink(sink, base::Underlying(m_version));
     rw::WriteVectorOfPOD(sink, m_data);
