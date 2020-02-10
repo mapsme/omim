@@ -11,7 +11,9 @@ MwmTraits::SearchIndexFormat MwmTraits::GetSearchIndexFormat() const
 {
   if (GetFormat() < version::Format::v7)
     return SearchIndexFormat::FeaturesWithRankAndCenter;
-  return SearchIndexFormat::CompressedBitVector;
+  if (GetFormat() < version::Format::v10)
+    return SearchIndexFormat::CompressedBitVector;
+  return SearchIndexFormat::CompressedBitVectorWithHeader;
 }
 
 MwmTraits::HouseToStreetTableFormat MwmTraits::GetHouseToStreetTableFormat() const
@@ -68,6 +70,8 @@ std::string DebugPrint(MwmTraits::SearchIndexFormat format)
     return "FeaturesWithRankAndCenter";
   case MwmTraits::SearchIndexFormat::CompressedBitVector:
     return "CompressedBitVector";
+  case MwmTraits::SearchIndexFormat::CompressedBitVectorWithHeader:
+    return "CompressedBitVectorWithHeader";
   }
   UNREACHABLE();
 }
