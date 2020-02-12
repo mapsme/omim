@@ -19,7 +19,6 @@
 		394916E41BAC3ACF002A8C4F /* libcoding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6753421B1A3F586300A0A8C3 /* libcoding.a */; };
 		394917201BAC3BE0002A8C4F /* testingmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3949171F1BAC3BE0002A8C4F /* testingmain.cpp */; };
 		3949172B1BAC3CAC002A8C4F /* libbase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 394917271BAC3CAC002A8C4F /* libbase.a */; };
-		3949172C1BAC3CAC002A8C4F /* libminizip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 394917281BAC3CAC002A8C4F /* libminizip.a */; };
 		3949172D1BAC3CAC002A8C4F /* libsuccinct.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 394917291BAC3CAC002A8C4F /* libsuccinct.a */; };
 		394917301BAC3CC9002A8C4F /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3949172F1BAC3CC9002A8C4F /* libz.tbd */; };
 		3954E00F233500E90007FDE4 /* files_container.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3954E00D233500E90007FDE4 /* files_container.hpp */; };
@@ -44,6 +43,7 @@
 		39F376D2207D32AA0058E8E0 /* test_polylines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39F376CA207D329F0058E8E0 /* test_polylines.cpp */; };
 		39F376D3207D32AD0058E8E0 /* geometry_serialization_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39F376CC207D329F0058E8E0 /* geometry_serialization_test.cpp */; };
 		39F376D4207D32B10058E8E0 /* geometry_coding_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39F376CB207D329F0058E8E0 /* geometry_coding_test.cpp */; };
+		3D0BBA5323F3E97600A50354 /* libminizip.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBA5223F3E97600A50354 /* libminizip.dylib */; };
 		3D489BC01D3D21A00052AA38 /* succinct_mapper_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D489BBA1D3D217E0052AA38 /* succinct_mapper_test.cpp */; };
 		3D489BC11D3D21A40052AA38 /* simple_dense_coding_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D489BB91D3D217E0052AA38 /* simple_dense_coding_test.cpp */; };
 		3D489BC21D3D21AA0052AA38 /* fixed_bits_ddvector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D489BB81D3D217E0052AA38 /* fixed_bits_ddvector_test.cpp */; };
@@ -199,6 +199,7 @@
 		39F376CA207D329F0058E8E0 /* test_polylines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_polylines.cpp; sourceTree = "<group>"; };
 		39F376CB207D329F0058E8E0 /* geometry_coding_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geometry_coding_test.cpp; sourceTree = "<group>"; };
 		39F376CC207D329F0058E8E0 /* geometry_serialization_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geometry_serialization_test.cpp; sourceTree = "<group>"; };
+		3D0BBA5223F3E97600A50354 /* libminizip.dylib */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libminizip.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D489BB51D3D21510052AA38 /* libplatform.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libplatform.a; path = "../../../omim-xcode-build/Debug/libplatform.a"; sourceTree = "<group>"; };
 		3D489BB71D3D217E0052AA38 /* elias_coder_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = elias_coder_test.cpp; sourceTree = "<group>"; };
 		3D489BB81D3D217E0052AA38 /* fixed_bits_ddvector_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fixed_bits_ddvector_test.cpp; sourceTree = "<group>"; };
@@ -307,13 +308,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D0BBA5323F3E97600A50354 /* libminizip.dylib in Frameworks */,
 				F65AFA381F18C7A500979A50 /* libplatform.a in Frameworks */,
 				F65AFA361F18B8AB00979A50 /* libplatform_tests_support.a in Frameworks */,
 				45C108BA1E9CFF8E000FE1F6 /* libgeometry.a in Frameworks */,
 				3496AB6E1DC1F53500C5DDBA /* libalohalitics.a in Frameworks */,
 				394917301BAC3CC9002A8C4F /* libz.tbd in Frameworks */,
 				3949172B1BAC3CAC002A8C4F /* libbase.a in Frameworks */,
-				3949172C1BAC3CAC002A8C4F /* libminizip.a in Frameworks */,
 				3949172D1BAC3CAC002A8C4F /* libsuccinct.a in Frameworks */,
 				394916E41BAC3ACF002A8C4F /* libcoding.a in Frameworks */,
 			);
@@ -332,6 +333,7 @@
 		3496AB6C1DC1F53500C5DDBA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3D0BBA5223F3E97600A50354 /* libminizip.dylib */,
 				F65AFA371F18C7A500979A50 /* libplatform.a */,
 				F65AFA351F18B8AB00979A50 /* libplatform_tests_support.a */,
 				45C108B91E9CFF8E000FE1F6 /* libgeometry.a */,

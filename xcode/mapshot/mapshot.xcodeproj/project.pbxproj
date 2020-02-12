@@ -12,6 +12,9 @@
 		346B76D51DC1ED4D00C7C87E /* libpugixml.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 346B76D41DC1ED4D00C7C87E /* libpugixml.a */; };
 		346B76D71DC1ED5D00C7C87E /* liboauthcpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 346B76D61DC1ED5D00C7C87E /* liboauthcpp.a */; };
 		346B76D91DC1ED7A00C7C87E /* libtracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 346B76D81DC1ED7A00C7C87E /* libtracking.a */; };
+		3D0BBA5B23F3EADD00A50354 /* libminizip.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBA5A23F3EADD00A50354 /* libminizip.dylib */; };
+		3D0BBBA323F3FF4600A50354 /* libprotobuf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBBA223F3FF4600A50354 /* libprotobuf.a */; };
+		3D0BBBA523F3FF6700A50354 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBBA423F3FF6700A50354 /* libfreetype.a */; };
 		453FEE221F35E87B005C1BB4 /* libsoftware_renderer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 453FEE211F35E87B005C1BB4 /* libsoftware_renderer.a */; };
 		453FEE241F35E8C1005C1BB4 /* libagg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 453FEE231F35E8C1005C1BB4 /* libagg.a */; };
 		675D213D1BFB717400717E4F /* mapshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675D213C1BFB717400717E4F /* mapshot.cpp */; };
@@ -38,7 +41,6 @@
 		675D21781BFB829000717E4F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 675D21771BFB829000717E4F /* Cocoa.framework */; };
 		675D217D1BFB84BA00717E4F /* libapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675D21791BFB84BA00717E4F /* libapi.a */; };
 		675D217E1BFB84BA00717E4F /* libgeometry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675D217A1BFB84BA00717E4F /* libgeometry.a */; };
-		675D217F1BFB84BA00717E4F /* libminizip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675D217B1BFB84BA00717E4F /* libminizip.a */; };
 		675D21801BFB84BA00717E4F /* libopening_hours.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 675D217C1BFB84BA00717E4F /* libopening_hours.a */; };
 		675D21821BFB85E800717E4F /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 675D21811BFB85E800717E4F /* libz.tbd */; };
 		675D21841BFB86F400717E4F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 675D21831BFB86F400717E4F /* IOKit.framework */; };
@@ -67,6 +69,9 @@
 		346B76D81DC1ED7A00C7C87E /* libtracking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtracking.a; path = "../../../omim-build/xcode/Debug/libtracking.a"; sourceTree = "<group>"; };
 		3475E0DF1DBF57AC004C7E69 /* common-debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-debug.xcconfig"; path = "../common-debug.xcconfig"; sourceTree = "<group>"; };
 		3475E0E01DBF57AC004C7E69 /* common-release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "common-release.xcconfig"; path = "../common-release.xcconfig"; sourceTree = "<group>"; };
+		3D0BBA5A23F3EADD00A50354 /* libminizip.dylib */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libminizip.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D0BBBA223F3FF4600A50354 /* libprotobuf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libprotobuf.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D0BBBA423F3FF6700A50354 /* libfreetype.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libfreetype.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		453FEE211F35E87B005C1BB4 /* libsoftware_renderer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsoftware_renderer.a; path = ../software_renderer/build/Debug/libsoftware_renderer.a; sourceTree = "<group>"; };
 		453FEE231F35E8C1005C1BB4 /* libagg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libagg.a; path = ../agg/build/Release/libagg.a; sourceTree = "<group>"; };
 		675D21311BFB6F3D00717E4F /* mapshot */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mapshot; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,6 +113,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D0BBBA523F3FF6700A50354 /* libfreetype.a in Frameworks */,
+				3D0BBBA323F3FF4600A50354 /* libprotobuf.a in Frameworks */,
+				3D0BBA5B23F3EADD00A50354 /* libminizip.dylib in Frameworks */,
 				453FEE241F35E8C1005C1BB4 /* libagg.a in Frameworks */,
 				453FEE221F35E87B005C1BB4 /* libsoftware_renderer.a in Frameworks */,
 				346B76D91DC1ED7A00C7C87E /* libtracking.a in Frameworks */,
@@ -122,7 +130,6 @@
 				675D21821BFB85E800717E4F /* libz.tbd in Frameworks */,
 				675D217D1BFB84BA00717E4F /* libapi.a in Frameworks */,
 				675D217E1BFB84BA00717E4F /* libgeometry.a in Frameworks */,
-				675D217F1BFB84BA00717E4F /* libminizip.a in Frameworks */,
 				675D21801BFB84BA00717E4F /* libopening_hours.a in Frameworks */,
 				675D21781BFB829000717E4F /* Cocoa.framework in Frameworks */,
 				675D21761BFB828900717E4F /* CoreFoundation.framework in Frameworks */,
@@ -154,6 +161,9 @@
 		346B76CF1DC1ED0B00C7C87E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3D0BBBA423F3FF6700A50354 /* libfreetype.a */,
+				3D0BBBA223F3FF4600A50354 /* libprotobuf.a */,
+				3D0BBA5A23F3EADD00A50354 /* libminizip.dylib */,
 				453FEE231F35E8C1005C1BB4 /* libagg.a */,
 				453FEE211F35E87B005C1BB4 /* libsoftware_renderer.a */,
 				346B76D81DC1ED7A00C7C87E /* libtracking.a */,
@@ -270,6 +280,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 675D21281BFB6F3D00717E4F;

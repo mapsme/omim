@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D0BBAD123F3ECD300A50354 /* liboauthcpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBAD023F3ECD300A50354 /* liboauthcpp.a */; };
+		3D0BBAD323F3ECE300A50354 /* libjansson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBAD223F3ECE300A50354 /* libjansson.a */; };
+		3D0BBAD923F3ED6F00A50354 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBAD823F3ED6F00A50354 /* CoreLocation.framework */; };
+		3D0BBADB23F3EDE100A50354 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBADA23F3EDE100A50354 /* Security.framework */; };
 		450703041E9E6C3400E8C029 /* icons_info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 450703021E9E6C3400E8C029 /* icons_info.cpp */; };
 		450703051E9E6C3400E8C029 /* icons_info.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 450703031E9E6C3400E8C029 /* icons_info.hpp */; };
 		455C5DA51E97EBAC00DBFE48 /* file_helpers_tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 455C5DA11E97EBA200DBFE48 /* file_helpers_tests.cpp */; };
@@ -34,6 +38,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3D0BBAD023F3ECD300A50354 /* liboauthcpp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = liboauthcpp.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D0BBAD223F3ECE300A50354 /* libjansson.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libjansson.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D0BBAD423F3ED2600A50354 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		3D0BBAD623F3ED3A00A50354 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		3D0BBAD823F3ED6F00A50354 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		3D0BBADA23F3EDE100A50354 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		450703021E9E6C3400E8C029 /* icons_info.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = icons_info.cpp; sourceTree = "<group>"; };
 		450703031E9E6C3400E8C029 /* icons_info.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = icons_info.hpp; sourceTree = "<group>"; };
 		455C5DA11E97EBA200DBFE48 /* file_helpers_tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file_helpers_tests.cpp; sourceTree = "<group>"; };
@@ -75,6 +85,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D0BBADB23F3EDE100A50354 /* Security.framework in Frameworks */,
+				3D0BBAD923F3ED6F00A50354 /* CoreLocation.framework in Frameworks */,
+				3D0BBAD323F3ECE300A50354 /* libjansson.a in Frameworks */,
+				3D0BBAD123F3ECD300A50354 /* liboauthcpp.a in Frameworks */,
 				4580DAC61E9D2C3D00E8BCDE /* libgeometry.a in Frameworks */,
 				45FFD68A1E96639400DB854E /* libz.tbd in Frameworks */,
 				45FFD6881E96637C00DB854E /* libalohalitics.a in Frameworks */,
@@ -145,6 +159,12 @@
 		45FFD6801E96634B00DB854E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3D0BBADA23F3EDE100A50354 /* Security.framework */,
+				3D0BBAD823F3ED6F00A50354 /* CoreLocation.framework */,
+				3D0BBAD623F3ED3A00A50354 /* IOKit.framework */,
+				3D0BBAD423F3ED2600A50354 /* Foundation.framework */,
+				3D0BBAD223F3ECE300A50354 /* libjansson.a */,
+				3D0BBAD023F3ECD300A50354 /* liboauthcpp.a */,
 				4580DAC51E9D2C3D00E8BCDE /* libgeometry.a */,
 				45812AB41E9781D500D7D3B3 /* libplatform_tests_support.a */,
 				45FFD6891E96639400DB854E /* libz.tbd */,
@@ -234,6 +254,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
