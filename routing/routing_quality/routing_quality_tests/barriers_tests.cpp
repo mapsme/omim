@@ -25,14 +25,14 @@ UNIT_TEST(RoutingQuality_Broad_Way_Jamaica)
        ());
 }
 
-UNIT_TEST(RoutingQuality_Broad_Node_Norway)
+UNIT_TEST(RoutingQuality_Broad_Node_Spain)
 {
-  TEST(CheckCarRoute({56.98511, 9.77031} /* start */, {56.98358, 9.77815} /* finish */,
-                     {{{56.98542, 9.77448}}} /* reference point */),
+  TEST(CheckCarRoute({41.95027, -0.54596} /* start */, {56.98358, 9.77815} /* finish */,
+                     {{{41.95026, -0.54562}}} /* reference point */),
        ());
 }
 
-UNIT_TEST(RoutingQuality_Broad_Node_Norway_2)
+UNIT_TEST(RoutingQuality_Broad_Node_Norway)
 {
   TEST(CheckCarRoute({56.20247, 8.77519} /* start */, {56.19732, 8.79190} /* finish */,
                      {{{56.20172, 8.77879}}} /* reference point */),
