@@ -43,7 +43,6 @@
 		39F376D2207D32AA0058E8E0 /* test_polylines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39F376CA207D329F0058E8E0 /* test_polylines.cpp */; };
 		39F376D3207D32AD0058E8E0 /* geometry_serialization_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39F376CC207D329F0058E8E0 /* geometry_serialization_test.cpp */; };
 		39F376D4207D32B10058E8E0 /* geometry_coding_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 39F376CB207D329F0058E8E0 /* geometry_coding_test.cpp */; };
-		3D0BBA5323F3E97600A50354 /* libminizip.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0BBA5223F3E97600A50354 /* libminizip.dylib */; };
 		3D489BC01D3D21A00052AA38 /* succinct_mapper_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D489BBA1D3D217E0052AA38 /* succinct_mapper_test.cpp */; };
 		3D489BC11D3D21A40052AA38 /* simple_dense_coding_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D489BB91D3D217E0052AA38 /* simple_dense_coding_test.cpp */; };
 		3D489BC21D3D21AA0052AA38 /* fixed_bits_ddvector_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D489BB81D3D217E0052AA38 /* fixed_bits_ddvector_test.cpp */; };
@@ -59,6 +58,8 @@
 		4563B062205909290057556D /* sha1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4563B05F205909280057556D /* sha1.cpp */; };
 		4563B063205909290057556D /* sha1.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 4563B060205909280057556D /* sha1.hpp */; };
 		45C108BA1E9CFF8E000FE1F6 /* libgeometry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45C108B91E9CFF8E000FE1F6 /* libgeometry.a */; };
+		4740184823F5BE0800A93C81 /* minizip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4740184623F5BE0200A93C81 /* minizip.framework */; };
+		4740184923F5BE0800A93C81 /* minizip.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4740184623F5BE0200A93C81 /* minizip.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		670BAACB1D0B0C1E000302DA /* huffman.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 394917221BAC3C2F002A8C4F /* huffman.cpp */; };
 		670D04BD1B0BA92D0013A7AC /* expat_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 670D04B31B0BA9050013A7AC /* expat_impl.h */; };
 		670D04BE1B0BA92D0013A7AC /* file64_api.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 670D04B41B0BA9050013A7AC /* file64_api.hpp */; };
@@ -155,6 +156,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		4740180E23F5BB5800A93C81 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4740184923F5BE0800A93C81 /* minizip.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -174,7 +186,6 @@
 		394917221BAC3C2F002A8C4F /* huffman.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = huffman.cpp; sourceTree = "<group>"; };
 		394917231BAC3C2F002A8C4F /* huffman.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = huffman.hpp; sourceTree = "<group>"; };
 		394917271BAC3CAC002A8C4F /* libbase.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbase.a; path = "../../../omim-xcode-build/Debug/libbase.a"; sourceTree = "<group>"; };
-		394917281BAC3CAC002A8C4F /* libminizip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libminizip.a; path = "../../../omim-xcode-build/Debug/libminizip.a"; sourceTree = "<group>"; };
 		394917291BAC3CAC002A8C4F /* libsuccinct.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsuccinct.a; path = "../../../omim-xcode-build/Debug/libsuccinct.a"; sourceTree = "<group>"; };
 		3949172F1BAC3CC9002A8C4F /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		3954E00D233500E90007FDE4 /* files_container.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = files_container.hpp; sourceTree = "<group>"; };
@@ -199,7 +210,6 @@
 		39F376CA207D329F0058E8E0 /* test_polylines.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_polylines.cpp; sourceTree = "<group>"; };
 		39F376CB207D329F0058E8E0 /* geometry_coding_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geometry_coding_test.cpp; sourceTree = "<group>"; };
 		39F376CC207D329F0058E8E0 /* geometry_serialization_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = geometry_serialization_test.cpp; sourceTree = "<group>"; };
-		3D0BBA5223F3E97600A50354 /* libminizip.dylib */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libminizip.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D489BB51D3D21510052AA38 /* libplatform.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libplatform.a; path = "../../../omim-xcode-build/Debug/libplatform.a"; sourceTree = "<group>"; };
 		3D489BB71D3D217E0052AA38 /* elias_coder_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = elias_coder_test.cpp; sourceTree = "<group>"; };
 		3D489BB81D3D217E0052AA38 /* fixed_bits_ddvector_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fixed_bits_ddvector_test.cpp; sourceTree = "<group>"; };
@@ -216,6 +226,7 @@
 		4563B05F205909280057556D /* sha1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sha1.cpp; sourceTree = "<group>"; };
 		4563B060205909280057556D /* sha1.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sha1.hpp; sourceTree = "<group>"; };
 		45C108B91E9CFF8E000FE1F6 /* libgeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeometry.a; path = "/Users/r.kuznetsov/Dev/Projects/omim/xcode/geometry/../../../omim-build/xcode/Debug/libgeometry.a"; sourceTree = "<absolute>"; };
+		4740184623F5BE0200A93C81 /* minizip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = minizip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		670D04B31B0BA9050013A7AC /* expat_impl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = expat_impl.h; sourceTree = "<group>"; };
 		670D04B41B0BA9050013A7AC /* file64_api.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = file64_api.hpp; sourceTree = "<group>"; };
 		670D04B51B0BA9050013A7AC /* file_data.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = file_data.cpp; sourceTree = "<group>"; };
@@ -308,7 +319,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D0BBA5323F3E97600A50354 /* libminizip.dylib in Frameworks */,
+				4740184823F5BE0800A93C81 /* minizip.framework in Frameworks */,
 				F65AFA381F18C7A500979A50 /* libplatform.a in Frameworks */,
 				F65AFA361F18B8AB00979A50 /* libplatform_tests_support.a in Frameworks */,
 				45C108BA1E9CFF8E000FE1F6 /* libgeometry.a in Frameworks */,
@@ -333,7 +344,7 @@
 		3496AB6C1DC1F53500C5DDBA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3D0BBA5223F3E97600A50354 /* libminizip.dylib */,
+				4740184623F5BE0200A93C81 /* minizip.framework */,
 				F65AFA371F18C7A500979A50 /* libplatform.a */,
 				F65AFA351F18B8AB00979A50 /* libplatform_tests_support.a */,
 				45C108B91E9CFF8E000FE1F6 /* libgeometry.a */,
@@ -523,7 +534,6 @@
 				3D489BB51D3D21510052AA38 /* libplatform.a */,
 				3949172F1BAC3CC9002A8C4F /* libz.tbd */,
 				394917271BAC3CAC002A8C4F /* libbase.a */,
-				394917281BAC3CAC002A8C4F /* libminizip.a */,
 				394917291BAC3CAC002A8C4F /* libsuccinct.a */,
 			);
 			name = libs;
@@ -608,6 +618,7 @@
 				3949168B1BAC3A5F002A8C4F /* Sources */,
 				3949168C1BAC3A5F002A8C4F /* Frameworks */,
 				3949168D1BAC3A5F002A8C4F /* CopyFiles */,
+				4740180E23F5BB5800A93C81 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -761,6 +772,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = "$(OMIM_ROOT)/iphone/Maps/MAPSME.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = maps.me.coding_tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -770,6 +782,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = "$(OMIM_ROOT)/iphone/Maps/MAPSME.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = maps.me.coding_tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -860,6 +873,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = "$(OMIM_ROOT)/iphone/Maps/MAPSME.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = maps.me.coding_tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
