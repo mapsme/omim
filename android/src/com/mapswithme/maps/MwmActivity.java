@@ -1158,7 +1158,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       @Override
       public boolean run(@NonNull MwmActivity target)
       {
-        Framework.nativeShowFeatureByLatLon(object.getLat(), object.getLon());
+        Framework.nativeShowFeature(object.getFeatureId());
         return false;
       }
     });
