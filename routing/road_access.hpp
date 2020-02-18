@@ -6,6 +6,7 @@
 #include "base/assert.hpp"
 
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -42,6 +43,12 @@ public:
 
     // The number of different road types.
     Count
+  };
+
+  enum class Confidence
+  {
+    MayBe,
+    Sure
   };
 
   class Conditional
@@ -98,8 +105,12 @@ public:
     return m_pointToAccessConditional;
   }
 
-  Type GetAccess(uint32_t featureId) const;
-  Type GetAccess(RoadPoint const & point) const;
+  std::pair<Type, Confidence> GetAccess(uint32_t featureId) const;
+  Type GetAccessWithoutConditional(uint32_t featureId) const;
+  std::pair<Type, Confidence> GetAccess(uint32_t featureId, time_t momentInTime) const;
+
+  std::pair<Type, Confidence> GetAccess(RoadPoint const & point) const;
+  std::pair<Type, Confidence> GetAccess(RoadPoint const & point, time_t momentInTime) const;
 
   template <typename WayToAccess, typename PointToAccess>
   void SetAccess(WayToAccess && wayToAccess, PointToAccess && pointToAccess)
@@ -124,7 +135,19 @@ public:
     m_wayToAccess = std::forward<WayToAccess>(wayToAccess);
   }
 
+  template <typename T>
+  void SetCurrentTimeGetter(T && getter) { m_currentTimeGetter = std::forward<T>(getter); }
+
 private:
+  inline static time_t constexpr kConfidenceIntervalSeconds = 2 * 3600;  // 2 hours
+
+  static std::optional<Confidence> GetConfidenceForAccessConditional(
+      time_t momentInTime, osmoh::OpeningHours const & openingHours);
+
+  std::function<time_t()> m_currentTimeGetter = []() {
+    using system_clock = std::chrono::system_clock;
+    return system_clock::to_time_t(system_clock::now());
+  };
   // If segmentIdx of a key in this map is 0, it means the
   // entire feature has the corresponding access type.
   // Otherwise, the information is about the segment with number (segmentIdx-1).

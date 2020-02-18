@@ -297,10 +297,15 @@ void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
       return currentPointId < lastPointId ? pointId + 1 : pointId - 1;
     };
 
-    if (m_roadAccess.GetAccess(firstChild.GetFeatureId()) == RoadAccess::Type::No)
+    auto const processAccess = [this](auto const & accessSelector) {
+      auto const [accessType, confidence] = m_roadAccess.GetAccess(accessSelector);
+      return accessType == RoadAccess::Type::No && confidence == RoadAccess::Confidence::Sure;
+    };
+
+    if (processAccess(firstChild.GetFeatureId()))
       continue;
 
-    if (m_roadAccess.GetAccess(parent.GetRoadPoint(isOutgoing)) == RoadAccess::Type::No)
+    if (processAccess(parent.GetRoadPoint(isOutgoing)))
       continue;
 
     if (IsUTurn(parent, firstChild) && IsUTurnAndRestricted(parent, firstChild, isOutgoing))
@@ -312,13 +317,14 @@ void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
       continue;
     }
 
+    RouteWeight summaryWeight;
     // Check current JointSegment for bad road access between segments.
     RoadPoint rp = firstChild.GetRoadPoint(isOutgoing);
     uint32_t start = currentPointId;
     bool noRoadAccess = false;
     do
     {
-      if (m_roadAccess.GetAccess(rp) == RoadAccess::Type::No)
+      if (processAccess(rp))
       {
         noRoadAccess = true;
         break;
@@ -334,7 +340,6 @@ void IndexGraph::ReconstructJointSegment(JointSegment const & parentJoint,
     bool forward = currentPointId < lastPointId;
     Segment current = firstChild;
     Segment prev = parent;
-    RouteWeight summaryWeight;
 
     do
     {
@@ -367,11 +372,16 @@ void IndexGraph::GetNeighboringEdge(Segment const & from, Segment const & to, bo
   if (IsRestricted(from, from.GetFeatureId(), to.GetFeatureId(), isOutgoing, parents))
     return;
 
-  if (m_roadAccess.GetAccess(to.GetFeatureId()) == RoadAccess::Type::No)
+  auto const processAccess = [this](auto const & accessSelector) {
+    auto const [accessType, confidence] = m_roadAccess.GetAccess(accessSelector);
+    return accessType == RoadAccess::Type::No && confidence == RoadAccess::Confidence::Sure;
+  };
+
+  if (processAccess(to.GetFeatureId()))
     return;
 
   RoadPoint const rp = from.GetRoadPoint(isOutgoing);
-  if (m_roadAccess.GetAccess(rp) == RoadAccess::Type::No)
+  if (processAccess(rp))
     return;
 
   auto const weight = CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing, from, to);
@@ -398,18 +408,48 @@ RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose,
   int8_t const passThroughPenalty =
       fromPenaltyData.m_passThroughAllowed == toPenaltyData.m_passThroughAllowed ? 0 : 1;
 
-  // We do not distinguish between RoadAccess::Type::Private and RoadAccess::Type::Destination for now.
-  bool const fromAccessAllowed = m_roadAccess.GetAccess(u.GetFeatureId()) == RoadAccess::Type::Yes;
-  bool const toAccessAllowed = m_roadAccess.GetAccess(v.GetFeatureId()) == RoadAccess::Type::Yes;
-  // Route crosses border of access=yes/access={private, destination} area if |u| and |v| have different
-  // access restrictions.
-  int8_t accessPenalty = fromAccessAllowed == toAccessAllowed ? 0 : 1;
+  int8_t accessPenalty = 0;
+  int8_t accessConditionalPenalties = 0;
+
+  if (u.GetFeatureId() != v.GetFeatureId())
+  {
+    // We do not distinguish between RoadAccess::Type::Private and RoadAccess::Type::Destination for now.
+    auto const [fromAccess, fromConfidence] = m_roadAccess.GetAccess(u.GetFeatureId());
+    auto const [toAccess, toConfidence] = m_roadAccess.GetAccess(v.GetFeatureId());
+
+    if (fromConfidence == RoadAccess::Confidence::Sure &&
+        toConfidence == RoadAccess::Confidence::Sure)
+    {
+      bool const fromAccessAllowed = fromAccess == RoadAccess::Type::Yes;
+      bool const toAccessAllowed = toAccess == RoadAccess::Type::Yes;
+      // Route crosses border of access=yes/access={private, destination} area if |u| and |v| have
+      // different access restrictions.
+      accessPenalty = fromAccessAllowed == toAccessAllowed ? 0 : 1;
+    }
+    else if (toConfidence == RoadAccess::Confidence::MayBe)
+    {
+      accessConditionalPenalties = 1;
+    }
+  }
 
   // RoadPoint between u and v is front of u.
   auto const rp = u.GetRoadPoint(true /* front */);
-  // No double penalty for barriers on the border of access=yes/access={private, destination} area.
-  if (m_roadAccess.GetAccess(rp) != RoadAccess::Type::Yes)
-    accessPenalty = 1;
+  auto const [rpAccessType, rpConfidence] = m_roadAccess.GetAccess(rp);
+  switch (rpConfidence)
+  {
+  case RoadAccess::Confidence::Sure:
+  {
+    if (rpAccessType != RoadAccess::Type::Yes)
+      accessPenalty = 1;
+    break;
+  }
+  case RoadAccess::Confidence::MayBe:
+  {
+    accessConditionalPenalties = 1;
+    break;
+  }
+  default: UNREACHABLE();
+  }
 
   double weightPenalty = 0.0;
   if (IsUTurn(u, v))
@@ -418,7 +458,8 @@ RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose,
   if (IsBoarding(fromPenaltyData.m_isFerry, toPenaltyData.m_isFerry))
     weightPenalty += m_estimator->GetFerryLandingPenalty(purpose);
 
-  return {weightPenalty /* weight */, passThroughPenalty, accessPenalty, 0.0 /* transitTime */};
+  return {weightPenalty /* weight */, passThroughPenalty, accessPenalty, accessConditionalPenalties,
+          0.0 /* transitTime */};
 }
 
 WorldGraphMode IndexGraph::GetMode() const { return WorldGraphMode::Undefined; }
