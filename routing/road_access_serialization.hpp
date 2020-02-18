@@ -177,7 +177,6 @@ private:
       DeserializeOneVehicleType(src, wayToAccess, pointToAccess);
 
       roadAccess.SetAccess(std::move(wayToAccess), std::move(pointToAccess));
-      return;
     }
   }
 
