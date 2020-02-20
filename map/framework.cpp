@@ -320,6 +320,11 @@ IsolinesManager & Framework::GetIsolinesManager()
   return m_isolinesManager;
 }
 
+IsolinesManager const & Framework::GetIsolinesManager() const
+{
+  return m_isolinesManager;
+}
+
 void Framework::OnUserPositionChanged(m2::PointD const & position, bool hasPosition)
 {
   GetBookmarkManager().MyPositionMark().SetUserPosition(position, hasPosition);
