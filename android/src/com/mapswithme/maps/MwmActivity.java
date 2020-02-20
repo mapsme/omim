@@ -2343,20 +2343,21 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mTutorial = null;
   }
 
+  @Nullable
+  Tutorial getTutorial()
+  {
+    return mTutorial;
+  }
+
+  void setTutorial(@NonNull Tutorial tutorial)
+  {
+    mTutorial = tutorial;
+    mToggleMapLayerController.setTutorial(tutorial);
+  }
+
   private void tryToShowTutorial()
   {
-    Tutorial tutorial = Tutorial.requestCurrent(this, getClass());
-    if (tutorial == Tutorial.STUB)
-      return;
-
-    if (mTutorial != null)
-      return;
-
-    mTutorial = tutorial;
-    mTutorial.show(getActivity(), this);
-
-    Statistics.INSTANCE.trackTipsEvent(Statistics.EventName.TIPS_TRICKS_SHOW,
-                                       mTutorial.ordinal());
+    addTask(new ShowTutorialTask());
   }
 
   private boolean tryToShowPromoAfterBooking()
@@ -2797,6 +2798,29 @@ public class MwmActivity extends BaseMwmFragmentActivity
       adjustCompassAndTraffic(UiUtils.isVisible(mSearchController.getToolbar())
                               ? calcFloatingViewsOffset()
                               : UiUtils.getStatusBarHeight(getApplicationContext()));
+    }
+  }
+
+  private static class ShowTutorialTask extends RegularMapTask
+  {
+    private static final long serialVersionUID = 4048546797944121014L;
+
+    @Override
+    public boolean run(@NonNull MwmActivity target)
+    {
+      Tutorial tutorial = Tutorial.requestCurrent(target, target.getClass());
+      if (tutorial == Tutorial.STUB)
+        return false;
+
+      if (target.getTutorial() != null)
+        return false;
+
+      target.setTutorial(tutorial);
+      tutorial.show(target, target);
+
+      Statistics.INSTANCE.trackTipsEvent(Statistics.EventName.TIPS_TRICKS_SHOW,
+                                         tutorial.ordinal());
+      return true;
     }
   }
 }
