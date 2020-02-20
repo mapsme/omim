@@ -60,6 +60,7 @@
                                 </state>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="FlatNormalTransButton"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="text_more_button"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="onMoreButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="SJG-1o-t1H"/>
