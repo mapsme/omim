@@ -562,6 +562,8 @@ public:
 
   void OnStartDownloading() override;
   void OnFinishDownloading() override;
+  void OnCountryInQueue(CountryId const & id) override;
+  void OnStartDownloadingCountry(CountryId const & id) override;
 
 private:
   friend struct UnitClass_StorageTest_DeleteCountry;
