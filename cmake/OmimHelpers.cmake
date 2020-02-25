@@ -52,6 +52,18 @@ function(omim_add_executable executable)
       target_link_libraries(${executable} "-lprofiler")
     endif()
   endif()
+
+  if (USE_HEAPPROF)
+    if (PLATFORM_MAC)
+      message(
+        WARNING
+        "Trying to use -ltcmalloc on MacOS, make sure that you installed it (https://github.com/gperftools/gperftools)."
+      )
+    else()
+      target_link_libraries(${executable} "-ltcmalloc")
+    endif()
+  endif()
+
   if (USE_PCH)
     add_precompiled_headers_to_target(${executable} ${OMIM_PCH_TARGET_NAME})
   endif()
