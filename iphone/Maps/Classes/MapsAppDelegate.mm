@@ -775,8 +775,15 @@ continueUserActivity:(NSUserActivity *)userActivity
   {
     [Statistics logEvent:kStatUGCReviewNotificationClicked];
     ReviewNotification * reviewNotification = (ReviewNotification *)notification;
-    if (GetFramework().MakePlacePageForNotification(reviewNotification.notificationWrapper.notificationCandidate))
-      [[MapViewController sharedController].controlsManager showPlacePageReview];
+    if ([self isGraphicContextInitialized]) {
+      if (GetFramework().MakePlacePageForNotification(reviewNotification.notificationWrapper.notificationCandidate))
+        [[MapViewController sharedController].controlsManager showPlacePageReview];
+    } else {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [self didOpenNotification:notification];
+      });
+    }
+
   }
   else if (notification.class == AuthNotification.class)
   {
