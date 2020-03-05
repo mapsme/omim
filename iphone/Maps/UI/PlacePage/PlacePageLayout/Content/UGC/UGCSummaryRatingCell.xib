@@ -73,10 +73,13 @@
                             <constraint firstItem="1wF-gY-Wza" firstAttribute="centerY" secondItem="MSt-Fx-y5y" secondAttribute="centerY" id="x7o-2J-PIT"/>
                             <constraint firstItem="vuk-Pr-u1F" firstAttribute="leading" secondItem="MSt-Fx-y5y" secondAttribute="leading" constant="16" id="ykf-u3-iXH"/>
                         </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background"/>
+                        </userDefinedRuntimeAttributes>
                     </view>
                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ek3-Zj-cfu">
                         <rect key="frame" x="0.0" y="78" width="320" height="56"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="height" priority="999" constant="56" id="NOt-1H-Ou6"/>
                         </constraints>
@@ -113,6 +116,9 @@
                     <constraint firstAttribute="trailing" secondItem="MSt-Fx-y5y" secondAttribute="trailing" id="lrY-p6-nWm"/>
                     <constraint firstItem="MSt-Fx-y5y" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="vuv-N8-45j"/>
                 </constraints>
+                <userDefinedRuntimeAttributes>
+                    <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background"/>
+                </userDefinedRuntimeAttributes>
             </tableViewCellContentView>
             <connections>
                 <outlet property="countLabel" destination="dL4-7I-zUJ" id="Tff-bs-ZJ1"/>

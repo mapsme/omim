@@ -79,6 +79,9 @@
                             <constraint firstItem="d1v-ce-wSZ" firstAttribute="leading" secondItem="sVT-L4-Mlw" secondAttribute="leading" id="fJH-u0-p1T"/>
                             <constraint firstAttribute="trailing" secondItem="d1v-ce-wSZ" secondAttribute="trailing" id="ix8-vC-6x9"/>
                         </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background"/>
+                        </userDefinedRuntimeAttributes>
                     </view>
                 </subviews>
                 <constraints>
