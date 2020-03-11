@@ -85,7 +85,7 @@ if [ -n "$ARGS_PRIVATE_REPO" ]; then
   if [ -n "$ARGS_PRIVATE_BRANCH" ]; then
     PRIVATE_BRANCH=$ARGS_PRIVATE_BRANCH
   else
-    PRIVATE_BRANCH=master
+    PRIVATE_BRANCH=release-96
   fi
 else
   read -t 1 READ_PRIVATE_REPO READ_PRIVATE_BRANCH || true
@@ -94,7 +94,7 @@ else
     if [ -n "${READ_PRIVATE_BRANCH-}" ]; then
       PRIVATE_BRANCH=$READ_PRIVATE_BRANCH
     else
-      PRIVATE_BRANCH=master
+      PRIVATE_BRANCH=release-96
     fi
   elif [ -f "$SAVED_PRIVATE_REPO_FILE" ]; then
     PRIVATE_REPO=`cat "$SAVED_PRIVATE_REPO_FILE"`
@@ -103,7 +103,7 @@ else
       PRIVATE_BRANCH=`cat "$SAVED_PRIVATE_BRANCH_FILE"`
       echo "Using stored private branch: $PRIVATE_BRANCH"
     else
-      PRIVATE_BRANCH=master
+      PRIVATE_BRANCH=release-96
     fi
   else
     PRIVATE_REPO=""
