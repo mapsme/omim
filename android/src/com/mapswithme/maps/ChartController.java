@@ -35,8 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class ChartController implements OnChartValueSelectedListener, Initializable<View>,
-                                        BookmarkManager.OnElevationActivePointChangedListener
+public class ChartController implements OnChartValueSelectedListener, Initializable<View>
 {
   private static final int CHART_Y_LABEL_COUNT = 3;
   private static final int CHART_X_LABEL_COUNT = 6;
@@ -72,7 +71,6 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
   public void initialize(@Nullable View view)
   {
     Objects.requireNonNull(view);
-    BookmarkManager.INSTANCE.setElevationActivePointChangedListener(this);
     final Resources resources = mContext.getResources();
     mChart = view.findViewById(R.id.elevation_profile_chart);
 
@@ -106,7 +104,6 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
   @Override
   public void destroy()
   {
-    BookmarkManager.INSTANCE.setElevationActivePointChangedListener(null);
   }
 
   private void highlightChartCurrentLocation()
@@ -207,15 +204,6 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
   public void onNothingSelected()
   {
     highlightChartCurrentLocation();
-  }
-
-  @Override
-  public void onElevationActivePointChanged()
-  {
-    if (mTrackId == Utils.INVALID_ID)
-      return;
-
-//    highlightActivePoint();
   }
 
   private void highlightActivePoint()
