@@ -215,13 +215,13 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
     if (mTrackId == Utils.INVALID_ID)
       return;
 
-    highlightActivePoint();
+//    highlightActivePoint();
   }
 
   private void highlightActivePoint()
   {
     double activeX = BookmarkManager.INSTANCE.getElevationActivePointDistance(mTrackId);
-    Highlight highlight = new Highlight((float) activeX, 0, 0);
+    Highlight highlight = new Highlight((float) activeX, 0f, 0);
     mFloatingMarkerView.updateOffsets(new Entry((float) activeX, 0f), highlight);
     Highlight curPos = getCurrentPosHighlight();
 

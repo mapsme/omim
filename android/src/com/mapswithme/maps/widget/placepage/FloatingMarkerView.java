@@ -91,17 +91,24 @@ public class FloatingMarkerView extends MarkerView
     return x + halfImg + wholeText >= getChartView().getContentRect().right;
   }
 
+  private float convertContainerHeight()
+  {
+    float delta = getChartView().getContentRect().height();
+    float factor =  (getChartView().getYMax() - getChartView().getYMin()) / delta;
+    return factor * mSlidingContainer.getHeight();
+  }
+
   private void updateVertical(@NonNull Entry entry)
   {
     LayoutParams layoutParams = (LayoutParams) mTextContentContainer.getLayoutParams();
     float posY = entry.getY();
-    if (posY + mSlidingContainer.getHeight() / 2f >= getChartView().getYChartMax())
+    if (posY + convertContainerHeight() / 2f >= getChartView().getYChartMax())
     {
       layoutParams.addRule(ALIGN_PARENT_BOTTOM);
       layoutParams.removeRule(ALIGN_PARENT_TOP);
       layoutParams.removeRule(CENTER_VERTICAL);
     }
-    else if (posY - mSlidingContainer.getHeight() / 2f <= getChartView().getYChartMin())
+    else if (posY - convertContainerHeight() / 2f <= getChartView().getYChartMin())
     {
       layoutParams.addRule(ALIGN_PARENT_TOP);
       layoutParams.removeRule(ALIGN_PARENT_BOTTOM);
