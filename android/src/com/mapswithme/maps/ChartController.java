@@ -222,10 +222,6 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
   {
     double activeX = BookmarkManager.INSTANCE.getElevationActivePointDistance(mTrackId);
     Highlight highlight = new Highlight((float) activeX, 0f, 0);
-    mFloatingMarkerView.updateOffsets(new Entry((float) activeX, 0f), highlight);
-    Highlight curPos = getCurrentPosHighlight();
-
-    mChart.highlightValues(Arrays.asList(curPos, highlight),
-                           Arrays.asList(mCurrentLocationMarkerView, mFloatingMarkerView));
+    mChart.highlightValue(highlight, true);
   }
 }
