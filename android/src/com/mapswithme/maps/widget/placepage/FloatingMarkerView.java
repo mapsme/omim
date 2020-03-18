@@ -85,16 +85,23 @@ public class FloatingMarkerView extends MarkerView
 
   private boolean isInvertedOrder(@NonNull Highlight highlight)
   {
-    float x = highlight.getXPx();
+    float x = highlight.getX();
     float halfImg = Math.abs(mImage.getWidth()) / 2f;
     int wholeText = Math.abs(mInfoFloatingContainer.getWidth());
-    return x + halfImg + wholeText >= getChartView().getContentRect().right;
+    float factor = calcHorizontalFactor();
+    return x + (halfImg + wholeText ) * factor >= getChartView().getXChartMax();
+  }
+
+  private float calcHorizontalFactor() {
+    float delta = getChartView().getXChartMax() - getChartView().getXChartMin();
+    return delta / getChartView().getContentRect().width();
   }
 
   private float convertContainerHeight()
   {
-    float delta = getChartView().getContentRect().height();
-    float factor =  (getChartView().getYMax() - getChartView().getYMin()) / delta;
+    float height = getChartView().getContentRect().height();
+    float delta = getChartView().getYMax() - getChartView().getYMin();
+    float factor =  delta / height;
     return factor * mSlidingContainer.getHeight();
   }
 
