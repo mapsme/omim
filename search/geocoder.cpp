@@ -521,7 +521,7 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> const & infos, bool inViewport
 
   // MatchAroundPivot() should always be matched in mwms
   // intersecting with position and viewport.
-  auto processCountry = [&](MwmType const & mwmType, unique_ptr<MwmContext> context, bool updatePreranker) {
+  auto processCountry = [&](unique_ptr<MwmContext> context, bool updatePreranker) {
     ASSERT(context, ());
     m_context = move(context);
 
@@ -562,16 +562,20 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> const & infos, bool inViewport
 
     if (m_params.IsCategorialRequest())
     {
-      MatchCategories(ctx, mwmType.m_viewportIntersected /* aroundPivot */);
+      auto const mwmType = m_context->GetType();
+      CHECK(mwmType, ());
+      MatchCategories(ctx, mwmType->m_viewportIntersected /* aroundPivot */);
     }
     else
     {
-      MatchRegions(ctx, mwmType, Region::TYPE_COUNTRY);
+      MatchRegions(ctx, Region::TYPE_COUNTRY);
 
-      if (mwmType.m_viewportIntersected || mwmType.m_containsUserPosition ||
+      auto const mwmType = m_context->GetType();
+      CHECK(mwmType, ());
+      if (mwmType->m_viewportIntersected || mwmType->m_containsUserPosition ||
           m_preRanker.NumSentResults() == 0)
       {
-        MatchAroundPivot(ctx, mwmType);
+        MatchAroundPivot(ctx);
       }
     }
 
@@ -812,7 +816,7 @@ void Geocoder::ForEachCountry(ExtendedMwmInfos const & extendedInfos, Fn && fn)
       continue;
     bool const updatePreranker = i + 1 >= extendedInfos.m_firstBatchSize;
     auto const & mwmType = extendedInfos.m_infos[i].m_type;
-    if (fn(mwmType, make_unique<MwmContext>(move(handle)), updatePreranker) ==
+    if (fn(make_unique<MwmContext>(move(handle), mwmType), updatePreranker) ==
         base::ControlFlow::Break)
     {
       break;
@@ -851,7 +855,7 @@ void Geocoder::MatchCategories(BaseContext & ctx, bool aroundPivot)
   features.ForEach(emit);
 }
 
-void Geocoder::MatchRegions(BaseContext & ctx, MwmType mwmType, Region::Type type)
+void Geocoder::MatchRegions(BaseContext & ctx, Region::Type type)
 {
   TRACE(MatchRegions);
 
@@ -860,12 +864,12 @@ void Geocoder::MatchRegions(BaseContext & ctx, MwmType mwmType, Region::Type typ
   case Region::TYPE_STATE:
     // Tries to skip state matching and go to cities matching.
     // Then, performs states matching.
-    MatchCities(ctx, mwmType);
+    MatchCities(ctx);
     break;
   case Region::TYPE_COUNTRY:
     // Tries to skip country matching and go to states matching.
     // Then, performs countries matching.
-    MatchRegions(ctx, mwmType, Region::TYPE_STATE);
+    MatchRegions(ctx, Region::TYPE_STATE);
     break;
   case Region::TYPE_COUNT: ASSERT(false, ("Invalid region type.")); return;
   }
@@ -926,15 +930,15 @@ void Geocoder::MatchRegions(BaseContext & ctx, MwmType mwmType, Region::Type typ
 
       switch (type)
       {
-      case Region::TYPE_STATE: MatchCities(ctx, mwmType); break;
-      case Region::TYPE_COUNTRY: MatchRegions(ctx, mwmType, Region::TYPE_STATE); break;
+      case Region::TYPE_STATE: MatchCities(ctx); break;
+      case Region::TYPE_COUNTRY: MatchRegions(ctx, Region::TYPE_STATE); break;
       case Region::TYPE_COUNT: ASSERT(false, ("Invalid region type.")); break;
       }
     }
   }
 }
 
-void Geocoder::MatchCities(BaseContext & ctx, MwmType mwmType)
+void Geocoder::MatchCities(BaseContext & ctx)
 {
   TRACE(MatchCities);
 
@@ -990,7 +994,7 @@ void Geocoder::MatchCities(BaseContext & ctx, MwmType mwmType)
   }
 }
 
-void Geocoder::MatchAroundPivot(BaseContext & ctx, MwmType mwmType)
+void Geocoder::MatchAroundPivot(BaseContext & ctx)
 {
   TRACE(MatchAroundPivot);
 
@@ -999,10 +1003,12 @@ void Geocoder::MatchAroundPivot(BaseContext & ctx, MwmType mwmType)
   ViewportFilter filter(features, m_preRanker.Limit() /* threshold */);
 
   vector<m2::PointD> centers = {m_params.m_pivot.Center()};
-  if (mwmType.m_containsUserPosition)
+  auto const mwmType = m_context->GetType();
+  CHECK(mwmType, ());
+  if (mwmType->m_containsUserPosition)
   {
     CHECK(m_params.m_position, ());
-    if (mwmType.m_viewportIntersected)
+    if (mwmType->m_viewportIntersected)
       centers.push_back(*m_params.m_position);
     else
       centers = {*m_params.m_position};
