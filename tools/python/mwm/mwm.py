@@ -77,8 +77,12 @@ class MWM:
     def read_types(self, filename):
         with open(filename, 'r') as ft:
             for line in ft:
-                if len(line.strip()) > 0:
-                    self.type_mapping.append(line.strip().replace('|', '-'))
+                s = line.strip()
+                if s:
+                    s = s.replace('|', '-')
+                    if s.startswith("*"):
+                        s = s[1:]
+                    self.type_mapping.append(s)
 
     def read_info(self):
         self.f.seek(0)
