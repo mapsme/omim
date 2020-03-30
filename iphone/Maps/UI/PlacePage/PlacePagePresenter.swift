@@ -47,6 +47,7 @@ extension PlacePagePresenter: PlacePagePresenterProtocol {
     } else {
       view.hideActionBar(true)
     }
+    updatePreviewOffset()
   }
 
   func setAdState(_ state: AdBannerState) {
@@ -54,6 +55,9 @@ extension PlacePagePresenter: PlacePagePresenterProtocol {
   }
 
   func updatePreviewOffset() {
+    guard !view.beginDragging else {
+      return
+    }
     layoutIfNeeded()
     scrollSteps = layout.calculateSteps(inScrollView: view.scrollView)
     let state = isPreviewPlus ? scrollSteps[2] : scrollSteps[1]
@@ -64,7 +68,7 @@ extension PlacePagePresenter: PlacePagePresenterProtocol {
     view.layoutIfNeeded()
   }
 
-  private func findNearestStop(_ offset: CGFloat) -> PlacePageState{
+  private func findNearestStop(_ offset: CGFloat) -> PlacePageState {
     var result = scrollSteps[0]
     scrollSteps.suffix(from: 1).forEach { ppState in
       if abs(result.offset - offset) > abs(ppState.offset - offset) {
