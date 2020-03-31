@@ -112,6 +112,10 @@ set(
   intermediate_data.cpp
   intermediate_data.hpp
   intermediate_elements.hpp
+  isolines_generator.cpp
+  isolines_generator.hpp
+  isolines_section_builder.cpp
+  isolines_section_builder.hpp
   maxspeeds_builder.cpp
   maxspeeds_builder.hpp
   maxspeeds_collector.cpp
@@ -248,6 +252,8 @@ set(
 )
 
 omim_add_library(${PROJECT_NAME} ${SRC})
+
+omim_add_pybindings_subdirectory(pygen)
 
 omim_add_test_subdirectory(generator_tests_support)
 omim_add_test_subdirectory(generator_tests)

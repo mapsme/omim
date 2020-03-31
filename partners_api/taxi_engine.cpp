@@ -1,4 +1,6 @@
 #include "partners_api/taxi_engine.hpp"
+
+#include "partners_api/freenow_api.hpp"
 #include "partners_api/maxim_api.hpp"
 #include "partners_api/rutaxi_api.hpp"
 #include "partners_api/taxi_places_loader.hpp"
@@ -117,8 +119,8 @@ void ResultMaker::DecrementRequestCount()
 Engine::Engine(std::vector<ProviderUrl> urls /* = {} */)
 {
   AddApi<yandex::Api>(urls, Provider::Type::Yandex);
-  AddApi<maxim::Api>(urls, Provider::Type::Maxim);
   AddApi<rutaxi::Api>(urls, Provider::Type::Rutaxi);
+  AddApi<freenow::Api>(urls, Provider::Type::Freenow);
 }
 
 void Engine::SetDelegate(std::unique_ptr<Delegate> delegate)
@@ -201,6 +203,18 @@ std::vector<Provider::Type> Engine::GetProvidersAtPos(ms::LatLon const & pos) co
   {
     if (IsAvailableAtPos(api.m_type, point))
       result.push_back(api.m_type);
+  }
+
+  return result;
+}
+
+std::vector<Provider::Type> Engine::GetSupportedProviders() const
+{
+  std::vector<Provider::Type> result;
+  result.reserve(m_apis.size());
+  for (auto const & api : m_apis)
+  {
+    result.emplace_back(api.m_type);
   }
 
   return result;

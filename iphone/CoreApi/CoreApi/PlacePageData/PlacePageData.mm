@@ -8,6 +8,8 @@
 #import "HotelBookingData+Core.h"
 #import "HotelRooms+Core.h"
 #import "UgcData+Core.h"
+#import "ElevationProfileData+Core.h"
+#import "MWMMapNodeAttributes.h"
 
 #include <CoreApi/CoreApi.h>
 #include "platform/network_policy.hpp"
@@ -45,19 +47,38 @@ static PlacePageTaxiProvider convertTaxiProvider(taxi::Provider::Type providerTy
       return PlacePageTaxiProviderMaxim;
     case taxi::Provider::Rutaxi:
       return PlacePageTaxiProviderRutaxi;
+    case taxi::Provider::Freenow:
+      return PlacePageTaxiProviderFreenow;
     case taxi::Provider::Count:
       return PlacePageTaxiProviderNone;
   }
 }
 
+static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
+  switch (roadType) {
+    case RoadWarningMarkType::Toll:
+      return PlacePageRoadTypeToll;
+    case RoadWarningMarkType::Ferry:
+      return PlacePageRoadTypeFerry;
+    case RoadWarningMarkType::Dirty:
+      return PlacePageRoadTypeDirty;
+    case RoadWarningMarkType::Count:
+      return PlacePageRoadTypeNone;
+  }
+}
+
+@interface PlacePageData () <MWMStorageObserver>
+
+@end
+
 @implementation PlacePageData
 
-- (instancetype)init {
+- (instancetype)initWithLocalizationProvider:(id<IOpeningHoursLocalization>)localization {
   self = [super init];
   if (self) {
     _buttonsData = [[PlacePageButtonsData alloc] initWithRawData:rawData()];
     _previewData = [[PlacePagePreviewData alloc] initWithRawData:rawData()];
-    _infoData = [[PlacePageInfoData alloc] initWithRawData:rawData()];
+    _infoData = [[PlacePageInfoData alloc] initWithRawData:rawData() ohLocalization:localization];
 
     if (rawData().IsBookmark()) {
       _bookmarkData = [[PlacePageBookmarkData alloc] initWithRawData:rawData()];
@@ -69,6 +90,7 @@ static PlacePageTaxiProvider convertTaxiProvider(taxi::Provider::Type providerTy
     }
 
     _sponsoredType = convertSponsoredType(rawData().GetSponsoredType());
+    _roadType = convertRoadType(rawData().GetRoadType());
 
     auto const &taxiProviders = rawData().ReachableByTaxiProviders();
     if (!taxiProviders.empty()) {
@@ -81,6 +103,7 @@ static PlacePageTaxiProvider convertTaxiProvider(taxi::Provider::Type providerTy
     _isPromoCatalog = _isLargeToponim || _isSightseeing || _isOutdoor;
     _shouldShowUgc = rawData().ShouldShowUGC();
     _isMyPosition = rawData().IsMyPosition();
+    _isRoutePoint = rawData().IsRoutePoint();
     _isPreviewPlus = rawData().GetOpeningMode() == place_page::OpeningMode::PreviewPlus;
     _isPartner = rawData().GetSponsoredType() == place_page::SponsoredType::Partner;
     _partnerIndex = _isPartner ? rawData().GetPartnerIndex() : -1;
@@ -108,8 +131,16 @@ static PlacePageTaxiProvider convertTaxiProvider(taxi::Provider::Type providerTy
       _sponsoredReviewURL = @(rawData().GetSponsoredReviewUrl().c_str());
       _sponsoredDeeplink = @(rawData().GetSponsoredDeepLink().c_str());
     }
+
+    _mapNodeAttributes = [[MWMStorage sharedStorage] attributesForCountry:@(rawData().GetCountryId().c_str())];
+    [[MWMStorage sharedStorage] addObserver:self];
+//    _elevationProfileData = [[ElevationProfileData alloc] init];
   }
   return self;
+}
+
+- (void)dealloc {
+  [[MWMStorage sharedStorage] removeObserver:self];
 }
 
 - (void)loadOnlineDataWithCompletion:(MWMVoidBlock)completion {
@@ -236,6 +267,37 @@ static PlacePageTaxiProvider convertTaxiProvider(taxi::Provider::Type providerTy
     _hotelRooms = [[HotelRooms alloc] initWithBlocks:blocks];
     completion();
   });
+}
+
+- (void)updateBookmarkStatus {
+  if (!GetFramework().HasPlacePageInfo()) {
+    return;
+  }
+  if (rawData().IsBookmark()) {
+    _bookmarkData = [[PlacePageBookmarkData alloc] initWithRawData:rawData()];
+  } else {
+    _bookmarkData = nil;
+  }
+  if (self.onBookmarkStatusUpdate != nil) {
+    self.onBookmarkStatusUpdate();
+  }
+}
+
+#pragma mark - MWMStorageObserver
+
+- (void)processCountryEvent:(NSString *)countryId {
+  if ([countryId isEqualToString:self.mapNodeAttributes.countryId]) {
+    _mapNodeAttributes = [[MWMStorage sharedStorage] attributesForCountry:@(rawData().GetCountryId().c_str())];
+    if (self.onMapNodeStatusUpdate != nil) {
+      self.onMapNodeStatusUpdate();
+    }
+  }
+}
+
+- (void)processCountry:(NSString *)countryId downloadedBytes:(uint64_t)downloadedBytes totalBytes:(uint64_t)totalBytes {
+  if ([countryId isEqualToString:self.mapNodeAttributes.countryId] && self.onMapNodeProgressUpdate != nil) {
+    self.onMapNodeProgressUpdate(downloadedBytes, totalBytes);
+  }
 }
 
 @end

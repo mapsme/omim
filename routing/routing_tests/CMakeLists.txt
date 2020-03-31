@@ -12,14 +12,17 @@ set(
   coding_test.cpp
   cross_mwm_connector_test.cpp
   cumulative_restriction_test.cpp
+  edge_estimator_tests.cpp
   fake_graph_test.cpp
   followed_polyline_test.cpp
+  guides_tests.cpp
   index_graph_test.cpp
   index_graph_tools.cpp
   index_graph_tools.hpp
   maxspeeds_tests.cpp
   nearest_edge_finder_tests.cpp
   online_cross_fetcher_test.cpp
+  opening_hours_serdes_tests.cpp
   position_accumulator_tests.cpp
   restriction_test.cpp
   road_access_test.cpp
@@ -46,6 +49,7 @@ omim_add_test(${PROJECT_NAME} ${SRC})
 omim_link_libraries(
   ${PROJECT_NAME}
   map
+  ge0
   routing
   platform_tests_support
   traffic

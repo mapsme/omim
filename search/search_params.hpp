@@ -27,6 +27,8 @@ struct SearchParams
   inline static size_t const kDefaultNumResultsEverywhere = 30;
   inline static size_t const kDefaultNumResultsInViewport = 200;
   inline static size_t const kPreResultsCount = 200;
+  inline static double const kDefaultStreetSearchRadiusM = 8e4;
+  inline static double const kDefaultVillageSearchRadiusM = 2e5;
   inline static std::chrono::steady_clock::duration const kDefaultTimeout =
       std::chrono::seconds(3);
   inline static std::chrono::steady_clock::duration const kDefaultDesktopTimeout =
@@ -72,6 +74,11 @@ struct SearchParams
   // Minimal distance between search results in mercators, needed for
   // pre-ranking of viewport search results.
   double m_minDistanceOnMapBetweenResults = 0.0;
+
+  // Street search radius from pivot or matched city center for everywhere search mode.
+  double m_streetSearchRadiusM = kDefaultStreetSearchRadiusM;
+  // Street search radius from pivot for everywhere search mode.
+  double m_villageSearchRadiusM = kDefaultVillageSearchRadiusM;
 
   Mode m_mode = Mode::Everywhere;
 

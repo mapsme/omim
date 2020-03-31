@@ -29,6 +29,7 @@
 		34FFD30E1E9CEF010010AD12 /* liblocal_ads.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34FFD30C1E9CEF010010AD12 /* liblocal_ads.a */; };
 		34FFD30F1E9CEF490010AD12 /* map_widget.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 34FFD2F21E9CEEA20010AD12 /* map_widget.hpp */; };
 		34FFD3101E9CEF490010AD12 /* resources_common.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 34FFD2FD1E9CEEA20010AD12 /* resources_common.qrc */; };
+		39B9682623E1AC8800D3B8E3 /* libge0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B9682523E1AC8800D3B8E3 /* libge0.a */; };
 		4415CD992271B1A200AA3A19 /* routing_settings_dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4415CD952271B1A200AA3A19 /* routing_settings_dialog.cpp */; };
 		4415CD9A2271B1A200AA3A19 /* screenshoter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4415CD962271B1A200AA3A19 /* screenshoter.cpp */; };
 		450703071E9E6C7100E8C029 /* local_ads_symbols.txt in Resources */ = {isa = PBXBuildFile; fileRef = 450703061E9E6C7100E8C029 /* local_ads_symbols.txt */; };
@@ -54,6 +55,8 @@
 		45B5B5A51CA422EE00D93E36 /* resources-xhdpi_dark in Resources */ = {isa = PBXBuildFile; fileRef = 45B5B5A01CA422EE00D93E36 /* resources-xhdpi_dark */; };
 		45B5B5A61CA422EE00D93E36 /* resources-xxhdpi_dark in Resources */ = {isa = PBXBuildFile; fileRef = 45B5B5A11CA422EE00D93E36 /* resources-xxhdpi_dark */; };
 		45D7ADA4210B519300160DE3 /* bookmark_dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45D7ADA2210B519300160DE3 /* bookmark_dialog.cpp */; };
+		4740186723F5BF3900A93C81 /* minizip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4740186623F5BF3900A93C81 /* minizip.framework */; };
+		4740186823F5BF3900A93C81 /* minizip.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4740186623F5BF3900A93C81 /* minizip.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		670D05931B0CBD320013A7AC /* about.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 6753456D1A404CB200A0A8C3 /* about.hpp */; };
 		670D05941B0CBD320013A7AC /* info_dialog.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 675345731A404CB200A0A8C3 /* info_dialog.hpp */; };
 		670D05951B0CBD320013A7AC /* preferences_dialog.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 675345781A404CB200A0A8C3 /* preferences_dialog.hpp */; };
@@ -70,7 +73,6 @@
 		671E78E51E6A4E1A00B2859B /* librouting_common.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 671E78E41E6A4E1A00B2859B /* librouting_common.a */; };
 		671E79221E6A508600B2859B /* libopenlr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 671E79211E6A508600B2859B /* libopenlr.a */; };
 		671F59021B8755FE0032311E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 671F59011B8755FE0032311E /* libz.dylib */; };
-		671F59301B8759460032311E /* libminizip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 671F592F1B8759460032311E /* libminizip.a */; };
 		672292B11DE307DC005BA3A7 /* libtraffic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 672292B01DE307DC005BA3A7 /* libtraffic.a */; };
 		6729A5C11A693014007D5872 /* categories.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6729A5B91A693013007D5872 /* categories.txt */; };
 		6729A5C21A693014007D5872 /* classificator.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6729A5BA1A693013007D5872 /* classificator.txt */; };
@@ -94,7 +96,6 @@
 		6729A66F1A695C70007D5872 /* welcome.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6729A66C1A695C70007D5872 /* welcome.html */; };
 		6729A6711A695CA8007D5872 /* languages.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6729A6701A695CA8007D5872 /* languages.txt */; };
 		674A29AB1B26F0AE001A525C /* libalohalitics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674A29901B26F0AE001A525C /* libalohalitics.a */; };
-		674A29AD1B26F0AE001A525C /* libapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674A29921B26F0AE001A525C /* libapi.a */; };
 		674A29AE1B26F0AE001A525C /* libbase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674A29931B26F0AE001A525C /* libbase.a */; };
 		674A29AF1B26F0AE001A525C /* libcoding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674A29941B26F0AE001A525C /* libcoding.a */; };
 		674A29B11B26F0AE001A525C /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674A29961B26F0AE001A525C /* libexpat.a */; };
@@ -139,7 +140,6 @@
 		677A2DEB1C0DDDBE00635A00 /* resources-default in Resources */ = {isa = PBXBuildFile; fileRef = 677A2DE71C0DDD7C00635A00 /* resources-default */; };
 		67A461A71C2172C400B18739 /* 07_roboto_medium.ttf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 67A461A61C2172C400B18739 /* 07_roboto_medium.ttf */; };
 		67E8DC931BBC1D3F0053C5BA /* libagg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67E8DC911BBC1D3F0053C5BA /* libagg.a */; };
-		67F4D3F51CC5400900C5D9BB /* cuisine-strings in Resources */ = {isa = PBXBuildFile; fileRef = 67F4D3F41CC5400900C5D9BB /* cuisine-strings */; };
 		9D4AD1DD1B7388CD00EBDD27 /* 02_droidsans-fallback.ttf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9DF792621B73884F00AF2D19 /* 02_droidsans-fallback.ttf */; };
 /* End PBXBuildFile section */
 
@@ -149,6 +149,8 @@
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.ui";
 			fileType = pattern.proxy;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/ui_$(INPUT_FILE_NAME).h",
@@ -160,6 +162,8 @@
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.hpp";
 			fileType = pattern.proxy;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_NAME).cpp",
@@ -171,6 +175,8 @@
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.qrc";
 			fileType = pattern.proxy;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_NAME).cpp",
@@ -180,6 +186,17 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		4740184023F5BC8E00A93C81 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4740186823F5BF3900A93C81 /* minizip.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6729A5B81A692C7D007D5872 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,6 +262,7 @@
 		34FFD2FF1E9CEEA20010AD12 /* scale_slider.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = scale_slider.hpp; sourceTree = "<group>"; };
 		34FFD30B1E9CEF010010AD12 /* libicu.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libicu.a; path = "/Users/igrechuhin/Repo/omim/xcode/icu/../../../omim-build/xcode/Debug/libicu.a"; sourceTree = "<absolute>"; };
 		34FFD30C1E9CEF010010AD12 /* liblocal_ads.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblocal_ads.a; path = "/Users/igrechuhin/Repo/omim/xcode/local_ads/../../../omim-build/xcode/Debug/liblocal_ads.a"; sourceTree = "<absolute>"; };
+		39B9682523E1AC8800D3B8E3 /* libge0.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libge0.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4415CD952271B1A200AA3A19 /* routing_settings_dialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = routing_settings_dialog.cpp; sourceTree = "<group>"; };
 		4415CD962271B1A200AA3A19 /* screenshoter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = screenshoter.cpp; sourceTree = "<group>"; };
 		4415CD972271B1A200AA3A19 /* routing_settings_dialog.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = routing_settings_dialog.hpp; sourceTree = "<group>"; };
@@ -280,6 +298,7 @@
 		45B5B5A11CA422EE00D93E36 /* resources-xxhdpi_dark */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "resources-xxhdpi_dark"; sourceTree = "<group>"; };
 		45D7ADA2210B519300160DE3 /* bookmark_dialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bookmark_dialog.cpp; sourceTree = "<group>"; };
 		45D7ADA3210B519300160DE3 /* bookmark_dialog.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bookmark_dialog.hpp; sourceTree = "<group>"; };
+		4740186623F5BF3900A93C81 /* minizip.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = minizip.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		671182F41C80E09A00CB8177 /* colors.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = colors.txt; sourceTree = "<group>"; };
 		671182F51C80E09A00CB8177 /* patterns.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = patterns.txt; sourceTree = "<group>"; };
 		6714E5DE1BD13F67008AB603 /* drules_proto_clear.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = drules_proto_clear.bin; sourceTree = "<group>"; };
@@ -289,7 +308,6 @@
 		671E78E41E6A4E1A00B2859B /* librouting_common.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librouting_common.a; path = "/Users/darkserj/mapsme/omim/xcode/routing_common/../../../omim-build/xcode/Debug/librouting_common.a"; sourceTree = "<absolute>"; };
 		671E79211E6A508600B2859B /* libopenlr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenlr.a; path = "/Users/darkserj/mapsme/omim/xcode/openlr/../../../omim-build/xcode/Debug/libopenlr.a"; sourceTree = "<absolute>"; };
 		671F59011B8755FE0032311E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		671F592F1B8759460032311E /* libminizip.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libminizip.a; path = "../../../omim-xcode-build/Debug/libminizip.a"; sourceTree = "<group>"; };
 		672292B01DE307DC005BA3A7 /* libtraffic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtraffic.a; path = "../../../omim-build/xcode/Debug/libtraffic.a"; sourceTree = "<group>"; };
 		6729A5B91A693013007D5872 /* categories.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = categories.txt; sourceTree = "<group>"; };
 		6729A5BA1A693013007D5872 /* classificator.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = classificator.txt; sourceTree = "<group>"; };
@@ -313,7 +331,6 @@
 		6729A66C1A695C70007D5872 /* welcome.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = welcome.html; sourceTree = "<group>"; };
 		6729A6701A695CA8007D5872 /* languages.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = languages.txt; sourceTree = "<group>"; };
 		674A29901B26F0AE001A525C /* libalohalitics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libalohalitics.a; path = "../../../omim-xcode-build/Debug/libalohalitics.a"; sourceTree = "<group>"; };
-		674A29921B26F0AE001A525C /* libapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapi.a; path = "../../../omim-xcode-build/Debug/libapi.a"; sourceTree = "<group>"; };
 		674A29931B26F0AE001A525C /* libbase.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbase.a; path = "../../../omim-xcode-build/Debug/libbase.a"; sourceTree = "<group>"; };
 		674A29941B26F0AE001A525C /* libcoding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcoding.a; path = "../../../omim-xcode-build/Debug/libcoding.a"; sourceTree = "<group>"; };
 		674A29961B26F0AE001A525C /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = "../../../omim-xcode-build/Debug/libexpat.a"; sourceTree = "<group>"; };
@@ -367,7 +384,6 @@
 		677A2DE71C0DDD7C00635A00 /* resources-default */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "resources-default"; sourceTree = "<group>"; };
 		67A461A61C2172C400B18739 /* 07_roboto_medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = 07_roboto_medium.ttf; sourceTree = "<group>"; };
 		67E8DC911BBC1D3F0053C5BA /* libagg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libagg.a; path = "../../../omim-xcode-build/Debug/libagg.a"; sourceTree = "<group>"; };
-		67F4D3F41CC5400900C5D9BB /* cuisine-strings */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "cuisine-strings"; sourceTree = "<group>"; };
 		9DF792621B73884F00AF2D19 /* 02_droidsans-fallback.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "02_droidsans-fallback.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -376,6 +392,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39B9682623E1AC8800D3B8E3 /* libge0.a in Frameworks */,
 				675B562020D15BEF00A521D2 /* libkml.a in Frameworks */,
 				675B561E20D15BC300A521D2 /* libopen_location_code.a in Frameworks */,
 				34EF6F8020246E0B00838CBC /* libtransit.a in Frameworks */,
@@ -399,10 +416,8 @@
 				674A7E391C0DB727003D48E1 /* libstb_image.a in Frameworks */,
 				674A7E311C0DB727003D48E1 /* libgeometry.a in Frameworks */,
 				67E8DC931BBC1D3F0053C5BA /* libagg.a in Frameworks */,
-				671F59301B8759460032311E /* libminizip.a in Frameworks */,
 				671F59021B8755FE0032311E /* libz.dylib in Frameworks */,
 				674A29AB1B26F0AE001A525C /* libalohalitics.a in Frameworks */,
-				674A29AD1B26F0AE001A525C /* libapi.a in Frameworks */,
 				674A29AE1B26F0AE001A525C /* libbase.a in Frameworks */,
 				674A29AF1B26F0AE001A525C /* libcoding.a in Frameworks */,
 				674A29B11B26F0AE001A525C /* libexpat.a in Frameworks */,
@@ -424,6 +439,7 @@
 				67534C421A4097D000A0A8C3 /* OpenGL.framework in Frameworks */,
 				675345A81A40535E00A0A8C3 /* Cocoa.framework in Frameworks */,
 				675345A61A40534F00A0A8C3 /* CoreFoundation.framework in Frameworks */,
+				4740186723F5BF3900A93C81 /* minizip.framework in Frameworks */,
 				675345A41A40534500A0A8C3 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -434,6 +450,8 @@
 		3475E0DC1DBF5772004C7E69 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39B9682523E1AC8800D3B8E3 /* libge0.a */,
+				4740186623F5BF3900A93C81 /* minizip.framework */,
 				675B561F20D15BEF00A521D2 /* libkml.a */,
 				675B561D20D15BC300A521D2 /* libopen_location_code.a */,
 				34EF6F8120246E0B00838CBC /* libtransit.a */,
@@ -450,10 +468,8 @@
 				674A7E341C0DB727003D48E1 /* libsdf_image.a */,
 				674A7E351C0DB727003D48E1 /* libstb_image.a */,
 				67E8DC911BBC1D3F0053C5BA /* libagg.a */,
-				671F592F1B8759460032311E /* libminizip.a */,
 				671F59011B8755FE0032311E /* libz.dylib */,
 				674A29901B26F0AE001A525C /* libalohalitics.a */,
-				674A29921B26F0AE001A525C /* libapi.a */,
 				674A29931B26F0AE001A525C /* libbase.a */,
 				674A29941B26F0AE001A525C /* libcoding.a */,
 				674A29961B26F0AE001A525C /* libexpat.a */,
@@ -549,7 +565,6 @@
 		6729A5C91A693045007D5872 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				67F4D3F41CC5400900C5D9BB /* cuisine-strings */,
 				45B5B59D1CA422EE00D93E36 /* resources-6plus_dark */,
 				45B5B59E1CA422EE00D93E36 /* resources-hdpi_dark */,
 				45B5B5A01CA422EE00D93E36 /* resources-xhdpi_dark */,
@@ -677,6 +692,7 @@
 				675345471A404C6100A0A8C3 /* Resources */,
 				6729A5B81A692C7D007D5872 /* CopyFiles */,
 				34EF6F84202471B500838CBC /* Copy frameworks */,
+				4740184023F5BC8E00A93C81 /* Embed Frameworks */,
 			);
 			buildRules = (
 				671E78E11E6A45BD00B2859B /* PBXBuildRule */,
@@ -748,7 +764,6 @@
 				45B5B59B1CA422C800D93E36 /* resources-xhdpi_clear in Resources */,
 				45B5B5981CA422C800D93E36 /* resources-6plus_clear in Resources */,
 				450703071E9E6C7100E8C029 /* local_ads_symbols.txt in Resources */,
-				67F4D3F51CC5400900C5D9BB /* cuisine-strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -893,6 +908,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "mail.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -915,6 +931,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "mail.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

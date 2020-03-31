@@ -40,6 +40,8 @@ jmethodID g_onTagsReceivedMethod;
 jmethodID g_onCustomPropertiesReceivedMethod;
 jmethodID g_onUploadStartedMethod;
 jmethodID g_onUploadFinishedMethod;
+jmethodID g_onElevationActivePointChangedMethod;
+jmethodID g_onElevationCurrentPositionChangedMethod;
 jclass g_bookmarkCategoryClass;
 jmethodID g_bookmarkCategoryConstructor;
 jclass g_catalogTagClass;
@@ -185,6 +187,28 @@ void PrepareClassRefs(JNIEnv * env)
     jni::GetConstructorID(env, g_catalogCustomPropertyClass,
                           "(Ljava/lang/String;Ljava/lang/String;Z"
                           "[Lcom/mapswithme/maps/bookmarks/data/CatalogCustomPropertyOption;)V");
+  g_onElevationCurrentPositionChangedMethod =
+      jni::GetMethodID(env, bookmarkManagerInstance, "onElevationCurrentPositionChanged", "()V");
+  g_onElevationActivePointChangedMethod =
+      jni::GetMethodID(env, bookmarkManagerInstance, "onElevationActivePointChanged", "()V");
+}
+
+void OnElevationCurPositionChanged(JNIEnv * env)
+{
+  ASSERT(g_bookmarkManagerClass, ());
+  jobject bookmarkManagerInstance =
+      env->GetStaticObjectField(g_bookmarkManagerClass, g_bookmarkManagerInstanceField);
+  env->CallVoidMethod(bookmarkManagerInstance, g_onElevationCurrentPositionChangedMethod);
+  jni::HandleJavaException(env);
+}
+
+void OnElevationActivePointChanged(JNIEnv * env)
+{
+  ASSERT(g_bookmarkManagerClass, ());
+  jobject bookmarkManagerInstance = env->GetStaticObjectField(g_bookmarkManagerClass,
+                                                              g_bookmarkManagerInstanceField);
+  env->CallVoidMethod(bookmarkManagerInstance, g_onElevationActivePointChangedMethod);
+  jni::HandleJavaException(env);
 }
 
 void OnBookmarksChanged(JNIEnv * env)
@@ -622,9 +646,12 @@ JNIEXPORT jobject JNICALL
 Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAddBookmarkToLastEditedCategory(
     JNIEnv * env, jobject thiz, double lat, double lon)
 {
+  if (!frm()->HasPlacePageInfo())
+    return nullptr;
+
   BookmarkManager & bmMng = frm()->GetBookmarkManager();
 
-  place_page::Info & info = g_framework->GetPlacePageInfo();
+  place_page::Info const & info = g_framework->GetPlacePageInfo();
 
   kml::BookmarkData bmData;
   bmData.m_name = info.FormatNewBookmarkName();
@@ -643,7 +670,7 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeAddBookmarkToLastE
   buildInfo.m_userMarkId = createdBookmark->GetId();
   frm()->UpdatePlacePageInfoForCurrentSelection(buildInfo);
 
-  return usermark_helper::CreateMapObject(env, info);
+  return usermark_helper::CreateMapObject(env, g_framework->GetPlacePageInfo());
 }
 
 JNIEXPORT jlong JNICALL
@@ -775,12 +802,15 @@ JNIEXPORT jobject JNICALL
 Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeUpdateBookmarkPlacePage(
      JNIEnv * env, jobject thiz, jlong bmkId)
 {
+  if (!frm()->HasPlacePageInfo())
+    return nullptr;
+
   auto & info = g_framework->GetPlacePageInfo();
   auto buildInfo = info.GetBuildInfo();
   buildInfo.m_userMarkId = static_cast<kml::MarkId>(bmkId);
   frm()->UpdatePlacePageInfoForCurrentSelection(buildInfo);
 
-  return usermark_helper::CreateMapObject(env, info);
+  return usermark_helper::CreateMapObject(env, g_framework->GetPlacePageInfo());
 }
 
 JNIEXPORT jobject JNICALL
@@ -1376,5 +1406,59 @@ Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeGetBookmarkAddress
 {
   auto const address = frm()->GetAddressAtPoint(getBookmark(bmkId)->GetPivot()).FormatAddress();
   return jni::ToJavaString(env, address);
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeGetElevationCurPositionDistance(
+    JNIEnv * env, jclass clazz, jlong trackId)
+{
+  auto & bm = frm()->GetBookmarkManager();
+  return static_cast<jdouble>(bm.GetElevationMyPosition(static_cast<kml::TrackId>(trackId)));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeSetElevationCurrentPositionChangedListener(
+        JNIEnv * env, jclass clazz)
+{
+  frm()->GetBookmarkManager().SetElevationMyPositionChangedCallback(
+      std::bind(&OnElevationCurPositionChanged, env));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeRemoveElevationCurrentPositionChangedListener(
+        JNIEnv * env, jclass)
+{
+  frm()->GetBookmarkManager().SetElevationMyPositionChangedCallback(nullptr);
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeSetElevationActivePoint(
+  JNIEnv *env, jclass clazz, jlong trackId, jdouble distanceInMeters)
+{
+  auto & bm = frm()->GetBookmarkManager();
+  bm.SetElevationActivePoint(static_cast<kml::TrackId>(trackId),
+                             static_cast<double>(distanceInMeters));
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeGetElevationActivePointDistance(
+  JNIEnv *env, jclass clazz, jlong trackId)
+{
+  auto & bm = frm()->GetBookmarkManager();
+  return static_cast<jdouble>(bm.GetElevationActivePoint(static_cast<kml::TrackId>(trackId)));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeSetElevationActiveChangedListener(
+   JNIEnv *env, jclass clazz)
+{
+  frm()->GetBookmarkManager().SetElevationActivePointChangedCallback(std::bind(&OnElevationActivePointChanged, env));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_bookmarks_data_BookmarkManager_nativeRemoveElevationActiveChangedListener(
+        JNIEnv *env, jclass)
+{
+  frm()->GetBookmarkManager().SetElevationActivePointChangedCallback(nullptr);
 }
 }  // extern "C"

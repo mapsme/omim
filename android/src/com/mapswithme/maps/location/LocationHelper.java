@@ -2,14 +2,15 @@ package com.mapswithme.maps.location;
 
 import android.app.Activity;
 import android.location.Location;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
+import com.mapswithme.maps.base.Initializable;
 import com.mapswithme.maps.bookmarks.data.FeatureId;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.routing.RoutingController;
@@ -21,7 +22,7 @@ import com.mapswithme.util.Utils;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 
-public enum LocationHelper
+public enum LocationHelper implements Initializable<Void>
 {
   INSTANCE;
 
@@ -73,12 +74,12 @@ public enum LocationHelper
     }
 
     @Override
-    public void onCompassUpdated(long time, double magneticNorth, double trueNorth, double accuracy)
+    public void onCompassUpdated(long time, double north)
     {
       if (mCompassData == null)
         mCompassData = new CompassData();
 
-      mCompassData.update(magneticNorth, trueNorth);
+      mCompassData.update(north);
 
       if (mUiCallback != null)
         mUiCallback.onCompassUpdated(mCompassData);
@@ -89,7 +90,7 @@ public enum LocationHelper
     public void onLocationError(int errorCode)
     {
       mLogger.d(TAG, "onLocationError errorCode = " + errorCode, new Throwable());
-
+      mSavedLocation = null;
       nativeOnLocationError(errorCode);
       mLogger.d(TAG, "nativeOnLocationError errorCode = " + errorCode +
                 ", current state = " + LocationState.nameOf(getMyPositionMode()));
@@ -111,6 +112,7 @@ public enum LocationHelper
   private final Logger mLogger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.LOCATION);
   @NonNull
   private final Listeners<LocationListener> mListeners = new Listeners<>();
+  @Nullable
   private Location mSavedLocation;
   private MapObject mMyPosition;
   private long mSavedLocationTime;
@@ -153,13 +155,19 @@ public enum LocationHelper
     }
   };
 
-  @UiThread
-  public void initialize()
+  @Override
+  public void initialize(@Nullable Void aVoid)
   {
     initProvider();
     LocationState.nativeSetListener(mMyPositionModeListener);
     LocationState.nativeSetLocationPendingTimeoutListener(mLocationPendingTimeoutListener);
     MwmApplication.backgroundTracker().addListener(mOnTransition);
+  }
+
+  @Override
+  public void destroy()
+  {
+    // No op.
   }
 
   private void initProvider()
@@ -250,10 +258,10 @@ public enum LocationHelper
     return mLocationUpdateStoppedByUser;
   }
 
-  void notifyCompassUpdated(long time, double magneticNorth, double trueNorth, double accuracy)
+  void notifyCompassUpdated(long time, double north)
   {
     for (LocationListener listener : mListeners)
-      listener.onCompassUpdated(time, magneticNorth, trueNorth, accuracy);
+      listener.onCompassUpdated(time, north);
     mListeners.finishIterate();
   }
 
@@ -660,7 +668,6 @@ public enum LocationHelper
   private static native void nativeOnLocationError(int errorCode);
   private static native void nativeLocationUpdated(long time, double lat, double lon, float accuracy,
                                                    double altitude, float speed, float bearing);
-  static native float[] nativeUpdateCompassSensor(int ind, float[] arr);
 
   public interface UiCallback
   {

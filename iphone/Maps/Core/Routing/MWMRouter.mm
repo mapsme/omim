@@ -55,7 +55,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   NSString * method = nil;
   if ([MWMRouter router].isAPICall)
     method = kStatRoutingPointMethodApi;
-  else if ([MWMNavigationDashboardManager manager].state != MWMNavigationDashboardStateHidden)
+  else if ([MWMNavigationDashboardManager sharedManager].state != MWMNavigationDashboardStateHidden)
     method = kStatRoutingPointMethodPlanning;
   else
     method = kStatRoutingPointMethodNoPlanning;
@@ -106,7 +106,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
     return;
   }
 
-  auto taxiDataSource = [MWMNavigationDashboardManager manager].taxiDataSource;
+  auto taxiDataSource = [MWMNavigationDashboardManager sharedManager].taxiDataSource;
   auto & rm = GetFramework().GetRoutingManager();
   auto const routePoints = rm.GetRoutePoints();
   if (routePoints.size() >= 2)
@@ -124,6 +124,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
     case MWMRoutePreviewTaxiCellTypeYandex: provider = kStatYandex; break;
     case MWMRoutePreviewTaxiCellTypeMaxim: provider = kStatMaxim; break;
     case MWMRoutePreviewTaxiCellTypeVezet: provider = kStatVezet; break;
+    case MWMRoutePreviewTaxiCellTypeFreenow: provider = kStatFreenow; break;
     }
 
     [Statistics logEvent:eventName
@@ -316,7 +317,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   [self applyTaxiTransaction];
   RouteMarkData pt = point.routeMarkData;
   GetFramework().GetRoutingManager().RemoveRoutePoint(pt.m_pointType, pt.m_intermediateIndex);
-  [[MWMNavigationDashboardManager manager] onRoutePointsUpdated];
+  [[MWMNavigationDashboardManager sharedManager] onRoutePointsUpdated];
 }
 
 + (void)removePointAndRebuild:(MWMRoutePoint *)point
@@ -339,7 +340,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   [self applyTaxiTransaction];
   RouteMarkData pt = point.routeMarkData;
   GetFramework().GetRoutingManager().AddRoutePoint(std::move(pt));
-  [[MWMNavigationDashboardManager manager] onRoutePointsUpdated];
+  [[MWMNavigationDashboardManager sharedManager] onRoutePointsUpdated];
 }
 
 + (void)addPointAndRebuild:(MWMRoutePoint *)point
@@ -533,7 +534,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   auto const & rm = GetFramework().GetRoutingManager();
   routing::FollowingInfo info;
   rm.GetRouteFollowingInfo(info);
-  auto navManager = [MWMNavigationDashboardManager manager];
+  auto navManager = [MWMNavigationDashboardManager sharedManager];
   if (!info.IsValid())
     return;
   if ([MWMRouter type] == MWMRouterTypePublicTransport)
@@ -667,7 +668,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
       return;
     self.routingOptions = [MWMRoutingOptions new];
     [self presentDownloaderAlert:code countries:absentCountries];
-    [[MWMNavigationDashboardManager manager] onRouteError:L(@"routing_planning_error")];
+    [[MWMNavigationDashboardManager sharedManager] onRouteError:L(@"routing_planning_error")];
     break;
   case routing::RouterResultCode::Cancelled:
     [mapViewControlsManager onRoutePrepare];
@@ -684,7 +685,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
     if ([MWMRouter isTaxi])
       return;
     [[MWMAlertViewController activeAlertController] presentAlert:code];
-    [[MWMNavigationDashboardManager manager] onRouteError:L(@"routing_planning_error")];
+    [[MWMNavigationDashboardManager sharedManager] onRouteError:L(@"routing_planning_error")];
     break;
   }
 }
@@ -692,7 +693,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
 - (void)processRouteBuilderProgress:(CGFloat)progress
 {
   if (![MWMRouter isTaxi])
-    [[MWMNavigationDashboardManager manager] setRouteBuilderProgress:progress];
+    [[MWMNavigationDashboardManager sharedManager] setRouteBuilderProgress:progress];
 }
 
 - (void)processRouteRecommendation:(MWMRouterRecommendation)recommendation
@@ -726,8 +727,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
           for (auto const &cid : downloadCountries) {
             [array addObject:@(cid.c_str())];
           }
-          [MWMStorage downloadNodes:array
-                          onSuccess:onSuccess];
+          [[MWMStorage sharedStorage] downloadNodes:array onSuccess:onSuccess];
         }
         downloadCompleteBlock:^{
           [MWMRouter rebuildWithBestRouter:NO];

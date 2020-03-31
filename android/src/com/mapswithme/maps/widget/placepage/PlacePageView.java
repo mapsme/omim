@@ -9,15 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -39,6 +30,15 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.MwmApplication;
@@ -1187,8 +1187,6 @@ public class PlacePageView extends NestedScrollView
 
   private void processSponsored(@NonNull NetworkPolicy policy)
   {
-    mCatalogPromoController.updateCatalogPromo(policy, mMapObject);
-
     if (mSponsored == null || mMapObject == null)
       return;
 
@@ -1775,6 +1773,11 @@ public class PlacePageView extends NestedScrollView
     switch (v.getId())
     {
       case R.id.ll__place_editor:
+        if (mMapObject == null)
+        {
+          LOGGER.e(TAG, "Cannot start editor, map object is null!");
+          break;
+        }
         getActivity().showEditor();
         break;
       case R.id.ll__add_organisation:
@@ -2079,7 +2082,11 @@ public class PlacePageView extends NestedScrollView
   @Override
   public void onBookmarkSaved(long bookmarkId, boolean movedFromCategory)
   {
-    setMapObject(BookmarkManager.INSTANCE.updateBookmarkPlacePage(bookmarkId), null);
+    Bookmark updatedBookmark = BookmarkManager.INSTANCE.updateBookmarkPlacePage(bookmarkId);
+    if (updatedBookmark == null)
+      return;
+
+    setMapObject(updatedBookmark, null);
     NetworkPolicy policy = NetworkPolicy.newInstance(NetworkPolicy.getCurrentNetworkUsageStatus());
     refreshViews(policy);
   }
@@ -2089,20 +2096,17 @@ public class PlacePageView extends NestedScrollView
     return mPreview.getHeight();
   }
 
-  public void toggleCatalogPromoGallery(boolean enabled)
-  {
-    UiUtils.showIf(enabled, this, R.id.catalog_promo_container);
-  }
-
   @NonNull
   public static List<PromoEntity> toEntities(@NonNull PromoCityGallery gallery)
   {
     List<PromoEntity> items = new ArrayList<>();
     for (PromoCityGallery.Item each : gallery.getItems())
     {
+      String subtitle = TextUtils.isEmpty(each.getTourCategory()) ? each.getAuthor().getName()
+                                                                  : each.getTourCategory();
       PromoEntity item = new PromoEntity(Constants.TYPE_PRODUCT,
                                          each.getName(),
-                                         each.getAuthor().getName(),
+                                         subtitle,
                                          each.getUrl(),
                                          each.getLuxCategory(),
                                          each.getImageUrl());

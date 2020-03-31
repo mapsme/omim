@@ -47,7 +47,7 @@ namespace
     integration::CalculateRouteAndTestRouteLength(
         integration::GetVehicleComponents(VehicleType::Car),
         mercator::FromLatLon(55.66216, 37.63259), {0., 0.},
-        mercator::FromLatLon(55.66237, 37.63560), 1502.0);
+        mercator::FromLatLon(55.66237, 37.63560), 2073.94);
   }
 
   UNIT_TEST(MoscowToSVOAirport)
@@ -298,7 +298,7 @@ namespace
 
     CHECK(routeResult.first, ());
     Route const & route = *routeResult.first;
-    integration::TestRouteTime(route, 14612.7);
+    integration::TestRouteTime(route, 18011.8);
   }
 
   UNIT_TEST(RussiaMoscowLenigradskiy39GeroevPanfilovtsev22TimeTest)
@@ -311,7 +311,7 @@ namespace
 
     CHECK(routeResult.first, ());
     Route const & route = *routeResult.first;
-    integration::TestRouteTime(route, 967.0);
+    integration::TestRouteTime(route, 1023.0);
   }
 
   UNIT_TEST(RussiaMoscowLenigradskiy39GeroevPanfilovtsev22SubrouteTest)
@@ -392,7 +392,7 @@ namespace
 
     CHECK(routeResult.first, ());
     Route const & route = *routeResult.first;
-    integration::TestRouteTime(route, 19621.8);
+    integration::TestRouteTime(route, 19381.5);
   }
 
   // Test on roads with tag route=shuttle_train
@@ -407,7 +407,7 @@ namespace
 
     CHECK(routeResult.first, ());
     Route const & route = *routeResult.first;
-    integration::TestRouteTime(route, 6392.28);
+    integration::TestRouteTime(route, 6529.2);
   }
 
   UNIT_TEST(TolyattiFeatureThatCrossSeveralMwmsTest)
@@ -419,7 +419,8 @@ namespace
 
     CHECK(routeResult.first, ());
     Route const & route = *routeResult.first;
-    integration::TestRouteTime(route, 6348.78);
+
+    integration::TestRouteTime(route, 8102.0);
   }
 
   // Test on removing speed cameras from the route for maps from Jan 2019,

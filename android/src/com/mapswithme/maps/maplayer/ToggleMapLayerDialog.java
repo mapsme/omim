@@ -92,7 +92,11 @@ public class ToggleMapLayerDialog extends DialogFragment
     Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>> traffic
         = new Pair<>(BottomSheetItem.Traffic.makeInstance(getContext()), trafficListener);
 
-    return Arrays.asList(traffic, subway);
+    IsolinesItemClickListener isoLinesListener = new IsolinesItemClickListener();
+    Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>> isoLines
+        = new Pair<>(BottomSheetItem.Isolines.makeInstance(getContext()), isoLinesListener);
+
+    return Arrays.asList(traffic, isoLines, subway);
   }
 
   public static void show(@NonNull AppCompatActivity activity)
@@ -218,6 +222,16 @@ public class ToggleMapLayerDialog extends DialogFragment
     {
       OnTrafficLayerToggleListener listener = (OnTrafficLayerToggleListener) getActivity();
       listener.onTrafficLayerSelected();
+    }
+  }
+
+  private class IsolinesItemClickListener extends DefaultClickListener
+  {
+    @Override
+    void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item)
+    {
+      OnIsolinesLayerToggleListener listener = (OnIsolinesLayerToggleListener) requireActivity();
+      listener.onIsolinesLayerSelected();
     }
   }
 }

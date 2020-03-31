@@ -46,6 +46,9 @@ area[amenity=grave_yard],
 node[amenity=grave_yard],
 {z-index: 800;}
 
+line[isoline],
+{z-index: 801;}
+
 node[place=continent]
 {z-index: 999;}
 
@@ -389,12 +392,14 @@ node|z13-[place=locality],
 node|z13-[place=neighbourhood],
 node|z14-[place=farm],
 node|z14-[place=isolated_dwelling],
+node|z17-[landuse=residential],
 {text: name;text-color: @district_label;}
 node|z13-14[place=suburb]::int_name,
 node|z13-[place=locality]::int_name,
 node|z13-[place=neighbourhood]::int_name,
 node|z14-[place=farm]::int_name,
 node|z14-[place=isolated_dwelling]::int_name,
+node|z17-[landuse=residential]::int_name,
 {text: int_name;text-color: @district_label;}
 
 node|z10[place=suburb]
@@ -415,11 +420,13 @@ node|z13-[place=locality],
 node|z13-[place=neighbourhood],
 node|z14-[place=farm],
 node|z14-[place=isolated_dwelling],
+node|z17-[landuse=residential],
 {font-size: 12;}
 node|z13-[place=locality]::int_name,
 node|z13-[place=neighbourhood]::int_name,
 node|z14-[place=isolated_dwelling]::int_name,
 node|z14-[place=farm]::int_name,
+node|z17-[landuse=residential]::int_name,
 {font-size: 10;}
 
 /* 5.VEGETATION, BEACH & GLACIER */
@@ -435,8 +442,9 @@ area|z14-[landuse=forest][name]::int_name,
 area|z16-[leisure=garden][name]::int_name
 {text: int_name;text-color: @park_label;text-halo-color: @halo_park_label;text-halo-radius: 0.5;text-halo-opacity: 0.8;}
 
-area|z14-[leisure=park][name],
 area|z14-[landuse=forest][name]
+{icon-image: nparkf-s.svg;text-offset: 1;font-size: 10;}
+area|z14-[leisure=park][name],
 {icon-image: park-s.svg;text-offset: 1;font-size: 10;}
 area|z14-[leisure=park][name]::int_name,
 area|z14-[landuse=forest][name]::int_name
@@ -445,8 +453,9 @@ area|z14-[leisure=park][!name],
 area|z14-[landuse=forest][!name]
 {}/*check*/
 
-area|z15-[leisure=park][name],
 area|z15-[landuse=forest][name]
+{icon-image: nparkf-m.svg;text-offset: 1;font-size: 11;}
+area|z15-[leisure=park][name],
 {icon-image: park-m.svg;text-offset: 1;font-size: 11;}
 area|z15-17[leisure=park][name]::int_name,
 area|z15-17[landuse=forest][name]::int_name,
@@ -456,8 +465,9 @@ area|z15[leisure=park][!name],
 area|z15[landuse=forest][!name]
 {}/*check*/
 
-area|z16[leisure=park][name],
 area|z16[landuse=forest][name]
+{icon-image: nparkf-m.svg;text-offset: 1;font-size: 11;}
+area|z16[leisure=park][name],
 {icon-image: park-m.svg;text-offset: 1;font-size: 11;}
 area|z16[leisure=garden][name]
 {icon-image: garden-m.svg;text-offset: 1;font-size: 11;}
@@ -469,8 +479,9 @@ area|z16[leisure=garden][!name]::int_name,
 area|z16[landuse=forest][!name]::int_name
 {}/*check*/
 
-area|z17[leisure=park][name],
 area|z17[landuse=forest][name]
+{icon-image: nparkf-m.svg;text-offset: 1;font-size: 12;}
+area|z17[leisure=park][name],
 {icon-image: park-m.svg;text-offset: 1;font-size: 12;}
 area|z17[leisure=garden][name]
 {icon-image: garden-m.svg;text-offset: 1;font-size: 12;}
@@ -482,8 +493,9 @@ area|z17[leisure=garden][!name]::int_name,
 area|z17[leisure=forest][!name]::int_name
 {}
 
-area|z18-[leisure=park],
 area|z18-[landuse=forest]
+{icon-image: nparkf-m.svg;text-offset: 1;font-size: 13;}
+area|z18-[leisure=park]
 {icon-image: park-m.svg;text-offset: 1;font-size: 13;}
 area|z18-[leisure=garden]
 {icon-image: garden-m.svg;text-offset: 1;font-size: 13;}
@@ -715,3 +727,24 @@ area|z15[aeroway=terminal]
 { text: name; font-size: 9; fill-opacity: 0.8; text-color: @building_label; text-position: center;}
 area|z16-[aeroway=terminal]
 {text: name; font-size: 9; fill-opacity: 1; text-color: @building_label; text-position: center;}
+
+/* 9. ISOLINES */
+
+line[isoline]
+{text-position: line;}
+
+line|z11-[isoline=step_1000],
+{text:name;font-size: 9;fill-opacity: 0.7;text-color: @label_isoline1000;}
+
+line|z12-[isoline=step_500],
+{text:name;font-size: 9;fill-opacity: 0.7;text-color: @label_isoline500;}
+
+line|z15-[isoline=step_100],
+{text:name;font-size: 9;fill-opacity: 0.7;text-color: @label_isoline100;}
+
+line|z17-[isoline=step_50],
+line|z17-[isoline=zero],
+{text:name;font-size: 9;fill-opacity: 0.7;text-color: @label_isoline50;}
+
+line|z18-[isoline=step_10],
+{text:name;font-size: 9;fill-opacity: 0.7;text-color: @label_isoline10;}

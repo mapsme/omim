@@ -10,6 +10,7 @@ class ModelReaderPtr;
 
 namespace version
 {
+// Add new types to the corresponding list in generator/pygen/pygen.cpp.
 enum class Format
 {
   unknownFormat = -1,
@@ -52,6 +53,8 @@ private:
   Format m_format{Format::unknownFormat};
   uint64_t m_secondsSinceEpoch{0};
 };
+
+std::string DebugPrint(MwmVersion const & mwmVersion);
 
 /// Writes latest format and current timestamp to the writer.
 void WriteVersion(Writer & w, uint64_t secondsSinceEpoch);

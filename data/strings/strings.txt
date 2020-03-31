@@ -1,39 +1,5 @@
 [[Strings]]
 
-  [about]
-    comment = About button text (should be short)
-    tags = tizen
-    en = About
-    ru = О приложении
-    ar = نبذة عنا
-    cs = O aplikaci
-    da = Om app
-    nl = Over
-    fi = Tietoja
-    fr = À propos de
-    de = Über MAPS.ME
-    hu = A programról
-    id = Tentang
-    it = Informazioni
-    ja = 情報
-    ko = 소개
-    nb = Om
-    pl = O programie
-    pt = Sobre
-    pt-BR = Sobre
-    ro = Despre
-    es = Acerca de
-    sv = Om
-    th = เกี่ยวกับ
-    tr = Hakkında
-    uk = Про програму
-    vi = Giới thiệu
-    zh-Hans = 关于
-    zh-Hant = 關於
-    he = אודות
-    sk = O aplikácii
-    fa = درباره‌ی
-
   [back]
     comment = Button text (should be short)
     en = Back
@@ -70,7 +36,6 @@
 
   [cancel]
     comment = Button text (should be short)
-    tags = tizen
     en = Cancel
     ru = Отмена
     ar = إلغاء
@@ -105,7 +70,6 @@
 
   [cancel_download]
     comment = Button which interrupts country download
-    tags = tizen
     en = Cancel Download
     ru = Отменить загрузку
     ar = إلغاء التنزيل
@@ -140,7 +104,6 @@
 
   [delete]
     comment = Button which deletes downloaded country
-    tags = tizen
     en = Delete
     ru = Удалить
     ar = حذف
@@ -240,7 +203,6 @@
     fa = ادامه
 
   [download_maps]
-    tags = tizen
     en = Download Maps
     ru = Загрузить карты
     ar = تنزيل الخرائط
@@ -559,7 +521,6 @@
 
   [kilometres]
     comment = Choose measurement on first launch alert - choose metric system button
-    tags = tizen
     en = Kilometers
     en-GB = Kilometres
     ru = Километры
@@ -729,7 +690,6 @@
 
   [mb]
     comment = Settings/Downloader - size string, only strings different from English should be translated
-    tags = tizen
     en = MB
     ru = МБ
     ar = م.ب.
@@ -757,7 +717,6 @@
 
   [miles]
     comment = Choose measurement on first launch alert - choose imperial system button
-    tags = tizen
     en = Miles
     ru = Мили
     ar = ميل
@@ -1123,40 +1082,6 @@
     he = כן
     sk = Áno
     fa = بله
-
-  [use_wifi_recommendation_text]
-    comment = Settings/Downloader - No internet connection dialog message
-    tags = tizen
-    en = We recommend using WiFi to download large maps
-    ru = Мы рекомендуем загружать большие страны через WiFi
-    ar = نحن نوصي باستخدام واي فاي لتنزيل الخرائط الكبيرة
-    cs = Pro stahování větších map doporučujeme používat WiFi
-    da = Vi anbefaler, at du bruger WiFi for at downloade store kort
-    nl = We raden WiFi aan om grote kaarten te downloaden
-    fi = WiFi-yhteyttä suositellaan suurten karttojen lataamiseen
-    fr = Nous recommandons d'utiliser une connexion Wi-Fi pour télécharger de grandes cartes
-    de = Wir empfehlen Ihnen, große Länder über eine WLAN-Verbindung herunterzuladen
-    hu = WiFi használatát javasoljuk nagy térképek letöltéséhez
-    id = Kami merekomendasi gunakan WiFi untuk mengunduh peta yang berukuran besar
-    it = Ti consigliamo di utilizzare il WiFi per scaricare mappe di grandi dimensioni
-    ja = 大きなマップをダウンロードする際はWiFiの使用をおすすめします。
-    ko = WiFi를 이용하여 큰 지도를 다운로드하는 것을 권하여 드립니다.
-    nb = Vi anbefaler å bruke WiFi når du skal laste ned store kart
-    pl = Zaleca się korzystanie z WiFi przy pobieraniu dużych map
-    pt = Recomendamos a utilização de WiFi para descarregar grandes mapas
-    pt-BR = Recomendamos usar WiFi para baixar mapas grandes
-    ro = Vă recomandăm să utilizați WiFi pentru a descărca hărți mari.
-    es = Recomendamos usar WiFi para descarga de los países grandes
-    sv = Vi rekommenderar att använda WiFi för nedladdning av stora kartor
-    th = เราขอแนะนำให้ใช้ WiFi เพื่อดาวน์โหลดแผนที่ขนาดใหญ่
-    tr = Büyük haritaları indirmek için WiFi kullanmanızı öneriyoruz
-    uk = Ми рекомендуємо завантажувати великі країни через WiFi
-    vi = Chúng tôi khuyên bạn nên sử dụng WiFi để tải xuống các bảnđồ lớn.
-    zh-Hans = 我们推荐使用 WiFi 来下载大的地图
-    zh-Hant = 我們建議透過 WiFi 連線來下載較大的地圖
-    he = אנו ממליצים להשתמש ב WiFi להורדת מפות גדולות
-    sk = Doporučujeme použiť WiFi pre sťahovanie väčších máp
-    fa = اکیداً توصیه می کنیم برای دانلود نقشه های حجیم از اینترنت وای فای استفاده نمایید
 
   [which_measurement_system]
     comment = Choose measurement on first launch alert - title
@@ -1762,7 +1687,6 @@
     fa = نیازمند است. متاسفانه دستگاه شما از ان پشتیبانی نمی کندOpenGLبرنامه برای اجرا به
 
   [download]
-    tags = tizen
     en = Download
     ru = Загрузить
     ar = تنزيل
@@ -2526,7 +2450,7 @@
 
   [download_country_failed]
     comment = Show popup notification on top of the map when country download has failed.
-    tags = android,tizen
+    tags = android
     en = %@ download has failed
     ru = Не удалось загрузить %@
     ar = فشلت عملية تنزيل %@
@@ -2561,7 +2485,7 @@
 
   [add_new_set]
     comment = Add New Bookmark Set dialog title
-    tags = ios,tizen
+    tags = ios
     en = Add New Set
     ru = Добавить группу
     ar = إضافة مجموعة جديدة
@@ -2630,7 +2554,7 @@
 
   [bookmark_color]
     comment = Bookmark Color dialog title
-    tags = ios,tizen
+    tags = ios
     en = Bookmark Color
     en-GB = Bookmark Colour
     ru = Цвет метки
@@ -2734,7 +2658,7 @@
 
   [bookmarks]
     comment = Bookmarks - dialog title
-    tags = ios,tizen
+    tags = ios
     en = Bookmarks
     ru = Метки
     ar = الإشارات المرجعية
@@ -3046,7 +2970,7 @@
 
   [settings]
     comment = Settings button in system menu
-    tags = android,tizen, ios
+    tags = android, ios
     en = Settings
     ru = Настройки
     ar = الإعدادات
@@ -3220,7 +3144,7 @@
 
   [visible]
     comment = Show bookmarks from this category on a map or not
-    tags = ios,tizen
+    tags = ios
     en = Visible
     ru = Показывать на карте
     ar = مرئي
@@ -3288,7 +3212,7 @@
 
   [measurement_units]
     comment = Measurement units title in settings activity
-    tags = ios,android,tizen
+    tags = ios,android
     en = Measurement units
     ru = Единицы измерения
     ar = وحدات القياس.
@@ -3323,7 +3247,7 @@
 
   [measurement_units_summary]
     comment = Detailed description of Measurement Units settings button
-    tags = ios,android,tizen
+    tags = ios,android
     en = Choose between miles and kilometers
     en-GB = Choose between miles and kilometres
     ru = Использовать километры или мили
@@ -3447,7 +3371,7 @@
   [eat]
     comment = Search team review required on any change
     comment = Search category for cafes, bars, restaurants
-    tags = ios,android,tizen
+    tags = ios,android
     en = Where to eat
     ru = Где поесть
     ar = مكان لتناول الطعام
@@ -3482,7 +3406,7 @@
 
   [food]
     comment = Search category for grocery stores
-    tags = ios,android,tizen
+    tags = ios,android
     en = Groceries
     ru = Продукты
     ar = المشتريات
@@ -3518,7 +3442,7 @@
   [transport]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Transport
     ru = Транспорт
     ar = نقل
@@ -3554,7 +3478,7 @@
   [fuel]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Gas
     en-GB = Petrol
     ru = Заправка
@@ -3591,7 +3515,7 @@
   [parking]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Parking
     ru = Парковка
     ar = الاصطفاف
@@ -3627,7 +3551,7 @@
   [shopping]
     comment = Search team review required on any change
     comment = Search category for clothes/shoes/gifts/jewellery/sport shops
-    tags = ios,android,tizen
+    tags = ios,android
     en = Shopping
     ru = Шоппинг
     ar = التسوق
@@ -3663,7 +3587,7 @@
   [hotel]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Hotel
     ru = Гостиница
     ar = فندق
@@ -3699,7 +3623,7 @@
   [tourism]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Sights
     ru = Достопримечательность
     ar = سياحة
@@ -3735,7 +3659,7 @@
   [entertainment]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Entertainment
     ru = Развлечения
     ar = التسلية
@@ -3771,7 +3695,7 @@
   [atm]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = ATM
     ru = Банкомат
     ar = ماكينة الصراف الآلي
@@ -3807,7 +3731,7 @@
   [nightlife]
     comment = Search team review required on any change
     comment = Search category for nightclubs/bars
-    tags = ios,android,tizen
+    tags = ios,android
     en = Nightlife
     ru = Ночная жизнь
     ar = أنشطة ترفيه ليلية
@@ -3843,7 +3767,7 @@
   [children]
     comment = Search team review required on any change
     comment = Search category for water park/disneyland/playground/toys store
-    tags = ios,android,tizen
+    tags = ios,android
     en = Family holiday
     ru = Отдых с детьми
     ar = عطلة عائلية
@@ -3879,7 +3803,7 @@
   [bank]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Bank
     ru = Банк
     ar = بنك
@@ -3915,7 +3839,7 @@
   [pharmacy]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Pharmacy
     ru = Аптека
     ar = صيدلية
@@ -3951,7 +3875,7 @@
   [hospital]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Hospital
     ru = Больница
     ar = مستشفى
@@ -3988,7 +3912,7 @@
   [toilet]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Toilet
     ru = Туалет
     ar = حمام
@@ -4024,7 +3948,7 @@
   [post]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Post
     ru = Почта
     ar = بريد
@@ -4060,7 +3984,7 @@
   [police]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Police
     ru = Полиция
     ar = شرطة
@@ -4095,7 +4019,7 @@
 
   [no_search_results_found]
     comment = String in search result list, when nothing found
-    tags = ios,android,tizen
+    tags = ios,android
     en = No results found
     ru = Нет результатов поиска
     ar = لم يتم العثور على أي نتائج
@@ -4341,7 +4265,7 @@
 
   [edit]
     comment = resource for context menu
-    tags = android,tizen
+    tags = android
     en = Edit
     ru = Редактировать
     ar = تعديل
@@ -4374,7 +4298,7 @@
 
   [unknown_current_position]
     comment = Warning message when doing search around current position
-    tags = ios,android,tizen
+    tags = ios,android
     en = Your location hasn't been determined yet
     ru = Ваше местоположение еще не определено
     ar = لم يتم التعرف على موقعك بعد.
@@ -4613,7 +4537,7 @@
 
   [bookmark_share_sms]
     comment = Share one specific bookmark using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140
-    tags = ios,android,tizen
+    tags = ios,android
     en = Hey, check out my pin at MAPS.ME! %1$@ or %2$@ Don't have offline maps installed? Download here: http://maps.me/get
     ru = Моя метка на карте. Жми %1$@ или %2$@
     ar = هاي، تفقد الدبوس الخاص بي على MAPS.ME! %1$@ أو %2$@. ليس لديك أي خرائط تعمل بدون الاتصال مع الانترنت مثبتة على جهازك؟ قم بتحميلها من هنا: http://maps.me/get
@@ -4646,7 +4570,7 @@
 
   [my_position_share_sms]
     comment = Share my position using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link WITHOUT NAME. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140
-    tags = ios,android,tizen
+    tags = ios,android
     en = Hey, check out my current location in MAPS.ME! %1$@ or %2$@ Don't have offline maps? Download here: http://maps.me/get
     ru = Смотри где я сейчас. Жми %1$@ или %2$@
     ar = هاي، تفقد الموقع الخاص بي على MAPS.ME! %1$@ أو %2$@. ليس لديك أي خرائط تعمل بدون الاتصال مع الانترنت مثبتة على جهازك؟ قم بتحميلها من هنا: http://maps.me/get
@@ -4680,7 +4604,7 @@
 
   [bookmark_share_email_subject]
     comment = Subject for emailed bookmark
-    tags = ios,android,tizen
+    tags = ios,android
     en = Hey, check out my pin in MAPS.ME!
     ru = Смотри мою метку на карте MAPS.ME
     ar = هاي، تفقد الدبوس الخاص بي على خريطة MAPS.ME!
@@ -4712,42 +4636,9 @@
     he = הי, בדוק את הסיכה שלי במפה של MAPS.ME!
     sk = Pozri na moju značku na mape MAPS.ME
 
-  [bookmark_share_email]
-    comment = Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me
-    tags = tizen
-    en = Hi,\n\nI pinned: %1$@ on the MAPS.ME offline map of the world. Click this link %2$@ or this one %3$@ to see the place on the map.\n\nThanks.
-    ru = Привет!\n\nОткрой эту ссылку %2$@ либо эту %3$@, для того, чтобы увидеть мою метку %1$@ на карте MAPS.ME.\n\nСпасибо.
-    ar = مرحبا،\n\nقمت بوضع دبوس: %1$@ على MAPS.ME، خرائط العالم بدون الاتصال مع الانترنت. انقر على هذا الرابط %2$@ أو الرابط التالي %3$@ لمشاهدة الموقع على الخريطة.\n\nشكرا لك.
-    cs = Ahoj,\n\noznačil/a jsem %1$@ v MAPS.ME, offline mapách celého světa. Klepni na jeden z těchto odkazů %2$@, %3$@ a uvidíš toto místo na mapě.\n\nDíky.
-    da = Hej\n\nJeg markerede: %1$@ på MAPS.ME, en verden af offline kort. Klik på dette link %2$@ eller dette %3$@ for at se stedet på kortet.\n\nTak.
-    nl = Hoi,\n\nIk heb: %1$@ geprikt bij MAPS.ME, offline wereldkaarten. Klik op deze %2$@ of deze %3$@ om de plaats op de kaart te zien.\n\nBedankt.
-    fi = Hei,\n\nnastoitin kohteen %1$@ MAPS.ME:ssä, koko maailman kattavassa offline-karttasovelluksessa. Klikkaa linkkiä %2$@ tai %3$@ nähdäksesi paikan kartalla. \n\nKiitos. kaikki
-    fr = Bonjour,\n\nJ'ai épinglé %1$@ sur MAPS.ME, les cartes du monde hors ligne. Clique sur ce lien %2$@ ou sur celui-ci %3$@ pour voir l'endroit sur la carte.\n\nMerci.
-    de = Hi,\n\nIch habe %1$@ auf MAPS.ME, der Offline-Weltkarte, gepinnt. Klicke auf diesen Link %2$@ oder diesen %3$@, um den Ort auf der Karte zu sehen.\n\nVielen Dank.
-    hu = Üdvözlöm,\n\nleszúrtam egy MAPS.ME jelzőt: %1$@. Kattintson erre a hivatkozásra %2$@ vagy erre %3$@ hogy lássa a helyet a térképen.\n\nKöszönöm.
-    id = Hai,\n\nI disematkan: %1$@ di MAPS.ME, peta offline dunia. Klik tautan ini %2$@ atau ini %3$@ untuk melihat tempat di peta.\n\n Terima kasih.
-    it = Ciao,\n\nHo segnato %1$@ su MAPS.ME, le mappe del mondo offline. Clicca su questo link %2$@ oppure su questo %3$@ per vedere il posto sulla mappa.\n\nGrazie.
-    ja = オフラインマップ MAPS.ME でこの位置にピンを作成しました: %1$@\n\nリンク %2$@ または %3$@ をクリックするとマップ上で確認できます。
-    ko = 안녕하세요.\n\n다음 위치에 표시를 하였습니다: 오프라인 세계 지도인 MAPS.ME에서 %1$@. %2$@ 또는 %3$@ 링크를 클릭하여 지도상에서 해당 장소를 살펴보시기 바랍니다.\n\n감사합니다.
-    nb = Hei,\n\nI merket av: %1$@ på MAPS.ME, offline verdenskart. Klikk på denne koblingen %2$@ eller denne %3$@ for å se stedet på kartet.\n\nTakk.
-    pl = Cześć,\n\nDodałem znacznik w: %1$@ w aplikacji MAPS.ME, mapach offline całego świata. Naciśnij ten link %2$@ lub ten %3$@ by zobaczyć to miejsce na mapie.\n\nDziękuję.
-    pt = Olá,\n\nFixei:%1$@ na MAPS.ME, mapas offline mundiais. Clique nesta ligação %2$@ ou nesta %3$@ para ver o local no mapa.\n\nObrigado.
-    pt-BR = Olá,\n\nMarquei %1$@ no MAPS.ME, mapas offline mundiais. Clique neste link %2$@ ou neste %3$@ para ver o local no mapa.\n\nObrigado.
-    ro = Salut,\n\nAm fixat poziția: %1$@ pe MAPS.ME, hărțile offline din întreaga lume. Clic pe acest link %2$@ sau pe acesta %3$@ pentru a vedea locul pe hartă.\n\nMulțumesc.
-    es = ¡Hola!\n\nMarqué con un alfiler: %1$@ en MAPS.ME, mapas del mundo sin conexión. Haz clic en este enlace %2$@ o este %3$@ para ver el sitio en el mapa.\n\nGracias.
-    sv = Hej,\n\nJag lade till en knappnål: %1$@ på MAPS.ME, offline-kartor över hela världen. Klicka på denna länk %2$@ eller denna %3$@ för att se platsen på kartan.\n\nTack.
-    th = หวัดดี\n\nฉันปักหมุด: %1$@ ที่ MAPS.ME, โลกแผนที่ออฟไลน์ คลิกลิงก์นี้ %2$@ หรือลิงก์นี้ %3$@ เพื่อดูสถานที่บนแผนที่\n\nขอบคุณ
-    tr = Merhaba,\n\nDünyanın çevrimdışı haritaları MAPS.ME’d: %1$@ pinledim. Yeri haritadan görmek için bu bağlantıya %2$@ veya şuna %3$@ tıkla.\n\nTeşekkürler.
-    uk = Привіт,\n\nЯ позначив: %1$@ на MAPS.ME, офлайн картах світу. Натисни на це посилання %2$@ або на це посилання %3$@, щоб побачити місце на карті.\n\nДякую.
-    vi = Xin chào,\n\nI được gắn: %1$@ tại MAPS.ME, bản đồ thế giới ngoại tuyến. Ấn vào đường dẫn này %2$@ hoặc cái này %3$@ để xem vị trí trên bản đồ.\n\nCám ơn nhiều.
-    zh-Hans = 嗨,\n\n我在 MAPS.ME 世界离线地图上标 注了%1$@。点击此链接%2$@或此链 接 %3$@来查看在地图上的位置。\n\n谢 谢。
-    zh-Hant = 嗨，\n\n我在 MAPS.ME 世界離線地圖上標記了%1$@。點擊此連結 %2$@ 或此連結 %3$@ 來察看地圖上的位置。\n\n謝謝。
-    he = הי, n\nI\ סומן בסיכה: %1$@ במפות העולם הלא-מקוונות של MAPS.ME. הקש על הלינק או על %3$@ כדי לראות את המקום על המפה. %2$@\n\n תודה.
-    sk = Ahoj,\n\nOznačil/a som: %1$@ v MAPS.ME, offline mapách celého sveta. Stlačte jeden z týchto odkazov %2$@, %3$@ a uvidíte toto miesto na mape.\n\nVďaka
-
   [my_position_share_email_subject]
     comment = Subject for emailed position
-    tags = ios,android,tizen
+    tags = ios,android
     en = Hey, check out my current location on the MAPS.ME map!
     ru = Посмотри на карте MAPS.ME, где я сейчас нахожусь
     ar = يا هلا، تحقق من موقعي الحالي على خريطة MAPS.ME!
@@ -4781,7 +4672,7 @@
 
   [my_position_share_email]
     comment = Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME
-    tags = ios,android,tizen
+    tags = ios,android
     en = Hi,\n\nI'm here now: %1$@. Click this link %2$@ or this one %3$@ to see the place on the map.\n\nThanks.
     ru = Привет!\n\nЯ сейчас здесь: %1$@. Чтобы увидеть это место на карте MAPS.ME, открой эту ссылку %2$@ или эту %3$@\n\nСпасибо.
     ar = مرحبا،\n\nأنا هنا الآن: %1$@. انقر على هذا الرابط %2$@ أو ذلك الرابط %3$@ لمشاهدة المكان على الخريطة.\n\nشكرا لك.
@@ -4850,7 +4741,7 @@
 
   [share]
     comment = Share button text which opens menu with more buttons, like Message, EMail, Facebook etc.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Share
     ru = Поделиться
     ar = مشاركة
@@ -4885,7 +4776,7 @@
 
   [message]
     comment = iOS share by Message button text (including SMS)
-    tags = ios,android,tizen
+    tags = ios,android
     en = Message
     ru = Сообщение
     ar = رسالة
@@ -4919,7 +4810,7 @@
 
   [email]
     comment = Share by email button text, also used in editor.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Email
     ru = Email
     ar = البريد الالكتروني
@@ -4953,7 +4844,7 @@
 
   [copy_link]
     comment = Copy Link
-    tags = ios,tizen
+    tags = ios
     en = Copy Link
     ru = Скопировать ссылку
     ar = نسخ الرابط
@@ -5126,7 +5017,7 @@
 
   [done]
     comment = Used for bookmark editing
-    tags = android,tizen
+    tags = android
     en = Done
     ru = Готово
     ar = تم
@@ -5257,7 +5148,7 @@
 
   [version]
     comment = Prints version number in About dialog
-    tags = android,tizen
+    tags = android
     en = Version: %@
     ru = Версия: %@
     ar = الاصدار: %@
@@ -5305,7 +5196,7 @@
 
   [are_you_sure]
     comment = Confirmation in downloading countries dialog
-    tags = android,tizen
+    tags = android
     en = Are you sure you want to continue?
     ru = Вы уверены, что хотите продолжить?
     ar = هل أنت واثق أنك تريد الاستمرار؟
@@ -5409,7 +5300,7 @@
     fa = طول
 
   [share_my_location]
-    tags = ios,android,tizen
+    tags = ios,android
     en = Share My Location
     ru = Поделиться местоположением
     ar = مشاركة موقعي
@@ -5592,7 +5483,7 @@
     fa = مسیریابی
 
   [pref_zoom_title]
-    tags = android,tizen
+    tags = android
     en = Zoom buttons
     ru = Кнопки масштаба
     ar = أزرار التكبير
@@ -5626,7 +5517,7 @@
     fa = دکمه های درشت نمایی
 
   [pref_zoom_summary]
-    tags = android,tizen
+    tags = android
     en = Display on the map
     ru = Показать на карте
     ar = عرض على الشاشة
@@ -6912,69 +6803,6 @@
     tl = Mga Ruta
     fa = مسیر ها
 
-  [maps_licence_info]
-    comment = Show on first launch.
-    tags = tizen
-    en = This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.
-    ru = Это приложение использует географические данные (включая карты, справочники, достопримечательности, границы стран и регионов, др.) взятые из проекта OpenStreetMap. Мы не гарантируем последовательности, точности, полноты и пригодности данных OpenStreetMap.
-    cs = Tato aplikace využívá geografická data (zahrnující mapy, zakreslení firem a zájmových bodů, hranice států a regionů apod.), která byla převzata z otevřeného projektu OpenStreetMap. Konzistenci, přesnost, úplnost ani správnost těchto OpenStreetMap dat proto nemůžeme zaručit.
-    fi = Tämä sovellus käyttää maantieteellistä dataa (mukaan lukien karttoja, yrityslistauksia, mielenkiinnon kohteita, maiden ja alueiden rajoja jne.), joka on noudettu OpenStreetMap-järjestelmästä. Emme takaa OpenStreetMapin datan johdonmukaisuutta, täsmällisyyttä, täydellisyyttä tai sovellettavuutta.
-    fr = Cette application utilise des données géographiques (incluant des cartes, des listes d'entreprises, des centres d'intérêt, des frontières de pays et de régions, etc.) extraites du projet OpenStreetMap. Nous ne garantissons aucune cohérence, exactitude, complétude ou applicabilité des données d'OpenStreetMap.
-    de = Diese Anwendungen verwenden geographische Informationen (inklusive Karten, Geschäftseinträge, Sehenswürdigkeiten, Landes- und Regionsgrenzen, etc.) aus dem OpenStreetMap-Projekt. Wir können weder die Beständigkeit noch die Genauigkeit, Vollständigkeit oder Eignung der OpenStreetMap-Daten garantieren.
-    id = Aplikasi ini menggunakan data geografis (termasuk peta, daftar perusahaan, lokasi-lokasi menarik, batas-batas negara dan daerah, dll) yang diambil dari proyek OpenStreetMap. Kami tidak menjamin konsistensi, akurasi, kelengkapan atau kesesuaian data OpenStreetMap apa pun.
-    ja = このアプリケーションはOpenStreetMapプロジェクトから取得された地理的データ（地図、ビジネスリスト、興味のある場所、国境と地域など）を使います。OpenStreetMapのデータの整合性、正確さ、完全性や適合性に関して弊社は保証致しかねます。
-    nb = Denne applikasjonen bruker geografiske data (inkludert kart, butikkoppføringer, interessepunkter, landegrenser og regiongrenser osv.) som er hentet fra OpenStreetMap-prosjektet. Vi garanterer ikke at data fra OpenStreetMap alltid er konsekvente, nøyaktige, fullstendige eller pålitelige.
-    pt-BR = Esta aplicação utiliza dados geográficos (incluindo mapas, listas de empresas, pontos de interesse, fronteiras de países e regiões, etc.) do projeto OpenStreetMap. Nós não garantimos a consistência, precisão, completude ou aplicabilidade dos dados do OpenStreetMap.
-    ro = Această aplicație utilizează date geografice (inclusiv hărți, liste de firme, puncte de interes, frontiere de țări și regiuni etc.) preluate din proiectul OpenStreetMap. Nu garantăm uniformitatea, acuratețea, integralitatea sau aplicabilitatea datelor OpenStreetMap.
-    sv = Detta program använder geografisk data (inkluderar kartor, företagsuppgifter, intressepunkter, landsgränser och regioner m.m.) från OpenStreetMap projektet. Vi garanterar ingen konsekvenshet, nogrannhet, fullständighet eller tillämpbarhet av OpenStreetMap datan.
-    vi = Ứng dụng này sử dụng dữ liệu địa lý (bao gồm bản đồ, thông tin doanh nghiệp, các điểm lưu tâm, biên giới quốc gia và khu vực, v.v…) lấy từ dự án OpenStreetMap. Chúng tôi không đảm bảo bất kỳ sự nhất quán, chính xác, toàn vẹn hay phù hợp nào từ các dữ liệu OpenStreetMap.
-    zh-Hans = 这个应用程序使用了源自OpenStreetMap项目的地理数据（包括地图、商业清单、景点、国家和地区边界等）。我们对OpenStreetMap任何数据的一致性、准确性、完整性或适用性不做担保。
-    zh-Hant = 此應用程式使用從 OpenStreetMap 專案擷取之地理數據（包括地圖、商家資訊、興趣點、國家和地區邊界等）。我們不保證 OpenStreetMap 數據的一致性、準確性、完整性、或適用性。
-    sk = Táto aplikácia používa geografické dáta (zahrňujúce mapy, obchodné zoznamy, body záujmov, hranice krajín a regiónov, atď.) prevzaté z OpenStreetMap projektu. Negarantujeme žiadnu jednotnosť, presnosť, úplnosť alebo použiteľnosť dát OpenStreetMap.
-
-  [agree]
-    comment = Show on first launch.
-    tags = tizen
-    en = I agree
-    ru = Я согласен
-    cs = Souhlasím
-    fi = Hyväksyn
-    fr = Je suis d'accord
-    de = Ich stimme zu
-    id = Saya setuju
-    ja = 同意する
-    nb = Jeg samtykker
-    pt-BR = Eu concordo
-    ro = Sunt de acord
-    vi = Tôi đồng ý
-    zh-Hans = 我同意
-    zh-Hant = 我同意
-    he = אני מסכים
-    sk = Súhlasím
-    fa = موافقم
-
-  [disagree]
-    comment = Show on first launch
-    tags = tizen
-    en = I disagree
-    ru = Я не согласен
-    cs = Nesouhlasím
-    fi = En hyväksy
-    fr = Je ne suis pas d'accord
-    de = Ich stimme nicht zu
-    id = Saya setuju
-    ja = 同意しない
-    nb = Jeg samtykker ikke
-    pt-BR = Eu não concordo
-    ro = Nu sunt de acord
-    sv = Jag accepterar
-    vi = Tôi không đồng ý
-    zh-Hans = 我不同意
-    zh-Hant = 我不同意
-    he = אינני מסכים
-    sk = Nesúhlasím
-    fa = مخالفم
-
   [download_map_notification]
     comment = text of notification
     tags = ios
@@ -7770,7 +7598,7 @@
   [wifi]
     comment = Search team review required on any change
     comment = Search category
-    tags = ios,android,tizen
+    tags = ios,android
     en = WiFi
     ru = WiFi
     ar = واي-فاي
@@ -7803,7 +7631,7 @@
 
   [routing_map_outdated]
     comment = Update map suggestion
-    tags = ios,android,tizen
+    tags = ios,android
     en = Please update the map to create a route
     ru = Пожалуйста, обновите карту для того, чтобы проложить маршрут.
     ar = يرجى تحديث الخريطة لإنشاء مسار.
@@ -7837,7 +7665,7 @@
 
   [routing_update_maps]
     comment = Update maps suggestion
-    tags = ios,android,tizen
+    tags = ios,android
     en = The new version of MAPS.ME allows creating routes from your current position to a destination point. Please update maps to use this feature.
     ru = В новой версии MAPS.ME вы сможете строить маршруты от текущего местоположения до точки назначения. Чтобы воспользоваться этой функцией, обновите, пожалуйста, карты.
     ar = إصدار MAPS.ME الجديد يسمح بإنشاء مسارات انطلاقاً من موقعك الحالي نحو المكان الذي تتجه إليه. يرجى تحديث الخرائط لاستخدام هذه الميزة.
@@ -7905,7 +7733,7 @@
 
   [downloader_cancel_all]
     comment = Cancel all button text
-    tags = ios,android,tizen
+    tags = ios,android
     en = Cancel All
     ru = Отменить все
     ar = إلغاء الكل
@@ -7940,7 +7768,7 @@
 
   [downloader_downloaded_subtitle]
     comment = Downloaded maps category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Downloaded
     ru = Загруженные
     ar = تم تنزيلها
@@ -8007,7 +7835,7 @@
 
   [downloader_queued]
     comment = Country queued for download
-    tags = ios,android,tizen
+    tags = ios,android
     en = Queued
     ru = В очереди
     ar = مَصْفوف
@@ -8140,7 +7968,7 @@
     fa = دانلود همه
 
   [downloader_downloading]
-    tags = ios,android,tizen
+    tags = ios,android
     en = Downloading:
     ru = Загружается:
     ar = يتم تنزيل:
@@ -8206,7 +8034,7 @@
 
   [routing_disclaimer]
     comment = Disclaimer message
-    tags = ios,android,tizen
+    tags = ios,android
     en = Creating routes in MAPS.ME app, please keep in mind the following:\n\n  - Suggested routes can be considered as recommendations only.\n - Road conditions, traffic rules and signs have higher priority than navigation advice.\n - The map may be incorrect or outdated, and routes may not be created the best possible way.\n\n  Be safe on roads and take care of yourself!
     ru = Используя маршруты в приложении MAPS.ME, пожалуйста, учитывайте следующее:\n\n  - Предлагаемые маршруты могут рассматриваться только в качестве рекомендации.\n - Дорожная обстановка, правила дорожного движения, знаки являются более приоритетными по сравнению с советами навигационной программы.\n - Карта может быть неточной или неактуальной, а предложенный маршрут не самым оптимальным.\n\n  Будьте внимательны на дорогах и берегите себя!
     ar = عند إنشاء مسارات الطرق في تطبيق MAPS.ME، يرجى أخذ التالي في الحسبان:\n\n  - المسارات المقترحة تعتبر مجرد اقتراحات فقط.\n - حالة الطريق وقوانينه والإشارات الموجودة فيه لها الأولولية أثناء تقديم نصائح الملاحة.\n - قد تكون الخريطة خاطئة أو قديمة، لذا فإنه يمكن ألا تُرسم المسارات بالشكل الأمثل.\n\n  كن آمنا على الطريق وانتبه لتفسك!
@@ -8239,7 +8067,7 @@
 
   [downloader_outdated_maps]
     comment = Outdated maps category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Outdated
     ru = Неактуальные
     ar = انتهت صلاحيته
@@ -8273,7 +8101,7 @@
 
   [downloader_uptodate_maps]
     comment = Up to date maps category
-    tags = ios,android,tizen
+    tags = ios,android
     en = Up-to-date
     ru = Обновленные
     ar = محدّث
@@ -8307,7 +8135,7 @@
 
   [downloader_status_outdated]
     comment = Status of outdated country in the list
-    tags = ios,android,tizen
+    tags = ios,android
     en = Update
     ru = Обновить
     ar = تحديث
@@ -8342,7 +8170,7 @@
 
   [downloader_status_failed]
     comment = Status of failed country in the list
-    tags = ios,android,tizen
+    tags = ios,android
     en = Failed
     ru = Ошибка
     ar = فشل
@@ -8656,7 +8484,7 @@
 
   [downloader_download_map_and_routing]
     comment = Context menu item for downloader.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Download Map + Routing
     ru = Загрузить карту + маршруты
     ar = تنزيل الخريطة + تحديد المسار
@@ -8690,7 +8518,7 @@
 
   [downloader_download_routing]
     comment = Context menu item for downloader.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Download Routing
     ru = Загрузить маршруты
     ar = تنزيل تحديد المسار
@@ -8724,7 +8552,7 @@
 
   [downloader_delete_routing]
     comment = Context menu item for downloader.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Delete Routing
     ru = Удалить маршруты
     ar = إزالة تحديد المسار
@@ -8758,7 +8586,7 @@
 
   [downloader_download_map]
     comment = Context menu item for downloader.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Download map
     ru = Загрузить карту
     ar = تنزيل الخريطة
@@ -8826,7 +8654,7 @@
 
   [routing_go]
     comment = Button for routing.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Go!
     ru = Поехали!
     ar = انطلق!
@@ -8860,7 +8688,7 @@
 
   [downloader_retry]
     comment = Item status in downloader.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Retry
     ru = Повторить
     ar = تكرار
@@ -8894,7 +8722,7 @@
 
   [downloader_map_and_routing]
     comment = Item in context menu.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Map + Routing
     ru = Карта + Маршруты
     ar = الخريطة + تحديد المسار
@@ -8928,7 +8756,7 @@
 
   [downloader_delete_map]
     comment = Item in context menu.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Delete Map
     ru = Удалить карту
     ar = حذف الخريطة
@@ -8963,7 +8791,7 @@
 
   [downloader_update_map]
     comment = Item in context menu.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Update Map
     ru = Обновить карту
     ar = تحديث الخريطة
@@ -8998,7 +8826,7 @@
 
   [downloader_update_map_and_routing]
     comment = Item in context menu.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Update Map + Routing
     ru = Обновить карту + Маршруты
     ar = تحديث الخريطة + تحديد المسار
@@ -9032,7 +8860,7 @@
 
   [downloader_map_only]
     comment = Item in context menu.
-    tags = ios,android,tizen
+    tags = ios,android
     en = Map Only
     ru = Только карта
     ar = الخريطة فقط
@@ -9066,7 +8894,7 @@
 
   [toolbar_application_menu]
     comment = Toolbar title
-    tags = ios,android,tizen
+    tags = ios,android
     en = Application menu
     ru = Меню приложения
     ar = قائمة التطبيق
@@ -10227,6 +10055,7 @@
     pt-BR = Vermelho
     ro = Roșu
     es = Rojo
+    es-MX = Rojo
     sv = Röd
     th = สีแดง
     tr = Kırmızı
@@ -10235,14 +10064,14 @@
     zh-Hans = 红色
     zh-Hant = 紅色
     el = Κόκκινο
-    sk = červená
+    sk = Červená
     fa = قرمز
 
   [yellow]
     comment = yellow color
     tags = android, ios
     en = Yellow
-    ru = Желтый
+    ru = Жёлтый
     ar = أصفر
     cs = Žlutá
     da = Gul
@@ -10261,6 +10090,7 @@
     pt-BR = Amarelo
     ro = Galben
     es = Amarillo
+    es-MX = Amarillo
     sv = Gul
     th = สีเหลือง
     tr = Sarı
@@ -10269,7 +10099,7 @@
     zh-Hans = 黄色
     zh-Hant = 黃色
     el = Κίτρινο
-    sk = žltá
+    sk = Žltá
     fa = زرد
 
   [blue]
@@ -10295,6 +10125,7 @@
     pt-BR = Azul
     ro = Albastru
     es = Azul
+    es-MX = Azul
     sv = Blå
     th = สีน้ำเงิน
     tr = Mavi
@@ -10303,14 +10134,14 @@
     zh-Hans = 蓝色
     zh-Hant = 藍色
     el = Μπλε
-    sk = modrá
+    sk = Modrá
     fa = ابی
 
   [green]
     comment = green color
     tags = android, ios
     en = Green
-    ru = Зеленый
+    ru = Зелёный
     ar = أخضر
     cs = Zelená
     da = Grøn
@@ -10329,6 +10160,7 @@
     pt-BR = Verde
     ro = Verde
     es = Verde
+    es-MX = Verde
     sv = Grön
     th = สีเขียว
     tr = Yeşil
@@ -10337,17 +10169,17 @@
     zh-Hans = 绿色
     zh-Hant = 綠色
     el = Πράσινο
-    sk = zelená
+    sk = Zelená
     fa = سبز
 
   [purple]
     comment = purple color
     tags = android, ios
     en = Purple
-    ru = Фиолетовый
+    ru = Пурпурный
     ar = أرجواني
     cs = Purpurová
-    da = violet
+    da = Violet
     nl = Paars
     fi = Violetti
     fr = Pourpre
@@ -10363,6 +10195,7 @@
     pt-BR = Roxo
     ro = Purpuriu
     es = Morado
+    es-MX = Morado
     sv = Lila
     th = สีม่วง
     tr = Mor
@@ -10371,7 +10204,7 @@
     zh-Hans = 紫色
     zh-Hant = 紫色
     el = Μωβ
-    sk = purpurová
+    sk = Purpurová
     fa = بنفش
 
   [orange]
@@ -10397,6 +10230,7 @@
     pt-BR = Laranja
     ro = Portocaliu
     es = Naranja
+    es-MX = Naranja
     sv = Orange
     th = สีส้ม
     tr = Turuncu
@@ -10405,7 +10239,7 @@
     zh-Hans = 橘红色
     zh-Hant = 橘色
     el = Πορτοκαλί
-    sk = oranžová
+    sk = Oranžová
     fa = نارنجی
 
   [brown]
@@ -10431,6 +10265,7 @@
     pt-BR = Marrom
     ro = Maro
     es = Marrón
+    es-MX = Marrón
     sv = Brun
     th = สีน้ำตาล
     tr = Kahverengi
@@ -10439,7 +10274,7 @@
     zh-Hans = 棕色
     zh-Hant = 棕色
     el = Καφέ
-    sk = hnedá
+    sk = Hnedá
     fa = قهوای
 
   [pink]
@@ -10465,6 +10300,7 @@
     pt-BR = Rosa
     ro = Roz
     es = Rosa
+    es-MX = Rosa
     sv = Rosa
     th = สีชมพู
     tr = Pembe
@@ -10473,8 +10309,296 @@
     zh-Hans = 粉色
     zh-Hant = 粉色
     el = Ροζ
-    sk = ružová
+    sk = Ružová
     fa = صورتی
+
+  [deep_purple]
+    comment = deep purple color
+    tags = android, ios
+    en = Deep Purple
+    ru = Тёмно-пурпурный
+    ar = أرجواني داكن
+    cs = Tmavě fialová
+    da = Mørkelilla
+    nl = Donker paars
+    fi = Tumman purppuranpunainen
+    fr = Pourpre foncé
+    de = Dunkelpurpur
+    hu = Sötét lila
+    id = Ungu Gelap
+    it = Viola scuro
+    ja = ディープパープル
+    ko = 진보라색
+    nb = Mørkepurpur
+    pl = Ciemnopurpurowy
+    pt = Purpúreo escuro
+    pt-BR = Lilás escuro
+    ro = Purpuriu închis
+    es = Morado oscuro
+    es-MX = Morado oscuro
+    sv = Mörk purpur
+    th = สีม่วงเข้ม
+    tr = Koyu Mor
+    uk = Темно-пурпуровий
+    vi = Tía thẫm
+    el = Βαθύ πορφυρό
+    sk = Tmavofialová
+    sw = Zambarau Iliyoiva
+    zh-Hans = 暗紫色
+    zh-Hant = 暗紫色
+    fa = ارغوانی سیر
+
+  [light_blue]
+    comment = light blue color
+    tags = android, ios
+    en = Light Blue
+    ru = Голубой
+    ar = أزرق فاتح
+    cs = Světle modrá
+    da = Lyseblå
+    nl = Lichtblauw
+    fi = Vaaleansininen
+    fr = Bleu ciel
+    de = Hellblau
+    hu = Világoskék
+    id = Biru Muda
+    it = Azzurro
+    ja = ライトブルー
+    ko = 하늘색
+    nb = Lyseblå
+    pl = Jasnoniebieski
+    pt = Azul Claro
+    pt-BR = Azul Claro
+    ro = Albastru deschis
+    es = Azul Claro
+    es-MX = Celeste
+    sv = Ljusblå
+    th = สีฟ้าอ่อน
+    tr = Açık Mavi
+    uk = Блакитний
+    vi = Xanh da trời
+    el = Γαλάζιο
+    sk = Svetlo modrá
+    sw = Buluu Hafifu
+    zh-Hans = 天蓝色
+    zh-Hant = 天藍色
+    fa = آبی کمرنگ
+
+  [cyan]
+    comment = cyan color
+    tags = android, ios
+    en = Cyan
+    ru = Сине-зелёный
+    ar = أزرق سماوي
+    cs = Cyan
+    da = Cyan
+    nl = Blauwgroen
+    fi = Sinivihreä
+    fr = Cyan
+    de = Blaugrün
+    hu = Cián
+    id = Biru Kehijauan
+    it = Cyan
+    ja = シアン
+    ko = 시안
+    nb = Blågrønn
+    pl = Niebieskozielony
+    pt = Azul-verde
+    pt-BR = Ciano
+    ro = Albastru-verziu
+    es = Cian
+    es-MX = Cian
+    sv = Blågrön
+    th = สีฟ้าอมเขียว
+    tr = Cam Göbeği
+    uk = Синьо-зелений
+    vi = Xanh lơ
+    el = Κυανό
+    sk = Tyrkysová
+    sw = Siani
+    zh-Hans = 蓝绿色
+    zh-Hant = 藍綠色
+    fa = فیروزه ای
+
+  [teal]
+    comment = teal color
+    tags = android, ios
+    en = Teal
+    ru = Изумрудный
+    ar = أخضر فاتح
+    cs = Teal
+    da = Blågrøn
+    nl = Smaragdgroen
+    fi = Smaragdinvihreä
+    fr = Émeraude
+    de = Smaragdgrün
+    hu = Zöldeskék
+    id = Biru Gelap
+    it = Verde smeraldo
+    ja = ティール
+    ko = 틸
+    nb = Smaragdgrønn
+    pl = Szmaragdowy
+    pt = Esmeralda
+    pt-BR = Cerceta
+    ro = Smarald
+    es = Verde azulado
+    es-MX = Verde azulado
+    sv = Smaragdgrön
+    th = สีเขียวนกเป็ดน้ำ
+    tr = Deniz Mavisi
+    uk = Смарагдовий
+    vi = Lục bảo
+    el = Σμαραγδένιο
+    sk = Modrozelená
+    sw = Teal
+    zh-Hans = 碧绿色
+    zh-Hant = 碧綠色
+    fa = آبی سیر
+
+  [lime]
+    comment = lime color
+    tags = android, ios
+    en = Lime
+    ru = Лайм
+    ar = ليموني
+    cs = Limeta
+    da = Lime
+    nl = Lime
+    fi = Limen värinen
+    fr = Vert citron
+    de = Limette
+    hu = Lime
+    id = Kuning Gelap
+    it = Verde fluo
+    ja = ライム
+    ko = 라임
+    nb = Limegrønn
+    pl = Lima
+    pt = Lima
+    pt-BR = Lima
+    ro = Var
+    es = Lima
+    es-MX = Lima
+    sv = Limefärg
+    th = สีเขียวอมเหลือง
+    tr = Çim Rengi
+    uk = Лайм
+    vi = Màu xanh chanh
+    el = Κιτρινοπράσινο
+    sk = Limetková
+    sw = Chokaa
+    zh-Hans = 青柠
+    zh-Hant = 青檸
+    fa = زرد لیویی
+
+  [deep_orange]
+    comment = deep orange color
+    tags = android, ios
+    en = Deep Orange
+    ru = Тёмно-оранжевый
+    ar = برتقالي داكن
+    cs = Tmavě oranžová
+    da = Dyb orange
+    nl = Donkeroranje
+    fi = Tumman oranssi
+    fr = Orange foncé
+    de = Dunkelorange
+    hu = Sötét Narancs
+    id = Oranye Gelap
+    it = Arancione scuro
+    ja = ディープオレンジ
+    ko = 진주황색
+    nb = Mørkeoransje
+    pl = Ciemnopomarańczowy
+    pt = Laranja escuro
+    pt-BR = Laranja escuro
+    ro = Portocaliu închis
+    es = Naranja oscuro
+    es-MX = Naranja oscuro
+    sv = Mörkorange
+    th = สีส้มเข้ม
+    tr = Koyu Turuncu
+    uk = Темно-помаранчевий
+    vi = Cam đậm
+    el = Βαθύ πορτοκαλί
+    sk = Tmavo oranžová
+    sw = Chungwa Iliyokoza
+    zh-Hans = 深橘色
+    zh-Hant = 深橘色
+    fa = نارنجی سیر
+
+  [gray]
+    comment = gray color
+    tags = android, ios
+    en = Gray
+    ru = Серый
+    ar = رمادي
+    cs = Šedá
+    da = Grå
+    nl = Grijs
+    fi = Harmaa
+    fr = Gris
+    de = Grau
+    hu = Szürke
+    id = Abu-abu
+    it = Grigio
+    ja = グレイ
+    ko = 회색
+    nb = Grå
+    pl = Szary
+    pt = Cinza
+    pt-BR = Cinza
+    ro = Gri
+    es = Gris
+    es-MX = Gris
+    sv = Grå
+    th = สีเทา
+    tr = Gri
+    uk = Сірий
+    vi = Xám
+    el = Γκρι
+    sk = Sivá
+    sw = Kijivu
+    zh-Hans = 灰色
+    zh-Hant = 灰色
+    fa = خاکستری
+
+  [blue_gray]
+    comment = blue gray color
+    tags = android, ios
+    en = Blue Gray
+    ru = Серо-голубой
+    ar = رمادي أزرق
+    cs = Modrošedá
+    da = Blågrå
+    nl = Grijsblauw
+    fi = Harmaan sininen
+    fr = Gris-bleu
+    de = Graublau
+    hu = Kékes Szürke
+    id = Biru Keabu-abuan
+    it = Grigiazzurro
+    ja = ブルーグレイ
+    ko = 청회색
+    nb = Gråblå
+    pl = Szaroniebieski
+    pt = Azul-cinza
+    pt-BR = Azul escuro
+    ro = Gri albăstriu
+    es = Gris azulado
+    es-MX = Gris azulado
+    sv = Ljusblå grå
+    th = สีฟ้าอมเทา
+    tr = Mavi Gri
+    uk = Сіро-блакитний
+    vi = Xám xanh da trời
+    el = Γκρίζο μπλε
+    sk = Modro sivá
+    sw = Kijivu Buluu
+    zh-Hans = 蓝灰色
+    zh-Hant = 藍灰色
+    fa = خاکستری کبود
 
   [WiFi_available]
     comment = Wi-Fi available
@@ -19633,9 +19757,36 @@
   [placepage_more_reviews_button]
     en = More Reviews
     ru = Ещё отзывы
-    el = Περισσότερες κριτικές
-    fa = بازخورد های بیشتر
+    ar = المزيد من المراجعات
+    cs = Více recenzí
+    da = Flere anmeldelser
+    nl = Meer reacties
+    fi = Lisää arvosteluja
     fr = Plus d'avis
+    de = Mehr Feedbacks
+    hu = További vélemények
+    id = Ulasan Lainnya
+    it = Altre recensioni
+    ja = レビューを更に表示
+    ko = 더 많은 리뷰
+    nb = Flere anmeldelser
+    pl = Więcej opinii
+    pt = Mais comentários
+    pt-BR = Mais Avaliações
+    ro = Mai multe recenzii
+    es = Más comentarios
+    es-MX = Más comentarios
+    sv = Fler recensioner
+    th = รีวิวอื่น ๆ
+    tr = Diğer yorumlar
+    uk = Ще відгуки
+    vi = Thêm nhận xét
+    el = Περισσότερα σχόλια
+    sk = Ďalšie recenzie
+    sw = Maoni Zaidi
+    zh-Hans = 更多评论
+    zh-Hant = 更多評論
+    fa = نقدهای دیگر
 
   [book_button]
     en = Book
@@ -29519,41 +29670,6 @@
     zh-Hant = 應用 %s 中……
     fa = اعمال %s...
 
-  [transit_not_found]
-    tags = ios,android
-    en = Transit navigation in this region is not yet available
-    ru = Навигация по общественному траспорту пока не доступна в данном регионе
-    ar = الملاحة المؤقتة في هذه المنطقة غير متوفرة بعد
-    cs = Tranzitní navigace v tomto regionu zatím není k dispozici
-    da = Transitnavigation i denne region er endnu ikke tilgængelig
-    nl = Transit navigatie is in deze regio nog niet beschikbaar
-    fi = Navigointi kohteiden välillä ei ole vielä käytettävissä tällä alueella
-    fr = La navigation en transit dans cette région n’est pas encore disponible
-    de = Transit-Navigation in dieser Region ist noch nicht verfügbar
-    hu = Tranzit navigáció ebben a régióban még nem áll rendelkezésre
-    id = Navigasi transit di daerah ini masih belum tersedia
-    it = La navigazione in transito in questa regione non è ancora disponibile
-    ja = この地域での乗り換え案内はまだご利用いただけません
-    ko = 이 지역에서 대중교통 내비게이션은 아직 사용 가능하지 않습니다.
-    nb = Transittnavigering i dette området er foreløpig ikke tilgjengelig
-    pl = Nawigacja tranzytowa nie jest jeszcze dostępna dla tego regionu
-    pt = A navegação de trânsito ainda não está disponível nesta região
-    pt-BR = A navegação de trânsito ainda não está disponível nessa região
-    ro = Navigarea în tranzit prin această regiune nu este disponibilă încă
-    es = La navegación de tránsito aún no está disponible en esta región
-    sv = Transitnavigering är inte tillgängligt i den här regionen ännu
-    th = การนำทางการสัญจรในบริเวณนี้ยังไม่สามารถใช้ได้
-    tr = Transit navigasyon henüz bu bölgede kullanılamıyor
-    uk = Транзитна навігація в цьому регіоні ще недоступна
-    vi = Chưa có tính năng dẫn đường quá cảnh cho khu vực này
-    el = Η πλοήγηση διαμετακόμισης στην περιοχή αυτή δεν είναι ακόμα διαθέσιμη
-    es_MX = La navegación de tránsito en esta región aún no está disponible
-    sk = Tranzitná navigácia v tomto regióne zatiaľ nie je k dispozícii
-    sw = Urambazaji usafiri katika eneo hili bado haupatikani
-    zh-Hans = 尚無法使用本區域的過境導航
-    zh-Hant = 本區域還沒有交通導航
-    fa = ناوبری حمل و نقل در این منطقه هنوز در دسترس نیست
-
   [whats_new_title_hotel_filter]
     en = New hotel filters available!
     ru = Новые фильтры при поиске отелей!
@@ -32938,38 +33054,39 @@
     fa = راهنمای با موفقیت دانلود شده است
 
   [download_guides]
-    en = Download guides
-    ru = Загрузите путеводители
-    ar = تنزيل الأدلة
-    cs = Stáhnout průvodce
-    da = Download vejledninger
-    nl = Handleidingen downloaden
-    fi = Lataa oppaat
-    fr = Télécharger les guides
-    de = Leitfäden herunterladen
-    hu = Útmutatók letöltése
-    id = Unduh panduan
-    it = Scarica le guide
-    ja = ガイドをダウンロード
-    ko = 안내 다운로드
-    no = Last ned bruksanvisninger
-    pl = Pobierz przewodniki
-    pt = Descarregue guias
-    pt-BR = Baixar guias
-    ro = Descarcă ghiduri
-    es = Descargar guías
-    es_MX = Descargar guías
-    sv = Ladda ned guider
-    th = ดาวน์โหลดคู่มือใช้งาน
-    tr = El kitaplarını indir
-    uk = Завантажити путівники
-    vi = Tải xuống hướng dẫn
-    el = Κατεβάστε τα εγχειρίδια
-    sk = Stiahnite si príručky
-    sw = Pakua viongozi/miongozo
-    zh-Hans = 下载导览
-    zh-Hant = 下載指南
-    fa = دانلود راهنما
+    comment = as few symbols as possible
+    en = Search guides
+    ru = Найти путеводители
+    ar = بحث عن أدلة
+    cs = Průvodce vyhledáváním
+    da = Søgeguide
+    nl = Gidsen zoeken
+    fi = Etsi matkaoppaita
+    fr = Chercher les guides
+    de = Reiseführer suchen
+    hu = Útmutatók keresése
+    id = Panduan pencarian
+    it = Trova guide
+    ja = ガイドを検索
+    ko = 가이드 찾기
+    nb = Søke etter guider
+    pl = Znajdź przewodniki
+    pt = Encontrar guias
+    pt-BR = Pesquisar guias
+    ro = Găsește ghiduri
+    es = Encontrar guías
+    es-MX = Encontrar guías
+    sv = Hitta guider
+    th = ค้นหาคู่มือใช้งาน
+    tr = Yol rehberlerini bul
+    uk = Знайти путівники
+    vi = Tìm hướng dẫn
+    el = Έυρεση οδηγών
+    sk = Vyhľadať sprievodcov
+    sw = Tafuta viongozi
+    zh-Hans = 查找指南
+    zh-Hant = 查找指南
+    fa = جستجوی راهنما
 
   [guides_groups_cached]
     en = Downloaded guides
@@ -44959,208 +45076,214 @@
     en = City + Outdoor Pass
 
   [all_pass_subscription_message_title]
-    en = 20000+ guides & trails
-    ru = 20000+ путеводителей и троп
-    ar = أكثر من 20000 دليل ومسار
-    cs = Více než 20000 průvodců a tras
-    da = 20000+ guides & ruter
-    nl = 20000+ gidsen & wandelroutes
-    fi = 20000+ matkaopasta ja polkua
-    fr = + de 20 000 guides et sentiers
-    de = 20000+ Reiseführer und Wanderwege
-    hu = 20 000+ útmutató és útvonal
-    id = 20000+ jalur & panduan
-    it = + di 20000 guide e sentieri
-    ja = 2万以上のガイド＆トレイル
-    ko = 2만개 이상의 가이드 및 길들
-    nb = 20000+ guider og stier
-    pl = 20000+ przewodników i szlaków
-    pt = 20000+ guias e trilhas
-    pt-BR = Mais de 2000 guias e trilhas
-    ro = 20000+ ghizi și trasee
-    es = Más de 20.000 guías y senderos
-    es-MX = Más de 20.000 guías y senderos
-    sv = 20 000+ guider och spår
-    th = คู่มือใช้งาน และเส้นทางมากกว่า 20,000 แห่ง
-    tr = 20.000+ rehber ve güzergah
-    uk = Понад 20 000 путівників і стежок
-    vi = Hơn 20000 hướng dẫn và đường mòn
-    el = 20.000+ οδηγών και μονοπατιών
-    sk = 20000+ sprievodcov a trás
-    sw = viongozi na njia zaidi ya 20000
-    zh-Hans = 超过20000个指南和人行道
-    zh-Hant = 超過20000個指南和人行道
-    fa = 20000+ راهنما و مسیرهای پیادهروی
+    comment = \n - for a break between lines. Max. 15 characters per 1 line.
+    en = 30000+\nguides & trails
+    ru = 30000+\nпутеводителей\nи троп
+    ar = 30000+\nأدلة ومسارات
+    cs = Více než 30000\nprůvodců a tras
+    da = 30000+\nguide & stier
+    nl = 30000+\ngidsen\nen paden
+    fi = 30000+\nopasta\nja polkua
+    fr = 30000+\nde guides\net de sentiers
+    de = 30000+\nReisführer\nund Wanderwege
+    hu = 30000+\nútmutatók\n& sávok
+    id = 30000+\npanduan & jalur
+    it = Più di 30000\nguide\ne sentieri
+    ja = 30000+の\nガイド&トレイル
+    ko = 30000개 이상의\n가이드 및 길들
+    nb = 30000+\nguider\nog stier
+    pl = 30000+\nprzewodników\ni szlaków
+    pt = Mais de 30000\nguias\ne trilhas
+    pt-BR = + de 30000\nguias e trilhas
+    ro = 30000+\nghiduri\nși rute
+    es = más de 30 mil\nguías\ny senderos
+    es-MX = más de 30 mil\nguías\ny senderos
+    sv = 30000+\nguider & spår
+    th = 30000+\nไกด์และเส้นทาง
+    tr = 30000+\nrehberler\nve yollar
+    uk = 30000+\nпутівників\nі стежок
+    vi = 30000+\nhướng dẫn\nvà đường mòn
+    el = 30.000+\nοδηγών\nκαι μονοπατιών
+    sk = 30000+\nsprievodcov\na tratí
+    sw = 30000+\nViongozi & njia
+    zh-Hans = 30000+\n指南\n和道路
+    zh-Hant = 30000+\n指南\n和道路
+    fa = 30000+\nراهنما و مسیرها
 
   [all_pass_subscription_message_subtitle]
-    en = Unlimited downloads of city and outdoor routes available offline
-    ru = Безлимитное скачивание офлайн маршрутов для городских прогулок и активного отдыха
-    ar = تحميل غير محدود لطرق المدينة والمناطق الخارجية بدون اتصال
-    cs = Neomezený počet stahování městských a venkovních tras dostupných offline
-    da = Ubegrænset downloads af by- og udendørsruter tilgængeligt offline
-    nl = Onbeperkt downloaden van stads- en buitenroutes offline beschikbaar
-    fi = Rajoittamaton offlinessa käytettävien kaupunkikierre- ja ulkoilureittien lataus
-    fr = Téléchargement illimité d'itinéraires de promenades en ville et d'activités de plein air avec l'accès hors ligne
-    de = Unlimitiertes Herunterladen von Offline-Routen für Spaziergänge durch die Stadt und aktive Erholung
-    hu = Korlátlan városi és szabadtéri útvonal elérhető offline letöltésre
-    id = Download berbagai macam rute perjalanan dan kota secara offline
-    it = Download illimitato di percorsi cittadini e di attività all'aria aperta
-    ja = オフラインで利用できる都市と戸外のルートが無制限にダウンロードできます
-    ko = 오프라인에서 사용 가능한 도시 및 야외 경로를 무제한 다운로드
-    nb = Ubegrenset offlineruter nedlasting for byturer og friluftsliv
-    pl = Nieograniczone pobieranie tras offline do zwiedzania i aktywnego wypoczynku poza miastem
-    pt = Download ilimitado de percursos offline para passeios pela cidade e recreação
-    pt-BR = Downloads ilimitados de rotas urbanas e ao ar livre disponíveis offline
-    ro = Descărcarea nelimitată a rutelor offline pentru plimbări prin oraș și activități în aer liber
-    es = Descarga ilimitada de rutas sin conexión para paseos por la ciudad y actividades al aire libre
-    es-MX = Descarga ilimitada de rutas fuera de línea para paseos urbanos y actividades al aire libre
-    sv = Obegränsad offline nedladdning av rutter för stadspromenader och utomhusaktiviteter
-    th = มีเส้นทางของเมืองใหญ่และเส้นทางเอาท์ดอร์ที่ใช้งานได้แบบออฟไลน์ให้ดาวน์โหลดได้ไม่จำกัด
-    tr = Sınırsız şehir ve açık hava güzergah indirmeleri çevrimdışı kullanılabilir
-    uk = Безлімітне завантаження офлайнових маршрутів для прогулянок містом і активного відпочинку
-    vi = Tải xuống không giới hạn các tuyến đường ngoại tuyến trong thành phố và những hoạt động ngoài trời
-    el = Απεριόριστες λήψεις διαδρομών χωρίς σύνδεση για περιπάτους στην πόλη και υπαίθριες δραστηριότητες
-    sk = Neobmedzené offline sťahovanie mestských a vonkajších trás
-    sw = Upakuaji usio ukomo wa njia za mji na za nje zinapatikana bila mtandao
-    zh-Hans = 无限下载市内旅行与休闲运动的离线路线
-    zh-Hant = 無限下載市內旅行與休閑運動的離線路線
-    fa = دانلود نامحدود مسیر شهرها و فضاهای باز موجود آفلاین
+    comment = <b> & </b> tag to make a part of the line bold
+    en = <b>Unlimited downloads</b> of city and outdoor routes <b>to offline mode</b>
+    ru = <b>Безлимитное скачивание в офлайн</b> маршрутов для города и активного отдыха
+    ar = <b>تحميلات غير محدودة</b> للمدينة والأماكن الخارجية <b>إلى الوضع الغير متصل</b>
+    cs = <b>Neomezené stahování</b> městských a venkovních tras <b>do režimu offline</b>
+    da = <b>Ubegrænsede downloads</b> af by og udendørs ruter <b>til offline mode</b>
+    nl = <b>Onbeperkt offline downloaden</b> van stads- en natuurroutes
+    fi = <b>Rajoittamaton lataus offline-reittejä</b> kaupunkiin ja aktiivisia ulkoilua varten
+    fr = <b>Téléchargement illimité hors connexion</b> d'itinéraires pour ville et pour les activités en plein air
+    de = <b>Uneingeschränktes Downloaden</b> von Routen durch die Stadt und für aktive Erholung <b>offline</b>
+    hu = <b>Korlátlan letöltése</b> a városi és szabadtéri útvonalaknak <b>offline módhoz</b>
+    id = <b>Unduh tanpa batas</b> jalur perkotaan dan outdoor <b>untuk mode offline</b>
+    it = <b>Download illimitati offline</b> percorsi cittadini e all'aria aperta
+    ja = 都市とアウトドアのルートの<b>オフラインモード</b>への<b>無制限のダウンロード</b>
+    ko = <b>오프라인 모드</b>에서 도시 및 아웃도어 경로를 <b>무제한 다운로드</b>
+    nb = <b>Ubegrenset nedlasting</b> av ruter for by og friluftsliv <b>uten nett</b>
+    pl = <b>Nieograniczone pobieranie w trybie offline</b> tras dla miasta i wypoczynku aktywnego
+    pt = <b>Download ilimitado</b> de percursos urbanos e férias ativas <b>no modo offline</b>
+    pt-BR = <b>Downloads ilimitados</b> da cidade e rotas externas <b>para o modo offline</b>
+    ro = <b>Descărcare nelimitată offline</b> de trasee pentru oraș și odihnă activă
+    es = <b>Descargas ilimitadas sin conexión</b> de rutas urbanas y actividades al aire libre
+    es-MX = <b>Descargas ilimitadas sin conexión</b> de rutas urbanas y actividades al aire libre
+    sv = <b>Obegränsad offline hämtning</b> av rutter för staden och utomhusaktiviteter
+    th = <b>ดาวน์โหลด</b> ถนนและเส้นทาง<b>เข้าสู่โหมดออฟไลน์ได้ไม่จำกัด</b>
+    tr = <b>Sınırsız çevrimdışı indirme</b> şehir ve açık hava etkinlikleri için yollar
+    uk = <b>Безлімітне завантаження в офлайн</b> маршрутів для міста та активного відпочинку
+    vi = <b>Tải xuống không giới hạn</b> các tuyến di chuyển trong thành phố và cho các hoạt động ngoài trời sang <b>chế độ ngoại tuyến</b>
+    el = <b>Απεριόριστη λήψη εκτός σύνδεσης</b> διαδρομές για την πόλη και υπαίθριες δραστηριότητες
+    sk = <b>Neobmedzené sťahovanie</b> mestských a vonkajších trás <b>do režimu offline</b>
+    sw = <b>Upakuaji usio kikomo</b> wa jiji na njia nje ya mji <b>kwenye hali ya bila mtandao</b>
+    zh-Hans = <b>无限离线下载</b>城市和户外活动的路线
+    zh-Hant = <b>無限離線下載</b>城市和戶外活動的路線
+    fa = <b>دانلود نامحدود</b>مسیرهای شهری و فضای باز<b>در حالت آفلاین</b>
 
   [all_pass_subscription_message_title_2]
-    en = 700+ cities and 100+ countries
-    ru = 700+ городов и 100+ стран
-    ar = أكثر من 700 مدينة و 100 دولة
-    cs = Více než 700 měst a 100 zemí
-    da = 700+ byer og 100+ lande
-    nl = 700+ steden en 100+ landen
-    fi = 700+ kaupunkia ja 100+ maata
-    fr = + de 700 villes et de 100 pays
-    de = 700+ Städte und 100+ Länder
-    hu = 700+ város és 100+ ország
-    id = 700+ kota dan 100+ negara
-    it = + di 700 città e 100 Paesi
-    ja = 700以上の都市と100以上の国
-    ko = 700개 이상 도시와 100곳 이상의 나라
-    nb = 700+ byer og 100+ land
-    pl = 700+ miast i 100+ krajów
-    pt = 700+ cidades e 100+ países
-    pt-BR = Mais de 700 cidades e 100 países
-    ro = 700+ orașe și 100+ de țări
-    es = 700+ ciudades y 100+ países
-    es-MX = 700+ ciudades y 100+ países
-    sv = 700+ städer och 100+ länder
-    th = มากกว่า 700 เมืองใหญ่ และมากกว่า 100 ประเทศ
-    tr = 700+ şehir ve 100+ ülke
-    uk = Понад 700 міст і 100 країн
-    vi = Hơn 700 thành phố và hơn 100 quốc gia
-    el = 700+ πόλεις και 100+ χώρες
-    sk = 700+ miest a 100+ krajín
-    sw = Zaidi ya majiji 700 na nchi 100
-    zh-Hans = 超过700座城市和100个国家
-    zh-Hant = 超過700座城市和100個國家
-    fa = 700+ شهر و 100+ کشور
+    comment = \n - for a break between lines. Max. 17 characters per 1 line.
+    en = Interactive\nelevation profile
+    ru = Интерактивный\nпрофиль высот
+    ar = ملف تفاعلي لتحديد\nالارتفاع
+    cs = Interaktivní\nvýškový profil
+    da = Interaktiv\nhøjdeprofil
+    nl = Interactief\nhoogteprofiel
+    fi = Interaktiivinen\nkorkeusprofiili
+    fr = Profil intéractif\naltimétrique
+    de = Interaktiver\nHöhenprofil
+    hu = Interaktív\nemelkedési profil
+    id = Profil ketinggian\ninteraktif
+    it = Profilo\naltimetrico\ninterattivo
+    ja = インタラクティブな\n高度情報
+    ko = 상호작용형\n고도 단면도
+    nb = Interaktiv\nhøydeprofil
+    pl = Interaktywny\nprofil wysokości
+    pt = Perfil de alturas\ninterativo
+    pt-BR = Perfil elevação\ninterativo
+    ro = Profil\naltitudine\ninteractiv
+    es = Perfil\nInteractivo\nde alturas
+    es-MX = Perfil\nInteractivo\nde alturas
+    sv = Interaktiv\nterräng profil
+    th = ข้อมูลของความสูง\nแบบมีปฏิสัมพันธ์
+    tr = Etkileşimli\nyükseklik profili
+    uk = Інтерактивний\nпрофіль висот
+    vi = Hồ sơ độ cao\ntương tác
+    el = Διαδραστικό\nπροφίλ υψόμετρου
+    sk = Interaktívny\nvýškový profil
+    sw = Mteremko upande\ningiliani
+    zh-Hans = 互动\n高度剖面图
+    zh-Hant = 互動\n高度剖面圖
+    fa = پروفایل ارتفاع\nتعاملی
 
   [all_pass_subscription_message_subtitle_2]
-    en = Plan your journeys at any time of the year
-    ru = Для путешествий в любое время года
-    ar = خطط لرحلاتك في أي وقت من السنة
-    cs = Plánujte své cesty v jakémkoli období roku
-    da = Planlæg din rejse på ethvert tidspunkt af året
-    nl = Plan uw reizen op elk moment van het jaar
-    fi = Matkoille minä tahansa vuodenaikana
-    fr = Pour voyager à tout moment de l'année
-    de = Für Reisen zu jeder Jahreszeit
-    hu = Tervezd meg az utazásod bármikor
-    id = Rencanakan perjalanan Anda kapan saja
-    it = Per viaggiare in qualsiasi momento dell'anno
-    ja = いつでも旅の計画ができます
-    ko = 연중 언제든지 여행 계획을 세워 보세요
-    nb = For reiser i alle årstider
-    pl = Dla podróży o każdej porze roku
-    pt = Para viagens em qualquer época do ano
-    pt-BR = Planeje suas viagens em qualquer época do ano
-    ro = Pentru călătorii în orice moment al anului
-    es = Para viajar en cualquier época del año
-    es-MX = Para viajar en cualquier época del año
-    sv = Planera dina resor när som helst på året
-    th = วางแผนการเดินทางของคุณได้ในทุกเวลาของปี
-    tr = Yolculuklarını yılın istediğin zamanında planla
-    uk = Для подорожей у будь-яку пору року
-    vi = Để du lịch vào bất cứ thời gian nào trong năm
-    el = Για ταξίδια σε οποιαδήποτε εποχή του χρόνου
-    sk = Naplánujte si svoje cesty kedykoľvek v priebehu roka
-    sw = Panga safari zako wakati wowote wa mwaka
-    zh-Hans = 支持全年旅行
-    zh-Hant = 支持全年旅行
-    fa = سفرهای خود را در هر زمانی از سال برنامهریزی کنید
+    comment = <b> & </b> tag to make a part of the line bold
+    en = Each trail contains <b>elevation and basic info about the route</b>
+    ru = Все тропы загружаются <b>с высотами и основной информацией о маршруте</b>
+    ar = يحتوي كل مسار على <b>تحديد الارتفاع ومعلومات أساسية عن الطريق</b>
+    cs = Každá trasa obsahuje <b>výšku a základní informace o trase</b>
+    da = Hver sti indeholder <b>højde og basis info om ruten</b>
+    nl = Elk pad bevat <b>informatie over de hoogte en basisinformatie over de route</b>
+    fi = Kaikki polut ladataan <b>korkeuksineen ja perustietoineen reiteistä</b>
+    fr = Chargement des sentiers <b>avec l'indication des altitudes et les informations principales sur l'itinéraire</b>
+    de = Alle Wanderwege werden <b>с mit Höhen und Hauptinformationen über die Route angezeigt</b>
+    hu = Minden nyomvonal<b>tartalmazza a magassági és alapinfót az útvonalról</b>
+    id = Setiap jalur terdapat <b>ketinggian dan informasi jalur secara umum</b>
+    it = Tutti i sentieri contengono <b>altitudine e informazioni di base sul percorso</b>
+    ja = 各トレイルには<b>ルートの高度と基本情報</b>が含まれています
+    ko = 각 산길들은 <b>경로의 고도 및 기본 정보를 포함하고 있습니다</b>
+    nb = Alle stier lastes ned <b>med høyder og den viktigste informasjonen om ruten</b>
+    pl = Wszystkie trasy są pobierane <b>z wysokościami i podstawowymi informacjami o trasie</b>
+    pt = Todas as trilhas são carregadas <b>com alturas e informações gerais do percurso</b>
+    pt-BR = Cada trilha contém <b>elevação e informações básicas sobre a rota</b>
+    ro = Toate rutele se încarcă <b>împreună cu altitudinea și informațiile de bază despre traseu</b>
+    es = Todos los senderos contienen <b>altitud e información básica de la ruta</b>
+    es-MX = Todos los senderos contienen <b>altitud e información básica de la ruta</b>
+    sv = Alla spår laddas <b>med terräng och grundläggande ruttinformation</b>
+    th = แต่ละเส้นทางประกอบด้วย<b>ความสูงและข้อมูลพื้นฐานเกี่ยวกับเส้นทาง</b>
+    tr = Tüm yollar <b>yükseklik ve temel rota bilgileri ile</b> yüklenir
+    uk = Всі стежки завантажуються <b>з висотами й основною інформацією про маршрут</b>
+    vi = Tất cả các đường mòn đang được tải có <b>bao gồm độ cao và thông tin chính về tuyến di chuyển</b>
+    el = Όλα τα μονοπάτια φορτώνονται <b>με υψόμετρα και βασικές πληροφορίες διαδρομής</b>
+    sk = Každá trasa obsahuje <b>prevýšenie a základné informácie o trase</b>
+    sw = Kila njia ina <b>mteremko na taarifa muhimu kuhusu njia hiyo</b>
+    zh-Hans = <b>所有道路均已加载高度和路线基本信息</b>
+    zh-Hant = <b>所有道路均已加載高度和路線基本信息</b>
+    fa = هر مسیر شامل<b>ارتفاع و اطلاعات اصلی مسیر است</b>
 
   [all_pass_subscription_message_title_3]
-    en = Wide range of content
-    ru = Разнообразный контент
-    ar = مجموعة كبيرة من المحتوى
-    cs = Široká škála obsahu
-    da = Stor udvalg af indhold
-    nl = Diverse inhoud
-    fi = Monipuolinen sisältö
-    fr = Contenu varié
-    de = Mischcontent
-    hu = Széles körű tartalom
-    id = Konten yang beragam
-    it = Svariati contenuti
-    ja = 幅広いコンテンツ
-    ko = 다양한 내용의 콘텐츠들
-    nb = Variert innhold
-    pl = Szeroki zakres treści
-    pt = Conteúdo diversificado
-    pt-BR = Amplo conteúdo
-    ro = Conținut divers
-    es = Contenido diverso
-    es-MX = Contenido diverso
-    sv = Olika innehåll
-    th = มีเนื้อหาที่กว้างขวาง
-    tr = Geniş içerik yelpazesi
-    uk = Різноманітний контент
-    vi = Nội dung phong phú
-    el = Ποικιλία περιεχομένων
-    sk = Široký rozsah obsahu
-    sw = Kuna maudhui mengi
-    zh-Hans = 丰富多彩的内容
-    zh-Hant = 豐富多彩的內容
-    fa = دامنه وسیعی از اطلاعات
+    comment = \n - for a break between lines. Max. 15 characters per 1 line.
+    en = Bookmarks,\nphotos, and\nrecommendations
+    ru = Избранные\nместа, фото\nи рекомендации
+    ar = إشارات مرجعية\nوصور و\nتوصيات
+    cs = Záložky,\nfotky a\ndoporučení
+    da = Bogmærker,\nbilleder og\nanbefalinger
+    nl = Favorieten\nplekjes, foto's\nen tips
+    fi = Valitut\npaikat, kuvat\nja suositukset
+    fr = Lieux,\nphotos et avis\nfavoris
+    de = Lesezeichen\nFotos und\nEmpfehlungen
+    hu = Könyvjelzők,\nfotók és\njavaslatok
+    id = Penanda,\nfoto dan\nrekomendasi
+    it = Luoghi salvati,\nfoto\ne suggerimenti
+    ja = ブックマーク、\n写真、そして\nおススメ
+    ko = 즐겨찾기,\n사진 및\n추천글
+    nb = Utvalgte\nsteder, bilder\nog anbefalinger
+    pl = Obrane miejsca,\nzdjęcia\ni referencje
+    pt = Lugares, fotos\ne recomendações\nfavoritos
+    pt-BR = Favoritos,\nfotos e\nrecomendações
+    ro = Locații,\nimagini\nși recomandări
+    es = Sitios\nFavoritos,fotos\ny recomendaciones
+    es-MX = Sitios\nFavoritos,fotos\ny recomendaciones
+    sv = Favoritplatser,\nfoton och\nrekommendation
+    th = บุ๊คมาร์ก\nรูปภาพ และ\nคำแนะนำ
+    tr = Favori\nyerler, fotolar\nve öneriler
+    uk = Вибрані\nмісця, фото\nта рекомендації
+    vi = Lựa chọn\nđ.điểm, h.ảnh\nvà các đề xuất
+    el = Αγαπημένα,\nφωτογραφίες\nκαι συστάσεις
+    sk = Záložky,\nfotky a\nodporúčania
+    sw = Vialamisho\npicha na\nmapendekezo
+    zh-Hans = 默认\n地点，照片\n和推荐
+    zh-Hant = 默認\n地點，照片\n和推薦
+    fa = نشانه ها،\nتصاویر و\nتوصیهها
 
   [all_pass_subscription_message_subtitle_3]
-    en = Bookmarks, photos, walking tracks, descriptions and tips
-    ru = Метки, фото, пешеходные треки, описания и рекомендации
-    ar = إشارات مرجعية وصور ومسارات المشي ووصف ونصائح
-    cs = Záložky, fotografie, turistické trasy, popisy a tipy
-    da = Bogmærker, fotos, gåture, beskrivelser og tips
-    nl = Bladwijzers, foto's, wandelroutes, beschrijvingen en tips
-    fi = Merkit, valokuvat, kävelyreitit, kuvaukset ja suositukset
-    fr = Tags, photos, parcours, descriptions et recommandations
-    de = Lesezeichen, Fotos, Wanderwege, Beschreibungen und Empfehlungen
-    hu = Könyvjezők, fényképek, séta úvonalak, leírások és tippek
-    id = Penanda, foto, jalur pejalan kaki, tips dan deskripsi
-    it = Segnalibri, foto, percorsi pedonali, descrizioni e suggerimenti
-    ja = ブックマーク、写真、歩行経路、説明文、そしてヒント
-    ko = 북마크, 사진, 산책로, 자세한 설명과 팁들
-    nb = Bokmerker, bilder, fotturer, beskrivelser og anbefalinger
-    pl = Znaczniki, zdjęcia, trasy spacerowe, opisy i wskazówki
-    pt = Tags, fotos, trilhas, descrições e recomendações
-    pt-BR = Favoritos, fotos, trilhas de caminhada, descrições e dicas
-    ro = Etichete, fotografii, trasee de mers, descrieri și recomandări
-    es = Etiquetas, fotos, senderos, descripciones y recomendaciones
-    es-MX = Etiquetas, fotos, senderos, descripciones y recomendaciones
-    sv = Taggar, foton, vandringsleder, beskrivningar och rekommendationer
-    th = บุ๊กมาร์ก ภาพถ่าย เส้นทางการเดินเท้า คำบรรยาย และเคล็ดลับ
-    tr = Yer imleri, fotoğraflar, yürüme güzergahları, açıklamalar ve ipuçları
-    uk = Мітки, фото, піші треки, описи та рекомендації
-    vi = Đánh dấu, ảnh, lối đi bộ qua đường, mô tả và cả những đề xuất
-    el = Αγαπημένα, φωτογραφίες, μονοπάτια πεζοπορίας, περιγραφές και συμβουλές
-    sk = Záložky, fotografie, turistické trasy, popisy a tipy
-    sw = Vialamisho, picha, njia za miguu, maelezo na vidokezo
-    zh-Hans = 标记，照片，人行道路，描述和推荐
-    zh-Hant = 標記，照片，人行道路，描述和推薦
-    fa = نشانکها، تصاویر، مسیرهای پیاده‎روی، توصیفات و توصیهها
+    comment = <b> & </b> tag to make a part of the line bold
+    en = <b>Learn all about the route</b> you are going to take
+    ru = <b>Узнайте всё о маршруте</b>, по которому собираетесь пройти
+    ar = <b>تعلم كل شيء عن المسار</b> الذي ستسلكه
+    cs = <b>Zjistěte vše o trase,</b> kterou se chcete vydat
+    da = <b>Lær alt om ruten</b> du skal til at tage
+    nl = <b>Meer informatie over de route</b> die u gaat nemen
+    fi = <b>Ota kaikki selvää reitistä</b>, jota sinä aiot kulkea
+    fr = <b>Tout savoir sur l'itinéraire</b>, que vous souhaitez prendre
+    de = <b>Erfahren Sie alles über die Routen</b>, die Sie gehen möchten
+    hu = <b>Tudjon meg mindent az útvonalról</b> amit megtesz
+    id = <b>Pelajari semua rute</b> yang akan Anda ambil
+    it = <b>Scopri tutto riguardo il percorso</b> che farai
+    ja = これから旅する<b>ルートの詳細</b>
+    ko = 가려는 곳의 <b>길에 대한 모든 것을 알 수 있습니다</b>
+    nb = <b>Lær alt om ruten</b> du har valgt
+    pl = <b>dowiedz się wszystkiego o trasie</b>, którą zamierzasz przejść
+    pt = <b>Saiba tudo sobre o percurso</b> que irá seguir
+    pt-BR = <b>Descubra tudo sobre a rota</b> que você vai tomar
+    ro = <b>Aflați totul despre traseul</b>, pe care intenționați să-l parcurgeți
+    es = <b>Aprende todo sobre la ruta</b> que vas a tomar
+    es-MX = <b>Aprende todo sobre la ruta</b> que vas a tomar
+    sv = <b>Lär dig allt om rutten</b> du ska följa
+    th = <b>เรียนรู้เกี่ยวกับเส้นทางทั้งหมด</b> ที่คุณกำลังจะไป
+    tr = Gitmek üzere olduğunuz <b>rota hakkında her şeyi öğrenin</b>
+    uk = <b>Дізнайтеся все про маршрут</b>, за яким збираєтеся пройти
+    vi = <b>Tìm hiểu về tất cả các tuyến</b> mà bạn dự định đi qua
+    el = <b>Μάθετε τα πάντα για τη διαδρομή</b> που θα ακολουθήσετε
+    sk = <b>Dozviete sa všetko o trase</b>, ktorou sa vydáte
+    sw = <b>Pata maelezo yote kuhusu njia</b> unayoenda kupita
+    zh-Hans = <b>了解您准备前往的路线</b>，的所有信息
+    zh-Hant = <b>了解您準備前往的路線</b>，的所有信息
+    fa = <b>دانستن همه چیز درباره مسیری</b>که قرار است طی کنید
 
   [sightseeing_subscription_header_sightseeing]
     comment = do not translate
@@ -45778,3 +45901,1125 @@
     zh-Hans = 现在你可在热门城市与名胜古迹地图上查找推荐的旅行指南
     zh-Hant = 現在你可在熱門城市與名勝古迹地圖上查找推薦的旅行指南
     fa = حال میتوانید توصیههای پیشنهادی را در صفحه مربوط به مکان شهرها و مکان‎های توریستی مشهور مشاهده کنید
+
+  [new_onboarding_step3_header]
+    en = Experience
+    ru = Путешествуйте
+    ar = جرب
+    cs = Zažijte
+    da = Oplevelse
+    nl = Reist
+    fi = Matkusta
+    fr = Voyagez
+    de = Reisen Sie
+    hu = Éld át
+    id = Pengalaman
+    it = Viaggia
+    ja = 体験しましょう
+    ko = 경험하세요
+    nb = Reis
+    pl = Podróżuj
+    pt = Viaje
+    pt-BR = Experiência
+    ro = Călătoriți
+    es = Viaja
+    es-MX = Viaje
+    sv = Resa
+    th = ประสบการณ์
+    tr = Deneyimle
+    uk = Подорожуйте
+    vi = Đi du lịch nào
+    el = Ταξιδέψτε
+    sk = Zážitok
+    sw = Uzoefu
+    zh-Hans = 去旅行吧
+    zh-Hant = 去旅行吧
+    fa = تجربه کنید
+
+  [all_pass_screen_best_value]
+    en = Best Value
+    ru = Выгодная цена
+    ar = أفضل قيمة
+    cs = Nejvýhodnější
+    da = Bedste værdi
+    nl = Gunstige prijs
+    fi = Edullinen hinta
+    fr = Prix avantageux
+    de = Günstiger Preis
+    hu = Legjobb ajánlat
+    id = Harga terbaik
+    it = Prezzo vantaggioso
+    ja = ベストバリュー
+    ko = 최고가치
+    nb = Rimelig pris
+    pl = Atrakcyjna cena
+    pt = Preço favorável
+    pt-BR = Melhor valor
+    ro = Preț avantajos
+    es = Precio ventajoso
+    es-MX = Precio ventajoso
+    sv = Lönsamt pris
+    th = คุ้มค่าที่สุด
+    tr = En İyi Teklif
+    uk = Вигідна ціна
+    vi = Giá tốt
+    el = Καλύτερη τιμή
+    sk = Najlepšia hodnota
+    sw = Thamani kubwa
+    zh-Hans = 优惠的价格
+    zh-Hant = 優惠的價格
+    fa = بهترین ارزش
+
+  [buy_btn_for_subscription_3]
+    en = Entire catalog for %s/year
+    ru = Весь каталог за %s/год
+    ar = كامل الكتالوج من أجل %s / سنة
+    cs = Celý katalog za %s/rok
+    da = Hele kataloget for %s/år
+    nl = De hele catalogus voor %s per jaar
+    fi = Koko luettelo %s/vuosi
+    fr = Le catalogue entier pour %s/an
+    de = Das ganze Katalog für %s/Jahr
+    hu = A teljes katalógus %s/év
+    id = Katalog lengkap hanya dengan %s/tahun
+    it = Tutto il catalogo a %s all'anno
+    ja = カタログ全体が年々%s
+    ko = 모든 카탈로그가 %s/년
+    nb = Hele katalogen for %s/år
+    pl = Cały katalog za %s/rok
+    pt = Tudo o catálogo por %s/ano
+    pt-BR = O catálogo completo por apenas %s por ano
+    ro = Tot catalogul pentru %s/an
+    es = Todo el catálogo por %s/año
+    es-MX = Todo el catálogo por %s/año
+    sv = Hela katalogen för %s/år
+    th = ทั้งแคตตาล็อคราคา %s/ปี
+    tr = Tüm katalog %s/yıl
+    uk = Увесь каталог за %s/рік
+    vi = Cả danh mục chỉ với %s/năm
+    el = Ολόκληρος κατάλογος με %s/έτος
+    sk = Celý katalóg za %s/rok
+    sw = Orodha yote kwa %s/mwaka
+    zh-Hans = 整个画册%s/年
+    zh-Hant = 整個畫冊%s/年
+    fa = کلیه کاتالوگ ها با %s در سال
+
+  [transit_not_found]
+    tags = ios,android
+    en = Subway navigation in this region is not available yet
+    ru = Навигация на метро ещё недоступна в данном регионе
+    ar = التنقل باستخدام مترو الأنفاق في هذه المنطقة غير متاح حتى الآن
+    cs = Navigace metra v této oblasti zatím není k dispozici
+    da = Metro-navigation er endnu ikke tilgængelig i denne region
+    nl = Metro-navigatie is nog niet beschikbaar in deze regio
+    fi = Metron reittiohjeet eivät ole vielä saatavilla tällä alueella
+    fr = La navigation en métro n'est pas encore disponible dans la région
+    de = Die U-Bahn-Navigation ist in dieser Region noch nicht verfügbar
+    hu = Metró navigáció ebben a régióban még nem érhető el
+    id = Navigasi kereta bawah tanah di wilayah ini belum tersedia
+    it = L'utilizzo della metro non è ancora disponibile in questa regione
+    ja = この地域の地下鉄ナビはまだ利用できません
+    ko = 이 지역의 지하철 노선 기능이 아직 없습니다
+    nb = T-bane navigasjon er ikke tilgjengelig i denne regionen ennå
+    pl = Nawigacja metrem nie jest jeszcze tutaj dostępna
+    pt = Navegação de metro ainda indisponível nesta região
+    pt-BR = A navegação por metrô nesta região ainda não está disponível
+    ro = Navigarea pentru metrou nu este încă disponibilă în această regiune
+    es = Navegación en Metro aún no disponible en esta región
+    es-MX = Navegación por metro aún no disponible en esta región
+    sv = Metro-navigering är ännu inte tillgänglig i denna region
+    th = ยังไม่สามารถใช้การนำทางรถไฟใต้ดินในภูมิภาคนี้ได้
+    tr = Metro navigasyonu bu bölgede henüz mevcut değil
+    uk = Навігація на метро ще недоступна в цьому регіоні
+    vi = Điều hướng đến Metro hiện chưa khả dụng cho khu vực này
+    el = Η πλοήγηση στο μετρό γι' αυτή την περιοχή δεν είναι ακόμα διαθέσιμη
+    sk = Navigácia metra v tejto oblasti ešte nie je k dispozícii
+    sw = Uabiri wa njia ya chini kwa chini katika mkoa huu haupatikani bado
+    zh-Hans = 本区域的地铁导航目前不可用
+    zh-Hant = 本區域的地鐵導航目前不可用
+    fa = راهنمای مترو در این منطقه هنوز دردسترس نیست
+
+  [dialog_pedestrian_route_is_long_header]
+    tags = ios,android
+    en = Subway route is not found
+    ru = Маршрут метро не найден
+    ar = لم يتم العثور على مترو الانفاق
+    cs = Trasa metra nebyla nalezena
+    da = Metro-rute blev ikke fundet
+    nl = Metroroute niet gevonden
+    fi = Metroreittiä ei ole löytynyt
+    fr = Itinéraire de métro non trouvé
+    de = Keine U-Bahn-Route gefunden
+    hu = Metró útvonal nem található
+    id = Jalur kereta bawah tanah tidak ditemukan
+    it = Percorso della metro non trovato
+    ja = 地下鉄ルートが見つかりませんでした
+    ko = 지하철 루트가 발견되지 않았습니다
+    nb = T-bane rute ikke funnet
+    pl = Nie znaleziono trasy metra
+    pt = Percurso de metro não encontrado
+    pt-BR = Rota por metrô não encontrada
+    ro = Ruta metroului nu a fost găsită
+    es = Ruta de metro no encontrada
+    es-MX = Ruta de metro no encontrada
+    sv = Metro rutt hittades inte
+    th = ไม่พบเส้นทางของทางรถไฟใต้ดิน
+    tr = Metro güzergahı bulunamadı
+    uk = Маршрут метро не знайдено
+    vi = Không tìm thấy tuyến Metro
+    el = Η διαδρομή του μετρό δεν βρέθηκε
+    sk = Trasa metra sa nenašla
+    sw = Njia ya chini kwa chini haipatikani
+    zh-Hans = 地铁路线图未找到
+    zh-Hant = 地鐵路線圖未找到
+    fa = مسیر مترو یافت نشد
+
+  [dialog_pedestrian_route_is_long_message]
+    tags = ios,android
+    en = Please choose a start or end point closer to a subway station
+    ru = Выберите начальную или конечную точку маршрута ближе к станции метро
+    ar = يرجى اختيار نقطة بداية أو نهاية أقرب لمحطة المترو
+    cs = Zvolte prosím počáteční nebo koncový bod blíže k stanici metra
+    da = Vælg venligst et start- eller stoppunkt, tættere på metrostationen
+    nl = Kies een begin- of eindpunt dichter bij het metrostation
+    fi = Valitse reitin aloitus- tai loppupiste lähemmäksi metroasemaa
+    fr = Choisissez le point de départ ou d'arrivée de l'itinéraire le plus proche de la station de métro
+    de = Wählen Sie den Start- und Endpunkt der Route, die am nächsten zur U-Bahn-Station liegen
+    hu = Válasszon indulási vagy végpontot közelebb a metróállomáshoz
+    id = Silakan pilih titik awal atau akhir yang lebih dekat ke stasiun kereta bawah tanah
+    it = Seleziona il punto iniziale o finale del percorso più vicino alla stazione della metro
+    ja = もっと地下鉄駅に近い出発地または目的地を選択してください
+    ko = 지하철역에서 가까운 출발점 또는 종점을 선택하세요
+    nb = Velg utgangspunkt eller destinasjon som befinner seg nærmere en T-bane stasjon
+    pl = Wybierz punkt początkowy lub końcowy trasy najbliżej do stacji metra
+    pt = Escolhe ponto inicial ou final de percurso próximo da estação de metro
+    pt-BR = Escolha outro ponto de início ou fim perto da estação de metrô
+    ro = Selectați punctul de început sau de sfârșit al rutei mai aproape de stația de metrou
+    es = Elige el punto de inicio o fin de ruta más cercano al metro
+    es-MX = Elija el punto de inicio o fin de ruta más cercano al metro
+    sv = Välj ruttens start- eller slutpunkt närmare till tunnelbanestation
+    th = โปรดเลือกจุดเริ่มต้นและสิ้นสุดที่อยู่ใกล้สถานีรถไฟใต้ดิน
+    tr = Metro istasyonuna en yakın rotanın başlangıç veya bitiş noktasını seçin
+    uk = Виберіть початкову чи кінцеву точку маршруту ближче до станції метро
+    vi = Hãy chọn điểm đầu hoặc điểm cuối của tuyến gần với bến Metro
+    el = Επιλέξτε το σημείο έναρξης ή τέλους διαδρομής πιο κοντά στο σταθμό του μετρό
+    sk = Vyberte počiatočný alebo konečný bod bližšie k stanici metra
+    sw = Chagua nyota au alama ya mwisho karibu ya kituo cha njia ya chini kwa chini
+    zh-Hans = 选择地铁站附近的起点和终点
+    zh-Hant = 選擇地鐵站附近的起點和終點
+    fa = لطفا نقطه آغاز و پایان نزدیک تری به ایستگاه مترو انتخاب کنید
+
+  [routing_planning_error_subway_special]
+    comment = Failed planning SUBWAY route message in navigation view
+    tags = ios,android
+    en = Subway route planning failed
+    ru = Ошибка построения маршрута метро
+    ar = فشل تخطيط طريق لمترو الانفاق
+    cs = Plánování trasy metra selhalo
+    da = Planlægning af metro-rute mislykkedes
+    nl = Routeplanner per metro is mislukt
+    fi = Virhe metroreitin luomisessa
+    fr = Erreur dans le tracé de l'itinéraire du métro
+    de = Fehler bei der Erstellung der U-Bahn-Route
+    hu = A metró útvonaltervezése sikertelen
+    id = Perencanaan jalur kereta bawah tanah gagal
+    it = Errore di creazione del percorso della metro
+    ja = 地下鉄ルートの計画ができませんでした
+    ko = 지하철 루트 계획 생성 실패
+    nb = Feil ved ruteplanlegging
+    pl = Błąd tworzenia trasy metra
+    pt = Erro ao construir o percurso de metro
+    pt-BR = O planejamento da rota de metrô falhou
+    ro = Eroare la construirea rutei metroului
+    es = Error al construir la ruta en metro
+    es-MX = Error al construir la ruta en metro
+    sv = Fel vid byggande av metro rutt
+    th = การวางแผนเส้นทางของทางรถไฟใต้ดินล้มเหลว
+    tr = Metro güzergahı oluşturma hatası
+    uk = Не вдалося прокласти маршрут метро
+    vi = Lỗi xây dựng tuyến Metro
+    el = Σφάλμα κατά την δημιουργία διαδρομής του μετρό
+    sk = Plánovanie trasy metra zlyhalo
+    sw = Mpango wa njia ya chini kwa chini umeshindikana
+    zh-Hans = 地铁路线图设计出错
+    zh-Hant = 地鐵路線圖設計出錯
+    fa = برنامه ریزی مسیر مترو ناموفق ماند
+
+  [whatsnew_isolines_title]
+    en = New for outdoors: offline topographic layer!
+    ru = Новинка для активного отдыха – линии высот офлайн!
+    ar = الجديد في الخارج: طبقة طبوغرافية بدون انترنت!
+    cs = Nové pro outdoor: topografická vrstva offline!
+    da = Nyt til udenfor: offline topografiske lag!
+    nl = Nieuwigheid voor buitenactiviteiten: hoogtelijnen offline!
+    fi = Uutuus aktiivilomalle – korkeus linjat offline-tilassa!
+    fr = Nouveauté pour les activités de plein air – lignes d'altitude hors-ligne !
+    de = Neu für aktiven Urlaub – Topographie-Layer offline!
+    hu = Újdonság a szabadtérhez: offline topográfiai réteg!
+    id = Yang baru di outdoor: lapisan topografi offline!
+    it = Novità per le attività all'aria aperta: modalità topografica offline!
+    ja = アウトドアの新要素：オフラインのトポグラフィーレイヤー！
+    ko = 아웃도어용 새 기능: 오프라인 지형 레이어!
+    nb = Nyhet i friluftsliv – høydekurver uten nett!
+    pl = Nowość do wypoczynku aktywnego – linie wysokości offline!
+    pt = Novidade para férias ativas- linhas de alturas offline!
+    pt-BR = Novidades para outdoors: camada topográfica offline!
+    ro = Noutatea pentru activități în aer liber – linii de înălțimi offline!
+    es = Novedad en actividades al aire libre: ¡altitud de relieve sin conexión!
+    es-MX = Novedad en actividades al aire libre: ¡altitud de relieve sin conexión!
+    sv = Nyhet för utomhusaktiviteter – höjdlinjer offline!
+    th = เลเยอร์แผนที่ภูมิประเทศแบบออฟไลน์ ใหม่สำหรับกิจกรรมกลางแจ้ง!
+    tr = Açık hava etkinlikleri için yenilik – yükseklik çizgileri çevrimdışı!
+    uk = Новина для активного відпочинку – лінії висот офлайн!
+    vi = Tính năng mới cho kỳ nghỉ năng động – đường chỉ độ cao ngoại tuyến!
+    el = Νέο για υπαίθριες δραστηριότητες – τοπογραφικά στρώματα εκτός σύνδεσης!
+    sk = Novinka pre outdoor: topografická vrstva offline!
+    sw = Mpya kwa mandhali ya nje: tabaka la nchi bila mtandao!
+    zh-Hans = 户外活动的新产品–离线高度线！
+    zh-Hant = 戶外活動的新產品–離線高度線！
+    fa = تازه های فضای باز: لایه توپوگرافی آفلاین!
+
+  [whatsnew_isolines_message]
+    comment = as less symbols as possible
+    en = Feel confident in the mountainous area. Just turn on the layer in the upper-left corner
+    ru = Ориентируйтесь в горной местности – включите слой кнопкой в левом верхнем углу экрана
+    ar = كن واثق في المنطقة الجبلية. فقط أشعل الطبقة في الزاوية العلوية اليسرى
+    cs = Buďte sebevědomí v hornaté oblasti. Stačí zapnout vrstvu v levém horním rohu
+    da = Følg dig selvsikker i det bjergrige område. Tænd bare for laget i det øverste venstre hjørne
+    nl = Navigeer probleemloos in bergachtig gebied. Schakel gewoon de hoogtelijn in via de toets in de linkerbovenhoek van het scherm
+    fi = Suunnistaudu vuorimaastossa – käynnistä kerros päälle näytön vasemmassa yläkulmassa olevalla painikkeella
+    fr = Concentrez-vous sur le terrain montagneux – activez la couche avec le bouton dans le coin supérieur gauche de l'écran
+    de = Verlaufen Sie sich nicht in den Berge. Um die Schicht zu aktivieren, klicken Sie auf den Button in der linken Bildschirmecke
+    hu = Legyen magabiztos a hegyvidéki területen. Csak kapcsolja be a réteget a bal felső sarokban
+    id = Merasa percaya diri di daerah pegunungan. Cukup aktifkan layer di sudut kiri atas
+    it = Orientatevi nelle aree montuose: attivate la modalità premendo nell'angolo in cima a sinistra
+    ja = 山地でも安心。左上でレイヤーを起動するだけです
+    ko = 산 지형에서도 자신감 있게. 왼쪽 구성 상단의 레이어를 키세요
+    nb = Orienter deg i fjellområde – slå på lag ved å trykke på knappen i hjørnet øverst til venstre på skjermen
+    pl = Nawiguj w górach – włącz warstwę za pomocą przycisku w lewym górnym rogu ekranu
+    pt = Oriente-se nas terras altas- ative a camada com o botão direito no canto superior esquerdo da tela
+    pt-BR = Sinta-se confiante em regiões montanhosos. Ative a camada no canto superior esquerdo
+    ro = Ghidați-vă în zona montană-activați butonul de strat în colțul din stânga sus pe ecran
+    es = Siéntete seguro en la zona montañosa. Activa la capa con el botón en la esquina superior izquierda de la pantalla
+    es-MX = Siéntase seguro en la zona montañosa. Habilite la capa con el botón en la esquina superior izquierda de la pantalla
+    sv = Navigera i högländerna – slå på lagret med knappen i det övre vänstra hörnet av skärmen
+    th = รู้สึกมั่นใจได้ในพื้นที่แถบภูเขา เพียงแค่เปิดเลเยอร์ที่มุมบนซ้าย
+    tr = Dağlık alanda kendinizi yönlendirin – ekranın sol üst köşesindeki düğmeyi kullanarak katmanı açın
+    uk = Орієнтуйтеся в гірській місцевості – увімкніть шар, натиснувши кнопку в лівому верхньому куті екрана
+    vi = Xác định phương hướng ở vùng đồi núi – hãy bật nút chỉ lớp ở góc trái trên màn hình
+    el = Νιώστε σίγουροι στα ορεινά – ενεργοποιήστε το στρώμα στην πάνω αριστερή γωνία της οθόνης
+    sk = Cíťte sa sebaisto v horskej oblasti. Stačí zapnúť vrstvu v ľavom hornom rohu
+    sw = Jisikie mwenye matumaini katika eneo la milima. Wewe washa tabaka tu katika pembe ya juu-kushoto
+    zh-Hans = 在山地中导航–使用屏幕左上角的按钮打开图层
+    zh-Hant = 在山地中導航–使用屏幕左上角的按鈕打開圖層
+    fa = در مناطق کوهستانی خاطر جمع باشید. فقط لایه را در قسمت بالا سمت چپ روشن کنید
+
+  [button_layer_isolines]
+    en = Terrain
+    ru = Высоты
+    ar = تضاريس
+    cs = Terén
+    da = Terræn
+    nl = Hoogtes
+    fi = Korkeudet
+    fr = Terrain
+    de = Terrain
+    hu = Terep
+    id = Isometrik
+    it = Terreno
+    ja = 地形
+    ko = 지형
+    nb = Høyder
+    pl = Wysokości
+    pt = Alturas
+    pt-BR = Topográfica
+    ro = Înălțimi
+    es = Alturas
+    es-MX = Alturas
+    sv = Terräng
+    th = ความสูง
+    tr = Yükseklikler
+    uk = Висоти
+    vi = Độ cao
+    el = Υψόμετρα
+    sk = Terén
+    sw = Topografia
+    zh-Hans = 高度
+    zh-Hant = 高度
+    fa = ایزومپ
+
+  [tips_map_layers_title_countour]
+    en = New in MAPS.ME: offline topographic layer!
+    ru = Линии высот офлайн в MAPS.ME!
+    ar = الجديد في MAPS.ME: طبقة طبوغرافية بدون انترنت!
+    cs = Novinka v MAPS.ME: offline topografická vrstva!
+    da = Nyt på MAPS.ME: offline topografiske lag!
+    nl = Hoogtelijnen offline in MAPS.ME!
+    fi = Korkeuslinjat offline-tilassa MAPS.ME:ssä!
+    fr = Lignes d'altitude hors-ligne dans MAPS.ME !
+    de = Neu in MAPS.ME: Topographie-Layer offline!
+    hu = Újdonság a MAPS.ME-n: offline topográfiai réteg!
+    id = Yang baru di MAPS.ME: lapisan topografi offline!
+    it = Novità su MAPS.ME modalità topografica offline!
+    ja = MAPS.MEの新要素：オフラインのトポグラフィーレイヤー！
+    ko = MAPS.ME의 새 기능: 오프라인 지형 레이어!
+    nb = Høydekurver uten nett med MAPS.ME!
+    pl = Linie wysokości w trybie offline w MAPS.ME!
+    pt = Linhas de alturas offline na MAPS.ME!
+    pt-BR = Novidades no MAPS.ME: camada topográfica offline!
+    ro = Linii de înălțimi offline pe MAPS.ME!
+    es = ¡Altitud de relieve sin conexión en MAPS.ME!
+    es-MX = ¡Altitud de relieve sin conexión en MAPS.ME!
+    sv = Höjningslinjer offline i MAPS.ME!
+    th = เลเยอร์แผนที่ภูมิประเทศแบบออฟไลน์ ใหม่ในแอป MAPS.ME!
+    tr = MAPS.ME'de yükseklik çizgileri çevrimdışı!
+    uk = Лінії висот офлайн у MAPS.ME!
+    vi = Đường độ cao ngoại tuyến trong MAPS.ME!
+    el = Τοπογραφικά στρώματα εκτός σύνδεσης στο MAPS.ME!
+    sk = Nové v MAPS.ME: offline topografická vrstva!
+    sw = Mpya katika MAPS.ME: tabaka la nchi bila mtandao!
+    zh-Hans = 离线高度线在MAPS.ME中！
+    zh-Hant = 離線高度線在MAPS.ME中！
+    fa = تازه ها در MAPS.ME: لایه توپوگرافی آفلاین!
+
+  [tips_map_layers_message_countour]
+    en = Plan and enjoy your nature trips being sure you know everything about the area
+    ru = Линии высот помогут спланировать путешествие на природу и не потеряться на местности
+    ar = خطط و استمتع برحلاتك في الطبيعة و أنت متأكد من أنك تعرف كل شيء عن المنطقة
+    cs = Naplánujte si a užijte si své výlety do přírody s jistotou, že víte vše o této oblasti
+    da = Planlæg og nyd din naturtur ved at være sikker på, at du ved alt om området
+    nl = Dankzij de hoogtelijnen kunt u probleemloos natuurreizen plannen en er zeker van zijn dat u niet verdwalen zult
+    fi = Korkeuslinjat auttavat suunnittelemaan luontomatkan etkä enää eksy maastolla
+    fr = Les lignes d'altitude vous aideront à planifier votre voyage à la campagne sans vous perdre dans les champs
+    de = Der Topographie-Layer hilft Ihnen Ihre Reise in die Natur zu planen und sich in der Gegen zurechtzufinden
+    hu = Tervezze meg és élvezze a természetjáró kirándulásait, és tudjon meg mindent a környékről
+    id = Rencanakan dan nikmati perjalanan alam Anda dan pastikan Anda tahu segalanya tentang daerah tersebut
+    it = La modalità topografica aiuta a programmare il viaggio nella natura e a non perdersi
+    ja = 自然の旅で訪れる地域を全てを把握しながら計画を立て楽しみましょう
+    ko = 이 지역에 대한 모든 것을 알고 있는지 확인하면서 자연 여행을 계획하고 즐기세요
+    nb = Høydekurver hjelper deg å planlegge turen din og ikke gå seg vill
+    pl = Linie wysokości pomogą zaplanować podróż i nie zgubić się w terenie
+    pt = As linhas de alturas offline ajudarão planejar sua viagem à natureza e não se perder no local
+    pt-BR = Planeje e aproveite de suas viagens na natureza tendo certeza que vocÊ sabe tudo sobre a região
+    ro = Liniile de înălțimi vă vor ajuta să planificați o călătorie în natură și să nu vă pierdeți
+    es = La altitud de relieve te ayudará a planificar un viaje a la naturaleza y no perderte en la zona
+    es-MX = La altitud de relieve le ayudará a planificar un viaje a la naturaleza y no perderse en el área
+    sv = Höjdlinjer hjälper dig att planera din resa till naturen och inte gå vilse på marken
+    th = วางแผนและสนุกไปกับทริปท่องธรรมชาติโดยมั่นใจว่าคุณรู้ทุกอย่างเกี่ยวกับพื้นที่นั้น
+    tr = Yükseklik çizgileri, doğaya bir gezi planlamanıza ve arazide kaybolmamanıza yardımcı olacaktır
+    uk = Лінії висот допоможуть спланувати подорож на природу та не загубитися на місцевості
+    vi = Đường độ cao giúp lên kế hoạch du lịch hòa mình với thiên nhiên và không bị lạc khi di chuyển
+    el = Τα τοπογραφικά στρώματα θα σας βοηθήσουν να σχεδιάσετε το ταξίδι σας στη φύση και να μην χαθείτε στην περιοχή
+    sk = Naplánujte a užite si výlety do prírody s istotou, že viete o tejto oblasti všetko
+    sw = Panga na furahia safari zako za ulimwengu ukiwa na uhakika unakijua kila kitu kuhusu eneo hilo
+    zh-Hans = 高度线可以帮您规划通往大自然地区的路线，不会迷路
+    zh-Hant = 高度線可以幫您規劃通往大自然地區的路線，不會迷路
+    fa = با اطمینان از این که همه چیز را در مورد منطقه می دانید طبیعت گردی خود را برنامه ریزی کنید و لذت ببرید
+
+  [isolines_activation_error_dialog]
+    en = To activate and use the topographic layer please update or download the map of the area
+    ru = Чтобы воспользоваться линиями высот, обновите или загрузите карту нужной местности
+    ar = لتفعيل الطبقة الطبوغرافية واستخدامها ، يرجى تحديث أوتنزيل خريطة المنطقة
+    cs = Chcete-li aktivovat a používat topografickou vrstvu, prosím aktualizujte nebo si stáhněte mapu oblasti
+    da = For at aktivere og bruge de topografiske lag, opdater venligst eller download kortet for området
+    nl = Als u gebruik wilt maken van hoogtelijnen, moet u een kaart van het gewenste gebied bijwerken of downloaden
+    fi = Päivitä tai lataa haluamasi alueen kartta, voidaksesi käyttää korkeuslinjoja
+    fr = Pour utiliser les lignes d'altitude, mettez à jour ou téléchargez la carte de l'endroit désiré
+    de = Um den Topographie-Layer benutzen zu können, aktualisieren oder laden Sie die Karte der benötigten Gegend herunter
+    hu = A topográfiai réteg aktiválásához és használatához kérjük frissítse vagy töltse le az adott terület térképét
+    id = Untuk mengaktifkan dan menggunakan lapisan topografi, silakan perbarui atau unduh peta area
+    it = Per utilizzare la modalità topografica, aggiornate o scaricate la mappa dell'area interessata
+    ja = トポグラフィーレイヤーを有効化して使用するには、このエリアのマップを更新もしくはダウンロードしてください
+    ko = 지형 레이어를 활성화하고 사용하려면 해당 지역의 지도를 업데이트하거나 다운로드하십시오
+    nb = For å bruke høydekurver oppdater eller last opp kartet til nødvendig område
+    pl = Do skorzystania z linii wysokości, zaktualizuj lub pobierz mapę obszaru, który potrzebujesz
+    pt = Para usar as linhas de alturas, atualize ou carregue o mapa da área desejada
+    pt-BR = Para ativar e usar a camada topográfica, atualize ou baixe o mapa da região
+    ro = Pentru a utiliza liniile de înălțimi, actualizați sau descărcați harta zonei dorite
+    es = Para usar la altitud de relieve, actualiza o descarga el mapa del área deseada
+    es-MX = Para usar la altitud de relieve, actualice o descargue el mapa del área deseada
+    sv = Om du vill använda höjdlinjer, uppdatera eller ladda ner en karta över önskat område
+    th = ในการเปิดใช้งานเลเยอร์แผนที่ภูมิประเทศโปรดอัปเดตหรือดาวน์โหลดแผนที่ของบริเวณนั้น
+    tr = Yükseklik çizgilerini kullanmak için, istediğiniz arazinin haritasını güncelleyin veya indirin
+    uk = Щоб скористатися лініями висот, оновіть чи завантажте карту потрібної місцевості
+    vi = Để sử dụng các đường chỉ độ cao, hãy cập nhật hoặc tải xuống bản đồ của khu vực bạn mong muốn
+    el = Για να χρησιμοποιήσετε τοπογραφικά στρώματα, ενημερώστε ή κατεβάστε τον χάρτη της επιθυμητής περιοχής
+    sk = Ak chcete aktivovať a používať topografickú vrstvu, aktualizujte alebo stiahnite mapu oblasti
+    sw = Kuamilisha na kutumia tabaka la nchi tafadhali sasisha au pakua ramani ya eneo hilo
+    zh-Hans = 如需使用高度線，請更新或下載所需區域的地圖
+    zh-Hant = 如需使用高度线，请更新或下载所需区域的地图
+    fa = برای فعال سازی و استفاده از لایه توپوگرافی نقشه منطقه را به روزرسانی یا دانلود کنید
+
+  [isolines_location_error_dialog]
+    en = The topographic layer is not yet available in this area
+    ru = Линии высот пока не доступны в этом регионе
+    ar = الطبقة الطبوغرافية ليست متاحة بعد في هذه المنطقة
+    cs = Topografická vrstva není v této oblasti ještě dostupná
+    da = Det topografiske lag er endnu ikke tilgængeligt i dette område
+    nl = De hoogtelijnen zijn nog niet beschikbaar in deze regio
+    fi = Korkeus linjat eivät ole vielä saatavilla tällä alueella
+    fr = Les lignes d'élévation ne sont pas encore disponibles dans cette région
+    de = Topographie-Layer sind in dieser Region noch nicht verfügbar
+    hu = Ezen a területen a topográfiai réteg még nem elérhető
+    id = Lapisan topografi belum tersedia untuk wilayah ini
+    it = La modalità topografica per questa regione non è ancora disponibile
+    ja = トポグラフィーレイヤーはこの地域ではまだ利用できません
+    ko = 이 지역의 지형 레이어는 아직 사용할 수 없습니다
+    nb = Høydekurver er ikke tilgjengelige i dette området ennå
+    pl = W tej chwili nie są dostępne linie wysokości w tym regionie
+    pt = A linhas de alturas ainda não está disponível em sua região
+    pt-BR = A camada topográfica ainda não está disponível para esta região
+    ro = Liniile de înălțimi pană ce nu sunt disponibile în această regiune
+    es = La altitud de relieve aún no está disponible en esta región
+    es-MX = La altitud de relieve no está aún disponible en esta región
+    sv = Höjningslinjer är ännu inte tillgängligt i den här regionen
+    th = เลเยอร์แผนที่ภูมิประเทศยังใช้งานไม่ได้ในพื้นที่นี้
+    tr = Bu bölgede henüz yükseklik çizgileri mevcut değil
+    uk = Лінії висот ще недоступні в цьому регіоні
+    vi = Đường hiển thị độ cao hiện chưa khả dụng tại khu vực này
+    el = Τα τοπογραφικά στρώματα δεν είναι ακόμα διαθέσιμα σε αυτή την περιοχή
+    sk = Topografická vrstva ešte nie je v tejto oblasti k dispozícii
+    sw = Tabaka la sura ya nchi bado haipatikani katika eneo hili
+    zh-Hans = 暂时无法获取该地区的高低线
+    zh-Hant = 暫時無法獲取該地區的高低線
+    fa = لایه توپوگرافی هنوز برای این منطقه در دسترس نیست
+
+  [elevation_profile_diff_level]
+    en = Difficulty level
+    ru = Уровень сложности
+    ar = مستوى الصعوبة
+    cs = Stupeň obtížnosti
+    da = Sværhedsgrad
+    nl = Moeilijkheidsgraad
+    fi = Vaikeustaso
+    fr = Niveau de difficulté
+    de = Komplexitätsniveau
+    hu = Nehézségi szint
+    id = Tingkat kesulitan
+    it = Livello di difficoltà
+    ja = 難易度
+    ko = 난이도
+    nb = Vanskelighetsgrad
+    pl = Poziom trudności
+    pt = Nível de complexidade
+    pt-BR = Nível de dificuldade
+    ro = Nivel de dificultate
+    es = Nivel de dificultad
+    es-MX = Nivel de dificultad
+    sv = Svårighetsgrad
+    th = ระดับความยาก
+    tr = Zorluk seviyesi
+    uk = Рівень складності
+    vi = Mức độ phức tạp
+    el = Επίπεδο δυσκολίας
+    sk = Level obtiažnosti
+    sw = Usawa mgumu
+    zh-Hans = 难度等级
+    zh-Hant = 難度等級
+    fa = سطح دشواری
+
+  [elevation_profile_diff_level_easy]
+    en = Easy
+    ru = Лёгкий
+    ar = سهل
+    cs = Snadný
+    da = Let
+    nl = Gemakkelijk
+    fi = Helppo
+    fr = Faible
+    de = Leicht
+    hu = Könnyű
+    id = Mudah
+    it = Facile
+    ja = イージー
+    ko = 쉬움
+    nb = Lett
+    pl = Łatwy
+    pt = Fácil
+    pt-BR = Fácil
+    ro = Ușor
+    es = Fácil
+    es-MX = Fácil
+    sv = Lätt
+    th = ง่าย
+    tr = Kolay
+    uk = Простий
+    vi = Dễ
+    el = Εύκολο
+    sk = Jednoduchá
+    sw = Rahisi
+    zh-Hans = 容易
+    zh-Hant = 容易
+    fa = آسان
+
+  [elevation_profile_diff_level_moderate]
+    en = Moderate
+    ru = Умеренный
+    ar = معتدل
+    cs = Mírný
+    da = Middel
+    nl = Middelmatig
+    fi = Kohtuullinen
+    fr = Moyen
+    de = Mittel
+    hu = Mérsékelt
+    id = Sedang
+    it = Moderato
+    ja = ノーマル
+    ko = 보통
+    nb = Middels
+    pl = Umiarkowany
+    pt = Moderado
+    pt-BR = Moderado
+    ro = Mediu
+    es = Moderado
+    es-MX = Moderado
+    sv = Måttlig
+    th = ปานกลาง
+    tr = Orta
+    uk = Помірний
+    vi = Trung bình
+    el = Μέτριο
+    sk = Mierna
+    sw = Wastani
+    zh-Hans = 中等
+    zh-Hant = 中等
+    fa = متوسط
+
+  [elevation_profile_diff_level_hard]
+    en = Hard
+    ru = Сложный
+    ar = صعب
+    cs = Těžký
+    da = Svær
+    nl = Moeilijk
+    fi = Vaikea
+    fr = Haut
+    de = Schwer
+    hu = Nehéz
+    id = Sulit
+    it = Difficile
+    ja = ハード
+    ko = 어려움
+    nb = Vanskelig
+    pl = Skomplikowany
+    pt = Complicado
+    pt-BR = Difícil
+    ro = Dificil
+    es = Difícil
+    es-MX = Difícil
+    sv = Svår
+    th = ยาก
+    tr = Karmaşık
+    uk = Складний
+    vi = Khó
+    el = Δύσκολο
+    sk = Náročná
+    sw = Ngumu
+    zh-Hans = 困难
+    zh-Hant = 困難
+    fa = دشوار
+
+  [elevation_profile_ascent]
+    en = Ascent
+    ru = Подъём
+    ar = تصاعدي
+    cs = Stoupání
+    da = Stige op
+    nl = Opstijging
+    fi = Nosto
+    fr = Montée
+    de = Bergauf
+    hu = Felemelkedés
+    id = Menanjak
+    it = Ascesa
+    ja = 上昇
+    ko = 올라가기
+    nb = Stigning
+    pl = Wejście
+    pt = Subida
+    pt-BR = Subida
+    ro = Urcare
+    es = Ascenso
+    es-MX = Ascenso
+    sv = Stigning
+    th = การขึ้น
+    tr = Tırmanış
+    uk = Підйом
+    vi = Đi lên
+    el = Άνοδος
+    sk = Výstup
+    sw = Upandaji
+    zh-Hans = 上坡
+    zh-Hant = 上坡
+    fa = بالا رفتن
+
+  [elevation_profile_descent]
+    en = Descent
+    ru = Спуск
+    ar = تنازلي
+    cs = Klesání
+    da = Stige ned
+    nl = Afdaling
+    fi = Lasku
+    fr = Descente
+    de = Bergab
+    hu = Leereszkedés
+    id = Menurun
+    it = Discesa
+    ja = 下降
+    ko = 내려가기
+    nb = Nedstigning
+    pl = Zejście
+    pt = Descida
+    pt-BR = Descida
+    ro = Coborâre
+    es = Descenso
+    es-MX = Descenso
+    sv = Backe
+    th = การลง
+    tr = İniş
+    uk = Спуск
+    vi = Đi xuống
+    el = Κάθοδος
+    sk = Zostup
+    sw = Ushukaji
+    zh-Hans = 下坡
+    zh-Hant = 下坡
+    fa = پایین آمدن
+
+  [elevation_profile_minaltitude]
+    en = Min. altitude
+    ru = Мин. высота
+    ar = الحد الأدنى للارتفاع
+    cs = Min. nadmořská výška
+    da = Min. højde
+    nl = Min. hoogte
+    fi = Min. korkeus
+    fr = Hauteur minimale
+    de = Min. Höhe
+    hu = Min. magasság
+    id = Ketinggian Min.
+    it = Altitudine minima
+    ja = 最小高度
+    ko = 산 최소 높이
+    nb = Min. høyde
+    pl = Min. wysokość
+    pt = Altura min.
+    pt-BR = Altitude Mín.
+    ro = Înălțime min.
+    es = Altura mínima
+    es-MX = Altura mínima
+    sv = Min. höjd
+    th = ระดับความสูงต่ำสุด
+    tr = Min. rakım
+    uk = Мін. висота
+    vi = Độ cao tối thiểu
+    el = Ελ. υψόμετρο
+    sk = Min. nadmorská výška
+    sw = Mwinuko wa chini kabisa
+    zh-Hans = 最小高度
+    zh-Hant = 最小高度
+    fa = کمینه ارتفاع
+
+  [elevation_profile_maxaltitude]
+    en = Max. altitude
+    ru = Макс. высота
+    ar = الحد الأقصى للارتفاع
+    cs = Max. nadmořská výška
+    da = Maks. højde
+    nl = Max. hoogte
+    fi = Maks. korkeus
+    fr = Hauteur maximale
+    de = Max. Höhe
+    hu = Max. magasság
+    id = Ketinggian Maks.
+    it = Altitudine massima
+    ja = 最大高度
+    ko = 산 최대 높이
+    nb = Maks. høyde
+    pl = Maks. wysokość
+    pt = Altura max.
+    pt-BR = Altiduta Max.
+    ro = Înălțime max.
+    es = Altura máxima
+    es-MX = Altura máxima
+    sv = Max. höjd
+    th = ระดับความสูงสูงสุด
+    tr = Maks. rakım
+    uk = Макс. висота
+    vi = Độ cao tối đa
+    el = Μέγ. υψόμετρο
+    sk = Max. nadmorská výška
+    sw = Mwinuko wa juu kabisa
+    zh-Hans = 最大高度
+    zh-Hant = 最大高度
+    fa = بیشینه ارتفاع
+
+  [elevation_profile_m]
+    en = m
+    ru = м
+    ar = م
+    cs = m
+    da = m
+    nl = m
+    fi = m
+    fr = m
+    de = m
+    hu = m
+    id = m
+    it = m
+    ja = m
+    ko = m
+    nb = m
+    pl = m
+    pt = m
+    pt-BR = m
+    ro = m
+    es = m
+    es-MX = m
+    sv = m
+    th = ม
+    tr = m
+    uk = м
+    vi = m
+    el = μ
+    sk = m
+    sw = m
+    zh-Hans = 米
+    zh-Hant = 米
+    fa = متر
+
+  [elevation_profile_difficulty]
+    en = Difficulty
+    ru = Сложность
+    ar = درجة الصعوبة
+    cs = Obtížnost
+    da = Vanskelighed
+    nl = Moeilijkheid
+    fi = Vaikeus
+    fr = Difficulté
+    de = Schwierigkeitsgrad
+    hu = Nehézség
+    id = Kesulitan
+    it = Difficoltà
+    ja = 難易度
+    ko = 난이도
+    nb = Vanskelighet
+    pl = Trudność
+    pt = Complexidade
+    pt-BR = Dificuldade
+    ro = Dificultate
+    es = Dificultad
+    es-MX = Dificultad
+    sv = Komplexitet
+    th = ลำบาก
+    tr = Zorluk
+    uk = Складність
+    vi = Độ khó
+    el = Δυσκολία
+    sk = Obtiažnosť
+    sw = Ugumu
+    zh-Hans = 难度
+    zh-Hant = 難度
+    fa = دشواری
+
+  [elevation_profile_distance]
+    en = Dist.:
+    ru = Расст.:
+    ar = المسافة:
+    cs = Vzdál.:
+    da = Afs.:
+    nl = Afst.:
+    fi = Etäisyys:
+    fr = Russe :
+    de = Entf.:
+    hu = Táv.:
+    id = Jarak:
+    it = Dist.
+    ja = 距離：
+    ko = 거리:
+    nb = Avstand:
+    pl = Odległ.:
+    pt = Distância:
+    pt-BR = Dist.:
+    ro = Dist.:
+    es = Distancia
+    es-MX = Distancia
+    sv = Avst.:
+    th = ระยะทาง
+    tr = Mesafe:
+    uk = Відст.:
+    vi = Khoảng cách
+    el = Απόστ.:
+    sk = Vzdial.:
+    sw = Umbali:
+    zh-Hans = 距离：
+    zh-Hant = 距離：
+    fa = مسافت
+
+  [elevation_profile_km]
+    en = km
+    ru = км
+    ar = كم
+    cs = km
+    da = km
+    nl = km
+    fi = km
+    fr = km
+    de = km
+    hu = km
+    id = km
+    it = km
+    ja = ㎞
+    ko = km
+    nb = km
+    pl = km
+    pt = km
+    pt-BR = km
+    ro = km
+    es = km
+    es-MX = km
+    sv = km
+    th = กม
+    tr = km
+    uk = км
+    vi = km
+    el = χλμ
+    sk = km
+    sw = km
+    zh-Hans = 千米
+    zh-Hant = 千米
+    fa = کیلومتر
+
+  [elevation_profile_time]
+    en = Time:
+    ru = В пути:
+    ar = مدة:
+    cs = Čas:
+    da = Tid:
+    nl = Op weg
+    fi = Aika:
+    fr = Temps:
+    de = Dauer:
+    hu = Idő
+    id = Waktu:
+    it = Tempo:
+    ja = 時間：
+    ko = 소비 시간:
+    nb = I rute
+    pl = Trasa:
+    pt = Ida:
+    pt-BR = Tempo:
+    ro = Timp:
+    es = Lapso:
+    es-MX = Lapso:
+    sv = Tid:
+    th = เวลา:
+    tr = Süre:
+    uk = Шлях:
+    vi = Giờ:
+    el = Διαρκ:
+    sk = Čas:
+    sw = Muda:
+    zh-Hans = 在路上：
+    zh-Hant = 在路上：
+    fa = زمان:
+
+  [elevation_profile_hours]
+    en = h.
+    ru = ч.
+    ar = ساعة
+    cs = hod.
+    da = t.
+    nl = uur
+    fi = t.
+    fr = h
+    de = St.
+    hu = ó.
+    id = j.
+    it = ore
+    ja = 時間
+    ko = 시간
+    nb = t.
+    pl = godz.
+    pt = h.
+    pt-BR = h.
+    ro = ore
+    es = h.
+    es-MX = h.
+    sv = h.
+    th = ชม
+    tr = sa.
+    uk = год.
+    vi = h.
+    el = ω.
+    sk = h.
+    sw = saa
+    zh-Hans = 小时
+    zh-Hant = 小時
+    fa = ساعت
+
+  [elevation_profile_minutes]
+    en = min
+    ru = мин
+    ar = دقيقة
+    cs = min
+    da = min
+    nl = min
+    fi = min
+    fr = mn
+    de = Min
+    hu = p.
+    id = mnt
+    it = min
+    ja = 分
+    ko = 분
+    nb = min
+    pl = min
+    pt = min
+    pt-BR = min
+    ro = min
+    es = min
+    es-MX = min
+    sv = min
+    th = นาที
+    tr = dk.
+    uk = хв
+    vi = ph
+    el = λ.
+    sk = min
+    sw = dakika
+    zh-Hans = 分钟
+    zh-Hant = 分鐘
+    fa = دقیقه
+
+  [hide_screen_map_update]
+    comment = hide the full screen banner and continue working with the app
+    en = Hide and continue
+    ru = Скрыть и продолжить работу
+    ar = إخفاء ومتابعة
+    cs = Skrýt a pokračovat
+    da = Skjul og fortsæt
+    nl = Verbergen en doorgaan
+    fi = Piilota ja jatka tausta-ajo
+    fr = Fermer la fenêtre et continuer la navigation
+    de = Ausblenden und Fortsetzen
+    hu = Elrejt és folytat
+    id = Sembunyikan dan lanjutkan
+    it = Chiudi e prosegui
+    ja = 閉じて継続
+    ko = 숨기고 계속하기
+    nb = Skjul og fortsett med appen
+    pl = Ukryj i kontynuuj
+    pt = Ocultar e continuar
+    pt-BR = Ocultar e continuar
+    ro = Ascunde și continuă utilizarea aplicației
+    es = Ocultar y continuar
+    es-MX = Ocultar y continuar
+    sv = Dölja och fortsätt
+    th = ซ่อนและใช้งานต่อ
+    tr = Gizle ve devam et
+    uk = Приховати та поновити роботу
+    vi = Thu gọn và tiếp tục thao tác với ứng dụng
+    el = Απόκρυψη και συνέχεια εργασίας
+    sk = Skryť a pokračovať
+    sw = Ficha na endelea
+    zh-Hans = 隐藏并继续
+    zh-Hant = 隱藏並繼續
+    fa = پنهان کردن و ادامه دادن
+
+  [view_on_map_downloaded_error]
+    en = This guide has been deleted from this device
+    ru = Этот путеводитель был удалён с устройства
+    ar = تم حذف هذا الدليل من هذا الجهاز
+    cs = Tento průvodce byl smazán z tohoto zařízení
+    da = Denne guide er blevet fjernet fra denne enhed
+    nl = Deze gids is van dit apparaat verwijderd
+    fi = Tämä matkaopas oli poistettu laitteesta
+    fr = Ce guide a été supprimé de votre appareil
+    de = Dieser Reiseführer wurde vom Gerät gelöscht
+    hu = Ezt az útmutatót törölték erről az eszközről
+    id = Panduan ini telah dihapus dari perangkat ini
+    it = Questa guida è stata cancellata dal dispositivo
+    ja = このガイドはこの機器から削除されました
+    ko = 이 가이드는 이 장치에서 제거되었습니다
+    nb = Denne guiden har blitt fjernet fra enheten
+    pl = Ten przewodnik został usunięty z urządzenia
+    pt = Este guia foi apagado do dispositivo
+    pt-BR = Este guia foi deletado deste serviço
+    ro = Acest ghid a fost șters de pe dispozitiv
+    es = Esta guía ha sido eliminada del dispositivo
+    es-MX = Esta guía ha sido eliminada del dispositivo
+    sv = Den här guiden har tagits bort från den här enheten
+    th = คู่มือใช้งานถูกลบออกจากอุปกรณ์แล้ว
+    tr = Bu rehber cihazdan kaldırıldı
+    uk = Цей путівник видалили з пристрою
+    vi = Hướng dẫn này đã được xóa khỏi thiết bị
+    el = Αυτός ο ταξιδιωτικός οδηγός έχει αφαιρεθεί από τη συσκευή
+    sk = Tento sprievodca bol z tohto zariadenia odstránený
+    sw = Kiongozi hiki kimefutwa kwenye kifaa hiki
+    zh-Hans = 该指南已从设备中删除
+    zh-Hant = 該指南已從設備中刪除
+    fa = راهنما از این دستگاه پاک شده است
+
+  [subscription]
+    en = Subscription
+    ru = Подписка
+    ar = الاشتراك
+    cs = Předplatné
+    da = Abonnement
+    nl = Abonnement
+    fi = Tilaus
+    fr = Souscription
+    de = Abo
+    hu = Feliratkozás
+    id = Berlangganan
+    it = Abbonamento
+    ja = サブスクリプション
+    ko = 구독
+    nb = Abonnement
+    pl = Subskrypcja
+    pt = Subscrição
+    pt-BR = Assinatura
+    ro = Abonare
+    es = Suscripción
+    es-MX = Suscripción
+    sv = Prenumeration
+    th = สมัครสมาชิก
+    tr = Abone
+    uk = Передплата
+    vi = Đăng ký
+    el = Συνδρομή
+    sk = Predplatné
+    sw = Usajili
+    zh-Hans = 订阅
+    zh-Hant = 訂閱
+    fa = عضویت
+
+  [freenow_taxi_title]
+    en = FREE NOW
+
+  [tinkoff_allairlines_map_downloader_title]
+    en = Карта Тинькофф All Airlines. 3000 миль в подарок
+
+  [tinkoff_allairlines_map_downloader_cta_button]
+    en = Оформить карту
+
+  [tinkoff_insurance_map_downloader_title]
+    en = Полис Тинькофф со скидкой! Подходит для любых виз.
+
+  [tinkoff_insurance_map_downloader_cta_button]
+    en = Промокод
+
+  [mts_map_downloader_title]
+    en = Забугорище: интернет и звонки за границей как дома
+
+  [mts_map_downloader_cta_button]
+    en = Подключить
+
+  [skyeng_map_downloader_title]
+    en = Дарим 4 бесплатных урока английского от Skyeng.
+
+  [skyeng_map_downloader_cta_button]
+    en = Подробнее

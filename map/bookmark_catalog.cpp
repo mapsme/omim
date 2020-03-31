@@ -270,7 +270,7 @@ void BookmarkCatalog::Download(std::string const & id, std::string const & acces
   static uint32_t counter = 0;
   auto const path = base::JoinPath(GetPlatform().TmpDir(), "file" + strings::to_string(++counter));
 
-  platform::RemoteFile remoteFile(BuildCatalogDownloadUrl(id), accessToken);
+  platform::RemoteFile remoteFile(BuildCatalogDownloadUrl(id), accessToken, GetHeaders());
   remoteFile.DownloadAsync(path, [startHandler = std::move(startHandler)](std::string const &)
   {
     if (startHandler)
@@ -327,7 +327,7 @@ std::string BookmarkCatalog::GetWebEditorUrl(std::string const & serverId,
 
 std::string BookmarkCatalog::GetFrontendUrl(UTM utm) const
 {
-  return InjectUTM(kCatalogFrontendServer + languages::GetCurrentNorm() + "/v2/mobilefront/", utm);
+  return InjectUTM(kCatalogFrontendServer + languages::GetCurrentNorm() + "/v3/mobilefront/", utm);
 }
 
 void BookmarkCatalog::RequestTagGroups(std::string const & language,
@@ -554,8 +554,9 @@ void BookmarkCatalog::Upload(UploadData uploadData, std::string const & accessTo
 
       // Save KML.
       auto const filePath = base::JoinPath(GetPlatform().TmpDir(), uploadData.m_serverId + kKmlExtension);
-      if (!SaveKmlFile(*fileData, filePath, KmlFileType::Text))
+      if (!SaveKmlFileSafe(*fileData, filePath, KmlFileType::Text))
       {
+        FileWriter::DeleteFileX(filePath);
         if (uploadErrorCallback)
           uploadErrorCallback(UploadResult::InvalidCall, "Could not save the uploading file.");
         return;

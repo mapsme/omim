@@ -3,7 +3,6 @@
 #import "MWMBookmarkTitleCell.h"
 #import "MWMButtonCell.h"
 #import "MWMNoteCell.h"
-#import "MWMPlacePageData.h"
 #import "SelectSetVC.h"
 #import "SwiftBridge.h"
 
@@ -79,9 +78,9 @@ enum RowInMetaInfo
 - (void)registerCells
 {
   UITableView * tv = self.tableView;
-  [tv registerWithCellClass:[MWMButtonCell class]];
-  [tv registerWithCellClass:[MWMBookmarkTitleCell class]];
-  [tv registerWithCellClass:[MWMNoteCell class]];
+  [tv registerNibWithCellClass:[MWMButtonCell class]];
+  [tv registerNibWithCellClass:[MWMBookmarkTitleCell class]];
+  [tv registerNibWithCellClass:[MWMNoteCell class]];
 }
 
 - (void)onSave
@@ -165,7 +164,7 @@ enum RowInMetaInfo
       auto cell = [tableView dequeueReusableCellWithCellClass:cls indexPath:indexPath];
       cell.textLabel.text = self.cachedCategory;
       cell.imageView.image = [UIImage imageNamed:@"ic_folder"];
-      cell.imageView.mwm_coloring = MWMImageColoringBlack;
+      cell.imageView.styleName = @"MWMBlack";
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       return cell;
     }

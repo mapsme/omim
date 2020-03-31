@@ -4,8 +4,6 @@
 <!-- Language: hu -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">A programról</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Vissza</string>
 	<!-- Button text (should be short) -->
@@ -66,8 +64,6 @@
 	<string name="touch_to_download">Érintse meg letöltéshez</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Igen</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">WiFi használatát javasoljuk nagy térképek letöltéséhez</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Milyen mértékegységet használjunk?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -255,8 +251,6 @@
 	<string name="my_position_share_sms">Nézd meg a MAPS.ME helyzetemet! %1$s vagy %2$s A program letöltése: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Nézze meg a MAPS.ME jelzőmet</string>
-	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">Üdvözlöm,\n\nleszúrtam egy MAPS.ME jelzőt: %1$s. Kattintson erre a hivatkozásra %2$s vagy erre %3$s hogy lássa a helyet a térképen.\n\nKöszönöm.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Nézze meg a helyzetemet a MAPS.ME térképen!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -559,6 +553,22 @@
 	<string name="brown">Barna</string>
 	<!-- pink color -->
 	<string name="pink">Rózsaszín</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">Sötét lila</string>
+	<!-- light blue color -->
+	<string name="light_blue">Világoskék</string>
+	<!-- cyan color -->
+	<string name="cyan">Cián</string>
+	<!-- teal color -->
+	<string name="teal">Zöldeskék</string>
+	<!-- lime color -->
+	<string name="lime">Lime</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">Sötét Narancs</string>
+	<!-- gray color -->
+	<string name="gray">Szürke</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">Kékes Szürke</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Igen</string>
 
@@ -872,6 +882,7 @@
 	<string name="minute">p</string>
 	<string name="placepage_place_description">Leírás</string>
 	<string name="placepage_more_button">Még</string>
+	<string name="placepage_more_reviews_button">További vélemények</string>
 	<string name="book_button">Foglalás</string>
 	<string name="placepage_call_button">Hívás</string>
 	<string name="placepage_edit_bookmark_button">Könyvjelző szerkesztése</string>
@@ -1227,7 +1238,6 @@
 	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">%s letöltése...</string>
 	<string name="downloader_applying">%s alkalmazása...</string>
-	<string name="transit_not_found">Tranzit navigáció ebben a régióban még nem áll rendelkezésre</string>
 	<string name="whats_new_title_hotel_filter">Új szálloda szűrők!</string>
 	<string name="whats_new_message_hotel_filter">Foglaljon elérhető szobát az Ön dátumain! Használja a be- ás kijelentkezési szűrőket</string>
 	<string name="whats_new_title_ugc_travel">Ossza meg tapasztalatait más utasokkal!</string>
@@ -1336,7 +1346,8 @@
 	<string name="error_already_downloaded">Ezt a listát már letöltötték</string>
 	<string name="guides">Útmutatók</string>
 	<string name="guide_downloaded_title">Az útmutató sikeresen letöltésre került</string>
-	<string name="download_guides">Útmutatók letöltése</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">Útmutatók keresése</string>
 	<string name="guides_groups_cached">Letöltött útmutatók</string>
 	<string name="subtitle_error_downloading_guide">Az útmutató nem került letöltésre</string>
 	<string name="error_already_downloaded_guide">Ez az útmutató már letöltésre került</string>
@@ -1701,12 +1712,18 @@
 	<string name="new_onboarding_step5.3_button">Ingyenes letöltés</string>
 	<string name="new_onboarding_additional_steps_later_button">Később</string>
 	<string name="all_pass_subscription_header">ELŐFIZETÉS A KATALÓGUSRA</string>
-	<string name="all_pass_subscription_message_title">20 000+ útmutató és útvonal</string>
-	<string name="all_pass_subscription_message_subtitle">Korlátlan városi és szabadtéri útvonal elérhető offline letöltésre</string>
-	<string name="all_pass_subscription_message_title_2">700+ város és 100+ ország</string>
-	<string name="all_pass_subscription_message_subtitle_2">Tervezd meg az utazásod bármikor</string>
-	<string name="all_pass_subscription_message_title_3">Széles körű tartalom</string>
-	<string name="all_pass_subscription_message_subtitle_3">Könyvjezők, fényképek, séta úvonalak, leírások és tippek</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">30000+\nútmutatók\n&amp; sávok</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle"><b>Korlátlan letöltése</b> a városi és szabadtéri útvonalaknak <b>offline módhoz</b></string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">Interaktív\nemelkedési profil</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">Minden nyomvonal<b>tartalmazza a magassági és alapinfót az útvonalról</b></string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">Könyvjelzők,\nfotók és\njavaslatok</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3"><b>Tudjon meg mindent az útvonalról</b> amit megtesz</string>
 	<string name="sightseeing_subscription_header_subscription">Útmutató előfizetés</string>
 	<string name="sightseeing_subscription_message">700+ város és 100+ ország</string>
 	<string name="sightseeing_subscription_message_2">Elérhető offline</string>
@@ -1725,6 +1742,41 @@
 	<string name="whatsnew_outdoor_guides_message">Az Outdooractive téli és nyári utazásai várnak rád a katalógusban!</string>
 	<string name="whatsnew_guides_galleries_title">Tervezd meg a következő utad a MAPS.ME-vel</string>
 	<string name="whatsnew_guides_galleries_message">Megtalálhatod az ajánlott útmutatókat a népszerű túristavárosok és látnivalók helyoldalain</string>
+	<string name="new_onboarding_step3_header">Éld át</string>
+	<string name="all_pass_screen_best_value">Legjobb ajánlat</string>
+	<string name="buy_btn_for_subscription_3">A teljes katalógus %s/év</string>
+	<string name="transit_not_found">Metró navigáció ebben a régióban még nem érhető el</string>
+	<string name="dialog_pedestrian_route_is_long_header">Metró útvonal nem található</string>
+	<string name="dialog_pedestrian_route_is_long_message">Válasszon indulási vagy végpontot közelebb a metróállomáshoz</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">A metró útvonaltervezése sikertelen</string>
+	<string name="whatsnew_isolines_title">Újdonság a szabadtérhez: offline topográfiai réteg!</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">Legyen magabiztos a hegyvidéki területen. Csak kapcsolja be a réteget a bal felső sarokban</string>
+	<string name="button_layer_isolines">Terep</string>
+	<string name="tips_map_layers_title_countour">Újdonság a MAPS.ME-n: offline topográfiai réteg!</string>
+	<string name="tips_map_layers_message_countour">Tervezze meg és élvezze a természetjáró kirándulásait, és tudjon meg mindent a környékről</string>
+	<string name="isolines_activation_error_dialog">A topográfiai réteg aktiválásához és használatához kérjük frissítse vagy töltse le az adott terület térképét</string>
+	<string name="isolines_location_error_dialog">Ezen a területen a topográfiai réteg még nem elérhető</string>
+	<string name="elevation_profile_diff_level">Nehézségi szint</string>
+	<string name="elevation_profile_diff_level_easy">Könnyű</string>
+	<string name="elevation_profile_diff_level_moderate">Mérsékelt</string>
+	<string name="elevation_profile_diff_level_hard">Nehéz</string>
+	<string name="elevation_profile_ascent">Felemelkedés</string>
+	<string name="elevation_profile_descent">Leereszkedés</string>
+	<string name="elevation_profile_minaltitude">Min. magasság</string>
+	<string name="elevation_profile_maxaltitude">Max. magasság</string>
+	<string name="elevation_profile_m">m</string>
+	<string name="elevation_profile_difficulty">Nehézség</string>
+	<string name="elevation_profile_distance">Táv.:</string>
+	<string name="elevation_profile_km">km</string>
+	<string name="elevation_profile_time">Idő</string>
+	<string name="elevation_profile_hours">ó.</string>
+	<string name="elevation_profile_minutes">p.</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">Elrejt és folytat</string>
+	<string name="view_on_map_downloaded_error">Ezt az útmutatót törölték erről az eszközről</string>
+	<string name="subscription">Feliratkozás</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Felvonóállomás</string>
@@ -1780,15 +1832,15 @@
 	<string name="type.amenity.parking">Parkoló</string>
 	<string name="type.amenity.parking.fee">Parkoló</string>
 	<string name="type.amenity.parking.multi.storey">Parkoló</string>
-	<string name="type.amenity.parking.multi.storey.fee">Parkoló</string>
 	<string name="type.amenity.parking.no.access">Parkoló</string>
 	<string name="type.amenity.parking.park_and_ride">Parkoló</string>
 	<string name="type.amenity.parking.permissive">Parkoló</string>
-	<string name="type.amenity.parking.permissive.fee">Parkoló</string>
 	<string name="type.amenity.parking.private">Parkoló</string>
 	<string name="type.amenity.parking.underground">Parkoló</string>
-	<string name="type.amenity.parking.underground.fee">Parkoló</string>
 	<string name="type.amenity.parking_space">Parkolóhely</string>
+	<string name="type.amenity.parking_space.permissive">Parkolóhely</string>
+	<string name="type.amenity.parking_space.private">Parkolóhely</string>
+	<string name="type.amenity.parking_space.underground">Parkolóhely</string>
 	<string name="type.amenity.payment_terminal">Fizető terminál</string>
 	<string name="type.amenity.pharmacy">Gyógyszertár</string>
 	<string name="type.amenity.place_of_worship">Templom</string>
@@ -2000,9 +2052,6 @@
 	<string name="type.highway.service.area">Utca</string>
 	<string name="type.highway.service.bridge">Utca</string>
 	<string name="type.highway.service.driveway">Utca</string>
-	<string name="type.highway.service.driveway.area">Utca</string>
-	<string name="type.highway.service.driveway.bridge">Utca</string>
-	<string name="type.highway.service.driveway.tunnel">Utca</string>
 	<string name="type.highway.service.parking_aisle">Utca</string>
 	<string name="type.highway.service.tunnel">Utca</string>
 	<string name="type.highway.speed_camera">Traffipax</string>
@@ -2021,14 +2070,8 @@
 	<string name="type.highway.track.grade1">Utca</string>
 	<string name="type.highway.track.grade2">Utca</string>
 	<string name="type.highway.track.grade3">Utca</string>
-	<string name="type.highway.track.grade3.no.access">Utca</string>
-	<string name="type.highway.track.grade3.permissive">Utca</string>
 	<string name="type.highway.track.grade4">Utca</string>
-	<string name="type.highway.track.grade4.no.access">Utca</string>
-	<string name="type.highway.track.grade4.permissive">Utca</string>
 	<string name="type.highway.track.grade5">Utca</string>
-	<string name="type.highway.track.grade5.no.access">Utca</string>
-	<string name="type.highway.track.grade5.permissive">Utca</string>
 	<string name="type.highway.track.no.access">Utca</string>
 	<string name="type.highway.track.permissive">Utca</string>
 	<string name="type.highway.track.tunnel">Utca</string>
@@ -2079,9 +2122,7 @@
 	<string name="type.leisure.park.permissive">Park</string>
 	<string name="type.leisure.park.private">Park</string>
 	<string name="type.leisure.pitch">Sportpálya</string>
-	<string name="type.leisure.pitch.tennis">Sportpálya</string>
 	<string name="type.leisure.playground">Játszótér</string>
-	<string name="type.leisure.playground.tennis">Játszótér</string>
 	<string name="type.leisure.sauna">Szauna</string>
 	<string name="type.leisure.sports_centre">Sportközpont</string>
 	<string name="type.leisure.sports_centre.climbing">Hegymászó központ</string>
@@ -2102,7 +2143,7 @@
 	<string name="type.natural.bay">Öböl</string>
 	<string name="type.natural.beach">Strand</string>
 	<string name="type.natural.cape">Hegytető</string>
-	<string name="type.natural.cave_entrance">Barlangbejárat</string>
+	<string name="type.natural.cave_entrance">Barlang</string>
 	<string name="type.natural.geyser">Gejzír</string>
 	<string name="type.natural.glacier">Gleccser</string>
 	<string name="type.natural.grassland">Mező</string>
@@ -2115,10 +2156,6 @@
 	<string name="type.natural.volcano">Tűzhányó</string>
 	<string name="type.natural.water">Víz</string>
 	<string name="type.natural.wetland">Vizes terület</string>
-	<string name="type.natural.wood">Erdő</string>
-	<string name="type.natural.wood.coniferous">Erdő</string>
-	<string name="type.natural.wood.deciduous">Erdő</string>
-	<string name="type.natural.wood.mixed">Erdő</string>
 	<string name="type.office">Hivatal</string>
 	<string name="type.office.company">Vállalati iroda</string>
 	<string name="type.office.estate_agent">Ingatlanügynök</string>

@@ -10,7 +10,7 @@ typedef NS_ENUM(NSInteger, MWMMapNodeStatus) {
   MWMMapNodeStatusOnDisk,
   MWMMapNodeStatusNotDownloaded,
   MWMMapNodeStatusPartly
-};
+} NS_SWIFT_NAME(MapNodeStatus);
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -34,6 +34,7 @@ NS_SWIFT_NAME(MapNodeAttributes)
 @property(nonatomic, readonly) uint64_t totalSize;
 @property(nonatomic, readonly) uint64_t downloadedSize;
 @property(nonatomic, readonly) uint64_t downloadingSize;
+@property(nonatomic, readonly) uint64_t totalUpdateSizeBytes;
 @property(nonatomic, readonly) NSString *nodeName;
 @property(nonatomic, readonly) NSString *nodeDescription;
 @property(nonatomic, readonly) MWMMapNodeStatus nodeStatus;

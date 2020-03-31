@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
-
 import com.appsflyer.AppsFlyerLib;
 import com.mapswithme.maps.analytics.ExternalLibrariesMediator;
 import com.mapswithme.maps.background.AppBackgroundTracker;
@@ -23,6 +23,7 @@ import com.mapswithme.maps.geofence.GeofenceRegistry;
 import com.mapswithme.maps.geofence.GeofenceRegistryImpl;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.TrackRecorder;
+import com.mapswithme.maps.maplayer.isolines.IsolinesManager;
 import com.mapswithme.maps.maplayer.subway.SubwayManager;
 import com.mapswithme.maps.maplayer.traffic.TrafficManager;
 import com.mapswithme.maps.routing.RoutingController;
@@ -59,6 +60,10 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   @NonNull
   private SubwayManager mSubwayManager;
 
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private IsolinesManager mIsolinesManager;
+
   private boolean mFrameworkInitialized;
   private boolean mPlatformInitialized;
 
@@ -92,6 +97,12 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   public SubwayManager getSubwayManager()
   {
     return mSubwayManager;
+  }
+
+  @NonNull
+  public IsolinesManager getIsolinesManager()
+  {
+    return mIsolinesManager;
   }
 
   public MwmApplication()
@@ -179,6 +190,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     mBackgroundTracker = new AppBackgroundTracker();
     mBackgroundTracker.addListener(mVisibleAppLaunchListener);
     mSubwayManager = new SubwayManager(this);
+    mIsolinesManager = new IsolinesManager(this);
     mConnectivityListener = new ConnectivityJobScheduler(this);
     mConnectivityListener.listen();
 
@@ -271,15 +283,16 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     MapManager.nativeSubscribe(mStorageCallbacks);
 
     initNativeStrings();
-    SearchEngine.INSTANCE.initialize();
+    SearchEngine.INSTANCE.initialize(null);
     BookmarkManager.loadBookmarks();
-    TtsPlayer.INSTANCE.init(this);
+    TtsPlayer.INSTANCE.initialize(this);
     ThemeSwitcher.restart(false);
-    LocationHelper.INSTANCE.initialize();
-    RoutingController.get().initialize();
-    TrafficManager.INSTANCE.initialize();
-    SubwayManager.from(this).initialize();
-    mPurchaseOperationObservable.initialize();
+    LocationHelper.INSTANCE.initialize(null);
+    RoutingController.get().initialize(null);
+    TrafficManager.INSTANCE.initialize(null);
+    SubwayManager.from(this).initialize(null);
+    IsolinesManager.from(this).initialize(null);
+    mPurchaseOperationObservable.initialize(null);
     mBackgroundTracker.addListener(this);
     mFrameworkInitialized = true;
   }
@@ -316,7 +329,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   {
     HashMap<String, Object> paramsMap = new HashMap<>();
     for (KeyValue p : params)
-      paramsMap.put(p.mKey, p.mValue);
+      paramsMap.put(p.getKey(), p.getValue());
     AppsFlyerLib.getInstance().trackEvent(this, tag, paramsMap);
   }
 

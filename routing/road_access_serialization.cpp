@@ -1,7 +1,17 @@
 #include "routing/road_access_serialization.hpp"
 
+#include <string>
+
 namespace routing
 {
-// static
-uint32_t const RoadAccessSerializer::kLatestVersion = 1;
+std::string DebugPrint(RoadAccessSerializer::Header const & header)
+{
+  switch (header)
+  {
+  case RoadAccessSerializer::Header::WithoutAccessConditional: return "WithoutAccessConditional";
+  case RoadAccessSerializer::Header::WithAccessConditional: return "WithAccessConditional";
+  }
+  UNREACHABLE();
+}
 }  // namespace routing
+
