@@ -1718,38 +1718,6 @@
     sk = Parkovisko
     fa = پارکینگ
 
-  [type.amenity.parking.multi.storey.fee]
-    en = Parking
-    ru = Парковка
-    ar = موقف سيارات
-    cs = Parkoviště
-    da = Parkering
-    nl = Parkeerplaats
-    fi = Parkkipaikka
-    fr = Stationnement
-    de = Parkhaus
-    hu = Parkoló
-    id = Parkir
-    it = Parcheggio
-    ja = 駐車場
-    ko = 주차
-    nb = Parkering
-    pl = Parking wielopoziomowy płatny
-    pt = Estacionamento
-    pt-BR = Estacionamento
-    ro = Parcare
-    es = Aparcamiento
-    sv = Parkering
-    th = ที่จอดรถ
-    tr = Otopark
-    uk = Парковка
-    vi = đỗ xe
-    zh-Hans = 停车
-    zh-Hant = 停車場
-    el = Χώρος στάθμευσης
-    sk = Parkovisko
-    fa = پارکینگ
-
   [type.amenity.parking.no.access]
     en = Parking
     ru = Парковка
@@ -1845,38 +1813,6 @@
     sk = Parkovisko
     fa = پارکینگ
 
-  [type.amenity.parking.permissive.fee]
-    en = Parking
-    ru = Парковка
-    ar = موقف سيارات
-    cs = Parkoviště
-    da = Parkering
-    nl = Parkeerplaats
-    fi = Parkkipaikka
-    fr = Stationnement
-    de = Parkplatz
-    hu = Parkoló
-    id = Parkir
-    it = Parcheggio
-    ja = 駐車場
-    ko = 주차
-    nb = Parkering
-    pl = Parking ograniczony płatny
-    pt = Estacionamento
-    pt-BR = Estacionamento
-    ro = Parcare
-    es = Aparcamiento
-    sv = Parkering
-    th = ที่จอดรถ
-    tr = Otopark
-    uk = Парковка
-    vi = đỗ xe
-    zh-Hans = 停车
-    zh-Hant = 停車場
-    el = Χώρος στάθμευσης
-    sk = Parkovisko
-    fa = پارکینگ
-
   [type.amenity.parking.private]
     en = Parking
     ru = Парковка
@@ -1941,38 +1877,6 @@
     sk = Parkovisko
     fa = پارکینگ
 
-  [type.amenity.parking.underground.fee]
-    en = Parking
-    ru = Парковка
-    ar = موقف سيارات
-    cs = Parkoviště
-    da = Parkering
-    nl = Parkeerplaats
-    fi = Parkkipaikka
-    fr = Stationnement
-    de = Tiefgarage
-    hu = Parkoló
-    id = Parkir
-    it = Parcheggio
-    ja = 駐車場
-    ko = 주차
-    nb = Parkering
-    pl = Parking podziemny płatny
-    pt = Estacionamento
-    pt-BR = Estacionamento
-    ro = Parcare
-    es = Aparcamiento
-    sv = Parkering
-    th = ที่จอดรถ
-    tr = Otopark
-    uk = Парковка
-    vi = đỗ xe
-    zh-Hans = 停车
-    zh-Hant = 停車場
-    el = Χώρος στάθμευσης
-    sk = Parkovisko
-    fa = پارکینگ
-
   [type.amenity.parking_space]
     en = Parking space
     ru = Парковочное место
@@ -2009,15 +1913,105 @@
 
   [type.amenity.parking_space.permissive]
     en = Parking space
-    pl = Miejsce parkingowe ograniczone
+    ru = Парковочное место
+    ar = مكان لوقوف السيارات
+    cs = Prostor pro parkování
+    da = Parkeringsplads
+    nl = Parkeerplaats
+    fi = Parkkipaikka
+    fr = Parking
+    de = Parkplatz
+    hu = Parkolóhely
+    id = Tempat parkir
+    it = Parcheggio
+    ja = 駐車スペース
+    ko = 주차장
+    nb = Parkeringsplass
+    pl = Miejsce parkingowe
+    pt = Lugar de estacionamento
+    pt-BR = Estacionamento
+    ro = Loc de parcare
+    es = Plaza de aparcamiento
+    es-MX = Plaza de aparcamiento
+    sv = Parkeringsplats
+    th = พื้นที่จอดรถ
+    tr = Park alanı
+    uk = Паркувальне місце
+    vi = Chỗ để xe
+    sw = Sehemu ya maegesho
+    zh-Hans = 停车地点
+    zh-Hant = 停車地點
+    el = Χώρος στάθμευσης
+    sk = Parkovacie miesto
+    fa = جای پارک
 
   [type.amenity.parking_space.private]
     en = Parking space
-    pl = Miejsce parkingowe prywatne
+    ru = Парковочное место
+    ar = مكان لوقوف السيارات
+    cs = Prostor pro parkování
+    da = Parkeringsplads
+    nl = Parkeerplaats
+    fi = Parkkipaikka
+    fr = Parking
+    de = Parkplatz
+    hu = Parkolóhely
+    id = Tempat parkir
+    it = Parcheggio
+    ja = 駐車スペース
+    ko = 주차장
+    nb = Parkeringsplass
+    pl = Miejsce parkingowe
+    pt = Lugar de estacionamento
+    pt-BR = Estacionamento
+    ro = Loc de parcare
+    es = Plaza de aparcamiento
+    es-MX = Plaza de aparcamiento
+    sv = Parkeringsplats
+    th = พื้นที่จอดรถ
+    tr = Park alanı
+    uk = Паркувальне місце
+    vi = Chỗ để xe
+    sw = Sehemu ya maegesho
+    zh-Hans = 停车地点
+    zh-Hant = 停車地點
+    el = Χώρος στάθμευσης
+    sk = Parkovacie miesto
+    fa = جای پارک
 
   [type.amenity.parking_space.underground]
     en = Parking space
-    pl = Miejsce parkingowe podziemne
+    ru = Парковочное место
+    ar = مكان لوقوف السيارات
+    cs = Prostor pro parkování
+    da = Parkeringsplads
+    nl = Parkeerplaats
+    fi = Parkkipaikka
+    fr = Parking
+    de = Parkplatz
+    hu = Parkolóhely
+    id = Tempat parkir
+    it = Parcheggio
+    ja = 駐車スペース
+    ko = 주차장
+    nb = Parkeringsplass
+    pl = Miejsce parkingowe
+    pt = Lugar de estacionamento
+    pt-BR = Estacionamento
+    ro = Loc de parcare
+    es = Plaza de aparcamiento
+    es-MX = Plaza de aparcamiento
+    sv = Parkeringsplats
+    th = พื้นที่จอดรถ
+    tr = Park alanı
+    uk = Паркувальне місце
+    vi = Chỗ để xe
+    sw = Sehemu ya maegesho
+    zh-Hans = 停车地点
+    zh-Hant = 停車地點
+    el = Χώρος στάθμευσης
+    sk = Parkovacie miesto
+    fa = جای پارک
 
   [type.amenity.payment_terminal]
     en = Payment Terminal
@@ -2399,31 +2393,38 @@
     fa = صندوق پست
 
   [type.amenity.post_office]
-    en = Post
-    ru = Почта
-    ar = بريد
+    en = Post office
+    ru = Почтовое отделение
+    ar = مكتب بريد
     cs = Pošta
-    fi = Posti
-    fr = Poste
+    da = Postkontor
+    nl = Postkantoor
+    fi = Postitoimisto
+    fr = Bureau de poste
+    de = Poststelle
     hu = Posta
-    id = Pos
-    it = Posta
+    id = Kantor pos
+    it = Ufficio postale
     ja = 郵便局
-    ko = 우편
-    pl = Poczta
+    ko = 우체국
+    nb = Postkontor
+    pl = Urząd Pocztowy
     pt = Correios
     pt-BR = Correios
-    ro = Poştă
+    ro = Oficiu poștal
     es = Oficina de correos
-    th = ไปรษณีย์
-    tr = Posta
-    uk = Пошта
-    vi = Bưu điện
-    zh-Hans = 邮政
-    zh-Hant = 郵局
+    es-MX = Oficina de correos
+    sv = Postkontor
+    th = ที่ทำการไปรษณีย์
+    tr = Postane
+    uk = Поштове відділення
+    vi = Bưu cục
     el = Ταχυδρομείο
     sk = Pošta
-    fa = پست
+    sw = Ofisi ya posta
+    zh-Hans = 邮局
+    zh-Hant = 郵局
+    fa = دفتر پست
 
   [type.amenity.prison]
     en = Prison
@@ -3629,18 +3630,6 @@
     el = Σιδηροδρομικός σταθμός
     sk = Železničná stanica
     fa = ایستگاه قطار
-
-  [type.communication]
-    en = communication
-    pl = Komunikacja
-
-  [type.communication.line]
-    en = communication-line
-    pl = Kabel komunikacyjny
-
-  [type.communication.line.underground]
-    en = communication-line-underground
-    pl = Podziemny kabel komunikacyjny
 
   [type.craft]
     en = craft
@@ -7214,7 +7203,8 @@
     fa = مسیر
 
   [type.highway.ford]
-    en = highway-ford
+    en = Ford
+    ru = Брод
     pl = Bród
 
   [type.highway.living_street]
@@ -8047,10 +8037,6 @@
     sk = Ulica
     fa = جاده
 
-  [type.highway.platform]
-    en = highway-platform
-    pl = Peron
-
   [type.highway.primary]
     en = Street
     ru = Улица
@@ -8854,102 +8840,6 @@
     sk = Ulica
     fa = جاده
 
-  [type.highway.service.driveway.area]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Zufahrt
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
-  [type.highway.service.driveway.bridge]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Zufahrt
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
-  [type.highway.service.driveway.tunnel]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Zufahrt
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
   [type.highway.service.parking_aisle]
     en = Street
     ru = Улица
@@ -9530,70 +9420,6 @@
     sk = Ulica
     fa = جاده
 
-  [type.highway.track.grade3.no.access]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Straße
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
-  [type.highway.track.grade3.permissive]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Straße
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
   [type.highway.track.grade4]
     en = Street
     ru = Улица
@@ -9626,135 +9452,7 @@
     sk = Ulica
     fa = جاده
 
-  [type.highway.track.grade4.no.access]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Straße
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
-  [type.highway.track.grade4.permissive]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Straße
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
   [type.highway.track.grade5]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Straße
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
-  [type.highway.track.grade5.no.access]
-    en = Street
-    ru = Улица
-    ar = شارع
-    cs = Ulice
-    da = Gade
-    nl = Straat
-    fi = Katu
-    fr = Rue
-    de = Straße
-    hu = Utca
-    id = Jalan
-    it = Via
-    ja = ストリート
-    ko = 거리
-    nb = Gate
-    pl = Ulica
-    pt = Rua
-    pt-BR = Rua
-    ro = Stradă
-    es = Calle
-    sv = Gata
-    th = ถนน
-    tr = Cadde
-    uk = Вулиця
-    vi = Phố
-    zh-Hans = 街头
-    zh-Hant = 路
-    el = Οδός
-    sk = Ulica
-    fa = جاده
-
-  [type.highway.track.grade5.permissive]
     en = Street
     ru = Улица
     ar = شارع
@@ -11212,14 +10910,6 @@
     en = landuse-residential
     pl = Tereny zamieszkania
 
-  [type.landuse.residential.rural]
-    en = landuse-residential-rural
-    pl = Tereny wiejskie
-
-  [type.landuse.residential.urban]
-    en = landuse-residential-urban
-    pl = Tereny miejskie
-
   [type.landuse.retail]
     en = landuse-retail
     pl = Obszar handlu
@@ -11276,14 +10966,6 @@
     zh-Hans = 遛狗区
     zh-Hant = 遛狗區
     fa = محدوده مخصوص سگ
-
-  [type.leisure.dog_park.tennis]
-    en = Dog area
-    ru = Место для выгула собак
-    cs = Psí hřiště
-    fi = Koirapuisto
-    de = Hundezone
-    ja = ドッグラン
 
   [type.leisure.fitness_centre]
     en = Fitness Centre
@@ -11625,38 +11307,6 @@
     sk = Športovisko
     fa = زمین ورزشی
 
-  [type.leisure.pitch.tennis]
-    en = Sports Ground
-    ru = Спортплощадка
-    ar = ملعب رياضي
-    cs = Sportovní hřiště
-    da = Sportsplads
-    nl = Sportveld
-    fi = Urheilukenttä
-    fr = Terrain de sport
-    de = Tennisplatz
-    hu = Sportpálya
-    id = Lapangan olahraga
-    it = Campo sportivo
-    ja = 運動場
-    ko = 경기장
-    nb = Sportssenter
-    pl = Korty tenisowe
-    pt = Campo de esportes
-    pt-BR = Campo de esportes
-    ro = Teren de sport
-    es = Complejo deportivo
-    sv = Idrottsplats
-    th = พื้นสนามกีฬา
-    tr = Spor sahası
-    uk = Спортмайданчик
-    vi = Sân vận động
-    zh-Hans = 球场
-    zh-Hant = 運動場
-    el = Γήπεδο αθλοπαιδιών
-    sk = Športovisko
-    fa = زمین ورزشی
-
   [type.leisure.playground]
     en = Playground
     ru = Детская площадка
@@ -11688,44 +11338,6 @@
     el = Παιδική χαρά
     sk = Ihrisko
     fa = زمین بازی
-
-  [type.leisure.playground.tennis]
-    en = Playground
-    ru = Детская площадка
-    ar = ملعب
-    cs = Hřiště
-    da = Legeplads
-    nl = Speeltuin
-    fi = Leikkikenttä
-    fr = Terrain de jeu
-    de = Spielplatz
-    hu = Játszótér
-    id = Taman bermain
-    it = Campo giochi
-    ja = 児童公園
-    ko = 운동장
-    nb = Lekeplass
-    pl = Plac zabaw
-    pt = Parquinho
-    pt-BR = Parquinho
-    ro = Loc de joacă
-    es = Patio de recreo
-    sv = Lekplats
-    th = สนามเด็กเล่น
-    tr = Oyun alanı
-    uk = Дитячий майданчик
-    vi = Sân chơi
-    zh-Hans = 操场
-    zh-Hant = 遊樂場
-    el = Παιδική χαρά
-    sk = Ihrisko
-    fa = زمین بازی
-
-  [type.leisure.playing_fields]
-    en = leisure-playing_fields
-
-  [type.leisure.playing_fields.tennis]
-    en = leisure-playing_fields-tennis
 
   [type.leisure.recreation_ground]
     en = Recreation ground
@@ -12320,24 +11932,6 @@
   [type.mapswithme.grid]
     en = mapswithme-grid
 
-  [type.marking]
-    en = marking
-
-  [type.marking.sport]
-    en = marking-sport
-
-  [type.marking.sport.black]
-    en = marking-sport-black
-
-  [type.marking.sport.blue]
-    en = marking-sport-blue
-
-  [type.marking.sport.red]
-    en = marking-sport-red
-
-  [type.marking.sport.white]
-    en = marking-sport-white
-
   [type.military]
     en = military
     pl = Wojskowe
@@ -12466,36 +12060,36 @@
     fa = دماغه
 
   [type.natural.cave_entrance]
-    en = Cave Entrance
+    en = Cave
     ru = Пещера
-    ar = مدخل كهف
-    cs = Vchod do jeskyně
-    da = Huleindgang
-    nl = Grotingang
-    fi = Luolan sisäänkäynti
-    fr = Entrée de la cave
-    de = Höhleneingang
-    hu = Barlangbejárat
-    id = Mulut gua
-    it = Ingresso grotta
-    ja = 洞穴入口
-    ko = 동굴입구
-    nb = Grotteåpning
-    pl = Wejście do jaskini
-    pt = Entrada de caverna
-    pt-BR = Entrada de caverna
-    ro = Intrare peșteră
-    es = Entrada a la cueva
-    sv = Grottöppning
-    th = ทางเข้าถ้ำ
-    tr = Entrée de la cave
+    ar = كهف
+    cs = Jeskyně
+    da = Hule
+    nl = Grot
+    fi = Luola
+    fr = Cave
+    de = Höhle
+    hu = Barlang
+    id = Gua
+    it = Grotta
+    ja = 洞窟
+    ko = 동굴
+    nb = Grotte
+    pl = Jaskinia
+    pt = Caverna
+    pt-BR = Caverna
+    ro = Peșteră
+    es = Cueva
+    sv = Grotta
+    th = ถ้ำ
+    tr = Mağara
     uk = Печера
-    vi = Cửa Hang
-    zh-Hans = 山洞入口
-    zh-Hant = 洞穴入口
-    el = Είσοδος σπηλαίου
-    sk = Vstup do jaskyne
-    fa = ورودی غار
+    vi = Hang động
+    zh-Hans = 山洞
+    zh-Hant = 洞穴
+    el = Σπήλαιο
+    sk = Jaskyňa
+    fa = غار
 
   [type.natural.cliff]
     en = Cliff
@@ -12942,134 +12536,6 @@
   [type.natural.wetland.marsh]
     en = Wetland
     pl = Moczary
-
-  [type.natural.wood]
-    en = Forest
-    ru = Лес
-    ar = غابة
-    cs = Les
-    da = Skov
-    nl = Bos
-    fi = Metsä
-    fr = Forêt
-    de = Wald
-    hu = Erdő
-    id = Hutan
-    it = Foresta
-    ja = 森林
-    ko = 숲
-    nb = Skog
-    pl = Las
-    pt = Floresta
-    pt-BR = Floresta
-    ro = Pădure
-    es = Bosque
-    sv = Skog
-    th = ป่า
-    tr = Orman
-    uk = Ліс
-    vi = Rừng
-    zh-Hans = 森林
-    zh-Hant = 樹林
-    el = Δάσος
-    sk = Les
-    fa = جنگل
-
-  [type.natural.wood.coniferous]
-    en = Forest
-    ru = Лес
-    ar = غابة
-    cs = Les
-    da = Skov
-    nl = Bos
-    fi = Metsä
-    fr = Forêt
-    de = Nadelwald
-    hu = Erdő
-    id = Hutan
-    it = Foresta
-    ja = 森林
-    ko = 숲
-    nb = Skog
-    pl = Las iglasty
-    pt = Floresta
-    pt-BR = Floresta
-    ro = Pădure
-    es = Bosque
-    sv = Skog
-    th = ป่า
-    tr = Orman
-    uk = Ліс
-    vi = Rừng
-    zh-Hans = 森林
-    zh-Hant = 樹林
-    el = Δάσος
-    sk = Les
-    fa = جنگل
-
-  [type.natural.wood.deciduous]
-    en = Forest
-    ru = Лес
-    ar = غابة
-    cs = Les
-    da = Skov
-    nl = Bos
-    fi = Metsä
-    fr = Forêt
-    de = Laubwald
-    hu = Erdő
-    id = Hutan
-    it = Foresta
-    ja = 森林
-    ko = 숲
-    nb = Skog
-    pl = Las liściasty
-    pt = Floresta
-    pt-BR = Floresta
-    ro = Pădure
-    es = Bosque
-    sv = Skog
-    th = ป่า
-    tr = Orman
-    uk = Ліс
-    vi = Rừng
-    zh-Hans = 森林
-    zh-Hant = 樹林
-    el = Δάσος
-    sk = Les
-    fa = جنگل
-
-  [type.natural.wood.mixed]
-    en = Forest
-    ru = Лес
-    ar = غابة
-    cs = Les
-    da = Skov
-    nl = Bos
-    fi = Metsä
-    fr = Forêt
-    de = Mischwald
-    hu = Erdő
-    id = Hutan
-    it = Foresta
-    ja = 森林
-    ko = 숲
-    nb = Skog
-    pl = Las mieszany
-    pt = Floresta
-    pt-BR = Floresta
-    ro = Pădure
-    es = Bosque
-    sv = Skog
-    th = ป่า
-    tr = Orman
-    uk = Ліс
-    vi = Rừng
-    zh-Hans = 森林
-    zh-Hant = 樹林
-    el = Δάσος
-    sk = Les
-    fa = جنگل
 
   [type.noexit]
     en = noexit
@@ -14257,16 +13723,6 @@
 
   [type.power.generator]
     en = power-generator
-
-  [type.power.generator.hydro]
-    en = power-generator-hydro
-
-  [type.power.generator.photovoltaic]
-    en = power-generator-photovoltaic
-
-  [type.power.generator.wind]
-    en = power-generator-wind
-    pl = Turbina wiatrowa
 
   [type.power.line]
     en = power-line
@@ -18134,9 +17590,6 @@
   [type.sponsored]
     en = sponsored
 
-  [type.sponsored.banner]
-    en = sponsored-banner
-
   [type.sponsored.booking]
     en = sponsored-booking
 
@@ -18211,9 +17664,6 @@
 
   [type.sponsored.partner9]
     en = sponsored-partner9
-
-  [type.sponsored.viator]
-    en = sponsored-viator
 
   [type.sport]
     en = sport
@@ -19876,9 +19326,6 @@
     el = Κτίριο
     sk = Budova
     fa = ساختما
-
-  [type.earthquake_damage]
-    en = earthquake:damage
 
   [type.area_highway.cycleway]
     en = area:highway-cycleway

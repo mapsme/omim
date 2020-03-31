@@ -29,27 +29,21 @@ class TermsOfUseViewController: MWMViewController {
     }
   }
 
-  @IBOutlet private weak var privacyPolicyCheck: Checkmark! {
-    didSet {
-      privacyPolicyCheck.offTintColor = .blackDividers()
-      privacyPolicyCheck.onTintColor = .linkBlue()
-    }
-  }
-
-  @IBOutlet private weak var termsOfUseCheck: Checkmark! {
-    didSet {
-      termsOfUseCheck.offTintColor = .blackDividers()
-      termsOfUseCheck.onTintColor = .linkBlue()
-    }
-  }
+  @IBOutlet private weak var privacyPolicyCheck: Checkmark!
+  @IBOutlet private weak var termsOfUseCheck: Checkmark!
 
   override func viewDidLoad() {
     super.viewDidLoad()
     presenter?.configure()
   }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    presenter?.onAppear()
+  }
+
   @IBAction func onCheck(_ sender: Checkmark) {
-    if (privacyPolicyCheck.isChecked && termsOfUseCheck.isChecked){
+    if (privacyPolicyCheck.isChecked && termsOfUseCheck.isChecked) {
       presenter?.onNext()
     }
   }
@@ -87,13 +81,8 @@ extension TermsOfUseViewController: ITermsOfUseView {
   }
 
   private func setHtmlTitle(textView: UITextView, htmlString: String) {
-    let attributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font: UIFont.regular16(),
-                                                      NSAttributedString.Key.foregroundColor: UIColor.blackPrimaryText()]
     textView.attributedText = NSAttributedString.string(withHtml: htmlString,
-                                                        defaultAttributes: attributes)
-    textView.linkTextAttributes = [NSAttributedString.Key.font: UIFont.regular16(),
-                                   NSAttributedString.Key.foregroundColor: UIColor.linkBlue(),
-                                   NSAttributedString.Key.underlineColor: UIColor.clear]
+                                                        defaultAttributes: [:])
   }
 }
 

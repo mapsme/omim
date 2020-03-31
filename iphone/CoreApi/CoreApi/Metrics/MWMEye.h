@@ -6,6 +6,7 @@ typedef NS_ENUM(NSUInteger, MWMTip)
   MWMTipSearch,
   MWMTipDiscovery,
   MWMTipSubway,
+  MWMTipIsolines,
   MWMTipNone
 };
 
@@ -37,6 +38,5 @@ typedef NS_ENUM(NSUInteger, MWMEyeDiscoveryEvent)
 + (void)discoveryItemClickedWithEvent:(MWMEyeDiscoveryEvent)event;
 + (void)transitionToBookingWithPos:(CGPoint)pos;
 + (void)promoAfterBookingShownWithCityId:(NSString *)cityId;
-+ (void)crownClicked;
 
 @end

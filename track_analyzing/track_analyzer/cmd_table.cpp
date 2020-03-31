@@ -262,7 +262,7 @@ public:
         << m_totalTime << ","
         << CalcSpeedKMpH(m_totalDistance, m_totalTime) << ",";
 
-    for (size_t i = 1; i < m_crossroads.size(); ++i)
+    for (size_t i = 0; i < m_crossroads.size(); ++i)
     {
       out << m_crossroads[i];
       if (i != m_crossroads.size() - 1)
@@ -315,7 +315,7 @@ public:
       if (!it.first.IsValid())
         continue;
 
-      out << user << "," << countryName << "," << it.first.GetSummary() << ","
+      out << user << "," << mwmName << "," << it.first.GetSummary() << ","
           << it.second.GetSummary() << '\n';
 
       stats.AddDataPoints(mwmName, countryName, it.second.GetDataPointsNumber());
@@ -386,9 +386,7 @@ namespace track_analyzing
 void CmdTagsTable(string const & filepath, string const & trackExtension, StringFilter mwmFilter,
                   StringFilter userFilter)
 {
-  cout << "user,mwm,hw type,surface type,maxspeed km/h,is city road,is one way,is day,lat lon,distance,time,"
-          "mean speed km/h,turn from smaller to bigger,turn from bigger to smaller,from link,to link,"
-          "intersection with big,intersection with small,intersection with link\n";
+  WriteCsvTableHeader(cout);
 
   storage::Storage storage;
   storage.RegisterAllLocalMaps(false /* enableDiffs */);
@@ -437,7 +435,7 @@ void CmdTagsTable(string const & filepath, string const & trackExtension, String
           continue;
 
         MoveTypeAggregator aggregator;
-        IsCrossroadChecker::CrossroadInfo info{};
+        IsCrossroadChecker::CrossroadInfo info = {};
         for (auto subtrackBegin = track.begin(); subtrackBegin != track.end();)
         {
           auto moveType = pointToMoveType.GetMoveType(*subtrackBegin);
@@ -446,22 +444,22 @@ void CmdTagsTable(string const & filepath, string const & trackExtension, String
           // Splitting track with points where MoveType is changed.
           while (end != track.end() && pointToMoveType.GetMoveType(*end) == moveType)
           {
-            IsCrossroadChecker::MergeCrossroads(checker(prev->GetSegment(), end->GetSegment()), info);
+            IsCrossroadChecker::MergeCrossroads(checker(prev->GetSegment(), end->GetSegment()),
+                                                info);
             prev = end;
             ++end;
           }
 
           // If it's not the end of the track than it could be a crossroad.
-          IsCrossroadChecker::CrossroadInfo crossroad{};
           if (end != track.end())
           {
-            crossroad = checker(prev->GetSegment(), end->GetSegment());
-            IsCrossroadChecker::MergeCrossroads(crossroad, info);
+            IsCrossroadChecker::MergeCrossroads(checker(prev->GetSegment(), end->GetSegment()),
+                                                info);
           }
 
           aggregator.Add(move(moveType), info, subtrackBegin, end, geometry);
           subtrackBegin = end;
-          info = {};
+          info.fill(0);
         }
 
         auto const summary = aggregator.GetSummary(user, mwmName, countryName, stats);
@@ -478,8 +476,6 @@ void CmdTagsTable(string const & filepath, string const & trackExtension, String
 
   ForEachTrackFile(filepath, trackExtension, numMwmIds, processTrack);
 
-  LOG(LINFO,
-      ("DataPoint distribution by mwms and countries and match and table commands."));
-  LOG(LINFO, (stats));
+  stats.Log();
 }
 }  // namespace track_analyzing

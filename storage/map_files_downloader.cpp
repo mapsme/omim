@@ -6,70 +6,76 @@
 #include "platform/platform.hpp"
 #include "platform/servers_list.hpp"
 
-#include "coding/url_encode.hpp"
+#include "coding/url.hpp"
 
 #include "base/assert.hpp"
 #include "base/string_utils.hpp"
-#include "base/url_helpers.hpp"
-
-#include <sstream>
 
 namespace storage
 {
-namespace
+void MapFilesDownloader::DownloadMapFile(QueuedCountry & queuedCountry)
 {
-std::vector<std::string> MakeUrlList(MapFilesDownloader::ServersList const & servers,
-                                     std::string const & relativeUrl)
-{
-  std::vector<std::string> urls;
-  urls.reserve(servers.size());
-  for (auto const & server : servers)
-    urls.emplace_back(base::url::Join(server, relativeUrl));
-
-  return urls;
-}
-}  // namespace
-
-void MapFilesDownloader::DownloadMapFile(std::string const & relativeUrl,
-                                         std::string const & path, int64_t size,
-                                         FileDownloadedCallback const & onDownloaded,
-                                         DownloadingProgressCallback const & onProgress)
-{
-  if (m_serversList.empty())
+  if (!m_serversList.empty())
   {
-    GetServersList([=](ServersList const & serversList)
-                   {
-                     m_serversList = serversList;
-                     auto const urls = MakeUrlList(m_serversList, relativeUrl);
-                     Download(urls, path, size, onDownloaded, onProgress);
-                   });
+    Download(queuedCountry);
+    return;
   }
-  else
+
+  if (!m_isServersListRequested)
   {
-    auto const urls = MakeUrlList(m_serversList, relativeUrl);
-    Download(urls, path, size, onDownloaded, onProgress);
+    m_isServersListRequested = true;
+
+    GetPlatform().RunTask(Platform::Thread::Network, [=]() mutable {
+      GetServersList([=](ServersList const & serversList) mutable {
+                       m_serversList = serversList;
+                       for (auto & country : m_quarantine)
+                       {
+                         Download(country);
+                       }
+                       m_quarantine.clear();
+                     });
+    });
   }
+
+  m_quarantine.emplace_back(std::move(queuedCountry));
 }
 
-// static
-std::string MapFilesDownloader::MakeRelativeUrl(std::string const & fileName, int64_t dataVersion,
-                                                uint64_t diffVersion)
+void MapFilesDownloader::Remove(CountryId const & id)
 {
-  std::ostringstream url;
-  if (diffVersion != 0)
-    url << "diffs/" << dataVersion << "/" << diffVersion;
-  else
-    url << OMIM_OS_NAME "/" << dataVersion;
+  if (m_quarantine.empty())
+    return;
 
-  return base::url::Join(url.str(), UrlEncode(fileName));
+  auto it = std::find(m_quarantine.begin(), m_quarantine.end(), id);
+  if (it != m_quarantine.end())
+    m_quarantine.erase(it);
+}
+
+void MapFilesDownloader::Clear()
+{
+  m_quarantine.clear();
+}
+
+Queue const & MapFilesDownloader::GetQueue() const
+{
+  return m_quarantine;
+}
+
+void MapFilesDownloader::Subscribe(Subscriber * subscriber)
+{
+  m_subscribers.push_back(subscriber);
+}
+
+void MapFilesDownloader::UnsubscribeAll()
+{
+  m_subscribers.clear();
 }
 
 // static
 std::string MapFilesDownloader::MakeFullUrlLegacy(std::string const & baseUrl,
                                                   std::string const & fileName, int64_t dataVersion)
 {
-  return base::url::Join(baseUrl, OMIM_OS_NAME, strings::to_string(dataVersion),
-                         UrlEncode(fileName));
+  return url::Join(baseUrl, OMIM_OS_NAME, strings::to_string(dataVersion),
+                           url::UrlEncode(fileName));
 }
 
 void MapFilesDownloader::SetServersList(ServersList const & serversList)
@@ -77,9 +83,24 @@ void MapFilesDownloader::SetServersList(ServersList const & serversList)
   m_serversList = serversList;
 }
 
-void MapFilesDownloader::SetDiffs(diffs::NameDiffInfoMap const & diffs)
+void MapFilesDownloader::SetDownloadingPolicy(DownloadingPolicy * policy)
 {
-  m_diffs = diffs;
+  m_downloadingPolicy = policy;
+}
+
+bool MapFilesDownloader::IsDownloadingAllowed() const
+{
+  return m_downloadingPolicy == nullptr || m_downloadingPolicy->IsDownloadingAllowed();
+}
+
+std::vector<std::string> MapFilesDownloader::MakeUrlList(std::string const & relativeUrl)
+{
+  std::vector<std::string> urls;
+  urls.reserve(m_serversList.size());
+  for (auto const & server : m_serversList)
+    urls.emplace_back(url::Join(server, relativeUrl));
+
+  return urls;
 }
 
 // static
@@ -99,9 +120,6 @@ MapFilesDownloader::ServersList MapFilesDownloader::LoadServersList()
 
 void MapFilesDownloader::GetServersList(ServersListCallback const & callback)
 {
-  GetPlatform().RunTask(Platform::Thread::Network, [callback]()
-  {
-    callback(LoadServersList());
-  });
+  callback(LoadServersList());
 }
 }  // namespace storage

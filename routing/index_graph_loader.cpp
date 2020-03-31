@@ -2,8 +2,8 @@
 
 #include "routing/city_roads.hpp"
 #include "routing/index_graph_serialization.hpp"
-#include "routing/maxspeeds.hpp"
 #include "routing/restriction_loader.hpp"
+#include "routing/road_access.hpp"
 #include "routing/road_access_serialization.hpp"
 #include "routing/route.hpp"
 #include "routing/routing_exceptions.hpp"
@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <map>
 #include <unordered_map>
+#include <utility>
 
 namespace
 {
@@ -62,6 +63,9 @@ private:
   decltype(m_cachedCameras)::iterator ReceiveSpeedCamsFromMwm(NumMwmId numMwmId);
 
   RoutingOptions m_avoidRoutingOptions = RoutingOptions();
+  std::function<time_t()> m_currentTimeGetter = [time = GetCurrentTimestamp()]() {
+    return time;
+  };
 };
 
 IndexGraphLoaderImpl::IndexGraphLoaderImpl(
@@ -72,9 +76,9 @@ IndexGraphLoaderImpl::IndexGraphLoaderImpl(
   : m_vehicleType(vehicleType)
   , m_loadAltitudes(loadAltitudes)
   , m_dataSource(dataSource)
-  , m_numMwmIds(numMwmIds)
-  , m_vehicleModelFactory(vehicleModelFactory)
-  , m_estimator(estimator)
+  , m_numMwmIds(move(numMwmIds))
+  , m_vehicleModelFactory(move(vehicleModelFactory))
+  , m_estimator(move(estimator))
   , m_avoidRoutingOptions(routingOptions)
 {
   CHECK(m_numMwmIds, ());
@@ -204,6 +208,7 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateIndexGraph(
     MYTHROW(RoutingException, ("Can't get mwm handle for", file));
 
   graph.m_indexGraph = make_unique<IndexGraph>(graph.m_geometry, m_estimator, m_avoidRoutingOptions);
+  graph.m_indexGraph->SetCurrentTimeGetter(m_currentTimeGetter);
   base::Timer timer;
   MwmValue const & mwmValue = *handle.GetValue();
   DeserializeIndexGraph(mwmValue, m_vehicleType, *graph.m_indexGraph);

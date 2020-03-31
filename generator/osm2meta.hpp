@@ -39,13 +39,11 @@ class MetadataTagProcessor : private MetadataTagProcessorImpl
 public:
   /// Make base class constructor public.
   using MetadataTagProcessorImpl::MetadataTagProcessorImpl;
-  /// Since it is used as a functor which stops iteration in ftype::ForEachTag
-  /// and the is no need for interrupting it always returns false.
-  /// TODO(mgsergio): Move to cpp after merge with https://github.com/mapsme/omim/pull/1314
-  bool operator() (std::string const & k, std::string const & v)
+
+  void operator()(std::string const & k, std::string const & v)
   {
     if (v.empty())
-      return false;
+      return;
 
     using feature::Metadata;
     Metadata & md = m_params.GetMetadata();
@@ -60,13 +58,12 @@ public:
         if (!md.Has(Metadata::FMD_MIN_HEIGHT))
           md.Set(Metadata::FMD_MIN_HEIGHT, ValidateAndFormat_building_levels(v));
       }
-      return false;
+      return;
     }
 
     std::string valid;
     switch (mdType)
     {
-    case Metadata::FMD_CUISINE: valid = ValidateAndFormat_cuisine(v); break;
     case Metadata::FMD_OPEN_HOURS: valid = ValidateAndFormat_opening_hours(v); break;
     case Metadata::FMD_FAX_NUMBER:  // The same validator as for phone.
     case Metadata::FMD_PHONE_NUMBER: valid = ValidateAndFormat_phone(v); break;
@@ -92,6 +89,7 @@ public:
     case Metadata::FMD_AIRPORT_IATA: valid = ValidateAndFormat_airport_iata(v); break;
     case Metadata::FMD_DURATION: valid = ValidateAndFormat_duration(v); break;
     // Used for old data compatibility only and should not be set:
+    case Metadata::FMD_CUISINE:
     case Metadata::FMD_POSTCODE: CHECK(false, (mdType, "used for compatibility, should not be set."));
     // Metadata types we do not get from OSM.
     case Metadata::FMD_SPONSORED_ID:
@@ -102,6 +100,5 @@ public:
     case Metadata::FMD_COUNT: CHECK(false, (mdType, "should not be parsed from OSM."));
     }
     md.Set(mdType, valid);
-    return false;
   }
 };

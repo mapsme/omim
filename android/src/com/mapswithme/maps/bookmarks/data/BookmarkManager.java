@@ -1,14 +1,13 @@
 package com.mapswithme.maps.bookmarks.data;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.IntRange;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.annotation.IntRange;
 import androidx.annotation.Nullable;
-
+import com.mapswithme.maps.PrivateVariables;
 import com.mapswithme.maps.base.DataChangedListener;
 import com.mapswithme.maps.base.Observable;
-import com.mapswithme.maps.PrivateVariables;
 import com.mapswithme.maps.metrics.UserActionsLogger;
 import com.mapswithme.util.KeyValue;
 import com.mapswithme.util.UTM;
@@ -98,17 +97,31 @@ public enum BookmarkManager
 
   @NonNull
   private final List<BookmarksInvalidCategoriesListener> mInvalidCategoriesListeners = new ArrayList<>();
-  
+
+  @Nullable
+  private OnElevationCurrentPositionChangedListener mOnElevationCurrentPositionChangedListener;
+
+  @Nullable
+  private OnElevationActivePointChangedListener mOnElevationActivePointChangedListener;
+
   static
   {
     ICONS.add(new Icon(Icon.PREDEFINED_COLOR_RED, Icon.BOOKMARK_ICON_TYPE_NONE));
-    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_BLUE, Icon.BOOKMARK_ICON_TYPE_NONE));
-    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_PURPLE, Icon.BOOKMARK_ICON_TYPE_NONE));
-    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_YELLOW, Icon.BOOKMARK_ICON_TYPE_NONE));
     ICONS.add(new Icon(Icon.PREDEFINED_COLOR_PINK, Icon.BOOKMARK_ICON_TYPE_NONE));
-    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_BROWN, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_PURPLE, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_DEEPPURPLE, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_BLUE, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_LIGHTBLUE, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_CYAN, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_TEAL, Icon.BOOKMARK_ICON_TYPE_NONE));
     ICONS.add(new Icon(Icon.PREDEFINED_COLOR_GREEN, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_LIME, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_YELLOW, Icon.BOOKMARK_ICON_TYPE_NONE));
     ICONS.add(new Icon(Icon.PREDEFINED_COLOR_ORANGE, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_DEEPORANGE, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_BROWN, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_GRAY, Icon.BOOKMARK_ICON_TYPE_NONE));
+    ICONS.add(new Icon(Icon.PREDEFINED_COLOR_BLUEGRAY, Icon.BOOKMARK_ICON_TYPE_NONE));
   }
 
   public void toggleCategoryVisibility(long catId)
@@ -117,11 +130,15 @@ public enum BookmarkManager
     setVisibility(catId, !isVisible);
   }
 
+  @Nullable
   public Bookmark addNewBookmark(double lat, double lon)
   {
     final Bookmark bookmark = nativeAddBookmarkToLastEditedCategory(lat, lon);
-    UserActionsLogger.logAddToBookmarkEvent();
-    Statistics.INSTANCE.trackBookmarkCreated();
+    if (bookmark != null)
+    {
+      UserActionsLogger.logAddToBookmarkEvent();
+      Statistics.INSTANCE.trackBookmarkCreated();
+    }
     return bookmark;
   }
 
@@ -203,6 +220,17 @@ public enum BookmarkManager
   public void removeCatalogPingListener(@NonNull BookmarksCatalogPingListener listener)
   {
     mCatalogPingListeners.remove(listener);
+  }
+
+  public void setElevationActivePointChangedListener(
+      @Nullable OnElevationActivePointChangedListener listener)
+  {
+    if (listener != null)
+      nativeSetElevationActiveChangedListener();
+    else
+      nativeRemoveElevationActiveChangedListener();
+
+    mOnElevationActivePointChangedListener = listener;
   }
 
   // Called from JNI.
@@ -409,6 +437,34 @@ public enum BookmarkManager
       listener.onCheckInvalidCategories(hasInvalidCategories);
   }
 
+  // Called from JNI.
+  @SuppressWarnings("unused")
+  @MainThread
+  public void onElevationCurrentPositionChanged()
+  {
+    if (mOnElevationCurrentPositionChangedListener != null)
+      mOnElevationCurrentPositionChangedListener.onCurrentPositionChanged();
+  }
+
+  public void setElevationCurrentPositionChangedListener(@Nullable OnElevationCurrentPositionChangedListener listener)
+  {
+    if (listener != null)
+      nativeSetElevationCurrentPositionChangedListener();
+    else
+      nativeRemoveElevationCurrentPositionChangedListener();
+
+    mOnElevationCurrentPositionChangedListener = listener;
+  }
+
+  // Called from JNI.
+  @SuppressWarnings("unused")
+  @MainThread
+  public void onElevationActivePointChanged()
+  {
+    if (mOnElevationActivePointChangedListener != null)
+      mOnElevationActivePointChangedListener.onElevationActivePointChanged();
+  }
+
   public boolean isVisible(long catId)
   {
     return nativeIsVisible(catId);
@@ -458,7 +514,7 @@ public enum BookmarkManager
     nativeUploadToCatalog(rules.ordinal(), category.getId());
   }
 
-  @NonNull
+  @Nullable
   public Bookmark updateBookmarkPlacePage(long bmkId)
   {
     return nativeUpdateBookmarkPlacePage(bmkId);
@@ -912,6 +968,21 @@ public enum BookmarkManager
     }
   }
 
+  public double getElevationCurPositionDistance(long trackId)
+  {
+   return nativeGetElevationCurPositionDistance(trackId);
+  }
+
+  public void setElevationActivePoint(long trackId, double distance)
+  {
+    nativeSetElevationActivePoint(trackId, distance);
+  }
+
+  public double getElevationActivePointDistance(long trackId)
+  {
+    return nativeGetElevationActivePointDistance(trackId);
+  }
+
   private native int nativeGetCategoriesCount();
 
   private native int nativeGetCategoryPositionById(long catId);
@@ -922,7 +993,7 @@ public enum BookmarkManager
 
   private native int nativeGetTracksCount(long catId);
 
-  @NonNull
+  @Nullable
   private native Bookmark nativeUpdateBookmarkPlacePage(long bmkId);
 
   @Nullable
@@ -966,7 +1037,7 @@ public enum BookmarkManager
 
   private native void nativeShowBookmarkCategoryOnMap(long catId);
 
-  @NonNull
+  @Nullable
   private native Bookmark nativeAddBookmarkToLastEditedCategory(double lat, double lon);
 
   private native long nativeGetLastEditedCategory();
@@ -1116,6 +1187,25 @@ public enum BookmarkManager
 
   @NonNull
   private static native String nativeGetBookmarkAddress(@IntRange(from = 0) long bookmarkId);
+
+  private static native double nativeGetElevationCurPositionDistance(long trackId);
+
+  private static native void nativeSetElevationCurrentPositionChangedListener();
+
+  public static native void nativeRemoveElevationCurrentPositionChangedListener();
+
+  private static native void nativeSetElevationActivePoint(long trackId, double distanceInMeters);
+
+  private static native double nativeGetElevationActivePointDistance(long trackId);
+
+  private static native void nativeSetElevationActiveChangedListener();
+
+  public static native void nativeRemoveElevationActiveChangedListener();
+
+  public interface ElevationActivePointChangedListener
+  {
+    void onElevationActivePointChanged();
+  }
 
   public interface BookmarksLoadingListener
   {
@@ -1280,6 +1370,16 @@ public enum BookmarkManager
     {
       /* do noting by default */
     }
+  }
+
+  public interface OnElevationActivePointChangedListener
+  {
+    void onElevationActivePointChanged();
+  }
+
+  public interface OnElevationCurrentPositionChangedListener
+  {
+    void onCurrentPositionChanged();
   }
 
   public enum UploadResult

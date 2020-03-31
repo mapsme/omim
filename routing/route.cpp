@@ -238,25 +238,33 @@ void Route::GetCurrentDirectionPoint(m2::PointD & pt) const
   m_poly.GetCurrentDirectionPoint(pt, kOnEndToleranceM);
 }
 
-void Route::SetFakeSegmentsOnPolyline()
+void Route::SetRouteSegments(vector<RouteSegment> && routeSegments)
 {
   vector<size_t> fakeSegmentIndexes;
+  m_routeSegments = move(routeSegments);
+  m_haveAltitudes = true;
   for (size_t i = 0; i < m_routeSegments.size(); ++i)
   {
+    if (m_haveAltitudes &&
+        m_routeSegments[i].GetJunction().GetAltitude() == geometry::kInvalidAltitude)
+    {
+      m_haveAltitudes = false;
+    }
+
     if (!m_routeSegments[i].GetSegment().IsRealSegment())
       fakeSegmentIndexes.push_back(i);
   }
 
-  m_poly.SetUnmatchingSegmentIndexes(move(fakeSegmentIndexes));
+  m_poly.SetFakeSegmentIndexes(move(fakeSegmentIndexes));
 }
 
-Route::MovedIteratorInfo Route::MoveIteratorToReal(location::GpsInfo const & info)
+bool Route::MoveIterator(location::GpsInfo const & info)
 {
   m2::RectD const rect = mercator::MetersToXY(
       info.m_longitude, info.m_latitude,
       max(m_routingSettings.m_matchingThresholdM, info.m_horizontalAccuracy));
-  auto const resUpdate = m_poly.UpdateMatchingProjection(rect);
-  return MovedIteratorInfo{resUpdate.m_updatedProjection, resUpdate.m_closerToUnmatching};
+
+  return m_poly.UpdateMatchingProjection(rect);
 }
 
 double Route::GetPolySegAngle(size_t ind) const
@@ -280,23 +288,30 @@ double Route::GetPolySegAngle(size_t ind) const
   return (i == polySz) ? 0 : base::RadToDeg(ang::AngleTo(p1, p2));
 }
 
-void Route::MatchLocationToRoute(location::GpsInfo & location, location::RouteMatchingInfo & routeMatchingInfo) const
+bool Route::MatchLocationToRoute(location::GpsInfo & location,
+                                 location::RouteMatchingInfo & routeMatchingInfo) const
 {
-  if (m_poly.IsValid())
+  if (!m_poly.IsValid())
+    return false;
+
+  auto const & iter = m_poly.GetCurrentIter();
+  routeMatchingInfo.Set(iter.m_pt, iter.m_ind, GetMercatorDistanceFromBegin());
+
+  auto const locationMerc = mercator::FromLatLon(location.m_latitude, location.m_longitude);
+  auto const distFromRouteM = mercator::DistanceOnEarth(iter.m_pt, locationMerc);
+
+  if (distFromRouteM < m_routingSettings.m_matchingThresholdM)
   {
-    auto const & iter = m_poly.GetCurrentIter();
-    m2::PointD const locationMerc = mercator::FromLatLon(location.m_latitude, location.m_longitude);
-    double const distFromRouteM = mercator::DistanceOnEarth(iter.m_pt, locationMerc);
-    if (distFromRouteM < m_routingSettings.m_matchingThresholdM)
+    if (!m_poly.IsFakeSegment(iter.m_ind))
     {
       location.m_latitude = mercator::YToLat(iter.m_pt.y);
       location.m_longitude = mercator::XToLon(iter.m_pt.x);
       if (m_routingSettings.m_matchRoute)
         location.m_bearing = location::AngleToBearing(GetPolySegAngle(iter.m_ind));
-
-      routeMatchingInfo.Set(iter.m_pt, iter.m_ind, GetMercatorDistanceFromBegin());
+      return true;
     }
   }
+  return false;
 }
 
 size_t Route::GetSubrouteCount() const { return m_subrouteAttrs.size(); }
@@ -336,7 +351,10 @@ bool Route::IsSubroutePassed(size_t subrouteIdx) const
   CHECK_LESS(segmentIdx, m_routeSegments.size(), ());
   double const lengthMeters = m_routeSegments[segmentIdx].GetDistFromBeginningMeters();
   double const passedDistanceMeters = m_poly.GetDistanceFromStartMeters();
-  return lengthMeters - passedDistanceMeters < kOnEndToleranceM;
+  double const finishToleranceM = segmentIdx == m_routeSegments.size() - 1
+                                      ? m_routingSettings.m_finishToleranceM
+                                      : kOnEndToleranceM;
+  return lengthMeters - passedDistanceMeters < finishToleranceM;
 }
 
 void Route::SetSubrouteUid(size_t segmentIdx, SubrouteUid subrouteUid)

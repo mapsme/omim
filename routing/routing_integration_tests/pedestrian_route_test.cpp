@@ -117,7 +117,7 @@ UNIT_TEST(HungaryBudapest_AvoidMotorway)
   integration::CalculateRouteAndTestRouteLength(
       integration::GetVehicleComponents(VehicleType::Pedestrian),
       mercator::FromLatLon(47.56566, 19.14942), {0., 0.},
-      mercator::FromLatLon(47.593, 19.24018), 10890.);
+      mercator::FromLatLon(47.593, 19.24018), 10072.3);
 }
 
 UNIT_TEST(PolandWarshaw_AvoidCycleway)
@@ -141,7 +141,7 @@ UNIT_TEST(SwedenStockholmSlussenHiltonToAfChapmanHostel)
   integration::CalculateRouteAndTestRouteLength(
       integration::GetVehicleComponents(VehicleType::Pedestrian),
       mercator::FromLatLon(59.32045, 18.06928), {0., 0.},
-      mercator::FromLatLon(59.3254, 18.08022), 2410.);
+      mercator::FromLatLon(59.3254, 18.08022), 2078.3);
 }
 
 UNIT_TEST(EstoniaTallinnRadissonHiltonToCatherdalChurch)
@@ -173,7 +173,7 @@ UNIT_TEST(BelarusMinksBarURatushiToMoscowBusStation)
   integration::CalculateRouteAndTestRouteLength(
       integration::GetVehicleComponents(VehicleType::Pedestrian),
       mercator::FromLatLon(53.9045, 27.5569), {0., 0.},
-      mercator::FromLatLon(53.889, 27.5466), 2499.);
+      mercator::FromLatLon(53.889, 27.5466), 2677.57);
 }
 
 UNIT_TEST(BelarusBobruisk50LetVlksmToSanatoryShinnik)
@@ -269,7 +269,7 @@ UNIT_TEST(CzechPragueHiltonToKarlovMost)
   integration::CalculateRouteAndTestRouteLength(
       integration::GetVehicleComponents(VehicleType::Pedestrian),
       mercator::FromLatLon(50.0933, 14.4397), {0., 0.},
-      mercator::FromLatLon(50.0864, 14.4124), 2398.);
+      mercator::FromLatLon(50.0864, 14.4124), 2568.8);
 }
 
 UNIT_TEST(CzechPragueHiltonToNicholasChurch)
@@ -285,7 +285,7 @@ UNIT_TEST(CzechPragueHiltonToKvetniceViewpoint)
   integration::CalculateRouteAndTestRouteLength(
       integration::GetVehicleComponents(VehicleType::Pedestrian),
       mercator::FromLatLon(50.0933, 14.4397), {0., 0.},
-      mercator::FromLatLon(50.0806, 14.3973), 4335.);
+      mercator::FromLatLon(50.0806, 14.3973), 4805.1);
 }
 
 UNIT_TEST(RussiaSaintPetersburgMoyka93ToAlexanderColumn)
@@ -382,7 +382,7 @@ UNIT_TEST(CrossMwmRussiaPStaiToBelarusDrazdy)
   integration::CalculateRouteAndTestRouteLength(
       integration::GetVehicleComponents(VehicleType::Pedestrian),
       mercator::FromLatLon(55.014, 30.95552), {0., 0.},
-      mercator::FromLatLon(55.01437, 30.8858), 12137.3);
+      mercator::FromLatLon(55.01437, 30.8858), 4835.76);
 }
 
 UNIT_TEST(RussiaZgradPanfilovskyUndergroundCrossing)
@@ -524,7 +524,7 @@ UNIT_TEST(RussiaElbrusPriut11)
   integration::CalculateRouteAndTestRouteTime(
       integration::GetVehicleComponents(VehicleType::Pedestrian),
       mercator::FromLatLon(43.35254, 42.43788), {0., 0.},
-      mercator::FromLatLon(43.31475, 42.46035), 5998.61 /* expectedTimeSeconds */);
+      mercator::FromLatLon(43.31475, 42.46035), 13708.4 /* expectedTimeSeconds */);
 }
 
 // Test on going straight forward on primary road.

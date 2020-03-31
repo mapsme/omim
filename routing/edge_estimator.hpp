@@ -39,6 +39,8 @@ public:
   // Note 3. It's assumed here that CalcLeapWeight(p1, p2) == CalcLeapWeight(p2, p1).
   double CalcLeapWeight(ms::LatLon const & from, ms::LatLon const & to) const;
 
+  double GetMaxWeightSpeedMpS() const;
+
   // Estimates time in seconds it takes to go from point |from| to point |to| along direct fake edge.
   double CalcOffroad(ms::LatLon const & from, ms::LatLon const & to, Purpose purpose) const;
 
@@ -59,4 +61,12 @@ private:
   double const m_maxWeightSpeedMpS;
   SpeedKMpH const m_offroadSpeedKMpH;
 };
+
+double GetPedestrianClimbPenalty(EdgeEstimator::Purpose purpose, double tangent,
+                                 geometry::Altitude altitudeM);
+double GetBicycleClimbPenalty(EdgeEstimator::Purpose purpose, double tangent,
+                              geometry::Altitude altitudeM);
+double GetCarClimbPenalty(EdgeEstimator::Purpose /* purpose */, double /* tangent */,
+                          geometry::Altitude /* altitude */);
+
 }  // namespace routing

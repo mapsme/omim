@@ -37,8 +37,8 @@ public:
   /// @param fetcher pointer to a online fetcher
   void SetRouter(std::unique_ptr<IRouter> && router, std::unique_ptr<IOnlineFetcher> && fetcher);
 
-  /// Main method to calulate new route from startPt to finalPt with start direction
-  /// Processed result will be passed to callback. Callback will called at GUI thread.
+  /// Main method to calculate new route from startPt to finalPt with start direction
+  /// Processed result will be passed to callback. Callback will be called at the GUI thread.
   ///
   /// @param checkpoints start, finish and intermadiate points
   /// @param direction start direction for routers with high cost of the turnarounds
@@ -55,8 +55,12 @@ public:
                       ProgressCallback const & progressCallback,
                       uint32_t timeoutSec = RouterDelegate::kNoTimeout);
 
+  void SetGuidesTracks(GuidesTracks && guides);
   /// Interrupt routing and clear buffers
   void ClearState();
+
+  bool FindClosestProjectionToRoad(m2::PointD const & point, m2::PointD const & direction,
+                                   double radius, EdgeProj & proj);
 
 private:
   /// Worker thread function
@@ -113,6 +117,8 @@ private:
   /// Current request parameters
   bool m_clearState = false;
   Checkpoints m_checkpoints;
+  GuidesTracks m_guides;
+
   m2::PointD m_startDirection = m2::PointD::Zero();
   bool m_adjustToPrevRoute = false;
   std::shared_ptr<RouterDelegateProxy> m_delegateProxy;

@@ -79,12 +79,14 @@ void TrafficManager::Teardown()
   m_thread.join();
 }
 
+TrafficManager::TrafficState TrafficManager::GetState() const
+{
+  return m_state;
+}
+
 void TrafficManager::SetStateListener(TrafficStateChangedFn const & onStateChangedFn)
 {
-  GetPlatform().RunTask(Platform::Thread::Gui, [this, onStateChangedFn]()
-  {
-    m_onStateChangedFn = onStateChangedFn;
-  });
+  m_onStateChangedFn = onStateChangedFn;
 }
 
 void TrafficManager::SetEnabled(bool enabled)
@@ -92,13 +94,7 @@ void TrafficManager::SetEnabled(bool enabled)
   {
     std::lock_guard<std::mutex> lock(m_mutex);
     if (enabled == IsEnabled())
-    {
-       LOG(LWARNING, ("Invalid attempt to", enabled ? "enable" : "disable",
-                      "traffic manager, it's already", enabled ? "enabled" : "disabled",
-                      ", doing nothing."));
        return;
-    }
-
     Clear();
     ChangeState(enabled ? TrafficState::Enabled : TrafficState::Disabled);
   }

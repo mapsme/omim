@@ -314,8 +314,7 @@ RoutingManager::RoutingManager(Callbacks && callbacks, Delegate & delegate)
   , m_delegate(delegate)
   , m_trackingReporter(platform::CreateSocket(), TRACKING_REALTIME_HOST, TRACKING_REALTIME_PORT,
                        tracking::Reporter::kPushDelayMs)
-  // TODO(o.khlopkova) uncomment after platform background uploader is ready.
-  //, m_trackingReporterArchive(TRACKING_HISTORICAL_HOST)
+  , m_trackingReporterArchive(TRACKING_HISTORICAL_HOST)
   , m_extrapolator(
         [this](location::GpsInfo const & gpsInfo) { this->OnExtrapolatedLocationUpdate(gpsInfo); })
 {
@@ -486,11 +485,10 @@ void RoutingManager::OnLocationUpdate(location::GpsInfo const & info)
 
   if (IsTrackingReporterArchiveEnabled())
   {
-    // TODO(o.khlopkova) uncomment after platform background uploader is ready.
-    // location::GpsInfo gpsInfo(info);
-    // auto routeMatchingInfo = GetRouteMatchingInfo(gpsInfo);
-    // m_trackingReporterArchive.Insert(m_currentRouterType, info,
-    //                                m_routingSession.MatchTraffic(routeMatchingInfo));
+     location::GpsInfo gpsInfo(info);
+     auto routeMatchingInfo = GetRouteMatchingInfo(gpsInfo);
+     m_trackingReporterArchive.Insert(m_currentRouterType, info,
+                                    m_routingSession.MatchTraffic(routeMatchingInfo));
   }
 }
 
@@ -992,6 +990,28 @@ void RoutingManager::GenerateNotifications(vector<string> & turnNotifications)
   m_routingSession.GenerateNotifications(turnNotifications);
 }
 
+routing::GuidesTracks RoutingManager::GetGuidesTracks() const
+{
+  if (m_currentRouterType != RouterType::Pedestrian && m_currentRouterType != RouterType::Bicycle)
+    return {};
+
+  routing::GuidesTracks guides;
+  for (auto const categoryId : m_bmManager->GetBmGroupsIdList())
+  {
+    if (!m_bmManager->IsCategoryFromCatalog(categoryId) || !m_bmManager->IsVisible(categoryId))
+      continue;
+
+    auto const tracksIds = m_bmManager->GetTrackIds(categoryId);
+    if (tracksIds.empty())
+      continue;
+
+    guides[categoryId].reserve(tracksIds.size());
+    for (auto const & trackId : tracksIds)
+      guides[categoryId].emplace_back(m_bmManager->GetTrack(trackId)->GetPointsWithAltitudes());
+  }
+  return guides;
+}
+
 void RoutingManager::BuildRoute(uint32_t timeoutSec)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ("BuildRoute"));
@@ -1083,7 +1103,7 @@ void RoutingManager::BuildRoute(uint32_t timeoutSec)
   for (auto const & point : routePoints)
     points.push_back(point.m_position);
 
-  m_routingSession.BuildRoute(Checkpoints(move(points)), timeoutSec);
+  m_routingSession.BuildRoute(Checkpoints(move(points)), GetGuidesTracks(), timeoutSec);
 }
 
 void RoutingManager::SetUserCurrentPosition(m2::PointD const & position)
@@ -1140,24 +1160,33 @@ void RoutingManager::CallRouteBuilded(RouterResultCode code,
   m_routingBuildingCallback(code, absentCountries);
 }
 
+void RoutingManager::ConfigureArchivalReporter(tracking::ArchivingSettings const & settings)
+{
+  m_trackingReporterArchive.SetArchivalManagerSettings(settings);
+}
+
 void RoutingManager::CallRouteBuildStart(std::vector<RouteMarkData> const & points)
 {
   m_routingStartBuildCallback(points);
 }
 
 void RoutingManager::MatchLocationToRoute(location::GpsInfo & location,
-                                          location::RouteMatchingInfo & routeMatchingInfo) const
+                                          location::RouteMatchingInfo & routeMatchingInfo)
 {
   if (!IsRoutingActive())
     return;
 
-  m_routingSession.MatchLocationToRoute(location, routeMatchingInfo);
+  bool const matchedToRoute = m_routingSession.MatchLocationToRoute(location, routeMatchingInfo);
+
+  if (!matchedToRoute && m_currentRouterType == RouterType::Vehicle)
+    m_routingSession.MatchLocationToRoadGraph(location);
 }
 
 location::RouteMatchingInfo RoutingManager::GetRouteMatchingInfo(location::GpsInfo & info)
 {
-  location::RouteMatchingInfo routeMatchingInfo;
   CheckLocationForRouting(info);
+
+  location::RouteMatchingInfo routeMatchingInfo;
   MatchLocationToRoute(info, routeMatchingInfo);
   return routeMatchingInfo;
 }

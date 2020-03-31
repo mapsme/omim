@@ -4,8 +4,6 @@
 <!-- Language: sv -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">Om</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Tillbaka</string>
 	<!-- Button text (should be short) -->
@@ -66,8 +64,6 @@
 	<string name="touch_to_download">Trycka för att ladda ner</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Ja</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">Vi rekommenderar att använda WiFi för nedladdning av stora kartor</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Vilket mätsystem föredrar du?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -255,8 +251,6 @@
 	<string name="my_position_share_sms">Hej, kolla på min nuvarande position på MAPS.ME! %1$s eller %2$s Har du inte offline-kartor? Ladda ner här: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Hej, kolla på min pin på MAPS.ME kartan</string>
-	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">Hej,\n\nJag lade till en knappnål: %1$s på MAPS.ME, offline-kartor över hela världen. Klicka på denna länk %2$s eller denna %3$s för att se platsen på kartan.\n\nTack.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Hej, kolla på min nuvarande position på MAPS.ME kartan!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -363,10 +357,6 @@
 	<string name="route">Rutt</string>
 	<!-- category title -->
 	<string name="routes">Rutter</string>
-	<!-- Show on first launch. -->
-	<string name="maps_licence_info">Detta program använder geografisk data (inkluderar kartor, företagsuppgifter, intressepunkter, landsgränser och regioner m.m.) från OpenStreetMap projektet. Vi garanterar ingen konsekvenshet, nogrannhet, fullständighet eller tillämpbarhet av OpenStreetMap datan.</string>
-	<!-- Show on first launch -->
-	<string name="disagree">Jag accepterar</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Ladda ner kartan över din nuvarande plats</string>
 	<!-- text of notification -->
@@ -561,6 +551,22 @@
 	<string name="brown">Brun</string>
 	<!-- pink color -->
 	<string name="pink">Rosa</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">Mörk purpur</string>
+	<!-- light blue color -->
+	<string name="light_blue">Ljusblå</string>
+	<!-- cyan color -->
+	<string name="cyan">Blågrön</string>
+	<!-- teal color -->
+	<string name="teal">Smaragdgrön</string>
+	<!-- lime color -->
+	<string name="lime">Limefärg</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">Mörkorange</string>
+	<!-- gray color -->
+	<string name="gray">Grå</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">Ljusblå grå</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Ja</string>
 
@@ -875,6 +881,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Beskrivning</string>
 	<string name="placepage_more_button">Mer</string>
+	<string name="placepage_more_reviews_button">Fler recensioner</string>
 	<string name="book_button">Boka</string>
 	<string name="placepage_call_button">Ring</string>
 	<string name="placepage_edit_bookmark_button">Redigera bokmärke</string>
@@ -1230,7 +1237,6 @@
 	<string name="downloader_percent">%1$s (%2$s av %3$s)</string>
 	<string name="downloader_process">Ladda ned %s...</string>
 	<string name="downloader_applying">Tillämpar %s...</string>
-	<string name="transit_not_found">Transitnavigering är inte tillgängligt i den här regionen ännu</string>
 	<string name="whats_new_title_hotel_filter">Nya hotellfilter finns tillgängliga!</string>
 	<string name="whats_new_message_hotel_filter">Boka hotell som är tillgängliga för dina datum! Använd filter för incheckning och utcheckning</string>
 	<string name="whats_new_title_ugc_travel">Dela din upplevelse med andra resenärer!</string>
@@ -1339,7 +1345,8 @@
 	<string name="error_already_downloaded">Den här listan har redan laddats ned</string>
 	<string name="guides">Guider</string>
 	<string name="guide_downloaded_title">Guiden har laddats ned framgångsrikt</string>
-	<string name="download_guides">Ladda ned guider</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">Hitta guider</string>
 	<string name="guides_groups_cached">Nedladdade guider</string>
 	<string name="subtitle_error_downloading_guide">Guiden laddades inte ned</string>
 	<string name="error_already_downloaded_guide">Denna guide har redan laddats ned</string>
@@ -1704,12 +1711,18 @@
 	<string name="new_onboarding_step5.3_button">Ladda ner gratis</string>
 	<string name="new_onboarding_additional_steps_later_button">Senare</string>
 	<string name="all_pass_subscription_header">PRENUMERATION PÅ KATALOGEN</string>
-	<string name="all_pass_subscription_message_title">20 000+ guider och spår</string>
-	<string name="all_pass_subscription_message_subtitle">Obegränsad offline nedladdning av rutter för stadspromenader och utomhusaktiviteter</string>
-	<string name="all_pass_subscription_message_title_2">700+ städer och 100+ länder</string>
-	<string name="all_pass_subscription_message_subtitle_2">Planera dina resor när som helst på året</string>
-	<string name="all_pass_subscription_message_title_3">Olika innehåll</string>
-	<string name="all_pass_subscription_message_subtitle_3">Taggar, foton, vandringsleder, beskrivningar och rekommendationer</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">30000+\nguider &amp; spår</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle"><b>Obegränsad offline hämtning</b> av rutter för staden och utomhusaktiviteter</string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">Interaktiv\nterräng profil</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">Alla spår laddas <b>med terräng och grundläggande ruttinformation</b></string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">Favoritplatser,\nfoton och\nrekommendation</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3"><b>Lär dig allt om rutten</b> du ska följa</string>
 	<string name="sightseeing_subscription_header_subscription">Prenumeration på guider</string>
 	<string name="sightseeing_subscription_message">700+ städer och 100+ länder</string>
 	<string name="sightseeing_subscription_message_2">Tillgänglig offline</string>
@@ -1728,6 +1741,41 @@
 	<string name="whatsnew_outdoor_guides_message">Rutter från Outdooractive för vinter- och sommarresor väntar i katalogen!</string>
 	<string name="whatsnew_guides_galleries_title">Planera din kommande resa med MAPS.ME</string>
 	<string name="whatsnew_guides_galleries_message">Nu kan du hitta rekommenderade guider på platssidor för populära städer och attraktioner</string>
+	<string name="new_onboarding_step3_header">Resa</string>
+	<string name="all_pass_screen_best_value">Lönsamt pris</string>
+	<string name="buy_btn_for_subscription_3">Hela katalogen för %s/år</string>
+	<string name="transit_not_found">Metro-navigering är ännu inte tillgänglig i denna region</string>
+	<string name="dialog_pedestrian_route_is_long_header">Metro rutt hittades inte</string>
+	<string name="dialog_pedestrian_route_is_long_message">Välj ruttens start- eller slutpunkt närmare till tunnelbanestation</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">Fel vid byggande av metro rutt</string>
+	<string name="whatsnew_isolines_title">Nyhet för utomhusaktiviteter – höjdlinjer offline!</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">Navigera i högländerna – slå på lagret med knappen i det övre vänstra hörnet av skärmen</string>
+	<string name="button_layer_isolines">Terräng</string>
+	<string name="tips_map_layers_title_countour">Höjningslinjer offline i MAPS.ME!</string>
+	<string name="tips_map_layers_message_countour">Höjdlinjer hjälper dig att planera din resa till naturen och inte gå vilse på marken</string>
+	<string name="isolines_activation_error_dialog">Om du vill använda höjdlinjer, uppdatera eller ladda ner en karta över önskat område</string>
+	<string name="isolines_location_error_dialog">Höjningslinjer är ännu inte tillgängligt i den här regionen</string>
+	<string name="elevation_profile_diff_level">Svårighetsgrad</string>
+	<string name="elevation_profile_diff_level_easy">Lätt</string>
+	<string name="elevation_profile_diff_level_moderate">Måttlig</string>
+	<string name="elevation_profile_diff_level_hard">Svår</string>
+	<string name="elevation_profile_ascent">Stigning</string>
+	<string name="elevation_profile_descent">Backe</string>
+	<string name="elevation_profile_minaltitude">Min. höjd</string>
+	<string name="elevation_profile_maxaltitude">Max. höjd</string>
+	<string name="elevation_profile_m">m</string>
+	<string name="elevation_profile_difficulty">Komplexitet</string>
+	<string name="elevation_profile_distance">Avst.:</string>
+	<string name="elevation_profile_km">km</string>
+	<string name="elevation_profile_time">Tid:</string>
+	<string name="elevation_profile_hours">h.</string>
+	<string name="elevation_profile_minutes">min</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">Dölja och fortsätt</string>
+	<string name="view_on_map_downloaded_error">Den här guiden har tagits bort från den här enheten</string>
+	<string name="subscription">Prenumeration</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Linbanestation</string>
@@ -1782,15 +1830,15 @@
 	<string name="type.amenity.parking">Parkering</string>
 	<string name="type.amenity.parking.fee">Parkering</string>
 	<string name="type.amenity.parking.multi.storey">Parkering</string>
-	<string name="type.amenity.parking.multi.storey.fee">Parkering</string>
 	<string name="type.amenity.parking.no.access">Parkering</string>
 	<string name="type.amenity.parking.park_and_ride">Parkering</string>
 	<string name="type.amenity.parking.permissive">Parkering</string>
-	<string name="type.amenity.parking.permissive.fee">Parkering</string>
 	<string name="type.amenity.parking.private">Parkering</string>
 	<string name="type.amenity.parking.underground">Parkering</string>
-	<string name="type.amenity.parking.underground.fee">Parkering</string>
 	<string name="type.amenity.parking_space">Parkeringsplats</string>
+	<string name="type.amenity.parking_space.permissive">Parkeringsplats</string>
+	<string name="type.amenity.parking_space.private">Parkeringsplats</string>
+	<string name="type.amenity.parking_space.underground">Parkeringsplats</string>
 	<string name="type.amenity.payment_terminal">Betalningsterminal</string>
 	<string name="type.amenity.pharmacy">Apotek</string>
 	<string name="type.amenity.place_of_worship">Plats för tillbedjan</string>
@@ -1803,6 +1851,7 @@
 	<string name="type.amenity.place_of_worship.taoist">Tempel</string>
 	<string name="type.amenity.police">Polis</string>
 	<string name="type.amenity.post_box">Postlåda</string>
+	<string name="type.amenity.post_office">Postkontor</string>
 	<string name="type.amenity.pub">Krog</string>
 	<string name="type.amenity.public_bookcase">Bokskåp</string>
 	<string name="type.amenity.recycling">Återvinningscentral</string>
@@ -1999,9 +2048,6 @@
 	<string name="type.highway.service.area">Gata</string>
 	<string name="type.highway.service.bridge">Gata</string>
 	<string name="type.highway.service.driveway">Gata</string>
-	<string name="type.highway.service.driveway.area">Gata</string>
-	<string name="type.highway.service.driveway.bridge">Gata</string>
-	<string name="type.highway.service.driveway.tunnel">Gata</string>
 	<string name="type.highway.service.parking_aisle">Gata</string>
 	<string name="type.highway.service.tunnel">Gata</string>
 	<string name="type.highway.speed_camera">Hastighetskamera</string>
@@ -2020,14 +2066,8 @@
 	<string name="type.highway.track.grade1">Gata</string>
 	<string name="type.highway.track.grade2">Gata</string>
 	<string name="type.highway.track.grade3">Gata</string>
-	<string name="type.highway.track.grade3.no.access">Gata</string>
-	<string name="type.highway.track.grade3.permissive">Gata</string>
 	<string name="type.highway.track.grade4">Gata</string>
-	<string name="type.highway.track.grade4.no.access">Gata</string>
-	<string name="type.highway.track.grade4.permissive">Gata</string>
 	<string name="type.highway.track.grade5">Gata</string>
-	<string name="type.highway.track.grade5.no.access">Gata</string>
-	<string name="type.highway.track.grade5.permissive">Gata</string>
 	<string name="type.highway.track.no.access">Gata</string>
 	<string name="type.highway.track.permissive">Gata</string>
 	<string name="type.highway.track.tunnel">Gata</string>
@@ -2077,9 +2117,7 @@
 	<string name="type.leisure.park.permissive">Parken</string>
 	<string name="type.leisure.park.private">Parken</string>
 	<string name="type.leisure.pitch">Idrottsplats</string>
-	<string name="type.leisure.pitch.tennis">Idrottsplats</string>
 	<string name="type.leisure.playground">Lekplats</string>
-	<string name="type.leisure.playground.tennis">Lekplats</string>
 	<string name="type.leisure.sauna">Sauna</string>
 	<string name="type.leisure.sports_centre">Sportcenter</string>
 	<string name="type.leisure.sports_centre.climbing">Klättercentrum</string>
@@ -2100,7 +2138,7 @@
 	<string name="type.natural.bay">Bukt</string>
 	<string name="type.natural.beach">Strand</string>
 	<string name="type.natural.cape">Udde</string>
-	<string name="type.natural.cave_entrance">Grottöppning</string>
+	<string name="type.natural.cave_entrance">Grotta</string>
 	<string name="type.natural.geyser">Gejser</string>
 	<string name="type.natural.glacier">Glaciär</string>
 	<string name="type.natural.grassland">Fältet</string>
@@ -2113,10 +2151,6 @@
 	<string name="type.natural.volcano">Vulkan</string>
 	<string name="type.natural.water">Vatten</string>
 	<string name="type.natural.wetland">Sumpmarken</string>
-	<string name="type.natural.wood">Skog</string>
-	<string name="type.natural.wood.coniferous">Skog</string>
-	<string name="type.natural.wood.deciduous">Skog</string>
-	<string name="type.natural.wood.mixed">Skog</string>
 	<string name="type.office">Kontor</string>
 	<string name="type.office.company">Företagskontor</string>
 	<string name="type.office.estate_agent">Fastighetsmäklare</string>

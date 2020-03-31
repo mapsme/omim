@@ -36,6 +36,7 @@ public:
   
   // IRouter overrides:
   string GetName() const override { return "Dummy"; }
+  void SetGuides(GuidesTracks && /* guides */) override {}
   RouterResultCode CalculateRoute(Checkpoints const & checkpoints, m2::PointD const & startDirection,
                             bool adjustToPrevRoute, RouterDelegate const & delegate,
                             Route & route) override
@@ -47,6 +48,12 @@ public:
       route.AddAbsentCountry(absent);
 
     return m_result;
+  }
+
+  bool FindClosestProjectionToRoad(m2::PointD const & point, m2::PointD const & direction,
+                                   double radius, EdgeProj & proj) override
+  {
+    return false;
   }
 };
 

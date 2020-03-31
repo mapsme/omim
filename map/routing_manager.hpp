@@ -8,9 +8,13 @@
 
 #include "routing/following_info.hpp"
 #include "routing/route.hpp"
+#include "routing/router.hpp"
 #include "routing/routing_callbacks.hpp"
 #include "routing/routing_session.hpp"
 #include "routing/speed_camera_manager.hpp"
+
+#include "tracking/archival_reporter.hpp"
+#include "tracking/reporter.hpp"
 
 #include "storage/storage_defines.hpp"
 
@@ -18,13 +22,12 @@
 
 #include "drape/pointers.hpp"
 
-#include "tracking/archival_reporter.hpp"
-#include "tracking/reporter.hpp"
-
 #include "geometry/point2d.hpp"
 #include "geometry/point_with_altitude.hpp"
 
 #include "base/thread_checker.hpp"
+
+#include "std/target_os.hpp"
 
 #include <chrono>
 #include <functional>
@@ -134,11 +137,11 @@ public:
   bool IsRouteBuilt() const { return m_routingSession.IsBuilt(); }
   bool IsRouteBuilding() const { return m_routingSession.IsBuilding(); }
   bool IsRouteRebuildingOnly() const { return m_routingSession.IsRebuildingOnly(); }
-  bool IsRouteNotReady() const { return m_routingSession.IsNotReady(); }
   bool IsRouteFinished() const { return m_routingSession.IsFinished(); }
   bool IsOnRoute() const { return m_routingSession.IsOnRoute(); }
   bool IsRoutingFollowing() const { return m_routingSession.IsFollowing(); }
   bool IsRouteValid() const { return m_routingSession.IsRouteValid(); }
+  routing::GuidesTracks GetGuidesTracks() const;
   void BuildRoute(uint32_t timeoutSec = routing::RouterDelegate::kNoTimeout);
   void SetUserCurrentPosition(m2::PointD const & position);
   void ResetRoutingSession() { m_routingSession.Reset(); }
@@ -249,6 +252,7 @@ public:
   {
     m_trackingReporter.SetAllowSendingPoints(isAllowed);
   }
+  void ConfigureArchivalReporter(tracking::ArchivingSettings const & settings);
 
   routing::SpeedCameraManager & GetSpeedCamManager() { return m_routingSession.GetSpeedCamManager(); }
   bool IsSpeedLimitExceeded() const;
@@ -335,8 +339,10 @@ private:
 
   bool IsTrackingReporterEnabled() const;
   bool IsTrackingReporterArchiveEnabled() const;
+  /// \returns false if the location could not be matched to the route and should be matched to the
+  /// road graph. Otherwise returns true.
   void MatchLocationToRoute(location::GpsInfo & info,
-                            location::RouteMatchingInfo & routeMatchingInfo) const;
+                            location::RouteMatchingInfo & routeMatchingInfo);
   location::RouteMatchingInfo GetRouteMatchingInfo(location::GpsInfo & info);
   uint32_t GenerateRoutePointsTransactionId() const;
 
@@ -367,8 +373,8 @@ private:
   routing::RoutingSession m_routingSession;
   Delegate & m_delegate;
   tracking::Reporter m_trackingReporter;
-  // TODO(o.khlopkova) uncomment after platform background uploader is ready.
-  // tracking::ArchivalReporter m_trackingReporterArchive;
+  tracking::ArchivalReporter m_trackingReporterArchive;
+
   BookmarkManager * m_bmManager = nullptr;
   extrapolation::Extrapolator m_extrapolator;
 

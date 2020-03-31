@@ -1,4 +1,5 @@
 #include "local_ads/statistics.hpp"
+
 #include "local_ads/config.hpp"
 #include "local_ads/file_helpers.hpp"
 
@@ -8,7 +9,7 @@
 
 #include "coding/file_writer.hpp"
 #include "coding/point_coding.hpp"
-#include "coding/url_encode.hpp"
+#include "coding/url.hpp"
 #include "coding/write_to_sink.hpp"
 #include "coding/zlib.hpp"
 
@@ -20,14 +21,15 @@
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
-#include "3party/jansson/myjansson.hpp"
+#include "private.h"
 
 #include <functional>
 #include <memory>
 #include <sstream>
 #include <utility>
 
-#include "private.h"
+#include "3party/Alohalytics/src/alohalytics.h"
+#include "3party/jansson/myjansson.hpp"
 
 namespace
 {
@@ -183,9 +185,9 @@ std::string MakeRemoteURL(std::string const & userId, std::string const & name, 
 
   std::ostringstream ss;
   ss << kStatisticsServer << "/";
-  ss << UrlEncode(userId) << "/";
+  ss << url::UrlEncode(userId) << "/";
   ss << version << "/";
-  ss << UrlEncode(name);
+  ss << url::UrlEncode(name);
   return ss.str();
 }
   
@@ -312,7 +314,11 @@ std::list<Event> Statistics::WriteEvents(std::list<Event> & events, std::string 
       }
 
       if (writer == nullptr || writer->GetName() != metadata.m_fileName)
-        writer = std::make_unique<FileWriter>(metadata.m_fileName, FileWriter::OP_APPEND);
+      {
+        writer = std::make_unique<FileWriter>(
+            metadata.m_fileName,
+            needWriteMetadata ? FileWriter::OP_WRITE_TRUNCATE : FileWriter::OP_APPEND);
+      }
 
       if (needWriteMetadata)
         WriteMetadata(*writer, event.m_countryId, event.m_mwmVersion, metadata.m_timestamp);
@@ -486,6 +492,19 @@ void Statistics::ExtractMetadata(std::string const & fileName)
       ReaderSource<FileReader> src(reader);
       ReadMetadata(src, countryId, mwmVersion, baseTimestamp);
     }
+
+    auto const expectedFileName =
+        GetPath(countryId + "_" + strings::to_string(mwmVersion) + kStatisticsExt);
+
+    if (fileName != expectedFileName)
+    {
+      alohalytics::TStringMap const info = {
+          {"expectedFilename", expectedFileName},
+          {"actualFilename", fileName},
+      };
+      alohalytics::LogEvent("localAdsBadFile", info);
+    }
+
     MetadataKey const key = std::make_pair(countryId, mwmVersion);
     auto it = m_metadataCache.find(key);
     if (it != m_metadataCache.end())

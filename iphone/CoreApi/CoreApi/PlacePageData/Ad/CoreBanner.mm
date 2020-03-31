@@ -10,6 +10,16 @@ static MWMBannerType ConvertBannerType(ads::Banner::Type coreType) {
       return MWMBannerTypeRb;
     case ads::Banner::Type::Mopub:
       return MWMBannerTypeMopub;
+    case ads::Banner::Type::TinkoffAllAirlines:
+      return MWMBannerTypeTinkoffAllAirlines;
+    case ads::Banner::Type::TinkoffInsurance:
+      return MWMBannerTypeTinkoffInsurance;
+    case ads::Banner::Type::Mts:
+      return MWMBannerTypeMts;
+    case ads::Banner::Type::Skyeng:
+      return MWMBannerTypeSkyeng;
+    case ads::Banner::Type::BookmarkCatalog:
+      return MWMBannerTypeBookmarkCatalog;
   }
 }
 
@@ -41,7 +51,7 @@ static MWMBannerType ConvertBannerType(ads::Banner::Type coreType) {
   self = [super init];
   if (self) {
     _mwmType = ConvertBannerType(banner.m_type);
-    _bannerID = @(banner.m_bannerId.c_str());
+    _bannerID = @(banner.m_value.c_str());
     _query = @"";
   }
   return self;

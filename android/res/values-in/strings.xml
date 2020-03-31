@@ -4,8 +4,6 @@
 <!-- Language: id -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">Tentang</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Kembali</string>
 	<!-- Button text (should be short) -->
@@ -70,8 +68,6 @@
 	<string name="touch_to_download">Sentuh untuk mengunduh</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Ya</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">Kami merekomendasi gunakan WiFi untuk mengunduh peta yang berukuran besar</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Sistem pengukuran manakah yang lebih Anda sukai?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -253,8 +249,6 @@
 	<string name="my_position_share_sms">Hei, lihat lokasiku saat ini di MAPS.ME! %1$s atau %2$s belum memiliki peta offline? Unduh di sini: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Hei, lihat pinku di peta MAPS.ME</string>
-	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">Hai,\n\nI disematkan: %1$s di MAPS.ME, peta offline dunia. Klik tautan ini %2$s atau ini %3$s untuk melihat tempat di peta.\n\n Terima kasih.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Hei, lihat lokasiku saat ini di peta MAPS.ME!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -357,12 +351,6 @@
 	<string name="route">Rute</string>
 	<!-- category title -->
 	<string name="routes">Rute</string>
-	<!-- Show on first launch. -->
-	<string name="maps_licence_info">Aplikasi ini menggunakan data geografis (termasuk peta, daftar perusahaan, lokasi-lokasi menarik, batas-batas negara dan daerah, dll) yang diambil dari proyek OpenStreetMap. Kami tidak menjamin konsistensi, akurasi, kelengkapan atau kesesuaian data OpenStreetMap apa pun.</string>
-	<!-- Show on first launch. -->
-	<string name="agree">Saya setuju</string>
-	<!-- Show on first launch -->
-	<string name="disagree">Saya setuju</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Unduh peta tempat di mana Anda berada sekarang</string>
 	<!-- Dialog for transferring maps from lite to pro. -->
@@ -556,6 +544,22 @@
 	<string name="brown">Nâu</string>
 	<!-- pink color -->
 	<string name="pink">Hồng</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">Ungu Gelap</string>
+	<!-- light blue color -->
+	<string name="light_blue">Biru Muda</string>
+	<!-- cyan color -->
+	<string name="cyan">Biru Kehijauan</string>
+	<!-- teal color -->
+	<string name="teal">Biru Gelap</string>
+	<!-- lime color -->
+	<string name="lime">Kuning Gelap</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">Oranye Gelap</string>
+	<!-- gray color -->
+	<string name="gray">Abu-abu</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">Biru Keabu-abuan</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Ya</string>
 
@@ -870,6 +874,7 @@
 	<string name="minute">mnt</string>
 	<string name="placepage_place_description">Deskripsi</string>
 	<string name="placepage_more_button">Lainnya</string>
+	<string name="placepage_more_reviews_button">Ulasan Lainnya</string>
 	<string name="book_button">Pesan</string>
 	<string name="placepage_call_button">Hubungi</string>
 	<string name="placepage_edit_bookmark_button">Edit Bookmark</string>
@@ -1225,7 +1230,6 @@
 	<string name="downloader_percent">%1$s (%2$s dari %3$s)</string>
 	<string name="downloader_process">Mengunduh %s...</string>
 	<string name="downloader_applying">Menerapkan %s...</string>
-	<string name="transit_not_found">Navigasi transit di daerah ini masih belum tersedia</string>
 	<string name="whats_new_title_hotel_filter">Filter hotel baru tersedia!</string>
 	<string name="whats_new_message_hotel_filter">Pesan hotel yang tersedia untuk tanggal perjalanan Anda! Gunakan filter check-in dan check-out</string>
 	<string name="whats_new_title_ugc_travel">Bagikan pengalaman Anda dengan musafir lain!</string>
@@ -1334,7 +1338,8 @@
 	<string name="error_already_downloaded">Daftar ini sudah diunduh</string>
 	<string name="guides">Panduan</string>
 	<string name="guide_downloaded_title">Panduan telah berhasil diunduh</string>
-	<string name="download_guides">Unduh panduan</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">Panduan pencarian</string>
 	<string name="guides_groups_cached">Panduan yang diunduh</string>
 	<string name="subtitle_error_downloading_guide">Panduan itu tidak diunduh</string>
 	<string name="error_already_downloaded_guide">Panduan ini telah diunduh</string>
@@ -1699,12 +1704,18 @@
 	<string name="new_onboarding_step5.3_button">Download Gratis</string>
 	<string name="new_onboarding_additional_steps_later_button">Nanti</string>
 	<string name="all_pass_subscription_header">BERLANGGANAN KATALOG</string>
-	<string name="all_pass_subscription_message_title">20000+ jalur &amp; panduan</string>
-	<string name="all_pass_subscription_message_subtitle">Download berbagai macam rute perjalanan dan kota secara offline</string>
-	<string name="all_pass_subscription_message_title_2">700+ kota dan 100+ negara</string>
-	<string name="all_pass_subscription_message_subtitle_2">Rencanakan perjalanan Anda kapan saja</string>
-	<string name="all_pass_subscription_message_title_3">Konten yang beragam</string>
-	<string name="all_pass_subscription_message_subtitle_3">Penanda, foto, jalur pejalan kaki, tips dan deskripsi</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">30000+\npanduan &amp; jalur</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle"><b>Unduh tanpa batas</b> jalur perkotaan dan outdoor <b>untuk mode offline</b></string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">Profil ketinggian\ninteraktif</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">Setiap jalur terdapat <b>ketinggian dan informasi jalur secara umum</b></string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">Penanda,\nfoto dan\nrekomendasi</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3"><b>Pelajari semua rute</b> yang akan Anda ambil</string>
 	<string name="sightseeing_subscription_header_subscription">Langganan Panduan</string>
 	<string name="sightseeing_subscription_message">700+ kota dan 100+ negara</string>
 	<string name="sightseeing_subscription_message_2">Tersedia secara Offline</string>
@@ -1723,6 +1734,41 @@
 	<string name="whatsnew_outdoor_guides_message">Rute dari Outdooractive untuk perjalanan musim dingin dan panas tengah menunggu di katalog!</string>
 	<string name="whatsnew_guides_galleries_title">Rencanakan perjalanan Anda selanjutnya dengan MAPS.ME</string>
 	<string name="whatsnew_guides_galleries_message">Kini Anda dapat menemukan panduan yang disarankan di halaman tempat wisata yang paling populer dikunjungi turis</string>
+	<string name="new_onboarding_step3_header">Pengalaman</string>
+	<string name="all_pass_screen_best_value">Harga terbaik</string>
+	<string name="buy_btn_for_subscription_3">Katalog lengkap hanya dengan %s/tahun</string>
+	<string name="transit_not_found">Navigasi kereta bawah tanah di wilayah ini belum tersedia</string>
+	<string name="dialog_pedestrian_route_is_long_header">Jalur kereta bawah tanah tidak ditemukan</string>
+	<string name="dialog_pedestrian_route_is_long_message">Silakan pilih titik awal atau akhir yang lebih dekat ke stasiun kereta bawah tanah</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">Perencanaan jalur kereta bawah tanah gagal</string>
+	<string name="whatsnew_isolines_title">Yang baru di outdoor: lapisan topografi offline!</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">Merasa percaya diri di daerah pegunungan. Cukup aktifkan layer di sudut kiri atas</string>
+	<string name="button_layer_isolines">Isometrik</string>
+	<string name="tips_map_layers_title_countour">Yang baru di MAPS.ME: lapisan topografi offline!</string>
+	<string name="tips_map_layers_message_countour">Rencanakan dan nikmati perjalanan alam Anda dan pastikan Anda tahu segalanya tentang daerah tersebut</string>
+	<string name="isolines_activation_error_dialog">Untuk mengaktifkan dan menggunakan lapisan topografi, silakan perbarui atau unduh peta area</string>
+	<string name="isolines_location_error_dialog">Lapisan topografi belum tersedia untuk wilayah ini</string>
+	<string name="elevation_profile_diff_level">Tingkat kesulitan</string>
+	<string name="elevation_profile_diff_level_easy">Mudah</string>
+	<string name="elevation_profile_diff_level_moderate">Sedang</string>
+	<string name="elevation_profile_diff_level_hard">Sulit</string>
+	<string name="elevation_profile_ascent">Menanjak</string>
+	<string name="elevation_profile_descent">Menurun</string>
+	<string name="elevation_profile_minaltitude">Ketinggian Min.</string>
+	<string name="elevation_profile_maxaltitude">Ketinggian Maks.</string>
+	<string name="elevation_profile_m">m</string>
+	<string name="elevation_profile_difficulty">Kesulitan</string>
+	<string name="elevation_profile_distance">Jarak:</string>
+	<string name="elevation_profile_km">km</string>
+	<string name="elevation_profile_time">Waktu:</string>
+	<string name="elevation_profile_hours">j.</string>
+	<string name="elevation_profile_minutes">mnt</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">Sembunyikan dan lanjutkan</string>
+	<string name="view_on_map_downloaded_error">Panduan ini telah dihapus dari perangkat ini</string>
+	<string name="subscription">Berlangganan</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Stasiun kereta gantung</string>
@@ -1775,15 +1821,15 @@
 	<string name="type.amenity.parking">Parkir</string>
 	<string name="type.amenity.parking.fee">Parkir</string>
 	<string name="type.amenity.parking.multi.storey">Parkir</string>
-	<string name="type.amenity.parking.multi.storey.fee">Parkir</string>
 	<string name="type.amenity.parking.no.access">Parkir</string>
 	<string name="type.amenity.parking.park_and_ride">Parkir</string>
 	<string name="type.amenity.parking.permissive">Parkir</string>
-	<string name="type.amenity.parking.permissive.fee">Parkir</string>
 	<string name="type.amenity.parking.private">Parkir</string>
 	<string name="type.amenity.parking.underground">Parkir</string>
-	<string name="type.amenity.parking.underground.fee">Parkir</string>
 	<string name="type.amenity.parking_space">Tempat parkir</string>
+	<string name="type.amenity.parking_space.permissive">Tempat parkir</string>
+	<string name="type.amenity.parking_space.private">Tempat parkir</string>
+	<string name="type.amenity.parking_space.underground">Tempat parkir</string>
 	<string name="type.amenity.payment_terminal">Terminal Pembayaran</string>
 	<string name="type.amenity.pharmacy">Apotek</string>
 	<string name="type.amenity.place_of_worship">Tempat ibadah</string>
@@ -1796,7 +1842,7 @@
 	<string name="type.amenity.place_of_worship.taoist">Kuil</string>
 	<string name="type.amenity.police">Polisi</string>
 	<string name="type.amenity.post_box">Kotak pos</string>
-	<string name="type.amenity.post_office">Pos</string>
+	<string name="type.amenity.post_office">Kantor pos</string>
 	<string name="type.amenity.public_bookcase">Rak Buku</string>
 	<string name="type.amenity.recycling">TPA</string>
 	<string name="type.amenity.restaurant">Restoran</string>
@@ -1993,9 +2039,6 @@
 	<string name="type.highway.service.area">Jalan</string>
 	<string name="type.highway.service.bridge">Jalan</string>
 	<string name="type.highway.service.driveway">Jalan</string>
-	<string name="type.highway.service.driveway.area">Jalan</string>
-	<string name="type.highway.service.driveway.bridge">Jalan</string>
-	<string name="type.highway.service.driveway.tunnel">Jalan</string>
 	<string name="type.highway.service.parking_aisle">Jalan</string>
 	<string name="type.highway.service.tunnel">Jalan</string>
 	<string name="type.highway.speed_camera">Kamera Kecepatan</string>
@@ -2014,14 +2057,8 @@
 	<string name="type.highway.track.grade1">Jalan</string>
 	<string name="type.highway.track.grade2">Jalan</string>
 	<string name="type.highway.track.grade3">Jalan</string>
-	<string name="type.highway.track.grade3.no.access">Jalan</string>
-	<string name="type.highway.track.grade3.permissive">Jalan</string>
 	<string name="type.highway.track.grade4">Jalan</string>
-	<string name="type.highway.track.grade4.no.access">Jalan</string>
-	<string name="type.highway.track.grade4.permissive">Jalan</string>
 	<string name="type.highway.track.grade5">Jalan</string>
-	<string name="type.highway.track.grade5.no.access">Jalan</string>
-	<string name="type.highway.track.grade5.permissive">Jalan</string>
 	<string name="type.highway.track.no.access">Jalan</string>
 	<string name="type.highway.track.permissive">Jalan</string>
 	<string name="type.highway.track.tunnel">Jalan</string>
@@ -2072,9 +2109,7 @@
 	<string name="type.leisure.park.permissive">Taman</string>
 	<string name="type.leisure.park.private">Taman</string>
 	<string name="type.leisure.pitch">Lapangan olahraga</string>
-	<string name="type.leisure.pitch.tennis">Lapangan olahraga</string>
 	<string name="type.leisure.playground">Taman bermain</string>
-	<string name="type.leisure.playground.tennis">Taman bermain</string>
 	<string name="type.leisure.sauna">Sauna</string>
 	<string name="type.leisure.sports_centre">Olahraga</string>
 	<string name="type.leisure.sports_centre.climbing">Pusat Peralatan Mendaki</string>
@@ -2095,7 +2130,7 @@
 	<string name="type.natural.bay">Teluk</string>
 	<string name="type.natural.beach">Pantai</string>
 	<string name="type.natural.cape">Tanjung</string>
-	<string name="type.natural.cave_entrance">Mulut gua</string>
+	<string name="type.natural.cave_entrance">Gua</string>
 	<string name="type.natural.geyser">Geiser</string>
 	<string name="type.natural.glacier">Gletser</string>
 	<string name="type.natural.grassland">Ladang</string>
@@ -2108,10 +2143,6 @@
 	<string name="type.natural.volcano">Gunung berapi</string>
 	<string name="type.natural.water">Air</string>
 	<string name="type.natural.wetland">Area lahan basah</string>
-	<string name="type.natural.wood">Hutan</string>
-	<string name="type.natural.wood.coniferous">Hutan</string>
-	<string name="type.natural.wood.deciduous">Hutan</string>
-	<string name="type.natural.wood.mixed">Hutan</string>
 	<string name="type.office">Kantor</string>
 	<string name="type.office.company">Kantor perusahaan</string>
 	<string name="type.office.estate_agent">Agen ril estat</string>

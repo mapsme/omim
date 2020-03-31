@@ -3,6 +3,7 @@
 #include "coding/endianness.hpp"
 #include "coding/zip_reader.hpp"
 
+#include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
 
 #include <iomanip>
@@ -33,6 +34,11 @@ struct UnzipMemDelegate : public ZipFileReader::Delegate
   std::string & m_buffer;
   bool m_completed;
 };
+
+std::string GetSrtmContFileName(std::string const & dir, std::string const & base)
+{
+  return base::JoinPath(dir, base + ".SRTMGL1.hgt.zip");
+}
 }  // namespace
 
 // SrtmTile ----------------------------------------------------------------------------------------
@@ -51,7 +57,7 @@ void SrtmTile::Init(std::string const & dir, ms::LatLon const & coord)
   Invalidate();
 
   std::string const base = GetBase(coord);
-  std::string const cont = dir + base + ".SRTMGL1.hgt.zip";
+  std::string const cont = GetSrtmContFileName(dir, base);
   std::string file = base + ".hgt";
 
   UnzipMemDelegate delegate(m_data);
@@ -84,7 +90,7 @@ void SrtmTile::Init(std::string const & dir, ms::LatLon const & coord)
   m_valid = true;
 }
 
-geometry::Altitude SrtmTile::GetHeight(ms::LatLon const & coord)
+geometry::Altitude SrtmTile::GetHeight(ms::LatLon const & coord) const
 {
   if (!IsValid())
     return geometry::kInvalidAltitude;
@@ -97,42 +103,55 @@ geometry::Altitude SrtmTile::GetHeight(ms::LatLon const & coord)
     lt += 1;
   lt = 1 - lt;  // from North to South
 
-  size_t const row = kArcSecondsInDegree * lt;
-  size_t const col = kArcSecondsInDegree * ln;
+  auto const row = static_cast<size_t>(std::round(kArcSecondsInDegree * lt));
+  auto const col = static_cast<size_t>(std::round(kArcSecondsInDegree * ln));
 
   size_t const ix = row * (kArcSecondsInDegree + 1) + col;
 
-  if (ix >= Size())
-    return geometry::kInvalidAltitude;
+  CHECK_LESS(ix, Size(), (coord));
   return ReverseByteOrder(Data()[ix]);
 }
 
-std::string SrtmTile::GetBase(ms::LatLon coord)
+// static
+std::string SrtmTile::GetPath(std::string const & dir, std::string const & base)
 {
+  return GetSrtmContFileName(dir, base);
+}
+
+// static
+ms::LatLon SrtmTile::GetCenter(ms::LatLon const & coord)
+{
+  return {floor(coord.m_lat) + 0.5, floor(coord.m_lon) + 0.5};
+}
+
+// static
+std::string SrtmTile::GetBase(ms::LatLon const & coord)
+{
+  auto center = GetCenter(coord);
   std::ostringstream ss;
-  if (coord.m_lat < 0)
+  if (center.m_lat < 0)
   {
     ss << "S";
-    coord.m_lat *= -1;
-    coord.m_lat += 1;
+    center.m_lat *= -1;
+    center.m_lat += 1;
   }
   else
   {
     ss << "N";
   }
-  ss << std::setw(2) << std::setfill('0') << static_cast<int>(coord.m_lat);
+  ss << std::setw(2) << std::setfill('0') << static_cast<int>(center.m_lat);
 
-  if (coord.m_lon < 0)
+  if (center.m_lon < 0)
   {
     ss << "W";
-    coord.m_lon *= -1;
-    coord.m_lon += 1;
+    center.m_lon *= -1;
+    center.m_lon += 1;
   }
   else
   {
     ss << "E";
   }
-  ss << std::setw(3) << static_cast<int>(coord.m_lon);
+  ss << std::setw(3) << static_cast<int>(center.m_lon);
   return ss.str();
 }
 
@@ -147,8 +166,9 @@ void SrtmTile::Invalidate()
 SrtmTileManager::SrtmTileManager(std::string const & dir) : m_dir(dir) {}
 geometry::Altitude SrtmTileManager::GetHeight(ms::LatLon const & coord)
 {
-  std::string const base = SrtmTile::GetBase(coord);
-  auto it = m_tiles.find(base);
+  auto const key = GetKey(coord);
+
+  auto it = m_tiles.find(key);
   if (it == m_tiles.end())
   {
     SrtmTile tile;
@@ -158,14 +178,32 @@ geometry::Altitude SrtmTileManager::GetHeight(ms::LatLon const & coord)
     }
     catch (RootException const & e)
     {
+      std::string const base = SrtmTile::GetBase(coord);
       LOG(LINFO, ("Can't init SRTM tile:", base, "reason:", e.Msg()));
     }
 
     // It's OK to store even invalid tiles and return invalid height
     // for them later.
-    it = m_tiles.emplace(base, std::move(tile)).first;
+    it = m_tiles.emplace(key, std::move(tile)).first;
   }
 
   return it->second.GetHeight(coord);
+}
+
+// static
+SrtmTileManager::LatLonKey SrtmTileManager::GetKey(ms::LatLon const & coord)
+{
+  auto const tileCenter = SrtmTile::GetCenter(coord);
+  return {static_cast<int32_t>(tileCenter.m_lat), static_cast<int32_t>(tileCenter.m_lon)};
+}
+
+SrtmTile const & SrtmTileManager::GetTile(ms::LatLon const & coord)
+{
+  // Touch the tile to force its loading.
+  GetHeight(coord);
+  auto const key = GetKey(coord);
+  auto const it = m_tiles.find(key);
+  CHECK(it != m_tiles.end(), (coord));
+  return it->second;
 }
 }  // namespace generator

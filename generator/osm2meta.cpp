@@ -1,12 +1,13 @@
 #include "generator/osm2meta.hpp"
 
-#include "platform/measurement_utils.hpp"
-
 #include "routing/routing_helpers.hpp"
 
+#include "indexer/classificator.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
-#include "coding/url_encode.hpp"
+#include "platform/measurement_utils.hpp"
+
+#include "coding/url.hpp"
 
 #include "base/logging.hpp"
 #include "base/math.hpp"
@@ -73,6 +74,13 @@ void CollapseMultipleConsecutiveCharsIntoOne(char c, string & str)
   auto const comparator = [c](char lhs, char rhs) { return lhs == rhs && lhs == c; };
   str.erase(unique(str.begin(), str.end(), comparator), str.end());
 }
+
+bool IsNoNameNoAddressBuilding(FeatureParams const & params)
+{
+  static uint32_t const buildingType = classif().GetTypeByPath({"building"});
+  return params.m_types.size() == 1 && params.m_types[0] == buildingType &&
+         params.house.Get().empty() && params.name.IsEmpty();
+}
 }  // namespace
 
 string MetadataTagProcessorImpl::ValidateAndFormat_stars(string const & v) const
@@ -119,6 +127,9 @@ string MetadataTagProcessorImpl::ValidateAndFormat_opening_hours(string const & 
 
 string MetadataTagProcessorImpl::ValidateAndFormat_ele(string const & v) const
 {
+  if (IsNoNameNoAddressBuilding(m_params))
+    return {};
+
   return measurement_utils::OSMDistanceToMetersString(v);
 }
 
@@ -240,7 +251,7 @@ string MetadataTagProcessorImpl::ValidateAndFormat_wikipedia(string v) const
       if (slashIndex != string::npos && slashIndex + 1 != baseIndex)
       {
         // Normalize article title according to OSM standards.
-        string title = UrlDecode(v.substr(baseIndex + baseSize));
+        string title = url::UrlDecode(v.substr(baseIndex + baseSize));
         replace(title.begin(), title.end(), '_', ' ');
         return v.substr(slashIndex + 1, baseIndex - slashIndex - 1) + ":" + title;
       }
@@ -270,6 +281,9 @@ string MetadataTagProcessorImpl::ValidateAndFormat_wikipedia(string v) const
 
 string MetadataTagProcessorImpl::ValidateAndFormat_airport_iata(string const & v) const
 {
+  if (!ftypes::IsAirportChecker::Instance()(m_params.m_types))
+    return {};
+
   if (v.size() != 3)
     return {};
 

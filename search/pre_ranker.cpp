@@ -7,6 +7,8 @@
 
 #include "ugc/types.hpp"
 
+#include "editor/osm_editor.hpp"
+
 #include "indexer/data_source.hpp"
 #include "indexer/mwm_set.hpp"
 #include "indexer/rank_table.hpp"
@@ -117,12 +119,24 @@ void PreRanker::FillMissingFieldsInPreResults()
     }
     else
     {
-      if (!pivotFeaturesInitialized)
+      auto const & editor = osm::Editor::Instance();
+      if (editor.GetFeatureStatus(id.m_mwmId, id.m_index) == FeatureStatus::Created)
       {
-        m_pivotFeatures.SetPosition(m_params.m_accuratePivotCenter, m_params.m_scale);
-        pivotFeaturesInitialized = true;
+        auto const emo = editor.GetEditedFeature(id);
+        CHECK(emo, ());
+        center = emo->GetMercator();
+        r.SetDistanceToPivot(mercator::DistanceOnEarth(m_params.m_accuratePivotCenter, center));
+        r.SetCenter(center);
       }
-      r.SetDistanceToPivot(m_pivotFeatures.GetDistanceToFeatureMeters(id));
+      else
+      {
+        if (!pivotFeaturesInitialized)
+        {
+          m_pivotFeatures.SetPosition(m_params.m_accuratePivotCenter, m_params.m_scale);
+          pivotFeaturesInitialized = true;
+        }
+        r.SetDistanceToPivot(m_pivotFeatures.GetDistanceToFeatureMeters(id));
+      }
     }
   });
 }
@@ -259,9 +273,12 @@ void PreRanker::FilterForViewportSearch()
 {
   auto const & viewport = m_params.m_viewport;
 
-  base::EraseIf(m_results, [&viewport](PreRankerResult const & result) {
+  base::EraseIf(m_results, [&](PreRankerResult const & result) {
     auto const & info = result.GetInfo();
-    return !viewport.IsPointInside(info.m_center);
+    if (!viewport.IsPointInside(info.m_center))
+      return true;
+
+    return result.GetMatchedTokensNumber() + 1 < m_params.m_numQueryTokens;
   });
 
   SweepNearbyResults(m_params.m_minDistanceOnMapBetweenResults, m_prevEmit, m_results);

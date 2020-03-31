@@ -412,54 +412,16 @@ void FeatureParams::AddTypes(FeatureParams const & rhs, uint32_t skipType2)
 
 bool FeatureParams::FinishAddingTypes()
 {
-  static uint32_t const boundary = classif().GetTypeByPath({ "boundary", "administrative" });
+  base::SortUnique(m_types);
 
-  vector<uint32_t> newTypes;
-  newTypes.reserve(m_types.size());
-
-  for (size_t i = 0; i < m_types.size(); ++i)
-  {
-    uint32_t candidate = m_types[i];
-
-    // Assume that classificator types are equal if they are equal for 2-arity dimension
-    // (e.g. "place-city-capital" is equal to "place-city" and we leave the longest one "place-city-capital").
-    // The only exception is "boundary-administrative" type.
-
-    uint32_t type = m_types[i];
-    ftype::TruncValue(type, 2);
-    if (type != boundary)
-    {
-      // Find all equal types (2-arity).
-      auto j = base::RemoveIfKeepValid(m_types.begin() + i + 1, m_types.end(), [type] (uint32_t t)
-      {
-        ftype::TruncValue(t, 2);
-        return (type == t);
-      });
-
-      // Choose the best type from equals by arity level.
-      for (auto k = j; k != m_types.end(); ++k)
-        if (ftype::GetLevel(*k) > ftype::GetLevel(candidate))
-          candidate = *k;
-
-      // Delete equal types.
-      m_types.erase(j, m_types.end());
-    }
-
-    newTypes.push_back(candidate);
-  }
-
-  base::SortUnique(newTypes);
-
-  if (newTypes.size() > kMaxTypesCount)
+  if (m_types.size() > kMaxTypesCount)
   {
     // Put common types to the end to leave the most important types.
     auto const & checker = UselessTypesChecker::Instance();
-    UNUSED_VALUE(base::RemoveIfKeepValid(newTypes.begin(), newTypes.end(), checker));
-    newTypes.resize(kMaxTypesCount);
-    sort(newTypes.begin(), newTypes.end());
+    UNUSED_VALUE(base::RemoveIfKeepValid(m_types.begin(), m_types.end(), checker));
+    m_types.resize(kMaxTypesCount);
+    sort(m_types.begin(), m_types.end());
   }
-
-  m_types.swap(newTypes);
 
   // Patch fix that removes house number from localities.
   if (!house.IsEmpty() && ftypes::IsLocalityChecker::Instance()(m_types))

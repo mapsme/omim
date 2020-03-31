@@ -12,13 +12,14 @@ set(
   base/astar_algorithm.hpp
   base/astar_progress.cpp
   base/astar_progress.hpp
+  base/astar_vertex_data.hpp
   base/astar_weight.hpp
   base/bfs.hpp
   base/followed_polyline.cpp
   base/followed_polyline.hpp
   base/routing_result.hpp
-  bicycle_directions.cpp
-  bicycle_directions.hpp
+  car_directions.cpp
+  car_directions.hpp
   checkpoint_predictor.cpp
   checkpoint_predictor.hpp
   checkpoints.cpp
@@ -50,6 +51,10 @@ set(
   following_info.hpp
   geometry.cpp
   geometry.hpp
+  guides_connections.cpp
+  guides_connections.hpp
+  guides_graph.cpp
+  guides_graph.hpp
   index_graph.cpp
   index_graph.hpp
   index_graph_loader.cpp
@@ -87,6 +92,8 @@ set(
   online_absent_fetcher.hpp
   online_cross_fetcher.cpp
   online_cross_fetcher.hpp
+  opening_hours_serdes.cpp
+  opening_hours_serdes.hpp
   pedestrian_directions.cpp
   pedestrian_directions.hpp
   position_accumulator.cpp
@@ -158,7 +165,7 @@ set(
   turns_sound_settings.hpp
   turns_tts_text.cpp
   turns_tts_text.hpp
-  vehicle_mask.cpp  
+  vehicle_mask.cpp
   vehicle_mask.hpp
   world_graph.cpp
   world_graph.hpp

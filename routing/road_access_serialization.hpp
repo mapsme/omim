@@ -1,6 +1,7 @@
 #pragma once
 
 #include "routing/coding.hpp"
+#include "routing/opening_hours_serdes.hpp"
 #include "routing/road_access.hpp"
 #include "routing/road_point.hpp"
 #include "routing/segment.hpp"
@@ -23,23 +24,103 @@
 #include <utility>
 #include <vector>
 
+#include "3party/skarupke/flat_hash_map.hpp"
+
 namespace routing
 {
 class RoadAccessSerializer final
 {
 public:
-  using RoadAccessTypesFeatureMap = std::unordered_map<uint32_t, RoadAccess::Type>;
-  using RoadAccessTypesPointMap = std::unordered_map<RoadPoint, RoadAccess::Type, RoadPoint::Hash>;
+  using WayToAccess = RoadAccess::WayToAccess;
+  using PointToAccess = RoadAccess::PointToAccess;
+  using WayToAccessConditional = RoadAccess::WayToAccessConditional;
+  using PointToAccessConditional = RoadAccess::PointToAccessConditional;
   using RoadAccessByVehicleType = std::array<RoadAccess, static_cast<size_t>(VehicleType::Count)>;
+
+  enum class Header
+  {
+    WithoutAccessConditional = 1,
+    WithAccessConditional = 2
+  };
 
   RoadAccessSerializer() = delete;
 
   template <class Sink>
   static void Serialize(Sink & sink, RoadAccessByVehicleType const & roadAccessByType)
   {
-    uint32_t const header = kLatestVersion;
+    Header const header = kLatestVersion;
     WriteToSink(sink, header);
+    SerializeAccess(sink, roadAccessByType);
+    SerializeAccessConditional(sink, roadAccessByType);
+  }
 
+  template <class Source>
+  static void Deserialize(Source & src, VehicleType vehicleType, RoadAccess & roadAccess)
+  {
+    auto const header = static_cast<Header>(ReadPrimitiveFromSource<uint32_t>(src));
+    CHECK_LESS_OR_EQUAL(header, kLatestVersion, ());
+    switch (header)
+    {
+    case Header::WithoutAccessConditional:
+    {
+      DeserializeAccess(src, vehicleType, roadAccess);
+      break;
+    }
+    case Header::WithAccessConditional:
+    {
+      DeserializeAccess(src, vehicleType, roadAccess);
+      DeserializeAccessConditional(src, vehicleType, roadAccess);
+      break;
+    }
+    default: UNREACHABLE();
+    }
+  }
+
+private:
+  inline static Header const kLatestVersion = Header::WithAccessConditional;
+  
+  class AccessPosition
+  {
+  public:
+    static AccessPosition MakeWayAccess(uint32_t featureId)
+    {
+      return {featureId, 0 /* wildcard pointId for way access */};
+    }
+    
+    static AccessPosition MakePointAccess(uint32_t featureId, uint32_t pointId)
+    {
+      return {featureId, pointId + 1};
+    }
+
+    AccessPosition() = default;
+    AccessPosition(uint32_t featureId, uint32_t pointId)
+      : m_featureId(featureId), m_pointId(pointId)
+    {
+    }
+
+    bool operator<(AccessPosition const & rhs) const
+    {
+      return std::tie(m_featureId, m_pointId) < std::tie(rhs.m_featureId, rhs.m_pointId);
+    }
+    
+    uint32_t GetFeatureId() const { return m_featureId; }
+    uint32_t GetPointId() const
+    {
+      ASSERT(IsNode(), ());
+      return m_pointId - 1;
+    }
+
+    bool IsWay() const { return m_pointId == 0; }
+    bool IsNode() const { return m_pointId != 0; }
+
+  private:
+    uint32_t m_featureId = 0;
+    uint32_t m_pointId = 0;
+  };
+
+  template <class Sink>
+  static void SerializeAccess(Sink & sink, RoadAccessByVehicleType const & roadAccessByType)
+  {
     auto const sectionSizesPos = sink.Pos();
     std::array<uint32_t, static_cast<size_t>(VehicleType::Count)> sectionSizes;
     for (size_t i = 0; i < sectionSizes.size(); ++i)
@@ -51,72 +132,120 @@ public:
     for (size_t i = 0; i < static_cast<size_t>(VehicleType::Count); ++i)
     {
       auto const pos = sink.Pos();
-      SerializeOneVehicleType(sink, roadAccessByType[i].GetFeatureTypes(),
-                              roadAccessByType[i].GetPointTypes());
+      SerializeOneVehicleType(sink, roadAccessByType[i].GetWayToAccess(),
+                              roadAccessByType[i].GetPointToAccess());
       sectionSizes[i] = base::checked_cast<uint32_t>(sink.Pos() - pos);
     }
 
     auto const endPos = sink.Pos();
     sink.Seek(sectionSizesPos);
-    for (size_t i = 0; i < sectionSizes.size(); ++i)
-      WriteToSink(sink, sectionSizes[i]);
+    for (auto const sectionSize : sectionSizes)
+      WriteToSink(sink, sectionSize);
+
     sink.Seek(endPos);
   }
 
   template <class Source>
-  static void Deserialize(Source & src, VehicleType vehicleType, RoadAccess & roadAccess)
+  static void DeserializeAccess(Source & src, VehicleType vehicleType, RoadAccess & roadAccess)
   {
-    auto const subsectionNumberToVehicleType = [](uint32_t version, size_t subsection)
+    std::array<uint32_t, static_cast<size_t>(VehicleType::Count)> sectionSizes{};
+    static_assert(static_cast<int>(VehicleType::Count) == 4,
+                  "It is assumed below that there are only 4 vehicle types and we store 4 numbers "
+                  "of sections size. If you add or remove vehicle type you should up "
+                  "|kLatestVersion| and save back compatibility here.");
+
+    for (auto & sectionSize : sectionSizes)
+      sectionSize = ReadPrimitiveFromSource<uint32_t>(src);
+
+    for (size_t i = 0; i < sectionSizes.size(); ++i)
     {
-      if (version == 0)
-      {
-        switch (subsection)
-        {
-        case 0: return VehicleType::Pedestrian;
-        case 1: return VehicleType::Bicycle;
-        case 2: return VehicleType::Car;
-        default: return VehicleType::Count;
-        }
-      }
-      return static_cast<VehicleType>(subsection);
-    };
-
-    uint32_t const header = ReadPrimitiveFromSource<uint32_t>(src);
-
-    std::vector<uint32_t> sectionSizes;
-    for (size_t i = 0; subsectionNumberToVehicleType(header, i) < VehicleType::Count; ++i)
-      sectionSizes.push_back(ReadPrimitiveFromSource<uint32_t>(src));
-
-    for (size_t i = 0; subsectionNumberToVehicleType(header, i) < VehicleType::Count; ++i)
-    {
-      if (vehicleType != subsectionNumberToVehicleType(header, i))
+      auto const sectionVehicleType = static_cast<VehicleType>(i);
+      if (sectionVehicleType != vehicleType)
       {
         src.Skip(sectionSizes[i]);
         continue;
       }
 
-      RoadAccessTypesFeatureMap mf;
-      RoadAccessTypesPointMap mp;
-      DeserializeOneVehicleType(src, mf, mp);
+      WayToAccess wayToAccess;
+      PointToAccess pointToAccess;
+      DeserializeOneVehicleType(src, wayToAccess, pointToAccess);
 
-      roadAccess.SetAccessTypes(std::move(mf), std::move(mp));
+      roadAccess.SetAccess(std::move(wayToAccess), std::move(pointToAccess));
     }
   }
 
-private:
+  template <class Sink>
+  static void SerializeAccessConditional(Sink & sink,
+                                         RoadAccessByVehicleType const & roadAccessByType)
+  {
+    auto const sectionSizesPos = sink.Pos();
+    std::array<uint32_t, static_cast<size_t>(VehicleType::Count)> sectionSizes;
+    for (size_t i = 0; i < sectionSizes.size(); ++i)
+    {
+      sectionSizes[i] = 0;
+      WriteToSink(sink, sectionSizes[i]);
+    }
+
+    for (size_t i = 0; i < static_cast<size_t>(VehicleType::Count); ++i)
+    {
+      auto const pos = sink.Pos();
+      SerializeConditionalOneVehicleType(sink, roadAccessByType[i].GetWayToAccessConditional(),
+                                         roadAccessByType[i].GetPointToAccessConditional());
+      sectionSizes[i] = base::checked_cast<uint32_t>(sink.Pos() - pos);
+    }
+
+    auto const endPos = sink.Pos();
+    sink.Seek(sectionSizesPos);
+    for (auto const sectionSize : sectionSizes)
+      WriteToSink(sink, sectionSize);
+
+    sink.Seek(endPos);
+  }
+
+  template <class Source>
+  static void DeserializeAccessConditional(Source & src, VehicleType vehicleType,
+                                           RoadAccess & roadAccess)
+  {
+    std::array<uint32_t, static_cast<size_t>(VehicleType::Count)> sectionSizes{};
+    static_assert(static_cast<int>(VehicleType::Count) == 4,
+                  "It is assumed below that there are only 4 vehicle types and we store 4 numbers "
+                  "of sections size. If you add or remove vehicle type you should up "
+                  "|kLatestVersion| and save back compatibility here.");
+
+    for (auto & sectionSize : sectionSizes)
+      sectionSize = ReadPrimitiveFromSource<uint32_t>(src);
+
+    for (size_t i = 0; i < sectionSizes.size(); ++i)
+    {
+      auto const sectionVehicleType = static_cast<VehicleType>(i);
+      if (sectionVehicleType != vehicleType)
+      {
+        src.Skip(sectionSizes[i]);
+        continue;
+      }
+
+      WayToAccessConditional wayToAccessConditional;
+      PointToAccessConditional pointToAccessConditional;
+      DeserializeConditionalOneVehicleType(src, wayToAccessConditional, pointToAccessConditional);
+
+      roadAccess.SetAccessConditional(std::move(wayToAccessConditional),
+                                      std::move(pointToAccessConditional));
+    }
+  }
+
   template <typename Sink>
-  static void SerializeOneVehicleType(Sink & sink, RoadAccessTypesFeatureMap const & mf,
-                                      RoadAccessTypesPointMap const & mp)
+  static void SerializeOneVehicleType(Sink & sink, WayToAccess const & wayToAccess,
+                                      PointToAccess const & pointToAccess)
   {
     std::array<std::vector<Segment>, static_cast<size_t>(RoadAccess::Type::Count)>
         segmentsByRoadAccessType;
-    for (auto const & kv : mf)
+    for (auto const & kv : wayToAccess)
     {
       segmentsByRoadAccessType[static_cast<size_t>(kv.second)].push_back(
           Segment(kFakeNumMwmId, kv.first, 0 /* wildcard segmentIdx */, true /* widcard forward */));
     }
     // For nodes we store |pointId + 1| because 0 is reserved for wildcard segmentIdx.
-    for (auto const & kv : mp)
+    for (auto const & kv : pointToAccess)
     {
       segmentsByRoadAccessType[static_cast<size_t>(kv.second)].push_back(
           Segment(kFakeNumMwmId, kv.first.GetFeatureId(), kv.first.GetPointId() + 1, true));
@@ -130,11 +259,11 @@ private:
   }
 
   template <typename Source>
-  static void DeserializeOneVehicleType(Source & src, RoadAccessTypesFeatureMap & mf,
-                                        RoadAccessTypesPointMap & mp)
+  static void DeserializeOneVehicleType(Source & src, WayToAccess & wayToAccess,
+                                        PointToAccess & pointToAccess)
   {
-    mf.clear();
-    mp.clear();
+    wayToAccess.clear();
+    pointToAccess.clear();
     for (size_t i = 0; i < static_cast<size_t>(RoadAccess::Type::Count); ++i)
     {
       // An earlier version allowed blocking any segment of a feature (or the entire feature
@@ -149,13 +278,87 @@ private:
         if (seg.GetSegmentIdx() == 0)
         {
           // Wildcard segmentIdx.
-          mf[seg.GetFeatureId()] = static_cast<RoadAccess::Type>(i);
+          wayToAccess[seg.GetFeatureId()] = static_cast<RoadAccess::Type>(i);
         }
         else
         {
           // For nodes we store |pointId + 1| because 0 is reserved for wildcard segmentIdx.
-          mp[RoadPoint(seg.GetFeatureId(), seg.GetSegmentIdx() - 1)] =
+          pointToAccess[RoadPoint(seg.GetFeatureId(), seg.GetSegmentIdx() - 1)] =
               static_cast<RoadAccess::Type>(i);
+        }
+      }
+    }
+  }
+
+  using PositionToAccessConditional = std::pair<AccessPosition, RoadAccess::Conditional::Access>;
+
+  template <typename Sink>
+  static void SerializeConditionalOneVehicleType(
+      Sink & sink, WayToAccessConditional const & wayToAccessConditional,
+      PointToAccessConditional const & pointToAccessConditional)
+  {
+    auto constexpr kAccessTypesCount = static_cast<size_t>(RoadAccess::Type::Count);
+    std::array<std::vector<PositionToAccessConditional>, kAccessTypesCount> positionsByAccessType;
+
+    for (auto const & [featureId, conditional] : wayToAccessConditional)
+    {
+      auto const position = AccessPosition::MakeWayAccess(featureId);
+      for (auto const & access : conditional.GetAccesses())
+        positionsByAccessType[static_cast<size_t>(access.m_type)].emplace_back(position, access);
+    }
+
+    // For nodes we store |pointId + 1| because 0 is reserved for wildcard segmentIdx.
+    for (auto const & [roadPoint, conditional] : pointToAccessConditional)
+    {
+      auto const position =
+          AccessPosition::MakePointAccess(roadPoint.GetFeatureId(), roadPoint.GetPointId());
+
+      for (auto const & access : conditional.GetAccesses())
+        positionsByAccessType[static_cast<size_t>(access.m_type)].emplace_back(position, access);
+    }
+
+    for (auto & positionsConditional : positionsByAccessType)
+    {
+      std::sort(positionsConditional.begin(), positionsConditional.end(),
+                [](auto const & lhs, auto const & rhs) {
+                  auto const & lhsAccessPosition = lhs.first;
+                  auto const & rhsAccessPosition = rhs.first;
+                  return lhsAccessPosition < rhsAccessPosition;
+                });
+
+      SerializePositionsAccessConditional(sink, positionsConditional);
+    }
+  }
+
+  template <typename Source>
+  static void DeserializeConditionalOneVehicleType(
+      Source & src, WayToAccessConditional & wayToAccessConditional,
+      PointToAccessConditional & pointToAccessConditional)
+  {
+    wayToAccessConditional.clear();
+    pointToAccessConditional.clear();
+
+    for (size_t i = 0; i < static_cast<size_t>(RoadAccess::Type::Count); ++i)
+    {
+      std::vector<PositionToAccessConditional> positions;
+
+      auto const accessType = static_cast<RoadAccess::Type>(i);
+      DeserializePositionsAccessConditional(src, positions);
+      for (auto & [position, access] : positions)
+      {
+        if (position.IsWay())
+        {
+          auto const featureId = position.GetFeatureId();
+          wayToAccessConditional[featureId].Insert(accessType, std::move(access.m_openingHours));
+        }
+        else if (position.IsNode())
+        {
+          RoadPoint const roadPoint(position.GetFeatureId(), position.GetPointId());
+          pointToAccessConditional[roadPoint].Insert(accessType, std::move(access.m_openingHours));
+        }
+        else
+        {
+          UNREACHABLE();
         }
       }
     }
@@ -237,6 +440,80 @@ private:
       segments.emplace_back(kFakeNumMwmId, featureIds[i], segmentIndices[i], isForward[i]);
   }
 
-  uint32_t static const kLatestVersion;
+  template <typename Sink>
+  static void SerializePositionsAccessConditional(
+      Sink & sink, std::vector<PositionToAccessConditional> const & positionsAccessConditional)
+  {
+    auto const sizePos = sink.Pos();
+    auto openingHoursSerializer = GetOpeningHoursSerDesForRouting();
+
+    size_t successWritten = 0;
+    WriteToSink(sink, successWritten);
+
+    {
+      BitWriter<Sink> bitWriter(sink);
+      uint32_t prevFeatureId = 0;
+      for (auto const & [position, accessConditional] : positionsAccessConditional)
+      {
+        if (!openingHoursSerializer.Serialize(bitWriter, accessConditional.m_openingHours))
+          continue;
+
+        uint32_t const currentFeatureId = position.GetFeatureId();
+        CHECK_GREATER_OR_EQUAL(currentFeatureId, prevFeatureId, ());
+        uint32_t const featureIdDiff = currentFeatureId - prevFeatureId;
+        prevFeatureId = currentFeatureId;
+
+        WriteGamma(bitWriter, featureIdDiff + 1);
+        auto const pointId = position.IsWay() ? 0 : position.GetPointId() + 1;
+        WriteGamma(bitWriter, pointId + 1);
+        ++successWritten;
+      }
+    }
+
+    auto const endPos = sink.Pos();
+    sink.Seek(sizePos);
+    WriteToSink(sink, successWritten);
+    sink.Seek(endPos);
+  }
+
+  template <typename Source>
+  static void DeserializePositionsAccessConditional(
+      Source & src, std::vector<PositionToAccessConditional> & positionsAccessConditional)
+  {
+    positionsAccessConditional.clear();
+
+    auto openingHoursDeserializer = GetOpeningHoursSerDesForRouting();
+    auto const size = ReadPrimitiveFromSource<size_t>(src);
+
+    positionsAccessConditional.reserve(size);
+    uint32_t prevFeatureId = 0;
+    BitReader<Source> bitReader(src);
+    for (size_t i = 0; i < size; ++i)
+    {
+      auto oh = openingHoursDeserializer.Deserialize(bitReader);
+      auto const featureIdDiff = ReadGamma<uint32_t>(bitReader) - 1;
+      auto const featureId = prevFeatureId + featureIdDiff;
+      prevFeatureId = featureId;
+      auto const pointId = ReadGamma<uint32_t>(bitReader) - 1;
+
+      AccessPosition const position(featureId, pointId);
+      RoadAccess::Conditional::Access access(RoadAccess::Type::Count, std::move(oh));
+      positionsAccessConditional.emplace_back(position, std::move(access));
+    }
+  }
+
+  static OpeningHoursSerDes GetOpeningHoursSerDesForRouting()
+  {
+    OpeningHoursSerDes openingHoursSerDes;
+    openingHoursSerDes.Enable(OpeningHoursSerDes::Header::Bits::Year);
+    openingHoursSerDes.Enable(OpeningHoursSerDes::Header::Bits::Month);
+    openingHoursSerDes.Enable(OpeningHoursSerDes::Header::Bits::MonthDay);
+    openingHoursSerDes.Enable(OpeningHoursSerDes::Header::Bits::WeekDay);
+    openingHoursSerDes.Enable(OpeningHoursSerDes::Header::Bits::Hours);
+    openingHoursSerDes.Enable(OpeningHoursSerDes::Header::Bits::Minutes);
+    return openingHoursSerDes;
+  }
 };
+
+std::string DebugPrint(RoadAccessSerializer::Header const & header);
 }  // namespace routing

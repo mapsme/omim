@@ -58,8 +58,7 @@ public:
 
   /// @param[in] checkpoints in mercator
   /// @param[in] timeoutSec timeout in seconds, if zero then there is no timeout
-  void BuildRoute(Checkpoints const & checkpoints,
-                  uint32_t timeoutSec);
+  void BuildRoute(Checkpoints const & checkpoints, GuidesTracks && guides, uint32_t timeoutSec);
   void RebuildRoute(m2::PointD const & startPoint, ReadyCallback const & readyCallback,
                     NeedMoreMapsCallback const & needMoreMapsCallback,
                     RemoveRouteCallback const & removeRouteCallback, uint32_t timeoutSec,
@@ -76,7 +75,6 @@ public:
   bool IsBuilding() const;
   bool IsBuildingOnly() const;
   bool IsRebuildingOnly() const;
-  bool IsNotReady() const;
   bool IsFinished() const;
   bool IsNoFollowing() const;
   bool IsOnRoute() const;
@@ -100,8 +98,9 @@ public:
   SessionState OnLocationPositionChanged(location::GpsInfo const & info);
   void GetRouteFollowingInfo(FollowingInfo & info) const;
 
-  void MatchLocationToRoute(location::GpsInfo & location,
-                            location::RouteMatchingInfo & routeMatchingInfo) const;
+  bool MatchLocationToRoute(location::GpsInfo & location,
+                            location::RouteMatchingInfo & routeMatchingInfo);
+  void MatchLocationToRoadGraph(location::GpsInfo & location);
   // Get traffic speed for the current route position.
   // Returns SpeedGroup::Unknown if any trouble happens: position doesn't match with route or something else.
   traffic::SpeedGroup MatchTraffic(location::RouteMatchingInfo const & routeMatchingInfo) const;
@@ -182,7 +181,7 @@ private:
   };
 
   void AssignRoute(std::shared_ptr<Route> route, RouterResultCode e);
-  /// RemoveRoute removes m_route and resets route attributes (m_state, m_lastDistance, m_moveAwayCounter).
+  /// RemoveRoute() removes m_route and resets route attributes (m_lastDistance, m_moveAwayCounter).
   void RemoveRoute();
   void RebuildRouteOnTrafficUpdate();
 
@@ -195,6 +194,9 @@ private:
   SessionState m_state;
   bool m_isFollowing;
   Checkpoints m_checkpoints;
+
+  EdgeProj m_proj;
+  bool m_projectedToRoadGraph = false;
 
   /// Current position metrics to check for RouteNeedRebuild state.
   double m_lastDistance = 0.0;
