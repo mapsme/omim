@@ -144,14 +144,13 @@ private:
 }  // namespace
 
 SearchAPI::SearchAPI(DataSource & dataSource, storage::Storage const & storage,
-                     storage::CountryInfoGetter const & infoGetter, size_t numThreads,
-                     Delegate & delegate)
+                     storage::CountryInfoGetter const & infoGetter, Delegate & delegate)
   : m_dataSource(dataSource)
   , m_storage(storage)
   , m_infoGetter(infoGetter)
   , m_delegate(delegate)
   , m_engine(m_dataSource, GetDefaultCategories(), m_infoGetter,
-             Engine::Params(languages::GetCurrentTwine() /* locale */, numThreads))
+             Engine::Params(languages::GetCurrentTwine() /* locale */, 1 /* params.m_numThreads */))
 {
 }
 

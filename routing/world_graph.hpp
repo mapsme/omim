@@ -1,6 +1,5 @@
 #pragma once
 
-#include "routing/base/astar_vertex_data.hpp"
 #include "routing/cross_mwm_graph.hpp"
 #include "routing/edge_estimator.hpp"
 #include "routing/geometry.hpp"
@@ -12,8 +11,6 @@
 #include "routing/routing_options.hpp"
 #include "routing/segment.hpp"
 #include "routing/transit_info.hpp"
-
-#include "routing/base/astar_graph.hpp"
 
 #include "routing_common/num_mwm_id.hpp"
 
@@ -45,21 +42,12 @@ enum class WorldGraphMode
 class WorldGraph
 {
 public:
-  template <typename VertexType>
-  using Parents = IndexGraph::Parents<VertexType>;
-
   virtual ~WorldGraph() = default;
 
-  virtual void GetEdgeList(astar::VertexData<Segment, RouteWeight> const & vertexData,
-                           bool isOutgoing, bool useRoutingOptions, bool useAccessConditional,
+  virtual void GetEdgeList(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
                            std::vector<SegmentEdge> & edges) = 0;
-  virtual void GetEdgeList(astar::VertexData<JointSegment, RouteWeight> const & vertexData,
-                           Segment const & segment, bool isOutgoing, bool useAccessConditional,
-                           std::vector<JointEdge> & edges,
-                           std::vector<RouteWeight> & parentWeights) = 0;
-
-  void GetEdgeList(Segment const & vertex, bool isOutgoing, bool useRoutingOptions,
-                   std::vector<SegmentEdge> & edges);
+  virtual void GetEdgeList(JointSegment const & vertex, Segment const & segment, bool isOutgoing,
+                           std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights) = 0;
 
   // Checks whether path length meets restrictions. Restrictions may depend on the distance from
   // start to finish of the route.
@@ -97,16 +85,19 @@ public:
   virtual RoutingOptions GetRoutingOptions(Segment const & /* segment */);
   virtual void SetRoutingOptions(RoutingOptions /* routingOptions */);
 
-  virtual void SetAStarParents(bool forward, Parents<Segment> & parents);
-  virtual void SetAStarParents(bool forward, Parents<JointSegment> & parents);
+  using ParentSegments = std::map<Segment, Segment>;
+  using ParentJoints = std::map<JointSegment, JointSegment>;
+
+  virtual void SetAStarParents(bool forward, ParentSegments & parents);
+  virtual void SetAStarParents(bool forward, ParentJoints & parents);
   virtual void DropAStarParents();
 
-  virtual bool AreWavesConnectible(Parents<Segment> & forwardParents, Segment const & commonVertex,
-                                   Parents<Segment> & backwardParents,
-                                   std::function<uint32_t(Segment const &)> && fakeFeatureConverter);
-  virtual bool AreWavesConnectible(Parents<JointSegment> & forwardParents, JointSegment const & commonVertex,
-                                   Parents<JointSegment> & backwardParents,
-                                   std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter);
+  virtual bool AreWavesConnectible(ParentSegments & forwardParents, Segment const & commonVertex,
+                                  ParentSegments & backwardParents,
+                                  std::function<uint32_t(Segment const &)> && fakeFeatureConverter);
+  virtual bool AreWavesConnectible(ParentJoints & forwardParents, JointSegment const & commonVertex,
+                                  ParentJoints & backwardParents,
+                                  std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter);
 
   /// \returns transit-specific information for segment. For nontransit segments returns nullptr.
   virtual std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) = 0;

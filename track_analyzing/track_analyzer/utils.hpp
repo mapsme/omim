@@ -7,7 +7,6 @@
 #include "track_analyzing/track.hpp"
 
 #include <cstdint>
-#include <istream>
 #include <map>
 #include <memory>
 #include <sstream>
@@ -37,22 +36,14 @@ public:
   void AddDataPoints(std::string const & mwmName, std::string const & countryName,
                      uint64_t dataPointNum);
 
-  void AddDataPoints(std::string const & mwmName, storage::Storage const & storage,
-                     uint64_t dataPointNum);
-
   /// \brief Saves csv file with numbers of DataPoints for each mwm to |csvPath|.
   /// If |csvPath| is empty it does nothing.
-  void SaveMwmDistributionToCsv(std::string const & csvPath) const;
-
-  void Log() const;
+  void SaveMwmDistributionToCsv(std::string const & csvPath);
 
   NameToCountMapping const & GetMwmToTotalDataPointsForTesting() const;
   NameToCountMapping const & GetCountryToTotalDataPointsForTesting() const;
 
 private:
-  void LogMwms() const;
-  void LogCountries() const;
-
   /// \note These fields may present mapping from territory name to either DataPoints
   /// or MatchedTrackPoint count.
   NameToCountMapping m_mwmToTotalDataPoints;
@@ -68,11 +59,6 @@ void MappingFromCsv(std::basic_istream<char> & ss, Stats::NameToCountMapping & m
 /// \brief Parses tracks from |logFile| and fills |mwmToTracks|.
 void ParseTracks(std::string const & logFile, std::shared_ptr<routing::NumMwmIds> const & numMwmIds,
                  MwmToTracks & mwmToTracks);
-
-void WriteCsvTableHeader(std::basic_ostream<char> & stream);
-
-void LogNameToCountMapping(std::string const & keyName, std::string const & descr,
-                           Stats::NameToCountMapping const & mapping);
 
 std::string DebugPrint(Stats const & s);
 }  // namespace track_analyzing

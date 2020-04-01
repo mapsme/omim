@@ -21,7 +21,6 @@
 @class FBSDKGraphRequest;
 
 // maps codes and subcodes pairs to FBSDKErrorRecoveryConfiguration instances.
-NS_SWIFT_NAME(ErrorConfiguration)
 @interface FBSDKErrorConfiguration : NSObject <NSSecureCoding, NSCopying>
 
 - (instancetype)init NS_UNAVAILABLE;

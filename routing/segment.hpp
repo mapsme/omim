@@ -85,12 +85,3 @@ private:
 std::string DebugPrint(Segment const & segment);
 std::string DebugPrint(SegmentEdge const & edge);
 }  // namespace routing
-
-namespace std
-{
-template <>
-struct hash<routing::Segment>
-{
-  size_t operator()(routing::Segment const & segment) const;
-};
-}  // namespace std

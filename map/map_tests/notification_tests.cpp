@@ -5,11 +5,7 @@
 #include "map/notifications/notification_queue_serdes.hpp"
 #include "map/notifications/notification_queue_storage.hpp"
 
-#include "ugc/api.hpp"
-
 #include "metrics/eye_info.hpp"
-
-#include "storage/storage_defines.hpp"
 
 #include "platform/platform.hpp"
 
@@ -31,17 +27,6 @@ public:
     ugc::Api & GetUGCApi() override
     {
       UNREACHABLE();
-    }
-
-    std::unordered_set<storage::CountryId> GetDescendantCountries(
-        storage::CountryId const & country) const override
-    {
-      return {{"South Korea_North"}, {"South Korea_South"}};
-    }
-
-    storage::CountryId GetCountryAtPoint(m2::PointD const & pt) const override
-    {
-      return "South Korea_North";
     }
 
     std::string GetAddress(m2::PointD const & pt) override
@@ -312,27 +297,5 @@ UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_UgcRateCheckPlannedTripT
 
   result = notificationManager.GetNotification();
   TEST(!result.has_value(), ());
-}
-
-UNIT_CLASS_TEST(ScopedNotificationsQueue, Notifications_DeleteCanidatesForCountry)
-{
-  NotificationManagerForTesting notificationManager;
-
-  eye::MapObject mapObject;
-  mapObject.SetPos(mercator::FromLatLon({35.966941, 127.571227}));
-  mapObject.SetReadableName("Joseon");
-  mapObject.SetBestType("amenity-bar");
-
-  notificationManager.GetEditableQueue().m_candidates.push_back({mapObject, ""});
-
-  TEST_EQUAL(notificationManager.GetEditableQueue().m_candidates.size(), 1, ());
-  notificationManager.DeleteCandidatesForCountry("South Korea_North");
-  TEST_EQUAL(notificationManager.GetEditableQueue().m_candidates.size(), 0, ());
-
-  notificationManager.GetEditableQueue().m_candidates.push_back({mapObject, ""});
-
-  TEST_EQUAL(notificationManager.GetEditableQueue().m_candidates.size(), 1, ());
-  notificationManager.DeleteCandidatesForCountry("South Korea");
-  TEST_EQUAL(notificationManager.GetEditableQueue().m_candidates.size(), 0, ());
 }
 }  // namespace

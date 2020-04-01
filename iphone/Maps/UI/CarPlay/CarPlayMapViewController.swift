@@ -147,9 +147,4 @@ final class CarPlayMapViewController: MWMViewController {
     super.traitCollectionDidChange(previousTraitCollection)
     ThemeManager.invalidate()
   }
-
-  override func applyTheme() {
-    super.applyTheme()
-    updateSpeedControl()
-  }
 }

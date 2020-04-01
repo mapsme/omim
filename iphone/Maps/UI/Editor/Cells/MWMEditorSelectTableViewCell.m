@@ -1,6 +1,6 @@
 #import "MWMEditorSelectTableViewCell.h"
 #import <CoreApi/MWMCommon.h>
-#import "SwiftBridge.h"
+#import "UIImageView+Coloring.h"
 
 @interface MWMEditorSelectTableViewCell ()
 
@@ -24,16 +24,16 @@
   self.delegate = delegate;
   self.icon.hidden = NO;
   self.icon.image = icon;
-  self.icon.styleName = @"MWMBlack";
+  self.icon.mwm_coloring = MWMImageColoringBlack;
   if (text && text.length != 0)
   {
     self.label.text = text;
-   [self.label setStyleAndApply: @"blackPrimaryText"];
+    self.label.textColor = [UIColor blackPrimaryText];
   }
   else
   {
     self.label.text = placeholder;
-    [self.label setStyleAndApply: @"blackHintText"];
+    self.label.textColor = [UIColor blackHintText];
   }
   self.label.preferredMaxLayoutWidth =
       self.width - self.labelLeadingOffset.constant - self.labelTrailingOffset.constant;

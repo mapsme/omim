@@ -16,23 +16,17 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "TargetConditionals.h"
-
-#if !TARGET_OS_TV
-
 #import "FBSDKLoginManagerLogger.h"
 
-#ifdef FBSDKCOCOAPODS
-#import <FBSDKCoreKit/FBSDKCoreKit+Internal.h>
-#else
 #import "FBSDKCoreKit+Internal.h"
-#endif
 #import "FBSDKLoginError.h"
 #import "FBSDKLoginManagerLoginResult+Internal.h"
 #import "FBSDKLoginUtility.h"
 
 NSString *const FBSDKLoginManagerLoggerAuthMethod_Native = @"fb_application_web_auth";
 NSString *const FBSDKLoginManagerLoggerAuthMethod_Browser = @"browser_auth";
+NSString *const FBSDKLoginManagerLoggerAuthMethod_System = @"integrated_auth";
+NSString *const FBSDKLoginManagerLoggerAuthMethod_Webview = @"fallback_auth";
 NSString *const FBSDKLoginManagerLoggerAuthMethod_SFVC = @"sfvc_auth";
 
 static NSString *const FBSDKLoginManagerLoggingClientStateKey = @"state";
@@ -56,6 +50,8 @@ static NSString *const FBSDKLoginManagerLoggerResultSkippedString = @"skipped";
 
 static NSString *const FBSDKLoginManagerLoggerTryNative = @"tryFBAppAuth";
 static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
+static NSString *const FBSDKLoginManagerLoggerTrySystemAccount = @"tryIntegratedAuth";
+static NSString *const FBSDKLoginManagerLoggerTryWebView = @"tryFallback";
 
 @implementation FBSDKLoginManagerLogger
 {
@@ -72,7 +68,7 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
 
 + (FBSDKLoginManagerLogger *)loggerFromParameters:(NSDictionary *)parameters
 {
-  NSDictionary<id, id> *clientState = [FBSDKBasicUtility objectForJSONString:parameters[FBSDKLoginManagerLoggingClientStateKey] error:NULL];
+  NSDictionary *clientState = [FBSDKInternalUtility objectForJSONString:parameters[FBSDKLoginManagerLoggingClientStateKey] error:NULL];
 
   id isClientState = clientState[FBSDKLoginManagerLoggingClientStateIsClientState];
   if ([isClientState isKindOfClass:[NSNumber class]] && [isClientState boolValue]) {
@@ -101,12 +97,38 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
 {
   BOOL isReauthorize = ([FBSDKAccessToken currentAccessToken] != nil);
   BOOL willTryNative = NO;
-  BOOL willTryBrowser = YES;
-  NSString *behaviorString = @"FBSDKLoginBehaviorBrowser";
+  BOOL willTryBrowser = NO;
+  BOOL willTrySystemAccount = NO;
+  BOOL willTryWebView = NO;
+  NSString *behaviorString = nil;
+
+  switch (loginManager.loginBehavior) {
+    case FBSDKLoginBehaviorNative:
+      willTryNative = YES;
+      willTryBrowser = YES;
+      behaviorString = @"FBSDKLoginBehaviorNative";
+      break;
+    case FBSDKLoginBehaviorBrowser:
+      willTryBrowser = YES;
+      behaviorString = @"FBSDKLoginBehaviorBrowser";
+      break;
+    case FBSDKLoginBehaviorSystemAccount:
+      willTryNative = YES;
+      willTryBrowser = YES;
+      willTrySystemAccount = YES;
+      behaviorString = @"FBSDKLoginBehaviorSystemAccount";
+      break;
+    case FBSDKLoginBehaviorWeb:
+      willTryWebView = YES;
+      behaviorString = @"FBSDKLoginBehaviorWeb";
+      break;
+  }
 
   [_extras addEntriesFromDictionary:@{
     FBSDKLoginManagerLoggerTryNative : @(willTryNative),
     FBSDKLoginManagerLoggerTryBrowser : @(willTryBrowser),
+    FBSDKLoginManagerLoggerTrySystemAccount : @(willTrySystemAccount),
+    FBSDKLoginManagerLoggerTryWebView : @(willTryWebView),
     @"isReauthorize" : @(isReauthorize),
     @"login_behavior" : behaviorString,
     @"default_audience" : [FBSDKLoginUtility stringForAudience:loginManager.defaultAudience],
@@ -156,12 +178,12 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
   NSMutableDictionary *params = [loginParams mutableCopy];
 
   NSTimeInterval timeValue = (NSTimeInterval)FBSDKMonotonicTimeGetCurrentSeconds();
-  NSString *e2eTimestampString = [FBSDKBasicUtility JSONStringForObject:@{ @"init" : @(timeValue) }
+  NSString *e2eTimestampString = [FBSDKInternalUtility JSONStringForObject:@{ @"init" : @(timeValue) }
                                                                      error:NULL
                                                       invalidObjectHandler:NULL];
   params[@"e2e"] = e2eTimestampString;
 
-  NSDictionary<id, id> *existingState = [FBSDKBasicUtility objectForJSONString:params[FBSDKLoginManagerLoggingClientStateKey] error:NULL];
+  NSDictionary *existingState = [FBSDKInternalUtility objectForJSONString:params[FBSDKLoginManagerLoggingClientStateKey] error:NULL];
   params[FBSDKLoginManagerLoggingClientStateKey] = [self clientStateForAuthMethod:authMethod andExistingState:existingState];
 
   return params;
@@ -179,6 +201,14 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
     @"isURLSchemeRegistered" : @(isURLSchemeRegistered),
     @"isFacebookAppCanOpenURLSchemeRegistered" : @(isFacebookAppCanOpenURLSchemeRegistered),
     @"isMessengerAppCanOpenURLSchemeRegistered" : @(isMessengerAppCanOpenURLSchemeRegistered),
+  }];
+}
+
+- (void)systemAuthDidShowDialog:(BOOL)didShowDialog isUnTOSedDevice:(BOOL)isUnTOSedDevice
+{
+  [_extras addEntriesFromDictionary:@{
+    @"isUntosedDevice" : @(isUnTOSedDevice),
+    @"dialogShown" : @(didShowDialog),
   }];
 }
 
@@ -208,7 +238,7 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
     clientState = mutableState;
   }
 
-  return [FBSDKBasicUtility JSONStringForObject:clientState error:NULL invalidObjectHandler:NULL];
+  return [FBSDKInternalUtility JSONStringForObject:clientState error:NULL invalidObjectHandler:NULL];
 }
 
 - (NSMutableDictionary *)_parametersForNewEvent
@@ -219,7 +249,7 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
     eventParameters[FBSDKLoginManagerLoggerParamIdentifierKey] = _identifier ?: FBSDKLoginManagerLoggerValueEmpty;
     eventParameters[FBSDKLoginManagerLoggerParamTimestampKey] = @(round(1000 * [NSDate date].timeIntervalSince1970));
     eventParameters[FBSDKLoginManagerLoggerParamResultKey] = FBSDKLoginManagerLoggerValueEmpty;
-    [FBSDKBasicUtility dictionary:eventParameters setObject:_authMethod forKey:FBSDKLoginManagerLoggerParamAuthMethodKey];
+    [FBSDKInternalUtility dictionary:eventParameters setObject:_authMethod forKey:FBSDKLoginManagerLoggerParamAuthMethodKey];
     eventParameters[FBSDKLoginManagerLoggerParamErrorCodeKey] = FBSDKLoginManagerLoggerValueEmpty;
     eventParameters[FBSDKLoginManagerLoggerParamErrorMessageKey] = FBSDKLoginManagerLoggerValueEmpty;
     eventParameters[FBSDKLoginManagerLoggerParamExtrasKey] = FBSDKLoginManagerLoggerValueEmpty;
@@ -231,7 +261,7 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
 - (void)logEvent:(NSString *)eventName params:(NSMutableDictionary *)params
 {
   if (_identifier) {
-    NSString *extrasJSONString = [FBSDKBasicUtility JSONStringForObject:_extras
+    NSString *extrasJSONString = [FBSDKInternalUtility JSONStringForObject:_extras
                                                                      error:NULL
                                                       invalidObjectHandler:NULL];
     if (extrasJSONString) {
@@ -239,9 +269,7 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
     }
     [_extras removeAllObjects];
 
-    [FBSDKAppEvents logInternalEvent:eventName
-                          parameters:params
-                  isImplicitlyLogged:YES];
+    [FBSDKAppEvents logImplicitEvent:eventName valueToSum:nil parameters:params accessToken:nil];
   }
 }
 
@@ -257,18 +285,18 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
     // first see if there is an explicit message in the error's userInfo. If not, default to the reason,
     // which is less useful.
     NSString *value = error.userInfo[@"error_message"] ?: error.userInfo[FBSDKErrorLocalizedDescriptionKey];
-    [FBSDKBasicUtility dictionary:params setObject:value forKey:FBSDKLoginManagerLoggerParamErrorMessageKey];
+    [FBSDKInternalUtility dictionary:params setObject:value forKey:FBSDKLoginManagerLoggerParamErrorMessageKey];
 
     value = error.userInfo[FBSDKGraphRequestErrorGraphErrorCodeKey] ?: [NSString stringWithFormat:@"%ld", (long)error.code];
-    [FBSDKBasicUtility dictionary:params setObject:value forKey:FBSDKLoginManagerLoggerParamErrorCodeKey];
+    [FBSDKInternalUtility dictionary:params setObject:value forKey:FBSDKLoginManagerLoggerParamErrorCodeKey];
 
     NSError *innerError = error.userInfo[NSUnderlyingErrorKey];
     if (innerError != nil) {
       value = innerError.userInfo[@"error_message"] ?: innerError.userInfo[NSLocalizedDescriptionKey];
-      [FBSDKBasicUtility dictionary:_extras setObject:value forKey:@"inner_error_message"];
+      [FBSDKInternalUtility dictionary:_extras setObject:value forKey:@"inner_error_message"];
 
       value = innerError.userInfo[FBSDKGraphRequestErrorGraphErrorCodeKey] ?: [NSString stringWithFormat:@"%ld", (long)innerError.code];
-      [FBSDKBasicUtility dictionary:_extras setObject:value forKey:@"inner_error_code"];
+      [FBSDKInternalUtility dictionary:_extras setObject:value forKey:@"inner_error_code"];
     }
   } else if (error) {
     params[FBSDKLoginManagerLoggerParamErrorCodeKey] = @(error.code);
@@ -279,5 +307,3 @@ static NSString *const FBSDKLoginManagerLoggerTryBrowser = @"trySafariAuth";
 }
 
 @end
-
-#endif

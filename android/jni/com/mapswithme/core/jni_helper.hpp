@@ -4,10 +4,10 @@
 
 #include "ScopedLocalRef.hpp"
 
-#include "geometry/point2d.hpp"
-
 #include "base/buffer_vector.hpp"
 #include "base/logging.hpp"
+
+#include "geometry/point2d.hpp"
 
 #include <iterator>
 #include <memory>
@@ -33,7 +33,6 @@ extern jclass g_httpBackgroundUploaderClazz;
 extern jclass g_httpUploaderResultClazz;
 extern jclass g_networkPolicyClazz;
 extern jclass g_storageUtilsClazz;
-extern jclass g_elevationInfoClazz;
 
 namespace jni
 {

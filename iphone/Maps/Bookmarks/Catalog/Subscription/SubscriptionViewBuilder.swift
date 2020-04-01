@@ -1,14 +1,8 @@
 class SubscriptionViewBuilder {
-  enum SuccessDialog {
-    case goToCatalog
-    case success
-    case none
-  }
-
   static func build(type: SubscriptionGroupType,
                     parentViewController: UIViewController,
                     source: String,
-                    successDialog: SuccessDialog,
+                    openCatalog: Bool,
                     completion: ((Bool) -> Void)?) -> UIViewController {
     let subscribeViewController: BaseSubscriptionViewController
     switch type {
@@ -19,11 +13,9 @@ class SubscriptionViewBuilder {
     }
     subscribeViewController.source = source
     subscribeViewController.onSubscribe = {
-      parentViewController.dismiss(animated: true) {
-        completion?(true);
-      }
-      switch successDialog {
-      case .goToCatalog:
+      completion?(true);
+      parentViewController.dismiss(animated: true)
+      if openCatalog {
         let successDialog = SubscriptionGoToCatalogViewController(type, onOk: {
           parentViewController.dismiss(animated: true)
           let webViewController = CatalogWebViewController.catalogFromAbsoluteUrl(nil, utm: .none)
@@ -32,19 +24,16 @@ class SubscriptionViewBuilder {
           parentViewController.dismiss(animated: true)
         }
         parentViewController.present(successDialog, animated: true)
-      case .success:
+      } else {
         let successDialog = SubscriptionSuccessViewController(type) {
           parentViewController.dismiss(animated: true)
         }
         parentViewController.present(successDialog, animated: true)
-      case .none:
-        break;
       }
     }
     subscribeViewController.onCancel = {
-      parentViewController.dismiss(animated: true) {
-        completion?(false)
-      }
+      completion?(false)
+      parentViewController.dismiss(animated: true)
     }
     return subscribeViewController
   }

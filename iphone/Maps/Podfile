@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '11.0'
+platform :ios, '10.0'
 
 workspace './../../xcode/omim.xcworkspace'
 
@@ -11,10 +11,7 @@ target 'MAPS.ME' do
 pod 'AppsFlyerFramework', '4.9.0'
 pod 'Pushwoosh', '5.16.0'
 pod 'ActionSheetPicker-3.0', '2.3.0'
-pod 'FBSDKCoreKit', '5.15.1'
-pod 'FBSDKLoginKit', '5.15.1'
-pod 'Flurry-iOS-SDK/FlurrySDK', '10.1'
-pod 'mopub-ios-sdk', '5.10'
-pod 'MoPub-FacebookAudienceNetwork-Adapters', '5.6.0.0'
+pod 'FBSDKCoreKit', '4.42.0'
+pod 'FBSDKLoginKit', '4.42.0'
 
 end

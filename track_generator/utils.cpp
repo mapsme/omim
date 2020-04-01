@@ -1,21 +1,20 @@
 #include "track_generator/utils.hpp"
 
-#include "routing/routes_builder/routes_builder.hpp"
-
-#include "routing/base/followed_polyline.hpp"
-#include "routing/route.hpp"
-#include "routing/routing_callbacks.hpp"
-
 #include "kml/serdes.hpp"
 #include "kml/type_utils.hpp"
 #include "kml/types.hpp"
 
-#include "platform/platform.hpp"
+#include "routing/routes_builder/routes_builder.hpp"
+
+#include "routing/route.hpp"
+#include "routing/routing_callbacks.hpp"
+
+#include "routing/base/followed_polyline.hpp"
 
 #include "coding/file_reader.hpp"
 #include "coding/file_writer.hpp"
 
-#include "geometry/point_with_altitude.hpp"
+#include "platform/platform.hpp"
 
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
@@ -29,10 +28,10 @@ using namespace std;
 
 namespace
 {
-vector<geometry::PointWithAltitude> GetTrackPoints(std::vector<m2::PointD> const & routePoints)
+vector<m2::PointD> GetTrackPoints(std::vector<m2::PointD> const & routePoints)
 {
   auto const size = routePoints.size();
-  vector<geometry::PointWithAltitude> result;
+  vector<m2::PointD> result;
   result.reserve(size);
 
   for (size_t i = 0; i < size;)
@@ -67,7 +66,7 @@ vector<geometry::PointWithAltitude> GetTrackPoints(std::vector<m2::PointD> const
       ///           *
 
       /// Check if there are two perpendicular fake segments and get rid from both of them.
-      if (!result.empty() && result.back().GetPoint() == routePoints[j])
+      if (!result.empty() && result.back() == routePoints[j])
       {
         result.pop_back();
         ++j;
@@ -75,7 +74,7 @@ vector<geometry::PointWithAltitude> GetTrackPoints(std::vector<m2::PointD> const
     }
     else
     {
-      result.emplace_back(routePoints[i], geometry::kDefaultAltitudeMeters);
+      result.emplace_back(routePoints[i]);
     }
 
     i = j;
@@ -129,11 +128,7 @@ void GenerateTracks(string const & inputDir, string const & outputDir, routing::
     numberOfTracks += data.m_tracksData.size();
     for (auto & track : data.m_tracksData)
     {
-      std::vector<m2::PointD> waypoints;
-      waypoints.reserve(track.m_pointsWithAltitudes.size());
-      for (auto const & pt : track.m_pointsWithAltitudes)
-        waypoints.push_back(pt.GetPoint());
-
+      auto waypoints = track.m_points;
       routing::routes_builder::RoutesBuilder::Params params(type, move(waypoints));
 
       auto result = routesBuilder.ProcessTask(params);
@@ -144,8 +139,7 @@ void GenerateTracks(string const & inputDir, string const & outputDir, routing::
         continue;
       }
 
-      track.m_pointsWithAltitudes =
-          GetTrackPoints(result.GetRoutes().back().m_followedPolyline.GetPolyline().GetPoints());
+      track.m_points = GetTrackPoints(result.GetRoutes().back().m_followedPolyline.GetPolyline().GetPoints());
     }
 
     try

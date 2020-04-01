@@ -1,7 +1,9 @@
+import UIKit
+
 final class PhotoViewController: UIViewController {
   let scalingView = PhotoScalingView()
 
-  let photo: HotelPhotoUrl
+  let photo: GalleryItemModel
 
   private(set) lazy var doubleTapGestureRecognizer: UITapGestureRecognizer = {
     let gesture = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTapWithGestureRecognizer(_:)))
@@ -9,7 +11,7 @@ final class PhotoViewController: UIViewController {
     return gesture
   }()
 
-  init(photo: HotelPhotoUrl) {
+  init(photo: GalleryItemModel) {
     self.photo = photo
     super.init(nibName: nil, bundle: nil)
   }

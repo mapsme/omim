@@ -88,9 +88,6 @@ unique_ptr<tests_support::TestSearchRequest> SearchTest::MakeRequest(
   params.m_mode = Mode::Everywhere;
   params.m_needAddress = true;
   params.m_suggestsEnabled = false;
-  params.m_streetSearchRadiusM = tests_support::TestSearchRequest::kDefaultTestStreetSearchRadiusM;
-  params.m_villageSearchRadiusM =
-      tests_support::TestSearchRequest::kDefaultTestVillageSearchRadiusM;
 
   auto request = make_unique<tests_support::TestSearchRequest>(m_engine, params);
   request->Run();

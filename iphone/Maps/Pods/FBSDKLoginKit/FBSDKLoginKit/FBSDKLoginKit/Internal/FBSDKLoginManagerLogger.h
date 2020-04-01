@@ -16,25 +16,22 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "TargetConditionals.h"
-
-#if !TARGET_OS_TV
-
 #import "FBSDKLoginManager+Internal.h"
 
 FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_Native;
 FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_Browser;
+FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_System;
+FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_Webview;
 FOUNDATION_EXPORT NSString *const FBSDKLoginManagerLoggerAuthMethod_SFVC;
 
 
-NS_SWIFT_NAME(LoginManagerLogger)
 @interface FBSDKLoginManagerLogger : NSObject
 + (FBSDKLoginManagerLogger *)loggerFromParameters:(NSDictionary *)parameters;
 
 - (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)new NS_UNAVAILABLE;
 
-- (instancetype)initWithLoggingToken:(NSString *)loggingToken NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithLoggingToken:(NSString *)loggingToken;
 
 // this must not retain loginManager - only used to conveniently grab various properties to log.
 - (void)startSessionForLoginManager:(FBSDKLoginManager *)loginManager;
@@ -45,8 +42,7 @@ NS_SWIFT_NAME(LoginManagerLogger)
 
 - (NSDictionary *)parametersWithTimeStampAndClientState:(NSDictionary *)loginParams forAuthMethod:(NSString *)authMethod;
 - (void)willAttemptAppSwitchingBehavior;
+- (void)systemAuthDidShowDialog:(BOOL)didShowDialog isUnTOSedDevice:(BOOL)isUnTOSedDevice;
 
 - (void)logNativeAppDialogResult:(BOOL)result dialogDuration:(NSTimeInterval)dialogDuration;
 @end
-
-#endif

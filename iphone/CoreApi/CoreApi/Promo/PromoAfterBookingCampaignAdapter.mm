@@ -1,18 +1,43 @@
 #import "PromoAfterBookingCampaignAdapter.h"
-#import "PromoAfterBookingData+Core.h"
-#import <CoreApi/Framework.h>
-#import "platform/network_policy.hpp"
+
+#include <CoreApi/Framework.h>
+#include "platform/network_policy.hpp"
+
+@interface PromoAfterBookingCampaignAdapter () {
+  promo::AfterBooking m_afterBooking;
+}
+@end
 
 @implementation PromoAfterBookingCampaignAdapter
 
-+ (PromoAfterBookingData*)afterBookingData {
-  auto policy = platform::GetCurrentNetworkPolicy();
-  auto promoApi = GetFramework().GetPromoApi(policy);
-  if (promoApi != nil) {
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    auto policy = platform::GetCurrentNetworkPolicy();
+    auto promoApi = GetFramework().GetPromoApi(policy);
+    if (promoApi == nullptr)
+      return nil;
+
     auto const promoAfterBooking = promoApi->GetAfterBooking(languages::GetCurrentNorm());
-    return [[PromoAfterBookingData alloc] initWithAfterBooking:promoAfterBooking];
+
+    if (promoAfterBooking.IsEmpty())
+      return nil;
+
+    m_afterBooking = promoAfterBooking;
   }
-  return [[PromoAfterBookingData alloc] init];
+  return self;
+}
+
+- (NSString *)promoId {
+  return @(m_afterBooking.m_id.c_str());
+}
+
+- (NSString *)promoUrl {
+  return @(m_afterBooking.m_promoUrl.c_str());
+}
+
+- (NSString *)pictureUrl {
+  return @(m_afterBooking.m_pictureUrl.c_str());
 }
 
 @end

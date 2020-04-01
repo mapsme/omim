@@ -26,6 +26,7 @@ namespace osmoh
                                 bind(&YearRange::SetEnd, _val, _2)]
       | (year >> lit('+'))     [bind(&YearRange::SetStart, _val, _1),
                                 bind(&YearRange::SetPlus, _val, true)]
+      | year                   [bind(&YearRange::SetStart, _val, _1)]
       ;
 
       main %= (year_range % ',');

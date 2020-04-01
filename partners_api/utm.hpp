@@ -1,6 +1,6 @@
 #pragma once
 
-#include "coding/url.hpp"
+#include "base/url_helpers.hpp"
 
 #include <cstdint>
 #include <string>
@@ -16,9 +16,9 @@ enum class UTM : uint8_t
   DiscoveryPageGallery,
   TipsAndTricks,
   BookingPromo,
+  CrownButton,
   DiscoverCatalogOnboarding,
-  FreeSamplesOnboading,
-  OutdoorPlacepageGallery,
+  FreeSamplesOnboading
 };
 
 enum class UTMContent : uint8_t
@@ -34,7 +34,7 @@ inline std::string InjectUTM(std::string const & url, UTM utm)
   if (url.empty())
     return {};
 
-  url::Params params;
+  base::url::Params params;
   params.emplace_back("utm_source", "maps.me");
   switch (utm)
   {
@@ -70,6 +70,10 @@ inline std::string InjectUTM(std::string const & url, UTM utm)
     params.emplace_back("utm_medium", "popup");
     params.emplace_back("utm_campaign", "bookingcom");
     break;
+  case UTM::CrownButton:
+    params.emplace_back("utm_medium", "button");
+    params.emplace_back("utm_campaign", "map_sponsored_button");
+    break;
   case UTM::DiscoverCatalogOnboarding:
     params.emplace_back("utm_medium", "onboarding_button");
     params.emplace_back("utm_campaign", "catalog_discovery");
@@ -78,19 +82,15 @@ inline std::string InjectUTM(std::string const & url, UTM utm)
     params.emplace_back("utm_medium", "onboarding_button");
     params.emplace_back("utm_campaign", "sample_discovery");
     break;
-  case UTM::OutdoorPlacepageGallery:
-    params.emplace_back("utm_medium", "gallery");
-    params.emplace_back("utm_campaign", "outdoor_placepage_gallery");
-    break;
   case UTM::None:
     return url;
   }
-  return url::Make(url, params);
+  return base::url::Make(url, params);
 }
 
 inline std::string InjectUTMContent(std::string const & url, UTMContent content)
 {
-  url::Params params;
+  base::url::Params params;
   switch (content)
   {
   case UTMContent::Description:
@@ -106,10 +106,5 @@ inline std::string InjectUTMContent(std::string const & url, UTMContent content)
     params.emplace_back("utm_content", "more");
     break;
   }
-  return url::Make(url, params);
-}
-
-inline std::string InjectUTMTerm(std::string const & url, std::string const & value)
-{
-  return url::Make(url, {{"utm_term", value}});
+  return base::url::Make(url, params);
 }

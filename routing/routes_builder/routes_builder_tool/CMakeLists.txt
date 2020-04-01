@@ -30,9 +30,7 @@ omim_link_libraries(
   icu
   jansson
   oauthcpp
-  opening_hours
   protobuf
-  opening_hours
   stats_client
   succinct
   gflags

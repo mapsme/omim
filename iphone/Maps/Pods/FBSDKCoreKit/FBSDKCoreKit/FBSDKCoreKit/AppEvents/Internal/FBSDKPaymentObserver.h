@@ -19,7 +19,6 @@
 #import <Foundation/Foundation.h>
 
 // Class to encapsulate implicit logging of purchase events
-NS_SWIFT_NAME(PaymentObserver)
 @interface FBSDKPaymentObserver : NSObject
 + (void)startObservingTransactions;
 + (void)stopObservingTransactions;

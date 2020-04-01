@@ -4,7 +4,6 @@
 #include "generator/booking_dataset.hpp"
 #include "generator/complex_loader.hpp"
 #include "generator/feature_merger.hpp"
-#include "generator/isolines_generator.hpp"
 #include "generator/mini_roundabout_transformer.hpp"
 #include "generator/node_mixer.hpp"
 #include "generator/osm2type.hpp"
@@ -129,7 +128,7 @@ std::string GetCountryNameFromTmpMwmPath(std::string filename)
 
 bool FilenameIsCountry(std::string const & filename, AffiliationInterface const & affiliation)
 {
-  return affiliation.HasCountryByName(GetCountryNameFromTmpMwmPath(filename));
+  return affiliation.HasRegionByName(GetCountryNameFromTmpMwmPath(filename));
 }
 
 class PlaceHelper
@@ -327,11 +326,6 @@ void CountryFinalProcessor::SetMiniRoundabouts(std::string const & filename)
   m_miniRoundaboutsFilename = filename;
 }
 
-void CountryFinalProcessor::SetIsolinesDir(std::string const & dir)
-{
-  m_isolinesPath = dir;
-}
-
 void CountryFinalProcessor::Process()
 {
   if (!m_hotelsFilename.empty())
@@ -346,8 +340,7 @@ void CountryFinalProcessor::Process()
     ProcessRoundabouts();
   if (!m_fakeNodesFilename.empty())
     AddFakeNodes();
-  if (!m_isolinesPath.empty())
-    AddIsolines();
+
   Finish();
 }
 
@@ -414,27 +407,6 @@ void CountryFinalProcessor::ProcessRoundabouts()
       });
     });
   }
-}
-
-void CountryFinalProcessor::AddIsolines()
-{
-  // For generated isolines must be built isolines_info section based on the same
-  // binary isolines file.
-  IsolineFeaturesGenerator isolineFeaturesGenerator(m_isolinesPath);
-  auto const affiliation = CountriesFilesIndexAffiliation(m_borderPath, m_haveBordersForWholeWorld);
-  ThreadPool pool(m_threadsCount);
-  ForEachCountry(m_temporaryMwmPath, [&](auto const & filename) {
-    pool.SubmitWork([&, filename]() {
-      if (!FilenameIsCountry(filename, affiliation))
-        return;
-      auto const countryName = GetCountryNameFromTmpMwmPath(filename);
-
-      auto const fullPath = base::JoinPath(m_temporaryMwmPath, filename);
-      FeatureBuilderWriter<MaxAccuracy> writer(fullPath, FileWriter::Op::OP_APPEND);
-      isolineFeaturesGenerator.GenerateIsolines(
-        countryName, [&writer](feature::FeatureBuilder && fb){ writer.Write(fb); });
-    });
-  });
 }
 
 void CountryFinalProcessor::ProcessRoutingCityBoundaries()

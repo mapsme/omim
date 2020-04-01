@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "routing/routing_quality/routing_quality_tool/utils.hpp"
 
 #include "routing/vehicle_mask.hpp"
@@ -7,14 +9,11 @@
 
 #include "coding/string_utf8_multilang.hpp"
 
-#include "geometry/point_with_altitude.hpp"
-
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
 
 #include <iomanip>
-#include <utility>
 
 using namespace routing::routes_builder;
 
@@ -33,13 +32,11 @@ void PrintWithSpaces(std::string const & str, size_t maxN)
     std::cout << " ";
 }
 
-std::vector<geometry::PointWithAltitude> ConvertToPointsWithAltitudes(
-    std::vector<ms::LatLon> const & latlons)
+std::vector<m2::PointD> ConvertToPointDVector(std::vector<ms::LatLon> const & latlons)
 {
-  std::vector<geometry::PointWithAltitude> result;
-  result.reserve(latlons.size());
+  std::vector<m2::PointD> result(latlons.size());
   for (size_t i = 0; i < latlons.size(); ++i)
-    result.emplace_back(mercator::FromLatLon(latlons[i]), geometry::kDefaultAltitudeMeters);
+    result[i] = mercator::FromLatLon(latlons[i]);
 
   return result;
 }
@@ -93,19 +90,14 @@ void SaveKmlFileDataTo(RoutesBuilder::Result const & mapsmeResult,
   kml.m_bookmarksData.emplace_back(CreateBookmark(start, true /* isStart */));
   kml.m_bookmarksData.emplace_back(CreateBookmark(finish, false /* isStart */));
 
-  auto & resultPoints =
-      mapsmeResult.GetRoutes().back().m_followedPolyline.GetPolyline().GetPoints();
   kml::TrackData mapsmeTrack;
-  mapsmeTrack.m_pointsWithAltitudes.reserve(resultPoints.size());
-  for (auto const & pt : resultPoints)
-    mapsmeTrack.m_pointsWithAltitudes.emplace_back(pt, geometry::kDefaultAltitudeMeters);
-
+  mapsmeTrack.m_points = mapsmeResult.GetRoutes().back().m_followedPolyline.GetPolyline().GetPoints();
   addTrack(std::move(mapsmeTrack));
 
   for (auto const & route : apiResult.GetRoutes())
   {
     kml::TrackData apiTrack;
-    apiTrack.m_pointsWithAltitudes = ConvertToPointsWithAltitudes(route.GetWaypoints());
+    apiTrack.m_points = ConvertToPointDVector(route.GetWaypoints());
     addTrack(std::move(apiTrack));
   }
 
@@ -340,8 +332,7 @@ void CreatePythonBarByMap(std::string const & pythonScriptPath,
                           std::vector<std::vector<double>> const & barHeights,
                           std::vector<std::string> const & legends,
                           std::string const & xlabel,
-                          std::string const & ylabel,
-                          bool drawPercents)
+                          std::string const & ylabel)
 {
   std::ofstream python(pythonScriptPath);
   CHECK(python.good(), ("Can not open:", pythonScriptPath, "for writing."));
@@ -356,10 +347,6 @@ void CreatePythonBarByMap(std::string const & pythonScriptPath,
     counts += "]";
   else
     counts.back() = ']';
-
-  std::string const formatString = drawPercents
-                                       ? "f'{round(height, 2)}({round(height / summ * 100, 2)}%)'"
-                                       : "f'{round(height, 2)}'";
 
   python << R"(
 import matplotlib
@@ -394,7 +381,7 @@ def autolabel(rects, counts_ith):
 
     for rect in rects:
         height = rect.get_height()
-        ax.annotate()" + formatString + R"(,
+        ax.annotate('{}({:2.0f}%)'.format(height, height / summ * 100),
                     xy=(rect.get_x() + rect.get_width() / 2, height),
                     xytext=(0, 3),  # 3 points vertical offset
                     textcoords="offset points",
@@ -455,18 +442,14 @@ SimilarityCounter::~SimilarityCounter()
 
 void SimilarityCounter::Push(Result const & result)
 {
-  auto left = kIntervals[m_currentInterval].m_left;
-  auto right = kIntervals[m_currentInterval].m_right;
-  while (!(left <= result.m_similarity && result.m_similarity < right))
+  auto const left = kIntervals[m_currentInterval].m_left;
+  auto const right = kIntervals[m_currentInterval].m_right;
+  if (!(left <= result.m_similarity && result.m_similarity < right))
   {
     ++m_currentInterval;
     m_routesSaver.TurnToNextFile();
-    CHECK_LESS(m_currentInterval, m_routesCounter.size(), ());
-    left = kIntervals[m_currentInterval].m_left;
-    right = kIntervals[m_currentInterval].m_right;
   }
 
-  CHECK_LESS(m_currentInterval, m_routesCounter.size(), ());
   if (m_routesCounter[m_currentInterval].m_routesNumber == 0)
   {
     LOG(LINFO,

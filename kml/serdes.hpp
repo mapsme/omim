@@ -6,9 +6,6 @@
 #include "coding/reader.hpp"
 #include "coding/writer.hpp"
 
-#include "geometry/point2d.hpp"
-#include "geometry/point_with_altitude.hpp"
-
 #include "base/exception.hpp"
 #include "base/stl_helpers.hpp"
 
@@ -86,6 +83,7 @@ private:
   };
 
   void ResetPoint();
+  bool ParsePoint(std::string const & s, char const * delim, m2::PointD & pt);
   void SetOrigin(std::string const & s);
   void ParseLineCoordinates(std::string const & s, char const * blockSeparator,
                             char const * coordSeparator);
@@ -98,7 +96,7 @@ private:
 
   std::vector<std::string> m_tags;
   GeometryType m_geometryType;
-  std::vector<geometry::PointWithAltitude> m_pointsWithAltitudes;
+  std::vector<m2::PointD> m_points;
   uint32_t m_color;
 
   std::string m_styleId;

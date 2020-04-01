@@ -16,28 +16,13 @@
 
 namespace tracking
 {
-struct ArchivingSettings
-{
-  size_t m_minFreeSpaceOnDiskBytes = 30 * 1024 * 1024;  // 30 Mb
-  size_t m_dumpIntervalSeconds = 60;
-  size_t m_maxFilesToSave = 100;
-  size_t m_maxArchivesToSave = 10;
-  size_t m_uploadIntervalSeconds = 15 * 60;
-  uint32_t m_version = 1;
-};
-
-/// \returns path to the directory with the tracks.
-std::string GetTracksDirectory();
-
 class ArchivalManager
 {
 public:
-  ArchivalManager(std::string const & url);
+  ArchivalManager(uint32_t version, std::string const & url);
 
   ArchivalManager(ArchivalManager const &) = delete;
   ArchivalManager & operator=(ArchivalManager const &) = delete;
-
-  void SetSettings(ArchivingSettings const & settings);
 
   /// \brief Saves to file contents of the |archive| if it is necessary to |dumpAnyway|
   /// or the |archive| is ready to be dumped.
@@ -45,7 +30,7 @@ public:
   void Dump(T & archive, routing::RouterType const & trackType, bool dumpAnyway);
 
   /// \returns time span between Archive dumps.
-  size_t IntervalBetweenDumpsSeconds();
+  static size_t IntervalBetweenDumpsSeconds();
 
   /// \brief Prepares zipped files and creates task for uploading them.
   void PrepareUpload();
@@ -57,7 +42,7 @@ private:
   bool ReadyToUpload();
 
   size_t GetTimeFromLastUploadSeconds();
-  size_t GetMaxSavedFilesCount(std::string const & extension) const;
+  static size_t GetMaxSavedFilesCount(std::string const & extension);
   std::chrono::seconds ReadTimestamp(std::string const & filePath);
   void WriteTimestamp(std::string const & filePath);
 
@@ -71,7 +56,8 @@ private:
   void CreateUploadTask(std::string const & filePath);
 
   std::string const m_url;
-  ArchivingSettings m_settings;
+  uint32_t const m_version;
+
   std::string m_tracksDir;
   std::string m_timestampFile;
 };

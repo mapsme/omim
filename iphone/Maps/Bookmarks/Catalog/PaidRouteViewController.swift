@@ -29,8 +29,6 @@ class PaidRouteViewController: MWMViewController {
   private var product: IStoreProduct?
   private var subscription: ISubscription?
   private let subscriptionManager: ISubscriptionManager
-  private let subscriptionType: SubscriptionGroupType
-  private let paidRoutesSubscriptionCampaign = PromoCampaignManager.manager().paidRoutesSubscriptionCampaign
 
   override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
     get { return [.portrait] }
@@ -47,7 +45,6 @@ class PaidRouteViewController: MWMViewController {
     self.imageUrl = imageUrl
     self.purchase = purchase
     self.statistics = statistics
-    self.subscriptionType = subscriptionType
     switch subscriptionType {
     case .sightseeing:
       self.subscriptionManager = InAppPurchase.bookmarksSubscriptionManager
@@ -55,9 +52,7 @@ class PaidRouteViewController: MWMViewController {
       self.subscriptionManager = InAppPurchase.allPassSubscriptionManager
     }
     super.init(nibName: nil, bundle: nil)
-    if paidRoutesSubscriptionCampaign.actionType == .instant {
-      self.subscriptionManager.addListener(self)
-    }
+    self.subscriptionManager.addListener(self)
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -65,14 +60,13 @@ class PaidRouteViewController: MWMViewController {
   }
 
   deinit {
-    if paidRoutesSubscriptionCampaign.actionType == .instant {
-      subscriptionManager.removeListener(self)
-    }
+    subscriptionManager.removeListener(self)
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    buyButton.layer.borderColor = UIColor.linkBlue().cgColor
     routeTitleLabel.text = name
     routeAuthorLabel.text = author
     if let url = imageUrl {
@@ -97,43 +91,32 @@ class PaidRouteViewController: MWMViewController {
 
     dispatchGroup.notify(queue: .main) { [weak self] in
       self?.loadingIndicator.stopAnimating()
-      guard let product = product,
-        let subscriptions = subscriptions,
-        let subscriptionGroup: SubscriptionGroup? = SubscriptionGroup(subscriptions: subscriptions),
-        let actionType = self?.paidRoutesSubscriptionCampaign.actionType,
-        let subscriptionType = self?.subscriptionType,
-        let subscriptionItem = actionType == .instant ? subscriptionGroup?[.year] : subscriptionGroup?[.month] else {
-          MWMAlertViewController.activeAlert().presentInfoAlert(L("price_error_title"),
-                                                                text: L("price_error_subtitle"))
-          if let s = self { s.delegate?.didCancelPurchase(s) }
-          return
+      guard let product = product, let subscriptions = subscriptions else {
+        MWMAlertViewController.activeAlert().presentInfoAlert(L("price_error_title"),
+                                                              text: L("price_error_subtitle"))
+        if let s = self { s.delegate?.didCancelPurchase(s) }
+        return
       }
       self?.productNameLabel.text = product.localizedName
       self?.buyButton.setTitle(String(coreFormat: L("buy_btn"), arguments: [product.formattedPrice]), for: .normal)
       self?.buyButton.isHidden = false
 
+      let idx = Int(arc4random() % 2)
+      let s = subscriptions[idx]
+
       let formatter = NumberFormatter()
-      formatter.locale = subscriptionItem.priceLocale
+      formatter.locale = s.priceLocale
       formatter.numberStyle = .currency
 
-      var titleFormat: String = ""
-      switch actionType {
-      case .instant:
-        titleFormat = subscriptionType == .allPass ? "buy_btn_for_subscription_3"
-          : "buy_btn_for_subscription_ios_only_year_version_2"
-      case .window:
-        titleFormat = subscriptionType == .allPass ? "buy_btn_for_subscription_version_3"
-          : "buy_btn_for_subscription_ios_only_mo_version_2"
-
-      }
-      let title = String(coreFormat: L(titleFormat), arguments: [formatter.string(from: subscriptionItem.price) ?? ""])
+      let titleFormat = L((s.period == .year) ? "buy_btn_for_subscription_ios_only_year_version_2"
+        : "buy_btn_for_subscription_ios_only_mo_version_2")
+      let title = String(coreFormat: titleFormat, arguments: [formatter.string(from: s.price) ?? ""])
       self?.subscribeButton.setTitle(title, for: .normal)
       self?.subscribeButton.isEnabled = true
-      self?.subscription = subscriptionItem.subscription
+      self?.subscription = s
       Statistics.logEvent(kStatInappShow, withParameters: [kStatVendor : self?.subscriptionManager.vendorId ?? "",
-                                                           kStatProduct : subscriptionItem.productId,
-                                                           kStatPurchase : self?.subscriptionManager.serverId ?? "",
-                                                           kStatTestGroup: self?.paidRoutesSubscriptionCampaign.testGroupStatName ?? ""],
+                                                           kStatProduct : s.productId,
+                                                           kStatPurchase : self?.subscriptionManager.serverId ?? ""],
                           with: .realtime)
     }
 
@@ -214,16 +197,6 @@ class PaidRouteViewController: MWMViewController {
   }
 
   @IBAction func onSubscribe(_ sender: UIButton) {
-    let type = PromoCampaignManager.manager().paidRoutesSubscriptionCampaign.actionType
-    switch type {
-    case .instant:
-      onInstantSubscribe()
-    case .window:
-      onWindowSubscribe()
-    }
-  }
-
-  private func onInstantSubscribe() {
     guard let subscription = subscription else {
       assertionFailure("Subscription can't be nil")
       return
@@ -246,18 +219,6 @@ class PaidRouteViewController: MWMViewController {
                           with: .realtime)
       self?.subscriptionManager.subscribe(to: subscription)
     }
-  }
-
-  private func onWindowSubscribe() {
-    let subscriptionView = SubscriptionViewBuilder.build(type: subscriptionType,
-                                                         parentViewController: self,
-                                                         source: kStatCard,
-                                                         successDialog: .none) {[weak self] (success) in
-                                                          if success, self != nil {
-                                                            self?.delegate?.didCompleteSubscription(self!)
-                                                          }
-    }
-    self.present(subscriptionView, animated: true, completion: nil)
   }
 
   @IBAction func onCancel(_ sender: UIButton) {
@@ -290,7 +251,7 @@ extension PaidRouteViewController : SubscriptionManagerListener {
     loadingView.isHidden = true
     if (isValid) {
       delegate?.didCompleteSubscription(self)
-      let successDialog = SubscriptionSuccessViewController(subscriptionType) { [weak self] in
+      let successDialog = SubscriptionSuccessViewController(.sightseeing) { [weak self] in
         self?.dismiss(animated: true)
       }
       present(successDialog, animated: true)

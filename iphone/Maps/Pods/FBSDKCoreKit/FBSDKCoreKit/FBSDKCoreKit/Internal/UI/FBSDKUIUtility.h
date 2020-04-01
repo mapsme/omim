@@ -18,6 +18,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import "../FBSDKMath.h"
+
 /**
   Insets a CGSize with the insets in a UIEdgeInsets.
  */
@@ -68,10 +70,10 @@ static inline CGSize FBSDKTextSize(NSString *text,
                                NSParagraphStyleAttributeName: paragraphStyle,
                                };
   NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:text attributes:attributes];
-  CGSize size = [attributedString boundingRectWithSize:constrainedSize
-                                               options:(NSStringDrawingUsesDeviceMetrics |
-                                                        NSStringDrawingUsesLineFragmentOrigin |
-                                                        NSStringDrawingUsesFontLeading)
-                                               context:NULL].size;
-  return CGSizeMake(ceilf(size.width), ceilf(size.height));
+  CGSize size = [FBSDKMath ceilForSize:[attributedString boundingRectWithSize:constrainedSize
+                                                                      options:(NSStringDrawingUsesDeviceMetrics |
+                                                                               NSStringDrawingUsesLineFragmentOrigin |
+                                                                               NSStringDrawingUsesFontLeading)
+                                                                      context:NULL].size];
+  return [FBSDKMath ceilForSize:size];
 }

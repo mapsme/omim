@@ -4,7 +4,6 @@
 #include "storage/downloader_search_params.hpp"
 #include "storage/storage_defines.hpp"
 
-#include "platform/downloader_defines.hpp"
 #include "platform/settings.hpp"
 
 #include "base/assert.hpp"
@@ -518,7 +517,7 @@ namespace qt
   }
 
   void UpdateDialog::OnCountryDownloadProgress(CountryId const & countryId,
-                                               downloader::Progress const & progress)
+                                               MapFilesDownloader::Progress const & progress)
   {
     auto const items = GetTreeItemsByCountryId(countryId);
     for (auto const item : items)

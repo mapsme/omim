@@ -16,9 +16,8 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
-NS_ASSUME_NONNULL_BEGIN
 
 #define FBSDK_DEVICE_INFO_PARAM @"device_info"
 
@@ -28,13 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
   Helper class for device requests mDNS broadcasts. Note this is only intended for
  internal consumption.
  */
-NS_SWIFT_NAME(DeviceRequestsHelper)
 @interface FBSDKDeviceRequestsHelper : NSObject
 
 /**
   Get device info to include with the GraphRequest
  */
-@property (class, nonatomic, copy, readonly) NSString *getDeviceInfo;
++ (NSString *)getDeviceInfo;
 
 /**
   Start the mDNS advertisement service for a device request
@@ -58,5 +56,3 @@ NS_SWIFT_NAME(DeviceRequestsHelper)
 + (void)cleanUpAdvertisementService:(id<NSNetServiceDelegate>)delegate;
 
 @end
-
-NS_ASSUME_NONNULL_END

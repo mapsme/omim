@@ -10,9 +10,10 @@ namespace storage
 {
 namespace diffs
 {
-// Status of the diffs data source as a whole.
+// Status of the diff manager as a whole.
 enum class Status
 {
+  Undefined,
   NotAvailable,
   Available
 };
@@ -27,5 +28,13 @@ struct DiffInfo final
 };
 
 using NameDiffInfoMap = std::unordered_map<storage::CountryId, DiffInfo>;
+
+struct LocalMapsInfo final
+{
+  using NameVersionMap = std::unordered_map<storage::CountryId, uint64_t>;
+
+  uint64_t m_currentDataVersion = 0;
+  NameVersionMap m_localMaps;
+};
 }  // namespace diffs
 }  // namespace storage

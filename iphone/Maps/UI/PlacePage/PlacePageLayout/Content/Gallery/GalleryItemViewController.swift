@@ -1,11 +1,14 @@
+@objc(MWMGalleryItemViewController)
 final class GalleryItemViewController: MWMViewController {
-  static func instance(photo: HotelPhotoUrl) -> GalleryItemViewController {
+  typealias Model = GalleryItemModel
+
+  static func instance(model: Model) -> GalleryItemViewController {
     let vc = GalleryItemViewController(nibName: toString(self), bundle: nil)
-    vc.photo = photo
+    vc.model = model
     return vc
   }
 
-  private var photo: HotelPhotoUrl!
+  private var model: Model!
 
   @IBOutlet private weak var scrollView: UIScrollView!
   fileprivate var imageView: UIImageView!
@@ -23,8 +26,7 @@ final class GalleryItemViewController: MWMViewController {
     imageView = UIImageView(frame: scrollView.bounds)
     imageView.contentMode = .scaleAspectFit
     scrollView.addSubview(imageView)
-    guard let url = URL(string: photo.original) else { return }
-    imageView.wi_setImage(with: url, transitionDuration: kDefaultAnimationDuration)
+    imageView.wi_setImage(with: model.imageURL, transitionDuration: kDefaultAnimationDuration)
   }
 
   override func viewDidLayoutSubviews() {

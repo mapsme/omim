@@ -1,3 +1,4 @@
+import UIKit
 
 final class ExpandableReviewView: UIView {
   var contentLabel: UILabel = {
@@ -75,8 +76,8 @@ final class ExpandableReviewView: UIView {
     self.moreLabel.text = settings.expandText
   }
 
-  override func applyTheme() {
-    super.applyTheme()
+  override func mwm_refreshUI() {
+    super.mwm_refreshUI()
     settings.textColor = settings.textColor.opposite()
     settings.expandTextColor = settings.expandTextColor.opposite()
   }

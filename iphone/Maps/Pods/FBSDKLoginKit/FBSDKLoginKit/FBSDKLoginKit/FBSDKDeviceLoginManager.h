@@ -18,8 +18,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "FBSDKDeviceLoginCodeInfo.h"
-#import "FBSDKDeviceLoginManagerResult.h"
+#import <FBSDKLoginKit/FBSDKDeviceLoginCodeInfo.h>
+#import <FBSDKLoginKit/FBSDKDeviceLoginManagerResult.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,7 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 /*!
  @abstract A delegate for `FBSDKDeviceLoginManager`.
  */
-NS_SWIFT_NAME(DeviceLoginManagerDelegate)
 @protocol FBSDKDeviceLoginManagerDelegate <NSObject>
 
 /*!
@@ -37,8 +36,7 @@ NS_SWIFT_NAME(DeviceLoginManagerDelegate)
  @param loginManager the login manager instance.
  @param codeInfo the code info data.
  */
-- (void)deviceLoginManager:(FBSDKDeviceLoginManager *)loginManager
-       startedWithCodeInfo:(FBSDKDeviceLoginCodeInfo *)codeInfo;
+- (void)deviceLoginManager:(FBSDKDeviceLoginManager *)loginManager startedWithCodeInfo:(FBSDKDeviceLoginCodeInfo *)codeInfo;
 
 /*!
  @abstract Indicates the device login flow has finished.
@@ -62,14 +60,13 @@ NS_SWIFT_NAME(DeviceLoginManagerDelegate)
 
  See [Facebook Device Login](https://developers.facebook.com/docs/facebook-login/for-devices).
  */
-NS_SWIFT_NAME(DeviceLoginManager)
 @interface FBSDKDeviceLoginManager : NSObject <NSNetServiceDelegate>
 
 /*!
  @abstract Initializes a new instance.
  @param permissions permissions to request.
  */
-- (instancetype)initWithPermissions:(NSArray<NSString *> *)permissions
+- (instancetype)initWithPermissions:(nullable NSArray<NSString *> *)permissions
                    enableSmartLogin:(BOOL)enableSmartLogin
 NS_DESIGNATED_INITIALIZER;
 
@@ -84,7 +81,7 @@ NS_DESIGNATED_INITIALIZER;
 /*!
  @abstract the requested permissions.
  */
-@property (nonatomic, copy, readonly) NSArray<NSString *> *permissions;
+@property (nullable, nonatomic, copy, readonly) NSArray<NSString *> *permissions;
 
 /*!
  @abstract the optional URL to redirect the user to after they complete the login.

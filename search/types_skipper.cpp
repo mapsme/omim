@@ -37,7 +37,6 @@ TypesSkipper::TypesSkipper()
   }
   m_skipAlways[1].push_back(c.GetTypeByPath({"sponsored", "partner18"}));
   m_skipAlways[1].push_back(c.GetTypeByPath({"sponsored", "partner19"}));
-  m_skipAlways[0].push_back(c.GetTypeByPath({"isoline"}));
 }
 
 void TypesSkipper::SkipEmptyNameTypes(feature::TypesHolder & types) const

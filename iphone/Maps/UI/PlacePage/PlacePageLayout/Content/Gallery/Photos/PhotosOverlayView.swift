@@ -1,18 +1,20 @@
+import UIKit
+
 final class PhotosOverlayView: UIView {
   private var navigationBar: UINavigationBar!
   private var navigationItem: UINavigationItem!
 
   weak var photosViewController: PhotosViewController?
 
-  var photo: HotelPhotoUrl? {
+  var photo: GalleryItemModel? {
     didSet {
       guard let photo = photo else {
         navigationItem.title = nil
         return
       }
       guard let photosViewController = photosViewController else { return }
-      if let index = photosViewController.photos.firstIndex(where: { $0 === photo }) {
-        navigationItem.title = "\(index + 1) / \(photosViewController.photos.count)"
+      if let index = photosViewController.photos.items.firstIndex(where: { $0 === photo }) {
+        navigationItem.title = "\(index + 1) / \(photosViewController.photos.items.count)"
       }
     }
   }
@@ -50,7 +52,7 @@ final class PhotosOverlayView: UIView {
     navigationBar.items = [navigationItem]
     addSubview(navigationBar)
 
-    navigationBar.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor).isActive = true
+    navigationBar.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
     navigationBar.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
     navigationBar.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
 

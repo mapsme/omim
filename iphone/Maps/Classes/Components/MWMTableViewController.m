@@ -3,7 +3,6 @@
 #import "MWMAlertViewController.h"
 #import "MWMTableViewCell.h"
 #import "MWMTableViewController.h"
-#import "SwiftBridge.h"
 
 #import "3party/Alohalytics/src/alohalytics_objc.h"
 
@@ -20,12 +19,25 @@
   return NO;
 }
 
+- (void)mwm_refreshUI
+{
+  [self.navigationController.navigationBar mwm_refreshUI];
+  MapViewController * mapViewController = [MapViewController sharedController];
+  for (UIViewController * vc in self.navigationController.viewControllers.reverseObjectEnumerator)
+  {
+    if (![vc isEqual:mapViewController])
+      [vc.view mwm_refreshUI];
+  }
+  [mapViewController mwm_refreshUI];
+}
+
 - (void)viewDidLoad
 {
   [super viewDidLoad];
   if (@available(iOS 11.0, *))
     self.tableView.insetsContentViewsToSafeArea = YES;
-  self.tableView.styleName = @"TableView:PressBackground";
+  self.tableView.backgroundColor = [UIColor pressBackground];
+  self.tableView.separatorColor = [UIColor blackDividers];
   [self.navigationController.navigationBar setTranslucent:NO];
   [self.tableView registerClass:[MWMTableViewCell class]
          forCellReuseIdentifier:[UITableViewCell className]];

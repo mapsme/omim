@@ -55,8 +55,6 @@ UNIT_TEST(MapUint32ValTest)
       uint32_t res;
       TEST(table->Get(d.first, res), ());
       TEST_EQUAL(res, d.second, ());
-      TEST(table->GetThreadsafe(d.first, res), ());
-      TEST_EQUAL(res, d.second, ());
     }
   }
 }

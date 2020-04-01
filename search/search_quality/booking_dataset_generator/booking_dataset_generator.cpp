@@ -1,11 +1,6 @@
+#include "search/result.hpp"
 #include "search/search_quality/helpers.hpp"
 #include "search/search_quality/sample.hpp"
-
-#include "search/result.hpp"
-
-#include "storage/country_info_getter.hpp"
-#include "storage/storage.hpp"
-#include "storage/storage_defines.hpp"
 
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_source.hpp"
@@ -14,7 +9,9 @@
 #include "indexer/scales.hpp"
 #include "indexer/utils.hpp"
 
-#include "platform/platform_tests_support/helpers.hpp"
+#include "storage/country_info_getter.hpp"
+#include "storage/storage.hpp"
+#include "storage/storage_defines.hpp"
 
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
@@ -25,8 +22,6 @@
 #include "base/file_name_utils.hpp"
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
-
-#include "defines.hpp"
 
 #include <cstddef>
 #include <fstream>
@@ -39,6 +34,8 @@
 #include <vector>
 
 #include "3party/gflags/src/gflags/gflags.h"
+
+#include "defines.hpp"
 
 using namespace search::search_quality;
 using namespace search;
@@ -135,7 +132,7 @@ map<string, string> ParseAddressDataset(string const & filename)
 
 int main(int argc, char * argv[])
 {
-  platform::tests_support::ChangeMaxNumberOfOpenFiles(kMaxOpenFiles);
+  ChangeMaxNumberOfOpenFiles(kMaxOpenFiles);
   CheckLocale();
 
   google::SetUsageMessage("Booking dataset generator.");

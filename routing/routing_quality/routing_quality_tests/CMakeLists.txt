@@ -30,7 +30,6 @@ omim_link_libraries(
   coding
   base
   icu
-  opening_hours
   jansson
   oauthcpp
   protobuf

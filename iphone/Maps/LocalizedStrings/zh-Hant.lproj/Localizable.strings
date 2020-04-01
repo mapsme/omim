@@ -6,6 +6,9 @@
 
 /********** Strings **********/
 
+/* About button text (should be short) */
+"about" = "關於";
+
 /* Button text (should be short) */
 "back" = "返回";
 
@@ -104,6 +107,9 @@
 
 /* Settings/Downloader - 3G download warning dialog confirm button */
 "use_cellular_data" = "是";
+
+/* Settings/Downloader - No internet connection dialog message */
+"use_wifi_recommendation_text" = "我們建議透過 WiFi 連線來下載較大的地圖";
 
 /* Choose measurement on first launch alert - title */
 "which_measurement_system" = "您偏好哪種度量單位系統？";
@@ -400,6 +406,9 @@
 /* Subject for emailed bookmark */
 "bookmark_share_email_subject" = "嘿，看看我在 MAPS.ME 地圖上的圖釘！";
 
+/* Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me */
+"bookmark_share_email" = "嗨，\n\n我在 MAPS.ME 世界離線地圖上標記了%1$@。點擊此連結 %2$@ 或此連結 %3$@ 來察看地圖上的位置。\n\n謝謝。";
+
 /* Subject for emailed position */
 "my_position_share_email_subject" = "嗨，到 MAPS.ME 地圖查看我的目前位置！";
 
@@ -577,6 +586,15 @@
 
 /* category title */
 "routes" = "路線";
+
+/* Show on first launch. */
+"maps_licence_info" = "此應用程式使用從 OpenStreetMap 專案擷取之地理數據（包括地圖、商家資訊、興趣點、國家和地區邊界等）。我們不保證 OpenStreetMap 數據的一致性、準確性、完整性、或適用性。";
+
+/* Show on first launch. */
+"agree" = "我同意";
+
+/* Show on first launch */
+"disagree" = "我不同意";
 
 /* text of notification */
 "download_map_notification" = "下載您所在地方的地圖";
@@ -876,30 +894,6 @@
 
 /* pink color */
 "pink" = "粉色";
-
-/* deep purple color */
-"deep_purple" = "暗紫色";
-
-/* light blue color */
-"light_blue" = "天藍色";
-
-/* cyan color */
-"cyan" = "藍綠色";
-
-/* teal color */
-"teal" = "碧綠色";
-
-/* lime color */
-"lime" = "青檸";
-
-/* deep orange color */
-"deep_orange" = "深橘色";
-
-/* gray color */
-"gray" = "灰色";
-
-/* blue gray color */
-"blue_gray" = "藍灰色";
 
 /* Wi-Fi available */
 "WiFi_available" = "是";
@@ -1500,7 +1494,7 @@
 
 "placepage_more_button" = "更多";
 
-"placepage_more_reviews_button" = "更多評論";
+"placepage_more_reviews_button" = "More Reviews";
 
 "book_button" = "預約";
 
@@ -2185,6 +2179,8 @@
 
 "downloader_applying" = "應用 %s 中……";
 
+"transit_not_found" = "本區域還沒有交通導航";
+
 "whats_new_title_hotel_filter" = "有新的賓館篩選！";
 
 "whats_new_message_hotel_filter" = "預訂在您所選日期有空的賓館！用入住和離店篩選";
@@ -2383,8 +2379,7 @@
 
 "guide_downloaded_title" = "指南已被成功下載";
 
-/* as few symbols as possible */
-"download_guides" = "查找指南";
+"download_guides" = "下載指南";
 
 "guides_groups_cached" = "已下載的指南";
 
@@ -3120,23 +3115,17 @@
 /* do not translate */
 "all_pass_subscription_subheader" = "City + Outdoor Pass";
 
-/* \n - for a break between lines. Max. 15 characters per 1 line. */
-"all_pass_subscription_message_title" = "30000+\n指南\n和道路";
+"all_pass_subscription_message_title" = "超過20000個指南和人行道";
 
-/* <b> & </b> tag to make a part of the line bold */
-"all_pass_subscription_message_subtitle" = "<b>無限離線下載</b>城市和戶外活動的路線";
+"all_pass_subscription_message_subtitle" = "無限下載市內旅行與休閑運動的離線路線";
 
-/* \n - for a break between lines. Max. 17 characters per 1 line. */
-"all_pass_subscription_message_title_2" = "互動\n高度剖面圖";
+"all_pass_subscription_message_title_2" = "超過700座城市和100個國家";
 
-/* <b> & </b> tag to make a part of the line bold */
-"all_pass_subscription_message_subtitle_2" = "<b>所有道路均已加載高度和路線基本信息</b>";
+"all_pass_subscription_message_subtitle_2" = "支持全年旅行";
 
-/* \n - for a break between lines. Max. 15 characters per 1 line. */
-"all_pass_subscription_message_title_3" = "默認\n地點，照片\n和推薦";
+"all_pass_subscription_message_title_3" = "豐富多彩的內容";
 
-/* <b> & </b> tag to make a part of the line bold */
-"all_pass_subscription_message_subtitle_3" = "<b>了解您準備前往的路線</b>，的所有信息";
+"all_pass_subscription_message_subtitle_3" = "標記，照片，人行道路，描述和推薦";
 
 /* do not translate */
 "sightseeing_subscription_header_sightseeing" = "City Pass";
@@ -3176,91 +3165,6 @@
 "whatsnew_guides_galleries_title" = "與MAPS.ME共同規劃即將到來的旅行";
 
 "whatsnew_guides_galleries_message" = "現在你可在熱門城市與名勝古迹地圖上查找推薦的旅行指南";
-
-"new_onboarding_step3_header" = "去旅行吧";
-
-"all_pass_screen_best_value" = "優惠的價格";
-
-"buy_btn_for_subscription_3" = "整個畫冊%s/年";
-
-"transit_not_found" = "本區域的地鐵導航目前不可用";
-
-"dialog_pedestrian_route_is_long_header" = "地鐵路線圖未找到";
-
-"dialog_pedestrian_route_is_long_message" = "選擇地鐵站附近的起點和終點";
-
-/* Failed planning SUBWAY route message in navigation view */
-"routing_planning_error_subway_special" = "地鐵路線圖設計出錯";
-
-"whatsnew_isolines_title" = "戶外活動的新產品–離線高度線！";
-
-/* as less symbols as possible */
-"whatsnew_isolines_message" = "在山地中導航–使用屏幕左上角的按鈕打開圖層";
-
-"button_layer_isolines" = "高度";
-
-"tips_map_layers_title_countour" = "離線高度線在MAPS.ME中！";
-
-"tips_map_layers_message_countour" = "高度線可以幫您規劃通往大自然地區的路線，不會迷路";
-
-"isolines_activation_error_dialog" = "如需使用高度线，请更新或下载所需区域的地图";
-
-"isolines_location_error_dialog" = "暫時無法獲取該地區的高低線";
-
-"elevation_profile_diff_level" = "難度等級";
-
-"elevation_profile_diff_level_easy" = "容易";
-
-"elevation_profile_diff_level_moderate" = "中等";
-
-"elevation_profile_diff_level_hard" = "困難";
-
-"elevation_profile_ascent" = "上坡";
-
-"elevation_profile_descent" = "下坡";
-
-"elevation_profile_minaltitude" = "最小高度";
-
-"elevation_profile_maxaltitude" = "最大高度";
-
-"elevation_profile_m" = "米";
-
-"elevation_profile_difficulty" = "難度";
-
-"elevation_profile_distance" = "距離：";
-
-"elevation_profile_km" = "千米";
-
-"elevation_profile_time" = "在路上：";
-
-"elevation_profile_hours" = "小時";
-
-"elevation_profile_minutes" = "分鐘";
-
-/* hide the full screen banner and continue working with the app */
-"hide_screen_map_update" = "隱藏並繼續";
-
-"view_on_map_downloaded_error" = "該指南已從設備中刪除";
-
-"subscription" = "訂閱";
-
-"freenow_taxi_title" = "FREE NOW";
-
-"tinkoff_allairlines_map_downloader_title" = "Карта Тинькофф All Airlines. 3000 миль в подарок";
-
-"tinkoff_allairlines_map_downloader_cta_button" = "Оформить карту";
-
-"tinkoff_insurance_map_downloader_title" = "Полис Тинькофф со скидкой! Подходит для любых виз.";
-
-"tinkoff_insurance_map_downloader_cta_button" = "Промокод";
-
-"mts_map_downloader_title" = "Забугорище: интернет и звонки за границей как дома";
-
-"mts_map_downloader_cta_button" = "Подключить";
-
-"skyeng_map_downloader_title" = "Дарим 4 бесплатных урока английского от Skyeng.";
-
-"skyeng_map_downloader_cta_button" = "Подробнее";
 
 
 /**********  Partners  **********/
@@ -3414,23 +3318,29 @@
 
 "type.amenity.parking.multi.storey" = "停車場";
 
+"type.amenity.parking.multi.storey.fee" = "停車場";
+
 "type.amenity.parking.no.access" = "停車場";
 
 "type.amenity.parking.park_and_ride" = "停車場";
 
 "type.amenity.parking.permissive" = "停車場";
 
+"type.amenity.parking.permissive.fee" = "停車場";
+
 "type.amenity.parking.private" = "停車場";
 
 "type.amenity.parking.underground" = "停車場";
 
+"type.amenity.parking.underground.fee" = "停車場";
+
 "type.amenity.parking_space" = "停車地點";
 
-"type.amenity.parking_space.permissive" = "停車地點";
+"type.amenity.parking_space.permissive" = "Parking space";
 
-"type.amenity.parking_space.private" = "停車地點";
+"type.amenity.parking_space.private" = "Parking space";
 
-"type.amenity.parking_space.underground" = "停車地點";
+"type.amenity.parking_space.underground" = "Parking space";
 
 "type.amenity.payment_terminal" = "付款終端";
 
@@ -3589,6 +3499,12 @@
 "type.building.has_parts" = "建築物";
 
 "type.building.train_station" = "鐵道";
+
+"type.communication" = "communication";
+
+"type.communication.line" = "communication-line";
+
+"type.communication.line.underground" = "communication-line-underground";
 
 "type.craft" = "craft";
 
@@ -3838,7 +3754,7 @@
 
 "type.highway.footway.tunnel" = "人行步道";
 
-"type.highway.ford" = "Ford";
+"type.highway.ford" = "highway-ford";
 
 "type.highway.living_street" = "路";
 
@@ -3892,6 +3808,8 @@
 
 "type.highway.pedestrian.tunnel" = "路";
 
+"type.highway.platform" = "highway-platform";
+
 "type.highway.primary" = "路";
 
 "type.highway.primary.bridge" = "路";
@@ -3944,6 +3862,12 @@
 
 "type.highway.service.driveway" = "路";
 
+"type.highway.service.driveway.area" = "路";
+
+"type.highway.service.driveway.bridge" = "路";
+
+"type.highway.service.driveway.tunnel" = "路";
+
 "type.highway.service.parking_aisle" = "路";
 
 "type.highway.service.tunnel" = "路";
@@ -3982,9 +3906,21 @@
 
 "type.highway.track.grade3" = "路";
 
+"type.highway.track.grade3.no.access" = "路";
+
+"type.highway.track.grade3.permissive" = "路";
+
 "type.highway.track.grade4" = "路";
 
+"type.highway.track.grade4.no.access" = "路";
+
+"type.highway.track.grade4.permissive" = "路";
+
 "type.highway.track.grade5" = "路";
+
+"type.highway.track.grade5.no.access" = "路";
+
+"type.highway.track.grade5.permissive" = "路";
 
 "type.highway.track.no.access" = "路";
 
@@ -4152,6 +4088,10 @@
 
 "type.landuse.residential" = "landuse-residential";
 
+"type.landuse.residential.rural" = "landuse-residential-rural";
+
+"type.landuse.residential.urban" = "landuse-residential-urban";
+
 "type.landuse.retail" = "landuse-retail";
 
 "type.landuse.salt_pond" = "landuse-salt_pond";
@@ -4165,6 +4105,8 @@
 "type.leisure.common" = "leisure-common";
 
 "type.leisure.dog_park" = "遛狗區";
+
+"type.leisure.dog_park.tennis" = "Dog area";
 
 "type.leisure.fitness_centre" = "健身中心";
 
@@ -4192,7 +4134,15 @@
 
 "type.leisure.pitch" = "運動場";
 
+"type.leisure.pitch.tennis" = "運動場";
+
 "type.leisure.playground" = "遊樂場";
+
+"type.leisure.playground.tennis" = "遊樂場";
+
+"type.leisure.playing_fields" = "leisure-playing_fields";
+
+"type.leisure.playing_fields.tennis" = "leisure-playing_fields-tennis";
 
 "type.leisure.recreation_ground" = "Recreation ground";
 
@@ -4256,6 +4206,18 @@
 
 "type.mapswithme.grid" = "mapswithme-grid";
 
+"type.marking" = "marking";
+
+"type.marking.sport" = "marking-sport";
+
+"type.marking.sport.black" = "marking-sport-black";
+
+"type.marking.sport.blue" = "marking-sport-blue";
+
+"type.marking.sport.red" = "marking-sport-red";
+
+"type.marking.sport.white" = "marking-sport-white";
+
 "type.military" = "military";
 
 "type.military.bunker" = "地堡";
@@ -4270,7 +4232,7 @@
 
 "type.natural.cape" = "海角";
 
-"type.natural.cave_entrance" = "洞穴";
+"type.natural.cave_entrance" = "洞穴入口";
 
 "type.natural.cliff" = "Cliff";
 
@@ -4321,6 +4283,14 @@
 "type.natural.wetland.bog" = "Wetland";
 
 "type.natural.wetland.marsh" = "Wetland";
+
+"type.natural.wood" = "樹林";
+
+"type.natural.wood.coniferous" = "樹林";
+
+"type.natural.wood.deciduous" = "樹林";
+
+"type.natural.wood.mixed" = "樹林";
 
 "type.noexit" = "noexit";
 
@@ -4439,6 +4409,12 @@
 "type.power" = "power";
 
 "type.power.generator" = "power-generator";
+
+"type.power.generator.hydro" = "power-generator-hydro";
+
+"type.power.generator.photovoltaic" = "power-generator-photovoltaic";
+
+"type.power.generator.wind" = "power-generator-wind";
 
 "type.power.line" = "power-line";
 
@@ -4818,6 +4794,8 @@
 
 "type.sponsored" = "sponsored";
 
+"type.sponsored.banner" = "sponsored-banner";
+
 "type.sponsored.booking" = "sponsored-booking";
 
 "type.sponsored.holiday" = "Christmas or New Year Celebrations";
@@ -4863,6 +4841,8 @@
 "type.sponsored.partner8" = "sponsored-partner8";
 
 "type.sponsored.partner9" = "sponsored-partner9";
+
+"type.sponsored.viator" = "sponsored-viator";
 
 "type.sport" = "sport";
 
@@ -5059,6 +5039,8 @@
 "type.piste_type.sled" = "piste:type-sled";
 
 "type.building_part" = "建築物";
+
+"type.earthquake_damage" = "earthquake:damage";
 
 "type.area_highway.cycleway" = "area:highway-cycleway";
 

@@ -289,7 +289,8 @@ extension BMCDefaultViewModel: MWMBookmarksObserver {
         case .userInterrupted: break
         case .success:
           guard let s = self else { return }
-          s.reloadData()
+          s.setCategories()
+          s.view?.update(sections: [.categories])
       }
     }
   }
@@ -364,5 +365,14 @@ extension BMCDefaultViewModel: MWMBookmarksObserver {
     setCategories()
     view?.update(sections: [.categories])
     view?.conversionFinished(success: success)
+  }
+
+  func onBookmarksFileLoadSuccess() {
+    Statistics.logEvent(kStatEventName(kStatApplication, kStatImport), withParameters: [kStatValue : kStatKML])
+    MWMAlertViewController.activeAlert().presentInfoAlert(L("load_kmz_title"), text: L("load_kmz_successful"))
+  }
+
+  func onBookmarksFileLoadError() {
+    MWMAlertViewController.activeAlert().presentInfoAlert(L("load_kmz_title"), text: L("load_kmz_failed"))
   }
 }

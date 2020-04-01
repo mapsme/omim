@@ -26,10 +26,10 @@ extern "C"
 using namespace storage;
 
 JNIEXPORT void JNICALL
-Java_com_mapswithme_maps_MapFragment_nativeCompassUpdated(JNIEnv * env, jclass clazz, jdouble north, jboolean forceRedraw)
+Java_com_mapswithme_maps_MapFragment_nativeCompassUpdated(JNIEnv * env, jclass clazz, jdouble magneticNorth, jdouble trueNorth, jboolean forceRedraw)
 {
   location::CompassInfo info;
-  info.m_bearing = north;
+  info.m_bearing = (trueNorth >= 0.0) ? trueNorth : magneticNorth;
 
   g_framework->OnCompassUpdated(info, forceRedraw);
 }

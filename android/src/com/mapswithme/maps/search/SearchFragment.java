@@ -4,22 +4,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.tabs.TabLayout;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.R;
@@ -37,10 +37,7 @@ import com.mapswithme.maps.widget.SearchToolbarController;
 import com.mapswithme.util.SharedPropertiesUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
-import com.mapswithme.util.log.Logger;
-import com.mapswithme.util.log.LoggerFactory;
 import com.mapswithme.util.statistics.Statistics;
-import com.pushwoosh.Pushwoosh;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -274,7 +271,8 @@ public class SearchFragment extends BaseMwmFragment
                         | AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL : 0);
     mToolbarLayout.setLayoutParams(lp);
     if (mFilterController != null)
-      mFilterController.show(hasQuery, !RoutingController.get().isWaitingPoiPick());
+      mFilterController.show(hasQuery && mSearchAdapter.getItemCount() != 0,
+                             mSearchAdapter.showPopulateButton());
 
     if (hasQuery)
       hideDownloadSuggest();
@@ -292,8 +290,7 @@ public class SearchFragment extends BaseMwmFragment
 
     UiUtils.showIf(show, mResultsPlaceholder);
     if (mFilterController != null)
-      mFilterController.showPopulateButton(!RoutingController.get()
-                                                             .isWaitingPoiPick() && !isTabletSearch());
+      mFilterController.showPopulateButton(mSearchAdapter.showPopulateButton() && !isTabletSearch());
   }
 
   @Override
@@ -474,8 +471,7 @@ public class SearchFragment extends BaseMwmFragment
     {
       mHiddenCommands.addAll(Arrays.asList(new BadStorageCommand("?emulateBadStorage"),
                                            new JavaCrashCommand("?emulateJavaCrash"),
-                                           new NativeCrashCommand("?emulateNativeCrash"),
-                                           new PushTokenCommand("?pushToken")));
+                                           new NativeCrashCommand("?emulateNativeCrash")));
     }
 
     return mHiddenCommands;
@@ -740,7 +736,7 @@ public class SearchFragment extends BaseMwmFragment
 
   private static class BadStorageCommand extends HiddenCommand.BaseHiddenCommand
   {
-    BadStorageCommand(@NonNull String command)
+    protected BadStorageCommand(@NonNull String command)
     {
       super(command);
     }
@@ -754,7 +750,7 @@ public class SearchFragment extends BaseMwmFragment
 
   private static class JavaCrashCommand extends HiddenCommand.BaseHiddenCommand
   {
-    JavaCrashCommand(@NonNull String command)
+    protected JavaCrashCommand(@NonNull String command)
     {
       super(command);
     }
@@ -768,7 +764,7 @@ public class SearchFragment extends BaseMwmFragment
 
   private static class NativeCrashCommand extends HiddenCommand.BaseHiddenCommand
   {
-    NativeCrashCommand(@NonNull String command)
+    protected NativeCrashCommand(@NonNull String command)
     {
       super(command);
     }
@@ -777,22 +773,6 @@ public class SearchFragment extends BaseMwmFragment
     void executeInternal()
     {
       Framework.nativeMakeCrash();
-    }
-  }
-
-  private static class PushTokenCommand extends HiddenCommand.BaseHiddenCommand
-  {
-    PushTokenCommand(@NonNull String command)
-    {
-      super(command);
-    }
-
-    @Override
-    void executeInternal()
-    {
-      Logger logger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.THIRD_PARTY);
-      String tag = PushTokenCommand.class.getSimpleName();
-      logger.i(tag, "Push token: " + Pushwoosh.getInstance().getPushToken());
     }
   }
 }

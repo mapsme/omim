@@ -1,13 +1,12 @@
 #pragma once
 
 #include "routing/base/astar_graph.hpp"
-#include "routing/base/astar_vertex_data.hpp"
 #include "routing/base/routing_result.hpp"
+
 #include "routing/fake_ending.hpp"
 #include "routing/fake_feature_ids.hpp"
 #include "routing/fake_graph.hpp"
 #include "routing/fake_vertex.hpp"
-#include "routing/guides_graph.hpp"
 #include "routing/index_graph.hpp"
 #include "routing/joint.hpp"
 #include "routing/latlon_with_altitude.hpp"
@@ -35,8 +34,6 @@ class FakeEdgesContainer;
 class IndexGraphStarter : public AStarGraph<IndexGraph::Vertex, IndexGraph::Edge, IndexGraph::Weight>
 {
 public:
-  template <typename VertexType>
-  using Parents = IndexGraph::Parents<VertexType>;
 
   friend class FakeEdgesContainer;
 
@@ -48,20 +45,13 @@ public:
     return segment.GetFeatureId() == kFakeFeatureId;
   }
 
-  static bool IsGuidesSegment(Segment const & segment)
-  {
-    return FakeFeatureIds::IsGuidesFeature(segment.GetFeatureId());
-  }
-
   // strictForward flag specifies which parts of real segment should be placed from the start
-  // vertex. true: place exactly one fake edge to the m_segment indicated with m_forward. false:
+  // vertex. true: place exactly one fake edge to the m_segment with indicated m_forward. false:
   // place two fake edges to the m_segment with both directions.
   IndexGraphStarter(FakeEnding const & startEnding, FakeEnding const & finishEnding,
                     uint32_t fakeNumerationStart, bool strictForward, WorldGraph & graph);
 
   void Append(FakeEdgesContainer const & container);
-
-  void SetGuides(GuidesGraph const & guides);
 
   WorldGraph & GetGraph() const { return m_graph; }
   WorldGraphMode GetMode() const { return m_graph.GetMode(); }
@@ -97,26 +87,25 @@ public:
   // start and finish in pass-through/non-pass-through area and number of non-pass-through crosses.
   bool CheckLength(RouteWeight const & weight);
 
-  void GetEdgeList(astar::VertexData<JointSegment, Weight> const & parentVertexData,
-                   Segment const & segment, bool isOutgoing, std::vector<JointEdge> & edges,
-                   std::vector<RouteWeight> & parentWeights) const
+  void GetEdgeList(JointSegment const & parent, Segment const & segment, bool isOutgoing,
+                   std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights) const
   {
-    return m_graph.GetEdgeList(parentVertexData, segment, isOutgoing,
-                               true /* useAccessConditional */, edges, parentWeights);
+    return m_graph.GetEdgeList(parent, segment, isOutgoing, edges, parentWeights);
   }
+
+  void GetEdgesList(Segment const & segment, bool isOutgoing,
+                    std::vector<SegmentEdge> & edges) const;
 
   // AStarGraph overridings:
   // @{
-  void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
-                            std::vector<Edge> & edges) override
+  void GetOutgoingEdgesList(Vertex const & segment, std::vector<Edge> & edges) override
   {
-    GetEdgesList(vertexData, true /* isOutgoing */, true /* useAccessConditional */, edges);
+    GetEdgesList(segment, true /* isOutgoing */, edges);
   }
 
-  void GetIngoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
-                           std::vector<Edge> & edges) override
+  void GetIngoingEdgesList(Vertex const & segment, std::vector<Edge> & edges) override
   {
-    GetEdgesList(vertexData, false /* isOutgoing */, true /* useAccessConditional */, edges);
+    GetEdgesList(segment, false /* isOutgoing */, edges);
   }
 
   RouteWeight HeuristicCostEstimate(Vertex const & from, Vertex const & to) override
@@ -125,7 +114,7 @@ public:
                                          GetPoint(to, true /* front */));
   }
 
-  void SetAStarParents(bool forward, Parents<Segment> & parents) override
+  void SetAStarParents(bool forward, std::map<Segment, Segment> & parents) override
   {
     m_graph.SetAStarParents(forward, parents);
   }
@@ -135,8 +124,8 @@ public:
     m_graph.DropAStarParents();
   }
 
-  bool AreWavesConnectible(Parents<Segment> & forwardParents, Vertex const & commonVertex,
-                           Parents<Segment> & backwardParents) override
+  bool AreWavesConnectible(std::map<Vertex, Vertex> & forwardParents, Vertex const & commonVertex,
+                           std::map<Vertex, Vertex> & backwardParents) override
   {
     return m_graph.AreWavesConnectible(forwardParents, commonVertex, backwardParents, nullptr);
   }
@@ -144,35 +133,29 @@ public:
   RouteWeight GetAStarWeightEpsilon() override;
   // @}
 
-  void GetEdgesList(Vertex const & vertex, bool isOutgoing, std::vector<SegmentEdge> & edges) const
-  {
-    GetEdgesList({vertex, Weight(0.0)}, isOutgoing, false /* useAccessConditional */, edges);
-  }
-
   RouteWeight HeuristicCostEstimate(Vertex const & from, ms::LatLon const & to) const
   {
     return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */), to);
   }
 
   RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) const;
-  RouteWeight CalcGuidesSegmentWeight(Segment const & segment,
-                                      EdgeEstimator::Purpose purpose) const;
   double CalculateETA(Segment const & from, Segment const & to) const;
   double CalculateETAWithoutPenalty(Segment const & segment) const;
 
   // For compatibility with IndexGraphStarterJoints
   // @{
-  void SetAStarParents(bool forward, Parents<JointSegment> & parents)
+  void SetAStarParents(bool forward, std::map<JointSegment, JointSegment> & parents)
   {
     m_graph.SetAStarParents(forward, parents);
   }
 
-  bool AreWavesConnectible(Parents<JointSegment> & forwardParents, JointSegment const & commonVertex,
-                           Parents<JointSegment> & backwardParents,
+  bool AreWavesConnectible(std::map<JointSegment, JointSegment> & forwardParents,
+                           JointSegment const & commonVertex,
+                           std::map<JointSegment, JointSegment> & backwardParents,
                            std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter)
   {
     return m_graph.AreWavesConnectible(forwardParents, commonVertex, backwardParents,
-                                       std::move(fakeFeatureConverter));
+                                      std::move(fakeFeatureConverter));
   }
 
   bool IsJoint(Segment const & segment, bool fromStart)
@@ -202,23 +185,9 @@ public:
   Ending const & GetStartEnding() const { return m_start; }
   Ending const & GetFinishEnding() const { return m_finish; }
 
-  uint32_t GetFakeNumerationStart() const { return m_fakeNumerationStart; }
-
-  // Creates fake edges for guides fake ending and adds them to the fake graph.
-  void AddEnding(FakeEnding const & thisEnding);
-
-  void ConnectLoopToGuideSegments(FakeVertex const & loop, Segment const & realSegment,
-                                  LatLonWithAltitude realFrom, LatLonWithAltitude realTo,
-                                  std::vector<std::pair<FakeVertex, Segment>> const & partsOfReal);
-
   ~IndexGraphStarter() override = default;
 
 private:
-  // Creates fake edges for fake ending and adds it to fake graph. |otherEnding| is used to
-  // generate proper fake edges in case both endings have projections to the same segment.
-  void AddEnding(FakeEnding const & thisEnding, FakeEnding const & otherEnding, bool isStart,
-                 bool strictForward);
-
   static Segment GetFakeSegment(uint32_t segmentIdx)
   {
     // We currently ignore |isForward| and use FakeGraph to get ingoing/outgoing.
@@ -227,14 +196,20 @@ private:
     return Segment(kFakeNumMwmId, kFakeFeatureId, segmentIdx, true /* isForward */);
   }
 
-  Segment GetFakeSegmentAndIncr();
+  static Segment GetFakeSegmentAndIncr(uint32_t & segmentIdx)
+  {
+    CHECK_LESS(segmentIdx, std::numeric_limits<uint32_t>::max(), ());
+    return GetFakeSegment(segmentIdx++);
+  }
 
-  void GetEdgesList(astar::VertexData<Vertex, Weight> const & vertexData, bool isOutgoing,
-                    bool useAccessConditional, std::vector<SegmentEdge> & edges) const;
-
-  void AddStart(FakeEnding const & startEnding, FakeEnding const & finishEnding,
-                bool strictForward);
-  void AddFinish(FakeEnding const & finishEnding, FakeEnding const & startEnding);
+  // Creates fake edges for fake ending and adds it to  fake graph. |otherEnding| used to generate
+  // propper fake edges in case both endings have projections to the same segment.
+  void AddEnding(FakeEnding const & thisEnding, FakeEnding const & otherEnding, bool isStart,
+                 bool strictForward, uint32_t & fakeNumerationStart);
+  void AddStart(FakeEnding const & startEnding, FakeEnding const & finishEnding, bool strictForward,
+                uint32_t & fakeNumerationStart);
+  void AddFinish(FakeEnding const & finishEnding, FakeEnding const & startEnding,
+                 uint32_t & fakeNumerationStart);
 
   // Adds fake edges of type PartOfReal which correspond real edges from |edges| and are connected
   // to |segment|
@@ -255,9 +230,5 @@ private:
   Ending m_finish;
   double m_startToFinishDistanceM;
   FakeGraph<Segment, FakeVertex> m_fake;
-  GuidesGraph m_guides;
-  uint32_t m_fakeNumerationStart;
-
-  std::vector<FakeEnding> m_otherEndings;
 };
 }  // namespace routing

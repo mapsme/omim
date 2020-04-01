@@ -26,23 +26,61 @@
 
 + (NSDictionary *)dictionaryWithQueryString:(NSString *)queryString
 {
-  return [FBSDKBasicUtility dictionaryWithQueryString:queryString];
+  NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+  NSArray *parts = [queryString componentsSeparatedByString:@"&"];
+
+  for (NSString *part in parts) {
+    if (part.length == 0) {
+      continue;
+    }
+
+    NSRange index = [part rangeOfString:@"="];
+    NSString *key;
+    NSString *value;
+
+    if (index.location == NSNotFound) {
+      key = part;
+      value = @"";
+    } else {
+      key = [part substringToIndex:index.location];
+      value = [part substringFromIndex:index.location + index.length];
+    }
+
+    key = [self URLDecode:key];
+    value = [self URLDecode:value];
+    if (key && value) {
+      result[key] = value;
+    }
+  }
+  return result;
 }
 
-+ (NSString *)queryStringWithDictionary:(NSDictionary<NSString *, id> *)dictionary error:(NSError **)errorRef
++ (NSString *)queryStringWithDictionary:(NSDictionary *)dictionary error:(NSError *__autoreleasing *)errorRef
 {
-  return [FBSDKBasicUtility queryStringWithDictionary:dictionary error:errorRef invalidObjectHandler:NULL];
+  return [FBSDKInternalUtility queryStringWithDictionary:dictionary error:errorRef invalidObjectHandler:NULL];
 }
 
 + (NSString *)URLDecode:(NSString *)value
 {
-  return [FBSDKBasicUtility URLDecode:value];
+  value = [value stringByReplacingOccurrencesOfString:@"+" withString:@" "];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  value = [value stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+#pragma clang diagnostic pop
+  return value;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 + (NSString *)URLEncode:(NSString *)value
 {
-  return [FBSDKBasicUtility URLEncode:value];
+  return (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
+                                                                               (CFStringRef)value,
+                                                                               NULL, // characters to leave unescaped
+                                                                               CFSTR(":!*();@/&?+$,='"),
+                                                                               kCFStringEncodingUTF8);
 }
+#pragma clang diagnostic pop
 
 + (dispatch_source_t)startGCDTimerWithInterval:(double)interval block:(dispatch_block_t)block
 {
@@ -74,10 +112,10 @@
 {
   NSData *data = nil;
 
-  if ([input isKindOfClass:[NSData class]]) {
-    data = (NSData *)input;
-  } else if ([input isKindOfClass:[NSString class]]) {
+  if ([input isKindOfClass:[NSString class]]) {
     data = [(NSString *)input dataUsingEncoding:NSUTF8StringEncoding];
+  } else if ([input isKindOfClass:[NSData class]]) {
+    data = (NSData *)input;
   }
 
   if (!data) {
@@ -86,12 +124,12 @@
 
   uint8_t digest[CC_SHA256_DIGEST_LENGTH];
   CC_SHA256(data.bytes, (CC_LONG)data.length, digest);
-  NSMutableString *hashed = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH * 2];
+  NSMutableString *encryptedStuff = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH * 2];
   for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) {
-    [hashed appendFormat:@"%02x", digest[i]];
+    [encryptedStuff appendFormat:@"%02x", digest[i]];
   }
 
-  return [hashed copy];
+  return encryptedStuff;
 }
 
 @end

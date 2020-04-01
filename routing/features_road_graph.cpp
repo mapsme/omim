@@ -11,8 +11,6 @@
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/scales.hpp"
 
-#include "coding/point_coding.hpp"
-
 #include "geometry/distance_on_sphere.hpp"
 
 #include "base/logging.hpp"
@@ -251,7 +249,7 @@ void FeaturesRoadGraph::GetJunctionTypes(geometry::PointWithAltitude const & jun
     if (ft.GetGeomType() != feature::GeomType::Point)
       return;
 
-    if (!base::AlmostEqualAbs(ft.GetCenter(), cross, kMwmPointAccuracy))
+    if (!base::AlmostEqualAbs(ft.GetCenter(), cross, geometry::kPointsEqualEpsilon))
       return;
 
     feature::TypesHolder typesHolder(ft);

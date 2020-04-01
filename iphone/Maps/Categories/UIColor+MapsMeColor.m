@@ -1,6 +1,5 @@
 #import "UIColorRoutines.h"
 #import "UIColor+MapsMeColor.h"
-#import "SwiftBridge.h"
 
 static BOOL isNightMode = NO;
 static NSDictionary<NSString *, UIColor *> *day;
@@ -61,7 +60,6 @@ static UIColor * color(SEL cmd) {
     @"bannerBackground" : [UIColor colorWithRed:scaled(249) green:scaled(251) blue:scaled(231) alpha:alpha100],
     @"border" : [UIColor colorWithWhite:0. alpha:alpha04],
     @"discountBackground" : [UIColor colorWithRed:scaled(240) green:scaled(100) blue:scaled(60) alpha:alpha100],
-    @"discountText" : [UIColor colorWithRed:scaled(60) green:scaled(64) blue:scaled(68) alpha:alpha100],
     @"bookmarkSubscriptionBackground" : [UIColor colorWithRed:scaled(240) green:scaled(252) blue:scaled(255) alpha:alpha100],
     @"bookmarkSubscriptionScrollBackground" : [UIColor colorWithRed:scaled(137) green:scaled(217) blue:scaled(255) alpha:alpha100],
     @"bookmarkSubscriptionFooterBackground" : [UIColor colorWithRed:scaled(47) green:scaled(58) blue:scaled(73) alpha:alpha100],
@@ -116,7 +114,6 @@ static UIColor * color(SEL cmd) {
     @"bannerBackground" : [UIColor colorWithRed:scaled(71) green:scaled(75) blue:scaled(79) alpha:alpha100],
     @"border" : [UIColor colorWithWhite:1. alpha:alpha04],
     @"discountBackground" : [UIColor colorWithRed:scaled(240) green:scaled(100) blue:scaled(60) alpha:alpha100],
-    @"discountText" : [UIColor colorWithRed:scaled(60) green:scaled(64) blue:scaled(68) alpha:alpha100],
     @"bookmarkSubscriptionBackground" : [UIColor colorWithRed:scaled(60.) green:scaled(64.) blue:scaled(68.) alpha:alpha100],
     @"bookmarkSubscriptionScrollBackground" : [UIColor colorWithRed:scaled(137) green:scaled(217) blue:scaled(255) alpha:alpha100],
     @"bookmarkSubscriptionFooterBackground" : [UIColor colorWithRed:scaled(47) green:scaled(58) blue:scaled(73) alpha:alpha100],
@@ -150,10 +147,27 @@ static UIColor * color(SEL cmd) {
   return color ?: self;
 }
 
+// Dark green color
++ (UIColor *)primaryDark
+{
+  return color(_cmd);
+}
+
 // Green color
 + (UIColor *)primary
 {
-  return StyleManager.shared.theme.colors.primary;
+  return color(_cmd);
+}
+
++ (UIColor *)secondary
+{
+  return color(_cmd);
+}
+
+// Light green color
++ (UIColor *)primaryLight
+{
+  return color(_cmd);
 }
 
 // Use for opaque fullscreen
@@ -162,59 +176,91 @@ static UIColor * color(SEL cmd) {
   return [UIColor colorWithWhite:0. alpha:alpha80];
 }
 
++ (UIColor *)menuBackground
+{
+  return color(_cmd);
+}
+
++ (UIColor *)downloadBadgeBackground
+{
+  return color(_cmd);
+}
 // Background color && press color
 + (UIColor *)pressBackground
 {
-  return StyleManager.shared.theme.colors.pressBackground;
+  return color(_cmd);
 }
 // Red color (use for status closed in place page)
 + (UIColor *)red
 {
-  return StyleManager.shared.theme.colors.red;
+  return color(_cmd);
+}
+// Yellow color (use for hotel's stars)
++ (UIColor *)yellow
+{
+  return [UIColor colorWithRed:scaled(255.) green:scaled(200.) blue:scaled(40.) alpha:alpha100];
+}
+// Green color (use for booking rating)
++ (UIColor *)green
+{
+  return [UIColor colorWithRed:scaled(85.) green:scaled(139.) blue:scaled(47.) alpha:alpha100];
+}
+// Pink background for invalid fields
++ (UIColor *)errorPink
+{
+  return color(_cmd);
+}
+// Orange color (use for status 15 min in place page)
++ (UIColor *)orange
+{
+  return color(_cmd);
 }
 
 // Blue color (use for links and phone numbers)
 + (UIColor *)linkBlue
 {
-  return StyleManager.shared.theme.colors.linkBlue;
+  return color(_cmd);
 }
 
 + (UIColor *)linkBlueHighlighted
 {
-  return StyleManager.shared.theme.colors.linkBlueHighlighted;
+  return color(_cmd);
 }
 
 + (UIColor *)linkBlueDark
 {
-  return StyleManager.shared.theme.colors.linkBlueDark;
+  return color(_cmd);
 }
-+ (UIColor *)buttonRed
-{
-  return StyleManager.shared.theme.colors.buttonRed;
-}
++ (UIColor *)buttonRed { return color(_cmd); }
++ (UIColor *)buttonRedHighlighted { return color(_cmd); }
 + (UIColor *)blackPrimaryText
 {
-  return StyleManager.shared.theme.colors.blackPrimaryText;
+  return color(_cmd);
 }
 
 + (UIColor *)blackSecondaryText
 {
-  return StyleManager.shared.theme.colors.blackSecondaryText;
+  return color(_cmd);
+}
+
++ (UIColor *)blackStatusBarBackground
+{
+  return [UIColor colorWithWhite:0. alpha:alpha40];
 }
 
 + (UIColor *)blackHintText
 {
-  return StyleManager.shared.theme.colors.blackHintText;
+  return color(_cmd);
 }
 
 + (UIColor *)blackDividers
 {
-  return StyleManager.shared.theme.colors.blackDividers;
+  return color(_cmd);
 }
 
 + (UIColor *)white
 {
-  return StyleManager.shared.theme.colors.white;
+  return color(_cmd);
 }
 
 + (UIColor *)whitePrimaryText
@@ -228,14 +274,24 @@ static UIColor * color(SEL cmd) {
   return [UIColor colorWithWhite:1. alpha:alpha30];
 }
 
++ (UIColor *)whiteSecondaryText
+{
+  return color(_cmd);
+}
+
 + (UIColor *)whiteHintText
 {
-  return StyleManager.shared.theme.colors.whiteHintText;
+  return color(_cmd);
+}
+
++ (UIColor *)whiteDividers
+{
+  return [UIColor colorWithWhite:1. alpha:alpha12];
 }
 
 + (UIColor *)buttonDisabledBlueText
 {
-  return StyleManager.shared.theme.colors.buttonDisabledBlueText;
+  return color(_cmd);
 }
 
 + (UIColor *)buttonHighlightedBlueText
@@ -243,9 +299,14 @@ static UIColor * color(SEL cmd) {
   return [UIColor colorWithRed:scaled(3.) green:scaled(122.) blue:scaled(255.) alpha:alpha54];
 }
 
++ (UIColor *)alertBackground
+{
+  return color(_cmd);
+}
+
 + (UIColor *)blackOpaque
 {
-  return StyleManager.shared.theme.colors.blackOpaque;
+  return color(_cmd);
 }
 
 + (UIColor *)bookingBackground
@@ -263,17 +324,62 @@ static UIColor * color(SEL cmd) {
   return [UIColor colorWithRed:scaled(233) green:scaled(244) blue:scaled(233) alpha:alpha26];
 }
 
-+ (UIColor *)bannerBackground
++ (UIColor *)ratingRed
 {
-  return StyleManager.shared.theme.colors.bannerBackground;
+  return [UIColor colorWithRed:scaled(229) green:scaled(57) blue:scaled(53) alpha:alpha100];
 }
 
++ (UIColor *)ratingOrange
+{
+  return [UIColor colorWithRed:scaled(244) green:scaled(81) blue:scaled(30) alpha:alpha100];
+}
+
++ (UIColor *)ratingYellow
+{
+  return [UIColor colorWithRed:scaled(245) green:scaled(176) blue:scaled(39) alpha:alpha100];
+}
+
++ (UIColor *)ratingLightGreen
+{
+  return [UIColor colorWithRed:scaled(124) green:scaled(179) blue:scaled(66) alpha:alpha100];
+}
+
++ (UIColor *)ratingGreen
+{
+  return [UIColor colorWithRed:scaled(67) green:scaled(160) blue:scaled(71) alpha:alpha100];
+}
+
++ (UIColor *)bannerBackground
+{
+  return color(_cmd);
+}
+
++ (UIColor *)border
+{
+  return color(_cmd);
+}
+
++ (UIColor *)bannerButtonBackground
+{
+  return [UIColor blackDividers];
+}
+
++ (UIColor *)toastBackground { return color(_cmd); }
++ (UIColor *)statusBarBackground { return color(_cmd); }
 + (UIColor *)colorWithName:(NSString *)colorName
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
   return [[UIColor class] performSelector:NSSelectorFromString(colorName)];
 #pragma clang diagnostic pop
+}
+
++ (UIColor *)facebookButtonBackground {
+  return [UIColor colorWithRed:scaled(59) green:scaled(89) blue:scaled(152) alpha:alpha100];
+}
+
++ (UIColor *)facebookButtonBackgroundDisabled {
+  return [self.facebookButtonBackground colorWithAlphaComponent:alpha70];
 }
 
 + (UIColor *)speedLimitRed {
@@ -295,4 +401,82 @@ static UIColor * color(SEL cmd) {
 + (UIColor *)speedLimitDarkGray {
   return [UIColor colorWithRed:scaled(51) green:scaled(51) blue:scaled(50) alpha:alpha100];
 }
+
++ (UIColor *)shadowColorBlue {
+  return [UIColor colorWithRed:scaled(5) green:scaled(70) blue:scaled(134) alpha:alpha100];
+}
+
++ (UIColor *)shadowColorPurple {
+  return [UIColor colorWithRed:scaled(88) green:scaled(0) blue:scaled(153) alpha:alpha100];
+}
+
++ (UIColor *)subscriptionCellBorder {
+  return [UIColor colorWithRed:scaled(174) green:scaled(184) blue:scaled(190) alpha:alpha100];
+}
+
++ (UIColor *)subscriptionCellBackground {
+  return [UIColor colorWithRed:scaled(208) green:scaled(246) blue:scaled(255) alpha:alpha100];
+}
+
++ (UIColor *)subscriptionCellTitle {
+  return [UIColor colorWithRed:scaled(14) green:scaled(101) blue:scaled(188) alpha:alpha100];
+}
+
+
++ (UIColor *)discountBackground
+{
+  return color(_cmd);
+}
+
++ (UIColor *)bookmarkSubscriptionScrollBackground
+{
+  return color(_cmd);
+}
+
++ (UIColor *)bookmarkSubscriptionBackground
+{
+  return color(_cmd);
+}
+
++ (UIColor *)bookmarkSubscriptionFooterBackground
+{
+  return color(_cmd);
+}
+
+//NO NIGHT COLORS
++ (UIColor *)allPassSubscriptionTitle
+{
+  return [UIColor colorWithWhite:1. alpha:alpha40];
+}
+
++ (UIColor *)allPassSubscriptionDescription
+{
+  return [UIColor colorWithWhite:1. alpha:alpha100];
+}
+
++ (UIColor *)allPassSubscriptionSubTitle
+{
+  return [UIColor colorWithRed:scaled(30.) green:scaled(150.) blue:scaled(240.) alpha:alpha100];
+}
+
++ (UIColor *)allPassSubscriptionMonthlyBackground
+{
+  return [UIColor colorWithWhite:0.88 alpha:alpha80];
+}
+
++ (UIColor *)allPassSubscriptionMonthlyTitle
+{
+  return [UIColor colorWithWhite:0 alpha:alpha87];
+}
+
++ (UIColor *)allPassSubscriptionDiscountBackground
+{
+  return [UIColor colorWithRed:scaled(245.) green:scaled(210.) blue:scaled(12.) alpha:alpha100];
+}
+
++ (UIColor *)allPassSubscriptionTermsTitle
+{
+  return [UIColor colorWithWhite:1 alpha:alpha70];
+}
+//END NO NIGHT
 @end

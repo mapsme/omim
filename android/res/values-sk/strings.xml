@@ -4,6 +4,8 @@
 <!-- Language: sk -->
 <resources>
 	<!-- SECTION: Strings -->
+	<!-- About button text (should be short) -->
+	<string name="about">O aplikácii</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Späť</string>
 	<!-- Button text (should be short) -->
@@ -64,6 +66,8 @@
 	<string name="touch_to_download">Stlačte pre stiahnutie</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Áno</string>
+	<!-- Settings/Downloader - No internet connection dialog message -->
+	<string name="use_wifi_recommendation_text">Doporučujeme použiť WiFi pre sťahovanie väčších máp</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Aký systém pre meranie preferujete?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -249,6 +253,8 @@
 	<string name="my_position_share_sms">Pozri kde som. Otvor odkaz: %1$s alebo %2$s</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Pozri na moju značku na mape MAPS.ME</string>
+	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
+	<string name="bookmark_share_email">Ahoj,\n\nOznačil/a som: %1$s v MAPS.ME, offline mapách celého sveta. Stlačte jeden z týchto odkazov %2$s, %3$s a uvidíte toto miesto na mape.\n\nVďaka</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Pozrite si moju aktuálnu polohu na mape MAPS.ME</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -355,6 +361,12 @@
 	<string name="route">Trasa</string>
 	<!-- category title -->
 	<string name="routes">Trasy</string>
+	<!-- Show on first launch. -->
+	<string name="maps_licence_info">Táto aplikácia používa geografické dáta (zahrňujúce mapy, obchodné zoznamy, body záujmov, hranice krajín a regiónov, atď.) prevzaté z OpenStreetMap projektu. Negarantujeme žiadnu jednotnosť, presnosť, úplnosť alebo použiteľnosť dát OpenStreetMap.</string>
+	<!-- Show on first launch. -->
+	<string name="agree">Súhlasím</string>
+	<!-- Show on first launch -->
+	<string name="disagree">Nesúhlasím</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Stiahnite si mapu miesta, kde sa práve nachádzate</string>
 	<!-- text of notification -->
@@ -534,37 +546,21 @@
 	<string name="new_group">nová skupina</string>
 	<string name="create">vytvoriť</string>
 	<!-- red color -->
-	<string name="red">Červená</string>
+	<string name="red">červená</string>
 	<!-- yellow color -->
-	<string name="yellow">Žltá</string>
+	<string name="yellow">žltá</string>
 	<!-- blue color -->
-	<string name="blue">Modrá</string>
+	<string name="blue">modrá</string>
 	<!-- green color -->
-	<string name="green">Zelená</string>
+	<string name="green">zelená</string>
 	<!-- purple color -->
-	<string name="purple">Purpurová</string>
+	<string name="purple">purpurová</string>
 	<!-- orange color -->
-	<string name="orange">Oranžová</string>
+	<string name="orange">oranžová</string>
 	<!-- brown color -->
-	<string name="brown">Hnedá</string>
+	<string name="brown">hnedá</string>
 	<!-- pink color -->
-	<string name="pink">Ružová</string>
-	<!-- deep purple color -->
-	<string name="deep_purple">Tmavofialová</string>
-	<!-- light blue color -->
-	<string name="light_blue">Svetlo modrá</string>
-	<!-- cyan color -->
-	<string name="cyan">Tyrkysová</string>
-	<!-- teal color -->
-	<string name="teal">Modrozelená</string>
-	<!-- lime color -->
-	<string name="lime">Limetková</string>
-	<!-- deep orange color -->
-	<string name="deep_orange">Tmavo oranžová</string>
-	<!-- gray color -->
-	<string name="gray">Sivá</string>
-	<!-- blue gray color -->
-	<string name="blue_gray">Modro sivá</string>
+	<string name="pink">ružová</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Áno</string>
 
@@ -879,7 +875,6 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Popis</string>
 	<string name="placepage_more_button">Viac</string>
-	<string name="placepage_more_reviews_button">Ďalšie recenzie</string>
 	<string name="book_button">Rezervovať</string>
 	<string name="placepage_call_button">Zavolať</string>
 	<string name="placepage_edit_bookmark_button">Upraviť záložku</string>
@@ -1235,6 +1230,7 @@
 	<string name="downloader_percent">%1$s (%2$s z %3$s)</string>
 	<string name="downloader_process">Sťahovanie %s...</string>
 	<string name="downloader_applying">Použitie %s...</string>
+	<string name="transit_not_found">Tranzitná navigácia v tomto regióne zatiaľ nie je k dispozícii</string>
 	<string name="whats_new_title_hotel_filter">Nové filtre pre hotely k dispozícii!</string>
 	<string name="whats_new_message_hotel_filter">Rezervujte si hotely, ktoré sú k dispozícii vo vami požadovanom dátume! Použiť filtre pre prihlásenie a odhlásenie v hoteli</string>
 	<string name="whats_new_title_ugc_travel">Podeľte sa o svoje skúsenosti s ďalšími cestovateľmi!</string>
@@ -1344,8 +1340,7 @@
 	<string name="error_already_downloaded">Tento zoznam už bol stiahnutý</string>
 	<string name="guides">Príručky</string>
 	<string name="guide_downloaded_title">Príručka bola úspešne stiahnutá</string>
-	<!-- as few symbols as possible -->
-	<string name="download_guides">Vyhľadať sprievodcov</string>
+	<string name="download_guides">Stiahnite si príručky</string>
 	<string name="guides_groups_cached">Stiahnuté príručky</string>
 	<string name="subtitle_error_downloading_guide">Príručka nebola stiahnutá</string>
 	<string name="error_already_downloaded_guide">Táto príručka už bola stiahnutá</string>
@@ -1710,18 +1705,12 @@
 	<string name="new_onboarding_step5.3_button">Bezplatné stiahnutie</string>
 	<string name="new_onboarding_additional_steps_later_button">Neskôr</string>
 	<string name="all_pass_subscription_header">ODBER KATALÓGU</string>
-	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title">30000+\nsprievodcov\na tratí</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle"><b>Neobmedzené sťahovanie</b> mestských a vonkajších trás <b>do režimu offline</b></string>
-	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title_2">Interaktívny\nvýškový profil</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle_2">Každá trasa obsahuje <b>prevýšenie a základné informácie o trase</b></string>
-	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title_3">Záložky,\nfotky a\nodporúčania</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle_3"><b>Dozviete sa všetko o trase</b>, ktorou sa vydáte</string>
+	<string name="all_pass_subscription_message_title">20000+ sprievodcov a trás</string>
+	<string name="all_pass_subscription_message_subtitle">Neobmedzené offline sťahovanie mestských a vonkajších trás</string>
+	<string name="all_pass_subscription_message_title_2">700+ miest a 100+ krajín</string>
+	<string name="all_pass_subscription_message_subtitle_2">Naplánujte si svoje cesty kedykoľvek v priebehu roka</string>
+	<string name="all_pass_subscription_message_title_3">Široký rozsah obsahu</string>
+	<string name="all_pass_subscription_message_subtitle_3">Záložky, fotografie, turistické trasy, popisy a tipy</string>
 	<string name="sightseeing_subscription_header_subscription">Predplatné sprievodcov</string>
 	<string name="sightseeing_subscription_message">700+ miest a 100+ krajín</string>
 	<string name="sightseeing_subscription_message_2">Dostupné offline</string>
@@ -1740,41 +1729,6 @@
 	<string name="whatsnew_outdoor_guides_message">V katalógu čakajú trasy z Outdooractive na zimné a letné cesty!</string>
 	<string name="whatsnew_guides_galleries_title">Naplánujte si svoj nadchádzajúci výlet s MAPS.ME</string>
 	<string name="whatsnew_guides_galleries_message">Teraz nájdete odporúčaných sprievodcov na stránkach obľúbených turistických miest a pamiatok</string>
-	<string name="new_onboarding_step3_header">Zážitok</string>
-	<string name="all_pass_screen_best_value">Najlepšia hodnota</string>
-	<string name="buy_btn_for_subscription_3">Celý katalóg za %s/rok</string>
-	<string name="transit_not_found">Navigácia metra v tejto oblasti ešte nie je k dispozícii</string>
-	<string name="dialog_pedestrian_route_is_long_header">Trasa metra sa nenašla</string>
-	<string name="dialog_pedestrian_route_is_long_message">Vyberte počiatočný alebo konečný bod bližšie k stanici metra</string>
-	<!-- Failed planning SUBWAY route message in navigation view -->
-	<string name="routing_planning_error_subway_special">Plánovanie trasy metra zlyhalo</string>
-	<string name="whatsnew_isolines_title">Novinka pre outdoor: topografická vrstva offline!</string>
-	<!-- as less symbols as possible -->
-	<string name="whatsnew_isolines_message">Cíťte sa sebaisto v horskej oblasti. Stačí zapnúť vrstvu v ľavom hornom rohu</string>
-	<string name="button_layer_isolines">Terén</string>
-	<string name="tips_map_layers_title_countour">Nové v MAPS.ME: offline topografická vrstva!</string>
-	<string name="tips_map_layers_message_countour">Naplánujte a užite si výlety do prírody s istotou, že viete o tejto oblasti všetko</string>
-	<string name="isolines_activation_error_dialog">Ak chcete aktivovať a používať topografickú vrstvu, aktualizujte alebo stiahnite mapu oblasti</string>
-	<string name="isolines_location_error_dialog">Topografická vrstva ešte nie je v tejto oblasti k dispozícii</string>
-	<string name="elevation_profile_diff_level">Level obtiažnosti</string>
-	<string name="elevation_profile_diff_level_easy">Jednoduchá</string>
-	<string name="elevation_profile_diff_level_moderate">Mierna</string>
-	<string name="elevation_profile_diff_level_hard">Náročná</string>
-	<string name="elevation_profile_ascent">Výstup</string>
-	<string name="elevation_profile_descent">Zostup</string>
-	<string name="elevation_profile_minaltitude">Min. nadmorská výška</string>
-	<string name="elevation_profile_maxaltitude">Max. nadmorská výška</string>
-	<string name="elevation_profile_m">m</string>
-	<string name="elevation_profile_difficulty">Obtiažnosť</string>
-	<string name="elevation_profile_distance">Vzdial.:</string>
-	<string name="elevation_profile_km">km</string>
-	<string name="elevation_profile_time">Čas:</string>
-	<string name="elevation_profile_hours">h.</string>
-	<string name="elevation_profile_minutes">min</string>
-	<!-- hide the full screen banner and continue working with the app -->
-	<string name="hide_screen_map_update">Skryť a pokračovať</string>
-	<string name="view_on_map_downloaded_error">Tento sprievodca bol z tohto zariadenia odstránený</string>
-	<string name="subscription">Predplatné</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Lanovka</string>
@@ -1830,15 +1784,15 @@
 	<string name="type.amenity.parking">Parkovisko</string>
 	<string name="type.amenity.parking.fee">Parkovisko</string>
 	<string name="type.amenity.parking.multi.storey">Parkovisko</string>
+	<string name="type.amenity.parking.multi.storey.fee">Parkovisko</string>
 	<string name="type.amenity.parking.no.access">Parkovisko</string>
 	<string name="type.amenity.parking.park_and_ride">Parkovisko</string>
 	<string name="type.amenity.parking.permissive">Parkovisko</string>
+	<string name="type.amenity.parking.permissive.fee">Parkovisko</string>
 	<string name="type.amenity.parking.private">Parkovisko</string>
 	<string name="type.amenity.parking.underground">Parkovisko</string>
+	<string name="type.amenity.parking.underground.fee">Parkovisko</string>
 	<string name="type.amenity.parking_space">Parkovacie miesto</string>
-	<string name="type.amenity.parking_space.permissive">Parkovacie miesto</string>
-	<string name="type.amenity.parking_space.private">Parkovacie miesto</string>
-	<string name="type.amenity.parking_space.underground">Parkovacie miesto</string>
 	<string name="type.amenity.payment_terminal">Platobný terminál</string>
 	<string name="type.amenity.pharmacy">Lekáreň</string>
 	<string name="type.amenity.place_of_worship">Svätyňa</string>
@@ -2050,6 +2004,9 @@
 	<string name="type.highway.service.area">Ulica</string>
 	<string name="type.highway.service.bridge">Ulica</string>
 	<string name="type.highway.service.driveway">Ulica</string>
+	<string name="type.highway.service.driveway.area">Ulica</string>
+	<string name="type.highway.service.driveway.bridge">Ulica</string>
+	<string name="type.highway.service.driveway.tunnel">Ulica</string>
 	<string name="type.highway.service.parking_aisle">Ulica</string>
 	<string name="type.highway.service.tunnel">Ulica</string>
 	<string name="type.highway.speed_camera">Rýchlostná kamera</string>
@@ -2068,8 +2025,14 @@
 	<string name="type.highway.track.grade1">Ulica</string>
 	<string name="type.highway.track.grade2">Ulica</string>
 	<string name="type.highway.track.grade3">Ulica</string>
+	<string name="type.highway.track.grade3.no.access">Ulica</string>
+	<string name="type.highway.track.grade3.permissive">Ulica</string>
 	<string name="type.highway.track.grade4">Ulica</string>
+	<string name="type.highway.track.grade4.no.access">Ulica</string>
+	<string name="type.highway.track.grade4.permissive">Ulica</string>
 	<string name="type.highway.track.grade5">Ulica</string>
+	<string name="type.highway.track.grade5.no.access">Ulica</string>
+	<string name="type.highway.track.grade5.permissive">Ulica</string>
 	<string name="type.highway.track.no.access">Ulica</string>
 	<string name="type.highway.track.permissive">Ulica</string>
 	<string name="type.highway.track.tunnel">Ulica</string>
@@ -2120,7 +2083,9 @@
 	<string name="type.leisure.park.permissive">Park</string>
 	<string name="type.leisure.park.private">Park</string>
 	<string name="type.leisure.pitch">Športovisko</string>
+	<string name="type.leisure.pitch.tennis">Športovisko</string>
 	<string name="type.leisure.playground">Ihrisko</string>
+	<string name="type.leisure.playground.tennis">Ihrisko</string>
 	<string name="type.leisure.sauna">Sauna</string>
 	<string name="type.leisure.sports_centre">Športové centrum</string>
 	<string name="type.leisure.sports_centre.climbing">Lezecké centrum</string>
@@ -2140,7 +2105,7 @@
 	<string name="type.man_made.windmill">Veterný mlyn</string>
 	<string name="type.natural.bay">Záliv</string>
 	<string name="type.natural.cape">Mys</string>
-	<string name="type.natural.cave_entrance">Jaskyňa</string>
+	<string name="type.natural.cave_entrance">Vstup do jaskyne</string>
 	<string name="type.natural.geyser">Gejzír</string>
 	<string name="type.natural.glacier">Ľadovec</string>
 	<string name="type.natural.grassland">Lúka</string>
@@ -2153,6 +2118,10 @@
 	<string name="type.natural.volcano">Vulkán</string>
 	<string name="type.natural.water">Voda</string>
 	<string name="type.natural.wetland">Oblasť mokradí</string>
+	<string name="type.natural.wood">Les</string>
+	<string name="type.natural.wood.coniferous">Les</string>
+	<string name="type.natural.wood.deciduous">Les</string>
+	<string name="type.natural.wood.mixed">Les</string>
 	<string name="type.office">Kancelária</string>
 	<string name="type.office.company">Sídlo spoločnosti</string>
 	<string name="type.office.estate_agent">Realitný agent</string>

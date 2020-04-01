@@ -1,7 +1,6 @@
 #pragma once
 
 #include "routing/base/astar_graph.hpp"
-#include "routing/base/astar_vertex_data.hpp"
 
 #include "routing/index_graph_starter.hpp"
 #include "routing/route_weight.hpp"
@@ -20,10 +19,8 @@ public:
 
   // AStarGraph overrides:
   // @{
-  void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
-                            std::vector<SegmentEdge> & edges) override;
-  void GetIngoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
-                           std::vector<SegmentEdge> & edges) override;
+  void GetOutgoingEdgesList(Segment const & segment, std::vector<SegmentEdge> & edges) override;
+  void GetIngoingEdgesList(Segment const & segment, std::vector<SegmentEdge> & edges) override;
   RouteWeight HeuristicCostEstimate(Segment const & from, Segment const & to) override;
   RouteWeight GetAStarWeightEpsilon() override;
   // @}

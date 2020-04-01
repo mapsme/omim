@@ -1,11 +1,15 @@
+@objc(MWMGalleryViewController)
 final class GalleryViewController: MWMCollectionViewController {
-  static func instance(photos: [HotelPhotoUrl]) -> GalleryViewController {
+  typealias Cell = GalleryCell
+  typealias Model = GalleryModel
+
+  @objc static func instance(model: Model) -> GalleryViewController {
     let vc = GalleryViewController(nibName: toString(self), bundle: nil)
-    vc.photos = photos
+    vc.model = model
     return vc
   }
 
-  private var photos: [HotelPhotoUrl]!
+  private var model: Model!
 
   private var lastViewSize = CGSize.zero {
     didSet { configLayout() }
@@ -13,7 +17,8 @@ final class GalleryViewController: MWMCollectionViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    collectionView!.register(cellClass: GalleryCell.self)
+    title = model.title
+    collectionView!.register(cellClass: Cell.self)
   }
 
   override func viewDidLayoutSubviews() {
@@ -36,7 +41,9 @@ final class GalleryViewController: MWMCollectionViewController {
     layout.minimumLineSpacing = spacing
     layout.minimumInteritemSpacing = spacing
     layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
-    layout.sectionInsetReference = .fromSafeArea
+    if #available(iOS 11.0, *) {
+      layout.sectionInsetReference = .fromSafeArea
+    }
   }
 
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -47,25 +54,28 @@ final class GalleryViewController: MWMCollectionViewController {
 
   // MARK: UICollectionViewDataSource
   override func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
-    return photos.count
+    return model.items.count
   }
 
   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCell(withCellClass: GalleryCell.self, indexPath: indexPath) as! GalleryCell
-    cell.photoUrl = photos[indexPath.item]
+    let cell = collectionView.dequeueReusableCell(withCellClass: Cell.self,
+                                                  indexPath: indexPath) as! Cell
+    cell.model = model.items[indexPath.item]
     return cell
   }
 
   // MARK: UICollectionViewDelegate
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    let currentPhoto = photos[indexPath.item]
+    let currentPhoto = model.items[indexPath.item]
     let cell = collectionView.cellForItem(at: indexPath)
-    let photoVC = PhotosViewController(photos: photos, initialPhoto: currentPhoto, referenceView: cell)
+    let photoVC = PhotosViewController(photos: model, initialPhoto: currentPhoto, referenceView: cell)
 
     photoVC.referenceViewForPhotoWhenDismissingHandler = { [weak self] photo in
-      guard let index = self?.photos.firstIndex(where: { $0 === photo }) else { return nil }
-      let indexPath = IndexPath(item: index, section: 0)
-      return collectionView.cellForItem(at: indexPath)
+      if let index = self?.model.items.firstIndex(where: { $0 === photo }) {
+        let indexPath = IndexPath(item: index, section: 0)
+        return collectionView.cellForItem(at: indexPath)
+      }
+      return nil
     }
     present(photoVC, animated: true, completion: nil)
   }

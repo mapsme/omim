@@ -20,7 +20,6 @@
 #include "indexer/indexer_tests/test_mwm_set.hpp"
 
 #include "platform/country_file.hpp"
-#include "platform/downloader_defines.hpp"
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
 #include "platform/mwm_version.hpp"
@@ -28,6 +27,8 @@
 #include "platform/platform_tests_support/scoped_dir.hpp"
 #include "platform/platform_tests_support/scoped_file.hpp"
 #include "platform/platform_tests_support/writable_dir_changer.hpp"
+
+#include "platform/platform_tests_support/scoped_dir.hpp"
 
 #include "geometry/mercator.hpp"
 
@@ -270,8 +271,7 @@ protected:
     TEST_LESS(m_currStatus + 1, m_transitionList.size(), (m_countryFile));
     TEST_EQUAL(nexStatus, m_transitionList[m_currStatus + 1], (m_countryFile));
     ++m_currStatus;
-    if (m_transitionList[m_currStatus] == Status::EDownloading ||
-        m_transitionList[m_currStatus] == Status::EInQueue)
+    if (m_transitionList[m_currStatus] == Status::EDownloading)
     {
       LocalAndRemoteSize localAndRemoteSize = m_storage.CountrySizeInBytes(m_countryId);
       m_totalBytesToDownload = localAndRemoteSize.second;
@@ -1312,7 +1312,8 @@ UNIT_TEST(StorageTest_GetOverallProgressSmokeTest)
   TaskRunner runner;
   InitStorage(storage, runner);
 
-  auto const currentProgress = storage.GetOverallProgress({"Abkhazia", "Algeria_Coast"});
+  MapFilesDownloader::Progress currentProgress =
+      storage.GetOverallProgress({"Abkhazia", "Algeria_Coast"});
   TEST_EQUAL(currentProgress.first, 0, ());
   TEST_EQUAL(currentProgress.second, 0, ());
 }

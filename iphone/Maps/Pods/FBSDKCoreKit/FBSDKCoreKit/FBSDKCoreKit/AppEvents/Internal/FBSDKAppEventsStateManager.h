@@ -20,7 +20,6 @@
 
 @class FBSDKAppEventsState;
 
-NS_SWIFT_NAME(AppEventsStateManager)
 @interface FBSDKAppEventsStateManager : NSObject
 
 + (void)clearPersistedAppEventsStates;

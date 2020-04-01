@@ -10,7 +10,7 @@
 #include "base/logging.hpp"
 #include "base/scope_guard.hpp"
 
-#include "3party/minizip/minizip.hpp"
+#include "3party/minizip/zip.h"
 
 #include <algorithm>
 #include <array>
@@ -22,24 +22,24 @@ namespace
 {
 class ZipHandle
 {
-  zip::File m_zipFileHandle;
+  zipFile m_zipFileHandle;
 
 public:
   explicit ZipHandle(std::string const & filePath)
   {
-    m_zipFileHandle = zip::Create(filePath);
+    m_zipFileHandle = zipOpen(filePath.c_str(), 0);
   }
 
   ~ZipHandle()
   {
     if (m_zipFileHandle)
-      zip::Close(m_zipFileHandle);
+      zipClose(m_zipFileHandle, NULL);
   }
 
-  zip::File Handle() const { return m_zipFileHandle; }
+  zipFile Handle() const { return m_zipFileHandle; }
 };
 
-void CreateTMZip(zip::DateTime & res)
+void CreateTMZip(tm_zip & res)
 {
   time_t rawtime;
   struct tm * timeinfo;
@@ -77,7 +77,7 @@ bool CreateZipFromPathDeflatedAndDefaultCompression(std::string const & filePath
   if (!zip.Handle())
     return false;
 
-  zip::FileInfo zipInfo = {};
+  zip_fileinfo zipInfo = {};
   CreateTMZip(zipInfo.tmz_date);
 
   std::string fileName = filePath;
@@ -85,8 +85,8 @@ bool CreateZipFromPathDeflatedAndDefaultCompression(std::string const & filePath
   if (!strings::IsASCIIString(fileName))
     fileName = "MapsMe.kml";
 
-  if (zip::Code::Ok != zip::OpenNewFileInZip(zip.Handle(), fileName, zipInfo, "ZIP from MapsWithMe",
-                                             Z_DEFLATED, Z_DEFAULT_COMPRESSION))
+  if (zipOpenNewFileInZip(zip.Handle(), fileName.c_str(), &zipInfo, nullptr, 0, nullptr, 0,
+                          "ZIP from MapsWithMe", Z_DEFLATED, Z_DEFAULT_COMPRESSION) < 0)
   {
     return false;
   }
@@ -98,13 +98,14 @@ bool CreateZipFromPathDeflatedAndDefaultCompression(std::string const & filePath
     uint64_t const fileSize = file.Size();
 
     uint64_t currSize = 0;
-    std::array<char, zip::kFileBufferSize> buffer;
+    char buffer[ZIP_FILE_BUFFER_SIZE];
     while (currSize < fileSize)
     {
-      auto const toRead = std::min(buffer.size(), static_cast<size_t>(fileSize - currSize));
-      file.Read(currSize, buffer.data(), toRead);
+      unsigned int const toRead =
+          std::min(ZIP_FILE_BUFFER_SIZE, static_cast<unsigned int>(fileSize - currSize));
+      file.Read(currSize, buffer, toRead);
 
-      if (zip::Code::Ok != zip::WriteInFileInZip(zip.Handle(), buffer, toRead))
+      if (ZIP_OK != zipWriteInFileInZip(zip.Handle(), buffer, toRead))
         return false;
 
       currSize += toRead;
@@ -130,14 +131,14 @@ bool CreateZipFromFiles(std::vector<std::string> const & files, std::string cons
     return false;
 
   auto const compressionLevel = GetCompressionLevel(compression);
-  zip::FileInfo const fileInfo = {};
+  zip_fileinfo const fileInfo = {};
 
   try
   {
     for (auto const & filePath : files)
     {
-      if (zip::Code::Ok != zip::OpenNewFileInZip(zip.Handle(), filePath, fileInfo, "",
-                              Z_DEFLATED, compressionLevel))
+      if (zipOpenNewFileInZip(zip.Handle(), filePath.c_str(), &fileInfo, nullptr, 0, nullptr, 0, "",
+                              Z_DEFLATED, compressionLevel) != Z_OK)
       {
         return false;
       }
@@ -145,15 +146,15 @@ bool CreateZipFromFiles(std::vector<std::string> const & files, std::string cons
       base::FileData file(filePath, base::FileData::OP_READ);
       uint64_t const fileSize = file.Size();
       uint64_t writtenSize = 0;
-      zip::Buffer buffer;
+      std::array<char, ZIP_FILE_BUFFER_SIZE> bufferForZip;
 
       while (writtenSize < fileSize)
       {
-        auto const filePartSize =
-            std::min(buffer.size(), static_cast<size_t>(fileSize - writtenSize));
-        file.Read(writtenSize, buffer.data(), filePartSize);
+        unsigned int const filePartSize =
+            std::min(ZIP_FILE_BUFFER_SIZE, static_cast<unsigned int>(fileSize - writtenSize));
+        file.Read(writtenSize, bufferForZip.data(), filePartSize);
 
-        if (zip::Code::Ok != zip::WriteInFileInZip(zip.Handle(), buffer, filePartSize))
+        if (zipWriteInFileInZip(zip.Handle(), bufferForZip.data(), filePartSize) != ZIP_OK)
           return false;
 
         writtenSize += filePartSize;

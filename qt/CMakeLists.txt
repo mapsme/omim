@@ -70,7 +70,6 @@ omim_link_libraries(
   ${PROJECT_NAME}
   qt_common
   map
-  ge0
   drape_frontend
   shaders
   generator
@@ -174,6 +173,7 @@ copy_resources(
   resources-xxhdpi_clear
   resources-xxxhdpi_clear
   resources-6plus_clear
+  cuisine-strings
   taxi_places
   eula.html
 

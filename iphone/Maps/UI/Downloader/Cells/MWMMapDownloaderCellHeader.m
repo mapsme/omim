@@ -1,5 +1,4 @@
 #import "MWMMapDownloaderCellHeader.h"
-#import "SwiftBridge.h"
 
 @implementation MWMMapDownloaderCellHeader
 
@@ -8,7 +7,8 @@
   self = [super initWithFrame:frame];
   if (self)
   {
-    [self setStyleAndApply:@"regular12:blackSecondaryText"];
+    self.font = [UIFont regular12];
+    self.textColor = [UIColor blackSecondaryText];
   }
   return self;
 }

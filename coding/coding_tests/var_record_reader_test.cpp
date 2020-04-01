@@ -19,27 +19,25 @@ namespace
 {
   struct SaveForEachParams
   {
-    explicit SaveForEachParams(vector<pair<uint64_t, string>> & data) : m_data(data) {}
-
-    void operator()(uint64_t pos, vector<uint8_t> && data) const
+    explicit SaveForEachParams(vector<pair<uint64_t, string> > & data) : m_Data(data) {}
+    void operator () (uint64_t pos, char const * pData, uint32_t size) const
     {
-      m_data.emplace_back(pos, string(data.begin(), data.end()));
+      m_Data.push_back(make_pair(pos, string(pData, pData + size)));
     }
-
-    vector<pair<uint64_t, string>> & m_data;
+    vector<pair<uint64_t, string> > & m_Data;
   };
 
 }
 
 UNIT_TEST(VarRecordReader_Simple)
 {
-  vector<uint8_t> data;
+  vector<char> data;
   char const longString[] = "0123456789012345678901234567890123456789012345678901234567890123456789"
                             "012345678901234567890123456789012345678901234567890123456789012345";
   size_t const longStringSize = sizeof(longString) - 1;
   TEST_GREATER(longStringSize, 128, ());
   {
-    MemWriter<vector<uint8_t>> writer(data);
+    MemWriter<vector<char> > writer(data);
     WriteVarUint(writer, 3U);                   //  0
     writer.Write("abc", 3);                     //  1
     WriteVarUint(writer, longStringSize);       //  4
@@ -49,22 +47,34 @@ UNIT_TEST(VarRecordReader_Simple)
                                                 // 11 + longStringSize
   }
 
-  MemReader reader(&data[0], data.size());
-  VarRecordReader<MemReader> recordReader(reader);
+  uint32_t chunkSizes[] = {4, 5, 63, 64, 65, 1000};
+  for (uint32_t chunkSize = 0; chunkSize < ARRAY_SIZE(chunkSizes); ++chunkSize)
+  {
+    MemReader reader(&data[0], data.size());
+    VarRecordReader<MemReader, &VarRecordSizeReaderVarint> recordReader(
+        reader, chunkSizes[chunkSize]);
 
-  auto r = recordReader.ReadRecord(0);
-  TEST_EQUAL(string(r.begin(), r.end()), "abc", ());
+    vector<char> r;
+    uint32_t offset, size;
 
-  r = recordReader.ReadRecord(6 + longStringSize);
-  TEST_EQUAL(string(r.begin(), r.end()), "defg", ());
+    TEST_EQUAL(4, recordReader.ReadRecord(0, r, offset, size), ());
+    r.resize(size);
+    TEST_EQUAL(string(r.begin() + offset, r.end()), "abc", ());
 
-  r = recordReader.ReadRecord(4);
-  TEST_EQUAL(string(r.begin(), r.end()), longString, ());
+    TEST_EQUAL(11 + longStringSize, recordReader.ReadRecord(6 + longStringSize, r, offset, size), ());
+    r.resize(size);
+    TEST_EQUAL(string(r.begin() + offset, r.end()), "defg", ());
 
-  vector<pair<uint64_t, string>> forEachCalls;
-  recordReader.ForEachRecord(SaveForEachParams(forEachCalls));
-  vector<pair<uint64_t, string>> expectedForEachCalls = {{0, "abc"},
-                                                         {4, longString},
-                                                         {6 + longStringSize, "defg"}};
-  TEST_EQUAL(forEachCalls, expectedForEachCalls, ());
+    TEST_EQUAL(6 + longStringSize, recordReader.ReadRecord(4, r, offset, size), ());
+    r.resize(size);
+    TEST_EQUAL(string(r.begin() + offset, r.end()), longString, ());
+
+    vector<pair<uint64_t, string> > forEachCalls;
+    recordReader.ForEachRecord(SaveForEachParams(forEachCalls));
+    vector<pair<uint64_t, string> > expectedForEachCalls;
+    expectedForEachCalls.push_back(pair<uint64_t, string>(0, "abc"));
+    expectedForEachCalls.push_back(pair<uint64_t, string>(4, longString));
+    expectedForEachCalls.push_back(pair<uint64_t, string>(6 + longStringSize, "defg"));
+    TEST_EQUAL(forEachCalls, expectedForEachCalls, ());
+  }
 }

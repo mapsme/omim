@@ -2,7 +2,7 @@
 
 #include "partners_api/booking_params_base.hpp"
 
-#include "coding/url.hpp"
+#include "base/url_helpers.hpp"
 
 #include <chrono>
 #include <string>
@@ -44,7 +44,7 @@ struct AvailabilityParams : public ParamsBase
   static AvailabilityParams MakeDefault();
 
   using UrlFilter = std::unordered_set<std::string>;
-  url::Params Get(UrlFilter const & filter = {}) const;
+  base::url::Params Get(UrlFilter const & filter = {}) const;
 
   // ParamsBase overrides:
   bool IsEmpty() const override;

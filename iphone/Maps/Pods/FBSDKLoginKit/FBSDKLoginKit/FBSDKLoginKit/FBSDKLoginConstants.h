@@ -18,8 +18,6 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 
 /**
@@ -27,8 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  Error codes from the SDK in the range 300-399 are reserved for this domain.
  */
-FOUNDATION_EXPORT NSErrorDomain const FBSDKLoginErrorDomain
-NS_SWIFT_NAME(LoginErrorDomain);
+FOUNDATION_EXPORT NSErrorDomain const FBSDKLoginErrorDomain;
 
 #else
 
@@ -37,8 +34,7 @@ NS_SWIFT_NAME(LoginErrorDomain);
 
  Error codes from the SDK in the range 300-399 are reserved for this domain.
  */
-FOUNDATION_EXPORT NSString *const FBSDKLoginErrorDomain
-NS_SWIFT_NAME(LoginErrorDomain);
+FOUNDATION_EXPORT NSString *const FBSDKLoginErrorDomain;
 
 #endif
 
@@ -58,7 +54,6 @@ typedef NS_ERROR_ENUM(FBSDKLoginErrorDomain, FBSDKLoginError)
     Reserved.
    */
   FBSDKLoginErrorReserved = 300,
-
   /**
     The error code for unknown errors.
    */
@@ -68,17 +63,14 @@ typedef NS_ERROR_ENUM(FBSDKLoginErrorDomain, FBSDKLoginError)
     The user's password has changed and must log in again
   */
   FBSDKLoginErrorPasswordChanged,
-
   /**
     The user must log in to their account on www.facebook.com to restore access
   */
   FBSDKLoginErrorUserCheckpointed,
-
   /**
     Indicates a failure to request new permissions because the user has changed.
    */
   FBSDKLoginErrorUserMismatch,
-
   /**
     The user must confirm their account with Facebook before logging in
   */
@@ -90,17 +82,15 @@ typedef NS_ERROR_ENUM(FBSDKLoginErrorDomain, FBSDKLoginError)
    been disabled.
    */
   FBSDKLoginErrorSystemAccountAppDisabled,
-
   /**
     An error occurred related to Facebook system Account store
   */
   FBSDKLoginErrorSystemAccountUnavailable,
-
   /**
     The login response was missing a valid challenge string.
   */
   FBSDKLoginErrorBadChallengeString,
-} NS_SWIFT_NAME(LoginError);
+};
 
 /**
  FBSDKDeviceLoginError
@@ -123,6 +113,30 @@ typedef NS_ERROR_ENUM(FBSDKLoginErrorDomain, FBSDKDeviceLoginError) {
    The code you entered has expired.
    */
   FBSDKDeviceLoginErrorCodeExpired = 1349152
-} NS_SWIFT_NAME(DeviceLoginError);
+};
 
-NS_ASSUME_NONNULL_END
+/**
+ Deprecated
+ */
+typedef NS_ENUM(NSInteger, FBSDKLoginErrorCode)
+{
+  FBSDKLoginReservedErrorCode DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorReserved instead") = FBSDKLoginErrorReserved,
+  FBSDKLoginUnknownErrorCode DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorUnknown instead"),
+  FBSDKLoginPasswordChangedErrorCode DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorPasswordChanged instead"),
+  FBSDKLoginUserCheckpointedErrorCode DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorUserCheckpointed instead"),
+  FBSDKLoginUserMismatchErrorCode DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorUserMismatch instead"),
+  FBSDKLoginUnconfirmedUserErrorCode DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorUnconfirmedUser instead"),
+  FBSDKLoginSystemAccountAppDisabledErrorCode DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorSystemAccountAppDisabled instead"),
+  FBSDKLoginSystemAccountUnavailableErrorCode DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorSystemAccountUnavailable instead"),
+  FBSDKLoginBadChallengeString DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginErrorBadChallengeString instead"),
+} DEPRECATED_MSG_ATTRIBUTE("use FBSDKLoginError instead");
+
+/**
+ Deprecated
+ */
+typedef NS_ENUM(NSUInteger, FBSDKDeviceLoginErrorSubcode) {
+  FBSDKDeviceLoginExcessivePollingErrorSubcode DEPRECATED_MSG_ATTRIBUTE("use FBSDKDeviceLoginErrorExcessivePolling instead") = FBSDKDeviceLoginErrorExcessivePolling,
+  FBSDKDeviceLoginAuthorizationDeclinedErrorSubcode DEPRECATED_MSG_ATTRIBUTE("use FBSDKDeviceLoginErrorAuthorizationDeclined instead") = FBSDKDeviceLoginErrorAuthorizationDeclined,
+  FBSDKDeviceLoginAuthorizationPendingErrorSubcode DEPRECATED_MSG_ATTRIBUTE("use FBSDKDeviceLoginErrorAuthorizationPending instead") = FBSDKDeviceLoginErrorAuthorizationPending,
+  FBSDKDeviceLoginCodeExpiredErrorSubcode DEPRECATED_MSG_ATTRIBUTE("use FBSDKDeviceLoginErrorCodeExpired instead") = FBSDKDeviceLoginErrorCodeExpired
+} DEPRECATED_MSG_ATTRIBUTE("use FBSDKDeviceLoginError instead");

@@ -9,8 +9,7 @@ typedef NS_ENUM(NSInteger, MWMUTM) {
   MWMUTMDiscoveryPageGallery,
   MWMUTMTipsAndTricks,
   MWMUTMBookingPromo,
-  MWMUTMDiscoverCatalogOnboarding,
-  MWMUTMFreeSamplesOnboading,
+  MWMUTMCrownButton,
 };
 
 typedef NS_ENUM(NSInteger, MWMUTMContent) {

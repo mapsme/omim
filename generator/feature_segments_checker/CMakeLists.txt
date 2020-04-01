@@ -28,7 +28,6 @@ omim_link_libraries(
   jansson
   minizip
   oauthcpp
-  opening_hours
   protobuf
   stats_client
   succinct

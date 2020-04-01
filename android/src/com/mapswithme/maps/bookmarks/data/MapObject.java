@@ -1,11 +1,12 @@
 package com.mapswithme.maps.bookmarks.data;
 
 import android.os.Parcel;
-import android.text.TextUtils;
-
+import android.os.Parcelable;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.text.TextUtils;
+
 import com.mapswithme.maps.ads.Banner;
 import com.mapswithme.maps.ads.LocalAdInfo;
 import com.mapswithme.maps.routing.RoutePointInfo;
@@ -15,7 +16,6 @@ import com.mapswithme.maps.search.PopularityProvider;
 import com.mapswithme.maps.search.PriceFilterView;
 import com.mapswithme.maps.taxi.TaxiType;
 import com.mapswithme.maps.ugc.UGC;
-import com.mapswithme.maps.widget.placepage.PlacePageData;
 import com.mapswithme.util.sharing.ShareableInfoProvider;
 
 import java.lang.annotation.Retention;
@@ -26,28 +26,8 @@ import java.util.List;
 
 // TODO(yunikkk): Refactor. Displayed information is different from edited information, and it's better to
 // separate them. Simple getters from jni place_page::Info and osm::EditableFeature should be enough.
-public class MapObject implements PopularityProvider, ShareableInfoProvider,
-                                  PlacePageData
+public class MapObject implements Parcelable, PopularityProvider, ShareableInfoProvider
 {
-  // Order must correspond indexer/map_object.hpp
-  public enum OsmProps
-  {
-    OpeningHours,
-    Phone,
-    Fax,
-    Website,
-    Email,
-    Cuisine,
-    Stars,
-    Operator,
-    Elevation,
-    Internet,
-    Wikipedia,
-    Flats,
-    BuildingLevels,
-    Level;
-  }
-
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({ POI, API_POINT, BOOKMARK, MY_POSITION, SEARCH })
   public @interface MapObjectType

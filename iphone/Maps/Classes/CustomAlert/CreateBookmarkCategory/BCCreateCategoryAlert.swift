@@ -13,7 +13,11 @@ final class BCCreateCategoryAlert: MWMAlert {
   @IBOutlet private weak var centerHorizontaly: NSLayoutConstraint!
   @IBOutlet private weak var errorLabel: UILabel!
   @IBOutlet private weak var charactersCountLabel: UILabel!
-  @IBOutlet private weak var rightButton: UIButton!
+  @IBOutlet private weak var rightButton: UIButton! {
+    didSet {
+      rightButton.setTitleColor(UIColor.blackHintText(), for: .disabled)
+    }
+  }
 
   private var maxCharactersNum: UInt?
   private var minCharactersNum: UInt?
@@ -81,30 +85,30 @@ final class BCCreateCategoryAlert: MWMAlert {
   }
 
   private func process(state: State) {
-    let styleName: String
+    let color: UIColor
     switch state {
     case .valid:
-      styleName = "blackHintText"
+      color = UIColor.blackHintText()
       rightButton.isEnabled = true
       errorLabel.isHidden = true
     case .tooFewSymbols:
-      styleName = "blackHintText"
+      color = UIColor.blackHintText()
       errorLabel.isHidden = true
       rightButton.isEnabled = false
     case .tooManySymbols:
-      styleName = "buttonRedText"
+      color = UIColor.buttonRed()
       errorLabel.isHidden = false
       errorLabel.text = L("bookmarks_error_title_list_name_too_long")
       rightButton.isEnabled = false
     case .nameAlreadyExists:
-      styleName = "buttonRedText"
+      color = UIColor.buttonRed()
       errorLabel.isHidden = false
       errorLabel.text = L("bookmarks_error_title_list_name_already_taken")
       rightButton.isEnabled = false
     }
 
-    charactersCountLabel.setStyleAndApply(styleName)
-    textFieldContainer.layer.borderColor = charactersCountLabel.textColor.cgColor
+    charactersCountLabel.textColor = color
+    textFieldContainer.layer.borderColor = color.cgColor
   }
 
   private func formatCharactersCountText() {

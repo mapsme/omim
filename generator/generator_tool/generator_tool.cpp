@@ -12,7 +12,6 @@
 #include "generator/feature_generator.hpp"
 #include "generator/feature_sorter.hpp"
 #include "generator/generate_info.hpp"
-#include "generator/isolines_section_builder.cpp"
 #include "generator/maxspeeds_builder.hpp"
 #include "generator/metalines_builder.hpp"
 #include "generator/osm_source.hpp"
@@ -130,9 +129,6 @@ DEFINE_string(
     nodes_list_path, "",
     "Path to file containing list of node ids we need to add to locality index. May be empty.");
 
-DEFINE_bool(generate_isolines_info, false, "Generate the isolines info section");
-DEFINE_string(isolines_path, "",
-              "Path to isolines directory. If set, adds isolines linear features.");
 // Routing.
 DEFINE_bool(make_routing_index, false, "Make sections with the routing information.");
 DEFINE_bool(make_cross_mwm, false,
@@ -197,8 +193,6 @@ DEFINE_bool(generate_traffic_keys, false,
 DEFINE_bool(dump_mwm_tmp, false, "Prints feature builder objects from .mwm.tmp");
 
 // Common.
-DEFINE_uint64(threads_count, 0, "Desired count of threads. If count equals zero, count of "
-                                "threads is set automatically.");
 DEFINE_bool(verbose, false, "Provide more detailed output.");
 
 using namespace generator;
@@ -214,8 +208,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   google::ParseCommandLineFlags(&argc, &argv, true);
 
   Platform & pl = GetPlatform();
-  unsigned threadsCount = FLAGS_threads_count != 0 ? static_cast<unsigned>(FLAGS_threads_count)
-                                                   : pl.CpuCores();
+  auto threadsCount = pl.CpuCores();
 
   if (!FLAGS_user_resource_path.empty())
   {
@@ -266,7 +259,6 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   genInfo.m_fileName = FLAGS_output;
   genInfo.m_idToWikidataFilename = FLAGS_idToWikidata;
   genInfo.m_complexHierarchyFilename = FLAGS_complex_hierarchy_data;
-  genInfo.m_isolinesDir = FLAGS_isolines_path;
 
   // Use merged style.
   GetStyleReader().SetCurrentStyle(MapStyleMerged);
@@ -388,7 +380,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
 
       /// @todo Make threads count according to environment (single mwm build or planet build).
       if (!indexer::BuildSearchIndexFromDataFile(path, country, true /* forceRebuild */,
-                                                 threadsCount))
+                                                 1 /* threadsCount */))
       {
         LOG(LCRITICAL, ("Error generating search index."));
       }
@@ -544,10 +536,6 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       else
         BuildDescriptionsSection(FLAGS_wikipedia_pages, datFile);
     }
-
-    // This section must be built with the same isolines file as had been used at the features stage.
-    if (FLAGS_generate_isolines_info)
-      BuildIsolinesInfoSection(FLAGS_isolines_path, country, datFile);
 
     if (FLAGS_generate_popular_places)
     {

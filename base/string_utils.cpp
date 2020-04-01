@@ -1,6 +1,9 @@
 #include "base/string_utils.hpp"
 
 #include "base/assert.hpp"
+#include "base/checked_cast.hpp"
+
+#include "std/target_os.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -20,38 +23,6 @@
 
 namespace strings
 {
-namespace
-{
-template <typename T>
-T RealConverter(char const * start, char ** stop);
-
-template <>
-float RealConverter<float>(char const * start, char ** stop)
-{
-  return std::strtof(start, stop);
-}
-
-template <>
-double RealConverter<double>(char const * start, char ** stop)
-{
-  return std::strtod(start, stop);
-}
-
-template <typename T>
-bool ToReal(char const * start, T & result)
-{
-  char * stop;
-  auto const tmp = RealConverter<T>(start, &stop);
-
-  if (*stop != 0 || start == stop || !std::isfinite(tmp))
-    return false;
-
-  result = tmp;
-  return true;
-}
-
-}  // namespace
-
 bool UniString::IsEqualAscii(char const * s) const
 {
   return (size() == strlen(s) && std::equal(begin(), end(), s));
@@ -81,24 +52,81 @@ UniChar LastUniChar(std::string const & s)
   return *iter;
 }
 
-bool to_size_t(char const * start, size_t & i, int base)
+namespace
+{
+template <typename T, typename TResult>
+bool IntegerCheck(char const * start, char const * stop, T x, TResult & out)
+{
+  if (errno != EINVAL && *stop == 0 && start != stop)
+  {
+    out = static_cast<TResult>(x);
+    return static_cast<T>(out) == x;
+  }
+  errno = 0;
+  return false;
+}
+}  // namespace
+
+bool to_int(char const * start, int & i, int base /*= 10*/)
+{
+  char * stop;
+  errno = 0;  // Library functions do not reset it.
+  long const v = strtol(start, &stop, base);
+  return IntegerCheck(start, stop, v, i);
+}
+
+bool to_uint(char const * start, unsigned int & i, int base /*= 10*/)
+{
+  char * stop;
+  errno = 0;  // Library functions do not reset it.
+  unsigned long const v = strtoul(start, &stop, base);
+  return IntegerCheck(start, stop, v, i);
+}
+
+bool to_uint64(char const * s, uint64_t & i, int base /*= 10*/)
+{
+  char * stop;
+#ifdef OMIM_OS_WINDOWS_NATIVE
+  i = _strtoui64(s, &stop, base);
+#else
+  i = strtoull(s, &stop, base);
+#endif
+  return *stop == 0 && s != stop;
+}
+
+bool to_int64(char const * s, int64_t & i)
+{
+  char * stop;
+#ifdef OMIM_OS_WINDOWS_NATIVE
+  i = _strtoi64(s, &stop, 10);
+#else
+  i = strtoll(s, &stop, 10);
+#endif
+  return *stop == 0 && s != stop;
+}
+
+bool to_size_t(char const * s, size_t & i, int base)
 {
   uint64_t num = 0;
-  if (!to_uint64(start, num, base))
+  if (!to_uint64(s, num, base))
     return false;
 
   i = static_cast<size_t>(num);
-  return true;
+  return i == num;
 }
 
-bool to_float(char const * start, float & f)
+bool to_float(char const * s, float & f)
 {
-  return ToReal(start, f);
+  char * stop;
+  f = strtof(s, &stop);
+  return *stop == 0 && s != stop && std::isfinite(f);
 }
 
-bool to_double(char const * start, double & d)
+bool to_double(char const * s, double & d)
 {
-  return ToReal(start, d);
+  char * stop;
+  d = strtod(s, &stop);
+  return *stop == 0 && s != stop && std::isfinite(d);
 }
 
 UniString MakeLowerCase(UniString const & s)

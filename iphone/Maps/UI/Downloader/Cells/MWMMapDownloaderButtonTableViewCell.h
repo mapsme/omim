@@ -2,7 +2,7 @@
 
 @protocol MWMMapDownloaderButtonTableViewCellProtocol <NSObject>
 
-- (void)onAddMaps;
+- (void)openAvailableMaps;
 
 @end
 

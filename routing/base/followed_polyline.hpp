@@ -59,26 +59,39 @@ public:
 
   struct Iter
   {
+    m2::PointD m_pt;
+    size_t m_ind;
+
     static size_t constexpr kInvalidIndex = std::numeric_limits<size_t>::max();
 
-    Iter() = default;
     Iter(m2::PointD pt, size_t ind) : m_pt(pt), m_ind(ind) {}
-
+    Iter() : m_ind(kInvalidIndex) {}
     bool IsValid() const { return m_ind != kInvalidIndex; }
-
-    m2::PointD m_pt;
-    size_t m_ind = kInvalidIndex;
   };
 
-  Iter GetCurrentIter() const { return m_current; }
+  struct UpdatedProjection
+  {
+    // Iterator to the projection point.
+    Iter m_iter;
+    // True if nearest point is on an unmatched segment.
+    bool m_closerToUnmatching;
+  };
+
+  struct UpdatedProjectionInfo
+  {
+    bool m_updatedProjection;
+    bool m_closerToUnmatching;
+  };
+
+  const Iter GetCurrentIter() const { return m_current; }
 
   double GetDistanceM(Iter const & it1, Iter const & it2) const;
 
   /// \brief Sets indexes of all unmatching segments on route.
-  void SetFakeSegmentIndexes(std::vector<size_t> && fakeSegmentIndexes);
+  void SetUnmatchingSegmentIndexes(std::vector<size_t> && unmatchingSegmentIndexes);
 
   /// \brief Updates projection to the closest matched segment if it's possible.
-  bool UpdateMatchingProjection(m2::RectD const & posRect);
+  UpdatedProjectionInfo UpdateMatchingProjection(m2::RectD const & posRect);
 
   Iter UpdateProjection(m2::RectD const & posRect);
 
@@ -121,10 +134,8 @@ public:
     return res;
   }
 
-  Iter GetClosestMatchingProjectionInInterval(m2::RectD const & posRect, size_t startIdx,
-                                              size_t endIdx) const;
-
-  bool IsFakeSegment(size_t index) const;
+UpdatedProjection GetClosestMatchingProjectionInInterval(m2::RectD const & posRect,
+                                                        size_t startIdx, size_t endIdx) const;
 
 private:
   /// \returns iterator to the best projection of center of |posRect| to the |m_poly|.
@@ -134,13 +145,13 @@ private:
   template <typename DistanceFn>
   Iter GetBestProjection(m2::RectD const & posRect, DistanceFn const & distFn) const;
 
-  Iter GetBestMatchingProjection(m2::RectD const & posRect) const;
+  UpdatedProjection GetBestMatchingProjection(m2::RectD const & posRect) const;
 
   void Update();
 
   m2::PolylineD m_poly;
   /// Indexes of all unmatching segments on route.
-  std::vector<size_t> m_fakeSegmentIndexes;
+  std::vector<size_t> m_unmatchingSegmentIndexes;
 
   /// Iterator with the current position. Position sets with UpdateProjection methods.
   Iter m_current;

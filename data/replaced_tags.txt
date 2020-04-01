@@ -1,11 +1,3 @@
-# Format:
-# <replacement>           ::= <original tag> ' : ' <replacement tags list>
-# <original tag>          ::= <tag>
-# <replacement tags list> ::= <tag>[', ' <replacement tags list>]
-# <tag>                   ::= <key> '=' <value>
-# <key>                   ::= string without spaces, '=' and ',' symbols
-# <value>                 ::= string without spaces, '=' and ',' symbols
-
 atm=yes : amenity=atm
 bench=yes : amenity=bench
 shelter=yes : amenity=shelter
@@ -20,15 +12,10 @@ ford=stepping_stones : highway=ford
 ford=yes : highway=ford
 ruins=yes : historic=ruins
 drinkable=yes : amenity=drinking_water
-drinking_water=yes : amenity=drinking_water
-water_point=yes : amenity=water_point
 building=entrance : entrance=yes
 
 ice_road=yes : highway=ice_road
 winter_road=yes : highway=ice_road
-highway=turning_loop : highway=mini_roundabout
-
-highway=platform : highway=pedestrian
 
 natural=marsh : natural=wetland, wetland=marsh
 natural=waterfall : waterway=waterfall
@@ -36,9 +23,16 @@ natural = forest : natural = wood
 # TODO
 # natural = ridge + cliff=yes -> natural=cliff
 
+office=travel_agent : shop=travel_agency
 office=notary : office=lawyer
 office=administrative : office=government
 
+shop=tailor : craft=tailor
+shop=estate_agent : office=estate_agent
+
+amenity=swimming_pool : leisure=swimming_pool
+amenity=gym : leisure=fitness_centre
+amenity=sauna : leisure=sauna
 amenity=monastery : amenity=place_of_worship
 
 power = transformer : power = substation
@@ -53,11 +47,19 @@ diet=vegan : cuisine=vegan
 aerodrome:type=international : aerodrome=international
 
 amenity=parking_entrance : amenity=parking
+amenity=garages : building=garage
+amenity=garage : building=garage
+building=garages : building=garage
 
 historic=cannon : historic=memorial
 historic=technical_monument : historic=memorial
 historic=shield : historic=memorial
 historic=war_memorial : historic=memorial
+
+# OSM recommends leisure=resort instead of tourism=resort
+# but we already have the type for tourism and don't have one for leisure.
+leisure=resort : tourism=resort
+leisure=summer_camp : tourism=resort
 
 place=allotments : place=neighbourhood
 

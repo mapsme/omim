@@ -187,7 +187,6 @@ void CreatePythonBarByMap(std::string const & pythonScriptPath,
                           std::vector<std::vector<double>> const & barHeights,
                           std::vector<std::string> const & legends,
                           std::string const & xlabel,
-                          std::string const & ylabel,
-                          bool drawPercents = true);
+                          std::string const & ylabel);
 }  // namespace routing_quality_tool
 }  // namespace routing_quality

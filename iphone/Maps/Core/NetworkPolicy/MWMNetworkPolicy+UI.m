@@ -12,15 +12,12 @@
   [alertController presentMobileInternetAlertWithBlock:^(MWMMobileInternetAlertResult result) {
     switch (result) {
       case MWMMobileInternetAlertResultAlways:
-        self.permission = MWMNetworkPolicyPermissionAlways;
         completion(YES);
         break;
       case MWMMobileInternetAlertResultToday:
-        self.permission = MWMNetworkPolicyPermissionToday;
         completion(YES);
         break;
       case MWMMobileInternetAlertResultNotToday:
-        self.permission = MWMNetworkPolicyPermissionNotToday;
         completion(NO);
         break;
     }
@@ -57,8 +54,10 @@
         case MWMNetworkPolicyPermissionToday:
           if (self.isTempPermissionValid) {
             onlineCall(YES);
-          } else {
+          } else if (askPermission) {
             [self askPermissionWithCompletion:onlineCall];
+          } else {
+            onlineCall(NO);
           }
           break;
         case MWMNetworkPolicyPermissionNotToday:

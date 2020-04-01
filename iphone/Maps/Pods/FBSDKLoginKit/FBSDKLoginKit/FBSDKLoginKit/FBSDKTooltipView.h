@@ -16,13 +16,7 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "TargetConditionals.h"
-
-#if !TARGET_OS_TV
-
 #import <UIKit/UIKit.h>
-
-NS_ASSUME_NONNULL_BEGIN
 
 /**
  FBSDKTooltipViewArrowDirection enum
@@ -35,7 +29,7 @@ typedef NS_ENUM(NSUInteger, FBSDKTooltipViewArrowDirection)
   FBSDKTooltipViewArrowDirectionDown = 0,
   /** View is located below given point, arrow is pointing up. */
   FBSDKTooltipViewArrowDirectionUp = 1,
-} NS_SWIFT_NAME(FBTooltipView.ArrowDirection);
+};
 
 /**
  FBSDKTooltipColorStyle enum
@@ -48,7 +42,7 @@ typedef NS_ENUM(NSUInteger, FBSDKTooltipColorStyle)
   FBSDKTooltipColorStyleFriendlyBlue = 0,
   /** Dark gray background, white text, light gray close button. */
   FBSDKTooltipColorStyleNeutralGray = 1,
-} NS_SWIFT_NAME(FBTooltipView.ColorStyle);
+};
 
 /**
 
@@ -59,7 +53,6 @@ typedef NS_ENUM(NSUInteger, FBSDKTooltipColorStyle)
 
  The tooltip fades in and will automatically fade out. See `displayDuration`.
  */
-NS_SWIFT_NAME(FBTooltipView)
 @interface FBSDKTooltipView : UIView
 
 /**
@@ -78,12 +71,12 @@ NS_SWIFT_NAME(FBTooltipView)
 /**
   Gets or sets the message.
  */
-@property (nonatomic, copy, nullable) NSString *message;
+@property (nonatomic, copy) NSString *message;
 
 /**
   Gets or sets the optional phrase that comprises the first part of the label (and is highlighted differently).
  */
-@property (nonatomic, copy, nullable) NSString *tagline;
+@property (nonatomic, copy) NSString *tagline;
 
 /**
   Designated initializer.
@@ -101,9 +94,7 @@ NS_SWIFT_NAME(FBTooltipView)
 
  @see FBSDKLoginTooltipView
  */
-- (instancetype)initWithTagline:(nullable NSString *)tagline
-                        message:(nullable NSString *)message
-                     colorStyle:(FBSDKTooltipColorStyle)colorStyle;
+- (instancetype)initWithTagline:(NSString *)tagline message:(NSString *)message colorStyle:(FBSDKTooltipColorStyle)colorStyle;
 
 /**
   Show tooltip at the top or at the bottom of given view.
@@ -131,10 +122,7 @@ NS_SWIFT_NAME(FBTooltipView)
  @param arrowDirection whenever arrow should be pointing up (message bubble is below the arrow) or
  down (message bubble is above the arrow).
  */
-- (void)presentInView:(UIView *)view
-    withArrowPosition:(CGPoint)arrowPosition
-            direction:(FBSDKTooltipViewArrowDirection)arrowDirection
-NS_SWIFT_NAME(present(in:arrowPosition:direction:));
+- (void)presentInView:(UIView *)view withArrowPosition:(CGPoint)arrowPosition direction:(FBSDKTooltipViewArrowDirection)arrowDirection;
 
 /**
   Remove tooltip manually.
@@ -146,7 +134,3 @@ NS_SWIFT_NAME(present(in:arrowPosition:direction:));
 - (void)dismiss;
 
 @end
-
-NS_ASSUME_NONNULL_END
-
-#endif

@@ -18,7 +18,6 @@
 
 #import <Foundation/Foundation.h>
 
-NS_SWIFT_NAME(AccessTokenExpirer)
 @interface FBSDKAccessTokenExpirer : NSObject
 
 @end

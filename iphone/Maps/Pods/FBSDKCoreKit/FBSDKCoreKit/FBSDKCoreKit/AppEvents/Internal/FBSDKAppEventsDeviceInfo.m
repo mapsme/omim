@@ -25,7 +25,6 @@
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #endif
-
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
@@ -229,7 +228,7 @@ static const u_int FB_GIGABYTE = 1024 * 1024 * 1024;  // bytes
                    _timeZoneName ?: @""
                    ];
 
-  return [FBSDKBasicUtility JSONStringForObject:arr error:NULL invalidObjectHandler:NULL];
+  return [FBSDKInternalUtility JSONStringForObject:arr error:NULL invalidObjectHandler:NULL];
 }
 
 #pragma mark - Helper Methods

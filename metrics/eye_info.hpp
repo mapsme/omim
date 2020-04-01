@@ -149,8 +149,7 @@ struct Layer
   enum class Type : uint8_t
   {
     TrafficJams,
-    PublicTransport,
-    Isolines,
+    PublicTransport
   };
 
   DECLARE_VISITOR_AND_DEBUG_PRINT(Layer, visitor(m_type, "type"), visitor(m_useCount, "use_count"),
@@ -173,7 +172,6 @@ struct Tip
     BookingHotels,
     DiscoverButton,
     PublicTransport,
-    Isolines,
 
     Count
   };
@@ -295,6 +293,13 @@ struct Promo
   std::string m_lastTimeShownAfterBookingCityId;
 };
 
+struct Crown
+{
+  DECLARE_VISITOR_AND_DEBUG_PRINT(Crown, visitor(m_clickedTime, "clicked_time"))
+
+  Time m_clickedTime;
+};
+
 using MapObjects = m4::Tree<MapObject>;
 
 struct InfoV0
@@ -303,7 +308,8 @@ struct InfoV0
   DECLARE_VISITOR_AND_DEBUG_PRINT(InfoV0, visitor(m_booking, "booking"),
                                   visitor(m_bookmarks, "bookmarks"),
                                   visitor(m_discovery, "discovery"), visitor(m_layers, "layers"),
-                                  visitor(m_tips, "tips"), visitor(m_promo, Promo(), "promo"))
+                                  visitor(m_tips, "tips"), visitor(m_promo, Promo(), "promo"),
+                                  visitor(m_crown, Crown(), "crown"))
 
   Booking m_booking;
   Bookmarks m_bookmarks;
@@ -312,6 +318,7 @@ struct InfoV0
   Tips m_tips;
   MapObjects m_mapObjects;
   Promo m_promo;
+  Crown m_crown;
 };
 
 using Info = InfoV0;
@@ -324,7 +331,6 @@ inline std::string DebugPrint(Tip::Type const & type)
   case Tip::Type::BookingHotels: return "BookingHotels";
   case Tip::Type::DiscoverButton: return "DiscoverButton";
   case Tip::Type::PublicTransport: return "PublicTransport";
-  case Tip::Type::Isolines: return "Isolines";
   case Tip::Type::Count: return "Count";
   }
   UNREACHABLE();
@@ -347,7 +353,6 @@ inline std::string DebugPrint(Layer::Type const & type)
   {
   case Layer::Type::TrafficJams: return "TrafficJams";
   case Layer::Type::PublicTransport: return "PublicTransport";
-  case Layer::Type::Isolines: return "Isolines";
   }
   UNREACHABLE();
 }

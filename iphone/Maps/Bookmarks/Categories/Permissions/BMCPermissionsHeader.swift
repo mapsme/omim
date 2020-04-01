@@ -7,13 +7,16 @@ final class BMCPermissionsHeader: UIView {
 
   @IBOutlet private weak var label: UILabel! {
     didSet {
+      label.font = .medium14()
+      label.textColor = .blackSecondaryText()
       label.text = L("settings_backup_bookmarks").uppercased()
     }
   }
 
   @IBOutlet private weak var button: UIButton! {
     didSet {
-      button.setImage(UIImage(named: "ic24PxChevronUp")?.withRenderingMode(.alwaysTemplate), for: .normal)
+      button.setImage(#imageLiteral(resourceName: "ic24PxChevronUp"), for: .normal)
+      button.tintColor = .blackSecondaryText()
       updateButton()
     }
   }

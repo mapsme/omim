@@ -96,9 +96,6 @@ public:
   // Sets default locale on all query processors.
   void SetLocale(std::string const & locale);
 
-  // Returns the number of request-processing threads.
-  size_t GetNumThreads() const;
-
   // Posts request to clear caches to the queue.
   void ClearCaches();
 

@@ -35,14 +35,10 @@ public:
 
   // AStarGraph overrides
   // @{
-  void GetIngoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
-                           std::vector<Edge> & adj) override;
-  void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
-                            std::vector<Edge> & adj) override;
+  void GetIngoingEdgesList(Vertex const & v, std::vector<Edge> & adj) override;
+  void GetOutgoingEdgesList(Vertex const & v, std::vector<Edge> & adj) override;
   double HeuristicCostEstimate(Vertex const & v, Vertex const & w) override;
   // @}
-
-  void GetEdgesList(Vertex const & vertex, bool /* isOutgoing */, std::vector<Edge> & adj);
 
 private:
   void GetAdjacencyList(Vertex v, std::vector<Edge> & adj) const;
@@ -59,7 +55,8 @@ public:
 
   void AddEdge(Vertex from, Vertex to, Weight w);
 
-  void GetEdgesList(Vertex const & v, bool isOutgoing, std::vector<Edge> & adj);
+  void GetIngoingEdgesList(Vertex const & v, std::vector<Edge> & adj);
+  void GetOutgoingEdgesList(Vertex const & v, std::vector<Edge> & adj);
 
 private:
   std::map<uint32_t, std::vector<Edge>> m_outgoing;

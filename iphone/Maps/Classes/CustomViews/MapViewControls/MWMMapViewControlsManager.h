@@ -5,6 +5,7 @@
 
 @class MapViewController;
 @protocol MWMFeatureHolder;
+@protocol MWMBookingInfoHolder;
 
 @interface MWMMapViewControlsManager : NSObject
 
@@ -27,11 +28,16 @@
 
 - (UIView *)anchorView;
 
+- (void)mwm_refreshUI;
+
 - (void)viewWillTransitionToSize:(CGSize)size
        withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator;
 
 #pragma mark - MWMPlacePageViewManager
 
+- (void)dismissPlacePage;
+- (void)showPlacePage;
+- (void)updatePlacePage;
 - (void)showPlacePageReview;
 
 #pragma mark - MWMNavigationDashboardManager
@@ -52,6 +58,10 @@
 #pragma mark - MWMFeatureHolder
 
 - (id<MWMFeatureHolder>)featureHolder;
+
+#pragma mark - MWMBookingInfoHolder
+
+- (id<MWMBookingInfoHolder>)bookingInfoHolder;
 
 - (void)showAdditionalViewsIfNeeded;
 

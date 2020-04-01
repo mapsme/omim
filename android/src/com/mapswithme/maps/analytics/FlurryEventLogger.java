@@ -23,13 +23,11 @@ class FlurryEventLogger extends DefaultEventLogger
   {
     //noinspection ConstantConditions
     FlurryAgent.setVersionName(BuildConfig.VERSION_NAME);
-    FlurryAgent.setDataSaleOptOut(true);
     new FlurryAgent
         .Builder()
         .withLogEnabled(true)
         .withLogLevel(BuildConfig.DEBUG ? Log.DEBUG : Log.ERROR)
         .withCaptureUncaughtExceptions(false)
-        .withDataSaleOptOut(true)
         .build(getApplication(), PrivateVariables.flurryKey());
   }
 

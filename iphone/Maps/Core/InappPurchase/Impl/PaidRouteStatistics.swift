@@ -2,23 +2,17 @@ class PaidRouteStatistics: IPaidRouteStatistics {
   let serverId: String
   let productId: String
   let vendor: String
-  let testGroup: String
 
-  init(serverId: String,
-       productId: String,
-       vendor: String,
-       testGroup: String) {
+  init(serverId: String, productId: String, vendor: String) {
     self.serverId = serverId
     self.productId = productId
     self.vendor = vendor
-    self.testGroup = testGroup
   }
 
   func logPreviewShow() {
     logEvent(kStatInappShow, withParameters: [kStatVendor: vendor,
                                               kStatProduct: productId,
-                                              kStatPurchase: serverId,
-                                              kStatTestGroup: testGroup],
+                                              kStatPurchase: serverId],
              withChannel: .realtime)
   }
 

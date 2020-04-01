@@ -74,15 +74,15 @@ final class SettingsTemplateBuilder {
   
   private class func createTrafficButton() -> CPGridButton {
     var trafficIconName = "ic_carplay_trafficlight"
-    let isTrafficEnabled = MapOverlayManager.trafficEnabled()
+    let isTrafficEnabled = MWMTrafficManager.trafficEnabled()
     if isTrafficEnabled { trafficIconName += "_active" }
     let trafficButton = CPGridButton(titleVariants: [L("button_layer_traffic")],
                                      image: UIImage(named: trafficIconName)!) { _ in
-                                      MapOverlayManager.setTrafficEnabled(!isTrafficEnabled)
+                                      MWMTrafficManager.setTrafficEnabled(!isTrafficEnabled)
                                       CarPlayService.shared.popTemplate(animated: true)
                                       Statistics.logEvent(kStatCarplaySettingsChange,
                                                           withParameters: [kStatOption : kStatTraffic,
-                                                                           kStatValue : MapOverlayManager.trafficEnabled() ? kStatOn : kStatOff])
+                                                                           kStatValue : (MWMTrafficManager.trafficEnabled() ? kStatOn : kStatOff)])
     }
     return trafficButton
   }

@@ -1,36 +1,30 @@
 #import "MWMHotelParams.h"
 
 #include <CoreApi/Framework.h>
-#include <CoreApi/PlacePageData.h>
-#include <CoreApi/PlacePagePreviewData.h>
-#include <CoreApi/HotelBookingData.h>
 
 static uint8_t kAdultsCount = 2;
 static int8_t kAgeOfChild = 5;
 
 @implementation MWMHotelParams
 
-- (instancetype)initWithPlacePageData:(PlacePageData *)data
+- (instancetype)init
 {
   self = [super init];
   if (self)
   {
     _types.insert(ftypes::IsHotelChecker::Type::Hotel);
-
-    PlacePagePreviewData *previewData = data.previewData;
-    HotelBookingData *hotelBookingData = data.hotelBooking;
-    CHECK(previewData && hotelBookingData,
-          ("Incorrect hotel type at coordinate:", data.locationCoordinate.latitude, data.locationCoordinate.longitude));
+    auto const & data = GetFramework().GetCurrentPlacePageInfo();
+    CHECK(data.GetHotelType(), ("Incorrect hotel type at coordinate:", data.GetLatLon().m_lat, data.GetLatLon().m_lon));
     
-    if (data.sponsoredType == PlacePageSponsoredTypeBooking)
+    if (data.GetSponsoredType() == place_page::SponsoredType::Booking)
     {
-      if (auto const price = [previewData.rawPricing intValue])
+      if (auto const price = data.GetRawApproximatePricing())
       {
-        CHECK_LESS_OR_EQUAL(price, base::Underlying(Price::Three), ());
-        _price.insert(static_cast<Price>(price));
+        CHECK_LESS_OR_EQUAL(*price, base::Underlying(Price::Three), ());
+        _price.insert(static_cast<Price>(*price));
       }
       
-      self.rating = place_page::rating::GetFilterRating(hotelBookingData.score);
+      self.rating = place_page::rating::GetFilterRating(data.GetRatingRawValue());
     }
   }
   

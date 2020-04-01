@@ -2,7 +2,6 @@
 
 #include "point2d.hpp"
 
-#include <sstream>
 #include <vector>
 
 namespace m2
@@ -26,17 +25,6 @@ template <typename T> struct Triangle
 
 using TriangleF = Triangle<float>;
 using TriangleD = Triangle<double>;
-
-template <typename T>
-std::string DebugPrint(m2::Triangle<T> const & trg)
-{
-  std::stringstream s;
-  s << "Triangle ["
-    << DebugPrint(trg.p1()) << ", "
-    << DebugPrint(trg.p2()) << ", "
-    << DebugPrint(trg.p3()) << "]";
-  return s.str();
-}
 
 template <class T>
 double GetTriangleArea(Point<T> const & p1, Point<T> const & p2, Point<T> const & p3)

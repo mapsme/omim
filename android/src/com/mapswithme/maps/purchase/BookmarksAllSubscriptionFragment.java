@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.widget.DotPager;
 import com.mapswithme.maps.widget.ParallaxBackgroundPageListener;
 import com.mapswithme.maps.widget.ParallaxBackgroundViewPager;
 import com.mapswithme.util.UiUtils;
@@ -42,7 +43,7 @@ public class BookmarksAllSubscriptionFragment extends AbstractBookmarkSubscripti
   View onSubscriptionCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                                 @Nullable Bundle savedInstanceState)
   {
-    View root = inflater.inflate(R.layout.pager_fragment_bookmarks_all_subscription, container,
+    View root = inflater.inflate(R.layout.pager_fragment_all_pass_subscription, container,
                                  false);
 
     setTopStatusBarOffset(root);
@@ -77,11 +78,23 @@ public class BookmarksAllSubscriptionFragment extends AbstractBookmarkSubscripti
     ParallaxBackgroundViewPager viewPager = root.findViewById(R.id.pager);
     PagerAdapter adapter = new ParallaxFragmentPagerAdapter(requireFragmentManager(),
                                                             items);
-    viewPager.setAdapter(adapter);
+    DotPager pager = makeDotPager(root.findViewById(R.id.indicator), viewPager, adapter);
+    pager.show();
     ViewPager.OnPageChangeListener listener = new ParallaxBackgroundPageListener(requireActivity(),
                                                                                  viewPager, items);
     viewPager.addOnPageChangeListener(listener);
     viewPager.startAutoScroll();
+  }
+
+  @NonNull
+  private DotPager makeDotPager(@NonNull ViewGroup indicatorContainer, @NonNull ViewPager viewPager,
+                                @NonNull PagerAdapter adapter)
+  {
+    return new DotPager.Builder(requireContext(), viewPager, adapter)
+        .setIndicatorContainer(indicatorContainer)
+        .setActiveDotDrawable(R.drawable.all_pass_marker_active)
+        .setInactiveDotDrawable(R.drawable.all_pass_marker_inactive)
+        .build();
   }
 
   @NonNull
@@ -109,7 +122,7 @@ public class BookmarksAllSubscriptionFragment extends AbstractBookmarkSubscripti
     @Override
     public Fragment getItem(int i)
     {
-      return BookmarksAllSubscriptionPageFragment.newInstance(i);
+      return AllPassSubscriptionFragment.newInstance(i);
     }
 
     @Override

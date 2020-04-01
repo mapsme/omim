@@ -4,11 +4,10 @@
 #import "MWMDiscoveryControllerViewModel.h"
 #import "MWMDiscoveryHotelViewModel.h"
 #import "MWMDiscoverySearchViewModel.h"
+#import "MWMDiscoveryGuideViewModel.h"
 #import "MWMNetworkPolicy+UI.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
-
-#import <CoreApi/CatalogPromoItem+Core.h>
 
 #include "map/place_page_info.hpp"
 
@@ -162,12 +161,12 @@ using namespace discovery;
 
 - (void)registerCells {
   auto tv = self.tableView;
-  [tv registerNibWithCellClass:[MWMDiscoverySpinnerCell class]];
-  [tv registerNibWithCellClass:[MWMDiscoveryOnlineTemplateCell class]];
-  [tv registerNibWithCellClass:[MWMDiscoverySearchCollectionHolderCell class]];
-  [tv registerNibWithCellClass:[MWMDiscoveryGuideCollectionHolderCell class]];
-  [tv registerNibWithCellClass:[MWMDiscoveryBookingCollectionHolderCell class]];
-  [tv registerNibWithCellClass:[MWMDiscoveryNoResultsCell class]];
+  [tv registerWithCellClass:[MWMDiscoverySpinnerCell class]];
+  [tv registerWithCellClass:[MWMDiscoveryOnlineTemplateCell class]];
+  [tv registerWithCellClass:[MWMDiscoverySearchCollectionHolderCell class]];
+  [tv registerWithCellClass:[MWMDiscoveryGuideCollectionHolderCell class]];
+  [tv registerWithCellClass:[MWMDiscoveryBookingCollectionHolderCell class]];
+  [tv registerWithCellClass:[MWMDiscoveryNoResultsCell class]];
 }
 
 - (NSInteger)position:(ItemType const)type {
@@ -371,13 +370,13 @@ using namespace discovery;
       Class cls = [MWMDiscoveryGuideCell class];
       MWMDiscoveryGuideCell *cell = (MWMDiscoveryGuideCell *)
       [collectionView dequeueReusableCellWithCellClass:cls indexPath:indexPath];
-      CatalogPromoItem *objectVM = [self.viewModel guideAtIndex:indexPath.item];
+      MWMDiscoveryGuideViewModel *objectVM = [self.viewModel guideAtIndex:indexPath.item];
       __weak __typeof__(self) weakSelf = self;
-      [cell configWithAvatarURL:objectVM.imageUrl
-                          title:objectVM.guideName
-                       subtitle:objectVM.guideAuthor
-                          label:objectVM.categoryLabel
-                  labelHexColor:objectVM.hexColor
+      [cell configWithAvatarURL:objectVM.imagePath
+                          title:objectVM.title
+                       subtitle:objectVM.subtitle
+                          label:objectVM.label
+                  labelHexColor:objectVM.labelHexColor
                       onDetails:^{
                             [weakSelf.delegate openURLForItem:ItemType::Promo atIndex:indexPath.row];
                           }];

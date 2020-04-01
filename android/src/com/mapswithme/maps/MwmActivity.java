@@ -30,7 +30,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import com.mapswithme.maps.Framework.PlacePageActivationListener;
+import com.mapswithme.maps.Framework.MapObjectListener;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
 import com.mapswithme.maps.ads.LikesManager;
 import com.mapswithme.maps.api.ParsedMwmRequest;
@@ -68,26 +68,20 @@ import com.mapswithme.maps.location.CompassData;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.maplayer.MapLayerCompositeController;
 import com.mapswithme.maps.maplayer.Mode;
-import com.mapswithme.maps.maplayer.OnIsolinesLayerToggleListener;
-import com.mapswithme.maps.maplayer.isolines.IsolinesManager;
-import com.mapswithme.maps.maplayer.isolines.IsolinesState;
 import com.mapswithme.maps.maplayer.subway.OnSubwayLayerToggleListener;
 import com.mapswithme.maps.maplayer.subway.SubwayManager;
 import com.mapswithme.maps.maplayer.traffic.OnTrafficLayerToggleListener;
 import com.mapswithme.maps.maplayer.traffic.TrafficManager;
 import com.mapswithme.maps.maplayer.traffic.widget.TrafficButton;
 import com.mapswithme.maps.metrics.UserActionsLogger;
-import com.mapswithme.maps.news.OnboardingStep;
 import com.mapswithme.maps.onboarding.IntroductionDialogFragment;
 import com.mapswithme.maps.onboarding.IntroductionScreenFactory;
 import com.mapswithme.maps.onboarding.OnboardingTip;
-import com.mapswithme.maps.onboarding.WelcomeDialogFragment;
 import com.mapswithme.maps.promo.Promo;
 import com.mapswithme.maps.promo.PromoAfterBooking;
 import com.mapswithme.maps.promo.PromoBookingDialogFragment;
 import com.mapswithme.maps.purchase.AdsRemovalActivationCallback;
 import com.mapswithme.maps.purchase.AdsRemovalPurchaseControllerProvider;
-import com.mapswithme.maps.purchase.BookmarksAllSubscriptionActivity;
 import com.mapswithme.maps.purchase.FailedPurchaseChecker;
 import com.mapswithme.maps.purchase.PurchaseCallback;
 import com.mapswithme.maps.purchase.PurchaseController;
@@ -125,9 +119,8 @@ import com.mapswithme.maps.widget.FadeView;
 import com.mapswithme.maps.widget.menu.BaseMenu;
 import com.mapswithme.maps.widget.menu.MainMenu;
 import com.mapswithme.maps.widget.menu.MyPositionButton;
+import com.mapswithme.maps.widget.placepage.BottomSheetPlacePageController;
 import com.mapswithme.maps.widget.placepage.PlacePageController;
-import com.mapswithme.maps.widget.placepage.PlacePageData;
-import com.mapswithme.maps.widget.placepage.PlacePageFactory;
 import com.mapswithme.maps.widget.placepage.RoutingModeListener;
 import com.mapswithme.util.Counters;
 import com.mapswithme.util.InputUtils;
@@ -149,35 +142,34 @@ import com.mapswithme.util.statistics.Statistics;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 public class MwmActivity extends BaseMwmFragmentActivity
-    implements PlacePageActivationListener,
-               View.OnTouchListener,
-               OnClickListener,
-               MapRenderingListener,
-               CustomNavigateUpListener,
-               RoutingController.Container,
-               LocationHelper.UiCallback,
-               FloatingSearchToolbarController.VisibilityListener,
-               NativeSearchListener,
-               NavigationButtonsAnimationController.OnTranslationChangedListener,
-               RoutingPlanInplaceController.RoutingPlanListener,
-               RoutingBottomMenuListener,
-               BookmarkManager.BookmarksLoadingListener,
-               DiscoveryFragment.DiscoveryListener,
-               FloatingSearchToolbarController.SearchToolbarListener,
-               OnTrafficLayerToggleListener,
-               OnSubwayLayerToggleListener,
-               BookmarkManager.BookmarksCatalogListener,
-               AdsRemovalPurchaseControllerProvider,
-               AdsRemovalActivationCallback,
-               PlacePageController.SlideListener,
-               AlertDialogCallback, RoutingModeListener,
-               AppBackgroundTracker.OnTransitionListener,
-               MaterialTapTargetPrompt.PromptStateChangeListener,
-               WelcomeDialogFragment.OnboardingStepPassedListener,
-               OnIsolinesLayerToggleListener
+                      implements MapObjectListener,
+                                 View.OnTouchListener,
+                                 OnClickListener,
+                                 MapRenderingListener,
+                                 CustomNavigateUpListener,
+                                 RoutingController.Container,
+                                 LocationHelper.UiCallback,
+                                 FloatingSearchToolbarController.VisibilityListener,
+                                 NativeSearchListener,
+                                 NavigationButtonsAnimationController.OnTranslationChangedListener,
+                                 RoutingPlanInplaceController.RoutingPlanListener,
+                                 RoutingBottomMenuListener,
+                                 BookmarkManager.BookmarksLoadingListener,
+                                 DiscoveryFragment.DiscoveryListener,
+                                 FloatingSearchToolbarController.SearchToolbarListener,
+                                 OnTrafficLayerToggleListener,
+                                 OnSubwayLayerToggleListener,
+                                 BookmarkManager.BookmarksCatalogListener,
+                                 AdsRemovalPurchaseControllerProvider,
+                                 AdsRemovalActivationCallback,
+                                 PlacePageController.SlideListener,
+                                 AlertDialogCallback, RoutingModeListener,
+                                 AppBackgroundTracker.OnTransitionListener,
+                                 MaterialTapTargetPrompt.PromptStateChangeListener
 {
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = MwmActivity.class.getSimpleName();
@@ -186,7 +178,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public static final String EXTRA_LAUNCH_BY_DEEP_LINK = "launch_by_deep_link";
   public static final String EXTRA_BACK_URL = "back_url";
   private static final String EXTRA_CONSUMED = "mwm.extra.intent.processed";
-  private static final String EXTRA_ONBOARDING_TIP = "extra_onboarding_tip";
 
   private static final String[] DOCKED_FRAGMENTS = { SearchFragment.class.getName(),
                                                      DownloaderFragment.class.getName(),
@@ -202,10 +193,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public static final int REQ_CODE_ERROR_DRIVING_OPTIONS_DIALOG = 5;
   public static final int REQ_CODE_DRIVING_OPTIONS = 6;
   public static final int REQ_CODE_CATALOG_UNLIMITED_ACCESS = 7;
-  private static final int REQ_CODE_ISOLINES_ERROR = 8;
   public static final String ERROR_DRIVING_OPTIONS_DIALOG_TAG = "error_driving_options_dialog_tag";
   public static final String CATALOG_UNLIMITED_ACCESS_DIALOG_TAG = "catalog_unlimited_access_dialog_tag";
-  private static final String ISOLINES_ERROR_DIALOG_TAG = "isolines_dialog_tag";
 
   // Map tasks that we run AFTER rendering initialized
   private final Stack<MapTask> mTasks = new Stack<>();
@@ -273,12 +262,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private PlacePageController mPlacePageController;
   @Nullable
   private Tutorial mTutorial;
-  @Nullable
-  private OnboardingTip mOnboardingTip;
 
-  @SuppressWarnings("NullableProblems")
-  @NonNull
-  private ChartController mChartController;
 
   public interface LeftAnimationTrackListener
   {
@@ -513,19 +497,16 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     super.onSafeCreate(savedInstanceState);
     if (savedInstanceState != null)
-    {
       mLocationErrorDialogAnnoying = savedInstanceState.getBoolean(EXTRA_LOCATION_DIALOG_IS_ANNOYING);
-      mOnboardingTip = savedInstanceState.getParcelable(EXTRA_ONBOARDING_TIP);
-    }
     mIsTabletLayout = getResources().getBoolean(R.bool.tabletLayout);
 
     if (!mIsTabletLayout && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP))
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
     setContentView(R.layout.activity_map);
-
-    mPlacePageController = PlacePageFactory.createPlacePageController(this, this, this);
-    mPlacePageController.initialize(this);
+    mPlacePageController = new BottomSheetPlacePageController(this, this, this,
+                                                              this);
+    mPlacePageController.initialize();
     mPlacePageController.onActivityCreated(this, savedInstanceState);
 
     boolean isLaunchByDeepLink = getIntent().getBooleanExtra(EXTRA_LAUNCH_BY_DEEP_LINK, false);
@@ -538,7 +519,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mSearchController.setVisibilityListener(this);
     SearchEngine.INSTANCE.addListener(this);
 
-    SharingHelper.INSTANCE.initialize(null);
+    SharingHelper.INSTANCE.initialize();
 
     initControllersAndValidatePurchases(savedInstanceState);
 
@@ -745,8 +726,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     initToggleMapLayerController(frame);
     View openSubsScreenBtnContainer = frame.findViewById(R.id.subs_screen_btn_container);
-    final OnboardingTip tip = OnboardingTip.get();
-    boolean hasOnBoardingView = mOnboardingTip == null && tip != null
+    boolean hasOnBoardingView = OnboardingTip.get() != null
                                 && MwmApplication.from(this).isFirstLaunch();
 
     mNavAnimationController = new NavigationButtonsAnimationController(
@@ -756,24 +736,23 @@ public class MwmActivity extends BaseMwmFragmentActivity
     UiUtils.showIf(hasOnBoardingView, openSubsScreenBtnContainer);
     if (hasOnBoardingView)
     {
-      openSubsScreenBtnContainer.findViewById(R.id.onboarding_btn)
-                                .setOnClickListener(v -> onBoardingBtnClicked(tip));
+      openSubsScreenBtnContainer.findViewById(R.id.subs_screen_btn)
+                                .setOnClickListener(v -> onBoardingBtnClicked());
       Statistics.ParameterBuilder builder = Statistics.makeGuidesSubscriptionBuilder();
       Statistics.INSTANCE.trackEvent(Statistics.EventName.MAP_SPONSORED_BUTTON_SHOW, builder);
     }
   }
 
-  private void onBoardingBtnClicked(@NonNull OnboardingTip tip)
+  private void onBoardingBtnClicked()
   {
+    OnboardingTip tip = Objects.requireNonNull(OnboardingTip.get());
+
     Statistics.ParameterBuilder builder = Statistics.makeGuidesSubscriptionBuilder();
     Statistics.INSTANCE.trackEvent(Statistics.EventName.MAP_SPONSORED_BUTTON_CLICK, builder);
     if (mNavAnimationController == null)
       return;
 
     mNavAnimationController.hideOnBoardingTipBtn();
-    mOnboardingTip = tip;
-    OnboardingStep step = com.mapswithme.maps.onboarding.Utils.getOnboardingStepByTip(mOnboardingTip);
-    WelcomeDialogFragment.showOnboardinStep(this, step);
   }
 
   private void initToggleMapLayerController(@NonNull View frame)
@@ -781,8 +760,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     ImageButton trafficBtn = frame.findViewById(R.id.traffic);
     TrafficButton traffic = new TrafficButton(trafficBtn);
     View subway = frame.findViewById(R.id.subway);
-    View isoLines = frame.findViewById(R.id.isolines);
-    mToggleMapLayerController = new MapLayerCompositeController(traffic, subway, isoLines,this);
+    mToggleMapLayerController = new MapLayerCompositeController(traffic, subway, this);
     mToggleMapLayerController.attachCore();
   }
 
@@ -791,7 +769,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (mPlacePageController.isClosed())
       return false;
 
-    mPlacePageController.close(true);
+    mPlacePageController.close();
     return true;
   }
 
@@ -933,7 +911,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
       // orientation changing, etc. Otherwise, the saved route might be restored at undesirable moment.
       RoutingController.get().deleteSavedRoute();
 
-    outState.putParcelable(EXTRA_ONBOARDING_TIP, mOnboardingTip);
     super.onSaveInstanceState(outState);
   }
 
@@ -1035,7 +1012,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void toggleRouteSettings(@NonNull RoadType roadType)
   {
-    mPlacePageController.close(true);
+    mPlacePageController.close();
     RoutingOptions.addOption(roadType);
     rebuildLastRouteInternal();
   }
@@ -1046,17 +1023,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (category == null)
       throw new IllegalArgumentException("Category not found in bundle");
 
-    addTask(new MapTask()
-    {
-      private static final long serialVersionUID = -7417385158050827655L;
-
-      @Override
-      public boolean run(@NonNull MwmActivity target)
-      {
-        target.showBookmarkCategory(category);
-        return true;
-      }
-    });
+    MapTask mapTask = target -> showBookmarkCategory(category);
+    addTask(mapTask);
     closePlacePage();
   }
 
@@ -1143,34 +1111,22 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onRouteToDiscoveredObject(@NonNull final MapObject object)
   {
-    addTask(new MapTask()
+    addTask((MapTask) target ->
     {
-      private static final long serialVersionUID = -219799471997583494L;
-
-      @Override
-      public boolean run(@NonNull MwmActivity target)
-      {
-        RoutingController.get().attach(target);
-        RoutingController.get().setRouterType(Framework.ROUTER_TYPE_PEDESTRIAN);
-        RoutingController.get().prepare(true, object);
-        return false;
-      }
+      RoutingController.get().attach(this);
+      RoutingController.get().setRouterType(Framework.ROUTER_TYPE_PEDESTRIAN);
+      RoutingController.get().prepare(true, object);
+      return false;
     });
   }
 
   @Override
   public void onShowDiscoveredObject(@NonNull final MapObject object)
   {
-    addTask(new MapTask()
+    addTask((MapTask) target ->
     {
-      private static final long serialVersionUID = 7499190617762270631L;
-
-      @Override
-      public boolean run(@NonNull MwmActivity target)
-      {
-        Framework.nativeShowFeature(object.getFeatureId());
-        return false;
-      }
+      Framework.nativeShowFeatureByLatLon(object.getLat(), object.getLon());
+      return false;
     });
   }
 
@@ -1219,31 +1175,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public void onTrafficLayerSelected()
   {
     mToggleMapLayerController.toggleMode(Mode.TRAFFIC);
-  }
-
-  @Override
-  public void onIsolinesLayerSelected()
-  {
-    mToggleMapLayerController.toggleMode(Mode.ISOLINES);
-  }
-
-  private void onIsolinesStateChanged(@NonNull IsolinesState type)
-  {
-    if (type != IsolinesState.EXPIREDDATA)
-    {
-      type.activate(getApplicationContext());
-      return;
-    }
-
-    com.mapswithme.maps.dialog.AlertDialog dialog = new com.mapswithme.maps.dialog.AlertDialog.Builder()
-        .setTitleId(R.string.downloader_update_maps)
-        .setMessageId(R.string.isolines_activation_error_dialog)
-        .setPositiveBtnId(R.string.ok)
-        .setNegativeBtnId(R.string.cancel)
-        .setFragManagerStrategyType(com.mapswithme.maps.dialog.AlertDialog.FragManagerStrategyType.ACTIVITY_FRAGMENT_MANAGER)
-        .setReqCode(REQ_CODE_ISOLINES_ERROR)
-        .build();
-    dialog.show(this, ISOLINES_ERROR_DIALOG_TAG);
   }
 
   @Override
@@ -1425,11 +1356,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
   protected void onStart()
   {
     super.onStart();
-    Framework.nativePlacePageActivationListener(this);
+    Framework.nativeSetMapObjectListener(this);
     BookmarkManager.INSTANCE.addLoadingListener(this);
     BookmarkManager.INSTANCE.addCatalogListener(this);
     RoutingController.get().attach(this);
-    IsolinesManager.from(getApplicationContext()).attach(this::onIsolinesStateChanged);
     if (MapFragment.nativeIsEngineCreated())
       LocationHelper.INSTANCE.attach(this);
     mPlacePageController.onActivityStarted(this);
@@ -1440,14 +1370,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
   protected void onStop()
   {
     super.onStop();
-    Framework.nativeRemovePlacePageActivationListener();
+    Framework.nativeRemoveMapObjectListener();
     BookmarkManager.INSTANCE.removeLoadingListener(this);
     BookmarkManager.INSTANCE.removeCatalogListener(this);
     LocationHelper.INSTANCE.detach(!isFinishing());
     RoutingController.get().detach();
     mPlacePageController.onActivityStopped(this);
     MwmApplication.backgroundTracker(getActivity()).removeListener(this);
-    IsolinesManager.from(getApplicationContext()).detach();
   }
 
   @CallSuper
@@ -1570,25 +1499,21 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   // Called from JNI.
   @Override
-  public void onPlacePageActivated(@NonNull PlacePageData data)
+  public void onMapObjectActivated(final MapObject object)
   {
-    if (data instanceof MapObject)
+    if (MapObject.isOfType(MapObject.API_POINT, object))
     {
-      MapObject object = (MapObject) data;
-      if (MapObject.isOfType(MapObject.API_POINT, object))
-      {
-        final ParsedMwmRequest request = ParsedMwmRequest.getCurrentRequest();
-        if (request == null)
-          return;
+      final ParsedMwmRequest request = ParsedMwmRequest.getCurrentRequest();
+      if (request == null)
+        return;
 
-        request.setPointData(object.getLat(), object.getLon(), object.getTitle(), object.getApiId());
-        object.setSubtitle(request.getCallerName(MwmApplication.get()).toString());
-      }
+      request.setPointData(object.getLat(), object.getLon(), object.getTitle(), object.getApiId());
+      object.setSubtitle(request.getCallerName(MwmApplication.get()).toString());
     }
 
     setFullscreen(false);
 
-    mPlacePageController.openFor(data);
+    mPlacePageController.openFor(object);
 
     if (UiUtils.isVisible(mFadeView))
       mFadeView.fadeOut();
@@ -1596,7 +1521,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   // Called from JNI.
   @Override
-  public void onPlacePageDeactivated(boolean switchFullScreenMode)
+  public void onDismiss(boolean switchFullScreenMode)
   {
     if (switchFullScreenMode)
     {
@@ -1608,7 +1533,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
     else
     {
-      mPlacePageController.close(true);
+      mPlacePageController.close();
     }
   }
 
@@ -1745,7 +1670,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     CompassData compass = LocationHelper.INSTANCE.getCompassData();
     if (compass != null)
-      MapFragment.nativeCompassUpdated(compass.getNorth(), true);
+      MapFragment.nativeCompassUpdated(compass.getMagneticNorth(), compass.getTrueNorth(), true);
   }
 
   private void adjustBottomWidgets(int offsetY)
@@ -2004,14 +1929,15 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
       updateSearchBar();
     }
+
+    // TODO:
+//    mPlacePage.refreshViews();
   }
 
   private void adjustCompassAndTraffic(final int offsetY)
   {
     addTask(new MapTask()
     {
-      private static final long serialVersionUID = 9177064181621376624L;
-
       @Override
       public boolean run(@NonNull MwmActivity target)
       {
@@ -2248,7 +2174,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onCompassUpdated(@NonNull CompassData compass)
   {
-    MapFragment.nativeCompassUpdated(compass.getNorth(), false);
+    MapFragment.nativeCompassUpdated(compass.getMagneticNorth(), compass.getTrueNorth(), false);
     mNavigationController.updateNorth(compass.getNorth());
   }
 
@@ -2378,21 +2304,20 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mTutorial = null;
   }
 
-  @Nullable
-  public Tutorial getTutorial()
-  {
-    return mTutorial;
-  }
-
-  public void setTutorial(@NonNull Tutorial tutorial)
-  {
-    mTutorial = tutorial;
-    mToggleMapLayerController.setTutorial(tutorial);
-  }
-
   private void tryToShowTutorial()
   {
-    addTask(new Factory.ShowTutorialTask());
+    Tutorial tutorial = Tutorial.requestCurrent(this, getClass());
+    if (tutorial == Tutorial.STUB)
+      return;
+
+    if (mTutorial != null)
+      return;
+
+    mTutorial = tutorial;
+    mTutorial.show(getActivity(), this);
+
+    Statistics.INSTANCE.trackTipsEvent(Statistics.EventName.TIPS_TRICKS_SHOW,
+                                       mTutorial.ordinal());
   }
 
   private boolean tryToShowPromoAfterBooking()
@@ -2475,11 +2400,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (requestCode == REQ_CODE_ERROR_DRIVING_OPTIONS_DIALOG)
       DrivingOptionsActivity.start(this);
     else if (requestCode == REQ_CODE_CATALOG_UNLIMITED_ACCESS)
-      BookmarksCatalogActivity.startForResult(this,
-                                              BookmarkCategoriesActivity.REQ_CODE_DOWNLOAD_BOOKMARK_CATEGORY,
-                                              BookmarkManager.INSTANCE.getCatalogFrontendUrl(UTM.UTM_NONE));
-    else if (requestCode == REQ_CODE_ISOLINES_ERROR)
-      startActivity(new Intent(this, DownloaderActivity.class));
+      BookmarksCatalogActivity.start(this, BookmarkManager.INSTANCE.getCatalogFrontendUrl(UTM.UTM_NONE));
   }
 
   @Override
@@ -2556,40 +2477,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
       default:
         return super.onKeyUp(keyCode, event);
     }
-  }
-
-  public void onOnboardingStepPassed(@NonNull OnboardingStep step)
-  {
-    if (mOnboardingTip == null)
-      throw new AssertionError("Onboarding tip must be non-null at this point!");
-
-    switch (step)
-    {
-      case DISCOVER_GUIDES:
-      case CHECK_OUT_SIGHTS:
-        BookmarksCatalogActivity.startForResult(this,
-                                                BookmarkCategoriesActivity.REQ_CODE_DOWNLOAD_BOOKMARK_CATEGORY,
-                                                mOnboardingTip.getUrl());
-        break;
-      case SUBSCRIBE_TO_CATALOG:
-        BookmarksAllSubscriptionActivity.startForResult(this);
-        break;
-      default:
-        throw new UnsupportedOperationException("Onboarding step '" + step + "' not supported " +
-                                                "for sponsored button");
-    }
-  }
-
-  @Override
-  public void onLastOnboardingStepPassed()
-  {
-    // Do nothing by default.
-  }
-
-  @Override
-  public void onOnboardingStepCancelled()
-  {
-    // Do nothing by default.
   }
 
   private class CurrentPositionClickListener implements OnClickListener

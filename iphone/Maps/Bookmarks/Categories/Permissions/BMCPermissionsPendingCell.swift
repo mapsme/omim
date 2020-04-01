@@ -1,5 +1,10 @@
 final class BMCPermissionsPendingCell: MWMTableViewCell {
-  @IBOutlet private weak var label: UILabel!
+  @IBOutlet private weak var label: UILabel! {
+    didSet {
+      label.font = .regular14()
+      label.textColor = .blackSecondaryText()
+    }
+  }
 
   @IBOutlet private weak var spinner: UIView!
   @IBOutlet private var spinnerBottom: NSLayoutConstraint!

@@ -11,7 +11,6 @@ set(
   type_utils.hpp
   types.hpp
   types_v3.hpp
-  types_v6.hpp
   visitors.hpp
 )
 

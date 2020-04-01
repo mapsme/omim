@@ -3,6 +3,7 @@
 #include "map/bookmark_helpers.hpp"
 #include "map/user_mark_id_storage.hpp"
 
+#include "geometry/distance_on_sphere.hpp"
 #include "geometry/mercator.hpp"
 
 #include <utility>
@@ -10,28 +11,10 @@
 Track::Track(kml::TrackData && data)
   : Base(data.m_id == kml::kInvalidTrackId ? UserMarkIdStorage::Instance().GetNextTrackId() : data.m_id)
   , m_data(std::move(data))
+  , m_groupID(0)
 {
   m_data.m_id = GetId();
-  CHECK_GREATER(m_data.m_pointsWithAltitudes.size(), 1, ());
-  CacheLengthsAndLimitRect();
-}
-
-void Track::CacheLengthsAndLimitRect()
-{
-  m_cachedLimitRect.MakeEmpty();
-  m_cachedLimitRect.Add(m_data.m_pointsWithAltitudes.front().GetPoint());
-  m_cachedLengths.resize(m_data.m_pointsWithAltitudes.size());
-  double length = 0.0;
-  m_cachedLengths[0] = 0.0;
-  for (size_t i = 1; i < m_data.m_pointsWithAltitudes.size(); ++i)
-  {
-    auto const & pt1 = m_data.m_pointsWithAltitudes[i - 1].GetPoint();
-    auto const & pt2 = m_data.m_pointsWithAltitudes[i].GetPoint();
-    auto const segmentLength = mercator::DistanceOnEarth(pt1, pt2);
-    length += segmentLength;
-    m_cachedLengths[i] = length;
-    m_cachedLimitRect.Add(pt2);
-  }
+  ASSERT_GREATER(m_data.m_points.size(), 1, ());
 }
 
 std::string Track::GetName() const
@@ -39,20 +22,31 @@ std::string Track::GetName() const
   return GetPreferredBookmarkStr(m_data.m_name);
 }
 
-m2::RectD const & Track::GetLimitRect() const
+m2::RectD Track::GetLimitRect() const
 {
-  return m_cachedLimitRect;
+  m2::RectD rect;
+  for (auto const & point : m_data.m_points)
+    rect.Add(point);
+  return rect;
 }
 
 double Track::GetLengthMeters() const
 {
-  return m_cachedLengths.back();
-}
+  double res = 0.0;
 
-double Track::GetLengthMeters(size_t pointIndex) const
-{
-  CHECK_LESS(pointIndex, m_cachedLengths.size(), (pointIndex, m_cachedLengths.size()));
-  return m_cachedLengths[pointIndex];
+  auto it = m_data.m_points.begin();
+  double lat1 = mercator::YToLat(it->y);
+  double lon1 = mercator::XToLon(it->x);
+  for (++it; it != m_data.m_points.end(); ++it)
+  {
+    double const lat2 = mercator::YToLat(it->y);
+    double const lon2 = mercator::XToLon(it->x);
+    res += ms::DistanceOnEarth(lat1, lon1, lat2, lon2);
+    lat1 = lat2;
+    lon1 = lon2;
+  }
+
+  return res;
 }
 
 df::DepthLayer Track::GetDepthLayer() const
@@ -82,67 +76,18 @@ float Track::GetDepth(size_t layerIndex) const
   return layerIndex * 10;
 }
 
-std::vector<m2::PointD> Track::GetPoints() const
+std::vector<m2::PointD> const & Track::GetPoints() const
 {
-  std::vector<m2::PointD> result;
-  result.reserve(m_data.m_pointsWithAltitudes.size());
-  for (auto const & pt : m_data.m_pointsWithAltitudes)
-    result.push_back(pt.GetPoint());
-
-  return result;
-}
-
-std::vector<geometry::PointWithAltitude> const & Track::GetPointsWithAltitudes() const
-{
-  return m_data.m_pointsWithAltitudes;
+  return m_data.m_points;
 }
 
 void Track::Attach(kml::MarkGroupId groupId)
 {
-  ASSERT_EQUAL(m_groupID, kml::kInvalidMarkGroupId, ());
+  ASSERT(!m_groupID, ());
   m_groupID = groupId;
 }
 
 void Track::Detach()
 {
-  m_groupID = kml::kInvalidMarkGroupId;
-}
-
-void Track::SetSelectionMarkId(kml::MarkId markId)
-{
-  m_selectionMarkId = markId;
-}
-
-bool Track::GetPoint(double distanceInMeters, m2::PointD & pt) const
-{
-  CHECK_GREATER_OR_EQUAL(distanceInMeters, 0.0, (distanceInMeters));
-
-  double const kEpsMeters = 1e-2;
-  if (base::AlmostEqualAbs(distanceInMeters, m_cachedLengths.front(), kEpsMeters))
-  {
-    pt = m_data.m_pointsWithAltitudes.front().GetPoint();
-    return true;
-  }
-
-  if (base::AlmostEqualAbs(distanceInMeters, m_cachedLengths.back(), kEpsMeters))
-  {
-    pt = m_data.m_pointsWithAltitudes.back().GetPoint();
-    return true;
-  }
-
-  auto const it = std::lower_bound(m_cachedLengths.begin(), m_cachedLengths.end(), distanceInMeters);
-  if (it == m_cachedLengths.end())
-    return false;
-
-  auto const pointIndex = std::distance(m_cachedLengths.begin(), it);
-  auto const length = *it;
-
-  auto const segmentLength = length - m_cachedLengths[pointIndex - 1];
-  auto const k = (segmentLength - (length - distanceInMeters)) / segmentLength;
-
-  auto const & pt1 = m_data.m_pointsWithAltitudes[pointIndex - 1].GetPoint();
-  auto const & pt2 = m_data.m_pointsWithAltitudes[pointIndex].GetPoint();
-  pt = pt1 + (pt2 - pt1) * k;
-
-  return true;
+  m_groupID = 0;
 }

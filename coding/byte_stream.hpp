@@ -3,15 +3,17 @@
 #include "base/base.hpp"
 
 #include <cstddef>
-#include <cstdint>
 #include <cstring>
 
 class ArrayByteSource
 {
 public:
-  explicit ArrayByteSource(const void * p) : m_p(static_cast<uint8_t const *>(p)) {}
+  explicit ArrayByteSource(const void * p) : m_p(static_cast<const unsigned char *>(p)) {}
 
-  uint8_t ReadByte() { return *m_p++; }
+  unsigned char ReadByte()
+  {
+    return *m_p++;
+  }
 
   void Read(void * ptr, size_t size)
   {
@@ -19,8 +21,9 @@ public:
     m_p += size;
   }
 
-  void const * Ptr() const { return m_p; }
-  uint8_t const * PtrUint8() const { return m_p; }
+  inline void const * Ptr() const { return m_p; }
+  inline unsigned char const * PtrUC() const { return m_p; }
+  inline char const * PtrC() const { return static_cast<char const *>(Ptr()); }
 
   void Advance(size_t size)
   {
@@ -28,7 +31,7 @@ public:
   }
 
 private:
-  uint8_t const * m_p;
+  unsigned char const * m_p;
 };
 
 template <class StorageT> class PushBackByteSink
@@ -42,7 +45,7 @@ public:
   void Write(void const * p, size_t size)
   {
     // assume input buffer as buffer of bytes
-    uint8_t const * pp = static_cast<uint8_t const *>(p);
+    unsigned char const * pp = static_cast<unsigned char const *>(p);
     m_Storage.insert(m_Storage.end(), pp, pp + size);
   }
 

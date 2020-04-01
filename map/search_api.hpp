@@ -11,7 +11,6 @@
 #include "search/downloader_search_callback.hpp"
 #include "search/engine.hpp"
 #include "search/mode.hpp"
-#include "search/query_saver.hpp"
 #include "search/result.hpp"
 #include "search/search_params.hpp"
 
@@ -96,7 +95,7 @@ public:
   };
 
   SearchAPI(DataSource & dataSource, storage::Storage const & storage,
-            storage::CountryInfoGetter const & infoGetter, size_t numThreads, Delegate & delegate);
+            storage::CountryInfoGetter const & infoGetter, Delegate & delegate);
   virtual ~SearchAPI() = default;
 
   void OnViewportChanged(m2::RectD const & viewport);
@@ -144,10 +143,6 @@ public:
                                    search::Results const & results, bool inViewport) override;
   void FilterAllHotelsInViewport(m2::RectD const & viewport,
                                  booking::filter::Tasks const & filterTasks) override;
-
-  std::list<search::QuerySaver::SearchRequest> const & GetLastSearchQueries() const { return m_searchQuerySaver.Get(); }
-  void SaveSearchQuery(search::QuerySaver::SearchRequest const & query) { m_searchQuerySaver.Add(query); }
-  void ClearSearchHistory() { m_searchQuerySaver.Clear(); }
 
   void EnableIndexingOfBookmarksDescriptions(bool enable);
 
@@ -200,8 +195,6 @@ private:
   Delegate & m_delegate;
 
   search::Engine m_engine;
-
-  search::QuerySaver m_searchQuerySaver;
 
   // Descriptions of last search queries for different modes. May be
   // used for search requests skipping. This field is not guarded

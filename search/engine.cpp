@@ -136,8 +136,6 @@ void Engine::SetLocale(string const & locale)
               [locale](Processor & processor) { processor.SetPreferredLocale(locale); });
 }
 
-size_t Engine::GetNumThreads() const { return m_threads.size(); }
-
 void Engine::ClearCaches()
 {
   PostMessage(Message::TYPE_BROADCAST, [](Processor & processor) { processor.ClearCaches(); });

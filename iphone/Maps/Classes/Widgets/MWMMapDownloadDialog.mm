@@ -1,9 +1,11 @@
 #import "MWMMapDownloadDialog.h"
 #import <SafariServices/SafariServices.h>
 #import "CLLocation+Mercator.h"
-#import "MWMBannerHelpers.h"
 #import "MWMBookmarksBannerViewController.h"
 #import "MWMCircularProgress.h"
+#import "MWMFrameworkListener.h"
+#import "MWMFrameworkStorageObserver.h"
+#import "MWMMegafonBannerViewController.h"
 #import "MWMStorage+UI.h"
 #import "MapViewController.h"
 #import "Statistics.h"
@@ -11,17 +13,10 @@
 
 #include <CoreApi/Framework.h>
 
-#include "partners_api/ads/ads_engine.hpp"
-#include "partners_api/ads/banner.hpp"
+#include "partners_api/downloader_promo.hpp"
 
-#include "storage/country_info_getter.hpp"
-
-#include "platform/downloader_defines.hpp"
 #include "platform/local_country_file_utils.hpp"
 #include "platform/network_policy.hpp"
-#include "platform/preferred_languages.hpp"
-
-#include "base/assert.hpp"
 
 namespace {
 CGSize constexpr kInitialDialogSize = {200, 200};
@@ -40,23 +35,22 @@ BOOL canAutoDownload(storage::CountryId const &countryId) {
   return YES;
 }
 
-ads::Banner getPromoBanner(std::string const &mwmId) {
-  std::vector<ads::Banner> banners;
-  auto const pos = GetFramework().GetCurrentPosition();
-  if (pos) {
-    banners = GetFramework().GetAdsEngine().GetDownloadOnMapBanners(mwmId, *pos, "ru");//languages::GetCurrentNorm());
-  }
-
-  if (banners.empty())
+promo::DownloaderPromo::Banner getPromoBanner(std::string const &mwmId) {
+  auto const &purchase = GetFramework().GetPurchase();
+  bool const hasRemoveAdsSubscription = purchase && purchase->IsSubscriptionActive(SubscriptionType::RemoveAds);
+  auto const policy = platform::GetCurrentNetworkPolicy();
+  if (!policy.CanUse())
     return {};
-
-  return banners[0];
+  auto const *promoApi = GetFramework().GetPromoApi(policy);
+  CHECK(promoApi != nullptr, ());
+  return promo::DownloaderPromo::GetBanner(GetFramework().GetStorage(), *promoApi, mwmId, languages::GetCurrentNorm(),
+                                           hasRemoveAdsSubscription);
 }
 }  // namespace
 
 using namespace storage;
 
-@interface MWMMapDownloadDialog () <MWMStorageObserver, MWMCircularProgressProtocol>
+@interface MWMMapDownloadDialog () <MWMFrameworkStorageObserver, MWMCircularProgressProtocol>
 @property(strong, nonatomic) IBOutlet UILabel *parentNode;
 @property(strong, nonatomic) IBOutlet UILabel *node;
 @property(strong, nonatomic) IBOutlet UILabel *nodeSize;
@@ -79,7 +73,7 @@ using namespace storage;
 @implementation MWMMapDownloadDialog {
   CountryId m_countryId;
   CountryId m_autoDownloadCountryId;
-  ads::Banner m_promoBanner;
+  promo::DownloaderPromo::Banner m_promoBanner;
 }
 
 + (instancetype)dialogForController:(MapViewController *)controller {
@@ -140,10 +134,10 @@ using namespace storage;
                   kStatScenario: kStatDownload
                 }];
           m_autoDownloadCountryId = m_countryId;
-          [[MWMStorage sharedStorage] downloadNode:@(m_countryId.c_str())
-                                         onSuccess:^{
-                                                      [self showInQueue];
-                                                    }];
+          [MWMStorage downloadNode:@(m_countryId.c_str())
+                         onSuccess:^{
+                           [self showInQueue];
+                         }];
         } else {
           m_autoDownloadCountryId = kInvalidCountryId;
           [self showDownloadRequest];
@@ -165,11 +159,8 @@ using namespace storage;
         break;
       case NodeStatus::Undefined:
       case NodeStatus::Error:
-        if (p.IsAutoRetryDownloadFailed()) {
+        if (p.IsAutoRetryDownloadFailed())
           [self showError:nodeAttrs.m_error];
-        } else {
-          [self showInQueue];
-        }
         break;
       case NodeStatus::OnDisk:
       case NodeStatus::OnDiskOutOfDate:
@@ -189,7 +180,7 @@ using namespace storage;
     return;
   MapViewController *controller = self.controller;
   [controller.view insertSubview:self aboveSubview:controller.controlsView];
-  [[MWMStorage sharedStorage] addObserver:self];
+  [MWMFrameworkListener addObserver:self];
 }
 
 - (void)removeFromSuperview {
@@ -197,7 +188,7 @@ using namespace storage;
     [[MWMCarPlayService shared] hideNoMapAlert];
   }
   self.progress.state = MWMCircularProgressStateNormal;
-  [[MWMStorage sharedStorage] removeObserver:self];
+  [MWMFrameworkListener removeObserver:self];
   [super removeFromSuperview];
 }
 
@@ -220,11 +211,11 @@ using namespace storage;
             kStatScenario: kStatDownload
           }];
     [self showInQueue];
-    [[MWMStorage sharedStorage] retryDownloadNode:@(self->m_countryId.c_str())];
+    [MWMStorage retryDownloadNode:@(self->m_countryId.c_str())];
   };
   auto const cancelBlock = ^{
     [Statistics logEvent:kStatDownloaderDownloadCancel withParameters:@{kStatFrom: kStatMap}];
-    [[MWMStorage sharedStorage] cancelDownloadNode:@(self->m_countryId.c_str())];
+    [MWMStorage cancelDownloadNode:@(self->m_countryId.c_str())];
   };
   switch (errorCode) {
     case NodeErrorCode::NoError:
@@ -280,41 +271,29 @@ using namespace storage;
   m_promoBanner = getPromoBanner(m_countryId);
   [self layoutIfNeeded];
   if (self.bannerView.hidden) {
-    NSString *statProvider;
     switch (m_promoBanner.m_type) {
-      case ads::Banner::Type::TinkoffAllAirlines:
-        statProvider = kStatTinkoffAirlines;
-      case ads::Banner::Type::TinkoffInsurance:
-        statProvider = kStatTinkoffInsurance;
-      case ads::Banner::Type::Mts:
-        statProvider = kStatMts;
-      case ads::Banner::Type::Skyeng: {
-        statProvider = kStatSkyeng;
+      case promo::DownloaderPromo::Type::Megafon: {
         __weak __typeof(self) ws = self;
-        PartnerBannerViewController *controller = [[PartnerBannerViewController alloc] initWithTapHandler:^{
+        self.bannerViewController = [[MWMMegafonBannerViewController alloc] initWithTapHandler:^{
           [ws bannerAction];
           [Statistics logEvent:kStatDownloaderBannerClick
                 withParameters:@{
-                  kStatFrom: kStatMap,
-                  kStatProvider: statProvider,
-                  kStatMWMName: @(self->m_countryId.c_str())
-                }];
+                                 kStatFrom: kStatMap,
+                                 kStatProvider: kStatMegafon
+                                 }];
         }];
         [Statistics logEvent:kStatDownloaderBannerShow
               withParameters:@{
-                kStatFrom: kStatMap,
-                kStatProvider: statProvider,
-                kStatMWMName: @(self->m_countryId.c_str())
-              }];
-        [controller configWithType:banner_helpers::MatchBannerType(m_promoBanner.m_type)];
-        self.bannerViewController = controller;
+                               kStatFrom: kStatMap,
+                               kStatProvider: kStatMegafon
+                               }];
         break;
       }
-      case ads::Banner::Type::BookmarkCatalog: {
+      case promo::DownloaderPromo::Type::BookmarkCatalog: {
         __weak __typeof(self) ws = self;
         self.bannerViewController = [[MWMBookmarksBannerViewController alloc] initWithTapHandler:^{
           __strong __typeof(self) self = ws;
-          NSString *urlString = @(self->m_promoBanner.m_value.c_str());
+          NSString *urlString = @(self->m_promoBanner.m_url.c_str());
           if (urlString.length == 0) {
             return;
           }
@@ -333,7 +312,7 @@ using namespace storage;
                                }];
         break;
       }
-      default:
+      case promo::DownloaderPromo::Type::NoPromo:
         self.bannerViewController = nil;
         break;
     }
@@ -389,7 +368,7 @@ using namespace storage;
   [self layoutIfNeeded];
 }
 
-#pragma mark - MWMStorageObserver
+#pragma mark - MWMFrameworkStorageObserver
 
 - (void)processCountryEvent:(NSString *)countryId {
   if (m_countryId != countryId.UTF8String)
@@ -419,22 +398,22 @@ using namespace storage;
             kStatScenario: kStatDownload
           }];
     [self showInQueue];
-    [[MWMStorage sharedStorage] retryDownloadNode:@(m_countryId.c_str())];
+    [MWMStorage retryDownloadNode:@(m_countryId.c_str())];
   } else {
     [Statistics logEvent:kStatDownloaderDownloadCancel withParameters:@{kStatFrom: kStatMap}];
     if (m_autoDownloadCountryId == m_countryId)
       self.isAutoDownloadCancelled = YES;
-    [[MWMStorage sharedStorage] cancelDownloadNode:@(m_countryId.c_str())];
+    [MWMStorage cancelDownloadNode:@(m_countryId.c_str())];
   }
 }
 
 #pragma mark - Actions
 
 - (IBAction)bannerAction {
-  if (m_promoBanner.m_value.empty())
+  if (m_promoBanner.m_url.empty())
     return;
 
-  NSURL *bannerURL = [NSURL URLWithString:@(m_promoBanner.m_value.c_str())];
+  NSURL *bannerURL = [NSURL URLWithString:@(m_promoBanner.m_url.c_str())];
   SFSafariViewController *safari = [[SFSafariViewController alloc] initWithURL:bannerURL];
   [self.controller presentViewController:safari animated:YES completion:nil];
 }
@@ -447,8 +426,8 @@ using namespace storage;
           kStatFrom: kStatMap,
           kStatScenario: kStatDownload
         }];
-  [[MWMStorage sharedStorage] downloadNode:@(m_countryId.c_str())
-                                 onSuccess:^{ [self showInQueue]; }];
+  [MWMStorage downloadNode:@(m_countryId.c_str())
+                 onSuccess:^{ [self showInQueue]; }];
 }
 
 #pragma mark - Properties

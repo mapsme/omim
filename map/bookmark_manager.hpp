@@ -4,17 +4,15 @@
 #include "map/bookmark_catalog.hpp"
 #include "map/bookmark_helpers.hpp"
 #include "map/cloud.hpp"
-#include "map/elevation_info.hpp"
 #include "map/track.hpp"
-#include "map/track_mark.hpp"
 #include "map/user_mark_layer.hpp"
 
 #include "drape_frontend/drape_engine_safe_ptr.hpp"
 
-#include "platform/safe_callback.hpp"
-
 #include "geometry/any_rect2d.hpp"
 #include "geometry/screenbase.hpp"
+
+#include "platform/safe_callback.hpp"
 
 #include "base/macros.hpp"
 #include "base/strings_bundle.hpp"
@@ -59,8 +57,6 @@ public:
   using KMLDataCollectionPtr = std::shared_ptr<KMLDataCollection>;
 
   using BookmarksChangedCallback = std::function<void()>;
-  using ElevationActivePointChangedCallback = std::function<void()>;
-  using ElevationMyPositionChangedCallback = std::function<void()>;
 
   using AsyncLoadingStartedCallback = std::function<void()>;
   using AsyncLoadingFinishedCallback = std::function<void()>;
@@ -452,45 +448,6 @@ public:
   std::vector<std::string> GetCategoriesFromCatalog(AccessRulesFilter && filter) const;
   static bool IsGuide(kml::AccessRules accessRules);
 
-  ElevationInfo MakeElevationInfo(kml::TrackId trackId) const;
-
-  void SetElevationActivePoint(kml::TrackId const & trackId, double distanceInMeters);
-  // Returns distance from the start of the track to active point in meters.
-  double GetElevationActivePoint(kml::TrackId const & trackId) const;
-
-  void UpdateElevationMyPosition(kml::TrackId const & trackId);
-  // Returns distance from the start of the track to my position in meters.
-  // Returns negative value if my position is not on the track.
-  double GetElevationMyPosition(kml::TrackId const & trackId) const;
-
-  void SetElevationActivePointChangedCallback(ElevationActivePointChangedCallback const & cb);
-  void SetElevationMyPositionChangedCallback(ElevationMyPositionChangedCallback const & cb);
-
-  struct TrackSelectionInfo
-  {
-    TrackSelectionInfo() = default;
-    TrackSelectionInfo(kml::TrackId trackId, m2::PointD const & trackPoint, double distanceInMeters)
-      : m_trackId(trackId)
-      , m_trackPoint(trackPoint)
-      , m_distanceInMeters(distanceInMeters)
-    {}
-
-    kml::TrackId m_trackId = kml::kInvalidTrackId;
-    m2::PointD m_trackPoint = m2::PointD::Zero();
-    double m_distanceInMeters = 0.0;
-  };
-
-  using TracksFilter = std::function<bool(Track const * track)>;
-  TrackSelectionInfo FindNearestTrack(m2::RectD const & touchRect,
-                                      TracksFilter const & tracksFilter = nullptr) const;
-  TrackSelectionInfo GetTrackSelectionInfo(kml::TrackId const & trackId) const;
-
-  void SelectTrack(TrackSelectionInfo const & trackSelectionInfo, bool notifyListeners);
-  void DeselectTrack(kml::TrackId trackId);
-
-  void ShowDefaultTrackInfo(kml::TrackId trackId);
-  void HideTrackInfo(kml::TrackId trackId);
-
 private:
   class MarksChangesTracker : public df::UserMarksProvider
   {
@@ -690,7 +647,7 @@ private:
 
   std::unique_ptr<kml::FileData> CollectBmGroupKMLData(BookmarkCategory const * group) const;
   KMLDataCollectionPtr PrepareToSaveBookmarks(kml::GroupIdCollection const & groupIdCollection);
-  bool SaveKmlFileByExt(kml::FileData & kmlData, std::string const & file);
+  bool SaveKmlFileSafe(kml::FileData & kmlData, std::string const & file);
 
   void OnSynchronizationStarted(Cloud::SynchronizationType type);
   void OnSynchronizationFinished(Cloud::SynchronizationType type, Cloud::SynchronizationResult result,
@@ -761,8 +718,6 @@ private:
 
   std::vector<std::string> GetAllPaidCategoriesIds() const;
 
-  kml::MarkId GetTrackSelectionMarkId(kml::TrackId trackId) const;
-
   ThreadChecker m_threadChecker;
 
   User & m_user;
@@ -776,10 +731,6 @@ private:
   std::mutex m_regionAddressMutex;
 
   BookmarksChangedCallback m_categoriesChangedCallback;
-  ElevationActivePointChangedCallback m_elevationActivePointChanged;
-  ElevationMyPositionChangedCallback m_elevationMyPositionChanged;
-  m2::PointD m_lastElevationMyPosition = m2::PointD::Zero();
-
   AsyncLoadingCallbacks m_asyncLoadingCallbacks;
   std::atomic<bool> m_needTeardown;
   size_t m_openedEditSessionsCount = 0;
@@ -806,9 +757,6 @@ private:
 
   StaticMarkPoint * m_selectionMark = nullptr;
   MyPositionMarkPoint * m_myPositionMark = nullptr;
-
-  kml::MarkId m_trackInfoMarkId = kml::kInvalidMarkId;
-  m2::PointF m_maxBookmarkSymbolSize;
 
   bool m_asyncLoadingInProgress = false;
   struct BookmarkLoaderInfo

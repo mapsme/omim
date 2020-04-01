@@ -1,11 +1,9 @@
 #include "search/search_quality/assessment_tool/main_model.hpp"
 #include "search/search_quality/assessment_tool/main_view.hpp"
 
-#include "map/framework.hpp"
-
 #include "search/search_quality/helpers.hpp"
 
-#include "platform/platform_tests_support/helpers.hpp"
+#include "map/framework.hpp"
 
 #include "platform/platform.hpp"
 
@@ -16,11 +14,10 @@
 DEFINE_string(resources_path, "", "Path to resources directory");
 DEFINE_string(data_path, "", "Path to data directory");
 DEFINE_string(samples_path, "", "Path to the file with samples to open on startup");
-DEFINE_uint64(num_threads, 4, "Number of search engine threads");
 
 int main(int argc, char ** argv)
 {
-  platform::tests_support::ChangeMaxNumberOfOpenFiles(search::search_quality::kMaxOpenFiles);
+  search::search_quality::ChangeMaxNumberOfOpenFiles(search::search_quality::kMaxOpenFiles);
 
   google::SetUsageMessage("Assessment tool.");
   google::ParseCommandLineFlags(&argc, &argv, true);
@@ -36,8 +33,6 @@ int main(int argc, char ** argv)
 
   FrameworkParams params;
   params.m_enableLocalAds = false;
-  CHECK_GREATER(FLAGS_num_threads, 0, ());
-  params.m_numSearchAPIThreads = FLAGS_num_threads;
 
   Framework framework(params);
   MainView view(framework);

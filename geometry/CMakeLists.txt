@@ -57,8 +57,6 @@ set(
   segment2d.cpp
   segment2d.hpp
   simplification.hpp
-  smoothing.cpp
-  smoothing.hpp
   spline.cpp
   spline.hpp
   transformations.hpp

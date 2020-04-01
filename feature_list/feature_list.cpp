@@ -1,14 +1,7 @@
 #include "generator/utils.hpp"
 
-#include "search/search_quality/helpers.hpp"
-
-#include "search/engine.hpp"
-#include "search/locality_finder.hpp"
-#include "search/reverse_geocoder.hpp"
-
-#include "storage/country_info_getter.hpp"
-#include "storage/storage.hpp"
-#include "storage/storage_defines.hpp"
+#include "geometry/mercator.hpp"
+#include "geometry/point2d.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
@@ -20,13 +13,17 @@
 #include "indexer/map_object.hpp"
 #include "indexer/map_style_reader.hpp"
 
-#include "platform/platform_tests_support/helpers.hpp"
-
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
 
-#include "geometry/mercator.hpp"
-#include "geometry/point2d.hpp"
+#include "search/engine.hpp"
+#include "search/locality_finder.hpp"
+#include "search/reverse_geocoder.hpp"
+#include "search/search_quality/helpers.hpp"
+
+#include "storage/country_info_getter.hpp"
+#include "storage/storage.hpp"
+#include "storage/storage_defines.hpp"
 
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
@@ -318,7 +315,7 @@ bool WillDelete(storage::CountryId const & /* countryId */,
 
 int main(int argc, char ** argv)
 {
-  platform::tests_support::ChangeMaxNumberOfOpenFiles(search::search_quality::kMaxOpenFiles);
+  search::search_quality::ChangeMaxNumberOfOpenFiles(search::search_quality::kMaxOpenFiles);
   if (argc <= 1)
   {
     LOG(LERROR, ("Usage:", argc == 1 ? argv[0] : "feature_list",
@@ -338,7 +335,7 @@ int main(int argc, char ** argv)
 
   storage::Storage storage(countriesFile, argv[1]);
   storage.Init(&DidDownload, &WillDelete);
-  auto infoGetter = storage::CountryInfoReader::CreateCountryInfoGetter(pl);
+  auto infoGetter = storage::CountryInfoReader::CreateCountryInfoReader(pl);
   infoGetter->SetAffiliations(&storage.GetAffiliations());
 
   GetStyleReader().SetCurrentStyle(MapStyleMerged);

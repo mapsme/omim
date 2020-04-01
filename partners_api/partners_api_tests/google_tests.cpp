@@ -1,10 +1,11 @@
 #include "testing/testing.hpp"
 
-#include "partners_api/ads/google_ads.hpp"
+#include "partners_api/google_ads.hpp"
 
 UNIT_TEST(Google_BannerInSearch)
 {
   ads::Google google;
-  auto result = google.GetBanner();
+  TEST(google.HasSearchBanner(), ());
+  auto result = google.GetSearchBannerId();
   TEST_EQUAL(result, "dummy", ());
 }

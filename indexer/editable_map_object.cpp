@@ -1,19 +1,16 @@
 #include "indexer/editable_map_object.hpp"
-
 #include "indexer/classificator.hpp"
 #include "indexer/cuisines.hpp"
 #include "indexer/postcodes_matcher.hpp"
-
-#include "platform/preferred_languages.hpp"
 
 #include "base/control_flow.hpp"
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 
 #include <algorithm>
+#include <codecvt>
 #include <cctype>
 #include <cmath>
-#include <codecvt>
 #include <regex>
 #include <sstream>
 
@@ -208,14 +205,7 @@ bool EditableMapObject::IsAddressEditable() const { return m_editableProperties.
 
 vector<Props> EditableMapObject::GetEditableProperties() const
 {
-  auto props = MetadataToProps(m_editableProperties.m_metadata);
-  if (m_editableProperties.m_cuisine)
-  {
-    props.push_back(Props::Cuisine);
-    base::SortUnique(props);
-  }
-
-  return props;
+  return MetadataToProps(m_editableProperties.m_metadata);
 }
 
 vector<feature::Metadata::EType> const & EditableMapObject::GetEditableFields() const
@@ -301,11 +291,11 @@ string EditableMapObject::GetWikipedia() const
 void EditableMapObject::ForEachMetadataItem(
     bool skipSponsored, function<void(string const & tag, string const & value)> const & fn) const
 {
-  for (auto const type : m_metadata.GetKeys())
+  for (auto const type : m_metadata.GetPresentTypes())
   {
-    if (skipSponsored && m_metadata.IsSponsoredType(type))
+    if (skipSponsored && m_metadata.IsSponsoredType(static_cast<feature::Metadata::EType>(type)))
       continue;
-    auto const attributeName = ToString(type);
+    auto const attributeName = ToString(static_cast<feature::Metadata::EType>(type));
     fn(attributeName, m_metadata.Get(type));
   }
 }
@@ -544,21 +534,9 @@ void EditableMapObject::SetLevel(string const & level)
 
 LocalizedStreet const & EditableMapObject::GetStreet() const { return m_street; }
 
-void EditableMapObject::SetCuisines(vector<string> const & cuisines)
+void EditableMapObject::SetCuisines(vector<string> const & cuisine)
 {
-  FeatureParams params;
-  params.m_types.insert(params.m_types.begin(), m_types.begin(), m_types.end());
-  for (auto const & cuisine : cuisines)
-    params.m_types.push_back(classif().GetTypeByPath({"cuisine", cuisine}));
-
-  // Move useless types to the end and resize to fit TypesHolder.
-  params.FinishAddingTypes();
-
-  feature::TypesHolder types;
-  for (auto const t : params.m_types)
-    types.Add(t);
-
-  m_types = types;
+  m_metadata.Set(feature::Metadata::FMD_CUISINE, strings::JoinStrings(cuisine, ';'));
 }
 
 void EditableMapObject::SetOpeningHours(string const & openingHours)

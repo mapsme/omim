@@ -1,6 +1,6 @@
 #import "MWMTrafficButtonViewController.h"
 
-#import <CoreApi/MWMMapOverlayManager.h>
+#import <CoreApi/MWMTrafficManager.h>
 
 #import "MWMAlertViewController.h"
 #import "MWMButton.h"
@@ -33,7 +33,7 @@ NSArray<UIImage *> * imagesWithName(NSString * name)
 
 @end
 
-@interface MWMTrafficButtonViewController ()<MWMMapOverlayManagerObserver, ThemeListener>
+@interface MWMTrafficButtonViewController ()<MWMTrafficManagerObserver>
 
 @property(nonatomic) NSLayoutConstraint * topOffset;
 @property(nonatomic) NSLayoutConstraint * leftOffset;
@@ -57,16 +57,10 @@ NSArray<UIImage *> * imagesWithName(NSString * name)
     [ovc addChildViewController:self];
     [ovc.controlsView addSubview:self.view];
     [self configLayout];
-    [self applyTheme];
-    [StyleManager.shared addListener: self];
-    [MWMMapOverlayManager addObserver:self];
+    [self refreshAppearance];
+    [MWMTrafficManager addObserver:self];
   }
   return self;
-}
-
-- (void)dealloc
-{
-  [StyleManager.shared removeListener: self];
 }
 
 - (void)configLayout
@@ -79,6 +73,12 @@ NSArray<UIImage *> * imagesWithName(NSString * name)
   self.leftOffset = [sv.leadingAnchor constraintEqualToAnchor:ov.leadingAnchor
                                                      constant:kViewControlsOffsetToBounds];
   self.leftOffset.active = YES;
+}
+
+- (void)mwm_refreshUI
+{
+  [self.view mwm_refreshUI];
+  [self refreshAppearance];
 }
 
 - (void)setHidden:(BOOL)hidden
@@ -100,56 +100,48 @@ NSArray<UIImage *> * imagesWithName(NSString * name)
   });
 }
 
-- (void)applyTheme
+- (void)refreshAppearance
 {
   MWMButton * btn = static_cast<MWMButton *>(self.view);
   UIImageView * iv = btn.imageView;
 
   // Traffic state machine: https://confluence.mail.ru/pages/viewpage.action?pageId=103680959
   [iv stopAnimating];
-  if ([MWMMapOverlayManager trafficEnabled])
+  if ([MWMTrafficManager trafficEnabled])
   {
-    switch ([MWMMapOverlayManager trafficState])
+    switch ([MWMTrafficManager trafficState])
     {
-      case MWMMapOverlayTrafficStateDisabled: CHECK(false, ("Incorrect traffic manager state.")); break;
-      case MWMMapOverlayTrafficStateEnabled: btn.imageName = @"btn_traffic_on"; break;
-      case MWMMapOverlayTrafficStateWaitingData:
+      case MWMTrafficManagerStateDisabled: CHECK(false, ("Incorrect traffic manager state.")); break;
+      case MWMTrafficManagerStateEnabled: btn.imageName = @"btn_traffic_on"; break;
+      case MWMTrafficManagerStateWaitingData:
         iv.animationImages = imagesWithName(@"btn_traffic_update");
         iv.animationDuration = 0.8;
         [iv startAnimating];
         break;
-      case MWMMapOverlayTrafficStateOutdated: btn.imageName = @"btn_traffic_outdated"; break;
-      case MWMMapOverlayTrafficStateNoData:
+      case MWMTrafficManagerStateOutdated: btn.imageName = @"btn_traffic_outdated"; break;
+      case MWMTrafficManagerStateNoData:
         btn.imageName = @"btn_traffic_on";
         [[MWMToast toastWithText:L(@"traffic_data_unavailable")] show];
         break;
-      case MWMMapOverlayTrafficStateNetworkError:
-        [MWMMapOverlayManager setTrafficEnabled:NO];
+      case MWMTrafficManagerStateNetworkError:
+        [MWMTrafficManager setTrafficEnabled:NO];
         [[MWMAlertViewController activeAlertController] presentNoConnectionAlert];
         break;
-      case MWMMapOverlayTrafficStateExpiredData:
+      case MWMTrafficManagerStateExpiredData:
         btn.imageName = @"btn_traffic_outdated";
         [[MWMToast toastWithText:L(@"traffic_update_maps_text")] show];
         break;
-      case MWMMapOverlayTrafficStateExpiredApp:
+      case MWMTrafficManagerStateExpiredApp:
         btn.imageName = @"btn_traffic_outdated";
         [[MWMToast toastWithText:L(@"traffic_update_app_message")] show];
         break;
       }
   }
-  else if ([MWMMapOverlayManager transitEnabled])
+  else if ([MWMTrafficManager transitEnabled])
   {
     btn.imageName = @"btn_subway_on";
-    if ([MWMMapOverlayManager transitState] == MWMMapOverlayTransitStateNoData)
+    if ([MWMTrafficManager transitState] == MWMTransitManagerStateNoData)
       [[MWMToast toastWithText:L(@"subway_data_unavailable")] show];
-  }
-  else if ([MWMMapOverlayManager isoLinesEnabled])
-  {
-    btn.imageName = @"btn_isoMap_on";
-    if ([MWMMapOverlayManager isolinesState] == MWMMapOverlayIsolinesStateNoData)
-      [[MWMToast toastWithText:L(@"isolines_location_error_dialog")] show];
-    else if ([MWMMapOverlayManager isolinesState] == MWMMapOverlayIsolinesStateExpiredData)
-      [MWMAlertViewController.activeAlertController presentInfoAlert:L(@"isolines_activation_error_dialog") text:@""];
   }
   else
   {
@@ -159,17 +151,13 @@ NSArray<UIImage *> * imagesWithName(NSString * name)
 
 - (IBAction)buttonTouchUpInside
 {
-  if ([MWMMapOverlayManager trafficEnabled])
+  if ([MWMTrafficManager trafficEnabled])
   {
-    [MWMMapOverlayManager setTrafficEnabled:NO];
+    [MWMTrafficManager setTrafficEnabled:NO];
   }
-  else if ([MWMMapOverlayManager transitEnabled])
+  else if ([MWMTrafficManager transitEnabled])
   {
-    [MWMMapOverlayManager setTransitEnabled:NO];
-  }
-  else if ([MWMMapOverlayManager isoLinesEnabled])
-  {
-    [MWMMapOverlayManager setIsoLinesEnabled:NO];
+    [MWMTrafficManager setTransitEnabled:NO];
   }
   else
   {
@@ -187,10 +175,8 @@ NSArray<UIImage *> * imagesWithName(NSString * name)
   [controller refreshLayout];
 }
 
-#pragma mark - MWMMapOverlayManagerObserver
+#pragma mark - MWMTrafficManagerObserver
 
-- (void)onTrafficStateUpdated { [self applyTheme]; }
-- (void)onTransitStateUpdated { [self applyTheme]; }
-- (void)onIsoLinesStateUpdated { [self applyTheme]; }
-
+- (void)onTrafficStateUpdated { [self refreshAppearance]; }
+- (void)onTransitStateUpdated { [self refreshAppearance]; }
 @end

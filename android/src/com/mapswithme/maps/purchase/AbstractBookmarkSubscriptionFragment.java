@@ -26,7 +26,6 @@ import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 import com.mapswithme.util.statistics.Statistics;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -166,13 +165,6 @@ abstract class AbstractBookmarkSubscriptionFragment extends BaseAuthFragment
     return mProductDetails[period.ordinal()];
   }
 
-  @Nullable
-  List<ProductDetails> getProductDetails()
-  {
-    return mProductDetails == null ? null
-                                   : Collections.synchronizedList(Arrays.asList(mProductDetails));
-  }
-
   @Override
   public void onAuthorizationFinish(boolean success)
   {
@@ -284,6 +276,7 @@ abstract class AbstractBookmarkSubscriptionFragment extends BaseAuthFragment
   {
     mDelegate.onPriceSelection();
   }
+
 
   @Override
   @CallSuper

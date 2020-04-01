@@ -275,8 +275,6 @@ public:
   void SetStart(NthDayOfTheMonth const s) { m_start = s; }
   void SetEnd(NthDayOfTheMonth const e) { m_end = e; }
 
-  bool operator==(NthWeekdayOfTheMonthEntry const & rhs) const;
-
 private:
   NthDayOfTheMonth m_start = NthDayOfTheMonth::None;
   NthDayOfTheMonth m_end = NthDayOfTheMonth::None;
@@ -347,8 +345,6 @@ public:
 
   void AddNth(NthWeekdayOfTheMonthEntry const & entry) { m_nths.push_back(entry); }
 
-  bool operator==(WeekdayRange const & rhs) const;
-
 private:
   Weekday m_start = Weekday::None;
   Weekday m_end = Weekday::None;
@@ -369,8 +365,6 @@ public:
 
   int32_t GetOffset() const { return m_offset; }
   void SetOffset(int32_t const offset) { m_offset = offset; }
-
-  bool operator==(Holiday const & rhs) const;
 
 private:
   bool m_plural = false;
@@ -399,8 +393,6 @@ public:
   void AddWeekdayRange(WeekdayRange const range) { m_weekdayRanges.push_back(range); }
   void AddHoliday(Holiday const & holiday) { m_holidays.push_back(holiday); }
 
-  bool operator==(Weekdays const & rhs) const;
-
 private:
   TWeekdayRanges m_weekdayRanges;
   THolidays m_holidays;
@@ -423,10 +415,6 @@ public:
   void SetWDayOffset(Weekday const wday) { m_wdayOffest = wday; }
   void SetOffset(int32_t const offset) { m_offset = offset; }
   void SetWDayOffsetPositive(bool const on) { m_positive = on; }
-
-  bool operator==(DateOffset const & rhs) const;
-  bool operator!=(DateOffset const & rhs) const { return !(*this == rhs); }
-  bool operator<(DateOffset const & rhs) const;
 
 private:
   Weekday m_wdayOffest = Weekday::None;
@@ -485,10 +473,6 @@ public:
   void SetOffset(DateOffset const & offset) { m_offset = offset; }
   void SetVariableDate(VariableDate const date) { m_variable_date = date; }
 
-  bool operator==(MonthDay const & rhs) const;
-  bool operator<(MonthDay const & rhs) const;
-  bool operator<=(MonthDay const & rhs) const { return *this < rhs || *this == rhs; }
-
 private:
   TYear m_year = 0;
   Month m_month = Month::None;
@@ -533,8 +517,6 @@ public:
   void SetPeriod(uint32_t const period) { m_period = period; }
   void SetPlus(bool const plus) { m_plus = plus; }
 
-  bool operator==(MonthdayRange const & rhs) const;
-
 private:
   MonthDay m_start;
   MonthDay m_end;
@@ -568,8 +550,6 @@ public:
   void SetPlus(bool const plus) { m_plus = plus; }
   void SetPeriod(uint32_t const period) { m_period = period; }
 
-  bool operator==(YearRange const & rhs) const;
-
 private:
   TYear m_start = 0;
   TYear m_end = 0;
@@ -601,8 +581,6 @@ public:
   void SetEnd(TWeek const end) { m_end = end; }
   void SetPeriod(uint32_t const period) { m_period = period; }
 
-  bool operator==(WeekRange const & rhs) const;
-
 private:
   TWeek m_start = 0;
   TWeek m_end = 0;
@@ -632,7 +610,6 @@ public:
 
   bool HasYears() const { return !GetYears().empty(); }
   bool HasMonths() const { return !GetMonths().empty(); }
-  bool HasMonthDay() const;
   bool HasWeeks() const { return !GetWeeks().empty(); }
   bool HasWeekdays() const { return !GetWeekdays().IsEmpty(); }
   bool HasTimes() const { return !GetTimes().empty(); }
@@ -666,8 +643,6 @@ public:
   void SetSeparatorForReadability(bool const on) { m_separatorForReadability = on; }
 
   void SetModifier(Modifier const modifier) { m_modifier = modifier; }
-
-  bool operator==(RuleSequence const & rhs) const;
 
 private:
   bool m_twentyFourHours{false};
@@ -713,12 +688,8 @@ public:
 
   TRuleSequences const & GetRule() const { return m_rule; }
 
-  friend void swap(OpeningHours & lhs, OpeningHours & rhs);
-
-  bool operator==(OpeningHours const & rhs) const;
-
 private:
   TRuleSequences m_rule;
-  bool m_valid;
+  bool const m_valid;
 };
 } // namespace osmoh

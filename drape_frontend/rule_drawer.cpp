@@ -23,7 +23,6 @@
 #include "base/logging.hpp"
 
 #include "drape_frontend/text_shape.hpp"
-#include "drape_frontend/line_shape.hpp"
 #ifdef DRAW_TILE_NET
 #include "drape_frontend/line_shape.hpp"
 #include "drape_frontend/text_shape.hpp"
@@ -350,11 +349,10 @@ void RuleDrawer::ProcessLineStyle(FeatureType & f, Stylist const & s,
                                   TInsertShapeFn const & insertShape, int & minVisibleScale)
 {
   int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
-  auto const smooth = ftypes::IsIsolineChecker::Instance()(f);
 
   ApplyLineFeatureGeometry applyGeom(m_context->GetTileKey(), insertShape, f.GetID(),
                                      m_currentScaleGtoP, minVisibleScale, f.GetRank(),
-                                     f.GetPointsCount(), smooth);
+                                     f.GetPointsCount());
   f.ForEachPoint(applyGeom, zoomLevel);
 
   if (CheckCancelled())
@@ -473,9 +471,6 @@ void RuleDrawer::operator()(FeatureType & f)
   if (m_filter(f))
     return;
 
-  if (!m_context->IsolinesEnabled() && ftypes::IsIsolineChecker::Instance()(f))
-    return;
-
   Stylist s;
   m_callback(f, s);
 
@@ -527,6 +522,10 @@ void RuleDrawer::operator()(FeatureType & f)
     ProcessPointStyle(f, s, insertShape, minVisibleScale);
   }
 
+#ifdef DRAW_TILE_NET
+  DrawTileNet(insertShape);
+#endif
+
   if (CheckCancelled())
     return;
 
@@ -542,37 +541,29 @@ void RuleDrawer::operator()(FeatureType & f)
 }
 
 #ifdef DRAW_TILE_NET
-void RuleDrawer::DrawTileNet()
+void RuleDrawer::DrawTileNet(TInsertShapeFn const & insertShape)
 {
-  if (CheckCancelled())
-    return;
-
-  auto const key = m_context->GetTileKey();
-  auto const tileRect = key.GetGlobalRect();
-
+  TileKey key = m_context->GetTileKey();
+  m2::RectD r = key.GetGlobalRect();
   std::vector<m2::PointD> path;
-  path.reserve(4);
-  path.push_back(tileRect.LeftBottom());
-  path.push_back(tileRect.LeftTop());
-  path.push_back(tileRect.RightTop());
-  path.push_back(tileRect.RightBottom());
+  path.push_back(r.LeftBottom());
+  path.push_back(r.LeftTop());
+  path.push_back(r.RightTop());
+  path.push_back(r.RightBottom());
+  path.push_back(r.LeftBottom());
 
   m2::SharedSpline spline(path);
   df::LineViewParams p;
   p.m_tileCenter = m_globalRect.Center();
   p.m_baseGtoPScale = 1.0;
   p.m_cap = dp::ButtCap;
-  p.m_color = dp::Color::Blue();
+  p.m_color = dp::Color::Red();
   p.m_depth = 20000;
   p.m_depthLayer = DepthLayer::GeometryLayer;
-  p.m_width = 1;
+  p.m_width = 5;
   p.m_join = dp::RoundJoin;
 
-  auto lineShape = make_unique_dp<LineShape>(spline, p);
-  lineShape->Prepare(m_context->GetTextureManager());
-  TMapShapes shapes;
-  shapes.push_back(std::move(lineShape));
-  m_context->Flush(std::move(shapes));
+  insertShape(make_unique_dp<LineShape>(spline, p));
 
   df::TextViewParams tp;
   tp.m_tileCenter = m_globalRect.Center();
@@ -580,22 +571,18 @@ void RuleDrawer::DrawTileNet()
   tp.m_depth = 20000;
   tp.m_depthLayer = DepthLayer::OverlayLayer;
   tp.m_titleDecl.m_primaryText = strings::to_string(key.m_x) + " " +
-    strings::to_string(key.m_y) + " " +
-    strings::to_string(key.m_zoomLevel);
+                                 strings::to_string(key.m_y) + " " +
+                                 strings::to_string(key.m_zoomLevel);
 
   tp.m_titleDecl.m_primaryTextFont = dp::FontDecl(dp::Color::Red(), 30);
   tp.m_titleDecl.m_primaryOffset = {0.0f, 0.0f};
-  auto textShape = make_unique_dp<TextShape>(tileRect.Center(), tp, key,
-                                             m2::PointF(0.0f, 0.0f) /* symbolSize */,
-                                             m2::PointF(0.0f, 0.0f) /* symbolOffset */,
-                                             dp::Anchor::Center,
-                                             0 /* textIndex */);
+  drape_ptr<TextShape> textShape = make_unique_dp<TextShape>(r.Center(), tp, key,
+                                                             m2::PointF(0.0f, 0.0f) /* symbolSize */,
+                                                             m2::PointF(0.0f, 0.0f) /* symbolOffset */,
+                                                             dp::Anchor::Center,
+                                                             0 /* textIndex */);
   textShape->DisableDisplacing();
-
-  textShape->Prepare(m_context->GetTextureManager());
-  TMapShapes overlayShapes;
-  overlayShapes.push_back(std::move(textShape));
-  m_context->FlushOverlays(std::move(overlayShapes));
+  insertShape(std::move(textShape));
 }
 #endif
 }  // namespace df

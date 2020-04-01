@@ -8,7 +8,6 @@
 #include "coding/varint.hpp"
 
 #include "geometry/mercator.hpp"
-#include "geometry/point_with_altitude.hpp"
 
 #include "base/bits.hpp"
 
@@ -43,8 +42,7 @@ class CollectorVisitor
                   std::is_same<T, FileDataV3>::value ||
                   std::is_same<T, CategoryDataV3>::value ||
                   std::is_same<T, BookmarkDataV3>::value ||
-                  std::is_same<T, TrackDataV3>::value ||
-                  std::is_same<T, TrackDataV6>::value};
+                  std::is_same<T, TrackDataV3>::value};
   };
 
 public:
@@ -345,12 +343,6 @@ public:
     WritePointD(m_sink, pt, m_doubleBits);
   }
 
-  void operator()(geometry::PointWithAltitude const & pt, char const * /* name */ = nullptr)
-  {
-    WritePointD(m_sink, pt.GetPoint(), m_doubleBits);
-    WriteVarInt(m_sink, pt.GetAltitude());
-  }
-
   void operator()(double d, char const * /* name */ = nullptr)
   {
     auto const encoded = DoubleToUint32(d, kMinLineWidth, kMaxLineWidth, m_doubleBits);
@@ -389,25 +381,6 @@ public:
       auto const upt = PointDToPointU(points[i], m_doubleBits);
       coding::EncodePointDelta(m_sink, lastUpt, upt);
       lastUpt = upt;
-    }
-  }
-
-  void operator()(std::vector<geometry::PointWithAltitude> const & points,
-                  char const * /* name */ = nullptr)
-  {
-    WriteVarUint(m_sink, static_cast<uint32_t>(points.size()));
-    m2::PointU lastUpt = m2::PointU::Zero();
-    for (auto const & point : points)
-    {
-      auto const upt = PointDToPointU(point.GetPoint(), m_doubleBits);
-      coding::EncodePointDelta(m_sink, lastUpt, upt);
-      lastUpt = upt;
-    }
-    geometry::Altitude lastAltitude = geometry::kDefaultAltitudeMeters;
-    for (auto const & point : points)
-    {
-      WriteVarInt(m_sink, point.GetAltitude() - lastAltitude);
-      lastAltitude = point.GetAltitude();
     }
   }
 
@@ -540,12 +513,6 @@ public:
     pt = ReadPointD(m_source, m_doubleBits);
   }
 
-  void operator()(geometry::PointWithAltitude & pt, char const * /* name */ = nullptr)
-  {
-    pt.SetPoint(ReadPointD(m_source, m_doubleBits));
-    pt.SetAltitude(ReadVarInt<int32_t, Source>(m_source));
-  }
-
   void operator()(double & d, char const * /* name */ = nullptr)
   {
     auto const v = ReadVarUint<uint32_t, Source>(m_source);
@@ -594,25 +561,6 @@ public:
     {
       lastUpt = coding::DecodePointDelta(m_source, lastUpt);
       points.emplace_back(PointUToPointD(lastUpt, m_doubleBits));
-    }
-  }
-
-  void operator()(std::vector<geometry::PointWithAltitude> & points,
-                  char const * /* name */ = nullptr)
-  {
-    auto const sz = ReadVarUint<uint32_t, Source>(m_source);
-    points.reserve(sz);
-    m2::PointU lastUpt = m2::PointU::Zero();
-    for (uint32_t i = 0; i < sz; ++i)
-    {
-      lastUpt = coding::DecodePointDelta(m_source, lastUpt);
-      points.emplace_back(PointUToPointD(lastUpt, m_doubleBits), geometry::kDefaultAltitudeMeters);
-    }
-    geometry::Altitude lastAltitude = geometry::kDefaultAltitudeMeters;
-    for (auto & point : points)
-    {
-      point.SetAltitude(lastAltitude + ReadVarInt<int32_t>(m_source));
-      lastAltitude = point.GetAltitude();
     }
   }
 

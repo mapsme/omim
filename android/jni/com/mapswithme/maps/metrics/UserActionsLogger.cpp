@@ -13,10 +13,6 @@ namespace
 {
 void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
 {
-  ::Framework * frm = g_framework->NativeFramework();
-  if (!frm->HasPlacePageInfo())
-    return;
-
   auto & info = g_framework->GetPlacePageInfo();
   auto const userPos = g_framework->NativeFramework()->GetCurrentPosition();
 
@@ -25,10 +21,6 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
 
 void RegisterTransitionToBooking()
 {
-  ::Framework * frm = g_framework->NativeFramework();
-  if (!frm->HasPlacePageInfo())
-    return;
-
   auto & info = g_framework->GetPlacePageInfo();
   eye::Eye::Event::TransitionToBooking(info.GetMercator());
 }
@@ -119,5 +111,11 @@ Java_com_mapswithme_maps_metrics_UserActionsLogger_nativePromoAfterBookingShown(
                                                                                 jclass, jstring id)
 {
   eye::Eye::Event::PromoAfterBookingShown(jni::ToNativeString(env, id));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_metrics_UserActionsLogger_nativeCrownClicked(JNIEnv *, jclass)
+{
+  eye::Eye::Event::CrownClicked();
 }
 }

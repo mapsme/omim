@@ -174,15 +174,15 @@ public:
     return GetAStarWeightZero<RouteWeight>();
   }
 
-  bool AreWavesConnectible(IndexGraph::Parents<JointSegment> const & /* forwardParents */,
+  bool AreWavesConnectible(map<JointSegment, JointSegment> const & /* forwardParents */,
                            JointSegment const & /* commonVertex */,
-                           IndexGraph::Parents<JointSegment> const & /* backwardParents */,
+                           map<JointSegment, JointSegment> const & /* backwardParents */,
                            function<uint32_t(JointSegment const &)> && /* fakeFeatureConverter */)
   {
     return true;
   }
 
-  void SetAStarParents(bool /* forward */, IndexGraph::Parents<JointSegment> & parents)
+  void SetAStarParents(bool /* forward */, map<JointSegment, JointSegment> & parents)
   {
     m_AStarParents = &parents;
   }
@@ -205,13 +205,11 @@ public:
     m_graph.GetEdgeList(child, isOutgoing, true /* useRoutingOptions */, edges);
   }
 
-  void GetEdgeList(astar::VertexData<JointSegment, RouteWeight> const & vertexData,
-                   Segment const & parent, bool isOutgoing, vector<JointEdge> & edges,
-                   vector<RouteWeight> & parentWeights) const
+  void GetEdgeList(JointSegment const & parentJoint, Segment const & parent, bool isOutgoing,
+                   vector<JointEdge> & edges, vector<RouteWeight> & parentWeights) const
   {
     CHECK(m_AStarParents, ());
-    return m_graph.GetEdgeList(vertexData.m_vertex, parent, isOutgoing, edges, parentWeights,
-                               *m_AStarParents);
+    return m_graph.GetEdgeList(parentJoint, parent, isOutgoing, edges, parentWeights, *m_AStarParents);
   }
 
   bool IsJoint(Segment const & segment, bool fromStart) const
@@ -234,7 +232,7 @@ public:
   }
 
 private:
-  IndexGraph::Parents<JointSegment> * m_AStarParents = nullptr;
+  map<JointSegment, JointSegment> * m_AStarParents = nullptr;
   IndexGraph & m_graph;
   Segment m_start;
 };

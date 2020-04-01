@@ -10,19 +10,17 @@
 #include "indexer/classificator_loader.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
-#include "platform/platform_tests_support/helpers.hpp"
-
 #include "platform/platform.hpp"
 
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
 #include "base/scope_guard.hpp"
 
-#include "defines.hpp"
-
 #include <cstdio>
 #include <sstream>
 #include <string>
+
+#include "defines.hpp"
 
 using namespace generator_integration_tests;
 
@@ -76,40 +74,7 @@ struct CountryFeaturesCounters
            m_poi == rhs.m_poi && m_cityTownOrVillage == rhs.m_cityTownOrVillage &&
            m_bookingHotels == rhs.m_bookingHotels;
   }
-
-  bool operator!=(CountryFeaturesCounters const & rhs) const { return !(*this == rhs); }
 };
-
-struct CountryFeatureResults
-{
-  CountryFeatureResults() = default;
-  CountryFeatureResults(CountryFeaturesCounters actual, CountryFeaturesCounters expected)
-    : m_actual(actual), m_expected(expected)
-  {
-  }
-
-  CountryFeaturesCounters m_actual;
-  CountryFeaturesCounters m_expected;
-};
-
-void TestAndLogCountryFeatures(std::map<std::string, CountryFeatureResults> const & results)
-{
-  for (auto const & result : results)
-  {
-    if (result.second.m_actual != result.second.m_expected)
-    {
-      LOG(LINFO, ("Unexpectad result for", result.first, "actual:", result.second.m_actual,
-                  "expected:", result.second.m_expected,
-                  "the difference is:", result.second.m_actual - result.second.m_expected));
-    }
-  }
-
-  for (auto const & result : results)
-  {
-    TEST_EQUAL(result.second.m_actual, result.second.m_expected,
-               (result.first, "difference:", result.second.m_actual - result.second.m_expected));
-  }
-}
 
 std::string DebugPrint(CountryFeaturesCounters const & cnt)
 {
@@ -127,35 +92,35 @@ CountryFeaturesCounters constexpr kWorldCounters(945 /* fbs */, 364406 /* geomet
                                                  0 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kNorthAucklandCounters(
-    1812333 /* fbs */, 12196704 /* geometryPoints */, 1007584 /* point */, 205634 /* line */,
-    599115 /* area */, 212598 /* poi */, 521 /* cityTownOrVillage */, 3557 /* bookingHotels */);
+    1812220 /* fbs */, 12197554 /* geometryPoints */, 1007483 /* point */, 205623 /* line */,
+    599114 /* area */, 212342 /* poi */, 521 /* cityTownOrVillage */, 3557 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kNorthWellingtonCounters(
-    797846 /* fbs */, 7771680 /* geometryPoints */, 460559 /* point */, 87011 /* line */,
-    250276 /* area */, 95893 /* poi */, 297 /* cityTownOrVillage */, 1062 /* bookingHotels */);
+    797963 /* fbs */, 7773454 /* geometryPoints */, 460516 /* point */, 87172 /* line */,
+    250275 /* area */, 95819 /* poi */, 297 /* cityTownOrVillage */, 1062 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kSouthCanterburyCounters(
-    637244 /* fbs */, 6984549 /* geometryPoints */, 397961 /* point */, 81697 /* line */,
-    157586 /* area */, 89666 /* poi */, 331 /* cityTownOrVillage */, 2085 /* bookingHotels */);
+    637282 /* fbs */, 6985227 /* geometryPoints */, 397939 /* point */, 81755 /* line */,
+    157588 /* area */, 89534 /* poi */, 331 /* cityTownOrVillage */, 2085 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kSouthSouthlandCounters(
-    340637 /* fbs */, 5342359 /* geometryPoints */, 185994 /* point */, 40117 /* line */,
-    114526 /* area */, 40667 /* poi */, 297 /* cityTownOrVillage */, 1621 /* bookingHotels */);
+    340647 /* fbs */, 5342833 /* geometryPoints */, 185980 /* point */, 40141 /* line */,
+    114526 /* area */, 40647 /* poi */, 297 /* cityTownOrVillage */, 1621 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kSouthSouthlandMixedNodesCounters(
     2 /* fbs */, 2 /* geometryPoints */, 2 /* point */, 0 /* line */, 0 /* area */, 0 /* poi */,
     0 /* cityTownOrVillage */, 0 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kNorthAucklandComplexFeaturesCounters(
-    288 /* fbs */, 16119 /* geometryPoints */, 0 /* point */, 252 /* line */, 36 /* area */,
+    283 /* fbs */, 16014 /* geometryPoints */, 0 /* point */, 247 /* line */, 36 /* area */,
     0 /* poi */, 0 /* cityTownOrVillage */, 0 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kNorthWellingtonComplexFeaturesCounters(
-    254 /* fbs */, 18434 /* geometryPoints */, 0 /* point */, 244 /* line */, 10 /* area */,
+    253 /* fbs */, 18422 /* geometryPoints */, 0 /* point */, 243 /* line */, 10 /* area */,
     0 /* poi */, 0 /* cityTownOrVillage */, 0 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kSouthCanterburyComplexFeaturesCounters(
-    1037 /* fbs */, 73854 /* geometryPoints */, 0 /* point */, 1016 /* line */, 21 /* area */,
+    1035 /* fbs */, 73795 /* geometryPoints */, 0 /* point */, 1014 /* line */, 21 /* area */,
     0 /* poi */, 0 /* cityTownOrVillage */, 0 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kSouthSouthlandComplexFeaturesCounters(
@@ -170,8 +135,6 @@ public:
     // You can get features-2019_07_17__13_39_20 by running:
     // rsync -v -p testdata.mapsme.cloud.devmail.ru::testdata/features-2019_07_17__13_39_20.zip .
     Init("features-2019_07_17__13_39_20" /* archiveName */);
-    size_t const kMaxOpenFiles = 4096;
-    platform::tests_support::ChangeMaxNumberOfOpenFiles(kMaxOpenFiles);
   }
 
   ~FeatureIntegrationTests()
@@ -235,8 +198,7 @@ public:
 
     TEST(Platform::IsFileExistsByFullPath(world), ());
 
-    auto const actual = GetCountersForCountry(world);
-    TEST_EQUAL(actual, kWorldCounters, ("kWorldCounters difference:", actual - kWorldCounters));
+    TestCountry(world, kWorldCounters);
   }
 
   void BuildCountries()
@@ -258,16 +220,10 @@ public:
     rawGenerator.GenerateCountries();
     TEST(rawGenerator.Execute(), ());
 
-    std::map<std::string, CountryFeatureResults> results;
-    results["kNorthAucklandCounters"] =
-        CountryFeatureResults(GetCountersForCountry(northAuckland), kNorthAucklandCounters);
-    results["kNorthWellingtonCounters"] =
-        CountryFeatureResults(GetCountersForCountry(northWellington), kNorthWellingtonCounters);
-    results["kSouthCanterburyCounters"] =
-        CountryFeatureResults(GetCountersForCountry(southCanterbury), kSouthCanterburyCounters);
-    results["kSouthSouthlandCounters"] =
-        CountryFeatureResults(GetCountersForCountry(southSouthland), kSouthSouthlandCounters);
-    TestAndLogCountryFeatures(results);
+    TestCountry(northAuckland, kNorthAucklandCounters);
+    TestCountry(northWellington, kNorthWellingtonCounters);
+    TestCountry(southCanterbury, kSouthCanterburyCounters);
+    TestCountry(southSouthland, kSouthSouthlandCounters);
   }
 
   void BuildCountriesWithComplex()
@@ -290,20 +246,10 @@ public:
     rawGenerator.GenerateCountries();
     TEST(rawGenerator.Execute(), ());
 
-    std::map<std::string, CountryFeatureResults> results;
-    results["kNorthAucklandCounters + kNorthAucklandComplexFeaturesCounters"] =
-        CountryFeatureResults(GetCountersForCountry(northAuckland),
-                              kNorthAucklandCounters + kNorthAucklandComplexFeaturesCounters);
-    results["kNorthWellingtonCounters + kNorthWellingtonComplexFeaturesCounters"] =
-        CountryFeatureResults(GetCountersForCountry(northWellington),
-                              kNorthWellingtonCounters + kNorthWellingtonComplexFeaturesCounters);
-    results["kSouthCanterburyCounters + kSouthCanterburyComplexFeaturesCounters"] =
-        CountryFeatureResults(GetCountersForCountry(southCanterbury),
-                              kSouthCanterburyCounters + kSouthCanterburyComplexFeaturesCounters);
-    results["kSouthSouthlandCounters + kSouthSouthlandComplexFeaturesCounters"] =
-        CountryFeatureResults(GetCountersForCountry(southSouthland),
-                              kSouthSouthlandCounters + kSouthSouthlandComplexFeaturesCounters);
-    TestAndLogCountryFeatures(results);
+    TestCountry(northAuckland, kNorthAucklandCounters + kNorthAucklandComplexFeaturesCounters);
+    TestCountry(northWellington, kNorthWellingtonCounters + kNorthWellingtonComplexFeaturesCounters);
+    TestCountry(southCanterbury, kSouthCanterburyCounters + kSouthCanterburyComplexFeaturesCounters);
+    TestCountry(southSouthland, kSouthSouthlandCounters + kSouthSouthlandComplexFeaturesCounters);
   }
 
   void CheckMixedTagsAndNodes()
@@ -328,28 +274,22 @@ public:
     rawGenerator.GenerateWorld(true /* needMixTags */);
     TEST(rawGenerator.Execute(), ());
 
+    TestCountry(northAuckland, kNorthAucklandCounters);
+    TestCountry(northWellington, kNorthWellingtonCounters);
+    TestCountry(southCanterbury, kSouthCanterburyCounters);
+
     size_t partner1CntReal = 0;
 
-    std::map<std::string, CountryFeatureResults> results;
-    results["kNorthAucklandCounters"] =
-        CountryFeatureResults(GetCountersForCountry(northAuckland), kNorthAucklandCounters);
-    results["kNorthWellingtonCounters"] =
-        CountryFeatureResults(GetCountersForCountry(northWellington), kNorthWellingtonCounters);
-    results["kSouthCanterburyCounters"] =
-        CountryFeatureResults(GetCountersForCountry(southCanterbury), kSouthCanterburyCounters);
-    results["kSouthSouthlandCounters + kSouthSouthlandMixedNodesCounters"] = CountryFeatureResults(
-        GetCountersForCountry(
-            southSouthland,
-            [&](auto const & fb) {
-              static auto const partner1 = classif().GetTypeByPath({"sponsored", "partner1"});
-              if (fb.HasType(partner1))
-                ++partner1CntReal;
-            }),
-        kSouthSouthlandCounters + kSouthSouthlandMixedNodesCounters);
-    results["kWorldCounters"] = CountryFeatureResults(GetCountersForCountry(world), kWorldCounters);
+    TestCountry(southSouthland, kSouthSouthlandCounters + kSouthSouthlandMixedNodesCounters,
+                [&](auto const & fb) {
+                  static auto const partner1 = classif().GetTypeByPath({"sponsored", "partner1"});
+                  if (fb.HasType(partner1))
+                    ++partner1CntReal;
+                });
 
-    TestAndLogCountryFeatures(results);
     TEST_EQUAL(partner1CntReal, 4, ());
+
+    TestCountry(world, kWorldCounters);
   }
 
   void CheckGeneratedData()
@@ -381,7 +321,7 @@ public:
     TestGeneratedFile(maxSpeeds, 1301515 /* fileSize */);
     TestGeneratedFile(metalines, 288032 /* fileSize */);
     TestGeneratedFile(restrictions, 371110 /* fileSize */);
-    TestGeneratedFile(roadAccess, 1915402 /* fileSize */);
+    TestGeneratedFile(roadAccess, 1969045 /* fileSize */);
     TestGeneratedFile(m_genInfo.m_citiesBoundariesFilename, 87 /* fileSize */);
   }
 
@@ -404,9 +344,10 @@ public:
   }
 
 private:
-  CountryFeaturesCounters GetCountersForCountry(
-      std::string const & path, std::function<void(feature::FeatureBuilder const &)> const & fn =
-                                    [](feature::FeatureBuilder const &) {})
+  void TestCountry(
+      std::string const & path, CountryFeaturesCounters const & expected,
+      std::function<void(feature::FeatureBuilder const &)> const & fn =
+          [](feature::FeatureBuilder const &) {})
   {
     CHECK(Platform::IsFileExistsByFullPath(path), ());
     auto const fbs = feature::ReadAllDatRawFormat(path);
@@ -436,7 +377,7 @@ private:
       fn(fb);
     }
 
-    return actual;
+    TEST_EQUAL(actual, expected, ("The difference is:", actual - expected));
   }
 
   void TestGeneratedFile(std::string const & path, size_t fileSize)
@@ -521,12 +462,12 @@ UNIT_CLASS_TEST(FeatureIntegrationTests, BuildCoasts)
   FeatureIntegrationTests::BuildCoasts();
 }
 
-UNIT_CLASS_TEST(FeatureIntegrationTests, BuildWorldMultithread)
+UNIT_CLASS_TEST(FeatureIntegrationTests, BuildWorld)
 {
   FeatureIntegrationTests::BuildWorld();
 }
 
-UNIT_CLASS_TEST(FeatureIntegrationTests, BuildCountriesMultithread)
+UNIT_CLASS_TEST(FeatureIntegrationTests, BuildCountries)
 {
   FeatureIntegrationTests::BuildCountries();
 }
@@ -541,7 +482,7 @@ UNIT_CLASS_TEST(FeatureIntegrationTests, CheckMixedTagsAndNodes)
   FeatureIntegrationTests::CheckMixedTagsAndNodes();
 }
 
-UNIT_CLASS_TEST(FeatureIntegrationTests, CheckGeneratedDataMultithread)
+UNIT_CLASS_TEST(FeatureIntegrationTests, CheckGeneratedData)
 {
   FeatureIntegrationTests::CheckGeneratedData();
 }

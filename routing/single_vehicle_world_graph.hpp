@@ -35,16 +35,11 @@ public:
   // @{
   ~SingleVehicleWorldGraph() override = default;
 
-  using WorldGraph::GetEdgeList;
-
-  void GetEdgeList(astar::VertexData<Segment, RouteWeight> const & vertexData, bool isOutgoing,
-                   bool useRoutingOptions, bool useAccessConditional,
+  void GetEdgeList(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
                    std::vector<SegmentEdge> & edges) override;
 
-  void GetEdgeList(astar::VertexData<JointSegment, RouteWeight> const & parentVertexData,
-                   Segment const & parent, bool isOutgoing, bool useAccessConditional,
-                   std::vector<JointEdge> & jointEdges,
-                   std::vector<RouteWeight> & parentWeights) override;
+  void GetEdgeList(JointSegment const & parentJoint, Segment const & parent, bool isOutgoing,
+                   std::vector<JointEdge> & jointEdges, std::vector<RouteWeight> & parentWeights) override;
 
   bool CheckLength(RouteWeight const &, double) const override { return true; }
 
@@ -82,15 +77,15 @@ public:
     return m_loader->GetIndexGraph(numMwmId);
   }
 
-  void SetAStarParents(bool forward, Parents<Segment> & parents) override;
-  void SetAStarParents(bool forward, Parents<JointSegment> & parents) override;
+  void SetAStarParents(bool forward, ParentSegments & parents) override;
+  void SetAStarParents(bool forward, ParentJoints & parents) override;
   void DropAStarParents() override;
 
-  bool AreWavesConnectible(Parents<Segment> & forwardParents, Segment const & commonVertex,
-                           Parents<Segment> & backwardParents,
+  bool AreWavesConnectible(ParentSegments & forwardParents, Segment const & commonVertex,
+                           ParentSegments & backwardParents,
                            std::function<uint32_t(Segment const &)> && fakeFeatureConverter) override;
-  bool AreWavesConnectible(Parents<JointSegment> & forwardParents, JointSegment const & commonVertex,
-                           Parents<JointSegment> & backwardParents,
+  bool AreWavesConnectible(ParentJoints & forwardParents, JointSegment const & commonVertex,
+                           ParentJoints & backwardParents,
                            std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter) override;
   // @}
 
@@ -108,9 +103,9 @@ private:
   /// \return The result chain of fetureIds are used to find restrictions on it and understand whether
   ///         waves are connectable or not.
   template <typename VertexType>
-  bool AreWavesConnectibleImpl(Parents<VertexType> const & forwardParents,
+  bool AreWavesConnectibleImpl(std::map<VertexType, VertexType> const & forwardParents,
                                VertexType const & commonVertex,
-                               Parents<VertexType> const & backwardParents,
+                               std::map<VertexType, VertexType> const & backwardParents,
                                std::function<uint32_t(VertexType const &)> && fakeFeatureConverter);
 
   // Retrieves the same |jointEdges|, but into others mwms.
@@ -133,7 +128,7 @@ private:
   template <typename Vertex>
   struct AStarParents
   {
-    using ParentType = Parents<Vertex>;
+    using ParentType = std::map<Vertex, Vertex>;
     static ParentType kEmpty;
     ParentType * forward = &kEmpty;
     ParentType * backward = &kEmpty;

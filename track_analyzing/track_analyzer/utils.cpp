@@ -16,7 +16,6 @@
 #include "base/string_utils.hpp"
 
 #include <algorithm>
-#include <fstream>
 #include <set>
 #include <sstream>
 #include <utility>
@@ -105,7 +104,9 @@ void Stats::AddTracksStats(MwmToTracks const & mwmToTracks, NumMwmIds const & nu
 
     NumMwmId const numMwmId = kv.first;
     auto const mwmName = numMwmIds.GetFile(numMwmId).GetName();
-    AddDataPoints(mwmName, storage, dataPointNum);
+    auto const countryName = storage.GetTopmostParentFor(mwmName);
+    // Note. In case of disputed mwms |countryName| will be empty.
+    AddDataPoints(mwmName, countryName, dataPointNum);
   }
 }
 
@@ -116,30 +117,13 @@ void Stats::AddDataPoints(string const & mwmName, string const & countryName,
   m_countryToTotalDataPoints[countryName] += dataPointNum;
 }
 
-void Stats::AddDataPoints(string const & mwmName, storage::Storage const & storage,
-                          uint64_t dataPointNum)
+void Stats::SaveMwmDistributionToCsv(string const & csvPath)
 {
-  auto const countryName = storage.GetTopmostParentFor(mwmName);
-  // Note. In case of disputed mwms |countryName| will be empty.
-  AddDataPoints(mwmName, countryName, dataPointNum);
-}
-
-void Stats::SaveMwmDistributionToCsv(string const & csvPath) const
-{
-  LOG(LINFO, ("Saving mwm distribution to", csvPath, "m_mwmToTotalDataPoints size is",
-              m_mwmToTotalDataPoints.size()));
   if (csvPath.empty())
     return;
 
-  ofstream ofs(csvPath);
-  CHECK(ofs.is_open(), ("Cannot open file", csvPath));
-  MappingToCsv("mwm", m_mwmToTotalDataPoints, false /* printPercentage */, ofs);
-}
-
-void Stats::Log() const
-{
-  LogMwms();
-  LogCountries();
+  ostringstream ss(csvPath);
+  MappingToCsv("mwm", m_mwmToTotalDataPoints, false /* printPercentage */, ss);
 }
 
 Stats::NameToCountMapping const & Stats::GetMwmToTotalDataPointsForTesting() const
@@ -150,16 +134,6 @@ Stats::NameToCountMapping const & Stats::GetMwmToTotalDataPointsForTesting() con
 Stats::NameToCountMapping const & Stats::GetCountryToTotalDataPointsForTesting() const
 {
   return m_countryToTotalDataPoints;
-}
-
-void Stats::LogMwms() const
-{
-  LogNameToCountMapping("mwm", "Mwm to total data points number:", m_mwmToTotalDataPoints);
-}
-
-void Stats::LogCountries() const
-{
-  LogNameToCountMapping("country", "Country name to data points number:", m_countryToTotalDataPoints);
 }
 
 void MappingToCsv(string const & keyName, Stats::NameToCountMapping const & mapping,
@@ -225,28 +199,13 @@ void ParseTracks(string const & logFile, shared_ptr<NumMwmIds> const & numMwmIds
 {
   Platform const & platform = GetPlatform();
   string const dataDir = platform.WritableDir();
-  auto countryInfoGetter = CountryInfoReader::CreateCountryInfoGetter(platform);
+  unique_ptr<CountryInfoGetter> countryInfoGetter =
+      CountryInfoReader::CreateCountryInfoReader(platform);
   unique_ptr<m4::Tree<NumMwmId>> mwmTree = MakeNumMwmTree(*numMwmIds, *countryInfoGetter);
 
   LOG(LINFO, ("Parsing", logFile));
   LogParser parser(numMwmIds, move(mwmTree), dataDir);
   parser.Parse(logFile, mwmToTracks);
-}
-
-void WriteCsvTableHeader(basic_ostream<char> & stream)
-{
-  stream << "user,mwm,hw type,surface type,maxspeed km/h,is city road,is one way,is day,lat lon,"
-            "distance,time,mean speed km/h,turn from smaller to bigger,turn from bigger to smaller,"
-            "intersection with big\n";
-}
-
-void LogNameToCountMapping(string const & keyName, string const & descr,
-                           Stats::NameToCountMapping const & mapping)
-{
-  ostringstream ss;
-  LOG(LINFO, ("\n"));
-  PrintMap(keyName, descr, mapping, ss);
-  LOG(LINFO, (ss.str()));
 }
 
 string DebugPrint(Stats const & s)

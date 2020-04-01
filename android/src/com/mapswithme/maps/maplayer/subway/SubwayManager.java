@@ -2,14 +2,12 @@ package com.mapswithme.maps.maplayer.subway;
 
 import android.app.Application;
 import android.content.Context;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
-import com.mapswithme.maps.base.Initializable;
 
-public class SubwayManager implements Initializable<Void>
+public class SubwayManager
 {
   @NonNull
   private final OnTransitSchemeChangedListener mSchemeChangedListener;
@@ -37,16 +35,9 @@ public class SubwayManager implements Initializable<Void>
     setEnabled(!isEnabled());
   }
 
-  @Override
-  public void initialize(@Nullable Void aVoid)
+  public void initialize()
   {
     registerListener();
-  }
-
-  @Override
-  public void destroy()
-  {
-    // No op.
   }
 
   private void registerListener()

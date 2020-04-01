@@ -19,14 +19,18 @@ class TermsOfUsePresenter {
 extension TermsOfUsePresenter: ITermsOfUsePresenter {
   func configure() {
     view?.setTitleImage(UIImage(named: "img_onboarding_travelbuddy"))
-    view?.setTitle("\(L("new_onboarding_step1_header"))\n\(L("new_onboarding_step1_header_2"))")
-    view?.setText(L("sign_message_gdpr"))
+    view?.setTitle(L("new_onboarding_step1_header"))
+    view?.setText(L("new_onboarding_step1_message"))
     view?.setPrivacyPolicyTitle(String(coreFormat: L("sign_agree_pp_gdpr"), arguments: [privacyPolicyLink]))
     view?.setTermsOfUseTitle(String(coreFormat: L("sign_agree_tof_gdpr"), arguments: [termsOfUseLink]))
   }
 
+  func key() -> String {
+    return ""
+  }
+
   func onAppear() {
-    Statistics.logEvent(kStatOnboardingScreenShow, withParameters: [kStatType: kStatAgreement])
+    Statistics.logEvent("OnStart_MapsMeConsent_shown")
   }
 
   func onNext() {
@@ -35,7 +39,7 @@ extension TermsOfUsePresenter: ITermsOfUsePresenter {
     WelcomeStorage.termsOfUseLink = termsOfUseLink
     WelcomeStorage.acceptTime = Date()
     router.onNext()
-    Statistics.logEvent(kStatOnboardingScreenAccept, withParameters: [kStatType: kStatAgreement])
+    Statistics.logEvent("OnStart_MapsMeConsent_accepted")
   }
 
   func onClose() {

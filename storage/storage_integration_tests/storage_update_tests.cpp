@@ -4,7 +4,6 @@
 
 #include "map/framework.hpp"
 
-#include "platform/downloader_defines.hpp"
 #include "platform/http_request.hpp"
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
@@ -43,14 +42,14 @@ bool DownloadFile(string const & url,
 {
   using namespace downloader;
 
-  DownloadStatus httpStatus;
+  HttpRequest::Status httpStatus;
   bool finished = false;
 
   unique_ptr<HttpRequest> request(HttpRequest::GetFile({url}, filePath, fileSize,
                                   [&](HttpRequest & request)
   {
-    DownloadStatus const s = request.GetStatus();
-    if (s != DownloadStatus::InProgress)
+    HttpRequest::Status const s = request.GetStatus();
+    if (s != HttpRequest::Status::InProgress)
     {
       httpStatus = s;
       finished = true;
@@ -60,7 +59,7 @@ bool DownloadFile(string const & url,
 
   testing::RunEventLoop();
 
-  return httpStatus == DownloadStatus::Completed;
+  return httpStatus == HttpRequest::Status::Completed;
 }
 
 string GetCountriesTxtWebUrl(string const version)

@@ -26,6 +26,8 @@
 #include <limits>
 #include <utility>
 
+#include <sys/resource.h>
+
 #include "defines.hpp"
 
 #include "3party/jansson/myjansson.hpp"
@@ -57,6 +59,16 @@ namespace search
 {
 namespace search_quality
 {
+void ChangeMaxNumberOfOpenFiles(size_t n)
+{
+#if defined(OMIM_OS_MAC) || defined(OMIM_OS_LINUX)
+  struct rlimit rlp;
+  getrlimit(RLIMIT_NOFILE, &rlp);
+  rlp.rlim_cur = n;
+  setrlimit(RLIMIT_NOFILE, &rlp);
+#endif
+}
+
 void CheckLocale()
 {
   string const kJson = "{\"coord\":123.456}";
@@ -185,7 +197,7 @@ unique_ptr<search::tests_support::TestSearchEngine> InitSearchEngine(
   params.m_locale = locale;
   params.m_numThreads = base::checked_cast<size_t>(numThreads);
 
-  auto infoGetter = storage::CountryInfoReader::CreateCountryInfoGetter(GetPlatform());
+  auto infoGetter = storage::CountryInfoReader::CreateCountryInfoReader(GetPlatform());
   infoGetter->SetAffiliations(&affiliations);
 
   return make_unique<search::tests_support::TestSearchEngine>(dataSource, move(infoGetter), params);

@@ -1,29 +1,24 @@
 final class LayersViewController: MWMViewController {
   private let transitioning = CoverVerticalModalTransitioning(presentationHeight: 150)
 
-  @IBOutlet var trafficButton: VerticallyAlignedButton! {
+  @IBOutlet weak var trafficButton: VerticallyAlignedButton! {
     didSet {
       updateTrafficButton()
     }
   }
-  @IBOutlet var subwayButton: VerticallyAlignedButton! {
+  @IBOutlet weak var subwayButton: VerticallyAlignedButton! {
     didSet {
       updateSubwayButton()
-    }
-  }
-  @IBOutlet var isoLinesButton: VerticallyAlignedButton! {
-    didSet {
-      updateIsoLinesButton()
     }
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    MapOverlayManager.add(self)
+    MWMTrafficManager.add(self)
   }
 
   deinit {
-    MapOverlayManager.remove(self)
+    MWMTrafficManager.remove(self)
   }
 
   override var transitioningDelegate: UIViewControllerTransitioningDelegate? {
@@ -37,48 +32,39 @@ final class LayersViewController: MWMViewController {
   }
 
   private func updateTrafficButton() {
-    let enabled = MapOverlayManager.trafficEnabled()
-    trafficButton.setStyleAndApply(enabled ? "LayersTrafficButtonEnabled" : "LayersTrafficButtonDisabled")
+    let enabled = MWMTrafficManager.trafficEnabled()
+    trafficButton.setTitleColor(enabled ? UIColor.linkBlue() : UIColor.blackSecondaryText(), for: .normal)
+    trafficButton.imageName = enabled ? "btn_menu_traffic_on" : "btn_menu_traffic_off"
   }
 
   private func updateSubwayButton() {
-    let enabled = MapOverlayManager.transitEnabled()
-    subwayButton.setStyleAndApply(enabled ? "LayersSubwayButtonEnabled" : "LayersSubwayButtonDisabled")
-  }
-
-  private func updateIsoLinesButton() {
-    let enabled = MapOverlayManager.isoLinesEnabled()
-    isoLinesButton.setStyleAndApply(enabled ? "LayersIsolinesButtonEnabled" : "LayersIsolinesButtonDisabled")
+    let enabled = MWMTrafficManager.transitEnabled()
+    subwayButton.setTitleColor(enabled ? UIColor.linkBlue() : UIColor.blackSecondaryText(), for: .normal)
+    subwayButton.imageName = enabled ? "btn_menu_subway_on" : "btn_menu_subway_off"
   }
 
   @IBAction func onTrafficButton(_ sender: UIButton) {
-    MapOverlayManager.setTrafficEnabled(!MapOverlayManager.trafficEnabled())
+    MWMTrafficManager.setTrafficEnabled(!MWMTrafficManager.trafficEnabled())
   }
 
   @IBAction func onSubwayButton(_ sender: UIButton) {
-    MapOverlayManager.setTransitEnabled(!MapOverlayManager.transitEnabled())
-  }
-
-  @IBAction func onIsoLinesButton(_ sender: UIButton) {
-    MapOverlayManager.setIsoLinesEnabled(!MapOverlayManager.isoLinesEnabled())
+    MWMTrafficManager.setTransitEnabled(!MWMTrafficManager.transitEnabled())
   }
 }
 
-extension LayersViewController: MapOverlayManagerObserver {
+extension LayersViewController: MWMTrafficManagerObserver {
   func onTrafficStateUpdated() {
     updateTrafficButton()
     let status: String?
-    switch MapOverlayManager.trafficState() {
-    case .enabled:
-      status = "success"
-    case .noData:
-      status = "unavailable"
-    case .networkError:
-      status = "error"
-    case .disabled, .waitingData, .outdated, .expiredData, .expiredApp:
-      status = nil
-    @unknown default:
-      fatalError()
+    switch MWMTrafficManager.trafficState() {
+    case .enabled: status = "success"
+    case .noData: status = "unavailable"
+    case .networkError: status = "error"
+    case .disabled: fallthrough
+    case .waitingData: fallthrough
+    case .outdated: fallthrough
+    case .expiredData: fallthrough
+    case .expiredApp: status = nil
     }
 
     if let status = status {
@@ -90,41 +76,14 @@ extension LayersViewController: MapOverlayManagerObserver {
   func onTransitStateUpdated() {
     updateSubwayButton()
     let status: String?
-    switch MapOverlayManager.transitState() {
-    case .enabled:
-      status = "success"
-    case .noData:
-      status = "unavailable"
-    case .disabled:
-      status = nil
-    @unknown default:
-      fatalError()
+    switch MWMTrafficManager.transitState() {
+    case .enabled: status = "success"
+    case .noData: status = "unavailable"
+    case .disabled: status = nil
     }
 
     if let status = status {
       Statistics.logEvent("Map_Layers_activate", withParameters: ["name" : "subway",
-                                                                  "status" : status])
-    }
-  }
-
-  func onIsoLinesStateUpdated() {
-    updateIsoLinesButton()
-    let status: String?
-    switch MapOverlayManager.isolinesState() {
-    case .enabled:
-      status = "success"
-    case .expiredData:
-      status = "error"
-    case .noData:
-      status = "unavailable"
-    case .disabled:
-      status = nil
-    @unknown default:
-      fatalError()
-    }
-    
-    if let status = status {
-      Statistics.logEvent("Map_Layers_activate", withParameters: ["name" : "isolines",
                                                                   "status" : status])
     }
   }

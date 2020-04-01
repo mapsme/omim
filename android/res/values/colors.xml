@@ -12,7 +12,6 @@
   <color name="base_accent_night">#FF4BB9E6</color>
   <color name="base_accent_pressed">#FF1C85D6</color>
   <color name="base_accent_pressed_night">#FF3C9BBE</color>
-  <color name="base_accent_transparent">#1E249CF2</color>
 
   <color name="base_red">#FFF54137</color>
   <color name="dark_red">#F51E30</color>
@@ -32,8 +31,6 @@
   <color name="black_24">#3D000000</color> <!-- 24% black -->
   <color name="black_38">#61000000</color>  <!-- 38% black -->
   <color name="black_40">#66000000</color>  <!-- 40% black -->
-  <color name="black_50">#80000000</color> <!-- 50% black -->
-  <color name="black_54">#8A000000</color> <!-- 54% black -->
   <color name="black_60">#99000000</color> <!-- 60% black -->
   <color name="white_primary">#FFFFFFFF</color>   <!-- 100% white -->
   <color name="white_secondary">#B3FFFFFF</color> <!-- 70% white -->
@@ -47,7 +44,6 @@
   <color name="white_24">#3DFFFFFF</color> <!-- 24% white -->
   <color name="white_38">#61FFFFFF</color>  <!-- 38% white -->
   <color name="white_40">#66FFFFFF</color>  <!-- 40% white -->
-  <color name="white_54">#8AFFFFFF</color> <!-- 54% black -->
   <color name="white_60">#99FFFFFF</color> <!-- 60% white -->
   <color name="warm_gray">#FF999691</color>
   <color name="warm_gray_night">#FF999691</color>
@@ -217,12 +213,4 @@
   <color name="notification">#82E510</color>
   <color name="yellow">#FFC800</color>
   <color name="all_pass_subtitle">#67BEFF</color>
-  <color name="bookmarks_sightseeing_subs_central_content_bg">#DAF8FF</color>
-
-  <color name="elevation_profile_dot_enabled">#FF9600</color>
-  <color name="elevation_profile">#1E96F0</color>
-
-  <color name="tinkoff_button">#FFDD2D</color>
-  <color name="mts_button">#E30611</color>
-  <color name="skyeng_button">#4287DF</color>
 </resources>

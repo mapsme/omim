@@ -33,8 +33,7 @@ class ReadManager
 {
 public:
   ReadManager(ref_ptr<ThreadsCommutator> commutator, MapDataProvider & model,
-              bool allow3dBuildings, bool trafficEnabled, bool isolinesEnabled,
-              EngineContext::TIsUGCFn && isUGCFn);
+              bool allow3dBuildings, bool trafficEnabled, EngineContext::TIsUGCFn && isUGCFn);
 
   void Start();
   void Stop();
@@ -51,7 +50,6 @@ public:
   void Allow3dBuildings(bool allow3dBuildings);
 
   void SetTrafficEnabled(bool trafficEnabled);
-  void SetIsolinesEnabled(bool isolinesEnabled);
 
   void SetDisplacementMode(int displacementMode);
 
@@ -83,7 +81,6 @@ private:
   bool m_have3dBuildings;
   bool m_allow3dBuildings;
   bool m_trafficEnabled;
-  bool m_isolinesEnabled;
   int m_displacementMode;
   bool m_modeChanged;
   bool m_ugcRenderingEnabled;

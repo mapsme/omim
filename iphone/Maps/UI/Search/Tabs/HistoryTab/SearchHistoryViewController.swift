@@ -29,7 +29,7 @@ final class SearchHistoryViewController: MWMViewController {
     if frameworkHelper.isSearchHistoryEmpty() {
       showNoResultsView()
     } else {
-      tableView.registerNib(cellClass: SearchHistoryQueryCell.self)
+      tableView.register(cellClass: SearchHistoryQueryCell.self)
       let nib = UINib(nibName: "SearchHistoryClearCell", bundle: nil)
       tableView.register(nib, forCellReuseIdentifier: SearchHistoryViewController.clearCellIdentifier)
     }

@@ -15,8 +15,6 @@
 #include "platform/local_country_file_utils.hpp"
 #include "platform/platform.hpp"
 
-#include "coding/point_coding.hpp"
-
 #include "geometry/mercator.hpp"
 #include "geometry/polyline2d.hpp"
 #include "geometry/point_with_altitude.hpp"
@@ -50,7 +48,7 @@ RoutingTest::RoutingTest(routing::IRoadGraph::Mode mode, routing::VehicleType ty
   classificator::Load();
 
   Platform & platform = GetPlatform();
-  m_cig = storage::CountryInfoReader::CreateCountryInfoGetter(platform);
+  m_cig = storage::CountryInfoReader::CreateCountryInfoReader(platform);
 
   platform::FindAllLocalMapsAndCleanup(numeric_limits<int64_t>::max(), m_localFiles);
 
@@ -162,8 +160,8 @@ void TestRouter(routing::IRouter & router, m2::PointD const & startPos,
   TEST(route.IsValid(), ());
   m2::PolylineD const & poly = route.GetPoly();
   TEST_GREATER(poly.GetSize(), 0, ());
-  TEST(base::AlmostEqualAbs(poly.Front(), startPos, kMwmPointAccuracy), ());
-  TEST(base::AlmostEqualAbs(poly.Back(), finalPos, kMwmPointAccuracy), ());
+  TEST(base::AlmostEqualAbs(poly.Front(), startPos, geometry::kPointsEqualEpsilon), ());
+  TEST(base::AlmostEqualAbs(poly.Back(), finalPos, geometry::kPointsEqualEpsilon), ());
   LOG(LINFO, ("Route polyline size:", route.GetPoly().GetSize()));
   LOG(LINFO, ("Route distance, meters:", route.GetTotalDistanceMeters()));
   LOG(LINFO, ("Elapsed, seconds:", elapsedSec));

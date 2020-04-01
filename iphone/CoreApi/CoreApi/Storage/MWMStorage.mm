@@ -15,60 +15,9 @@ NSInteger const kStorageHaveUnsavedEdits = 5;
 
 using namespace storage;
 
-@interface MWMStorage ()
-
-@property(nonatomic, strong) NSHashTable<id<MWMStorageObserver>> *observers;
-
-@end
-
 @implementation MWMStorage
 
-+ (instancetype)sharedStorage {
-  static MWMStorage *instance;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    instance = [[self alloc] init];
-  });
-  return instance;
-}
-
-- (instancetype)init {
-  self = [super init];
-  if (self) {
-    _observers = [NSHashTable weakObjectsHashTable];
-    NSHashTable *observers = _observers;
-
-    auto const &countryFunction = [observers](CountryId const & countryId) {
-      NSHashTable *observersCopy = [observers copy];
-      for (id<MWMStorageObserver> observer in observersCopy) {
-        [observer processCountryEvent:@(countryId.c_str())];
-      }
-    };
-
-    auto const &progressFunction = [observers](CountryId const & countryId, downloader::Progress const & progress) {
-      NSHashTable *observersCopy = [observers copy];
-      for (id<MWMStorageObserver> observer in observersCopy) {
-        if ([observer respondsToSelector:@selector(processCountry:downloadedBytes:totalBytes:)]) {
-          [observer processCountry:@(countryId.c_str()) downloadedBytes:progress.first totalBytes:progress.second];
-        }
-      }
-    };
-
-    GetFramework().GetStorage().Subscribe(countryFunction, progressFunction);
-  }
-  return self;
-}
-
-- (void)addObserver:(id<MWMStorageObserver>)observer {
-  [self.observers addObject:observer];
-}
-
-- (void)removeObserver:(id<MWMStorageObserver>)observer {
-  [self.observers removeObject:observer];
-}
-
-
-- (BOOL)downloadNode:(NSString *)countryId error:(NSError *__autoreleasing _Nullable *)error {
++ (BOOL)downloadNode:(NSString *)countryId error:(NSError *__autoreleasing _Nullable *)error {
   if (IsEnoughSpaceForDownload(countryId.UTF8String, GetFramework().GetStorage())) {
     NSError *connectionError;
     if ([self checkConnection:&connectionError]) {
@@ -84,13 +33,13 @@ using namespace storage;
   return NO;
 }
 
-- (void)retryDownloadNode:(NSString *)countryId {
++ (void)retryDownloadNode:(NSString *)countryId {
   if ([self checkConnection:nil]) {
     GetFramework().GetStorage().RetryDownloadNode(countryId.UTF8String);
   }
 }
 
-- (BOOL)updateNode:(NSString *)countryId error:(NSError *__autoreleasing _Nullable *)error {
++ (BOOL)updateNode:(NSString *)countryId error:(NSError *__autoreleasing _Nullable *)error {
   if (IsEnoughSpaceForUpdate(countryId.UTF8String, GetFramework().GetStorage())) {
     NSError *connectionError;
     if ([self checkConnection:&connectionError]) {
@@ -106,7 +55,7 @@ using namespace storage;
   return NO;
 }
 
-- (BOOL)deleteNode:(NSString *)countryId
++ (BOOL)deleteNode:(NSString *)countryId
   ignoreUnsavedEdits:(BOOL)force
                error:(NSError *__autoreleasing _Nullable *)error {
   auto &f = GetFramework();
@@ -123,22 +72,21 @@ using namespace storage;
     }
   } else {
     f.GetStorage().DeleteNode(countryId.UTF8String);
-    f.GetNotificationManager().DeleteCandidatesForCountry(countryId.UTF8String);
     return YES;
   }
 
   return NO;
 }
 
-- (void)cancelDownloadNode:(NSString *)countryId {
++ (void)cancelDownloadNode:(NSString *)countryId {
   GetFramework().GetStorage().CancelDownloadNode(countryId.UTF8String);
 }
 
-- (void)showNode:(NSString *)countryId {
++ (void)showNode:(NSString *)countryId {
   GetFramework().ShowNode(countryId.UTF8String);
 }
 
-- (BOOL)downloadNodes:(NSArray<NSString *> *)countryIds error:(NSError *__autoreleasing _Nullable *)error {
++ (BOOL)downloadNodes:(NSArray<NSString *> *)countryIds error:(NSError *__autoreleasing _Nullable *)error {
   auto &s = GetFramework().GetStorage();
 
   MwmSize requiredSize = s.GetMaxMwmSizeBytes();
@@ -165,7 +113,7 @@ using namespace storage;
   return NO;
 }
 
-- (BOOL)checkConnection:(NSError *__autoreleasing *)error {
++ (BOOL)checkConnection:(NSError *__autoreleasing *)error {
   switch (Platform::ConnectionStatus()) {
     case Platform::EConnectionType::CONNECTION_NONE:
       if (error) {
@@ -196,26 +144,26 @@ using namespace storage;
   }
 }
 
-- (BOOL)haveDownloadedCountries {
++ (BOOL)haveDownloadedCountries {
   return GetFramework().GetStorage().HaveDownloadedCountries();
 }
 
-- (BOOL)downloadInProgress {
++ (BOOL)downloadInProgress {
   return GetFramework().GetStorage().IsDownloadInProgress();
 }
 
-- (void)enableCellularDownload:(BOOL)enable {
++ (void)enableCellularDownload:(BOOL)enable {
   GetFramework().GetDownloadingPolicy().EnableCellularDownload(enable);
 }
 
 #pragma mark - Attributes
 
-- (NSArray<NSString *> *)allCountries {
++ (NSArray<NSString *> *)allCountries {
   NSString *rootId = @(GetFramework().GetStorage().GetRootId().c_str());
   return [self allCountriesWithParent:rootId];
 }
 
-- (NSArray<NSString *> *)allCountriesWithParent:(NSString *)countryId {
++ (NSArray<NSString *> *)allCountriesWithParent:(NSString *)countryId {
   storage::CountriesVec downloadedChildren;
   storage::CountriesVec availableChildren;
   GetFramework().GetStorage().GetChildrenInGroups(countryId.UTF8String, downloadedChildren, availableChildren,
@@ -228,7 +176,7 @@ using namespace storage;
   return [result copy];
 }
 
-- (NSArray<NSString *> *)availableCountriesWithParent:(NSString *)countryId {
++ (NSArray<NSString *> *)availableCountriesWithParent:(NSString *)countryId {
   storage::CountriesVec downloadedChildren;
   storage::CountriesVec availableChildren;
   GetFramework().GetStorage().GetChildrenInGroups(countryId.UTF8String, downloadedChildren, availableChildren);
@@ -240,12 +188,12 @@ using namespace storage;
   return [result copy];
 }
 
-- (NSArray<NSString *> *)downloadedCountries {
++ (NSArray<NSString *> *)downloadedCountries {
   NSString *rootId = @(GetFramework().GetStorage().GetRootId().c_str());
   return [self downloadedCountriesWithParent:rootId];
 }
 
-- (NSArray<NSString *> *)downloadedCountriesWithParent:(NSString *)countryId {
++ (NSArray<NSString *> *)downloadedCountriesWithParent:(NSString *)countryId {
   storage::CountriesVec downloadedChildren;
   storage::CountriesVec availableChildren;
   GetFramework().GetStorage().GetChildrenInGroups(countryId.UTF8String, downloadedChildren, availableChildren);
@@ -257,7 +205,7 @@ using namespace storage;
   return [result copy];
 }
 
-- (MWMMapNodeAttributes *)attributesForCountry:(NSString *)countryId {
++ (MWMMapNodeAttributes *)attributesForCountry:(NSString *)countryId {
   auto const &s = GetFramework().GetStorage();
   storage::NodeAttrs nodeAttrs;
   s.GetNodeAttrs(countryId.UTF8String, nodeAttrs);
@@ -270,15 +218,15 @@ using namespace storage;
                                                   hasChildren:!children.empty()];
 }
 
-- (MWMMapNodeAttributes *)attributesForRoot {
++ (MWMMapNodeAttributes *)attributesForRoot {
   return [self attributesForCountry:@(GetFramework().GetStorage().GetRootId().c_str())];
 }
 
-- (NSString *)nameForCountry:(NSString *)countryId {
++ (NSString *)nameForCountry:(NSString *)countryId {
   return @(GetFramework().GetStorage().GetNodeLocalName(countryId.UTF8String).c_str());
 }
 
-- (NSArray<NSString *> *)nearbyAvailableCountries:(CLLocationCoordinate2D)location {
++ (NSArray<NSString *> *)nearbyAvailableCountries:(CLLocationCoordinate2D)location {
   auto &f = GetFramework();
   storage::CountriesVec closestCoutryIds;
   f.GetCountryInfoGetter().GetRegionsCountryId(mercator::FromLatLon(location.latitude, location.longitude),
@@ -294,7 +242,7 @@ using namespace storage;
   return nearmeCountries.count > 0 ? [nearmeCountries copy] : nil;
 }
 
-- (MWMMapUpdateInfo *)updateInfoWithParent:(nullable NSString *)countryId {
++ (MWMMapUpdateInfo *)updateInfoWithParent:(nullable NSString *)countryId {
   auto const &s = GetFramework().GetStorage();
   Storage::UpdateInfo updateInfo;
   if (countryId.length > 0) {

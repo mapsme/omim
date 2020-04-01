@@ -26,7 +26,7 @@ struct Less;
 template <typename T, typename C>
 struct Less<true, T, C>
 {
-  explicit Less(T C::* p) : m_p(p) {}
+  Less(T C::* p) : m_p(p) {}
 
   bool operator()(C const & lhs, C const & rhs) const { return lhs.*m_p < rhs.*m_p; }
 
@@ -41,7 +41,7 @@ struct Less<true, T, C>
 template <typename T, typename C>
 struct Less<false, T, C>
 {
-  explicit Less(T (C::*p)() const) : m_p(p) {}
+  Less(T (C::*p)() const) : m_p(p) {}
 
   bool operator()(C const & lhs, C const & rhs) const { return (lhs.*m_p)() < (rhs.*m_p)(); }
 
@@ -59,7 +59,7 @@ struct Equals;
 template <typename T, typename C>
 struct Equals<true, T, C>
 {
-  explicit Equals(T C::* p) : m_p(p) {}
+  Equals(T C::* p) : m_p(p) {}
 
   bool operator()(C const & lhs, C const & rhs) const { return lhs.*m_p == rhs.*m_p; }
 
@@ -74,7 +74,7 @@ struct Equals<true, T, C>
 template <typename T, typename C>
 struct Equals<false, T, C>
 {
-  explicit Equals(T (C::*p)() const) : m_p(p) {}
+  Equals(T (C::*p)() const) : m_p(p) {}
 
   bool operator()(C const & lhs, C const & rhs) const { return (lhs.*m_p)() == (rhs.*m_p)(); }
 
@@ -110,8 +110,8 @@ private:
 template <typename Cont>
 void SortUnique(Cont & c)
 {
-  std::sort(c.begin(), c.end());
-  c.erase(std::unique(c.begin(), c.end()), c.end());
+  sort(c.begin(), c.end());
+  c.erase(unique(c.begin(), c.end()), c.end());
 }
 
 // Sorts according to |less| and removes duplicate entries according to |equals| from |c|.
@@ -120,14 +120,14 @@ void SortUnique(Cont & c)
 template <typename Cont, typename Less, typename Equals>
 void SortUnique(Cont & c, Less && less, Equals && equals)
 {
-  std::sort(c.begin(), c.end(), std::forward<Less>(less));
-  c.erase(std::unique(c.begin(), c.end(), std::forward<Equals>(equals)), c.end());
+  sort(c.begin(), c.end(), std::forward<Less>(less));
+  c.erase(unique(c.begin(), c.end(), std::forward<Equals>(equals)), c.end());
 }
 
 template <typename Cont, typename Fn>
 void EraseIf(Cont & c, Fn && fn)
 {
-  c.erase(std::remove_if(c.begin(), c.end(), std::forward<Fn>(fn)), c.end());
+  c.erase(remove_if(c.begin(), c.end(), std::forward<Fn>(fn)), c.end());
 }
 
 template <typename Cont, typename Fn>
@@ -196,7 +196,7 @@ class IgnoreFirstArgument
 {
 public:
   template <typename Gn>
-  explicit IgnoreFirstArgument(Gn && gn) : m_fn(std::forward<Gn>(gn)) {}
+  IgnoreFirstArgument(Gn && gn) : m_fn(std::forward<Gn>(gn)) {}
 
   template <typename Arg, typename... Args>
   std::result_of_t<Fn(Args &&...)> operator()(Arg && arg, Args &&... args)

@@ -18,7 +18,6 @@
 
 #import <UIKit/UIKit.h>
 
-NS_SWIFT_NAME(Icon)
 @interface FBSDKIcon : NSObject
 
 - (instancetype)initWithColor:(UIColor *)color NS_DESIGNATED_INITIALIZER;

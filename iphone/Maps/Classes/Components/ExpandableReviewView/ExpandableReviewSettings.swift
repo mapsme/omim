@@ -1,3 +1,4 @@
+import UIKit
 
 struct ExpandableReviewSettings {
   var expandText: String

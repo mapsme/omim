@@ -1,11 +1,16 @@
 #import "BookmarksSection.h"
-#import "MWMBookmarkColorViewController.h"
+#import "CircleView.h"
+#import "ColorPickerView.h"
 #import "MWMLocationHelpers.h"
 #import "MWMSearchManager.h"
 
 #import <CoreApi/CoreApi.h>
 
 #include "geometry/distance_on_sphere.hpp"
+
+namespace {
+CGFloat const kPinDiameter = 22.0f;
+}  // namespace
 
 @interface BookmarksSection ()
 
@@ -83,7 +88,9 @@
   auto const &bm = GetFramework().GetBookmarkManager();
   Bookmark const *bookmark = bm.GetBookmark(bmId);
   cell.textLabel.text = @(bookmark->GetPreferredName().c_str());
-  cell.imageView.image = ios_bookmark_ui_helper::ImageForBookmark(bookmark->GetColor(), bookmark->GetData().m_icon);
+  cell.imageView.image = [CircleView createCircleImageWith:kPinDiameter
+                                                  andColor:[ColorPickerView getUIColor:bookmark->GetColor()]
+                                              andImageName:@(ToString(bookmark->GetData().m_icon).c_str())];
 
   CLLocation *lastLocation = [MWMLocationManager lastLocation];
 

@@ -29,14 +29,9 @@ import com.mapswithme.maps.bookmarks.data.FeatureId;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.onboarding.IntroductionScreenFactory;
-import com.mapswithme.maps.purchase.BookmarksAllSubscriptionActivity;
-import com.mapswithme.maps.purchase.BookmarksSightsSubscriptionActivity;
-import com.mapswithme.maps.purchase.PurchaseUtils;
-import com.mapswithme.maps.purchase.SubscriptionType;
 import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.search.SearchActivity;
 import com.mapswithme.maps.search.SearchEngine;
-import com.mapswithme.maps.tips.Tutorial;
 import com.mapswithme.maps.ugc.EditParams;
 import com.mapswithme.maps.ugc.UGC;
 import com.mapswithme.maps.ugc.UGCEditorActivity;
@@ -59,7 +54,6 @@ import java.util.Locale;
 public class Factory
 {
   public static final String EXTRA_IS_FIRST_LAUNCH = "extra_is_first_launch";
-
   @NonNull
   public static IntentProcessor createBuildRouteProcessor()
   {
@@ -100,12 +94,6 @@ public class Factory
   public static IntentProcessor createDlinkBookmarkGuidesPageProcessor()
   {
     return new DlinkGuidesPageIntentProcessor();
-  }
-
-  @NonNull
-  public static IntentProcessor createDlinkBookmarksSubscriptionProcessor()
-  {
-    return new DlinkBookmarksSubscriptionIntentProcessor();
   }
 
   @NonNull
@@ -201,7 +189,7 @@ public class Factory
     @Override
     MapTask createMapTask(@NonNull String uri)
     {
-      return BackUrlMapTaskWrapper.wrap(new OpenUrlTask(uri, Statistics.ParamValue.UNKNOWN), uri);
+      return BackUrlMapTaskWrapper.wrap(new OpenUrlTask(uri), uri);
     }
   }
 
@@ -212,13 +200,6 @@ public class Factory
     {
       return (intent.getData() != null && "geo".equals(intent.getScheme()));
     }
-
-    @NonNull
-    @Override
-    MapTask createMapTask(@NonNull String uri)
-    {
-      return StatisticMapTaskWrapper.wrap(new OpenUrlTask(uri, "geo"));
-    }
   }
 
   private static class Ge0IntentProcessor extends BaseOpenUrlProcessor
@@ -228,13 +209,6 @@ public class Factory
     {
       return (intent.getData() != null && "ge0".equals(intent.getScheme()));
     }
-
-    @NonNull
-    @Override
-    MapTask createMapTask(@NonNull String uri)
-    {
-      return StatisticMapTaskWrapper.wrap(new OpenUrlTask(uri, "ge0"));
-    }
   }
 
   private static class MapsmeProcessor extends BaseOpenUrlProcessor
@@ -243,13 +217,6 @@ public class Factory
     public boolean isSupported(@NonNull Intent intent)
     {
       return "mapsme".equals(intent.getScheme());
-    }
-
-    @NonNull
-    @Override
-    MapTask createMapTask(@NonNull String uri)
-    {
-      return StatisticMapTaskWrapper.wrap(new OpenUrlTask(uri, "mapsme"));
     }
   }
 
@@ -275,7 +242,7 @@ public class Factory
       final Uri data = intent.getData();
       final String ge0Url = "ge0:/" + data.getPath();
       org.alohalytics.Statistics.logEvent("HttpGe0IntentProcessor::process", ge0Url);
-      return StatisticMapTaskWrapper.wrap(new OpenUrlTask(ge0Url, "http_ge0_me"));
+      return new OpenUrlTask(ge0Url);
     }
   }
 
@@ -305,7 +272,7 @@ public class Factory
         Statistics.INSTANCE.trackApiCall(request);
 
         if (!ParsedMwmRequest.isPickPointMode())
-          return StatisticMapTaskWrapper.wrap(new OpenUrlTask(apiUrl, "action_api_request"));
+          return new OpenUrlTask(apiUrl);
       }
 
       throw new AssertionError("Url must be provided!");
@@ -319,13 +286,6 @@ public class Factory
     {
       final Uri data = intent.getData();
       return (data != null && "maps.google.com".equals(data.getHost()));
-    }
-
-    @NonNull
-    @Override
-    MapTask createMapTask(@NonNull String uri)
-    {
-      return StatisticMapTaskWrapper.wrap(new OpenUrlTask(uri, "maps_google_com"));
     }
   }
 
@@ -345,13 +305,6 @@ public class Factory
         return false;
 
       return (scheme.equals("mapsme") || scheme.equals("mapswithme")) && "lead".equals(host);
-    }
-
-    @NonNull
-    @Override
-    MapTask createMapTask(@NonNull String uri)
-    {
-      return StatisticMapTaskWrapper.wrap(new OpenUrlTask(uri, "old_lead"));
     }
   }
 
@@ -376,7 +329,7 @@ public class Factory
     @Override
     MapTask createTargetTask(@NonNull String url)
     {
-      return StatisticMapTaskWrapper.wrap(new ImportBookmarkCatalogueTask(url));
+      return new ImportBookmarkCatalogueTask(url);
     }
   }
 
@@ -401,33 +354,7 @@ public class Factory
     @Override
     MapTask createTargetTask(@NonNull String url)
     {
-      return StatisticMapTaskWrapper.wrap(new GuidesPageToOpenTask(url));
-    }
-  }
-
-  public static class DlinkBookmarksSubscriptionIntentProcessor extends DlinkIntentProcessor
-  {
-    static final String SUBSCRIPTION = "subscription";
-
-    @Override
-    boolean isLinkSupported(@NonNull Uri data)
-    {
-      return (File.separator + SUBSCRIPTION).equals(data.getPath());
-    }
-
-    @Nullable
-    @Override
-    MapTask createIntroductionTask(@NonNull String url)
-    {
-      // In release 9.5 the introduction screen for this deeplink is forgotten.
-      return null;
-    }
-
-    @NonNull
-    @Override
-    MapTask createTargetTask(@NonNull String url)
-    {
-      return StatisticMapTaskWrapper.wrap(new BookmarksSubscriptionTask(url));
+      return new GuidesPageToOpenTask(url);
     }
   }
 
@@ -442,7 +369,7 @@ public class Factory
                       .authority(DlinkIntentProcessor.HOST)
                       .path(DlinkBookmarkCatalogueIntentProcessor.CATALOGUE)
                       .build().toString();
-      return StatisticMapTaskWrapper.wrap(new ImportBookmarkCatalogueTask(url));
+      return new ImportBookmarkCatalogueTask(url);
     }
 
     @Override
@@ -464,6 +391,12 @@ public class Factory
   {
     private static final String SCHEME_CORE = "mapsme";
 
+    @Override
+    protected boolean isLinkSupported(@NonNull Uri data)
+    {
+      return true;
+    }
+
     @NonNull
     @Override
     protected MapTask createTargetTask(@NonNull String url)
@@ -474,19 +407,7 @@ public class Factory
       Uri coreUri = uri.buildUpon()
                        .scheme(SCHEME_CORE)
                        .authority("").build();
-
-      String query = coreUri.getLastPathSegment();
-      MapTask statisticTask = StatisticMapTaskWrapper.wrap(new OpenUrlTask(coreUri.toString(),
-                                                                             TextUtils.isEmpty(query)
-                                                                             ? Statistics.ParamValue.UNKNOWN :
-                                                                             query));
-      return BackUrlMapTaskWrapper.wrap(statisticTask, url);
-    }
-
-    @Override
-    boolean isLinkSupported(@NonNull Uri data)
-    {
-      return true;
+      return BackUrlMapTaskWrapper.wrap(new OpenUrlTask(coreUri.toString()), url);
     }
 
     @Nullable
@@ -557,7 +478,7 @@ public class Factory
       org.alohalytics.Statistics.logEvent("OpenCountryTaskProcessor::process",
                                           new String[] { "autoDownload", "false" },
                                           LocationHelper.INSTANCE.getSavedLocation());
-      return StatisticMapTaskWrapper.wrap(new ShowCountryTask(countryId));
+      return new ShowCountryTask(countryId);
     }
   }
 
@@ -692,7 +613,7 @@ public class Factory
       double lat = getCoordinateFromIntent(intent, EXTRA_LAT);
       double lon = getCoordinateFromIntent(intent, EXTRA_LON);
 
-      return StatisticMapTaskWrapper.wrap(new ShowPointTask(lat, lon));
+      return new ShowPointTask(lat, lon);
     }
   }
 
@@ -761,73 +682,26 @@ public class Factory
     return value;
   }
 
-  public static class BookmarksSubscriptionTask extends UrlTaskWithStatistics
-  {
-    private static final long serialVersionUID = 8378582625122063605L;
-
-    BookmarksSubscriptionTask(@NonNull String url)
-    {
-      super(url);
-    }
-
-    @Override
-    public boolean run(@NonNull MwmActivity target)
-    {
-      Uri uri = Uri.parse(getUrl());
-      String serverId = uri.getQueryParameter(PurchaseUtils.GROUPS);
-      if (TextUtils.isEmpty(serverId))
-        return false;
-
-      SubscriptionType type = SubscriptionType.getTypeByBookmarksGroup(serverId);
-
-      if (type.equals(SubscriptionType.BOOKMARKS_ALL))
-      {
-        BookmarksAllSubscriptionActivity.startForResult(target);
-        return true;
-      }
-
-      if (type.equals(SubscriptionType.BOOKMARKS_SIGHTS))
-      {
-        BookmarksSightsSubscriptionActivity.startForResult(target);
-        return true;
-      }
-
-      return false;
-    }
-
-    @NonNull
-    @Override
-    public String toStatisticValue()
-    {
-      return "subscription";
-    }
-  }
-
-  public static class ImportBookmarkCatalogueTask extends UrlTaskWithStatistics
+  public static class ImportBookmarkCatalogueTask implements MapTask
   {
     private static final long serialVersionUID = 5363722491377575159L;
+    @NonNull
+    private final String mUrl;
 
     ImportBookmarkCatalogueTask(@NonNull String url)
     {
-      super(url);
+      mUrl = url;
     }
 
     @Override
     public boolean run(@NonNull MwmActivity target)
     {
-      BookmarkCategoriesActivity.startForResult(target, BookmarksPageFactory.DOWNLOADED.ordinal(), getUrl());
+      BookmarkCategoriesActivity.startForResult(target, BookmarksPageFactory.DOWNLOADED.ordinal(), mUrl);
       return true;
-    }
-
-    @NonNull
-    @Override
-    public String toStatisticValue()
-    {
-      return "catalogue";
     }
   }
 
-  public static class GuidesPageToOpenTask extends UrlTaskWithStatistics
+  public static class GuidesPageToOpenTask extends BaseUrlTask
   {
     private static final long serialVersionUID = 8388101038319062165L;
 
@@ -840,17 +714,8 @@ public class Factory
     public boolean run(@NonNull MwmActivity target)
     {
       String deeplink = convertUrlToGuidesPageDeeplink(getUrl());
-      BookmarksCatalogActivity.startForResult(target,
-                                              BookmarkCategoriesActivity.REQ_CODE_DOWNLOAD_BOOKMARK_CATEGORY,
-                                              deeplink);
+      BookmarksCatalogActivity.start(target, deeplink);
       return true;
-    }
-
-    @NonNull
-    @Override
-    public String toStatisticValue()
-    {
-      return "guides_page";
     }
   }
 
@@ -907,58 +772,30 @@ public class Factory
     }
   }
 
-  abstract static class UrlTaskWithStatistics extends MapTaskWithStatistics
+  public static class OpenUrlTask implements MapTask
   {
-    private static final long serialVersionUID = -8661639898700431066L;
-    @NonNull
+    private static final long serialVersionUID = -7257820771228127413L;
+    private static final int SEARCH_IN_VIEWPORT_ZOOM = 16;
     private final String mUrl;
 
-    UrlTaskWithStatistics(@NonNull String url)
+    OpenUrlTask(String url)
     {
       Utils.checkNotNull(url);
       mUrl = url;
     }
 
     @Override
-    @NonNull
-    public Statistics.ParameterBuilder toStatisticParams()
-    {
-      return Statistics.makeParametersFromTypeAndUrl(toStatisticValue(), mUrl);
-    }
-
-    @NonNull
-    String getUrl()
-    {
-      return mUrl;
-    }
-  }
-
-  public static class OpenUrlTask extends UrlTaskWithStatistics
-  {
-    private static final long serialVersionUID = -7257820771228127413L;
-    private static final int SEARCH_IN_VIEWPORT_ZOOM = 16;
-
-    @NonNull
-    private final String mStatisticValue;
-
-    OpenUrlTask(@NonNull String url, @NonNull String statisticValue)
-    {
-      super(url);
-      mStatisticValue = statisticValue;
-    }
-
-    @Override
     public boolean run(@NonNull MwmActivity target)
     {
-      final @ParsedUrlMwmRequest.ParsingResult int result = Framework.nativeParseAndSetApiUrl(getUrl());
+      final @ParsedUrlMwmRequest.ParsingResult int result = Framework.nativeParseAndSetApiUrl(mUrl);
       switch (result)
       {
         case ParsedUrlMwmRequest.RESULT_INCORRECT:
           // TODO: Kernel recognizes "mapsme://", "mwm://" and "mapswithme://" schemas only!!!
-          return MapFragment.nativeShowMapForUrl(getUrl());
+          return MapFragment.nativeShowMapForUrl(mUrl);
 
         case ParsedUrlMwmRequest.RESULT_MAP:
-          return MapFragment.nativeShowMapForUrl(getUrl());
+          return MapFragment.nativeShowMapForUrl(mUrl);
 
         case ParsedUrlMwmRequest.RESULT_ROUTE:
           final ParsedRoutingData data = Framework.nativeGetParsedRoutingData();
@@ -991,16 +828,9 @@ public class Factory
 
       return false;
     }
-
-    @NonNull
-    @Override
-    public String toStatisticValue()
-    {
-      return mStatisticValue;
-    }
   }
 
-  public static class ShowCountryTask extends MapTaskWithStatistics
+  public static class ShowCountryTask implements MapTask
   {
     private static final long serialVersionUID = 256630934543189768L;
     private final String mCountryId;
@@ -1015,13 +845,6 @@ public class Factory
     {
       Framework.nativeShowCountry(mCountryId, false);
       return true;
-    }
-
-    @NonNull
-    @Override
-    public String toStatisticValue()
-    {
-      return "open_country";
     }
   }
 
@@ -1089,7 +912,7 @@ public class Factory
     }
   }
 
-  public static class ShowPointTask extends MapTaskWithStatistics
+  public static class ShowPointTask implements MapTask
   {
     private static final long serialVersionUID = -2467635346469323664L;
     private final double mLat;
@@ -1108,16 +931,9 @@ public class Factory
                                                     "mapsme://map?ll=%f,%f", mLat, mLon));
       return true;
     }
-
-    @NonNull
-    @Override
-    public String toStatisticValue()
-    {
-      return "show_on_map_intent";
-    }
   }
 
-  public static class BuildRouteTask extends MapTaskWithStatistics
+  public static class BuildRouteTask implements MapTask
   {
     private static final long serialVersionUID = 5301468481040195957L;
     private final double mLatTo;
@@ -1213,13 +1029,6 @@ public class Factory
       }
       return true;
     }
-
-    @NonNull
-    @Override
-    public String toStatisticValue()
-    {
-      return "build_route_intent";
-    }
   }
 
   public static class RestoreRouteTask implements MapTask
@@ -1285,29 +1094,6 @@ public class Factory
 
       final DialogFragment fragment = (DialogFragment) Fragment.instantiate(target, mDialogName);
       fragment.show(target.getSupportFragmentManager(), mDialogName);
-      return true;
-    }
-  }
-
-  public static class ShowTutorialTask implements MapTask
-  {
-    private static final long serialVersionUID = -7565474616748655191L;
-
-    @Override
-    public boolean run(@NonNull MwmActivity target)
-    {
-      Tutorial tutorial = Tutorial.requestCurrent(target, target.getClass());
-      if (tutorial == Tutorial.STUB)
-        return false;
-
-      if (target.getTutorial() != null)
-        return false;
-
-      target.setTutorial(tutorial);
-      tutorial.show(target, target);
-
-      Statistics.INSTANCE.trackTipsEvent(Statistics.EventName.TIPS_TRICKS_SHOW,
-                                         tutorial.ordinal());
       return true;
     }
   }

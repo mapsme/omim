@@ -154,9 +154,9 @@ static const long INACTIVE_SECONDS_QUANTA[] =
     FBSDKTimeSpentPersistKeySessionID : _sessionID,
     };
 
-  NSString *content = [FBSDKBasicUtility JSONStringForObject:timeSpentData error:NULL invalidObjectHandler:NULL];
+  NSString *content = [FBSDKInternalUtility JSONStringForObject:timeSpentData error:NULL invalidObjectHandler:NULL];
 
-  [content writeToFile:[FBSDKBasicUtility persistenceFilePath:FBSDKTimeSpentFilename]
+  [content writeToFile:[FBSDKAppEventsUtility persistenceFilePath:FBSDKTimeSpentFilename]
             atomically:YES
               encoding:NSASCIIStringEncoding
                  error:nil];
@@ -181,7 +181,7 @@ static const long INACTIVE_SECONDS_QUANTA[] =
   if (!_isCurrentlyLoaded) {
 
     NSString *content =
-    [[NSString alloc] initWithContentsOfFile:[FBSDKBasicUtility persistenceFilePath:FBSDKTimeSpentFilename]
+    [[NSString alloc] initWithContentsOfFile:[FBSDKAppEventsUtility persistenceFilePath:FBSDKTimeSpentFilename]
                                 usedEncoding:nil
                                        error:nil];
 
@@ -203,7 +203,7 @@ static const long INACTIVE_SECONDS_QUANTA[] =
 
     } else {
 
-      NSDictionary<id, id> *results = [FBSDKBasicUtility objectForJSONString:content error:NULL];
+      NSDictionary *results = [FBSDKInternalUtility objectForJSONString:content error:NULL];
 
       _lastSuspendTime = [results[FBSDKTimeSpentPersistKeyLastSuspendTime] longValue];
 

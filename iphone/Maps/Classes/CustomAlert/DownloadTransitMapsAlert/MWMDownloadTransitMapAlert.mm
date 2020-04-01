@@ -2,14 +2,14 @@
 #import "MWMCircularProgress.h"
 #import "MWMDownloaderDialogCell.h"
 #import "MWMDownloaderDialogHeader.h"
+#import "MWMFrameworkListener.h"
+#import "MWMFrameworkStorageObserver.h"
 #import "MWMStorage+UI.h"
 #import "Statistics.h"
 #import "SwiftBridge.h"
 #import "UILabel+RuntimeAttributes.h"
 
 #include <CoreApi/Framework.h>
-
-#include "platform/downloader_defines.hpp"
 
 namespace
 {
@@ -22,7 +22,7 @@ CGFloat const kMinimumOffset = 20.;
 CGFloat const kAnimationDuration = .05;
 } // namespace
 
-@interface MWMDownloadTransitMapAlert () <UITableViewDataSource, UITableViewDelegate, MWMStorageObserver, MWMCircularProgressProtocol>
+@interface MWMDownloadTransitMapAlert () <UITableViewDataSource, UITableViewDelegate, MWMFrameworkStorageObserver, MWMCircularProgressProtocol>
 
 @property(copy, nonatomic) MWMVoidBlock cancelBlock;
 @property(copy, nonatomic) MWMDownloadBlock downloadBlock;
@@ -100,13 +100,13 @@ CGFloat const kAnimationDuration = .05;
   alert->m_countries = storage::CountriesVec(countries.begin(), countries.end());
   [alert configure];
   [alert updateCountriesList];
-  [[MWMStorage sharedStorage] addObserver:alert];
+  [MWMFrameworkListener addObserver:alert];
   return alert;
 }
 
 - (void)configure
 {
-  [self.dialogsTableView registerNibWithCellClass:[MWMDownloaderDialogCell class]];
+  [self.dialogsTableView registerWithCellClass:[MWMDownloaderDialogCell class]];
   self.listExpanded = NO;
   CALayer * containerViewLayer = self.containerView.layer;
   containerViewLayer.shouldRasterize = YES;
@@ -139,11 +139,11 @@ CGFloat const kAnimationDuration = .05;
 - (void)progressButtonPressed:(nonnull MWMCircularProgress *)progress
 {
   for (auto const & countryId : m_countries)
-    [[MWMStorage sharedStorage] cancelDownloadNode:@(countryId.c_str())];
+    [MWMStorage cancelDownloadNode:@(countryId.c_str())];
   [self cancelButtonTap];
 }
 
-#pragma mark - MWMStorageObserver
+#pragma mark - MWMFrameworkStorageObserver
 
 - (void)processCountryEvent:(NSString *)countryId
 {
@@ -290,7 +290,7 @@ CGFloat const kAnimationDuration = .05;
 
 - (void)close:(MWMVoidBlock)completion
 {
-  [[MWMStorage sharedStorage] removeObserver:self];
+  [MWMFrameworkListener removeObserver:self];
   [super close:completion];
 }
 
@@ -319,7 +319,7 @@ CGFloat const kAnimationDuration = .05;
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
   UIView * view = [[UIView alloc] init];
-  view.styleName = @"BlackOpaqueBackground";
+  view.backgroundColor = UIColor.blackOpaque;
   return view;
 }
 

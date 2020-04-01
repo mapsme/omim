@@ -109,7 +109,8 @@
         <ImageView
           android:id="@+id/icon"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"/>
+          android:layout_height="wrap_content"
+          android:src="@drawable/ic_brand_megafon_green"/>
         <TextView
           android:id="@id/text"
           android:layout_width="wrap_content"
@@ -117,7 +118,8 @@
           android:layout_marginTop="@dimen/margin_half"
           android:gravity="center"
           android:textAppearance="@style/MwmTextAppearance.Body4"
-          android:textColor="?android:textColorPrimary"/>
+          android:textColor="?android:textColorPrimary"
+          android:text="@string/banner_megafon_banner_message"/>
         <Button
           android:id="@+id/banner_button"
           android:layout_width="match_parent"
@@ -132,6 +134,8 @@
           android:fontFamily="@string/robotoMedium"
           android:textAllCaps="false"
           android:textSize="@dimen/text_size_body_3"
+          android:text="@string/banner_megafon_banner_button"
+          android:background="@drawable/button_megafon"
           style="?android:attr/borderlessButtonStyle"
           android:textColor="@color/white_primary"
           android:lines="1"

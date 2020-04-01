@@ -1,3 +1,5 @@
+#import "MWMPlacePageData.h"
+
 #include "map/place_page_info.hpp"
 #include "map/booking_filter_params.hpp"
 
@@ -14,8 +16,6 @@ enum class Price {
   Three
 };
 
-@class PlacePageData;
-
 @interface MWMHotelParams : NSObject 
 
 @property (nonatomic) std::unordered_set<Price> price;
@@ -24,7 +24,6 @@ enum class Price {
 @property (nonatomic) NSDate * checkInDate;
 @property (nonatomic) NSDate * checkOutDate;
 
-- (instancetype)initWithPlacePageData:(PlacePageData *)data;
 - (std::shared_ptr<search::hotels_filter::Rule>)rules;
 - (booking::filter::Params)availabilityParams;
 

@@ -22,6 +22,8 @@ namespace search_quality
 // todo(@m) We should not need that much.
 size_t constexpr kMaxOpenFiles = 4000;
 
+void ChangeMaxNumberOfOpenFiles(size_t n);
+
 void CheckLocale();
 
 void ReadStringsFromFile(std::string const & path, std::vector<std::string> & result);

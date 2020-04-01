@@ -13,8 +13,6 @@
 
 #include <unordered_map>
 
-#include "3party/opening_hours/opening_hours.hpp"
-
 using namespace std;
 
 namespace routing_test
@@ -170,22 +168,6 @@ void TestIndexGraphTopology::SetEdgeAccess(Vertex from, Vertex to, RoadAccess::T
   CHECK(false, ("Cannot set access for edge that is not in the graph", from, to));
 }
 
-void TestIndexGraphTopology::SetEdgeAccessConditional(Vertex from, Vertex to, RoadAccess::Type type,
-                                                      string const & condition)
-{
-  for (auto & r : m_edgeRequests)
-  {
-    if (r.m_from == from && r.m_to == to)
-    {
-      osmoh::OpeningHours openingHours(condition);
-      CHECK(openingHours.IsValid(), (condition));
-      r.m_accessConditionalType.Insert(type, move(openingHours));
-      return;
-    }
-  }
-  CHECK(false, ("Cannot set access for edge that is not in the graph", from, to));
-}
-
 void TestIndexGraphTopology::SetVertexAccess(Vertex v, RoadAccess::Type type)
 {
   bool found = false;
@@ -196,40 +178,11 @@ void TestIndexGraphTopology::SetVertexAccess(Vertex v, RoadAccess::Type type)
       r.m_fromAccessType = type;
       found = true;
     }
-    else if (r.m_to == v)
+    if (r.m_to == v)
     {
       r.m_toAccessType = type;
       found = true;
     }
-
-    if (found)
-      break;
-  }
-  CHECK(found, ("Cannot set access for vertex that is not in the graph", v));
-}
-
-void TestIndexGraphTopology::SetVertexAccessConditional(Vertex v, RoadAccess::Type type,
-                                                        string const & condition)
-{
-  osmoh::OpeningHours openingHours(condition);
-  CHECK(openingHours.IsValid(), (condition));
-
-  bool found = false;
-  for (auto & r : m_edgeRequests)
-  {
-    if (r.m_from == v)
-    {
-      r.m_fromAccessConditionalType.Insert(type, move(openingHours));
-      found = true;
-    }
-    else if (r.m_to == v)
-    {
-      r.m_toAccessConditionalType.Insert(type, move(openingHours));
-      found = true;
-    }
-
-    if (found)
-      break;
   }
   CHECK(found, ("Cannot set access for vertex that is not in the graph", v));
 }
@@ -265,7 +218,6 @@ bool TestIndexGraphTopology::FindPath(Vertex start, Vertex finish, double & path
                                      true /* forward */);
 
   Builder builder(m_numVertices);
-  builder.SetCurrentTimeGetter(m_currentTimeGetter);
   builder.BuildGraphFromRequests(edgeRequests);
   auto worldGraph = builder.PrepareIndexGraph();
   CHECK(worldGraph != nullptr, ());
@@ -334,10 +286,7 @@ unique_ptr<SingleVehicleWorldGraph> TestIndexGraphTopology::Builder::PrepareInde
   BuildJoints();
 
   auto worldGraph = BuildWorldGraph(move(loader), estimator, m_joints);
-  auto & indexGraph = worldGraph->GetIndexGraphForTests(kTestNumMwmId);
-  if (m_currentTimeGetter)
-    indexGraph.SetCurrentTimeGetter(m_currentTimeGetter);
-  indexGraph.SetRoadAccess(move(m_roadAccess));
+  worldGraph->GetIndexGraphForTests(kTestNumMwmId).SetRoadAccess(move(m_roadAccess));
   return worldGraph;
 }
 
@@ -358,43 +307,22 @@ void TestIndexGraphTopology::Builder::BuildJoints()
 
 void TestIndexGraphTopology::Builder::BuildGraphFromRequests(vector<EdgeRequest> const & requests)
 {
-  RoadAccess::WayToAccess wayToAccess;
-  RoadAccess::WayToAccessConditional wayToAccessConditional;
-  RoadAccess::PointToAccess pointToAccess;
-  RoadAccess::PointToAccessConditional pointToAccessConditional;
+  unordered_map<uint32_t, RoadAccess::Type> featureTypes;
+  unordered_map<RoadPoint, RoadAccess::Type, RoadPoint::Hash> pointTypes;
   for (auto const & request : requests)
   {
     BuildSegmentFromEdge(request);
     if (request.m_accessType != RoadAccess::Type::Yes)
-      wayToAccess[request.m_id] = request.m_accessType;
-
-    if (!request.m_accessConditionalType.IsEmpty())
-      wayToAccessConditional[request.m_id] = request.m_accessConditionalType;
+      featureTypes[request.m_id] = request.m_accessType;
 
     // All features have 1 segment. |from| has point index 0, |to| has point index 1. 
     if (request.m_fromAccessType != RoadAccess::Type::Yes)
-      pointToAccess[RoadPoint(request.m_id, 0 /* pointId */)] = request.m_fromAccessType;
-
-    if (!request.m_fromAccessConditionalType.IsEmpty())
-    {
-      pointToAccessConditional[RoadPoint(request.m_id, 0 /* pointId */)] =
-          request.m_fromAccessConditionalType;
-    }
-
+      pointTypes[RoadPoint(request.m_id, 0 /* pointId */)] = request.m_fromAccessType;
     if (request.m_toAccessType != RoadAccess::Type::Yes)
-      pointToAccess[RoadPoint(request.m_id, 1 /* pointId */)] = request.m_toAccessType;
-
-    if (!request.m_toAccessConditionalType.IsEmpty())
-    {
-      pointToAccessConditional[RoadPoint(request.m_id, 1 /* pointId */)] =
-          request.m_toAccessConditionalType;
-    }
+      pointTypes[RoadPoint(request.m_id, 1 /* pointId */)] = request.m_toAccessType;
   }
 
-  m_roadAccess.SetAccess(move(wayToAccess), move(pointToAccess));
-  m_roadAccess.SetAccessConditional(move(wayToAccessConditional), move(pointToAccessConditional));
-  if (m_currentTimeGetter)
-    m_roadAccess.SetCurrentTimeGetter(m_currentTimeGetter);
+  m_roadAccess.SetAccessTypes(move(featureTypes), move(pointTypes));
 }
 
 void TestIndexGraphTopology::Builder::BuildSegmentFromEdge(EdgeRequest const & request)
@@ -622,49 +550,5 @@ unique_ptr<IndexGraphStarter> MakeStarter(FakeEnding const & start, FakeEnding c
 {
   return make_unique<IndexGraphStarter>(start, finish, 0 /* fakeNumerationStart */,
                                         false /* strictForward */, graph);
-}
-
-time_t GetUnixtimeByDate(uint16_t year, Month month, uint8_t monthDay, uint8_t hours,
-                         uint8_t minutes)
-{
-  std::tm t{};
-  t.tm_year = year - 1900;
-  t.tm_mon = static_cast<int>(month) - 1;
-  t.tm_mday = monthDay;
-  t.tm_hour = hours;
-  t.tm_min = minutes;
-
-  time_t moment = mktime(&t);
-  return moment;
-}
-
-time_t GetUnixtimeByDate(uint16_t year, Month month, Weekday weekday, uint8_t hours,
-                         uint8_t minutes)
-{
-  int monthDay = 1;
-  auto createUnixtime = [&]() {
-    std::tm t{};
-    t.tm_year = year - 1900;
-    t.tm_mon = static_cast<int>(month) - 1;
-    t.tm_mday = monthDay;
-    t.tm_wday = static_cast<int>(weekday) - 1;
-    t.tm_hour = hours;
-    t.tm_min = minutes;
-
-    return mktime(&t);
-  };
-
-  int wday = -1;
-  for (;;)
-  {
-    auto unixtime = createUnixtime();
-    auto timeOut = localtime(&unixtime);
-    wday = timeOut->tm_wday;
-    if (wday == static_cast<int>(weekday) - 1)
-      break;
-    ++monthDay;
-  }
-
-  return createUnixtime();
 }
 }  // namespace routing_test

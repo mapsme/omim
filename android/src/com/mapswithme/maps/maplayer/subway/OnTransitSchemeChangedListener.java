@@ -5,27 +5,27 @@ import android.content.Context;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 
+import com.mapswithme.maps.content.AbstractContextualListener;
+
 interface OnTransitSchemeChangedListener
 {
   @SuppressWarnings("unused")
   @MainThread
   void onTransitStateChanged(int type);
 
-  class Default implements OnTransitSchemeChangedListener
+  class Default extends AbstractContextualListener implements OnTransitSchemeChangedListener
   {
-    @NonNull
-    private final Application mContext;
-
-    Default(@NonNull Application context)
+    public Default(@NonNull Application context)
     {
-      mContext = context;
+      super(context);
     }
 
     @Override
     public void onTransitStateChanged(int index)
     {
+      Context app = getContext();
       TransitSchemeState state = TransitSchemeState.values()[index];
-      state.activate(mContext);
+      state.activate(app);
     }
   }
 }

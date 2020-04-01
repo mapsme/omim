@@ -1,9 +1,7 @@
 #pragma once
 
-#include "storage/downloading_policy.hpp"
-#include "storage/queued_country.hpp"
+#include "storage/diff_scheme/diff_types.hpp"
 
-#include "platform/downloader_defines.hpp"
 #include "platform/http_request.hpp"
 #include "platform/safe_callback.hpp"
 
@@ -16,88 +14,60 @@
 
 namespace storage
 {
-using Queue = std::list<QueuedCountry>;
 // This interface encapsulates HTTP routines for receiving servers
 // URLs and downloading a single map file.
 class MapFilesDownloader
 {
 public:
   // Denotes bytes downloaded and total number of bytes.
+  using Progress = std::pair<int64_t, int64_t>;
   using ServersList = std::vector<std::string>;
 
+  using FileDownloadedCallback =
+      std::function<void(downloader::HttpRequest::Status status, Progress const & progress)>;
+  using DownloadingProgressCallback = std::function<void(Progress const & progress)>;
   using ServersListCallback = platform::SafeCallback<void(ServersList const & serverList)>;
-
-  class Subscriber
-  {
-  public:
-    virtual ~Subscriber() = default;
-
-    virtual void OnStartDownloading() = 0;
-    virtual void OnFinishDownloading() = 0;
-    virtual void OnCountryInQueue(CountryId const & id) = 0;
-    virtual void OnStartDownloadingCountry(CountryId const & id) = 0;
-  };
 
   virtual ~MapFilesDownloader() = default;
 
   /// Asynchronously downloads a map file, periodically invokes
   /// onProgress callback and finally invokes onDownloaded
   /// callback. Both callbacks will be invoked on the main thread.
-  void DownloadMapFile(QueuedCountry & queuedCountry);
+  void DownloadMapFile(std::string const & relativeUrl, std::string const & path, int64_t size,
+                       FileDownloadedCallback const & onDownloaded,
+                       DownloadingProgressCallback const & onProgress);
 
   /// Returns current downloading progress.
-  virtual downloader::Progress GetDownloadingProgress() = 0;
+  virtual Progress GetDownloadingProgress() = 0;
 
   /// Returns true when downloader does not perform any job.
   virtual bool IsIdle() = 0;
 
-  virtual void Pause() = 0;
-  virtual void Resume() = 0;
+  /// Resets downloader to the idle state.
+  virtual void Reset() = 0;
 
-  // Removes item from m_quarantine queue when list of servers is not received.
-  // Parent method must be called into override method.
-  virtual void Remove(CountryId const & id);
-
-  // Clears m_quarantine queue when list of servers is not received.
-  // Parent method must be called into override method.
-  virtual void Clear();
-
-  // Returns m_quarantine queue when list of servers is not received.
-  // Parent method must be called into override method.
-  virtual Queue const & GetQueue() const;
-
-  void Subscribe(Subscriber * subscriber);
-  void UnsubscribeAll();
-
+  static std::string MakeRelativeUrl(std::string const & fileName, int64_t dataVersion,
+                                     uint64_t diffVersion);
   static std::string MakeFullUrlLegacy(std::string const & baseUrl, std::string const & fileName,
                                        int64_t dataVersion);
 
   void SetServersList(ServersList const & serversList);
-  void SetDownloadingPolicy(DownloadingPolicy * policy);
+  void SetDiffs(diffs::NameDiffInfoMap const & diffs);
 
 protected:
-  bool IsDownloadingAllowed() const;
-  std::vector<std::string> MakeUrlList(std::string const & relativeUrl);
-
   // Synchronously loads list of servers by http client.
   static ServersList LoadServersList();
 
-  std::vector<Subscriber *> m_subscribers;
-
 private:
-  /// NOTE: this method will be called on network thread.
-  /// Default implementation receives a list of all servers that can be asked
+  /// Default implementation asynchronously receives a list of all servers that can be asked
   /// for a map file and invokes callback on the main thread.
   virtual void GetServersList(ServersListCallback const & callback);
-  /// Asynchronously downloads the file and saves result to provided directory.
-  virtual void Download(QueuedCountry & queuedCountry) = 0;
+  /// Asynchronously downloads the file from provided |urls| and saves result to |path|.
+  virtual void Download(std::vector<std::string> const & urls, std::string const & path,
+                        int64_t size, FileDownloadedCallback const & onDownloaded,
+                        DownloadingProgressCallback const & onProgress) = 0;
 
   ServersList m_serversList;
-  bool m_isServersListRequested = false;
-  DownloadingPolicy * m_downloadingPolicy = nullptr;
-
-  // This queue accumulates download requests before
-  // the servers list is received on the network thread.
-  Queue m_quarantine;
+  diffs::NameDiffInfoMap m_diffs;
 };
 }  // namespace storage

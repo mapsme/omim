@@ -1,5 +1,11 @@
 final class RouteManagerHeaderView: UIView {
-  @IBOutlet private weak var titleLabel: UILabel!
+  @IBOutlet private weak var titleLabel: UILabel! {
+    didSet {
+      titleLabel.text = L("planning_route_manage_route")
+      titleLabel.font = UIFont.bold22()
+      titleLabel.textColor = UIColor.blackPrimaryText()
+    }
+  }
   @IBOutlet private weak var addLocationButton: UIButton! {
     didSet {
 // TODO(igrechuhin): Uncomment when start_from_my_position translation is ready.
@@ -14,7 +20,11 @@ final class RouteManagerHeaderView: UIView {
 //      addLocationButton.imageView?.transform = flipLR
     }
   }
-  @IBOutlet weak var separator: UIView!
+  @IBOutlet weak var separator: UIView! {
+    didSet {
+      separator.backgroundColor = UIColor.blackDividers()
+    }
+  }
 
   var isLocationButtonEnabled = true {
     didSet {
@@ -25,10 +35,6 @@ final class RouteManagerHeaderView: UIView {
 
   override func awakeFromNib() {
     super.awakeFromNib()
-  }
-
-  override func applyTheme() {
-    super.applyTheme()
-    addLocationButton.tintColor = isLocationButtonEnabled ? UIColor.linkBlue() : UIColor.buttonDisabledBlueText()
+    backgroundColor = UIColor.white()
   }
 }

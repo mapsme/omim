@@ -16,15 +16,10 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "TargetConditionals.h"
-
-#if !TARGET_OS_TV
-
 #import <Foundation/Foundation.h>
 
-#import "FBSDKLoginManager.h"
+#import <FBSDKLoginKit/FBSDKLoginManager.h>
 
-NS_SWIFT_NAME(LoginUtility)
 @interface FBSDKLoginUtility : NSObject
 
 - (instancetype)init NS_UNAVAILABLE;
@@ -36,5 +31,3 @@ NS_SWIFT_NAME(LoginUtility)
 + (NSString *)userIDFromSignedRequest:(NSString *)signedRequest;
 
 @end
-
-#endif

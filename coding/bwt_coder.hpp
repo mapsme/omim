@@ -1,9 +1,10 @@
 #pragma once
 
-#include "coding/bwt.hpp"
 #include "coding/huffman.hpp"
-#include "coding/move_to_front.hpp"
 #include "coding/varint.hpp"
+
+#include "base/bwt.hpp"
+#include "base/move_to_front.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -26,9 +27,9 @@ public:
                                   std::vector<uint8_t> & bwtBuffer)
   {
     bwtBuffer.resize(n);
-    auto const start = BWT(n, s, bwtBuffer.data());
+    auto const start = base::BWT(n, s, bwtBuffer.data());
 
-    MoveToFront mtf;
+    base::MoveToFront mtf;
     for (auto & b : bwtBuffer)
       b = mtf.Transform(b);
 
@@ -83,7 +84,7 @@ public:
     huffman.ReadAndDecode(source, std::back_inserter(bwtBuffer));
 
     size_t const n = bwtBuffer.size();
-    MoveToFront mtf;
+    base::MoveToFront mtf;
     for (size_t i = 0; i < n; ++i)
     {
       auto const b = mtf[bwtBuffer[i]];
@@ -95,7 +96,7 @@ public:
       CHECK_LESS(start, n, ());
 
     revBuffer.resize(n);
-    RevBWT(n, static_cast<size_t>(start), bwtBuffer.data(), revBuffer.data());
+    base::RevBWT(n, static_cast<size_t>(start), bwtBuffer.data(), revBuffer.data());
     return std::copy(revBuffer.begin(), revBuffer.end(), it);
   }
 

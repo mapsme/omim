@@ -1,6 +1,5 @@
 #import "WebViewController.h"
 #import <CoreApi/MWMFrameworkHelper.h>
-#import "SwiftBridge.h"
 
 @interface WebViewController()
 
@@ -63,12 +62,9 @@
 {
   [super viewDidLoad];
   UIView * view = self.view;
-  view.styleName = @"Background";
+  view.backgroundColor = UIColor.whiteColor;
 
   self.webView = [[WKWebView alloc] initWithFrame:CGRectZero];
-//  [self.webView.scrollView setStyleAndApply:@"Background"];
-  self.webView.backgroundColor = UIColor.clearColor;
-  self.webView.opaque = false;
   self.webView.navigationDelegate = self;
   [view addSubview:self.webView];
 
@@ -92,6 +88,7 @@
   [self.webView.leadingAnchor constraintEqualToAnchor:leadingAnchor].active = YES;
   [self.webView.trailingAnchor constraintEqualToAnchor:trailingAnchor].active = YES;
 
+  self.webView.backgroundColor = UIColor.whiteColor;
   self.webView.allowsLinkPreview = NO;
   [self.webView setCustomUserAgent:[MWMFrameworkHelper userAgent]];
 
@@ -118,10 +115,6 @@
         {
           NSString *authHeader = [NSString stringWithFormat:@"Bearer %@", [MWMFrameworkHelper userAccessToken]];
           [request setValue:authHeader forHTTPHeaderField:@"Authorization"];
-        }
-        if ([UIColor isNightMode])
-        {
-          [request setValue:@"dark" forHTTPHeaderField:@"x-mapsme-theme"];
         }
         [self.webView loadRequest:request];
       }

@@ -8,7 +8,7 @@
   if (self) {
     _result = result;
     auto const &request = GetFramework().GetParsedSubscription();
-    _groups = @(request.m_groups.c_str());
+    _deliverable = @(request.m_deliverable.c_str());
   }
   return self;
 }

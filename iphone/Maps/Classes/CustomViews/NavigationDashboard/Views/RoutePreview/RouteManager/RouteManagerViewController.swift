@@ -14,7 +14,7 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
 
   lazy var chromeView: UIView = {
     let view = UIView()
-    view.styleName = "BlackStatusBarBackground"
+    view.backgroundColor = UIColor.blackStatusBarBackground()
     return view
   }()
 
@@ -186,7 +186,7 @@ final class RouteManagerViewController: MWMViewController, UITableViewDataSource
   }
 
   private func setupTableView() {
-    tableView.registerNib(cellClass: RouteManagerCell.self)
+    tableView.register(cellClass: RouteManagerCell.self)
     tableView.estimatedRowHeight = 48
     tableView.rowHeight = UITableView.automaticDimension
   }

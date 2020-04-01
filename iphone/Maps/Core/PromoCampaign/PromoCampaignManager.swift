@@ -1,7 +1,6 @@
 @objc protocol IPromoCampaignManager {
   @objc var promoDiscoveryCampaign: PromoDiscoveryCampaign { get }
   @objc var promoAfterBookingCampaign: PromoAfterBookingCampaign { get }
-  @objc var paidRoutesSubscriptionCampaign: PaidRoutesSubscriptionCampaign { get }
 }
 
 @objc class PromoCampaignManager: NSObject, IPromoCampaignManager {
@@ -17,9 +16,5 @@
 
   @objc lazy var promoAfterBookingCampaign: PromoAfterBookingCampaign = {
     return PromoAfterBookingCampaign()
-  }()
-
-  @objc lazy var paidRoutesSubscriptionCampaign: PaidRoutesSubscriptionCampaign = {
-    return PaidRoutesSubscriptionCampaign()
   }()
 }

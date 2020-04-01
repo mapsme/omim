@@ -16,17 +16,9 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "TargetConditionals.h"
-
-#if !TARGET_OS_TV
-
 #import "FBSDKHybridAppEventsScriptMessageHandler.h"
 
-#if SWIFT_PACKAGE
-#import "FBSDKAppEvents.h"
-#else
 #import <FBSDKCoreKit/FBSDKAppEvents.h>
-#endif
 
 #import "FBSDKAppEvents+Internal.h"
 
@@ -42,7 +34,7 @@ NSString *const FBSDKAppEventsWKWebViewMessagesPixelReferralParamKey = @"_fb_pix
     NSString *event = message.body[FBSDKAppEventsWKWebViewMessagesEventKey];
     if (event.length > 0) {
       NSString *stringedParams = message.body[FBSDKAppEventsWKWebViewMessagesParamsKey];
-      NSMutableDictionary <NSString *, id> *params = nil;
+      NSMutableDictionary <NSObject *, NSObject *> *params = nil;
       NSError *jsonParseError = nil;
       if ([stringedParams isKindOfClass:[NSString class]]) {
         params = [NSJSONSerialization JSONObjectWithData:[stringedParams dataUsingEncoding:NSUTF8StringEncoding]
@@ -62,13 +54,9 @@ NSString *const FBSDKAppEventsWKWebViewMessagesPixelReferralParamKey = @"_fb_pix
       else {
         params[FBSDKAppEventsWKWebViewMessagesPixelReferralParamKey] = pixelID;
       }
-      [FBSDKAppEvents logInternalEvent:event
-                            parameters:params
-                    isImplicitlyLogged:NO];
+      [FBSDKAppEvents logEvent:event parameters:params];
     }
   }
 }
 
 @end
-
-#endif

@@ -90,7 +90,6 @@ struct BuildInfo
     Everything = 0,
     FeatureOnly,
     UserMarkOnly,
-    TrackOnly,
     Nothing
   };
 
@@ -114,11 +113,6 @@ struct BuildInfo
     return m_match == Match::Everything || m_match == Match::UserMarkOnly;
   }
 
-  bool IsTrackMatchingEnabled() const
-  {
-    return m_match == Match::Everything || m_match == Match::TrackOnly;
-  }
-
   Source m_source = Source::Other;
   m2::PointD m_mercator;
   bool m_isLongTap = false;
@@ -126,7 +120,6 @@ struct BuildInfo
   FeatureID m_featureId;
   Match m_match = Match::Everything;
   kml::MarkId m_userMarkId = kml::kInvalidMarkId;
-  kml::TrackId m_trackId = kml::kInvalidTrackId;
   bool m_isGeometrySelectionAllowed = false;
   bool m_needAnimationOnSelection = true;
   std::string m_postcode;
@@ -146,7 +139,6 @@ public:
   /// Place traits
   bool IsFeature() const { return m_featureID.IsValid(); }
   bool IsBookmark() const { return m_markGroupId != kml::kInvalidMarkGroupId && m_markId != kml::kInvalidMarkId; }
-  bool IsTrack() const { return m_trackId != kml::kInvalidTrackId; }
   bool IsMyPosition() const { return m_selectedObject == df::SelectionShape::ESelectedObject::OBJECT_MY_POSITION; }
   bool IsRoutePoint() const { return m_isRoutePoint; }
   bool IsRoadType() const { return m_roadType != RoadWarningMarkType::Count; }
@@ -205,9 +197,6 @@ public:
   void SetBookmarkData(kml::BookmarkData const & data) { m_bookmarkData = data; }
   kml::BookmarkData const & GetBookmarkData() const { return m_bookmarkData; }
 
-  void SetTrackId(kml::TrackId trackId) { m_trackId = trackId; };
-  kml::TrackId GetTrackId() const { return m_trackId; };
-
   /// Api
   void SetApiId(std::string const & apiId) { m_apiId = apiId; }
   void SetApiUrl(std::string const & url) { m_apiUrl = url; }
@@ -241,9 +230,9 @@ public:
 
   /// Feature status
   void SetFeatureStatus(FeatureStatus const status) { m_featureStatus = status; }
-  FeatureStatus GetFeatureStatus() const { return m_featureStatus; }
 
   /// Banner
+  bool HasBanner() const;
   std::vector<ads::Banner> GetBanners() const;
 
   /// Taxi
@@ -347,12 +336,10 @@ private:
   /// Bookmarks
   /// If not invalid, bookmark is bound to this place page.
   kml::MarkId m_markId = kml::kInvalidMarkId;
-  kml::MarkGroupId m_markGroupId = kml::kInvalidMarkGroupId;
+  kml::MarkGroupId m_markGroupId = kml::kInvalidMarkGroupId;;
   /// Bookmark category name. Empty, if it's not bookmark;
   std::string m_bookmarkCategoryName;
   kml::BookmarkData m_bookmarkData;
-
-  kml::TrackId m_trackId = kml::kInvalidTrackId;
 
   /// Api ID passed for the selected object. It's automatically included in api url below.
   std::string m_apiId;

@@ -5,17 +5,18 @@
 #include "storage/map_files_downloader.hpp"
 #include "storage/storage.hpp"
 
-#include "platform/downloader_defines.hpp"
-#include "platform/http_request.hpp"
 #include "platform/platform.hpp"
+#include "platform/http_request.hpp"
 #include "platform/servers_list.hpp"
 
 #include "coding/internal/file_data.hpp"
 #include "coding/reader_streambuf.hpp"
+#include "coding/url_encode.hpp"
 
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
+#include "base/url_helpers.hpp"
 
 #include "com/mapswithme/core/jni_helper.hpp"
 
@@ -150,10 +151,10 @@ extern "C"
   static void DownloadFileFinished(std::shared_ptr<jobject> obj, HttpRequest const & req)
   {
     auto const status = req.GetStatus();
-    ASSERT_NOT_EQUAL(status, DownloadStatus::InProgress, ());
+    ASSERT_NOT_EQUAL(status, HttpRequest::Status::InProgress, ());
 
     int errorCode = ERR_DOWNLOAD_ERROR;
-    if (status == DownloadStatus::Completed)
+    if (status == HttpRequest::Status::Completed)
       errorCode = ERR_DOWNLOAD_SUCCESS;
 
     g_currentRequest.reset();

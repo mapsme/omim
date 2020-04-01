@@ -1,12 +1,12 @@
 #import "MWMSearchCommonCell.h"
 #import "CLLocation+Mercator.h"
 #import "MWMLocationManager.h"
-#import "SwiftBridge.h"
 
 #include "map/place_page_info.hpp"
 
 #include "platform/localization.hpp"
 #include "platform/measurement_utils.hpp"
+
 namespace
 {
 bool PopularityHasHigherPriority(bool hasPosition, double distanceInMeters)
@@ -122,11 +122,11 @@ bool PopularityHasHigherPriority(bool hasPosition, double distanceInMeters)
   }
 
   if (productInfo.m_isLocalAdsCustomer)
-      [self setStyleAndApply: @"SearchCellAds"];
+    self.backgroundColor = [UIColor bannerBackground];
   else if (isAvailable)
-      [self setStyleAndApply: @"SearchCellAvaliable"];
+    self.backgroundColor = [UIColor transparentGreen];
   else
-    [self setStyleAndApply: @"Background"];
+    self.backgroundColor = [UIColor white];
 }
 
 - (void)setInfoText:(NSString *)infoText

@@ -12,7 +12,6 @@ class BaseSubscriptionViewController: MWMViewController {
   @objc var onSubscribe: MWMVoidBlock?
   @objc var onCancel: MWMVoidBlock?
   @objc var source: String = kStatWebView
-  private let transitioning = FadeTransitioning<IPadModalPresentationController>()
 
   override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
     get { return [.portrait] }
@@ -24,12 +23,8 @@ class BaseSubscriptionViewController: MWMViewController {
 
   override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    if UIDevice.current.userInterfaceIdiom == .pad {
-      transitioningDelegate = transitioning
-      modalPresentationStyle = .custom
-    } else {
-      modalPresentationStyle = .fullScreen
-    }
+    self.modalTransitionStyle = .coverVertical
+    self.modalPresentationStyle = .formSheet
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -43,10 +38,11 @@ class BaseSubscriptionViewController: MWMViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     subscriptionManager?.addListener(self)
+    self.presentationController?.delegate = self;
   }
 
   func configure(buttons: [SubscriptionPeriod: BookmarksSubscriptionButton],
-                 discountLabels: [SubscriptionPeriod: InsetsLabel]) {
+                 discountLabels: [SubscriptionPeriod: BookmarksSubscriptionDiscountLabel]) {
     subscriptionManager?.getAvailableSubscriptions { [weak self] (subscriptions, error) in
       guard let subscriptions = subscriptions, subscriptions.count >= buttons.count else {
         MWMAlertViewController.activeAlert().presentInfoAlert(L("price_error_title"),
@@ -65,7 +61,7 @@ class BaseSubscriptionViewController: MWMViewController {
 
           if subscriptionItem.hasDiscount, let discountLabel = discountLabels[period] {
             discountLabel.isHidden = false;
-            discountLabel.text = L("all_pass_screen_best_value")
+            discountLabel.text = subscriptionItem.formattedDisount
           }
         }
       }

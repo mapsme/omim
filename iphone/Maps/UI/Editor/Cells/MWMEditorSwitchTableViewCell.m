@@ -1,5 +1,5 @@
 #import "MWMEditorSwitchTableViewCell.h"
-#import "SwiftBridge.h"
+#import "UIImageView+Coloring.h"
 
 @interface MWMEditorSwitchTableViewCell ()
 
@@ -20,7 +20,7 @@
 {
   self.delegate = delegate;
   self.icon.image = icon;
-  self.icon.styleName = @"MWMBlack";
+  self.icon.mwm_coloring = MWMImageColoringBlack;
   self.label.text = text;
   self.switchControl.on = on;
   [self setTextColorWithSwitchValue:on];

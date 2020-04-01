@@ -3,16 +3,16 @@ package com.mapswithme.maps.promo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Resources;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.Detachable;
@@ -84,27 +84,14 @@ public class CatalogPromoController implements Promo.Listener, Detachable<Activi
     if (mRequester == null)
       return;
 
-    GalleryPlacement placement = getGalleryPlacement(mRequester.getSponsoredType());
+    GalleryPlacement placement;
+    if (mRequester.getSponsoredType() == Sponsored.TYPE_PROMO_CATALOG_CITY)
+      placement = GalleryPlacement.PLACEPAGE_LARGE_TOPONYMS;
+    else
+      placement = GalleryPlacement.PLACEPAGE_SIGHTSEEINGS;
 
     Statistics.INSTANCE.trackGalleryError(GalleryType.PROMO, placement,
                                           Statistics.ParamValue.NO_PRODUCTS);
-  }
-
-  @SuppressLint("SwitchIntDef")
-  @NonNull
-  private static GalleryPlacement getGalleryPlacement(@Sponsored.SponsoredType int type)
-  {
-    switch (type)
-    {
-      case Sponsored.TYPE_PROMO_CATALOG_CITY:
-        return GalleryPlacement.PLACEPAGE_LARGE_TOPONYMS;
-      case Sponsored.TYPE_PROMO_CATALOG_SIGHTSEEINGS:
-        return GalleryPlacement.PLACEPAGE_SIGHTSEEINGS;
-      case Sponsored.TYPE_PROMO_CATALOG_OUTDOOR:
-        return GalleryPlacement.PLACEPAGE_OUTDOOR;
-      default:
-        throw new AssertionError("Unsupported catalog gallery type '" + type + "'!");
-    }
   }
 
   public void updateCatalogPromo(@NonNull NetworkPolicy policy, @Nullable MapObject mapObject)
@@ -149,8 +136,6 @@ public class CatalogPromoController implements Promo.Listener, Detachable<Activi
         return new SightseeingsPromoRequester();
       case Sponsored.TYPE_PROMO_CATALOG_CITY:
         return new CityPromoRequester();
-      case Sponsored.TYPE_PROMO_CATALOG_OUTDOOR:
-        return new OutdoorPromoRequester();
       default:
         return null;
     }
@@ -161,8 +146,7 @@ public class CatalogPromoController implements Promo.Listener, Detachable<Activi
                                                           @NonNull PromoCityGallery promo)
   {
     if (type != Sponsored.TYPE_PROMO_CATALOG_CITY
-        && type != Sponsored.TYPE_PROMO_CATALOG_SIGHTSEEINGS
-        && type != Sponsored.TYPE_PROMO_CATALOG_OUTDOOR)
+        && type != Sponsored.TYPE_PROMO_CATALOG_SIGHTSEEINGS)
       return null;
 
     PromoCityGallery.Item[] items = promo.getItems();
@@ -204,22 +188,6 @@ public class CatalogPromoController implements Promo.Listener, Detachable<Activi
     public int getSponsoredType()
     {
       return Sponsored.TYPE_PROMO_CATALOG_SIGHTSEEINGS;
-    }
-  }
-
-  static class OutdoorPromoRequester implements PromoRequester
-  {
-    @Override
-    public void requestPromo(@NonNull NetworkPolicy policy, @NonNull MapObject mapObject)
-    {
-      Promo.INSTANCE.nativeRequestPoiGallery(policy, mapObject.getLat(), mapObject.getLon(),
-                                             mapObject.getRawTypes(), UTM.UTM_OUTDOOR_PLACEPAGE_GALLERY);
-    }
-
-    @Override
-    public int getSponsoredType()
-    {
-      return Sponsored.TYPE_PROMO_CATALOG_OUTDOOR;
     }
   }
 
@@ -268,6 +236,9 @@ public class CatalogPromoController implements Promo.Listener, Detachable<Activi
       mTitle.setText(R.string.pp_discovery_place_related_header);
 
       final PromoCityGallery.Item item = items[0];
+      final GalleryPlacement placement = mSponsoredType == Sponsored.TYPE_PROMO_CATALOG_SIGHTSEEINGS
+                                         ? GalleryPlacement.PLACEPAGE_SIGHTSEEINGS
+                                         : GalleryPlacement.PLACEPAGE_LARGE_TOPONYMS;
 
       ImageView poiImage = mPlacePageView.findViewById(R.id.promo_poi_image);
       Glide.with(poiImage.getContext())
@@ -277,11 +248,9 @@ public class CatalogPromoController implements Promo.Listener, Detachable<Activi
            .into(poiImage);
       TextView bookmarkName = mPlacePageView.findViewById(R.id.place_single_bookmark_name);
       bookmarkName.setText(item.getName());
-      TextView subtitle = mPlacePageView.findViewById(R.id.place_single_bookmark_subtitle);
-      subtitle.setText(TextUtils.isEmpty(item.getTourCategory()) ? item.getAuthor().getName()
-                                                                 : item.getTourCategory());
+      TextView authorName = mPlacePageView.findViewById(R.id.place_single_bookmark_author);
+      authorName.setText(item.getAuthor().getName());
       View cta = mPlacePageView.findViewById(R.id.place_single_bookmark_cta);
-      final GalleryPlacement placement = getGalleryPlacement(mSponsoredType);
       cta.setOnClickListener(v -> onCtaClicked(placement, item.getUrl()));
 
       PromoCityGallery.Place place = item.getPlace();
@@ -338,23 +307,18 @@ public class CatalogPromoController implements Promo.Listener, Detachable<Activi
 
       Resources resources = mPlacePageView.getResources();
       String category = promo.getCategory();
-      boolean showCategoryHeader = !TextUtils.isEmpty(category)
-                                   && (mSponsoredType == Sponsored.TYPE_PROMO_CATALOG_SIGHTSEEINGS
-                                       || mSponsoredType == Sponsored.TYPE_PROMO_CATALOG_OUTDOOR);
-      String galleryHeader;
-      if (showCategoryHeader)
-      {
-        galleryHeader = resources.getString(R.string.pp_discovery_place_related_tag_header,
-                                    promo.getCategory());
-      }
+      boolean isSightseeings = !TextUtils.isEmpty(category)
+                               && mSponsoredType == Sponsored.TYPE_PROMO_CATALOG_SIGHTSEEINGS;
+      String title;
+      if (isSightseeings)
+        title = resources.getString(R.string.pp_discovery_place_related_tag_header, promo.getCategory());
       else
-      {
-        galleryHeader = resources.getString(R.string.guides);
-      }
-      mTitle.setText(galleryHeader);
+        title = resources.getString(R.string.guides);
+      mTitle.setText(title);
 
       String url = promo.getMoreUrl();
-      GalleryPlacement placement = getGalleryPlacement(mSponsoredType);
+      GalleryPlacement placement = isSightseeings ? GalleryPlacement.PLACEPAGE_SIGHTSEEINGS :
+                                   GalleryPlacement.PLACEPAGE_LARGE_TOPONYMS;
       RegularCatalogPromoListener promoListener = new RegularCatalogPromoListener(requireActivity(),
                                                                                   placement);
       GalleryAdapter adapter = Factory.createCatalogPromoAdapter(requireActivity(), promo, url,

@@ -3,6 +3,7 @@ package com.mapswithme.maps.search;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.api.ParsedMwmRequest;
 import com.mapswithme.maps.base.Initializable;
@@ -19,7 +20,7 @@ public enum SearchEngine implements NativeSearchListener,
                                     NativeMapSearchListener,
                                     NativeBookmarkSearchListener,
                                     NativeBookingFilterListener,
-                                    Initializable<Void>
+                                    Initializable
 {
   INSTANCE;
 
@@ -251,7 +252,7 @@ public enum SearchEngine implements NativeSearchListener,
   }
 
   @Override
-  public void initialize(@Nullable Void aVoid)
+  public void initialize()
   {
     nativeInit();
   }
@@ -259,7 +260,7 @@ public enum SearchEngine implements NativeSearchListener,
   @Override
   public void destroy()
   {
-    // No op.
+    // Do nothing.
   }
 
   /**

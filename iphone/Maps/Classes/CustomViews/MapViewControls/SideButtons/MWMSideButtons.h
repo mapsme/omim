@@ -10,6 +10,7 @@
 
 - (instancetype)init __attribute__((unavailable("init is not available")));
 - (instancetype)initWithParentView:(UIView *)view;
+- (void)mwm_refreshUI;
 
 - (void)processMyPositionStateModeEvent:(MWMMyPositionMode)mode;
 

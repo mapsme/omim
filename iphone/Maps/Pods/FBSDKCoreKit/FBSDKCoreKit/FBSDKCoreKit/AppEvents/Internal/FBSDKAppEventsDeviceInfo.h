@@ -18,7 +18,6 @@
 
 #import <Foundation/Foundation.h>
 
-NS_SWIFT_NAME(AppEventsDeviceInfo)
 @interface FBSDKAppEventsDeviceInfo : NSObject
 
 + (void)extendDictionaryWithDeviceInfo:(NSMutableDictionary *)dictionary;

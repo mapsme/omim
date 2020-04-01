@@ -4,12 +4,10 @@ include_directories(${OMIM_ROOT}/3party/gflags/src)
 
 set(
   SRC
-  benchmark_results.cpp
-  benchmark_results.hpp
   benchmark_stat.cpp
   benchmark_stat.hpp
-  error_type_counter.cpp
-  error_type_counter.hpp
+  benchmark_results.cpp
+  benchmark_results.hpp
   routing_quality_tool.cpp
   utils.cpp
   utils.hpp
@@ -39,7 +37,6 @@ omim_link_libraries(
   base
   icu
   jansson
-  opening_hours
   oauthcpp
   protobuf
   stats_client

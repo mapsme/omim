@@ -16,13 +16,9 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "TargetConditionals.h"
-
-#if !TARGET_OS_TV
-
 #import <Foundation/Foundation.h>
 
-#import "FBSDKLoginManagerLoginResult.h"
+#import <FBSDKLoginKit/FBSDKLoginManagerLoginResult.h>
 
 @interface FBSDKLoginManagerLoginResult()
 
@@ -34,5 +30,3 @@
 // adds additional logging entry to extras - only sent as part of `endLoginWithResult:`
 -(void)addLoggingExtra:(id)object forKey:(id<NSCopying>)key;
 @end
-
-#endif

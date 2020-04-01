@@ -2,7 +2,7 @@
 #import <CoreApi/MWMCommon.h>
 #import <CoreApi/MWMOpeningHoursCommon.h>
 #import "MWMPlacePageOpeningHoursDayView.h"
-#import "SwiftBridge.h"
+#import "UIImageView+Coloring.h"
 
 #include "editor/ui2oh.hpp"
 
@@ -71,7 +71,7 @@ WeekDayView getWeekDayView()
   self.toggleButton.hidden = !delegate.forcedButton;
   self.expandImage.hidden = !delegate.forcedButton;
   self.expandImage.image = [UIImage imageNamed:@"ic_arrow_gray_right"];
-  self.expandImage.styleName = @"MWMGray";
+  self.expandImage.mwm_coloring = MWMImageColoringGray;
   if (isInterfaceRightToLeft())
     self.expandImage.transform = CGAffineTransformMakeScale(-1, 1);
   NSAssert(info, @"Schedule can not be empty");
@@ -133,7 +133,7 @@ WeekDayView getWeekDayView()
     else
       self.expandImage.image = [UIImage imageNamed:@"ic_arrow_gray_down"];
 
-    self.expandImage.styleName = @"MWMGray";
+    self.expandImage.mwm_coloring = MWMImageColoringGray;
     if (isInterfaceRightToLeft())
       self.expandImage.transform = CGAffineTransformMakeScale(-1, 1);
 

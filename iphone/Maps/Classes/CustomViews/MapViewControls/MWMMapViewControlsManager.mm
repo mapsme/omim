@@ -70,7 +70,6 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
     [NSLayoutConstraint activateConstraints:
      @[[self.promoButton.centerXAnchor constraintEqualToAnchor:self.trafficButton.view.centerXAnchor],
        [self.promoButton.topAnchor constraintEqualToAnchor:self.sideButtons.view.topAnchor]]];
-    [Statistics logEvent:kStatMapSponsoredButtonShow withParameters:@{kStatTarget : kStatGuidesSubscription}];
   }
   return self;
 }
@@ -101,6 +100,18 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
   return self.menuController.view;
 }
 
+- (void)mwm_refreshUI
+{
+  [self.trafficButton mwm_refreshUI];
+  [self.sideButtons mwm_refreshUI];
+  [self.navigationManager mwm_refreshUI];
+  [self.searchManager mwm_refreshUI];
+  [self.menuController mwm_refreshUI];
+  [self.placePageManager mwm_refreshUI];
+  [self.promoButton mwm_refreshUI];
+  [self.ownerController setNeedsStatusBarAppearanceUpdate];
+}
+
 - (void)viewWillTransitionToSize:(CGSize)size
        withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
@@ -110,6 +121,23 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
 }
 
 #pragma mark - MWMPlacePageViewManager
+
+- (void)dismissPlacePage
+{
+  self.trafficButtonHidden = NO;
+  [self.placePageManager dismiss];
+}
+
+- (void)showPlacePage {
+  [[MWMNetworkPolicy sharedPolicy] callOnlineApi:^(BOOL) {
+    self.trafficButtonHidden = YES;
+    [self.placePageManager show];
+  }];
+}
+
+- (void)updatePlacePage {
+  [self.placePageManager update];
+}
 
 - (void)showPlacePageReview {
   [[MWMNetworkPolicy sharedPolicy] callOnlineApi:^(BOOL) {
@@ -159,7 +187,7 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
   self.trafficButtonHidden = YES;
   self.menuState = MWMBottomMenuStateHidden;
   MapViewController * ownerController = self.ownerController;
-  [ownerController dismissPlacePage];
+  [self.placePageManager dismiss];
   self.searchManager.state = MWMSearchManagerStateHidden;
 
   [MWMAddPlaceNavigationBar showInSuperview:ownerController.view
@@ -249,7 +277,7 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
   [self.navigationManager onRouteStop];
   self.disableStandbyOnRouteFollowing = NO;
   self.trafficButtonHidden = NO;
-  self.promoButton.hidden = _promoDiscoveryCampaign.hasBeenActivated;
+  self.promoButton.hidden = NO;
 }
 
 
@@ -361,6 +389,9 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
 
 - (id<MWMFeatureHolder>)featureHolder { return self.placePageManager; }
 
+#pragma mark - MWMBookingInfoHolder
+- (id<MWMBookingInfoHolder>)bookingInfoHolder { return self.placePageManager; }
+
 - (MWMTutorialViewController *)tutorialWithType:(MWMTip)tutorialType
 {
   MWMTutorialViewController * tutorial;
@@ -383,11 +414,6 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
     break;
   case MWMTipSubway:
     tutorial = [MWMTutorialViewController tutorial:MWMTutorialTypeSubway
-                                            target:(UIControl *)self.trafficButton.view
-                                          delegate:self];
-    break;
-  case MWMTipIsolines:
-    tutorial = [MWMTutorialViewController tutorial:MWMTutorialTypeIsolines
                                             target:(UIControl *)self.trafficButton.view
                                           delegate:self];
     break;
@@ -424,13 +450,13 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
 }
 
 - (BOOL)showPromoBookingIfNeeded {
-  PromoAfterBookingCampaign * afterBookingCampaign = [PromoCampaignManager manager].promoAfterBookingCampaign;
-  PromoAfterBookingData * afterBookingData = afterBookingCampaign.afterBookingData;
-  if (!afterBookingData.enabled)
+  PromoAfterBookingCampaign * afterBooking = [PromoCampaignManager manager].promoAfterBookingCampaign;
+
+  if (!afterBooking.enabled)
     return NO;
 
   MWMVoidBlock ok = ^{
-    auto urlString = afterBookingData.promoUrl;
+    auto urlString = afterBooking.promoUrl;
     auto url = [NSURL URLWithString:urlString];
     [MapViewController.sharedController openCatalogAbsoluteUrl:url animated:YES utm:MWMUTMBookingPromo];
 
@@ -439,11 +465,11 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
   MWMVoidBlock cancel = ^{
     [self.ownerController dismissViewControllerAnimated:YES completion:nil];
   };
-  NSString *cityImageUrl = afterBookingData.pictureUrl;
+  NSString *cityImageUrl = afterBooking.pictureUrl;
   PromoAfterBookingViewController *alert;
   alert = [[PromoAfterBookingViewController alloc] initWithCityImageUrl:cityImageUrl okClosure:ok cancelClosure:cancel];
   [self.ownerController presentViewController:alert animated:YES completion:nil];
-  [MWMEye promoAfterBookingShownWithCityId:afterBookingData.promoId];
+  [MWMEye promoAfterBookingShownWithCityId:afterBooking.promoId];
   return YES;
 }
 
@@ -514,9 +540,6 @@ NSString * const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
       break;
     case MWMTipSubway:
       statTutorialType = @3;
-      break;
-    case MWMTipIsolines:
-      statTutorialType = @4;
       break;
     case MWMTipNone:
       return;

@@ -6,7 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class MWMDiscoveryCityGalleryObjects;
 @class MWMDiscoverySearchViewModel;
 @class MWMDiscoveryHotelViewModel;
-@class CatalogPromoItem;
+@class MWMDiscoveryGuideViewModel;
 
 @interface MWMDiscoveryControllerViewModel : NSObject
 
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (MWMDiscoverySearchViewModel *)attractionAtIndex:(NSUInteger)index;
 - (MWMDiscoverySearchViewModel *)cafeAtIndex:(NSUInteger)index;
 - (MWMDiscoveryHotelViewModel *)hotelAtIndex:(NSUInteger)index;
-- (CatalogPromoItem *)guideAtIndex:(NSUInteger)index;
+- (MWMDiscoveryGuideViewModel *)guideAtIndex:(NSUInteger)index;
 
 @end
 

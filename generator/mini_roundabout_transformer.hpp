@@ -18,13 +18,6 @@
 
 namespace generator
 {
-struct RoundaboutUnit
-{
-  uint64_t m_roadId = 0;
-  m2::PointD m_location;
-  FeatureParams::Types m_roadTypes;
-};
-
 class MiniRoundaboutTransformer
 {
 public:
@@ -43,18 +36,9 @@ private:
   /// \brief Sets |road_type| to |found_type| if it is a more important road type.
   void UpdateRoadType(FeatureParams::Types const & foundTypes, uint32_t & roadType);
 
-  /// \brief Splits |road| in two parts: part before the |roundabout| and after.
-  /// Returns second road to |newRoads| - the artificial one.
-  feature::FeatureBuilder::PointSeq CreateSurrogateRoad(
-      RoundaboutUnit const & roundaboutOnRoad, std::vector<m2::PointD> & roundaboutCircle,
-      feature::FeatureBuilder::PointSeq & road,
-      feature::FeatureBuilder::PointSeq::iterator & itPointUpd);
-
-  /// \brief Creates new point and adds it to |roundabout| circle and to the |road|.
-  bool AddRoundaboutToRoad(RoundaboutUnit const & roundaboutOnRoad,
-                           std::vector<m2::PointD> & roundaboutCircle,
-                           feature::FeatureBuilder::PointSeq & road,
-                           std::vector<feature::FeatureBuilder> & newRoads);
+  /// \brief Creates new point and add it to |roundabout| circle and to the |road|.
+  bool AddRoundaboutToRoad(m2::PointD const & center, std::vector<m2::PointD> & roundabout,
+                           feature::FeatureBuilder::PointSeq & road);
 
   std::vector<MiniRoundaboutInfo> m_roundabouts;
   double const m_radiusMercator = 0.0;
@@ -63,10 +47,9 @@ private:
 /// \brief Calculates Euclidean distance between 2 points on plane.
 double DistanceOnPlain(m2::PointD const & a, m2::PointD const & b);
 
-/// \returns The point that is located on the segment (|source|, |target|) and lies in |dist|
-/// or less from |target|.
-m2::PointD GetPointAtDistFromTarget(m2::PointD const & source, m2::PointD const & target,
-                                    double dist);
+/// \returns The point that is located on the segment (|segPoint|, |target|) and lies in |r| or less
+/// from |target|.
+m2::PointD TrimSegment(m2::PointD const & segPoint, m2::PointD const & target, double r);
 
 /// \brief Creates a regular polygon with |verticesCount| inscribed in a circle with |center| and
 /// |radiusMercator|. The polygon is rotated by an angle |initAngleDeg| CCW.

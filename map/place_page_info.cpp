@@ -1,12 +1,11 @@
 #include "map/place_page_info.hpp"
-
 #include "map/bookmark_helpers.hpp"
 #include "map/reachable_by_taxi_checker.hpp"
 
 #include "descriptions/loader.hpp"
 
-#include "partners_api/ads/ads_engine.hpp"
-#include "partners_api/ads/banner.hpp"
+#include "partners_api/ads_engine.hpp"
+#include "partners_api/banner.hpp"
 #include "partners_api/partners.hpp"
 
 #include "editor/osm_editor.hpp"
@@ -318,12 +317,20 @@ std::optional<int> Info::GetRawApproximatePricing() const
   return {};
 }
 
-std::vector<ads::Banner> Info::GetBanners() const
+bool Info::HasBanner() const
 {
   if (!m_adsEngine || IsMyPosition() || IsRoadType())
+    return false;
+
+  return m_adsEngine->HasBanner(m_types, m_topmostCountryIds, languages::GetCurrentNorm());
+}
+
+std::vector<ads::Banner> Info::GetBanners() const
+{
+  if (!m_adsEngine)
     return {};
 
-  return m_adsEngine->GetPoiBanners(m_types, m_topmostCountryIds, languages::GetCurrentNorm());
+  return m_adsEngine->GetBanners(m_types, m_topmostCountryIds, languages::GetCurrentNorm());
 }
 
 void Info::SetPartnerIndex(int index)

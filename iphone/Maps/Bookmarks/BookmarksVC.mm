@@ -2,7 +2,6 @@
 #import "BookmarksSection.h"
 #import "InfoSection.h"
 #import "MWMCategoryInfoCell.h"
-#import "SwiftBridge.h"
 
 #import "MWMKeyboard.h"
 #import "MWMLocationObserver.h"
@@ -210,13 +209,17 @@ using namespace std;
 - (void)viewDidLoad {
   [super viewDidLoad];
 
+  UIColor *searchBarColor = [UIColor primary];
   self.searchBar.delegate = self;
+  self.statusBarBackground.backgroundColor = self.searchBar.barTintColor = searchBarColor;
+  self.searchBar.backgroundImage = [UIImage imageWithColor:searchBarColor];
   self.searchBar.placeholder = L(@"search_in_the_list");
 
   [self.noResultsView setTranslatesAutoresizingMaskIntoConstraints:NO];
 
   self.tableView.estimatedRowHeight = 44;
-  [self.tableView registerNibWithCellClass:MWMCategoryInfoCell.class];
+  [self.tableView registerWithCellClass:MWMCategoryInfoCell.class];
+  self.tableView.separatorColor = [UIColor blackDividers];
 
   auto regularTitleAttributes = @{ NSFontAttributeName: [UIFont regular16],
                                    NSForegroundColorAttributeName: [UIColor linkBlue] };
@@ -679,6 +682,10 @@ using namespace std;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   UITableViewCell *cell = [[self currentSections][indexPath.section] tableView:tableView cellForRow:indexPath.row];
+
+  cell.backgroundColor = [UIColor white];
+  cell.textLabel.textColor = [UIColor blackPrimaryText];
+  cell.detailTextLabel.textColor = [UIColor blackSecondaryText];
   return cell;
 }
 
@@ -737,6 +744,12 @@ using namespace std;
     self.navigationItem.rightBarButtonItem = nil;
     [self setEditing:NO animated:YES];
   }
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+  auto header = (UITableViewHeaderFooterView *)view;
+  header.textLabel.textColor = [UIColor blackSecondaryText];
+  header.textLabel.font = [UIFont medium14];
 }
 
 #pragma mark - InfoSectionDelegate

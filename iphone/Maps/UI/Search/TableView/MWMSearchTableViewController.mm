@@ -52,14 +52,15 @@ NSString * GetLocalizedTypeName(search::Result const & result)
   [self reloadData];
 }
 
+- (void)mwm_refreshUI { [self.view mwm_refreshUI]; }
 - (void)setupTableView
 {
   UITableView * tableView = self.tableView;
   tableView.estimatedRowHeight = 80.;
   tableView.rowHeight = UITableViewAutomaticDimension;
-  [tableView registerNibWithCellClass:[MWMSearchSuggestionCell class]];
-  [tableView registerNibWithCellClass:[MWMSearchCommonCell class]];
-  [tableView registerClassWithCellClass:[MWMAdBannerCell class]];
+  [tableView registerWithCellClass:[MWMSearchSuggestionCell class]];
+  [tableView registerWithCellClass:[MWMSearchCommonCell class]];
+  [tableView registerWithCellClass:[MWMAdBanner class]];
 }
 
 - (void)reloadData { [self.tableView reloadData]; }
@@ -112,7 +113,7 @@ NSString * GetLocalizedTypeName(search::Result const & result)
   case MWMSearchItemTypeMopub:
   case MWMSearchItemTypeFacebook:
   {
-    auto cell = static_cast<MWMAdBannerCell *>([tableView dequeueReusableCellWithCellClass:[MWMAdBannerCell class] indexPath:indexPath]);
+    auto cell = static_cast<MWMAdBanner *>([tableView dequeueReusableCellWithCellClass:[MWMAdBanner class] indexPath:indexPath]);
     auto ad = [MWMSearch adWithContainerIndex:containerIndex];
     [cell configWithAd:ad
          containerType:MWMAdBannerContainerTypeSearch

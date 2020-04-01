@@ -1,7 +1,16 @@
 final class BMCActionsCreateCell: MWMTableViewCell {
-  @IBOutlet private weak var actionImage: UIImageView!
+  @IBOutlet private weak var actionImage: UIImageView! {
+    didSet {
+      actionImage.tintColor = .linkBlue()
+    }
+  }
 
-  @IBOutlet private weak var actionTitle: UILabel!
+  @IBOutlet private weak var actionTitle: UILabel! {
+    didSet {
+      actionTitle.font = .regular16()
+      actionTitle.textColor = .blackPrimaryText()
+    }
+  }
 
   private var model: BMCAction! {
     didSet {

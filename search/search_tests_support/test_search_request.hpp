@@ -25,21 +25,12 @@ class TestSearchEngine;
 class TestSearchRequest
 {
 public:
-  inline static double const kDefaultTestStreetSearchRadiusM = 2e7;
-  inline static double const kDefaultTestVillageSearchRadiusM = 2e7;
-
   TestSearchRequest(TestSearchEngine & engine, std::string const & query,
                     std::string const & locale, Mode mode, m2::RectD const & viewport);
   TestSearchRequest(TestSearchEngine & engine, SearchParams const & params);
 
   // Initiates the search and waits for it to finish.
   void Run();
-
-  // Initiates asynchronous search.
-  void Start();
-
-  // Waits for the search to finish.
-  void Wait();
 
   // Call these functions only after call to Wait().
   std::chrono::steady_clock::duration ResponseTime() const;
@@ -50,6 +41,12 @@ protected:
                     std::string const & locale, Mode mode, m2::RectD const & viewport,
                     SearchParams::OnStarted const & onStarted,
                     SearchParams::OnResults const & onResults);
+
+  // Initiates the search.
+  void Start();
+
+  // Waits for the search to finish.
+  void Wait();
 
   void SetUpCallbacks();
   void SetUpResultParams();

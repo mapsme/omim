@@ -46,7 +46,6 @@ NSInteger convertToAlohalyticsChannel(StatisticsChannel cnannel) {
     if ([ASIdentifierManager sharedManager].advertisingTrackingEnabled) {
       auto sessionBuilder = [[[FlurrySessionBuilder alloc] init]
                              withAppVersion:[AppInfo sharedInfo].bundleVersion];
-      [sessionBuilder withDataSaleOptOut:true];
       [Flurry startSession:@(FLURRY_KEY) withSessionBuilder:sessionBuilder];
       [Flurry logAllPageViewsForTarget:application.windows.firstObject.rootViewController];
 

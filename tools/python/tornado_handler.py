@@ -59,11 +59,7 @@ class MainHandler(tornado.web.RequestHandler, ResponseProviderMixin):
         
 
     def post(self, param):
-        payload = self.response_provider.response_for_url_and_headers(self.request.uri, self.headers)
-        if payload.response_code() >= 300:
-            self.dispatch_response(Payload(self.request.body))
-        else:
-            self.dispatch_response(payload)
+        self.dispatch_response(Payload(self.request.body))
 
 
     @staticmethod

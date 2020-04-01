@@ -457,30 +457,13 @@ public class SplashActivity extends AppCompatActivity
   @Override
   public void onPolicyAgreementApplied()
   {
-    boolean permissionsGranted = processPermissionGranting();
-    if (!permissionsGranted)
-      return;
-
-    boolean isFirstLaunch = WelcomeDialogFragment.isFirstLaunch(this);
-    if (isFirstLaunch)
-    {
-      UiThread.runLater(mOnboardingStepsTask, DELAY);
-      return;
-    }
-
-    runInitCoreTask();
+    processPermissionGranting();
   }
 
   @Override
   public void onLastOnboardingStepPassed()
   {
     runInitCoreTask();
-  }
-
-  @Override
-  public void onOnboardingStepCancelled()
-  {
-    finish();
   }
 
   @Override

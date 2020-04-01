@@ -29,6 +29,7 @@ final class CatalogWebViewController: WebViewController {
   var deeplink: URL?
   var categoryInfo: CatalogCategoryInfo?
   var statSent = false
+  var backButton: UIBarButtonItem!
   var billing = InAppPurchase.inAppBilling()
   var noInternetView: CatalogConnectionErrorView!
 
@@ -59,6 +60,11 @@ final class CatalogWebViewController: WebViewController {
       }
     }
     super.init(url: catalogUrl, title: L("guides_catalogue_title"))!
+    let bButton = UIButton(type: .custom)
+    bButton.addTarget(self, action: #selector(onBack), for: .touchUpInside)
+    bButton.setTitle(L("back"), for: .normal)
+    bButton.setImage(UIImage(named: "ic_nav_bar_back"), for: .normal)
+    backButton = UIBarButtonItem(customView: bButton)
     noInternetView = CatalogConnectionErrorView(frame: .zero, actionCallback: { [weak self] in
       guard let self = self else { return }
       if !FrameworkHelper.isNetworkConnected() {
@@ -87,7 +93,8 @@ final class CatalogWebViewController: WebViewController {
     progressView.translatesAutoresizingMaskIntoConstraints = false
     progressBgView.translatesAutoresizingMaskIntoConstraints = false
     loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
-    numberOfTasksLabel.styleName = "medium14:whiteText"
+    numberOfTasksLabel.font = UIFont.medium14()
+    numberOfTasksLabel.textColor = UIColor.white
     numberOfTasksLabel.text = "0"
     progressBgView.layer.cornerRadius = 8
     progressBgView.clipsToBounds = true
@@ -124,15 +131,10 @@ final class CatalogWebViewController: WebViewController {
       progressBgView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8).isActive = true
     }
 
-    progressView.styleName = "MWMWhite"
-    self.view.styleName = "Background"
-    
+    progressView.tintColor = UIColor.white()
     updateProgress()
-    let backButton = UIBarButtonItem(image: UIImage(named: "ic_nav_bar_back"),
-                                  style: .plain,
-                                  target: self,
-                                  action: #selector(onBack))
-    navigationItem.leftBarButtonItem = backButton
+    navigationItem.hidesBackButton = true;
+    navigationItem.rightBarButtonItem = UIBarButtonItem(title: L("core_exit"), style: .plain, target: self, action:  #selector(goBack))
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -181,6 +183,11 @@ final class CatalogWebViewController: WebViewController {
       MWMEye.boomarksCatalogShown()
     }
     loadingIndicator.stopAnimating()
+    if (webView.canGoBack) {
+      navigationItem.leftBarButtonItem = backButton
+    } else {
+      navigationItem.leftBarButtonItem = nil
+    }
   }
 
   override func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -201,7 +208,7 @@ final class CatalogWebViewController: WebViewController {
     let subscribeViewController = SubscriptionViewBuilder.build(type: type,
                                                                 parentViewController: self,
                                                                 source: kStatWebView,
-                                                                successDialog: .success) { [weak self] (success) in
+                                                                openCatalog: false) { [weak self] (success) in
                                                                   if (success) {
                                                                     self?.webView.reloadFromOrigin()
                                                                   }
@@ -359,10 +366,7 @@ final class CatalogWebViewController: WebViewController {
 
     let purchase = InAppPurchase.paidRoutePurchase(serverId: productInfo.id,
                                                    productId: productId)
-    let testGroup = PromoCampaignManager.manager().paidRoutesSubscriptionCampaign.testGroupStatName
-    let stats = InAppPurchase.paidRouteStatistics(serverId: productInfo.id,
-                                                  productId: productId,
-                                                  testGroup: testGroup)
+    let stats = InAppPurchase.paidRouteStatistics(serverId: productInfo.id, productId: productId)
     let paymentVC = PaidRouteViewController(name: productInfo.name,
                                             author: productInfo.author,
                                             imageUrl: URL(string: productInfo.imageUrl ?? ""),
@@ -371,7 +375,6 @@ final class CatalogWebViewController: WebViewController {
                                             statistics: stats)
     paymentVC.delegate = self
     paymentVC.modalTransitionStyle = .coverVertical
-    paymentVC.modalPresentationStyle = .fullScreen
     self.navigationController?.present(paymentVC, animated: true)
   }
 
@@ -404,11 +407,7 @@ final class CatalogWebViewController: WebViewController {
   }
 
   @objc private func onBack() {
-    if (webView.canGoBack) {
-      back()
-    } else {
-      navigationController?.popViewController(animated: true)
-    }
+    back()
   }
 
   @objc private func onFwd() {
@@ -421,7 +420,6 @@ private func logToPushWoosh(_ categoryInfo: CatalogCategoryInfo) {
   
   if categoryInfo.productId == nil {
     pushManager!.setTags(["Bookmarks_Guides_free_title": categoryInfo.name]);
-    pushManager!.setTags(["Bookmarks_Guides_free_date": MWMPushNotifications.formattedTimestamp()]);
   } else {
     pushManager!.setTags(["Bookmarks_Guides_paid_tier": categoryInfo.productId!]);
     pushManager!.setTags(["Bookmarks_Guides_paid_title": categoryInfo.name]);

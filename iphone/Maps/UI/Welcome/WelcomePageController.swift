@@ -1,3 +1,5 @@
+import UIKit
+
 @objc(MWMWelcomePageControllerProtocol)
 protocol WelcomePageControllerProtocol {
   var view: UIView! { get set }
@@ -63,32 +65,40 @@ final class WelcomePageController: UIPageViewController {
         }
       }
     }
-    
-    WelcomeStorage.shouldShowWhatsNew = false
+
     vc.controllers = controllersToShow
     return vc
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    view.styleName = "Background"
+    view.backgroundColor = UIColor.white()
     iPadSpecific {
       let parentView = parentController.view!
       iPadBackgroundView = SolidTouchView(frame: parentView.bounds)
-      iPadBackgroundView!.styleName = "FadeBackground"
+      iPadBackgroundView!.backgroundColor = UIColor.fadeBackground()
       iPadBackgroundView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
       parentView.addSubview(iPadBackgroundView!)
       view.layer.cornerRadius = 5
       view.clipsToBounds = true
     }
     currentController = controllers.first
+    WelcomeStorage.shouldShowWhatsNew = false
   }
 
   func nextPage() {
     currentController = pageViewController(self, viewControllerAfter: currentController)
+    if let controller = currentController as? WelcomeViewController {
+      Statistics.logEvent(kStatEventName(kStatWhatsNew, controller.key),
+                          withParameters: [kStatAction: kStatNext])
+    }
   }
 
   func close() {
+    if let controller = currentController as? WelcomeViewController {
+      Statistics.logEvent(kStatEventName(kStatWhatsNew, controller.key),
+                          withParameters: [kStatAction: kStatClose])
+    }
     iPadBackgroundView?.removeFromSuperview()
     view.removeFromSuperview()
     removeFromParent()
@@ -97,6 +107,10 @@ final class WelcomePageController: UIPageViewController {
   }
 
   @objc func show() {
+    if let controller = currentController as? WelcomeViewController {
+      Statistics.logEvent(kStatEventName(kStatWhatsNew, controller.key),
+                          withParameters: [kStatAction: kStatOpen])
+    }
     parentController.addChildViewController(self)
     parentController.view.addSubview(view)
     updateFrame()
@@ -104,12 +118,8 @@ final class WelcomePageController: UIPageViewController {
 
   private func updateFrame() {
     let parentView = parentController.view!
-    let size = WelcomeViewController.presentationSize
     view.frame = alternative(iPhone: CGRect(origin: CGPoint(), size: parentView.size),
-                             iPad: CGRect(x: parentView.center.x - size.width/2,
-                                          y: parentView.center.y - size.height/2,
-                                          width: size.width,
-                                          height: size.height))
+                             iPad: CGRect(x: parentView.center.x - 260, y: parentView.center.y - 300, width: 520, height: 600))
   }
 
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

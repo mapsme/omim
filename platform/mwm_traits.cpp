@@ -54,12 +54,6 @@ bool MwmTraits::HasCuisineTypes() const
   return GetVersion() >= kFirstVersionWithCuisineTypes;
 }
 
-bool MwmTraits::HasIsolines() const
-{
-  uint32_t constexpr kFirstVersionWithIsolines = 200209;
-  return GetVersion() >= kFirstVersionWithIsolines;
-}
-
 std::string DebugPrint(MwmTraits::SearchIndexFormat format)
 {
   switch (format)

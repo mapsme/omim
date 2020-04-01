@@ -1,6 +1,14 @@
 @objc(MWMFilterRatingCell)
 final class FilterRatingCell: MWMTableViewCell {
-  @IBOutlet private var ratingButtons: [UIButton]!
+  @IBOutlet private var ratingButtons: [UIButton]! {
+    didSet {
+      ratingButtons.map { $0.layer }.forEach {
+        $0.cornerRadius = 4
+        $0.borderWidth = 1
+        $0.borderColor = UIColor.blackDividers().cgColor
+      }
+    }
+  }
 
   @IBOutlet weak var any: UIButton!
   @IBOutlet weak var good: UIButton!
@@ -32,5 +40,6 @@ final class FilterRatingCell: MWMTableViewCell {
   override func awakeFromNib() {
     super.awakeFromNib()
     isSeparatorHidden = true
+    backgroundColor = UIColor.clear
   }
 }

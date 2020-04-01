@@ -10,13 +10,13 @@ public interface LocationListener
     public void onLocationUpdated(Location location) {}
 
     @Override
-    public void onCompassUpdated(long time, double north) {}
+    public void onCompassUpdated(long time, double magneticNorth, double trueNorth, double accuracy) {}
 
     @Override
     public void onLocationError(int errorCode) {}
   }
 
   void onLocationUpdated(Location location);
-  void onCompassUpdated(long time, double north);
+  void onCompassUpdated(long time, double magneticNorth, double trueNorth, double accuracy);
   void onLocationError(int errorCode);
 }

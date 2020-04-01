@@ -1,7 +1,5 @@
 #include "search/processor.hpp"
 
-#include "ge0/parser.hpp"
-
 #include "search/common.hpp"
 #include "search/cuisine_filter.hpp"
 #include "search/dummy_rank_table.hpp"
@@ -37,6 +35,8 @@
 #include "indexer/search_string_utils.hpp"
 #include "indexer/trie_reader.hpp"
 
+#include "geometry/mercator.hpp"
+
 #include "platform/mwm_traits.hpp"
 #include "platform/mwm_version.hpp"
 #include "platform/preferred_languages.hpp"
@@ -44,13 +44,8 @@
 #include "coding/compressed_bit_vector.hpp"
 #include "coding/reader_wrapper.hpp"
 #include "coding/string_utf8_multilang.hpp"
-#include "coding/url.hpp"
-
-#include "geometry/latlon.hpp"
-#include "geometry/mercator.hpp"
 
 #include "base/assert.hpp"
-#include "base/buffer_vector.hpp"
 #include "base/logging.hpp"
 #include "base/macros.hpp"
 #include "base/scope_guard.hpp"
@@ -58,8 +53,6 @@
 #include "base/string_utils.hpp"
 
 #include <algorithm>
-#include <set>
-#include <sstream>
 
 #include "3party/Alohalytics/src/alohalytics.h"
 #include "3party/open-location-code/openlocationcode.h"
@@ -547,36 +540,12 @@ void Processor::Search(SearchParams const & params)
 
 void Processor::SearchCoordinates()
 {
-  buffer_vector<ms::LatLon, 3> results;
-
-  {
-    double lat;
-    double lon;
-    if (MatchLatLonDegree(m_query, lat, lon))
-      results.emplace_back(lat, lon);
-  }
-
-  istringstream iss(m_query);
-  string token;
-  while (iss >> token)
-  {
-    ge0::Ge0Parser parser;
-    ge0::Ge0Parser::Result r;
-    if (parser.Parse(token, r))
-      results.emplace_back(r.m_lat, r.m_lon);
-
-    url::GeoURLInfo info(token);
-    if (info.IsValid())
-      results.emplace_back(info.m_lat, info.m_lon);
-  }
-
-  base::SortUnique(results);
-  for (auto const & r : results)
-  {
-    m_emitter.AddResultNoChecks(m_ranker.MakeResult(
-        RankerResult(r.m_lat, r.m_lon), true /* needAddress */, true /* needHighlighting */));
-    m_emitter.Emit();
-  }
+  double lat, lon;
+  if (!MatchLatLonDegree(m_query, lat, lon))
+    return;
+  m_emitter.AddResultNoChecks(m_ranker.MakeResult(RankerResult(lat, lon), true /* needAddress */,
+                                                  true /* needHighlighting */));
+  m_emitter.Emit();
 }
 
 void Processor::SearchPlusCode()
@@ -729,8 +698,6 @@ void Processor::InitGeocoder(Geocoder::Params & geocoderParams, SearchParams con
   geocoderParams.m_cuisineTypes = m_cuisineTypes;
   geocoderParams.m_preferredTypes = m_preferredTypes;
   geocoderParams.m_tracer = searchParams.m_tracer;
-  geocoderParams.m_streetSearchRadiusM = searchParams.m_streetSearchRadiusM;
-  geocoderParams.m_villageSearchRadiusM = searchParams.m_villageSearchRadiusM;
 
   m_geocoder.SetParams(geocoderParams);
 }
@@ -752,7 +719,6 @@ void Processor::InitPreRanker(Geocoder::Params const & geocoderParams,
   params.m_limit = max(SearchParams::kPreResultsCount, searchParams.m_maxNumResults);
   params.m_viewportSearch = viewportSearch;
   params.m_categorialRequest = geocoderParams.IsCategorialRequest();
-  params.m_numQueryTokens = geocoderParams.GetNumTokens();
 
   m_preRanker.Init(params);
 }

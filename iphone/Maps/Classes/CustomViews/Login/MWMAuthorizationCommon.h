@@ -10,6 +10,9 @@ enum class AuthorizationButtonType
   AuthorizationButtonTypeOSM
 };
 
+UIColor * AuthorizationButtonBackgroundColor(AuthorizationButtonType type);
+void AuthorizationConfigButton(UIButton * btn, AuthorizationButtonType type);
+
 // Deletes any stored credentials if called with empty key or secret.
 void AuthorizationStoreCredentials(osm::KeySecret const & keySecret);
 BOOL AuthorizationHaveCredentials();

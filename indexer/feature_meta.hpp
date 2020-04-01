@@ -103,7 +103,6 @@ public:
   /// @note! Do not change values here.
   /// Add new types to the end of list, before FMD_COUNT.
   /// Add new types to the corresponding list in Java.
-  /// Add new types to the corresponding list in generator/pygen/pygen.cpp.
   /// For types parsed from OSM get corresponding OSM tag to MetadataTagProcessor::TypeFromString().
   enum EType : int8_t
   {
@@ -149,16 +148,7 @@ public:
   static bool TypeFromString(std::string const & osmTagKey, EType & outType);
   static bool IsSponsoredType(EType const & type);
 
-  std::vector<Metadata::EType> GetKeys() const;
-
-  using MetadataBase::Has;
-  using MetadataBase::Get;
-  bool Has(EType type) const { return MetadataBase::Has(static_cast<uint8_t>(type)); }
-  std::string Get(EType type) const { return MetadataBase::Get(static_cast<uint8_t>(type)); }
-  bool Get(EType type, std::string & value) const { return MetadataBase::Get(static_cast<uint8_t>(type), value);  }
-
-  using MetadataBase::Set;
-  void Set(EType type, std::string const & value) { MetadataBase::Set(static_cast<uint8_t>(type), value); }
+  void Set(EType type, std::string const & value) { MetadataBase::Set(type, value); }
   void Drop(EType type) { Set(type, std::string()); }
   std::string GetWikiURL() const;
 

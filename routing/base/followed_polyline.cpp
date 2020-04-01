@@ -109,11 +109,6 @@ void FollowedPolyline::Update()
   m_current = Iter(m_poly.Front(), 0);
 }
 
-bool FollowedPolyline::IsFakeSegment(size_t index) const
-{
-  return binary_search(m_fakeSegmentIndexes.begin(), m_fakeSegmentIndexes.end(), index);
-}
-
 template <class DistanceFn>
 Iter FollowedPolyline::GetBestProjection(m2::RectD const & posRect,
                                          DistanceFn const & distFn) const
@@ -124,7 +119,7 @@ Iter FollowedPolyline::GetBestProjection(m2::RectD const & posRect,
   // right after intermediate point (in next subroute).
   size_t const hoppingBorderIdx = min(m_segProj.size(), m_current.m_ind + 2);
   Iter const closestIter =
-      GetClosestProjectionInInterval(posRect, distFn, m_current.m_ind, hoppingBorderIdx);
+    GetClosestProjectionInInterval(posRect, distFn, m_current.m_ind, hoppingBorderIdx);
   if (closestIter.IsValid())
     return closestIter;
 
@@ -133,36 +128,32 @@ Iter FollowedPolyline::GetBestProjection(m2::RectD const & posRect,
   return GetClosestProjectionInInterval(posRect, distFn, hoppingBorderIdx, m_nextCheckpointIndex);
 }
 
-Iter FollowedPolyline::GetBestMatchingProjection(m2::RectD const & posRect) const
+FollowedPolyline::UpdatedProjection FollowedPolyline::GetBestMatchingProjection(m2::RectD const & posRect) const
 {
   CHECK_EQUAL(m_segProj.size() + 1, m_poly.GetSize(), ());
   // At first trying to find a projection to two closest route segments of route which is close
-  // enough to |posRect| center. If |m_current| is right before intermediate point we can get |iter|
+  // enough to |posRect| center. If |m_current| is right before intermediate point we can get |closestIter|
   // right after intermediate point (in next subroute).
-  size_t const hoppingBorderIdx =
-      min(m_nextCheckpointIndex, min(m_segProj.size(), m_current.m_ind + 3));
-  auto const iter = GetClosestMatchingProjectionInInterval(posRect, m_current.m_ind, hoppingBorderIdx);
-  if (iter.IsValid())
-    return iter;
+  size_t const hoppingBorderIdx = min(m_segProj.size(), m_current.m_ind + 3);
+  auto const res = GetClosestMatchingProjectionInInterval(posRect, m_current.m_ind, hoppingBorderIdx);
+  if (res.m_iter.IsValid() || res.m_closerToUnmatching)
+    return UpdatedProjection{res.m_iter, res.m_closerToUnmatching};
+
   // If a projection to the 3 closest route segments is not found tries to find projection to other route
   // segments of current subroute.
   return GetClosestMatchingProjectionInInterval(posRect, hoppingBorderIdx, m_nextCheckpointIndex);
 }
 
-bool FollowedPolyline::UpdateMatchingProjection(m2::RectD const & posRect)
+FollowedPolyline::UpdatedProjectionInfo FollowedPolyline::UpdateMatchingProjection(m2::RectD const & posRect)
 {
   ASSERT(m_current.IsValid(), ());
   ASSERT_LESS(m_current.m_ind, m_poly.GetSize() - 1, ());
 
-  auto const iter = GetBestMatchingProjection(posRect);
+  auto const res = GetBestMatchingProjection(posRect);
 
-  if (iter.IsValid())
-  {
-    m_current = iter;
-    return true;
-  }
-
-  return false;
+  if (res.m_iter.IsValid())
+    m_current = res.m_iter;
+  return UpdatedProjectionInfo{res.m_iter.IsValid(), res.m_closerToUnmatching};
 }
 
 Iter FollowedPolyline::UpdateProjection(m2::RectD const & posRect)
@@ -182,10 +173,10 @@ Iter FollowedPolyline::UpdateProjection(m2::RectD const & posRect)
   return res;
 }
 
-void FollowedPolyline::SetFakeSegmentIndexes(vector<size_t> && fakeSegmentIndexes)
+void FollowedPolyline::SetUnmatchingSegmentIndexes(vector<size_t> && unmatchingSegmentIndexes)
 {
-  ASSERT(is_sorted(fakeSegmentIndexes.cbegin(), fakeSegmentIndexes.cend()), ());
-  m_fakeSegmentIndexes = move(fakeSegmentIndexes);
+  ASSERT(is_sorted(unmatchingSegmentIndexes.cbegin(), unmatchingSegmentIndexes.cend()), ());
+  m_unmatchingSegmentIndexes = move(unmatchingSegmentIndexes);
 }
 
 double FollowedPolyline::GetDistFromCurPointToRoutePointMerc() const
@@ -218,14 +209,14 @@ void FollowedPolyline::GetCurrentDirectionPoint(m2::PointD & pt, double toleranc
   pt = point;
 }
 
-Iter FollowedPolyline::GetClosestMatchingProjectionInInterval(m2::RectD const & posRect,
-                                                              size_t startIdx, size_t endIdx) const
+FollowedPolyline::UpdatedProjection FollowedPolyline::GetClosestMatchingProjectionInInterval(m2::RectD const & posRect,
+                                                          size_t startIdx, size_t endIdx) const
 {
   CHECK_LESS_OR_EQUAL(endIdx, m_segProj.size(), ());
   CHECK_LESS_OR_EQUAL(startIdx, endIdx, ());
-
   Iter nearestIter;
   double minDist = std::numeric_limits<double>::max();
+  double minDistUnmatching = minDist;
 
   m2::PointD const currPos = posRect.Center();
 
@@ -236,14 +227,25 @@ Iter FollowedPolyline::GetClosestMatchingProjectionInInterval(m2::RectD const & 
     if (!posRect.IsPointInside(pt))
       continue;
 
-    double const dp = mercator::DistanceOnEarth(pt, currPos);
-    if (dp >= minDist)
+    Iter it(pt, i);
+    double const dp = mercator::DistanceOnEarth(it.m_pt, currPos);
+    if (dp >= minDistUnmatching && dp >= minDist)
       continue;
 
-    nearestIter = Iter(pt, i);
-    minDist = dp;
+    if (!std::binary_search(m_unmatchingSegmentIndexes.begin(), m_unmatchingSegmentIndexes.end(), it.m_ind))
+    {
+      if (minDist > dp) // Overwrites the best matching for matched segment.
+      {
+        minDist = dp;
+        nearestIter = it;
+      }
+    }
+    else
+    {
+      if (minDistUnmatching > dp)
+        minDistUnmatching = dp;
+    }
   }
-
-  return nearestIter;
+  return UpdatedProjection{nearestIter, minDistUnmatching < minDist /* m_closerToUnmatching */};
 }
 }  //  namespace routing

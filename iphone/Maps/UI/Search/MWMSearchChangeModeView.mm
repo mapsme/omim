@@ -1,7 +1,6 @@
 #import "MWMSearchChangeModeView.h"
 #import "MWMButton.h"
 #import "UIButton+RuntimeAttributes.h"
-#import "SwiftBridge.h"
 
 @interface MWMSearchChangeModeView ()<MWMSearchObserver>
 
@@ -36,11 +35,11 @@
   switch (state)
   {
   case MWMSearchManagerStateTableSearch:
-    [self setStyleAndApply: @"PressBackground"];
+    self.backgroundColor = [UIColor pressBackground];
     [changeModeButton setTitle:L(@"search_show_on_map") forState:UIControlStateNormal];
     break;
   case MWMSearchManagerStateMapSearch:
-    [self setStyleAndApply: @"Background"];
+    self.backgroundColor = [UIColor white];
     [changeModeButton setTitle:L(@"search_in_table") forState:UIControlStateNormal];
     break;
   default: break;
@@ -57,14 +56,22 @@
     return;
   if (hasFilter)
   {
-   [self.filterButton setStyleAndApply:@"SearchFilterButtonActive"];
-   [self.cancelFilterButton setStyleAndApply:@"SearchCancelButtonActive"];
+    [self.filterButton setBackgroundColorName:@"linkBlue"];
+    [self.filterButton setBackgroundHighlightedColorName:@"linkBlueHighlighted"];
+    [self.filterButton setTitleColor:[UIColor white] forState:UIControlStateNormal];
+    [self.cancelFilterButton setImage:[UIImage imageNamed:@"ic_clear_filters"]
+                             forState:UIControlStateNormal];
+    self.cancelFilterButton.coloring = MWMButtonColoringWhite;
     [self bringSubviewToFront:self.cancelFilterButton];
   }
   else
   {
-   [self.filterButton setStyleAndApply:@"SearchFilterButtonInActive"];
-   [self.cancelFilterButton setStyleAndApply:@"SearchCancelButtonInActive"];
+    [self.filterButton setBackgroundColorName:@"clearColor"];
+    [self.filterButton setBackgroundHighlightedColorName:@"clearColor"];
+    [self.filterButton setTitleColor:[UIColor linkBlue] forState:UIControlStateNormal];
+    [self.cancelFilterButton setImage:[UIImage imageNamed:@"ic_filter"]
+                             forState:UIControlStateNormal];
+    self.cancelFilterButton.coloring = MWMButtonColoringBlue;
     [self sendSubviewToBack:self.cancelFilterButton];
   }
   [self sendSubviewToBack:self.changeModeBackground];

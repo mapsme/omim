@@ -255,86 +255,68 @@ public:
   {
     char const * affics[] =
     {
-      // Russian - Русский
+      // Russian
       "аллея", "бульвар", "набережная", "переулок", "площадь", "проезд", "проспект", "шоссе", "тупик", "улица", "тракт", "ал", "бул", "наб", "пер", "пл", "пр", "просп", "ш", "туп", "ул", "тр",
 
-      // English - English
-      "street", "st", "avenue", "av", "ave", "square", "sq", "road", "rd", "boulevard", "blvd", "drive", "dr", "highway", "hwy", "lane", "ln", "way", "circle", "place", "pl",
+      // English
+      "street", "avenue", "square", "road", "boulevard", "drive", "highway", "lane", "way", "circle", "st", "av", "ave", "sq", "rd", "blvd", "dr", "hwy", "ln",
 
-      // Bulgarian - Български
+      // Lithuanian
+      "g", "pr", "pl", "kel",
+
+      // Български език - Bulgarian
       "булевард", "бул", "площад", "пл", "улица", "ул", "квартал", "кв",
 
-      // Canada
+      // Canada - Canada
       "allee", "alley", "autoroute", "aut", "bypass", "byway", "carrefour", "carref", "chemin", "cercle", "circle", "côte", "crossing", "cross", "expressway", "freeway", "fwy", "line", "link", "loop", "parkway", "pky", "pkwy", "path", "pathway", "ptway", "route", "rue", "rte", "trail", "walk",
 
-      // Croatian - Hrvatski
-      "šetalište", "trg", "ulica", "ul", "poljana",
+      // Cesky - Czech
+      "ulice", "ul", "náměstí", "nám",
 
-      // Czech - Čeština
-      "ulice", "ul", "náměstí", "nám", "nábřeží", "nábr",
-
-      // Danish - Dansk
-      "plads",
-
-      // Dutch - Nederlands
-      "laan", "ln.", "straat", "steenweg", "stwg", "st",
-
-      // Estonian - Eesti
-      "maantee", "mnt", "puiestee", "tee", "pst",
-
-      // Finnish - Suomi
-      "kaari", "kri", "katu", "kuja", "kj", "kylä", "polku", "tie", "t", "tori", "väylä", "vlä",
-
-      // French - Français
-      "rue", "avenue", "carré", "cercle", "route", "boulevard", "drive", "autoroute", "lane", "chemin",
-
-      // German - Deutsch
+      // Deutsch - German
       "allee", "al", "brücke", "br", "chaussee", "gasse", "gr", "pfad", "straße", "str", "weg", "platz",
 
-      // Hungarian - Magyar
-      "utca", "út", "u.", "tér", "körút", "krt.", "rakpart", "rkp.",
+      // Español - Spanish
+      "avenida", "avd", "avda", "bulevar", "bulev", "calle", "calleja", "cllja", "callejón", "callej", "cjon", "callejuela", "cjla", "callizo", "cllzo", "calzada", "czada", "costera", "coste", "plza", "pza", "plazoleta", "pzta", "plazuela", "plzla", "tránsito", "trans", "transversal", "trval", "trasera", "tras", "travesía", "trva",
 
-       // Italian - Italiano
-      "corso", "piazza", "piazzale", "strada", "via", "viale", "calle", "fondamenta",
+      // Français - French
+      "rue", "avenue", "carré", "cercle", "route", "boulevard", "drive", "autoroute", "lane", "chemin",
 
-      // Latvian - Latviešu
-      "iela", "laukums",
+       // Italiano - Italian
+      "corso", "piazza", "piazzale", "strada", "via", "viale",
 
-      // Lithuanian - Lietuvių
-      "gatvė", "g.", "aikštė", "a", "prospektas", "pr.", "pl", "kel",
+      // Nederlands - Dutch
+      "laan", "ln.", "straat", "steenweg", "stwg", "st",
 
-      // Nepalese - नेपाली
-      "मार्ग", "marg",
-
-      // Norwegian - Norsk
+      // Norsk - Norwegian
       "vei", "veien", "vn", "gaten", "gata", "gt", "plass", "plassen", "sving", "svingen", "sv",
 
-      // Polish - Polski
+      // Polski - Polish
       "aleja", "aleje", "aleji", "alejach", "aleją", "plac", "placu", "placem", "ulica", "ulicy",
 
-      // Portuguese - Português
-      "rua", "r.", "travessa", "tr.", "praça", "pç.", "avenida", "quadrado", "estrada", "boulevard", "carro", "auto-estrada", "lane", "caminho",
+      // Português - Portuguese
+      "street", "avenida", "quadrado", "estrada", "boulevard", "carro", "auto-estrada", "lane", "caminho",
 
-      // Romanian - Română
+      // Română - Romanian
       "bul", "bdul", "blv", "bulevard", "bulevardu", "calea", "cal", "piața", "pţa", "pța", "strada", "stra", "stradela", "sdla", "stradă", "unitate", "autostradă", "lane",
 
-      // Slovenian - Slovenščina
-      "cesta", "ulica", "trg", "nabrežje",
+      // Slovenščina - Slovenian
+      "cesta",
 
-      // Spanish - Español
-      "avenida", "avd", "avda", "bulevar", "bulev", "calle", "calleja", "cllja", "callejón", "callej", "cjon", "callejuela", "cjla", "callizo", "cllzo", "calzada", "czada", "costera", "coste", "plza", "pza", "plazoleta", "pzta", "plazuela", "plzla", "tránsito", "trans", "transversal", "trval", "trasera", "tras", "travesía", "trva", "paseo", "plaça",
+      // Suomi - Finnish
+      "kaari", "kri", "katu", "kuja", "kj", "kylä", "polku", "tie", "t", "tori", "väylä", "vlä",
 
-      // Swedish - Svenska
+      // Svenska - Swedish
       "väg", "vägen", "gatan", "gränd", "gränden", "stig", "stigen", "plats", "platsen",
 
-      // Turkish - Türkçe
-      "sokak", "sk.", "sok", "sokağı", "cadde", "cad", "cd", "caddesi", "bulvar", "bulvarı", "blv.",
+      // Türkçe - Turkish
+      "sokak", "sk", "sok", "sokağı", "cadde", "cad", "cd", "caddesi", "bulvar", "bulvarı",
 
-      // Ukrainian - Українська
-      "дорога", "провулок", "площа", "шосе", "вулиця", "дор", "пров", "вул"
-
-      // Vietnamese - Tiếng Việt
+      // Tiếng Việt – Vietnamese
       "quốc lộ", "ql", "tỉnh lộ", "tl", "Đại lộ", "Đl", "Đường", "Đ", "Đường sắt", "Đs", "Đường phố", "Đp", "vuông", "con Đường", "Đại lộ", "Đường cao tốc",
+
+      // Українська - Ukrainian
+      "дорога", "провулок", "площа", "шосе", "вулиця", "дор", "пров", "вул"
     };
 
     for (auto const * s : affics)

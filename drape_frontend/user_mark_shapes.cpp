@@ -568,9 +568,6 @@ void CacheUserLines(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
     if (simplify)
       spline = SimplifySpline(renderInfo, sqrScale);
 
-    if (spline->GetSize() < 2)
-      continue;
-
     auto const clippedSplines = m2::ClipSplineByRect(tileRect, spline);
     for (auto const & clippedSpline : clippedSplines)
     {

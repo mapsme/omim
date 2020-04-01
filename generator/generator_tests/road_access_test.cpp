@@ -63,37 +63,6 @@ void BuildTestMwmWithRoads(LocalCountryFile & country)
   }
 }
 
-size_t GetLinesNumber(string const & text)
-{
-  stringstream ss;
-  ss << text.data();
-  string line;
-  size_t n = 0;
-  while (getline(ss, line))
-    ++n;
-  return n;
-}
-
-bool ExistsConsecutiveLines(string const & text, vector<string> const & lines)
-{
-  stringstream ss;
-  ss << text.data();
-  size_t lineIndex = 0;
-  string lineFromText;
-  while (getline(ss, lineFromText))
-  {
-    if (lineFromText == lines[lineIndex])
-      ++lineIndex;
-    else
-      lineIndex = 0;
-
-    if (lineIndex == lines.size())
-      return true;
-  }
-
-  return false;
-}
-
 void LoadRoadAccess(string const & mwmFilePath, VehicleType vehicleType, RoadAccess & roadAccess)
 {
   FilesContainerR const cont(mwmFilePath);
@@ -186,8 +155,7 @@ UNIT_TEST(RoadAccess_AccessPrivate)
   auto const roadAccessAllTypes =
       SaveAndLoadRoadAccess(roadAccessContent, osmIdsToFeatureIdsContent);
   auto const carRoadAccess = roadAccessAllTypes[static_cast<size_t>(VehicleType::Car)];
-  TEST_EQUAL(carRoadAccess.GetAccessWithoutConditional(0 /* featureId */),
-             make_pair(RoadAccess::Type::Private, RoadAccess::Confidence::Sure), ());
+  TEST_EQUAL(carRoadAccess.GetFeatureType(0 /* featureId */), RoadAccess::Type::Private, ());
 }
 
 UNIT_TEST(RoadAccess_Access_Multiple_Vehicle_Types)
@@ -204,20 +172,12 @@ UNIT_TEST(RoadAccess_Access_Multiple_Vehicle_Types)
       SaveAndLoadRoadAccess(roadAccessContent, osmIdsToFeatureIdsContent);
   auto const carRoadAccess = roadAccessAllTypes[static_cast<size_t>(VehicleType::Car)];
   auto const bicycleRoadAccess = roadAccessAllTypes[static_cast<size_t>(VehicleType::Bicycle)];
-  TEST_EQUAL(carRoadAccess.GetAccessWithoutConditional(1 /* featureId */),
-             make_pair(RoadAccess::Type::Private, RoadAccess::Confidence::Sure), ());
-
-  TEST_EQUAL(carRoadAccess.GetAccessWithoutConditional(2 /* featureId */),
-             make_pair(RoadAccess::Type::Private, RoadAccess::Confidence::Sure), ());
-
-  TEST_EQUAL(carRoadAccess.GetAccessWithoutConditional(3 /* featureId */),
-             make_pair(RoadAccess::Type::Yes, RoadAccess::Confidence::Sure), ());
-
-  TEST_EQUAL(carRoadAccess.GetAccessWithoutConditional(4 /* featureId */),
-             make_pair(RoadAccess::Type::Destination, RoadAccess::Confidence::Sure), ());
-
-  TEST_EQUAL(bicycleRoadAccess.GetAccessWithoutConditional(3 /* featureId */),
-             make_pair(RoadAccess::Type::No, RoadAccess::Confidence::Sure), ());
+  TEST_EQUAL(carRoadAccess.GetFeatureType(1 /* featureId */), RoadAccess::Type::Private, ());
+  TEST_EQUAL(carRoadAccess.GetFeatureType(2 /* featureId */), RoadAccess::Type::Private, ());
+  TEST_EQUAL(carRoadAccess.GetFeatureType(3 /* featureId */), RoadAccess::Type::Yes, ());
+  TEST_EQUAL(carRoadAccess.GetFeatureType(4 /* featureId */), RoadAccess::Type::Destination,
+             ());
+  TEST_EQUAL(bicycleRoadAccess.GetFeatureType(3 /* featureId */), RoadAccess::Type::No, ());
 }
 
 UNIT_TEST(RoadAccessWriter_Merge)
@@ -230,40 +190,19 @@ UNIT_TEST(RoadAccessWriter_Merge)
                                           OsmElement::EntityType::Way, {10, 11, 12, 13});
   auto const w2 = MakeOsmElementWithNodes(2 /* id */, {{"highway", "service"}} /* tags */,
                                           OsmElement::EntityType::Way, {20, 21, 22, 23});
-  auto const w3 = MakeOsmElementWithNodes(3 /* id */, {{"highway", "motorway"}} /* tags */,
-                                          OsmElement::EntityType::Way, {30, 31, 32, 33});
 
-  auto const p1 = generator_tests::MakeOsmElement(
-      11 /* id */, {{"barrier", "lift_gate"}, {"motor_vehicle", "private"}},
-      OsmElement::EntityType::Node);
-
-  auto const p2 = generator_tests::MakeOsmElement(
-      22 /* id */, {{"barrier", "lift_gate"}, {"motor_vehicle", "private"}},
-      OsmElement::EntityType::Node);
-
-  // We should ignore this barrier because it's without access tag and placed on highway-motorway.
-  auto const p3 = generator_tests::MakeOsmElement(32 /* id */, {{"barrier", "lift_gate"}},
-                                                  OsmElement::EntityType::Node);
+  auto const p1 = generator_tests::MakeOsmElement(11 /* id */, {{"barrier", "lift_gate"}, {"motor_vehicle", "private"}}, OsmElement::EntityType::Node);
+  auto const p2 = generator_tests::MakeOsmElement(22 /* id */, {{"barrier", "lift_gate"}, {"motor_vehicle", "private"}}, OsmElement::EntityType::Node);
 
   auto c1 = make_shared<RoadAccessWriter>(filename);
   auto c2 = c1->Clone();
-  auto c3 = c1->Clone();
-
   c1->CollectFeature(MakeFbForTest(p1), p1);
   c2->CollectFeature(MakeFbForTest(p2), p2);
-  c3->CollectFeature(MakeFbForTest(p3), p3);
-
   c1->CollectFeature(MakeFbForTest(w1), w1);
   c2->CollectFeature(MakeFbForTest(w2), w2);
-  c3->CollectFeature(MakeFbForTest(w3), w3);
-
   c1->Finish();
   c2->Finish();
-  c3->Finish();
-
   c1->Merge(*c2);
-  c1->Merge(*c3);
-
   c1->Save();
 
   ifstream stream;
@@ -275,210 +214,5 @@ UNIT_TEST(RoadAccessWriter_Merge)
   string const correctAnswer = "Car Private 1 2\n"
                                "Car Private 2 3\n";
   TEST_EQUAL(buffer.str(), correctAnswer, ());
-}
-
-UNIT_TEST(RoadAccessCoditionalParse)
-{
-  AccessConditionalTagParser parser;
-
-  using ConditionalVector = vector<AccessConditional>;
-  vector<pair<string, ConditionalVector>> tests = {
-      {"no @ Mo-Su",
-       {{RoadAccess::Type::No, "Mo-Su"}}},
-
-      {"no @ Mo-Su;",
-       {{RoadAccess::Type::No, "Mo-Su"}}},
-
-      {"yes @ (10:00 - 20:00)",
-       {{RoadAccess::Type::Yes, "10:00 - 20:00"}}},
-
-      {"private @ Mo-Fr 15:00-20:00",
-       {{RoadAccess::Type::Private, "Mo-Fr 15:00-20:00"}}},
-
-      {"destination @ 10:00-20:00",
-       {{RoadAccess::Type::Destination, "10:00-20:00"}}},
-
-      {"yes @ Mo-Fr ; Sa-Su",
-       {{RoadAccess::Type::Yes, "Mo-Fr ; Sa-Su"}}},
-
-      {"no @ (Mo-Su) ; yes @ (Fr-Su)",
-       {{RoadAccess::Type::No, "Mo-Su"},
-
-        {RoadAccess::Type::Yes, "Fr-Su"}}},
-      {"private @ (18:00-09:00; Oct-Mar)", {{RoadAccess::Type::Private, "18:00-09:00; Oct-Mar"}}},
-
-      {"no @ (Nov-May); no @ (20:00-07:00)",
-       {{RoadAccess::Type::No, "Nov-May"},
-        {RoadAccess::Type::No, "20:00-07:00"}}},
-
-      {"no @ 22:30-05:00",
-       {{RoadAccess::Type::No, "22:30-05:00"}}},
-
-      {"destination @ (Mo-Fr 06:00-15:00); yes @ (Mo-Fr 15:00-21:00; Sa,Su,SH,PH 09:00-21:00)",
-       {{RoadAccess::Type::Destination, "Mo-Fr 06:00-15:00"},
-        {RoadAccess::Type::Yes, "Mo-Fr 15:00-21:00; Sa,Su,SH,PH 09:00-21:00"}}},
-
-      {"no @ (Mar 15-Jul 15); private @ (Jan- Dec)",
-       {{RoadAccess::Type::No, "Mar 15-Jul 15"},
-        {RoadAccess::Type::Private, "Jan- Dec"}}},
-
-      {"no @ (06:30-08:30);destination @ (06:30-08:30 AND agricultural)",
-       {{RoadAccess::Type::No, "06:30-08:30"},
-        {RoadAccess::Type::Destination, "06:30-08:30 AND agricultural"}}},
-
-      {"no @ (Mo-Fr 00:00-08:00,20:00-24:00; Sa-Su 00:00-24:00; PH 00:00-24:00)",
-       {{RoadAccess::Type::No, "Mo-Fr 00:00-08:00,20:00-24:00; Sa-Su 00:00-24:00; PH 00:00-24:00"}}},
-
-      // Not valid cases
-      {"trash @ (Mo-Fr 00:00-10:00)", {{RoadAccess::Type::Count, "Mo-Fr 00:00-10:00"}}},
-      {"yes Mo-Fr", {}},
-      {"yes (Mo-Fr)", {}},
-      {"no ; Mo-Fr", {}},
-      {"asdsadasdasd", {}}
-  };
-
-  vector<string> tags = {
-      "motorcar:conditional",
-      "vehicle:conditional",
-      "motor_vehicle:conditional",
-      "bicycle:conditional",
-      "foot:conditional"
-  };
-
-  for (auto const & tag : tags)
-  {
-    for (auto const & test : tests)
-    {
-      auto const & [value, answer] = test;
-      auto const access = parser.ParseAccessConditionalTag(tag, value);
-      TEST(access == answer, (value, tag));
-    }
-  }
-}
-
-UNIT_TEST(RoadAccessWriter_ConditionalMerge)
-{
-  classificator::Load();
-  auto const filename = generator_tests::GetFileName();
-  SCOPE_GUARD(_, bind(Platform::RemoveFileIfExists, cref(filename)));
-
-  auto const w1 = MakeOsmElementWithNodes(
-      1 /* id */, {{"highway", "primary"}, {"vehicle:conditional", "no @ (Mo-Su)"}} /* tags */,
-      OsmElement::EntityType::Way, {10, 11, 12, 13});
-
-  auto const w2 = MakeOsmElementWithNodes(
-      2 /* id */,
-      {{"highway", "service"}, {"vehicle:conditional", "private @ (10:00-20:00)"}} /* tags */,
-      OsmElement::EntityType::Way, {20, 21, 22, 23});
-
-  auto const w3 = MakeOsmElementWithNodes(
-      3 /* id */,
-      {{"highway", "service"},
-       {"vehicle:conditional", "private @ (12:00-19:00) ; no @ (Mo-Su)"}} /* tags */,
-      OsmElement::EntityType::Way, {30, 31, 32, 33});
-
-  auto c1 = make_shared<RoadAccessWriter>(filename);
-  auto c2 = c1->Clone();
-  auto c3 = c1->Clone();
-
-  c1->CollectFeature(MakeFbForTest(w1), w1);
-  c2->CollectFeature(MakeFbForTest(w2), w2);
-  c3->CollectFeature(MakeFbForTest(w3), w3);
-
-  c1->Finish();
-  c2->Finish();
-  c3->Finish();
-
-  c1->Merge(*c2);
-  c1->Merge(*c3);
-
-  c1->Save();
-
-  ifstream stream;
-  stream.exceptions(fstream::failbit | fstream::badbit);
-  stream.open(filename + ROAD_ACCESS_CONDITIONAL_EXT);
-  stringstream buffer;
-  buffer << stream.rdbuf();
-
-  size_t linesNumber = 0;
-  auto const test = [&linesNumber, &buffer](vector<string> const & lines) {
-    TEST(ExistsConsecutiveLines(buffer.str(), lines), (buffer.str(), lines));
-    linesNumber += lines.size();
-  };
-
-  test({"Car 3 2",
-        "Private",
-        "12:00-19:00",
-        "No",
-        "Mo-Su"});
-
-  test({
-      "Car 2 1",
-      "Private",
-      "10:00-20:00"});
-
-  test({
-      "Car 1 1",
-      "No",
-      "Mo-Su"});
-
-  TEST_EQUAL(GetLinesNumber(buffer.str()), linesNumber, ());
-}
-
-UNIT_TEST(RoadAccessWriter_Conditional_WinterRoads)
-{
-  classificator::Load();
-  auto const filename = generator_tests::GetFileName();
-  SCOPE_GUARD(_, bind(Platform::RemoveFileIfExists, cref(filename)));
-
-  auto const w1 = MakeOsmElementWithNodes(
-      1 /* id */, {{"highway", "primary"}, {"ice_road", "yes"}} /* tags */,
-      OsmElement::EntityType::Way, {10, 11, 12, 13});
-
-  auto const w2 = MakeOsmElementWithNodes(
-      2 /* id */,
-      {{"highway", "service"}, {"winter_road", "yes"}} /* tags */,
-      OsmElement::EntityType::Way, {20, 21, 22, 23});
-
-  auto c1 = make_shared<RoadAccessWriter>(filename);
-
-  c1->CollectFeature(MakeFbForTest(w1), w1);
-  c1->CollectFeature(MakeFbForTest(w2), w2);
-
-  c1->Finish();
-  c1->Save();
-
-  ifstream stream;
-  stream.exceptions(fstream::failbit | fstream::badbit);
-  stream.open(filename + ROAD_ACCESS_CONDITIONAL_EXT);
-  stringstream buffer;
-  buffer << stream.rdbuf();
-
-  size_t linesNumber = 0;
-  auto const test = [&linesNumber, &buffer](vector<string> const & lines) {
-    TEST(ExistsConsecutiveLines(buffer.str(), lines), (buffer.str(), lines));
-    linesNumber += lines.size();
-  };
-
-  test({"Pedestrian 2 1",
-        "No",
-        "Mar - Nov"});
-  test({"Pedestrian 1 1",
-        "No",
-        "Mar - Nov"});
-  test({"Bicycle 2 1",
-        "No",
-        "Mar - Nov"});
-  test({"Bicycle 1 1",
-        "No",
-        "Mar - Nov"});
-  test({"Car 2 1",
-        "No",
-        "Mar - Nov"});
-  test({"Car 1 1",
-        "No",
-        "Mar - Nov"});
-
-  TEST_EQUAL(GetLinesNumber(buffer.str()), linesNumber, ());
 }
 }  // namespace

@@ -18,7 +18,6 @@
 
 #import <Foundation/Foundation.h>
 
-NS_SWIFT_NAME(KeychainStore)
 @interface FBSDKKeychainStore : NSObject
 
 @property (nonatomic, readonly, copy) NSString *service;

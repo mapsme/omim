@@ -35,7 +35,6 @@
 #include "map/framework_light.hpp"
 #include "map/gps_tracker.hpp"
 
-#include "partners_api/ads/mopub_ads.hpp"
 #include "platform/http_thread_apple.h"
 #include "platform/local_country_file_utils.hpp"
 
@@ -108,7 +107,7 @@ void OverrideUserAgent()
 
 using namespace osm_auth_ios;
 
-@interface MapsAppDelegate ()<MWMStorageObserver,
+@interface MapsAppDelegate ()<MWMFrameworkStorageObserver,
                               NotificationManagerDelegate,
                               AppsFlyerTrackerDelegate,
                               CPApplicationDelegate>
@@ -188,7 +187,7 @@ using namespace osm_auth_ios;
   [HttpThreadImpl setDownloadIndicatorProtocol:self];
   InitLocalizedStrings();
   GetFramework().SetupMeasurementSystem();
-  [[MWMStorage sharedStorage] addObserver:self];
+  [MWMFrameworkListener addObserver:self];
   [MapsAppDelegate customizeAppearance];
 
   self.standbyCounter = 0;
@@ -268,17 +267,11 @@ using namespace osm_auth_ios;
     }];
   }
 
-  MPMoPubConfiguration *sdkConfig = [[MPMoPubConfiguration alloc] initWithAdUnitIdForAppInitialization:@(ads::Mopub::InitializationBannerId().c_str())];
-  NSDictionary * facebookConfig = @{@"native_banner" : @true};
-  NSMutableDictionary * config = [@{@"FacebookAdapterConfiguration" : facebookConfig} mutableCopy];
-  sdkConfig.mediatedNetworkConfigurations = config;
-  sdkConfig.loggingLevel = MPBLogLevelDebug;
-  [[MoPub sharedInstance] initializeSdkWithConfiguration:sdkConfig completion:nil];
-
   if ([MoPubKit shouldShowConsentDialog])
     [MoPubKit grantConsent];
 
   [[DeepLinkHandler shared] applicationDidFinishLaunching:launchOptions];
+
   return YES;
 }
 
@@ -559,8 +552,22 @@ continueUserActivity:(NSUserActivity *)userActivity
   });
 }
 
++ (NSDictionary *)navigationBarTextAttributes
+{
+  return @{
+    NSForegroundColorAttributeName : [UIColor whitePrimaryText],
+    NSFontAttributeName : [UIFont regular18]
+  };
+}
+
 + (void)customizeAppearanceForNavigationBar:(UINavigationBar *)navigationBar
 {
+  navigationBar.tintColor = [UIColor primary];
+  navigationBar.barTintColor = [UIColor primary];
+  navigationBar.titleTextAttributes = [self navigationBarTextAttributes];
+  navigationBar.translucent = NO;
+  [navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+  navigationBar.shadowImage = [UIImage new];
   auto backImage = [[UIImage imageNamed:@"ic_nav_bar_back_sys"]
                     imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
   navigationBar.backIndicatorImage = backImage;
@@ -572,10 +579,39 @@ continueUserActivity:(NSUserActivity *)userActivity
   [UIButton appearance].exclusiveTouch = YES;
 
   [self customizeAppearanceForNavigationBar:[UINavigationBar appearance]];
+  
+  UIBarButtonItem *barButtonApperance = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UINavigationBar class]]];
+  [barButtonApperance setTitleTextAttributes:[self navigationBarTextAttributes]
+                                    forState:UIControlStateNormal];
+  [barButtonApperance setTitleTextAttributes:@{
+                                               NSForegroundColorAttributeName : [UIColor lightGrayColor],
+                                               }
+                                    forState:UIControlStateDisabled];
+  [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UINavigationBar class]]].tintColor = [UIColor whitePrimaryText];
+
+  UIPageControl * pageControl = [UIPageControl appearance];
+  pageControl.pageIndicatorTintColor = [UIColor blackHintText];
+  pageControl.currentPageIndicatorTintColor = [UIColor blackSecondaryText];
+  pageControl.backgroundColor = [UIColor white];
 
   UITextField * textField = [UITextField appearance];
   textField.keyboardAppearance =
       [UIColor isNightMode] ? UIKeyboardAppearanceDark : UIKeyboardAppearanceDefault;
+
+  UISearchBar * searchBar = [UISearchBar appearance];
+  searchBar.barTintColor = [UIColor primary];
+
+  UIBarButtonItem *searchButtonApperance = [UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]];
+  searchButtonApperance.tintColor = [UIColor whitePrimaryText];
+
+  UITextField * textFieldInSearchBar =
+      [UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]];
+
+  textField.backgroundColor = [UIColor white];
+  textFieldInSearchBar.defaultTextAttributes = @{
+    NSForegroundColorAttributeName : [UIColor blackPrimaryText],
+    NSFontAttributeName : [UIFont regular14]
+  };
 }
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options
@@ -613,7 +649,7 @@ continueUserActivity:(NSUserActivity *)userActivity
   return updateInfo.m_numberOfMwmFilesToUpdate;
 }
 
-#pragma mark - MWMStorageObserver
+#pragma mark - MWMFrameworkStorageObserver
 
 - (void)processCountryEvent:(NSString *)countryId
 {

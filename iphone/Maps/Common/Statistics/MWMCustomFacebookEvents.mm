@@ -5,8 +5,6 @@
 
 #include <CoreApi/Framework.h>
 
-#include "platform/downloader_defines.hpp"
-
 @implementation MWMCustomFacebookEvents
 
 // Used to filter out old users and to track only new installs.
@@ -97,7 +95,7 @@ static int gStorageSubscriptionId = kNotSubscribed;
                 [Alohalytics logEvent:kDownloadedSecondMapEvent];
               }
             },
-            [](storage::CountryId const &, downloader::Progress const &) {});
+            [](storage::CountryId const &, storage::MapFilesDownloader::Progress const &) {});
       }
     }
   }

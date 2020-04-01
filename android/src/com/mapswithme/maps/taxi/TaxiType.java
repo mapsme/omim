@@ -136,38 +136,6 @@ public enum TaxiType
         {
           return "Vezet";
         }
-      },
-  FREENOW
-      {
-        @NonNull
-        public String getPackageName()
-        {
-          return "taxi.android.client";
-        }
-
-        @NonNull
-        public Utils.PartnerAppOpenMode getOpenMode()
-        {
-          return Utils.PartnerAppOpenMode.Indirect;
-        }
-
-        @DrawableRes
-        public int getIcon()
-        {
-          return R.drawable.ic_logo_freenow;
-        }
-
-        @StringRes
-        public int getTitle()
-        {
-          return R.string.freenow_taxi_title;
-        }
-
-        @NonNull
-        public String getProviderName()
-        {
-          return "Freenow";
-        }
       };
 
   @StringRes

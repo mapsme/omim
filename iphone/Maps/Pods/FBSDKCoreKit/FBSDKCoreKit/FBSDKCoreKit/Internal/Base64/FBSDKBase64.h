@@ -18,7 +18,6 @@
 
 #import <Foundation/Foundation.h>
 
-NS_SWIFT_NAME(Base64)
 @interface FBSDKBase64 : NSObject
 
 /**

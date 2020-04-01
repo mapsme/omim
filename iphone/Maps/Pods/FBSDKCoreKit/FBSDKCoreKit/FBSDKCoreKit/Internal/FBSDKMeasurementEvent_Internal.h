@@ -16,16 +16,12 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "TargetConditionals.h"
-
-#if !TARGET_OS_TV
-
 #import "FBSDKMeasurementEvent.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- Provides methods for posting notifications from App Links
+/*!
+ Provides methods for posting notifications from the Bolts framework
  */
 @interface FBSDKMeasurementEvent (Internal)
 
@@ -35,5 +31,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif

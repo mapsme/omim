@@ -1,5 +1,4 @@
 #import "MWMEditorAdditionalNameTableViewCell.h"
-#import "SwiftBridge.h"
 
 static CGFloat const kErrorLabelHeight = 16;
 
@@ -46,12 +45,12 @@ static CGFloat const kErrorLabelHeight = 16;
   if (self.isValid)
   {
     self.errorLabelHeight.constant = 0;
-    [self.contentView setStyleAndApply: @"Background"];
+    self.contentView.backgroundColor = [UIColor white];
   }
   else
   {
     self.errorLabelHeight.constant = kErrorLabelHeight;
-    [self.contentView setStyleAndApply: @"ErrorBackground"];
+    self.contentView.backgroundColor = [UIColor errorPink];
   }
   [self layoutIfNeeded];
 }

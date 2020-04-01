@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -25,20 +27,20 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" verticalCompressionResistancePriority="749" ambiguous="YES" image="img_guides_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="1jX-9f-swC">
-                    <rect key="frame" x="0.0" y="-380.5" width="1000" height="485"/>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" verticalCompressionResistancePriority="749" image="img_guides_placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="1jX-9f-swC">
+                    <rect key="frame" x="0.0" y="-380.5" width="320" height="485"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="1jX-9f-swC" secondAttribute="height" multiplier="500:758" id="ZSu-8v-nw1"/>
                     </constraints>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" verticalCompressionResistancePriority="250" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wJO-dJ-F8G">
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="wJO-dJ-F8G">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="104.5"/>
                 </imageView>
-                <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q1n-JA-q3D">
+                <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q1n-JA-q3D">
                     <rect key="frame" x="0.0" y="104.5" width="320" height="463.5"/>
                     <subviews>
-                        <view contentMode="scaleToFill" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pbL-bL-mXm">
+                        <view contentMode="scaleToFill" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pbL-bL-mXm">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="463.5"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pwv-EO-6fY">
@@ -47,7 +49,8 @@
                                     <color key="textColor" white="0.0" alpha="0.37553510273972601" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="medium14:blackHintText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium14"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackHintText"/>
                                     </userDefinedRuntimeAttributes>
                                 </label>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YlO-Qt-ILN">
@@ -57,7 +60,7 @@
                                         <constraint firstAttribute="height" constant="1" id="LSa-3h-jdQ"/>
                                     </constraints>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Divider"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="blackDividers"/>
                                     </userDefinedRuntimeAttributes>
                                 </view>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="751" text="Have a dinner with Hemingway and Castro in Havana" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4PP-cK-o7Y">
@@ -67,7 +70,8 @@
                                     <nil key="highlightedColor"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value=""/>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular24:blackPrimaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular24"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackPrimaryText"/>
                                     </userDefinedRuntimeAttributes>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="by Julio Mulio" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H6m-mO-TFt">
@@ -77,10 +81,11 @@
                                     <nil key="highlightedColor"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value=""/>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular14:blackPrimaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular14"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackPrimaryText"/>
                                     </userDefinedRuntimeAttributes>
                                 </label>
-                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="751" ambiguous="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1XW-gh-X68" userLabel="Download Bookmarks">
+                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="751" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1XW-gh-X68" userLabel="Download Bookmarks">
                                     <rect key="frame" x="24" y="210" width="272" height="48"/>
                                     <color key="backgroundColor" red="0.11764705882352941" green="0.58823529411764708" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
@@ -92,13 +97,20 @@
                                         <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </state>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="FlatNormalButton"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="textColorHighlightedName" value="whitePrimaryTextHighlighted"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium14"/>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                            <integer key="value" value="8"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="textColorName" value="whitePrimaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="linkBlue"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundHighlightedColorName" value="linkBlueHighlighted"/>
                                     </userDefinedRuntimeAttributes>
                                     <connections>
                                         <action selector="onSubscribe:" destination="-1" eventType="touchUpInside" id="vKT-Jw-oYb"/>
                                     </connections>
                                 </button>
-                                <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="751" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y4X-z8-enR" userLabel="Buy">
+                                <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y4X-z8-enR" userLabel="Buy">
                                     <rect key="frame" x="24" y="268" width="272" height="48"/>
                                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
@@ -110,16 +122,24 @@
                                         <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </state>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="FlatNormalTransButton"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="textColorHighlightedName" value="linkBlueHighlighted"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium14"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="textColorName" value="linkBlue"/>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                            <integer key="value" value="1"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                            <integer key="value" value="8"/>
+                                        </userDefinedRuntimeAttribute>
                                     </userDefinedRuntimeAttributes>
                                     <connections>
                                         <action selector="onBuy:" destination="-1" eventType="touchUpInside" id="2iV-Mk-Qcg"/>
                                     </connections>
                                 </button>
-                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Yat-hc-p6d">
+                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Yat-hc-p6d">
                                     <rect key="frame" x="150" y="224" width="20" height="20"/>
                                 </activityIndicatorView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" textAlignment="justified" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ikF-tk-1jf">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="justified" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ikF-tk-1jf">
                                     <rect key="frame" x="20" y="348" width="280" height="75.5"/>
                                     <string key="text">Payment will be charged to your iTunes account at confirmation of purchase. The subscription will automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period. Your account will be charged according to your plan for renewal within 24 hours prior to the end of the current period. You can manage or turn off auto-renew in your Apple ID account settings at any time of your purchase.</string>
                                     <fontDescription key="fontDescription" type="system" pointSize="9"/>
@@ -127,10 +147,11 @@
                                     <nil key="highlightedColor"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="subscription_terms"/>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular9:blackPrimaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular9"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackPrimaryText"/>
                                     </userDefinedRuntimeAttributes>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="afE-a3-MQI">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="afE-a3-MQI">
                                     <rect key="frame" x="20" y="423.5" width="64" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="32" id="gYt-Pg-xeh"/>
@@ -140,14 +161,16 @@
                                         <color key="titleColor" white="0.33896576909169757" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="textColorName" value="blackSecondaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="textColorHighlightedName" value="blackHintText"/>
                                         <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="terms_of_use"/>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="TermsOfUseGrayButton"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium10"/>
                                     </userDefinedRuntimeAttributes>
                                     <connections>
                                         <action selector="onTerms:" destination="-1" eventType="touchUpInside" id="9bk-bP-2bT"/>
                                     </connections>
                                 </button>
-                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tUc-za-PqS">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tUc-za-PqS">
                                     <rect key="frame" x="233" y="423" width="67" height="32"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="32" id="nHF-aZ-Dei"/>
@@ -157,8 +180,10 @@
                                         <color key="titleColor" white="0.33896576909999998" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="textColorName" value="blackSecondaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="textColorHighlightedName" value="blackHintText"/>
                                         <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="privacy_policy"/>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="TermsOfUseGrayButton"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium10"/>
                                     </userDefinedRuntimeAttributes>
                                     <connections>
                                         <action selector="onPrivacy:" destination="-1" eventType="touchUpInside" id="E7z-WW-KLD"/>
@@ -203,7 +228,7 @@
                                 <constraint firstItem="Yat-hc-p6d" firstAttribute="centerY" secondItem="1XW-gh-X68" secondAttribute="centerY" id="xdk-le-mv7"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
                             </userDefinedRuntimeAttributes>
                             <variation key="default">
                                 <mask key="constraints">
@@ -268,7 +293,8 @@
                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                             <integer key="value" value="16"/>
                         </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background:MWMBlue"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="tintColorName" value="linkBlue"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <action selector="onCancel:" destination="-1" eventType="touchUpInside" id="qqu-Pr-Tyn"/>
@@ -288,7 +314,7 @@
                         <constraint firstItem="m8U-2p-bdf" firstAttribute="centerX" secondItem="I10-rL-z9q" secondAttribute="centerX" id="rsy-NP-WQ1"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="ToastBackground"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="toastBackground"/>
                     </userDefinedRuntimeAttributes>
                 </view>
             </subviews>
@@ -315,7 +341,7 @@
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <userDefinedRuntimeAttributes>
-                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background"/>
+                <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
             </userDefinedRuntimeAttributes>
             <variation key="default">
                 <mask key="constraints">

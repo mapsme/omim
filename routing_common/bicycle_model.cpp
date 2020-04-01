@@ -28,9 +28,9 @@ namespace
 // As result of such heuristic road is not totally the shortest, but it avoids non bicycle roads, which were
 // not marked as "hwtag=nobicycle" in OSM.
 
-HighwayBasedFactors const kDefaultFactors = GetOneFactorsForBicycleAndPedestrianModel();
+HighwayBasedFactors const kDefaultFactors{};
 
-HighwayBasedSpeeds const kDefaultSpeeds = {
+HighwayBasedMeanSpeeds const kDefaultSpeeds = {
     // {highway class : InOutCitySpeedKMpH(in city(weight, eta), out city(weight eta))}
     {HighwayType::HighwayTrunk, InOutCitySpeedKMpH(SpeedKMpH(3.0, 18.0))},
     {HighwayType::HighwayTrunkLink, InOutCitySpeedKMpH(SpeedKMpH(3.0, 18.0))},
@@ -52,6 +52,7 @@ HighwayBasedSpeeds const kDefaultSpeeds = {
     {HighwayType::HighwaySteps, InOutCitySpeedKMpH(SpeedKMpH(1.0, 5.0))},
     {HighwayType::HighwayPedestrian, InOutCitySpeedKMpH(SpeedKMpH(5.0))},
     {HighwayType::HighwayFootway, InOutCitySpeedKMpH(SpeedKMpH(7.0, 5.0))},
+    {HighwayType::HighwayPlatform, InOutCitySpeedKMpH(SpeedKMpH(3.0))},
     {HighwayType::ManMadePier, InOutCitySpeedKMpH(SpeedKMpH(7.0))},
     {HighwayType::RouteFerry, InOutCitySpeedKMpH(SpeedKMpH(3.0, 20.0))},
 };
@@ -77,7 +78,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsDefault = {
     {{"highway", "cycleway"}, true},
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
-    {{"highway", "steps"}, true}};
+    {{"highway", "steps"}, true},
+    {{"highway", "platform"}, true}};
 
 // All options available.
 VehicleModel::LimitsInitList const kBicycleOptionsAll = {
@@ -100,7 +102,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsAll = {
     {{"highway", "living_street"}, true},
     {{"highway", "steps"}, true},
     {{"highway", "pedestrian"}, true},
-    {{"highway", "footway"}, true}};
+    {{"highway", "footway"}, true},
+    {{"highway", "platform"}, true}};
 
 // Same as defaults except trunk and trunk_link are not allowed
 VehicleModel::LimitsInitList const kBicycleOptionsNoTrunk = {
@@ -118,7 +121,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsNoTrunk = {
     {{"highway", "cycleway"}, true},
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
-    {{"highway", "steps"}, true}};
+    {{"highway", "steps"}, true},
+    {{"highway", "platform"}, true}};
 
 // Same as defaults except pedestrian is allowed
 VehicleModel::LimitsInitList const kBicycleOptionsPedestrianAllowed = {
@@ -139,7 +143,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsPedestrianAllowed = {
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
     {{"highway", "steps"}, true},
-    {{"highway", "pedestrian"}, true}};
+    {{"highway", "pedestrian"}, true},
+    {{"highway", "platform"}, true}};
 
 // Same as defaults except bridleway is allowed
 VehicleModel::LimitsInitList const kBicycleOptionsBridlewayAllowed = {
@@ -160,7 +165,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsBridlewayAllowed = {
     {{"highway", "cycleway"}, true},
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
-    {{"highway", "steps"}, true}};
+    {{"highway", "steps"}, true},
+    {{"highway", "platform"}, true}};
 
 // Same as defaults except pedestrian and footway are allowed
 VehicleModel::LimitsInitList const kBicycleOptionsPedestrianFootwayAllowed = {
@@ -182,7 +188,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsPedestrianFootwayAllowed = {
     {{"highway", "living_street"}, true},
     {{"highway", "steps"}, true},
     {{"highway", "pedestrian"}, true},
-    {{"highway", "footway"}, true}};
+    {{"highway", "footway"}, true},
+    {{"highway", "platform"}, true}};
 
 // Australia
 VehicleModel::LimitsInitList const kBicycleOptionsAustralia = kBicycleOptionsAll;
@@ -203,7 +210,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsAustria = {
     {{"highway", "cycleway"}, true},
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
-    {{"highway", "steps"}, true}};
+    {{"highway", "steps"}, true},
+    {{"highway", "platform"}, true}};
 
 // Belarus
 VehicleModel::LimitsInitList const kBicycleOptionsBelarus = kBicycleOptionsPedestrianFootwayAllowed;
@@ -227,7 +235,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsBelgium = {
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
     {{"highway", "steps"}, true},
-    {{"highway", "pedestrian"}, true}};
+    {{"highway", "pedestrian"}, true},
+    {{"highway", "platform"}, true}};
 
 // Brazil
 VehicleModel::LimitsInitList const kBicycleOptionsBrazil = {
@@ -250,7 +259,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsBrazil = {
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
     {{"highway", "steps"}, true},
-    {{"highway", "footway"}, true}};
+    {{"highway", "footway"}, true},
+    {{"highway", "platform"}, true}};
 
 // Denmark
 VehicleModel::LimitsInitList const kBicycleOptionsDenmark = kBicycleOptionsNoTrunk;
@@ -274,7 +284,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsFrance = {
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
     {{"highway", "steps"}, true},
-    {{"highway", "pedestrian"}, true}};
+    {{"highway", "pedestrian"}, true},
+    {{"highway", "platform"}, true}};
 
 // Finland
 VehicleModel::LimitsInitList const kBicycleOptionsFinland = kBicycleOptionsPedestrianAllowed;
@@ -344,7 +355,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsUkraine = {
     {{"highway", "living_street"}, false},
     {{"highway", "steps"}, true},
     {{"highway", "pedestrian"}, true},
-    {{"highway", "footway"}, true}};
+    {{"highway", "footway"}, true},
+    {{"highway", "platform"}, true}};
 
 // United Kingdom
 VehicleModel::LimitsInitList const kBicycleOptionsUK = kBicycleOptionsBridlewayAllowed;
@@ -370,7 +382,8 @@ VehicleModel::LimitsInitList const kBicycleOptionsUS = {
     {{"highway", "residential"}, true},
     {{"highway", "living_street"}, true},
     {{"highway", "steps"}, true},
-    {{"highway", "pedestrian"}, true}};
+    {{"highway", "pedestrian"}, true},
+    {{"highway", "platform"}, true}};
 
 VehicleModel::SurfaceInitList const kBicycleSurface = {
   // {{surfaceType, surfaceType}, {weightFactor, etaFactor}}

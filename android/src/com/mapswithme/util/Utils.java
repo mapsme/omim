@@ -35,7 +35,6 @@ import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.activity.CustomNavigateUpListener;
-import com.mapswithme.maps.analytics.ExternalLibrariesMediator;
 import com.mapswithme.util.concurrency.UiThread;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
@@ -379,14 +378,6 @@ public class Utils
       return "";
 
     return installationId;
-  }
-
-  @Nullable
-  public static String getAdvertisingId(@NonNull Context context)
-  {
-    MwmApplication application = MwmApplication.from(context);
-    ExternalLibrariesMediator mediator = application.getMediator();
-    return mediator.getAdvertisingId();
   }
 
   @NonNull

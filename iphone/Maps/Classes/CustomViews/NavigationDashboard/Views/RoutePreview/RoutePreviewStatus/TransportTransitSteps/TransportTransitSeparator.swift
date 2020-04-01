@@ -1,4 +1,8 @@
 final class TransportTransitSeparator: UICollectionReusableView {
+  enum Config {
+    static var imageColor: UIColor { return UIColor.blackSecondaryText() }
+  }
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     setup()
@@ -11,7 +15,7 @@ final class TransportTransitSeparator: UICollectionReusableView {
 
   private func setup() {
     let image = UIImageView(image: #imageLiteral(resourceName: "ic_arrow"))
-    image.styleName = "MWMBlack"
+    image.tintColor = Config.imageColor
     image.contentMode = .scaleAspectFit
     addSubview(image)
   }

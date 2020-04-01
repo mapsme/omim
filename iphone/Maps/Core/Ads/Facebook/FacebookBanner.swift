@@ -11,7 +11,7 @@ final class FacebookBanner: NSObject, Banner {
   fileprivate var failure: Banner.Failure!
   fileprivate var click: Banner.Click!
 
-  let nativeAd: FBNativeBannerAd
+  let nativeAd: FBNativeAd
 
   func reload(success: @escaping Banner.Success, failure: @escaping Banner.Failure, click: @escaping Click) {
     FBAdSettings.clearTestDevices()
@@ -19,7 +19,7 @@ final class FacebookBanner: NSObject, Banner {
     self.failure = failure
     self.click = click
 
-    nativeAd.loadAd(withMediaCachePolicy: .all)
+    nativeAd.load()
     requestDate = Date()
   }
 
@@ -87,7 +87,8 @@ final class FacebookBanner: NSObject, Banner {
   }
 
   init(bannerID: String) {
-    nativeAd = FBNativeBannerAd(placementID: bannerID)
+    nativeAd = FBNativeAd(placementID: bannerID)
+    nativeAd.mediaCachePolicy = .all
     super.init()
     nativeAd.delegate = self
     let center = NotificationCenter.default
@@ -118,15 +119,15 @@ final class FacebookBanner: NSObject, Banner {
   }
 }
 
-// MARK: FacebookBanner: FBNativeBannerAdDelegate
-extension FacebookBanner: FBNativeBannerAdDelegate {
+// MARK: FacebookBanner: FBNativeAdDelegate
+extension FacebookBanner: FBNativeAdDelegate {
 
-  func nativeBannerAdDidLoad(_ nativeBannerAd: FBNativeBannerAd) {
+  func nativeAdDidLoad(_ nativeAd: FBNativeAd) {
     guard nativeAd === self.nativeAd else { return }
     success(self)
   }
 
-  func nativeBannerAd(_ nativeBannerAd: FBNativeBannerAd, didFailWithError error: Error) {
+  func nativeAd(_ nativeAd: FBNativeAd, didFailWithError error: Error) {
     guard nativeAd === self.nativeAd else { return }
 
     // https://developers.facebook.com/docs/audience-network/testing
@@ -144,7 +145,7 @@ extension FacebookBanner: FBNativeBannerAdDelegate {
     failure(type, event, params, e)
   }
 
-  func nativeBannerAdDidClick(_ nativeBannerAd: FBNativeBannerAd) {
+  func nativeAdDidClick(_ nativeAd: FBNativeAd) {
     guard nativeAd === self.nativeAd else { return }
     click(self)
   }

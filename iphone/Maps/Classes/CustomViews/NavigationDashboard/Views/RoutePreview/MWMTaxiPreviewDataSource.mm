@@ -137,10 +137,6 @@ using namespace taxi;
         self.type = MWMRoutePreviewTaxiCellTypeVezet;
         providerName = kStatVezet;
         break;
-      case taxi::Provider::Type::Freenow:
-        self.type = MWMRoutePreviewTaxiCellTypeFreenow;
-        providerName = kStatFreenow;
-        break;
       case taxi::Provider::Type::Count:
         LOG(LERROR, ("Incorrect taxi provider"));
         break;
@@ -176,7 +172,6 @@ using namespace taxi;
       case taxi::Provider::Type::Yandex: provider = kStatYandex; break;
       case taxi::Provider::Type::Maxim: provider = kStatMaxim; break;
       case taxi::Provider::Type::Rutaxi: provider = kStatVezet; break;
-      case taxi::Provider::Type::Freenow: provider = kStatFreenow; break;
       case taxi::Provider::Count: LOG(LERROR, ("Incorrect taxi provider")); break;
       }
       NSString * errorValue = nil;
@@ -209,7 +204,6 @@ using namespace taxi;
   case MWMRoutePreviewTaxiCellTypeYandex: url = [NSURL URLWithString:@"yandextaxi://"]; break;
   case MWMRoutePreviewTaxiCellTypeMaxim: url = [NSURL URLWithString:@"maximzakaz://"]; break;
   case MWMRoutePreviewTaxiCellTypeVezet: url = [NSURL URLWithString:@"vzt://"]; break;
-  case MWMRoutePreviewTaxiCellTypeFreenow: url = [NSURL URLWithString:@"mytaxi://"]; break;
   }
   return [UIApplication.sharedApplication canOpenURL:url];
 }
@@ -232,7 +226,6 @@ using namespace taxi;
   case MWMRoutePreviewTaxiCellTypeYandex: type = Provider::Type::Yandex; break;
   case MWMRoutePreviewTaxiCellTypeMaxim: type = Provider::Type::Maxim; break;
   case MWMRoutePreviewTaxiCellTypeVezet: type = Provider::Type::Rutaxi; break;
-  case MWMRoutePreviewTaxiCellTypeFreenow: type = Provider::Type::Freenow; break;
   }
 
   auto links = engine->GetRideRequestLinks(type, productId, m_from, m_to);

@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@protocol IOpeningHoursLocalization;
+#import "IOpeningHoursLocalization.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -8,18 +8,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, readonly) NSString *workingDays;
 @property(nonatomic, readonly) NSString *workingTimes;
-@property(nonatomic, readonly, nullable) NSString *breaks;
-@property(nonatomic, readonly) BOOL isOpen;
+@property(nonatomic, readonly) NSString *breaks;
 
 @end
 
 @interface OpeningHours : NSObject
 
 @property(nonatomic, readonly) NSArray<WorkingDay *> *days;
-@property(nonatomic, readonly) BOOL isClosedNow;
 
-- (nullable instancetype)initWithRawString:(NSString *)rawString
-                              localization:(id<IOpeningHoursLocalization>)localization;
+- (instancetype)initWithRawString:(NSString *)rawString localization:(id<IOpeningHoursLocalization>)localization;
 
 @end
 

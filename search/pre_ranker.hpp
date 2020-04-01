@@ -14,7 +14,6 @@
 #include <optional>
 #include <random>
 #include <set>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -53,8 +52,6 @@ public:
 
     bool m_viewportSearch = false;
     bool m_categorialRequest = false;
-
-    size_t m_numQueryTokens = 0;
   };
 
   PreRanker(DataSource const & dataSource, Ranker & ranker);

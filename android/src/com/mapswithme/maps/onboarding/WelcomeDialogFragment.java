@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
@@ -27,17 +26,13 @@ import com.mapswithme.util.Counters;
 import com.mapswithme.util.SharedPropertiesUtils;
 import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
-import com.mapswithme.util.statistics.Statistics;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Stack;
 
 public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View.OnClickListener
 {
-  private static final String ARG_SPECIFIC_STEP = "arg_specific_step";
-  private static final String ARG_HAS_MANY_STEPS = "arg_has_many_steps";
-  private static final String DEF_STATISTICS_VALUE = "agreement";
+  private static final String ARG_HAS_SPECIFIC_STEP = "welcome_screen_type";
+  private static final String ARG_HAS_MANY_STEPS = "show_onboarding_steps";
 
   @NonNull
   private final Stack<OnboardingStep> mOnboardingSteps = new Stack<>();
@@ -96,15 +91,7 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
   {
     Bundle args = new Bundle();
     args.putBoolean(ARG_HAS_MANY_STEPS, true);
-    args.putInt(ARG_SPECIFIC_STEP, startStep.ordinal());
-    create(activity, args);
-  }
-
-  public static void showOnboardinStep(@NonNull FragmentActivity activity,
-                                       @NonNull OnboardingStep step)
-  {
-    Bundle args = new Bundle();
-    args.putInt(ARG_SPECIFIC_STEP, step.ordinal());
+    args.putInt(ARG_HAS_SPECIFIC_STEP, startStep.ordinal());
     create(activity, args);
   }
 
@@ -182,17 +169,12 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
     mImage = mContentView.findViewById(R.id.iv__image);
     mImage.setImageResource(R.drawable.img_welcome);
     mTitle = mContentView.findViewById(R.id.tv__title);
-    List<String> headers = Arrays.asList(getString(R.string.new_onboarding_step1_header),
-                                         getString(R.string.new_onboarding_step1_header_2));
-    String titleText = TextUtils.join(UiUtils.NEW_STRING_DELIMITER, headers);
-    mTitle.setText(titleText);
+    mTitle.setText(R.string.onboarding_welcome_title);
     mSubtitle = mContentView.findViewById(R.id.tv__subtitle1);
-    mSubtitle.setText(R.string.sign_message_gdpr);
+    mSubtitle.setText(R.string.onboarding_welcome_first_subtitle);
 
     initUserAgreementViews();
     bindWelcomeScreenType();
-    if (savedInstanceState == null)
-      trackStatisticEvent(Statistics.EventName.ONBOARDING_SCREEN_SHOW);
 
     return res;
   }
@@ -210,10 +192,10 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
         mOnboardingSteps.push(OnboardingStep.DREAM_AND_PLAN);
       }
 
-      boolean hasSpecificStep = args.containsKey(ARG_SPECIFIC_STEP);
+      boolean hasSpecificStep = args.containsKey(ARG_HAS_SPECIFIC_STEP);
       if (hasSpecificStep)
         mOnboardinStep =
-            OnboardingStep.values()[args.getInt(ARG_SPECIFIC_STEP)];
+            OnboardingStep.values()[args.getInt(ARG_HAS_SPECIFIC_STEP)];
 
       if (hasManySteps && hasSpecificStep)
       {
@@ -273,8 +255,6 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
     if (!isAgreementGranted)
       return;
 
-    trackStatisticEvent(Statistics.EventName.ONBOARDING_SCREEN_ACCEPT);
-
     if (mPolicyAgreementListener != null)
       mPolicyAgreementListener.onPolicyAgreementApplied();
     dismissAllowingStateLoss();
@@ -302,32 +282,18 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
     mTitle.setText(mOnboardinStep.getTitle());
     mImage.setImageResource(mOnboardinStep.getImage());
     mAcceptBtn.setText(mOnboardinStep.getAcceptButtonResId());
-    declineBtn.setOnClickListener(v -> onDeclineBtnClicked());
+    declineBtn.setOnClickListener(v -> {});
     mSubtitle.setText(mOnboardinStep.getSubtitle());
-  }
-
-  private void onDeclineBtnClicked()
-  {
-    Counters.setFirstStartDialogSeen(requireContext());
-    trackStatisticEvent(Statistics.EventName.ONBOARDING_SCREEN_DECLINE);
-    dismissAllowingStateLoss();
-  }
-
-  private void trackStatisticEvent(@NonNull String event)
-  {
-    String value = mOnboardinStep == null ? DEF_STATISTICS_VALUE : mOnboardinStep.toStatisticValue();
-    Statistics.ParameterBuilder builder = Statistics
-        .params().add(Statistics.EventParam.TYPE, value);
-    Statistics.INSTANCE.trackEvent(event, builder);
   }
 
   @Override
   public void onClick(View v)
   {
     if (v.getId() != R.id.accept_btn)
+    {
+      Counters.setFirstStartDialogSeen(requireContext());
       return;
-
-    trackStatisticEvent(Statistics.EventName.ONBOARDING_SCREEN_ACCEPT);
+    }
 
     if (!mOnboardingSteps.isEmpty())
     {
@@ -337,9 +303,6 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
       bindWelcomeScreenType();
       return;
     }
-
-    if (mOnboardinStep != null && mOnboardingStepPassedListener != null)
-      mOnboardingStepPassedListener.onOnboardingStepPassed(mOnboardinStep);
 
     Counters.setFirstStartDialogSeen(requireContext());
     dismissAllowingStateLoss();
@@ -354,8 +317,7 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
     super.onCancel(dialog);
     if (!isAgreementDeclined(requireContext()))
       Counters.setFirstStartDialogSeen(requireContext());
-    if (mOnboardingStepPassedListener != null)
-      mOnboardingStepPassedListener.onOnboardingStepCancelled();
+    requireActivity().finish();
   }
 
   public static boolean isAgreementDeclined(@NonNull Context context)
@@ -374,6 +336,5 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
   {
     void onOnboardingStepPassed(@NonNull OnboardingStep step);
     void onLastOnboardingStepPassed();
-    void onOnboardingStepCancelled();
   }
 }

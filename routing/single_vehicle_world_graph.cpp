@@ -1,7 +1,5 @@
 #include "routing/single_vehicle_world_graph.hpp"
 
-#include "routing/base/astar_algorithm.hpp"
-
 #include <algorithm>
 #include <utility>
 
@@ -75,38 +73,36 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
   jointEdges.insert(jointEdges.end(), newCrossMwmEdges.begin(), newCrossMwmEdges.end());
 }
 
-void SingleVehicleWorldGraph::GetEdgeList(
-    astar::VertexData<Segment, RouteWeight> const & vertexData, bool isOutgoing,
-    bool useRoutingOptions, bool useAccessConditional, vector<SegmentEdge> & edges)
+void SingleVehicleWorldGraph::GetEdgeList(Segment const & segment, bool isOutgoing,
+                                          bool useRoutingOptions, vector<SegmentEdge> & edges)
 {
   CHECK_NOT_EQUAL(m_mode, WorldGraphMode::LeapsOnly, ());
 
   ASSERT(m_parentsForSegments.forward && m_parentsForSegments.backward,
          ("m_parentsForSegments was not initialized in SingleVehicleWorldGraph."));
-  auto const & segment = vertexData.m_vertex;
   auto & parents = isOutgoing ? *m_parentsForSegments.forward : *m_parentsForSegments.backward;
   IndexGraph & indexGraph = m_loader->GetIndexGraph(segment.GetMwmId());
-  indexGraph.GetEdgeList(vertexData, isOutgoing, useRoutingOptions, edges, parents);
+  indexGraph.GetEdgeList(segment, isOutgoing, useRoutingOptions, edges, parents);
 
   if (m_mode != WorldGraphMode::SingleMwm && m_crossMwmGraph && m_crossMwmGraph->IsTransition(segment, isOutgoing))
     GetTwins(segment, isOutgoing, useRoutingOptions, edges);
 }
 
-void SingleVehicleWorldGraph::GetEdgeList(
-    astar::VertexData<JointSegment, RouteWeight> const & parentVertexData, Segment const & parent,
-    bool isOutgoing, bool useAccessConditional, vector<JointEdge> & jointEdges,
-    vector<RouteWeight> & parentWeights)
+void SingleVehicleWorldGraph::GetEdgeList(JointSegment const & parentJoint,
+                                          Segment const & parent, bool isOutgoing,
+                                          vector<JointEdge> & jointEdges,
+                                          vector<RouteWeight> & parentWeights)
 {
   // Fake segments aren't processed here. All work must be done
   // on the IndexGraphStarterJoints abstraction-level.
   if (!parent.IsRealSegment())
     return;
 
-  ASSERT(m_parentsForJoints.forward && m_parentsForJoints.backward,
-         ("m_parentsForJoints was not initialized in SingleVehicleWorldGraph."));
+  ASSERT(m_parentsForSegments.forward && m_parentsForSegments.backward,
+         ("m_parentsForSegments was not initialized in SingleVehicleWorldGraph."));
   auto & parents = isOutgoing ? *m_parentsForJoints.forward : *m_parentsForJoints.backward;
   auto & indexGraph = GetIndexGraph(parent.GetMwmId());
-  indexGraph.GetEdgeList(parentVertexData, parent, isOutgoing, jointEdges, parentWeights, parents);
+  indexGraph.GetEdgeList(parentJoint, parent, isOutgoing, jointEdges, parentWeights, parents);
 
   if (m_mode != WorldGraphMode::JointSingleMwm)
     CheckAndProcessTransitFeatures(parent, jointEdges, parentWeights, isOutgoing);
@@ -215,7 +211,7 @@ RoutingOptions SingleVehicleWorldGraph::GetRoutingOptions(Segment const & segmen
   return geometry.GetRoutingOptions();
 }
 
-void SingleVehicleWorldGraph::SetAStarParents(bool forward, Parents<Segment> & parents)
+void SingleVehicleWorldGraph::SetAStarParents(bool forward, map<Segment, Segment> & parents)
 {
   if (forward)
     m_parentsForSegments.forward = &parents;
@@ -223,7 +219,7 @@ void SingleVehicleWorldGraph::SetAStarParents(bool forward, Parents<Segment> & p
     m_parentsForSegments.backward = &parents;
 }
 
-void SingleVehicleWorldGraph::SetAStarParents(bool forward, Parents<JointSegment> & parents)
+void SingleVehicleWorldGraph::SetAStarParents(bool forward, map<JointSegment, JointSegment> & parents)
 {
   if (forward)
     m_parentsForJoints.forward = &parents;
@@ -260,13 +256,13 @@ NumMwmId GetCommonMwmInChain(vector<VertexType> const & chain)
 
 template <typename VertexType>
 bool 
-SingleVehicleWorldGraph::AreWavesConnectibleImpl(Parents<VertexType> const & forwardParents,
+SingleVehicleWorldGraph::AreWavesConnectibleImpl(map<VertexType, VertexType> const & forwardParents,
                                                  VertexType const & commonVertex,
-                                                 Parents<VertexType> const & backwardParents,
+                                                 map<VertexType, VertexType> const & backwardParents,
                                                  function<uint32_t(VertexType const &)> && fakeFeatureConverter)
 {
   vector<VertexType> chain;
-  auto const fillUntilNextFeatureId = [&](VertexType const & cur, auto const & parents)
+  auto const fillUntilNextFeatureId = [&](VertexType const & cur, map<VertexType, VertexType> const & parents)
   {
     auto startFeatureId = cur.GetFeatureId();
     auto it = parents.find(cur);
@@ -283,7 +279,7 @@ SingleVehicleWorldGraph::AreWavesConnectibleImpl(Parents<VertexType> const & for
     return true;
   };
 
-  auto const fillParents = [&](VertexType const & start, auto const & parents)
+  auto const fillParents = [&](VertexType const & start, map<VertexType, VertexType> const & parents)
   {
     VertexType current = start;
     static uint32_t constexpr kStepCountOneSide = 3;
@@ -316,7 +312,7 @@ SingleVehicleWorldGraph::AreWavesConnectibleImpl(Parents<VertexType> const & for
   if (mwmId == kFakeNumMwmId)
     return true;
 
-  Parents<VertexType> parents;
+  map<VertexType, VertexType> parents;
   for (size_t i = 1; i < chain.size(); ++i)
     parents[chain[i]] = chain[i - 1];
 
@@ -338,17 +334,17 @@ SingleVehicleWorldGraph::AreWavesConnectibleImpl(Parents<VertexType> const & for
   return true;
 }
 
-bool SingleVehicleWorldGraph::AreWavesConnectible(Parents<Segment> & forwardParents,
+bool SingleVehicleWorldGraph::AreWavesConnectible(ParentSegments & forwardParents,
                                                   Segment const & commonVertex,
-                                                  Parents<Segment> & backwardParents,
+                                                  ParentSegments & backwardParents,
                                                   function<uint32_t(Segment const &)> && fakeFeatureConverter)
 {
   return AreWavesConnectibleImpl(forwardParents, commonVertex, backwardParents, move(fakeFeatureConverter));
 }
 
-bool SingleVehicleWorldGraph::AreWavesConnectible(Parents<JointSegment> & forwardParents,
+bool SingleVehicleWorldGraph::AreWavesConnectible(ParentJoints & forwardParents,
                                                   JointSegment const & commonVertex,
-                                                  Parents<JointSegment> & backwardParents,
+                                                  ParentJoints & backwardParents,
                                                   function<uint32_t(JointSegment const &)> && fakeFeatureConverter)
 {
   return AreWavesConnectibleImpl(forwardParents, commonVertex, backwardParents, move(fakeFeatureConverter));

@@ -1,5 +1,4 @@
 #import <CoreApi/MWMTypes.h>
-#import <CoreApi/CoreBanner.h>
 
 #import "MWMHotelParams.h"
 #import "MWMSearchItemType.h"

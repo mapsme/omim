@@ -1,10 +1,6 @@
 package com.mapswithme.maps.permissions;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.View;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
@@ -17,8 +13,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.news.OnboardingStep;
-import com.mapswithme.util.statistics.Statistics;
 
 public class PermissionsDialogFragment extends BasePermissionsDialogFragment
 {
@@ -77,7 +71,6 @@ public class PermissionsDialogFragment extends BasePermissionsDialogFragment
   protected void onFirstActionClick()
   {
     PermissionsDetailDialogFragment.show(getActivity(), getRequestCode());
-    sendStatistics(Statistics.EventName.ONBOARDING_SCREEN_DECLINE);
   }
 
   @IdRes
@@ -85,17 +78,6 @@ public class PermissionsDialogFragment extends BasePermissionsDialogFragment
   protected int getContinueActionButton()
   {
     return R.id.accept_btn;
-  }
-
-  @NonNull
-  @Override
-  public Dialog onCreateDialog(Bundle savedInstanceState)
-  {
-    Dialog dialog = super.onCreateDialog(savedInstanceState);
-    if (savedInstanceState == null)
-      sendStatistics(Statistics.EventName.ONBOARDING_SCREEN_SHOW);
-
-    return dialog;
   }
 
   @Override
@@ -112,19 +94,5 @@ public class PermissionsDialogFragment extends BasePermissionsDialogFragment
   {
     super.onCancel(dialog);
     getActivity().finish();
-  }
-
-  @Override
-  protected void onContinueBtnClicked(View v)
-  {
-    super.onContinueBtnClicked(v);
-    sendStatistics(Statistics.EventName.ONBOARDING_SCREEN_ACCEPT);
-  }
-
-  private void sendStatistics(@NonNull String event)
-  {
-    String value =  OnboardingStep.PERMISSION_EXPLANATION.toStatisticValue();
-    Statistics.ParameterBuilder builder = Statistics.params().add(Statistics.EventParam.TYPE, value);
-    Statistics.INSTANCE.trackEvent(event, builder);
   }
 }

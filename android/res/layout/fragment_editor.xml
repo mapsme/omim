@@ -158,7 +158,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-      android:id="@+id/cv__details"
+      android:id="@+id/cv__metadata"
       style="@style/MwmWidget.Editor.CardView">
 
       <LinearLayout

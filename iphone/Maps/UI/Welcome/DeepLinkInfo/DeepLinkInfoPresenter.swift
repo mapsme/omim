@@ -46,6 +46,10 @@ extension DeepLinkInfoPresenter: IDeepLinkInfoPresenter {
     Statistics.logEvent(kStatOnboardingDlAccept, withParameters: [kStatType : host])
   }
 
+  func key() -> String {
+    return ""
+  }
+
   func onClose() {
 
   }

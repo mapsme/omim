@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -31,7 +33,7 @@
                         <constraint firstAttribute="height" constant="20" id="0AS-cy-xIW"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="PrimaryBackground"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="primary"/>
                     </userDefinedRuntimeAttributes>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l7E-Ns-2Nn" userLabel="Options View">
@@ -57,7 +59,7 @@
                     </constraints>
                     <viewLayoutGuide key="safeArea" id="THL-V3-3xS"/>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="SecondaryBackground"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="secondary"/>
                     </userDefinedRuntimeAttributes>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3s2-BV-X5i" customClass="SolidTouchView">
@@ -154,7 +156,7 @@
                         <constraint firstAttribute="bottom" secondItem="sXu-tl-a0m" secondAttribute="bottom" constant="4" id="wEf-uh-sfy"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="PrimaryBackground"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="primary"/>
                     </userDefinedRuntimeAttributes>
                 </view>
                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="87p-Qg-8f3" customClass="MWMBaseRoutePreviewStatus">
@@ -170,7 +172,8 @@
                                     <nil key="highlightedColor"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="routing_planning_error"/>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular17:redText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="red"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular17"/>
                                     </userDefinedRuntimeAttributes>
                                 </label>
                             </subviews>
@@ -190,7 +193,8 @@
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.54000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular17:blackSecondaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackSecondaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular17"/>
                                     </userDefinedRuntimeAttributes>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Arrive at 12:24" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oec-Ee-6ha">
@@ -199,7 +203,8 @@
                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.54000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="medium14:blackSecondaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="blackSecondaryText"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium14"/>
                                     </userDefinedRuntimeAttributes>
                                 </label>
                             </subviews>
@@ -225,7 +230,8 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                             <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="medium14:linkBlueText"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="colorName" value="linkBlue"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="medium14"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                     </subviews>
@@ -272,7 +278,7 @@
                                         <constraint firstAttribute="height" constant="1" id="ZFh-zw-f9W"/>
                                     </constraints>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Divider"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="blackDividers"/>
                                     </userDefinedRuntimeAttributes>
                                 </view>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NAs-km-8uw">
@@ -280,9 +286,6 @@
                                     <inset key="contentEdgeInsets" minX="8" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     <inset key="imageEdgeInsets" minX="-16" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     <state key="normal" title="ManageRoute" image="ic_24px_manager"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="medium14:MWMBlack"/>
-                                    </userDefinedRuntimeAttributes>
                                     <connections>
                                         <action selector="showRouteManager" destination="-1" eventType="touchUpInside" id="eOk-zR-QEb"/>
                                     </connections>
@@ -311,7 +314,7 @@
                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </collectionViewFlowLayout>
                                     <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background"/>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
                                     </userDefinedRuntimeAttributes>
                                 </collectionView>
                             </subviews>
@@ -355,7 +358,13 @@
                         <constraint firstItem="QEP-6s-YTM" firstAttribute="leading" secondItem="87p-Qg-8f3" secondAttribute="leading" id="x6v-27-R7O"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="RouteBasePreview"/>
+                        <userDefinedRuntimeAttribute type="color" keyPath="layer.borderUIColor">
+                            <color key="value" red="0.0" green="0.0" blue="0.0" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                            <integer key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="arriveLabel" destination="oec-Ee-6ha" id="FLF-8X-PAf"/>
@@ -406,7 +415,13 @@
                         <constraint firstAttribute="height" priority="100" constant="80" id="lLi-5o-PDI"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="RouteBasePreview"/>
+                        <userDefinedRuntimeAttribute type="color" keyPath="layer.borderUIColor">
+                            <color key="value" red="0.0" green="0.0" blue="0.0" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                            <integer key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="etaLabel" destination="tuZ-25-ltG" id="Rwo-UC-mvq"/>
@@ -426,8 +441,11 @@
                                 <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="0.26000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="FlatNormalButtonBig"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="regular17"/>
                                 <userDefinedRuntimeAttribute type="string" keyPath="localizedText" value="p2p_start"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="textColorName" value="white"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="linkBlue"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="backgroundHighlightedColorName" value="linkBlueHighlighted"/>
                             </userDefinedRuntimeAttributes>
                             <connections>
                                 <action selector="routingStartTouchUpInside" destination="-1" eventType="touchUpInside" id="S0p-CT-EfI"/>
@@ -443,7 +461,13 @@
                         <constraint firstAttribute="bottom" secondItem="4IJ-pR-Ztp" secondAttribute="bottom" id="iof-B4-bI3"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="RouteBasePreview"/>
+                        <userDefinedRuntimeAttribute type="color" keyPath="layer.borderUIColor">
+                            <color key="value" red="0.0" green="0.0" blue="0.0" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                            <integer key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="white"/>
                     </userDefinedRuntimeAttributes>
                 </view>
             </subviews>
@@ -471,7 +495,19 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="rhh-dY-ZHT"/>
             <userDefinedRuntimeAttributes>
-                <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="RoutePreview"/>
+                <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                    <integer key="value" value="2"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="color" keyPath="layer.shadowUIColor">
+                    <color key="value" red="0.0" green="0.0" blue="0.0" alpha="0.23999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                    <integer key="value" value="1"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="size" keyPath="layer.shadowOffset">
+                    <size key="value" width="3" height="0.0"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="string" keyPath="backgroundColorName" value="pressBackground"/>
             </userDefinedRuntimeAttributes>
             <connections>
                 <outlet property="backButton" destination="a4n-5I-PN3" id="42W-5B-Z8i"/>

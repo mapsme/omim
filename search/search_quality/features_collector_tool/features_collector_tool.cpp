@@ -1,22 +1,18 @@
-#include "search/search_quality/helpers.hpp"
-#include "search/search_quality/matcher.hpp"
-#include "search/search_quality/sample.hpp"
-
-#include "search/search_tests_support/test_search_engine.hpp"
-#include "search/search_tests_support/test_search_request.hpp"
-
 #include "search/feature_loader.hpp"
 #include "search/ranking_info.hpp"
 #include "search/result.hpp"
-
-#include "storage/country_info_getter.hpp"
-#include "storage/storage.hpp"
-#include "storage/storage_defines.hpp"
+#include "search/search_quality/helpers.hpp"
+#include "search/search_quality/matcher.hpp"
+#include "search/search_quality/sample.hpp"
+#include "search/search_tests_support/test_search_engine.hpp"
+#include "search/search_tests_support/test_search_request.hpp"
 
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_source.hpp"
 
-#include "platform/platform_tests_support/helpers.hpp"
+#include "storage/country_info_getter.hpp"
+#include "storage/storage.hpp"
+#include "storage/storage_defines.hpp"
 
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
@@ -28,8 +24,6 @@
 #include "base/macros.hpp"
 #include "base/string_utils.hpp"
 
-#include "defines.hpp"
-
 #include <cstddef>
 #include <fstream>
 #include <iostream>
@@ -37,6 +31,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "defines.hpp"
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -46,7 +42,6 @@ using namespace search;
 using namespace std;
 using namespace storage;
 
-DEFINE_int32(num_threads, 1, "Number of search engine threads");
 DEFINE_string(data_path, "", "Path to data directory (resources dir)");
 DEFINE_string(mwm_path, "", "Path to mwm files (writable dir)");
 DEFINE_string(stats_path, "", "Path to store stats about queries results (default: stderr)");
@@ -99,7 +94,7 @@ void DisplayStats(ostream & os, vector<Sample> const & samples, vector<Stats> co
 
 int main(int argc, char * argv[])
 {
-  platform::tests_support::ChangeMaxNumberOfOpenFiles(kMaxOpenFiles);
+  ChangeMaxNumberOfOpenFiles(kMaxOpenFiles);
   CheckLocale();
 
   google::SetUsageMessage("Features collector tool.");
@@ -116,63 +111,56 @@ int main(int argc, char * argv[])
   storage::CountryNameSynonyms countryNameSynonyms;
   InitStorageData(affiliations, countryNameSynonyms);
 
-  auto engine = InitSearchEngine(dataSource, affiliations, "en" /* locale */, FLAGS_num_threads);
+  auto engine = InitSearchEngine(dataSource, affiliations, "en" /* locale */, 1 /* numThreads */);
 
-  vector<Sample> samples;
+  string lines;
+  if (FLAGS_json_in.empty())
   {
-    string lines;
-    if (FLAGS_json_in.empty())
+    GetContents(cin, lines);
+  }
+  else
+  {
+    ifstream ifs(FLAGS_json_in);
+    if (!ifs.is_open())
     {
-      GetContents(cin, lines);
-    }
-    else
-    {
-      ifstream ifs(FLAGS_json_in);
-      if (!ifs.is_open())
-      {
-        cerr << "Can't open input json file." << endl;
-        return -1;
-      }
-      GetContents(ifs, lines);
-    }
-
-    if (!Sample::DeserializeFromJSONLines(lines, samples))
-    {
-      cerr << "Can't parse input json file." << endl;
+      cerr << "Can't open input json file." << endl;
       return -1;
     }
+    GetContents(ifs, lines);
+  }
+
+  vector<Sample> samples;
+  if (!Sample::DeserializeFromJSONLines(lines, samples))
+  {
+    cerr << "Can't parse input json file." << endl;
+    return -1;
   }
 
   vector<Stats> stats(samples.size());
   FeatureLoader loader(dataSource);
   Matcher matcher(loader);
 
-  vector<unique_ptr<TestSearchRequest>> requests;
-  requests.reserve(samples.size());
+  cout << "SampleId,";
+  RankingInfo::PrintCSVHeader(cout);
+  cout << ",Relevance" << endl;
 
-  for (auto const & sample : samples)
+  for (size_t i = 0; i < samples.size(); ++i)
   {
+    auto const & sample = samples[i];
+
     search::SearchParams params;
     sample.FillSearchParams(params);
     params.m_batchSize = 100;
     params.m_maxNumResults = 300;
     params.m_timeout = search::SearchParams::kDefaultDesktopTimeout;
-    requests.push_back(make_unique<TestSearchRequest>(*engine, params));
-    requests.back()->Start();
-  }
+    TestSearchRequest request(*engine, params);
+    request.Run();
 
-  cout << "SampleId,";
-  RankingInfo::PrintCSVHeader(cout);
-  cout << ",Relevance" << endl;
-  for (size_t i = 0; i < samples.size(); ++i)
-  {
-    requests[i]->Wait();
-    auto const & sample = samples[i];
-    auto const & results = requests[i]->Results();
+    auto const & results = request.Results();
 
     vector<size_t> goldenMatching;
     vector<size_t> actualMatching;
-    matcher.Match(sample, results, goldenMatching, actualMatching);
+    matcher.Match(sample.m_results, results, goldenMatching, actualMatching);
 
     for (size_t j = 0; j < results.size(); ++j)
     {
@@ -201,7 +189,6 @@ int main(int argc, char * argv[])
       if (wasNotFound && isRelevant)
         s.m_notFound.push_back(j);
     }
-    requests[i].reset();
   }
 
   if (FLAGS_stats_path.empty())

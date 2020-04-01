@@ -4,6 +4,8 @@
 <!-- Language: en -->
 <resources>
 	<!-- SECTION: Strings -->
+	<!-- About button text (should be short) -->
+	<string name="about">About</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Back</string>
 	<!-- Button text (should be short) -->
@@ -69,6 +71,8 @@
 	<string name="touch_to_download">Touch to download</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Yes</string>
+	<!-- Settings/Downloader - No internet connection dialog message -->
+	<string name="use_wifi_recommendation_text">We recommend using WiFi to download large maps</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Which measurement system do you prefer?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -258,6 +262,8 @@
 	<string name="my_position_share_sms">Hey, check out my current location in MAPS.ME! %1$s or %2$s Don\'t have offline maps? Download here: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Hey, check out my pin in MAPS.ME!</string>
+	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
+	<string name="bookmark_share_email">Hi,\n\nI pinned: %1$s on the MAPS.ME offline map of the world. Click this link %2$s or this one %3$s to see the place on the map.\n\nThanks.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Hey, check out my current location on the MAPS.ME map!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -370,6 +376,12 @@
 	<string name="route">Route</string>
 	<!-- category title -->
 	<string name="routes">Routes</string>
+	<!-- Show on first launch. -->
+	<string name="maps_licence_info">This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.</string>
+	<!-- Show on first launch. -->
+	<string name="agree">I agree</string>
+	<!-- Show on first launch -->
+	<string name="disagree">I disagree</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Download the map of the place where you are</string>
 	<!-- text of notification -->
@@ -566,22 +578,6 @@
 	<string name="brown">Brown</string>
 	<!-- pink color -->
 	<string name="pink">Pink</string>
-	<!-- deep purple color -->
-	<string name="deep_purple">Deep Purple</string>
-	<!-- light blue color -->
-	<string name="light_blue">Light Blue</string>
-	<!-- cyan color -->
-	<string name="cyan">Cyan</string>
-	<!-- teal color -->
-	<string name="teal">Teal</string>
-	<!-- lime color -->
-	<string name="lime">Lime</string>
-	<!-- deep orange color -->
-	<string name="deep_orange">Deep Orange</string>
-	<!-- gray color -->
-	<string name="gray">Gray</string>
-	<!-- blue gray color -->
-	<string name="blue_gray">Blue Gray</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Yes</string>
 
@@ -1273,6 +1269,7 @@
 	<string name="downloader_percent">%1$s (%2$s of %3$s)</string>
 	<string name="downloader_process">Downloading %s...</string>
 	<string name="downloader_applying">Applying %s...</string>
+	<string name="transit_not_found">Transit navigation in this region is not yet available</string>
 	<string name="whats_new_title_hotel_filter">New hotel filters available!</string>
 	<string name="whats_new_message_hotel_filter">Book hotels available for your dates! Use check in and check out filters</string>
 	<string name="whats_new_title_ugc_travel">Share your experience with other travellers!</string>
@@ -1392,8 +1389,7 @@
 	<string name="bookmarks_downloaded_subtitle">Press ‘View on map’ to explore new places from the list</string>
 	<string name="guides">Guides</string>
 	<string name="guide_downloaded_title">The guide has been downloaded successfully</string>
-	<!-- as few symbols as possible -->
-	<string name="download_guides">Search guides</string>
+	<string name="download_guides">Download guides</string>
 	<string name="guides_groups_cached">Downloaded guides</string>
 	<string name="subtitle_error_downloading_guide">The guide was not downloaded</string>
 	<string name="error_already_downloaded_guide">This guide has already been downloaded</string>
@@ -1772,18 +1768,12 @@
 	<string name="all_pass_subscription_header">SUBSCRIPTION TO CATALOG</string>
 	<!-- do not translate -->
 	<string name="all_pass_subscription_subheader">City + Outdoor Pass</string>
-	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title">30000+\nguides &amp; trails</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle"><b>Unlimited downloads</b> of city and outdoor routes <b>to offline mode</b></string>
-	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title_2">Interactive\nelevation profile</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle_2">Each trail contains <b>elevation and basic info about the route</b></string>
-	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title_3">Bookmarks,\nphotos, and\nrecommendations</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle_3"><b>Learn all about the route</b> you are going to take</string>
+	<string name="all_pass_subscription_message_title">20000+ guides &amp; trails</string>
+	<string name="all_pass_subscription_message_subtitle">Unlimited downloads of city and outdoor routes available offline</string>
+	<string name="all_pass_subscription_message_title_2">700+ cities and 100+ countries</string>
+	<string name="all_pass_subscription_message_subtitle_2">Plan your journeys at any time of the year</string>
+	<string name="all_pass_subscription_message_title_3">Wide range of content</string>
+	<string name="all_pass_subscription_message_subtitle_3">Bookmarks, photos, walking tracks, descriptions and tips</string>
 	<!-- do not translate -->
 	<string name="sightseeing_subscription_header_sightseeing">City Pass</string>
 	<string name="sightseeing_subscription_header_subscription">Guides Subscription</string>
@@ -1804,50 +1794,6 @@
 	<string name="whatsnew_outdoor_guides_message">Routes from Outdooractive for winter and summer journeys are waiting in the catalog!</string>
 	<string name="whatsnew_guides_galleries_title">Plan your upcoming trip with MAPS.ME</string>
 	<string name="whatsnew_guides_galleries_message">Now you can find recommended guides in place pages of popular touristic cities and sights</string>
-	<string name="new_onboarding_step3_header">Experience</string>
-	<string name="all_pass_screen_best_value">Best Value</string>
-	<string name="buy_btn_for_subscription_3">Entire catalog for %s/year</string>
-	<string name="transit_not_found">Subway navigation in this region is not available yet</string>
-	<string name="dialog_pedestrian_route_is_long_header">Subway route is not found</string>
-	<string name="dialog_pedestrian_route_is_long_message">Please choose a start or end point closer to a subway station</string>
-	<!-- Failed planning SUBWAY route message in navigation view -->
-	<string name="routing_planning_error_subway_special">Subway route planning failed</string>
-	<string name="whatsnew_isolines_title">New for outdoors: offline topographic layer!</string>
-	<!-- as less symbols as possible -->
-	<string name="whatsnew_isolines_message">Feel confident in the mountainous area. Just turn on the layer in the upper-left corner</string>
-	<string name="button_layer_isolines">Terrain</string>
-	<string name="tips_map_layers_title_countour">New in MAPS.ME: offline topographic layer!</string>
-	<string name="tips_map_layers_message_countour">Plan and enjoy your nature trips being sure you know everything about the area</string>
-	<string name="isolines_activation_error_dialog">To activate and use the topographic layer please update or download the map of the area</string>
-	<string name="isolines_location_error_dialog">The topographic layer is not yet available in this area</string>
-	<string name="elevation_profile_diff_level">Difficulty level</string>
-	<string name="elevation_profile_diff_level_easy">Easy</string>
-	<string name="elevation_profile_diff_level_moderate">Moderate</string>
-	<string name="elevation_profile_diff_level_hard">Hard</string>
-	<string name="elevation_profile_ascent">Ascent</string>
-	<string name="elevation_profile_descent">Descent</string>
-	<string name="elevation_profile_minaltitude">Min. altitude</string>
-	<string name="elevation_profile_maxaltitude">Max. altitude</string>
-	<string name="elevation_profile_m">m</string>
-	<string name="elevation_profile_difficulty">Difficulty</string>
-	<string name="elevation_profile_distance">Dist.:</string>
-	<string name="elevation_profile_km">km</string>
-	<string name="elevation_profile_time">Time:</string>
-	<string name="elevation_profile_hours">h.</string>
-	<string name="elevation_profile_minutes">min</string>
-	<!-- hide the full screen banner and continue working with the app -->
-	<string name="hide_screen_map_update">Hide and continue</string>
-	<string name="view_on_map_downloaded_error">This guide has been deleted from this device</string>
-	<string name="subscription">Subscription</string>
-	<string name="freenow_taxi_title">FREE NOW</string>
-	<string name="tinkoff_allairlines_map_downloader_title">Карта Тинькофф All Airlines. 3000 миль в подарок</string>
-	<string name="tinkoff_allairlines_map_downloader_cta_button">Оформить карту</string>
-	<string name="tinkoff_insurance_map_downloader_title">Полис Тинькофф со скидкой! Подходит для любых виз.</string>
-	<string name="tinkoff_insurance_map_downloader_cta_button">Промокод</string>
-	<string name="mts_map_downloader_title">Забугорище: интернет и звонки за границей как дома</string>
-	<string name="mts_map_downloader_cta_button">Подключить</string>
-	<string name="skyeng_map_downloader_title">Дарим 4 бесплатных урока английского от Skyeng.</string>
-	<string name="skyeng_map_downloader_cta_button">Подробнее</string>
 
 	<!-- SECTION:  Partners  -->
 	<string name="sponsored_partner1_action">Outlets</string>
@@ -1925,11 +1871,14 @@
 	<string name="type.amenity.parking">Parking</string>
 	<string name="type.amenity.parking.fee">Parking</string>
 	<string name="type.amenity.parking.multi.storey">Parking</string>
+	<string name="type.amenity.parking.multi.storey.fee">Parking</string>
 	<string name="type.amenity.parking.no.access">Parking</string>
 	<string name="type.amenity.parking.park_and_ride">Parking</string>
 	<string name="type.amenity.parking.permissive">Parking</string>
+	<string name="type.amenity.parking.permissive.fee">Parking</string>
 	<string name="type.amenity.parking.private">Parking</string>
 	<string name="type.amenity.parking.underground">Parking</string>
+	<string name="type.amenity.parking.underground.fee">Parking</string>
 	<string name="type.amenity.parking_space">Parking space</string>
 	<string name="type.amenity.parking_space.permissive">Parking space</string>
 	<string name="type.amenity.parking_space.private">Parking space</string>
@@ -1946,7 +1895,7 @@
 	<string name="type.amenity.place_of_worship.taoist">Temple</string>
 	<string name="type.amenity.police">Police</string>
 	<string name="type.amenity.post_box">Postbox</string>
-	<string name="type.amenity.post_office">Post office</string>
+	<string name="type.amenity.post_office">Post</string>
 	<string name="type.amenity.prison">Prison</string>
 	<string name="type.amenity.pub">Pub</string>
 	<string name="type.amenity.public_bookcase">Book Exchange</string>
@@ -2013,6 +1962,9 @@
 	<string name="type.building.garage">Garage</string>
 	<string name="type.building.has_parts">Building</string>
 	<string name="type.building.train_station">Train Station</string>
+	<string name="type.communication">communication</string>
+	<string name="type.communication.line">communication-line</string>
+	<string name="type.communication.line.underground">communication-line-underground</string>
 	<string name="type.craft">craft</string>
 	<string name="type.craft.brewery">Craft brewery</string>
 	<string name="type.craft.carpenter">Carpenter</string>
@@ -2137,7 +2089,7 @@
 	<string name="type.highway.footway.mountain_hiking">Path</string>
 	<string name="type.highway.footway.permissive">Path</string>
 	<string name="type.highway.footway.tunnel">Path</string>
-	<string name="type.highway.ford">Ford</string>
+	<string name="type.highway.ford">highway-ford</string>
 	<string name="type.highway.living_street">Street</string>
 	<string name="type.highway.living_street.bridge">Street</string>
 	<string name="type.highway.living_street.tunnel">Street</string>
@@ -2164,6 +2116,7 @@
 	<string name="type.highway.pedestrian.area">Street</string>
 	<string name="type.highway.pedestrian.bridge">Street</string>
 	<string name="type.highway.pedestrian.tunnel">Street</string>
+	<string name="type.highway.platform">highway-platform</string>
 	<string name="type.highway.primary">Street</string>
 	<string name="type.highway.primary.bridge">Street</string>
 	<string name="type.highway.primary.tunnel">Street</string>
@@ -2190,6 +2143,9 @@
 	<string name="type.highway.service.area">Street</string>
 	<string name="type.highway.service.bridge">Street</string>
 	<string name="type.highway.service.driveway">Street</string>
+	<string name="type.highway.service.driveway.area">Street</string>
+	<string name="type.highway.service.driveway.bridge">Street</string>
+	<string name="type.highway.service.driveway.tunnel">Street</string>
 	<string name="type.highway.service.parking_aisle">Street</string>
 	<string name="type.highway.service.tunnel">Street</string>
 	<string name="type.highway.services">highway-services</string>
@@ -2209,8 +2165,14 @@
 	<string name="type.highway.track.grade1">Street</string>
 	<string name="type.highway.track.grade2">Street</string>
 	<string name="type.highway.track.grade3">Street</string>
+	<string name="type.highway.track.grade3.no.access">Street</string>
+	<string name="type.highway.track.grade3.permissive">Street</string>
 	<string name="type.highway.track.grade4">Street</string>
+	<string name="type.highway.track.grade4.no.access">Street</string>
+	<string name="type.highway.track.grade4.permissive">Street</string>
 	<string name="type.highway.track.grade5">Street</string>
+	<string name="type.highway.track.grade5.no.access">Street</string>
+	<string name="type.highway.track.grade5.permissive">Street</string>
 	<string name="type.highway.track.no.access">Street</string>
 	<string name="type.highway.track.permissive">Street</string>
 	<string name="type.highway.track.tunnel">Street</string>
@@ -2294,6 +2256,8 @@
 	<string name="type.landuse.recreation_ground">landuse-recreation_ground</string>
 	<string name="type.landuse.reservoir">Water</string>
 	<string name="type.landuse.residential">landuse-residential</string>
+	<string name="type.landuse.residential.rural">landuse-residential-rural</string>
+	<string name="type.landuse.residential.urban">landuse-residential-urban</string>
 	<string name="type.landuse.retail">landuse-retail</string>
 	<string name="type.landuse.salt_pond">landuse-salt_pond</string>
 	<string name="type.landuse.village_green">landuse-village_green</string>
@@ -2301,6 +2265,7 @@
 	<string name="type.leisure">leisure</string>
 	<string name="type.leisure.common">leisure-common</string>
 	<string name="type.leisure.dog_park">Dog area</string>
+	<string name="type.leisure.dog_park.tennis">Dog area</string>
 	<string name="type.leisure.fitness_centre">Fitness Centre</string>
 	<string name="type.leisure.fitness_station">Fitness Station</string>
 	<string name="type.leisure.garden">Garden</string>
@@ -2314,7 +2279,11 @@
 	<string name="type.leisure.park.permissive">Park</string>
 	<string name="type.leisure.park.private">Park</string>
 	<string name="type.leisure.pitch">Sports Ground</string>
+	<string name="type.leisure.pitch.tennis">Sports Ground</string>
 	<string name="type.leisure.playground">Playground</string>
+	<string name="type.leisure.playground.tennis">Playground</string>
+	<string name="type.leisure.playing_fields">leisure-playing_fields</string>
+	<string name="type.leisure.playing_fields.tennis">leisure-playing_fields-tennis</string>
 	<string name="type.leisure.recreation_ground">Recreation ground</string>
 	<string name="type.leisure.sauna">Sauna</string>
 	<string name="type.leisure.slipway">leisure-slipway</string>
@@ -2346,6 +2315,12 @@
 	<string name="type.man_made.works">man_made-works</string>
 	<string name="type.mapswithme">mapswithme</string>
 	<string name="type.mapswithme.grid">mapswithme-grid</string>
+	<string name="type.marking">marking</string>
+	<string name="type.marking.sport">marking-sport</string>
+	<string name="type.marking.sport.black">marking-sport-black</string>
+	<string name="type.marking.sport.blue">marking-sport-blue</string>
+	<string name="type.marking.sport.red">marking-sport-red</string>
+	<string name="type.marking.sport.white">marking-sport-white</string>
 	<string name="type.military">military</string>
 	<string name="type.military.bunker">Bunker</string>
 	<string name="type.natural">natural</string>
@@ -2353,7 +2328,7 @@
 	<string name="type.natural.bay">Bay</string>
 	<string name="type.natural.beach">Beach</string>
 	<string name="type.natural.cape">Cape</string>
-	<string name="type.natural.cave_entrance">Cave</string>
+	<string name="type.natural.cave_entrance">Cave Entrance</string>
 	<string name="type.natural.cliff">Cliff</string>
 	<string name="type.natural.coastline">Coastline</string>
 	<string name="type.natural.geyser">Geyser</string>
@@ -2379,6 +2354,10 @@
 	<string name="type.natural.wetland">Wetland area</string>
 	<string name="type.natural.wetland.bog">Wetland</string>
 	<string name="type.natural.wetland.marsh">Wetland</string>
+	<string name="type.natural.wood">Forest</string>
+	<string name="type.natural.wood.coniferous">Forest</string>
+	<string name="type.natural.wood.deciduous">Forest</string>
+	<string name="type.natural.wood.mixed">Forest</string>
 	<string name="type.noexit">noexit</string>
 	<string name="type.noexit.motor_vehicle">noexit-motor_vehicle</string>
 	<string name="type.office">Office</string>
@@ -2438,6 +2417,9 @@
 	<string name="type.place.village">Village</string>
 	<string name="type.power">power</string>
 	<string name="type.power.generator">power-generator</string>
+	<string name="type.power.generator.hydro">power-generator-hydro</string>
+	<string name="type.power.generator.photovoltaic">power-generator-photovoltaic</string>
+	<string name="type.power.generator.wind">power-generator-wind</string>
 	<string name="type.power.line">power-line</string>
 	<string name="type.power.line.underground">power-line-underground</string>
 	<string name="type.power.minor_line">power-minor_line</string>
@@ -2627,6 +2609,7 @@
 	<string name="type.shop.video">Shop</string>
 	<string name="type.shop.wine">Wine Shop</string>
 	<string name="type.sponsored">sponsored</string>
+	<string name="type.sponsored.banner">sponsored-banner</string>
 	<string name="type.sponsored.booking">sponsored-booking</string>
 	<string name="type.sponsored.holiday">Christmas or New Year Celebrations</string>
 	<string name="type.sponsored.opentable">sponsored-opentable</string>
@@ -2650,6 +2633,7 @@
 	<string name="type.sponsored.partner7">sponsored-partner7</string>
 	<string name="type.sponsored.partner8">sponsored-partner8</string>
 	<string name="type.sponsored.partner9">sponsored-partner9</string>
+	<string name="type.sponsored.viator">sponsored-viator</string>
 	<string name="type.sport">sport</string>
 	<string name="type.sport.american_football">sport-american_football</string>
 	<string name="type.sport.archery">sport-archery</string>
@@ -2748,6 +2732,7 @@
 	<string name="type.piste_type.nordic">piste:type-nordic</string>
 	<string name="type.piste_type.sled">piste:type-sled</string>
 	<string name="type.building_part">Building</string>
+	<string name="type.earthquake_damage">earthquake:damage</string>
 	<string name="type.area_highway.cycleway">area:highway-cycleway</string>
 	<string name="type.area_highway.footway">area:highway-footway</string>
 	<string name="type.area_highway.living_street">area:highway-living_street</string>

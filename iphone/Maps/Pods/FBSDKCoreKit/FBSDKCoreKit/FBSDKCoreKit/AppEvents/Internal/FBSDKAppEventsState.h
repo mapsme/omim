@@ -19,14 +19,13 @@
 #import <Foundation/Foundation.h>
 
 // this type is not thread safe.
-NS_SWIFT_NAME(AppEventsState)
 @interface FBSDKAppEventsState : NSObject<NSCopying, NSSecureCoding>
 
 @property (nonatomic, readonly, copy) NSArray *events;
 @property (nonatomic, readonly, assign) NSUInteger numSkipped;
 @property (nonatomic, readonly, copy) NSString *tokenString;
 @property (nonatomic, readonly, copy) NSString *appID;
-@property (nonatomic, readonly, getter=areAllEventsImplicit) BOOL allEventsImplicit;
+@property (nonatomic, readonly) BOOL areAllEventsImplicit;
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;

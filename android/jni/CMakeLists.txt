@@ -22,7 +22,6 @@ set(
   SRC
   # JNI headers
   ../../private.h
-  com/mapswithme/util/FeatureIdBuilder.hpp
   com/mapswithme/core/jni_helper.hpp
   com/mapswithme/core/logging.hpp
   com/mapswithme/core/ScopedEnv.hpp
@@ -70,7 +69,6 @@ set(
   com/mapswithme/maps/taxi/TaxiManager.cpp
   com/mapswithme/maps/TrackRecorder.cpp
   com/mapswithme/maps/TrafficState.cpp
-  com/mapswithme/maps/isolines/IsolinesManager.cpp
   com/mapswithme/maps/subway/SubwayManager.cpp
   com/mapswithme/maps/ugc/UGC.cpp
   com/mapswithme/maps/UserMarkHelper.cpp
@@ -116,7 +114,6 @@ target_link_libraries(
   z
   # MapsWithMe libs
   map
-  ge0
   tracking
   routing
   traffic

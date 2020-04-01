@@ -75,6 +75,10 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
     _mapViewController = controller;
     _delegate = delegate;
     [controller addChildViewController:self];
+    self.view.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                  UIViewAutoresizingFlexibleTopMargin |
+                                  UIViewAutoresizingFlexibleBottomMargin |
+                                  UIViewAutoresizingFlexibleHeight);
     [controller.controlsView addSubview:self.view];
     [controller.view layoutIfNeeded];
   }
@@ -102,6 +106,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
   [self refreshLayout];
 }
 
+- (void)mwm_refreshUI { [self.view mwm_refreshUI]; }
 - (void)updateBadgeVisible:(BOOL)visible { self.downloadBadge.hidden = !visible; }
 #pragma mark - Refresh Collection View layout
 
@@ -127,7 +132,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
 
 - (void)onNavigationDashboardStateChanged
 {
-  auto const navigationState = [MWMNavigationDashboardManager sharedManager].state;
+  auto const navigationState = [MWMNavigationDashboardManager manager].state;
   if (navigationState == MWMNavigationDashboardStateHidden)
     self.state = MWMBottomMenuStateInactive;
   else
@@ -166,7 +171,7 @@ typedef NS_ENUM(NSUInteger, MWMBottomMenuViewCell) {
   case MWMBottomMenuViewCellAddPlace:
   {
     BOOL const isEnabled =
-        [MWMNavigationDashboardManager sharedManager].state == MWMNavigationDashboardStateHidden &&
+        [MWMNavigationDashboardManager manager].state == MWMNavigationDashboardStateHidden &&
         GetFramework().CanEditMap();
     [cell configureWithImageName:@"ic_add_place"
                            label:L(@"placepage_add_place_button")

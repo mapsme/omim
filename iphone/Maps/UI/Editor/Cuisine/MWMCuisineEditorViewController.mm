@@ -134,6 +134,7 @@ std::vector<std::string> SliceKeys(std::vector<std::pair<std::string, std::strin
 - (void)configSearchBar
 {
   self.isSearch = NO;
+  self.searchBar.backgroundImage = [UIImage imageWithColor:[UIColor primary]];
   self.searchBar.placeholder = L(@"search");
 }
 
@@ -153,6 +154,8 @@ std::vector<std::string> SliceKeys(std::vector<std::pair<std::string, std::strin
 
 - (void)configTable
 {
+  self.tableView.backgroundColor = [UIColor pressBackground];
+  self.tableView.separatorColor = [UIColor blackDividers];
   [self.tableView registerClass:[MWMTableViewCell class]
          forCellReuseIdentifier:[UITableViewCell className]];
 }

@@ -14,11 +14,8 @@ namespace utils
 {
 eye::MapObject MakeEyeMapObject(place_page::Info const & info)
 {
-  if (!info.IsFeature() || (info.GetFeatureStatus() != FeatureStatus::Untouched &&
-                            info.GetFeatureStatus() != FeatureStatus::Modified))
-  {
+  if (!info.IsFeature())
     return {};
-  }
 
   auto types = info.GetTypes();
   if (types.Empty())
@@ -35,12 +32,8 @@ eye::MapObject MakeEyeMapObject(place_page::Info const & info)
   return mapObject;
 }
 
-eye::MapObject MakeEyeMapObject(FeatureType & ft, osm::Editor const & editor)
+eye::MapObject MakeEyeMapObject(FeatureType & ft)
 {
-  auto const status = editor.GetFeatureStatus(ft.GetID());
-  if (status != FeatureStatus::Untouched && status != FeatureStatus::Modified)
-    return {};
-
   feature::TypesHolder types(ft);
   if (types.Empty())
     return {};

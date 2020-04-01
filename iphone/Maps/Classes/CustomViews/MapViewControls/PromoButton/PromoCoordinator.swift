@@ -1,6 +1,8 @@
+import UIKit
 
 @objc class PromoCoordinator: NSObject {
   @objc enum PromoType: Int{
+    case crown
     case discoveryGuide
     case discoverySubscribe
     case discoveryFree
@@ -16,11 +18,11 @@
 
   func onPromoButtonPress(completion: @escaping () -> Void) {
     presentPromoDiscoveryOnboarding(completion: completion)
-    Statistics.logEvent(kStatMapSponsoredButtonClick, withParameters: [kStatTarget: kStatGuidesSubscription])
   }
 
   private func presentPromoDiscoveryOnboarding(completion: @escaping () -> Void) {
     let vc = PromoDiscoveryBuilder.build(rootViewController: mapViewController, campaign: campaign)
+    vc.modalPresentationStyle = .fullScreen
     mapViewController?.present(vc, animated: true, completion: {
       completion()
     })

@@ -15,7 +15,6 @@ omim_link_libraries(
   storage
   editor
   indexer
-  ge0
   platform
   mwm_diff
   bsdiff

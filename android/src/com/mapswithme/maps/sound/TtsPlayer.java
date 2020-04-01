@@ -3,14 +3,13 @@ package com.mapswithme.maps.sound;
 import android.content.Context;
 import android.content.res.Resources;
 import android.speech.tts.TextToSpeech;
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import android.text.TextUtils;
+
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.base.Initializable;
 import com.mapswithme.maps.base.MediaPlayerWrapper;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.log.Logger;
@@ -36,7 +35,7 @@ import java.util.Locale;
  * <p>
  * If no core supported languages can be used by the system, TTS is locked down and can not be enabled and used.
  */
-public enum TtsPlayer implements Initializable<Context>
+public enum TtsPlayer
 {
   INSTANCE;
 
@@ -137,8 +136,7 @@ public enum TtsPlayer implements Initializable<Context>
     setEnabled(false);
   }
 
-  @Override
-  public void initialize(@Nullable Context context)
+  public void init(Context context)
   {
     if (mTts != null || mInitializing || mUnavailable)
       return;
@@ -162,12 +160,6 @@ public enum TtsPlayer implements Initializable<Context>
         mInitializing = false;
       }
     });
-  }
-
-  @Override
-  public void destroy()
-  {
-    // No op.
   }
 
   public boolean isSpeaking()

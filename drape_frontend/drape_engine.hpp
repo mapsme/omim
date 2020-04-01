@@ -63,7 +63,6 @@ public:
            location::TMyPositionModeChanged && myPositionModeChanged,
            bool allow3dBuildings,
            bool trafficEnabled,
-           bool isolinesEnabled,
            bool blockTapEvents,
            bool showChoosePositionMark,
            std::vector<m2::TriangleD> && boundAreaTriangles,
@@ -85,7 +84,6 @@ public:
       , m_myPositionModeChanged(std::move(myPositionModeChanged))
       , m_allow3dBuildings(allow3dBuildings)
       , m_trafficEnabled(trafficEnabled)
-      , m_isolinesEnabled(isolinesEnabled)
       , m_blockTapEvents(blockTapEvents)
       , m_showChoosePositionMark(showChoosePositionMark)
       , m_boundAreaTriangles(std::move(boundAreaTriangles))
@@ -109,7 +107,6 @@ public:
     location::TMyPositionModeChanged m_myPositionModeChanged;
     bool m_allow3dBuildings;
     bool m_trafficEnabled;
-    bool m_isolinesEnabled;
     bool m_blockTapEvents;
     bool m_showChoosePositionMark;
     std::vector<m2::TriangleD> m_boundAreaTriangles;
@@ -181,8 +178,7 @@ public:
   
   dp::DrapeID AddSubroute(SubrouteConstPtr subroute);
   void RemoveSubroute(dp::DrapeID subrouteId, bool deactivateFollowing);
-  void FollowRoute(int preferredZoomLevel, int preferredZoomLevel3d, bool enableAutoZoom,
-                   bool isArrowGlued);
+  void FollowRoute(int preferredZoomLevel, int preferredZoomLevel3d, bool enableAutoZoom);
   void DeactivateRouteFollowing();
   void SetSubrouteVisibility(dp::DrapeID subrouteId, bool isVisible);
   dp::DrapeID AddRoutePreviewSegment(m2::PointD const & startPt, m2::PointD const & finishPt);
@@ -224,8 +220,6 @@ public:
   void UpdateTransitScheme(TransitDisplayInfos && transitDisplayInfos);
   void ClearTransitSchemeCache(MwmSet::MwmId const & mwmId);
   void ClearAllTransitSchemeCache();
-
-  void EnableIsolines(bool enable);
 
   void SetFontScaleFactor(double scaleFactor);
 

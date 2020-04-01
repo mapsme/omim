@@ -4,12 +4,7 @@ typedef NS_ENUM(NSInteger, MWMBannerType) {
   MWMBannerTypeNone,
   MWMBannerTypeFacebook,
   MWMBannerTypeRb,
-  MWMBannerTypeMopub,
-  MWMBannerTypeTinkoffAllAirlines,
-  MWMBannerTypeTinkoffInsurance,
-  MWMBannerTypeMts,
-  MWMBannerTypeSkyeng,
-  MWMBannerTypeBookmarkCatalog,
+  MWMBannerTypeMopub
 };
 
 NS_ASSUME_NONNULL_BEGIN

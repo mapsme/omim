@@ -6,8 +6,6 @@
 
 #include <sstream>
 
-#include "3party/boost/boost/container_hash/hash.hpp"
-
 namespace routing
 {
 bool IsRealSegmentSimple(Segment const & segment)
@@ -37,7 +35,7 @@ JointSegment::JointSegment(Segment const & from, Segment const & to)
 
 void JointSegment::ToFake(uint32_t fakeId)
 {
-  m_featureId = kInvalidFeatureIdId;
+  m_featureId = kInvalidId;
   m_startSegmentId = fakeId;
   m_endSegmentId = fakeId;
   m_numMwmId = kFakeNumMwmId;
@@ -47,7 +45,7 @@ void JointSegment::ToFake(uint32_t fakeId)
 bool JointSegment::IsFake() const
 {
   // This is enough, but let's check in Debug for confidence.
-  bool result = m_featureId == kInvalidFeatureIdId && m_startSegmentId != kInvalidSegmentId;
+  bool result = m_featureId == kInvalidId && m_startSegmentId != kInvalidId;
   if (result)
   {
     ASSERT_EQUAL(m_startSegmentId, m_endSegmentId, ());
@@ -56,11 +54,6 @@ bool JointSegment::IsFake() const
   }
 
   return result;
-}
-
-Segment JointSegment::GetSegment(bool start) const
-{
-  return {m_numMwmId, m_featureId, start ? m_startSegmentId : m_endSegmentId, m_forward};
 }
 
 bool JointSegment::operator<(JointSegment const & rhs) const
@@ -87,11 +80,6 @@ bool JointSegment::operator==(JointSegment const & rhs) const
          m_numMwmId == rhs.m_numMwmId;
 }
 
-bool JointSegment::operator!=(JointSegment const & rhs) const
-{
-  return !(*this == rhs);
-}
-
 std::string DebugPrint(JointSegment const & jointSegment)
 {
   std::ostringstream out;
@@ -105,18 +93,3 @@ std::string DebugPrint(JointSegment const & jointSegment)
   return out.str();
 }
 }  // namespace routing
-
-namespace std
-{
-size_t
-std::hash<routing::JointSegment>::operator()(routing::JointSegment const & jointSegment) const
-{
-  size_t seed = 0;
-  boost::hash_combine(seed, jointSegment.GetMwmId());
-  boost::hash_combine(seed, jointSegment.GetFeatureId());
-  boost::hash_combine(seed, jointSegment.GetStartSegmentId());
-  boost::hash_combine(seed, jointSegment.GetEndSegmentId());
-  boost::hash_combine(seed, jointSegment.IsForward());
-  return seed;
-}
-}  // namespace std

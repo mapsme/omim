@@ -1,7 +1,5 @@
 #pragma once
 
-#include "editor/osm_editor.hpp"
-
 #include "metrics/eye_info.hpp"
 
 #include <optional>
@@ -16,7 +14,7 @@ class FeatureType;
 namespace utils
 {
 eye::MapObject MakeEyeMapObject(place_page::Info const & info);
-eye::MapObject MakeEyeMapObject(FeatureType & ft, osm::Editor const & editor);
+eye::MapObject MakeEyeMapObject(FeatureType & ft);
 
 void RegisterEyeEventIfPossible(eye::MapObject::Event::Type const type,
                                 std::optional<m2::PointD> const & userPos,

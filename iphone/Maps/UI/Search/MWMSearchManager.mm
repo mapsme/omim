@@ -1,5 +1,6 @@
 #import "MWMSearchManager.h"
 #import "MWMFrameworkListener.h"
+#import "MWMFrameworkStorageObserver.h"
 #import "MWMMapViewControlsManager.h"
 #import "MWMNoMapsViewController.h"
 #import "MWMRoutePoint+CPP.h"
@@ -30,7 +31,7 @@ using Observers = NSHashTable<Observer>;
 @end
 
 @interface MWMSearchManager ()<MWMSearchTableViewProtocol, MWMSearchTabViewControllerDelegate,
-                               UITextFieldDelegate, MWMStorageObserver, MWMSearchObserver>
+                               UITextFieldDelegate, MWMFrameworkStorageObserver, MWMSearchObserver>
 
 @property(weak, nonatomic, readonly) UIViewController * ownerController;
 
@@ -73,6 +74,14 @@ using Observers = NSHashTable<Observer>;
     _observers = [Observers weakObjectsHashTable];
   }
   return self;
+}
+
+- (void)mwm_refreshUI
+{
+  [self.searchBarView mwm_refreshUI];
+  [self.actionBarView mwm_refreshUI];
+  [self.tableViewController mwm_refreshUI];
+  [self.noMapsController mwm_refreshUI];
 }
 
 - (void)beginSearch
@@ -174,11 +183,11 @@ using Observers = NSHashTable<Observer>;
     else
       [MWMRouter buildToPoint:point bestRouter:NO];
   }
-  if (!IPAD || [MWMNavigationDashboardManager sharedManager].state != MWMNavigationDashboardStateHidden)
+  if (!IPAD || [MWMNavigationDashboardManager manager].state != MWMNavigationDashboardStateHidden)
     self.state = MWMSearchManagerStateHidden;
 }
 
-#pragma mark - MWMStorageObserver
+#pragma mark - MWMFrameworkStorageObserver
 
 - (void)processCountryEvent:(NSString *)countryId
 {
@@ -228,7 +237,6 @@ using Observers = NSHashTable<Observer>;
   [self viewHidden:NO];
   self.actionBarState = MWMSearchManagerActionBarStateHidden;
   [self.searchTextField becomeFirstResponder];
-  [self.searchBarView applyTheme];
 }
 
 - (void)changeToTableSearchState
@@ -255,7 +263,7 @@ using Observers = NSHashTable<Observer>;
       self.actionBarViewBottom.priority = UILayoutPriorityDefaultHigh;
     }];
   }
-  auto const navigationManagerState = [MWMNavigationDashboardManager sharedManager].state;
+  auto const navigationManagerState = [MWMNavigationDashboardManager manager].state;
   [self viewHidden:navigationManagerState != MWMNavigationDashboardStateHidden];
   [MWMSearch setSearchOnMap:YES];
   [self.tableViewController reloadData];
@@ -368,7 +376,7 @@ using Observers = NSHashTable<Observer>;
 
 - (UIViewController *)topController
 {
-  [[MWMStorage sharedStorage] removeObserver:self];
+  [MWMFrameworkListener removeObserver:self];
   self.noMapsController = nil;
   switch (self.state)
   {
@@ -381,7 +389,7 @@ using Observers = NSHashTable<Observer>;
         return tabViewController;
       }
       self.noMapsController = [MWMNoMapsViewController controller];
-      [[MWMStorage sharedStorage] addObserver:self];
+      [MWMFrameworkListener addObserver:self];
       return self.noMapsController;
     }
     case MWMSearchManagerStateTableSearch: return self.tableViewController;

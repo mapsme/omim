@@ -34,10 +34,11 @@ NS_SWIFT_NAME(FrameworkHelper)
 + (NSArray<NSString *> *)obtainLastSearchQueries;
 + (void)rotateMap:(double)azimuth animated:(BOOL)isAnimated;
 + (void)updatePositionArrowOffset:(BOOL)useDefault offset:(int)offsetY;
++ (BOOL)shouldShowCrown;
 + (void)uploadUGC:(void (^)(UIBackgroundFetchResult))completionHandler;
 + (NSString *)userAccessToken;
 + (NSString *)userAgent;
-+ (int64_t)dataVersion;
++ (NSNumber *)dataVersion;
 + (void)searchInDownloader:(NSString *)query
                inputLocale:(NSString *)locale
                 completion:(SearchInDownloaderCompletions)completion;

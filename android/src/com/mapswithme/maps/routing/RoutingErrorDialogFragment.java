@@ -29,13 +29,10 @@ public class RoutingErrorDialogFragment extends BaseRoutingErrorDialogFragment
   {
     super.beforeDialogCreated(builder);
 
-    ResultCodesHelper.ResourcesHolder resHolder =
-        ResultCodesHelper.getDialogTitleSubtitle(mResultCode, mMissingMaps.size());
-    Pair<String, String> titleMessage = resHolder.getTitleMessage();
-
+    Pair<String, String> titleMessage = ResultCodesHelper.getDialogTitleSubtitle(mResultCode, mMissingMaps.size());
     builder.setTitle(titleMessage.first);
     mMessage = titleMessage.second;
-    builder.setNegativeButton(resHolder.getCancelBtnResId(), null);
+
     if (ResultCodesHelper.isDownloadable(mResultCode, mMissingMaps.size()))
       builder.setPositiveButton(R.string.download, null);
 

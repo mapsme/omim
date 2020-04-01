@@ -3,12 +3,12 @@ package com.mapswithme.maps.tips;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.view.View;
-
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import android.view.View;
+
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.MwmApplication;
@@ -61,28 +61,16 @@ public enum Tutorial
         }
       },
 
-  SUBWAY(R.string.tips_map_layers_title,
-         R.string.tips_map_layers_message,
-         R.id.subway, null, MwmActivity.class)
+  MAP_LAYERS(R.string.tips_map_layers_title,
+             R.string.tips_map_layers_message,
+             R.id.subway, null, MwmActivity.class)
       {
+
         @NonNull
         @Override
         public ClickInterceptor createClickInterceptor()
         {
           return ClickInterceptorFactory.createActivateSubwayLayerListener();
-        }
-      },
-
-  ISOLINES(R.string.tips_map_layers_title_countour,
-           R.string.tips_map_layers_message_countour,
-           R.id.isolines, null, MwmActivity.class)
-      {
-
-        @NonNull
-        @Override
-        public ClickInterceptor createClickInterceptor()
-        {
-          return ClickInterceptorFactory.createActivateIsolinesLayerListener();
         }
       },
 

@@ -2,8 +2,7 @@ package com.mapswithme.maps.maplayer.traffic;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.mapswithme.maps.base.Initializable;
+
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @MainThread
-public enum TrafficManager implements Initializable<Void>
+public enum TrafficManager
 {
   INSTANCE;
   private final static String TAG = TrafficManager.class.getSimpleName();
@@ -29,18 +28,11 @@ public enum TrafficManager implements Initializable<Void>
 
   private boolean mInitialized = false;
 
-  @Override
-  public void initialize(@Nullable Void aVoid)
+  public void initialize()
   {
     mLogger.d(TAG, "Initialization of traffic manager and setting the listener for traffic state changes");
     TrafficState.nativeSetListener(mStateChangeListener);
     mInitialized = true;
-  }
-
-  @Override
-  public void destroy()
-  {
-    // No op.
   }
 
   public void toggle()

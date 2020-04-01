@@ -1,13 +1,9 @@
-#include "track_analyzing/track_analyzer/cmd_balance_csv.hpp"
-
 #include "track_analyzing/exceptions.hpp"
 #include "track_analyzing/track.hpp"
 #include "track_analyzing/utils.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
-
-#include "base/checked_cast.hpp"
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -41,9 +37,7 @@ DEFINE_string_ext(cmd, "",
                   "tracks - prints track statistics\n"
                   "track - prints info about single track\n"
                   "cpptrack - prints track coords to insert them to cpp code\n"
-                  "table - prints csv table based on matched tracks to stdout\n"
-                  "balance_csv - prints csv table based on csv table set in \"in\" param "
-                  "with a distribution set according to input_distribution param.\n"
+                  "table - prints csv table based on matched tracks\n"
                   "gpx - convert raw logs into gpx files\n");
 DEFINE_string_ext(in, "", "input log file name");
 DEFINE_string(out, "", "output track file name");
@@ -51,19 +45,6 @@ DEFINE_string_ext(output_dir, "", "output dir for gpx files");
 DEFINE_string_ext(mwm, "", "short mwm name");
 DEFINE_string_ext(user, "", "user id");
 DEFINE_int32(track, -1, "track index");
-DEFINE_string(
-    input_distribution, "",
-    "path to input data point distribution file. It's a csv file with data point count for "
-    "some mwms. Usage:\n"
-    "- It may be used with match and match_dir command. If so it's a path to save file with "
-    "data point distribution by mwm. If it's empty no file is saved.\n"
-    "- It may be used with balance_csv command. If so it's a path of a file with distribution which "
-    "will be used for normalization (balancing) the result of the command. It should not be empty.");
-DEFINE_uint64(
-    ignore_datapoints_number, 100,
-    "The number of datapoints in an mwm to exclude the mwm from balancing process. If this number "
-    "of datapoints or less number is in an mwm after matching and tabling, the mwm will not used "
-    "for balancing. This param should be used with balance_csv command.");
 
 DEFINE_string(track_extension, ".track", "track files extension");
 DEFINE_bool(no_world_logs, false, "don't print world summary logs");
@@ -100,9 +81,9 @@ namespace track_analyzing
 void CmdCppTrack(string const & trackFile, string const & mwmName, string const & user,
                  size_t trackIdx);
 // Match raw gps logs to tracks.
-void CmdMatch(string const & logFile, string const & trackFile, string const & inputDistribution);
+void CmdMatch(string const & logFile, string const & trackFile);
 // The same as match but applies for the directory with raw logs.
-void CmdMatchDir(string const & logDir, string const & trackExt, string const & inputDistribution);
+void CmdMatchDir(string const & logDir, string const & trackExt);
 // Parse |logFile| and save tracks (mwm name, aloha id, lats, lons, timestamps in seconds in csv).
 void CmdUnmatchedTracks(string const & logFile, string const & trackFileCsv);
 // Print aggregated tracks to csv table.
@@ -131,12 +112,12 @@ int main(int argc, char ** argv)
     if (cmd == "match")
     {
       string const & logFile = Checked_in();
-      CmdMatch(logFile, FLAGS_out.empty() ? logFile + ".track" : FLAGS_out, FLAGS_input_distribution);
+      CmdMatch(logFile, FLAGS_out.empty() ? logFile + ".track" : FLAGS_out);
     }
     else if (cmd == "match_dir")
     {
       string const & logDir = Checked_in();
-      CmdMatchDir(logDir, FLAGS_track_extension, FLAGS_input_distribution);
+      CmdMatchDir(logDir, FLAGS_track_extension);
     }
     else if (cmd == "unmatched_tracks")
     {
@@ -162,17 +143,6 @@ int main(int argc, char ** argv)
     {
       CmdTagsTable(Checked_in(), FLAGS_track_extension, MakeFilter(FLAGS_mwm),
                    MakeFilter(FLAGS_user));
-    }
-    else if (cmd == "balance_csv")
-    {
-      if (FLAGS_input_distribution.empty())
-      {
-        LOG(LERROR, ("input_distribution param should be set to a path to csv file with required "
-                     "distribution. Hint: this file may be saved by match or match_dir command."));
-        return 1;
-      }
-      CmdBalanceCsv(FLAGS_in, FLAGS_input_distribution,
-                    base::checked_cast<uint64_t>(FLAGS_ignore_datapoints_number));
     }
     else if (cmd == "gpx")
     {

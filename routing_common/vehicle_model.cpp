@@ -17,6 +17,8 @@ using namespace std;
 
 namespace
 {
+double constexpr kInvalidModelValue = -1.0;
+
 template <double const & (*F)(double const &, double const &), typename WeightAndETA>
 WeightAndETA Pick(WeightAndETA const & lhs, WeightAndETA const & rhs)
 {
@@ -26,6 +28,11 @@ WeightAndETA Pick(WeightAndETA const & lhs, WeightAndETA const & rhs)
 InOutCitySpeedKMpH Max(InOutCitySpeedKMpH const & lhs, InOutCitySpeedKMpH const & rhs)
 {
   return {Pick<max>(lhs.m_inCity, rhs.m_inCity), Pick<max>(lhs.m_outCity, rhs.m_outCity)};
+}
+
+MaxspeedType GetMaxspeedKey(double maxspeedValue)
+{
+  return base::asserted_cast<MaxspeedType>(10 * static_cast<MaxspeedType>((maxspeedValue + 5) / 10));
 }
 
 HighwayType GetHighwayTypeKey(HighwayType type)
@@ -65,8 +72,8 @@ VehicleModel::VehicleModel(Classificator const & c, LimitsInitList const & featu
   {
     auto const classificatorType = c.GetTypeByPath(v.m_types);
     auto const highwayType = static_cast<HighwayType>(c.GetIndexForType(classificatorType));
-    auto const speedIt = info.m_speeds.find(highwayType);
-    CHECK(speedIt != info.m_speeds.cend(), ("Can't found speed for", highwayType));
+    auto const speedIt = info.m_globalSpeeds.find(highwayType);
+    CHECK(speedIt != info.m_globalSpeeds.cend(), ("Can't found speed for", highwayType));
     // TODO: Consider using not only highway class speed but max sped * max speed factor.
     m_maxModelSpeed = Max(m_maxModelSpeed, speedIt->second);
     m_roadTypes.emplace(classificatorType, RoadType(highwayType, v.m_isPassThroughAllowed));
@@ -166,44 +173,84 @@ void VehicleModel::GetAdditionalRoadSpeed(uint32_t type, bool isCityRoad,
 SpeedKMpH VehicleModel::GetSpeedOnFeatureWithMaxspeed(HighwayType const & type,
                                                       SpeedParams const & speedParams) const
 {
-  ASSERT(speedParams.m_maxspeed.IsValid(), ());
+  CHECK(speedParams.m_maxspeed.IsValid(), ());
   bool const isCityRoad = speedParams.m_inCity;
-  auto const featureMaxSpeedKmPH = speedParams.m_maxspeed.GetSpeedKmPH(speedParams.m_forward);
-  ASSERT(featureMaxSpeedKmPH != kInvalidSpeed, (type, speedParams.m_forward, speedParams.m_maxspeed));
-
+  SpeedKMpH const & maxModelSpeed = m_maxModelSpeed.GetSpeed(isCityRoad);
+  auto const maxspeedKmPH = static_cast<double>(speedParams.m_maxspeed.GetSpeedKmPH(speedParams.m_forward));
+  SpeedKMpH speed = Pick<min>(SpeedKMpH(maxspeedKmPH, maxspeedKmPH), maxModelSpeed);
   // We assume that all link roads are equal to its parents and drop "_link" suffix
   // while searching for the particular factor.
-  auto const highwayType = GetHighwayTypeKey(type);
+  auto const maxspeedKey = GetMaxspeedKey(maxspeedKmPH);
+  SpeedFactor maxspeedFactor(kInvalidModelValue, kInvalidModelValue);
+  auto const typeKey = GetHighwayTypeKey(type);
+  auto const local = m_highwayBasedInfo.m_localFactors.find(typeKey);
+  if (local != m_highwayBasedInfo.m_localFactors.cend())
+  {
+    auto const & maxspeedsToFactors = local->second;
+    auto const it = maxspeedsToFactors.find(maxspeedKey);
+    if (it != maxspeedsToFactors.cend())
+      maxspeedFactor = it->second.GetFactor(isCityRoad);
+  }
 
-  auto const factorIt = m_highwayBasedInfo.m_factors.find(highwayType);
-  ASSERT(factorIt != m_highwayBasedInfo.m_factors.cend(), ("Key:", highwayType, "is not found."));
-  auto const & factor = factorIt->second;
-  SpeedKMpH const & maxModelSpeed = m_maxModelSpeed.GetSpeed(isCityRoad);
-  return Pick<min>(SpeedKMpH(static_cast<double>(featureMaxSpeedKmPH)) * factor.GetFactor(isCityRoad),
-                   maxModelSpeed);
+  if (maxspeedFactor.m_weight != kInvalidModelValue && maxspeedFactor.m_eta != kInvalidModelValue)
+    return Pick<min>(speed * maxspeedFactor, maxModelSpeed);
+
+  auto const global = m_highwayBasedInfo.m_globalFactors.find(typeKey);
+  if (global != m_highwayBasedInfo.m_globalFactors.cend())
+  {
+    auto const & maxspeedsToFactors = global->second;
+    auto const it = maxspeedsToFactors.find(maxspeedKey);
+    if (it != maxspeedsToFactors.cend())
+    {
+      auto const & factor = it->second.GetFactor(isCityRoad);
+      if (factor.m_weight != kInvalidModelValue && maxspeedFactor.m_weight == kInvalidModelValue)
+        maxspeedFactor.m_weight = factor.m_weight;
+
+      if (factor.m_eta != kInvalidModelValue && maxspeedFactor.m_weight == kInvalidModelValue)
+        maxspeedFactor.m_eta = factor.m_eta;
+    }
+
+    auto const defaultIt = maxspeedsToFactors.find(kCommonMaxSpeedValue);
+    CHECK(defaultIt != maxspeedsToFactors.cend(), ());
+    SpeedFactor const & defaultFactor = defaultIt->second.GetFactor(isCityRoad);
+    if (maxspeedFactor.m_weight == kInvalidModelValue)
+      maxspeedFactor.m_weight = defaultFactor.m_weight;
+
+    if (maxspeedFactor.m_eta == kInvalidModelValue)
+      maxspeedFactor.m_eta = defaultFactor.m_eta;
+  }
+
+  CHECK_NOT_EQUAL(maxspeedFactor.m_weight, kInvalidModelValue, ());
+  CHECK_NOT_EQUAL(maxspeedFactor.m_eta, kInvalidModelValue, ());
+  return Pick<min>(speed * maxspeedFactor, maxModelSpeed);
 }
 
 SpeedKMpH VehicleModel::GetSpeedOnFeatureWithoutMaxspeed(HighwayType const & type,
                                                          SpeedParams const & speedParams) const
 {
-  ASSERT(!speedParams.m_maxspeed.IsValid(), ());
+  CHECK(!speedParams.m_maxspeed.IsValid(), ());
   auto const isCityRoad = speedParams.m_inCity;
   SpeedKMpH const & maxModelSpeed = m_maxModelSpeed.GetSpeed(isCityRoad);
+  SpeedKMpH speed(kInvalidModelValue, kInvalidModelValue);
+  auto const local = m_highwayBasedInfo.m_localSpeeds.find(type);
+  if (local != m_highwayBasedInfo.m_localSpeeds.cend())
+    speed = local->second.GetSpeed(isCityRoad);
 
-  auto const speedIt = m_highwayBasedInfo.m_speeds.find(type);
-  ASSERT(speedIt != m_highwayBasedInfo.m_speeds.cend(), ("Key:", type, "is not found."));
+  if (speed.m_weight != kInvalidModelValue && speed.m_eta != kInvalidModelValue)
+    return speed;
 
-  auto const typeKey = GetHighwayTypeKey(type);
-  auto const factorIt = m_highwayBasedInfo.m_factors.find(typeKey);
-  ASSERT(factorIt != m_highwayBasedInfo.m_factors.cend(), ("Key:", typeKey, "is not found."));
+  auto const globalIt = m_highwayBasedInfo.m_globalSpeeds.find(type);
+  CHECK(globalIt != m_highwayBasedInfo.m_globalSpeeds.cend(), ("Can't find type in global speeds", type));
+  SpeedKMpH const & global = globalIt->second.GetSpeed(isCityRoad);
+  CHECK_NOT_EQUAL(global.m_weight, kInvalidModelValue, ());
+  CHECK_NOT_EQUAL(global.m_eta, kInvalidModelValue, ());
+  if (speed.m_weight == kInvalidModelValue)
+    speed.m_weight = global.m_weight;
 
-  SpeedKMpH const speed = speedIt->second.GetSpeed(isCityRoad);
-  ASSERT(speed.IsValid(), (speed));
-  // Note. Weight speeds put to |m_highwayBasedInfo| are taken from the former code and should not
-  // be multiplied to the factor. On the contrary eta speed should be multiplied.
-  return SpeedKMpH(
-      min(speed.m_weight, maxModelSpeed.m_weight),
-      min(factorIt->second.GetFactor(isCityRoad).m_eta * speed.m_eta, maxModelSpeed.m_eta));
+  if (speed.m_eta == kInvalidModelValue)
+    speed.m_eta = global.m_eta;
+
+  return Pick<min>(speed, maxModelSpeed);
 }
 
 SpeedKMpH VehicleModel::GetTypeSpeed(feature::TypesHolder const & types,
@@ -351,34 +398,6 @@ string VehicleModelFactory::GetParent(string const & country) const
   return m_countryParentNameGetterFn(country);
 }
 
-HighwayBasedFactors GetOneFactorsForBicycleAndPedestrianModel()
-{
-  return HighwayBasedFactors{
-      {HighwayType::HighwayTrunk, InOutCityFactor(1.0)},
-      {HighwayType::HighwayTrunkLink, InOutCityFactor(1.0)},
-      {HighwayType::HighwayPrimary, InOutCityFactor(1.0)},
-      {HighwayType::HighwayPrimaryLink, InOutCityFactor(1.0)},
-      {HighwayType::HighwaySecondary, InOutCityFactor(1.0)},
-      {HighwayType::HighwaySecondaryLink, InOutCityFactor(1.0)},
-      {HighwayType::HighwayTertiary, InOutCityFactor(1.0)},
-      {HighwayType::HighwayTertiaryLink, InOutCityFactor(1.0)},
-      {HighwayType::HighwayService, InOutCityFactor(1.0)},
-      {HighwayType::HighwayUnclassified, InOutCityFactor(1.0)},
-      {HighwayType::HighwayRoad, InOutCityFactor(1.0)},
-      {HighwayType::HighwayTrack, InOutCityFactor(1.0)},
-      {HighwayType::HighwayPath, InOutCityFactor(1.0)},
-      {HighwayType::HighwayBridleway, InOutCityFactor(1.0)},
-      {HighwayType::HighwayCycleway, InOutCityFactor(1.0)},
-      {HighwayType::HighwayResidential, InOutCityFactor(1.0)},
-      {HighwayType::HighwayLivingStreet, InOutCityFactor(1.0)},
-      {HighwayType::HighwaySteps, InOutCityFactor(1.0)},
-      {HighwayType::HighwayPedestrian, InOutCityFactor(1.0)},
-      {HighwayType::HighwayFootway, InOutCityFactor(1.0)},
-      {HighwayType::ManMadePier, InOutCityFactor(1.0)},
-      {HighwayType::RouteFerry, InOutCityFactor(1.0)},
-  };
-}
-
 string DebugPrint(VehicleModelInterface::RoadAvailability const l)
 {
   switch (l)
@@ -400,30 +419,12 @@ string DebugPrint(SpeedKMpH const & speed)
   return oss.str();
 }
 
-std::string DebugPrint(SpeedFactor const & speedFactor)
-{
-  ostringstream oss;
-  oss << "SpeedFactor [ ";
-  oss << "weight:" << speedFactor.m_weight << ", ";
-  oss << "eta:" << speedFactor.m_eta << " ]";
-  return oss.str();
-}
-
 string DebugPrint(InOutCitySpeedKMpH const & speed)
 {
   ostringstream oss;
   oss << "InOutCitySpeedKMpH [ ";
   oss << "inCity:" << DebugPrint(speed.m_inCity) << ", ";
   oss << "outCity:" << DebugPrint(speed.m_outCity) << " ]";
-  return oss.str();
-}
-
-string DebugPrint(InOutCityFactor const & speedFactor)
-{
-  ostringstream oss;
-  oss << "InOutCityFactor [ ";
-  oss << "inCity:" << DebugPrint(speedFactor.m_inCity) << ", ";
-  oss << "outCity:" << DebugPrint(speedFactor.m_outCity) << " ]";
   return oss.str();
 }
 
@@ -458,6 +459,7 @@ string DebugPrint(HighwayType type)
   case HighwayType::RouteFerryMotorcar: return "route-ferry-motorcar";
   case HighwayType::RouteFerryMotorVehicle: return "route-ferry-motor_vehicle";
   case HighwayType::RailwayRailMotorVehicle: return "railway-rail-motor_vehicle";
+  case HighwayType::HighwayPlatform: return "highway-platform";
   case HighwayType::RouteShuttleTrain: return "route-shuttle_train";
   }
 

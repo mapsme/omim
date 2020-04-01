@@ -5,10 +5,9 @@
 #include "platform/preferred_languages.hpp"
 #include "platform/settings.hpp"
 
-#include "coding/url.hpp"
-
 #include "base/assert.hpp"
 #include "base/string_utils.hpp"
+#include "base/url_helpers.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -47,8 +46,7 @@ bool NeedToShowImpl(std::string const & bookingPromoAwaitingForId, eye::Eye::Inf
          timeSinceLastShown > kShowPromoNotRaterThan;
 }
 
-void ParseCityGallery(std::string const & src, UTM utm, std::string const & utmTerm,
-                      promo::CityGallery & result)
+void ParseCityGallery(std::string const & src, UTM utm, promo::CityGallery & result)
 {
   Json root(src.c_str());
   auto const dataArray = json_object_get(root.get(), "data");
@@ -63,9 +61,6 @@ void ParseCityGallery(std::string const & src, UTM utm, std::string const & utmT
     FromJSONObject(obj, "name", item.m_name);
     FromJSONObject(obj, "url", item.m_url);
     item.m_url = InjectUTM(url::Join(BOOKMARKS_CATALOG_FRONT_URL, item.m_url), utm);
-    if (!utmTerm.empty())
-      item.m_url = InjectUTMTerm(item.m_url, utmTerm);
-
     FromJSONObject(obj, "access", item.m_access);
     FromJSONObjectOptionalField(obj, "image_url", item.m_imageUrl);
     FromJSONObjectOptionalField(obj, "tier", item.m_tier);
@@ -95,8 +90,6 @@ void ParseCityGallery(std::string const & src, UTM utm, std::string const & utmT
   auto const meta = json_object_get(root.get(), "meta");
   FromJSONObjectOptionalField(meta, "more", result.m_moreUrl);
   result.m_moreUrl = InjectUTM(url::Join(BOOKMARKS_CATALOG_FRONT_URL, result.m_moreUrl), utm);
-  if (!utmTerm.empty())
-    result.m_moreUrl = InjectUTMTerm(result.m_moreUrl, utmTerm);
   FromJSONObjectOptionalField(meta, "category", result.m_category);
 }
 
@@ -119,7 +112,7 @@ std::string MakeCityGalleryUrl(std::string const & baseUrl, std::string const & 
   ASSERT_EQUAL(baseUrl.back(), '/', ());
 
   url::Params params = {{"city_id", ToSignedId(id)}, {"lang", lang}};
-  return url::Make(url::Join(baseUrl, "gallery/v2/search/"), params);
+  return url::Make(url::Join(baseUrl, "gallery/v1/search/"), params);
 }
 
 std::string MakePoiGalleryUrl(std::string const & baseUrl, std::string const & id,
@@ -146,7 +139,7 @@ std::string MakePoiGalleryUrl(std::string const & baseUrl, std::string const & i
   params.emplace_back("tags", strings::JoinStrings(tags, ","));
   params.emplace_back("lang", lang);
 
-  return url::Make(url::Join(baseUrl, "gallery/v2/search/"), params);
+  return url::Make(url::Join(baseUrl, "gallery/v1/search/"), params);
 }
 
 std::string GetPictureUrl(std::string const & baseUrl, std::string const & id)
@@ -168,12 +161,11 @@ std::string GetCityCatalogueUrl(std::string const & baseUrl, std::string const &
 
   ASSERT_EQUAL(baseUrl.back(), '/', ());
 
-  return baseUrl + "v3/mobilefront/city/" + ToSignedId(id);
+  return baseUrl + "v2/mobilefront/city/" + ToSignedId(id);
 }
 
 void GetPromoGalleryImpl(std::string const & url, platform::HttpClient::Headers const & headers,
-                         UTM utm, std::string const & utmTerm,
-                         CityGalleryCallback const & onSuccess, OnError const & onError)
+                         UTM utm, CityGalleryCallback const & onSuccess, OnError const & onError)
 {
   if (url.empty())
   {
@@ -181,7 +173,7 @@ void GetPromoGalleryImpl(std::string const & url, platform::HttpClient::Headers 
     return;
   }
 
-  GetPlatform().RunTask(Platform::Thread::Network, [url, headers, utm, utmTerm, onSuccess, onError]()
+  GetPlatform().RunTask(Platform::Thread::Network, [url, headers, utm, onSuccess, onError]()
   {
     CityGallery result;
     std::string httpResult;
@@ -196,7 +188,7 @@ void GetPromoGalleryImpl(std::string const & url, platform::HttpClient::Headers 
 
     try
     {
-      ParseCityGallery(httpResult, utm, utmTerm, result);
+      ParseCityGallery(httpResult, utm, result);
     }
     catch (Json::Exception const & e)
     {
@@ -275,10 +267,9 @@ void Api::GetCityGallery(m2::PointD const & point, std::string const & lang, UTM
                          CityGalleryCallback const & onSuccess, OnError const & onError) const
 {
   CHECK(m_delegate, ());
-  auto const cityId = m_delegate->GetCityId(point);
-  auto const url = MakeCityGalleryUrl(m_baseUrl, cityId, lang);
+  auto const url = MakeCityGalleryUrl(m_baseUrl, m_delegate->GetCityId(point), lang);
   auto const headers = m_delegate->GetHeaders();
-  GetPromoGalleryImpl(url, headers, utm, cityId, onSuccess, onError);
+  GetPromoGalleryImpl(url, headers, utm, onSuccess, onError);
 }
 
 void Api::GetPoiGallery(m2::PointD const & point, std::string const & lang, Tags const & tags,
@@ -290,7 +281,7 @@ void Api::GetPoiGallery(m2::PointD const & point, std::string const & lang, Tags
   auto const url =
       MakePoiGalleryUrl(m_baseUrl, m_delegate->GetCityId(point), point, lang, tags, useCoordinates);
   auto const headers = m_delegate->GetHeaders();
-  GetPromoGalleryImpl(url, headers, utm, "", onSuccess, onError);
+  GetPromoGalleryImpl(url, headers, utm, onSuccess, onError);
 }
 
 void Api::OnTransitionToBooking(m2::PointD const & hotelPos)

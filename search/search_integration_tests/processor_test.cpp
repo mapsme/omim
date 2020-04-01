@@ -1,19 +1,17 @@
 #include "testing/testing.hpp"
 
-#include "generator/generator_tests_support/test_feature.hpp"
-#include "generator/generator_tests_support/test_mwm_builder.hpp"
-
-#include "generator/feature_builder.hpp"
-
-#include "search/search_tests_support/helpers.hpp"
-#include "search/search_tests_support/test_results_matching.hpp"
-#include "search/search_tests_support/test_search_request.hpp"
-
 #include "search/cities_boundaries_table.hpp"
 #include "search/features_layer_path_finder.hpp"
 #include "search/retrieval.hpp"
+#include "search/search_tests_support/helpers.hpp"
+#include "search/search_tests_support/test_results_matching.hpp"
+#include "search/search_tests_support/test_search_request.hpp"
 #include "search/token_range.hpp"
 #include "search/token_slice.hpp"
+
+#include "generator/feature_builder.hpp"
+#include "generator/generator_tests_support/test_feature.hpp"
+#include "generator/generator_tests_support/test_mwm_builder.hpp"
 
 #include "editor/editable_data_source.hpp"
 
@@ -33,7 +31,6 @@
 
 #include <cstdint>
 #include <string>
-#include <tuple>
 #include <vector>
 
 using namespace feature;
@@ -76,6 +73,27 @@ public:
 private:
   float const m_rating;
   int const m_priceRate;
+};
+
+class TestCafeWithCuisine : public TestCafe
+{
+public:
+  TestCafeWithCuisine(m2::PointD const & center, string const & name, string const & lang, string const & cuisine)
+    : TestCafe(center, name, lang), m_cuisine(cuisine)
+  {
+  }
+
+  // TestPOI overrides:
+  void Serialize(FeatureBuilder & fb) const override
+  {
+    TestCafe::Serialize(fb);
+
+    auto & metadata = fb.GetMetadata();
+    metadata.Set(Metadata::FMD_CUISINE, m_cuisine);
+  }
+
+private:
+  string m_cuisine;
 };
 
 class TestAirport : public TestPOI
@@ -179,7 +197,7 @@ UNIT_CLASS_TEST(ProcessorTest, Smoke)
   TestBuilding descartesHouse(m2::PointD(10, 10), "Descartes house", "2", "en");
   TestBuilding bornHouse(m2::PointD(14.999, 15), "Born house", "8", firstAprilStreet.GetName("en"), "en");
 
-  TestPOI busStop(m2::PointD(0, 0), "Central bus stop", "en");
+  TestPOI busStop(m2::PointD(0, 0), "Bus stop", "en");
   TestPOI tramStop(m2::PointD(0.0001, 0.0001), "Tram stop", "en");
   TestPOI quantumTeleport1(m2::PointD(0.0002, 0.0002), "Quantum teleport 1", "en");
 
@@ -196,41 +214,43 @@ UNIT_CLASS_TEST(ProcessorTest, Smoke)
                          "Strada drive", "en");
   TestBuilding terranceHouse(m2::PointD(-10, -10), "", "155", stradaDrive.GetName("en"), "en");
 
-  auto const worldId = BuildWorld([&](TestMwmBuilder & builder) {
-    builder.Add(wonderlandCountry);
-    builder.Add(losAlamosCity);
-    builder.Add(mskCity);
-    builder.Add(torontoCity);
-  });
-  auto const wonderlandId = BuildCountry(countryName, [&](TestMwmBuilder & builder) {
-    builder.Add(losAlamosCity);
-    builder.Add(mskCity);
-    builder.Add(torontoCity);
-    builder.Add(longPondVillage);
+  BuildWorld([&](TestMwmBuilder & builder)
+             {
+               builder.Add(wonderlandCountry);
+               builder.Add(losAlamosCity);
+               builder.Add(mskCity);
+               builder.Add(torontoCity);
+             });
+  auto wonderlandId = BuildCountry(countryName, [&](TestMwmBuilder & builder)
+                                   {
+                                     builder.Add(losAlamosCity);
+                                     builder.Add(mskCity);
+                                     builder.Add(torontoCity);
+                                     builder.Add(longPondVillage);
 
-    builder.Add(feynmanStreet);
-    builder.Add(bohrStreet1);
-    builder.Add(bohrStreet2);
-    builder.Add(bohrStreet3);
-    builder.Add(firstAprilStreet);
+                                     builder.Add(feynmanStreet);
+                                     builder.Add(bohrStreet1);
+                                     builder.Add(bohrStreet2);
+                                     builder.Add(bohrStreet3);
+                                     builder.Add(firstAprilStreet);
 
-    builder.Add(feynmanHouse);
-    builder.Add(bohrHouse);
-    builder.Add(hilbertHouse);
-    builder.Add(descartesHouse);
-    builder.Add(bornHouse);
+                                     builder.Add(feynmanHouse);
+                                     builder.Add(bohrHouse);
+                                     builder.Add(hilbertHouse);
+                                     builder.Add(descartesHouse);
+                                     builder.Add(bornHouse);
 
-    builder.Add(busStop);
-    builder.Add(tramStop);
-    builder.Add(quantumTeleport1);
-    builder.Add(quantumTeleport2);
-    builder.Add(quantumCafe);
-    builder.Add(lantern1);
-    builder.Add(lantern2);
+                                     builder.Add(busStop);
+                                     builder.Add(tramStop);
+                                     builder.Add(quantumTeleport1);
+                                     builder.Add(quantumTeleport2);
+                                     builder.Add(quantumCafe);
+                                     builder.Add(lantern1);
+                                     builder.Add(lantern2);
 
-    builder.Add(stradaDrive);
-    builder.Add(terranceHouse);
-  });
+                                     builder.Add(stradaDrive);
+                                     builder.Add(terranceHouse);
+                                   });
 
   SetViewport(m2::RectD(m2::PointD(-1.0, -1.0), m2::PointD(1.0, 1.0)));
   {
@@ -239,7 +259,7 @@ UNIT_CLASS_TEST(ProcessorTest, Smoke)
   }
   {
     Rules rules = {ExactMatch(wonderlandId, busStop)};
-    TEST(ResultsMatch("Central bus stop", rules), ());
+    TEST(ResultsMatch("Bus stop", rules), ());
   }
   {
     Rules rules = {ExactMatch(wonderlandId, quantumCafe),
@@ -264,19 +284,13 @@ UNIT_CLASS_TEST(ProcessorTest, Smoke)
     TEST(ResultsMatch("feynman street 3", rules), ());
   }
   {
-    // Here we expect to find feynmanHouse (building next to Feynman street with housenumber '1 unit 1')
-    // but not lantern1 (building next to Feynman street with name 'lantern 1') because '1'
-    // looks like housenumber.
-    Rules rules = {ExactMatch(wonderlandId, feynmanHouse),
+    Rules rules = {ExactMatch(wonderlandId, feynmanHouse), ExactMatch(wonderlandId, lantern1),
                    ExactMatch(wonderlandId, firstAprilStreet)};
     TEST(ResultsMatch("feynman street 1", rules), ());
   }
   {
-    // Here we expect to find bohrHouse (building next to Bohr street with housenumber '1 unit 1')
-    // but not lantern1 (building next to Bohr street with name 'lantern 1') because '1' looks like
-    // housenumber.
     Rules rules = {ExactMatch(wonderlandId, bohrHouse), ExactMatch(wonderlandId, hilbertHouse),
-                   ExactMatch(wonderlandId, firstAprilStreet)};
+                   ExactMatch(wonderlandId, lantern1), ExactMatch(wonderlandId, firstAprilStreet)};
     TEST(ResultsMatch("bohr street 1", rules), ());
   }
   {
@@ -299,9 +313,7 @@ UNIT_CLASS_TEST(ProcessorTest, Smoke)
     // It's not possible to find Descartes house by house number,
     // because it doesn't belong to Los Alamos streets. But it still
     // exists.
-    // Also it's not possible to find 'Quantum teleport 2' and 'lantern 2' by name because '2' looks
-    // like house number and it is not considered as poi name.
-    Rules rules = {ExactMatch(worldId, losAlamosCity)};
+    Rules rules = {ExactMatch(wonderlandId, lantern2), ExactMatch(wonderlandId, quantumTeleport2)};
     TEST(ResultsMatch("Los Alamos 2", rules), ());
   }
   {
@@ -784,7 +796,7 @@ UNIT_CLASS_TEST(ProcessorTest, TestCategories)
   TestPOI nonameAtm(m2::PointD(0, 0), "", "en");
   nonameAtm.SetTypes({{"amenity", "atm"}});
 
-  TestPOI namedAtm(m2::PointD(0.03, 0.03), "ATM", "en");
+  TestPOI namedAtm(m2::PointD(0.3, 0.3), "ATM", "en");
   namedAtm.SetTypes({{"amenity", "atm"}});
 
   TestPOI busStop(m2::PointD(0.00005, 0.0005), "ATM Bus Stop", "en");
@@ -817,7 +829,7 @@ UNIT_CLASS_TEST(ProcessorTest, TestCategories)
     Rules const rules = {ExactMatch(wonderlandId, nonameAtm), ExactMatch(wonderlandId, namedAtm),
                          ExactMatch(wonderlandId, busStop)};
 
-    auto request = MakeRequest("San Francisco atm");
+    auto request = MakeRequest("atm");
     TEST(ResultsMatch(request->Results(), rules), ());
     for (auto const & result : request->Results())
     {
@@ -930,7 +942,7 @@ UNIT_CLASS_TEST(ProcessorTest, TestCategorialSearch)
                          ExactMatch(wonderlandId, hotelCafe), ExactMatch(testWorldId, homel),
                          ExactMatch(wonderlandId, hotelDeVille)};
     // A prefix token.
-    auto request = MakeRequest("hote");
+    auto request = MakeRequest("hotel");
     TEST(ResultsMatch(request->Results(), rules), ());
   }
 
@@ -968,62 +980,17 @@ UNIT_CLASS_TEST(ProcessorTest, TestCategorialSearch)
 
 UNIT_CLASS_TEST(ProcessorTest, TestCoords)
 {
-  vector<tuple<string, double, double>> tests = {
-      {"51.681644 39.183481", 51.681644, 39.183481},
+  auto request = MakeRequest("51.681644 39.183481");
+  auto const & results = request->Results();
+  TEST_EQUAL(results.size(), 1, ());
 
-      {"https://maps.apple.com/maps?ll=30.3345,-81.6648&q=30.3345,-81.6648", 30.3345, -81.6648},
-      {"https://maps.apple.com/maps?ll=30.3345,-81.6648&q=10.0,10.0", 30.3345, -81.6648},
-      {"https://maps.apple.com/maps?q=10.0,10.0&ll=30.3345,-81.6648", 30.3345, -81.6648},
-      {"https://maps.apple.com/maps?q=10.0,10.0&ll=10.0,10.0", 10.0, 10.0},
+  auto const & result = results[0];
+  TEST_EQUAL(result.GetResultType(), Result::Type::LatLon, ());
+  TEST(result.HasPoint(), ());
 
-      // The first pair of coordinates in this URL belongs to the selected feature but is harder to
-      // parse. The second pair (in "m=") is the viewport center.
-      {"https://2gis.ru/moscow/geo/4504338361754075/"
-       "37.326747%2C55.481637?m=37.371024%2C55.523592%2F9.69",
-       55.523592, 37.371024},
-      {"https://2gis.com.cy/cyprus?m=32.441559%2C34.767296%2F14.58", 34.767296, 32.441559},
-      {"https://2gis.com.cy/cyprus/geo/70030076127247109/"
-       "32.431259%2C34.771945?m=32.433265%2C34.770793%2F17.21",
-       34.770793, 32.433265},
-
-      {"https://yandex.ru/maps/?ll=158.828916%2C52.931098&z=9.1", 52.931098, 158.828916},
-      {"https://yandex.ru/maps/78/petropavlovsk/?ll=158.657810%2C53.024529&z=12.99", 53.024529,
-       158.657810},
-      {"https://yandex.ru/maps/78/petropavlovsk/"
-       "?ll=158.643359%2C53.018729&mode=whatshere&whatshere%5Bpoint%5D=158.643270%2C53.021174&"
-       "whatshere%5Bzoom%5D=16.07&z=15.65",
-       53.018729, 158.643359},
-      {"https://yandex.com.tr/harita/115707/fatih/?ll=28.967470%2C41.008857&z=10", 41.008857,
-       28.967470},
-
-      {"http://ge0.me/kyuh76X_vf/Borgo_Maggiore", 43.941187, 12.447423},
-      {"ge0://kyuh76X_vf/Borgo_Maggiore", 43.941187, 12.447423},
-      {"Check out Ospedale di Stato My Places • Hospital "
-       "http://ge0.me/syujRR7Xgi/Ospedale_di_Stato ge0://syujRR7Xgi/Ospedale_di_Stato",
-       43.950255, 12.455579},
-
-      {"https://en.mapy.cz/zakladni?x=37.5516243&y=55.7638088&z=12", 55.7638088, 37.5516243},
-      {"https://en.mapy.cz/"
-       "turisticka?moje-mapy&x=37.6575394&y=55.7253036&z=13&m3d=1&height=10605&yaw=0&pitch=-90&l=0&"
-       "cat=mista-trasy",
-       55.7253036, 37.6575394},
-  };
-
-  for (auto const & [query, lat, lon] : tests)
-  {
-    auto const request = MakeRequest(query);
-    auto const & results = request->Results();
-    TEST_EQUAL(results.size(), 1, ());
-
-    auto const & result = results[0];
-    TEST_EQUAL(result.GetResultType(), Result::Type::LatLon, ());
-    TEST(result.HasPoint(), ());
-
-    m2::PointD const expected = mercator::FromLatLon(lat, lon);
-    auto const actual = result.GetFeatureCenter();
-    auto const dist = mercator::DistanceOnEarth(actual, expected);
-    TEST_LESS_OR_EQUAL(dist, 1.0, (actual, expected));
-  }
+  m2::PointD const expected = mercator::FromLatLon(51.681644, 39.183481);
+  auto const actual = result.GetFeatureCenter();
+  TEST(mercator::DistanceOnEarth(expected, actual) <= 1.0, ());
 }
 
 UNIT_CLASS_TEST(ProcessorTest, HotelsFiltering)
@@ -1620,6 +1587,34 @@ UNIT_CLASS_TEST(ProcessorTest, CuisineTest)
   }
 }
 
+UNIT_CLASS_TEST(ProcessorTest, CuisineMetadataTest)
+{
+  string const countryName = "Wonderland";
+
+  TestCafeWithCuisine kebab(m2::PointD(1.0, 1.0), "Useless name", "en", "kebab");
+  TestCafeWithCuisine tapas(m2::PointD(1.0, 1.0), "Useless name", "en", "tapas");
+
+  // Metadata is supported for old maps only.
+  SetMwmVersion(180801);
+
+  auto countryId = BuildCountry(countryName, [&](TestMwmBuilder & builder) {
+    builder.Add(kebab);
+    builder.Add(tapas);
+  });
+
+  SetViewport(m2::RectD(-1, -1, 1, 1));
+
+  {
+    Rules rules{ExactMatch(countryId, kebab)};
+    TEST(ResultsMatch("kebab ", "en", rules), ());
+  }
+
+  {
+    Rules rules{ExactMatch(countryId, tapas)};
+    TEST(ResultsMatch("tapas ", "en", rules), ());
+  }
+}
+
 UNIT_CLASS_TEST(ProcessorTest, AirportTest)
 {
   string const countryName = "Wonderland";
@@ -1701,7 +1696,7 @@ UNIT_CLASS_TEST(ProcessorTest, BrandTest)
 
   {
     Rules rules{ExactMatch(countryId, sw)};
-    TEST(ResultsMatch("Subway cafe", "en", rules), ());
+    TEST(ResultsMatch("Subway", "en", rules), ());
     TEST(ResultsMatch("Сабвэй", "ru", rules), ());
     TEST(ResultsMatch("サブウェイ", "ja", rules), ());
   }
@@ -2492,253 +2487,6 @@ UNIT_CLASS_TEST(ProcessorTest, Suburbs)
     TEST(info.m_exactMatch, ());
     TEST(info.m_allTokensUsed, ());
     TEST_ALMOST_EQUAL_ABS(info.m_matchedFraction, 1.0, 1e-12, ());
-  }
-}
-
-UNIT_CLASS_TEST(ProcessorTest, ViewportFilter)
-{
-  TestStreet street23({m2::PointD(0.5, -1.0), m2::PointD(0.5, 1.0)}, "23rd February street", "en");
-  TestStreet street8({m2::PointD(0.0, -1.0), m2::PointD(0.0, 1.0)}, "8th March street", "en");
-
-  auto const countryId = BuildCountry("Wounderland", [&](TestMwmBuilder & builder) {
-    builder.Add(street23);
-    builder.Add(street8);
-  });
-
-  {
-    SearchParams params;
-    params.m_query = "8th March street 23";
-    params.m_inputLocale = "en";
-    params.m_viewport = m2::RectD(m2::PointD(-1.0, -1.0), m2::PointD(1.0, 1.0));
-    params.m_mode = Mode::Viewport;
-
-    // |street23| should not appear in viewport search because it has 2 unmatched tokens.
-    // |street8| has 1 unmatched token.
-    Rules const rulesViewport = {ExactMatch(countryId, street8)};
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rulesViewport), ());
-  }
-
-  {
-    SearchParams params;
-    params.m_query = "8th March street 23";
-    params.m_inputLocale = "en";
-    params.m_viewport = m2::RectD(m2::PointD(-1.0, -1.0), m2::PointD(1.0, 1.0));
-    params.m_mode = Mode::Everywhere;
-
-    // |street23| should be in everywhere search results because everywhere search mode does not
-    // have matched tokens number restriction.
-    Rules const rulesViewport = {ExactMatch(countryId, street23), ExactMatch(countryId, street8)};
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rulesViewport), ());
-  }
-}
-
-UNIT_CLASS_TEST(ProcessorTest, FilterStreetPredictions)
-{
-  TestCity smallCity(m2::PointD(3.0, 0.0), "SmallCity", "en", 1 /* rank */);
-
-  TestStreet lenina0({m2::PointD(0.0, -1.0), m2::PointD(0.0, 1.0)}, "Lenina", "en");
-  TestStreet lenina1({m2::PointD(1.0, -1.0), m2::PointD(1.0, 1.0)}, "Lenina", "en");
-  TestStreet lenina2({m2::PointD(2.0, -1.0), m2::PointD(2.0, 1.0)}, "Lenina", "en");
-  TestStreet lenina3({m2::PointD(3.0, -1.0), m2::PointD(3.0, 1.0)}, "Lenina", "en");
-
-  auto const countryId = BuildCountry("Wounderland", [&](TestMwmBuilder & builder) {
-    builder.Add(lenina0);
-    builder.Add(lenina1);
-    builder.Add(lenina2);
-    builder.Add(lenina3);
-  });
-
-  BuildWorld([&](TestMwmBuilder & builder) { builder.Add(smallCity); });
-
-  SearchParams defaultParams;
-  defaultParams.m_query = "Lenina";
-  defaultParams.m_inputLocale = "en";
-  defaultParams.m_viewport = m2::RectD(m2::PointD(-1.0, -1.0), m2::PointD(1.0, 1.0));
-  defaultParams.m_mode = Mode::Everywhere;
-  defaultParams.m_streetSearchRadiusM = TestSearchRequest::kDefaultTestStreetSearchRadiusM;
-
-  {
-    Rules const rules = {ExactMatch(countryId, lenina0), ExactMatch(countryId, lenina1),
-                         ExactMatch(countryId, lenina2), ExactMatch(countryId, lenina3)};
-
-    TestSearchRequest request(m_engine, defaultParams);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(countryId, lenina0), ExactMatch(countryId, lenina1),
-                         ExactMatch(countryId, lenina2)};
-
-    auto params = defaultParams;
-    params.m_streetSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), m2::PointD(3.0, 0.0)) - 1.0;
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(countryId, lenina0), ExactMatch(countryId, lenina1)};
-
-    auto params = defaultParams;
-    params.m_streetSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), m2::PointD(2.0, 0.0)) - 1.0;
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(countryId, lenina0)};
-
-    auto params = defaultParams;
-    params.m_streetSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), m2::PointD(1.0, 0.0)) - 1.0;
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(countryId, lenina0), ExactMatch(countryId, lenina3)};
-
-    auto params = defaultParams;
-    params.m_streetSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), m2::PointD(1.0, 0.0)) - 1.0;
-    params.m_position = m2::PointD(3.0, 0.0);
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(countryId, lenina0), ExactMatch(countryId, lenina3)};
-
-    auto params = defaultParams;
-    params.m_streetSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), m2::PointD(1.0, 0.0)) - 1.0;
-    params.m_query = "SmallCity Lenina";
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-}
-
-UNIT_CLASS_TEST(ProcessorTest, FilterVillages)
-{
-  TestState moscowRegion(m2::PointD(10.0, 10.0), "Moscow Region", "en");
-  // |moscowRegion| feature should belong to MoscowRegion with some margin due to mwmPointAccuracy.
-  TestPOI dummy(m2::PointD(9.99, 9.99), "", "en");
-  TestVillage petrovskoeMoscow(m2::PointD(10.5, 10.5), "Petrovskoe", "en", 5 /* rank */);
-
-  TestVillage petrovskoe0(m2::PointD(0.0, 0.0), "Petrovskoe", "en", 5 /* rank */);
-  TestVillage petrovskoe1(m2::PointD(1.0, 1.0), "Petrovskoe", "en", 5 /* rank */);
-  TestVillage petrovskoe2(m2::PointD(2.0, 2.0), "Petrovskoe", "en", 5 /* rank */);
-
-  auto const moscowId = BuildCountry("MoscowRegion", [&](TestMwmBuilder & builder) {
-    builder.Add(petrovskoeMoscow);
-    builder.Add(dummy);
-  });
-
-  auto const otherId = BuildCountry("OtherRegion", [&](TestMwmBuilder & builder) {
-    builder.Add(petrovskoe0);
-    builder.Add(petrovskoe1);
-    builder.Add(petrovskoe2);
-  });
-
-  BuildWorld([&](TestMwmBuilder & builder) { builder.Add(moscowRegion); });
-
-  SearchParams defaultParams;
-  defaultParams.m_query = "Petrovskoe";
-  defaultParams.m_inputLocale = "en";
-  defaultParams.m_viewport = m2::RectD(m2::PointD(-1.0, -1.0), m2::PointD(1.0, 1.0));
-  defaultParams.m_mode = Mode::Everywhere;
-  defaultParams.m_villageSearchRadiusM = TestSearchRequest::kDefaultTestVillageSearchRadiusM;
-
-  {
-    Rules const rules = {ExactMatch(otherId, petrovskoe0), ExactMatch(otherId, petrovskoe1),
-                         ExactMatch(otherId, petrovskoe2), ExactMatch(moscowId, petrovskoeMoscow)};
-
-    TestSearchRequest request(m_engine, defaultParams);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(otherId, petrovskoe0), ExactMatch(otherId, petrovskoe1),
-                         ExactMatch(otherId, petrovskoe2)};
-
-    auto params = defaultParams;
-    params.m_villageSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), petrovskoeMoscow.GetCenter()) - 1.0;
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(otherId, petrovskoe0), ExactMatch(otherId, petrovskoe1)};
-
-    auto params = defaultParams;
-    params.m_villageSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), petrovskoe2.GetCenter()) - 1.0;
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(otherId, petrovskoe0)};
-
-    auto params = defaultParams;
-    params.m_villageSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), petrovskoe1.GetCenter()) - 1.0;
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(otherId, petrovskoe0), ExactMatch(otherId, petrovskoe2)};
-
-    auto params = defaultParams;
-    params.m_position = m2::PointD(2.0, 2.0);
-    params.m_villageSearchRadiusM =
-        min(mercator::DistanceOnEarth(params.m_viewport.Center(), petrovskoe1.GetCenter()),
-            mercator::DistanceOnEarth(*params.m_position, petrovskoe1.GetCenter()));
-    params.m_villageSearchRadiusM -= 1.0;
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
-  }
-
-  {
-    Rules const rules = {ExactMatch(otherId, petrovskoe0), ExactMatch(moscowId, petrovskoeMoscow)};
-
-    auto params = defaultParams;
-    params.m_villageSearchRadiusM =
-        mercator::DistanceOnEarth(params.m_viewport.Center(), petrovskoe1.GetCenter()) - 1.0;
-    params.m_query = "Petrovskoe Moscow Region";
-
-    TestSearchRequest request(m_engine, params);
-    request.Run();
-    TEST(ResultsMatch(request.Results(), rules), ());
   }
 }
 }  // namespace

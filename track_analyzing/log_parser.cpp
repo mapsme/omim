@@ -7,7 +7,6 @@
 #include "platform/platform.hpp"
 
 #include "coding/hex.hpp"
-#include "coding/traffic.hpp"
 
 #include "geometry/mercator.hpp"
 
@@ -28,20 +27,9 @@ vector<DataPoint> ReadDataPoints(string const & data)
 {
   string const decoded = FromHex(data);
   vector<DataPoint> points;
-  MemReaderWithExceptions memReader(decoded.data(), decoded.size());
-  ReaderSource<MemReaderWithExceptions> src(memReader);
-
-  try
-  {
-    coding::TrafficGPSEncoder::DeserializeDataPoints(coding::TrafficGPSEncoder::kLatestVersion, src,
-                                                     points);
-  }
-  catch (Reader::SizeException const & e)
-  {
-    points.clear();
-    LOG(LERROR, ("DataPoint is corrupted. data:", data));
-    LOG(LINFO, ("Continue reading..."));
-  }
+  MemReader memReader(decoded.data(), decoded.size());
+  ReaderSource<MemReader> src(memReader);
+  coding::TrafficGPSEncoder::DeserializeDataPoints(1 /* version */, src, points);
   return points;
 }
 

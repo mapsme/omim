@@ -22,7 +22,6 @@ omim_link_libraries(
   ${PROJECT_NAME}
   platform_tests_support
   map
-  ge0
   drape_frontend
   shaders
   routing

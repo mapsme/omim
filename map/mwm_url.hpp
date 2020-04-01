@@ -1,7 +1,5 @@
 #pragma once
 
-#include "coding/url.hpp"
-
 #include "geometry/point2d.hpp"
 #include "geometry/rect2d.hpp"
 
@@ -10,11 +8,6 @@
 
 class ApiMarkPoint;
 class BookmarkManager;
-
-namespace url
-{
-class Url;
-}
 
 namespace url_scheme
 {
@@ -57,13 +50,15 @@ struct CatalogPath
 
 struct Subscription
 {
-  std::string m_groups;
+  std::string m_deliverable;
 };
 
 namespace lead
 {
 struct CampaignDescription;
 }
+
+class Uri;
 
 /// Handles [mapswithme|mwm|mapsme]://map|route|search?params - everything related to displaying info on a map
 class ParsedMapApi
@@ -85,7 +80,7 @@ public:
 
   void SetBookmarkManager(BookmarkManager * manager);
 
-  ParsingResult SetUrlAndParse(std::string const & url);
+  ParsingResult SetUriAndParse(std::string const & url);
   bool IsValid() const { return m_isValid; }
   std::string const & GetGlobalBackUrl() const { return m_globalBackUrl; }
   std::string const & GetAppTitle() const { return m_appTitle; }
@@ -102,17 +97,15 @@ public:
   Catalog const & GetCatalog() const { return m_catalog; }
   CatalogPath const & GetCatalogPath() const { return m_catalogPath; }
   Subscription const & GetSubscription() const { return m_subscription; }
-  std::string const & GetAffiliateId() const { return m_affiliateId; }
 private:
-  ParsingResult Parse(url::Url const & url);
-  void ParseAdditional(url::Url const & url);
-  void ParseMapParam(url::Param const & param, std::vector<ApiPoint> & points, bool & correctOrder);
-  void ParseRouteParam(url::Param const & param, std::vector<std::string> & pattern);
-  void ParseSearchParam(url::Param const & param, SearchRequest & request) const;
-  void ParseLeadParam(url::Param const & param, lead::CampaignDescription & description) const;
-  void ParseCatalogParam(url::Param const & param, Catalog & item) const;
-  void ParseCatalogPathParam(url::Param const & param, CatalogPath & item) const;
-  void ParseSubscriptionParam(url::Param const & param, Subscription & item) const;
+  ParsingResult Parse(Uri const & uri);
+  bool AddKeyValue(std::string const & key, std::string const & value, std::vector<ApiPoint> & points);
+  bool RouteKeyValue(std::string const & key, std::string const & value, std::vector<std::string> & pattern);
+  bool SearchKeyValue(std::string const & key, std::string const & value, SearchRequest & request) const;
+  bool LeadKeyValue(std::string const & key, std::string const & value, lead::CampaignDescription & description) const;
+  bool CatalogKeyValue(std::string const & key, std::string const & value, Catalog & item) const;
+  bool CatalogPathKeyValue(std::string const & key, std::string const & value, CatalogPath & item) const;
+  bool SubscriptionKeyValue(std::string const & key, std::string const & value, Subscription & item) const;
 
   BookmarkManager * m_bmManager = nullptr;
   std::vector<RoutePoint> m_routePoints;
@@ -123,7 +116,6 @@ private:
   std::string m_globalBackUrl;
   std::string m_appTitle;
   std::string m_routingType;
-  std::string m_affiliateId;
   int m_version = 0;
   /// Zoom level in OSM format (e.g. from 1.0 to 20.0)
   /// Taken into an account when calculating viewport rect, but only if points count is == 1

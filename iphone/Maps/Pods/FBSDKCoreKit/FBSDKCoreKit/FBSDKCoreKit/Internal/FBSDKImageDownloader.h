@@ -16,26 +16,17 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
-/**
- Describes the callback for downloadImageWithURL:ttl:completion:.
- @param image the optional image returned
- */
-typedef void (^FBSDKImageDownloadBlock)(UIImage *_Nullable image)
-NS_SWIFT_NAME(ImageDownloadBlock);
 
 /*
   simple class to manage image downloads
 
  this class is not smart enough to dedupe identical requests in flight.
  */
-NS_SWIFT_NAME(ImageDownloader)
 @interface FBSDKImageDownloader : NSObject
 
-@property (class, nonatomic, strong, readonly) FBSDKImageDownloader *sharedInstance;
++ (instancetype)sharedInstance;
 
 /*
   download an image or retrieve it from cache
@@ -43,12 +34,8 @@ NS_SWIFT_NAME(ImageDownloader)
  @param ttl the amount of time (in seconds) that using a cached version is acceptable.
  @param completion the callback with the image - for simplicity nil is returned rather than surfacing an error.
  */
-- (void)downloadImageWithURL:(NSURL *)url
-                         ttl:(NSTimeInterval)ttl
-                  completion:(nullable FBSDKImageDownloadBlock)completion;
+- (void)downloadImageWithURL:(NSURL *)url ttl:(NSTimeInterval)ttl completion:(void(^)(UIImage* image))completion;
 
 - (void)removeAll;
 
 @end
-
-NS_ASSUME_NONNULL_END

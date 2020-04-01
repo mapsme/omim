@@ -5,17 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.style.StyleSpan;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -24,6 +13,16 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.cocosw.bottomsheet.BottomSheet;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
@@ -563,24 +562,20 @@ class DownloaderAdapter extends RecyclerView.Adapter<DownloaderAdapter.ViewHolde
     {
       super.bind(item);
 
-      String found = null;
       if (mSearchResultsMode)
       {
         mName.setMaxLines(1);
         mName.setText(mItem.name);
 
-        String searchResultName = mItem.searchResultName;
-        if (!TextUtils.isEmpty(searchResultName))
-        {
-          found = searchResultName.toLowerCase();
-          SpannableStringBuilder builder = new SpannableStringBuilder(searchResultName);
-          int start = found.indexOf(mSearchQuery);
-          int end = start + mSearchQuery.length();
-          if (start > -1)
-            builder.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        String found = mItem.searchResultName.toLowerCase();
+        SpannableStringBuilder builder = new SpannableStringBuilder(mItem.searchResultName);
+        int start = found.indexOf(mSearchQuery);
+        int end = start + mSearchQuery.length();
 
-          mFoundName.setText(builder);
-        }
+        if (start > -1)
+          builder.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        mFoundName.setText(builder);
 
         if (!mItem.isExpandable())
           UiUtils.setTextAndHideIfEmpty(mSubtitle, mItem.topmostParentName);
@@ -600,7 +595,7 @@ class DownloaderAdapter extends RecyclerView.Adapter<DownloaderAdapter.ViewHolde
                                                                                                                      mItem.totalChildCount)));
       }
 
-      UiUtils.showIf(mSearchResultsMode && !TextUtils.isEmpty(found), mFoundName);
+      UiUtils.showIf(mSearchResultsMode, mFoundName);
 
       long size;
       if (mItem.status == CountryItem.STATUS_ENQUEUED ||

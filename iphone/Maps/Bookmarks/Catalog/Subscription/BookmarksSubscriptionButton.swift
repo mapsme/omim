@@ -1,3 +1,5 @@
+import UIKit
+
 class BookmarksSubscriptionButton: UIButton {
   private let descriptionLabel = UILabel()
   private let priceLabel = UILabel()
@@ -23,10 +25,8 @@ class BookmarksSubscriptionButton: UIButton {
   
   override func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
     super.setTitleColor(color, for: state)
-    if state == .normal {
-      descriptionLabel.textColor = color
-      priceLabel.textColor = color
-    }
+    descriptionLabel.textColor = color
+    priceLabel.textColor = color
   }
 
   override func setTitle(_ title: String?, for state: UIControl.State) {

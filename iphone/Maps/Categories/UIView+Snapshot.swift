@@ -1,3 +1,4 @@
+import UIKit
 
 extension UIView {
   @objc var snapshot: UIView {

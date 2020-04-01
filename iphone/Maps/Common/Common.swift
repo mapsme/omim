@@ -38,7 +38,3 @@ func LOG(_ level: LogLevel,
     Logger.log(level, message: formattedMessage)
   }
 }
-
-struct Weak<T> where T: AnyObject {
-  weak var value: T?
-}

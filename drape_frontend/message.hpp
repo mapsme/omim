@@ -102,7 +102,6 @@ public:
     ShowDebugInfo,
     NotifyRenderThread,
     NotifyGraphicsReady,
-    EnableIsolines,
   };
 
   virtual ~Message() = default;

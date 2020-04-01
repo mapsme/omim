@@ -13,7 +13,7 @@ typedef NS_ENUM(NSUInteger, MWMNavigationDashboardState) {
 
 @interface MWMNavigationDashboardManager : NSObject
 
-+ (nonnull MWMNavigationDashboardManager *)sharedManager;
++ (MWMNavigationDashboardManager *)manager;
 + (void)addObserver:(id<MWMNavigationDashboardObserver>)observer;
 + (void)removeObserver:(id<MWMNavigationDashboardObserver>)observer;
 
@@ -23,6 +23,7 @@ typedef NS_ENUM(NSUInteger, MWMNavigationDashboardState) {
 - (instancetype)init __attribute__((unavailable("init is not available")));
 - (instancetype)initWithParentView:(UIView *)view;
 - (void)setRouteBuilderProgress:(CGFloat)progress;
+- (void)mwm_refreshUI;
 
 - (void)onRoutePrepare;
 - (void)onRoutePlanning;

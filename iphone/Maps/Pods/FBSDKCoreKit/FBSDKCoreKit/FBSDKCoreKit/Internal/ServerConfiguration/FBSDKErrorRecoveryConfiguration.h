@@ -18,14 +18,9 @@
 
 #import <Foundation/Foundation.h>
 
-#if SWIFT_PACKAGE
-#import "FBSDKConstants.h"
-#else
 #import <FBSDKCoreKit/FBSDKConstants.h>
-#endif
 
 //immutable
-NS_SWIFT_NAME(ErrorRecoveryConfiguration)
 @interface FBSDKErrorRecoveryConfiguration : NSObject<NSCopying, NSSecureCoding>
 
 @property (nonatomic, readonly) NSString *localizedRecoveryDescription;

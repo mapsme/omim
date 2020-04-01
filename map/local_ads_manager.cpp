@@ -22,9 +22,10 @@
 
 #include "coding/point_coding.hpp"
 #include "coding/string_utf8_multilang.hpp"
-#include "coding/url.hpp"
+#include "coding/url_encode.hpp"
 
 #include "base/file_name_utils.hpp"
+#include "base/url_helpers.hpp"
 
 #include "private.h"
 
@@ -90,7 +91,7 @@ std::string MakeCampaignDownloadingURL(MwmSet::MwmId const & mwmId)
   ss << kServerUrl << "/"
      << campaignDataVersion << "/"
      << mwmId.GetInfo()->GetVersion() << "/"
-     << url::UrlEncode(mwmId.GetInfo()->GetCountryName()) << ".ads";
+     << UrlEncode(mwmId.GetInfo()->GetCountryName()) << ".ads";
   return ss.str();
 }
 
@@ -148,7 +149,7 @@ std::string MakeCampaignPageURL(FeatureID const & featureId)
 
   std::ostringstream ss;
   ss << kCampaignPageUrl << "/" << featureId.m_mwmId.GetInfo()->GetVersion() << "/"
-     << url::UrlEncode(featureId.m_mwmId.GetInfo()->GetCountryName()) << "/" << featureId.m_index;
+     << UrlEncode(featureId.m_mwmId.GetInfo()->GetCountryName()) << "/" << featureId.m_index;
 
   url::Params params;
   params.reserve(kMarketingParameters.size());

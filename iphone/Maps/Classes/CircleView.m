@@ -21,7 +21,7 @@
   {
     _circleColor = color;
     if (imageName)
-      _image = [UIImage imageNamed:imageName];
+      _image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@", @"ic_bm_", [imageName lowercaseString]]];
     self.opaque = NO;
   }
   return self;
@@ -37,34 +37,32 @@
     [self.image drawInRect:CGRectMake(3, 3, rect.size.width - 6, rect.size.height - 6)];
 }
 
-+ (UIImage *)createCircleImageWithFrameSize:(CGFloat)frameSize
-                                andDiameter:(CGFloat)diameter
-                                   andColor:(UIColor *)color
-                               andImageName:(nullable NSString *)imageName {
-  UIView *circleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frameSize, frameSize)];
++ (UIView *)createViewWithCircleDiameter:(CGFloat)diameter
+                                andColor:(UIColor *)color
+                            andImageName:(nullable NSString *)imageName {
+  UIView *circleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, diameter, diameter)];
   circleView.backgroundColor = UIColor.clearColor;
   CircleView *circle = [[self alloc] initWithFrame:CGRectMake(0.5, 0.5, diameter - 1, diameter - 1)
                                           andColor:color
                                       andImageName:imageName];
-  circle.center = circleView.center;
   [circleView addSubview:circle];
-  return  [self imageWithView:circleView];
+  return circleView;
 }
 
-+ (UIImage *)createCircleImageWithFrameSize:(CGFloat)frameSize
-                                andDiameter:(CGFloat)diameter
-                                   andColor:(UIColor *)color {
-  return [self createCircleImageWithFrameSize:frameSize andDiameter:diameter andColor:color andImageName:nil];
++ (UIImage *)createCircleImageWith:(CGFloat)diameter andColor:(UIColor *)color {
+  UIView *circle = [self createViewWithCircleDiameter:diameter andColor:color andImageName:nil];
+  return [self imageWithView:circle];
 }
 
-+ (UIImage *)createCircleImageWithDiameter:(CGFloat)diameter andColor:(UIColor *)color {
-  return [self createCircleImageWithFrameSize:diameter andDiameter:diameter andColor:color andImageName:nil];
++ (UIImage *)createCircleImageWith:(CGFloat)diameter andColor:(UIColor *)color andImageName:(NSString *)imageName {
+  UIView *circle = [self createViewWithCircleDiameter:diameter andColor:color andImageName:imageName];
+  return [self imageWithView:circle];
 }
 
-+ (UIImage *)createCircleImageWithDiameter:(CGFloat)diameter
-                                  andColor:(UIColor *)color
-                              andImageName:(NSString *)imageName {
-  return [self createCircleImageWithFrameSize:diameter andDiameter:diameter andColor:color andImageName:imageName];
++ (UIImage *)createCircleImageWith:(CGFloat)diameter andColor:(UIColor *)color andSubview:(UIView *)view {
+  UIView *circle = [self createViewWithCircleDiameter:diameter andColor:color andImageName:nil];
+  [circle addSubview:view];
+  return [self imageWithView:circle];
 }
 
 + (UIImage *)imageWithView:(UIView *)view {

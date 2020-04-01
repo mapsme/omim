@@ -50,7 +50,6 @@
 #define REGION_INFO_FILE_TAG "rgninfo"
 #define METALINES_FILE_TAG "metalines"
 #define CAMERAS_INFO_FILE_TAG "speedcams"
-#define ISOLINES_INFO_FILE_TAG "isolines_info"
 #define TRAFFIC_KEYS_FILE_TAG "traffic"
 #define TRANSIT_CROSS_MWM_FILE_TAG "transit_cross_mwm"
 #define TRANSIT_FILE_TAG "transit"
@@ -96,7 +95,6 @@
 #define GPS_TRACK_FILENAME "gps_track.dat"
 #define RESTRICTIONS_FILENAME "restrictions.csv"
 #define ROAD_ACCESS_FILENAME "road_access.csv"
-#define ROAD_ACCESS_CONDITIONAL_EXT ".access_conditional"
 
 #define MINI_ROUNDABOUT_ROADS_EXTENSION ".mini_roundabouts_roads_ids"
 #define METALINES_FILENAME "metalines.bin"

@@ -92,8 +92,6 @@ public:
     std::vector<uint32_t> m_cuisineTypes;
     std::vector<uint32_t> m_preferredTypes;
     std::shared_ptr<Tracer> m_tracer;
-    double m_streetSearchRadiusM = 0.0;
-    double m_villageSearchRadiusM = 0.0;
   };
 
   Geocoder(DataSource const & dataSource, storage::CountryInfoGetter const & infoGetter,
@@ -136,22 +134,6 @@ private:
     Count
   };
 
-  struct ExtendedMwmInfos
-  {
-    struct ExtendedMwmInfo
-    {
-      bool operator<(ExtendedMwmInfo const & rhs) const;
-
-      std::shared_ptr<MwmInfo> m_info;
-      MwmContext::MwmType m_type;
-      double m_similarity;
-      double m_distance;
-    };
-
-    std::vector<ExtendedMwmInfo> m_infos;
-    size_t m_firstBatchSize = 0;
-  };
-
   struct Postcodes
   {
     void Clear()
@@ -178,7 +160,7 @@ private:
   // Sets search query params for categorial search.
   void SetParamsForCategorialSearch(Params const & params);
 
-  void GoImpl(std::vector<std::shared_ptr<MwmInfo>> const & infos, bool inViewport);
+  void GoImpl(std::vector<std::shared_ptr<MwmInfo>> & infos, bool inViewport);
 
   template <typename Locality>
   using TokenToLocalities = std::map<TokenRange, std::vector<Locality>>;
@@ -201,7 +183,7 @@ private:
   bool CityHasPostcode(BaseContext const & ctx) const;
 
   template <typename Fn>
-  void ForEachCountry(ExtendedMwmInfos const & infos, Fn && fn);
+  void ForEachCountry(std::vector<std::shared_ptr<MwmInfo>> const & infos, Fn && fn);
 
   // Throws CancelException if cancelled.
   void BailIfCancelled() { ::search::BailIfCancelled(m_cancellable); }
@@ -226,21 +208,19 @@ private:
   // Tries to do geocoding in a limited scope, assuming that knowledge
   // about high-level features, like cities or countries, is
   // incorporated into |filter|.
-  void LimitedSearch(BaseContext & ctx, FeaturesFilter const & filter,
-                     std::vector<m2::PointD> const & centers);
+  void LimitedSearch(BaseContext & ctx, FeaturesFilter const & filter);
 
   template <typename Fn>
   void WithPostcodes(BaseContext & ctx, Fn && fn);
 
   // Tries to match some adjacent tokens in the query as streets and
   // then performs geocoding in street vicinities.
-  void GreedilyMatchStreets(BaseContext & ctx, std::vector<m2::PointD> const & centers);
+  void GreedilyMatchStreets(BaseContext & ctx);
   // Matches suburbs and streets inside suburbs like |GreedilyMatchStreets|.
-  void GreedilyMatchStreetsWithSuburbs(BaseContext & ctx, std::vector<m2::PointD> const & centers);
+  void GreedilyMatchStreetsWithSuburbs(BaseContext & ctx);
 
   void CreateStreetsLayerAndMatchLowerLayers(BaseContext & ctx,
-                                             StreetsMatcher::Prediction const & prediction,
-                                             std::vector<m2::PointD> const & centers);
+                                             StreetsMatcher::Prediction const & prediction);
 
   // Tries to find all paths in a search tree, where each edge is
   // marked with some substring of the query tokens. These paths are
@@ -284,21 +264,13 @@ private:
   WARN_UNUSED_RESULT bool GetTypeInGeocoding(BaseContext const & ctx, uint32_t featureId,
                                              Model::Type & type);
 
-  ExtendedMwmInfos::ExtendedMwmInfo GetExtendedMwmInfo(
-      std::shared_ptr<MwmInfo> const & info, bool inViewport,
-      std::function<bool(std::shared_ptr<MwmInfo> const &)> const & isMwmWithMatchedCity,
-      std::function<bool(std::shared_ptr<MwmInfo> const &)> const & isMwmWithMatchedState) const;
-
   // Reorders maps in a way that prefix consists of "best" maps to search and suffix consists of all
-  // other maps ordered by minimum distance from pivot. Returns ExtendedMwmInfos structure which
-  // consists of vector of mwms with MwmType information and number of "best" maps to search.
-  // For viewport mode prefix consists of maps intersecting with pivot ordered by distance from
-  // pivot center.
-  // For non-viewport search mode prefix consists of maps intersecting with pivot, map with user
-  // location and maps with cities matched to the query, sorting prefers mwms that contain the
-  // user's position.
-  ExtendedMwmInfos OrderCountries(bool inViewport,
-                                  std::vector<std::shared_ptr<MwmInfo>> const & infos);
+  // other maps ordered by minimum distance from pivot. Returns number of maps in prefix.
+  // For viewport mode prefix consists of maps intersecting with pivot ordered by distance from pivot
+  // center.
+  // For non-viewport search mode prefix consists of maps intersecting with pivot, map with user location
+  // and maps with cities matched to the query, sorting prefers mwms that contain the user's position.
+  size_t OrderCountries(bool inViewport, std::vector<std::shared_ptr<MwmInfo>> & infos);
 
   DataSource const & m_dataSource;
   storage::CountryInfoGetter const & m_infoGetter;

@@ -3,11 +3,10 @@ package com.mapswithme.maps.routing;
 import android.content.res.Resources;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.location.LocationHelper;
+import com.mapswithme.maps.location.LocationState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +32,11 @@ class ResultCodesHelper
   private static final int ROUTE_NOT_FOUND_REDRESS_ROUTE_ERROR = 15;
   static final int HAS_WARNINGS = 16;
 
-  @NonNull
-  static ResourcesHolder getDialogTitleSubtitle(int errorCode, int missingCount)
+  static Pair<String, String> getDialogTitleSubtitle(int errorCode, int missingCount)
   {
     Resources resources = MwmApplication.get().getResources();
     int titleRes = 0;
     List<String> messages = new ArrayList<>();
-    @StringRes
-    int cancelBtnResId = android.R.string.cancel;
     switch (errorCode)
     {
     case NO_POSITION:
@@ -86,9 +82,7 @@ class ResultCodesHelper
       messages.add(resources.getString(R.string.transit_not_found));
       break;
     case TRANSIT_ROUTE_NOT_FOUND_TOO_LONG_PEDESTRIAN:
-      titleRes = R.string.dialog_pedestrian_route_is_long_header;
-      messages.add(resources.getString(R.string.dialog_pedestrian_route_is_long_message));
-      cancelBtnResId = R.string.ok;
+      messages.add(resources.getString(R.string.dialog_pedestrian_route_is_long));
       break;
     case ROUTE_NOT_FOUND:
     case ROUTE_NOT_FOUND_REDRESS_ROUTE_ERROR:
@@ -124,9 +118,7 @@ class ResultCodesHelper
       builder.append(messagePart);
     }
 
-    return new ResourcesHolder(
-        new Pair<>(titleRes == 0 ? "" : resources.getString(titleRes), builder.toString()),
-        cancelBtnResId);
+    return new Pair<>(titleRes == 0 ? "" : resources.getString(titleRes), builder.toString());
   }
 
   static boolean isDownloadable(int resultCode, int missingCount)
@@ -150,30 +142,5 @@ class ResultCodesHelper
   static boolean isMoreMapsNeeded(int resultCode)
   {
     return resultCode == NEED_MORE_MAPS;
-  }
-
-  static class ResourcesHolder
-  {
-    @NonNull
-    private final Pair<String, String> mTitleMessage;
-
-    private final int mCancelBtnResId;
-
-    private ResourcesHolder(@NonNull Pair<String, String> titleMessage, int cancelBtnResId)
-    {
-      mTitleMessage = titleMessage;
-      mCancelBtnResId = cancelBtnResId;
-    }
-
-    @NonNull
-    Pair<String, String> getTitleMessage()
-    {
-      return mTitleMessage;
-    }
-
-    int getCancelBtnResId()
-    {
-      return mCancelBtnResId;
-    }
   }
 }

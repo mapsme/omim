@@ -10,7 +10,6 @@
 #include <functional>
 #include <string>
 #include <utility>
-#include <vector>
 
 namespace search
 {
@@ -53,13 +52,6 @@ void NormalizeAndTokenizeAsUtf8(std::string const & s, Tokens & tokens)
   tokens.clear();
   auto const fn = [&](strings::UniString const & s) { tokens.emplace_back(strings::ToUtf8(s)); };
   SplitUniString(NormalizeAndSimplifyString(s), fn, search::Delimiters());
-}
-
-inline std::vector<std::string> NormalizeAndTokenizeAsUtf8(std::string const & s)
-{
-  std::vector<std::string> result;
-  NormalizeAndTokenizeAsUtf8(s, result);
-  return result;
 }
 
 template <typename Fn>

@@ -45,10 +45,9 @@ public:
   };
 
 public:
-  Spline() = default;
-  explicit Spline(size_t reservedSize);
-  explicit Spline(std::vector<PointD> const & path);
-  explicit Spline(std::vector<PointD> && path);
+  Spline() {}
+  Spline(size_t reservedSize);
+  Spline(std::vector<PointD> const & path);
   Spline const & operator = (Spline const & spl);
 
   void AddPoint(PointD const & pt);
@@ -82,9 +81,6 @@ public:
   double GetLength() const;
 
 private:
-  template <typename T>
-  void Init(T && path);
-
   std::vector<PointD> m_position;
   std::vector<PointD> m_direction;
   std::vector<double> m_length;
@@ -93,9 +89,8 @@ private:
 class SharedSpline
 {
 public:
-  SharedSpline() = default;
-  explicit SharedSpline(std::vector<PointD> const & path);
-  explicit SharedSpline(std::vector<PointD> && path);
+  SharedSpline() {}
+  SharedSpline(std::vector<PointD> const & path);
   SharedSpline(SharedSpline const & other);
   SharedSpline const & operator= (SharedSpline const & spl);
 

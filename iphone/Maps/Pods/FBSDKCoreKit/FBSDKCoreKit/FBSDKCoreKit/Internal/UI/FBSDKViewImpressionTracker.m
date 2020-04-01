@@ -79,9 +79,9 @@
   }
   [_trackedImpressions addObject:impressionKey];
 
-  [FBSDKAppEvents logInternalEvent:self.eventName
+  [FBSDKAppEvents logImplicitEvent:self.eventName
+                        valueToSum:nil
                         parameters:parameters
-                isImplicitlyLogged:YES
                        accessToken:[FBSDKAccessToken currentAccessToken]];
 }
 

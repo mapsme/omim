@@ -18,15 +18,10 @@
 
 #import <Foundation/Foundation.h>
 
-#if SWIFT_PACKAGE
-#import "FBSDKButton.h"
-#else
 #import <FBSDKCoreKit/FBSDKButton.h>
-#endif
 
 #import "FBSDKIcon.h"
 
-NS_SWIFT_NAME(FBButtonImpressionTracking)
 @protocol FBSDKButtonImpressionTracking <NSObject>
 
 @property (nonatomic, readonly, copy) NSDictionary<NSString *, id> *analyticsParameters;

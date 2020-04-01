@@ -28,11 +28,6 @@ final class SettingsTableViewSwitchCell: MWMTableViewCell {
     set { switchButton.isOn = newValue }
   }
 
-  override func awakeFromNib() {
-    super.awakeFromNib()
-    styleTitle()
-  }
-
   @objc func config(delegate: SettingsTableViewSwitchCellDelegate, title: String, isOn: Bool) {
     backgroundColor = UIColor.white()
 
@@ -42,6 +37,7 @@ final class SettingsTableViewSwitchCell: MWMTableViewCell {
     styleTitle()
 
     switchButton.isOn = isOn
+    styleSwitchButton()
   }
 
   @IBAction fileprivate func switchChanged() {
@@ -49,7 +45,11 @@ final class SettingsTableViewSwitchCell: MWMTableViewCell {
   }
 
   fileprivate func styleTitle() {
-    let style = "regular17:" + (isEnabled ? "blackPrimaryText" : "blackSecondaryText")
-    title.setStyleAndApply(style)
+    title.textColor = isEnabled ? UIColor.blackPrimaryText() : UIColor.blackSecondaryText()
+    title.font = UIFont.regular17()
+  }
+
+  fileprivate func styleSwitchButton() {
+    switchButton.onTintColor = UIColor.linkBlue()
   }
 }

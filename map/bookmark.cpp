@@ -1,7 +1,7 @@
 #include "map/bookmark.hpp"
 #include "map/bookmark_helpers.hpp"
 
-#include "coding/url.hpp"
+#include "coding/url_encode.hpp"
 
 #include "base/string_utils.hpp"
 
@@ -38,12 +38,6 @@ std::string GetBookmarkIconType(kml::BookmarkIcon const & icon)
   case kml::BookmarkIcon::Sights: return "sights";
   case kml::BookmarkIcon::Swim: return "swim";
   case kml::BookmarkIcon::Water: return "water";
-  case kml::BookmarkIcon::Bar: return "bar";
-  case kml::BookmarkIcon::Transport: return "transport";
-  case kml::BookmarkIcon::Viewpoint: return "viewpoint";
-  case kml::BookmarkIcon::Sport: return "sport";
-  case kml::BookmarkIcon::Start: return "start";
-  case kml::BookmarkIcon::Finish: return "finish";
   case kml::BookmarkIcon::Count:
     ASSERT(false, ("Invalid bookmark icon type"));
     return {};
@@ -156,22 +150,6 @@ df::ColorConstant Bookmark::GetColorConstant() const
       return "BookmarkGreen";
     case kml::PredefinedColor::Orange:
       return "BookmarkOrange";
-    case kml::PredefinedColor::DeepPurple:
-      return "BookmarkDeepPurple";
-    case kml::PredefinedColor::LightBlue:
-      return "BookmarkLightBlue";
-    case kml::PredefinedColor::Cyan:
-      return "BookmarkCyan";
-    case kml::PredefinedColor::Teal:
-      return "BookmarkTeal";
-    case kml::PredefinedColor::Lime:
-      return "BookmarkLime";
-    case kml::PredefinedColor::DeepOrange:
-      return "BookmarkDeepOrange";
-    case kml::PredefinedColor::Gray:
-      return "BookmarkGray";
-    case kml::PredefinedColor::BlueGray:
-      return "BookmarkBlueGray";
     case kml::PredefinedColor::None:
     case kml::PredefinedColor::Count:
       return "BookmarkRed";
@@ -360,7 +338,7 @@ std::string BookmarkCategory::GetCatalogDeeplink() const
     return {};
 
   std::ostringstream ss;
-  ss << kDeepLinkUrl << "catalogue?id=" << m_serverId << "&name=" << url::UrlEncode(GetName());
+  ss << kDeepLinkUrl << "catalogue?id=" << m_serverId << "&name=" << UrlEncode(GetName());
   return ss.str();
 }
 

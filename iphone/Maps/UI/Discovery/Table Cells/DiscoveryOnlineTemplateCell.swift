@@ -13,11 +13,22 @@ final class DiscoveryOnlineTemplateCell: MWMTableViewCell {
     }
   }
   
-  @IBOutlet var containerView: UIView!
+  @IBOutlet var containerView: UIView! {
+    didSet {
+      containerView.backgroundColor = UIColor.white()
+      containerView.layer.cornerRadius = 6.0
+      containerView.layer.borderWidth = 1.0
+      containerView.layer.borderColor = UIColor.blackDividers().cgColor
+    }
+  }
   @IBOutlet var header: UILabel!
   @IBOutlet var title: UILabel!
   @IBOutlet var subtitle: UILabel!
-  @IBOutlet var actionButton: UIButton!
+  @IBOutlet var actionButton: UIButton! {
+    didSet {
+      actionButton.setTitleColor(UIColor.linkBlue(), for: .normal)
+    }
+  }
 
   typealias Tap = () -> ()
   private var tap: Tap?

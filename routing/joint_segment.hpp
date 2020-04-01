@@ -15,8 +15,7 @@ namespace routing
 class JointSegment
 {
 public:
-  static auto constexpr kInvalidSegmentId = std::numeric_limits<uint32_t>::max();
-  static auto constexpr kInvalidFeatureIdId = std::numeric_limits<uint32_t>::max();
+  static uint32_t constexpr kInvalidId = std::numeric_limits<uint32_t>::max();
 
   JointSegment() = default;
   JointSegment(Segment const & from, Segment const & to);
@@ -34,16 +33,23 @@ public:
   bool IsFake() const;
   bool IsRealSegment() const { return !IsFake(); }
 
-  Segment GetSegment(bool start) const;
+  Segment GetSegment(bool start) const
+  {
+    return {m_numMwmId, m_featureId, start ? m_startSegmentId : m_endSegmentId, m_forward};
+  }
 
   bool operator<(JointSegment const & rhs) const;
   bool operator==(JointSegment const & rhs) const;
-  bool operator!=(JointSegment const & rhs) const;
+
+  bool operator!=(JointSegment const & rhs) const
+  {
+    return !(*this == rhs);
+  }
 
 private:
-  uint32_t m_featureId = kInvalidFeatureIdId;
-  uint32_t m_startSegmentId = kInvalidSegmentId;
-  uint32_t m_endSegmentId = kInvalidSegmentId;
+  uint32_t m_featureId = kInvalidId;
+  uint32_t m_startSegmentId = kInvalidId;
+  uint32_t m_endSegmentId = kInvalidId;
   NumMwmId m_numMwmId = kFakeNumMwmId;
   bool m_forward = false;
 };
@@ -66,12 +72,3 @@ private:
 
 std::string DebugPrint(JointSegment const & jointSegment);
 }  // namespace routing
-
-namespace std
-{
-template <>
-struct hash<routing::JointSegment>
-{
-  size_t operator()(routing::JointSegment const & jointSegment) const;
-};
-}  // namespace std

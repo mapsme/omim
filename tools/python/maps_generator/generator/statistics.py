@@ -1,34 +1,23 @@
-import datetime
-import json
-import logging
-import os
 import re
+import os
+import datetime
 from collections import defaultdict
-from typing import AnyStr
-from typing import Dict
-from typing import List
 
-from .env import WORLDS_NAMES
 from .exceptions import ParseError
 
-logger = logging.getLogger("maps_generator")
 
-RE_STAT = re.compile(
-    r"(?:\d+\. )?([\w:|-]+?)\|: "
-    r"size = \d+; "
-    r"count = (\d+); "
-    r"length = ([0-9.e+-]+) m; "
-    r"area = ([0-9.e+-]+) m²; "
-    r"names = (\d+)\s*"
-)
+RE_STAT = re.compile(r"(?:\d+\. )?([\w:|-]+?)\|: "
+                     r"size = \d+; "
+                     r"count = (\d+); "
+                     r"length = ([0-9.e+-]+) m; "
+                     r"area = ([0-9.e+-]+) m²; "
+                     r"names = (\d+)\s*")
 
-RE_TIME_DELTA = re.compile(
-    r"^(?:(?P<days>-?\d+) (days?, )?)?"
-    r"((?:(?P<hours>-?\d+):)(?=\d+:\d+))?"
-    r"(?:(?P<minutes>-?\d+):)?"
-    r"(?P<seconds>-?\d+)"
-    r"(?:\.(?P<microseconds>\d{1,6})\d{0,6})?$"
-)
+RE_TIME_DELTA = re.compile(r'^(?:(?P<days>-?\d+) (days?, )?)?'
+                           r'((?:(?P<hours>-?\d+):)(?=\d+:\d+))?'
+                           r'(?:(?P<minutes>-?\d+):)?'
+                           r'(?P<seconds>-?\d+)'
+                           r'(?:\.(?P<microseconds>\d{1,6})\d{0,6})?$')
 
 RE_FINISH_STAGE = re.compile(r"(.*)Stage (.+): finished in (.+)$")
 
@@ -37,15 +26,13 @@ def read_stat(f):
     stats = []
     for line in f:
         m = RE_STAT.match(line)
-        stats.append(
-            {
-                "name": m.group(1).replace("|", "-"),
-                "cnt": int(m.group(2)),
-                "len": float(m.group(3)),
-                "area": float(m.group(4)),
-                "names": int(m.group(5)),
-            }
-        )
+        stats.append({
+            "name": m.group(1).replace("|", "-"),
+            "cnt": int(m.group(2)),
+            "len": float(m.group(3)),
+            "area": float(m.group(4)),
+            "names": int(m.group(5))
+        })
     return stats
 
 
@@ -136,45 +123,3 @@ def get_stages_info(log_path, ignored_stages=frozenset()):
                     country = file.split(".")[0]
                     result["countries"][country][stage_name] = dt
     return result
-
-
-def read_types(path: AnyStr) -> Dict[AnyStr, Dict]:
-    """"
-    Reads and summarizes statistics for all countries, excluding World and
-    WorldCoast.
-    """
-    with open(path) as f:
-        json_data = json.load(f)
-        all_types = {}
-        countries = json_data["countries"]
-        for country, json_value in countries.items():
-            if country in WORLDS_NAMES:
-                continue
-            try:
-                json_types = json_value["types"]
-            except KeyError:
-                logger.exception(f"Cannot parse {json_value}")
-                continue
-            for t in json_types:
-                curr = all_types.get(t["type"], {})
-                curr["quantity"] = curr.get("quantity", 0.0) + t["quantity"]
-                curr["unit"] = t["unit"]
-                all_types[t["type"]] = curr
-        return all_types
-
-
-def diff(new: Dict[AnyStr, Dict], old: Dict[AnyStr, Dict]) -> List:
-    assert len(new) == len(old)
-    lines = []
-    for key in new:
-        o = old[key]["quantity"]
-        n = new[key]["quantity"]
-        rel = 0
-        if o != 0.0:
-            rel = int(((n - o) / o) * 100)
-        else:
-            if n != 0.0:
-                rel = 100
-
-        lines.append((key, o, n, rel, n - o, new[key]["unit"],))
-    return lines

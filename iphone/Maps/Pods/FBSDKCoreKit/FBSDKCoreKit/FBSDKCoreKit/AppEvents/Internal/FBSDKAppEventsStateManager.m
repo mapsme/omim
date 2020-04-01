@@ -22,7 +22,6 @@
 
 #import "FBSDKAppEventsState.h"
 #import "FBSDKAppEventsUtility.h"
-#import "FBSDKInternalUtility.h"
 #import "FBSDKLogger.h"
 #import "FBSDKSettings.h"
 
@@ -74,6 +73,6 @@ static BOOL g_canSkipDiskCheck = NO;
 
 + (NSString *)filePath
 {
-  return [FBSDKBasicUtility persistenceFilePath:@"com-facebook-sdk-AppEventsPersistedEvents.json"];
+  return [FBSDKAppEventsUtility persistenceFilePath:@"com-facebook-sdk-AppEventsPersistedEvents.json"];
 }
 @end

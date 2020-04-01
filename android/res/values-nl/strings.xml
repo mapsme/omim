@@ -4,6 +4,8 @@
 <!-- Language: nl -->
 <resources>
 	<!-- SECTION: Strings -->
+	<!-- About button text (should be short) -->
+	<string name="about">Over</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Terug</string>
 	<!-- Button text (should be short) -->
@@ -64,6 +66,8 @@
 	<string name="touch_to_download">Klik om te downloaden</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Ja</string>
+	<!-- Settings/Downloader - No internet connection dialog message -->
+	<string name="use_wifi_recommendation_text">We raden WiFi aan om grote kaarten te downloaden</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Welk meetstelsel heeft u liever?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -250,6 +254,8 @@
 	<string name="my_position_share_sms">Kijk waar ik nu ben. Open %1$s of %2$s</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Kijk naar mijn pin op MAPS.ME kaart</string>
+	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
+	<string name="bookmark_share_email">Hoi,\n\nIk heb: %1$s geprikt bij MAPS.ME, offline wereldkaarten. Klik op deze %2$s of deze %3$s om de plaats op de kaart te zien.\n\nBedankt.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Kijk naar mijn huidige locatie op MAPS.ME kaart</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -552,22 +558,6 @@
 	<string name="brown">Bruin</string>
 	<!-- pink color -->
 	<string name="pink">Roze</string>
-	<!-- deep purple color -->
-	<string name="deep_purple">Donker paars</string>
-	<!-- light blue color -->
-	<string name="light_blue">Lichtblauw</string>
-	<!-- cyan color -->
-	<string name="cyan">Blauwgroen</string>
-	<!-- teal color -->
-	<string name="teal">Smaragdgroen</string>
-	<!-- lime color -->
-	<string name="lime">Lime</string>
-	<!-- deep orange color -->
-	<string name="deep_orange">Donkeroranje</string>
-	<!-- gray color -->
-	<string name="gray">Grijs</string>
-	<!-- blue gray color -->
-	<string name="blue_gray">Grijsblauw</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Ja</string>
 
@@ -882,7 +872,6 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Beschrijving</string>
 	<string name="placepage_more_button">Meer</string>
-	<string name="placepage_more_reviews_button">Meer reacties</string>
 	<string name="book_button">Boeken</string>
 	<string name="placepage_call_button">Bellen</string>
 	<string name="placepage_edit_bookmark_button">Bladwijzer bewerken</string>
@@ -1238,6 +1227,7 @@
 	<string name="downloader_percent">%1$s (%2$s van %3$s)</string>
 	<string name="downloader_process">%s downloaden...</string>
 	<string name="downloader_applying">%s toepassen...</string>
+	<string name="transit_not_found">Transit navigatie is in deze regio nog niet beschikbaar</string>
 	<string name="whats_new_title_hotel_filter">Nieuwe hotelfilters beschikbaar!</string>
 	<string name="whats_new_message_hotel_filter">Boek beschikbare hotels voor uw data! Gebruik de filters inchecken en uitchecken</string>
 	<string name="whats_new_title_ugc_travel">Deel uw ervaring met andere reizigers!</string>
@@ -1346,8 +1336,7 @@
 	<string name="error_already_downloaded">Deze lijst is al gedownload</string>
 	<string name="guides">Handleidingen</string>
 	<string name="guide_downloaded_title">De handleiding is met succes gedownload</string>
-	<!-- as few symbols as possible -->
-	<string name="download_guides">Gidsen zoeken</string>
+	<string name="download_guides">Handleidingen downloaden</string>
 	<string name="guides_groups_cached">Gedownloade handleidingen</string>
 	<string name="subtitle_error_downloading_guide">De handleiding is niet gedownload</string>
 	<string name="error_already_downloaded_guide">De handleiding is reeds gedownload</string>
@@ -1712,18 +1701,12 @@
 	<string name="new_onboarding_step5.3_button">Gratis downloaden</string>
 	<string name="new_onboarding_additional_steps_later_button">Niet nu</string>
 	<string name="all_pass_subscription_header">INSCHRIJVING OP DE CATALOGUS</string>
-	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title">30000+\ngidsen\nen paden</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle"><b>Onbeperkt offline downloaden</b> van stads- en natuurroutes</string>
-	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title_2">Interactief\nhoogteprofiel</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle_2">Elk pad bevat <b>informatie over de hoogte en basisinformatie over de route</b></string>
-	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
-	<string name="all_pass_subscription_message_title_3">Favorieten\nplekjes, foto\'s\nen tips</string>
-	<!-- <b> & </b> tag to make a part of the line bold -->
-	<string name="all_pass_subscription_message_subtitle_3"><b>Meer informatie over de route</b> die u gaat nemen</string>
+	<string name="all_pass_subscription_message_title">20000+ gidsen &amp; wandelroutes</string>
+	<string name="all_pass_subscription_message_subtitle">Onbeperkt downloaden van stads- en buitenroutes offline beschikbaar</string>
+	<string name="all_pass_subscription_message_title_2">700+ steden en 100+ landen</string>
+	<string name="all_pass_subscription_message_subtitle_2">Plan uw reizen op elk moment van het jaar</string>
+	<string name="all_pass_subscription_message_title_3">Diverse inhoud</string>
+	<string name="all_pass_subscription_message_subtitle_3">Bladwijzers, foto\'s, wandelroutes, beschrijvingen en tips</string>
 	<string name="sightseeing_subscription_header_subscription">Gidsen abonnement</string>
 	<string name="sightseeing_subscription_message">700+ steden en 100+ landen</string>
 	<string name="sightseeing_subscription_message_2">Online beschikbaar</string>
@@ -1742,41 +1725,6 @@
 	<string name="whatsnew_outdoor_guides_message">Routes van Outdooractive voor winter- en zomerreizen wachten op u in de catalogus!</string>
 	<string name="whatsnew_guides_galleries_title">Plan uw volgende reis met MAPS.ME</string>
 	<string name="whatsnew_guides_galleries_message">Nu kunt u de aanbevolen handleidingen in de populaire steden en sightseeing kaarten vinden</string>
-	<string name="new_onboarding_step3_header">Reist</string>
-	<string name="all_pass_screen_best_value">Gunstige prijs</string>
-	<string name="buy_btn_for_subscription_3">De hele catalogus voor %s per jaar</string>
-	<string name="transit_not_found">Metro-navigatie is nog niet beschikbaar in deze regio</string>
-	<string name="dialog_pedestrian_route_is_long_header">Metroroute niet gevonden</string>
-	<string name="dialog_pedestrian_route_is_long_message">Kies een begin- of eindpunt dichter bij het metrostation</string>
-	<!-- Failed planning SUBWAY route message in navigation view -->
-	<string name="routing_planning_error_subway_special">Routeplanner per metro is mislukt</string>
-	<string name="whatsnew_isolines_title">Nieuwigheid voor buitenactiviteiten: hoogtelijnen offline!</string>
-	<!-- as less symbols as possible -->
-	<string name="whatsnew_isolines_message">Navigeer probleemloos in bergachtig gebied. Schakel gewoon de hoogtelijn in via de toets in de linkerbovenhoek van het scherm</string>
-	<string name="button_layer_isolines">Hoogtes</string>
-	<string name="tips_map_layers_title_countour">Hoogtelijnen offline in MAPS.ME!</string>
-	<string name="tips_map_layers_message_countour">Dankzij de hoogtelijnen kunt u probleemloos natuurreizen plannen en er zeker van zijn dat u niet verdwalen zult</string>
-	<string name="isolines_activation_error_dialog">Als u gebruik wilt maken van hoogtelijnen, moet u een kaart van het gewenste gebied bijwerken of downloaden</string>
-	<string name="isolines_location_error_dialog">De hoogtelijnen zijn nog niet beschikbaar in deze regio</string>
-	<string name="elevation_profile_diff_level">Moeilijkheidsgraad</string>
-	<string name="elevation_profile_diff_level_easy">Gemakkelijk</string>
-	<string name="elevation_profile_diff_level_moderate">Middelmatig</string>
-	<string name="elevation_profile_diff_level_hard">Moeilijk</string>
-	<string name="elevation_profile_ascent">Opstijging</string>
-	<string name="elevation_profile_descent">Afdaling</string>
-	<string name="elevation_profile_minaltitude">Min. hoogte</string>
-	<string name="elevation_profile_maxaltitude">Max. hoogte</string>
-	<string name="elevation_profile_m">m</string>
-	<string name="elevation_profile_difficulty">Moeilijkheid</string>
-	<string name="elevation_profile_distance">Afst.:</string>
-	<string name="elevation_profile_km">km</string>
-	<string name="elevation_profile_time">Op weg</string>
-	<string name="elevation_profile_hours">uur</string>
-	<string name="elevation_profile_minutes">min</string>
-	<!-- hide the full screen banner and continue working with the app -->
-	<string name="hide_screen_map_update">Verbergen en doorgaan</string>
-	<string name="view_on_map_downloaded_error">Deze gids is van dit apparaat verwijderd</string>
-	<string name="subscription">Abonnement</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Kabelwagenstation</string>
@@ -1829,15 +1777,15 @@
 	<string name="type.amenity.parking">Parkeerplaats</string>
 	<string name="type.amenity.parking.fee">Parkeerplaats</string>
 	<string name="type.amenity.parking.multi.storey">Parkeerplaats</string>
+	<string name="type.amenity.parking.multi.storey.fee">Parkeerplaats</string>
 	<string name="type.amenity.parking.no.access">Parkeerplaats</string>
 	<string name="type.amenity.parking.park_and_ride">Parkeerplaats</string>
 	<string name="type.amenity.parking.permissive">Parkeerplaats</string>
+	<string name="type.amenity.parking.permissive.fee">Parkeerplaats</string>
 	<string name="type.amenity.parking.private">Parkeerplaats</string>
 	<string name="type.amenity.parking.underground">Parkeerplaats</string>
+	<string name="type.amenity.parking.underground.fee">Parkeerplaats</string>
 	<string name="type.amenity.parking_space">Parkeerplaats</string>
-	<string name="type.amenity.parking_space.permissive">Parkeerplaats</string>
-	<string name="type.amenity.parking_space.private">Parkeerplaats</string>
-	<string name="type.amenity.parking_space.underground">Parkeerplaats</string>
 	<string name="type.amenity.payment_terminal">Betaalautomaat</string>
 	<string name="type.amenity.pharmacy">Apotheek</string>
 	<string name="type.amenity.place_of_worship">Gebedsplaats</string>
@@ -1850,7 +1798,6 @@
 	<string name="type.amenity.place_of_worship.taoist">Tempel</string>
 	<string name="type.amenity.police">Politie</string>
 	<string name="type.amenity.post_box">Brievenbus</string>
-	<string name="type.amenity.post_office">Postkantoor</string>
 	<string name="type.amenity.pub">Kroeg</string>
 	<string name="type.amenity.public_bookcase">Boekenkast</string>
 	<string name="type.amenity.recycling">Milieustraat</string>
@@ -2044,6 +1991,9 @@
 	<string name="type.highway.service.area">Straat</string>
 	<string name="type.highway.service.bridge">Straat</string>
 	<string name="type.highway.service.driveway">Straat</string>
+	<string name="type.highway.service.driveway.area">Straat</string>
+	<string name="type.highway.service.driveway.bridge">Straat</string>
+	<string name="type.highway.service.driveway.tunnel">Straat</string>
 	<string name="type.highway.service.parking_aisle">Straat</string>
 	<string name="type.highway.service.tunnel">Straat</string>
 	<string name="type.highway.speed_camera">Flitspaal</string>
@@ -2062,8 +2012,14 @@
 	<string name="type.highway.track.grade1">Straat</string>
 	<string name="type.highway.track.grade2">Straat</string>
 	<string name="type.highway.track.grade3">Straat</string>
+	<string name="type.highway.track.grade3.no.access">Straat</string>
+	<string name="type.highway.track.grade3.permissive">Straat</string>
 	<string name="type.highway.track.grade4">Straat</string>
+	<string name="type.highway.track.grade4.no.access">Straat</string>
+	<string name="type.highway.track.grade4.permissive">Straat</string>
 	<string name="type.highway.track.grade5">Straat</string>
+	<string name="type.highway.track.grade5.no.access">Straat</string>
+	<string name="type.highway.track.grade5.permissive">Straat</string>
 	<string name="type.highway.track.no.access">Straat</string>
 	<string name="type.highway.track.permissive">Straat</string>
 	<string name="type.highway.track.tunnel">Straat</string>
@@ -2111,7 +2067,9 @@
 	<string name="type.leisure.park.permissive">Park</string>
 	<string name="type.leisure.park.private">Park</string>
 	<string name="type.leisure.pitch">Sportveld</string>
+	<string name="type.leisure.pitch.tennis">Sportveld</string>
 	<string name="type.leisure.playground">Speeltuin</string>
+	<string name="type.leisure.playground.tennis">Speeltuin</string>
 	<string name="type.leisure.sauna">Sauna</string>
 	<string name="type.leisure.sports_centre">Sportcentrum</string>
 	<string name="type.leisure.sports_centre.climbing">Klimhal</string>
@@ -2131,7 +2089,7 @@
 	<string name="type.natural.bay">Baai</string>
 	<string name="type.natural.beach">Strand</string>
 	<string name="type.natural.cape">Kaap</string>
-	<string name="type.natural.cave_entrance">Grot</string>
+	<string name="type.natural.cave_entrance">Grotingang</string>
 	<string name="type.natural.geyser">Geiser</string>
 	<string name="type.natural.glacier">Gletsjer</string>
 	<string name="type.natural.grassland">Veld</string>
@@ -2143,6 +2101,10 @@
 	<string name="type.natural.tree">Boom</string>
 	<string name="type.natural.volcano">Vulkaan</string>
 	<string name="type.natural.wetland">Moerasland</string>
+	<string name="type.natural.wood">Bos</string>
+	<string name="type.natural.wood.coniferous">Bos</string>
+	<string name="type.natural.wood.deciduous">Bos</string>
+	<string name="type.natural.wood.mixed">Bos</string>
 	<string name="type.office">Kantoor</string>
 	<string name="type.office.company">Bedrijfskantoor</string>
 	<string name="type.office.estate_agent">Makelaar</string>

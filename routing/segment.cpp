@@ -4,8 +4,6 @@
 
 #include <sstream>
 
-#include "3party/boost/boost/container_hash/hash.hpp"
-
 namespace routing
 {
 // Segment -----------------------------------------------------------------------------------------
@@ -75,16 +73,3 @@ std::string DebugPrint(SegmentEdge const & edge)
   return out.str();
 }
 }  // namespace routing
-
-namespace std
-{
-size_t std::hash<routing::Segment>::operator()(routing::Segment const & segment) const
-{
-  size_t seed = 0;
-  boost::hash_combine(seed, segment.GetFeatureId());
-  boost::hash_combine(seed, segment.GetSegmentIdx());
-  boost::hash_combine(seed, segment.GetMwmId());
-  boost::hash_combine(seed, segment.IsForward());
-  return seed;
-}
-}  // namespace std

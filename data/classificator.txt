@@ -69,12 +69,18 @@ world  +
         nursing_home  -
         parking  +
             fee  -
-            multi-storey  -
+            multi-storey  +
+                fee  -
+                {}
             no-access  -
             park_and_ride  -
-            permissive  -
+            permissive  +
+                fee  -
+                {}
             private  -
-            underground  -
+            underground  +
+                fee  -
+                {}
             {}
         parking_space  +
             permissive  -
@@ -186,6 +192,11 @@ world  +
         train_station  -
         {}
     building:part  -
+    communication  +
+        line  +
+            underground  -
+            {}
+        {}
     complex_entry  -
     craft  +
         brewery  -
@@ -353,6 +364,7 @@ world  +
             bridge  -
             tunnel  -
             {}
+        platform  -
         primary  +
             bridge  -
             tunnel  -
@@ -384,7 +396,11 @@ world  +
         service  +
             area  -
             bridge  -
-            driveway  -
+            driveway  +
+                area  -
+                bridge  -
+                tunnel  -
+                {}
             parking_aisle  -
             tunnel  -
             {}
@@ -407,9 +423,18 @@ world  +
             bridge  -
             grade1  -
             grade2  -
-            grade3  -
-            grade4  -
-            grade5  -
+            grade3  +
+                no-access  -
+                permissive  -
+                {}
+            grade4  +
+                no-access  -
+                permissive  -
+                {}
+            grade5  +
+                no-access  -
+                permissive  -
+                {}
             no-access  -
             permissive  -
             tunnel  -
@@ -470,14 +495,6 @@ world  +
     internet_access  +
         wlan  -
         {}
-    isoline  +
-        step_10  -
-        step_100  -
-        step_1000  -
-        step_50  -
-        step_500  -
-        zero  -
-        {}
     junction  +
         roundabout  -
         {}
@@ -513,7 +530,10 @@ world  +
         railway  -
         recreation_ground  -
         reservoir  -
-        residential  -
+        residential  +
+            rural  -
+            urban  -
+            {}
         retail  -
         salt_pond  -
         village_green  -
@@ -521,7 +541,9 @@ world  +
         {}
     leisure  +
         common  -
-        dog_park  -
+        dog_park  +
+            tennis  -
+            {}
         fitness_centre  -
         fitness_station  -
         garden  -
@@ -535,8 +557,15 @@ world  +
             permissive  -
             private  -
             {}
-        pitch  -
-        playground  -
+        pitch  +
+            tennis  -
+            {}
+        playground  +
+            tennis  -
+            {}
+        playing_fields  +
+            tennis  -
+            {}
         recreation_ground  -
         sauna  -
         slipway  -
@@ -573,6 +602,14 @@ world  +
     mapswithme  +
         grid  -
         {}
+    marking  +
+        sport  +
+            black  -
+            blue  -
+            red  -
+            white  -
+            {}
+        {}
     military  +
         bunker  -
         {}
@@ -607,6 +644,11 @@ world  +
         wetland  +
             bog  -
             marsh  -
+            {}
+        wood  +
+            coniferous  -
+            deciduous  -
+            mixed  -
             {}
         {}
     noexit  +
@@ -693,7 +735,11 @@ world  +
         village  -
         {}
     power  +
-        generator  -
+        generator  +
+            hydro  -
+            photovoltaic  -
+            wind  -
+            {}
         line  +
             underground  -
             {}

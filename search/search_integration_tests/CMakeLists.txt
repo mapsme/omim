@@ -30,7 +30,6 @@ omim_link_libraries(
   stats_client
   editor
   indexer
-  ge0
   platform
   mwm_diff
   bsdiff

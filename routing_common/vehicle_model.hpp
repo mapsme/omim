@@ -60,11 +60,18 @@ enum class HighwayType : uint32_t
   RouteFerryMotorcar = 988,
   RouteFerryMotorVehicle = 993,
   RailwayRailMotorVehicle = 994,
+  HighwayPlatform = 1008,
   RouteShuttleTrain = 1054,
 };
 
-using HighwayBasedFactors = std::unordered_map<HighwayType, InOutCityFactor, base::EnumClassHash>;
-using HighwayBasedSpeeds = std::unordered_map<HighwayType, InOutCitySpeedKMpH, base::EnumClassHash>;
+using SpeedToFactor = std::unordered_map<MaxspeedType /* maxspeed km/h */, InOutCityFactor>;
+using HighwayBasedFactors = std::unordered_map<HighwayType, SpeedToFactor, base::EnumClassHash>;
+using HighwayBasedMeanSpeeds =
+    std::unordered_map<HighwayType, InOutCitySpeedKMpH, base::EnumClassHash>;
+using CountryToHighwayBasedMeanSpeeds =
+    std::unordered_map<std::string /* country */, HighwayBasedMeanSpeeds>;
+using CountryToHighwayBasedFactors =
+    std::unordered_map<std::string /* country */, HighwayBasedFactors>;
 
 /// \brief Params for calculation of an approximate speed on a feature.
 struct SpeedParams
@@ -108,8 +115,6 @@ struct SpeedFactor
   constexpr SpeedFactor(double factor) noexcept : m_weight(factor), m_eta(factor) {}
   constexpr SpeedFactor(double weight, double eta) noexcept : m_weight(weight), m_eta(eta) {}
 
-  bool IsValid() const { return m_weight > 0.0 && m_eta > 0.0; }
-
   bool operator==(SpeedFactor const & rhs) const
   {
     return m_weight == rhs.m_weight && m_eta == rhs.m_eta;
@@ -148,7 +153,6 @@ struct InOutCitySpeedKMpH
   }
 
   SpeedKMpH const & GetSpeed(bool isCity) const { return isCity ? m_inCity : m_outCity; }
-  bool IsValid() const { return m_inCity.IsValid() && m_outCity.IsValid(); }
 
   SpeedKMpH m_inCity;
   SpeedKMpH m_outCity;
@@ -171,7 +175,6 @@ struct InOutCityFactor
   }
 
   SpeedFactor const & GetFactor(bool isCity) const { return isCity ? m_inCity : m_outCity; }
-  bool IsValid() const { return m_inCity.IsValid() && m_outCity.IsValid(); }
 
   SpeedFactor m_inCity;
   SpeedFactor m_outCity;
@@ -179,14 +182,29 @@ struct InOutCityFactor
 
 struct HighwayBasedInfo
 {
-  HighwayBasedInfo(HighwayBasedSpeeds const & speeds, HighwayBasedFactors const & factors)
-    : m_speeds(speeds)
-    , m_factors(factors)
+  HighwayBasedInfo(HighwayBasedMeanSpeeds const & speeds, HighwayBasedFactors const & factors)
+    : m_localSpeeds(speeds)
+    , m_globalSpeeds(speeds)
+    , m_localFactors(factors)
+    , m_globalFactors(factors)
   {
   }
 
-  HighwayBasedSpeeds const & m_speeds;
-  HighwayBasedFactors const & m_factors;
+  HighwayBasedInfo(HighwayBasedMeanSpeeds const & localSpeeds,
+                   HighwayBasedMeanSpeeds const & globalSpeeds,
+                   HighwayBasedFactors const & localFactors,
+                   HighwayBasedFactors const & globalFactors)
+    : m_localSpeeds(localSpeeds)
+    , m_globalSpeeds(globalSpeeds)
+    , m_localFactors(localFactors)
+    , m_globalFactors(globalFactors)
+  {
+  }
+
+  HighwayBasedMeanSpeeds const & m_localSpeeds;
+  HighwayBasedMeanSpeeds const & m_globalSpeeds;
+  HighwayBasedFactors const & m_localFactors;
+  HighwayBasedFactors const & m_globalFactors;
 };
 
 class VehicleModelInterface
@@ -336,7 +354,7 @@ protected:
 
   SpeedKMpH GetSpeedWihtoutMaxspeed(FeatureType & f, SpeedParams const & speedParams) const;
 
-  /// \brief maximum within all the speed limits set in a model (car model, bicycle model and so on).
+  /// \brief maximum within all the speed limits set in a model (car model, bicycle modle and so on).
   /// It shouldn't be mixed with maxspeed value tag which defines maximum legal speed on a feature.
   InOutCitySpeedKMpH m_maxModelSpeed;
 
@@ -425,12 +443,8 @@ protected:
   CountryParentNameGetterFn m_countryParentNameGetterFn;
 };
 
-HighwayBasedFactors GetOneFactorsForBicycleAndPedestrianModel();
-
 std::string DebugPrint(VehicleModelInterface::RoadAvailability const l);
 std::string DebugPrint(SpeedKMpH const & speed);
-std::string DebugPrint(SpeedFactor const & speedFactor);
 std::string DebugPrint(InOutCitySpeedKMpH const & speed);
-std::string DebugPrint(InOutCityFactor const & speedFactor);
 std::string DebugPrint(HighwayType type);
 }  // namespace routing

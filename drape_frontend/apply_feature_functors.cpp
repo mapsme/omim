@@ -20,7 +20,6 @@
 #include "indexer/road_shields_parser.hpp"
 
 #include "geometry/clipping.hpp"
-#include "geometry/smoothing.hpp"
 
 #include "drape/color.hpp"
 #include "drape/stipple_pen_resource.hpp"
@@ -864,13 +863,12 @@ ApplyLineFeatureGeometry::ApplyLineFeatureGeometry(TileKey const & tileKey,
                                                    TInsertShapeFn const & insertShape,
                                                    FeatureID const & id, double currentScaleGtoP,
                                                    int minVisibleScale, uint8_t rank,
-                                                   size_t pointsCount, bool smooth)
+                                                   size_t pointsCount)
   : TBase(tileKey, insertShape, id, minVisibleScale, rank, CaptionDescription())
   , m_currentScaleGtoP(static_cast<float>(currentScaleGtoP))
   , m_sqrScale(currentScaleGtoP * currentScaleGtoP)
   , m_simplify(tileKey.m_zoomLevel >= kLineSimplifyLevelStart &&
                tileKey.m_zoomLevel <= kLineSimplifyLevelEnd)
-  , m_smooth(smooth)
   , m_initialPointsCount(pointsCount)
 #ifdef LINES_GENERATION_CALC_FILTERED_POINTS
   , m_readCount(0)
@@ -923,33 +921,7 @@ void ApplyLineFeatureGeometry::ProcessLineRule(Stylist::TRuleWrapper const & rul
   if (pLineRule == nullptr)
     return;
 
-  if (!m_smooth)
-  {
-    m_clippedSplines = m2::ClipSplineByRect(m_tileRect, m_spline);
-  }
-  else
-  {
-    m2::GuidePointsForSmooth guidePointsForSmooth;
-    std::vector<std::vector<m2::PointD>> clippedPaths;
-    auto extTileRect = m_tileRect;
-    extTileRect.Inflate(m_tileRect.SizeX() * 0.3, m_tileRect.SizeY() * 0.3);
-    m2::ClipPathByRectBeforeSmooth(extTileRect, m_spline->GetPath(), guidePointsForSmooth,
-                                   clippedPaths);
-    if (clippedPaths.empty())
-      return;
-
-    size_t const kExtraPointsPerSegment = 4;
-    m2::SmoothPaths(guidePointsForSmooth, kExtraPointsPerSegment, m2::kCentripetalAlpha,
-                    clippedPaths);
-
-    m_clippedSplines.clear();
-    for (auto const & path : clippedPaths)
-    {
-      auto splines = m2::ClipPathByRect(m_tileRect, path);
-      std::move(splines.begin(), splines.end(), std::back_inserter(m_clippedSplines));
-    }
-  }
-
+  m_clippedSplines = m2::ClipSplineByRect(m_tileRect, m_spline);
   if (m_clippedSplines.empty())
     return;
 

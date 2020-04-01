@@ -194,6 +194,7 @@ void configButton(UIButton * button, NSString * primaryText, NSString * secondar
 
 - (void)refreshViewAppearance
 {
+  self.view.backgroundColor = [UIColor pressBackground];
   self.tableView.backgroundColor = [UIColor clearColor];
   self.tableView.contentInset = {-20, 0, 80, 0};
 }
@@ -253,6 +254,7 @@ void configButton(UIButton * button, NSString * primaryText, NSString * secondar
 - (void)initialCheckConfig
 {
   MWMFilterCheckCell * check = self.check;
+  [check refreshButtonsAppearance];
   check.isOffline = !Platform::IsConnected();
   check.delegate = self;
 }

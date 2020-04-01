@@ -3,10 +3,11 @@ import logging
 import os
 import re
 import sys
+
+from collections import defaultdict
 from multiprocessing import Pool
 
-from mwm import Mwm
-from mwm.ft2osm import read_osm2ft
+from mwm import mwm
 
 
 class PromoIds(object):
@@ -43,17 +44,20 @@ class PromoIds(object):
             "cities": []
         }
         ft2osm = load_osm2ft(self.osm2ft_path, leaf_id)
+        with open(os.path.join(self.mwm_path, leaf_id + ".mwm"), "rb") as f:
+            mwm_file = mwm.MWM(f)
+            mwm_file.read_header()
+            mwm_file.read_types(self.types_path)
+            for feature in mwm_file.iter_features(metadata=True):
+                osm_id = ft2osm.get(feature["id"], None)
+                types = feature["header"]["types"]
 
-        for feature in Mwm(os.path.join(self.mwm_path, leaf_id + ".mwm")):
-            osm_id = ft2osm.get(feature.index(), None)
-            types = feature.readable_types()
+                if "sponsored-promo_catalog" in types and osm_id in self.cities:
+                    city = self._get_city(osm_id, types)
+                    result["cities"].append(city)
 
-            if "sponsored-promo_catalog" in types and osm_id in self.cities:
-                city = self._get_city(osm_id, types)
-                result["cities"].append(city)
-
-            if "place-country" in types and osm_id in self.countries:
-                result["countries"].append(osm_id)
+                if "place-country" in types and osm_id in self.countries:
+                    result["countries"].append(osm_id)
 
         return result
 
@@ -96,7 +100,7 @@ class PromoIds(object):
         return max(proposed_cities, key=key_compare)
 
     def _score_city_types(self, types):
-        return max(self._city_type_to_int(t) for t in types)
+        return max([self._city_type_to_int(t) for t in types])
 
     @staticmethod
     def _city_type_to_int(t):
@@ -130,7 +134,7 @@ def load_osm2ft(osm2ft_path, mwm_id):
         logging.error(f"Cannot find {osm2ft_name}")
         sys.exit(3)
     with open(osm2ft_name, "rb") as f:
-        return read_osm2ft(f, ft2osm=True, tuples=False)
+        return mwm.read_osm2ft(f, ft2osm=True, tuples=False)
 
 
 def inject_promo_ids(countries_json, promo_cities_path, promo_countries_path,

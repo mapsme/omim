@@ -7,8 +7,8 @@
 #include "base/logging.hpp"
 #include "base/timer.hpp"
 
+#include <sstream>
 #include <type_traits>
-#include <unordered_set>
 #include <utility>
 
 using namespace eye;
@@ -27,36 +27,6 @@ auto constexpr kShowTipAfterCollapsingPeriod = std::chrono::hours(12);
 size_t constexpr kActionClicksCountToDisable = 1;
 // If a user clicks 3 times on the button GOT IT the appropriate screen will never be shown again.
 size_t constexpr kGotitClicksCountToDisable = 3;
-
-std::unordered_set<std::string> const kIsolinesExceptedMwms =
-{
-  "Argentina_Buenos Aires_Buenos Aires",
-  "Australia_Melbourne",
-  "Australia_Sydney",
-  "Austria_Salzburg",
-  "Belarus_Minsk Region",
-  "China_Guizhou",
-  "China_Shanghai",
-  "Czech_Praha",
-  "Finland_Southern Finland_Helsinki",
-  "France_Ile-de-France_Paris",
-  "Germany_Berlin",
-  "Germany_Hamburg_main",
-  "Germany_Saxony_Leipzig",
-  "Germany_Saxony_Dresden",
-  "India_Delhi",
-  "Italy_Veneto_Venezia",
-  "Italy_Veneto_Verona",
-  "Netherlands_Utrecht_Utrecht",
-  "Netherlands_North Holland_Amsterdam",
-  "Russia_Moscow",
-  "Spain_Catalonia_Provincia de Barcelona",
-  "Spain_Community of Madrid",
-  "UK_England_Greater London",
-  "US_New York_New York",
-  "Russia_Saint Petersburg",
-  "US_Illinois_Chickago"
-};
 
 template <typename T, std::enable_if_t<std::is_enum<T>::value> * = nullptr>
 size_t ToIndex(T type)
@@ -110,11 +80,10 @@ std::optional<eye::Tip::Type> GetTipImpl(TipsApi::Duration showAnyTipPeriod,
       candidates[ToIndex(shownTip.m_type)].second = false;
     }
 
-    // Iterates reversed because we need to show newest tip first.
-    for (auto c = candidates.crbegin(); c != candidates.crend(); ++c)
+    for (auto const & c : candidates)
     {
-      if (c->second && conditions[ToIndex(c->first)](*info))
-        return c->first;
+      if (c.second && conditions[ToIndex(c.first)](*info))
+        return c.first;
     }
   }
 
@@ -163,8 +132,8 @@ size_t TipsApi::GetGotitClicksCountToDisable()
   return kGotitClicksCountToDisable;
 }
 
-TipsApi::TipsApi(std::unique_ptr<Delegate> delegate)
-  : m_delegate(std::move(delegate))
+TipsApi::TipsApi(Delegate const & delegate)
+  : m_delegate(delegate)
 {
   m_conditions =
   {{
@@ -189,59 +158,38 @@ TipsApi::TipsApi(std::unique_ptr<Delegate> delegate)
           return false;
       }
 
-      auto const pos = m_delegate->GetCurrentPosition();
+      auto const pos = m_delegate.GetCurrentPosition();
       if (!pos)
         return false;
 
-      return m_delegate->IsCountryLoaded(*pos);
+      return m_delegate.IsCountryLoaded(*pos);
     },
     // Condition for Tips::Type::PublicTransport type.
     [this] (eye::Info const & info)
     {
       for (auto const & layer : info.m_layers)
       {
-        if (layer.m_type == Layer::Type::PublicTransport &&
-            layer.m_lastTimeUsed.time_since_epoch().count() != 0)
+        if (layer.m_type == Layer::Type::PublicTransport)
         {
-          return false;
+          if (layer.m_lastTimeUsed.time_since_epoch().count() != 0)
+          {
+            return false;
+          }
         }
       }
 
-      auto const pos = m_delegate->GetCurrentPosition();
+      auto const pos = m_delegate.GetCurrentPosition();
       if (!pos)
         return false;
 
-      return m_delegate->HaveTransit(*pos);
-    },
-   // Condition for Tips::Type::Isolines type.
-   [this] (eye::Info const & info)
-   {
-     for (auto const & layer : info.m_layers)
-     {
-       if (layer.m_type == Layer::Type::Isolines &&
-           layer.m_lastTimeUsed.time_since_epoch().count() != 0)
-       {
-         return false;
-       }
-     }
-
-     auto const pos = m_delegate->GetViewportCenter();
-     auto const countryId = m_delegate->GetCountryId(pos);
-
-     if (countryId.empty())
-       return false;
-
-     if (kIsolinesExceptedMwms.find(countryId) != kIsolinesExceptedMwms.end())
-         return false;
-
-     return m_delegate->GetIsolinesQuality(countryId) == isolines::Quality::Normal;
-   },
+      return m_delegate.HaveTransit(*pos);
+    }
   }};
 }
 
 std::optional<eye::Tip::Type> TipsApi::GetTip() const
 {
-  return GetTipImpl(GetShowAnyTipPeriod(), GetShowSameTipPeriod(), *m_delegate, m_conditions);
+  return GetTipImpl(GetShowAnyTipPeriod(), GetShowSameTipPeriod(), m_delegate, m_conditions);
 }
 
 // static

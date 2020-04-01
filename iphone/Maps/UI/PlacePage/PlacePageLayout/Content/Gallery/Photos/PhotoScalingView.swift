@@ -1,3 +1,5 @@
+import UIKit
+
 final class PhotoScalingView: UIScrollView {
   private(set) lazy var imageView: UIImageView = {
     let imageView = UIImageView(frame: self.bounds)
@@ -5,7 +7,7 @@ final class PhotoScalingView: UIScrollView {
     return imageView
   }()
 
-  var photo: HotelPhotoUrl? {
+  var photo: GalleryItemModel? {
     didSet {
       updateImage(photo)
     }
@@ -41,7 +43,7 @@ final class PhotoScalingView: UIScrollView {
     showsVerticalScrollIndicator = false
     showsHorizontalScrollIndicator = false
     bouncesZoom = true
-    decelerationRate = .fast
+    decelerationRate = UIScrollView.DecelerationRate.fast
   }
 
   private func centerScrollViewContents() {
@@ -50,11 +52,10 @@ final class PhotoScalingView: UIScrollView {
     contentInset = UIEdgeInsets(top: verticalInset, left: horizontalInset, bottom: verticalInset, right: horizontalInset)
   }
 
-  private func updateImage(_ photo: HotelPhotoUrl?) {
+  private func updateImage(_ photo: GalleryItemModel?) {
     guard let photo = photo else { return }
     imageView.transform = CGAffineTransform.identity
-    guard let url = URL(string: photo.original) else { return }
-    imageView.wi_setImage(with: url,
+    imageView.wi_setImage(with: photo.imageURL,
                           transitionDuration: kDefaultAnimationDuration) { [weak self] (image, error) in
       guard let s = self else { return }
       s.contentSize = image?.size ?? CGSize.zero

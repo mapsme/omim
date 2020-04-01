@@ -1,93 +1,59 @@
 package com.mapswithme.maps.maplayer;
 
 import android.app.Activity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import com.mapswithme.maps.maplayer.subway.DefaultMapLayerController;
+import com.mapswithme.maps.maplayer.subway.SubwayMapLayerController;
 import com.mapswithme.maps.maplayer.traffic.widget.TrafficButton;
 import com.mapswithme.maps.maplayer.traffic.widget.TrafficButtonController;
 import com.mapswithme.maps.tips.Tutorial;
 import com.mapswithme.maps.tips.TutorialClickListener;
 import com.mapswithme.util.InputUtils;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class MapLayerCompositeController implements MapLayerController
 {
   @NonNull
   private final AppCompatActivity mActivity;
   @NonNull
-  private final List<ControllerAndMode> mLayers;
+  private final Collection<ControllerAndMode> mChildrenEntries;
   @NonNull
-  private ControllerAndMode mCurrentLayer;
-  @NonNull
-  private final TutorialClickListener mOpenBottomDialogClickListener;
+  private ControllerAndMode mMasterEntry;
 
   public MapLayerCompositeController(@NonNull TrafficButton traffic, @NonNull View subway,
-                                     @NonNull View isoLines, @NonNull AppCompatActivity activity)
+                                     @NonNull AppCompatActivity activity)
   {
-    mOpenBottomDialogClickListener = new OpenBottomDialogClickListener(activity);
+    View.OnClickListener listener = new OpenBottomDialogClickListener(activity, Tutorial.MAP_LAYERS);
     mActivity = activity;
-    mLayers = createLayers(traffic, subway, isoLines, activity, mOpenBottomDialogClickListener);
-    mCurrentLayer = getCurrentLayer();
-    toggleMode(mCurrentLayer.getMode());
+    mChildrenEntries = createEntries(traffic, subway, activity, listener);
+    mMasterEntry = getCurrentLayer();
+    toggleMode(mMasterEntry.getMode());
   }
 
   @NonNull
-  private static List<ControllerAndMode> createLayers(@NonNull TrafficButton traffic,
-                                                      @NonNull View subway,
-                                                      @NonNull View isoLinesView,
-                                                      @NonNull AppCompatActivity activity,
-                                                      @NonNull View.OnClickListener dialogClickListener)
+  private static Collection<ControllerAndMode> createEntries(@NonNull TrafficButton traffic,
+                                                             @NonNull View subway,
+                                                             @NonNull AppCompatActivity activity,
+                                                             @NonNull View.OnClickListener dialogClickListener)
   {
     traffic.setOnclickListener(dialogClickListener);
     TrafficButtonController trafficButtonController = new TrafficButtonController(traffic,
                                                                                   activity);
     subway.setOnClickListener(dialogClickListener);
-    DefaultMapLayerController subwayMapLayerController = new DefaultMapLayerController(subway);
+    SubwayMapLayerController subwayMapLayerController = new SubwayMapLayerController(subway);
 
-    isoLinesView.setOnClickListener(dialogClickListener);
-    DefaultMapLayerController isoLinesController = new DefaultMapLayerController(isoLinesView);
-
-    ControllerAndMode subwayEntry = new ControllerAndMode(Mode.SUBWAY, Tutorial.SUBWAY,
-                                                          subwayMapLayerController);
-    ControllerAndMode trafficEntry = new ControllerAndMode(Mode.TRAFFIC, null,
-                                                           trafficButtonController);
-    ControllerAndMode isoLineEntry = new ControllerAndMode(Mode.ISOLINES, Tutorial.ISOLINES,
-                                                           isoLinesController);
-
-    List<ControllerAndMode> entries = new ArrayList<>();
+    ControllerAndMode subwayEntry = new ControllerAndMode(Mode.SUBWAY, subwayMapLayerController);
+    ControllerAndMode trafficEntry = new ControllerAndMode(Mode.TRAFFIC, trafficButtonController);
+    Set<ControllerAndMode> entries = new LinkedHashSet<>();
     entries.add(subwayEntry);
-    entries.add(isoLineEntry);
     entries.add(trafficEntry);
-
-    return entries;
-  }
-
-  public void setTutorial(@NonNull Tutorial tutorial)
-  {
-    mOpenBottomDialogClickListener.setTutorial(tutorial);
-
-    // The sorting is needed to put the controller mode corresponding to the specified tutorial
-    // at the first place in the list. It allows to enable the map layer ignoring the opening the
-    // bottom dialog when user taps on the pulsating map layer button.
-    Collections.sort(mLayers, (lhs, rhs) ->
-    {
-      if (tutorial.equals(lhs.getTutorial()))
-        return -1;
-      if (tutorial.equals(rhs.getTutorial()))
-        return 1;
-      return 0;
-    });
-
-    // The current layer must be updated after the layer controllers are sorted.
-    mCurrentLayer = getCurrentLayer();
-    toggleMode(mCurrentLayer.getMode());
+    return Collections.unmodifiableSet(entries);
   }
 
   public void toggleMode(@NonNull Mode mode)
@@ -114,20 +80,20 @@ public class MapLayerCompositeController implements MapLayerController
 
   private void turnInitialMode()
   {
-    mCurrentLayer.getController().hideImmediately();
-    mCurrentLayer = mLayers.iterator().next();
-    mCurrentLayer.getController().showImmediately();
+    mMasterEntry.getController().hideImmediately();
+    mMasterEntry = mChildrenEntries.iterator().next();
+    mMasterEntry.getController().showImmediately();
   }
 
   public void applyLastActiveMode()
   {
-    toggleMode(mCurrentLayer.getMode(), true);
+    toggleMode(mMasterEntry.getMode(), true);
   }
 
   @Override
   public void attachCore()
   {
-    for (ControllerAndMode each : mLayers)
+    for (ControllerAndMode each : mChildrenEntries)
     {
       each.getController().attachCore();
     }
@@ -136,7 +102,7 @@ public class MapLayerCompositeController implements MapLayerController
   @Override
   public void detachCore()
   {
-    for (ControllerAndMode each : mLayers)
+    for (ControllerAndMode each : mChildrenEntries)
     {
       each.getController().detachCore();
     }
@@ -144,11 +110,11 @@ public class MapLayerCompositeController implements MapLayerController
 
   private void setMasterController(@NonNull Mode mode)
   {
-    for (ControllerAndMode each : mLayers)
+    for (ControllerAndMode each : mChildrenEntries)
     {
       if (each.getMode() == mode)
       {
-        mCurrentLayer = each;
+        mMasterEntry = each;
       }
       else
       {
@@ -161,65 +127,65 @@ public class MapLayerCompositeController implements MapLayerController
   private void showMasterController(boolean animate)
   {
     if (animate)
-      mCurrentLayer.getController().show();
+      mMasterEntry.getController().show();
     else
-      mCurrentLayer.getController().showImmediately();
+      mMasterEntry.getController().showImmediately();
   }
 
   @NonNull
   private ControllerAndMode getCurrentLayer()
   {
-    for (ControllerAndMode each : mLayers)
+    for (ControllerAndMode each : mChildrenEntries)
     {
       if (each.getMode().isEnabled(mActivity))
         return each;
     }
 
-    return mLayers.iterator().next();
+    return mChildrenEntries.iterator().next();
   }
 
   @Override
   public void turnOn()
   {
-    mCurrentLayer.getController().turnOn();
-    mCurrentLayer.getMode().setEnabled(mActivity, true);
+    mMasterEntry.getController().turnOn();
+    mMasterEntry.getMode().setEnabled(mActivity, true);
   }
 
   @Override
   public void turnOff()
   {
-    mCurrentLayer.getController().turnOff();
-    mCurrentLayer.getMode().setEnabled(mActivity, false);
+    mMasterEntry.getController().turnOff();
+    mMasterEntry.getMode().setEnabled(mActivity, false);
   }
 
   @Override
   public void show()
   {
-    mCurrentLayer.getController().show();
+    mMasterEntry.getController().show();
   }
 
   @Override
   public void showImmediately()
   {
-    mCurrentLayer.getController().showImmediately();
+    mMasterEntry.getController().showImmediately();
   }
 
   @Override
   public void hide()
   {
-    mCurrentLayer.getController().hide();
+    mMasterEntry.getController().hide();
   }
 
   @Override
   public void hideImmediately()
   {
-    mCurrentLayer.getController().hideImmediately();
+    mMasterEntry.getController().hideImmediately();
   }
 
   @Override
   public void adjust(int offsetX, int offsetY)
   {
-    for(ControllerAndMode controllerAndMode: mLayers)
+    for(ControllerAndMode controllerAndMode: mChildrenEntries)
       controllerAndMode.getController().adjust(offsetX, offsetY);
   }
 
@@ -248,7 +214,7 @@ public class MapLayerCompositeController implements MapLayerController
   @NonNull
   private ControllerAndMode findModeMapLayerController(@NonNull Mode mode)
   {
-    for (ControllerAndMode each : mLayers)
+    for (ControllerAndMode each : mChildrenEntries)
     {
       if (each.getMode() == mode)
         return each;
@@ -261,16 +227,12 @@ public class MapLayerCompositeController implements MapLayerController
   {
     @NonNull
     private final Mode mMode;
-    @Nullable
-    private final Tutorial mTutorial;
     @NonNull
     private final MapLayerController mController;
 
-    ControllerAndMode(@NonNull Mode mode, @Nullable Tutorial tutorial,
-                      @NonNull MapLayerController controller)
+    ControllerAndMode(@NonNull Mode mode, @NonNull MapLayerController controller)
     {
       mMode = mode;
-      mTutorial = tutorial;
       mController = controller;
     }
 
@@ -300,25 +262,19 @@ public class MapLayerCompositeController implements MapLayerController
     {
       return mMode;
     }
-
-    @Nullable
-    Tutorial getTutorial()
-    {
-      return mTutorial;
-    }
   }
 
   private class OpenBottomDialogClickListener extends TutorialClickListener
   {
-    OpenBottomDialogClickListener(@NonNull Activity activity)
+    OpenBottomDialogClickListener(@NonNull Activity activity, @NonNull Tutorial tutorial)
     {
-      super(activity);
+      super(activity, tutorial);
     }
 
     @Override
     public void onProcessClick(@NonNull View view)
     {
-      if (mCurrentLayer.getMode().isEnabled(mActivity))
+      if (mMasterEntry.getMode().isEnabled(mActivity))
       {
         turnOff();
         toggleMode(getCurrentLayer().getMode());

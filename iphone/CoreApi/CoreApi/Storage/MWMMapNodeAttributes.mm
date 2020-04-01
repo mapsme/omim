@@ -1,5 +1,4 @@
 #import "MWMMapNodeAttributes+Core.h"
-#include <CoreApi/Framework.h>
 
 static MWMMapNodeStatus convertStatus(storage::NodeStatus status) {
   switch (status) {
@@ -77,13 +76,6 @@ static MWMMapNodeStatus convertStatus(storage::NodeStatus status) {
     _nodeStatus = convertStatus(attributes.m_status);
     _hasChildren = hasChildren;
     _hasParent = hasParent;
-
-    storage::Storage::UpdateInfo updateInfo;
-    if (GetFramework().GetStorage().GetUpdateInfo([countryId UTF8String], updateInfo)) {
-      _totalUpdateSizeBytes = updateInfo.m_totalUpdateSizeInBytes;
-    } else {
-      _totalUpdateSizeBytes = 0;
-    }
 
     NSMutableArray *parentInfoArray = [NSMutableArray arrayWithCapacity:attributes.m_parentInfo.size()];
     for (auto const &pi : attributes.m_parentInfo) {

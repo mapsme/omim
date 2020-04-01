@@ -45,4 +45,8 @@
   eye::Eye::Event::PromoAfterBookingShown(cityId.UTF8String);
 }
 
++ (void)crownClicked {
+  eye::Eye::Event::CrownClicked();
+}
+
 @end

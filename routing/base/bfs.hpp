@@ -59,7 +59,10 @@ void BFS<Graph>::Run(Vertex const & start, bool isOutgoing,
     Vertex const current = queue.front();
     queue.pop();
 
-    m_graph.GetEdgesList(current, isOutgoing, edges);
+    if (isOutgoing)
+      m_graph.GetOutgoingEdgesList(current, edges);
+    else
+      m_graph.GetIngoingEdgesList(current, edges);
 
     for (auto const & edge : edges)
     {

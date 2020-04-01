@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.base.BaseMwmFragment;
-import com.mapswithme.maps.bookmarks.data.MapObject.OsmProps;
+import com.mapswithme.maps.bookmarks.data.Metadata.MetadataType;
 import com.mapswithme.maps.dialog.EditTextDialogFragment;
 import com.mapswithme.maps.editor.data.LocalizedName;
 import com.mapswithme.maps.editor.data.LocalizedStreet;
@@ -49,7 +49,7 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
   private TextView mCategory;
   private View mCardName;
   private View mCardAddress;
-  private View mCardDetails;
+  private View mCardMetadata;
 
   private RecyclerView mNamesView;
 
@@ -114,7 +114,7 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
   private TextView mOpeningHours;
   private View mEditOpeningHours;
   private EditText mDescription;
-  private final SparseArray<View> mDetailsBlocks = new SparseArray<>(7);
+  private final SparseArray<View> mMetaBlocks = new SparseArray<>(7);
   private TextView mReset;
 
   private EditorHostFragment mParent;
@@ -312,27 +312,27 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
     UiUtils.showIf(Editor.nativeIsAddressEditable(), mCardAddress);
     UiUtils.showIf(Editor.nativeIsBuilding() && !Editor.nativeIsPointType(), mBlockLevels);
 
-    final int[] editableDetails = Editor.nativeGetEditableProperties();
-    if (editableDetails.length == 0)
+    final int[] editableMeta = Editor.nativeGetEditableFields();
+    if (editableMeta.length == 0)
     {
-      UiUtils.hide(mCardDetails);
+      UiUtils.hide(mCardMetadata);
       return;
     }
 
-    for (int i = 0; i < mDetailsBlocks.size(); i++)
-      UiUtils.hide(mDetailsBlocks.valueAt(i));
+    for (int i = 0; i < mMetaBlocks.size(); i++)
+      UiUtils.hide(mMetaBlocks.valueAt(i));
 
-    boolean anyEditableDetails = false;
-    for (int type : editableDetails)
+    boolean anyEditableMeta = false;
+    for (int type : editableMeta)
     {
-      final View detailsBlock = mDetailsBlocks.get(type);
-      if (detailsBlock == null)
+      final View metaBlock = mMetaBlocks.get(type);
+      if (metaBlock == null)
         continue;
 
-      anyEditableDetails = true;
-      UiUtils.show(detailsBlock);
+      anyEditableMeta = true;
+      UiUtils.show(metaBlock);
     }
-    UiUtils.showIf(anyEditableDetails, mCardDetails);
+    UiUtils.showIf(anyEditableMeta, mCardMetadata);
   }
 
   private void refreshOpeningTime()
@@ -412,7 +412,7 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
     mCategory = (TextView) categoryBlock.findViewById(R.id.name);
     mCardName = view.findViewById(R.id.cv__name);
     mCardAddress = view.findViewById(R.id.cv__address);
-    mCardDetails = view.findViewById(R.id.cv__details);
+    mCardMetadata = view.findViewById(R.id.cv__metadata);
     initNamesView(view);
 
     // Address
@@ -463,13 +463,13 @@ public class EditorFragment extends BaseMwmFragment implements View.OnClickListe
     mReset = (TextView) view.findViewById(R.id.reset);
     mReset.setOnClickListener(this);
 
-    mDetailsBlocks.append(OsmProps.OpeningHours.ordinal(), blockOpeningHours);
-    mDetailsBlocks.append(OsmProps.Phone.ordinal(), blockPhone);
-    mDetailsBlocks.append(OsmProps.Website.ordinal(), blockWeb);
-    mDetailsBlocks.append(OsmProps.Email.ordinal(), blockEmail);
-    mDetailsBlocks.append(OsmProps.Cuisine.ordinal(), blockCuisine);
-    mDetailsBlocks.append(OsmProps.Operator.ordinal(), blockOperator);
-    mDetailsBlocks.append(OsmProps.Internet.ordinal(), blockWifi);
+    mMetaBlocks.append(MetadataType.FMD_OPEN_HOURS.toInt(), blockOpeningHours);
+    mMetaBlocks.append(MetadataType.FMD_PHONE_NUMBER.toInt(), blockPhone);
+    mMetaBlocks.append(MetadataType.FMD_WEBSITE.toInt(), blockWeb);
+    mMetaBlocks.append(MetadataType.FMD_EMAIL.toInt(), blockEmail);
+    mMetaBlocks.append(MetadataType.FMD_CUISINE.toInt(), blockCuisine);
+    mMetaBlocks.append(MetadataType.FMD_OPERATOR.toInt(), blockOperator);
+    mMetaBlocks.append(MetadataType.FMD_INTERNET.toInt(), blockWifi);
   }
 
   private static EditText findInput(View blockWithInput)

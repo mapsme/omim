@@ -18,82 +18,65 @@
 
 #import "FBSDKAccessTokenCache.h"
 
-#import "FBSDKDynamicFrameworkLoader.h"
-#import "FBSDKInternalUtility.h"
-#import "FBSDKKeychainStore.h"
+#import "FBSDKAccessTokenCacheV3.h"
+#import "FBSDKAccessTokenCacheV3_17.h"
+#import "FBSDKAccessTokenCacheV3_21.h"
+#import "FBSDKAccessTokenCacheV4.h"
 
-static NSString *const kFBSDKAccessTokenUserDefaultsKey = @"com.facebook.sdk.v4.FBSDKAccessTokenInformationKey";
-static NSString *const kFBSDKAccessTokenKeychainKey = @"com.facebook.sdk.v4.FBSDKAccessTokenInformationKeychainKey";
-static NSString *const kFBSDKAccessTokenUUIDKey = @"tokenUUID";
-static NSString *const kFBSDKAccessTokenEncodedKey = @"tokenEncoded";
+static BOOL g_tryDeprecatedCaches = YES;
 
 @implementation FBSDKAccessTokenCache
-{
-  FBSDKKeychainStore *_keychainStore;
-}
 
-- (instancetype)init
+- (FBSDKAccessToken*)accessToken
 {
-  if ((self = [super init])) {
-    NSString *keyChainServiceIdentifier = [NSString stringWithFormat:@"com.facebook.sdk.tokencache.%@", [NSBundle mainBundle].bundleIdentifier];
-    _keychainStore = [[FBSDKKeychainStore alloc] initWithService:keyChainServiceIdentifier accessGroup:nil];
+  FBSDKAccessToken *token = [[FBSDKAccessTokenCacheV4 alloc] init].accessToken;
+  if (token || !g_tryDeprecatedCaches) {
+    return token;
   }
-  return self;
-}
 
-- (FBSDKAccessToken *)accessToken
-{
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  NSString *uuid = [defaults objectForKey:kFBSDKAccessTokenUserDefaultsKey];
-
-  NSDictionary<NSString *, id> *dict = [_keychainStore dictionaryForKey:kFBSDKAccessTokenKeychainKey];
-  if ([dict[kFBSDKAccessTokenUUIDKey] isKindOfClass:[NSString class]]) {
-    // there is a bug while running on simulator that the uuid stored in dict can be NSData,
-    // do a type check to make sure it is NSString
-    if ([dict[kFBSDKAccessTokenUUIDKey] isEqualToString:uuid]) {
-      id tokenData = dict[kFBSDKAccessTokenEncodedKey];
-      if ([tokenData isKindOfClass:[NSData class]]) {
-        return [NSKeyedUnarchiver unarchiveObjectWithData:tokenData];
-      }
+  g_tryDeprecatedCaches = NO;
+  NSArray *oldCacheClasses = [[self class] deprecatedCacheClasses];
+  __block FBSDKAccessToken *oldToken = nil;
+  [oldCacheClasses enumerateObjectsUsingBlock:^(Class obj, NSUInteger idx, BOOL *stop) {
+    id<FBSDKAccessTokenCaching> cache = [[obj alloc] init];
+    oldToken = cache.accessToken;
+    if (oldToken) {
+      *stop = YES;
+      [cache clearCache];
     }
+  }];
+  if (oldToken) {
+    self.accessToken = oldToken;
   }
-  // if the uuid doesn't match (including if there is no uuid in defaults which means uninstalled case)
-  // clear the keychain and return nil.
-  [self clearCache];
-  return nil;
+  return oldToken;
 }
 
 - (void)setAccessToken:(FBSDKAccessToken *)token
 {
-  if (!token) {
-    [self clearCache];
-    return;
+  [[FBSDKAccessTokenCacheV4 alloc] init].accessToken = token;
+  if (g_tryDeprecatedCaches) {
+    g_tryDeprecatedCaches = NO;
+    NSArray *oldCacheClasses = [[self class] deprecatedCacheClasses];
+    [oldCacheClasses enumerateObjectsUsingBlock:^(Class obj, NSUInteger idx, BOOL *stop) {
+      id<FBSDKAccessTokenCaching> cache = [[obj alloc] init];
+        [cache clearCache];
+    }];
   }
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  NSString *uuid = [defaults objectForKey:kFBSDKAccessTokenUserDefaultsKey];
-  if (!uuid) {
-    uuid = [NSUUID UUID].UUIDString;
-    [defaults setObject:uuid forKey:kFBSDKAccessTokenUserDefaultsKey];
-    [defaults synchronize];
-  }
-  NSData *tokenData = [NSKeyedArchiver archivedDataWithRootObject:token];
-  NSDictionary<NSString *, id> *dict = @{
-                                         kFBSDKAccessTokenUUIDKey : uuid,
-                                         kFBSDKAccessTokenEncodedKey : tokenData
-                                         };
-
-  [_keychainStore setDictionary:dict
-                         forKey:kFBSDKAccessTokenKeychainKey
-                  accessibility:[FBSDKDynamicFrameworkLoader loadkSecAttrAccessibleAfterFirstUnlockThisDeviceOnly]];
 }
 
 - (void)clearCache
 {
-  [_keychainStore setDictionary:nil
-                         forKey:kFBSDKAccessTokenKeychainKey
-                  accessibility:NULL];
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  [defaults removeObjectForKey:kFBSDKAccessTokenUserDefaultsKey];
-  [defaults synchronize];
+  [[[FBSDKAccessTokenCacheV4 alloc] init] clearCache];
+}
+
+// used by FBSDKAccessTokenCacheIntegrationTests
++ (void)resetV3CacheChecks
+{
+  g_tryDeprecatedCaches = YES;
+}
+
++ (NSArray *)deprecatedCacheClasses
+{
+  return @[ [FBSDKAccessTokenCacheV3_21 class], [FBSDKAccessTokenCacheV3_17 class], [FBSDKAccessTokenCacheV3 class]];
 }
 @end
