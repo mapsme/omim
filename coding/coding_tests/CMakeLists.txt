@@ -5,6 +5,7 @@ set(
   base64_test.cpp
   bit_streams_test.cpp
   bwt_coder_tests.cpp
+  bwt_tests.cpp
   compressed_bit_vector_test.cpp
   csv_reader_test.cpp
   dd_vector_test.cpp
@@ -21,6 +22,7 @@ set(
   map_uint32_to_val_tests.cpp
   mem_file_reader_test.cpp
   mem_file_writer_test.cpp
+  move_to_front_tests.cpp
   png_decoder_test.cpp
   point_coding_tests.cpp
   reader_cache_test.cpp
@@ -35,8 +37,7 @@ set(
   test_polylines.hpp
   text_storage_tests.cpp
   traffic_test.cpp
-  uri_test.cpp
-  url_encode_test.cpp
+  url_tests.cpp
   value_opt_string_test.cpp
   var_record_reader_test.cpp
   var_serial_vector_test.cpp

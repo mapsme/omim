@@ -24,10 +24,10 @@ enum BannerType {
 
   init(type: MWMBannerType, id: String, query: String = "") {
     switch type {
-    case .none: self = .none
     case .facebook: self = .facebook(id)
     case .rb: self = .rb(id)
     case .mopub: self = .mopub(id)
+    default: self = .none
     }
   }
 }
@@ -48,7 +48,7 @@ extension BannerType: Equatable {
 }
 
 extension BannerType: Hashable {
-  func hash(into hasher: inout Hasher){
+  func hash(into hasher: inout Hasher) {
     switch self {
     case .none: hasher.combine(mwmType.hashValue)
     case let .facebook(id): hasher.combine(mwmType.hashValue ^ id.hashValue)

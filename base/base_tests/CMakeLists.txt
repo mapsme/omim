@@ -9,9 +9,9 @@ set(
   bidirectional_map_tests.cpp
   bits_test.cpp
   buffer_vector_test.cpp
-  bwt_tests.cpp
   cache_test.cpp
   cancellable_tests.cpp
+  checked_cast_tests.cpp
   clustering_map_tests.cpp
   collection_cast_test.cpp
   condition_test.cpp
@@ -25,7 +25,6 @@ set(
   math_test.cpp
   matrix_test.cpp
   mem_trie_test.cpp
-  move_to_front_tests.cpp
   newtype_test.cpp
   non_intersecting_intervals_tests.cpp
   observer_list_test.cpp
@@ -49,7 +48,6 @@ set(
   timegm_test.cpp
   timer_test.cpp
   uni_string_dfa_test.cpp
-  url_helpers_tests.cpp
   visitor_tests.cpp
 )
 

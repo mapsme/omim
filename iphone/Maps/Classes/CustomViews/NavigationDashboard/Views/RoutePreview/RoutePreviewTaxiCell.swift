@@ -2,19 +2,8 @@
 final class RoutePreviewTaxiCell: UICollectionViewCell {
 
   @IBOutlet private weak var icon: UIImageView!
-  @IBOutlet private weak var title: UILabel! {
-    didSet {
-      title.font = UIFont.bold14()
-      title.textColor = UIColor.blackPrimaryText()
-    }
-  }
-
-  @IBOutlet private weak var info: UILabel! {
-    didSet {
-      info.font = UIFont.regular14()
-      info.textColor = UIColor.blackSecondaryText()
-    }
-  }
+  @IBOutlet private weak var title: UILabel!
+  @IBOutlet private weak var info: UILabel!
 
   @objc func config(type: MWMRoutePreviewTaxiCellType, title: String, eta: String, price: String, currency: String) {
     let iconImage = { () -> UIImage in
@@ -24,6 +13,7 @@ final class RoutePreviewTaxiCell: UICollectionViewCell {
       case .yandex: return #imageLiteral(resourceName: "ic_taxi_logo_yandex")
       case .maxim: return #imageLiteral(resourceName: "ic_taxi_logo_maksim")
       case .vezet: return #imageLiteral(resourceName: "ic_taxi_logo_vezet")
+      case .freenow: return #imageLiteral(resourceName: "ic_logo_freenow")
       }
     }
 
@@ -34,6 +24,7 @@ final class RoutePreviewTaxiCell: UICollectionViewCell {
       case .yandex: return L("yandex_taxi_title")
       case .maxim: return L("maxim_taxi_title")
       case .vezet: return L("vezet_taxi")
+      case .freenow: return title
       }
     }
 
@@ -53,6 +44,7 @@ final class RoutePreviewTaxiCell: UICollectionViewCell {
         } else {
           return "\(currency) \(price)"
         }
+      case .freenow: return price
       }
     }
 

@@ -6,9 +6,6 @@
 
 /********** Strings **********/
 
-/* About button text (should be short) */
-"about" = "نبذة عنا";
-
 /* Button text (should be short) */
 "back" = "رجوع";
 
@@ -107,9 +104,6 @@
 
 /* Settings/Downloader - 3G download warning dialog confirm button */
 "use_cellular_data" = "نعم";
-
-/* Settings/Downloader - No internet connection dialog message */
-"use_wifi_recommendation_text" = "نحن نوصي باستخدام واي فاي لتنزيل الخرائط الكبيرة";
 
 /* Choose measurement on first launch alert - title */
 "which_measurement_system" = "ما هو نظام القياس المفضل لديك؟";
@@ -406,9 +400,6 @@
 /* Subject for emailed bookmark */
 "bookmark_share_email_subject" = "هاي، تفقد الدبوس الخاص بي على خريطة MAPS.ME!";
 
-/* Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me */
-"bookmark_share_email" = "مرحبا،\n\nقمت بوضع دبوس: %1$@ على MAPS.ME، خرائط العالم بدون الاتصال مع الانترنت. انقر على هذا الرابط %2$@ أو الرابط التالي %3$@ لمشاهدة الموقع على الخريطة.\n\nشكرا لك.";
-
 /* Subject for emailed position */
 "my_position_share_email_subject" = "يا هلا، تحقق من موقعي الحالي على خريطة MAPS.ME!";
 
@@ -586,15 +577,6 @@
 
 /* category title */
 "routes" = "المسارات";
-
-/* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
-
-/* Show on first launch. */
-"agree" = "I agree";
-
-/* Show on first launch */
-"disagree" = "I disagree";
 
 /* text of notification */
 "download_map_notification" = "تنزيل خريطة المكان الذي توجد فيه";
@@ -894,6 +876,30 @@
 
 /* pink color */
 "pink" = "وردي";
+
+/* deep purple color */
+"deep_purple" = "أرجواني داكن";
+
+/* light blue color */
+"light_blue" = "أزرق فاتح";
+
+/* cyan color */
+"cyan" = "أزرق سماوي";
+
+/* teal color */
+"teal" = "أخضر فاتح";
+
+/* lime color */
+"lime" = "ليموني";
+
+/* deep orange color */
+"deep_orange" = "برتقالي داكن";
+
+/* gray color */
+"gray" = "رمادي";
+
+/* blue gray color */
+"blue_gray" = "رمادي أزرق";
 
 /* Wi-Fi available */
 "WiFi_available" = "نعم";
@@ -1494,7 +1500,7 @@
 
 "placepage_more_button" = "المزيد";
 
-"placepage_more_reviews_button" = "More Reviews";
+"placepage_more_reviews_button" = "المزيد من المراجعات";
 
 "book_button" = "حجز";
 
@@ -2179,8 +2185,6 @@
 
 "downloader_applying" = "جار تطبيق %s...";
 
-"transit_not_found" = "الملاحة المؤقتة في هذه المنطقة غير متوفرة بعد";
-
 "whats_new_title_hotel_filter" = "يتوفر عوامل تصفية جديدة للفنادق!";
 
 "whats_new_message_hotel_filter" = "احجز الفنادق المتاحة في المواعيد الخاصة بك! استخدم عوامل تصفية تسجيل الوصول والمغادرة";
@@ -2379,7 +2383,8 @@
 
 "guide_downloaded_title" = "تم تنزيل الدليل بنجاح";
 
-"download_guides" = "تنزيل الأدلة";
+/* as few symbols as possible */
+"download_guides" = "بحث عن أدلة";
 
 "guides_groups_cached" = "الأدلة التي تم تنزيلها";
 
@@ -3115,17 +3120,23 @@
 /* do not translate */
 "all_pass_subscription_subheader" = "City + Outdoor Pass";
 
-"all_pass_subscription_message_title" = "أكثر من 20000 دليل ومسار";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title" = "30000+\nأدلة ومسارات";
 
-"all_pass_subscription_message_subtitle" = "تحميل غير محدود لطرق المدينة والمناطق الخارجية بدون اتصال";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle" = "<b>تحميلات غير محدودة</b> للمدينة والأماكن الخارجية <b>إلى الوضع الغير متصل</b>";
 
-"all_pass_subscription_message_title_2" = "أكثر من 700 مدينة و 100 دولة";
+/* \n - for a break between lines. Max. 17 characters per 1 line. */
+"all_pass_subscription_message_title_2" = "ملف تفاعلي لتحديد\nالارتفاع";
 
-"all_pass_subscription_message_subtitle_2" = "خطط لرحلاتك في أي وقت من السنة";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_2" = "يحتوي كل مسار على <b>تحديد الارتفاع ومعلومات أساسية عن الطريق</b>";
 
-"all_pass_subscription_message_title_3" = "مجموعة كبيرة من المحتوى";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title_3" = "إشارات مرجعية\nوصور و\nتوصيات";
 
-"all_pass_subscription_message_subtitle_3" = "إشارات مرجعية وصور ومسارات المشي ووصف ونصائح";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_3" = "<b>تعلم كل شيء عن المسار</b> الذي ستسلكه";
 
 /* do not translate */
 "sightseeing_subscription_header_sightseeing" = "City Pass";
@@ -3165,6 +3176,91 @@
 "whatsnew_guides_galleries_title" = "خطط لرحلتك القادمة مع MAPS.ME";
 
 "whatsnew_guides_galleries_message" = "يمكنك الآن العثور على دلائل موصى بها في صفحات الأماكن للمدن والمعالم السياحية الشهيرة";
+
+"new_onboarding_step3_header" = "جرب";
+
+"all_pass_screen_best_value" = "أفضل قيمة";
+
+"buy_btn_for_subscription_3" = "كامل الكتالوج من أجل %s / سنة";
+
+"transit_not_found" = "التنقل باستخدام مترو الأنفاق في هذه المنطقة غير متاح حتى الآن";
+
+"dialog_pedestrian_route_is_long_header" = "لم يتم العثور على مترو الانفاق";
+
+"dialog_pedestrian_route_is_long_message" = "يرجى اختيار نقطة بداية أو نهاية أقرب لمحطة المترو";
+
+/* Failed planning SUBWAY route message in navigation view */
+"routing_planning_error_subway_special" = "فشل تخطيط طريق لمترو الانفاق";
+
+"whatsnew_isolines_title" = "الجديد في الخارج: طبقة طبوغرافية بدون انترنت!";
+
+/* as less symbols as possible */
+"whatsnew_isolines_message" = "كن واثق في المنطقة الجبلية. فقط أشعل الطبقة في الزاوية العلوية اليسرى";
+
+"button_layer_isolines" = "تضاريس";
+
+"tips_map_layers_title_countour" = "الجديد في MAPS.ME: طبقة طبوغرافية بدون انترنت!";
+
+"tips_map_layers_message_countour" = "خطط و استمتع برحلاتك في الطبيعة و أنت متأكد من أنك تعرف كل شيء عن المنطقة";
+
+"isolines_activation_error_dialog" = "لتفعيل الطبقة الطبوغرافية واستخدامها ، يرجى تحديث أوتنزيل خريطة المنطقة";
+
+"isolines_location_error_dialog" = "الطبقة الطبوغرافية ليست متاحة بعد في هذه المنطقة";
+
+"elevation_profile_diff_level" = "مستوى الصعوبة";
+
+"elevation_profile_diff_level_easy" = "سهل";
+
+"elevation_profile_diff_level_moderate" = "معتدل";
+
+"elevation_profile_diff_level_hard" = "صعب";
+
+"elevation_profile_ascent" = "تصاعدي";
+
+"elevation_profile_descent" = "تنازلي";
+
+"elevation_profile_minaltitude" = "الحد الأدنى للارتفاع";
+
+"elevation_profile_maxaltitude" = "الحد الأقصى للارتفاع";
+
+"elevation_profile_m" = "م";
+
+"elevation_profile_difficulty" = "درجة الصعوبة";
+
+"elevation_profile_distance" = "المسافة:";
+
+"elevation_profile_km" = "كم";
+
+"elevation_profile_time" = "مدة:";
+
+"elevation_profile_hours" = "ساعة";
+
+"elevation_profile_minutes" = "دقيقة";
+
+/* hide the full screen banner and continue working with the app */
+"hide_screen_map_update" = "إخفاء ومتابعة";
+
+"view_on_map_downloaded_error" = "تم حذف هذا الدليل من هذا الجهاز";
+
+"subscription" = "الاشتراك";
+
+"freenow_taxi_title" = "FREE NOW";
+
+"tinkoff_allairlines_map_downloader_title" = "Карта Тинькофф All Airlines. 3000 миль в подарок";
+
+"tinkoff_allairlines_map_downloader_cta_button" = "Оформить карту";
+
+"tinkoff_insurance_map_downloader_title" = "Полис Тинькофф со скидкой! Подходит для любых виз.";
+
+"tinkoff_insurance_map_downloader_cta_button" = "Промокод";
+
+"mts_map_downloader_title" = "Забугорище: интернет и звонки за границей как дома";
+
+"mts_map_downloader_cta_button" = "Подключить";
+
+"skyeng_map_downloader_title" = "Дарим 4 бесплатных урока английского от Skyeng.";
+
+"skyeng_map_downloader_cta_button" = "Подробнее";
 
 
 /**********  Partners  **********/
@@ -3318,29 +3414,23 @@
 
 "type.amenity.parking.multi.storey" = "موقف سيارات";
 
-"type.amenity.parking.multi.storey.fee" = "موقف سيارات";
-
 "type.amenity.parking.no.access" = "موقف سيارات";
 
 "type.amenity.parking.park_and_ride" = "موقف سيارات";
 
 "type.amenity.parking.permissive" = "موقف سيارات";
 
-"type.amenity.parking.permissive.fee" = "موقف سيارات";
-
 "type.amenity.parking.private" = "موقف سيارات";
 
 "type.amenity.parking.underground" = "موقف سيارات";
 
-"type.amenity.parking.underground.fee" = "موقف سيارات";
-
 "type.amenity.parking_space" = "مكان لوقوف السيارات";
 
-"type.amenity.parking_space.permissive" = "Parking space";
+"type.amenity.parking_space.permissive" = "مكان لوقوف السيارات";
 
-"type.amenity.parking_space.private" = "Parking space";
+"type.amenity.parking_space.private" = "مكان لوقوف السيارات";
 
-"type.amenity.parking_space.underground" = "Parking space";
+"type.amenity.parking_space.underground" = "مكان لوقوف السيارات";
 
 "type.amenity.payment_terminal" = "محطة دفع";
 
@@ -3366,7 +3456,7 @@
 
 "type.amenity.post_box" = "صندوق بريد";
 
-"type.amenity.post_office" = "بريد";
+"type.amenity.post_office" = "مكتب بريد";
 
 "type.amenity.prison" = "Prison";
 
@@ -3499,12 +3589,6 @@
 "type.building.has_parts" = "مبنى";
 
 "type.building.train_station" = "محطة سكك حديدية";
-
-"type.communication" = "communication";
-
-"type.communication.line" = "communication-line";
-
-"type.communication.line.underground" = "communication-line-underground";
 
 "type.craft" = "craft";
 
@@ -3754,7 +3838,7 @@
 
 "type.highway.footway.tunnel" = "مسار";
 
-"type.highway.ford" = "highway-ford";
+"type.highway.ford" = "Ford";
 
 "type.highway.living_street" = "شارع";
 
@@ -3808,8 +3892,6 @@
 
 "type.highway.pedestrian.tunnel" = "شارع";
 
-"type.highway.platform" = "highway-platform";
-
 "type.highway.primary" = "شارع";
 
 "type.highway.primary.bridge" = "شارع";
@@ -3862,12 +3944,6 @@
 
 "type.highway.service.driveway" = "شارع";
 
-"type.highway.service.driveway.area" = "شارع";
-
-"type.highway.service.driveway.bridge" = "شارع";
-
-"type.highway.service.driveway.tunnel" = "شارع";
-
 "type.highway.service.parking_aisle" = "شارع";
 
 "type.highway.service.tunnel" = "شارع";
@@ -3906,21 +3982,9 @@
 
 "type.highway.track.grade3" = "شارع";
 
-"type.highway.track.grade3.no.access" = "شارع";
-
-"type.highway.track.grade3.permissive" = "شارع";
-
 "type.highway.track.grade4" = "شارع";
 
-"type.highway.track.grade4.no.access" = "شارع";
-
-"type.highway.track.grade4.permissive" = "شارع";
-
 "type.highway.track.grade5" = "شارع";
-
-"type.highway.track.grade5.no.access" = "شارع";
-
-"type.highway.track.grade5.permissive" = "شارع";
 
 "type.highway.track.no.access" = "شارع";
 
@@ -4088,10 +4152,6 @@
 
 "type.landuse.residential" = "landuse-residential";
 
-"type.landuse.residential.rural" = "landuse-residential-rural";
-
-"type.landuse.residential.urban" = "landuse-residential-urban";
-
 "type.landuse.retail" = "landuse-retail";
 
 "type.landuse.salt_pond" = "landuse-salt_pond";
@@ -4105,8 +4165,6 @@
 "type.leisure.common" = "leisure-common";
 
 "type.leisure.dog_park" = "منطقة كلاب";
-
-"type.leisure.dog_park.tennis" = "Dog area";
 
 "type.leisure.fitness_centre" = "مركز للياقة البدنية، نادي رياضي";
 
@@ -4134,15 +4192,7 @@
 
 "type.leisure.pitch" = "ملعب رياضي";
 
-"type.leisure.pitch.tennis" = "ملعب رياضي";
-
 "type.leisure.playground" = "ملعب";
-
-"type.leisure.playground.tennis" = "ملعب";
-
-"type.leisure.playing_fields" = "leisure-playing_fields";
-
-"type.leisure.playing_fields.tennis" = "leisure-playing_fields-tennis";
 
 "type.leisure.recreation_ground" = "Recreation ground";
 
@@ -4206,18 +4256,6 @@
 
 "type.mapswithme.grid" = "mapswithme-grid";
 
-"type.marking" = "marking";
-
-"type.marking.sport" = "marking-sport";
-
-"type.marking.sport.black" = "marking-sport-black";
-
-"type.marking.sport.blue" = "marking-sport-blue";
-
-"type.marking.sport.red" = "marking-sport-red";
-
-"type.marking.sport.white" = "marking-sport-white";
-
 "type.military" = "military";
 
 "type.military.bunker" = "مأوى";
@@ -4232,7 +4270,7 @@
 
 "type.natural.cape" = "رأس";
 
-"type.natural.cave_entrance" = "مدخل كهف";
+"type.natural.cave_entrance" = "كهف";
 
 "type.natural.cliff" = "Cliff";
 
@@ -4283,14 +4321,6 @@
 "type.natural.wetland.bog" = "Wetland";
 
 "type.natural.wetland.marsh" = "Wetland";
-
-"type.natural.wood" = "غابة";
-
-"type.natural.wood.coniferous" = "غابة";
-
-"type.natural.wood.deciduous" = "غابة";
-
-"type.natural.wood.mixed" = "غابة";
 
 "type.noexit" = "noexit";
 
@@ -4409,12 +4439,6 @@
 "type.power" = "power";
 
 "type.power.generator" = "power-generator";
-
-"type.power.generator.hydro" = "power-generator-hydro";
-
-"type.power.generator.photovoltaic" = "power-generator-photovoltaic";
-
-"type.power.generator.wind" = "power-generator-wind";
 
 "type.power.line" = "power-line";
 
@@ -4794,8 +4818,6 @@
 
 "type.sponsored" = "sponsored";
 
-"type.sponsored.banner" = "sponsored-banner";
-
 "type.sponsored.booking" = "sponsored-booking";
 
 "type.sponsored.holiday" = "Christmas or New Year Celebrations";
@@ -4841,8 +4863,6 @@
 "type.sponsored.partner8" = "sponsored-partner8";
 
 "type.sponsored.partner9" = "sponsored-partner9";
-
-"type.sponsored.viator" = "sponsored-viator";
 
 "type.sport" = "sport";
 
@@ -5039,8 +5059,6 @@
 "type.piste_type.sled" = "piste:type-sled";
 
 "type.building_part" = "مبنى";
-
-"type.earthquake_damage" = "earthquake:damage";
 
 "type.area_highway.cycleway" = "area:highway-cycleway";
 

@@ -195,14 +195,6 @@ public:
     size_t m_endSegmentIdx = 0;
   };
 
-  struct MovedIteratorInfo
-  {
-    // Indicator of setting the iterator to one of real segments.
-    bool m_movedIterator;
-    // Indicator of the presence of the fake segment which is the nearest to the given point.
-    bool m_closerToFake;
-  };
-
   /// \brief For every subroute some attributes are kept in the following structure.
   struct SubrouteSettings final
   {
@@ -255,24 +247,11 @@ public:
     }
   }
 
-  template <class SI>
-  void SetRouteSegments(SI && v)
-  {
-    m_routeSegments = std::forward<SI>(v);
-
-    m_haveAltitudes = true;
-    for (auto const & s : m_routeSegments)
-    {
-      if (s.GetJunction().GetAltitude() == geometry::kInvalidAltitude)
-      {
-        m_haveAltitudes = false;
-        return;
-      }
-    }
-  }
+  void SetRouteSegments(std::vector<RouteSegment> && routeSegments);
 
   std::vector<RouteSegment> & GetRouteSegments() { return m_routeSegments; }
   std::vector<RouteSegment> const & GetRouteSegments() const { return m_routeSegments; }
+  RoutingSettings const & GetCurrentRoutingSettings() const { return m_routingSettings; }
 
   void SetCurrentSubrouteIdx(size_t currentSubrouteIdx) { m_currentSubrouteIdx = currentSubrouteIdx; }
 
@@ -334,9 +313,12 @@ public:
 
   void GetCurrentDirectionPoint(m2::PointD & pt) const;
   
-  MovedIteratorInfo MoveIteratorToReal(location::GpsInfo const & info);
+  bool MoveIterator(location::GpsInfo const & info);
 
-  void MatchLocationToRoute(location::GpsInfo & location, location::RouteMatchingInfo & routeMatchingInfo) const;
+  /// \brief Finds projection of |location| to the nearest route and sets |routeMatchingInfo|
+  /// fields accordingly.
+  bool MatchLocationToRoute(location::GpsInfo & location,
+                            location::RouteMatchingInfo & routeMatchingInfo) const;
 
   /// Add country name if we have no country filename to make route
   void AddAbsentCountry(std::string const & name);
@@ -398,8 +380,6 @@ public:
   /// \returns mwm list which is crossed by the route and where there are restrictions on warning
   /// about speed cameras.
   std::vector<platform::CountryFile> const & GetMwmsPartlyProhibitedForSpeedCams() const;
-
-  void SetFakeSegmentsOnPolyline();
 
 private:
   friend std::string DebugPrint(Route const & r);

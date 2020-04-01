@@ -1,14 +1,13 @@
-import UIKit
-
 class AllPassSubscriptionViewController: BaseSubscriptionViewController {
   //MARK:outlets
   @IBOutlet private var backgroundImageView: ImageViewCrossDisolve!
   @IBOutlet private var annualSubscriptionButton: BookmarksSubscriptionButton!
-  @IBOutlet private var annualDiscountLabel: BookmarksSubscriptionDiscountLabel!
+  @IBOutlet private var annualDiscountLabel: InsetsLabel!
   @IBOutlet private var monthlySubscriptionButton: BookmarksSubscriptionButton!
-  @IBOutlet private var pageIndicator: PageIndicator!
   @IBOutlet private var descriptionPageScrollView: UIScrollView!
   @IBOutlet private var contentView: UIView!
+  @IBOutlet private var statusBarBackgroundView: UIVisualEffectView!
+  @IBOutlet private var descriptionSubtitles: [UILabel]!
 
   //MARK: locals
   private var pageWidth: CGFloat {
@@ -22,13 +21,10 @@ class AllPassSubscriptionViewController: BaseSubscriptionViewController {
   private let animationDelay: TimeInterval = 2
   private let animationDuration: TimeInterval = 0.75
   private let animationBackDuration: TimeInterval = 0.3
+  private let statusBarBackVisibleThreshold: CGFloat = 60
 
   override var subscriptionManager: ISubscriptionManager? {
     get { return InAppPurchase.allPassSubscriptionManager }
-  }
-
-  override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-    get { return [.portrait] }
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -45,14 +41,12 @@ class AllPassSubscriptionViewController: BaseSubscriptionViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.presentationController?.delegate = self;
 
     backgroundImageView.images = [
       UIImage.init(named: "AllPassSubscriptionBg1"),
       UIImage.init(named: "AllPassSubscriptionBg2"),
       UIImage.init(named: "AllPassSubscriptionBg3")
     ]
-    pageIndicator.pageCount = maxPages
     startAnimating();
 
     annualSubscriptionButton.config(title: L("annual_subscription_title"),
@@ -62,18 +56,22 @@ class AllPassSubscriptionViewController: BaseSubscriptionViewController {
                                      price: "...",
                                      enabled: false)
 
-    annualDiscountLabel.layer.shadowRadius = 4
-    annualDiscountLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
-    annualDiscountLabel.layer.shadowColor = UIColor.blackHintText().cgColor
-    annualDiscountLabel.layer.shadowOpacity = 0.62
-    annualDiscountLabel.layer.cornerRadius = 6
     annualDiscountLabel.isHidden = true
-    
+
+    let fontSize: CGFloat = UIScreen.main.bounds.width > 320 ? 17.0 : 14.0
+    let fontFamily = UIFont.systemFont(ofSize: fontSize).familyName
+    let css = "<style type=\"text/css\">b{font-weight: 900;}body{font-weight: 300; font-size: \(fontSize); font-family: '-apple-system','\(fontFamily)';}</style>"
+    zip(descriptionSubtitles, ["all_pass_subscription_message_subtitle",
+                               "all_pass_subscription_message_subtitle_2",
+                               "all_pass_subscription_message_subtitle_3"]).forEach { (title, loc) in
+                                title.attributedText = NSAttributedString.string(withHtml: css + L(loc), defaultAttributes: [:])
+    }
+
     self.configure(buttons: [
       .year: annualSubscriptionButton,
       .month: monthlySubscriptionButton],
                    discountLabels:[
-      .year: annualDiscountLabel])
+                    .year: annualDiscountLabel])
 
     self.preferredContentSize = CGSize(width: 414, height: contentView.frame.height)
 
@@ -140,9 +138,14 @@ extension AllPassSubscriptionViewController {
 
 extension AllPassSubscriptionViewController: UIScrollViewDelegate {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if scrollView == descriptionPageScrollView {
       let pageProgress = scrollView.contentOffset.x/self.pageWidth
-      pageIndicator.currentPage = pageProgress
       backgroundImageView.currentPage = pageProgress
+    } else {
+      let statusBarAlpha = min(scrollView.contentOffset.y/self.statusBarBackVisibleThreshold, 1)
+      statusBarBackgroundView.alpha = statusBarAlpha
+    }
+
   }
 
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

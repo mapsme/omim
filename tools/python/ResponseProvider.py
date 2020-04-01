@@ -147,9 +147,11 @@ class ResponseProvider:
                 "/partners/taxi_info": self.partners_yandex_taxi_info,
                 "/partners/get-offers-in-bbox/": self.partners_rent_nearby,
                 "/partners/CalculateByCoords": self.partners_calculate_by_coords,
-                "/gallery/v1/search/": self.promo_gallery_city,
-                "/single/empty/gallery/v1/search/": self.promo_gallery_city_single_empty,
-                "/single/gallery/v1/search/": self.promo_gallery_city_single,
+                "/gallery/v2/search/": self.promo_gallery_city,
+                "/single/empty/gallery/v2/search/": self.promo_gallery_city_single_empty,
+                "/single/gallery/v2/search/": self.promo_gallery_city_single,
+                "/partners/oauth/token": self.freenow_auth_token,
+                "/partners/service-types": self.freenow_service_types,
             }[url]()
         except:
             return self.test_404()
@@ -250,6 +252,12 @@ class ResponseProvider:
 
     def promo_gallery_city_single(self):
         return Payload(jsons.PROMO_GALLERY_CITY_SINGLE)
+
+    def freenow_auth_token(self):
+        return Payload(jsons.FREENOW_AUTH_TOKEN)
+
+    def freenow_service_types(self):
+        return Payload(jsons.FREENOW_SERVICE_TYPES)
 
     def kill(self):
         logging.debug("Kill called in ResponseProvider")

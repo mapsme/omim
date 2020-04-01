@@ -26,6 +26,9 @@ IncludeBlocks: Regroup
 IncludeCategories:
 # Tests --------------------------------------------------------------------------------------------
   - Regex:           '^"track_analyzing/track_analyzing_tests/'
+    Priority:        4730
+
+  - Regex:           '^"poly_borders/poly_borders_tests/'
     Priority:        4740
 
   - Regex:           '^"generator/generator_integration_tests/'
@@ -43,6 +46,9 @@ IncludeCategories:
     Priority:        4762
   - Regex:           '^"map/map_integration_tests/'
     Priority:        4763
+
+  - Regex:           '^"ge0/ge0_tests/'
+    Priority:        4765
 
   - Regex:           '^"openlr/openlr_tests/'
     Priority:        4770
@@ -188,6 +194,9 @@ IncludeCategories:
 
 # Libraries ----------------------------------------------------------------------------------------
 
+  - Regex:           '^"poly_borders/'
+    Priority:        46700
+
   - Regex:           '^"track_analyzing/'
     Priority:        46800
 
@@ -202,6 +211,9 @@ IncludeCategories:
 
   - Regex:           '^"map/'
     Priority:        47000
+
+  - Regex:           '^"ge0/'
+    Priority:        47050
 
   - Regex:           '^"openlr/'
     Priority:        47100

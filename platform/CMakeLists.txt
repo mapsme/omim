@@ -15,6 +15,7 @@ set(
   country_defines.hpp
   country_file.cpp
   country_file.hpp
+  downloader_defines.hpp
   file_logging.cpp
   file_logging.hpp
   get_text_by_id.cpp
@@ -108,6 +109,7 @@ else() # neither iPhone nor Android
       http_user_agent_dummy.cpp
       http_thread_qt.cpp
       http_thread_qt.hpp
+      http_uploader_background_dummy.cpp
       http_uploader_dummy.cpp
       marketing_service_dummy.cpp
       platform_win.cpp
@@ -123,6 +125,7 @@ else() # neither iPhone nor Android
       http_thread_apple.h
       http_thread_apple.mm
       http_uploader_apple.mm
+      http_uploader_background_dummy.cpp
       http_user_agent_dummy.cpp
       marketing_service_dummy.cpp
       platform_mac.mm
@@ -140,6 +143,7 @@ else() # neither iPhone nor Android
       http_thread_qt.cpp
       http_thread_qt.hpp
       http_uploader_dummy.cpp
+      http_uploader_background_dummy.cpp
       http_user_agent_dummy.cpp
       marketing_service_dummy.cpp
       platform_linux.cpp

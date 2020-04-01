@@ -1,6 +1,7 @@
 #include "routing/routing_quality/routing_quality_tool/benchmark_stat.hpp"
 
 #include "routing/routing_quality/routing_quality_tool/benchmark_results.hpp"
+#include "routing/routing_quality/routing_quality_tool/error_type_counter.hpp"
 #include "routing/routing_quality/routing_quality_tool/utils.hpp"
 
 #include "routing/routing_callbacks.hpp"
@@ -10,6 +11,7 @@
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
 #include "base/logging.hpp"
+#include "base/string_utils.hpp"
 
 #include <algorithm>
 
@@ -17,6 +19,7 @@ namespace
 {
 using namespace routing;
 using namespace routes_builder;
+using namespace routing_quality::routing_quality_tool;
 
 bool IsErrorCode(RouterResultCode code)
 {
@@ -40,6 +43,70 @@ void LogIfNotConsistent(RoutesBuilder::Result const & oldRes, RoutesBuilder::Res
                 newRoute.m_eta, "new distance:", newRoute.m_distance, start, finish));
   }
 }
+
+/// \brief Helps to compare route time building for routes group by old time building.
+void FillInfoAboutBuildTimeGroupByPreviousResults(std::vector<std::string> & labels,
+                                                  std::vector<std::vector<double>> & bars,
+                                                  std::vector<TimeInfo> && times)
+{
+  bars.clear();
+  labels.clear();
+
+  std::sort(times.begin(), times.end(), [](auto const & a, auto const & b) {
+    return a.m_oldTime < b.m_oldTime;
+  });
+
+  size_t constexpr kSteps = 10;
+  size_t const step = times.size() / kSteps;
+
+  size_t startFrom = 0;
+  size_t curCount = 0;
+  bars.resize(2);
+  labels.clear();
+  double curSumOld = 0;
+  double curSumNew = 0;
+  for (size_t i = 0; i < times.size(); ++i)
+  {
+    if (curCount < step && i + 1 != times.size())
+    {
+      ++curCount;
+      curSumOld += times[i].m_oldTime;
+      curSumNew += times[i].m_newTime;
+      continue;
+    }
+
+    double const curLeft = times[startFrom].m_oldTime;
+    startFrom = i + 1;
+    double const curRight = times[i].m_oldTime;
+    labels.emplace_back("[" + strings::to_string_dac(curLeft, 2 /* dac */) + "s, " +
+                        strings::to_string_dac(curRight, 2 /* dac */) + "s]\\n" +
+                        "Routes count:\\n" + std::to_string(curCount));
+    curSumOld /= curCount;
+    curSumNew /= curCount;
+    double const k = curSumNew / curSumOld;
+    bars[0].emplace_back(100.0);
+    bars[1].emplace_back(100.0 * k);
+    curCount = 0;
+  }
+}
+
+std::vector<double> GetBoostPercents(BenchmarkResults const & oldResults,
+                                     BenchmarkResults const & newResults)
+{
+  std::vector<double> boostPercents;
+  for (size_t i = 0; i < oldResults.GetBuildTimes().size(); ++i)
+  {
+    auto const oldTime = oldResults.GetBuildTimes()[i];
+    auto const newTime = newResults.GetBuildTimes()[i];
+    if (base::AlmostEqualAbs(oldTime, newTime, 1e-2))
+      continue;
+
+    auto const diffPercent = (oldTime - newTime) / oldTime * 100.0;
+    boostPercents.emplace_back(diffPercent);
+  }
+
+  return boostPercents;
+}
 }  // namespace
 
 namespace routing_quality::routing_quality_tool
@@ -60,16 +127,22 @@ static std::string const kPythonBarBoostPercentDistr = "show_boost_distr.py";
 static std::string const kPythonEtaDiff = "eta_diff.py";
 // The same as above but in percents.
 static std::string const kPythonEtaDiffPercent = "eta_diff_percent.py";
+// Groups routes by previous time building and draws two types of bars. The first one (old mapsme)
+// has the same height in all groups and the second ones' height is proportional less or more
+// according to difference in average time building between old and new version. The example you can
+// see here: https://github.com/mapsme/omim/pull/12401
+static std::string const kPythonSmartDistr = "show_smart_boost_distr.py";
 
 void RunBenchmarkStat(
     std::vector<std::pair<RoutesBuilder::Result, std::string>> const & mapsmeResults,
     std::string const & dirForResults)
 {
   BenchmarkResults benchmarkResults;
+  ErrorTypeCounter errorTypeCounter;
   for (auto const & resultItem : mapsmeResults)
   {
     auto const & result = resultItem.first;
-    benchmarkResults.PushError(result.m_code);
+    errorTypeCounter.PushError(result.m_code);
     if (result.m_code != RouterResultCode::NoError)
       continue;
 
@@ -102,11 +175,7 @@ void RunBenchmarkStat(
 
   std::vector<std::string> labels;
   std::vector<double> heights;
-  for (auto const & [errorName, errorCount] : benchmarkResults.GetErrorsDistribution())
-  {
-    labels.emplace_back(errorName);
-    heights.emplace_back(errorCount);
-  }
+  FillLabelsAndErrorTypeDistribution(labels, heights, errorTypeCounter);
 
   CreatePythonBarByMap(pythonScriptPath, labels, {heights}, {"mapsme"} /* legends */,
                        "Type of errors" /* xlabel */, "Number of errors" /* ylabel */);
@@ -119,8 +188,12 @@ void RunBenchmarkComparison(
 {
   BenchmarkResults benchmarkResults;
   BenchmarkResults benchmarkOldResults;
+  ErrorTypeCounter errorTypeCounter;
+  ErrorTypeCounter errorTypeCounterOld;
   std::vector<double> etaDiffsPercent;
   std::vector<double> etaDiffs;
+
+  std::vector<TimeInfo> times;
 
   for (size_t i = 0; i < mapsmeResults.size(); ++i)
   {
@@ -135,8 +208,8 @@ void RunBenchmarkComparison(
 
     auto const & mapsmeOldResult = mapsmeOldResultPair.first;
 
-    benchmarkResults.PushError(mapsmeResult.m_code);
-    benchmarkOldResults.PushError(mapsmeOldResult.m_code);
+    errorTypeCounter.PushError(mapsmeResult.m_code);
+    errorTypeCounterOld.PushError(mapsmeOldResult.m_code);
 
     if (IsErrorCode(mapsmeResult.m_code) && !IsErrorCode(mapsmeOldResult.m_code))
     {
@@ -159,15 +232,33 @@ void RunBenchmarkComparison(
     etaDiffs.emplace_back(etaDiff);
     etaDiffsPercent.emplace_back(etaDiffPercent);
 
+    auto const oldTime = mapsmeOldResult.m_buildTimeSeconds;
+    auto const newTime = mapsmeResult.m_buildTimeSeconds;
+    auto const diffPercent = (oldTime - newTime) / oldTime * 100.0;
+    // Warn about routes building time degradation.
+    double constexpr kSlowdownPercent = -10.0;
+    if (diffPercent < kSlowdownPercent)
+    {
+      auto const start = mercator::ToLatLon(mapsmeResult.m_params.m_checkpoints.GetStart());
+      auto const finish = mercator::ToLatLon(mapsmeResult.m_params.m_checkpoints.GetFinish());
+      LOG(LINFO, ("oldTime:", oldTime, "newTime:", newTime, "diffPercent:", diffPercent, start, finish));
+    }
+
     benchmarkResults.PushBuildTime(mapsmeResult.m_buildTimeSeconds);
     benchmarkOldResults.PushBuildTime(mapsmeOldResult.m_buildTimeSeconds);
+
+    times.emplace_back(mapsmeOldResult.m_buildTimeSeconds, mapsmeResult.m_buildTimeSeconds);
   }
 
   LOG(LINFO, ("Comparing", benchmarkResults.GetBuildTimes().size(), "routes."));
 
+  auto const oldAverage = benchmarkOldResults.GetAverageBuildTime();
+  auto const newAverage = benchmarkResults.GetAverageBuildTime();
+  auto const averageTimeDiff = (oldAverage - newAverage) / oldAverage * 100.0;
   LOG(LINFO, ("Average route time building. "
-              "Old version:", benchmarkOldResults.GetAverageBuildTime(),
-              "New version:", benchmarkResults.GetAverageBuildTime()));
+              "Old version:", oldAverage,
+              "New version:", newAverage,
+              "(", -averageTimeDiff, "% )"));
 
   std::vector<std::vector<m2::PointD>> graphics;
   for (auto const & results : {benchmarkOldResults, benchmarkResults})
@@ -190,33 +281,15 @@ void RunBenchmarkComparison(
                               {"old mapsme", "new mapsme"} /* legends */);
 
   std::vector<std::string> labels;
-  std::vector<std::vector<double>> errorsCount(2);
-  for (auto const & item : benchmarkOldResults.GetErrorsDistribution())
-  {
-    labels.emplace_back(item.first);
-    errorsCount[0].emplace_back(item.second);
-  }
-
-  for (auto const & item : benchmarkResults.GetErrorsDistribution())
-    errorsCount[1].emplace_back(item.second);
+  std::vector<std::vector<double>> errorsCount;
+  FillLabelsAndErrorTypeDistribution(labels, errorsCount, errorTypeCounter, errorTypeCounterOld);
 
   pythonScriptPath = base::JoinPath(dirForResults, kPythonBarError);
   CreatePythonBarByMap(pythonScriptPath, labels, errorsCount,
                        {"old mapsme", "new mapsme"} /* legends */, "Type of errors" /* xlabel */,
                        "Number of errors" /* ylabel */);
 
-  std::vector<double> boostPercents;
-  for (size_t i = 0; i < benchmarkOldResults.GetBuildTimes().size(); ++i)
-  {
-    auto const oldTime = benchmarkOldResults.GetBuildTimes()[i];
-    auto const newTime = benchmarkResults.GetBuildTimes()[i];
-    if (base::AlmostEqualAbs(oldTime, newTime, 1e-2))
-      continue;
-
-    auto const diffPercent = (oldTime - newTime) / oldTime * 100.0;
-    boostPercents.emplace_back(diffPercent);
-  }
-
+  auto const boostPercents = GetBoostPercents(benchmarkOldResults, benchmarkResults);
   pythonScriptPath = base::JoinPath(dirForResults, kPythonBarBoostPercentDistr);
   CreatePythonScriptForDistribution(pythonScriptPath, "Boost percent" /* title */, boostPercents);
 
@@ -227,5 +300,15 @@ void RunBenchmarkComparison(
   pythonScriptPath = base::JoinPath(dirForResults, kPythonEtaDiffPercent);
   CreatePythonScriptForDistribution(pythonScriptPath, "ETA diff percent distribution" /* title */,
                                     etaDiffsPercent);
+
+  std::vector<std::vector<double>> bars;
+  FillInfoAboutBuildTimeGroupByPreviousResults(labels, bars, std::move(times));
+  pythonScriptPath = base::JoinPath(dirForResults, kPythonSmartDistr);
+  CreatePythonBarByMap(
+      pythonScriptPath, labels, bars, {"old mapsme", "new mapsme"} /* legends */,
+      "Intervals of groups (build time in old mapsme)" /* xlabel */,
+      "Boost\\nRight column is so lower/higher than the left\\n how much the average build time "
+      "has decreased in each group)" /* ylabel */,
+      false /* drawPercents */);
 }
 }  // namespace routing_quality::routing_quality_tool

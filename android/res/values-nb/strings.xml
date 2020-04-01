@@ -4,8 +4,6 @@
 <!-- Language: nb -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">Om</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Tilbake</string>
 	<!-- Button text (should be short) -->
@@ -70,8 +68,6 @@
 	<string name="touch_to_download">Trykk for å laste ned</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Ja</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">Vi anbefaler å bruke WiFi når du skal laste ned store kart</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Hvilket målesystem foretrekker du?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -253,8 +249,6 @@
 	<string name="my_position_share_sms">Hei, se posisjonen min på MAPS.ME! %1$s eller %2$s Har du ikke offline-kart? Last dem ned her: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Hei, se merket mitt på MAPS.ME-kartet</string>
-	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">Hei,\n\nI merket av: %1$s på MAPS.ME, offline verdenskart. Klikk på denne koblingen %2$s eller denne %3$s for å se stedet på kartet.\n\nTakk.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Hei, se posisjonen min på MAPS.ME-kartet!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -357,12 +351,6 @@
 	<string name="route">Rute</string>
 	<!-- category title -->
 	<string name="routes">Ruter</string>
-	<!-- Show on first launch. -->
-	<string name="maps_licence_info">Denne applikasjonen bruker geografiske data (inkludert kart, butikkoppføringer, interessepunkter, landegrenser og regiongrenser osv.) som er hentet fra OpenStreetMap-prosjektet. Vi garanterer ikke at data fra OpenStreetMap alltid er konsekvente, nøyaktige, fullstendige eller pålitelige.</string>
-	<!-- Show on first launch. -->
-	<string name="agree">Jeg samtykker</string>
-	<!-- Show on first launch -->
-	<string name="disagree">Jeg samtykker ikke</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Last ned kart over stedet der du befinner deg</string>
 	<!-- Dialog for transferring maps from lite to pro. -->
@@ -557,6 +545,22 @@
 	<string name="brown">Brun</string>
 	<!-- pink color -->
 	<string name="pink">Rosa</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">Mørkepurpur</string>
+	<!-- light blue color -->
+	<string name="light_blue">Lyseblå</string>
+	<!-- cyan color -->
+	<string name="cyan">Blågrønn</string>
+	<!-- teal color -->
+	<string name="teal">Smaragdgrønn</string>
+	<!-- lime color -->
+	<string name="lime">Limegrønn</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">Mørkeoransje</string>
+	<!-- gray color -->
+	<string name="gray">Grå</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">Gråblå</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Ja</string>
 
@@ -869,6 +873,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Beskrivelse</string>
 	<string name="placepage_more_button">Mer</string>
+	<string name="placepage_more_reviews_button">Flere anmeldelser</string>
 	<string name="book_button">Bestill</string>
 	<string name="placepage_call_button">Ring</string>
 	<string name="placepage_edit_bookmark_button">Rediger bokmerke</string>
@@ -1224,7 +1229,6 @@
 	<string name="downloader_percent">%1$s (%2$s av %3$s)</string>
 	<string name="downloader_process">Laster ned %s ...</string>
 	<string name="downloader_applying">Bruker %s ...</string>
-	<string name="transit_not_found">Transittnavigering i dette området er foreløpig ikke tilgjengelig</string>
 	<string name="whats_new_title_hotel_filter">Nye filter for hotell er tilgjengelig!</string>
 	<string name="whats_new_message_hotel_filter">Bestill hotell på datoene dine! Bruk filtre for inn- og utsjekking</string>
 	<string name="whats_new_title_ugc_travel">Del dine opplevelser med andre reisende!</string>
@@ -1275,6 +1279,8 @@
 	<string name="sign_agree_pp_gdpr">Jeg godtar &lt;a href="%s">personvernregler&lt;/a></string>
 	<string name="sign_agree_tof_gdpr">Jeg godtar &lt;a href="%s">bruksbetingelsene&lt;/a></string>
 	<string name="sign_agree_news_gdpr">Jeg godtar å motta de siste nyhetene om MAPS.ME-produkter</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">Søke etter guider</string>
 	<string name="sharing_options">Delemuligheter</string>
 	<string name="export_file">Eksporter fil</string>
 	<string name="list_settings">Liste Innstillinger</string>
@@ -1598,12 +1604,18 @@
 	<string name="new_onboarding_step5.3_button">Laste ned gratis</string>
 	<string name="new_onboarding_additional_steps_later_button">Ikke nå</string>
 	<string name="all_pass_subscription_header">KATALOGABONNEMENT</string>
-	<string name="all_pass_subscription_message_title">20000+ guider og stier</string>
-	<string name="all_pass_subscription_message_subtitle">Ubegrenset offlineruter nedlasting for byturer og friluftsliv</string>
-	<string name="all_pass_subscription_message_title_2">700+ byer og 100+ land</string>
-	<string name="all_pass_subscription_message_subtitle_2">For reiser i alle årstider</string>
-	<string name="all_pass_subscription_message_title_3">Variert innhold</string>
-	<string name="all_pass_subscription_message_subtitle_3">Bokmerker, bilder, fotturer, beskrivelser og anbefalinger</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">30000+\nguider\nog stier</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle"><b>Ubegrenset nedlasting</b> av ruter for by og friluftsliv <b>uten nett</b></string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">Interaktiv\nhøydeprofil</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">Alle stier lastes ned <b>med høyder og den viktigste informasjonen om ruten</b></string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">Utvalgte\nsteder, bilder\nog anbefalinger</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3"><b>Lær alt om ruten</b> du har valgt</string>
 	<string name="sightseeing_subscription_header_subscription">Guiderabonnement</string>
 	<string name="sightseeing_subscription_message">700+ byer og 100+ land</string>
 	<string name="sightseeing_subscription_message_2">Tilgjengelig offline</string>
@@ -1622,6 +1634,41 @@
 	<string name="whatsnew_outdoor_guides_message">Outdooractive ruter for vinter- og sommerferier venter i katalogen!</string>
 	<string name="whatsnew_guides_galleries_title">Planlegg din neste reise med MAPS.ME</string>
 	<string name="whatsnew_guides_galleries_message">Nå kan du finne anbefalte guider i stedssidene med populære byer og severdigheter</string>
+	<string name="new_onboarding_step3_header">Reis</string>
+	<string name="all_pass_screen_best_value">Rimelig pris</string>
+	<string name="buy_btn_for_subscription_3">Hele katalogen for %s/år</string>
+	<string name="transit_not_found">T-bane navigasjon er ikke tilgjengelig i denne regionen ennå</string>
+	<string name="dialog_pedestrian_route_is_long_header">T-bane rute ikke funnet</string>
+	<string name="dialog_pedestrian_route_is_long_message">Velg utgangspunkt eller destinasjon som befinner seg nærmere en T-bane stasjon</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">Feil ved ruteplanlegging</string>
+	<string name="whatsnew_isolines_title">Nyhet i friluftsliv – høydekurver uten nett!</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">Orienter deg i fjellområde – slå på lag ved å trykke på knappen i hjørnet øverst til venstre på skjermen</string>
+	<string name="button_layer_isolines">Høyder</string>
+	<string name="tips_map_layers_title_countour">Høydekurver uten nett med MAPS.ME!</string>
+	<string name="tips_map_layers_message_countour">Høydekurver hjelper deg å planlegge turen din og ikke gå seg vill</string>
+	<string name="isolines_activation_error_dialog">For å bruke høydekurver oppdater eller last opp kartet til nødvendig område</string>
+	<string name="isolines_location_error_dialog">Høydekurver er ikke tilgjengelige i dette området ennå</string>
+	<string name="elevation_profile_diff_level">Vanskelighetsgrad</string>
+	<string name="elevation_profile_diff_level_easy">Lett</string>
+	<string name="elevation_profile_diff_level_moderate">Middels</string>
+	<string name="elevation_profile_diff_level_hard">Vanskelig</string>
+	<string name="elevation_profile_ascent">Stigning</string>
+	<string name="elevation_profile_descent">Nedstigning</string>
+	<string name="elevation_profile_minaltitude">Min. høyde</string>
+	<string name="elevation_profile_maxaltitude">Maks. høyde</string>
+	<string name="elevation_profile_m">m</string>
+	<string name="elevation_profile_difficulty">Vanskelighet</string>
+	<string name="elevation_profile_distance">Avstand:</string>
+	<string name="elevation_profile_km">km</string>
+	<string name="elevation_profile_time">I rute</string>
+	<string name="elevation_profile_hours">t.</string>
+	<string name="elevation_profile_minutes">min</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">Skjul og fortsett med appen</string>
+	<string name="view_on_map_downloaded_error">Denne guiden har blitt fjernet fra enheten</string>
+	<string name="subscription">Abonnement</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Kabelbanestasjon</string>
@@ -1675,15 +1722,15 @@
 	<string name="type.amenity.parking">Parkering</string>
 	<string name="type.amenity.parking.fee">Parkering</string>
 	<string name="type.amenity.parking.multi.storey">Parkering</string>
-	<string name="type.amenity.parking.multi.storey.fee">Parkering</string>
 	<string name="type.amenity.parking.no.access">Parkering</string>
 	<string name="type.amenity.parking.park_and_ride">Parkering</string>
 	<string name="type.amenity.parking.permissive">Parkering</string>
-	<string name="type.amenity.parking.permissive.fee">Parkering</string>
 	<string name="type.amenity.parking.private">Parkering</string>
 	<string name="type.amenity.parking.underground">Parkering</string>
-	<string name="type.amenity.parking.underground.fee">Parkering</string>
 	<string name="type.amenity.parking_space">Parkeringsplass</string>
+	<string name="type.amenity.parking_space.permissive">Parkeringsplass</string>
+	<string name="type.amenity.parking_space.private">Parkeringsplass</string>
+	<string name="type.amenity.parking_space.underground">Parkeringsplass</string>
 	<string name="type.amenity.payment_terminal">Betalingsterminal</string>
 	<string name="type.amenity.pharmacy">Apotek</string>
 	<string name="type.amenity.place_of_worship">Gudshus</string>
@@ -1696,6 +1743,7 @@
 	<string name="type.amenity.place_of_worship.taoist">Tempel</string>
 	<string name="type.amenity.police">Politi</string>
 	<string name="type.amenity.post_box">Postboks</string>
+	<string name="type.amenity.post_office">Postkontor</string>
 	<string name="type.amenity.public_bookcase">Bokhylle</string>
 	<string name="type.amenity.recycling">Resirkuleringssenter</string>
 	<string name="type.amenity.school">Skole</string>
@@ -1893,9 +1941,6 @@
 	<string name="type.highway.service.area">Gate</string>
 	<string name="type.highway.service.bridge">Gate</string>
 	<string name="type.highway.service.driveway">Gate</string>
-	<string name="type.highway.service.driveway.area">Gate</string>
-	<string name="type.highway.service.driveway.bridge">Gate</string>
-	<string name="type.highway.service.driveway.tunnel">Gate</string>
 	<string name="type.highway.service.parking_aisle">Gate</string>
 	<string name="type.highway.service.tunnel">Gate</string>
 	<string name="type.highway.speed_camera">Fotoboks</string>
@@ -1914,14 +1959,8 @@
 	<string name="type.highway.track.grade1">Gate</string>
 	<string name="type.highway.track.grade2">Gate</string>
 	<string name="type.highway.track.grade3">Gate</string>
-	<string name="type.highway.track.grade3.no.access">Gate</string>
-	<string name="type.highway.track.grade3.permissive">Gate</string>
 	<string name="type.highway.track.grade4">Gate</string>
-	<string name="type.highway.track.grade4.no.access">Gate</string>
-	<string name="type.highway.track.grade4.permissive">Gate</string>
 	<string name="type.highway.track.grade5">Gate</string>
-	<string name="type.highway.track.grade5.no.access">Gate</string>
-	<string name="type.highway.track.grade5.permissive">Gate</string>
 	<string name="type.highway.track.no.access">Gate</string>
 	<string name="type.highway.track.permissive">Gate</string>
 	<string name="type.highway.track.tunnel">Gate</string>
@@ -1971,9 +2010,7 @@
 	<string name="type.leisure.park.permissive">Park</string>
 	<string name="type.leisure.park.private">Park</string>
 	<string name="type.leisure.pitch">Sportssenter</string>
-	<string name="type.leisure.pitch.tennis">Sportssenter</string>
 	<string name="type.leisure.playground">Lekeplass</string>
-	<string name="type.leisure.playground.tennis">Lekeplass</string>
 	<string name="type.leisure.sauna">Badstue</string>
 	<string name="type.leisure.sports_centre">Sportssenter</string>
 	<string name="type.leisure.sports_centre.climbing">Klatresenter</string>
@@ -1994,7 +2031,7 @@
 	<string name="type.natural.bay">Bukt</string>
 	<string name="type.natural.beach">Strand</string>
 	<string name="type.natural.cape">Kapp</string>
-	<string name="type.natural.cave_entrance">Grotteåpning</string>
+	<string name="type.natural.cave_entrance">Grotte</string>
 	<string name="type.natural.geyser">Gaysir</string>
 	<string name="type.natural.glacier">Isbre</string>
 	<string name="type.natural.grassland">Slette</string>
@@ -2007,10 +2044,6 @@
 	<string name="type.natural.volcano">Vulkan</string>
 	<string name="type.natural.water">Vann</string>
 	<string name="type.natural.wetland">Våtmarksområde</string>
-	<string name="type.natural.wood">Skog</string>
-	<string name="type.natural.wood.coniferous">Skog</string>
-	<string name="type.natural.wood.deciduous">Skog</string>
-	<string name="type.natural.wood.mixed">Skog</string>
 	<string name="type.office">Kontor</string>
 	<string name="type.office.company">Firmakontor</string>
 	<string name="type.office.estate_agent">Eiendomsmegler</string>

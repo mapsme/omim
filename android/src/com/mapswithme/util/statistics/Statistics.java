@@ -5,13 +5,14 @@ import android.content.Context;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.android.billingclient.api.BillingClient;
 import com.facebook.ads.AdError;
 import com.facebook.appevents.AppEventsLogger;
@@ -70,8 +71,8 @@ import static com.mapswithme.util.statistics.Statistics.EventName.BM_SYNC_PROPOS
 import static com.mapswithme.util.statistics.Statistics.EventName.BM_SYNC_SUCCESS;
 import static com.mapswithme.util.statistics.Statistics.EventName.DOWNLOADER_DIALOG_ERROR;
 import static com.mapswithme.util.statistics.Statistics.EventName.GUIDES_BOOKMARK_SELECT;
-import static com.mapswithme.util.statistics.Statistics.EventName.GUIDES_SHOWN;
 import static com.mapswithme.util.statistics.Statistics.EventName.GUIDES_OPEN;
+import static com.mapswithme.util.statistics.Statistics.EventName.GUIDES_SHOWN;
 import static com.mapswithme.util.statistics.Statistics.EventName.GUIDES_TRACK_SELECT;
 import static com.mapswithme.util.statistics.Statistics.EventName.INAPP_PURCHASE_PREVIEW_SELECT;
 import static com.mapswithme.util.statistics.Statistics.EventName.INAPP_PURCHASE_PREVIEW_SHOW;
@@ -111,6 +112,7 @@ import static com.mapswithme.util.statistics.Statistics.EventParam.ERROR;
 import static com.mapswithme.util.statistics.Statistics.EventParam.ERROR_CODE;
 import static com.mapswithme.util.statistics.Statistics.EventParam.ERROR_MESSAGE;
 import static com.mapswithme.util.statistics.Statistics.EventParam.FEATURE_ID;
+import static com.mapswithme.util.statistics.Statistics.EventParam.FIRST_LAUNCH;
 import static com.mapswithme.util.statistics.Statistics.EventParam.FROM;
 import static com.mapswithme.util.statistics.Statistics.EventParam.HAS_AUTH;
 import static com.mapswithme.util.statistics.Statistics.EventParam.HOTEL;
@@ -145,12 +147,15 @@ import static com.mapswithme.util.statistics.Statistics.ParamValue.BICYCLE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.BOOKING_COM;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.DISK_NO_SPACE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.FACEBOOK;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.FALSE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.GOOGLE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.HOLIDAY;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.MAPSME;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.MAPSME_GUIDES;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.NO_BACKUP;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.OFFSCREEEN;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.OPENTABLE;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.PARTNER;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.PEDESTRIAN;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.PHONE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.RESTORE;
@@ -158,10 +163,9 @@ import static com.mapswithme.util.statistics.Statistics.ParamValue.SEARCH_BOOKIN
 import static com.mapswithme.util.statistics.Statistics.ParamValue.TAXI;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.TRAFFIC;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.TRANSIT;
+import static com.mapswithme.util.statistics.Statistics.ParamValue.TRUE;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.UNKNOWN;
 import static com.mapswithme.util.statistics.Statistics.ParamValue.VEHICLE;
-import static com.mapswithme.util.statistics.Statistics.ParamValue.MAPSME_GUIDES;
-import static com.mapswithme.util.statistics.Statistics.ParamValue.PARTNER;
 
 public enum Statistics
 {
@@ -176,11 +180,13 @@ public enum Statistics
   }
 
   @NonNull
-  public static ParameterBuilder makeDownloaderBannerParamBuilder(@NonNull String provider)
+  public static ParameterBuilder makeDownloaderBannerParamBuilder(@NonNull String provider,
+                                                                  @NonNull String mwmId)
   {
     return new ParameterBuilder()
             .add(EventParam.FROM, ParamValue.MAP)
-            .add(PROVIDER, provider);
+            .add(PROVIDER, provider)
+            .add(MWM_NAME, mwmId);
   }
 
   @NonNull
@@ -369,6 +375,7 @@ public enum Statistics
     public static final String DOWNLOADER_BANNER_CLICK = "Downloader_Banner_click";
     public static final String DOWNLOADER_FAB_CLICK = "Downloader_AddMap_click";
     public static final String DOWNLOADER_SEARCH_CLICK = "Downloader_Search_click";
+    public static final String WHATS_NEW_ACTION = "WhatsNew_action";
     static final String DOWNLOADER_DIALOG_ERROR = "Downloader_OnStartScreen_error";
 
     // bookmarks
@@ -544,6 +551,10 @@ public enum Statistics
     static final String INAPP_PURCHASE_VALIDATION_ERROR  = "InAppPurchase_Validation_error";
     static final String INAPP_PURCHASE_PRODUCT_DELIVERED  = "InAppPurchase_Product_delivered";
 
+    public static final String ONBOARDING_SCREEN_SHOW = "OnboardingScreen_show";
+    public static final String ONBOARDING_SCREEN_ACCEPT = "OnboardingScreen_accept";
+    public static final String ONBOARDING_SCREEN_DECLINE = "OnboardingScreen_decline";
+
     public static final String ONBOARDING_DEEPLINK_SCREEN_SHOW = "OnboardingDeeplinkScreen_show";
     public static final String ONBOARDING_DEEPLINK_SCREEN_ACCEPT = "OnboardingDeeplinkScreen_accept";
     public static final String ONBOARDING_DEEPLINK_SCREEN_DECLINE = "OnboardingDeeplinkScreen_decline";
@@ -562,6 +573,9 @@ public enum Statistics
     public static final String GUIDES_TRACK_SELECT = "Bookmarks_BookmarksList_Track_select";
     public static final String MAP_SPONSORED_BUTTON_CLICK = "Map_SponsoredButton_click";
     public static final String MAP_SPONSORED_BUTTON_SHOW = "Map_SponsoredButton_show";
+
+    public static final String DEEPLINK_CALL = "Deeplink_call";
+    public static final String DEEPLINK_CALL_MISSED = "Deeplink_call_missed";
 
     public static class Settings
     {
@@ -606,6 +620,7 @@ public enum Statistics
     public static final String SCENARIO = "scenario";
     public static final String BUTTON = "button";
     public static final String SCREEN = "screen";
+    public static final String VERSION = "version";
     static final String TARGET = "target";
     static final String CATEGORY = "category";
     public static final String TAB = "tab";
@@ -672,6 +687,7 @@ public enum Statistics
     static final String SERVER_ID = "server_id";
     static final String SERVER_IDS = "server_ids";
     public static final String SOURCE = "source";
+    static final String FIRST_LAUNCH = "first_launch";
 
     private EventParam() {}
   }
@@ -701,9 +717,13 @@ public enum Statistics
     public static final String SPONSORED_BUTTON = "sponsored_button";
     public static final String POPUP = "popup";
     public static final String WEBVIEW = "webview";
+    public static final String ONBOARDING_GUIDES_SUBSCRIPTION = "onboarding_guides_subscription";
     public static final String PLUS = "plus";
     public static final String DOWNLOAD = "download";
-    static final String GUIDES_SUBSCRIPTION = "GuidesSubscription";
+    public static final String OPEN = "open";
+    public static final String CLOSE = "close";
+    public static final String NEXT = "next";
+    static final String GUIDES_SUBSCRIPTION = "OnboardingGuidesSubscription";
     static final String SEARCH_BOOKING_COM = "Search.Booking.Com";
     static final String OPENTABLE = "OpenTable";
     static final String LOCALS_EXPERTS = "Locals.Maps.Me";
@@ -756,6 +776,10 @@ public enum Statistics
     public static final String DELETE_GROUP = "delete_group";
     public static final String OFFSCREEEN = "Offscreen";
     public static final String MAPSME_GUIDES = "MapsMeGuides";
+    public static final String TINKOFF_INSURANCE = "Tinkoff_Insurance";
+    public static final String TINKOFF_ALL_AIRLINES= "Tinkoff_AllAirlines";
+    public static final String SKYENG = "Skyeng";
+    public static final String MTS = "MTS";
     public static final String BY_DEFAULT = "Default";
     public static final String BY_DATE = "Date";
     public static final String BY_DISTANCE = "Distance";
@@ -763,6 +787,8 @@ public enum Statistics
     public static final String BOOKMARKS_LIST = "BookmarksList";
     static final String PARTNER = "Partner";
     public static final String WIKIPEDIA = "wikipedia";
+    static final String TRUE = "True";
+    static final String FALSE = "False";
   }
 
   // Initialized once in constructor and does not change until the process restarts.
@@ -866,7 +892,7 @@ public enum Statistics
   {
     if (mEnabled)
     {
-      AppEventsLogger.activateApp(activity);
+      AppEventsLogger.activateApp(activity.getApplication());
       org.alohalytics.Statistics.onStart(activity);
     }
 
@@ -877,7 +903,6 @@ public enum Statistics
   {
     if (mEnabled)
     {
-      AppEventsLogger.deactivateApp(activity);
       org.alohalytics.Statistics.onStop(activity);
     }
     mMediator.getEventLogger().stopActivity(activity);
@@ -1749,6 +1774,37 @@ public enum Statistics
   public void trackGuideTrackSelect(@NonNull String serverId)
   {
     trackEvent(GUIDES_TRACK_SELECT, params().add(SERVER_ID, serverId), STATISTICS_CHANNEL_REALTIME);
+  }
+
+  public void trackDeeplinkEvent(@NonNull String event, @NonNull ParameterBuilder params,
+                                 boolean isFirstLaunch)
+  {
+    trackEvent(event, params.add(FIRST_LAUNCH, isFirstLaunch ? TRUE : FALSE));
+  }
+
+  @NonNull
+  public static ParameterBuilder makeParametersFromType(@NonNull String type)
+  {
+    return params().add(TYPE, type);
+  }
+
+  @NonNull
+  public static ParameterBuilder makeParametersFromTypeAndUrl(@NonNull String type, @NonNull String url)
+  {
+    Statistics.ParameterBuilder result = params();
+    Uri uri = Uri.parse(url);
+    for (String name : uri.getQueryParameterNames())
+    {
+      if (name.startsWith("utm_") || name.equals("affiliate_id"))
+      {
+        String value = uri.getQueryParameter(name);
+        result.add(name, value == null ? "" : value);
+      }
+    }
+
+    result.add(TYPE, type);
+
+    return result;
   }
 
   public static ParameterBuilder params()

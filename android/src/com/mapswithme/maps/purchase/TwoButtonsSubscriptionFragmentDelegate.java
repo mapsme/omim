@@ -8,11 +8,13 @@ import com.mapswithme.maps.R;
 import com.mapswithme.maps.widget.SubscriptionButton;
 import com.mapswithme.util.Utils;
 
+import java.util.List;
+
 class TwoButtonsSubscriptionFragmentDelegate extends SubscriptionFragmentDelegate
 {
   @SuppressWarnings("NullableProblems")
   @NonNull
-  private SubscriptionButton mAnnualButton;
+  private SubscriptionButton mYearlyButton;
   @SuppressWarnings("NullableProblems")
   @NonNull
   private SubscriptionButton mMonthlyButton;
@@ -29,16 +31,24 @@ class TwoButtonsSubscriptionFragmentDelegate extends SubscriptionFragmentDelegat
   public void onCreateView(@NonNull View root)
   {
     super.onCreateView(root);
-    mAnnualButton = root.findViewById(R.id.annual_button);
-    mAnnualButton.setOnClickListener(v -> {
-      mSelectedPeriod = PurchaseUtils.Period.P1Y;
-      getFragment().pingBookmarkCatalog();
+    mYearlyButton = root.findViewById(R.id.annual_button);
+    mYearlyButton.setOnClickListener(v -> {
+      onSubscriptionButtonClicked(PurchaseUtils.Period.P1Y);
     });
     mMonthlyButton = root.findViewById(R.id.monthly_button);
     mMonthlyButton.setOnClickListener(v -> {
-      mSelectedPeriod = PurchaseUtils.Period.P1M;
-      getFragment().pingBookmarkCatalog();
+      onSubscriptionButtonClicked(PurchaseUtils.Period.P1M);
     });
+  }
+
+  private void onSubscriptionButtonClicked(@NonNull PurchaseUtils.Period period)
+  {
+    List<ProductDetails> productDetails = getFragment().getProductDetails();
+    if (productDetails == null || productDetails.isEmpty())
+      return;
+
+    mSelectedPeriod = period;
+    getFragment().pingBookmarkCatalog();
   }
 
   @NonNull
@@ -51,14 +61,14 @@ class TwoButtonsSubscriptionFragmentDelegate extends SubscriptionFragmentDelegat
   @Override
   void onProductDetailsLoading()
   {
-    mAnnualButton.showProgress();
+    mYearlyButton.showProgress();
     mMonthlyButton.showProgress();
   }
 
   @Override
   void onPriceSelection()
   {
-    mAnnualButton.hideProgress();
+    mYearlyButton.hideProgress();
     mMonthlyButton.hideProgress();
     updatePaymentButtons();
   }
@@ -69,17 +79,16 @@ class TwoButtonsSubscriptionFragmentDelegate extends SubscriptionFragmentDelegat
     updateMonthlyButton();
   }
 
-  private void updateMonthlyButton()
+  private void updateYearlyButton()
   {
     ProductDetails details = getFragment().getProductDetailsForPeriod(PurchaseUtils.Period.P1Y);
     String price = Utils.formatCurrencyString(details.getPrice(), details.getCurrencyCode());
-    mAnnualButton.setPrice(price);
-    mAnnualButton.setName(getFragment().getString(R.string.annual_subscription_title));
-    String sale = getFragment().getString(R.string.annual_save_component, getFragment().calculateYearlySaving());
-    mAnnualButton.setSale(sale);
+    mYearlyButton.setPrice(price);
+    mYearlyButton.setName(getFragment().getString(R.string.annual_subscription_title));
+    mYearlyButton.setSale(getFragment().getString(R.string.all_pass_screen_best_value));
   }
 
-  private void updateYearlyButton()
+  private void updateMonthlyButton()
   {
     ProductDetails details = getFragment().getProductDetailsForPeriod(PurchaseUtils.Period.P1M);
     String price = Utils.formatCurrencyString(details.getPrice(), details.getCurrencyCode());
@@ -91,7 +100,7 @@ class TwoButtonsSubscriptionFragmentDelegate extends SubscriptionFragmentDelegat
   void showButtonProgress()
   {
     if (mSelectedPeriod == PurchaseUtils.Period.P1Y)
-      mAnnualButton.showProgress();
+      mYearlyButton.showProgress();
     else
       mMonthlyButton.showProgress();
   }
@@ -100,7 +109,7 @@ class TwoButtonsSubscriptionFragmentDelegate extends SubscriptionFragmentDelegat
   void hideButtonProgress()
   {
     if (mSelectedPeriod == PurchaseUtils.Period.P1Y)
-      mAnnualButton.hideProgress();
+      mYearlyButton.hideProgress();
     else
       mMonthlyButton.hideProgress();
   }

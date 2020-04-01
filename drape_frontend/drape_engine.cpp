@@ -102,6 +102,7 @@ DrapeEngine::DrapeEngine(Params && params)
                                    make_ref(m_requestedTiles),
                                    params.m_allow3dBuildings,
                                    params.m_trafficEnabled,
+                                   params.m_isolinesEnabled,
                                    params.m_simplifiedTrafficColors,
                                    std::move(params.m_isUGCFn),
                                    params.m_onGraphicsContextInitialized);
@@ -511,12 +512,14 @@ void DrapeEngine::StopLocationFollow()
                                   MessagePriority::Normal);
 }
 
-void DrapeEngine::FollowRoute(int preferredZoomLevel, int preferredZoomLevel3d, bool enableAutoZoom)
+void DrapeEngine::FollowRoute(int preferredZoomLevel, int preferredZoomLevel3d, bool enableAutoZoom,
+                              bool isArrowGlued)
 {
-  m_threadCommutator->PostMessage(ThreadsCommutator::RenderThread,
-                                  make_unique_dp<FollowRouteMessage>(preferredZoomLevel,
-                                                                     preferredZoomLevel3d, enableAutoZoom),
-                                  MessagePriority::Normal);
+  m_threadCommutator->PostMessage(
+      ThreadsCommutator::RenderThread,
+      make_unique_dp<FollowRouteMessage>(preferredZoomLevel, preferredZoomLevel3d, enableAutoZoom,
+                                         isArrowGlued),
+      MessagePriority::Normal);
 }
 
 void DrapeEngine::SetModelViewListener(ModelViewChangedHandler && fn)
@@ -800,6 +803,13 @@ void DrapeEngine::UpdateTransitScheme(TransitDisplayInfos && transitDisplayInfos
 {
   m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
                                   make_unique_dp<UpdateTransitSchemeMessage>(std::move(transitDisplayInfos)),
+                                  MessagePriority::Normal);
+}
+
+void DrapeEngine::EnableIsolines(bool enable)
+{
+  m_threadCommutator->PostMessage(ThreadsCommutator::ResourceUploadThread,
+                                  make_unique_dp<EnableIsolinesMessage>(enable),
                                   MessagePriority::Normal);
 }
 

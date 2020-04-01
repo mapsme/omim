@@ -6,8 +6,6 @@
 
 #include "map/features_fetcher.hpp"
 
-#include "storage/routing_helpers.hpp"
-
 #include "routing/index_router.hpp"
 #include "routing/online_absent_fetcher.hpp"
 #include "routing/online_cross_fetcher.hpp"
@@ -15,9 +13,12 @@
 #include "routing/router_delegate.hpp"
 #include "routing/routing_callbacks.hpp"
 
+#include "storage/country_parent_getter.hpp"
+#include "storage/routing_helpers.hpp"
+
 #include "indexer/data_source.hpp"
 
-#include "storage/country_parent_getter.hpp"
+#include "platform/platform_tests_support/helpers.hpp"
 
 #include "platform/local_country_file.hpp"
 #include "platform/local_country_file_utils.hpp"
@@ -37,8 +38,8 @@
 #include <map>
 #include <memory>
 #include <set>
-#include <sys/resource.h>
 #include <tuple>
+#include <utility>
 
 using namespace routing;
 using namespace routing_test;
@@ -52,14 +53,6 @@ namespace
 {
 double constexpr kErrorMeters = 1.0;
 double constexpr kErrorSeconds = 1.0;
-
-void ChangeMaxNumberOfOpenFiles(size_t n)
-{
-  struct rlimit rlp;
-  getrlimit(RLIMIT_NOFILE, &rlp);
-  rlp.rlim_cur = n;
-  setrlimit(RLIMIT_NOFILE, &rlp);
-}
 }  // namespace
 
 namespace integration
@@ -67,7 +60,7 @@ namespace integration
 shared_ptr<FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const & localFiles)
 {
   size_t const maxOpenFileNumber = 4096;
-  ChangeMaxNumberOfOpenFiles(maxOpenFileNumber);
+  platform::tests_support::ChangeMaxNumberOfOpenFiles(maxOpenFileNumber);
   shared_ptr<FeaturesFetcher> featuresFetcher(new FeaturesFetcher);
   featuresFetcher->InitClassificator();
 
@@ -80,7 +73,7 @@ shared_ptr<FeaturesFetcher> CreateFeaturesFetcher(vector<LocalCountryFile> const
 unique_ptr<storage::CountryInfoGetter> CreateCountryInfoGetter()
 {
   Platform const & platform = GetPlatform();
-  return storage::CountryInfoReader::CreateCountryInfoReader(platform);
+  return storage::CountryInfoReader::CreateCountryInfoGetter(platform);
 }
 
 unique_ptr<IndexRouter> CreateVehicleRouter(DataSource & dataSource,
@@ -167,6 +160,20 @@ TRouteResult CalculateRoute(IRouterComponents const & routerComponents,
   RouterResultCode result = routerComponents.GetRouter().CalculateRoute(
       Checkpoints(startPoint, finalPoint), startDirection, false /* adjust */, delegate, *route);
   ASSERT(route, ());
+  routerComponents.GetRouter().SetGuides({});
+  return TRouteResult(route, result);
+}
+
+TRouteResult CalculateRoute(IRouterComponents const & routerComponents,
+                            Checkpoints const & checkpoints, GuidesTracks && guides)
+{
+  RouterDelegate delegate;
+  shared_ptr<Route> route = make_shared<Route>("mapsme", 0 /* route id */);
+  routerComponents.GetRouter().SetGuides(move(guides));
+  RouterResultCode result = routerComponents.GetRouter().CalculateRoute(
+      checkpoints, m2::PointD::Zero() /* startDirection */, false /* adjust */, delegate, *route);
+  ASSERT(route, ());
+  routerComponents.GetRouter().SetGuides({});
   return TRouteResult(route, result);
 }
 
@@ -272,7 +279,7 @@ const TestTurn & TestTurn::TestPoint(m2::PointD const & expectedPoint, double in
 
 const TestTurn & TestTurn::TestDirection(routing::turns::CarDirection expectedDirection) const
 {
-  TEST_EQUAL(m_direction, expectedDirection, (m_direction));
+  TEST_EQUAL(m_direction, expectedDirection, ());
   return *this;
 }
 

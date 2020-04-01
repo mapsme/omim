@@ -4,8 +4,6 @@
 <!-- Language: ja -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">情報</string>
 	<!-- Button text (should be short) -->
 	<string name="back">戻る</string>
 	<!-- Button text (should be short) -->
@@ -66,8 +64,6 @@
 	<string name="touch_to_download">タッチしてダウンロード</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">はい</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">大きなマップをダウンロードする際はWiFiの使用をおすすめします。</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">どちらの距離単位を使いますか？</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -253,8 +249,6 @@
 	<string name="my_position_share_sms">私は今ここにいます。リンク: %1$s, %2$s</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">MAPS.MEでピン情報を確認</string>
-	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">オフラインマップ MAPS.ME でこの位置にピンを作成しました: %1$s\n\nリンク %2$s または %3$s をクリックするとマップ上で確認できます。</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">MAPS.MEで現在地を確認</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -355,12 +349,6 @@
 	<string name="route">経路</string>
 	<!-- category title -->
 	<string name="routes">ルート</string>
-	<!-- Show on first launch. -->
-	<string name="maps_licence_info">このアプリケーションはOpenStreetMapプロジェクトから取得された地理的データ（地図、ビジネスリスト、興味のある場所、国境と地域など）を使います。OpenStreetMapのデータの整合性、正確さ、完全性や適合性に関して弊社は保証致しかねます。</string>
-	<!-- Show on first launch. -->
-	<string name="agree">同意する</string>
-	<!-- Show on first launch -->
-	<string name="disagree">同意しない</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">あなたがいる場所のマップをダウンロードしよう</string>
 	<!-- text of notification -->
@@ -557,6 +545,22 @@
 	<string name="brown">茶色</string>
 	<!-- pink color -->
 	<string name="pink">ピンク</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">ディープパープル</string>
+	<!-- light blue color -->
+	<string name="light_blue">ライトブルー</string>
+	<!-- cyan color -->
+	<string name="cyan">シアン</string>
+	<!-- teal color -->
+	<string name="teal">ティール</string>
+	<!-- lime color -->
+	<string name="lime">ライム</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">ディープオレンジ</string>
+	<!-- gray color -->
+	<string name="gray">グレイ</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">ブルーグレイ</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">はい</string>
 
@@ -871,6 +875,7 @@
 	<string name="minute">分</string>
 	<string name="placepage_place_description">説明</string>
 	<string name="placepage_more_button">さらに詳しく</string>
+	<string name="placepage_more_reviews_button">レビューを更に表示</string>
 	<string name="book_button">予約</string>
 	<string name="placepage_call_button">コール</string>
 	<string name="placepage_edit_bookmark_button">ブックマークを編集</string>
@@ -1226,7 +1231,6 @@
 	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">%s をダウンロードしています...</string>
 	<string name="downloader_applying">%s を適用中です...</string>
-	<string name="transit_not_found">この地域での乗り換え案内はまだご利用いただけません</string>
 	<string name="whats_new_title_hotel_filter">新しいホテルのフィルターをご利用いただけます！</string>
 	<string name="whats_new_message_hotel_filter">あなたの日程で空室のあるホテルを予約できます！チェックインおよびチェックアウトフィルターをご利用ください。</string>
 	<string name="whats_new_title_ugc_travel">あなたの体験を他の旅行者に共有してください！</string>
@@ -1334,7 +1338,8 @@
 	<string name="error_already_downloaded">このリストは既にダウンロード済みです</string>
 	<string name="guides">ガイド</string>
 	<string name="guide_downloaded_title">ガイドが正常にダウンロードされました</string>
-	<string name="download_guides">ガイドをダウンロード</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">ガイドを検索</string>
 	<string name="guides_groups_cached">ガイドをダウンロード</string>
 	<string name="subtitle_error_downloading_guide">ガイドがダウンロードされませんでした</string>
 	<string name="error_already_downloaded_guide">このガイドはすでにダウンロードされています</string>
@@ -1699,12 +1704,18 @@
 	<string name="new_onboarding_step5.3_button">無料ダウンロード</string>
 	<string name="new_onboarding_additional_steps_later_button">後で</string>
 	<string name="all_pass_subscription_header">カタログにサブスクライブ</string>
-	<string name="all_pass_subscription_message_title">2万以上のガイド＆トレイル</string>
-	<string name="all_pass_subscription_message_subtitle">オフラインで利用できる都市と戸外のルートが無制限にダウンロードできます</string>
-	<string name="all_pass_subscription_message_title_2">700以上の都市と100以上の国</string>
-	<string name="all_pass_subscription_message_subtitle_2">いつでも旅の計画ができます</string>
-	<string name="all_pass_subscription_message_title_3">幅広いコンテンツ</string>
-	<string name="all_pass_subscription_message_subtitle_3">ブックマーク、写真、歩行経路、説明文、そしてヒント</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">30000+の\nガイド&amp;トレイル</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle">都市とアウトドアのルートの<b>オフラインモード</b>への<b>無制限のダウンロード</b></string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">インタラクティブな\n高度情報</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">各トレイルには<b>ルートの高度と基本情報</b>が含まれています</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">ブックマーク、\n写真、そして\nおススメ</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3">これから旅する<b>ルートの詳細</b></string>
 	<string name="sightseeing_subscription_header_subscription">ガイドのサブスクリプション</string>
 	<string name="sightseeing_subscription_message">700以上の都市と100以上の国</string>
 	<string name="sightseeing_subscription_message_2">オフラインで利用可能</string>
@@ -1723,6 +1734,41 @@
 	<string name="whatsnew_outdoor_guides_message">Outdooractiveが提供する冬と夏の旅のためのルートをカタログから利用できます!</string>
 	<string name="whatsnew_guides_galleries_title">MAPS.MEで今後の旅の計画を立てましょう</string>
 	<string name="whatsnew_guides_galleries_message">人気の観光都市と景色の場所のページでお勧めのガイドを見つける事ができるようになりました</string>
+	<string name="new_onboarding_step3_header">体験しましょう</string>
+	<string name="all_pass_screen_best_value">ベストバリュー</string>
+	<string name="buy_btn_for_subscription_3">カタログ全体が年々%s</string>
+	<string name="transit_not_found">この地域の地下鉄ナビはまだ利用できません</string>
+	<string name="dialog_pedestrian_route_is_long_header">地下鉄ルートが見つかりませんでした</string>
+	<string name="dialog_pedestrian_route_is_long_message">もっと地下鉄駅に近い出発地または目的地を選択してください</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">地下鉄ルートの計画ができませんでした</string>
+	<string name="whatsnew_isolines_title">アウトドアの新要素：オフラインのトポグラフィーレイヤー！</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">山地でも安心。左上でレイヤーを起動するだけです</string>
+	<string name="button_layer_isolines">地形</string>
+	<string name="tips_map_layers_title_countour">MAPS.MEの新要素：オフラインのトポグラフィーレイヤー！</string>
+	<string name="tips_map_layers_message_countour">自然の旅で訪れる地域を全てを把握しながら計画を立て楽しみましょう</string>
+	<string name="isolines_activation_error_dialog">トポグラフィーレイヤーを有効化して使用するには、このエリアのマップを更新もしくはダウンロードしてください</string>
+	<string name="isolines_location_error_dialog">トポグラフィーレイヤーはこの地域ではまだ利用できません</string>
+	<string name="elevation_profile_diff_level">難易度</string>
+	<string name="elevation_profile_diff_level_easy">イージー</string>
+	<string name="elevation_profile_diff_level_moderate">ノーマル</string>
+	<string name="elevation_profile_diff_level_hard">ハード</string>
+	<string name="elevation_profile_ascent">上昇</string>
+	<string name="elevation_profile_descent">下降</string>
+	<string name="elevation_profile_minaltitude">最小高度</string>
+	<string name="elevation_profile_maxaltitude">最大高度</string>
+	<string name="elevation_profile_m">m</string>
+	<string name="elevation_profile_difficulty">難易度</string>
+	<string name="elevation_profile_distance">距離：</string>
+	<string name="elevation_profile_km">㎞</string>
+	<string name="elevation_profile_time">時間：</string>
+	<string name="elevation_profile_hours">時間</string>
+	<string name="elevation_profile_minutes">分</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">閉じて継続</string>
+	<string name="view_on_map_downloaded_error">このガイドはこの機器から削除されました</string>
+	<string name="subscription">サブスクリプション</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">ケーブルカー駅</string>
@@ -1778,15 +1824,15 @@
 	<string name="type.amenity.parking">駐車場</string>
 	<string name="type.amenity.parking.fee">駐車場</string>
 	<string name="type.amenity.parking.multi.storey">駐車場</string>
-	<string name="type.amenity.parking.multi.storey.fee">駐車場</string>
 	<string name="type.amenity.parking.no.access">駐車場</string>
 	<string name="type.amenity.parking.park_and_ride">駐車場</string>
 	<string name="type.amenity.parking.permissive">駐車場</string>
-	<string name="type.amenity.parking.permissive.fee">駐車場</string>
 	<string name="type.amenity.parking.private">駐車場</string>
 	<string name="type.amenity.parking.underground">駐車場</string>
-	<string name="type.amenity.parking.underground.fee">駐車場</string>
 	<string name="type.amenity.parking_space">駐車スペース</string>
+	<string name="type.amenity.parking_space.permissive">駐車スペース</string>
+	<string name="type.amenity.parking_space.private">駐車スペース</string>
+	<string name="type.amenity.parking_space.underground">駐車スペース</string>
 	<string name="type.amenity.payment_terminal">決済端末</string>
 	<string name="type.amenity.pharmacy">薬局</string>
 	<string name="type.amenity.place_of_worship">礼拝</string>
@@ -1999,9 +2045,6 @@
 	<string name="type.highway.service.area">ストリート</string>
 	<string name="type.highway.service.bridge">ストリート</string>
 	<string name="type.highway.service.driveway">ストリート</string>
-	<string name="type.highway.service.driveway.area">ストリート</string>
-	<string name="type.highway.service.driveway.bridge">ストリート</string>
-	<string name="type.highway.service.driveway.tunnel">ストリート</string>
 	<string name="type.highway.service.parking_aisle">ストリート</string>
 	<string name="type.highway.service.tunnel">ストリート</string>
 	<string name="type.highway.speed_camera">オービス</string>
@@ -2020,14 +2063,8 @@
 	<string name="type.highway.track.grade1">ストリート</string>
 	<string name="type.highway.track.grade2">ストリート</string>
 	<string name="type.highway.track.grade3">ストリート</string>
-	<string name="type.highway.track.grade3.no.access">ストリート</string>
-	<string name="type.highway.track.grade3.permissive">ストリート</string>
 	<string name="type.highway.track.grade4">ストリート</string>
-	<string name="type.highway.track.grade4.no.access">ストリート</string>
-	<string name="type.highway.track.grade4.permissive">ストリート</string>
 	<string name="type.highway.track.grade5">ストリート</string>
-	<string name="type.highway.track.grade5.no.access">ストリート</string>
-	<string name="type.highway.track.grade5.permissive">ストリート</string>
 	<string name="type.highway.track.no.access">ストリート</string>
 	<string name="type.highway.track.permissive">ストリート</string>
 	<string name="type.highway.track.tunnel">ストリート</string>
@@ -2070,7 +2107,6 @@
 	<string name="type.landuse.railway">鉄道施設</string>
 	<string name="type.landuse.reservoir">水地</string>
 	<string name="type.leisure.dog_park">ドッグエリア</string>
-	<string name="type.leisure.dog_park.tennis">ドッグラン</string>
 	<string name="type.leisure.fitness_centre">フィットネスセンター、ジム</string>
 	<string name="type.leisure.fitness_station">フィットネスステーション</string>
 	<string name="type.leisure.garden">庭園</string>
@@ -2081,9 +2117,7 @@
 	<string name="type.leisure.park.permissive">公園</string>
 	<string name="type.leisure.park.private">公園</string>
 	<string name="type.leisure.pitch">運動場</string>
-	<string name="type.leisure.pitch.tennis">運動場</string>
 	<string name="type.leisure.playground">児童公園</string>
-	<string name="type.leisure.playground.tennis">児童公園</string>
 	<string name="type.leisure.sauna">サウナ</string>
 	<string name="type.leisure.sports_centre">スポーツセンター</string>
 	<string name="type.leisure.sports_centre.climbing">クライミングセンター</string>
@@ -2105,7 +2139,7 @@
 	<string name="type.natural.bay">港湾</string>
 	<string name="type.natural.beach">ビーチ</string>
 	<string name="type.natural.cape">岬</string>
-	<string name="type.natural.cave_entrance">洞穴入口</string>
+	<string name="type.natural.cave_entrance">洞窟</string>
 	<string name="type.natural.geyser">間欠泉</string>
 	<string name="type.natural.glacier">氷河</string>
 	<string name="type.natural.grassland">野原</string>
@@ -2118,10 +2152,6 @@
 	<string name="type.natural.volcano">火山</string>
 	<string name="type.natural.water">水地</string>
 	<string name="type.natural.wetland">湿地帯</string>
-	<string name="type.natural.wood">森林</string>
-	<string name="type.natural.wood.coniferous">森林</string>
-	<string name="type.natural.wood.deciduous">森林</string>
-	<string name="type.natural.wood.mixed">森林</string>
 	<string name="type.office">オフィス</string>
 	<string name="type.office.company">会社事務所</string>
 	<string name="type.office.estate_agent">不動産業者</string>

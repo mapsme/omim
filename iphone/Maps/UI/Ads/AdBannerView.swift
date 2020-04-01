@@ -36,7 +36,7 @@ private func attributedTitle(title: String, indent: CGFloat) -> NSAttributedStri
   return NSAttributedString(string: title,
                         attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle,
                                      NSAttributedString.Key.font: UIFont.bold12(),
-                                     NSAttributedString.Key.foregroundColor: UIColor.blackSecondaryText()
+                                     NSAttributedString.Key.foregroundColor: UIColor.isNightMode() ? UIColor.pressBackground() : UIColor.blackSecondaryText()
                                     ])
 }
 
@@ -173,7 +173,7 @@ class AdBannerView: UIView {
       adCallToActionButtonDetailed.isHighlighted = highlighted;
   }
 
-  private func configFBBanner(ad: FBNativeAd) {
+  private func configFBBanner(ad: FBNativeBannerAd) {
     adType = .native
     DAAImageWidth.constant = adPrivacyImage.width;
     DAAImage.isHidden = false;
@@ -184,14 +184,14 @@ class AdBannerView: UIView {
     } else {
       adCallToActionButtons = [adCallToActionButtonCompact, adCallToActionButtonDetailed]
     }
-    ad.registerView(forInteraction: self, with: nil, withClickableViews: adCallToActionButtons)
+    ad.registerView(forInteraction: self,
+                    iconImageView: adIconImageView,
+                    viewController: UIViewController.topViewController(),
+                    clickableViews: adCallToActionButtons)
 
-    ad.icon?.loadAsync { [weak self] image in
-      self?.adIconImageView.image = image
-    }
-    adTitleLabel.attributedText = attributedTitle(title: ad.title ?? "",
+    adTitleLabel.attributedText = attributedTitle(title: ad.headline ?? "",
                                                   indent: adPrivacyImage.width + DAAImageWidth.constant)
-    adBodyLabel.text = ad.body ?? ""
+    adBodyLabel.text = ad.bodyText ?? ""
     let config = state.config()
     adTitleLabel.numberOfLines = config.numberOfTitleLines
     adBodyLabel.numberOfLines = config.numberOfBodyLines
@@ -231,8 +231,7 @@ class AdBannerView: UIView {
       adCallToActionButtons = [adCallToActionButtonCompact, adCallToActionButtonDetailed]
       adCallToActionButtons.forEach { $0.setTitle(ad.ctaText, for: .normal) }
     }
-    mpNativeAd?.setAdView(self, actionButtons: adCallToActionButtons)
-
+    mpNativeAd?.setAdView(self, iconView: adIconImageView, actionButtons: adCallToActionButtons)
     adTitleLabel.attributedText = attributedTitle(title: ad.title,
                                                   indent: adPrivacyImage.width + DAAImageWidth.constant)
     adBodyLabel.text = ad.text
@@ -259,5 +258,12 @@ class AdBannerView: UIView {
   override func willMove(toSuperview newSuperview: UIView?) {
     super.willMove(toSuperview: newSuperview)
     mpNativeAd?.nativeViewWillMove(toSuperview: newSuperview)
+  }
+
+
+  override func applyTheme() {
+    super.applyTheme()
+    adTitleLabel.attributedText = attributedTitle(title: adTitleLabel.attributedText?.string ?? "",
+                                                  indent: adPrivacyImage.width + DAAImageWidth.constant)
   }
 }

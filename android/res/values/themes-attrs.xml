@@ -110,13 +110,14 @@
     <attr name="tipsBgColor" format="color"/>
     <attr name="tipsPrimaryTextColor" format="color"/>
     <attr name="tipsSecondaryTextColor" format="color"/>
-    <attr name="bg_crown" format="reference"/>
-    <attr name="bg_dog_btn" format="reference"/>
+    <attr name="bgCrown" format="reference"/>
+    <attr name="bgDogBtn" format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="ThemeAttrs.NavButtons">
     <attr name="nav_background" format="reference"/>
     <attr name="nav_bg_subway" format="reference"/>
+    <attr name="nav_bg_isolines" format="reference"/>
   </declare-styleable>
 
   <declare-styleable name="ThemeAttrs.Downloader">
@@ -136,5 +137,25 @@
   <declare-styleable name="ThemeAttrs.BookmarksSubscription">
     <attr name="subscriptionTitleColor" format="color"/>
     <attr name="subscriptionSubtitleColor" format="color"/>
+  </declare-styleable>
+
+  <declare-styleable name="ThemeAttrs.ElevationProfile">
+    <attr name="elevationProfilePropertyBg" format="reference" />
+    <attr name="elevationProfilePropIconTint" format="color" />
+    <attr name="altitudeBg" format="reference"/>
+    <attr name="elevationProfileAxisLabelColor" format="color"/>
+    <attr name="elevationProfileYourLocationPinBg" format="reference"/>
+    <attr name="elevationProfileSelectedPointBg" format="reference"/>
+    <attr name="elevationProfileSelectedPointTriangle" format="reference"/>
+    <attr name="elevationProfileFloatingTriangle" format="reference"/>
+  </declare-styleable>
+  
+  <declare-styleable name="ThemeAttrs.Fonts">
+    <attr name="fontHeadline1" format="reference"/>
+    <attr name="fontHeadline2" format="reference"/>
+    <attr name="fontHeadline3" format="reference"/>
+    <attr name="fontHeadline4" format="reference"/>
+    <attr name="fontHeadline5" format="reference"/>
+    <attr name="fontHeadline6" format="reference"/>
   </declare-styleable>
 </resources>

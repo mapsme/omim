@@ -2,9 +2,9 @@ package com.mapswithme.maps.purchase;
 
 import android.app.Activity;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.mapswithme.maps.PrivateVariables;
@@ -36,8 +36,11 @@ public class FailedBookmarkPurchaseController implements PurchaseController<Fail
   }
 
   @Override
-  public void initialize(@NonNull Activity activity)
+  public void initialize(@Nullable Activity activity)
   {
+    if (activity == null)
+      throw new AssertionError("Activity must be non-null!");
+
     mBillingManager.initialize(activity);
     mValidator.addCallback(mValidationCallback);
     mBillingManager.addCallback(mBillingCallback);
@@ -161,7 +164,8 @@ public class FailedBookmarkPurchaseController implements PurchaseController<Fail
     @Override
     public void onStoreConnectionFailed()
     {
-      // Do nothing by default.
+      if (mCallback != null)
+        mCallback.onStoreConnectionFailed();
     }
 
     @Override

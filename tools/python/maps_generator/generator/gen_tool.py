@@ -3,8 +3,10 @@ import logging
 import os
 import subprocess
 
-from .exceptions import (OptionNotFound, ValidationError,
-                         wait_and_raise_if_fail)
+from . import settings
+from .exceptions import OptionNotFound
+from .exceptions import ValidationError
+from .exceptions import wait_and_raise_if_fail
 
 logger = logging.getLogger("maps_generator")
 
@@ -24,6 +26,7 @@ class GenTool:
         "generate_geo_objects_index": bool,
         "generate_geometry": bool,
         "generate_index": bool,
+        "generate_isolines_info": bool,
         "generate_maxspeed": bool,
         "generate_packed_borders": bool,
         "generate_popular_places": bool,
@@ -43,7 +46,7 @@ class GenTool:
         "split_by_polygons": bool,
         "type_statistics": bool,
         "version": bool,
-        "planet_version": int,
+        "threads_count": int,
         "booking_data": str,
         "promo_catalog_cities": str,
         "brands_data": str,
@@ -56,11 +59,13 @@ class GenTool:
         "ids_without_addresses": str,
         "idToWikidata": str,
         "intermediate_data_path": str,
+        "isolines_path": str,
         "nodes_list_path": str,
         "node_storage": str,
         "osm_file_name": str,
         "osm_file_type": str,
         "output": str,
+        "planet_version": str,
         "popular_places_data": str,
         "regions_features": str,
         "regions_index": str,
@@ -74,13 +79,14 @@ class GenTool:
         "wikipedia_pages": str,
     }
 
-    def __init__(self, name_executable, out=subprocess.DEVNULL,
-                 err=subprocess.DEVNULL, **options):
+    def __init__(
+        self, name_executable, out=subprocess.DEVNULL, err=subprocess.DEVNULL, **options
+    ):
         self.name_executable = name_executable
         self.subprocess = None
         self.output = out
         self.error = err
-        self.options = {}
+        self.options = {"threads_count": 1}
         self.logger = logger
         self.add_options(**options)
 
@@ -100,8 +106,10 @@ class GenTool:
                 raise OptionNotFound(f"{k} is unavailable option")
 
             if type(v) is not GenTool.OPTIONS[k]:
-                raise ValidationError(f"{k} required {str(GenTool.OPTIONS[k])},"
-                                      f" but not {str(type(v))}")
+                raise ValidationError(
+                    f"{k} required {str(GenTool.OPTIONS[k])},"
+                    f" but not {str(type(v))}"
+                )
 
             self.options[k] = str(v).lower() if type(v) is bool else v
         return self
@@ -109,11 +117,13 @@ class GenTool:
     def run_async(self):
         assert self.subprocess is None, "You forgot to call wait()"
         cmd = self._collect_cmd()
-        self.subprocess = subprocess.Popen(cmd, stdout=self.output,
-                                           stderr=self.error, env=os.environ)
+        self.subprocess = subprocess.Popen(
+            cmd, stdout=self.output, stderr=self.error, env=os.environ
+        )
 
-        self.logger.info(f"Run generator tool [{self.get_build_version()}]:"
-                         f" {' '.join(cmd)} ")
+        self.logger.info(
+            f"Run generator tool [{self.get_build_version()}]:" f" {' '.join(cmd)} "
+        )
         return self
 
     def wait(self):
@@ -131,19 +141,20 @@ class GenTool:
         return c
 
     def get_build_version(self):
-        p = subprocess.Popen([self.name_executable, "--version"],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             env=os.environ)
+        p = subprocess.Popen(
+            [self.name_executable, "--version"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=os.environ,
+        )
         wait_and_raise_if_fail(p)
         out, err = p.communicate()
         return out.decode("utf-8").replace("\n", " ").strip()
 
     def _collect_cmd(self):
-        options = ["".join(["--", k, "=", str(v)]) for k, v in
-                   self.options.items()]
+        options = ["".join(["--", k, "=", str(v)]) for k, v in self.options.items()]
         return [self.name_executable, *options]
 
 
 def run_gen_tool(*args, **kwargs):
     GenTool(*args, **kwargs).run()
-

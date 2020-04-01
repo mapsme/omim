@@ -151,7 +151,7 @@ std::vector<MWMEditorCellType> cellsForProperties(std::vector<osm::Props> const 
 void registerCellsForTableView(std::vector<MWMEditorCellType> const & cells, UITableView * tv)
 {
   for (auto const c : cells)
-    [tv registerWithCellClass:cellClass(c)];
+    [tv registerNibWithCellClass:cellClass(c)];
 }
 }  // namespace
 
@@ -259,7 +259,7 @@ void registerCellsForTableView(std::vector<MWMEditorCellType> const & cells, UIT
   auto & f = GetFramework();
   auto const & featureID = m_mapObject.GetID();
   NSDictionary * info = @{
-    kStatEditorMWMName : @(featureID.GetMwmName().c_str()),
+    kStatMWMName : @(featureID.GetMwmName().c_str()),
     kStatEditorMWMVersion : @(featureID.GetMwmVersion())
   };
   BOOL const haveNote = self.note.length;
@@ -952,7 +952,7 @@ void registerCellsForTableView(std::vector<MWMEditorCellType> const & cells, UIT
       std::string const additional = additionalMessage.length ? additionalMessage.UTF8String : "";
       [Statistics logEvent:kStatEditorProblemReport
             withParameters:@{
-              kStatEditorMWMName : @(fid.GetMwmName().c_str()),
+              kStatMWMName : @(fid.GetMwmName().c_str()),
               kStatEditorMWMVersion : @(fid.GetMwmVersion()),
               kStatProblem : @(osm::Editor::kPlaceDoesNotExistMessage)
             }
@@ -967,7 +967,7 @@ void registerCellsForTableView(std::vector<MWMEditorCellType> const & cells, UIT
   auto revertAction = ^(BOOL isCreated) {
     [Statistics logEvent:isCreated ? kStatEditorAddCancel : kStatEditorEditCancel
           withParameters:@{
-            kStatEditorMWMName : @(fid.GetMwmName().c_str()),
+            kStatMWMName : @(fid.GetMwmName().c_str()),
             kStatEditorMWMVersion : @(fid.GetMwmVersion())
           }
               atLocation:location];

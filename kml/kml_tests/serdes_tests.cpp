@@ -96,8 +96,9 @@ kml::FileData GenerateKmlFileData()
   trackData.m_layers = {{6.0, {kml::PredefinedColor::None, 0xff0000ff}},
                         {7.0, {kml::PredefinedColor::None, 0x00ff00ff}}};
   trackData.m_timestamp = std::chrono::system_clock::from_time_t(900);
-  trackData.m_points = {m2::PointD(45.9242, 56.8679), m2::PointD(45.2244, 56.2786),
-                        m2::PointD(45.1964, 56.9832)};
+  trackData.m_pointsWithAltitudes = {{m2::PointD(45.9242, 56.8679), 1},
+                                     {m2::PointD(45.2244, 56.2786), 2},
+                                     {m2::PointD(45.1964, 56.9832), 3}};
   trackData.m_visible = false;
   trackData.m_nearestToponyms = {"12345", "54321", "98765"};
   trackData.m_properties = {{"tr_property1", "value1"}, {"tr_property2", "value2"}};
@@ -163,6 +164,62 @@ char const * kGeneratedKml =
   "    <IconStyle>\n"
   "      <Icon>\n"
   "        <href>http://maps.me/placemarks/placemark-orange.png</href>\n"
+  "      </Icon>\n"
+  "    </IconStyle>\n"
+  "  </Style>\n"
+  "  <Style id=\"placemark-deeppurple\">\n"
+  "    <IconStyle>\n"
+  "      <Icon>\n"
+  "        <href>http://maps.me/placemarks/placemark-deeppurple.png</href>\n"
+  "      </Icon>\n"
+  "    </IconStyle>\n"
+  "  </Style>\n"
+  "  <Style id=\"placemark-lightblue\">\n"
+  "    <IconStyle>\n"
+  "      <Icon>\n"
+  "        <href>http://maps.me/placemarks/placemark-lightblue.png</href>\n"
+  "      </Icon>\n"
+  "    </IconStyle>\n"
+  "  </Style>\n"
+  "  <Style id=\"placemark-cyan\">\n"
+  "    <IconStyle>\n"
+  "      <Icon>\n"
+  "        <href>http://maps.me/placemarks/placemark-cyan.png</href>\n"
+  "      </Icon>\n"
+  "    </IconStyle>\n"
+  "  </Style>\n"
+  "  <Style id=\"placemark-teal\">\n"
+  "    <IconStyle>\n"
+  "      <Icon>\n"
+  "        <href>http://maps.me/placemarks/placemark-teal.png</href>\n"
+  "      </Icon>\n"
+  "    </IconStyle>\n"
+  "  </Style>\n"
+  "  <Style id=\"placemark-lime\">\n"
+  "    <IconStyle>\n"
+  "      <Icon>\n"
+  "        <href>http://maps.me/placemarks/placemark-lime.png</href>\n"
+  "      </Icon>\n"
+  "    </IconStyle>\n"
+  "  </Style>\n"
+  "  <Style id=\"placemark-deeporange\">\n"
+  "    <IconStyle>\n"
+  "      <Icon>\n"
+  "        <href>http://maps.me/placemarks/placemark-deeporange.png</href>\n"
+  "      </Icon>\n"
+  "    </IconStyle>\n"
+  "  </Style>\n"
+  "  <Style id=\"placemark-gray\">\n"
+  "    <IconStyle>\n"
+  "      <Icon>\n"
+  "        <href>http://maps.me/placemarks/placemark-gray.png</href>\n"
+  "      </Icon>\n"
+  "    </IconStyle>\n"
+  "  </Style>\n"
+  "  <Style id=\"placemark-bluegray\">\n"
+  "    <IconStyle>\n"
+  "      <Icon>\n"
+  "        <href>http://maps.me/placemarks/placemark-bluegray.png</href>\n"
   "      </Icon>\n"
   "    </IconStyle>\n"
   "  </Style>\n"
@@ -251,7 +308,7 @@ char const * kGeneratedKml =
   "      <width>6</width>\n"
   "    </LineStyle></Style>\n"
   "    <TimeStamp><when>1970-01-01T00:15:00Z</when></TimeStamp>\n"
-  "    <LineString><coordinates>45.9242,49.326859 45.2244,48.941288 45.1964,49.401948</coordinates></LineString>\n"
+  "    <LineString><coordinates>45.9242,49.326859,1 45.2244,48.941288,2 45.1964,49.401948,3</coordinates></LineString>\n"
   "    <ExtendedData xmlns:mwm=\"https://maps.me\">\n"
   "      <mwm:name>\n"
   "        <mwm:lang code=\"ru\">Тестовый трек</mwm:lang>\n"
@@ -548,7 +605,7 @@ UNIT_TEST(Kml_Serialization_Text_File)
 }
 
 // 8. Check binary deserialization of v.3 format.
-UNIT_TEST(Kml_Deserialization_Bin_V3)
+UNIT_TEST(Kml_Deserialization_From_Bin_V3_And_V4)
 {
   kml::FileData dataFromBinV3;
   try
@@ -575,4 +632,33 @@ UNIT_TEST(Kml_Deserialization_Bin_V3)
   }
 
   TEST_EQUAL(dataFromBinV3, dataFromBinV4, ());
+}
+
+UNIT_TEST(Kml_Deserialization_From_Bin_V6_And_V7)
+{
+  kml::FileData dataFromBinV6;
+  try
+  {
+    MemReader reader(kBinKmlV6.data(), kBinKmlV6.size());
+    kml::binary::DeserializerKml des(dataFromBinV6);
+    des.Deserialize(reader);
+  }
+  catch (kml::binary::DeserializerKml::DeserializeException const & exc)
+  {
+    TEST(false, ("Exception raised", exc.what()));
+  }
+
+  kml::FileData dataFromBinV7;
+  try
+  {
+    MemReader reader(kBinKmlV7.data(), kBinKmlV7.size());
+    kml::binary::DeserializerKml des(dataFromBinV7);
+    des.Deserialize(reader);
+  }
+  catch (kml::binary::DeserializerKml::DeserializeException const & exc)
+  {
+    TEST(false, ("Exception raised", exc.what()));
+  }
+
+  TEST_EQUAL(dataFromBinV6, dataFromBinV7, ());
 }
