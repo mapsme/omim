@@ -1,5 +1,7 @@
 #include "map/user.hpp"
 
+#include "web_api/request_headers.hpp"
+
 #include "platform/http_client.hpp"
 #include "platform/http_payload.hpp"
 #include "platform/http_uploader.hpp"
@@ -9,7 +11,7 @@
 #include "coding/file_writer.hpp"
 #include "coding/internal/file_data.hpp"
 #include "coding/serdes_json.hpp"
-#include "coding/url_encode.hpp"
+#include "coding/url.hpp"
 #include "coding/writer.hpp"
 
 #include "base/file_name_utils.hpp"
@@ -125,7 +127,7 @@ std::string UserBindingRequestUrl(std::string const & advertisingId)
   std::ostringstream ss;
   ss << kUserBindingRequestUrl
      << "?vendor=" << kVendor
-     << "&advertising_id=" << UrlEncode(advertisingId);
+     << "&advertising_id=" << url::UrlEncode(advertisingId);
   return ss.str();
 }
 
@@ -671,7 +673,7 @@ std::string User::GetPhoneAuthUrl(std::string const & redirectUri)
 {
   std::ostringstream os;
   os << kPassportServerUrl << "/oauth/authorize/?mode=phone_device&response_type=code"
-     << "&locale=" << languages::GetCurrentOrig() << "&redirect_uri=" << UrlEncode(redirectUri)
+     << "&locale=" << languages::GetCurrentOrig() << "&redirect_uri=" << url::UrlEncode(redirectUri)
      << "&client_id=" << kAppName;
 
   return os.str();
@@ -710,7 +712,7 @@ void User::RequestImpl(std::string const & url, BuildRequestHandler const & onBu
 
   platform::HttpClient request(url);
   request.SetRawHeader("Accept", kApplicationJson);
-  request.SetRawHeader("User-Agent", GetPlatform().GetAppUserAgent());
+  request.SetRawHeaders(web_api::GetDefaultAuthHeaders());
   if (onBuildRequest)
     onBuildRequest(request);
 

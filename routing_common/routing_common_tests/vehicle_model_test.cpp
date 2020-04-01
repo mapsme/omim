@@ -1,5 +1,6 @@
 #include "testing/testing.hpp"
 
+#include "routing_common/car_model_coefs.hpp"
 #include "routing_common/maxspeed_conversion.hpp"
 #include "routing_common/vehicle_model.hpp"
 
@@ -13,13 +14,14 @@
 #include "base/math.hpp"
 
 #include <cstdint>
+#include <vector>
 
 using namespace routing;
 using namespace std;
 
 namespace
 {
-HighwayBasedMeanSpeeds const kDefaultSpeeds = {
+HighwayBasedSpeeds const kDefaultSpeeds = {
     {HighwayType::HighwayTrunk, InOutCitySpeedKMpH(100.0 /* in city */, 150.0 /* out city */)},
     {HighwayType::HighwayPrimary, InOutCitySpeedKMpH(90.0 /* in city */, 120.0 /* out city */)},
     {HighwayType::HighwaySecondary,
@@ -32,12 +34,10 @@ HighwayBasedMeanSpeeds const kDefaultSpeeds = {
                         SpeedKMpH(50.0 /* weight */, 40.0 /* eta */) /* out city */)}};
 
 HighwayBasedFactors const kDefaultFactors = {
-    {HighwayType::HighwayPrimary,
-     {// maxspeed : InOutCityFactor(in and out city factor value)
-      {70, InOutCityFactor(1.0)},
-      {90, InOutCityFactor(1.0)}}},
-    {HighwayType::HighwaySecondary, {{90, InOutCityFactor(1.0)}}},
-    {HighwayType::HighwayResidential, {{60, InOutCityFactor(0.5)}}}};
+    {HighwayType::HighwayTrunk, InOutCityFactor(1.0)},
+    {HighwayType::HighwayPrimary, InOutCityFactor(1.0)},
+    {HighwayType::HighwaySecondary, InOutCityFactor(1.0)},
+    {HighwayType::HighwayResidential, InOutCityFactor(0.5)}};
 
 VehicleModel::LimitsInitList const kTestLimits = {{{"highway", "trunk"}, true},
                                                    {{"highway", "primary"}, true},
@@ -66,8 +66,7 @@ class TestVehicleModel : public VehicleModel
 
 public:
   TestVehicleModel()
-    : VehicleModel(classif(), kTestLimits, kCarSurface,
-                   {kDefaultSpeeds, kDefaultSpeeds, kDefaultFactors, kDefaultFactors})
+    : VehicleModel(classif(), kTestLimits, kCarSurface, {kDefaultSpeeds, kDefaultFactors})
   {
   }
 
@@ -150,7 +149,7 @@ UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_Speed)
              {SpeedKMpH(100.0 /* weight */, 100.0 /* eta */) /* in city */,
               SpeedKMpH(150.0 /* weight */, 150.0 /* eta */) /* out of city */});
   CheckSpeed({GetType("highway", "primary")}, {SpeedKMpH(90.0, 90.0), SpeedKMpH(120.0, 120.0)});
-  CheckSpeed({GetType("highway", "residential")}, {SpeedKMpH(45.0, 55.0), SpeedKMpH(50.0, 60.0)});
+  CheckSpeed({GetType("highway", "residential")}, {SpeedKMpH(45, 27.5), SpeedKMpH(50.0, 30.0)});
 }
 
 UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_Speed_MultiTypes)
@@ -212,10 +211,10 @@ UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_SpeedFactor)
   CheckSpeed({secondary, unpavedGood}, {SpeedKMpH(48.0, 56.0), SpeedKMpH(48.0, 56.0)});
   CheckSpeed({secondary, unpavedBad}, {SpeedKMpH(16.0, 14.0), SpeedKMpH(16.0, 14.0)});
 
-  CheckSpeed({residential, pavedGood}, {SpeedKMpH(36.0, 49.5), SpeedKMpH(40.0, 54.0)});
-  CheckSpeed({residential, pavedBad}, {SpeedKMpH(18.0, 27.5), SpeedKMpH(20.0, 30.0)});
-  CheckSpeed({residential, unpavedGood}, {SpeedKMpH(27.0, 44.0), SpeedKMpH(30.0, 48.0)});
-  CheckSpeed({residential, unpavedBad}, {SpeedKMpH(9.0, 11.0), SpeedKMpH(10.0, 12.0)});
+  CheckSpeed({residential, pavedGood}, {SpeedKMpH(36.0, 24.75), SpeedKMpH(40.0, 27.0)});
+  CheckSpeed({residential, pavedBad}, {SpeedKMpH(18.0, 13.75), SpeedKMpH(20.0, 15.0)});
+  CheckSpeed({residential, unpavedGood}, {SpeedKMpH(27, 22.0), SpeedKMpH(30.0, 24.0)});
+  CheckSpeed({residential, unpavedBad}, {SpeedKMpH(9, 5.5), SpeedKMpH(10.0, 6.0)});
 }
 
 UNIT_CLASS_TEST(VehicleModelTest, VehicleModel_MaxspeedFactor)
@@ -261,4 +260,31 @@ UNIT_TEST(VehicleModel_MultiplicationOperatorTest)
   TEST_EQUAL(lResult, rResult, ());
   TEST(base::AlmostEqualAbs(lResult.m_weight, 90.0, 1e-7), ());
   TEST(base::AlmostEqualAbs(lResult.m_eta, 110.0, 1e-7), ());
+}
+
+UNIT_TEST(VehicleModel_CarModelValidation)
+{
+  vector<HighwayType> const carRoadTypes = {
+      HighwayType::HighwayLivingStreet,  HighwayType::HighwayMotorway,
+      HighwayType::HighwayMotorwayLink,  HighwayType::HighwayPrimary,
+      HighwayType::HighwayPrimaryLink,   HighwayType::HighwayResidential,
+      HighwayType::HighwayRoad,          HighwayType::HighwaySecondary,
+      HighwayType::HighwaySecondaryLink, HighwayType::HighwayService,
+      HighwayType::HighwayTertiary,      HighwayType::HighwayTertiaryLink,
+      HighwayType::HighwayTrack,         HighwayType::HighwayTrunk,
+      HighwayType::HighwayTrunkLink,     HighwayType::HighwayUnclassified,
+      HighwayType::ManMadePier,          HighwayType::RailwayRailMotorVehicle,
+      HighwayType::RouteFerryMotorcar,   HighwayType::RouteFerryMotorVehicle,
+      HighwayType::RouteShuttleTrain};
+
+  for (auto const hwType : carRoadTypes)
+  {
+    auto const factorIt = kHighwayBasedFactors.find(hwType);
+    TEST(factorIt != kHighwayBasedFactors.cend(), (hwType));
+    TEST(factorIt->second.IsValid(), (hwType, factorIt->second));
+
+    auto const speedIt = kHighwayBasedSpeeds.find(hwType);
+    TEST(speedIt != kHighwayBasedSpeeds.cend(), (hwType));
+    TEST(speedIt->second.IsValid(), (hwType, speedIt->second));
+  }
 }

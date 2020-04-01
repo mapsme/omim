@@ -1,5 +1,3 @@
-import UIKit
-
 class CatalogConnectionErrorView: UIView {
   
   @IBOutlet var imageView: UIImageView!
@@ -30,7 +28,6 @@ class CatalogConnectionErrorView: UIView {
 
 extension CatalogConnectionErrorView {
   func xibSetup() {
-    backgroundColor = UIColor.clear
     let nib = UINib(nibName: "CatalogConnectionErrorView", bundle: nil)
     let view = nib.instantiate(withOwner: self, options: nil).first as! UIView
     view.translatesAutoresizingMaskIntoConstraints = false

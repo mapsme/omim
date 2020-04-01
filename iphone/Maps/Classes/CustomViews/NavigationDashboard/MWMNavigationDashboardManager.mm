@@ -48,7 +48,7 @@ using Observers = NSHashTable<Observer>;
 
 @implementation MWMNavigationDashboardManager
 
-+ (MWMNavigationDashboardManager *)manager
++ (MWMNavigationDashboardManager *)sharedManager
 {
   return [MWMMapViewControlsManager manager].navigationManager;
 }
@@ -94,17 +94,6 @@ using Observers = NSHashTable<Observer>;
 
   for (MWMRouteStartButton * button in self.goButtons)
     [button setTitle:title forState:UIControlStateNormal];
-}
-
-- (void)mwm_refreshUI
-{
-  [_routePreview mwm_refreshUI];
-  [_navigationInfoView mwm_refreshUI];
-  [_navigationControlView mwm_refreshUI];
-  [_baseRoutePreviewStatus mwm_refreshUI];
-  [_transportRoutePreviewStatus mwm_refreshUI];
-  _etaAttributes = nil;
-  _etaSecondaryAttributes = nil;
 }
 
 - (void)onNavigationInfoUpdated
@@ -293,9 +282,9 @@ using Observers = NSHashTable<Observer>;
 
 - (IBAction)trafficButtonAction
 {
-  BOOL const switchOn = ([MWMTrafficManager trafficState] == MWMTrafficManagerStateDisabled);
+  BOOL const switchOn = ([MWMMapOverlayManager trafficState] == MWMMapOverlayTrafficStateDisabled);
   [Statistics logEvent:kStatMenu withParameters:@{kStatTraffic : switchOn ? kStatOn : kStatOff}];
-  [MWMTrafficManager setTrafficEnabled:switchOn];
+  [MWMMapOverlayManager setTrafficEnabled:switchOn];
 }
 
 - (IBAction)settingsButtonAction
@@ -315,12 +304,12 @@ using Observers = NSHashTable<Observer>;
 
 + (void)addObserver:(id<MWMNavigationDashboardObserver>)observer
 {
-  [[self manager].observers addObject:observer];
+  [[self sharedManager].observers addObject:observer];
 }
 
 + (void)removeObserver:(id<MWMNavigationDashboardObserver>)observer
 {
-  [[self manager].observers removeObject:observer];
+  [[self sharedManager].observers removeObject:observer];
 }
 
 #pragma mark - MWMNavigationDashboardObserver
@@ -344,7 +333,7 @@ using Observers = NSHashTable<Observer>;
 
 + (void)updateNavigationInfoAvailableArea:(CGRect)frame
 {
-  [[self manager] updateNavigationInfoAvailableArea:frame];
+  [[self sharedManager] updateNavigationInfoAvailableArea:frame];
 }
 
 - (void)updateNavigationInfoAvailableArea:(CGRect)frame

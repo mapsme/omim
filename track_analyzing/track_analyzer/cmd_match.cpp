@@ -94,11 +94,11 @@ void MatchTracks(MwmToTracks const & mwmToTracks, storage::Storage const & stora
 namespace track_analyzing
 {
 void CmdMatch(string const & logFile, string const & trackFile,
-              shared_ptr<NumMwmIds> const & numMwmIds, Storage const & storage, Stats & stat)
+              shared_ptr<NumMwmIds> const & numMwmIds, Storage const & storage, Stats & stats)
 {
   MwmToTracks mwmToTracks;
   ParseTracks(logFile, numMwmIds, mwmToTracks);
-  stat.AddTracksStats(mwmToTracks, *numMwmIds, storage);
+  stats.AddTracksStats(mwmToTracks, *numMwmIds, storage);
 
   MwmToMatchedTracks mwmToMatchedTracks;
   MatchTracks(mwmToTracks, storage, *numMwmIds, mwmToMatchedTracks);
@@ -109,17 +109,17 @@ void CmdMatch(string const & logFile, string const & trackFile,
   LOG(LINFO, ("Matched tracks were saved to", trackFile));
 }
 
-void CmdMatch(string const & logFile, string const & trackFile)
+void CmdMatch(string const & logFile, string const & trackFile, string const & inputDistribution)
 {
   LOG(LINFO, ("Matching", logFile));
   Storage storage;
   storage.RegisterAllLocalMaps(false /* enableDiffs */);
   shared_ptr<NumMwmIds> numMwmIds = CreateNumMwmIds(storage);
 
-  Stats stat;
-  CmdMatch(logFile, trackFile, numMwmIds, storage, stat);
-  LOG(LINFO, ("DataPoint distribution by mwms and countries."));
-  LOG(LINFO, (stat));
+  Stats stats;
+  CmdMatch(logFile, trackFile, numMwmIds, storage, stats);
+  stats.SaveMwmDistributionToCsv(inputDistribution);
+  stats.Log();
 }
 
 void UnzipAndMatch(Iter begin, Iter end, string const & trackExt, Stats & stats)
@@ -163,8 +163,10 @@ void UnzipAndMatch(Iter begin, Iter end, string const & trackExt, Stats & stats)
   }
 }
 
-void CmdMatchDir(string const & logDir, string const & trackExt)
+void CmdMatchDir(string const & logDir, string const & trackExt, string const & inputDistribution)
 {
+  LOG(LINFO,
+      ("Matching dir:", logDir, ". Input distribution will be saved to:", inputDistribution));
   Platform::EFileType fileType = Platform::FILE_TYPE_UNKNOWN;
   Platform::EError const result = Platform::GetFileType(logDir, fileType);
 
@@ -218,7 +220,7 @@ void CmdMatchDir(string const & logDir, string const & trackExt)
   for (auto const & s : stats)
     statSum.Add(s);
 
-  LOG(LINFO, ("DataPoint distribution by mwms and countries."));
-  LOG(LINFO, (statSum));
+  statSum.SaveMwmDistributionToCsv(inputDistribution);
+  statSum.Log();
 }
 }  // namespace track_analyzing

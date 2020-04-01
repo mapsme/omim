@@ -148,20 +148,15 @@ UNIT_CLASS_TEST(SmokeTest, DeepCategoryTest)
 UNIT_CLASS_TEST(SmokeTest, CategoriesTest)
 {
   // todo(@t.yan): fix some or delete category.
-  vector<vector<string>> const invisibleAsPointTags = {{"amenity", "driving_school"},
-                                                       {"military", "bunker"},
-                                                       {"waterway", "canal"},
+  vector<vector<string>> const invisibleAsPointTags = {{"waterway", "canal"},
                                                        {"waterway", "river"},
                                                        {"waterway", "riverbank"},
                                                        {"waterway", "stream"},
                                                        {"landuse", "basin"},
-                                                       {"landuse", "residential"},
                                                        {"place", "county"},
                                                        {"place", "islet"},
-                                                       {"power", "pole"},
                                                        {"highway", "footway"},
                                                        {"highway", "cycleway"},
-                                                       {"highway", "ford"}, // MAPSME-10683
                                                        {"highway", "living_street"},
                                                        {"highway", "motorway"},
                                                        {"highway", "motorway_link"},
@@ -184,14 +179,12 @@ UNIT_CLASS_TEST(SmokeTest, CategoriesTest)
                                                        {"highway", "trunk"},
                                                        {"highway", "trunk_link"},
                                                        {"highway", "unclassified"},
-                                                       {"man_made", "surveillance"},
                                                        {"man_made", "tower"},
                                                        {"man_made", "water_tower"},
                                                        {"man_made", "water_well"},
                                                        {"natural", "glacier"},
                                                        {"natural", "pond"},
-                                                       {"natural", "tree"},
-                                                       {"natural", "wood"}};
+                                                       {"natural", "tree"}};
   set<uint32_t> invisibleTypes;
   for (auto const & tags : invisibleAsPointTags)
     invisibleTypes.insert(classif().GetTypeByPath(tags));

@@ -5,9 +5,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.mapswithme.maps.MwmApplication;
 
 class SensorHelper implements SensorEventListener
@@ -38,8 +38,7 @@ class SensorHelper implements SensorEventListener
       SensorManager.getOrientation(rotMatrix, rotVals);
 
       // rotVals indexes: 0 - yaw, 2 - roll, 1 - pitch.
-      double azimuth = rotVals[0];
-      LocationHelper.INSTANCE.notifyCompassUpdated(event.timestamp, azimuth, azimuth, 1.0);
+      LocationHelper.INSTANCE.notifyCompassUpdated(event.timestamp, rotVals[0]);
     }
   }
 
@@ -56,7 +55,7 @@ class SensorHelper implements SensorEventListener
 
   void start()
   {
-    if (mRotation != null)
+    if (mRotation != null && mSensorManager != null)
       mSensorManager.registerListener(this, mRotation, SensorManager.SENSOR_DELAY_UI);
   }
 

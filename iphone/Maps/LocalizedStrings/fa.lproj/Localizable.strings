@@ -6,9 +6,6 @@
 
 /********** Strings **********/
 
-/* About button text (should be short) */
-"about" = "درباره‌ی";
-
 /* Button text (should be short) */
 "back" = "بازگشت";
 
@@ -107,9 +104,6 @@
 
 /* Settings/Downloader - 3G download warning dialog confirm button */
 "use_cellular_data" = "بله";
-
-/* Settings/Downloader - No internet connection dialog message */
-"use_wifi_recommendation_text" = "اکیداً توصیه می کنیم برای دانلود نقشه های حجیم از اینترنت وای فای استفاده نمایید";
 
 /* Choose measurement on first launch alert - title */
 "which_measurement_system" = "کدام واحد اندازه گیری را ترجیح می دهید؟";
@@ -406,9 +400,6 @@
 /* Subject for emailed bookmark */
 "bookmark_share_email_subject" = "Hey, check out my pin in MAPS.ME!";
 
-/* Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me */
-"bookmark_share_email" = "Hi,\n\nI pinned: %1$@ on the MAPS.ME offline map of the world. Click this link %2$@ or this one %3$@ to see the place on the map.\n\nThanks.";
-
 /* Subject for emailed position */
 "my_position_share_email_subject" = "Hey, check out my current location on the MAPS.ME map!";
 
@@ -586,15 +577,6 @@
 
 /* category title */
 "routes" = "مسیر ها";
-
-/* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
-
-/* Show on first launch. */
-"agree" = "موافقم";
-
-/* Show on first launch */
-"disagree" = "مخالفم";
 
 /* text of notification */
 "download_map_notification" = "دانلود نقشه جایی که هستید";
@@ -894,6 +876,30 @@
 
 /* pink color */
 "pink" = "صورتی";
+
+/* deep purple color */
+"deep_purple" = "ارغوانی سیر";
+
+/* light blue color */
+"light_blue" = "آبی کمرنگ";
+
+/* cyan color */
+"cyan" = "فیروزه ای";
+
+/* teal color */
+"teal" = "آبی سیر";
+
+/* lime color */
+"lime" = "زرد لیویی";
+
+/* deep orange color */
+"deep_orange" = "نارنجی سیر";
+
+/* gray color */
+"gray" = "خاکستری";
+
+/* blue gray color */
+"blue_gray" = "خاکستری کبود";
 
 /* Wi-Fi available */
 "WiFi_available" = "بلی";
@@ -1494,7 +1500,7 @@
 
 "placepage_more_button" = "بیشتر";
 
-"placepage_more_reviews_button" = "بازخورد های بیشتر";
+"placepage_more_reviews_button" = "نقدهای دیگر";
 
 "book_button" = "رزرو";
 
@@ -2179,8 +2185,6 @@
 
 "downloader_applying" = "اعمال %s...";
 
-"transit_not_found" = "ناوبری حمل و نقل در این منطقه هنوز در دسترس نیست";
-
 "whats_new_title_hotel_filter" = "فیلترهای جدید هتل در دسترس است!";
 
 "whats_new_message_hotel_filter" = "رزرو هتل در دسترس برای تاریخ خود را! از چک کردن استفاده کنید و فیلتر کنید";
@@ -2379,7 +2383,8 @@
 
 "guide_downloaded_title" = "راهنمای با موفقیت دانلود شده است";
 
-"download_guides" = "دانلود راهنما";
+/* as few symbols as possible */
+"download_guides" = "جستجوی راهنما";
 
 "guides_groups_cached" = "راهنما‌های دانلود شده";
 
@@ -3115,17 +3120,23 @@
 /* do not translate */
 "all_pass_subscription_subheader" = "City + Outdoor Pass";
 
-"all_pass_subscription_message_title" = "20000+ راهنما و مسیرهای پیادهروی";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title" = "30000+\nراهنما و مسیرها";
 
-"all_pass_subscription_message_subtitle" = "دانلود نامحدود مسیر شهرها و فضاهای باز موجود آفلاین";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle" = "<b>دانلود نامحدود</b>مسیرهای شهری و فضای باز<b>در حالت آفلاین</b>";
 
-"all_pass_subscription_message_title_2" = "700+ شهر و 100+ کشور";
+/* \n - for a break between lines. Max. 17 characters per 1 line. */
+"all_pass_subscription_message_title_2" = "پروفایل ارتفاع\nتعاملی";
 
-"all_pass_subscription_message_subtitle_2" = "سفرهای خود را در هر زمانی از سال برنامهریزی کنید";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_2" = "هر مسیر شامل<b>ارتفاع و اطلاعات اصلی مسیر است</b>";
 
-"all_pass_subscription_message_title_3" = "دامنه وسیعی از اطلاعات";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title_3" = "نشانه ها،\nتصاویر و\nتوصیهها";
 
-"all_pass_subscription_message_subtitle_3" = "نشانکها، تصاویر، مسیرهای پیاده‎روی، توصیفات و توصیهها";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_3" = "<b>دانستن همه چیز درباره مسیری</b>که قرار است طی کنید";
 
 /* do not translate */
 "sightseeing_subscription_header_sightseeing" = "City Pass";
@@ -3165,6 +3176,91 @@
 "whatsnew_guides_galleries_title" = "سفر آتی خود را با MAPS.ME برنامهریزی کنید";
 
 "whatsnew_guides_galleries_message" = "حال میتوانید توصیههای پیشنهادی را در صفحه مربوط به مکان شهرها و مکان‎های توریستی مشهور مشاهده کنید";
+
+"new_onboarding_step3_header" = "تجربه کنید";
+
+"all_pass_screen_best_value" = "بهترین ارزش";
+
+"buy_btn_for_subscription_3" = "کلیه کاتالوگ ها با %s در سال";
+
+"transit_not_found" = "راهنمای مترو در این منطقه هنوز دردسترس نیست";
+
+"dialog_pedestrian_route_is_long_header" = "مسیر مترو یافت نشد";
+
+"dialog_pedestrian_route_is_long_message" = "لطفا نقطه آغاز و پایان نزدیک تری به ایستگاه مترو انتخاب کنید";
+
+/* Failed planning SUBWAY route message in navigation view */
+"routing_planning_error_subway_special" = "برنامه ریزی مسیر مترو ناموفق ماند";
+
+"whatsnew_isolines_title" = "تازه های فضای باز: لایه توپوگرافی آفلاین!";
+
+/* as less symbols as possible */
+"whatsnew_isolines_message" = "در مناطق کوهستانی خاطر جمع باشید. فقط لایه را در قسمت بالا سمت چپ روشن کنید";
+
+"button_layer_isolines" = "ایزومپ";
+
+"tips_map_layers_title_countour" = "تازه ها در MAPS.ME: لایه توپوگرافی آفلاین!";
+
+"tips_map_layers_message_countour" = "با اطمینان از این که همه چیز را در مورد منطقه می دانید طبیعت گردی خود را برنامه ریزی کنید و لذت ببرید";
+
+"isolines_activation_error_dialog" = "برای فعال سازی و استفاده از لایه توپوگرافی نقشه منطقه را به روزرسانی یا دانلود کنید";
+
+"isolines_location_error_dialog" = "لایه توپوگرافی هنوز برای این منطقه در دسترس نیست";
+
+"elevation_profile_diff_level" = "سطح دشواری";
+
+"elevation_profile_diff_level_easy" = "آسان";
+
+"elevation_profile_diff_level_moderate" = "متوسط";
+
+"elevation_profile_diff_level_hard" = "دشوار";
+
+"elevation_profile_ascent" = "بالا رفتن";
+
+"elevation_profile_descent" = "پایین آمدن";
+
+"elevation_profile_minaltitude" = "کمینه ارتفاع";
+
+"elevation_profile_maxaltitude" = "بیشینه ارتفاع";
+
+"elevation_profile_m" = "متر";
+
+"elevation_profile_difficulty" = "دشواری";
+
+"elevation_profile_distance" = "مسافت";
+
+"elevation_profile_km" = "کیلومتر";
+
+"elevation_profile_time" = "زمان:";
+
+"elevation_profile_hours" = "ساعت";
+
+"elevation_profile_minutes" = "دقیقه";
+
+/* hide the full screen banner and continue working with the app */
+"hide_screen_map_update" = "پنهان کردن و ادامه دادن";
+
+"view_on_map_downloaded_error" = "راهنما از این دستگاه پاک شده است";
+
+"subscription" = "عضویت";
+
+"freenow_taxi_title" = "FREE NOW";
+
+"tinkoff_allairlines_map_downloader_title" = "Карта Тинькофф All Airlines. 3000 миль в подарок";
+
+"tinkoff_allairlines_map_downloader_cta_button" = "Оформить карту";
+
+"tinkoff_insurance_map_downloader_title" = "Полис Тинькофф со скидкой! Подходит для любых виз.";
+
+"tinkoff_insurance_map_downloader_cta_button" = "Промокод";
+
+"mts_map_downloader_title" = "Забугорище: интернет и звонки за границей как дома";
+
+"mts_map_downloader_cta_button" = "Подключить";
+
+"skyeng_map_downloader_title" = "Дарим 4 бесплатных урока английского от Skyeng.";
+
+"skyeng_map_downloader_cta_button" = "Подробнее";
 
 
 /**********  Partners  **********/
@@ -3318,29 +3414,23 @@
 
 "type.amenity.parking.multi.storey" = "پارکینگ";
 
-"type.amenity.parking.multi.storey.fee" = "پارکینگ";
-
 "type.amenity.parking.no.access" = "پارکینگ";
 
 "type.amenity.parking.park_and_ride" = "پارکینگ";
 
 "type.amenity.parking.permissive" = "پارکینگ";
 
-"type.amenity.parking.permissive.fee" = "پارکینگ";
-
 "type.amenity.parking.private" = "پارکینگ";
 
 "type.amenity.parking.underground" = "پارکینگ";
 
-"type.amenity.parking.underground.fee" = "پارکینگ";
-
 "type.amenity.parking_space" = "جای پارک";
 
-"type.amenity.parking_space.permissive" = "Parking space";
+"type.amenity.parking_space.permissive" = "جای پارک";
 
-"type.amenity.parking_space.private" = "Parking space";
+"type.amenity.parking_space.private" = "جای پارک";
 
-"type.amenity.parking_space.underground" = "Parking space";
+"type.amenity.parking_space.underground" = "جای پارک";
 
 "type.amenity.payment_terminal" = "دستگاه کارتخوان";
 
@@ -3366,7 +3456,7 @@
 
 "type.amenity.post_box" = "صندوق پست";
 
-"type.amenity.post_office" = "پست";
+"type.amenity.post_office" = "دفتر پست";
 
 "type.amenity.prison" = "Prison";
 
@@ -3499,12 +3589,6 @@
 "type.building.has_parts" = "ساختمان";
 
 "type.building.train_station" = "ایستگاه قطار";
-
-"type.communication" = "communication";
-
-"type.communication.line" = "communication-line";
-
-"type.communication.line.underground" = "communication-line-underground";
 
 "type.craft" = "craft";
 
@@ -3754,7 +3838,7 @@
 
 "type.highway.footway.tunnel" = "مسیر";
 
-"type.highway.ford" = "highway-ford";
+"type.highway.ford" = "Ford";
 
 "type.highway.living_street" = "جاده";
 
@@ -3808,8 +3892,6 @@
 
 "type.highway.pedestrian.tunnel" = "جاده";
 
-"type.highway.platform" = "highway-platform";
-
 "type.highway.primary" = "جاده";
 
 "type.highway.primary.bridge" = "جاده";
@@ -3862,12 +3944,6 @@
 
 "type.highway.service.driveway" = "جاده";
 
-"type.highway.service.driveway.area" = "جاده";
-
-"type.highway.service.driveway.bridge" = "جاده";
-
-"type.highway.service.driveway.tunnel" = "جاده";
-
 "type.highway.service.parking_aisle" = "جاده";
 
 "type.highway.service.tunnel" = "جاده";
@@ -3906,21 +3982,9 @@
 
 "type.highway.track.grade3" = "جاده";
 
-"type.highway.track.grade3.no.access" = "جاده";
-
-"type.highway.track.grade3.permissive" = "جاده";
-
 "type.highway.track.grade4" = "جاده";
 
-"type.highway.track.grade4.no.access" = "جاده";
-
-"type.highway.track.grade4.permissive" = "جاده";
-
 "type.highway.track.grade5" = "جاده";
-
-"type.highway.track.grade5.no.access" = "جاده";
-
-"type.highway.track.grade5.permissive" = "جاده";
 
 "type.highway.track.no.access" = "جاده";
 
@@ -4088,10 +4152,6 @@
 
 "type.landuse.residential" = "landuse-residential";
 
-"type.landuse.residential.rural" = "landuse-residential-rural";
-
-"type.landuse.residential.urban" = "landuse-residential-urban";
-
 "type.landuse.retail" = "landuse-retail";
 
 "type.landuse.salt_pond" = "landuse-salt_pond";
@@ -4105,8 +4165,6 @@
 "type.leisure.common" = "leisure-common";
 
 "type.leisure.dog_park" = "محدوده مخصوص سگ";
-
-"type.leisure.dog_park.tennis" = "Dog area";
 
 "type.leisure.fitness_centre" = "باشگاه بدنسازی";
 
@@ -4134,15 +4192,7 @@
 
 "type.leisure.pitch" = "زمین ورزشی";
 
-"type.leisure.pitch.tennis" = "زمین ورزشی";
-
 "type.leisure.playground" = "زمین بازی";
-
-"type.leisure.playground.tennis" = "زمین بازی";
-
-"type.leisure.playing_fields" = "leisure-playing_fields";
-
-"type.leisure.playing_fields.tennis" = "leisure-playing_fields-tennis";
 
 "type.leisure.recreation_ground" = "Recreation ground";
 
@@ -4206,18 +4256,6 @@
 
 "type.mapswithme.grid" = "mapswithme-grid";
 
-"type.marking" = "marking";
-
-"type.marking.sport" = "marking-sport";
-
-"type.marking.sport.black" = "marking-sport-black";
-
-"type.marking.sport.blue" = "marking-sport-blue";
-
-"type.marking.sport.red" = "marking-sport-red";
-
-"type.marking.sport.white" = "marking-sport-white";
-
 "type.military" = "military";
 
 "type.military.bunker" = "پناهگاه";
@@ -4232,7 +4270,7 @@
 
 "type.natural.cape" = "دماغه";
 
-"type.natural.cave_entrance" = "ورودی غار";
+"type.natural.cave_entrance" = "غار";
 
 "type.natural.cliff" = "Cliff";
 
@@ -4283,14 +4321,6 @@
 "type.natural.wetland.bog" = "Wetland";
 
 "type.natural.wetland.marsh" = "Wetland";
-
-"type.natural.wood" = "جنگل";
-
-"type.natural.wood.coniferous" = "جنگل";
-
-"type.natural.wood.deciduous" = "جنگل";
-
-"type.natural.wood.mixed" = "جنگل";
 
 "type.noexit" = "noexit";
 
@@ -4409,12 +4439,6 @@
 "type.power" = "power";
 
 "type.power.generator" = "power-generator";
-
-"type.power.generator.hydro" = "power-generator-hydro";
-
-"type.power.generator.photovoltaic" = "power-generator-photovoltaic";
-
-"type.power.generator.wind" = "power-generator-wind";
 
 "type.power.line" = "power-line";
 
@@ -4794,8 +4818,6 @@
 
 "type.sponsored" = "sponsored";
 
-"type.sponsored.banner" = "sponsored-banner";
-
 "type.sponsored.booking" = "sponsored-booking";
 
 "type.sponsored.holiday" = "Christmas or New Year Celebrations";
@@ -4841,8 +4863,6 @@
 "type.sponsored.partner8" = "sponsored-partner8";
 
 "type.sponsored.partner9" = "sponsored-partner9";
-
-"type.sponsored.viator" = "sponsored-viator";
 
 "type.sport" = "sport";
 
@@ -5039,8 +5059,6 @@
 "type.piste_type.sled" = "piste:type-sled";
 
 "type.building_part" = "ساختما";
-
-"type.earthquake_damage" = "earthquake:damage";
 
 "type.area_highway.cycleway" = "area:highway-cycleway";
 

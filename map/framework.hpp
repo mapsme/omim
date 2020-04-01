@@ -9,6 +9,7 @@
 #include "map/discovery/discovery_manager.hpp"
 #include "map/displacement_mode_manager.hpp"
 #include "map/features_fetcher.hpp"
+#include "map/isolines_manager.hpp"
 #include "map/local_ads_manager.hpp"
 #include "map/mwm_url.hpp"
 #include "map/notifications/notification_manager.hpp"
@@ -52,7 +53,6 @@
 #include "search/city_finder.hpp"
 #include "search/displayed_categories.hpp"
 #include "search/mode.hpp"
-#include "search/query_saver.hpp"
 #include "search/region_address_getter.hpp"
 #include "search/result.hpp"
 #include "search/reverse_geocoder.hpp"
@@ -62,7 +62,7 @@
 
 #include "tracking/reporter.hpp"
 
-#include "partners_api/banner.hpp"
+#include "partners_api/ads/banner.hpp"
 #include "partners_api/booking_api.hpp"
 #include "partners_api/locals_api.hpp"
 #include "partners_api/promo_api.hpp"
@@ -143,6 +143,7 @@ struct FrameworkParams
 {
   bool m_enableLocalAds = true;
   bool m_enableDiffs = true;
+  size_t m_numSearchAPIThreads = 1;
 
   FrameworkParams() = default;
   FrameworkParams(bool enableLocalAds, bool enableDiffs)
@@ -154,7 +155,6 @@ struct FrameworkParams
 class Framework : public PositionProvider,
                   public SearchAPI::Delegate,
                   public RoutingManager::Delegate,
-                  public TipsApi::Delegate,
                   private power_management::PowerManager::Subscriber
 {
   DISALLOW_COPY(Framework);
@@ -206,8 +206,6 @@ protected:
 
   std::unique_ptr<SearchAPI> m_searchAPI;
 
-  search::QuerySaver m_searchQuerySaver;
-
   ScreenBase m_currentModelView;
   m2::RectD m_visibleViewport;
 
@@ -242,6 +240,7 @@ protected:
   power_management::PowerManager m_powerManager;
 
   TransitReadManager m_transitManager;
+  IsolinesManager m_isolinesManager;
 
   // Note. |m_routingManager| should be declared before |m_trafficManager|
   RoutingManager m_routingManager;
@@ -308,7 +307,7 @@ public:
 
   // TipsApi::Delegate override.
   /// Checks, whether the country which contains the specified point is loaded.
-  bool IsCountryLoaded(m2::PointD const & pt) const override;
+  bool IsCountryLoaded(m2::PointD const & pt) const;
   /// Checks, whether the country is loaded.
   bool IsCountryLoadedByName(std::string const & name) const;
 
@@ -353,7 +352,7 @@ public:
   void ShowBookmark(kml::MarkId id);
   void ShowBookmark(Bookmark const * bookmark);
   void ShowTrack(kml::TrackId trackId);
-  void ShowFeatureByMercator(m2::PointD const & pt);
+  void ShowFeature(FeatureID const & featureId);
   void ShowBookmarkCategory(kml::MarkGroupId categoryId, bool animation = true);
 
   void AddBookmarksFile(std::string const & filePath, bool isTemporaryFile);
@@ -408,7 +407,7 @@ public:
   void SetPlacePageListeners(PlacePageEvent::OnOpen const & onOpen,
                              PlacePageEvent::OnClose const & onClose,
                              PlacePageEvent::OnUpdate const & onUpdate);
-  bool IsPlacePageOpened() const { return m_currentPlacePageInfo.has_value(); }
+  bool HasPlacePageInfo() const { return m_currentPlacePageInfo.has_value(); }
   place_page::Info const & GetCurrentPlacePageInfo() const;
   place_page::Info & GetCurrentPlacePageInfo();
 
@@ -438,6 +437,9 @@ private:
 
   void OnTapEvent(place_page::BuildInfo const & buildInfo);
   std::optional<place_page::Info> BuildPlacePageInfo(place_page::BuildInfo const & buildInfo);
+  void BuildTrackPlacePage(BookmarkManager::TrackSelectionInfo const & trackSelectionInfo,
+                           place_page::Info & info);
+  BookmarkManager::TrackSelectionInfo FindTrackInTapPosition(place_page::BuildInfo const & buildInfo) const;
   UserMark const * FindUserMarkInTapPosition(place_page::BuildInfo const & buildInfo) const;
   FeatureID FindBuildingAtPoint(m2::PointD const & mercator) const;
 
@@ -527,7 +529,7 @@ public:
 private:
   void InitCountryInfoGetter();
   void InitUGC();
-  void InitSearchAPI();
+  void InitSearchAPI(size_t numThreads);
   void InitDiscoveryManager();
 
   DisplacementModeManager m_displacementModeManager;
@@ -563,9 +565,6 @@ public:
   void FillSearchResultsMarks(bool clear, search::Results const & results);
   void FillSearchResultsMarks(search::Results::ConstIter begin, search::Results::ConstIter end,
                                 bool clear, SearchMarkPostProcessing fn = nullptr);
-  std::list<SearchRequest> const & GetLastSearchQueries() const { return m_searchQuerySaver.Get(); }
-  void SaveSearchQuery(SearchRequest const & query) { m_searchQuerySaver.Add(query); }
-  void ClearSearchHistory() { m_searchQuerySaver.Clear(); }
 
   /// Calculate distance and direction to POI for the given position.
   /// @param[in]  point             POI's position;
@@ -689,6 +688,8 @@ private:
   void FillRoadTypeMarkInfo(RoadWarningMark const & roadTypeMark, place_page::Info & info) const;
   void FillPointInfoForBookmark(Bookmark const & bmk, place_page::Info & info) const;
   void FillBookmarkInfo(Bookmark const & bmk, place_page::Info & info) const;
+  void FillTrackInfo(Track const & track, m2::PointD const & trackPoint,
+                     place_page::Info & info) const;
   void SetPlacePageLocation(place_page::Info & info);
   void FillLocalExperts(FeatureType & ft, place_page::Info & info) const;
   void FillDescription(FeatureType & ft, place_page::Info & info) const;
@@ -727,15 +728,15 @@ public:
                               double bearing, double speed, double elapsedSeconds);
 
 public:
-  std::string CodeGe0url(Bookmark const * bmk, bool addName);
-  std::string CodeGe0url(double lat, double lon, double zoomLevel, std::string const & name);
+  static std::string CodeGe0url(Bookmark const * bmk, bool addName);
+  static std::string CodeGe0url(double lat, double lon, double zoomLevel, std::string const & name);
 
   /// @name Api
   std::string GenerateApiBackUrl(ApiMarkPoint const & point) const;
-  url_scheme::ParsedMapApi const & GetApiDataHolder() const { return m_ParsedMapApi; }
+  url_scheme::ParsedMapApi const & GetApiDataHolder() const { return m_parsedMapApi; }
 
 private:
-  url_scheme::ParsedMapApi m_ParsedMapApi;
+  url_scheme::ParsedMapApi m_parsedMapApi;
 
 public:
   /// @name Data versions
@@ -766,6 +767,9 @@ public:
 
   TransitReadManager & GetTransitManager();
 
+  IsolinesManager & GetIsolinesManager();
+  IsolinesManager const & GetIsolinesManager() const;
+
   bool LoadTrafficEnabled();
   void SaveTrafficEnabled(bool trafficEnabled);
 
@@ -774,6 +778,9 @@ public:
 
   bool LoadTransitSchemeEnabled();
   void SaveTransitSchemeEnabled(bool enabled);
+
+  bool LoadIsolinesEnabled();
+  void SaveIsolonesEnabled(bool enabled);
 
   dp::ApiVersion LoadPreferredGraphicsAPI();
   void SavePreferredGraphicsAPI(dp::ApiVersion apiVersion);
@@ -845,6 +852,7 @@ public:
 private:
   std::unique_ptr<search::CityFinder> m_cityFinder;
   CachingAddressGetter m_addressGetter;
+  // Ads engine must be destroyed before Storage, CountryInfoGetter and Purchase.
   std::unique_ptr<ads::Engine> m_adsEngine;
   // The order matters here: storage::CountryInfoGetter and
   // search::CityFinder must be initialized before
@@ -891,8 +899,8 @@ public:
   TipsApi const & GetTipsApi() const;
 
   // TipsApi::Delegate override.
-  bool HaveTransit(m2::PointD const & pt) const override;
-  double GetLastBackgroundTime() const override;
+  bool HaveTransit(m2::PointD const & pt) const;
+  double GetLastBackgroundTime() const;
 
   bool MakePlacePageForNotification(notifications::NotificationCandidate const & notification);
 

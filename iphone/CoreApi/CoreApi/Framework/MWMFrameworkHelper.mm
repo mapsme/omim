@@ -5,8 +5,6 @@
 
 #include "base/sunrise_sunset.hpp"
 
-#include "map/crown.hpp"
-
 #include "platform/local_country_file_utils.hpp"
 #include "platform/network_policy_ios.h"
 
@@ -89,7 +87,7 @@
 
 + (NSArray<NSString *> *)obtainLastSearchQueries {
   NSMutableArray *result = [NSMutableArray array];
-  auto const &queries = GetFramework().GetLastSearchQueries();
+  auto const & queries = GetFramework().GetSearchAPI().GetLastSearchQueries();
   for (auto const &item : queries) {
     [result addObject:@(item.second.c_str())];
   }
@@ -133,10 +131,6 @@
   GetFramework().UpdateMyPositionRoutingOffset(useDefault, offsetY);
 }
 
-+ (BOOL)shouldShowCrown {
-  return crown::NeedToShow(GetFramework().GetPurchase());
-}
-
 + (void)uploadUGC:(void (^)(UIBackgroundFetchResult))completionHandler {
   GetFramework().UploadUGC([completionHandler](bool isSuccessful) {
     completionHandler(isSuccessful ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultFailed);
@@ -151,8 +145,8 @@
   return @(GetPlatform().GetAppUserAgent().Get().c_str());
 }
 
-+ (NSNumber *)dataVersion {
-  return @(GetFramework().GetCurrentDataVersion());
++ (int64_t)dataVersion {
+  return GetFramework().GetCurrentDataVersion();
 }
 
 + (void)searchInDownloader:(NSString *)query

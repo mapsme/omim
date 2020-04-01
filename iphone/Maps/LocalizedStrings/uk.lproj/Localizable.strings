@@ -6,9 +6,6 @@
 
 /********** Strings **********/
 
-/* About button text (should be short) */
-"about" = "Про програму";
-
 /* Button text (should be short) */
 "back" = "Назад";
 
@@ -107,9 +104,6 @@
 
 /* Settings/Downloader - 3G download warning dialog confirm button */
 "use_cellular_data" = "Так";
-
-/* Settings/Downloader - No internet connection dialog message */
-"use_wifi_recommendation_text" = "Ми рекомендуємо завантажувати великі країни через WiFi";
 
 /* Choose measurement on first launch alert - title */
 "which_measurement_system" = "Якій системі вимірювання ви віддаєте перевагу?";
@@ -406,9 +400,6 @@
 /* Subject for emailed bookmark */
 "bookmark_share_email_subject" = "Поглянь на мою мiтку на карті MAPS.ME";
 
-/* Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me */
-"bookmark_share_email" = "Привіт,\n\nЯ позначив: %1$@ на MAPS.ME, офлайн картах світу. Натисни на це посилання %2$@ або на це посилання %3$@, щоб побачити місце на карті.\n\nДякую.";
-
 /* Subject for emailed position */
 "my_position_share_email_subject" = "Поглянь на моє поточне місцезнаходження на карті MAPS.ME";
 
@@ -586,15 +577,6 @@
 
 /* category title */
 "routes" = "Маршрути";
-
-/* Show on first launch. */
-"maps_licence_info" = "This applications uses geographical data (including maps, business listings, points of interest, borders of countries and regions, etc.) taken from the OpenStreetMap project. We do not warrant any consistency, accuracy, completeness or applicability of the OpenStreetMap data.";
-
-/* Show on first launch. */
-"agree" = "I agree";
-
-/* Show on first launch */
-"disagree" = "I disagree";
 
 /* text of notification */
 "download_map_notification" = "Завантажуйте карту тієї місцевості, де ви знаходитесь";
@@ -894,6 +876,30 @@
 
 /* pink color */
 "pink" = "Рожевий";
+
+/* deep purple color */
+"deep_purple" = "Темно-пурпуровий";
+
+/* light blue color */
+"light_blue" = "Блакитний";
+
+/* cyan color */
+"cyan" = "Синьо-зелений";
+
+/* teal color */
+"teal" = "Смарагдовий";
+
+/* lime color */
+"lime" = "Лайм";
+
+/* deep orange color */
+"deep_orange" = "Темно-помаранчевий";
+
+/* gray color */
+"gray" = "Сірий";
+
+/* blue gray color */
+"blue_gray" = "Сіро-блакитний";
 
 /* Wi-Fi available */
 "WiFi_available" = "Так";
@@ -1494,7 +1500,7 @@
 
 "placepage_more_button" = "Ще";
 
-"placepage_more_reviews_button" = "More Reviews";
+"placepage_more_reviews_button" = "Ще відгуки";
 
 "book_button" = "Забронювати";
 
@@ -2179,8 +2185,6 @@
 
 "downloader_applying" = "Застосування %s...";
 
-"transit_not_found" = "Транзитна навігація в цьому регіоні ще недоступна";
-
 "whats_new_title_hotel_filter" = "Доступні нові фільтри для готелів!";
 
 "whats_new_message_hotel_filter" = "Бронюйте готелі, що доступні за вашими датами! Використовуйте фільтри в'їзду та виїзду";
@@ -2379,7 +2383,8 @@
 
 "guide_downloaded_title" = "Путівник успішно завантажено";
 
-"download_guides" = "Завантажити путівники";
+/* as few symbols as possible */
+"download_guides" = "Знайти путівники";
 
 "guides_groups_cached" = "Завантажені путівники";
 
@@ -3115,17 +3120,23 @@
 /* do not translate */
 "all_pass_subscription_subheader" = "City + Outdoor Pass";
 
-"all_pass_subscription_message_title" = "Понад 20 000 путівників і стежок";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title" = "30000+\nпутівників\nі стежок";
 
-"all_pass_subscription_message_subtitle" = "Безлімітне завантаження офлайнових маршрутів для прогулянок містом і активного відпочинку";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle" = "<b>Безлімітне завантаження в офлайн</b> маршрутів для міста та активного відпочинку";
 
-"all_pass_subscription_message_title_2" = "Понад 700 міст і 100 країн";
+/* \n - for a break between lines. Max. 17 characters per 1 line. */
+"all_pass_subscription_message_title_2" = "Інтерактивний\nпрофіль висот";
 
-"all_pass_subscription_message_subtitle_2" = "Для подорожей у будь-яку пору року";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_2" = "Всі стежки завантажуються <b>з висотами й основною інформацією про маршрут</b>";
 
-"all_pass_subscription_message_title_3" = "Різноманітний контент";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title_3" = "Вибрані\nмісця, фото\nта рекомендації";
 
-"all_pass_subscription_message_subtitle_3" = "Мітки, фото, піші треки, описи та рекомендації";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_3" = "<b>Дізнайтеся все про маршрут</b>, за яким збираєтеся пройти";
 
 /* do not translate */
 "sightseeing_subscription_header_sightseeing" = "City Pass";
@@ -3165,6 +3176,91 @@
 "whatsnew_guides_galleries_title" = "Плануйте найближчу поїздку з MAPS.ME";
 
 "whatsnew_guides_galleries_message" = "Тепер ви можете знайти рекомендовані путівники в картках популярних міст і пам’яток";
+
+"new_onboarding_step3_header" = "Подорожуйте";
+
+"all_pass_screen_best_value" = "Вигідна ціна";
+
+"buy_btn_for_subscription_3" = "Увесь каталог за %s/рік";
+
+"transit_not_found" = "Навігація на метро ще недоступна в цьому регіоні";
+
+"dialog_pedestrian_route_is_long_header" = "Маршрут метро не знайдено";
+
+"dialog_pedestrian_route_is_long_message" = "Виберіть початкову чи кінцеву точку маршруту ближче до станції метро";
+
+/* Failed planning SUBWAY route message in navigation view */
+"routing_planning_error_subway_special" = "Не вдалося прокласти маршрут метро";
+
+"whatsnew_isolines_title" = "Новина для активного відпочинку – лінії висот офлайн!";
+
+/* as less symbols as possible */
+"whatsnew_isolines_message" = "Орієнтуйтеся в гірській місцевості – увімкніть шар, натиснувши кнопку в лівому верхньому куті екрана";
+
+"button_layer_isolines" = "Висоти";
+
+"tips_map_layers_title_countour" = "Лінії висот офлайн у MAPS.ME!";
+
+"tips_map_layers_message_countour" = "Лінії висот допоможуть спланувати подорож на природу та не загубитися на місцевості";
+
+"isolines_activation_error_dialog" = "Щоб скористатися лініями висот, оновіть чи завантажте карту потрібної місцевості";
+
+"isolines_location_error_dialog" = "Лінії висот ще недоступні в цьому регіоні";
+
+"elevation_profile_diff_level" = "Рівень складності";
+
+"elevation_profile_diff_level_easy" = "Простий";
+
+"elevation_profile_diff_level_moderate" = "Помірний";
+
+"elevation_profile_diff_level_hard" = "Складний";
+
+"elevation_profile_ascent" = "Підйом";
+
+"elevation_profile_descent" = "Спуск";
+
+"elevation_profile_minaltitude" = "Мін. висота";
+
+"elevation_profile_maxaltitude" = "Макс. висота";
+
+"elevation_profile_m" = "м";
+
+"elevation_profile_difficulty" = "Складність";
+
+"elevation_profile_distance" = "Відст.:";
+
+"elevation_profile_km" = "км";
+
+"elevation_profile_time" = "Шлях:";
+
+"elevation_profile_hours" = "год.";
+
+"elevation_profile_minutes" = "хв";
+
+/* hide the full screen banner and continue working with the app */
+"hide_screen_map_update" = "Приховати та поновити роботу";
+
+"view_on_map_downloaded_error" = "Цей путівник видалили з пристрою";
+
+"subscription" = "Передплата";
+
+"freenow_taxi_title" = "FREE NOW";
+
+"tinkoff_allairlines_map_downloader_title" = "Карта Тинькофф All Airlines. 3000 миль в подарок";
+
+"tinkoff_allairlines_map_downloader_cta_button" = "Оформить карту";
+
+"tinkoff_insurance_map_downloader_title" = "Полис Тинькофф со скидкой! Подходит для любых виз.";
+
+"tinkoff_insurance_map_downloader_cta_button" = "Промокод";
+
+"mts_map_downloader_title" = "Забугорище: интернет и звонки за границей как дома";
+
+"mts_map_downloader_cta_button" = "Подключить";
+
+"skyeng_map_downloader_title" = "Дарим 4 бесплатных урока английского от Skyeng.";
+
+"skyeng_map_downloader_cta_button" = "Подробнее";
 
 
 /**********  Partners  **********/
@@ -3318,29 +3414,23 @@
 
 "type.amenity.parking.multi.storey" = "Парковка";
 
-"type.amenity.parking.multi.storey.fee" = "Парковка";
-
 "type.amenity.parking.no.access" = "Парковка";
 
 "type.amenity.parking.park_and_ride" = "Парковка";
 
 "type.amenity.parking.permissive" = "Парковка";
 
-"type.amenity.parking.permissive.fee" = "Парковка";
-
 "type.amenity.parking.private" = "Парковка";
 
 "type.amenity.parking.underground" = "Парковка";
 
-"type.amenity.parking.underground.fee" = "Парковка";
-
 "type.amenity.parking_space" = "Паркувальне місце";
 
-"type.amenity.parking_space.permissive" = "Parking space";
+"type.amenity.parking_space.permissive" = "Паркувальне місце";
 
-"type.amenity.parking_space.private" = "Parking space";
+"type.amenity.parking_space.private" = "Паркувальне місце";
 
-"type.amenity.parking_space.underground" = "Parking space";
+"type.amenity.parking_space.underground" = "Паркувальне місце";
 
 "type.amenity.payment_terminal" = "Платіжний термінал";
 
@@ -3366,7 +3456,7 @@
 
 "type.amenity.post_box" = "Поштова скринька";
 
-"type.amenity.post_office" = "Пошта";
+"type.amenity.post_office" = "Поштове відділення";
 
 "type.amenity.prison" = "Prison";
 
@@ -3499,12 +3589,6 @@
 "type.building.has_parts" = "Будівля";
 
 "type.building.train_station" = "Залізничний вокзал";
-
-"type.communication" = "communication";
-
-"type.communication.line" = "communication-line";
-
-"type.communication.line.underground" = "communication-line-underground";
 
 "type.craft" = "craft";
 
@@ -3754,7 +3838,7 @@
 
 "type.highway.footway.tunnel" = "Пішохідна доріжка";
 
-"type.highway.ford" = "highway-ford";
+"type.highway.ford" = "Ford";
 
 "type.highway.living_street" = "Вулиця";
 
@@ -3808,8 +3892,6 @@
 
 "type.highway.pedestrian.tunnel" = "Вулиця";
 
-"type.highway.platform" = "highway-platform";
-
 "type.highway.primary" = "Вулиця";
 
 "type.highway.primary.bridge" = "Вулиця";
@@ -3862,12 +3944,6 @@
 
 "type.highway.service.driveway" = "Вулиця";
 
-"type.highway.service.driveway.area" = "Вулиця";
-
-"type.highway.service.driveway.bridge" = "Вулиця";
-
-"type.highway.service.driveway.tunnel" = "Вулиця";
-
 "type.highway.service.parking_aisle" = "Вулиця";
 
 "type.highway.service.tunnel" = "Вулиця";
@@ -3906,21 +3982,9 @@
 
 "type.highway.track.grade3" = "Вулиця";
 
-"type.highway.track.grade3.no.access" = "Вулиця";
-
-"type.highway.track.grade3.permissive" = "Вулиця";
-
 "type.highway.track.grade4" = "Вулиця";
 
-"type.highway.track.grade4.no.access" = "Вулиця";
-
-"type.highway.track.grade4.permissive" = "Вулиця";
-
 "type.highway.track.grade5" = "Вулиця";
-
-"type.highway.track.grade5.no.access" = "Вулиця";
-
-"type.highway.track.grade5.permissive" = "Вулиця";
 
 "type.highway.track.no.access" = "Вулиця";
 
@@ -4088,10 +4152,6 @@
 
 "type.landuse.residential" = "landuse-residential";
 
-"type.landuse.residential.rural" = "landuse-residential-rural";
-
-"type.landuse.residential.urban" = "landuse-residential-urban";
-
 "type.landuse.retail" = "landuse-retail";
 
 "type.landuse.salt_pond" = "landuse-salt_pond";
@@ -4105,8 +4165,6 @@
 "type.leisure.common" = "leisure-common";
 
 "type.leisure.dog_park" = "Місце для вигулу собак";
-
-"type.leisure.dog_park.tennis" = "Dog area";
 
 "type.leisure.fitness_centre" = "Фітнес-зал";
 
@@ -4134,15 +4192,7 @@
 
 "type.leisure.pitch" = "Спортмайданчик";
 
-"type.leisure.pitch.tennis" = "Спортмайданчик";
-
 "type.leisure.playground" = "Дитячий майданчик";
-
-"type.leisure.playground.tennis" = "Дитячий майданчик";
-
-"type.leisure.playing_fields" = "leisure-playing_fields";
-
-"type.leisure.playing_fields.tennis" = "leisure-playing_fields-tennis";
 
 "type.leisure.recreation_ground" = "Recreation ground";
 
@@ -4205,18 +4255,6 @@
 "type.mapswithme" = "mapswithme";
 
 "type.mapswithme.grid" = "mapswithme-grid";
-
-"type.marking" = "marking";
-
-"type.marking.sport" = "marking-sport";
-
-"type.marking.sport.black" = "marking-sport-black";
-
-"type.marking.sport.blue" = "marking-sport-blue";
-
-"type.marking.sport.red" = "marking-sport-red";
-
-"type.marking.sport.white" = "marking-sport-white";
 
 "type.military" = "military";
 
@@ -4283,14 +4321,6 @@
 "type.natural.wetland.bog" = "Wetland";
 
 "type.natural.wetland.marsh" = "Wetland";
-
-"type.natural.wood" = "Ліс";
-
-"type.natural.wood.coniferous" = "Ліс";
-
-"type.natural.wood.deciduous" = "Ліс";
-
-"type.natural.wood.mixed" = "Ліс";
 
 "type.noexit" = "noexit";
 
@@ -4409,12 +4439,6 @@
 "type.power" = "power";
 
 "type.power.generator" = "power-generator";
-
-"type.power.generator.hydro" = "power-generator-hydro";
-
-"type.power.generator.photovoltaic" = "power-generator-photovoltaic";
-
-"type.power.generator.wind" = "power-generator-wind";
 
 "type.power.line" = "power-line";
 
@@ -4794,8 +4818,6 @@
 
 "type.sponsored" = "sponsored";
 
-"type.sponsored.banner" = "sponsored-banner";
-
 "type.sponsored.booking" = "sponsored-booking";
 
 "type.sponsored.holiday" = "Christmas or New Year Celebrations";
@@ -4841,8 +4863,6 @@
 "type.sponsored.partner8" = "sponsored-partner8";
 
 "type.sponsored.partner9" = "sponsored-partner9";
-
-"type.sponsored.viator" = "sponsored-viator";
 
 "type.sport" = "sport";
 
@@ -5039,8 +5059,6 @@
 "type.piste_type.sled" = "piste:type-sled";
 
 "type.building_part" = "Будівля";
-
-"type.earthquake_damage" = "earthquake:damage";
 
 "type.area_highway.cycleway" = "area:highway-cycleway";
 

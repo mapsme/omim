@@ -68,15 +68,17 @@ static PlacePageDataHotelType convertHotelType(std::optional<ftypes::IsHotelChec
     _subtitle = rawData.GetSubtitle().empty() ? nil : @(rawData.GetSubtitle().c_str());
     _address = rawData.GetAddress().empty() ? nil : @(rawData.GetAddress().c_str());
     _pricing = rawData.GetApproximatePricing().empty() ? nil : @(rawData.GetApproximatePricing().c_str());
-    _hasBanner = rawData.HasBanner();
+    _rawPricing = rawData.GetRawApproximatePricing() ? nil : [[NSNumber alloc] initWithInt: *(rawData.GetRawApproximatePricing())];
     _isPopular = rawData.GetPopularity() > 0;
     _isBookingPlace = rawData.GetSponsoredType() == place_page::SponsoredType::Booking;
     _schedule = convertOpeningHours(rawData.GetOpeningHours());
     _hotelType = convertHotelType(rawData.GetHotelType());
     _showUgc = rawData.ShouldShowUGC();
+    auto const banners = rawData.GetBanners();
+    _hasBanner = !banners.empty();
     if (_hasBanner) {
       NSMutableArray *bannersArray = [NSMutableArray array];
-      for (auto const &b : rawData.GetBanners()) {
+      for (auto const &b : banners) {
         CoreBanner *banner = [[CoreBanner alloc] initWithAdBanner:b];
         [bannersArray addObject:banner];
       }

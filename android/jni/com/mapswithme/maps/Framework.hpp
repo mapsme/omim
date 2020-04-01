@@ -22,14 +22,15 @@
 #include "partners_api/promo_api.hpp"
 #include "partners_api/utm.hpp"
 
+#include "indexer/feature_decl.hpp"
+#include "indexer/map_style.hpp"
+
 #include "platform/country_defines.hpp"
 #include "platform/location.hpp"
 
 #include "geometry/avg_vector.hpp"
 
 #include "base/timer.hpp"
-
-#include "indexer/map_style.hpp"
 
 #include <cstdint>
 #include <map>
@@ -69,6 +70,7 @@ namespace android
 
     void TrafficStateChanged(TrafficManager::TrafficState state);
     void TransitSchemeStateChanged(TransitReadManager::TransitSchemeState state);
+    void IsolinesSchemeStateChanged(IsolinesManager::IsolinesState state);
 
     void MyPositionModeChanged(location::EMyPositionMode mode, bool routingActive);
 
@@ -78,6 +80,7 @@ namespace android
 
     TrafficManager::TrafficStateChangedFn m_onTrafficStateChangedFn;
     TransitReadManager::TransitStateChangedFn m_onTransitStateChangedFn;
+    IsolinesManager::IsolinesStateChangedFn m_onIsolinesStateChangedFn;
 
     bool m_isChoosePositionMode;
 
@@ -92,7 +95,6 @@ namespace android
     void OnLocationError(int/* == location::TLocationStatus*/ newStatus);
     void OnLocationUpdated(location::GpsInfo const & info);
     void OnCompassUpdated(location::CompassInfo const & info, bool forceRedraw);
-    void UpdateCompassSensor(int ind, float * arr);
 
     bool CreateDrapeEngine(JNIEnv * env, jobject jSurface, int densityDpi, bool firstLaunch,
                            bool launchByDeepLink, int appVersionCode);
@@ -168,6 +170,7 @@ namespace android
 
     void SetTrafficStateListener(TrafficManager::TrafficStateChangedFn const & fn);
     void SetTransitSchemeListener(TransitReadManager::TransitStateChangedFn const & fn);
+    void SetIsolinesListener(IsolinesManager::IsolinesStateChangedFn const & fn);
     bool IsTrafficEnabled();
     void EnableTraffic();
     void DisableTraffic();
@@ -225,6 +228,8 @@ namespace android
     // PowerManager::Subscriber overrides:
     void OnPowerFacilityChanged(power_management::Facility const facility, bool enabled) override;
     void OnPowerSchemeChanged(power_management::Scheme const actualScheme) override;
+
+    FeatureID BuildFeatureId(JNIEnv * env, jobject featureId);
   };
 }
 

@@ -18,6 +18,7 @@ omim_add_executable(${PROJECT_NAME} ${SRC})
 omim_link_libraries(
   ${PROJECT_NAME}
   map
+  ge0
   web_api
   editor
   indexer

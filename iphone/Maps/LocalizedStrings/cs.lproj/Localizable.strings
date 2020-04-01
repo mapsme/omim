@@ -6,9 +6,6 @@
 
 /********** Strings **********/
 
-/* About button text (should be short) */
-"about" = "O aplikaci";
-
 /* Button text (should be short) */
 "back" = "Zpět";
 
@@ -107,9 +104,6 @@
 
 /* Settings/Downloader - 3G download warning dialog confirm button */
 "use_cellular_data" = "Ano";
-
-/* Settings/Downloader - No internet connection dialog message */
-"use_wifi_recommendation_text" = "Pro stahování větších map doporučujeme používat WiFi";
 
 /* Choose measurement on first launch alert - title */
 "which_measurement_system" = "Jaký systém pro měření preferujete?";
@@ -406,9 +400,6 @@
 /* Subject for emailed bookmark */
 "bookmark_share_email_subject" = "Koukni na moji značku na mapě v MAPS.ME";
 
-/* Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me */
-"bookmark_share_email" = "Ahoj,\n\noznačil/a jsem %1$@ v MAPS.ME, offline mapách celého světa. Klepni na jeden z těchto odkazů %2$@, %3$@ a uvidíš toto místo na mapě.\n\nDíky.";
-
 /* Subject for emailed position */
 "my_position_share_email_subject" = "Podívej se na mou aktuální polohu na mapě na MAPS.ME";
 
@@ -586,15 +577,6 @@
 
 /* category title */
 "routes" = "Trasy";
-
-/* Show on first launch. */
-"maps_licence_info" = "Tato aplikace využívá geografická data (zahrnující mapy, zakreslení firem a zájmových bodů, hranice států a regionů apod.), která byla převzata z otevřeného projektu OpenStreetMap. Konzistenci, přesnost, úplnost ani správnost těchto OpenStreetMap dat proto nemůžeme zaručit.";
-
-/* Show on first launch. */
-"agree" = "Souhlasím";
-
-/* Show on first launch */
-"disagree" = "Nesouhlasím";
 
 /* text of notification */
 "download_map_notification" = "Stáhněte si mapu místa, kde právě jste";
@@ -894,6 +876,30 @@
 
 /* pink color */
 "pink" = "Růžová";
+
+/* deep purple color */
+"deep_purple" = "Tmavě fialová";
+
+/* light blue color */
+"light_blue" = "Světle modrá";
+
+/* cyan color */
+"cyan" = "Cyan";
+
+/* teal color */
+"teal" = "Teal";
+
+/* lime color */
+"lime" = "Limeta";
+
+/* deep orange color */
+"deep_orange" = "Tmavě oranžová";
+
+/* gray color */
+"gray" = "Šedá";
+
+/* blue gray color */
+"blue_gray" = "Modrošedá";
 
 /* Wi-Fi available */
 "WiFi_available" = "Ano";
@@ -1494,7 +1500,7 @@
 
 "placepage_more_button" = "Více";
 
-"placepage_more_reviews_button" = "More Reviews";
+"placepage_more_reviews_button" = "Více recenzí";
 
 "book_button" = "Rezervace";
 
@@ -2179,8 +2185,6 @@
 
 "downloader_applying" = "Aplikuji %s...";
 
-"transit_not_found" = "Tranzitní navigace v tomto regionu zatím není k dispozici";
-
 "whats_new_title_hotel_filter" = "Nové filtry pro hotely k dispozici!";
 
 "whats_new_message_hotel_filter" = "Rezervujte si hotely, které jsou k dispozici k vámi požadovaném datu! Použít filtry pro přihlášení a odhlášení v hotelu";
@@ -2379,7 +2383,8 @@
 
 "guide_downloaded_title" = "Průvodce byl úspěšně stažen.";
 
-"download_guides" = "Stáhnout průvodce";
+/* as few symbols as possible */
+"download_guides" = "Průvodce vyhledáváním";
 
 "guides_groups_cached" = "Stažení průvodci";
 
@@ -3115,17 +3120,23 @@
 /* do not translate */
 "all_pass_subscription_subheader" = "City + Outdoor Pass";
 
-"all_pass_subscription_message_title" = "Více než 20000 průvodců a tras";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title" = "Více než 30000\nprůvodců a tras";
 
-"all_pass_subscription_message_subtitle" = "Neomezený počet stahování městských a venkovních tras dostupných offline";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle" = "<b>Neomezené stahování</b> městských a venkovních tras <b>do režimu offline</b>";
 
-"all_pass_subscription_message_title_2" = "Více než 700 měst a 100 zemí";
+/* \n - for a break between lines. Max. 17 characters per 1 line. */
+"all_pass_subscription_message_title_2" = "Interaktivní\nvýškový profil";
 
-"all_pass_subscription_message_subtitle_2" = "Plánujte své cesty v jakémkoli období roku";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_2" = "Každá trasa obsahuje <b>výšku a základní informace o trase</b>";
 
-"all_pass_subscription_message_title_3" = "Široká škála obsahu";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title_3" = "Záložky,\nfotky a\ndoporučení";
 
-"all_pass_subscription_message_subtitle_3" = "Záložky, fotografie, turistické trasy, popisy a tipy";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_3" = "<b>Zjistěte vše o trase,</b> kterou se chcete vydat";
 
 /* do not translate */
 "sightseeing_subscription_header_sightseeing" = "City Pass";
@@ -3165,6 +3176,91 @@
 "whatsnew_guides_galleries_title" = "Plánujte váš nadcházející výlet s MAPS.ME";
 
 "whatsnew_guides_galleries_message" = "Nyní najdete doporučené průvodce na místě na stránkách oblíbených turistických měst a památek";
+
+"new_onboarding_step3_header" = "Zažijte";
+
+"all_pass_screen_best_value" = "Nejvýhodnější";
+
+"buy_btn_for_subscription_3" = "Celý katalog za %s/rok";
+
+"transit_not_found" = "Navigace metra v této oblasti zatím není k dispozici";
+
+"dialog_pedestrian_route_is_long_header" = "Trasa metra nebyla nalezena";
+
+"dialog_pedestrian_route_is_long_message" = "Zvolte prosím počáteční nebo koncový bod blíže k stanici metra";
+
+/* Failed planning SUBWAY route message in navigation view */
+"routing_planning_error_subway_special" = "Plánování trasy metra selhalo";
+
+"whatsnew_isolines_title" = "Nové pro outdoor: topografická vrstva offline!";
+
+/* as less symbols as possible */
+"whatsnew_isolines_message" = "Buďte sebevědomí v hornaté oblasti. Stačí zapnout vrstvu v levém horním rohu";
+
+"button_layer_isolines" = "Terén";
+
+"tips_map_layers_title_countour" = "Novinka v MAPS.ME: offline topografická vrstva!";
+
+"tips_map_layers_message_countour" = "Naplánujte si a užijte si své výlety do přírody s jistotou, že víte vše o této oblasti";
+
+"isolines_activation_error_dialog" = "Chcete-li aktivovat a používat topografickou vrstvu, prosím aktualizujte nebo si stáhněte mapu oblasti";
+
+"isolines_location_error_dialog" = "Topografická vrstva není v této oblasti ještě dostupná";
+
+"elevation_profile_diff_level" = "Stupeň obtížnosti";
+
+"elevation_profile_diff_level_easy" = "Snadný";
+
+"elevation_profile_diff_level_moderate" = "Mírný";
+
+"elevation_profile_diff_level_hard" = "Těžký";
+
+"elevation_profile_ascent" = "Stoupání";
+
+"elevation_profile_descent" = "Klesání";
+
+"elevation_profile_minaltitude" = "Min. nadmořská výška";
+
+"elevation_profile_maxaltitude" = "Max. nadmořská výška";
+
+"elevation_profile_m" = "m";
+
+"elevation_profile_difficulty" = "Obtížnost";
+
+"elevation_profile_distance" = "Vzdál.:";
+
+"elevation_profile_km" = "km";
+
+"elevation_profile_time" = "Čas:";
+
+"elevation_profile_hours" = "hod.";
+
+"elevation_profile_minutes" = "min";
+
+/* hide the full screen banner and continue working with the app */
+"hide_screen_map_update" = "Skrýt a pokračovat";
+
+"view_on_map_downloaded_error" = "Tento průvodce byl smazán z tohoto zařízení";
+
+"subscription" = "Předplatné";
+
+"freenow_taxi_title" = "FREE NOW";
+
+"tinkoff_allairlines_map_downloader_title" = "Карта Тинькофф All Airlines. 3000 миль в подарок";
+
+"tinkoff_allairlines_map_downloader_cta_button" = "Оформить карту";
+
+"tinkoff_insurance_map_downloader_title" = "Полис Тинькофф со скидкой! Подходит для любых виз.";
+
+"tinkoff_insurance_map_downloader_cta_button" = "Промокод";
+
+"mts_map_downloader_title" = "Забугорище: интернет и звонки за границей как дома";
+
+"mts_map_downloader_cta_button" = "Подключить";
+
+"skyeng_map_downloader_title" = "Дарим 4 бесплатных урока английского от Skyeng.";
+
+"skyeng_map_downloader_cta_button" = "Подробнее";
 
 
 /**********  Partners  **********/
@@ -3318,29 +3414,23 @@
 
 "type.amenity.parking.multi.storey" = "Parkoviště";
 
-"type.amenity.parking.multi.storey.fee" = "Parkoviště";
-
 "type.amenity.parking.no.access" = "Parkoviště";
 
 "type.amenity.parking.park_and_ride" = "Parkoviště";
 
 "type.amenity.parking.permissive" = "Parkoviště";
 
-"type.amenity.parking.permissive.fee" = "Parkoviště";
-
 "type.amenity.parking.private" = "Parkoviště";
 
 "type.amenity.parking.underground" = "Parkoviště";
 
-"type.amenity.parking.underground.fee" = "Parkoviště";
-
 "type.amenity.parking_space" = "Prostor pro parkování";
 
-"type.amenity.parking_space.permissive" = "Parking space";
+"type.amenity.parking_space.permissive" = "Prostor pro parkování";
 
-"type.amenity.parking_space.private" = "Parking space";
+"type.amenity.parking_space.private" = "Prostor pro parkování";
 
-"type.amenity.parking_space.underground" = "Parking space";
+"type.amenity.parking_space.underground" = "Prostor pro parkování";
 
 "type.amenity.payment_terminal" = "Platební terminál";
 
@@ -3499,12 +3589,6 @@
 "type.building.has_parts" = "Stavba";
 
 "type.building.train_station" = "Železniční stanice";
-
-"type.communication" = "communication";
-
-"type.communication.line" = "communication-line";
-
-"type.communication.line.underground" = "communication-line-underground";
 
 "type.craft" = "craft";
 
@@ -3754,7 +3838,7 @@
 
 "type.highway.footway.tunnel" = "Cesta";
 
-"type.highway.ford" = "highway-ford";
+"type.highway.ford" = "Ford";
 
 "type.highway.living_street" = "Ulice";
 
@@ -3808,8 +3892,6 @@
 
 "type.highway.pedestrian.tunnel" = "Ulice";
 
-"type.highway.platform" = "highway-platform";
-
 "type.highway.primary" = "Ulice";
 
 "type.highway.primary.bridge" = "Ulice";
@@ -3862,12 +3944,6 @@
 
 "type.highway.service.driveway" = "Ulice";
 
-"type.highway.service.driveway.area" = "Ulice";
-
-"type.highway.service.driveway.bridge" = "Ulice";
-
-"type.highway.service.driveway.tunnel" = "Ulice";
-
 "type.highway.service.parking_aisle" = "Ulice";
 
 "type.highway.service.tunnel" = "Ulice";
@@ -3906,21 +3982,9 @@
 
 "type.highway.track.grade3" = "Ulice";
 
-"type.highway.track.grade3.no.access" = "Ulice";
-
-"type.highway.track.grade3.permissive" = "Ulice";
-
 "type.highway.track.grade4" = "Ulice";
 
-"type.highway.track.grade4.no.access" = "Ulice";
-
-"type.highway.track.grade4.permissive" = "Ulice";
-
 "type.highway.track.grade5" = "Ulice";
-
-"type.highway.track.grade5.no.access" = "Ulice";
-
-"type.highway.track.grade5.permissive" = "Ulice";
 
 "type.highway.track.no.access" = "Ulice";
 
@@ -4088,10 +4152,6 @@
 
 "type.landuse.residential" = "landuse-residential";
 
-"type.landuse.residential.rural" = "landuse-residential-rural";
-
-"type.landuse.residential.urban" = "landuse-residential-urban";
-
 "type.landuse.retail" = "landuse-retail";
 
 "type.landuse.salt_pond" = "landuse-salt_pond";
@@ -4105,8 +4165,6 @@
 "type.leisure.common" = "leisure-common";
 
 "type.leisure.dog_park" = "Místo pro psy";
-
-"type.leisure.dog_park.tennis" = "Psí hřiště";
 
 "type.leisure.fitness_centre" = "Fitness";
 
@@ -4134,15 +4192,7 @@
 
 "type.leisure.pitch" = "Sportovní hřiště";
 
-"type.leisure.pitch.tennis" = "Sportovní hřiště";
-
 "type.leisure.playground" = "Hřiště";
-
-"type.leisure.playground.tennis" = "Hřiště";
-
-"type.leisure.playing_fields" = "leisure-playing_fields";
-
-"type.leisure.playing_fields.tennis" = "leisure-playing_fields-tennis";
 
 "type.leisure.recreation_ground" = "Recreation ground";
 
@@ -4206,18 +4256,6 @@
 
 "type.mapswithme.grid" = "mapswithme-grid";
 
-"type.marking" = "marking";
-
-"type.marking.sport" = "marking-sport";
-
-"type.marking.sport.black" = "marking-sport-black";
-
-"type.marking.sport.blue" = "marking-sport-blue";
-
-"type.marking.sport.red" = "marking-sport-red";
-
-"type.marking.sport.white" = "marking-sport-white";
-
 "type.military" = "military";
 
 "type.military.bunker" = "Bunkr";
@@ -4232,7 +4270,7 @@
 
 "type.natural.cape" = "Mys";
 
-"type.natural.cave_entrance" = "Vchod do jeskyně";
+"type.natural.cave_entrance" = "Jeskyně";
 
 "type.natural.cliff" = "Cliff";
 
@@ -4283,14 +4321,6 @@
 "type.natural.wetland.bog" = "Wetland";
 
 "type.natural.wetland.marsh" = "Wetland";
-
-"type.natural.wood" = "Les";
-
-"type.natural.wood.coniferous" = "Les";
-
-"type.natural.wood.deciduous" = "Les";
-
-"type.natural.wood.mixed" = "Les";
 
 "type.noexit" = "noexit";
 
@@ -4409,12 +4439,6 @@
 "type.power" = "power";
 
 "type.power.generator" = "power-generator";
-
-"type.power.generator.hydro" = "power-generator-hydro";
-
-"type.power.generator.photovoltaic" = "power-generator-photovoltaic";
-
-"type.power.generator.wind" = "power-generator-wind";
 
 "type.power.line" = "power-line";
 
@@ -4794,8 +4818,6 @@
 
 "type.sponsored" = "sponsored";
 
-"type.sponsored.banner" = "sponsored-banner";
-
 "type.sponsored.booking" = "sponsored-booking";
 
 "type.sponsored.holiday" = "Christmas or New Year Celebrations";
@@ -4841,8 +4863,6 @@
 "type.sponsored.partner8" = "sponsored-partner8";
 
 "type.sponsored.partner9" = "sponsored-partner9";
-
-"type.sponsored.viator" = "sponsored-viator";
 
 "type.sport" = "sport";
 
@@ -5039,8 +5059,6 @@
 "type.piste_type.sled" = "piste:type-sled";
 
 "type.building_part" = "Stavba";
-
-"type.earthquake_damage" = "earthquake:damage";
 
 "type.area_highway.cycleway" = "area:highway-cycleway";
 

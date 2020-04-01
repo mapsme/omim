@@ -8,6 +8,7 @@
 
 #include "geometry/latlon.hpp"
 #include "geometry/mercator.hpp"
+#include "geometry/point_with_altitude.hpp"
 
 #include "base/assert.hpp"
 
@@ -97,7 +98,7 @@ struct LocalizableStringAdapter
     if (dict.is_none())
       return;
 
-    auto const langs = python_list_to_std_vector<std::string>(dict.keys());
+    auto const langs = pyhelpers::PythonListToStdVector<std::string>(dict.keys());
     for (auto const & lang : langs)
     {
       auto const langIndex = StringUtf8Multilang::GetLangIndex(lang);
@@ -121,6 +122,42 @@ struct LocalizableStringAdapter
         out << ", ";
     }
     out << "]";
+    return out.str();
+  }
+};
+
+std::string LatLonToString(ms::LatLon const & latLon);
+
+struct PointWithAltitudeAdapter
+{
+  static m2::PointD const & GetPoint(geometry::PointWithAltitude const & ptWithAlt)
+  {
+    return ptWithAlt.GetPoint();
+  }
+
+  static geometry::Altitude GetAltitude(geometry::PointWithAltitude const & ptWithAlt)
+  {
+    return ptWithAlt.GetAltitude();
+  }
+
+  static void SetPoint(geometry::PointWithAltitude & ptWithAlt, m2::PointD const & pt)
+  {
+    ptWithAlt.SetPoint(pt);
+  }
+
+  static void SetAltitude(geometry::PointWithAltitude & ptWithAlt, geometry::Altitude altitude)
+  {
+    ptWithAlt.SetAltitude(altitude);
+  }
+
+  static std::string ToString(geometry::PointWithAltitude const & ptWithAlt)
+  {
+    auto const latLon = mercator::ToLatLon(ptWithAlt.GetPoint());
+    std::ostringstream out;
+    out << "["
+        << "point:" << LatLonToString(latLon) << ", "
+        << "altitude:" << ptWithAlt.GetAltitude()
+        << "]";
     return out.str();
   }
 };
@@ -163,7 +200,7 @@ struct PropertiesAdapter
     if (dict.is_none())
       return;
 
-    auto const keys = python_list_to_std_vector<std::string>(dict.keys());
+    auto const keys = pyhelpers::PythonListToStdVector<std::string>(dict.keys());
     for (auto const & k : keys)
       props[k] = extract<std::string>(dict[k]);
   }
@@ -190,7 +227,7 @@ struct VectorAdapter
 {
   static boost::python::list Get(std::vector<T> const & v)
   {
-    return std_vector_to_python_list(v);
+    return pyhelpers::StdVectorToPythonList(v);
   }
 
   static void Set(std::vector<T> & v, boost::python::object const & iterable)
@@ -200,7 +237,7 @@ struct VectorAdapter
       v.clear();
       return;
     }
-    v = python_list_to_std_vector<T>(iterable);
+    v = pyhelpers::PythonListToStdVector<T>(iterable);
   }
 
   static void PrintType(std::ostringstream & out, T const & t)
@@ -243,34 +280,10 @@ void VectorAdapter<TrackLayer>::PrintType(std::ostringstream & out, TrackLayer c
 }
 
 template<>
-boost::python::list VectorAdapter<m2::PointD>::Get(std::vector<m2::PointD> const & points)
+void VectorAdapter<geometry::PointWithAltitude>::PrintType(std::ostringstream & out,
+                                                           geometry::PointWithAltitude const & pt)
 {
-  std::vector<ms::LatLon> latLonArray;
-  latLonArray.reserve(points.size());
-  for (size_t i = 0; i < points.size(); ++i)
-    latLonArray.emplace_back(mercator::YToLat(points[i].y), mercator::XToLon(points[i].x));
-  return std_vector_to_python_list(latLonArray);
-}
-
-template<>
-void VectorAdapter<m2::PointD>::Set(std::vector<m2::PointD> & v, boost::python::object const & iterable)
-{
-  v.clear();
-  if (iterable.is_none())
-    return;
-
-  auto const latLon = python_list_to_std_vector<ms::LatLon>(iterable);
-  v.reserve(latLon.size());
-  for (size_t i = 0; i < latLon.size(); ++i)
-    v.emplace_back(mercator::LonToX(latLon[i].m_lon), mercator::LatToY(latLon[i].m_lat));
-}
-
-std::string LatLonToString(ms::LatLon const & latLon);
-template<>
-void VectorAdapter<m2::PointD>::PrintType(std::ostringstream & out, m2::PointD const & pt)
-{
-  ms::LatLon const latLon(mercator::YToLat(pt.y), mercator::XToLon(pt.x));
-  out << LatLonToString(latLon);
+  out << PointWithAltitudeAdapter::ToString(pt);
 }
 
 std::string BookmarkDataToString(BookmarkData const & bm);
@@ -300,6 +313,14 @@ std::string PredefinedColorToString(PredefinedColor c)
   case PredefinedColor::Brown: return "BROWN";
   case PredefinedColor::Green: return "GREEN";
   case PredefinedColor::Orange: return "ORANGE";
+  case PredefinedColor::DeepPurple: return "DEEPPURPLE";
+  case PredefinedColor::LightBlue: return "LIGHTBLUE";
+  case PredefinedColor::Cyan: return "CYAN";
+  case PredefinedColor::Teal: return "TEAL";
+  case PredefinedColor::Lime: return "LIME";
+  case PredefinedColor::DeepOrange: return "DEEPORANGE";
+  case PredefinedColor::Gray: return "GRAY";
+  case PredefinedColor::BlueGray: return "BLUEGRAY";
   case PredefinedColor::Count: CHECK(false, ("Unknown predefined color")); return {};
   }
 }
@@ -343,6 +364,12 @@ std::string BookmarkIconToString(BookmarkIcon icon)
   case BookmarkIcon::Sights: return "SIGHTS";
   case BookmarkIcon::Swim: return "SWIM";
   case BookmarkIcon::Water: return "WATER";
+  case BookmarkIcon::Bar: return "BAR";
+  case BookmarkIcon::Transport: return "TRANSPORT";
+  case BookmarkIcon::Viewpoint: return "VIEWPOINT";
+  case BookmarkIcon::Sport: return "SPORT";
+  case BookmarkIcon::Start: return "START";
+  case BookmarkIcon::Finish: return "FINISH";
   case BookmarkIcon::Count: CHECK(false, ("Unknown bookmark icon")); return {};
   }
 }
@@ -409,7 +436,8 @@ std::string TrackDataToString(TrackData const & t)
       << "description:" << LocalizableStringAdapter::ToString(t.m_description) << ", "
       << "timestamp:" << DebugPrint(t.m_timestamp) << ", "
       << "layers:" << VectorAdapter<TrackLayer>::ToString(t.m_layers) << ", "
-      << "points:" << VectorAdapter<m2::PointD>::ToString(t.m_points) << ", "
+      << "points_with_altitudes:"
+      << VectorAdapter<geometry::PointWithAltitude>::ToString(t.m_pointsWithAltitudes) << ", "
       << "visible:" << (t.m_visible ? "True" : "False") << ", "
       << "nearest_toponyms:" << VectorAdapter<std::string>::ToString(t.m_nearestToponyms) << ", "
       << "properties:" << PropertiesAdapter::ToString(t.m_properties)
@@ -533,7 +561,7 @@ boost::python::list GetLanguages(std::vector<int8_t> const & langs)
       throw std::runtime_error("Language not found");
     result.emplace_back(std::move(lang));
   }
-  return std_vector_to_python_list(result);
+  return pyhelpers::StdVectorToPythonList(result);
 }
 
 void SetLanguages(std::vector<int8_t> & langs, boost::python::object const & iterable)
@@ -542,7 +570,7 @@ void SetLanguages(std::vector<int8_t> & langs, boost::python::object const & ite
   if (iterable.is_none())
     return;
 
-  auto const langStr = python_list_to_std_vector<std::string>(iterable);
+  auto const langStr = pyhelpers::PythonListToStdVector<std::string>(iterable);
   langs.reserve(langStr.size());
   for (auto const & lang : langStr)
   {
@@ -560,7 +588,7 @@ boost::python::list GetSupportedLanguages()
   langs.reserve(supportedLangs.size());
   for (auto const & lang : supportedLangs)
     langs.emplace_back(lang.m_code);
-  return std_vector_to_python_list(langs);
+  return pyhelpers::StdVectorToPythonList(langs);
 }
 
 boost::python::object GetLanguageIndex(std::string const & lang)
@@ -651,6 +679,7 @@ std::string IndexToClassificatorType(uint32_t index)
 BOOST_PYTHON_MODULE(pykmlib)
 {
   scope().attr("__version__") = PYBINDINGS_VERSION;
+  scope().attr("invalid_altitude") = geometry::kInvalidAltitude;
   register_exception_translator<std::runtime_error>(&TranslateRuntimeError);
   TimestampConverter();
   LatLonConverter();
@@ -665,6 +694,14 @@ BOOST_PYTHON_MODULE(pykmlib)
     .value(PredefinedColorToString(PredefinedColor::Brown).c_str(), PredefinedColor::Brown)
     .value(PredefinedColorToString(PredefinedColor::Green).c_str(), PredefinedColor::Green)
     .value(PredefinedColorToString(PredefinedColor::Orange).c_str(), PredefinedColor::Orange)
+    .value(PredefinedColorToString(PredefinedColor::DeepPurple).c_str(), PredefinedColor::DeepPurple)
+    .value(PredefinedColorToString(PredefinedColor::LightBlue).c_str(), PredefinedColor::LightBlue)
+    .value(PredefinedColorToString(PredefinedColor::Cyan).c_str(), PredefinedColor::Cyan)
+    .value(PredefinedColorToString(PredefinedColor::Teal).c_str(), PredefinedColor::Teal)
+    .value(PredefinedColorToString(PredefinedColor::Lime).c_str(), PredefinedColor::Lime)
+    .value(PredefinedColorToString(PredefinedColor::DeepOrange).c_str(), PredefinedColor::DeepOrange)
+    .value(PredefinedColorToString(PredefinedColor::Gray).c_str(), PredefinedColor::Gray)
+    .value(PredefinedColorToString(PredefinedColor::BlueGray).c_str(), PredefinedColor::BlueGray)
     .export_values();
 
   enum_<AccessRules>("AccessRules")
@@ -698,6 +735,12 @@ BOOST_PYTHON_MODULE(pykmlib)
     .value(BookmarkIconToString(BookmarkIcon::Sights).c_str(), BookmarkIcon::Sights)
     .value(BookmarkIconToString(BookmarkIcon::Swim).c_str(), BookmarkIcon::Swim)
     .value(BookmarkIconToString(BookmarkIcon::Water).c_str(), BookmarkIcon::Water)
+    .value(BookmarkIconToString(BookmarkIcon::Bar).c_str(), BookmarkIcon::Bar)
+    .value(BookmarkIconToString(BookmarkIcon::Transport).c_str(), BookmarkIcon::Transport)
+    .value(BookmarkIconToString(BookmarkIcon::Viewpoint).c_str(), BookmarkIcon::Viewpoint)
+    .value(BookmarkIconToString(BookmarkIcon::Sport).c_str(), BookmarkIcon::Sport)
+    .value(BookmarkIconToString(BookmarkIcon::Start).c_str(), BookmarkIcon::Start)
+    .value(BookmarkIconToString(BookmarkIcon::Finish).c_str(), BookmarkIcon::Finish)
     .export_values();
 
   class_<ColorData>("ColorData")
@@ -739,6 +782,13 @@ BOOST_PYTHON_MODULE(pykmlib)
     .def_readwrite("lat", &ms::LatLon::m_lat)
     .def_readwrite("lon", &ms::LatLon::m_lon)
     .def("__str__", &LatLonToString);
+
+  class_<geometry::PointWithAltitude>("PointWithAltitude")
+    .def("get_point", &PointWithAltitudeAdapter::GetPoint, return_value_policy<copy_const_reference>())
+    .def("set_point", &PointWithAltitudeAdapter::SetPoint)
+    .def("get_altitude", &PointWithAltitudeAdapter::GetAltitude)
+    .def("set_altitude", &PointWithAltitudeAdapter::SetAltitude)
+    .def("__str__", &PointWithAltitudeAdapter::ToString);
 
   class_<m2::PointD>("PointD");
 
@@ -791,6 +841,12 @@ BOOST_PYTHON_MODULE(pykmlib)
     .def("set_list", &VectorAdapter<m2::PointD>::Set)
     .def("__str__", &VectorAdapter<m2::PointD>::ToString);
 
+  class_<std::vector<geometry::PointWithAltitude>>("PointWithAltitudeList")
+    .def(vector_indexing_suite<std::vector<geometry::PointWithAltitude>>())
+    .def("get_list", &VectorAdapter<geometry::PointWithAltitude>::Get)
+    .def("set_list", &VectorAdapter<geometry::PointWithAltitude>::Set)
+    .def("__str__", &VectorAdapter<geometry::PointWithAltitude>::ToString);
+
   class_<std::vector<ms::LatLon>>("LatLonList")
     .def(vector_indexing_suite<std::vector<ms::LatLon>>());
 
@@ -800,7 +856,7 @@ BOOST_PYTHON_MODULE(pykmlib)
     .def_readwrite("description", &TrackData::m_description)
     .def_readwrite("timestamp", &TrackData::m_timestamp)
     .def_readwrite("layers", &TrackData::m_layers)
-    .def_readwrite("points", &TrackData::m_points)
+    .def_readwrite("points_with_altitudes", &TrackData::m_pointsWithAltitudes)
     .def_readwrite("visible", &TrackData::m_visible)
     .def_readwrite("nearest_toponyms", &TrackData::m_nearestToponyms)
     .def_readwrite("properties", &TrackData::m_properties)

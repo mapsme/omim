@@ -4,8 +4,6 @@
 <!-- Language: it -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">Informazioni</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Indietro</string>
 	<!-- Button text (should be short) -->
@@ -66,8 +64,6 @@
 	<string name="touch_to_download">Tocca per scaricare</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Sì</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">Ti consigliamo di utilizzare il WiFi per scaricare mappe di grandi dimensioni</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Quale sistema di misura preferisci?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -253,8 +249,6 @@
 	<string name="my_position_share_sms">Vedi dove sono ora. Apri %1$s o %2$s</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Dai uno sguardo al mio pin sulla mappa di MAPS.ME</string>
-	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">Ciao,\n\nHo segnato %1$s su MAPS.ME, le mappe del mondo offline. Clicca su questo link %2$s oppure su questo %3$s per vedere il posto sulla mappa.\n\nGrazie.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Guarda dove mi trovo attualmente sulla mappa MAPS.ME</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -557,6 +551,22 @@
 	<string name="brown">Marrone</string>
 	<!-- pink color -->
 	<string name="pink">Rosa</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">Viola scuro</string>
+	<!-- light blue color -->
+	<string name="light_blue">Azzurro</string>
+	<!-- cyan color -->
+	<string name="cyan">Cyan</string>
+	<!-- teal color -->
+	<string name="teal">Verde smeraldo</string>
+	<!-- lime color -->
+	<string name="lime">Verde fluo</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">Arancione scuro</string>
+	<!-- gray color -->
+	<string name="gray">Grigio</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">Grigiazzurro</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Sì</string>
 
@@ -871,6 +881,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Descrizione</string>
 	<string name="placepage_more_button">Altro</string>
+	<string name="placepage_more_reviews_button">Altre recensioni</string>
 	<string name="book_button">Prenota</string>
 	<string name="placepage_call_button">Chiama</string>
 	<string name="placepage_edit_bookmark_button">Modifica segnalibro</string>
@@ -1226,7 +1237,6 @@
 	<string name="downloader_percent">%1$s (%2$s di %3$s)</string>
 	<string name="downloader_process">Download di %s...</string>
 	<string name="downloader_applying">Applicazione di %s...</string>
-	<string name="transit_not_found">La navigazione in transito in questa regione non è ancora disponibile</string>
 	<string name="whats_new_title_hotel_filter">Nuovi filtri hotel disponibili!</string>
 	<string name="whats_new_message_hotel_filter">Prenota gli hotel disponibili nelle tue date! Usa i filtri per check-in e check-out</string>
 	<string name="whats_new_title_ugc_travel">Condividi la tua esperienza con altri viaggiatori!</string>
@@ -1335,7 +1345,8 @@
 	<string name="error_already_downloaded">Questa lista è già stata scaricata</string>
 	<string name="guides">Guide</string>
 	<string name="guide_downloaded_title">La guida è stata scaricata correttamente</string>
-	<string name="download_guides">Scarica le guide</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">Trova guide</string>
 	<string name="guides_groups_cached">Guide scaricate</string>
 	<string name="subtitle_error_downloading_guide">La guida non è stata scaricata</string>
 	<string name="error_already_downloaded_guide">La guida è già stata scaricata</string>
@@ -1700,12 +1711,18 @@
 	<string name="new_onboarding_step5.3_button">Scarica gratis</string>
 	<string name="new_onboarding_additional_steps_later_button">Non ora</string>
 	<string name="all_pass_subscription_header">ISCRIVITI AL CATALOGO</string>
-	<string name="all_pass_subscription_message_title">+ di 20000 guide e sentieri</string>
-	<string name="all_pass_subscription_message_subtitle">Download illimitato di percorsi cittadini e di attività all\'aria aperta</string>
-	<string name="all_pass_subscription_message_title_2">+ di 700 città e 100 Paesi</string>
-	<string name="all_pass_subscription_message_subtitle_2">Per viaggiare in qualsiasi momento dell\'anno</string>
-	<string name="all_pass_subscription_message_title_3">Svariati contenuti</string>
-	<string name="all_pass_subscription_message_subtitle_3">Segnalibri, foto, percorsi pedonali, descrizioni e suggerimenti</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">Più di 30000\nguide\ne sentieri</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle"><b>Download illimitati offline</b> percorsi cittadini e all\'aria aperta</string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">Profilo\naltimetrico\ninterattivo</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">Tutti i sentieri contengono <b>altitudine e informazioni di base sul percorso</b></string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">Luoghi salvati,\nfoto\ne suggerimenti</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3"><b>Scopri tutto riguardo il percorso</b> che farai</string>
 	<string name="sightseeing_subscription_header_subscription">Iscriviti alle guide</string>
 	<string name="sightseeing_subscription_message">+ di 700 città e 100 Paesi</string>
 	<string name="sightseeing_subscription_message_2">Disponibili offline</string>
@@ -1724,6 +1741,41 @@
 	<string name="whatsnew_outdoor_guides_message">I percorsi di Outdooractive ti aspettano all\'interno del catalogo, sia per vacanze invernali che estive!</string>
 	<string name="whatsnew_guides_galleries_title">Pianifica il tuo prossimo viaggio con MAPS.ME</string>
 	<string name="whatsnew_guides_galleries_message">Adesso puoi trovare le guide consigliate sulle pagine dedicate alle città e alla attrazioni più popolari</string>
+	<string name="new_onboarding_step3_header">Viaggia</string>
+	<string name="all_pass_screen_best_value">Prezzo vantaggioso</string>
+	<string name="buy_btn_for_subscription_3">Tutto il catalogo a %s all\'anno</string>
+	<string name="transit_not_found">L\'utilizzo della metro non è ancora disponibile in questa regione</string>
+	<string name="dialog_pedestrian_route_is_long_header">Percorso della metro non trovato</string>
+	<string name="dialog_pedestrian_route_is_long_message">Seleziona il punto iniziale o finale del percorso più vicino alla stazione della metro</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">Errore di creazione del percorso della metro</string>
+	<string name="whatsnew_isolines_title">Novità per le attività all\'aria aperta: modalità topografica offline!</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">Orientatevi nelle aree montuose: attivate la modalità premendo nell\'angolo in cima a sinistra</string>
+	<string name="button_layer_isolines">Terreno</string>
+	<string name="tips_map_layers_title_countour">Novità su MAPS.ME modalità topografica offline!</string>
+	<string name="tips_map_layers_message_countour">La modalità topografica aiuta a programmare il viaggio nella natura e a non perdersi</string>
+	<string name="isolines_activation_error_dialog">Per utilizzare la modalità topografica, aggiornate o scaricate la mappa dell\'area interessata</string>
+	<string name="isolines_location_error_dialog">La modalità topografica per questa regione non è ancora disponibile</string>
+	<string name="elevation_profile_diff_level">Livello di difficoltà</string>
+	<string name="elevation_profile_diff_level_easy">Facile</string>
+	<string name="elevation_profile_diff_level_moderate">Moderato</string>
+	<string name="elevation_profile_diff_level_hard">Difficile</string>
+	<string name="elevation_profile_ascent">Ascesa</string>
+	<string name="elevation_profile_descent">Discesa</string>
+	<string name="elevation_profile_minaltitude">Altitudine minima</string>
+	<string name="elevation_profile_maxaltitude">Altitudine massima</string>
+	<string name="elevation_profile_m">m</string>
+	<string name="elevation_profile_difficulty">Difficoltà</string>
+	<string name="elevation_profile_distance">Dist.</string>
+	<string name="elevation_profile_km">km</string>
+	<string name="elevation_profile_time">Tempo:</string>
+	<string name="elevation_profile_hours">ore</string>
+	<string name="elevation_profile_minutes">min</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">Chiudi e prosegui</string>
+	<string name="view_on_map_downloaded_error">Questa guida è stata cancellata dal dispositivo</string>
+	<string name="subscription">Abbonamento</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Stazione di rifornimento per auto elettriche</string>
@@ -1775,15 +1827,15 @@
 	<string name="type.amenity.parking">Parcheggio</string>
 	<string name="type.amenity.parking.fee">Parcheggio</string>
 	<string name="type.amenity.parking.multi.storey">Parcheggio</string>
-	<string name="type.amenity.parking.multi.storey.fee">Parcheggio</string>
 	<string name="type.amenity.parking.no.access">Parcheggio</string>
 	<string name="type.amenity.parking.park_and_ride">Parcheggio</string>
 	<string name="type.amenity.parking.permissive">Parcheggio</string>
-	<string name="type.amenity.parking.permissive.fee">Parcheggio</string>
 	<string name="type.amenity.parking.private">Parcheggio</string>
 	<string name="type.amenity.parking.underground">Parcheggio</string>
-	<string name="type.amenity.parking.underground.fee">Parcheggio</string>
 	<string name="type.amenity.parking_space">Parcheggio</string>
+	<string name="type.amenity.parking_space.permissive">Parcheggio</string>
+	<string name="type.amenity.parking_space.private">Parcheggio</string>
+	<string name="type.amenity.parking_space.underground">Parcheggio</string>
 	<string name="type.amenity.payment_terminal">Terminale di pagamento</string>
 	<string name="type.amenity.pharmacy">Farmacia</string>
 	<string name="type.amenity.place_of_worship">Tempio</string>
@@ -1796,7 +1848,7 @@
 	<string name="type.amenity.place_of_worship.taoist">Tempio</string>
 	<string name="type.amenity.police">Polizia</string>
 	<string name="type.amenity.post_box">Casella</string>
-	<string name="type.amenity.post_office">Posta</string>
+	<string name="type.amenity.post_office">Ufficio postale</string>
 	<string name="type.amenity.public_bookcase">Libreria</string>
 	<string name="type.amenity.recycling">Centro di riciclaggio</string>
 	<string name="type.amenity.restaurant">Ristorante</string>
@@ -1992,9 +2044,6 @@
 	<string name="type.highway.service.area">Via</string>
 	<string name="type.highway.service.bridge">Via</string>
 	<string name="type.highway.service.driveway">Via</string>
-	<string name="type.highway.service.driveway.area">Via</string>
-	<string name="type.highway.service.driveway.bridge">Via</string>
-	<string name="type.highway.service.driveway.tunnel">Via</string>
 	<string name="type.highway.service.parking_aisle">Via</string>
 	<string name="type.highway.service.tunnel">Via</string>
 	<string name="type.highway.speed_camera">Autovelox</string>
@@ -2013,14 +2062,8 @@
 	<string name="type.highway.track.grade1">Via</string>
 	<string name="type.highway.track.grade2">Via</string>
 	<string name="type.highway.track.grade3">Via</string>
-	<string name="type.highway.track.grade3.no.access">Via</string>
-	<string name="type.highway.track.grade3.permissive">Via</string>
 	<string name="type.highway.track.grade4">Via</string>
-	<string name="type.highway.track.grade4.no.access">Via</string>
-	<string name="type.highway.track.grade4.permissive">Via</string>
 	<string name="type.highway.track.grade5">Via</string>
-	<string name="type.highway.track.grade5.no.access">Via</string>
-	<string name="type.highway.track.grade5.permissive">Via</string>
 	<string name="type.highway.track.no.access">Via</string>
 	<string name="type.highway.track.permissive">Via</string>
 	<string name="type.highway.track.tunnel">Via</string>
@@ -2071,9 +2114,7 @@
 	<string name="type.leisure.park.permissive">Parco</string>
 	<string name="type.leisure.park.private">Parco</string>
 	<string name="type.leisure.pitch">Campo sportivo</string>
-	<string name="type.leisure.pitch.tennis">Campo sportivo</string>
 	<string name="type.leisure.playground">Campo giochi</string>
-	<string name="type.leisure.playground.tennis">Campo giochi</string>
 	<string name="type.leisure.sauna">Sauna</string>
 	<string name="type.leisure.sports_centre">Centro sportivo</string>
 	<string name="type.leisure.sports_centre.climbing">Centro di arrampicata</string>
@@ -2094,7 +2135,7 @@
 	<string name="type.natural.bay">Baia</string>
 	<string name="type.natural.beach">Spiaggia</string>
 	<string name="type.natural.cape">Capo</string>
-	<string name="type.natural.cave_entrance">Ingresso grotta</string>
+	<string name="type.natural.cave_entrance">Grotta</string>
 	<string name="type.natural.geyser">Geyser</string>
 	<string name="type.natural.glacier">Ghiacciaio</string>
 	<string name="type.natural.grassland">Campo</string>
@@ -2107,10 +2148,6 @@
 	<string name="type.natural.volcano">Vulcano</string>
 	<string name="type.natural.water">Bacino</string>
 	<string name="type.natural.wetland">Terreno paludoso</string>
-	<string name="type.natural.wood">Foresta</string>
-	<string name="type.natural.wood.coniferous">Foresta</string>
-	<string name="type.natural.wood.deciduous">Foresta</string>
-	<string name="type.natural.wood.mixed">Foresta</string>
 	<string name="type.office">Ufficio</string>
 	<string name="type.office.company">Ufficio aziendale</string>
 	<string name="type.office.estate_agent">Agenzia immobiliare</string>

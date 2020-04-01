@@ -11,8 +11,6 @@
 #include "platform/marketing_service.hpp"
 #include "platform/settings.hpp"
 
-#include "coding/uri.hpp"
-
 #include "base/logging.hpp"
 #include "base/string_utils.hpp"
 
@@ -108,7 +106,7 @@ namespace catalogue_path
 
 namespace subscription
 {
-  char const * kDeliverable = "deliverable";
+  char const * kGroups = "groups";
 } // namespace subscription
 
 namespace
@@ -127,12 +125,12 @@ enum class ApiURLType
 
 std::array<std::string, 3> const kAvailableSchemes = {{"mapswithme", "mwm", "mapsme"}};
 
-ApiURLType URLType(Uri const & uri)
+ApiURLType URLType(url::Url const & url)
 {
-  if (std::find(kAvailableSchemes.begin(), kAvailableSchemes.end(), uri.GetScheme()) == kAvailableSchemes.end())
+  if (std::find(kAvailableSchemes.begin(), kAvailableSchemes.end(), url.GetScheme()) == kAvailableSchemes.end())
     return ApiURLType::Incorrect;
 
-  auto const path = uri.GetPath();
+  auto const path = url.GetPath();
   if (path == "map")
     return ApiURLType::Map;
   if (path == "route")
@@ -151,8 +149,11 @@ ApiURLType URLType(Uri const & uri)
   return ApiURLType::Incorrect;
 }
 
-bool ParseLatLon(string const & key, string const & value, double & lat, double & lon)
+bool ParseLatLon(url::Param const & param, double & lat, double & lon)
 {
+  string const & key = param.m_name;
+  string const & value = param.m_value;
+
   size_t const firstComma = value.find(',');
   if (firstComma == string::npos)
   {
@@ -181,7 +182,7 @@ void ParsedMapApi::SetBookmarkManager(BookmarkManager * manager)
   m_bmManager = manager;
 }
 
-ParsedMapApi::ParsingResult ParsedMapApi::SetUriAndParse(string const & url)
+ParsedMapApi::ParsingResult ParsedMapApi::SetUrlAndParse(string const & url)
 {
   Reset();
 
@@ -190,27 +191,31 @@ ParsedMapApi::ParsingResult ParsedMapApi::SetUriAndParse(string const & url)
   {
     return ParsingResult::Incorrect;
   }
+  auto const u = url::Url(url);
+  ParsingResult const result = Parse(u);
+  m_isValid = result != ParsingResult::Incorrect;
 
-  ParsingResult const res = Parse(url_scheme::Uri(url));
-  m_isValid = res != ParsingResult::Incorrect;
-  return res;
+  if (m_isValid)
+    ParseAdditional(u);
+
+  return result;
 }
 
-ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
+ParsedMapApi::ParsingResult ParsedMapApi::Parse(url::Url const & url)
 {
-  switch (URLType(uri))
+  switch (URLType(url))
   {
     case ApiURLType::Incorrect:
       return ParsingResult::Incorrect;
     case ApiURLType::Map:
     {
       vector<ApiPoint> points;
-      auto const result = uri.ForEachKeyValue([&points, this](string const & key, string const & value)
-                                              {
-                                                return AddKeyValue(key, value, points);
-                                              });
+      bool correctOrder = true;
+      url.ForEachParam([&points, &correctOrder, this](url::Param const & param) {
+        ParseMapParam(param, points, correctOrder);
+      });
 
-      if (!result || points.empty())
+      if (points.empty() || !correctOrder)
         return ParsingResult::Incorrect;
 
       ASSERT(m_bmManager != nullptr, ());
@@ -231,12 +236,11 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
       m_routePoints.clear();
       using namespace route;
       vector<string> pattern{kSourceLatLon, kSourceName, kDestLatLon, kDestName, kRouteType};
-      auto const result = uri.ForEachKeyValue([&pattern, this](string const & key, string const & value)
-                                              {
-                                                return RouteKeyValue(key, value, pattern);
-                                              });
+      url.ForEachParam([&pattern, this](url::Param const & param) {
+        ParseRouteParam(param, pattern);
+      });
 
-      if (!result || pattern.size() != 0)
+      if (pattern.size() != 0)
         return ParsingResult::Incorrect;
 
       if (m_routePoints.size() != 2)
@@ -250,25 +254,23 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
     case ApiURLType::Search:
     {
       SearchRequest request;
-      auto const result = uri.ForEachKeyValue([&request, this](string const & key, string const & value)
-                                              {
-                                                return SearchKeyValue(key, value, request);
-                                              });
-      if (!result)
+      url.ForEachParam([&request, this](url::Param const & param) {
+        ParseSearchParam(param, request);
+      });
+      if (request.m_query.empty())
         return ParsingResult::Incorrect;
       
       m_request = request;
-      return request.m_query.empty() ? ParsingResult::Incorrect : ParsingResult::Search;
+      return ParsingResult::Search;
     }
     case ApiURLType::Lead:
     {
       lead::CampaignDescription description;
-      auto result = uri.ForEachKeyValue([&description, this](string const & key, string const & value)
-                                        {
-                                          return LeadKeyValue(key, value, description);
-                                        });
+      url.ForEachParam([&description, this](url::Param const & param) {
+        ParseLeadParam(param, description);
+      });
 
-      if (!result || !description.IsValid())
+      if (!description.IsValid())
         return ParsingResult::Incorrect;
 
       description.Write();
@@ -277,12 +279,11 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
     case ApiURLType::Catalogue:
     {
       Catalog item;
-      auto const result = uri.ForEachKeyValue([&item, this](string const & key, string const & value)
-                                              {
-                                                return CatalogKeyValue(key, value, item);
-                                              });
+      url.ForEachParam([&item, this](url::Param const & param) {
+        ParseCatalogParam(param, item);
+      });
 
-      if (!result || item.m_id.empty())
+      if (item.m_id.empty())
         return ParsingResult::Incorrect;
 
       m_catalog = item;
@@ -291,12 +292,11 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
     case ApiURLType::CataloguePath:
     {
       CatalogPath item;
-      auto const result = uri.ForEachKeyValue([&item, this](string const & key, string const & value)
-                                              {
-                                                return CatalogPathKeyValue(key, value, item);
-                                              });
+      url.ForEachParam([&item, this](url::Param const & param) {
+        ParseCatalogPathParam(param, item);
+      });
 
-      if (!result || item.m_url.empty())
+      if (item.m_url.empty())
         return ParsingResult::Incorrect;
 
       m_catalogPath = item;
@@ -305,12 +305,11 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
     case ApiURLType::Subscription:
     {
      Subscription item;
-     auto const result = uri.ForEachKeyValue([&item, this](string const & key, string const & value)
-                                            {
-                                              return SubscriptionKeyValue(key, value, item);
-                                            });
+     url.ForEachParam([&item, this](url::Param const & param) {
+       ParseSubscriptionParam(param, item);
+     });
 
-     if (!result || item.m_deliverable.empty())
+     if (item.m_groups.empty())
        return ParsingResult::Incorrect;
 
      m_subscription = item;
@@ -320,60 +319,30 @@ ParsedMapApi::ParsingResult ParsedMapApi::Parse(Uri const & uri)
   UNREACHABLE();
 }
 
-bool ParsedMapApi::RouteKeyValue(string const & key, string const & value, vector<string> & pattern)
+void ParsedMapApi::ParseAdditional(url::Url const & url)
 {
-  using namespace route;
+  url.ForEachParam([this](url::Param const & param)
+  {
+    if (param.m_name == "affiliate_id")
+      m_affiliateId = param.m_value;
 
-  if (pattern.empty())
     return true;
-
-  if (key != pattern.front())
-    return false;
-
-  if (key == kSourceLatLon || key == kDestLatLon)
-  {
-    double lat = 0.0;
-    double lon = 0.0;
-    if (!ParseLatLon(key, value, lat, lon))
-      return false;
-
-    RoutePoint p;
-    p.m_org = mercator::FromLatLon(lat, lon);
-    m_routePoints.push_back(p);
-  }
-  else if (key == kSourceName || key == kDestName)
-  {
-    m_routePoints.back().m_name = value;
-  }
-  else if (key == kRouteType)
-  {
-    string const lowerValue = strings::MakeLowerCase(value);
-    if (lowerValue == kRouteTypePedestrian || lowerValue == kRouteTypeVehicle ||
-        lowerValue == kRouteTypeBicycle || lowerValue == kRouteTypeTransit)
-    {
-      m_routingType = lowerValue;
-    }
-    else
-    {
-      LOG(LWARNING, ("Incorrect routing type:", value));
-      return false;
-    }
-  }
-
-  pattern.erase(pattern.begin());
-  return true;
+  });
 }
 
-bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<ApiPoint> & points)
+void ParsedMapApi::ParseMapParam(url::Param const & param, vector<ApiPoint> & points, bool & correctOrder)
 {
   using namespace map;
+
+  string const & key = param.m_name;
+  string const & value = param.m_value;
 
   if (key == kLatLon)
   {
     double lat = 0.0;
     double lon = 0.0;
-    if (!ParseLatLon(key, value, lat, lon))
-      return false;
+    if (!ParseLatLon(param, lat, lon))
+      return;
 
     ApiPoint pt{.m_lat = lat, .m_lon = lon};
     points.push_back(pt);
@@ -392,7 +361,8 @@ bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<
     else
     {
       LOG(LWARNING, ("Map API: Point name with no point. 'll' should come first!"));
-      return false;
+      correctOrder = false;
+      return;
     }
   }
   else if (key == kId)
@@ -404,7 +374,8 @@ bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<
     else
     {
       LOG(LWARNING, ("Map API: Point url with no point. 'll' should come first!"));
-      return false;
+      correctOrder = false;
+      return;
     }
   }
   else if (key == kStyle)
@@ -416,7 +387,7 @@ bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<
     else
     {
       LOG(LWARNING, ("Map API: Point style with no point. 'll' should come first!"));
-      return false;
+      return;
     }
   }
   else if (key == kBackUrl)
@@ -440,25 +411,67 @@ bool ParsedMapApi::AddKeyValue(string const & key, string const & value, vector<
   {
     m_goBackOnBalloonClick = true;
   }
-  return true;
 }
 
-bool ParsedMapApi::SearchKeyValue(string const & key, string const & value, SearchRequest & request) const
+void ParsedMapApi::ParseRouteParam(url::Param const & param, vector<string> & pattern)
+{
+  using namespace route;
+
+  string const & key = param.m_name;
+  string const & value = param.m_value;
+
+  if (pattern.empty() || key != pattern.front())
+    return;
+
+  if (key == kSourceLatLon || key == kDestLatLon)
+  {
+    double lat = 0.0;
+    double lon = 0.0;
+    if (!ParseLatLon(param, lat, lon))
+      return;
+
+    RoutePoint p;
+    p.m_org = mercator::FromLatLon(lat, lon);
+    m_routePoints.push_back(p);
+  }
+  else if (key == kSourceName || key == kDestName)
+  {
+    m_routePoints.back().m_name = value;
+  }
+  else if (key == kRouteType)
+  {
+    string const lowerValue = strings::MakeLowerCase(value);
+    if (lowerValue == kRouteTypePedestrian || lowerValue == kRouteTypeVehicle ||
+        lowerValue == kRouteTypeBicycle || lowerValue == kRouteTypeTransit)
+    {
+      m_routingType = lowerValue;
+    }
+    else
+    {
+      LOG(LWARNING, ("Incorrect routing type:", value));
+      return;
+    }
+  }
+
+  pattern.erase(pattern.begin());
+}
+
+void ParsedMapApi::ParseSearchParam(url::Param const & param, SearchRequest & request) const
 {
   using namespace search;
 
+  string const & key = param.m_name;
+  string const & value = param.m_value;
+
   if (key == kQuery)
   {
-    if (value.empty())
-      return false;
-
     request.m_query = value;
   }
   else if (key == kCenterLatLon)
   {
     double lat = 0.0;
     double lon = 0.0;
-    if (ParseLatLon(key, value, lat, lon))
+    if (ParseLatLon(param, lat, lon))
     {
       request.m_centerLat = lat;
       request.m_centerLon = lon;
@@ -472,13 +485,14 @@ bool ParsedMapApi::SearchKeyValue(string const & key, string const & value, Sear
   {
     request.m_isSearchOnMap = true;
   }
-
-  return true;
 }
 
-bool ParsedMapApi::LeadKeyValue(string const & key, string const & value, lead::CampaignDescription & description) const
+void ParsedMapApi::ParseLeadParam(url::Param const & param, lead::CampaignDescription & description) const
 {
   using namespace lead;
+
+  string const & key = param.m_name;
+  string const & value = param.m_value;
 
   if (key == kFrom)
     description.m_from = value;
@@ -490,47 +504,48 @@ bool ParsedMapApi::LeadKeyValue(string const & key, string const & value, lead::
     description.m_content = value;
   else if (key == kKeyword)
     description.m_keyword = value;
-  /*
-   We have to support parsing the uri which contains unregistred parameters.
-   */
-  return true;
 }
 
-bool ParsedMapApi::CatalogKeyValue(string const & key, string const & value, Catalog & item) const
+void ParsedMapApi::ParseCatalogParam(url::Param const & param, Catalog & item) const
 {
   using namespace catalogue;
+
+  string const & key = param.m_name;
+  string const & value = param.m_value;
 
   if (key == kName)
     item.m_name = value;
   else if (key == kId)
     item.m_id = value;
-
-  return true;
 }
 
-bool ParsedMapApi::CatalogPathKeyValue(string const & key, string const & value, CatalogPath & item) const
+void ParsedMapApi::ParseCatalogPathParam(url::Param const & param, CatalogPath & item) const
 {
-  if (key == catalogue_path::kUrl)
-    item.m_url = value;
-
-  return true;
+  if (param.m_name == catalogue_path::kUrl)
+    item.m_url = param.m_value;
 }
 
-bool ParsedMapApi::SubscriptionKeyValue(string const & key, string const & value, Subscription & item) const
+void ParsedMapApi::ParseSubscriptionParam(url::Param const & param, Subscription & item) const
 {
-  if (key == subscription::kDeliverable)
-    item.m_deliverable = value;
-
-  return true;
+  if (param.m_name == subscription::kGroups)
+    item.m_groups = param.m_value;
 }
 
 void ParsedMapApi::Reset()
 {
-  m_globalBackUrl.clear();
-  m_appTitle.clear();
+  m_routePoints = {};
+  m_request = {};
+  m_catalog = {};
+  m_catalogPath = {};
+  m_subscription = {};
+  m_globalBackUrl ={};
+  m_appTitle = {};
+  m_routingType = {};
+  m_affiliateId = {};
   m_version = 0;
   m_zoomLevel = 0.0;
   m_goBackOnBalloonClick = false;
+  m_isValid = false;
 }
 
 bool ParsedMapApi::GetViewportRect(m2::RectD & rect) const

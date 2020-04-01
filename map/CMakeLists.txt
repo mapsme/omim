@@ -9,7 +9,6 @@ include_directories(
 
 set(
   SRC
-  ../api/src/c/api-client.c
   api_mark_point.cpp
   api_mark_point.hpp
   benchmark_tools.hpp
@@ -38,8 +37,6 @@ set(
   chart_generator.hpp
   cloud.cpp
   cloud.hpp
-  crown.cpp
-  crown.hpp
   discovery/discovery_client_params.hpp
   discovery/discovery_manager.cpp
   discovery/discovery_manager.hpp
@@ -50,6 +47,10 @@ set(
   displacement_mode_manager.hpp
   displayed_categories_modifiers.cpp
   displayed_categories_modifiers.hpp
+  download_on_map_ads_delegate.cpp
+  download_on_map_ads_delegate.hpp
+  elevation_info.cpp
+  elevation_info.hpp
   everywhere_search_callback.cpp
   everywhere_search_callback.hpp
   everywhere_search_params.hpp
@@ -62,10 +63,6 @@ set(
   framework_light.cpp
   framework_light.hpp
   framework_light_delegate.hpp
-  ge0_parser.cpp
-  ge0_parser.hpp
-  geourl_process.cpp
-  geourl_process.hpp
   gps_track_collection.cpp
   gps_track_collection.hpp
   gps_track_filter.cpp
@@ -76,6 +73,8 @@ set(
   gps_track.hpp
   gps_tracker.cpp
   gps_tracker.hpp
+  isolines_manager.cpp
+  isolines_manager.hpp
   local_ads_manager.cpp
   local_ads_manager.hpp
   local_ads_mark.cpp
@@ -122,8 +121,12 @@ set(
   taxi_delegate.hpp
   tips_api.cpp
   tips_api.hpp
+  tips_api_delegate.cpp
+  tips_api_delegate.hpp
   track.cpp
   track.hpp
+  track_mark.cpp
+  track_mark.hpp
   traffic_manager.cpp
   traffic_manager.hpp
   transit/transit_display.cpp

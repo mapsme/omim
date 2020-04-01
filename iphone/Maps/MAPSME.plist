@@ -103,8 +103,6 @@
 	<string>185237551520383</string>
 	<key>FacebookDisplayName</key>
 	<string>MapsWithMe, offline maps</string>
-	<key>Item 0</key>
-	<string>FedokaOne-Regular.ttf</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -117,6 +115,7 @@
 		<string>booking</string>
 		<string>maximzakaz</string>
 		<string>vzt</string>
+		<string>mytaxi</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

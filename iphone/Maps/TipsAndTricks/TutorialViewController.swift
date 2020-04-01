@@ -4,6 +4,7 @@ enum TutorialType: Int {
   case discovery
   case bookmarks
   case subway
+  case isolines
 }
 
 @objc(MWMTutorialViewControllerDelegate)
@@ -109,6 +110,8 @@ extension TutorialViewController {
       result = discoveryTutorialBlur()
     case .subway:
       result = subwayTutorialBlur()
+    case .isolines:
+      result = isolinesTutorialBlur()
     case .bookmarks:
       result = bookmarksTutorialBlur()
     }
@@ -145,7 +148,15 @@ extension TutorialViewController {
   private static func subwayTutorialBlur() -> TutorialViewController {
     let result = TutorialViewController(nibName: "SubwayTutorialBlur", bundle: nil)
     result.customAction = {
-      MWMTrafficManager.setTransitEnabled(true)
+      MapOverlayManager.setTransitEnabled(true)
+    }
+    return result
+  }
+  
+  private static func isolinesTutorialBlur() -> TutorialViewController {
+    let result = TutorialViewController(nibName: "IsolinesTutorialBlur", bundle: nil)
+    result.customAction = {
+      MapOverlayManager.setIsoLinesEnabled(true)
     }
     return result
   }

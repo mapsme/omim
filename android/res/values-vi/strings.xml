@@ -4,8 +4,6 @@
 <!-- Language: vi -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">Giới thiệu</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Quay lại</string>
 	<!-- Button text (should be short) -->
@@ -70,8 +68,6 @@
 	<string name="touch_to_download">Chạm để tải xuống</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Có</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">Chúng tôi khuyên bạn nên sử dụng WiFi để tải xuống các bảnđồ lớn.</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Bạn thích sử dụng hệ thống đo lường nào?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -253,8 +249,6 @@
 	<string name="my_position_share_sms">Này, hãy xem vị trí hiện tại của tôi tại MAPS.ME! %1$s hoặc %2$s Bạn không có bản đồ ngoại tuyến? Tải xuống tại đây: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Này, hãy xem ghim của tôi tại MAPS.ME map</string>
-	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">Xin chào,\n\nI được gắn: %1$s tại MAPS.ME, bản đồ thế giới ngoại tuyến. Ấn vào đường dẫn này %2$s hoặc cái này %3$s để xem vị trí trên bản đồ.\n\nCám ơn nhiều.</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Này, hãy xem vị trí hiện tại của tôi tại MAPS.ME map!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -357,12 +351,6 @@
 	<string name="route">Tuyến đường</string>
 	<!-- category title -->
 	<string name="routes">Tuyến đường</string>
-	<!-- Show on first launch. -->
-	<string name="maps_licence_info">Ứng dụng này sử dụng dữ liệu địa lý (bao gồm bản đồ, thông tin doanh nghiệp, các điểm lưu tâm, biên giới quốc gia và khu vực, v.v…) lấy từ dự án OpenStreetMap. Chúng tôi không đảm bảo bất kỳ sự nhất quán, chính xác, toàn vẹn hay phù hợp nào từ các dữ liệu OpenStreetMap.</string>
-	<!-- Show on first launch. -->
-	<string name="agree">Tôi đồng ý</string>
-	<!-- Show on first launch -->
-	<string name="disagree">Tôi không đồng ý</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Tải xuống bản đồ của vị trí của bạn</string>
 	<!-- Dialog for transferring maps from lite to pro. -->
@@ -557,6 +545,22 @@
 	<string name="brown">Nâu</string>
 	<!-- pink color -->
 	<string name="pink">Hồng</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">Tía thẫm</string>
+	<!-- light blue color -->
+	<string name="light_blue">Xanh da trời</string>
+	<!-- cyan color -->
+	<string name="cyan">Xanh lơ</string>
+	<!-- teal color -->
+	<string name="teal">Lục bảo</string>
+	<!-- lime color -->
+	<string name="lime">Màu xanh chanh</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">Cam đậm</string>
+	<!-- gray color -->
+	<string name="gray">Xám</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">Xám xanh da trời</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Có</string>
 
@@ -871,6 +875,7 @@
 	<string name="minute">phút</string>
 	<string name="placepage_place_description">Mô tả</string>
 	<string name="placepage_more_button">Bổ sung</string>
+	<string name="placepage_more_reviews_button">Thêm nhận xét</string>
 	<string name="book_button">Đặt trước</string>
 	<string name="placepage_call_button">Gọi</string>
 	<string name="placepage_edit_bookmark_button">Sửa Dấu Trang</string>
@@ -1226,7 +1231,6 @@
 	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">Tải về %s...</string>
 	<string name="downloader_applying">Áp dụng %s...</string>
-	<string name="transit_not_found">Chưa có tính năng dẫn đường quá cảnh cho khu vực này</string>
 	<string name="whats_new_title_hotel_filter">Đã có bộ lọc khách sạn mới!</string>
 	<string name="whats_new_message_hotel_filter">Đặt các khách sạn còn phòng cho ngày của bạn! Sử dụng các bộ lọc nhận phòng và trả phòng</string>
 	<string name="whats_new_title_ugc_travel">Chia sẻ trải nghiệm của bạn với những du khách khác!</string>
@@ -1331,7 +1335,8 @@
 	<string name="error_already_downloaded">Danh sách này đã được tải về</string>
 	<string name="guides">Hướng dẫn</string>
 	<string name="guide_downloaded_title">Hướng dẫn đã được tải xuống thành công</string>
-	<string name="download_guides">Tải xuống hướng dẫn</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">Tìm hướng dẫn</string>
 	<string name="guides_groups_cached">Đã tải xuống hướng dẫn</string>
 	<string name="subtitle_error_downloading_guide">Hướng dẫn đã không được tải xuống</string>
 	<string name="error_already_downloaded_guide">Hướng dẫn này đã được tải xuống</string>
@@ -1696,12 +1701,18 @@
 	<string name="new_onboarding_step5.3_button">Tải miễn phí</string>
 	<string name="new_onboarding_additional_steps_later_button">Không phải bây giờ</string>
 	<string name="all_pass_subscription_header">ĐĂNG KÝ DANH SÁCH</string>
-	<string name="all_pass_subscription_message_title">Hơn 20000 hướng dẫn và đường mòn</string>
-	<string name="all_pass_subscription_message_subtitle">Tải xuống không giới hạn các tuyến đường ngoại tuyến trong thành phố và những hoạt động ngoài trời</string>
-	<string name="all_pass_subscription_message_title_2">Hơn 700 thành phố và hơn 100 quốc gia</string>
-	<string name="all_pass_subscription_message_subtitle_2">Để du lịch vào bất cứ thời gian nào trong năm</string>
-	<string name="all_pass_subscription_message_title_3">Nội dung phong phú</string>
-	<string name="all_pass_subscription_message_subtitle_3">Đánh dấu, ảnh, lối đi bộ qua đường, mô tả và cả những đề xuất</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">30000+\nhướng dẫn\nvà đường mòn</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle"><b>Tải xuống không giới hạn</b> các tuyến di chuyển trong thành phố và cho các hoạt động ngoài trời sang <b>chế độ ngoại tuyến</b></string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">Hồ sơ độ cao\ntương tác</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">Tất cả các đường mòn đang được tải có <b>bao gồm độ cao và thông tin chính về tuyến di chuyển</b></string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">Lựa chọn\nđ.điểm, h.ảnh\nvà các đề xuất</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3"><b>Tìm hiểu về tất cả các tuyến</b> mà bạn dự định đi qua</string>
 	<string name="sightseeing_subscription_header_subscription">Đăng ký hướng dẫn</string>
 	<string name="sightseeing_subscription_message">Hơn 700 thành phố và hơn 100 quốc gia</string>
 	<string name="sightseeing_subscription_message_2">Truy cập ngoại tuyến</string>
@@ -1720,6 +1731,41 @@
 	<string name="whatsnew_outdoor_guides_message">Các tuyến đường từ Outdooractive cho kỳ nghỉ mùa đông, mùa hè đang chờ đón bạn trong danh sách!</string>
 	<string name="whatsnew_guides_galleries_title">Hãy lên kế hoạch cho chuyến đi sắp tới cùng với MAPS.ME</string>
 	<string name="whatsnew_guides_galleries_message">Bây giờ bạn có thể tìm thấy hướng dẫn được đề xuất trong các thẻ của các thành phố và điểm tham quan nổi tiếng</string>
+	<string name="new_onboarding_step3_header">Đi du lịch nào</string>
+	<string name="all_pass_screen_best_value">Giá tốt</string>
+	<string name="buy_btn_for_subscription_3">Cả danh mục chỉ với %s/năm</string>
+	<string name="transit_not_found">Điều hướng đến Metro hiện chưa khả dụng cho khu vực này</string>
+	<string name="dialog_pedestrian_route_is_long_header">Không tìm thấy tuyến Metro</string>
+	<string name="dialog_pedestrian_route_is_long_message">Hãy chọn điểm đầu hoặc điểm cuối của tuyến gần với bến Metro</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">Lỗi xây dựng tuyến Metro</string>
+	<string name="whatsnew_isolines_title">Tính năng mới cho kỳ nghỉ năng động – đường chỉ độ cao ngoại tuyến!</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">Xác định phương hướng ở vùng đồi núi – hãy bật nút chỉ lớp ở góc trái trên màn hình</string>
+	<string name="button_layer_isolines">Độ cao</string>
+	<string name="tips_map_layers_title_countour">Đường độ cao ngoại tuyến trong MAPS.ME!</string>
+	<string name="tips_map_layers_message_countour">Đường độ cao giúp lên kế hoạch du lịch hòa mình với thiên nhiên và không bị lạc khi di chuyển</string>
+	<string name="isolines_activation_error_dialog">Để sử dụng các đường chỉ độ cao, hãy cập nhật hoặc tải xuống bản đồ của khu vực bạn mong muốn</string>
+	<string name="isolines_location_error_dialog">Đường hiển thị độ cao hiện chưa khả dụng tại khu vực này</string>
+	<string name="elevation_profile_diff_level">Mức độ phức tạp</string>
+	<string name="elevation_profile_diff_level_easy">Dễ</string>
+	<string name="elevation_profile_diff_level_moderate">Trung bình</string>
+	<string name="elevation_profile_diff_level_hard">Khó</string>
+	<string name="elevation_profile_ascent">Đi lên</string>
+	<string name="elevation_profile_descent">Đi xuống</string>
+	<string name="elevation_profile_minaltitude">Độ cao tối thiểu</string>
+	<string name="elevation_profile_maxaltitude">Độ cao tối đa</string>
+	<string name="elevation_profile_m">m</string>
+	<string name="elevation_profile_difficulty">Độ khó</string>
+	<string name="elevation_profile_distance">Khoảng cách</string>
+	<string name="elevation_profile_km">km</string>
+	<string name="elevation_profile_time">Giờ:</string>
+	<string name="elevation_profile_hours">h.</string>
+	<string name="elevation_profile_minutes">ph</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">Thu gọn và tiếp tục thao tác với ứng dụng</string>
+	<string name="view_on_map_downloaded_error">Hướng dẫn này đã được xóa khỏi thiết bị</string>
+	<string name="subscription">Đăng ký</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Trạm Cáp Treo</string>
@@ -1775,15 +1821,15 @@
 	<string name="type.amenity.parking">đỗ xe</string>
 	<string name="type.amenity.parking.fee">đỗ xe</string>
 	<string name="type.amenity.parking.multi.storey">đỗ xe</string>
-	<string name="type.amenity.parking.multi.storey.fee">đỗ xe</string>
 	<string name="type.amenity.parking.no.access">đỗ xe</string>
 	<string name="type.amenity.parking.park_and_ride">đỗ xe</string>
 	<string name="type.amenity.parking.permissive">đỗ xe</string>
-	<string name="type.amenity.parking.permissive.fee">đỗ xe</string>
 	<string name="type.amenity.parking.private">đỗ xe</string>
 	<string name="type.amenity.parking.underground">đỗ xe</string>
-	<string name="type.amenity.parking.underground.fee">đỗ xe</string>
 	<string name="type.amenity.parking_space">Chỗ để xe</string>
+	<string name="type.amenity.parking_space.permissive">Chỗ để xe</string>
+	<string name="type.amenity.parking_space.private">Chỗ để xe</string>
+	<string name="type.amenity.parking_space.underground">Chỗ để xe</string>
 	<string name="type.amenity.payment_terminal">Thiết bị thanh toán</string>
 	<string name="type.amenity.pharmacy">3Hiệu thuốc</string>
 	<string name="type.amenity.place_of_worship">Chùa</string>
@@ -1796,7 +1842,7 @@
 	<string name="type.amenity.place_of_worship.taoist">Đền</string>
 	<string name="type.amenity.police">Cảnh sát</string>
 	<string name="type.amenity.post_box">Hòm thư</string>
-	<string name="type.amenity.post_office">Bưu điện</string>
+	<string name="type.amenity.post_office">Bưu cục</string>
 	<string name="type.amenity.pub">Quán rượu</string>
 	<string name="type.amenity.public_bookcase">Kệ sách</string>
 	<string name="type.amenity.recycling">Trung tâm tái sinh</string>
@@ -1995,9 +2041,6 @@
 	<string name="type.highway.service.area">Phố</string>
 	<string name="type.highway.service.bridge">Phố</string>
 	<string name="type.highway.service.driveway">Phố</string>
-	<string name="type.highway.service.driveway.area">Phố</string>
-	<string name="type.highway.service.driveway.bridge">Phố</string>
-	<string name="type.highway.service.driveway.tunnel">Phố</string>
 	<string name="type.highway.service.parking_aisle">Phố</string>
 	<string name="type.highway.service.tunnel">Phố</string>
 	<string name="type.highway.speed_camera">Camera bắn tốc độ</string>
@@ -2016,14 +2059,8 @@
 	<string name="type.highway.track.grade1">Phố</string>
 	<string name="type.highway.track.grade2">Phố</string>
 	<string name="type.highway.track.grade3">Phố</string>
-	<string name="type.highway.track.grade3.no.access">Phố</string>
-	<string name="type.highway.track.grade3.permissive">Phố</string>
 	<string name="type.highway.track.grade4">Phố</string>
-	<string name="type.highway.track.grade4.no.access">Phố</string>
-	<string name="type.highway.track.grade4.permissive">Phố</string>
 	<string name="type.highway.track.grade5">Phố</string>
-	<string name="type.highway.track.grade5.no.access">Phố</string>
-	<string name="type.highway.track.grade5.permissive">Phố</string>
 	<string name="type.highway.track.no.access">Phố</string>
 	<string name="type.highway.track.permissive">Phố</string>
 	<string name="type.highway.track.tunnel">Phố</string>
@@ -2074,9 +2111,7 @@
 	<string name="type.leisure.park.permissive">Công viên</string>
 	<string name="type.leisure.park.private">Công viên</string>
 	<string name="type.leisure.pitch">Sân vận động</string>
-	<string name="type.leisure.pitch.tennis">Sân vận động</string>
 	<string name="type.leisure.playground">Sân chơi</string>
-	<string name="type.leisure.playground.tennis">Sân chơi</string>
 	<string name="type.leisure.sauna">Sauna</string>
 	<string name="type.leisure.sports_centre">Thể thao</string>
 	<string name="type.leisure.sports_centre.climbing">Trung tâm leo núi</string>
@@ -2098,7 +2133,7 @@
 	<string name="type.natural.bay">Vịnh</string>
 	<string name="type.natural.beach">Bãi biển</string>
 	<string name="type.natural.cape">Áo choàng</string>
-	<string name="type.natural.cave_entrance">Cửa Hang</string>
+	<string name="type.natural.cave_entrance">Hang động</string>
 	<string name="type.natural.geyser">Suối nước nóng</string>
 	<string name="type.natural.glacier">Sông băng</string>
 	<string name="type.natural.grassland">Cánh đồng</string>
@@ -2111,10 +2146,6 @@
 	<string name="type.natural.volcano">Núi lửa</string>
 	<string name="type.natural.water">Nước</string>
 	<string name="type.natural.wetland">Khu vực đầm lầy</string>
-	<string name="type.natural.wood">Rừng</string>
-	<string name="type.natural.wood.coniferous">Rừng</string>
-	<string name="type.natural.wood.deciduous">Rừng</string>
-	<string name="type.natural.wood.mixed">Rừng</string>
 	<string name="type.office">Văn phòng</string>
 	<string name="type.office.company">Văn phòng công ty</string>
 	<string name="type.office.estate_agent">Đại Lý Bất Động Sản</string>

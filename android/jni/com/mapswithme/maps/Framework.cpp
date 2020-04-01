@@ -4,20 +4,19 @@
 #include "com/mapswithme/opengl/androidoglcontextfactory.hpp"
 #include "com/mapswithme/platform/Platform.hpp"
 #include "com/mapswithme/util/NetworkPolicy.hpp"
+#include "com/mapswithme/util/FeatureIdBuilder.hpp"
 #include "com/mapswithme/vulkan/android_vulkan_context_factory.hpp"
 
 #include "map/chart_generator.hpp"
-#include "map/crown.hpp"
 #include "map/everywhere_search_params.hpp"
 #include "map/notifications/notification_queue.hpp"
 #include "map/user_mark.hpp"
 #include "map/purchase.hpp"
 
-#include "partners_api/ads_engine.hpp"
-#include "partners_api/banner.hpp"
+#include "partners_api/ads/ads_engine.hpp"
+#include "partners_api/ads/banner.hpp"
+#include "partners_api/ads/mopub_ads.hpp"
 #include "partners_api/booking_block_params.hpp"
-#include "partners_api/downloader_promo.hpp"
-#include "partners_api/mopub_ads.hpp"
 #include "partners_api/megafon_countries.hpp"
 
 #include "web_api/utils.hpp"
@@ -93,7 +92,7 @@ namespace
   return g_framework->NativeFramework();
 }
 
-jobject g_mapObjectListener = nullptr;
+jobject g_placePageActivationListener = nullptr;
 int const kUndefinedTip = -1;
 
 android::AndroidVulkanContextFactory * CastFactory(drape_ptr<dp::GraphicsContextFactory> const & f)
@@ -123,6 +122,7 @@ Framework::Framework()
 {
   m_work.GetTrafficManager().SetStateListener(bind(&Framework::TrafficStateChanged, this, _1));
   m_work.GetTransitManager().SetStateListener(bind(&Framework::TransitSchemeStateChanged, this, _1));
+  m_work.GetIsolinesManager().SetStateListener(bind(&Framework::IsolinesSchemeStateChanged, this, _1));
   m_work.GetPowerManager().Subscribe(this);
 }
 
@@ -150,11 +150,6 @@ void Framework::OnCompassUpdated(location::CompassInfo const & info, bool forceR
   }
 }
 
-void Framework::UpdateCompassSensor(int ind, float * arr)
-{
-  m_sensors[ind].Next(arr);
-}
-
 void Framework::MyPositionModeChanged(location::EMyPositionMode mode, bool routingActive)
 {
   if (m_myPositionModeSignal)
@@ -173,6 +168,12 @@ void Framework::TransitSchemeStateChanged(TransitReadManager::TransitSchemeState
     m_onTransitStateChangedFn(state);
 }
 
+void Framework::IsolinesSchemeStateChanged(IsolinesManager::IsolinesState state)
+{
+  if (m_onIsolinesStateChangedFn)
+    m_onIsolinesStateChangedFn(state);
+}
+
 bool Framework::DestroySurfaceOnDetach()
 {
   if (m_vulkanContextFactory)
@@ -186,8 +187,11 @@ bool Framework::CreateDrapeEngine(JNIEnv * env, jobject jSurface, int densityDpi
   // Vulkan is supported only since Android 8.0, because some Android devices with Android 7.x
   // have fatal driver issue, which can lead to process termination and whole OS destabilization.
   int constexpr kMinSdkVersionForVulkan = 26;
+  // Ban Vulkan temporarily for Android 10.0 because of unfixed rendering artifacts.
+  int constexpr kMaxSdkVersionForVulkan = 28;
   int const sdkVersion = GetAndroidSdkVersion();
   auto const vulkanForbidden = sdkVersion < kMinSdkVersionForVulkan ||
+                               sdkVersion > kMaxSdkVersionForVulkan ||
                                dp::SupportManager::Instance().IsVulkanForbidden();
   if (vulkanForbidden)
     LOG(LWARNING, ("Vulkan API is forbidden on this device."));
@@ -615,6 +619,11 @@ void Framework::SetTransitSchemeListener(TransitReadManager::TransitStateChanged
   m_onTransitStateChangedFn = function;
 }
 
+void Framework::SetIsolinesListener(IsolinesManager::IsolinesStateChangedFn const & function)
+{
+  m_onIsolinesStateChangedFn = function;
+}
+
 bool Framework::IsTrafficEnabled()
 {
   return m_work.GetTrafficManager().IsEnabled();
@@ -839,6 +848,10 @@ std::string Framework::GetPromoCityUrl(JNIEnv * env, jobject policy, jdouble lat
 
 void Framework::LogLocalAdsEvent(local_ads::EventType type, double lat, double lon, uint16_t accuracy)
 {
+  ::Framework * frm = g_framework->NativeFramework();
+  if (!frm->HasPlacePageInfo())
+    return;
+
   auto const & info = g_framework->GetPlacePageInfo();
   auto const & featureID = info.GetID();
   auto const & mwmInfo = featureID.m_mwmId.GetInfo();
@@ -860,6 +873,13 @@ void Framework::OnPowerSchemeChanged(power_management::Scheme const actualScheme
 {
   // Dummy
   // TODO: provide information for UI Properties.
+}
+
+FeatureID Framework::BuildFeatureId(JNIEnv * env, jobject featureId)
+{
+  static FeatureIdBuilder const builder(env);
+
+  return builder.Build(env, featureId);
 }
 }  // namespace android
 
@@ -995,40 +1015,52 @@ Java_com_mapswithme_maps_Framework_nativeGetParsedSearchRequest(JNIEnv * env, jc
 }
 
 JNIEXPORT void JNICALL
-Java_com_mapswithme_maps_Framework_nativeSetMapObjectListener(JNIEnv * env, jclass clazz, jobject jListener)
+Java_com_mapswithme_maps_Framework_nativePlacePageActivationListener(JNIEnv *env, jclass clazz,
+                                                                     jobject jListener)
 {
   LOG(LINFO, ("Set global map object listener"));
-  g_mapObjectListener = env->NewGlobalRef(jListener);
-  // void onMapObjectActivated(MapObject object);
-  jmethodID const activatedId = jni::GetMethodID(env, g_mapObjectListener, "onMapObjectActivated",
-                                                 "(Lcom/mapswithme/maps/bookmarks/data/MapObject;)V");
-  // void onDismiss(boolean switchFullScreenMode);
-  jmethodID const dismissId = jni::GetMethodID(env, g_mapObjectListener, "onDismiss", "(Z)V");
+  g_placePageActivationListener = env->NewGlobalRef(jListener);
+  // void onPlacePageActivated(MapObject object);
+  jmethodID const activatedId = jni::GetMethodID(env, g_placePageActivationListener,
+                                                 "onPlacePageActivated",
+                                                 "(Lcom/mapswithme/maps/widget/placepage/PlacePageData;)V");
+  // void onPlacePageDeactivated(boolean switchFullScreenMode);
+  jmethodID const deactivateId = jni::GetMethodID(env, g_placePageActivationListener,
+                                                  "onPlacePageDeactivated", "(Z)V");
   auto const fillPlacePage = [activatedId]()
   {
     JNIEnv * env = jni::GetEnv();
     auto const & info = frm()->GetCurrentPlacePageInfo();
-    jni::TScopedLocalRef mapObject(env, usermark_helper::CreateMapObject(env, info));
-    env->CallVoidMethod(g_mapObjectListener, activatedId, mapObject.get());
+    jni::TScopedLocalRef placePageDataRef(env, nullptr);
+    if (info.IsTrack())
+    {
+      auto const elevationInfo = frm()->GetBookmarkManager().MakeElevationInfo(info.GetTrackId());
+      placePageDataRef.reset(usermark_helper::CreateElevationInfo(env, elevationInfo));
+    }
+    else
+    {
+      placePageDataRef.reset(usermark_helper::CreateMapObject(env, info));
+    }
+    env->CallVoidMethod(g_placePageActivationListener, activatedId, placePageDataRef.get());
   };
-  auto const closePlacePage = [dismissId](bool switchFullScreenMode)
+  auto const closePlacePage = [deactivateId](bool switchFullScreenMode)
   {
     JNIEnv * env = jni::GetEnv();
-    env->CallVoidMethod(g_mapObjectListener, dismissId, switchFullScreenMode);
+    env->CallVoidMethod(g_placePageActivationListener, deactivateId, switchFullScreenMode);
   };
   frm()->SetPlacePageListeners(fillPlacePage, closePlacePage, fillPlacePage);
 }
 
 JNIEXPORT void JNICALL
-Java_com_mapswithme_maps_Framework_nativeRemoveMapObjectListener(JNIEnv * env, jclass)
+Java_com_mapswithme_maps_Framework_nativeRemovePlacePageActivationListener(JNIEnv *env, jclass)
 {
-  if (g_mapObjectListener == nullptr)
+  if (g_placePageActivationListener == nullptr)
     return;
 
   frm()->SetPlacePageListeners({} /* onOpen */, {} /* onClose */, {} /* onUpdate */);
   LOG(LINFO, ("Remove global map object listener"));
-  env->DeleteGlobalRef(g_mapObjectListener);
-  g_mapObjectListener = nullptr;
+  env->DeleteGlobalRef(g_placePageActivationListener);
+  g_placePageActivationListener = nullptr;
 }
 
 JNIEXPORT jstring JNICALL
@@ -1730,6 +1762,20 @@ Java_com_mapswithme_maps_Framework_nativeIsTransitSchemeEnabled(JNIEnv * env, jc
 }
 
 JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_Framework_nativeSetIsolinesLayerEnabled(JNIEnv * env, jclass, jboolean enabled)
+{
+  auto const isolinesEnabled = static_cast<bool>(enabled);
+  frm()->GetIsolinesManager().SetEnabled(isolinesEnabled);
+  frm()->SaveIsolonesEnabled(isolinesEnabled);
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_mapswithme_maps_Framework_nativeIsIsolinesLayerEnabled(JNIEnv * env, jclass)
+{
+  return static_cast<jboolean>(frm()->LoadIsolinesEnabled());
+}
+
+JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_Framework_nativeSaveSettingSchemeEnabled(JNIEnv * env, jclass, jboolean enabled)
 {
   frm()->SaveTransitSchemeEnabled(static_cast<bool>(enabled));
@@ -1751,22 +1797,29 @@ Java_com_mapswithme_maps_Framework_nativeZoomToPoint(JNIEnv * env, jclass, jdoub
 JNIEXPORT jobject JNICALL
 Java_com_mapswithme_maps_Framework_nativeDeleteBookmarkFromMapObject(JNIEnv * env, jclass)
 {
-  place_page::Info & info = g_framework->GetPlacePageInfo();
+  if (!frm()->HasPlacePageInfo())
+    return nullptr;
+
+  place_page::Info const & info = g_framework->GetPlacePageInfo();
   auto const bookmarkId = info.GetBookmarkId();
   frm()->GetBookmarkManager().GetEditSession().DeleteBookmark(bookmarkId);
 
   auto buildInfo = info.GetBuildInfo();
   buildInfo.m_match = place_page::BuildInfo::Match::FeatureOnly;
   buildInfo.m_userMarkId = kml::kInvalidMarkId;
+  buildInfo.m_source = place_page::BuildInfo::Source::Other;
   frm()->UpdatePlacePageInfoForCurrentSelection(buildInfo);
 
-  return usermark_helper::CreateMapObject(env, info);
+  return usermark_helper::CreateMapObject(env, g_framework->GetPlacePageInfo());
 }
 
 JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_Framework_nativeTurnOnChoosePositionMode(JNIEnv *, jclass, jboolean isBusiness, jboolean applyPosition)
 {
-  g_framework->SetChoosePositionMode(true, isBusiness, applyPosition, applyPosition ? g_framework->GetPlacePageInfo().GetMercator() : m2::PointD());
+  auto const pos = applyPosition && frm()->HasPlacePageInfo()
+      ? g_framework->GetPlacePageInfo().GetMercator()
+      : m2::PointD();
+  g_framework->SetChoosePositionMode(true, isBusiness, applyPosition, pos);
 }
 
 JNIEXPORT void JNICALL
@@ -1791,6 +1844,10 @@ Java_com_mapswithme_maps_Framework_nativeIsDownloadedMapAtScreenCenter(JNIEnv *,
 JNIEXPORT jstring JNICALL
 Java_com_mapswithme_maps_Framework_nativeGetActiveObjectFormattedCuisine(JNIEnv * env, jclass)
 {
+  ::Framework * frm = g_framework->NativeFramework();
+  if (!frm->HasPlacePageInfo())
+    return {};
+
   return jni::ToJavaString(env, g_framework->GetPlacePageInfo().FormatCuisines());
 }
 
@@ -1872,9 +1929,6 @@ Java_com_mapswithme_maps_Framework_nativeDeleteSavedRoutePoints()
 JNIEXPORT jobjectArray JNICALL
 Java_com_mapswithme_maps_Framework_nativeGetSearchBanners(JNIEnv * env, jclass)
 {
-  auto const & purchase = frm()->GetPurchase();
-  if (purchase && purchase->IsSubscriptionActive(SubscriptionType::RemoveAds))
-    return nullptr;
   return usermark_helper::ToBannersArray(env, frm()->GetAdsEngine().GetSearchBanners());
 }
 
@@ -1922,6 +1976,12 @@ Java_com_mapswithme_maps_Framework_nativeGetPhoneAuthUrl(JNIEnv * env, jclass, j
   return jni::ToJavaString(env, User::GetPhoneAuthUrl(jni::ToNativeString(env, redirectUrl)));
 }
 
+JNIEXPORT jobjectArray JNICALL
+Java_com_mapswithme_maps_Framework_nativeGetDefaultAuthHeaders(JNIEnv * env, jobject)
+{
+  return jni::ToKeyValueArray(env, web_api::GetDefaultAuthHeaders());
+}
+
 JNIEXPORT jstring JNICALL
 Java_com_mapswithme_maps_Framework_nativeGetPrivacyPolicyLink(JNIEnv * env, jclass)
 {
@@ -1935,10 +1995,12 @@ Java_com_mapswithme_maps_Framework_nativeGetTermsOfUseLink(JNIEnv * env, jclass)
 }
 
 JNIEXPORT void JNICALL
-Java_com_mapswithme_maps_Framework_nativeShowFeatureByLatLon(JNIEnv * env, jclass,
-                                                             jdouble lat, jdouble lon)
+Java_com_mapswithme_maps_Framework_nativeShowFeature(JNIEnv * env, jclass, jobject featureId)
 {
-  frm()->ShowFeatureByMercator(mercator::FromLatLon(ms::LatLon(lat, lon)));
+  auto const f = g_framework->BuildFeatureId(env, featureId);
+
+  if (f.IsValid())
+    frm()->ShowFeature(f);
 }
 
 JNIEXPORT void JNICALL
@@ -1969,24 +2031,20 @@ Java_com_mapswithme_maps_Framework_nativeGetDownloaderPromoBanner(JNIEnv * env, 
   static jmethodID const downloaderPromoBannerConstructor = jni::GetConstructorID(env,
       downloaderPromoBannerClass, "(ILjava/lang/String;)V");
 
-  auto const & purchase = frm()->GetPurchase();
-  bool const hasSubscription = purchase != nullptr &&
-                               purchase->IsSubscriptionActive(SubscriptionType::RemoveAds);
-
-  promo::DownloaderPromo::Banner banner;
-  auto const policy = platform::GetCurrentNetworkPolicy();
-  if (policy.CanUse())
+  std::vector<ads::Banner> banners;
+  auto const pos = frm()->GetCurrentPosition();
+  if (pos)
   {
-    auto const * promoApi = frm()->GetPromoApi(policy);
-    CHECK(promoApi != nullptr, ());
-    banner = promo::DownloaderPromo::GetBanner(frm()->GetStorage(), *promoApi,
-                                               jni::ToNativeString(env, mwmId),
-                                               languages::GetCurrentNorm(), hasSubscription);
+    banners = frm()->GetAdsEngine().GetDownloadOnMapBanners(jni::ToNativeString(env, mwmId), *pos,
+                                                            languages::GetCurrentNorm());
   }
 
-  jni::TScopedLocalRef const url(env, jni::ToJavaString(env, banner.m_url));
+  if (banners.empty())
+    return nullptr;
+
+  jni::TScopedLocalRef const url(env, jni::ToJavaString(env, banners[0].m_value));
   return env->NewObject(downloaderPromoBannerClass, downloaderPromoBannerConstructor,
-                        static_cast<jint>(banner.m_type), url.get());
+                        static_cast<jint>(banners[0].m_type), url.get());
 }
 
 JNIEXPORT jboolean JNICALL
@@ -2216,8 +2274,8 @@ Java_com_mapswithme_maps_Framework_nativeSetSearchViewport(JNIEnv *, jclass, jdo
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_mapswithme_maps_Framework_nativeNeedToShowCrown(JNIEnv *, jclass)
+Java_com_mapswithme_maps_Framework_nativeHasPlacePageInfo(JNIEnv *, jclass)
 {
-  return static_cast<jboolean>(crown::NeedToShow(frm()->GetPurchase()));
+  return static_cast<jboolean>(frm()->HasPlacePageInfo());
 }
 }  // extern "C"

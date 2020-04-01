@@ -4,8 +4,6 @@
 <!-- Language: fi -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">Tietoja</string>
 	<!-- Button text (should be short) -->
 	<string name="back">Takaisin</string>
 	<!-- Button text (should be short) -->
@@ -70,8 +68,6 @@
 	<string name="touch_to_download">Lataa koskettamalla</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">Kyllä</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">WiFi-yhteyttä suositellaan suurten karttojen lataamiseen</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">Mitä mittayksikköä haluat käyttää?</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -253,8 +249,6 @@
 	<string name="my_position_share_sms">Hei, katso sijaintini MAPS.ME-sovelluksessa! %1$s tai %2$s Eikö sinulla ole vielä offline-karttoja? Lataa ne täältä: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
 	<string name="bookmark_share_email_subject">Hei, katso merkintäni MAPS.ME-kartalla</string>
-	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">Hei,\n\nnastoitin kohteen %1$s MAPS.ME:ssä, koko maailman kattavassa offline-karttasovelluksessa. Klikkaa linkkiä %2$s tai %3$s nähdäksesi paikan kartalla. \n\nKiitos. kaikki</string>
 	<!-- Subject for emailed position -->
 	<string name="my_position_share_email_subject">Hei, kurkkaa tämänhetkinen sijaintini MAPS.ME:n kartalla!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
@@ -357,12 +351,6 @@
 	<string name="route">Reitti</string>
 	<!-- category title -->
 	<string name="routes">Reitit</string>
-	<!-- Show on first launch. -->
-	<string name="maps_licence_info">Tämä sovellus käyttää maantieteellistä dataa (mukaan lukien karttoja, yrityslistauksia, mielenkiinnon kohteita, maiden ja alueiden rajoja jne.), joka on noudettu OpenStreetMap-järjestelmästä. Emme takaa OpenStreetMapin datan johdonmukaisuutta, täsmällisyyttä, täydellisyyttä tai sovellettavuutta.</string>
-	<!-- Show on first launch. -->
-	<string name="agree">Hyväksyn</string>
-	<!-- Show on first launch -->
-	<string name="disagree">En hyväksy</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">Lataa sijaintisi kartta</string>
 	<!-- Dialog for transferring maps from lite to pro. -->
@@ -557,6 +545,22 @@
 	<string name="brown">Ruskea</string>
 	<!-- pink color -->
 	<string name="pink">Pinkki</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">Tumman purppuranpunainen</string>
+	<!-- light blue color -->
+	<string name="light_blue">Vaaleansininen</string>
+	<!-- cyan color -->
+	<string name="cyan">Sinivihreä</string>
+	<!-- teal color -->
+	<string name="teal">Smaragdinvihreä</string>
+	<!-- lime color -->
+	<string name="lime">Limen värinen</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">Tumman oranssi</string>
+	<!-- gray color -->
+	<string name="gray">Harmaa</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">Harmaan sininen</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">Kyllä</string>
 
@@ -871,6 +875,7 @@
 	<string name="minute">min</string>
 	<string name="placepage_place_description">Kuvaus</string>
 	<string name="placepage_more_button">Lisää</string>
+	<string name="placepage_more_reviews_button">Lisää arvosteluja</string>
 	<string name="book_button">Varaa</string>
 	<string name="placepage_call_button">Soita</string>
 	<string name="placepage_edit_bookmark_button">Muokkaa kirjanmerkkiä</string>
@@ -1226,7 +1231,6 @@
 	<string name="downloader_percent">%1$s (%2$s / %3$s)</string>
 	<string name="downloader_process">Ladataan %s...</string>
 	<string name="downloader_applying">%s otetaan käyttöön...</string>
-	<string name="transit_not_found">Navigointi kohteiden välillä ei ole vielä käytettävissä tällä alueella</string>
 	<string name="whats_new_title_hotel_filter">Uusia hotellisuodattimia on saatavana!</string>
 	<string name="whats_new_message_hotel_filter">Varaa hotelleja, joissa on tilaa valitseminasi päivinä! Käytä sisäänkirjautumis- ja uloskirjautumissuodattimia</string>
 	<string name="whats_new_title_ugc_travel">Jaa kokemuksesi muille matkailijoille!</string>
@@ -1335,7 +1339,8 @@
 	<string name="error_already_downloaded">Tämä lista on jo ladattu</string>
 	<string name="guides">Oppaat</string>
 	<string name="guide_downloaded_title">Opas on onnistuneesti ladattu</string>
-	<string name="download_guides">Lataa oppaat</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">Etsi matkaoppaita</string>
 	<string name="guides_groups_cached">Ladatut oppaat</string>
 	<string name="subtitle_error_downloading_guide">Opasta ei ladattu</string>
 	<string name="error_already_downloaded_guide">Tämä opas on jo ladattu</string>
@@ -1700,12 +1705,18 @@
 	<string name="new_onboarding_step5.3_button">Lataa ilmaiseksi</string>
 	<string name="new_onboarding_additional_steps_later_button">Ei nyt</string>
 	<string name="all_pass_subscription_header">MATKAOPASLUETTELON TILAUS</string>
-	<string name="all_pass_subscription_message_title">20000+ matkaopasta ja polkua</string>
-	<string name="all_pass_subscription_message_subtitle">Rajoittamaton offlinessa käytettävien kaupunkikierre- ja ulkoilureittien lataus</string>
-	<string name="all_pass_subscription_message_title_2">700+ kaupunkia ja 100+ maata</string>
-	<string name="all_pass_subscription_message_subtitle_2">Matkoille minä tahansa vuodenaikana</string>
-	<string name="all_pass_subscription_message_title_3">Monipuolinen sisältö</string>
-	<string name="all_pass_subscription_message_subtitle_3">Merkit, valokuvat, kävelyreitit, kuvaukset ja suositukset</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">30000+\nopasta\nja polkua</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle"><b>Rajoittamaton lataus offline-reittejä</b> kaupunkiin ja aktiivisia ulkoilua varten</string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">Interaktiivinen\nkorkeusprofiili</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">Kaikki polut ladataan <b>korkeuksineen ja perustietoineen reiteistä</b></string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">Valitut\npaikat, kuvat\nja suositukset</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3"><b>Ota kaikki selvää reitistä</b>, jota sinä aiot kulkea</string>
 	<string name="sightseeing_subscription_header_subscription">Matkaopastilaus</string>
 	<string name="sightseeing_subscription_message">700+ kaupunkia ja 100+ maata</string>
 	<string name="sightseeing_subscription_message_2">Saatavilla offline-tilassa</string>
@@ -1724,6 +1735,41 @@
 	<string name="whatsnew_outdoor_guides_message">Outdooractiven talvi- ja kesälomareitit odottavat luettelossa!</string>
 	<string name="whatsnew_guides_galleries_title">Suunnittele seuraava matka MAPS.ME:n kanssa</string>
 	<string name="whatsnew_guides_galleries_message">Nyt te voitte löytää suositeltuja matkaoppaita suosittujen kaupunkien ja nähtävyyksien korteista</string>
+	<string name="new_onboarding_step3_header">Matkusta</string>
+	<string name="all_pass_screen_best_value">Edullinen hinta</string>
+	<string name="buy_btn_for_subscription_3">Koko luettelo %s/vuosi</string>
+	<string name="transit_not_found">Metron reittiohjeet eivät ole vielä saatavilla tällä alueella</string>
+	<string name="dialog_pedestrian_route_is_long_header">Metroreittiä ei ole löytynyt</string>
+	<string name="dialog_pedestrian_route_is_long_message">Valitse reitin aloitus- tai loppupiste lähemmäksi metroasemaa</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">Virhe metroreitin luomisessa</string>
+	<string name="whatsnew_isolines_title">Uutuus aktiivilomalle – korkeus linjat offline-tilassa!</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">Suunnistaudu vuorimaastossa – käynnistä kerros päälle näytön vasemmassa yläkulmassa olevalla painikkeella</string>
+	<string name="button_layer_isolines">Korkeudet</string>
+	<string name="tips_map_layers_title_countour">Korkeuslinjat offline-tilassa MAPS.ME:ssä!</string>
+	<string name="tips_map_layers_message_countour">Korkeuslinjat auttavat suunnittelemaan luontomatkan etkä enää eksy maastolla</string>
+	<string name="isolines_activation_error_dialog">Päivitä tai lataa haluamasi alueen kartta, voidaksesi käyttää korkeuslinjoja</string>
+	<string name="isolines_location_error_dialog">Korkeus linjat eivät ole vielä saatavilla tällä alueella</string>
+	<string name="elevation_profile_diff_level">Vaikeustaso</string>
+	<string name="elevation_profile_diff_level_easy">Helppo</string>
+	<string name="elevation_profile_diff_level_moderate">Kohtuullinen</string>
+	<string name="elevation_profile_diff_level_hard">Vaikea</string>
+	<string name="elevation_profile_ascent">Nosto</string>
+	<string name="elevation_profile_descent">Lasku</string>
+	<string name="elevation_profile_minaltitude">Min. korkeus</string>
+	<string name="elevation_profile_maxaltitude">Maks. korkeus</string>
+	<string name="elevation_profile_m">m</string>
+	<string name="elevation_profile_difficulty">Vaikeus</string>
+	<string name="elevation_profile_distance">Etäisyys:</string>
+	<string name="elevation_profile_km">km</string>
+	<string name="elevation_profile_time">Aika:</string>
+	<string name="elevation_profile_hours">t.</string>
+	<string name="elevation_profile_minutes">min</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">Piilota ja jatka tausta-ajo</string>
+	<string name="view_on_map_downloaded_error">Tämä matkaopas oli poistettu laitteesta</string>
+	<string name="subscription">Tilaus</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Köysirata-asema</string>
@@ -1778,15 +1824,15 @@
 	<string name="type.amenity.parking">Parkkipaikka</string>
 	<string name="type.amenity.parking.fee">Parkkipaikka</string>
 	<string name="type.amenity.parking.multi.storey">Parkkipaikka</string>
-	<string name="type.amenity.parking.multi.storey.fee">Parkkipaikka</string>
 	<string name="type.amenity.parking.no.access">Parkkipaikka</string>
 	<string name="type.amenity.parking.park_and_ride">Parkkipaikka</string>
 	<string name="type.amenity.parking.permissive">Parkkipaikka</string>
-	<string name="type.amenity.parking.permissive.fee">Parkkipaikka</string>
 	<string name="type.amenity.parking.private">Parkkipaikka</string>
 	<string name="type.amenity.parking.underground">Parkkipaikka</string>
-	<string name="type.amenity.parking.underground.fee">Parkkipaikka</string>
 	<string name="type.amenity.parking_space">Parkkipaikka</string>
+	<string name="type.amenity.parking_space.permissive">Parkkipaikka</string>
+	<string name="type.amenity.parking_space.private">Parkkipaikka</string>
+	<string name="type.amenity.parking_space.underground">Parkkipaikka</string>
 	<string name="type.amenity.payment_terminal">Maksupääte</string>
 	<string name="type.amenity.pharmacy">Apteekki</string>
 	<string name="type.amenity.place_of_worship">Uskonnollinen kohde</string>
@@ -1799,7 +1845,7 @@
 	<string name="type.amenity.place_of_worship.taoist">Temppeli</string>
 	<string name="type.amenity.police">Poliisi</string>
 	<string name="type.amenity.post_box">Postilaatikko</string>
-	<string name="type.amenity.post_office">Posti</string>
+	<string name="type.amenity.post_office">Postitoimisto</string>
 	<string name="type.amenity.pub">Pubi</string>
 	<string name="type.amenity.public_bookcase">Kirjahylly</string>
 	<string name="type.amenity.recycling">Kierrätyskeskus</string>
@@ -1999,9 +2045,6 @@
 	<string name="type.highway.service.area">Katu</string>
 	<string name="type.highway.service.bridge">Katu</string>
 	<string name="type.highway.service.driveway">Katu</string>
-	<string name="type.highway.service.driveway.area">Katu</string>
-	<string name="type.highway.service.driveway.bridge">Katu</string>
-	<string name="type.highway.service.driveway.tunnel">Katu</string>
 	<string name="type.highway.service.parking_aisle">Katu</string>
 	<string name="type.highway.service.tunnel">Katu</string>
 	<string name="type.highway.speed_camera">Nopeusvalvontakamera</string>
@@ -2020,14 +2063,8 @@
 	<string name="type.highway.track.grade1">Katu</string>
 	<string name="type.highway.track.grade2">Katu</string>
 	<string name="type.highway.track.grade3">Katu</string>
-	<string name="type.highway.track.grade3.no.access">Katu</string>
-	<string name="type.highway.track.grade3.permissive">Katu</string>
 	<string name="type.highway.track.grade4">Katu</string>
-	<string name="type.highway.track.grade4.no.access">Katu</string>
-	<string name="type.highway.track.grade4.permissive">Katu</string>
 	<string name="type.highway.track.grade5">Katu</string>
-	<string name="type.highway.track.grade5.no.access">Katu</string>
-	<string name="type.highway.track.grade5.permissive">Katu</string>
 	<string name="type.highway.track.no.access">Katu</string>
 	<string name="type.highway.track.permissive">Katu</string>
 	<string name="type.highway.track.tunnel">Katu</string>
@@ -2068,7 +2105,6 @@
 	<string name="type.landuse.railway">Rautatierakennukset</string>
 	<string name="type.landuse.reservoir">Vesi</string>
 	<string name="type.leisure.dog_park">Koirien ulkoilupaikka</string>
-	<string name="type.leisure.dog_park.tennis">Koirapuisto</string>
 	<string name="type.leisure.fitness_centre">Kuntosali</string>
 	<string name="type.leisure.fitness_station">Kuntokeskus</string>
 	<string name="type.leisure.garden">Puutarha</string>
@@ -2079,9 +2115,7 @@
 	<string name="type.leisure.park.permissive">Puisto</string>
 	<string name="type.leisure.park.private">Puisto</string>
 	<string name="type.leisure.pitch">Urheilukenttä</string>
-	<string name="type.leisure.pitch.tennis">Urheilukenttä</string>
 	<string name="type.leisure.playground">Leikkikenttä</string>
-	<string name="type.leisure.playground.tennis">Leikkikenttä</string>
 	<string name="type.leisure.sauna">Sauna</string>
 	<string name="type.leisure.sports_centre">Urheilukeskus</string>
 	<string name="type.leisure.sports_centre.climbing">Kiipeilykeskus</string>
@@ -2103,7 +2137,7 @@
 	<string name="type.natural.bay">Lahti</string>
 	<string name="type.natural.beach">Ranta</string>
 	<string name="type.natural.cape">Niemeke</string>
-	<string name="type.natural.cave_entrance">Luolan sisäänkäynti</string>
+	<string name="type.natural.cave_entrance">Luola</string>
 	<string name="type.natural.geyser">Geysir</string>
 	<string name="type.natural.glacier">Jäätikkö</string>
 	<string name="type.natural.grassland">Pelto</string>
@@ -2116,10 +2150,6 @@
 	<string name="type.natural.volcano">Tulivuori</string>
 	<string name="type.natural.water">Vesi</string>
 	<string name="type.natural.wetland">Suoperäinen seutu</string>
-	<string name="type.natural.wood">Metsä</string>
-	<string name="type.natural.wood.coniferous">Metsä</string>
-	<string name="type.natural.wood.deciduous">Metsä</string>
-	<string name="type.natural.wood.mixed">Metsä</string>
 	<string name="type.office">Toimisto</string>
 	<string name="type.office.company">Yhtiön toimisto</string>
 	<string name="type.office.estate_agent">Kiinteistönvälittäjä</string>

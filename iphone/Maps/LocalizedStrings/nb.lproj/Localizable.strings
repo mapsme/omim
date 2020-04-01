@@ -6,9 +6,6 @@
 
 /********** Strings **********/
 
-/* About button text (should be short) */
-"about" = "Om";
-
 /* Button text (should be short) */
 "back" = "Tilbake";
 
@@ -107,9 +104,6 @@
 
 /* Settings/Downloader - 3G download warning dialog confirm button */
 "use_cellular_data" = "Ja";
-
-/* Settings/Downloader - No internet connection dialog message */
-"use_wifi_recommendation_text" = "Vi anbefaler å bruke WiFi når du skal laste ned store kart";
 
 /* Choose measurement on first launch alert - title */
 "which_measurement_system" = "Hvilket målesystem foretrekker du?";
@@ -406,9 +400,6 @@
 /* Subject for emailed bookmark */
 "bookmark_share_email_subject" = "Hei, se merket mitt på MAPS.ME-kartet";
 
-/* Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me */
-"bookmark_share_email" = "Hei,\n\nI merket av: %1$@ på MAPS.ME, offline verdenskart. Klikk på denne koblingen %2$@ eller denne %3$@ for å se stedet på kartet.\n\nTakk.";
-
 /* Subject for emailed position */
 "my_position_share_email_subject" = "Hei, se posisjonen min på MAPS.ME-kartet!";
 
@@ -586,15 +577,6 @@
 
 /* category title */
 "routes" = "Ruter";
-
-/* Show on first launch. */
-"maps_licence_info" = "Denne applikasjonen bruker geografiske data (inkludert kart, butikkoppføringer, interessepunkter, landegrenser og regiongrenser osv.) som er hentet fra OpenStreetMap-prosjektet. Vi garanterer ikke at data fra OpenStreetMap alltid er konsekvente, nøyaktige, fullstendige eller pålitelige.";
-
-/* Show on first launch. */
-"agree" = "Jeg samtykker";
-
-/* Show on first launch */
-"disagree" = "Jeg samtykker ikke";
 
 /* text of notification */
 "download_map_notification" = "Last ned kart over stedet der du befinner deg";
@@ -894,6 +876,30 @@
 
 /* pink color */
 "pink" = "Rosa";
+
+/* deep purple color */
+"deep_purple" = "Mørkepurpur";
+
+/* light blue color */
+"light_blue" = "Lyseblå";
+
+/* cyan color */
+"cyan" = "Blågrønn";
+
+/* teal color */
+"teal" = "Smaragdgrønn";
+
+/* lime color */
+"lime" = "Limegrønn";
+
+/* deep orange color */
+"deep_orange" = "Mørkeoransje";
+
+/* gray color */
+"gray" = "Grå";
+
+/* blue gray color */
+"blue_gray" = "Gråblå";
 
 /* Wi-Fi available */
 "WiFi_available" = "Ja";
@@ -1494,7 +1500,7 @@
 
 "placepage_more_button" = "Mer";
 
-"placepage_more_reviews_button" = "More Reviews";
+"placepage_more_reviews_button" = "Flere anmeldelser";
 
 "book_button" = "Bestill";
 
@@ -2179,8 +2185,6 @@
 
 "downloader_applying" = "Bruker %s ...";
 
-"transit_not_found" = "Transittnavigering i dette området er foreløpig ikke tilgjengelig";
-
 "whats_new_title_hotel_filter" = "Nye filter for hotell er tilgjengelig!";
 
 "whats_new_message_hotel_filter" = "Bestill hotell på datoene dine! Bruk filtre for inn- og utsjekking";
@@ -2379,7 +2383,8 @@
 
 "guide_downloaded_title" = "The guide has been downloaded successfully";
 
-"download_guides" = "Download guides";
+/* as few symbols as possible */
+"download_guides" = "Søke etter guider";
 
 "guides_groups_cached" = "Downloaded guides";
 
@@ -3115,17 +3120,23 @@
 /* do not translate */
 "all_pass_subscription_subheader" = "City + Outdoor Pass";
 
-"all_pass_subscription_message_title" = "20000+ guider og stier";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title" = "30000+\nguider\nog stier";
 
-"all_pass_subscription_message_subtitle" = "Ubegrenset offlineruter nedlasting for byturer og friluftsliv";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle" = "<b>Ubegrenset nedlasting</b> av ruter for by og friluftsliv <b>uten nett</b>";
 
-"all_pass_subscription_message_title_2" = "700+ byer og 100+ land";
+/* \n - for a break between lines. Max. 17 characters per 1 line. */
+"all_pass_subscription_message_title_2" = "Interaktiv\nhøydeprofil";
 
-"all_pass_subscription_message_subtitle_2" = "For reiser i alle årstider";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_2" = "Alle stier lastes ned <b>med høyder og den viktigste informasjonen om ruten</b>";
 
-"all_pass_subscription_message_title_3" = "Variert innhold";
+/* \n - for a break between lines. Max. 15 characters per 1 line. */
+"all_pass_subscription_message_title_3" = "Utvalgte\nsteder, bilder\nog anbefalinger";
 
-"all_pass_subscription_message_subtitle_3" = "Bokmerker, bilder, fotturer, beskrivelser og anbefalinger";
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_3" = "<b>Lær alt om ruten</b> du har valgt";
 
 /* do not translate */
 "sightseeing_subscription_header_sightseeing" = "City Pass";
@@ -3165,6 +3176,91 @@
 "whatsnew_guides_galleries_title" = "Planlegg din neste reise med MAPS.ME";
 
 "whatsnew_guides_galleries_message" = "Nå kan du finne anbefalte guider i stedssidene med populære byer og severdigheter";
+
+"new_onboarding_step3_header" = "Reis";
+
+"all_pass_screen_best_value" = "Rimelig pris";
+
+"buy_btn_for_subscription_3" = "Hele katalogen for %s/år";
+
+"transit_not_found" = "T-bane navigasjon er ikke tilgjengelig i denne regionen ennå";
+
+"dialog_pedestrian_route_is_long_header" = "T-bane rute ikke funnet";
+
+"dialog_pedestrian_route_is_long_message" = "Velg utgangspunkt eller destinasjon som befinner seg nærmere en T-bane stasjon";
+
+/* Failed planning SUBWAY route message in navigation view */
+"routing_planning_error_subway_special" = "Feil ved ruteplanlegging";
+
+"whatsnew_isolines_title" = "Nyhet i friluftsliv – høydekurver uten nett!";
+
+/* as less symbols as possible */
+"whatsnew_isolines_message" = "Orienter deg i fjellområde – slå på lag ved å trykke på knappen i hjørnet øverst til venstre på skjermen";
+
+"button_layer_isolines" = "Høyder";
+
+"tips_map_layers_title_countour" = "Høydekurver uten nett med MAPS.ME!";
+
+"tips_map_layers_message_countour" = "Høydekurver hjelper deg å planlegge turen din og ikke gå seg vill";
+
+"isolines_activation_error_dialog" = "For å bruke høydekurver oppdater eller last opp kartet til nødvendig område";
+
+"isolines_location_error_dialog" = "Høydekurver er ikke tilgjengelige i dette området ennå";
+
+"elevation_profile_diff_level" = "Vanskelighetsgrad";
+
+"elevation_profile_diff_level_easy" = "Lett";
+
+"elevation_profile_diff_level_moderate" = "Middels";
+
+"elevation_profile_diff_level_hard" = "Vanskelig";
+
+"elevation_profile_ascent" = "Stigning";
+
+"elevation_profile_descent" = "Nedstigning";
+
+"elevation_profile_minaltitude" = "Min. høyde";
+
+"elevation_profile_maxaltitude" = "Maks. høyde";
+
+"elevation_profile_m" = "m";
+
+"elevation_profile_difficulty" = "Vanskelighet";
+
+"elevation_profile_distance" = "Avstand:";
+
+"elevation_profile_km" = "km";
+
+"elevation_profile_time" = "I rute";
+
+"elevation_profile_hours" = "t.";
+
+"elevation_profile_minutes" = "min";
+
+/* hide the full screen banner and continue working with the app */
+"hide_screen_map_update" = "Skjul og fortsett med appen";
+
+"view_on_map_downloaded_error" = "Denne guiden har blitt fjernet fra enheten";
+
+"subscription" = "Abonnement";
+
+"freenow_taxi_title" = "FREE NOW";
+
+"tinkoff_allairlines_map_downloader_title" = "Карта Тинькофф All Airlines. 3000 миль в подарок";
+
+"tinkoff_allairlines_map_downloader_cta_button" = "Оформить карту";
+
+"tinkoff_insurance_map_downloader_title" = "Полис Тинькофф со скидкой! Подходит для любых виз.";
+
+"tinkoff_insurance_map_downloader_cta_button" = "Промокод";
+
+"mts_map_downloader_title" = "Забугорище: интернет и звонки за границей как дома";
+
+"mts_map_downloader_cta_button" = "Подключить";
+
+"skyeng_map_downloader_title" = "Дарим 4 бесплатных урока английского от Skyeng.";
+
+"skyeng_map_downloader_cta_button" = "Подробнее";
 
 
 /**********  Partners  **********/
@@ -3318,29 +3414,23 @@
 
 "type.amenity.parking.multi.storey" = "Parkering";
 
-"type.amenity.parking.multi.storey.fee" = "Parkering";
-
 "type.amenity.parking.no.access" = "Parkering";
 
 "type.amenity.parking.park_and_ride" = "Parkering";
 
 "type.amenity.parking.permissive" = "Parkering";
 
-"type.amenity.parking.permissive.fee" = "Parkering";
-
 "type.amenity.parking.private" = "Parkering";
 
 "type.amenity.parking.underground" = "Parkering";
 
-"type.amenity.parking.underground.fee" = "Parkering";
-
 "type.amenity.parking_space" = "Parkeringsplass";
 
-"type.amenity.parking_space.permissive" = "Parking space";
+"type.amenity.parking_space.permissive" = "Parkeringsplass";
 
-"type.amenity.parking_space.private" = "Parking space";
+"type.amenity.parking_space.private" = "Parkeringsplass";
 
-"type.amenity.parking_space.underground" = "Parking space";
+"type.amenity.parking_space.underground" = "Parkeringsplass";
 
 "type.amenity.payment_terminal" = "Betalingsterminal";
 
@@ -3366,7 +3456,7 @@
 
 "type.amenity.post_box" = "Postboks";
 
-"type.amenity.post_office" = "Post";
+"type.amenity.post_office" = "Postkontor";
 
 "type.amenity.prison" = "Prison";
 
@@ -3499,12 +3589,6 @@
 "type.building.has_parts" = "Bygning";
 
 "type.building.train_station" = "Togstasjon";
-
-"type.communication" = "communication";
-
-"type.communication.line" = "communication-line";
-
-"type.communication.line.underground" = "communication-line-underground";
 
 "type.craft" = "craft";
 
@@ -3754,7 +3838,7 @@
 
 "type.highway.footway.tunnel" = "Sti";
 
-"type.highway.ford" = "highway-ford";
+"type.highway.ford" = "Ford";
 
 "type.highway.living_street" = "Gate";
 
@@ -3808,8 +3892,6 @@
 
 "type.highway.pedestrian.tunnel" = "Gate";
 
-"type.highway.platform" = "highway-platform";
-
 "type.highway.primary" = "Gate";
 
 "type.highway.primary.bridge" = "Gate";
@@ -3862,12 +3944,6 @@
 
 "type.highway.service.driveway" = "Gate";
 
-"type.highway.service.driveway.area" = "Gate";
-
-"type.highway.service.driveway.bridge" = "Gate";
-
-"type.highway.service.driveway.tunnel" = "Gate";
-
 "type.highway.service.parking_aisle" = "Gate";
 
 "type.highway.service.tunnel" = "Gate";
@@ -3906,21 +3982,9 @@
 
 "type.highway.track.grade3" = "Gate";
 
-"type.highway.track.grade3.no.access" = "Gate";
-
-"type.highway.track.grade3.permissive" = "Gate";
-
 "type.highway.track.grade4" = "Gate";
 
-"type.highway.track.grade4.no.access" = "Gate";
-
-"type.highway.track.grade4.permissive" = "Gate";
-
 "type.highway.track.grade5" = "Gate";
-
-"type.highway.track.grade5.no.access" = "Gate";
-
-"type.highway.track.grade5.permissive" = "Gate";
 
 "type.highway.track.no.access" = "Gate";
 
@@ -4088,10 +4152,6 @@
 
 "type.landuse.residential" = "landuse-residential";
 
-"type.landuse.residential.rural" = "landuse-residential-rural";
-
-"type.landuse.residential.urban" = "landuse-residential-urban";
-
 "type.landuse.retail" = "landuse-retail";
 
 "type.landuse.salt_pond" = "landuse-salt_pond";
@@ -4105,8 +4165,6 @@
 "type.leisure.common" = "leisure-common";
 
 "type.leisure.dog_park" = "Hundeområde";
-
-"type.leisure.dog_park.tennis" = "Dog area";
 
 "type.leisure.fitness_centre" = "Treningssenter";
 
@@ -4134,15 +4192,7 @@
 
 "type.leisure.pitch" = "Sportssenter";
 
-"type.leisure.pitch.tennis" = "Sportssenter";
-
 "type.leisure.playground" = "Lekeplass";
-
-"type.leisure.playground.tennis" = "Lekeplass";
-
-"type.leisure.playing_fields" = "leisure-playing_fields";
-
-"type.leisure.playing_fields.tennis" = "leisure-playing_fields-tennis";
 
 "type.leisure.recreation_ground" = "Recreation ground";
 
@@ -4206,18 +4256,6 @@
 
 "type.mapswithme.grid" = "mapswithme-grid";
 
-"type.marking" = "marking";
-
-"type.marking.sport" = "marking-sport";
-
-"type.marking.sport.black" = "marking-sport-black";
-
-"type.marking.sport.blue" = "marking-sport-blue";
-
-"type.marking.sport.red" = "marking-sport-red";
-
-"type.marking.sport.white" = "marking-sport-white";
-
 "type.military" = "military";
 
 "type.military.bunker" = "Bunker";
@@ -4232,7 +4270,7 @@
 
 "type.natural.cape" = "Kapp";
 
-"type.natural.cave_entrance" = "Grotteåpning";
+"type.natural.cave_entrance" = "Grotte";
 
 "type.natural.cliff" = "Cliff";
 
@@ -4283,14 +4321,6 @@
 "type.natural.wetland.bog" = "Wetland";
 
 "type.natural.wetland.marsh" = "Wetland";
-
-"type.natural.wood" = "Skog";
-
-"type.natural.wood.coniferous" = "Skog";
-
-"type.natural.wood.deciduous" = "Skog";
-
-"type.natural.wood.mixed" = "Skog";
 
 "type.noexit" = "noexit";
 
@@ -4409,12 +4439,6 @@
 "type.power" = "power";
 
 "type.power.generator" = "power-generator";
-
-"type.power.generator.hydro" = "power-generator-hydro";
-
-"type.power.generator.photovoltaic" = "power-generator-photovoltaic";
-
-"type.power.generator.wind" = "power-generator-wind";
 
 "type.power.line" = "power-line";
 
@@ -4794,8 +4818,6 @@
 
 "type.sponsored" = "sponsored";
 
-"type.sponsored.banner" = "sponsored-banner";
-
 "type.sponsored.booking" = "sponsored-booking";
 
 "type.sponsored.holiday" = "Christmas or New Year Celebrations";
@@ -4841,8 +4863,6 @@
 "type.sponsored.partner8" = "sponsored-partner8";
 
 "type.sponsored.partner9" = "sponsored-partner9";
-
-"type.sponsored.viator" = "sponsored-viator";
 
 "type.sport" = "sport";
 
@@ -5039,8 +5059,6 @@
 "type.piste_type.sled" = "piste:type-sled";
 
 "type.building_part" = "Bygning";
-
-"type.earthquake_damage" = "earthquake:damage";
 
 "type.area_highway.cycleway" = "area:highway-cycleway";
 

@@ -1,11 +1,13 @@
 #import "MWMFrameworkObserver.h"
-#import "MWMFrameworkStorageObserver.h"
 #import "MWMRouterRecommendation.h"
 
 #include "routing/router.hpp"
 #include "routing/routing_callbacks.hpp"
+
 #include "storage/storage.hpp"
 #include "storage/storage_defines.hpp"
+
+#include "platform/downloader_defines.hpp"
 
 using namespace storage;
 
@@ -27,7 +29,7 @@ using namespace storage;
 
 @optional
 
-- (void)processViewportCountryEvent:(CountryId const &)countryId;
+- (void)processViewportCountryEvent:(storage::CountryId const &)countryId;
 - (void)processViewportChangedEvent;
 
 @end

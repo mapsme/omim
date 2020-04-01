@@ -3,13 +3,14 @@
 #include "routing/routing_helpers.hpp"
 #include "routing/speed_camera.hpp"
 
-#include "geometry/mercator.hpp"
-
 #include "platform/location.hpp"
 #include "platform/measurement_utils.hpp"
 #include "platform/platform.hpp"
 
 #include "coding/internal/file_data.hpp"
+
+#include "geometry/angles.hpp"
+#include "geometry/mercator.hpp"
 
 #include <utility>
 
@@ -53,7 +54,7 @@ void FormatDistance(double dist, string & value, string & suffix)
 RoutingSession::RoutingSession()
   : m_router(nullptr)
   , m_route(make_shared<Route>(string() /* router */, 0 /* route id */))
-  , m_state(SessionState::RoutingNotActive)
+  , m_state(SessionState::NoValidRoute)
   , m_isFollowing(false)
   , m_speedCameraManager(m_turnNotificationsMgr)
   , m_routingSettings(GetRoutingSettings(VehicleType::Car))
@@ -61,7 +62,7 @@ RoutingSession::RoutingSession()
   , m_lastCompletionPercent(0.0)
 {
   // To call |m_changeSessionStateCallback| on |m_state| initialization.
-  SetState(SessionState::RoutingNotActive);
+  SetState(SessionState::NoValidRoute);
   m_speedCameraManager.SetRoute(m_route);
 }
 
@@ -79,13 +80,15 @@ void RoutingSession::Init(RoutingStatisticsCallback const & routingStatisticsFn,
   alohalytics::LogEvent("OnRoutingInit", params);
 }
 
-void RoutingSession::BuildRoute(Checkpoints const & checkpoints,
+void RoutingSession::BuildRoute(Checkpoints const & checkpoints, GuidesTracks && guides,
                                 uint32_t timeoutSec)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   CHECK(m_router, ());
   m_checkpoints = checkpoints;
   m_router->ClearState();
+  m_router->SetGuidesTracks(std::move(guides));
+
   m_isFollowing = false;
   m_routingRebuildCount = -1; // -1 for the first rebuild.
 
@@ -102,22 +105,20 @@ void RoutingSession::RebuildRoute(m2::PointD const & startPoint,
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   CHECK(m_router, ());
-  RemoveRoute();
   SetState(routeRebuildingState);
 
   ++m_routingRebuildCount;
-  m_lastCompletionPercent = 0;
-  m_checkpoints.SetPointFrom(startPoint);
-
   auto const & direction = 
       m_routingSettings.m_useDirectionForRouteBuilding ? m_positionAccumulator.GetDirection()
                                                        : m2::PointD::Zero();
 
+  Checkpoints checkpoints(m_checkpoints);
+  checkpoints.SetPointFrom(startPoint);
   // Use old-style callback construction, because lambda constructs buggy function on Android
   // (callback param isn't captured by value).
-  m_router->CalculateRoute(m_checkpoints, direction, adjustToPrevRoute,
-                           DoReadyCallback(*this, readyCallback),
-                           needMoreMapsCallback, removeRouteCallback, m_progressCallback, timeoutSec);
+  m_router->CalculateRoute(checkpoints, direction, adjustToPrevRoute,
+                           DoReadyCallback(*this, readyCallback), needMoreMapsCallback,
+                           removeRouteCallback, m_progressCallback, timeoutSec);
 }
 
 m2::PointD RoutingSession::GetStartPoint() const
@@ -142,7 +143,7 @@ void RoutingSession::DoReadyCallback::operator()(shared_ptr<Route> route, Router
 void RoutingSession::RemoveRoute()
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
-  SetState(SessionState::RoutingNotActive);
+
   m_lastDistance = 0.0;
   m_moveAwayCounter = 0;
   m_turnNotificationsMgr.Reset();
@@ -162,8 +163,7 @@ void RoutingSession::RebuildRouteOnTrafficUpdate()
 
     switch (m_state)
     {
-    case SessionState::RoutingNotActive:
-    case SessionState::RouteNotReady:
+    case SessionState::NoValidRoute:
     case SessionState::RouteFinished: return;
 
     case SessionState::RouteBuilding:
@@ -189,7 +189,7 @@ void RoutingSession::RebuildRouteOnTrafficUpdate()
 bool RoutingSession::IsActive() const
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
-  return (m_state != SessionState::RoutingNotActive);
+  return (m_state != SessionState::NoValidRoute);
 }
 
 bool RoutingSession::IsNavigable() const
@@ -223,12 +223,6 @@ bool RoutingSession::IsRebuildingOnly() const
   return m_state == SessionState::RouteRebuilding;
 }
 
-bool RoutingSession::IsNotReady() const
-{
-  CHECK_THREAD_CHECKER(m_threadChecker, ());
-  return m_state == SessionState::RouteNotReady;
-}
-
 bool RoutingSession::IsFinished() const
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
@@ -259,6 +253,7 @@ void RoutingSession::Reset()
   ASSERT(m_router != nullptr, ());
 
   RemoveRoute();
+  SetState(SessionState::NoValidRoute);
   m_router->ClearState();
 
   m_passedDistanceOnRouteMeters = 0.0;
@@ -268,6 +263,7 @@ void RoutingSession::Reset()
 
 void RoutingSession::SetState(SessionState state)
 {
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
   if (m_changeSessionStateCallback && m_state != state)
     m_changeSessionStateCallback(m_state, state);
 
@@ -277,22 +273,25 @@ void RoutingSession::SetState(SessionState state)
 SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
-  ASSERT_NOT_EQUAL(m_state, SessionState::RoutingNotActive, ());
+  ASSERT_NOT_EQUAL(m_state, SessionState::NoValidRoute, ());
   ASSERT(m_router, ());
 
-  if (m_state == SessionState::RouteNeedRebuild || m_state == SessionState::RouteFinished
-      || m_state == SessionState::RouteBuilding || m_state == SessionState::RouteRebuilding
-      || m_state == SessionState::RouteNotReady || m_state == SessionState::RouteNoFollowing)
+  if (m_state == SessionState::RouteFinished || m_state == SessionState::RouteBuilding ||
+      m_state == SessionState::RouteNoFollowing || m_state == SessionState::NoValidRoute)
+  {
     return m_state;
+  }
 
-  ASSERT(m_route, ());
-  ASSERT(m_route->IsValid(), ());
+  CHECK(m_route, (m_state));
+  // Note. The route may not be valid here. It happens in case when while the first route
+  // build is cancelled because of traffic jam were downloaded. After that route rebuilding
+  // happens. While the rebuilding may be called OnLocationPositionChanged(...)
+  if (!m_route->IsValid())
+    return m_state;
 
   m_turnNotificationsMgr.SetSpeedMetersPerSecond(info.m_speedMpS);
 
-  auto const iteratorAction = m_route->MoveIteratorToReal(info);
-
-  if (iteratorAction.m_movedIterator)
+  if (m_route->MoveIterator(info))
   {
     m_moveAwayCounter = 0;
     m_lastDistance = 0.0;
@@ -312,7 +311,6 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
     else
     {
       SetState(SessionState::OnRoute);
-
       m_speedCameraManager.OnLocationPositionChanged(info);
     }
 
@@ -322,7 +320,7 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
     return m_state;
   }
 
-  if (!iteratorAction.m_closerToFake)
+  if (m_state != SessionState::RouteNeedRebuild && m_state != SessionState::RouteRebuilding)
   {
     // Distance from the last known projection on route
     // (check if we are moving far from the last known projection).
@@ -487,22 +485,22 @@ void RoutingSession::GenerateNotifications(vector<string> & notifications)
 void RoutingSession::AssignRoute(shared_ptr<Route> route, RouterResultCode e)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
-  if (e != RouterResultCode::Cancelled)
+
+  if (e != RouterResultCode::NoError)
   {
-    if (route->IsValid())
-      SetState(SessionState::RouteNotStarted);
+    // Route building was not success. If the former route is valid let's continue moving along it.
+    // If not, let's set corresponding state.
+    if (m_route->IsValid())
+      SetState(SessionState::OnRoute);
     else
-      SetState(SessionState::RoutingNotActive);
-
-    if (e != RouterResultCode::NoError)
-      SetState(SessionState::RouteNotReady);
-  }
-  else
-  {
-    SetState(SessionState::RoutingNotActive);
+      SetState(SessionState::NoValidRoute);
+    return;
   }
 
-  ASSERT(m_route, ());
+  RemoveRoute();
+  SetState(SessionState::RouteNotStarted);
+  m_lastCompletionPercent = 0;
+  m_checkpoints.SetPointFrom(route->GetPoly().Front());
 
   route->SetRoutingSettings(m_routingSettings);
   m_route = route;
@@ -519,16 +517,59 @@ void RoutingSession::SetRouter(unique_ptr<IRouter> && router,
   m_router->SetRouter(move(router), move(fetcher));
 }
 
-void RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
-                                          location::RouteMatchingInfo & routeMatchingInfo) const
+void RoutingSession::MatchLocationToRoadGraph(location::GpsInfo & location)
+{
+  auto const locationMerc = mercator::FromLatLon(location.m_latitude, location.m_longitude);
+  double const radius = m_route->GetCurrentRoutingSettings().m_matchingThresholdM;
+
+  m2::PointD const direction = m_positionAccumulator.GetDirection();
+  EdgeProj proj;
+  if (!m_router->FindClosestProjectionToRoad(locationMerc, direction, radius, proj))
+  {
+    m_projectedToRoadGraph = false;
+    return;
+  }
+
+  if (!m_projectedToRoadGraph)
+  {
+    m_projectedToRoadGraph = true;
+  }
+  else
+  {
+    if (m_proj.m_edge.GetFeatureId() == proj.m_edge.GetFeatureId())
+    {
+      location.m_latitude = mercator::YToLat(proj.m_point.y);
+      location.m_longitude = mercator::XToLon(proj.m_point.x);
+
+      if (m_route->GetCurrentRoutingSettings().m_matchRoute)
+      {
+        location.m_bearing =
+            location::AngleToBearing(base::RadToDeg(ang::AngleTo(m_proj.m_point, proj.m_point)));
+      }
+    }
+    else
+    {
+      m_projectedToRoadGraph = false;
+    }
+  }
+
+  m_proj = proj;
+}
+
+bool RoutingSession::MatchLocationToRoute(location::GpsInfo & location,
+                                          location::RouteMatchingInfo & routeMatchingInfo)
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   if (!IsOnRoute())
-    return;
+    return true;
 
   ASSERT(m_route, ());
 
-  m_route->MatchLocationToRoute(location, routeMatchingInfo);
+  bool const matchedToRoute = m_route->MatchLocationToRoute(location, routeMatchingInfo);
+  if (matchedToRoute)
+    m_projectedToRoadGraph = false;
+
+  return matchedToRoute;
 }
 
 traffic::SpeedGroup RoutingSession::MatchTraffic(
@@ -781,9 +822,8 @@ string DebugPrint(SessionState state)
 {
   switch (state)
   {
-  case SessionState::RoutingNotActive: return "RoutingNotActive";
+  case SessionState::NoValidRoute: return "NoValidRoute";
   case SessionState::RouteBuilding: return "RouteBuilding";
-  case SessionState::RouteNotReady: return "RouteNotReady";
   case SessionState::RouteNotStarted: return "RouteNotStarted";
   case SessionState::OnRoute: return "OnRoute";
   case SessionState::RouteNeedRebuild: return "RouteNeedRebuild";

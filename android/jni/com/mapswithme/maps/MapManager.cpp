@@ -10,6 +10,7 @@
 
 #include "base/thread_checker.hpp"
 
+#include "platform/downloader_defines.hpp"
 #include "platform/local_country_file_utils.hpp"
 #include "platform/mwm_version.hpp"
 
@@ -431,7 +432,9 @@ JNIEXPORT void JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeDelete(JNIEnv * env, jclass clazz, jstring root)
 {
   StartBatchingCallbacks();
-  GetStorage().DeleteNode(jni::ToNativeString(env, root));
+  auto const countryId = jni::ToNativeString(env, root);
+  GetStorage().DeleteNode(countryId);
+  g_framework->NativeFramework()->GetNotificationManager().DeleteCandidatesForCountry(countryId);
   EndBatchingCallbacks(env);
 }
 
@@ -535,7 +538,7 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeGetOverallProgress(JNIEnv *
     countries.push_back(jni::ToNativeString(env, static_cast<jstring>(item.get())));
   }
 
-  MapFilesDownloader::Progress const progress = GetStorage().GetOverallProgress(countries);
+  downloader::Progress const progress = GetStorage().GetOverallProgress(countries);
 
   jint res = 0;
   if (progress.second)
@@ -569,6 +572,9 @@ Java_com_mapswithme_maps_downloader_MapManager_nativeEnableDownloadOn3g(JNIEnv *
 JNIEXPORT jstring JNICALL
 Java_com_mapswithme_maps_downloader_MapManager_nativeGetSelectedCountry(JNIEnv * env, jclass clazz)
 {
+  if (!g_framework->NativeFramework()->HasPlacePageInfo())
+    return nullptr;
+
   storage::CountryId const & res = g_framework->GetPlacePageInfo().GetCountryId();
   return (res == storage::kInvalidCountryId ? nullptr : jni::ToJavaString(env, res));
 }

@@ -4,8 +4,6 @@
 <!-- Language: fa -->
 <resources>
 	<!-- SECTION: Strings -->
-	<!-- About button text (should be short) -->
-	<string name="about">درباره‌ی</string>
 	<!-- Button text (should be short) -->
 	<string name="back">بازگشت</string>
 	<!-- Button text (should be short) -->
@@ -69,8 +67,6 @@
 	<string name="touch_to_download">برای دانلود لمس کنید</string>
 	<!-- Settings/Downloader - 3G download warning dialog confirm button -->
 	<string name="use_cellular_data">بله</string>
-	<!-- Settings/Downloader - No internet connection dialog message -->
-	<string name="use_wifi_recommendation_text">اکیداً توصیه می کنیم برای دانلود نقشه های حجیم از اینترنت وای فای استفاده نمایید</string>
 	<!-- Choose measurement on first launch alert - title -->
 	<string name="which_measurement_system">کدام واحد اندازه گیری را ترجیح می دهید؟</string>
 	<!-- Location services are disabled by user alert - message -->
@@ -336,10 +332,6 @@
 	<string name="route">مسیر</string>
 	<!-- category title -->
 	<string name="routes">مسیر ها</string>
-	<!-- Show on first launch. -->
-	<string name="agree">موافقم</string>
-	<!-- Show on first launch -->
-	<string name="disagree">مخالفم</string>
 	<!-- text of notification -->
 	<string name="download_map_notification">دانلود نقشه جایی که هستید</string>
 	<!-- text of notification -->
@@ -530,6 +522,22 @@
 	<string name="brown">قهوای</string>
 	<!-- pink color -->
 	<string name="pink">صورتی</string>
+	<!-- deep purple color -->
+	<string name="deep_purple">ارغوانی سیر</string>
+	<!-- light blue color -->
+	<string name="light_blue">آبی کمرنگ</string>
+	<!-- cyan color -->
+	<string name="cyan">فیروزه ای</string>
+	<!-- teal color -->
+	<string name="teal">آبی سیر</string>
+	<!-- lime color -->
+	<string name="lime">زرد لیویی</string>
+	<!-- deep orange color -->
+	<string name="deep_orange">نارنجی سیر</string>
+	<!-- gray color -->
+	<string name="gray">خاکستری</string>
+	<!-- blue gray color -->
+	<string name="blue_gray">خاکستری کبود</string>
 	<!-- Wi-Fi available -->
 	<string name="WiFi_available">بلی</string>
 
@@ -835,7 +843,7 @@
 	<string name="minute">دقیقه</string>
 	<string name="placepage_place_description">توضیحات</string>
 	<string name="placepage_more_button">بیشتر</string>
-	<string name="placepage_more_reviews_button">بازخورد های بیشتر</string>
+	<string name="placepage_more_reviews_button">نقدهای دیگر</string>
 	<string name="book_button">رزرو</string>
 	<string name="placepage_call_button">تماس</string>
 	<string name="placepage_edit_bookmark_button">ویرایش نشانه ها</string>
@@ -1175,7 +1183,6 @@
 	<string name="downloader_percent">%1$s (%2$s از %3$s)</string>
 	<string name="downloader_process">در حال دانلود %s...</string>
 	<string name="downloader_applying">اعمال %s...</string>
-	<string name="transit_not_found">ناوبری حمل و نقل در این منطقه هنوز در دسترس نیست</string>
 	<string name="whats_new_title_hotel_filter">فیلترهای جدید هتل در دسترس است!</string>
 	<string name="whats_new_message_hotel_filter">رزرو هتل در دسترس برای تاریخ خود را! از چک کردن استفاده کنید و فیلتر کنید</string>
 	<string name="whats_new_title_ugc_travel">تجربه خود را با مسافران دیگر به اشتراک بگذارید!</string>
@@ -1292,7 +1299,8 @@
 	<string name="bookmarks_downloaded_subtitle">\'نمایش بر روی نقشه\' را فشار دهید تا مکان های جدید را از لیست کاوش کنید</string>
 	<string name="guides">راهنما</string>
 	<string name="guide_downloaded_title">راهنمای با موفقیت دانلود شده است</string>
-	<string name="download_guides">دانلود راهنما</string>
+	<!-- as few symbols as possible -->
+	<string name="download_guides">جستجوی راهنما</string>
 	<string name="guides_groups_cached">راهنما‌های دانلود شده</string>
 	<string name="subtitle_error_downloading_guide">راهنما دانلود نشد</string>
 	<string name="error_already_downloaded_guide">این راهنمای قبلا دانلود شده است</string>
@@ -1643,12 +1651,18 @@
 	<string name="new_onboarding_step5.3_button">دانلود رایگان</string>
 	<string name="new_onboarding_additional_steps_later_button">بعداً</string>
 	<string name="all_pass_subscription_header">اشتراک کاتالوگ</string>
-	<string name="all_pass_subscription_message_title">20000+ راهنما و مسیرهای پیادهروی</string>
-	<string name="all_pass_subscription_message_subtitle">دانلود نامحدود مسیر شهرها و فضاهای باز موجود آفلاین</string>
-	<string name="all_pass_subscription_message_title_2">700+ شهر و 100+ کشور</string>
-	<string name="all_pass_subscription_message_subtitle_2">سفرهای خود را در هر زمانی از سال برنامهریزی کنید</string>
-	<string name="all_pass_subscription_message_title_3">دامنه وسیعی از اطلاعات</string>
-	<string name="all_pass_subscription_message_subtitle_3">نشانکها، تصاویر، مسیرهای پیاده‎روی، توصیفات و توصیهها</string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title">30000+\nراهنما و مسیرها</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle"><b>دانلود نامحدود</b>مسیرهای شهری و فضای باز<b>در حالت آفلاین</b></string>
+	<!-- \n - for a break between lines. Max. 17 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_2">پروفایل ارتفاع\nتعاملی</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_2">هر مسیر شامل<b>ارتفاع و اطلاعات اصلی مسیر است</b></string>
+	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_3">نشانه ها،\nتصاویر و\nتوصیهها</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_3"><b>دانستن همه چیز درباره مسیری</b>که قرار است طی کنید</string>
 	<string name="sightseeing_subscription_header_subscription">اشتراک راهنماها</string>
 	<string name="sightseeing_subscription_message">700+ شهر و 100+ کشور</string>
 	<string name="sightseeing_subscription_message_2">دسترسی آفلاین</string>
@@ -1667,6 +1681,41 @@
 	<string name="whatsnew_outdoor_guides_message">مسیرهای Outdooractive برای سفرهای زمستانی و تابستانی در کاتالوگ در حال انتظار هستند!</string>
 	<string name="whatsnew_guides_galleries_title">سفر آتی خود را با MAPS.ME برنامهریزی کنید</string>
 	<string name="whatsnew_guides_galleries_message">حال میتوانید توصیههای پیشنهادی را در صفحه مربوط به مکان شهرها و مکان‎های توریستی مشهور مشاهده کنید</string>
+	<string name="new_onboarding_step3_header">تجربه کنید</string>
+	<string name="all_pass_screen_best_value">بهترین ارزش</string>
+	<string name="buy_btn_for_subscription_3">کلیه کاتالوگ ها با %s در سال</string>
+	<string name="transit_not_found">راهنمای مترو در این منطقه هنوز دردسترس نیست</string>
+	<string name="dialog_pedestrian_route_is_long_header">مسیر مترو یافت نشد</string>
+	<string name="dialog_pedestrian_route_is_long_message">لطفا نقطه آغاز و پایان نزدیک تری به ایستگاه مترو انتخاب کنید</string>
+	<!-- Failed planning SUBWAY route message in navigation view -->
+	<string name="routing_planning_error_subway_special">برنامه ریزی مسیر مترو ناموفق ماند</string>
+	<string name="whatsnew_isolines_title">تازه های فضای باز: لایه توپوگرافی آفلاین!</string>
+	<!-- as less symbols as possible -->
+	<string name="whatsnew_isolines_message">در مناطق کوهستانی خاطر جمع باشید. فقط لایه را در قسمت بالا سمت چپ روشن کنید</string>
+	<string name="button_layer_isolines">ایزومپ</string>
+	<string name="tips_map_layers_title_countour">تازه ها در MAPS.ME: لایه توپوگرافی آفلاین!</string>
+	<string name="tips_map_layers_message_countour">با اطمینان از این که همه چیز را در مورد منطقه می دانید طبیعت گردی خود را برنامه ریزی کنید و لذت ببرید</string>
+	<string name="isolines_activation_error_dialog">برای فعال سازی و استفاده از لایه توپوگرافی نقشه منطقه را به روزرسانی یا دانلود کنید</string>
+	<string name="isolines_location_error_dialog">لایه توپوگرافی هنوز برای این منطقه در دسترس نیست</string>
+	<string name="elevation_profile_diff_level">سطح دشواری</string>
+	<string name="elevation_profile_diff_level_easy">آسان</string>
+	<string name="elevation_profile_diff_level_moderate">متوسط</string>
+	<string name="elevation_profile_diff_level_hard">دشوار</string>
+	<string name="elevation_profile_ascent">بالا رفتن</string>
+	<string name="elevation_profile_descent">پایین آمدن</string>
+	<string name="elevation_profile_minaltitude">کمینه ارتفاع</string>
+	<string name="elevation_profile_maxaltitude">بیشینه ارتفاع</string>
+	<string name="elevation_profile_m">متر</string>
+	<string name="elevation_profile_difficulty">دشواری</string>
+	<string name="elevation_profile_distance">مسافت</string>
+	<string name="elevation_profile_km">کیلومتر</string>
+	<string name="elevation_profile_time">زمان:</string>
+	<string name="elevation_profile_hours">ساعت</string>
+	<string name="elevation_profile_minutes">دقیقه</string>
+	<!-- hide the full screen banner and continue working with the app -->
+	<string name="hide_screen_map_update">پنهان کردن و ادامه دادن</string>
+	<string name="view_on_map_downloaded_error">راهنما از این دستگاه پاک شده است</string>
+	<string name="subscription">عضویت</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aeroway.aerodrome">فرودگاه</string>
@@ -1721,15 +1770,15 @@
 	<string name="type.amenity.parking">پارکینگ</string>
 	<string name="type.amenity.parking.fee">پارکینگ</string>
 	<string name="type.amenity.parking.multi.storey">پارکینگ</string>
-	<string name="type.amenity.parking.multi.storey.fee">پارکینگ</string>
 	<string name="type.amenity.parking.no.access">پارکینگ</string>
 	<string name="type.amenity.parking.park_and_ride">پارکینگ</string>
 	<string name="type.amenity.parking.permissive">پارکینگ</string>
-	<string name="type.amenity.parking.permissive.fee">پارکینگ</string>
 	<string name="type.amenity.parking.private">پارکینگ</string>
 	<string name="type.amenity.parking.underground">پارکینگ</string>
-	<string name="type.amenity.parking.underground.fee">پارکینگ</string>
 	<string name="type.amenity.parking_space">جای پارک</string>
+	<string name="type.amenity.parking_space.permissive">جای پارک</string>
+	<string name="type.amenity.parking_space.private">جای پارک</string>
+	<string name="type.amenity.parking_space.underground">جای پارک</string>
 	<string name="type.amenity.payment_terminal">دستگاه کارتخوان</string>
 	<string name="type.amenity.pharmacy">داروخانه</string>
 	<string name="type.amenity.place_of_worship">گردشگری</string>
@@ -1742,7 +1791,7 @@
 	<string name="type.amenity.place_of_worship.taoist">گردشگری</string>
 	<string name="type.amenity.police">کلانتری</string>
 	<string name="type.amenity.post_box">صندوق پست</string>
-	<string name="type.amenity.post_office">پست</string>
+	<string name="type.amenity.post_office">دفتر پست</string>
 	<string name="type.amenity.pub">میکده</string>
 	<string name="type.amenity.recycling">مرکز بازیافت</string>
 	<string name="type.amenity.restaurant">غذا</string>
@@ -1854,9 +1903,6 @@
 	<string name="type.highway.service.area">جاده</string>
 	<string name="type.highway.service.bridge">جاده</string>
 	<string name="type.highway.service.driveway">جاده</string>
-	<string name="type.highway.service.driveway.area">جاده</string>
-	<string name="type.highway.service.driveway.bridge">جاده</string>
-	<string name="type.highway.service.driveway.tunnel">جاده</string>
 	<string name="type.highway.service.parking_aisle">جاده</string>
 	<string name="type.highway.service.tunnel">جاده</string>
 	<string name="type.highway.speed_camera">دوربین سرعت سنج</string>
@@ -1875,14 +1921,8 @@
 	<string name="type.highway.track.grade1">جاده</string>
 	<string name="type.highway.track.grade2">جاده</string>
 	<string name="type.highway.track.grade3">جاده</string>
-	<string name="type.highway.track.grade3.no.access">جاده</string>
-	<string name="type.highway.track.grade3.permissive">جاده</string>
 	<string name="type.highway.track.grade4">جاده</string>
-	<string name="type.highway.track.grade4.no.access">جاده</string>
-	<string name="type.highway.track.grade4.permissive">جاده</string>
 	<string name="type.highway.track.grade5">جاده</string>
-	<string name="type.highway.track.grade5.no.access">جاده</string>
-	<string name="type.highway.track.grade5.permissive">جاده</string>
 	<string name="type.highway.track.no.access">جاده</string>
 	<string name="type.highway.track.permissive">جاده</string>
 	<string name="type.highway.track.tunnel">جاده</string>
@@ -1934,9 +1974,7 @@
 	<string name="type.leisure.park.permissive">پارک</string>
 	<string name="type.leisure.park.private">پارک</string>
 	<string name="type.leisure.pitch">زمین ورزشی</string>
-	<string name="type.leisure.pitch.tennis">زمین ورزشی</string>
 	<string name="type.leisure.playground">زمین بازی</string>
-	<string name="type.leisure.playground.tennis">زمین بازی</string>
 	<string name="type.leisure.sauna">سونا</string>
 	<string name="type.leisure.sports_centre">مرکزورزشی</string>
 	<string name="type.leisure.sports_centre.climbing">مرکز صعود</string>
@@ -1957,7 +1995,7 @@
 	<string name="type.natural.bay">خلیج</string>
 	<string name="type.natural.beach">ساحل</string>
 	<string name="type.natural.cape">دماغه</string>
-	<string name="type.natural.cave_entrance">ورودی غار</string>
+	<string name="type.natural.cave_entrance">غار</string>
 	<string name="type.natural.geyser">چشمه آب گرم</string>
 	<string name="type.natural.glacier">یخچال طبیعی</string>
 	<string name="type.natural.grassland">کشتزار</string>
@@ -1970,10 +2008,6 @@
 	<string name="type.natural.volcano">اتشفشان</string>
 	<string name="type.natural.water">اب</string>
 	<string name="type.natural.wetland">ناحیه تالابی</string>
-	<string name="type.natural.wood">جنگل</string>
-	<string name="type.natural.wood.coniferous">جنگل</string>
-	<string name="type.natural.wood.deciduous">جنگل</string>
-	<string name="type.natural.wood.mixed">جنگل</string>
 	<string name="type.office">اداره</string>
 	<string name="type.office.company">دفتر شرکت</string>
 	<string name="type.office.estate_agent">بنگاه معاملات ملکی</string>

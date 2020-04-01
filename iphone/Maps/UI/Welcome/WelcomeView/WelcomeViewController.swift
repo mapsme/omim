@@ -9,7 +9,7 @@ protocol IWelcomeView: class {
   var isCloseButtonHidden: Bool {get set}
 }
 
-class WelcomeViewController: MWMViewController {
+class WelcomeViewController: MWMViewController, UIAdaptivePresentationControllerDelegate {
   var presenter: IWelcomePresenter?
 
   @IBOutlet private var image: UIImageView!
@@ -18,6 +18,8 @@ class WelcomeViewController: MWMViewController {
   @IBOutlet private var nextButton: UIButton!
   @IBOutlet private var closeButton: UIButton!
   @IBOutlet private var closeButtonHeightConstraint: NSLayoutConstraint!
+  static var presentationSize = CGSize(width: 520, height: 600)
+  private let transitioning = FadeTransitioning<IPadModalPresentationController>()
 
   var isCloseButtonHidden: Bool = false {
     didSet{
@@ -25,9 +27,20 @@ class WelcomeViewController: MWMViewController {
     }
   }
 
+  required init?(coder: NSCoder) {
+    super.init(coder: coder)
+    if UIDevice.current.userInterfaceIdiom == .pad {
+      transitioningDelegate = transitioning
+      modalPresentationStyle = .custom
+    } else {
+      modalPresentationStyle = .fullScreen
+    }
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
     presenter?.configure()
+    self.preferredContentSize = WelcomeViewController.presentationSize
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -41,10 +54,6 @@ class WelcomeViewController: MWMViewController {
 
   @IBAction func onCloseButton(_ sender: UIButton) {
     presenter?.onClose()
-  }
-
-  var key: String {
-    return presenter?.key() ?? ""
   }
 }
 
@@ -73,4 +82,3 @@ extension WelcomeViewController: IWelcomeView {
     image.image = titleImage
   }
 }
-

@@ -1,4 +1,3 @@
-import UIKit
 
 @IBDesignable final class RatingView: UIView {
   @IBInspectable var value: CGFloat = RatingViewSettings.Default.value {
@@ -328,18 +327,6 @@ import UIKit
 
   override var intrinsicContentSize: CGSize {
     return viewSize
-  }
-
-  override func mwm_refreshUI() {
-    super.mwm_refreshUI()
-    leftTextColor = leftTextColor.opposite()
-    rightTextColor = rightTextColor.opposite()
-    topTextColor = topTextColor.opposite()
-    bottomTextColor = bottomTextColor.opposite()
-    filledColor = filledColor.opposite()
-    emptyColor = emptyColor.opposite()
-    emptyBorderColor = emptyBorderColor.opposite()
-    filledBorderColor = filledBorderColor.opposite()
   }
 
   private func createLayers() -> [CALayer] {

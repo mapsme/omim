@@ -2,14 +2,14 @@ package com.mapswithme.maps;
 
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.text.TextUtils;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Size;
 import androidx.annotation.UiThread;
-import android.text.TextUtils;
-
 import com.mapswithme.maps.ads.Banner;
 import com.mapswithme.maps.ads.LocalAdInfo;
 import com.mapswithme.maps.api.ParsedRoutingData;
@@ -18,6 +18,7 @@ import com.mapswithme.maps.api.ParsedUrlMwmRequest;
 import com.mapswithme.maps.auth.AuthorizationListener;
 import com.mapswithme.maps.background.NotificationCandidate;
 import com.mapswithme.maps.bookmarks.data.DistanceAndAzimut;
+import com.mapswithme.maps.bookmarks.data.FeatureId;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.downloader.DownloaderPromoBanner;
 import com.mapswithme.maps.gdpr.UserBindingListener;
@@ -28,12 +29,16 @@ import com.mapswithme.maps.routing.RoutingInfo;
 import com.mapswithme.maps.routing.TransitRouteInfo;
 import com.mapswithme.maps.search.FilterUtils;
 import com.mapswithme.maps.settings.SettingsPrefsFragment;
+import com.mapswithme.maps.widget.placepage.PlacePageData;
 import com.mapswithme.util.Constants;
+import com.mapswithme.util.KeyValue;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class wraps android::Framework.cpp class
@@ -109,11 +114,11 @@ public class Framework
   public static final int SUBSCRIPTION_TYPE_BOOKMARK_CATALOG = 1;
 
   @SuppressWarnings("unused")
-  public interface MapObjectListener
+  public interface PlacePageActivationListener
   {
-    void onMapObjectActivated(MapObject object);
+    void onPlacePageActivated(@NonNull PlacePageData data);
 
-    void onDismiss(boolean switchFullScreenMode);
+    void onPlacePageDeactivated(boolean switchFullScreenMode);
   }
 
   @SuppressWarnings("unused")
@@ -240,6 +245,17 @@ public class Framework
     nativeSetSpeedCamManagerMode(mode.ordinal());
   }
 
+  @NonNull
+  public static Map<String, String> getDefaultAuthHeaders()
+  {
+    KeyValue[] headers = nativeGetDefaultAuthHeaders();
+    Map<String, String> result = new HashMap<>();
+    for (KeyValue header: headers)
+      result.put(header.getKey(), header.getValue());
+
+    return result;
+  }
+
   public static native void nativeShowTrackRect(long track);
 
   public static native int nativeGetDrawScale();
@@ -266,9 +282,9 @@ public class Framework
 
   public static native String nativeGetAddress(double lat, double lon);
 
-  public static native void nativeSetMapObjectListener(MapObjectListener listener);
+  public static native void nativePlacePageActivationListener(@NonNull PlacePageActivationListener listener);
 
-  public static native void nativeRemoveMapObjectListener();
+  public static native void nativeRemovePlacePageActivationListener();
 
   @UiThread
   public static native String nativeGetOutdatedCountriesString();
@@ -422,6 +438,10 @@ public class Framework
 
   public static native boolean nativeIsTransitSchemeEnabled();
 
+  public static native void nativeSetIsolinesLayerEnabled(boolean enabled);
+
+  public static native boolean nativeIsIsolinesLayerEnabled();
+
   @NonNull
   public static native MapObject nativeDeleteBookmarkFromMapObject();
 
@@ -469,11 +489,13 @@ public class Framework
   @NonNull
   public static native String nativeGetPhoneAuthUrl(@NonNull String redirectUrl);
   @NonNull
+  public static native KeyValue[] nativeGetDefaultAuthHeaders();
+  @NonNull
   public static native String nativeGetPrivacyPolicyLink();
   @NonNull
   public static native String nativeGetTermsOfUseLink();
 
-  public static native void nativeShowFeatureByLatLon(double lat, double lon);
+  public static native void nativeShowFeature(@NonNull FeatureId featureId);
   public static native void nativeShowBookmarkCategory(long cat);
 
   private static native int nativeGetFilterRating(float rawRating);
@@ -481,7 +503,7 @@ public class Framework
   @NonNull
   public static native String nativeMoPubInitializationBannerId();
 
-  @NonNull
+  @Nullable
   public static native DownloaderPromoBanner nativeGetDownloaderPromoBanner(@NonNull String mwmId);
 
   public static native boolean nativeHasMegafonCategoryBanner();
@@ -528,7 +550,14 @@ public class Framework
 
   public static native void nativeSetSearchViewport(double lat, double lon, int zoom);
 
-  public static native boolean nativeNeedToShowCrown();
+  /**
+   * In case of the app was dumped by system to the hard drive, Java map object can be
+   * restored from parcelable, but c++ framework is created from scratch and internal
+   * place page object is not initialized. So, do not restore place page in this case.
+   *
+   * @return true if c++ framework has initialized internal place page object, otherwise - false.
+   */
+  public static native boolean nativeHasPlacePageInfo();
 
   public enum LocalAdsEventType
   {
