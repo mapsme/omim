@@ -31,7 +31,7 @@ SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> cross
 void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & parent,
                                                              vector<JointEdge> & jointEdges,
                                                              vector<RouteWeight> & parentWeights,
-                                                             bool isOutgoing)
+                                                             bool isOutgoing, bool useAccessConditional)
 {
   bool opposite = !isOutgoing;
   vector<JointEdge> newCrossMwmEdges;
@@ -59,9 +59,9 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
       twinIndexGraph.GetLastPointsForJoint({start}, isOutgoing, lastPoints);
       ASSERT_EQUAL(lastPoints.size(), 1, ());
 
-      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(parent,
-                                                                target.GetSegment(!opposite),
-                                                                isOutgoing, lastPoints.back()))
+      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(
+              parent, target.GetSegment(!opposite), isOutgoing, useAccessConditional,
+              lastPoints.back()))
       {
         newCrossMwmEdges.emplace_back(*edge);
         newCrossMwmEdges.back().GetTarget().SetFeatureId(twinFeatureId);
@@ -109,7 +109,7 @@ void SingleVehicleWorldGraph::GetEdgeList(
   indexGraph.GetEdgeList(parentVertexData, parent, isOutgoing, jointEdges, parentWeights, parents);
 
   if (m_mode != WorldGraphMode::JointSingleMwm)
-    CheckAndProcessTransitFeatures(parent, jointEdges, parentWeights, isOutgoing);
+    CheckAndProcessTransitFeatures(parent, jointEdges, parentWeights, isOutgoing, useAccessConditional);
 }
 
 LatLonWithAltitude const & SingleVehicleWorldGraph::GetJunction(Segment const & segment,
@@ -167,7 +167,10 @@ double SingleVehicleWorldGraph::CalculateETA(Segment const & from, Segment const
     return CalculateETAWithoutPenalty(to);
 
   auto & indexGraph = m_loader->GetIndexGraph(from.GetMwmId());
-  return indexGraph.CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, true /* isOutgoing */, from, to).GetWeight();
+  return indexGraph
+      .CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, true /* isOutgoing */,
+                           false /* useAccessConditional */, from, to)
+      .GetWeight();
 }
 
 double SingleVehicleWorldGraph::CalculateETAWithoutPenalty(Segment const & segment)

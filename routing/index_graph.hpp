@@ -65,6 +65,7 @@ public:
 
   std::optional<JointEdge> GetJointEdgeByLastPoint(Segment const & parent,
                                                    Segment const & firstChild, bool isOutgoing,
+                                                   bool useAccessConditional,
                                                    uint32_t lastPoint);
 
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
@@ -129,9 +130,10 @@ public:
 
   bool IsUTurnAndRestricted(Segment const & parent, Segment const & child, bool isOutgoing) const;
 
-  RouteWeight CalculateEdgeWeight(EdgeEstimator::Purpose purpose, bool isOutgoing,
-                                  Segment const & from, Segment const & to,
-                                  std::optional<RouteWeight const> const & prevWeight = std::nullopt);
+  RouteWeight CalculateEdgeWeight(
+      EdgeEstimator::Purpose purpose, bool isOutgoing, bool useAccessConditional,
+      Segment const & from, Segment const & to,
+      std::optional<RouteWeight const> const & prevWeight = std::nullopt);
 
   template <typename T>
   void SetCurrentTimeGetter(T && t) { m_currentTimeGetter = std::forward<T>(t); }
@@ -151,8 +153,8 @@ private:
                            std::vector<SegmentEdge> & edges, Parents<Segment> const & parents,
                            bool useAccessConditional);
   void GetNeighboringEdge(astar::VertexData<Segment, RouteWeight> const & fromVertexData,
-                          Segment const & to, bool isOutgoing, std::vector<SegmentEdge> & edges,
-                          Parents<Segment> const & parents, bool useAccessConditional);
+                          Segment const & to, bool isOutgoing, bool useAccessConditional,
+                          std::vector<SegmentEdge> & edges, Parents<Segment> const & parents);
 
   struct PenaltyData
   {
@@ -171,7 +173,7 @@ private:
   /// will be at |u|. This time is based on start time of route building and weight of calculated
   /// path until |u|.
   RouteWeight GetPenalties(EdgeEstimator::Purpose purpose, Segment const & u, Segment const & v,
-                           std::optional<RouteWeight> const & prevWeight);
+                           std::optional<RouteWeight> const & prevWeight, bool useAccessConditional);
 
   void GetSegmentCandidateForRoadPoint(RoadPoint const & rp, NumMwmId numMwmId,
                                        bool isOutgoing, std::vector<Segment> & children);
@@ -181,6 +183,7 @@ private:
                                std::vector<Segment> const & firstChildren,
                                std::vector<uint32_t> const & lastPointIds,
                                bool isOutgoing,
+                               bool useAccessConditional,
                                std::vector<JointEdge> & jointEdges,
                                std::vector<RouteWeight> & parentWeights,
                                Parents<JointSegment> const & parents);

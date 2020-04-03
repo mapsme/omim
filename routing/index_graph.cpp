@@ -174,11 +174,12 @@ void IndexGraph::GetEdgeListImpl(
   GetLastPointsForJoint(possibleChildren, isOutgoing, lastPoints);
 
   ReconstructJointSegment(parentVertexData, parent, possibleChildren, lastPoints,
-                          isOutgoing, edges, parentWeights, parents);
+                          isOutgoing, useAccessConditional, edges, parentWeights, parents);
 }
 
 optional<JointEdge> IndexGraph::GetJointEdgeByLastPoint(Segment const & parent,
                                                         Segment const & firstChild, bool isOutgoing,
+                                                        bool useAccessConditional,
                                                         uint32_t lastPoint)
 {
   vector<Segment> const possibleChildren = {firstChild};
@@ -188,7 +189,7 @@ optional<JointEdge> IndexGraph::GetJointEdgeByLastPoint(Segment const & parent,
   vector<RouteWeight> parentWeights;
   Parents<JointSegment> emptyParents;
   ReconstructJointSegment(astar::VertexData<JointSegment, RouteWeight>::Zero(), parent, possibleChildren, lastPoints,
-                          isOutgoing, edges, parentWeights, emptyParents);
+                          isOutgoing, useAccessConditional, edges, parentWeights, emptyParents);
 
   CHECK_LESS_OR_EQUAL(edges.size(), 1, ());
   if (edges.size() == 1)
@@ -265,7 +266,7 @@ void IndexGraph::GetNeighboringEdges(astar::VertexData<Segment, RouteWeight> con
   {
     GetNeighboringEdge(fromVertexData,
                        Segment(from.GetMwmId(), rp.GetFeatureId(), rp.GetPointId(), isOutgoing),
-                       isOutgoing, edges, parents, useAccessConditional);
+                       isOutgoing, useAccessConditional, edges, parents);
   }
 
   if ((!isOutgoing || bidirectional) && rp.GetPointId() > 0)
@@ -273,7 +274,7 @@ void IndexGraph::GetNeighboringEdges(astar::VertexData<Segment, RouteWeight> con
     GetNeighboringEdge(
         fromVertexData,
         Segment(from.GetMwmId(), rp.GetFeatureId(), rp.GetPointId() - 1, !isOutgoing), isOutgoing,
-        edges, parents, useAccessConditional);
+        useAccessConditional, edges, parents);
   }
 }
 
@@ -324,6 +325,7 @@ void IndexGraph::ReconstructJointSegment(astar::VertexData<JointSegment, RouteWe
                                          vector<Segment> const & firstChildren,
                                          vector<uint32_t> const & lastPointIds,
                                          bool isOutgoing,
+                                         bool useAccessConditional,
                                          vector<JointEdge> & jointEdges,
                                          vector<RouteWeight> & parentWeights,
                                          Parents<JointSegment> const & parents)
@@ -346,14 +348,13 @@ void IndexGraph::ReconstructJointSegment(astar::VertexData<JointSegment, RouteWe
       return currentPointId < lastPointId ? pointId + 1 : pointId - 1;
     };
 
-    if (IsAccessNoForSure(firstChild.GetFeatureId(), weightTimeToParent,
-                          true /* useAccessConditional */))
+    if (IsAccessNoForSure(firstChild.GetFeatureId(), weightTimeToParent, useAccessConditional))
     {
       continue;
     }
 
     if (IsAccessNoForSure(parent.GetRoadPoint(isOutgoing), weightTimeToParent,
-                          true /* useAccessConditional */))
+                          useAccessConditional))
     {
       continue;
     }
@@ -380,7 +381,7 @@ void IndexGraph::ReconstructJointSegment(astar::VertexData<JointSegment, RouteWe
       // And using |weightTimeToParent| is not fair in fact, because we should calculate weight
       // until this |rp|. But we assume that segments have small length and inaccuracy will not
       // affect user.
-      if (IsAccessNoForSure(rp, weightTimeToParent, true /* useAccessConditional */))
+      if (IsAccessNoForSure(rp, weightTimeToParent, useAccessConditional))
       {
         noRoadAccess = true;
         break;
@@ -399,8 +400,9 @@ void IndexGraph::ReconstructJointSegment(astar::VertexData<JointSegment, RouteWe
 
     do
     {
-      RouteWeight const weight = CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing,
-                                                     prev, current, weightTimeToParent);
+      RouteWeight const weight =
+          CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing, useAccessConditional,
+                              prev, current, weightTimeToParent);
 
       if (isOutgoing || prev != parent)
         summaryWeight += weight;
@@ -420,9 +422,8 @@ void IndexGraph::ReconstructJointSegment(astar::VertexData<JointSegment, RouteWe
 }
 
 void IndexGraph::GetNeighboringEdge(astar::VertexData<Segment, RouteWeight> const & fromVertexData,
-                                    Segment const & to, bool isOutgoing,
-                                    vector<SegmentEdge> & edges, Parents<Segment> const & parents,
-                                    bool useAccessConditional)
+                                    Segment const & to, bool isOutgoing, bool useAccessConditional,
+                                    vector<SegmentEdge> & edges, Parents<Segment> const & parents)
 {
   auto const & from = fromVertexData.m_vertex;
   auto const & weightToFrom = fromVertexData.m_realDistance;
@@ -440,8 +441,8 @@ void IndexGraph::GetNeighboringEdge(astar::VertexData<Segment, RouteWeight> cons
   if (IsAccessNoForSure(rp, weightToFrom, useAccessConditional))
     return;
 
-  auto const weight =
-      CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing, from, to, weightToFrom);
+  auto const weight = CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing,
+                                          useAccessConditional, from, to, weightToFrom);
 
   edges.emplace_back(to, weight);
 }
@@ -457,7 +458,8 @@ IndexGraph::PenaltyData IndexGraph::GetRoadPenaltyData(Segment const & segment)
 }
 
 RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose, Segment const & u,
-                                     Segment const & v, optional<RouteWeight> const & prevWeight)
+                                     Segment const & v, optional<RouteWeight> const & prevWeight,
+                                     bool useAccessConditional)
 {
   auto const & fromPenaltyData = GetRoadPenaltyData(u);
   auto const & toPenaltyData = GetRoadPenaltyData(v);
@@ -474,12 +476,14 @@ RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose, Segment con
     // We do not distinguish between RoadAccess::Type::Private and RoadAccess::Type::Destination for
     // now.
     auto const [fromAccess, fromConfidence] =
-        prevWeight ? m_roadAccess.GetAccess(u.GetFeatureId(), *prevWeight)
-                   : m_roadAccess.GetAccessWithoutConditional(u.GetFeatureId());
+        prevWeight && useAccessConditional
+            ? m_roadAccess.GetAccess(u.GetFeatureId(), *prevWeight)
+            : m_roadAccess.GetAccessWithoutConditional(u.GetFeatureId());
 
     auto const [toAccess, toConfidence] =
-        prevWeight ? m_roadAccess.GetAccess(v.GetFeatureId(), *prevWeight)
-                   : m_roadAccess.GetAccessWithoutConditional(v.GetFeatureId());
+        prevWeight && useAccessConditional
+            ? m_roadAccess.GetAccess(v.GetFeatureId(), *prevWeight)
+            : m_roadAccess.GetAccessWithoutConditional(v.GetFeatureId());
 
     if (fromConfidence == RoadAccess::Confidence::Sure &&
         toConfidence == RoadAccess::Confidence::Sure)
@@ -498,7 +502,7 @@ RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose, Segment con
 
   // RoadPoint between u and v is front of u.
   auto const rp = u.GetRoadPoint(true /* front */);
-  auto const [rpAccessType, rpConfidence] = prevWeight
+  auto const [rpAccessType, rpConfidence] = prevWeight && useAccessConditional
                                                 ? m_roadAccess.GetAccess(rp, *prevWeight)
                                                 : m_roadAccess.GetAccessWithoutConditional(rp);
   switch (rpConfidence)
@@ -556,7 +560,8 @@ bool IndexGraph::IsUTurnAndRestricted(Segment const & parent, Segment const & ch
 }
 
 RouteWeight IndexGraph::CalculateEdgeWeight(EdgeEstimator::Purpose purpose, bool isOutgoing,
-                                            Segment const & from, Segment const & to,
+                                            bool useAccessConditional, Segment const & from,
+                                            Segment const & to,
                                             std::optional<RouteWeight const> const & prevWeight)
 {
   auto const & segment = isOutgoing ? to : from;
@@ -564,7 +569,7 @@ RouteWeight IndexGraph::CalculateEdgeWeight(EdgeEstimator::Purpose purpose, bool
 
   auto const weight = RouteWeight(m_estimator->CalcSegmentWeight(segment, road, purpose));
   auto const & penalties =
-      GetPenalties(purpose, isOutgoing ? from : to, isOutgoing ? to : from, prevWeight);
+      GetPenalties(purpose, isOutgoing ? from : to, isOutgoing ? to : from, prevWeight, useAccessConditional);
 
   return weight + penalties;
 }
