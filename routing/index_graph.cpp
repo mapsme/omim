@@ -389,9 +389,8 @@ void IndexGraph::ReconstructJointSegment(
 
     do
     {
-      RouteWeight const weight =
-          CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing,
-                              prev, current, weightTimeToParent);
+      RouteWeight const weight = CalculateEdgeWeight(EdgeEstimator::Purpose::Weight, isOutgoing,
+                                                     prev, current, weightTimeToParent);
 
       if (isOutgoing || prev != parent)
         summaryWeight += weight;
@@ -458,17 +457,17 @@ RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose, Segment con
   int8_t accessPenalty = 0;
   int8_t accessConditionalPenalties = 0;
 
-  bool const needAccessContitional = prevWeight && m_useAccessConditional;
+  bool const needAccessConditional = prevWeight && m_useAccessConditional;
   if (u.GetFeatureId() != v.GetFeatureId())
   {
     // We do not distinguish between RoadAccess::Type::Private and RoadAccess::Type::Destination for
     // now.
     auto const [fromAccess, fromConfidence] =
-        needAccessContitional ? m_roadAccess.GetAccess(u.GetFeatureId(), *prevWeight)
+        needAccessConditional ? m_roadAccess.GetAccess(u.GetFeatureId(), *prevWeight)
                               : m_roadAccess.GetAccessWithoutConditional(u.GetFeatureId());
 
     auto const [toAccess, toConfidence] =
-        needAccessContitional ? m_roadAccess.GetAccess(v.GetFeatureId(), *prevWeight)
+        needAccessConditional ? m_roadAccess.GetAccess(v.GetFeatureId(), *prevWeight)
                               : m_roadAccess.GetAccessWithoutConditional(v.GetFeatureId());
 
     if (fromConfidence == RoadAccess::Confidence::Sure &&
@@ -488,7 +487,7 @@ RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose, Segment con
 
   // RoadPoint between u and v is front of u.
   auto const rp = u.GetRoadPoint(true /* front */);
-  auto const [rpAccessType, rpConfidence] = needAccessContitional
+  auto const [rpAccessType, rpConfidence] = needAccessConditional
                                                 ? m_roadAccess.GetAccess(rp, *prevWeight)
                                                 : m_roadAccess.GetAccessWithoutConditional(rp);
   switch (rpConfidence)
