@@ -214,6 +214,14 @@ private:
   std::unordered_map<uint32_t, UTurnEnding> m_noUTurnRestrictions;
 
   RoadAccess m_roadAccess;
+  // Note. If this parameter is set to true access:conditional tag will be used. Now for all
+  // the cases (map generation, tests, mobile version and so on) access:conditional is not used.
+  // So the |m_useAccessConditional| should be always set to false. But later we'll use it
+  // for mobile version. And than |m_useAccessConditional| should be set to true for only
+  // index graphs which is used for mobile version. But it should be done careful. For example
+  // IndexGraphLoader::GetIndexGraph() may construct an IndexGraph and used in
+  // mobile version, track analyzing and tests.
+  bool const m_useAccessConditional = false;
   RoutingOptions m_avoidRoutingOptions;
 
   std::function<time_t()> m_currentTimeGetter = []() {

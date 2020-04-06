@@ -471,19 +471,18 @@ RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose, Segment con
   int8_t accessPenalty = 0;
   int8_t accessConditionalPenalties = 0;
 
+  bool const needAccessContitional = prevWeight && useAccessConditional;
   if (u.GetFeatureId() != v.GetFeatureId())
   {
     // We do not distinguish between RoadAccess::Type::Private and RoadAccess::Type::Destination for
     // now.
     auto const [fromAccess, fromConfidence] =
-        prevWeight && useAccessConditional
-            ? m_roadAccess.GetAccess(u.GetFeatureId(), *prevWeight)
-            : m_roadAccess.GetAccessWithoutConditional(u.GetFeatureId());
+        needAccessContitional ? m_roadAccess.GetAccess(u.GetFeatureId(), *prevWeight)
+                              : m_roadAccess.GetAccessWithoutConditional(u.GetFeatureId());
 
     auto const [toAccess, toConfidence] =
-        prevWeight && useAccessConditional
-            ? m_roadAccess.GetAccess(v.GetFeatureId(), *prevWeight)
-            : m_roadAccess.GetAccessWithoutConditional(v.GetFeatureId());
+        needAccessContitional ? m_roadAccess.GetAccess(v.GetFeatureId(), *prevWeight)
+                              : m_roadAccess.GetAccessWithoutConditional(v.GetFeatureId());
 
     if (fromConfidence == RoadAccess::Confidence::Sure &&
         toConfidence == RoadAccess::Confidence::Sure)
@@ -502,7 +501,7 @@ RouteWeight IndexGraph::GetPenalties(EdgeEstimator::Purpose purpose, Segment con
 
   // RoadPoint between u and v is front of u.
   auto const rp = u.GetRoadPoint(true /* front */);
-  auto const [rpAccessType, rpConfidence] = prevWeight && useAccessConditional
+  auto const [rpAccessType, rpConfidence] = needAccessContitional
                                                 ? m_roadAccess.GetAccess(rp, *prevWeight)
                                                 : m_roadAccess.GetAccessWithoutConditional(rp);
   switch (rpConfidence)
