@@ -60,8 +60,8 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
       ASSERT_EQUAL(lastPoints.size(), 1, ());
 
       if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(
-              parent, target.GetSegment(!opposite), isOutgoing, useAccessConditional,
-              lastPoints.back()))
+          parent, target.GetSegment(!opposite), isOutgoing,
+          lastPoints.back()))
       {
         newCrossMwmEdges.emplace_back(*edge);
         newCrossMwmEdges.back().GetTarget().SetFeatureId(twinFeatureId);
@@ -168,8 +168,7 @@ double SingleVehicleWorldGraph::CalculateETA(Segment const & from, Segment const
 
   auto & indexGraph = m_loader->GetIndexGraph(from.GetMwmId());
   return indexGraph
-      .CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, true /* isOutgoing */,
-                           false /* useAccessConditional */, from, to)
+      .CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, true /* isOutgoing */, from, to)
       .GetWeight();
 }
 

@@ -514,8 +514,8 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
 
           static map<JointSegment, JointSegment> kEmptyParents;
           auto optionalEdge =
-              graph.GetJointEdgeByLastPoint(parentSegment, firstChild, true /* isOutgoing */,
-                                            false /* useAccessConditional */, lastPoint);
+              graph
+                  .GetJointEdgeByLastPoint(parentSegment, firstChild, true /* isOutgoing */, lastPoint);
 
           if (!optionalEdge)
             continue;

@@ -157,8 +157,7 @@ double TransitWorldGraph::CalculateETA(Segment const & from, Segment const & to)
 
   auto & indexGraph = m_indexLoader->GetIndexGraph(from.GetMwmId());
   return indexGraph
-      .CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, true /* isOutgoing */,
-                           false /* useAccessConditional */, from, to)
+      .CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, true /* isOutgoing */, from, to)
       .GetWeight();
 }
 

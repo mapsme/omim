@@ -65,7 +65,6 @@ public:
 
   std::optional<JointEdge> GetJointEdgeByLastPoint(Segment const & parent,
                                                    Segment const & firstChild, bool isOutgoing,
-                                                   bool useAccessConditional,
                                                    uint32_t lastPoint);
 
   Joint::Id GetJointId(RoadPoint const & rp) const { return m_roadIndex.GetJointId(rp); }
@@ -130,30 +129,29 @@ public:
 
   bool IsUTurnAndRestricted(Segment const & parent, Segment const & child, bool isOutgoing) const;
 
-  RouteWeight CalculateEdgeWeight(
-      EdgeEstimator::Purpose purpose, bool isOutgoing, bool useAccessConditional,
-      Segment const & from, Segment const & to,
-      std::optional<RouteWeight const> const & prevWeight = std::nullopt);
+  RouteWeight CalculateEdgeWeight(EdgeEstimator::Purpose purpose, bool isOutgoing,
+                                  Segment const & from, Segment const & to,
+                                  std::optional<RouteWeight const> const & prevWeight = std::nullopt);
 
   template <typename T>
   void SetCurrentTimeGetter(T && t) { m_currentTimeGetter = std::forward<T>(t); }
 
 private:
-  void GetEdgeListImpl(astar::VertexData<Segment, RouteWeight> const & vertexData, bool isOutgoing,
-                       bool useRoutingOptions, bool useAccessConditional,
-                       std::vector<SegmentEdge> & edges, Parents<Segment> const & parents);
+  void GetEdgeListImpl(astar::VertexData<Segment, RouteWeight> const & vertexData,
+                       bool isOutgoing, bool useRoutingOptions,
+                       std::vector<SegmentEdge> & edges,
+                       Parents<Segment> const & parents);
 
-  void GetEdgeListImpl(astar::VertexData<JointSegment, RouteWeight> const & parentVertexData,
-                       Segment const & parent, bool isOutgoing, bool useAccessConditional,
-                       std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights,
-                       Parents<JointSegment> & parents);
+  void GetEdgeListImpl(
+      astar::VertexData<JointSegment, RouteWeight> const & parentVertexData, Segment const & parent,
+      bool isOutgoing, std::vector<JointEdge> & edges, std::vector<RouteWeight> & parentWeights,
+      Parents<JointSegment> & parents);
 
   void GetNeighboringEdges(astar::VertexData<Segment, RouteWeight> const & fromVertexData,
                            RoadPoint const & rp, bool isOutgoing, bool useRoutingOptions,
-                           std::vector<SegmentEdge> & edges, Parents<Segment> const & parents,
-                           bool useAccessConditional);
+                           std::vector<SegmentEdge> & edges, Parents<Segment> const & parents);
   void GetNeighboringEdge(astar::VertexData<Segment, RouteWeight> const & fromVertexData,
-                          Segment const & to, bool isOutgoing, bool useAccessConditional,
+                          Segment const & to, bool isOutgoing,
                           std::vector<SegmentEdge> & edges, Parents<Segment> const & parents);
 
   struct PenaltyData
@@ -172,25 +170,21 @@ private:
   /// \param |prevWeight| uses for fetching access:conditional. In fact it is time when user
   /// will be at |u|. This time is based on start time of route building and weight of calculated
   /// path until |u|.
-  RouteWeight GetPenalties(EdgeEstimator::Purpose purpose, Segment const & u, Segment const & v,
-                           std::optional<RouteWeight> const & prevWeight, bool useAccessConditional);
+  RouteWeight GetPenalties(EdgeEstimator::Purpose purpose, Segment const & u,
+                           Segment const & v, std::optional<RouteWeight> const & prevWeight);
 
   void GetSegmentCandidateForRoadPoint(RoadPoint const & rp, NumMwmId numMwmId,
                                        bool isOutgoing, std::vector<Segment> & children);
   void GetSegmentCandidateForJoint(Segment const & parent, bool isOutgoing, std::vector<Segment> & children);
-  void ReconstructJointSegment(astar::VertexData<JointSegment, RouteWeight> const & parentVertexData,
-                               Segment const & parent,
-                               std::vector<Segment> const & firstChildren,
-                               std::vector<uint32_t> const & lastPointIds,
-                               bool isOutgoing,
-                               bool useAccessConditional,
-                               std::vector<JointEdge> & jointEdges,
-                               std::vector<RouteWeight> & parentWeights,
-                               Parents<JointSegment> const & parents);
+  void ReconstructJointSegment(
+      astar::VertexData<JointSegment, RouteWeight> const & parentVertexData, Segment const & parent,
+      std::vector<Segment> const & firstChildren, std::vector<uint32_t> const & lastPointIds,
+      bool isOutgoing, std::vector<JointEdge> & jointEdges,
+      std::vector<RouteWeight> & parentWeights, Parents<JointSegment> const & parents);
 
   template <typename AccessPositionType>
   bool IsAccessNoForSure(AccessPositionType const & accessPositionType,
-                         RouteWeight const & weight, bool useAccessConditional) const;
+                         RouteWeight const & weight) const;
 
   std::shared_ptr<Geometry> m_geometry;
   std::shared_ptr<EdgeEstimator> m_estimator;
@@ -231,11 +225,11 @@ private:
 
 template <typename AccessPositionType>
 bool IndexGraph::IsAccessNoForSure(AccessPositionType const & accessPositionType,
-                                   RouteWeight const & weight, bool useAccessConditional) const
+                                   RouteWeight const & weight) const
 {
   auto const [accessType, confidence] =
-      useAccessConditional ? m_roadAccess.GetAccess(accessPositionType, weight)
-                           : m_roadAccess.GetAccessWithoutConditional(accessPositionType);
+      m_useAccessConditional ? m_roadAccess.GetAccess(accessPositionType, weight)
+                             : m_roadAccess.GetAccessWithoutConditional(accessPositionType);
   return accessType == RoadAccess::Type::No && confidence == RoadAccess::Confidence::Sure;
 }
 
