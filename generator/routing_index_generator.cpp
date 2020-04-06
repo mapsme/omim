@@ -447,7 +447,6 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
                     "called but should not be called."));
       return static_cast<time_t>(0);
     });
-    graph.SetRoadAccess(RoadAccess());
 
     Algorithm astar;
     IndexGraphWrapper indexGraphWrapper(graph, enter);

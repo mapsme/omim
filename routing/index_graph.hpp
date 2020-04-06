@@ -134,7 +134,7 @@ public:
                                   std::optional<RouteWeight const> const & prevWeight = std::nullopt);
 
   template <typename T>
-  void SetCurrentTimeGetter(T && t) { m_currentTimeGetter = std::forward<T>(t); }
+  void SetCurrentTimeGetter(T && t) { m_roadAccess.SetCurrentTimeGetter(std::forward<T>(t)); }
 
 private:
   void GetEdgeListImpl(astar::VertexData<Segment, RouteWeight> const & vertexData,
@@ -217,10 +217,6 @@ private:
   // mobile version, track analyzing and tests.
   bool const m_useAccessConditional = false;
   RoutingOptions m_avoidRoutingOptions;
-
-  std::function<time_t()> m_currentTimeGetter = []() {
-    return GetCurrentTimestamp();
-  };
 };
 
 template <typename AccessPositionType>
