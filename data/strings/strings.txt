@@ -47019,7 +47019,7 @@
     en = Подключить
 
   [skyeng_map_downloader_title]
-    en = Дарим 4 бесплатных урока английского от Skyeng.
+    en = Дарим 3 бесплатных урока английского от Skyeng.
 
   [skyeng_map_downloader_cta_button]
     en = Подробнее
