@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  android:padding="@dimen/margin_half"
+  android:background="?cardBackground">
+
+  <RelativeLayout
+    android:id="@+id/guide_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/image"
+      android:src="@drawable/gallery_placeholder"
+      android:layout_width="@dimen/nav_street_left"
+      android:layout_height="@dimen/nav_street_left" />
+
+    <LinearLayout
+      android:layout_alignParentTop="true"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/margin_half"
+      android:layout_toEndOf="@id/image"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/title"
+        android:lines="2"
+        android:textSize="@dimen/text_size_body_2"
+        android:fontFamily="@string/robotoRegular"
+        android:textColor="?android:textColorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+      </TextView>
+
+      <TextView
+        android:id="@+id/description"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/margin_half"/>
+
+      <include
+        layout="@layout/divider_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:layout_marginTop="@dimen/margin_half" />
+      <include
+        android:visibility="gone"
+        android:id="@+id/city_content"
+        layout="@layout/city_content" />
+      <include
+        android:visibility="gone"
+        android:id="@+id/outdoor_content"
+        layout="@layout/outdoor_content" />
+
+    </LinearLayout>
+  </RelativeLayout>
+
+  <RelativeLayout
+    android:id="@+id/placeholder_loading"
+    android:layout_width="match_parent"
+    android:visibility="gone"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/image_placeholder"
+      android:src="@drawable/gallery_placeholder"
+      android:layout_width="@dimen/nav_street_left"
+      android:layout_height="@dimen/nav_street_left" />
+
+    <LinearLayout
+      android:layout_alignParentTop="true"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginStart="@dimen/margin_half"
+      android:layout_toEndOf="@id/image_placeholder"
+      android:orientation="vertical">
+
+      <View
+        android:background="@drawable/bg_grey"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_base" />
+
+      <View
+        android:background="@drawable/bg_grey"
+        android:layout_width="@dimen/square_block_size"
+        android:layout_height="@dimen/margin_base"
+        android:layout_marginTop="@dimen/margin_half" />
+
+      <View
+        android:background="@drawable/bg_grey"
+        android:layout_width="@dimen/editor_height_days"
+        android:layout_height="@dimen/margin_half"
+        android:layout_marginTop="@dimen/margin_half_plus_eight" />
+
+      <include
+        layout="@layout/divider_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:layout_marginTop="@dimen/margin_half" />
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_half_double_plus"
+        android:orientation="horizontal">
+
+        <View
+          android:id="@+id/left_block"
+          android:background="@drawable/bg_grey"
+          android:layout_alignParentEnd="true"
+          android:layout_width="@dimen/nav_next_turn_frame"
+          android:layout_height="@dimen/margin_half" />
+
+        <View
+          android:layout_toEndOf="@id/left_block"
+          android:background="@drawable/bg_grey"
+          android:layout_alignParentStart="true"
+          android:layout_width="@dimen/nav_next_turn_frame"
+          android:layout_height="@dimen/margin_half" />
+
+      </RelativeLayout>
+    </LinearLayout>
+  </RelativeLayout>
+</RelativeLayout>
