@@ -15,8 +15,9 @@
     <ImageView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      tools:src="@drawable/ic_planning_route_isomaps_off_light_off" />
+      android:src="@drawable/time" />
     <TextView
+      android:id="@+id/time"
       android:layout_marginStart="@dimen/margin_quarter"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -24,7 +25,7 @@
       android:lines="1"
       android:textColor="?android:textColorSecondary"
       android:textSize="@dimen/text_size_body_4"
-      tools:text="you" />
+      tools:text="12h" />
   </LinearLayout>
 
   <LinearLayout
@@ -35,8 +36,9 @@
     <ImageView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      tools:src="@drawable/ic_planning_route_isomaps_off_light_off" />
+      android:src="@drawable/distance" />
     <TextView
+      android:id="@+id/distance"
       android:layout_marginStart="@dimen/margin_quarter"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -44,7 +46,7 @@
       android:lines="1"
       android:textColor="?android:textColorSecondary"
       android:textSize="@dimen/text_size_body_4"
-      tools:text="you" />
+      tools:text="30km" />
   </LinearLayout>
 
   <LinearLayout
@@ -55,8 +57,9 @@
     <ImageView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      tools:src="@drawable/ic_planning_route_isomaps_off_light_off" />
+      android:src="@drawable/altitude" />
     <TextView
+      android:id="@+id/altitude"
       android:layout_marginStart="@dimen/margin_quarter"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -64,6 +67,7 @@
       android:lines="1"
       android:textColor="?android:textColorSecondary"
       android:textSize="@dimen/text_size_body_4"
-      tools:text="you" />
+      tools:text="100m" />
   </LinearLayout>
+
 </LinearLayout>
