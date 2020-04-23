@@ -89,8 +89,8 @@ static CGFloat kDefaultMainButtonsHeight = 48;
   if (CGRectEqualToRect(availableArea, CGRectZero))
     return;
   self.separatorHeight.constant = 0.0;
-  self.additionalButtonsHeight.constant = 0.0;
   self.mainButtonsHeight.constant = kDefaultMainButtonsHeight;
+  CGFloat additionalHeight = 0;
   switch (self.state)
   {
   case MWMBottomMenuStateHidden: self.minY = self.superview.height; return;
@@ -101,20 +101,21 @@ static CGFloat kDefaultMainButtonsHeight = 48;
     BOOL const isLandscape = self.width > self.layoutThreshold;
     if (isLandscape)
     {
-      self.additionalButtonsHeight.constant = kAdditionalHeight;
+      additionalHeight = kAdditionalHeight;
     }
     else
     {
       NSUInteger const additionalButtonsCount = [self.additionalButtons numberOfItemsInSection:0];
       CGFloat const buttonHeight = 52.0;
-      self.additionalButtonsHeight.constant = additionalButtonsCount * buttonHeight;
+      additionalHeight = additionalButtonsCount * buttonHeight;
     }
   }
   break;
   }
   CGFloat mainHeight = self.mainButtonsHeight.constant;
   CGFloat separatorHeight = self.separatorHeight.constant;
-  CGFloat additionalHeight = self.additionalButtonsHeight.constant;
+  additionalHeight = MIN(additionalHeight, availableArea.size.height - mainHeight - separatorHeight);
+  self.additionalButtonsHeight.constant = additionalHeight;
   CGFloat height = mainHeight + separatorHeight + additionalHeight;
   self.frame = CGRectMake(availableArea.origin.x,
                           availableArea.size.height - height,
@@ -193,6 +194,8 @@ static CGFloat kDefaultMainButtonsHeight = 48;
     return;
   BOOL const wasCompact = [self isCompact];
   self.availableArea = frame;
+  self.width = frame.size.width;
+  [self layoutIfNeeded];
   BOOL const isCompact = [self isCompact];
   if (wasCompact || isCompact)
     [self morphMenuButtonTemplate:@"ic_menu_rotate_" direct:isCompact];
