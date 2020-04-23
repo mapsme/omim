@@ -39,8 +39,9 @@ public:
 
   enum class Header
   {
-    WithoutAccessConditional = 1,
-    WithAccessConditional = 2
+    TheFirstVersionRoadAccess = 0, // Version of section roadaccess in 2017.
+    WithoutAccessConditional = 1,  // Section roadaccess before conditional was implemented.
+    WithAccessConditional = 2      // Section roadaccess with conditional.
   };
 
   RoadAccessSerializer() = delete;
@@ -61,6 +62,8 @@ public:
     CHECK_LESS_OR_EQUAL(header, kLatestVersion, ());
     switch (header)
     {
+    case Header::TheFirstVersionRoadAccess:
+      break; // Version of 2017. Unsupported.
     case Header::WithoutAccessConditional:
     {
       DeserializeAccess(src, vehicleType, roadAccess);
