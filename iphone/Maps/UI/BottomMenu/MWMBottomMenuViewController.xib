@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
@@ -182,7 +182,7 @@
                 <outlet property="menuButton" destination="svD-yi-GrZ" id="JH2-aG-h1U"/>
                 <outlet property="separatorHeight" destination="wSx-Bp-1WM" id="f7K-ic-Yai"/>
             </connections>
-            <point key="canvasLocation" x="34" y="308.5"/>
+            <point key="canvasLocation" x="33.333333333333336" y="264.84375"/>
         </view>
     </objects>
     <resources>
