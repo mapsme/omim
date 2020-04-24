@@ -227,6 +227,12 @@ class DownloadMapsViewController: MWMViewController {
     self.processCountryEvent(dataSource.parentAttributes().countryId)
     tableView.reloadData()
   }
+
+  @objc func onAddMaps() {
+    let vc = storyboard!.instantiateViewController(ofType: DownloadMapsViewController.self)
+    vc.mode = .available
+    navigationController?.pushViewController(vc, animated: true)
+  }
 }
 
 // MARK: - UITableViewDataSource
@@ -247,7 +253,6 @@ extension DownloadMapsViewController: UITableViewDataSource {
     if hasAddMapSection && indexPath.section == dataSource.numberOfSections()  {
       let cellType = MWMMapDownloaderButtonTableViewCell.self
       let buttonCell = tableView.dequeueReusableCell(cell: cellType, indexPath: indexPath)
-      buttonCell.delegate = self
       return buttonCell
     }
 
@@ -331,6 +336,10 @@ extension DownloadMapsViewController: UITableViewDelegate {
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
+    if indexPath.section == dataSource.numberOfSections() {
+      onAddMaps()
+      return
+    }
     let nodeAttrs = dataSource.item(at: indexPath)
     if nodeAttrs.hasChildren {
       showChildren(dataSource.item(at: indexPath))
@@ -461,15 +470,5 @@ extension DownloadMapsViewController: UISearchBarDelegate {
 extension DownloadMapsViewController: UIBarPositioningDelegate {
   func position(for bar: UIBarPositioning) -> UIBarPosition {
     .topAttached
-  }
-}
-
-// MARK: - MWMMapDownloaderButtonTableViewCellProtocol
-
-extension DownloadMapsViewController: MWMMapDownloaderButtonTableViewCellProtocol {
-  @objc func onAddMaps() {
-    let vc = storyboard!.instantiateViewController(ofType: DownloadMapsViewController.self)
-    vc.mode = .available
-    navigationController?.pushViewController(vc, animated: true)
   }
 }

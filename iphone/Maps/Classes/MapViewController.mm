@@ -111,6 +111,10 @@ NSString * const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 #pragma mark - Map Navigation
 
 - (void)showPlacePage {
+  if (!PlacePageData.hasData) {
+    return;
+  }
+  
   self.controlsManager.trafficButtonHidden = YES;
   self.placePageVC = [PlacePageBuilder build];
   [self addChildViewController:self.placePageVC];

@@ -47,6 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PlacePageData : NSObject
 
+@property(class, nonatomic, readonly) BOOL hasData;
+
 @property(nonatomic, readonly, nullable) PlacePageButtonsData *buttonsData;
 @property(nonatomic, readonly) PlacePagePreviewData *previewData;
 @property(nonatomic, readonly, nullable) PlacePageInfoData *infoData;
