@@ -67,7 +67,12 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
   }
 }
 
-@interface PlacePageData () <MWMStorageObserver>
+@interface PlacePageData () <MWMStorageObserver> {
+  FeatureID m_featureID;
+  m2::PointD m_mercator;
+  std::vector<std::string> m_rawTypes;
+  std::string m_hotelId;
+}
 
 @end
 
@@ -150,6 +155,12 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
       _mapNodeAttributes = [[MWMStorage sharedStorage] attributesForCountry:@(rawData().GetCountryId().c_str())];
       [[MWMStorage sharedStorage] addObserver:self];
     }
+
+    m_featureID = rawData().GetID();
+    m_mercator = rawData().GetMercator();
+    m_rawTypes = rawData().GetRawTypes();
+    m_hotelId = rawData().GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID);
+
   }
   return self;
 }
@@ -158,6 +169,10 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
   if (self.mapNodeAttributes != nil) {
     [[MWMStorage sharedStorage] removeObserver:self];
   }
+}
+
++ (BOOL)hasData {
+  return GetFramework().HasPlacePageInfo();
 }
 
 - (void)loadOnlineDataWithCompletion:(MWMVoidBlock)completion {
@@ -181,7 +196,7 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
 
 - (void)loadUgcWithCompletion:(MWMVoidBlock)completion {
   __weak __typeof(self) wSelf = self;
-  GetFramework().GetUGC(rawData().GetID(), [wSelf, completion] (ugc::UGC const & ugc, ugc::UGCUpdate const & update) {
+  GetFramework().GetUGC(m_featureID, [wSelf, completion] (ugc::UGC const & ugc, ugc::UGCUpdate const & update) {
     __strong __typeof(wSelf) self = wSelf;
     if (self == nil) {
       completion();
@@ -218,11 +233,11 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
 
   auto locale = AppInfo.sharedInfo.twoLetterLanguageId.UTF8String;
   if (self.isLargeToponim) {
-    api->GetCityGallery(rawData().GetMercator(), locale, UTM::LargeToponymsPlacepageGallery, resultHandler, errorHandler);
+    api->GetCityGallery(m_mercator, locale, UTM::LargeToponymsPlacepageGallery, resultHandler, errorHandler);
   } else {
-    api->GetPoiGallery(rawData().GetMercator(),
+    api->GetPoiGallery(m_mercator,
                        locale,
-                       rawData().GetRawTypes(),
+                       m_rawTypes,
                        [MWMFrameworkHelper isWiFiConnected],
                        UTM::SightseeingsPlacepageGallery,
                        resultHandler,
@@ -241,9 +256,9 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
     return;
   }
 
-  std::string const hotelId = rawData().GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID);
+  std::string const hotelId = m_hotelId;
   __weak __typeof(self) wSelf = self;
-  api->GetHotelInfo(hotelId,
+  api->GetHotelInfo(m_hotelId,
                     [[AppInfo sharedInfo] twoLetterLanguageId].UTF8String,
                     [wSelf, hotelId, completion] (booking::HotelInfo const & hotelInfo) {
     __strong __typeof(wSelf) self = wSelf;
@@ -269,7 +284,7 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
   std::string const currency = "RUB";
 
   auto params = booking::BlockParams::MakeDefault();
-  params.m_hotelId = rawData().GetMetadata().Get(feature::Metadata::FMD_SPONSORED_ID);
+  params.m_hotelId = m_hotelId;
   params.m_currency = currency;
 
   __weak __typeof(self) wSelf = self;
@@ -318,7 +333,7 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
 
 - (void)processCountryEvent:(NSString *)countryId {
   if ([countryId isEqualToString:self.mapNodeAttributes.countryId]) {
-    _mapNodeAttributes = [[MWMStorage sharedStorage] attributesForCountry:@(rawData().GetCountryId().c_str())];
+    _mapNodeAttributes = [[MWMStorage sharedStorage] attributesForCountry:countryId];
     if (self.onMapNodeStatusUpdate != nil) {
       self.onMapNodeStatusUpdate();
     }
