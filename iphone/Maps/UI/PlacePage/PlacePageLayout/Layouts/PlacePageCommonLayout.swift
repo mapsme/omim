@@ -354,6 +354,7 @@ extension PlacePageCommonLayout {
     } else {
       hidden = true
     }
+    self.presenter?.layoutIfNeeded()
     UIView.animate(withDuration: kDefaultAnimationDuration) { [unowned self] in
       self.bookmarkViewController.view.isHidden = hidden
       self.presenter?.layoutIfNeeded()
