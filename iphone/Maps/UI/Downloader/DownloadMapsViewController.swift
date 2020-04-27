@@ -77,6 +77,10 @@ class DownloadMapsViewController: MWMViewController {
     } else {
       searchBar.placeholder = L("downloader_search_field_hint")
     }
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
     configButtons()
   }
 
@@ -160,6 +164,11 @@ class DownloadMapsViewController: MWMViewController {
     }
   }
 
+  func reloadData() {
+    tableView.reloadData()
+    configButtons()
+  }
+
   private func setAllMapsButton(_ state: AllMapsButtonState) {
     switch state {
     case .none:
@@ -225,7 +234,7 @@ class DownloadMapsViewController: MWMViewController {
     Statistics.logEvent(kStatDownloaderDownloadCancel, withParameters: [kStatFrom: kStatMap])
     skipCountryEvent = false
     self.processCountryEvent(dataSource.parentAttributes().countryId)
-    tableView.reloadData()
+    reloadData()
   }
 
   @objc func onAddMaps() {
@@ -404,7 +413,7 @@ extension DownloadMapsViewController: StorageObserver {
       return
     }
     dataSource.reload {
-      tableView.reloadData()
+      reloadData()
       noMapsContainer.isHidden = !dataSource.isEmpty || Storage.shared().downloadInProgress()
     }
     if countryId == dataSource.parentAttributes().countryId {
@@ -451,7 +460,7 @@ extension DownloadMapsViewController: UISearchBarDelegate {
     searchBar.text = nil
     searchBar.resignFirstResponder()
     dataSource.cancelSearch()
-    tableView.reloadData()
+    reloadData()
     self.noSerchResultViewController.view.isHidden = true
   }
 
@@ -459,7 +468,7 @@ extension DownloadMapsViewController: UISearchBarDelegate {
     let locale = searchBar.textInputMode?.primaryLanguage
     dataSource.search(searchText, locale: locale ?? "") { [weak self] (finished) in
       guard let self = self else { return }
-      self.tableView.reloadData()
+      self.reloadData()
       self.noSerchResultViewController.view.isHidden = !self.dataSource.isEmpty
     }
   }
