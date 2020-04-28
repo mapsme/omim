@@ -1,11 +1,13 @@
+#include "generator/generator_tests/common.hpp"
+
 #include "testing/testing.hpp"
+
+#include "generator/generator_tests_support/routing_helpers.hpp"
+#include "generator/generator_tests_support/test_mwm_builder.hpp"
 
 #include "generator/camera_info_collector.hpp"
 #include "generator/feature_sorter.hpp"
 #include "generator/generate_info.hpp"
-#include "generator/generator_tests/common.hpp"
-#include "generator/generator_tests_support/routing_helpers.hpp"
-#include "generator/generator_tests_support/test_mwm_builder.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/maxspeeds_parser.hpp"
 #include "generator/metalines_builder.hpp"
@@ -20,14 +22,16 @@
 #include "routing_common/maxspeed_conversion.hpp"
 
 #include "indexer/classificator_loader.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/index_builder.hpp"
 #include "indexer/map_style_reader.hpp"
+
+#include "platform/platform_tests_support/scoped_dir.hpp"
+#include "platform/platform_tests_support/scoped_file.hpp"
 
 #include "platform/local_country_file.hpp"
 #include "platform/measurement_utils.hpp"
 #include "platform/platform.hpp"
-#include "platform/platform_tests_support/scoped_dir.hpp"
-#include "platform/platform_tests_support/scoped_file.hpp"
 
 #include "coding/internal/file_data.hpp"
 
@@ -193,9 +197,11 @@ void TestSpeedCameraSectionBuilding(string const & osmContent, CameraMap const &
   string const & mwmFullPath = scopedMwm.GetFullPath();
 
   // Collecting additional info for building section.
-  TEST(BuildOffsetsTable(mwmFullPath), ("Cannot create offsets table"));
+  TEST(BuildOffsetsTable(mwmFullPath, FeaturesTag::Common), ("Cannot create offsets table"));
 
-  TEST(indexer::BuildIndexFromDataFile(mwmFullPath, testDirFullPath + country.GetCountryName()), ());
+  TEST(indexer::BuildIndexFromDataFile(mwmFullPath, testDirFullPath + country.GetCountryName(),
+                                       FeaturesTag::Common),
+       ());
 
   // Step 3. Build section into mwm.
   string const camerasFilename =

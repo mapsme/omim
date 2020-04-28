@@ -443,7 +443,7 @@ uint32_t FeatureType::ParseGeometry(int scale)
         int const ind = GetScaleIndex(*m_loadInfo, scale, m_offsets.m_pts);
         if (ind != -1)
         {
-          ReaderSource<FilesContainerR::TReader> src(m_loadInfo->GetGeometryReader(ind));
+          ReaderSource<FilesContainerR::TReader> src(m_loadInfo->GetGeometryReader(m_id.m_tag, ind));
           src.Skip(m_offsets.m_pts[ind]);
 
           serial::GeometryCodingParams cp = m_loadInfo->GetGeometryCodingParams(ind);
@@ -498,7 +498,7 @@ uint32_t FeatureType::ParseTriangles(int scale)
         auto const ind = GetScaleIndex(*m_loadInfo, scale, m_offsets.m_trg);
         if (ind != -1)
         {
-          ReaderSource<FilesContainerR::TReader> src(m_loadInfo->GetTrianglesReader(ind));
+          ReaderSource<FilesContainerR::TReader> src(m_loadInfo->GetTrianglesReader(m_id.m_tag, ind));
           src.Skip(m_offsets.m_trg[ind]);
           serial::LoadOuterTriangles(src, m_loadInfo->GetGeometryCodingParams(ind), m_triangles);
 

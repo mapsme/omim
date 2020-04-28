@@ -48,6 +48,7 @@
 #include "indexer/data_header.hpp"
 #include "indexer/drawing_rules.hpp"
 #include "indexer/features_offsets_table.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/index_builder.hpp"
 #include "indexer/map_style_reader.hpp"
@@ -364,9 +365,14 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       if (!feature::GenerateFinalFeatures(genInfo, country, mapType))
         continue;
 
-      LOG(LINFO, ("Generating offsets table for", dataFile));
-      if (!feature::BuildOffsetsTable(dataFile))
-        continue;
+      // Generate offsets tables for all features sections.
+      for (uint8_t i = 0; i < base::Underlying(FeaturesTag::Count); ++i)
+      {
+        auto const tag = static_cast<FeaturesTag>(i);
+        LOG(LINFO, ("Generating offsets table for", dataFile, tag));
+        if (!feature::BuildOffsetsTable(dataFile, tag))
+          continue;
+      }
 
       auto const boundaryPostcodesFilename =
           genInfo.GetIntermediateFileName(BOUNDARY_POSTCODE_TMP_FILENAME);
@@ -385,10 +391,14 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
 
     if (FLAGS_generate_index)
     {
-      LOG(LINFO, ("Generating index for", dataFile));
-
-      if (!indexer::BuildIndexFromDataFile(dataFile, FLAGS_intermediate_data_path + country))
-        LOG(LCRITICAL, ("Error generating index."));
+      // Generate index for all features sections.
+      for (uint8_t i = 0; i < base::Underlying(FeaturesTag::Count); ++i)
+      {
+        auto const tag = static_cast<FeaturesTag>(i);
+        LOG(LINFO, ("Generating index for", dataFile, tag));
+        if (!indexer::BuildIndexFromDataFile(dataFile, FLAGS_intermediate_data_path + country, tag))
+          LOG(LCRITICAL, ("Error generating index."));
+      }
     }
 
     if (FLAGS_generate_search_index)

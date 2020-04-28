@@ -11,6 +11,8 @@
 #include <memory>
 #include <vector>
 
+#include "features_tag.hpp"
+
 namespace feature { class FeaturesOffsetsTable; }
 
 /// Note! This class is NOT Thread-Safe.
@@ -20,13 +22,13 @@ class FeaturesVector
   DISALLOW_COPY(FeaturesVector);
 
 public:
-  FeaturesVector(FilesContainerR const & cont, feature::DataHeader const & header,
+  FeaturesVector(FilesContainerR const & cont, feature::DataHeader const & header, FeaturesTag tag,
                  feature::FeaturesOffsetsTable const * table)
-    : m_loadInfo(cont, header), m_table(table)
+    : m_loadInfo(cont, header), m_tag(tag), m_table(table)
   {
     if (m_loadInfo.GetMWMFormat() >= version::Format::v10)
     {
-      FilesContainerR::TReader reader = m_loadInfo.GetDataReader();
+      FilesContainerR::TReader reader = m_loadInfo.GetDataReader(m_tag);
 
       feature::DatSectionHeader header;
       header.Read(*reader.GetPtr());
@@ -41,7 +43,7 @@ public:
     }
     else
     {
-      m_recordReader = std::make_unique<RecordReader>(m_loadInfo.GetDataReader());
+      m_recordReader = std::make_unique<RecordReader>(m_loadInfo.GetDataReader(m_tag));
     }
     CHECK(m_recordReader, ());
   }
@@ -60,7 +62,7 @@ public:
       // works with FileContainerR, not with MwmId/MwmHandle/MwmValue.
       // But it's OK to set at least feature's index, because it can
       // be used later for Metadata loading.
-      ft.SetID(FeatureID(MwmSet::MwmId(), index));
+      ft.SetID(FeatureID(MwmSet::MwmId(), m_tag, index));
       toDo(ft, m_table ? index++ : pos);
     });
   }
@@ -78,6 +80,7 @@ private:
 
   feature::SharedLoadInfo m_loadInfo;
   std::unique_ptr<RecordReader> m_recordReader;
+  FeaturesTag m_tag;
   feature::FeaturesOffsetsTable const * m_table;
   std::unique_ptr<feature::MetadataIndex> m_metaidx;
 };
@@ -93,8 +96,8 @@ class FeaturesVectorTest
   FeaturesVector m_vector;
 
 public:
-  explicit FeaturesVectorTest(std::string const & filePath);
-  explicit FeaturesVectorTest(FilesContainerR const & cont);
+  FeaturesVectorTest(std::string const & filePath, FeaturesTag tag);
+  FeaturesVectorTest(FilesContainerR const & cont, FeaturesTag tag);
   ~FeaturesVectorTest();
 
   feature::DataHeader const & GetHeader() const { return m_header; }

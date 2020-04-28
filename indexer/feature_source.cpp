@@ -15,21 +15,25 @@ string ToString(FeatureStatus fs)
   return "Undefined";
 }
 
-FeatureSource::FeatureSource(MwmSet::MwmHandle const & handle) : m_handle(handle)
+FeatureSource::FeatureSource(MwmSet::MwmHandle const & handle, FeaturesTag tag)
+  : m_handle(handle), m_tag(tag)
 {
   if (!m_handle.IsAlive())
     return;
 
   auto const & value = *m_handle.GetValue();
-  m_vector = make_unique<FeaturesVector>(value.m_cont, value.GetHeader(), value.m_table.get());
+  if (value.m_cont.IsExist(GetFeaturesTag(tag, value.GetMwmVersion().GetFormat())))
+  {
+    m_vector =
+        make_unique<FeaturesVector>(value.m_cont, value.GetHeader(), m_tag, value.GetTable(m_tag));
+  }
 }
 
 size_t FeatureSource::GetNumFeatures() const
 {
-  if (!m_handle.IsAlive())
+  if (!m_handle.IsAlive() || !m_vector)
     return 0;
 
-  ASSERT(m_vector.get(), ());
   return m_vector->GetNumFeatures();
 }
 
@@ -38,7 +42,7 @@ unique_ptr<FeatureType> FeatureSource::GetOriginalFeature(uint32_t index) const
   ASSERT(m_handle.IsAlive(), ());
   ASSERT(m_vector != nullptr, ());
   auto ft = m_vector->GetByIndex(index);
-  ft->SetID(FeatureID(m_handle.GetId(), index));
+  ft->SetID(FeatureID(m_handle.GetId(), m_tag, index));
   return ft;
 }
 

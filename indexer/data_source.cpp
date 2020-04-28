@@ -18,14 +18,15 @@ class ReadMWMFunctor
 public:
   using Fn = function<void(uint32_t, FeatureSource & src)>;
 
-  ReadMWMFunctor(FeatureSourceFactory const & factory, Fn const & fn) : m_factory(factory), m_fn(fn)
+  ReadMWMFunctor(FeatureSourceFactory const & factory, FeaturesTag tag, Fn const & fn)
+    : m_factory(factory), m_tag(tag), m_fn(fn)
   {
     m_stop = []() { return false; };
   }
 
-  ReadMWMFunctor(FeatureSourceFactory const & factory, Fn const & fn,
+  ReadMWMFunctor(FeatureSourceFactory const & factory, FeaturesTag tag, Fn const & fn,
                  DataSource::StopSearchCallback const & stop)
-    : m_factory(factory), m_fn(fn), m_stop(stop)
+    : m_factory(factory), m_tag(tag), m_fn(fn), m_stop(stop)
   {
   }
 
@@ -34,7 +35,7 @@ public:
   // touched (created, edited etc.) features reading.
   void operator()(MwmSet::MwmHandle const & handle, covering::CoveringGetter & cov, int scale) const
   {
-    auto src = m_factory(handle);
+    auto src = m_factory(handle, m_tag);
 
     MwmValue const * mwmValue = handle.GetValue();
     if (mwmValue)
@@ -54,7 +55,8 @@ public:
 
       // Use last coding scale for covering (see index_builder.cpp).
       covering::Intervals const & intervals = cov.Get<RectId::DEPTH_LEVELS>(lastScale);
-      ScaleIndex<ModelReaderPtr> index(mwmValue->m_cont.GetReader(INDEX_FILE_TAG), mwmValue->m_factory);
+      auto const tag = GetIndexTag(m_tag);
+      ScaleIndex<ModelReaderPtr> index(mwmValue->m_cont.GetReader(tag), mwmValue->m_factory);
 
       // iterate through intervals
       for (auto const & i : intervals)
@@ -77,6 +79,7 @@ public:
 
 private:
   FeatureSourceFactory const & m_factory;
+  FeaturesTag m_tag;
   Fn m_fn;
   DataSource::StopSearchCallback m_stop;
 };
@@ -238,7 +241,8 @@ void DataSource::ForEachFeatureIDInRect(FeatureIdCallback const & f, m2::RectD c
       f(src.GetFeatureId(index));
   };
 
-  ReadMWMFunctor readFunctor(*m_factory, readFeatureId);
+  // todo(@t.yan): support reading from selected source/sources here.
+  ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureId);
   ForEachInIntervals(readFunctor, covering::LowLevelsOnly, rect, scale);
 }
 
@@ -248,7 +252,8 @@ void DataSource::ForEachInRect(FeatureCallback const & f, m2::RectD const & rect
     ReadFeatureType(f, src, index);
   };
 
-  ReadMWMFunctor readFunctor(*m_factory, readFeatureType);
+  // todo(@t.yan): support reading from selected source/sources here.
+  ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
   ForEachInIntervals(readFunctor, covering::ViewportWithLowLevels, rect, scale);
 }
 
@@ -260,7 +265,9 @@ void DataSource::ForClosestToPoint(FeatureCallback const & f, StopSearchCallback
   auto readFeatureType = [&f](uint32_t index, FeatureSource & src) {
     ReadFeatureType(f, src, index);
   };
-  ReadMWMFunctor readFunctor(*m_factory, readFeatureType, stop);
+
+  // todo(@t.yan): support reading from selected source/sources here.
+  ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType, stop);
   ForEachInIntervals(readFunctor, covering::CoveringMode::Spiral, rect, scale);
 }
 
@@ -270,7 +277,8 @@ void DataSource::ForEachInScale(FeatureCallback const & f, int scale) const
     ReadFeatureType(f, src, index);
   };
 
-  ReadMWMFunctor readFunctor(*m_factory, readFeatureType);
+  // todo(@t.yan): support reading from selected source/sources here.
+  ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
   ForEachInIntervals(readFunctor, covering::FullCover, m2::RectD::GetInfiniteRect(), scale);
 }
 
@@ -285,7 +293,8 @@ void DataSource::ForEachInRectForMWM(FeatureCallback const & f, m2::RectD const 
       ReadFeatureType(f, src, index);
     };
 
-    ReadMWMFunctor readFunctor(*m_factory, readFeatureType);
+    // todo(@t.yan): support reading from selected source/sources here.
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
     readFunctor(handle, cov, scale);
   }
 }
@@ -299,11 +308,12 @@ void DataSource::ReadFeatures(FeatureCallback const & fn, vector<FeatureID> cons
   while (fidIter != endIter)
   {
     MwmId const & id = fidIter->m_mwmId;
+    auto const tag = fidIter->m_tag;
     MwmHandle const handle = GetMwmHandleById(id);
     if (handle.IsAlive())
     {
       // Prepare features reading.
-      auto src = (*m_factory)(handle);
+      auto src = (*m_factory)(handle, fidIter->m_tag);
       do
       {
         auto const fts = src->GetFeatureStatus(fidIter->m_index);
@@ -317,7 +327,7 @@ void DataSource::ReadFeatures(FeatureCallback const & fn, vector<FeatureID> cons
           ft = src->GetOriginalFeature(fidIter->m_index);
         CHECK(ft, ());
         fn(*ft);
-      } while (++fidIter != endIter && id == fidIter->m_mwmId);
+      } while (++fidIter != endIter && id == fidIter->m_mwmId && tag == fidIter->m_tag);
     }
     else
     {

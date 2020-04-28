@@ -17,6 +17,7 @@
 #include "indexer/feature_impl.hpp"
 #include "indexer/feature_utils.hpp"
 #include "indexer/feature_visibility.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/postcodes_matcher.hpp"
@@ -603,7 +604,7 @@ void BuildSearchIndex(FilesContainerR & container, Writer & indexWriter)
 
   auto const & categoriesHolder = GetDefaultCategories();
 
-  FeaturesVectorTest features(container);
+  FeaturesVectorTest features(container, FeaturesTag::Common);
   SingleValueSerializer<Value> serializer;
 
   vector<pair<Key, Value>> searchIndexKeyValuePairs;

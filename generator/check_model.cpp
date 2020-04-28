@@ -1,12 +1,14 @@
 #include "generator/check_model.hpp"
 
-#include "defines.hpp"
-
-#include "indexer/features_vector.hpp"
 #include "indexer/classificator.hpp"
 #include "indexer/feature_visibility.hpp"
+#include "indexer/features_tag.hpp"
+#include "indexer/features_vector.hpp"
 
 #include "base/logging.hpp"
+#include "base/stl_helpers.hpp"
+
+#include "defines.hpp"
 
 #include <vector>
 
@@ -14,11 +16,14 @@ using namespace feature;
 
 namespace check_model
 {
-  void ReadFeatures(std::string const & fName)
-  {
-    Classificator const & c = classif();
+void ReadFeatures(std::string const & fName)
+{
+  Classificator const & c = classif();
 
-    FeaturesVectorTest(fName).GetVector().ForEach([&](FeatureType & ft, uint32_t) {
+  for (uint8_t i = 0; i < base::Underlying(FeaturesTag::Count); ++i)
+  {
+    auto const fv = FeaturesVectorTest(fName, static_cast<FeaturesTag>(i));
+    fv.GetVector().ForEach([&](FeatureType & ft, uint32_t) {
       TypesHolder types(ft);
 
       std::vector<uint32_t> vTypes;
@@ -40,7 +45,8 @@ namespace check_model
 
       IsDrawableLike(vTypes, ft.GetGeomType());
     });
-
-    LOG(LINFO, ("OK"));
   }
+
+  LOG(LINFO, ("OK"));
+}
 }

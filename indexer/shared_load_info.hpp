@@ -1,6 +1,7 @@
 #pragma once
 
 #include "indexer/data_header.hpp"
+#include "indexer/features_tag.hpp"
 
 #include "coding/files_container.hpp"
 #include "coding/geometry_coding.hpp"
@@ -20,12 +21,12 @@ public:
   SharedLoadInfo(FilesContainerR const & cont, DataHeader const & header);
   ~SharedLoadInfo() = default;
 
-  Reader GetDataReader() const;
+  Reader GetDataReader(FeaturesTag tag) const;
   Reader GetMetadataReader() const;
   Reader GetMetadataIndexReader() const;
   Reader GetAltitudeReader() const;
-  Reader GetGeometryReader(int ind) const;
-  Reader GetTrianglesReader(int ind) const;
+  Reader GetGeometryReader(FeaturesTag tag, int ind) const;
+  Reader GetTrianglesReader(FeaturesTag tag, int ind) const;
   std::optional<Reader> GetPostcodesReader() const;
 
   version::Format GetMWMFormat() const { return m_header.GetFormat(); }

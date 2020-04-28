@@ -1,5 +1,4 @@
 #include "track_analyzing/track_analyzer/crossroad_checker.hpp"
-
 #include "track_analyzing/track_analyzer/utils.hpp"
 
 #include "track_analyzing/track.hpp"
@@ -11,20 +10,21 @@
 #include "routing/index_graph_loader.hpp"
 #include "routing/maxspeeds.hpp"
 
+#include "traffic/speed_groups.hpp"
+
+#include "storage/routing_helpers.hpp"
+#include "storage/storage.hpp"
+
 #include "routing_common/car_model.hpp"
 #include "routing_common/maxspeed_conversion.hpp"
 #include "routing_common/vehicle_model.hpp"
-
-#include "traffic/speed_groups.hpp"
 
 #include "indexer/classificator.hpp"
 #include "indexer/data_source.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_data.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
-
-#include "storage/routing_helpers.hpp"
-#include "storage/storage.hpp"
 
 #include "coding/file_reader.hpp"
 
@@ -36,6 +36,8 @@
 #include "base/stl_helpers.hpp"
 #include "base/sunrise_sunset.hpp"
 #include "base/timer.hpp"
+
+#include "defines.hpp"
 
 #include <algorithm>
 #include <array>
@@ -50,8 +52,6 @@
 #include <tuple>
 #include <utility>
 #include <vector>
-
-#include "defines.hpp"
 
 using namespace routing;
 using namespace std;
@@ -331,8 +331,9 @@ private:
 class MatchedTrackPointToMoveType final
 {
 public:
-  MatchedTrackPointToMoveType(FilesContainerR const & container, VehicleModelInterface & vehicleModel)
-    : m_featuresVector(container), m_vehicleModel(vehicleModel)
+  MatchedTrackPointToMoveType(FilesContainerR const & container,
+                              VehicleModelInterface & vehicleModel)
+    : m_featuresVector(container, FeaturesTag::Common), m_vehicleModel(vehicleModel)
   {
     if (container.IsExist(CITY_ROADS_FILE_TAG))
       LoadCityRoads(container.GetFileName(), container.GetReader(CITY_ROADS_FILE_TAG), m_cityRoads);

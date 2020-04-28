@@ -1,7 +1,9 @@
+#include "indexer/features_offsets_table.hpp"
+
 #include "testing/testing.hpp"
 
-#include "indexer/features_offsets_table.hpp"
 #include "indexer/data_header.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 
 #include "platform/local_country_file_utils.hpp"
@@ -70,7 +72,8 @@ namespace feature
     string const testFileName = "test_file";
     Platform & pl = GetPlatform();
 
-    FilesContainerR baseContainer(pl.GetReader("minsk-pass" DATA_FILE_EXTENSION));
+    auto const minskPassFile = "minsk-pass" DATA_FILE_EXTENSION;
+    FilesContainerR baseContainer(pl.GetReader(minskPassFile));
 
     LocalCountryFile localFile = LocalCountryFile::MakeForTesting(testFileName);
     CountryIndexes::PreparePlaceOnDisk(localFile);
@@ -79,11 +82,10 @@ namespace feature
     FileWriter::DeleteFileX(indexFile);
 
     FeaturesOffsetsTable::Builder builder;
-    // minsk-pass.mwm has old format and old FEATURES_FILE_TAG name.
-    FeaturesVector::ForEachOffset(baseContainer.GetReader(FEATURES_FILE_TAG_V1_V9), [&builder](uint32_t offset)
-    {
-      builder.PushOffset(offset);
-    });
+    auto const featuesTag =
+        GetFeaturesTag(FeaturesTag::Common, DataHeader(minskPassFile).GetFormat());
+    FeaturesVector::ForEachOffset(baseContainer.GetReader(featuesTag),
+                                  [&builder](uint32_t offset) { builder.PushOffset(offset); });
 
     unique_ptr<FeaturesOffsetsTable> table(FeaturesOffsetsTable::Build(builder));
     TEST(table.get(), ());

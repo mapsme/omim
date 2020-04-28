@@ -1,9 +1,11 @@
+#include "indexer/centers_table.hpp"
+
 #include "testing/testing.hpp"
 
-#include "indexer/centers_table.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_header.hpp"
 #include "indexer/feature_algo.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 
 #include "platform/platform.hpp"
@@ -37,8 +39,7 @@ UNIT_CLASS_TEST(CentersTableTest, Smoke)
 {
   string const kMap = base::JoinPath(GetPlatform().WritableDir(), "minsk-pass.mwm");
 
-
-  FeaturesVectorTest fv(kMap);
+  FeaturesVectorTest fv(kMap, FeaturesTag::Common);
 
   TBuffer buffer;
 
@@ -74,7 +75,7 @@ UNIT_CLASS_TEST(CentersTableTest, SmokeV0)
 {
   string const kMap = base::JoinPath(GetPlatform().WritableDir(), "minsk-pass.mwm");
 
-  FeaturesVectorTest fv(kMap);
+  FeaturesVectorTest fv(kMap, FeaturesTag::Common);
 
   feature::DataHeader header(kMap);
   auto const codingParams = header.GetDefGeometryCodingParams();

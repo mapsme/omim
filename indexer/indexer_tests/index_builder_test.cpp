@@ -1,12 +1,12 @@
+#include "indexer/index_builder.hpp"
+
 #include "testing/testing.hpp"
 
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_source.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
-#include "indexer/index_builder.hpp"
 #include "indexer/scales.hpp"
-
-#include "defines.hpp"
 
 #include "platform/platform.hpp"
 
@@ -14,6 +14,8 @@
 
 #include "base/macros.hpp"
 #include "base/stl_helpers.hpp"
+
+#include "defines.hpp"
 
 #include <string>
 #include <vector>
@@ -30,7 +32,7 @@ UNIT_TEST(BuildIndexTest)
   // Build index.
   vector<char> serialIndex;
   {
-    FeaturesVectorTest features(originalContainer);
+    FeaturesVectorTest features(originalContainer, FeaturesTag::Common);
 
     MemWriter<vector<char>> serialWriter(serialIndex);
     indexer::BuildIndex(features.GetHeader(), features.GetVector(), serialWriter, "build_index_test");
@@ -48,10 +50,10 @@ UNIT_TEST(BuildIndexTest)
     originalContainer.ForEachTag(base::MakeBackInsertFunctor(tags));
     for (size_t i = 0; i < tags.size(); ++i)
     {
-      if (tags[i] != INDEX_FILE_TAG)
+      if (tags[i] != GetIndexTag(FeaturesTag::Common))
         containerWriter.Write(originalContainer.GetReader(tags[i]), tags[i]);
     }
-    containerWriter.Write(serialIndex, INDEX_FILE_TAG);
+    containerWriter.Write(serialIndex, GetIndexTag(FeaturesTag::Common));
   }
 
   {

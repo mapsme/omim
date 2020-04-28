@@ -5,6 +5,7 @@
 #include "indexer/feature_algo.hpp"
 #include "indexer/feature_impl.hpp"
 #include "indexer/feature_utils.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
@@ -12,8 +13,8 @@
 #include "platform/local_country_file_utils.hpp"
 
 #include "coding/endianness.hpp"
-#include "coding/files_container.hpp"
 #include "coding/file_writer.hpp"
+#include "coding/files_container.hpp"
 #include "coding/memory_region.hpp"
 #include "coding/reader.hpp"
 #include "coding/simple_dense_coding.hpp"
@@ -25,12 +26,12 @@
 #include "base/macros.hpp"
 #include "base/math.hpp"
 
+#include "defines.hpp"
+
 #include <algorithm>
 #include <exception>
 #include <limits>
 #include <utility>
-
-#include "defines.hpp"
 
 using namespace std;
 
@@ -312,7 +313,8 @@ unique_ptr<RankTable> RankTable::Load(FilesMappingContainer const & mcont, strin
 void SearchRankTableBuilder::CalcSearchRanks(FilesContainerR & rcont, vector<uint8_t> & ranks)
 {
   feature::DataHeader header(rcont);
-  FeaturesVector featuresVector(rcont, header, nullptr /* features offsets table */);
+  FeaturesVector featuresVector(rcont, header, FeaturesTag::Common,
+                                nullptr /* features offsets table */);
 
   featuresVector.ForEach(
       [&ranks](FeatureType & ft, uint32_t /* index */) { ranks.push_back(CalcSearchRank(ft)); });

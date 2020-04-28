@@ -1,6 +1,7 @@
 #pragma once
 
 #include "indexer/feature.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/mwm_set.hpp"
 
@@ -28,14 +29,14 @@ inline std::string DebugPrint(FeatureStatus fs) { return ToString(fs); }
 class FeatureSource
 {
 public:
-  explicit FeatureSource(MwmSet::MwmHandle const & handle);
+  explicit FeatureSource(MwmSet::MwmHandle const & handle, FeaturesTag tag);
   virtual ~FeatureSource() {}
 
   size_t GetNumFeatures() const;
 
   std::unique_ptr<FeatureType> GetOriginalFeature(uint32_t index) const;
 
-  FeatureID GetFeatureId(uint32_t index) const { return FeatureID(m_handle.GetId(), index); }
+  FeatureID GetFeatureId(uint32_t index) const { return FeatureID(m_handle.GetId(), m_tag, index); }
 
   virtual FeatureStatus GetFeatureStatus(uint32_t index) const;
 
@@ -48,6 +49,7 @@ public:
 protected:
   MwmSet::MwmHandle const & m_handle;
   std::unique_ptr<FeaturesVector> m_vector;
+  FeaturesTag m_tag;
 };  // class FeatureSource
 
 // Lightweight FeatureSource factory. Each DataSource owns factory object.
@@ -55,8 +57,9 @@ class FeatureSourceFactory
 {
 public:
   virtual ~FeatureSourceFactory() = default;
-  virtual std::unique_ptr<FeatureSource> operator()(MwmSet::MwmHandle const & handle) const
+  virtual std::unique_ptr<FeatureSource> operator()(MwmSet::MwmHandle const & handle,
+                                                    FeaturesTag tag) const
   {
-    return std::make_unique<FeatureSource>(handle);
+    return std::make_unique<FeatureSource>(handle, tag);
   }
 };

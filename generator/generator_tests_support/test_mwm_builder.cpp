@@ -1,25 +1,27 @@
 #include "generator/generator_tests_support/test_mwm_builder.hpp"
 
+#include "generator/generator_tests_support/test_feature.hpp"
+
 #include "generator/centers_table_builder.hpp"
 #include "generator/cities_ids_builder.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/feature_generator.hpp"
 #include "generator/feature_sorter.hpp"
-#include "generator/generator_tests_support/test_feature.hpp"
 #include "generator/postcode_points_builder.hpp"
 #include "generator/postcodes_section_builder.hpp"
 #include "generator/search_index_builder.hpp"
+
+#include "storage/country_info_getter.hpp"
 
 #include "indexer/city_boundary.hpp"
 #include "indexer/data_header.hpp"
 #include "indexer/feature_data.hpp"
 #include "indexer/feature_meta.hpp"
 #include "indexer/features_offsets_table.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/ftypes_matcher.hpp"
 #include "indexer/index_builder.hpp"
 #include "indexer/rank_table.hpp"
-
-#include "storage/country_info_getter.hpp"
 
 #include "platform/local_country_file.hpp"
 
@@ -146,9 +148,10 @@ void TestMwmBuilder::Finish()
   string const path = m_file.GetPath(MapFileType::Map);
   UNUSED_VALUE(base::DeleteFileX(path + OSM2FEATURE_FILE_EXTENSION));
 
-  CHECK(BuildOffsetsTable(path), ("Can't build feature offsets table."));
+  CHECK(BuildOffsetsTable(path, FeaturesTag::Common), ("Can't build feature offsets table."));
 
-  CHECK(indexer::BuildIndexFromDataFile(path, path), ("Can't build geometry index."));
+  CHECK(indexer::BuildIndexFromDataFile(path, path, FeaturesTag::Common),
+        ("Can't build geometry index."));
 
   // We do not have boundaryPostcodesFilename because we do not have osm elements stage.
   CHECK(BuildPostcodesSection(m_file.GetDirectory(), m_file.GetCountryName(),

@@ -66,13 +66,15 @@ namespace feature
   }
 
   // static
-  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Load(FilesContainerR const & cont)
+  unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Load(FilesContainerR const & cont,
+                                                              FeaturesTag tag)
   {
     unique_ptr<FeaturesOffsetsTable> table(new FeaturesOffsetsTable());
 
     table->m_file.Open(cont.GetFileName());
-    auto p = cont.GetAbsoluteOffsetAndSize(FEATURE_OFFSETS_FILE_TAG);
-    table->m_handle.Assign(table->m_file.Map(p.first, p.second, FEATURE_OFFSETS_FILE_TAG));
+    auto const offsetsTag = GetFeaturesOffsetsTag(tag);
+    auto p = cont.GetAbsoluteOffsetAndSize(offsetsTag);
+    table->m_handle.Assign(table->m_file.Map(p.first, p.second, offsetsTag));
 
     succinct::mapper::map(table->m_table, table->m_handle.GetData<char>());
     return table;
@@ -122,14 +124,15 @@ namespace feature
     return leftBound;
   }
 
-  bool BuildOffsetsTable(string const & filePath)
+  bool BuildOffsetsTable(string const & filePath, FeaturesTag tag)
   {
     try
     {
       string const destPath = filePath + ".offsets";
       SCOPE_GUARD(fileDeleter, bind(FileWriter::DeleteFileX, destPath));
 
-      FilesContainerR::TReader reader = FilesContainerR(filePath).GetReader(FEATURES_FILE_TAG);
+      FilesContainerR::TReader reader =
+          FilesContainerR(filePath).GetReader(GetFeaturesTag(tag, version::Format::lastFormat));
 
       DatSectionHeader header;
       header.Read(*reader.GetPtr());
@@ -138,7 +141,8 @@ namespace feature
       auto featuresSubreader = reader.SubReader(header.m_featuresOffset, header.m_featuresSize);
       feature::FeaturesOffsetsTable::Build(featuresSubreader, destPath);
 
-      FilesContainerW(filePath, FileWriter::OP_WRITE_EXISTING).Write(destPath, FEATURE_OFFSETS_FILE_TAG);
+      FilesContainerW(filePath, FileWriter::OP_WRITE_EXISTING)
+          .Write(destPath, GetFeaturesOffsetsTag(tag));
       return true;
     }
     catch (RootException const & ex)

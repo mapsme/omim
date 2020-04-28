@@ -12,11 +12,9 @@ SharedLoadInfo::SharedLoadInfo(FilesContainerR const & cont, DataHeader const & 
   CHECK_NOT_EQUAL(m_header.GetFormat(), version::Format::v1, ("Old maps format is not supported"));
 }
 
-SharedLoadInfo::Reader SharedLoadInfo::GetDataReader() const
+SharedLoadInfo::Reader SharedLoadInfo::GetDataReader(FeaturesTag tag) const
 {
-  if (GetMWMFormat() < version::Format::v10)
-    return m_cont.GetReader(FEATURES_FILE_TAG_V1_V9);
-  return m_cont.GetReader(FEATURES_FILE_TAG);
+  return m_cont.GetReader(GetFeaturesTag(tag, GetMWMFormat()));
 }
 
 SharedLoadInfo::Reader SharedLoadInfo::GetMetadataReader() const
@@ -34,14 +32,16 @@ SharedLoadInfo::Reader SharedLoadInfo::GetAltitudeReader() const
   return m_cont.GetReader(ALTITUDES_FILE_TAG);
 }
 
-SharedLoadInfo::Reader SharedLoadInfo::GetGeometryReader(int ind) const
+SharedLoadInfo::Reader SharedLoadInfo::GetGeometryReader(FeaturesTag tag, int ind) const
 {
-  return m_cont.GetReader(GetTagForIndex(GEOMETRY_FILE_TAG, ind));
+  auto const tagStr = GetGeometryFileTag(tag);
+  return m_cont.GetReader(GetTagForIndex(tagStr, ind));
 }
 
-SharedLoadInfo::Reader SharedLoadInfo::GetTrianglesReader(int ind) const
+SharedLoadInfo::Reader SharedLoadInfo::GetTrianglesReader(FeaturesTag tag, int ind) const
 {
-  return m_cont.GetReader(GetTagForIndex(TRIANGLE_FILE_TAG, ind));
+  auto const tagStr = GetTrianglesFileTag(tag);
+  return m_cont.GetReader(GetTagForIndex(tagStr, ind));
 }
 
 std::optional<SharedLoadInfo::Reader> SharedLoadInfo::GetPostcodesReader() const

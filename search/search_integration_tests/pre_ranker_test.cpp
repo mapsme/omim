@@ -1,29 +1,32 @@
+#include "search/pre_ranker.hpp"
+
 #include "testing/testing.hpp"
+
+#include "generator/generator_tests_support/test_feature.hpp"
+#include "generator/generator_tests_support/test_mwm_builder.hpp"
+
+#include "search/search_tests_support/helpers.hpp"
+#include "search/search_tests_support/test_search_engine.hpp"
 
 #include "search/categories_cache.hpp"
 #include "search/cities_boundaries_table.hpp"
 #include "search/emitter.hpp"
 #include "search/intermediate_result.hpp"
 #include "search/model.hpp"
-#include "search/pre_ranker.hpp"
 #include "search/ranker.hpp"
-#include "search/search_tests_support/helpers.hpp"
-#include "search/search_tests_support/test_search_engine.hpp"
 #include "search/suggest.hpp"
 
 #include "indexer/categories_holder.hpp"
 #include "indexer/feature_algo.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/mwm_set.hpp"
 #include "indexer/scales.hpp"
 
-#include "generator/generator_tests_support/test_feature.hpp"
-#include "generator/generator_tests_support/test_mwm_builder.hpp"
-
-#include "geometry/mercator.hpp"
-
 #include "platform/country_defines.hpp"
 #include "platform/local_country_file.hpp"
+
+#include "geometry/mercator.hpp"
 
 #include "base/assert.hpp"
 #include "base/cancellable.hpp"
@@ -149,7 +152,8 @@ UNIT_CLASS_TEST(PreRankerTest, Smoke)
   vector<double> distances(pois.size());
   vector<bool> emit(pois.size());
 
-  FeaturesVectorTest fv(mwmId.GetInfo()->GetLocalFile().GetPath(MapFileType::Map));
+  FeaturesVectorTest fv(mwmId.GetInfo()->GetLocalFile().GetPath(MapFileType::Map),
+                        FeaturesTag::Common);
   fv.GetVector().ForEach([&](FeatureType & ft, uint32_t index) {
     FeatureID id(mwmId, index);
     ResultTracer::Provenance provenance;
