@@ -3,6 +3,7 @@
 #include "indexer/cell_id.hpp"
 #include "indexer/fake_feature_ids.hpp"
 #include "indexer/feature_source.hpp"
+#include "indexer/features_tag.hpp"
 
 namespace search
 {
@@ -13,21 +14,14 @@ void CoverRect(m2::RectD const & rect, int scale, covering::Intervals & result)
   result.insert(result.end(), intervals.begin(), intervals.end());
 }
 
-MwmContext::MwmContext(MwmSet::MwmHandle handle)
-  : m_handle(std::move(handle))
-  , m_value(*m_handle.GetValue())
-  , m_vector(m_value.m_cont, m_value.GetHeader(), m_value.m_table.get())
-  , m_index(m_value.m_cont.GetReader(INDEX_FILE_TAG), m_value.m_factory)
-  , m_centers(m_value)
-  , m_editableSource(m_handle)
-{
-}
+MwmContext::MwmContext(MwmSet::MwmHandle handle) : MwmContext(std::move(handle), {} /* type */) {}
 
 MwmContext::MwmContext(MwmSet::MwmHandle handle, MwmType type)
   : m_handle(std::move(handle))
   , m_value(*m_handle.GetValue())
-  , m_vector(m_value.m_cont, m_value.GetHeader(), m_value.m_table.get())
-  , m_index(m_value.m_cont.GetReader(INDEX_FILE_TAG), m_value.m_factory)
+  , m_vector(m_value.m_cont, m_value.GetHeader(), FeaturesTag::Common,
+             m_value.GetTable(FeaturesTag::Common))
+  , m_index(m_value.m_cont.GetReader(GetIndexTag(FeaturesTag::Common)), m_value.m_factory)
   , m_centers(m_value)
   , m_editableSource(m_handle)
   , m_type(type)

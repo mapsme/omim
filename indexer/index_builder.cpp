@@ -1,6 +1,7 @@
 #include "indexer/index_builder.hpp"
 
 #include "indexer/features_vector.hpp"
+#include "indexer/scale_index.hpp"
 
 #include "base/logging.hpp"
 
@@ -8,19 +9,21 @@
 
 namespace indexer
 {
-bool BuildIndexFromDataFile(std::string const & dataFile, std::string const & tmpFile)
+bool BuildIndexFromDataFile(std::string const & dataFile, std::string const & tmpFile,
+                            FeaturesTag tag)
 {
   try
   {
     std::string const idxFileName(tmpFile + GEOM_INDEX_TMP_EXT);
     {
-      FeaturesVectorTest features(dataFile);
+      FeaturesVectorTest features(dataFile, tag);
       FileWriter writer(idxFileName);
 
       BuildIndex(features.GetHeader(), features.GetVector(), writer, tmpFile);
     }
 
-    FilesContainerW(dataFile, FileWriter::OP_WRITE_EXISTING).Write(idxFileName, INDEX_FILE_TAG);
+    auto const tagStr = GetIndexTag(tag);
+    FilesContainerW(dataFile, FileWriter::OP_WRITE_EXISTING).Write(idxFileName, tagStr);
     FileWriter::DeleteFileX(idxFileName);
   }
   catch (Reader::Exception const & e)

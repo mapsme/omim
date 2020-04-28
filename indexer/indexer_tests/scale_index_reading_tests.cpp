@@ -99,7 +99,7 @@ UNIT_CLASS_TEST(ScaleIndexReadingTest, Mmap)
   IndexFactory factory;
   factory.Load(cont);
 
-  auto const offsetSize = cont.GetAbsoluteOffsetAndSize(INDEX_FILE_TAG);
+  auto const offsetSize = cont.GetAbsoluteOffsetAndSize(GetIndexTag(FeaturesTag::Common));
 
   MmapReader reader(path);
   ReaderPtr<Reader> subReader(reader.CreateSubReader(offsetSize.first, offsetSize.second));

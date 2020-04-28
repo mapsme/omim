@@ -40,17 +40,18 @@
 #include "routing/cross_mwm_ids.hpp"
 #include "routing/speed_camera_prohibition.hpp"
 
+#include "storage/country_parent_getter.hpp"
+
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_header.hpp"
 #include "indexer/drawing_rules.hpp"
 #include "indexer/features_offsets_table.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/index_builder.hpp"
 #include "indexer/map_style_reader.hpp"
 #include "indexer/rank_table.hpp"
-
-#include "storage/country_parent_getter.hpp"
 
 #include "platform/platform.hpp"
 
@@ -60,6 +61,8 @@
 #include "base/file_name_utils.hpp"
 #include "base/timer.hpp"
 
+#include "defines.hpp"
+
 #include <csignal>
 #include <cstdlib>
 #include <fstream>
@@ -67,10 +70,9 @@
 #include <string>
 #include <thread>
 
-#include "build_version.hpp"
-#include "defines.hpp"
-
 #include "3party/gflags/src/gflags/gflags.h"
+
+#include "build_version.hpp"
 
 using namespace std;
 
@@ -355,9 +357,14 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       if (!feature::GenerateFinalFeatures(genInfo, country, mapType))
         continue;
 
-      LOG(LINFO, ("Generating offsets table for", dataFile));
-      if (!feature::BuildOffsetsTable(dataFile))
-        continue;
+      // Generate offsets tables for all features sections.
+      for (uint8_t i = 0; i < base::Underlying(FeaturesTag::Count); ++i)
+      {
+        auto const tag = static_cast<FeaturesTag>(i);
+        LOG(LINFO, ("Generating offsets table for", dataFile, tag));
+        if (!feature::BuildOffsetsTable(dataFile, tag))
+          continue;
+      }
 
       auto const boundaryPostcodesFilename =
           genInfo.GetIntermediateFileName(BOUNDARY_POSTCODE_TMP_FILENAME);
@@ -376,10 +383,14 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
 
     if (FLAGS_generate_index)
     {
-      LOG(LINFO, ("Generating index for", dataFile));
-
-      if (!indexer::BuildIndexFromDataFile(dataFile, FLAGS_intermediate_data_path + country))
-        LOG(LCRITICAL, ("Error generating index."));
+      // Generate index for all features sections.
+      for (uint8_t i = 0; i < base::Underlying(FeaturesTag::Count); ++i)
+      {
+        auto const tag = static_cast<FeaturesTag>(i);
+        LOG(LINFO, ("Generating index for", dataFile, tag));
+        if (!indexer::BuildIndexFromDataFile(dataFile, FLAGS_intermediate_data_path + country, tag))
+          LOG(LCRITICAL, ("Error generating index."));
+      }
     }
 
     if (FLAGS_generate_search_index)

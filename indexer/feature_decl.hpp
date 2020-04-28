@@ -1,5 +1,6 @@
 #pragma once
 
+#include "indexer/features_tag.hpp"
 #include "indexer/mwm_set.hpp"
 
 #include <cstdint>
@@ -24,7 +25,16 @@ struct FeatureID
   static int64_t const kInvalidMwmVersion;
 
   FeatureID() = default;
-  FeatureID(MwmSet::MwmId const & mwmId, uint32_t index) : m_mwmId(mwmId), m_index(index) {}
+
+  FeatureID(MwmSet::MwmId const & mwmId, FeaturesTag tag, uint32_t index)
+    : m_mwmId(mwmId), m_tag(tag), m_index(index)
+  {
+  }
+
+  FeatureID(MwmSet::MwmId const & mwmId, uint32_t index)
+    : FeatureID(mwmId, FeaturesTag::Common, index)
+  {
+  }
 
   bool IsValid() const { return m_mwmId.IsAlive(); }
 
@@ -32,12 +42,14 @@ struct FeatureID
   {
     if (m_mwmId != r.m_mwmId)
       return m_mwmId < r.m_mwmId;
+    if (m_tag != r.m_tag)
+      return m_tag < r.m_tag;
     return m_index < r.m_index;
   }
 
   bool operator==(FeatureID const & r) const
   {
-    return m_mwmId == r.m_mwmId && m_index == r.m_index;
+    return m_mwmId == r.m_mwmId && m_tag == r.m_tag && m_index == r.m_index;
   }
 
   bool operator!=(FeatureID const & r) const { return !(*this == r); }
@@ -46,6 +58,7 @@ struct FeatureID
   int64_t GetMwmVersion() const;
 
   MwmSet::MwmId m_mwmId;
+  FeaturesTag m_tag = FeaturesTag::Common;
   uint32_t m_index = 0;
 };
 

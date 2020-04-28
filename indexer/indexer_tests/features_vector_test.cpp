@@ -1,7 +1,9 @@
+#include "indexer/features_vector.hpp"
+
 #include "testing/testing.hpp"
 
 #include "indexer/data_source.hpp"
-#include "indexer/features_vector.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/mwm_set.hpp"
 
 #include "platform/local_country_file.hpp"
@@ -60,7 +62,8 @@ UNIT_TEST(FeaturesVectorTest_ParseMetadata)
   TEST(handle.IsAlive(), ());
 
   auto const * value = handle.GetValue();
-  FeaturesVector fv(value->m_cont, value->GetHeader(), value->m_table.get());
+  FeaturesVector fv(value->m_cont, value->GetHeader(), FeaturesTag::Common,
+                    value->GetTable(FeaturesTag::Common));
 
   map<string, int> actual;
   fv.ForEach([&](FeatureType & ft, uint32_t index)

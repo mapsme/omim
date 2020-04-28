@@ -1,5 +1,10 @@
 #pragma once
 
+#include "indexer/data_factory.hpp"
+#include "indexer/feature_meta.hpp"
+#include "indexer/features_offsets_table.hpp"
+#include "indexer/features_tag.hpp"
+
 #include "platform/country_file.hpp"
 #include "platform/local_country_file.hpp"
 #include "platform/mwm_version.hpp"
@@ -7,10 +12,7 @@
 #include "geometry/rect2d.hpp"
 
 #include "base/macros.hpp"
-
-#include "indexer/data_factory.hpp"
-#include "indexer/feature_meta.hpp"
-#include "indexer/features_offsets_table.hpp"
+#include "base/observer_list.hpp"
 
 #include <atomic>
 #include <deque>
@@ -20,8 +22,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "base/observer_list.hpp"
 
 /// Information about stored mwm.
 class MwmInfo
@@ -92,6 +92,8 @@ class MwmInfoEx : public MwmInfo
 private:
   friend class DataSource;
   friend class MwmValue;
+
+  // todo (@t.yan) support offset tables for other feature sections here
 
   // weak_ptr is needed here to access offsets table in already
   // instantiated MwmValue-s for the MWM, including MwmValues in the
@@ -373,12 +375,6 @@ private:
 class MwmValue
 {
 public:
-  FilesContainerR const m_cont;
-  IndexFactory m_factory;
-  platform::LocalCountryFile const m_file;
-
-  std::shared_ptr<feature::FeaturesOffsetsTable> m_table;
-
   explicit MwmValue(platform::LocalCountryFile const & localFile);
   void SetTable(MwmInfoEx & info);
 
@@ -388,7 +384,21 @@ public:
   std::string const & GetCountryFileName() const { return m_file.GetCountryFile().GetName(); }
 
   bool HasSearchIndex() const { return m_cont.IsExist(SEARCH_INDEX_FILE_TAG); }
-  bool HasGeometryIndex() const { return m_cont.IsExist(INDEX_FILE_TAG); }
+  bool HasGeometryIndex() const { return m_cont.IsExist(GetIndexTag(FeaturesTag::Common)); }
+
+  feature::FeaturesOffsetsTable const * GetTable(FeaturesTag tag) const
+  {
+    CHECK_EQUAL(tag, FeaturesTag::Common, ());
+    return m_table.get();
+  }
+
+  FilesContainerR const m_cont;
+  IndexFactory m_factory;
+  platform::LocalCountryFile const m_file;
+
+private:
+  // todo (@t.yan) support offset tables for other feature sections here
+  std::shared_ptr<feature::FeaturesOffsetsTable> m_table;
 }; // class MwmValue
 
 

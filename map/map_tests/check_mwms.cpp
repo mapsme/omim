@@ -54,7 +54,7 @@ UNIT_TEST(CheckMWM_GeomIndex)
 
   // Initialize index reader section inside mwm.
   typedef ModelReaderPtr ReaderT;
-  ReaderT reader = cont.GetReader(INDEX_FILE_TAG);
+  ReaderT reader = cont.GetReader(GetIndexTag(FeaturesTag::Common));
   ReaderSource<ReaderT> source(reader);
   VarSerialVectorReader<ReaderT> treesReader(source);
 

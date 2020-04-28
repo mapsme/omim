@@ -1,5 +1,7 @@
 #pragma once
 
+#include "indexer/features_tag.hpp"
+
 #include "coding/files_container.hpp"
 #include "coding/mmap_reader.hpp"
 
@@ -66,7 +68,8 @@ namespace feature
     /// Load table by full path to the table file.
     static std::unique_ptr<FeaturesOffsetsTable> Load(std::string const & filePath);
 
-    static std::unique_ptr<FeaturesOffsetsTable> Load(FilesContainerR const & cont);
+    static std::unique_ptr<FeaturesOffsetsTable> Load(FilesContainerR const & cont,
+                                                      FeaturesTag tag);
     static void Build(ModelReaderPtr & reader, std::string const & storePath);
 
     FeaturesOffsetsTable(FeaturesOffsetsTable const &) = delete;
@@ -109,5 +112,5 @@ namespace feature
 
   // Builds feature offsets table in an mwm or rebuilds an existing
   // one.
-  bool BuildOffsetsTable(std::string const & filePath);
+  bool BuildOffsetsTable(std::string const & filePath, FeaturesTag tag);
 }  // namespace feature

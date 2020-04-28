@@ -5,11 +5,12 @@
 #include "indexer/centers_table.hpp"
 #include "indexer/feature_algo.hpp"
 #include "indexer/features_offsets_table.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 
-#include "coding/files_container.hpp"
-
 #include "platform/mwm_traits.hpp"
+
+#include "coding/files_container.hpp"
 
 #include "base/exception.hpp"
 
@@ -42,7 +43,7 @@ bool BuildCentersTableFromDataFile(std::string const & filename, bool forceRebui
         return false;
       }
 
-      auto const table = feature::FeaturesOffsetsTable::Load(rcont);
+      auto const table = feature::FeaturesOffsetsTable::Load(rcont, FeaturesTag::Common);
       if (!table)
       {
         LOG(LERROR, ("Can't load offsets table from:", filename));
@@ -50,7 +51,7 @@ bool BuildCentersTableFromDataFile(std::string const & filename, bool forceRebui
       }
 
       feature::DataHeader const header(rcont);
-      FeaturesVector const features(rcont, header, table.get());
+      FeaturesVector const features(rcont, header, FeaturesTag::Common, table.get());
 
       builder.SetGeometryParams(header.GetBounds());
       features.ForEach([&](FeatureType & ft, uint32_t featureId) {

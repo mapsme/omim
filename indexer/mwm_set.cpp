@@ -418,7 +418,8 @@ void MwmValue::SetTable(MwmInfoEx & info)
   if (m_table)
     return;
 
-  m_table = feature::FeaturesOffsetsTable::Load(m_cont);
+  // todo (@t.yan): Load tables for other features tags.
+  m_table = feature::FeaturesOffsetsTable::Load(m_cont, FeaturesTag::Common);
   info.m_table = m_table;
 }
 

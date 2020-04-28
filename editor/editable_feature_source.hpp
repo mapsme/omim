@@ -2,6 +2,7 @@
 
 #include "indexer/feature.hpp"
 #include "indexer/feature_source.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/mwm_set.hpp"
 
 #include "geometry/rect2d.hpp"
@@ -13,7 +14,10 @@
 class EditableFeatureSource final : public FeatureSource
 {
 public:
-  explicit EditableFeatureSource(MwmSet::MwmHandle const & handle) : FeatureSource(handle) {}
+  explicit EditableFeatureSource(MwmSet::MwmHandle const & handle)
+    : FeatureSource(handle, FeaturesTag::Common)
+  {
+  }
 
   // FeatureSource overrides:
   FeatureStatus GetFeatureStatus(uint32_t index) const override;
@@ -26,8 +30,11 @@ class EditableFeatureSourceFactory : public FeatureSourceFactory
 {
 public:
   // FeatureSourceFactory overrides:
-  std::unique_ptr<FeatureSource> operator()(MwmSet::MwmHandle const & handle) const override
+  std::unique_ptr<FeatureSource> operator()(MwmSet::MwmHandle const & handle,
+                                            FeaturesTag tag) const override
   {
+    if (tag != FeaturesTag::Common)
+      return std::make_unique<FeatureSource>(handle, tag);
     return std::make_unique<EditableFeatureSource>(handle);
   }
 };

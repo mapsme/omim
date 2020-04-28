@@ -1,6 +1,7 @@
 #pragma once
 
 #include "indexer/data_header.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/scale_index_builder.hpp"
 
 #include <string>
@@ -22,5 +23,6 @@ void BuildIndex(feature::DataHeader const & header, TFeaturesVector const & feat
   }
 
   // doesn't throw exceptions
-  bool BuildIndexFromDataFile(std::string const & dataFile, std::string const & tmpFile);
+  bool BuildIndexFromDataFile(std::string const & dataFile, std::string const & tmpFile,
+                              FeaturesTag tag);
 }  // namespace indexer

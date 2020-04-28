@@ -1,6 +1,7 @@
 #include "indexer/feature_to_osm.hpp"
 
 #include "indexer/data_source.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/mwm_set.hpp"
 #include "indexer/utils.hpp"
 
@@ -155,7 +156,8 @@ bool FeatureIdToGeoObjectIdTwoWay::GetFeatureID(base::GeoObjectId const & id, Fe
   uint32_t index;
   if (!m_map.GetKey(id, index))
     return false;
-  fid = FeatureID(m_mwmId, index);
+  // todo (@t.yan): support other types in ft2osm.
+  fid = FeatureID(m_mwmId, FeaturesTag::Common, index);
   return true;
 }
 }  // namespace indexer

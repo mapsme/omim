@@ -3,8 +3,9 @@
 #include "indexer/cell_id.hpp"
 #include "indexer/feature.hpp"
 #include "indexer/feature_covering.hpp"
-#include "indexer/features_offsets_table.hpp"
 #include "indexer/feature_source.hpp"
+#include "indexer/features_offsets_table.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/features_vector.hpp"
 #include "indexer/mwm_set.hpp"
 #include "indexer/scale_index.hpp"
@@ -14,13 +15,13 @@
 
 #include "base/macros.hpp"
 
+#include "defines.hpp"
+
 #include <cstdint>
 #include <functional>
 #include <memory>
 #include <utility>
 #include <vector>
-
-#include "defines.hpp"
 
 class DataSource : public MwmSet
 {
@@ -92,8 +93,10 @@ public:
 class FeaturesLoaderGuard
 {
 public:
-  FeaturesLoaderGuard(DataSource const & dataSource, DataSource::MwmId const & id)
-    : m_handle(dataSource.GetMwmHandleById(id)), m_source((*dataSource.m_factory)(m_handle))
+  FeaturesLoaderGuard(DataSource const & dataSource, DataSource::MwmId const & id,
+                      FeaturesTag tag = FeaturesTag::Common)
+    : m_handle(dataSource.GetMwmHandleById(id))
+    , m_source((*dataSource.m_factory)(m_handle, tag))
   {
   }
 

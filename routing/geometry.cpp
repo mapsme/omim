@@ -7,6 +7,7 @@
 
 #include "indexer/altitude_loader.hpp"
 #include "indexer/data_source.hpp"
+#include "indexer/features_tag.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
 #include "geometry/distance_on_sphere.hpp"
@@ -127,7 +128,7 @@ private:
 
 FileGeometryLoader::FileGeometryLoader(string const & fileName,
                                        shared_ptr<VehicleModelInterface> vehicleModel)
-  : m_featuresVector(FilesContainerR(make_unique<FileReader>(fileName)))
+  : m_featuresVector(FilesContainerR(make_unique<FileReader>(fileName)), FeaturesTag::Common)
   , m_vehicleModel(vehicleModel)
 {
   auto const cont = FilesContainerR(make_unique<FileReader>(fileName));

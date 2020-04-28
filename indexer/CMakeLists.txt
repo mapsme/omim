@@ -81,6 +81,8 @@ set(
   feature_visibility.hpp
   features_offsets_table.cpp
   features_offsets_table.hpp
+  features_tag.cpp
+  features_tag.hpp
   features_vector.cpp
   features_vector.hpp
   ftraits.hpp
