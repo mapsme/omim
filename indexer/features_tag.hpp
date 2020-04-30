@@ -7,6 +7,7 @@
 enum class FeaturesTag : uint8_t
 {
   Common,
+  Isolines,
   Count
 };
 

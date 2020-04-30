@@ -93,8 +93,6 @@ private:
   friend class DataSource;
   friend class MwmValue;
 
-  // todo (@t.yan) support offset tables for other feature sections here
-
   // weak_ptr is needed here to access offsets table in already
   // instantiated MwmValue-s for the MWM, including MwmValues in the
   // MwmSet's cache. We can't use shared_ptr because of offsets table
@@ -104,6 +102,7 @@ private:
   // only in the MwmSet critical section, protected by a lock.  So,
   // there's an implicit synchronization on this field.
   std::weak_ptr<feature::FeaturesOffsetsTable> m_table;
+  std::weak_ptr<feature::FeaturesOffsetsTable> m_isolinesTable;
 };
 
 class MwmValue;
@@ -388,8 +387,10 @@ public:
 
   feature::FeaturesOffsetsTable const * GetTable(FeaturesTag tag) const
   {
-    CHECK_EQUAL(tag, FeaturesTag::Common, ());
-    return m_table.get();
+    if (tag == FeaturesTag::Common)
+      return m_table.get();
+    CHECK_EQUAL(tag, FeaturesTag::Isolines, ());
+    return m_isolinesTable.get();
   }
 
   FilesContainerR const m_cont;
@@ -397,8 +398,8 @@ public:
   platform::LocalCountryFile const m_file;
 
 private:
-  // todo (@t.yan) support offset tables for other feature sections here
   std::shared_ptr<feature::FeaturesOffsetsTable> m_table;
+  std::shared_ptr<feature::FeaturesOffsetsTable> m_isolinesTable;
 }; // class MwmValue
 
 

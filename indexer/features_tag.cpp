@@ -8,6 +8,9 @@ using namespace std;
 
 string GetFeaturesTag(FeaturesTag tag, version::Format format)
 {
+  if (tag == FeaturesTag::Isolines)
+    return ISOLINES_FEATURES_FILE_TAG;
+
   CHECK_EQUAL(tag, FeaturesTag::Common, ());
   if (format < version::Format::v10)
     return FEATURES_FILE_TAG_V1_V9;
@@ -16,26 +19,33 @@ string GetFeaturesTag(FeaturesTag tag, version::Format format)
 
 string GetFeaturesOffsetsTag(FeaturesTag tag)
 {
-  CHECK_EQUAL(tag, FeaturesTag::Common, ());
-  return FEATURE_OFFSETS_FILE_TAG;
+  if (tag == FeaturesTag::Common)
+    return FEATURE_OFFSETS_FILE_TAG;
+  CHECK_EQUAL(tag, FeaturesTag::Isolines, ());
+  return ISOLINES_OFFSETS_FILE_TAG;
 }
 
 string GetIndexTag(FeaturesTag tag)
 {
-  CHECK_EQUAL(tag, FeaturesTag::Common, ());
-  return INDEX_FILE_TAG;
+  if (tag == FeaturesTag::Common)
+    return INDEX_FILE_TAG;
+  CHECK_EQUAL(tag, FeaturesTag::Isolines, ());
+  return ISOLINES_INDEX_FILE_TAG;
 }
 
 string GetGeometryFileTag(FeaturesTag tag)
 {
-  CHECK_EQUAL(tag, FeaturesTag::Common, ());
-  return GEOMETRY_FILE_TAG;
+  if (tag == FeaturesTag::Common)
+    return GEOMETRY_FILE_TAG;
+  CHECK_EQUAL(tag, FeaturesTag::Isolines, ());
+  return ISOLINES_GEOMETRY_FILE_TAG;
 }
-
 string GetTrianglesFileTag(FeaturesTag tag)
 {
-  CHECK_EQUAL(tag, FeaturesTag::Common, ());
-  return TRIANGLE_FILE_TAG;
+  if (tag == FeaturesTag::Common)
+    return TRIANGLE_FILE_TAG;
+  CHECK_EQUAL(tag, FeaturesTag::Isolines, ());
+  return ISOLINES_TRIANGLE_FILE_TAG;
 }
 
 string DebugPrint(FeaturesTag tag)
@@ -43,6 +53,7 @@ string DebugPrint(FeaturesTag tag)
   switch (tag)
   {
   case FeaturesTag::Common: return "Common";
+  case FeaturesTag::Isolines: return "Isolines";
   case FeaturesTag::Count: return "Count";
   }
   UNREACHABLE();

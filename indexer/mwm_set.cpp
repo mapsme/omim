@@ -415,12 +415,21 @@ void MwmValue::SetTable(MwmInfoEx & info)
   CHECK_GREATER(version, version::Format::v5, ("Old maps should not be registered."));
 
   m_table = info.m_table.lock();
-  if (m_table)
-    return;
+  if (!m_table)
+  {
+    m_table = feature::FeaturesOffsetsTable::Load(m_cont, FeaturesTag::Common);
+    info.m_table = m_table;
+  }
+  if (m_cont.IsExist(GetFeaturesOffsetsTag(FeaturesTag::Isolines)))
+  {
+    m_isolinesTable = info.m_isolinesTable.lock();
 
-  // todo (@t.yan): Load tables for other features tags.
-  m_table = feature::FeaturesOffsetsTable::Load(m_cont, FeaturesTag::Common);
-  info.m_table = m_table;
+    if (!m_isolinesTable)
+    {
+      m_isolinesTable = feature::FeaturesOffsetsTable::Load(m_cont, FeaturesTag::Isolines);
+      info.m_isolinesTable = m_isolinesTable;
+    }
+  }
 }
 
 string DebugPrint(MwmSet::RegResult result)

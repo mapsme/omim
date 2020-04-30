@@ -104,7 +104,7 @@ bool BuildPostcodesSection(std::string const & path, std::string const & country
       builder.Put(featureId, boundaryPostcodes[i].first);
       return true;
     });
-  });
+  }, false /* includeIsolines */);
 
   if (postcodesFromBoundaries == 0 && postcodesFromAddr == 0)
     return true;

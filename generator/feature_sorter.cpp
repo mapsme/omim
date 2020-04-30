@@ -17,6 +17,8 @@
 #include "indexer/feature_impl.hpp"
 #include "indexer/feature_processor.hpp"
 #include "indexer/feature_visibility.hpp"
+#include "indexer/features_tag.hpp"
+#include "indexer/ftypes_matcher.hpp"
 #include "indexer/meta_idx.hpp"
 #include "indexer/scales.hpp"
 #include "indexer/scales_patch.hpp"
@@ -49,28 +51,42 @@ using namespace std;
 
 namespace feature
 {
-class FeaturesCollector2 : public FeaturesCollector
+class FeaturesCollector2
 {
 public:
   static uint32_t constexpr kInvalidFeatureId = std::numeric_limits<uint32_t>::max();
 
   FeaturesCollector2(string const & filename, DataHeader const & header,
                      RegionData const & regionData, uint32_t versionDate)
-    : FeaturesCollector(filename + FEATURES_FILE_TAG)
-    , m_filename(filename)
+    : m_filename(filename)
     , m_header(header)
     , m_regionData(regionData)
     , m_versionDate(versionDate)
+    , m_collector(filename + GetFeaturesTag(FeaturesTag::Common, version::Format::lastFormat))
+    , m_isolinesCollector(filename +
+                          GetFeaturesTag(FeaturesTag::Isolines, version::Format::lastFormat))
   {
     for (size_t i = 0; i < m_header.GetScalesCount(); ++i)
     {
       string const postfix = strings::to_string(i);
-      m_geoFile.push_back(make_unique<TmpFile>(filename + GEOMETRY_FILE_TAG + postfix));
-      m_trgFile.push_back(make_unique<TmpFile>(filename + TRIANGLE_FILE_TAG + postfix));
+      m_geoFile.push_back(
+          make_unique<TmpFile>(filename + GetGeometryFileTag(FeaturesTag::Common) + postfix));
+      m_trgFile.push_back(
+          make_unique<TmpFile>(filename + GetTrianglesFileTag(FeaturesTag::Common) + postfix));
+      m_isolinesGeoFile.push_back(
+          make_unique<TmpFile>(filename + GetGeometryFileTag(FeaturesTag::Isolines) + postfix));
+      m_isolinesTrgFile.push_back(
+          make_unique<TmpFile>(filename + GetTrianglesFileTag(FeaturesTag::Isolines) + postfix));
     }
 
     m_metadataFile = make_unique<TmpFile>(filename + METADATA_FILE_TAG);
     m_addrFile = make_unique<FileWriter>(filename + TEMP_ADDR_FILENAME);
+  }
+
+  ~FeaturesCollector2()
+  {
+    Platform::RemoveFileIfExists(m_collector.GetFileName());
+    Platform::RemoveFileIfExists(m_isolinesCollector.GetFileName());
   }
 
   void Finish()
@@ -83,7 +99,7 @@ public:
     }
 
     // write own mwm header
-    m_header.SetBounds(m_bounds);
+    m_header.SetBounds(m_collector.GetBounds());
     {
       FilesContainerW writer(m_filename, FileWriter::OP_WRITE_EXISTING);
       auto w = writer.GetWriter(HEADER_FILE_TAG);
@@ -98,11 +114,10 @@ public:
     }
 
     // assume like we close files
-    Flush();
-
+    m_collector.Flush();
     {
       FilesContainerW writer(m_filename, FileWriter::OP_WRITE_EXISTING);
-      auto w = writer.GetWriter(FEATURES_FILE_TAG);
+      auto w = writer.GetWriter(GetFeaturesTag(FeaturesTag::Common, version::Format::lastFormat));
 
       size_t const startOffset = w->Pos();
       CHECK(coding::IsAlign8(startOffset), ());
@@ -114,7 +129,34 @@ public:
       coding::WritePadding(*w, bytesWritten);
 
       header.m_featuresOffset = base::asserted_cast<uint32_t>(w->Pos() - startOffset);
-      ReaderSource<ModelReaderPtr> src(make_unique<FileReader>(m_dataFile.GetName()));
+      ReaderSource<ModelReaderPtr> src(make_unique<FileReader>(m_collector.GetFileName()));
+      rw::ReadAndWrite(src, *w);
+      header.m_featuresSize =
+          base::asserted_cast<uint32_t>(w->Pos() - header.m_featuresOffset - startOffset);
+
+      auto const endOffset = w->Pos();
+      w->Seek(startOffset);
+      header.Serialize(*w);
+      w->Seek(endOffset);
+    }
+
+    // assume like we close files
+    m_isolinesCollector.Flush();
+    {
+      FilesContainerW writer(m_filename, FileWriter::OP_WRITE_EXISTING);
+      auto w = writer.GetWriter(GetFeaturesTag(FeaturesTag::Isolines, version::Format::lastFormat));
+
+      size_t const startOffset = w->Pos();
+      CHECK(coding::IsAlign8(startOffset), ());
+
+      feature::DatSectionHeader header;
+      header.Serialize(*w);
+
+      uint64_t bytesWritten = static_cast<uint64_t>(w->Pos());
+      coding::WritePadding(*w, bytesWritten);
+
+      header.m_featuresOffset = base::asserted_cast<uint32_t>(w->Pos() - startOffset);
+      ReaderSource<ModelReaderPtr> src(make_unique<FileReader>(m_isolinesCollector.GetFileName()));
       rw::ReadAndWrite(src, *w);
       header.m_featuresSize =
           base::asserted_cast<uint32_t>(w->Pos() - header.m_featuresOffset - startOffset);
@@ -134,8 +176,12 @@ public:
 
     for (size_t i = 0; i < m_header.GetScalesCount(); ++i)
     {
-      finalizeFn(move(m_geoFile[i]), GetTagForIndex(GEOMETRY_FILE_TAG, i));
-      finalizeFn(move(m_trgFile[i]), GetTagForIndex(TRIANGLE_FILE_TAG, i));
+      finalizeFn(move(m_geoFile[i]), GetTagForIndex(GetGeometryFileTag(FeaturesTag::Common), i));
+      finalizeFn(move(m_trgFile[i]), GetTagForIndex(GetTrianglesFileTag(FeaturesTag::Common), i));
+      finalizeFn(move(m_isolinesGeoFile[i]),
+                 GetTagForIndex(GetGeometryFileTag(FeaturesTag::Isolines), i));
+      finalizeFn(move(m_isolinesTrgFile[i]),
+                 GetTagForIndex(GetTrianglesFileTag(FeaturesTag::Isolines), i));
     }
 
     finalizeFn(move(m_metadataFile), METADATA_FILE_TAG);
@@ -159,12 +205,20 @@ public:
     }
   }
 
-  void SetBounds(m2::RectD bounds) { m_bounds = bounds; }
+  void SetBounds(m2::RectD bounds) { m_collector.SetBounds(bounds); }
 
   uint32_t operator()(FeatureBuilder & fb)
   {
-    GeometryHolder holder([this](int i) -> FileWriter & { return *m_geoFile[i]; },
-                          [this](int i) -> FileWriter & { return *m_trgFile[i]; }, fb, m_header);
+    auto const isIsoline = ftypes::IsIsolineChecker::Instance()(fb.GetTypes());
+
+    GeometryHolder holder(
+        [this, isIsoline](int i) -> FileWriter & {
+          return isIsoline ? *m_isolinesGeoFile[i] : *m_geoFile[i];
+        },
+        [this, isIsoline](int i) -> FileWriter & {
+          return isIsoline ? *m_isolinesTrgFile[i] : *m_trgFile[i];
+        },
+        fb, m_header);
 
     bool const isLine = fb.IsLine();
     bool const isArea = fb.IsArea();
@@ -244,22 +298,29 @@ public:
     {
       fb.SerializeForMwm(buffer, m_header.GetDefGeometryCodingParams());
 
-      featureId = WriteFeatureBase(buffer.m_buffer, fb);
-
-      fb.GetAddressData().Serialize(*m_addrFile);
-
-      if (!fb.GetMetadata().Empty())
+      if (isIsoline)
       {
-        uint64_t const offset = m_metadataFile->Pos();
-        ASSERT_LESS_OR_EQUAL(offset, numeric_limits<uint32_t>::max(), ());
-
-        m_metadataOffset.emplace_back(featureId, static_cast<uint32_t>(offset));
-        fb.GetMetadata().Serialize(*m_metadataFile);
+        featureId = m_isolinesCollector.WriteFeatureBase(buffer.m_buffer, fb);
       }
+      else
+      {
+        featureId = m_collector.WriteFeatureBase(buffer.m_buffer, fb);
 
-      if (fb.HasOsmIds())
-        m_osm2ft.AddIds(generator::MakeCompositeId(fb), featureId);
-    };
+        fb.GetAddressData().Serialize(*m_addrFile);
+
+        if (!fb.GetMetadata().Empty())
+        {
+          uint64_t const offset = m_metadataFile->Pos();
+          ASSERT_LESS_OR_EQUAL(offset, numeric_limits<uint32_t>::max(), ());
+
+          m_metadataOffset.emplace_back(featureId, static_cast<uint32_t>(offset));
+          fb.GetMetadata().Serialize(*m_metadataFile);
+        }
+
+        if (fb.HasOsmIds())
+          m_osm2ft.AddIds(generator::MakeCompositeId(fb), featureId);
+      }
+    }
     return featureId;
   }
 
@@ -312,7 +373,10 @@ private:
 
   // Temporary files for sections.
   unique_ptr<TmpFile> m_metadataFile;
-  TmpFiles m_geoFile, m_trgFile;
+  TmpFiles m_geoFile;
+  TmpFiles m_trgFile;
+  TmpFiles m_isolinesGeoFile;
+  TmpFiles m_isolinesTrgFile;
 
   // Mapping from feature id to offset in file section with the correspondent metadata.
   vector<pair<uint32_t, uint32_t>> m_metadataOffset;
@@ -320,6 +384,8 @@ private:
   DataHeader m_header;
   RegionData m_regionData;
   uint32_t m_versionDate;
+  FeaturesCollector m_collector;
+  FeaturesCollector m_isolinesCollector;
 
   generator::OsmID2FeatureID m_osm2ft;
 
@@ -366,9 +432,6 @@ bool GenerateFinalFeatures(feature::GenerateInfo const & info, string const & na
     // Transform features from raw format to optimized format.
     try
     {
-      // FeaturesCollector2 will create temporary file `dataFilePath + FEATURES_FILE_TAG`.
-      // We cannot remove it in ~FeaturesCollector2(), we need to remove it in SCOPE_GUARD.
-      SCOPE_GUARD(_, [&]() { Platform::RemoveFileIfExists(dataFilePath + FEATURES_FILE_TAG); });
       FeaturesCollector2 collector(dataFilePath, header, regionData, info.m_versionDate);
 
       for (auto const & point : midPoints.GetVector())

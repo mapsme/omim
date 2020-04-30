@@ -33,15 +33,19 @@ public:
   }
   virtual void Finish() {}
 
-protected:
   /// \return Feature offset in the file, which is used as an ID later
   uint32_t WriteFeatureBase(std::vector<char> const & bytes, FeatureBuilder const & fb);
   void Flush();
 
+  m2::RectD const & GetBounds() const { return m_bounds; }
+  void SetBounds(m2::RectD const & bounds) { m_bounds = bounds; }
+
+  std::string const & GetFileName() const { return m_dataFile.GetName(); }
+
+private:
   FileWriter m_dataFile;
   m2::RectD m_bounds;
 
-private:
   void Write(char const * src, size_t size);
   void FlushBuffer();
 
