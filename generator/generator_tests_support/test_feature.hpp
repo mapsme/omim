@@ -50,6 +50,7 @@ public:
   m2::PointD const & GetCenter() const { return m_center; }
 
   feature::Metadata & GetMetadata() { return m_metadata; }
+  feature::Metadata const & GetMetadata() const { return m_metadata; }
 
   virtual void Serialize(feature::FeatureBuilder & fb) const;
   virtual std::string ToDebugString() const = 0;
@@ -249,6 +250,23 @@ public:
 
 private:
   std::vector<m2::PointD> m_points;
+};
+
+class TestIsoline : public TestFeature
+{
+public:
+  TestIsoline(std::vector<m2::PointD> const & points);
+  TestIsoline(std::vector<m2::PointD> const & points, std::string const & name);
+
+  feature::TypesHolder GetType() const;
+
+  // TestFeature overrides:
+  void Serialize(feature::FeatureBuilder & fb) const override;
+  std::string ToDebugString() const override;
+
+private:
+  std::vector<m2::PointD> m_points;
+  std::vector<std::string> m_classificatorType;
 };
 
 std::string DebugPrint(TestFeature const & feature);

@@ -474,6 +474,49 @@ string TestRoad::ToDebugString() const
   return os.str();
 }
 
+// TestIsoline -------------------------------------------------------------------------------------
+TestIsoline::TestIsoline(vector<m2::PointD> const & points) : TestIsoline(points, "10") {}
+
+TestIsoline::TestIsoline(vector<m2::PointD> const & points, string const & name)
+  : TestFeature(name, "en"), m_points(points)
+{
+  string type = "step_";
+  set<string> steps{"10", "50", "100", "500", "1000"};
+  string defaultName = m_names.GetLangByCode(StringUtf8Multilang::kDefaultCode);
+  auto const it = steps.find(defaultName);
+  if (it != steps.end())
+    type += *it;
+  else
+    type += "10";
+  m_classificatorType = {"isoline", type};
+}
+
+TypesHolder TestIsoline::GetType() const
+{
+  TypesHolder type;
+  type.Add(classif().GetTypeByPath(m_classificatorType));
+  return type;
+}
+
+void TestIsoline::Serialize(FeatureBuilder & fb) const
+{
+  TestFeature::Serialize(fb);
+
+  auto const & classificator = classif();
+  fb.SetType(classificator.GetTypeByPath(m_classificatorType));
+
+  for (auto const & point : m_points)
+    fb.AddPoint(point);
+  fb.SetLinear(false /* reverseGeometry */);
+}
+
+string TestIsoline::ToDebugString() const
+{
+  ostringstream os;
+  os << "TestIsoline [" << DebugPrint(m_names) << ", " << ::DebugPrint(m_points) << "]";
+  return os.str();
+}
+
 // Functions ---------------------------------------------------------------------------------------
 string DebugPrint(TestFeature const & feature) { return feature.ToDebugString(); }
 }  // namespace tests_support

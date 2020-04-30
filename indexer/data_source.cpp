@@ -56,6 +56,8 @@ public:
       // Use last coding scale for covering (see index_builder.cpp).
       covering::Intervals const & intervals = cov.Get<RectId::DEPTH_LEVELS>(lastScale);
       auto const tag = GetIndexTag(m_tag);
+      if (!mwmValue->m_cont.IsExist(tag))
+        return;
       ScaleIndex<ModelReaderPtr> index(mwmValue->m_cont.GetReader(tag), mwmValue->m_factory);
 
       // iterate through intervals
@@ -241,9 +243,14 @@ void DataSource::ForEachFeatureIDInRect(FeatureIdCallback const & f, m2::RectD c
       f(src.GetFeatureId(index));
   };
 
-  // todo(@t.yan): support reading from selected source/sources here.
-  ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureId);
-  ForEachInIntervals(readFunctor, covering::LowLevelsOnly, rect, scale);
+  {
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureId);
+    ForEachInIntervals(readFunctor, covering::LowLevelsOnly, rect, scale);
+  }
+  {
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Isolines, readFeatureId);
+    ForEachInIntervals(readFunctor, covering::LowLevelsOnly, rect, scale);
+  }
 }
 
 void DataSource::ForEachInRect(FeatureCallback const & f, m2::RectD const & rect, int scale) const
@@ -252,9 +259,14 @@ void DataSource::ForEachInRect(FeatureCallback const & f, m2::RectD const & rect
     ReadFeatureType(f, src, index);
   };
 
-  // todo(@t.yan): support reading from selected source/sources here.
-  ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
-  ForEachInIntervals(readFunctor, covering::ViewportWithLowLevels, rect, scale);
+  {
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
+    ForEachInIntervals(readFunctor, covering::ViewportWithLowLevels, rect, scale);
+  }
+  {
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Isolines, readFeatureType);
+    ForEachInIntervals(readFunctor, covering::ViewportWithLowLevels, rect, scale);
+  }
 }
 
 void DataSource::ForClosestToPoint(FeatureCallback const & f, StopSearchCallback const & stop,
@@ -266,9 +278,14 @@ void DataSource::ForClosestToPoint(FeatureCallback const & f, StopSearchCallback
     ReadFeatureType(f, src, index);
   };
 
-  // todo(@t.yan): support reading from selected source/sources here.
-  ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType, stop);
-  ForEachInIntervals(readFunctor, covering::CoveringMode::Spiral, rect, scale);
+  {
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType, stop);
+    ForEachInIntervals(readFunctor, covering::CoveringMode::Spiral, rect, scale);
+  }
+  {
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Isolines, readFeatureType, stop);
+    ForEachInIntervals(readFunctor, covering::CoveringMode::Spiral, rect, scale);
+  }
 }
 
 void DataSource::ForEachInScale(FeatureCallback const & f, int scale) const
@@ -277,9 +294,14 @@ void DataSource::ForEachInScale(FeatureCallback const & f, int scale) const
     ReadFeatureType(f, src, index);
   };
 
-  // todo(@t.yan): support reading from selected source/sources here.
-  ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
-  ForEachInIntervals(readFunctor, covering::FullCover, m2::RectD::GetInfiniteRect(), scale);
+  {
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
+    ForEachInIntervals(readFunctor, covering::FullCover, m2::RectD::GetInfiniteRect(), scale);
+  }
+  {
+    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Isolines, readFeatureType);
+    ForEachInIntervals(readFunctor, covering::FullCover, m2::RectD::GetInfiniteRect(), scale);
+  }
 }
 
 void DataSource::ForEachInRectForMWM(FeatureCallback const & f, m2::RectD const & rect, int scale,
@@ -293,9 +315,14 @@ void DataSource::ForEachInRectForMWM(FeatureCallback const & f, m2::RectD const 
       ReadFeatureType(f, src, index);
     };
 
-    // todo(@t.yan): support reading from selected source/sources here.
-    ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
-    readFunctor(handle, cov, scale);
+    {
+      ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Common, readFeatureType);
+      readFunctor(handle, cov, scale);
+    }
+    {
+      ReadMWMFunctor readFunctor(*m_factory, FeaturesTag::Isolines, readFeatureType);
+      readFunctor(handle, cov, scale);
+    }
   }
 }
 
