@@ -13,7 +13,7 @@
     hu = Kanyarodjon enyhén jobbra.
     id = Sedikit ke kanan.
     it = Mantenersi a destra.
-    ja = 緩やかに右折。
+    ja = 斜め右方向です。
     ko = 약간 우회전.
     pl = Lekko w prawo.
     pt = Ligeira curva à direita.
@@ -46,7 +46,7 @@
     hu = Forduljon jobbra.
     id = Belok kanan.
     it = Gira a destra.
-    ja = 右に曲がります。
+    ja = 右方向です。
     ko = 우회전하십시오.
     pl = Skręć w prawo.
     pt = Vire à direita.
@@ -79,7 +79,7 @@
     hu = Kanyarodjon élesen jobbra.
     id = Belok tajam ke kanan.
     it = Svoltare a destra.
-    ja = 急に右折。
+    ja = 右手前方向です。
     ko = 급우회전.
     pl = Ostro w prawo.
     pt = Curva acentuada à direita.
@@ -178,7 +178,7 @@
     hu = Kanyarodjon enyhén balra.
     id = Sedikit ke kiri.
     it = Mantenersi a sinistra.
-    ja = 緩やかに左折。
+    ja = 斜め左方向です。
     ko = 약간 좌회전.
     pl = Lekko w lewo.
     pt = Ligeira curva à esquerda.
@@ -211,7 +211,7 @@
     hu = Forduljon balra.
     id = Belok kiri.
     it = Gira a sinistra.
-    ja = 左に曲がります。
+    ja = 左方向です。
     ko = 좌회전하십시오.
     pl = Skręć w lewo.
     pt = Vire à esquerda.
@@ -244,7 +244,7 @@
     hu = Kanyarodjon élesen balra.
     id = Belok tajam ke kiri.
     it = Svoltare a sinistra.
-    ja = 急に左折。
+    ja = 左手前方向です。
     ko = 급좌회전.
     pl = Ostro w lewo.
     pt = Curva acentuada à esquerda.
@@ -343,7 +343,7 @@
     hu = Kilépés.
     id = Keluar.
     it = Uscita.
-    ja = 出口.
+    ja = まもなく出口です。
     ko = 출구.
     pl = Zjazd.
     pt = Saída.
@@ -376,7 +376,7 @@
     hu = Megérkezik.
     id = Anda akan tiba.
     it = Arriverai.
-    ja = 到着します。
+    ja = まもなく目的地付近です。
     ko = 도착할 예정입니다.
     pl = Dojedziesz.
     pt = Você vai chegar.
@@ -409,7 +409,7 @@
     hu = Ön megérkezett.
     id = Anda sudah sampai.
     it = Sei arrivato.
-    ja = 到着。
+    ja = 目的地に到着しました。お疲れ様でした。
     ko = 도착했습니다.
     pl = Jesteś u celu.
     pt = Chegou.
@@ -442,7 +442,7 @@
     hu = Ötven méter után
     id = Setelah lima puluh meter
     it = Tra cinquanta metri
-    ja = 五十メートル先
+    ja = 五十メートル先、
     ko = 오십 미터 앞
     pl = Za pięćdziesiąt metrów
     pt = A cinquenta metros
@@ -475,7 +475,7 @@
     hu = Száz méter után
     id = Setelah seratus meter
     it = Tra cento metri
-    ja = 百メートル先
+    ja = 百メートル先、
     ko = 백 미터 앞
     pl = Za sto metrów
     pt = A cem metros
@@ -508,7 +508,7 @@
     hu = Kétszáz méter után
     id = Setelah dua ratus meter
     it = Tra duecento metri
-    ja = 二百メートル先
+    ja = 二百メートル先、
     ko = 이백 미터 앞
     pl = Za dwieście metrów
     pt = A duzentos metros
@@ -541,7 +541,7 @@
     hu = Kétszázötven méter után
     id = Setelah dua ratus lima puluh meter
     it = Tra duecento cinquanta metri
-    ja = 二百五十メートル先
+    ja = 二百五十メートル先、
     ko = 이백오십 미터 앞
     pl = Za dwieście pięćdziesiąt metrów
     pt = A duzentos e cinquenta metros
@@ -574,7 +574,7 @@
     hu = Háromszáz méter után
     id = Setelah tiga ratus meter
     it = Tra trecento metri
-    ja = 三百メートル先
+    ja = 三百メートル先、
     ko = 삼백 미터 앞
     pl = Za trzysta metrów
     pt = A trezentos metros
@@ -607,7 +607,7 @@
     hu = Négyszáz méter után
     id = Setelah empat ratus meter
     it = Tra quattrocento metri
-    ja = 四百メートル先
+    ja = 四百メートル先、
     ko = 사백 미터 앞
     pl = Za czterysta metrów
     pt = A quatrocentos metros
@@ -640,7 +640,7 @@
     hu = Ötszáz méter után
     id = Setelah lima ratus meter
     it = Tra cinquecento metri
-    ja = 五百メートル先
+    ja = 五百メートル先、
     ko = 오백 미터 앞
     pl = Za pięćset metrów
     pt = A quinhentos metros
@@ -673,7 +673,7 @@
     hu = Hatszáz méter után
     id = Setelah enam ratus meter
     it = Tra seicento metri
-    ja = 六百メートル先
+    ja = 六百メートル先、
     ko = 육백 미터 앞
     pl = Za sześćset metrów
     pt = A seiscentos metros
@@ -706,7 +706,7 @@
     hu = Hétszáz méter után
     id = Setelah tujuh ratus meter
     it = Tra settecento metri
-    ja = 七百メートル先
+    ja = 七百メートル先、
     ko = 칠백 미터 앞
     pl = Za siedemset metrów
     pt = A setecentos metros
@@ -739,7 +739,7 @@
     hu = Hétszázötven méter után
     id = Setelah tujuh ratus lima puluh meter
     it = Tra settecento cinquanta metri
-    ja = 七百五十メートル先
+    ja = 七百五十メートル先、
     ko = 칠백오십 미터 앞
     pl = Za siedemset pięćdziesiąt metrów
     pt = A setecentos e cinquenta metros
@@ -772,7 +772,7 @@
     hu = Nyolcszáz méter után
     id = Setelah delapan ratus meter
     it = Tra ottocento metri
-    ja = 八百メートル先
+    ja = 八百メートル先、
     ko = 팔백 미터 앞
     pl = Za osiemset metrów
     pt = A oitocentos metros
@@ -805,7 +805,7 @@
     hu = Kilencszáz méter után
     id = Setelah sembilan ratus meter
     it = Tra novecento metri
-    ja = 九百メートル先
+    ja = 九百メートル先、
     ko = 구백 미터 앞
     pl = Za dziewięćset metrów
     pt = A novecentos metros
@@ -838,7 +838,7 @@
     hu = Egy kilométer után
     id = Setelah satu kilometer
     it = Tra un chilometro
-    ja = 一キロ先
+    ja = 一キロ先、
     ko = 일 킬로미터 앞
     pl = Za kilometr
     pt = A um quilómetro
@@ -871,7 +871,7 @@
     hu = Másfél kilométer után
     id = Setelah satu setengah kilometer
     it = Tra un chilometro e mezzo
-    ja = 一.五キロ先
+    ja = 一.五キロ先、
     ko = 일점오 킬로미터 앞
     pl = Za półtora kilometra
     pt = A um quilómetro e meio
@@ -904,7 +904,7 @@
     hu = Két kilométer után
     id = Setelah dua kilometer
     it = Tra due chilometri
-    ja = 二キロ先
+    ja = 二キロ先、
     ko = 이 킬로미터 앞
     pl = Za dwa kilometry
     pt = A dois quilómetros
@@ -937,7 +937,7 @@
     hu = Két és fél kilométer után
     id = Setelah dua setengah kilometer
     it = Tra due chilometri e mezzo
-    ja = 二.五キロ先
+    ja = 二.五キロ先、
     ko = 이점오 킬로미터 앞
     pl = Za dwa i pół kilometra
     pt = A dois quilómetros e meio
@@ -970,7 +970,7 @@
     hu = Három kilométer után
     id = Setelah tiga kilometer
     it = Tra tre chilometri
-    ja = 三キロ先
+    ja = 三キロ先、
     ko = 삼 킬로미터 앞
     pl = Za trzy kilometry
     pt = A três quilômetros
@@ -2125,7 +2125,7 @@
     hu = Kamera elöl
     id = Diawasi kamera
     it = Autovelox in prossimità
-    ja = この先にある自動速度違反取締装置
+    ja = この先、オービスがあります。速度に注意してください。
     ko = 전방에 카메라
     nb = Kommer til kamera
     pl = Kamera z przodu
