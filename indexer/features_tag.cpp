@@ -6,6 +6,13 @@
 
 using namespace std;
 
+vector<FeaturesTag> const & GetFeaturesTags()
+{
+  static const vector<FeaturesTag> tags = {FeaturesTag::Common, FeaturesTag::Isolines};
+  ASSERT_EQUAL(tags.size(), static_cast<size_t>(FeaturesTag::Count), ());
+  return tags;
+}
+
 string GetFeaturesTag(FeaturesTag tag, version::Format format)
 {
   if (tag == FeaturesTag::Isolines)

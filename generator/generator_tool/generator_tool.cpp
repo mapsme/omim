@@ -358,9 +358,8 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
         continue;
 
       // Generate offsets tables for all features sections.
-      for (uint8_t i = 0; i < base::Underlying(FeaturesTag::Count); ++i)
+      for (auto const tag : GetFeaturesTags())
       {
-        auto const tag = static_cast<FeaturesTag>(i);
         LOG(LINFO, ("Generating offsets table for", dataFile, tag));
         if (!feature::BuildOffsetsTable(dataFile, tag))
           continue;
@@ -384,9 +383,8 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
     if (FLAGS_generate_index)
     {
       // Generate index for all features sections.
-      for (uint8_t i = 0; i < base::Underlying(FeaturesTag::Count); ++i)
+      for (auto const tag : GetFeaturesTags())
       {
-        auto const tag = static_cast<FeaturesTag>(i);
         LOG(LINFO, ("Generating index for", dataFile, tag));
         if (!indexer::BuildIndexFromDataFile(dataFile, FLAGS_intermediate_data_path + country, tag))
           LOG(LCRITICAL, ("Error generating index."));
