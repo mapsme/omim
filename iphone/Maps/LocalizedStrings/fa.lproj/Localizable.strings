@@ -3262,6 +3262,57 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+/* FIXME */
+"button_layer_guides" = "Guides";
+
+/* FIXME */
+"no_routes_in_the_area_toast" = "No guides found here";
+
+/* FIXME */
+"routes_layer_in_menu_toast" = "Turn on layers to find offline guides, explore isolines, subway lines or traffic jams";
+
+/* FIXME */
+"routes_layer_is_on_toast" = "Drag the map to explore guides";
+
+/* FIXME */
+"connection_error_dialog_guides_title" = "Connection error";
+
+/* FIXME */
+"connection_error_dialog_guides_message" = "To continue searching for guides, make sure you have internet connection or turn the layer off";
+
+/* FIXME */
+"connection_error_dialog_guides_try" = "Try again";
+
+/* FIXME */
+"connection_error_dialog_guides_layer_turn_off" = "Turn off";
+
+/* FIXME */
+"connection_error_toast_guides" = "Trying to reconnect";
+
+/* FIXME */
+"routes_card_show" = "Show";
+
+/* FIXME */
+"routes_card_hide" = "Hide";
+
+/* FIXME */
+"routes_card_city" = "City";
+
+/* FIXME */
+"routes_card_outdoor" = "Outdoor";
+
+/* FIXME */
+"routes_card_routes_tag" = "Itinerary";
+
+/* FIXME */
+"routes_card_set_tag" = "Featured places";
+
+/* FIXME */
+"routes_card_number_of_points" = "%s places";
+
+/* FIXME */
+"routes_card_plus_track" = "+ track";
+
 
 /**********  Partners  **********/
 

@@ -1848,6 +1848,40 @@
 	<string name="mts_map_downloader_cta_button">Подключить</string>
 	<string name="skyeng_map_downloader_title">Дарим 4 бесплатных урока английского от Skyeng.</string>
 	<string name="skyeng_map_downloader_cta_button">Подробнее</string>
+	<!-- FIXME -->
+	<string name="button_layer_guides">Guides</string>
+	<!-- FIXME -->
+	<string name="no_routes_in_the_area_toast">No guides found here</string>
+	<!-- FIXME -->
+	<string name="routes_layer_in_menu_toast">Turn on layers to find offline guides, explore isolines, subway lines or traffic jams</string>
+	<!-- FIXME -->
+	<string name="routes_layer_is_on_toast">Drag the map to explore guides</string>
+	<!-- FIXME -->
+	<string name="connection_error_dialog_guides_title">Connection error</string>
+	<!-- FIXME -->
+	<string name="connection_error_dialog_guides_message">To continue searching for guides, make sure you have internet connection or turn the layer off</string>
+	<!-- FIXME -->
+	<string name="connection_error_dialog_guides_try">Try again</string>
+	<!-- FIXME -->
+	<string name="connection_error_dialog_guides_layer_turn_off">Turn off</string>
+	<!-- FIXME -->
+	<string name="connection_error_toast_guides">Trying to reconnect</string>
+	<!-- FIXME -->
+	<string name="routes_card_show">Show</string>
+	<!-- FIXME -->
+	<string name="routes_card_hide">Hide</string>
+	<!-- FIXME -->
+	<string name="routes_card_city">City</string>
+	<!-- FIXME -->
+	<string name="routes_card_outdoor">Outdoor</string>
+	<!-- FIXME -->
+	<string name="routes_card_routes_tag">Itinerary</string>
+	<!-- FIXME -->
+	<string name="routes_card_set_tag">Featured places</string>
+	<!-- FIXME -->
+	<string name="routes_card_number_of_points">%s places</string>
+	<!-- FIXME -->
+	<string name="routes_card_plus_track">+ track</string>
 
 	<!-- SECTION:  Partners  -->
 	<string name="sponsored_partner1_action">Outlets</string>
@@ -2918,6 +2952,4 @@
 	<string name="brand.yoshinoya">Yoshinoya</string>
 	<string name="brand.yudetaro">Yudetaro</string>
 	<string name="brand.yumean">Yumean</string>
-  <string name="button_layer_guides">Guides</string>
-	<string name="no_routes_in_the_area_toast">No guides found here</string>
 </resources>
