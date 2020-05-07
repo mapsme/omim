@@ -20,9 +20,9 @@ void ReadFeatures(std::string const & fName)
 {
   Classificator const & c = classif();
 
-  for (uint8_t i = 0; i < base::Underlying(FeaturesTag::Count); ++i)
+  for (auto const tag : GetFeaturesTags())
   {
-    auto const fv = FeaturesVectorTest(fName, static_cast<FeaturesTag>(i));
+    auto const fv = FeaturesVectorTest(fName, tag);
     fv.GetVector().ForEach([&](FeatureType & ft, uint32_t) {
       TypesHolder types(ft);
 

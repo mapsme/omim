@@ -113,11 +113,11 @@ public:
       m_regionData.Serialize(*w);
     }
 
-    // assume like we close files
-    m_collector.Flush();
-    {
+    auto const finalizeFeaturesFn = [this](auto & collector, FeaturesTag tag) {
+      // assume like we close files
+      collector.Flush();
       FilesContainerW writer(m_filename, FileWriter::OP_WRITE_EXISTING);
-      auto w = writer.GetWriter(GetFeaturesTag(FeaturesTag::Common, version::Format::lastFormat));
+      auto w = writer.GetWriter(GetFeaturesTag(tag, version::Format::lastFormat));
 
       size_t const startOffset = w->Pos();
       CHECK(coding::IsAlign8(startOffset), ());
@@ -129,7 +129,7 @@ public:
       coding::WritePadding(*w, bytesWritten);
 
       header.m_featuresOffset = base::asserted_cast<uint32_t>(w->Pos() - startOffset);
-      ReaderSource<ModelReaderPtr> src(make_unique<FileReader>(m_collector.GetFileName()));
+      ReaderSource<ModelReaderPtr> src(make_unique<FileReader>(collector.GetFileName()));
       rw::ReadAndWrite(src, *w);
       header.m_featuresSize =
           base::asserted_cast<uint32_t>(w->Pos() - header.m_featuresOffset - startOffset);
@@ -138,34 +138,10 @@ public:
       w->Seek(startOffset);
       header.Serialize(*w);
       w->Seek(endOffset);
-    }
+    };
 
-    // assume like we close files
-    m_isolinesCollector.Flush();
-    {
-      FilesContainerW writer(m_filename, FileWriter::OP_WRITE_EXISTING);
-      auto w = writer.GetWriter(GetFeaturesTag(FeaturesTag::Isolines, version::Format::lastFormat));
-
-      size_t const startOffset = w->Pos();
-      CHECK(coding::IsAlign8(startOffset), ());
-
-      feature::DatSectionHeader header;
-      header.Serialize(*w);
-
-      uint64_t bytesWritten = static_cast<uint64_t>(w->Pos());
-      coding::WritePadding(*w, bytesWritten);
-
-      header.m_featuresOffset = base::asserted_cast<uint32_t>(w->Pos() - startOffset);
-      ReaderSource<ModelReaderPtr> src(make_unique<FileReader>(m_isolinesCollector.GetFileName()));
-      rw::ReadAndWrite(src, *w);
-      header.m_featuresSize =
-          base::asserted_cast<uint32_t>(w->Pos() - header.m_featuresOffset - startOffset);
-
-      auto const endOffset = w->Pos();
-      w->Seek(startOffset);
-      header.Serialize(*w);
-      w->Seek(endOffset);
-    }
+    finalizeFeaturesFn(m_collector, FeaturesTag::Common);
+    finalizeFeaturesFn(m_isolinesCollector, FeaturesTag::Isolines);
 
     // File Writer finalization function with adding section to the main mwm file.
     auto const finalizeFn = [this](unique_ptr<TmpFile> w, string const & tag) {

@@ -148,13 +148,12 @@ void TestMwmBuilder::Finish()
   string const path = m_file.GetPath(MapFileType::Map);
   UNUSED_VALUE(base::DeleteFileX(path + OSM2FEATURE_FILE_EXTENSION));
 
-  CHECK(BuildOffsetsTable(path, FeaturesTag::Common), ("Can't build feature offsets table."));
-  CHECK(BuildOffsetsTable(path, FeaturesTag::Isolines), ("Can't build isolines offsets table."));
-
-  CHECK(indexer::BuildIndexFromDataFile(path, path, FeaturesTag::Common),
-        ("Can't build features geometry index."));
-  CHECK(indexer::BuildIndexFromDataFile(path, path, FeaturesTag::Isolines),
-        ("Can't build isolines geometry index."));
+  for (auto const tag : GetFeaturesTags())
+  {
+    CHECK(BuildOffsetsTable(path, tag), ("Can't build offsets table for tag", tag));
+    CHECK(indexer::BuildIndexFromDataFile(path, path, tag),
+          ("Can't build geometry index for tag", tag));
+  }
 
   // We do not have boundaryPostcodesFilename because we do not have osm elements stage.
   CHECK(BuildPostcodesSection(m_file.GetDirectory(), m_file.GetCountryName(),

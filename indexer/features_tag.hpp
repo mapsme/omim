@@ -3,6 +3,7 @@
 #include "platform/mwm_version.hpp"
 
 #include <string>
+#include <vector>
 
 enum class FeaturesTag : uint8_t
 {
@@ -10,6 +11,8 @@ enum class FeaturesTag : uint8_t
   Isolines,
   Count
 };
+
+std::vector<FeaturesTag> const & GetFeaturesTags();
 
 std::string GetFeaturesTag(FeaturesTag tag, version::Format format);
 std::string GetFeaturesOffsetsTag(FeaturesTag tag);
