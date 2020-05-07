@@ -47025,7 +47025,69 @@
     en = Подробнее
 
   [button_layer_guides]
+    comment = FIXME
     en =Guides
 
   [no_routes_in_the_area_toast]
+    comment = FIXME
     en = No guides found here
+
+  [routes_layer_in_menu_toast]
+    comment = FIXME
+    en = Turn on layers to find offline guides, explore isolines, subway lines or traffic jams
+
+  [routes_layer_is_on_toast]
+    comment = FIXME
+    en = Drag the map to explore guides
+
+  [connection_error_dialog_guides_title]
+    comment = FIXME
+    en = Connection error
+
+  [connection_error_dialog_guides_message]
+    comment = FIXME
+    en = To continue searching for guides, make sure you have internet connection or turn the layer off
+
+  [connection_error_dialog_guides_try]
+    comment = FIXME
+    en = Try again
+
+  [connection_error_dialog_guides_layer_turn_off]
+    comment = FIXME
+    en = Turn off
+
+  [connection_error_toast_guides]
+    comment = FIXME
+    en = Trying to reconnect
+
+  [routes_card_show]
+    comment = FIXME
+    en = Show
+
+  [routes_card_hide]
+    comment = FIXME
+    en = Hide
+
+  [routes_card_city]
+    comment = FIXME
+    en = City
+
+  [routes_card_outdoor]
+    comment = FIXME
+    en = Outdoor
+
+  [routes_card_routes_tag]
+    comment = FIXME
+    en = Itinerary
+
+  [routes_card_set_tag]
+    comment = FIXME
+    en = Featured places
+
+  [routes_card_number_of_points]
+    comment = FIXME
+    en = %s places
+
+  [routes_card_plus_track]
+    comment = FIXME
+    en = + track
