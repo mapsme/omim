@@ -871,7 +871,7 @@ void MainWindow::OnRunTests()
 {
   try
   {
-    pair<bool, QString> res = build_style::RunCurrentStyleTests();
+    std::pair<bool, QString> res = build_style::RunCurrentStyleTests();
     InfoDialog dlg(QString("Style tests: ") + (res.first ? "OK" : "FAILED"), res.second, NULL);
     dlg.exec();
   }
