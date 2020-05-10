@@ -61,6 +61,9 @@ while getopts ":cdrstagjp:" opt; do
   esac
 done
 
+[ -z "$OPT_SKIP_DESKTOP" ] &&
+CMAKE_CONFIG="${CMAKE_CONFIG:-} -DSKIP_DESKTOP=OFF"
+
 [ -n "$OPT_DESIGNER" -a -n "$OPT_SKIP_DESKTOP" ] &&
 echo "Can't skip desktop and build designer tool simultaneously" &&
 exit 2
