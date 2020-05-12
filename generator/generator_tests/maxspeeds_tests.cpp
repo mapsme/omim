@@ -122,7 +122,7 @@ void TestMaxspeedsSection(Features const & roads, string const & maxspeedsCsvCon
     // Comparing maxspeed from csv and maxspeed from mwm section.
     TEST_EQUAL(maxspeedCsv, maxspeedMwm, ());
   };
-  feature::ForEachFeature(testMwmFullPath, processor);
+  feature::ForEachCommonFeature(testMwmFullPath, processor);
 }
 
 // Note. ParseMaxspeeds() is not tested in TestMaxspeedsSection() because it's used twice there.

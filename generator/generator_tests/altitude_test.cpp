@@ -159,7 +159,7 @@ void TestAltitudes(DataSource const & dataSource, MwmSet::MwmId const & mwmId,
       TEST_EQUAL(expected, altitudes[i], ("A wrong altitude"));
     }
   };
-  feature::ForEachFeature(mwmPath, processor);
+  feature::ForEachCommonFeature(mwmPath, processor);
 }
 
 void TestAltitudesBuilding(std::vector<TPoint3DList> const & roads, bool hasAltitudeExpected,

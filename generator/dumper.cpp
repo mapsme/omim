@@ -99,7 +99,7 @@ namespace feature
   void DumpTypes(string const & fPath)
   {
     TypesCollector doClass;
-    feature::ForEachFeature(fPath, doClass);
+    feature::ForEachCommonFeature(fPath, doClass);
 
     typedef pair<vector<uint32_t>, size_t> stats_elem_type;
     typedef vector<stats_elem_type> vec_to_sort;
@@ -185,7 +185,7 @@ namespace feature
   void DumpPrefixes(string const & fPath)
   {
     PrefixesCollector doClass;
-    feature::ForEachFeature(fPath, doClass);
+    feature::ForEachCommonFeature(fPath, doClass);
     for (TokensContainerT::iterator it = doClass.m_stats.begin();
          it != doClass.m_stats.end(); ++it)
     {
@@ -225,9 +225,7 @@ namespace feature
         cout << name << endl;
     };
 
-    feature::ForEachFeature(fPath, [&](FeatureType & f, uint32_t)
-                            {
-                              f.ForEachName(printName);
-                            });
+    feature::ForEachCommonFeature(fPath,
+                                  [&](FeatureType & f, uint32_t) { f.ForEachName(printName); });
   }
 }  // namespace feature

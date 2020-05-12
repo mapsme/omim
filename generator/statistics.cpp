@@ -110,7 +110,7 @@ namespace stats
   void CalcStatistic(std::string const & fPath, MapInfo & info)
   {
     AccumulateStatistic doProcess(info);
-    feature::ForEachFeature(fPath, doProcess);
+    feature::ForEachCommonFeature(fPath, doProcess);
   }
 
   void PrintInfo(std::ostream & os, std::string const & prefix, GeneralInfo const & info, bool measurements)
