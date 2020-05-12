@@ -80,8 +80,7 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
   bool popularPlaceFound = false;
 
   std::vector<PopularityIndex> content;
-  feature::ForEachFeature(mwmFile, [&](FeatureType const & f, uint32_t featureId)
-  {
+  feature::ForEachCommonFeature(mwmFile, [&](FeatureType const & f, uint32_t featureId) {
     ASSERT_EQUAL(content.size(), featureId, ());
 
     PopularityIndex rank = 0;
@@ -100,7 +99,7 @@ bool BuildPopularPlacesMwmSection(std::string const & srcFilename, std::string c
 
     content.emplace_back(rank);
   });
-  
+
   if (!popularPlaceFound)
     return true;
 

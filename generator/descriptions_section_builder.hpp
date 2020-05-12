@@ -53,7 +53,7 @@ struct ForEachFeatureAdapt
 {
   void operator()(std::string const & str, T && fn) const
   {
-    feature::ForEachFeature(str, std::forward<T>(fn));
+    feature::ForEachCommonFeature(str, std::forward<T>(fn));
   }
 };
 

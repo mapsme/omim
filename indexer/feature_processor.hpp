@@ -13,20 +13,15 @@
 namespace feature
 {
 template <class ToDo>
-void ForEachFeature(ModelReaderPtr reader, ToDo && toDo, bool includeIsolines = true)
+void ForEachCommonFeature(ModelReaderPtr reader, ToDo && toDo)
 {
   FeaturesVectorTest features((FilesContainerR(reader)), FeaturesTag::Common);
   features.GetVector().ForEach(std::forward<ToDo>(toDo));
-  if (includeIsolines)
-  {
-    FeaturesVectorTest isolineFeatures((FilesContainerR(reader)), FeaturesTag::Isolines);
-    isolineFeatures.GetVector().ForEach(std::forward<ToDo>(toDo));
-  }
 }
 
 template <class ToDo>
-void ForEachFeature(std::string const & fPath, ToDo && toDo, bool includeIsolines = true)
+void ForEachCommonFeature(std::string const & fPath, ToDo && toDo)
 {
-  ForEachFeature(std::make_unique<FileReader>(fPath), std::forward<ToDo>(toDo), includeIsolines);
+  ForEachCommonFeature(std::make_unique<FileReader>(fPath), std::forward<ToDo>(toDo));
 }
 }  // namespace feature
