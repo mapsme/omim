@@ -1137,9 +1137,12 @@ void HouseDetector::ReadHouses(Street * st)
   // offsetMeters));
 
   ProjectionOnStreetCalculator calc(st->m_points);
-  m_loader.ForEachInRect(st->GetLimitRect(m_houseOffsetM), [this, &st, &calc](FeatureType & ft) {
-    ReadHouse<ProjectionOnStreetCalculator>(ft, st, calc);
-  });
+  m_loader.ForEachInRect(
+      st->GetLimitRect(m_houseOffsetM),
+      [this, &st, &calc](FeatureType & ft) {
+        ReadHouse<ProjectionOnStreetCalculator>(ft, st, calc);
+      },
+      FeaturesEnumerationMode::Common);
 
   st->m_length = st->GetLength();
   st->SortHousesProjection();

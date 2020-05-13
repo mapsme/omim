@@ -236,27 +236,28 @@ void DataSource::ForEachInIntervals(ReaderCallback const & fn, covering::Coverin
 }
 
 void DataSource::ForEachFeatureIDInRect(FeatureIdCallback const & f, m2::RectD const & rect,
-                                        int scale) const
+                                        int scale, FeaturesEnumerationMode mode) const
 {
   auto readFeatureId = [&f](uint32_t index, FeatureSource & src) {
     if (src.GetFeatureStatus(index) != FeatureStatus::Deleted)
       f(src.GetFeatureId(index));
   };
 
-  for (auto const tag : GetFeaturesTags())
+  for (auto const tag : GetFeaturesTags(mode))
   {
     ReadMWMFunctor readFunctor(*m_factory, tag, readFeatureId);
     ForEachInIntervals(readFunctor, covering::LowLevelsOnly, rect, scale);
   }
 }
 
-void DataSource::ForEachInRect(FeatureCallback const & f, m2::RectD const & rect, int scale) const
+void DataSource::ForEachInRect(FeatureCallback const & f, m2::RectD const & rect, int scale,
+                               FeaturesEnumerationMode mode) const
 {
   auto readFeatureType = [&f](uint32_t index, FeatureSource & src) {
     ReadFeatureType(f, src, index);
   };
 
-  for (auto const tag : GetFeaturesTags())
+  for (auto const tag : GetFeaturesTags(mode))
   {
     ReadMWMFunctor readFunctor(*m_factory, tag, readFeatureType);
     ForEachInIntervals(readFunctor, covering::ViewportWithLowLevels, rect, scale);
@@ -264,7 +265,8 @@ void DataSource::ForEachInRect(FeatureCallback const & f, m2::RectD const & rect
 }
 
 void DataSource::ForClosestToPoint(FeatureCallback const & f, StopSearchCallback const & stop,
-                                   m2::PointD const & center, double sizeM, int scale) const
+                                   m2::PointD const & center, double sizeM, int scale,
+                                   FeaturesEnumerationMode mode) const
 {
   auto const rect = mercator::RectByCenterXYAndSizeInMeters(center, sizeM);
 
@@ -272,20 +274,21 @@ void DataSource::ForClosestToPoint(FeatureCallback const & f, StopSearchCallback
     ReadFeatureType(f, src, index);
   };
 
-  for (auto const tag : GetFeaturesTags())
+  for (auto const tag : GetFeaturesTags(mode))
   {
     ReadMWMFunctor readFunctor(*m_factory, tag, readFeatureType, stop);
     ForEachInIntervals(readFunctor, covering::CoveringMode::Spiral, rect, scale);
   }
 }
 
-void DataSource::ForEachInScale(FeatureCallback const & f, int scale) const
+void DataSource::ForEachInScale(FeatureCallback const & f, int scale,
+                                FeaturesEnumerationMode mode) const
 {
   auto readFeatureType = [&f](uint32_t index, FeatureSource & src) {
     ReadFeatureType(f, src, index);
   };
 
-  for (auto const tag : GetFeaturesTags())
+  for (auto const tag : GetFeaturesTags(mode))
   {
     ReadMWMFunctor readFunctor(*m_factory, tag, readFeatureType);
     ForEachInIntervals(readFunctor, covering::FullCover, m2::RectD::GetInfiniteRect(), scale);
@@ -293,7 +296,7 @@ void DataSource::ForEachInScale(FeatureCallback const & f, int scale) const
 }
 
 void DataSource::ForEachInRectForMWM(FeatureCallback const & f, m2::RectD const & rect, int scale,
-                                     MwmId const & id) const
+                                     MwmId const & id, FeaturesEnumerationMode mode) const
 {
   MwmHandle const handle = GetMwmHandleById(id);
   if (handle.IsAlive())
@@ -303,7 +306,7 @@ void DataSource::ForEachInRectForMWM(FeatureCallback const & f, m2::RectD const 
       ReadFeatureType(f, src, index);
     };
 
-    for (auto const tag : GetFeaturesTags())
+    for (auto const tag : GetFeaturesTags(mode))
     {
       ReadMWMFunctor readFunctor(*m_factory, tag, readFeatureType);
       readFunctor(handle, cov, scale);

@@ -304,7 +304,7 @@ void MapWidget::ShowInfoPopup(QMouseEvent * e, m2::PointD const & pt)
 
         menu.addSeparator();
       },
-      m_framework.PtoG(pt));
+      m_framework.PtoG(pt), FeaturesEnumerationMode::All);
 
   menu.exec(e->pos());
 }

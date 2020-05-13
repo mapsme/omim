@@ -40,7 +40,7 @@ UNIT_TEST(Framework_ForEachFeatureAtPoint_And_Others)
       TEST(found != types.end(), ());
       types.erase(found);
     });
-  }, mercator::FromLatLon(53.882663, 27.537788));
+  }, mercator::FromLatLon(53.882663, 27.537788), FeaturesEnumerationMode::Common);
   TEST_EQUAL(0, types.size(), ());
 
   ftypes::IsBuildingChecker const & isBuilding = ftypes::IsBuildingChecker::Instance();

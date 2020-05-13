@@ -177,7 +177,8 @@ void FeaturesRoadGraph::ForEachFeatureClosestToCross(m2::PointD const & cross,
   CrossFeaturesLoader featuresLoader(*this, edgesLoader);
   m2::RectD const rect =
       mercator::RectByCenterXYAndSizeInMeters(cross, kMwmRoadCrossingRadiusMeters);
-  m_dataSource.ForEachInRect(featuresLoader, rect, GetStreetReadScale());
+  m_dataSource.ForEachInRect(featuresLoader, rect, GetStreetReadScale(),
+                             FeaturesEnumerationMode::Common);
 }
 
 void FeaturesRoadGraph::FindClosestEdges(
@@ -197,7 +198,7 @@ void FeaturesRoadGraph::FindClosestEdges(
     finder.AddInformationSource(IRoadGraph::FullRoadInfo(featureId, roadInfo));
   };
 
-  m_dataSource.ForEachInRect(f, rect, GetStreetReadScale());
+  m_dataSource.ForEachInRect(f, rect, GetStreetReadScale(), FeaturesEnumerationMode::Common);
 
   finder.MakeResult(vicinities, count);
 }
@@ -223,7 +224,7 @@ FeaturesRoadGraph::FindRoads(m2::RectD const & rect, IsGoodFeatureFn const & isG
     roads.emplace_back(featureId, roadInfo);
   };
 
-  m_dataSource.ForEachInRect(f, rect, GetStreetReadScale());
+  m_dataSource.ForEachInRect(f, rect, GetStreetReadScale(), FeaturesEnumerationMode::Common);
   return roads;
 }
 
@@ -262,7 +263,7 @@ void FeaturesRoadGraph::GetJunctionTypes(geometry::PointWithAltitude const & jun
 
   m2::RectD const rect =
       mercator::RectByCenterXYAndSizeInMeters(cross, kMwmRoadCrossingRadiusMeters);
-  m_dataSource.ForEachInRect(f, rect, GetStreetReadScale());
+  m_dataSource.ForEachInRect(f, rect, GetStreetReadScale(), FeaturesEnumerationMode::Common);
 }
 
 IRoadGraph::Mode FeaturesRoadGraph::GetMode() const

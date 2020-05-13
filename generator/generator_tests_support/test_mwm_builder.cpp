@@ -148,7 +148,7 @@ void TestMwmBuilder::Finish()
   string const path = m_file.GetPath(MapFileType::Map);
   UNUSED_VALUE(base::DeleteFileX(path + OSM2FEATURE_FILE_EXTENSION));
 
-  for (auto const tag : GetFeaturesTags())
+  for (auto const tag : GetFeaturesTags(FeaturesEnumerationMode::All))
   {
     CHECK(BuildOffsetsTable(path, tag), ("Can't build offsets table for tag", tag));
     CHECK(indexer::BuildIndexFromDataFile(path, path, tag),

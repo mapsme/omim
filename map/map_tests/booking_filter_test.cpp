@@ -111,7 +111,7 @@ UNIT_CLASS_TEST(TestMwmEnvironment, BookingFilter_AvailabilitySmoke)
         results.AddResult(std::move(result));
         expectedResults.AddResult(std::move(copy));
       },
-      rect, scales::GetUpperScale());
+      rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
   ParamsInternal filterParams;
   search::Results filteredResults;
   filterParams.m_apiParams = std::make_shared<booking::AvailabilityParams>();
@@ -195,7 +195,7 @@ UNIT_CLASS_TEST(TestMwmEnvironment, BookingFilter_ProcessorSmoke)
       if (availableWithDeals.find(sponsoredId) != availableWithDeals.cend())
         InsertResult(result, expectedAvailableWithDeals);
     },
-    rect, scales::GetUpperScale());
+    rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
 
   TasksInternal tasks;
   ParamsInternal availabilityParams;
@@ -312,7 +312,7 @@ UNIT_CLASS_TEST(TestMwmEnvironment, BookingFilter_ApplyFilterOntoWithFeatureIds)
       if (kHotelIds.cend() != std::find(kHotelIds.cbegin(), kHotelIds.cend(), hotelId))
         expectedFeatureIds.push_back(ft.GetID());
     },
-    rect, scales::GetUpperScale());
+    rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
 
   std::sort(expectedFeatureIds.begin(), expectedFeatureIds.end());
   std::sort(allFeatureIds.begin(), allFeatureIds.end());

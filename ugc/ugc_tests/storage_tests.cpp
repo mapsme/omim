@@ -183,7 +183,7 @@ private:
       if (checker(featureType))
         id = featureType.GetID();
     };
-    m_dataSource.ForEachInRect(fn, rect, scales::GetUpperScale());
+    m_dataSource.ForEachInRect(fn, rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
     CHECK(id.IsValid(), ());
     return id;
   }

@@ -39,7 +39,7 @@ public:
             // We check asserts here. There is no any other constrains here.
             (void)ft.IsEmptyGeometry(m_scale);
           },
-          m_scale);
+          m_scale, FeaturesEnumerationMode::All);
     }
   }
 

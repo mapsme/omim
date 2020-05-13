@@ -170,8 +170,8 @@ void TrackMatcher::Step::FillCandidatesWithNearbySegments(
           }
         }
       },
-      mercator::RectByCenterXYAndSizeInMeters(m_point, kMatchingRange),
-      scales::GetUpperScale());
+      mercator::RectByCenterXYAndSizeInMeters(m_point, kMatchingRange), scales::GetUpperScale(),
+      FeaturesEnumerationMode::Common);
 }
 
 void TrackMatcher::Step::FillCandidates(Step const & previousStep, IndexGraph & graph)

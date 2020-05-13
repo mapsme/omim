@@ -50,7 +50,7 @@ void ScoreCandidatePointsGetter::GetJunctionPointCandidates(m2::PointD const & p
   };
 
   m_dataSource.ForEachInRect(selectCandidates, mercator::RectByCenterXYAndSizeInMeters(p, kRadius),
-                             scales::GetUpperScale());
+                             scales::GetUpperScale(), FeaturesEnumerationMode::Common);
 
   base::SortUnique(pointCandidates);
   std::reverse(pointCandidates.begin(), pointCandidates.end());

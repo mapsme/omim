@@ -20,7 +20,7 @@ void ReadFeatures(std::string const & fName)
 {
   Classificator const & c = classif();
 
-  for (auto const tag : GetFeaturesTags())
+  for (auto const tag : GetFeaturesTags(FeaturesEnumerationMode::All))
   {
     auto const fv = FeaturesVectorTest(fName, tag);
     fv.GetVector().ForEach([&](FeatureType & ft, uint32_t) {

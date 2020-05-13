@@ -61,7 +61,8 @@ namespace
   };
 
   void RunBenchmark(FeaturesFetcher const & src, m2::RectD const & rect,
-                    pair<int, int> const & scaleRange, AllResult & res)
+                    pair<int, int> const & scaleRange, FeaturesEnumerationMode mode,
+                    AllResult & res)
   {
     ASSERT_LESS_OR_EQUAL(scaleRange.first, scaleRange.second, ());
 
@@ -82,7 +83,7 @@ namespace
         acc.Reset(scale);
 
         base::Timer timer;
-        src.ForEachFeature(r, acc, scale);
+        src.ForEachFeature(r, acc, scale, mode);
         res.Add(timer.ElapsedSeconds());
 
         doDivide = !acc.IsEmpty();
@@ -99,7 +100,8 @@ namespace
   }
 }
 
-void RunFeaturesLoadingBenchmark(string const & file, pair<int, int> scaleRange, AllResult & res)
+void RunFeaturesLoadingBenchmark(string const & file, pair<int, int> scaleRange,
+                                 FeaturesEnumerationMode mode, AllResult & res)
 {
   string fileName = file;
   base::GetNameFromFullPath(fileName);
@@ -123,6 +125,6 @@ void RunFeaturesLoadingBenchmark(string const & file, pair<int, int> scaleRange,
   if (scaleRange.first > scaleRange.second)
     return;
 
-  RunBenchmark(src, r.first.GetInfo()->m_bordersRect, scaleRange, res);
+  RunBenchmark(src, r.first.GetInfo()->m_bordersRect, scaleRange, mode, res);
 }
 }  // namespace bench

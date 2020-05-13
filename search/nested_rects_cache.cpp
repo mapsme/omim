@@ -108,7 +108,7 @@ void NestedRectsCache::Update()
       }
       lastFeatures->push_back(id.m_index);
     };
-    m_dataSource.ForEachFeatureIDInRect(addId, rect, m_scale);
+    m_dataSource.ForEachFeatureIDInRect(addId, rect, m_scale, FeaturesEnumerationMode::Common);
     for (auto & kv : bucket)
       std::sort(kv.second.begin(), kv.second.end());
   }

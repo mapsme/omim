@@ -62,7 +62,7 @@ UNIT_TEST(BuildIndexTest)
     UNUSED_VALUE(dataSource.Register(platform::LocalCountryFile::MakeForTesting("build_index_test")));
 
     // Make sure that index is actually parsed.
-    dataSource.ForEachInScale([](FeatureType &) { return; }, 15);
+    dataSource.ForEachInScale([](FeatureType &) { return; }, 15, FeaturesEnumerationMode::Common);
   }
 
   // Clean after the test.

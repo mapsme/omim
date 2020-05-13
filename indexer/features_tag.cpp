@@ -6,8 +6,13 @@
 
 using namespace std;
 
-vector<FeaturesTag> const & GetFeaturesTags()
+vector<FeaturesTag> const & GetFeaturesTags(FeaturesEnumerationMode mode)
 {
+  static const vector<FeaturesTag> common = {FeaturesTag::Common};
+  if (mode == FeaturesEnumerationMode::Common)
+    return common;
+
+  CHECK_EQUAL(mode, FeaturesEnumerationMode::All, ());
   static const vector<FeaturesTag> tags = {FeaturesTag::Common, FeaturesTag::Isolines};
   ASSERT_EQUAL(tags.size(), static_cast<size_t>(FeaturesTag::Count), ());
   return tags;
@@ -62,6 +67,16 @@ string DebugPrint(FeaturesTag tag)
   case FeaturesTag::Common: return "Common";
   case FeaturesTag::Isolines: return "Isolines";
   case FeaturesTag::Count: return "Count";
+  }
+  UNREACHABLE();
+}
+
+string DebugPrint(FeaturesEnumerationMode mode)
+{
+  switch (mode)
+  {
+  case FeaturesEnumerationMode::Common: return "Common";
+  case FeaturesEnumerationMode::All: return "All";
   }
   UNREACHABLE();
 }

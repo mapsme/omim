@@ -707,9 +707,10 @@ public:
   FeatureID GetFeatureAtPoint(m2::PointD const & mercator,
                               FeatureMatcher && matcher = nullptr) const;
   template <typename TFn>
-  void ForEachFeatureAtPoint(TFn && fn, m2::PointD const & mercator) const
+  void ForEachFeatureAtPoint(TFn && fn, m2::PointD const & mercator,
+                             FeaturesEnumerationMode mode) const
   {
-    indexer::ForEachFeatureAtPoint(m_featuresFetcher.GetDataSource(), fn, mercator, 0.0);
+    indexer::ForEachFeatureAtPoint(m_featuresFetcher.GetDataSource(), fn, mercator, mode, 0.0);
   }
 
   osm::MapObject GetMapObjectByID(FeatureID const & fid) const;

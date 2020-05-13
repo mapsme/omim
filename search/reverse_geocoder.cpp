@@ -322,7 +322,8 @@ void ReverseGeocoder::GetNearbyBuildings(m2::PointD const & center, double radiu
 
   auto const stop = [&]() { return buildings.size() >= kMaxNumTriesToApproxAddress; };
 
-  m_dataSource.ForClosestToPoint(addBuilding, stop, center, radius, kQueryScale);
+  m_dataSource.ForClosestToPoint(addBuilding, stop, center, radius, kQueryScale,
+                                 FeaturesEnumerationMode::Common);
   sort(buildings.begin(), buildings.end(), base::LessBy(&Building::m_distanceMeters));
 }
 

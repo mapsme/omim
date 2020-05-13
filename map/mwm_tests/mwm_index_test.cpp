@@ -59,7 +59,8 @@ bool RunTest(string const & countryFileName, int lowS, int highS)
   for (int scale = lowS; scale <= highS; ++scale)
   {
     doCheck.SetScale(scale);
-    src.ForEachFeatureID(mercator::Bounds::FullRect(), doCheck, scale);
+    src.ForEachFeatureID(mercator::Bounds::FullRect(), doCheck, scale,
+                         FeaturesEnumerationMode::All);
     src.ReadFeatures(doCheck, doCheck.m_ids);
   }
 

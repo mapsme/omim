@@ -226,7 +226,7 @@ void OnRouteStartBuild(DataSource const & dataSource,
         found = true;
       }
     },
-    rect, scales::GetUpperScale());
+    rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
   }
 }
 }  // namespace
@@ -1882,8 +1882,9 @@ bool Framework::GetDistanceAndAzimut(m2::PointD const & point,
 void Framework::CreateDrapeEngine(ref_ptr<dp::GraphicsContextFactory> contextFactory, DrapeCreationParams && params)
 {
   auto idReadFn = [this](df::MapDataProvider::TReadCallback<FeatureID const> const & fn,
-                         m2::RectD const & r,
-                         int scale) -> void { m_featuresFetcher.ForEachFeatureID(r, fn, scale); };
+                         m2::RectD const & r, int scale) -> void {
+    m_featuresFetcher.ForEachFeatureID(r, fn, scale, FeaturesEnumerationMode::All);
+  };
 
   auto featureReadFn = [this](df::MapDataProvider::TReadCallback<FeatureType> const & fn,
                               vector<FeatureID> const & ids) -> void
@@ -2353,9 +2354,6 @@ FeatureID Framework::GetFeatureAtPoint(m2::PointD const & mercator,
       poi = ft.GetID();
       break;
     case feature::GeomType::Line:
-      // Skip/ignore isolines.
-      if (ftypes::IsIsolineChecker::Instance()(ft))
-        return;
       line = ft.GetID();
       break;
     case feature::GeomType::Area:
@@ -2378,7 +2376,7 @@ FeatureID Framework::GetFeatureAtPoint(m2::PointD const & mercator,
       ASSERT(false, ("case feature::Undefined"));
       break;
     }
-  }, mercator);
+  }, mercator, FeaturesEnumerationMode::Common);
 
   return fullMatch.IsValid() ? fullMatch : (poi.IsValid() ? poi : (area.IsValid() ? area : line));
 }
@@ -2625,7 +2623,7 @@ FeatureID Framework::FindBuildingAtPoint(m2::PointD const & mercator) const
       {
         featureId = ft.GetID();
       }
-    }, kScale);
+    }, kScale, FeaturesEnumerationMode::Common);
   }
   return featureId;
 }
@@ -3783,7 +3781,7 @@ void Framework::VisualizeRoadsInRect(m2::RectD const & rect)
   {
     if (routing::IsRoad(feature::TypesHolder(ft)))
       VisualizeFeatureInRect(rect, ft, m_drapeApi);
-  }, scales::GetUpperScale());
+  }, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
 }
 
 void Framework::VisualizeCityBoundariesInRect(m2::RectD const & rect)
@@ -3848,7 +3846,7 @@ void Framework::VisualizeCityRoadsInRect(m2::RectD const & rect)
 
         VisualizeFeatureInRect(rect, ft, m_drapeApi);
       },
-      rect, scales::GetUpperScale());
+      rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
 }
 
 ads::Engine const & Framework::GetAdsEngine() const
@@ -4346,7 +4344,7 @@ bool Framework::MakePlacePageForNotification(NotificationCandidate const & notif
           }
         }
       },
-      rect, scales::GetUpperScale());
+      rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
 
   return found;
 }

@@ -36,7 +36,8 @@ void CandidatePointsGetter::FillJunctionPointCandidates(m2::PointD const & p,
         scales::GetUpperScale());
   };
 
-  m_dataSource.ForEachInRect(selectCandidates, rect, scales::GetUpperScale());
+  m_dataSource.ForEachInRect(selectCandidates, rect, scales::GetUpperScale(),
+                             FeaturesEnumerationMode::Common);
 
   // TODO: Move this to a separate stage.
   // 1030292476 Does not match. Some problem occur with points.

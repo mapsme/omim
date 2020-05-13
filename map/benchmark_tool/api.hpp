@@ -1,5 +1,7 @@
 #pragma once
 
+#include "indexer/features_tag.hpp"
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -44,5 +46,6 @@ namespace bench
   };
 
   /// @param[in] count number of times to run benchmark
-  void RunFeaturesLoadingBenchmark(std::string const & file, std::pair<int, int> scaleR, AllResult & res);
+  void RunFeaturesLoadingBenchmark(std::string const & file, std::pair<int, int> scaleR,
+                                   FeaturesEnumerationMode mode, AllResult & res);
 }  // namespace bench

@@ -101,7 +101,8 @@ size_t SearchTest::CountFeatures(m2::RectD const & rect)
 {
   size_t count = 0;
   auto counter = [&count](const FeatureType & /* ft */) { ++count; };
-  m_dataSource.ForEachInRect(counter, rect, scales::GetUpperScale());
+  m_dataSource.ForEachInRect(counter, rect, scales::GetUpperScale(),
+                             FeaturesEnumerationMode::Common);
   return count;
 }
 

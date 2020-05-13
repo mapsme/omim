@@ -53,15 +53,15 @@ public:
   }
 
   void ForEachFeature(m2::RectD const & rect, std::function<void(FeatureType &)> const & fn,
-                      int scale) const
+                      int scale, FeaturesEnumerationMode mode) const
   {
-    m_dataSource.ForEachInRect(fn, rect, scale);
+    m_dataSource.ForEachInRect(fn, rect, scale, mode);
   }
 
   void ForEachFeatureID(m2::RectD const & rect, std::function<void(FeatureID const &)> const & fn,
-                        int scale) const
+                        int scale, FeaturesEnumerationMode mode) const
   {
-    m_dataSource.ForEachFeatureIDInRect(fn, rect, scale);
+    m_dataSource.ForEachFeatureIDInRect(fn, rect, scale, mode);
   }
 
   template <class ToDo>

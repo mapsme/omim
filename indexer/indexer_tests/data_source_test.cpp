@@ -86,7 +86,7 @@ UNIT_CLASS_TEST(DataSourceTest, Parse)
   UNUSED_VALUE(m_dataSource.RegisterMap(platform::LocalCountryFile::MakeForTesting("minsk-pass")));
 
   // Make sure that index is actually parsed.
-  m_dataSource.ForEachInScale([](FeatureType &) { return; }, 15);
+  m_dataSource.ForEachInScale([](FeatureType &) { return; }, 15, FeaturesEnumerationMode::All);
 }
 
 UNIT_CLASS_TEST(DataSourceTest, StatusNotifications)
