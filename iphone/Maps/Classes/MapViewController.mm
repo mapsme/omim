@@ -120,6 +120,7 @@ NSString * const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   [self addChildViewController:self.placePageVC];
   self.placePageContainer.hidden = NO;
   [self.placePageContainer addSubview:self.placePageVC.view];
+  [self.view bringSubviewToFront:self.placePageContainer];
   self.placePageVC.view.translatesAutoresizingMaskIntoConstraints = NO;
   [NSLayoutConstraint activateConstraints:@[
     [self.placePageVC.view.topAnchor constraintEqualToAnchor:self.placePageContainer.safeAreaLayoutGuide.topAnchor],
