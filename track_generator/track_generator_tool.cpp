@@ -1,6 +1,8 @@
-#include "track_generator/utils.hpp"
+#include "track_generator/track_generator.hpp"
 
 #include "routing/vehicle_mask.hpp"
+
+#include "platform/platform.hpp"
 
 #include "base/assert.hpp"
 #include "base/logging.hpp"
@@ -12,6 +14,8 @@
 DEFINE_string(inputDir, "", "Path to kmls.");
 
 DEFINE_string(outputDir, "", "Path to converted kmls.");
+
+DEFINE_string(dataDir, "", "Path to MAPS.ME data directory.");
 
 DEFINE_int32(vehicleType, 0, "Numeric value of routing::VehicleType enum. "
                              "Pedestrian by default.");
@@ -36,12 +40,15 @@ int main(int argc, char ** argv)
     return 0;
   }
 
-  if (FLAGS_inputDir.empty() || FLAGS_outputDir.empty())
+  if (FLAGS_inputDir.empty() || FLAGS_outputDir.empty() || FLAGS_dataDir.empty())
   {
-    LOG(LINFO, (FLAGS_inputDir.empty() ? "Input" : "Output", "directory is required."));
+    LOG(LINFO, ("Missing required option."));
     google::ShowUsageWithFlags(argv[0]);
     return 1;
   }
+
+  GetPlatform().SetResourceDir(FLAGS_dataDir);
+  GetPlatform().SetWritableDirForTests(FLAGS_dataDir);
 
   track_generator_tool::GenerateTracks(FLAGS_inputDir, FLAGS_outputDir,
                                        static_cast<routing::VehicleType>(FLAGS_vehicleType));

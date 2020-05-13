@@ -7,8 +7,8 @@ include_directories(
 set(
   SRC
   track_generator_tool.cpp
-  utils.cpp
-  utils.hpp
+  track_generator.cpp
+  track_generator.hpp
 )
 
 omim_add_executable(${PROJECT_NAME} ${SRC})
