@@ -3262,6 +3262,14 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"whatsnew_catalog_new_title" = "En ny katalog och tusentals idéer för vila";
+
+"whatsnew_catalog_new_message" = "Vi har uppdaterat guidebok katalogen och lagt till översättningar till alla språk. Börja planera i förväg!";
+
+"whatsnew_elevation_profile_title" = "Terräng profil i guiderna";
+
+"whatsnew_elevation_profile_message" = "Utvärdera komplexitet för kommande stigningar och backar offline med hjälp av markören i profilen för den förvärvade rutten.";
+
 
 /**********  Partners  **********/
 

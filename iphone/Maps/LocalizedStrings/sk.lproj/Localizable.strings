@@ -3262,6 +3262,14 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"whatsnew_catalog_new_title" = "Nový katalóg sprievodcov a tisíce nápadov na cestovanie";
+
+"whatsnew_catalog_new_message" = "Aktualizovali sme katalóg sprievodcov a pridali preklady do všetkých jazykov. Začnite plánovať vopred!";
+
+"whatsnew_elevation_profile_title" = "Výškový profil v cestovných sprievodcoch";
+
+"whatsnew_elevation_profile_message" = "Vyhodnoťte zložitosť prichádzajúcich výstupov a zostupov offline pomocou kurzora v profile zakúpenej trasy.";
+
 
 /**********  Partners  **********/
 

@@ -1716,6 +1716,10 @@
 	<string name="hide_screen_map_update">پنهان کردن و ادامه دادن</string>
 	<string name="view_on_map_downloaded_error">راهنما از این دستگاه پاک شده است</string>
 	<string name="subscription">عضویت</string>
+	<string name="whatsnew_catalog_new_title">کاتالوگ راهنما های جدید و هزاران ایده سفر</string>
+	<string name="whatsnew_catalog_new_message">ما کاتالوگ راهنما را به روزرسانی کرده ایم و ترجمه تمامی زبان ها را افزوده ایم. از پیش برنامه ریزی کنید!</string>
+	<string name="whatsnew_elevation_profile_title">پروفایل ارتفاع در راهنمای سفر</string>
+	<string name="whatsnew_elevation_profile_message">پیچیدگی بالا رفتن ها و پایین آمدن های آفلاین بعدی را در پروفایل مسیرهای خریداری شده به وسیله مکان نما ارزیابی کنید.</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aeroway.aerodrome">فرودگاه</string>

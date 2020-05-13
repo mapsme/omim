@@ -1781,6 +1781,10 @@
 	<string name="hide_screen_map_update">ซ่อนและใช้งานต่อ</string>
 	<string name="view_on_map_downloaded_error">คู่มือใช้งานถูกลบออกจากอุปกรณ์แล้ว</string>
 	<string name="subscription">สมัครสมาชิก</string>
+	<string name="whatsnew_catalog_new_title">ไกด์แคตตาล็อกใหม่และไอเดียในการท่องเที่ยวหลายพันอย่าง</string>
+	<string name="whatsnew_catalog_new_message">เราได้อัปเดตไกด์แคตตาล็อก และเพิ่มการแปลในทุกภาษา มาเริ่มวางแผนทริปของคุณล่วงหน้ากัน!</string>
+	<string name="whatsnew_elevation_profile_title">ข้อมูลของความสูงในคู่มือใช้งานเพื่อการท่องเที่ยว</string>
+	<string name="whatsnew_elevation_profile_message">ประเมินความลำบากของการขึ้นและการลงในเส้นทางข้างหน้าแบบออฟไลน์ ด้วยเคอร์เซอร์ในโปรไฟล์ของเส้นทางที่คุณซื้อไว้</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">สถานีกระเช้าลอยฟ้า</string>

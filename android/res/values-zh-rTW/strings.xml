@@ -1778,6 +1778,10 @@
 	<string name="hide_screen_map_update">隱藏並繼續</string>
 	<string name="view_on_map_downloaded_error">該指南已從設備中刪除</string>
 	<string name="subscription">訂閱</string>
+	<string name="whatsnew_catalog_new_title">新目錄和數千個理想度假勝地</string>
+	<string name="whatsnew_catalog_new_message">我們更新了指南目錄，並添加了所有語言的翻譯。開始提前計劃！</string>
+	<string name="whatsnew_elevation_profile_title">指南中的高度剖面圖</string>
+	<string name="whatsnew_elevation_profile_message">使用所獲取路線中的光標離線評估即將遇到的上坡和下坡的難度。</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">纜車站</string>

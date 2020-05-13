@@ -1779,6 +1779,10 @@
 	<string name="hide_screen_map_update">Skrýt a pokračovat</string>
 	<string name="view_on_map_downloaded_error">Tento průvodce byl smazán z tohoto zařízení</string>
 	<string name="subscription">Předplatné</string>
+	<string name="whatsnew_catalog_new_title">Nový katalog průvodců a tisíce nápadů na cestování</string>
+	<string name="whatsnew_catalog_new_message">Aktualizovali jsme katalog průvodců a přidali jsme překlady ve všech jazycích. Začněte plánovat dopředu!</string>
+	<string name="whatsnew_elevation_profile_title">Výškový profil v cestovních průvodcích</string>
+	<string name="whatsnew_elevation_profile_message">Vyhodnoťte obtížnost nadcházejících offline stoupání a klesání pomocí kurzoru v profilu zakoupené trasy.</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Stanice lanové dráhy</string>

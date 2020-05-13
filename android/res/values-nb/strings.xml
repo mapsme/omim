@@ -1669,6 +1669,10 @@
 	<string name="hide_screen_map_update">Skjul og fortsett med appen</string>
 	<string name="view_on_map_downloaded_error">Denne guiden har blitt fjernet fra enheten</string>
 	<string name="subscription">Abonnement</string>
+	<string name="whatsnew_catalog_new_title">Ny katalog med tusenvis av ferieideer</string>
+	<string name="whatsnew_catalog_new_message">Vi har oppdatert guidekatalogen vår og lagt til oversettelser til alle språk. Begynn å planlegge på forhånd!</string>
+	<string name="whatsnew_elevation_profile_title">Høydeprofil i guidene</string>
+	<string name="whatsnew_elevation_profile_message">Evaluer vanskeligheten til kommende oppstigninger og nedstigninger uten nett med markøren i profilen til den kjøpte ruten.</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Kabelbanestasjon</string>

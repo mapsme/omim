@@ -1770,6 +1770,10 @@
 	<string name="hide_screen_map_update">Piilota ja jatka tausta-ajo</string>
 	<string name="view_on_map_downloaded_error">Tämä matkaopas oli poistettu laitteesta</string>
 	<string name="subscription">Tilaus</string>
+	<string name="whatsnew_catalog_new_title">Uusi luettelo ja tuhansia lomasi viettoon liittyviä ideoita</string>
+	<string name="whatsnew_catalog_new_message">Olemme päivittäneet matkaopasluettelon ja lisänneet käännöksiä kaikille kielille. Aloita suunnittelu etukäteen!</string>
+	<string name="whatsnew_elevation_profile_title">Korkeuslinjat matkaoppaissa</string>
+	<string name="whatsnew_elevation_profile_message">Arvioi tulevien ylä- ja alamäkien vaikeus offline-tilassa hankitun reitin profiilissa kursorin avulla.</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Köysirata-asema</string>

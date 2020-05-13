@@ -3262,6 +3262,14 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"whatsnew_catalog_new_title" = "Új útmutatók katalógusa és több ezer utazási ötlet";
+
+"whatsnew_catalog_new_message" = "Frissítettük az útmutatók katalógusát és minden nyelven hozzáadtuk a fordításokat. Tervezze meg előre utazását!";
+
+"whatsnew_elevation_profile_title" = "Emelkedési profil az utazási útmutatókban";
+
+"whatsnew_elevation_profile_message" = "A kurzorral becsülje meg a közelgő offline felemelkedések és leereszkedések nehézségét a megvásárolt útvonal profiljában.";
+
 
 /**********  Partners  **********/
 

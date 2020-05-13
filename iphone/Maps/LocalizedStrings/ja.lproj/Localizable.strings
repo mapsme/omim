@@ -3262,6 +3262,14 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"whatsnew_catalog_new_title" = "新しいガイドのカタログと数千の旅行アイディア";
+
+"whatsnew_catalog_new_message" = "ガイドのカタログが更新され、全ての言語に翻訳が追加されました。事前に計画を立てましょう！";
+
+"whatsnew_elevation_profile_title" = "旅行ガイドの標高情報";
+
+"whatsnew_elevation_profile_message" = "購入したルートのプロフィールでカーソルを使って今後のオフラインの上昇と下降の難易度を調べましょう。";
+
 
 /**********  Partners  **********/
 

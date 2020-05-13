@@ -1784,6 +1784,10 @@
 	<string name="hide_screen_map_update">Ausblenden und Fortsetzen</string>
 	<string name="view_on_map_downloaded_error">Dieser Reiseführer wurde vom Gerät gelöscht</string>
 	<string name="subscription">Abo</string>
+	<string name="whatsnew_catalog_new_title">Neuer Katalog und tausende Erholungsideen</string>
+	<string name="whatsnew_catalog_new_message">Wir haben das Reiseführerkatalog upgedatet und Übersetzungen in alle Sprachen hinzugefügt. Beginnen Sie im Voraus zu planen!</string>
+	<string name="whatsnew_elevation_profile_title">Höhenprofil in den Reiseführern</string>
+	<string name="whatsnew_elevation_profile_message">Bewerten Sie den Schwierigkeitsgrad des bevorstehenden Bergaufs und Bergabs offline per Kursor im Profil der erworbenen Route.</string>
 
 	<!-- SECTION:  Partners  -->
 	<string name="sponsored_partner2_action">Rabatt</string>

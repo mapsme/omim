@@ -1769,6 +1769,10 @@
 	<string name="hide_screen_map_update">Sembunyikan dan lanjutkan</string>
 	<string name="view_on_map_downloaded_error">Panduan ini telah dihapus dari perangkat ini</string>
 	<string name="subscription">Berlangganan</string>
+	<string name="whatsnew_catalog_new_title">Katalog panduan baru dan ribuan ide perjalanan</string>
+	<string name="whatsnew_catalog_new_message">Kami telah memperbarui katalog panduan dan menambahkan terjemahan dalam semua bahasa. Mulai perencanaan terlebih dahulu!</string>
+	<string name="whatsnew_elevation_profile_title">Profil elevasi dalam panduan perjalanan</string>
+	<string name="whatsnew_elevation_profile_message">Mengevaluasi kerumitan kenaikan dan penurunan offline yang akan datang dengan kursor di profil dari rute yang dibeli.</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Stasiun kereta gantung</string>
