@@ -43,19 +43,19 @@ public:
   bool DeregisterMap(platform::CountryFile const & countryFile);
 
   void ForEachFeatureIDInRect(FeatureIdCallback const & f, m2::RectD const & rect, int scalei,
-                              FeaturesEnumerationMode mode) const;
+                              FeaturesEnumerationMode mode = FeaturesEnumerationMode::Common) const;
   void ForEachInRect(FeatureCallback const & f, m2::RectD const & rect, int scale,
-                     FeaturesEnumerationMode mode) const;
+                     FeaturesEnumerationMode mode = FeaturesEnumerationMode::Common) const;
   // Calls |f| for features closest to |center| until |stopCallback| returns true or distance
   // |sizeM| from has been reached. Then for EditableDataSource calls |f| for each edited feature
   // inside square with center |center| and side |2 * sizeM|. Edited features are not in the same
   // hierarchy and there is no fast way to merge frozen and edited features.
   void ForClosestToPoint(FeatureCallback const & f, StopSearchCallback const & stopCallback,
                          m2::PointD const & center, double sizeM, int scale,
-                         FeaturesEnumerationMode mode) const;
-  void ForEachInScale(FeatureCallback const & f, int scale, FeaturesEnumerationMode mode) const;
+                         FeaturesEnumerationMode mode = FeaturesEnumerationMode::Common) const;
+  void ForEachInScale(FeatureCallback const & f, int scale, FeaturesEnumerationMode mode = FeaturesEnumerationMode::Common) const;
   void ForEachInRectForMWM(FeatureCallback const & f, m2::RectD const & rect, int scale,
-                           MwmId const & id, FeaturesEnumerationMode mode) const;
+                           MwmId const & id, FeaturesEnumerationMode mode = FeaturesEnumerationMode::Common) const;
   // "features" must be sorted using FeatureID::operator< as predicate.
   void ReadFeatures(FeatureCallback const & fn, std::vector<FeatureID> const & features) const;
 

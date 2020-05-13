@@ -2376,7 +2376,7 @@ FeatureID Framework::GetFeatureAtPoint(m2::PointD const & mercator,
       ASSERT(false, ("case feature::Undefined"));
       break;
     }
-  }, mercator, FeaturesEnumerationMode::Common);
+  }, mercator, 0.0, FeaturesEnumerationMode::Common);
 
   return fullMatch.IsValid() ? fullMatch : (poi.IsValid() ? poi : (area.IsValid() ? area : line));
 }

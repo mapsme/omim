@@ -24,11 +24,10 @@ public:
 
   void Reset();
 
-  void ForEachInRect(m2::RectD const & rect, std::function<void(FeatureType &)> const & fn,
-                     FeaturesEnumerationMode mode)
+  void ForEachInRect(m2::RectD const & rect, std::function<void(FeatureType &)> const & fn)
   {
     ASSERT(m_checker.CalledOnOriginalThread(), ());
-    m_dataSource.ForEachInRect(fn, rect, scales::GetUpperScale(), mode);
+    m_dataSource.ForEachInRect(fn, rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
   }
 
 private:

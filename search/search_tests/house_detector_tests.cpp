@@ -204,8 +204,7 @@ UNIT_TEST(HS_StreetsMerge)
     search::HouseDetector houser(dataSource);
     StreetIDsByName toDo;
     toDo.streetNames.push_back("улица Володарского");
-    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale(),
-                              FeaturesEnumerationMode::Common);
+    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale());
     houser.LoadStreets(toDo.GetFeatureIDs());
     TEST_EQUAL(houser.MergeStreets(), 1, ());
   }
@@ -214,8 +213,7 @@ UNIT_TEST(HS_StreetsMerge)
     search::HouseDetector houser(dataSource);
     StreetIDsByName toDo;
     toDo.streetNames.push_back("Московская улица");
-    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale(),
-                              FeaturesEnumerationMode::Common);
+    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale());
     houser.LoadStreets(toDo.GetFeatureIDs());
     TEST_GREATER_OR_EQUAL(houser.MergeStreets(), 1, ());
     TEST_LESS_OR_EQUAL(houser.MergeStreets(), 3, ());
@@ -226,8 +224,7 @@ UNIT_TEST(HS_StreetsMerge)
     StreetIDsByName toDo;
     toDo.streetNames.push_back("проспект Независимости");
     toDo.streetNames.push_back("Московская улица");
-    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale(),
-                              FeaturesEnumerationMode::Common);
+    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale());
     houser.LoadStreets(toDo.GetFeatureIDs());
     TEST_GREATER_OR_EQUAL(houser.MergeStreets(), 1, ());
     TEST_LESS_OR_EQUAL(houser.MergeStreets(), 5, ());
@@ -241,8 +238,7 @@ UNIT_TEST(HS_StreetsMerge)
     toDo.streetNames.push_back("Вишнёвый переулок");
     toDo.streetNames.push_back("Студенческий переулок");
     toDo.streetNames.push_back("Полоцкий переулок");
-    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale(),
-                              FeaturesEnumerationMode::Common);
+    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale());
     houser.LoadStreets(toDo.GetFeatureIDs());
     TEST_GREATER_OR_EQUAL(houser.MergeStreets(), 1, ());
     TEST_LESS_OR_EQUAL(houser.MergeStreets(), 8, ());
@@ -255,8 +251,7 @@ UNIT_TEST(HS_StreetsMerge)
     toDo.streetNames.push_back("Московская улица");
     toDo.streetNames.push_back("улица Кирова");
     toDo.streetNames.push_back("улица Городской Вал");
-    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale(),
-                              FeaturesEnumerationMode::Common);
+    dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale());
     houser.LoadStreets(toDo.GetFeatureIDs());
     TEST_GREATER_OR_EQUAL(houser.MergeStreets(), 1, ());
     TEST_LESS_OR_EQUAL(houser.MergeStreets(), 10, ());
@@ -272,8 +267,7 @@ m2::PointD FindHouse(DataSource & dataSource, vector<string> const & streets,
 
   StreetIDsByName toDo;
   toDo.streetNames = streets;
-  dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale(),
-                            FeaturesEnumerationMode::Common);
+  dataSource.ForEachInScale([&toDo](FeatureType & ft) { toDo(ft); }, scales::GetUpperScale());
 
   if (houser.LoadStreets(toDo.GetFeatureIDs()) > 0)
     TEST_GREATER(houser.MergeStreets(), 0, ());
@@ -402,7 +396,7 @@ UNIT_TEST(HS_MWMSearch)
   TEST(p.first.IsAlive(), ());
 
   CollectStreetIDs streetIDs;
-  dataSource.ForEachInScale(streetIDs, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
+  dataSource.ForEachInScale(streetIDs, scales::GetUpperScale());
   streetIDs.Finish();
 
   string line;

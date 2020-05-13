@@ -158,8 +158,7 @@ public:
       ft.ForEachPoint(pushPoint, scales::GetUpperScale());
     };
 
-    m_dataSource.ForEachInRect(pushFeaturePoints, rect, scales::GetUpperScale(),
-                               FeaturesEnumerationMode::Common);
+    m_dataSource.ForEachInRect(pushFeaturePoints, rect, scales::GetUpperScale());
     return points;
   }
 
@@ -195,7 +194,7 @@ public:
           pointOnFt = ft.GetPoint(bestPointIndex);
         }
       },
-      p, FeaturesEnumerationMode::Common);
+      p);
     return std::make_pair(points, pointOnFt);
 
   }

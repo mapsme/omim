@@ -710,7 +710,7 @@ public:
   void ForEachFeatureAtPoint(TFn && fn, m2::PointD const & mercator,
                              FeaturesEnumerationMode mode) const
   {
-    indexer::ForEachFeatureAtPoint(m_featuresFetcher.GetDataSource(), fn, mercator, mode, 0.0);
+    indexer::ForEachFeatureAtPoint(m_featuresFetcher.GetDataSource(), fn, mercator, 0.0, mode);
   }
 
   osm::MapObject GetMapObjectByID(FeatureID const & fid) const;

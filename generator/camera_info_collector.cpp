@@ -255,7 +255,7 @@ void CamerasInfoCollector::Camera::FindClosestSegmentWithGeometryIndex(FrozenDat
   dataSource.ForEachInRect(
     updateClosestFeatureCallback,
     mercator::RectByCenterXYAndSizeInMeters(m_data.m_center, kSearchCameraRadiusMeters),
-    scales::GetUpperScale(), FeaturesEnumerationMode::Common);
+    scales::GetUpperScale());
 
   if (found)
     m_data.m_ways.emplace_back(bestFeatureId, bestSegmentId, bestCoef);

@@ -122,7 +122,7 @@ void ForEachCafeAtPoint(DataSource & dataSource, m2::PointD const & mercator, Fn
     }
   };
 
-  dataSource.ForEachInRect(f, rect, scales::GetUpperScale(), FeaturesEnumerationMode::Common);
+  dataSource.ForEachInRect(f, rect, scales::GetUpperScale());
 }
 
 void FillEditableMapObject(osm::Editor const & editor, FeatureType & ft, osm::EditableMapObject & emo)
@@ -183,8 +183,7 @@ uint32_t CountFeatureTypeInRectByDataSource(DataSource const & dataSource, m2::R
 {
   auto const scale = scales::GetUpperScale();
   uint32_t counter = 0;
-  dataSource.ForEachInRect([&counter](FeatureType const &) { ++counter; }, rect, scale,
-                           FeaturesEnumerationMode::Common);
+  dataSource.ForEachInRect([&counter](FeatureType const &) { ++counter; }, rect, scale);
 
   return counter;
 }

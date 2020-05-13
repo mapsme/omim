@@ -12,6 +12,6 @@ class FeatureType;
 namespace indexer
 {
 void ForEachFeatureAtPoint(DataSource const & dataSource, std::function<void(FeatureType &)> && fn,
-                           m2::PointD const & mercator, FeaturesEnumerationMode mode,
-                           double toleranceInMeters = 0.0);
+                           m2::PointD const & mercator, double toleranceInMeters = 0.0,
+                           FeaturesEnumerationMode mode = FeaturesEnumerationMode::Common);
 }

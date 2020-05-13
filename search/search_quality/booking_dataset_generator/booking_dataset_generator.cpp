@@ -239,7 +239,7 @@ int main(int argc, char * argv[])
 
       dataSource.ForEachInRect(
           addHotel, mercator::RectByCenterXYAndSizeInMeters(airportPos, kDistanceToHotelM),
-          scales::GetUpperScale(), FeaturesEnumerationMode::Common);
+          scales::GetUpperScale());
     }
     LOG(LINFO, (hotelsNextToAirport.size(), "hotels have nearby airport."));
   }

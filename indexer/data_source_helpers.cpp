@@ -9,8 +9,7 @@ using namespace std;
 namespace indexer
 {
 void ForEachFeatureAtPoint(DataSource const & dataSource, function<void(FeatureType &)> && fn,
-                           m2::PointD const & mercator, FeaturesEnumerationMode mode,
-                           double toleranceInMeters)
+                           m2::PointD const & mercator, double toleranceInMeters, FeaturesEnumerationMode mode)
 {
   double constexpr kSelectRectWidthInMeters = 1.1;
   double constexpr kMetersToLinearFeature = 3;
