@@ -1538,6 +1538,10 @@
 	<string name="hide_screen_map_update">Απόκρυψη και συνέχεια εργασίας</string>
 	<string name="view_on_map_downloaded_error">Αυτός ο ταξιδιωτικός οδηγός έχει αφαιρεθεί από τη συσκευή</string>
 	<string name="subscription">Συνδρομή</string>
+	<string name="whatsnew_catalog_new_title">Νέος κατάλογος οδηγών και χιλιάδες ιδέες για ταξίδια</string>
+	<string name="whatsnew_catalog_new_message">Έχουμε ενημερώσει τον κατάλογο οδηγών και προσθέσαμε μεταφράσεις σε όλες τις γλώσσες. Ξεκινήστε να κάνετε τα σχέδια σας εκ των προτέρων!</string>
+	<string name="whatsnew_elevation_profile_title">Προφίλ υψόμετρου στους οδηγούς</string>
+	<string name="whatsnew_elevation_profile_message">Αξιολογήστε τη δυσκολία των επερχόμενων αναβάσεων και καταβάσεων εκτός σύνδεσης με τη βοήθεια του δρομέα στο προφίλ της διαδρομής που αποκτήσατε.</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Σταθμός αερομεταφοράς</string>

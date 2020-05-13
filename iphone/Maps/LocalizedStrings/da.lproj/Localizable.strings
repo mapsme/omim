@@ -3262,6 +3262,14 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"whatsnew_catalog_new_title" = "Nyt guide katalog og rejseidéer";
+
+"whatsnew_catalog_new_message" = "Vi har opdateret guide kataloget og tilføjet oversættelser på alle sprog. Påbegynd planlægning på forhånd!";
+
+"whatsnew_elevation_profile_title" = "Højdeprofil i rejseguides";
+
+"whatsnew_elevation_profile_message" = "Vurder kompleksiteten af kommende offline stigninger og nedstigninger med markøren i profilen af den købte rute.";
+
 
 /**********  Partners  **********/
 
