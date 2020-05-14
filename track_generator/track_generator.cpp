@@ -101,6 +101,7 @@ void GenerateTracks(string const & inputDir, string const & outputDir, routing::
 
   size_t numberOfTracks = 0;
   size_t numberOfNotConverted = 0;
+
   for (auto const & file : files)
   {
     LOG(LINFO, ("Start generating tracks for file", file));
@@ -127,6 +128,7 @@ void GenerateTracks(string const & inputDir, string const & outputDir, routing::
     }
 
     numberOfTracks += data.m_tracksData.size();
+
     for (auto & track : data.m_tracksData)
     {
       std::vector<m2::PointD> waypoints;
