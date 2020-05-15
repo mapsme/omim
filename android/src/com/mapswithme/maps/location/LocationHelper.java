@@ -85,6 +85,17 @@ public enum LocationHelper implements Initializable<Void>
         mUiCallback.onCompassUpdated(mCompassData);
     }
 
+    @Override
+    public void onCompassNeedsCalibration()
+    {
+      if (RoutingController.get().isNavigating() && !RoutingController.get().isPedestrianNavigation())
+        return;
+
+      mLogger.d(TAG, "onCompassNeedsCalibration COMPASS NEEDS CALIBRATION");
+      if (mUiCallback != null)
+        mUiCallback.onCompassNeedsCalibration();
+
+    }
 
     @Override
     public void onLocationError(int errorCode)
@@ -264,6 +275,14 @@ public enum LocationHelper implements Initializable<Void>
       listener.onCompassUpdated(time, north);
     mListeners.finishIterate();
   }
+
+  void notifyCompassNeedsCalibration()
+  {
+    for (LocationListener listener : mListeners)
+      listener.onCompassNeedsCalibration();
+    mListeners.finishIterate();
+  }
+
 
   void notifyLocationUpdated()
   {
@@ -675,6 +694,7 @@ public enum LocationHelper implements Initializable<Void>
     void onMyPositionModeChanged(int newMode);
     void onLocationUpdated(@NonNull Location location);
     void onCompassUpdated(@NonNull CompassData compass);
+    void onCompassNeedsCalibration();
     void onLocationError();
     void onLocationNotFound();
     void onRoutingFinish();

@@ -422,6 +422,10 @@ public class RichPlacePageController implements PlacePageController, LocationLis
   }
 
   @Override
+  public void onCompassNeedsCalibration()
+  {}
+
+  @Override
   public void onLocationError(int errorCode)
   {
     // Do nothing by default.

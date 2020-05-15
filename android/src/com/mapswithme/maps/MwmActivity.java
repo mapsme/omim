@@ -2268,6 +2268,16 @@ public class MwmActivity extends BaseMwmFragmentActivity
   }
 
   @Override
+  public void onCompassNeedsCalibration()
+  {
+    new AlertDialog.Builder(MwmActivity.this)
+            .setMessage("CALIBRATE with 8")
+            .setCancelable(true)
+            .setPositiveButton(android.R.string.ok, null)
+            .show();
+  }
+
+  @Override
   public void onLocationError()
   {
     if (mLocationErrorDialogAnnoying)

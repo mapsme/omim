@@ -147,5 +147,9 @@ public class DirectionFragment extends BaseMwmDialogFragment
   }
 
   @Override
+  public void onCompassNeedsCalibration()
+  { }
+
+  @Override
   public void onLocationError(int errorCode) {}
 }

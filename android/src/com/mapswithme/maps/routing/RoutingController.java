@@ -754,6 +754,11 @@ public class RoutingController implements TaxiManager.TaxiListener, Initializabl
     return mLastRouterType == Framework.ROUTER_TYPE_VEHICLE;
   }
 
+  boolean isPedestrianRouterType()
+  {
+    return mLastRouterType == Framework.ROUTER_TYPE_PEDESTRIAN;
+  }
+
   public boolean isNavigating()
   {
     return mState == State.NAVIGATION;
@@ -762,6 +767,11 @@ public class RoutingController implements TaxiManager.TaxiListener, Initializabl
   public boolean isVehicleNavigation()
   {
     return isNavigating() && isVehicleRouterType();
+  }
+
+  public boolean isPedestrianNavigation()
+  {
+    return isNavigating() && isPedestrianRouterType();
   }
 
   public boolean isBuilding()
