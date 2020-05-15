@@ -9,6 +9,8 @@ import android.hardware.SensorManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.mapswithme.maps.MwmApplication;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
 
 class SensorHelper implements SensorEventListener
 {
@@ -21,6 +23,8 @@ class SensorHelper implements SensorEventListener
 
   private int mUnreliableMeasuresCount = 0;
 
+  private final static String TAG = LocationHelper.class.getSimpleName();
+  private final Logger mLogger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.LOCATION);
 
   @Override
   public void onSensorChanged(SensorEvent event)
@@ -47,9 +51,11 @@ class SensorHelper implements SensorEventListener
 
   private void manageCompassAccuracy(@NonNull SensorEvent event)
   {
+    mLogger.d(TAG, "SensorManager accuracy " + event.accuracy);
     if (event.accuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW ||
         event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
     {
+      mLogger.d(TAG, "SensorManager bad accuracy " + event.accuracy);
       mUnreliableMeasuresCount++;
       if (mUnreliableMeasuresCount == UNRELIABLE_MEASURES_COUNT_FOR_ALERT)
       {
