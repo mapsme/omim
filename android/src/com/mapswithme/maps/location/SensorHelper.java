@@ -12,14 +12,18 @@ import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 
+import java.lang.Math;
+
 class SensorHelper implements SensorEventListener
 {
   @Nullable
   private final SensorManager mSensorManager;
   @Nullable
   private Sensor mRotation;
+  @Nullable
+  private Sensor mMagnetic;
 
-  private static final int UNRELIABLE_MEASURES_COUNT_FOR_ALERT = 30;
+  private static final int UNRELIABLE_MEASURES_COUNT_FOR_ALERT = 100;
 
   private int mUnreliableMeasuresCount = 0;
 
@@ -52,14 +56,17 @@ class SensorHelper implements SensorEventListener
   private void manageCompassAccuracy(@NonNull SensorEvent event)
   {
     mLogger.d(TAG, "SensorManager accuracy " + event.accuracy);
-    if (event.accuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW ||
-        event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
+
+    if (event.accuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW)
     {
-      mLogger.d(TAG, "SensorManager bad accuracy " + event.accuracy);
+      double B = Math.sqrt(event.values[0]*event.values[0] + event.values[1]*event.values[1] + event.values[2]*event.values[2]);
+
+      mLogger.d(TAG, "SensorManager SENSOR_STATUS_ACCURACY_LOW B = " + B);
       mUnreliableMeasuresCount++;
-      if (mUnreliableMeasuresCount == UNRELIABLE_MEASURES_COUNT_FOR_ALERT)
+      if (mUnreliableMeasuresCount == UNRELIABLE_MEASURES_COUNT_FOR_ALERT && B >= 30.0 && B <= 60.0)
       {
-        LocationHelper.INSTANCE.notifyCompassNeedsCalibration();
+        mLogger.d(TAG, "SensorManager TRIGGER ALERT");
+        //LocationHelper.INSTANCE.notifyCompassNeedsCalibration();
         mUnreliableMeasuresCount = 0;
       }
     }
@@ -74,8 +81,10 @@ class SensorHelper implements SensorEventListener
     if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR)
     {
       manageCompassValues(event);
-      manageCompassAccuracy(event);
+      return;
     }
+    if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+      manageCompassAccuracy(event);
   }
 
   @Override
@@ -86,13 +95,22 @@ class SensorHelper implements SensorEventListener
     mSensorManager = (SensorManager) MwmApplication.get().getSystemService(Context.SENSOR_SERVICE);
 
     if (mSensorManager != null)
+    {
       mRotation = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+      mMagnetic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+    }
   }
 
   void start()
   {
-    if (mRotation != null && mSensorManager != null)
-      mSensorManager.registerListener(this, mRotation, SensorManager.SENSOR_DELAY_UI);
+    if (mSensorManager != null)
+    {
+      if (mRotation != null)
+        mSensorManager.registerListener(this, mRotation, SensorManager.SENSOR_DELAY_UI);
+
+      if (mMagnetic != null)
+        mSensorManager.registerListener(this, mMagnetic, SensorManager.SENSOR_DELAY_UI);
+    }
   }
 
   void stop()
