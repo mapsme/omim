@@ -1,0 +1,40 @@
+recycling-batterie
+en:Batteries
+ru:Батарейки
+uk:Батарейки
+
+recycling-clothes
+en:Clothes
+ru:Одежда
+uk:Одяг
+
+recycling-glass_bottles
+en:Glass bottles
+ru:Стеклотара
+es:Vidrio
+uk:Склотара
+
+recycling-paper
+en:Paper
+ru:Макулатура
+uk:Макулатура
+
+recycling-plastic
+en:Plastic
+ru:Пластик
+uk:Пластик
+
+recycling-plastic_bottles
+en:Plastic bottles
+ru:Пластиковые бутылки
+
+recycling-scrap_metal
+en:Scrap metal
+ru:Металлолом
+uk:Металолом
+
+recycling-small_appliances
+en:Small appliances
+ru:Электроприборы
+uk:Електроприлади
+

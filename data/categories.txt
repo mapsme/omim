@@ -3667,7 +3667,7 @@ fa:زباله دانی
 
 amenity-recycling
 en:Recycling Center|U+1F6AE|U+267B
-ru:Приём вторсырья|утиль|сырье|сбор сырья|стеклотара|макулатура|прием металлов
+ru:Приём вторсырья|утиль|сырье|сбор сырья|стеклотара|макулатура|приём металлов
 ar:مركز إعادة تدوير
 cs:Recyklační středisko
 da:Genbrugsplads
@@ -3697,6 +3697,11 @@ el:Κέντρο ανακύκλωσης
 sk:Zberné suroviny
 sw:Chombo cha kutia taka
 fa:مرکز بازیافت
+
+amenity-recycling_container
+en:Recycling container|U+1F6AE|U+267B
+ru:Контейнер для вторсырья|утиль
+uk:Контейнер для вторсировини
 
 amenity-school
 en:3School|U+1F392|U+1F3EB

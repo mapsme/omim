@@ -2517,6 +2517,51 @@
     sk = Zberné suroviny
     fa = مرکز بازیافت
 
+  [type.amenity.recycling_container]
+    en = Recycling container
+    ru = Контейнер для вторсырья
+    uk = Контейнер для вторсировини
+
+  [type.recycling.batterie]
+    en = Batteries
+    ru = Батарейки
+    uk = Батарейки
+
+  [type.recycling.clothes]
+    en = Clothes
+    ru = Одежда
+    uk = Одяг
+
+  [type.recycling.glass_bottles]
+    en = Glass bottles
+    ru = Стеклотара
+    es = Vidrio
+    uk = Склотара
+
+  [type.recycling.paper]
+    en = Paper
+    ru = Макулатура
+    uk = Макулатура
+
+  [type.recycling.plastic]
+    en = Plastic
+    ru = Пластик
+    uk = Пластик
+
+  [type.recycling.plastic_bottles]
+    en = Plastic bottles
+    ru = Пластиковые бутылки
+
+  [type.recycling.scrap_metal]
+    en = Scrap metal
+    ru = Металлолом
+    uk = Металолом
+
+  [type.recycling.small_appliances]
+    en = Small appliances
+    ru = Электроприборы
+    uk = Електроприлади
+
   [type.amenity.restaurant]
     en = Restaurant
     ru = Ресторан
