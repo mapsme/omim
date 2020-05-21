@@ -3304,6 +3304,16 @@
 
 "routes_card_plus_track" = "+ bana";
 
+"routes_card_city" = "City";
+
+"routes_card_outdoor" = "Outdoor";
+
+"routes_card_number_of_points" = "%s platser";
+
+"routes_card_routes_tag" = "Resväg";
+
+"routes_card_set_tag" = "Utvalda platser";
+
 
 /**********  Partners  **********/
 
@@ -3507,6 +3517,24 @@
 "type.amenity.public_bookcase" = "Bokskåp";
 
 "type.amenity.recycling" = "Återvinningscentral";
+
+"type.amenity.recycling_container" = "Recycling container";
+
+"type.recycling.toxic" = "Toxic waste";
+
+"type.recycling.clothes" = "Old clothes";
+
+"type.recycling.glass_bottles" = "Glass bottles";
+
+"type.recycling.paper" = "Paper waste";
+
+"type.recycling.plastic" = "Plastic waste";
+
+"type.recycling.plastic_bottles" = "Plastic bottles";
+
+"type.recycling.scrap_metal" = "Scrap metal";
+
+"type.recycling.small_appliances" = "Electronic waste";
 
 "type.amenity.restaurant" = "Restaurang";
 
