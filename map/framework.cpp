@@ -3063,7 +3063,7 @@ bool Framework::LoadIsolinesEnabled()
   return enabled;
 }
 
-void Framework::SaveIsolonesEnabled(bool enabled)
+void Framework::SaveIsolinesEnabled(bool enabled)
 {
   settings::Set(kIsolinesEnabledKey, enabled);
 }
