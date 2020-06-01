@@ -1772,7 +1772,8 @@
 	<string name="whatsnew_catalog_new_title">新しいガイドのカタログと数千の旅行アイディア</string>
 	<string name="whatsnew_catalog_new_message">ガイドのカタログが更新され、全ての言語に翻訳が追加されました。事前に計画を立てましょう！</string>
 	<string name="whatsnew_elevation_profile_title">旅行ガイドの標高情報</string>
-	<string name="whatsnew_elevation_profile_message">購入したルートのプロフィールでカーソルを使って今後のオフラインの上昇と下降の難易度を調べましょう。</string>
+	<string name="whatsnew_elevation_profile_message">購入したルートのプロフィールでカーソルを使って今後のオフラインの上昇と下降の難易度を調べましょう。\nダウンロードしてカタログの「無料サンプル」セクションでお試しください</string>
+	<string name="whatsnew_elevation_profile_cta_button">サンプルの確認</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">ケーブルカー駅</string>

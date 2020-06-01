@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "旅行ガイドの標高情報";
 
-"whatsnew_elevation_profile_message" = "購入したルートのプロフィールでカーソルを使って今後のオフラインの上昇と下降の難易度を調べましょう。";
+"whatsnew_elevation_profile_message" = "購入したルートのプロフィールでカーソルを使って今後のオフラインの上昇と下降の難易度を調べましょう。\nダウンロードしてカタログの「無料サンプル」セクションでお試しください";
+
+"whatsnew_elevation_profile_cta_button" = "サンプルの確認";
 
 
 /**********  Partners  **********/

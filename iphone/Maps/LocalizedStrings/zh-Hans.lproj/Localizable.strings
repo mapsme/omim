@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "指导中的高度剖面图";
 
-"whatsnew_elevation_profile_message" = "使用所获取路线中的光标离线评估即将遇到的上坡和下坡的难度。";
+"whatsnew_elevation_profile_message" = "使用所获取路线中的光标离线评估即将遇到的上坡和下坡的难度。\n请在目录栏下载并尝试 \"免费示例\"";
+
+"whatsnew_elevation_profile_cta_button" = "查看示例";
 
 
 /**********  Partners  **********/

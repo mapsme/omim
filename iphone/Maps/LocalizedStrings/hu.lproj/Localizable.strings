@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Emelkedési profil az utazási útmutatókban";
 
-"whatsnew_elevation_profile_message" = "A kurzorral becsülje meg a közelgő offline felemelkedések és leereszkedések nehézségét a megvásárolt útvonal profiljában.";
+"whatsnew_elevation_profile_message" = "A kurzorral becsülje meg a közelgő offline felemelkedések és leereszkedések nehézségét a megvásárolt útvonal profiljában.\nTöltse le és próbálja ki a katalógus \"Ingyenes minták\" részben";
+
+"whatsnew_elevation_profile_cta_button" = "Minták ellenőrzése";
 
 
 /**********  Partners  **********/

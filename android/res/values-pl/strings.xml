@@ -1790,7 +1790,8 @@
 	<string name="whatsnew_catalog_new_title">Nowy katalog przewodników i tysiące pomysłów na podróż</string>
 	<string name="whatsnew_catalog_new_message">Zaktualizowaliśmy katalog przewodników i dodaliśmy tłumaczenia we wszystkich językach. Zacznij planować z wyprzedzeniem!</string>
 	<string name="whatsnew_elevation_profile_title">Profil wysokości w przewodnikach</string>
-	<string name="whatsnew_elevation_profile_message">Oceń złożoność nadchodzących zjazdów i zejść offline za pomocą kursora w profilu zakupionej trasy.</string>
+	<string name="whatsnew_elevation_profile_message">Oceń złożoność nadchodzącego wspinania oraz spustu offline za pomocą kursora w profilu zakupionej trasy.\nPobierz i wypróbuj w sekcji \"Darmowe przykłady\"</string>
+	<string name="whatsnew_elevation_profile_cta_button">Wypróbuj na przykładzie</string>
 
 	<!-- SECTION:  Partners  -->
 	<string name="sponsored_partner1_action">Wyprzedaże</string>

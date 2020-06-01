@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Výškový profil v cestovních průvodcích";
 
-"whatsnew_elevation_profile_message" = "Vyhodnoťte obtížnost nadcházejících offline stoupání a klesání pomocí kurzoru v profilu zakoupené trasy.";
+"whatsnew_elevation_profile_message" = "Vyhodnoťte obtížnost nadcházejících offline stoupání a klesání pomocí kurzoru v profilu zakoupené trasy.\nStáhnout a vyzkoušet v sekci katalogu \"Bezplatné ukázky\"";
+
+"whatsnew_elevation_profile_cta_button" = "Podívat se na ukázky";
 
 
 /**********  Partners  **********/

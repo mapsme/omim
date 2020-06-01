@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Profil wysokości w przewodnikach";
 
-"whatsnew_elevation_profile_message" = "Oceń złożoność nadchodzących zjazdów i zejść offline za pomocą kursora w profilu zakupionej trasy.";
+"whatsnew_elevation_profile_message" = "Oceń złożoność nadchodzącego wspinania oraz spustu offline za pomocą kursora w profilu zakupionej trasy.\nPobierz i wypróbuj w sekcji \"Darmowe przykłady\"";
+
+"whatsnew_elevation_profile_cta_button" = "Wypróbuj na przykładzie";
 
 
 /**********  Partners  **********/

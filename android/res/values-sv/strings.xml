@@ -1779,7 +1779,8 @@
 	<string name="whatsnew_catalog_new_title">En ny katalog och tusentals idéer för vila</string>
 	<string name="whatsnew_catalog_new_message">Vi har uppdaterat guidebok katalogen och lagt till översättningar till alla språk. Börja planera i förväg!</string>
 	<string name="whatsnew_elevation_profile_title">Terräng profil i guiderna</string>
-	<string name="whatsnew_elevation_profile_message">Utvärdera komplexitet för kommande stigningar och backar offline med hjälp av markören i profilen för den förvärvade rutten.</string>
+	<string name="whatsnew_elevation_profile_message">Utvärdera komplexitet för kommande stigningar och backar offline med hjälp av markören i profilen för den förvärvade rutten.\nLadda ned och pröva det i katalogens avsnitt Gratisexempel</string>
+	<string name="whatsnew_elevation_profile_cta_button">Se exempel</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Linbanestation</string>

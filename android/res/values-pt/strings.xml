@@ -1783,7 +1783,8 @@
 	<string name="whatsnew_catalog_new_title">Catálogo novo e milhares de ideias para as férias</string>
 	<string name="whatsnew_catalog_new_message">Atualizamos o catálogo de guias e adicionamos traduções para todos os idiomas. Comece a planejar com antecedência!</string>
 	<string name="whatsnew_elevation_profile_title">Perfil de alturas nas guias</string>
-	<string name="whatsnew_elevation_profile_message">Avalie a complexidade de futuras subidas e descidas offline com ajuda de um cursor especial no perfil do percurso adquirido.</string>
+	<string name="whatsnew_elevation_profile_message">Avalie a complexidade de futuras subidas e descidas offline com ajuda de um cursor especial no perfil do percurso adquirido.\nFaça download e experimente na seção do catálogo \"Exemplos gratuitos\"</string>
+	<string name="whatsnew_elevation_profile_cta_button">Ver um exemplo</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Estação de teleférico</string>

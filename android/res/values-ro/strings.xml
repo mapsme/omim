@@ -1769,7 +1769,8 @@
 	<string name="whatsnew_catalog_new_title">Un nou catalog și mii de idei de vacanță</string>
 	<string name="whatsnew_catalog_new_message">Am actualizat catalogul de ghiduri și am adăugat traduceri în toate limbile. Începeți planificarea înainte!</string>
 	<string name="whatsnew_elevation_profile_title">Profilul înălțimilor în ghiduri</string>
-	<string name="whatsnew_elevation_profile_message">Evaluați complexitatea urcărilor și coborârilor viitoare offline cu cursorul în profilul traseului achiziționat.</string>
+	<string name="whatsnew_elevation_profile_message">Evaluați complexitatea urcărilor și coborârilor viitoare offline cu cursorul în profilul traseului achiziționat.\nDescărcați și încercați în secțiunea Catalogului \"Exemple gratuite\"</string>
+	<string name="whatsnew_elevation_profile_cta_button">Uită-te la exemplu</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Stație de teleferic</string>

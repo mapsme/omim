@@ -1781,7 +1781,8 @@
 	<string name="whatsnew_catalog_new_title">新目錄和數千個理想度假勝地</string>
 	<string name="whatsnew_catalog_new_message">我們更新了指南目錄，並添加了所有語言的翻譯。開始提前計劃！</string>
 	<string name="whatsnew_elevation_profile_title">指南中的高度剖面圖</string>
-	<string name="whatsnew_elevation_profile_message">使用所獲取路線中的光標離線評估即將遇到的上坡和下坡的難度。</string>
+	<string name="whatsnew_elevation_profile_message">使用所獲取路線中的光標離線評估即將遇到的上坡和下坡的難度。\n請在目錄欄下載並嘗試 \"免費示例\"</string>
+	<string name="whatsnew_elevation_profile_cta_button">查看示例</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">纜車站</string>

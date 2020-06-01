@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Profilul înălțimilor în ghiduri";
 
-"whatsnew_elevation_profile_message" = "Evaluați complexitatea urcărilor și coborârilor viitoare offline cu cursorul în profilul traseului achiziționat.";
+"whatsnew_elevation_profile_message" = "Evaluați complexitatea urcărilor și coborârilor viitoare offline cu cursorul în profilul traseului achiziționat.\nDescărcați și încercați în secțiunea Catalogului \"Exemple gratuite\"";
+
+"whatsnew_elevation_profile_cta_button" = "Uită-te la exemplu";
 
 
 /**********  Partners  **********/

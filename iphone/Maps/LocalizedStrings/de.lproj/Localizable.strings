@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Höhenprofil in den Reiseführern";
 
-"whatsnew_elevation_profile_message" = "Bewerten Sie den Schwierigkeitsgrad des bevorstehenden Bergaufs und Bergabs offline per Kursor im Profil der erworbenen Route.";
+"whatsnew_elevation_profile_message" = "Bewerten Sie den Schwierigkeitsgrad des bevorstehenden Bergaufs und Bergabs offline per Kursor im Profil der erworbenen Route.\nIn der Kategorie des Katalogs \"Kostenlose Beispiele\" können Sie Beispiele herunterladen und ausprobieren.";
+
+"whatsnew_elevation_profile_cta_button" = "Beispiel zeigen";
 
 
 /**********  Partners  **********/

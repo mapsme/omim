@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Rehberlerde yükseklik profili";
 
-"whatsnew_elevation_profile_message" = "Satın alınan rotanın profilindeki imleci kullanarak, yaklaşan yükselişlerin ve inişlerin zorluk derecesini çevrimdışı olarak değerlendirin.";
+"whatsnew_elevation_profile_message" = "Satın alınan rotanın profilindeki imleci kullanarak, yaklaşan yükselişlerin ve inişlerin zorluk derecesini çevrimdışı olarak değerlendirin.\n\"Ücretsiz örnekler\" kataloğunu indirin ve deneyin";
+
+"whatsnew_elevation_profile_cta_button" = "Örnekleri göster";
 
 
 /**********  Partners  **********/

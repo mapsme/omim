@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Terräng profil i guiderna";
 
-"whatsnew_elevation_profile_message" = "Utvärdera komplexitet för kommande stigningar och backar offline med hjälp av markören i profilen för den förvärvade rutten.";
+"whatsnew_elevation_profile_message" = "Utvärdera komplexitet för kommande stigningar och backar offline med hjälp av markören i profilen för den förvärvade rutten.\nLadda ned och pröva det i katalogens avsnitt Gratisexempel";
+
+"whatsnew_elevation_profile_cta_button" = "Se exempel";
 
 
 /**********  Partners  **********/

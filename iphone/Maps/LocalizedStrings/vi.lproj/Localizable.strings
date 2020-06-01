@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Hồ sơ độ cao trong các hướng dẫn";
 
-"whatsnew_elevation_profile_message" = "Hãy đánh giá độ khó khi sắp tới điểm đi lên và đi xuống ngoại tuyến bằng cách sử dụng con trỏ trong hồ sơ của tuyến đường đã mua.";
+"whatsnew_elevation_profile_message" = "Hãy đánh giá độ khó khi sắp tới điểm đi lên và đi xuống ngoại tuyến bằng cách sử dụng con trỏ trong hồ sơ của tuyến đường đã mua.\nTải xuống và thử trong phần danh mục \"Những ví dụ miễn phí\"";
+
+"whatsnew_elevation_profile_cta_button" = "Xem ví dụ";
 
 
 /**********  Partners  **********/

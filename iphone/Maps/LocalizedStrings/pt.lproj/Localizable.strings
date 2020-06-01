@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Perfil de alturas nas guias";
 
-"whatsnew_elevation_profile_message" = "Avalie a complexidade de futuras subidas e descidas offline com ajuda de um cursor especial no perfil do percurso adquirido.";
+"whatsnew_elevation_profile_message" = "Avalie a complexidade de futuras subidas e descidas offline com ajuda de um cursor especial no perfil do percurso adquirido.\nFaça download e experimente na seção do catálogo \"Exemplos gratuitos\"";
+
+"whatsnew_elevation_profile_cta_button" = "Ver um exemplo";
 
 
 /**********  Partners  **********/

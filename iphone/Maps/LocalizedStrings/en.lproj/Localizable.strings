@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Elevation profile in travel guides";
 
-"whatsnew_elevation_profile_message" = "Evaluate the difficulty of upcoming offline ascents and descents with the cursor in the profile of the purchased route.";
+"whatsnew_elevation_profile_message" = "Evaluate the difficulty of upcoming offline ascents and descents with the cursor in the profile of the purchased route.\nDownload and try in the \"Free samples\" section of the catalog";
+
+"whatsnew_elevation_profile_cta_button" = "Check samples";
 
 
 /**********  Partners  **********/
