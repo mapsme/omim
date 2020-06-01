@@ -1783,7 +1783,8 @@
 	<string name="whatsnew_catalog_new_title">Nyt guide katalog og rejseidéer</string>
 	<string name="whatsnew_catalog_new_message">Vi har opdateret guide kataloget og tilføjet oversættelser på alle sprog. Påbegynd planlægning på forhånd!</string>
 	<string name="whatsnew_elevation_profile_title">Højdeprofil i rejseguides</string>
-	<string name="whatsnew_elevation_profile_message">Vurder kompleksiteten af kommende offline stigninger og nedstigninger med markøren i profilen af den købte rute.</string>
+	<string name="whatsnew_elevation_profile_message">Vurder kompleksiteten af kommende offline stigninger og nedstigninger med markøren i profilen af den købte rute.\nDownload og prøv \"Gratis prøver\" afsnittet af kataloget</string>
+	<string name="whatsnew_elevation_profile_cta_button">Se prøver</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Kabelbanestation</string>

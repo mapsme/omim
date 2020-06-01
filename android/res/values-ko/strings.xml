@@ -1774,7 +1774,8 @@
 	<string name="whatsnew_catalog_new_title">새로운 가이드 카탈로그와 수 많은 여행 아이디어</string>
 	<string name="whatsnew_catalog_new_message">가이드 카탈로그를 업데이트했고 모든 언어로 된 번역본을 추가했습니다. 미리 여행 계획을 짜보세요!</string>
 	<string name="whatsnew_elevation_profile_title">여행 가이드의 고도 단면도</string>
-	<string name="whatsnew_elevation_profile_message">구매한 경로의 프로필에 커서를 두고 곧 있을 오프라인 올라가기 및 내려가기의 어려움을 평가합니다.</string>
+	<string name="whatsnew_elevation_profile_message">구매한 경로의 프로필에 커서를 두고 곧 있을 오프라인 올라가기 및 내려가기의 어려움을 평가합니다.\n카탈로그의 \"무료 샘플\" 섹션에서 다운로드하고 시도해보세요</string>
+	<string name="whatsnew_elevation_profile_cta_button">샘플 확인하기</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">케이블카 역</string>

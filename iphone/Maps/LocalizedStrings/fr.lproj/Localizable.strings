@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Profil altimétrique intégré dans les guides";
 
-"whatsnew_elevation_profile_message" = "Vous pouvez estimer la difficulté de vos futures montées et descentes hors connexion à l'aide d'un curseur disponible dans le profil de l'itinéraire acheté.";
+"whatsnew_elevation_profile_message" = "Vous pouvez estimer la difficulté de vos futures montées et descentes hors connexion à l'aide d'un curseur disponible dans le profil de l'itinéraire acheté.\nTéléchargez et essayez dans le rubrique du catalogue \"Exemples gratuits\"";
+
+"whatsnew_elevation_profile_cta_button" = "Voir l'exemple";
 
 
 /**********  Partners  **********/

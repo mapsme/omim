@@ -1780,7 +1780,8 @@
 	<string name="whatsnew_catalog_new_title">Nieuwe reisgidscatalogus en duizenden reisideeën</string>
 	<string name="whatsnew_catalog_new_message">We hebben de reisgidscatalogus bijgewerkt en vertalingen in alle talen toegevoegd. Begin vooruit te plannen!</string>
 	<string name="whatsnew_elevation_profile_title">Hoogteprofiel in reisgidsen</string>
-	<string name="whatsnew_elevation_profile_message">Evalueer de moeilijkheidsgraad van komende beklimmingen en afdalingen offline met de cursor in het profiel van de aangeschafte route.</string>
+	<string name="whatsnew_elevation_profile_message">Evalueer de moeilijkheidsgraad van komende beklimmingen en afdalingen offline met de cursor in het profiel van de aangeschafte route.\nDownload en probeer het uit in het gedeelte \"Gratis voorbeelden\" van de catalogus</string>
+	<string name="whatsnew_elevation_profile_cta_button">Controleer voorbeelden</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Kabelwagenstation</string>

@@ -1787,7 +1787,8 @@
 	<string name="whatsnew_catalog_new_title">Neuer Katalog und tausende Erholungsideen</string>
 	<string name="whatsnew_catalog_new_message">Wir haben das Reiseführerkatalog upgedatet und Übersetzungen in alle Sprachen hinzugefügt. Beginnen Sie im Voraus zu planen!</string>
 	<string name="whatsnew_elevation_profile_title">Höhenprofil in den Reiseführern</string>
-	<string name="whatsnew_elevation_profile_message">Bewerten Sie den Schwierigkeitsgrad des bevorstehenden Bergaufs und Bergabs offline per Kursor im Profil der erworbenen Route.</string>
+	<string name="whatsnew_elevation_profile_message">Bewerten Sie den Schwierigkeitsgrad des bevorstehenden Bergaufs und Bergabs offline per Kursor im Profil der erworbenen Route.\nIn der Kategorie des Katalogs \"Kostenlose Beispiele\" können Sie Beispiele herunterladen und ausprobieren.</string>
+	<string name="whatsnew_elevation_profile_cta_button">Beispiel zeigen</string>
 
 	<!-- SECTION:  Partners  -->
 	<string name="sponsored_partner2_action">Rabatt</string>

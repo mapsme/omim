@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Høydeprofil i guidene";
 
-"whatsnew_elevation_profile_message" = "Evaluer vanskeligheten til kommende oppstigninger og nedstigninger uten nett med markøren i profilen til den kjøpte ruten.";
+"whatsnew_elevation_profile_message" = "Evaluer vanskeligheten til kommende oppstigninger og nedstigninger uten nett med markøren i profilen til den kjøpte ruten.\nLast ned og prøv i katalogdelen \"Gratis eksempler\"";
+
+"whatsnew_elevation_profile_cta_button" = "Se et eksempel";
 
 
 /**********  Partners  **********/

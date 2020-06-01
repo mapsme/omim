@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Perfil de altura en las guías";
 
-"whatsnew_elevation_profile_message" = "Evalúa la dificultad de los inminentes ascensos y descensos sin conexión, haciendo uso del cursor en el perfil de la ruta adquirida.";
+"whatsnew_elevation_profile_message" = "Evalúa la dificultad de los inminentes ascensos y descensos sin conexión, haciendo uso del cursor en el perfil de la ruta adquirida.\nDescárgala y pruébala en la sección del catálogo \"Ejemplos gratuitos\"";
+
+"whatsnew_elevation_profile_cta_button" = "Ver un ejemplo";
 
 
 /**********  Partners  **********/

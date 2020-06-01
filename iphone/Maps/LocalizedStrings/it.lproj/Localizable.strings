@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Profilo altimetrico e guide";
 
-"whatsnew_elevation_profile_message" = "Valuta offline la difficoltà di ascesa e discesa grazie al cursore del profilo altimetrico del percorso acquistato.";
+"whatsnew_elevation_profile_message" = "Valuta offline la difficoltà di ascesa e discesa grazie al cursore del profilo altimetrico del percorso acquistato.\nScarica e prova nella sezione \"Esempi gratuiti\" del catalogo";
+
+"whatsnew_elevation_profile_cta_button" = "Guarda l'esempio";
 
 
 /**********  Partners  **********/

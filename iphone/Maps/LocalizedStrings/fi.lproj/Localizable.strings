@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "Korkeuslinjat matkaoppaissa";
 
-"whatsnew_elevation_profile_message" = "Arvioi tulevien ylä- ja alamäkien vaikeus offline-tilassa hankitun reitin profiilissa kursorin avulla.";
+"whatsnew_elevation_profile_message" = "Arvioi tulevien ylä- ja alamäkien vaikeus offline-tilassa hankitun reitin profiilissa kursorin avulla.\nLataa ja kokeile luettelon Maksuttomat esimerkit -osiossa";
+
+"whatsnew_elevation_profile_cta_button" = "Katso esimerkki";
 
 
 /**********  Partners  **********/

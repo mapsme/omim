@@ -3268,7 +3268,9 @@
 
 "whatsnew_elevation_profile_title" = "여행 가이드의 고도 단면도";
 
-"whatsnew_elevation_profile_message" = "구매한 경로의 프로필에 커서를 두고 곧 있을 오프라인 올라가기 및 내려가기의 어려움을 평가합니다.";
+"whatsnew_elevation_profile_message" = "구매한 경로의 프로필에 커서를 두고 곧 있을 오프라인 올라가기 및 내려가기의 어려움을 평가합니다.\n카탈로그의 \"무료 샘플\" 섹션에서 다운로드하고 시도해보세요";
+
+"whatsnew_elevation_profile_cta_button" = "샘플 확인하기";
 
 
 /**********  Partners  **********/

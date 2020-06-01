@@ -1541,7 +1541,8 @@
 	<string name="whatsnew_catalog_new_title">Νέος κατάλογος οδηγών και χιλιάδες ιδέες για ταξίδια</string>
 	<string name="whatsnew_catalog_new_message">Έχουμε ενημερώσει τον κατάλογο οδηγών και προσθέσαμε μεταφράσεις σε όλες τις γλώσσες. Ξεκινήστε να κάνετε τα σχέδια σας εκ των προτέρων!</string>
 	<string name="whatsnew_elevation_profile_title">Προφίλ υψόμετρου στους οδηγούς</string>
-	<string name="whatsnew_elevation_profile_message">Αξιολογήστε τη δυσκολία των επερχόμενων αναβάσεων και καταβάσεων εκτός σύνδεσης με τη βοήθεια του δρομέα στο προφίλ της διαδρομής που αποκτήσατε.</string>
+	<string name="whatsnew_elevation_profile_message">Αξιολογήστε τη δυσκολία των επερχόμενων αναβάσεων και καταβάσεων εκτός σύνδεσης με τη βοήθεια του δρομέα στο προφίλ της διαδρομής που αποκτήσατε.\nΚάντε λήψη και δοκιμή στο τμήμα καταλόγου \"Δωρεάν παραδείγματα\"</string>
+	<string name="whatsnew_elevation_profile_cta_button">Παράδειγμα</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Σταθμός αερομεταφοράς</string>

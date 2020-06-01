@@ -1784,7 +1784,8 @@
 	<string name="whatsnew_catalog_new_title">قائمة أدلة جديدة والآلاف من أفكار السفر</string>
 	<string name="whatsnew_catalog_new_message">لقد قمنا بتحديث قائمة الأدلة وإضافة ترجمات بكل اللغات. ابدأ بتخطيط سفرك مسبقًا!</string>
 	<string name="whatsnew_elevation_profile_title">ملف تحديد الارتفاع في أدلة السفر</string>
-	<string name="whatsnew_elevation_profile_message">قم بتقييم درجة صعوبة الصعود والهبوط التاليين دون اتصال باستخدام المؤشر في الملف الخاص بالمسار الذي تم شراؤه.</string>
+	<string name="whatsnew_elevation_profile_message">قم بتقييم درجة صعوبة الصعود والهبوط التاليين دون اتصال باستخدام المؤشر في الملف الخاص بالمسار الذي تم شراؤه.\nقم بالتنزيل وتجربة قسم \"العينات المجانية\" من القائمة</string>
+	<string name="whatsnew_elevation_profile_cta_button">تفقد العينات</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">محطة تلفريك</string>
