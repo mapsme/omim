@@ -5,16 +5,12 @@ class WhatsNewBuilder {
       WhatsNewPresenter.WhatsNewConfig(image: UIImage(named: "img_onboarding_elevprofile"),
                                        title: "whatsnew_elevation_profile_title",
                                        text: "whatsnew_elevation_profile_message",
-                                       buttonNextTitle: "new_onboarding_button"),
-      WhatsNewPresenter.WhatsNewConfig(image: UIImage(named: "img_onboarding_newcatalog"),
-                                       title: "whatsnew_catalog_new_title",
-                                       text: "whatsnew_catalog_new_message",
-                                       buttonNextTitle: "download_guides_button",
+                                       buttonNextTitle: "whatsnew_elevation_profile_cta_button",
                                        isCloseButtonHidden: false,
                                        action: { MapViewController.shared()?.openCatalogAbsoluteUrl(catalogUrl, animated: true, utm: .none) }),
-      WhatsNewPresenter.WhatsNewConfig(image: UIImage(named: "img_onboarding_newcatalog"),
-                                       title: "whatsnew_catalog_new_title",
-                                       text: "whatsnew_catalog_new_message",
+      WhatsNewPresenter.WhatsNewConfig(image: UIImage(named: "img_onboarding_elevprofile"),
+                                       title: "whatsnew_elevation_profile_title",
+                                       text: "whatsnew_elevation_profile_message",
                                        buttonNextTitle: "done")
     ]
   }
