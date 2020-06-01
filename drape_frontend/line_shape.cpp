@@ -57,7 +57,7 @@ public:
     }
     m_dirty = false;
 
-    TOffsetNode const & node = GetOffsetNode(0x7F);
+    TOffsetNode const & node = GetOffsetNode(1);
     ASSERT(node.first.GetElementSize() == sizeof(gpu::TrackArrowDynamicVertex), ());
     ASSERT(node.second.m_count == m_trackArrowsDynamicGeom.size(), ());
 

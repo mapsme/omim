@@ -100,7 +100,7 @@ dp::BindingInfo TrackArrowDynamicBindingInit()
   static_assert(sizeof(TrackArrowDynamicVertex) == (sizeof(TrackArrowDynamicVertex::TPosition) +
                                              sizeof(TrackArrowDynamicVertex::TNormal)), "");
 
-  dp::BindingFiller<TrackArrowDynamicVertex> filler(2);
+  dp::BindingFiller<TrackArrowDynamicVertex> filler(2, 1);
   filler.FillDecl<TrackArrowDynamicVertex::TPosition>("a_position");
   filler.FillDecl<TrackArrowDynamicVertex::TNormal>("a_normal");
 
