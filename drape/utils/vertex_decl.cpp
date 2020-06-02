@@ -10,6 +10,8 @@ enum VertexType
   Area3d,
   HatchingArea,
   SolidTexturing,
+  TrackArrowStatic,
+  TrackArrowDynamic,
   MaskedTexturing,
   TextStatic,
   TextOutlinedStatic,
@@ -79,6 +81,28 @@ dp::BindingInfo SolidTexturingBindingInit()
   filler.FillDecl<SolidTexturingVertex::TPosition3d>("a_position");
   filler.FillDecl<SolidTexturingVertex::TNormal>("a_normal");
   filler.FillDecl<SolidTexturingVertex::TTexCoord>("a_colorTexCoords");
+
+  return filler.m_info;
+}
+
+dp::BindingInfo TrackArrowStaticBindingInit()
+{
+  static_assert(sizeof(TrackArrowStaticVertex) == sizeof(TrackArrowStaticVertex::TTexCoord), "");
+
+  dp::BindingFiller<TrackArrowStaticVertex> filler(1);
+  filler.FillDecl<TrackArrowStaticVertex::TTexCoord>("a_colorTexCoord");
+
+  return filler.m_info;
+}
+
+dp::BindingInfo TrackArrowDynamicBindingInit()
+{
+  static_assert(sizeof(TrackArrowDynamicVertex) == (sizeof(TrackArrowDynamicVertex::TPosition) +
+                                             sizeof(TrackArrowDynamicVertex::TNormal)), "");
+
+  dp::BindingFiller<TrackArrowDynamicVertex> filler(2);
+  filler.FillDecl<TrackArrowDynamicVertex::TPosition>("a_position");
+  filler.FillDecl<TrackArrowDynamicVertex::TNormal>("a_normal");
 
   return filler.m_info;
 }
@@ -214,6 +238,8 @@ TInitFunction g_initFunctions[TypeCount] =
   &Area3dBindingInit,
   &HatchingAreaBindingInit,
   &SolidTexturingBindingInit,
+  &TrackArrowStaticBindingInit,
+  &TrackArrowDynamicBindingInit,
   &MaskedTexturingBindingInit,
   &TextStaticBindingInit,
   &TextOutlinedStaticBindingInit,
@@ -305,6 +331,34 @@ SolidTexturingVertex::SolidTexturingVertex(TPosition3d const & position, TNormal
 dp::BindingInfo const & SolidTexturingVertex::GetBindingInfo()
 {
   return GetBinding(SolidTexturing);
+}
+
+TrackArrowStaticVertex::TrackArrowStaticVertex()
+  : m_colorTexCoord(0.0, 0.0)
+{}
+
+TrackArrowStaticVertex::TrackArrowStaticVertex(TTexCoord const & colorTexCoord)
+  : m_colorTexCoord(colorTexCoord)
+{}
+
+dp::BindingInfo const & TrackArrowStaticVertex::GetBindingInfo()
+{
+  return GetBinding(TrackArrowStatic);
+}
+
+TrackArrowDynamicVertex::TrackArrowDynamicVertex()
+  : m_position(0.0, 0.0, 0.0)
+  , m_normal(0.0, 0.0)
+{}
+
+TrackArrowDynamicVertex::TrackArrowDynamicVertex(TPosition const & position, TNormal const & normal)
+  : m_position(position)
+  , m_normal(normal)
+{}
+
+dp::BindingInfo const & TrackArrowDynamicVertex::GetBindingInfo()
+{
+  return GetBinding(TrackArrowDynamic);
 }
 
 MaskedTexturingVertex::MaskedTexturingVertex()

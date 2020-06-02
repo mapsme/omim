@@ -12,30 +12,13 @@
 
 namespace df
 {
-class LineShapeInfo
-{
-public:
-  virtual ~LineShapeInfo() = default;
-
-  virtual dp::BindingInfo const & GetBindingInfo() = 0;
-  virtual dp::RenderState GetState() = 0;
-
-  virtual ref_ptr<void> GetLineData() = 0;
-  virtual uint32_t GetLineSize() = 0;
-
-  virtual ref_ptr<void> GetJoinData() = 0;
-  virtual uint32_t GetJoinSize() = 0;
-
-  virtual dp::BindingInfo const & GetCapBindingInfo() = 0;
-  virtual dp::RenderState GetCapState() = 0;
-  virtual ref_ptr<void> GetCapData() = 0;
-  virtual uint32_t GetCapSize() = 0;
-};
+class LineShapeInfo;
 
 class LineShape : public MapShape
 {
 public:
-  LineShape(m2::SharedSpline const & spline, LineViewParams const & params);
+  LineShape(m2::SharedSpline const & spline, LineViewParams const & params, bool showArrows = false);
+  ~LineShape() override;
 
   void Prepare(ref_ptr<dp::TextureManager> textures) const override;
   void Draw(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Batcher> batcher,
@@ -46,6 +29,8 @@ private:
   void Construct(TBuilder & builder) const;
 
   bool CanBeSimplified(int & lineWidth) const;
+
+  bool const m_showArrows;
 
   LineViewParams m_params;
   m2::SharedSpline m_spline;

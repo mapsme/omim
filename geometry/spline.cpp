@@ -19,7 +19,8 @@ Spline::Spline(vector<PointD> && path)
   Init(move(path));
 }
 
-Spline::Spline(size_t reservedSize)
+Spline::Spline(size_t reservedSize, double const initialLength)
+  : m_initialLength(initialLength)
 {
   ASSERT_LESS(0, reservedSize, ());
   m_position.reserve(reservedSize);
@@ -110,6 +111,7 @@ Spline const & Spline::operator = (Spline const & spl)
     m_position = spl.m_position;
     m_direction = spl.m_direction;
     m_length = spl.m_length;
+    m_initialLength = spl.m_initialLength;
   }
   return *this;
 }
@@ -127,6 +129,7 @@ void Spline::Init(T && path)
   size_t cnt = m_position.size() - 1;
   m_direction = vector<PointD>(cnt);
   m_length = vector<double>(cnt);
+  m_initialLength = 0.0;
 
   for (size_t i = 0; i < cnt; ++i)
   {

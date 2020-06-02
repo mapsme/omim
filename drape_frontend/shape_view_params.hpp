@@ -1,6 +1,7 @@
 #pragma once
 
 #include "drape_frontend/render_state_extension.hpp"
+#include "drape_frontend/tile_key.hpp"
 
 #include "drape/color.hpp"
 #include "drape/drape_global.hpp"
@@ -79,7 +80,9 @@ struct LineViewParams : CommonViewParams
   dp::LineJoin m_join;
   buffer_vector<uint8_t, 8> m_pattern;
   float m_baseGtoPScale = 1.0f;
+  float m_currentPtoGScale = 1.0f;
   int m_zoomLevel = -1;
+  m2::RectD m_tileRect;
 };
 
 struct TextViewParams : CommonOverlayViewParams
