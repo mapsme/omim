@@ -592,7 +592,7 @@ void CacheUserLines(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
     auto const clippedSplines = m2::ClipSplineByRect(tileRect, spline);
     for (auto const & clippedSpline : clippedSplines)
     {
-      bool showArrows = true; // draw track arrows only for the first layer if any
+      bool showArrows = renderInfo.m_interactive; // draw track arrows only for the first layer if any
       for (auto const & layer : renderInfo.m_layers)
       {
         params.m_color = layer.m_color;

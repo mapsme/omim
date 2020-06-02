@@ -63,6 +63,7 @@ struct UserLineRenderParams
   int m_minZoom = 1;
   DepthLayer m_depthLayer = DepthLayer::UserLineLayer;
   std::vector<LineLayer> m_layers;
+  bool m_interactive = false;
   m2::SharedSpline m_spline;
 };
 

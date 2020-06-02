@@ -110,6 +110,8 @@ public:
   virtual float GetDepth(size_t layerIndex) const = 0;
   virtual std::vector<m2::PointD> GetPoints() const = 0;
 
+  virtual bool IsInteractive() const { return false; }
+
 private:
   kml::TrackId m_id;
 };

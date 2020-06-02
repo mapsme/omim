@@ -958,6 +958,7 @@ drape_ptr<UserLineRenderParams> DrapeEngine::GenerateLineRenderInfo(UserLineMark
   renderInfo->m_depthLayer = mark->GetDepthLayer();
   renderInfo->m_spline = m2::SharedSpline(mark->GetPoints());
   renderInfo->m_layers.reserve(mark->GetLayerCount());
+  renderInfo->m_interactive = mark->IsInteractive();
   for (size_t layerIndex = 0, layersCount = mark->GetLayerCount(); layerIndex < layersCount; ++layerIndex)
   {
     renderInfo->m_layers.emplace_back(mark->GetColor(layerIndex),
