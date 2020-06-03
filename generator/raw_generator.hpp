@@ -1,7 +1,8 @@
 #pragma once
 
+#include "generator/composite_id.hpp"
 #include "generator/features_processing_helpers.hpp"
-#include "generator/final_processor_intermediate_mwm.hpp"
+#include "generator/final_processor_interface.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/intermediate_data.hpp"
 #include "generator/translator_collection.hpp"
@@ -48,6 +49,7 @@ private:
   feature::GenerateInfo & m_genInfo;
   size_t m_threadsCount;
   size_t m_chunkSize;
+  cache::IntermediateDataObjectsCache m_intermediateDataObjectsCache;
   std::shared_ptr<cache::IntermediateData> m_cache;
   std::shared_ptr<FeatureProcessorQueue> m_queue;
   std::shared_ptr<TranslatorCollection> m_translators;

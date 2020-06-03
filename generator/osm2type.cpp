@@ -540,7 +540,6 @@ void PreprocessElement(OsmElement * p)
       value = "specified";
   });
 
-  // todo(@t.yan): remove this code from osm2meta.cpp when types'll be used for cuisines translation.
   string const kCuisineKey = "cuisine";
   auto cuisines = p->GetTag(kCuisineKey);
   if (!cuisines.empty())
@@ -560,6 +559,12 @@ void PreprocessElement(OsmElement * p)
       collapse(' ', normalized);
       replace(normalized.begin(), normalized.end(), ' ', '_');
 
+      if (normalized.empty())
+      {
+        ++iter;
+        continue;
+      }
+
       // Avoid duplication for some cuisines.
       if (normalized == "bbq" || normalized == "barbeque")
         normalized = "barbecue";
@@ -577,6 +582,25 @@ void PreprocessElement(OsmElement * p)
 
       first = false;
       ++iter;
+    }
+  }
+
+  string const kAerodromeTypeKey = "aerodrome:type";
+  auto aerodromeTypes = p->GetTag(kAerodromeTypeKey);
+  if (!aerodromeTypes.empty())
+  {
+    strings::MakeLowerCaseInplace(aerodromeTypes);
+    bool first = true;
+    for (auto type : strings::Tokenize(aerodromeTypes, ",;"))
+    {
+      strings::Trim(type, " ");
+
+      if (first)
+        p->UpdateTag(kAerodromeTypeKey, [&type](auto & value) { value = type; });
+      else
+        p->AddTag(kAerodromeTypeKey, type);
+
+      first = false;
     }
   }
 

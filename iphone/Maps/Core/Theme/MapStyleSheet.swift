@@ -1,33 +1,21 @@
 class MapStyleSheet: IStyleSheet {
   static func register(theme: Theme, colors: IColors, fonts: IFonts) {
-    theme.add(styleName: "LayersTrafficButtonEnabled") { (s) -> (Void) in
-      s.fontColor = colors.linkBlue
-      s.mwmImage = "btn_menu_traffic_on"
-    }
-    
-    theme.add(styleName: "LayersTrafficButtonDisabled") { (s) -> (Void) in
+    theme.add(styleName: "MenuButtonDisabled") { (s) -> (Void) in
       s.fontColor = colors.blackSecondaryText
-      s.mwmImage =  "btn_menu_traffic_off"
+      s.font = fonts.regular10
+      s.backgroundColor = colors.clear
+      s.borderColor = colors.clear
+      s.borderWidth = 0
+      s.cornerRadius = 6
     }
 
-    theme.add(styleName: "LayersIsolinesButtonEnabled") { (s) -> (Void) in
+    theme.add(styleName: "MenuButtonEnabled") { (s) -> (Void) in
       s.fontColor = colors.linkBlue
-      s.mwmImage = "btn_menu_isomaps_on"
-    }
-
-    theme.add(styleName: "LayersIsolinesButtonDisabled") { (s) -> (Void) in
-      s.fontColor = colors.blackSecondaryText
-      s.mwmImage = "btn_menu_isomaps_off"
-    }
-
-    theme.add(styleName: "LayersSubwayButtonEnabled") { (s) -> (Void) in
-      s.fontColor = colors.linkBlue
-      s.mwmImage = "btn_menu_subway_on"
-    }
-
-    theme.add(styleName: "LayersSubwayButtonDisabled") { (s) -> (Void) in
-      s.fontColor = colors.blackSecondaryText
-      s.mwmImage = "btn_menu_subway_off"
+      s.font = fonts.regular10
+      s.backgroundColor = colors.linkBlue
+      s.borderColor = colors.linkBlue
+      s.borderWidth = 2
+      s.cornerRadius = 6
     }
 
     theme.add(styleName: "StreetNameBackgroundView") { (s) -> (Void) in

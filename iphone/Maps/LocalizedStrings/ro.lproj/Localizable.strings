@@ -3262,6 +3262,58 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"button_layer_guides" = "Ghiduri (noutate)";
+
+"no_routes_in_the_area_toast" = "Nu există ghiduri aici";
+
+"isolines_toast_zooms_1_10" = "Măriți harta pentru a vedea contururile";
+
+"routes_layer_in_menu_toast" = "Includeți straturi pentru a găsi ghiduri offline, explorați contururile, ramurile de metrou sau blocajele de trafic";
+
+"routes_layer_is_on_toast" = "Mutați harta pentru a găsi ghiduri";
+
+"connection_error_dialog_guides_title" = "Eroare de conectare";
+
+"connection_error_dialog_guides_message" = "Stratul nu funcționează deoarece nu există internet sau semnalul este slab. Pentru a continua, verificați conexiunea sau opriți stratul.";
+
+"connection_error_dialog_guides_try" = "Încercați din nou";
+
+"connection_error_dialog_guides_layer_turn_off" = "Opriți";
+
+"connection_error_toast_guides" = "Restabilim conexiunea la Internet";
+
+"routes_card_show" = "Arată";
+
+"routes_card_hide" = "Ascunde";
+
+"whatsnew_catalog_new_title" = "Un nou catalog și mii de idei de vacanță";
+
+"whatsnew_catalog_new_message" = "Am actualizat catalogul de ghiduri și am adăugat traduceri în toate limbile. Începeți planificarea înainte!";
+
+"whatsnew_elevation_profile_title" = "Profilul înălțimilor în ghiduri";
+
+"whatsnew_elevation_profile_message" = "Evaluați complexitatea urcărilor și coborârilor viitoare offline cu cursorul în profilul traseului achiziționat.";
+
+"whatsnew_guides_on_map_title" = "Strat nou - ghiduri pe hartă!";
+
+"whatsnew_guides_on_map_message" = "Activați stratul din meniul setărilor aplicației pentru a găsi rapid rute interesante pentru orașe și ghiduri de călătorie pentru activități în aer liber.";
+
+"downloader_updating_ios" = "Actualizare";
+
+"downloader_loading_ios" = "Încărcare";
+
+"routes_card_plus_track" = "+ track";
+
+"routes_card_city" = "City";
+
+"routes_card_outdoor" = "Outdoor";
+
+"routes_card_number_of_points" = "%s locuri";
+
+"routes_card_routes_tag" = "Traseu";
+
+"routes_card_set_tag" = "Locuri atractive";
+
 
 /**********  Partners  **********/
 
@@ -3465,6 +3517,24 @@
 "type.amenity.public_bookcase" = "Bibliotecă";
 
 "type.amenity.recycling" = "Centru de reciclare";
+
+"type.amenity.recycling_container" = "Recycling container";
+
+"type.recycling.toxic" = "Toxic waste";
+
+"type.recycling.clothes" = "Old clothes";
+
+"type.recycling.glass_bottles" = "Glass bottles";
+
+"type.recycling.paper" = "Paper waste";
+
+"type.recycling.plastic" = "Plastic waste";
+
+"type.recycling.plastic_bottles" = "Plastic bottles";
+
+"type.recycling.scrap_metal" = "Scrap metal";
+
+"type.recycling.small_appliances" = "Electronic waste";
 
 "type.amenity.restaurant" = "Restaurant";
 

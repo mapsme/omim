@@ -3,20 +3,20 @@ import os
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 
-from .generator import settings
-from .generator import stages
-from .generator import stages_declaration as sd
-from .generator.env import Env
-from .generator.env import PathProvider
-from .generator.env import WORLDS_NAMES
-from .generator.env import find_last_build_dir
-from .generator.env import get_all_countries_list
-from .generator.exceptions import ContinueError
-from .generator.exceptions import SkipError
-from .generator.exceptions import ValidationError
-from .maps_generator import generate_coasts
-from .maps_generator import generate_maps
-from .utils.algo import unique
+from maps_generator.generator import settings
+from maps_generator.generator import stages
+from maps_generator.generator import stages_declaration as sd
+from maps_generator.generator.env import Env
+from maps_generator.generator.env import PathProvider
+from maps_generator.generator.env import WORLDS_NAMES
+from maps_generator.generator.env import find_last_build_dir
+from maps_generator.generator.env import get_all_countries_list
+from maps_generator.generator.exceptions import ContinueError
+from maps_generator.generator.exceptions import SkipError
+from maps_generator.generator.exceptions import ValidationError
+from maps_generator.maps_generator import generate_coasts
+from maps_generator.maps_generator import generate_maps
+from maps_generator.utils.algo import unique
 
 logger = logging.getLogger("maps_generator")
 
@@ -87,6 +87,13 @@ def parse_options():
         "last stopped stage.",
     )
     parser.add_argument(
+        "-s",
+        "--suffix",
+        default="",
+        type=str,
+        help="Suffix of the name of a build directory.",
+    )
+    parser.add_argument(
         "--countries",
         type=str,
         default="",
@@ -124,6 +131,12 @@ def parse_options():
         help="Build only WorldCoasts.raw and WorldCoasts.rawgeom files",
     )
     parser.add_argument(
+        "--force_download_files",
+        default=False,
+        action="store_true",
+        help="If build is continued, files will always be downloaded again.",
+    )
+    parser.add_argument(
         "--production",
         default=False,
         action="store_true",
@@ -139,20 +152,22 @@ def parse_options():
         ),
         help="Mwm generation order.",
     )
-    return vars(parser.parse_args())
+    return parser.parse_args()
 
 
 def main():
     root = logging.getLogger()
     root.addHandler(logging.NullHandler())
+
     options = parse_options()
 
     # Processing of 'continue' option.
     # If 'continue' is set maps generation is continued from the last build
     # that is found automatically.
     build_name = None
-    if options["continue"] is None or options["continue"]:
-        d = find_last_build_dir(options["continue"])
+    continue_ = getattr(options, "continue")
+    if continue_ is None or continue_:
+        d = find_last_build_dir(continue_)
         if d is None:
             raise ContinueError(
                 "The build cannot continue: the last build " "directory was not found."
@@ -170,13 +185,13 @@ def main():
     without_countries_line = ""
     if "COUNTRIES" in os.environ:
         countries_line = os.environ["COUNTRIES"]
-    if options["countries"]:
-        countries_line = options["countries"]
+    if options.countries:
+        countries_line = options.countries
     else:
         countries_line = "*"
 
-    if options["without_countries"]:
-        without_countries_line = options["without_countries"]
+    if options.without_countries:
+        without_countries_line = options.without_countries
 
     all_countries = get_all_countries_list(PathProvider.borders_path())
 
@@ -223,10 +238,10 @@ def main():
 
     # Processing of 'order' option.
     # It defines an order of countries generation using a file from 'order' path.
-    if options["order"]:
+    if options.order:
         ordered_countries = []
         countries = set(countries)
-        with open(options["order"]) as file:
+        with open(options.order) as file:
             for c in file:
                 if c.strip().startswith("#"):
                     continue
@@ -236,14 +251,14 @@ def main():
                     countries.remove(c)
             if countries:
                 raise ValueError(
-                    f"{options['order']} does not have an order " f"for {countries}."
+                    f"{options.order} does not have an order " f"for {countries}."
                 )
         countries = ordered_countries
 
     # Processing of 'skip' option.
     skipped_stages = set()
-    if options["skip"]:
-        for s in options["skip"].replace(";", ",").split(","):
+    if options.skip:
+        for s in options.skip.replace(";", ",").split(","):
             stage = s.strip()
             if not stages.stages.is_valid_stage_name(stage):
                 raise SkipError(f"{stage} not found.")
@@ -253,7 +268,7 @@ def main():
         skipped_stages.add(sd.StageUpdatePlanet)
 
     if sd.StageCoastline in skipped_stages:
-        if any(x in WORLDS_NAMES for x in options["countries"]):
+        if any(x in WORLDS_NAMES for x in options.countries):
             raise SkipError(
                 f"You can not skip {stages.get_stage_name(sd.StageCoastline)}"
                 f" if you want to generate {WORLDS_NAMES}."
@@ -266,14 +281,16 @@ def main():
     # Make env and run maps generation.
     env = Env(
         countries=countries,
-        production=options["production"],
+        production=options.production,
         build_name=build_name,
+        build_suffix=options.suffix,
         skipped_stages=skipped_stages,
+        force_download_files=options.force_download_files
     )
     from_stage = None
-    if options["from_stage"]:
-        from_stage = f"{options['from_stage']}"
-    if options["coasts"]:
+    if options.from_stage:
+        from_stage = f"{options.from_stage}"
+    if options.coasts:
         generate_coasts(env, from_stage)
     else:
         generate_maps(env, from_stage)

@@ -4,6 +4,8 @@
 
 namespace
 {
+static uint8_t constexpr kMaxDifficulty = ElevationInfo::Difficulty::Hard;
+
 std::string const kAscentKey = "ascent";
 std::string const kDescentKey = "descent";
 std::string const kLowestPointKey = "lowest_point";
@@ -44,6 +46,19 @@ ElevationInfo::ElevationInfo(Track const & track)
   FillProperty(properties, kDescentKey, m_descent);
   FillProperty(properties, kLowestPointKey, m_minAltitude);
   FillProperty(properties, kHighestPointKey, m_maxAltitude);
-  FillProperty(properties, kDifficultyKey, m_difficulty);
+
+  uint8_t difficulty;
+  FillProperty(properties, kDifficultyKey, difficulty);
+
+  if (difficulty > kMaxDifficulty)
+  {
+    LOG(LWARNING, ("Invalid difficulty value", m_difficulty, "in track", track.GetName()));
+    m_difficulty = Difficulty ::Unknown;
+  }
+  else
+  {
+    m_difficulty = static_cast<Difficulty>(difficulty);
+  }
+
   FillProperty(properties, kDurationKey, m_duration);
 }

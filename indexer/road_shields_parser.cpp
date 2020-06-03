@@ -537,7 +537,10 @@ std::set<RoadShield> GetRoadShields(FeatureType & f)
 
   // Find out country name.
   std::string mwmName = f.GetID().GetMwmName();
-  ASSERT_NOT_EQUAL(mwmName, FeatureID::kInvalidFileName, ());
+
+  ASSERT_NOT_EQUAL(mwmName, FeatureID::kInvalidFileName,
+                   ("Use GetRoadShields(rawRoadNumber) for unknown mwms."));
+
   auto const underlinePos = mwmName.find('_');
   if (underlinePos != std::string::npos)
     mwmName = mwmName.substr(0, underlinePos);
@@ -572,6 +575,15 @@ std::set<RoadShield> GetRoadShields(FeatureType & f)
     return MexicoRoadShieldParser(roadNumber).GetRoadShields();
 
   return SimpleRoadShieldParser(roadNumber, SimpleRoadShieldParser::ShieldTypes()).GetRoadShields();
+}
+
+std::set<RoadShield> GetRoadShields(std::string const & rawRoadNumber)
+{
+  if (rawRoadNumber.empty())
+    return {};
+
+  return SimpleRoadShieldParser(rawRoadNumber, SimpleRoadShieldParser::ShieldTypes())
+      .GetRoadShields();
 }
 
 std::string DebugPrint(RoadShieldType shieldType)

@@ -5,7 +5,7 @@ class DayColors: IColors {
   var secondary = UIColor(45, 137, 83, alpha100)
   // Light green color
   var primaryLight = UIColor(36, 180, 98, alpha100)
-  var menuBackground = UIColor(255, 255, 255, alpha80)
+  var menuBackground = UIColor(255, 255, 255, alpha90)
   var downloadBadgeBackground = UIColor(255, 55, 35, alpha100)
   // Background color && press color
   var pressBackground = UIColor(245, 245, 245, alpha100)
@@ -24,6 +24,7 @@ class DayColors: IColors {
   var blackSecondaryText = UIColor(0, 0, 0, alpha54)
   var blackHintText = UIColor(0, 0, 0, alpha26)
   var blackDividers = UIColor(0, 0, 0, alpha12)
+  var solidDividers = UIColor(224, 224, 224, alpha100)
   var white = UIColor(255, 255, 255, alpha100)
   var whitePrimaryText = UIColor(255, 255, 255, alpha87);
   var whitePrimaryTextHighlighted = UIColor(255, 255, 255, alpha30);
@@ -35,6 +36,7 @@ class DayColors: IColors {
   var toastBackground = UIColor(255, 255, 255, alpha87)
   var statusBarBackground = UIColor(255, 255, 255, alpha36)
   var bannerBackground = UIColor(242, 245, 212, alpha100)
+  var searchPromoBackground = UIColor(249, 251, 231, alpha100)
   var border = UIColor(0, 0, 0, alpha04)
   var discountBackground = UIColor(240, 100, 60, alpha100)
   var discountText = UIColor(60, 64, 68, alpha100)
@@ -62,6 +64,11 @@ class DayColors: IColors {
   var allPassSubscriptionTermsTitle = UIColor(255, 255, 255, alpha70)
   var fadeBackground = UIColor(0, 0, 0, alpha80)
   var blackStatusBarBackground = UIColor(0, 0, 0, alpha80)
+  var elevationPreviewTint = UIColor(193, 209, 224, alpha30)
+  var elevationPreviewSelector = UIColor(red: 0.757, green: 0.82, blue: 0.878, alpha: 1)
+  var shadow = UIColor(0, 0, 0, alpha100)
+  var chartLine = UIColor(red: 0.118, green: 0.588, blue: 0.941, alpha: 1)
+  var chartShadow = UIColor(red: 0.118, green: 0.588, blue: 0.941, alpha: 0.12)
 }
 
 class NightColors: IColors {
@@ -71,7 +78,7 @@ class NightColors: IColors {
   var secondary =  UIColor(0x25, 0x28, 0x2b, alpha100)
   // Light green color
   var primaryLight = UIColor(65, 70, 75, alpha100)
-  var menuBackground = UIColor(45, 50, 55, alpha80)
+  var menuBackground = UIColor(45, 50, 55, alpha90)
   var downloadBadgeBackground = UIColor(230, 70, 60, alpha100)
   // Background color && press color
   var pressBackground = UIColor(50, 54, 58, alpha100)
@@ -90,6 +97,7 @@ class NightColors: IColors {
   var blackSecondaryText =  UIColor(255, 255, 255, alpha70)
   var blackHintText =  UIColor(255, 255, 255, alpha30)
   var blackDividers =  UIColor(255, 255, 255, alpha12)
+  var solidDividers = UIColor(84, 86, 90, alpha100)
   var white =  UIColor(60, 64, 68, alpha100)
   var whitePrimaryText = UIColor(255, 255, 255, alpha87)
   var whitePrimaryTextHighlighted = UIColor(255, 255, 255, alpha30)
@@ -101,6 +109,7 @@ class NightColors: IColors {
   var toastBackground =  UIColor(0, 0, 0, alpha87)
   var statusBarBackground =  UIColor(0, 0, 0, alpha32)
   var bannerBackground = UIColor(255, 255, 255, alpha54)
+  var searchPromoBackground = UIColor(71, 75, 79, alpha100)
   var border = UIColor(255, 255, 255, alpha04)
   var discountBackground = UIColor(240, 100, 60, alpha100)
   var discountText = UIColor(60, 64, 68, alpha100)
@@ -128,4 +137,9 @@ class NightColors: IColors {
   var allPassSubscriptionTermsTitle = UIColor(255, 255, 255, alpha70)
   var fadeBackground = UIColor(0, 0, 0, alpha80)
   var blackStatusBarBackground = UIColor(0, 0, 0, alpha80)
+  var elevationPreviewTint = UIColor(0, 0, 0, alpha54)
+  var elevationPreviewSelector = UIColor(red: 0.404, green: 0.439, blue: 0.475, alpha: 1)
+  var shadow = UIColor.clear
+  var chartLine = UIColor(red: 0.294, green: 0.725, blue: 0.902, alpha: 1)
+  var chartShadow = UIColor(red: 0.294, green: 0.725, blue: 0.902, alpha: 0.12)
 }

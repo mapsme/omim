@@ -4,23 +4,25 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, ElevationDifficulty) {
+  ElevationDifficultyDisabled,
   ElevationDifficultyEasy,
-  ElevationDifficultyModerate,
+  ElevationDifficultyMedium,
   ElevationDifficultyHard
 };
 
 @interface ElevationProfileData : NSObject
 
-@property(nonatomic, readonly) NSString* serverId;
-@property(nonatomic, readonly) NSString* ascent;
-@property(nonatomic, readonly) NSString* descent;
-@property(nonatomic, readonly) NSString* maxAttitude;
-@property(nonatomic, readonly) NSString* minAttitude;
+@property(nonatomic, readonly) uint64_t trackId;
+@property(nonatomic, readonly) NSString *serverId;
+@property(nonatomic, readonly) NSUInteger ascent;
+@property(nonatomic, readonly) NSUInteger descent;
+@property(nonatomic, readonly) NSUInteger maxAttitude;
+@property(nonatomic, readonly) NSUInteger minAttitude;
 @property(nonatomic, readonly) ElevationDifficulty difficulty;
-@property(nonatomic, readonly) NSString* trackTime;
-@property(nonatomic, readonly, nullable) NSString* extendedDifficultyGrade;
-@property(nonatomic, readonly, nullable) NSString* extendedDifficultyDescription;
-@property(nonatomic, readonly) NSArray<ElevationHeightPoint*>* points;
+@property(nonatomic, readonly) NSUInteger trackTime;
+@property(nonatomic, readonly) NSArray<ElevationHeightPoint *> *points;
+@property(nonatomic, readonly) double activePoint;
+@property(nonatomic, readonly) double myPosition;
 
 @end
 

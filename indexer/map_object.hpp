@@ -79,12 +79,18 @@ public:
   std::string GetEmail() const;
   std::string GetWebsite() const;
   Internet GetInternet() const;
-  /// @returns not localized cuisines keys.
+  /// @returns non-localized cuisines keys.
   std::vector<std::string> GetCuisines() const;
   /// @returns translated cuisine(s).
   std::vector<std::string> GetLocalizedCuisines() const;
+  /// @returns non-localized recycling type(s).
+  std::vector<std::string> GetRecyclingTypes() const;
+  /// @returns translated recycling type(s).
+  std::vector<std::string> GetLocalizedRecyclingTypes() const;
   /// @returns translated and formatted cuisines.
   std::string FormatCuisines() const;
+  std::vector<std::string> GetRoadShields() const;
+  std::string FormatRoadShields() const;
   std::string GetOpeningHours() const;
   std::string GetOperator() const;
   int GetStars() const;
@@ -120,6 +126,7 @@ protected:
 
   StringUtf8Multilang m_name;
   std::string m_houseNumber;
+  std::string m_roadNumber;
   std::string m_postcode;
   feature::TypesHolder m_types;
   feature::Metadata m_metadata;

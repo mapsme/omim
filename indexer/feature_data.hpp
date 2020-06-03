@@ -3,16 +3,17 @@
 #include "indexer/feature_decl.hpp"
 #include "indexer/feature_meta.hpp"
 
-#include "geometry/point2d.hpp"
-
 #include "coding/reader.hpp"
 #include "coding/string_utf8_multilang.hpp"
 #include "coding/value_opt_string.hpp"
+
+#include "geometry/point2d.hpp"
 
 #include <algorithm>
 #include <array>
 #include <cstdint>
 #include <iterator>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -81,6 +82,8 @@ namespace feature
 
     size_t Size() const { return m_size; }
     bool Empty() const { return (m_size == 0); }
+    Types::const_iterator cbegin() const { return m_types.cbegin(); }
+    Types::const_iterator cend() const { return m_types.cbegin() + m_size; }
     Types::const_iterator begin() const { return m_types.cbegin(); }
     Types::const_iterator end() const { return m_types.cbegin() + m_size; }
     Types::iterator begin() { return m_types.begin(); }
@@ -118,7 +121,7 @@ namespace feature
     std::vector<std::string> ToObjectNames() const;
 
   private:
-    Types m_types;
+    Types m_types = {};
     size_t m_size = 0;
 
     GeomType m_geomType = GeomType::Undefined;
@@ -279,7 +282,7 @@ public:
     Base::Read(src, header);
   }
 
-  Types m_types;
+  Types m_types = {};
 
 private:
   using Base = FeatureParamsBase;
@@ -288,7 +291,7 @@ private:
   static uint32_t GetIndexForType(uint32_t t);
   static uint32_t GetTypeForIndex(uint32_t i);
 
-  feature::HeaderGeomType m_geomType = feature::HeaderGeomType::Point;
+  std::optional<feature::HeaderGeomType> m_geomType;
 };
 
 class FeatureBuilderParams : public FeatureParams

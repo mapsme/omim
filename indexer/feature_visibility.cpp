@@ -7,6 +7,7 @@
 #include "indexer/scales.hpp"
 
 #include "base/assert.hpp"
+#include "base/checked_cast.hpp"
 
 #include <algorithm>
 #include <array>
@@ -82,7 +83,6 @@ vector<string> Classificator::GetFullObjectNamePath(uint32_t type) const
 
 namespace feature
 {
-
 namespace
 {
   class DrawRuleGetter
@@ -280,6 +280,7 @@ namespace
     static uint32_t const psurface = classif().GetTypeByPath({"psurface"});
     static uint32_t const wheelchair = classif().GetTypeByPath({"wheelchair"});
     static uint32_t const cuisine = classif().GetTypeByPath({"cuisine"});
+    static uint32_t const recycling = classif().GetTypeByPath({"recycling"});
     static uint32_t const sponsored = classif().GetTypeByPath({"sponsored"});
     // Reserved for custom event processing, e.g. fc2018.
     // static uint32_t const event = classif().GetTypeByPath({"event" });
@@ -300,7 +301,7 @@ namespace
     if (type == wheelchair && typeLength == 2)
       return true;
 
-    if (type == cuisine)
+    if (type == cuisine || type == recycling)
       return true;
 
     if (g != GeomType::Line && type == sponsored)
@@ -578,7 +579,7 @@ pair<int, int> GetDrawableScaleRangeForRules(TypesHolder const & types, int rule
 TypeSetChecker::TypeSetChecker(initializer_list<char const *> const & lst)
 {
   m_type = classif().GetTypeByPath(lst);
-  m_level = lst.size();
+  m_level = base::checked_cast<uint8_t>(lst.size());
 }
 
 bool TypeSetChecker::IsEqual(uint32_t type) const
@@ -586,5 +587,4 @@ bool TypeSetChecker::IsEqual(uint32_t type) const
   ftype::TruncValue(type, m_level);
   return (m_type == type);
 }
-
 }   // namespace feature

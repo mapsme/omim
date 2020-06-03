@@ -3,12 +3,15 @@ package com.mapswithme.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.BookmarksPageFactory;
+import com.mapswithme.maps.maplayer.Mode;
+
+import java.util.Locale;
 
 import static com.mapswithme.util.Config.KEY_PREF_STATISTICS;
 
@@ -21,6 +24,10 @@ public final class SharedPropertiesUtils
   private static final String PREFS_WHATS_NEW_TITLE_CONCATENATION = "WhatsNewTitleConcatenation";
   private static final String PREFS_CATALOG_CATEGORIES_HEADER_CLOSED = "CatalogCategoriesHeaderClosed";
   private static final String PREFS_BOOKMARK_CATEGORIES_LAST_VISIBLE_PAGE = "BookmarkCategoriesLastVisiblePage";
+  private static final String PREFS_SHOULD_SHOW_LAYER_MARKER_FOR = "ShouldShowGuidesLayerMarkerFor";
+  private static final String PREFS_SHOULD_SHOW_LAYER_TUTORIAL_TOAST = "ShouldShowLayerTutorialToast";
+  private static final String PREFS_SHOULD_SHOW_HOW_TO_USE_GUIDES_LAYER_TOAST
+      = "ShouldShowHowToUseGuidesLayerToast";
   private static final SharedPreferences PREFS
       = PreferenceManager.getDefaultSharedPreferences(MwmApplication.get());
 
@@ -126,9 +133,50 @@ public final class SharedPropertiesUtils
     putBoolean(context, USER_AGREEMENT_TERM_OF_USE, isChecked);
   }
 
+  public static boolean shouldShowNewMarkerForLayerMode(@NonNull Context context,
+                                                        @NonNull Mode mode)
+  {
+    switch (mode)
+    {
+      case SUBWAY:
+      case TRAFFIC:
+      case ISOLINES:
+        return false;
+      default:
+        return getBoolean(context, PREFS_SHOULD_SHOW_LAYER_MARKER_FOR + mode.name()
+                                                                            .toLowerCase(Locale.ENGLISH),
+                          true);
+    }
+  }
+
+  public static boolean shouldShowLayerTutorialToast(@NonNull Context context)
+  {
+    boolean result = getBoolean(context, PREFS_SHOULD_SHOW_LAYER_TUTORIAL_TOAST, true);
+    putBoolean(context, PREFS_SHOULD_SHOW_LAYER_TUTORIAL_TOAST, false);
+    return result;
+  }
+
+  public static boolean shouldShowHowToUseGuidesLayerToast(@NonNull Context context)
+  {
+    boolean result = getBoolean(context, PREFS_SHOULD_SHOW_HOW_TO_USE_GUIDES_LAYER_TOAST, true);
+    putBoolean(context, PREFS_SHOULD_SHOW_HOW_TO_USE_GUIDES_LAYER_TOAST, false);
+    return result;
+  }
+
+  public static void setLayerMarkerShownForLayerMode(@NonNull Context context, @NonNull Mode mode)
+  {
+    putBoolean(context, PREFS_SHOULD_SHOW_LAYER_MARKER_FOR + mode.name()
+                                                                 .toLowerCase(Locale.ENGLISH), false);
+  }
+
   private static boolean getBoolean(@NonNull Context context,  @NonNull String key)
   {
-    return MwmApplication.prefs(context).getBoolean(key, false);
+    return getBoolean(context, key, false);
+  }
+
+  private static boolean getBoolean(@NonNull Context context,  @NonNull String key, boolean defValue)
+  {
+    return MwmApplication.prefs(context).getBoolean(key, defValue);
   }
 
   private static void putBoolean(@NonNull Context context,  @NonNull String key, boolean value)

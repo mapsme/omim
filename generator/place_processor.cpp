@@ -1,5 +1,6 @@
 #include "generator/place_processor.hpp"
 
+#include "generator/cluster_finder.hpp"
 #include "generator/feature_maker_base.hpp"
 #include "generator/type_helper.hpp"
 
@@ -7,9 +8,11 @@
 #include "indexer/ftypes_matcher.hpp"
 
 #include "base/assert.hpp"
+#include "base/stl_helpers.hpp"
 
 #include <algorithm>
 #include <iterator>
+#include <limits>
 #include <tuple>
 
 using namespace feature;
@@ -43,18 +46,51 @@ double GetRadiusM(ftypes::LocalityType const & type)
 template <typename T>
 bool IsWorsePlace(T const & left, T const & right)
 {
-  auto const rankL = left.GetRank();
-  auto const rankR = right.GetRank();
-  auto const levelL = ftype::GetLevel(GetPlaceType(left));
-  auto const levelR = ftype::GetLevel(GetPlaceType(right));
-  auto const langCntL = left.GetMultilangName().CountLangs();
-  auto const langCntR = right.GetMultilangName().CountLangs();
-  auto const isPointL = left.IsPoint();
-  auto const isPointR = right.IsPoint();
-  auto const boxAreaL = left.GetLimitRect().Area();
-  auto const boxAreaR = right.GetLimitRect().Area();
-  return std::tie(rankL, levelL, langCntL, isPointL, boxAreaL) <
-      std::tie(rankR, levelR, langCntR, isPointR, boxAreaR);
+  double constexpr kRankCoeff = 1.0;
+  double constexpr kIsCapitalCoeff = 0.1;
+  double constexpr kLangsCountCoeff = 1.0;
+  double constexpr kIsPointCoeff = 0.1;
+  double constexpr kIsNodeCoeff = 0.1;
+  double constexpr kAreaCoeff = 0.1;
+
+  auto const normalizeRank = [](uint8_t rank) {
+    return static_cast<double>(rank) / static_cast<double>(std::numeric_limits<uint8_t>::max());
+  };
+  auto const normalizeLangsCount = [](uint8_t langsCount) {
+    return static_cast<double>(langsCount) /
+           static_cast<double>(StringUtf8Multilang::kMaxSupportedLanguages);
+  };
+  auto const normalizeArea = [](double area) {
+    double const kMaxAreaM2 = 2e9;
+    area = base::Clamp(area, 0.0, kMaxAreaM2);
+    return area / kMaxAreaM2;
+  };
+
+  static_assert(kRankCoeff >= 0, "");
+  static_assert(kIsCapitalCoeff >= 0, "");
+  static_assert(kLangsCountCoeff >= 0, "");
+
+  auto const getScore = [&](auto const place) {
+    auto const rank = place.GetRank();
+    auto const isCapital = ftypes::IsCapitalChecker::Instance()(GetPlaceType(place));
+    auto const langsCount = place.GetMultilangName().CountLangs();
+    auto const isPoint = place.IsPoint();
+
+    auto const type = place.GetMostGenericOsmId().GetType();
+    auto const isNode = (type == base::GeoObjectId::Type::OsmNode) ||
+                        (type == base::GeoObjectId::Type::ObsoleteOsmNode);
+
+    auto const area = mercator::AreaOnEarth(place.GetLimitRect());
+
+    return kRankCoeff * normalizeRank(rank) +
+           kIsCapitalCoeff * (isCapital ? 1.0 : 0.0) +
+           kLangsCountCoeff * normalizeLangsCount(langsCount) +
+           kIsPointCoeff * (isPoint ? 1.0 : 0.0) +
+           kIsNodeCoeff * (isNode ? 1.0 : 0.0) +
+           kAreaCoeff * normalizeArea(area);
+  };
+
+  return getScore(left) < getScore(right);
 }
 
 template <typename T>
@@ -84,6 +120,9 @@ namespace generator
 {
 bool NeedProcessPlace(feature::FeatureBuilder const & fb)
 {
+  if (fb.GetMultilangName().IsEmpty())
+    return false;
+
   auto const & islandChecker = ftypes::IsIslandChecker::Instance();
   auto const & localityChecker = ftypes::IsLocalityChecker::Instance();
   return islandChecker(fb.GetTypes()) || localityChecker.GetType(GetPlaceType(fb)) != ftypes::LocalityType::None;
@@ -95,7 +134,7 @@ void FeaturePlace::Append(FeatureBuilder const & fb)
     m_bestIndex = m_fbs.size();
 
   m_fbs.emplace_back(fb);
-  m_limitRect.Add(fb.GetLimitRect());
+  m_allFbsLimitRect.Add(fb.GetLimitRect());
 }
 
 FeatureBuilder const & FeaturePlace::GetFb() const
@@ -109,10 +148,9 @@ FeaturePlace::FeaturesBuilders const & FeaturePlace::GetFbs() const
   return m_fbs;
 }
 
-m2::RectD const & FeaturePlace::GetLimitRect() const
-{
-  return m_limitRect;
-}
+m2::RectD const & FeaturePlace::GetLimitRect() const { return GetFb().GetLimitRect(); }
+
+m2::RectD const & FeaturePlace::GetAllFbsLimitRect() const { return m_allFbsLimitRect; }
 
 base::GeoObjectId FeaturePlace::GetMostGenericOsmId() const
 {
@@ -129,11 +167,6 @@ std::string FeaturePlace::GetName() const
   return GetFb().GetName();
 }
 
-m2::PointD FeaturePlace::GetKeyPoint() const
-{
-  return GetFb().GetKeyPoint();
-}
-
 StringUtf8Multilang const & FeaturePlace::GetMultilangName() const
 {
   return GetFb().GetMultilangName();
@@ -144,10 +177,7 @@ bool FeaturePlace::IsPoint() const
   return GetFb().IsPoint();
 }
 
-m2::RectD GetLimitRect(FeaturePlace const & fp)
-{
-  return fp.GetLimitRect();
-}
+m2::RectD GetLimitRect(FeaturePlace const & fp) { return fp.GetAllFbsLimitRect(); }
 
 PlaceProcessor::PlaceProcessor(std::shared_ptr<OsmIdToBoundariesTable> boundariesTable)
   : m_boundariesTable(boundariesTable) {}
@@ -157,12 +187,13 @@ void PlaceProcessor::FillTable(FeaturePlaces::const_iterator start, FeaturePlace
 {
   CHECK(m_boundariesTable, ());
   base::GeoObjectId lastId;
+  auto const & isCityTownOrVillage = ftypes::IsCityTownOrVillageChecker::Instance();
   for (auto outerIt = start; outerIt != end; ++outerIt)
   {
     auto const & fbs = outerIt->GetFbs();
     for (auto const & fb : fbs)
     {
-      if (!(fb.IsArea() && ftypes::IsCityTownOrVillage(fb.GetTypes())))
+      if (!(fb.IsArea() && isCityTownOrVillage(fb.GetTypes())))
         continue;
 
       auto const id = fb.GetLastOsmId();
@@ -201,8 +232,9 @@ std::vector<PlaceProcessor::PlaceWithIds> PlaceProcessor::ProcessPlaces()
       }
       std::vector<base::GeoObjectId> ids;
       ids.reserve(cluster.size());
-      std::transform(std::cbegin(cluster), std::cend(cluster), std::back_inserter(ids),
-                     [](auto const & place) { return place.GetMostGenericOsmId(); });
+      base::Transform(cluster, std::back_inserter(ids), [](auto const & place) {
+        return place.GetMostGenericOsmId();
+      });
       finalPlaces.emplace_back(std::move(bestFb), std::move(ids));
       if (m_boundariesTable)
         FillTable(std::cbegin(cluster), std::cend(cluster), best);
@@ -227,7 +259,7 @@ void PlaceProcessor::Add(FeatureBuilder const & fb)
     return;
   // Objects are grouped with the same name and type. This does not guarantee that all objects describe
   // the same place. The logic for the separation of different places of the same name is
-  // implemented in the function GetPlaces().
+  // implemented in the function ProcessPlaces().
   m_nameToPlaces[GetKey(fb)][fb.GetMostGenericOsmId()].Append(fb);
 }
 }  // namespace generator

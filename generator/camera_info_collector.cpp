@@ -24,14 +24,14 @@ CamerasInfoCollector::CamerasInfoCollector(std::string const & dataFilePath,
                                            std::string const & camerasInfoPath,
                                            std::string const & osmIdsToFeatureIdsPath)
 {
-  std::map<base::GeoObjectId, uint32_t> osmIdToFeatureId;
-  if (!routing::ParseRoadsOsmIdToFeatureIdMapping(osmIdsToFeatureIdsPath, osmIdToFeatureId))
+  routing::OsmIdToFeatureIds osmIdToFeatureIds;
+  if (!routing::ParseWaysOsmIdToFeatureIdMapping(osmIdsToFeatureIdsPath, osmIdToFeatureIds))
   {
     LOG(LCRITICAL, ("An error happened while parsing feature id to osm ids mapping from file:",
                     osmIdsToFeatureIdsPath));
   }
 
-  if (!ParseIntermediateInfo(camerasInfoPath, osmIdToFeatureId))
+  if (!ParseIntermediateInfo(camerasInfoPath, osmIdToFeatureIds))
     LOG(LCRITICAL, ("Unable to parse intermediate file(", camerasInfoPath, ") about cameras info"));
 
   platform::LocalCountryFile file = platform::LocalCountryFile::MakeTemporary(dataFilePath);
@@ -96,8 +96,8 @@ void CamerasInfoCollector::Serialize(FileWriter & writer) const
     camera.Serialize(writer, prevFeatureId);
 }
 
-bool CamerasInfoCollector::ParseIntermediateInfo(std::string const & camerasInfoPath,
-                                                 std::map<base::GeoObjectId, uint32_t> const & osmIdToFeatureId)
+bool CamerasInfoCollector::ParseIntermediateInfo(
+    std::string const & camerasInfoPath, routing::OsmIdToFeatureIds const & osmIdToFeatureIds)
 {
   FileReader reader(camerasInfoPath);
   ReaderSource<FileReader> src(reader);
@@ -144,9 +144,14 @@ bool CamerasInfoCollector::ParseIntermediateInfo(std::string const & camerasInfo
     {
       ReadPrimitiveFromSource(src, wayOsmId);
 
-      auto const it = osmIdToFeatureId.find(base::MakeOsmWay(wayOsmId));
-      if (it != osmIdToFeatureId.cend())
-        ways.emplace_back(it->second /* featureId */, 0 /* segmentId */, 0 /* coef */);
+      auto const it = osmIdToFeatureIds.find(base::MakeOsmWay(wayOsmId));
+      if (it != osmIdToFeatureIds.cend())
+      {
+        auto const & featureIdsVec = it->second;
+        // Note. One |wayOsmId| may correspond several feature ids.
+        for (auto const featureId : featureIdsVec)
+          ways.emplace_back(featureId, 0 /* segmentId */, 0 /* coef */);
+      }
     }
 
     auto const speed = base::asserted_cast<uint8_t>(maxSpeedKmPH);
@@ -262,6 +267,7 @@ std::optional<std::pair<double, uint32_t>> CamerasInfoCollector::Camera::FindMys
   double coef = 0.0;
   bool isRoad = true;
   uint32_t result = 0;
+  bool cannotFindMyself = false;
 
   auto const readFeature = [&](FeatureType & ft) {
     bool found = false;
@@ -281,8 +287,11 @@ std::optional<std::pair<double, uint32_t>> CamerasInfoCollector::Camera::FindMys
 
     ft.ForEachPoint(findPoint, scales::GetUpperScale());
 
-    CHECK(found, ("Cannot find camera point at the feature:", wayFeatureId,
-                  "; camera center:", mercator::ToLatLon(m_data.m_center)));
+    if (!found)
+    {
+      cannotFindMyself = true;
+      return;
+    }
 
     // If point with number - N, is end of feature, we cannot say: segmentId = N,
     // because number of segments is N - 1, so we say segmentId = N - 1, and coef = 1
@@ -297,6 +306,19 @@ std::optional<std::pair<double, uint32_t>> CamerasInfoCollector::Camera::FindMys
 
   FeatureID featureID(mwmId, wayFeatureId);
   dataSource.ReadFeature(readFeature, featureID);
+
+  if (cannotFindMyself)
+  {
+    // Note. Speed camera with coords |m_data.m_center| is not located at any point of |wayFeatureId|.
+    // It may happens if osm feature corresponds to |wayFeatureId| is split by a mini_roundabout
+    // or turning_loop. There are two cases:
+    // * |m_data.m_center| is located at a point of another part of the whole osm feature. In
+    //   that case it will be found on another call of FindMyself() method.
+    // * |m_data.m_center| coincides with point of mini_roundabout or turning_loop. It means
+    //   there on feature point which coincides with speed camera (|m_data.m_center|).
+    //   These camera (notification) will be lost.
+    return {};
+  }
 
   if (isRoad)
     return std::optional<std::pair<double, uint32_t>>({coef, result});

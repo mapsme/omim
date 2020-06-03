@@ -8,8 +8,8 @@ from pathlib import Path
 from typing import Any
 from typing import AnyStr
 
-from ..utils.md5 import md5
-from ..utils.system import total_virtual_memory
+from maps_generator.utils.md5 import md5_ext
+from maps_generator.utils.system import total_virtual_memory
 
 parser = argparse.ArgumentParser(add_help=False)
 opt_config = "--config"
@@ -68,7 +68,7 @@ class CfgReader:
 
 
 DEFAULT_PLANET_URL = "https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf"
-DEFAULT_PLANET_MD5_URL = md5(DEFAULT_PLANET_URL)
+DEFAULT_PLANET_MD5_URL = md5_ext(DEFAULT_PLANET_URL)
 
 # Main section:
 # If DEBUG is True, a little special planet is downloaded.
@@ -106,6 +106,7 @@ PROMO_CATALOG_CITIES_URL = ""
 PROMO_CATALOG_COUNTRIES_URL = ""
 POPULARITY_URL = ""
 SUBWAY_URL = ""
+TRANSIT_URL = ""
 FOOD_URL = ""
 FOOD_TRANSLATIONS_URL = ""
 UK_POSTCODES_URL = ""
@@ -135,8 +136,12 @@ PLANET_COASTS_GEOM_URL = os.path.join(PLANET_COASTS_URL, "latest_coasts.geom")
 PLANET_COASTS_RAWGEOM_URL = os.path.join(PLANET_COASTS_URL, "latest_coasts.rawgeom")
 
 if DEBUG:
-    PLANET_URL = "http://osmz.ru/mwm/islands/islands.o5m"
-    PLANET_MD5_URL = "https://cloud.mail.ru/public/5v2F/f7cSaEXBC"
+    PLANET_URL = "https://www.dropbox.com/s/m3ru5tnj8g9u4cz/planet-latest.o5m?raw=1"
+    PLANET_MD5_URL = (
+        "https://www.dropbox.com/s/8wdl2hy22jgisk5/planet-latest.o5m.md5?raw=1"
+    )
+    NODE_STORAGE = "map"
+    NEED_PLANET_UPDATE = False
 
 # Common:
 THREADS_COUNT = multiprocessing.cpu_count()
@@ -228,6 +233,7 @@ def init(default_settings_path: AnyStr):
     global PROMO_CATALOG_COUNTRIES_URL
     global POPULARITY_URL
     global SUBWAY_URL
+    global TRANSIT_URL
     global FOOD_URL
     global UK_POSTCODES_URL
     global US_POSTCODES_URL
@@ -250,6 +256,7 @@ def init(default_settings_path: AnyStr):
     )
     POPULARITY_URL = cfg.get_opt_path("External", "POPULARITY_URL", POPULARITY_URL)
     SUBWAY_URL = cfg.get_opt("External", "SUBWAY_URL", SUBWAY_URL)
+    TRANSIT_URL = cfg.get_opt("External", "TRANSIT_URL", TRANSIT_URL)
     FOOD_URL = cfg.get_opt("External", "FOOD_URL", FOOD_URL)
 
     UK_POSTCODES_URL = cfg.get_opt("External", "UK_POSTCODES_URL", UK_POSTCODES_URL)
@@ -279,5 +286,9 @@ def init(default_settings_path: AnyStr):
     PLANET_COASTS_RAWGEOM_URL = os.path.join(PLANET_COASTS_URL, "latest_coasts.rawgeom")
 
     if DEBUG:
-        PLANET_URL = "http://osmz.ru/mwm/islands/islands.o5m"
-        PLANET_MD5_URL = "https://cloud.mail.ru/public/5v2F/f7cSaEXBC"
+        PLANET_URL = "https://www.dropbox.com/s/m3ru5tnj8g9u4cz/planet-latest.o5m?raw=1"
+        PLANET_MD5_URL = (
+            "https://www.dropbox.com/s/8wdl2hy22jgisk5/planet-latest.o5m.md5?raw=1"
+        )
+        NODE_STORAGE = "map"
+        NEED_PLANET_UPDATE = False

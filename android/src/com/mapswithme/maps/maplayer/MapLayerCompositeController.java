@@ -12,6 +12,7 @@ import com.mapswithme.maps.maplayer.traffic.widget.TrafficButtonController;
 import com.mapswithme.maps.tips.Tutorial;
 import com.mapswithme.maps.tips.TutorialClickListener;
 import com.mapswithme.util.InputUtils;
+import com.mapswithme.util.statistics.Statistics;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,11 +30,12 @@ public class MapLayerCompositeController implements MapLayerController
   private final TutorialClickListener mOpenBottomDialogClickListener;
 
   public MapLayerCompositeController(@NonNull TrafficButton traffic, @NonNull View subway,
-                                     @NonNull View isoLines, @NonNull AppCompatActivity activity)
+                                     @NonNull View isoLines, @NonNull View guides,
+                                     @NonNull AppCompatActivity activity)
   {
     mOpenBottomDialogClickListener = new OpenBottomDialogClickListener(activity);
     mActivity = activity;
-    mLayers = createLayers(traffic, subway, isoLines, activity, mOpenBottomDialogClickListener);
+    mLayers = createLayers(traffic, subway, isoLines, guides, activity, mOpenBottomDialogClickListener);
     mCurrentLayer = getCurrentLayer();
     toggleMode(mCurrentLayer.getMode());
   }
@@ -42,6 +44,7 @@ public class MapLayerCompositeController implements MapLayerController
   private static List<ControllerAndMode> createLayers(@NonNull TrafficButton traffic,
                                                       @NonNull View subway,
                                                       @NonNull View isoLinesView,
+                                                      @NonNull View guides,
                                                       @NonNull AppCompatActivity activity,
                                                       @NonNull View.OnClickListener dialogClickListener)
   {
@@ -54,17 +57,23 @@ public class MapLayerCompositeController implements MapLayerController
     isoLinesView.setOnClickListener(dialogClickListener);
     DefaultMapLayerController isoLinesController = new DefaultMapLayerController(isoLinesView);
 
+    guides.setOnClickListener(dialogClickListener);
+    DefaultMapLayerController guidesController = new DefaultMapLayerController(guides);
+
     ControllerAndMode subwayEntry = new ControllerAndMode(Mode.SUBWAY, Tutorial.SUBWAY,
                                                           subwayMapLayerController);
     ControllerAndMode trafficEntry = new ControllerAndMode(Mode.TRAFFIC, null,
                                                            trafficButtonController);
     ControllerAndMode isoLineEntry = new ControllerAndMode(Mode.ISOLINES, Tutorial.ISOLINES,
                                                            isoLinesController);
+    ControllerAndMode guidesEntry = new ControllerAndMode(Mode.GUIDES, null,
+                                                          guidesController);
 
     List<ControllerAndMode> entries = new ArrayList<>();
     entries.add(subwayEntry);
     entries.add(isoLineEntry);
     entries.add(trafficEntry);
+    entries.add(guidesEntry);
 
     return entries;
   }
@@ -320,8 +329,10 @@ public class MapLayerCompositeController implements MapLayerController
     {
       if (mCurrentLayer.getMode().isEnabled(mActivity))
       {
+        Mode mode = getCurrentLayer().getMode();
+        Statistics.INSTANCE.trackMapLayerClick(mode, Statistics.ParamValue.MAP, false);
         turnOff();
-        toggleMode(getCurrentLayer().getMode());
+        toggleMode(mode);
       }
       else
       {

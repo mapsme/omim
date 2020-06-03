@@ -117,7 +117,7 @@ public:
 
   void ProcessAllFeatures(string const & filename)
   {
-    feature::ForEachFromDat(filename, bind(&Processor::ProcessFeature, this, _1, _2));
+    feature::ForEachFeature(filename, bind(&Processor::ProcessFeature, this, _1, _2));
   }
 
   void BuildGraph(IndexGraph & graph) const
@@ -263,14 +263,14 @@ void CalcCrossMwmTransitions(
 {
   VehicleMaskBuilder const maskMaker(country, countryParentNameGetterFn);
   map<uint32_t, base::GeoObjectId> featureIdToOsmId;
-  CHECK(ParseRoadsFeatureIdToOsmIdMapping(mappingFile, featureIdToOsmId),
+  CHECK(ParseWaysFeatureIdToOsmIdMapping(mappingFile, featureIdToOsmId),
         ("Can't parse feature id to osm id mapping. File:", mappingFile));
 
   auto const & path = base::JoinPath(intermediateDir, CROSS_MWM_OSM_WAYS_DIR, country);
   auto const crossMwmOsmIdWays =
       generator::CrossMwmOsmWaysCollector::CrossMwmInfo::LoadFromFileToSet(path);
 
-  ForEachFromDat(mwmFile, [&](FeatureType & f, uint32_t featureId) {
+  ForEachFeature(mwmFile, [&](FeatureType & f, uint32_t featureId) {
     VehicleMask const roadMask = maskMaker.CalcRoadMask(f);
     if (roadMask == 0)
       return;

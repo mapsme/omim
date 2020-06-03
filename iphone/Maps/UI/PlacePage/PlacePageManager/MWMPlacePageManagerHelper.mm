@@ -29,7 +29,8 @@
 - (void)openCatalogMoreItems:(PlacePageData *)data;
 - (void)addBookmark:(PlacePageData *)data;
 - (void)removeBookmark:(PlacePageData *)data;
-- (void)editBookmark;
+- (void)editBookmark:(PlacePageData *)data;
+- (void)searchBookingHotels:(PlacePageData *)data;
 - (void)openPartner:(PlacePageData *)data;
 - (void)book:(PlacePageData *)data;
 - (void)share:(PlacePageData *)data;
@@ -125,8 +126,12 @@
   [[MWMMapViewControlsManager manager].placePageManager removeBookmark:data];
 }
 
-+ (void)editBookmark {
-  [[MWMMapViewControlsManager manager].placePageManager editBookmark];
++ (void)editBookmark:(PlacePageData *)data {
+  [[MWMMapViewControlsManager manager].placePageManager editBookmark:data];
+}
+
++ (void)searchBookingHotels:(PlacePageData *)data {
+  [[MWMMapViewControlsManager manager].placePageManager searchBookingHotels:data];
 }
 
 + (void)openPartner:(PlacePageData *)data {

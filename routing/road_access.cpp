@@ -33,9 +33,11 @@ void PrintKV(ostringstream & oss, KV const & kvs, size_t maxKVToShow)
 namespace routing
 {
 // RoadAccess --------------------------------------------------------------------------------------
-RoadAccess::RoadAccess() : m_currentTimeGetter([](){ return GetCurrentTimestamp(); })
-{
-}
+// @TODO(bykoinako) It's a fast fix for release. The idea behind it is to remember the time of
+// creation RoadAccess instance and return it instread of getting time when m_currentTimeGetter() is
+// called. But it's not understadbale now why m_currentTimeGetter() is called when
+// cross_mwm section is built.
+RoadAccess::RoadAccess() : m_currentTimeGetter([time = GetCurrentTimestamp()]() { return time; }) {}
 
 pair<RoadAccess::Type, RoadAccess::Confidence> RoadAccess::GetAccess(
     uint32_t featureId, RouteWeight const & weightToFeature) const
@@ -53,6 +55,10 @@ pair<RoadAccess::Type, RoadAccess::Confidence> RoadAccess::GetAccess(uint32_t fe
                                                                      time_t momentInTime) const
 {
   auto const itConditional = m_wayToAccessConditional.find(featureId);
+  // @TODO This check should be removed when access:conditional is switch on.
+  CHECK(m_pointToAccessConditional.empty(),
+        ("access:conditional is switched off now but m_pointToAccessConditional is not empty.",
+            m_pointToAccessConditional.size()));
   if (itConditional != m_wayToAccessConditional.cend())
   {
     auto const & conditional = itConditional->second;
@@ -73,6 +79,10 @@ pair<RoadAccess::Type, RoadAccess::Confidence> RoadAccess::GetAccess(RoadPoint c
                                                                      time_t momentInTime) const
 {
   auto const itConditional = m_pointToAccessConditional.find(point);
+  // @TODO This check should be removed when access:conditional is switch on.
+  CHECK(m_pointToAccessConditional.empty(),
+        ("access:conditional is switched off now but m_pointToAccessConditional is not empty.",
+         m_pointToAccessConditional.size()));
   if (itConditional != m_pointToAccessConditional.cend())
   {
     auto const & conditional = itConditional->second;

@@ -4,6 +4,7 @@
 
 #include "coding/file_reader.hpp"
 #include "coding/file_writer.hpp"
+#include "coding/internal/file_data.hpp"
 #include "coding/read_write_utils.hpp"
 
 #include "base/geo_object_id.hpp"
@@ -70,7 +71,7 @@ public:
   size_t GetTypesCount() const { return m_params.m_types.size(); }
 
   template <class ToDo>
-  void ForEachGeometryPointEx(ToDo && toDo) const
+  void ForEachPoint(ToDo && toDo) const
   {
     if (IsPoint())
     {
@@ -78,48 +79,34 @@ public:
     }
     else
     {
-      for (PointSeq const & points : m_polygons)
+      for (auto const & points : m_polygons)
       {
         for (auto const & pt : points)
-        {
-          if (!toDo(pt))
-            return;
-        }
-        toDo.EndRegion();
+          toDo(pt);
       }
     }
   }
 
   template <class ToDo>
-  void ForEachGeometryPoint(ToDo && toDo) const
-  {
-    ToDoWrapper<ToDo> wrapper(std::forward<ToDo>(toDo));
-    ForEachGeometryPointEx(std::move(wrapper));
-  }
-
-  template <class ToDo>
-  bool ForAnyGeometryPointEx(ToDo && toDo) const
+  bool ForAnyPoint(ToDo && toDo) const
   {
     if (IsPoint())
       return toDo(m_center);
 
-    for (PointSeq const & points : m_polygons)
+    for (auto const & points : m_polygons)
     {
-      for (auto const & pt : points)
-      {
-        if (toDo(pt))
-          return true;
-      }
-      toDo.EndRegion();
+      if (base::AnyOf(points, std::forward<ToDo>(toDo)))
+        return true;
     }
+
     return false;
   }
 
   template <class ToDo>
-  bool ForAnyGeometryPoint(ToDo && toDo) const
+  void ForEachPolygon(ToDo && toDo) const
   {
-    ToDoWrapper<ToDo> wrapper(std::forward<ToDo>(toDo));
-    return ForAnyGeometryPointEx(std::move(wrapper));
+    for (auto const & points : m_polygons)
+      toDo(points);
   }
 
   // To work with geometry type.
@@ -210,18 +197,6 @@ public:
   bool IsCoastCell() const { return (m_coastCell != -1); }
 
 protected:
-  template <class ToDo>
-  class ToDoWrapper
-  {
-  public:
-    ToDoWrapper(ToDo && toDo) : m_toDo(std::forward<ToDo>(toDo)) {}
-    bool operator()(m2::PointD const & p) { return m_toDo(p); }
-    void EndRegion() {}
-
-  private:
-    ToDo && m_toDo;
-  };
-
   // Can be one of the following:
   // - point in point-feature
   // - origin point of text [future] in line-feature
@@ -311,9 +286,9 @@ void ReadFromSourceRawFormat(Source & src, FeatureBuilder & fb)
   SerializationPolicy::Deserialize(fb, buffer);
 }
 
-// Process features in .dat file.
+// Process features in features file.
 template <class SerializationPolicy = serialization_policy::MinSize, class ToDo>
-void ForEachFromDatRawFormat(std::string const & filename, ToDo && toDo)
+void ForEachFeatureRawFormat(std::string const & filename, ToDo && toDo)
 {
   FileReader reader(filename);
   ReaderSource<FileReader> src(reader);
@@ -330,53 +305,11 @@ void ForEachFromDatRawFormat(std::string const & filename, ToDo && toDo)
   }
 }
 
-/// Parallel process features in .dat file.
-template <class SerializationPolicy = serialization_policy::MinSize, class ToDo>
-void ForEachParallelFromDatRawFormat(size_t threadsCount, std::string const & filename,
-                                     ToDo && toDo)
-{
-  CHECK_GREATER_OR_EQUAL(threadsCount, 1, ());
-  if (threadsCount == 1)
-    return ForEachFromDatRawFormat(filename, std::forward<ToDo>(toDo));
-
-  FileReader reader(filename);
-  ReaderSource<FileReader> src(reader);
-  //  TryReadAndCheckVersion<SerializationPolicy>(src);
-  auto const fileSize = reader.Size();
-  auto currPos = src.Pos();
-  std::mutex readMutex;
-  auto concurrentProcessor = [&] {
-    for (;;)
-    {
-      FeatureBuilder fb;
-      uint64_t featurePos;
-
-      {
-        std::lock_guard<std::mutex> lock(readMutex);
-
-        if (fileSize <= currPos)
-          break;
-
-        ReadFromSourceRawFormat<SerializationPolicy>(src, fb);
-        featurePos = currPos;
-        currPos = src.Pos();
-      }
-
-      toDo(fb, featurePos);
-    }
-  };
-
-  std::vector<std::thread> workers;
-  for (size_t i = 0; i < threadsCount; ++i)
-    workers.emplace_back(concurrentProcessor);
-  for (auto & thread : workers)
-    thread.join();
-}
 template <class SerializationPolicy = serialization_policy::MinSize>
 std::vector<FeatureBuilder> ReadAllDatRawFormat(std::string const & fileName)
 {
   std::vector<FeatureBuilder> fbs;
-  ForEachFromDatRawFormat<SerializationPolicy>(fileName, [&](auto && fb, auto const &) {
+  ForEachFeatureRawFormat<SerializationPolicy>(fileName, [&](auto && fb, auto const &) {
     fbs.emplace_back(std::move(fb));
   });
   return fbs;
@@ -387,8 +320,11 @@ class FeatureBuilderWriter
 {
 public:
   explicit FeatureBuilderWriter(std::string const & filename,
+                                bool mangleName = false,
                                 FileWriter::Op op = FileWriter::Op::OP_WRITE_TRUNCATE)
-    : m_writer(filename, op)
+    : m_filename(filename)
+    , m_mangleName(mangleName)
+    , m_writer(std::make_unique<Writer>(m_mangleName ? m_filename  + "_" : m_filename, op))
   {
     // TODO(maksimandrianov): I would like to support the verification of serialization versions,
     // but this requires reworking of FeatureCollector class and its derived classes. It is in
@@ -396,9 +332,26 @@ public:
     // static_cast<serialization_policy::TypeSerializationVersion>(SerializationPolicy::kSerializationVersion));
   }
 
+  explicit FeatureBuilderWriter(std::string const & filename,
+                                FileWriter::Op op)
+    : FeatureBuilderWriter(filename, false /* mangleName */, op)
+  {
+  }
+
+  ~FeatureBuilderWriter()
+  {
+    if (m_mangleName)
+    {
+      // Flush and close.
+      auto const currentFilename = m_writer->GetName();
+      m_writer.reset();
+      CHECK(base::RenameFileX(currentFilename, m_filename), (currentFilename, m_filename));
+    }
+  }
+
   void Write(FeatureBuilder const & fb)
   {
-    Write(m_writer, fb);
+    Write(*m_writer, fb);
   }
 
   template <typename Sink>
@@ -411,6 +364,8 @@ public:
   }
 
 private:
-  Writer m_writer;
+  std::string m_filename;
+  bool m_mangleName = false;
+  std::unique_ptr<Writer> m_writer;
 };
 }  // namespace feature

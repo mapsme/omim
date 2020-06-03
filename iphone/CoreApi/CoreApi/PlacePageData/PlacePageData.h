@@ -12,6 +12,7 @@
 @class HotelRooms;
 @class UgcData;
 @class ElevationProfileData;
+@class GuidesGalleryData;
 @class MWMMapNodeAttributes;
 
 typedef NS_ENUM(NSInteger, PlacePageSponsoredType) {
@@ -47,6 +48,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PlacePageData : NSObject
 
+@property(nonatomic, readonly, class) BOOL isGuide;
+@property(class, nonatomic, readonly) BOOL hasData;
+
 @property(nonatomic, readonly, nullable) PlacePageButtonsData *buttonsData;
 @property(nonatomic, readonly) PlacePagePreviewData *previewData;
 @property(nonatomic, readonly, nullable) PlacePageInfoData *infoData;
@@ -60,7 +64,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly, nullable) HotelRooms *hotelRooms;
 @property(nonatomic, readonly, nullable) UgcData *ugcData;
 @property(nonatomic, readonly, nullable) ElevationProfileData *elevationProfileData;
-@property(nonatomic, readonly) MWMMapNodeAttributes *mapNodeAttributes;
+@property(nonatomic, readonly, nullable) GuidesGalleryData *guidesGalleryData;
+@property(nonatomic, readonly, nullable) MWMMapNodeAttributes *mapNodeAttributes;
 @property(nonatomic, readonly, nullable) NSString *bookingSearchUrl;
 @property(nonatomic, readonly) BOOL isLargeToponim;
 @property(nonatomic, readonly) BOOL isSightseeing;
@@ -83,6 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly, nullable) NSString *sponsoredDeeplink;
 @property(nonatomic, copy, nullable) MWMVoidBlock onBookmarkStatusUpdate;
 @property(nonatomic, copy, nullable) MWMVoidBlock onMapNodeStatusUpdate;
+@property(nonatomic, copy, nullable) MWMVoidBlock onUgcStatusUpdate;
 @property(nonatomic, copy, nullable) void (^onMapNodeProgressUpdate)(uint64_t downloadedBytes, uint64_t totalBytes);
 
 - (instancetype)initWithLocalizationProvider:(id<IOpeningHoursLocalization>)localization;
@@ -92,6 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadUgcWithCompletion:(MWMVoidBlock)completion;
 - (void)loadCatalogPromoWithCompletion:(MWMVoidBlock)completion;
 - (void)updateBookmarkStatus;
+- (void)updateUgcStatus;
 
 @end
 

@@ -1,24 +1,33 @@
 package com.mapswithme.maps.widget.placepage;
 
-import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import com.mapswithme.maps.ChartController;
+import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.bookmarks.data.ElevationInfo;
 import com.mapswithme.maps.routing.RoutingController;
+import com.mapswithme.util.UiUtils;
+import com.mapswithme.util.statistics.Statistics;
 
 import java.util.Objects;
 
-public class ElevationProfileViewRenderer implements PlacePageViewRenderer<PlacePageData>
+public class ElevationProfileViewRenderer implements PlacePageViewRenderer<PlacePageData>,
+                                                     PlacePageStateObserver
 {
+  // Must be correspond to map/elevation_info.hpp constants.
   private static final int MAX_DIFFICULTY_LEVEL = 3;
+  private static final int UNKNOWN_DIFFICULTY = 0;
 
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private NestedScrollView mScrollView;
   @SuppressWarnings("NullableProblems")
   @NonNull
   private TextView mTitle;
@@ -44,24 +53,34 @@ public class ElevationProfileViewRenderer implements PlacePageViewRenderer<Place
   private ChartController mChartController;
   @Nullable
   private ElevationInfo mElevationInfo;
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private View mDifficultyContainer;
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private View mTimeContainer;
 
-  @SuppressLint("SetTextI18n")
   @Override
   public void render(@NonNull PlacePageData data)
   {
     mElevationInfo = (ElevationInfo) data;
     mChartController.setData(mElevationInfo);
-    Resources resources = mTitle.getResources();
-    String meters = " " + resources.getString(R.string.elevation_profile_m);
     mTitle.setText(mElevationInfo.getName());
     setDifficulty(mElevationInfo.getDifficulty());
-    mAscent.setText(mElevationInfo.getAscent() + meters);
-    mDescent.setText(mElevationInfo.getDescent() +  meters);
-    mMaxAltitude.setText(mElevationInfo.getMaxAltitude() + meters);
-    mMinAltitude.setText(mElevationInfo.getMinAltitude() + meters);
+    mAscent.setText(formatDistance(mElevationInfo.getAscent()));
+    mDescent.setText(formatDistance(mElevationInfo.getDescent()));
+    mMaxAltitude.setText(formatDistance(mElevationInfo.getMaxAltitude()));
+    mMinAltitude.setText(formatDistance(mElevationInfo.getMinAltitude()));
+    UiUtils.hideIf(mElevationInfo.getDuration() == 0, mTimeContainer);
     mTime.setText(RoutingController.formatRoutingTime(mTitle.getContext(),
                                                       (int) mElevationInfo.getDuration(),
                                                       R.dimen.text_size_body_2));
+  }
+
+  @NonNull
+  private static String formatDistance(int distance)
+  {
+    return Framework.nativeFormatAltitude(distance);
   }
 
   @Override
@@ -70,15 +89,18 @@ public class ElevationProfileViewRenderer implements PlacePageViewRenderer<Place
     Objects.requireNonNull(view);
     mChartController = new ChartController(view.getContext());
     mChartController.initialize(view);
+    mScrollView = (NestedScrollView) view;
     mTitle = view.findViewById(R.id.title);
     mAscent = view.findViewById(R.id.ascent);
     mDescent = view.findViewById(R.id.descent);
     mMaxAltitude = view.findViewById(R.id.max_altitude);
     mMinAltitude = view.findViewById(R.id.min_altitude);
-    mTime = view.findViewById(R.id.time);
-    mDifficultyLevels[0] = view.findViewById(R.id.difficulty_level_1);
-    mDifficultyLevels[1] = view.findViewById(R.id.difficulty_level_2);
-    mDifficultyLevels[2] = view.findViewById(R.id.difficulty_level_3);
+    mTimeContainer = view.findViewById(R.id.time_container);
+    mTime = mTimeContainer.findViewById(R.id.time);
+    mDifficultyContainer = view.findViewById(R.id.difficulty_container);
+    mDifficultyLevels[0] = mDifficultyContainer.findViewById(R.id.difficulty_level_1);
+    mDifficultyLevels[1] = mDifficultyContainer.findViewById(R.id.difficulty_level_2);
+    mDifficultyLevels[2] = mDifficultyContainer.findViewById(R.id.difficulty_level_3);
   }
 
   @Override
@@ -91,6 +113,19 @@ public class ElevationProfileViewRenderer implements PlacePageViewRenderer<Place
   {
     for (View levelView : mDifficultyLevels)
       levelView.setEnabled(false);
+
+    boolean invalidDifficulty = level > MAX_DIFFICULTY_LEVEL || level == UNKNOWN_DIFFICULTY;
+    UiUtils.hideIf(invalidDifficulty, mDifficultyContainer);
+    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTimeContainer.getLayoutParams();
+    params.removeRule(RelativeLayout.ALIGN_PARENT_END);
+    params.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+    params.removeRule(RelativeLayout.ALIGN_PARENT_START);
+    params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
+    params.addRule(invalidDifficulty ? RelativeLayout.ALIGN_PARENT_START : RelativeLayout.ALIGN_PARENT_END);
+    mTimeContainer.setLayoutParams(params);
+
+    if (invalidDifficulty)
+      return;
 
     for (int i = 0; i < level; i++)
       mDifficultyLevels[i].setEnabled(true);
@@ -108,5 +143,41 @@ public class ElevationProfileViewRenderer implements PlacePageViewRenderer<Place
     mElevationInfo = inState.getParcelable(PlacePageUtils.EXTRA_PLACE_PAGE_DATA);
     if (mElevationInfo != null)
       render(mElevationInfo);
+  }
+
+  @Override
+  public void onHide()
+  {
+    mScrollView.scrollTo(0, 0);
+    mChartController.onHide();
+  }
+
+  @Override
+  public void onPlacePageDetails()
+  {
+    if (mElevationInfo != null)
+      Statistics.INSTANCE.trackElevationProfilePageOpen(mElevationInfo.getServerId(),
+                                                        Statistics.ParamValue.FULL);
+  }
+
+  @Override
+  public void onPlacePagePreview()
+  {
+    if (mElevationInfo != null)
+      Statistics.INSTANCE.trackElevationProfilePageOpen(mElevationInfo.getServerId(),
+                                                        Statistics.ParamValue.PREVIEW);
+  }
+
+  @Override
+  public void onPlacePageClosed()
+  {
+    if (mElevationInfo != null)
+      Statistics.INSTANCE.trackElevationProfilePageClose(mElevationInfo.getServerId());
+  }
+
+  @Override
+  public boolean support(@NonNull PlacePageData data)
+  {
+    return data instanceof ElevationInfo;
   }
 }

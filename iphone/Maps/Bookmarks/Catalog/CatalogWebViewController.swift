@@ -128,11 +128,14 @@ final class CatalogWebViewController: WebViewController {
     self.view.styleName = "Background"
     
     updateProgress()
-    let backButton = UIBarButtonItem(image: UIImage(named: "ic_nav_bar_back"),
-                                  style: .plain,
-                                  target: self,
-                                  action: #selector(onBack))
-    navigationItem.leftBarButtonItem = backButton
+    navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "ic_nav_bar_back"),
+                                                       style: .plain,
+                                                       target: self,
+                                                       action: #selector(onBackPressed))
+    navigationItem.rightBarButtonItem = UIBarButtonItem(title: L("core_exit"),
+                                                        style: .plain,
+                                                        target: self,
+                                                        action:  #selector(onExitPressed))
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -159,20 +162,33 @@ final class CatalogWebViewController: WebViewController {
                         decidePolicyFor navigationAction: WKNavigationAction,
                         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
     let subscribePath = "subscribe"
+    let showOnMapPath = "map"
     guard let url = navigationAction.request.url,
-      url.scheme == "mapsme" || url.path.contains("buy_kml") || url.path.contains(subscribePath) else {
-        super.webView(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
-        return
+      url.scheme == "mapsme" ||
+        url.path.contains("buy_kml") ||
+        url.path.contains(subscribePath) ||
+        url.path.contains(showOnMapPath) else {
+          super.webView(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
+          return
+    }
+
+    defer {
+      decisionHandler(.cancel);
     }
 
     if url.path.contains(subscribePath) {
       showSubscribe(type: SubscriptionGroupType(catalogURL: url))
-      decisionHandler(.cancel);
+      return
+    }
+
+    if url.path.contains(showOnMapPath) {
+      guard let components = url.queryParams() else { return }
+      guard let serverId = components["server_id"] else { return }
+      showOnMap(serverId)
       return
     }
 
     processDeeplink(url)
-    decisionHandler(.cancel);
   }
 
   override func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
@@ -207,6 +223,12 @@ final class CatalogWebViewController: WebViewController {
                                                                   }
     }
     present(subscribeViewController, animated: true)
+  }
+
+  private func showOnMap(_ serverId: String) {
+    let groupId = MWMBookmarksManager.shared().getGroupId(serverId)
+    FrameworkHelper.show(onMap: groupId)
+    navigationController?.popToRootViewController(animated: true)
   }
 
   private func buildHeaders(completion: @escaping ([String : String]?) -> Void) {
@@ -249,7 +271,7 @@ final class CatalogWebViewController: WebViewController {
         self?.loadingIndicator.stopAnimating()
       case .needAuth:
         if let s = self, let navBar = s.navigationController?.navigationBar {
-          s.signup(anchor: navBar, onComplete: {
+          s.signup(anchor: navBar, source: .guideCatalogue, onComplete: {
             if $0 {
               s.handlePendingTransactions(completion: completion)
             } else {
@@ -266,10 +288,7 @@ final class CatalogWebViewController: WebViewController {
   }
 
   private func parseUrl(_ url: URL) -> CatalogCategoryInfo? {
-    guard let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
-    guard let components = urlComponents.queryItems?.reduce(into: [:], { $0[$1.name] = $1.value })
-      else { return nil }
-
+    guard let components = url.queryParams() else { return nil }
     return CatalogCategoryInfo(components, type: SubscriptionGroupType(catalogURL: url))
   }
 
@@ -316,7 +335,7 @@ final class CatalogWebViewController: WebViewController {
           switch (status) {
           case .needAuth:
             if let s = self, let navBar = s.navigationController?.navigationBar{
-              s.signup(anchor: navBar) {
+              s.signup(anchor: navBar, source: .guideCatalogue) {
                 if $0 { s.download() }
               }
             }
@@ -403,12 +422,19 @@ final class CatalogWebViewController: WebViewController {
     progressBgView.isHidden = numberOfTasks == 0
   }
 
-  @objc private func onBack() {
+  @objc private func onBackPressed() {
     if (webView.canGoBack) {
       back()
+      Statistics.logEvent(kStatGuidesBack, withParameters: [kStatMethod: kStatBack])
     } else {
       navigationController?.popViewController(animated: true)
+      Statistics.logEvent(kStatGuidesClose, withParameters: [kStatMethod: kStatBack])
     }
+  }
+
+  @objc private func onExitPressed() {
+    goBack()
+    Statistics.logEvent(kStatGuidesClose, withParameters: [kStatMethod: kStatDone])
   }
 
   @objc private func onFwd() {

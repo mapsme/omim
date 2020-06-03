@@ -922,6 +922,7 @@ void FrontendRenderer::AcceptMessage(ref_ptr<Message> message)
   case Message::Type::UpdateMetalines:
   case Message::Type::EnableUGCRendering:
   case Message::Type::EnableIsolines:
+  case Message::Type::EnableGuides:
     {
       m_forceUpdateScene = true;
       break;
@@ -1335,7 +1336,8 @@ void FrontendRenderer::ProcessSelection(ref_ptr<SelectObjectMessage> msg)
     double offsetZ = 0.0;
     ScreenBase modelView;
     m_userEventStream.GetTargetScreen(modelView);
-    if (modelView.isPerspective())
+    if (modelView.isPerspective() &&
+        msg->GetSelectedObject() != SelectionShape::ESelectedObject::OBJECT_TRACK)
     {
       dp::TOverlayContainer selectResult;
       if (m_overlayTree->IsNeedUpdate())
@@ -1472,7 +1474,8 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView, bool activeFram
                                     m_frameValues);
 
     if (m_selectionShape != nullptr &&
-        m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK)
+        (m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_USER_MARK ||
+         m_selectionShape->GetSelectedObject() == SelectionShape::OBJECT_TRACK))
     {
       m_selectionShape->Render(m_context, make_ref(m_gpuProgramManager), modelView, m_currentZoomLevel,
                                m_frameValues);
@@ -1486,6 +1489,8 @@ void FrontendRenderer::RenderScene(ScreenBase const & modelView, bool activeFram
       RenderUserMarksLayer(modelView, DepthLayer::UserMarkLayer);
       RenderUserMarksLayer(modelView, DepthLayer::RoutingBottomMarkLayer);
       RenderUserMarksLayer(modelView, DepthLayer::RoutingMarkLayer);
+      RenderUserMarksLayer(modelView, DepthLayer::GuidesBottomMarkLayer);
+      RenderUserMarksLayer(modelView, DepthLayer::GuidesMarkLayer);
       RenderSearchMarksLayer(modelView);
     }
 
@@ -1854,7 +1859,9 @@ void FrontendRenderer::BuildOverlayTree(ScreenBase const & modelView)
                                            DepthLayer::LocalAdsMarkLayer,
                                            DepthLayer::NavigationLayer,
                                            DepthLayer::RoutingBottomMarkLayer,
-                                           DepthLayer::RoutingMarkLayer};
+                                           DepthLayer::RoutingMarkLayer,
+                                           DepthLayer::GuidesBottomMarkLayer,
+                                           DepthLayer::GuidesMarkLayer};
   BeginUpdateOverlayTree(modelView);
   for (auto const & layerId : layers)
   {

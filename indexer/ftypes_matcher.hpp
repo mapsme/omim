@@ -91,6 +91,27 @@ public:
   DECLARE_CHECKER_INSTANCE(IsRailwayStationChecker);
 };
 
+class IsOutdoorChecker : public BaseChecker
+{
+  IsOutdoorChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsOutdoorChecker);
+};
+
+class IsTransportChecker : public BaseChecker
+{
+  IsTransportChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsTransportChecker);
+};
+
+class IsParkingChecker : public BaseChecker
+{
+  IsParkingChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsParkingChecker);
+};
+
 class IsSubwayStationChecker : public BaseChecker
 {
   IsSubwayStationChecker();
@@ -365,6 +386,14 @@ public:
   DECLARE_CHECKER_INSTANCE(IsCuisineChecker);
 };
 
+class IsRecyclingTypeChecker : public BaseChecker
+{
+  IsRecyclingTypeChecker();
+
+public:
+  DECLARE_CHECKER_INSTANCE(IsRecyclingTypeChecker);
+};
+
 class IsCityChecker : public BaseChecker
 {
   IsCityChecker();
@@ -430,15 +459,27 @@ public:
   DECLARE_CHECKER_INSTANCE(IsLocalityChecker);
 };
 
-template <typename Types>
-bool IsCityTownOrVillage(Types const & types)
+
+class IsCountryChecker : public BaseChecker
 {
-  feature::TypesHolder h;
-  for (auto const t : types)
-    h.Add(t);
-  auto const type = IsLocalityChecker::Instance().GetType(h);
-  return type == LocalityType ::City || type == LocalityType ::Town || type == LocalityType ::Village;
-}
+  IsCountryChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsCountryChecker);
+};
+
+class IsStateChecker : public BaseChecker
+{
+  IsStateChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsStateChecker);
+};
+
+class IsCityTownOrVillageChecker : public BaseChecker
+{
+  IsCityTownOrVillageChecker();
+public:
+  DECLARE_CHECKER_INSTANCE(IsCityTownOrVillageChecker);
+};
 
 /// @name Get city radius and population.
 /// @param r Radius in meters.

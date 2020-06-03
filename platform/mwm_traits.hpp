@@ -22,6 +22,12 @@ public:
     // stored behind every node of the search trie.
     // This format corresponds to ValueList<Uint64IndexValue>.
     CompressedBitVector,
+
+    // A compressed bit vector of feature indices is
+    // stored behind every node of the search trie.
+    // This format corresponds to ValueList<Uint64IndexValue>.
+    // Section has header.
+    CompressedBitVectorWithHeader,
   };
 
   enum class HouseToStreetTableFormat
@@ -36,6 +42,9 @@ public:
 
     // Elias-Fano based map from feature id to corresponding street feature id.
     EliasFanoMap,
+
+    // Versioning is independent of MwmTraits: section format depends on the section header.
+    HouseToStreetTableWithHeader,
 
     // The format of relation is unknown. Most likely, an error has occured.
     Unknown

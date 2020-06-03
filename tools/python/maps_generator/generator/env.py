@@ -16,13 +16,14 @@ from typing import Set
 from typing import Type
 from typing import Union
 
-from . import settings
-from .osmtools import build_osmtools
-from .stages import Stage
-from .status import Status
-from ..utils.file import find_executable
-from ..utils.file import is_executable
-from ..utils.file import symlink_force
+from maps_generator.generator import settings
+from maps_generator.generator import status
+from maps_generator.generator.osmtools import build_osmtools
+from maps_generator.generator.stages import Stage
+from maps_generator.generator.status import Status
+from maps_generator.utils.file import find_executable
+from maps_generator.utils.file import is_executable
+from maps_generator.utils.file import make_symlink
 
 logger = logging.getLogger("maps_generator")
 
@@ -212,6 +213,12 @@ class PathProvider:
         return self.intermediate_data_path
 
     @property
+    def transit_path_experimental(self) -> AnyStr:
+        return os.path.join(
+            self.intermediate_data_path, "transit_from_gtfs"
+        )
+
+    @property
     def planet_osm_pbf(self) -> AnyStr:
         return os.path.join(self.build_path, f"{settings.PLANET}.osm.pbf")
 
@@ -221,15 +228,15 @@ class PathProvider:
 
     @property
     def main_status_path(self) -> AnyStr:
-        return os.path.join(self.status_path, "stages.status")
+        return os.path.join(self.status_path, status.with_stat_ext("stages"))
 
     @property
     def packed_polygons_path(self) -> AnyStr:
-        return os.path.join(self.intermediate_data_path, "packed_polygons.bin")
+        return os.path.join(self.mwm_path, "packed_polygons.bin")
 
     @property
     def localads_path(self) -> AnyStr:
-        return os.path.join(self.intermediate_data_path, f"localads_{self.mwm_version}")
+        return os.path.join(self.build_path, f"localads_{self.mwm_version}")
 
     @property
     def types_path(self) -> AnyStr:
@@ -335,6 +342,9 @@ class PathProvider:
         return settings.TMPDIR
 
 
+COUNTRIES_NAMES = set(get_all_countries_list(PathProvider.borders_path()))
+
+
 class Env:
     """
     Env provides a generation environment. It sets up instruments and paths,
@@ -346,7 +356,9 @@ class Env:
         countries: Optional[List[AnyStr]] = None,
         production: bool = False,
         build_name: Optional[AnyStr] = None,
+        build_suffix: AnyStr = "",
         skipped_stages: Optional[Set[Type[Stage]]] = None,
+        force_download_files: bool = False,
     ):
         self.setup_logging()
 
@@ -358,6 +370,7 @@ class Env:
         self.gen_tool = self.setup_generator_tool()
 
         self.production = production
+        self.force_download_files = force_download_files
         self.countries = countries
         self.skipped_stages = set() if skipped_stages is None else skipped_stages
         if self.countries is None:
@@ -366,18 +379,28 @@ class Env:
         self.node_storage = settings.NODE_STORAGE
 
         version_format = "%Y_%m_%d__%H_%M_%S"
+        suffix_div = "-"
         dt = None
         if build_name is None:
             dt = datetime.datetime.now()
             build_name = dt.strftime(version_format)
+            if build_suffix:
+                build_name = f"{build_name}{suffix_div}{build_suffix}"
         else:
-            dt = datetime.datetime.strptime(build_name, version_format)
+            s = build_name.split(suffix_div, maxsplit=1)
+            if len(s) == 1:
+                s.append("")
 
+            date_str, build_suffix = s
+            dt = datetime.datetime.strptime(date_str, version_format)
+
+        self.build_suffix = build_suffix
         self.mwm_version = dt.strftime("%y%m%d")
         self.planet_version = dt.strftime("%s")
         self.build_path = os.path.join(settings.MAIN_OUT_PATH, build_name)
         self.build_name = build_name
 
+        logger.info(f"Build name is {self.build_name}.")
         logger.info(f"Build path is {self.build_path}.")
 
         self.paths = PathProvider(self.build_path, self.mwm_version)
@@ -386,7 +409,12 @@ class Env:
         self.setup_borders()
         self.setup_osm2ft()
 
-        self.main_status = Status()
+        if self.force_download_files:
+            for item in os.listdir(self.paths.status_path):
+                if item.endswith(".download"):
+                    os.remove(os.path.join(self.paths.status_path, item))
+
+        self.main_status = status.Status()
         # self.countries_meta stores log files and statuses for each country.
         self.countries_meta = collections.defaultdict(dict)
         self.subprocess_out = None
@@ -494,22 +522,14 @@ class Env:
 
     def setup_borders(self):
         temp_borders = self.paths.generation_borders_path
-        # It is needed in case of rebuilding several mwms.
-        for filename in os.listdir(temp_borders):
-            file_path = os.path.join(temp_borders, filename)
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-
         borders = PathProvider.borders_path()
         for x in self.countries:
             if x in WORLDS_NAMES:
                 continue
 
             poly = f"{x}.poly"
-            os.symlink(os.path.join(borders, poly), os.path.join(temp_borders, poly))
-        symlink_force(temp_borders, os.path.join(self.paths.draft_path, "borders"))
+            make_symlink(os.path.join(borders, poly), os.path.join(temp_borders, poly))
+        make_symlink(temp_borders, os.path.join(self.paths.draft_path, "borders"))
 
     def setup_osm2ft(self):
         for x in os.listdir(self.paths.osm2ft_path):

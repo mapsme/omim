@@ -1,6 +1,10 @@
 #include "generator/raw_generator.hpp"
 
 #include "generator/complex_loader.hpp"
+#include "generator/features_processing_helpers.hpp"
+#include "generator/final_processor_coastline.hpp"
+#include "generator/final_processor_country.hpp"
+#include "generator/final_processor_world.hpp"
 #include "generator/osm_source.hpp"
 #include "generator/processor_factory.hpp"
 #include "generator/raw_generator_writer.hpp"
@@ -17,7 +21,7 @@ RawGenerator::RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount,
   : m_genInfo(genInfo)
   , m_threadsCount(threadsCount)
   , m_chunkSize(chunkSize)
-  , m_cache(std::make_shared<generator::cache::IntermediateData>(genInfo))
+  , m_cache(std::make_shared<generator::cache::IntermediateData>(m_intermediateDataObjectsCache, genInfo))
   , m_queue(std::make_shared<FeatureProcessorQueue>())
   , m_translators(std::make_shared<TranslatorCollection>())
 {
@@ -25,7 +29,8 @@ RawGenerator::RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount,
 
 void RawGenerator::ForceReloadCache()
 {
-  m_cache = std::make_shared<cache::IntermediateData>(m_genInfo, true /* forceReload */);
+  m_intermediateDataObjectsCache.Clear();
+  m_cache = std::make_shared<cache::IntermediateData>(m_intermediateDataObjectsCache, m_genInfo);
 }
 
 std::shared_ptr<FeatureProcessorQueue> RawGenerator::GetQueue() { return m_queue; }
@@ -77,6 +82,11 @@ bool RawGenerator::Execute()
 {
   if (!GenerateFilteredFeatures())
     return false;
+
+  m_translators.reset();
+  m_cache.reset();
+  m_queue.reset();
+  m_intermediateDataObjectsCache.Clear();
 
   while (!m_finalProcessors.empty())
   {
@@ -174,7 +184,7 @@ bool RawGenerator::GenerateFilteredFeatures()
       continue;
 
     translators.Emit(std::move(elements));
-    elements = vector<OsmElement>(m_chunkSize);
+    elements = std::vector<OsmElement>(m_chunkSize);
     element_pos = 0;
   }
   elements.resize(element_pos);

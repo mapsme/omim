@@ -2,21 +2,21 @@ final class ExpandableLabel: UIView {
   typealias OnExpandClosure = (() -> Void) -> Void
   
   private let stackView = UIStackView()
-  private let textLabel = UILabel()
+  private let textView = UITextView()
   private let expandLabel = UILabel()
 
   var onExpandClosure: OnExpandClosure?
 
   var font = UIFont.systemFont(ofSize: 16) {
     didSet {
-      textLabel.font = font
+      textView.font = font
       expandLabel.font = font
     }
   }
 
   var textColor = UIColor.black {
     didSet {
-      textLabel.textColor = textColor
+      textView.textColor = textColor
     }
   }
 
@@ -28,14 +28,16 @@ final class ExpandableLabel: UIView {
 
   var text: String? {
     didSet {
-      textLabel.text = text
+      containerText = text
+      textView.text = text
       expandLabel.isHidden = true
     }
   }
 
   var attributedText: NSAttributedString? {
     didSet {
-      textLabel.attributedText = attributedText
+      containerText = attributedText?.string
+      textView.attributedText = attributedText
       expandLabel.isHidden = true
     }
   }
@@ -48,8 +50,22 @@ final class ExpandableLabel: UIView {
 
   var numberOfLines = 2 {
     didSet {
-      textLabel.numberOfLines = numberOfLines > 0 ? numberOfLines + 1 : 0
+      containerMaximumNumberOfLines = numberOfLines > 0 ? numberOfLines + 1 : 0
     }
+  }
+
+  private var containerText: String?
+  private var containerMaximumNumberOfLines = 2 {
+    didSet {
+      textView.textContainer.maximumNumberOfLines = containerMaximumNumberOfLines
+      textView.invalidateIntrinsicContentSize()
+    }
+  }
+
+  override func setContentHuggingPriority(_ priority: UILayoutPriority, for axis: NSLayoutConstraint.Axis) {
+    super.setContentHuggingPriority(priority, for: axis)
+    textView.setContentHuggingPriority(priority, for: axis)
+    expandLabel.setContentHuggingPriority(priority, for: axis)
   }
 
   override init(frame: CGRect) {
@@ -65,19 +81,25 @@ final class ExpandableLabel: UIView {
   private func commonInit() {
     stackView.axis = .vertical
     stackView.alignment = .leading
-    textLabel.numberOfLines = numberOfLines > 0 ? numberOfLines + 1 : 0
-    textLabel.contentMode = .topLeft
-    textLabel.font = font
-    textLabel.textColor = textColor
-    textLabel.text = text
-    textLabel.attributedText = attributedText
+    containerMaximumNumberOfLines = numberOfLines > 0 ? numberOfLines + 1 : 0
+    textView.textContainer.lineFragmentPadding = 0;
+    textView.isScrollEnabled = false
+    textView.isEditable = false
+    textView.textContainerInset = .zero
+    textView.contentMode = .topLeft
+    textView.font = font
+    textView.textColor = textColor
+    textView.text = text
+    textView.attributedText = attributedText
+    textView.setContentHuggingPriority(contentHuggingPriority(for: .vertical), for: .vertical)
+    expandLabel.setContentHuggingPriority(contentHuggingPriority(for: .vertical), for: .vertical)
     expandLabel.font = font
     expandLabel.textColor = expandColor
     expandLabel.text = expandText
     expandLabel.isHidden = true
     addSubview(stackView)
 
-    stackView.addArrangedSubview(textLabel)
+    stackView.addArrangedSubview(textView)
     stackView.addArrangedSubview(expandLabel)
     stackView.alignToSuperview()
     let gr = UITapGestureRecognizer(target: self, action: #selector(onExpand(_:)))
@@ -89,7 +111,7 @@ final class ExpandableLabel: UIView {
     
     let expandClosure = {
       UIView.animate(withDuration: kDefaultAnimationDuration) {
-        self.textLabel.numberOfLines = 0
+        self.containerMaximumNumberOfLines = 0
         self.expandLabel.isHidden = true
         self.stackView.layoutIfNeeded()
       }
@@ -104,18 +126,23 @@ final class ExpandableLabel: UIView {
   override func layoutSubviews() {
     super.layoutSubviews()
 
-    guard textLabel.numberOfLines > 0, textLabel.numberOfLines != numberOfLines, let s = textLabel.text as NSString? else { return }
+    guard containerMaximumNumberOfLines > 0,
+      containerMaximumNumberOfLines != numberOfLines,
+      let s = containerText,
+      !s.isEmpty else {
+        return
+    }
     let textRect = s.boundingRect(with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
                                   options: .usesLineFragmentOrigin,
                                   attributes: [.font: font],
                                   context: nil)
-    let lineHeight = textLabel.font.lineHeight
+    let lineHeight = font.lineHeight
     if Int(lineHeight * CGFloat(numberOfLines + 1)) >= Int(textRect.height) {
       expandLabel.isHidden = true
-      textLabel.numberOfLines = 0
+      containerMaximumNumberOfLines = 0
     } else {
       expandLabel.isHidden = false
-      textLabel.numberOfLines = numberOfLines
+      containerMaximumNumberOfLines = numberOfLines
     }
     layoutIfNeeded()
   }

@@ -6,17 +6,19 @@ from typing import AnyStr
 from typing import Dict
 from typing import Iterable
 from typing import List
+from typing import Tuple
 from typing import Union
 
 import math
 
 from mwm import mwm_interface as mi
+from mwm.exceptions import FeaturesSectionParseError
 
 logger = logging.getLogger(__name__)
 
 
 class MwmPython(mi.Mwm):
-    def __init__(self, filename: str, parse: bool = False):
+    def __init__(self, filename: str, parse: bool = True):
         super().__init__(filename)
 
         self.f = open(filename, "rb")
@@ -50,10 +52,7 @@ class MwmPython(mi.Mwm):
 
     def __len__(self) -> int:
         old_pos = self.file.tell()
-        self.seek_tag("dat")
-        tag_info = self.get_tag("dat")
-        pos = tag_info.offset
-        end = pos + tag_info.size
+        pos, end = self._get_features_offset_and_size()
         size = 0
         while pos < end:
             self.file.seek(pos)
@@ -64,7 +63,6 @@ class MwmPython(mi.Mwm):
         return size
 
     def __iter__(self) -> Iterable:
-        assert self.has_tag("dat")
         return MwmPythonIter(self)
 
     def get_tag(self, name: str) -> mi.SectionInfo:
@@ -88,6 +86,10 @@ class MwmPython(mi.Mwm):
         return tags
 
     def _read_metadata_offsets(self) -> Dict[int, int]:
+        if self.version_.format < 10 :
+          logger.warn("Method population() does not have an implementation.")
+          return None
+
         self.seek_tag("metaidx")
         tag_info = self.get_tag("metaidx")
         current = 0
@@ -98,6 +100,32 @@ class MwmPython(mi.Mwm):
             metadata_offsets[id] = offs
             current += 8
         return metadata_offsets
+
+    def _get_features_offset_and_size(self) -> Tuple[int, int]:
+        old_pos = self.file.tell()
+        pos = 0
+        end = 0
+        if self.version_.format < 10:
+            assert self.has_tag("dat")
+            tag_info = self.get_tag("dat")
+            pos = tag_info.offset
+            end = pos + tag_info.size
+        else:
+            assert self.has_tag("features")
+            tag_info = self.get_tag("features")
+            self.seek_tag("features")
+            version = read_uint(self.file, 1)
+            if version != 0:
+                self.file.seek(old_pos)
+                raise FeaturesSectionParseError(f"Unexpected features section version: {version}.")
+            features_offset = read_uint(self.file, bytelen=4)
+            if features_offset >= tag_info.size:
+                self.file.seek(old_pos)
+                raise FeaturesSectionParseError(f"Wrong features offset: {features_offset}.")
+            pos = tag_info.offset + features_offset
+            end = pos + tag_info.size - features_offset
+        self.file.seek(old_pos)
+        return pos, end
 
     def _read_version(self) -> mi.MwmVersion:
         self.seek_tag("version")
@@ -115,10 +143,8 @@ class MwmPython(mi.Mwm):
 class MwmPythonIter:
     def __init__(self, mwm: MwmPython):
         self.mwm = mwm
+        self.pos, self.end = self.mwm._get_features_offset_and_size()
         self.index = 0
-        tag_info = self.mwm.get_tag("dat")
-        self.pos = tag_info.offset
-        self.end = self.pos + tag_info.size
 
     def __iter__(self) -> "MwmPythonIter":
         return self

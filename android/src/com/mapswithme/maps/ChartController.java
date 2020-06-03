@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerView;
@@ -20,13 +19,13 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.mapswithme.maps.base.Hideable;
 import com.mapswithme.maps.base.Initializable;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.ElevationInfo;
 import com.mapswithme.maps.widget.placepage.AxisValueFormatter;
 import com.mapswithme.maps.widget.placepage.CurrentLocationMarkerView;
 import com.mapswithme.maps.widget.placepage.FloatingMarkerView;
-import com.mapswithme.util.StringUtils;
 import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.Utils;
 
@@ -37,13 +36,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class ChartController implements OnChartValueSelectedListener, Initializable<View>,
-        BookmarkManager.OnElevationActivePointChangedListener,
-        BookmarkManager.OnElevationCurrentPositionChangedListener
+                                        BookmarkManager.OnElevationActivePointChangedListener,
+                                        BookmarkManager.OnElevationCurrentPositionChangedListener,
+                                        Hideable
 {
   private static final int CHART_Y_LABEL_COUNT = 3;
   private static final int CHART_X_LABEL_COUNT = 6;
   private static final int CHART_ANIMATION_DURATION = 1500;
   private static final int CHART_FILL_ALPHA = (int) (0.12 * 255);
+  private static final int CHART_AXIS_GRANULARITY = 100;
   private static final float CUBIC_INTENSITY = 0.2f;
   private static final int CURRENT_POSITION_OUT_OF_TRACK = -1;
 
@@ -81,7 +82,7 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
     final Resources resources = mContext.getResources();
     mChart = view.findViewById(R.id.elevation_profile_chart);
 
-    mFloatingMarkerView = new FloatingMarkerView(mContext);
+    mFloatingMarkerView = view.findViewById(R.id.floating_marker);
     mCurrentLocationMarkerView = new CurrentLocationMarkerView(mContext);
     mFloatingMarkerView.setChartView(mChart);
     mCurrentLocationMarkerView.setChartView(mChart);
@@ -93,9 +94,8 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
     mChart.setTouchEnabled(true);
     mChart.setOnChartValueSelectedListener(this);
     mChart.setDrawGridBackground(false);
-    mChart.setDragEnabled(true);
-    mChart.setScaleEnabled(true);
-    mChart.setPinchZoom(true);
+    mChart.setScaleXEnabled(true);
+    mChart.setScaleYEnabled(false);
     mChart.setExtraTopOffset(0);
     int sideOffset = resources.getDimensionPixelSize(R.dimen.margin_base);
     int topOffset = 0;
@@ -125,13 +125,14 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
   {
     XAxis x = mChart.getXAxis();
     x.setLabelCount(CHART_X_LABEL_COUNT, false);
-    x.setAvoidFirstLastClipping(true);
     x.setDrawGridLines(false);
+    x.setGranularity(CHART_AXIS_GRANULARITY);
+    x.setGranularityEnabled(true);
     x.setTextColor(ThemeUtils.getColor(mContext, R.attr.elevationProfileAxisLabelColor));
     x.setPosition(XAxis.XAxisPosition.BOTTOM);
     x.setAxisLineColor(ThemeUtils.getColor(mContext, R.attr.dividerHorizontal));
     x.setAxisLineWidth(mContext.getResources().getDimensionPixelSize(R.dimen.divider_height));
-    ValueFormatter xAxisFormatter = new AxisValueFormatter();
+    ValueFormatter xAxisFormatter = new AxisValueFormatter(mChart);
     x.setValueFormatter(xAxisFormatter);
 
     YAxis y = mChart.getAxisLeft();
@@ -163,13 +164,14 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
     set.setDrawCircles(false);
     int lineThickness = mContext.getResources().getDimensionPixelSize(R.dimen.divider_width);
     set.setLineWidth(lineThickness);
-    set.setCircleColor(mContext.getResources().getColor(R.color.base_accent));
-    set.setColor(mContext.getResources().getColor(R.color.base_accent));
+    int color = ThemeUtils.getColor(mContext, R.attr.elevationProfileColor);
+    set.setCircleColor(color);
+    set.setColor(color);
     set.setFillAlpha(CHART_FILL_ALPHA);
+    set.setFillColor(color);
     set.setDrawHorizontalHighlightIndicator(false);
     set.setHighlightLineWidth(lineThickness);
     set.setHighLightColor(mContext.getResources().getColor(R.color.base_accent_transparent));
-    set.setFillColor(mContext.getResources().getColor(R.color.elevation_profile));
 
     LineData data = new LineData(set);
     data.setValueTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.text_size_icon_title));
@@ -178,8 +180,8 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
     mChart.setData(data);
     mChart.animateX(CHART_ANIMATION_DURATION);
 
-    mMinAltitude.setText(StringUtils.nativeFormatDistance(info.getMinAltitude()));
-    mMaxAltitude.setText(StringUtils.nativeFormatDistance(info.getMaxAltitude()));
+    mMinAltitude.setText(Framework.nativeFormatAltitude(info.getMinAltitude()));
+    mMaxAltitude.setText(Framework.nativeFormatAltitude(info.getMaxAltitude()));
 
     highlightActivePointManually();
   }
@@ -247,5 +249,12 @@ public class ChartController implements OnChartValueSelectedListener, Initializa
   {
     double activeX = BookmarkManager.INSTANCE.getElevationActivePointDistance(mTrackId);
     return new Highlight((float) activeX, 0f, 0);
+  }
+
+  @Override
+  public void onHide()
+  {
+    mChart.fitScreen();
+    mTrackId = Utils.INVALID_ID;
   }
 }

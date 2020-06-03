@@ -9,6 +9,7 @@
 #include "map/discovery/discovery_manager.hpp"
 #include "map/displacement_mode_manager.hpp"
 #include "map/features_fetcher.hpp"
+#include "map/guides_manager.hpp"
 #include "map/isolines_manager.hpp"
 #include "map/local_ads_manager.hpp"
 #include "map/mwm_url.hpp"
@@ -214,6 +215,7 @@ protected:
 
   drape_ptr<df::DrapeEngine> m_drapeEngine;
 
+  // Time in seconds.
   double m_startForegroundTime = 0.0;
   double m_startBackgroundTime = 0.0;
 
@@ -241,6 +243,7 @@ protected:
 
   TransitReadManager m_transitManager;
   IsolinesManager m_isolinesManager;
+  GuidesManager m_guidesManager;
 
   // Note. |m_routingManager| should be declared before |m_trafficManager|
   RoutingManager m_routingManager;
@@ -439,6 +442,7 @@ private:
   std::optional<place_page::Info> BuildPlacePageInfo(place_page::BuildInfo const & buildInfo);
   void BuildTrackPlacePage(BookmarkManager::TrackSelectionInfo const & trackSelectionInfo,
                            place_page::Info & info);
+  void BuildGuidePlacePage(GuideMark const & guideMark, place_page::Info & info);
   BookmarkManager::TrackSelectionInfo FindTrackInTapPosition(place_page::BuildInfo const & buildInfo) const;
   UserMark const * FindUserMarkInTapPosition(place_page::BuildInfo const & buildInfo) const;
   FeatureID FindBuildingAtPoint(m2::PointD const & mercator) const;
@@ -770,6 +774,8 @@ public:
   IsolinesManager & GetIsolinesManager();
   IsolinesManager const & GetIsolinesManager() const;
 
+  GuidesManager & GetGuidesManager();
+
   bool LoadTrafficEnabled();
   void SaveTrafficEnabled(bool trafficEnabled);
 
@@ -780,7 +786,10 @@ public:
   void SaveTransitSchemeEnabled(bool enabled);
 
   bool LoadIsolinesEnabled();
-  void SaveIsolonesEnabled(bool enabled);
+  void SaveIsolinesEnabled(bool enabled);
+
+  bool LoadGuidesEnabled();
+  void SaveGuidesEnabled(bool enabled);
 
   dp::ApiVersion LoadPreferredGraphicsAPI();
   void SavePreferredGraphicsAPI(dp::ApiVersion apiVersion);

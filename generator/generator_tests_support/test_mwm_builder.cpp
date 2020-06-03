@@ -87,7 +87,8 @@ bool TestMwmBuilder::Add(FeatureBuilder & fb)
 {
   CHECK(m_collector, ("It's not possible to add features after call to Finish()."));
 
-  if (ftypes::IsCityTownOrVillage(fb.GetTypes()) && fb.GetGeomType() == GeomType::Area)
+  auto const & isCityTownOrVillage = ftypes::IsCityTownOrVillageChecker::Instance();
+  if (isCityTownOrVillage(fb.GetTypes()) && fb.GetGeomType() == GeomType::Area)
   {
     auto const & metadata = fb.GetMetadata();
     uint64_t testId;
@@ -95,7 +96,6 @@ bool TestMwmBuilder::Add(FeatureBuilder & fb)
     m_boundariesTable.Append(testId, indexer::CityBoundary(fb.GetOuterGeometry()));
 
     auto const center = fb.GetGeometryCenter();
-    fb.ResetGeometry();
     fb.SetCenter(center);
   }
 

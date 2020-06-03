@@ -1,5 +1,7 @@
 package com.mapswithme.maps.bookmarks.data;
 
+import android.text.TextUtils;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
 import androidx.annotation.MainThread;
@@ -124,10 +126,15 @@ public enum BookmarkManager
     ICONS.add(new Icon(Icon.PREDEFINED_COLOR_BLUEGRAY, Icon.BOOKMARK_ICON_TYPE_NONE));
   }
 
-  public void toggleCategoryVisibility(long catId)
+  public void toggleCategoryVisibility(@NonNull BookmarkCategory category)
   {
-    boolean isVisible = isVisible(catId);
-    setVisibility(catId, !isVisible);
+    boolean isVisible = isVisible(category.getId());
+    setVisibility(category.getId(), !isVisible);
+    Statistics.INSTANCE.trackBookmarksVisibility(Statistics.ParamValue.BOOKMARK_LIST,
+                                                 isVisible ? Statistics.ParamValue.HIDE
+                                                           : Statistics.ParamValue.SHOW,
+                                                 category.isFromCatalog() ? category.getServerId()
+                                                                          : null);
   }
 
   @Nullable
@@ -463,6 +470,17 @@ public enum BookmarkManager
   {
     if (mOnElevationActivePointChangedListener != null)
       mOnElevationActivePointChangedListener.onElevationActivePointChanged();
+  }
+
+  @NonNull
+  public BookmarkCategory getCategoryByServerId(@NonNull String guideId)
+  {
+    List<BookmarkCategory> items = getAllCategoriesSnapshot().getItems();
+    for (BookmarkCategory each : items)
+      if (TextUtils.equals(each.getServerId(), guideId))
+        return each;
+
+    throw new IllegalArgumentException("Guide id not found : " + guideId);
   }
 
   public boolean isVisible(long catId)

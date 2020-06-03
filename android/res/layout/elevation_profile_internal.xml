@@ -64,6 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:textAppearance"
+        android:fontFamily="@string/robotoMedium"
         tools:text="10000 m" />
     </LinearLayout>
     <LinearLayout
@@ -93,6 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:textAppearance"
+        android:fontFamily="@string/robotoMedium"
         tools:text="10000 m" />
     </LinearLayout>
     <LinearLayout
@@ -122,6 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:textAppearance"
+        android:fontFamily="@string/robotoMedium"
         tools:text="10000 m" />
     </LinearLayout>
     <LinearLayout
@@ -150,10 +153,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:textAppearance"
+        android:fontFamily="@string/robotoMedium"
         tools:text="10000 m" />
     </LinearLayout>
   </LinearLayout>
-  <LinearLayout
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_base"
@@ -161,9 +165,10 @@
     android:layout_marginEnd="@dimen/margin_base"
     android:orientation="horizontal">
     <LinearLayout
+      android:id="@+id/difficulty_container"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:gravity="center_vertical"
+      android:layout_gravity="bottom"
       android:orientation="horizontal">
       <TextView
         android:layout_width="wrap_content"
@@ -174,6 +179,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/elevation_profile_dot_levels_margin"
+        android:layout_gravity="bottom"
         android:layout_marginStart="@dimen/margin_half_plus_eight">
         <TextView
           android:id="@+id/difficulty_level_1"
@@ -197,14 +204,13 @@
           android:enabled="false"/>
       </LinearLayout>
     </LinearLayout>
-    <View
-      android:layout_width="0dp"
-      android:layout_weight="1"
-      android:layout_height="@dimen/margin_base"
-      android:minWidth="@dimen/margin_base"/>
     <LinearLayout
+      android:layout_toEndOf="@id/difficulty_container"
+      android:layout_alignParentEnd="true"
+      android:id="@+id/time_container"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:gravity="end"
       android:orientation="horizontal">
       <TextView
         android:layout_width="wrap_content"
@@ -218,7 +224,9 @@
         android:layout_marginStart="@dimen/margin_half"
         android:textAppearance="?android:textAppearanceMedium"
         android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="end"
         tools:text="3 h. 25 min." />
     </LinearLayout>
-  </LinearLayout>
+  </RelativeLayout>
 </merge>

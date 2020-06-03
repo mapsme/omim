@@ -28,7 +28,8 @@ public:
   {
     Facebook,
     Google,
-    Phone
+    Phone,
+    Apple
   };
 
   struct Subscriber
@@ -54,7 +55,8 @@ public:
 
   User();
   void Authenticate(std::string const & socialToken, SocialTokenType socialTokenType,
-                    bool privacyAccepted, bool termsAccepted, bool promoAccepted);
+                    bool privacyAccepted, bool termsAccepted, bool promoAccepted,
+                    std::string const & firstName = "", std::string const & lastName = "");
   bool IsAuthenticated() const;
   void ResetAccessToken();
   void UpdateUserDetails();

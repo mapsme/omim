@@ -14,6 +14,12 @@
 		470016082342541100EBF03D /* MWMTagGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 470016052342541000EBF03D /* MWMTagGroup.m */; };
 		4700160F2342579000EBF03D /* MWMTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 470016042342540F00EBF03D /* MWMTag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		470016102342579200EBF03D /* MWMTagGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 470016032342540E00EBF03D /* MWMTagGroup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		470B3620244DD9E400C0EA9E /* GuidesGalleryData.h in Headers */ = {isa = PBXBuildFile; fileRef = 470B361E244DD9E400C0EA9E /* GuidesGalleryData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		470B3621244DD9E400C0EA9E /* GuidesGalleryData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 470B361F244DD9E400C0EA9E /* GuidesGalleryData.mm */; };
+		470B3624244DDA0A00C0EA9E /* GuidesGalleryItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 470B3622244DDA0A00C0EA9E /* GuidesGalleryItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		470B3625244DDA0A00C0EA9E /* GuidesGalleryItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 470B3623244DDA0A00C0EA9E /* GuidesGalleryItem.mm */; };
+		470B3628244DDA2600C0EA9E /* GuidesGalleryData+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 470B3626244DDA2600C0EA9E /* GuidesGalleryData+Core.h */; };
+		470B362C244DDBF600C0EA9E /* GuidesGalleryItem+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 470B362A244DDBF600C0EA9E /* GuidesGalleryItem+Core.h */; };
 		4718C4322355FC3C00640DF1 /* MWMNetworkPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = 4718C4302355FC3C00640DF1 /* MWMNetworkPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4718C4332355FC3C00640DF1 /* MWMNetworkPolicy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4718C4312355FC3C00640DF1 /* MWMNetworkPolicy.mm */; };
 		471AB98D23AB925D00F56D49 /* MWMMapSearchResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 471AB98B23AB925D00F56D49 /* MWMMapSearchResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -61,7 +67,7 @@
 		47942D98237D675400DEFAE3 /* CatalogPromoItem+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 47942D96237D675400DEFAE3 /* CatalogPromoItem+Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47942D9C237D927800DEFAE3 /* PlacePageBookmarkData.h in Headers */ = {isa = PBXBuildFile; fileRef = 47942D9A237D927800DEFAE3 /* PlacePageBookmarkData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47942D9D237D927800DEFAE3 /* PlacePageBookmarkData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 47942D9B237D927800DEFAE3 /* PlacePageBookmarkData.mm */; };
-		47942DA0237D954400DEFAE3 /* PlacePageBookmarkData+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 47942D9E237D954400DEFAE3 /* PlacePageBookmarkData+Core.h */; };
+		47942DA0237D954400DEFAE3 /* PlacePageBookmarkData+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 47942D9E237D954400DEFAE3 /* PlacePageBookmarkData+Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47942DAB237ED9FE00DEFAE3 /* IOpeningHoursLocalization.h in Headers */ = {isa = PBXBuildFile; fileRef = 47942DAA237ED9FE00DEFAE3 /* IOpeningHoursLocalization.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47942DAE2382ABE100DEFAE3 /* UgcSummaryRating.h in Headers */ = {isa = PBXBuildFile; fileRef = 47942DAC2382ABE100DEFAE3 /* UgcSummaryRating.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47942DAF2382ABE100DEFAE3 /* UgcSummaryRating.mm in Sources */ = {isa = PBXBuildFile; fileRef = 47942DAD2382ABE100DEFAE3 /* UgcSummaryRating.mm */; };
@@ -102,6 +108,8 @@
 		47EEAFF42350CEDB005CF316 /* AppInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 47EEAFF22350CEDA005CF316 /* AppInfo.mm */; };
 		47EEAFF62350CF48005CF316 /* AppInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 47EEAFF32350CEDB005CF316 /* AppInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47EEAFF72350D060005CF316 /* MWMCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 47EEAFF52350CEF6005CF316 /* MWMCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		47EF73F9246E035C00D32AB8 /* MWMGuidesManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 47EF73F7246E035C00D32AB8 /* MWMGuidesManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		47EF73FA246E035C00D32AB8 /* MWMGuidesManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 47EF73F8246E035C00D32AB8 /* MWMGuidesManager.mm */; };
 		47F4F1F923A3336C0022FD56 /* MWMMapNodeAttributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 47F4F1F723A3336B0022FD56 /* MWMMapNodeAttributes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		47F4F1FA23A3336C0022FD56 /* MWMMapNodeAttributes.mm in Sources */ = {isa = PBXBuildFile; fileRef = 47F4F1F823A3336C0022FD56 /* MWMMapNodeAttributes.mm */; };
 		47F4F1FD23A3D1AC0022FD56 /* MWMMapNodeAttributes+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 47F4F1FB23A3D1AC0022FD56 /* MWMMapNodeAttributes+Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -124,7 +132,7 @@
 		9957FAE8237AE5B000855F48 /* Logger.h in Headers */ = {isa = PBXBuildFile; fileRef = 9957FAE6237AE5B000855F48 /* Logger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9957FAE9237AE5B000855F48 /* Logger.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9957FAE7237AE5B000855F48 /* Logger.mm */; };
 		9974CA2923DF1968003FE824 /* ElevationProfileData.h in Headers */ = {isa = PBXBuildFile; fileRef = 9974CA2723DF1968003FE824 /* ElevationProfileData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9974CA2A23DF1968003FE824 /* ElevationProfileData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9974CA2823DF1968003FE824 /* ElevationProfileData.m */; };
+		9974CA2A23DF1968003FE824 /* ElevationProfileData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9974CA2823DF1968003FE824 /* ElevationProfileData.mm */; };
 		9974CA2D23DF197B003FE824 /* ElevationProfileData+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 9974CA2B23DF197B003FE824 /* ElevationProfileData+Core.h */; };
 		999D3A64237B097C00C5F7A8 /* DeepLinkSubscriptionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 999D3A62237B097C00C5F7A8 /* DeepLinkSubscriptionData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		999D3A65237B097C00C5F7A8 /* DeepLinkSubscriptionData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 999D3A63237B097C00C5F7A8 /* DeepLinkSubscriptionData.mm */; };
@@ -145,6 +153,12 @@
 		470016062342541100EBF03D /* MWMTag.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWMTag.m; sourceTree = "<group>"; };
 		4700161223425CFD00EBF03D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		470016142342633D00EBF03D /* CoreApi.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = CoreApi.modulemap; sourceTree = "<group>"; };
+		470B361E244DD9E400C0EA9E /* GuidesGalleryData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuidesGalleryData.h; sourceTree = "<group>"; };
+		470B361F244DD9E400C0EA9E /* GuidesGalleryData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GuidesGalleryData.mm; sourceTree = "<group>"; };
+		470B3622244DDA0A00C0EA9E /* GuidesGalleryItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuidesGalleryItem.h; sourceTree = "<group>"; };
+		470B3623244DDA0A00C0EA9E /* GuidesGalleryItem.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GuidesGalleryItem.mm; sourceTree = "<group>"; };
+		470B3626244DDA2600C0EA9E /* GuidesGalleryData+Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GuidesGalleryData+Core.h"; sourceTree = "<group>"; };
+		470B362A244DDBF600C0EA9E /* GuidesGalleryItem+Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GuidesGalleryItem+Core.h"; sourceTree = "<group>"; };
 		4718C4302355FC3C00640DF1 /* MWMNetworkPolicy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMNetworkPolicy.h; sourceTree = "<group>"; };
 		4718C4312355FC3C00640DF1 /* MWMNetworkPolicy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMNetworkPolicy.mm; sourceTree = "<group>"; };
 		471AB98B23AB925D00F56D49 /* MWMMapSearchResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMMapSearchResult.h; sourceTree = "<group>"; };
@@ -233,6 +247,8 @@
 		47EEAFF22350CEDA005CF316 /* AppInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = AppInfo.mm; sourceTree = "<group>"; };
 		47EEAFF32350CEDB005CF316 /* AppInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppInfo.h; sourceTree = "<group>"; };
 		47EEAFF52350CEF6005CF316 /* MWMCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMCommon.h; sourceTree = "<group>"; };
+		47EF73F7246E035C00D32AB8 /* MWMGuidesManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMGuidesManager.h; sourceTree = "<group>"; };
+		47EF73F8246E035C00D32AB8 /* MWMGuidesManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMGuidesManager.mm; sourceTree = "<group>"; };
 		47F4F1F723A3336B0022FD56 /* MWMMapNodeAttributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMMapNodeAttributes.h; sourceTree = "<group>"; };
 		47F4F1F823A3336C0022FD56 /* MWMMapNodeAttributes.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMMapNodeAttributes.mm; sourceTree = "<group>"; };
 		47F4F1FB23A3D1AC0022FD56 /* MWMMapNodeAttributes+Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MWMMapNodeAttributes+Core.h"; sourceTree = "<group>"; };
@@ -252,6 +268,7 @@
 		9940621E23EAC57900493D1A /* ElevationHeightPoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElevationHeightPoint.h; sourceTree = "<group>"; };
 		9940621F23EAC57900493D1A /* ElevationHeightPoint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElevationHeightPoint.m; sourceTree = "<group>"; };
 		99447847238559F2004DAEE5 /* DeeplinkParsingResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeeplinkParsingResult.h; sourceTree = "<group>"; };
+		994C4E0E246C22CA0018EB1E /* MWMUTM+Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MWMUTM+Core.h"; sourceTree = "<group>"; };
 		9957FACC237AB01400855F48 /* DeepLinkParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeepLinkParser.h; sourceTree = "<group>"; };
 		9957FACD237AB01400855F48 /* DeepLinkParser.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DeepLinkParser.mm; sourceTree = "<group>"; };
 		9957FAD9237ACB1100855F48 /* DeepLinkSearchData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeepLinkSearchData.h; sourceTree = "<group>"; };
@@ -259,7 +276,7 @@
 		9957FAE6237AE5B000855F48 /* Logger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		9957FAE7237AE5B000855F48 /* Logger.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Logger.mm; sourceTree = "<group>"; };
 		9974CA2723DF1968003FE824 /* ElevationProfileData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElevationProfileData.h; sourceTree = "<group>"; };
-		9974CA2823DF1968003FE824 /* ElevationProfileData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElevationProfileData.m; sourceTree = "<group>"; };
+		9974CA2823DF1968003FE824 /* ElevationProfileData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ElevationProfileData.mm; sourceTree = "<group>"; };
 		9974CA2B23DF197B003FE824 /* ElevationProfileData+Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ElevationProfileData+Core.h"; sourceTree = "<group>"; };
 		999D3A62237B097C00C5F7A8 /* DeepLinkSubscriptionData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeepLinkSubscriptionData.h; sourceTree = "<group>"; };
 		999D3A63237B097C00C5F7A8 /* DeepLinkSubscriptionData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DeepLinkSubscriptionData.mm; sourceTree = "<group>"; };
@@ -312,6 +329,7 @@
 		470015F12342509C00EBF03D /* CoreApi */ = {
 			isa = PBXGroup;
 			children = (
+				47EF73F6246E031E00D32AB8 /* GuidesGallery */,
 				47E8163D23B2B97A008FD836 /* User */,
 				47F4F1F623A333280022FD56 /* Storage */,
 				3D40DED323ED9C5C00A0153A /* WebApi */,
@@ -347,6 +365,19 @@
 				4700161223425CFD00EBF03D /* UIKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		470B361D244DD98B00C0EA9E /* GuidesGallery */ = {
+			isa = PBXGroup;
+			children = (
+				470B361E244DD9E400C0EA9E /* GuidesGalleryData.h */,
+				470B3626244DDA2600C0EA9E /* GuidesGalleryData+Core.h */,
+				470B361F244DD9E400C0EA9E /* GuidesGalleryData.mm */,
+				470B3622244DDA0A00C0EA9E /* GuidesGalleryItem.h */,
+				470B362A244DDBF600C0EA9E /* GuidesGalleryItem+Core.h */,
+				470B3623244DDA0A00C0EA9E /* GuidesGalleryItem.mm */,
+			);
+			path = GuidesGallery;
 			sourceTree = "<group>";
 		};
 		4718C42F2355FC0D00640DF1 /* NetworkPolicy */ = {
@@ -444,6 +475,7 @@
 				47942D5B237CC3B500DEFAE3 /* Common */,
 				47942D65237CC3B500DEFAE3 /* Booking */,
 				9974CA2623DF1931003FE824 /* ElevationProfile */,
+				470B361D244DD98B00C0EA9E /* GuidesGallery */,
 				47942D69237CC3B500DEFAE3 /* UGC */,
 			);
 			path = PlacePageData;
@@ -498,6 +530,7 @@
 				479F704D234FB60400011E2E /* MWMCatalogObserver.h */,
 				479F704E234FB60400011E2E /* MWMCatalogObserver.mm */,
 				479F705A234FBAC200011E2E /* MWMUTM.h */,
+				994C4E0E246C22CA0018EB1E /* MWMUTM+Core.h */,
 			);
 			path = Catalog;
 			sourceTree = "<group>";
@@ -551,6 +584,15 @@
 				47E8163F23B2B98F008FD836 /* MWMUser.mm */,
 			);
 			path = User;
+			sourceTree = "<group>";
+		};
+		47EF73F6246E031E00D32AB8 /* GuidesGallery */ = {
+			isa = PBXGroup;
+			children = (
+				47EF73F7246E035C00D32AB8 /* MWMGuidesManager.h */,
+				47EF73F8246E035C00D32AB8 /* MWMGuidesManager.mm */,
+			);
+			path = GuidesGallery;
 			sourceTree = "<group>";
 		};
 		47F4F1F623A333280022FD56 /* Storage */ = {
@@ -633,7 +675,7 @@
 			isa = PBXGroup;
 			children = (
 				9974CA2723DF1968003FE824 /* ElevationProfileData.h */,
-				9974CA2823DF1968003FE824 /* ElevationProfileData.m */,
+				9974CA2823DF1968003FE824 /* ElevationProfileData.mm */,
 				9974CA2B23DF197B003FE824 /* ElevationProfileData+Core.h */,
 				9940621E23EAC57900493D1A /* ElevationHeightPoint.h */,
 				9940621F23EAC57900493D1A /* ElevationHeightPoint.m */,
@@ -649,9 +691,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				9957FAE8237AE5B000855F48 /* Logger.h in Headers */,
+				470B3624244DDA0A00C0EA9E /* GuidesGalleryItem.h in Headers */,
 				470015F42342509C00EBF03D /* CoreApi.h in Headers */,
 				47942D74237CC41A00DEFAE3 /* HotelBookingData.h in Headers */,
 				479F705F234FBB8F00011E2E /* MWMCategory.h in Headers */,
+				47EF73F9246E035C00D32AB8 /* MWMGuidesManager.h in Headers */,
+				470B3620244DD9E400C0EA9E /* GuidesGalleryData.h in Headers */,
 				471AB99123AB931000F56D49 /* MWMMapSearchResult+Core.h in Headers */,
 				4738A8E0239FACE7007C0F43 /* CoreBanner.h in Headers */,
 				47942D6D237CC3E300DEFAE3 /* PlacePagePreviewData.h in Headers */,
@@ -691,6 +736,7 @@
 				47942D6E237CC3E800DEFAE3 /* PlacePagePreviewData+Core.h in Headers */,
 				4738A8E4239FB46E007C0F43 /* CoreBanner+Core.h in Headers */,
 				47942D7B237CC41A00DEFAE3 /* HotelRoom+Core.h in Headers */,
+				470B3628244DDA2600C0EA9E /* GuidesGalleryData+Core.h in Headers */,
 				47942D94237D673E00DEFAE3 /* CatalogPromoItem.h in Headers */,
 				470016102342579200EBF03D /* MWMTagGroup.h in Headers */,
 				47942D87237CC55800DEFAE3 /* MWMOpeningHoursCommon.h in Headers */,
@@ -721,6 +767,7 @@
 				47D609DC234FE625008ECC47 /* MWMBookmarksObserver.h in Headers */,
 				471AB98D23AB925D00F56D49 /* MWMMapSearchResult.h in Headers */,
 				47942D6F237CC3F400DEFAE3 /* PlacePageInfoData.h in Headers */,
+				470B362C244DDBF600C0EA9E /* GuidesGalleryItem+Core.h in Headers */,
 				475784C22344B422008291A4 /* Framework.h in Headers */,
 				47C637D22354A6FB00E12DE0 /* MWMEye.h in Headers */,
 			);
@@ -802,6 +849,7 @@
 				3D40DED723ED9C9500A0153A /* WebApi.mm in Sources */,
 				99103844237EDFA200893C9F /* DeepLinkData.m in Sources */,
 				47942D88237CCA8800DEFAE3 /* PlacePagePreviewData.mm in Sources */,
+				470B3625244DDA0A00C0EA9E /* GuidesGalleryItem.mm in Sources */,
 				479F7050234FB60400011E2E /* MWMCatalogObserver.mm in Sources */,
 				47942D7F237CC43300DEFAE3 /* UgcData.mm in Sources */,
 				99F31EB823D5DD9000CE2CE1 /* PromoAfterBookingData.mm in Sources */,
@@ -809,7 +857,7 @@
 				47942D9D237D927800DEFAE3 /* PlacePageBookmarkData.mm in Sources */,
 				4738A8E1239FACE7007C0F43 /* CoreBanner.mm in Sources */,
 				47942D86237CC55500DEFAE3 /* MWMOpeningHoursCommon.mm in Sources */,
-				9974CA2A23DF1968003FE824 /* ElevationProfileData.m in Sources */,
+				9974CA2A23DF1968003FE824 /* ElevationProfileData.mm in Sources */,
 				47942D82237CC52A00DEFAE3 /* MWMOpeningHours.mm in Sources */,
 				47942D73237CC41400DEFAE3 /* OpeningHours.mm in Sources */,
 				47C637DC2354B79B00E12DE0 /* MWMSearchFrameworkHelper.mm in Sources */,
@@ -820,6 +868,7 @@
 				47942DAF2382ABE100DEFAE3 /* UgcSummaryRating.mm in Sources */,
 				479F705E234FBB8C00011E2E /* MWMCategory.m in Sources */,
 				479834EB2342697400724D1E /* MWMTagGroup+Convenience.mm in Sources */,
+				47EF73FA246E035C00D32AB8 /* MWMGuidesManager.mm in Sources */,
 				470016082342541100EBF03D /* MWMTagGroup.m in Sources */,
 				47942D79237CC41A00DEFAE3 /* HotelRooms.mm in Sources */,
 				479F7057234FB7F200011E2E /* MWMBookmarksManager.mm in Sources */,
@@ -842,6 +891,7 @@
 				47E8163623B1889C008FD836 /* MWMStorage.mm in Sources */,
 				9957FAE9237AE5B000855F48 /* Logger.mm in Sources */,
 				999D3A65237B097C00C5F7A8 /* DeepLinkSubscriptionData.mm in Sources */,
+				470B3621244DD9E400C0EA9E /* GuidesGalleryData.mm in Sources */,
 				47942D7C237CC41A00DEFAE3 /* HotelRoom.mm in Sources */,
 				47942D76237CC41A00DEFAE3 /* HotelBookingData.mm in Sources */,
 			);
@@ -989,7 +1039,7 @@
 				);
 				INFOPLIST_FILE = CoreApi/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1026,7 +1076,7 @@
 				);
 				INFOPLIST_FILE = CoreApi/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1119,7 +1169,7 @@
 				);
 				INFOPLIST_FILE = CoreApi/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

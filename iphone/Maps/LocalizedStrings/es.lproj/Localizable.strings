@@ -3262,6 +3262,58 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"button_layer_guides" = "Guías (nuevo)";
+
+"no_routes_in_the_area_toast" = "No hay guías aquí";
+
+"isolines_toast_zooms_1_10" = "Amplía el mapa para ver las isolíneas";
+
+"routes_layer_in_menu_toast" = "Activa las capas para ubicar guías fuera de línea, explorar isolíneas, líneas de metro o atascos de tráfico";
+
+"routes_layer_is_on_toast" = "Mueve el mapa para encontrar guías";
+
+"connection_error_dialog_guides_title" = "Error de conexión";
+
+"connection_error_dialog_guides_message" = "La capa no funciona porque no hay internet o hay una señal débil. Para continuar, verifica la conexión o desactiva la capa.";
+
+"connection_error_dialog_guides_try" = "Probar de nuevo";
+
+"connection_error_dialog_guides_layer_turn_off" = "Apagar";
+
+"connection_error_toast_guides" = "Restablecemos la conexión a Internet";
+
+"routes_card_show" = "Mostrar";
+
+"routes_card_hide" = "Ocultar";
+
+"whatsnew_catalog_new_title" = "Nuevo catálogo de guías y miles de ideas para descansar";
+
+"whatsnew_catalog_new_message" = "Hemos actualizado el catálogo de guías y agregado traducciones a todos los idiomas. ¡Comienza a planificar con anticipación!";
+
+"whatsnew_elevation_profile_title" = "Perfil de altura en las guías";
+
+"whatsnew_elevation_profile_message" = "Evalúa la dificultad de los inminentes ascensos y descensos sin conexión, haciendo uso del cursor en el perfil de la ruta adquirida.";
+
+"whatsnew_guides_on_map_title" = "Nueva capa para encontrar guías con facilidad";
+
+"whatsnew_guides_on_map_message" = "Activa la capa en el menú de configuración de la aplicación, para encontrar rápidamente interesantes rutas urbanas y guías para actividades al aire libre.";
+
+"downloader_updating_ios" = "Actualización";
+
+"downloader_loading_ios" = "Cargando";
+
+"routes_card_plus_track" = "+ pista";
+
+"routes_card_city" = "City";
+
+"routes_card_outdoor" = "Outdoor";
+
+"routes_card_number_of_points" = "%s lugares";
+
+"routes_card_routes_tag" = "Itinerario";
+
+"routes_card_set_tag" = "Lugares destacados";
+
 
 /**********  Partners  **********/
 
@@ -3465,6 +3517,24 @@
 "type.amenity.public_bookcase" = "Intercambio de libros";
 
 "type.amenity.recycling" = "Centro de reciclaje";
+
+"type.amenity.recycling_container" = "Contenedor de reciclaje";
+
+"type.recycling.toxic" = "Residuos tóxicos";
+
+"type.recycling.clothes" = "Ropa vieja";
+
+"type.recycling.glass_bottles" = "Vidrio";
+
+"type.recycling.paper" = "Papel de desecho";
+
+"type.recycling.plastic" = "Residuos plásticos";
+
+"type.recycling.plastic_bottles" = "Botellas de plástico";
+
+"type.recycling.scrap_metal" = "Chatarra";
+
+"type.recycling.small_appliances" = "Chatarra electrónica";
 
 "type.amenity.restaurant" = "Restaurante";
 

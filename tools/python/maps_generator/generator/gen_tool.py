@@ -3,10 +3,9 @@ import logging
 import os
 import subprocess
 
-from . import settings
-from .exceptions import OptionNotFound
-from .exceptions import ValidationError
-from .exceptions import wait_and_raise_if_fail
+from maps_generator.generator.exceptions import OptionNotFound
+from maps_generator.generator.exceptions import ValidationError
+from maps_generator.generator.exceptions import wait_and_raise_if_fail
 
 logger = logging.getLogger("maps_generator")
 
@@ -72,6 +71,7 @@ class GenTool:
         "regions_key_value": str,
         "srtm_path": str,
         "transit_path": str,
+        "transit_path_experimental": str,
         "ugc_data": str,
         "uk_postcodes_dataset": str,
         "us_postcodes_dataset": str,

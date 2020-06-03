@@ -4,9 +4,6 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -15,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.ads.AdTracker;
 import com.mapswithme.maps.ads.Banner;
@@ -392,10 +392,10 @@ final class BannerController implements PlacePageStateObserver
     {
       Context context = mBannerView.getContext();
       Resources res = context.getResources();
-      int colorFrom = ThemeUtils.isNightTheme() ? res.getColor(R.color.white_12)
-                                                : res.getColor(R.color.black_12);
-      int colorTo = ThemeUtils.isNightTheme() ? res.getColor(R.color.white_24)
-                                              : res.getColor(R.color.black_24);
+      int colorFrom = ThemeUtils.isNightTheme() ? res.getColor(R.color.bg_banner_action_button_night)
+                                                : res.getColor(R.color.bg_banner_action_button);
+      int colorTo = ThemeUtils.isNightTheme() ? res.getColor(R.color.bg_banner_action_button_pressed_night)
+                                              : res.getColor(R.color.bg_banner_action_button_pressed);
       animator = ObjectAnimator.ofObject(mActionLarge, "backgroundColor", new ArgbEvaluator(),
                                          colorFrom, colorTo, colorFrom);
     }
@@ -465,14 +465,31 @@ final class BannerController implements PlacePageStateObserver
     banner.setLayoutParams(lp);
   }
 
-  @Override
-  public void onPlacePageStateChanged()
+  private void onPlacePageStateChanged()
   {
     if (mCurrentAd == null)
       return;
 
     BannerState newState =  mBannerStateRequester.requestBannerState();
     setBannerState(newState);
+  }
+
+  @Override
+  public void onPlacePageDetails()
+  {
+    onPlacePageStateChanged();
+  }
+
+  @Override
+  public void onPlacePagePreview()
+  {
+    onPlacePageStateChanged();
+  }
+
+  @Override
+  public void onPlacePageClosed()
+  {
+    // Do nothing.
   }
 
   private class MyNativeAdsListener implements NativeAdListener

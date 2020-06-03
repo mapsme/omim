@@ -35,12 +35,18 @@ osmoh::RuleSequence GetTwentyFourHourRule()
   return result;
 }
 
+bool ShouldSkipYear(uint16_t startYear, uint16_t endYear, uint16_t currentYear)
+{
+  if (startYear > endYear)
+    return true; // Wrong data. |startYear| is later than |endYear|.
+
+  // returns true if |startYear| and |endYear| are too old and false otherwise.
+  return endYear < currentYear;
+}
+
 bool ShouldSkipYear(osmoh::YearRange const & range, uint16_t currentYear)
 {
-  if (range.GetStart() > range.GetEnd())
-    return false;
-  
-  return range.GetStart() < currentYear && range.GetEnd() < currentYear;
+  return ShouldSkipYear(range.GetStart(), range.GetEnd(), currentYear);
 }
 
 bool ShouldSkipYear(osmoh::MonthdayRange const & range, uint16_t currentYear)
@@ -48,23 +54,14 @@ bool ShouldSkipYear(osmoh::MonthdayRange const & range, uint16_t currentYear)
   auto const hasYear = range.GetStart().HasYear() && range.GetEnd().HasYear();
   if (!hasYear)
     return false;
-  
-  auto const startYear = range.GetStart().GetYear();
-  auto const endYear = range.GetEnd().GetYear();
-  if (startYear > endYear)
-    return false;
 
-  return hasYear && startYear < currentYear && endYear < currentYear;
+  return ShouldSkipYear(range.GetStart().GetYear(), range.GetEnd().GetYear(), currentYear);
 }
 
 bool UselessModifier(osmoh::RuleSequence const & rule)
 {
-  if (rule.GetModifier() == osmoh::RuleSequence::Modifier::Closed ||
-      rule.GetModifier() == osmoh::RuleSequence::Modifier::Open)
-  {
-    return false;
-  }
-  return true;
+  return rule.GetModifier() != osmoh::RuleSequence::Modifier::Closed &&
+         rule.GetModifier() != osmoh::RuleSequence::Modifier::Open;
 }
 }  // namespace
 
@@ -179,13 +176,10 @@ bool OpeningHoursSerDes::ExistsFeatureInOpeningHours(Header::Bits feature,
 bool OpeningHoursSerDes::CheckSupportedFeatures() const
 {
   if (IsEnabled(Header::Bits::MonthDay) && !IsEnabled(Header::Bits::Month))
-    CHECK(false, ("Can not use MonthDay without Month"));
+    CHECK(false, ("Cannot use MonthDay without Month."));
 
-  if ((IsEnabled(Header::Bits::Hours) && !IsEnabled(Header::Bits::Minutes)) ||
-      (!IsEnabled(Header::Bits::Hours) && IsEnabled(Header::Bits::Minutes)))
-  {
-    CHECK(false, ("Can not use Hours without Minutes and vice versa."));
-  }
+  if (IsEnabled(Header::Bits::Hours) != IsEnabled(Header::Bits::Minutes))
+    CHECK(false, ("Cannot use Hours without Minutes and vice versa."));
 
   return true;
 }

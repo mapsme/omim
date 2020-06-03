@@ -1,5 +1,7 @@
 #pragma once
 
+#include "map/layers_statistics.hpp"
+
 #include "drape_frontend/drape_engine_safe_ptr.hpp"
 
 #include "indexer/data_source.hpp"
@@ -11,6 +13,7 @@
 #include "geometry/rect2d.hpp"
 #include "geometry/screenbase.hpp"
 
+#include <cstdint>
 #include <functional>
 #include <map>
 #include <set>
@@ -41,6 +44,8 @@ public:
 
   void SetEnabled(bool enabled);
   bool IsEnabled() const;
+
+  bool IsVisible() const;
 
   void UpdateViewport(ScreenBase const & screen);
   void Invalidate();
@@ -86,6 +91,7 @@ private:
   std::vector<MwmSet::MwmId> m_lastMwms;
   mutable std::map<MwmSet::MwmId, Info> m_mwmCache;
   bool m_trackFirstSchemeData = false;
+  LayersStatistics m_statistics;
 };
 
 std::string DebugPrint(IsolinesManager::IsolinesState state);

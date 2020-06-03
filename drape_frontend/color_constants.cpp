@@ -14,7 +14,6 @@
 #include "3party/jansson/myjansson.hpp"
 
 #include <fstream>
-#include <map>
 
 using namespace std;
 
@@ -83,6 +82,8 @@ public:
     }
   }
 
+  map<string, dp::Color> const & GetClearColors() const { return m_clearColors; }
+
 private:
   dp::Color ParseColor(string const & colorStr)
   {
@@ -106,10 +107,6 @@ TransitColorsHolder & TransitColors()
 
 namespace df
 {
-string const kTransitColorPrefix = "transit_";
-string const kTransitTextPrefix = "text_";
-string const kTransitLinePrefix = "line_";
-
 ColorConstant GetTransitColorName(ColorConstant const & localName)
 {
   return kTransitColorPrefix + kTransitLinePrefix + localName;
@@ -132,6 +129,8 @@ dp::Color GetColorConstant(ColorConstant const & constant)
   uint32_t const color = drule::rules().GetColor(constant);
   return ToDrapeColor(color);
 }
+
+map<string, dp::Color> const & GetTransitClearColors() { return TransitColors().GetClearColors(); }
 
 void LoadTransitColors()
 {

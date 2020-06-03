@@ -1,6 +1,7 @@
 #import "MWMActionBarButton.h"
 #import "MWMButton.h"
 #import "MWMCircularProgress.h"
+#import "SwiftBridge.h"
 
 static NSString *titleForPartner(NSInteger partnerIndex) {
   NSString *str = [NSString stringWithFormat:@"sponsored_partner%ld_action", (long)partnerIndex];
@@ -83,7 +84,7 @@ static UIColor *backgroundColorForPartner(NSInteger partnerIndex) {
 
 @implementation MWMActionBarButton
 
-- (void)configButton:(BOOL)isSelected disabled:(BOOL)isDisabled {
+- (void)configButton:(BOOL)isSelected enabled:(BOOL)isEnabled {
   self.label.text = titleForButton(self.type, self.partnerIndex, isSelected);
   self.extraBackground.hidden = YES;
   switch (self.type) {
@@ -103,7 +104,7 @@ static UIColor *backgroundColorForPartner(NSInteger partnerIndex) {
     }
     case MWMActionBarButtonTypeBooking:
       [self.button setImage:[UIImage imageNamed:@"ic_booking_logo"] forState:UIControlStateNormal];
-      self.label.textColor = UIColor.whiteColor;
+      self.label.styleName = @"PPActionBarTitlePartner";
       self.backgroundColor = [UIColor bookingBackground];
       if (!IPAD) {
         self.extraBackground.backgroundColor = [UIColor bookingBackground];
@@ -112,7 +113,7 @@ static UIColor *backgroundColorForPartner(NSInteger partnerIndex) {
       break;
     case MWMActionBarButtonTypeBookingSearch:
       [self.button setImage:[UIImage imageNamed:@"ic_booking_search"] forState:UIControlStateNormal];
-      self.label.textColor = UIColor.whiteColor;
+      self.label.styleName = @"PPActionBarTitlePartner";
       self.backgroundColor = [UIColor bookingBackground];
       if (!IPAD) {
         self.extraBackground.backgroundColor = [UIColor bookingBackground];
@@ -121,7 +122,7 @@ static UIColor *backgroundColorForPartner(NSInteger partnerIndex) {
       break;
     case MWMActionBarButtonTypeOpentable:
       [self.button setImage:[UIImage imageNamed:@"ic_opentable"] forState:UIControlStateNormal];
-      self.label.textColor = UIColor.whiteColor;
+      self.label.styleName = @"PPActionBarTitlePartner";
       self.backgroundColor = [UIColor opentableBackground];
       if (!IPAD) {
         self.extraBackground.backgroundColor = [UIColor opentableBackground];
@@ -154,6 +155,7 @@ static UIColor *backgroundColorForPartner(NSInteger partnerIndex) {
       break;
     case MWMActionBarButtonTypePartner:
       [self.button setImage:imageForPartner(self.partnerIndex) forState:UIControlStateNormal];
+      self.label.styleName = @"regular10";
       self.label.textColor = textColorForPartner(self.partnerIndex);
       self.backgroundColor = backgroundColorForPartner(self.partnerIndex);
       break;
@@ -167,24 +169,24 @@ static UIColor *backgroundColorForPartner(NSInteger partnerIndex) {
       [self.button setImage:[UIImage imageNamed:@"ic_avoid_ferry"] forState:UIControlStateNormal];
       break;
   }
-  self.button.enabled = !isDisabled;
+  self.button.enabled = isEnabled;
 }
 
 + (MWMActionBarButton *)buttonWithDelegate:(id<MWMActionBarButtonDelegate>)delegate
                                 buttonType:(MWMActionBarButtonType)type
                               partnerIndex:(NSInteger)partnerIndex
                                 isSelected:(BOOL)isSelected
-                                isDisabled:(BOOL)isDisabled {
+                                isEnabled:(BOOL)isEnabled {
   MWMActionBarButton *button = [NSBundle.mainBundle loadNibNamed:[self className] owner:nil options:nil].firstObject;
   button.delegate = delegate;
   button.type = type;
   button.partnerIndex = partnerIndex;
-  [button configButton:isSelected disabled:isDisabled];
+  [button configButton:isSelected enabled:isEnabled];
   return button;
 }
 
 - (void)progressButtonPressed:(MWMCircularProgress *)progress {
-  [self.delegate tapOnButtonWithType:MWMActionBarButtonTypeDownload];
+  [self.delegate tapOnButtonWithType:self.type];
 }
 
 - (IBAction)tap {

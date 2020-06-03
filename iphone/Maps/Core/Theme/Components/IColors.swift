@@ -34,6 +34,7 @@ let alpha100: CGFloat = 1.0
   var blackSecondaryText: UIColor { get }
   var blackHintText: UIColor { get }
   var blackDividers: UIColor { get }
+  var solidDividers: UIColor { get }
   var white: UIColor { get }
   var whitePrimaryText: UIColor { get }
   var whitePrimaryTextHighlighted: UIColor { get }
@@ -45,6 +46,7 @@ let alpha100: CGFloat = 1.0
   var toastBackground: UIColor { get }
   var statusBarBackground: UIColor { get }
   var bannerBackground: UIColor { get }
+  var searchPromoBackground: UIColor { get }
   var border: UIColor { get }
   var discountBackground: UIColor { get }
   var discountText: UIColor { get }
@@ -72,4 +74,9 @@ let alpha100: CGFloat = 1.0
   var allPassSubscriptionTermsTitle: UIColor { get }
   var fadeBackground: UIColor { get }
   var blackStatusBarBackground: UIColor { get }
+  var elevationPreviewSelector: UIColor { get }
+  var elevationPreviewTint: UIColor { get }
+  var shadow: UIColor { get }
+  var chartLine: UIColor { get }
+  var chartShadow: UIColor { get }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.mapswithme.maps.guides.GuidesGalleryListener;
 import com.mapswithme.maps.purchase.AdsRemovalPurchaseControllerProvider;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ class PlacePageControllerComposite implements PlacePageController
   private final PlacePageController.SlideListener mSlideListener;
   @Nullable
   private final RoutingModeListener mRoutingModeListener;
+  @Nullable
+  private final GuidesGalleryListener mGuidesGalleryListener;
   @NonNull
   private final List<PlacePageController> mControllers = new ArrayList<>();
   @SuppressWarnings("NullableProblems")
@@ -26,11 +29,13 @@ class PlacePageControllerComposite implements PlacePageController
 
   PlacePageControllerComposite(@NonNull AdsRemovalPurchaseControllerProvider adsProvider,
                                @NonNull SlideListener slideListener,
-                               @Nullable RoutingModeListener routingModeListener)
+                               @Nullable RoutingModeListener routingModeListener,
+                               @Nullable GuidesGalleryListener galleryListener)
   {
     mAdsProvider = adsProvider;
     mSlideListener = slideListener;
     mRoutingModeListener = routingModeListener;
+    mGuidesGalleryListener = galleryListener;
   }
 
   @Override
@@ -113,14 +118,20 @@ class PlacePageControllerComposite implements PlacePageController
       throw new AssertionError("Place page controllers already initialized!");
 
     PlacePageController richController =
-        createRichPlacePageController(mAdsProvider, mSlideListener, mRoutingModeListener);
+        PlacePageFactory.createRichController(mAdsProvider, mSlideListener,
+                                              mRoutingModeListener);
     richController.initialize(activity);
     mControllers.add(richController);
 
-    PlacePageController simpleController =
-        createSimplePlacePageController(mSlideListener);
-    simpleController.initialize(activity);
-    mControllers.add(simpleController);
+    PlacePageController elevationProfileController =
+        PlacePageFactory.createElevationProfilePlacePageController(mSlideListener);
+    elevationProfileController.initialize(activity);
+    mControllers.add(elevationProfileController);
+
+    PlacePageController guidesGalleryController =
+        PlacePageFactory.createGuidesGalleryController(mSlideListener, mGuidesGalleryListener);
+    guidesGalleryController.initialize(activity);
+    mControllers.add(guidesGalleryController);
 
     mActiveController = richController;
   }
@@ -147,10 +158,10 @@ class PlacePageControllerComposite implements PlacePageController
   @Override
   public void onRestore(@NonNull Bundle inState)
   {
-    PlacePageData userMark = inState.getParcelable(PlacePageUtils.EXTRA_PLACE_PAGE_DATA);
-    if (userMark != null)
+    PlacePageData data = inState.getParcelable(PlacePageUtils.EXTRA_PLACE_PAGE_DATA);
+    if (data != null)
     {
-      PlacePageController controller = findControllerFor(userMark);
+      PlacePageController controller = findControllerFor(data);
       if (controller != null)
         mActiveController = controller;
     }
@@ -173,21 +184,5 @@ class PlacePageControllerComposite implements PlacePageController
   public boolean support(@NonNull PlacePageData object)
   {
     return mActiveController.support(object);
-  }
-
-  @NonNull
-  private static PlacePageController createRichPlacePageController(
-      @NonNull AdsRemovalPurchaseControllerProvider provider,
-      @NonNull PlacePageController.SlideListener listener,
-      @Nullable RoutingModeListener routingModeListener)
-  {
-    return new RichPlacePageController(provider, listener, routingModeListener);
-  }
-
-  @NonNull
-  private static PlacePageController createSimplePlacePageController(
-      @NonNull PlacePageController.SlideListener listener)
-  {
-    return new SimplePlacePageController(listener, new ElevationProfileViewRenderer());
   }
 }

@@ -5,6 +5,7 @@
 #import "MWMCatalogObserver.h"
 #import "MWMTag.h"
 #import "MWMTagGroup+Convenience.h"
+#import "MWMUTM+Core.h"
 
 #include "Framework.h"
 
@@ -535,7 +536,7 @@
 
 - (NSURL *)catalogFrontendUrl:(MWMUTM)utm
 {
-  NSString * urlString = @(self.bm.GetCatalog().GetFrontendUrl((UTM)utm).c_str());
+  NSString * urlString = @(self.bm.GetCatalog().GetFrontendUrl(toUTM(utm)).c_str());
   return urlString ? [NSURL URLWithString:urlString] : nil;
 }
 
@@ -543,14 +544,14 @@
   if (!url)
     return nil;
   NSString * urlString = @(InjectUTMContent(std::string(url.absoluteString.UTF8String),
-                                            (UTMContent)content).c_str());
+                                            toUTMContent(content)).c_str());
   return urlString ? [NSURL URLWithString:urlString] : nil;
 }
 
 - (NSURL * _Nullable)catalogFrontendUrlPlusPath:(NSString *)path
                                             utm:(MWMUTM)utm
 {
-  NSString * urlString = @(self.bm.GetCatalog().GetFrontendUrl((UTM)utm).c_str());
+  NSString * urlString = @(self.bm.GetCatalog().GetFrontendUrl(toUTM(utm)).c_str());
   return urlString ? [NSURL URLWithString:[urlString stringByAppendingPathComponent:path]] : nil;
 }
 
@@ -739,6 +740,10 @@
   return @(self.bm.GetCategoryServerId(groupId).c_str());
 }
 
+- (MWMMarkGroupID)getGroupId:(NSString *)serverId {
+  return self.bm.GetCategoryIdByServerId(serverId.UTF8String);
+}
+
 - (NSString *)getGuidesIds {
   auto const guides = self.bm.GetCategoriesFromCatalog(std::bind(&BookmarkManager::IsGuide, std::placeholders::_1));
   return @(strings::JoinStrings(guides.begin(), guides.end(), ',').c_str());
@@ -767,5 +772,32 @@
 
   return [result copy];
 }
+
+- (void)setElevationActivePoint:(double)distance trackId:(uint64_t)trackId {
+  self.bm.SetElevationActivePoint(trackId, distance);
+}
+
+- (void)setElevationActivePointChanged:(uint64_t)trackId callback:(ElevationPointChangedBlock)callback {
+  __weak __typeof(self) ws = self;
+  self.bm.SetElevationActivePointChangedCallback([callback, trackId, ws] () {
+    callback(ws.bm.GetElevationActivePoint(trackId));
+  });
+}
+
+- (void)resetElevationActivePointChanged {
+  self.bm.SetElevationActivePointChangedCallback(nullptr);
+}
+
+- (void)setElevationMyPositionChanged:(uint64_t)trackId callback:(ElevationPointChangedBlock)callback {
+  __weak __typeof(self) ws = self;
+  self.bm.SetElevationMyPositionChangedCallback([callback, trackId, ws] () {
+    callback(ws.bm.GetElevationMyPosition(trackId));
+  });
+}
+
+- (void)resetElevationMyPositionChanged {
+  self.bm.SetElevationMyPositionChangedCallback(nullptr);
+}
+
 
 @end

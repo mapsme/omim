@@ -16,6 +16,7 @@
 #include "base/cancellable.hpp"
 #include "base/exception.hpp"
 #include "base/logging.hpp"
+#include "base/stl_helpers.hpp"
 
 #include <exception>
 #include <iostream>
@@ -115,7 +116,7 @@ bool ParseFeatureIdToTestIdMapping(std::string const & path,
                                    std::unordered_map<uint32_t, uint64_t> & mapping)
 {
   bool success = true;
-  feature::ForEachFromDat(path, [&](FeatureType & feature, uint32_t fid) {
+  feature::ForEachFeature(path, [&](FeatureType & feature, uint32_t fid) {
     auto const & metatada = feature.GetMetadata();
     auto const testIdStr = metatada.Get(feature::Metadata::FMD_TEST_ID);
     uint64_t testId;
@@ -145,25 +146,22 @@ bool MapcssRule::Matches(std::vector<OsmElement::Tag> const & tags) const
 {
   for (auto const & tag : m_tags)
   {
-    if (!std::any_of(tags.begin(), tags.end(), [&](auto const & t) { return t == tag; }))
+    if (!base::AnyOf(tags, [&](auto const & t) { return t == tag; }))
       return false;
   }
+
   for (auto const & key : m_mandatoryKeys)
   {
-    if (!std::any_of(tags.begin(), tags.end(),
-                     [&](auto const & t) { return t.m_key == key && t.m_value != "no"; }))
-    {
+    if (!base::AnyOf(tags, [&](auto const & t) { return t.m_key == key && t.m_value != "no"; }))
       return false;
-    }
   }
+
   for (auto const & key : m_forbiddenKeys)
   {
-    if (!std::all_of(tags.begin(), tags.end(),
-                     [&](auto const & t) { return t.m_key != key || t.m_value == "no"; }))
-    {
+    if (!base::AllOf(tags, [&](auto const & t) { return t.m_key != key || t.m_value == "no"; }))
       return false;
-    }
   }
+
   return true;
 }
 
@@ -252,5 +250,13 @@ MapcssRules ParseMapCSS(std::unique_ptr<Reader> reader)
   }
 
   return rules;
+}
+
+std::ofstream OfstreamWithExceptions(std::string const & name)
+{
+  std::ofstream f;
+  f.exceptions(std::ios::failbit | std::ios::badbit);
+  f.open(name);
+  return f;
 }
 }  // namespace generator

@@ -9,7 +9,6 @@ import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.base.Detachable;
 import com.mapswithme.maps.base.Initializable;
-import com.mapswithme.maps.maplayer.subway.OnIsolinesChangedListener;
 
 public class IsolinesManager implements Initializable<Void>, Detachable<IsolinesErrorDialogListener>
 {
@@ -65,6 +64,7 @@ public class IsolinesManager implements Initializable<Void>, Detachable<Isolines
 
   private static native void nativeAddListener(@NonNull OnIsolinesChangedListener listener);
   private static native void nativeRemoveListener(@NonNull OnIsolinesChangedListener listener);
+  private static native boolean nativeShouldShowNotification();
 
   @Override
   public void attach(@NonNull IsolinesErrorDialogListener listener)
@@ -76,5 +76,10 @@ public class IsolinesManager implements Initializable<Void>, Detachable<Isolines
   public void detach()
   {
     mListener.detach();
+  }
+
+  public boolean shouldShowNotification()
+  {
+    return nativeShouldShowNotification();
   }
 }

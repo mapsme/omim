@@ -10,6 +10,16 @@ class PlacePageStyleSheet: IStyleSheet {
       s.cornerRadius = 10
     }
 
+    theme.add(styleName: "PPActionBarTitle") { (s) -> (Void) in
+      s.font = fonts.regular10
+      s.fontColor = colors.blackSecondaryText
+    }
+
+    theme.add(styleName: "PPActionBarTitlePartner") { (s) -> (Void) in
+      s.font = fonts.regular10
+      s.fontColor = UIColor.white
+    }
+
     theme.add(styleName: "ElevationProfileDescriptionCell") { (s) -> (Void) in
       s.backgroundColor = colors.blackOpaque
       s.cornerRadius = 6
@@ -73,6 +83,53 @@ class PlacePageStyleSheet: IStyleSheet {
     theme.add(styleName: "RatingSummaryView12User", from: "RatingSummaryView12") { (s) -> (Void) in
       s.colors?[0] = colors.linkBlue
       s.images?[0] = "ic_12px_radio_on"
+    }
+
+    theme.add(styleName: "PPHeaderView") { (s) -> (Void) in
+      s.backgroundColor = colors.white
+      s.cornerRadius = 10
+      s.clip = true
+    }
+
+    theme.add(styleName: "PPNavigationShadowView") { (s) -> (Void) in
+      s.backgroundColor = colors.white
+      s.shadowColor = UIColor.black
+      s.shadowOffset = CGSize(width: 0, height: 1)
+      s.shadowOpacity = 0.4
+      s.shadowRadius = 1
+      s.clip = false
+    }
+
+    theme.add(styleName: "PPBackgroundView") { (s) -> (Void) in
+      s.backgroundColor = colors.pressBackground
+      s.cornerRadius = 10
+      s.shadowColor = UIColor.black
+      s.shadowOffset = CGSize(width: 0, height: 1)
+      s.shadowOpacity = 0.6
+      s.shadowRadius = 2
+      s.clip = false
+    }
+
+    theme.add(styleName: "PPView") { (s) -> (Void) in
+      s.backgroundColor = colors.clear
+      s.cornerRadius = 10
+      s.clip = true
+    }
+
+    theme.add(styleName: "PPCloseButton") { (s) -> (Void) in
+      s.tintColor = colors.blackDividers
+    }
+
+    theme.add(styleName: "ChartView") { (s) -> (Void) in
+      s.backgroundColor = colors.white
+      s.fontColor = colors.blackSecondaryText
+      s.font = fonts.regular12
+      s.gridColor = colors.blackDividers
+      s.previewSelectorColor = colors.elevationPreviewSelector
+      s.previewTintColor = colors.elevationPreviewTint
+      s.shadowOpacity = 0.25
+      s.shadowColor = colors.shadow
+      s.infoBackground = colors.pressBackground
     }
   }
 }

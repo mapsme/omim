@@ -85,8 +85,10 @@
   <dimen name="elevation_profile_chart_min_height">144dp</dimen>
   <dimen name="elevation_profile_chart_info_min_height">68dp</dimen>
   <dimen name="elevation_profile_difficulty_dot_size">10dp</dimen>
-  <dimen name="elevation_profile_height">144dp</dimen>
-  <dimen name="elevation_profile_half_height">72dp</dimen>
+  <dimen name="elevation_profile_content_height">144dp</dimen>
+  <dimen name="elevation_profile_height">108dp</dimen>
+  <dimen name="elevation_profile_half_height">54dp</dimen>
+  <dimen name="elevation_profile_dot_levels_margin">3dp</dimen>
 
   <!-- routing layout -->
   <dimen name="routing_info_height">48dp</dimen>
@@ -109,6 +111,7 @@
   <dimen name="menu_line_button_inset_top">-20dp</dimen>
   <dimen name="menu_line_button_inset_edge">-16dp</dimen>
   <dimen name="menu_list_item_height">48dp</dimen>
+  <dimen name="main_menu_bottom_sheet_width">375dp</dimen>
 
   <!-- Nav menu -->
   <dimen name="nav_elevation">6dp</dimen>
@@ -203,8 +206,8 @@
   <dimen name="placepage_banner_small_action_corner">20dp</dimen>
   <dimen name="placepage_banner_remove_button_size">14dp</dimen>
   <dimen name="placepage_banner_open_touch_slop">50dp</dimen>
-  <dimen name="megafon_button_min_height">28dp</dimen>
-  <dimen name="megafon_button_corner_radius">@dimen/megafon_button_min_height</dimen>
+  <dimen name="downloader_partner_button_min_height">28dp</dimen>
+  <dimen name="downloader_partner_button_corner_radius">@dimen/downloader_partner_button_min_height</dimen>
 
   <!-- Place page taxi-->
   <dimen name="placepage_taxi_button_min_width">96dp</dimen>
@@ -279,19 +282,22 @@
   <dimen name="bookmarks_subs_sale_min_width">84dp</dimen>
   <dimen name="bookmarks_subs_offer_card_width">164dp</dimen>
   <dimen name="bookmarks_subs_card_corner_radius">9dp</dimen>
-
-  <!-- Promo-->
-  <dimen name="promo_after_booking_width">288dp</dimen>
-  <dimen name="subs_card_min_height">226dp</dimen>
-  <dimen name="subs_card_min_width">164dp</dimen>
-  <dimen name="pro_label_margin">52dp</dimen>
-  <dimen name="promo_single_place_container_height">194dp</dimen>
-  <dimen name="subscription_view_pager_height">256dp</dimen>
-  <dimen name="zero">0dp</dimen>
-  <dimen name="all_pass_top_offset">62dp</dimen>
-  <dimen name="welcome_btn_min_width">148dp</dimen>
-  <dimen name="bookmark_all_subscription_content_width">336dp</dimen>
   <dimen name="subs_btn_min_width">328dp</dimen>
   <dimen name="bookmarks_all_subscription_pager_item_margin">@dimen/margin_base_plus</dimen>
   <dimen name="bookmarks_sightseeing_subs_central_content_margin">88dp</dimen>
+  <dimen name="bookmark_all_subscription_content_width">336dp</dimen>
+  <dimen name="all_pass_top_offset">62dp</dimen>
+  <dimen name="subs_card_min_height">226dp</dimen>
+  <dimen name="subs_card_min_width">164dp</dimen>
+  <dimen name="subscription_view_pager_height">256dp</dimen>
+
+  <!-- Promo-->
+  <dimen name="promo_after_booking_width">288dp</dimen>
+  <dimen name="pro_label_margin">52dp</dimen>
+  <dimen name="promo_single_place_container_height">194dp</dimen>
+  <dimen name="zero">0dp</dimen>
+  <dimen name="welcome_btn_min_width">148dp</dimen>
+  <dimen name="guide_gallery_item_width">328dp</dimen>
+  <dimen name="guide_gallery_title_width">176dp</dimen>
+  <dimen name="guide_gallery_title_height">40dp</dimen>
 </resources>

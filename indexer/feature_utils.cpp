@@ -4,9 +4,11 @@
 #include "indexer/feature.hpp"
 #include "indexer/feature_data.hpp"
 #include "indexer/feature_visibility.hpp"
+#include "indexer/ftypes_matcher.hpp"
+#include "indexer/road_shields_parser.hpp"
 #include "indexer/scales.hpp"
 
-#include "geometry/point2d.hpp"
+#include "platform/localization.hpp"
 
 #include "coding/string_utf8_multilang.hpp"
 #include "coding/transliteration.hpp"
@@ -17,6 +19,7 @@
 #include <unordered_map>
 #include <utility>
 
+using namespace feature;
 using namespace std;
 
 namespace
@@ -150,6 +153,35 @@ void GetReadableNameImpl(feature::RegionData const & regionData, StringUtf8Multi
   }
 
   GetMwmLangName(regionData, src, out);
+}
+
+// Filters types with |checker|, returns vector of raw type second components.
+// For example for types {"cuisine-sushi", "cuisine-pizza", "cuisine-seafood"} vector
+// of second components is {"sushi", "pizza", "seafood"}.
+vector<string> GetRawTypeSecond(ftypes::BaseChecker const & checker, TypesHolder const & types)
+{
+  vector<string> res;
+  for (auto const t : types)
+  {
+    if (!checker(t))
+      continue;
+    auto const path = classif().GetFullObjectNamePath(t);
+    CHECK_EQUAL(path.size(), 2, (path));
+    res.push_back(path[1]);
+  }
+  return res;
+}
+
+vector<string> GetLocalizedTypes(ftypes::BaseChecker const & checker, TypesHolder const & types)
+{
+  vector<string> localized;
+  for (auto const t : types)
+  {
+    if (!checker(t))
+      continue;
+    localized.push_back(platform::GetLocalizedTypeName(classif().GetReadableObjectName(t)));
+  }
+  return localized;
 }
 }  // namespace
 
@@ -372,5 +404,38 @@ vector<int8_t> GetDescriptionLangPriority(RegionData const & regionData, int8_t 
 {
   bool const preferDefault = IsNativeLang(regionData, deviceLang);
   return MakePrimaryNamePriorityList(deviceLang, preferDefault);
+}
+
+vector<string> GetCuisines(TypesHolder const & types)
+{
+  auto const & isCuisine = ftypes::IsCuisineChecker::Instance();
+  return GetRawTypeSecond(isCuisine, types);
+}
+
+vector<string> GetLocalizedCuisines(TypesHolder const & types)
+{
+  auto const & isCuisine = ftypes::IsCuisineChecker::Instance();
+  return GetLocalizedTypes(isCuisine, types);
+}
+
+vector<string> GetRecyclingTypes(TypesHolder const & types)
+{
+  auto const & isRecyclingType = ftypes::IsRecyclingTypeChecker::Instance();
+  return GetRawTypeSecond(isRecyclingType, types);
+}
+
+vector<string> GetLocalizedRecyclingTypes(TypesHolder const & types)
+{
+  auto const & isRecyclingType = ftypes::IsRecyclingTypeChecker::Instance();
+  return GetLocalizedTypes(isRecyclingType, types);
+}
+
+vector<string> GetRoadShieldsNames(string const & rawRoadNumber)
+{
+  vector<string> names;
+  for (auto const & shield : ftypes::GetRoadShields(rawRoadNumber))
+    names.push_back(shield.m_name);
+
+  return names;
 }
 } // namespace feature

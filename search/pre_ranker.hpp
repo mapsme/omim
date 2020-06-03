@@ -72,6 +72,8 @@ public:
       return;
 
     m_results.emplace_back(std::forward<Args>(args)...);
+    if (m_results.back().GetInfo().m_allTokensUsed)
+      m_haveFullyMatchedResult = true;
   }
 
   // Computes missing fields for all pre-results.
@@ -83,9 +85,10 @@ public:
   // Use |lastUpdate| to indicate that no more results will be added.
   void UpdateResults(bool lastUpdate);
 
-  size_t Size() const { return m_results.size(); }
+  size_t Size() const { return m_results.size() + m_relaxedResults.size(); }
   size_t BatchSize() const { return m_params.m_batchSize; }
   size_t NumSentResults() const { return m_numSentResults; }
+  bool HaveFullyMatchedResult() const { return m_haveFullyMatchedResult; }
   size_t Limit() const { return m_params.m_limit; }
 
   template <typename Fn>
@@ -109,6 +112,9 @@ private:
 
   // Amount of results sent up the pipeline.
   size_t m_numSentResults = 0;
+
+  // True iff there is at least one result with all tokens used (not relaxed).
+  bool m_haveFullyMatchedResult = false;
 
   // Cache of nested rects used to estimate distance from a feature to the pivot.
   NestedRectsCache m_pivotFeatures;

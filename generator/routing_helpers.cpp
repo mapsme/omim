@@ -13,7 +13,7 @@ using std::string;
 namespace
 {
 template <class ToDo>
-bool ForEachRoadFromFile(string const & filename, ToDo && toDo)
+bool ForEachWayFromFile(string const & filename, ToDo && toDo)
 {
   return generator::ForEachOsmId2FeatureId(
       filename, [&](auto const & compositeOsmId, auto featureId) {
@@ -27,29 +27,27 @@ bool ForEachRoadFromFile(string const & filename, ToDo && toDo)
 namespace routing
 {
 void AddFeatureId(base::GeoObjectId osmId, uint32_t featureId,
-                  map<base::GeoObjectId, uint32_t> & osmIdToFeatureId)
+                  OsmIdToFeatureIds & osmIdToFeatureIds)
 {
-  // Failing to insert here usually means that two features were created
-  // from one osm id, for example an area and its boundary.
-  osmIdToFeatureId.emplace(osmId, featureId);
+  osmIdToFeatureIds[osmId].push_back(featureId);
 }
 
-bool ParseRoadsOsmIdToFeatureIdMapping(string const & osmIdsToFeatureIdPath,
-                                       map<base::GeoObjectId, uint32_t> & osmIdToFeatureId)
+bool ParseWaysOsmIdToFeatureIdMapping(string const & osmIdsToFeatureIdPath,
+                                      OsmIdToFeatureIds & osmIdToFeatureIds)
 {
-  return ForEachRoadFromFile(osmIdsToFeatureIdPath,
+  return ForEachWayFromFile(osmIdsToFeatureIdPath,
                              [&](uint32_t featureId, base::GeoObjectId osmId) {
-                               AddFeatureId(osmId, featureId, osmIdToFeatureId);
+                               AddFeatureId(osmId, featureId, osmIdToFeatureIds);
                              });
 }
 
-bool ParseRoadsFeatureIdToOsmIdMapping(string const & osmIdsToFeatureIdPath,
-                                       map<uint32_t, base::GeoObjectId> & featureIdToOsmId)
+bool ParseWaysFeatureIdToOsmIdMapping(string const & osmIdsToFeatureIdPath,
+                                      map<uint32_t, base::GeoObjectId> & featureIdToOsmId)
 {
   featureIdToOsmId.clear();
   bool idsAreOk = true;
 
-  bool const readSuccess = ForEachRoadFromFile(
+  bool const readSuccess = ForEachWayFromFile(
       osmIdsToFeatureIdPath, [&](uint32_t featureId, base::GeoObjectId const & osmId) {
         auto const emplaced = featureIdToOsmId.emplace(featureId, osmId);
         if (emplaced.second)

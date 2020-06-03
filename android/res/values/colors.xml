@@ -179,8 +179,8 @@
   <color name="bg_brand_opentable_pressed">#FFFC5965</color>
 
   <!-- Banner colors -->
-  <color name="bg_banner_color">#FFFDFFE6</color>
-  <color name="bg_banner_color_night">#FF484C50</color>
+  <color name="bg_banner_color">#F2F5D4</color>
+  <color name="bg_banner_color_night">#A5A6A8</color>
   <color name="text_banner_color">#28000000</color>
   <color name="text_banner_color_night">#28FFFFFF</color>
   <color name="text_ads_color">#FFFFFBF2</color>
@@ -188,6 +188,10 @@
   <color name="megafon_button">@color/bg_brand_partner19</color>
   <color name="megafon_button_pressed">@color/bg_brand_partner19_pressed</color>
   <color name="red_cross_background">#FFE53935</color>
+  <color name="bg_banner_action_button">#73AC6A</color>
+  <color name="bg_banner_action_button_pressed">#54814D</color>
+  <color name="bg_banner_action_button_night">#597380</color>
+  <color name="bg_banner_action_button_pressed_night">#36505C</color>
 
   <!-- Rating colors -->
   <color name="rating_excellent">#43A047</color>
@@ -221,8 +225,12 @@
 
   <color name="elevation_profile_dot_enabled">#FF9600</color>
   <color name="elevation_profile">#1E96F0</color>
+  <color name="elevation_profile_dark">#4BB9E6</color>
+
 
   <color name="tinkoff_button">#FFDD2D</color>
   <color name="mts_button">#E30611</color>
   <color name="skyeng_button">#4287DF</color>
+  <color name="city_color">#9B24B2</color>
+  <color name="outdoor_color">#3C8C3C</color>
 </resources>

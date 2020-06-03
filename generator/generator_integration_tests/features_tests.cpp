@@ -7,6 +7,7 @@
 #include "generator/generate_info.hpp"
 #include "generator/raw_generator.hpp"
 
+#include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
@@ -128,19 +129,19 @@ CountryFeaturesCounters constexpr kWorldCounters(945 /* fbs */, 364406 /* geomet
 
 CountryFeaturesCounters constexpr kNorthAucklandCounters(
     1812333 /* fbs */, 12196704 /* geometryPoints */, 1007584 /* point */, 205634 /* line */,
-    599115 /* area */, 212598 /* poi */, 521 /* cityTownOrVillage */, 3557 /* bookingHotels */);
+    599115 /* area */, 212614 /* poi */, 521 /* cityTownOrVillage */, 3557 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kNorthWellingtonCounters(
     797846 /* fbs */, 7771680 /* geometryPoints */, 460559 /* point */, 87011 /* line */,
-    250276 /* area */, 95893 /* poi */, 297 /* cityTownOrVillage */, 1062 /* bookingHotels */);
+    250276 /* area */, 95897 /* poi */, 297 /* cityTownOrVillage */, 1062 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kSouthCanterburyCounters(
     637244 /* fbs */, 6984549 /* geometryPoints */, 397961 /* point */, 81697 /* line */,
-    157586 /* area */, 89666 /* poi */, 331 /* cityTownOrVillage */, 2085 /* bookingHotels */);
+    157586 /* area */, 89700 /* poi */, 331 /* cityTownOrVillage */, 2085 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kSouthSouthlandCounters(
     340637 /* fbs */, 5342359 /* geometryPoints */, 185994 /* point */, 40117 /* line */,
-    114526 /* area */, 40667 /* poi */, 297 /* cityTownOrVillage */, 1621 /* bookingHotels */);
+    114526 /* area */, 40672 /* poi */, 297 /* cityTownOrVillage */, 1621 /* bookingHotels */);
 
 CountryFeaturesCounters constexpr kSouthSouthlandMixedNodesCounters(
     2 /* fbs */, 2 /* geometryPoints */, 2 /* point */, 0 /* line */, 0 /* area */, 0 /* poi */,
@@ -382,7 +383,7 @@ public:
     TestGeneratedFile(metalines, 288032 /* fileSize */);
     TestGeneratedFile(restrictions, 371110 /* fileSize */);
     TestGeneratedFile(roadAccess, 1915402 /* fileSize */);
-    TestGeneratedFile(m_genInfo.m_citiesBoundariesFilename, 87 /* fileSize */);
+    TestGeneratedFile(m_genInfo.m_citiesBoundariesFilename, 95 /* fileSize */);
   }
 
   void BuildWorldOneThread()
@@ -426,7 +427,8 @@ private:
       if (poiChecker(fb.GetTypes()))
         ++actual.m_poi;
 
-      if (ftypes::IsCityTownOrVillage(fb.GetTypes()))
+      auto const & isCityTownOrVillage = ftypes::IsCityTownOrVillageChecker::Instance();
+      if (isCityTownOrVillage(fb.GetTypes()))
         ++actual.m_cityTownOrVillage;
 
       auto static const & bookingChecker = ftypes::IsBookingHotelChecker::Instance();

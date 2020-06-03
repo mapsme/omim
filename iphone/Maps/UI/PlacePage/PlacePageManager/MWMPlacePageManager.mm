@@ -1,6 +1,7 @@
 #import "MWMPlacePageManager.h"
 #import "CLLocation+Mercator.h"
 #import "MWMActivityViewController.h"
+#import "MWMEditBookmarkController.h"
 #import "MWMLocationHelpers.h"
 #import "MWMLocationObserver.h"
 #import "MWMRoutePoint+CPP.h"
@@ -278,6 +279,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
   auto buildInfo = f.GetCurrentPlacePageInfo().GetBuildInfo();
   buildInfo.m_match = place_page::BuildInfo::Match::FeatureOnly;
   buildInfo.m_userMarkId = kml::kInvalidMarkId;
+  buildInfo.m_source = place_page::BuildInfo::Source::Other;
   f.UpdatePlacePageInfoForCurrentSelection(buildInfo);
   [data updateBookmarkStatus];
 }
@@ -288,13 +290,23 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
   }
 }
 
-- (void)editBookmark {
-  [self.ownerViewController openBookmarkEditor];
+- (void)editBookmark:(PlacePageData *)data {
+  MWMEditBookmarkController *editBookmarkController = [[UIStoryboard instance:MWMStoryboardMain]
+                                                       instantiateViewControllerWithIdentifier:@"MWMEditBookmarkController"];
+  editBookmarkController.placePageData = data;
+  [[MapViewController sharedController].navigationController pushViewController:editBookmarkController animated:YES];
 }
 
 - (void)showPlaceDescription:(NSString *)htmlString
 {
   [self.ownerViewController openFullPlaceDescriptionWithHtml:htmlString];
+}
+
+- (void)searchBookingHotels:(PlacePageData *)data {
+  logSponsoredEvent(data, kStatPlacePageHotelBook);
+  NSURL *url = [NSURL URLWithString:data.bookingSearchUrl];
+  NSAssert(url, @"Search url can't be nil!");
+  [UIApplication.sharedApplication openURL:url options:@{} completionHandler:nil];
 }
 
 - (void)openPartner:(PlacePageData *)data withStatisticLog:(NSString *)eventName proposedUrl:(NSURL *)proposedUrl
@@ -372,17 +384,11 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
   [self closePlacePage];
 }
 
-- (void)showUGCAddReview:(PlacePageData *)data rating:(UgcSummaryRatingType)value fromSource:(MWMUGCReviewSource)source
-{
-  NSMutableArray *ratings = [NSMutableArray array];
-  for (NSString *cat in data.ratingCategories) {
-    [ratings addObject:[[MWMUGCRatingStars alloc] initWithTitle:cat
-                                                          value:value
-                                                       maxValue:5.0f]];
-  }
-
+- (void)showUGCAddReview:(PlacePageData *)data
+                  rating:(UgcSummaryRatingType)value
+              fromSource:(MWMUGCReviewSource)source {
   RegisterEventIfPossible(eye::MapObject::Event::Type::UgcEditorOpened);
-  NSString * sourceString;
+  NSString *sourceString;
   switch (source) {
     case MWMUGCReviewSourcePlacePage:
       sourceString = kStatPlacePage;
@@ -401,9 +407,10 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
           kStatMode: kStatAdd,
           kStatFrom: sourceString
         }];
-  auto ugcReviewModel =
-      [[MWMUGCReviewModel alloc] initWithReviewValue:value ratings:ratings title:data.previewData.title text:@""];
-  auto ugcVC = [MWMUGCAddReviewController instanceWithModel:ugcReviewModel saver:self];
+
+  MWMUGCAddReviewController *ugcVC = [[MWMUGCAddReviewController alloc] initWithPlacePageData:data
+                                                                                       rating:value
+                                                                                        saver:self];
   [[MapViewController sharedController].navigationController pushViewController:ugcVC animated:YES];
 }
 
@@ -501,9 +508,10 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
 
 - (MapViewController *)ownerViewController { return [MapViewController sharedController]; }
 
-- (void)saveUgcWithModel:(MWMUGCReviewModel *)model
-                language:(NSString *)language
-           resultHandler:(void (^)(BOOL))resultHandler {
+- (void)saveUgcWithPlacePageData:(PlacePageData *)placePageData
+                           model:(MWMUGCReviewModel *)model
+                        language:(NSString *)language
+                   resultHandler:(void (^)(BOOL))resultHandler {
   using namespace ugc;
   auto appInfo = AppInfo.sharedInfo;
   auto const locale =
@@ -522,7 +530,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
 
   place_page::Info const & info = GetFramework().GetCurrentPlacePageInfo();
   GetFramework().GetUGCApi()->SetUGCUpdate(info.GetID(), update,
-  [resultHandler, info](ugc::Storage::SettingResult const result)
+  [resultHandler, info, placePageData](ugc::Storage::SettingResult const result)
   {
     if (result != ugc::Storage::SettingResult::Success)
     {
@@ -532,6 +540,7 @@ void RegisterEventIfPossible(eye::MapObject::Event::Type const type)
 
     resultHandler(YES);
     GetFramework().UpdatePlacePageInfoForCurrentSelection();
+    [placePageData updateUgcStatus];
 
     utils::RegisterEyeEventIfPossible(eye::MapObject::Event::Type::UgcSaved,
                                       GetFramework().GetCurrentPosition(), info);

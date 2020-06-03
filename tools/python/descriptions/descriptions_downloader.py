@@ -15,7 +15,8 @@ import wikipediaapi
 from bs4 import BeautifulSoup
 from wikidata.client import Client
 
-from .exceptions import GettingError, ParseError
+from descriptions.exceptions import GettingError
+from descriptions.exceptions import ParseError
 
 """
 This script downloads Wikipedia pages for different languages.
@@ -54,6 +55,8 @@ def try_get(obj, prop, *args, **kwargs):
                 raise GettingError(f"Page not found {e.msg}")
         except KeyError:
             raise GettingError(f"Getting {prop} field failed. {prop} not found.")
+        except urllib.error.URLError:
+            raise GettingError(f"URLError: {obj}, {prop}, {args}, {kwargs}")
 
     raise GettingError(f"Getting {prop} field failed. "
                        f"All {REQUEST_ATTEMPTS} attempts are spent")
@@ -263,10 +266,9 @@ def download_from_wikidata_tags(input_file, output_dir, langs, checker):
     wikidata_output_dir = os.path.join(output_dir, "wikidata")
     os.makedirs(wikidata_output_dir, exist_ok=True)
     with open(input_file) as file:
-        pool = ThreadPool(processes=WORKERS)
-        pool.map(wikidata_worker(wikidata_output_dir, checker, langs), file, CHUNK_SIZE)
-        pool.close()
-        pool.join()
+        with ThreadPool(processes=WORKERS) as pool:
+            pool.map(wikidata_worker(wikidata_output_dir, checker, langs),
+                     file, CHUNK_SIZE)
 
 
 def check_and_get_checker(popularity_file):

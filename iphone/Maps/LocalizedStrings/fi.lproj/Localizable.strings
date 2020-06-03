@@ -3262,6 +3262,58 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"button_layer_guides" = "Matkaoppaat (uutuus)";
+
+"no_routes_in_the_area_toast" = "Täällä ei ole matkaoppaita";
+
+"isolines_toast_zooms_1_10" = "Suurenna kartta nähdäksesi korkeuslinjat";
+
+"routes_layer_in_menu_toast" = "Laita tasoja päälle löytääksesi offline-matkaoppaita, tutkiaksesi korkeuslinjoja, metrolinjoja tai liikenneruuhkia";
+
+"routes_layer_is_on_toast" = "Siirrä karttaa löytääksesi matkaoppaita";
+
+"connection_error_dialog_guides_title" = "Yhteysvirhe";
+
+"connection_error_dialog_guides_message" = "Taso ei toimi, koska Internetiä ei ole tai signaali on heikko. Jatkaaksesi työskentelyä, tarkista yhteys tai sammuta taso.";
+
+"connection_error_dialog_guides_try" = "Yritä uudelleen";
+
+"connection_error_dialog_guides_layer_turn_off" = "Sammuta";
+
+"connection_error_toast_guides" = "Palauttamme Internet-yhteyden";
+
+"routes_card_show" = "Näytä";
+
+"routes_card_hide" = "Piilota";
+
+"whatsnew_catalog_new_title" = "Uusi luettelo ja tuhansia lomasi viettoon liittyviä ideoita";
+
+"whatsnew_catalog_new_message" = "Olemme päivittäneet matkaopasluettelon ja lisänneet käännöksiä kaikille kielille. Aloita suunnittelu etukäteen!";
+
+"whatsnew_elevation_profile_title" = "Korkeuslinjat matkaoppaissa";
+
+"whatsnew_elevation_profile_message" = "Arvioi tulevien ylä- ja alamäkien vaikeus offline-tilassa hankitun reitin profiilissa kursorin avulla.";
+
+"whatsnew_guides_on_map_title" = "Uusi taso — matkaoppaat kartalla!";
+
+"whatsnew_guides_on_map_message" = "Aktivoi taso sovellusasetusvalikossa löytääksesi nopeasti mielenkiintoisia kaupunkireittejä ja ulkoilumatkaoppaita.";
+
+"downloader_updating_ios" = "Päivitys";
+
+"downloader_loading_ios" = "Lataus";
+
+"routes_card_plus_track" = "+ reitti";
+
+"routes_card_city" = "City";
+
+"routes_card_outdoor" = "Outdoor";
+
+"routes_card_number_of_points" = "%s paikoista";
+
+"routes_card_routes_tag" = "Reitti";
+
+"routes_card_set_tag" = "Esitellyt paikat";
+
 
 /**********  Partners  **********/
 
@@ -3465,6 +3517,24 @@
 "type.amenity.public_bookcase" = "Kirjahylly";
 
 "type.amenity.recycling" = "Kierrätyskeskus";
+
+"type.amenity.recycling_container" = "Recycling container";
+
+"type.recycling.toxic" = "Toxic waste";
+
+"type.recycling.clothes" = "Old clothes";
+
+"type.recycling.glass_bottles" = "Glass bottles";
+
+"type.recycling.paper" = "Paper waste";
+
+"type.recycling.plastic" = "Plastic waste";
+
+"type.recycling.plastic_bottles" = "Plastic bottles";
+
+"type.recycling.scrap_metal" = "Scrap metal";
+
+"type.recycling.small_appliances" = "Electronic waste";
 
 "type.amenity.restaurant" = "Ravintola";
 

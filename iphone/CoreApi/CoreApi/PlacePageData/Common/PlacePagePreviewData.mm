@@ -61,14 +61,25 @@ static PlacePageDataHotelType convertHotelType(std::optional<ftypes::IsHotelChec
 
 @implementation PlacePagePreviewData (Core)
 
+- (instancetype)initWithElevationInfo:(ElevationInfo const &)elevationInfo {
+  self = [super init];
+  if (self) {
+     _title = @(elevationInfo.GetName().c_str());
+  }
+  return self;
+}
+
 - (instancetype)initWithRawData:(place_page::Info const &)rawData {
   self = [super init];
   if (self) {
     _title = rawData.GetTitle().empty() ? nil : @(rawData.GetTitle().c_str());
     _subtitle = rawData.GetSubtitle().empty() ? nil : @(rawData.GetSubtitle().c_str());
+    _coordinates = rawData.GetFormattedCoordinate(true).empty() ? nil : @(rawData.GetFormattedCoordinate(true).c_str());
     _address = rawData.GetAddress().empty() ? nil : @(rawData.GetAddress().c_str());
     _pricing = rawData.GetApproximatePricing().empty() ? nil : @(rawData.GetApproximatePricing().c_str());
     _rawPricing = rawData.GetRawApproximatePricing() ? nil : [[NSNumber alloc] initWithInt: *(rawData.GetRawApproximatePricing())];
+    _rawRating = rawData.GetRatingRawValue();
+    _isMyPosition = rawData.IsMyPosition();
     _isPopular = rawData.GetPopularity() > 0;
     _isBookingPlace = rawData.GetSponsoredType() == place_page::SponsoredType::Booking;
     _schedule = convertOpeningHours(rawData.GetOpeningHours());

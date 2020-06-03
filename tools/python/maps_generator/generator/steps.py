@@ -2,26 +2,29 @@
 This file contains basic api for generator_tool and osm tools to generate maps.
 """
 import functools
+import json
 import logging
 import os
 import shutil
 import subprocess
 from typing import AnyStr
 
-from . import settings
-from .env import Env
-from .env import PathProvider
-from .env import WORLDS_NAMES
-from .env import WORLD_NAME
-from .env import get_all_countries_list
-from .gen_tool import run_gen_tool
-from .osmtools import osmconvert
-from .osmtools import osmupdate
-from ..utils.file import download_file
-from ..utils.file import is_verified
-from ..utils.file import symlink_force
-from ..utils.md5 import md5
-from ..utils.md5 import write_md5sum
+from maps_generator.generator import settings
+from maps_generator.generator.env import Env
+from maps_generator.generator.env import PathProvider
+from maps_generator.generator.env import WORLDS_NAMES
+from maps_generator.generator.env import WORLD_NAME
+from maps_generator.generator.env import get_all_countries_list
+from maps_generator.generator.exceptions import ValidationError
+from maps_generator.generator.gen_tool import run_gen_tool
+from maps_generator.generator.osmtools import osmconvert
+from maps_generator.generator.osmtools import osmupdate
+from maps_generator.generator.statistics import make_stats
+from maps_generator.utils.file import download_files
+from maps_generator.utils.file import is_verified
+from maps_generator.utils.file import make_symlink
+from maps_generator.utils.md5 import md5_ext
+from maps_generator.utils.md5 import write_md5sum
 
 logger = logging.getLogger("maps_generator")
 
@@ -36,11 +39,6 @@ def multithread_run_if_one_country(func):
     return wrap
 
 
-def download_planet(planet: AnyStr):
-    download_file(settings.PLANET_URL, planet)
-    download_file(settings.PLANET_MD5_URL, md5(planet))
-
-
 def convert_planet(
     tool: AnyStr,
     in_planet: AnyStr,
@@ -49,12 +47,21 @@ def convert_planet(
     error=subprocess.DEVNULL,
 ):
     osmconvert(tool, in_planet, out_planet, output=output, error=error)
-    write_md5sum(out_planet, md5(out_planet))
+    write_md5sum(out_planet, md5_ext(out_planet))
 
 
 def step_download_and_convert_planet(env: Env, force_download: bool, **kwargs):
     if force_download or not is_verified(env.paths.planet_osm_pbf):
-        download_planet(env.paths.planet_osm_pbf)
+        download_files(
+            {
+                settings.PLANET_URL: env.paths.planet_osm_pbf,
+                settings.PLANET_MD5_URL: md5_ext(env.paths.planet_osm_pbf),
+            },
+            env.force_download_files,
+        )
+
+        if not is_verified(env.paths.planet_osm_pbf):
+            raise ValidationError(f"Wrong md5 sum for {env.paths.planet_osm_pbf}.")
 
     convert_planet(
         env[settings.OSM_TOOL_CONVERT],
@@ -64,7 +71,7 @@ def step_download_and_convert_planet(env: Env, force_download: bool, **kwargs):
         error=env.get_subprocess_out(),
     )
     os.remove(env.paths.planet_osm_pbf)
-    os.remove(md5(env.paths.planet_osm_pbf))
+    os.remove(md5_ext(env.paths.planet_osm_pbf))
 
 
 def step_update_planet(env: Env, **kwargs):
@@ -79,7 +86,7 @@ def step_update_planet(env: Env, **kwargs):
     )
     os.remove(env.paths.planet_o5m)
     os.rename(tmp, env.paths.planet_o5m)
-    write_md5sum(env.paths.planet_o5m, md5(env.paths.planet_o5m))
+    write_md5sum(env.paths.planet_o5m, md5_ext(env.paths.planet_o5m))
 
 
 def step_preprocess(env: Env, **kwargs):
@@ -134,7 +141,7 @@ def run_gen_tool_with_recovery_country(env: Env, *args, **kwargs):
     mwm = f"{kwargs['output']}.mwm"
     osm2ft = f"{mwm}.osm2ft"
     kwargs["data_path"] = env.paths.draft_path
-    symlink_force(
+    make_symlink(
         os.path.join(prev_data_path, osm2ft), os.path.join(env.paths.draft_path, osm2ft)
     )
     shutil.copy(
@@ -307,7 +314,32 @@ def step_routing_transit(env: Env, country: AnyStr, **kwargs):
         intermediate_data_path=env.paths.intermediate_data_path,
         user_resource_path=env.paths.user_resource_path,
         transit_path=env.paths.transit_path,
+        transit_path_experimental=env.paths.transit_path_experimental,
         make_transit_cross_mwm=True,
         output=country,
         **kwargs,
     )
+
+
+def step_statistics(env: Env, country: AnyStr, **kwargs):
+    run_gen_tool_with_recovery_country(
+        env,
+        env.gen_tool,
+        out=env.get_subprocess_out(country),
+        err=env.get_subprocess_out(country),
+        data_path=env.paths.mwm_path,
+        intermediate_data_path=env.paths.intermediate_data_path,
+        user_resource_path=env.paths.user_resource_path,
+        type_statistics=True,
+        output=country,
+        **kwargs,
+    )
+
+    with open(os.path.join(env.paths.stats_path, f"{country}.json"), "w") as f:
+        json.dump(
+            make_stats(
+                settings.STATS_TYPES_CONFIG,
+                os.path.join(env.paths.intermediate_data_path, f"{country}.stats"),
+            ),
+            f,
+        )

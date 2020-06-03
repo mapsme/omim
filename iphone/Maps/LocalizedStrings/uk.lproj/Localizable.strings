@@ -3262,6 +3262,58 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"button_layer_guides" = "Путівники (новинка)";
+
+"no_routes_in_the_area_toast" = "Тут немає путівників";
+
+"isolines_toast_zooms_1_10" = "Збільште карту, щоб побачити ізолінії";
+
+"routes_layer_in_menu_toast" = "Вмикайте шари, щоб знайти офлайн-путівники, вивчити ізолінії, гілки метро чи пробки";
+
+"routes_layer_is_on_toast" = "Пересувайте карту, щоб знайти путівники";
+
+"connection_error_dialog_guides_title" = "Помилка з’єднання";
+
+"connection_error_dialog_guides_message" = "Шар не працює, тому що немає Інтернету чи слабкий сигнал. Щоб продовжити роботу, перевірте з’єднання чи вимкніть шар.";
+
+"connection_error_dialog_guides_try" = "Спробувати ще раз";
+
+"connection_error_dialog_guides_layer_turn_off" = "Вимкнути";
+
+"connection_error_toast_guides" = "Відновлюємо з’єднання з Інтернетом";
+
+"routes_card_show" = "Показати";
+
+"routes_card_hide" = "Приховати";
+
+"whatsnew_catalog_new_title" = "Новий каталог і тисячі ідей для відпочинку";
+
+"whatsnew_catalog_new_message" = "Ми оновили каталог путівників і додали переклади на всі мови. Почніть планувати заздалегідь!";
+
+"whatsnew_elevation_profile_title" = "Профіль висот у путівниках";
+
+"whatsnew_elevation_profile_message" = "Оцінюйте складність майбутніх підйомів і спусків офлайн за допомогою курсору в профілі придбаного маршруту.";
+
+"whatsnew_guides_on_map_title" = "Новий шар — путівники на карті!";
+
+"whatsnew_guides_on_map_message" = "Активуйте шар у меню налаштувань додатку, щоб швидко знайти цікаві міські маршрути та путівники для активного відпочинку.";
+
+"downloader_updating_ios" = "Оновлення";
+
+"downloader_loading_ios" = "Завантаження";
+
+"routes_card_plus_track" = "+ трек";
+
+"routes_card_city" = "City";
+
+"routes_card_outdoor" = "Outdoor";
+
+"routes_card_number_of_points" = "%s місць";
+
+"routes_card_routes_tag" = "Маршрут";
+
+"routes_card_set_tag" = "Добірка місць";
+
 
 /**********  Partners  **********/
 
@@ -3465,6 +3517,24 @@
 "type.amenity.public_bookcase" = "Книги";
 
 "type.amenity.recycling" = "Прийом вторсировини";
+
+"type.amenity.recycling_container" = "Контейнер для вторсировини";
+
+"type.recycling.toxic" = "Отруйні відходи";
+
+"type.recycling.clothes" = "Старий одяг";
+
+"type.recycling.glass_bottles" = "Склотара";
+
+"type.recycling.paper" = "Макулатура";
+
+"type.recycling.plastic" = "Пластикове сміття";
+
+"type.recycling.plastic_bottles" = "Збір пластикових пляшок";
+
+"type.recycling.scrap_metal" = "Металолом";
+
+"type.recycling.small_appliances" = "Електровідходи";
 
 "type.amenity.restaurant" = "Ресторан";
 

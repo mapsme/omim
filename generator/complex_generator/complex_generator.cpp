@@ -17,7 +17,7 @@
 
 #include "generator/filter_complex.hpp"
 #include "generator/filter_interface.hpp"
-#include "generator/final_processor_intermediate_mwm.hpp"
+#include "generator/final_processor_complex.hpp"
 #include "generator/generate_info.hpp"
 #include "generator/hierarchy.hpp"
 #include "generator/hierarchy_entry.hpp"
@@ -101,7 +101,8 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
   generator::RawGenerator rawGenerator(genInfo, threadsCount);
   auto processor = CreateProcessor(generator::ProcessorType::Complex, rawGenerator.GetQueue(),
                                    genInfo.m_intermediateDir, false /* haveBordersForWholeWorld */);
-  auto const cache = std::make_shared<generator::cache::IntermediateData>(genInfo);
+  generator::cache::IntermediateDataObjectsCache objectsCache;
+  auto const cache = std::make_shared<generator::cache::IntermediateData>(objectsCache, genInfo);
   auto translator = CreateTranslator(generator::TranslatorType::Complex, processor, cache, genInfo);
   auto finalProcessor = std::make_shared<generator::ComplexFinalProcessor>(
       genInfo.m_tmpDir, FLAGS_output, threadsCount);

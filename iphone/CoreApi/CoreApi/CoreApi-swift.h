@@ -17,6 +17,7 @@ FOUNDATION_EXPORT const unsigned char CoreApiVersionString[];
 #import <CoreApi/MWMEye.h>
 #import <CoreApi/MWMGeoUtil.h>
 #import <CoreApi/MWMFrameworkHelper.h>
+#import <CoreApi/MWMGuidesManager.h>
 #import <CoreApi/MWMMapOverlayManager.h>
 #import <CoreApi/MWMNetworkPolicy.h>
 #import <CoreApi/MWMSearchFrameworkHelper.h>
@@ -55,3 +56,5 @@ FOUNDATION_EXPORT const unsigned char CoreApiVersionString[];
 #import <CoreApi/ElevationProfileData.h>
 #import <CoreApi/OpeningHours.h>
 #import <CoreApi/IOpeningHoursLocalization.h>
+#import <CoreApi/GuidesGalleryData.h>
+#import <CoreApi/GuidesGalleryItem.h>

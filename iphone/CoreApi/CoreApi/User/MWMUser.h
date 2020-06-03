@@ -5,13 +5,9 @@
 typedef NS_ENUM(NSInteger, MWMSocialTokenType) {
   MWMSocialTokenTypeGoogle,
   MWMSocialTokenTypeFacebook,
-  MWMSocialTokenTypePhone
+  MWMSocialTokenTypePhone,
+  MWMSocialTokenTypeApple
 } NS_SWIFT_NAME(SocialTokenType);
-
-typedef NS_ENUM(NSInteger, MWMAuthorizationSource) {
-  MWMAuthorizationSourceUGC,
-  MWMAuthorizationSourceBookmarks
-} NS_SWIFT_NAME(AuthorizationSource);
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,13 +18,15 @@ NS_SWIFT_NAME(User)
 + (BOOL)isAuthenticated;
 + (NSString *)termsOfUseLink;
 + (NSString *)privacyPolicyLink;
++ (void)logOut;
 
 + (void)authenticateWithToken:(NSString *)token
                          type:(MWMSocialTokenType)type
               privacyAccepted:(BOOL)privacyAccepted
                 termsAccepted:(BOOL)termsAccepted
                 promoAccepted:(BOOL)promoAccepted
-                       source:(MWMAuthorizationSource)source
+                    firstName:(NSString *)firstName
+                     lastName:(NSString *)lastName
                    onComplete:(MWMBoolBlock)onComplete;
 
 @end

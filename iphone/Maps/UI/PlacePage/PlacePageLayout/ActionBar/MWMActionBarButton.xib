@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,7 +14,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R50-Tj-X0W">
-                    <rect key="frame" x="-100" y="0.0" width="180" height="48"/>
+                    <rect key="frame" x="0.0" y="0.0" width="80" height="48"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W07-Hz-J60" customClass="MWMButton">
@@ -35,7 +35,7 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="regular10:blackSecondaryText"/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="PPActionBarTitle"/>
                     </userDefinedRuntimeAttributes>
                 </label>
             </subviews>
@@ -49,7 +49,7 @@
                 <constraint firstItem="R50-Tj-X0W" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ZHQ-XD-E90"/>
                 <constraint firstAttribute="bottom" secondItem="rrI-0A-w3s" secondAttribute="bottom" constant="2" id="Zsi-G2-yc8"/>
                 <constraint firstAttribute="bottom" secondItem="R50-Tj-X0W" secondAttribute="bottom" id="adE-76-Hab"/>
-                <constraint firstItem="R50-Tj-X0W" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="-100" id="qid-13-F5b"/>
+                <constraint firstItem="R50-Tj-X0W" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="qid-13-F5b"/>
                 <constraint firstItem="W07-Hz-J60" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="rBR-of-5Ha"/>
                 <constraint firstAttribute="trailing" secondItem="W07-Hz-J60" secondAttribute="trailing" id="teM-gm-CX7"/>
             </constraints>

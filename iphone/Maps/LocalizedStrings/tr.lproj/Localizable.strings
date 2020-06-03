@@ -3262,6 +3262,58 @@
 
 "skyeng_map_downloader_cta_button" = "Подробнее";
 
+"button_layer_guides" = "Rehberler (yeni)";
+
+"no_routes_in_the_area_toast" = "Burada seyahat rehberi yok";
+
+"isolines_toast_zooms_1_10" = "Konturları görmek için haritayı büyütün";
+
+"routes_layer_in_menu_toast" = "Çevrimdışı rehberleri bulmak, konturları, metro hatlarını veya trafik sıkışıklıklarını keşfetmek için katmanları çevirin";
+
+"routes_layer_is_on_toast" = "Rehberleri bulmak için haritayı hareket ettirin";
+
+"connection_error_dialog_guides_title" = "Bağlantı hatası";
+
+"connection_error_dialog_guides_message" = "Katman çalışmıyor çünkü internet yok veya sinyal zayıf. Devam etmek için bağlantıyı kontrol edin veya katmanı kapatın.";
+
+"connection_error_dialog_guides_try" = "Tekrar deneyin";
+
+"connection_error_dialog_guides_layer_turn_off" = "Kapat";
+
+"connection_error_toast_guides" = "İnternete yeniden bağlanıyoruz";
+
+"routes_card_show" = "Göster";
+
+"routes_card_hide" = "Gizle";
+
+"whatsnew_catalog_new_title" = "Yeni bir katalog ve binlerce tatil fikri";
+
+"whatsnew_catalog_new_message" = "Rehberlerin kataloğunu güncelledik ve tüm dillere çeviriler ekledik. Planlamanızı önceden yapmaya başlayın!";
+
+"whatsnew_elevation_profile_title" = "Rehberlerde yükseklik profili";
+
+"whatsnew_elevation_profile_message" = "Satın alınan rotanın profilindeki imleci kullanarak, yaklaşan yükselişlerin ve inişlerin zorluk derecesini çevrimdışı olarak değerlendirin.";
+
+"whatsnew_guides_on_map_title" = "Rehberleri kolayca bulmak için yeni katman!";
+
+"whatsnew_guides_on_map_message" = "Açık hava etkinlikleri için ilginç şehir rotalarını ve seyahat rehberlerini hızlı bir şekilde bulmak için uygulamanın ayarlar menüsündeki katmanı etkinleştirin.";
+
+"downloader_updating_ios" = "Güncelleme";
+
+"downloader_loading_ios" = "İndir";
+
+"routes_card_plus_track" = "+ rota";
+
+"routes_card_city" = "City";
+
+"routes_card_outdoor" = "Outdoor";
+
+"routes_card_number_of_points" = "%s yer";
+
+"routes_card_routes_tag" = "Yol";
+
+"routes_card_set_tag" = "Öne çıkan yerler";
+
 
 /**********  Partners  **********/
 
@@ -3465,6 +3517,24 @@
 "type.amenity.public_bookcase" = "Kütüphane";
 
 "type.amenity.recycling" = "Geri dönüşüm merkezi";
+
+"type.amenity.recycling_container" = "Recycling container";
+
+"type.recycling.toxic" = "Toxic waste";
+
+"type.recycling.clothes" = "Old clothes";
+
+"type.recycling.glass_bottles" = "Glass bottles";
+
+"type.recycling.paper" = "Paper waste";
+
+"type.recycling.plastic" = "Plastic waste";
+
+"type.recycling.plastic_bottles" = "Plastic bottles";
+
+"type.recycling.scrap_metal" = "Scrap metal";
+
+"type.recycling.small_appliances" = "Electronic waste";
 
 "type.amenity.restaurant" = "Restoran";
 

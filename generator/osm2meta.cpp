@@ -69,12 +69,6 @@ private:
   vector<string> m_values;
 };
 
-void CollapseMultipleConsecutiveCharsIntoOne(char c, string & str)
-{
-  auto const comparator = [c](char lhs, char rhs) { return lhs == rhs && lhs == c; };
-  str.erase(unique(str.begin(), str.end(), comparator), str.end());
-}
-
 bool IsNoNameNoAddressBuilding(FeatureParams const & params)
 {
   static uint32_t const buildingType = classif().GetTypeByPath({"building"});
@@ -207,31 +201,6 @@ string MetadataTagProcessorImpl::ValidateAndFormat_level(string v) const
 string MetadataTagProcessorImpl::ValidateAndFormat_denomination(string const & v) const
 {
   return v;
-}
-
-string MetadataTagProcessorImpl::ValidateAndFormat_cuisine(string v) const
-{
-  strings::MakeLowerCaseInplace(v);
-  strings::SimpleTokenizer iter(v, ",;");
-  MultivalueCollector collector;
-  while (iter) {
-    string normalized = *iter;
-    strings::Trim(normalized, " ");
-    CollapseMultipleConsecutiveCharsIntoOne(' ', normalized);
-    replace(normalized.begin(), normalized.end(), ' ', '_');
-    // Avoid duplication for some cuisines.
-    if (normalized == "bbq" || normalized == "barbeque")
-      normalized = "barbecue";
-    if (normalized == "doughnut")
-      normalized = "donut";
-    if (normalized == "steak")
-      normalized = "steak_house";
-    if (normalized == "coffee")
-      normalized = "coffee_shop";
-    collector(normalized);
-    ++iter;
-  }
-  return collector.GetString();
 }
 
 string MetadataTagProcessorImpl::ValidateAndFormat_wikipedia(string v) const

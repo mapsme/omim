@@ -4,10 +4,10 @@ This file contains api for osmfilter and generator_tool to generate coastline.
 import os
 import subprocess
 
-from . import settings
-from .env import Env
-from .gen_tool import run_gen_tool
-from .osmtools import osmfilter
+from maps_generator.generator import settings
+from maps_generator.generator.env import Env
+from maps_generator.generator.gen_tool import run_gen_tool
+from maps_generator.generator.osmtools import osmfilter
 
 
 def filter_coastline(
@@ -62,4 +62,5 @@ def make_coastline(env: Env):
         user_resource_path=env.paths.user_resource_path,
         make_coasts=True,
         fail_on_coasts=True,
+        threads_count=settings.THREADS_COUNT,
     )

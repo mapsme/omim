@@ -41,8 +41,8 @@ public:
     Postcode
   };
 
-  // Metadata for search results. Considered valid if GetResultType() == Type::Feature.
-  struct Metadata
+  // Search results details. Considered valid if GetResultType() == Type::Feature.
+  struct Details
   {
     // Valid only if not empty, used for restaurants.
     std::string m_cuisine;
@@ -52,6 +52,9 @@ public:
 
     // Valid only if not empty, used for brand name.
     std::string m_brand;
+
+    // Valid only if not empty, used for roads.
+    std::string m_roadShields;
 
     // Following fields are used for hotels only.
     int m_hotelPricing = 0;
@@ -72,7 +75,7 @@ public:
 
   // For Type::Feature.
   Result(FeatureID const & id, m2::PointD const & pt, std::string const & str,
-         std::string const & address, uint32_t featureType, Metadata const & meta);
+         std::string const & address, uint32_t featureType, Details const & meta);
 
   // For Type::LatLon.
   Result(m2::PointD const & pt, std::string const & latlon, std::string const & address);
@@ -90,18 +93,19 @@ public:
 
   std::string const & GetString() const { return m_str; }
   std::string const & GetAddress() const { return m_address; }
-  std::string const & GetCuisine() const { return m_metadata.m_cuisine; }
-  std::string const & GetAirportIata() const { return m_metadata.m_airportIata; }
-  std::string const & GetBrand() const { return m_metadata.m_brand; }
-  float GetHotelRating() const { return m_metadata.m_hotelRating; }
+  std::string const & GetCuisine() const { return m_details.m_cuisine; }
+  std::string const & GetAirportIata() const { return m_details.m_airportIata; }
+  std::string const & GetBrand() const { return m_details.m_brand; }
+  std::string const & GetRoadShields() const { return m_details.m_roadShields; }
+  float GetHotelRating() const { return m_details.m_hotelRating; }
   std::string const & GetHotelApproximatePricing() const
   {
-    return m_metadata.m_hotelApproximatePricing;
+    return m_details.m_hotelApproximatePricing;
   }
-  bool IsHotel() const { return m_metadata.m_isHotel; }
+  bool IsHotel() const { return m_details.m_isHotel; }
 
-  osm::YesNoUnknown IsOpenNow() const { return m_metadata.m_isOpenNow; }
-  int GetStarsCount() const { return m_metadata.m_stars; }
+  osm::YesNoUnknown IsOpenNow() const { return m_details.m_isOpenNow; }
+  int GetStarsCount() const { return m_details.m_stars; }
 
   bool IsSuggest() const;
   bool HasPoint() const;
@@ -165,7 +169,7 @@ private:
   std::string m_suggestionStr;
   buffer_vector<std::pair<uint16_t, uint16_t>, 4> m_hightlightRanges;
 
-  RankingInfo m_info;
+  RankingInfo m_info = {};
 
   // The position that this result occupied in the vector returned by
   // a search query. -1 if undefined.
@@ -175,7 +179,7 @@ private:
 
 public:
   // Careful when moving: the order of destructors is important.
-  Metadata m_metadata;
+  Details m_details;
 };
 
 std::string DebugPrint(search::Result::Type type);

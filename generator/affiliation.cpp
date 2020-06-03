@@ -16,25 +16,70 @@
 BOOST_GEOMETRY_REGISTER_POINT_2D(m2::PointD, double, boost::geometry::cs::cartesian, x, y);
 BOOST_GEOMETRY_REGISTER_RING(std::vector<m2::PointD>);
 
-namespace feature
+namespace
 {
-CountriesFilesAffiliation::CountriesFilesAffiliation(std::string const & borderPath, bool haveBordersForWholeWorld)
-  : m_countryPolygonsTree(borders::GetOrCreateCountryPolygonsTree(borderPath))
-  , m_haveBordersForWholeWorld(haveBordersForWholeWorld)
+using namespace feature;
+
+template <typename T>
+struct RemoveCvref
 {
+  typedef std::remove_cv_t<std::remove_reference_t<T>> type;
+};
+
+template <typename T>
+using RemoveCvrefT = typename RemoveCvref<T>::type;
+
+template <typename T>
+m2::RectD GetLimitRect(T && t)
+{
+  using Type = RemoveCvrefT<T>;
+  if constexpr(std::is_same_v<Type, FeatureBuilder>)
+    return t.GetLimitRect();
+  if constexpr(std::is_same_v<Type, m2::PointD>)
+    return m2::RectD(t, t);
+
+  UNREACHABLE();
 }
 
-std::vector<std::string> CountriesFilesAffiliation::GetAffiliations(FeatureBuilder const & fb) const
+template <typename T, typename F>
+bool ForAnyPoint(T && t, F && f)
+{
+  using Type = RemoveCvrefT<T>;
+  if constexpr(std::is_same_v<Type, FeatureBuilder>)
+    return t.ForAnyPoint(std::forward<F>(f));
+  if constexpr(std::is_same_v<Type, m2::PointD>)
+    return f(std::forward<T>(t));
+
+  UNREACHABLE();
+}
+
+template <typename T, typename F>
+void ForEachPoint(T && t, F && f)
+{
+  using Type = RemoveCvrefT<T>;
+  if constexpr(std::is_same_v<Type, FeatureBuilder>)
+    t.ForEachPoint(std::forward<F>(f));
+  else if constexpr(std::is_same_v<Type, m2::PointD>)
+    f(std::forward<T>(t));
+  else
+    UNREACHABLE();
+}
+
+// An implementation for CountriesFilesAffiliation class.
+template <typename T>
+std::vector<std::string> GetAffiliations(T && t,
+                                         borders::CountryPolygonsCollection const & countryPolygonsTree,
+                                         bool haveBordersForWholeWorld)
 {
   std::vector<std::string> countries;
   std::vector<std::reference_wrapper<borders::CountryPolygons const>> countriesContainer;
-  m_countryPolygonsTree.ForEachPolygonInRect(fb.GetLimitRect(), [&](auto const & countryPolygons) {
+  countryPolygonsTree.ForEachCountryInRect(GetLimitRect(t), [&](auto const & countryPolygons) {
     countriesContainer.emplace_back(countryPolygons);
   });
 
   // todo(m.andrianov): We need to explore this optimization better. There is a hypothesis: some
   // elements belong to a rectangle, but do not belong to the exact boundary.
-  if (m_haveBordersForWholeWorld && countriesContainer.size() == 1)
+  if (haveBordersForWholeWorld && countriesContainer.size() == 1)
   {
     borders::CountryPolygons const & countryPolygons = countriesContainer.front();
     countries.emplace_back(countryPolygons.GetName());
@@ -43,7 +88,7 @@ std::vector<std::string> CountriesFilesAffiliation::GetAffiliations(FeatureBuild
 
   for (borders::CountryPolygons const & countryPolygons : countriesContainer)
   {
-    auto const need = fb.ForAnyGeometryPoint([&](auto const & point) {
+    auto const need = ForAnyPoint(t, [&](auto const & point) {
       return countryPolygons.Contains(point);
     });
 
@@ -54,76 +99,21 @@ std::vector<std::string> CountriesFilesAffiliation::GetAffiliations(FeatureBuild
   return countries;
 }
 
-std::vector<std::string>
-CountriesFilesAffiliation::GetAffiliations(m2::PointD const & point) const
+// An implementation for CountriesFilesIndexAffiliation class.
+using IndexSharedPtr = std::shared_ptr<CountriesFilesIndexAffiliation::Tree>;
+
+CountriesFilesIndexAffiliation::Box MakeBox(m2::RectD const & rect)
 {
-  std::vector<std::string> countries;
-  std::vector<std::reference_wrapper<borders::CountryPolygons const>> countriesContainer;
-  m_countryPolygonsTree.ForEachPolygonInRect(m2::RectD(point, point), [&](auto const & countryPolygons) {
-    countriesContainer.emplace_back(countryPolygons);
-  });
-
-  if (m_haveBordersForWholeWorld && countriesContainer.size() == 1)
-  {
-    borders::CountryPolygons const & countryPolygons = countriesContainer.front();
-    countries.emplace_back(countryPolygons.GetName());
-    return countries;
-  }
-
-  for (borders::CountryPolygons const & countryPolygons : countriesContainer)
-  {
-    auto const need = countryPolygons.Contains(point);
-
-    if (need)
-      countries.emplace_back(countryPolygons.GetName());
-  }
-
-  return countries;
+  return {rect.LeftBottom(), rect.RightTop()};
 }
 
-bool CountriesFilesAffiliation::HasCountryByName(std::string const & name) const
-{
-  return m_countryPolygonsTree.HasRegionByName(name);
-}
-
-CountriesFilesIndexAffiliation::CountriesFilesIndexAffiliation(std::string const & borderPath,
-                                                               bool haveBordersForWholeWorld)
-  : CountriesFilesAffiliation(borderPath, haveBordersForWholeWorld)
-{
-  static std::mutex cacheMutex;
-  static std::unordered_map<std::string, std::shared_ptr<Tree>> cache;
-  auto const key = borderPath + std::to_string(haveBordersForWholeWorld);
-  {
-    std::lock_guard<std::mutex> lock(cacheMutex);
-    auto const it = cache.find(key);
-    if (it != std::cend(cache))
-    {
-      m_index = it->second;
-      return;
-    }
-  }
-  auto const net = generator::cells_merger::MakeNet(0.2 /* step */,
-                                                    mercator::Bounds::kMinX, mercator::Bounds::kMinY,
-                                                    mercator::Bounds::kMaxX, mercator::Bounds::kMaxY);
-  auto const index = BuildIndex(net);
-  m_index = index;
-  std::lock_guard<std::mutex> lock(cacheMutex);
-  cache.emplace(key, index);
-}
-
-std::vector<std::string> CountriesFilesIndexAffiliation::GetAffiliations(FeatureBuilder const & fb) const
-{
-  auto const oneCountry = IsOneCountryForBbox(fb);
-  return oneCountry ? std::vector<std::string>{*oneCountry} : GetHonestAffiliations(fb);
-}
-
-std::optional<std::string> CountriesFilesIndexAffiliation::IsOneCountryForBbox(
-    FeatureBuilder const & fb) const
+std::optional<std::string> IsOneCountryForLimitRect(m2::RectD const & limitRect,
+                                                    IndexSharedPtr const & index)
 {
   borders::CountryPolygons const * country = nullptr;
-  std::vector<Value> values;
-  auto const bbox = MakeBox(fb.GetLimitRect());
-  boost::geometry::index::query(*m_index, boost::geometry::index::covers(bbox),
+  std::vector<CountriesFilesIndexAffiliation::Value> values;
+  auto const bbox = MakeBox(limitRect);
+  boost::geometry::index::query(*index, boost::geometry::index::covers(bbox),
                                 std::back_inserter(values));
   for (auto const & v : values)
   {
@@ -138,13 +128,14 @@ std::optional<std::string> CountriesFilesIndexAffiliation::IsOneCountryForBbox(
   return country ? country->GetName() : std::optional<std::string>{};
 }
 
-std::vector<std::string> CountriesFilesIndexAffiliation::GetHonestAffiliations(FeatureBuilder const & fb) const
+template <typename T>
+std::vector<std::string> GetHonestAffiliations(T && t, IndexSharedPtr const & index)
 {
   std::vector<std::string> affiliations;
   std::unordered_set<borders::CountryPolygons const *> countires;
-  fb.ForEachGeometryPoint([&](auto const & point) {
-    std::vector<Value> values;
-    boost::geometry::index::query(*m_index, boost::geometry::index::covers(point),
+  ForEachPoint(t, [&](auto const & point) {
+    std::vector<CountriesFilesIndexAffiliation::Value> values;
+    boost::geometry::index::query(*index, boost::geometry::index::covers(point),
                                   std::back_inserter(values));
     for (auto const & v : values)
     {
@@ -163,15 +154,76 @@ std::vector<std::string> CountriesFilesIndexAffiliation::GetHonestAffiliations(F
         }
       }
     }
-    return true;
   });
+
   return affiliations;
 }
 
-// static
-CountriesFilesIndexAffiliation::Box CountriesFilesIndexAffiliation::MakeBox(m2::RectD const & rect)
+template <typename T>
+std::vector<std::string> GetAffiliations(T && t, IndexSharedPtr const & index)
 {
-  return {rect.LeftBottom(), rect.RightTop()};
+  auto const oneCountry = IsOneCountryForLimitRect(GetLimitRect(t), index);
+  return oneCountry ? std::vector<std::string>{*oneCountry} : GetHonestAffiliations(t, index);
+}
+}  // namespace
+
+namespace feature
+{
+CountriesFilesAffiliation::CountriesFilesAffiliation(std::string const & borderPath, bool haveBordersForWholeWorld)
+  : m_countryPolygonsTree(borders::GetOrCreateCountryPolygonsTree(borderPath))
+  , m_haveBordersForWholeWorld(haveBordersForWholeWorld)
+{
+}
+
+std::vector<std::string> CountriesFilesAffiliation::GetAffiliations(FeatureBuilder const & fb) const
+{
+  return ::GetAffiliations(fb, m_countryPolygonsTree, m_haveBordersForWholeWorld);
+}
+
+std::vector<std::string>
+CountriesFilesAffiliation::GetAffiliations(m2::PointD const & point) const
+{
+  return ::GetAffiliations(point, m_countryPolygonsTree, m_haveBordersForWholeWorld);
+}
+
+bool CountriesFilesAffiliation::HasCountryByName(std::string const & name) const
+{
+  return m_countryPolygonsTree.HasRegionByName(name);
+}
+
+CountriesFilesIndexAffiliation::CountriesFilesIndexAffiliation(std::string const & borderPath,
+                                                               bool haveBordersForWholeWorld)
+  : CountriesFilesAffiliation(borderPath, haveBordersForWholeWorld)
+{
+  static std::mutex cacheMutex;
+  static std::unordered_map<std::string, std::shared_ptr<Tree>> cache;
+  auto const key = borderPath + std::to_string(haveBordersForWholeWorld);
+
+  std::lock_guard<std::mutex> lock(cacheMutex);
+
+  auto const it = cache.find(key);
+  if (it != std::cend(cache))
+  {
+    m_index = it->second;
+    return;
+  }
+
+  auto const net = generator::cells_merger::MakeNet(0.2 /* step */,
+                                                    mercator::Bounds::kMinX, mercator::Bounds::kMinY,
+                                                    mercator::Bounds::kMaxX, mercator::Bounds::kMaxY);
+  auto const index = BuildIndex(net);
+  m_index = index;
+  cache.emplace(key, index);
+}
+
+std::vector<std::string> CountriesFilesIndexAffiliation::GetAffiliations(FeatureBuilder const & fb) const
+{
+  return ::GetAffiliations(fb, m_index);
+}
+
+std::vector<std::string> CountriesFilesIndexAffiliation::GetAffiliations(m2::PointD const & point) const
+{
+  return ::GetAffiliations(point, m_index);
 }
 
 std::shared_ptr<CountriesFilesIndexAffiliation::Tree>
@@ -188,7 +240,7 @@ CountriesFilesIndexAffiliation::BuildIndex(const std::vector<m2::RectD> & net)
     {
       pool.SubmitWork([&, rect]() {
         std::vector<std::reference_wrapper<borders::CountryPolygons const>> countries;
-        m_countryPolygonsTree.ForEachPolygonInRect(rect, [&](auto const & country) {
+        m_countryPolygonsTree.ForEachCountryInRect(rect, [&](auto const & country) {
           countries.emplace_back(country);
         });
         if (m_haveBordersForWholeWorld && countries.size() == 1)
@@ -262,7 +314,7 @@ bool SingleAffiliation::HasCountryByName(std::string const & name) const
 }
 
 std::vector<std::string>
-SingleAffiliation::GetAffiliations(m2::PointD const & point) const
+SingleAffiliation::GetAffiliations(m2::PointD const &) const
 {
   return {m_filename};
 }

@@ -17,6 +17,7 @@
 
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -64,6 +65,8 @@ private:
 
   private:
     using TMwmFeatureCache = base::Cache<uint32_t, RoadInfo>;
+
+    std::mutex m_mutexCache;
     std::map<MwmSet::MwmId, TMwmFeatureCache> m_cache;
   };
 

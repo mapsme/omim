@@ -1,10 +1,12 @@
 #include "com/mapswithme/maps/Framework.hpp"
+
 #include "com/mapswithme/core/jni_helper.hpp"
+#include "com/mapswithme/maps/guides/Guides.hpp"
 #include "com/mapswithme/maps/UserMarkHelper.hpp"
 #include "com/mapswithme/opengl/androidoglcontextfactory.hpp"
 #include "com/mapswithme/platform/Platform.hpp"
-#include "com/mapswithme/util/NetworkPolicy.hpp"
 #include "com/mapswithme/util/FeatureIdBuilder.hpp"
+#include "com/mapswithme/util/NetworkPolicy.hpp"
 #include "com/mapswithme/vulkan/android_vulkan_context_factory.hpp"
 
 #include "map/chart_generator.hpp"
@@ -123,6 +125,7 @@ Framework::Framework()
   m_work.GetTrafficManager().SetStateListener(bind(&Framework::TrafficStateChanged, this, _1));
   m_work.GetTransitManager().SetStateListener(bind(&Framework::TransitSchemeStateChanged, this, _1));
   m_work.GetIsolinesManager().SetStateListener(bind(&Framework::IsolinesSchemeStateChanged, this, _1));
+  m_work.GetGuidesManager().SetStateListener(bind(&Framework::GuidesLayerStateChanged, this, _1));
   m_work.GetPowerManager().Subscribe(this);
 }
 
@@ -172,6 +175,12 @@ void Framework::IsolinesSchemeStateChanged(IsolinesManager::IsolinesState state)
 {
   if (m_onIsolinesStateChangedFn)
     m_onIsolinesStateChangedFn(state);
+}
+
+void Framework::GuidesLayerStateChanged(GuidesManager::GuidesState state)
+{
+  if (m_onGuidesStateChangedFn)
+    m_onGuidesStateChangedFn(state);
 }
 
 bool Framework::DestroySurfaceOnDetach()
@@ -624,6 +633,11 @@ void Framework::SetIsolinesListener(IsolinesManager::IsolinesStateChangedFn cons
   m_onIsolinesStateChangedFn = function;
 }
 
+void Framework::SetGuidesListener(GuidesManager::GuidesStateChangedFn const & function)
+{
+  m_onGuidesStateChangedFn = function;
+}
+
 bool Framework::IsTrafficEnabled()
 {
   return m_work.GetTrafficManager().IsEnabled();
@@ -1034,8 +1048,16 @@ Java_com_mapswithme_maps_Framework_nativePlacePageActivationListener(JNIEnv *env
     jni::TScopedLocalRef placePageDataRef(env, nullptr);
     if (info.IsTrack())
     {
+      auto const categoryId = info.GetBookmarkCategoryId();
+      auto const serverId = frm()->GetBookmarkManager().GetCategoryServerId(categoryId);
       auto const elevationInfo = frm()->GetBookmarkManager().MakeElevationInfo(info.GetTrackId());
-      placePageDataRef.reset(usermark_helper::CreateElevationInfo(env, elevationInfo));
+      placePageDataRef.reset(usermark_helper::CreateElevationInfo(env, serverId, elevationInfo));
+    }
+    else if (info.IsGuide())
+    {
+      auto const & guidesManager = frm()->GetGuidesManager();
+      auto const gallery = guidesManager.GetGallery();
+      placePageDataRef.reset(guides::CreateGallery(env, gallery));
     }
     else
     {
@@ -1766,13 +1788,26 @@ Java_com_mapswithme_maps_Framework_nativeSetIsolinesLayerEnabled(JNIEnv * env, j
 {
   auto const isolinesEnabled = static_cast<bool>(enabled);
   frm()->GetIsolinesManager().SetEnabled(isolinesEnabled);
-  frm()->SaveIsolonesEnabled(isolinesEnabled);
+  frm()->SaveIsolinesEnabled(isolinesEnabled);
 }
 
 JNIEXPORT jboolean JNICALL
 Java_com_mapswithme_maps_Framework_nativeIsIsolinesLayerEnabled(JNIEnv * env, jclass)
 {
   return static_cast<jboolean>(frm()->LoadIsolinesEnabled());
+}
+
+JNIEXPORT void JNICALL Java_com_mapswithme_maps_Framework_nativeSetGuidesLayerEnabled(
+    JNIEnv * env, jclass, jboolean enabled)
+{
+  frm()->GetGuidesManager().SetEnabled(static_cast<bool>(enabled));
+  frm()->SaveGuidesEnabled(static_cast<bool>(enabled));
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_mapswithme_maps_Framework_nativeIsGuidesLayerEnabled(JNIEnv * env, jclass)
+{
+  return static_cast<jboolean>(frm()->LoadGuidesEnabled());
 }
 
 JNIEXPORT void JNICALL

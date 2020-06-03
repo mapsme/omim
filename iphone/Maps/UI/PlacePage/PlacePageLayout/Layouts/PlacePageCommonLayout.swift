@@ -1,4 +1,17 @@
 class PlacePageCommonLayout: NSObject, IPlacePageLayout {
+  private lazy var distanceFormatter: MKDistanceFormatter = {
+    let formatter =  MKDistanceFormatter()
+    formatter.unitStyle = .abbreviated
+    formatter.units = Settings.measurementUnits() == .imperial ? .imperial : .metric
+    return formatter
+  }()
+
+  private lazy var unitsFormatter: MeasurementFormatter = {
+    let formatter = MeasurementFormatter()
+    formatter.unitOptions = [.providedUnit]
+    return formatter
+  }()
+
   private var placePageData: PlacePageData
   private var interactor: PlacePageInteractor
   private let storyboard: UIStoryboard
@@ -12,6 +25,10 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
 
   var actionBar: ActionBarViewController? {
     return actionBarViewController
+  }
+
+  var navigationBar: UIViewController? {
+    return placePageNavigationViewController
   }
 
   var adState: AdBannerState = .unset {
@@ -92,7 +109,7 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
   lazy var buttonsViewController: PlacePageButtonsViewController = {
     let vc = storyboard.instantiateViewController(ofType: PlacePageButtonsViewController.self)
     vc.buttonsData = placePageData.buttonsData!
-    vc.buttonsEnabled = placePageData.mapNodeAttributes.nodeStatus == .onDisk
+    vc.buttonsEnabled = placePageData.mapNodeAttributes?.nodeStatus == .onDisk
     vc.delegate = interactor
     return vc
   } ()
@@ -133,7 +150,14 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
     vc.delegate = interactor
     return vc
   } ()
-  
+
+  lazy var header: PlacePageHeaderViewController? = {
+    return PlacePageHeaderBuilder.build(data: placePageData.previewData, delegate: interactor, headerType: .flexible)
+  } ()
+
+  lazy var placePageNavigationViewController: PlacePageHeaderViewController = {
+    return PlacePageHeaderBuilder.build(data: placePageData.previewData, delegate: interactor, headerType: .fixed)
+  } ()
   
   init(interactor: PlacePageInteractor, storyboard: UIStoryboard, data: PlacePageData) {
     self.interactor = interactor
@@ -144,7 +168,7 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
   private func configureViewControllers() -> [UIViewController] {
     var viewControllers = [UIViewController]()
     viewControllers.append(previewViewController)
-    if placePageData.isPromoCatalog {
+    if placePageData.isPromoCatalog && placePageData.bookmarkData == nil {
       viewControllers.append(catalogSingleItemViewController)
       viewControllers.append(catalogGalleryViewController)
       placePageData.loadCatalogPromo(completion: onLoadCatalogPromo)
@@ -195,12 +219,20 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
     
     placePageData.loadOnlineData(completion: onLoadOnlineData)
     placePageData.onBookmarkStatusUpdate = { [weak self] in
-      self?.updateBookmarkSection()
+      guard let self = self else { return }
+      if self.placePageData.bookmarkData == nil {
+        self.actionBarViewController.resetButtons()
+      }
+      self.updateBookmarkSection()
+    }
+    placePageData.onUgcStatusUpdate = { [weak self] in
+      self?.onLoadUgc()
     }
 
     MWMLocationManager.add(observer: self)
     if let lastLocation = MWMLocationManager.lastLocation() {
       onLocationUpdate(lastLocation)
+      self.lastLocation = lastLocation
     }
     if let lastHeading = MWMLocationManager.lastHeading() {
       onHeadingUpdate(lastHeading)
@@ -208,8 +240,8 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
 
     placePageData.onMapNodeStatusUpdate = { [weak self] in
       guard let self = self else { return }
-      self.actionBarViewController.updateDownloadButtonState(self.placePageData.mapNodeAttributes.nodeStatus)
-      if self.placePageData.mapNodeAttributes.nodeStatus == .onDisk {
+      self.actionBarViewController.updateDownloadButtonState(self.placePageData.mapNodeAttributes!.nodeStatus)
+      if self.placePageData.mapNodeAttributes!.nodeStatus == .onDisk {
         self.actionBarViewController.resetButtons()
         if self.placePageData.buttonsData != nil {
           self.buttonsViewController.buttonsEnabled = true
@@ -224,7 +256,7 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
     return viewControllers
   }
 
-  func calculateSteps(inScrollView scrollView: UIScrollView) -> [PlacePageState] {
+  func calculateSteps(inScrollView scrollView: UIScrollView, compact: Bool) -> [PlacePageState] {
     var steps: [PlacePageState] = []
     let scrollHeight = scrollView.height
     steps.append(.closed(-scrollHeight))
@@ -233,10 +265,13 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
     }
     let previewFrame = scrollView.convert(preview.bounds, from: preview)
     steps.append(.preview(previewFrame.maxY - scrollHeight))
-    if placePageData.isPreviewPlus {
-      steps.append(.previewPlus(-scrollHeight * 0.55))
+    if !compact {
+      if placePageData.isPreviewPlus {
+        steps.append(.previewPlus(-scrollHeight * 0.55))
+      }
+      steps.append(.expanded(-scrollHeight * 0.3))
     }
-    steps.append(.expanded(-scrollHeight * 0.3))
+    steps.append(.full(0))
     return steps
   }
 }
@@ -272,17 +307,15 @@ extension PlacePageCommonLayout {
   }
 
   func onLoadUgc() {
-    if let ugcData =  self.placePageData.ugcData {
+    if let ugcData = self.placePageData.ugcData {
       previewViewController.updateUgc(ugcData)
 
       if !ugcData.isTotalRatingEmpty {
         ratingSummaryViewController.ugcData = ugcData
         ratingSummaryViewController.view.isHidden = false
       }
-      if ugcData.isUpdateEmpty {
-        addReviewViewController.view.isHidden = false
-      }
-      if !ugcData.isEmpty {
+      addReviewViewController.view.isHidden = !ugcData.isUpdateEmpty
+      if !ugcData.isEmpty || !ugcData.isUpdateEmpty {
         reviewsViewController.ugcData = ugcData
         reviewsViewController.view.isHidden = false
       }
@@ -297,6 +330,24 @@ extension PlacePageCommonLayout {
       }
       return
     }
+
+    let statPlacement: String
+    switch (self.placePageData.sponsoredType)
+    {
+    case .promoCatalogCity:
+      statPlacement = kStatPlacePageToponims;
+    case .promoCatalogSightseeings:
+      statPlacement = kStatPlacePageSightSeeing;
+    case .promoCatalogOutdoor:
+      statPlacement = kStatPlacePageOutdoor;
+    default:
+      statPlacement =  kStatUnknownError;
+    }
+    Statistics.logEvent(kStatPlacepageSponsoredShow, withParameters: [kStatProvider: kStatMapsmeGuides,
+                                                                      kStatState: kStatOnline,
+                                                                      kStatCount: catalogPromo.promoItems.count,
+                                                                      kStatPlacement: statPlacement])
+
     if catalogPromo.promoItems.count == 1 {
       catalogSingleItemViewController.promoItem = catalogPromo.promoItems.first!
       catalogSingleItemViewController.view.isHidden = false
@@ -321,6 +372,7 @@ extension PlacePageCommonLayout {
     } else {
       hidden = true
     }
+    self.presenter?.layoutIfNeeded()
     UIView.animate(withDuration: kDefaultAnimationDuration) { [unowned self] in
       self.bookmarkViewController.view.isHidden = hidden
       self.presenter?.layoutIfNeeded()
@@ -332,19 +384,35 @@ extension PlacePageCommonLayout {
 
 extension PlacePageCommonLayout: MWMLocationObserver {
   func onHeadingUpdate(_ heading: CLHeading) {
-    updateHeading(heading.trueHeading)
+    if !placePageData.isMyPosition {
+      updateHeading(heading.trueHeading)
+    }
   }
 
   func onLocationUpdate(_ location: CLLocation) {
-    let ppLocation = CLLocation(latitude: placePageData.locationCoordinate.latitude,
-                                longitude: placePageData.locationCoordinate.longitude)
-    let distance = location.distance(from: ppLocation)
-    let distanceFormatter = MKDistanceFormatter()
-    distanceFormatter.unitStyle = .abbreviated
-    let formattedDistance = distanceFormatter.string(fromDistance: distance)
-    previewViewController.updateDistance(formattedDistance)
-    lastLocation = location
-    updateHeading(location.course)
+    if placePageData.isMyPosition {
+      let imperial = Settings.measurementUnits() == .imperial
+      let alt = imperial ? location.altitude / 0.3048 : location.altitude
+      let altMeasurement = Measurement(value: alt.rounded(), unit: imperial ? UnitLength.feet : UnitLength.meters)
+      let altString = "▲ \(unitsFormatter.string(from: altMeasurement))"
+
+      if location.speed > 0 && location.timestamp.timeIntervalSinceNow >= -2 {
+        let speed = imperial ? location.speed * 2.237 : location.speed * 3.6
+        let speedMeasurement = Measurement(value: speed.rounded(), unit: imperial ? UnitSpeed.milesPerHour: UnitSpeed.kilometersPerHour)
+        let speedString = "\(MWMLocationManager.speedSymbolFor(location.speed))\(unitsFormatter.string(from: speedMeasurement))"
+        previewViewController.updateSpeedAndAltitude("\(altString)  \(speedString)")
+      } else {
+        previewViewController.updateSpeedAndAltitude(altString)
+      }
+    } else {
+      let ppLocation = CLLocation(latitude: placePageData.locationCoordinate.latitude,
+                                  longitude: placePageData.locationCoordinate.longitude)
+      let distance = location.distance(from: ppLocation)
+      let formattedDistance = distanceFormatter.string(fromDistance: distance)
+      previewViewController.updateDistance(formattedDistance)
+
+      lastLocation = location
+    }
   }
 
   func onLocationError(_ locationError: MWMLocationStatus) {

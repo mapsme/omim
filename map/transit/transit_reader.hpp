@@ -1,13 +1,15 @@
 #pragma once
 
-#include "transit/transit_display_info.hpp"
+#include "map/layers_statistics.hpp"
 
 #include "drape_frontend/drape_engine_safe_ptr.hpp"
 
-#include "geometry/screenbase.hpp"
+#include "transit/transit_display_info.hpp"
 
 #include "indexer/data_source.hpp"
 #include "indexer/feature_decl.hpp"
+
+#include "geometry/screenbase.hpp"
 
 #include "base/thread.hpp"
 #include "base/thread_pool.hpp"
@@ -118,6 +120,8 @@ private:
   void ShrinkCacheToAllowableSize();
   void ClearCache(MwmSet::MwmId const & mwmId);
 
+  void TrackStatistics(std::set<int64_t> const & mwmVersions);
+
   std::unique_ptr<base::thread_pool::routine::ThreadPool> m_threadsPool;
 
   std::mutex m_mutex;
@@ -152,5 +156,8 @@ private:
   bool m_isSchemeMode = false;
   bool m_isSchemeModeBlocked = false;
   std::pair<ScreenBase, bool> m_currentModelView = {ScreenBase(), false /* initialized */};
+
   bool m_trackFirstSchemeData = false;
+  std::optional<LayersStatistics::Status> m_lastTrackedStatus;
+  LayersStatistics m_statistics;
 };

@@ -24,6 +24,14 @@ public:
 
   using Points = std::vector<Point>;
 
+  enum Difficulty : uint8_t
+  {
+    Unknown,
+    Easy,
+    Medium,
+    Hard
+  };
+
   ElevationInfo() = default;
   explicit ElevationInfo(Track const & track);
 
@@ -51,8 +59,9 @@ private:
   uint16_t m_minAltitude = 0;
   // Altitude in meters.
   uint16_t m_maxAltitude = 0;
-  // Some digital difficulty level with value in range [0-3]
-  uint8_t m_difficulty = 0;
+  // Some digital difficulty level with value in range [0-kMaxDifficulty]
+  // or kInvalidDifficulty when difficulty is not found or incorrect.
+  Difficulty m_difficulty = Difficulty::Unknown;
   // Duration in seconds.
   uint32_t m_duration = 0;
 };

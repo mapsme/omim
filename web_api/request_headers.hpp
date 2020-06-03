@@ -17,9 +17,11 @@ public:
   std::optional<m2::PointD> m_currentPosition;
   std::vector<base::GeoObjectId> m_countryGeoIds;
   std::vector<base::GeoObjectId> m_cityGeoIds;
+  std::vector<std::string> m_downloadedGuidesIds;
 };
 
 platform::HttpClient::Headers GetDefaultCatalogHeaders();
 platform::HttpClient::Headers GetDefaultAuthHeaders();
+platform::HttpClient::Header GetPositionHeader(m2::PointD const & pos);
 platform::HttpClient::Headers GetCatalogHeaders(HeadersParams const & params);
 }  // namespace web_api

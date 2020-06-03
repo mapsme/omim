@@ -1,52 +1,48 @@
 package com.mapswithme.maps.maplayer;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.adapter.OnItemClickListener;
 import com.mapswithme.maps.maplayer.subway.OnSubwayLayerToggleListener;
 import com.mapswithme.maps.maplayer.traffic.OnTrafficLayerToggleListener;
 import com.mapswithme.maps.widget.recycler.SpanningLinearLayoutManager;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class ToggleMapLayerDialog extends DialogFragment
 {
   @NonNull
   @SuppressWarnings("NullableProblems")
-  private ModeAdapter mAdapter;
+  private LayersAdapter mAdapter;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private View mRoot;
 
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState)
   {
-    BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
-    LayoutInflater inflater = getActivity().getLayoutInflater();
-    View root = inflater.inflate(R.layout.fragment_toggle_map_layer, null, false);
+    BottomSheetDialog dialog = new BottomSheetDialog(requireActivity());
+    LayoutInflater inflater = requireActivity().getLayoutInflater();
+    mRoot = inflater.inflate(R.layout.fragment_toggle_map_layer, null, false);
     dialog.setOnShowListener(this::onShow);
-    dialog.setContentView(root);
-    initChildren(root);
+    dialog.setContentView(mRoot);
+    initChildren(mRoot);
     return dialog;
   }
 
@@ -73,30 +69,17 @@ public class ToggleMapLayerDialog extends DialogFragment
   private void initRecycler(@NonNull View root)
   {
     RecyclerView recycler = root.findViewById(R.id.recycler);
-    RecyclerView.LayoutManager layoutManager = new SpanningLinearLayoutManager(getContext(),
+    RecyclerView.LayoutManager layoutManager = new SpanningLinearLayoutManager(requireContext(),
                                                                                LinearLayoutManager.HORIZONTAL,
                                                                                false);
     recycler.setLayoutManager(layoutManager);
-    mAdapter = new ModeAdapter(createItems());
+    mAdapter = new LayersAdapter();
+    mAdapter.setLayerModes(LayersUtils.createItems(requireContext(),
+                                                   new SubwayItemClickListener(),
+                                                   new TrafficItemClickListener(),
+                                                   new IsolinesItemClickListener(),
+                                                   new GuidesItemClickListener()));
     recycler.setAdapter(mAdapter);
-  }
-
-  @NonNull
-  private List<Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>>> createItems()
-  {
-    SubwayItemClickListener subwayListener = new SubwayItemClickListener();
-    Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>> subway
-        = new Pair<>(BottomSheetItem.Subway.makeInstance(getContext()), subwayListener);
-
-    TrafficItemClickListener trafficListener = new TrafficItemClickListener();
-    Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>> traffic
-        = new Pair<>(BottomSheetItem.Traffic.makeInstance(getContext()), trafficListener);
-
-    IsolinesItemClickListener isoLinesListener = new IsolinesItemClickListener();
-    Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>> isoLines
-        = new Pair<>(BottomSheetItem.Isolines.makeInstance(getContext()), isoLinesListener);
-
-    return Arrays.asList(traffic, isoLines, subway);
   }
 
   public static void show(@NonNull AppCompatActivity activity)
@@ -113,125 +96,76 @@ public class ToggleMapLayerDialog extends DialogFragment
     fm.executePendingTransactions();
   }
 
-  private static class ModeAdapter extends RecyclerView.Adapter<ModeHolder>
+  @NonNull
+  public View getRootView()
   {
-    @NonNull
-    private final List<Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>>> mItems;
-
-    private ModeAdapter(@NonNull List<Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>>> modes)
-    {
-      mItems = modes;
-    }
-
-    @Override
-    public ModeHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
-      LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-      View root = inflater.inflate(R.layout.item_bottomsheet_dialog, parent, false);
-      return new ModeHolder(root);
-    }
-
-    @Override
-    public void onBindViewHolder(ModeHolder holder, int position)
-    {
-      Context context = holder.itemView.getContext();
-      Pair<BottomSheetItem, OnItemClickListener<BottomSheetItem>> pair = mItems.get(position);
-      BottomSheetItem item = pair.first;
-      holder.mItem = item;
-
-      boolean isEnabled = item.getMode().isEnabled(context);
-
-      holder.mButton.setSelected(isEnabled);
-      holder.mTitle.setSelected(isEnabled);
-      holder.mTitle.setText(item.getTitle());
-      holder.mButton.setImageResource(isEnabled ? item.getEnabledStateDrawable()
-                                                : item.getDisabledStateDrawable());
-      holder.mListener = pair.second;
-    }
-
-    @Override
-    public int getItemCount()
-    {
-      return mItems.size();
-    }
-  }
-  private static class ModeHolder extends RecyclerView.ViewHolder
-  {
-    @NonNull
-    private final ImageView mButton;
-    @NonNull
-    private final TextView mTitle;
-    @Nullable
-    private BottomSheetItem mItem;
-    @Nullable
-    private OnItemClickListener<BottomSheetItem> mListener;
-
-    ModeHolder(@NonNull View root)
-    {
-      super(root);
-      mButton = root.findViewById(R.id.btn);
-      mTitle = root.findViewById(R.id.name);
-      mButton.setOnClickListener(this::onItemClicked);
-    }
-
-    @NonNull
-    public BottomSheetItem getItem()
-    {
-      return Objects.requireNonNull(mItem);
-    }
-
-    @NonNull
-    public OnItemClickListener<BottomSheetItem> getListener()
-    {
-      return Objects.requireNonNull(mListener);
-    }
-
-    private void onItemClicked(@NonNull View v)
-    {
-      getListener().onItemClick(v, getItem());
-    }
+    return mRoot;
   }
 
-  private abstract class DefaultClickListener implements OnItemClickListener<BottomSheetItem>
-  {
-    @Override
-    public final void onItemClick(@NonNull View v, @NonNull BottomSheetItem item)
-    {
-      item.getMode().toggle(getContext());
-      onItemClickInternal(v, item);
-      mAdapter.notifyDataSetChanged();
-    }
-
-    abstract void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item);
+  @Nullable
+  public static ToggleMapLayerDialog getInstance(@NonNull AppCompatActivity activity) {
+    String tag = ToggleMapLayerDialog.class.getCanonicalName();
+    return (ToggleMapLayerDialog) activity.getSupportFragmentManager().findFragmentByTag(tag);
   }
 
   private class SubwayItemClickListener extends DefaultClickListener
   {
-    @Override
-    void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item)
+    private SubwayItemClickListener()
     {
-      OnSubwayLayerToggleListener listener = (OnSubwayLayerToggleListener) getActivity();
+      super(mAdapter);
+    }
+
+    @Override
+    public void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item)
+    {
+      OnSubwayLayerToggleListener listener = (OnSubwayLayerToggleListener) requireActivity();
       listener.onSubwayLayerSelected();
     }
   }
 
   private class TrafficItemClickListener extends DefaultClickListener
   {
-    @Override
-    void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item)
+    private TrafficItemClickListener()
     {
-      OnTrafficLayerToggleListener listener = (OnTrafficLayerToggleListener) getActivity();
+      super(mAdapter);
+    }
+
+    @Override
+    public void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item)
+    {
+      OnTrafficLayerToggleListener listener = (OnTrafficLayerToggleListener) requireActivity();
       listener.onTrafficLayerSelected();
     }
   }
 
-  private class IsolinesItemClickListener extends DefaultClickListener
+  private class IsolinesItemClickListener extends AbstractIsoLinesClickListener
   {
-    @Override
-    void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item)
+    private IsolinesItemClickListener()
     {
+      super(mAdapter);
+    }
+
+    @Override
+    public void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item)
+    {
+      super.onItemClickInternal(v,item);
       OnIsolinesLayerToggleListener listener = (OnIsolinesLayerToggleListener) requireActivity();
       listener.onIsolinesLayerSelected();
+    }
+  }
+
+  private class GuidesItemClickListener extends DefaultClickListener
+  {
+    private GuidesItemClickListener()
+    {
+      super(mAdapter);
+    }
+
+    @Override
+    public void onItemClickInternal(@NonNull View v, @NonNull BottomSheetItem item)
+    {
+      OnGuidesLayerToggleListener listener = (OnGuidesLayerToggleListener) requireActivity();
+      listener.onGuidesLayerSelected();
     }
   }
 }

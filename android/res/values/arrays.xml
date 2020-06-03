@@ -3,15 +3,15 @@
 
   <!-- What's new -->
   <integer-array name="news_images">
-    <item>@drawable/ic_img_wnew_isolines</item>
+    <item>@drawable/img_wnew_newguides</item>
   </integer-array>
 
   <string-array name="news_title_keys">
-    <item>whatsnew_isolines_title</item>
+    <item>whatsnew_guides_on_map_title</item>
   </string-array>
 
   <string-array name="news_messages_1">
-    <item>@string/whatsnew_isolines_message</item>
+    <item>@string/whatsnew_guides_on_map_message</item>
   </string-array>
 
   <string-array name="news_messages_2">

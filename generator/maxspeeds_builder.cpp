@@ -79,7 +79,7 @@ MaxspeedsMwmCollector::MaxspeedsMwmCollector(
   OsmIdToMaxspeed osmIdToMaxspeed;
   CHECK(ParseMaxspeeds(maxspeedCsvPath, osmIdToMaxspeed), (maxspeedCsvPath));
 
-  ForEachFromDat(dataPath, [&](FeatureType & ft, uint32_t fid) {
+  ForEachFeature(dataPath, [&](FeatureType & ft, uint32_t fid) {
     if (!routing::IsCarRoad(TypesHolder(ft)))
       return;
 
@@ -186,7 +186,7 @@ void BuildMaxspeedsSection(string const & dataPath, string const & osmToFeatureP
   LOG(LINFO, ("BuildMaxspeedsSection(", dataPath, ",", osmToFeaturePath, ",", maxspeedsFilename, ")"));
 
   map<uint32_t, base::GeoObjectId> featureIdToOsmId;
-  CHECK(ParseRoadsFeatureIdToOsmIdMapping(osmToFeaturePath, featureIdToOsmId), ());
+  CHECK(ParseWaysFeatureIdToOsmIdMapping(osmToFeaturePath, featureIdToOsmId), ());
   BuildMaxspeedsSection(dataPath, featureIdToOsmId, maxspeedsFilename);
 }
 }  // namespace routing

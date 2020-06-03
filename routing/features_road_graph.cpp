@@ -107,6 +107,7 @@ void FeaturesRoadGraph::CrossCountryVehicleModel::Clear()
 
 IRoadGraph::RoadInfo & FeaturesRoadGraph::RoadInfoCache::Find(FeatureID const & featureId, bool & found)
 {
+  std::lock_guard lock(m_mutexCache);
   auto res = m_cache.emplace(featureId.m_mwmId, TMwmFeatureCache());
   if (res.second)
     res.first->second.Init(kPowOfTwoForFeatureCacheSize);
@@ -115,8 +116,10 @@ IRoadGraph::RoadInfo & FeaturesRoadGraph::RoadInfoCache::Find(FeatureID const & 
 
 void FeaturesRoadGraph::RoadInfoCache::Clear()
 {
+  std::lock_guard lock(m_mutexCache);
   m_cache.clear();
 }
+
 FeaturesRoadGraph::FeaturesRoadGraph(DataSource const & dataSource, IRoadGraph::Mode mode,
                                      shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory)
   : m_dataSource(dataSource), m_mode(mode), m_vehicleModel(vehicleModelFactory)
@@ -191,8 +194,6 @@ void FeaturesRoadGraph::FindClosestEdges(
     FeatureID const & featureId = ft.GetID();
 
     IRoadGraph::RoadInfo const & roadInfo = GetCachedRoadInfo(featureId, ft, kInvalidSpeedKMPH);
-    CHECK_EQUAL(roadInfo.m_speedKMPH, kInvalidSpeedKMPH, ());
-
     finder.AddInformationSource(IRoadGraph::FullRoadInfo(featureId, roadInfo));
   };
 
@@ -296,12 +297,13 @@ double FeaturesRoadGraph::GetSpeedKMpHFromFt(FeatureType & ft, SpeedParams const
 void FeaturesRoadGraph::ExtractRoadInfo(FeatureID const & featureId, FeatureType & ft,
                                         double speedKMpH, RoadInfo & ri) const
 {
+  ri.m_speedKMPH = speedKMpH;
+
   Value const & value = LockMwm(featureId.m_mwmId);
   if (!value.IsAlive())
     return;
 
   ri.m_bidirectional = !IsOneWay(ft);
-  ri.m_speedKMPH = speedKMpH;
 
   ft.ParseGeometry(FeatureType::BEST_GEOMETRY);
   size_t const pointsCount = ft.GetPointsCount();

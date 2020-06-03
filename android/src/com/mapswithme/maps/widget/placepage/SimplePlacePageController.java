@@ -7,12 +7,12 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GestureDetectorCompat;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.R;
-import com.mapswithme.maps.bookmarks.data.ElevationInfo;
 import com.mapswithme.util.UiUtils;
 import com.trafi.anchorbottomsheetbehavior.AnchorBottomSheetBehavior;
 
@@ -35,6 +35,8 @@ public class SimplePlacePageController implements PlacePageController
   private int mViewPortMinWidth;
   @NonNull
   private final PlacePageViewRenderer<PlacePageData> mViewRenderer;
+  @Nullable
+  private final PlacePageStateObserver mStateObserver;
   @NonNull
   private final BottomSheetChangedListener mBottomSheetChangedListener =
       new BottomSheetChangedListener()
@@ -43,6 +45,8 @@ public class SimplePlacePageController implements PlacePageController
         public void onSheetHidden()
         {
           onHiddenInternal();
+          if (mStateObserver != null)
+            mStateObserver.onPlacePageClosed();
         }
 
         @Override
@@ -59,6 +63,8 @@ public class SimplePlacePageController implements PlacePageController
         {
           if (UiUtils.isLandscape(mApplication))
             PlacePageUtils.moveViewPortRight(mSheet, mViewPortMinWidth);
+          if (mStateObserver != null)
+            mStateObserver.onPlacePageDetails();
         }
 
         @Override
@@ -66,6 +72,8 @@ public class SimplePlacePageController implements PlacePageController
         {
           if (UiUtils.isLandscape(mApplication))
             PlacePageUtils.moveViewPortRight(mSheet, mViewPortMinWidth);
+          if (mStateObserver != null)
+            mStateObserver.onPlacePagePreview();
         }
 
         @Override
@@ -91,17 +99,23 @@ public class SimplePlacePageController implements PlacePageController
       = new DefaultBottomSheetCallback(mBottomSheetChangedListener);
 
   private boolean mDeactivateMapSelection = true;
+  @IdRes
+  private final int mSheetResId;
 
-  SimplePlacePageController(@NonNull SlideListener slideListener,
-                            @NonNull PlacePageViewRenderer<PlacePageData> renderer)
+  SimplePlacePageController(int sheetResId, @NonNull PlacePageViewRenderer<PlacePageData> renderer,
+                            @Nullable PlacePageStateObserver stateObserver,
+                            @NonNull SlideListener slideListener)
   {
+    mSheetResId = sheetResId;
     mSlideListener = slideListener;
     mViewRenderer = renderer;
+    mStateObserver = stateObserver;
   }
 
   @Override
   public void openFor(@NonNull PlacePageData data)
   {
+    mDeactivateMapSelection = true;
     mViewRenderer.render(data);
     if (mSheetBehavior.getSkipCollapsed())
       mSheetBehavior.setState(AnchorBottomSheetBehavior.STATE_EXPANDED);
@@ -170,7 +184,7 @@ public class SimplePlacePageController implements PlacePageController
   {
     Objects.requireNonNull(activity);
     mApplication = activity.getApplication();
-    mSheet = activity.findViewById(R.id.elevation_profile);
+    mSheet = activity.findViewById(mSheetResId);
     mViewportMinHeight = mSheet.getResources().getDimensionPixelSize(R.dimen.viewport_min_height);
     mViewPortMinWidth = mSheet.getResources().getDimensionPixelSize(R.dimen.viewport_min_width);
     mSheetBehavior = AnchorBottomSheetBehavior.from(mSheet);
@@ -223,6 +237,7 @@ public class SimplePlacePageController implements PlacePageController
 
   private void onHiddenInternal()
   {
+    mViewRenderer.onHide();
     if (mDeactivateMapSelection)
       Framework.nativeDeactivatePopup();
     mDeactivateMapSelection = true;
@@ -238,7 +253,7 @@ public class SimplePlacePageController implements PlacePageController
   @Override
   public boolean support(@NonNull PlacePageData data)
   {
-    return data instanceof ElevationInfo;
+    return mViewRenderer.support(data);
   }
 
   private static class SimplePlacePageGestureListener extends PlacePageGestureListener

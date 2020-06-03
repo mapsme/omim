@@ -313,44 +313,36 @@ public:
   /// \note |task| cannot be moved in case of |Thread::Gui|. This way unique_ptr cannot be used
   /// in |task|. Use shared_ptr instead.
   template <typename Task>
-  void RunTask(Thread thread, Task && task)
+  base::TaskLoop::TaskId RunTask(Thread thread, Task && task)
   {
     ASSERT(m_networkThread && m_fileThread && m_backgroundThread, ());
     switch (thread)
     {
-    case Thread::File:
-      m_fileThread->Push(std::forward<Task>(task));
-      break;
-    case Thread::Network:
-      m_networkThread->Push(std::forward<Task>(task));
-      break;
-    case Thread::Gui:
-      RunOnGuiThread(std::forward<Task>(task));
-      break;
-    case Thread::Background: m_backgroundThread->Push(std::forward<Task>(task)); break;
+    case Thread::File: return m_fileThread->Push(std::forward<Task>(task));
+    case Thread::Network: return m_networkThread->Push(std::forward<Task>(task));
+    case Thread::Gui: RunOnGuiThread(std::forward<Task>(task)); return base::TaskLoop::kIncorrectId;
+    case Thread::Background: return m_backgroundThread->Push(std::forward<Task>(task));
     }
   }
 
   template <typename Task>
-  void RunDelayedTask(Thread thread, base::thread_pool::delayed::ThreadPool::Duration const & delay, Task && task)
+  base::TaskLoop::TaskId RunDelayedTask(
+      Thread thread, base::thread_pool::delayed::ThreadPool::Duration const & delay, Task && task)
   {
     ASSERT(m_networkThread && m_fileThread && m_backgroundThread, ());
     switch (thread)
     {
-    case Thread::File:
-      m_fileThread->PushDelayed(delay, std::forward<Task>(task));
-      break;
-    case Thread::Network:
-      m_networkThread->PushDelayed(delay, std::forward<Task>(task));
-      break;
+    case Thread::File: return m_fileThread->PushDelayed(delay, std::forward<Task>(task));
+    case Thread::Network: return m_networkThread->PushDelayed(delay, std::forward<Task>(task));
     case Thread::Gui:
       CHECK(false, ("Delayed tasks for gui thread are not supported yet"));
-      break;
+      return base::TaskLoop::kIncorrectId;
     case Thread::Background:
-      m_backgroundThread->PushDelayed(delay, std::forward<Task>(task));
-      break;
+      return m_backgroundThread->PushDelayed(delay, std::forward<Task>(task));
     }
   }
+
+  void CancelTask(Thread thread, base::TaskLoop::TaskId id);
 
   // Use this method for testing purposes only.
   void SetGuiThread(std::unique_ptr<base::TaskLoop> guiThread);

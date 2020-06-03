@@ -16,16 +16,29 @@ from abc import abstractmethod
 from collections import defaultdict
 from typing import AnyStr
 from typing import Callable
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Type
 from typing import Union
 
-from .status import Status
-from ..utils.log import DummyObject
-from ..utils.log import create_file_logger
+import filelock
+
+from maps_generator.generator import status
+from maps_generator.utils.file import download_files
+from maps_generator.utils.file import normalize_url_to_path_dict
+from maps_generator.utils.log import DummyObject
+from maps_generator.utils.log import create_file_logger
+from maps_generator.utils.log import create_file_handler
 
 logger = logging.getLogger("maps_generator")
+
+
+class InternalDependency:
+    def __init__(self, url, path_method, mode=""):
+        self.url = url
+        self.path_method = path_method
+        self.mode = mode
 
 
 class Stage(ABC):
@@ -96,6 +109,9 @@ class Stages:
         for dep in deps:
             self.dependencies[stage].add(dep)
 
+    def get_invisible_stages_names(self) -> List[AnyStr]:
+        return [get_stage_name(st) for st in self.helper_stages]
+
     def get_visible_stages_names(self) -> List[AnyStr]:
         """Returns all stages names except helper stages names."""
         stages = []
@@ -129,28 +145,32 @@ def outer_stage(stage: Type[Stage]) -> Type[Stage]:
         def apply(obj: Stage, env: "Env", *args, **kwargs):
             name = get_stage_name(obj)
             logfile = os.path.join(env.paths.log_path, f"{name}.log")
-            log_handler = logging.FileHandler(logfile)
+            log_handler = create_file_handler(logfile)
             logger.addHandler(log_handler)
-            if not env.is_accepted_stage(stage):
-                logger.info(f"{name} was not accepted.")
-                logger.removeHandler(log_handler)
-                return
-
-            main_status = env.main_status
-            main_status.init(env.paths.main_status_path, name)
-            if main_status.need_skip():
-                logger.warning(f"{name} was skipped.")
-                logger.removeHandler(log_handler)
-                return
-
-            main_status.update_status()
-            logger.info(f"{name}: start ...")
+            # This message is used as an anchor for parsing logs.
+            # See maps_generator/checks/logs/logs_reader.py STAGE_START_MSG_PATTERN
+            logger.info(f"Stage {name}: start ...")
             t = time.time()
-            env.set_subprocess_out(log_handler.stream)
-            method(obj, env, *args, **kwargs)
-            d = time.time() - t
-            logger.info(f"{name}: finished in " f"{str(datetime.timedelta(seconds=d))}")
-            logger.removeHandler(log_handler)
+            try:
+                if not env.is_accepted_stage(stage):
+                    logger.info(f"Stage {name} was not accepted.")
+                    return
+
+                main_status = env.main_status
+                main_status.init(env.paths.main_status_path, name)
+                if main_status.need_skip():
+                    logger.warning(f"Stage {name} was skipped.")
+                    return
+
+                main_status.update_status()
+                env.set_subprocess_out(log_handler.stream)
+                method(obj, env, *args, **kwargs)
+            finally:
+                d = time.time() - t
+                # This message is used as an anchor for parsing logs.
+                # See maps_generator/checks/logs/logs_reader.py STAGE_FINISH_MSG_PATTERN
+                logger.info(f"Stage {name}: finished in " f"{str(datetime.timedelta(seconds=d))}")
+                logger.removeHandler(log_handler)
 
         return apply
 
@@ -170,20 +190,22 @@ def country_stage_status(stage: Type[Stage]) -> Type[Stage]:
                 _logger, _ = countries_meta[country]["logger"]
 
             if not env.is_accepted_stage(stage):
-                _logger.info(f"{name} was not accepted.")
+                _logger.info(f"Stage {name} was not accepted.")
                 return
 
             if "status" not in countries_meta[country]:
-                countries_meta[country]["status"] = Status()
+                countries_meta[country]["status"] = status.Status()
 
-            status = countries_meta[country]["status"]
-            status_file = os.path.join(env.paths.status_path, f"{country}.status")
-            status.init(status_file, name)
-            if status.need_skip():
-                _logger.warning(f"{name} was skipped.")
+            country_status = countries_meta[country]["status"]
+            status_file = os.path.join(
+                env.paths.status_path, status.with_stat_ext(country)
+            )
+            country_status.init(status_file, name)
+            if country_status.need_skip():
+                _logger.warning(f"Stage {name} was skipped.")
                 return
 
-            status.update_status()
+            country_status.update_status()
             method(obj, env, country, *args, **kwargs)
 
         return apply
@@ -204,14 +226,17 @@ def country_stage_log(stage: Type[Stage]) -> Type[Stage]:
                 countries_meta[country]["logger"] = create_file_logger(log_file)
 
             _logger, log_handler = countries_meta[country]["logger"]
-            stage_formatted = " ".join(name.split("_")).capitalize()
-            _logger.info(f"{stage_formatted}: start ...")
+            # This message is used as an anchor for parsing logs.
+            # See maps_generator/checks/logs/logs_reader.py STAGE_START_MSG_PATTERN
+            _logger.info(f"Stage {name}: start ...")
             t = time.time()
             env.set_subprocess_out(log_handler.stream, country)
             method(obj, env, country, *args, logger=_logger, **kwargs)
             d = time.time() - t
+            # This message is used as an anchor for parsing logs.
+            # See maps_generator/checks/logs/logs_reader.py STAGE_FINISH_MSG_PATTERN
             _logger.info(
-                f"{stage_formatted}: finished in "
+                f"Stage {name}: finished in "
                 f"{str(datetime.timedelta(seconds=d))}"
             )
 
@@ -236,16 +261,6 @@ def mwm_stage(stage: Type[Stage]) -> Type[Stage]:
     return stage
 
 
-def planet_lock(stage: Type[Stage]) -> Type[Stage]:
-    stage.need_planet_lock = True
-    return stage
-
-
-def build_lock(stage: Type[Stage]) -> Type[Stage]:
-    stage.need_build_lock = True
-    return stage
-
-
 def production_only(stage: Type[Stage]) -> Type[Stage]:
     stage.is_production_only = True
     return stage
@@ -255,6 +270,53 @@ def helper_stage_for(*deps) -> Callable[[Type[Stage],], Type[Stage]]:
     def wrapper(stage: Type[Stage]) -> Type[Stage]:
         stages.add_dependency_for(stage, *deps)
         stage.is_helper = True
+        return stage
+
+    return wrapper
+
+
+def depends_from_internal(*deps) -> Callable[[Type[Stage],], Type[Stage]]:
+    def get_urls(
+        env: "Env", internal_dependencies: List[InternalDependency]
+    ) -> Dict[AnyStr, AnyStr]:
+        deps = {}
+        for d in internal_dependencies:
+            if "p" in d.mode and not env.production:
+                continue
+
+            path = None
+            if type(d.path_method) is property:
+                path = d.path_method.__get__(env.paths)
+
+            assert path is not None, type(d.path_method)
+            deps[d.url] = path
+
+        return deps
+
+    def download_under_lock(env: "Env", urls: Dict[AnyStr, AnyStr], stage_name: AnyStr):
+        lock_name = f"{os.path.join(env.paths.status_path, stage_name)}.lock"
+        status_name = f"{os.path.join(env.paths.status_path, stage_name)}.download"
+        with filelock.FileLock(lock_name):
+            s = status.Status(status_name)
+            if not s.is_finished():
+                urls = normalize_url_to_path_dict(urls)
+                download_files(urls, env.force_download_files)
+                s.finish()
+
+    def new_apply(method):
+        def apply(obj: Stage, env: "Env", *args, **kwargs):
+            if hasattr(obj, "internal_dependencies") and obj.internal_dependencies:
+                urls = get_urls(env, obj.internal_dependencies)
+                if urls:
+                    download_under_lock(env, urls, get_stage_name(obj))
+
+            method(obj, env, *args, **kwargs)
+
+        return apply
+
+    def wrapper(stage: Type[Stage]) -> Type[Stage]:
+        stage.internal_dependencies = deps
+        stage.apply = new_apply(stage.apply)
         return stage
 
     return wrapper

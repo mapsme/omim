@@ -1,8 +1,10 @@
 #include "generator/search_index_builder.hpp"
 
 #include "search/common.hpp"
+#include "search/house_to_street_table.hpp"
 #include "search/mwm_context.hpp"
 #include "search/reverse_geocoder.hpp"
+#include "search/search_index_header.hpp"
 #include "search/search_index_values.hpp"
 #include "search/search_trie.hpp"
 #include "search/types_skipper.hpp"
@@ -40,15 +42,15 @@
 #include "base/string_utils.hpp"
 #include "base/timer.hpp"
 
+#include "defines.hpp"
+
 #include <algorithm>
 #include <fstream>
 #include <map>
 #include <mutex>
+#include <thread>
 #include <unordered_map>
 #include <vector>
-#include <thread>
-
-#include "defines.hpp"
 
 using namespace std;
 
@@ -322,8 +324,11 @@ public:
       return;
 
     // Road number.
-    if (hasStreetType && !f.GetParams().ref.empty())
-      inserter(StringUtf8Multilang::kDefaultCode, f.GetParams().ref);
+    if (hasStreetType)
+    {
+      for (auto const & shield : feature::GetRoadShieldsNames(f.GetRoadNumber()))
+        inserter(StringUtf8Multilang::kDefaultCode, shield);
+    }
 
     if (ftypes::IsAirportChecker::Instance()(types))
     {
@@ -487,8 +492,7 @@ void BuildAddressTable(FilesContainerR & container, string const & addressDataFi
 
   // Flush results to disk.
   {
-    // Code corresponds to the HouseToStreetTable decoding.
-    MapUint32ToValueBuilder<uint32_t> builder;
+    search::HouseToStreetTableBuilder builder;
     uint32_t houseToStreetCount = 0;
     for (size_t i = 0; i < results.size(); ++i)
     {
@@ -499,22 +503,7 @@ void BuildAddressTable(FilesContainerR & container, string const & addressDataFi
       }
     }
 
-    // Each street id is encoded as delta from some prediction.
-    // First street id in the block encoded as VarUint, all other street ids in the block
-    // encoded as VarInt delta from previous id.
-    auto const writeBlockCallback = [&](Writer & w, vector<uint32_t>::const_iterator begin,
-                                        vector<uint32_t>::const_iterator end) {
-      CHECK(begin != end, ("MapUint32ToValueBuilder should guarantee begin != end."));
-      WriteVarUint(w, *begin);
-      auto prevIt = begin;
-      for (auto it = begin + 1; it != end; ++it)
-      {
-        int32_t const delta = base::asserted_cast<int32_t>(*it) - *prevIt;
-        WriteVarInt(w, delta);
-        prevIt = it;
-      }
-    };
-    builder.Freeze(writer, writeBlockCallback);
+    builder.Freeze(writer);
 
     LOG(LINFO, ("Address: BuildingToStreet entries count:", houseToStreetCount));
   }
@@ -564,7 +553,24 @@ bool BuildSearchIndexFromDataFile(string const & path, string const & country, b
       {
         FilesContainerW writeContainer(readContainer.GetFileName(), FileWriter::OP_WRITE_EXISTING);
         auto writer = writeContainer.GetWriter(SEARCH_INDEX_FILE_TAG);
+        size_t const startOffset = writer->Pos();
+        CHECK(coding::IsAlign8(startOffset), ());
+
+        search::SearchIndexHeader header;
+        header.Serialize(*writer);
+
+        uint64_t bytesWritten = writer->Pos();
+        coding::WritePadding(*writer, bytesWritten);
+
+        header.m_indexOffset = base::asserted_cast<uint32_t>(writer->Pos() - startOffset);
         rw_ops::Reverse(FileReader(indexFilePath), *writer);
+        header.m_indexSize =
+            base::asserted_cast<uint32_t>(writer->Pos() - header.m_indexOffset - startOffset);
+
+        auto const endOffset = writer->Pos();
+        writer->Seek(startOffset);
+        header.Serialize(*writer);
+        writer->Seek(endOffset);
       }
 
       {

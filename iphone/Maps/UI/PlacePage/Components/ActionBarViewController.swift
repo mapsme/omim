@@ -1,5 +1,5 @@
 protocol ActionBarViewControllerDelegate: AnyObject {
-  func actionBar(_ actionBar: ActionBarViewController, dPressButton type: ActionBarButtonType)
+  func actionBar(_ actionBar: ActionBarViewController, didPressButton type: ActionBarButtonType)
 }
 
 class ActionBarViewController: UIViewController {
@@ -40,23 +40,16 @@ class ActionBarViewController: UIViewController {
     }
 
     for buttonType in visibleButtons {
-      var selected = false
-      var disabled = false
-      if buttonType == .bookmark {
-        if let bookmarkData = placePageData.bookmarkData {
-          selected = true
-          disabled = !bookmarkData.isEditable
-        }
-      }
+      let (selected, enabled) = buttonState(buttonType)
       let button = ActionBarButton(delegate: self,
                                    buttonType: buttonType,
                                    partnerIndex: placePageData.partnerIndex,
                                    isSelected: selected,
-                                   isDisabled: disabled)
+                                   isEnabled: enabled)
       stackView.addArrangedSubview(button)
       if buttonType == .download {
         downloadButton = button
-        updateDownloadButtonState(placePageData.mapNodeAttributes.nodeStatus)
+        updateDownloadButtonState(placePageData.mapNodeAttributes!.nodeStatus)
       }
     }
   }
@@ -79,8 +72,8 @@ class ActionBarViewController: UIViewController {
   }
 
   func updateDownloadButtonState(_ nodeStatus: MapNodeStatus) {
-    guard let downloadButton = downloadButton else { return }
-    switch self.placePageData.mapNodeAttributes.nodeStatus {
+    guard let downloadButton = downloadButton, let mapNodeAttributes = placePageData.mapNodeAttributes else { return }
+    switch mapNodeAttributes.nodeStatus {
     case .downloading:
       downloadButton.mapDownloadProgress?.state = .progress
     case .applying, .inQueue:
@@ -97,14 +90,16 @@ class ActionBarViewController: UIViewController {
   }
 
   private func configButton1() {
-    switch placePageData.mapNodeAttributes.nodeStatus {
-    case .onDiskOutOfDate, .onDisk, .undefined:
-      break
-    case .downloading, .applying, .inQueue, .error, .notDownloaded, .partly:
-      visibleButtons.append(.download)
-      return
-    @unknown default:
-      fatalError()
+    if let mapNodeAttributes = placePageData.mapNodeAttributes {
+      switch mapNodeAttributes.nodeStatus {
+      case .onDiskOutOfDate, .onDisk, .undefined:
+        break
+      case .downloading, .applying, .inQueue, .error, .notDownloaded, .partly:
+        visibleButtons.append(.download)
+        return
+      @unknown default:
+        fatalError()
+      }
     }
     var buttons: [ActionBarButtonType] = []
     if isRoutePlanning {
@@ -165,12 +160,15 @@ class ActionBarViewController: UIViewController {
                                         message: placePageData.previewData.subtitle,
                                         preferredStyle: .actionSheet)
     for button in additionalButtons {
-      actionSheet.addAction(UIAlertAction(title: titleForButton(button, placePageData.partnerIndex, false),
-                                          style: .default,
-                                          handler: { [weak self] _ in
-                                            guard let self = self else { return }
-                                            self.delegate?.actionBar(self, dPressButton: button)
-      }))
+      let (selected, enabled) = buttonState(button)
+      let action = UIAlertAction(title: titleForButton(button, placePageData.partnerIndex, selected),
+                                 style: .default,
+                                 handler: { [weak self] _ in
+                                  guard let self = self else { return }
+                                  self.delegate?.actionBar(self, didPressButton: button)
+      })
+      action.isEnabled = enabled
+      actionSheet.addAction(action)
     }
     actionSheet.addAction(UIAlertAction(title: L("cancel"), style: .cancel))
     if let popover = actionSheet.popoverPresentationController, let sourceView = stackView.arrangedSubviews.last {
@@ -178,6 +176,16 @@ class ActionBarViewController: UIViewController {
       popover.sourceRect = sourceView.bounds
     }
     present(actionSheet, animated: true)
+  }
+
+  private func buttonState(_ buttonType: ActionBarButtonType) -> (Bool /* selected */, Bool /* enabled */) {
+    var selected = false
+    var enabled = true
+    if buttonType == .bookmark, let bookmarkData = placePageData.bookmarkData {
+      selected = true
+      enabled = bookmarkData.isEditable
+    }
+    return (selected, enabled)
   }
 }
 
@@ -187,6 +195,6 @@ extension ActionBarViewController: ActionBarButtonDelegate {
       showMore()
       return
     }
-    delegate?.actionBar(self, dPressButton: type)
+    delegate?.actionBar(self, didPressButton: type)
   }
 }

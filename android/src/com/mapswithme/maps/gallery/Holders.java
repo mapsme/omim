@@ -6,35 +6,46 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.net.Uri;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.mapswithme.HotelUtils;
+import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.R;
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
+import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.maps.guides.GuidesGallery;
 import com.mapswithme.maps.promo.PromoCityGallery;
 import com.mapswithme.maps.promo.PromoEntity;
+import com.mapswithme.maps.routing.RoutingController;
 import com.mapswithme.maps.search.Popularity;
 import com.mapswithme.maps.ugc.Impress;
 import com.mapswithme.maps.ugc.UGC;
 import com.mapswithme.maps.widget.RatingView;
 import com.mapswithme.util.ConnectionState;
 import com.mapswithme.util.NetworkPolicy;
+import com.mapswithme.util.StringUtils;
+import com.mapswithme.util.ThemeUtils;
 import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
+import com.mapswithme.util.statistics.Statistics;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Holders
 {
@@ -424,6 +435,7 @@ public class Holders
     }
   }
 
+
   public static class CatalogPromoHolder extends BaseViewHolder<PromoEntity>
   {
     @NonNull
@@ -545,6 +557,194 @@ public class Holders
         return;
 
       listener.onItemSelected(item, position);
+    }
+  }
+
+  public static class GuideHodler extends BaseViewHolder<GuidesGallery.Item>
+  {
+    @NonNull
+    private final ImageView mImage;
+    @NonNull
+    private final TextView mSubtitle;
+    // TODO: handle city and outdoor content properly.
+    @NonNull
+    private final View mCityContent;
+    @NonNull
+    private final View mOutdoorContent;
+    @NonNull
+    private final View mItemView;
+    @NonNull
+    private final TextView mAltitide;
+    @NonNull
+    private final TextView mTime;
+    @NonNull
+    private final TextView mDistance;
+    @NonNull
+    private final TextView mDesc;
+    @NonNull
+    private final View mDivider;
+    @NonNull
+    private final View mBoughtContent;
+    @NonNull
+    private final TextView mBoughtContentBtn;
+    @NonNull
+    private final View mBoughtContentCheckbox;
+
+    public GuideHodler(@NonNull View itemView, @NonNull List<GuidesGallery.Item> items, @Nullable ItemSelectedListener<GuidesGallery.Item> listener)
+    {
+      super(itemView, items, listener);
+      mItemView = itemView;
+      mImage = mItemView.findViewById(R.id.image);
+      mSubtitle = mItemView.findViewById(R.id.subtitle);
+      mCityContent = mItemView.findViewById(R.id.city_content);
+      mOutdoorContent = mItemView.findViewById(R.id.outdoor_content);
+      mDistance = mOutdoorContent.findViewById(R.id.distance);
+      mTime = mOutdoorContent.findViewById(R.id.time);
+      mAltitide = mOutdoorContent.findViewById(R.id.altitude);
+      mDesc = mCityContent.findViewById(R.id.description);
+      mDivider = mItemView.findViewById(R.id.divider);
+      mBoughtContent = mItemView.findViewById(R.id.bought_content);
+      mBoughtContentBtn = mBoughtContent.findViewById(R.id.text);
+      mBoughtContentBtn.setOnClickListener(v -> toggleBoughtContentBtnVisibility());
+      mBoughtContentCheckbox = mItemView.findViewById(R.id.downloaded);
+    }
+
+    private void toggleBoughtContentBtnVisibility()
+    {
+      int index = getAdapterPosition();
+      GuidesGallery.Item item = mItems.get(index);
+      BookmarkCategory category =
+          BookmarkManager.INSTANCE.getCategoryByServerId(item.getGuideId());
+      boolean isVisible = category.isVisible();
+      BookmarkManager.INSTANCE.setVisibility(category.getId(), !isVisible);
+      Statistics.INSTANCE.trackBookmarksVisibility(Statistics.ParamValue.MAP_GALLERY,
+                                                   isVisible ? Statistics.ParamValue.HIDE
+                                                             : Statistics.ParamValue.SHOW,
+                                                   item.getGuideId());
+      mBoughtContentBtn.setText(!isVisible ? R.string.hide : R.string.show);
+    }
+
+    @Override
+    public void bind(@NonNull GuidesGallery.Item item)
+    {
+      super.bind(item);
+      bindImage(item);
+      bindActivationState(item);
+      bindSubtitle(item);
+      bindBottomBlock(item);
+      bindActivationState(item);
+    }
+
+    private void bindBottomBlock(@NonNull GuidesGallery.Item item)
+    {
+      UiUtils.hideIf(item.isDownloaded(), mDivider, mOutdoorContent, mCityContent);
+      UiUtils.showIf(item.isDownloaded(), mBoughtContent, mBoughtContentCheckbox);
+
+      if (item.isDownloaded())
+      {
+        bindBoughtContentBlock(item);
+        return;
+      }
+
+      boolean isCity = item.getGuideType() == GuidesGallery.Type.City;
+      if (isCity)
+        bindCityBlock(Objects.requireNonNull(item.getCityParams()));
+      else
+        bindOutdoorBlock(Objects.requireNonNull(item.getOutdoorParams()));
+    }
+
+    private void bindBoughtContentBlock(@NonNull GuidesGallery.Item item)
+    {
+      BookmarkCategory category =
+          BookmarkManager.INSTANCE.getCategoryByServerId(item.getGuideId());
+      mBoughtContentBtn.setText(category.isVisible() ? R.string.hide : R.string.show);
+    }
+
+    private void bindOutdoorBlock(@NonNull GuidesGallery.OutdoorParams params)
+    {
+      UiUtils.show(mOutdoorContent);
+      UiUtils.hide(mCityContent);
+
+      Context context = mAltitide.getContext();
+
+      mAltitide.setText(Framework.nativeFormatAltitude(params.getAscent()));
+      mDistance.setText(StringUtils.nativeFormatDistance(params.getDistance()));
+      mTime.setText(makeTime(context, params));
+    }
+
+    private void bindCityBlock(@NonNull GuidesGallery.CityParams cityParams)
+    {
+      UiUtils.show(mCityContent);
+      UiUtils.hide(mOutdoorContent);
+
+      Context context = mAltitide.getContext();
+      String poiCount = String.valueOf(cityParams.getBookmarksCount());
+      String text = context.getString(R.string.routes_card_number_of_points, poiCount)
+                    + " " + context.getString(R.string.routes_card_plus_track);
+      mDesc.setText(text);
+    }
+
+    private void bindSubtitle(@NonNull GuidesGallery.Item item)
+    {
+      Spannable subtitle = makeSubtitle(mItemView.getContext(), item);
+      mSubtitle.setText(subtitle);
+    }
+
+    private void bindImage(@NonNull GuidesGallery.Item item)
+    {
+      Glide.with(mImage.getContext())
+           .load(item.getImageUrl())
+           .asBitmap()
+           .placeholder(ThemeUtils.getResource(mImage.getContext(), R.attr.guidesPlaceholder))
+           .centerCrop()
+           .into(mImage);
+      mSubtitle.setText(item.getSubtitle());
+    }
+
+    private void bindActivationState(@NonNull GuidesGallery.Item item)
+    {
+      boolean activated = mItemView.isActivated();
+      if (activated != item.isActivated())
+      {
+        mItemView.post(() -> mItemView.setActivated(item.isActivated()));
+      }
+    }
+
+    @NonNull
+    private static CharSequence makeTime(@NonNull Context context,
+                                         @NonNull GuidesGallery.OutdoorParams params)
+    {
+      return RoutingController.formatRoutingTime(context, (int) params.getDuration(),
+                                                 R.dimen.text_size_body_4,
+                                                 R.dimen.text_size_body_4);
+    }
+
+    @NonNull
+    private static Spannable makeSubtitle(Context context, @NonNull GuidesGallery.Item item)
+    {
+      boolean isCity = item.getGuideType() == GuidesGallery.Type.City;
+      SpannableStringBuilder builder =
+          new SpannableStringBuilder(isCity ? context.getString(R.string.type_place_city)
+                                            : context.getString(R.string.type_shop_outdoor));
+
+      Resources res = context.getResources();
+      int color = isCity ? res.getColor(R.color.city_color)
+                         : res.getColor(R.color.outdoor_color);
+
+      builder.setSpan(new ForegroundColorSpan(color), 0, builder.length(),
+                      Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+      boolean isItinerary = isCity && Objects.requireNonNull(item.getCityParams())
+                                             .isTrackAvailable();
+      String text = res.getString(isItinerary ? R.string.routes_card_routes_tag : R.string.routes_card_set_tag);
+
+      if (!isCity)
+        text = TextUtils.isEmpty(Objects.requireNonNull(item.getOutdoorParams())
+                                        .getString()) ? "" : item.getOutdoorParams()
+                                                                 .getString();
+
+      builder.append(TextUtils.isEmpty(text) ? text : UiUtils.PHRASE_SEPARATOR + text);
+      return builder;
     }
   }
 }

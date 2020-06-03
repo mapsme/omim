@@ -9,8 +9,11 @@
 
 #include "routing_common/num_mwm_id.hpp"
 
+#include "platform/platform.hpp"
+
 #include "coding/bit_streams.hpp"
 #include "coding/reader.hpp"
+#include "coding/sha1.hpp"
 #include "coding/varint.hpp"
 #include "coding/write_to_sink.hpp"
 
@@ -20,6 +23,7 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -39,8 +43,9 @@ public:
 
   enum class Header
   {
-    WithoutAccessConditional = 1,
-    WithAccessConditional = 2
+    TheFirstVersionRoadAccess = 0, // Version of section roadaccess in 2017.
+    WithoutAccessConditional = 1,  // Section roadaccess before conditional was implemented.
+    WithAccessConditional = 2      // Section roadaccess with conditional.
   };
 
   RoadAccessSerializer() = delete;
@@ -55,12 +60,16 @@ public:
   }
 
   template <class Source>
-  static void Deserialize(Source & src, VehicleType vehicleType, RoadAccess & roadAccess)
+  static void Deserialize(Source & src, VehicleType vehicleType, RoadAccess & roadAccess,
+                          std::string const & mwmPath)
   {
-    auto const header = static_cast<Header>(ReadPrimitiveFromSource<uint32_t>(src));
+    auto const readHeader = ReadPrimitiveFromSource<uint32_t>(src);
+    auto const header = static_cast<Header>(readHeader);
     CHECK_LESS_OR_EQUAL(header, kLatestVersion, ());
     switch (header)
     {
+    case Header::TheFirstVersionRoadAccess:
+      break; // Version of 2017. Unsupported.
     case Header::WithoutAccessConditional:
     {
       DeserializeAccess(src, vehicleType, roadAccess);
@@ -69,10 +78,22 @@ public:
     case Header::WithAccessConditional:
     {
       DeserializeAccess(src, vehicleType, roadAccess);
-      DeserializeAccessConditional(src, vehicleType, roadAccess);
+      // access:conditional should be switch off for release 10.0 and probably for the next one.
+      // It means that they should be switch off for cross_mwm section generation and for runtime.
+      // To switch on access:conditional the line below should be uncommented.
+      // Also tests in routing/routing_tests/road_access_test.cpp should be uncommented.
+      // DeserializeAccessConditional(src, vehicleType, roadAccess);
       break;
     }
-    default: UNREACHABLE();
+    default:
+    {
+      LOG(LWARNING, ("Wrong roadaccess section header version:", static_cast<int>(readHeader),
+                  ". Mwm name:", mwmPath));
+      if (Platform::IsFileExistsByFullPath(mwmPath))
+        LOG(LWARNING, ("SHA1 is:", coding::SHA1::CalculateBase64(mwmPath)));
+
+      UNREACHABLE();
+    }
     }
   }
 

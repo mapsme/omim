@@ -120,6 +120,8 @@ final class BMCViewController: MWMViewController {
     if let categoriesHeader = tableView.headerView(forSection: viewModel.sectionIndex(section: .categories)) as? BMCCategoriesHeader {
       categoriesHeader.isShowAll = viewModel.areAllCategoriesHidden()
     }
+    Statistics.logEvent(kStatBookmarkVisibilityChange, withParameters: [kStatFrom : kStatBookmarkList,
+                                                                        kStatAction : visible ? kStatShow : kStatHide])
   }
 
   private func editCategory(at index: Int, anchor: UIView) {
@@ -305,7 +307,7 @@ extension BMCViewController: BMCPermissionsCellDelegate {
     switch permission {
     case .signup:
       viewModel.pendingPermission(isPending: true)
-      signup(anchor: anchor, onComplete: { [viewModel] success in
+      signup(anchor: anchor, source: .bookmarksBackup, onComplete: { [viewModel] success in
         viewModel!.grant(permission: success ? .backup : nil)
       })
     case .backup:

@@ -40,6 +40,8 @@
 #include "routing/cross_mwm_ids.hpp"
 #include "routing/speed_camera_prohibition.hpp"
 
+#include "storage/country_parent_getter.hpp"
+
 #include "indexer/classificator.hpp"
 #include "indexer/classificator_loader.hpp"
 #include "indexer/data_header.hpp"
@@ -50,8 +52,6 @@
 #include "indexer/map_style_reader.hpp"
 #include "indexer/rank_table.hpp"
 
-#include "storage/country_parent_getter.hpp"
-
 #include "platform/platform.hpp"
 
 #include "coding/endianness.hpp"
@@ -60,6 +60,8 @@
 #include "base/file_name_utils.hpp"
 #include "base/timer.hpp"
 
+#include "defines.hpp"
+
 #include <csignal>
 #include <cstdlib>
 #include <fstream>
@@ -67,10 +69,9 @@
 #include <string>
 #include <thread>
 
-#include "build_version.hpp"
-#include "defines.hpp"
-
 #include "3party/gflags/src/gflags/gflags.h"
+
+#include "build_version.hpp"
 
 using namespace std;
 
@@ -138,12 +139,18 @@ DEFINE_bool(make_routing_index, false, "Make sections with the routing informati
 DEFINE_bool(make_cross_mwm, false,
             "Make section for cross mwm routing (for dynamic indexed routing).");
 DEFINE_bool(make_transit_cross_mwm, false, "Make section for cross mwm transit routing.");
+DEFINE_bool(make_transit_cross_mwm_experimental, false,
+            "Experimental parameter. If set the new version of transit cross-mwm section will be "
+            "generated. Makes section for cross mwm transit routing.");
 DEFINE_bool(disable_cross_mwm_progress, false,
             "Disable log of cross mwm section building progress.");
 DEFINE_string(srtm_path, "",
               "Path to srtm directory. If set, generates a section with altitude information "
               "about roads.");
 DEFINE_string(transit_path, "", "Path to directory with transit graphs in json.");
+DEFINE_string(transit_path_experimental, "",
+              "Experimental parameter. If set the new version of transit section will be "
+              "generated. Path to directory with json generated from GTFS.");
 DEFINE_bool(generate_cameras, false, "Generate section with speed cameras info.");
 DEFINE_bool(
     make_city_roads, false,
@@ -310,7 +317,8 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   // Load mwm tree only if we need it
   unique_ptr<storage::CountryParentGetter> countryParentGetter;
   if (FLAGS_make_routing_index || FLAGS_make_cross_mwm || FLAGS_make_transit_cross_mwm ||
-      !FLAGS_uk_postcodes_dataset.empty() || !FLAGS_us_postcodes_dataset.empty())
+      FLAGS_make_transit_cross_mwm_experimental || !FLAGS_uk_postcodes_dataset.empty() ||
+      !FLAGS_us_postcodes_dataset.empty())
   {
     countryParentGetter = make_unique<storage::CountryParentGetter>();
   }
@@ -318,24 +326,24 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   if (!FLAGS_dump_wikipedia_urls.empty())
   {
     auto const tmpPath = base::JoinPath(genInfo.m_intermediateDir, "tmp");
-    auto const datFiles = platform_helpers::GetFullDataTmpFilePaths(tmpPath);
+    auto const dataFiles = platform_helpers::GetFullDataTmpFilePaths(tmpPath);
 
-    WikiUrlDumper wikiUrlDumper(FLAGS_dump_wikipedia_urls, datFiles);
+    WikiUrlDumper wikiUrlDumper(FLAGS_dump_wikipedia_urls, dataFiles);
     wikiUrlDumper.Dump(threadsCount);
 
     if (!FLAGS_idToWikidata.empty())
     {
-      WikiDataFilter wikiDataFilter(FLAGS_idToWikidata, datFiles);
+      WikiDataFilter wikiDataFilter(FLAGS_idToWikidata, dataFiles);
       wikiDataFilter.Filter(threadsCount);
     }
   }
 
-  // Enumerate over all dat files that were created.
+  // Enumerate over all features files that were created.
   size_t const count = genInfo.m_bucketNames.size();
   for (size_t i = 0; i < count; ++i)
   {
     string const & country = genInfo.m_bucketNames[i];
-    string const datFile = base::JoinPath(path, country + DATA_FILE_EXTENSION);
+    string const dataFile = base::JoinPath(path, country + DATA_FILE_EXTENSION);
     string const osmToFeatureFilename =
         genInfo.GetTargetFileName(country) + OSM2FEATURE_FILE_EXTENSION;
 
@@ -355,8 +363,8 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       if (!feature::GenerateFinalFeatures(genInfo, country, mapType))
         continue;
 
-      LOG(LINFO, ("Generating offsets table for", datFile));
-      if (!feature::BuildOffsetsTable(datFile))
+      LOG(LINFO, ("Generating offsets table for", dataFile));
+      if (!feature::BuildOffsetsTable(dataFile))
         continue;
 
       auto const boundaryPostcodesFilename =
@@ -369,22 +377,22 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
         string const metalinesFilename = genInfo.GetIntermediateFileName(METALINES_FILENAME);
 
         LOG(LINFO, ("Processing metalines from", metalinesFilename));
-        if (!feature::WriteMetalinesSection(datFile, metalinesFilename, osmToFeatureFilename))
+        if (!feature::WriteMetalinesSection(dataFile, metalinesFilename, osmToFeatureFilename))
           LOG(LCRITICAL, ("Error generating metalines section."));
       }
     }
 
     if (FLAGS_generate_index)
     {
-      LOG(LINFO, ("Generating index for", datFile));
+      LOG(LINFO, ("Generating index for", dataFile));
 
-      if (!indexer::BuildIndexFromDataFile(datFile, FLAGS_intermediate_data_path + country))
+      if (!indexer::BuildIndexFromDataFile(dataFile, FLAGS_intermediate_data_path + country))
         LOG(LCRITICAL, ("Error generating index."));
     }
 
     if (FLAGS_generate_search_index)
     {
-      LOG(LINFO, ("Generating search index for", datFile));
+      LOG(LINFO, ("Generating search index for", dataFile));
 
       /// @todo Make threads count according to environment (single mwm build or planet build).
       if (!indexer::BuildSearchIndexFromDataFile(path, country, true /* forceRebuild */,
@@ -421,38 +429,45 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
           LOG(LCRITICAL, ("Error generating postcodes section for", country));
       }
 
-      LOG(LINFO, ("Generating rank table for", datFile));
-      if (!search::SearchRankTableBuilder::CreateIfNotExists(datFile))
+      LOG(LINFO, ("Generating rank table for", dataFile));
+      if (!search::SearchRankTableBuilder::CreateIfNotExists(dataFile))
         LOG(LCRITICAL, ("Error generating rank table."));
 
-      LOG(LINFO, ("Generating centers table for", datFile));
-      if (!indexer::BuildCentersTableFromDataFile(datFile, true /* forceRebuild */))
+      LOG(LINFO, ("Generating centers table for", dataFile));
+      if (!indexer::BuildCentersTableFromDataFile(dataFile, true /* forceRebuild */))
         LOG(LCRITICAL, ("Error generating centers table."));
     }
 
     if (FLAGS_generate_cities_boundaries)
     {
       CHECK(!FLAGS_cities_boundaries_data.empty(), ());
-      LOG(LINFO, ("Generating cities boundaries for", datFile));
+      LOG(LINFO, ("Generating cities boundaries for", dataFile));
       generator::OsmIdToBoundariesTable table;
       if (!generator::DeserializeBoundariesTable(FLAGS_cities_boundaries_data, table))
         LOG(LCRITICAL, ("Error deserializing boundaries table"));
-      if (!generator::BuildCitiesBoundaries(datFile, osmToFeatureFilename, table))
+      if (!generator::BuildCitiesBoundaries(dataFile, osmToFeatureFilename, table))
         LOG(LCRITICAL, ("Error generating cities boundaries."));
     }
 
     if (FLAGS_generate_cities_ids)
     {
-      LOG(LINFO, ("Generating cities ids for", datFile));
-      if (!generator::BuildCitiesIds(datFile, osmToFeatureFilename))
+      LOG(LINFO, ("Generating cities ids for", dataFile));
+      if (!generator::BuildCitiesIds(dataFile, osmToFeatureFilename))
         LOG(LCRITICAL, ("Error generating cities ids."));
     }
 
     if (!FLAGS_srtm_path.empty())
-      routing::BuildRoadAltitudes(datFile, FLAGS_srtm_path);
+      routing::BuildRoadAltitudes(dataFile, FLAGS_srtm_path);
 
-    if (!FLAGS_transit_path.empty())
+    if (!FLAGS_transit_path_experimental.empty())
+    {
+      // TODO(o.khlopkova) Build transit.
+      LOG(LINFO, ("Transit experimental building."));
+    }
+    else if (!FLAGS_transit_path.empty())
+    {
       routing::transit::BuildTransit(path, country, osmToFeatureFilename, FLAGS_transit_path);
+    }
 
     if (FLAGS_generate_cameras)
     {
@@ -465,7 +480,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       {
         string const camerasFilename = genInfo.GetIntermediateFileName(CAMERAS_TO_WAYS_FILENAME);
 
-        BuildCamerasInfo(datFile, camerasFilename, osmToFeatureFilename);
+        BuildCamerasInfo(dataFile, camerasFilename, osmToFeatureFilename);
       }
     }
 
@@ -483,30 +498,31 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       string const restrictionsFilename = genInfo.GetIntermediateFileName(RESTRICTIONS_FILENAME);
       string const roadAccessFilename = genInfo.GetIntermediateFileName(ROAD_ACCESS_FILENAME);
 
-      routing::BuildRoutingIndex(datFile, country, *countryParentGetter);
-      routing::BuildRoadRestrictions(path, datFile, country, restrictionsFilename,
+      routing::BuildRoutingIndex(dataFile, country, *countryParentGetter);
+      routing::BuildRoadRestrictions(path, dataFile, country, restrictionsFilename,
                                      osmToFeatureFilename, *countryParentGetter);
-      routing::BuildRoadAccessInfo(datFile, roadAccessFilename, osmToFeatureFilename);
+      routing::BuildRoadAccessInfo(dataFile, roadAccessFilename, osmToFeatureFilename);
     }
 
     if (FLAGS_make_city_roads)
     {
       CHECK(!FLAGS_cities_boundaries_data.empty(), ());
-      LOG(LINFO, ("Generating cities boundaries roads for", datFile));
+      LOG(LINFO, ("Generating cities boundaries roads for", dataFile));
       auto const boundariesPath =
           genInfo.GetIntermediateFileName(ROUTING_CITY_BOUNDARIES_DUMP_FILENAME);
-      if (!routing::BuildCityRoads(datFile, boundariesPath))
+      if (!routing::BuildCityRoads(dataFile, boundariesPath))
         LOG(LCRITICAL, ("Generating city roads error."));
     }
 
     if (FLAGS_generate_maxspeed)
     {
-      LOG(LINFO, ("Generating maxspeeds section for", datFile));
+      LOG(LINFO, ("Generating maxspeeds section for", dataFile));
       string const maxspeedsFilename = genInfo.GetIntermediateFileName(MAXSPEEDS_FILENAME);
-      routing::BuildMaxspeedsSection(datFile, osmToFeatureFilename, maxspeedsFilename);
+      routing::BuildMaxspeedsSection(dataFile, osmToFeatureFilename, maxspeedsFilename);
     }
 
-    if (FLAGS_make_cross_mwm || FLAGS_make_transit_cross_mwm)
+    if (FLAGS_make_cross_mwm || FLAGS_make_transit_cross_mwm ||
+        FLAGS_make_transit_cross_mwm_experimental)
     {
       if (!countryParentGetter)
       {
@@ -519,39 +535,46 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
 
       if (FLAGS_make_cross_mwm)
       {
-        routing::BuildRoutingCrossMwmSection(path, datFile, country, genInfo.m_intermediateDir,
+        routing::BuildRoutingCrossMwmSection(path, dataFile, country, genInfo.m_intermediateDir,
                                              *countryParentGetter, osmToFeatureFilename,
                                              FLAGS_disable_cross_mwm_progress);
       }
 
-      if (FLAGS_make_transit_cross_mwm)
-        routing::BuildTransitCrossMwmSection(path, datFile, country, *countryParentGetter);
+      if (FLAGS_make_transit_cross_mwm_experimental)
+      {
+        // TODO(o.khlopkova): Implement BuildTransitCrossMwmSection().
+        LOG(LINFO, ("Make cross mwm for experimental transit."));
+      }
+      else if (FLAGS_make_transit_cross_mwm)
+      {
+        routing::BuildTransitCrossMwmSection(path, dataFile, country, *countryParentGetter);
+      }
     }
 
     if (!FLAGS_ugc_data.empty())
     {
-      if (!BuildUgcMwmSection(FLAGS_ugc_data, datFile, osmToFeatureFilename))
+      if (!BuildUgcMwmSection(FLAGS_ugc_data, dataFile, osmToFeatureFilename))
         LOG(LCRITICAL, ("Error generating UGC mwm section."));
 
-      if (!BuildRatingsMwmSection(FLAGS_ugc_data, datFile, osmToFeatureFilename))
+      if (!BuildRatingsMwmSection(FLAGS_ugc_data, dataFile, osmToFeatureFilename))
         LOG(LCRITICAL, ("Error generating ratings mwm section."));
     }
 
     if (!FLAGS_wikipedia_pages.empty())
     {
       if (!FLAGS_idToWikidata.empty())
-        BuildDescriptionsSection(FLAGS_wikipedia_pages, datFile, FLAGS_idToWikidata);
+        BuildDescriptionsSection(FLAGS_wikipedia_pages, dataFile, FLAGS_idToWikidata);
       else
-        BuildDescriptionsSection(FLAGS_wikipedia_pages, datFile);
+        BuildDescriptionsSection(FLAGS_wikipedia_pages, dataFile);
     }
 
     // This section must be built with the same isolines file as had been used at the features stage.
     if (FLAGS_generate_isolines_info)
-      BuildIsolinesInfoSection(FLAGS_isolines_path, country, datFile);
+      BuildIsolinesInfoSection(FLAGS_isolines_path, country, dataFile);
 
     if (FLAGS_generate_popular_places)
     {
-      if (!BuildPopularPlacesMwmSection(genInfo.m_popularPlacesFilename, datFile,
+      if (!BuildPopularPlacesMwmSection(genInfo.m_popularPlacesFilename, dataFile,
                                         osmToFeatureFilename))
       {
         LOG(LCRITICAL, ("Error generating popular places mwm section."));
@@ -560,51 +583,53 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
 
     if (FLAGS_generate_traffic_keys)
     {
-      if (!traffic::GenerateTrafficKeysFromDataFile(datFile))
+      if (!traffic::GenerateTrafficKeysFromDataFile(dataFile))
         LOG(LCRITICAL, ("Error generating traffic keys."));
     }
   }
 
-  string const datFile = base::JoinPath(path, FLAGS_output + DATA_FILE_EXTENSION);
+  string const dataFile = base::JoinPath(path, FLAGS_output + DATA_FILE_EXTENSION);
 
   if (FLAGS_calc_statistics)
   {
-    LOG(LINFO, ("Calculating statistics for", datFile));
+    LOG(LINFO, ("Calculating statistics for", dataFile));
 
-    stats::FileContainerStatistic(datFile);
-    stats::FileContainerStatistic(datFile + ROUTING_FILE_EXTENSION);
+    auto file = OfstreamWithExceptions(genInfo.GetIntermediateFileName(FLAGS_output, STATS_EXTENSION));
+    stats::FileContainerStatistic(file, dataFile);
+    stats::FileContainerStatistic(file, dataFile + ROUTING_FILE_EXTENSION);
 
     stats::MapInfo info;
-    stats::CalcStatistic(datFile, info);
-    stats::PrintStatistic(info);
+    stats::CalcStatistic(dataFile, info);
+    stats::PrintStatistic(file, info);
   }
 
   if (FLAGS_type_statistics)
   {
-    LOG(LINFO, ("Calculating type statistics for", datFile));
+    LOG(LINFO, ("Calculating type statistics for", dataFile));
 
     stats::MapInfo info;
-    stats::CalcStatistic(datFile, info);
-    stats::PrintTypeStatistic(info);
+    stats::CalcStatistic(dataFile, info);
+    auto file = OfstreamWithExceptions(genInfo.GetIntermediateFileName(FLAGS_output, STATS_EXTENSION));
+    stats::PrintTypeStatistic(file, info);
   }
 
   if (FLAGS_dump_types)
-    feature::DumpTypes(datFile);
+    feature::DumpTypes(dataFile);
 
   if (FLAGS_dump_prefixes)
-    feature::DumpPrefixes(datFile);
+    feature::DumpPrefixes(dataFile);
 
   if (FLAGS_dump_search_tokens)
-    feature::DumpSearchTokens(datFile, 100 /* maxTokensToShow */);
+    feature::DumpSearchTokens(dataFile, 100 /* maxTokensToShow */);
 
   if (FLAGS_dump_feature_names != "")
-    feature::DumpFeatureNames(datFile, FLAGS_dump_feature_names);
+    feature::DumpFeatureNames(dataFile, FLAGS_dump_feature_names);
 
   if (FLAGS_unpack_mwm)
-    UnpackMwm(datFile);
+    UnpackMwm(dataFile);
 
   if (!FLAGS_delete_section.empty())
-    DeleteSection(datFile, FLAGS_delete_section);
+    DeleteSection(dataFile, FLAGS_delete_section);
 
   if (FLAGS_generate_packed_borders)
     borders::GeneratePackedBorders(path);
@@ -613,7 +638,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
     borders::UnpackBorders(path, FLAGS_unpack_borders);
 
   if (FLAGS_check_mwm)
-    check_model::ReadFeatures(datFile);
+    check_model::ReadFeatures(dataFile);
 
   return EXIT_SUCCESS;
 });

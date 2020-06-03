@@ -15,6 +15,7 @@ int constexpr kMinIsolinesZoom = 11;
 IsolinesManager::IsolinesManager(DataSource & dataSource, GetMwmsByRectFn const & getMwmsByRectFn)
   : m_dataSource(dataSource)
   , m_getMwmsByRectFn(getMwmsByRectFn)
+  , m_statistics("isolines")
 {
   CHECK(m_getMwmsByRectFn != nullptr, ());
 }
@@ -84,13 +85,21 @@ bool IsolinesManager::IsEnabled() const
   return m_state != IsolinesState::Disabled;
 }
 
+bool IsolinesManager::IsVisible() const
+{
+  return m_currentModelView && df::GetDrawTileScale(*m_currentModelView) >= kMinIsolinesZoom;
+}
+
 void IsolinesManager::UpdateViewport(ScreenBase const & screen)
 {
+  if (screen.GlobalRect().GetLocalRect().IsEmptyInterior())
+    return;
+
   m_currentModelView.reset(screen);
   if (!IsEnabled())
     return;
 
-  if (df::GetZoomLevel(screen.GetScale()) < kMinIsolinesZoom)
+  if (!IsVisible())
   {
     ChangeState(IsolinesState::Enabled);
     return;
@@ -116,6 +125,7 @@ void IsolinesManager::UpdateState()
   bool available = false;
   bool expired = false;
   bool noData = false;
+  std::set<int64_t> mwmVersions;
   for (auto const & mwmId : m_lastMwms)
   {
     if (!mwmId.IsAlive())
@@ -128,6 +138,9 @@ void IsolinesManager::UpdateState()
     case Availability::ExpiredData: expired = true; break;
     case Availability::NoData: noData = true; break;
     }
+
+    if (m_trackFirstSchemeData)
+      mwmVersions.insert(mwmId.GetInfo()->GetVersion());
   }
 
   if (expired)
@@ -135,13 +148,20 @@ void IsolinesManager::UpdateState()
   else if (!available && noData)
     ChangeState(IsolinesState::NoData);
   else
+    ChangeState(IsolinesState::Enabled);
+
+  if (m_trackFirstSchemeData)
   {
-    if (available && m_trackFirstSchemeData)
+    if (available)
     {
       eye::Eye::Event::LayerShown(eye::Layer::Type::Isolines);
+      m_statistics.LogActivate(LayersStatistics::Status::Success, mwmVersions);
       m_trackFirstSchemeData = false;
     }
-    ChangeState(IsolinesState::Enabled);
+    else
+    {
+      m_statistics.LogActivate(LayersStatistics::Status::Unavailable, mwmVersions);
+    }
   }
 }
 

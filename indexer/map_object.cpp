@@ -2,6 +2,7 @@
 
 #include "indexer/feature.hpp"
 #include "indexer/feature_algo.hpp"
+#include "indexer/feature_utils.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
 #include "platform/localization.hpp"
@@ -21,6 +22,7 @@ constexpr char const * kWlan = "wlan";
 constexpr char const * kWired = "wired";
 constexpr char const * kYes = "yes";
 constexpr char const * kNo = "no";
+constexpr char const * kFieldsSeparator = " • ";
 
 void SetInetIfNeeded(FeatureType & ft, feature::Metadata & metadata)
 {
@@ -74,6 +76,7 @@ void MapObject::SetFromFeatureType(FeatureType & ft)
   m_types = feature::TypesHolder(ft);
   m_metadata = ft.GetMetadata();
   m_houseNumber = ft.GetHouseNumber();
+  m_roadNumber = ft.GetRoadNumber();
   m_postcode = ft.GetPostcode();
   m_featureID = ft.GetID();
   m_geomType = ft.GetGeomType();
@@ -168,35 +171,34 @@ Internet MapObject::GetInternet() const
   return Internet::Unknown;
 }
 
-vector<string> MapObject::GetCuisines() const
-{
-  vector<string> cuisines;
-  auto const & isCuisine = ftypes::IsCuisineChecker::Instance();
-  for (auto const t : m_types)
-  {
-    if (!isCuisine(t))
-      continue;
-    auto const cuisine = classif().GetFullObjectNamePath(t);
-    CHECK_EQUAL(cuisine.size(), 2, (cuisine));
-    cuisines.push_back(cuisine[1]);
-  }
-  return cuisines;
-}
+vector<string> MapObject::GetCuisines() const { return feature::GetCuisines(m_types); }
 
 vector<string> MapObject::GetLocalizedCuisines() const
 {
-  vector<string> localized;
-  auto const & isCuisine = ftypes::IsCuisineChecker::Instance();
-  for (auto const t : m_types)
-  {
-    if (!isCuisine(t))
-      continue;
-    localized.push_back(platform::GetLocalizedTypeName(classif().GetReadableObjectName(t)));
-  }
-  return localized;
+  return feature::GetLocalizedCuisines(m_types);
 }
 
-string MapObject::FormatCuisines() const { return strings::JoinStrings(GetLocalizedCuisines(), " • "); }
+vector<string> MapObject::GetRecyclingTypes() const { return feature::GetRecyclingTypes(m_types); }
+
+vector<string> MapObject::GetLocalizedRecyclingTypes() const
+{
+  return feature::GetLocalizedRecyclingTypes(m_types);
+}
+
+string MapObject::FormatCuisines() const
+{
+  return strings::JoinStrings(GetLocalizedCuisines(), kFieldsSeparator);
+}
+
+vector<string> MapObject::GetRoadShields() const
+{
+  return feature::GetRoadShieldsNames(m_roadNumber);
+}
+
+string MapObject::FormatRoadShields() const
+{
+  return strings::JoinStrings(GetRoadShields(), kFieldsSeparator);
+}
 
 string MapObject::GetOpeningHours() const
 {

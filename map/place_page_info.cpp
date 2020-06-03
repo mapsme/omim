@@ -113,10 +113,19 @@ std::string Info::FormatSubtitle(bool withType) const
   for (std::string const & cuisine : GetLocalizedCuisines())
     subtitle.push_back(cuisine);
 
+  // Recycling types.
+  for (std::string const & recycling : GetLocalizedRecyclingTypes())
+    subtitle.push_back(recycling);
+
   // Airport IATA code.
   std::string const iata = GetAirportIata();
   if (!iata.empty())
     subtitle.push_back(iata);
+
+  // Road numbers/ids.
+  std::string const roadShields = FormatRoadShields();
+  if (!roadShields.empty())
+    subtitle.push_back(roadShields);
 
   // Stars.
   std::string const stars = FormatStars();

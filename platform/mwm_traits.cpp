@@ -11,11 +11,16 @@ MwmTraits::SearchIndexFormat MwmTraits::GetSearchIndexFormat() const
 {
   if (GetFormat() < version::Format::v7)
     return SearchIndexFormat::FeaturesWithRankAndCenter;
-  return SearchIndexFormat::CompressedBitVector;
+  if (GetFormat() < version::Format::v10)
+    return SearchIndexFormat::CompressedBitVector;
+  return SearchIndexFormat::CompressedBitVectorWithHeader;
 }
 
 MwmTraits::HouseToStreetTableFormat MwmTraits::GetHouseToStreetTableFormat() const
 {
+  if (GetFormat() >= version::Format::v10)
+    return HouseToStreetTableFormat::HouseToStreetTableWithHeader;
+
   if (GetFormat() < version::Format::v7)
     return HouseToStreetTableFormat::Unknown;
 
@@ -68,6 +73,8 @@ std::string DebugPrint(MwmTraits::SearchIndexFormat format)
     return "FeaturesWithRankAndCenter";
   case MwmTraits::SearchIndexFormat::CompressedBitVector:
     return "CompressedBitVector";
+  case MwmTraits::SearchIndexFormat::CompressedBitVectorWithHeader:
+    return "CompressedBitVectorWithHeader";
   }
   UNREACHABLE();
 }
@@ -80,6 +87,8 @@ std::string DebugPrint(MwmTraits::HouseToStreetTableFormat format)
     return "Fixed3BitsDDVector";
   case MwmTraits::HouseToStreetTableFormat::EliasFanoMap:
     return "EliasFanoMap";
+  case MwmTraits::HouseToStreetTableFormat::HouseToStreetTableWithHeader:
+    return "HouseToStreetTableWithHeader";
   case MwmTraits::HouseToStreetTableFormat::Unknown:
     return "Unknown";
   }

@@ -844,6 +844,33 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_Cuisine)
   }
 }
 
+UNIT_CLASS_TEST(TestWithClassificator, OsmType_Hotel)
+{
+  using Type = std::vector<std::string>;
+  std::vector<std::pair<std::vector<Type>, Tags>> const types = {
+    {
+      {{"tourism", "hotel"}},
+      {{"tourism", "hotel"}},
+    },
+    {
+      {{"tourism", "hotel"}, {"building"}},
+      {{"building", "hotel"}},
+    },
+    {
+      {{"tourism", "hotel"}},
+      {{"hotel", "yes"}},
+    }
+  };
+
+  for (auto const & t : types)
+  {
+    auto const params = GetFeatureBuilderParams(t.second);
+    TEST_EQUAL(t.first.size(), params.m_types.size(), (params, t));
+    for (auto const & t : t.first)
+      TEST(params.IsTypeExist(GetType(t)), (params));
+  }
+}
+
 UNIT_CLASS_TEST(TestWithClassificator, OsmType_MergeTags)
 {
   {
@@ -934,6 +961,58 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_DoNotMergeTags)
     TEST_EQUAL(params.m_types.size(), 1, (params));
     TEST(params.IsTypeExist(GetType({"shop"})), (params));
     TEST(!params.IsTypeExist(GetType({"shop", "photo"})), (params));
+  }
+}
+
+UNIT_CLASS_TEST(TestWithClassificator, OsmType_AerodromeType)
+{
+  Tags const tags = {
+      {"aeroway", "aerodrome"},
+      {"aerodrome:type", "international ; public"},
+  };
+
+  auto const params = GetFeatureBuilderParams(tags);
+
+  TEST_EQUAL(params.m_types.size(), 1, (params));
+  TEST(params.IsTypeExist(GetType({"aeroway", "aerodrome", "international"})), (params));
+}
+
+UNIT_CLASS_TEST(TestWithClassificator, OsmType_CuisineType)
+{
+  {
+    // Collapce synonyms to single type.
+    Tags const tags = {
+        {"cuisine", "BBQ ; barbeque, barbecue;bbq"},
+    };
+
+    auto const params = GetFeatureBuilderParams(tags);
+
+    TEST_EQUAL(params.m_types.size(), 1, (params));
+    TEST(params.IsTypeExist(GetType({"cuisine", "barbecue"})), (params));
+  }
+  {
+    // Replace space with underscore, ignore commas and semicolons.
+    Tags const tags = {
+        {"cuisine", ",; ;   ; Fish and  Chips;; , , ;"},
+    };
+
+    auto const params = GetFeatureBuilderParams(tags);
+
+    TEST_EQUAL(params.m_types.size(), 1, (params));
+    TEST(params.IsTypeExist(GetType({"cuisine", "fish_and_chips"})), (params));
+  }
+  {
+    // Multiple cuisines.
+    Tags const tags = {
+        {"cuisine", "Italian Pizza , mediterranean;international,"},
+    };
+
+    auto const params = GetFeatureBuilderParams(tags);
+
+    TEST_EQUAL(params.m_types.size(), 3, (params));
+    TEST(params.IsTypeExist(GetType({"cuisine", "italian_pizza"})), (params));
+    TEST(params.IsTypeExist(GetType({"cuisine", "mediterranean"})), (params));
+    TEST(params.IsTypeExist(GetType({"cuisine", "international"})), (params));
   }
 }
 
@@ -1077,7 +1156,6 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_SimpleTypesSmoke)
     {"amenity", "prison"},
     {"amenity", "pub"},
     {"amenity", "public_bookcase"},
-    {"amenity", "recycling"},
     {"amenity", "restaurant"},
     {"amenity", "school"},
     {"amenity", "shelter"},
@@ -1634,6 +1712,9 @@ UNIT_CLASS_TEST(TestWithClassificator, OsmType_ComplexTypesSmoke)
     {{"amenity", "place_of_worship", "muslim"}, {{"amenity", "place_of_worship"}, {"religion", "muslim"}}},
     {{"amenity", "place_of_worship", "shinto"}, {{"amenity", "place_of_worship"}, {"religion", "shinto"}}},
     {{"amenity", "place_of_worship", "taoist"}, {{"amenity", "place_of_worship"}, {"religion", "taoist"}}},
+    {{"amenity", "recycling"}, {{"amenity", "recycling"}, {"recycling_type","centre"}}},
+    {{"amenity", "recycling_container"}, {{"amenity", "recycling"}, {"recycling_type","container"}}},
+    {{"amenity", "recycling_container"}, {{"amenity", "recycling"}}},
     {{"amenity", "vending_machine", "cigarettes"}, {{"amenity", "vending_machine"}, {"vending", "cigarettes"}}},
     {{"amenity", "vending_machine", "drinks"}, {{"amenity", "vending_machine"}, {"vending", "drinks"}}},
     {{"amenity", "vending_machine", "parking_tickets"}, {{"amenity", "vending_machine"}, {"vending", "parking_tickets"}}},

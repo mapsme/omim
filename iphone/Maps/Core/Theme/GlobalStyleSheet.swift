@@ -72,7 +72,7 @@ class GlobalStyleSheet: IStyleSheet {
     }
 
     theme.add(styleName: "DifficultyView") { (s) -> (Void) in
-      s.colors = [colors.ratingGreen, colors.ratingYellow, colors.ratingRed]
+      s.colors = [colors.blackSecondaryText, colors.ratingGreen, colors.ratingYellow, colors.ratingRed]
       s.offTintColor = colors.blackSecondaryText
       s.backgroundColor = colors.clear
     }
@@ -80,6 +80,10 @@ class GlobalStyleSheet: IStyleSheet {
     //MARK: Global styles
     theme.add(styleName: "Divider") { (s) -> (Void) in
       s.backgroundColor = colors.blackDividers
+    }
+
+    theme.add(styleName: "SolidDivider") { (s) -> (Void) in
+      s.backgroundColor = colors.solidDividers
     }
 
     theme.add(styleName: "Background") { (s) -> (Void) in
@@ -124,6 +128,10 @@ class GlobalStyleSheet: IStyleSheet {
 
     theme.add(styleName: "BlackStatusBarBackground") { (s) -> (Void) in
       s.backgroundColor = colors.blackStatusBarBackground
+    }
+
+    theme.add(styleName: "ClearBackground") { (s) -> (Void) in
+      s.backgroundColor = colors.clear
     }
 
     theme.add(styleName: "TabView") { (s) -> (Void) in

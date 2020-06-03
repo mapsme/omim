@@ -1,5 +1,7 @@
 #pragma once
 
+#include "map/layers_statistics.hpp"
+
 #include "traffic/traffic_info.hpp"
 
 #include "drape_frontend/drape_engine_safe_ptr.hpp"
@@ -7,11 +9,11 @@
 
 #include "drape/pointers.hpp"
 
+#include "indexer/mwm_set.hpp"
+
 #include "geometry/point2d.hpp"
 #include "geometry/polyline2d.hpp"
 #include "geometry/screenbase.hpp"
-
-#include "indexer/mwm_set.hpp"
 
 #include "base/thread.hpp"
 
@@ -19,8 +21,10 @@
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
+#include <cstdint>
 #include <map>
 #include <mutex>
+#include <optional>
 #include <set>
 #include <string>
 #include <utility>
@@ -145,6 +149,8 @@ private:
     std::for_each(activeMwms.begin(), activeMwms.end(), std::forward<F>(f));
   }
 
+  void TrackStatistics(std::set<int64_t> const & mwmVersions);
+
   GetMwmsByRectFn m_getMwmsByRectFn;
   traffic::TrafficObserver & m_observer;
 
@@ -183,6 +189,10 @@ private:
   std::vector<MwmSet::MwmId> m_requestedMwms;
   std::mutex m_mutex;
   threads::SimpleThread m_thread;
+
+  bool m_trackFirstSchemeData = false;
+  std::optional<LayersStatistics::Status> m_lastTrackedStatus;
+  LayersStatistics m_statistics;
 };
 
 extern std::string DebugPrint(TrafficManager::TrafficState state);

@@ -35,6 +35,7 @@ set(
   cities_ids_builder.hpp
   city_roads_generator.cpp
   city_roads_generator.hpp
+  cluster_finder.hpp
   coastlines_generator.cpp
   coastlines_generator.hpp
   collection_base.hpp
@@ -97,8 +98,18 @@ set(
   filter_roads.hpp
   filter_world.cpp
   filter_world.hpp
-  final_processor_intermediate_mwm.cpp
-  final_processor_intermediate_mwm.hpp
+  final_processor_coastline.cpp
+  final_processor_coastline.hpp
+  final_processor_complex.cpp
+  final_processor_complex.hpp
+  final_processor_country.cpp
+  final_processor_country.hpp
+  final_processor_interface.cpp
+  final_processor_interface.hpp
+  final_processor_utils.cpp
+  final_processor_utils.hpp
+  final_processor_world.cpp
+  final_processor_world.hpp
   gen_mwm_info.cpp
   gen_mwm_info.hpp
   generate_info.hpp

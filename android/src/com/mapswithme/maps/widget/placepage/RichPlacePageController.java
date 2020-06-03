@@ -100,7 +100,7 @@ public class RichPlacePageController implements PlacePageController, LocationLis
     @Override
     public void onSheetDetailsOpened()
     {
-      mBannerController.onPlacePageStateChanged();
+      mBannerController.onPlacePageDetails();
       mPlacePageTracker.onDetails();
     }
 
@@ -108,7 +108,7 @@ public class RichPlacePageController implements PlacePageController, LocationLis
     public void onSheetCollapsed()
     {
       mPlacePage.resetScroll();
-      mBannerController.onPlacePageStateChanged();
+      mBannerController.onPlacePagePreview();
       setPeekHeight();
     }
 
@@ -249,6 +249,7 @@ public class RichPlacePageController implements PlacePageController, LocationLis
   @Override
   public void openFor(@NonNull PlacePageData data)
   {
+    mDeactivateMapSelection = true;
     MapObject object = (MapObject) data;
     mPlacePage.setMapObject(object, (policy, isSameObject) -> {
       @AnchorBottomSheetBehavior.State

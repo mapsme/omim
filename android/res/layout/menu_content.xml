@@ -4,88 +4,83 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_marginBottom="@dimen/margin_half"
-  android:layout_marginTop="@dimen/margin_half"
   android:orientation="vertical">
-
-  <TextView
-    android:id="@+id/add_place"
-    style="@style/MwmTheme.Menu.Content.ListItem"
-    android:drawableLeft="@drawable/ic_plus"
-    android:drawableStart="@drawable/ic_plus"
-    android:text="@string/placepage_add_place_button"
-    tools:background="#40FF00FF"/>
-
-  <TextView
-    android:id="@+id/download_guides"
-    style="@style/MwmTheme.Menu.Content.ListItem"
-    android:drawableLeft="@drawable/ic_menu_download_guides"
-    android:drawableStart="@drawable/ic_menu_download_guides"
-    android:drawableTint="?attr/colorAccent"
-    android:textColor="?attr/colorAccent"
-    android:text="@string/download_guides"
-    tools:background="#403033FF"
-    tools:targetApi="m"/>
-
-  <TextView
-    android:id="@+id/hotel_search"
-    style="@style/MwmTheme.Menu.Content.ListItem"
-    android:drawableLeft="@drawable/ic_menu_hotel_search"
-    android:drawableStart="@drawable/ic_menu_hotel_search"
-    android:text="@string/booking_button_toolbar"
-    tools:background="#200000FF"/>
-
-  <TextView
-    android:id="@+id/search"
-    style="@style/MwmTheme.Menu.Content.ListItem"
-    android:drawableLeft="@drawable/ic_menu_search"
-    android:drawableStart="@drawable/ic_menu_search"
-    android:text="@string/search"
-    tools:background="#200000FF"/>
-
-  <TextView
-    android:id="@+id/bookmarks"
-    style="@style/MwmTheme.Menu.Content.ListItem"
-    android:drawableLeft="@drawable/ic_menu_bookmarks"
-    android:drawableStart="@drawable/ic_menu_bookmarks"
-    android:text="@string/bookmarks"
-    tools:background="#40FF00FF"/>
-
-  <FrameLayout
+  <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?cardBackground"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_base">
     <TextView
-      android:id="@+id/download_maps"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/layers_title"
+      android:textAppearance="?fontHeadline6"
+      android:textStyle="bold" />
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/layers_recycler"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:layout_marginTop="@dimen/margin_base_plus"
+      android:minHeight="@dimen/toggle_map_layer_frame_height" />
+  </LinearLayout>
+  <include layout="@layout/list_divider" />
+  <include
+    layout="@layout/list_divider"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/divider_height"
+    android:layout_marginTop="@dimen/margin_half_plus" />
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?cardBackground"
+    android:orientation="vertical">
+    <TextView
+      android:id="@+id/add_place"
       style="@style/MwmTheme.Menu.Content.ListItem"
-      android:drawableLeft="@drawable/ic_menu_download"
-      android:drawableStart="@drawable/ic_menu_download"
-      android:text="@string/download_maps"
-      tools:background="#2000FF00"/>
-
+      android:drawableStart="@drawable/ic_plus"
+      android:text="@string/placepage_add_place_button"
+      tools:background="#40FF00FF" />
     <TextView
-      android:id="@+id/counter"
-      style="@style/MwmWidget.Counter"
-      android:layout_gravity="end|center_vertical"
-      android:layout_marginRight="@dimen/margin_base"
-      android:layout_marginEnd="@dimen/margin_base"
-      android:visibility="gone"
-      tools:text="9999"
-      tools:visibility="visible"/>
-  </FrameLayout>
-
-  <TextView
-    android:id="@+id/settings"
-    style="@style/MwmTheme.Menu.Content.ListItem"
-    android:drawableLeft="@drawable/ic_menu_settings"
-    android:drawableStart="@drawable/ic_menu_settings"
-    android:text="@string/settings"
-    tools:background="#20FF0000"/>
-
-  <TextView
-    android:id="@+id/share"
-    style="@style/MwmTheme.Menu.Content.ListItem"
-    android:drawableLeft="@drawable/ic_menu_share"
-    android:drawableStart="@drawable/ic_menu_share"
-    android:text="@string/share_my_location"
-    tools:background="#400FF000"/>
+      android:id="@+id/download_guides"
+      style="@style/MwmTheme.Menu.Content.ListItem"
+      android:drawableStart="@drawable/ic_menu_download_guides"
+      android:drawableTint="?attr/colorAccent"
+      android:text="@string/download_guides"
+      android:textColor="?attr/colorAccent"
+      tools:background="#403033FF"
+      tools:targetApi="m" />
+    <FrameLayout
+      android:id="@+id/download_maps_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+      <TextView
+        android:id="@+id/download_maps"
+        style="@style/MwmTheme.Menu.Content.ListItem"
+        android:drawableStart="@drawable/ic_menu_download"
+        android:text="@string/download_maps"
+        tools:background="#2000FF00" />
+      <TextView
+        android:id="@+id/counter"
+        style="@style/MwmWidget.Counter"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="@dimen/margin_base"
+        android:visibility="gone"
+        tools:text="9999"
+        tools:visibility="visible" />
+    </FrameLayout>
+    <TextView
+      android:id="@+id/settings"
+      style="@style/MwmTheme.Menu.Content.ListItem"
+      android:drawableStart="@drawable/ic_menu_settings"
+      android:text="@string/settings"
+      tools:background="#20FF0000" />
+    <TextView
+      android:id="@+id/share"
+      style="@style/MwmTheme.Menu.Content.ListItem"
+      android:drawableStart="@drawable/ic_menu_share"
+      android:text="@string/share_my_location"
+      tools:background="#400FF000" />
+  </LinearLayout>
 </LinearLayout>
