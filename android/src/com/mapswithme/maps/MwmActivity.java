@@ -888,7 +888,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   public void refreshFade()
   {
-    if (getCurrentMenu().isOpen())
+    if (getCurrentMenu().isOpen() || !mMainMenuController.isClosed())
       mFadeView.fadeIn();
     else
       mFadeView.fadeOut();
@@ -1411,6 +1411,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (mNavAnimationController != null)
       mNavAnimationController.onResume();
     mPlacePageController.onActivityResumed(this);
+    refreshFade();
   }
 
   @Override
