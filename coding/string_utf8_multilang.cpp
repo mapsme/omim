@@ -68,9 +68,9 @@ array<StringUtf8Multilang::Lang, StringUtf8Multilang::kMaxSupportedLanguages> co
      {"vi", "Tiếng Việt", ""},
      {"tr", "Türkçe", ""},
      {"bg", "Български", "Bulgarian-Latin/BGN"},
-     {StringUtf8Multilang::kReservedLang /* eo */, "", ""},
+     {"alt_name", "Alternative name", "Any-Latin"},  // Was "eo" before December 2018.
      {"lt", "Lietuvių", ""},
-     {StringUtf8Multilang::kReservedLang /* la */, "", ""},
+     {"old_name", "Old/Previous name", "Any-Latin"},  // Was "la" before December 2018.
      {"kk", "Қазақ", "Kazakh-Latin/BGN"},
      {StringUtf8Multilang::kReservedLang /* gsw */, "", ""},
      {"et", "Eesti", ""},
