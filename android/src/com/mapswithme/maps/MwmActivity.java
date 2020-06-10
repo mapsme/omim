@@ -1494,6 +1494,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
   private void onGuidesFatalError()
   {
+    Mode.GUIDES.setEnabled(getApplicationContext(), false);
     mToggleMapLayerController.turnOff();
     RecyclerView bottomSheetRecycler = findViewById(R.id.layers_recycler);
     Objects.requireNonNull(bottomSheetRecycler.getAdapter()).notifyDataSetChanged();
