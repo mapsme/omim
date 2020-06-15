@@ -2513,7 +2513,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public void onSearchRoutePoint(@RoutePointInfo.RouteMarkType int pointType)
   {
     RoutingController.get().waitForPoiPick(pointType);
-    mNavigationController.performSearchClick();
+    mNavigationController.resetSearchWheel();
+    showSearch("");
     Statistics.INSTANCE.trackRoutingTooltipEvent(pointType, true);
   }
 
