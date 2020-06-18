@@ -5,6 +5,7 @@
 #include "indexer/features_tag.hpp"
 
 #include <iostream>
+#include <cstdlib>
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -24,7 +25,7 @@ int main(int argc, char ** argv)
   if (argc < 2)
   {
     google::ShowUsageWithFlagsRestrict(argv[0], "main");
-    return 1;
+    return EXIT_FAILURE;
   }
 
   google::ParseCommandLineFlags(&argc, &argv, false);
@@ -36,7 +37,7 @@ int main(int argc, char ** argv)
     for (size_t i = 0; i < h.GetScalesCount(); ++i)
       cout << h.GetScale(i) << " ";
     cout << endl;
-    return 0;
+    return EXIT_SUCCESS;
   }
 
   if (!FLAGS_input.empty())
@@ -44,7 +45,7 @@ int main(int argc, char ** argv)
     if (FLAGS_mode != "all" && FLAGS_mode != "common")
     {
       google::ShowUsageWithFlagsRestrict(argv[0], "main");
-      return 1;
+      return EXIT_FAILURE;
     }
 
     auto const mode =
@@ -58,5 +59,5 @@ int main(int argc, char ** argv)
     res.Print();
   }
 
-  return 0;
+  return EXIT_SUCCESS;
 }

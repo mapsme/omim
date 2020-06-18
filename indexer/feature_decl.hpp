@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <string>
+#include <tuple>
 
 namespace feature
 {
@@ -40,11 +41,7 @@ struct FeatureID
 
   bool operator<(FeatureID const & r) const
   {
-    if (m_mwmId != r.m_mwmId)
-      return m_mwmId < r.m_mwmId;
-    if (m_tag != r.m_tag)
-      return m_tag < r.m_tag;
-    return m_index < r.m_index;
+    return std::tie(m_mwmId, m_tag, m_index) < std::tie(r.m_mwmId, r.m_tag, r.m_index);
   }
 
   bool operator==(FeatureID const & r) const
