@@ -1,0 +1,119 @@
+{
+  "project_info": {
+    "project_number": "5919897255",
+    "firebase_url": "https://mapsmestats.firebaseio.com",
+    "project_id": "mapsmestats",
+    "storage_bucket": "mapsmestats.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5919897255:android:962bf7fc760613f198cd82",
+        "android_client_info": {
+          "package_name": "com.mapswithme.maps.pro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5919897255-jte7mromk66hdv0hn4v9m94edbu4t0ei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyNuLpmVbfhKcbEqw4hDEK26kIUCrMKDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5919897255-jte7mromk66hdv0hn4v9m94edbu4t0ei.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "5919897255-lrfblfltp295mofvjk4emvph939rd55r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.my.maps-beta-enterprise"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5919897255:android:a665e226a221964398cd82",
+        "android_client_info": {
+          "package_name": "com.mapswithme.maps.pro.beta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5919897255-jte7mromk66hdv0hn4v9m94edbu4t0ei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyNuLpmVbfhKcbEqw4hDEK26kIUCrMKDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5919897255-jte7mromk66hdv0hn4v9m94edbu4t0ei.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "5919897255-lrfblfltp295mofvjk4emvph939rd55r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.my.maps-beta-enterprise"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5919897255:android:6b2f91956c7db4af98cd82",
+        "android_client_info": {
+          "package_name": "com.mapswithme.maps.pro.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5919897255-jte7mromk66hdv0hn4v9m94edbu4t0ei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyNuLpmVbfhKcbEqw4hDEK26kIUCrMKDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5919897255-jte7mromk66hdv0hn4v9m94edbu4t0ei.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "5919897255-lrfblfltp295mofvjk4emvph939rd55r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.my.maps-beta-enterprise"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
