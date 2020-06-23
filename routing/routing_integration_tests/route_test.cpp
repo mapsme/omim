@@ -59,7 +59,7 @@ namespace
     integration::CalculateRouteAndTestRouteLength(
         integration::GetVehicleComponents(VehicleType::Car),
         mercator::FromLatLon(55.97310, 37.41460), {0., 0.},
-        mercator::FromLatLon(55.75100, 37.61790), 39899.2);
+        mercator::FromLatLon(55.75100, 37.61790), 33763.7);
   }
 
   // Restrictions tests. Check restrictions generation, if there are any errors.
