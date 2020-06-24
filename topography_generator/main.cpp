@@ -25,6 +25,7 @@ DEFINE_string(data_dir, "", "Path to data directory.");
 
 // Common option for automatic isolines generating mode and custom generating mode.
 DEFINE_string(srtm_path, "", "Path to srtm directory.");
+DEFINE_string(whitelist_path, "", "Path to whitelist file.");
 DEFINE_uint64(threads, 4, "Number of threads.");
 DEFINE_uint64(tiles_per_thread, 9, "Max cached tiles per thread");
 
@@ -149,7 +150,7 @@ int main(int argc, char ** argv)
     }
   }
 
-  Generator generator(FLAGS_srtm_path, FLAGS_threads, FLAGS_tiles_per_thread, FLAGS_force);
+  Generator generator(FLAGS_srtm_path, FLAGS_whitelist_path, FLAGS_threads, FLAGS_tiles_per_thread, FLAGS_force);
 
   if (isAutomaticMode)
   {
