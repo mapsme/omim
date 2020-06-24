@@ -215,8 +215,13 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   [self hidePlacePage];
 
   BOOL const isSearchResult = [MWMSearchManager manager].state == MWMSearchManagerStateResult;
+  BOOL const isNavigationDashboardHidden = [MWMNavigationDashboardManager sharedManager].state == MWMNavigationDashboardStateHidden;
   if (isSearchResult) {
-    [MWMSearchManager manager].state = MWMSearchManagerStateMapSearch;
+    if (isNavigationDashboardHidden) {
+      [MWMSearchManager manager].state = MWMSearchManagerStateMapSearch;
+    } else {
+      [MWMSearchManager manager].state = MWMSearchManagerStateHidden;
+    }
   }
 
   if (!switchFullScreenMode)
@@ -226,7 +231,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
     return;
 
   BOOL const isSearchHidden = [MWMSearchManager manager].state == MWMSearchManagerStateHidden;
-  BOOL const isNavigationDashboardHidden = [MWMNavigationDashboardManager sharedManager].state == MWMNavigationDashboardStateHidden;
   if (isSearchHidden && isNavigationDashboardHidden) {
     self.controlsManager.hidden = !self.controlsManager.hidden;
   }
