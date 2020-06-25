@@ -44,6 +44,27 @@ SUPPORTED_LANGUAGES = (
     "el",
 )
 
+SUPPORTED_FACILITIES = {
+    8,   # 24-hour front desk
+
+    2,   # Parking
+    46,  # Free parking
+    52,  # Valet parking
+    160, # On-site parking
+    161, # Private parking
+    162, # Misc parking
+    179, # Secured parking
+    180, # Street parking
+    181, # Parking garage
+    184, # Accessible parking
+
+    185, # Wheelchair accessible
+
+    4,   # Pets allowed
+    3,   # Restaurant"
+    115, # Restaurant (à la carte)"
+    116, # Restaurant (buffet)"
+}
 
 class BookingGen:
     def __init__(self, api, country):
@@ -52,7 +73,7 @@ class BookingGen:
         self.country_name = country["name"]
         logging.info(f"Download[{self.country_code}]: {self.country_name}")
 
-        extras = ["hotel_info", "room_info"]
+        extras = ["hotel_info", "room_info", "hotel_facilities"]
         self.hotels = self._download_hotels(extras=extras)
         self.translations = self._download_translations()
         self.currency_medians = self._currency_medians_by_cities()
@@ -156,6 +177,20 @@ class BookingGen:
             rate += 1
         return rate
 
+    @staticmethod
+    def _get_facilities(hotel):
+        try:
+            hotel_facilities = hotel["hotel_data"]["hotel_facilities"]
+        except KeyError:
+            return ""
+        result = []
+        for facility in hotel_facilities:
+            facility_id = facility["hotel_facility_type_id"]
+            if facility_id in SUPPORTED_FACILITIES:
+                result.append(str(facility_id))
+
+        return ",".join(result)
+
     def _get_translations(self, hotel):
         try:
             tr = self.translations[hotel["hotel_id"]]
@@ -194,6 +229,7 @@ class BookingGen:
             hotel_data["review_score"],
             hotel_data["url"],
             hotel_data["hotel_type_id"],
+            self._get_facilities(hotel),
             self._get_translations(hotel),
         )
         return sep.join(BookingGen._format_string(str(x)) for x in row)

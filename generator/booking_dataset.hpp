@@ -28,7 +28,8 @@ struct BookingHotel : SponsoredObjectBase
     RatingUsers = 8,
     DescUrl = 9,
     Type = 10,
-    Translations = 11,
+    Facilities = 11,
+    Translations = 12,
     Counter
   };
 
