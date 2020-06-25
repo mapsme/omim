@@ -169,6 +169,8 @@ android/secure.properties
 android/pushwoosh.properties
 android/libnotify.properties
 server
+iphone/Maps/com.mapswithme.full/
+iphone/Maps/com.my.maps-beta-enterprise/
 
 *.li
 
