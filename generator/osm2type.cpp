@@ -176,6 +176,7 @@ public:
     WheelchairYes,
     BarrierGate,
     Toll,
+    BicycleOnedir,
     Count
   };
 
@@ -207,7 +208,8 @@ public:
         {Type::SubwayStation,      {"railway", "station", "subway"}},
         {Type::WheelchairYes,      {"wheelchair", "yes"}},
         {Type::BarrierGate,        {"barrier", "gate"}},
-        {Type::Toll,               {"hwtag", "toll"}}};
+        {Type::Toll,               {"hwtag", "toll"}},
+        {Type::BicycleOnedir,      {"hwtag", "onedir_bicycle"}}};
 
     m_types.resize(static_cast<size_t>(Type::Count));
     for (auto const & kv : kTypeToName)
@@ -688,6 +690,8 @@ void PostprocessElement(OsmElement * p, FeatureBuilderParams & params)
           {"cycleway:left", "~", [&params] { params.AddType(types.Get(CachedTypes::Type::YesBicycle)); }},
           {"oneway:bicycle", "!",
            [&params] { params.AddType(types.Get(CachedTypes::Type::BicycleBidir)); }},
+          {"oneway:bicycle", "~",
+           [&params] { params.AddType(types.Get(CachedTypes::Type::BicycleOnedir)); }},
           {"cycleway", "opposite",
            [&params] { params.AddType(types.Get(CachedTypes::Type::BicycleBidir)); }},
 
