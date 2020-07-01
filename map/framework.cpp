@@ -385,7 +385,7 @@ Framework::Framework(FrameworkParams const & params)
   , m_guidesManager([this]()
                     {
                       if (m_currentPlacePageInfo && m_currentPlacePageInfo->IsGuide())
-                        DeactivateMapSelection(true /* notifyUI */);
+                        DeactivateMapSelectionImpl(true /* notifyUI */);
                     })
   , m_routingManager(
         RoutingManager::Callbacks(
@@ -2459,7 +2459,7 @@ void Framework::ActivateMapSelection(std::optional<place_page::Info> const & inf
     LOG(LWARNING, ("m_onPlacePageOpen has not been set up."));
 }
 
-void Framework::DeactivateMapSelection(bool notifyUI)
+void Framework::DeactivateMapSelectionImpl(bool notifyUI)
 {
   bool const somethingWasAlreadySelected = (m_currentPlacePageInfo.has_value());
 
@@ -2476,6 +2476,12 @@ void Framework::DeactivateMapSelection(bool notifyUI)
   }
 
   SetDisplacementMode(DisplacementModeManager::SLOT_MAP_SELECTION, false /* show */);
+}
+
+void Framework::DeactivateMapSelection(bool notifyUI)
+{
+  DeactivateMapSelectionImpl(notifyUI);
+  m_guidesManager.ResetActiveGuide();
 }
 
 void Framework::InvalidateUserMarks()

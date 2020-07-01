@@ -1711,7 +1711,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
     else
     {
-      mPlacePageController.close(true);
+      mPlacePageController.close(false);
     }
   }
 
