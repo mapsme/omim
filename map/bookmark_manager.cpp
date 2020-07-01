@@ -2655,8 +2655,13 @@ kml::MarkGroupId BookmarkManager::CreateBookmarkCategory(std::string const & nam
   m_categories[groupId] = std::make_unique<BookmarkCategory>(name, groupId, autoSave);
   UpdateBmGroupIdList();
   m_changesTracker.OnAddGroup(groupId);
+
+  // The newly created empty bookmark category shouldn't create an empty kml file, that's why this
+  // method is public and available without EditSession (EditSession guarantees kml file saving in
+  // NotifyChanges method), but we still need to notify UI about it.
   NotifyBookmarksChanged();
   NotifyCategoriesChanged();
+
   return groupId;
 }
 
@@ -2702,6 +2707,14 @@ bool BookmarkManager::DeleteBmCategory(kml::MarkGroupId groupId)
 
   m_categories.erase(it);
   UpdateBmGroupIdList();
+
+  // If after deleting a category total changes became none,
+  // it means that we have deleted an empty just created category and we should notify UI about it.
+  if (!m_changesTracker.HasBookmarksChanges())
+    NotifyBookmarksChanged();
+  if (!m_changesTracker.HasCategoriesChanges())
+    NotifyCategoriesChanged();
+  
   return true;
 }
 
