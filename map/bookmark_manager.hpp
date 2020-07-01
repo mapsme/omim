@@ -115,6 +115,10 @@ public:
     DetachedBookmarksCallback m_detachedBookmarksCallback;
   };
 
+  // This class provides access to the private methods of BookmarkManager which modify usermarks
+  // state and guarantees automatically notification about changes made by these methods.
+  // There is a counter of currently opened EditSessions.
+  // Notification will be send after last EditSession object is destroyed.
   class EditSession
   {
   public:
@@ -470,6 +474,7 @@ public:
   // Returns negative value if my position is not on the track.
   double GetElevationMyPosition(kml::TrackId const & trackId) const;
 
+  // These handlers are always called from UI-thread.
   void SetElevationActivePointChangedCallback(ElevationActivePointChangedCallback const & cb);
   void SetElevationMyPositionChangedCallback(ElevationMyPositionChangedCallback const & cb);
 
@@ -498,6 +503,8 @@ public:
   void OnTrackDeselected();
 
 private:
+  // Tracks all changes in usermark groups and usermarks for sending them to other systems
+  // which must be synchronized with BookmarkManager.
   class MarksChangesTracker : public df::UserMarksProvider
   {
   public:
