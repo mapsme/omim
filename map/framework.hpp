@@ -438,6 +438,8 @@ public:
 private:
   std::optional<place_page::Info> m_currentPlacePageInfo;
 
+  void DeactivateMapSelectionImpl(bool notifyUI);
+
   void OnTapEvent(place_page::BuildInfo const & buildInfo);
   std::optional<place_page::Info> BuildPlacePageInfo(place_page::BuildInfo const & buildInfo);
   void BuildTrackPlacePage(BookmarkManager::TrackSelectionInfo const & trackSelectionInfo,
