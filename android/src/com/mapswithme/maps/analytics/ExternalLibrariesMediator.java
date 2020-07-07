@@ -10,12 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
-import com.crashlytics.android.ndk.CrashlyticsNdk;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mapswithme.maps.BuildConfig;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmApplication;
@@ -31,7 +29,6 @@ import com.mopub.common.MoPub;
 import com.mopub.common.SdkConfiguration;
 import com.mopub.common.privacy.PersonalInfoManager;
 import com.my.target.common.MyTargetPrivacy;
-import io.fabric.sdk.android.Fabric;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,7 +97,7 @@ public class ExternalLibrariesMediator
 
   public void initCrashlytics()
   {
-    if (!isCrashlyticsEnabled())
+/*    if (!isCrashlyticsEnabled())
       return;
 
     if (isCrashlyticsInitialized())
@@ -112,7 +109,7 @@ public class ExternalLibrariesMediator
         .build();
 
     Fabric.with(mApplication, core, new CrashlyticsNdk());
-    nativeInitCrashlytics();
+    nativeInitCrashlytics();*/
     mCrashlyticsInitialized = true;
   }
 
@@ -149,7 +146,8 @@ public class ExternalLibrariesMediator
     if (TextUtils.isEmpty(installationId))
       return false;
 
-    Crashlytics.setString("AlohalyticsInstallationId", installationId);
+    FirebaseCrashlytics.getInstance().setCustomKey("AlohalyticsInstallationId", installationId);
+    FirebaseCrashlytics.getInstance().setUserId(installationId);
     return true;
   }
 
