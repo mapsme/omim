@@ -217,7 +217,7 @@ android {
         cFlags '-ffunction-sections', '-fdata-sections',
                '-Wno-extern-c-compat'
         arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=c++_static',
-                  "-DOS=$osName", '-DSKIP_TESTS=ON', "-DUSE_PCH=$pchFlag", 'DANDROID=lld'
+                  "-DOS=$osName", '-DSKIP_TESTS=ON', "-DUSE_PCH=$pchFlag", '-DANDROID_LD=lld'
       }
     }
 
