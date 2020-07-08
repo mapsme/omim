@@ -577,26 +577,29 @@ void CacheUserLines(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
     if (spline->GetSize() < 2)
       continue;
 
+    LineViewParams params;
+    params.m_tileCenter = tileKey.GetGlobalRect().Center();
+    params.m_baseGtoPScale = 1.0f;
+    params.m_currentPtoGScale = GetScreenScale(tileKey.m_zoomLevel);
+    params.m_cap = dp::RoundCap;
+    params.m_join = dp::RoundJoin;
+    params.m_depthTestEnabled = true;
+    params.m_depthLayer = renderInfo.m_depthLayer;
+    params.m_minVisibleScale = 1;
+    params.m_rank = 0;
+    params.m_tileRect = tileKey.GetGlobalRect();
+
     auto const clippedSplines = m2::ClipSplineByRect(tileRect, spline);
     for (auto const & clippedSpline : clippedSplines)
     {
+      bool showArrows = renderInfo.m_interactive; // draw track arrows only for the first layer if any
       for (auto const & layer : renderInfo.m_layers)
       {
-        LineViewParams params;
-        params.m_tileCenter = tileKey.GetGlobalRect().Center();
-        params.m_baseGtoPScale = 1.0f;
-        params.m_cap = dp::RoundCap;
-        params.m_join = dp::RoundJoin;
         params.m_color = layer.m_color;
-        params.m_depthTestEnabled = true;
         params.m_depth = layer.m_depth;
-        params.m_depthLayer = renderInfo.m_depthLayer;
         params.m_width = static_cast<float>(layer.m_width * vs *
           kLineWidthZoomFactor[tileKey.m_zoomLevel - 1]);
-        params.m_minVisibleScale = 1;
-        params.m_rank = 0;
-
-        LineShape(clippedSpline, params).Draw(context, make_ref(&batcher), textures);
+        LineShape(clippedSpline, params, std::exchange(showArrows, false)).Draw(context, make_ref(&batcher), textures);
       }
     }
   }

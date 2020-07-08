@@ -133,7 +133,8 @@ void ClipTriangleByRect(m2::RectD const & rect, m2::PointD const & p1, m2::Point
 }
 
 std::vector<m2::SharedSpline> ClipPathByRectImpl(m2::RectD const & rect,
-                                                 std::vector<m2::PointD> const & path)
+                                                 std::vector<m2::PointD> const & path,
+                                                 double accumulatedLength)
 {
   vector<m2::SharedSpline> result;
 
@@ -146,7 +147,6 @@ std::vector<m2::SharedSpline> ClipPathByRectImpl(m2::RectD const & rect,
   int code1 = 0;
   int code2 = 0;
   m2::SharedSpline s;
-  s.Reset(new m2::Spline(path.size()));
 
   for (size_t i = 0; i < path.size() - 1; i++)
   {
@@ -155,7 +155,7 @@ std::vector<m2::SharedSpline> ClipPathByRectImpl(m2::RectD const & rect,
     if (m2::Intersect(rect, p1, p2, code1, code2))
     {
       if (s.IsNull())
-        s.Reset(new m2::Spline(path.size() - i));
+        s.Reset(new m2::Spline(path.size() - i, accumulatedLength));
 
       s->AddPoint(p1);
       s->AddPoint(p2);
@@ -173,6 +173,7 @@ std::vector<m2::SharedSpline> ClipPathByRectImpl(m2::RectD const & rect,
         result.push_back(s);
       s.Reset(nullptr);
     }
+    accumulatedLength += (p2 - p1).Length();
   }
   return result;
 }
@@ -206,7 +207,7 @@ vector<m2::SharedSpline> ClipSplineByRect(m2::RectD const & rect, m2::SharedSpli
   {
   case RectCase::Inside: return {spline};
   case RectCase::Outside: return {};
-  case RectCase::Intersect: return ClipPathByRectImpl(rect, spline->GetPath());
+  case RectCase::Intersect: return ClipPathByRectImpl(rect, spline->GetPath(), spline->GetInitialLength());
   }
 }
 
@@ -218,7 +219,7 @@ std::vector<m2::SharedSpline> ClipPathByRect(m2::RectD const & rect,
   {
   case RectCase::Inside: return {m2::SharedSpline(path)};
   case RectCase::Outside: return {};
-  case RectCase::Intersect: return ClipPathByRectImpl(rect, path);
+  case RectCase::Intersect: return ClipPathByRectImpl(rect, path, 0.0);
   }
 }
 

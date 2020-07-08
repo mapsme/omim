@@ -69,6 +69,31 @@ struct SolidTexturingVertex : BaseVertex
 
 using TSolidTexVertexBuffer = buffer_vector<SolidTexturingVertex, 128>;
 
+struct TrackArrowStaticVertex : BaseVertex
+{
+  TrackArrowStaticVertex();
+  TrackArrowStaticVertex(TTexCoord const & colorTexCoord);
+
+  TTexCoord m_colorTexCoord;
+
+  static dp::BindingInfo const & GetBindingInfo();
+};
+
+using TTrackArrowStaticVertexBuffer = buffer_vector<TrackArrowStaticVertex, 6 * 128>;
+
+struct TrackArrowDynamicVertex : BaseVertex
+{
+  TrackArrowDynamicVertex();
+  TrackArrowDynamicVertex(TPosition const & position, TNormal const & normal);
+
+  TPosition m_position;
+  TNormal m_normal;
+
+  static dp::BindingInfo const & GetBindingInfo();
+};
+
+using TTrackArrowDynamicVertexBuffer = buffer_vector<TrackArrowDynamicVertex, 6 * 128>;
+
 struct MaskedTexturingVertex : BaseVertex
 {
   MaskedTexturingVertex();

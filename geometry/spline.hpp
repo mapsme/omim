@@ -46,7 +46,7 @@ public:
 
 public:
   Spline() = default;
-  explicit Spline(size_t reservedSize);
+  explicit Spline(size_t reservedSize, double const initialLength = 0.0);
   explicit Spline(std::vector<PointD> const & path);
   explicit Spline(std::vector<PointD> && path);
   Spline const & operator = (Spline const & spl);
@@ -55,6 +55,7 @@ public:
   void ReplacePoint(PointD const & pt);
   bool IsPrelonging(PointD const & pt);
   size_t GetSize() const;
+  double GetInitialLength() const { return m_initialLength; }
   std::vector<PointD> const & GetPath() const { return m_position; }
   std::vector<double> const & GetLengths() const { return m_length; }
   std::vector<PointD> const & GetDirections() const { return m_direction; }
@@ -85,6 +86,7 @@ private:
   template <typename T>
   void Init(T && path);
 
+  double m_initialLength = 0.0;
   std::vector<PointD> m_position;
   std::vector<PointD> m_direction;
   std::vector<double> m_length;

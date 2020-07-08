@@ -86,6 +86,7 @@ struct MapProgramParams
     Program::TextOutlinedBillboard,
     Program::Texturing,
     Program::TexturingBillboard,
+    Program::TrackArrow,
     Program::BookmarkAboveText,
     Program::BookmarkAnimAboveText,
     Program::BookmarkAnimAboveTextBillboard,

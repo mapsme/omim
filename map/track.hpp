@@ -23,7 +23,6 @@ public:
   m2::RectD GetLimitRect() const;
   double GetLengthMeters() const;
   double GetLengthMeters(size_t pointIndex) const;
-  bool IsInteractive() const;
 
   int GetMinZoom() const override { return 1; }
   df::DepthLayer GetDepthLayer() const override;
@@ -32,6 +31,7 @@ public:
   float GetWidth(size_t layerIndex) const override;
   float GetDepth(size_t layerIndex) const override;
   std::vector<m2::PointD> GetPoints() const override;
+  bool IsInteractive() const override;
   std::vector<geometry::PointWithAltitude> const & GetPointsWithAltitudes() const;
 
   void Attach(kml::MarkGroupId groupId);

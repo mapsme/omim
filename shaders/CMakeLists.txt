@@ -64,6 +64,8 @@ set(
     GL/texturing3d.fsh.glsl
     GL/texturing_billboard.vsh.glsl
     GL/texturing_gui.vsh.glsl
+    GL/track_arrow.fsh.glsl
+    GL/track_arrow.vsh.glsl
     GL/traffic.fsh.glsl
     GL/traffic.vsh.glsl
     GL/traffic_circle.fsh.glsl

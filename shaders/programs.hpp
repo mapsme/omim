@@ -30,6 +30,7 @@ enum class Program
   PathSymbol,
   HatchingArea,
   TexturingGui,
+  TrackArrow,
   Ruler,
   Accuracy,
   MyPosition,
@@ -93,6 +94,7 @@ inline std::string DebugPrint(Program p)
   case Program::PathSymbol: return "PathSymbol";
   case Program::HatchingArea: return "HatchingArea";
   case Program::TexturingGui: return "TexturingGui";
+  case Program::TrackArrow: return "TrackArrow";
   case Program::Ruler: return "Ruler";
   case Program::Accuracy: return "Accuracy";
   case Program::MyPosition: return "MyPosition";
