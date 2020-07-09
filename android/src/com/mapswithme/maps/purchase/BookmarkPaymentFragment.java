@@ -288,7 +288,7 @@ public class BookmarkPaymentFragment extends BaseMwmFragment
     if (details.isEmpty())
       return;
 
-    SkuDetails skuDetails = details.get(0);;
+    SkuDetails skuDetails = details.get(0);
     mProductDetails = PurchaseUtils.toProductDetails(skuDetails);
   }
 
