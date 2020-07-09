@@ -97,19 +97,6 @@ public class ExternalLibrariesMediator
 
   public void initCrashlytics()
   {
-/*    if (!isCrashlyticsEnabled())
-      return;
-
-    if (isCrashlyticsInitialized())
-      return;
-
-    Crashlytics core = new Crashlytics
-        .Builder()
-        .core(new CrashlyticsCore.Builder().disabled(!isFabricEnabled()).build())
-        .build();
-
-    Fabric.with(mApplication, core, new CrashlyticsNdk());
-    nativeInitCrashlytics();*/
     mCrashlyticsInitialized = true;
   }
 
