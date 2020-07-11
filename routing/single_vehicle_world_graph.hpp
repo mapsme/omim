@@ -118,7 +118,7 @@ private:
   void CheckAndProcessTransitFeatures(Segment const & parent,
                                       std::vector<JointEdge> & jointEdges,
                                       std::vector<RouteWeight> & parentWeights,
-                                      bool isOutgoing);
+                                      bool isOutgoing, bool useAccessConditional);
   // WorldGraph overrides:
   void GetTwinsInner(Segment const & s, bool isOutgoing, std::vector<Segment> & twins) override;
 

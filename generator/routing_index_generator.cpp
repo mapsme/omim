@@ -16,6 +16,7 @@
 #include "routing/index_graph_serialization.hpp"
 #include "routing/index_graph_starter_joints.hpp"
 #include "routing/joint_segment.hpp"
+#include "routing/road_access.hpp"
 #include "routing/vehicle_mask.hpp"
 
 #include "routing_common/bicycle_model.hpp"
@@ -441,6 +442,12 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
 
     using Algorithm = AStarAlgorithm<JointSegment, JointEdge, RouteWeight>;
 
+    graph.SetCurrentTimeGetter([]() {
+      CHECK(false, ("IndexGraph::m_currentTimeGetter() or RoadAccess::m_currentTimeGetter() is "
+                    "called but should not be called."));
+      return static_cast<time_t>(0);
+    });
+
     Algorithm astar;
     IndexGraphWrapper indexGraphWrapper(graph, enter);
     DijkstraWrapperJoints wrapper(indexGraphWrapper, enter);
@@ -505,8 +512,8 @@ void FillWeights(string const & path, string const & mwmFile, string const & cou
           uint32_t const lastPoint = exit.GetPointId(true /* front */);
 
           static map<JointSegment, JointSegment> kEmptyParents;
-          auto optionalEdge =  graph.GetJointEdgeByLastPoint(parentSegment, firstChild,
-                                                             true /* isOutgoing */, lastPoint);
+          auto optionalEdge = graph.GetJointEdgeByLastPoint(parentSegment, firstChild,
+                                                            true /* isOutgoing */, lastPoint);
 
           if (!optionalEdge)
             continue;
