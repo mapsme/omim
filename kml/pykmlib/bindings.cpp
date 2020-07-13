@@ -11,6 +11,8 @@
 #include "geometry/point_with_altitude.hpp"
 
 #include "base/assert.hpp"
+#include "base/exception.hpp"
+#include "base/logging.hpp"
 
 // This header should be included due to a python compilation error.
 // pyport.h overwrites defined macros and replaces it with its own.
@@ -50,6 +52,8 @@ using namespace boost::python;
 
 namespace
 {
+std::string const kEmptyStr;
+
 struct LocalizableStringAdapter
 {
   static std::string const & Get(LocalizableString const & str, std::string const & lang)
@@ -58,14 +62,19 @@ struct LocalizableStringAdapter
     auto const it = str.find(langIndex);
     if (it != str.end())
       return it->second;
-    throw std::runtime_error("Language not found");
+
+    LOG(LWARNING, ("Error. Unsupported language. Language", lang, "is not found."));
+    return kEmptyStr;
   }
 
   static void Set(LocalizableString & str, std::string const & lang, std::string const & val)
   {
     auto const langIndex = StringUtf8Multilang::GetLangIndex(lang);
     if (langIndex == StringUtf8Multilang::kUnsupportedLanguageCode)
-      throw std::runtime_error("Unsupported language");
+    {
+      LOG(LWARNING, ("Error. Unsupported language. Language", lang, "is not found."));
+      return;
+    }
     str[langIndex] = val;
   }
 
@@ -74,9 +83,12 @@ struct LocalizableStringAdapter
     auto const langIndex = StringUtf8Multilang::GetLangIndex(lang);
     auto const it = str.find(langIndex);
     if (it != str.end())
+    {
       str.erase(it);
-    else
-      throw std::runtime_error("Language not found");
+      return;
+    }
+
+    LOG(LWARNING, ("Error. Unsupported language. Language", lang, "is not found."));
   }
 
   static boost::python::dict GetDict(LocalizableString const & str)
@@ -86,7 +98,10 @@ struct LocalizableStringAdapter
     {
       std::string lang = StringUtf8Multilang::GetLangByCode(s.first);
       if (lang.empty())
-        throw std::runtime_error("Language not found");
+      {
+        LOG(LWARNING, ("Error. Unsupported language. Language", lang, "is not found."));
+        return {};
+      }
       d[lang] = s.second;
     }
     return d;
@@ -103,7 +118,10 @@ struct LocalizableStringAdapter
     {
       auto const langIndex = StringUtf8Multilang::GetLangIndex(lang);
       if (langIndex == StringUtf8Multilang::kUnsupportedLanguageCode)
-        throw std::runtime_error("Unsupported language");
+      {
+        LOG(LWARNING, ("Error. Unsupported language. Language", lang, "is not found."));
+        return;
+      }
 
       str[langIndex] = extract<std::string>(dict[lang]);
     }
@@ -169,7 +187,9 @@ struct PropertiesAdapter
     auto const it = props.find(key);
     if (it != props.end())
       return it->second;
-    throw std::runtime_error("Property not found");
+
+    LOG(LWARNING, ("Error. Property not found. key:", key));
+    return kEmptyStr;
   }
 
   static void Set(Properties & props, std::string const & key, std::string const & val)
@@ -181,9 +201,11 @@ struct PropertiesAdapter
   {
     auto const it = props.find(key);
     if (it != props.end())
+    {
       props.erase(it);
-    else
-      throw std::runtime_error("Property not found");
+      return;
+    }
+    LOG(LWARNING, ("Error. Property not found. key:", key));
   }
 
   static boost::python::dict GetDict(Properties const & props)
@@ -558,7 +580,10 @@ boost::python::list GetLanguages(std::vector<int8_t> const & langs)
   {
     std::string lang = StringUtf8Multilang::GetLangByCode(langCode);
     if (lang.empty())
-      throw std::runtime_error("Language not found");
+    {
+      LOG(LWARNING, ("Error. Language not found. langCode:", langCode));
+      return {};
+    }
     result.emplace_back(std::move(lang));
   }
   return pyhelpers::StdVectorToPythonList(result);
@@ -576,7 +601,10 @@ void SetLanguages(std::vector<int8_t> & langs, boost::python::object const & ite
   {
     auto const langIndex = StringUtf8Multilang::GetLangIndex(lang);
     if (langIndex == StringUtf8Multilang::kUnsupportedLanguageCode)
-      throw std::runtime_error("Unsupported language");
+    {
+      LOG(LWARNING, ("Error. Unsupported language. lang:", lang));
+      return;
+    }
     langs.emplace_back(langIndex);
   }
 }
@@ -595,84 +623,103 @@ boost::python::object GetLanguageIndex(std::string const & lang)
 {
   auto const langIndex = StringUtf8Multilang::GetLangIndex(lang);
   if (langIndex == StringUtf8Multilang::kUnsupportedLanguageCode)
-    throw std::runtime_error("Unsupported language");
+  {
+    LOG(LWARNING, ("Error. Unsupported language. lang:", lang));
+    return {};
+  }
   return boost::python::object(langIndex);
 }
 
 std::string ExportKml(FileData const & fileData)
 {
-  std::string resultBuffer;
-  try
-  {
-    MemWriter<decltype(resultBuffer)> sink(resultBuffer);
-    kml::SerializerKml ser(fileData);
-    ser.Serialize(sink);
-  }
-  catch (kml::SerializerKml::SerializeException const & exc)
-  {
-    throw std::runtime_error(std::string("Export error: ") + exc.what());
-  }
-  return resultBuffer;
+  bool exceptionWasThrown = true;
+  return ExceptionCatcher(
+      "ExportKml().", exceptionWasThrown,
+      [](FileData const & fileData) {
+        std::string resultBuffer;
+        MemWriter<decltype(resultBuffer)> sink(resultBuffer);
+        kml::SerializerKml ser(fileData);
+        ser.Serialize(sink);
+        return resultBuffer;
+      },
+      fileData);
 }
 
 FileData ImportKml(std::string const & str)
 {
-  kml::FileData data;
-  try
-  {
-    kml::DeserializerKml des(data);
-    MemReader reader(str.data(), str.size());
-    des.Deserialize(reader);
-  }
-  catch (kml::DeserializerKml::DeserializeException const & exc)
-  {
-    throw std::runtime_error(std::string("Import error: ") + exc.what());
-  }
-  return data;
+  bool exceptionWasThrown = true;
+  return ExceptionCatcher(
+      "ImportKml().", exceptionWasThrown,
+      [](std::string const & str) {
+        kml::FileData data;
+        kml::DeserializerKml des(data);
+        MemReader reader(str.data(), str.size());
+        des.Deserialize(reader);
+        return data;
+      },
+      str);
 }
 
 void LoadClassificatorTypes(std::string const & classificatorFileStr,
                             std::string const & typesFileStr)
 {
-  classificator::LoadTypes(classificatorFileStr, typesFileStr);
+  bool exceptionWasThrown = true;
+  ExceptionCatcher(
+      "LoadClassificatorTypes()", exceptionWasThrown,
+      [](std::string const & classificatorFileStr, std::string const & typesFileStr) {
+        classificator::LoadTypes(classificatorFileStr, typesFileStr);
+      },
+      classificatorFileStr, typesFileStr);
 }
 
 uint32_t ClassificatorTypeToIndex(std::string const & typeStr)
 {
-  if (typeStr.empty())
-    throw std::runtime_error("Empty type is not allowed.");
+  bool exceptionWasThrown = true;
+  return ExceptionCatcher(
+      "ClassificatorTypeToIndex().", exceptionWasThrown,
+      [](std::string const & typeStr) {
+        if (typeStr.empty())
+          throw std::runtime_error("Empty type is not allowed.");
 
-  auto const & c = classif();
-  if (!c.HasTypesMapping())
-    throw std::runtime_error("Types mapping is not loaded.");
+        auto const & c = classif();
+        if (!c.HasTypesMapping())
+          throw std::runtime_error("Types mapping is not loaded.");
 
-  auto const type = c.GetTypeByReadableObjectName(typeStr);
-  if (!c.IsTypeValid(type))
-    throw std::runtime_error("Type is not valid.");
+        auto const type = c.GetTypeByReadableObjectName(typeStr);
+        if (!c.IsTypeValid(type))
+          throw std::runtime_error("Type is not valid.");
 
-  return c.GetIndexForType(type);
+        return c.GetIndexForType(type);
+      },
+      typeStr);
 }
 
 std::string IndexToClassificatorType(uint32_t index)
 {
-  auto const & c = classif();
-  if (!c.HasTypesMapping())
-    throw std::runtime_error("Types mapping is not loaded.");
+  bool exceptionWasThrown = true;
+  return ExceptionCatcher(
+      "IndexToClassificatorType().", exceptionWasThrown,
+      [](uint32_t index) {
+        auto const & c = classif();
+        if (!c.HasTypesMapping())
+          throw std::runtime_error("Types mapping is not loaded.");
 
-  uint32_t t;
-  try
-  {
-    t = c.GetTypeForIndex(index);
-  }
-  catch (std::out_of_range const & exc)
-  {
-    throw std::runtime_error("Type is not found.");
-  }
+        uint32_t t;
+        try
+        {
+          t = c.GetTypeForIndex(index);
+        }
+        catch (std::out_of_range const & exc)
+        {
+          throw std::runtime_error("Type is not found.");
+        }
 
-  if (!c.IsTypeValid(t))
-    throw std::runtime_error("Type is not valid.");
+        if (!c.IsTypeValid(t))
+          throw std::runtime_error("Type is not valid.");
 
-  return c.GetReadableObjectName(t);
+        return c.GetReadableObjectName(t);
+      },
+      index);
 }
 }  // namespace
 
