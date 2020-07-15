@@ -38840,7 +38840,7 @@
     ar = طرق غير ممهدة
     cs = Nezpevněná silnice
     da = Grusveje
-    nl = Aardewegen
+    nl = Aarden wegen
     fi = Päällystämättömät tiet
     fr = Routes non revêtues
     de = Erdwege
@@ -39248,7 +39248,7 @@
     ar = تجنب الطرق الغير ممهدة
     cs = Vyhnout se nezpevněným silnicím
     da = Undgå grusveje
-    nl = Aardewegen vermijden
+    nl = Aarden wegen vermijden
     fi = Vältä maanteitä
     fr = Éviter les routes non revêtues
     de = Erdwege vermeiden
@@ -39892,7 +39892,7 @@
     ar = حدد الطرق التي تحتوي: نقط تحصيل رسوم، طرق غير ممهدة، تفاطعات العبارات
     cs = Vyberte si objížďky podle zpoplatněných silnic, prašných silnic a přejezdů trajektů
     da = Vælg omveje for at undgå vejbaner, grusveje og færgeoverfarter
-    nl = Kies omwegen via tolwegen, aardewegen en ferries
+    nl = Kies omwegen via tolwegen, aarden wegen en ferries
     fi = Valitse kiertoreitit maksullisten teiden, päällystämättömien teiden ja lauttojen ohi
     fr = Choisissez des itinéraires de détour par péage, routes non revêtues et passages d'un cours d'eau
     de = Wählen Sie die Umwege durch Mautstraßen, Erdwege und Fährstellen
@@ -42108,7 +42108,7 @@
     ar = تجنب غير الممهد
     cs = Vyhnout se nezp
     da = Undgå grus
-    nl = Geen aardewegen
+    nl = Geen aarden wegen
     fi = Vain päällyste
     fr = Route de terre
     de = Ohne Landstr.
