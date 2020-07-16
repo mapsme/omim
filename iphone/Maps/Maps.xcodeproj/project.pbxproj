@@ -5259,7 +5259,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\necho \"[Firebase Crashlytics] start\"\n\nLOWERED_CONFIG=`echo $CONFIGURATION | tr [A-Z] [a-z]`\nPLIST_PATH=\"${PROJECT_DIR}/${BUNDLE_IDENTIFIER}/GoogleService-Info.plist\"\nDSYM_PATH=${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\n\necho \"[Firebase Crashlytics] dsyms: ${DSYM_PATH}\"\necho \"[Firebase Crashlytics] plist: ${PLIST_PATH}\"\n# ONLY FOR Release, because for production we use Bitecode\n\nif [[ \"$LOWERED_CONFIG\" == *release* ]]; then\n  if [ ! -f \"${PLIST_PATH}\" ]; then\n    echo \"[Firebase Crashlytics] Google plist not found!\"\n    exit 1\n  fi\n  bash \"${PODS_ROOT}/FirebaseCrashlytics/run -gsp ${PLIST_PATH} -p ios ${DSYM_PATH}\"\n  echo \"[Firebase Crashlytics] done\"\nfi\n";
+			shellScript = "#!/bin/bash\necho \"[Firebase Crashlytics] start\"\n\nLOWERED_CONFIG=`echo $CONFIGURATION | tr [A-Z] [a-z]`\nPLIST_PATH=\"${PROJECT_DIR}/${BUNDLE_IDENTIFIER}/GoogleService-Info.plist\"\nDSYM_PATH=${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\n\necho \"[Firebase Crashlytics] dsyms: ${DSYM_PATH}\"\necho \"[Firebase Crashlytics] plist: ${PLIST_PATH}\"\n# ONLY FOR Release, because for production we use Bitecode\n\nif [[ \"$LOWERED_CONFIG\" == *release* ]]; then\n  if [ ! -f \"${PLIST_PATH}\" ]; then\n    echo \"[Firebase Crashlytics] Google plist not found!\"\n    exit 1\n  fi\n  bash \"${PODS_ROOT}/FirebaseCrashlytics/run -gsp \\\"${PLIST_PATH}\\\" -p ios \\\"${DSYM_PATH}\\\"\"\n  echo \"[Firebase Crashlytics] done\"\nfi\n";
 		};
 		47C7F96D2191A3B600C2760C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
