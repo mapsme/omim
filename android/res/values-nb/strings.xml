@@ -1598,9 +1598,9 @@
 	<string name="new_onboarding_step5.1_header">Før du kommer i gang…</string>
 	<string name="new_onboarding_step5.1_message">Ikke glem å besøke vår nye rutekatalog for å finne offlineguide til neste reise!</string>
 	<string name="new_onboarding_step5.1_button">Åpne katalogen</string>
-	<string name="new_onboarding_step5.2_message">Det er rimelig å abonnere på guidekatalogen på MAPS.ME. Få deg full tilgang til byturguider og friluftslivsguider!</string>
+	<string name="new_onboarding_step5.2_message">Det er fordelaktig å abonnere på guider-katalogen på MAPS.ME. Få full tilgang til alle funksjonene i guider-katalogen</string>
 	<string name="new_onboarding_step5.2_button">Sjekke vilkår</string>
-	<string name="new_onboarding_step5.3_message">Last ned og sjekk ut ruter for byturer og friluftsliv med gratis MAPS.ME utvalg!</string>
+	<string name="new_onboarding_step5.3_message">Last ned og evaluer ruter for byturer og friluftsliv uten nett</string>
 	<string name="new_onboarding_step5.3_button">Laste ned gratis</string>
 	<string name="new_onboarding_additional_steps_later_button">Ikke nå</string>
 	<string name="all_pass_subscription_header">KATALOGABONNEMENT</string>
@@ -1621,7 +1621,7 @@
 	<string name="sightseeing_subscription_message_2">Tilgjengelig offline</string>
 	<string name="sightseeing_subscription_message_3">Bilder og fotturer</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Takk for at du abonnerte!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Nå har du tilgang til alle byguider i katalogen</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">Nå har du ubegrenset tilgang til alle funksjonene i guider-katalogen</string>
 	<string name="downloader_main_gallery_header">Kart og guider</string>
 	<string name="downloader_main_gallery_message">Nå i denne delen kan du ikke bare laste ned kart, men også velge guider til dine neste reiser</string>
 	<string name="downloader_main_1_element_gallery_header">Alle guider</string>

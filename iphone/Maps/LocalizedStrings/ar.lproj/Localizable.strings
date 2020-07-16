@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "افتح القائمة";
 
-"new_onboarding_step5.2_message" = "الاشتراك في قائمة دلائل MAPS.ME ذو قيمة كبيرة. احصل على الوصول الكامل إلى دلائل المدينة والمناطق الخارجية في جميع أنحاء العالم!";
+"new_onboarding_step5.2_message" = "الاشتراك في قائمة أدلة MAPS.ME فرصة كبيرة. احصل على وصول كامل لجميع ميزات قائمة الأدلة";
 
 "new_onboarding_step5.2_button" = "تحقق من الشروط";
 
-"new_onboarding_step5.3_message" = "تحقق من عينات مجانية لمسارات جاهزة للمدن والمناطق الخارجية مع مجموعة مختارة مجانية من MAPS.ME!";
+"new_onboarding_step5.3_message" = "تحقق من أمثلة مسارات المدينة والأنشطة الخارجية الجاهزة دون اتصال بالانترنت";
 
 "new_onboarding_step5.3_button" = "تحميل مجاني";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "شكرًا للاشتراك!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "يمكنك الآن الوصول إلى جميع أدلة المعالم في القائمة";
+"subscription_success_dialog_message_sightseeing_pass" = "لديك الآن وصول غير محدود إلى جميع ميزات قائمة الأدلة";
 
 "downloader_main_gallery_header" = "خرائط ودلائل";
 

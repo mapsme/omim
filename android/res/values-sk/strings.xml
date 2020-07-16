@@ -1704,9 +1704,9 @@
 	<string name="new_onboarding_step5.1_header">Ešte jedna vec, než začnete…</string>
 	<string name="new_onboarding_step5.1_message">Nezabudnite navštíviť náš úplne nový katalóg sprievodcov a nájsť offline sprievodcu pre svoju nadchádzajúcu cestu!</string>
 	<string name="new_onboarding_step5.1_button">Otvoriť katalóg</string>
-	<string name="new_onboarding_step5.2_message">Predplatné katalógu sprievodcov MAPS.ME má veľkú hodnotu. Získajte plný prístup k mestským a vonkajším sprievodcom po celom svete!</string>
+	<string name="new_onboarding_step5.2_message">Predplatenie katalógu sprievodcov MAPS.ME je naozaj výhodné. Získajte plný prístup ku všetkým funkciám katalógu sprievodcov</string>
 	<string name="new_onboarding_step5.2_button">Skontrolovať podmienky</string>
-	<string name="new_onboarding_step5.3_message">Vyskúšajte bezplatné ukážky hotových mestských a vonkajších trás s bezplatným výberom MAPS.ME!</string>
+	<string name="new_onboarding_step5.3_message">Pozrite sa na ukážky pripravených offline mestských a outdoorových trás</string>
 	<string name="new_onboarding_step5.3_button">Bezplatné stiahnutie</string>
 	<string name="new_onboarding_additional_steps_later_button">Neskôr</string>
 	<string name="all_pass_subscription_header">ODBER KATALÓGU</string>
@@ -1727,7 +1727,7 @@
 	<string name="sightseeing_subscription_message_2">Dostupné offline</string>
 	<string name="sightseeing_subscription_message_3">Fotografie a turistické trasy</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Ďakujeme, že ste sa prihlásili na odber!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Teraz máte prístup ku všetkým sprievodcom v katalógu</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">Teraz máte neobmedzený prístup ku všetkým funkciám katalógu sprievodcov</string>
 	<string name="downloader_main_gallery_header">Mapy a sprievodcovia</string>
 	<string name="downloader_main_gallery_message">Teraz v tejto sekcii môžete nielen sťahovať mapy, ale tiež si pozrieť sprievodcov pre svoju nadchádzajúcu cestu</string>
 	<string name="downloader_main_1_element_gallery_header">Všetci sprievodcovia</string>

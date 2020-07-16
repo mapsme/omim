@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Deschide directorul";
 
-"new_onboarding_step5.2_message" = "Abonarea la directorul ghidurilor din MAPS.ME este profitabilă. Obțineți acces complet la ghiduri pentru plimbări prin oraș și alte activități!";
+"new_onboarding_step5.2_message" = "Abonarea la catalogul ghidurilor de călătorie în MAPS.ME – e profitabil. Obțineți acces complet la toate capabilitățile catalogului ghidurilor";
 
 "new_onboarding_step5.2_button" = "Vezi termenii";
 
-"new_onboarding_step5.3_message" = "Descărcați și evaluați rutele pentru plimbări prin oraș și activități în aer liber, cu o selecție gratuită din MAPS.ME!";
+"new_onboarding_step5.3_message" = "Descărcați și evaluați rutele offline pentru plimbări prin oraș și activități în aer liber";
 
 "new_onboarding_step5.3_button" = "Descarcă gratuit";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Mulțumim pentru abonament!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Acum aveți acces la toate ghidurile orașului din catalog";
+"subscription_success_dialog_message_sightseeing_pass" = "Acum aveți acces nelimitat la toate capabilitățile catalogului de ghiduri";
 
 "downloader_main_gallery_header" = "Hărți și ghiduri";
 

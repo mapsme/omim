@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "カタログを開く";
 
-"new_onboarding_step5.2_message" = "MAPS.MEのガイドのカタログにサブスクライブすれば多くの利点があります。世界中の都市や戸外のガイドの全てにアクセスする事ができます！";
+"new_onboarding_step5.2_message" = "割引中のMAPS.MEのガイドのカタログにサブスクライブしましょう。ガイドのカタログの全機能へのフルアクセスをゲット";
 
 "new_onboarding_step5.2_button" = "規約をご確認ください";
 
-"new_onboarding_step5.3_message" = "MAPS.MEの無料セレクションでレディメイドな都市と戸外のルートのサンプルをご覧ください！";
+"new_onboarding_step5.3_message" = "オフラインで利用できるレディーメイドな都市とアウトドアのルート";
 
 "new_onboarding_step5.3_button" = "無料ダウンロード";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "ご登録ありがとうございます！";
 
-"subscription_success_dialog_message_sightseeing_pass" = "これでカタログ内の全ての観光ガイドにアクセスできるようになりました";
+"subscription_success_dialog_message_sightseeing_pass" = "これで全てのガイドのカタログの機能に無制限でアクセスできるようになりました";
 
 "downloader_main_gallery_header" = "マップとガイド";
 

@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Kataloğu aç";
 
-"new_onboarding_step5.2_message" = "MAPS.ME rehber kataloğuna abone olmak çok karlıdır. Dünyanın her yerindeki şehir ve açık hava rehberlerine tam erişim elde edin!";
+"new_onboarding_step5.2_message" = "MAPS.ME rehber kataloğuna abone olmak bir avantajdır. Tüm rehber kataloğu özelliklerine tam erişim sağlayın";
 
 "new_onboarding_step5.2_button" = "Şartlara göz at";
 
-"new_onboarding_step5.3_message" = "Ücretsiz MAPS.ME seçeneği ile hazır şehir ve açık hava güzergahlarından ücretsiz örnekleri inceleyin!";
+"new_onboarding_step5.3_message" = "Hazır çevrimdışı şehir ve açık hava rotalarının örneklerine göz atın";
 
 "new_onboarding_step5.3_button" = "Ücretsiz indir";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Abone olduğunuz için teşekkürler!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Artık katalogdaki tüm gezi rehberlerine erişim hakkınız var";
+"subscription_success_dialog_message_sightseeing_pass" = "Artık tüm rehber kataloğu özelliklerine sınırsız erişiminiz var";
 
 "downloader_main_gallery_header" = "Haritalar ve rehberler";
 

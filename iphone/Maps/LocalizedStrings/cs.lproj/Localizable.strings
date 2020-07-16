@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Otevřete katalog";
 
-"new_onboarding_step5.2_message" = "Předplatné katalogu průvodců MAPS.ME má velkou hodnotu. Získejte plný přístup k průvodcům městem a venkovem po celém světě!";
+"new_onboarding_step5.2_message" = "Předplatné katalogu průvodců MAPS.ME je výhodná koupě. Získejte plný přístup ke všem funkcím katalogu průvodců";
 
 "new_onboarding_step5.2_button" = "Zkontrolujte termíny";
 
-"new_onboarding_step5.3_message" = "Vyzkoušejte zdarma vzorky hotových městských a venkovních tras s bezplatným výběrem MAPS.ME!";
+"new_onboarding_step5.3_message" = "Podívejte se na vzorky hotových městských a venkovních tras";
 
 "new_onboarding_step5.3_button" = "Stáhněte si zdarma";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Děkujeme za předplatné!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Nyní máte přístup ke všem památkovým průvodcům v katalogu";
+"subscription_success_dialog_message_sightseeing_pass" = "Nyní máte neomezený přístup ke všem funkcím katalogu průvodců";
 
 "downloader_main_gallery_header" = "Mapy a průvodci";
 

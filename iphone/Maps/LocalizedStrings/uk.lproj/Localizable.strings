@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Відкрити каталог";
 
-"new_onboarding_step5.2_message" = "Передплата каталогу путівників у MAPS.ME – це вигідно. Отримайте повний доступ до путівників для прогулянок містом і активного відпочинку!";
+"new_onboarding_step5.2_message" = "Передплата каталогу путівників у MAPS.ME – це вигідно. Отримайте повний доступ до всіх можливостей каталогу путівників";
 
 "new_onboarding_step5.2_button" = "Переглянути умови";
 
-"new_onboarding_step5.3_message" = "Завантажте й оцініть маршрути для прогулянок містом і активного відпочинку з безкоштовною підбіркою MAPS.ME!";
+"new_onboarding_step5.3_message" = "Завантажте та оцініть офлайн маршрути для міських прогулянок і активного відпочинку";
 
 "new_onboarding_step5.3_button" = "Завантажити безкоштовно";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Дякуємо за передплату!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Тепер у вас є доступ до всіх путівників містами в каталозі";
+"subscription_success_dialog_message_sightseeing_pass" = "Тепер у вас необмежений доступ до всіх можливостей каталогу путівників";
 
 "downloader_main_gallery_header" = "Карти та путівники";
 

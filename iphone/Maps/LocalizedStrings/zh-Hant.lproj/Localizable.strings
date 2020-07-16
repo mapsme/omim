@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "打開目錄";
 
-"new_onboarding_step5.2_message" = "在MAPS.ME 中訂閱指南目錄非常劃算。可訪問所有市內徒步旅行與休閑運動指南！";
+"new_onboarding_step5.2_message" = "訂閱MAPS.ME指南目錄超級划算。獲得所有指南目錄功能的完整訪問權限";
 
 "new_onboarding_step5.2_button" = "查看條件";
 
-"new_onboarding_step5.3_message" = "下載或評論帶有 MAPS.ME免費編錄的市內旅行和休閑運動的線路！";
+"new_onboarding_step5.3_message" = "查看預製的離線城市和戶外路線示例";
 
 "new_onboarding_step5.3_button" = "免費下載";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "感謝訂閱！";
 
-"subscription_success_dialog_message_sightseeing_pass" = "現在你可使用目錄中的全部城市指南";
+"subscription_success_dialog_message_sightseeing_pass" = "您現在可無限制訪問所有指南目錄功能";
 
 "downloader_main_gallery_header" = "地圖與指南";
 

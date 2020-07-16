@@ -1698,9 +1698,9 @@
 	<string name="new_onboarding_step5.1_header">始める前にもう1点…</string>
 	<string name="new_onboarding_step5.1_message">今後の旅のオフラインのガイドを見つけるために新しいガイドのカタログを見る事をお忘れなく！</string>
 	<string name="new_onboarding_step5.1_button">カタログを開く</string>
-	<string name="new_onboarding_step5.2_message">MAPS.MEのガイドのカタログにサブスクライブすれば多くの利点があります。世界中の都市や戸外のガイドの全てにアクセスする事ができます！</string>
+	<string name="new_onboarding_step5.2_message">割引中のMAPS.MEのガイドのカタログにサブスクライブしましょう。ガイドのカタログの全機能へのフルアクセスをゲット</string>
 	<string name="new_onboarding_step5.2_button">規約をご確認ください</string>
-	<string name="new_onboarding_step5.3_message">MAPS.MEの無料セレクションでレディメイドな都市と戸外のルートのサンプルをご覧ください！</string>
+	<string name="new_onboarding_step5.3_message">オフラインで利用できるレディーメイドな都市とアウトドアのルート</string>
 	<string name="new_onboarding_step5.3_button">無料ダウンロード</string>
 	<string name="new_onboarding_additional_steps_later_button">後で</string>
 	<string name="all_pass_subscription_header">カタログにサブスクライブ</string>
@@ -1721,7 +1721,7 @@
 	<string name="sightseeing_subscription_message_2">オフラインで利用可能</string>
 	<string name="sightseeing_subscription_message_3">写真と歩行経路</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">ご登録ありがとうございます！</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">これでカタログ内の全ての観光ガイドにアクセスできるようになりました</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">これで全てのガイドのカタログの機能に無制限でアクセスできるようになりました</string>
 	<string name="downloader_main_gallery_header">マップとガイド</string>
 	<string name="downloader_main_gallery_message">このセクションではマップをダウンロードできるだけでなく、今後の旅のためのガイドをチェックする事もできます</string>
 	<string name="downloader_main_1_element_gallery_header">全てのガイド</string>

@@ -1764,9 +1764,9 @@
 	<string name="new_onboarding_step5.1_header">One more thing before you start…</string>
 	<string name="new_onboarding_step5.1_message">Don\'t forget to visit our brand new guides catalog to find an offline guide for your upcoming journey!</string>
 	<string name="new_onboarding_step5.1_button">Open catalog</string>
-	<string name="new_onboarding_step5.2_message">Subscription to MAPS.ME guides catalog is a bargain. Get full access to city and outdoor guides around the world!</string>
+	<string name="new_onboarding_step5.2_message">Subscribing to the MAPS.ME guides catalog is a bargain. Get full access to all guides catalog features</string>
 	<string name="new_onboarding_step5.2_button">Check out the terms</string>
-	<string name="new_onboarding_step5.3_message">Check out free samples of ready-made city and outdoor routes with a free selection of MAPS.ME!</string>
+	<string name="new_onboarding_step5.3_message">Check out samples of ready-made offline city and outdoor routes</string>
 	<string name="new_onboarding_step5.3_button">Free download</string>
 	<string name="new_onboarding_additional_steps_later_button">Later</string>
 	<string name="all_pass_subscription_header">SUBSCRIPTION TO CATALOG</string>
@@ -1791,7 +1791,7 @@
 	<string name="sightseeing_subscription_message_2">Available offline</string>
 	<string name="sightseeing_subscription_message_3">Photos and walking tracks</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Thanks for subscribing!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Now you have access to all sightseeing guides in the catalog</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">You now have unlimited access to all guides catalog features</string>
 	<string name="downloader_main_gallery_header">Maps &amp; guides</string>
 	<string name="downloader_main_gallery_message">From now on in this section you can not only download maps, but also check out guides for your upcoming journey</string>
 	<string name="downloader_main_1_element_gallery_header">All guides</string>
