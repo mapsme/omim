@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Åbent katalog";
 
-"new_onboarding_step5.2_message" = "Abonnement til MAPS.ME guidekataloget har stor værdi. Få fuld adgang til byen og udendørs guides rundt om i verden!";
+"new_onboarding_step5.2_message" = "Et abonnement på MAPS.ME guidekatalog er et godt køb. Få fuld adgang til alle funktioner i guidekataloget";
 
 "new_onboarding_step5.2_button" = "Check betingelserne ud";
 
-"new_onboarding_step5.3_message" = "Check de gratis prøver på færdige by- og udendørsruter med et gratis udvalg af MAPS.ME!";
+"new_onboarding_step5.3_message" = "Se smagsprøver på færdiglavede offline by- og udendørsruter";
 
 "new_onboarding_step5.3_button" = "Gratis download";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Tak for din tilmelding!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Nu har du adgang til alle sightseeing-guides i kataloget";
+"subscription_success_dialog_message_sightseeing_pass" = "Du har nu ubegrænset adgang til alle funktioner i guidekataloget";
 
 "downloader_main_gallery_header" = "Kort & kort";
 

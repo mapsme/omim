@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "کاتالوگ را باز کنید";
 
-"new_onboarding_step5.2_message" = "اشتراک در کاتالوگ راهنمای MAPS.ME بسیار با ارزش است. به راهنمای شهرها و فضای باز سراسر جهان دسترسی مییابید!";
+"new_onboarding_step5.2_message" = "با پرداخت مبلغی اندک، حق اشتراک کاتالوگ راهنمای MAPS.ME را دریافت کنید به همۀ ویژگیهای موجود در کاتالوگ راهنما، دسترسی کامل پیدا کنید";
 
 "new_onboarding_step5.2_button" = "شرایط را چک کنید";
 
-"new_onboarding_step5.3_message" = "با گزینش رایگان MAPS.ME نمونههای رایگان مسیرهای آماده شهرها و فضاهای باز را چک کنید!";
+"new_onboarding_step5.3_message" = "نمونههایی از مسیرهای درون و برونشهری آماده و آفلاین را مشاهده کنید";
 
 "new_onboarding_step5.3_button" = "دانلود رایگان";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "با تشکر از اشتراک شما!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "حال به تمامی اطلاعات راهنمای گردشگری موجود در کاتالوگ دسترسی دار";
+"subscription_success_dialog_message_sightseeing_pass" = "شما الان به همۀ امکانات کاتالوگ راهنما دسترسی نامحدود دارید";
 
 "downloader_main_gallery_header" = "نقشه‎ها و راهنماها";
 

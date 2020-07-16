@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Open catalog";
 
-"new_onboarding_step5.2_message" = "Subscription to MAPS.ME guides catalog is a bargain. Get full access to city and outdoor guides around the world!";
+"new_onboarding_step5.2_message" = "Subscribing to the MAPS.ME guides catalog is a bargain. Get full access to all guides catalog features";
 
 "new_onboarding_step5.2_button" = "Check out the terms";
 
-"new_onboarding_step5.3_message" = "Check out free samples of ready-made city and outdoor routes with a free selection of MAPS.ME!";
+"new_onboarding_step5.3_message" = "Check out samples of ready-made offline city and outdoor routes";
 
 "new_onboarding_step5.3_button" = "Free download";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Thanks for subscribing!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Now you have access to all sightseeing guides in the catalog";
+"subscription_success_dialog_message_sightseeing_pass" = "You now have unlimited access to all guides catalog features";
 
 "downloader_main_gallery_header" = "Maps & guides";
 

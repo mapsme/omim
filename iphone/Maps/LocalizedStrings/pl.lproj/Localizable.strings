@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Otwórz katalog";
 
-"new_onboarding_step5.2_message" = "Subskrypcja katalogu przewodników w MAPS.ME – to opłacalne. Uzyskaj pełny dostęp do przewodników do zwiedzania i aktywnego wypoczynku poza miastem!";
+"new_onboarding_step5.2_message" = "Subskrypcja katalogu przewodników turystycznych w MAPS.ME – to opłacalne. Uzyskaj pełny dostęp do wszystkich funkcji katalogu przewodników";
 
 "new_onboarding_step5.2_button" = "Sprawdź warunki";
 
-"new_onboarding_step5.3_message" = "Pobierz i oceń trasy do zwiedzania i aktywnego wypoczynku poza miastem z bezpłatnym doborem MAPS.ME!";
+"new_onboarding_step5.3_message" = "Pobierz i oceń trasy offline dla miejskich spacerów i odpoczynku aktywnego";
 
 "new_onboarding_step5.3_button" = "Darmowe pobieranie";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Dziękujemy za subskrypcję!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Teraz masz dostęp do wszystkich przewodników miejskich w katalogu";
+"subscription_success_dialog_message_sightseeing_pass" = "Teraz masz nieograniczony dostęp do wszystkich funkcji katalogu przewodników";
 
 "downloader_main_gallery_header" = "Mapy i przewodniki";
 

@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Öppna katalog";
 
-"new_onboarding_step5.2_message" = "Prenumeration på katalogen över guider i MAPS.ME är lönsamt. Få full tillgång till guider för stadspromenader och utomhusaktiviteter!";
+"new_onboarding_step5.2_message" = "Prenumeration på guidebok katalogen i MAPS.ME – det är lönsamt. Få full tillgång till alla möjligheter i guidebok katalogen";
 
 "new_onboarding_step5.2_button" = "Kolla villkoren";
 
-"new_onboarding_step5.3_message" = "Ladda ner och betygsätt rutter för stadspromenader och utomhusaktiviteter med ett gratis urval av MAPS.ME!";
+"new_onboarding_step5.3_message" = "Ladda ner och utvärdera offline-rutter för stadspromenader och utomhusaktiviteter";
 
 "new_onboarding_step5.3_button" = "Ladda ner gratis";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Tack för att du prenumererar!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Nu har du tillgång till alla stadsguider i katalogen";
+"subscription_success_dialog_message_sightseeing_pass" = "Nu har du obegränsad tillgång till alla möjligheter i guidebok katalogen";
 
 "downloader_main_gallery_header" = "Kartor och guider";
 

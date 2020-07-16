@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Ouvrir le catalogue";
 
-"new_onboarding_step5.2_message" = "L'abonnement au catalogue des guides dans MAPS.ME est avantageux. Obtenez un accès complet aux guides pour les promenades en ville et les activités de plein air !";
+"new_onboarding_step5.2_message" = "S'abonner au catalogue des guides dans l'application MAPS.ME, c'est intéressant. Choisissez un accès complet à toutes les fonctionnalités du catalogue des guides";
 
 "new_onboarding_step5.2_button" = "Voir les conditions";
 
-"new_onboarding_step5.3_message" = "Téléchargez et notez les itinéraires de promenades en ville et les activités de plein air grâce à une sélection gratuite de MAPS.ME !";
+"new_onboarding_step5.3_message" = "Téléchargez et profitez les itinéraires hors ligne pour des balades en ville et des activités en plein air";
 
 "new_onboarding_step5.3_button" = "Télécharger gratuitement";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Merci pour votre inscription !";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Désormais vous avez accès à tous les guides touristiques des villes du catalogue";
+"subscription_success_dialog_message_sightseeing_pass" = "Maintenant vous avez l'accès illimité à toutes les fonctionnalités du catalogue";
 
 "downloader_main_gallery_header" = "Cartes et guides";
 

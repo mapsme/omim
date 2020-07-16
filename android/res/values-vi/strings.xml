@@ -1695,9 +1695,9 @@
 	<string name="new_onboarding_step5.1_header">Trước khi bắt đầu…</string>
 	<string name="new_onboarding_step5.1_message">Đừng quên truy cập danh mục tuyến đường mới của chúng tôi để tìm hướng dẫn ngoại tuyến cho chuyến đi tiếp theo của bạn!</string>
 	<string name="new_onboarding_step5.1_button">Mở danh sách</string>
-	<string name="new_onboarding_step5.2_message">Việc đăng ký vào thư mục hướng dẫn trong MAPS.ME là một điều có lợi. Người đăng ký nhận được quyền truy cập đầy đủ tới những hướng dẫn cho các chuyến đi ở các thành phố và các hoạt động ngoài trời!</string>
+	<string name="new_onboarding_step5.2_message">Đăng ký mua danh sách hướng dẫn trên MAPS.ME - Đó là một cách có lợi. Bạn sẽ nhận được quyền truy cập đầy đủ, trọn vẹn vào tất cả các tính năng của danh mục sách hướng dẫn</string>
 	<string name="new_onboarding_step5.2_button">Xem các điều khoản</string>
-	<string name="new_onboarding_step5.3_message">Tải xuống và đánh giá các tuyến đường cho các chuyến đi trong thành phố và các hoạt động ngoài trời với lựa chọn MAPS.ME miễn phí!</string>
+	<string name="new_onboarding_step5.3_message">Tải xuống và đánh giá ngoại tuyến các tuyến đường cho các chuyến dã ngoại trong thành phố và hoạt động ngoài trời</string>
 	<string name="new_onboarding_step5.3_button">Tải miễn phí</string>
 	<string name="new_onboarding_additional_steps_later_button">Không phải bây giờ</string>
 	<string name="all_pass_subscription_header">ĐĂNG KÝ DANH SÁCH</string>
@@ -1718,7 +1718,7 @@
 	<string name="sightseeing_subscription_message_2">Truy cập ngoại tuyến</string>
 	<string name="sightseeing_subscription_message_3">Ảnh và lối qua đường</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Cảm ơn vì đã đăng ký!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Giờ thì bạn có thể truy cập vào tất cả hướng dẫn của các thành phố trong danh sách</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">Bây giờ bạn có thể truy cập không giới hạn vào tất cả các tính năng của danh mục hướng dẫn</string>
 	<string name="downloader_main_gallery_header">Bản đồ và hướng dẫn</string>
 	<string name="downloader_main_gallery_message">Bây giờ, trong mục này ngoài việc tải bản đồ xuống, bạn còn có thể lựa chọn các hướng dẫn cho những chuyến đi sắp tới</string>
 	<string name="downloader_main_1_element_gallery_header">Tất cả các hướng dẫn</string>

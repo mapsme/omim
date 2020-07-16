@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Åpne katalogen";
 
-"new_onboarding_step5.2_message" = "Det er rimelig å abonnere på guidekatalogen på MAPS.ME. Få deg full tilgang til byturguider og friluftslivsguider!";
+"new_onboarding_step5.2_message" = "Det er fordelaktig å abonnere på guider-katalogen på MAPS.ME. Få full tilgang til alle funksjonene i guider-katalogen";
 
 "new_onboarding_step5.2_button" = "Sjekke vilkår";
 
-"new_onboarding_step5.3_message" = "Last ned og sjekk ut ruter for byturer og friluftsliv med gratis MAPS.ME utvalg!";
+"new_onboarding_step5.3_message" = "Last ned og evaluer ruter for byturer og friluftsliv uten nett";
 
 "new_onboarding_step5.3_button" = "Laste ned gratis";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Takk for at du abonnerte!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Nå har du tilgang til alle byguider i katalogen";
+"subscription_success_dialog_message_sightseeing_pass" = "Nå har du ubegrenset tilgang til alle funksjonene i guider-katalogen";
 
 "downloader_main_gallery_header" = "Kart og guider";
 

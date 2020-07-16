@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "เปิดแคตตาล็อก";
 
-"new_onboarding_step5.2_message" = "สมัครสมาชิกไกด์แคตตาล็อกของ MAPS.ME นั้นคุ้มค่าอย่างยิ่ง ด้วยการเข้าถึงเมืองใหญ่ๆ และเส้นทางเอาท์ดอร์รอบโลก!";
+"new_onboarding_step5.2_message" = "การสมัครสมาชิกไกด์แคตตาล็อกของ MAPS.ME นั้นมีค่าใช้จ่ายถูก เพื่อเข้าถึงฟีเจอร์ไกด์แคตตาล็อกทั้งหมด";
 
 "new_onboarding_step5.2_button" = "เช็คเงื่อนไขการใช้งาน";
 
-"new_onboarding_step5.3_message" = "เช็คตัวอย่างของเส้นทางที่ถูกวางไว้แล้วของเมืองใหญ่ๆ และพื้นที่กลางแจ้ง ด้วยการเลือกสรรให้ฟรีๆ ของ MAPS.ME!";
+"new_onboarding_step5.3_message" = "เช็กตัวอย่างคู่มือใช้งานที่พร้อมใช้แบบออฟไลน์ และเส้นทางในกิจกรรมกลางแจ้ง";
 
 "new_onboarding_step5.3_button" = "ดาวน์โหลดฟรี";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "ขอบคุณที่สมัครใช้งานกับเรา!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "ตอนนี้คุณเข้าถึงคู่มือใช้งานในการเที่ยวชมในแคตตาล็อกได้แล้ว";
+"subscription_success_dialog_message_sightseeing_pass" = "ตอนนี้ตุณเข้าถึงไกด์แคตตาล็อกได้ไม่จำกัดฟีเจอร์";
 
 "downloader_main_gallery_header" = "แผนที่และคู่มือใช้งาน";
 

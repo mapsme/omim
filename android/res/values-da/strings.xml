@@ -1709,9 +1709,9 @@
 	<string name="new_onboarding_step5.1_header">En ting mere før du starter…</string>
 	<string name="new_onboarding_step5.1_message">Glem ikke at besøge vores helt nye guidekatalog for at en finde en offline guide til din kommende rejse!</string>
 	<string name="new_onboarding_step5.1_button">Åbent katalog</string>
-	<string name="new_onboarding_step5.2_message">Abonnement til MAPS.ME guidekataloget har stor værdi. Få fuld adgang til byen og udendørs guides rundt om i verden!</string>
+	<string name="new_onboarding_step5.2_message">Et abonnement på MAPS.ME guidekatalog er et godt køb. Få fuld adgang til alle funktioner i guidekataloget</string>
 	<string name="new_onboarding_step5.2_button">Check betingelserne ud</string>
-	<string name="new_onboarding_step5.3_message">Check de gratis prøver på færdige by- og udendørsruter med et gratis udvalg af MAPS.ME!</string>
+	<string name="new_onboarding_step5.3_message">Se smagsprøver på færdiglavede offline by- og udendørsruter</string>
 	<string name="new_onboarding_step5.3_button">Gratis download</string>
 	<string name="new_onboarding_additional_steps_later_button">Senere</string>
 	<string name="all_pass_subscription_header">ABONNEMENT TIL KATALOG</string>
@@ -1732,7 +1732,7 @@
 	<string name="sightseeing_subscription_message_2">Tilgængeligt offline</string>
 	<string name="sightseeing_subscription_message_3">Fotos og gåture</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Tak for din tilmelding!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Nu har du adgang til alle sightseeing-guides i kataloget</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">Du har nu ubegrænset adgang til alle funktioner i guidekataloget</string>
 	<string name="downloader_main_gallery_header">Kort &amp; kort</string>
 	<string name="downloader_main_gallery_message">I denne sektion kan du ikke kun downloade kort, men også checke guides ud til din kommen rejse</string>
 	<string name="downloader_main_1_element_gallery_header">Alle guides</string>
