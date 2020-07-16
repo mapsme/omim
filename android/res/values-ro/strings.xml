@@ -1695,9 +1695,9 @@
 	<string name="new_onboarding_step5.1_header">Înainte de a începe…</string>
 	<string name="new_onboarding_step5.1_message">Nu uita să vizitezi noul nostru director de rute pentru a găsi un ghid offline pentru următoarea călătorie!</string>
 	<string name="new_onboarding_step5.1_button">Deschide directorul</string>
-	<string name="new_onboarding_step5.2_message">Abonarea la directorul ghidurilor din MAPS.ME este profitabilă. Obțineți acces complet la ghiduri pentru plimbări prin oraș și alte activități!</string>
+	<string name="new_onboarding_step5.2_message">Abonarea la catalogul ghidurilor de călătorie în MAPS.ME – e profitabil. Obțineți acces complet la toate capabilitățile catalogului ghidurilor</string>
 	<string name="new_onboarding_step5.2_button">Vezi termenii</string>
-	<string name="new_onboarding_step5.3_message">Descărcați și evaluați rutele pentru plimbări prin oraș și activități în aer liber, cu o selecție gratuită din MAPS.ME!</string>
+	<string name="new_onboarding_step5.3_message">Descărcați și evaluați rutele offline pentru plimbări prin oraș și activități în aer liber</string>
 	<string name="new_onboarding_step5.3_button">Descarcă gratuit</string>
 	<string name="new_onboarding_additional_steps_later_button">Nu acum</string>
 	<string name="all_pass_subscription_header">ABONAREA LA CATALOG</string>
@@ -1718,7 +1718,7 @@
 	<string name="sightseeing_subscription_message_2">Disponibile offline</string>
 	<string name="sightseeing_subscription_message_3">Foto și trasee de mers pe jos</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Mulțumim pentru abonament!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Acum aveți acces la toate ghidurile orașului din catalog</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">Acum aveți acces nelimitat la toate capabilitățile catalogului de ghiduri</string>
 	<string name="downloader_main_gallery_header">Hărți și ghiduri</string>
 	<string name="downloader_main_gallery_message">Acum, în această secțiune, puteți descărca nu doar numai hărți, dar puteți alege și ghiduri pentru următoarele călătorii</string>
 	<string name="downloader_main_1_element_gallery_header">Toate ghidurile</string>

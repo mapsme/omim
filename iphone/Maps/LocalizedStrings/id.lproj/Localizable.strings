@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Buka katalog";
 
-"new_onboarding_step5.2_message" = "Berlangganan katalog panduan MAPS.ME sangatlah menguntungkan. Dapatkan akses lengkap ke berbagai kota dan panduan perjalanan di seluruh dunia!";
+"new_onboarding_step5.2_message" = "Berlangganan katalog panduan MAPS.ME sangat murah. Dapatkan akses penuh ke semua fitur katalog panduan";
 
 "new_onboarding_step5.2_button" = "Lihat ketentuannya";
 
-"new_onboarding_step5.3_message" = "Lihatlah contoh rute perjalanan dan kota secara gratis dengan berbagai macam pilihan dari MAPS.ME!";
+"new_onboarding_step5.3_message" = "Lihat contoh kota offline dan rute luar ruang yang sudah jadi";
 
 "new_onboarding_step5.3_button" = "Download Gratis";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Terima kasih telah berlangganan!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Kini Anda telah memiliki akses ke katalog panduan perjalanan";
+"subscription_success_dialog_message_sightseeing_pass" = "Anda sekarang memiliki akses tak terbatas ke semua fitur katalog panduan";
 
 "downloader_main_gallery_header" = "Peta & panduan";
 

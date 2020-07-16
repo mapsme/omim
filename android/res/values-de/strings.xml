@@ -1713,9 +1713,9 @@
 	<string name="new_onboarding_step5.1_header">Vor dem Start…</string>
 	<string name="new_onboarding_step5.1_message">Vergessen Sie nicht in den neuen Routenkatalog hineinzuschauen, um den Offline-Guide für die nächste Reise zu finden!</string>
 	<string name="new_onboarding_step5.1_button">Katalog öffnen</string>
-	<string name="new_onboarding_step5.2_message">Reiseführer-Katalog-Subskription in MAPS.ME: das ist günstig. Sie bekommen einen uneingeschränkten Zugriff auf alle Reiseführer für Spaziergänge durch die Stadt und aktive Erholung!</string>
+	<string name="new_onboarding_step5.2_message">Es ist günstig das Reiseführerkatalog in MAPS.ME zu abonnieren. Sie bekommen einen uneingeschränkten Zugriff auf alle Möglichkeiten des Reiseführerkatalogs</string>
 	<string name="new_onboarding_step5.2_button">Bedingungen ansehen</string>
-	<string name="new_onboarding_step5.3_message">Lade herunter und bewerte Routen für Spaziergänge durch die Stadt und aktive Erholung mit der gratis Sammlung von MAPS.ME!</string>
+	<string name="new_onboarding_step5.3_message">Laden Sie herunter und probieren Sie die Offline-Routen für Stadtspaziergänge und Aktivurlaub aus</string>
 	<string name="new_onboarding_step5.3_button">Download Gratis</string>
 	<string name="new_onboarding_additional_steps_later_button">Später</string>
 	<string name="all_pass_subscription_header">KATALOGSUBSKRIPTION</string>
@@ -1736,7 +1736,7 @@
 	<string name="sightseeing_subscription_message_2">Offline verfügbar</string>
 	<string name="sightseeing_subscription_message_3">Fotos und Wanderwege</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Vielen Dank für Ihre Subskription!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Jetzt haben Sie einen Zugriff auf alle Stadtreiseführer im Katalog</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">Nun haben Sie einen uneingeschränkten Zugriff auf alle Möglichkeiten des Reiseführerkatalogs</string>
 	<string name="downloader_main_gallery_header">Karten und Reiseführer</string>
 	<string name="downloader_main_gallery_message">Nun können Sie in dieser Rubrik nicht nur Karten herunterladen, sondern auch Reiseführer für die nächsten Reisen auswählen</string>
 	<string name="downloader_main_1_element_gallery_header">Alle Reiseführer</string>

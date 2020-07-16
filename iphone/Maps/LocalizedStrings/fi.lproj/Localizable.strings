@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Avaa luettelo";
 
-"new_onboarding_step5.2_message" = "MAPS.ME:ssä matkaopasluettelon tilaaminen on kannattavaa. Saat täyden pääsyn matkaoppaisiin kaupungin kävelyretkiä ja ulkoilua varten!";
+"new_onboarding_step5.2_message" = "MAPS.ME -matkaoppaiden tilaus on löytöostos. Käytä täydet käyttöoikeudet matkaoppaiden kokoelman kaikkiin mahdollisuuksiin";
 
 "new_onboarding_step5.2_button" = "Näytä ehdot";
 
-"new_onboarding_step5.3_message" = "Lataa ja arvioi kaupunkikierroksia ja ulkoiluaktiviteetteja ilmaisella MAPS.ME-valinnalla!";
+"new_onboarding_step5.3_message" = "Lataa ja arvostele valmiit verkon ulkopuoliset kaupunki- ja ulkoilureitit";
 
 "new_onboarding_step5.3_button" = "Lataa ilmaiseksi";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Kiitos tilauksesta!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Nyt teillä on pääsy kaikkiin luettelossa oleviin kaupunkioppaisiin";
+"subscription_success_dialog_message_sightseeing_pass" = "Nyt sinulla on vapaa pääsy matkaoppaiden luettelon kaikkiin mahdollisuuksiin";
 
 "downloader_main_gallery_header" = "Kartat ja matkaoppaat";
 

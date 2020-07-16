@@ -1709,9 +1709,9 @@
 	<string name="new_onboarding_step5.1_header">Antes de começar…</string>
 	<string name="new_onboarding_step5.1_message">Não se esqueça de visitar nosso novo catálogo de percursos para encontrar um guia offline para sua próxima viagem!</string>
 	<string name="new_onboarding_step5.1_button">Abrir o catálogo</string>
-	<string name="new_onboarding_step5.2_message">Subscrição para catálogo de guias no MAPS.ME é vantajoso. Obtenha acesso ilimitado a guias para passeios pela cidade e recreação!</string>
+	<string name="new_onboarding_step5.2_message">Subscrição para catálogo de guias no MAPS.ME é vantajoso. Obtenha acesso ilimitado aos todos os recursos do catálogo de guias</string>
 	<string name="new_onboarding_step5.2_button">Ver os termos</string>
-	<string name="new_onboarding_step5.3_message">Faça o download e avalie percursos para passeios pela cidade e recreação com uma seleção gratuita do MAPS.ME!</string>
+	<string name="new_onboarding_step5.3_message">Faça download e avalie as guias offline para passeios urbanos e férias ativas</string>
 	<string name="new_onboarding_step5.3_button">Download grátis</string>
 	<string name="new_onboarding_additional_steps_later_button">Agora não</string>
 	<string name="all_pass_subscription_header">SUBSCRIÇÃO PARA CATÁLOGO</string>
@@ -1732,7 +1732,7 @@
 	<string name="sightseeing_subscription_message_2">Disponíveis off-line</string>
 	<string name="sightseeing_subscription_message_3">Fotos e faixas pedestres</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Obrigado por subscrever!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Agora tem acesso a todos os guias de cidades do catálogo</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">Agora tem acesso ilimitado aos todos recursos do catálogo de guias</string>
 	<string name="downloader_main_gallery_header">Mapas e guias</string>
 	<string name="downloader_main_gallery_message">Agora, nesta seção, além de baixar mapas também pode escolher guias para suas próximas viagens</string>
 	<string name="downloader_main_1_element_gallery_header">Todas as guias</string>

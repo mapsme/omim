@@ -1645,9 +1645,9 @@
 	<string name="new_onboarding_step5.1_header">نکتهای دیگر قبل از شروع…</string>
 	<string name="new_onboarding_step5.1_message">فراموش نکنید کاتالوگ راهنمای جدید و برند ما را ملاحظه کنید تا برای سفر آتی خود راهنمای آفلاین پیدا کنید!</string>
 	<string name="new_onboarding_step5.1_button">کاتالوگ را باز کنید</string>
-	<string name="new_onboarding_step5.2_message">اشتراک در کاتالوگ راهنمای MAPS.ME بسیار با ارزش است. به راهنمای شهرها و فضای باز سراسر جهان دسترسی مییابید!</string>
+	<string name="new_onboarding_step5.2_message">با پرداخت مبلغی اندک، حق اشتراک کاتالوگ راهنمای MAPS.ME را دریافت کنید به همۀ ویژگیهای موجود در کاتالوگ راهنما، دسترسی کامل پیدا کنید</string>
 	<string name="new_onboarding_step5.2_button">شرایط را چک کنید</string>
-	<string name="new_onboarding_step5.3_message">با گزینش رایگان MAPS.ME نمونههای رایگان مسیرهای آماده شهرها و فضاهای باز را چک کنید!</string>
+	<string name="new_onboarding_step5.3_message">نمونههایی از مسیرهای درون و برونشهری آماده و آفلاین را مشاهده کنید</string>
 	<string name="new_onboarding_step5.3_button">دانلود رایگان</string>
 	<string name="new_onboarding_additional_steps_later_button">بعداً</string>
 	<string name="all_pass_subscription_header">اشتراک کاتالوگ</string>
@@ -1668,7 +1668,7 @@
 	<string name="sightseeing_subscription_message_2">دسترسی آفلاین</string>
 	<string name="sightseeing_subscription_message_3">تصاویر و مسیرهای پیاده‎روی</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">با تشکر از اشتراک شما!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">حال به تمامی اطلاعات راهنمای گردشگری موجود در کاتالوگ دسترسی دار</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">شما الان به همۀ امکانات کاتالوگ راهنما دسترسی نامحدود دارید</string>
 	<string name="downloader_main_gallery_header">نقشه‎ها و راهنماها</string>
 	<string name="downloader_main_gallery_message">حال در این بخش نه تنها قادر به دانلود نقشهها خواهید بود، بلکه همچنین میتوانید راهنماها را برای سفر آتی خود چک کنید</string>
 	<string name="downloader_main_1_element_gallery_header">تمامی راهنماها</string>

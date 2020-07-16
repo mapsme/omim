@@ -1711,9 +1711,9 @@
 	<string name="new_onboarding_step5.1_header">Перш ніж почати…</string>
 	<string name="new_onboarding_step5.1_message">Не забудьте відвідати наш новий каталог путівників, щоб знайти офлайновий гід до найближчої поїздки!</string>
 	<string name="new_onboarding_step5.1_button">Відкрити каталог</string>
-	<string name="new_onboarding_step5.2_message">Передплата каталогу путівників у MAPS.ME – це вигідно. Отримайте повний доступ до путівників для прогулянок містом і активного відпочинку!</string>
+	<string name="new_onboarding_step5.2_message">Передплата каталогу путівників у MAPS.ME – це вигідно. Отримайте повний доступ до всіх можливостей каталогу путівників</string>
 	<string name="new_onboarding_step5.2_button">Переглянути умови</string>
-	<string name="new_onboarding_step5.3_message">Завантажте й оцініть маршрути для прогулянок містом і активного відпочинку з безкоштовною підбіркою MAPS.ME!</string>
+	<string name="new_onboarding_step5.3_message">Завантажте та оцініть офлайн маршрути для міських прогулянок і активного відпочинку</string>
 	<string name="new_onboarding_step5.3_button">Завантажити безкоштовно</string>
 	<string name="new_onboarding_additional_steps_later_button">Не зараз</string>
 	<string name="all_pass_subscription_header">ПЕРЕДПЛАТА КАТАЛОГУ</string>
@@ -1734,7 +1734,7 @@
 	<string name="sightseeing_subscription_message_2">Доступні онлайн</string>
 	<string name="sightseeing_subscription_message_3">Фото та піші треки</string>
 	<string name="subscription_success_dialog_title_sightseeing_pass">Дякуємо за передплату!</string>
-	<string name="subscription_success_dialog_message_sightseeing_pass">Тепер у вас є доступ до всіх путівників містами в каталозі</string>
+	<string name="subscription_success_dialog_message_sightseeing_pass">Тепер у вас необмежений доступ до всіх можливостей каталогу путівників</string>
 	<string name="downloader_main_gallery_header">Карти та путівники</string>
 	<string name="downloader_main_gallery_message">Тепер у цьому розділі ви можете не лише завантажити карти, а й вибрати путівники для найближчих подорожей</string>
 	<string name="downloader_main_1_element_gallery_header">Усі путівники</string>

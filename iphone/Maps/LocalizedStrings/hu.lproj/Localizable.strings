@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Katalógus megnyitása";
 
-"new_onboarding_step5.2_message" = "Az útmutató katalógusra MAPS.ME való előfizetés kiváló választás. Szerezz hozzáférést a városi és szabadtéri útmutatókhoz világszerte!";
+"new_onboarding_step5.2_message" = "A MAPS.ME útmutatók katalógusára való feliratkozás jó vétel. Szerezzen teljes hozzáférést az összes útmutató katalógus funkcióhoz";
 
 "new_onboarding_step5.2_button" = "Nézd meg a feltételeinket";
 
-"new_onboarding_step5.3_message" = "Nézd meg a szabadon válaztható városi és szabadtéri túrák ingyenes példáit a MAPS.ME-ről!";
+"new_onboarding_step5.3_message" = "Nézze meg a kész offline városi és szabadtéri útvonal mintákat";
 
 "new_onboarding_step5.3_button" = "Ingyenes letöltés";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Köszönjük előfizetését!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Így minden városnéző útmutatóhoz hozzáférsz a katalógusból";
+"subscription_success_dialog_message_sightseeing_pass" = "Most korlátlan hozzáféréssel az összes útmutató katalógus szolgáltatáshoz";
 
 "downloader_main_gallery_header" = "Térképek és útmutatók";
 

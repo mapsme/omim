@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Catalogus openen";
 
-"new_onboarding_step5.2_message" = "Een abonnement op MAPS.ME's catalogus van handleidingen is gunstig. Krijg volledige toegang tot de handleidingen voor stadswandelingen en buitenactiviteiten!";
+"new_onboarding_step5.2_message" = "Een abonnement nemen op de gidsencatalogus van MAPS.ME is een koopje. Krijg volledige toegang tot alle functies van de gidsencatalogus";
 
 "new_onboarding_step5.2_button" = "Bekijk de voorwaarden";
 
-"new_onboarding_step5.3_message" = "Bekijk gratis voorbeelden van kant-en-klare stads- en buitenroutes met een gratis selectie van MAPS.ME!";
+"new_onboarding_step5.3_message" = "Bekijk voorbeelden van kant-en-klare offline stads- en buitenroutes";
 
 "new_onboarding_step5.3_button" = "Gratis downloaden";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Bedankt voor uw inschrijving!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Nu heeft u toegang tot alle gidsen voor sightseeing in de catalogus";
+"subscription_success_dialog_message_sightseeing_pass" = "U hebt nu onbeperkt toegang tot alle functies van de gidsencatalogus";
 
 "downloader_main_gallery_header" = "Kaarten en handleidingen";
 

@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Открыть каталог";
 
-"new_onboarding_step5.2_message" = "Подписка на каталог путеводителей в MAPS.ME – это выгодно. Получите полный доступ к путеводителям для городских прогулок и активного отдыха!";
+"new_onboarding_step5.2_message" = "Подписка на каталог путеводителей в MAPS.ME – это выгодно. Получите полный доступ ко всем возможностям каталога путеводителей";
 
 "new_onboarding_step5.2_button" = "Посмотреть условия";
 
-"new_onboarding_step5.3_message" = "Скачайте и оцените маршруты для городских прогулок и активного отдыха с бесплатной подборкой MAPS.ME!";
+"new_onboarding_step5.3_message" = "Скачайте и оцените офлайн маршруты для городских прогулок и активного отдыха";
 
 "new_onboarding_step5.3_button" = "Скачать бесплатно";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Спасибо за подписку!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Теперь у вас есть доступ ко всем городским путеводителям в каталоге";
+"subscription_success_dialog_message_sightseeing_pass" = "Теперь у вас неограниченный доступ ко всем возможностям каталога путеводителей";
 
 "downloader_main_gallery_header" = "Карты и путеводители";
 

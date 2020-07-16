@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Abrir catálogo";
 
-"new_onboarding_step5.2_message" = "Suscribirse al directorio de guías en MAPS.ME es rentable. ¡Obtén acceso completo a guías de paseos por la ciudad y a actividades al aire libre!";
+"new_onboarding_step5.2_message" = "Suscribirse al directorio de guías en MAPS.ME es rentable. Obtén acceso completo a todas las funciones del catálogo de guías";
 
 "new_onboarding_step5.2_button" = "Mira los términos";
 
-"new_onboarding_step5.3_message" = "¡Descarga y califica las rutas para paseos por la ciudad y actividades al aire libre con una selección gratuita de MAPS.ME!";
+"new_onboarding_step5.3_message" = "Descarga y evalúa las rutas sin conexión para paseos urbanos y actividades al aire libre";
 
 "new_onboarding_step5.3_button" = "Descarga gratis";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "¡Gracias por suscribirte!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Ahora tienes acceso a todas las guías de ciudades del catálogo";
+"subscription_success_dialog_message_sightseeing_pass" = "Ahora tienes acceso ilimitado a todas las funciones del catálogo de guías";
 
 "downloader_main_gallery_header" = "Mapas y guías";
 

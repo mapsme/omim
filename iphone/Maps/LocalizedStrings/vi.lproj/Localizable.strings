@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Mở danh sách";
 
-"new_onboarding_step5.2_message" = "Việc đăng ký vào thư mục hướng dẫn trong MAPS.ME là một điều có lợi. Người đăng ký nhận được quyền truy cập đầy đủ tới những hướng dẫn cho các chuyến đi ở các thành phố và các hoạt động ngoài trời!";
+"new_onboarding_step5.2_message" = "Đăng ký mua danh sách hướng dẫn trên MAPS.ME - Đó là một cách có lợi. Bạn sẽ nhận được quyền truy cập đầy đủ, trọn vẹn vào tất cả các tính năng của danh mục sách hướng dẫn";
 
 "new_onboarding_step5.2_button" = "Xem các điều khoản";
 
-"new_onboarding_step5.3_message" = "Tải xuống và đánh giá các tuyến đường cho các chuyến đi trong thành phố và các hoạt động ngoài trời với lựa chọn MAPS.ME miễn phí!";
+"new_onboarding_step5.3_message" = "Tải xuống và đánh giá ngoại tuyến các tuyến đường cho các chuyến dã ngoại trong thành phố và hoạt động ngoài trời";
 
 "new_onboarding_step5.3_button" = "Tải miễn phí";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Cảm ơn vì đã đăng ký!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Giờ thì bạn có thể truy cập vào tất cả hướng dẫn của các thành phố trong danh sách";
+"subscription_success_dialog_message_sightseeing_pass" = "Bây giờ bạn có thể truy cập không giới hạn vào tất cả các tính năng của danh mục hướng dẫn";
 
 "downloader_main_gallery_header" = "Bản đồ và hướng dẫn";
 

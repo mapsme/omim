@@ -3105,11 +3105,11 @@
 
 "new_onboarding_step5.1_button" = "Katalog öffnen";
 
-"new_onboarding_step5.2_message" = "Reiseführer-Katalog-Subskription in MAPS.ME: das ist günstig. Sie bekommen einen uneingeschränkten Zugriff auf alle Reiseführer für Spaziergänge durch die Stadt und aktive Erholung!";
+"new_onboarding_step5.2_message" = "Es ist günstig das Reiseführerkatalog in MAPS.ME zu abonnieren. Sie bekommen einen uneingeschränkten Zugriff auf alle Möglichkeiten des Reiseführerkatalogs";
 
 "new_onboarding_step5.2_button" = "Bedingungen ansehen";
 
-"new_onboarding_step5.3_message" = "Lade herunter und bewerte Routen für Spaziergänge durch die Stadt und aktive Erholung mit der gratis Sammlung von MAPS.ME!";
+"new_onboarding_step5.3_message" = "Laden Sie herunter und probieren Sie die Offline-Routen für Stadtspaziergänge und Aktivurlaub aus";
 
 "new_onboarding_step5.3_button" = "Download Gratis";
 
@@ -3151,7 +3151,7 @@
 
 "subscription_success_dialog_title_sightseeing_pass" = "Vielen Dank für Ihre Subskription!";
 
-"subscription_success_dialog_message_sightseeing_pass" = "Jetzt haben Sie einen Zugriff auf alle Stadtreiseführer im Katalog";
+"subscription_success_dialog_message_sightseeing_pass" = "Nun haben Sie einen uneingeschränkten Zugriff auf alle Möglichkeiten des Reiseführerkatalogs";
 
 "downloader_main_gallery_header" = "Karten und Reiseführer";
 
