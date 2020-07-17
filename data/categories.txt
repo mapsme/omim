@@ -59,7 +59,7 @@ uk:Де поїсти|Їжа
 vi:Ăn ở đâu|ẩm thực
 zh-Hans:在哪儿吃|食物
 zh-Hant:在哪兒吃|飲食
-el:Πού να φάμε|Φαγητό
+el:Πού να φάμε|Φαγητό|Εστίαση
 he:אוכל
 sk:Kde sa najesť|Jedlo
 sw:Sehemu ya kula
@@ -261,7 +261,7 @@ uk:Готель
 vi:Khách sạn
 zh-Hans:旅店
 zh-Hant:飯店
-el:Ξενοδοχείο
+el:Ξενοδοχείο|Διαμονή
 he:מלון
 sk:Hotel
 fa:هتل
@@ -4102,7 +4102,7 @@ ro:Capitală
 es:Capital|ciudad
 sv:Huvudstad|stad
 th:เมือง|เมืองหลวง
-tr:Sermaye
+tr:Başkent
 uk:Столиця|місто|центр
 vi:Thủ đô
 zh-Hans:资本
