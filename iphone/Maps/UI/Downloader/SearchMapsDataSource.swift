@@ -28,7 +28,7 @@ extension SearchMapsDataSource: IDownloaderDataSource {
   }
 
   func parentAttributes() -> MapNodeAttributes {
-    return Storage.shared().attributesForRoot()
+    Storage.shared().attributesForRoot()
   }
 
   func numberOfItems(in section: Int) -> Int {
@@ -66,8 +66,8 @@ extension SearchMapsDataSource: IDownloaderDataSource {
       if searchId != self?.searchId {
         return
       }
-      self?.searchResults = results
       if results.count > 0 || finished {
+        self?.searchResults = results
         self?.onUpdate?(finished)
       }
     }
