@@ -126,93 +126,123 @@ void GenerateColoredSymbolShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<d
                                  m2::PointD const & tileCenter, m2::PointF const & symbolOffset,
                                  m2::PointF & symbolSize, dp::Batcher & batcher)
 {
-  m2::PointF sizeInc(0.0f, 0.0f);
-  m2::PointF offset(0.0f, 0.0f);
-  UserPointMark::SymbolSizes symbolSizesInc;
-
-  auto const isTextBg = renderInfo.m_coloredSymbols->m_addTextSize;
-
-  if (isTextBg)
+  m2::PointF saleOffset(0.0f, 0.0f);
+  for (df::UserPointMark::ColoredSymbolInfo const & coloredSymbol : *renderInfo.m_coloredSymbols)
   {
-    auto const & titleDecl = renderInfo.m_titleDecl->at(0);
-    dp::FontDecl const & fontDecl = titleDecl.m_primaryTextFont;
-    auto isSdf = df::VisualParams::Instance().IsSdfPrefered();
-    isSdf = fontDecl.m_outlineColor != dp::Color::Transparent() ? true : isSdf;
-    auto const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
+    m2::PointF sizeInc(0.0f, 0.0f);
+    m2::PointF offset(0.0f, 0.0f);
+    UserPointMark::SymbolSizes symbolSizesInc;
 
-    TextLayout textLayout;
-    textLayout.Init(strings::MakeUniString(titleDecl.m_primaryText), fontDecl.m_size * vs, isSdf, textures);
-    sizeInc.x = textLayout.GetPixelLength();
-    sizeInc.y = textLayout.GetPixelHeight();
+    bool const isTextBg = coloredSymbol.m_addTextSize.has_value();
 
-    if (renderInfo.m_symbolSizes != nullptr)
+    if (isTextBg)
     {
-      symbolSizesInc.reserve(renderInfo.m_symbolSizes->size());
-      for (auto const & sz : *renderInfo.m_symbolSizes)
-        symbolSizesInc.push_back(sz + sizeInc);
-    }
+      auto const & titleDecl = renderInfo.m_titleDecl->at(*coloredSymbol.m_addTextSize);
+      dp::FontDecl const & fontDecl = titleDecl.m_primaryTextFont;
+      auto isSdf = df::VisualParams::Instance().IsSdfPrefered();
+      isSdf = fontDecl.m_outlineColor != dp::Color::Transparent() || isSdf;
+      auto const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
 
-    offset = StraightTextLayout::GetSymbolBasedTextOffset(symbolSize, titleDecl.m_anchor, renderInfo.m_anchor);
-  }
+      TextLayout textLayout;
+      textLayout.Init(strings::MakeUniString(titleDecl.m_primaryText), fontDecl.m_size * vs, isSdf, textures);
+      sizeInc.x = textLayout.GetPixelLength();
+      sizeInc.y = textLayout.GetPixelHeight();
 
-  ColoredSymbolViewParams params;
-
-  if (renderInfo.m_coloredSymbols->m_isSymbolStub)
-  {
-    params.m_anchor = renderInfo.m_anchor;
-    params.m_color = dp::Color::Transparent();
-    params.m_shape = ColoredSymbolViewParams::Shape::Rectangle;
-    params.m_sizeInPixels = symbolSize;
-    params.m_offset = symbolOffset;
-  }
-  else
-  {
-    for (auto itSym = renderInfo.m_coloredSymbols->m_zoomInfo.rbegin();
-         itSym != renderInfo.m_coloredSymbols->m_zoomInfo.rend(); ++itSym)
-    {
-      if (itSym->first <= tileKey.m_zoomLevel)
+      if (*coloredSymbol.m_addTextSize == 1)
       {
-        params = itSym->second;
-        break;
+        sizeInc.x += symbolSize.x;
+        sizeInc.y *= 2.0f;
+
+        saleOffset.x = 2.0f * symbolSize.x;
+        saleOffset.y = -sizeInc.y / 2.0f;
+      }
+      else if (*coloredSymbol.m_addTextSize == 2)
+      {
+        offset = saleOffset;
+        sizeInc *= 1.5f;
+      }
+
+      if (renderInfo.m_symbolSizes != nullptr)
+      {
+        symbolSizesInc.reserve(renderInfo.m_symbolSizes->size());
+        for (auto const & sz : *renderInfo.m_symbolSizes)
+          symbolSizesInc.push_back(sz + sizeInc);
+      }
+
+      offset = StraightTextLayout::GetSymbolBasedTextOffset(symbolSize, titleDecl.m_anchor, renderInfo.m_anchor);
+
+      if (*coloredSymbol.m_addTextSize == 1)
+      {
+        offset.x += symbolSize.x / 2.0f;
+      }
+      else if (*coloredSymbol.m_addTextSize == 2)
+      {
+        offset = saleOffset;
       }
     }
-  }
 
-  m2::PointF coloredSize(0.0f, 0.0f);
-  if (params.m_shape == ColoredSymbolViewParams::Shape::Circle)
-  {
-    params.m_radiusInPixels = params.m_radiusInPixels + std::max(sizeInc.x, sizeInc.y) / 2.0f;
-    coloredSize = m2::PointF(params.m_radiusInPixels * 2.0f, params.m_radiusInPixels * 2.0f);
-  }
-  else
-  {
-    params.m_sizeInPixels = params.m_sizeInPixels + sizeInc;
-    coloredSize = params.m_sizeInPixels;
-  }
-  if (!isTextBg)
-    symbolSize = m2::PointF(std::max(coloredSize.x, symbolSize.x), std::max(coloredSize.y, symbolSize.y));
+    ColoredSymbolViewParams params;
 
-  params.m_featureID = renderInfo.m_featureId;
-  params.m_tileCenter = tileCenter;
-  params.m_depthTestEnabled = renderInfo.m_depthTestEnabled;
-  params.m_depth = renderInfo.m_depth;
-  params.m_depthLayer = renderInfo.m_depthLayer;
-  params.m_minVisibleScale = renderInfo.m_minZoom;
-  params.m_specialDisplacement = renderInfo.m_displacement;
-  params.m_specialPriority = renderInfo.m_priority;
-  params.m_offset += offset;
-  if (renderInfo.m_symbolSizes != nullptr)
-  {
-    ColoredSymbolShape(renderInfo.m_pivot, params, tileKey,
-                       kStartUserMarkOverlayIndex + renderInfo.m_index,
-                       isTextBg ? symbolSizesInc : *renderInfo.m_symbolSizes.get())
-        .Draw(context, &batcher, textures);
-  }
-  else
-  {
-    ColoredSymbolShape(renderInfo.m_pivot, params, tileKey,
-                       kStartUserMarkOverlayIndex + renderInfo.m_index, renderInfo.m_coloredSymbols->m_needOverlay)
-        .Draw(context, &batcher, textures);
+    if (coloredSymbol.m_isSymbolStub)
+    {
+      params.m_anchor = renderInfo.m_anchor;
+      params.m_color = dp::Color::Transparent();
+      params.m_shape = ColoredSymbolViewParams::Shape::Rectangle;
+      params.m_sizeInPixels = symbolSize;
+      params.m_offset = symbolOffset;
+    }
+    else
+    {
+      for (auto itSym = coloredSymbol.m_zoomInfo.rbegin();
+           itSym != coloredSymbol.m_zoomInfo.rend(); ++itSym)
+      {
+        if (itSym->first <= tileKey.m_zoomLevel)
+        {
+          params = itSym->second;
+          break;
+        }
+      }
+    }
+
+    m2::PointF coloredSize(0.0f, 0.0f);
+    if (params.m_shape == ColoredSymbolViewParams::Shape::Circle)
+    {
+      params.m_radiusInPixels = params.m_radiusInPixels + std::max(sizeInc.x, sizeInc.y) / 2.0f;
+      coloredSize = m2::PointF(params.m_radiusInPixels * 2.0f, params.m_radiusInPixels * 2.0f);
+    }
+    else
+    {
+      params.m_sizeInPixels = params.m_sizeInPixels + sizeInc;
+      coloredSize = params.m_sizeInPixels;
+
+      if (isTextBg && (*coloredSymbol.m_addTextSize == 1))
+        params.m_radiusInPixels = sizeInc.y / 2.0;
+    }
+    if (!isTextBg)
+      symbolSize = m2::PointF(std::max(coloredSize.x, symbolSize.x), std::max(coloredSize.y, symbolSize.y));
+
+    params.m_featureID = renderInfo.m_featureId;
+    params.m_tileCenter = tileCenter;
+    params.m_depthTestEnabled = renderInfo.m_depthTestEnabled;
+    params.m_depth = renderInfo.m_depth;
+    params.m_depthLayer = renderInfo.m_depthLayer;
+    params.m_minVisibleScale = renderInfo.m_minZoom;
+    params.m_specialDisplacement = renderInfo.m_displacement;
+    params.m_specialPriority = renderInfo.m_priority;
+    params.m_offset += offset;
+    if (renderInfo.m_symbolSizes != nullptr)
+    {
+      ColoredSymbolShape(renderInfo.m_pivot, params, tileKey,
+                         kStartUserMarkOverlayIndex + renderInfo.m_index,
+                         isTextBg ? symbolSizesInc : *renderInfo.m_symbolSizes.get())
+          .Draw(context, &batcher, textures);
+    }
+    else
+    {
+      ColoredSymbolShape(renderInfo.m_pivot, params, tileKey,
+                         kStartUserMarkOverlayIndex + renderInfo.m_index, coloredSymbol.m_needOverlay)
+          .Draw(context, &batcher, textures);
+    }
   }
 }
 
@@ -233,7 +263,7 @@ void GeneratePoiSymbolShape(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Te
   params.m_anchor = renderInfo.m_anchor;
   params.m_offset = symbolOffset;
 
-  bool const hasColoredOverlay = renderInfo.m_coloredSymbols != nullptr && renderInfo.m_coloredSymbols->m_needOverlay;
+  bool const hasColoredOverlay = renderInfo.m_coloredSymbols != nullptr && renderInfo.m_coloredSymbols->front().m_needOverlay;
   params.m_startOverlayRank = hasColoredOverlay ? dp::OverlayRank1 : dp::OverlayRank0;
 
   PoiSymbolShape(renderInfo.m_pivot, params, tileKey,
@@ -243,7 +273,7 @@ void GeneratePoiSymbolShape(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Te
 
 void GenerateTextShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::TextureManager> textures,
                         UserMarkRenderParams const & renderInfo, TileKey const & tileKey,
-                        m2::PointD const & tileCenter, m2::PointF const & symbolOffset,
+                        m2::PointD const & tileCenter, m2::PointF symbolOffset,
                         m2::PointF const & symbolSize, dp::Batcher & batcher)
 {
   if (renderInfo.m_minTitleZoom > tileKey.m_zoomLevel)
@@ -251,6 +281,8 @@ void GenerateTextShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Textur
 
   auto const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
 
+  size_t titleIndex = 0;
+  m2::PointF saleOffset(0.0f, 0.0f);
   for (auto const & titleDecl : *renderInfo.m_titleDecl)
   {
     if (titleDecl.m_primaryText.empty())
@@ -269,9 +301,29 @@ void GenerateTextShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Textur
     params.m_titleDecl.m_secondaryOffset *= vs;
     bool const isSdf = df::VisualParams::Instance().IsSdfPrefered();
     params.m_titleDecl.m_primaryTextFont.m_isSdf =
-      params.m_titleDecl.m_primaryTextFont.m_outlineColor != dp::Color::Transparent() ? true : isSdf;
+      params.m_titleDecl.m_primaryTextFont.m_outlineColor != dp::Color::Transparent() || isSdf;
     params.m_titleDecl.m_secondaryTextFont.m_isSdf =
-      params.m_titleDecl.m_secondaryTextFont.m_outlineColor != dp::Color::Transparent() ? true : isSdf;
+      params.m_titleDecl.m_secondaryTextFont.m_outlineColor != dp::Color::Transparent() || isSdf;
+
+    if (titleIndex == 1)
+    {
+      dp::FontDecl const & fontDecl = titleDecl.m_primaryTextFont;
+      auto const isSdf = params.m_titleDecl.m_primaryTextFont.m_isSdf;
+      auto const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
+
+      TextLayout textLayout;
+      textLayout.Init(strings::MakeUniString(titleDecl.m_primaryText), fontDecl.m_size * vs, isSdf, textures);
+
+      saleOffset = StraightTextLayout::GetSymbolBasedTextOffset(symbolSize, titleDecl.m_anchor, renderInfo.m_anchor);
+      saleOffset.x += symbolSize.x / 2.0f;
+
+      saleOffset.x *= 2.0f;
+      saleOffset.y = -textLayout.GetPixelHeight();
+    }
+    else if (titleIndex == 2)
+    {
+      symbolOffset = saleOffset;
+    }
 
     params.m_depthTestEnabled = renderInfo.m_depthTestEnabled;
     params.m_depth = renderInfo.m_depth;
@@ -288,7 +340,7 @@ void GenerateTextShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Textur
       if (renderInfo.m_symbolNames != nullptr && renderInfo.m_symbolIsPOI)
         params.m_startOverlayRank++;
 
-      if (renderInfo.m_coloredSymbols != nullptr && renderInfo.m_coloredSymbols->m_needOverlay)
+      if (renderInfo.m_coloredSymbols != nullptr && renderInfo.m_coloredSymbols->front().m_needOverlay)
         params.m_startOverlayRank++;
 
       ASSERT_LESS(params.m_startOverlayRank, dp::OverlayRanksCount, ());
@@ -306,6 +358,7 @@ void GenerateTextShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Textur
                 overlayIndex)
           .Draw(context, &batcher, textures);
     }
+    ++titleIndex;
   }
 }
 

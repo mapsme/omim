@@ -162,10 +162,10 @@ drape_ptr<df::UserPointMark::TitlesInfo> RouteMarkPoint::GetTitleDecl() const
 }
 
 
-drape_ptr<df::UserPointMark::ColoredSymbolZoomInfo> RouteMarkPoint::GetColoredSymbols() const
+drape_ptr<df::UserPointMark::ColoredSymbolInfos> RouteMarkPoint::GetColoredSymbols() const
 {
-  auto coloredSymbol = make_unique_dp<ColoredSymbolZoomInfo>();
-  coloredSymbol->m_isSymbolStub = true;
+  auto coloredSymbol = make_unique_dp<ColoredSymbolInfos>();
+  coloredSymbol->emplace_back().m_isSymbolStub = true;
   return coloredSymbol;
 }
 
@@ -478,17 +478,19 @@ void TransitMark::SetSymbolNames(std::map<int, std::string> const & symbolNames)
   m_symbolNames = symbolNames;
 }
 
-void TransitMark::SetColoredSymbols(ColoredSymbolZoomInfo const & symbolParams)
+void TransitMark::SetColoredSymbol(ColoredSymbolInfo const & symbolParams)
 {
   SetDirty();
-  m_coloredSymbols = symbolParams;
+  m_coloredSymbol = symbolParams;
 }
 
-drape_ptr<df::UserPointMark::ColoredSymbolZoomInfo> TransitMark::GetColoredSymbols() const
+drape_ptr<df::UserPointMark::ColoredSymbolInfos> TransitMark::GetColoredSymbols() const
 {
-  if (m_coloredSymbols.m_zoomInfo.empty())
+  if (m_coloredSymbol.m_zoomInfo.empty())
     return nullptr;
-  return make_unique_dp<ColoredSymbolZoomInfo>(m_coloredSymbols);
+  auto coloredSymbolZoomInfo = make_unique_dp<ColoredSymbolInfos>();
+  coloredSymbolZoomInfo->push_back(m_coloredSymbol);
+  return coloredSymbolZoomInfo;
 }
 
 void TransitMark::SetSymbolSizes(SymbolSizes const & symbolSizes)
@@ -566,7 +568,7 @@ SpeedCameraMark::SpeedCameraMark(m2::PointD const & ptOrg)
   params.m_outlineColor = df::GetColorConstant(kSpeedCameraMarkOutline);
   params.m_outlineWidth = kSpeedCameraOutlineWidth;
   m_textBg.m_zoomInfo[kMinSpeedCameraTitleZoom] = params;
-  m_textBg.m_addTextSize = true;
+  m_textBg.m_addTextSize = 0;
 }
 
 void SpeedCameraMark::SetTitle(std::string const & title)
@@ -595,11 +597,13 @@ drape_ptr<df::UserPointMark::TitlesInfo> SpeedCameraMark::GetTitleDecl() const
   return titleInfo;
 }
 
-drape_ptr<df::UserPointMark::ColoredSymbolZoomInfo> SpeedCameraMark::GetColoredSymbols() const
+drape_ptr<df::UserPointMark::ColoredSymbolInfos> SpeedCameraMark::GetColoredSymbols() const
 {
   if (m_titleDecl.m_primaryText.empty())
     return nullptr;
-  return make_unique_dp<ColoredSymbolZoomInfo>(m_textBg);
+  auto coloredSymbolZoomInfo = make_unique_dp<ColoredSymbolInfos>();
+  coloredSymbolZoomInfo->push_back(m_textBg);
+  return coloredSymbolZoomInfo;
 }
 
 int SpeedCameraMark::GetMinZoom() const

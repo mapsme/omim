@@ -70,14 +70,14 @@ ColoredMarkPoint::ColoredMarkPoint(m2::PointD const & ptOrg)
   params.m_outlineWidth = 1.5f * vs;
   params.m_radiusInPixels = 7.0f * vs;
   params.m_color = dp::Color::Green();
-  m_coloredSymbols.m_needOverlay = false;
-  m_coloredSymbols.m_zoomInfo.insert(std::make_pair(1, params));
+  m_coloredSymbol.m_needOverlay = false;
+  m_coloredSymbol.m_zoomInfo.insert(std::make_pair(1, params));
 }
 
 void ColoredMarkPoint::SetColor(dp::Color const & color)
 {
   SetDirty();
-  m_coloredSymbols.m_zoomInfo.begin()->second.m_color = color;
+  m_coloredSymbol.m_zoomInfo.begin()->second.m_color = color;
 }
 
 void ColoredMarkPoint::SetRadius(float radius)
@@ -85,12 +85,14 @@ void ColoredMarkPoint::SetRadius(float radius)
   SetDirty();
 
   auto const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
-  m_coloredSymbols.m_zoomInfo.begin()->second.m_radiusInPixels = radius * vs;
+  m_coloredSymbol.m_zoomInfo.begin()->second.m_radiusInPixels = radius * vs;
 }
 
-drape_ptr<df::UserPointMark::ColoredSymbolZoomInfo> ColoredMarkPoint::GetColoredSymbols() const
+drape_ptr<df::UserPointMark::ColoredSymbolInfos> ColoredMarkPoint::GetColoredSymbols() const
 {
-  return make_unique_dp<ColoredSymbolZoomInfo>(m_coloredSymbols);
+  auto coloredSymbolZoomInfo = make_unique_dp<ColoredSymbolInfos>();
+  coloredSymbolZoomInfo->push_back(m_coloredSymbol);
+  return coloredSymbolZoomInfo;
 }
 
 std::string DebugPrint(UserMark::Type type)

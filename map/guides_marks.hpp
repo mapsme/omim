@@ -76,8 +76,8 @@ public:
 
   df::DepthLayer GetDepthLayer() const override { return df::DepthLayer::GuidesBottomMarkLayer; }
   drape_ptr<SymbolNameZoomInfo> GetSymbolNames() const override { return nullptr; }
-  drape_ptr<ColoredSymbolZoomInfo> GetColoredSymbols() const override;
+  drape_ptr<ColoredSymbolInfos> GetColoredSymbols() const override;
 
 private:
-  ColoredSymbolZoomInfo m_coloredInfo;
+  ColoredSymbolInfo m_coloredInfo;
 };

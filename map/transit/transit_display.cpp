@@ -545,7 +545,7 @@ void TransitRouteDisplay::CreateTransitMarks()
         titleTransitMark->SetSymbolOffsets(transferArrowOffsets);
         titleTransitMark->SetPriority(UserMark::Priority::TransitTransfer);
       }
-      df::UserPointMark::ColoredSymbolZoomInfo coloredSymbol;
+      df::UserPointMark::ColoredSymbolInfo coloredSymbol;
       for (size_t sizeIndex = 0; sizeIndex < transferMarkerSizes.size(); ++sizeIndex)
       {
         auto const zoomLevel = sizeIndex + 1;
@@ -559,7 +559,7 @@ void TransitRouteDisplay::CreateTransitMarks()
           coloredSymbol.m_zoomInfo.insert(make_pair(zoomLevel, params));
         }
       }
-      transitMark->SetColoredSymbols(coloredSymbol);
+      transitMark->SetColoredSymbol(coloredSymbol);
       transitMark->SetPriority(UserMark::Priority::TransitTransfer);
     }
     else
@@ -581,7 +581,7 @@ void TransitRouteDisplay::CreateTransitMarks()
         symbolNames[kMediumIconZoom] = mark.m_symbolName + "-m";
         transitMark->SetSymbolNames(symbolNames);
 
-        df::UserPointMark::ColoredSymbolZoomInfo coloredSymbol;
+        df::UserPointMark::ColoredSymbolInfo coloredSymbol;
         df::ColoredSymbolViewParams params;
         params.m_color = df::GetColorConstant(mark.m_color);
 
@@ -593,12 +593,12 @@ void TransitRouteDisplay::CreateTransitMarks()
         params.m_radiusInPixels = max(sz.x, sz.y) * kGateBgScale * 0.5f;
         coloredSymbol.m_zoomInfo[kMediumIconZoom] = params;
 
-        transitMark->SetColoredSymbols(coloredSymbol);
+        transitMark->SetColoredSymbol(coloredSymbol);
         transitMark->SetPriority(UserMark::Priority::TransitKeyStop);
       }
       else
       {
-        df::UserPointMark::ColoredSymbolZoomInfo coloredSymbol;
+        df::UserPointMark::ColoredSymbolInfo coloredSymbol;
         for (size_t sizeIndex = 0; sizeIndex < stopMarkerSizes.size(); ++sizeIndex)
         {
           auto const zoomLevel = sizeIndex + 1;
@@ -613,7 +613,7 @@ void TransitRouteDisplay::CreateTransitMarks()
           }
         }
         transitMark->SetSymbolSizes(stopMarkerSizes);
-        transitMark->SetColoredSymbols(coloredSymbol);
+        transitMark->SetColoredSymbol(coloredSymbol);
         transitMark->SetPriority(UserMark::Priority::TransitStop);
         transitMark->SetMinTitleZoom(kMinStopTitleZoom);
       }

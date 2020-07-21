@@ -63,7 +63,7 @@ public:
 
   drape_ptr<TitlesInfo> GetTitleDecl() const override;
 
-  drape_ptr<ColoredSymbolZoomInfo> GetColoredSymbols() const override;
+  drape_ptr<ColoredSymbolInfos> GetColoredSymbols() const override;
 
   bool HasTitlePriority() const override { return true; }
   df::SpecialDisplacement GetDisplacement() const override { return df::SpecialDisplacement::SpecialModeUserMark; }
@@ -134,8 +134,8 @@ public:
   void SetMinTitleZoom(int minTitleZoom);
   int GetMinTitleZoom() const override { return m_minTitleZoom; }
 
-  void SetColoredSymbols(ColoredSymbolZoomInfo const & symbolParams);
-  drape_ptr<ColoredSymbolZoomInfo> GetColoredSymbols() const override;
+  void SetColoredSymbol(ColoredSymbolInfo const & symbolParams);
+  drape_ptr<ColoredSymbolInfos> GetColoredSymbols() const override;
 
   void SetSymbolNames(SymbolNameZoomInfo const & symbolNames);
   drape_ptr<SymbolNameZoomInfo> GetSymbolNames() const override;
@@ -159,7 +159,7 @@ private:
   FeatureID m_featureId;
   TitlesInfo m_titles;
   SymbolNameZoomInfo m_symbolNames;
-  ColoredSymbolZoomInfo m_coloredSymbols;
+  ColoredSymbolInfo m_coloredSymbol;
   SymbolSizes m_symbolSizes;
   SymbolOffsets m_symbolOffsets;
   dp::Anchor m_anchor = dp::Center;
@@ -182,7 +182,7 @@ public:
 
   drape_ptr<SymbolNameZoomInfo> GetSymbolNames() const override;
   drape_ptr<TitlesInfo> GetTitleDecl() const override;
-  drape_ptr<ColoredSymbolZoomInfo> GetColoredSymbols() const override;
+  drape_ptr<ColoredSymbolInfos> GetColoredSymbols() const override;
 
   int GetMinZoom() const override;
   int GetMinTitleZoom() const override;
@@ -191,7 +191,7 @@ public:
 private:
   uint32_t m_index = 0;
   SymbolNameZoomInfo m_symbolNames;
-  ColoredSymbolZoomInfo m_textBg;
+  ColoredSymbolInfo m_textBg;
   std::string m_title;
   dp::TitleDecl m_titleDecl;
 };

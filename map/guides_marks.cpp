@@ -150,7 +150,9 @@ GuideSelectionMark::GuideSelectionMark(m2::PointD const & ptOrg)
   m_coloredInfo.m_needOverlay = false;
 }
 
-drape_ptr<df::UserPointMark::ColoredSymbolZoomInfo> GuideSelectionMark::GetColoredSymbols() const
+drape_ptr<df::UserPointMark::ColoredSymbolInfos> GuideSelectionMark::GetColoredSymbols() const
 {
-  return make_unique_dp<ColoredSymbolZoomInfo>(m_coloredInfo);
+  auto coloredSymbolZoomInfo = make_unique_dp<ColoredSymbolInfos>();
+  coloredSymbolZoomInfo->push_back(m_coloredInfo);
+  return coloredSymbolZoomInfo;
 }

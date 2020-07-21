@@ -77,7 +77,7 @@ public:
   float GetDepth() const override { return kInvalidDepth; }
   df::DepthLayer GetDepthLayer() const override { return df::DepthLayer::UserMarkLayer; }
   drape_ptr<TitlesInfo> GetTitleDecl() const override { return nullptr; }
-  drape_ptr<ColoredSymbolZoomInfo> GetColoredSymbols() const override { return nullptr; }
+  drape_ptr<ColoredSymbolInfos> GetColoredSymbols() const override { return nullptr; }
   drape_ptr<SymbolNameZoomInfo> GetBadgeNames() const override { return nullptr; }
   drape_ptr<SymbolSizes> GetSymbolSizes() const override { return nullptr; }
   drape_ptr<SymbolOffsets> GetSymbolOffsets() const override { return nullptr; }
@@ -151,10 +151,10 @@ public:
   void SetRadius(float radius);
   bool SymbolIsPOI() const override { return true; }
   drape_ptr<SymbolNameZoomInfo> GetSymbolNames() const override { return nullptr; }
-  drape_ptr<ColoredSymbolZoomInfo> GetColoredSymbols() const override;
+  drape_ptr<ColoredSymbolInfos> GetColoredSymbols() const override;
 
 private:
-  ColoredSymbolZoomInfo m_coloredSymbols;
+  ColoredSymbolInfo m_coloredSymbol;
 };
 
 std::string DebugPrint(UserMark::Type type);

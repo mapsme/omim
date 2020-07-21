@@ -4,6 +4,7 @@
 
 #include "drape_frontend/drape_engine.hpp"
 #include "drape_frontend/visual_params.hpp"
+#include "drape_frontend/text_layout.hpp"
 
 #include "platform/platform.hpp"
 
@@ -274,15 +275,28 @@ SearchMarkType GetSearchMarkType(uint32_t type)
 SearchMarkPoint::SearchMarkPoint(m2::PointD const & ptOrg)
   : UserMark(ptOrg, UserMark::Type::SEARCH)
 {
+  double const fs = df::VisualParams::Instance().GetFontScale();
+
   m_titleDecl.m_anchor = dp::Center;
   m_titleDecl.m_primaryTextFont.m_color = df::GetColorConstant("RatingText");
   m_titleDecl.m_primaryTextFont.m_size =
-      static_cast<float>(12.0 / df::VisualParams::Instance().GetFontScale());
+      static_cast<float>(12.0 / fs);
 
   m_ugcTitleDecl.m_anchor = dp::LeftTop;
   m_ugcTitleDecl.m_primaryTextFont.m_color = df::GetColorConstant("UGCRatingText");
   m_ugcTitleDecl.m_primaryTextFont.m_size =
-      static_cast<float>(14.0 / df::VisualParams::Instance().GetFontScale());
+      static_cast<float>(14.0 / fs);
+
+  m_priceDecl.m_anchor = dp::Left;
+  m_priceDecl.m_primaryTextFont.m_color = dp::Color::Black();
+  m_priceDecl.m_primaryTextFont.m_size =
+      static_cast<float>(12.0 / fs);
+
+  m_saleDecl.m_primaryText = "%";
+  m_saleDecl.m_anchor = dp::Center;
+  m_saleDecl.m_primaryTextFont.m_color = dp::Color::White();
+  m_saleDecl.m_primaryTextFont.m_size =
+      static_cast<float>(8.0 / fs);
 }
 
 std::string SearchMarkPoint::GetSymbolName() const
@@ -324,19 +338,12 @@ drape_ptr<df::UserPointMark::SymbolNameZoomInfo> SearchMarkPoint::GetSymbolNames
 
 drape_ptr<df::UserPointMark::SymbolNameZoomInfo> SearchMarkPoint::GetBadgeNames() const
 {
+  if (IsBookingSpecialMark())
+    return nullptr;
+
   auto const badgeName = GetBadgeName();
   if (badgeName.empty())
     return nullptr;
-  
-  if (IsBookingSpecialMark())
-  {
-    auto symbol = make_unique_dp<SymbolNameZoomInfo>();
-    if (NeedShowBookingBadge(m_rating, m_pricing) && m_rating >= kRatingThreshold)
-      symbol->insert(std::make_pair(10 /* zoomLevel */, badgeName));
-    else
-      symbol->insert(std::make_pair(17 /* zoomLevel */, badgeName));
-    return symbol;
-  }
   
   if (IsUGCMark())
   {
@@ -405,6 +412,8 @@ drape_ptr<df::UserPointMark::TitlesInfo> SearchMarkPoint::GetTitleDecl() const
   if ((!IsBookingSpecialMark() && !isUGC) || !HasRating(m_rating))
     return nullptr;
 
+  auto const vs = df::VisualParams::Instance().GetVisualScale();
+
   auto titles = make_unique_dp<TitlesInfo>();
   if (isUGC)
   {
@@ -415,7 +424,7 @@ drape_ptr<df::UserPointMark::TitlesInfo> SearchMarkPoint::GetTitleDecl() const
     auto constexpr kShadowOffset = 4.0;
     auto const centerOffset = -0.5 * sz->y - kShadowOffset;
     titleDecl.m_primaryOffset.y =
-        static_cast<float>(centerOffset / df::VisualParams::Instance().GetVisualScale()) -
+        static_cast<float>(centerOffset / vs) -
         0.5f * titleDecl.m_primaryTextFont.m_size;
     titles->push_back(titleDecl);
   }
@@ -424,13 +433,47 @@ drape_ptr<df::UserPointMark::TitlesInfo> SearchMarkPoint::GetTitleDecl() const
     titles->push_back(m_titleDecl);
     if (!m_price.empty())
     {
-      auto priceDecl = m_titleDecl;
-      priceDecl.m_primaryText = m_price;
-      priceDecl.m_anchor = dp::Anchor::Left;
-      titles->push_back(priceDecl);
+      titles->push_back(m_priceDecl);
+      if (m_hasSale)
+        titles->push_back(m_saleDecl);
     }
   }
   return titles;
+}
+
+drape_ptr<df::UserPointMark::ColoredSymbolInfos> SearchMarkPoint::GetColoredSymbols() const
+{
+  auto const titleDecl = GetTitleDecl();
+  if (!titleDecl || (titleDecl->size() < 2))
+    return nullptr;
+
+  auto coloredSymbolZoomInfo = make_unique_dp<ColoredSymbolInfos>();
+
+  df::ColoredSymbolViewParams params;
+  params.m_featureID = m_featureID;
+  params.m_shape = df::ColoredSymbolViewParams::Shape::RoundedRectangle;
+  params.m_anchor = dp::Anchor::Center;
+  params.m_color = dp::Color::White();
+  params.m_outlineColor = dp::Color::Transparent();
+
+  ColoredSymbolInfo priceColoredSymbol;
+  priceColoredSymbol.m_needOverlay = true;
+  priceColoredSymbol.m_addTextSize = 1; // titleDecl index for price
+  priceColoredSymbol.m_zoomInfo.insert(std::make_pair(1, params));
+  coloredSymbolZoomInfo->push_back(std::move(priceColoredSymbol));
+
+  if (m_hasSale)
+  {
+    params.m_shape = df::ColoredSymbolViewParams::Shape::Circle;
+    params.m_color = df::GetColorConstant("SaleBackground");
+
+    ColoredSymbolInfo saleColoredSymbol;
+    saleColoredSymbol.m_needOverlay = true;
+    saleColoredSymbol.m_addTextSize = 2; // titleDecl index for percent symbol
+    saleColoredSymbol.m_zoomInfo.insert(std::make_pair(1, params));
+    coloredSymbolZoomInfo->push_back(std::move(saleColoredSymbol));
+  }
+  return coloredSymbolZoomInfo;
 }
 
 int SearchMarkPoint::GetMinTitleZoom() const
@@ -494,9 +537,8 @@ void SearchMarkPoint::SetPricing(int pricing)
 
 void SearchMarkPoint::SetPrice(std::string && price)
 {
-  // Dummy.
-  // TODO: uncomment when drape will be ready.
-  // SetAttributeValue(m_price, std::move(price));
+  SetAttributeValue(m_price, std::move(price));
+  m_priceDecl.m_primaryText = m_price;
 }
 
 void SearchMarkPoint::SetSale(bool hasSale)

@@ -15,6 +15,7 @@
 #include "geometry/polyline2d.hpp"
 
 #include <vector>
+#include <optional>
 
 namespace df
 {
@@ -38,14 +39,16 @@ struct IDCollections
 class UserPointMark
 {
 public:
-  struct ColoredSymbolZoomInfo
+  struct ColoredSymbolInfo
   {
     std::map<int, df::ColoredSymbolViewParams> m_zoomInfo;
     bool m_isSymbolStub = false;
     bool m_needOverlay = true;
-    bool m_addTextSize = false;
+    std::optional<size_t /*titleDecl index*/> m_addTextSize;
   };
+
   using SymbolNameZoomInfo = std::map<int, std::string>;
+  using ColoredSymbolInfos = std::vector<ColoredSymbolInfo>;
   using TitlesInfo = std::vector<dp::TitleDecl>;
   using SymbolSizes = std::vector<m2::PointF>;
   using SymbolOffsets = std::vector<m2::PointF>;
@@ -71,7 +74,7 @@ public:
   virtual drape_ptr<TitlesInfo> GetTitleDecl() const = 0;
   virtual drape_ptr<SymbolNameZoomInfo> GetSymbolNames() const = 0;
   virtual drape_ptr<SymbolNameZoomInfo> GetBadgeNames() const = 0;
-  virtual drape_ptr<ColoredSymbolZoomInfo> GetColoredSymbols() const = 0;
+  virtual drape_ptr<ColoredSymbolInfos> GetColoredSymbols() const = 0;
   virtual drape_ptr<SymbolSizes> GetSymbolSizes() const = 0;
   virtual drape_ptr<SymbolOffsets> GetSymbolOffsets() const = 0;
   virtual uint16_t GetPriority() const = 0;

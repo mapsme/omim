@@ -42394,4 +42394,8 @@ colors {
     name: "GuideOutdoorMarkText"
     color: 3968060
   }
+  value {
+    name: "SaleBackground"
+    color: 2399474
+  }
 }

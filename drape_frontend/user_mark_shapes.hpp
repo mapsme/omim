@@ -21,12 +21,14 @@ struct UserMarkRenderParams
   m2::PointD m_pivot = m2::PointD(0.0, 0.0);
   m2::PointD m_pixelOffset = m2::PointD(0.0, 0.0);
   dp::Anchor m_anchor = dp::Center;
-  drape_ptr<UserPointMark::ColoredSymbolZoomInfo> m_coloredSymbols;
+  drape_ptr<UserPointMark::ColoredSymbolInfos> m_coloredSymbols;
   drape_ptr<UserPointMark::SymbolNameZoomInfo> m_symbolNames;
   drape_ptr<UserPointMark::TitlesInfo> m_titleDecl;
   drape_ptr<UserPointMark::SymbolSizes> m_symbolSizes;
   drape_ptr<UserPointMark::SymbolOffsets> m_symbolOffsets;
   drape_ptr<UserPointMark::SymbolNameZoomInfo> m_badgeNames;
+  drape_ptr<UserPointMark::SymbolSizes> m_badgeSizes;
+  drape_ptr<UserPointMark::SymbolOffsets> m_badgeOffsets;
   df::ColorConstant m_color;
   bool m_symbolIsPOI = false;
   bool m_hasTitlePriority = false;

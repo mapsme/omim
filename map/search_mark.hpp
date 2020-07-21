@@ -27,6 +27,7 @@ public:
   drape_ptr<SymbolNameZoomInfo> GetSymbolNames() const override;
   df::ColorConstant GetColorConstant() const override;
   drape_ptr<TitlesInfo> GetTitleDecl() const override;
+  drape_ptr<ColoredSymbolInfos> GetColoredSymbols() const override;
   int GetMinTitleZoom() const override;
   df::DepthLayer GetDepthLayer() const override;
   drape_ptr<SymbolNameZoomInfo> GetBadgeNames() const override;
@@ -80,6 +81,8 @@ protected:
   std::string m_price;
   bool m_hasSale = false;
   dp::TitleDecl m_titleDecl;
+  dp::TitleDecl m_priceDecl;
+  dp::TitleDecl m_saleDecl;
   dp::TitleDecl m_ugcTitleDecl;
   bool m_isUsed = false;
   bool m_isAvailable = true;
