@@ -29,6 +29,7 @@ class BottomTabBarInteractor {
 
 extension BottomTabBarInteractor: BottomTabBarInteractorProtocol {
   func openSearch() {
+    fatalError("Firebase test")
     if searchManager?.state == .hidden {
       searchManager?.state = .default
     } else {
