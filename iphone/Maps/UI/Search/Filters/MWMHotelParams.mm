@@ -83,7 +83,9 @@ static int8_t kAgeOfChild = 5;
     }
   }
 
-  result += self.types.size();
+  if (!self.types.empty()) {
+    result += 1;
+  }
 
   return result;
 }
