@@ -225,6 +225,7 @@ private:
   ShapeLink m_shapeLink;
   Translations m_title;
   IdList m_stopIds;
+  // Join lines with identical shape, route and stops but different m_intervals and m_serviceDays:
   std::vector<LineInterval> m_intervals;
   osmoh::OpeningHours m_serviceDays;
 };
@@ -265,7 +266,9 @@ private:
   // enter the gate. The segments may be invalid because of map date. If so there's no pedestrian
   // segment which can be used to reach the stop.
   std::vector<SingleMwmSegment> m_bestPedestrianSegments;
+  // Replace Translations with std::string:
   Translations m_title;
+  // Replace osmoh::OpeningHours with something new:
   TimeTable m_timetable;
   m2::PointD m_point;
   IdList m_transferIds;
