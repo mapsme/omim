@@ -251,6 +251,9 @@ private:
 
   StartDownloadingCallback m_startDownloadingCallback;
 
+  CountryId m_lastDownloadedCountryId;
+  CountryId m_lastUpdatedCountryId;
+
   void LoadCountriesFile(std::string const & pathToCountriesFile);
 
   void ReportProgress(CountryId const & countryId, downloader::Progress const & p);
@@ -569,6 +572,8 @@ public:
   void OnCountryInQueue(CountryId const & id) override;
   void OnStartDownloadingCountry(CountryId const & id) override;
 
+  CountryId const & GetLastDownloadedCountryId() const;
+
 private:
   friend struct UnitClass_StorageTest_DeleteCountry;
 
@@ -662,6 +667,8 @@ private:
   // Should be called once on startup, downloading process should be suspended until this method
   // was not called. Do not call this method manually.
   void OnDiffStatusReceived(diffs::NameDiffInfoMap && diffs);
+
+  void SaveLastDownloadedMapId(CountryId const & countryId);
 };
 
 void GetQueuedCountries(Queue const & queue, CountriesSet & resultCountries);

@@ -45,6 +45,7 @@ namespace
 {
 string const kUpdateQueueKey = "UpdateQueue";
 string const kDownloadQueueKey = "DownloadQueue";
+string const kLastDownloadedCountryIdKey = "LastDownloadedCountryId";
 
 void DeleteCountryIndexes(LocalCountryFile const & localFile)
 {
@@ -169,6 +170,8 @@ Storage::Storage(string const & pathToCountriesFile /* = COUNTRIES_FILE */,
   SetLocale(languages::GetCurrentTwine());
   LoadCountriesFile(pathToCountriesFile);
   CalcMaxMwmSizeBytes();
+
+  settings::TryGet(kLastDownloadedCountryIdKey, m_lastDownloadedCountryId);
 }
 
 Storage::Storage(string const & referenceCountriesTxtJsonForTesting,
@@ -735,6 +738,7 @@ void Storage::RegisterDownloadedFiles(CountryId const & countryId, MapFileType t
     DeleteCountryIndexes(*localFile);
     m_didDownload(countryId, localFile);
 
+    SaveLastDownloadedMapId(countryId);
     SaveDownloadQueue();
 
     NotifyStatusChangedForHierarchy(countryId);
@@ -1818,5 +1822,16 @@ void Storage::OnMapDownloadFailed(CountryId const & countryId)
 {
   m_failedCountries.insert(countryId);
   NotifyStatusChangedForHierarchy(countryId);
+}
+
+CountryId const & Storage::GetLastDownloadedCountryId() const
+{
+  return m_lastDownloadedCountryId;
+}
+
+void Storage::SaveLastDownloadedMapId(CountryId const & countryId)
+{
+  settings::Set(kLastDownloadedCountryIdKey, countryId);
+  m_lastDownloadedCountryId = countryId;
 }
 }  // namespace storage
