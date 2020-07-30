@@ -32,10 +32,12 @@ class PromoIds(object):
             if not node_ids["cities"]:
                 continue
             node = nodes[idx]
-            best = self._choose_best_city(node_ids["cities"])
-            node["top_city_geo_id"] = best["id"]
-            if best["id"] < 0:
-                node["top_city_geo_id"] += (1 << 64)
+            sorted_cities = self._sort_cities(node_ids["cities"])
+            city_ids = [city["id"] for city in sorted_cities]
+            for city_id in city_ids:
+                if city_id < 0:
+                    city_id += (1 << 64)
+            node["top_city_geo_ids"] = city_ids
 
     def _find(self, leaf_id):
         result = {
@@ -88,12 +90,12 @@ class PromoIds(object):
 
         return city
 
-    def _choose_best_city(self, proposed_cities):
+    def _sort_cities(self, proposed_cities):
         def key_compare(city):
             return city["count_of_guides"], self._score_city_types(
                 city["types"])
 
-        return max(proposed_cities, key=key_compare)
+        return sorted(proposed_cities, key=key_compare, reverse=True)
 
     def _score_city_types(self, types):
         return max(self._city_type_to_int(t) for t in types)
