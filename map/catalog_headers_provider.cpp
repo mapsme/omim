@@ -25,7 +25,6 @@ platform::HttpClient::Headers CatalogHeadersProvider::GetHeaders()
 
   storage::CountriesVec localMaps;
   m_storage.GetLocalRealMaps(localMaps);
-  auto const & countryToCity = m_storage.GetMwmTopCityGeoIds();
   std::set<base::GeoObjectId> countries;
   auto & cities = params.m_cityGeoIds;
   for (auto const id : localMaps)
@@ -33,9 +32,8 @@ platform::HttpClient::Headers CatalogHeadersProvider::GetHeaders()
     auto const countryIds = m_storage.GetTopCountryGeoIds(id);
     countries.insert(countryIds.cbegin(), countryIds.cend());
 
-    auto const cityIt = countryToCity.find(id);
-    if (cityIt != countryToCity.cend())
-      cities.push_back(cityIt->second);
+    auto const cityIds = m_storage.GetMwmTopCityGeoIds(id);
+    cities.insert(cities.end(), countryIds.cbegin(), countryIds.cend());
   }
   params.m_countryGeoIds.assign(countries.cbegin(), countries.cend());
 

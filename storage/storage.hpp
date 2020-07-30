@@ -440,7 +440,12 @@ public:
 
   CountryNameSynonyms const & GetCountryNameSynonyms() const { return m_countryNameSynonyms; }
 
-  MwmTopCityGeoIds const & GetMwmTopCityGeoIds() const { return m_mwmTopCityGeoIds; }
+  // Returns array of osm ids for provided |countryId|.
+  // These are osm ids of "top" cities into mwm.
+  // Osm ids are ordered by count of guides and city types.
+  std::vector<base::GeoObjectId> GetMwmTopCityGeoIds(CountryId const & countryId) const;
+  // Returns array of osm ids for provided |countryId|.
+  // These are osm ids of countries into |countryId| plus all ids from ascendants.
   std::vector<base::GeoObjectId> GetTopCountryGeoIds(CountryId const & countryId) const;
 
   /// \brief Calls |toDo| for each node for subtree with |root|.

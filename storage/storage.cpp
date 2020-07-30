@@ -1678,6 +1678,15 @@ bool Storage::GetUpdateInfo(CountryId const & countryId, UpdateInfo & updateInfo
   return true;
 }
 
+std::vector<base::GeoObjectId> Storage::GetMwmTopCityGeoIds(CountryId const & countryId) const
+{
+  auto const it = m_mwmTopCityGeoIds.find(countryId);
+  if (it == m_mwmTopCityGeoIds.cend())
+    return {};
+
+  return it->second;
+}
+
 std::vector<base::GeoObjectId> Storage::GetTopCountryGeoIds(CountryId const & countryId) const
 {
   std::vector<base::GeoObjectId> result;
