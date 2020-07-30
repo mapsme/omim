@@ -37,7 +37,10 @@ public:
   virtual void InsertOldMwmMapping(CountryId const & newId, CountryId const & oldId) = 0;
   virtual void InsertAffiliation(CountryId const & countryId, string const & affilation) = 0;
   virtual void InsertCountryNameSynonym(CountryId const & countryId, string const & synonym) = 0;
-  virtual void InsertMwmTopCityGeoId(CountryId const & countryId, uint64_t const & geoObjectId) {}
+  virtual void InsertMwmTopCityGeoIds(CountryId const & countryId,
+                                      vector<uint64_t> const & geoObjectIds)
+  {
+  }
   virtual void InsertTopCountryGeoIds(CountryId const & countryId,
                                       vector<uint64_t> const & geoObjectIds)
   {
@@ -110,12 +113,13 @@ public:
     m_countryNameSynonyms[synonym] = countryId;
   }
 
-  void InsertMwmTopCityGeoId(CountryId const & countryId, uint64_t const & geoObjectId) override
+  void InsertMwmTopCityGeoIds(CountryId const & countryId,
+                              vector<uint64_t> const & geoObjectIds) override
   {
     ASSERT(!countryId.empty(), ());
-    ASSERT_NOT_EQUAL(geoObjectId, 0, ());
-    base::GeoObjectId id(geoObjectId);
-    m_mwmTopCityGeoIds.emplace(countryId, move(id));
+    ASSERT(!geoObjectIds.empty(), ());
+    vector<base::GeoObjectId> ids(geoObjectIds.cbegin(), geoObjectIds.cend());
+    m_mwmTopCityGeoIds.emplace(countryId, move(ids));
   }
 
   void InsertTopCountryGeoIds(CountryId const & countryId,
@@ -356,10 +360,10 @@ MwmSubtreeAttrs LoadGroupImpl(size_t depth, json_t * node, CountryId const & par
   for (auto const & affilationValue : affiliations)
     store.InsertAffiliation(id, affilationValue);
 
-  uint64_t geoObjectId = 0;
-  FromJSONObjectOptionalField(node, "top_city_geo_id", geoObjectId);
-  if (geoObjectId != 0)
-    store.InsertMwmTopCityGeoId(id, geoObjectId);
+  vector<uint64_t> topCityIds;
+  FromJSONObjectOptionalField(node, "top_city_geo_ids", topCityIds);
+  if (!topCityIds.empty())
+    store.InsertMwmTopCityGeoIds(id, topCityIds);
 
   vector<uint64_t> topCountryIds;
   FromJSONObjectOptionalField(node, "top_countries_geo_ids", topCountryIds);

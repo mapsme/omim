@@ -24,13 +24,11 @@ storage::CountryId DownloadOnMapDelegate::GetTopmostParentFor(storage::CountryId
 
 std::string DownloadOnMapDelegate::GetLinkForCountryId(storage::CountryId const & countryId) const
 {
-  auto const & cities = m_storage.GetMwmTopCityGeoIds();
-  auto const it = cities.find(countryId);
-
-  if (it == cities.cend())
+  auto const cities = m_storage.GetMwmTopCityGeoIds(countryId);
+  if (cities.empty())
     return {};
 
-  auto const cityGeoId = strings::to_string(it->second.GetEncodedId());
+  auto const cityGeoId = strings::to_string(cities[0].GetEncodedId());
 
   if (cityGeoId.empty())
     return {};
