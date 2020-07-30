@@ -23,19 +23,18 @@ platform::HttpClient::Headers CatalogHeadersProvider::GetHeaders()
   web_api::HeadersParams params;
   params.m_currentPosition = m_positionProvider.GetCurrentPosition();
 
-  storage::CountriesVec localMaps;
-  m_storage.GetLocalRealMaps(localMaps);
+  auto const & targetCountry = m_storage.GetLastDownloadedCountryId();
   std::set<base::GeoObjectId> countries;
   auto & cities = params.m_cityGeoIds;
-  for (auto const id : localMaps)
+  if (!targetCountry.empty())
   {
-    auto const countryIds = m_storage.GetTopCountryGeoIds(id);
+    auto const countryIds = m_storage.GetTopCountryGeoIds(targetCountry);
     countries.insert(countryIds.cbegin(), countryIds.cend());
+    params.m_countryGeoIds.assign(countries.cbegin(), countries.cend());
 
-    auto const cityIds = m_storage.GetMwmTopCityGeoIds(id);
-    cities.insert(cities.end(), countryIds.cbegin(), countryIds.cend());
+    auto const cityIds = m_storage.GetMwmTopCityGeoIds(targetCountry);
+    cities.insert(cities.end(), cityIds.cbegin(), cityIds.cend());
   }
-  params.m_countryGeoIds.assign(countries.cbegin(), countries.cend());
 
   if (m_bookmarkCatalog != nullptr && !m_bookmarkCatalog->GetDownloadedIds().empty())
   {
