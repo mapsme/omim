@@ -8,6 +8,7 @@
 
 #include "indexer/scales.hpp"
 
+#include "platform/localization.hpp"
 #include "platform/platform.hpp"
 
 #include "base/stl_helpers.hpp"
@@ -703,7 +704,7 @@ void SearchMarks::OnActivate(FeatureID const & featureId)
     if (unavailableIt != m_unavailable.cend())
     {
       mark->SetAvailable(false);
-      mark->SetReason(unavailableIt->second);
+      mark->SetReason(platform::GetLocalizedString(unavailableIt->second));
     }
   });
 }
@@ -733,9 +734,9 @@ void SearchMarks::ClearVisited()
   m_visited.clear();
 }
 
-void SearchMarks::SetUnavailable(FeatureID const & id, std::string const & reason)
+void SearchMarks::SetUnavailable(FeatureID const & id, std::string const & reasonKey)
 {
-  m_unavailable[id] = reason;
+  m_unavailable[id] = reasonKey;
 }
 
 bool SearchMarks::IsUnavailable(FeatureID const & id) const
