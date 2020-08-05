@@ -745,7 +745,7 @@ void SearchMarks::ClearVisited()
 
 void SearchMarks::SetUnavailable(FeatureID const & id, std::string const & reasonKey)
 {
-  m_unavailable[id] = reasonKey;
+  m_unavailable.insert_or_assign(id, reasonKey);
 }
 
 bool SearchMarks::IsUnavailable(FeatureID const & id) const
