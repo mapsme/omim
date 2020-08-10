@@ -434,9 +434,11 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (mFilterController == null || data == null)
       return;
 
-    BookingFilterParams params = data.getParcelableExtra(FilterActivity.EXTRA_FILTER_PARAMS);
     HotelsFilter filter = data.getParcelableExtra(FilterActivity.EXTRA_FILTER);
-    mFilterController.setFilterAndParams(filter, params);
+    mFilterController.setFilter(filter);
+    BookingFilterParams params = data.getParcelableExtra(FilterActivity.EXTRA_FILTER_PARAMS);
+    if (params != null)
+      mFilterController.setFilterParams(params);
 
     showSearch(query);
   }
@@ -465,7 +467,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       SearchActivity.start(this, query, filter, params);
     }
     if (mFilterController != null)
-      mFilterController.resetFilter();
+      mFilterController.resetFilterAndParams();
   }
 
   public void showEditor()
@@ -1159,9 +1161,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     setupSearchQuery(data);
 
+    mFilterController.setFilter(data.getParcelableExtra(FilterActivity.EXTRA_FILTER));
     BookingFilterParams params = data.getParcelableExtra(FilterActivity.EXTRA_FILTER_PARAMS);
-    mFilterController.setFilterAndParams(data.getParcelableExtra(FilterActivity.EXTRA_FILTER),
-                                         params);
+    if (params != null)
+      mFilterController.setFilterParams(params);
     mFilterController.updateFilterButtonsVisibility(mFilterController.isSatisfiedForSearch());
     runSearch();
   }
@@ -1371,7 +1374,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     {
       mFilterController.updateFilterButtonsVisibility(true);
       mFilterController.show(!TextUtils.isEmpty(SearchEngine.INSTANCE.getQuery()), true);
-      mFilterController.setFilterAndParams(filter, params);
+      mFilterController.setFilter(filter);
+      if (params != null)
+        mFilterController.setFilterParams(params);
       return true;
     }
 
@@ -1591,7 +1596,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     {
       SearchEngine.INSTANCE.cancelInteractiveSearch();
       if (mFilterController != null)
-        mFilterController.resetFilter();
+        mFilterController.resetFilterAndParams();
       mSearchController.clear();
       return;
     }
@@ -2605,7 +2610,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public void onSearchClearClick()
   {
     if (mFilterController != null)
-      mFilterController.resetFilter();
+      mFilterController.resetFilterAndParams();
   }
 
   @Override

@@ -46,8 +46,7 @@ public class SearchFilterController implements SearchToolbarController.FilterPar
     @Override
     public void onClick(View v)
     {
-      setFilterAndParams(null, null);
-      mToolbarController.setFilterParams(null);
+      resetFilterAndParams();
       if (mFilterListener != null)
         mFilterListener.onFilterClear();
     }
@@ -144,11 +143,15 @@ public class SearchFilterController implements SearchToolbarController.FilterPar
     return mFilter;
   }
 
-  public void setFilterAndParams(@Nullable HotelsFilter filter, @Nullable BookingFilterParams params)
+  public void setFilterParams(@NonNull BookingFilterParams params)
+  {
+    mToolbarController.setFilterParams(params);
+    mBookingFilterParams = params;
+  }
+
+  public void setFilter(@Nullable HotelsFilter filter)
   {
     mFilter = filter;
-    if (params != null)
-      mToolbarController.setFilterParams(params);
     if (mFilter != null)
     {
       mFilterIcon.setOnClickListener(mClearListener);
@@ -171,11 +174,17 @@ public class SearchFilterController implements SearchToolbarController.FilterPar
     }
   }
 
-  public void resetFilter()
+  public void resetFilterAndParams()
   {
-    setFilterAndParams(null, null);
-    mToolbarController.setFilterParams(null);
+    setFilter(null);
+    resetFilterParams();
     updateFilterButtonsVisibility(false);
+  }
+
+  private void resetFilterParams()
+  {
+    mToolbarController.resetFilterParams();
+    mBookingFilterParams = null;
   }
 
   @Nullable
@@ -194,7 +203,10 @@ public class SearchFilterController implements SearchToolbarController.FilterPar
 
   public void onRestoreState(@NonNull Bundle state)
   {
-    setFilterAndParams(state.getParcelable(STATE_HOTEL_FILTER), state.getParcelable(STATE_FILTER_PARAMS));
+    setFilter(state.getParcelable(STATE_HOTEL_FILTER));
+    BookingFilterParams params = state.getParcelable(STATE_FILTER_PARAMS);
+    if (params != null)
+      setFilterParams(params);
     updateFilterButtonsVisibility(state.getBoolean(STATE_HOTEL_FILTER_VISIBILITY, false));
   }
 
