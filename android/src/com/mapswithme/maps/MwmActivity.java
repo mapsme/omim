@@ -437,8 +437,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     HotelsFilter filter = data.getParcelableExtra(FilterActivity.EXTRA_FILTER);
     mFilterController.setFilter(filter);
     BookingFilterParams params = data.getParcelableExtra(FilterActivity.EXTRA_FILTER_PARAMS);
-    if (params != null)
-      mFilterController.setFilterParams(params);
+    mFilterController.setFilterParams(params);
 
     showSearch(query);
   }
@@ -1163,8 +1162,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
     mFilterController.setFilter(data.getParcelableExtra(FilterActivity.EXTRA_FILTER));
     BookingFilterParams params = data.getParcelableExtra(FilterActivity.EXTRA_FILTER_PARAMS);
-    if (params != null)
-      mFilterController.setFilterParams(params);
+    mFilterController.setFilterParams(params);
     mFilterController.updateFilterButtonsVisibility(mFilterController.isSatisfiedForSearch());
     runSearch();
   }
@@ -1375,8 +1373,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mFilterController.updateFilterButtonsVisibility(true);
       mFilterController.show(!TextUtils.isEmpty(SearchEngine.INSTANCE.getQuery()), true);
       mFilterController.setFilter(filter);
-      if (params != null)
-        mFilterController.setFilterParams(params);
+      mFilterController.setFilterParams(params);
       return true;
     }
 

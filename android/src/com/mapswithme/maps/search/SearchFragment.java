@@ -364,8 +364,7 @@ public class SearchFragment extends BaseMwmFragment
     if (savedInstanceState != null)
       mFilterController.onRestoreState(savedInstanceState);
     mFilterController.setFilter(mInitialHotelsFilter);
-    if (mInitialFilterParams != null)
-      mFilterController.setFilterParams(mInitialFilterParams);
+    mFilterController.setFilterParams(mInitialFilterParams);
     mFilterController.updateFilterButtonsVisibility(mFilterController.isSatisfiedForSearch());
 
     mSearchAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver()
@@ -696,9 +695,7 @@ public class SearchFragment extends BaseMwmFragment
           return;
 
         mFilterController.setFilter(data.getParcelableExtra(FilterActivity.EXTRA_FILTER));
-        BookingFilterParams params = data.getParcelableExtra(FilterActivity.EXTRA_FILTER_PARAMS);
-        if (params != null)
-          mFilterController.setFilterParams(params);
+        mFilterController.setFilterParams(data.getParcelableExtra(FilterActivity.EXTRA_FILTER_PARAMS));
         runSearch();
         break;
     }

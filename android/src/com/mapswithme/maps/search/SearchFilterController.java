@@ -143,8 +143,11 @@ public class SearchFilterController implements SearchToolbarController.FilterPar
     return mFilter;
   }
 
-  public void setFilterParams(@NonNull BookingFilterParams params)
+  public void setFilterParams(@Nullable BookingFilterParams params)
   {
+    if (params == null)
+      return;
+
     mToolbarController.setFilterParams(params);
     mBookingFilterParams = params;
   }
@@ -204,9 +207,7 @@ public class SearchFilterController implements SearchToolbarController.FilterPar
   public void onRestoreState(@NonNull Bundle state)
   {
     setFilter(state.getParcelable(STATE_HOTEL_FILTER));
-    BookingFilterParams params = state.getParcelable(STATE_FILTER_PARAMS);
-    if (params != null)
-      setFilterParams(params);
+    setFilterParams(state.getParcelable(STATE_FILTER_PARAMS));
     updateFilterButtonsVisibility(state.getBoolean(STATE_HOTEL_FILTER_VISIBILITY, false));
   }
 
