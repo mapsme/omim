@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class FilterUtils
 {
   private static final int MAX_STAYING_DAYS = 30;
-  private static final int MAX_CHECKIN_WINDOW_IN_DAYS = 360;
+  private static final int MAX_CHECKIN_WINDOW_IN_DAYS = 365;
   private static final String DAY_OF_MONTH_PATTERN = "MMM d";
 
   @Retention(RetentionPolicy.SOURCE)
