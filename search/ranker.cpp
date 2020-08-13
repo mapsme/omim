@@ -307,8 +307,13 @@ class RankerResultMaker
 {
 public:
   RankerResultMaker(Ranker & ranker, DataSource const & dataSource,
-                    storage::CountryInfoGetter const & infoGetter, Geocoder::Params const & params)
-    : m_ranker(ranker), m_dataSource(dataSource), m_infoGetter(infoGetter), m_params(params)
+                    storage::CountryInfoGetter const & infoGetter,
+                    ReverseGeocoder const & reverseGeocoder, Geocoder::Params const & params)
+    : m_ranker(ranker)
+    , m_dataSource(dataSource)
+    , m_infoGetter(infoGetter)
+    , m_reverseGeocoder(reverseGeocoder)
+    , m_params(params)
   {
   }
 
@@ -355,6 +360,22 @@ private:
 
     center = feature::GetCenter(*ft);
     m_ranker.GetBestMatchName(*ft, name);
+
+    // Insert exact address (street and house number) instead of empty result name.
+    if (name.empty())
+    {
+      ReverseGeocoder::Address addr;
+      LazyAddressGetter addressGetter(m_reverseGeocoder, center);
+      if (addressGetter.GetExactAddress(addr))
+      {
+        if (auto streetFeature = LoadFeature(addr.m_street.m_id))
+        {
+          string streetName;
+          m_ranker.GetBestMatchName(*streetFeature, streetName);
+          name = streetName + ", " + addr.GetHouseNumber();
+        }
+      }
+    }
 
     // Country (region) name is a file name if feature isn't from
     // World.mwm.
@@ -538,6 +559,7 @@ private:
   Ranker & m_ranker;
   DataSource const & m_dataSource;
   storage::CountryInfoGetter const & m_infoGetter;
+  ReverseGeocoder const & m_reverseGeocoder;
   Geocoder::Params const & m_params;
 
   unique_ptr<FeaturesLoaderGuard> m_loader;
@@ -584,14 +606,6 @@ Result Ranker::MakeResult(RankerResult const & rankerResult, bool needAddress,
   if (needAddress)
   {
     LazyAddressGetter addressGetter(m_reverseGeocoder, rankerResult.GetCenter());
-
-    // Insert exact address (street and house number) instead of empty result name.
-    if (name.empty())
-    {
-      ReverseGeocoder::Address addr;
-      if (addressGetter.GetExactAddress(addr))
-        name = FormatStreetAndHouse(addr);
-    }
 
     address = GetLocalizedRegionInfoForResult(rankerResult);
 
@@ -736,7 +750,7 @@ void Ranker::LoadCountriesTree() { m_regionInfoGetter.LoadCountriesTree(); }
 void Ranker::MakeRankerResults(Geocoder::Params const & geocoderParams,
                                vector<RankerResult> & results)
 {
-  RankerResultMaker maker(*this, m_dataSource, m_infoGetter, geocoderParams);
+  RankerResultMaker maker(*this, m_dataSource, m_infoGetter, m_reverseGeocoder, geocoderParams);
   for (auto const & r : m_preRankerResults)
   {
     auto p = maker(r);
