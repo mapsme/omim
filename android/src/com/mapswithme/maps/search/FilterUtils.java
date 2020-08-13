@@ -204,6 +204,8 @@ public class FilterUtils
     long difference = checkinMillis - MaterialDatePicker.todayInUtcMilliseconds();
     int daysToCheckin = (int) TimeUnit.MILLISECONDS.toDays(difference);
     int leftDays = MAX_CHECKIN_WINDOW_IN_DAYS - daysToCheckin;
+    if (leftDays <= 0)
+      throw new AssertionError("No available dates for checkout!");
     Calendar date = Utils.getCalendarInstance();
     date.setTimeInMillis(checkinMillis);
     date.add(Calendar.DAY_OF_YEAR, Math.min(leftDays, MAX_STAYING_DAYS));
