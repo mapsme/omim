@@ -333,20 +333,28 @@ public class SearchToolbarController extends ToolbarController
       if (mChosenDates.first == null || mChosenDates.second == null)
         return;
 
-      final long checkinMillis = mChosenDates.first;
-      final long checkoutMillis = mChosenDates.second;
-      if (FilterUtils.isWithinMaxStayingDays(checkinMillis, checkoutMillis))
+      validateAndSetupDates(mChosenDates.first, mChosenDates.second);
+
+      for (FilterParamsChangedListener listener : mFilterParamsChangedListeners)
+        listener.onBookingParamsChanged();
+    }
+
+    private void validateAndSetupDates(long checkinMillis, long checkoutMillis)
+    {
+      if (checkoutMillis <= checkinMillis)
       {
-        Objects.requireNonNull(mChooseDatesChip);
-        mChooseDatesChip.setText(mPicker.getHeaderText());
+        formatAndSetChosenDates(checkinMillis, FilterUtils.getDayAfter(checkinMillis));
       }
-      else
+      else if (!FilterUtils.isWithinMaxStayingDays(checkinMillis, checkoutMillis))
       {
         Toast.makeText(getActivity(), R.string.thirty_days_limit_dialog, Toast.LENGTH_LONG).show();
         formatAndSetChosenDates(checkinMillis, FilterUtils.getMaxCheckoutInMillis(checkinMillis));
       }
-      for (FilterParamsChangedListener listener : mFilterParamsChangedListeners)
-        listener.onBookingParamsChanged();
+      else
+      {
+        Objects.requireNonNull(mChooseDatesChip);
+        mChooseDatesChip.setText(mPicker.getHeaderText());
+      }
     }
   }
 }

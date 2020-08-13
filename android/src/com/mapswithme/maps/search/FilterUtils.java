@@ -1,8 +1,6 @@
 package com.mapswithme.maps.search;
 
 import android.content.Context;
-import android.icu.util.Calendar;
-import android.icu.util.TimeZone;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -13,12 +11,14 @@ import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.mapswithme.maps.R;
+import com.mapswithme.util.Utils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -204,7 +204,7 @@ public class FilterUtils
     long difference = checkinMillis - MaterialDatePicker.todayInUtcMilliseconds();
     int daysToCheckin = (int) TimeUnit.MILLISECONDS.toDays(difference);
     int leftDays = MAX_CHECKIN_WINDOW_IN_DAYS - daysToCheckin;
-    Calendar date = Calendar.getInstance();
+    Calendar date = Utils.getCalendarInstance();
     date.setTimeInMillis(checkinMillis);
     date.add(Calendar.DAY_OF_YEAR, Math.min(leftDays, MAX_STAYING_DAYS));
     return date.getTimeInMillis();
@@ -213,7 +213,7 @@ public class FilterUtils
   private static long getMaxCheckinInMillis()
   {
     final long today = MaterialDatePicker.todayInUtcMilliseconds();
-    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    Calendar calendar = Utils.getCalendarInstance();
     calendar.setTimeInMillis(today);
     calendar.add(Calendar.DAY_OF_YEAR, MAX_CHECKIN_WINDOW_IN_DAYS);
     return calendar.getTimeInMillis();
@@ -249,5 +249,13 @@ public class FilterUtils
     long difference = checkoutMillis - checkinMillis;
     int days = (int) TimeUnit.MILLISECONDS.toDays(difference);
     return days <= MAX_STAYING_DAYS;
+  }
+
+  public static long getDayAfter(long date)
+  {
+    Calendar dayAfter = Utils.getCalendarInstance();
+    dayAfter.setTimeInMillis(date);
+    dayAfter.add(Calendar.DAY_OF_YEAR, 1);
+    return dayAfter.getTimeInMillis();
   }
 }
