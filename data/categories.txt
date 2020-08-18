@@ -9065,6 +9065,11 @@ zh-Hans:视频商城
 zh-Hant:視頻商城
 fa:فروشگاه رسانه‌های تصویری
 
+shop-tobacco
+en:Tobacco shop|Tobacconist
+de:Tabak Laden
+it:Tabacchi|Tabacchino|Tabaccaio
+
 shop-video_games
 en:Video games shop|videogames shop|video games|videogames
 ru:Магазин видеоигр|видеоигры
