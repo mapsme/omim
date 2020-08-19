@@ -63,7 +63,7 @@ public class BookingFilterParams implements Parcelable
     }
 
     @Nullable
-    private int[] getAgeOfChildren()
+    public int[] getAgeOfChildren()
     {
       if (!mAgeOfChildrenList.isEmpty())
       {
@@ -73,6 +73,11 @@ public class BookingFilterParams implements Parcelable
       }
 
       return mAgeOfChildren;
+    }
+
+    public int getAdultsCount()
+    {
+      return mAdultsCount;
     }
 
     void incrementAdultsCount()

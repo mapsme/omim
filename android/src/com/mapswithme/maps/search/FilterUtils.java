@@ -38,7 +38,7 @@ public class FilterUtils
   private static final int MAX_CHECKIN_WINDOW_IN_DAYS = 365;
   private static final String DAY_OF_MONTH_PATTERN = "MMM d";
   private static final String NO_NETWORK_CONNECTION_DIALOG_TAG = "no_network_connection_dialog";
-  private static final int AGE_OF_CHILD = 8;
+  private static final int AGE_OF_CHILD = 7;
   private static final int AGE_OF_INFANT = 1;
 
   @Retention(RetentionPolicy.SOURCE)
@@ -354,10 +354,30 @@ public class FilterUtils
   }
 
   @NonNull
-  public static RoomGuestCounts toCounts(@NonNull BookingFilterParams.Room... roms)
+  public static RoomGuestCounts toCounts(@NonNull BookingFilterParams.Room... rooms)
   {
-    // TODO: coming soon.
-    return new RoomGuestCounts(5, 5, 5,5);
+    final int roomsCount = rooms.length;
+    int adultsCount = 0;
+    int infantsCount = 0;
+    int childrenCount = 0;
+    for (Room room : rooms)
+    {
+      adultsCount += room.getAdultsCount();
+      int[] ageOfChildren = room.getAgeOfChildren();
+      if (ageOfChildren == null)
+        continue;
+      for (int age : ageOfChildren)
+      {
+        if (age == AGE_OF_INFANT)
+          infantsCount++;
+        else if (age == AGE_OF_CHILD)
+          childrenCount++;
+        else
+          throw new AssertionError("Unexpected age '" + age + "' detected!");
+      }
+    }
+
+    return new RoomGuestCounts(roomsCount, adultsCount, childrenCount, infantsCount);
   }
 
   public static class RoomGuestCounts
