@@ -100,6 +100,7 @@ public class BookingFilterParams implements Parcelable
     {
       mAdultsCount = in.readInt();
       mAgeOfChildren = in.createIntArray();
+      in.readList(mAgeOfChildrenList, Integer.class.getClassLoader());
     }
 
     public static final Creator<Room> CREATOR = new Creator<Room>()
@@ -128,6 +129,7 @@ public class BookingFilterParams implements Parcelable
     {
       dest.writeInt(mAdultsCount);
       dest.writeIntArray(mAgeOfChildren);
+      dest.writeList(mAgeOfChildrenList);
     }
   }
 
