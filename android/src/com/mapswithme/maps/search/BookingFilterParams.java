@@ -2,10 +2,13 @@ package com.mapswithme.maps.search;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.mapswithme.util.ConnectionState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookingFilterParams implements Parcelable
 {
@@ -51,6 +54,36 @@ public class BookingFilterParams implements Parcelable
     private int mAdultsCount;
     @Nullable
     private int[] mAgeOfChildren;
+    @NonNull
+    private final List<Integer> mAgeOfChildrenList = new ArrayList<>();
+
+    Room()
+    {
+      // No op.
+    }
+
+    @Nullable
+    private int[] getAgeOfChildren()
+    {
+      if (!mAgeOfChildrenList.isEmpty())
+      {
+        mAgeOfChildren = new int[mAgeOfChildrenList.size()];
+        for (int i = 0; i < mAgeOfChildren.length; i++)
+          mAgeOfChildren[i] = mAgeOfChildrenList.get(i);
+      }
+
+      return mAgeOfChildren;
+    }
+
+    void incrementAdultsCount()
+    {
+      mAdultsCount++;
+    }
+
+    public void addAge(int age)
+    {
+      mAgeOfChildrenList.add(age);
+    }
 
     Room(int adultsCount, @Nullable int[] ageOfChildren)
     {
