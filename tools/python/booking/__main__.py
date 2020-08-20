@@ -74,20 +74,20 @@ def main():
     with tqdm(disable=not options.verbose) as progress_bar:
         if options.download_test_dataset:
             download_test_data(
-                options.country_code,
                 options.user,
                 options.password,
                 options.output,
                 options.threads_count,
+                options.country_code,
                 progress_bar,
             )
         else:
             download(
-                options.country_code,
                 options.user,
                 options.password,
                 options.output,
                 options.threads_count,
+                options.country_code,
                 progress_bar,
             )
 

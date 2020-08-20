@@ -10,6 +10,10 @@ WD_HOST = ""
 WD_LOGIN = ""
 WD_PASSWORD = ""
 
+# Booking settings
+BOOKING_USER = ""
+BOOKING_PASSWORD= ""
+
 # Common section
 EMAILS = []
 
@@ -44,6 +48,13 @@ def init(default_settings_path: AnyStr):
     WD_HOST = cfg.get_opt("Storage", "WD_HOST", WD_HOST)
     WD_LOGIN = cfg.get_opt("Storage", "WD_LOGIN", WD_LOGIN)
     WD_PASSWORD = cfg.get_opt("Storage", "WD_PASSWORD", WD_PASSWORD)
+
+    # Booking section
+    global BOOKING_USER
+    global BOOKING_PASSWORD
+
+    BOOKING_USER = cfg.get_opt("Booking", "BOOKING_USER", BOOKING_USER)
+    BOOKING_PASSWORD = cfg.get_opt("Booking", "BOOKING_PASSWORD", BOOKING_PASSWORD)
 
     # Common section
     global EMAILS

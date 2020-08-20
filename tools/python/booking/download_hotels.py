@@ -207,7 +207,12 @@ def download_hotels_by_country(api, country):
 
 
 def download(
-    country_code, user, password, path, threads_count, progress_bar=tqdm(disable=True)
+    user,
+    password,
+    path,
+    threads_count,
+    country_code=None,
+    progress_bar=tqdm(disable=True),
 ):
     api = BookingApi(user, password, "2.4")
     list_api = BookingListApi(api)

@@ -70,7 +70,12 @@ def download_hotels_by_country(api, district_names, country):
 
 
 def download_test_data(
-    country_code, user, password, path, threads_count, progress_bar=tqdm(disable=True)
+    user,
+    password,
+    path,
+    threads_count,
+    country_code=None,
+    progress_bar=tqdm(disable=True),
 ):
     logging.info(f"Starting test dataset download.")
     api = BookingApi(user, password, "2.4")
