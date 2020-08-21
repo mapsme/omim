@@ -346,9 +346,6 @@ void RuleDrawer::ProcessAreaStyle(FeatureType & f, Stylist const & s,
     applyPointStyle = m_globalRect.IsPointInside(featureCenter);
   }
 
-  if (!CheckPointStyle(f))
-    applyPointStyle = false;
-
   if (applyPointStyle || is3dBuilding)
     minVisibleScale = feature::GetMinDrawableScale(f);
 
@@ -473,9 +470,6 @@ void RuleDrawer::ProcessPointStyle(FeatureType & f, Stylist const & s,
                                    TInsertShapeFn const & insertShape, int & minVisibleScale)
 {
   if (m_customFeaturesContext && m_customFeaturesContext->NeedDiscardGeometry(f.GetID()))
-    return;
-
-  if (!CheckPointStyle(f))
     return;
 
   int const zoomLevel = m_context->GetTileKey().m_zoomLevel;
