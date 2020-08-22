@@ -4,6 +4,7 @@
 
 #include "transit/transit_entities.hpp"
 #include "transit/transit_graph_data.hpp"
+#include "transit/world_feed/feed_helpers.hpp"
 #include "transit/world_feed/world_feed.hpp"
 
 #include "geometry/mercator.hpp"
@@ -45,6 +46,21 @@ private:
   bool ConvertTransfers();
   bool ConvertGates();
   bool ConvertEdges();
+  // We try to minimize the reversed lines count.
+  void MirrorReversedLines();
+  // Returns line ids with corresponding shape links and route ids. There can be may lines inside
+  // the route with same shapeLink. We keep only one of them. These line ids are used in
+  // |PrepareLinesMetadata()|.
+  std::vector<LineSchemeData> GetLinesOnScheme(
+      std::unordered_map<TransitId, IdList> const & lineIdToStops) const;
+  // Finds common overlapping (parallel on the subway layer) segments on polylines. Motivation:
+  // we shouldn't draw parallel lines of different routes on top of each other so the user can’t
+  // tell which lines go where (the only visible line is the one that is drawn last). We need these
+  // lines to be drawn in parallel in corresponding routes colours.
+  void PrepareLinesMetadata();
+  // Calculates order for each of the parallel lines in the overlapping segment. In drape frontend
+  // we use this order as an offset for drawing line.
+  void CalculateLinePriorities(std::vector<LineSchemeData> const & linesOnScheme);
 
   // Methods for creating id & data pairs for |m_feed| based on the subway items.
   std::pair<TransitId, RouteData> MakeRoute(routing::transit::Line const & lineSubway);

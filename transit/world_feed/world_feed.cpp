@@ -22,7 +22,6 @@
 #include <utility>
 
 #include "3party/boost/boost/algorithm/string.hpp"
-#include "3party/boost/boost/container_hash/hash.hpp"
 
 #include "3party/jansson/myjansson.hpp"
 
@@ -692,50 +691,72 @@ void WorldFeed::ModifyLinesAndShapes()
 
   for (size_t i = 1; i < links.size(); ++i)
   {
-    auto const lineId = links[i].m_lineId;
-    auto & lineData = m_lines.m_data[lineId];
-    auto const shapeId = links[i].m_shapeId;
+    auto const lineIdNeedle = links[i].m_lineId;
+    auto & lineDataNeedle = m_lines.m_data[lineIdNeedle];
+    auto const shapeIdNeedle = links[i].m_shapeId;
 
-    auto [itCache, inserted] = matchingCache.emplace(shapeId, 0);
+    auto [itCache, inserted] = matchingCache.emplace(shapeIdNeedle, 0);
     if (!inserted)
     {
       if (itCache->second != 0)
       {
-        lineData.m_shapeId = 0;
-        lineData.m_shapeLink = m_lines.m_data[itCache->second].m_shapeLink;
+        lineDataNeedle.m_shapeId = 0;
+        lineDataNeedle.m_shapeLink = m_lines.m_data[itCache->second].m_shapeLink;
       }
       continue;
     }
 
-    auto const & points = m_shapes.m_data[shapeId].m_points;
+    auto const & pointsNeedle = m_shapes.m_data[shapeIdNeedle].m_points;
+    auto pointsNeedleRev = pointsNeedle;
+    std::reverse(pointsNeedleRev.begin(), pointsNeedleRev.end());
 
     for (size_t j = 0; j < i; ++j)
     {
-      auto const & curLineId = links[j].m_lineId;
+      auto const & lineIdHaystack = links[j].m_lineId;
 
-      // We skip shapes which are already included to other shapes.
-      if (m_lines.m_data[curLineId].m_shapeId == 0)
+      // We skip shapes which are already included into other shapes.
+      if (m_lines.m_data[lineIdHaystack].m_shapeId == 0)
         continue;
 
-      auto const curShapeId = links[j].m_shapeId;
+      auto const shapeIdHaystack = links[j].m_shapeId;
 
-      if (curShapeId == shapeId)
+      if (shapeIdHaystack == shapeIdNeedle)
         continue;
 
-      auto const & curPoints = m_shapes.m_data[curShapeId].m_points;
+      auto const & pointsHaystack = m_shapes.m_data[shapeIdHaystack].m_points;
 
-      auto const it = std::search(curPoints.begin(), curPoints.end(), points.begin(), points.end());
+      auto const it = std::search(pointsHaystack.begin(), pointsHaystack.end(),
+                                  pointsNeedle.begin(), pointsNeedle.end());
 
-      if (it == curPoints.end())
-        continue;
+      if (it == pointsHaystack.end())
+      {
+        auto const itRev = std::search(pointsHaystack.begin(), pointsHaystack.end(),
+                                       pointsNeedleRev.begin(), pointsNeedleRev.end());
+        if (itRev == pointsHaystack.end())
+          continue;
 
-      // Shape with |points| polyline is fully contained in the shape with |curPoints| polyline.
-      lineData.m_shapeId = 0;
-      lineData.m_shapeLink.m_shapeId = curShapeId;
-      lineData.m_shapeLink.m_startIndex = std::distance(curPoints.begin(), it);
-      lineData.m_shapeLink.m_endIndex = lineData.m_shapeLink.m_startIndex + points.size() - 1;
-      itCache->second = lineId;
-      shapesForRemoval.insert(shapeId);
+        // Shape with |pointsNeedleRev| polyline is fully contained in the shape with
+        // |pointsHaystack| polyline.
+        lineDataNeedle.m_shapeId = 0;
+        lineDataNeedle.m_shapeLink.m_shapeId = shapeIdHaystack;
+        lineDataNeedle.m_shapeLink.m_endIndex = std::distance(pointsHaystack.begin(), itRev);
+        lineDataNeedle.m_shapeLink.m_startIndex =
+            lineDataNeedle.m_shapeLink.m_endIndex + pointsNeedleRev.size() - 1;
+
+        itCache->second = lineIdNeedle;
+        shapesForRemoval.insert(shapeIdNeedle);
+        ++subShapesCount;
+        break;
+      }
+
+      // Shape with |pointsNeedle| polyline is fully contained in the shape |pointsHaystack|.
+      lineDataNeedle.m_shapeId = 0;
+      lineDataNeedle.m_shapeLink.m_shapeId = shapeIdHaystack;
+      lineDataNeedle.m_shapeLink.m_startIndex = std::distance(pointsHaystack.begin(), it);
+      lineDataNeedle.m_shapeLink.m_endIndex =
+          lineDataNeedle.m_shapeLink.m_startIndex + pointsNeedle.size() - 1;
+      itCache->second = lineIdNeedle;
+      shapesForRemoval.insert(shapeIdNeedle);
       ++subShapesCount;
       break;
     }
@@ -748,7 +769,7 @@ void WorldFeed::ModifyLinesAndShapes()
 
     lineData.m_shapeLink.m_shapeId = lineData.m_shapeId;
     lineData.m_shapeLink.m_startIndex = 0;
-    lineData.m_shapeLink.m_endIndex = m_shapes.m_data[lineData.m_shapeId].m_points.size();
+    lineData.m_shapeLink.m_endIndex = m_shapes.m_data[lineData.m_shapeId].m_points.size() - 1;
 
     lineData.m_shapeId = 0;
   }
@@ -1440,6 +1461,36 @@ void Lines::Write(std::unordered_map<TransitId, IdList> const & ids, std::ofstre
   }
 }
 
+void LinesMetadata::Write(std::unordered_map<TransitId, IdList> const & ids,
+                          std::ofstream & stream) const
+{
+  for (auto const & [lineId, stopIds] : ids)
+  {
+    auto it = m_data.find(lineId);
+    if (it == m_data.end())
+      continue;
+
+    auto const & lineMetaData = it->second;
+    auto node = base::NewJSONObject();
+    ToJSONObject(*node, "id", lineId);
+
+    auto segmentsOnShape = base::NewJSONArray();
+
+    for (auto const & lineSegmentOrder : lineMetaData)
+    {
+      auto segmentData = base::NewJSONObject();
+      ToJSONObject(*segmentData, "order", lineSegmentOrder.m_order);
+      ToJSONObject(*segmentData, "start_index", lineSegmentOrder.m_segment.m_startIdx);
+      ToJSONObject(*segmentData, "end_index", lineSegmentOrder.m_segment.m_endIdx);
+      json_array_append_new(segmentsOnShape.get(), segmentData.release());
+    }
+
+    json_object_set_new(node.get(), "shape_segments", segmentsOnShape.release());
+
+    WriteJson(node.get(), stream);
+  }
+}
+
 void Shapes::Write(IdSet const & ids, std::ofstream & stream) const
 {
   for (auto shapeId : ids)
@@ -1464,10 +1515,16 @@ void Stops::Write(IdSet const & ids, std::ofstream & stream) const
   {
     auto const & stop = m_data.find(stopId)->second;
     auto node = base::NewJSONObject();
-    if (stop.m_osmId == 0)
-      ToJSONObject(*node, "id", stopId);
-    else
+
+    ToJSONObject(*node, "id", stopId);
+
+    if (stop.m_osmId != 0)
+    {
       ToJSONObject(*node, "osm_id", stop.m_osmId);
+
+      if (stop.m_featureId != 0)
+        ToJSONObject(*node, "feature_id", stop.m_featureId);
+    }
 
     json_object_set_new(node.get(), "point", PointToJson(stop.m_point).release());
     json_object_set_new(node.get(), "title", TranslationsToJson(stop.m_title).release());
@@ -1576,10 +1633,16 @@ void Gates::Write(IdSet const & ids, std::ofstream & stream) const
 
 void WorldFeed::SplitFeedIntoRegions()
 {
+  LOG(LINFO, ("Started splitting feed into regions."));
+
   SplitStopsBasedData();
   LOG(LINFO, ("Split stops into", m_splitting.m_stops.size(), "regions."));
   SplitLinesBasedData();
   SplitSupplementalData();
+
+  m_feedIsSplitIntoRegions = true;
+
+  LOG(LINFO, ("Finished splitting feed into regions."));
 }
 
 void WorldFeed::SplitStopsBasedData()
@@ -1670,6 +1733,11 @@ void WorldFeed::SaveRegions(std::string const & worldFeedDir, std::string const 
         ());
   CHECK(DumpData(m_lines, m_splitting.m_lines[region], base::JoinPath(path, kLinesFile), overwrite),
         ());
+
+  CHECK(DumpData(m_linesMetadata, m_splitting.m_lines[region],
+                 base::JoinPath(path, kLinesMetadataFile), overwrite),
+        ());
+
   CHECK(DumpData(m_shapes, m_splitting.m_shapes[region], base::JoinPath(path, kShapesFile),
                  overwrite),
         ());
@@ -1701,10 +1769,11 @@ bool WorldFeed::Save(std::string const & worldFeedDir, bool overwrite)
   }
 
   CHECK(!m_edges.m_data.empty(), ());
-  LOG(LINFO, ("Started splitting feed into regions."));
-  SplitFeedIntoRegions();
-  LOG(LINFO, ("Finished splitting feed into regions. Saving to", worldFeedDir));
 
+  if (!m_feedIsSplitIntoRegions)
+    SplitFeedIntoRegions();
+
+  LOG(LINFO, ("Saving feed to", worldFeedDir));
   for (auto const & regionAndData : m_splitting.m_stops)
     SaveRegions(worldFeedDir, regionAndData.first, overwrite);
 
