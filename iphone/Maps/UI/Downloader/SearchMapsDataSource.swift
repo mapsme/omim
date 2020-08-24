@@ -4,6 +4,8 @@ class SearchMapsDataSource {
   fileprivate var searchResults: [MapSearchResult] = []
   fileprivate var searchId = 0
   fileprivate var onUpdate: SearchCallback?
+  fileprivate var query: String = ""
+  fileprivate var lastSuccessfulQuery: String = ""
 }
 
 extension SearchMapsDataSource: IDownloaderDataSource {
@@ -36,7 +38,8 @@ extension SearchMapsDataSource: IDownloaderDataSource {
   }
 
   func item(at indexPath: IndexPath) -> MapNodeAttributes {
-    Storage.shared().attributes(forCountry: searchResults[indexPath.item].countryId)
+    precondition(indexPath.row < searchResults.count, "Search error: index:\(indexPath.row), count: \(searchResults.count), query: \(query) / \(lastSuccessfulQuery)")
+    return Storage.shared().attributes(forCountry: searchResults[indexPath.item].countryId)
   }
 
   func matchedName(at indexPath: IndexPath) -> String? {
@@ -62,12 +65,14 @@ extension SearchMapsDataSource: IDownloaderDataSource {
   func search(_ query: String, locale: String, update: @escaping SearchCallback) {
     searchId += 1
     onUpdate = update
+    self.query = query
     FrameworkHelper.search(inDownloader: query, inputLocale: locale) { [weak self, searchId] (results, finished) in
       if searchId != self?.searchId {
         return
       }
       self?.searchResults = results
-      if results.count > 0 || finished {
+      self?.lastSuccessfulQuery = query
+      if !results.isEmpty || finished {
         self?.onUpdate?(finished)
       }
     }
