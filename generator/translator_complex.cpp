@@ -19,20 +19,24 @@ namespace generator
 {
 TranslatorComplex::TranslatorComplex(std::shared_ptr<FeatureProcessorInterface> const & processor,
                                      std::shared_ptr<cache::IntermediateData> const & cache,
-                                     feature::GenerateInfo const & info)
+                                     feature::GenerateInfo const & info, bool popularity)
   : Translator(processor, cache, std::make_shared<FeatureMaker>(cache->GetCache()))
   , m_tagReplacer(std::make_shared<TagReplacer>(
-                    base::JoinPath(GetPlatform().ResourcesDir(), REPLACED_TAGS_FILE)))
+        base::JoinPath(GetPlatform().ResourcesDir(), REPLACED_TAGS_FILE)))
 {
   auto filters = std::make_shared<FilterCollection>();
   filters->Append(std::make_shared<FilterPlanet>());
-  filters->Append(std::make_shared<FilterComplex>());
+  filters->Append(popularity ? std::make_shared<FilterComplexPopularity>()
+                             : std::make_shared<FilterComplex>());
   filters->Append(std::make_shared<FilterElements>(
       base::JoinPath(GetPlatform().ResourcesDir(), SKIPPED_ELEMENTS_FILE)));
   SetFilter(filters);
 
-  SetCollector(std::make_shared<BuildingPartsCollector>(
-                 info.GetIntermediateFileName(BUILDING_PARTS_MAPPING_FILE), cache->GetCache()));
+  if (!popularity)
+  {
+    SetCollector(std::make_shared<BuildingPartsCollector>(
+        info.GetIntermediateFileName(BUILDING_PARTS_MAPPING_FILE), cache->GetCache()));
+  }
 }
 
 void TranslatorComplex::Preprocess(OsmElement & element)

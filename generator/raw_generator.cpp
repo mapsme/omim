@@ -35,6 +35,8 @@ void RawGenerator::ForceReloadCache()
 
 std::shared_ptr<FeatureProcessorQueue> RawGenerator::GetQueue() { return m_queue; }
 
+std::shared_ptr<cache::IntermediateData> RawGenerator::GetCache() { return m_cache; }
+
 void RawGenerator::GenerateCountries(bool addAds)
 {
   if (!m_genInfo.m_complexHierarchyFilename.empty())

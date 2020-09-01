@@ -2,8 +2,8 @@
 // Complexes are a hierarchy of interesting geographical features.
 // For the program to work correctly, you need to have in your file system:
 // top_directory
-//      |_ planet.o5m
 //      |_maps_build
+//             |_planet.o5m
 //             |_190223(for example 2019 Feb. 23rd)
 //             |_intermediate_data
 //             |_osm2ft
@@ -76,7 +76,7 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
   classificator::Load();
 
   feature::GenerateInfo genInfo;
-  genInfo.m_osmFileName = base::JoinPath(FLAGS_maps_build_path, "..", "planet.o5m");
+  genInfo.m_osmFileName = base::JoinPath(FLAGS_maps_build_path, "planet.o5m");
   genInfo.SetOsmFileType("o5m");
   genInfo.SetNodeStorageType(FLAGS_node_storage);
   genInfo.m_intermediateDir = base::JoinPath(FLAGS_maps_build_path, "intermediate_data");
@@ -85,7 +85,9 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
 
   generator::hierarchy::PrintFn print;
   generator::hierarchy::GetMainTypeFn getMainType = generator::hierarchy::GetMainType;
-  std::shared_ptr<generator::FilterInterface> filter = std::make_shared<generator::FilterComplex>();
+  std::shared_ptr<generator::FilterInterface> filter =
+      FLAGS_popularity ? std::make_shared<generator::FilterComplexPopularity::FilterComplex>()
+                       : std::make_shared<generator::FilterComplex>();
 
   if (FLAGS_debug)
   {
@@ -101,9 +103,8 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
   generator::RawGenerator rawGenerator(genInfo, threadsCount);
   auto processor = CreateProcessor(generator::ProcessorType::Complex, rawGenerator.GetQueue(),
                                    genInfo.m_intermediateDir, false /* haveBordersForWholeWorld */);
-  generator::cache::IntermediateDataObjectsCache objectsCache;
-  auto const cache = std::make_shared<generator::cache::IntermediateData>(objectsCache, genInfo);
-  auto translator = CreateTranslator(generator::TranslatorType::Complex, processor, cache, genInfo);
+  auto translator = CreateTranslator(generator::TranslatorType::Complex, processor,
+                                     rawGenerator.GetCache()->Clone(), genInfo, FLAGS_popularity);
   auto finalProcessor = std::make_shared<generator::ComplexFinalProcessor>(
       genInfo.m_tmpDir, FLAGS_output, threadsCount);
 
@@ -111,8 +112,6 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
   finalProcessor->SetGetMainTypeFunction(getMainType);
   finalProcessor->SetGetNameFunction(generator::hierarchy::GetName);
   finalProcessor->SetFilter(filter);
-  finalProcessor->UseBuildingPartsInfo(
-      genInfo.GetIntermediateFileName(BUILDING_PARTS_MAPPING_FILE));
 
   if (FLAGS_popularity)
   {
@@ -121,10 +120,15 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv) {
     // Find directory with *.mwm. Directory FLAGS_maps_build_path must contain directory with *.mwm,
     // whose name must consist of six digits.
     Platform::FilesList files;
-    pl.GetFilesByRegExp(FLAGS_maps_build_path, "[0-9]{6}", files);
+    pl.GetFilesByRegExp(FLAGS_maps_build_path, "^[0-9]{6}$", files);
     CHECK_EQUAL(files.size(), 1, ());
     auto const mwmPath = base::JoinPath(FLAGS_maps_build_path, files[0]);
     finalProcessor->UseCentersEnricher(mwmPath, osm2FtPath);
+  }
+  else
+  {
+    finalProcessor->UseBuildingPartsInfo(
+        genInfo.GetIntermediateFileName(BUILDING_PARTS_MAPPING_FILE));
   }
 
   rawGenerator.GenerateCustom(translator, finalProcessor);

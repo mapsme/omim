@@ -73,7 +73,6 @@ UNIT_CLASS_TEST(TestWithClassificator, ComplexHierarchy_FlattenBuildingParts)
 {
 
   auto trees = generator::hierarchy::BuildHierarchy(MakeTestSet1(),
-                                                    generator::hierarchy::GetMainType,
                                                     std::make_shared<generator::FilterComplex>());
   TEST_EQUAL(trees.size(), 1, ());
   TEST_EQUAL(tree_node::Size(trees[0]), 4, ());
@@ -95,7 +94,6 @@ UNIT_CLASS_TEST(TestWithClassificator, ComplexHierarchy_FlattenBuildingParts)
 UNIT_CLASS_TEST(TestWithClassificator, ComplexHierarchy_AddChildrenTo)
 {
   auto trees = generator::hierarchy::BuildHierarchy(MakeTestSet1(),
-                                                    generator::hierarchy::GetMainType,
                                                     std::make_shared<generator::FilterComplex>());
   TEST_EQUAL(trees.size(), 1, ());
   TEST_EQUAL(tree_node::Size(trees[0]), 4, ());

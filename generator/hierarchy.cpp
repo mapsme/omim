@@ -6,6 +6,7 @@
 #include "geometry/rect2d.hpp"
 
 #include "base/assert.hpp"
+#include "base/math.hpp"
 #include "base/stl_helpers.hpp"
 
 #include <algorithm>
@@ -113,16 +114,15 @@ HierarchyLinker::Node::Ptr HierarchyLinker::FindPlaceParent(HierarchyPlace const
     // is contained in a object with tag 'building'. This case is second. We suppose a building part is
     // only inside a building.
     static auto const & buildingChecker = ftypes::IsBuildingChecker::Instance();
-    static auto const & buildingPartChecker = ftypes::IsBuildingPartChecker::Instance();
     auto const & candidate = candidateNode->GetData();
-    if (buildingPartChecker(place.GetTypes()) &&
-        !(buildingChecker(candidate.GetTypes()) || buildingPartChecker(candidate.GetTypes())))
+    if (mainTypeIsBuildingPart(place.GetTypes()) &&
+        !(buildingChecker(candidate.GetTypes()) || mainTypeIsBuildingPart(candidate.GetTypes())))
     {
       return;
     }
 
     // A building part must have children only with 'building:part' type.
-    if (!buildingPartChecker(place.GetTypes()) && buildingPartChecker(candidate.GetTypes()))
+    if (!mainTypeIsBuildingPart(place.GetTypes()) && mainTypeIsBuildingPart(candidate.GetTypes()))
       return;
 
     if (place.GetCompositeId() == candidate.GetCompositeId())
@@ -162,7 +162,7 @@ HierarchyLinker::Node::Ptrs HierarchyLinker::Link()
 }
 
 HierarchyEntryEnricher::HierarchyEntryEnricher(std::string const & osm2FtIdsPath,
-                                             std::string const & countryFullPath)
+                                               std::string const & countryFullPath)
   : m_featureGetter(countryFullPath)
 {
   CHECK(m_osm2FtIds.ReadFromFile(osm2FtIdsPath), (osm2FtIdsPath));
@@ -268,16 +268,26 @@ HierarchyEntry HierarchyLinesBuilder::Transform(HierarchyLinker::Node::Ptr const
   return line;
 }
 
-HierarchyLinker::Node::Ptrs BuildHierarchy(std::vector<feature::FeatureBuilder> && fbs,
-                                           GetMainTypeFn const & getMainType,
+HierarchyLinker::Node::Ptrs BuildHierarchy(std::vector<feature::FeatureBuilder> const & fbs,
                                            std::shared_ptr<FilterInterface> const & filter)
 {
-  base::EraseIf(fbs, [&](auto const & fb) { return !filter->IsAccepted(fb); });
   HierarchyLinker::Node::Ptrs places;
   places.reserve(fbs.size());
-  base::Transform(fbs, std::back_inserter(places), [](auto const & fb) {
-    return tree_node::MakeTreeNode(HierarchyPlace(fb));
-  });
+  for (auto const & fb : fbs)
+  {
+    if (!filter->IsAccepted(fb))
+      continue;
+
+    auto hierarchyPlace = HierarchyPlace(fb);
+    if (!hierarchyPlace.IsPoint() &&
+        base::AlmostEqualAbs(hierarchyPlace.GetArea(), 0.0, std::numeric_limits<double>::epsilon()))
+    {
+      continue;
+    }
+
+    places.emplace_back(tree_node::MakeTreeNode(std::move(hierarchyPlace)));
+  }
+
   auto nodes = HierarchyLinker(std::move(places)).Link();
   // We leave only the trees.
   base::EraseIf(nodes, [](auto const & node) {
@@ -310,7 +320,6 @@ void FlattenBuildingParts(HierarchyLinker::Node::Ptrs & trees)
 {
   for (auto & tree : trees)
   {
-
     CHECK(!tree->HasParent(), ());
 
     std::vector<
