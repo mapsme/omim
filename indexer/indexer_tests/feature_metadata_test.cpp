@@ -65,7 +65,8 @@ UNIT_TEST(Feature_Metadata_PresentTypes)
   auto const types = m.GetPresentTypes();
   TEST_EQUAL(types.size(), m.Size(), ());
   for (auto const & type : types)
-    TEST_EQUAL(m.Get(type), kKeyValues.find(static_cast<Metadata::EType>(type))->second, ());
+    TEST_EQUAL(m.Get(static_cast<Metadata::EType>(type)),
+               kKeyValues.find(static_cast<Metadata::EType>(type))->second, ());
 }
 
 UNIT_TEST(Feature_MwmTmpSerialization)

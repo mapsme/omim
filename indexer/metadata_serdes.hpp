@@ -18,7 +18,7 @@
 
 namespace feature
 {
-class MetadataBase;
+class Metadata;
 }  // namespace feature
 
 namespace indexer
@@ -60,12 +60,12 @@ public:
   // Tries to get metadata of the feature with id |featureId|. Returns false if table
   // does not have entry for the feature.
   // This method is threadsafe.
-  WARN_UNUSED_RESULT bool Get(uint32_t featureId, feature::MetadataBase & meta);
+  WARN_UNUSED_RESULT bool Get(uint32_t featureId, feature::Metadata & meta);
 
 private:
   using Map = MapUint32ToValue<std::vector<std::pair<uint8_t, uint32_t>>>;
 
-  std::unique_ptr<Reader> m_stringsSubreader;
+  std::shared_ptr<Reader> m_stringsSubreader;
   coding::BlockedTextStorageReader m_strings;
   std::mutex m_stringsMutex;
   std::unique_ptr<Map> m_map;
@@ -76,7 +76,7 @@ private:
 class MetadataBuilder
 {
 public:
-  void Put(uint32_t featureId, feature::MetadataBase const & meta);
+  void Put(uint32_t featureId, feature::Metadata const & meta);
   void Freeze(Writer & writer) const;
 
 private:

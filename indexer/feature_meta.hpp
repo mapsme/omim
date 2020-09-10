@@ -78,10 +78,8 @@ public:
   }
 
 protected:
-  friend bool indexer::MetadataDeserializer::Get(uint32_t id, MetadataBase & meta);
-
   // TODO: Change uint8_t to appropriate type when FMD_COUNT reaches 256.
-  void Set(uint8_t type, std::string const & value)
+  void Set(uint8_t type, std::string const & value) const
   {
     auto found = m_metadata.find(type);
     if (found == m_metadata.end())
@@ -98,7 +96,7 @@ protected:
     }
   }
 
-  std::map<uint8_t, std::string> m_metadata;
+  mutable std::map<uint8_t, std::string> m_metadata;
 };
 
 class Metadata : public MetadataBase
@@ -153,18 +151,60 @@ public:
   static bool TypeFromString(std::string const & osmTagKey, EType & outType);
   static bool IsSponsoredType(EType const & type);
 
+  void Init(std::function<std::string(size_t)> const & cb,
+            std::vector<std::pair<uint8_t, uint32_t>> const & ids)
+  {
+    m_cb = cb;
+    for (auto const & id : ids)
+      m_offsets[id.first] = id.second;
+  }
+
   std::vector<Metadata::EType> GetKeys() const;
 
-  using MetadataBase::Has;
-  using MetadataBase::Get;
-  bool Has(EType type) const { return MetadataBase::Has(static_cast<uint8_t>(type)); }
-  std::string Get(EType type) const { return MetadataBase::Get(static_cast<uint8_t>(type)); }
-  bool Get(EType type, std::string & value) const { return MetadataBase::Get(static_cast<uint8_t>(type), value);  }
+  bool Has(EType type) const { return m_offsets.find(type) != m_offsets.end(); }
 
-  using MetadataBase::Set;
-  void Set(EType type, std::string const & value) { MetadataBase::Set(static_cast<uint8_t>(type), value); }
-  void Drop(EType type) { Set(type, std::string()); }
+  std::string Get(EType type) const
+  {
+    if (MetadataBase::Has(static_cast<uint8_t>(type)))
+      return MetadataBase::Get(static_cast<uint8_t>(type));
+    auto const it = m_offsets.find(type);
+    if (it == m_offsets.end())
+      return {};
+    CHECK_NOT_EQUAL(it->second, kExtraKeyOffs, ());
+    auto const value = m_cb(it->second);
+    MetadataBase::Set(static_cast<uint8_t>(type), value);
+    return value;
+  }
+
+  bool Get(EType type, std::string & value) const
+  {
+    if (!Has(type))
+      return false;
+    value = Get(type);
+    return true;
+  }
+
+  void Set(EType type, std::string const & value)
+  {
+    if (!Has(type))
+      m_offsets[type] = kExtraKeyOffs;
+    MetadataBase::Set(static_cast<uint8_t>(type), value);
+  }
+
+  void Drop(EType type)
+  {
+    Set(type, std::string());
+    auto it = m_offsets.find(type);
+    if (it != m_offsets.end())
+      m_offsets.erase(it);
+  }
+
   std::string GetWikiURL() const;
+
+  uint32_t kExtraKeyOffs = std::numeric_limits<uint32_t>::max();
+
+  std::map<uint8_t, uint32_t> m_offsets;
+  std::function<std::string(size_t)> m_cb;
 };
 
 class AddressData : public MetadataBase

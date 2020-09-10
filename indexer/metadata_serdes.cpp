@@ -25,18 +25,18 @@ void MetadataDeserializer::Header::Read(Reader & reader)
   m_metadataMapSize = ReadPrimitiveFromSource<uint32_t>(source);
 }
 
-bool MetadataDeserializer::Get(uint32_t id, feature::MetadataBase & meta)
+bool MetadataDeserializer::Get(uint32_t id, feature::Metadata & meta)
 {
   vector<pair<uint8_t, uint32_t>> metaIds;
   if (!m_map->GetThreadsafe(id, metaIds))
     return false;
 
-  lock_guard<mutex> guard(m_stringsMutex);
-  for (auto const & id : metaIds)
-  {
-    CHECK_LESS_OR_EQUAL(id.second, m_strings.GetNumStrings(), ());
-    meta.Set(id.first, m_strings.ExtractString(*m_stringsSubreader, id.second));
-  }
+  auto const cb = [&](size_t id) {
+    lock_guard<mutex> guard(m_stringsMutex);
+    return m_strings.ExtractString(*m_stringsSubreader, id);
+  };
+
+  meta.Init(cb, metaIds);
   return true;
 }
 
@@ -90,13 +90,13 @@ unique_ptr<MetadataDeserializer> MetadataDeserializer::Load(Reader & reader)
 }
 
 // MetadataBuilder -----------------------------------------------------------------------------
-void MetadataBuilder::Put(uint32_t featureId, feature::MetadataBase const & meta)
+void MetadataBuilder::Put(uint32_t featureId, feature::Metadata const & meta)
 {
   vector<pair<uint8_t, uint32_t>> metaIds;
   for (auto const & type : meta.GetPresentTypes())
   {
     uint32_t id = 0;
-    auto const value = meta.Get(type);
+    auto const value = meta.Get(static_cast<feature::Metadata::EType>(type));
     auto const it = m_stringToId.find(value);
     if (it != m_stringToId.end())
     {
