@@ -99,6 +99,9 @@ if not os.path.exists(USER_RESOURCE_PATH):
 if not os.path.exists(USER_RESOURCE_PATH):
     USER_RESOURCE_PATH = os.path.join(OMIM_PATH, "data")
 
+DATA_ARCHIVE_DIR = USER_RESOURCE_PATH
+DIFF_VERSION_DEPTH = 2
+
 # Stages section:
 NEED_PLANET_UPDATE = False
 
@@ -214,9 +217,17 @@ def init(default_settings_path: AnyStr):
 
     # Generator tool section:
     global USER_RESOURCE_PATH
+    global DATA_ARCHIVE_DIR
+    global DIFF_VERSION_DEPTH
     global NODE_STORAGE
     USER_RESOURCE_PATH = cfg.get_opt_path(
         "Generator tool", "USER_RESOURCE_PATH", USER_RESOURCE_PATH
+    )
+    DATA_ARCHIVE_DIR = cfg.get_opt_path(
+        "Generator tool", "DATA_ARCHIVE_DIR", DATA_ARCHIVE_DIR
+    )
+    DIFF_VERSION_DEPTH = cfg.get_opt(
+        "Generator tool", "DIFF_VERSION_DEPTH", DIFF_VERSION_DEPTH
     )
     NODE_STORAGE = cfg.get_opt("Generator tool", "NODE_STORAGE", NODE_STORAGE)
 
