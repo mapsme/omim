@@ -2861,7 +2861,7 @@ UserMark const * Framework::FindUserMarkInTapPosition(place_page::BuildInfo cons
   }
 
   UserMark const * mark = GetBookmarkManager().FindNearestUserMark(
-    [this, &buildInfo](UserMark::Type type)
+    [this, &buildInfo](UserMark::Type type) -> m2::AnyRectD
     {
       double constexpr kEps = 1e-7;
       if (buildInfo.m_source != place_page::BuildInfo::Source::User)
@@ -2871,7 +2871,14 @@ UserMark const * Framework::FindUserMarkInTapPosition(place_page::BuildInfo cons
         return df::TapInfo::GetBookmarkTapRect(buildInfo.m_mercator, m_currentModelView);
 
       if (type == UserMark::Type::ROUTING || type == UserMark::Type::ROAD_WARNING)
+      {
+        if (type == UserMark::Type::ROAD_WARNING && m_routingManager.IsRoutingActive() &&
+            m_routingManager.IsRoutingFollowing())
+        {
+          return {}; // Do not select road warning marks in follow mode.
+        }
         return df::TapInfo::GetRoutingPointTapRect(buildInfo.m_mercator, m_currentModelView);
+      }
 
       if (type == UserMark::Type::GUIDE || type == UserMark::Type::GUIDE_CLUSTER)
         return df::TapInfo::GetGuideTapRect(buildInfo.m_mercator, m_currentModelView);
