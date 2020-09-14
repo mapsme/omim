@@ -30,6 +30,7 @@ abstract class AbstractBookmarkValidationCallback implements ValidationCallback
       Statistics.INSTANCE.trackPurchaseEvent(Statistics.EventName.INAPP_PURCHASE_VALIDATION_SUCCESS,
                                              mServerId);
       consumePurchase(purchaseData);
+      // TODO: for testing purposes.
       return;
     }
 
