@@ -144,6 +144,7 @@ import com.mapswithme.maps.widget.placepage.PlacePageFactory;
 import com.mapswithme.maps.widget.placepage.RoutingModeListener;
 import com.mapswithme.util.Counters;
 import com.mapswithme.util.InputUtils;
+import com.mapswithme.util.KeyValue;
 import com.mapswithme.util.NetworkPolicy;
 import com.mapswithme.util.PermissionsUtils;
 import com.mapswithme.util.SharedPropertiesUtils;
@@ -162,6 +163,7 @@ import com.mapswithme.util.statistics.AlohaHelper;
 import com.mapswithme.util.statistics.Statistics;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -320,17 +322,20 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public static Intent createShowMapIntent(@NonNull Context context, @Nullable String countryId)
   {
     return new Intent(context, DownloadResourcesLegacyActivity.class)
-               .putExtra(DownloadResourcesLegacyActivity.EXTRA_COUNTRY, countryId);
+        .putExtra(DownloadResourcesLegacyActivity.EXTRA_COUNTRY, countryId);
   }
 
   @NonNull
   public static Intent createAuthenticateIntent(@NonNull Context context)
   {
+    ArrayList<KeyValue> params = new ArrayList<>();
+    params.add(new KeyValue(Statistics.EventParam.FROM, Statistics.ParamValue.NOTIFICATION));
+
     return new Intent(context, MwmActivity.class)
         .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         .putExtra(MwmActivity.EXTRA_TASK,
-                  new Factory.ShowDialogTask(PassportAuthDialogFragment.class.getName()));
+                  new Factory.ShowDialogTask(PassportAuthDialogFragment.class.getName(), params));
   }
 
   @NonNull
@@ -338,9 +343,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
                                                @NonNull NotificationCandidate.UgcReview nc)
   {
     return new Intent(context, MwmActivity.class)
-      .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      .putExtra(MwmActivity.EXTRA_TASK, new Factory.ShowUGCEditorTask(nc));
+        .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        .putExtra(MwmActivity.EXTRA_TASK, new Factory.ShowUGCEditorTask(nc));
   }
 
   @Override
@@ -488,8 +493,10 @@ public class MwmActivity extends BaseMwmFragmentActivity
     final Location loc = LocationHelper.INSTANCE.getSavedLocation();
     if (loc != null)
     {
-      final String geoUrl = Framework.nativeGetGe0Url(loc.getLatitude(), loc.getLongitude(), Framework.nativeGetDrawScale(), "");
-      final String httpUrl = Framework.getHttpGe0Url(loc.getLatitude(), loc.getLongitude(), Framework.nativeGetDrawScale(), "");
+      final String geoUrl = Framework.nativeGetGe0Url(loc.getLatitude(), loc.getLongitude(), Framework
+          .nativeGetDrawScale(), "");
+      final String httpUrl = Framework.getHttpGe0Url(loc.getLatitude(), loc.getLongitude(), Framework
+          .nativeGetDrawScale(), "");
       final String body = getString(R.string.my_position_share_sms, geoUrl, httpUrl);
       ShareOption.AnyShareOption.ANY.share(this, body);
       return;
@@ -561,7 +568,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     mMainMenuController.initialize(findViewById(R.id.coordinator));
 
     mSearchController = new FloatingSearchToolbarController(this, this);
-    mSearchController.getToolbar().getViewTreeObserver().addOnGlobalLayoutListener(new ToolbarLayoutChangeListener());
+    mSearchController.getToolbar()
+                     .getViewTreeObserver()
+                     .addOnGlobalLayoutListener(new ToolbarLayoutChangeListener());
     mSearchController.setVisibilityListener(this);
 
     boolean isLaunchByDeepLink = getIntent().getBooleanExtra(EXTRA_LAUNCH_BY_DEEP_LINK, false);
@@ -595,7 +604,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onNoConnectionError()
   {
-    DialogInterface.OnClickListener listener = (dialog, which) -> {};
+    DialogInterface.OnClickListener listener = (dialog, which) -> {
+    };
     DialogUtils.showAlertDialog(this, R.string.common_check_internet_connection_dialog_title,
                                 R.string.common_check_internet_connection_dialog,
                                 R.string.ok, listener);
@@ -700,9 +710,9 @@ public class MwmActivity extends BaseMwmFragmentActivity
     SearchEngine.INSTANCE.cancel();
 
     SearchEngine.INSTANCE.searchInteractive(mSearchController.getQuery(), System.nanoTime(),
-                                   false /* isMapAndTable */,
-                                   mFilterController != null ? mFilterController.getFilter() : null,
-                                   mFilterController != null ? mFilterController.getBookingFilterParams() : null);
+                                            false /* isMapAndTable */,
+                                            mFilterController != null ? mFilterController.getFilter() : null,
+                                            mFilterController != null ? mFilterController.getBookingFilterParams() : null);
     SearchEngine.INSTANCE.setQuery(mSearchController.getQuery());
   }
 
@@ -1616,7 +1626,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
       try
       {
         super.onBackPressed();
-      } catch (IllegalStateException e)
+      }
+      catch (IllegalStateException e)
       {
         // Sometimes this can be called after onSaveState() for unknown reason.
       }
@@ -1714,7 +1725,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (switchFullScreenMode)
     {
       if ((mPanelAnimator != null && mPanelAnimator.isVisible()) ||
-           UiUtils.isVisible(mSearchController.getToolbar()))
+          UiUtils.isVisible(mSearchController.getToolbar()))
         return;
 
       setFullscreen(!mIsFullscreen);
@@ -1736,8 +1747,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   private void setFullscreen(boolean isFullscreen)
   {
     if (RoutingController.get().isNavigating()
-            || RoutingController.get().isBuilding()
-            || RoutingController.get().isPlanning())
+        || RoutingController.get().isBuilding()
+        || RoutingController.get().isPlanning())
       return;
 
     mIsFullscreen = isFullscreen;
@@ -1809,16 +1820,16 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     switch (v.getId())
     {
-    case R.id.nav_zoom_in:
-      Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_IN);
-      AlohaHelper.logClick(AlohaHelper.ZOOM_IN);
-      MapFragment.nativeScalePlus();
-      break;
-    case R.id.nav_zoom_out:
-      Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_OUT);
-      AlohaHelper.logClick(AlohaHelper.ZOOM_OUT);
-      MapFragment.nativeScaleMinus();
-      break;
+      case R.id.nav_zoom_in:
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_IN);
+        AlohaHelper.logClick(AlohaHelper.ZOOM_IN);
+        MapFragment.nativeScalePlus();
+        break;
+      case R.id.nav_zoom_out:
+        Statistics.INSTANCE.trackEvent(Statistics.EventName.ZOOM_OUT);
+        AlohaHelper.logClick(AlohaHelper.ZOOM_OUT);
+        MapFragment.nativeScaleMinus();
+        break;
     }
   }
 
@@ -1838,8 +1849,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
     }
   }
 
-
-
   void adjustCompass(int offsetY)
   {
     if (mMapFragment == null || !mMapFragment.isAdded())
@@ -1849,7 +1858,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     //If the compass is covered by navigation buttons, we move it beyond the visible screen
     if (mNavAnimationController != null && mNavAnimationController.isConflictWithCompass(offsetY))
     {
-      int halfHeight = (int)(UiUtils.dimen(R.dimen.compass_height) * 0.5f);
+      int halfHeight = (int) (UiUtils.dimen(R.dimen.compass_height) * 0.5f);
       int margin = UiUtils.dimen(R.dimen.margin_compass_top)
                    + UiUtils.dimen(R.dimen.nav_frame_padding);
       resultOffset = -(offsetY + halfHeight + margin);
@@ -2607,7 +2616,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public void onBookmarksFileLoaded(boolean success)
   {
     Utils.toastShortcut(MwmActivity.this, success ? R.string.load_kmz_successful :
-        R.string.load_kmz_failed);
+                                          R.string.load_kmz_failed);
   }
 
   @Override
