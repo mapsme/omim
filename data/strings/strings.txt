@@ -62,8 +62,7 @@
     uk = Скасувати
     vi = Huỷ bỏ
     zh-Hans = 取消
-    zh-Hant = 取消
-    el = Άκυρο
+    zh-Hant = 取
     he = בטל
     sk = Zrušiť
     fa = لغو
