@@ -1,5 +1,7 @@
 #pragma once
 
+#include "search/search_trie.hpp"
+
 #include "indexer/scales.hpp"
 
 #include "coding/string_utf8_multilang.hpp"
@@ -11,6 +13,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -25,7 +28,7 @@ class QueryParams
 public:
   using String = strings::UniString;
   using TypeIndices = std::vector<uint32_t>;
-  using Langs = base::SafeSmallSet<StringUtf8Multilang::kMaxSupportedLanguages>;
+  using Langs = base::SafeSmallSet<search::kBigramsLang + 1>;
 
   class Token
   {
@@ -132,9 +135,6 @@ public:
   Langs const & GetLangs() const { return m_langs; }
   bool LangExists(int8_t lang) const { return m_langs.Contains(lang); }
 
-  void SetCategorialRequest(bool isCategorial) { m_isCategorialRequest = isCategorial; }
-  bool IsCategorialRequest() const { return m_isCategorialRequest; }
-
 private:
   friend std::string DebugPrint(QueryParams const & params);
 
@@ -146,7 +146,6 @@ private:
   std::vector<Token> m_tokens;
   Token m_prefixToken;
   bool m_hasPrefix = false;
-  bool m_isCategorialRequest = false;
 
   std::vector<TypeIndices> m_typeIndices;
 

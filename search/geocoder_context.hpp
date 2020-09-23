@@ -82,6 +82,8 @@ struct BaseContext
   // context in all branches of the search.
   size_t m_numEmitted = 0;
 
+  bool m_bigrams = false;
+
   std::unique_ptr<hotels_filter::HotelsFilter::ScopedFilter> m_hotelsFilter;
   std::unique_ptr<cuisine_filter::CuisineFilter::ScopedFilter> m_cuisineFilter;
 };

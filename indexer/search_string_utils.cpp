@@ -480,6 +480,15 @@ bool ContainsNormalized(string const & str, string const & substr)
   return std::search(ustr.begin(), ustr.end(), usubstr.begin(), usubstr.end()) != ustr.end();
 }
 
+bool HaveHieroglyphs(UniString const & s)
+{
+  return base::AnyOf(s, [](UniChar c) {
+    return (c >= 0x2E80 && c <= 0x2FD5) || (c >= 0x3190 && c <= 0x319f) ||
+           (c >= 0x3400 && c <= 0x4DBF) || (c >= 0x4E00 && c <= 0x9FCC) ||
+           (c >= 0xF900 && c <= 0xFAAD);
+  });
+}
+
 // StreetTokensFilter ------------------------------------------------------------------------------
 void StreetTokensFilter::Put(strings::UniString const & token, bool isPrefix, size_t tag)
 {

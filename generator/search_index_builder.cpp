@@ -9,6 +9,9 @@
 #include "search/search_trie.hpp"
 #include "search/types_skipper.hpp"
 
+#include "storage/country_info_getter.hpp"
+#include "storage/country_tree_helpers.hpp"
+
 #include "indexer/brands_holder.hpp"
 #include "indexer/categories_holder.hpp"
 #include "indexer/classificator.hpp"
@@ -144,11 +147,13 @@ template <typename Key, typename Value>
 struct FeatureNameInserter
 {
   FeatureNameInserter(uint32_t index, SynonymsHolder * synonyms,
-                      vector<pair<Key, Value>> & keyValuePairs, bool hasStreetType)
+                      vector<pair<Key, Value>> & keyValuePairs, bool hasStreetType,
+                      bool needBigramsForDefaultName)
     : m_val(index)
     , m_synonyms(synonyms)
     , m_keyValuePairs(keyValuePairs)
     , m_hasStreetType(hasStreetType)
+    , m_needBigramsForDefaultName(needBigramsForDefaultName)
   {
   }
 
@@ -160,6 +165,31 @@ struct FeatureNameInserter
     key.append(s.begin(), s.end());
 
     m_keyValuePairs.emplace_back(key, m_val);
+  }
+
+  void AddBiramToken(strings::UniString const & s) const
+  {
+    CHECK(!s.empty(), ());
+    {
+      strings::UniString key;
+      key.push_back(search::kBigramsLang);
+      key.push_back(s[0]);
+      m_keyValuePairs.emplace_back(key, m_val);
+    }
+    for (size_t i = 0; i < s.size() - 1; ++i)
+    {
+      strings::UniString key;
+      key.push_back(search::kBigramsLang);
+      key.push_back(s[i]);
+      key.push_back(s[i + 1]);
+      m_keyValuePairs.emplace_back(key, m_val);
+    }
+    {
+      strings::UniString key;
+      key.push_back(search::kBigramsLang);
+      key.push_back(s[s.size() - 1]);
+      m_keyValuePairs.emplace_back(key, m_val);
+    }
   }
 
   // Adds search tokens for different ways of writing strasse:
@@ -200,6 +230,14 @@ struct FeatureNameInserter
     // split input string on tokens
     search::QueryTokens tokens;
     SplitUniString(uniName, base::MakeBackInsertFunctor(tokens), search::Delimiters());
+    auto const needBigramsForLang =
+        lang == StringUtf8Multilang::GetLangIndex("ja") ||
+        (m_needBigramsForDefaultName && lang == StringUtf8Multilang::kDefaultCode);
+    if (needBigramsForLang && search::HaveHieroglyphs(strings::MakeUniString(name)))
+    {
+      for (auto const & token : tokens)
+        AddBiramToken(token);
+    }
 
     // add synonyms for input native string
     if (m_synonyms)
@@ -239,6 +277,7 @@ struct FeatureNameInserter
   SynonymsHolder * m_synonyms;
   vector<pair<Key, Value>> & m_keyValuePairs;
   bool m_hasStreetType = false;
+  bool m_needBigramsForDefaultName = false;
 };
 
 // Returns true iff feature name was indexed as postcode and should be ignored for name indexing.
@@ -275,6 +314,19 @@ bool InsertPostcodes(FeatureType & f, function<void(strings::UniString const &)>
   return useNameAsPostcode;
 }
 
+bool NeedBigramsForDefaultName(FeatureType & f)
+{
+  auto static const infoGetter = storage::CountryInfoReader::CreateCountryInfoGetter(GetPlatform());
+  CHECK(infoGetter, ());
+  auto static const countryTree = storage::LoadCountriesFromFile(COUNTRIES_FILE);
+  CHECK(countryTree, ());
+
+  auto const center = feature::GetCenter(f);
+  auto const countryId = infoGetter->GetRegionCountryId(center);
+  auto const country = storage::GetTopmostParentFor(*countryTree, countryId);
+  return country == "Japan";
+}
+
 template <typename Key, typename Value>
 class FeatureInserter
 {
@@ -307,17 +359,20 @@ public:
 
     auto const & streetChecker = ftypes::IsStreetOrSquareChecker::Instance();
     bool const hasStreetType = streetChecker(types);
+    auto const needBigramsForDefaultName = NeedBigramsForDefaultName(f);
 
     // Init inserter with serialized value.
     // Insert synonyms only for countries and states (maybe will add cities in future).
     FeatureNameInserter<Key, Value> inserter(index, isCountryOrState(types) ? m_synonyms : nullptr,
-                                             m_keyValuePairs, hasStreetType);
+                                             m_keyValuePairs, hasStreetType,
+                                             needBigramsForDefaultName);
 
     bool const useNameAsPostcode = InsertPostcodes(
         f, [&inserter](auto const & token) { inserter.AddToken(kPostcodesLang, token); });
 
     if (!useNameAsPostcode)
       f.ForEachName(inserter);
+
     if (!f.HasName())
       skipIndex.SkipEmptyNameTypes(types);
     if (types.Empty())

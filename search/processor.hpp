@@ -82,7 +82,7 @@ public:
 
   void SearchBookmarks(bookmarks::GroupId const & groupId);
 
-  void InitParams(QueryParams & params) const;
+  void InitParams(QueryParams & params, bool bigrams) const;
 
   void InitGeocoder(Geocoder::Params & geocoderParams, SearchParams const & searchParams);
   void InitPreRanker(Geocoder::Params const & geocoderParams, SearchParams const & searchParams);
@@ -131,6 +131,7 @@ protected:
   std::string m_region;
   std::string m_query;
   QueryTokens m_tokens;
+  QueryTokens m_bigramTokens;
   strings::UniString m_prefix;
   bool m_isCategorialRequest;
   std::vector<uint32_t> m_preferredTypes;

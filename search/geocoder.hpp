@@ -82,8 +82,16 @@ class TokenSlice;
 class Geocoder
 {
 public:
-  struct Params : public QueryParams
+  enum class TokenizationMode
   {
+    Tokens,
+    Bigrams
+  };
+
+  struct Params
+  {
+    bool IsCategorialRequest() const { return m_isCategorialRequest; }
+
     Mode m_mode = Mode::Everywhere;
     m2::RectD m_pivot;
     std::optional<m2::PointD> m_position;
@@ -95,6 +103,9 @@ public:
     double m_streetSearchRadiusM = 0.0;
     double m_villageSearchRadiusM = 0.0;
     int m_scale = scales::GetUpperScale();
+    QueryParams m_tokenParams;
+    QueryParams m_bigramParams;
+    bool m_isCategorialRequest = false;
   };
 
   struct LocalitiesCaches
@@ -195,11 +206,13 @@ private:
   template <typename Locality>
   using TokenToLocalities = std::map<TokenRange, std::vector<Locality>>;
 
+  using RegionsToLocalities = TokenToLocalities<Region>[Region::TYPE_COUNT];
+
   QueryParams::Token const & GetTokens(size_t i) const;
 
   // Creates a cache of posting lists corresponding to features in m_context
   // for each token and saves it to m_addressFeatures.
-  void InitBaseContext(BaseContext & ctx);
+  void InitBaseContext(BaseContext & ctx, bool bigrams);
 
   void InitLayer(Model::Type type, TokenRange const & tokenRange, FeaturesLayer & layer);
 
@@ -312,6 +325,22 @@ private:
   ExtendedMwmInfos OrderCountries(bool inViewport,
                                   std::vector<std::shared_ptr<MwmInfo>> const & infos);
 
+  QueryParams const & GetQueryParams() const
+  {
+    return m_tokenizationMode == TokenizationMode::Tokens ? m_params.m_tokenParams
+                                                          : m_params.m_bigramParams;
+  }
+
+  TokenToLocalities<City> & GetCities()
+  {
+    return m_tokenizationMode == TokenizationMode::Tokens ? m_tokenCities : m_bigramCities;
+  }
+
+  RegionsToLocalities & GetRegions()
+  {
+    return m_tokenizationMode == TokenizationMode::Tokens ? m_tokenRegions : m_bigramRegions;
+  }
+
   DataSource const & m_dataSource;
   storage::CountryInfoGetter const & m_infoGetter;
   CategoriesHolder const & m_categories;
@@ -328,6 +357,7 @@ private:
 
   // Geocoder params.
   Params m_params;
+  TokenizationMode m_tokenizationMode = TokenizationMode::Tokens;
 
   // This field is used to map features to a limited number of search
   // classes.
@@ -343,8 +373,10 @@ private:
 
   // m_cities stores both big cities that are visible at World.mwm
   // and small villages and hamlets that are not.
-  TokenToLocalities<City> m_cities;
-  TokenToLocalities<Region> m_regions[Region::TYPE_COUNT];
+  TokenToLocalities<City> m_tokenCities;
+  RegionsToLocalities m_tokenRegions;
+  TokenToLocalities<City> m_bigramCities;
+  RegionsToLocalities m_bigramRegions;
   CitiesBoundariesTable const & m_citiesBoundaries;
 
   // Caches of features in rects. These caches are separated from
@@ -373,6 +405,7 @@ private:
   // Search query params prepared for retrieval.
   std::vector<SearchTrieRequest<strings::LevenshteinDFA>> m_tokenRequests;
   SearchTrieRequest<strings::PrefixDFAModifier<strings::LevenshteinDFA>> m_prefixTokenRequest;
+  std::vector<SearchTrieRequest<strings::UniStringDFA>> m_bigramRequests;
 
   ResultTracer m_resultTracer;
 

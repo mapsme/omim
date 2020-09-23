@@ -1261,9 +1261,9 @@ UNIT_CLASS_TEST(ProcessorTest, TestWeirdTypes)
   TestPOI fireHydrant(m2::PointD(2.0, 0.0), "" /* name */, "en");
   fireHydrant.SetTypes({{"emergency", "fire_hydrant"}});
 
-  BuildWorld([&](TestMwmBuilder & builder) { builder.Add(tokyo); });
+  auto const worldId = BuildWorld([&](TestMwmBuilder & builder) { builder.Add(tokyo); });
 
-  auto countryId = BuildCountry(countryName, [&](TestMwmBuilder & builder) {
+  auto const countryId = BuildCountry(countryName, [&](TestMwmBuilder & builder) {
     builder.Add(street);
     builder.Add(defibrillator1);
     builder.Add(defibrillator2);
@@ -1275,7 +1275,8 @@ UNIT_CLASS_TEST(ProcessorTest, TestWeirdTypes)
     TEST(ResultsMatch("defibrillator", "en", rules), ());
     TEST(ResultsMatch("除細動器", "ja", rules), ());
 
-    Rules onlyFirst{ExactMatch(countryId, defibrillator1)};
+    Rules onlyFirst{ExactMatch(countryId, defibrillator1),
+                    ExactMatch(worldId, tokyo) /* todo: limit bigram parses */};
     Rules firstWithStreet{ExactMatch(countryId, defibrillator1), ExactMatch(countryId, street)};
 
     // City + category. Only the first defibrillator is inside.
@@ -3123,6 +3124,33 @@ UNIT_CLASS_TEST(ProcessorTest, TestRankingInfo_MultipleOldNames)
   checkResult("Санкт-Петербург", "Санкт-Петербург");
   checkResult("Ленинград", "Санкт-Петербург (Ленинград)");
   checkResult("Петроград", "Санкт-Петербург (Петроград)");
+}
+
+UNIT_CLASS_TEST(ProcessorTest, SearchBigrams)
+{
+  string const countryName = "Wonderland";
+  TestCity city(m2::PointD(0.0, 0.0), "東京都", "ja", 100 /* rank */);
+  TestPOI cafe(m2::PointD(0.0, 0.0), "藍屋", "ja");
+  TestStreet street(vector<m2::PointD>{m2::PointD(-1.0, 0.0), m2::PointD(1.0, 0.0)}, "鼠坂", "ja");
+
+  auto worldId = BuildWorld([&](TestMwmBuilder & builder) { builder.Add(city); });
+
+  auto wonderlandId = BuildCountry(countryName, [&](TestMwmBuilder & builder) {
+    builder.Add(cafe);
+    builder.Add(street);
+  });
+
+  SetViewport(m2::RectD(m2::PointD(-0.5, -0.5), m2::PointD(0.5, 0.5)));
+  {
+    Rules rules = {ExactMatch(wonderlandId, cafe), ExactMatch(wonderlandId, street)};
+    TEST(ResultsMatch("鼠坂藍屋", "ja", rules), ());
+  }
+
+  SetViewport(m2::RectD(m2::PointD(-0.5, -0.5), m2::PointD(0.5, 0.5)));
+  {
+    Rules rules = {ExactMatch(wonderlandId, cafe), ExactMatch(wonderlandId, street)};
+    TEST(ResultsMatch("東京都鼠坂藍屋", "ja", rules), ());
+  }
 }
 }  // namespace
 }  // namespace search

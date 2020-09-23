@@ -96,7 +96,7 @@ vector<vector<strings::UniString>> ModifyStrasse(vector<strings::UniString> cons
   return result;
 }
 
-pair<NameScores, size_t> GetNameScores(FeatureType & ft, Geocoder::Params const & params,
+pair<NameScores, size_t> GetNameScores(FeatureType & ft, QueryParams const & params,
                                        TokenRange const & range, Model::Type type)
 {
   NameScores bestScores;
@@ -179,7 +179,7 @@ pair<NameScores, size_t> GetNameScores(FeatureType & ft, Geocoder::Params const 
   return make_pair(bestScores, matchedLength);
 }
 
-void MatchTokenRange(FeatureType & ft, Geocoder::Params const & params, TokenRange const & range,
+void MatchTokenRange(FeatureType & ft, QueryParams const & params, TokenRange const & range,
                      Model::Type type, ErrorsMade & errorsMade, size_t & matchedLength,
                      bool & isAltOrOldName)
 {
@@ -345,6 +345,9 @@ public:
     string name;
     string country;
 
+    m_tokenizationMode = preRankerResult.GetInfo().m_bigram ? Geocoder::TokenizationMode::Bigrams
+                                                            : Geocoder::TokenizationMode::Tokens;
+
     auto ft = LoadFeature(preRankerResult.GetId(), center, name, country);
     if (!ft)
       return {};
@@ -425,7 +428,7 @@ private:
     if (Model::IsPoi(info.m_type))
       info.m_resultType = GetResultType(feature::TypesHolder(ft));
     info.m_allTokensUsed = preInfo.m_allTokensUsed;
-    info.m_numTokens = m_params.GetNumTokens();
+    info.m_numTokens = GetQueryParams().GetNumTokens();
     info.m_exactMatch = preInfo.m_exactMatch;
     info.m_categorialRequest = m_params.IsCategorialRequest();
     info.m_tokenRanges = preInfo.m_tokenRanges;
@@ -445,7 +448,8 @@ private:
     }
     else
     {
-      auto const scores = GetNameScores(ft, m_params, preInfo.InnermostTokenRange(), info.m_type);
+      auto const scores =
+          GetNameScores(ft, GetQueryParams(), preInfo.InnermostTokenRange(), info.m_type);
 
       auto nameScore = scores.first.m_nameScore;
       auto errorsMade = scores.first.m_errorsMade;
@@ -461,7 +465,7 @@ private:
         {
           auto const type = Model::TYPE_STREET;
           auto const & range = preInfo.m_tokenRanges[type];
-          auto const streetScores = GetNameScores(*street, m_params, range, type);
+          auto const streetScores = GetNameScores(*street, GetQueryParams(), range, type);
 
           nameScore = min(nameScore, streetScores.first.m_nameScore);
           errorsMade += streetScores.first.m_errorsMade;
@@ -483,7 +487,7 @@ private:
           ErrorsMade suburbErrors;
           size_t suburbMatchedLength = 0;
           bool suburbNameIsAltNameOrOldName = false;
-          MatchTokenRange(*suburb, m_params, range, type, suburbErrors, suburbMatchedLength,
+          MatchTokenRange(*suburb, GetQueryParams(), range, type, suburbErrors, suburbMatchedLength,
                           suburbNameIsAltNameOrOldName);
           errorsMade += suburbErrors;
           matchedLength += suburbMatchedLength;
@@ -502,7 +506,7 @@ private:
           ErrorsMade cityErrors;
           size_t cityMatchedLength = 0;
           bool cityNameIsAltNameOrOldName = false;
-          MatchTokenRange(*city, m_params, range, type, cityErrors, cityMatchedLength,
+          MatchTokenRange(*city, GetQueryParams(), range, type, cityErrors, cityMatchedLength,
                           cityNameIsAltNameOrOldName);
           errorsMade += cityErrors;
           matchedLength += cityMatchedLength;
@@ -512,8 +516,8 @@ private:
       }
 
       size_t totalLength = 0;
-      for (size_t i = 0; i < m_params.GetNumTokens(); ++i)
-        totalLength += m_params.GetToken(i).GetOriginal().size();
+      for (size_t i = 0; i < GetQueryParams().GetNumTokens(); ++i)
+        totalLength += GetQueryParams().GetToken(i).GetOriginal().size();
 
       info.m_nameScore = nameScore;
       info.m_errorsMade = errorsMade;
@@ -542,7 +546,7 @@ private:
     }
 
     CategoriesInfo const categoriesInfo(feature::TypesHolder(ft),
-                                        TokenSlice(m_params, preInfo.InnermostTokenRange()),
+                                        TokenSlice(GetQueryParams(), preInfo.InnermostTokenRange()),
                                         m_ranker.m_params.m_categoryLocales, m_ranker.m_categories);
 
     info.m_pureCats = categoriesInfo.IsPureCategories();
@@ -578,11 +582,18 @@ private:
     }
   }
 
+  QueryParams const & GetQueryParams() const
+  {
+    return m_tokenizationMode == Geocoder::TokenizationMode::Tokens ? m_params.m_tokenParams
+                                                                    : m_params.m_bigramParams;
+  }
+
   Ranker & m_ranker;
   DataSource const & m_dataSource;
   storage::CountryInfoGetter const & m_infoGetter;
   ReverseGeocoder const & m_reverseGeocoder;
   Geocoder::Params const & m_params;
+  Geocoder::TokenizationMode m_tokenizationMode = Geocoder::TokenizationMode::Tokens;
 
   unique_ptr<FeaturesLoaderGuard> m_loader;
 };

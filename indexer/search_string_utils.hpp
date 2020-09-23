@@ -101,6 +101,8 @@ bool IsStreetSynonymPrefixWithMisprints(strings::UniString const & s);
 /// Used in native platform code for search in localized strings (cuisines, categories, strings etc.).
 bool ContainsNormalized(std::string const & str, std::string const & substr);
 
+bool HaveHieroglyphs(strings::UniString const & s);
+
 // This class can be used as a filter for street tokens.  As there can
 // be street synonyms in the street name, single street synonym is
 // skipped, but multiple synonyms are left as is. For example, when

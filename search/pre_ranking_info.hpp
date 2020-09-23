@@ -77,6 +77,8 @@ struct PreRankingInfo
 
   // Search type for the feature.
   Model::Type m_type = Model::TYPE_COUNT;
+
+  bool m_bigram = false;
 };
 
 std::string DebugPrint(PreRankingInfo const & info);

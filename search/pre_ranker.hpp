@@ -59,6 +59,7 @@ public:
     bool m_categorialRequest = false;
 
     size_t m_numQueryTokens = 0;
+    size_t m_numBigramTokens = 0;
   };
 
   PreRanker(DataSource const & dataSource, Ranker & ranker);

@@ -232,6 +232,7 @@ void Processor::SetQuery(string const & query)
 {
   m_query = query;
   m_tokens.clear();
+  m_bigramTokens.clear();
   m_prefix.clear();
 
   // Following code splits input query by delimiters except hash tags
@@ -245,6 +246,16 @@ void Processor::SetQuery(string const & query)
     auto normalizedQuery = NormalizeAndSimplifyString(query);
     PreprocessBeforeTokenization(normalizedQuery);
     SplitUniString(normalizedQuery, base::MakeBackInsertFunctor(tokens), delims);
+
+    if (normalizedQuery.size() <= kMaxNumTokens && HaveHieroglyphs(normalizedQuery))
+    {
+      for (size_t i = 0; i < normalizedQuery.size(); ++i)
+      {
+        if (strings::UniString(normalizedQuery.begin() + i, normalizedQuery.begin() + i + 1) !=
+            strings::MakeUniString(" "))
+          m_bigramTokens.emplace_back(normalizedQuery.begin() + i, normalizedQuery.begin() + i + 1);
+      }
+    }
   }
 
   search::Delimiters delims;
@@ -655,7 +666,7 @@ void Processor::SearchPostcode()
 void Processor::SearchBookmarks(bookmarks::GroupId const & groupId)
 {
   bookmarks::Processor::Params params;
-  InitParams(params);
+  InitParams(params, false /* bigrams */);
   params.m_groupId = groupId;
 
   try
@@ -671,9 +682,16 @@ void Processor::SearchBookmarks(bookmarks::GroupId const & groupId)
   m_bookmarksProcessor.Finish(IsCancelled());
 }
 
-void Processor::InitParams(QueryParams & params) const
+void Processor::InitParams(QueryParams & params, bool bigrams) const
 {
   params.SetQuery(m_query);
+
+  if (bigrams)
+  {
+    params.InitNoPrefix(m_bigramTokens.begin(), m_bigramTokens.end());
+    params.GetLangs().Insert(search::kBigramsLang);
+    return;
+  }
 
   if (m_prefix.empty())
     params.InitNoPrefix(m_tokens.begin(), m_tokens.end());
@@ -687,7 +705,6 @@ void Processor::InitParams(QueryParams & params) const
     params.GetTypeIndices(i).push_back(index);
   };
   auto const tokenSlice = QuerySliceOnRawStrings<decltype(m_tokens)>(m_tokens, m_prefix);
-  params.SetCategorialRequest(m_isCategorialRequest);
   if (m_isCategorialRequest)
   {
     for (auto const type : m_preferredTypes)
@@ -723,8 +740,10 @@ void Processor::InitGeocoder(Geocoder::Params & geocoderParams, SearchParams con
 {
   auto const viewportSearch = searchParams.m_mode == Mode::Viewport;
 
-  InitParams(geocoderParams);
+  InitParams(geocoderParams.m_tokenParams, false /* bigrams */);
+  InitParams(geocoderParams.m_bigramParams, true /* bigrams */);
 
+  geocoderParams.m_isCategorialRequest = m_isCategorialRequest;
   geocoderParams.m_mode = searchParams.m_mode;
   geocoderParams.m_pivot = GetPivotRect(viewportSearch);
   geocoderParams.m_position = m_position;
@@ -759,7 +778,8 @@ void Processor::InitPreRanker(Geocoder::Params const & geocoderParams,
   params.m_limit = max(SearchParams::kPreResultsCount, searchParams.m_maxNumResults);
   params.m_viewportSearch = viewportSearch;
   params.m_categorialRequest = geocoderParams.IsCategorialRequest();
-  params.m_numQueryTokens = geocoderParams.GetNumTokens();
+  params.m_numQueryTokens = geocoderParams.m_tokenParams.GetNumTokens();
+  params.m_numBigramTokens = geocoderParams.m_bigramParams.GetNumTokens();
 
   m_preRanker.Init(params);
 }
@@ -780,7 +800,8 @@ void Processor::InitRanker(Geocoder::Params const & geocoderParams,
   params.m_preferredTypes = m_preferredTypes;
   params.m_suggestsEnabled = searchParams.m_suggestsEnabled;
   params.m_needAddress = searchParams.m_needAddress;
-  params.m_needHighlighting = searchParams.m_needHighlighting && !geocoderParams.IsCategorialRequest();
+  params.m_needHighlighting =
+      searchParams.m_needHighlighting && !geocoderParams.IsCategorialRequest();
   params.m_query = m_query;
   params.m_tokens = m_tokens;
   params.m_prefix = m_prefix;

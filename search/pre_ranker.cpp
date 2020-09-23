@@ -284,7 +284,9 @@ void PreRanker::FilterForViewportSearch()
     if (!viewport.IsPointInside(info.m_center))
       return true;
 
-    return result.GetMatchedTokensNumber() + 1 < m_params.m_numQueryTokens;
+    auto const requestTokens =
+        result.GetInfo().m_bigram ? m_params.m_numBigramTokens : m_params.m_numQueryTokens;
+    return result.GetMatchedTokensNumber() + 1 < requestTokens;
   });
 
   SweepNearbyResults(m_params.m_minDistanceOnMapBetweenResultsX,

@@ -61,6 +61,14 @@ public:
       return result;
     }
 
+    ExtendedFeatures Unite(ExtendedFeatures const & rhs) const
+    {
+      ExtendedFeatures result;
+      result.m_features = m_features.Union(rhs.m_features);
+      result.m_exactMatchingFeatures = m_exactMatchingFeatures.Union(rhs.m_exactMatchingFeatures);
+      return result;
+    }
+
     ExtendedFeatures Intersect(Features const & cbv) const
     {
       ExtendedFeatures result;
