@@ -19,8 +19,6 @@
     nb = Tilbake
     pl = Wróć
     pt = Voltar
-    pt-BR = Voltar
-    ro = Înapoi
     es = Atrás
     sv = Tillbaka
     th = กลับ
