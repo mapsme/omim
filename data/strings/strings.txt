@@ -20,6 +20,7 @@
     pt = Voltar
     es = Atrás
     sv = Tillbaka
+    th = กลับ
     tr = Geri
     uk = Назад
     vi = Quay lại
