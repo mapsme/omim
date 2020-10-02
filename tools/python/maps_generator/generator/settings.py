@@ -98,6 +98,11 @@ if not os.path.exists(USER_RESOURCE_PATH):
     USER_RESOURCE_PATH = os.path.join(site.USER_BASE, _omim_data_dir)
 if not os.path.exists(USER_RESOURCE_PATH):
     USER_RESOURCE_PATH = os.path.join(OMIM_PATH, "data")
+else:
+    try:
+        import borders
+    except:
+        pass
 
 # Stages section:
 NEED_PLANET_UPDATE = False
