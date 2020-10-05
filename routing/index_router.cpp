@@ -1499,7 +1499,7 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
   junctions.reserve(numPoints);
 
   for (size_t i = 0; i < numPoints; ++i)
-    junctions.emplace_back(starter.GetRouteJunction(segments, i).ToPointWithAltitude());
+    junctions.emplace_back(starter.GetRouteJunction(segments, i, true /* isOutgoing */).ToPointWithAltitude());
 
   IndexRoadGraph roadGraph(m_numMwmIds, starter, segments, junctions, m_dataSource);
   starter.GetGraph().SetMode(WorldGraphMode::NoLeaps);

@@ -116,33 +116,35 @@ bool IndexGraphStarter::ConvertToReal(Segment & segment) const
   return m_fake.FindReal(Segment(segment), segment);
 }
 
-LatLonWithAltitude const & IndexGraphStarter::GetJunction(Segment const & segment, bool front) const
+LatLonWithAltitude const & IndexGraphStarter::GetJunction(Segment const & segment, bool front,
+                                                          bool isOutgoing) const
 {
   if (IsGuidesSegment(segment))
     return m_guides.GetJunction(segment, front);
 
   if (!IsFakeSegment(segment))
-    return m_graph.GetJunction(segment, front, true);
+    return m_graph.GetJunction(segment, front, isOutgoing);
 
   auto const & vertex = m_fake.GetVertex(segment);
   return front ? vertex.GetJunctionTo() : vertex.GetJunctionFrom();
 }
 
-LatLonWithAltitude const & IndexGraphStarter::GetRouteJunction(
-    vector<Segment> const & segments, size_t pointIndex) const
+LatLonWithAltitude const & IndexGraphStarter::GetRouteJunction(vector<Segment> const & segments,
+                                                               size_t pointIndex,
+                                                               bool isOutgoing) const
 {
   CHECK(!segments.empty(), ());
   CHECK_LESS_OR_EQUAL(
       pointIndex, segments.size(),
       ("Point with index", pointIndex, "does not exist in route with size", segments.size()));
   if (pointIndex == segments.size())
-    return GetJunction(segments[pointIndex - 1], true /* front */);
-  return GetJunction(segments[pointIndex], false);
+    return GetJunction(segments[pointIndex - 1], true /* front */, isOutgoing);
+  return GetJunction(segments[pointIndex], false, isOutgoing);
 }
 
 ms::LatLon const & IndexGraphStarter::GetPoint(Segment const & segment, bool front, bool isOutgoing) const
 {
-  return GetJunction(segment, front).GetLatLon();
+  return GetJunction(segment, front, isOutgoing).GetLatLon();
 }
 
 bool IndexGraphStarter::IsRoutingOptionsGood(Segment const & segment, bool isOutgoing) const
@@ -213,8 +215,10 @@ void IndexGraphStarter::GetEdgesList(astar::VertexData<Vertex, Weight> const & v
     Segment real;
     if (m_fake.FindReal(segment, real))
     {
-      bool const haveSameFront = GetJunction(segment, true /* front */) == GetJunction(real, true);
-      bool const haveSameBack = GetJunction(segment, false /* front */) == GetJunction(real, false);
+      bool const haveSameFront =
+          GetJunction(segment, true /* front */, isOutgoing) == GetJunction(real, true, isOutgoing);
+      bool const haveSameBack =
+          GetJunction(segment, false /* front */, isOutgoing) == GetJunction(real, false, isOutgoing);
       if ((isOutgoing && haveSameFront) || (!isOutgoing && haveSameBack))
       {
         if (IsGuidesSegment(real))
@@ -534,12 +538,12 @@ void IndexGraphStarter::AddFakeEdges(Segment const & segment, bool isOutgoing, v
       //     |segment|       |s|
       //  *------------>*----------->
       bool const sIsOutgoing =
-          GetJunction(segment, true /* front */) == GetJunction(s, false /* front */);
+          GetJunction(segment, true /* front */, false) == GetJunction(s, false /* front */, false);
 
       //        |s|       |segment|
       //  *------------>*----------->
       bool const sIsIngoing =
-          GetJunction(s, true /* front */) == GetJunction(segment, false /* front */);
+          GetJunction(s, true /* front */, false) == GetJunction(segment, false /* front */, false);
 
       if ((isOutgoing && sIsOutgoing) || (!isOutgoing && sIsIngoing))
       {

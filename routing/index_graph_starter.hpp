@@ -73,9 +73,10 @@ public:
   // If segment is part of real converts it to real and returns true.
   // Otherwise returns false and does not modify segment.
   bool ConvertToReal(Segment & segment) const;
-  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) const;
-  LatLonWithAltitude const & GetRouteJunction(std::vector<Segment> const & route,
-                                                       size_t pointIndex) const;
+  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front,
+                                         bool isOutgoing) const;
+  LatLonWithAltitude const & GetRouteJunction(std::vector<Segment> const & segments, size_t pointIndex,
+                                              bool isOutgoing) const;
   ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) const;
 
   bool IsRoutingOptionsGood(Segment const & segment, bool isOutgoing) const;
