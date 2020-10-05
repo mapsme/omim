@@ -198,6 +198,10 @@ TipsApi::TipsApi(std::unique_ptr<Delegate> delegate)
     // Condition for Tips::Type::PublicTransport type.
     [this] (eye::Info const & info)
     {
+#if defined(OMIM_OS_ANDROID)
+      return false;
+#endif
+
       for (auto const & layer : info.m_layers)
       {
         if (layer.m_type == Layer::Type::PublicTransport &&
@@ -216,6 +220,10 @@ TipsApi::TipsApi(std::unique_ptr<Delegate> delegate)
    // Condition for Tips::Type::Isolines type.
    [this] (eye::Info const & info)
    {
+#if defined(OMIM_OS_ANDROID)
+     return false;
+#endif
+
      for (auto const & layer : info.m_layers)
      {
        if (layer.m_type == Layer::Type::Isolines &&
