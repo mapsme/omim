@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <map>
+#include <mutex>
 #include <unordered_map>
 #include <utility>
 
@@ -54,11 +55,13 @@ private:
 
   VehicleType m_vehicleType;
   bool m_loadAltitudes;
+  std::mutex m_dataSourceMtx;
   DataSource & m_dataSource;
   shared_ptr<NumMwmIds> m_numMwmIds;
   shared_ptr<VehicleModelFactoryInterface> m_vehicleModelFactory;
   shared_ptr<EdgeEstimator> m_estimator;
 
+  std::mutex m_graphsMtx;
   unordered_map<NumMwmId, GraphAttrs> m_graphs;
 
   unordered_map<NumMwmId, map<SegmentCoord, vector<RouteSegment::SpeedCamera>>> m_cachedCameras;
@@ -90,20 +93,26 @@ IndexGraphLoaderImpl::IndexGraphLoaderImpl(
 
 Geometry & IndexGraphLoaderImpl::GetGeometry(NumMwmId numMwmId)
 {
-  auto it = m_graphs.find(numMwmId);
-  if (it != m_graphs.end())
-    return *it->second.m_geometry;
+  {
+    std::lock_guard guard(m_graphsMtx);
+    auto it = m_graphs.find(numMwmId);
+    if (it != m_graphs.end())
+      return *it->second.m_geometry;
+  }
 
   return *CreateGeometry(numMwmId).m_geometry;
 }
 
 IndexGraph & IndexGraphLoaderImpl::GetIndexGraph(NumMwmId numMwmId)
 {
-  auto it = m_graphs.find(numMwmId);
-  if (it != m_graphs.end())
   {
-    return it->second.m_indexGraph ? *it->second.m_indexGraph
-                                   : *CreateIndexGraph(numMwmId, it->second).m_indexGraph;
+    std::lock_guard guard(m_graphsMtx);
+    auto it = m_graphs.find(numMwmId);
+    if (it != m_graphs.end())
+    {
+      return it->second.m_indexGraph ? *it->second.m_indexGraph
+                                     : *CreateIndexGraph(numMwmId, it->second).m_indexGraph;
+    }
   }
 
   return *CreateIndexGraph(numMwmId, CreateGeometry(numMwmId)).m_indexGraph;
@@ -194,6 +203,7 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateGeometry(NumMwmId
   shared_ptr<VehicleModelInterface> vehicleModel =
       m_vehicleModelFactory->GetVehicleModelForCountry(file.GetName());
 
+  std::lock_guard guard(m_graphsMtx);
   auto & graph = m_graphs[numMwmId];
   graph.m_geometry = make_shared<Geometry>(GeometryLoader::Create(
       m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle), m_loadAltitudes));
@@ -219,7 +229,11 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateIndexGraph(
   return graph;
 }
 
-void IndexGraphLoaderImpl::Clear() { m_graphs.clear(); }
+void IndexGraphLoaderImpl::Clear()
+{
+  std::lock_guard guard(m_graphsMtx);
+  m_graphs.clear();
+}
 
 bool ReadRoadAccessFromMwm(MwmValue const & mwmValue, VehicleType vehicleType,
                            RoadAccess & roadAccess)

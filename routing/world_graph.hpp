@@ -65,9 +65,9 @@ public:
   // start to finish of the route.
   virtual bool CheckLength(RouteWeight const & weight, double startToFinishDistanceM) const = 0;
 
-  virtual LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) = 0;
-  virtual ms::LatLon const & GetPoint(Segment const & segment, bool front) = 0;
-  virtual bool IsOneWay(NumMwmId mwmId, uint32_t featureId) = 0;
+  virtual LatLonWithAltitude const & GetJunction(Segment const & segment, bool front, bool isOutgoing) = 0;
+  virtual ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) = 0;
+  virtual bool IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) = 0;
 
   // Checks whether feature is allowed for through passage.
   virtual bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId) = 0;
@@ -77,10 +77,10 @@ public:
   virtual void SetMode(WorldGraphMode mode) = 0;
   virtual WorldGraphMode GetMode() const = 0;
 
-  virtual RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to) = 0;
+  virtual RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to, bool isOutgoing) = 0;
 
   virtual RouteWeight CalcSegmentWeight(Segment const & segment,
-                                        EdgeEstimator::Purpose purpose) = 0;
+                                        EdgeEstimator::Purpose purpose, bool isOutgoin) = 0;
 
   virtual RouteWeight CalcLeapWeight(ms::LatLon const & from, ms::LatLon const & to) const = 0;
 
@@ -93,8 +93,8 @@ public:
   /// \returns transitions for mwm with id |numMwmId|.
   virtual std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter);
 
-  virtual bool IsRoutingOptionsGood(Segment const & /* segment */);
-  virtual RoutingOptions GetRoutingOptions(Segment const & /* segment */);
+  virtual bool IsRoutingOptionsGood(Segment const & /* segment */, bool isOutgoing);
+  virtual RoutingOptions GetRoutingOptions(Segment const & /* segment */, bool isOutgoing);
   virtual void SetRoutingOptions(RoutingOptions /* routingOptions */);
 
   virtual void SetAStarParents(bool forward, Parents<Segment> & parents);

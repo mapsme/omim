@@ -593,9 +593,13 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
 
   vector<Segment> startSegments;
   bool startSegmentIsAlmostCodirectionalDirection = false;
-  bool const foundStart =
-      FindBestSegments(checkpoints.GetPointFrom(), startDirection, true /* isOutgoing */, *graph,
-                       startSegments, startSegmentIsAlmostCodirectionalDirection);
+  bool foundStart = false;
+  {
+    base::ScopedTimerWithLog timer("MTR FindBestSegments");
+    foundStart =
+        FindBestSegments(checkpoints.GetPointFrom(), startDirection, true /* isOutgoing */, *graph,
+                         startSegments, startSegmentIsAlmostCodirectionalDirection);
+  }
 
   m_guides.SetGuidesGraphParams(guidesMwmId, m_estimator->GetMaxWeightSpeedMpS());
   m_guides.ConnectToGuidesGraph(checkpoints.GetPoints());
@@ -629,15 +633,18 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     vector<Segment> finishSegments;
     bool dummy = false;
 
-    // Stop building route if |finishCheckpoint| is not connected to OSM and is not connected to
-    // the guides graph.
-    if (!FindBestSegments(finishCheckpoint, m2::PointD::Zero() /* direction */,
-                          false /* isOutgoing */, *graph, finishSegments,
-                          dummy /* bestSegmentIsAlmostCodirectional */) &&
-        finishFakeEnding.m_projections.empty())
     {
-      return isLastSubroute ? RouterResultCode::EndPointNotFound
-                            : RouterResultCode::IntermediatePointNotFound;
+      base::ScopedTimerWithLog timer("MTR Find finish or intermediate segment.");
+      // Stop building route if |finishCheckpoint| is not connected to OSM and is not connected to
+      // the guides graph.
+      if (!FindBestSegments(finishCheckpoint, m2::PointD::Zero() /* direction */,
+                            false /* isOutgoing */, *graph, finishSegments,
+                            dummy /* bestSegmentIsAlmostCodirectional */) &&
+          finishFakeEnding.m_projections.empty())
+      {
+        return isLastSubroute ? RouterResultCode::EndPointNotFound
+                              : RouterResultCode::IntermediatePointNotFound;
+      }
     }
 
     bool isStartSegmentStrictForward = (m_vehicleType == VehicleType::Car);
@@ -710,7 +717,12 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
 
   // TODO (@gmoryes) https://jira.mail.ru/browse/MAPSME-10694
   //  We should do RedressRoute for each subroute separately.
-  auto redressResult = RedressRoute(segments, delegate.GetCancellable(), *starter, route);
+  RouterResultCode redressResult = RouterResultCode::InternalError;
+
+  {
+    base::ScopedTimerWithLog timer("MTR RedressRoute.");
+    redressResult = RedressRoute(segments, delegate.GetCancellable(), *starter, route);
+  }
   if (redressResult != RouterResultCode::NoError)
     return redressResult;
 
@@ -720,7 +732,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
   m_lastRoute = make_unique<SegmentedRoute>(checkpoints.GetStart(), checkpoints.GetFinish(),
                                             route.GetSubroutes());
   for (Segment const & segment : segments)
-    m_lastRoute->AddStep(segment, mercator::FromLatLon(starter->GetPoint(segment, true /* front */)));
+    m_lastRoute->AddStep(segment, mercator::FromLatLon(starter->GetPoint(segment, true /* front */, true /* isOutgoing */)));
 
   m_lastFakeEdges = make_unique<FakeEdgesContainer>(move(*starter));
 
@@ -801,9 +813,13 @@ RouterResultCode IndexRouter::CalculateSubrouteJointsMode(
       nullptr /* prevRoute */, delegate.GetCancellable(), move(visitor),
       AStarLengthChecker(starter));
 
+  RouterResultCode result = RouterResultCode::InternalError;
   RoutingResult<Vertex, Weight> routingResult;
-  RouterResultCode const result =
-      FindPath<Vertex, Edge, Weight>(params, {} /* mwmIds */, routingResult, WorldGraphMode::Joints);
+  {
+    base::ScopedTimerWithLog timer("MTR CalculateSubrouteJointsMode");
+    result = FindPath<Vertex, Edge, Weight>(
+        params, {} /* mwmIds */, routingResult, WorldGraphMode::Joints);
+  }
 
   if (result != RouterResultCode::NoError)
     return result;
@@ -863,9 +879,13 @@ RouterResultCode IndexRouter::CalculateSubrouteLeapsOnlyMode(
       nullptr /* prevRoute */, delegate.GetCancellable(), move(visitor),
       AStarLengthChecker(starter));
 
+  RouterResultCode result;
   RoutingResult<Vertex, Weight> routingResult;
-  RouterResultCode const result =
-      FindPath<Vertex, Edge, Weight>(params, {} /* mwmIds */, routingResult, WorldGraphMode::LeapsOnly);
+  {
+    base::ScopedTimerWithLog timer("MTR Cross mwm FindPath.");
+    result = FindPath<Vertex, Edge, Weight>(
+        params, {} /* mwmIds */, routingResult, WorldGraphMode::LeapsOnly);
+  }
 
   progress->PushAndDropLastSubProgress();
 
@@ -924,7 +944,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   {
     auto const & step = steps[i];
     prevEdges.emplace_back(step.GetSegment(), starter.CalcSegmentWeight(step.GetSegment(),
-                           EdgeEstimator::Purpose::Weight));
+                           EdgeEstimator::Purpose::Weight, true));
   }
 
   using Visitor = JunctionVisitor<IndexGraphStarter>;
@@ -1333,8 +1353,8 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
 
     maxStart = max(maxStart, start);
     auto const contribCoef = static_cast<double>(end - maxStart + 1) / (input.size());
-    auto const startPoint = starter.GetPoint(input[start], true /* front */);
-    auto const endPoint = starter.GetPoint(input[end], true /* front */);
+    auto const startPoint = starter.GetPoint(input[start], true /* front */, true /* isOutgoing */);
+    auto const endPoint = starter.GetPoint(input[end], true /* front */, true /* isOutgoing */);
     progress->AppendSubProgress({startPoint, endPoint, contribCoef});
 
     RouterResultCode resultCode = RouterResultCode::NoError;
@@ -1353,7 +1373,10 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
         nullptr /* prevRoute */, delegate.GetCancellable(), move(visitor),
         AStarLengthChecker(starter));
 
-    resultCode = FindPath<Vertex, Edge, Weight>(params, mwmIds, routingResult, mode);
+    {
+      base::ScopedTimerWithLog timer("MTR In one mwm after cross mwm.");
+      resultCode = FindPath<Vertex, Edge, Weight>(params, mwmIds, routingResult, mode);
+    }
     return resultCode;
   };
 
@@ -1381,8 +1404,8 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
     }
 
     LOG(LINFO, ("Can not find path",
-      "from:", starter.GetPoint(input[start], input[start].IsForward()),
-      "to:", starter.GetPoint(input[end], input[end].IsForward())));
+      "from:", starter.GetPoint(input[start], input[start].IsForward(), true /* isOutgoing */),
+      "to:", starter.GetPoint(input[end], input[end].IsForward(), true /* isOutgoing */)));
 
     return false;
   };
@@ -1412,12 +1435,12 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
 
     if (!tryBuildRoute(prev, next, WorldGraphMode::JointSingleMwm, routingResult))
     {
-      auto const prevPoint = starter.GetPoint(input[next], true);
+      auto const prevPoint = starter.GetPoint(input[next], true, true /* isOutgoing */);
       // |next + 1| - is the twin of |next|
       // |next + 2| - is the next exit.
       while (next + 2 < finishLeapStart && next != finishLeapStart)
       {
-        auto const point = starter.GetPoint(input[next + 2], true);
+        auto const point = starter.GetPoint(input[next + 2], true, true /* isOutgoing */);
         double const distBetweenExistsMeters = ms::DistanceOnEarth(point, prevPoint);
 
         static double constexpr kMinDistBetweenExitsM = 100000;  // 100 km
@@ -1513,7 +1536,7 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
     // to use them.
     if (m_vehicleType == VehicleType::Car)
     {
-      routeSegment.SetRoadTypes(starter.GetRoutingOptions(segment));
+      routeSegment.SetRoadTypes(starter.GetRoutingOptions(segment, true /* isOutgoing */));
       if (segment.IsRealSegment() &&
           !AreSpeedCamerasProhibited(m_numMwmIds->GetFile(segment.GetMwmId())))
       {

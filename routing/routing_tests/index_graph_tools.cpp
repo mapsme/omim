@@ -91,7 +91,7 @@ void NoUTurnRestrictionTest::TestRouteGeom(Segment const & start, Segment const 
   for (size_t i = 0; i < routingResult.m_path.size(); ++i)
   {
     static auto constexpr kEps = 1e-3;
-    auto const point = m_graph->GetWorldGraph().GetPoint(routingResult.m_path[i], true /* forward */);
+    auto const point = m_graph->GetWorldGraph().GetPoint(routingResult.m_path[i], true /* forward */, true);
     if (!base::AlmostEqualAbs(mercator::FromLatLon(point), expectedRouteGeom[i], kEps))
     {
       TEST(false, ("Coords missmated at index:", i, "expected:", expectedRouteGeom[i],
@@ -137,7 +137,7 @@ void TestTransitGraphLoader::AddGraph(NumMwmId mwmId, unique_ptr<TransitGraph> g
 // WeightedEdgeEstimator --------------------------------------------------------------
 double WeightedEdgeEstimator::CalcSegmentWeight(Segment const & segment,
                                                 RoadGeometry const & /* road */,
-                                                EdgeEstimator::Purpose /* purpose */) const
+                                                EdgeEstimator::Purpose /* purpose */, bool isOutgoing) const
 {
   auto const it = m_segmentWeights.find(segment);
   CHECK(it != m_segmentWeights.cend(), ());

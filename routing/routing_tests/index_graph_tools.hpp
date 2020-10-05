@@ -55,10 +55,10 @@ public:
 
   // AStarGraph overrides:
   // @{
-  Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to) override
+  Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to, bool isOutgoing) override
   {
-    return m_graph->HeuristicCostEstimate(m_graph->GetPoint(from, true /* front */),
-                                          m_graph->GetPoint(to, true /* front */));
+    return m_graph->HeuristicCostEstimate(m_graph->GetPoint(from, true /* front */, isOutgoing),
+                                          m_graph->GetPoint(to, true /* front */, isOutgoing));
   }
 
   void GetOutgoingEdgesList(astar::VertexData<Vertex, RouteWeight> const & vertexData,
@@ -177,7 +177,7 @@ public:
   ~WeightedEdgeEstimator() override = default;
 
   double CalcSegmentWeight(Segment const & segment, RoadGeometry const & /* road */,
-                           EdgeEstimator::Purpose purpose) const override;
+                           EdgeEstimator::Purpose purpose, bool isOutgoing) const override;
 
   double GetUTurnPenalty(Purpose purpose) const override;
   double GetFerryLandingPenalty(Purpose purpose) const override;

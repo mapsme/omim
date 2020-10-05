@@ -10,8 +10,8 @@ namespace routing
 LeapsGraph::LeapsGraph(IndexGraphStarter & starter, MwmHierarchyHandler && hierarchyHandler)
   : m_starter(starter), m_hierarchyHandler(std::move(hierarchyHandler))
 {
-  m_startPoint = m_starter.GetPoint(m_starter.GetStartSegment(), true /* front */);
-  m_finishPoint = m_starter.GetPoint(m_starter.GetFinishSegment(), true /* front */);
+  m_startPoint = m_starter.GetPoint(m_starter.GetStartSegment(), true /* front */, true /* isOutgoing */);
+  m_finishPoint = m_starter.GetPoint(m_starter.GetFinishSegment(), true /* front */, true /* isOutgoing */);
   m_startSegment = m_starter.GetStartSegment();
   m_finishSegment = m_starter.GetFinishSegment();
 }
@@ -28,12 +28,12 @@ void LeapsGraph::GetIngoingEdgesList(astar::VertexData<Vertex, Weight> const & v
   GetEdgesList(vertexData.m_vertex, false /* isOutgoing */, edges);
 }
 
-RouteWeight LeapsGraph::HeuristicCostEstimate(Segment const & from, Segment const & to)
+RouteWeight LeapsGraph::HeuristicCostEstimate(Segment const & from, Segment const & to, bool isOutgoing)
 {
   ASSERT(to == m_startSegment || to == m_finishSegment, ());
   bool const toFinish = to == m_finishSegment;
   auto const & toPoint = toFinish ? m_finishPoint : m_startPoint;
-  return m_starter.HeuristicCostEstimate(from, toPoint);
+  return m_starter.HeuristicCostEstimate(from, toPoint, isOutgoing);
 }
 
 void LeapsGraph::GetEdgesList(Segment const & segment, bool isOutgoing,
@@ -55,7 +55,7 @@ void LeapsGraph::GetEdgesList(Segment const & segment, bool isOutgoing,
     return GetEdgesListToFinish(segment, edges);
   }
 
-  if (!m_starter.IsRoutingOptionsGood(segment))
+  if (!m_starter.IsRoutingOptionsGood(segment, isOutgoing))
     return;
 
   auto & crossMwmGraph = m_starter.GetGraph().GetCrossMwmGraph();
@@ -86,7 +86,7 @@ void LeapsGraph::GetEdgesListFromStart(Segment const & segment, std::vector<Segm
     auto const & exits = m_starter.GetGraph().GetTransitions(mwmId, false /* isEnter */);
     for (auto const & exit : exits)
     {
-      auto const & exitFrontPoint = m_starter.GetPoint(exit, true /* front */);
+      auto const & exitFrontPoint = m_starter.GetPoint(exit, true /* front */, true /* isOutgoing */);
       auto const weight = m_starter.GetGraph().CalcLeapWeight(m_startPoint, exitFrontPoint);
 
       edges.emplace_back(exit, weight);
@@ -102,7 +102,7 @@ void LeapsGraph::GetEdgesListToFinish(Segment const & segment, std::vector<Segme
     auto const & enters = m_starter.GetGraph().GetTransitions(mwmId, true /* isEnter */);
     for (auto const & enter : enters)
     {
-      auto const & enterFrontPoint = m_starter.GetPoint(enter, true /* front */);
+      auto const & enterFrontPoint = m_starter.GetPoint(enter, true /* front */, true /* isOutgoing */);
       auto const weight = m_starter.GetGraph().CalcLeapWeight(enterFrontPoint, m_finishPoint);
 
       edges.emplace_back(enter, weight);
@@ -110,9 +110,9 @@ void LeapsGraph::GetEdgesListToFinish(Segment const & segment, std::vector<Segme
   }
 }
 
-ms::LatLon const & LeapsGraph::GetPoint(Segment const & segment, bool front) const
+ms::LatLon const & LeapsGraph::GetPoint(Segment const & segment, bool front, bool isOutgoing) const
 {
-  return m_starter.GetPoint(segment, front);
+  return m_starter.GetPoint(segment, front, isOutgoing);
 }
 
 Segment const & LeapsGraph::GetStartSegment() const

@@ -20,7 +20,7 @@ public:
 
   using Parents = ska::bytell_hash_map<Vertex, Vertex>;
 
-  virtual Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to) = 0;
+  virtual Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to, bool isOutgoing) = 0;
 
   virtual void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
                                     std::vector<Edge> & edges) = 0;

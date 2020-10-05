@@ -19,6 +19,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 
@@ -139,20 +140,28 @@ public:
 
   /// \note The reference returned by the method is valid until the next call of GetRoad()
   /// of GetPoint() methods.
-  RoadGeometry const & GetRoad(uint32_t featureId);
+  RoadGeometry const & GetRoad(uint32_t featureId, bool isOutgoing);
 
   /// \note The reference returned by the method is valid until the next call of GetRoad()
   /// of GetPoint() methods.
-  ms::LatLon const & GetPoint(RoadPoint const & rp)
+  ms::LatLon const & GetPoint(RoadPoint const & rp, bool isOutgoing)
   {
-    return GetRoad(rp.GetFeatureId()).GetPoint(rp.GetPointId());
+    return GetRoad(rp.GetFeatureId(), isOutgoing).GetPoint(rp.GetPointId());
+  }
+
+  void LoadGeomLock(uint32_t featureId, RoadGeometry & road)
+  {
+    m_loader->Load(featureId, road);
   }
 
 private:
   using RoutingFifoCache =
       FifoCache<uint32_t, RoadGeometry, ska::bytell_hash_map<uint32_t, RoadGeometry>>;
 
+  std::mutex m_loaderMtx;
   std::unique_ptr<GeometryLoader> m_loader;
+//  std::unique_ptr<GeometryLoader> m_loaderBwd;
   std::unique_ptr<RoutingFifoCache> m_featureIdToRoad;
+  std::unique_ptr<RoutingFifoCache> m_featureIdToRoadBwd;
 };
 }  // namespace routing

@@ -177,7 +177,7 @@ public:
   }
 
   double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
-                           Purpose purpose) const override
+                           Purpose purpose, bool isOutgoing) const override
   {
     return CalcClimbSegment(purpose, segment, road, GetPedestrianClimbPenalty);
   }
@@ -206,7 +206,7 @@ public:
   }
 
   double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
-                           Purpose purpose) const override
+                           Purpose purpose, bool isOutgoing) const override
   {
     return CalcClimbSegment(purpose, segment, road, GetBicycleClimbPenalty);
   }
@@ -221,7 +221,7 @@ public:
 
   // EdgeEstimator overrides:
   double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
-                           Purpose purpose) const override;
+                           Purpose purpose, bool isOutgoing) const override;
   double GetUTurnPenalty(Purpose /* purpose */) const override;
   double GetFerryLandingPenalty(Purpose purpose) const override;
 
@@ -237,7 +237,7 @@ CarEstimator::CarEstimator(shared_ptr<TrafficStash> trafficStash, double maxWeig
 }
 
 double CarEstimator::CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
-                                       Purpose purpose) const
+                                       Purpose purpose, bool isOutgoing) const
 {
   return CalcSegment(purpose, segment, road);
 }

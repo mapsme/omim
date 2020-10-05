@@ -25,7 +25,7 @@ namespace
 {
 // @TODO(bykoianko) Consider setting cache size based on available memory.
 // Maximum road geometry cache size in items.
-size_t constexpr kRoadsCacheSize = 5000;
+size_t constexpr kRoadsCacheSize = 3500;
 
 double CalcFerryDurationHours(string const & durationHours, double roadLenKm)
 {
@@ -257,17 +257,24 @@ Geometry::Geometry(unique_ptr<GeometryLoader> loader)
     : m_loader(move(loader))
     , m_featureIdToRoad(make_unique<RoutingFifoCache>(
         kRoadsCacheSize,
-        [this](uint32_t featureId, RoadGeometry & road) { m_loader->Load(featureId, road); }))
+        [this](uint32_t featureId, RoadGeometry & road) { LoadGeomLock(featureId, road); }))
+    , m_featureIdToRoadBwd(make_unique<RoutingFifoCache>(
+        kRoadsCacheSize,
+        [this](uint32_t featureId, RoadGeometry & road) { LoadGeomLock(featureId, road); }))
 {
   CHECK(m_loader, ());
 }
 
-RoadGeometry const & Geometry::GetRoad(uint32_t featureId)
+RoadGeometry const & Geometry::GetRoad(uint32_t featureId, bool isOutgoing)
 {
   ASSERT(m_featureIdToRoad, ());
   ASSERT(m_loader, ());
 
-  return m_featureIdToRoad->GetValue(featureId);
+  std::lock_guard lock(m_loaderMtx);
+  if (isOutgoing)
+    return m_featureIdToRoad->GetValue(featureId);
+
+  return m_featureIdToRoadBwd->GetValue(featureId);
 }
 
 // static
