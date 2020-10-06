@@ -518,13 +518,13 @@ void TestRouteGeometry(IndexGraphStarter & starter,
 
   for (auto const & routeSeg : routeSegs)
   {
-    auto const & ll = starter.GetPoint(routeSeg, false /* front */);
+    auto const & ll = starter.GetPoint(routeSeg, false /* front */, true);
     // Note. In case of A* router all internal points of route are duplicated.
     // So it's necessary to exclude the duplicates.
     pushPoint(ll);
   }
 
-  pushPoint(starter.GetPoint(routeSegs.back(), false /* front */));
+  pushPoint(starter.GetPoint(routeSegs.back(), false /* front */, true));
   TEST_EQUAL(geom.size(), expectedRouteGeom.size(), ("geom:", geom, "expectedRouteGeom:", expectedRouteGeom));
   for (size_t i = 0; i < geom.size(); ++i)
   {
@@ -582,8 +582,8 @@ void TestRestrictions(double expectedLength,
   double length = 0.0;
   for (auto const & segment : segments)
   {
-    auto const back = mercator::FromLatLon(starter.GetPoint(segment, false /* front */));
-    auto const front = mercator::FromLatLon(starter.GetPoint(segment, true /* front */));
+    auto const back = mercator::FromLatLon(starter.GetPoint(segment, false /* front */, true));
+    auto const front = mercator::FromLatLon(starter.GetPoint(segment, true /* front */, true));
 
     length += back.Length(front);
   }

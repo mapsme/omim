@@ -638,7 +638,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   auto wave = [&epsilon](BidirectionalStepContext & context, std::atomic<bool> & queueIsEmpty,
                  BidirectionalStepContext & oppositeContext, std::atomic<bool> & oppositeQueueIsEmpty)
   {
-    LOG(LINFO, ("------------------wave---------------------------", context.forward ? "forward" : "backward"));
+    LOG(LINFO, ("---FindPath-------wave---------------------------", context.forward ? "forward" : "backward"));
     size_t i = 0;
     std::vector<Edge> adj;
     while (!context.queue.empty() /* && !oppositeQueueIsEmpty.load() */)
@@ -685,7 +685,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         ++i;
         if (oppositeContext.GetDistanceLock(stateW.vertex)) // i == 896199
         {
-          LOG(LINFO, ("------------------wave end---------------------------", context.forward ? "forward" : "backward", stateW.vertex, i));
+          LOG(LINFO, ("---FindPath-------wave end---------------------------", context.forward ? "forward" : "backward", stateW.vertex, i));
           return;  // The waves are intersected.
         }
 
@@ -696,7 +696,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
 
     if (context.queue.empty())
       queueIsEmpty.store(true);
-    LOG(LINFO, ("------------------wave end (empty)---------------------------", context.forward ? "forward" : "backward"));
+    LOG(LINFO, ("----FindPath------wave end (empty)---------------------------", context.forward ? "forward" : "backward"));
   };
 
 //  std::atomic<bool> foundAnyPathF;
@@ -713,7 +713,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     wave(forward, fwdIsEmpty, backward, bwdIsEmpty);
     backwardWave.get();
   }
-  LOG(LINFO, ("---------------------------------------------"));
+  LOG(LINFO, ("-------FindPath-------Finished-----------------"));
 
   // To use the search code both for backward and forward directions
   // we keep the pointers to everything related to the search in the
