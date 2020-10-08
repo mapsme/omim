@@ -151,6 +151,7 @@ public:
 
   void LoadGeomLock(uint32_t featureId, RoadGeometry & road)
   {
+    std::lock_guard lock(m_loaderMtx);
     m_loader->Load(featureId, road);
   }
 

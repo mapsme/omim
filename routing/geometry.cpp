@@ -270,7 +270,7 @@ RoadGeometry const & Geometry::GetRoad(uint32_t featureId, bool isOutgoing)
   ASSERT(m_featureIdToRoad, ());
   ASSERT(m_loader, ());
 
-  std::lock_guard lock(m_loaderMtx);
+//  std::lock_guard lock(m_loaderMtx);
   if (isOutgoing)
     return m_featureIdToRoad->GetValue(featureId);
 
