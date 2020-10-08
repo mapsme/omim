@@ -52,7 +52,7 @@ public class Holders
     }
   }
 
-  static class HeaderViewHolder extends RecyclerView.ViewHolder
+  public static class HeaderViewHolder extends RecyclerView.ViewHolder
   {
     @NonNull
     private TextView mButton;
@@ -373,7 +373,7 @@ public class Holders
     }
   }
 
-  static class SectionViewHolder extends BaseBookmarkHolder
+  public static class SectionViewHolder extends BaseBookmarkHolder
   {
     @NonNull
     private final TextView mView;
