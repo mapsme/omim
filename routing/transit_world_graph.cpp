@@ -38,8 +38,8 @@ void TransitWorldGraph::GetEdgeList(astar::VertexData<Segment, RouteWeight> cons
     Segment real;
     if (transitGraph.FindReal(segment, real))
     {
-      bool const haveSameFront = GetJunction(segment, true /* front */) == GetJunction(real, true);
-      bool const haveSameBack = GetJunction(segment, false /* front */) == GetJunction(real, false);
+      bool const haveSameFront = GetJunction(segment, true /* front */, isOutgoing) == GetJunction(real, true, isOutgoing);
+      bool const haveSameBack = GetJunction(segment, false /* front */, isOutgoing) == GetJunction(real, false, isOutgoing);
       if ((isOutgoing && haveSameFront) || (!isOutgoing && haveSameBack))
       {
         astar::VertexData const data(real, vertexData.m_realDistance);
@@ -60,8 +60,8 @@ void TransitWorldGraph::GetEdgeList(astar::VertexData<Segment, RouteWeight> cons
     auto const & edgeSegment = edge.GetTarget();
     for (auto const & s : transitGraph.GetFake(edgeSegment))
     {
-      bool const haveSameFront = GetJunction(edgeSegment, true /* front */) == GetJunction(s, true);
-      bool const haveSameBack = GetJunction(edgeSegment, false /* front */) == GetJunction(s, false);
+      bool const haveSameFront = GetJunction(edgeSegment, true /* front */, isOutgoing) == GetJunction(s, true, isOutgoing);
+      bool const haveSameBack = GetJunction(edgeSegment, false /* front */, isOutgoing) == GetJunction(s, false, isOutgoing);
       if ((isOutgoing && haveSameBack) || (!isOutgoing && haveSameFront))
         fakeFromReal.emplace_back(s, edge.GetWeight());
     }
@@ -77,7 +77,7 @@ void TransitWorldGraph::GetEdgeList(
   CHECK(false, ("TransitWorldGraph does not support Joints mode."));
 }
 
-LatLonWithAltitude const & TransitWorldGraph::GetJunction(Segment const & segment, bool front)
+LatLonWithAltitude const & TransitWorldGraph::GetJunction(Segment const & segment, bool front, bool isOutgoing)
 {
   if (TransitGraph::IsTransitSegment(segment))
     return GetTransitGraph(segment.GetMwmId()).GetJunction(segment, front);
@@ -86,12 +86,12 @@ LatLonWithAltitude const & TransitWorldGraph::GetJunction(Segment const & segmen
       .GetJunction(segment.GetPointId(front));
 }
 
-ms::LatLon const & TransitWorldGraph::GetPoint(Segment const & segment, bool front)
+ms::LatLon const & TransitWorldGraph::GetPoint(Segment const & segment, bool front, bool isOutgoing)
 {
-  return GetJunction(segment, front).GetLatLon();
+  return GetJunction(segment, front, isOutgoing).GetLatLon();
 }
 
-bool TransitWorldGraph::IsOneWay(NumMwmId mwmId, uint32_t featureId)
+bool TransitWorldGraph::IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing)
 {
   if (TransitGraph::IsTransitFeature(featureId))
     return true;
@@ -111,22 +111,22 @@ void TransitWorldGraph::ClearCachedGraphs()
   m_transitLoader->Clear();
 }
 
-RouteWeight TransitWorldGraph::HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to)
+RouteWeight TransitWorldGraph::HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to, bool isOutgoing)
 {
   return RouteWeight(m_estimator->CalcHeuristic(from, to));
 }
 
 RouteWeight TransitWorldGraph::CalcSegmentWeight(Segment const & segment,
-                                                 EdgeEstimator::Purpose purpose)
+                                                 EdgeEstimator::Purpose purpose, bool isOutgoing)
 {
   if (TransitGraph::IsTransitSegment(segment))
   {
     TransitGraph & transitGraph = GetTransitGraph(segment.GetMwmId());
-    return transitGraph.CalcSegmentWeight(segment, purpose);
+    return transitGraph.CalcSegmentWeight(segment, purpose, isOutgoing);
   }
 
   return RouteWeight(m_estimator->CalcSegmentWeight(
-      segment, GetRealRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()), purpose));
+      segment, GetRealRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()), purpose, isOutgoing));
 }
 
 RouteWeight TransitWorldGraph::CalcLeapWeight(ms::LatLon const & from, ms::LatLon const & to) const
@@ -144,15 +144,15 @@ RouteWeight TransitWorldGraph::CalcOffroadWeight(ms::LatLon const & from,
 double TransitWorldGraph::CalculateETA(Segment const & from, Segment const & to)
 {
   if (TransitGraph::IsTransitSegment(from))
-    return CalcSegmentWeight(to, EdgeEstimator::Purpose::ETA).GetWeight();
+    return CalcSegmentWeight(to, EdgeEstimator::Purpose::ETA, true).GetWeight();
 
   if (TransitGraph::IsTransitSegment(to))
-    return CalcSegmentWeight(to, EdgeEstimator::Purpose::ETA).GetWeight();
+    return CalcSegmentWeight(to, EdgeEstimator::Purpose::ETA, true).GetWeight();
 
   if (from.GetMwmId() != to.GetMwmId())
   {
     return m_estimator->CalcSegmentWeight(to, GetRealRoadGeometry(to.GetMwmId(), to
-        .GetFeatureId()), EdgeEstimator::Purpose::ETA);
+        .GetFeatureId()), EdgeEstimator::Purpose::ETA, true);
   }
 
   auto & indexGraph = m_indexLoader->GetIndexGraph(from.GetMwmId());
@@ -164,11 +164,11 @@ double TransitWorldGraph::CalculateETA(Segment const & from, Segment const & to)
 double TransitWorldGraph::CalculateETAWithoutPenalty(Segment const & segment)
 {
   if (TransitGraph::IsTransitSegment(segment))
-    return CalcSegmentWeight(segment, EdgeEstimator::Purpose::ETA).GetWeight();
+    return CalcSegmentWeight(segment, EdgeEstimator::Purpose::ETA, true).GetWeight();
 
   return m_estimator->CalcSegmentWeight(
       segment, GetRealRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()),
-      EdgeEstimator::Purpose::ETA);
+      EdgeEstimator::Purpose::ETA, true);
 }
 
 unique_ptr<TransitInfo> TransitWorldGraph::GetTransitInfo(Segment const & segment)
@@ -217,7 +217,7 @@ void TransitWorldGraph::GetTwinsInner(Segment const & segment, bool isOutgoing,
 RoadGeometry const & TransitWorldGraph::GetRealRoadGeometry(NumMwmId mwmId, uint32_t featureId)
 {
   CHECK(!TransitGraph::IsTransitFeature(featureId), ("GetRealRoadGeometry not designed for transit."));
-  return m_indexLoader->GetGeometry(mwmId).GetRoad(featureId);
+  return m_indexLoader->GetGeometry(mwmId).GetRoad(featureId, true /* isOutgoing */);
 }
 
 void TransitWorldGraph::AddRealEdges(astar::VertexData<Segment, RouteWeight> const & vertexData,

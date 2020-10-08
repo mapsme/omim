@@ -51,19 +51,19 @@ public:
     return weight.GetWeight() - weight.GetTransitTime() <=
            MaxPedestrianTimeSec(startToFinishDistanceM);
   }
-  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) override;
-  ms::LatLon const & GetPoint(Segment const & segment, bool front) override;
+  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front, bool isOutgoing) override;
+  ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) override;
   // All transit features are oneway.
-  bool IsOneWay(NumMwmId mwmId, uint32_t featureId) override;
+  bool IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) override;
   // All transit features are allowed for through passage.
   bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId) override;
   void ClearCachedGraphs() override;
   void SetMode(WorldGraphMode mode) override { m_mode = mode; }
   WorldGraphMode GetMode() const override { return m_mode; }
 
-  RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to) override;
+  RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to, bool isOutgoing) override;
 
-  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) override;
+  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose, bool isOutgoing) override;
   RouteWeight CalcLeapWeight(ms::LatLon const & from, ms::LatLon const & to) const override;
   RouteWeight CalcOffroadWeight(ms::LatLon const & from, ms::LatLon const & to,
                                 EdgeEstimator::Purpose purpose) const override;

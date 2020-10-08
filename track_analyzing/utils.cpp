@@ -31,8 +31,8 @@ double CalcSubtrackLength(MatchedTrack::const_iterator begin, MatchedTrack::cons
     {
       length +=
           ms::DistanceOnEarth(
-          geometry.GetPoint(segment.GetRoadPoint(false /* front */)),
-          geometry.GetPoint(segment.GetRoadPoint(true /* front */)));
+          geometry.GetPoint(segment.GetRoadPoint(false /* front */), true /* isOutgoing */),
+          geometry.GetPoint(segment.GetRoadPoint(true /* front */), true /* isOutgoing */));
       prevSegment = segment;
     }
   }

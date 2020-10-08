@@ -60,7 +60,7 @@ LatLonWithAltitude const & TransitGraph::GetJunction(Segment const & segment,
 }
 
 RouteWeight TransitGraph::CalcSegmentWeight(Segment const & segment,
-                                            EdgeEstimator::Purpose purpose) const
+                                            EdgeEstimator::Purpose purpose, bool isOutgoing) const
 {
   CHECK(IsTransitSegment(segment), ("Nontransit segment passed to TransitGraph."));
 
@@ -188,7 +188,7 @@ void TransitGraph::GetTransitEdges(Segment const & segment, bool isOutgoing,
     auto const & from = isOutgoing ? segment : s;
     auto const & to = isOutgoing ? s : segment;
     edges.emplace_back(
-        s, CalcSegmentWeight(to, EdgeEstimator::Purpose::Weight) + GetTransferPenalty(from, to));
+        s, CalcSegmentWeight(to, EdgeEstimator::Purpose::Weight, isOutgoing) + GetTransferPenalty(from, to));
   }
 }
 

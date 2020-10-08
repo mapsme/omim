@@ -45,7 +45,7 @@ public:
   double CalcOffroad(ms::LatLon const & from, ms::LatLon const & to, Purpose purpose) const;
 
   virtual double CalcSegmentWeight(Segment const & segment, RoadGeometry const & road,
-                                   Purpose purpose) const = 0;
+                                   Purpose purpose, bool isOutgoing) const = 0;
   virtual double GetUTurnPenalty(Purpose purpose) const = 0;
   virtual double GetFerryLandingPenalty(Purpose purpose) const = 0;
 

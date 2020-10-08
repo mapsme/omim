@@ -35,8 +35,8 @@ double DistanceToSegment(m2::PointD const & segmentBegin, m2::PointD const & seg
 double DistanceToSegment(Segment const & segment, m2::PointD const & point, IndexGraph & indexGraph)
 {
   return DistanceToSegment(
-      mercator::FromLatLon(indexGraph.GetGeometry().GetPoint(segment.GetRoadPoint(false))),
-      mercator::FromLatLon(indexGraph.GetGeometry().GetPoint(segment.GetRoadPoint(true))), point);
+      mercator::FromLatLon(indexGraph.GetGeometry().GetPoint(segment.GetRoadPoint(false), true /* isOutgoing */)),
+      mercator::FromLatLon(indexGraph.GetGeometry().GetPoint(segment.GetRoadPoint(true), true /* isOutgoing */)), point);
 }
 
 bool EdgesContain(vector<SegmentEdge> const & edges, Segment const & segment)

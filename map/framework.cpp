@@ -1489,6 +1489,7 @@ void Framework::MemoryWarning()
 
 void Framework::EnterBackground()
 {
+  LOG(LINFO, ("Framework::EnterBackground()"));
   m_startBackgroundTime = base::Timer::LocalTime();
   settings::Set("LastEnterBackground", m_startBackgroundTime);
 
@@ -1515,6 +1516,7 @@ void Framework::EnterBackground()
 
 void Framework::EnterForeground()
 {
+  LOG(LINFO, ("Framework::EnterForeground()"));
   m_startForegroundTime = base::Timer::LocalTime();
   if (m_drapeEngine != nullptr && m_startBackgroundTime != 0.0)
   {

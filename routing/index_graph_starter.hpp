@@ -73,13 +73,14 @@ public:
   // If segment is part of real converts it to real and returns true.
   // Otherwise returns false and does not modify segment.
   bool ConvertToReal(Segment & segment) const;
-  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) const;
-  LatLonWithAltitude const & GetRouteJunction(std::vector<Segment> const & route,
-                                                       size_t pointIndex) const;
-  ms::LatLon const & GetPoint(Segment const & segment, bool front) const;
+  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front,
+                                         bool isOutgoing) const;
+  LatLonWithAltitude const & GetRouteJunction(std::vector<Segment> const & segments, size_t pointIndex,
+                                              bool isOutgoing) const;
+  ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) const;
 
-  bool IsRoutingOptionsGood(Segment const & segment) const;
-  RoutingOptions GetRoutingOptions(Segment const & segment) const;
+  bool IsRoutingOptionsGood(Segment const & segment, bool isOutgoing) const;
+  RoutingOptions GetRoutingOptions(Segment const & segment, bool isOutgoing) const;
 
   uint32_t GetNumFakeSegments() const
   {
@@ -119,10 +120,10 @@ public:
     GetEdgesList(vertexData, false /* isOutgoing */, true /* useAccessConditional */, edges);
   }
 
-  RouteWeight HeuristicCostEstimate(Vertex const & from, Vertex const & to) override
+  RouteWeight HeuristicCostEstimate(Vertex const & from, Vertex const & to, bool isOutgoing) override
   {
-    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */),
-                                         GetPoint(to, true /* front */));
+    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */, isOutgoing),
+                                         GetPoint(to, true /* front */, isOutgoing), isOutgoing);
   }
 
   void SetAStarParents(bool forward, Parents<Segment> & parents) override
@@ -149,12 +150,12 @@ public:
     GetEdgesList({vertex, Weight(0.0)}, isOutgoing, false /* useAccessConditional */, edges);
   }
 
-  RouteWeight HeuristicCostEstimate(Vertex const & from, ms::LatLon const & to) const
+  RouteWeight HeuristicCostEstimate(Vertex const & from, ms::LatLon const & to, bool isOutgoing) const
   {
-    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */), to);
+    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */, isOutgoing), to, isOutgoing);
   }
 
-  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) const;
+  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose, bool isOutgoing) const;
   RouteWeight CalcGuidesSegmentWeight(Segment const & segment,
                                       EdgeEstimator::Purpose purpose) const;
   double CalculateETA(Segment const & from, Segment const & to) const;

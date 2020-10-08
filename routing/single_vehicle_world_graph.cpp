@@ -125,39 +125,39 @@ void SingleVehicleWorldGraph::GetEdgeList(
 }
 
 LatLonWithAltitude const & SingleVehicleWorldGraph::GetJunction(Segment const & segment,
-                                                                         bool front)
+                                                                         bool front, bool isOutgoing)
 {
-  return GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId())
+  return GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing)
          .GetJunction(segment.GetPointId(front));
 }
 
-ms::LatLon const & SingleVehicleWorldGraph::GetPoint(Segment const & segment, bool front)
+ms::LatLon const & SingleVehicleWorldGraph::GetPoint(Segment const & segment, bool front, bool isOutgoing)
 {
-  return GetJunction(segment, front).GetLatLon();
+  return GetJunction(segment, front, isOutgoing).GetLatLon();
 }
 
-bool SingleVehicleWorldGraph::IsOneWay(NumMwmId mwmId, uint32_t featureId)
+bool SingleVehicleWorldGraph::IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing)
 {
-  return GetRoadGeometry(mwmId, featureId).IsOneWay();
+  return GetRoadGeometry(mwmId, featureId, isOutgoing).IsOneWay();
 }
 
 bool SingleVehicleWorldGraph::IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId)
 {
-  return GetRoadGeometry(mwmId, featureId).IsPassThroughAllowed();
+  return GetRoadGeometry(mwmId, featureId, true).IsPassThroughAllowed(); /// !!!
 }
 
 RouteWeight SingleVehicleWorldGraph::HeuristicCostEstimate(ms::LatLon const & from,
-                                                           ms::LatLon const & to)
+                                                           ms::LatLon const & to, bool isOutgoing)
 {
   return RouteWeight(m_estimator->CalcHeuristic(from, to));
 }
 
 
 RouteWeight SingleVehicleWorldGraph::CalcSegmentWeight(Segment const & segment,
-                                                       EdgeEstimator::Purpose purpose)
+                                                       EdgeEstimator::Purpose purpose, bool isOutgoing)
 {
   return RouteWeight(m_estimator->CalcSegmentWeight(
-      segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()), purpose));
+      segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing), purpose, isOutgoing));
 }
 
 RouteWeight SingleVehicleWorldGraph::CalcLeapWeight(ms::LatLon const & from,
@@ -185,8 +185,8 @@ double SingleVehicleWorldGraph::CalculateETA(Segment const & from, Segment const
 double SingleVehicleWorldGraph::CalculateETAWithoutPenalty(Segment const & segment)
 {
   return m_estimator->CalcSegmentWeight(segment,
-                                        GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()),
-                                        EdgeEstimator::Purpose::ETA);
+                                        GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), true),
+                                        EdgeEstimator::Purpose::ETA, true);
 }
 
 vector<Segment> const & SingleVehicleWorldGraph::GetTransitions(NumMwmId numMwmId, bool isEnter)
@@ -202,9 +202,9 @@ vector<RouteSegment::SpeedCamera> SingleVehicleWorldGraph::GetSpeedCamInfo(Segme
   return m_loader->GetSpeedCameraInfo(segment);
 }
 
-RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId)
+RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId, bool isOutgoing)
 {
-  return m_loader->GetGeometry(mwmId).GetRoad(featureId);
+  return m_loader->GetGeometry(mwmId).GetRoad(featureId, isOutgoing);
 }
 
 void SingleVehicleWorldGraph::GetTwinsInner(Segment const & segment, bool isOutgoing,
@@ -213,17 +213,17 @@ void SingleVehicleWorldGraph::GetTwinsInner(Segment const & segment, bool isOutg
   m_crossMwmGraph->GetTwins(segment, isOutgoing, twins);
 }
 
-bool SingleVehicleWorldGraph::IsRoutingOptionsGood(Segment const & segment)
+bool SingleVehicleWorldGraph::IsRoutingOptionsGood(Segment const & segment, bool isOutgoing)
 {
-  auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId());
+  auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing);
   return geometry.SuitableForOptions(m_avoidRoutingOptions);
 }
 
-RoutingOptions SingleVehicleWorldGraph::GetRoutingOptions(Segment const & segment)
+RoutingOptions SingleVehicleWorldGraph::GetRoutingOptions(Segment const & segment, bool isOutgoing)
 {
   ASSERT(segment.IsRealSegment(), ());
 
-  auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId());
+  auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing);
   return geometry.GetRoutingOptions();
 }
 

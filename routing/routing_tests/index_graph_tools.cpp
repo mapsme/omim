@@ -91,7 +91,7 @@ void NoUTurnRestrictionTest::TestRouteGeom(Segment const & start, Segment const 
   for (size_t i = 0; i < routingResult.m_path.size(); ++i)
   {
     static auto constexpr kEps = 1e-3;
-    auto const point = m_graph->GetWorldGraph().GetPoint(routingResult.m_path[i], true /* forward */);
+    auto const point = m_graph->GetWorldGraph().GetPoint(routingResult.m_path[i], true /* forward */, true);
     if (!base::AlmostEqualAbs(mercator::FromLatLon(point), expectedRouteGeom[i], kEps))
     {
       TEST(false, ("Coords missmated at index:", i, "expected:", expectedRouteGeom[i],
@@ -137,7 +137,7 @@ void TestTransitGraphLoader::AddGraph(NumMwmId mwmId, unique_ptr<TransitGraph> g
 // WeightedEdgeEstimator --------------------------------------------------------------
 double WeightedEdgeEstimator::CalcSegmentWeight(Segment const & segment,
                                                 RoadGeometry const & /* road */,
-                                                EdgeEstimator::Purpose /* purpose */) const
+                                                EdgeEstimator::Purpose /* purpose */, bool isOutgoing) const
 {
   auto const it = m_segmentWeights.find(segment);
   CHECK(it != m_segmentWeights.cend(), ());
@@ -518,13 +518,13 @@ void TestRouteGeometry(IndexGraphStarter & starter,
 
   for (auto const & routeSeg : routeSegs)
   {
-    auto const & ll = starter.GetPoint(routeSeg, false /* front */);
+    auto const & ll = starter.GetPoint(routeSeg, false /* front */, true);
     // Note. In case of A* router all internal points of route are duplicated.
     // So it's necessary to exclude the duplicates.
     pushPoint(ll);
   }
 
-  pushPoint(starter.GetPoint(routeSegs.back(), false /* front */));
+  pushPoint(starter.GetPoint(routeSegs.back(), false /* front */, true));
   TEST_EQUAL(geom.size(), expectedRouteGeom.size(), ("geom:", geom, "expectedRouteGeom:", expectedRouteGeom));
   for (size_t i = 0; i < geom.size(); ++i)
   {
@@ -582,8 +582,8 @@ void TestRestrictions(double expectedLength,
   double length = 0.0;
   for (auto const & segment : segments)
   {
-    auto const back = mercator::FromLatLon(starter.GetPoint(segment, false /* front */));
-    auto const front = mercator::FromLatLon(starter.GetPoint(segment, true /* front */));
+    auto const back = mercator::FromLatLon(starter.GetPoint(segment, false /* front */, true));
+    auto const front = mercator::FromLatLon(starter.GetPoint(segment, true /* front */, true));
 
     length += back.Length(front);
   }
