@@ -102,15 +102,17 @@ public:
 
 private:
   RouterResultCode CalculateSubrouteJointsMode(IndexGraphStarter & starter,
+                                               IndexGraphStarter & starterBwd,
                                                RouterDelegate const & delegate,
                                                std::shared_ptr<AStarProgress> const & progress,
                                                std::vector<Segment> & subroute);
-  RouterResultCode CalculateSubrouteNoLeapsMode(IndexGraphStarter & starter,
+  RouterResultCode CalculateSubrouteNoLeapsMode(IndexGraphStarter & starter, IndexGraphStarter & starterBwd,
                                                 RouterDelegate const & delegate,
                                                 std::shared_ptr<AStarProgress> const & progress,
                                                 std::vector<Segment> & subroute);
   RouterResultCode CalculateSubrouteLeapsOnlyMode(Checkpoints const & checkpoints,
                                                   size_t subrouteIdx, IndexGraphStarter & starter,
+                                                  IndexGraphStarter & starterBwd,
                                                   RouterDelegate const & delegate,
                                                   std::shared_ptr<AStarProgress> const & progress,
                                                   std::vector<Segment> & subroute);
@@ -121,7 +123,8 @@ private:
   RouterResultCode CalculateSubroute(Checkpoints const & checkpoints, size_t subrouteIdx,
                                      RouterDelegate const & delegate,
                                      std::shared_ptr<AStarProgress> const & progress,
-                                     IndexGraphStarter & graph, std::vector<Segment> & subroute,
+                                     IndexGraphStarter & graph, IndexGraphStarter & graphBwd,
+                                     std::vector<Segment> & subroute,
                                      bool guidesActive = false);
 
   RouterResultCode AdjustRoute(Checkpoints const & checkpoints,

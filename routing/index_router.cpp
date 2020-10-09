@@ -663,6 +663,8 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
         starter ? starter->GetNumFakeSegments() + startIdx : startIdx;
     IndexGraphStarter subrouteStarter(startFakeEnding, finishFakeEnding, fakeNumerationStart,
                                       isStartSegmentStrictForward, *graph);
+    IndexGraphStarter subrouteStarterBwd(startFakeEnding, finishFakeEnding, fakeNumerationStart,
+                                         isStartSegmentStrictForward, *graph);
 
     if (m_guides.IsAttached())
     {
@@ -683,7 +685,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     progress->AppendSubProgress(subProgress);
     SCOPE_GUARD(eraseProgress, [&progress]() { progress->PushAndDropLastSubProgress(); });
 
-    auto const result = CalculateSubroute(checkpoints, i, delegate, progress, subrouteStarter,
+    auto const result = CalculateSubroute(checkpoints, i, delegate, progress, subrouteStarter, subrouteStarterBwd,
                                           subroute, m_guides.IsAttached());
 
     if (result != RouterResultCode::NoError)
@@ -769,6 +771,7 @@ RouterResultCode IndexRouter::CalculateSubroute(Checkpoints const & checkpoints,
                                                 RouterDelegate const & delegate,
                                                 shared_ptr<AStarProgress> const & progress,
                                                 IndexGraphStarter & starter,
+                                                IndexGraphStarter & starterBwd,
                                                 vector<Segment> & subroute,
                                                 bool guidesActive /* = false */)
 {
@@ -776,6 +779,7 @@ RouterResultCode IndexRouter::CalculateSubroute(Checkpoints const & checkpoints,
   subroute.clear();
 
   SetupAlgorithmMode(starter, guidesActive);
+  SetupAlgorithmMode(starterBwd, guidesActive);
   LOG(LINFO, ("Routing in mode:", starter.GetGraph().GetMode()));
 
   base::ScopedTimerWithLog timer("Route build");
@@ -783,11 +787,11 @@ RouterResultCode IndexRouter::CalculateSubroute(Checkpoints const & checkpoints,
   switch (mode)
   {
   case WorldGraphMode::Joints:
-    return CalculateSubrouteJointsMode(starter, delegate, progress, subroute);
+    return CalculateSubrouteJointsMode(starter, starterBwd, delegate, progress, subroute);
   case WorldGraphMode::NoLeaps:
-    return CalculateSubrouteNoLeapsMode(starter, delegate, progress, subroute);
+    return CalculateSubrouteNoLeapsMode(starter, starterBwd, delegate, progress, subroute);
   case WorldGraphMode::LeapsOnly:
-    return CalculateSubrouteLeapsOnlyMode(checkpoints, subrouteIdx, starter, delegate, progress,
+    return CalculateSubrouteLeapsOnlyMode(checkpoints, subrouteIdx, starter, starterBwd, delegate, progress,
                                           subroute);
   default: CHECK(false, ("Wrong WorldGraphMode here:", mode));
   }
@@ -795,11 +799,12 @@ RouterResultCode IndexRouter::CalculateSubroute(Checkpoints const & checkpoints,
 }
 
 RouterResultCode IndexRouter::CalculateSubrouteJointsMode(
-    IndexGraphStarter & starter, RouterDelegate const & delegate,
+    IndexGraphStarter & starter, IndexGraphStarter & starterBwd, RouterDelegate const & delegate,
     shared_ptr<AStarProgress> const & progress, vector<Segment> & subroute)
 {
   using JointsStarter = IndexGraphStarterJoints<IndexGraphStarter>;
   JointsStarter jointStarter(starter, starter.GetStartSegment(), starter.GetFinishSegment());
+  JointsStarter jointStarterBwd(starterBwd, starterBwd.GetStartSegment(), starterBwd.GetFinishSegment());
 
   using Visitor = JunctionVisitor<JointsStarter>;
   Visitor visitor(jointStarter, delegate, kVisitPeriod, progress);
@@ -809,7 +814,7 @@ RouterResultCode IndexRouter::CalculateSubrouteJointsMode(
   using Weight = JointsStarter::Weight;
 
   AStarAlgorithm<Vertex, Edge, Weight>::Params<Visitor, AStarLengthChecker> params(
-      jointStarter, jointStarter.GetStartJoint(), jointStarter.GetFinishJoint(),
+      jointStarter, jointStarterBwd, jointStarter.GetStartJoint(), jointStarter.GetFinishJoint(),
       nullptr /* prevRoute */, delegate.GetCancellable(), move(visitor),
       AStarLengthChecker(starter));
 
@@ -829,7 +834,7 @@ RouterResultCode IndexRouter::CalculateSubrouteJointsMode(
 }
 
 RouterResultCode IndexRouter::CalculateSubrouteNoLeapsMode(
-    IndexGraphStarter & starter, RouterDelegate const & delegate,
+    IndexGraphStarter & starter, IndexGraphStarter & starterBwd, RouterDelegate const & delegate,
     shared_ptr<AStarProgress> const & progress, vector<Segment> & subroute)
 {
   using Vertex = IndexGraphStarter::Vertex;
@@ -840,7 +845,7 @@ RouterResultCode IndexRouter::CalculateSubrouteNoLeapsMode(
   Visitor visitor(starter, delegate, kVisitPeriod, progress);
 
   AStarAlgorithm<Vertex, Edge, Weight>::Params<Visitor, AStarLengthChecker> params(
-      starter, starter.GetStartSegment(), starter.GetFinishSegment(), nullptr /* prevRoute */,
+      starter, starterBwd, starter.GetStartSegment(), starter.GetFinishSegment(), nullptr /* prevRoute */,
       delegate.GetCancellable(), move(visitor), AStarLengthChecker(starter));
 
   RoutingResult<Vertex, Weight> routingResult;
@@ -857,10 +862,11 @@ RouterResultCode IndexRouter::CalculateSubrouteNoLeapsMode(
 
 RouterResultCode IndexRouter::CalculateSubrouteLeapsOnlyMode(
     Checkpoints const & checkpoints, size_t subrouteIdx, IndexGraphStarter & starter,
-    RouterDelegate const & delegate, shared_ptr<AStarProgress> const & progress,
+    IndexGraphStarter & starterBwd, RouterDelegate const & delegate, shared_ptr<AStarProgress> const & progress,
     vector<Segment> & subroute)
 {
   LeapsGraph leapsGraph(starter, MwmHierarchyHandler(m_numMwmIds, m_countryParentNameGetterFn));
+  LeapsGraph leapsGraphBwd(starterBwd, MwmHierarchyHandler(m_numMwmIds, m_countryParentNameGetterFn));
 
   using Vertex = LeapsGraph::Vertex;
   using Edge = LeapsGraph::Edge;
@@ -875,7 +881,7 @@ RouterResultCode IndexRouter::CalculateSubrouteLeapsOnlyMode(
   Visitor visitor(leapsGraph, delegate, kVisitPeriodForLeaps, progress);
 
   AStarAlgorithm<Vertex, Edge, Weight>::Params<Visitor, AStarLengthChecker> params(
-      leapsGraph, leapsGraph.GetStartSegment(), leapsGraph.GetFinishSegment(),
+      leapsGraph, leapsGraphBwd, leapsGraph.GetStartSegment(), leapsGraph.GetFinishSegment(),
       nullptr /* prevRoute */, delegate.GetCancellable(), move(visitor),
       AStarLengthChecker(starter));
 
@@ -955,8 +961,10 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   using Weight = IndexGraphStarter::Weight;
 
   AStarAlgorithm<Vertex, Edge, Weight> algorithm;
+  // @TODO Duplicate starter.
+  CHECK(false, ("Duplicate stater."));
   AStarAlgorithm<Vertex, Edge, Weight>::Params<Visitor, AdjustLengthChecker> params(
-      starter, starter.GetStartSegment(), {} /* finalVertex */, &prevEdges,
+      starter, starter, starter.GetStartSegment(), {} /* finalVertex */, &prevEdges,
       delegate.GetCancellable(), move(visitor), AdjustLengthChecker(starter));
 
   RoutingResult<Segment, RouteWeight> result;
@@ -1368,8 +1376,10 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
     using Visitor = JunctionVisitor<JointsStarter>;
     Visitor visitor(jointStarter, delegate, kVisitPeriod, progress);
 
+    // @TODO Duplicate jointStarter.
+    CHECK(false, ("Duplicate jointStarter."));
     AStarAlgorithm<Vertex, Edge, Weight>::Params<Visitor, AStarLengthChecker> params(
-        jointStarter, jointStarter.GetStartJoint(), jointStarter.GetFinishJoint(),
+        jointStarter, jointStarter, jointStarter.GetStartJoint(), jointStarter.GetFinishJoint(),
         nullptr /* prevRoute */, delegate.GetCancellable(), move(visitor),
         AStarLengthChecker(starter));
 
@@ -1633,6 +1643,7 @@ void IndexRouter::FillSpeedCamProhibitedMwms(vector<Segment> const & segments,
   }
 }
 
+// @TODO This method should be const.
 void IndexRouter::SetupAlgorithmMode(IndexGraphStarter & starter, bool guidesActive)
 {
   // We use NoLeaps for pedestrians and bicycles with route points near to the Guides tracks

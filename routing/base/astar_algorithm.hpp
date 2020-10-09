@@ -13,8 +13,8 @@
 #include <algorithm>
 #include <atomic>
 #include <functional>
-#include <iostream>
 #include <future>
+#include <iostream>
 #include <map>
 #include <mutex>
 #include <optional>
@@ -80,11 +80,12 @@ public:
             typename LengthChecker = astar::DefaultLengthChecker<Weight>>
   struct Params
   {
-    Params(Graph & graph, Vertex const & startVertex, Vertex const & finalVertex,
+    Params(Graph & graph, Graph & graphBwd, Vertex const & startVertex, Vertex const & finalVertex,
            std::vector<Edge> const * prevRoute, base::Cancellable const & cancellable,
            Visitor && onVisitedVertexCallback = astar::DefaultVisitor<Vertex>(),
            LengthChecker && checkLengthCallback = astar::DefaultLengthChecker<Weight>())
         : m_graph(graph)
+        , m_graphBwd(graphBwd)
         , m_startVertex(startVertex)
         , m_finalVertex(finalVertex)
         , m_prevRoute(prevRoute)
@@ -95,6 +96,7 @@ public:
     }
 
     Graph & m_graph;
+    Graph & m_graphBwd;
     Weight const m_weightEpsilon = m_graph.GetAStarWeightEpsilon();
     Vertex const m_startVertex;
     // Used for FindPath, FindPathBidirectional.
@@ -614,13 +616,14 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
 {
   auto const epsilon = params.m_weightEpsilon;
   auto & graph = params.m_graph;
+  auto & graphBwd = params.m_graphBwd;
   auto const & finalVertex = params.m_finalVertex;
   auto const & startVertex = params.m_startVertex;
 
   std::mutex mtx;
   std::mutex mtxGr;
   BidirectionalStepContext forward(mtx, mtxGr, true /* forward */, startVertex, finalVertex, graph);
-  BidirectionalStepContext backward(mtx, mtxGr, false /* forward */, startVertex, finalVertex, graph);
+  BidirectionalStepContext backward(mtx, mtxGr, false /* forward */, startVertex, finalVertex, graphBwd);
 
   auto & forwardParents = forward.GetParents();
   auto & backwardParents = backward.GetParents();
