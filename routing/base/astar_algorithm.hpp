@@ -618,7 +618,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
 {
   auto const epsilon = params.m_weightEpsilon;
   auto & graph = params.m_graph;
-  auto & graphBwd = params.m_graphBwd;
+  auto & graphBwd = params.m_graph; // params.m_graphBwd;
   auto const & finalVertex = params.m_finalVertex;
   auto const & startVertex = params.m_startVertex;
 
