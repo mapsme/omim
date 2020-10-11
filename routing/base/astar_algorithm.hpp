@@ -116,6 +116,7 @@ public:
         std::vector<Edge> const * prevRoute,
         LengthChecker && checkLengthCallback = astar::DefaultLengthChecker<Weight>())
       : m_graph(graph)
+      , m_graphBwd(graph)
       , m_startVertex(startVertex)
       , m_finalVertex(finalVertex)
       , m_prevRoute(prevRoute)
@@ -124,6 +125,7 @@ public:
     }
 
     Graph & m_graph;
+    Graph & m_graphBwd;
     Weight const m_weightEpsilon = m_graph.GetAStarWeightEpsilon();
     Vertex const m_startVertex;
     // Used for FindPath, FindPathBidirectional.

@@ -151,7 +151,7 @@ public:
 
   void LoadGeomLock(uint32_t featureId, RoadGeometry & road)
   {
-    std::lock_guard lock(m_loaderMtx);
+//    std::lock_guard lock(m_loaderMtx);
     m_loader->Load(featureId, road);
   }
 
@@ -159,7 +159,7 @@ private:
   using RoutingFifoCache =
       FifoCache<uint32_t, RoadGeometry, ska::bytell_hash_map<uint32_t, RoadGeometry>>;
 
-  std::mutex m_loaderMtx;
+//  std::mutex m_loaderMtx;
   std::unique_ptr<GeometryLoader> m_loader;
 //  std::unique_ptr<GeometryLoader> m_loaderBwd;
   std::unique_ptr<RoutingFifoCache> m_featureIdToRoad;
