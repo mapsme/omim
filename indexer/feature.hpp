@@ -37,6 +37,8 @@ public:
   FeatureType(feature::SharedLoadInfo const * loadInfo, std::vector<uint8_t> && buffer,
               feature::MetadataIndex const * metadataIndex);
   FeatureType(osm::MapObject const & emo);
+  FeatureType(feature::SharedLoadInfo const * loadInfo, std::vector<uint8_t> && buffer,
+              feature::MetadataIndex const * metadataIndex, uint32_t offset);
 
   feature::GeomType GetGeomType() const;
   FeatureParamsBase & GetParams() { return m_params; }
@@ -254,6 +256,8 @@ private:
   uint32_t m_ptsSimpMask = 0;
 
   InnerGeomStat m_innerStats;
+
+  uint32_t m_offset = 0;
 
   DISALLOW_COPY_AND_MOVE(FeatureType);
 };

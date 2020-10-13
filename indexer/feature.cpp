@@ -196,6 +196,13 @@ FeatureType::FeatureType(SharedLoadInfo const * loadInfo, vector<uint8_t> && buf
   m_header = Header(m_data);
 }
 
+FeatureType::FeatureType(feature::SharedLoadInfo const * loadInfo, std::vector<uint8_t> && buffer,
+                         feature::MetadataIndex const * metadataIndex, uint32_t offset)
+  : FeatureType(loadInfo, std::move(buffer), metadataIndex)
+{
+  m_offset = offset;
+}
+
 FeatureType::FeatureType(osm::MapObject const & emo)
 {
   HeaderGeomType headerGeomType = HeaderGeomType::Point;
@@ -275,19 +282,22 @@ void FeatureType::ParseTypes()
 
   size_t const count = GetTypesCount();
   uint32_t index = 0;
+  uint32_t type = 0;
+  size_t i = 0;
   try
   {
-    for (size_t i = 0; i < count; ++i)
+    for (i = 0; i < count; ++i)
     {
       index = ReadVarUint<uint32_t>(source);
-      m_types[i] = c.GetTypeForIndex(index);
+      type = c.GetTypeForIndex(index);
+      m_types[i] = type;
     }
   }
   catch (std::out_of_range const & ex)
   {
     LOG(LERROR, ("Incorrect type index for feature.FeatureID:", m_id, ". Incorrect index:", index,
                  ". Loaded feature types:", m_types, ". Total count of types:", count,
-                 ". Header:", m_header));
+                 ". Header:", m_header, "type:", type, "ex:", ex.what(), "i:", i));
     throw;
   }
 

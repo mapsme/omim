@@ -17,7 +17,7 @@ public:
   // Throws std::out_of_range exception.
   uint32_t GetType(uint32_t ind) const
   {
-    ASSERT_LESS ( ind, m_types.size(), () );
+    ASSERT_LESS(ind, m_types.size(), ());
     return m_types.at(ind);
   }
 
