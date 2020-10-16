@@ -1,4 +1,5 @@
 #include "features_vector.hpp"
+#include "feature.hpp"
 #include "features_offsets_table.hpp"
 #include "data_factory.hpp"
 
@@ -7,8 +8,11 @@
 
 std::unique_ptr<FeatureType> FeaturesVector::GetByIndex(uint32_t index) const
 {
-  auto const ftOffset = m_table ? m_table->GetFeatureOffset(index) : index;
-  return std::make_unique<FeatureType>(&m_loadInfo, m_recordReader->ReadRecord(ftOffset),
+  uint32_t ftOffset = 0;
+  ftOffset = m_table ? m_table->GetFeatureOffset(index) : index;
+//  if (index == 333004 || index == 468000 || index == 664105)
+//    LOG(LCRITICAL, (index, ftOffset));
+  return std::make_unique<FeatureType>(&m_loadInfo, m_recordReader->ReadRecord(ftOffset, index),
                                        m_metaidx.get(), ftOffset);
 }
 

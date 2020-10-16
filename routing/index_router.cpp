@@ -588,6 +588,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
 
   TrafficStash::Guard guard(m_trafficStash);
   unique_ptr<WorldGraph> graph = MakeWorldGraph();
+  graph->MultithreadingIssue(m_dataSource);
 
   vector<Segment> segments;
 
@@ -1034,7 +1035,7 @@ unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph()
   {
     auto graph = make_unique<SingleVehicleWorldGraph>(
         move(crossMwmGraph), move(indexGraphLoader), m_estimator,
-        MwmHierarchyHandler(m_numMwmIds, m_countryParentNameGetterFn));
+        MwmHierarchyHandler(m_numMwmIds, m_countryParentNameGetterFn), m_numMwmIds);
     graph->SetRoutingOptions(routingOptions);
     return graph;
   }

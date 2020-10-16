@@ -50,6 +50,8 @@ public:
 
   virtual ~WorldGraph() = default;
 
+  virtual void MultithreadingIssue(DataSource & dataSource) {}
+
   virtual void GetEdgeList(astar::VertexData<Segment, RouteWeight> const & vertexData,
                            bool isOutgoing, bool useRoutingOptions, bool useAccessConditional,
                            std::vector<SegmentEdge> & edges) = 0;

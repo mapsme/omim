@@ -31,7 +31,9 @@ public:
   SingleVehicleWorldGraph(std::unique_ptr<CrossMwmGraph> crossMwmGraph,
                           std::unique_ptr<IndexGraphLoader> loader,
                           std::shared_ptr<EdgeEstimator> estimator,
-                          MwmHierarchyHandler && hierarchyHandler);
+                          MwmHierarchyHandler && hierarchyHandler, std::shared_ptr<NumMwmIds> numMwmIds);
+
+  void MultithreadingIssue(DataSource & dataSource) override;
 
   // WorldGraph overrides:
   // @{
@@ -145,5 +147,6 @@ private:
   AStarParents<JointSegment> m_parentsForJoints;
 
   MwmHierarchyHandler m_hierarchyHandler;
+  std::shared_ptr<NumMwmIds> m_numMwmIds;
 };
 }  // namespace routing

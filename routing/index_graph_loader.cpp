@@ -196,10 +196,12 @@ vector<RouteSegment::SpeedCamera> IndexGraphLoaderImpl::GetSpeedCameraInfo(Segme
 IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateGeometry(NumMwmId numMwmId)
 {
   platform::CountryFile const & file = m_numMwmIds->GetFile(numMwmId);
+  // @TODO No protection!!!!!
   MwmSet::MwmHandle handle = m_dataSource.GetMwmHandleByCountryFile(file);
   if (!handle.IsAlive())
     MYTHROW(RoutingException, ("Can't get mwm handle for", file));
 
+  // @TODO No protection!!!!!
   shared_ptr<VehicleModelInterface> vehicleModel =
       m_vehicleModelFactory->GetVehicleModelForCountry(file.GetName());
 

@@ -116,7 +116,7 @@ double EstimateDuration(MatchedTrack const & track, shared_ptr<EdgeEstimator> es
 
     segment = point.GetSegment();
     result += estimator->CalcSegmentWeight(segment, geometry.GetRoad(segment.GetFeatureId(), true /* isOutgoing */),
-                                           EdgeEstimator::Purpose::ETA);
+                                           EdgeEstimator::Purpose::ETA, true);
   }
 
   return result;

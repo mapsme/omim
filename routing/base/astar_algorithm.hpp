@@ -5,6 +5,8 @@
 #include "routing/base/astar_weight.hpp"
 #include "routing/base/routing_result.hpp"
 
+#include "indexer/features_offsets_table.hpp"
+
 #include "base/assert.hpp"
 #include "base/cancellable.hpp"
 #include "base/fifo_cache.hpp"
@@ -712,6 +714,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
 
   // Starting a thread.
   {
+//    feature::FeaturesOffsetsTable::SetLog(true);
     base::ScopedTimerWithLog timer("Wave");
     auto backwardWave = std::async(std::launch::async, wave, std::ref(backward),
                                    std::ref(bwdIsEmpty), std::ref(forward), std::ref(fwdIsEmpty));

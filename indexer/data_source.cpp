@@ -134,6 +134,7 @@ unique_ptr<FeatureType> FeaturesLoaderGuard::GetOriginalOrEditedFeatureByIndex(u
 
 unique_ptr<FeatureType> FeaturesLoaderGuard::GetFeatureByIndex(uint32_t index) const
 {
+  CHECK(m_handle.IsAlive(), ());
   if (!m_handle.IsAlive())
     return {};
 
@@ -149,6 +150,7 @@ unique_ptr<FeatureType> FeaturesLoaderGuard::GetFeatureByIndex(uint32_t index) c
 
 unique_ptr<FeatureType> FeaturesLoaderGuard::GetOriginalFeatureByIndex(uint32_t index) const
 {
+  CHECK(m_handle.IsAlive(), ());
   return m_handle.IsAlive() ? m_source->GetOriginalFeature(index) : nullptr;
 }
 

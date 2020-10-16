@@ -19,6 +19,8 @@ using namespace std;
 
 namespace feature
 {
+  bool FeaturesOffsetsTable::m_log = false;
+
   void FeaturesOffsetsTable::Builder::PushOffset(uint32_t const offset)
   {
     ASSERT(m_offsets.empty() || m_offsets.back() < offset, ());
@@ -28,10 +30,14 @@ namespace feature
   FeaturesOffsetsTable::FeaturesOffsetsTable(succinct::elias_fano::elias_fano_builder & builder)
       : m_table(&builder)
   {
+    if (m_log)
+      LOG(LINFO, ("FeaturesOffsetsTable::FeaturesOffsetsTable()"));
   }
 
   FeaturesOffsetsTable::FeaturesOffsetsTable(string const & filePath)
   {
+    if (m_log)
+      LOG(LINFO, ("FeaturesOffsetsTable::FeaturesOffsetsTable() filePath:", filePath));
     m_pReader.reset(new MmapReader(filePath));
     succinct::mapper::map(m_table, reinterpret_cast<char const *>(m_pReader->Data()));
   }
@@ -68,6 +74,9 @@ namespace feature
   // static
   unique_ptr<FeaturesOffsetsTable> FeaturesOffsetsTable::Load(FilesContainerR const & cont)
   {
+    if (m_log)
+      LOG(LINFO, ("FeaturesOffsetsTable::Load()"));
+
     unique_ptr<FeaturesOffsetsTable> table(new FeaturesOffsetsTable());
 
     table->m_file.Open(cont.GetFileName());
@@ -90,6 +99,8 @@ namespace feature
 
   void FeaturesOffsetsTable::Save(string const & filePath)
   {
+    if (m_log)
+      LOG(LINFO, ("FeaturesOffsetsTable::Save()"));
     LOG(LINFO, ("Saving features offsets table to ", filePath));
     string const fileNameTmp = filePath + EXTENSION_TMP;
     succinct::mapper::freeze(m_table, fileNameTmp.c_str());
@@ -98,12 +109,16 @@ namespace feature
 
   uint32_t FeaturesOffsetsTable::GetFeatureOffset(size_t index) const
   {
+    if (m_log)
+      LOG(LINFO, (threads::GetCurrentThreadID(), "FeaturesOffsetsTable::GetFeatureOffset()", index));
     ASSERT_LESS(index, size(), ("Index out of bounds", index, size()));
     return static_cast<uint32_t>(m_table.select(index));
   }
 
   size_t FeaturesOffsetsTable::GetFeatureIndexbyOffset(uint32_t offset) const
   {
+    if (m_log)
+      LOG(LINFO, ("FeaturesOffsetsTable::GetFeatureIndexbyOffset()", offset));
     ASSERT_GREATER(size(), 0, ("We must not ask empty table"));
     ASSERT_LESS_OR_EQUAL(offset, m_table.select(size() - 1), ("Offset out of bounds", offset,
                                                      m_table.select(size() - 1)));

@@ -16,6 +16,7 @@
 #include "base/string_utils.hpp"
 
 #include <algorithm>
+#include <mutex>
 #include <string>
 
 using namespace routing;
@@ -92,20 +93,24 @@ GeometryLoaderImpl::GeometryLoaderImpl(DataSource const & dataSource,
   CHECK(m_attrLoader.m_maxspeeds, ());
 }
 
+//std::mutex mtx;
+
 void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road)
 {
+//  std::unique_lock guard(mtx);
   auto feature = m_guard.GetFeatureByIndex(featureId);
   if (!feature)
     MYTHROW(RoutingException, ("Feature", featureId, "not found in ", m_country));
 
   feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
+//  guard.unlock();
 
   geometry::Altitudes const * altitudes = nullptr;
 //  if (m_loadAltitudes)
 //    altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature->GetPointsCount()));
 
-  road.Load(*m_vehicleModel, *feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
-            m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
+//  road.Load(*m_vehicleModel, *feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
+//            m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
 //  m_altitudeLoader.ClearCache();
 }
 
@@ -185,7 +190,7 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
 {
   CHECK(altitudes == nullptr || altitudes->size() == feature.GetPointsCount(), ());
 
-  m_valid = vehicleModel.IsRoad(feature);
+  vehicleModel.IsRoad(feature);
   m_isOneWay = vehicleModel.IsOneWay(feature);
   m_forwardSpeed = vehicleModel.GetSpeed(feature, {true /* forward */, inCity, maxspeed});
   m_backwardSpeed = vehicleModel.GetSpeed(feature, {false /* forward */, inCity, maxspeed});

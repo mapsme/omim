@@ -22,14 +22,50 @@ SingleVehicleWorldGraph::AStarParents<JointSegment>::kEmpty = {};
 SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> crossMwmGraph,
                                                  unique_ptr<IndexGraphLoader> loader,
                                                  shared_ptr<EdgeEstimator> estimator,
-                                                 MwmHierarchyHandler && hierarchyHandler)
+                                                 MwmHierarchyHandler && hierarchyHandler,
+                                                 std::shared_ptr<NumMwmIds> numMwmIds)
   : m_crossMwmGraph(move(crossMwmGraph))
   , m_loader(move(loader))
   , m_estimator(move(estimator))
   , m_hierarchyHandler(std::move(hierarchyHandler))
+  , m_numMwmIds(std::move(numMwmIds))
 {
   CHECK(m_loader, ());
   CHECK(m_estimator, ());
+}
+
+void SingleVehicleWorldGraph::MultithreadingIssue(DataSource & dataSource)
+{
+  LOG(LINFO, ("SingleVehicleWorldGraph::MultithreadingIssue()"));
+//  auto & mosGeom = m_loader->GetGeometry(749 /* Moscow */);
+  platform::CountryFile const & file = m_numMwmIds->GetFile(749 /* Moscow */);
+  MwmSet::MwmHandle handle = dataSource.GetMwmHandleByCountryFile(file);
+  if (!handle.IsAlive())
+    MYTHROW(RoutingException, ("Can't get mwm handle for", file));
+  FeaturesLoaderGuard m_guard(dataSource, handle.GetId());
+  auto wave = [&](bool isOutgoing){
+    LOG(LINFO, ("SingleVehicleWorldGraph::MultithreadingIssue() --------- wave ---------", isOutgoing));
+    size_t pointCounts = 0;
+    for (uint32_t i = 1; i < 600'000; ++i)
+    {
+//      RoadGeometry const & road = mosGeom.GetRoad(i, isOutgoing);
+//      RoadGeometry road;
+//      mosGeom.LoadGeomLock(i, road);
+//      pointCounts += road.GetPointsCount();
+
+      auto feature = m_guard.GetFeatureByIndex(i);
+      if (!feature)
+        MYTHROW(RoutingException, ("Feature", i, "not found in Moscow."));
+
+      feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
+      pointCounts += feature->GetPointsCount();
+    }
+    LOG(LINFO, ("SingleVehicleWorldGraph::MultithreadingIssue() --------- wave end ----", isOutgoing, pointCounts));
+  };
+  auto backwardWave = std::async(std::launch::async, wave, false /* isOutgoing */);
+  wave(true /* isOutgoing */);
+  backwardWave.get();
+  LOG(LINFO, ("SingleVehicleWorldGraph::MultithreadingIssue() end."));
 }
 
 void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & parent,

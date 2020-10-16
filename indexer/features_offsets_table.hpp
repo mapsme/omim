@@ -93,6 +93,8 @@ namespace feature
     ///         can be used in benchmarks, logging, etc.
     // size_t byte_size() { return static_cast<size_t>(succinct::mapper::size_of(m_table)); }
 
+    static void SetLog(bool flag) { m_log = flag; }
+
   private:
     FeaturesOffsetsTable(succinct::elias_fano::elias_fano_builder & builder);
     FeaturesOffsetsTable(std::string const & filePath);
@@ -105,6 +107,7 @@ namespace feature
 
     detail::MappedFile m_file;
     detail::MappedFile::Handle m_handle;
+    static bool m_log;
   };
 
   // Builds feature offsets table in an mwm or rebuilds an existing

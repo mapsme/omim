@@ -21,6 +21,8 @@ public:
     return m_types.at(ind);
   }
 
+  bool IsIndexOk(uint32_t ind) const { return ind < m_types.size(); }
+
   uint32_t GetIndex(uint32_t t) const;
 
   /// For Debug purposes only.

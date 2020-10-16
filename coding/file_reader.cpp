@@ -57,6 +57,7 @@ public:
 
   uint64_t Size() const { return m_fileData.Size(); }
 
+//  std::mutex mut;
   void Read(uint64_t pos, void * p, size_t size)
   {
 #if LOG_FILE_READER_STATS
@@ -65,7 +66,8 @@ public:
       LOG(LINFO, ("FileReader", m_fileData.GetName(), m_readerCache.GetStatsStr()));
     }
 #endif
-
+    // TODO This cache should not be accessed from different threads.
+//    std::lock_guard guard(mut);
     return m_readerCache.Read(m_fileData, pos, p, size);
   }
 

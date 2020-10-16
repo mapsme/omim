@@ -52,13 +52,13 @@ UNIT_TEST(VarRecordReader_Simple)
   MemReader reader(&data[0], data.size());
   VarRecordReader<MemReader> recordReader(reader);
 
-  auto r = recordReader.ReadRecord(0);
+  auto r = recordReader.ReadRecord(0, 0);
   TEST_EQUAL(string(r.begin(), r.end()), "abc", ());
 
-  r = recordReader.ReadRecord(6 + longStringSize);
+  r = recordReader.ReadRecord(6 + longStringSize, 0);
   TEST_EQUAL(string(r.begin(), r.end()), "defg", ());
 
-  r = recordReader.ReadRecord(4);
+  r = recordReader.ReadRecord(4, 0);
   TEST_EQUAL(string(r.begin(), r.end()), longString, ());
 
   vector<pair<uint64_t, string>> forEachCalls;

@@ -18,7 +18,7 @@ class VarRecordReader
 public:
   VarRecordReader(ReaderT const & reader) : m_reader(reader) {}
 
-  std::vector<uint8_t> ReadRecord(uint64_t const pos) const
+  std::vector<uint8_t> ReadRecord(uint64_t const pos, uint32_t index) const
   {
     ReaderSource source(m_reader);
     ASSERT_LESS(pos, source.Size(), ());
@@ -26,6 +26,7 @@ public:
     uint32_t const recordSize = ReadVarUint<uint32_t>(source);
     std::vector<uint8_t> buffer(recordSize);
     source.Read(buffer.data(), recordSize);
+    CheckFeatureTypeData(buffer, pos, index, recordSize);
     return buffer;
   }
 

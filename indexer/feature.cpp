@@ -825,3 +825,41 @@ feature::Metadata & FeatureType::GetMetadata()
   ParseMetadata();
   return m_metadata;
 }
+
+void CheckFeatureTypeData(std::vector<uint8_t> const & data, uint64_t offset, uint32_t fid,
+                          uint32_t recordSize)
+{
+  static std::atomic<size_t> counter = 0;
+  ++counter;
+  CHECK(!data.empty(), ("offset:", offset, "fid:", fid, "counter:", counter, "recordSize:", recordSize));
+
+  auto const header = data[0];
+  auto const typesOffset = sizeof(header);
+  Classificator & c = classif();
+  ArrayByteSource source(data.data() + typesOffset);
+
+  size_t const count = (header & feature::HEADER_MASK_TYPE) + 1;
+  uint32_t index = 0;
+  uint32_t type = 0;
+  size_t i = 0;
+  try
+  {
+    for (i = 0; i < count; ++i)
+    {
+      index = ReadVarUint<uint32_t>(source);
+      type = c.GetTypeForIndex(index);
+    }
+  }
+  catch (std::out_of_range const & ex)
+  {
+    LOG(LCRITICAL, ("Incorrect type index:", index, ". header:", header, ". Size of data:", data,
+                    ". count:", count, "type:", type, "ex:", ex.what(), "i:", i,
+                    "Is index ok:", c.IsIndexOk(index) ? "true" : "false", "counter:", counter.load(), "fid:", fid, "offset:", offset));
+    for (auto const i : data)
+      LOG(LINFO, (i));
+    throw;
+  }
+//  LOG(LINFO, ("Correct type index:", index, ". header:", header, ". Size of data:", data,
+//      ". count:", count, "type:", type, "i:", i,
+//      "Is index ok:", c.IsIndexOk(index) ? "true" : "false"));
+}

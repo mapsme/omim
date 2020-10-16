@@ -261,3 +261,6 @@ private:
 
   DISALLOW_COPY_AND_MOVE(FeatureType);
 };
+
+void CheckFeatureTypeData(std::vector<uint8_t> const & data, uint64_t offset, uint32_t index,
+                          uint32_t recordSize);
