@@ -119,7 +119,7 @@ public:
   // GeometryLoader overrides:
   ~ZeroGeometryLoader() override = default;
 
-  void Load(uint32_t featureId, routing::RoadGeometry & road) override;
+  void Load(uint32_t featureId, bool isOutgoing, routing::RoadGeometry & road) override;
 };
 
 class TestIndexGraphLoader final : public IndexGraphLoader

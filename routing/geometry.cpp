@@ -65,12 +65,13 @@ public:
                      AttrLoader attrLoader, bool loadAltitudes);
 
   // GeometryLoader overrides:
-  void Load(uint32_t featureId, RoadGeometry & road) override;
+  void Load(uint32_t featureId, bool isOutgoing, RoadGeometry & road) override;
 
 private:
   shared_ptr<VehicleModelInterface> m_vehicleModel;
   AttrLoader m_attrLoader;
   FeaturesLoaderGuard m_guard;
+  FeaturesLoaderGuard m_guardBwd;
   string const m_country;
   feature::AltitudeLoader m_altitudeLoader;
   bool const m_loadAltitudes;
@@ -83,6 +84,7 @@ GeometryLoaderImpl::GeometryLoaderImpl(DataSource const & dataSource,
   : m_vehicleModel(move(vehicleModel))
   , m_attrLoader(move(attrLoader))
   , m_guard(dataSource, handle.GetId())
+  , m_guardBwd(dataSource, handle.GetId())
   , m_country(handle.GetInfo()->GetCountryName())
   , m_altitudeLoader(dataSource, handle.GetId())
   , m_loadAltitudes(loadAltitudes)
@@ -95,14 +97,15 @@ GeometryLoaderImpl::GeometryLoaderImpl(DataSource const & dataSource,
 
 //std::mutex mtx;
 
-void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road)
+void GeometryLoaderImpl::Load(uint32_t featureId, bool isOutgoing, RoadGeometry & road)
 {
 //  std::unique_lock guard(mtx);
-  auto feature = m_guard.GetFeatureByIndex(featureId);
-  if (!feature)
-    MYTHROW(RoutingException, ("Feature", featureId, "not found in ", m_country));
+auto feature =
+    isOutgoing ? m_guard.GetFeatureByIndex(featureId) : m_guardBwd.GetFeatureByIndex(featureId);
+if (!feature)
+  MYTHROW(RoutingException, ("Feature", featureId, "not found in ", m_country));
 
-  feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
+feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
 //  guard.unlock();
 
   geometry::Altitudes const * altitudes = nullptr;
@@ -121,7 +124,7 @@ public:
   FileGeometryLoader(string const & fileName, shared_ptr<VehicleModelInterface> vehicleModel);
 
   // GeometryLoader overrides:
-  void Load(uint32_t featureId, RoadGeometry & road) override;
+  void Load(uint32_t featureId, bool isOutgoing, RoadGeometry & road) override;
 
 private:
   FeaturesVectorTest m_featuresVector;
@@ -154,8 +157,9 @@ FileGeometryLoader::FileGeometryLoader(string const & fileName,
   CHECK(m_vehicleModel, ());
 }
 
-void FileGeometryLoader::Load(uint32_t featureId, RoadGeometry & road)
+void FileGeometryLoader::Load(uint32_t featureId, bool isOutgoing, RoadGeometry & road)
 {
+  CHECK(false, ("FileGeometryLoader() is not ready for multithreading."));
   auto feature = m_featuresVector.GetVector().GetByIndex(featureId);
   CHECK(feature, ());
   feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
@@ -261,10 +265,10 @@ Geometry::Geometry(unique_ptr<GeometryLoader> loader)
     : m_loader(move(loader))
     , m_featureIdToRoad(make_unique<RoutingFifoCache>(
         kRoadsCacheSize,
-        [this](uint32_t featureId, RoadGeometry & road) { LoadGeomLock(featureId, road); }))
+        [this](uint32_t featureId, RoadGeometry & road) { LoadGeomLock(featureId, true /* isOutgoing */, road); }))
     , m_featureIdToRoadBwd(make_unique<RoutingFifoCache>(
         kRoadsCacheSize,
-        [this](uint32_t featureId, RoadGeometry & road) { LoadGeomLock(featureId, road); }))
+        [this](uint32_t featureId, RoadGeometry & road) { LoadGeomLock(featureId, false /* isOutgoing */, road); }))
 {
   CHECK(m_loader, ());
 }

@@ -109,7 +109,7 @@ class GeometryLoader
 public:
   virtual ~GeometryLoader() = default;
 
-  virtual void Load(uint32_t featureId, RoadGeometry & road) = 0;
+  virtual void Load(uint32_t featureId, bool isOutgoing, RoadGeometry & road) = 0;
 
   // handle should be alive: it is caller responsibility to check it.
   static std::unique_ptr<GeometryLoader> Create(DataSource const & dataSource,
@@ -149,10 +149,10 @@ public:
     return GetRoad(rp.GetFeatureId(), isOutgoing).GetPoint(rp.GetPointId());
   }
 
-  void LoadGeomLock(uint32_t featureId, RoadGeometry & road)
+  void LoadGeomLock(uint32_t featureId, bool isOutgoing, RoadGeometry & road)
   {
 //    std::lock_guard lock(m_loaderMtx);
-    m_loader->Load(featureId, road);
+    m_loader->Load(featureId, isOutgoing, road);
   }
 
 private:
