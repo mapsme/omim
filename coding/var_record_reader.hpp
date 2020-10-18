@@ -1,5 +1,7 @@
 #pragma once
 
+#include "indexer/feature.hpp"
+
 #include "coding/byte_stream.hpp"
 #include "coding/reader.hpp"
 #include "coding/varint.hpp"

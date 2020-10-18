@@ -544,6 +544,8 @@ void IndexGraphStarterJoints<Graph>::GetEdgeList(
     // |parentSegment| is parent-vertex from which we search children.
     // For correct weight calculation we should get weight of JointSegment, that
     // ends in |parentSegment| and add |parentWeight[i]| to the saved value.
+
+    // @TODO It seems this guards is taken too often.
     std::lock_guard guard(m_savedWeightMtx);
     auto const it = m_savedWeight.find(vertex);
     CHECK(it != m_savedWeight.cend(), ("Can not find weight for:", vertex));

@@ -109,8 +109,8 @@ void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road)
 //  if (m_loadAltitudes)
 //    altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature->GetPointsCount()));
 
-//  road.Load(*m_vehicleModel, *feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
-//            m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
+  road.Load(*m_vehicleModel, *feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
+            m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
 //  m_altitudeLoader.ClearCache();
 }
 
@@ -190,8 +190,7 @@ void RoadGeometry::Load(VehicleModelInterface const & vehicleModel, FeatureType 
 {
   CHECK(altitudes == nullptr || altitudes->size() == feature.GetPointsCount(), ());
 
-  vehicleModel.IsRoad(feature);
-  m_isOneWay = vehicleModel.IsOneWay(feature);
+  m_valid = vehicleModel.IsRoad(feature);
   m_forwardSpeed = vehicleModel.GetSpeed(feature, {true /* forward */, inCity, maxspeed});
   m_backwardSpeed = vehicleModel.GetSpeed(feature, {false /* forward */, inCity, maxspeed});
   m_highwayType = vehicleModel.GetHighwayType(feature);

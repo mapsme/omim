@@ -55,7 +55,7 @@ private:
 
   VehicleType m_vehicleType;
   bool m_loadAltitudes;
-  std::mutex m_dataSourceMtx;
+//  std::mutex m_dataSourceMtx;
   DataSource & m_dataSource;
   shared_ptr<NumMwmIds> m_numMwmIds;
   shared_ptr<VehicleModelFactoryInterface> m_vehicleModelFactory;
@@ -205,10 +205,12 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateGeometry(NumMwmId
   shared_ptr<VehicleModelInterface> vehicleModel =
       m_vehicleModelFactory->GetVehicleModelForCountry(file.GetName());
 
+  auto geom = make_shared<Geometry>(GeometryLoader::Create(
+      m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle), m_loadAltitudes));
+
   std::lock_guard guard(m_graphsMtx);
   auto & graph = m_graphs[numMwmId];
-  graph.m_geometry = make_shared<Geometry>(GeometryLoader::Create(
-      m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle), m_loadAltitudes));
+  graph.m_geometry = std::move(geom);
   return graph;
 }
 

@@ -287,9 +287,6 @@ private:
       , startVertex(startVertex)
       , finalVertex(finalVertex)
       , graph(graph)
-//      , consistentHeuristics(300 /* capacity */, [this](Vertex const & v, Weight & w) {
-//        this->ConsistentHeuristicImpl(v, w);
-//      })
     {
       bestVertex = forward ? startVertex : finalVertex;
       pS = ConsistentHeuristic(bestVertex);
@@ -320,10 +317,8 @@ private:
     // particular routes when debugging turned out to be easier.
     Weight ConsistentHeuristic(Vertex const & v) const
     {
-      Weight piF;
-      Weight piR;
-      piF = graph.HeuristicCostEstimate(v, finalVertex, forward);
-      piR = graph.HeuristicCostEstimate(v, startVertex, forward);
+      Weight piF = graph.HeuristicCostEstimate(v, finalVertex, forward);
+      Weight piR = graph.HeuristicCostEstimate(v, startVertex, forward);
 
       if (forward)
       {
@@ -338,28 +333,6 @@ private:
         return 0.5 * (piR - piF);
       }
     }
-//    void ConsistentHeuristicImpl(Vertex const & v, Weight & weight) const
-//    {
-//      auto const piF = graph.HeuristicCostEstimate(v, finalVertex);
-//      auto const piR = graph.HeuristicCostEstimate(v, startVertex);
-//      if (forward)
-//      {
-//        /// @todo careful: with this "return" here and below in the Backward case
-//        /// the heuristic becomes inconsistent but still seems to work.
-//        /// return HeuristicCostEstimate(v, finalVertex);
-//        weight = 0.5 * (piF - piR);
-//      }
-//      else
-//      {
-//        // return HeuristicCostEstimate(v, startVertex);
-//        weight = 0.5 * (piR - piF);
-//      }
-//    }
-//
-//    Weight ConsistentHeuristic(Vertex const & v)
-//    {
-//      return consistentHeuristics.GetValue(v);
-//    }
 
     bool ExistsStateWithBetterDistance(State const & state, Weight const & eps = Weight(0.0)) const
     {
@@ -415,7 +388,6 @@ private:
       return GetDistance(vertex);
     }
 
-//    std::atomic<bool> fullProtection;
     std::mutex & mtx;
     std::mutex & mtxGr;
     bool const forward;
@@ -425,7 +397,6 @@ private:
 
     std::priority_queue<State, std::vector<State>, std::greater<State>> queue;
     ska::bytell_hash_map<Vertex, Weight> bestDistance;
-//    FifoCache<Vertex, Weight> consistentHeuristics;
     Parents parent;
     Vertex bestVertex;
 
@@ -1006,7 +977,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectionalOneThread(P & params,
 
   return Result::NoPath;
 }
-
 
 template <typename Vertex, typename Edge, typename Weight>
 template <typename P>

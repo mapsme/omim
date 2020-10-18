@@ -588,7 +588,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
 
   TrafficStash::Guard guard(m_trafficStash);
   unique_ptr<WorldGraph> graph = MakeWorldGraph();
-  graph->MultithreadingIssue(m_dataSource);
+//  graph->MultithreadingIssue(m_dataSource);
 
   vector<Segment> segments;
 

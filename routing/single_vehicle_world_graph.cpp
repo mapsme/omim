@@ -37,23 +37,18 @@ SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> cross
 void SingleVehicleWorldGraph::MultithreadingIssue(DataSource & dataSource)
 {
   LOG(LINFO, ("SingleVehicleWorldGraph::MultithreadingIssue()"));
-//  auto & mosGeom = m_loader->GetGeometry(749 /* Moscow */);
   platform::CountryFile const & file = m_numMwmIds->GetFile(749 /* Moscow */);
   MwmSet::MwmHandle handle = dataSource.GetMwmHandleByCountryFile(file);
   if (!handle.IsAlive())
     MYTHROW(RoutingException, ("Can't get mwm handle for", file));
-  FeaturesLoaderGuard m_guard(dataSource, handle.GetId());
+
   auto wave = [&](bool isOutgoing){
     LOG(LINFO, ("SingleVehicleWorldGraph::MultithreadingIssue() --------- wave ---------", isOutgoing));
+    FeaturesLoaderGuard guard(dataSource, handle.GetId());
     size_t pointCounts = 0;
     for (uint32_t i = 1; i < 600'000; ++i)
     {
-//      RoadGeometry const & road = mosGeom.GetRoad(i, isOutgoing);
-//      RoadGeometry road;
-//      mosGeom.LoadGeomLock(i, road);
-//      pointCounts += road.GetPointsCount();
-
-      auto feature = m_guard.GetFeatureByIndex(i);
+      auto feature = guard.GetFeatureByIndex(i);
       if (!feature)
         MYTHROW(RoutingException, ("Feature", i, "not found in Moscow."));
 
