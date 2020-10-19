@@ -899,6 +899,16 @@ public enum BookmarkManager
   {
     return Arrays.asList(nativeGetChildrenCollections(catId));
   }
+
+  public boolean isCompilation(long catId)
+  {
+    return nativeIsCompilation(catId);
+  }
+
+  public int getCompilationType(long catId)
+  {
+    return nativeGetCompilationType(catId);
+  }
   
   @NonNull
   native BookmarkCategory[] nativeGetBookmarkCategories();
@@ -908,6 +918,7 @@ public enum BookmarkManager
   native BookmarkCategory[] nativeGetChildrenCollections(long catId);
 
   native boolean nativeIsCompilation(long catId);
+
   native int nativeGetCompilationType(long catId);
 
   @NonNull
