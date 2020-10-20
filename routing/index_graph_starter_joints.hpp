@@ -194,7 +194,7 @@ private:
   ms::LatLon m_endPoint;
 
   // See comments in |GetEdgeList()| about |m_savedWeight|.
-  std::mutex m_savedWeightMtx;
+//  std::mutex m_savedWeightMtx; // When there's a backward thread should be touch only from it.
   ska::bytell_hash_map<Vertex, Weight> m_savedWeight;
 
   // JointSegment consists of two segments of one feature.
@@ -289,7 +289,7 @@ void IndexGraphStarterJoints<Graph>::InitEnding(Segment const & ending, bool sta
 
   if (!start)
   {
-    std::lock_guard guard(m_savedWeightMtx);
+//    std::lock_guard guard(m_savedWeightMtx); // Initialization before starting two threads.
     m_savedWeight[m_endJoint] = Weight(0.0);
     for (auto const & edge : m_endOutEdges)
       m_savedWeight[edge.GetTarget()] = edge.GetWeight();
@@ -439,7 +439,7 @@ std::optional<Segment> IndexGraphStarterJoints<Graph>::GetParentSegment(
       }
       else
       {
-        std::lock_guard guard(m_savedWeightMtx);
+//        std::lock_guard guard(m_savedWeightMtx);
         auto const it = m_savedWeight.find(vertex);
         CHECK(it != m_savedWeight.cend(), ("Can not find weight for:", vertex));
 
@@ -546,7 +546,7 @@ void IndexGraphStarterJoints<Graph>::GetEdgeList(
     // ends in |parentSegment| and add |parentWeight[i]| to the saved value.
 
     // @TODO It seems this guards is taken too often.
-    std::lock_guard guard(m_savedWeightMtx);
+//    std::lock_guard guard(m_savedWeightMtx);
     auto const it = m_savedWeight.find(vertex);
     CHECK(it != m_savedWeight.cend(), ("Can not find weight for:", vertex));
 
@@ -705,7 +705,7 @@ void IndexGraphStarterJoints<Graph>::Reset()
   m_startSegment = Segment();
   m_endSegment = Segment();
   {
-    std::lock_guard guard(m_savedWeightMtx);
+//    std::lock_guard guard(m_savedWeightMtx);
     m_savedWeight.clear();
   }
   m_fakeJointSegments.clear();
