@@ -139,10 +139,10 @@ public:
       // There are same in common, but in case of different version of mwms
       // their's geometry can differ from each other. Because of this we can not
       // build the route, because we fail in astar_algorithm.hpp CHECK(invariant) sometimes.
-      if (SegmentsAreEqualByGeometry(s, *twinSeg))
+//      if (SegmentsAreEqualByGeometry(s, *twinSeg))
         twins.push_back(*twinSeg);
-      else
-        LOG(LINFO, ("Bad cross mwm feature, differ in geometry. Current:", s, ", twin:", *twinSeg));
+//      else
+//        LOG(LINFO, ("Bad cross mwm feature, differ in geometry. Current:", s, ", twin:", *twinSeg));
     }
   }
 
@@ -164,6 +164,7 @@ public:
 
   CrossMwmConnector<CrossMwmId> const & GetCrossMwmConnectorWithTransitions(NumMwmId numMwmId)
   {
+    // @TODO |m_connectors| should be protected.
     auto const it = m_connectors.find(numMwmId);
     if (it != m_connectors.cend())
       return it->second;
