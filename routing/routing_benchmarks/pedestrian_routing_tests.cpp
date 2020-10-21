@@ -50,7 +50,7 @@ protected:
     shared_ptr<routing::NumMwmIds> numMwmIds) override
   {
     unique_ptr<routing::IDirectionsEngine> engine(
-        new routing::PedestrianDirectionsEngine(m_dataSource, move(numMwmIds)));
+        new routing::PedestrianDirectionsEngine(move(numMwmIds)));
     return engine;
   }
 
@@ -60,8 +60,6 @@ protected:
         new SimplifiedModelFactory<routing::PedestrianModel>());
     return factory;
   }
-
-  FrozenDataSource m_dataSource;
 };
 }  // namespace
 
