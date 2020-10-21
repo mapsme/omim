@@ -14,7 +14,7 @@ namespace routing
 {
 PedestrianDirectionsEngine::PedestrianDirectionsEngine(DataSource const & dataSource,
                                                        shared_ptr<NumMwmIds> numMwmIds)
-  : DirectionsEngine(dataSource, move(numMwmIds))
+  : IDirectionsEngine(dataSource, move(numMwmIds))
 {
 }
 
