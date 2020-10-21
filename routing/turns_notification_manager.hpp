@@ -88,9 +88,8 @@ public:
   CarDirection GetSecondTurnNotification() const { return m_secondTurnNotification; }
 
 private:
-  std::string GenerateTurnText(uint32_t distanceUnits, uint8_t exitNum,
-                               bool useThenInsteadOfDistance, TurnItem const & turn,
-                               measurement_utils::Units lengthUnits) const;
+  std::string GenerateTurnText(uint32_t distanceUnits, uint8_t exitNum, bool useThenInsteadOfDistance,
+                               CarDirection turnDir, measurement_utils::Units lengthUnits) const;
 
   /// Generates turn sound notification for the nearest to the current position turn.
   std::string GenerateFirstTurnSound(TurnItem const & turn, double distanceToTurnMeters);
@@ -148,7 +147,7 @@ private:
   /// m_secondTurnNotification is a direction of the turn after the closest one
   /// if an end user shall be informed about it. If not, m_secondTurnNotification ==
   /// TurnDirection::NoTurn
-  CarDirection m_secondTurnNotification = CarDirection::None;
+  CarDirection m_secondTurnNotification;
 
   /// m_secondTurnNotificationIndex is an index of the closest turn on the route polyline
   /// where m_secondTurnNotification was set to true last time for a turn.
