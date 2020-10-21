@@ -118,10 +118,8 @@ void IDirectionsEngine::GetSegmentRangeAndAdjacentEdges(
   }
 
   if (outgoingTurns.isCandidatesAngleValid)
-  {
     sort(outgoingTurns.candidates.begin(), outgoingTurns.candidates.end(),
          base::LessBy(&TurnCandidate::m_angle));
-  }
 }
 
 void IDirectionsEngine::GetEdges(IndexRoadGraph const & graph,
