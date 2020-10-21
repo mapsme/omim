@@ -46,7 +46,7 @@
     hu = Forduljon jobbra.
     id = Belok kanan.
     it = Gira a destra.
-    ja = 右に曲がります。
+    ja = 右方向です。
     ko = 우회전하십시오.
     pl = Skręć w prawo.
     pt = Vire à direita.
@@ -79,7 +79,7 @@
     hu = Kanyarodjon élesen jobbra.
     id = Belok tajam ke kanan.
     it = Svoltare a destra.
-    ja = 急に右折。
+    ja = 右後ろ方向です。
     ko = 급우회전.
     pl = Ostro w prawo.
     pt = Curva acentuada à direita.
@@ -211,7 +211,7 @@
     hu = Forduljon balra.
     id = Belok kiri.
     it = Gira a sinistra.
-    ja = 左に曲がります。
+    ja = 左方向です。
     ko = 좌회전하십시오.
     pl = Skręć w lewo.
     pt = Vire à esquerda.
@@ -244,7 +244,7 @@
     hu = Kanyarodjon élesen balra.
     id = Belok tajam ke kiri.
     it = Svoltare a sinistra.
-    ja = 急に左折。
+    ja = 左後ろ方向です。
     ko = 급좌회전.
     pl = Ostro w lewo.
     pt = Curva acentuada à esquerda.
@@ -310,7 +310,7 @@
     hu = Hajtson előre.
     id = Lurus terus.
     it = Sempre dritto.
-    ja = 直進です。
+    ja = 直進方向です。
     ko = 직진입니다.
     pl = Jedź prosto.
     pt = Siga em frente.
@@ -343,7 +343,7 @@
     hu = Kilépés.
     id = Keluar.
     it = Uscita.
-    ja = 出口.
+    ja = 出口です。
     ko = 출구.
     pl = Zjazd.
     pt = Saída.
@@ -376,7 +376,7 @@
     hu = Megérkezik.
     id = Anda akan tiba.
     it = Arriverai.
-    ja = 到着します。
+    ja = まもなく目的地です。
     ko = 도착할 예정입니다.
     pl = Dojedziesz.
     pt = Você vai chegar.
@@ -409,7 +409,7 @@
     hu = Ön megérkezett.
     id = Anda sudah sampai.
     it = Sei arrivato.
-    ja = 到着。
+    ja = 目的地に到着しました。
     ko = 도착했습니다.
     pl = Jesteś u celu.
     pt = Chegou.
@@ -2125,7 +2125,7 @@
     hu = Kamera elöl
     id = Diawasi kamera
     it = Autovelox in prossimità
-    ja = この先にある自動速度違反取締装置
+    ja = この先に取締装置があります。
     ko = 전방에 카메라
     nb = Kommer til kamera
     pl = Kamera z przodu
