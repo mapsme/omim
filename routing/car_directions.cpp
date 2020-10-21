@@ -58,10 +58,8 @@ bool CarDirectionsEngine::Generate(IndexRoadGraph const & graph,
     return false;
 
   RoutingEngineResult resultGraph(routeEdges, m_adjacentEdges, m_pathSegments);
-  CHECK_NOT_EQUAL(m_vehicleType, VehicleType::Count, (m_vehicleType));
-
-  auto const res = MakeTurnAnnotation(resultGraph, *m_numMwmIds, m_vehicleType, cancellable,
-                                      routeGeometry, turns, streetNames, segments);
+  auto const res = MakeTurnAnnotation(resultGraph, *m_numMwmIds, cancellable, routeGeometry, turns,
+                                      streetNames, segments);
 
   if (res != RouterResultCode::NoError)
     return false;

@@ -1497,7 +1497,7 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
 
   CHECK(m_directionsEngine, ());
 
-  m_directionsEngine->SetVehicleType(m_vehicleType);
+  m_directionsEngine->SetIsTransit(m_vehicleType == VehicleType::Transit);
   ReconstructRoute(*m_directionsEngine, roadGraph, m_trafficStash, cancellable, junctions,
                    move(times), route);
 
