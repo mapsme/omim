@@ -112,11 +112,12 @@ std::string DebugPrint(CarDirection const l);
 enum class PedestrianDirection
 {
   None = 0,
-  GoStraight,
-  TurnRight,
-  TurnLeft,
+  Upstairs,
+  Downstairs,
+  LiftGate,
+  Gate,
   ReachedYourDestination,
-  Count /**< This value is used for internals only. */
+  Count  /**< This value is used for internals only. */
 };
 
 std::string DebugPrint(PedestrianDirection const l);
@@ -188,7 +189,7 @@ struct TurnItem
   }
 
   uint32_t m_index;                    /*!< Index of point on route polyline (number of segment + 1). */
-  CarDirection m_turn = CarDirection::None; /*!< The turn instruction of the TurnItem */
+  CarDirection m_turn;                 /*!< The turn instruction of the TurnItem */
   std::vector<SingleLaneInfo> m_lanes; /*!< Lane information on the edge before the turn. */
   uint32_t m_exitNum;                  /*!< Number of exit on roundabout. */
   std::string m_sourceName;            /*!< Name of the street which the ingoing edge belongs to */
@@ -202,7 +203,7 @@ struct TurnItem
    * \brief m_pedestrianTurn is type of corresponding direction for a pedestrian, or None
    * if there is no pedestrian specific direction
    */
-  PedestrianDirection m_pedestrianTurn = PedestrianDirection::None;
+  PedestrianDirection m_pedestrianTurn;
 };
 
 std::string DebugPrint(TurnItem const & turnItem);

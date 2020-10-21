@@ -68,18 +68,11 @@ NotificationManager NotificationManager::CreateNotificationManagerForTesting(
 }
 
 string NotificationManager::GenerateTurnText(uint32_t distanceUnits, uint8_t exitNum,
-                                             bool useThenInsteadOfDistance, TurnItem const & turn,
+                                             bool useThenInsteadOfDistance, CarDirection turnDir,
                                              measurement_utils::Units lengthUnits) const
 {
-  if (turn.m_turn != CarDirection::None && turn.m_pedestrianTurn == PedestrianDirection::None)
-  {
-    Notification const notification(distanceUnits, exitNum, useThenInsteadOfDistance, turn.m_turn,
-                                    lengthUnits);
-    return m_getTtsText.GetTurnNotification(notification);
-  }
-
-  Notification const notification(distanceUnits, exitNum, useThenInsteadOfDistance,
-                                  turn.m_pedestrianTurn, lengthUnits);
+  Notification const notification(distanceUnits, exitNum, useThenInsteadOfDistance, turnDir,
+                                  lengthUnits);
   return m_getTtsText.GetTurnNotification(notification);
 }
 
@@ -117,7 +110,7 @@ void NotificationManager::GenerateTurnNotifications(vector<TurnItemDist> const &
   }
   string secondNotification = GenerateTurnText(
       0 /* distanceUnits is not used because of "Then" is used */, secondTurn.m_turnItem.m_exitNum,
-      true, secondTurn.m_turnItem, m_settings.GetLengthUnits());
+      true, secondTurn.m_turnItem.m_turn, m_settings.GetLengthUnits());
   if (secondNotification.empty())
     return;
   turnNotifications.emplace_back(move(secondNotification));
@@ -168,7 +161,7 @@ string NotificationManager::GenerateFirstTurnSound(TurnItem const & turn,
               m_settings.RoundByPresetSoundedDistancesUnits(distToPronounceUnits);
           m_nextTurnNotificationProgress = PronouncedNotification::First;
           return GenerateTurnText(roundedDistToPronounceUnits, turn.m_exitNum,
-                                  false /* useThenInsteadOfDistance */, turn,
+                                  false /* useThenInsteadOfDistance */, turn.m_turn,
                                   m_settings.GetLengthUnits());
         }
       }
@@ -189,7 +182,7 @@ string NotificationManager::GenerateFirstTurnSound(TurnItem const & turn,
     m_nextTurnNotificationProgress = PronouncedNotification::Second;
     FastForwardFirstTurnNotification();
     return GenerateTurnText(0 /* distanceUnits */, turn.m_exitNum,
-                            false /* useThenInsteadOfDistance */, turn,
+                            false /* useThenInsteadOfDistance */, turn.m_turn,
                             m_settings.GetLengthUnits());
   }
   return string();
