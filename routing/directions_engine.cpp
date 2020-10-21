@@ -36,18 +36,13 @@ FeaturesLoaderGuard & DirectionsEngine::GetLoader(MwmSet::MwmId const & id)
   return *m_loader;
 }
 
-bool IsFakeFeature(uint32_t featureId)
-{
-  return FakeFeatureIds::IsGuidesFeature(featureId) || FakeFeatureIds::IsTransitFeature(featureId);
-}
-
 void DirectionsEngine::LoadPathAttributes(FeatureID const & featureId,
                                           LoadedPathSegment & pathSegment)
 {
   if (!featureId.IsValid())
     return;
 
-  if (IsFakeFeature(featureId.m_index))
+  if (FakeFeatureIds::IsGuidesFeature(featureId.m_index))
     return;
 
   auto ft = GetLoader(featureId.m_mwmId).GetFeatureByIndex(featureId.m_index);
@@ -84,7 +79,7 @@ void DirectionsEngine::GetSegmentRangeAndAdjacentEdges(IRoadGraph::EdgeVector co
       continue;
 
     auto const & outFeatureId = edge.GetFeatureId();
-    if (IsFakeFeature(outFeatureId.m_index))
+    if (FakeFeatureIds::IsGuidesFeature(outFeatureId.m_index))
       continue;
 
     auto ft = GetLoader(outFeatureId.m_mwmId).GetFeatureByIndex(outFeatureId.m_index);
