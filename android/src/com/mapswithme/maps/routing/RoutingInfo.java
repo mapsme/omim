@@ -2,8 +2,6 @@ package com.mapswithme.maps.routing;
 
 import android.location.Location;
 import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-
 import android.widget.ImageView;
 
 import com.mapswithme.maps.R;
@@ -73,13 +71,13 @@ public class RoutingInfo
       mNextTurnRes = nextResId;
     }
 
-    public void setTurnDrawable(@NonNull ImageView imageView)
+    public void setTurnDrawable(ImageView imageView)
     {
       imageView.setImageResource(mTurnRes);
       imageView.setRotation(0.0f);
     }
 
-    public void setNextTurnDrawable(@NonNull ImageView imageView)
+    public void setNextTurnDrawable(ImageView imageView)
     {
       imageView.setImageResource(mNextTurnRes);
     }
@@ -114,13 +112,13 @@ public class RoutingInfo
       mNextTurnRes = nextResId;
     }
 
-    public void setTurnDrawable(@NonNull ImageView imageView)
+    public void setTurnDrawable(ImageView imageView)
     {
       imageView.setImageResource(mTurnRes);
       imageView.setRotation(0.0f);
     }
 
-    public void setNextTurnDrawable(@NonNull ImageView imageView)
+    public void setNextTurnDrawable(ImageView imageView)
     {
       imageView.setImageResource(mNextTurnRes);
     }
