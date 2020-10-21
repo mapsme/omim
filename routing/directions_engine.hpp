@@ -20,16 +20,16 @@
 
 namespace routing
 {
-class DirectionsEngine
+class IDirectionsEngine
 {
 public:
-  DirectionsEngine(DataSource const & dataSource, std::shared_ptr<NumMwmIds> numMwmIds)
+  IDirectionsEngine(DataSource const & dataSource, std::shared_ptr<NumMwmIds> numMwmIds)
     : m_dataSource(dataSource), m_numMwmIds(numMwmIds)
   {
     CHECK(m_numMwmIds, ());
   }
 
-  virtual ~DirectionsEngine() = default;
+  virtual ~IDirectionsEngine() = default;
 
   // @TODO(bykoianko) Method Generate() should fill
   // vector<RouteSegment> instead of corresponding arguments.
