@@ -95,37 +95,17 @@ public class RoutingInfo
 
   enum PedestrianTurnDirection
   {
-    NO_TURN(R.drawable.ic_turn_straight, 0),
-    GO_STRAIGHT(R.drawable.ic_turn_straight, 0),
+    NONE,
+    UPSTAIRS,
+    DOWNSTAIRS,
+    LIFT_GATE,
+    GATE,
+    REACHED_YOUR_DESTINATION;
 
-    TURN_RIGHT(R.drawable.ic_turn_right, R.drawable.ic_then_right),
-    TURN_LEFT(R.drawable.ic_turn_left, R.drawable.ic_then_left),
-
-    REACHED_YOUR_DESTINATION(R.drawable.ic_turn_finish, R.drawable.ic_then_finish);
-
-    private final int mTurnRes;
-    private final int mNextTurnRes;
-
-    PedestrianTurnDirection(@DrawableRes int mainResId, @DrawableRes int nextResId)
+    public static void setTurnDrawable(ImageView view, DistanceAndAzimut distanceAndAzimut)
     {
-      mTurnRes = mainResId;
-      mNextTurnRes = nextResId;
-    }
-
-    public void setTurnDrawable(ImageView imageView)
-    {
-      imageView.setImageResource(mTurnRes);
-      imageView.setRotation(0.0f);
-    }
-
-    public void setNextTurnDrawable(ImageView imageView)
-    {
-      imageView.setImageResource(mNextTurnRes);
-    }
-
-    public boolean containsNextTurn()
-    {
-      return mNextTurnRes != 0;
+      view.setImageResource(R.drawable.ic_turn_direction);
+      view.setRotation((float) Math.toDegrees(distanceAndAzimut.getAzimuth()));
     }
   }
 
