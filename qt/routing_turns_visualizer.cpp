@@ -30,7 +30,7 @@ void RoutingTurnsVisualizer::ClearTurns(df::DrapeApi & drape)
   m_turnIds.clear();
 }
 
-std::string RoutingTurnsVisualizer::GetId(routing::turns::TurnItem const & turn)
+static std::string RoutingTurnsVisualizer::GetId(routing::turns::TurnItem const & turn)
 {
   std::string const maneuver = turn.m_pedestrianTurn == routing::turns::PedestrianDirection::None
                                    ? DebugPrint(turn.m_turn)
