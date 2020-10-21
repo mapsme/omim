@@ -33,6 +33,7 @@ public class RoutingInfo
   public final PedestrianTurnDirection pedestrianTurnDirection;
   private final boolean speedLimitExceeded;
   private final boolean shouldPlayWarningSignal;
+  public final Location pedestrianNextDirection;
 
   /**
    * IMPORTANT : Order of enum values MUST BE the same as native CarDirection enum.
@@ -152,7 +153,7 @@ public class RoutingInfo
   }
 
   public RoutingInfo(String distToTarget, String units, String distTurn, String turnSuffix, String currentStreet, String nextStreet, double completionPercent,
-                     int vehicleTurnOrdinal, int vehicleNextTurnOrdinal, int pedestrianTurnOrdinal, int exitNum,
+                     int vehicleTurnOrdinal, int vehicleNextTurnOrdinal, int pedestrianTurnOrdinal, double pedestrianDirectionLat, double pedestrianDirectionLon, int exitNum,
                      int totalTime, SingleLaneInfo[] lanes, boolean speedLimitExceeded,
                      boolean shouldPlayWarningSignal)
   {
@@ -171,6 +172,9 @@ public class RoutingInfo
     this.pedestrianTurnDirection = PedestrianTurnDirection.values()[pedestrianTurnOrdinal];
     this.speedLimitExceeded = speedLimitExceeded;
     this.shouldPlayWarningSignal = shouldPlayWarningSignal;
+    this.pedestrianNextDirection = new Location("");
+    this.pedestrianNextDirection.setLatitude(pedestrianDirectionLat);
+    this.pedestrianNextDirection.setLongitude(pedestrianDirectionLon);
   }
 
   public boolean isSpeedLimitExceeded()
