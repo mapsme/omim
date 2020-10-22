@@ -27,4 +27,4 @@ jobs:
       run: ./configure.sh
       
     - name: Build with Gradle
-      run: cd android && ./gradlew aR 
+      run: cd android && ./gradlew aWR 
