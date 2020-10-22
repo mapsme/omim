@@ -35,8 +35,39 @@ jobs:
             "project_id": "xxxx",
             "storage_bucket": "xxxx"
           },
-        "client": []
+        "client": [
+            {
+              "client_info": {
+              "mobilesdk_app_id": "xxxx",
+              "android_client_info": {
+                "package_name": "com.mapswithme.maps.pro.beta"
+              }
+            },
+            "oauth_client": [
+              {
+                "client_id": "xxxx",
+                "client_type": 3
+              }
+            ],
+            "api_key": [
+              {
+                "current_key": "xxxx"
+              }
+            ],
+            "services": {
+              "appinvite_service": {
+                "other_platform_oauth_client": [
+                  {
+                    "client_id": "xxxx",
+                    "client_type": 3
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "configuration_version": "1"
         }
         EOF
     - name: Build with Gradle
-      run: cd android && ./gradlew aWD
+      run: cd android && ./gradlew assembleWebBeta
