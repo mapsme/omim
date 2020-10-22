@@ -72,4 +72,4 @@ jobs:
     - name: Add CITYMOBIL_TOKEN var
       run: echo '#define CITYMOBIL_TOKEN ""' >> private_default.h
     - name: Build with Gradle
-      run: cd android && ./gradlew assembleWebBeta
+      run: cd android && ./gradlew assembleWebBeta -Parm64
