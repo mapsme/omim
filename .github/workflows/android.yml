@@ -32,7 +32,7 @@ jobs:
         "project_info": {
             "project_number": "xxxx",
             "firebase_url": "xxxx",
-            "project_id": "xxxx,
+            "project_id": "xxxx",
             "storage_bucket": "xxxx"
           },
         "client": []
