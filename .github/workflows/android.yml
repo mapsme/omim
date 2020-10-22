@@ -22,9 +22,21 @@ jobs:
    
     - name: Update Submodules
       run: git submodule update --init --recursive
-      
+    
     - name: Configure
       run: ./configure.sh
-      
+    - name: Fill fake params
+      run: | 
+        cat << EOF > android/google-services.json
+        {  
+        "project_info": {
+            "project_number": "xxxx",
+            "firebase_url": "xxxx",
+            "project_id": "xxxx,
+            "storage_bucket": "xxxx"
+          },
+        "client": []
+        }
+        EOF
     - name: Build with Gradle
       run: cd android && ./gradlew aWD
