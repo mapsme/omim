@@ -20,7 +20,7 @@ jobs:
     - name: Install ndk
       run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;21.3.6528147" --sdk_root=${ANDROID_SDK_ROOT}
    
-   - name: Update Submodules
+    - name: Update Submodules
       run: git submodule update --init --recursive
       
     - name: Configure
