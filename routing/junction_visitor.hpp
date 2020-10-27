@@ -27,20 +27,21 @@ public:
       m_lastProgressPercent = progress->GetLastPercent();
   }
 
-  void operator()(Vertex const & from, Vertex const & to)
+  void operator()(Vertex const & from, Vertex const & to, bool isOutgoing)
   {
+    // @TODO This method may call from different threads. All the data should be protected.
     ++m_visitCounter;
     if (m_visitCounter % m_visitPeriod != 0)
       return;
 
-    auto const & pointFrom = m_graph.GetPoint(from, true /* front */);
+    auto const & pointFrom = m_graph.GetPoint(from, true /* front */, isOutgoing);
     m_delegate.OnPointCheck(pointFrom);
 
     auto progress = m_progress.lock();
     if (!progress)
       return;
 
-    auto const & pointTo = m_graph.GetPoint(to, true /* front */);
+    auto const & pointTo = m_graph.GetPoint(to, true /* front */, isOutgoing);
     auto const currentPercent = progress->UpdateProgress(pointFrom, pointTo);
     if (currentPercent - m_lastProgressPercent > kProgressInterval)
     {

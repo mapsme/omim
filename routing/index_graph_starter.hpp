@@ -73,13 +73,13 @@ public:
   // If segment is part of real converts it to real and returns true.
   // Otherwise returns false and does not modify segment.
   bool ConvertToReal(Segment & segment) const;
-  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) const;
-  LatLonWithAltitude const & GetRouteJunction(std::vector<Segment> const & route,
-                                                       size_t pointIndex) const;
-  ms::LatLon const & GetPoint(Segment const & segment, bool front) const;
+  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front, bool isOutgoing) const;
+  LatLonWithAltitude const & GetRouteJunction(std::vector<Segment> const & route, size_t pointIndex,
+                                              bool isOutgoing) const;
+  ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) const;
 
-  bool IsRoutingOptionsGood(Segment const & segment) const;
-  RoutingOptions GetRoutingOptions(Segment const & segment) const;
+  bool IsRoutingOptionsGood(Segment const & segment, bool isOutgoing) const;
+  RoutingOptions GetRoutingOptions(Segment const & segment, bool isOutgoing) const;
 
   uint32_t GetNumFakeSegments() const
   {
@@ -95,7 +95,7 @@ public:
 
   // Checks whether |weight| meets non-pass-through crossing restrictions according to placement of
   // start and finish in pass-through/non-pass-through area and number of non-pass-through crosses.
-  bool CheckLength(RouteWeight const & weight);
+  bool CheckLength(RouteWeight const & weight, bool isOutgoing);
 
   void GetEdgeList(astar::VertexData<JointSegment, Weight> const & parentVertexData,
                    Segment const & segment, bool isOutgoing, std::vector<JointEdge> & edges,
@@ -119,10 +119,10 @@ public:
     GetEdgesList(vertexData, false /* isOutgoing */, true /* useAccessConditional */, edges);
   }
 
-  RouteWeight HeuristicCostEstimate(Vertex const & from, Vertex const & to) override
+  RouteWeight HeuristicCostEstimate(Vertex const & from, Vertex const & to, bool isOutgoing) override
   {
-    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */),
-                                         GetPoint(to, true /* front */));
+    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */, isOutgoing),
+                                         GetPoint(to, true /* front */, isOutgoing));
   }
 
   void SetAStarParents(bool forward, Parents<Segment> & parents) override
@@ -149,16 +149,17 @@ public:
     GetEdgesList({vertex, Weight(0.0)}, isOutgoing, false /* useAccessConditional */, edges);
   }
 
-  RouteWeight HeuristicCostEstimate(Vertex const & from, ms::LatLon const & to) const
+  RouteWeight HeuristicCostEstimate(Vertex const & from, ms::LatLon const & to, bool isOutgoing) const
   {
-    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */), to);
+    return m_graph.HeuristicCostEstimate(GetPoint(from, true /* front */, isOutgoing), to);
   }
 
-  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) const;
+  RouteWeight CalcSegmentWeight(Segment const & segment, bool isOutgoing,
+                                EdgeEstimator::Purpose purpose) const;
   RouteWeight CalcGuidesSegmentWeight(Segment const & segment,
                                       EdgeEstimator::Purpose purpose) const;
-  double CalculateETA(Segment const & from, Segment const & to) const;
-  double CalculateETAWithoutPenalty(Segment const & segment) const;
+  double CalculateETA(Segment const & from, Segment const & to, bool isOutgoing) const;
+  double CalculateETAWithoutPenalty(Segment const & segment, bool isOutgoing) const;
 
   // For compatibility with IndexGraphStarterJoints
   // @{
@@ -240,11 +241,11 @@ private:
   void AddFakeEdges(Segment const & segment, bool isOutgoing, std::vector<SegmentEdge> & edges) const;
 
   // Checks whether ending belongs to pass-through or non-pass-through zone.
-  bool EndingPassThroughAllowed(Ending const & ending);
+  bool EndingPassThroughAllowed(Ending const & ending, bool isOutgoing);
   // Start segment is located in a pass-through/non-pass-through area.
-  bool StartPassThroughAllowed();
+  bool StartPassThroughAllowed(bool isOutgoing);
   // Finish segment is located in a pass-through/non-pass-through area.
-  bool FinishPassThroughAllowed();
+  bool FinishPassThroughAllowed(bool isOutgoing);
 
   static uint32_t constexpr kFakeFeatureId = FakeFeatureIds::kIndexGraphStarterId;
   WorldGraph & m_graph;

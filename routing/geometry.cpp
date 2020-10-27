@@ -262,7 +262,7 @@ Geometry::Geometry(unique_ptr<GeometryLoader> loader)
   CHECK(m_loader, ());
 }
 
-RoadGeometry const & Geometry::GetRoad(uint32_t featureId)
+RoadGeometry const & Geometry::GetRoad(uint32_t featureId, bool isOutgoing)
 {
   ASSERT(m_featureIdToRoad, ());
   ASSERT(m_loader, ());

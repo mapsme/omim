@@ -91,7 +91,8 @@ void NoUTurnRestrictionTest::TestRouteGeom(Segment const & start, Segment const 
   for (size_t i = 0; i < routingResult.m_path.size(); ++i)
   {
     static auto constexpr kEps = 1e-3;
-    auto const point = m_graph->GetWorldGraph().GetPoint(routingResult.m_path[i], true /* forward */);
+    auto const point = m_graph->GetWorldGraph().GetPoint(routingResult.m_path[i], true /* front */,
+                                                         true /* isOutgoing */);
     if (!base::AlmostEqualAbs(mercator::FromLatLon(point), expectedRouteGeom[i], kEps))
     {
       TEST(false, ("Coords missmated at index:", i, "expected:", expectedRouteGeom[i],

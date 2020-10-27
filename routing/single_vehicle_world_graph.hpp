@@ -50,11 +50,12 @@ public:
 
   bool CheckLength(RouteWeight const &, double) const override { return true; }
 
-  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) override;
-  ms::LatLon const & GetPoint(Segment const & segment, bool front) override;
+  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front,
+                                         bool isOutgoing) override;
+  ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) override;
 
-  bool IsOneWay(NumMwmId mwmId, uint32_t featureId) override;
-  bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId) override;
+  bool IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) override;
+  bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) override;
   void ClearCachedGraphs() override { m_loader->Clear(); }
 
   void SetMode(WorldGraphMode mode) override { m_mode = mode; }
@@ -62,19 +63,20 @@ public:
 
   RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to) override;
 
-  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) override;
+  RouteWeight CalcSegmentWeight(Segment const & segment, bool isOutgoing,
+                                EdgeEstimator::Purpose purpose) override;
   RouteWeight CalcLeapWeight(ms::LatLon const & from, ms::LatLon const & to) const override;
   RouteWeight CalcOffroadWeight(ms::LatLon const & from, ms::LatLon const & to,
                                 EdgeEstimator::Purpose purpose) const override;
-  double CalculateETA(Segment const & from, Segment const & to) override;
-  double CalculateETAWithoutPenalty(Segment const & segment) override;
+  double CalculateETA(Segment const & from, Segment const & to, bool isOutgoing) override;
+  double CalculateETAWithoutPenalty(Segment const & segment, bool isOutgoing) override;
 
   std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter) override;
 
   void SetRoutingOptions(RoutingOptions routingOptions) override { m_avoidRoutingOptions = routingOptions; }
   /// \returns true if feature, associated with segment satisfies users conditions.
-  bool IsRoutingOptionsGood(Segment const & segment) override;
-  RoutingOptions GetRoutingOptions(Segment const & segment) override;
+  bool IsRoutingOptionsGood(Segment const & segment, bool isOutgoing) override;
+  RoutingOptions GetRoutingOptions(Segment const & segment, bool isOutgoing) override;
 
   std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) override;
   std::vector<RouteSegment::SpeedCamera> GetSpeedCamInfo(Segment const & segment) override;
@@ -124,7 +126,7 @@ private:
   // WorldGraph overrides:
   void GetTwinsInner(Segment const & s, bool isOutgoing, std::vector<Segment> & twins) override;
 
-  RoadGeometry const & GetRoadGeometry(NumMwmId mwmId, uint32_t featureId);
+  RoadGeometry const & GetRoadGeometry(NumMwmId mwmId, uint32_t featureId, bool isOutgoing);
 
   std::unique_ptr<CrossMwmGraph> m_crossMwmGraph;
   std::unique_ptr<IndexGraphLoader> m_loader;

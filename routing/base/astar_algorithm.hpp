@@ -303,8 +303,9 @@ private:
     // particular routes when debugging turned out to be easier.
     Weight ConsistentHeuristic(Vertex const & v) const
     {
-      auto const piF = graph.HeuristicCostEstimate(v, finalVertex);
-      auto const piR = graph.HeuristicCostEstimate(v, startVertex);
+      // TODO. The last parameter may be false in case of two thread routing.
+      auto const piF = graph.HeuristicCostEstimate(v, finalVertex, true /* forward */);
+      auto const piR = graph.HeuristicCostEstimate(v, startVertex, true /* forward */);
       if (forward)
       {
         /// @todo careful: with this "return" here and below in the Backward case
@@ -482,8 +483,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
   Result resultCode = Result::NoPath;
 
   auto const heuristicDiff = [&](Vertex const & vertexFrom, Vertex const & vertexTo) {
-    return graph.HeuristicCostEstimate(vertexFrom, finalVertex) -
-           graph.HeuristicCostEstimate(vertexTo, finalVertex);
+    return graph.HeuristicCostEstimate(vertexFrom, finalVertex, true /* forward */) -
+           graph.HeuristicCostEstimate(vertexTo, finalVertex, true /* forward */);
   };
 
   auto const fullToReducedLength = [&](Vertex const & vertexFrom, Vertex const & vertexTo,
@@ -503,7 +504,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
       return false;
     }
 
-    params.m_onVisitedVertexCallback(vertex, finalVertex);
+    params.m_onVisitedVertexCallback(vertex, finalVertex, true /* forward */);
 
     if (vertex == finalVertex)
     {
@@ -527,7 +528,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
   };
 
   auto const filterStates = [&](State const & state) {
-    return params.m_checkLengthCallback(reducedToRealLength(state));
+    return params.m_checkLengthCallback(reducedToRealLength(state), true /* forward */);
   };
 
   PropagateWave(graph, startVertex, visitVertex, adjustEdgeWeight, filterStates,
@@ -539,7 +540,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
     result.m_distance =
         reducedToFullLength(startVertex, finalVertex, context.GetDistance(finalVertex));
 
-    if (!params.m_checkLengthCallback(result.m_distance))
+    if (!params.m_checkLengthCallback(result.m_distance), true /* forward */)
       resultCode = Result::NoPath;
   }
 
@@ -581,7 +582,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   BidirectionalStepContext * nxt = &backward;
 
   auto const getResult = [&]() {
-    if (!params.m_checkLengthCallback(bestPathRealLength))
+    // TODO. |forward| may be false or true in case of two thread routing.
+    if (!params.m_checkLengthCallback(bestPathRealLength, true /* forward */))
       return Result::NoPath;
 
     ReconstructPathBidirectional(cur->bestVertex, nxt->bestVertex, cur->parent, nxt->parent,
@@ -638,8 +640,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     if (cur->ExistsStateWithBetterDistance(stateV))
       continue;
 
+    // TODO. |forward| may be false or true in case of two thread routing.
     params.m_onVisitedVertexCallback(stateV.vertex,
-                                     cur->forward ? cur->finalVertex : cur->startVertex);
+                                     cur->forward ? cur->finalVertex : cur->startVertex, true /* forward */);
 
     cur->GetAdjacencyList(stateV, adj);
     auto const & pV = stateV.heuristic;
@@ -660,7 +663,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
       stateW.distance = stateV.distance + std::max(reducedWeight, kZeroDistance);
 
       auto const fullLength = weight + stateV.distance + cur->pS - pV;
-      if (!params.m_checkLengthCallback(fullLength))
+      // TODO. |forward| may be false or true in case of two thread routing.
+      if (!params.m_checkLengthCallback(fullLength, true /* forward */))
         continue;
 
       if (cur->ExistsStateWithBetterDistance(stateW, epsilon))
@@ -746,7 +750,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::AdjustRoute(P & params,
       return false;
     }
 
-    params.m_onVisitedVertexCallback(startVertex, vertex);
+    params.m_onVisitedVertexCallback(startVertex, vertex, true /* forward */);
 
     auto it = remainingDistances.find(vertex);
     if (it != remainingDistances.cend())
@@ -767,7 +771,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::AdjustRoute(P & params,
   };
 
   auto const filterStates = [&](State const & state) {
-    return params.m_checkLengthCallback(state.distance);
+    return params.m_checkLengthCallback(state.distance, true /* forward */);
   };
 
   auto const reducedToRealLength = [&](State const & state) { return state.distance; };

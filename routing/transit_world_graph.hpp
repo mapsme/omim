@@ -51,24 +51,26 @@ public:
     return weight.GetWeight() - weight.GetTransitTime() <=
            MaxPedestrianTimeSec(startToFinishDistanceM);
   }
-  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) override;
-  ms::LatLon const & GetPoint(Segment const & segment, bool front) override;
+  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front,
+                                         bool isOutgoing) override;
+  ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) override;
   // All transit features are oneway.
-  bool IsOneWay(NumMwmId mwmId, uint32_t featureId) override;
+  bool IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) override;
   // All transit features are allowed for through passage.
-  bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId) override;
+  bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) override;
   void ClearCachedGraphs() override;
   void SetMode(WorldGraphMode mode) override { m_mode = mode; }
   WorldGraphMode GetMode() const override { return m_mode; }
 
   RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to) override;
 
-  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) override;
+  RouteWeight CalcSegmentWeight(Segment const & segment, bool isOutgoing,
+                                EdgeEstimator::Purpose purpose) override;
   RouteWeight CalcLeapWeight(ms::LatLon const & from, ms::LatLon const & to) const override;
   RouteWeight CalcOffroadWeight(ms::LatLon const & from, ms::LatLon const & to,
                                 EdgeEstimator::Purpose purpose) const override;
-  double CalculateETA(Segment const & from, Segment const & to) override;
-  double CalculateETAWithoutPenalty(Segment const & segment) override;
+  double CalculateETA(Segment const & from, Segment const & to, bool /* isOutgoing */) override;
+  double CalculateETAWithoutPenalty(Segment const & segment, bool /* isOutgoing */) override;
 
   std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) override;
 
@@ -88,7 +90,7 @@ private:
     return 50 * 60 + (startToFinishDistanceM / 1000) * 3 * 60;
   }
 
-  RoadGeometry const & GetRealRoadGeometry(NumMwmId mwmId, uint32_t featureId);
+  RoadGeometry const & GetRealRoadGeometry(NumMwmId mwmId, uint32_t featureId, bool isOutgoing);
   void AddRealEdges(astar::VertexData<Segment, RouteWeight> const & vertexData, bool isOutgoing,
                     bool useRoutingOptions, std::vector<SegmentEdge> & edges);
   TransitGraph & GetTransitGraph(NumMwmId mwmId);

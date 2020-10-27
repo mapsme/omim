@@ -39,7 +39,7 @@ public:
                            std::vector<Edge> & adj) override;
   void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
                             std::vector<Edge> & adj) override;
-  double HeuristicCostEstimate(Vertex const & v, Vertex const & w) override;
+  double HeuristicCostEstimate(Vertex const & v, Vertex const & w, bool isOutgoing) override;
   // @}
 
   void GetEdgesList(Vertex const & vertex, bool /* isOutgoing */, std::vector<Edge> & adj);

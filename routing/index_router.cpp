@@ -718,7 +718,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
   m_lastRoute = make_unique<SegmentedRoute>(checkpoints.GetStart(), checkpoints.GetFinish(),
                                             route.GetSubroutes());
   for (Segment const & segment : segments)
-    m_lastRoute->AddStep(segment, mercator::FromLatLon(starter->GetPoint(segment, true /* front */)));
+    m_lastRoute->AddStep(segment, mercator::FromLatLon(starter->GetPoint(segment, true /* front */, true /* isOutgoing */)));
 
   m_lastFakeEdges = make_unique<FakeEdgesContainer>(move(*starter));
 
@@ -922,7 +922,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   {
     auto const & step = steps[i];
     prevEdges.emplace_back(step.GetSegment(), starter.CalcSegmentWeight(step.GetSegment(),
-                           EdgeEstimator::Purpose::Weight));
+                           true /* isOutgoing */, EdgeEstimator::Purpose::Weight));
   }
 
   using Visitor = JunctionVisitor<IndexGraphStarter>;
@@ -1331,8 +1331,8 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
 
     maxStart = max(maxStart, start);
     auto const contribCoef = static_cast<double>(end - maxStart + 1) / (input.size());
-    auto const startPoint = starter.GetPoint(input[start], true /* front */);
-    auto const endPoint = starter.GetPoint(input[end], true /* front */);
+    auto const startPoint = starter.GetPoint(input[start], true /* front */, true /* isOutgoing */);
+    auto const endPoint = starter.GetPoint(input[end], true /* front */, true /* isOutgoing */);
     progress->AppendSubProgress({startPoint, endPoint, contribCoef});
 
     RouterResultCode resultCode = RouterResultCode::NoError;
@@ -1379,8 +1379,8 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
     }
 
     LOG(LINFO, ("Can not find path",
-      "from:", starter.GetPoint(input[start], input[start].IsForward()),
-      "to:", starter.GetPoint(input[end], input[end].IsForward())));
+      "from:", starter.GetPoint(input[start], input[start].IsForward(), true /* isOutgoing */),
+      "to:", starter.GetPoint(input[end], input[end].IsForward(), true /* isOutgoing */)));
 
     return false;
   };
@@ -1410,12 +1410,12 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
 
     if (!tryBuildRoute(prev, next, WorldGraphMode::JointSingleMwm, routingResult))
     {
-      auto const prevPoint = starter.GetPoint(input[next], true);
+      auto const prevPoint = starter.GetPoint(input[next], true /* front */, true /* isOutgoing */);
       // |next + 1| - is the twin of |next|
       // |next + 2| - is the next exit.
       while (next + 2 < finishLeapStart && next != finishLeapStart)
       {
-        auto const point = starter.GetPoint(input[next + 2], true);
+        auto const point = starter.GetPoint(input[next + 2], true /* front */, true /* isOutgoing */);
         double const distBetweenExistsMeters = ms::DistanceOnEarth(point, prevPoint);
 
         static double constexpr kMinDistBetweenExitsM = 100000;  // 100 km
@@ -1474,7 +1474,7 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
   junctions.reserve(numPoints);
 
   for (size_t i = 0; i < numPoints; ++i)
-    junctions.emplace_back(starter.GetRouteJunction(segments, i).ToPointWithAltitude());
+    junctions.emplace_back(starter.GetRouteJunction(segments, i, true /* isOutgoing */).ToPointWithAltitude());
 
   IndexRoadGraph roadGraph(m_numMwmIds, starter, segments, junctions, m_dataSource);
   starter.GetGraph().SetMode(WorldGraphMode::NoLeaps);
@@ -1486,12 +1486,12 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
   times.emplace_back(static_cast<uint32_t>(0), 0.0);
 
   // Time at first route point - weight of first segment.
-  double time = starter.CalculateETAWithoutPenalty(segments.front());
+  double time = starter.CalculateETAWithoutPenalty(segments.front(), true /* isOutgoing */);
   times.emplace_back(static_cast<uint32_t>(1), time);
 
   for (size_t i = 1; i < segments.size(); ++i)
   {
-    time += starter.CalculateETA(segments[i - 1], segments[i]);
+    time += starter.CalculateETA(segments[i - 1], segments[i], true /* isOutgoing */);
     times.emplace_back(static_cast<uint32_t>(i + 1), time);
   }
 
@@ -1513,7 +1513,7 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
     // to use them.
     if (m_vehicleType == VehicleType::Car)
     {
-      routeSegment.SetRoadTypes(starter.GetRoutingOptions(segment));
+      routeSegment.SetRoadTypes(starter.GetRoutingOptions(segment, true /* isOutgoing */));
       if (segment.IsRealSegment() &&
           !AreSpeedCamerasProhibited(m_numMwmIds->GetFile(segment.GetMwmId())))
       {

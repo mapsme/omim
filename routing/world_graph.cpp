@@ -28,12 +28,12 @@ void WorldGraph::GetTwins(Segment const & segment, bool isOutgoing, bool useRout
   SetMode(prevMode);
 }
 
-RoutingOptions WorldGraph::GetRoutingOptions(Segment const & /* segment */)
+RoutingOptions WorldGraph::GetRoutingOptions(Segment const & /* segment */, bool /* isOutgoing */)
 {
   return {};
 }
 
-bool WorldGraph::IsRoutingOptionsGood(Segment const & /* segment */)
+bool WorldGraph::IsRoutingOptionsGood(Segment const & /* segment */, bool /* isOutgoing */)
 {
   return true;
 }
