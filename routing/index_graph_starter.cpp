@@ -532,13 +532,13 @@ void IndexGraphStarter::AddFakeEdges(Segment const & segment, bool isOutgoing, v
     {
       //     |segment|       |s|
       //  *------------>*----------->
-      bool const sIsOutgoing =
-          GetJunction(segment, true /* front */) == GetJunction(s, false /* front */);
+      bool const sIsOutgoing = GetJunction(segment, true /* front */, isOutgoing) ==
+                               GetJunction(s, false /* front */, isOutgoing);
 
       //        |s|       |segment|
       //  *------------>*----------->
-      bool const sIsIngoing =
-          GetJunction(s, true /* front */) == GetJunction(segment, false /* front */);
+      bool const sIsIngoing = GetJunction(s, true /* front */, isOutgoing) ==
+                              GetJunction(segment, false /* front */, isOutgoing);
 
       if ((isOutgoing && sIsOutgoing) || (!isOutgoing && sIsIngoing))
       {

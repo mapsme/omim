@@ -48,7 +48,7 @@ bool IndexGraph::IsJoint(RoadPoint const & roadPoint) const
   return m_roadIndex.GetJointId(roadPoint) != Joint::kInvalidId;
 }
 
-bool IndexGraph::IsJointOrEnd(Segment const & segment, bool fromStart)
+bool IndexGraph::IsJointOrEnd(Segment const & segment, bool fromStart, bool isOutgoing)
 {
   if (IsJoint(segment.GetRoadPoint(fromStart)))
     return true;

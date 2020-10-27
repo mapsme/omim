@@ -176,14 +176,14 @@ public:
                                        std::move(fakeFeatureConverter));
   }
 
-  bool IsJoint(Segment const & segment, bool fromStart)
+  bool IsJoint(Segment const & segment, bool fromStart, bool isOutgoing)
   {
     return GetGraph().GetIndexGraph(segment.GetMwmId()).IsJoint(segment.GetRoadPoint(fromStart));
   }
 
-  bool IsJointOrEnd(Segment const & segment, bool fromStart)
+  bool IsJointOrEnd(Segment const & segment, bool fromStart, bool isOutgoing)
   {
-    return GetGraph().GetIndexGraph(segment.GetMwmId()).IsJointOrEnd(segment, fromStart);
+    return GetGraph().GetIndexGraph(segment.GetMwmId()).IsJointOrEnd(segment, fromStart, isOutgoing);
   }
   // @}
 

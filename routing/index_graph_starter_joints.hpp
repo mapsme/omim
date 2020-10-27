@@ -142,14 +142,14 @@ private:
 
   JointSegment CreateFakeJoint(Segment const & from, Segment const & to);
 
-  bool IsJoint(Segment const & segment, bool fromStart) const
+  bool IsJoint(Segment const & segment, bool fromStart, bool isOutgoing) const
   {
-    return m_graph.IsJoint(segment, fromStart);
+    return m_graph.IsJoint(segment, fromStart, isOutgoing);
   }
 
-  bool IsJointOrEnd(Segment const & segment, bool fromStart) const
+  bool IsJointOrEnd(Segment const & segment, bool fromStart, bool isOutgoing) const
   {
-    return m_graph.IsJointOrEnd(segment, fromStart);
+    return m_graph.IsJointOrEnd(segment, fromStart, isOutgoing);
   }
 
   bool FillEdgesAndParentsWeights(astar::VertexData<Vertex, Weight> const & vertexData,
@@ -163,7 +163,7 @@ private:
 
   /// \brief Makes BFS from |startSegment| in direction |fromStart| and find the closest segments
   /// which end RoadPoints are joints. Thus we build fake joint segments graph.
-  std::vector<JointEdge> FindFirstJoints(Segment const & startSegment, bool fromStart);
+  std::vector<JointEdge> FindFirstJoints(Segment const & startSegment, bool fromStart, bool isOutgoing);
 
   JointSegment CreateInvisibleJoint(Segment const & segment, bool start);
 
@@ -275,7 +275,7 @@ void IndexGraphStarterJoints<Graph>::InitEnding(Segment const & ending, bool sta
   m_reconstructedFakeJoints[endingJoint] = ReconstructedPath({ending}, start);
 
   auto & outEdges = start ? m_startOutEdges : m_endOutEdges;
-  outEdges = FindFirstJoints(ending, start);
+  outEdges = FindFirstJoints(ending, start, true /* isOutgoing */);
 
   if (!start)
   {
@@ -569,7 +569,7 @@ JointSegment IndexGraphStarterJoints<Graph>::CreateFakeJoint(Segment const & fro
 
 template <typename Graph>
 std::vector<JointEdge> IndexGraphStarterJoints<Graph>::FindFirstJoints(Segment const & startSegment,
-                                                                       bool fromStart)
+                                                                       bool fromStart, bool isOutgoing)
 {
   Segment const & endSegment = fromStart ? m_endSegment : m_startSegment;
 
@@ -636,7 +636,7 @@ std::vector<JointEdge> IndexGraphStarterJoints<Graph>::FindFirstJoints(Segment c
     // or it's the real one and its end (RoadPoint) is |Joint|.
     if (((!IsRealSegment(segment) && m_graph.ConvertToReal(segment) &&
           isEndOfSegment(beforeConvert, segment, fromStart)) || IsRealSegment(beforeConvert)) &&
-        IsJoint(segment, fromStart))
+        IsJoint(segment, fromStart, isOutgoing))
     {
       addFake(segment, beforeConvert);
       continue;

@@ -223,14 +223,14 @@ public:
                                *m_AStarParents);
   }
 
-  bool IsJoint(routing::Segment const & segment, bool fromStart) const
+  bool IsJoint(routing::Segment const & segment, bool fromStart, bool isOutgoing) const
   {
-    return IsJointOrEnd(segment, fromStart);
+    return IsJointOrEnd(segment, fromStart, isOutgoing);
   }
 
-  bool IsJointOrEnd(routing::Segment const & segment, bool fromStart) const
+  bool IsJointOrEnd(routing::Segment const & segment, bool fromStart, bool isOutgoing) const
   {
-    return m_graph.IsJointOrEnd(segment, fromStart);
+    return m_graph.IsJointOrEnd(segment, fromStart, isOutgoing);
   }
 
   template <typename Vertex>

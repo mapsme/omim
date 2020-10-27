@@ -28,13 +28,13 @@ namespace astar
 template <typename Vertex>
 struct DefaultVisitor
 {
-  void operator()(Vertex const & /* from */, Vertex const & /* to */) const {};
+  void operator()(Vertex const & /* from */, Vertex const & /* to */, bool /* isOutgoing */) const {};
 };
 
 template <typename Weight>
 struct DefaultLengthChecker
 {
-  bool operator()(Weight const & /* weight */) const { return true; }
+  bool operator()(Weight const & /* weight */, bool /* isOutgoing */) const { return true; }
 };
 }  // namespace astar
 
@@ -540,7 +540,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
     result.m_distance =
         reducedToFullLength(startVertex, finalVertex, context.GetDistance(finalVertex));
 
-    if (!params.m_checkLengthCallback(result.m_distance), true /* forward */)
+    if (!params.m_checkLengthCallback(result.m_distance, true /* forward */))
       resultCode = Result::NoPath;
   }
 
