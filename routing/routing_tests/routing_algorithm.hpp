@@ -30,6 +30,8 @@ struct SimpleEdge
 class UndirectedGraph : public AStarGraph<uint32_t, SimpleEdge, double>
 {
 public:
+  UndirectedGraph();
+
   void AddEdge(Vertex u, Vertex v, Weight w);
   size_t GetNodesNumber() const;
 

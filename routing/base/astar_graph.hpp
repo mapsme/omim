@@ -20,6 +20,12 @@ public:
 
   using Parents = ska::bytell_hash_map<Vertex, Vertex>;
 
+  constexpr AStarGraph(bool multithreadingReady = false)
+    : m_multithreadingReady(multithreadingReady)
+  {
+  }
+  virtual ~AStarGraph() = default;
+
   virtual Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to, bool isOutgoing) = 0;
 
   virtual void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
@@ -34,7 +40,10 @@ public:
 
   virtual Weight GetAStarWeightEpsilon();
 
-  virtual ~AStarGraph() = default;
+  constexpr bool GetMultithreadingReady() const { return m_multithreadingReady;}
+
+private:
+  bool const m_multithreadingReady;
 };
 
 template <typename VertexType, typename EdgeType, typename WeightType>

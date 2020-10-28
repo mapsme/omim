@@ -8,7 +8,6 @@
 
 #include "transit/transit_version.hpp"
 
-#include "base/assert.hpp"
 #include "base/math.hpp"
 
 #include <unordered_map>

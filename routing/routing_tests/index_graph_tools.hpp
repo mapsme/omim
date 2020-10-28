@@ -28,6 +28,8 @@
 
 #include "geometry/point2d.hpp"
 
+#include "base/assert.hpp"
+
 #include <algorithm>
 #include <cstdint>
 #include <ctime>
@@ -50,7 +52,11 @@ using AlgorithmForWorldGraph = AStarAlgorithm<Segment, SegmentEdge, RouteWeight>
 class WorldGraphForAStar : public AStarGraph<Segment, SegmentEdge, RouteWeight>
 {
 public:
-  explicit WorldGraphForAStar(std::unique_ptr<SingleVehicleWorldGraph> graph) : m_graph(std::move(graph)) {}
+  explicit WorldGraphForAStar(std::unique_ptr<SingleVehicleWorldGraph> graph)
+    : m_graph(std::move(graph))
+  {
+    CHECK(!GetMultithreadingReady(), ());
+  }
   ~WorldGraphForAStar() override = default;
 
   // AStarGraph overrides:

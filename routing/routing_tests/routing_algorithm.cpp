@@ -16,6 +16,11 @@
 
 namespace routing_test
 {
+UndirectedGraph::UndirectedGraph()
+{
+  CHECK(!GetMultithreadingReady(), ());
+}
+
 void UndirectedGraph::AddEdge(Vertex u, Vertex v, Weight w)
 {
   m_adjs[u].emplace_back(v, w);
@@ -115,7 +120,9 @@ public:
 
   explicit RoadGraph(IRoadGraph const & roadGraph)
     : m_roadGraph(roadGraph), m_maxSpeedMPS(KMPH2MPS(roadGraph.GetMaxSpeedKMpH()))
-  {}
+  {
+    CHECK(!GetMultithreadingReady(), ());
+  }
 
   void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
                             std::vector<Edge> & adj) override
