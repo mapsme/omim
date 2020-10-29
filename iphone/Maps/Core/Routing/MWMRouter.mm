@@ -542,7 +542,7 @@ void logPointEvent(MWMRoutePoint * point, NSString * eventType)
   if ([MWMRouter type] == MWMRouterTypePublicTransport)
     [navManager updateTransitInfo:rm.GetTransitRouteInfo()];
   else
-    [navManager updateFollowingInfo:info];
+    [navManager updateFollowingInfo:info type:[MWMRouter type]];
 }
 
 + (void)routeAltitudeImageForSize:(CGSize)size completion:(MWMImageHeightBlock)block
