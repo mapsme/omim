@@ -349,6 +349,7 @@ public class SearchToolbarController extends ToolbarController
 
     case R.id.clear:
       onClearClick();
+      closeBottomMenu();
       break;
 
     case R.id.voice_input:
@@ -418,7 +419,6 @@ public class SearchToolbarController extends ToolbarController
       mGuestsRoomsMenuController.close();
       return true;
     }
-
     return false;
   }
 
