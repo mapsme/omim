@@ -13,10 +13,12 @@
 #include "geometry/latlon.hpp"
 
 #include "base/assert.hpp"
+#include "base/optional_lock_guard.hpp"
 
 #include <algorithm>
 #include <limits>
 #include <map>
+#include <mutex>
 #include <optional>
 #include <queue>
 #include <set>
@@ -30,10 +32,18 @@ template <typename Graph>
 class IndexGraphStarterJoints : public AStarGraph<JointSegment, JointEdge, RouteWeight>
 {
 public:
-  explicit IndexGraphStarterJoints(Graph & graph) : m_graph(graph) {}
+  /// \note This class may be used in two modes. For one thread A* nd two thread A*.
+  /// To create an instance of the class with synchronization staff |twoThreadsReady|
+  /// Should be set to true. It means the class is ready for calls HeuristicCostEstimate(),
+  /// GetOutgoingEdgesList() and GetIngoingEdgesList() from two different threads.
+  explicit IndexGraphStarterJoints(Graph & graph)
+    : m_graph(graph), m_reconstructedFakeJointsMtx(std::nullopt)
+  {
+  }
   IndexGraphStarterJoints(Graph & graph,
                           Segment const & startSegment,
-                          Segment const & endSegment);
+                          Segment const & endSegment,
+                          bool twoThreadsReady);
 
   IndexGraphStarterJoints(Graph & graph,
                           Segment const & startSegment);
@@ -184,6 +194,9 @@ private:
   JointSegment m_startJoint;
   JointSegment m_endJoint;
 
+  // |m_startSegment| and |m_endSegment| are read from HeuristicCostEstimate() method
+  // but they may used from two threads concurrently because they are set only on initialization
+  // step and in Reset() method and then they are only read.
   Segment m_startSegment;
   Segment m_endSegment;
 
@@ -191,6 +204,10 @@ private:
   ms::LatLon m_endPoint;
 
   // See comments in |GetEdgeList()| about |m_savedWeight|.
+  // |m_savedWeight| is set on initialization step and in Rest() method so before routing.
+  // It is also wrote and read while A* execution. But it's not used concurrently
+  // because it's always used form backward wave. So in case of bidirectional A*
+  // it's used from additional thread only. No synchronization is needed.
   ska::bytell_hash_map<Vertex, Weight> m_savedWeight;
 
   // JointSegment consists of two segments of one feature.
@@ -209,8 +226,14 @@ private:
     std::vector<Segment> m_path;
   };
 
+  // |m_reconstructedFakeJointsMtx| is used for synchronization access to |m_reconstructedFakeJoints|
+  // while bidirectional A* is calculation the route in two threads mode.
+  std::optional<std::mutex> m_reconstructedFakeJointsMtx;
   std::map<JointSegment, ReconstructedPath> m_reconstructedFakeJoints;
 
+  // |m_startOutEdges| and |m_endOutEdges| are read from GetOutgoingEdgesList() and
+  // GetIngoingEdgesList() methods but they may be used from two threads concurrently because
+  // they are set only on initialization step and in Reset() method and then they are only read.
   // List of JointEdges that are outgoing from start.
   std::vector<JointEdge> m_startOutEdges;
   // List of incoming to finish.
@@ -221,10 +244,13 @@ private:
 };
 
 template <typename Graph>
-IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph,
-                                                        Segment const & startSegment,
-                                                        Segment const & endSegment)
-  : m_graph(graph), m_startSegment(startSegment), m_endSegment(endSegment)
+IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph, Segment const & startSegment,
+                                                        Segment const & endSegment,
+                                                        bool twoThreadsReady)
+  : m_graph(graph)
+  , m_startSegment(startSegment)
+  , m_endSegment(endSegment)
+  , m_reconstructedFakeJointsMtx(twoThreadsReady ? std::optional<std::mutex>() : std::nullopt)
 {
   Init(m_startSegment, m_endSegment);
 }
@@ -232,7 +258,7 @@ IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph,
 template <typename Graph>
 IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph,
                                                         Segment const & startSegment)
-  : m_graph(graph), m_startSegment(startSegment)
+  : m_graph(graph), m_startSegment(startSegment), m_reconstructedFakeJointsMtx(std::nullopt)
 {
   InitEnding(startSegment, true /* start */);
 
@@ -272,7 +298,10 @@ void IndexGraphStarterJoints<Graph>::InitEnding(Segment const & ending, bool sta
     endingJoint = CreateFakeJoint(loopSegment, loopSegment);
   }
 
-  m_reconstructedFakeJoints[endingJoint] = ReconstructedPath({ending}, start);
+  {
+    base::OptionalLockGuard guard(m_reconstructedFakeJointsMtx);
+    m_reconstructedFakeJoints[endingJoint] = ReconstructedPath({ending}, start);
+  }
 
   auto & outEdges = start ? m_startOutEdges : m_endOutEdges;
   outEdges = FindFirstJoints(ending, start, true /* isOutgoing */);
@@ -296,6 +325,7 @@ RouteWeight IndexGraphStarterJoints<Graph>::HeuristicCostEstimate(JointSegment c
   Segment fromSegment;
   if (from.IsFake() || IsInvisible(from))
   {
+    base::OptionalLockGuard guard(m_reconstructedFakeJointsMtx);
     ASSERT_NOT_EQUAL(m_reconstructedFakeJoints.count(from), 0, ());
     fromSegment = m_reconstructedFakeJoints[from].m_path.back();
   }
@@ -329,11 +359,15 @@ std::vector<Segment> IndexGraphStarterJoints<Graph>::ReconstructJoint(JointSegme
   // In case of a fake vertex we return its prebuilt path.
   if (joint.IsFake())
   {
-    auto const it = m_reconstructedFakeJoints.find(joint);
-    CHECK(it != m_reconstructedFakeJoints.cend(), ("Can not find such fake joint"));
+    std::vector<Segment> path;
+    {
+      base::OptionalLockGuard guard(m_reconstructedFakeJointsMtx);
+      auto const it = m_reconstructedFakeJoints.find(joint);
+      CHECK(it != m_reconstructedFakeJoints.cend(), ("Can not find such fake joint"));
 
-    auto path = it->second.m_path;
-    ASSERT(!path.empty(), ());
+      path = it->second.m_path;
+      ASSERT(!path.empty(), ());
+    }
     if (path.front() == m_startSegment && path.back() == m_endSegment)
       path.pop_back();
 
@@ -610,6 +644,7 @@ std::vector<JointEdge> IndexGraphStarterJoints<Graph>::FindFirstJoints(Segment c
     result.emplace_back(fakeJoint, weight[beforeConvert]);
 
     std::vector<Segment> path = reconstructPath(beforeConvert, fromStart);
+    base::OptionalLockGuard guard(m_reconstructedFakeJointsMtx);
     m_reconstructedFakeJoints.emplace(fakeJoint,
                                       ReconstructedPath(std::move(path), fromStart));
   };

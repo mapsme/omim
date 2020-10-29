@@ -653,7 +653,8 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     uint32_t const fakeNumerationStart =
         starter ? starter->GetNumFakeSegments() + startIdx : startIdx;
     IndexGraphStarter subrouteStarter(startFakeEnding, finishFakeEnding, fakeNumerationStart,
-                                      isStartSegmentStrictForward, *graph);
+                                      isStartSegmentStrictForward, false /* twoThreadsReady */,
+                                      *graph);
 
     if (m_guides.IsAttached())
     {
@@ -785,7 +786,8 @@ RouterResultCode IndexRouter::CalculateSubrouteJointsMode(
     shared_ptr<AStarProgress> const & progress, vector<Segment> & subroute)
 {
   using JointsStarter = IndexGraphStarterJoints<IndexGraphStarter>;
-  JointsStarter jointStarter(starter, starter.GetStartSegment(), starter.GetFinishSegment());
+  JointsStarter jointStarter(starter, starter.GetStartSegment(), starter.GetFinishSegment(),
+                             starter.IsTwoThreadsReady());
 
   using Visitor = JunctionVisitor<JointsStarter>;
   Visitor visitor(jointStarter, delegate, kVisitPeriod, progress);
@@ -912,7 +914,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   FakeEnding dummy{};
   IndexGraphStarter starter(MakeFakeEnding(startSegments, pointFrom, *graph), dummy,
                             m_lastFakeEdges->GetNumFakeEdges(), bestSegmentIsAlmostCodirectional,
-                            *graph);
+                            false /* twoThreadsReady */, *graph);
 
   starter.Append(*m_lastFakeEdges);
 

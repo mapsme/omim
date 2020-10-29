@@ -18,7 +18,7 @@ namespace routing_test
 {
 UndirectedGraph::UndirectedGraph()
 {
-  CHECK(!GetMultithreadingReady(), ());
+  CHECK(!IsTwoThreadsReady(), ());
 }
 
 void UndirectedGraph::AddEdge(Vertex u, Vertex v, Weight w)
@@ -121,7 +121,7 @@ public:
   explicit RoadGraph(IRoadGraph const & roadGraph)
     : m_roadGraph(roadGraph), m_maxSpeedMPS(KMPH2MPS(roadGraph.GetMaxSpeedKMpH()))
   {
-    CHECK(!GetMultithreadingReady(), ());
+    CHECK(!IsTwoThreadsReady(), ());
   }
 
   void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,

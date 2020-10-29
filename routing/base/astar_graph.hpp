@@ -21,7 +21,7 @@ public:
   using Parents = ska::bytell_hash_map<Vertex, Vertex>;
 
   constexpr AStarGraph(bool multithreadingReady = false)
-    : m_multithreadingReady(multithreadingReady)
+    : m_twoThreadsReady(multithreadingReady)
   {
   }
   virtual ~AStarGraph() = default;
@@ -40,10 +40,10 @@ public:
 
   virtual Weight GetAStarWeightEpsilon();
 
-  constexpr bool GetMultithreadingReady() const { return m_multithreadingReady;}
+  constexpr bool IsTwoThreadsReady() const { return m_twoThreadsReady;}
 
 private:
-  bool const m_multithreadingReady;
+  bool const m_twoThreadsReady;
 };
 
 template <typename VertexType, typename EdgeType, typename WeightType>

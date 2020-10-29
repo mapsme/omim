@@ -55,7 +55,7 @@ public:
   explicit WorldGraphForAStar(std::unique_ptr<SingleVehicleWorldGraph> graph)
     : m_graph(std::move(graph))
   {
-    CHECK(!GetMultithreadingReady(), ());
+    CHECK(!IsTwoThreadsReady(), ());
   }
   ~WorldGraphForAStar() override = default;
 

@@ -620,7 +620,7 @@ unique_ptr<IndexGraphStarter> MakeStarter(FakeEnding const & start, FakeEnding c
                                           WorldGraph & graph)
 {
   return make_unique<IndexGraphStarter>(start, finish, 0 /* fakeNumerationStart */,
-                                        false /* strictForward */, graph);
+                                        false /* strictForward */, false /* twoThreadsReady */, graph);
 }
 
 time_t GetUnixtimeByDate(uint16_t year, Month month, uint8_t monthDay, uint8_t hours,
