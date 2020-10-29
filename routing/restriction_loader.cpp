@@ -162,7 +162,15 @@ void ConvertRestrictionsOnlyUTurnToNo(IndexGraph & graph,
     if (!graph.IsRoad(featureId))
       continue;
 
-    // @TODO isOutgoing should be passed from IndexGraphLoaderImpl::GetIndexGraph()
+    // On the one hand to pass |isOutgoing| param to this method is quite difficult. To do that
+    // should be modified: AStarGraph::AreWavesConnectible() and methods in derived classes,
+    // two methods WorldGraph::AreWavesConnectible() and methods in derived classes and so on.
+    // About 110 lines should be modified.
+    // On the other hand loading ConvertRestrictionsOnlyUTurnToNo() is called only from
+    // RestrictionLoader constructor and this operation is planned to be implemented
+    // under mutex in case of two threaded bidirectional A star.
+    // To prevent inflating function signatures by adding |isOutgoing| parameter
+    // it should be hardcode as true here.
     uint32_t const n = graph.GetGeometry().GetRoad(featureId, true /* isOutgoing */).GetPointsCount();
     RoadJointIds const & joints = graph.GetRoad(uTurnRestriction.m_featureId);
     Joint::Id const joint = uTurnRestriction.m_viaIsFirstPoint ? joints.GetJointId(0)
