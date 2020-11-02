@@ -200,6 +200,7 @@ public:
   }
 
   routing::RouteWeight GetAStarWeightEpsilon() { return routing::RouteWeight(0.0); }
+  bool IsTwoThreadsReady() const { return false; }
   // @}
 
   ms::LatLon const & GetPoint(routing::Segment const & s, bool forward, bool isOutgoing)

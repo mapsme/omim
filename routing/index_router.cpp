@@ -786,8 +786,7 @@ RouterResultCode IndexRouter::CalculateSubrouteJointsMode(
     shared_ptr<AStarProgress> const & progress, vector<Segment> & subroute)
 {
   using JointsStarter = IndexGraphStarterJoints<IndexGraphStarter>;
-  JointsStarter jointStarter(starter, starter.GetStartSegment(), starter.GetFinishSegment(),
-                             starter.IsTwoThreadsReady());
+  JointsStarter jointStarter(starter, starter.GetStartSegment(), starter.GetFinishSegment());
 
   using Visitor = JunctionVisitor<JointsStarter>;
   Visitor visitor(jointStarter, delegate, kVisitPeriod, progress);

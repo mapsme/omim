@@ -33,17 +33,14 @@ class IndexGraphStarterJoints : public AStarGraph<JointSegment, JointEdge, Route
 {
 public:
   /// \note This class may be used in two modes. For one thread A* and two threads A*.
-  /// To create an instance of the class with synchronization staff |twoThreadsReady|
-  /// should be set to true. It means the class is ready for calls HeuristicCostEstimate(),
+  /// To create an instance of the class with synchronization staff |graph.IsTwoThreadsReady()|
+  /// should return true. It means the class is ready for calls HeuristicCostEstimate(),
   /// GetOutgoingEdgesList() and GetIngoingEdgesList() from two different threads.
-  explicit IndexGraphStarterJoints(Graph & graph)
-    : m_graph(graph), m_reconstructedFakeJointsMtx(std::nullopt)
-  {
-  }
+  explicit IndexGraphStarterJoints(Graph & graph);
+
   IndexGraphStarterJoints(Graph & graph,
                           Segment const & startSegment,
-                          Segment const & endSegment,
-                          bool twoThreadsReady);
+                          Segment const & endSegment);
 
   IndexGraphStarterJoints(Graph & graph,
                           Segment const & startSegment);
@@ -103,6 +100,8 @@ public:
   }
 
   RouteWeight GetAStarWeightEpsilon() override { return m_graph.GetAStarWeightEpsilon(); }
+
+  bool IsTwoThreadsReady() const override { return m_graph.IsTwoThreadsReady(); }
   // @}
 
   WorldGraphMode GetMode() const { return m_graph.GetMode(); }
@@ -244,21 +243,34 @@ private:
 };
 
 template <typename Graph>
+std::optional<std::mutex> GetOptionalMutex(Graph const & graph)
+{
+  return graph.IsTwoThreadsReady() ? std::optional<std::mutex>() : std::nullopt;
+}
+
+template <typename Graph>
+IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph)
+  : m_graph(graph)
+  , m_reconstructedFakeJointsMtx(GetOptionalMutex(graph))
+{
+}
+
+template <typename Graph>
 IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph, Segment const & startSegment,
-                                                        Segment const & endSegment,
-                                                        bool twoThreadsReady)
+                                                        Segment const & endSegment)
   : m_graph(graph)
   , m_startSegment(startSegment)
   , m_endSegment(endSegment)
-  , m_reconstructedFakeJointsMtx(twoThreadsReady ? std::optional<std::mutex>() : std::nullopt)
+  , m_reconstructedFakeJointsMtx(GetOptionalMutex(graph))
 {
   Init(m_startSegment, m_endSegment);
 }
 
 template <typename Graph>
-IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph,
-                                                        Segment const & startSegment)
-  : m_graph(graph), m_startSegment(startSegment), m_reconstructedFakeJointsMtx(std::nullopt)
+IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph, Segment const & startSegment)
+  : m_graph(graph)
+  , m_startSegment(startSegment)
+  , m_reconstructedFakeJointsMtx(GetOptionalMutex(graph))
 {
   InitEnding(startSegment, true /* start */);
 

@@ -20,10 +20,7 @@ public:
 
   using Parents = ska::bytell_hash_map<Vertex, Vertex>;
 
-  constexpr AStarGraph(bool multithreadingReady = false)
-    : m_twoThreadsReady(multithreadingReady)
-  {
-  }
+  constexpr AStarGraph() {}
   virtual ~AStarGraph() = default;
 
   virtual Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to, bool isOutgoing) = 0;
@@ -40,10 +37,7 @@ public:
 
   virtual Weight GetAStarWeightEpsilon();
 
-  constexpr bool IsTwoThreadsReady() const { return m_twoThreadsReady;}
-
-private:
-  bool const m_twoThreadsReady;
+  virtual bool IsTwoThreadsReady() const { return false; }
 };
 
 template <typename VertexType, typename EdgeType, typename WeightType>
