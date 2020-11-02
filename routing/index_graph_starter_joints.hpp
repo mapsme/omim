@@ -32,9 +32,9 @@ template <typename Graph>
 class IndexGraphStarterJoints : public AStarGraph<JointSegment, JointEdge, RouteWeight>
 {
 public:
-  /// \note This class may be used in two modes. For one thread A* nd two thread A*.
+  /// \note This class may be used in two modes. For one thread A* and two threads A*.
   /// To create an instance of the class with synchronization staff |twoThreadsReady|
-  /// Should be set to true. It means the class is ready for calls HeuristicCostEstimate(),
+  /// should be set to true. It means the class is ready for calls HeuristicCostEstimate(),
   /// GetOutgoingEdgesList() and GetIngoingEdgesList() from two different threads.
   explicit IndexGraphStarterJoints(Graph & graph)
     : m_graph(graph), m_reconstructedFakeJointsMtx(std::nullopt)
