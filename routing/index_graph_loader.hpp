@@ -27,9 +27,11 @@ public:
   // Because several cameras can lie on one segment we return vector of them.
   virtual std::vector<RouteSegment::SpeedCamera> GetSpeedCameraInfo(Segment const & segment) = 0;
   virtual void Clear() = 0;
+  virtual bool IsTwoThreadsReady() const = 0;
 
   static std::unique_ptr<IndexGraphLoader> Create(
-      VehicleType vehicleType, bool loadAltitudes, std::shared_ptr<NumMwmIds> numMwmIds,
+      VehicleType vehicleType, bool loadAltitudes, bool twoThreadsReady,
+      std::shared_ptr<NumMwmIds> numMwmIds,
       std::shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
       std::shared_ptr<EdgeEstimator> estimator, DataSource & dataSource,
       RoutingOptions routingOptions = RoutingOptions());

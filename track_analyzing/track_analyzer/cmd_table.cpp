@@ -407,7 +407,8 @@ void CmdTagsTable(string const & filepath, string const & trackExtension, String
     Geometry geometry(GeometryLoader::CreateFromFile(mwmFile, vehicleModel));
     auto const vehicleType = VehicleType::Car;
     auto const edgeEstimator = EdgeEstimator::Create(vehicleType, *vehicleModel, nullptr /* trafficStash */);
-    auto indexGraphLoader = IndexGraphLoader::Create(vehicleType, false /* loadAltitudes */, numMwmIds,
+    auto indexGraphLoader = IndexGraphLoader::Create(vehicleType, false /* loadAltitudes */,
+                                                     false /* twoThreadsReady */, numMwmIds,
                                                      carModelFactory, edgeEstimator, dataSource);
 
     platform::CountryFile const countryFile(mwmName);

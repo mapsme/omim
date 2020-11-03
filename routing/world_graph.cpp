@@ -14,6 +14,7 @@ void WorldGraph::GetEdgeList(Segment const & vertex, bool isOutgoing, bool useRo
 void WorldGraph::GetTwins(Segment const & segment, bool isOutgoing, bool useRoutingOptions,
                           std::vector<SegmentEdge> & edges)
 {
+  // @TODO It should be ready for calling form two threads if IsTwoThreadsReady() returns true.
   std::vector<Segment> twins;
   GetTwinsInner(segment, isOutgoing, twins);
 

@@ -22,7 +22,6 @@ SingleVehicleWorldGraph::AStarParents<JointSegment>::kEmpty = {};
 SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> crossMwmGraph,
                                                  unique_ptr<IndexGraphLoader> loader,
                                                  shared_ptr<EdgeEstimator> estimator,
-                                                 bool twoThreadsReady,
                                                  MwmHierarchyHandler && hierarchyHandler)
   : m_crossMwmGraph(move(crossMwmGraph))
   , m_loader(move(loader))
@@ -213,6 +212,7 @@ RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, ui
 void SingleVehicleWorldGraph::GetTwinsInner(Segment const & segment, bool isOutgoing,
                                             vector<Segment> & twins)
 {
+  // @TODO It should be ready for calling form two threads if IsTwoThreadsReady() returns true.
   m_crossMwmGraph->GetTwins(segment, isOutgoing, twins);
 }
 

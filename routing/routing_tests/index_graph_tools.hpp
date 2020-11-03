@@ -143,6 +143,8 @@ public:
 
   void Clear() override;
 
+  bool IsTwoThreadsReady() const override { return false; }
+
   void AddGraph(NumMwmId mwmId, std::unique_ptr<IndexGraph> graph);
 
 private:

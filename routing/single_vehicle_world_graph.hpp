@@ -31,7 +31,6 @@ public:
   SingleVehicleWorldGraph(std::unique_ptr<CrossMwmGraph> crossMwmGraph,
                           std::unique_ptr<IndexGraphLoader> loader,
                           std::shared_ptr<EdgeEstimator> estimator,
-                          bool twoThreadsReady,
                           MwmHierarchyHandler && hierarchyHandler);
 
   // WorldGraph overrides:
@@ -97,6 +96,7 @@ public:
   bool AreWavesConnectible(Parents<JointSegment> & forwardParents, JointSegment const & commonVertex,
                            Parents<JointSegment> & backwardParents,
                            std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter) override;
+  bool IsTwoThreadsReady() const override { return m_loader->IsTwoThreadsReady(); }
   // @}
 
   // This method should be used for tests only

@@ -128,7 +128,7 @@ private:
                                m2::PointD const & startDirection,
                                RouterDelegate const & delegate, Route & route);
 
-  std::unique_ptr<WorldGraph> MakeWorldGraph();
+  std::unique_ptr<WorldGraph> MakeWorldGraph(bool isTwoThreadsReady);
 
   /// \brief Removes all roads from |roads| which goes to dead ends and all road which
   /// is not good according to |worldGraph|. For car routing there are roads with hwtag nocar as well.

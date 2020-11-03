@@ -88,6 +88,7 @@ void CrossMwmGraph::DeserializeTransitTransitions(vector<NumMwmId> const & mwmId
 
 void CrossMwmGraph::GetTwins(Segment const & s, bool isOutgoing, vector<Segment> & twins)
 {
+  // @TODO. This method may be called from two threads. It should be ready for it.
   ASSERT(IsTransition(s, isOutgoing),
         ("The segment", s, "is not a transition segment for isOutgoing ==", isOutgoing));
   // Note. There's an extremely rare case when a segment is ingoing and outgoing at the same time.

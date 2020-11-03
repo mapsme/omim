@@ -305,7 +305,7 @@ IndexRouter::IndexRouter(VehicleType vehicleType, bool loadAltitudes,
 
 unique_ptr<WorldGraph> IndexRouter::MakeSingleMwmWorldGraph()
 {
-  auto worldGraph = MakeWorldGraph();
+  auto worldGraph = MakeWorldGraph(false /* twoThreadsReady */);
   worldGraph->SetMode(WorldGraphMode::SingleMwm);
   return worldGraph;
 }
@@ -585,12 +585,14 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     return RouterResultCode::NeedMoreMaps;
 
   TrafficStash::Guard guard(m_trafficStash);
-  unique_ptr<WorldGraph> graph = MakeWorldGraph();
+  unique_ptr<WorldGraph> graph = MakeWorldGraph(true /* isTwoThreadsReady */);
 
   vector<Segment> segments;
 
   vector<Segment> startSegments;
   bool startSegmentIsAlmostCodirectionalDirection = false;
+  // @TODO |startSegments| and |finishSegments| may be found in two threads with the help of
+  // |graph| with two threads support.
   bool const foundStart =
       FindBestSegments(checkpoints.GetPointFrom(), startDirection, true /* isOutgoing */, *graph,
                        startSegments, startSegmentIsAlmostCodirectionalDirection);
@@ -890,7 +892,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
 {
   base::Timer timer;
   TrafficStash::Guard guard(m_trafficStash);
-  auto graph = MakeWorldGraph();
+  auto graph = MakeWorldGraph(false /* isTwoThreadsReady */);
   graph->SetMode(WorldGraphMode::NoLeaps);
 
   vector<Segment> startSegments;
@@ -981,7 +983,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   return RouterResultCode::NoError;
 }
 
-unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph()
+unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph(bool isTwoThreadsReady)
 {
   RoutingOptions routingOptions;
   if (m_vehicleType == VehicleType::Car)
@@ -997,13 +999,13 @@ unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph()
 
   auto indexGraphLoader = IndexGraphLoader::Create(
       m_vehicleType == VehicleType::Transit ? VehicleType::Pedestrian : m_vehicleType,
-      m_loadAltitudes, m_numMwmIds, m_vehicleModelFactory, m_estimator, m_dataSource,
-      routingOptions);
+      m_loadAltitudes, isTwoThreadsReady, m_numMwmIds, m_vehicleModelFactory,
+      m_estimator, m_dataSource, routingOptions);
 
   if (m_vehicleType != VehicleType::Transit)
   {
     auto graph = make_unique<SingleVehicleWorldGraph>(
-        move(crossMwmGraph), move(indexGraphLoader), m_estimator, false /* twoThreadsReady */,
+        move(crossMwmGraph), move(indexGraphLoader), m_estimator,
         MwmHierarchyHandler(m_numMwmIds, m_countryParentNameGetterFn));
     graph->SetRoutingOptions(routingOptions);
     return graph;
