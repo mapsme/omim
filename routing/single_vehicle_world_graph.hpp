@@ -31,6 +31,7 @@ public:
   SingleVehicleWorldGraph(std::unique_ptr<CrossMwmGraph> crossMwmGraph,
                           std::unique_ptr<IndexGraphLoader> loader,
                           std::shared_ptr<EdgeEstimator> estimator,
+                          bool twoThreadsReady,
                           MwmHierarchyHandler && hierarchyHandler);
 
   // WorldGraph overrides:

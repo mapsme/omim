@@ -108,6 +108,8 @@ public:
                                    Parents<JointSegment> & backwardParents,
                                    std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter);
 
+  virtual bool IsTwoThreadsReady() const { return false; }
+
   /// \returns transit-specific information for segment. For nontransit segments returns nullptr.
   virtual std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) = 0;
 

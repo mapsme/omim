@@ -57,8 +57,7 @@ public:
   // vertex. true: place exactly one fake edge to the m_segment indicated with m_forward. false:
   // place two fake edges to the m_segment with both directions.
   IndexGraphStarter(FakeEnding const & startEnding, FakeEnding const & finishEnding,
-                    uint32_t fakeNumerationStart, bool strictForward, bool twoThreadsReady,
-                    WorldGraph & graph);
+                    uint32_t fakeNumerationStart, bool strictForward, WorldGraph & graph);
 
   void Append(FakeEdgesContainer const & container);
 
@@ -143,6 +142,8 @@ public:
   }
 
   RouteWeight GetAStarWeightEpsilon() override;
+
+  bool IsTwoThreadsReady() const override { return m_graph.IsTwoThreadsReady(); }
   // @}
 
   void GetEdgesList(Vertex const & vertex, bool isOutgoing, std::vector<SegmentEdge> & edges) const

@@ -653,8 +653,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     uint32_t const fakeNumerationStart =
         starter ? starter->GetNumFakeSegments() + startIdx : startIdx;
     IndexGraphStarter subrouteStarter(startFakeEnding, finishFakeEnding, fakeNumerationStart,
-                                      isStartSegmentStrictForward, false /* twoThreadsReady */,
-                                      *graph);
+                                      isStartSegmentStrictForward, *graph);
 
     if (m_guides.IsAttached())
     {
@@ -913,7 +912,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   FakeEnding dummy{};
   IndexGraphStarter starter(MakeFakeEnding(startSegments, pointFrom, *graph), dummy,
                             m_lastFakeEdges->GetNumFakeEdges(), bestSegmentIsAlmostCodirectional,
-                            false /* twoThreadsReady */, *graph);
+                            *graph);
 
   starter.Append(*m_lastFakeEdges);
 
@@ -1004,7 +1003,7 @@ unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph()
   if (m_vehicleType != VehicleType::Transit)
   {
     auto graph = make_unique<SingleVehicleWorldGraph>(
-        move(crossMwmGraph), move(indexGraphLoader), m_estimator,
+        move(crossMwmGraph), move(indexGraphLoader), m_estimator, false /* twoThreadsReady */,
         MwmHierarchyHandler(m_numMwmIds, m_countryParentNameGetterFn));
     graph->SetRoutingOptions(routingOptions);
     return graph;

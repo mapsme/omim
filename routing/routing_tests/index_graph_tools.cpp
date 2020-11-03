@@ -420,7 +420,8 @@ unique_ptr<SingleVehicleWorldGraph> BuildWorldGraph(unique_ptr<TestGeometryLoade
   auto indexLoader = make_unique<TestIndexGraphLoader>();
   indexLoader->AddGraph(kTestNumMwmId, move(graph));
   return make_unique<SingleVehicleWorldGraph>(nullptr /* crossMwmGraph */, move(indexLoader),
-                                              estimator, MwmHierarchyHandler(nullptr, nullptr));
+                                              estimator, false /* twoThreadsReady */,
+                                              MwmHierarchyHandler(nullptr, nullptr));
 }
 
 unique_ptr<IndexGraph> BuildIndexGraph(unique_ptr<TestGeometryLoader> geometryLoader,
@@ -442,7 +443,8 @@ unique_ptr<SingleVehicleWorldGraph> BuildWorldGraph(unique_ptr<ZeroGeometryLoade
   auto indexLoader = make_unique<TestIndexGraphLoader>();
   indexLoader->AddGraph(kTestNumMwmId, move(graph));
   return make_unique<SingleVehicleWorldGraph>(nullptr /* crossMwmGraph */, move(indexLoader),
-                                              estimator, MwmHierarchyHandler(nullptr, nullptr));
+                                              estimator, false /* twoThreadsReady */,
+                                              MwmHierarchyHandler(nullptr, nullptr));
 }
 
 unique_ptr<TransitWorldGraph> BuildWorldGraph(unique_ptr<TestGeometryLoader> geometryLoader,
@@ -620,7 +622,7 @@ unique_ptr<IndexGraphStarter> MakeStarter(FakeEnding const & start, FakeEnding c
                                           WorldGraph & graph)
 {
   return make_unique<IndexGraphStarter>(start, finish, 0 /* fakeNumerationStart */,
-                                        false /* strictForward */, false /* twoThreadsReady */, graph);
+                                        false /* strictForward */, graph);
 }
 
 time_t GetUnixtimeByDate(uint16_t year, Month month, uint8_t monthDay, uint8_t hours,

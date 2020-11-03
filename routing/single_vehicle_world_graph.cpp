@@ -22,6 +22,7 @@ SingleVehicleWorldGraph::AStarParents<JointSegment>::kEmpty = {};
 SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> crossMwmGraph,
                                                  unique_ptr<IndexGraphLoader> loader,
                                                  shared_ptr<EdgeEstimator> estimator,
+                                                 bool twoThreadsReady,
                                                  MwmHierarchyHandler && hierarchyHandler)
   : m_crossMwmGraph(move(crossMwmGraph))
   , m_loader(move(loader))
