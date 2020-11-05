@@ -117,7 +117,8 @@ private:
 
   RouterResultCode DoCalculateRoute(Checkpoints const & checkpoints,
                                     m2::PointD const & startDirection,
-                                    RouterDelegate const & delegate, Route & route);
+                                    RouterDelegate const & delegate, bool twoThreadsReady,
+                                    Route & route);
   RouterResultCode CalculateSubroute(Checkpoints const & checkpoints, size_t subrouteIdx,
                                      RouterDelegate const & delegate,
                                      std::shared_ptr<AStarProgress> const & progress,
@@ -128,7 +129,7 @@ private:
                                m2::PointD const & startDirection,
                                RouterDelegate const & delegate, Route & route);
 
-  std::unique_ptr<WorldGraph> MakeWorldGraph(bool isTwoThreadsReady);
+  std::unique_ptr<WorldGraph> MakeWorldGraph(bool twoThreadsReady);
 
   /// \brief Removes all roads from |roads| which goes to dead ends and all road which
   /// is not good according to |worldGraph|. For car routing there are roads with hwtag nocar as well.

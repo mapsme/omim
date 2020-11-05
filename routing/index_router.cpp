@@ -407,7 +407,15 @@ RouterResultCode IndexRouter::CalculateRoute(Checkpoints const & checkpoints,
       }
     }
 
-    return DoCalculateRoute(checkpoints, startDirection, delegate, route);
+    RouterResultCode lastReturn = RouterResultCode::InternalError;
+    for (auto twoThreadsReady : {false, true, true, false})
+    {
+      LOG(LINFO, ("---------------------", twoThreadsReady ? "Two threads" : "One threads", "---------------------"));
+      lastReturn = DoCalculateRoute(checkpoints, startDirection, delegate, twoThreadsReady, route);
+      LOG(LINFO, ("---------------------", twoThreadsReady ? "Two threads" : "One threads", "END---------------------"));
+    }
+//    return DoCalculateRoute(checkpoints, startDirection, delegate, false, route);
+    return lastReturn;
   }
   catch (RootException const & e)
   {
@@ -552,7 +560,8 @@ void IndexRouter::AddGuidesOsmConnectionsToGraphStarter(size_t checkpointIdxFrom
 
 RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
                                                m2::PointD const & startDirection,
-                                               RouterDelegate const & delegate, Route & route)
+                                               RouterDelegate const & delegate,
+                                               bool twoThreadsReady, Route & route)
 {
   m_lastRoute.reset();
   // MwmId used for guides segments in RedressRoute().
@@ -983,7 +992,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   return RouterResultCode::NoError;
 }
 
-unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph(bool isTwoThreadsReady)
+unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph(bool twoThreadsReady)
 {
   RoutingOptions routingOptions;
   if (m_vehicleType == VehicleType::Car)
@@ -999,7 +1008,7 @@ unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph(bool isTwoThreadsReady)
 
   auto indexGraphLoader = IndexGraphLoader::Create(
       m_vehicleType == VehicleType::Transit ? VehicleType::Pedestrian : m_vehicleType,
-      m_loadAltitudes, isTwoThreadsReady, m_numMwmIds, m_vehicleModelFactory,
+      m_loadAltitudes, twoThreadsReady, m_numMwmIds, m_vehicleModelFactory,
       m_estimator, m_dataSource, routingOptions);
 
   if (m_vehicleType != VehicleType::Transit)
