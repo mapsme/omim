@@ -71,7 +71,7 @@ TrackMatcher::TrackMatcher(storage::Storage const & storage, NumMwmId mwmId,
   m_graph = make_unique<IndexGraph>(
       make_shared<Geometry>(GeometryLoader::Create(m_dataSource, handle, m_vehicleModel,
                                                    AttrLoader(m_dataSource, handle),
-                                                   false /* loadAltitudes */)),
+                                                   false /* loadAltitudes */, false /* twoThreadsReady */)),
       EdgeEstimator::Create(VehicleType::Car, *m_vehicleModel, nullptr /* trafficStash */));
 
   DeserializeIndexGraph(*handle.GetValue(), VehicleType::Car, *m_graph);

@@ -108,13 +108,14 @@ class GeometryLoader
 public:
   virtual ~GeometryLoader() = default;
 
-  virtual void Load(uint32_t featureId, RoadGeometry & road) = 0;
+  virtual void Load(uint32_t featureId, RoadGeometry & road, bool isOutgoing) = 0;
 
   // handle should be alive: it is caller responsibility to check it.
   static std::unique_ptr<GeometryLoader> Create(DataSource const & dataSource,
                                                 MwmSet::MwmHandle const & handle,
                                                 std::shared_ptr<VehicleModelInterface> vehicleModel,
-                                                AttrLoader && attrLoader, bool loadAltitudes);
+                                                AttrLoader && attrLoader, bool loadAltitudes,
+                                                bool twoThreadsReady);
 
   /// This is for stand-alone work.
   /// Use in generator_tool and unit tests.
@@ -148,10 +149,14 @@ public:
   }
 
 private:
+  bool IsTwoThreadsReady() const { return m_featureIdToRoadBwd != nullptr; }
+
   using RoutingFifoCache =
       FifoCache<uint32_t, RoadGeometry, ska::bytell_hash_map<uint32_t, RoadGeometry>>;
 
   std::unique_ptr<GeometryLoader> m_loader;
   std::unique_ptr<RoutingFifoCache> m_featureIdToRoad;
+  // Geometry cache |m_featureIdToRoadBwd| is used from the thread of backward wave of A*.
+  std::unique_ptr<RoutingFifoCache> m_featureIdToRoadBwd;
 };
 }  // namespace routing

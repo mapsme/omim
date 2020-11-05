@@ -211,7 +211,7 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateGeometry(NumMwmId
   auto & graph = m_graphs[numMwmId];
   graph.m_geometry = make_shared<Geometry>(
       GeometryLoader::Create(m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle),
-                             m_loadAltitudes), IsTwoThreadsReady());
+                             m_loadAltitudes, IsTwoThreadsReady()), IsTwoThreadsReady());
   return graph;
 }
 

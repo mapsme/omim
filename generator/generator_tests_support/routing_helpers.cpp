@@ -46,8 +46,9 @@ void ReEncodeOsmIdsToFeatureIdsMapping(std::string const & mappingContent, std::
 
 namespace routing
 {
-void TestGeometryLoader::Load(uint32_t featureId, RoadGeometry & road)
+void TestGeometryLoader::Load(uint32_t featureId, RoadGeometry & road, bool isOutgoing)
 {
+  CHECK(isOutgoing, ("TestGeometryLoader() is not ready for two threads feature parsing."));
   auto const it = m_roads.find(featureId);
   if (it == m_roads.cend())
     return;

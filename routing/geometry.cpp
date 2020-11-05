@@ -24,8 +24,10 @@ using namespace std;
 namespace
 {
 // @TODO(bykoianko) Consider setting cache size based on available memory.
-// Maximum road geometry cache size in items.
+// Maximum road geometry cache size in items in case twoThreadsReady == false.
 size_t constexpr kRoadsCacheSize = 5000;
+// Maximum road geometry cache size in items in case twoThreadsReady == true.
+size_t constexpr kRoadsCacheSizeTwoCaches = 3500;
 
 double CalcFerryDurationHours(string const & durationHours, double roadLenKm)
 {
@@ -61,15 +63,18 @@ class GeometryLoaderImpl final : public GeometryLoader
 public:
   GeometryLoaderImpl(DataSource const & dataSource, MwmSet::MwmHandle const & handle,
                      shared_ptr<VehicleModelInterface> vehicleModel, AttrLoader attrLoader,
-                     bool loadAltitudes);
+                     bool loadAltitudes, bool twoThreadsReady);
 
   // GeometryLoader overrides:
-  void Load(uint32_t featureId, RoadGeometry & road) override;
+  void Load(uint32_t featureId, RoadGeometry & road, bool isOutgoing) override;
 
 private:
+  bool IsTwoThreadsReady() const { return m_guardBwd != nullptr; }
+
   shared_ptr<VehicleModelInterface> m_vehicleModel;
   AttrLoader m_attrLoader;
   FeaturesLoaderGuard m_guard;
+  unique_ptr<FeaturesLoaderGuard> m_guardBwd;
   string const m_country;
   feature::AltitudeLoader m_altitudeLoader;
   bool const m_loadAltitudes;
@@ -78,10 +83,13 @@ private:
 GeometryLoaderImpl::GeometryLoaderImpl(DataSource const & dataSource,
                                        MwmSet::MwmHandle const & handle,
                                        shared_ptr<VehicleModelInterface> vehicleModel,
-                                       AttrLoader attrLoader, bool loadAltitudes)
+                                       AttrLoader attrLoader, bool loadAltitudes,
+                                       bool twoThreadsReady)
   : m_vehicleModel(move(vehicleModel))
   , m_attrLoader(move(attrLoader))
   , m_guard(dataSource, handle.GetId())
+  , m_guardBwd(twoThreadsReady ? make_unique<FeaturesLoaderGuard>(dataSource, handle.GetId())
+                               : nullptr)
   , m_country(handle.GetInfo()->GetCountryName())
   , m_altitudeLoader(dataSource, handle.GetId())
   , m_loadAltitudes(loadAltitudes)
@@ -92,21 +100,31 @@ GeometryLoaderImpl::GeometryLoaderImpl(DataSource const & dataSource,
   CHECK(m_attrLoader.m_maxspeeds, ());
 }
 
-void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road)
+void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road, bool isOutgoing)
 {
-  auto feature = m_guard.GetFeatureByIndex(featureId);
+  unique_ptr<FeatureType> feature;
+  if (IsTwoThreadsReady())
+  {
+    feature = isOutgoing ? m_guard.GetFeatureByIndex(featureId)
+                         : m_guardBwd->GetFeatureByIndex(featureId);
+  }
+  else
+  {
+    feature = m_guard.GetFeatureByIndex(featureId);
+  }
   if (!feature)
     MYTHROW(RoutingException, ("Feature", featureId, "not found in ", m_country));
 
   feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
 
   geometry::Altitudes const * altitudes = nullptr;
-  if (m_loadAltitudes)
-    altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature->GetPointsCount()));
+  // TODO Altitude should be refactored to be able to be accessible from two threads.
+//  if (m_loadAltitudes)
+//    altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature->GetPointsCount()));
 
   road.Load(*m_vehicleModel, *feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
             m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
-  m_altitudeLoader.ClearCache();
+//  m_altitudeLoader.ClearCache();
 }
 
 // FileGeometryLoader ------------------------------------------------------------------------------
@@ -116,7 +134,7 @@ public:
   FileGeometryLoader(string const & fileName, shared_ptr<VehicleModelInterface> vehicleModel);
 
   // GeometryLoader overrides:
-  void Load(uint32_t featureId, RoadGeometry & road) override;
+  void Load(uint32_t featureId, RoadGeometry & road, bool isOutgoing) override;
 
 private:
   FeaturesVectorTest m_featuresVector;
@@ -149,8 +167,9 @@ FileGeometryLoader::FileGeometryLoader(string const & fileName,
   CHECK(m_vehicleModel, ());
 }
 
-void FileGeometryLoader::Load(uint32_t featureId, RoadGeometry & road)
+void FileGeometryLoader::Load(uint32_t featureId, RoadGeometry & road, bool isOutgoing)
 {
+  CHECK(isOutgoing, ("FileGeometryLoader() is not ready for two threads feature parsing."));
   auto feature = m_featuresVector.GetVector().GetByIndex(featureId);
   CHECK(feature, ());
   feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
@@ -255,9 +274,18 @@ double RoadGeometry::GetRoadLengthM() const
 // Geometry ----------------------------------------------------------------------------------------
 Geometry::Geometry(std::unique_ptr<GeometryLoader> loader, bool twoThreadsReady)
   : m_loader(move(loader))
-    , m_featureIdToRoad(make_unique<RoutingFifoCache>(
-        kRoadsCacheSize,
-        [this](uint32_t featureId, RoadGeometry & road) { m_loader->Load(featureId, road); }))
+  , m_featureIdToRoad(
+        make_unique<RoutingFifoCache>(twoThreadsReady ? kRoadsCacheSizeTwoCaches : kRoadsCacheSize,
+                                      [this](uint32_t featureId, RoadGeometry & road) {
+                                        m_loader->Load(featureId, road, true /* isOutgoing */);
+                                      }))
+  , m_featureIdToRoadBwd(twoThreadsReady
+                             ? make_unique<RoutingFifoCache>(
+                                   kRoadsCacheSizeTwoCaches,
+                                   [this](uint32_t featureId, RoadGeometry & road) {
+                                     m_loader->Load(featureId, road, false /* isOutgoing */);
+                                   })
+                             : nullptr)
 {
   CHECK(m_loader, ());
 }
@@ -267,6 +295,11 @@ RoadGeometry const & Geometry::GetRoad(uint32_t featureId, bool isOutgoing)
   ASSERT(m_featureIdToRoad, ());
   ASSERT(m_loader, ());
 
+  if (IsTwoThreadsReady())
+  {
+    return isOutgoing ? m_featureIdToRoad->GetValue(featureId)
+                      : m_featureIdToRoadBwd->GetValue(featureId);
+  }
   return m_featureIdToRoad->GetValue(featureId);
 }
 
@@ -274,11 +307,11 @@ RoadGeometry const & Geometry::GetRoad(uint32_t featureId, bool isOutgoing)
 unique_ptr<GeometryLoader> GeometryLoader::Create(
     DataSource const & dataSource, MwmSet::MwmHandle const & handle,
     std::shared_ptr<VehicleModelInterface> vehicleModel, AttrLoader && attrLoader,
-    bool loadAltitudes)
+    bool loadAltitudes, bool twoThreadsReady)
 {
   CHECK(handle.IsAlive(), ());
   return make_unique<GeometryLoaderImpl>(dataSource, handle, vehicleModel, move(attrLoader),
-                                         loadAltitudes);
+                                         loadAltitudes, twoThreadsReady);
 }
 
 // static

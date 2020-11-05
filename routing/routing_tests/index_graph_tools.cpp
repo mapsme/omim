@@ -101,8 +101,10 @@ void NoUTurnRestrictionTest::TestRouteGeom(Segment const & start, Segment const 
 }
 
 // ZeroGeometryLoader ------------------------------------------------------------------------------
-void ZeroGeometryLoader::Load(uint32_t /* featureId */, routing::RoadGeometry & road)
+void ZeroGeometryLoader::Load(uint32_t /* featureId */, routing::RoadGeometry & road,
+                              bool isOutgoing)
 {
+  CHECK(isOutgoing, ("ZeroGeometryLoader() is not ready for two threads feature parsing."));
   // Any valid road will do.
   auto const points = routing::RoadGeometry::Points({{0.0, 0.0}, {0.0, 1.0}});
   road = RoadGeometry(true /* oneWay */, 1.0 /* weightSpeedKMpH */, 1.0 /* etaSpeedKMpH */, points);
