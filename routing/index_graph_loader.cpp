@@ -209,8 +209,9 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateGeometry(NumMwmId
 
   base::OptionalLockGuard guard(m_graphsMtx);
   auto & graph = m_graphs[numMwmId];
-  graph.m_geometry = make_shared<Geometry>(GeometryLoader::Create(
-      m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle), m_loadAltitudes));
+  graph.m_geometry = make_shared<Geometry>(
+      GeometryLoader::Create(m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle),
+                             m_loadAltitudes), IsTwoThreadsReady());
   return graph;
 }
 

@@ -60,8 +60,8 @@ class GeometryLoaderImpl final : public GeometryLoader
 {
 public:
   GeometryLoaderImpl(DataSource const & dataSource, MwmSet::MwmHandle const & handle,
-                     shared_ptr<VehicleModelInterface> vehicleModel,
-                     AttrLoader attrLoader, bool loadAltitudes);
+                     shared_ptr<VehicleModelInterface> vehicleModel, AttrLoader attrLoader,
+                     bool loadAltitudes);
 
   // GeometryLoader overrides:
   void Load(uint32_t featureId, RoadGeometry & road) override;
@@ -253,8 +253,8 @@ double RoadGeometry::GetRoadLengthM() const
 }
 
 // Geometry ----------------------------------------------------------------------------------------
-Geometry::Geometry(unique_ptr<GeometryLoader> loader)
-    : m_loader(move(loader))
+Geometry::Geometry(std::unique_ptr<GeometryLoader> loader, bool twoThreadsReady)
+  : m_loader(move(loader))
     , m_featureIdToRoad(make_unique<RoutingFifoCache>(
         kRoadsCacheSize,
         [this](uint32_t featureId, RoadGeometry & road) { m_loader->Load(featureId, road); }))
@@ -271,11 +271,10 @@ RoadGeometry const & Geometry::GetRoad(uint32_t featureId, bool isOutgoing)
 }
 
 // static
-unique_ptr<GeometryLoader> GeometryLoader::Create(DataSource const & dataSource,
-                                                  MwmSet::MwmHandle const & handle,
-                                                  shared_ptr<VehicleModelInterface> vehicleModel,
-                                                  AttrLoader && attrLoader,
-                                                  bool loadAltitudes)
+unique_ptr<GeometryLoader> GeometryLoader::Create(
+    DataSource const & dataSource, MwmSet::MwmHandle const & handle,
+    std::shared_ptr<VehicleModelInterface> vehicleModel, AttrLoader && attrLoader,
+    bool loadAltitudes)
 {
   CHECK(handle.IsAlive(), ());
   return make_unique<GeometryLoaderImpl>(dataSource, handle, vehicleModel, move(attrLoader),

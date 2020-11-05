@@ -91,6 +91,7 @@ void SingleVehicleWorldGraph::GetEdgeList(
     astar::VertexData<Segment, RouteWeight> const & vertexData, bool isOutgoing,
     bool useRoutingOptions, bool useAccessConditional, vector<SegmentEdge> & edges)
 {
+  // @TODO It should be ready for calling form two threads if IsTwoThreadsReady() returns true.
   CHECK_NOT_EQUAL(m_mode, WorldGraphMode::LeapsOnly, ());
 
   ASSERT(m_parentsForSegments.forward && m_parentsForSegments.backward,
@@ -114,7 +115,7 @@ void SingleVehicleWorldGraph::GetEdgeList(
   if (!parent.IsRealSegment())
     return;
 
-  ASSERT(m_parentsForJoints.forward && m_parentsForJoints.backward,
+  ASSERT(isOutgoing ? m_parentsForJoints.forward : m_parentsForJoints.backward,
          ("m_parentsForJoints was not initialized in SingleVehicleWorldGraph."));
   auto & parents = isOutgoing ? *m_parentsForJoints.forward : *m_parentsForJoints.backward;
   auto & indexGraph = GetIndexGraph(parent.GetMwmId());

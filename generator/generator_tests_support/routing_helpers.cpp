@@ -98,7 +98,7 @@ std::unique_ptr<IndexGraph> BuildIndexGraph(std::unique_ptr<TestGeometryLoader> 
                                             std::vector<Joint> const & joints)
 {
   auto graph = std::make_unique<IndexGraph>(std::make_shared<Geometry>(std::move(geometryLoader)),
-                                       estimator);
+                                            estimator);
   graph->Import(joints);
   return graph;
 }

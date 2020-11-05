@@ -114,8 +114,7 @@ public:
   static std::unique_ptr<GeometryLoader> Create(DataSource const & dataSource,
                                                 MwmSet::MwmHandle const & handle,
                                                 std::shared_ptr<VehicleModelInterface> vehicleModel,
-                                                AttrLoader && attrLoader,
-                                                bool loadAltitudes);
+                                                AttrLoader && attrLoader, bool loadAltitudes);
 
   /// This is for stand-alone work.
   /// Use in generator_tool and unit tests.
@@ -135,7 +134,7 @@ class Geometry final
 {
 public:
   Geometry() = default;
-  explicit Geometry(std::unique_ptr<GeometryLoader> loader);
+  explicit Geometry(std::unique_ptr<GeometryLoader> loader, bool twoThreadsReady = false);
 
   /// \note The reference returned by the method is valid until the next call of GetRoad()
   /// of GetPoint() methods.

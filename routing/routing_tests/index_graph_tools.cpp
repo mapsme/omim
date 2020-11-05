@@ -438,7 +438,7 @@ unique_ptr<SingleVehicleWorldGraph> BuildWorldGraph(unique_ptr<ZeroGeometryLoade
                                                     vector<Joint> const & joints)
 {
   auto graph = make_unique<IndexGraph>(make_shared<Geometry>(move(geometryLoader)), estimator);
-  
+
   graph->Import(joints);
   auto indexLoader = make_unique<TestIndexGraphLoader>();
   indexLoader->AddGraph(kTestNumMwmId, move(graph));
