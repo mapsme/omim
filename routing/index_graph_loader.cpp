@@ -87,7 +87,7 @@ IndexGraphLoaderImpl::IndexGraphLoaderImpl(
   , m_numMwmIds(move(numMwmIds))
   , m_vehicleModelFactory(move(vehicleModelFactory))
   , m_estimator(move(estimator))
-  , m_graphsMtx(isTwoThreadsReady ? std::optional<std::mutex>() : std::nullopt)
+  , m_graphsMtx(isTwoThreadsReady ? std::make_optional<std::mutex>() : std::nullopt)
   , m_avoidRoutingOptions(routingOptions)
 {
   CHECK(m_numMwmIds, ());
@@ -198,16 +198,13 @@ vector<RouteSegment::SpeedCamera> IndexGraphLoaderImpl::GetSpeedCameraInfo(Segme
 IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateGeometry(NumMwmId numMwmId)
 {
   platform::CountryFile const & file = m_numMwmIds->GetFile(numMwmId);
-  // @TODO No protection!!!!!
   MwmSet::MwmHandle handle = m_dataSource.GetMwmHandleByCountryFile(file);
   if (!handle.IsAlive())
     MYTHROW(RoutingException, ("Can't get mwm handle for", file));
 
-  // @TODO No protection!!!!!
   shared_ptr<VehicleModelInterface> vehicleModel =
       m_vehicleModelFactory->GetVehicleModelForCountry(file.GetName());
 
-  base::OptionalLockGuard guard(m_graphsMtx);
   auto & graph = m_graphs[numMwmId];
   graph.m_geometry = make_shared<Geometry>(
       GeometryLoader::Create(m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle),

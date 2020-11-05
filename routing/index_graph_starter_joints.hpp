@@ -245,7 +245,7 @@ private:
 template <typename Graph>
 std::optional<std::mutex> GetOptionalMutex(Graph const & graph)
 {
-  return graph.IsTwoThreadsReady() ? std::optional<std::mutex>() : std::nullopt;
+  return graph.IsTwoThreadsReady() ? std::make_optional<std::mutex>() : std::nullopt;
 }
 
 template <typename Graph>

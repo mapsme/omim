@@ -31,7 +31,8 @@ void TestAStar(UndirectedGraph & graph, vector<unsigned> const & expectedRoute, 
   TEST_ALMOST_EQUAL_ULPS(expectedDistance, actualRoute.m_distance, ());
 
   actualRoute.m_path.clear();
-  TEST_EQUAL(Algorithm::Result::OK, algo.FindPathBidirectional(params, actualRoute), ());
+  TEST_EQUAL(Algorithm::Result::OK,
+             algo.FindPathBidirectional(false /* useTwoThreads */, params, actualRoute), ());
   TEST_EQUAL(expectedRoute, actualRoute.m_path, ());
   TEST_ALMOST_EQUAL_ULPS(expectedDistance, actualRoute.m_distance, ());
 }
@@ -75,7 +76,7 @@ UNIT_TEST(AStarAlgorithm_CheckLength)
   TEST_EQUAL(result, Algorithm::Result::NoPath, ());
 
   routingResult = {};
-  result = algo.FindPathBidirectional(params, routingResult);
+  result = algo.FindPathBidirectional(false /* useTwoThreads */, params, routingResult);
   // Best route weight is 23 so we expect to find no route with restriction |weight < 23|.
   TEST_EQUAL(result, Algorithm::Result::NoPath, ());
 }

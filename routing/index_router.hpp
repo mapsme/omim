@@ -104,6 +104,7 @@ private:
   RouterResultCode CalculateSubrouteJointsMode(IndexGraphStarter & starter,
                                                RouterDelegate const & delegate,
                                                std::shared_ptr<AStarProgress> const & progress,
+                                               bool twoThreadsReady,
                                                std::vector<Segment> & subroute);
   RouterResultCode CalculateSubrouteNoLeapsMode(IndexGraphStarter & starter,
                                                 RouterDelegate const & delegate,
@@ -123,7 +124,7 @@ private:
                                      RouterDelegate const & delegate,
                                      std::shared_ptr<AStarProgress> const & progress,
                                      IndexGraphStarter & graph, std::vector<Segment> & subroute,
-                                     bool guidesActive = false);
+                                     bool twoThreadsReady, bool guidesActive = false);
 
   RouterResultCode AdjustRoute(Checkpoints const & checkpoints,
                                m2::PointD const & startDirection,
@@ -208,13 +209,15 @@ private:
   }
 
   template <typename Vertex, typename Edge, typename Weight, typename AStarParams>
-  RouterResultCode FindPath(
-      AStarParams & params, std::set<NumMwmId> const & mwmIds,
-      RoutingResult<Vertex, Weight> & routingResult, WorldGraphMode mode) const
+  RouterResultCode FindPath(bool useTwoThreads, AStarParams & params,
+                            std::set<NumMwmId> const & mwmIds,
+                            RoutingResult<Vertex, Weight> & routingResult,
+                            WorldGraphMode mode) const
   {
     AStarAlgorithm<Vertex, Edge, Weight> algorithm;
     return ConvertTransitResult(
-        mwmIds, ConvertResult<Vertex, Edge, Weight>(algorithm.FindPathBidirectional(params, routingResult)));
+        mwmIds, ConvertResult<Vertex, Edge, Weight>(
+                    algorithm.FindPathBidirectional(useTwoThreads, params, routingResult)));
   }
 
   void SetupAlgorithmMode(IndexGraphStarter & starter, bool guidesActive = false) const;

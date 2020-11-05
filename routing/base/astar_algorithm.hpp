@@ -210,13 +210,13 @@ public:
   Result FindPath(P & params, RoutingResult<Vertex, Weight> & result) const;
 
   template <typename P>
-  Result FindPathBidirectional(P & params, RoutingResult<Vertex, Weight> & result) const;
+  Result FindPathBidirectional(bool useTwoThreads, P & params, RoutingResult<Vertex, Weight> & result) const;
 
   // Adjust route to the previous one.
   // Expects |params.m_checkLengthCallback| to check wave propagation limit.
   template <typename P>
-  typename AStarAlgorithm<Vertex, Edge, Weight>::Result AdjustRoute(P & params,
-                                                                    RoutingResult<Vertex, Weight> & result) const;
+  typename AStarAlgorithm<Vertex, Edge, Weight>::Result AdjustRoute(
+      P & params, RoutingResult<Vertex, Weight> & result) const;
 
 private:
   // Periodicity of switching a wave of bidirectional algorithm.
@@ -550,13 +550,24 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
 template <typename Vertex, typename Edge, typename Weight>
 template <typename P>
 typename AStarAlgorithm<Vertex, Edge, Weight>::Result
-AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
+AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, P & params,
                                                             RoutingResult<Vertex, Weight> & result) const
 {
   auto const epsilon = params.m_weightEpsilon;
   auto & graph = params.m_graph;
   auto const & finalVertex = params.m_finalVertex;
   auto const & startVertex = params.m_startVertex;
+
+  if (useTwoThreads)
+  {
+    CHECK(graph.IsTwoThreadsReady(),
+          ("For two threads routing it's necessary to use two threads ready graph."));
+  }
+  else
+  {
+    CHECK(!graph.IsTwoThreadsReady(),
+          ("Only one thread will be used. You may still use two threads graph but it brings some performance leaks."));
+  }
 
   BidirectionalStepContext forward(true /* forward */, startVertex, finalVertex, graph);
   BidirectionalStepContext backward(false /* forward */, startVertex, finalVertex, graph);
