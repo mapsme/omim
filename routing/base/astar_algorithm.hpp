@@ -8,6 +8,7 @@
 #include "base/assert.hpp"
 #include "base/cancellable.hpp"
 #include "base/logging.hpp"
+#include "base/optional_lock_guard.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -267,12 +268,9 @@ private:
   {
     using Parents = typename Graph::Parents;
 
-    BidirectionalStepContext(bool forward, Vertex const & startVertex, Vertex const & finalVertex,
-                             Graph & graph)
-        : forward(forward)
-        , startVertex(startVertex)
-        , finalVertex(finalVertex)
-        , graph(graph)
+    BidirectionalStepContext(std::optional<std::mutex> & m, bool forward,
+                             Vertex const & startVertex, Vertex const & finalVertex, Graph & graph)
+      : mtx(m), forward(forward), startVertex(startVertex), finalVertex(finalVertex), graph(graph)
     {
       bestVertex = forward ? startVertex : finalVertex;
       pS = ConsistentHeuristic(bestVertex);
@@ -304,8 +302,9 @@ private:
     Weight ConsistentHeuristic(Vertex const & v) const
     {
       // TODO. The last parameter may be false in case of two thread routing.
-      auto const piF = graph.HeuristicCostEstimate(v, finalVertex, true /* forward */);
-      auto const piR = graph.HeuristicCostEstimate(v, startVertex, true /* forward */);
+      bool const isTwoThreads = IsTwoThreadsReady();
+      auto const piF = graph.HeuristicCostEstimate(v, finalVertex, isTwoThreads ?  forward : true);
+      auto const piR = graph.HeuristicCostEstimate(v, startVertex, isTwoThreads ?  forward : true);
       if (forward)
       {
         /// @todo careful: with this "return" here and below in the Backward case
@@ -322,17 +321,20 @@ private:
 
     bool ExistsStateWithBetterDistance(State const & state, Weight const & eps = Weight(0.0)) const
     {
+      base::OptionalLockGuard guard(mtx);
       auto const it = bestDistance.find(state.vertex);
       return it != bestDistance.end() && state.distance > it->second - eps;
     }
 
     void UpdateDistance(State const & state)
     {
+      base::OptionalLockGuard guard(mtx);
       bestDistance.insert_or_assign(state.vertex, state.distance);
     }
 
     std::optional<Weight> GetDistance(Vertex const & vertex) const
     {
+      base::OptionalLockGuard guard(mtx);
       auto const it = bestDistance.find(vertex);
       return it != bestDistance.cend() ? std::optional<Weight>(it->second) : std::nullopt;
     }
@@ -354,6 +356,9 @@ private:
 
     Parents & GetParents() { return parent; }
 
+    bool IsTwoThreadsReady() const { return mtx.has_value(); }
+
+    std::optional<std::mutex> & mtx;
     bool const forward;
     Vertex const & startVertex;
     Vertex const & finalVertex;
@@ -558,10 +563,12 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
   auto const & finalVertex = params.m_finalVertex;
   auto const & startVertex = params.m_startVertex;
 
+  std::optional<std::mutex> mtx;
   if (useTwoThreads)
   {
     CHECK(graph.IsTwoThreadsReady(),
           ("For two threads routing it's necessary to use two threads ready graph."));
+    mtx.emplace();
   }
   else
   {
@@ -569,8 +576,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
           ("Only one thread will be used. You may still use two threads graph but it brings some performance leaks."));
   }
 
-  BidirectionalStepContext forward(true /* forward */, startVertex, finalVertex, graph);
-  BidirectionalStepContext backward(false /* forward */, startVertex, finalVertex, graph);
+  BidirectionalStepContext forward(mtx, true /* forward */, startVertex, finalVertex, graph);
+  BidirectionalStepContext backward(mtx, false /* forward */, startVertex, finalVertex, graph);
 
   auto & forwardParents = forward.GetParents();
   auto & backwardParents = backward.GetParents();
