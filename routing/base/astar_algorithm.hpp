@@ -597,6 +597,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
   {
     mtx.emplace();
     //////////////////////////////////////////////////////////////////////////////////////////////////
+    // @TODO The multithreading code below in wave lambda is used more or less the same line
+    // as one thread bidirectional version. Consider put in some functions and call them for
+    // one thread and two thread versions.
     auto wave = [&epsilon](BidirectionalStepContext & context, std::atomic<bool> & queueIsEmpty,
                            BidirectionalStepContext & oppositeContext,
                            std::atomic<bool> & oppositeQueueIsEmpty) {
@@ -614,6 +617,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
         if (context.ExistsStateWithBetterDistance(stateV))
           continue;
 
+        // @TODO This call should be synchronized in two thread case.
         //      params.m_onVisitedVertexCallback(stateV.vertex, context.forward ? context.finalVertex : context.startVertex);
         context.GetAdjacencyList(stateV, adj);
         auto const & pV = stateV.heuristic;
@@ -634,6 +638,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
 
           stateW.distance = stateV.distance + std::max(reducedWeight, kZeroDistance);
 
+          // @TODO This call should be synchronized in two thread case.
           //        auto const fullLength = weight + stateV.distance + context.pS - pV;
 
           //        if (!params.m_checkLengthCallback(fullLength))
@@ -663,6 +668,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
       LOG(LINFO, ("----FindPath------wave end (empty)---------------------------",
                   context.forward ? "forward" : "backward"));
     };
+    CHECK(!mtx.has_value(), ("Mutex should be destroyed."));
 
     std::atomic<bool> fwdIsEmpty;
     std::atomic<bool> bwdIsEmpty;

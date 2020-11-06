@@ -412,7 +412,8 @@ RouterResultCode IndexRouter::CalculateRoute(Checkpoints const & checkpoints,
     {
       LOG(LINFO, ("---------------------", twoThreadsReady ? "Two threads" : "One threads", "---------------------"));
       // TODO |twoThreadsReady| is passed to DoCalculateRoute(), CalculateSubroute() and
-      // to CalculateSubrouteJointsMode() for test purposes only.
+      // to CalculateSubrouteJointsMode() for test purposes only. It should be removed in
+      // these methods.
       lastReturn = DoCalculateRoute(checkpoints, startDirection, delegate, twoThreadsReady, route);
       LOG(LINFO, ("---------------------", twoThreadsReady ? "Two threads" : "One threads", "END---------------------"));
     }
