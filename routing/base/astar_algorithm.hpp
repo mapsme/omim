@@ -11,7 +11,9 @@
 #include "base/optional_lock_guard.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <functional>
+#include <future>
 #include <iostream>
 #include <map>
 #include <optional>
@@ -568,7 +570,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
   {
     CHECK(graph.IsTwoThreadsReady(),
           ("For two threads routing it's necessary to use two threads ready graph."));
-    mtx.emplace();
   }
   else
   {
@@ -591,6 +592,96 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
 
   backward.UpdateDistance(State(finalVertex, kZeroDistance));
   backward.queue.push(State(finalVertex, kZeroDistance, backward.ConsistentHeuristic(finalVertex)));
+
+  if (useTwoThreads)
+  {
+    mtx.emplace();
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    auto wave = [&epsilon](BidirectionalStepContext & context, std::atomic<bool> & queueIsEmpty,
+                           BidirectionalStepContext & oppositeContext,
+                           std::atomic<bool> & oppositeQueueIsEmpty) {
+      LOG(LINFO, ("---FindPath-------wave---------------------------",
+                  context.forward ? "forward" : "backward"));
+      size_t i = 0;
+      std::vector<Edge> adj;
+      while (!context.queue.empty()  && !oppositeQueueIsEmpty.load())
+      {
+        // Note. In case of exception in copy c-tor |context.queue| structure is not damaged
+        // because the routing is stopped.
+        State const stateV = context.queue.top();
+        context.queue.pop();
+
+        if (context.ExistsStateWithBetterDistance(stateV))
+          continue;
+
+        //      params.m_onVisitedVertexCallback(stateV.vertex, context.forward ? context.finalVertex : context.startVertex);
+        context.GetAdjacencyList(stateV, adj);
+        auto const & pV = stateV.heuristic;
+        for (auto const & edge : adj)
+        {
+          State stateW(edge.GetTarget(), kZeroDistance);
+
+          if (stateV.vertex == stateW.vertex)
+            continue;
+
+          auto const weight = edge.GetWeight();
+          auto const pW = context.ConsistentHeuristic(stateW.vertex);
+          auto const reducedWeight = weight + pW - pV;
+
+          CHECK_GREATER_OR_EQUAL(
+              reducedWeight, -epsilon,
+              ("Invariant violated for:", "v =", stateV.vertex, "w =", stateW.vertex));
+
+          stateW.distance = stateV.distance + std::max(reducedWeight, kZeroDistance);
+
+          //        auto const fullLength = weight + stateV.distance + context.pS - pV;
+
+          //        if (!params.m_checkLengthCallback(fullLength))
+          //          continue;
+
+          if (context.ExistsStateWithBetterDistance(stateW, epsilon))
+            continue;
+
+          stateW.heuristic = pW;
+          context.UpdateDistance(stateW);
+          context.UpdateParent(stateW.vertex, stateV.vertex);
+          ++i;
+          if (oppositeContext.GetDistance(stateW.vertex))
+          {
+            LOG(LINFO, ("---FindPath-------wave end---------------------------",
+                        context.forward ? "forward" : "backward", stateW.vertex, i));
+            return;  // The waves are intersected.
+          }
+
+          if (stateW.vertex != (context.forward ? context.finalVertex : context.startVertex))
+            context.queue.push(stateW);
+        }
+      }
+
+      if (context.queue.empty())
+        queueIsEmpty.store(true);
+      LOG(LINFO, ("----FindPath------wave end (empty)---------------------------",
+                  context.forward ? "forward" : "backward"));
+    };
+
+    std::atomic<bool> fwdIsEmpty;
+    std::atomic<bool> bwdIsEmpty;
+
+    PeriodicPollCancellable periodicCancellable(params.m_cancellable);
+
+    // Starting two wave in two threads.
+    {
+      base::ScopedTimerWithLog timer("Wave");
+      auto backwardWave = std::async(std::launch::async, wave, std::ref(backward),
+                                     std::ref(bwdIsEmpty), std::ref(forward), std::ref(fwdIsEmpty));
+      wave(forward, fwdIsEmpty, backward, bwdIsEmpty);
+      backwardWave.get();
+    }
+    LOG(LINFO, ("-------FindPath-------Finished-----------------"));
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    mtx.reset();
+    CHECK(!mtx.has_value(), ());
+  }
 
   // To use the search code both for backward and forward directions
   // we keep the pointers to everything related to the search in the
