@@ -16,6 +16,7 @@
 #include <future>
 #include <iostream>
 #include <map>
+#include <mutex>
 #include <optional>
 #include <queue>
 #include <type_traits>
@@ -31,7 +32,8 @@ namespace astar
 template <typename Vertex>
 struct DefaultVisitor
 {
-  void operator()(Vertex const & /* from */, Vertex const & /* to */, bool /* isOutgoing */) const {};
+  void operator()(Vertex const & /* from */, Vertex const & /* to */, bool /* isOutgoing */,
+                  std::optional<std::mutex> & /* m */) const {};
 };
 
 template <typename Weight>
@@ -504,6 +506,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
     return reducedLength + heuristicDiff(vertexFrom, vertexTo);
   };
 
+  std::optional<std::mutex> dummy;
   auto visitVertex = [&](Vertex const & vertex) {
     if (periodicCancellable.IsCancelled())
     {
@@ -511,7 +514,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
       return false;
     }
 
-    params.m_onVisitedVertexCallback(vertex, finalVertex, true /* forward */);
+    params.m_onVisitedVertexCallback(vertex, finalVertex, true /* forward */, dummy);
 
     if (vertex == finalVertex)
     {
@@ -600,7 +603,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
     // @TODO The multithreading code below in wave lambda is used more or less the same line
     // as one thread bidirectional version. Consider put in some functions and call them for
     // one thread and two thread versions.
-    auto wave = [&epsilon](BidirectionalStepContext & context, std::atomic<bool> & queueIsEmpty,
+    auto wave = [&epsilon, &params](BidirectionalStepContext & context, std::atomic<bool> & queueIsEmpty,
                            BidirectionalStepContext & oppositeContext,
                            std::atomic<bool> & oppositeQueueIsEmpty) {
       LOG(LINFO, ("---FindPath-------wave---------------------------",
@@ -617,8 +620,10 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
         if (context.ExistsStateWithBetterDistance(stateV))
           continue;
 
-        // @TODO This call should be synchronized in two thread case.
-        //      params.m_onVisitedVertexCallback(stateV.vertex, context.forward ? context.finalVertex : context.startVertex);
+        params.m_onVisitedVertexCallback(stateV.vertex,
+                                         context.forward ? context.finalVertex : context.startVertex,
+                                         context.forward, context.mtx);
+
         context.GetAdjacencyList(stateV, adj);
         auto const & pV = stateV.heuristic;
         for (auto const & edge : adj)
@@ -668,7 +673,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
       LOG(LINFO, ("----FindPath------wave end (empty)---------------------------",
                   context.forward ? "forward" : "backward"));
     };
-    CHECK(!mtx.has_value(), ("Mutex should be destroyed."));
 
     std::atomic<bool> fwdIsEmpty;
     std::atomic<bool> bwdIsEmpty;
@@ -686,8 +690,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
     LOG(LINFO, ("-------FindPath-------Finished-----------------"));
     //////////////////////////////////////////////////////////////////////////////////////////////////
     mtx.reset();
-    CHECK(!mtx.has_value(), ());
   }
+  CHECK(!mtx.has_value(), ("Mutex should be destroyed."));
 
   // To use the search code both for backward and forward directions
   // we keep the pointers to everything related to the search in the
@@ -757,7 +761,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
 
     // TODO. |forward| may be false or true in case of two thread routing.
     params.m_onVisitedVertexCallback(stateV.vertex,
-                                     cur->forward ? cur->finalVertex : cur->startVertex, true /* forward */);
+                                     cur->forward ? cur->finalVertex : cur->startVertex, true /* forward */, mtx);
 
     cur->GetAdjacencyList(stateV, adj);
     auto const & pV = stateV.heuristic;
@@ -857,6 +861,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::AdjustRoute(P & params,
   Context context(graph);
   PeriodicPollCancellable periodicCancellable(params.m_cancellable);
 
+  std::optional<std::mutex> dummy;
   auto visitVertex = [&](Vertex const & vertex) {
 
     if (periodicCancellable.IsCancelled())
@@ -865,7 +870,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::AdjustRoute(P & params,
       return false;
     }
 
-    params.m_onVisitedVertexCallback(startVertex, vertex, true /* forward */);
+    params.m_onVisitedVertexCallback(startVertex, vertex, true /* forward */, dummy);
 
     auto it = remainingDistances.find(vertex);
     if (it != remainingDistances.cend())

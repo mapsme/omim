@@ -205,7 +205,8 @@ vector<RouteSegment::SpeedCamera> SingleVehicleWorldGraph::GetSpeedCamInfo(Segme
   return m_loader->GetSpeedCameraInfo(segment);
 }
 
-RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId, bool isOutgoing)
+RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId,
+                                                              bool isOutgoing)
 {
   return m_loader->GetGeometry(mwmId).GetRoad(featureId, isOutgoing);
 }
