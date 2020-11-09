@@ -315,7 +315,6 @@ private:
     // particular routes when debugging turned out to be easier.
     Weight ConsistentHeuristic(Vertex const & v) const
     {
-      // TODO. The last parameter may be false in case of two thread routing.
       bool const isTwoThreads = IsTwoThreadsReady();
       auto const piF = graph.HeuristicCostEstimate(v, finalVertex, isTwoThreads ?  forward : true);
       auto const piR = graph.HeuristicCostEstimate(v, startVertex, isTwoThreads ?  forward : true);
