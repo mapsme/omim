@@ -95,6 +95,9 @@ public:
 
   // Checks whether |weight| meets non-pass-through crossing restrictions according to placement of
   // start and finish in pass-through/non-pass-through area and number of non-pass-through crosses.
+  // Note. CheckLength() may be called from two different threads according to |isOutgoing|
+  // but it no need additional synchronization. Although |m_start| and |m_finish| may be
+  // used from two different threads while route building they are used only for reading.
   bool CheckLength(RouteWeight const & weight, bool isOutgoing);
 
   void GetEdgeList(astar::VertexData<JointSegment, Weight> const & parentVertexData,

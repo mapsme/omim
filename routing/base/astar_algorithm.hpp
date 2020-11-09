@@ -214,6 +214,14 @@ public:
   template <typename P>
   Result FindPath(P & params, RoutingResult<Vertex, Weight> & result) const;
 
+  /// \brief Finds path on |params.m_graph| using bidirectional A* algorithm.
+  /// \param useTwoThreads if |useTwoThreads| is equal to false one thread version is used.
+  /// It's worth using one thread version if there's only one core available.
+  /// if |useTwoThreads| is equal to true two thread version is used. If the decision is made to
+  /// use two thread version it should be taken into account:
+  /// - |isOutgoing| flag in each method specified which thread calls the method
+  /// - All callbacks which are called from |wave| lambda such as |params.m_onVisitedVertexCallback|
+  ///   or |params.m_checkLengthCallback| should be ready for calling from two threads
   template <typename P>
   Result FindPathBidirectional(bool useTwoThreads, P & params, RoutingResult<Vertex, Weight> & result) const;
 
@@ -643,11 +651,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
 
           stateW.distance = stateV.distance + std::max(reducedWeight, kZeroDistance);
 
-          // @TODO This call should be synchronized in two thread case.
-          //        auto const fullLength = weight + stateV.distance + context.pS - pV;
-
-          //        if (!params.m_checkLengthCallback(fullLength))
-          //          continue;
+          auto const fullLength = weight + stateV.distance + context.pS - pV;
+          if (!params.m_checkLengthCallback(fullLength, context.forward))
+            continue;
 
           if (context.ExistsStateWithBetterDistance(stateW, epsilon))
             continue;
@@ -701,7 +707,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
   BidirectionalStepContext * nxt = &backward;
 
   auto const getResult = [&]() {
-    // TODO. |forward| may be false or true in case of two thread routing.
     if (!params.m_checkLengthCallback(bestPathRealLength, true /* forward */))
       return Result::NoPath;
 
@@ -759,9 +764,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
     if (cur->ExistsStateWithBetterDistance(stateV))
       continue;
 
-    // TODO. |forward| may be false or true in case of two thread routing.
     params.m_onVisitedVertexCallback(stateV.vertex,
-                                     cur->forward ? cur->finalVertex : cur->startVertex, true /* forward */, mtx);
+                                     cur->forward ? cur->finalVertex : cur->startVertex,
+                                     true /* forward */, mtx);
 
     cur->GetAdjacencyList(stateV, adj);
     auto const & pV = stateV.heuristic;
@@ -782,7 +787,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
       stateW.distance = stateV.distance + std::max(reducedWeight, kZeroDistance);
 
       auto const fullLength = weight + stateV.distance + cur->pS - pV;
-      // TODO. |forward| may be false or true in case of two thread routing.
       if (!params.m_checkLengthCallback(fullLength, true /* forward */))
         continue;
 
