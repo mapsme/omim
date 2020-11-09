@@ -414,6 +414,7 @@ RouterResultCode IndexRouter::CalculateRoute(Checkpoints const & checkpoints,
       // TODO |twoThreadsReady| is passed to DoCalculateRoute(), CalculateSubroute() and
       // to CalculateSubrouteJointsMode() for test purposes only. It should be removed in
       // these methods.
+      m_guides.Clear();
       lastReturn = DoCalculateRoute(checkpoints, startDirection, delegate, twoThreadsReady, route);
       LOG(LINFO, ("---------------------", twoThreadsReady ? "Two threads" : "One threads", "END---------------------"));
     }
@@ -844,7 +845,7 @@ RouterResultCode IndexRouter::CalculateSubrouteNoLeapsMode(
   RoutingResult<Vertex, Weight> routingResult;
   set<NumMwmId> const mwmIds = starter.GetMwms();
   RouterResultCode const result =
-      FindPath<Vertex, Edge, Weight>(false /* useTwoThreads */, params, mwmIds, routingResult,
+      FindPath<Vertex, Edge, Weight>(starter.IsTwoThreadsReady(), params, mwmIds, routingResult,
                                      WorldGraphMode::NoLeaps);
 
   if (result != RouterResultCode::NoError)
@@ -880,7 +881,7 @@ RouterResultCode IndexRouter::CalculateSubrouteLeapsOnlyMode(
 
   RoutingResult<Vertex, Weight> routingResult;
   RouterResultCode const result =
-      FindPath<Vertex, Edge, Weight>(false /* useTwoThreads */, params, {} /* mwmIds */,
+      FindPath<Vertex, Edge, Weight>(leapsGraph.IsTwoThreadsReady(), params, {} /* mwmIds */,
                                      routingResult, WorldGraphMode::LeapsOnly);
 
   progress->PushAndDropLastSubProgress();
@@ -1369,7 +1370,7 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
         nullptr /* prevRoute */, delegate.GetCancellable(), move(visitor),
         AStarLengthChecker(starter));
 
-    resultCode = FindPath<Vertex, Edge, Weight>(true /* useTwoThreads */, params, mwmIds,
+    resultCode = FindPath<Vertex, Edge, Weight>(jointStarter.IsTwoThreadsReady(), params, mwmIds,
                                                 routingResult, mode);
     return resultCode;
   };

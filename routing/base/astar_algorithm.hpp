@@ -611,14 +611,14 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
     // @TODO The multithreading code below in wave lambda is used more or less the same line
     // as one thread bidirectional version. Consider put in some functions and call them for
     // one thread and two thread versions.
-    auto wave = [&epsilon, &params](BidirectionalStepContext & context, std::atomic<bool> & queueIsEmpty,
+    auto wave = [&epsilon, &params](BidirectionalStepContext & context,
                            BidirectionalStepContext & oppositeContext,
-                           std::atomic<bool> & oppositeQueueIsEmpty) {
+                           std::atomic<bool> & exit) {
       LOG(LINFO, ("---FindPath-------wave---------------------------",
                   context.forward ? "forward" : "backward"));
       size_t i = 0;
       std::vector<Edge> adj;
-      while (!context.queue.empty()  && !oppositeQueueIsEmpty.load())
+      while (!context.queue.empty()  && !exit.load())
       {
         // Note. In case of exception in copy c-tor |context.queue| structure is not damaged
         // because the routing is stopped.
@@ -666,6 +666,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
           {
             LOG(LINFO, ("---FindPath-------wave end---------------------------",
                         context.forward ? "forward" : "backward", stateW.vertex, i));
+            exit.store(true);
             return;  // The waves are intersected.
           }
 
@@ -674,27 +675,24 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
         }
       }
 
-      if (context.queue.empty())
-        queueIsEmpty.store(true);
+      exit.store(true);
       LOG(LINFO, ("----FindPath------wave end (empty)---------------------------",
                   context.forward ? "forward" : "backward"));
     };
 
-    std::atomic<bool> fwdIsEmpty;
-    std::atomic<bool> bwdIsEmpty;
-
+    std::atomic<bool> shouldExit;
     PeriodicPollCancellable periodicCancellable(params.m_cancellable);
 
     // Starting two wave in two threads.
     {
       base::ScopedTimerWithLog timer("Wave");
       auto backwardWave = std::async(std::launch::async, wave, std::ref(backward),
-                                     std::ref(bwdIsEmpty), std::ref(forward), std::ref(fwdIsEmpty));
-      wave(forward, fwdIsEmpty, backward, bwdIsEmpty);
+                                     std::ref(forward), std::ref(shouldExit));
+      wave(forward, backward, shouldExit);
       backwardWave.get();
     }
     LOG(LINFO, ("-------FindPath-------Finished-----------------"));
-    //////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     mtx.reset();
   }
   CHECK(!mtx.has_value(), ("Mutex should be destroyed."));
