@@ -215,15 +215,17 @@ public:
   Result FindPath(P & params, RoutingResult<Vertex, Weight> & result) const;
 
   /// \brief Finds path on |params.m_graph| using bidirectional A* algorithm.
-  /// \param useTwoThreads if |useTwoThreads| is equal to false one thread version is used.
+  /// \note Two thread version is used when the version is set in |params.m_graph|.
+  /// If |params.m_graph.IsTwoThreadsReady()| returns false, one thread version is used.
   /// It's worth using one thread version if there's only one core available.
-  /// if |useTwoThreads| is equal to true two thread version is used. If the decision is made to
-  /// use two thread version it should be taken into account:
+  /// if |params.m_graph.IsTwoThreadsReady()| returns true two thread version is used.
+  /// If the decision is made to use two thread version it should be taken into account:
+  /// If the decision is made to use two thread version it should be taken into account:
   /// - |isOutgoing| flag in each method specified which thread calls the method
   /// - All callbacks which are called from |wave| lambda such as |params.m_onVisitedVertexCallback|
   ///   or |params.m_checkLengthCallback| should be ready for calling from two threads
   template <typename P>
-  Result FindPathBidirectional(bool useTwoThreads, P & params, RoutingResult<Vertex, Weight> & result) const;
+  Result FindPathBidirectional(P & params, RoutingResult<Vertex, Weight> & result) const;
 
   // Adjust route to the previous one.
   // Expects |params.m_checkLengthCallback| to check wave propagation limit.
@@ -568,7 +570,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPath(P & params, RoutingResult<Vertex,
 template <typename Vertex, typename Edge, typename Weight>
 template <typename P>
 typename AStarAlgorithm<Vertex, Edge, Weight>::Result
-AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, P & params,
+AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
                                                             RoutingResult<Vertex, Weight> & result) const
 {
   auto const epsilon = params.m_weightEpsilon;
@@ -576,17 +578,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(bool useTwoThreads, 
   auto const & finalVertex = params.m_finalVertex;
   auto const & startVertex = params.m_startVertex;
 
+  auto const useTwoThreads = graph.IsTwoThreadsReady();
   std::optional<std::mutex> mtx;
-  if (useTwoThreads)
-  {
-    CHECK(graph.IsTwoThreadsReady(),
-          ("For two threads routing it's necessary to use two threads ready graph."));
-  }
-  else
-  {
-    CHECK(!graph.IsTwoThreadsReady(),
-          ("Only one thread will be used. You may still use two threads graph but it brings some performance leaks."));
-  }
 
   BidirectionalStepContext forward(mtx, true /* forward */, startVertex, finalVertex, graph);
   BidirectionalStepContext backward(mtx, false /* forward */, startVertex, finalVertex, graph);

@@ -85,7 +85,7 @@ void NoUTurnRestrictionTest::TestRouteGeom(Segment const & start, Segment const 
 
   RoutingResult<Segment, RouteWeight> routingResult;
   auto const resultCode =
-      algorithm.FindPathBidirectional(false /* useTwoThreads */, params, routingResult);
+      algorithm.FindPathBidirectional(params, routingResult);
 
   TEST_EQUAL(resultCode, expectedRouteResult, ());
   for (size_t i = 0; i < routingResult.m_path.size(); ++i)
@@ -279,7 +279,7 @@ bool TestIndexGraphTopology::FindPath(Vertex start, Vertex finish, double & path
                                                   nullptr /* prevRoute */);
   RoutingResult<Segment, RouteWeight> routingResult;
   auto const resultCode =
-      algorithm.FindPathBidirectional(false /* useTwoThreads */, params, routingResult);
+      algorithm.FindPathBidirectional(params, routingResult);
 
   // Check unidirectional AStar returns same result.
   {
@@ -485,7 +485,7 @@ AlgorithmForWorldGraph::Result CalculateRoute(IndexGraphStarter & starter, vecto
       AStarLengthChecker(starter));
 
   auto const resultCode =
-      algorithm.FindPathBidirectional(false /* useTwoThreads */, params, routingResult);
+      algorithm.FindPathBidirectional(params, routingResult);
 
   timeSec = routingResult.m_distance.GetWeight();
   roadPoints = routingResult.m_path;
