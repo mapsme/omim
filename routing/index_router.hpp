@@ -244,6 +244,8 @@ private:
   std::shared_ptr<NumMwmIds> m_numMwmIds;
   std::shared_ptr<m4::Tree<NumMwmId>> m_numMwmTree;
   std::shared_ptr<TrafficStash> m_trafficStash;
+  // Note. |m_roadGraph| contains caches inside and is not ready for multithreading.
+  // So all calls of the methods of |m_roadGraph| should be synchronized.
   FeaturesRoadGraph m_roadGraph;
 
   std::shared_ptr<EdgeEstimator> m_estimator;

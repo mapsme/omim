@@ -10,7 +10,7 @@
 #include <string>
 
 // FileReader, cheap to copy, not thread safe.
-// It is assumed that file is not modified during FireReader lifetime,
+// It is assumed that file is not modified during FileReader lifetime,
 // because of caching and assumption that Size() is constant.
 class FileReader : public ModelReader
 {

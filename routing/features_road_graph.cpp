@@ -41,7 +41,11 @@ FeaturesRoadGraph::Value::Value(DataSource const & dataSource, MwmSet::MwmHandle
   if (!m_mwmHandle.IsAlive())
     return;
 
-  m_altitudeLoader = make_unique<feature::AltitudeLoader>(dataSource, m_mwmHandle.GetId());
+  // Note. FeaturesRoadGraph is always used now from one thread. But if to find the best
+  // edge for start and finish from two threads the instance of FeaturesRoadGraph
+  // should have two thread support.
+  m_altitudeLoader = make_unique<feature::AltitudeLoader>(dataSource, m_mwmHandle.GetId(),
+                                                          false /* twoThreadsReady */);
 }
 
 FeaturesRoadGraph::CrossCountryVehicleModel::CrossCountryVehicleModel(
@@ -311,7 +315,8 @@ void FeaturesRoadGraph::ExtractRoadInfo(FeatureID const & featureId, FeatureType
   geometry::Altitudes altitudes;
   if (value.m_altitudeLoader)
   {
-    altitudes = value.m_altitudeLoader->GetAltitudes(featureId.m_index, ft.GetPointsCount());
+    altitudes = value.m_altitudeLoader->GetAltitudes(featureId.m_index, ft.GetPointsCount(),
+                                                     true /* isOutgoing */);
   }
   else
   {

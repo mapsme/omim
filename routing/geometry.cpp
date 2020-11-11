@@ -91,7 +91,7 @@ GeometryLoaderImpl::GeometryLoaderImpl(DataSource const & dataSource,
   , m_guardBwd(twoThreadsReady ? make_unique<FeaturesLoaderGuard>(dataSource, handle.GetId())
                                : nullptr)
   , m_country(handle.GetInfo()->GetCountryName())
-  , m_altitudeLoader(dataSource, handle.GetId())
+  , m_altitudeLoader(dataSource, handle.GetId(), twoThreadsReady)
   , m_loadAltitudes(loadAltitudes)
 {
   CHECK(handle.IsAlive(), ());
@@ -118,13 +118,13 @@ void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road, bool isOu
   feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
 
   geometry::Altitudes const * altitudes = nullptr;
-  // TODO Altitude should be refactored to be able to be accessible from two threads.
-//  if (m_loadAltitudes)
-//    altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature->GetPointsCount()));
+
+  if (m_loadAltitudes)
+    altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature->GetPointsCount(), isOutgoing));
 
   road.Load(*m_vehicleModel, *feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
             m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
-//  m_altitudeLoader.ClearCache();
+  m_altitudeLoader.ClearCache(isOutgoing);
 }
 
 // FileGeometryLoader ------------------------------------------------------------------------------

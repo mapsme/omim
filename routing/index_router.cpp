@@ -645,7 +645,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     // Stop building route if |finishCheckpoint| is not connected to OSM and is not connected to
     // the guides graph.
     if (!FindBestSegments(finishCheckpoint, m2::PointD::Zero() /* direction */,
-                          false /* isOutgoing */, *graph, finishSegments,
+                          true /* isOutgoing */, *graph, finishSegments,
                           dummy /* bestSegmentIsAlmostCodirectional */) &&
         finishFakeEnding.m_projections.empty())
     {
