@@ -34,6 +34,7 @@
 @interface MapFileSaveStrategy : NSObject
 
 - (NSURL *)getLocationForWebUrl:(NSURL *)webUrl;
+- (NSString *)resumeInfoPathForWebUrl:(NSURL *)webUrl;
 
 @end
 
@@ -42,6 +43,11 @@
 - (NSURL *)getLocationForWebUrl:(NSURL *)webUrl {
   NSString *path = @(downloader::GetFilePathByUrl(webUrl.path.UTF8String).c_str());
   return [NSURL fileURLWithPath:path];
+}
+
+- (NSString *)resumeInfoPathForWebUrl:(NSURL *)webUrl {
+  NSURL *destinationUrl = [self getLocationForWebUrl:webUrl];
+  return [destinationUrl.absoluteString stringByAppendingString:@".resume_data"];
 }
 
 @end
@@ -137,7 +143,17 @@
     [self.restoredTasks removeObjectForKey:url.path];
     taskIdentifier = restoredTask.taskIdentifier;
   } else {
-    NSURLSessionTask *task = [self.session downloadTaskWithURL:url];
+    NSString *resumeInfoPath = [self.saveStrategy resumeInfoPathForWebUrl:url];
+    NSData *resumeData = [NSData dataWithContentsOfFile:resumeInfoPath];
+    
+    NSURLSessionTask *task = nil;
+    if (resumeData) {
+      [[NSFileManager defaultManager] removeItemAtPath:resumeInfoPath error:nil];
+      task = [self.session downloadTaskWithResumeData:resumeData];
+    } else {
+      task = [self.session downloadTaskWithURL:url];
+    }
+      
     TaskInfo *info = [[TaskInfo alloc] initWithTask:task completion:completion progress:progress];
     [self.tasks setObject:info forKey:@(task.taskIdentifier)];
     [task resume];
@@ -201,7 +217,7 @@
   didFinishDownloadingToURL:(NSURL *)location {
   NSURL *destinationUrl = [self.saveStrategy getLocationForWebUrl:downloadTask.originalRequest.URL];
   NSError *error;
-  [[NSFileManager defaultManager] moveItemAtURL:location.filePathURL toURL:destinationUrl error:&error];
+  [[NSFileManager defaultManager] moveItemAtURL:location toURL:destinationUrl error:&error];
 
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.restoredTasks removeObjectForKey:downloadTask.originalRequest.URL.path];
@@ -235,6 +251,12 @@
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)downloadTask didCompleteWithError:(NSError *)error {
+  NSData * resumeData = error ? error.userInfo[NSURLSessionDownloadTaskResumeData] : nil;
+  if (resumeData) {
+    NSString * path = [self.saveStrategy resumeInfoPathForWebUrl:downloadTask.originalRequest.URL];
+    [[NSFileManager defaultManager] createFileAtPath:path contents:resumeData attributes:nil];
+  }
+  
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.restoredTasks removeObjectForKey:downloadTask.originalRequest.URL.path];
 
