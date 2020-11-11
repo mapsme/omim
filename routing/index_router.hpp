@@ -77,6 +77,11 @@ public:
               traffic::TrafficCache const & trafficCache, DataSource & dataSource);
 
   std::unique_ptr<WorldGraph> MakeSingleMwmWorldGraph();
+  /// @todo FindBestSegments() is called for start, finish and intermediate points of the route.
+  /// On a modern mobile device this method takes 200-300ms.
+  /// The most number of routes have no intermediate points. It's worth calling this method
+  /// for start on one thread and for finish and another one. It's not difficult to implement it
+  /// based on functionality which was developed for two-thread bidirectional A*.
   bool FindBestSegments(m2::PointD const & checkpoint, m2::PointD const & direction, bool isOutgoing,
                         WorldGraph & worldGraph, std::vector<Segment> & bestSegments);
   bool FindBestEdges(m2::PointD const & checkpoint,

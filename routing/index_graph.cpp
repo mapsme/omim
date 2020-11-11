@@ -181,7 +181,7 @@ optional<JointEdge> IndexGraph::GetJointEdgeByLastPoint(Segment const & parent,
                                                         Segment const & firstChild, bool isOutgoing,
                                                         uint32_t lastPoint)
 {
-  // @TODO It should be ready for calling form two threads if IsTwoThreadsReady() returns true.
+  // @TODO It should be ready for calling from two threads if IsTwoThreadsReady() returns true.
   vector<Segment> const possibleChildren = {firstChild};
   vector<uint32_t> const lastPoints = {lastPoint};
 

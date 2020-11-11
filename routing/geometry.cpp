@@ -274,18 +274,22 @@ double RoadGeometry::GetRoadLengthM() const
 // Geometry ----------------------------------------------------------------------------------------
 Geometry::Geometry(std::unique_ptr<GeometryLoader> loader, bool twoThreadsReady)
   : m_loader(move(loader))
-  , m_featureIdToRoad(
-        make_unique<RoutingFifoCache>(twoThreadsReady ? kRoadsCacheSizeTwoCaches : kRoadsCacheSize,
-                                      [this](uint32_t featureId, RoadGeometry & road) {
-                                        m_loader->Load(featureId, road, true /* isOutgoing */);
-                                      }))
-  , m_featureIdToRoadBwd(twoThreadsReady
-                             ? make_unique<RoutingFifoCache>(
-                                   kRoadsCacheSizeTwoCaches,
-                                   [this](uint32_t featureId, RoadGeometry & road) {
-                                     m_loader->Load(featureId, road, false /* isOutgoing */);
-                                   })
-                             : nullptr)
+  , m_featureIdToRoad(MakeCache(twoThreadsReady ? kRoadsCacheSizeTwoCaches : kRoadsCacheSize,
+                                true /* isOutgoing */))
+  , m_featureIdToRoadBwd(
+        twoThreadsReady ? MakeCache(kRoadsCacheSizeTwoCaches, false /* isOutgoing */) : nullptr)
+//  , m_featureIdToRoad(
+//        make_unique<RoutingFifoCache>(twoThreadsReady ? kRoadsCacheSizeTwoCaches : kRoadsCacheSize,
+//                                      [this](uint32_t featureId, RoadGeometry & road) {
+//                                        m_loader->Load(featureId, road, true /* isOutgoing */);
+//                                      }))
+//  , m_featureIdToRoadBwd(twoThreadsReady
+//                             ? make_unique<RoutingFifoCache>(
+//                                   kRoadsCacheSizeTwoCaches,
+//                                   [this](uint32_t featureId, RoadGeometry & road) {
+//                                     m_loader->Load(featureId, road, false /* isOutgoing */);
+//                                   })
+//                             : nullptr)
 {
   CHECK(m_loader, ());
 }
@@ -301,6 +305,15 @@ RoadGeometry const & Geometry::GetRoad(uint32_t featureId, bool isOutgoing)
                       : m_featureIdToRoadBwd->GetValue(featureId);
   }
   return m_featureIdToRoad->GetValue(featureId);
+}
+
+std::unique_ptr<Geometry::RoutingFifoCache> Geometry::MakeCache(size_t cacheSize,
+                                                                bool isOutgoing) const
+{
+  return make_unique<RoutingFifoCache>(cacheSize,
+                                       [this, isOutgoing](uint32_t featureId, RoadGeometry & road) {
+                                         m_loader->Load(featureId, road, isOutgoing);
+                                       });
 }
 
 // static

@@ -149,10 +149,11 @@ public:
   }
 
 private:
-  bool IsTwoThreadsReady() const { return m_featureIdToRoadBwd != nullptr; }
-
   using RoutingFifoCache =
       FifoCache<uint32_t, RoadGeometry, ska::bytell_hash_map<uint32_t, RoadGeometry>>;
+
+  bool IsTwoThreadsReady() const { return m_featureIdToRoadBwd != nullptr; }
+  std::unique_ptr<RoutingFifoCache> MakeCache(size_t cacheSize, bool isOutgoing) const;
 
   std::unique_ptr<GeometryLoader> m_loader;
   std::unique_ptr<RoutingFifoCache> m_featureIdToRoad;

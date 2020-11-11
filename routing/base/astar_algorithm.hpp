@@ -220,7 +220,6 @@ public:
   /// It's worth using one thread version if there's only one core available.
   /// if |params.m_graph.IsTwoThreadsReady()| returns true two thread version is used.
   /// If the decision is made to use two thread version it should be taken into account:
-  /// If the decision is made to use two thread version it should be taken into account:
   /// - |isOutgoing| flag in each method specified which thread calls the method
   /// - All callbacks which are called from |wave| lambda such as |params.m_onVisitedVertexCallback|
   ///   or |params.m_checkLengthCallback| should be ready for calling from two threads

@@ -91,7 +91,7 @@ void SingleVehicleWorldGraph::GetEdgeList(
     astar::VertexData<Segment, RouteWeight> const & vertexData, bool isOutgoing,
     bool useRoutingOptions, bool useAccessConditional, vector<SegmentEdge> & edges)
 {
-  // @TODO It should be ready for calling form two threads if IsTwoThreadsReady() returns true.
+  // @TODO It should be ready for calling from two threads if IsTwoThreadsReady() returns true.
   CHECK_NOT_EQUAL(m_mode, WorldGraphMode::LeapsOnly, ());
 
   ASSERT(m_parentsForSegments.forward && m_parentsForSegments.backward,
@@ -214,7 +214,7 @@ RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, ui
 void SingleVehicleWorldGraph::GetTwinsInner(Segment const & segment, bool isOutgoing,
                                             vector<Segment> & twins)
 {
-  // @TODO It should be ready for calling form two threads if IsTwoThreadsReady() returns true.
+  // @TODO It should be ready for calling from two threads if IsTwoThreadsReady() returns true.
   m_crossMwmGraph->GetTwins(segment, isOutgoing, twins);
 }
 

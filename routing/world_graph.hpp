@@ -28,6 +28,20 @@
 
 namespace routing
 {
+/// \Note. About isOutgoing parameter.
+/// In routing in hundreds of method isOutgoing boolean flag is used. This flag have
+/// several meanings.
+/// - Originally this parameter was added to distinguish getting ingoing graph edges and
+///   outgoing graph edges. For example, if it's necessary to get outgoing edges
+///   GetEdgeList(..., true /* isOutgoing */, ...) should be called and to get ingoing
+///   graph edges GetEdgeList(..., false /* isOutgoing */, ...) should be called.
+/// - On the other hand getting ingoing edges (isOutgoing == false) only for backward wave
+///   in bidirectional A*. So it's possible to say that based on isOutgoing value
+///   it's possible to say which wave in bidirectional A* is used.
+/// - Then two-threads variant was implemented for bidirectional A*. A new thread is created
+///   for backward A* bidirectional wave in this case. So if isOutgoing == false
+///   that means the method is called from this additional thread.
+
 enum class WorldGraphMode
 {
   LeapsOnly,       // Mode for building a cross mwm route containing only leaps. In case of start and
