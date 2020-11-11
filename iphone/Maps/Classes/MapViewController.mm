@@ -33,8 +33,6 @@
 extern NSString *const kMap2FBLoginSegue = @"Map2FBLogin";
 extern NSString *const kMap2GoogleLoginSegue = @"Map2GoogleLogin";
 
-typedef NS_ENUM(NSUInteger, UserTouchesAction) { UserTouchesActionNone, UserTouchesActionDrag, UserTouchesActionScale };
-
 namespace {
 NSString *const kDownloaderSegue = @"Map2MapDownloaderSegue";
 NSString *const kEditorSegue = @"Map2EditorSegue";
@@ -79,8 +77,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 
 @property(nonatomic) BOOL disableStandbyOnLocationStateMode;
 
-@property(nonatomic) UserTouchesAction userTouchesAction;
-
 @property(nonatomic, readwrite) MWMMapDownloadDialog *downloadDialog;
 
 @property(nonatomic) BOOL skipForceTouch;
@@ -94,7 +90,8 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 @property(strong, nonatomic) IBOutlet NSLayoutConstraint *guidesVisibleConstraint;;
 @property(strong, nonatomic) IBOutlet NSLayoutConstraint *guidesHiddenConstraint;
 @property(strong, nonatomic) IBOutlet UIImageView *carplayPlaceholderLogo;
-@property(strong, nonatomic) BookmarksCoordinator * bookmarksCoordinator;
+@property(strong, nonatomic) BookmarksCoordinator *bookmarksCoordinator;
+@property(strong, nonatomic) MapControlsViewController *mapControlsViewController;
 
 @property(strong, nonatomic) NSHashTable<id<MWMLocationModeListener>> *listeners;
 
@@ -116,135 +113,8 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 
 #pragma mark - Map Navigation
 
-- (void)showRegularPlacePage {
-  self.placePageVC = [PlacePageBuilder build];
-  self.placePageContainer.hidden = NO;
-  [self.placePageContainer addSubview:self.placePageVC.view];
-  [self.view bringSubviewToFront:self.placePageContainer];
-  [NSLayoutConstraint activateConstraints:@[
-    [self.placePageVC.view.topAnchor constraintEqualToAnchor:self.placePageContainer.safeAreaLayoutGuide.topAnchor],
-    [self.placePageVC.view.leftAnchor constraintEqualToAnchor:self.placePageContainer.leftAnchor],
-    [self.placePageVC.view.bottomAnchor constraintEqualToAnchor:self.placePageContainer.bottomAnchor],
-    [self.placePageVC.view.rightAnchor constraintEqualToAnchor:self.placePageContainer.rightAnchor]
-  ]];
-  self.placePageVC.view.translatesAutoresizingMaskIntoConstraints = NO;
-  [self addChildViewController:self.placePageVC];
-  [self.placePageVC didMoveToParentViewController:self];
-}
-
-- (void)showGuidesGallery {
-  self.guidesGalleryVC = [MWMGuidesGalleryBuilder build];
-  self.guidesCollectionContainer.hidden = NO;
-  [self.guidesCollectionContainer addSubview:self.guidesGalleryVC.view];
-  [NSLayoutConstraint activateConstraints:@[
-    [self.guidesGalleryVC.view.topAnchor constraintEqualToAnchor:self.guidesCollectionContainer.topAnchor],
-    [self.guidesGalleryVC.view.leftAnchor constraintEqualToAnchor:self.guidesCollectionContainer.leftAnchor],
-    [self.guidesGalleryVC.view.bottomAnchor constraintEqualToAnchor:self.guidesCollectionContainer.bottomAnchor],
-    [self.guidesGalleryVC.view.rightAnchor constraintEqualToAnchor:self.guidesCollectionContainer.rightAnchor]
-  ]];
-  self.guidesGalleryVC.view.translatesAutoresizingMaskIntoConstraints = NO;
-  [self addChildViewController:self.guidesGalleryVC];
-  [self.guidesGalleryVC didMoveToParentViewController:self];
-  self.guidesVisibleConstraint.priority = UILayoutPriorityDefaultLow;
-  self.guidesHiddenConstraint.priority = UILayoutPriorityDefaultHigh;
-  self.guidesCollectionContainer.alpha = 0;
-  [self.view layoutIfNeeded];
-  [UIView animateWithDuration:kDefaultAnimationDuration animations:^{
-    self.guidesVisibleConstraint.priority = UILayoutPriorityDefaultHigh;
-    self.guidesHiddenConstraint.priority = UILayoutPriorityDefaultLow;
-    [self.view layoutIfNeeded];
-    self.guidesCollectionContainer.alpha = 1;
-  }];
-  [self setPlacePageTopBound:self.view.height - self.guidesCollectionContainer.minY duration:kDefaultAnimationDuration];
-}
-
-- (void)showPlacePage {
-  if (!PlacePageData.hasData) {
-    return;
-  }
-  
-  self.controlsManager.trafficButtonHidden = YES;
-  if (PlacePageData.isGuide) {
-    [self showGuidesGallery];
-  } else {
-    [self showRegularPlacePage];
-  }
-}
-
 - (void)dismissPlacePage {
   GetFramework().DeactivateMapSelection(true);
-}
-
-- (void)hideRegularPlacePage {
-  [self.placePageVC.view removeFromSuperview];
-  [self.placePageVC willMoveToParentViewController:nil];
-  [self.placePageVC removeFromParentViewController];
-  self.placePageVC = nil;
-  self.placePageContainer.hidden = YES;
-  [self setPlacePageTopBound:0 duration:0];
-}
-
-- (void)hideGuidesGallery {
-  [self.view layoutIfNeeded];
-  [UIView animateWithDuration:kDefaultAnimationDuration animations:^{
-    self.guidesVisibleConstraint.priority = UILayoutPriorityDefaultLow;
-    self.guidesHiddenConstraint.priority = UILayoutPriorityDefaultHigh;
-    [self.view layoutIfNeeded];
-    self.guidesCollectionContainer.alpha = 0;
-  } completion:^(BOOL finished) {
-    [self.guidesGalleryVC.view removeFromSuperview];
-    [self.guidesGalleryVC willMoveToParentViewController:nil];
-    [self.guidesGalleryVC removeFromParentViewController];
-    self.guidesGalleryVC = nil;
-    self.guidesCollectionContainer.hidden = YES;
-    self.guidesVisibleConstraint.constant = 48;
-  }];
-  [self setPlacePageTopBound:0 duration:kDefaultAnimationDuration];
-}
-
-- (void)hidePlacePage {
-  if (self.placePageVC != nil) {
-    [self hideRegularPlacePage];
-  } else if (self.guidesGalleryVC != nil) {
-    [self hideGuidesGallery];
-  }
-  self.controlsManager.trafficButtonHidden = NO;
-}
-
-- (void)onMapObjectDeselected:(bool)switchFullScreenMode {
-  [self hidePlacePage];
-
-  BOOL const isSearchResult = [MWMSearchManager manager].state == MWMSearchManagerStateResult;
-  BOOL const isNavigationDashboardHidden = [MWMNavigationDashboardManager sharedManager].state == MWMNavigationDashboardStateHidden;
-  if (isSearchResult) {
-    if (isNavigationDashboardHidden) {
-      [MWMSearchManager manager].state = MWMSearchManagerStateMapSearch;
-    } else {
-      [MWMSearchManager manager].state = MWMSearchManagerStateHidden;
-    }
-  }
-
-  if (!switchFullScreenMode)
-    return;
-
-  if (DeepLinkHandler.shared.isLaunchedByDeeplink)
-    return;
-
-  BOOL const isSearchHidden = [MWMSearchManager manager].state == MWMSearchManagerStateHidden;
-  if (isSearchHidden && isNavigationDashboardHidden) {
-    self.controlsManager.hidden = !self.controlsManager.hidden;
-  }
-}
-
-- (void)onMapObjectSelected {
-  [self hidePlacePage];
-  [[MWMNetworkPolicy sharedPolicy] callOnlineApi:^(BOOL) {
-    [self showPlacePage];
-  }];
-}
-
-- (void)onMapObjectUpdated {
-  //  [self.controlsManager updatePlacePage];
 }
 
 - (IBAction)onGudesGalleryPan:(UIPanGestureRecognizer *)sender {
@@ -418,6 +288,19 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 
   self.view.clipsToBounds = YES;
   [MWMKeyboard addObserver:self];
+
+  self.mapControlsViewController = [MapControlsBuilder buildWithBookmarksCoordinator:self.bookmarksCoordinator];
+  self.mapControlsViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
+  [self.view addSubview:self.mapControlsViewController.view];
+  [NSLayoutConstraint activateConstraints:@[
+    [self.mapControlsViewController.view.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+    [self.mapControlsViewController.view.leftAnchor constraintEqualToAnchor:self.view.leftAnchor],
+    [self.mapControlsViewController.view.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+    [self.mapControlsViewController.view.rightAnchor constraintEqualToAnchor:self.view.rightAnchor]
+  ]];
+  [self addChildViewController:self.mapControlsViewController];
+  [self.mapControlsViewController didMoveToParentViewController:self];
+
   self.welcomePageController = [MWMWelcomePageController controllerWithParent:self];
   [self processMyPositionStateModeEvent:[MWMLocationManager isLocationProhibited] ? MWMMyPositionModeNotFollowNoPosition
                                                                                   : MWMMyPositionModePendingPosition];
@@ -435,8 +318,9 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 }
 
 - (void)didBecomeActive {
-  if (!self.welcomePageController)
-    [self.controlsManager showAdditionalViewsIfNeeded];
+  if (!self.welcomePageController && self.navigationController.viewControllers.count == 1) {
+    [self.mapControlsViewController showAdditionalViews];
+  }
 }
 
 - (void)viewDidLayoutSubviews {
@@ -518,10 +402,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   self.listeners = [NSHashTable<id<MWMLocationModeListener>> weakObjectsHashTable];
   Framework &f = GetFramework();
   // TODO: Review and improve this code.
-  f.SetPlacePageListeners([self]() { [self onMapObjectSelected]; },
-                          [self](bool switchFullScreen) { [self onMapObjectDeselected:switchFullScreen]; },
-                          [self]() { [self onMapObjectUpdated]; });
-  // TODO: Review and improve this code.
   f.SetMyPositionModeListener([self](location::EMyPositionMode mode, bool routingActive) {
     // TODO: Two global listeners are subscribed to the same event from the core.
     // Probably it's better to subscribe only wnen needed and usubscribe in other cases.
@@ -530,7 +410,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   });
   f.SetMyPositionPendingTimeoutListener([self] { [self processMyPositionPendingTimeout]; });
 
-  self.userTouchesAction = UserTouchesActionNone;
   [[MWMBookmarksManager sharedManager] addObserver:self];
   [[MWMBookmarksManager sharedManager] loadBookmarks];
   [MWMFrameworkListener addObserver:self];
@@ -894,7 +773,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 - (BookmarksCoordinator *)bookmarksCoordinator {
   if (!_bookmarksCoordinator)
     _bookmarksCoordinator = [[BookmarksCoordinator alloc] initWithNavigationController:self.navigationController
-                                                                       controlsManager:self.controlsManager
                                                                      navigationManager:[MWMNavigationDashboardManager sharedManager]];
   return _bookmarksCoordinator;
 }

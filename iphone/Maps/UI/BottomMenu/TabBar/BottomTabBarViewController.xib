@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,17 +20,10 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="zuH-WU-hiP" customClass="BottomTabBarView" customModule="maps_me" customModuleProvider="target" propertyAccessControl="none">
-            <rect key="frame" x="0.0" y="0.0" width="373" height="84"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="zuH-WU-hiP" customClass="SolidTouchView" propertyAccessControl="none">
+            <rect key="frame" x="0.0" y="0.0" width="373" height="48"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Uc-SH-J1o">
-                    <rect key="frame" x="0.0" y="0.0" width="373" height="84"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="MenuBackground"/>
-                    </userDefinedRuntimeAttributes>
-                </view>
                 <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vum-s3-PHx" userLabel="MainButtons">
                     <rect key="frame" x="0.0" y="0.0" width="373" height="48"/>
                     <subviews>
@@ -104,7 +97,6 @@
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <accessibility key="accessibilityConfiguration" identifier="MainButtons"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="48" id="69A-eu-uLp"/>
                         <constraint firstItem="No0-ld-JX3" firstAttribute="centerY" secondItem="vum-s3-PHx" secondAttribute="centerY" id="8nL-zT-Y7b"/>
                         <constraint firstItem="No0-ld-JX3" firstAttribute="height" secondItem="vum-s3-PHx" secondAttribute="height" id="9eR-I7-7at"/>
                         <constraint firstItem="svD-yi-GrZ" firstAttribute="leading" secondItem="dgG-ki-3tB" secondAttribute="trailing" id="Bsa-EZ-etN"/>
@@ -130,12 +122,9 @@
                     </constraints>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="aaw-Hz-zma"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="aaw-Hz-zma" firstAttribute="trailing" secondItem="4Uc-SH-J1o" secondAttribute="trailing" id="04D-ND-rcR"/>
-                <constraint firstItem="4Uc-SH-J1o" firstAttribute="top" secondItem="vum-s3-PHx" secondAttribute="top" id="0Jc-AD-Qya"/>
-                <constraint firstItem="4Uc-SH-J1o" firstAttribute="leading" secondItem="aaw-Hz-zma" secondAttribute="leading" id="CMh-m4-Ern"/>
-                <constraint firstAttribute="bottom" secondItem="4Uc-SH-J1o" secondAttribute="bottom" id="Hjq-xN-iqA"/>
                 <constraint firstItem="vum-s3-PHx" firstAttribute="top" secondItem="zuH-WU-hiP" secondAttribute="top" id="PQS-ro-25e"/>
                 <constraint firstItem="vum-s3-PHx" firstAttribute="leading" secondItem="zuH-WU-hiP" secondAttribute="leading" id="kza-JN-Dul"/>
                 <constraint firstAttribute="trailing" secondItem="vum-s3-PHx" secondAttribute="trailing" id="sM6-P2-rN9"/>
@@ -144,7 +133,6 @@
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="aaw-Hz-zma"/>
             <point key="canvasLocation" x="72" y="254"/>
         </view>
     </objects>

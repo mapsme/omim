@@ -142,3 +142,9 @@ fileprivate final class RoutesGalleryLayout: UICollectionViewFlowLayout {
     return CGPoint(x: adjustedIndex * pageWidth, y: 0)
   }
 }
+
+extension GuidesGalleryViewController: MapOverlayViewProtocol {
+  var bottomView: UIView {
+    view
+  }
+}

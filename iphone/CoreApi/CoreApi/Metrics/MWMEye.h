@@ -1,23 +1,20 @@
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, MWMTip)
-{
-  MWMTipBookmarks,
-  MWMTipSearch,
-  MWMTipDiscovery,
-  MWMTipSubway,
-  MWMTipIsolines,
-  MWMTipNone
-};
+typedef NS_ENUM(NSUInteger, MWMTipType) {
+  MWMTipTypeBookmarks,
+  MWMTipTypeSearch,
+  MWMTipTypeDiscovery,
+  MWMTipTypeSubway,
+  MWMTipTypeIsolines,
+  MWMTipTypeNone
+} NS_SWIFT_NAME(TipType);
 
-typedef NS_ENUM(NSUInteger, MWMTipEvent)
-{
+typedef NS_ENUM(NSUInteger, MWMTipEvent) {
   MWMTipEventAction,
   MWMTipEventGotIt
-};
+} NS_SWIFT_NAME(TipEvent);
 
-typedef NS_ENUM(NSUInteger, MWMEyeDiscoveryEvent)
-{
+typedef NS_ENUM(NSUInteger, MWMEyeDiscoveryEvent) {
   MWMEyeDiscoveryEventHotels,
   MWMEyeDiscoveryEventAttractions,
   MWMEyeDiscoveryEventCafes,
@@ -28,10 +25,10 @@ typedef NS_ENUM(NSUInteger, MWMEyeDiscoveryEvent)
   MWMEyeDiscoveryEventMoreLocals
 };
 
-@interface MWMEye : NSObject
+@interface MWMEye: NSObject
 
-+ (MWMTip)getTipType;
-+ (void)tipClickedWithType:(MWMTip)type event:(MWMTipEvent)event;
++ (MWMTipType)getTipType;
++ (void)tipClickedWithType:(MWMTipType)type event:(MWMTipEvent)event;
 + (void)bookingFilterUsed;
 + (void)boomarksCatalogShown;
 + (void)discoveryShown;

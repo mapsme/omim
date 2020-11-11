@@ -12,7 +12,7 @@ final class GuidesNavigationBarArea: AvailableArea {
   }
 
   override func notifyObserver() {
-    GuidesNavigationBarViewController.updateAvailableArea(areaFrame)
+//    GuidesNavigationBarViewController.updateAvailableArea(areaFrame)
   }
 }
 

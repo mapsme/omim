@@ -190,4 +190,12 @@
   GetFramework().UpdatePlacePageInfoForCurrentSelection();
 }
 
++ (void)setPlacePageSelectedCallback:(MWMVoidBlock)selected
+                  deselectedCallback:(MWMBoolBlock)deselected
+                     updatedCallback:(MWMVoidBlock)updated {
+  GetFramework().SetPlacePageListeners([selected]() { selected(); },
+                                       [deselected](bool switchFullScreen) { deselected(switchFullScreen); },
+                                       [updated]() { updated(); });
+}
+
 @end

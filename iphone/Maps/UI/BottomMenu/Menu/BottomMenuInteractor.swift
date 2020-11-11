@@ -8,9 +8,9 @@ protocol BottomMenuInteractorProtocol: class {
 }
 
 @objc protocol BottomMenuDelegate {
-  func actionDownloadMaps(_ mode: MWMMapDownloaderMode)
   func addPlace()
   func didFinishAddingPlace()
+  func didFinish()
 }
 
 class BottomMenuInteractor {
@@ -18,26 +18,19 @@ class BottomMenuInteractor {
   private weak var viewController: UIViewController?
   private weak var mapViewController: MapViewController?
   private weak var delegate: BottomMenuDelegate?
-  private weak var controlsManager: MWMMapViewControlsManager?
 
   init(viewController: UIViewController,
        mapViewController: MapViewController,
-       controlsManager: MWMMapViewControlsManager,
        delegate: BottomMenuDelegate) {
     self.viewController = viewController
     self.mapViewController = mapViewController
     self.delegate = delegate
-    self.controlsManager = controlsManager
   }
 }
 
 extension BottomMenuInteractor: BottomMenuInteractorProtocol {
   func close() {
-    if controlsManager?.guidesNavigationBarHidden == false {
-      controlsManager?.menuState = .inactive
-    } else {
-      controlsManager?.menuState = .hidden
-    }
+    delegate?.didFinish()
   }
 
   func addPlace() {
@@ -54,7 +47,7 @@ extension BottomMenuInteractor: BottomMenuInteractorProtocol {
   func downloadMaps() {
     Statistics.logEvent(kStatToolbarClick, withParameters: [kStatItem : kStatDownloadMaps])
     close()
-    self.delegate?.actionDownloadMaps(.downloaded)
+    mapViewController?.openMapsDownloader(.downloaded)
   }
 
   func openSettings() {

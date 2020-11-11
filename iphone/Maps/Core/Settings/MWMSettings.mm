@@ -1,6 +1,5 @@
 #import "MWMSettings.h"
 #import "MWMCoreUnits.h"
-#import "MWMMapViewControlsManager.h"
 #import "SwiftBridge.h"
 #import "Flurry.h"
 
@@ -72,7 +71,6 @@ NSString * const kCrashReportingDisabled = @"CrashReportingDisabled";
 + (void)setZoomButtonsEnabled:(BOOL)zoomButtonsEnabled
 {
   settings::Set(kZoomButtonsEnabledKey, static_cast<bool>(zoomButtonsEnabled));
-  [MWMMapViewControlsManager manager].zoomHidden = !zoomButtonsEnabled;
 }
 
 + (BOOL)compassCalibrationEnabled

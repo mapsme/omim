@@ -16,7 +16,11 @@ class BottomTabBarInteractor {
   
   private var isPoint2PointSelected = false
   
-  
+  init(viewController: UIViewController,
+       mapViewController: MapViewController) {
+    self.viewController = viewController
+    self.mapViewController = mapViewController
+  }
   
   init(viewController: UIViewController,
        mapViewController: MapViewController,

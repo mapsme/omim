@@ -345,3 +345,9 @@ extension PlacePageViewController: UIScrollViewDelegate {
     }
   }
 }
+
+extension PlacePageViewController: MapOverlayViewProtocol {
+  var bottomView: UIView {
+    stackView
+  }
+}

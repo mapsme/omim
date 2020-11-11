@@ -10,7 +10,7 @@ final class TrafficButtonArea: AvailableArea {
   }
 
   override func notifyObserver() {
-    MWMTrafficButtonViewController.updateAvailableArea(areaFrame)
+//    MWMTrafficButtonViewController.updateAvailableArea(areaFrame)
   }
 }
 

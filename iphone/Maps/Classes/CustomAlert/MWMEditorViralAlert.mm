@@ -21,8 +21,8 @@
   [Statistics logEvent:kStatEditorSecondTimeShareClick];
   [self close:^{
     MWMActivityViewController* shareVC = [MWMActivityViewController shareControllerForEditorViral];
-    [shareVC presentInParentViewController:self.alertController.ownerViewController
-                                anchorView:[BottomTabBarViewController controller].view];
+//    [shareVC presentInParentViewController:self.alertController.ownerViewController
+//                                anchorView:[BottomTabBarViewController controller].view];
   }];
 }
 
