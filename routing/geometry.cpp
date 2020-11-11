@@ -278,18 +278,6 @@ Geometry::Geometry(std::unique_ptr<GeometryLoader> loader, bool twoThreadsReady)
                                 true /* isOutgoing */))
   , m_featureIdToRoadBwd(
         twoThreadsReady ? MakeCache(kRoadsCacheSizeTwoCaches, false /* isOutgoing */) : nullptr)
-//  , m_featureIdToRoad(
-//        make_unique<RoutingFifoCache>(twoThreadsReady ? kRoadsCacheSizeTwoCaches : kRoadsCacheSize,
-//                                      [this](uint32_t featureId, RoadGeometry & road) {
-//                                        m_loader->Load(featureId, road, true /* isOutgoing */);
-//                                      }))
-//  , m_featureIdToRoadBwd(twoThreadsReady
-//                             ? make_unique<RoutingFifoCache>(
-//                                   kRoadsCacheSizeTwoCaches,
-//                                   [this](uint32_t featureId, RoadGeometry & road) {
-//                                     m_loader->Load(featureId, road, false /* isOutgoing */);
-//                                   })
-//                             : nullptr)
 {
   CHECK(m_loader, ());
 }
