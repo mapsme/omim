@@ -320,6 +320,9 @@ void IndexGraph::GetSegmentCandidateForJoint(Segment const & parent, bool isOutg
 /// \param |parentWeights| - see |IndexGraphStarterJoints::GetEdgeList| method about this argument.
 ///                          Shortly - in case of |isOutgoing| == false, method saves here the weights
 ///                                   from parent to firstChildren.
+/// \note Despite the fact the method is not constant it still may be called from two
+/// threads. One should call it with |isOutgoing| == true and another one with
+/// |isOutgoing| == false.
 void IndexGraph::ReconstructJointSegment(astar::VertexData<JointSegment, RouteWeight> const & parentVertexData,
                                          Segment const & parent,
                                          vector<Segment> const & firstChildren,

@@ -21,6 +21,8 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <mutex>
+#include <optional>
 #include <vector>
 
 namespace routing
@@ -43,6 +45,8 @@ public:
                    bool useRoutingOptions, bool useAccessConditional,
                    std::vector<SegmentEdge> & edges) override;
 
+  /// \note This method may be called from two threads. One with |isOutgoing| == true
+  /// and another one with |isOutgoing| == false.
   void GetEdgeList(astar::VertexData<JointSegment, RouteWeight> const & parentVertexData,
                    Segment const & parent, bool isOutgoing, bool useAccessConditional,
                    std::vector<JointEdge> & jointEdges,
@@ -61,6 +65,9 @@ public:
   void SetMode(WorldGraphMode mode) override { m_mode = mode; }
   WorldGraphMode GetMode() const override { return m_mode; }
 
+  /// \note Despite the fact the method is not constant it does not change the state
+  // of SingleVehicleWorldGraph and may be called from different threads without
+  // synchronization.
   RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to) override;
 
   RouteWeight CalcSegmentWeight(Segment const & segment, bool isOutgoing,
@@ -131,6 +138,11 @@ private:
 
   std::unique_ptr<CrossMwmGraph> m_crossMwmGraph;
   std::unique_ptr<IndexGraphLoader> m_loader;
+  // This mutex synchronizes the access to cross mwm graph |m_crossMwmGraph|. For the time being
+  // the synchronization is done only for
+  // GetEdgeList(astar::VertexData<JointSegment, RouteWeight> const & ....).
+  // That means only for SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(...).
+  std::optional<std::mutex> m_crossMwmGraphMtx;
   std::shared_ptr<EdgeEstimator> m_estimator;
   RoutingOptions m_avoidRoutingOptions = RoutingOptions();
   WorldGraphMode m_mode = WorldGraphMode::NoLeaps;

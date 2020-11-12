@@ -131,6 +131,9 @@ public:
 
   bool IsUTurnAndRestricted(Segment const & parent, Segment const & child, bool isOutgoing) const;
 
+  /// \note Despite the fact the method is not constant it still may be called from two
+  /// threads. One should call it with |isOutgoing| == true and another one with
+  /// |isOutgoing| == false.
   RouteWeight CalculateEdgeWeight(EdgeEstimator::Purpose purpose,
                                   Segment const & from, Segment const & to, bool isOutgoing,
                                   std::optional<RouteWeight const> const & prevWeight = std::nullopt);

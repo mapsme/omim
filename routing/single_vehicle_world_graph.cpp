@@ -2,6 +2,8 @@
 
 #include "routing/base/astar_algorithm.hpp"
 
+#include "base/optional_lock_guard.hpp"
+
 #include <algorithm>
 #include <utility>
 
@@ -25,6 +27,8 @@ SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> cross
                                                  MwmHierarchyHandler && hierarchyHandler)
   : m_crossMwmGraph(move(crossMwmGraph))
   , m_loader(move(loader))
+  , m_crossMwmGraphMtx(m_loader->IsTwoThreadsReady() ? std::make_optional<std::mutex>()
+                                                     : std::nullopt)
   , m_estimator(move(estimator))
   , m_hierarchyHandler(std::move(hierarchyHandler))
 {
@@ -37,6 +41,10 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
                                                              vector<RouteWeight> & parentWeights,
                                                              bool isOutgoing)
 {
+  // Synchronization note. While building route with the help of two thread bidirectional A*
+  // SingleVehicleWorldGraph::CheckAndProcessTransitFeatures() may be called from two
+  // threads (depending on the value of |isOutgoing|). According to performance tests
+  // there's almost no performance leak after locking this mutex here.
   bool opposite = !isOutgoing;
   vector<JointEdge> newCrossMwmEdges;
 
@@ -48,20 +56,27 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
 
     NumMwmId const edgeMwmId = target.GetMwmId();
 
-    if (!m_crossMwmGraph->IsFeatureTransit(edgeMwmId, target.GetFeatureId()))
-      continue;
+    {
+      base::OptionalLockGuard guard(m_crossMwmGraphMtx);
+      if (!m_crossMwmGraph->IsFeatureTransit(edgeMwmId, target.GetFeatureId()))
+        continue;
+    }
 
     auto & currentIndexGraph = GetIndexGraph(mwmId);
 
     vector<Segment> twins;
-    m_crossMwmGraph->GetTwinFeature(target.GetSegment(true /* start */), isOutgoing, twins);
+    {
+      base::OptionalLockGuard guard(m_crossMwmGraphMtx);
+      m_crossMwmGraph->GetTwinFeature(target.GetSegment(true /* start */), isOutgoing, twins);
+    }
     for (auto const & twin : twins)
     {
       NumMwmId const twinMwmId = twin.GetMwmId();
 
       uint32_t const twinFeatureId = twin.GetFeatureId();
 
-      Segment const start(twinMwmId, twinFeatureId, target.GetSegmentId(!opposite), target.IsForward());
+      Segment const start(twinMwmId, twinFeatureId, target.GetSegmentId(!opposite),
+                          target.IsForward());
 
       auto & twinIndexGraph = GetIndexGraph(twinMwmId);
 
@@ -69,15 +84,17 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
       twinIndexGraph.GetLastPointsForJoint({start}, isOutgoing, lastPoints);
       ASSERT_EQUAL(lastPoints.size(), 1, ());
 
-      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(parent,
-                                                                target.GetSegment(!opposite),
-                                                                isOutgoing, lastPoints.back()))
+      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(
+              parent, target.GetSegment(!opposite), isOutgoing, lastPoints.back()))
       {
         newCrossMwmEdges.emplace_back(*edge);
         newCrossMwmEdges.back().GetTarget().SetFeatureId(twinFeatureId);
         newCrossMwmEdges.back().GetTarget().SetMwmId(twinMwmId);
-        newCrossMwmEdges.back().GetWeight() +=
-            m_hierarchyHandler.GetCrossBorderPenalty(mwmId, twinMwmId);
+        {
+          base::OptionalLockGuard guard(m_crossMwmGraphMtx);
+          newCrossMwmEdges.back().GetWeight() +=
+              m_hierarchyHandler.GetCrossBorderPenalty(mwmId, twinMwmId);
+        }
 
         parentWeights.emplace_back(parentWeights[i]);
       }
@@ -91,7 +108,6 @@ void SingleVehicleWorldGraph::GetEdgeList(
     astar::VertexData<Segment, RouteWeight> const & vertexData, bool isOutgoing,
     bool useRoutingOptions, bool useAccessConditional, vector<SegmentEdge> & edges)
 {
-  // @TODO It should be ready for calling from two threads if IsTwoThreadsReady() returns true.
   CHECK_NOT_EQUAL(m_mode, WorldGraphMode::LeapsOnly, ());
 
   ASSERT(m_parentsForSegments.forward && m_parentsForSegments.backward,
@@ -214,7 +230,6 @@ RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, ui
 void SingleVehicleWorldGraph::GetTwinsInner(Segment const & segment, bool isOutgoing,
                                             vector<Segment> & twins)
 {
-  // @TODO It should be ready for calling from two threads if IsTwoThreadsReady() returns true.
   m_crossMwmGraph->GetTwins(segment, isOutgoing, twins);
 }
 
