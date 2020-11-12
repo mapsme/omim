@@ -40,6 +40,14 @@ public:
                        shared_ptr<EdgeEstimator> estimator, DataSource & dataSource,
                        RoutingOptions routingOptions = RoutingOptions());
 
+  /// |GetGeometry()| and |GetIndexGraph()| return a references to items in container |m_graphs|.
+  /// They may be called from different threads in case of two thread bidirectional A*.
+  /// The references they return are not constant but it's ok. The code should works with them
+  /// taking into account |isOutgoing| parameter. On the other hand these methods may add items to
+  /// |m_graphs| under a mutex. So it's possible that while one thread is working with a reference
+  /// returned by |GetGeometry()| or |GetIndexGraph()| the other thread is adding item to |m_graphs|
+  /// and the hash table is rehashing. Everything should work correctly because according
+  /// to the standard rehashing of std::unordered_map keeps references.
   // IndexGraphLoader overrides:
   Geometry & GetGeometry(NumMwmId numMwmId) override;
   IndexGraph & GetIndexGraph(NumMwmId numMwmId) override;
