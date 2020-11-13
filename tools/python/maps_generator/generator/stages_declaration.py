@@ -412,8 +412,7 @@ class StageCleanup(Stage):
             if os.path.isfile(p) and x.endswith(".mwm.osm2ft"):
                 shutil.move(p, os.path.join(env.paths.osm2ft_path, x))
 
-        logger.info(f"{env.paths.draft_path} will be removed.")
-        shutil.rmtree(env.paths.draft_path)
+        env.clean()
 
 
 stages.init()

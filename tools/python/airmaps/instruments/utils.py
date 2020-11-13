@@ -1,14 +1,15 @@
+import logging
 import os
 import shutil
 from datetime import datetime
 from typing import Iterable
 
-from airflow.operators.python_operator import PythonOperator
-
 from maps_generator.generator.env import Env
 from maps_generator.generator.stages import Stage
 from maps_generator.generator.stages import get_stage_name
 from maps_generator.maps_generator import run_generation
+
+logger = logging.getLogger("airmaps")
 
 
 def put_current_date_in_filename(filename):
@@ -26,19 +27,9 @@ def get_latest_filename(filename, prefix=""):
     return os.path.join(path, ".".join(parts))
 
 
-def rm_build(**kwargs):
-    build_name = kwargs["ti"].xcom_pull(key="build_name")
-    env = Env(build_name=build_name)
+def rm_build(env):
+    logger.info(f"Build {env.build_path} will be removed.")
     shutil.rmtree(env.build_path)
-
-
-def make_rm_build_task(dag):
-    return PythonOperator(
-        task_id="Rm_build_task",
-        provide_context=True,
-        python_callable=rm_build,
-        dag=dag,
-    )
 
 
 def run_generation_from_first_stage(

@@ -1,7 +1,7 @@
 import argparse
+import logging
 import multiprocessing
 import os
-import site
 import sys
 from configparser import ConfigParser
 from configparser import ExtendedInterpolation
@@ -11,6 +11,8 @@ from typing import AnyStr
 
 from maps_generator.utils.md5 import md5_ext
 from maps_generator.utils.system import total_virtual_memory
+
+logger = logging.getLogger("maps_generator")
 
 ETC_DIR = os.path.join(os.path.dirname(__file__), "..", "var", "etc")
 
@@ -54,7 +56,8 @@ class CfgReader:
 
     def __init__(self, default_settings_path: AnyStr):
         self.config = ConfigParser(interpolation=ExtendedInterpolation())
-        self.config.read([get_config_path(default_settings_path)])
+        self.config_path = get_config_path(default_settings_path)
+        self.config.read([self.config_path, ])
 
     def get_opt(self, s: AnyStr, v: AnyStr, default: Any = None):
         val = CfgReader._get_env_val(s, v)
@@ -222,17 +225,20 @@ def init(default_settings_path: AnyStr):
     NODE_STORAGE = cfg.get_opt("Generator tool", "NODE_STORAGE", NODE_STORAGE)
 
     if not os.path.exists(USER_RESOURCE_PATH):
-        from data_files import find_data_files
+        try:
+            from data_files import find_data_files
 
-        USER_RESOURCE_PATH = find_data_files("omim-data")
-        assert USER_RESOURCE_PATH is not None
+            USER_RESOURCE_PATH = find_data_files("omim-data")
+            assert USER_RESOURCE_PATH is not None
 
-        import borders
+            import borders
 
-        # Issue: If maps_generator is installed in your system as a system
-        # package and borders.init() is called first time, call borders.init()
-        # might return False, because you need root permission.
-        assert borders.init()
+            # Issue: If maps_generator is installed in your system as a system
+            # package and borders.init() is called first time, call borders.init()
+            # might return False, because you need root permission.
+            assert borders.init()
+        except AssertionError as e:
+            logger.exception(f"Error while loading settings from {cfg.config_path}:")
 
     # Stages section:
     global NEED_PLANET_UPDATE
