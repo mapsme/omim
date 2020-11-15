@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Ukendt sted";
 
-"editor_other_info" = "Send en besked til OSM-moderator";
+"editor_other_info" = "Send en besked til OSM-redaktører";
 
 "editor_detailed_description_hint" = "Detaljerede bemærkninger";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Senere";
 
-"all_pass_subscription_header" = "ABONNEMENT TIL KATALOG";
+"all_pass_subscription_header" = "Abonner på";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Katalog over Guides";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\nguide & stier";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Børn";
 
-"guests_picker_children_subtitle" = "1-16 år";
+"guests_picker_children_subtitle" = "1-17 år";
 
 "guests_picker_infants_title" = "Spædbørn";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Prøv det nu";
 
-"subscription_terms_guides_outdoor" = "Når du bekræfter købet, vil betalingen blive debiteret på din iTunes-konto. Abonnementet vil automatisk blive fornyet, med mindre automatisk fornyelse slås fra mindst 24 timer før slutningen af den nuværende abonnementsperiode. Din konto vil blive debiteret ifølge din fornyelsesplan inden for 24 timer før den nuværende abonnementsperiode slutter. Du kan administrere eller slå automatisk fornyelse fra i dine Apple ID-kontoindstillinger når som helst efter købet. Du kan kun bruge de downloadede guider i løbet af dit abonnement, indtil abonnementet udløber. Guider og bogmærker vil automatisk blive slettet 30 dage efter abonnementet udløber.\n* Abonnementet med gratis prøveperiode vil automatisk blive fornyet til et betalt abonnement. Du kan annullere eller administrere automatisk fornyelse af din gratis prøveperiode i dine kontoindstillinger efter købet. Annulleringen træder i kraft 24 timer efter den sidste dag af den nuværende abonnementsperiode. Derefter vil du blive nedgraderet til den gratis tjeneste. Bemærk venligst: Enhver ubrugt del af den gratis prøveperiode går tabt, når du køber et premium-abonnement i løbet af den gratis prøveperiode.";
+"subscription_terms_guides_outdoor" = "Når du bekræfter købet, vil betalingen blive debiteret på din iTunes-konto. Abonnementet vil automatisk blive fornyet, med mindre automatisk fornyelse slås fra mindst 24 timer før slutningen af den nuværende abonnementsperiode. Din konto vil blive debiteret ifølge din fornyelsesplan inden for 24 timer før den nuværende abonnementsperiode slutter. Du kan administrere eller slå automatisk fornyelse fra i dine Apple ID-kontoindstillinger når som helst efter købet. Du kan kun bruge de downloadede guider i løbet af dit abonnement, indtil abonnementet udløber. Guider og bogmærker vil automatisk blive slettet 7 dage efter abonnementet udløber.\n* Abonnementet med gratis prøveperiode vil automatisk blive fornyet til et betalt abonnement. Du kan annullere eller administrere automatisk fornyelse af din gratis prøveperiode i dine kontoindstillinger efter købet. Annulleringen træder i kraft 24 timer efter den sidste dag af den nuværende abonnementsperiode. Derefter vil du blive nedgraderet til den gratis tjeneste. Bemærk venligst: Enhver ubrugt del af den gratis prøveperiode går tabt, når du køber et premium-abonnement i løbet af den gratis prøveperiode.";
 
-"subscription_terms_android_outdoor" = "Når du bekræfter købet, vil betalingen blive debiteret på din Google Play-konto. Abonnementet vil automatisk blive fornyet, med mindre automatisk fornyelse slås fra mindst 24 timer før slutningen af den nuværende abonnementsperiode. Din konto vil blive debiteret ifølge din fornyelsesplan inden for 24 timer før den nuværende abonnementsperiode slutter. Du kan administrere eller slå automatisk fornyelse fra i dine kontoindstillinger når som helst efter købet. Du kan kun bruge de downloadede guider i løbet af dit abonnement, indtil abonnementet udløber. Guider vil automatisk blive slettet 30 dage efter abonnementet udløber.\n* Abonnementet med gratis prøveperiode vil automatisk blive fornyet til et betalt abonnement. Du kan annullere eller administrere automatisk fornyelse af din gratis prøveperiode i dine kontoindstillinger efter købet. Annulleringen træder i kraft 24 timer efter den sidste dag af den nuværende abonnementsperiode. Derefter vil du blive nedgraderet til den gratis tjeneste. Bemærk venligst: Enhver ubrugt del af den gratis prøveperiode går tabt, når du køber et premium-abonnement i løbet af den gratis prøveperiode.";
+"subscription_terms_android_outdoor" = "Når du bekræfter købet, vil betalingen blive debiteret på din Google Play-konto. Abonnementet vil automatisk blive fornyet, med mindre automatisk fornyelse slås fra mindst 24 timer før slutningen af den nuværende abonnementsperiode. Din konto vil blive debiteret ifølge din fornyelsesplan inden for 24 timer før den nuværende abonnementsperiode slutter. Du kan administrere eller slå automatisk fornyelse fra i dine kontoindstillinger når som helst efter købet. Du kan kun bruge de downloadede guider i løbet af dit abonnement, indtil abonnementet udløber. Guider vil automatisk blive slettet 7 dage efter abonnementet udløber.\n* Abonnementet med gratis prøveperiode vil automatisk blive fornyet til et betalt abonnement. Du kan annullere eller administrere automatisk fornyelse af din gratis prøveperiode i dine kontoindstillinger efter købet. Annulleringen træder i kraft 24 timer efter den sidste dag af den nuværende abonnementsperiode. Derefter vil du blive nedgraderet til den gratis tjeneste. Bemærk venligst: Enhver ubrugt del af den gratis prøveperiode går tabt, når du køber et premium-abonnement i løbet af den gratis prøveperiode.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "Abonner på\n<b>Guidekatalog</b>";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Rejseguider\naf Lonely Planet®";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "Endnu <b>flere oplevelser</b> med tusindvis af interessante steder <b>i hele verden</b>";
+
+"content_by_component" = "Indhold af: %s";
+
+"whatsnew_lp_title" = "Endnu flere følelser";
+
+"whatsnew_lp_message" = "Lonely Planet guides kan nu findes i vores app! De bedse attraktioner, tematiske gåture og unikke destinationer for 7000+ byer.";
+
+"collections_title" = "Samlinger";
+
+"key_information_title" = "Central information";
+
+"mustsee_title" = "Skal se";
+
+"see_lp_category" = "Attraktioner";
+
+"play_lp_category" = "Underholdning";
+
+"shop_lp_category" = "Forretninger";
+
+"transport_lp_category" = "Transport";
+
+"sleep_lp_category" = "Overnatning";
+
+"general_lp_category" = "Generelt";
+
+"drink_lp_category" = "Drikke";
+
+"eat_lp_category" = "Mad";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Gade";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "Væddeløbsbane";
 
 "type.highway.residential" = "Gade";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Kilde";
 
+"type.natural.strait" = "Stræde";
+
 "type.natural.tree" = "Træ";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Jernbane";
 

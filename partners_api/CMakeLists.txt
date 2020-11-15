@@ -13,6 +13,8 @@ set(
   ads/banner.hpp
   ads/bookmark_catalog_ads.cpp
   ads/bookmark_catalog_ads.hpp
+  ads/citymobil_ads.cpp
+  ads/citymobil_ads.hpp
   ads/facebook_ads.cpp
   ads/facebook_ads.hpp
   ads/google_ads.cpp
@@ -40,6 +42,8 @@ set(
   booking_ordering_params.cpp
   booking_ordering_params.hpp
   booking_params_base.hpp
+  citymobil_api.cpp
+  citymobil_api.hpp
   freenow_api.cpp
   freenow_api.hpp
   guides_on_map_api.cpp

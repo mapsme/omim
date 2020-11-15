@@ -824,7 +824,7 @@
 	<string name="error_enter_correct_zip_code">Írja be a helyes irányítószámot</string>
 	<!-- Place Page title for long tap -->
 	<string name="core_placepage_unknown_place">Ismeretlen hely</string>
-	<string name="editor_other_info">Megjegyzést küldött az OSM-moderátornak</string>
+	<string name="editor_other_info">Küldjön jegyzetet az OSM editornak</string>
 	<string name="editor_detailed_description_hint">Részletes megjegyzés</string>
 	<string name="editor_detailed_description">Javasolt változtatásait elküldjük az OpenStreetMap közösségnek. Írja le a további információkat, amelyek nem szerkeszthetők a MAPS.ME-ben.</string>
 	<string name="editor_more_about_osm">További részletek az OpenStreetMap-ról</string>
@@ -1711,7 +1711,8 @@
 	<string name="new_onboarding_step5.3_message">Nézd meg a szabadon válaztható városi és szabadtéri túrák ingyenes példáit a MAPS.ME-ről!</string>
 	<string name="new_onboarding_step5.3_button">Ingyenes letöltés</string>
 	<string name="new_onboarding_additional_steps_later_button">Később</string>
-	<string name="all_pass_subscription_header">ELŐFIZETÉS A KATALÓGUSRA</string>
+	<string name="all_pass_subscription_header">Iratkozzon fel az</string>
+	<string name="all_pass_subscription_subheader">Útmutató katalógus</string>
 	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
 	<string name="all_pass_subscription_message_title">30000+\nútmutatók\n&amp; sávok</string>
 	<!-- <b> & </b> tag to make a part of the line bold -->
@@ -1821,7 +1822,7 @@
 	<string name="guests_picker_rooms">Szobák</string>
 	<string name="guests_picker_adults">Felnőttek</string>
 	<string name="guests_picker_children_title">Gyerekek</string>
-	<string name="guests_picker_children_subtitle">1-16 éves</string>
+	<string name="guests_picker_children_subtitle">1-17 éves</string>
 	<string name="guests_picker_infants_title">Csecsemők</string>
 	<string name="guests_picker_infants_subtitle">0-12 hónapos</string>
 	<!-- as less symbols as possible -->
@@ -1835,8 +1836,27 @@
 	<string name="whatsnew_trial_title">Ingyenes hozzáférés az útmutatók katalógushoz</string>
 	<string name="whatsnew_trial_message">Most 7 napos ingyenes próbaverziót kínálunk. Hozzáférés ezer útmutatóhoz a világ minden tájáról, és egy interaktív emelkedési profil a szabadtéri útmutatókhoz.</string>
 	<string name="whatsnew_trial_cta">Próbálja ki most</string>
-	<string name="subscription_terms_guides_outdoor">Amikor megerősíti a vásárlást, a fizetést az iTunes számlájára terheljük. Az előfizetés automatikusan megújul, kivéve, ha az automatikus megújítás funkció legalább 24 órával a jelenlegi előfizetési időszak vége előtt letiltásra kerül. Fiókját a megújítási terv szerint 24 órán belül terheljük a jelenlegi előfizetési időszak lejárta előtt. Az automatikus megújítást az Apple ID-fiók beállításaiban a vásárlás után bármikor ellenőrizheti és letilthatja. Az előfizetés alatt letöltött útmutatásokat csak az előfizetés lejártáig használhatja. Az útmutatók és az összes könyvjelző automatikusan törlésre kerül az előfizetés lejárta után 30 nappal.\n* Az ingyenes próbaidőszakra szóló feliratkozás automatikusan fizetett előfizetésként kerül megújításra. Az ingyenes próbaverzió automatikus megújítását a vásárlás után a fiókbeállításaiban törölheti vagy ellenőrizheti. A lemondás a jelenlegi előfizetési időszak utolsó napját követő 24 órában lép életbe. Ezt követően az ingyenes szolgáltatásra kerül át. Megjegyzés: Az ingyenes próbaverzió fel nem használt része elvész, ha prémium előfizetést vásárol az ingyenes próbaverzió alatt.</string>
-	<string name="subscription_terms_android_outdoor">Amikor megerősíti a vásárlást, a fizetést a Google Play számlájára terheljük. Az előfizetés automatikusan megújul, kivéve, ha az automatikus megújítás funkció legalább 24 órával a jelenlegi előfizetési időszak vége előtt letiltásra kerül. Fiókját a megújítási terv szerint 24 órán belül terheljük a jelenlegi előfizetési időszak lejárta előtt. Vásárlás után bármikor ellenőrizheti vagy törölheti az automatikus megújítást a fiókbeállításokban. Az előfizetés alatt letöltött útmutatásokat csak az előfizetés lejártáig használhatja. Az útmutatók automatikusan törlésre kerülnek az előfizetés lejárta után 30 nappal.\n* Az ingyenes próbaidőszakra szóló feliratkozás automatikusan fizetett előfizetésként kerül megújításra. Az ingyenes próbaverzió automatikus megújítását a vásárlás után a fiókbeállításaiban törölheti vagy ellenőrizheti. A lemondás a jelenlegi előfizetési időszak utolsó napját követő 24 órában lép életbe. Ezt követően az ingyenes szolgáltatásra kerül át. Megjegyzés: Az ingyenes próbaverzió fel nem használt része elvész, ha prémium előfizetést vásárol az ingyenes próbaverzió alatt.</string>
+	<string name="subscription_terms_guides_outdoor">Amikor megerősíti a vásárlást, a fizetést az iTunes számlájára terheljük. Az előfizetés automatikusan megújul, kivéve, ha az automatikus megújítás funkció legalább 24 órával a jelenlegi előfizetési időszak vége előtt letiltásra kerül. Fiókját a megújítási terv szerint 24 órán belül terheljük a jelenlegi előfizetési időszak lejárta előtt. Az automatikus megújítást az Apple ID-fiók beállításaiban a vásárlás után bármikor ellenőrizheti és letilthatja. Az előfizetés alatt letöltött útmutatásokat csak az előfizetés lejártáig használhatja. Az útmutatók és az összes könyvjelző automatikusan törlésre kerül az előfizetés lejárta után 7 nappal.\n* Az ingyenes próbaidőszakra szóló feliratkozás automatikusan fizetett előfizetésként kerül megújításra. Az ingyenes próbaverzió automatikus megújítását a vásárlás után a fiókbeállításaiban törölheti vagy ellenőrizheti. A lemondás a jelenlegi előfizetési időszak utolsó napját követő 24 órában lép életbe. Ezt követően az ingyenes szolgáltatásra kerül át. Megjegyzés: Az ingyenes próbaverzió fel nem használt része elvész, ha prémium előfizetést vásárol az ingyenes próbaverzió alatt.</string>
+	<string name="subscription_terms_android_outdoor">Amikor megerősíti a vásárlást, a fizetést a Google Play számlájára terheljük. Az előfizetés automatikusan megújul, kivéve, ha az automatikus megújítás funkció legalább 24 órával a jelenlegi előfizetési időszak vége előtt letiltásra kerül. Fiókját a megújítási terv szerint 24 órán belül terheljük a jelenlegi előfizetési időszak lejárta előtt. Vásárlás után bármikor ellenőrizheti vagy törölheti az automatikus megújítást a fiókbeállításokban. Az előfizetés alatt letöltött útmutatásokat csak az előfizetés lejártáig használhatja. Az útmutatók automatikusan törlésre kerülnek az előfizetés lejárta után 7 nappal.\n* Az ingyenes próbaidőszakra szóló feliratkozás automatikusan fizetett előfizetésként kerül megújításra. Az ingyenes próbaverzió automatikus megújítását a vásárlás után a fiókbeállításaiban törölheti vagy ellenőrizheti. A lemondás a jelenlegi előfizetési időszak utolsó napját követő 24 órában lép életbe. Ezt követően az ingyenes szolgáltatásra kerül át. Megjegyzés: Az ingyenes próbaverzió fel nem használt része elvész, ha prémium előfizetést vásárol az ingyenes próbaverzió alatt.</string>
+	<string name="subscription_header">Iratkozzon fel az\n<b>Útmutató katalógusra</b></string>
+	<!-- Max. 20 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_4">Útikalauzok\na Lonely Planet®-től</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_4">Még <b>több élmény</b> érdekes helyszínek ezreivel <b>a világon</b></string>
+	<string name="content_by_component">Tartalom: %s</string>
+	<string name="whatsnew_lp_title">Még több izgalom</string>
+	<string name="whatsnew_lp_message">Mostantól Lonely Planet útmutatók vannak az alkalmazásunkban! A legjobb látnivalók, tematikus séták, egyedi úti helyek több mint 7000 városhoz.</string>
+	<string name="collections_title">Gyűjtemények</string>
+	<string name="key_information_title">Kulcs információ</string>
+	<string name="mustsee_title">Látnia kell</string>
+	<string name="see_lp_category">Lásd</string>
+	<string name="play_lp_category">Játék</string>
+	<string name="shop_lp_category">Vásárlás</string>
+	<string name="transport_lp_category">Utazás</string>
+	<string name="sleep_lp_category">Szállás</string>
+	<string name="general_lp_category">Általános</string>
+	<string name="drink_lp_category">Ital</string>
+	<string name="eat_lp_category">Étel</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Felvonóállomás</string>
@@ -2222,6 +2242,7 @@
 	<string name="type.natural.pond">Tavacska</string>
 	<string name="type.natural.scrub">Cserjés</string>
 	<string name="type.natural.spring">Forrás</string>
+	<string name="type.natural.strait">Szoros</string>
 	<string name="type.natural.tree">Fa</string>
 	<string name="type.natural.volcano">Tűzhányó</string>
 	<string name="type.natural.water">Víz</string>

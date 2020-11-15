@@ -95,6 +95,8 @@ private:
   double GetTrackWidthForStyle(std::string const & styleUrl) const;
 
   FileData & m_data;
+  CategoryData m_compilationData;
+  CategoryData * m_categoryData;  // never null
 
   std::vector<std::string> m_tags;
   GeometryType m_geometryType;
@@ -127,7 +129,9 @@ private:
   bool m_visible;
   std::string m_nearestToponym;
   std::vector<std::string> m_nearestToponyms;
+  int m_minZoom = 1;
   kml::Properties m_properties;
+  std::vector<CompilationId> m_compilations;
   double m_trackWidth;
 };
 

@@ -138,25 +138,6 @@ BOOST_LIBRARYDIR = os.path.join(BOOST_ROOT, 'stage', 'lib')
 ORIGINAL_CWD = os.getcwd()
 
 
-def python_static_libdir():
-    return get_config_var('LIBPL')
-
-
-def python_ld_library():
-    LDLIBRARY = get_config_var('LDLIBRARY')
-    PYTHONFRAMEWORKPREFIX = get_config_var('PYTHONFRAMEWORKPREFIX')
-    LIBDIR = get_config_var('LIBDIR')
-    LIBPL = get_config_var('LIBPL')
-    candidates = [
-        os.path.join(PYTHONFRAMEWORKPREFIX, LDLIBRARY),
-        os.path.join(LIBDIR, LDLIBRARY),
-        os.path.join(LIBPL, LDLIBRARY),
-    ]
-    for candidate in candidates:
-        if os.path.exists(candidate):
-            return candidate
-
-
 @contextmanager
 def chdir(target_dir):
     saved_cwd = os.getcwd()
@@ -310,11 +291,10 @@ class BuildBoostPythonCommand(Command, object):
         mkpath(self.omim_builddir)
         with open(self.get_boost_config_path(), 'w') as f:
             f.write(
-                'using python : {} : {} : {} : {} ;\n'.format(
+                'using python : {} : {} : {} ;\n'.format(
                     get_python_version(),
                     sys.executable,
                     get_python_inc(),
-                    python_static_libdir(),
                 )
             )
 
@@ -404,7 +384,6 @@ class BuildOmimBindingCommand(build_ext, object):
                     '-DPYTHON_VERSION={}'.format(get_python_version()),
                     '-DPYTHON_EXECUTABLE={}'.format(sys.executable),
                     '-DPYTHON_INCLUDE_DIR={}'.format(get_python_inc()),
-                    '-DPYTHON_LIBRARY={}'.format(python_ld_library()),
                     OMIM_ROOT,
                 ]
             )
@@ -490,11 +469,9 @@ def get_version():
                     break
     code_version = max(versions)
 
-    env_version_addendum = os.environ.get('OMIM_SCM_VERSION')
+    env_version_addendum = os.environ.get('OMIM_SCM_VERSION', '')
 
-    if env_version_addendum:
-        return "{}_{}".format(code_version, env_version_addendum)
-    return code_version
+    return "{}{}".format(code_version, env_version_addendum)
 
 
 def transform_omim_requirement(requirement, omim_package_version):
@@ -534,7 +511,7 @@ def setup_omim_pybinding(
     author_email='dev@maps.me',
     url='https://github.com/mapsme/omim',
     license='Apache-2.0',
-    supported_pythons=('2', '2.7', '3', '3.5', '3.6', '3.7'),
+    supported_pythons=('2', '2.7', '3', '3.5', '3.6', '3.7', '3.8', '3.9'),
 ):
     if version is None:
         version = str(get_version())

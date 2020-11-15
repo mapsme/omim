@@ -214,7 +214,7 @@ void OverlayTree::InsertHandle(ref_ptr<OverlayHandle> handle, int currentRank,
   ASSERT(IsNeedUpdate(), ());
 
 #ifdef DEBUG_OVERLAYS_OUTPUT
-  string str = handle->GetOverlayDebugInfo();
+  std::string str = handle->GetOverlayDebugInfo();
   if (!str.empty())
     LOG(LINFO, (str));
 #endif
@@ -460,7 +460,8 @@ void OverlayTree::Select(m2::RectD const & rect, TOverlayContainer & result) con
   ScreenBase screen = GetModelView();
   ForEachInRect(rect, [&](ref_ptr<OverlayHandle> const & h)
   {
-    if (!h->HasLinearFeatureShape() && h->IsVisible() && h->GetOverlayID().m_featureId.IsValid())
+    auto const & overlayId = h->GetOverlayID();
+    if (!h->HasLinearFeatureShape() && h->IsVisible() && (overlayId.m_featureId.IsValid() || overlayId.m_markId != kml::kInvalidMarkId))
     {
       OverlayHandle::Rects shape;
       h->GetPixelShape(screen, screen.isPerspective(), shape);

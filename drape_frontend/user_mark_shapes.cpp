@@ -29,8 +29,8 @@ namespace df
 {
 std::vector<double> const kLineWidthZoomFactor =
 {
-// 1   2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18   19
-  0.3, 0.3, 0.3, 0.4, 0.5, 0.6, 0.7, 0.7, 0.7, 0.7, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+// 1   2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18   19   20
+  0.3, 0.3, 0.3, 0.4, 0.5, 0.6, 0.7, 0.7, 0.7, 0.7, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
 };
 int const kLineSimplifyLevelEnd = 15;
 
@@ -169,6 +169,8 @@ void GenerateColoredSymbolShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<d
   }
 
   ColoredSymbolViewParams params;
+  params.m_featureId = renderInfo.m_featureId;
+  params.m_markId = renderInfo.m_markId;
 
   if (renderInfo.m_coloredSymbols->m_isSymbolStub)
   {
@@ -205,7 +207,6 @@ void GenerateColoredSymbolShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<d
   if (!isTextBg)
     symbolSize = m2::PointF(std::max(coloredSize.x, symbolSize.x), std::max(coloredSize.y, symbolSize.y));
 
-  params.m_featureID = renderInfo.m_featureId;
   params.m_tileCenter = tileCenter;
   params.m_depthTestEnabled = renderInfo.m_depthTestEnabled;
   params.m_depth = renderInfo.m_depth;
@@ -234,7 +235,9 @@ void GeneratePoiSymbolShape(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Te
                             m2::PointD const & tileCenter, std::string const & symbolName,
                             m2::PointF const & symbolOffset, dp::Batcher & batcher)
 {
-  PoiSymbolViewParams params(renderInfo.m_featureId);
+  PoiSymbolViewParams params;
+  params.m_featureId = renderInfo.m_featureId;
+  params.m_markId = renderInfo.m_markId;
   params.m_tileCenter = tileCenter;
   params.m_depthTestEnabled = renderInfo.m_depthTestEnabled;
   params.m_depth = renderInfo.m_depth;
@@ -263,9 +266,10 @@ void GeneratePoiSymbolShape(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Te
         textures->GetSymbolRegion(symbolName, region);
         float const pixelHalfWidth = 0.5f * region.GetPixelSize().x;
 
+        auto const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
         float constexpr kBadgeMarginsAdjustmentFactor = 4.0f;
         float const badgeMarginsAdjustment =
-            kBadgeMarginsAdjustmentFactor * titleDecl.m_primaryOffset.x;
+            kBadgeMarginsAdjustmentFactor * titleDecl.m_primaryOffset.x * vs;
 
         params.m_pixelWidth = 3.0f * pixelHalfWidth + textWidth + badgeMarginsAdjustment;
         params.m_offset.x += 0.5f * (pixelHalfWidth + textWidth + badgeMarginsAdjustment);
@@ -297,7 +301,8 @@ void GenerateTextShapes(ref_ptr<dp::GraphicsContext> context, ref_ptr<dp::Textur
       continue;
 
     TextViewParams params;
-    params.m_featureID = renderInfo.m_featureId;
+    params.m_featureId = renderInfo.m_featureId;
+    params.m_markId = renderInfo.m_markId;
     params.m_tileCenter = tileCenter;
     params.m_titleDecl = titleDecl;
 
@@ -386,6 +391,23 @@ std::string GetBackgroundForSymbol(std::string const & symbolName,
   else
     backgroundSymbol = tokens[0] + kDelimiter + kBackgroundName + kDelimiter + tokens[2];
   return textures->HasSymbolRegion(backgroundSymbol) ? backgroundSymbol : "";
+}
+
+drape_ptr<dp::OverlayHandle> CreateSymbolOverlayHandle(UserMarkRenderParams const & renderInfo,
+                                                       TileKey const & tileKey,
+                                                       m2::PointF const & symbolOffset,
+                                                       m2::RectD const & pixelRect)
+{
+  if (!renderInfo.m_isSymbolSelectable || !renderInfo.m_isNonDisplaceable)
+    return nullptr;
+
+  dp::OverlayID overlayId(renderInfo.m_featureId, renderInfo.m_markId, tileKey.GetTileCoords(),
+                          kStartUserMarkOverlayIndex + renderInfo.m_index);
+  drape_ptr<dp::OverlayHandle> handle = make_unique_dp<dp::SquareHandle>(
+      overlayId, renderInfo.m_anchor, renderInfo.m_pivot,
+      pixelRect.RightTop() - pixelRect.LeftBottom(), m2::PointD(symbolOffset), 0 /*priority*/,
+      true /* isBound */, renderInfo.m_minZoom, true /* isBillboard */);
+  return handle;
 }
 }  // namespace
 
@@ -490,6 +512,13 @@ void CacheUserMarks(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
             glsl::ToVec4(m2::PointD(texRect.RightBottom()), m2::PointD(bgTexRect.RightBottom())),
             maskColor);
 
+        m2::RectD rect;
+        for (auto const & vertex : buffer)
+          rect.Add(glsl::FromVec2(vertex.m_normalAndAnimateOrZ.xy()));
+
+        drape_ptr<dp::OverlayHandle> overlayHandle =
+            CreateSymbolOverlayHandle(renderInfo, tileKey, symbolOffset, rect);
+
         gpu::Program program;
         gpu::Program program3d;
         if (renderInfo.m_isMarkAboveText)
@@ -516,7 +545,8 @@ void CacheUserMarks(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
         dp::AttributeProvider attribProvider(1, static_cast<uint32_t>(buffer.size()));
         attribProvider.InitStream(0, UPV::GetBinding(), make_ref(buffer.data()));
 
-        batcher.InsertListOfStrip(context, state, make_ref(&attribProvider), dp::Batcher::VertexPerQuad);
+        batcher.InsertListOfStrip(context, state, make_ref(&attribProvider),
+                                  std::move(overlayHandle), dp::Batcher::VertexPerQuad);
       }
     }
 
@@ -576,7 +606,7 @@ void CacheUserLines(ref_ptr<dp::GraphicsContext> context, TileKey const & tileKe
                     UserLinesRenderCollection & renderParams, dp::Batcher & batcher)
 {
   CHECK_GREATER(tileKey.m_zoomLevel, 0, ());
-  CHECK_LESS_OR_EQUAL(tileKey.m_zoomLevel, scales::GetUpperStyleScale(), ());
+  CHECK_LESS(tileKey.m_zoomLevel - 1, static_cast<int>(kLineWidthZoomFactor.size()), ());
 
   auto const vs = static_cast<float>(df::VisualParams::Instance().GetVisualScale());
   bool const simplify = tileKey.m_zoomLevel <= kLineSimplifyLevelEnd;

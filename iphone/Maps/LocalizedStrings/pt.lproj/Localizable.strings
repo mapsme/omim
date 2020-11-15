@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Local desconhecido";
 
-"editor_other_info" = "Enviou uma nota ao moderador OSM";
+"editor_other_info" = "Enviar nota aos editores OSM";
 
 "editor_detailed_description_hint" = "Comentário detalhado";
 
@@ -2384,7 +2384,7 @@
 "guide_downloaded_title" = "O guia foi descarregado com sucesso";
 
 /* as few symbols as possible */
-"download_guides" = "Encontrar guias";
+"download_guides" = "Buscar guías";
 
 "guides_groups_cached" = "Descarregar guias";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Agora não";
 
-"all_pass_subscription_header" = "SUBSCRIÇÃO PARA CATÁLOGO";
+"all_pass_subscription_header" = "Subscrição para";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Catálogo de guias";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "Mais de 30000\nguias\ne trilhas";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Crianças";
 
-"guests_picker_children_subtitle" = "1-16 anos";
+"guests_picker_children_subtitle" = "1-17 anos";
 
 "guests_picker_infants_title" = "Bebês";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Experimentar";
 
-"subscription_terms_guides_outdoor" = "O pagamento será efetuado da sua conta iTunes após a confirmação da compra. A subscrição será renovada automaticamente se a renovação automatica não será cancelada pelo menos 24 horas antes do final do período atual. O valor será descontado da sua conta pessoal de acordo com o seu tarifário de renovação durante 24 horas antes do final do período atual. Pode controlar a renovação automática ou desativá-la nas configurações da sua conta Apple ID a qualquer momento após a compra. Pode usar as guias descarregadas pela subscrição apenas durante o período da sua validade. 30 dias após o final do período da subscrição, todas as guias com todas as marcas serão excluídos automaticamente.\n* A subscrição com período de teste gratuito automaticamente se transforma em uma subscrição paga. Pode cancelar ou controlar a renovação automática da versão de teste gratuita nas configurações da sua conta pessoal após a compra. O cancelamento entrará em vigor 24 horas após o último dia do período da subscrição atual e você será transferido para uma assinatura gratuita. Atenção: qualquer parte não usada do período de teste gratuito será cancelada na compra da subscrição paga durante esse período.";
+"subscription_terms_guides_outdoor" = "O pagamento será efetuado da sua conta iTunes após a confirmação da compra. A subscrição será renovada automaticamente se a renovação automatica não será cancelada pelo menos 24 horas antes do final do período atual. O valor será descontado da sua conta pessoal de acordo com o seu tarifário de renovação durante 24 horas antes do final do período atual. Pode controlar a renovação automática ou desativá-la nas configurações da sua conta Apple ID a qualquer momento após a compra. Pode usar as guias descarregadas pela subscrição apenas durante o período da sua validade. 7 dias após o final do período da subscrição, todas as guias com todas as marcas serão excluídos automaticamente.\n* A subscrição com período de teste gratuito automaticamente se transforma em uma subscrição paga. Pode cancelar ou controlar a renovação automática da versão de teste gratuita nas configurações da sua conta pessoal após a compra. O cancelamento entrará em vigor 24 horas após o último dia do período da subscrição atual e você será transferido para uma assinatura gratuita. Atenção: qualquer parte não usada do período de teste gratuito será cancelada na compra da subscrição paga durante esse período.";
 
-"subscription_terms_android_outdoor" = "O pagamento será efetuado da sua conta Google Play após a confirmação da compra. A subscrição será renovada automaticamente se a renovação automatica não será cancelada pelo menos 24 horas antes do final do período atual. O valor será descontado da sua conta pessoal de acordo com o seu tarifário de renovação durante 24 horas antes do final do período atual. Pode controlar a renovação automática ou desativá-la nas configurações da sua conta a qualquer momento após a compra. Pode usar as guias descarregadas pela subscrição apenas durante o período da sua validade. 30 dias após o final do período da subscrição, todas as guias serão excluídos automaticamente.\n* A subscrição com período de teste gratuito automaticamente se transforma em uma subscrição paga. Pode cancelar ou controlar a renovação automática da versão de teste gratuita nas configurações da sua conta pessoal após a compra. O cancelamento entrará em vigor 24 horas após o último dia do período da subscrição atual e você será transferido para uma assinatura gratuita. Atenção: qualquer parte não usada do período de teste gratuito será cancelada na compra da subscrição paga durante esse período.";
+"subscription_terms_android_outdoor" = "O pagamento será efetuado da sua conta Google Play após a confirmação da compra. A subscrição será renovada automaticamente se a renovação automatica não será cancelada pelo menos 24 horas antes do final do período atual. O valor será descontado da sua conta pessoal de acordo com o seu tarifário de renovação durante 24 horas antes do final do período atual. Pode controlar a renovação automática ou desativá-la nas configurações da sua conta a qualquer momento após a compra. Pode usar as guias descarregadas pela subscrição apenas durante o período da sua validade. 7 dias após o final do período da subscrição, todas as guias serão excluídos automaticamente.\n* A subscrição com período de teste gratuito automaticamente se transforma em uma subscrição paga. Pode cancelar ou controlar a renovação automática da versão de teste gratuita nas configurações da sua conta pessoal após a compra. O cancelamento entrará em vigor 24 horas após o último dia do período da subscrição atual e você será transferido para uma assinatura gratuita. Atenção: qualquer parte não usada do período de teste gratuito será cancelada na compra da subscrição paga durante esse período.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "Subscrição para\n<b>Catálogo de guias</b>";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Guias\nda Lonely Planet®";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "Ainda <b>mais emoções</b> com milhares de locais curiosos pelo <b>mundo inteiro</b>";
+
+"content_by_component" = "Conteúdo de: %s";
+
+"whatsnew_lp_title" = "Ainda mais emoções";
+
+"whatsnew_lp_message" = "Conheça guias de Lonely Planet! Pontos turísticos, percursos temáticos e locais únicos em 7.000+ cidades.";
+
+"collections_title" = "Coleções";
+
+"key_information_title" = "Informações principais";
+
+"mustsee_title" = "Deve ver";
+
+"see_lp_category" = "Atrações";
+
+"play_lp_category" = "Lazer";
+
+"shop_lp_category" = "Compras";
+
+"transport_lp_category" = "Transporte";
+
+"sleep_lp_category" = "Pousada";
+
+"general_lp_category" = "Geral";
+
+"drink_lp_category" = "Bares";
+
+"eat_lp_category" = "Restaurantes";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Rua";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "Pista de corrida";
 
 "type.highway.residential" = "Rua";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Nascente";
 
+"type.natural.strait" = "Estreito";
+
 "type.natural.tree" = "Árvore";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Ferrovia";
 

@@ -86,8 +86,8 @@ class MwmPython(mi.Mwm):
         return tags
 
     def _read_metadata_offsets(self) -> Dict[int, int]:
-        if self.version_.format < 10 :
-          logger.warn("Method population() does not have an implementation.")
+        if self.version_.format >= 10 :
+          logger.warn("Method _read_metadata_offsets() does not have an implementation.")
           return None
 
         self.seek_tag("metaidx")
@@ -227,9 +227,6 @@ class FeaturePython(mi.Feature):
 
     def limit_rect(self) -> mi.Rect:
         logger.warn("Method limit_rect() does not have an implementation.")
-
-    def postcode(self) -> str:
-        logger.warn("Method postcode() does not have an implementation.")
 
     def index(self) -> int:
         return self._index

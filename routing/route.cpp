@@ -30,15 +30,6 @@ namespace
 {
 double constexpr kOnEndToleranceM = 10.0;
 double constexpr kSteetNameLinkMeters = 400.;
-
-bool IsNormalTurn(TurnItem const & turn)
-{
-  CHECK_NOT_EQUAL(turn.m_turn, CarDirection::Count, ());
-  CHECK_NOT_EQUAL(turn.m_pedestrianTurn, PedestrianDirection::Count, ());
-
-  return turn.m_turn != turns::CarDirection::None ||
-         turn.m_pedestrianTurn != turns::PedestrianDirection::None;
-}
 }  //  namespace
 
 Route::Route(string const & router, vector<m2::PointD> const & points, uint64_t routeId,
@@ -179,8 +170,7 @@ void Route::GetClosestTurn(size_t segIdx, TurnItem & turn) const
       return;
     }
   }
-  CHECK(false, ("The last turn should be CarDirection::ReachedYourDestination."));
-  return;
+  CHECK(false, ("The last turn should be ReachedYourDestination."));
 }
 
 void Route::GetCurrentTurn(double & distanceToTurnMeters, TurnItem & turn) const
@@ -191,10 +181,20 @@ void Route::GetCurrentTurn(double & distanceToTurnMeters, TurnItem & turn) const
                                              m_poly.GetIterToIndex(turn.m_index));
 }
 
+optional<turns::TurnItem> Route::GetCurrentIteratorTurn() const
+{
+  auto const & iter = m_poly.GetCurrentIter();
+  if (!iter.IsValid())
+    return nullopt;
+
+  CHECK_LESS(iter.m_ind, m_routeSegments.size(), ());
+  return m_routeSegments[iter.m_ind].GetTurn();
+}
+
 bool Route::GetNextTurn(double & distanceToTurnMeters, TurnItem & nextTurn) const
 {
   TurnItem curTurn;
-  // Note. |m_poly.GetCurrentIter().m_ind| is a zero based index of last passed point at \m_poly|.
+  // Note. |m_poly.GetCurrentIter().m_ind| is a zero based index of last passed point at |m_poly|.
   size_t const curIdx = m_poly.GetCurrentIter().m_ind;
   // Note. First param of GetClosestTurn() is a segment index at |m_routeSegments|.
   // |curIdx| is an index of last passed point at |m_poly|.
@@ -202,7 +202,7 @@ bool Route::GetNextTurn(double & distanceToTurnMeters, TurnItem & nextTurn) cons
   // |curIdx| + 1 - 1 is an index of segment to start look for the closest turn.
   GetClosestTurn(curIdx, curTurn);
   CHECK_LESS(curIdx, curTurn.m_index, ());
-  if (curTurn.m_turn == CarDirection::ReachedYourDestination)
+  if (curTurn.IsTurnReachedYourDestination())
   {
     nextTurn = TurnItem();
     return false;
@@ -427,6 +427,14 @@ double Route::GetETAToLastPassedPointSec() const
   CHECK_LESS(curIter.m_ind, m_routeSegments.size(), ());
 
   return curIter.m_ind == 0 ? 0.0 : m_routeSegments[curIter.m_ind - 1].GetTimeFromBeginningSec();
+}
+
+bool IsNormalTurn(TurnItem const & turn)
+{
+  CHECK_NOT_EQUAL(turn.m_turn, CarDirection::Count, ());
+  CHECK_NOT_EQUAL(turn.m_pedestrianTurn, PedestrianDirection::Count, ());
+
+  return !turn.IsTurnNone();
 }
 
 string DebugPrint(Route const & r)

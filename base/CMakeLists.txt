@@ -42,6 +42,7 @@ set(
   logging.cpp
   logging.hpp
   lower_case.cpp
+  lru_cache.hpp
   macros.hpp
   math.hpp
   matrix.hpp
@@ -51,6 +52,7 @@ set(
   normalize_unicode.cpp
   non_intersecting_intervals.hpp
   observer_list.hpp
+  optional_lock_guard.hpp
   pprof.cpp
   pprof.hpp
   random.cpp

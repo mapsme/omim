@@ -1,9 +1,11 @@
 #pragma once
 
 #include "kml/header_binary.hpp"
-#include "kml/types.hpp"
 #include "kml/types_v3.hpp"
 #include "kml/types_v6.hpp"
+#include "kml/types_v7.hpp"
+#include "kml/types_v8.hpp"
+#include "kml/types.hpp"
 #include "kml/visitors.hpp"
 
 #include "platform/platform.hpp"
@@ -19,21 +21,6 @@ namespace kml
 {
 namespace binary
 {
-enum class Version : uint8_t
-{
-  V0 = 0,
-  V1 = 1,  // 11th April 2018: new Point2D storage, added deviceId, feature name -> custom name.
-  V2 = 2,  // 25th April 2018: added serverId.
-  V3 = 3,  // 7th May 2018: persistent feature types. V3 is binary compatible with lower versions.
-  V4 = 4,  // 26th August 2019: key-value properties and nearestToponym for bookmarks and tracks,
-           // cities -> toponyms.
-  V5 = 5,  // 21st November 2019: extended color palette.
-  V6 = 6,  // 3rd December 2019: extended bookmark icons. V6 is binary compatible with V4 and V5
-           // versions.
-  V7 = 7,  // 13th February 2020: track points are replaced by points with altitude.
-  Latest = V7
-};
-
 class SerializerKml
 {
 public:
@@ -83,6 +70,10 @@ public:
     header.m_tracksOffset = sink.Pos() - startPos;
     SerializeTracks(sink);
 
+    // Serialize compilations.
+    header.m_compilationsOffset = sink.Pos() - startPos;
+    SerializeCompilations(sink);
+
     // Serialize strings.
     header.m_stringsOffset = sink.Pos() - startPos;
     SerializeStrings(sink);
@@ -115,6 +106,13 @@ public:
     visitor(m_data.m_tracksData);
   }
 
+  template <typename Sink>
+  void SerializeCompilations(Sink & sink)
+  {
+    CategorySerializerVisitor<Sink> visitor(sink, kDoubleBits);
+    visitor(m_data.m_compilationsData);
+  }
+
   // Serializes texts in a compressed storage with block access.
   template <typename Sink>
   void SerializeStrings(Sink & sink)
@@ -129,6 +127,17 @@ private:
   std::vector<std::string> m_strings;
 };
 
+template <typename T, typename = void>
+struct HasCompilationsData : std::false_type
+{
+};
+
+template <typename T>
+struct HasCompilationsData<T, std::void_t<decltype(T::m_compilationsData)>>
+  : std::is_same<decltype(T::m_compilationsData), std::vector<CategoryData>>
+{
+};
+
 class DeserializerKml
 {
 public:
@@ -141,10 +150,12 @@ public:
   {
     // Check version.
     NonOwningReaderSource source(reader);
-    auto const v = ReadPrimitiveFromSource<Version>(source);
+    m_header.m_version = ReadPrimitiveFromSource<Version>(source);
 
-    if (v != Version::Latest && v != Version::V2 && v != Version::V3 && v != Version::V4 &&
-        v != Version::V5 && v != Version::V6)
+    if (m_header.m_version != Version::V2 && m_header.m_version != Version::V3 &&
+        m_header.m_version != Version::V4 && m_header.m_version != Version::V5 &&
+        m_header.m_version != Version::V6 && m_header.m_version != Version::V7 &&
+        m_header.m_version != Version::V8 && m_header.m_version != Version::V9)
     {
       MYTHROW(DeserializeException, ("Incorrect file version."));
     }
@@ -156,11 +167,36 @@ public:
     auto subReader = reader.CreateSubReader(source.Pos(), source.Size());
     InitializeIfNeeded(*subReader);
 
-    if (v == Version::V7)
+    switch (m_header.m_version)
+    {
+    case Version::Latest:
     {
       DeserializeFileData(subReader, m_data);
+      break;
     }
-    else if (v == Version::V6 || v == Version::V5 || v == Version::V4)
+    case Version::V8:
+    {
+      FileDataV8 dataV8;
+      dataV8.m_deviceId = m_data.m_deviceId;
+      dataV8.m_serverId = m_data.m_serverId;
+      DeserializeFileData(subReader, dataV8);
+
+      m_data = dataV8.ConvertToLatestVersion();
+      break;
+    }
+    case Version::V7:
+    {
+      FileDataV7 dataV7;
+      dataV7.m_deviceId = m_data.m_deviceId;
+      dataV7.m_serverId = m_data.m_serverId;
+      DeserializeFileData(subReader, dataV7);
+
+      m_data = dataV7.ConvertToLatestVersion();
+      break;
+    }
+    case Version::V6:
+    case Version::V5:
+    case Version::V4:
     {
       // NOTE: v.4, v.5 and v.6 are binary compatible.
       FileDataV6 dataV6;
@@ -169,8 +205,10 @@ public:
       DeserializeFileData(subReader, dataV6);
 
       m_data = dataV6.ConvertToLatestVersion();
+      break;
     }
-    else
+    case Version::V3:
+    case Version::V2:
     {
       // NOTE: v.2 and v.3 are binary compatible.
       FileDataV3 dataV3;
@@ -179,10 +217,16 @@ public:
       DeserializeFileData(subReader, dataV3);
 
       // Migrate bookmarks (it's necessary ony for v.2).
-      if (v == Version::V2)
+      if (m_header.m_version == Version::V2)
         MigrateBookmarksV2(dataV3);
 
       m_data = dataV3.ConvertToLatestVersion();
+      break;
+    }
+    default:
+    {
+      UNREACHABLE();
+    }
     }
   }
 
@@ -223,7 +267,13 @@ private:
   template <typename ReaderType>
   std::unique_ptr<Reader> CreateTrackSubReader(ReaderType const & reader)
   {
-    return CreateSubReader(reader, m_header.m_tracksOffset, m_header.m_stringsOffset);
+    return CreateSubReader(reader, m_header.m_tracksOffset, m_header.m_compilationsOffset);
+  }
+
+  template <typename ReaderType>
+  std::unique_ptr<Reader> CreateCompilationsSubReader(ReaderType const & reader)
+  {
+    return CreateSubReader(reader, m_header.m_compilationsOffset, m_header.m_stringsOffset);
   }
 
   template <typename ReaderType>
@@ -262,6 +312,8 @@ private:
     DeserializeCategory(subReader, data);
     DeserializeBookmarks(subReader, data);
     DeserializeTracks(subReader, data);
+    if constexpr (HasCompilationsData<FileDataType>::value)
+      DeserializeCompilations(subReader, data);
     DeserializeStrings(subReader, data);
   }
 
@@ -296,6 +348,15 @@ private:
     NonOwningReaderSource src(*trackSubReader);
     BookmarkDeserializerVisitor<decltype(src)> visitor(src, m_doubleBits);
     visitor(data.m_tracksData);
+  }
+
+  template <typename FileDataType>
+  void DeserializeCompilations(std::unique_ptr<Reader> & subReader, FileDataType & data)
+  {
+    auto compilationsSubReader = CreateCompilationsSubReader(*subReader);
+    NonOwningReaderSource src(*compilationsSubReader);
+    CategoryDeserializerVisitor<decltype(src)> visitor(src, m_doubleBits);
+    visitor(data.m_compilationsData);
   }
 
   template <typename FileDataType>

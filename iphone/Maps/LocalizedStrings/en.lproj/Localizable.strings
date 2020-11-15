@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Unknown Place";
 
-"editor_other_info" = "Send a note to OSM moderators";
+"editor_other_info" = "Send a note to OSM editors";
 
 "editor_detailed_description_hint" = "Detailed comment";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Later";
 
-"all_pass_subscription_header" = "SUBSCRIPTION TO CATALOG";
+"all_pass_subscription_header" = "Subscribe to";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Guides catalog";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\nguides & trails";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Children";
 
-"guests_picker_children_subtitle" = "1-16 y.o.";
+"guests_picker_children_subtitle" = "1-17 y.o.";
 
 "guests_picker_infants_title" = "Infants";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Try it now";
 
-"subscription_terms_guides_outdoor" = "When you confirm the purchase, the payment will be charged to your iTunes account. The subscription will automatically renew unless the auto-renew feature is disabled at least 24 hours before the end of the current subscription period. Your account will be charged according to your renewal plan within 24 hours before the current subscription period ends. You can manage or disable auto-renewal in your Apple ID account settings any time after purchase. You can only use guides downloaded during your subscription until the subscription expires. Guides and all bookmarks will be automatically deleted 30 days after the subscription expires.\n* The subscription with a free trial period will automatically renew to a paid subscription. You can cancel or manage your free trial's auto-renewal in your account settings after purchase. The cancellation will take effect 24 hours after the last day of the current subscription period. After that, you will be downgraded to the free service. Please note: Any unused portion of the free trial will be forfeited when you purchase a premium subscription during the free trial.";
+"subscription_terms_guides_outdoor" = "When you confirm the purchase, the payment will be charged to your iTunes account. The subscription will automatically renew unless the auto-renew feature is disabled at least 24 hours before the end of the current subscription period. Your account will be charged according to your renewal plan within 24 hours before the current subscription period ends. You can manage or disable auto-renewal in your Apple ID account settings any time after purchase. You can only use guides downloaded during your subscription until the subscription expires. Guides and all bookmarks will be automatically deleted 7 days after the subscription expires.\n* The subscription with a free trial period will automatically renew to a paid subscription. You can cancel or manage your free trial's auto-renewal in your account settings after purchase. The cancellation will take effect 24 hours after the last day of the current subscription period. After that, you will be downgraded to the free service. Please note: Any unused portion of the free trial will be forfeited when you purchase a premium subscription during the free trial.";
 
-"subscription_terms_android_outdoor" = "When you confirm the purchase, the payment will be charged to your Google Play account. The subscription will automatically renew unless the auto-renew feature is disabled at least 24 hours before the end of the current subscription period. Your account will be charged according to your renewal plan within 24 hours before the current subscription period ends. You can manage or disable auto-renewal in account settings any time after purchase. You can only use guides downloaded during your subscription until the subscription expires. Guides will be automatically deleted 30 days after the subscription expires.\n* The subscription with a free trial period will automatically renew to a paid subscription. You can cancel or manage your free trial's auto-renewal in your account settings after purchase. The cancellation will take effect 24 hours after the last day of the current subscription period. After that, you will be downgraded to the free service. Please note: Any unused portion of the free trial will be forfeited when you purchase a premium subscription during the free trial.";
+"subscription_terms_android_outdoor" = "When you confirm the purchase, the payment will be charged to your Google Play account. The subscription will automatically renew unless the auto-renew feature is disabled at least 24 hours before the end of the current subscription period. Your account will be charged according to your renewal plan within 24 hours before the current subscription period ends. You can manage or disable auto-renewal in account settings any time after purchase. You can only use guides downloaded during your subscription until the subscription expires. Guides will be automatically deleted 7 days after the subscription expires.\n* The subscription with a free trial period will automatically renew to a paid subscription. You can cancel or manage your free trial's auto-renewal in your account settings after purchase. The cancellation will take effect 24 hours after the last day of the current subscription period. After that, you will be downgraded to the free service. Please note: Any unused portion of the free trial will be forfeited when you purchase a premium subscription during the free trial.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "Subscribe to\n<b>Guides catalog</b>";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Travel guides\nby Lonely Planet®";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "Even <b>more experiences</b> with thousands of interesting places <b>around the world</b>";
+
+"content_by_component" = "Content by: %s";
+
+"whatsnew_lp_title" = "Even more emotions";
+
+"whatsnew_lp_message" = "Lonely Planet guides are now in our app! The best attractions, thematic walks and unique travel spots for 7000+ cities.";
+
+"collections_title" = "Collections";
+
+"key_information_title" = "Key information";
+
+"mustsee_title" = "Must see";
+
+"see_lp_category" = "See";
+
+"play_lp_category" = "Play";
+
+"shop_lp_category" = "Shop";
+
+"transport_lp_category" = "Transport";
+
+"sleep_lp_category" = "Sleep";
+
+"general_lp_category" = "General";
+
+"drink_lp_category" = "Drink";
+
+"eat_lp_category" = "Eat";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Street";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "Racetrack";
 
 "type.highway.residential" = "Street";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Spring";
 
+"type.natural.strait" = "Strait";
+
 "type.natural.tree" = "Tree";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Railway";
 

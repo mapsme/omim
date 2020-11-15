@@ -44,11 +44,14 @@ omim_link_libraries(
   sqlite3
   ${CMAKE_DL_LIBS}
   ${LIBZ}
-  ${PYTHON_LIBRARIES}
   ${Boost_LIBRARIES}
 )
 
 link_qt5_core(${PROJECT_NAME})
 link_qt5_network(${PROJECT_NAME})
+
+if (PLATFORM_MAC)
+  omim_link_libraries(${PROJECT_NAME} "-Wl,-undefined,dynamic_lookup")
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")

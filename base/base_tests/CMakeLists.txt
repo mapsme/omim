@@ -24,12 +24,14 @@ set(
   levenshtein_dfa_test.cpp
   linked_map_tests.cpp
   logging_test.cpp
+  lru_cache_tests.cpp
   math_test.cpp
   matrix_test.cpp
   mem_trie_test.cpp
   newtype_test.cpp
   non_intersecting_intervals_tests.cpp
   observer_list_test.cpp
+  optional_lock_guard_tests.cpp
   range_iterator_test.cpp
   ref_counted_tests.cpp
   regexp_test.cpp

@@ -23,6 +23,7 @@
 
 #include <limits>
 #include <memory>
+#include <optional>
 #include <set>
 #include <string>
 #include <utility>
@@ -292,10 +293,14 @@ public:
   double GetCurrentDistanceToEndMeters() const;
   double GetMercatorDistanceFromBegin() const;
 
-  /// \brief GetCurrentTurn returns information about the nearest turn.
+  /// \brief Extracts information about the nearest turn according to the route.
   /// \param distanceToTurnMeters is a distance from current position to the nearest turn.
   /// \param turn is information about the nearest turn.
   void GetCurrentTurn(double & distanceToTurnMeters, turns::TurnItem & turn) const;
+
+  /// \returns information about turn from RouteSegment according to current iterator
+  /// set with MoveIterator() method. If it's not possible returns nullopt.
+  std::optional<turns::TurnItem> GetCurrentIteratorTurn() const;
 
   /// \brief Returns a name of a street where the user rides at this moment.
   void GetCurrentStreetName(std::string & name) const;
@@ -415,4 +420,8 @@ private:
   // Mwms which are crossed by the route where speed cameras are prohibited.
   std::vector<platform::CountryFile> m_speedCamPartlyProhibitedMwms;
 };
+
+/// \returns true if |turn| is not equal to turns::CarDirection::None or
+/// |turns::PedestrianDirection::None|.
+bool IsNormalTurn(turns::TurnItem const & turn);
 } // namespace routing

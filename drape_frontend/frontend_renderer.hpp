@@ -23,6 +23,8 @@
 #include "drape_frontend/transit_scheme_renderer.hpp"
 #include "drape_frontend/user_event_stream.hpp"
 
+#include "kml/type_utils.hpp"
+
 #include "shaders/program_manager.hpp"
 
 #include "drape/overlay_tree.hpp"
@@ -63,6 +65,7 @@ struct TapInfo
   bool const m_isLong;
   bool const m_isMyPositionTapped;
   FeatureID const m_featureTapped;
+  kml::MarkId const m_markTapped;
 
   static m2::AnyRectD GetDefaultTapRect(m2::PointD const & mercator, ScreenBase const & screen);
   static m2::AnyRectD GetBookmarkTapRect(m2::PointD const & mercator, ScreenBase const & screen);
@@ -184,7 +187,7 @@ private:
   void RenderOverlayLayer(ScreenBase const & modelView);
   void RenderNavigationOverlayLayer(ScreenBase const & modelView);
   void RenderUserMarksLayer(ScreenBase const & modelView, DepthLayer layerId);
-  void RenderNonDisplacedUserMarksLayer(ScreenBase const & modelView, DepthLayer layerId);
+  void RenderNonDisplaceableUserMarksLayer(ScreenBase const & modelView, DepthLayer layerId);
   void RenderTransitSchemeLayer(ScreenBase const & modelView);
   void RenderTrafficLayer(ScreenBase const & modelView);
   void RenderRouteLayer(ScreenBase const & modelView);
@@ -266,8 +269,8 @@ private:
 
   void OnCompassTapped();
 
-  FeatureID GetVisiblePOI(m2::PointD const & pixelPoint);
-  FeatureID GetVisiblePOI(m2::RectD const & pixelRect);
+  std::pair<FeatureID, kml::MarkId> GetVisiblePOI(m2::PointD const & pixelPoint);
+  std::pair<FeatureID, kml::MarkId> GetVisiblePOI(m2::RectD const & pixelRect);
 
   void PullToBoundArea(bool randomPlace, bool applyZoom);
 
@@ -281,6 +284,10 @@ private:
   void CheckAndRunFirstLaunchAnimation();
 
   void ScheduleOverlayCollecting();
+
+  void SearchInNonDisplaceableUserMarksLayer(ScreenBase const & modelView, DepthLayer layerId,
+                                             m2::RectD const & selectionRect,
+                                             dp::TOverlayContainer & result);
 
   drape_ptr<gpu::ProgramManager> m_gpuProgramManager;
 

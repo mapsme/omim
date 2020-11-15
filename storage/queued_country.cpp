@@ -2,25 +2,12 @@
 
 #include "storage/storage_helpers.hpp"
 
+#include "platform/downloader_utils.hpp"
 #include "platform/local_country_file_utils.hpp"
 
 #include "coding/url.hpp"
 
 #include "base/assert.hpp"
-
-namespace
-{
-std::string MakeRelativeUrl(std::string const & fileName, int64_t dataVersion, uint64_t diffVersion)
-{
-  std::ostringstream url;
-  if (diffVersion != 0)
-    url << "diffs/" << dataVersion << "/" << diffVersion;
-  else
-    url << OMIM_OS_NAME "/" << dataVersion;
-
-  return url::Join(url.str(), url::UrlEncode(fileName));
-}
-}  // namespace
 
 namespace storage
 {
@@ -37,6 +24,16 @@ QueuedCountry::QueuedCountry(platform::CountryFile const & countryFile, CountryI
 {
   ASSERT(IsCountryIdValid(GetCountryId()), ("Only valid countries may be downloaded."));
   ASSERT(m_diffsDataSource != nullptr, ());
+}
+
+void QueuedCountry::Subscribe(Subscriber & subscriber)
+{
+  m_subscriber = &subscriber;
+}
+
+void QueuedCountry::Unsubscribe()
+{
+  m_subscriber = nullptr;
 }
 
 void QueuedCountry::SetFileType(MapFileType type)
@@ -62,7 +59,7 @@ std::string QueuedCountry::GetRelativeUrl() const
   if (m_fileType == MapFileType::Diff)
     CHECK(m_diffsDataSource->VersionFor(m_countryId, diffVersion), ());
 
-  return MakeRelativeUrl(fileName, m_currentDataVersion, diffVersion);
+  return downloader::GetFileDownloadUrl(fileName, m_currentDataVersion, diffVersion);
 }
 
 std::string QueuedCountry::GetFileDownloadPath() const
@@ -82,39 +79,28 @@ uint64_t QueuedCountry::GetDownloadSize() const
   return GetRemoteSize(*m_diffsDataSource, m_countryFile);
 }
 
-void QueuedCountry::ClarifyDownloadingType()
+void QueuedCountry::OnCountryInQueue() const
 {
-  if (m_fileType != MapFileType::Diff)
-    return;
-
-  using diffs::Status;
-  auto const status = m_diffsDataSource->GetStatus();
-  if (status == Status::NotAvailable || !m_diffsDataSource->HasDiffFor(m_countryId))
-  {
-    m_fileType = MapFileType::Map;
-  }
+  if (m_subscriber != nullptr)
+    m_subscriber->OnCountryInQueue(*this);
 }
 
-void QueuedCountry::SetOnFinishCallback(DownloadingFinishCallback const & onDownloaded)
+void QueuedCountry::OnStartDownloading() const
 {
-  m_downloadingFinishCallback = onDownloaded;
-}
-
-void QueuedCountry::SetOnProgressCallback(DownloadingProgressCallback const & onProgress)
-{
-  m_downloadingProgressCallback = onProgress;
-}
-
-void QueuedCountry::OnDownloadFinished(downloader::DownloadStatus status) const
-{
-  if (m_downloadingFinishCallback)
-    m_downloadingFinishCallback(*this, status);
+  if (m_subscriber != nullptr)
+    m_subscriber->OnStartDownloading(*this);
 }
 
 void QueuedCountry::OnDownloadProgress(downloader::Progress const & progress) const
 {
-  if (m_downloadingProgressCallback)
-    m_downloadingProgressCallback(*this, progress);
+  if (m_subscriber != nullptr)
+    m_subscriber->OnDownloadProgress(*this, progress);
+}
+
+void QueuedCountry::OnDownloadFinished(downloader::DownloadStatus status) const
+{
+  if (m_subscriber != nullptr)
+    m_subscriber->OnDownloadFinished(*this, status);
 }
 
 bool QueuedCountry::operator==(CountryId const & countryId) const

@@ -23,9 +23,9 @@ set(
   features_vector_test.cpp
   index_builder_test.cpp
   interval_index_test.cpp
+  metadata_serdes_tests.cpp
   mwm_set_test.cpp
   postcodes_matcher_tests.cpp
-  postcodes_tests.cpp
   rank_table_test.cpp
   read_features_tests.cpp
   scale_index_reading_tests.cpp

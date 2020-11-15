@@ -35,6 +35,8 @@
 #include "map/gps_tracker.hpp"
 
 #include "partners_api/ads/mopub_ads.hpp"
+
+#include "platform/background_downloader_ios.h"
 #include "platform/http_thread_apple.h"
 #include "platform/local_country_file_utils.hpp"
 
@@ -553,6 +555,12 @@ using namespace osm_auth_ios;
   return updateInfo.m_numberOfMwmFilesToUpdate;
 }
 
+- (void)application:(UIApplication *)application
+  handleEventsForBackgroundURLSession:(NSString *)identifier
+                    completionHandler:(void (^)())completionHandler {
+  [BackgroundDownloader sharedBackgroundMapDownloader].backgroundCompletionHandler = completionHandler;
+}
+
 #pragma mark - MWMStorageObserver
 
 - (void)processCountryEvent:(NSString *)countryId {
@@ -733,6 +741,9 @@ using namespace osm_auth_ios;
   didConnectCarInterfaceController:(CPInterfaceController *)interfaceController
                           toWindow:(CPWindow *)window API_AVAILABLE(ios(12.0)) {
   [self.carplayService setupWithWindow:window interfaceController:interfaceController];
+  if (@available(iOS 13.0, *)) {
+    window.overrideUserInterfaceStyle = UIUserInterfaceStyleUnspecified;
+  }
   [self updateAppearanceFromWindow:self.window toWindow:window isCarplayActivated:YES];
 
   [Statistics logEvent:kStatCarplayActivated];

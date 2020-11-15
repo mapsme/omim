@@ -8,9 +8,9 @@
 #include "qt/routing_settings_dialog.hpp"
 #include "qt/screenshoter.hpp"
 
-#include "map/framework.hpp"
-
 #include "generator/borders.hpp"
+
+#include "map/framework.hpp"
 
 #include "search/result.hpp"
 #include "search/reverse_geocoder.hpp"
@@ -32,22 +32,19 @@
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
 
-#include <string>
-#include <vector>
+#include "defines.hpp"
 
-#include <QtGui/QMouseEvent>
+#include <QtCore/QThread>
+#include <QtCore/QTimer>
 #include <QtGui/QGuiApplication>
-
+#include <QtGui/QMouseEvent>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMenu>
 
-#include <QtCore/QLocale>
-#include <QtCore/QThread>
-#include <QtCore/QTimer>
-
-#include "defines.hpp"
+#include <string>
+#include <vector>
 
 using namespace qt::common;
 
@@ -96,14 +93,20 @@ DrawWidget::DrawWidget(Framework & framework, bool apiOpenGLES3, std::unique_ptr
   m_framework.SetPlacePageListeners([this]() { ShowPlacePage(); },
                                     {} /* onClose */, {} /* onUpdate */);
 
-  m_framework.GetRoutingManager().SetRouteBuildingListener(
-      [](routing::RouterResultCode, storage::CountriesSet const &) {});
+  auto & routingManager = m_framework.GetRoutingManager();
 
-  m_framework.GetRoutingManager().SetRouteRecommendationListener(
-    [this](RoutingManager::Recommendation r)
-  {
-    OnRouteRecommendation(r);
-  });
+  routingManager.SetRouteBuildingListener(
+      [&routingManager, this](routing::RouterResultCode, storage::CountriesSet const &) {
+        auto & drapeApi = m_framework.GetDrapeApi();
+
+        m_turnsVisualizer.ClearTurns(drapeApi);
+
+        if (RoutingSettings::TurnsEnabled())
+          m_turnsVisualizer.Visualize(routingManager, drapeApi);
+      });
+
+  routingManager.SetRouteRecommendationListener(
+      [this](RoutingManager::Recommendation r) { OnRouteRecommendation(r); });
 
   m_framework.SetCurrentCountryChangedListener([this](storage::CountryId const & countryId) {
     m_countryId = countryId;
@@ -133,19 +136,18 @@ void DrawWidget::UpdateCountryStatus(storage::CountryId const & countryId)
     std::string countryName = countryId;
     auto status = m_framework.GetStorage().CountryStatusEx(countryId);
 
-    uint8_t progressInPercentage = 0;
-    downloader::Progress progressInByte = std::make_pair(0, 0);
+    uint8_t percentage = 0;
+    downloader::Progress progress;
     if (!countryId.empty())
     {
       storage::NodeAttrs nodeAttrs;
       m_framework.GetStorage().GetNodeAttrs(countryId, nodeAttrs);
-      progressInByte = nodeAttrs.m_downloadingProgress;
-      if (progressInByte.second != 0)
-        progressInPercentage = static_cast<int8_t>(100 * progressInByte.first / progressInByte.second);
+      progress = nodeAttrs.m_downloadingProgress;
+      if (!progress.IsUnknown() && progress.m_bytesTotal != 0)
+        percentage = static_cast<int8_t>(100 * progress.m_bytesDownloaded / progress.m_bytesTotal);
     }
 
-    m_currentCountryChanged(countryId, countryName, status,
-                            progressInByte.second, progressInPercentage);
+    m_currentCountryChanged(countryId, countryName, status, progress.m_bytesTotal, percentage);
   }
 }
 
@@ -529,9 +531,18 @@ void DrawWidget::SubmitFakeLocationPoint(m2::PointD const & pt)
   {
     routing::FollowingInfo loc;
     m_framework.GetRoutingManager().GetRouteFollowingInfo(loc);
-    LOG(LDEBUG, ("Distance:", loc.m_distToTarget, loc.m_targetUnitsSuffix, "Time:", loc.m_time,
-                 "Turn:", routing::turns::GetTurnString(loc.m_turn), "(", loc.m_distToTurn, loc.m_turnUnitsSuffix,
-                 ") Roundabout exit number:", loc.m_exitNum));
+    if (m_framework.GetRoutingManager().GetCurrentRouterType() == routing::RouterType::Pedestrian)
+    {
+      LOG(LDEBUG, ("Distance:", loc.m_distToTarget, loc.m_targetUnitsSuffix, "Time:", loc.m_time,
+                   "Pedestrian turn:", DebugPrint(loc.m_pedestrianTurn),
+                   "Distance to turn:", loc.m_distToTurn, loc.m_turnUnitsSuffix));
+    }
+    else
+    {
+      LOG(LDEBUG, ("Distance:", loc.m_distToTarget, loc.m_targetUnitsSuffix, "Time:", loc.m_time,
+                   "Turn:", routing::turns::GetTurnString(loc.m_turn), "(", loc.m_distToTurn,
+                   loc.m_turnUnitsSuffix, ") Roundabout exit number:", loc.m_exitNum));
+    }
   }
 }
 
@@ -569,7 +580,9 @@ void DrawWidget::SubmitRoutingPoint(m2::PointD const & pt)
   routingManager.AddRoutePoint(std::move(point));
 
   if (routingManager.GetRoutePoints().size() >= 2)
+  {
     routingManager.BuildRoute();
+  }
 }
 
 void DrawWidget::SubmitBookmark(m2::PointD const & pt)
@@ -617,6 +630,8 @@ void DrawWidget::ClearRoute()
     else if (style == MapStyle::MapStyleVehicleDark)
       SetMapStyle(MapStyle::MapStyleDark);
   }
+
+  m_turnsVisualizer.ClearTurns(m_framework.GetDrapeApi());
 }
 
 void DrawWidget::OnRouteRecommendation(RoutingManager::Recommendation recommendation)

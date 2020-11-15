@@ -112,17 +112,15 @@ shared_ptr<VehicleModelFactoryInterface> CreateVehicleModelFactory(
   UNREACHABLE();
 }
 
-unique_ptr<IDirectionsEngine> CreateDirectionsEngine(VehicleType vehicleType,
-                                                     shared_ptr<NumMwmIds> numMwmIds,
-                                                     DataSource & dataSource)
+unique_ptr<DirectionsEngine> CreateDirectionsEngine(VehicleType vehicleType,
+                                                    shared_ptr<NumMwmIds> numMwmIds,
+                                                    DataSource & dataSource)
 {
   switch (vehicleType)
   {
   case VehicleType::Pedestrian:
-  case VehicleType::Transit: return make_unique<PedestrianDirectionsEngine>(numMwmIds);
+  case VehicleType::Transit: return make_unique<PedestrianDirectionsEngine>(dataSource, numMwmIds);
   case VehicleType::Bicycle:
-  // @TODO Bicycle turn generation engine is used now. It's ok for the time being.
-  // But later a special car turn generation engine should be implemented.
   case VehicleType::Car: return make_unique<CarDirectionsEngine>(dataSource, numMwmIds);
   case VehicleType::Count:
     CHECK(false, ("Can't create DirectionsEngine for", vehicleType));
@@ -1498,6 +1496,8 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
   }
 
   CHECK(m_directionsEngine, ());
+
+  m_directionsEngine->SetVehicleType(m_vehicleType);
   ReconstructRoute(*m_directionsEngine, roadGraph, m_trafficStash, cancellable, junctions,
                    move(times), route);
 
@@ -1610,7 +1610,7 @@ void IndexRouter::FillSpeedCamProhibitedMwms(vector<Segment> const & segments,
   }
 }
 
-void IndexRouter::SetupAlgorithmMode(IndexGraphStarter & starter, bool guidesActive)
+void IndexRouter::SetupAlgorithmMode(IndexGraphStarter & starter, bool guidesActive) const
 {
   // We use NoLeaps for pedestrians and bicycles with route points near to the Guides tracks
   // because it is much easier to implement. Otherwise for pedestrians and bicycles we use Joints.

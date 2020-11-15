@@ -822,7 +822,7 @@
 	<string name="error_enter_correct_zip_code">Ange korrekt postnr</string>
 	<!-- Place Page title for long tap -->
 	<string name="core_placepage_unknown_place">Okänd plats</string>
-	<string name="editor_other_info">Poznámka odoslaná regulátorovi OSM</string>
+	<string name="editor_other_info">Skicka en not till OSM-redaktörer</string>
 	<string name="editor_detailed_description_hint">Detaljerad kommentar</string>
 	<string name="editor_detailed_description">Dina föreslagna ändringar kommer att skcikas till OpenStreetMap-communityt. Beskriv detaljerna som inte kan redigeras i MAPS.ME.</string>
 	<string name="editor_more_about_osm">Mer om OpenStreetMap</string>
@@ -1710,7 +1710,8 @@
 	<string name="new_onboarding_step5.3_message">Ladda ner och betygsätt rutter för stadspromenader och utomhusaktiviteter med ett gratis urval av MAPS.ME!</string>
 	<string name="new_onboarding_step5.3_button">Ladda ner gratis</string>
 	<string name="new_onboarding_additional_steps_later_button">Senare</string>
-	<string name="all_pass_subscription_header">PRENUMERATION PÅ KATALOGEN</string>
+	<string name="all_pass_subscription_header">Prenumeration på</string>
+	<string name="all_pass_subscription_subheader">Guidebok katalogen</string>
 	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
 	<string name="all_pass_subscription_message_title">30000+\nguider &amp; spår</string>
 	<!-- <b> & </b> tag to make a part of the line bold -->
@@ -1820,7 +1821,7 @@
 	<string name="guests_picker_rooms">Rum</string>
 	<string name="guests_picker_adults">Vuxna</string>
 	<string name="guests_picker_children_title">Barn</string>
-	<string name="guests_picker_children_subtitle">1-16 år</string>
+	<string name="guests_picker_children_subtitle">1-17 år</string>
 	<string name="guests_picker_infants_title">Spädbarn</string>
 	<string name="guests_picker_infants_subtitle">0-12 mån.</string>
 	<!-- as less symbols as possible -->
@@ -1834,8 +1835,27 @@
 	<string name="whatsnew_trial_title">Gratis tillgång till guider</string>
 	<string name="whatsnew_trial_message">Vi har lanserat en 7-dagars period för provprenumeration. Tusentals rutter runt om i världen, samt en interaktiv terräng profil i guider för utomhusaktiviteter.</string>
 	<string name="whatsnew_trial_cta">Prova</string>
-	<string name="subscription_terms_guides_outdoor">Betalning ska genomföras från ditt iTunes-konto vid bekräftelse av köpet. Prenumerationen ska förnyas automatiskt om automatisk förnyelse inte stängs av minst 24 timmar före utgången av den aktuella perioden. Penningmedel ska debiteras från ditt konto enligt din förnyelsetariff inom 24 timmar före utgången av den aktuella perioden. Du kan styra eller stänga av automatisk förnyelse i dina Apple ID-kontoinställningar när som helst efter köpet. Du kommer att kunna använda de guider som laddats ner genom prenumeration endast under dess giltighetsperiod. 30 dagar efter prenumerationens slut ska guiderna med alla bokmärken raderas automatiskt.\n* Prenumeration med en gratis provperiod blir automatiskt en betald prenumeration. Du kan avbryta eller styra den automatiska förnyelsen av gratis provversionen i dina kontoinställningar efter köpet. Avbrytningen ska träda i kraft 24 timmar efter den sista dagen av den aktuella prenumerationsperioden och du kommer att överföras till en gratis prenumeration. Observera: alla oanvända delar av den gratis prövningsperioden ska annulleras vid köp av en betald prenumeration under denna period.</string>
-	<string name="subscription_terms_android_outdoor">Betalning ska genomföras från ditt Google Play-konto vid bekräftelse av köpet. Prenumerationen ska förnyas automatiskt om automatisk förnyelse inte stängs av minst 24 timmar före utgången av den aktuella perioden. Penningmedel ska debiteras från ditt konto enligt din förnyelsetariff inom 24 timmar före utgången av den aktuella perioden. Du kan styra eller stänga av automatisk förnyelse i dina kontoinställningar efter köpet. Du kommer att kunna använda de guider som laddats ner genom prenumeration endast under dess giltighetsperiod. 30 dagar efter prenumerationens slut ska guiderna raderas automatiskt.\n* Prenumeration med en gratis provperiod blir automatiskt en betald prenumeration. Du kan avbryta eller styra den automatiska förnyelsen av gratis provversionen i dina kontoinställningar efter köpet. Avbrytningen ska träda i kraft 24 timmar efter den sista dagen av den aktuella prenumerationsperioden och du kommer att överföras till en gratis prenumeration. Observera: alla oanvända delar av den gratis prövningsperioden ska annulleras vid köp av en betald prenumeration under denna period.</string>
+	<string name="subscription_terms_guides_outdoor">Betalning ska genomföras från ditt iTunes-konto vid bekräftelse av köpet. Prenumerationen ska förnyas automatiskt om automatisk förnyelse inte stängs av minst 24 timmar före utgången av den aktuella perioden. Penningmedel ska debiteras från ditt konto enligt din förnyelsetariff inom 24 timmar före utgången av den aktuella perioden. Du kan styra eller stänga av automatisk förnyelse i dina Apple ID-kontoinställningar när som helst efter köpet. Du kommer att kunna använda de guider som laddats ner genom prenumeration endast under dess giltighetsperiod. 7 dagar efter prenumerationens slut ska guiderna med alla bokmärken raderas automatiskt.\n* Prenumeration med en gratis provperiod blir automatiskt en betald prenumeration. Du kan avbryta eller styra den automatiska förnyelsen av gratis provversionen i dina kontoinställningar efter köpet. Avbrytningen ska träda i kraft 24 timmar efter den sista dagen av den aktuella prenumerationsperioden och du kommer att överföras till en gratis prenumeration. Observera: alla oanvända delar av den gratis prövningsperioden ska annulleras vid köp av en betald prenumeration under denna period.</string>
+	<string name="subscription_terms_android_outdoor">Betalning ska genomföras från ditt Google Play-konto vid bekräftelse av köpet. Prenumerationen ska förnyas automatiskt om automatisk förnyelse inte stängs av minst 24 timmar före utgången av den aktuella perioden. Penningmedel ska debiteras från ditt konto enligt din förnyelsetariff inom 24 timmar före utgången av den aktuella perioden. Du kan styra eller stänga av automatisk förnyelse i dina kontoinställningar efter köpet. Du kommer att kunna använda de guider som laddats ner genom prenumeration endast under dess giltighetsperiod. 7 dagar efter prenumerationens slut ska guiderna raderas automatiskt.\n* Prenumeration med en gratis provperiod blir automatiskt en betald prenumeration. Du kan avbryta eller styra den automatiska förnyelsen av gratis provversionen i dina kontoinställningar efter köpet. Avbrytningen ska träda i kraft 24 timmar efter den sista dagen av den aktuella prenumerationsperioden och du kommer att överföras till en gratis prenumeration. Observera: alla oanvända delar av den gratis prövningsperioden ska annulleras vid köp av en betald prenumeration under denna period.</string>
+	<string name="subscription_header">Prenumeration på\n<b>Guidebok katalogen</b></string>
+	<!-- Max. 20 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_4">Guider\nfrån Lonely Planet®</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_4">Ännu <b>mer intryck</b> med tusentals intressanta platser <b>runt om i världen</b></string>
+	<string name="content_by_component">Innehåll från: %s</string>
+	<string name="whatsnew_lp_title">Ännu mer intryck</string>
+	<string name="whatsnew_lp_message">Träffa Lonely Planet-guider! Sevärdheter, tematiska rutter och unika platser i 7000+ städer.</string>
+	<string name="collections_title">Samlingar</string>
+	<string name="key_information_title">Nyckelinformation</string>
+	<string name="mustsee_title">Måste se</string>
+	<string name="see_lp_category">Sevärdheter</string>
+	<string name="play_lp_category">Förströelser</string>
+	<string name="shop_lp_category">Handla</string>
+	<string name="transport_lp_category">Transport</string>
+	<string name="sleep_lp_category">Övernatta</string>
+	<string name="general_lp_category">Allmäna</string>
+	<string name="drink_lp_category">Barer</string>
+	<string name="eat_lp_category">Restauranger</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Linbanestation</string>
@@ -2217,6 +2237,7 @@
 	<string name="type.natural.pond">Damm</string>
 	<string name="type.natural.scrub">Ruggen</string>
 	<string name="type.natural.spring">Vattenkälla</string>
+	<string name="type.natural.strait">Sund</string>
 	<string name="type.natural.tree">Träd</string>
 	<string name="type.natural.volcano">Vulkan</string>
 	<string name="type.natural.water">Vatten</string>

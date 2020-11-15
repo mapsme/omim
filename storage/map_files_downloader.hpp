@@ -1,5 +1,6 @@
 #pragma once
 
+#include "storage/downloader_queue_universal.hpp"
 #include "storage/downloading_policy.hpp"
 #include "storage/queued_country.hpp"
 
@@ -16,7 +17,6 @@
 
 namespace storage
 {
-using Queue = std::list<QueuedCountry>;
 // This interface encapsulates HTTP routines for receiving servers
 // URLs and downloading a single map file.
 class MapFilesDownloader
@@ -34,8 +34,6 @@ public:
 
     virtual void OnStartDownloading() = 0;
     virtual void OnFinishDownloading() = 0;
-    virtual void OnCountryInQueue(CountryId const & id) = 0;
-    virtual void OnStartDownloadingCountry(CountryId const & id) = 0;
   };
 
   virtual ~MapFilesDownloader() = default;
@@ -44,15 +42,6 @@ public:
   /// onProgress callback and finally invokes onDownloaded
   /// callback. Both callbacks will be invoked on the main thread.
   void DownloadMapFile(QueuedCountry & queuedCountry);
-
-  /// Returns current downloading progress.
-  virtual downloader::Progress GetDownloadingProgress() = 0;
-
-  /// Returns true when downloader does not perform any job.
-  virtual bool IsIdle() = 0;
-
-  virtual void Pause() = 0;
-  virtual void Resume() = 0;
 
   // Removes item from m_quarantine queue when list of servers is not received.
   // Parent method must be called into override method.
@@ -64,7 +53,7 @@ public:
 
   // Returns m_quarantine queue when list of servers is not received.
   // Parent method must be called into override method.
-  virtual Queue const & GetQueue() const;
+  virtual QueueInterface const & GetQueue() const;
 
   void Subscribe(Subscriber * subscriber);
   void UnsubscribeAll();

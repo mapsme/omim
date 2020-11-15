@@ -14,6 +14,7 @@ if (PLATFORM_MAC)
     ${PROJECT_NAME}
     ${Qt5Widgets_LIBRARIES}
     "-framework QuartzCore"
+    "-Wl,-undefined,dynamic_lookup"
   )
 endif()
 
@@ -43,7 +44,6 @@ omim_link_libraries(
   opening_hours
   succinct
   icu
-  ${PYTHON_LIBRARIES}
   ${Boost_LIBRARIES}
   ${LIBZ}
 )

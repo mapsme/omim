@@ -393,4 +393,17 @@ void CheckSubwayExistence(Route const & route)
   bool wasSubway = IsSubwayExists(route);
   TEST(wasSubway, ("Can not find subway subpath into route."));
 }
-}  // namespace
+
+LocalCountryFile GetLocalCountryFileByCountryId(platform::CountryFile const & country)
+{
+  vector<LocalCountryFile> localFiles;
+  GetAllLocalFiles(localFiles);
+
+  for (auto const & lf : localFiles)
+  {
+    if (lf.GetCountryFile() == country)
+      return lf;
+  }
+  return {};
+}
+}  // namespace integration

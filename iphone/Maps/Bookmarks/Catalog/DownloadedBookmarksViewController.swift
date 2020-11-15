@@ -22,6 +22,16 @@ class DownloadedBookmarksViewController: MWMViewController {
   }
 
   let dataSource = DownloadedBookmarksDataSource()
+  private weak var coordinator: BookmarksCoordinator?
+
+  init(coordinator: BookmarksCoordinator?) {
+    super.init(nibName: nil, bundle: nil)
+    self.coordinator = coordinator
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -90,6 +100,12 @@ class DownloadedBookmarksViewController: MWMViewController {
       tableView.reloadData()
     }
   }
+
+  private func openCategory(category: BookmarkGroup) {
+    let bmViewController = BookmarksListBuilder.build(markGroupId: category.categoryId, bookmarksCoordinator: coordinator)
+    MapViewController.topViewController().navigationController?.pushViewController(bmViewController,
+                                                                                   animated: true)
+  }
 }
 
 extension DownloadedBookmarksViewController: UITableViewDataSource {
@@ -127,9 +143,7 @@ extension DownloadedBookmarksViewController: UITableViewDelegate {
     }
     
     let category = dataSource.category(at: indexPath.row)
-    let bmViewController = BookmarksVC(category: category.categoryId)
-    MapViewController.topViewController().navigationController?.pushViewController(bmViewController,
-                                                                                   animated: true)
+    openCategory(category: category)
   }
 }
 

@@ -605,7 +605,7 @@ void Geocoder::GoImpl(vector<shared_ptr<MwmInfo>> const & infos, bool inViewport
 
     ctx.m_villages = m_localitiesCaches.m_villages.Get(*m_context);
 
-    auto citiesFromWorld = m_cities;
+    auto const citiesFromWorld = m_cities;
     FillVillageLocalities(ctx);
     SCOPE_GUARD(remove_villages, [&]() { m_cities = citiesFromWorld; });
 
@@ -1778,10 +1778,10 @@ CBV Geocoder::RetrieveGeometryFeatures(MwmContext const & context, m2::RectD con
 {
   switch (id)
   {
-  case RectId::Pivot: return m_pivotRectsCache.Get(context, rect, m_params.GetScale());
-  case RectId::Postcode: return m_postcodesRectsCache.Get(context, rect, m_params.GetScale());
-  case RectId::Locality: return m_localityRectsCache.Get(context, rect, m_params.GetScale());
-  case RectId::Suburb: return m_localityRectsCache.Get(context, rect, m_params.GetScale());
+  case RectId::Pivot: return m_pivotRectsCache.Get(context, rect, m_params.m_scale);
+  case RectId::Postcode: return m_postcodesRectsCache.Get(context, rect, m_params.m_scale);
+  case RectId::Locality: return m_localityRectsCache.Get(context, rect, m_params.m_scale);
+  case RectId::Suburb: return m_localityRectsCache.Get(context, rect, m_params.m_scale);
   case RectId::Count: ASSERT(false, ("Invalid RectId.")); return CBV();
   }
   UNREACHABLE();

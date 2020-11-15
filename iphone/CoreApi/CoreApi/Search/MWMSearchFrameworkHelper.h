@@ -7,6 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray<NSString *> *)searchCategories;
 - (BOOL)hasMegafonCategoryBanner;
 - (NSURL *)megafonBannerUrl;
+- (nullable NSURL *)citymobilBannerUrl;
 
 - (BOOL)isSearchHistoryEmpty;
 - (NSArray<NSString *> *)lastSearchQueries;

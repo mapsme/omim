@@ -19,7 +19,6 @@
 #include "generator/platform_helpers.hpp"
 #include "generator/popular_places_section_builder.hpp"
 #include "generator/postcode_points_builder.hpp"
-#include "generator/postcodes_section_builder.hpp"
 #include "generator/processor_factory.hpp"
 #include "generator/ratings_section_builder.hpp"
 #include "generator/raw_generator.hpp"
@@ -101,7 +100,10 @@ DEFINE_string(osm_file_name, "", "Input osm area file.");
 DEFINE_string(osm_file_type, "xml", "Input osm area file type [xml, o5m].");
 DEFINE_string(data_path, "", GetDataPathHelp());
 DEFINE_string(user_resource_path, "", "User defined resource path for classificator.txt and etc.");
-DEFINE_string(intermediate_data_path, "", "Path to stored nodes, ways, relations.");
+DEFINE_string(intermediate_data_path, "", "Path to stored intermediate data.");
+DEFINE_string(cache_path, "",
+              "Path to stored caches for nodes, ways, relations. "
+              "If 'cache_path' is empty, caches are stored to 'intermediate_data_path'.");
 DEFINE_string(output, "", "File name for process (without 'mwm' ext).");
 DEFINE_bool(preload_cache, false, "Preload all ways and relations cache.");
 DEFINE_string(node_storage, "map",
@@ -242,6 +244,8 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
   genInfo.m_intermediateDir = FLAGS_intermediate_data_path.empty()
                                   ? path
                                   : base::AddSlashIfNeeded(FLAGS_intermediate_data_path);
+  genInfo.m_cacheDir = FLAGS_cache_path.empty() ? genInfo.m_intermediateDir
+                                                : base::AddSlashIfNeeded(FLAGS_cache_path);
   genInfo.m_targetDir = genInfo.m_tmpDir = path;
 
   /// @todo Probably, it's better to add separate option for .mwm.tmp files.
@@ -368,11 +372,6 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
       if (!feature::BuildOffsetsTable(dataFile))
         continue;
 
-      auto const boundaryPostcodesFilename =
-          genInfo.GetIntermediateFileName(BOUNDARY_POSTCODE_TMP_FILENAME);
-      if (!BuildPostcodesSection(path, country, boundaryPostcodesFilename))
-        LOG(LCRITICAL, ("Error generating postcodes section."));
-
       if (mapType == MapType::Country)
       {
         string const metalinesFilename = genInfo.GetIntermediateFileName(METALINES_FILENAME);
@@ -460,10 +459,12 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
     if (!FLAGS_srtm_path.empty())
       routing::BuildRoadAltitudes(dataFile, FLAGS_srtm_path);
 
+    transit::experimental::EdgeIdToFeatureId transitEdgeFeatureIds;
+
     if (!FLAGS_transit_path_experimental.empty())
     {
-      transit::experimental::BuildTransit(path, country, osmToFeatureFilename,
-                                          FLAGS_transit_path_experimental);
+      transitEdgeFeatureIds = transit::experimental::BuildTransit(
+          path, country, osmToFeatureFilename, FLAGS_transit_path_experimental);
     }
     else if (!FLAGS_transit_path.empty())
     {
@@ -543,12 +544,17 @@ MAIN_WITH_ERROR_HANDLING([](int argc, char ** argv)
 
       if (FLAGS_make_transit_cross_mwm_experimental)
       {
-        routing::BuildTransitCrossMwmSection(path, dataFile, country, *countryParentGetter,
-                                             true /* experimentalTransit */);
+        if (!transitEdgeFeatureIds.empty())
+        {
+          routing::BuildTransitCrossMwmSection(path, dataFile, country, *countryParentGetter,
+                                               transitEdgeFeatureIds,
+                                               true /* experimentalTransit */);
+        }
       }
       else if (FLAGS_make_transit_cross_mwm)
       {
         routing::BuildTransitCrossMwmSection(path, dataFile, country, *countryParentGetter,
+                                             transitEdgeFeatureIds,
                                              false /* experimentalTransit */);
       }
     }

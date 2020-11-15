@@ -391,7 +391,7 @@ public:
 private:
   void ShowViewportSearchResults(search::Results const & results, bool clear, booking::filter::Types types);
 
-  void ActivateMapSelection(std::optional<place_page::Info> const & info);
+  void ActivateMapSelection();
   void InvalidateUserMarks();
 
   void DeactivateHotelSearchMark();
@@ -876,8 +876,6 @@ private:
   void InitCityFinder();
   void InitTaxiEngine();
 
-
-
 public:
   // UGC.
   void UploadUGC(User::CompleteUploadingHandler const & onCompleteUploading);
@@ -908,6 +906,8 @@ private:
   std::unique_ptr<Purchase> m_purchase;
   TipsApi m_tipsApi;
   notifications::NotificationManager m_notificationManager;
+
+  void EnableGuidesOnce(bool isFirstLaunch, bool isLaunchByDeeplink);
 
 public:
   TipsApi const & GetTipsApi() const;

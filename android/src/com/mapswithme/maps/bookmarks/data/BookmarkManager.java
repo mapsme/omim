@@ -18,6 +18,7 @@ import com.mapswithme.util.statistics.Statistics;
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,6 +63,15 @@ public enum BookmarkManager
   public static final int SORT_BY_TYPE = 0;
   public static final int SORT_BY_DISTANCE = 1;
   public static final int SORT_BY_TIME = 2;
+
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({ CATEGORY, COLLECTION, DAY })
+  public @interface CompilationType {}
+
+  // These values have to match the values of kml::CompilationType from kml/types.hpp
+  public static final int CATEGORY = 0;
+  public static final int COLLECTION = 1;
+  public static final int DAY = 2;
 
   public static final List<Icon> ICONS = new ArrayList<>();
 
@@ -699,6 +709,21 @@ public enum BookmarkManager
     nativeSetAllCategoriesVisibility(visible, type.ordinal());
   }
 
+  public boolean areAllCompilationsVisible(long catId, @CompilationType int compilationType)
+  {
+    return nativeAreAllCompilationsVisible(catId, compilationType);
+  }
+
+  public boolean areAllCompilationsInvisible(long catId, @CompilationType int compilationType)
+  {
+    return nativeAreAllCompilationsInvisible(catId, compilationType);
+  }
+
+  public void setChildCategoriesVisibility(long catId, @CompilationType int compilationType, boolean visible)
+  {
+    nativeSetChildCategoriesVisibility(catId, compilationType, visible);
+  }
+
   public int getKmlFilesCountForConversion()
   {
     return nativeGetKmlFilesCountForConversion();
@@ -873,8 +898,38 @@ public enum BookmarkManager
     nativeGetSortedCategory(catId, sortingType, hasMyPosition, lat, lon, timestamp);
   }
 
-  native BookmarkCategory[] nativeGetBookmarkCategories();
+  @NonNull
+  public List<BookmarkCategory> getChildrenCategories(long catId)
+  {
+    return Arrays.asList(nativeGetChildrenCategories(catId));
+  }
 
+  @NonNull
+  public List<BookmarkCategory> getChildrenCollections(long catId)
+  {
+    return Arrays.asList(nativeGetChildrenCollections(catId));
+  }
+
+  public boolean isCompilation(long catId)
+  {
+    return nativeIsCompilation(catId);
+  }
+
+  public int getCompilationType(long catId)
+  {
+    return nativeGetCompilationType(catId);
+  }
+  
+  @NonNull
+  native BookmarkCategory[] nativeGetBookmarkCategories();
+  @NonNull
+  native BookmarkCategory[] nativeGetChildrenCategories(long catId);
+  @NonNull
+  native BookmarkCategory[] nativeGetChildrenCollections(long catId);
+
+  native boolean nativeIsCompilation(long catId);
+
+  native int nativeGetCompilationType(long catId);
 
   @NonNull
   public String getBookmarkName(@IntRange(from = 0) long bookmarkId)
@@ -1090,6 +1145,12 @@ public enum BookmarkManager
   private static native boolean nativeAreAllCategoriesInvisible(int type);
 
   private static native void nativeSetAllCategoriesVisibility(boolean visible, int type);
+
+  private static native boolean nativeAreAllCompilationsVisible(long catId, @CompilationType int compilationType);
+
+  private static native boolean nativeAreAllCompilationsInvisible(long catId, @CompilationType int compilationType);
+  
+  private static native void nativeSetChildCategoriesVisibility(long catId, @CompilationType int compilationType, boolean visible);
 
   private static native int nativeGetKmlFilesCountForConversion();
 

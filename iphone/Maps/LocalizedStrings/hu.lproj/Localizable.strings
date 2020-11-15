@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Ismeretlen hely";
 
-"editor_other_info" = "Megjegyzést küldött az OSM-moderátornak";
+"editor_other_info" = "Küldjön jegyzetet az OSM editornak";
 
 "editor_detailed_description_hint" = "Részletes megjegyzés";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Később";
 
-"all_pass_subscription_header" = "ELŐFIZETÉS A KATALÓGUSRA";
+"all_pass_subscription_header" = "Iratkozzon fel az";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Útmutató katalógus";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\nútmutatók\n& sávok";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Gyerekek";
 
-"guests_picker_children_subtitle" = "1-16 éves";
+"guests_picker_children_subtitle" = "1-17 éves";
 
 "guests_picker_infants_title" = "Csecsemők";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Próbálja ki most";
 
-"subscription_terms_guides_outdoor" = "Amikor megerősíti a vásárlást, a fizetést az iTunes számlájára terheljük. Az előfizetés automatikusan megújul, kivéve, ha az automatikus megújítás funkció legalább 24 órával a jelenlegi előfizetési időszak vége előtt letiltásra kerül. Fiókját a megújítási terv szerint 24 órán belül terheljük a jelenlegi előfizetési időszak lejárta előtt. Az automatikus megújítást az Apple ID-fiók beállításaiban a vásárlás után bármikor ellenőrizheti és letilthatja. Az előfizetés alatt letöltött útmutatásokat csak az előfizetés lejártáig használhatja. Az útmutatók és az összes könyvjelző automatikusan törlésre kerül az előfizetés lejárta után 30 nappal.\n* Az ingyenes próbaidőszakra szóló feliratkozás automatikusan fizetett előfizetésként kerül megújításra. Az ingyenes próbaverzió automatikus megújítását a vásárlás után a fiókbeállításaiban törölheti vagy ellenőrizheti. A lemondás a jelenlegi előfizetési időszak utolsó napját követő 24 órában lép életbe. Ezt követően az ingyenes szolgáltatásra kerül át. Megjegyzés: Az ingyenes próbaverzió fel nem használt része elvész, ha prémium előfizetést vásárol az ingyenes próbaverzió alatt.";
+"subscription_terms_guides_outdoor" = "Amikor megerősíti a vásárlást, a fizetést az iTunes számlájára terheljük. Az előfizetés automatikusan megújul, kivéve, ha az automatikus megújítás funkció legalább 24 órával a jelenlegi előfizetési időszak vége előtt letiltásra kerül. Fiókját a megújítási terv szerint 24 órán belül terheljük a jelenlegi előfizetési időszak lejárta előtt. Az automatikus megújítást az Apple ID-fiók beállításaiban a vásárlás után bármikor ellenőrizheti és letilthatja. Az előfizetés alatt letöltött útmutatásokat csak az előfizetés lejártáig használhatja. Az útmutatók és az összes könyvjelző automatikusan törlésre kerül az előfizetés lejárta után 7 nappal.\n* Az ingyenes próbaidőszakra szóló feliratkozás automatikusan fizetett előfizetésként kerül megújításra. Az ingyenes próbaverzió automatikus megújítását a vásárlás után a fiókbeállításaiban törölheti vagy ellenőrizheti. A lemondás a jelenlegi előfizetési időszak utolsó napját követő 24 órában lép életbe. Ezt követően az ingyenes szolgáltatásra kerül át. Megjegyzés: Az ingyenes próbaverzió fel nem használt része elvész, ha prémium előfizetést vásárol az ingyenes próbaverzió alatt.";
 
-"subscription_terms_android_outdoor" = "Amikor megerősíti a vásárlást, a fizetést a Google Play számlájára terheljük. Az előfizetés automatikusan megújul, kivéve, ha az automatikus megújítás funkció legalább 24 órával a jelenlegi előfizetési időszak vége előtt letiltásra kerül. Fiókját a megújítási terv szerint 24 órán belül terheljük a jelenlegi előfizetési időszak lejárta előtt. Vásárlás után bármikor ellenőrizheti vagy törölheti az automatikus megújítást a fiókbeállításokban. Az előfizetés alatt letöltött útmutatásokat csak az előfizetés lejártáig használhatja. Az útmutatók automatikusan törlésre kerülnek az előfizetés lejárta után 30 nappal.\n* Az ingyenes próbaidőszakra szóló feliratkozás automatikusan fizetett előfizetésként kerül megújításra. Az ingyenes próbaverzió automatikus megújítását a vásárlás után a fiókbeállításaiban törölheti vagy ellenőrizheti. A lemondás a jelenlegi előfizetési időszak utolsó napját követő 24 órában lép életbe. Ezt követően az ingyenes szolgáltatásra kerül át. Megjegyzés: Az ingyenes próbaverzió fel nem használt része elvész, ha prémium előfizetést vásárol az ingyenes próbaverzió alatt.";
+"subscription_terms_android_outdoor" = "Amikor megerősíti a vásárlást, a fizetést a Google Play számlájára terheljük. Az előfizetés automatikusan megújul, kivéve, ha az automatikus megújítás funkció legalább 24 órával a jelenlegi előfizetési időszak vége előtt letiltásra kerül. Fiókját a megújítási terv szerint 24 órán belül terheljük a jelenlegi előfizetési időszak lejárta előtt. Vásárlás után bármikor ellenőrizheti vagy törölheti az automatikus megújítást a fiókbeállításokban. Az előfizetés alatt letöltött útmutatásokat csak az előfizetés lejártáig használhatja. Az útmutatók automatikusan törlésre kerülnek az előfizetés lejárta után 7 nappal.\n* Az ingyenes próbaidőszakra szóló feliratkozás automatikusan fizetett előfizetésként kerül megújításra. Az ingyenes próbaverzió automatikus megújítását a vásárlás után a fiókbeállításaiban törölheti vagy ellenőrizheti. A lemondás a jelenlegi előfizetési időszak utolsó napját követő 24 órában lép életbe. Ezt követően az ingyenes szolgáltatásra kerül át. Megjegyzés: Az ingyenes próbaverzió fel nem használt része elvész, ha prémium előfizetést vásárol az ingyenes próbaverzió alatt.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "Iratkozzon fel az\n<b>Útmutató katalógusra</b>";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Útikalauzok\na Lonely Planet®-től";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "Még <b>több élmény</b> érdekes helyszínek ezreivel <b>a világon</b>";
+
+"content_by_component" = "Tartalom: %s";
+
+"whatsnew_lp_title" = "Még több izgalom";
+
+"whatsnew_lp_message" = "Mostantól Lonely Planet útmutatók vannak az alkalmazásunkban! A legjobb látnivalók, tematikus séták, egyedi úti helyek több mint 7000 városhoz.";
+
+"collections_title" = "Gyűjtemények";
+
+"key_information_title" = "Kulcs információ";
+
+"mustsee_title" = "Látnia kell";
+
+"see_lp_category" = "Lásd";
+
+"play_lp_category" = "Játék";
+
+"shop_lp_category" = "Vásárlás";
+
+"transport_lp_category" = "Utazás";
+
+"sleep_lp_category" = "Szállás";
+
+"general_lp_category" = "Általános";
+
+"drink_lp_category" = "Ital";
+
+"eat_lp_category" = "Étel";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Utca";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "Versenypálya";
 
 "type.highway.residential" = "Utca";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Forrás";
 
+"type.natural.strait" = "Szoros";
+
 "type.natural.tree" = "Fa";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Vasút";
 

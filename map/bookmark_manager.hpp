@@ -49,7 +49,6 @@ class BookmarkManager final
 {
   using UserMarkLayers = std::vector<std::unique_ptr<UserMarkLayer>>;
   using CategoriesCollection = std::map<kml::MarkGroupId, std::unique_ptr<BookmarkCategory>>;
-
   using MarksCollection = std::map<kml::MarkId, std::unique_ptr<UserMark>>;
   using BookmarksCollection = std::map<kml::MarkId, std::unique_ptr<Bookmark>>;
   using TracksCollection = std::map<kml::TrackId, std::unique_ptr<Track>>;
@@ -196,8 +195,14 @@ public:
   void UpdateViewport(ScreenBase const & screen);
   void Teardown();
 
-  static bool IsBookmarkCategory(kml::MarkGroupId groupId) { return groupId >= UserMark::USER_MARK_TYPES_COUNT_MAX; }
-  static bool IsBookmark(kml::MarkId markId) { return UserMark::GetMarkType(markId) == UserMark::BOOKMARK; }
+  static bool IsBookmarkCategory(kml::MarkGroupId groupId)
+  {
+    return groupId != kml::kInvalidMarkGroupId && groupId >= UserMark::USER_MARK_TYPES_COUNT_MAX;
+  }
+  static bool IsBookmark(kml::MarkId markId)
+  {
+    return markId != kml::kInvalidMarkId && UserMark::GetMarkType(markId) == UserMark::BOOKMARK;
+  }
   static UserMark::Type GetGroupType(kml::MarkGroupId groupId)
   {
     return IsBookmarkCategory(groupId) ? UserMark::BOOKMARK : static_cast<UserMark::Type>(groupId);
@@ -268,6 +273,8 @@ public:
 
   kml::MarkGroupId CreateBookmarkCategory(kml::CategoryData && data, bool autoSave = true);
   kml::MarkGroupId CreateBookmarkCategory(std::string const & name, bool autoSave = true);
+
+  BookmarkCategory * CreateBookmarkCompilation(kml::CategoryData && data);
 
   std::string GetCategoryName(kml::MarkGroupId categoryId) const;
   std::string GetCategoryFileName(kml::MarkGroupId categoryId) const;
@@ -364,6 +371,10 @@ public:
   bool AreAllCategoriesVisible(CategoryFilterType const filter) const;
   bool AreAllCategoriesInvisible(CategoryFilterType const filter) const;
   void SetAllCategoriesVisibility(CategoryFilterType const filter, bool visible);
+  bool AreAllCompilationsVisible(kml::MarkGroupId categoryId, kml::CompilationType compilationType) const;
+  bool AreAllCompilationsInvisible(kml::MarkGroupId categoryId, kml::CompilationType compilationType) const;
+  void SetChildCategoriesVisibility(kml::MarkGroupId categoryId, kml::CompilationType compilationType,
+                                    bool visible);
 
   // Return number of files for the conversion to the binary format.
   size_t GetKmlFilesCountForConversion() const;
@@ -497,6 +508,14 @@ public:
   void OnTrackSelected(kml::TrackId trackId);
   void OnTrackDeselected();
 
+  kml::GroupIdCollection GetChildrenCategories(kml::MarkGroupId parentCategoryId) const;
+  kml::GroupIdCollection GetChildrenCollections(kml::MarkGroupId parentCategoryId) const;
+
+  bool IsCompilation(kml::MarkGroupId id) const;
+  kml::CompilationType GetCompilationType(kml::MarkGroupId id) const;
+
+  std::vector<std::string> GetAllPaidCategoriesIds() const;
+
 private:
   class MarksChangesTracker : public df::UserMarksProvider
   {
@@ -556,6 +575,8 @@ private:
     void InsertBookmark(kml::MarkId markId, kml::MarkGroupId catId,
                         GroupMarkIdSet & setToInsert, GroupMarkIdSet & setToErase);
     bool HasBookmarkCategories(kml::GroupIdSet const & groupIds) const;
+
+    void InferVisibility(BookmarkCategory * const group);
 
     BookmarkManager * m_bmManager;
 
@@ -628,6 +649,8 @@ private:
   void AttachBookmark(kml::MarkId bmId, kml::MarkGroupId groupId);
   void DetachBookmark(kml::MarkId bmId, kml::MarkGroupId groupId);
   void DeleteBookmark(kml::MarkId bmId);
+  void DetachUserMark(kml::MarkId bmId, kml::MarkGroupId catId);
+  void DeleteCompilations(kml::GroupIdCollection const & compilations);
 
   Track * CreateTrack(kml::TrackData && trackData);
 
@@ -712,7 +735,10 @@ private:
   void FinishConversion(ConversionHandler const & handler, bool result);
 
   bool HasDuplicatedIds(kml::FileData const & fileData) const;
+  template <typename UniquityChecker>
+  void SetUniqueName(kml::CategoryData & data, UniquityChecker checker);
   bool CheckVisibility(CategoryFilterType const filter, bool isVisible) const;
+  bool CheckCompilationsVisibility(kml::MarkGroupId categoryId, kml::CompilationType compilationType, bool isVisible) const;
 
   struct SortBookmarkData
   {
@@ -768,8 +794,6 @@ private:
                             SortedBlocksCollection & sortedBlocks) const;
   void SortTracksByTime(std::vector<SortTrackData> & tracks) const;
 
-  std::vector<std::string> GetAllPaidCategoriesIds() const;
-
   kml::MarkId GetTrackSelectionMarkId(kml::TrackId trackId) const;
   int GetTrackSelectionMarkMinZoom(kml::TrackId trackId) const;
   void SetTrackSelectionMark(kml::TrackId trackId, m2::PointD const & pt, double distance);
@@ -780,6 +804,9 @@ private:
   void UpdateTrackMarksMinZoom();
   void UpdateTrackMarksVisibility(kml::MarkGroupId groupId);
   void RequestSymbolSizes();
+
+  kml::GroupIdCollection GetCompilationOfType(kml::MarkGroupId parentId,
+                                              kml::CompilationType type) const;
 
   ThreadChecker m_threadChecker;
 
@@ -902,6 +929,8 @@ private:
   Metadata m_metadata;
 
   bool m_testModeEnabled = false;
+
+  CategoriesCollection m_compilations;
 
   DISALLOW_COPY_AND_MOVE(BookmarkManager);
 };

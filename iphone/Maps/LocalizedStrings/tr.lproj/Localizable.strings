@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Bilinmeyen Yer";
 
-"editor_other_info" = "OSM moderatörüne bir not gönder";
+"editor_other_info" = "OSM editörlerine bir not gönderin";
 
 "editor_detailed_description_hint" = "Ayrıntılı yorum";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Sonra";
 
-"all_pass_subscription_header" = "KATALOĞA ABONELİK";
+"all_pass_subscription_header" = "Üye olun";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Rehber kataloğu";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\nrehberler\nve yollar";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Çocuk";
 
-"guests_picker_children_subtitle" = "1-16 yaş";
+"guests_picker_children_subtitle" = "1-17 yaş";
 
 "guests_picker_infants_title" = "Bebek";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Hemen deneyin";
 
-"subscription_terms_guides_outdoor" = "Satın alma işlemini onayladığınızda, ödeme iTunes hesabınızdan gerçekleştirilecektir. Otomatik yenileme özelliği mevcut abonelik döneminin sona ermesinden en az 24 saat önce devre dışı bırakılmadığı sürece abonelik otomatik olarak yenilenir. Yenileme planı çerçevesinde, mevcut abonelik döneminizin sona ermesinden önceki 24 saat içinde hesabınızdan para çekilecektir. Satın alma işleminden sonra dilediğiniz zaman Apple Kimliği hesap ayarlarından otomatik yenilemeyi yönetebilir veya devre dışı bırakabilirsiniz. Aboneliğiniz süresinde indirdiğiniz rehberleri sadece aboneliğiniz geçerli olduğu sürece kullanabilirsiniz. Rehberler ve tüm yer işaretleri, aboneliğin sona ermesinden 30 gün sonra otomatik olarak silinecektir.\n* Ücretsiz deneme süresinde sahip abonelikler, otomatik olarak ücretli abonelik şeklinde yenilenir. Satın alma işleminden sonra hesap ayarlarından ücretsiz deneme süresi sonunda otomatik yenilemeyi iptal edebilir veya yönetebilirsiniz. İptal işlemi, mevcut abonelik döneminin son gününden 24 saat sonra geçerli olacaktır. Bu aşamadan sonra ücretsiz hizmete geçersiniz. Lütfen unutmayın: Ücretsiz deneme süresinde premium abonelik satın almanız durumunda, ücretsiz deneme süresinde henüz kullanmadığınız günlerden feragat etmiş sayılırsınız.";
+"subscription_terms_guides_outdoor" = "Satın alma işlemini onayladığınızda, ödeme iTunes hesabınızdan gerçekleştirilecektir. Otomatik yenileme özelliği mevcut abonelik döneminin sona ermesinden en az 24 saat önce devre dışı bırakılmadığı sürece abonelik otomatik olarak yenilenir. Yenileme planı çerçevesinde, mevcut abonelik döneminizin sona ermesinden önceki 24 saat içinde hesabınızdan para çekilecektir. Satın alma işleminden sonra dilediğiniz zaman Apple Kimliği hesap ayarlarından otomatik yenilemeyi yönetebilir veya devre dışı bırakabilirsiniz. Aboneliğiniz süresinde indirdiğiniz rehberleri sadece aboneliğiniz geçerli olduğu sürece kullanabilirsiniz. Rehberler ve tüm yer işaretleri, aboneliğin sona ermesinden 7 gün sonra otomatik olarak silinecektir.\n* Ücretsiz deneme süresinde sahip abonelikler, otomatik olarak ücretli abonelik şeklinde yenilenir. Satın alma işleminden sonra hesap ayarlarından ücretsiz deneme süresi sonunda otomatik yenilemeyi iptal edebilir veya yönetebilirsiniz. İptal işlemi, mevcut abonelik döneminin son gününden 24 saat sonra geçerli olacaktır. Bu aşamadan sonra ücretsiz hizmete geçersiniz. Lütfen unutmayın: Ücretsiz deneme süresinde premium abonelik satın almanız durumunda, ücretsiz deneme süresinde henüz kullanmadığınız günlerden feragat etmiş sayılırsınız.";
 
-"subscription_terms_android_outdoor" = "Satın alma işlemini onayladığınızda, ödeme Google Play hesabınızdan gerçekleştirilecektir. Otomatik yenileme özelliği mevcut abonelik döneminin sona ermesinden en az 24 saat önce devre dışı bırakılmadığı sürece abonelik otomatik olarak yenilenir. Yenileme planı çerçevesinde, mevcut abonelik döneminizin sona ermesinden önceki 24 saat içinde hesabınızdan para çekilecektir. Satın alma işleminden sonra dilediğiniz zaman hesap ayarlarından otomatik yenilemeyi yönetebilir veya devre dışı bırakabilirsiniz. Aboneliğiniz süresinde indirdiğiniz rehberleri sadece aboneliğiniz geçerli olduğu sürece kullanabilirsiniz. Rehberler, aboneliğin sona ermesinden 30 gün sonra otomatik olarak silinecektir.\n* Ücretsiz deneme süresinde sahip abonelikler, otomatik olarak ücretli abonelik şeklinde yenilenir. Satın alma işleminden sonra hesap ayarlarından ücretsiz deneme süresi sonunda otomatik yenilemeyi iptal edebilir veya yönetebilirsiniz. İptal işlemi, mevcut abonelik döneminin son gününden 24 saat sonra geçerli olacaktır. Bu aşamadan sonra ücretsiz hizmete geçersiniz. Lütfen unutmayın: Ücretsiz deneme süresinde premium abonelik satın almanız durumunda, ücretsiz deneme süresinde henüz kullanmadığınız günlerden feragat etmiş sayılırsınız.";
+"subscription_terms_android_outdoor" = "Satın alma işlemini onayladığınızda, ödeme Google Play hesabınızdan gerçekleştirilecektir. Otomatik yenileme özelliği mevcut abonelik döneminin sona ermesinden en az 24 saat önce devre dışı bırakılmadığı sürece abonelik otomatik olarak yenilenir. Yenileme planı çerçevesinde, mevcut abonelik döneminizin sona ermesinden önceki 24 saat içinde hesabınızdan para çekilecektir. Satın alma işleminden sonra dilediğiniz zaman hesap ayarlarından otomatik yenilemeyi yönetebilir veya devre dışı bırakabilirsiniz. Aboneliğiniz süresinde indirdiğiniz rehberleri sadece aboneliğiniz geçerli olduğu sürece kullanabilirsiniz. Rehberler, aboneliğin sona ermesinden 7 gün sonra otomatik olarak silinecektir.\n* Ücretsiz deneme süresinde sahip abonelikler, otomatik olarak ücretli abonelik şeklinde yenilenir. Satın alma işleminden sonra hesap ayarlarından ücretsiz deneme süresi sonunda otomatik yenilemeyi iptal edebilir veya yönetebilirsiniz. İptal işlemi, mevcut abonelik döneminin son gününden 24 saat sonra geçerli olacaktır. Bu aşamadan sonra ücretsiz hizmete geçersiniz. Lütfen unutmayın: Ücretsiz deneme süresinde premium abonelik satın almanız durumunda, ücretsiz deneme süresinde henüz kullanmadığınız günlerden feragat etmiş sayılırsınız.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "<b>Rehber kataloğuna</b>\nüye olun";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Lonely Planet®\nseyahat rehberleri";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "<b>Dünyanın dört bir yanındaki</b> binlerce ilginç yer sayesinde <b>daha da fazla deneyim</b>";
+
+"content_by_component" = "Yayınlayan: %s";
+
+"whatsnew_lp_title" = "Daha da fazla duygu";
+
+"whatsnew_lp_message" = "Lonely Planet rehberlerine uygulamamızdan erişebilirsiniz! 7000'den fazla şehirde eşsiz seyahat noktaları, cazibe yerleri ve tematik yürüyüşler.";
+
+"collections_title" = "Koleksiyonlar";
+
+"key_information_title" = "Anahtar bilgisi";
+
+"mustsee_title" = "Görmeden geçme";
+
+"see_lp_category" = "Görülecek Yerler";
+
+"play_lp_category" = "Eğlence";
+
+"shop_lp_category" = "Alışveriş";
+
+"transport_lp_category" = "Ulaşım";
+
+"sleep_lp_category" = "Dinlenme";
+
+"general_lp_category" = "Genel";
+
+"drink_lp_category" = "İçecek";
+
+"eat_lp_category" = "Yiyecek";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Cadde";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "Koşu yolu";
 
 "type.highway.residential" = "Cadde";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Pınar";
 
+"type.natural.strait" = "Boğaz";
+
 "type.natural.tree" = "Arbre";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Demiryolu";
 

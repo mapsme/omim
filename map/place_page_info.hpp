@@ -1,19 +1,20 @@
 #pragma once
 
 #include "map/bookmark.hpp"
-
-#include "partners_api/taxi_provider.hpp"
+#include "map/routing_mark.hpp"
 
 #include "ugc/api.hpp"
 
-#include "map/routing_mark.hpp"
-
-#include "drape_frontend/frontend_renderer.hpp"
-#include "drape_frontend/selection_shape.hpp"
+#include "partners_api/taxi_provider.hpp"
 
 #include "storage/storage_defines.hpp"
 
 #include "editor/osm_editor.hpp"
+
+#include "drape_frontend/frontend_renderer.hpp"
+#include "drape_frontend/selection_shape.hpp"
+
+#include "kml/types.hpp"
 
 #include "indexer/feature_data.hpp"
 #include "indexer/feature_meta.hpp"
@@ -102,6 +103,7 @@ struct BuildInfo
     , m_isLongTap(info.m_isLong)
     , m_isMyPosition(info.m_isMyPositionTapped)
     , m_featureId(info.m_featureTapped)
+    , m_userMarkId(info.m_markTapped)
   {}
 
   bool IsFeatureMatchingEnabled() const
@@ -145,8 +147,7 @@ public:
 
   /// Place traits
   bool IsFeature() const { return m_featureID.IsValid(); }
-  bool IsBookmark() const { return m_markGroupId != kml::kInvalidMarkGroupId && m_markId != kml::kInvalidMarkId; }
-  bool IsSearchMark() const { return m_isSearchMark; }
+  bool IsBookmark() const;
   bool IsTrack() const { return m_trackId != kml::kInvalidTrackId; }
   bool IsMyPosition() const { return m_selectedObject == df::SelectionShape::ESelectedObject::OBJECT_MY_POSITION; }
   bool IsRoutePoint() const { return m_isRoutePoint; }
@@ -191,6 +192,7 @@ public:
 
   /// UI setters
   void SetCustomName(std::string const & name);
+  void SetTitlesForBookmark();
   void SetCustomNames(std::string const & title, std::string const & subtitle);
   void SetCustomNameWithCoordinates(m2::PointD const & mercator, std::string const & name);
   void SetAddress(std::string const & address) { m_address = address; }
@@ -198,21 +200,20 @@ public:
   void SetLocalizedWifiString(std::string const & str) { m_localizedWifiString = str; }
 
   /// Bookmark
-  void SetBookmarkId(kml::MarkId markId);
-  kml::MarkId GetBookmarkId() const { return m_markId; }
+  void SetFromBookmarkProperties(kml::Properties const & p);
+  void SetBookmarkId(kml::MarkId bookmarkId);
+  kml::MarkId GetBookmarkId() const { return m_bookmarkId; }
   void SetBookmarkCategoryId(kml::MarkGroupId markGroupId) { m_markGroupId = markGroupId; }
   kml::MarkGroupId GetBookmarkCategoryId() const { return m_markGroupId; }
   std::string const & GetBookmarkCategoryName() const { return m_bookmarkCategoryName; }
   void SetBookmarkCategoryName(std::string const & name) { m_bookmarkCategoryName = name; }
   void SetBookmarkData(kml::BookmarkData const & data) { m_bookmarkData = data; }
   kml::BookmarkData const & GetBookmarkData() const { return m_bookmarkData; }
+  bool IsTopChoice() const { return m_isTopChoice; }
 
   /// Track
   void SetTrackId(kml::TrackId trackId) { m_trackId = trackId; };
   kml::TrackId GetTrackId() const { return m_trackId; };
-
-  /// SearchMark
-  void SetIsSearchMark(bool isSearchMark) { m_isSearchMark = isSearchMark; };
 
   /// Guide
   void SetIsGuide(bool isGuide) { m_isGuide = isGuide; }
@@ -328,7 +329,6 @@ private:
   std::string GetBookmarkName();
   /// @returns empty string or GetStars() count of ★ symbol.
   std::string FormatStars() const;
-  void SetTitlesForBookmark();
 
   place_page::BuildInfo m_buildInfo;
 
@@ -356,15 +356,14 @@ private:
   /// Bookmark or track
   kml::MarkGroupId m_markGroupId = kml::kInvalidMarkGroupId;
   /// If not invalid, bookmark is bound to this place page.
-  kml::MarkId m_markId = kml::kInvalidMarkId;
+  kml::MarkId m_bookmarkId = kml::kInvalidMarkId;
   /// Bookmark category name. Empty, if it's not bookmark;
   std::string m_bookmarkCategoryName;
   kml::BookmarkData m_bookmarkData;
   /// If not invalid, track is bound to this place page.
   kml::TrackId m_trackId = kml::kInvalidTrackId;
-
-  /// SearchMark
-  kml::MarkId m_isSearchMark = false;
+  /// Whether to show "Must See".
+  bool m_isTopChoice = false;
 
   /// Guide
   bool m_isGuide = false;

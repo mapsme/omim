@@ -30,7 +30,7 @@ class WorldFeedIntegrationTests
 public:
   WorldFeedIntegrationTests()
     : m_mwmMatcher(GetTestingOptions().m_resourcePath, false /* haveBordersForWholeWorld */)
-    , m_globalFeed(m_generator, m_colorPicker, m_mwmMatcher)
+    , m_globalFeed(m_generator, m_generatorEdges, m_colorPicker, m_mwmMatcher)
   {
     auto const & options = GetTestingOptions();
 
@@ -39,6 +39,7 @@ public:
     CHECK(GetPlatform().MkDirRecursively(m_testPath), ());
 
     m_generator = IdGenerator(base::JoinPath(m_testPath, "mapping.txt"));
+    m_generatorEdges = IdGenerator(base::JoinPath(m_testPath, "mapping_edges.txt"));
 
     auto const src = base::JoinPath(options.m_resourcePath, kArchiveWithFeeds + ".zip");
     ZipFileReader::FileList filesAndSizes;
@@ -81,13 +82,13 @@ public:
     TEST_EQUAL(m_globalFeed.m_networks.m_data.size(), 21, ());
     TEST_EQUAL(m_globalFeed.m_routes.m_data.size(), 87, ());
     // All trips have unique service_id so each line corresponds to some trip.
-    TEST_EQUAL(m_globalFeed.m_lines.m_data.size(), 980, ());
+    TEST_EQUAL(m_globalFeed.m_lines.m_data.size(), 392, ());
     TEST_EQUAL(m_globalFeed.m_stops.m_data.size(), 1008, ());
     // 64 shapes contained in other shapes should be skipped.
     TEST_EQUAL(m_globalFeed.m_shapes.m_data.size(), 329, ());
     TEST_EQUAL(m_globalFeed.m_gates.m_data.size(), 0, ());
     TEST_EQUAL(m_globalFeed.m_transfers.m_data.size(), 0, ());
-    TEST_EQUAL(m_globalFeed.m_edges.m_data.size(), 10079, ());
+    TEST_EQUAL(m_globalFeed.m_edges.m_data.size(), 3999, ());
     TEST_EQUAL(m_globalFeed.m_edgesTransfers.m_data.size(), 0, ());
   }
 
@@ -119,22 +120,23 @@ public:
 
     // First and last stops are connected through 1 edge with 1 nearest stop.
     // Stops in the middle are connected through 2 edges with 2 nearest stops.
-    TEST_EQUAL(stopsInRegions["Switzerland_Ticino"].size(), 2, ());
+    TEST_EQUAL(stopsInRegions["Switzerland_Ticino"].size(), 3, ());
     TEST_EQUAL(edgesInRegions["Switzerland_Ticino"].size(), 1, ());
 
-    TEST_EQUAL(stopsInRegions["Switzerland_Eastern"].size(), 3, ());
+    TEST_EQUAL(stopsInRegions["Switzerland_Eastern"].size(), 4, ());
     TEST_EQUAL(edgesInRegions["Switzerland_Eastern"].size(), 2, ());
 
-    TEST_EQUAL(stopsInRegions["Italy_Lombardy_Como"].size(), 3, ());
+    TEST_EQUAL(stopsInRegions["Italy_Lombardy_Como"].size(), 4, ());
     TEST_EQUAL(edgesInRegions["Italy_Lombardy_Como"].size(), 2, ());
 
-    TEST_EQUAL(stopsInRegions["Italy_Lombardy_Monza and Brianza"].size(), 2, ());
+    TEST_EQUAL(stopsInRegions["Italy_Lombardy_Monza and Brianza"].size(), 3, ());
     TEST_EQUAL(edgesInRegions["Italy_Lombardy_Monza and Brianza"].size(), 1, ());
   }
 
 private:
   std::string m_testPath;
   IdGenerator m_generator;
+  IdGenerator m_generatorEdges;
   transit::ColorPicker m_colorPicker;
   feature::CountriesFilesAffiliation m_mwmMatcher;
   WorldFeed m_globalFeed;

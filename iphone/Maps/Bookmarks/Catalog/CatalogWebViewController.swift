@@ -169,9 +169,9 @@ final class CatalogWebViewController: WebViewController {
     let showOnMapPath = "map"
     guard let url = navigationAction.request.url,
       url.scheme == "mapsme" ||
-        url.path.contains("buy_kml") ||
-        url.path.contains(subscribePath) ||
-        url.path.contains(showOnMapPath) else {
+        url.pathComponents.contains("buy_kml") ||
+        url.pathComponents.contains(subscribePath) ||
+        url.pathComponents.contains(showOnMapPath) else {
           super.webView(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
           return
     }
@@ -180,12 +180,12 @@ final class CatalogWebViewController: WebViewController {
       decisionHandler(.cancel)
     }
 
-    if url.path.contains(subscribePath) {
+    if url.pathComponents.contains(subscribePath) {
       showSubscriptionBannerScreen(SubscriptionGroupType(catalogURL: url))
       return
     }
 
-    if url.path.contains(showOnMapPath) {
+    if url.pathComponents.contains(showOnMapPath) {
       guard let components = url.queryParams() else { return }
       guard let serverId = components["server_id"] else { return }
       showOnMap(serverId)
@@ -263,10 +263,11 @@ final class CatalogWebViewController: WebViewController {
         self?.loadingIndicator.stopAnimating()
       case .needAuth:
         if let s = self, let navBar = s.navigationController?.navigationBar {
-          s.signup(anchor: navBar, source: .guideCatalogue, onComplete: {
-            if $0 {
+          s.signup(anchor: navBar, source: .guideCatalogue, onComplete: { result in
+            if result == .succes {
+              s.reloadFromOrigin()
               s.handlePendingTransactions(completion: completion)
-            } else {
+            } else if result == .error {
               MWMAlertViewController.activeAlert().presentInfoAlert(L("title_error_downloading_bookmarks"),
                                                                     text: L("failed_purchase_support_message"))
               completion(false)
@@ -326,8 +327,15 @@ final class CatalogWebViewController: WebViewController {
           switch status {
           case .needAuth:
             if let s = self, let navBar = s.navigationController?.navigationBar {
-              s.signup(anchor: navBar, source: .guideCatalogue) {
-                if $0 { s.download() }
+              s.signup(anchor: navBar, source: .guideCatalogue) { result in
+                if result == .succes {
+                  s.reloadFromOrigin()
+                  s.download()
+                } else if result == .error {
+                  MWMAlertViewController.activeAlert().presentAuthErrorAlert {
+                    s.download()
+                  }
+                }
               }
             }
           case .needPayment:
@@ -368,7 +376,7 @@ final class CatalogWebViewController: WebViewController {
 
     let purchase = InAppPurchase.paidRoutePurchase(serverId: productInfo.id,
                                                    productId: productId)
-    let testGroup = PromoCampaignManager.manager().paidRoutesSubscriptionCampaign.testGroupStatName
+    let testGroup = ABTestManager.manager().paidRoutesSubscriptionCampaign.testGroupStatName
     let stats = InAppPurchase.paidRouteStatistics(serverId: productInfo.id,
                                                   productId: productId,
                                                   testGroup: testGroup,
@@ -391,7 +399,7 @@ final class CatalogWebViewController: WebViewController {
                                                                 source: kStatWebView,
                                                                 successDialog: .none) { [weak self] success in
                                                                   if success {
-                                                                    self?.webView.reloadFromOrigin()
+                                                                    self?.reloadFromOrigin()
                                                                     self?.download()
                                                                   }
     }
@@ -404,7 +412,7 @@ final class CatalogWebViewController: WebViewController {
                                                                 source: kStatWebView,
                                                                 successDialog: .success) { [weak self] success in
                                                                   if success {
-                                                                    self?.webView.reloadFromOrigin()
+                                                                    self?.reloadFromOrigin()
                                                                   }
     }
     present(subscribeViewController, animated: true)
@@ -475,12 +483,13 @@ extension CatalogWebViewController: PaidRouteViewControllerDelegate {
   func didCompleteSubscription(_ viewController: PaidRouteViewController) {
     dismiss(animated: true)
     download()
-    webView.reloadFromOrigin()
+    reloadFromOrigin()
   }
 
   func didCompletePurchase(_ viewController: PaidRouteViewController) {
     dismiss(animated: true)
     download()
+    reloadFromOrigin()
   }
 
   func didCancelPurchase(_ viewController: PaidRouteViewController) {

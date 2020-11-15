@@ -93,6 +93,12 @@ void Bookmark::SetAddress(search::ReverseGeocoder::RegionAddress const & address
   m_address = address;
 }
 
+void Bookmark::SetIsVisible(bool isVisible)
+{
+  SetDirty();
+  m_isVisible = isVisible;
+}
+
 dp::Anchor Bookmark::GetAnchor() const
 {
   return dp::Bottom;
@@ -272,15 +278,30 @@ kml::MarkGroupId Bookmark::GetGroupId() const
   return m_groupId;
 }
 
+bool Bookmark::CanFillPlacePageMetadata() const
+{
+  auto const & p = m_data.m_properties;
+  if (auto const hours = p.find("hours"); hours != p.end() && !hours->second.empty())
+    return true;
+  return false;
+}
+
 void Bookmark::Attach(kml::MarkGroupId groupId)
 {
   ASSERT(m_groupId == kml::kInvalidMarkGroupId, ());
   m_groupId = groupId;
 }
 
+void Bookmark::AttachCompilation(kml::MarkGroupId groupId)
+{
+  ASSERT(groupId != kml::kInvalidMarkGroupId, ());
+  m_compilationIds.push_back(groupId);
+}
+
 void Bookmark::Detach()
 {
   m_groupId = kml::kInvalidMarkGroupId;
+  m_compilationIds.clear();
 }
 
 BookmarkCategory::BookmarkCategory(std::string const & name, kml::MarkGroupId groupId, bool autoSave)

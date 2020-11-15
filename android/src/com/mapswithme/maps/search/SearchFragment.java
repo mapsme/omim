@@ -335,6 +335,7 @@ public class SearchFragment extends BaseMwmFragment
       public void onShowOnMapClick()
       {
         showAllResultsOnMap();
+        Statistics.INSTANCE.trackSearchContextAreaClick(Statistics.ParamValue.MAP);
       }
 
       @Override
@@ -349,6 +350,7 @@ public class SearchFragment extends BaseMwmFragment
         }
         FilterActivity.startForResult(SearchFragment.this, filter, params,
                                       FilterActivity.REQ_CODE_FILTER);
+        Statistics.INSTANCE.trackSearchContextAreaClick(Statistics.EventParam.FILTER);
       }
 
       @Override
@@ -360,6 +362,7 @@ public class SearchFragment extends BaseMwmFragment
       @Override
       public void onFilterParamsChanged()
       {
+        FilterUtils.trackFiltersApplying(mFilterController);
         runSearch();
       }
     }, mToolbarController);
@@ -417,6 +420,13 @@ public class SearchFragment extends BaseMwmFragment
       mFilterController.onSaveState(outState);
   }
 
+  @Override
+  public void onStart()
+  {
+    super.onStart();
+    mToolbarController.attach(requireActivity());
+  }
+
   public void onResume()
   {
     super.onResume();
@@ -432,6 +442,13 @@ public class SearchFragment extends BaseMwmFragment
     SearchEngine.INSTANCE.removeHotelListener(this);
     super.onPause();
     mAppBarLayout.removeOnOffsetChangedListener(mOffsetListener);
+  }
+
+  @Override
+  public void onStop()
+  {
+    super.onStop();
+    mToolbarController.detach();
   }
 
   @Override
@@ -465,7 +482,7 @@ public class SearchFragment extends BaseMwmFragment
     mInitialLocale = arguments.getString(SearchActivity.EXTRA_LOCALE);
     mInitialSearchOnMap = arguments.getBoolean(SearchActivity.EXTRA_SEARCH_ON_MAP);
     mInitialHotelsFilter = arguments.getParcelable(FilterActivity.EXTRA_FILTER);
-    mInitialFilterParams = arguments.getParcelable(FilterActivity.EXTRA_FILTER_PARAMS);
+    mInitialFilterParams = arguments.getParcelable(FilterUtils.EXTRA_FILTER_PARAMS);
   }
 
   private boolean tryRecognizeHiddenCommand(@NonNull String query)
@@ -632,7 +649,7 @@ public class SearchFragment extends BaseMwmFragment
   }
 
   @Override
-  public void onResultsEnd(long timestamp)
+  public void onResultsEnd(long timestamp, boolean isHotel)
   {
     onSearchEnd();
   }
@@ -702,7 +719,7 @@ public class SearchFragment extends BaseMwmFragment
           return;
 
         mFilterController.setFilter(data.getParcelableExtra(FilterActivity.EXTRA_FILTER));
-        mFilterController.setFilterParams(data.getParcelableExtra(FilterActivity.EXTRA_FILTER_PARAMS));
+        mFilterController.setFilterParams(data.getParcelableExtra(FilterUtils.EXTRA_FILTER_PARAMS));
         runSearch();
         break;
     }

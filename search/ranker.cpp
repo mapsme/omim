@@ -38,7 +38,16 @@ template <typename Slice>
 void UpdateNameScores(string const & name, uint8_t lang, Slice const & slice,
                       NameScores & bestScores)
 {
-  bestScores.UpdateIfBetter(GetNameScores(name, lang, slice));
+  if (lang == StringUtf8Multilang::kAltNameCode || lang == StringUtf8Multilang::kOldNameCode)
+  {
+    auto const names = strings::Tokenize(name, ";");
+    for (auto const & n : names)
+      bestScores.UpdateIfBetter(GetNameScores(n, lang, slice));
+  }
+  else
+  {
+    bestScores.UpdateIfBetter(GetNameScores(name, lang, slice));
+  }
 }
 
 template <typename Slice>
@@ -107,19 +116,32 @@ pair<NameScores, size_t> GetNameScores(FeatureType & ft, Geocoder::Params const 
     string name;
     if (!ft.GetName(lang, name))
       continue;
-    vector<strings::UniString> tokens;
-    PrepareStringForMatching(name, tokens);
-
-    UpdateNameScores(tokens, lang, slice, bestScores);
-    UpdateNameScores(tokens, lang, sliceNoCategories, bestScores);
-
-    if (type == Model::TYPE_STREET)
+    vector<vector<strings::UniString>> tokens(1);
+    if (lang == StringUtf8Multilang::kAltNameCode || lang == StringUtf8Multilang::kOldNameCode)
     {
-      auto const variants = ModifyStrasse(tokens);
-      for (auto const & variant : variants)
+      auto const names = strings::Tokenize(name, ";");
+      tokens.resize(names.size());
+      for (size_t i = 0; i < names.size(); ++i)
+        PrepareStringForMatching(names[i], tokens[i]);
+    }
+    else
+    {
+      PrepareStringForMatching(name, tokens[0]);
+    }
+
+    for (auto const & t : tokens)
+    {
+      UpdateNameScores(t, lang, slice, bestScores);
+      UpdateNameScores(t, lang, sliceNoCategories, bestScores);
+
+      if (type == Model::TYPE_STREET)
       {
-        UpdateNameScores(variant, lang, slice, bestScores);
-        UpdateNameScores(variant, lang, sliceNoCategories, bestScores);
+        auto const variants = ModifyStrasse(t);
+        for (auto const & variant : variants)
+        {
+          UpdateNameScores(variant, lang, slice, bestScores);
+          UpdateNameScores(variant, lang, sliceNoCategories, bestScores);
+        }
       }
     }
   }
@@ -130,16 +152,16 @@ pair<NameScores, size_t> GetNameScores(FeatureType & ft, Geocoder::Params const 
 
   if (ftypes::IsAirportChecker::Instance()(ft))
   {
-    string const iata = ft.GetMetadata().Get(feature::Metadata::FMD_AIRPORT_IATA);
+    string const iata = ft.GetMetadata(feature::Metadata::FMD_AIRPORT_IATA);
     if (!iata.empty())
       UpdateNameScores(iata, StringUtf8Multilang::kDefaultCode, sliceNoCategories, bestScores);
   }
 
-  string const op = ft.GetMetadata().Get(feature::Metadata::FMD_OPERATOR);
+  string const op = ft.GetMetadata(feature::Metadata::FMD_OPERATOR);
   if (!op.empty())
     UpdateNameScores(op, StringUtf8Multilang::kDefaultCode, sliceNoCategories, bestScores);
 
-  string const brand = ft.GetMetadata().Get(feature::Metadata::FMD_BRAND);
+  string const brand = ft.GetMetadata(feature::Metadata::FMD_BRAND);
   if (!brand.empty())
   {
     auto const & brands = indexer::GetDefaultBrands();
@@ -307,8 +329,13 @@ class RankerResultMaker
 {
 public:
   RankerResultMaker(Ranker & ranker, DataSource const & dataSource,
-                    storage::CountryInfoGetter const & infoGetter, Geocoder::Params const & params)
-    : m_ranker(ranker), m_dataSource(dataSource), m_infoGetter(infoGetter), m_params(params)
+                    storage::CountryInfoGetter const & infoGetter,
+                    ReverseGeocoder const & reverseGeocoder, Geocoder::Params const & params)
+    : m_ranker(ranker)
+    , m_dataSource(dataSource)
+    , m_infoGetter(infoGetter)
+    , m_reverseGeocoder(reverseGeocoder)
+    , m_params(params)
   {
   }
 
@@ -356,6 +383,22 @@ private:
     center = feature::GetCenter(*ft);
     m_ranker.GetBestMatchName(*ft, name);
 
+    // Insert exact address (street and house number) instead of empty result name.
+    if (name.empty())
+    {
+      ReverseGeocoder::Address addr;
+      LazyAddressGetter addressGetter(m_reverseGeocoder, center);
+      if (addressGetter.GetExactAddress(addr))
+      {
+        if (auto streetFeature = LoadFeature(addr.m_street.m_id))
+        {
+          string streetName;
+          m_ranker.GetBestMatchName(*streetFeature, streetName);
+          name = streetName + ", " + addr.GetHouseNumber();
+        }
+      }
+    }
+
     // Country (region) name is a file name if feature isn't from
     // World.mwm.
     ASSERT(m_loader && m_loader->GetId() == id.m_mwmId, ());
@@ -395,9 +438,8 @@ private:
       info.m_hasName = ft.HasName();
       if (!info.m_hasName)
       {
-        auto const & meta = ft.GetMetadata();
-        info.m_hasName =
-            meta.Has(feature::Metadata::FMD_OPERATOR) || meta.Has(feature::Metadata::FMD_BRAND);
+        info.m_hasName = ft.HasMetadata(feature::Metadata::FMD_OPERATOR) ||
+                         ft.HasMetadata(feature::Metadata::FMD_BRAND);
       }
     }
     else
@@ -538,6 +580,7 @@ private:
   Ranker & m_ranker;
   DataSource const & m_dataSource;
   storage::CountryInfoGetter const & m_infoGetter;
+  ReverseGeocoder const & m_reverseGeocoder;
   Geocoder::Params const & m_params;
 
   unique_ptr<FeaturesLoaderGuard> m_loader;
@@ -584,14 +627,6 @@ Result Ranker::MakeResult(RankerResult const & rankerResult, bool needAddress,
   if (needAddress)
   {
     LazyAddressGetter addressGetter(m_reverseGeocoder, rankerResult.GetCenter());
-
-    // Insert exact address (street and house number) instead of empty result name.
-    if (name.empty())
-    {
-      ReverseGeocoder::Address addr;
-      if (addressGetter.GetExactAddress(addr))
-        name = FormatStreetAndHouse(addr);
-    }
 
     address = GetLocalizedRegionInfoForResult(rankerResult);
 
@@ -653,7 +688,7 @@ void Ranker::UpdateResults(bool lastUpdate)
   if (!lastUpdate)
     BailIfCancelled();
 
-  MakeRankerResults(m_geocoderParams, m_tentativeResults);
+  MakeRankerResults();
   RemoveDuplicatingLinear(m_tentativeResults);
   if (m_tentativeResults.empty())
     return;
@@ -733,24 +768,23 @@ void Ranker::SetLocale(string const & locale)
 
 void Ranker::LoadCountriesTree() { m_regionInfoGetter.LoadCountriesTree(); }
 
-void Ranker::MakeRankerResults(Geocoder::Params const & geocoderParams,
-                               vector<RankerResult> & results)
+void Ranker::MakeRankerResults()
 {
-  RankerResultMaker maker(*this, m_dataSource, m_infoGetter, geocoderParams);
+  RankerResultMaker maker(*this, m_dataSource, m_infoGetter, m_reverseGeocoder, m_geocoderParams);
   for (auto const & r : m_preRankerResults)
   {
     auto p = maker(r);
     if (!p)
       continue;
 
-    if (geocoderParams.m_mode == Mode::Viewport &&
-        !geocoderParams.m_pivot.IsPointInside(p->GetCenter()))
+    if (m_geocoderParams.m_mode == Mode::Viewport &&
+        !m_geocoderParams.m_pivot.IsPointInside(p->GetCenter()))
     {
       continue;
     }
 
-    if (!ResultExists(*p, results, m_params.m_minDistanceBetweenResultsM))
-      results.push_back(move(*p));
+    if (!ResultExists(*p, m_tentativeResults, m_params.m_minDistanceBetweenResultsM))
+      m_tentativeResults.push_back(move(*p));
   };
 
   m_preRankerResults.clear();
@@ -772,7 +806,17 @@ void Ranker::GetBestMatchName(FeatureType & f, string & name) const
   };
 
   auto bestNameFinder = [&](int8_t lang, string const & s) {
-    updateScore(lang, s, true /* force */);
+    if (lang == StringUtf8Multilang::kAltNameCode || lang == StringUtf8Multilang::kOldNameCode)
+    {
+      auto const names = strings::Tokenize(s, ";");
+      for (auto const & n : names)
+        updateScore(lang, n, true /* force */);
+    }
+    else
+    {
+      updateScore(lang, s, true /* force */);
+    }
+
     // Default name should be written in the regional language.
     if (lang == StringUtf8Multilang::kDefaultCode)
     {

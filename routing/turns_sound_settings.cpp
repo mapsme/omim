@@ -98,12 +98,18 @@ double Settings::ConvertMetersToUnits(double distanceInMeters) const
   return 0.;
 }
 
-uint32_t Settings::ComputeDistToPronounceDistM(double speedMetersPerSecond) const
+uint32_t Settings::ComputeDistToPronounceDistM(double speedMetersPerSecond, bool pedestrian) const
 {
   ASSERT_LESS_OR_EQUAL(0, speedMetersPerSecond, ());
+
+  auto const startBeforeSeconds = pedestrian ? m_startBeforeSecondsPedestrian : m_startBeforeSecondsVehicle;
+  auto const minStartBeforeMeters = pedestrian ? m_minStartBeforeMetersPedestrian : m_minStartBeforeMetersVehicle;
+  auto const maxStartBeforeMeters = pedestrian ? m_maxStartBeforeMetersPedestrian : m_maxStartBeforeMetersVehicle;
+
   uint32_t const startBeforeMeters =
-      static_cast<uint32_t>(speedMetersPerSecond * m_startBeforeSeconds);
-  return base::Clamp(startBeforeMeters, m_minStartBeforeMeters, m_maxStartBeforeMeters);
+      static_cast<uint32_t>(speedMetersPerSecond * startBeforeSeconds);
+
+  return base::Clamp(startBeforeMeters, minStartBeforeMeters, maxStartBeforeMeters);
 }
 
 string DebugPrint(Notification const & notification)
@@ -113,6 +119,7 @@ string DebugPrint(Notification const & notification)
       << ", m_exitNum == " << notification.m_exitNum
       << ", m_useThenInsteadOfDistance == " << notification.m_useThenInsteadOfDistance
       << ", m_turnDir == " << DebugPrint(notification.m_turnDir)
+      << ", m_turnDirPedestrian == " << DebugPrint(notification.m_turnDirPedestrian)
       << ", m_lengthUnits == " << DebugPrint(notification.m_lengthUnits) << " ]" << endl;
   return out.str();
 }

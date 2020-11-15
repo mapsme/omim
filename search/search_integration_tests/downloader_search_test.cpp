@@ -10,6 +10,7 @@
 #include "search/search_tests_support/test_search_request.hpp"
 
 #include "storage/downloader_search_params.hpp"
+#include "storage/downloader_queue_universal.hpp"
 #include "storage/map_files_downloader.hpp"
 #include "storage/queued_country.hpp"
 #include "storage/storage.hpp"
@@ -87,16 +88,10 @@ class TestMapFilesDownloader : public storage::MapFilesDownloader
 {
 public:
   // MapFilesDownloader overrides:
-  downloader::Progress GetDownloadingProgress() override { return {}; }
-
-  bool IsIdle() override { return false; }
-
-  void Pause() override {}
-  void Resume() override {}
   void Remove(storage::CountryId const & id) override {}
   void Clear() override {}
 
-  storage::Queue const & GetQueue() const override { return m_queue; }
+  storage::QueueInterface const & GetQueue() const override { return m_queue; }
 
 private:
   void GetServersList(ServersListCallback const & /* callback */) override {}

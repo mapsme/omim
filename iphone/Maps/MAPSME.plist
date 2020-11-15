@@ -111,11 +111,13 @@
 		<string>fbshareextension</string>
 		<string>uber</string>
 		<string>yandextaxi</string>
+		<string>yandexyango</string>
 		<string>tel</string>
 		<string>booking</string>
 		<string>maximzakaz</string>
 		<string>vzt</string>
 		<string>mytaxi</string>
+		<string>citymobil-taxi</string>
 		<string>wunderlinq</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
@@ -230,8 +232,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>

@@ -35,7 +35,7 @@
 	<!-- Choose measurement on first launch alert - choose metric system button -->
 	<string name="kilometres">Kilómetros</string>
 	<!-- Leave Review dialog - Review button -->
-	<string name="leave_a_review">Escribir una opinión|comentario</string>
+	<string name="leave_a_review">Escribir una opinión</string>
 	<!-- View and button titles for accessibility -->
 	<string name="maps">Mapas</string>
 	<!-- View and button titles for accessibility -->
@@ -152,7 +152,7 @@
 	<!-- Text hint in Bookmarks dialog when at least one bookmark is added -->
 	<string name="bookmarks_usage_hint_import_only">Se pueden importar y mostrar marcadores de otras fuentes en la aplicación MAPS.ME. Abre el archivo KML/KMZ con los alfileres guardados desde el corre, Dropbox o Weblink.</string>
 	<!-- Settings button in system menu -->
-	<string name="settings">Ajustes</string>
+	<string name="settings">Configuración</string>
 	<!-- Header of settings activity where user defines storage path -->
 	<string name="maps_storage">Guardar mapas en</string>
 	<!-- Detailed description of Maps Storage settings button -->
@@ -315,7 +315,7 @@
 	<string name="pref_tts_how_to_set_up_voice">Cómo configurar la voz</string>
 	<!-- Settings «Map» category: «Record track» title -->
 	<string name="pref_track_record_title">Trayecto reciente</string>
-	<string name="pref_map_auto_zoom">Autozoom</string>
+	<string name="pref_map_auto_zoom">Zoom automático</string>
 	<string name="duration_disabled">Desactivada</string>
 	<string name="duration_1_hour">1 hora</string>
 	<string name="duration_2_hours">2 horas</string>
@@ -647,7 +647,7 @@
 	<string name="p2p_start">Empezar</string>
 	<string name="p2p_planning">Planeando…</string>
 	<string name="p2p_from_here">Desde</string>
-	<string name="p2p_to_here">Ruta hasta</string>
+	<string name="p2p_to_here">Ruta hacia</string>
 	<string name="p2p_only_from_current">La navegación solo está disponible desde tu ubicación actual.</string>
 	<string name="p2p_reroute_from_current">¿Quieres que planeemos un ruta desde tu ubicación actual?</string>
 	<string name="whats_new_next_button">Siguiente</string>
@@ -684,7 +684,7 @@
 	<string name="download_all">Descargar todos</string>
 	<string name="delete_all">Eliminar todos</string>
 	<string name="autodownload">Descarga automática</string>
-	<string name="disable_autodownload">Inhabilitar descarga automática</string>
+	<string name="disable_autodownload">Desactivar descarga automática</string>
 	<!-- Place Page opening hours text -->
 	<string name="closed_now">Cerrado ahora</string>
 	<!-- Place Page opening hours text -->
@@ -816,7 +816,7 @@
 	<string name="error_enter_correct_zip_code">Introduzca el código postal correcto</string>
 	<!-- Place Page title for long tap -->
 	<string name="core_placepage_unknown_place">Lugar desconocido</string>
-	<string name="editor_other_info">Enviar una nota al moderador de OSM</string>
+	<string name="editor_other_info">Enviar nota a los editores de OSM</string>
 	<string name="editor_detailed_description_hint">Comentario detallado</string>
 	<string name="editor_detailed_description">Los cambios que ha sugerido se enviarán a la comunidad de OpenStreetMap. Describa los detalles que no pueden editarse en MAPS.ME.</string>
 	<string name="editor_more_about_osm">Más acerca de OpenStreetMap</string>
@@ -1095,7 +1095,7 @@
 	<string name="search_hotel_filters_type">Tipo</string>
 	<!-- Settings: "Send general feedback" button -->
 	<string name="feedback_general">Opinión general</string>
-	<string name="on">Akt.</string>
+	<string name="on">Act.</string>
 	<string name="off">Desact.</string>
 	<string name="prefs_languages_information">Utilizamos el sistema TTS para las instrucciones de voz. Muchos dispositivos de Android usan Google TTS. Puede descargar o actualizarlo desde Google Play (https://play.google.com/store/apps/details?id=com.google.android.tts)</string>
 	<string name="prefs_languages_information_off">Para algunos idiomas, debe instalar otro sintetizador de voz o un paquete de idioma adicional desde la tienda de aplicaciones (Google Play mercado, Samsung Apps). Abra los Ajustes de su dispositivo → Idioma e introducción → Voz → Opciones texto a voz. Aquí puede administrar la configuración de síntesis de voz (por ejemplo, descargar un paquete de idioma para poder usarlo sin conexión) o seleccionar otro motor de texto a voz.</string>
@@ -1104,8 +1104,8 @@
 	<string name="whatsnew_transliteration_message">Si una calle o un objeto no tiene nombre en su idioma, se escribirá con el alfabeto latino.</string>
 	<string name="learn_more">Leer más</string>
 	<string name="core_exit">Salir</string>
-	<string name="routing_add_start_point">Agregar un punto de inicio para planificar una ruta</string>
-	<string name="routing_add_finish_point">Agregar un destino para planificar una ruta</string>
+	<string name="routing_add_start_point">Buscar un origen para el plan de ruta</string>
+	<string name="routing_add_finish_point">Buscar un destino para el plan de ruta</string>
 	<string name="onboarding_welcome_message">Mapas gratuitos, rápidos y detallados sin conexión a internet y con navegación paso a paso.</string>
 	<!-- нужно как-то выделять документы, чтобы привязать позже ссылки. -->
 	<string name="onboarding_welcome_agree">Al iniciar la aplicación, usted acepta las Condiciones de uso y la Política de privacidad.</string>
@@ -1219,8 +1219,8 @@
 	<string name="bookmarks_message_unauthorized_user">La copia de seguridad de sus marcadores se guarda automáticamente en un almacenamiento seguro de la nube. Inicie sesión para habilitar la copia de seguridad.</string>
 	<string name="bookmarks_message_unbackuped_user">La copia de seguridad de sus marcadores se guarda automáticamente en un almacenamiento seguro de la nube.</string>
 	<string name="bookmarks_message_backuped_user">La copia de seguridad de sus marcadores se guarda automáticamente en un almacenamiento seguro de la nube. La última copia de seguridad se hizo %s</string>
-	<string name="settings_backup_bookmarks">Marcadores de copia de seguridad</string>
-	<string name="bookmarks_groups">Liza</string>
+	<string name="settings_backup_bookmarks">Copia de seguridad de marcadores</string>
+	<string name="bookmarks_groups">Listas</string>
 	<string name="bookmarks_groups_hide_all">Ocultar todo</string>
 	<string name="bookmarks_groups_show_all">Mostrar todo</string>
 	<plurals name="bookmarks_places">
@@ -1380,9 +1380,9 @@
 	<string name="restore_error_alert">Se ha producido un error al restablecer la suscripción</string>
 	<string name="restore_no_subscription_alert">No hay suscripciones activas</string>
 	<string name="subscriptions_title">Suscripciones</string>
-	<string name="manage_subscription">Gestionar suscripción</string>
+	<string name="manage_subscription">Administrar suscripción</string>
 	<string name="sharing_options">Configuración de acceso</string>
-	<string name="export_file">Exportar el archivo</string>
+	<string name="export_file">Exportar como archivo</string>
 	<string name="list_settings">Configurar lista</string>
 	<string name="delete_list">Eliminar lista</string>
 	<string name="hide_from_map">Ocultar en el mapa</string>
@@ -1704,7 +1704,8 @@
 	<string name="new_onboarding_step5.3_message">¡Descarga y califica las rutas para paseos por la ciudad y actividades al aire libre con una selección gratuita de MAPS.ME!</string>
 	<string name="new_onboarding_step5.3_button">Descarga gratis</string>
 	<string name="new_onboarding_additional_steps_later_button">Más tarde</string>
-	<string name="all_pass_subscription_header">SUSCRIPCIÓN AL CATÁLOGO</string>
+	<string name="all_pass_subscription_header">Suscripción al</string>
+	<string name="all_pass_subscription_subheader">Catálogo de guías</string>
 	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
 	<string name="all_pass_subscription_message_title">más de 30 mil\nguías\ny senderos</string>
 	<!-- <b> & </b> tag to make a part of the line bold -->
@@ -1814,7 +1815,7 @@
 	<string name="guests_picker_rooms">Habitaciones</string>
 	<string name="guests_picker_adults">Adultos</string>
 	<string name="guests_picker_children_title">Niños</string>
-	<string name="guests_picker_children_subtitle">de 1-16 años</string>
+	<string name="guests_picker_children_subtitle">de 1-17 años</string>
 	<string name="guests_picker_infants_title">Infantes</string>
 	<string name="guests_picker_infants_subtitle">de 0-12 meses</string>
 	<!-- as less symbols as possible -->
@@ -1828,8 +1829,27 @@
 	<string name="whatsnew_trial_title">Acceso gratuito a las guías de viaje</string>
 	<string name="whatsnew_trial_message">Hemos lanzado un período de suscripción de prueba de 7 días. Miles de rutas en todo el mundo, además de un perfil interactivo de alturas en las guías para actividades al aire libre.</string>
 	<string name="whatsnew_trial_cta">Pruébalo ahora</string>
-	<string name="subscription_terms_guides_outdoor">Cuando confirmes la compra, el pago se cargará a tu cuenta de iTunes. La suscripción se renovará automáticamente a menos que la función de renovación automática esté desactivada al menos 24 horas antes del final del período de suscripción actual. Tu cuenta se cargará de acuerdo con tu plan de renovación dentro de las 24 horas antes de que finalice el período de suscripción actual. Puedes administrar o deshabilitar la renovación automática en la configuración de tu cuenta de ID de Apple en cualquier momento después de la compra. Solo podrás usar las guías descargadas de tu suscripción durante su período de vigencia. Las guías y todos los marcadores se eliminarán automáticamente 30 días después de que caduque la suscripción.\n* La suscripción con un período de prueba gratuito se renovará automáticamente a una suscripción paga. Puedes cancelar o administrar la renovación automática de tu prueba gratuita en la configuración de tu cuenta después de la compra. La cancelación surtirá efecto 24 horas después del último día del período de suscripción actual, después de eso, serás trasferido al servicio gratuito. Ten en cuenta que cualquier parte no utilizada de la prueba gratuita se perderá cuando compres una suscripción premium durante la prueba gratuita.</string>
-	<string name="subscription_terms_android_outdoor">El pago se cargará a tu cuenta de Google Play en la confirmación de la compra. La suscripción se renovará automáticamente a menos que la función de renovación automática esté desactivada al menos 24 horas antes del final del período de suscripción actual. Tu cuenta se cargará de acuerdo con tu plan de renovación dentro de las 24 horas antes de que finalice el período de suscripción actual. Puedes administrar o deshabilitar la renovación automática yendo a la configuración de tu cuenta después de la compra. Solo podrás usar las guías descargadas de tu suscripción durante su período de vigencia. Después de 30 días después del final de la suscripción, las guías se eliminarán automáticamente.\n* La suscripción con un período de prueba gratuito se renovará automáticamente a una suscripción paga. Puedes cancelar o administrar la renovación automática de tu prueba gratuita en la configuración de tu cuenta después de la compra. La cancelación surtirá efecto 24 horas después del último día del período de suscripción actual, después de eso, serás trasferido al servicio gratuito. Ten en cuenta que cualquier parte no utilizada de la prueba gratuita se perderá cuando compres una suscripción premium durante la prueba gratuita.</string>
+	<string name="subscription_terms_guides_outdoor">Cuando confirmes la compra, el pago se cargará a tu cuenta de iTunes. La suscripción se renovará automáticamente a menos que la función de renovación automática esté desactivada al menos 24 horas antes del final del período de suscripción actual. Tu cuenta se cargará de acuerdo con tu plan de renovación dentro de las 24 horas antes de que finalice el período de suscripción actual. Puedes administrar o deshabilitar la renovación automática en la configuración de tu cuenta de ID de Apple en cualquier momento después de la compra. Solo podrás usar las guías descargadas de tu suscripción durante su período de vigencia. Las guías y todos los marcadores se eliminarán automáticamente 7 días después de que caduque la suscripción.\n* La suscripción con un período de prueba gratuito se renovará automáticamente a una suscripción paga. Puedes cancelar o administrar la renovación automática de tu prueba gratuita en la configuración de tu cuenta después de la compra. La cancelación surtirá efecto 24 horas después del último día del período de suscripción actual, después de eso, serás trasferido al servicio gratuito. Ten en cuenta que cualquier parte no utilizada de la prueba gratuita se perderá cuando compres una suscripción premium durante la prueba gratuita.</string>
+	<string name="subscription_terms_android_outdoor">El pago se cargará a tu cuenta de Google Play en la confirmación de la compra. La suscripción se renovará automáticamente a menos que la función de renovación automática esté desactivada al menos 24 horas antes del final del período de suscripción actual. Tu cuenta se cargará de acuerdo con tu plan de renovación dentro de las 24 horas antes de que finalice el período de suscripción actual. Puedes administrar o deshabilitar la renovación automática yendo a la configuración de tu cuenta después de la compra. Solo podrás usar las guías descargadas de tu suscripción durante su período de vigencia. Después de 7 días después del final de la suscripción, las guías se eliminarán automáticamente.\n* La suscripción con un período de prueba gratuito se renovará automáticamente a una suscripción paga. Puedes cancelar o administrar la renovación automática de tu prueba gratuita en la configuración de tu cuenta después de la compra. La cancelación surtirá efecto 24 horas después del último día del período de suscripción actual, después de eso, serás trasferido al servicio gratuito. Ten en cuenta que cualquier parte no utilizada de la prueba gratuita se perderá cuando compres una suscripción premium durante la prueba gratuita.</string>
+	<string name="subscription_header">Suscripción al\n<b>Catálogo de guías</b></string>
+	<!-- Max. 20 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_4">Guías\nde Lonely Planet®</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_4">Más <b>impresiones adicionales</b> con miles de lugares interesantes <b>en todo el mundo</b></string>
+	<string name="content_by_component">Contenido de: %s</string>
+	<string name="whatsnew_lp_title">Aún más impresiones</string>
+	<string name="whatsnew_lp_message">¡Conozca las guías Lonely Planet! Sitios de interés, rutas temáticas y lugares únicos en más de 7000 ciudades.</string>
+	<string name="collections_title">Colecciones</string>
+	<string name="key_information_title">Información clave</string>
+	<string name="mustsee_title">Debes ver</string>
+	<string name="see_lp_category">Atracciones</string>
+	<string name="play_lp_category">Entretenimientos</string>
+	<string name="shop_lp_category">Compras</string>
+	<string name="transport_lp_category">Transporte</string>
+	<string name="sleep_lp_category">Hospedaje</string>
+	<string name="general_lp_category">Populares</string>
+	<string name="drink_lp_category">Bebidas</string>
+	<string name="eat_lp_category">Comidas</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Estación de teleférico</string>
@@ -2208,6 +2228,7 @@
 	<string name="type.natural.pond">Estanque</string>
 	<string name="type.natural.scrub">Matorrales</string>
 	<string name="type.natural.spring">Manantial</string>
+	<string name="type.natural.strait">Estrecho</string>
 	<string name="type.natural.tree">Árbol</string>
 	<string name="type.natural.volcano">Volcán</string>
 	<string name="type.natural.water">Cuenca</string>

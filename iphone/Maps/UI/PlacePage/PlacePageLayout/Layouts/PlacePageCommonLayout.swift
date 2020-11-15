@@ -64,7 +64,25 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
     vc.delegate = interactor
     return vc
   } ()
-  
+
+  lazy var descriptionDividerViewController: PlacePageDividerViewController = {
+    let vc = storyboard.instantiateViewController(ofType: PlacePageDividerViewController.self)
+    vc.view.isHidden = true
+    if let bookmarkData = placePageData.bookmarkData {
+      let group = BookmarkGroup(categoryId: bookmarkData.bookmarkGroupId, bookmarksManager: BookmarksManager.shared())
+      vc.isAuthorIconHidden = !group.isLonelyPlanet
+    }
+    vc.titleText = L("placepage_place_description").uppercased()
+    return vc
+  } ()
+
+  lazy var keyInformationDividerViewController: PlacePageDividerViewController = {
+    let vc = storyboard.instantiateViewController(ofType: PlacePageDividerViewController.self)
+    vc.view.isHidden = true
+    vc.titleText = L("key_information_title").uppercased()
+    return vc
+  } ()
+
   lazy var bookmarkViewController: PlacePageBookmarkViewController = {
     let vc = storyboard.instantiateViewController(ofType: PlacePageBookmarkViewController.self)
     vc.view.isHidden = true
@@ -174,11 +192,13 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
       placePageData.loadCatalogPromo(completion: onLoadCatalogPromo)
     }
 
+    viewControllers.append(descriptionDividerViewController)
     viewControllers.append(wikiDescriptionViewController)
     if let wikiDescriptionHtml = placePageData.wikiDescriptionHtml {
       wikiDescriptionViewController.descriptionHtml = wikiDescriptionHtml
       if placePageData.bookmarkData?.bookmarkDescription == nil && !placePageData.isPromoCatalog {
         wikiDescriptionViewController.view.isHidden = false
+        descriptionDividerViewController.view.isHidden = false
       }
     }
 
@@ -186,6 +206,9 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
     if let bookmarkData = placePageData.bookmarkData {
       bookmarkViewController.bookmarkData = bookmarkData
       bookmarkViewController.view.isHidden = false
+      if let description = bookmarkData.bookmarkDescription, description.isEmpty == false {
+        descriptionDividerViewController.view.isHidden = false
+      }
     }
 
     viewControllers.append(hotelPhotosViewController)
@@ -194,11 +217,15 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
     viewControllers.append(hotelReviewsViewController)
 
     if placePageData.infoData != nil {
+      viewControllers.append(keyInformationDividerViewController)
+      keyInformationDividerViewController.view.isHidden = false
       viewControllers.append(infoViewController)
     }
 
-    if placePageData.taxiProvider != .none {
-      viewControllers.append(taxiViewController)
+    if placePageData.taxiProvider != .none &&
+      !LocationManager.isLocationProhibited() &&
+      FrameworkHelper.isNetworkConnected() {
+        viewControllers.append(taxiViewController)
     }
 
     if placePageData.previewData.showUgc {
@@ -230,12 +257,12 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
       self?.onLoadUgc()
     }
 
-    MWMLocationManager.add(observer: self)
-    if let lastLocation = MWMLocationManager.lastLocation() {
+    LocationManager.add(observer: self)
+    if let lastLocation = LocationManager.lastLocation() {
       onLocationUpdate(lastLocation)
       self.lastLocation = lastLocation
     }
-    if let lastHeading = MWMLocationManager.lastHeading() {
+    if let lastHeading = LocationManager.lastHeading() {
       onHeadingUpdate(lastHeading)
     }
 
@@ -424,7 +451,7 @@ extension PlacePageCommonLayout: MWMLocationObserver {
       if location.speed > 0 && location.timestamp.timeIntervalSinceNow >= -2 {
         let speed = imperial ? location.speed * 2.237 : location.speed * 3.6
         let speedMeasurement = Measurement(value: speed.rounded(), unit: imperial ? UnitSpeed.milesPerHour: UnitSpeed.kilometersPerHour)
-        let speedString = "\(MWMLocationManager.speedSymbolFor(location.speed))\(unitsFormatter.string(from: speedMeasurement))"
+        let speedString = "\(LocationManager.speedSymbolFor(location.speed))\(unitsFormatter.string(from: speedMeasurement))"
         previewViewController.updateSpeedAndAltitude("\(altString)  \(speedString)")
       } else {
         previewViewController.updateSpeedAndAltitude(altString)

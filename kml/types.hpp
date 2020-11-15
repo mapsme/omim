@@ -95,6 +95,28 @@ inline std::string DebugPrint(AccessRules accessRules)
   UNREACHABLE();
 }
 
+enum class CompilationType : uint8_t
+{
+  // Do not change the order because of binary serialization.
+  Category = 0,
+  Collection,
+  Day,
+
+  Count
+};
+
+inline std::string DebugPrint(CompilationType compilationType)
+{
+  switch (compilationType)
+  {
+  case CompilationType::Category: return "Category";
+  case CompilationType::Collection: return "Collection";
+  case CompilationType::Day: return "Day";
+  case CompilationType::Count: return {};
+  }
+  UNREACHABLE();
+}
+
 enum class BookmarkIcon : uint16_t
 {
   // Do not change the order because of binary serialization.
@@ -206,6 +228,8 @@ struct BookmarkData
                                   visitor(m_boundTracks, "boundTracks"),
                                   visitor(m_visible, "visible"),
                                   visitor(m_nearestToponym, "nearestToponym"),
+                                  visitor(m_minZoom, "minZoom"),
+                                  visitor(m_compilations, "compilations"),
                                   visitor(m_properties, "properties"),
                                   VISITOR_COLLECTABLE)
 
@@ -225,6 +249,8 @@ struct BookmarkData
            m_boundTracks == data.m_boundTracks &&
            m_visible == data.m_visible &&
            m_nearestToponym == data.m_nearestToponym &&
+           m_minZoom == data.m_minZoom &&
+           m_compilations == data.m_compilations &&
            m_properties == data.m_properties;
   }
 
@@ -257,6 +283,10 @@ struct BookmarkData
   bool m_visible = true;
   // Nearest toponym.
   std::string m_nearestToponym;
+  // Minimal zoom when bookmark is visible.
+  int m_minZoom = 1;
+  // List of compilationIds.
+  std::vector<CompilationId> m_compilations;
   // Key-value properties.
   Properties m_properties;
 };
@@ -339,6 +369,8 @@ struct TrackData
 struct CategoryData
 {
   DECLARE_VISITOR_AND_DEBUG_PRINT(CategoryData, visitor(m_id, "id"),
+                                  visitor(m_compilationId, "compilationId"),
+                                  visitor(m_type, "type"),
                                   visitor(m_name, "name"),
                                   visitor(m_imageUrl, "imageUrl"),
                                   visitor(m_annotation, "annotation"),
@@ -362,7 +394,8 @@ struct CategoryData
   bool operator==(CategoryData const & data) const
   {
     double constexpr kEps = 1e-5;
-    return m_id == data.m_id && m_name == data.m_name && m_imageUrl == data.m_imageUrl &&
+    return m_id == data.m_id && m_compilationId == data.m_compilationId &&
+           m_type == data.m_type && m_name == data.m_name && m_imageUrl == data.m_imageUrl &&
            m_annotation == data.m_annotation && m_description == data.m_description &&
            m_visible == data.m_visible && m_accessRules == data.m_accessRules &&
            m_authorName == data.m_authorName && m_authorId == data.m_authorId &&
@@ -376,6 +409,12 @@ struct CategoryData
 
   // Unique id (it will not be serialized in text files).
   MarkGroupId m_id = kInvalidMarkGroupId;
+  // Id unique within single kml (have to be serialized in text files).
+  CompilationId m_compilationId = kInvalidCompilationId;
+  // Unique ids of nested groups (it will not be serialized in text files).
+  GroupIdCollection m_compilationIds;
+  // Compilation's type
+  CompilationType m_type = CompilationType::Category;
   // Category's name.
   LocalizableString m_name;
   // Image URL.
@@ -413,12 +452,14 @@ struct FileData
   DECLARE_VISITOR_AND_DEBUG_PRINT(FileData, visitor(m_serverId, "serverId"),
                                   visitor(m_categoryData, "category"),
                                   visitor(m_bookmarksData, "bookmarks"),
-                                  visitor(m_tracksData, "tracks"))
+                                  visitor(m_tracksData, "tracks"),
+                                  visitor(m_compilationsData, "compilations"))
 
   bool operator==(FileData const & data) const
   {
     return m_serverId == data.m_serverId && m_categoryData == data.m_categoryData &&
-           m_bookmarksData == data.m_bookmarksData && m_tracksData == data.m_tracksData;
+           m_bookmarksData == data.m_bookmarksData && m_tracksData == data.m_tracksData &&
+           m_compilationsData == data.m_compilationsData;
   }
 
   bool operator!=(FileData const & data) const { return !operator==(data); }
@@ -433,7 +474,11 @@ struct FileData
   std::vector<BookmarkData> m_bookmarksData;
   // Tracks collection.
   std::vector<TrackData> m_tracksData;
+  // Compilation collection.
+  std::vector<CategoryData> m_compilationsData;
 };
+
+void SetBookmarksMinZoom(FileData & fileData, double countPerTile, int maxZoom);
   
 inline std::string DebugPrint(BookmarkIcon icon)
 {

@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Unbekannter Ort";
 
-"editor_other_info" = "Senden Sie eine Notiz an den OSM-Moderator";
+"editor_other_info" = "Notiz an OSM-Redakteure senden";
 
 "editor_detailed_description_hint" = "Ausführlicher Kommentar";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Später";
 
-"all_pass_subscription_header" = "KATALOGSUBSKRIPTION";
+"all_pass_subscription_header" = "Abo";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Reiseführer-Katalog";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\nReisführer\nund Wanderwege";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Kinder";
 
-"guests_picker_children_subtitle" = "1-16 Jahre";
+"guests_picker_children_subtitle" = "1-17 Jahre";
 
 "guests_picker_infants_title" = "Babys";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Ausprobieren";
 
-"subscription_terms_guides_outdoor" = "Die Bezahlung erfolgt über Ihr iTunes-Konto bei der Kaufbestätigung. Ihr Abo wird automatisch erneuert, wenn die automatische Verlängerung mindestens 24 Stunden vor Ablauf der Probezeit nicht deaktiviert wird. Der Betrag wird von Ihrem Konto gemäß unserem Verlängerungstarifplan innerhalb von 24 Stunden bis zum Ende der laufenden Periode abgebucht. Sie können die automatische Verlängerung jederzeit nach dem Kauf in den Kontoeinstellungen Apple ID deaktivieren. Die heruntergeladenen Abo-Reiseführer stehen Ihnen nur für den Abozeitraum zur Verfügung. 30 Tage nach Ablauf des Abozeitraums werden die Reiseführer samt Lesezeichen automatisch gelöscht.\n* Das Gratis-Probeabo wird automatisch kostenpflichtig. Sie können nach dem Kauf die automatische Verlängerung des Probeabos in Ihren Kontoeinstellungen deaktivieren. Die Deaktivierung tritt 24 Stunden nach dem letzten Tag des laufenden Abozeitraums in Kraft und Sie erhalten das Gratis-Abo. Achten Sie bitte darauf, dass jeder ungenutzter Gratis-Probeabozeitraum beim Kauf des kostenpflichtigen Abos für diesen Zeitraum annulliert wird.";
+"subscription_terms_guides_outdoor" = "Die Bezahlung erfolgt über Ihr iTunes-Konto bei der Kaufbestätigung. Ihr Abo wird automatisch erneuert, wenn die automatische Verlängerung mindestens 24 Stunden vor Ablauf der Probezeit nicht deaktiviert wird. Der Betrag wird von Ihrem Konto gemäß unserem Verlängerungstarifplan innerhalb von 24 Stunden bis zum Ende der laufenden Periode abgebucht. Sie können die automatische Verlängerung jederzeit nach dem Kauf in den Kontoeinstellungen Apple ID deaktivieren. Die heruntergeladenen Abo-Reiseführer stehen Ihnen nur für den Abozeitraum zur Verfügung. 7 Tage nach Ablauf des Abozeitraums werden die Reiseführer samt Lesezeichen automatisch gelöscht.\n* Das Gratis-Probeabo wird automatisch kostenpflichtig. Sie können nach dem Kauf die automatische Verlängerung des Probeabos in Ihren Kontoeinstellungen deaktivieren. Die Deaktivierung tritt 24 Stunden nach dem letzten Tag des laufenden Abozeitraums in Kraft und Sie erhalten das Gratis-Abo. Achten Sie bitte darauf, dass jeder ungenutzter Gratis-Probeabozeitraum beim Kauf des kostenpflichtigen Abos für diesen Zeitraum annulliert wird.";
 
-"subscription_terms_android_outdoor" = "Die Bezahlung erfolgt über Ihr Google Play-Konto bei der Kaufbestätigung. Ihr Abo wird automatisch erneuert, wenn die automatische Verlängerung mindestens 24 Stunden vor Ablauf der Probezeit nicht deaktiviert wird. Der Betrag wird von Ihrem Konto gemäß unserem Verlängerungstarifplan innerhalb von 24 Stunden bis zum Ende der laufenden Periode abgebucht. Sie können die automatische Verlängerung jederzeit nach dem Kauf in den Kontoeinstellungen aktivieren oder deaktivieren. Die heruntergeladenen Abo-Reiseführer stehen Ihnen nur für den Abozeitraum zur Verfügung. 30 Tage nach Ablauf des Abozeitraums werden die Reiseführer automatisch gelöscht.\n* Das Gratis-Probeabo wird automatisch kostenpflichtig. Sie können nach dem Kauf die automatische Verlängerung des Probeabos in Ihren Kontoeinstellungen deaktivieren. Die Deaktivierung tritt 24 Stunden nach dem letzten Tag des laufenden Abozeitraums in Kraft und Sie erhalten das Gratis-Abo. Achten Sie bitte darauf, dass jeder ungenutzter Gratis-Probeabozeitraum beim Kauf des kostenpflichtigen Abos für diesen Zeitraum annulliert wird.";
+"subscription_terms_android_outdoor" = "Die Bezahlung erfolgt über Ihr Google Play-Konto bei der Kaufbestätigung. Ihr Abo wird automatisch erneuert, wenn die automatische Verlängerung mindestens 24 Stunden vor Ablauf der Probezeit nicht deaktiviert wird. Der Betrag wird von Ihrem Konto gemäß unserem Verlängerungstarifplan innerhalb von 24 Stunden bis zum Ende der laufenden Periode abgebucht. Sie können die automatische Verlängerung jederzeit nach dem Kauf in den Kontoeinstellungen aktivieren oder deaktivieren. Die heruntergeladenen Abo-Reiseführer stehen Ihnen nur für den Abozeitraum zur Verfügung. 7 Tage nach Ablauf des Abozeitraums werden die Reiseführer automatisch gelöscht.\n* Das Gratis-Probeabo wird automatisch kostenpflichtig. Sie können nach dem Kauf die automatische Verlängerung des Probeabos in Ihren Kontoeinstellungen deaktivieren. Die Deaktivierung tritt 24 Stunden nach dem letzten Tag des laufenden Abozeitraums in Kraft und Sie erhalten das Gratis-Abo. Achten Sie bitte darauf, dass jeder ungenutzter Gratis-Probeabozeitraum beim Kauf des kostenpflichtigen Abos für diesen Zeitraum annulliert wird.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "<b>Reiseführerkatalog</b>-\nAbo";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Reiseführer\nvon Lonely Planet®";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "Noch <b>mehr Eindrücke</b> mit tausenden interessanten Orten <b>weltweit</b>";
+
+"content_by_component" = "Content von: %s";
+
+"whatsnew_lp_title" = "Noch mehr Eindrücke";
+
+"whatsnew_lp_message" = "Wir präsentieren Ihnen die Reiseführer Lonely Planet! Sehenswürdigkeiten, Themenrouten und einzigartige Orte in 7000+ Städten.";
+
+"collections_title" = "Sammlungen";
+
+"key_information_title" = "Wichtige Informationen";
+
+"mustsee_title" = "Sehenswert";
+
+"see_lp_category" = "Sehenswürdigkeiten";
+
+"play_lp_category" = "Unterhaltungen";
+
+"shop_lp_category" = "Shopping";
+
+"transport_lp_category" = "Transport";
+
+"sleep_lp_category" = "Übernachtung";
+
+"general_lp_category" = "Haupt";
+
+"drink_lp_category" = "Bars";
+
+"eat_lp_category" = "Restaurants";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Straße";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "Rennbahn";
 
 "type.highway.residential" = "Wohnstraße";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Quelle";
 
+"type.natural.strait" = "Meerenge";
+
 "type.natural.tree" = "Baum";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Eisenbahn";
 

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "kml/types_v3.hpp"
+#include "kml/types_v6.hpp"
+#include "kml/types_v7.hpp"
+#include "kml/types_v8.hpp"
 #include "kml/types.hpp"
 
 #include "coding/geometry_coding.hpp"
@@ -36,15 +40,22 @@ class CollectorVisitor
   class VisitedTypes
   {
   public:
-    enum {value = std::is_same<T, FileData>::value ||
-                  std::is_same<T, CategoryData>::value ||
-                  std::is_same<T, BookmarkData>::value ||
+    enum {value = std::is_same<T, BookmarkData>::value ||
                   std::is_same<T, TrackData>::value ||
-                  std::is_same<T, FileDataV3>::value ||
-                  std::is_same<T, CategoryDataV3>::value ||
+                  std::is_same<T, CategoryData>::value ||
+                  std::is_same<T, FileData>::value ||
                   std::is_same<T, BookmarkDataV3>::value ||
                   std::is_same<T, TrackDataV3>::value ||
-                  std::is_same<T, TrackDataV6>::value};
+                  std::is_same<T, CategoryDataV3>::value ||
+                  std::is_same<T, FileDataV3>::value ||
+                  std::is_same<T, BookmarkDataV6>::value ||
+                  std::is_same<T, TrackDataV6>::value ||
+                  std::is_same<T, CategoryDataV6>::value ||
+                  std::is_same<T, FileDataV6>::value ||
+                  std::is_same<T, BookmarkDataV7>::value ||
+                  std::is_same<T, TrackDataV7>::value ||
+                  std::is_same<T, CategoryDataV7>::value ||
+                  std::is_same<T, FileDataV7>::value};
   };
 
 public:
@@ -270,7 +281,12 @@ public:
     (*this)(static_cast<uint8_t>(rules));
   }
 
-  void operator()(Timestamp const & t, char const * name = nullptr)
+  void operator()(CompilationType type, char const * /* name */ = nullptr)
+  {
+    (*this)(static_cast<uint8_t>(type));
+  }
+
+  void operator()(Timestamp const & t, char const * /* name */ = nullptr)
   {
     WriteVarUint(m_sink, ToSecondsSinceEpoch(t));
   }
@@ -284,6 +300,11 @@ public:
   void operator()(m2::PointD const & pt, char const * /* name */ = nullptr)
   {
     WritePointD(m_sink, pt, m_doubleBits);
+  }
+
+  void operator()(CategoryData const & compilationData, char const * /* name */ = nullptr)
+  {
+    compilationData.Visit(*this);
   }
 
   template <typename T>
@@ -460,6 +481,11 @@ public:
     rules = static_cast<AccessRules>(ReadPrimitiveFromSource<uint8_t>(m_source));
   }
 
+  void operator()(CompilationType & type, char const * /* name */ = nullptr)
+  {
+    type = static_cast<CompilationType>(ReadPrimitiveFromSource<uint8_t>(m_source));
+  }
+
   void operator()(Timestamp & t, char const * /* name */ = nullptr)
   {
     auto const v = ReadVarUint<uint64_t, Source>(m_source);
@@ -475,6 +501,11 @@ public:
   void operator()(m2::PointD & pt, char const * /* name */ = nullptr)
   {
     pt = ReadPointD(m_source, m_doubleBits);
+  }
+
+  void operator()(CategoryData & compilationData, char const * /* name */ = nullptr)
+  {
+    compilationData.Visit(*this);
   }
 
   template <typename T>

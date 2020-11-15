@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Địa Điểm Chưa Biết";
 
-"editor_other_info" = "Gửi thanh đến người kiểm duyệt OSM";
+"editor_other_info" = "Gửi ghi chú cho ban biên tập OSM";
 
 "editor_detailed_description_hint" = "Nhận xét chi tiết";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Không phải bây giờ";
 
-"all_pass_subscription_header" = "ĐĂNG KÝ DANH SÁCH";
+"all_pass_subscription_header" = "Đăng ký";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Danh mục sách hướng dẫn";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\nhướng dẫn\nvà đường mòn";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Trẻ em";
 
-"guests_picker_children_subtitle" = "1-16 tuổi";
+"guests_picker_children_subtitle" = "1-17 tuổi";
 
 "guests_picker_infants_title" = "Em bé";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Dùng thử";
 
-"subscription_terms_guides_outdoor" = "Việc thanh toán sẽ được thực hiện từ tài khoản iTunes khi xác nhận mua. Việc đăng ký sẽ được tự động gia hạn nếu tự động gia hạn không được tắt ít nhất 24h đồng hồ trước thời điểm kết thúc giai đoạn hiện tại. Tài khoản của bạn sẽ được tính phí dựa trên gói gia hạn của bạn trong vòng 24 giờ trước khi kết thúc giai đoạn hiện tại. Bạn có thể quản lý để tự động gia hạn hoặc tắt nó đi ở phần cài đặt tài khoản Apple ID vào bất cứ lúc nào sau khi mua. Bạn chỉ có thể sử dụng các hướng dẫn đã tải theo gói đăng ký trong thời gian gói đăng ký còn hiệu lực. 30 ngày sau khi kết thúc đăng ký, các hướng dẫn bao gồm tất cả dấu trang sẽ tự động bị xóa.\n* Đăng ký với giai đoạn dùng thử miễn phí sẽ được tự động chuyển sang đăng ký trả phí. Bạn có thể hủy hoặc quản lý việc tự động gia hạn phiên bản dùng thử miễn phí trong cài đặt tài khoản của mình sau khi mua. Việc hủy sẽ có hiệu lực sau 24h sau ngày cuối cùng của giai đoạn đã đăng ký hiện tại, và bạn sẽ được chuyển sang đăng ký miễn phí. Chú ý: bất kỳ phần chưa sử dụng nào trong thời gian dùng thử miễn phí đều sẽ bị mất đi khi bạn mua đăng ký trả phí trong khoảng thời gian đó.";
+"subscription_terms_guides_outdoor" = "Việc thanh toán sẽ được thực hiện từ tài khoản iTunes khi xác nhận mua. Việc đăng ký sẽ được tự động gia hạn nếu tự động gia hạn không được tắt ít nhất 24h đồng hồ trước thời điểm kết thúc giai đoạn hiện tại. Tài khoản của bạn sẽ được tính phí dựa trên gói gia hạn của bạn trong vòng 24 giờ trước khi kết thúc giai đoạn hiện tại. Bạn có thể quản lý để tự động gia hạn hoặc tắt nó đi ở phần cài đặt tài khoản Apple ID vào bất cứ lúc nào sau khi mua. Bạn chỉ có thể sử dụng các hướng dẫn đã tải theo gói đăng ký trong thời gian gói đăng ký còn hiệu lực. 7 ngày sau khi kết thúc đăng ký, các hướng dẫn bao gồm tất cả dấu trang sẽ tự động bị xóa.\n* Đăng ký với giai đoạn dùng thử miễn phí sẽ được tự động chuyển sang đăng ký trả phí. Bạn có thể hủy hoặc quản lý việc tự động gia hạn phiên bản dùng thử miễn phí trong cài đặt tài khoản của mình sau khi mua. Việc hủy sẽ có hiệu lực sau 24h sau ngày cuối cùng của giai đoạn đã đăng ký hiện tại, và bạn sẽ được chuyển sang đăng ký miễn phí. Chú ý: bất kỳ phần chưa sử dụng nào trong thời gian dùng thử miễn phí đều sẽ bị mất đi khi bạn mua đăng ký trả phí trong khoảng thời gian đó.";
 
-"subscription_terms_android_outdoor" = "Việc thanh toán sẽ được thực hiện từ tài khoản Google Play của bạn khi xác nhận mua. Việc đăng ký sẽ được tự động gia hạn nếu tự động gia hạn không được tắt ít nhất 24h đồng hồ trước thời điểm kết thúc giai đoạn hiện tại. Tài khoản của bạn sẽ được tính phí dựa trên gói gia hạn của bạn trong vòng 24 giờ trước khi kết thúc giai đoạn hiện tại. Bạn có thể quản lý để tự động gia hạn hoặc tắt nó ở phần cài đặt tài khoản sau khi mua. Bạn chỉ có thể sử dụng các hướng dẫn đã tải theo gói đăng ký trong thời gian gói đăng ký còn hiệu lực. 30 ngày sau khi kết thúc đăng ký, các hướng dẫn sẽ tự động bị xóa đi.\n* Đăng ký với giai đoạn dùng thử miễn phí sẽ được tự động chuyển sang đăng ký trả phí. Bạn có thể hủy hoặc quản lý việc tự động gia hạn phiên bản dùng thử miễn phí trong cài đặt tài khoản của mình sau khi mua. Việc hủy sẽ có hiệu lực sau 24h sau ngày cuối cùng của giai đoạn đã đăng ký hiện tại, và bạn sẽ được chuyển sang đăng ký miễn phí. Chú ý: bất kỳ phần chưa sử dụng nào trong thời gian dùng thử miễn phí đều sẽ bị mất đi khi bạn mua đăng ký trả phí trong khoảng thời gian đó.";
+"subscription_terms_android_outdoor" = "Việc thanh toán sẽ được thực hiện từ tài khoản Google Play của bạn khi xác nhận mua. Việc đăng ký sẽ được tự động gia hạn nếu tự động gia hạn không được tắt ít nhất 24h đồng hồ trước thời điểm kết thúc giai đoạn hiện tại. Tài khoản của bạn sẽ được tính phí dựa trên gói gia hạn của bạn trong vòng 24 giờ trước khi kết thúc giai đoạn hiện tại. Bạn có thể quản lý để tự động gia hạn hoặc tắt nó ở phần cài đặt tài khoản sau khi mua. Bạn chỉ có thể sử dụng các hướng dẫn đã tải theo gói đăng ký trong thời gian gói đăng ký còn hiệu lực. 7 ngày sau khi kết thúc đăng ký, các hướng dẫn sẽ tự động bị xóa đi.\n* Đăng ký với giai đoạn dùng thử miễn phí sẽ được tự động chuyển sang đăng ký trả phí. Bạn có thể hủy hoặc quản lý việc tự động gia hạn phiên bản dùng thử miễn phí trong cài đặt tài khoản của mình sau khi mua. Việc hủy sẽ có hiệu lực sau 24h sau ngày cuối cùng của giai đoạn đã đăng ký hiện tại, và bạn sẽ được chuyển sang đăng ký miễn phí. Chú ý: bất kỳ phần chưa sử dụng nào trong thời gian dùng thử miễn phí đều sẽ bị mất đi khi bạn mua đăng ký trả phí trong khoảng thời gian đó.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "Đăng ký\n<b>Danh mục hướng dẫn</b>";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Hướng dẫn du lịch\nbởi Lonely Planet®";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "Thậm chí <b>thêm nhiều trải nghiệm</b> với hàng nghìn những địa điểm thú vị <b>vòng quanh thế giới</b>";
+
+"content_by_component" = "Nội dung bởi: %s";
+
+"whatsnew_lp_title" = "Còn ấn tượng hơn nữa";
+
+"whatsnew_lp_message" = "Hãy chào đón cẩm nang du lịch Lonely Planet! Các điểm tham quan, tuyến hành trình theo chủ đề và các địa điểm độc đáo tại 7000 + thành phố.";
+
+"collections_title" = "Tuyển chọn";
+
+"key_information_title" = "Thông tin chìa khóa";
+
+"mustsee_title" = "Phải xem";
+
+"see_lp_category" = "Xem";
+
+"play_lp_category" = "Chơi";
+
+"shop_lp_category" = "Mua sắm";
+
+"transport_lp_category" = "Di chuyển";
+
+"sleep_lp_category" = "Ngủ";
+
+"general_lp_category" = "Phổ biến";
+
+"drink_lp_category" = "Uống";
+
+"eat_lp_category" = "Ăn";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Phố";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "Đường đua";
 
 "type.highway.residential" = "Phố";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Suối";
 
+"type.natural.strait" = "Eo biển";
+
 "type.natural.tree" = "Cây";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Đường sắt";
 

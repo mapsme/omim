@@ -828,7 +828,7 @@
 	<string name="error_enter_correct_zip_code">Doğru Posta Kodunu girin</string>
 	<!-- Place Page title for long tap -->
 	<string name="core_placepage_unknown_place">Bilinmeyen Yer</string>
-	<string name="editor_other_info">OSM moderatörüne bir not gönder</string>
+	<string name="editor_other_info">OSM editörlerine bir not gönderin</string>
 	<string name="editor_detailed_description_hint">Ayrıntılı yorum</string>
 	<string name="editor_detailed_description">Önerdiğiniz değişiklikler OpenStreetMap topluluğuna gönderilecek. MAPS.ME’de düzenlenemeyen ayrıntıları açıklayın.</string>
 	<string name="editor_more_about_osm">OpenStreetMap hakkında ek bilgi</string>
@@ -1715,7 +1715,8 @@
 	<string name="new_onboarding_step5.3_message">Ücretsiz MAPS.ME seçeneği ile hazır şehir ve açık hava güzergahlarından ücretsiz örnekleri inceleyin!</string>
 	<string name="new_onboarding_step5.3_button">Ücretsiz indir</string>
 	<string name="new_onboarding_additional_steps_later_button">Sonra</string>
-	<string name="all_pass_subscription_header">KATALOĞA ABONELİK</string>
+	<string name="all_pass_subscription_header">Üye olun</string>
+	<string name="all_pass_subscription_subheader">Rehber kataloğu</string>
 	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
 	<string name="all_pass_subscription_message_title">30000+\nrehberler\nve yollar</string>
 	<!-- <b> & </b> tag to make a part of the line bold -->
@@ -1825,7 +1826,7 @@
 	<string name="guests_picker_rooms">Odalar</string>
 	<string name="guests_picker_adults">Yetişkin</string>
 	<string name="guests_picker_children_title">Çocuk</string>
-	<string name="guests_picker_children_subtitle">1-16 yaş</string>
+	<string name="guests_picker_children_subtitle">1-17 yaş</string>
 	<string name="guests_picker_infants_title">Bebek</string>
 	<string name="guests_picker_infants_subtitle">0-12 ay</string>
 	<!-- as less symbols as possible -->
@@ -1839,8 +1840,27 @@
 	<string name="whatsnew_trial_title">Rehber kataloğuna ücretsiz erişim</string>
 	<string name="whatsnew_trial_message">Artık kullanıcılarımıza 7 günlük deneme süresi sunuyoruz. Tüm dünyadan seyahat rehberlerine ve doğa gezilerini seven kullanıcılar için interaktif dağ profillerine erişim.</string>
 	<string name="whatsnew_trial_cta">Hemen deneyin</string>
-	<string name="subscription_terms_guides_outdoor">Satın alma işlemini onayladığınızda, ödeme iTunes hesabınızdan gerçekleştirilecektir. Otomatik yenileme özelliği mevcut abonelik döneminin sona ermesinden en az 24 saat önce devre dışı bırakılmadığı sürece abonelik otomatik olarak yenilenir. Yenileme planı çerçevesinde, mevcut abonelik döneminizin sona ermesinden önceki 24 saat içinde hesabınızdan para çekilecektir. Satın alma işleminden sonra dilediğiniz zaman Apple Kimliği hesap ayarlarından otomatik yenilemeyi yönetebilir veya devre dışı bırakabilirsiniz. Aboneliğiniz süresinde indirdiğiniz rehberleri sadece aboneliğiniz geçerli olduğu sürece kullanabilirsiniz. Rehberler ve tüm yer işaretleri, aboneliğin sona ermesinden 30 gün sonra otomatik olarak silinecektir.\n* Ücretsiz deneme süresinde sahip abonelikler, otomatik olarak ücretli abonelik şeklinde yenilenir. Satın alma işleminden sonra hesap ayarlarından ücretsiz deneme süresi sonunda otomatik yenilemeyi iptal edebilir veya yönetebilirsiniz. İptal işlemi, mevcut abonelik döneminin son gününden 24 saat sonra geçerli olacaktır. Bu aşamadan sonra ücretsiz hizmete geçersiniz. Lütfen unutmayın: Ücretsiz deneme süresinde premium abonelik satın almanız durumunda, ücretsiz deneme süresinde henüz kullanmadığınız günlerden feragat etmiş sayılırsınız.</string>
-	<string name="subscription_terms_android_outdoor">Satın alma işlemini onayladığınızda, ödeme Google Play hesabınızdan gerçekleştirilecektir. Otomatik yenileme özelliği mevcut abonelik döneminin sona ermesinden en az 24 saat önce devre dışı bırakılmadığı sürece abonelik otomatik olarak yenilenir. Yenileme planı çerçevesinde, mevcut abonelik döneminizin sona ermesinden önceki 24 saat içinde hesabınızdan para çekilecektir. Satın alma işleminden sonra dilediğiniz zaman hesap ayarlarından otomatik yenilemeyi yönetebilir veya devre dışı bırakabilirsiniz. Aboneliğiniz süresinde indirdiğiniz rehberleri sadece aboneliğiniz geçerli olduğu sürece kullanabilirsiniz. Rehberler, aboneliğin sona ermesinden 30 gün sonra otomatik olarak silinecektir.\n* Ücretsiz deneme süresinde sahip abonelikler, otomatik olarak ücretli abonelik şeklinde yenilenir. Satın alma işleminden sonra hesap ayarlarından ücretsiz deneme süresi sonunda otomatik yenilemeyi iptal edebilir veya yönetebilirsiniz. İptal işlemi, mevcut abonelik döneminin son gününden 24 saat sonra geçerli olacaktır. Bu aşamadan sonra ücretsiz hizmete geçersiniz. Lütfen unutmayın: Ücretsiz deneme süresinde premium abonelik satın almanız durumunda, ücretsiz deneme süresinde henüz kullanmadığınız günlerden feragat etmiş sayılırsınız.</string>
+	<string name="subscription_terms_guides_outdoor">Satın alma işlemini onayladığınızda, ödeme iTunes hesabınızdan gerçekleştirilecektir. Otomatik yenileme özelliği mevcut abonelik döneminin sona ermesinden en az 24 saat önce devre dışı bırakılmadığı sürece abonelik otomatik olarak yenilenir. Yenileme planı çerçevesinde, mevcut abonelik döneminizin sona ermesinden önceki 24 saat içinde hesabınızdan para çekilecektir. Satın alma işleminden sonra dilediğiniz zaman Apple Kimliği hesap ayarlarından otomatik yenilemeyi yönetebilir veya devre dışı bırakabilirsiniz. Aboneliğiniz süresinde indirdiğiniz rehberleri sadece aboneliğiniz geçerli olduğu sürece kullanabilirsiniz. Rehberler ve tüm yer işaretleri, aboneliğin sona ermesinden 7 gün sonra otomatik olarak silinecektir.\n* Ücretsiz deneme süresinde sahip abonelikler, otomatik olarak ücretli abonelik şeklinde yenilenir. Satın alma işleminden sonra hesap ayarlarından ücretsiz deneme süresi sonunda otomatik yenilemeyi iptal edebilir veya yönetebilirsiniz. İptal işlemi, mevcut abonelik döneminin son gününden 24 saat sonra geçerli olacaktır. Bu aşamadan sonra ücretsiz hizmete geçersiniz. Lütfen unutmayın: Ücretsiz deneme süresinde premium abonelik satın almanız durumunda, ücretsiz deneme süresinde henüz kullanmadığınız günlerden feragat etmiş sayılırsınız.</string>
+	<string name="subscription_terms_android_outdoor">Satın alma işlemini onayladığınızda, ödeme Google Play hesabınızdan gerçekleştirilecektir. Otomatik yenileme özelliği mevcut abonelik döneminin sona ermesinden en az 24 saat önce devre dışı bırakılmadığı sürece abonelik otomatik olarak yenilenir. Yenileme planı çerçevesinde, mevcut abonelik döneminizin sona ermesinden önceki 24 saat içinde hesabınızdan para çekilecektir. Satın alma işleminden sonra dilediğiniz zaman hesap ayarlarından otomatik yenilemeyi yönetebilir veya devre dışı bırakabilirsiniz. Aboneliğiniz süresinde indirdiğiniz rehberleri sadece aboneliğiniz geçerli olduğu sürece kullanabilirsiniz. Rehberler, aboneliğin sona ermesinden 7 gün sonra otomatik olarak silinecektir.\n* Ücretsiz deneme süresinde sahip abonelikler, otomatik olarak ücretli abonelik şeklinde yenilenir. Satın alma işleminden sonra hesap ayarlarından ücretsiz deneme süresi sonunda otomatik yenilemeyi iptal edebilir veya yönetebilirsiniz. İptal işlemi, mevcut abonelik döneminin son gününden 24 saat sonra geçerli olacaktır. Bu aşamadan sonra ücretsiz hizmete geçersiniz. Lütfen unutmayın: Ücretsiz deneme süresinde premium abonelik satın almanız durumunda, ücretsiz deneme süresinde henüz kullanmadığınız günlerden feragat etmiş sayılırsınız.</string>
+	<string name="subscription_header"><b>Rehber kataloğuna</b>\nüye olun</string>
+	<!-- Max. 20 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_4">Lonely Planet®\nseyahat rehberleri</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_4"><b>Dünyanın dört bir yanındaki</b> binlerce ilginç yer sayesinde <b>daha da fazla deneyim</b></string>
+	<string name="content_by_component">Yayınlayan: %s</string>
+	<string name="whatsnew_lp_title">Daha da fazla duygu</string>
+	<string name="whatsnew_lp_message">Lonely Planet rehberlerine uygulamamızdan erişebilirsiniz! 7000\'den fazla şehirde eşsiz seyahat noktaları, cazibe yerleri ve tematik yürüyüşler.</string>
+	<string name="collections_title">Koleksiyonlar</string>
+	<string name="key_information_title">Anahtar bilgisi</string>
+	<string name="mustsee_title">Görmeden geçme</string>
+	<string name="see_lp_category">Görülecek Yerler</string>
+	<string name="play_lp_category">Eğlence</string>
+	<string name="shop_lp_category">Alışveriş</string>
+	<string name="transport_lp_category">Ulaşım</string>
+	<string name="sleep_lp_category">Dinlenme</string>
+	<string name="general_lp_category">Genel</string>
+	<string name="drink_lp_category">İçecek</string>
+	<string name="eat_lp_category">Yiyecek</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Remontées mécaniques</string>
@@ -2223,6 +2243,7 @@
 	<string name="type.natural.pond">Gölet</string>
 	<string name="type.natural.scrub">Çalılık</string>
 	<string name="type.natural.spring">Pınar</string>
+	<string name="type.natural.strait">Boğaz</string>
 	<string name="type.natural.tree">Arbre</string>
 	<string name="type.natural.volcano">Volcan</string>
 	<string name="type.natural.water">Su</string>

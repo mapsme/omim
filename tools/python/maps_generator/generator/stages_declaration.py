@@ -16,6 +16,7 @@ from multiprocessing.pool import ThreadPool
 from typing import AnyStr
 from typing import Type
 
+import maps_generator.generator.diffs as diffs
 import maps_generator.generator.stages_tests as st
 from descriptions.descriptions_downloader import check_and_get_checker
 from descriptions.descriptions_downloader import download_from_wikidata_tags
@@ -147,6 +148,7 @@ class StageDownloadDescriptions(Stage):
             out=env.get_subprocess_out(),
             err=env.get_subprocess_out(),
             intermediate_data_path=env.paths.intermediate_data_path,
+            cache_path=env.paths.cache_path,
             user_resource_path=env.paths.user_resource_path,
             dump_wikipedia_urls=env.paths.wiki_url_path,
             idToWikidata=env.paths.id_to_wikidata_path,
@@ -176,22 +178,27 @@ class StageMwm(Stage):
 
     @staticmethod
     def make_mwm(country: AnyStr, env: Env):
-        if country == WORLD_NAME:
-            StageIndex(country=country)(env)
-            StageCitiesIdsWorld(country=country)(env)
-        elif country == WORLD_COASTS_NAME:
-            StageIndex(country=country)(env)
-        else:
-            StageIndex(country=country)(env)
-            StageUgc(country=country)(env)
-            StagePopularity(country=country)(env)
-            StageSrtm(country=country)(env)
-            StageIsolinesInfo(country=country)(env)
-            StageDescriptions(country=country)(env)
-            StageRouting(country=country)(env)
-            StageRoutingTransit(country=country)(env)
+        world_stages = {
+            WORLD_NAME: [StageIndex, StageCitiesIdsWorld, StageMwmStatistics],
+            WORLD_COASTS_NAME: [StageIndex, StageMwmStatistics],
+        }
 
-        StageMwmStatistics(country=country)(env)
+        mwm_stages = [
+            StageIndex,
+            StageUgc,
+            StagePopularity,
+            StageSrtm,
+            StageIsolinesInfo,
+            StageDescriptions,
+            StageRouting,
+            StageRoutingTransit,
+            StageMwmDiffs,
+            StageMwmStatistics,
+        ]
+
+        for stage in world_stages.get(country, mwm_stages):
+            stage(country=country)(env)
+
         env.finish_mwm(country)
 
 
@@ -267,11 +274,26 @@ class StageRouting(Stage):
 
 
 @country_stage
-@depends_from_internal(D(settings.SUBWAY_URL, PathProvider.subway_path),
-                       D(settings.TRANSIT_URL, PathProvider.transit_path_experimental),)
+@depends_from_internal(
+    D(settings.SUBWAY_URL, PathProvider.subway_path),
+    D(settings.TRANSIT_URL, PathProvider.transit_path_experimental),
+)
 class StageRoutingTransit(Stage):
     def apply(self, env: Env, country, **kwargs):
         steps.step_routing_transit(env, country, **kwargs)
+
+
+@country_stage
+@production_only
+class StageMwmDiffs(Stage):
+    def apply(self, env: Env, country, logger, **kwargs):
+        data_dir = diffs.DataDir(
+            mwm_name=env.build_name, new_version_dir=env.build_path,
+            old_version_root_dir=settings.DATA_ARCHIVE_DIR
+        )
+        diffs.mwm_diff_calculation(
+            data_dir, logger, depth=settings.DIFF_VERSION_DEPTH
+        )
 
 
 @country_stage

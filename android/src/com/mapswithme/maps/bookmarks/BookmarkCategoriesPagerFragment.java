@@ -2,19 +2,20 @@ package com.mapswithme.maps.bookmarks;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
+import com.google.android.material.tabs.TabLayout;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.auth.TargetFragmentCallback;
 import com.mapswithme.maps.base.BaseMwmFragment;
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.dialog.AlertDialogCallback;
 import com.mapswithme.maps.purchase.PurchaseUtils;
 import com.mapswithme.util.SharedPropertiesUtils;
@@ -94,6 +95,21 @@ public class BookmarkCategoriesPagerFragment extends BaseMwmFragment
     mViewPager.addOnPageChangeListener(new PageChangeListener());
     mDelegate.onCreateView(savedInstanceState);
     return root;
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+  {
+    super.onViewCreated(view, savedInstanceState);
+    Bundle args = getArguments();
+    if (args != null)
+    {
+      BookmarkCategory category = args.getParcelable(BookmarksListFragment.EXTRA_CATEGORY);
+      if (category == null)
+        return;
+
+      BookmarkListActivity.startForResult(requireActivity(), category);
+    }
   }
 
   @Override

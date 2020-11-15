@@ -64,7 +64,7 @@ NSString *const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
   self.trafficButtonHidden = NO;
   self.isDirectionViewHidden = YES;
   self.menuRestoreState = MWMBottomMenuStateInactive;
-  self.promoDiscoveryCampaign = [PromoCampaignManager manager].promoDiscoveryCampaign;
+  self.promoDiscoveryCampaign = [ABTestManager manager].promoDiscoveryCampaign;
   if (_promoDiscoveryCampaign.enabled) {
     [controller.controlsView addSubview:self.promoButton];
     self.promoButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -103,6 +103,7 @@ NSString *const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
        withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
   [self.trafficButton viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
   [self.tabBarController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+  [self.guidesNavigationBar viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
   [self.searchManager viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
@@ -195,8 +196,11 @@ NSString *const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
 
 - (void)onSearchManagerStateChanged {
   auto state = [MWMSearchManager manager].state;
-  if (!IPAD && state == MWMSearchManagerStateHidden)
+  if (!IPAD && state == MWMSearchManagerStateHidden) {
     self.hidden = NO;
+  } else if (state != MWMSearchManagerStateHidden) {
+    [self hideGuidesNavigationBar];
+  }
 }
 
 #pragma mark - Routing
@@ -205,6 +209,7 @@ NSString *const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
   auto nm = self.navigationManager;
   [nm onRoutePrepare];
   [nm onRoutePointsUpdated];
+  [self.ownerController.bookmarksCoordinator close];
   self.promoButton.hidden = YES;
 }
 
@@ -212,6 +217,7 @@ NSString *const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
   if (IPAD)
     self.searchManager.state = MWMSearchManagerStateHidden;
 
+  [self.ownerController.bookmarksCoordinator close];
   [self.navigationManager onRoutePlanning];
   self.promoButton.hidden = YES;
 }
@@ -322,6 +328,28 @@ NSString *const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
   self.trafficButton.hidden = self.hidden || _trafficButtonHidden;
 }
 
+- (void)showGuidesNavigationBar:(MWMMarkGroupID)categoryId {
+  if (!_guidesNavigationBar) {
+    MapViewController *parentViewController = self.ownerController;
+    _guidesNavigationBar = [[GuidesNavigationBarViewController alloc] initWithCategoryId:categoryId];
+    [parentViewController addChildViewController:_guidesNavigationBar];
+    [parentViewController.controlsView addSubview:_guidesNavigationBar.view];
+    [_guidesNavigationBar configLayout];
+    _guidesNavigationBarHidden = YES;
+    self.menuState = MWMBottomMenuStateHidden;
+  }
+}
+
+- (void)hideGuidesNavigationBar {
+  if (_guidesNavigationBar) {
+    [_guidesNavigationBar removeFromParentViewController];
+    [_guidesNavigationBar.view removeFromSuperview];
+    _guidesNavigationBar = nil;
+    _guidesNavigationBarHidden = NO;
+    self.menuState = _menuRestoreState;
+  }
+}
+
 - (void)setMenuState:(MWMBottomMenuState)menuState {
   _menuState = menuState;
   switch (_menuState) {
@@ -429,7 +457,7 @@ NSString *const kMapToCategorySelectorSegue = @"MapToCategorySelectorSegue";
 }
 
 - (BOOL)showPromoBookingIfNeeded {
-  PromoAfterBookingCampaign *afterBookingCampaign = [PromoCampaignManager manager].promoAfterBookingCampaign;
+  PromoAfterBookingCampaign *afterBookingCampaign = [ABTestManager manager].promoAfterBookingCampaign;
   PromoAfterBookingData *afterBookingData = afterBookingCampaign.afterBookingData;
   if (!afterBookingData.enabled)
     return NO;

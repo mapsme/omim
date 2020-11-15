@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Wns-nH-AQU">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Wns-nH-AQU">
     <device id="ipad12_9" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -68,6 +68,10 @@
                                             </mask>
                                         </variation>
                                     </view>
+                                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QNg-zA-Jne" customClass="GuidesNavigationBarArea" customModule="maps_me" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
                                     <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="awj-9E-eBS" customClass="PlacePageArea" customModule="maps_me" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                                         <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="0.20000000000000001" colorSpace="calibratedRGB"/>
@@ -101,8 +105,10 @@
                                     <constraint firstAttribute="trailing" secondItem="aVk-ab-LFJ" secondAttribute="trailing" priority="100" id="GPp-90-Ied"/>
                                     <constraint firstItem="TdT-ia-GP9" firstAttribute="top" secondItem="rL1-9E-4b7" secondAttribute="top" priority="100" id="RAX-O7-Lnd"/>
                                     <constraint firstAttribute="trailing" secondItem="awj-9E-eBS" secondAttribute="trailing" priority="100" id="TEL-dH-TJ7"/>
+                                    <constraint firstItem="QNg-zA-Jne" firstAttribute="leading" secondItem="rL1-9E-4b7" secondAttribute="leading" id="VQH-6U-4Db"/>
                                     <constraint firstAttribute="trailing" secondItem="TdT-ia-GP9" secondAttribute="trailing" priority="100" id="aeq-NS-iqz"/>
                                     <constraint firstItem="awj-9E-eBS" firstAttribute="leading" secondItem="rL1-9E-4b7" secondAttribute="leading" priority="100" id="m7e-b7-NS9"/>
+                                    <constraint firstAttribute="trailing" secondItem="QNg-zA-Jne" secondAttribute="trailing" id="nMy-dG-vag"/>
                                     <constraint firstAttribute="trailing" secondItem="QKu-4A-UgP" secondAttribute="trailing" priority="100" id="p0L-Ic-nWq"/>
                                     <constraint firstAttribute="trailing" secondItem="65S-M4-TnM" secondAttribute="trailing" priority="100" id="pyg-ph-5Qe"/>
                                     <constraint firstItem="awj-9E-eBS" firstAttribute="top" secondItem="rL1-9E-4b7" secondAttribute="top" priority="100" id="sdc-wL-91M"/>
@@ -187,6 +193,7 @@
                                 </connections>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="utd-Jy-pE5"/>
                         <color key="backgroundColor" red="0.8666666666666667" green="0.8666666666666667" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Tqh-46-Yrm" firstAttribute="centerX" secondItem="utd-Jy-pE5" secondAttribute="centerX" id="0T0-4t-4m2"/>
@@ -211,6 +218,8 @@
                             <constraint firstItem="utd-Jy-pE5" firstAttribute="trailing" secondItem="rL1-9E-4b7" secondAttribute="trailing" id="QdS-Yx-ADV"/>
                             <constraint firstItem="jio-3T-E6G" firstAttribute="leading" secondItem="utd-Jy-pE5" secondAttribute="leading" id="SAj-bF-qrr"/>
                             <constraint firstItem="utd-Jy-pE5" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="xJx-UU-IdV" secondAttribute="bottom" id="SDX-4J-Jz5"/>
+                            <constraint firstItem="utd-Jy-pE5" firstAttribute="bottom" secondItem="QNg-zA-Jne" secondAttribute="bottom" id="TGG-JD-3dN"/>
+                            <constraint firstItem="utd-Jy-pE5" firstAttribute="bottom" secondItem="FFY-Dy-Wou" secondAttribute="bottom" id="TZk-MH-pMV"/>
                             <constraint firstItem="utd-Jy-pE5" firstAttribute="bottom" secondItem="xJx-UU-IdV" secondAttribute="bottom" priority="100" id="VfU-Zk-8IU"/>
                             <constraint firstItem="rbx-Oj-jeo" firstAttribute="leading" secondItem="utd-Jy-pE5" secondAttribute="leading" constant="8" id="W0l-NG-7lt"/>
                             <constraint firstItem="utd-Jy-pE5" firstAttribute="top" secondItem="QKu-4A-UgP" secondAttribute="top" priority="100" id="X96-y7-5oI"/>
@@ -229,14 +238,29 @@
                             <constraint firstAttribute="trailing" secondItem="jio-3T-E6G" secondAttribute="trailing" id="t9l-Ud-h6j"/>
                             <constraint firstAttribute="bottom" secondItem="aPn-pa-nCx" secondAttribute="bottom" id="tB3-eX-gUV"/>
                             <constraint firstItem="utd-Jy-pE5" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="rbx-Oj-jeo" secondAttribute="bottom" constant="70" id="u9s-KY-yCt"/>
+                            <constraint firstItem="QNg-zA-Jne" firstAttribute="top" secondItem="utd-Jy-pE5" secondAttribute="top" id="vCA-75-hd4"/>
+                            <constraint firstItem="utd-Jy-pE5" firstAttribute="bottom" secondItem="xJx-UU-IdV" secondAttribute="bottom" id="veF-Rn-BEm"/>
                             <constraint firstItem="utd-Jy-pE5" firstAttribute="top" secondItem="65S-M4-TnM" secondAttribute="top" priority="100" id="vfQ-ZT-Dlc"/>
                             <constraint firstItem="utd-Jy-pE5" firstAttribute="trailing" secondItem="rL1-9E-4b7" secondAttribute="trailing" priority="100" id="xUq-Vo-ETR"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="utd-Jy-pE5"/>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="SDX-4J-Jz5"/>
+                                <exclude reference="TZk-MH-pMV"/>
                                 <exclude reference="u9s-KY-yCt"/>
+                                <exclude reference="veF-Rn-BEm"/>
                                 <exclude reference="W0l-NG-7lt"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="constraints">
+                                <include reference="TZk-MH-pMV"/>
+                                <include reference="veF-Rn-BEm"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular">
+                            <mask key="constraints">
+                                <include reference="SDX-4J-Jz5"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact-widthClass=compact">
@@ -268,6 +292,7 @@
                         <outlet property="controlsView" destination="rL1-9E-4b7" id="sfV-7X-WlR"/>
                         <outlet property="guidesCollectionContainer" destination="at1-V1-pzl" id="zwo-PP-5N0"/>
                         <outlet property="guidesHiddenConstraint" destination="8JV-dP-iYZ" id="19x-c0-wYa"/>
+                        <outlet property="guidesNavigationBarAreaBottom" destination="TGG-JD-3dN" id="n00-S5-6VI"/>
                         <outlet property="guidesVisibleConstraint" destination="O8L-nd-nOa" id="vhS-sT-o0o"/>
                         <outlet property="mapView" destination="aPn-pa-nCx" id="tCi-LW-1ll"/>
                         <outlet property="placePageAreaKeyboard" destination="PFs-sL-oVA" id="O3P-ia-ZlX"/>
@@ -611,6 +636,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="xW7-hS-tWE"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="SZQ-ra-FC3" firstAttribute="top" secondItem="aQv-7U-zAP" secondAttribute="bottom" id="14K-dW-WIs"/>
@@ -625,7 +651,6 @@
                             <constraint firstItem="aQv-7U-zAP" firstAttribute="top" secondItem="xW7-hS-tWE" secondAttribute="top" id="bqT-uu-tmG"/>
                             <constraint firstItem="X1H-IB-Nv1" firstAttribute="top" secondItem="xW7-hS-tWE" secondAttribute="top" id="dQa-Ak-qfa"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="xW7-hS-tWE"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="PressBackground"/>
                         </userDefinedRuntimeAttributes>
@@ -753,6 +778,7 @@
                                 </connections>
                             </searchBar>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="lsu-H8-wQc"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="gzF-B7-8pj" secondAttribute="trailing" id="05P-0L-iQz"/>
@@ -766,7 +792,6 @@
                             <constraint firstAttribute="trailing" secondItem="rI9-RR-sKP" secondAttribute="trailing" id="p51-up-UeV"/>
                             <constraint firstItem="rI9-RR-sKP" firstAttribute="leading" secondItem="MIY-NW-Joh" secondAttribute="leading" id="uJM-3a-T9n"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="lsu-H8-wQc"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="PressBackground"/>
                         </userDefinedRuntimeAttributes>
@@ -824,6 +849,7 @@
                                 </connections>
                             </searchBar>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="aCA-5u-5ht"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="aCA-5u-5ht" firstAttribute="bottom" secondItem="ina-WD-kps" secondAttribute="bottom" id="4ua-eU-UlF"/>
@@ -837,7 +863,6 @@
                             <constraint firstAttribute="trailing" secondItem="ina-WD-kps" secondAttribute="trailing" id="rNY-6Q-e5e"/>
                             <constraint firstItem="HEU-Bu-3wh" firstAttribute="leading" secondItem="iTG-qE-svw" secondAttribute="leading" id="w8n-vg-Wp1"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="aCA-5u-5ht"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="PressBackground"/>
                         </userDefinedRuntimeAttributes>
@@ -909,6 +934,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="dlW-OQ-WMO"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
@@ -930,7 +956,6 @@
                             <constraint firstItem="dlW-OQ-WMO" firstAttribute="bottom" secondItem="CDj-ol-HRP" secondAttribute="bottom" id="tp7-f9-Sw5"/>
                             <constraint firstItem="dlW-OQ-WMO" firstAttribute="trailing" secondItem="kXO-Oh-2vO" secondAttribute="trailing" id="yMA-25-2pq"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="dlW-OQ-WMO"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="PressBackground"/>
                         </userDefinedRuntimeAttributes>
@@ -953,17 +978,17 @@
             <objects>
                 <viewController storyboardIdentifier="MWMNoMapsViewController" id="3el-Zi-2E4" customClass="MWMNoMapsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="4WP-vj-Alg">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="762"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="1310"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gmw-e3-n53" userLabel="Container" customClass="MWMNoMapsView">
-                                <rect key="frame" x="3.5" y="0.0" width="407" height="762"/>
+                                <rect key="frame" x="308.5" y="0.0" width="407" height="1310"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dCZ-PN-2Ob" userLabel="BoundsView">
-                                        <rect key="frame" x="16" y="0.0" width="375" height="658"/>
+                                        <rect key="frame" x="16" y="0.0" width="375" height="1206"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="87G-jh-N8H" userLabel="CenteredView">
-                                                <rect key="frame" x="0.0" y="204.5" width="375" height="249"/>
+                                                <rect key="frame" x="0.0" y="478.5" width="375" height="249"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalCompressionResistancePriority="749" image="img_no_maps" translatesAutoresizingMaskIntoConstraints="NO" id="vI9-fc-FO2">
                                                         <rect key="frame" x="107.5" y="0.0" width="160" height="160"/>
@@ -1024,7 +1049,7 @@
                                         </constraints>
                                     </view>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Moj-UK-oyl" userLabel="DownloadMaps" customClass="MWMButton">
-                                        <rect key="frame" x="83.5" y="678" width="240" height="44"/>
+                                        <rect key="frame" x="83.5" y="1226" width="240" height="44"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="240" id="49x-bx-JJj"/>
@@ -1071,6 +1096,7 @@
                                 </connections>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="6lX-F6-61M"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Gmw-e3-n53" firstAttribute="width" relation="lessThanOrEqual" secondItem="4WP-vj-Alg" secondAttribute="width" id="IPr-ei-Pbl"/>
@@ -1079,7 +1105,6 @@
                             <constraint firstAttribute="topMargin" secondItem="Gmw-e3-n53" secondAttribute="top" id="aKd-EX-mvs"/>
                             <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="Gmw-e3-n53" secondAttribute="bottom" id="g7o-yu-JXZ"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="6lX-F6-61M"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="styleName" value="Background"/>
                         </userDefinedRuntimeAttributes>
@@ -1109,6 +1134,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="yK4-pW-Ads"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="EbW-Mp-c6s" firstAttribute="centerY" secondItem="9jm-RW-DZK" secondAttribute="centerY" priority="250" id="BHf-cB-UbU"/>
@@ -1120,7 +1146,6 @@
                             <constraint firstItem="EbW-Mp-c6s" firstAttribute="centerX" secondItem="yK4-pW-Ads" secondAttribute="centerX" id="xbz-FB-nZl"/>
                             <constraint firstItem="EbW-Mp-c6s" firstAttribute="width" secondItem="9jm-RW-DZK" secondAttribute="width" priority="750" id="zcx-oD-0Uk"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="yK4-pW-Ads"/>
                     </view>
                     <connections>
                         <outlet property="container" destination="EbW-Mp-c6s" id="T6K-0M-IAe"/>
@@ -1173,6 +1198,12 @@
             <point key="canvasLocation" x="3780" y="2227.8169014084506"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="sMq-pa-AId"/>
+        <segue reference="4Cc-99-mlN"/>
+        <segue reference="OEF-kR-jKi"/>
+        <segue reference="0A8-4b-0A2"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="ic_add_button" width="28" height="28"/>
         <image name="ic_arrow_gray_down" width="28" height="28"/>
@@ -1181,10 +1212,4 @@
         <image name="img_no_maps" width="240" height="240"/>
         <image name="separator_image" width="1" height="1"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="sMq-pa-AId"/>
-        <segue reference="4Cc-99-mlN"/>
-        <segue reference="OEF-kR-jKi"/>
-        <segue reference="0A8-4b-0A2"/>
-    </inferredMetricsTieBreakers>
 </document>

@@ -98,7 +98,9 @@ final class CategorySettingsViewController: MWMTableViewController {
       }
     case .delete:
       let cell = tableView.dequeueReusableCell(cell: MWMButtonCell.self, indexPath: indexPath)
-      cell.configure(with: self, title: L("delete_list"))
+      cell.configure(with: self,
+                     title: L("delete_list"),
+                     enabled: BookmarksManager.shared().userCategories().count > 1)
       return cell
     default:
       fatalError()
@@ -122,12 +124,12 @@ final class CategorySettingsViewController: MWMTableViewController {
   @objc func onSave() {
     view.endEditing(true)
     if let newName = newName, !newName.isEmpty {
-      bookmarkGroup.title = newName
+      BookmarksManager.shared().setCategory(bookmarkGroup.categoryId, name: newName)
       changesMade = true
     }
 
     if let newAnnotation = newAnnotation, !newAnnotation.isEmpty {
-      bookmarkGroup.detailedAnnotation = newAnnotation
+      BookmarksManager.shared().setCategory(bookmarkGroup.categoryId, description: newAnnotation)
       changesMade = true
     }
 

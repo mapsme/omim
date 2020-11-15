@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "未知的位置";
 
-"editor_other_info" = "發送筆記到OSM調節器";
+"editor_other_info" = "給OSM編輯器發送標記";
 
 "editor_detailed_description_hint" = "詳細註釋";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "稍後";
 
-"all_pass_subscription_header" = "訂閱目錄";
+"all_pass_subscription_header" = "訂閱";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "指南目錄";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\n指南\n和道路";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "儿童";
 
-"guests_picker_children_subtitle" = "1-16岁";
+"guests_picker_children_subtitle" = "1-17岁";
 
 "guests_picker_infants_title" = "婴儿";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "试用";
 
-"subscription_terms_guides_outdoor" = "确认购买后，付款将从您的iTunes帐户中扣除。订阅将自动续订，除非在到期前至少24小时关闭自动续订。在到期前的24小时内，将根据您的续订计划从您的帐户扣费。购买成功后，您可以随时进入Apple ID帐户设置来管理或关闭自动更新。您只能在有效期内使用通过订阅下载的指南。订阅结束后30天，带有所有标签的指南将被自动删除。\n*免费试用期的订阅会自动转换为付费订阅。购买后，您可以转到“帐户设置”来取消或管理免费试用版的自动续订。取消将在当前订阅期最后一天的24小时后生效，您将被转为免费订阅。请注意，免费试用期内未使用的部分在该期间购买付费订阅时将被收回。";
+"subscription_terms_guides_outdoor" = "确认购买后，付款将从您的iTunes帐户中扣除。订阅将自动续订，除非在到期前至少24小时关闭自动续订。在到期前的24小时内，将根据您的续订计划从您的帐户扣费。购买成功后，您可以随时进入Apple ID帐户设置来管理或关闭自动更新。您只能在有效期内使用通过订阅下载的指南。订阅结束后7天，带有所有标签的指南将被自动删除。\n*免费试用期的订阅会自动转换为付费订阅。购买后，您可以转到“帐户设置”来取消或管理免费试用版的自动续订。取消将在当前订阅期最后一天的24小时后生效，您将被转为免费订阅。请注意，免费试用期内未使用的部分在该期间购买付费订阅时将被收回。";
 
-"subscription_terms_android_outdoor" = "确认购买后，付款将从您的Google Play帐户中扣除。订阅将自动续订，除非在到期前至少24小时关闭自动续订。在到期前的24小时内，将根据您的续订计划从您的帐户扣费。购买后，您可以转到“帐户设置”来管理或关闭自动续订。您只能在有效期内使用通过订阅下载的指南。订阅结束后30天后，指南将自动删除。\n*免费试用期的订阅会自动转换为付费订阅。购买后，您可以转到“帐户设置”来取消或管理免费试用版的自动续订。取消将在当前订阅期最后一天的24小时后生效，您将被转为免费订阅。请注意，免费试用期内未使用的部分在该期间购买付费订阅时将被收回。";
+"subscription_terms_android_outdoor" = "确认购买后，付款将从您的Google Play帐户中扣除。订阅将自动续订，除非在到期前至少24小时关闭自动续订。在到期前的24小时内，将根据您的续订计划从您的帐户扣费。购买后，您可以转到“帐户设置”来管理或关闭自动续订。您只能在有效期内使用通过订阅下载的指南。订阅结束后7天后，指南将自动删除。\n*免费试用期的订阅会自动转换为付费订阅。购买后，您可以转到“帐户设置”来取消或管理免费试用版的自动续订。取消将在当前订阅期最后一天的24小时后生效，您将被转为免费订阅。请注意，免费试用期内未使用的部分在该期间购买付费订阅时将被收回。";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "訂閱\n<b>旅行指南目錄</b>";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "旅行指南\nLonely Planet®出品";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "還有<b>來自全球各地</b> 千萬有趣景點的 <b>無窮印象</b>";
+
+"content_by_component" = "內容來源：%s";
+
+"whatsnew_lp_title" = "更多印象";
+
+"whatsnew_lp_message" = "歡迎Lonely Planet旅行指南加入我們！7000余座城市的名勝古跡、主題路線和獨特景點。";
+
+"collections_title" = "專欄";
+
+"key_information_title" = "關鍵信息";
+
+"mustsee_title" = "必看";
+
+"see_lp_category" = "名勝古跡";
+
+"play_lp_category" = "休閑娛樂";
+
+"shop_lp_category" = "購物";
+
+"transport_lp_category" = "交通";
+
+"sleep_lp_category" = "住宿";
+
+"general_lp_category" = "主要";
+
+"drink_lp_category" = "酒吧";
+
+"eat_lp_category" = "餐廳";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "路";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "跑道";
 
 "type.highway.residential" = "路";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "泉水";
 
+"type.natural.strait" = "海峽";
+
 "type.natural.tree" = "樹";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "鐵路";
 

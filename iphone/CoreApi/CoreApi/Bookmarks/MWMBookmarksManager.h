@@ -5,16 +5,28 @@
 #import "MWMUTM.h"
 #import "PlacePageBookmarkData.h"
 
+@class CLLocation;
+@class MWMBookmark;
 @class MWMBookmarkGroup;
+@class MWMBookmarksSection;
 @class MWMCarPlayBookmarkObject;
 @class MWMTagGroup;
 @class MWMTag;
+@class MWMTrack;
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef NS_ENUM(NSInteger, MWMBookmarksSortingType) {
+  MWMBookmarksSortingTypeByType,
+  MWMBookmarksSortingTypeByDistance,
+  MWMBookmarksSortingTypeByTime
+} NS_SWIFT_NAME(BookmarksSortingType);
 
 typedef void (^LoadTagsCompletionBlock)(NSArray<MWMTagGroup *> * _Nullable tags, NSInteger maxTagsNumber);
 typedef void (^PingCompletionBlock)(BOOL success);
 typedef void (^ElevationPointChangedBlock)(double distance);
+typedef void (^SearchBookmarksCompletionBlock)(NSArray<MWMBookmark *> *bookmarks);
+typedef void (^SortBookmarksCompletionBlock)(NSArray<MWMBookmarksSection *> * _Nullable sortedSections);
 
 NS_SWIFT_NAME(BookmarksManager)
 @interface MWMBookmarksManager : NSObject
@@ -35,8 +47,13 @@ NS_SWIFT_NAME(BookmarksManager)
 - (uint64_t)getCategoryMarksCount:(MWMMarkGroupID)groupId;
 - (uint64_t)getCategoryTracksCount:(MWMMarkGroupID)groupId;
 - (MWMBookmarkGroupAccessStatus)getCategoryAccessStatus:(MWMMarkGroupID)groupId;
+- (NSString *)getCategoryAnnotation:(MWMMarkGroupID)groupId;
 - (NSString *)getCategoryDescription:(MWMMarkGroupID)groupId;
 - (NSString *)getCategoryAuthorName:(MWMMarkGroupID)groupId;
+- (NSString *)getCategoryAuthorId:(MWMMarkGroupID)groupId;
+- (MWMBookmarkGroupType)getCategoryGroupType:(MWMMarkGroupID)groupId;
+- (nullable NSURL *)getCategoryImageUrl:(MWMMarkGroupID)groupId;
+- (BOOL)hasExtraInfo:(MWMMarkGroupID)groupId;
 
 - (MWMMarkGroupID)createCategoryWithName:(NSString *)name;
 - (void)setCategory:(MWMMarkGroupID)groupId name:(NSString *)name;
@@ -47,10 +64,25 @@ NS_SWIFT_NAME(BookmarksManager)
 - (void)setCatalogCategoriesVisible:(BOOL)isVisible;
 - (void)deleteCategory:(MWMMarkGroupID)groupId;
 - (BOOL)checkCategoryName:(NSString *)name;
+- (NSArray<NSNumber *> *)availableSortingTypes:(MWMMarkGroupID)groupId hasMyPosition:(BOOL)hasMyPosition;
+- (void)sortBookmarks:(MWMMarkGroupID)groupId
+          sortingType:(MWMBookmarksSortingType)sortingType
+             location:(CLLocation * _Nullable)location
+           completion:(SortBookmarksCompletionBlock)completionBlock;
+- (BOOL)hasLastSortingType:(MWMMarkGroupID)groupId;
+- (MWMBookmarksSortingType)lastSortingType:(MWMMarkGroupID)groupId;
+- (void)resetLastSortingType:(MWMMarkGroupID)groupId;
 
 - (NSArray<MWMCarPlayBookmarkObject *> *)bookmarksForCategory:(MWMMarkGroupID)categoryId;
 - (MWMMarkIDCollection)bookmarkIdsForCategory:(MWMMarkGroupID)categoryId;
 - (void)deleteBookmark:(MWMMarkID)bookmarkId;
+- (NSArray<MWMBookmark *> *)bookmarksForGroup:(MWMMarkGroupID)groupId;
+- (NSArray<MWMTrack *> *)tracksForGroup:(MWMMarkGroupID)groupId;
+- (NSArray<MWMBookmarkGroup *> *)collectionsForGroup:(MWMMarkGroupID)groupId;
+- (NSArray<MWMBookmarkGroup *> *)categoriesForGroup:(MWMMarkGroupID)groupId;
+- (void)searchBookmarksGroup:(MWMMarkGroupID)groupId
+                        text:(NSString *)text
+                  completion:(SearchBookmarksCompletionBlock)completion;
 
 - (MWMTrackIDCollection)trackIdsForCategory:(MWMMarkGroupID)categoryId;
 

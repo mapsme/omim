@@ -1,17 +1,19 @@
 #pragma once
 
+#include "drape/attribute_buffer_mutator.hpp"
+#include "drape/binding_info.hpp"
 #include "drape/drape_diagnostics.hpp"
 #include "drape/drape_global.hpp"
-#include "drape/binding_info.hpp"
 #include "drape/index_buffer_mutator.hpp"
 #include "drape/index_storage.hpp"
-#include "drape/attribute_buffer_mutator.hpp"
+
+#include "kml/type_utils.hpp"
 
 #include "indexer/feature_decl.hpp"
 
-#include "geometry/screenbase.hpp"
 #include "geometry/point2d.hpp"
 #include "geometry/rect2d.hpp"
+#include "geometry/screenbase.hpp"
 
 #include "base/buffer_vector.hpp"
 
@@ -19,6 +21,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <tuple>
 
 namespace dp
 {
@@ -40,20 +43,32 @@ uint64_t constexpr kPriorityMaskAll = kPriorityMaskZoomLevel |
 struct OverlayID
 {
   FeatureID m_featureId;
-  m2::PointI m_tileCoords;
-  uint32_t m_index;
+  kml::MarkId m_markId = kml::kInvalidMarkId;
+  m2::PointI m_tileCoords{-1, -1};
+  uint32_t m_index = 0;
 
-  OverlayID(FeatureID const & featureId)
-    : m_featureId(featureId), m_tileCoords(-1, -1), m_index(0)
+  OverlayID() = default;
+
+  explicit OverlayID(FeatureID const & featureId)
+    : m_featureId(featureId)
   {}
-  OverlayID(FeatureID const & featureId, m2::PointI const & tileCoords, uint32_t index)
-    : m_featureId(featureId), m_tileCoords(tileCoords), m_index(index)
+
+  OverlayID(FeatureID const & featureId, kml::MarkId markId, m2::PointI const & tileCoords,
+            uint32_t index)
+    : m_featureId(featureId)
+    , m_markId(markId)
+    , m_tileCoords(tileCoords)
+    , m_index(index)
   {}
+
+  auto AsTupleOfRefs() const
+  {
+    return std::tie(m_featureId, m_markId, m_tileCoords, m_index);
+  }
 
   bool operator==(OverlayID const & overlayId) const
   {
-    return m_featureId == overlayId.m_featureId && m_tileCoords == overlayId.m_tileCoords &&
-           m_index == overlayId.m_index;
+    return AsTupleOfRefs() == overlayId.AsTupleOfRefs();
   }
 
   bool operator!=(OverlayID const & overlayId) const
@@ -63,26 +78,18 @@ struct OverlayID
 
   bool operator<(OverlayID const & overlayId) const
   {
-    if (m_featureId == overlayId.m_featureId)
-    {
-      if (m_tileCoords == overlayId.m_tileCoords)
-        return m_index < overlayId.m_index;
-
-      return m_tileCoords < overlayId.m_tileCoords;
-    }
-    return m_featureId < overlayId.m_featureId;
+    return AsTupleOfRefs() < overlayId.AsTupleOfRefs();
   }
 
   bool operator>(OverlayID const & overlayId) const
   {
-    if (m_featureId == overlayId.m_featureId)
-    {
-      if (m_tileCoords == overlayId.m_tileCoords)
-        return m_index > overlayId.m_index;
+    return overlayId < *this;
+  }
 
-      return !(m_tileCoords < overlayId.m_tileCoords);
-    }
-    return !(m_featureId < overlayId.m_featureId);
+  friend std::string DebugPrint(OverlayID const & overlayId)
+  {
+    return strings::to_string(overlayId.m_featureId.m_index) + "-" +
+           strings::to_string(overlayId.m_markId) + "-" + strings::to_string(overlayId.m_index);
   }
 };
 
@@ -206,9 +213,8 @@ class SquareHandle : public OverlayHandle
 
 public:
   SquareHandle(OverlayID const & id, dp::Anchor anchor, m2::PointD const & gbPivot,
-               m2::PointD const & pxSize, m2::PointD const & pxOffset,
-               uint64_t priority, bool isBound, std::string const & debugStr,
-               int minVisibleScale, bool isBillboard);
+               m2::PointD const & pxSize, m2::PointD const & pxOffset, uint64_t priority,
+               bool isBound, int minVisibleScale, bool isBillboard);
 
   m2::RectD GetPixelRect(ScreenBase const & screen, bool perspective) const override;
   void GetPixelShape(ScreenBase const & screen, bool perspective, Rects & rects) const override;
@@ -225,10 +231,6 @@ private:
   m2::PointD m_gbPivot;
   m2::PointD m_pxOffset;
   bool m_isBound;
-
-#ifdef DEBUG_OVERLAYS_OUTPUT
-  std::string m_debugStr;
-#endif
 };
 
 uint64_t CalculateOverlayPriority(int minZoomLevel, uint8_t rank, float depth);

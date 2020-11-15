@@ -1,5 +1,6 @@
 #pragma once
 
+#include "storage/downloader_queue_universal.hpp"
 #include "storage/map_files_downloader.hpp"
 #include "storage/queued_country.hpp"
 
@@ -34,13 +35,9 @@ public:
   ~FakeMapFilesDownloader();
 
   // MapFilesDownloader overrides:
-  downloader::Progress GetDownloadingProgress() override;
-  bool IsIdle() override;
-  void Pause() override;
-  void Resume() override;
   void Remove(CountryId const & id) override;
   void Clear() override;
-  Queue const & GetQueue() const override;
+  QueueInterface const & GetQueue() const override;
 
 private:
   // MapFilesDownloader overrides:

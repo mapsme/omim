@@ -9,22 +9,29 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import com.google.android.material.appbar.AppBarLayout;
 import com.mapswithme.maps.DownloadResourcesLegacyActivity;
 import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MapFragment;
 import com.mapswithme.maps.MwmActivity;
+import com.mapswithme.maps.R;
 import com.mapswithme.maps.api.Const;
 import com.mapswithme.maps.api.ParsedMwmRequest;
 import com.mapswithme.maps.api.ParsedRoutingData;
 import com.mapswithme.maps.api.ParsedSearchRequest;
 import com.mapswithme.maps.api.ParsedUrlMwmRequest;
+import com.mapswithme.maps.api.ParsingResult;
 import com.mapswithme.maps.api.RoutePoint;
 import com.mapswithme.maps.background.NotificationCandidate;
 import com.mapswithme.maps.bookmarks.BookmarkCategoriesActivity;
 import com.mapswithme.maps.bookmarks.BookmarksCatalogActivity;
 import com.mapswithme.maps.bookmarks.BookmarksPageFactory;
+import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
+import com.mapswithme.maps.bookmarks.data.BookmarkInfo;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.bookmarks.data.FeatureId;
 import com.mapswithme.maps.bookmarks.data.MapObject;
@@ -41,11 +48,13 @@ import com.mapswithme.maps.tips.Tutorial;
 import com.mapswithme.maps.ugc.EditParams;
 import com.mapswithme.maps.ugc.UGC;
 import com.mapswithme.maps.ugc.UGCEditorActivity;
+import com.mapswithme.maps.widget.placepage.ToolbarBehavior;
 import com.mapswithme.util.Constants;
 import com.mapswithme.util.CrashlyticsUtils;
 import com.mapswithme.util.KeyValue;
 import com.mapswithme.util.StorageUtils;
 import com.mapswithme.util.UTM;
+import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.concurrency.ThreadPool;
 import com.mapswithme.util.log.Logger;
@@ -59,6 +68,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Factory
 {
@@ -954,17 +964,27 @@ public class Factory
     @Override
     public boolean run(@NonNull MwmActivity target)
     {
-      final @ParsedUrlMwmRequest.ParsingResult int result = Framework.nativeParseAndSetApiUrl(getUrl());
-      switch (result)
+      final ParsingResult result = Framework.nativeParseAndSetApiUrl(getUrl());
+
+      // TODO: Kernel recognizes "mapsme://", "mwm://" and "mapswithme://" schemas only!!!
+      if (result.getUrlType() == ParsingResult.TYPE_INCORRECT)
+        return MapFragment.nativeShowMapForUrl(getUrl());
+
+      if (!result.isSuccess())
+        return false;
+
+      switch (result.getUrlType())
       {
-        case ParsedUrlMwmRequest.RESULT_INCORRECT:
-          // TODO: Kernel recognizes "mapsme://", "mwm://" and "mapswithme://" schemas only!!!
+        case ParsingResult.TYPE_INCORRECT:
+        case ParsingResult.TYPE_CATALOGUE:
+        case ParsingResult.TYPE_CATALOGUE_PATH:
+        case ParsingResult.TYPE_SUBSCRIPTION:
+          return false;
+
+        case ParsingResult.TYPE_MAP:
           return MapFragment.nativeShowMapForUrl(getUrl());
 
-        case ParsedUrlMwmRequest.RESULT_MAP:
-          return MapFragment.nativeShowMapForUrl(getUrl());
-
-        case ParsedUrlMwmRequest.RESULT_ROUTE:
+        case ParsingResult.TYPE_ROUTE:
           final ParsedRoutingData data = Framework.nativeGetParsedRoutingData();
           RoutingController.get().setRouterType(data.mRouterType);
           final RoutePoint from = data.mPoints[0];
@@ -974,7 +994,7 @@ public class Factory
                                           MapObject.createMapObject(FeatureId.EMPTY, MapObject.API_POINT,
                                                                     to.mName, "", to.mLat, to.mLon), true);
           return true;
-        case ParsedUrlMwmRequest.RESULT_SEARCH:
+        case ParsingResult.TYPE_SEARCH:
           final ParsedSearchRequest request = Framework.nativeGetParsedSearchRequest();
           if (request.mLat != 0.0 || request.mLon != 0.0)
           {
@@ -989,7 +1009,7 @@ public class Factory
           SearchActivity.start(target, request.mQuery, request.mLocale, request.mIsSearchOnMap,
                                null, null);
           return true;
-        case ParsedUrlMwmRequest.RESULT_LEAD:
+        case ParsingResult.TYPE_LEAD:
           return true;
       }
 
@@ -1041,7 +1061,7 @@ public class Factory
 
     public boolean run(@NonNull MwmActivity target)
     {
-      BookmarkManager.INSTANCE.showBookmarkCategoryOnMap(mCategoryId);
+      target.showBookmarkCategoryOnMap(mCategoryId);
       return true;
     }
   }
@@ -1071,7 +1091,7 @@ public class Factory
     @Override
     public boolean run(@NonNull MwmActivity target)
     {
-      BookmarkManager.INSTANCE.showBookmarkOnMap(mId);
+      target.showBookmarkOnMap(mId);
       return true;
     }
   }
@@ -1088,7 +1108,7 @@ public class Factory
     @Override
     public boolean run(@NonNull MwmActivity target)
     {
-      Framework.nativeShowTrackRect(mId);
+      target.showTrackOnMap(mId);
       return true;
     }
   }
@@ -1276,12 +1296,6 @@ public class Factory
     private final String mDialogName;
     @NonNull
     private final ArrayList<KeyValue> mKeyValues;
-
-    public ShowDialogTask(@NonNull String dialogName)
-    {
-
-      this(dialogName, new ArrayList<>());
-    }
 
     public ShowDialogTask(@NonNull String dialogName, @NonNull ArrayList<KeyValue> keyValues)
     {

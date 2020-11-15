@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Onbekende locatie";
 
-"editor_other_info" = "Een boodschap naar OSM-moderator sturen";
+"editor_other_info" = "Notitie sturen naar de OSM-editors";
 
 "editor_detailed_description_hint" = "Gedetailleerde reactie";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Niet nu";
 
-"all_pass_subscription_header" = "INSCHRIJVING OP DE CATALOGUS";
+"all_pass_subscription_header" = "Abonneer u op";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Reisgidscatalogus";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\ngidsen\nen paden";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Kinderen";
 
-"guests_picker_children_subtitle" = "1-16 jaar";
+"guests_picker_children_subtitle" = "1-17 jaar";
 
 "guests_picker_infants_title" = "Zuigelingen";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Probeer het nu";
 
-"subscription_terms_guides_outdoor" = "Wanneer u de aankoop bevestigt, wordt de betaling in rekening gebracht op uw iTunes-account. Het abonnement wordt automatisch verlengd, tenzij de functie voor automatisch verlengen ten minste 24 uur voor het einde van de huidige abonnementsperiode is uitgeschakeld. Uw account wordt binnen 24 uur voordat de huidige abonnementsperiode eindigt, volgens uw verlengingsplan in rekening gebracht. U kunt automatische verlenging op elk gewenst moment na aankoop beheren of uitschakelen in uw Apple ID-accountinstellingen. U kunt alleen reisgidsen gebruiken die tijdens uw abonnement zijn gedownload totdat het abonnement verloopt. Reisgidsen en alle bladwijzers worden automatisch 30 dagen na het verlopen van het abonnement verwijderd.\n* Het abonnement met een gratis proefperiode wordt automatisch verlengd tot een betaald abonnement. U kunt de automatische verlenging van uw gratis proefperiode na aankoop annuleren of beheren in uw accountinstellingen. De opzegging wordt van kracht 24 uur na de laatste dag van de huidige abonnementsperiode. Daarna wordt u gedowngraded naar de gratis service. Let op: elk ongebruikt deel van de gratis proefperiode vervalt wanneer u tijdens de gratis proefperiode een premium abonnement koopt.";
+"subscription_terms_guides_outdoor" = "Wanneer u de aankoop bevestigt, wordt de betaling in rekening gebracht op uw iTunes-account. Het abonnement wordt automatisch verlengd, tenzij de functie voor automatisch verlengen ten minste 24 uur voor het einde van de huidige abonnementsperiode is uitgeschakeld. Uw account wordt binnen 24 uur voordat de huidige abonnementsperiode eindigt, volgens uw verlengingsplan in rekening gebracht. U kunt automatische verlenging op elk gewenst moment na aankoop beheren of uitschakelen in uw Apple ID-accountinstellingen. U kunt alleen reisgidsen gebruiken die tijdens uw abonnement zijn gedownload totdat het abonnement verloopt. Reisgidsen en alle bladwijzers worden automatisch 7 dagen na het verlopen van het abonnement verwijderd.\n* Het abonnement met een gratis proefperiode wordt automatisch verlengd tot een betaald abonnement. U kunt de automatische verlenging van uw gratis proefperiode na aankoop annuleren of beheren in uw accountinstellingen. De opzegging wordt van kracht 24 uur na de laatste dag van de huidige abonnementsperiode. Daarna wordt u gedowngraded naar de gratis service. Let op: elk ongebruikt deel van de gratis proefperiode vervalt wanneer u tijdens de gratis proefperiode een premium abonnement koopt.";
 
-"subscription_terms_android_outdoor" = "Wanneer u de aankoop bevestigt, wordt de betaling in rekening gebracht op uw Google Play-account. Het abonnement wordt automatisch verlengd, tenzij de functie voor automatisch verlengen ten minste 24 uur voor het einde van de huidige abonnementsperiode is uitgeschakeld. Uw account wordt binnen 24 uur voordat de huidige abonnementsperiode eindigt, volgens uw verlengingsplan in rekening gebracht. U kunt automatische verlenging op elk gewenst moment na aankoop beheren of uitschakelen in accountinstellingen. U kunt alleen reisgidsen gebruiken die tijdens uw abonnement zijn gedownload totdat het abonnement verloopt. Reisgidsen worden automatisch verwijderd 30 dagen nadat het abonnement is verlopen.\n* Het abonnement met een gratis proefperiode wordt automatisch verlengd tot een betaald abonnement. U kunt de automatische verlenging van uw gratis proefperiode na aankoop annuleren of beheren in uw accountinstellingen. De opzegging wordt van kracht 24 uur na de laatste dag van de huidige abonnementsperiode. Daarna wordt u gedowngraded naar de gratis service. Let op: elk ongebruikt deel van de gratis proefperiode vervalt wanneer u tijdens de gratis proefperiode een premium abonnement koopt.";
+"subscription_terms_android_outdoor" = "Wanneer u de aankoop bevestigt, wordt de betaling in rekening gebracht op uw Google Play-account. Het abonnement wordt automatisch verlengd, tenzij de functie voor automatisch verlengen ten minste 24 uur voor het einde van de huidige abonnementsperiode is uitgeschakeld. Uw account wordt binnen 24 uur voordat de huidige abonnementsperiode eindigt, volgens uw verlengingsplan in rekening gebracht. U kunt automatische verlenging op elk gewenst moment na aankoop beheren of uitschakelen in accountinstellingen. U kunt alleen reisgidsen gebruiken die tijdens uw abonnement zijn gedownload totdat het abonnement verloopt. Reisgidsen worden automatisch verwijderd 7 dagen nadat het abonnement is verlopen.\n* Het abonnement met een gratis proefperiode wordt automatisch verlengd tot een betaald abonnement. U kunt de automatische verlenging van uw gratis proefperiode na aankoop annuleren of beheren in uw accountinstellingen. De opzegging wordt van kracht 24 uur na de laatste dag van de huidige abonnementsperiode. Daarna wordt u gedowngraded naar de gratis service. Let op: elk ongebruikt deel van de gratis proefperiode vervalt wanneer u tijdens de gratis proefperiode een premium abonnement koopt.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "Abonneer u op\n<b>Gidsencatalogus</b>";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Reisgidsen\nvan Lonely Planet®";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "Nog <b>meer impressies</b> met duizenden interessante plaatsen <b>over de hele wereld</b>";
+
+"content_by_component" = "Inhoud van: %s";
+
+"whatsnew_lp_title" = "Nog meer emoties";
+
+"whatsnew_lp_message" = "Gidsen van Lonely Planet staan nu in onze app! De beste attracties, themawandelingen en unieke reisbestemmingen voor meer dan 7000 steden.";
+
+"collections_title" = "Verzameling";
+
+"key_information_title" = "Belangrijke informatie";
+
+"mustsee_title" = "Must-see";
+
+"see_lp_category" = "Bezienswaardigheden";
+
+"play_lp_category" = "Ontspanning";
+
+"shop_lp_category" = "Winkelen";
+
+"transport_lp_category" = "Transport";
+
+"sleep_lp_category" = "Overnachtingen";
+
+"general_lp_category" = "Algemeen";
+
+"drink_lp_category" = "Drinken";
+
+"eat_lp_category" = "Eten";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Straat";
 
-"type.highway.proposed" = "highway-proposed";
-
 "type.highway.raceway" = "Racebaan";
 
 "type.highway.residential" = "Straat";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Bron";
 
+"type.natural.strait" = "Zeestraat";
+
 "type.natural.tree" = "Boom";
 
 "type.natural.tree_row" = "Tree row";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Spoorlijn";
 

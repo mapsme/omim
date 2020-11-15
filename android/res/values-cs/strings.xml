@@ -824,7 +824,7 @@
 	<string name="error_enter_correct_zip_code">Zadejte správné PSČ</string>
 	<!-- Place Page title for long tap -->
 	<string name="core_placepage_unknown_place">Neznámé místo</string>
-	<string name="editor_other_info">Odeslat komentář moderátorovi OSM</string>
+	<string name="editor_other_info">Odeslat poznámku editorům OSM</string>
 	<string name="editor_detailed_description_hint">Podrobný komentář</string>
 	<string name="editor_detailed_description">Vámi navržené změny odešleme do komunity OpenStreetMap. Popište podrobnosti, které nelze upravit v MAPS.ME.</string>
 	<string name="editor_more_about_osm">Více o projektu OpenStreetMap</string>
@@ -1713,7 +1713,8 @@
 	<string name="new_onboarding_step5.3_message">Vyzkoušejte zdarma vzorky hotových městských a venkovních tras s bezplatným výběrem MAPS.ME!</string>
 	<string name="new_onboarding_step5.3_button">Stáhněte si zdarma</string>
 	<string name="new_onboarding_additional_steps_later_button">Později</string>
-	<string name="all_pass_subscription_header">PŘEDPLATNÉ KATALOGU</string>
+	<string name="all_pass_subscription_header">Předplaťte si</string>
+	<string name="all_pass_subscription_subheader">Katalog průvodců</string>
 	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
 	<string name="all_pass_subscription_message_title">Více než 30000\nprůvodců a tras</string>
 	<!-- <b> & </b> tag to make a part of the line bold -->
@@ -1823,7 +1824,7 @@
 	<string name="guests_picker_rooms">Pokoje</string>
 	<string name="guests_picker_adults">Dospělí</string>
 	<string name="guests_picker_children_title">Děti</string>
-	<string name="guests_picker_children_subtitle">1-16 let</string>
+	<string name="guests_picker_children_subtitle">1-17 let</string>
 	<string name="guests_picker_infants_title">Nemluvňata</string>
 	<string name="guests_picker_infants_subtitle">0-12 měsíců</string>
 	<!-- as less symbols as possible -->
@@ -1837,8 +1838,27 @@
 	<string name="whatsnew_trial_title">Bezplatný přístup do katalogu průvodců</string>
 	<string name="whatsnew_trial_message">Nyní nabízíme 7denní zkušební verzi. Získejte přístup k tisícům cestovních průvodců po celém světě a interaktivnímu výškovému profilu pro outdoorové průvodce.</string>
 	<string name="whatsnew_trial_cta">Vyzkoušejte nyní</string>
-	<string name="subscription_terms_guides_outdoor">Po potvrzení nákupu bude platba naúčtována na váš účet v iTunes. Předplatné se automaticky obnoví, pokud není automatické obnovení vypnuto nejméně 24 hodin před koncem aktuálního období předplatného. V souladu s plánem obnovy bude na váš účet naúčtována částka za obnovení během 24 hodin před koncem aktuálního období předplatného. Automatické obnovení můžete spravovat nebo zakázat kdykoli po zakoupení v nastavení vašeho účtu Apple ID. Průvodce stažené během období předplatného můžete používat pouze do doby vypršení platnosti předplatného. 30 dnů po vypršení platnosti předplatného dojde k automatickému smazání průvodců a záložek.\n* Předplatné s bezplatným zkušebním obdobím se automaticky obnoví na placené předplatné. Automatické obnovení vaší bezplatné zkušební verze můžete rušit nebo spravovat v nastavení vašeho účtu. Zrušení nabude účinku 24 hodin po posledním dni aktuálního období předplatného. Poté budete přeřazeni na bezplatnou variantu. Upozornění: Jakákoli nevyužitá část bezplatné zkušební verze propadne, pokud si během tohoto zkušebního období zakoupíte prémiové předplatné.</string>
-	<string name="subscription_terms_android_outdoor">Po potvrzení nákupu bude platba naúčtována na váš účet Google Play. Předplatné se automaticky obnoví, pokud není automatické obnovení vypnuto nejméně 24 hodin před koncem aktuálního období předplatného. V souladu s plánem obnovy bude na váš účet naúčtována částka za obnovení během 24 hodin před koncem aktuálního období předplatného. Automatické obnovení můžete spravovat nebo zakázat kdykoli po zakoupení v nastavení účtu. Průvodce stažené během období předplatného můžete používat pouze do doby vypršení platnosti předplatného. 30 dnů po vypršení platnosti předplatného dojde k automatickému smazání průvodců.\n* Předplatné s bezplatným zkušebním obdobím se automaticky obnoví na placené předplatné. Automatické obnovení vaší bezplatné zkušební verze můžete rušit nebo spravovat v nastavení vašeho účtu. Zrušení nabude účinku 24 hodin po posledním dni aktuálního období předplatného. Poté budete přeřazeni na bezplatnou variantu. Upozornění: Jakákoli nevyužitá část bezplatné zkušební verze propadne, pokud si během tohoto zkušebního období zakoupíte prémiové předplatné.</string>
+	<string name="subscription_terms_guides_outdoor">Po potvrzení nákupu bude platba naúčtována na váš účet v iTunes. Předplatné se automaticky obnoví, pokud není automatické obnovení vypnuto nejméně 24 hodin před koncem aktuálního období předplatného. V souladu s plánem obnovy bude na váš účet naúčtována částka za obnovení během 24 hodin před koncem aktuálního období předplatného. Automatické obnovení můžete spravovat nebo zakázat kdykoli po zakoupení v nastavení vašeho účtu Apple ID. Průvodce stažené během období předplatného můžete používat pouze do doby vypršení platnosti předplatného. 7 dnů po vypršení platnosti předplatného dojde k automatickému smazání průvodců a záložek.\n* Předplatné s bezplatným zkušebním obdobím se automaticky obnoví na placené předplatné. Automatické obnovení vaší bezplatné zkušební verze můžete rušit nebo spravovat v nastavení vašeho účtu. Zrušení nabude účinku 24 hodin po posledním dni aktuálního období předplatného. Poté budete přeřazeni na bezplatnou variantu. Upozornění: Jakákoli nevyužitá část bezplatné zkušební verze propadne, pokud si během tohoto zkušebního období zakoupíte prémiové předplatné.</string>
+	<string name="subscription_terms_android_outdoor">Po potvrzení nákupu bude platba naúčtována na váš účet Google Play. Předplatné se automaticky obnoví, pokud není automatické obnovení vypnuto nejméně 24 hodin před koncem aktuálního období předplatného. V souladu s plánem obnovy bude na váš účet naúčtována částka za obnovení během 24 hodin před koncem aktuálního období předplatného. Automatické obnovení můžete spravovat nebo zakázat kdykoli po zakoupení v nastavení účtu. Průvodce stažené během období předplatného můžete používat pouze do doby vypršení platnosti předplatného. 7 dnů po vypršení platnosti předplatného dojde k automatickému smazání průvodců.\n* Předplatné s bezplatným zkušebním obdobím se automaticky obnoví na placené předplatné. Automatické obnovení vaší bezplatné zkušební verze můžete rušit nebo spravovat v nastavení vašeho účtu. Zrušení nabude účinku 24 hodin po posledním dni aktuálního období předplatného. Poté budete přeřazeni na bezplatnou variantu. Upozornění: Jakákoli nevyužitá část bezplatné zkušební verze propadne, pokud si během tohoto zkušebního období zakoupíte prémiové předplatné.</string>
+	<string name="subscription_header">Předplaťte si\n<b>katalog průvodců</b></string>
+	<!-- Max. 20 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_4">Cestovní průvodci\nod Lonely Planet®</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_4">Ještě <b>více zážitků</b> s tisíci zajímavými místy <b>po celém světě</b></string>
+	<string name="content_by_component">Obsah od: %s</string>
+	<string name="whatsnew_lp_title">Ještě více emocí</string>
+	<string name="whatsnew_lp_message">Průvodci Lonely Planet jsou nyní v naší aplikaci! Nejlepší atrakce, tematické procházky a unikátní místa k cestování pro více než 7 000 měst.</string>
+	<string name="collections_title">Sbírky</string>
+	<string name="key_information_title">Klíčové informace</string>
+	<string name="mustsee_title">Musíte vidět</string>
+	<string name="see_lp_category">K vidění</string>
+	<string name="play_lp_category">Zábava</string>
+	<string name="shop_lp_category">Nakupování</string>
+	<string name="transport_lp_category">Doprava</string>
+	<string name="sleep_lp_category">Spánek</string>
+	<string name="general_lp_category">Obecné</string>
+	<string name="drink_lp_category">Pití</string>
+	<string name="eat_lp_category">Jídlo</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Stanice lanové dráhy</string>
@@ -2223,6 +2243,7 @@
 	<string name="type.natural.pond">Rybník</string>
 	<string name="type.natural.scrub">Křoviny</string>
 	<string name="type.natural.spring">Pramen</string>
+	<string name="type.natural.strait">Průliv</string>
 	<string name="type.natural.tree">Strom</string>
 	<string name="type.natural.volcano">Sopka</string>
 	<string name="type.natural.water">Voda</string>

@@ -100,11 +100,12 @@ bool PopularityHasHigherPriority(bool hasPosition, double distanceInMeters)
   {
     if (result.HasPoint())
     {
+      auto const localizedUnits = platform::GetLocalizedDistanceUnits();
       distanceInMeters =
           mercator::DistanceOnEarth(lastLocation.mercator, result.GetFeatureCenter());
-      std::string distanceStr;
-      measurement_utils::FormatDistance(distanceInMeters, distanceStr);
-
+      std::string distanceStr = measurement_utils::FormatDistanceWithLocalization(distanceInMeters,
+                                                                                  localizedUnits.m_high,
+                                                                                  localizedUnits.m_low);
       self.distanceLabel.text = @(distanceStr.c_str());
     }
   }

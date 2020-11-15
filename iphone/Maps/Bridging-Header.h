@@ -22,7 +22,6 @@
 
 #import <CoreApi/CoreApi-swift.h>
 
-#import "BookmarksVC.h"
 #import "CoreNotificationWrapper.h"
 #import "DeepLinkRouteStrategyAdapter.h"
 #import "EAGLView.h"
@@ -92,3 +91,4 @@
 #import "UIImageView+WebImage.h"
 #import "UIViewController+Navigation.h"
 #import "WebViewController.h"
+#import "MWMMapViewControlsCommon.h"

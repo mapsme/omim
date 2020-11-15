@@ -93,6 +93,14 @@ class MapStyleSheet: IStyleSheet {
       s.mwmImage = "promo_discovery_button"
     }
 
+    theme.add(styleName: "ButtonBookmarksBack") { (s) -> (Void) in
+      s.mwmImage = "btn_back"
+    }
+
+    theme.add(styleName: "ButtonBookmarksBackOpaque") { (s) -> (Void) in
+      s.mwmImage = "btn_back_opaque"
+    }
+
     theme.add(styleName: "FirstTurnView") { (s) -> (Void) in
       s.backgroundColor = colors.linkBlue
       s.cornerRadius = 4
@@ -112,6 +120,15 @@ class MapStyleSheet: IStyleSheet {
       s.cornerRadius = 4
       s.shadowOpacity = 1
       s.backgroundColor = colors.white
+    }
+
+    theme.add(styleName: "GuidesNavigationBar") { (s) -> (Void) in
+      s.barTintColor = colors.white
+      s.tintColor = colors.linkBlue
+      s.backgroundImage = UIImage()
+      s.shadowImage = UIImage()
+      s.font = fonts.regular18
+      s.fontColor = colors.blackPrimaryText
     }
   }
 }

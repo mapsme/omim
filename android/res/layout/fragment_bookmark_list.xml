@@ -1,45 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:mapsme="http://schemas.android.com/apk/app"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  xmlns:mapsme="http://schemas.android.com/apk/res-auto">
-
-  <androidx.recyclerview.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recycler"
+  android:layout_height="match_parent">
+  <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
-
+    android:layout_height="match_parent"
+    android:background="?windowBackgroundForced"
+    android:fillViewport="true">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:focusableInTouchMode="true"
+      android:orientation="vertical">
+      <com.mapswithme.maps.bookmarks.BookmarkHeaderView
+        android:id="@+id/guide_info"
+        android:background="?cardBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/collections_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:background="?cardBackground"/>
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?cardBackground"/>
+    </LinearLayout>
+  </androidx.core.widget.NestedScrollView>
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/fabViewOnMap"
-    mapsme:layout_constraintRight_toRightOf="parent"
-    mapsme:layout_constraintBottom_toBottomOf="parent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_above="@id/recycler"
     android:layout_alignWithParentIfMissing="true"
-    android:layout_alignParentRight="true"
+    android:layout_above="@id/container"
     android:layout_alignParentEnd="true"
-    android:layout_marginRight="@dimen/margin_base"
     android:layout_marginEnd="@dimen/margin_base"
     android:layout_marginBottom="@dimen/margin_base"
-    android:src="?fabViewOnMap"/>
-
+    android:src="?fabViewOnMap"
+    mapsme:layout_constraintBottom_toBottomOf="parent"
+    mapsme:layout_constraintRight_toRightOf="parent"
+    tools:ignore="NotSibling" />
   <com.mapswithme.maps.widget.PlaceholderView
     android:id="@+id/placeholder"
-    mapsme:layout_constraintBottom_toBottomOf="parent"
-    mapsme:layout_constraintTop_toTopOf="parent"
-    mapsme:layout_constraintLeft_toLeftOf="parent"
-    mapsme:layout_constraintRight_toRightOf="parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:paddingLeft="@dimen/margin_double_and_half"
-    android:paddingRight="@dimen/margin_double_and_half"
     android:paddingTop="@dimen/placeholder_margin_top"
+    android:paddingRight="@dimen/margin_double_and_half"
     mapsme:imgSrcDefault="@drawable/img_empty_bookmarks"
-    mapsme:titleDefault="@string/bookmarks_empty_list_title"
-    mapsme:subTitleDefault="@string/bookmarks_empty_list_message"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    mapsme:layout_constraintBottom_toBottomOf="parent"
+    mapsme:layout_constraintLeft_toLeftOf="parent"
+    mapsme:layout_constraintRight_toRightOf="parent"
+    mapsme:layout_constraintTop_toTopOf="parent"
+    mapsme:subTitleDefault="@string/bookmarks_empty_list_message"
+    mapsme:titleDefault="@string/bookmarks_empty_list_title" />
+</RelativeLayout>

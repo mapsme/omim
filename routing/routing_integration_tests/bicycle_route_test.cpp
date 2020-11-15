@@ -64,7 +64,7 @@ UNIT_TEST(NetherlandsAmsterdamBicycleYes)
   Route const & route = *routeResult.first;
   RouterResultCode const result = routeResult.second;
   TEST_EQUAL(result, RouterResultCode::NoError, ());
-  TEST(base::AlmostEqualAbs(route.GetTotalTimeSec(), 301.8, 1.0), (route.GetTotalTimeSec()));
+  TEST(base::AlmostEqualAbs(route.GetTotalTimeSec(), 304.2, 1.0), (route.GetTotalTimeSec()));
 }
 
 // This test on tag cycleway=opposite for a streets which have oneway=yes.
@@ -131,7 +131,7 @@ UNIT_TEST(SwedenStockholmBicyclePastFerry)
   CalculateRouteAndTestRouteLength(
       GetVehicleComponents(VehicleType::Bicycle),
       mercator::FromLatLon(59.4725, 18.51355), {0.0, 0.0},
-      mercator::FromLatLon(59.32967, 18.075), 46163.7);
+      mercator::FromLatLon(59.42533, 18.35991), 14338.0);
 }
 
 // Test on cross mwm bicycle routing.

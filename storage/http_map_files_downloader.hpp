@@ -1,5 +1,6 @@
 #pragma once
 
+#include "storage/downloader_queue_universal.hpp"
 #include "storage/map_files_downloader_with_ping.hpp"
 
 #include "platform/http_request.hpp"
@@ -23,13 +24,9 @@ public:
   virtual ~HttpMapFilesDownloader();
 
   // MapFilesDownloader overrides:
-  downloader::Progress GetDownloadingProgress() override;
-  bool IsIdle() override;
-  void Pause() override;
-  void Resume() override;
   void Remove(CountryId const & id) override;
   void Clear() override;
-  Queue const & GetQueue() const override;
+  QueueInterface const & GetQueue() const override;
 
 private:
   // MapFilesDownloaderWithServerList overrides:

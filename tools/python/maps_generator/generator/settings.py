@@ -32,11 +32,12 @@ def get_config_path(config_path: AnyStr):
         if opt == opt_config:
             indexes = (i, i + 2)
 
-    if indexes[1] > len(argv):
-        return config_path
+    config_args = argv[indexes[0] : indexes[1]]
+    if config_args:
+        return parser.parse_args(config_args).config
 
-    args = argv[indexes[0] : indexes[1]]
-    return parser.parse_args(args).config if args else config_path
+    config_var = os.environ.get(f"MM_GEN__CONFIG")
+    return config_path if config_var is None else config_var
 
 
 class CfgReader:
@@ -67,7 +68,7 @@ class CfgReader:
 
     @staticmethod
     def _get_env_val(s: AnyStr, v: AnyStr):
-        return os.environ.get(f"MM__{s.upper()}_{v.upper()}")
+        return os.environ.get(f"MM_GEN__{s.upper()}_{v.upper()}")
 
 
 DEFAULT_PLANET_URL = "https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf"
@@ -80,6 +81,7 @@ _HOME_PATH = str(Path.home())
 _WORK_PATH = _HOME_PATH
 TMPDIR = os.path.join(_HOME_PATH, "tmp")
 MAIN_OUT_PATH = os.path.join(_WORK_PATH, "generation")
+CACHE_PATH = ""
 
 # Developer section:
 BUILD_PATH = os.path.join(_WORK_PATH, "omim-build-release")
@@ -90,17 +92,14 @@ OSM_TOOLS_SRC_PATH = os.path.join(OMIM_PATH, "tools", "osmctools")
 OSM_TOOLS_PATH = os.path.join(_WORK_PATH, "osmctools")
 
 # Generator tool section:
+USER_RESOURCE_PATH = os.path.join(OMIM_PATH, "data")
 NODE_STORAGE = "mem" if total_virtual_memory() / 10 ** 9 >= 64 else "map"
-
-_omim_data_dir = "omim-data"
-USER_RESOURCE_PATH = os.path.join(sys.prefix, _omim_data_dir)
-if not os.path.exists(USER_RESOURCE_PATH):
-    USER_RESOURCE_PATH = os.path.join(site.USER_BASE, _omim_data_dir)
-if not os.path.exists(USER_RESOURCE_PATH):
-    USER_RESOURCE_PATH = os.path.join(OMIM_PATH, "data")
 
 # Stages section:
 NEED_PLANET_UPDATE = False
+THREADS_COUNT_FEATURES_STAGE = multiprocessing.cpu_count()
+DATA_ARCHIVE_DIR = USER_RESOURCE_PATH
+DIFF_VERSION_DEPTH = 2
 
 # Logging section:
 LOG_FILE_PATH = os.path.join(MAIN_OUT_PATH, "generation.log")
@@ -128,7 +127,7 @@ STATS_TYPES_CONFIG = os.path.join(ETC_DIR, "stats_types_config.txt")
 
 # Other variables:
 PLANET = "planet"
-GEN_TOOL = "generator_tool"
+POSSIBLE_GEN_TOOL_NAMES = ("generator_tool", "omim-generator_tool")
 VERSION_FILE_NAME = "version.txt"
 
 # Osm tools:
@@ -191,12 +190,14 @@ def init(default_settings_path: AnyStr):
 
     # Main section:
     global DEBUG
-    global MAIN_OUT_PATH
     global TMPDIR
+    global MAIN_OUT_PATH
+    global CACHE_PATH
     _DEBUG = cfg.get_opt("Main", "DEBUG")
     DEBUG = DEBUG if _DEBUG is None else int(_DEBUG)
-    MAIN_OUT_PATH = cfg.get_opt_path("Main", "MAIN_OUT_PATH", MAIN_OUT_PATH)
     TMPDIR = cfg.get_opt_path("Main", "TMPDIR", TMPDIR)
+    MAIN_OUT_PATH = cfg.get_opt_path("Main", "MAIN_OUT_PATH", MAIN_OUT_PATH)
+    CACHE_PATH = cfg.get_opt_path("Main", "CACHE_PATH", CACHE_PATH)
 
     # Developer section:
     global BUILD_PATH
@@ -220,9 +221,41 @@ def init(default_settings_path: AnyStr):
     )
     NODE_STORAGE = cfg.get_opt("Generator tool", "NODE_STORAGE", NODE_STORAGE)
 
+    if not os.path.exists(USER_RESOURCE_PATH):
+        from data_files import find_data_files
+
+        USER_RESOURCE_PATH = find_data_files("omim-data")
+        assert USER_RESOURCE_PATH is not None
+
+        import borders
+
+        # Issue: If maps_generator is installed in your system as a system
+        # package and borders.init() is called first time, call borders.init()
+        # might return False, because you need root permission.
+        assert borders.init()
+
     # Stages section:
     global NEED_PLANET_UPDATE
+    global DATA_ARCHIVE_DIR
+    global DIFF_VERSION_DEPTH
+    global THREADS_COUNT_FEATURES_STAGE
     NEED_PLANET_UPDATE = cfg.get_opt("Stages", "NEED_PLANET_UPDATE", NEED_PLANET_UPDATE)
+    DATA_ARCHIVE_DIR = cfg.get_opt_path(
+        "Generator tool", "DATA_ARCHIVE_DIR", DATA_ARCHIVE_DIR
+    )
+    DIFF_VERSION_DEPTH = cfg.get_opt(
+        "Generator tool", "DIFF_VERSION_DEPTH", DIFF_VERSION_DEPTH
+    )
+
+    threads_count = int(
+        cfg.get_opt(
+            "Generator tool",
+            "THREADS_COUNT_FEATURES_STAGE",
+            THREADS_COUNT_FEATURES_STAGE,
+        )
+    )
+    if threads_count > 0:
+        THREADS_COUNT_FEATURES_STAGE = threads_count
 
     # Logging section:
     global LOG_FILE_PATH

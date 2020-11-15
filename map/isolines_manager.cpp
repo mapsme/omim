@@ -95,7 +95,7 @@ void IsolinesManager::UpdateViewport(ScreenBase const & screen)
   if (screen.GlobalRect().GetLocalRect().IsEmptyInterior())
     return;
 
-  m_currentModelView.reset(screen);
+  m_currentModelView = screen;
   if (!IsEnabled())
     return;
 
@@ -143,13 +143,6 @@ void IsolinesManager::UpdateState()
       mwmVersions.insert(mwmId.GetInfo()->GetVersion());
   }
 
-  if (expired)
-    ChangeState(IsolinesState::ExpiredData);
-  else if (!available && noData)
-    ChangeState(IsolinesState::NoData);
-  else
-    ChangeState(IsolinesState::Enabled);
-
   if (m_trackFirstSchemeData)
   {
     if (available)
@@ -163,6 +156,13 @@ void IsolinesManager::UpdateState()
       m_statistics.LogActivate(LayersStatistics::Status::Unavailable, mwmVersions);
     }
   }
+
+  if (expired)
+    ChangeState(IsolinesState::ExpiredData);
+  else if (!available && noData)
+    ChangeState(IsolinesState::NoData);
+  else
+    ChangeState(IsolinesState::Enabled);
 }
 
 void IsolinesManager::Invalidate()
@@ -171,7 +171,7 @@ void IsolinesManager::Invalidate()
     return;
   m_lastMwms.clear();
   if (m_currentModelView)
-    UpdateViewport(m_currentModelView.get());
+    UpdateViewport(*m_currentModelView);
 }
 
 isolines::Quality IsolinesManager::GetDataQuality(MwmSet::MwmId const & id) const

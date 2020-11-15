@@ -2,6 +2,9 @@
 
 #import "MWMTypes.h"
 
+@class MWMBookmark;
+@class MWMTrack;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @class MWMBookmarksManager;
@@ -14,15 +17,26 @@ NS_SWIFT_NAME(BookmarkGroup)
                             bookmarksManager:(MWMBookmarksManager *)manager;
 
 @property(nonatomic, readonly) MWMMarkGroupID categoryId;
-@property(nonatomic, copy) NSString *title;
+@property(nonatomic, readonly) NSString *title;
 @property(nonatomic, readonly) NSString *author;
 @property(nonatomic, readonly) NSString *annotation;
-@property(nonatomic, copy) NSString *detailedAnnotation;
+@property(nonatomic, readonly) NSString *detailedAnnotation;
+@property(nonatomic, readonly) NSString *serverId;
+@property(nonatomic, readonly, nullable) NSURL *imageUrl;
 @property(nonatomic, readonly) NSInteger bookmarksCount;
 @property(nonatomic, readonly) NSInteger trackCount;
-@property(nonatomic, getter=isVisible) BOOL visible;
+@property(nonatomic, readonly, getter=isVisible) BOOL visible;
 @property(nonatomic, readonly, getter=isEmpty) BOOL empty;
+@property(nonatomic, readonly, getter=isEditable) BOOL editable;
+@property(nonatomic, readonly, getter=isGuide) BOOL guide;
+@property(nonatomic, readonly, getter=isLonelyPlanet) BOOL lonelyPlanet;
+@property(nonatomic, readonly) BOOL hasDescription;
 @property(nonatomic, readonly) MWMBookmarkGroupAccessStatus accessStatus;
+@property(nonatomic, readonly) NSArray<MWMBookmark *> *bookmarks;
+@property(nonatomic, readonly) NSArray<MWMTrack *> *tracks;
+@property(nonatomic, readonly) NSArray<MWMBookmarkGroup *> *collections;
+@property(nonatomic, readonly) NSArray<MWMBookmarkGroup *> *categories;
+@property(nonatomic, readonly) MWMBookmarkGroupType type;
 
 @end
 

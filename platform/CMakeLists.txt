@@ -16,6 +16,8 @@ set(
   country_file.cpp
   country_file.hpp
   downloader_defines.hpp
+  downloader_utils.cpp
+  downloader_utils.hpp
   file_logging.cpp
   file_logging.hpp
   get_text_by_id.cpp
@@ -37,6 +39,7 @@ set(
   local_country_file_utils.cpp
   local_country_file_utils.hpp
   locale.hpp
+  localization.cpp
   localization.hpp
   location.hpp
   marketing_service.cpp
@@ -61,11 +64,14 @@ set(
   socket.hpp
   string_storage_base.cpp
   string_storage_base.hpp
+  utils.hpp
 )
 
 if(${PLATFORM_IPHONE})
   append(
     SRC
+    background_downloader_ios.h
+    background_downloader_ios.mm
     gui_thread_apple.mm
     http_thread_apple.h
     http_thread_apple.mm
@@ -82,6 +88,7 @@ if(${PLATFORM_IPHONE})
     platform_unix_impl.hpp
     secure_storage_ios.mm
     socket_apple.mm
+    utils.mm
   )
 elseif(${PLATFORM_ANDROID})
   append(
@@ -137,6 +144,7 @@ else() # neither iPhone nor Android
       secure_storage_qt.cpp
       socket_apple.mm
       http_session_manager.mm
+      utils.cpp
     )
   elseif(${PLATFORM_LINUX})
     append(
@@ -154,6 +162,7 @@ else() # neither iPhone nor Android
       platform_unix_impl.cpp
       platform_unix_impl.hpp
       secure_storage_qt.cpp
+      utils.cpp
     )
   endif()
 endif()

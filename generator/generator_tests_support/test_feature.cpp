@@ -89,7 +89,7 @@ void TestFeature::Init()
 
 bool TestFeature::Matches(FeatureType & feature) const
 {
-  istringstream is(feature.GetMetadata().Get(Metadata::FMD_TEST_ID));
+  istringstream is(feature.GetMetadata(Metadata::FMD_TEST_ID));
   uint64_t id;
   is >> id;
   return id == m_id;
@@ -138,7 +138,10 @@ void TestFeature::Serialize(FeatureBuilder & fb) const
   });
 
   if (!m_postcode.empty())
+  {
     fb.GetParams().AddPostcode(m_postcode);
+    fb.GetMetadata().Set(Metadata::FMD_POSTCODE, m_postcode);
+  }
 }
 
 // TestCountry -------------------------------------------------------------------------------------

@@ -9,6 +9,7 @@
 
 #include "map/routing_manager.hpp"
 
+#include "platform/localization.hpp"
 #include "platform/measurement_utils.hpp"
 
 @interface MWMNavigationDashboardEntity ()
@@ -38,7 +39,7 @@
   if (!lastLocation || lastLocation.speed < 0)
     return nil;
   auto const units = coreUnits([MWMSettings measurementUnits]);
-  return @(measurement_utils::FormatSpeed(lastLocation.speed, units).c_str());
+  return @(measurement_utils::FormatSpeedNumeric(lastLocation.speed, units).c_str());
 }
 
 - (BOOL)isSpeedLimitExceeded
@@ -48,8 +49,7 @@
 
 - (NSString *)speedUnits
 {
-  auto const units = coreUnits([MWMSettings measurementUnits]);
-  return [self localizedUnitSpeed:@(measurement_utils::FormatSpeedUnits(units).c_str())];
+  return @(platform::GetLocalizedSpeedUnits().c_str());
 }
 
 - (NSString *)eta { return [NSDateComponentsFormatter etaStringFrom:self.timeToTarget]; }
@@ -68,15 +68,6 @@
     NSFontAttributeName: [UIFont medium17]
   };
   return [[NSAttributedString alloc] initWithString:@" • " attributes:attributes];
-}
-
-- (NSString *)localizedUnitSpeed:(NSString *)speedUnits {
-  if ([speedUnits isEqualToString:@"mph"]) {
-    return L(@"miles_per_hour");
-  } else if ([speedUnits isEqualToString:@"km/h"]) {
-    return L(@"kilometers_per_hour");
-  }
-  return speedUnits;
 }
 
 @end

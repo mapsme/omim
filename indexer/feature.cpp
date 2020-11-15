@@ -186,11 +186,18 @@ uint8_t ReadByte(TSource & src)
 }  // namespace
 
 FeatureType::FeatureType(SharedLoadInfo const * loadInfo, vector<uint8_t> && buffer,
-                         MetadataIndex const * metadataIndex)
-  : m_loadInfo(loadInfo), m_data(buffer), m_metadataIndex(metadataIndex)
+                         MetadataIndex const * metadataIndex,
+                         indexer::MetadataDeserializer * metadataDeserializer)
+  : m_loadInfo(loadInfo)
+  , m_data(buffer)
+  , m_metadataIndex(metadataIndex)
+  , m_metadataDeserializer(metadataDeserializer)
 {
   CHECK(loadInfo, ());
-  ASSERT(m_loadInfo->GetMWMFormat() < version::Format::v10 || m_metadataIndex,
+
+  ASSERT(m_loadInfo->GetMWMFormat() < version::Format::v10 ||
+             m_loadInfo->GetMWMFormat() == version::Format::v10 && m_metadataIndex ||
+             m_loadInfo->GetMWMFormat() > version::Format::v10 && m_metadataDeserializer,
          (m_loadInfo->GetMWMFormat()));
 
   m_header = Header(m_data);
@@ -235,11 +242,9 @@ FeatureType::FeatureType(osm::MapObject const & emo)
     m_params.house.Set(house);
   m_parsed.m_common = true;
 
-  m_postcode = emo.GetPostcode();
-  m_parsed.m_postcode = true;
-
   m_metadata = emo.GetMetadata();
   m_parsed.m_metadata = true;
+  m_parsed.m_metaIds = true;
 
   CHECK_LESS_OR_EQUAL(emo.GetTypes().Size(), feature::kMaxTypesCount, ());
   copy(emo.GetTypes().begin(), emo.GetTypes().end(), m_types.begin());
@@ -522,7 +527,11 @@ void FeatureType::ParseMetadata()
   try
   {
     auto const format = m_loadInfo->GetMWMFormat();
-    if (format >= version::Format::v10)
+    if (format >= version::Format::v11)
+    {
+      UNUSED_VALUE(m_metadataDeserializer->Get(m_id.m_index, m_metadata));
+    }
+    else if (format == version::Format::v10)
     {
       uint32_t offset;
       CHECK(m_metadataIndex, ("metadata index should be set for mwm format >= v10"));
@@ -530,7 +539,8 @@ void FeatureType::ParseMetadata()
       {
         ReaderSource<FilesContainerR::TReader> src(m_loadInfo->GetMetadataReader());
         src.Skip(offset);
-        m_metadata.Deserialize(src);
+        // Before v11 we used the same metadata serialization for mwm and mwm.tmp
+        m_metadata.DeserializeFromMwmTmp(src);
       }
     }
     else
@@ -552,8 +562,21 @@ void FeatureType::ParseMetadata()
         src.Skip(it->value);
         CHECK_GREATER_OR_EQUAL(m_loadInfo->GetMWMFormat(), version::Format::v8,
                                ("Unsupported mwm format"));
-        m_metadata.Deserialize(src);
+        // Before v11 we used the same metadata serialization for mwm and mwm.tmp
+        m_metadata.DeserializeFromMwmTmp(src);
       }
+    }
+    // December 19 - September 20 mwm compatibility
+    auto postcodesReader = m_loadInfo->GetPostcodesReader();
+    if (postcodesReader)
+    {
+      auto postcodes = indexer::Postcodes::Load(*postcodesReader->GetPtr());
+      CHECK(postcodes, ());
+      string postcode;
+      auto const havePostcode = postcodes->Get(m_id.m_index, postcode);
+      CHECK(!havePostcode || !postcode.empty(), (havePostcode, postcode));
+      if (havePostcode)
+        m_metadata.Set(feature::Metadata::FMD_POSTCODE, postcode);
     }
   }
   catch (Reader::OpenException const &)
@@ -564,27 +587,26 @@ void FeatureType::ParseMetadata()
   m_parsed.m_metadata = true;
 }
 
-void FeatureType::ParsePostcode()
+void FeatureType::ParseMetaIds()
 {
-  if (m_parsed.m_postcode)
+  if (m_parsed.m_metaIds)
     return;
 
-  auto postcodesReader = m_loadInfo->GetPostcodesReader();
-  if (postcodesReader)
+  CHECK(m_loadInfo, ());
+  try
   {
-    auto postcodes = indexer::Postcodes::Load(*postcodesReader->GetPtr());
-    CHECK(postcodes, ());
-    auto const havePostcode = postcodes->Get(m_id.m_index, m_postcode);
-    CHECK(!havePostcode || !m_postcode.empty(), (havePostcode, m_postcode));
+    auto const format = m_loadInfo->GetMWMFormat();
+    if (format >= version::Format::v11)
+      UNUSED_VALUE(m_metadataDeserializer->GetIds(m_id.m_index, m_metaIds));
+    else
+      ParseMetadata();
   }
-  else
+  catch (Reader::OpenException const &)
   {
-    // Old data compatibility.
-    ParseMetadata();
-    m_postcode = m_metadata.Get(feature::Metadata::FMD_POSTCODE);
+    // now ignore exception because not all mwm have needed sections
   }
 
-  m_parsed.m_postcode = true;
+  m_parsed.m_metaIds = true;
 }
 
 StringUtf8Multilang const & FeatureType::GetNames()
@@ -804,14 +826,33 @@ string FeatureType::GetRoadNumber()
   return m_params.ref;
 }
 
-string const & FeatureType::GetPostcode()
-{
-  ParsePostcode();
-  return m_postcode;
-}
-
-feature::Metadata & FeatureType::GetMetadata()
+feature::Metadata const & FeatureType::GetMetadata()
 {
   ParseMetadata();
   return m_metadata;
+}
+
+std::string FeatureType::GetMetadata(feature::Metadata::EType type)
+{
+  ParseMetaIds();
+  if (m_metadata.Has(type))
+    return m_metadata.Get(type);
+
+  auto const it = base::FindIf(m_metaIds, [&type](auto const & v) { return v.first == type; });
+  if (it == m_metaIds.end())
+    return {};
+
+  auto const value = m_metadataDeserializer->GetMetaById(it->second);
+  m_metadata.Set(type, value);
+  return value;
+}
+
+bool FeatureType::HasMetadata(feature::Metadata::EType type)
+{
+  ParseMetaIds();
+  if (m_metadata.Has(type))
+    return true;
+
+  return base::FindIf(m_metaIds, [&type](auto const & v) { return v.first == type; }) !=
+         m_metaIds.end();
 }

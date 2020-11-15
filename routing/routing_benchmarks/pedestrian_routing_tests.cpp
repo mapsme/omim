@@ -46,12 +46,10 @@ public:
 
 protected:
   // RoutingTest overrides:
-  unique_ptr<routing::IDirectionsEngine> CreateDirectionsEngine(
-    shared_ptr<routing::NumMwmIds> numMwmIds) override
+  unique_ptr<routing::DirectionsEngine> CreateDirectionsEngine(
+      shared_ptr<routing::NumMwmIds> numMwmIds) override
   {
-    unique_ptr<routing::IDirectionsEngine> engine(
-        new routing::PedestrianDirectionsEngine(move(numMwmIds)));
-    return engine;
+    return std::make_unique<routing::PedestrianDirectionsEngine>(m_dataSource, move(numMwmIds));
   }
 
   unique_ptr<routing::VehicleModelFactoryInterface> CreateModelFactory() override
@@ -60,6 +58,8 @@ protected:
         new SimplifiedModelFactory<routing::PedestrianModel>());
     return factory;
   }
+
+  FrozenDataSource m_dataSource;
 };
 }  // namespace
 

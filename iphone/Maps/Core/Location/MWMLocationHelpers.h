@@ -1,6 +1,6 @@
-#import "MWMLocationManager.h"
-#import "SwiftBridge.h"
+#import "MWMMyPositionMode.h"
 
+#include "platform/localization.hpp"
 #include "platform/location.hpp"
 #include "platform/measurement_utils.hpp"
 #include "platform/settings.hpp"
@@ -13,26 +13,9 @@ namespace location_helpers
 static inline NSString * formattedDistance(double const & meters) {
   if (meters < 0.)
     return nil;
-  
-  auto units = measurement_utils::Units::Metric;
-  settings::TryGet(settings::kMeasurementUnits, units);
-  
-  std::string distance;
-  switch (units) {
-    case measurement_utils::Units::Imperial:
-      measurement_utils::FormatDistanceWithLocalization(meters,
-                                                        distance,
-                                                        [[@" " stringByAppendingString:L(@"mile")] UTF8String],
-                                                        [[@" " stringByAppendingString:L(@"foot")] UTF8String]);
-      break;
-    case measurement_utils::Units::Metric:
-      measurement_utils::FormatDistanceWithLocalization(meters,
-                                                        distance,
-                                                        [[@" " stringByAppendingString:L(@"kilometer")] UTF8String],
-                                                        [[@" " stringByAppendingString:L(@"meter")] UTF8String]);
-      break;
-  }
-  return @(distance.c_str());
+
+  auto const localizedUnits = platform::GetLocalizedDistanceUnits();
+  return @(measurement_utils::FormatDistanceWithLocalization(meters, localizedUnits.m_high, localizedUnits.m_low).c_str());
 }
 
 static inline BOOL isMyPositionPendingOrNoPosition()

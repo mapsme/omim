@@ -48,7 +48,6 @@ struct NodeAttrs
 {
   NodeAttrs() : m_mwmCounter(0), m_localMwmCounter(0), m_downloadingMwmCounter(0),
     m_mwmSize(0), m_localMwmSize(0), m_downloadingMwmSize(0),
-    m_downloadingProgress({}),
     m_status(NodeStatus::Undefined), m_error(NodeErrorCode::NoError), m_present(false) {}
 
   /// If the node is expandable (a big country) |m_mwmCounter| is number of mwm files (leaves)
@@ -105,9 +104,9 @@ struct NodeAttrs
 
   /// Progress of downloading for the node expandable or not. It reflects downloading progress in case of
   /// downloading and updating mwm.
-  /// m_downloadingProgress.first is number of downloaded bytes.
-  /// m_downloadingProgress.second is size of file(s) in bytes to download.
-  /// So m_downloadingProgress.first <= m_downloadingProgress.second.
+  /// m_downloadingProgress.m_bytesDownloaded is number of downloaded bytes.
+  /// m_downloadingProgress.m_bytesTotal is size of file(s) in bytes to download.
+  /// So m_downloadingProgress.m_bytesDownloaded <= m_downloadingProgress.m_bytesTotal.
   downloader::Progress m_downloadingProgress;
 
   /// Status of group and leaf node.
@@ -147,7 +146,8 @@ struct NodeStatuses
 // Downloading of only one mwm at a time is supported, so while the
 // mwm at the top of the queue is being downloaded (or updated by
 // applying a diff file) all other mwms have to wait.
-class Storage : public MapFilesDownloader::Subscriber
+class Storage : public MapFilesDownloader::Subscriber,
+                public QueuedCountry::Subscriber
 {
 public:
   struct StatusCallback;
@@ -157,6 +157,7 @@ public:
   using DeleteCallback = std::function<bool(storage::CountryId const &, LocalFilePtr const)>;
   using ChangeCountryFunction = std::function<void(CountryId const &)>;
   using ProgressFunction = std::function<void(CountryId const &, downloader::Progress const &)>;
+  using DownloadingCountries = std::unordered_map<CountryId, downloader::Progress>;
 
 private:
   /// We support only one simultaneous request at the moment
@@ -251,21 +252,26 @@ private:
 
   StartDownloadingCallback m_startDownloadingCallback;
 
+  DownloadingCountries m_downloadingCountries;
+
   void LoadCountriesFile(std::string const & pathToCountriesFile);
 
   void ReportProgress(CountryId const & countryId, downloader::Progress const & p);
   void ReportProgressForHierarchy(CountryId const & countryId,
                                   downloader::Progress const & leafProgress);
 
+  // QueuedCountry::Subscriber overrides:
+  void OnCountryInQueue(QueuedCountry const & queuedCountry) override;
+  void OnStartDownloading(QueuedCountry const & queuedCountry) override;
   /// Called on the main thread by MapFilesDownloader when
   /// downloading of a map file succeeds/fails.
-  void OnMapFileDownloadFinished(QueuedCountry const & queuedCountry,
-                                 downloader::DownloadStatus status);
+  void OnDownloadFinished(QueuedCountry const & queuedCountry,
+                          downloader::DownloadStatus status) override;
 
   /// Periodically called on the main thread by MapFilesDownloader
   /// during the downloading process.
-  void OnMapFileDownloadProgress(QueuedCountry const & queuedCountry,
-                                 downloader::Progress const & progress);
+  void OnDownloadProgress(QueuedCountry const & queuedCountry,
+                          downloader::Progress const & progress) override;
 
   void RegisterDownloadedFiles(CountryId const & countryId, MapFileType type);
 
@@ -534,9 +540,9 @@ public:
   /// Notifies observers about country status change.
   void DeleteCustomCountryVersion(platform::LocalCountryFile const & localFile);
 
-  bool IsDownloadInProgress() const;
+  DownloadingCountries const & GetCurrentDownloadingCountries() const;
 
-  CountryId GetCurrentDownloadingCountryId() const;
+  bool IsDownloadInProgress() const;
 
   /// @param[out] res Populated with oudated countries.
   void GetOutdatedCountries(std::vector<Country const *> & countries) const;
@@ -560,10 +566,9 @@ public:
 
   void SetStartDownloadingCallback(StartDownloadingCallback const & cb);
 
+  // MapFilesDownloader::Subscriber overrides:
   void OnStartDownloading() override;
   void OnFinishDownloading() override;
-  void OnCountryInQueue(CountryId const & id) override;
-  void OnStartDownloadingCountry(CountryId const & id) override;
 
 private:
   friend struct UnitClass_StorageTest_DeleteCountry;
@@ -573,9 +578,6 @@ private:
 
   // Returns true when country is in the downloader's queue.
   bool IsCountryInQueue(CountryId const & countryId) const;
-
-  // Returns true when country is first in the downloader's queue.
-  bool IsCountryFirstInQueue(CountryId const & countryId) const;
 
   // Returns true if we started the diff applying procedure for an mwm with countryId.
   bool IsDiffApplyingInProgressToCountry(CountryId const & countryId) const;
@@ -630,16 +632,7 @@ private:
 
   /// Calculates progress of downloading for expandable nodes in country tree.
   /// |descendants| All descendants of the parent node.
-  /// |downloadingMwm| Downloading leaf node country id if any. If not, downloadingMwm == kInvalidCountryId.
-  /// |downloadingMwm| Must be only leaf.
-  /// If downloadingMwm != kInvalidCountryId |downloadingMwmProgress| is a progress of downloading
-  /// the leaf node in bytes. |downloadingMwmProgress.first| == number of downloaded bytes.
-  /// |downloadingMwmProgress.second| == number of bytes in downloading files.
-  /// |mwmsInQueue| hash table made from |m_queue|.
-  downloader::Progress CalculateProgress(CountryId const & downloadingMwm,
-                                         CountriesVec const & descendants,
-                                         downloader::Progress const & downloadingMwmProgress,
-                                         CountriesSet const & mwmsInQueue) const;
+  downloader::Progress CalculateProgress(CountriesVec const & descendants) const;
 
   template <class ToDo>
   void ForEachAncestorExceptForTheRoot(std::vector<CountryTree::Node const *> const & nodes,
@@ -654,13 +647,14 @@ private:
 
   void LoadDiffScheme();
   void ApplyDiff(CountryId const & countryId, std::function<void(bool isSuccess)> const & fn);
+  void AbortDiffScheme();
 
   // Should be called once on startup, downloading process should be suspended until this method
   // was not called. Do not call this method manually.
   void OnDiffStatusReceived(diffs::NameDiffInfoMap && diffs);
 };
 
-void GetQueuedCountries(Queue const & queue, CountriesSet & resultCountries);
+CountriesSet GetQueuedCountries(QueueInterface const & queue);
 
 template <class ToDo>
 void Storage::ForEachInSubtree(CountryId const & root, ToDo && toDo) const

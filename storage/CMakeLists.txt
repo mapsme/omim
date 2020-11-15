@@ -26,11 +26,13 @@ set(
   diff_scheme/diff_scheme_loader.cpp
   diff_scheme/diff_scheme_loader.hpp
   diff_scheme/diff_types.hpp
+  downloader.hpp
   downloader_search_params.hpp
+  downloader_queue.hpp
+  downloader_queue_universal.cpp
+  downloader_queue_universal.hpp
   downloading_policy.cpp
   downloading_policy.hpp
-  http_map_files_downloader.cpp
-  http_map_files_downloader.hpp
   map_files_downloader.cpp
   map_files_downloader.hpp
   map_files_downloader_with_ping.cpp
@@ -48,6 +50,24 @@ set(
   storage_helpers.cpp
   storage_helpers.hpp
 )
+
+if (${PLATFORM_IPHONE})
+  append(
+    SRC
+    background_downloading/downloader_adapter_ios.h
+    background_downloading/downloader_adapter_ios.mm
+    background_downloading/downloader_subscriber_adapter_ios.h
+    background_downloading/downloader_subscriber_adapter_ios.mm
+    background_downloading/downloader_queue_ios.hpp
+    background_downloading/downloader_queue_ios.cpp
+  )
+else()
+  append(
+    SRC
+    http_map_files_downloader.cpp
+    http_map_files_downloader.hpp
+  )
+endif()
 
 omim_add_library(${PROJECT_NAME} ${SRC})
 

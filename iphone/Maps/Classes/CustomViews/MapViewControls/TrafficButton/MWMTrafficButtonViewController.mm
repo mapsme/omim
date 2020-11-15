@@ -85,6 +85,7 @@ NSArray<UIImage *> *imagesWithName(NSString *name) {
     [self.view.superview animateConstraintsWithAnimations:^{
       self.topOffset.constant = availableArea.origin.y + kTopOffset;
       self.leftOffset.constant = leftOffset;
+      self.view.alpha = self.hidden ? 0 : 1;
     }];
   });
 }
@@ -149,6 +150,27 @@ NSArray<UIImage *> *imagesWithName(NSString *name) {
   }
 }
 
+- (void)handleIsolinesState:(MWMMapOverlayIsolinesState)state {
+  switch (state) {
+    case MWMMapOverlayIsolinesStateDisabled:
+      break;
+    case MWMMapOverlayIsolinesStateEnabled:
+      if (![MWMMapOverlayManager isolinesVisible]) {
+        [[MWMToast toastWithText:L(@"isolines_toast_zooms_1_10")] show];
+        [Statistics logEvent:kStatMapToastShow withParameters:@{kStatType: kStatIsolines}];
+      }
+      break;
+    case MWMMapOverlayIsolinesStateExpiredData:
+      [MWMAlertViewController.activeAlertController presentInfoAlert:L(@"isolines_activation_error_dialog")];
+      [MWMMapOverlayManager setIsoLinesEnabled:NO];
+      break;
+    case MWMMapOverlayIsolinesStateNoData:
+      [MWMAlertViewController.activeAlertController presentInfoAlert:L(@"isolines_location_error_dialog")];
+      [MWMMapOverlayManager setIsoLinesEnabled:NO];
+      break;
+  }
+}
+
 - (void)applyTheme {
   MWMButton *btn = static_cast<MWMButton *>(self.view);
   UIImageView *iv = btn.imageView;
@@ -163,15 +185,7 @@ NSArray<UIImage *> *imagesWithName(NSString *name) {
       [[MWMToast toastWithText:L(@"subway_data_unavailable")] show];
   } else if ([MWMMapOverlayManager isoLinesEnabled]) {
     btn.imageName = @"btn_isoMap_on";
-    if ([MWMMapOverlayManager isolinesState] == MWMMapOverlayIsolinesStateEnabled &&
-        ![MWMMapOverlayManager isolinesVisible]) {
-      [[MWMToast toastWithText:L(@"isolines_toast_zooms_1_10")] show];
-      [Statistics logEvent:kStatMapToastShow withParameters:@{kStatType : kStatIsolines}];
-    } else if ([MWMMapOverlayManager isolinesState] == MWMMapOverlayIsolinesStateNoData) {
-      [[MWMToast toastWithText:L(@"isolines_location_error_dialog")] show];
-    }
-    else if ([MWMMapOverlayManager isolinesState] == MWMMapOverlayIsolinesStateExpiredData)
-      [MWMAlertViewController.activeAlertController presentInfoAlert:L(@"isolines_activation_error_dialog") text:@""];
+    [self handleIsolinesState:[MWMMapOverlayManager isolinesState]];
   } else if ([MWMMapOverlayManager guidesEnabled]) {
     btn.imageName = @"btn_layers_off";
     [self handleGuidesState:[MWMMapOverlayManager guidesState]];

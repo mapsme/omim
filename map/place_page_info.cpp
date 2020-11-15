@@ -39,6 +39,11 @@ char const * const Info::kMountainSymbol = "▲";
 char const * const Info::kPricingSymbol = "$";
 char const * const kWheelchairSymbol = u8"\u267F";
 
+bool Info::IsBookmark() const
+{
+  return BookmarkManager::IsBookmarkCategory(m_markGroupId) && BookmarkManager::IsBookmark(m_bookmarkId);
+}
+
 bool Info::ShouldShowAddPlace() const
 {
   auto const isPointOrBuilding = IsPointType() || IsBuilding();
@@ -186,6 +191,17 @@ std::string Info::GetBookmarkName()
   return bookmarkName;
 }
 
+void Info::SetTitlesForBookmark()
+{
+  m_uiTitle = GetBookmarkName();
+
+  std::vector<std::string> subtitle;
+  subtitle.push_back(m_bookmarkCategoryName);
+  if (!m_bookmarkData.m_featureTypes.empty())
+    subtitle.push_back(GetLocalizedFeatureType(m_bookmarkData.m_featureTypes));
+  m_uiSubtitle = strings::JoinStrings(subtitle, kSubtitleSeparator);
+}
+
 void Info::SetCustomName(std::string const & name)
 {
   if (IsBookmark())
@@ -219,9 +235,23 @@ void Info::SetCustomNameWithCoordinates(m2::PointD const & mercator, std::string
   m_customName = name;
 }
 
-void Info::SetBookmarkId(kml::MarkId markId)
+void Info::SetFromBookmarkProperties(kml::Properties const & p)
 {
-  m_markId = markId;
+  if (auto const hours = p.find("hours"); hours != p.end() && !hours->second.empty())
+    m_metadata.Set(feature::Metadata::EType::FMD_OPEN_HOURS, hours->second);
+  if (auto const phone = p.find("phone"); phone != p.end() && !phone->second.empty())
+    m_metadata.Set(feature::Metadata::EType::FMD_PHONE_NUMBER, phone->second);
+  if (auto const email = p.find("email"); email != p.end() && !email->second.empty())
+    m_metadata.Set(feature::Metadata::EType::FMD_EMAIL, email->second);
+  if (auto const url = p.find("url"); url != p.end() && !url->second.empty())
+    m_metadata.Set(feature::Metadata::EType::FMD_URL, url->second);
+  if (auto const isTopChoice = p.find("is_top_choice"); isTopChoice != p.end())
+    m_isTopChoice = isTopChoice->second == "1";
+}
+
+void Info::SetBookmarkId(kml::MarkId bookmarkId)
+{
+  m_bookmarkId = bookmarkId;
   m_uiSubtitle = FormatSubtitle(IsFeature() /* withType */);
 }
 
@@ -271,17 +301,6 @@ std::string Info::FormatStars() const
   for (int i = 0; i < GetStars(); ++i)
     stars.append(kStarSymbol);
   return stars;
-}
-
-void Info::SetTitlesForBookmark()
-{
-  m_uiTitle = GetBookmarkName();
-
-  std::vector<std::string> subtitle;
-  subtitle.push_back(m_bookmarkCategoryName);
-  if (!m_bookmarkData.m_featureTypes.empty())
-    subtitle.push_back(GetLocalizedFeatureType(m_bookmarkData.m_featureTypes));
-  m_uiSubtitle = strings::JoinStrings(subtitle, kSubtitleSeparator);
 }
 
 std::string Info::GetFormattedCoordinate(bool isDMS) const

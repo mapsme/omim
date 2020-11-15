@@ -318,7 +318,7 @@ jobject ToJavaResult(Result & result, search::ProductInfo const & productInfo, b
       distanceInMeters = ms::DistanceOnEarth(lat, lon,
                                              mercator::YToLat(center.y),
                                              mercator::XToLon(center.x));
-      measurement_utils::FormatDistance(distanceInMeters, distance);
+      distance = measurement_utils::FormatDistance(distanceInMeters);
     }
   }
 
@@ -389,12 +389,14 @@ void OnResults(Results const & results, vector<search::ProductInfo> const & prod
     jni::TScopedLocalObjectArrayRef jResults(
         env, BuildSearchResults(results, productInfo, hasPosition, lat, lon));
     env->CallVoidMethod(g_javaListener, g_updateResultsId, jResults.get(),
-                        static_cast<jlong>(timestamp), results.GetType() == Results::Type::Hotels);
+                        static_cast<jlong>(timestamp),
+                        static_cast<jboolean>(results.GetType() == Results::Type::Hotels));
   }
 
   if (results.IsEndMarker())
   {
-    env->CallVoidMethod(g_javaListener, g_endResultsId, static_cast<jlong>(timestamp));
+    env->CallVoidMethod(g_javaListener, g_endResultsId, static_cast<jlong>(timestamp),
+                        static_cast<jboolean>(results.GetType() == Results::Type::Hotels));
     if (isMapAndTable && results.IsEndedNormal())
       g_framework->NativeFramework()->GetSearchAPI().PokeSearchInViewport();
   }
@@ -515,7 +517,7 @@ public:
     m_roomsId = env->GetFieldID(m_bookingFilterParamsClass, "mRooms",
                                 "[Lcom/mapswithme/maps/search/BookingFilterParams$Room;");
     m_roomAdultsCountId = env->GetFieldID(m_roomClass, "mAdultsCount", "I");
-    m_roomAgeOfChildrenId = env->GetFieldID(m_roomClass, "mAgeOfChildren", "[I");
+    m_roomAgeOfChildrenId = env->GetMethodID(m_roomClass, "getAgeOfChildren", "()[I");
 
     m_initialized = true;
   }
@@ -550,7 +552,7 @@ public:
       auto & room = orderingParams.m_rooms[i];
       room.SetAdultsCount(static_cast<uint8_t>(env->GetIntField(jroom, m_roomAdultsCountId)));
 
-      auto const childrenObject = env->GetObjectField(jroom, m_roomAgeOfChildrenId);
+      auto const childrenObject = env->CallObjectMethod(jroom, m_roomAgeOfChildrenId);
       if (childrenObject != nullptr)
       {
         auto const children = static_cast<jintArray>(childrenObject);
@@ -626,7 +628,7 @@ private:
   jfieldID m_checkoutMillisecId = nullptr;
   jfieldID m_roomsId = nullptr;
   jfieldID m_roomAdultsCountId = nullptr;
-  jfieldID m_roomAgeOfChildrenId = nullptr;
+  jmethodID m_roomAgeOfChildrenId = nullptr;
 
   bool m_initialized = false;
 } g_bookingBuilder;
@@ -660,7 +662,7 @@ extern "C"
     g_javaListener = env->NewGlobalRef(thiz);
     g_updateResultsId = jni::GetMethodID(env, g_javaListener, "onResultsUpdate",
                                          "([Lcom/mapswithme/maps/search/SearchResult;JZ)V");
-    g_endResultsId = jni::GetMethodID(env, g_javaListener, "onResultsEnd", "(J)V");
+    g_endResultsId = jni::GetMethodID(env, g_javaListener, "onResultsEnd", "(JZ)V");
     g_resultClass = jni::GetGlobalClassRef(env, "com/mapswithme/maps/search/SearchResult");
     g_resultConstructor = jni::GetConstructorID(
         env, g_resultClass,

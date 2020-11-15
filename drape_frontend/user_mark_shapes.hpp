@@ -16,6 +16,7 @@ namespace df
 {
 struct UserMarkRenderParams
 {
+  kml::MarkId m_markId = kml::kInvalidMarkId;
   int m_minZoom = 1;
   int m_minTitleZoom = 1;
   m2::PointD m_pivot = m2::PointD(0.0, 0.0);
@@ -43,6 +44,8 @@ struct UserMarkRenderParams
   FeatureID m_featureId;
   bool m_isMarkAboveText = false;
   float m_symbolOpacity = 1.0f;
+  bool m_isSymbolSelectable = true;
+  bool m_isNonDisplaceable = false;
 };
 
 struct LineLayer

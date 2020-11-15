@@ -11,7 +11,6 @@ omim_add_library(${PROJECT_NAME} MODULE ${SRC})
 
 omim_link_libraries(
   ${PROJECT_NAME}
-  ${PYTHON_LIBRARIES}
   ${Boost_LIBRARIES}
   kml
   indexer
@@ -33,7 +32,7 @@ omim_link_libraries(
 link_qt5_core(${PROJECT_NAME})
 
 if (PLATFORM_MAC)
-  omim_link_libraries(${PROJECT_NAME} ${LIBZ})
+  omim_link_libraries(${PROJECT_NAME} "-Wl,-undefined,dynamic_lookup")
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")

@@ -47,7 +47,7 @@ private:
   uint32_t m_endSegId = 0;     // The last segment index of SegmentRange.
   bool m_forward = true;       // Segment direction in |m_featureId|.
   // Note. According to current implementation SegmentRange is filled based on instances of
-  // Edge class in IDirectionsEngine::GetSegmentRangeAndAdjacentEdges() method. In Edge class
+  // Edge class in DirectionsEngine::GetSegmentRangeAndAdjacentEdges() method. In Edge class
   // to identify fake edges (part of real and completely fake) is used coordinates of beginning
   // and ending of the edge. To keep SegmentRange instances unique for unique edges
   // in case of fake edges it's necessary to have |m_start| and |m_end| fields below.
@@ -112,12 +112,11 @@ std::string DebugPrint(CarDirection const l);
 enum class PedestrianDirection
 {
   None = 0,
-  Upstairs,
-  Downstairs,
-  LiftGate,
-  Gate,
+  GoStraight,
+  TurnRight,
+  TurnLeft,
   ReachedYourDestination,
-  Count  /**< This value is used for internals only. */
+  Count /**< This value is used for internals only. */
 };
 
 std::string DebugPrint(PedestrianDirection const l);
@@ -188,8 +187,19 @@ struct TurnItem
            m_pedestrianTurn == rhs.m_pedestrianTurn;
   }
 
+  bool IsTurnReachedYourDestination() const
+  {
+    return m_turn == CarDirection::ReachedYourDestination ||
+           m_pedestrianTurn == PedestrianDirection::ReachedYourDestination;
+  }
+
+  bool IsTurnNone() const
+  {
+    return m_turn == CarDirection::None && m_pedestrianTurn == PedestrianDirection::None;
+  }
+
   uint32_t m_index;                    /*!< Index of point on route polyline (number of segment + 1). */
-  CarDirection m_turn;                 /*!< The turn instruction of the TurnItem */
+  CarDirection m_turn = CarDirection::None; /*!< The turn instruction of the TurnItem */
   std::vector<SingleLaneInfo> m_lanes; /*!< Lane information on the edge before the turn. */
   uint32_t m_exitNum;                  /*!< Number of exit on roundabout. */
   std::string m_sourceName;            /*!< Name of the street which the ingoing edge belongs to */
@@ -203,7 +213,7 @@ struct TurnItem
    * \brief m_pedestrianTurn is type of corresponding direction for a pedestrian, or None
    * if there is no pedestrian specific direction
    */
-  PedestrianDirection m_pedestrianTurn;
+  PedestrianDirection m_pedestrianTurn = PedestrianDirection::None;
 };
 
 std::string DebugPrint(TurnItem const & turnItem);

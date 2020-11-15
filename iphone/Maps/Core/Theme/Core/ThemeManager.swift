@@ -9,6 +9,9 @@ final class ThemeManager: NSObject {
 
   private override init() {
     super.init()
+    if #available(iOS 13.0, *) {
+      MapsAppDelegate.theApp().window.overrideUserInterfaceStyle = .light
+    }
   }
 
   @objc static func setDarkModeEnabled(_ val: Bool) {
@@ -30,7 +33,7 @@ final class ThemeManager: NSObject {
           return isDarkModeEnabled ? .vehicleNight : .vehicleDay
         } else {
           guard isVehicleRouting else { return .day }
-          switch FrameworkHelper.daytime(at: MWMLocationManager.lastLocation()) {
+          switch FrameworkHelper.daytime(at: LocationManager.lastLocation()) {
           case .day: return .vehicleDay
           case .night: return .vehicleNight
           @unknown default:

@@ -86,7 +86,7 @@ UNIT_TEST(SmallMwms_Update_Test)
 
   Platform & platform = GetPlatform();
 
-  auto onProgressFn = [&](CountryId const & countryId, LocalAndRemoteSize const & mapSize) {};
+  auto onProgressFn = [&](CountryId const &, downloader::Progress const &) {};
 
   // Download countries.txt for version 1
   TEST(DownloadFile(GetCountriesTxtWebUrl(kMwmVersion1), GetCountriesTxtFilePath(), kCountriesTxtFileSize1), ());
@@ -110,7 +110,7 @@ UNIT_TEST(SmallMwms_Update_Test)
     storage.DownloadNode(kGroupCountryId);
     testing::RunEventLoop();
 
-    // Check group node status is EOnDisk
+    // Check group node status is OnDisk
     NodeAttrs attrs;
     storage.GetNodeAttrs(kGroupCountryId, attrs);
     TEST_EQUAL(NodeStatus::OnDisk, attrs.m_status, ());
@@ -142,12 +142,12 @@ UNIT_TEST(SmallMwms_Update_Test)
     CountriesVec children;
     storage.GetChildren(kGroupCountryId, children);
 
-    // Check group node status is EOnDiskOutOfDate
+    // Check group node status is OnDiskOutOfDate
     NodeAttrs attrs;
     storage.GetNodeAttrs(kGroupCountryId, attrs);
     TEST_EQUAL(NodeStatus::OnDiskOutOfDate, attrs.m_status, ());
 
-    // Check children node status is EOnDiskOutOfDate
+    // Check children node status is OnDiskOutOfDate
     for (auto const & child : children)
     {
       NodeAttrs attrs;
@@ -166,11 +166,11 @@ UNIT_TEST(SmallMwms_Update_Test)
     storage.DownloadNode(kGroupCountryId);
     testing::RunEventLoop();
 
-    // Check group node status is EOnDisk
+    // Check group node status is OnDisk
     storage.GetNodeAttrs(kGroupCountryId, attrs);
     TEST_EQUAL(NodeStatus::OnDisk, attrs.m_status, ());
 
-    // Check children node status is EOnDisk
+    // Check children node status is OnDisk
     for (auto const & child : children)
     {
       NodeAttrs attrs;

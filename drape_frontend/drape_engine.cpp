@@ -922,6 +922,7 @@ void DrapeEngine::EnableDebugRectRendering(bool enabled)
 drape_ptr<UserMarkRenderParams> DrapeEngine::GenerateMarkRenderInfo(UserPointMark const * mark)
 {
   auto renderInfo = make_unique_dp<UserMarkRenderParams>();
+  renderInfo->m_markId = mark->GetId();
   renderInfo->m_anchor = mark->GetAnchor();
   renderInfo->m_depthTestEnabled = mark->GetDepthTestEnabled();
   if (mark->GetDepth() != UserPointMark::kInvalidDepth)
@@ -951,6 +952,8 @@ drape_ptr<UserMarkRenderParams> DrapeEngine::GenerateMarkRenderInfo(UserPointMar
   renderInfo->m_hasCreationAnimation = mark->HasCreationAnimation();
   renderInfo->m_isMarkAboveText = mark->IsMarkAboveText();
   renderInfo->m_symbolOpacity = mark->GetSymbolOpacity();
+  renderInfo->m_isSymbolSelectable = mark->IsSymbolSelectable();
+  renderInfo->m_isNonDisplaceable = mark->IsNonDisplaceable();
   return renderInfo;
 }
 

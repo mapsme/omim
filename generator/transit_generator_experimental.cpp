@@ -161,8 +161,9 @@ void DeserializeFromJson(OsmIdToFeatureIdsMap const & mapping, std::string const
   data.DeserializeFromJson(transitJsonsPath, mapping);
 }
 
-void BuildTransit(std::string const & mwmDir, CountryId const & countryId,
-                  std::string const & osmIdToFeatureIdsPath, std::string const & transitDir)
+EdgeIdToFeatureId BuildTransit(std::string const & mwmDir, CountryId const & countryId,
+                               std::string const & osmIdToFeatureIdsPath,
+                               std::string const & transitDir)
 {
   LOG(LINFO, ("Building experimental transit section for", countryId, "mwmDir:", mwmDir));
   std::string const mwmPath = GetMwmPath(mwmDir, countryId);
@@ -170,12 +171,22 @@ void BuildTransit(std::string const & mwmDir, CountryId const & countryId,
   OsmIdToFeatureIdsMap mapping;
   FillOsmIdToFeatureIdsMap(osmIdToFeatureIdsPath, mapping);
 
+  std::string const transitPath = base::JoinPath(transitDir, countryId);
+  if (!Platform::IsFileExistsByFullPath(transitPath))
+  {
+    LOG(LWARNING, ("Path to experimental transit files doesn't exist:", transitPath));
+    return {};
+  }
+
   TransitData data;
-  DeserializeFromJson(mapping, base::JoinPath(transitDir, countryId), data);
+  DeserializeFromJson(mapping, transitPath, data);
 
   // Transit section can be empty.
   if (data.IsEmpty())
-    return;
+  {
+    LOG(LWARNING, ("Experimental transit data deserialized from jsons is empty:", transitPath));
+    return {};
+  }
 
   CalculateBestPedestrianSegments(mwmPath, countryId, data);
 
@@ -188,6 +199,8 @@ void BuildTransit(std::string const & mwmDir, CountryId const & countryId,
   FilesContainerW container(mwmPath, FileWriter::OP_WRITE_EXISTING);
   auto writer = container.GetWriter(TRANSIT_FILE_TAG);
   data.Serialize(*writer);
+  CHECK_EQUAL(data.GetEdgeIdToFeatureId().size(), data.GetEdges().size(), ());
+  return data.GetEdgeIdToFeatureId();
 }
 }  // namespace experimental
 }  // namespace transit

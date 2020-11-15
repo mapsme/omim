@@ -48,7 +48,7 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
 {
   static final int REQ_CODE_CATALOG = 101;
-  private static final int REQ_CODE_DELETE_CATEGORY = 102;
+  static final int REQ_CODE_DELETE_CATEGORY = 102;
 
   private static final int MAX_CATEGORY_NAME_LENGTH = 60;
 
@@ -101,7 +101,7 @@ public abstract class BaseBookmarkCategoriesFragment extends BaseMwmRecyclerFrag
 
     rw.setNestedScrollingEnabled(false);
     RecyclerView.ItemDecoration decor = ItemDecoratorFactory
-        .createVerticalDefaultDecorator(getContext());
+        .createDecoratorWithPadding(getContext());
     rw.addItemDecoration(decor);
     mCatalogListener = new CatalogListenerDecorator(createCatalogListener(), this);
     mCategoriesAdapterObserver = new CategoriesAdapterObserver(this);

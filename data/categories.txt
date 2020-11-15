@@ -44,7 +44,7 @@ de:Essmöglichkeiten|Essen
 hu:Hol lehet enni valamit|Élelmiszer
 id:Tempat makan|Makanan
 it:Dove mangiare|Cibo
-ja:食事場所|飲食
+ja:食事場所|飲食|飲食店
 ko:어디서먹을까|음식
 nb:Spisesteder|Mat
 pl:Gdzie zjeść|Jedzenie
@@ -867,7 +867,7 @@ de:Gemischtwarenladen|Verbauchermarkt|Lebensmittelhändler|Lebensmittelhandlung|
 hu:Csemegebolt|ábécé
 id:Mini market
 it:Minimarket
-ja:コンビニエンスストア|コンビニ|スーパー|スーパーマーケット
+ja:コンビニエンスストア|コンビニ|スーパー|スーパーマーケット|コンビニエンス
 ko:편의점
 nb:Nærbutikk|nærbutikk
 pl:Sklep spożywczy
@@ -5014,6 +5014,41 @@ el:Λίμνη|νερό
 sk:Jazero|vodná nádrž|voda
 sw:Ziwa
 fa:دریاچه
+
+# Skipped if empty name
+natural-strait
+en:Strait
+ru:Пролив
+ar:مضيق
+cs:Průliv
+da:Stræde
+nl:Zeestraat
+fi:Salmi
+fr:Détroit
+de:Meerenge
+hu:Szoros
+id:Selat
+it:Stretto
+ja:海峡
+ko:해협
+nb:Sund
+pl:Cieśnina
+pt:Estreito
+pt-BR:Estreito
+ro:Strâmtoare
+es:Estrecho
+es-MX:Estrecho
+sv:Sund
+th:ช่องแคบ
+tr:Boğaz
+uk:Протока
+vi:Eo biển
+el:Πορθμός
+sk:Prieliv
+sw:Mlango Bahari
+zh-Hans:海峡
+zh-Hant:海峽
+fa:تنگه
 
 # Skipped if empty name
 landuse-forest

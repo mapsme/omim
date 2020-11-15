@@ -24,20 +24,24 @@
   return [self.manager getCategoryName:self.categoryId];
 }
 
-- (void)setTitle:(NSString *)title {
-  [self.manager setCategory:self.categoryId name:title];
-}
-
 - (NSString *)author {
   return [self.manager getCategoryAuthorName:self.categoryId];
+}
+
+- (NSString *)annotation {
+  return [self.manager getCategoryAnnotation:self.categoryId];
 }
 
 - (NSString *)detailedAnnotation {
   return [self.manager getCategoryDescription:self.categoryId];
 }
 
-- (void)setDetailedAnnotation:(NSString *)detailedAnnotation {
-  [self.manager setCategory:self.categoryId description:detailedAnnotation];
+- (NSString *)serverId {
+  return [self.manager getServerId:self.categoryId];
+}
+
+- (NSString *)imageUrl {
+  return [self.manager getCategoryImageUrl:self.categoryId];
 }
 
 - (NSInteger)bookmarksCount {
@@ -52,16 +56,48 @@
   return [self.manager isCategoryVisible:self.categoryId];
 }
 
-- (void)setVisible:(BOOL)visible {
-  [self.manager setCategory:self.categoryId isVisible:visible];
-}
-
 - (BOOL)isEmpty {
   return ![self.manager isCategoryNotEmpty:self.categoryId];
 }
 
+- (BOOL)isEditable {
+  return [self.manager isCategoryEditable:self.categoryId];
+}
+
+- (BOOL)isGuide {
+  return [self.manager isGuide:self.categoryId];
+}
+
+- (BOOL)isLonelyPlanet {
+  return [[self.manager getCategoryAuthorId:self.categoryId] isEqualToString: @"28035594-6457-466d-8f6f-8499607df570"];
+}
+
+- (BOOL)hasDescription {
+  return [self.manager hasExtraInfo:self.categoryId];
+}
+
 - (MWMBookmarkGroupAccessStatus)accessStatus {
   return [self.manager getCategoryAccessStatus:self.categoryId];
+}
+
+- (NSArray<MWMBookmark *> *)bookmarks {
+  return [self.manager bookmarksForGroup:self.categoryId];
+}
+
+- (NSArray<MWMTrack *> *)tracks {
+  return [self.manager tracksForGroup:self.categoryId];
+}
+
+- (NSArray<MWMBookmarkGroup *> *)collections {
+  return [self.manager collectionsForGroup:self.categoryId];
+}
+
+- (NSArray<MWMBookmarkGroup *> *)categories {
+  return [self.manager categoriesForGroup:self.categoryId];
+}
+
+- (MWMBookmarkGroupType)type {
+  return [self.manager getCategoryGroupType:self.categoryId];
 }
 
 @end

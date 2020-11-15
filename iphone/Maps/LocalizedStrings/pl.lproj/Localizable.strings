@@ -1386,7 +1386,7 @@
 /* Place Page title for long tap */
 "core_placepage_unknown_place" = "Nieznane miejsce";
 
-"editor_other_info" = "Wyślij uwagę do moderatora OSM";
+"editor_other_info" = "Poinformuj redaktorów OSM";
 
 "editor_detailed_description_hint" = "Szczegółowy komentarz";
 
@@ -3115,10 +3115,9 @@
 
 "new_onboarding_additional_steps_later_button" = "Nie teraz";
 
-"all_pass_subscription_header" = "SUBSKRYPCJA KATALOGU";
+"all_pass_subscription_header" = "Subskrypcja";
 
-/* do not translate */
-"all_pass_subscription_subheader" = "City + Outdoor Pass";
+"all_pass_subscription_subheader" = "Katalog przewodników";
 
 /* \n - for a break between lines. Max. 15 characters per 1 line. */
 "all_pass_subscription_message_title" = "30000+\nprzewodników\ni szlaków";
@@ -3338,7 +3337,7 @@
 
 "guests_picker_children_title" = "Dzieci";
 
-"guests_picker_children_subtitle" = "1-16 lat";
+"guests_picker_children_subtitle" = "1-17 lat";
 
 "guests_picker_infants_title" = "Niemowlęta";
 
@@ -3364,15 +3363,55 @@
 
 "whatsnew_trial_cta" = "Spróbuj";
 
-"subscription_terms_guides_outdoor" = "Płatność zostanie pobrana z Twojego konta iTunes po potwierdzeniu zakupu. Subskrypcja zostanie automatycznie wznowiona, chyba że automatyczne wznowienie zostanie wyłączone co najmniej 24 godziny przed końcem okresu bieżącego. Środki zostaną pobrane z Twojego konta zgodnie z Twoim planem wznowienia w ciągu 24 godzin przed końcem bieżącego okresu. Możesz zarządzać automatycznym wznowieniem lub wyłączyć go w ustawieniach konta Apple ID w dowolnym momencie po zakupie. Możesz korzystać z przewodników, pobranych w ramach subskrypcji, tylko w okresie ich obowiązywania. Po upływie 30 dni od zakończenia subskrypcji przewodniki ze wszystkimi zakładkami zostaną automatycznie usunięte.\n* Subskrypcja z darmowym okresem próbnym jest automatycznie konwertowana na subskrypcję płatną. Możesz anulować lub zarządzać automatycznym przedłużeniem darmowego okresu próbnego w ustawieniach konta po dokonaniu zakupu. Anulowanie zacznie obowiązywać 24 godziny po ostatnim dniu bieżącego okresu subskrypcji, a zostaniesz przeniesiony do subskrypcji darmowej. Uwaga: Każda niewykorzystana część darmowego okresu próbnego zostanie anulowana przy zakupie płatnej subskrypcji w tym okresie.";
+"subscription_terms_guides_outdoor" = "Płatność zostanie pobrana z Twojego konta iTunes po potwierdzeniu zakupu. Subskrypcja zostanie automatycznie wznowiona, chyba że automatyczne wznowienie zostanie wyłączone co najmniej 24 godziny przed końcem okresu bieżącego. Środki zostaną pobrane z Twojego konta zgodnie z Twoim planem wznowienia w ciągu 24 godzin przed końcem bieżącego okresu. Możesz zarządzać automatycznym wznowieniem lub wyłączyć go w ustawieniach konta Apple ID w dowolnym momencie po zakupie. Możesz korzystać z przewodników, pobranych w ramach subskrypcji, tylko w okresie ich obowiązywania. Po upływie 7 dni od zakończenia subskrypcji przewodniki ze wszystkimi zakładkami zostaną automatycznie usunięte.\n* Subskrypcja z darmowym okresem próbnym jest automatycznie konwertowana na subskrypcję płatną. Możesz anulować lub zarządzać automatycznym przedłużeniem darmowego okresu próbnego w ustawieniach konta po dokonaniu zakupu. Anulowanie zacznie obowiązywać 24 godziny po ostatnim dniu bieżącego okresu subskrypcji, a zostaniesz przeniesiony do subskrypcji darmowej. Uwaga: Każda niewykorzystana część darmowego okresu próbnego zostanie anulowana przy zakupie płatnej subskrypcji w tym okresie.";
 
-"subscription_terms_android_outdoor" = "Płatność zostanie pobrana z Twojego konta Google Play po potwierdzeniu zakupu. Subskrypcja zostanie automatycznie wznowiona, chyba że automatyczne wznowienie zostanie wyłączone co najmniej 24 godziny przed końcem okresu bieżącego. Środki zostaną pobrane z Twojego konta zgodnie z Twoim planem wznowienia w ciągu 24 godzin przed końcem bieżącego okresu. Możesz zarządzać automatycznym odnowieniem lub wyłączyć go w ustawieniach konta po zakupie. Możesz korzystać z przewodników, pobranych w ramach subskrypcji, tylko w okresie ich obowiązywania. Po upływie 30 dni od zakończenia subskrypcji przewodniki zostaną automatycznie usunięte.\n* Subskrypcja z darmowym okresem próbnym jest automatycznie konwertowana na subskrypcję płatną. Możesz anulować lub zarządzać automatycznym przedłużeniem darmowego okresu próbnego w ustawieniach konta po dokonaniu zakupu. Anulowanie zacznie obowiązywać 24 godziny po ostatnim dniu bieżącego okresu subskrypcji, a zostaniesz przeniesiony do subskrypcji darmowej. Uwaga: Każda niewykorzystana część darmowego okresu próbnego zostanie anulowana przy zakupie płatnej subskrypcji w tym okresie.";
+"subscription_terms_android_outdoor" = "Płatność zostanie pobrana z Twojego konta Google Play po potwierdzeniu zakupu. Subskrypcja zostanie automatycznie wznowiona, chyba że automatyczne wznowienie zostanie wyłączone co najmniej 24 godziny przed końcem okresu bieżącego. Środki zostaną pobrane z Twojego konta zgodnie z Twoim planem wznowienia w ciągu 24 godzin przed końcem bieżącego okresu. Możesz zarządzać automatycznym odnowieniem lub wyłączyć go w ustawieniach konta po zakupie. Możesz korzystać z przewodników, pobranych w ramach subskrypcji, tylko w okresie ich obowiązywania. Po upływie 7 dni od zakończenia subskrypcji przewodniki zostaną automatycznie usunięte.\n* Subskrypcja z darmowym okresem próbnym jest automatycznie konwertowana na subskrypcję płatną. Możesz anulować lub zarządzać automatycznym przedłużeniem darmowego okresu próbnego w ustawieniach konta po dokonaniu zakupu. Anulowanie zacznie obowiązywać 24 godziny po ostatnim dniu bieżącego okresu subskrypcji, a zostaniesz przeniesiony do subskrypcji darmowej. Uwaga: Każda niewykorzystana część darmowego okresu próbnego zostanie anulowana przy zakupie płatnej subskrypcji w tym okresie.";
 
 "sberbank_map_downloader_title" = "Откройте Сберкарту Тревел Mastercard и копите мили";
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
 "yango_taxi_title" = "Yango";
+
+"citymobil_taxi_title" = "Citymobil";
+
+"subscription_header" = "Subskrypcja\n<b>Katalogu przewodników</b>";
+
+/* Max. 20 characters per 1 line. */
+"all_pass_subscription_message_title_4" = "Przewodniki\nod Lonely Planet®";
+
+/* <b> & </b> tag to make a part of the line bold */
+"all_pass_subscription_message_subtitle_4" = "Jeszcze<b>więcej wrażeń</b> z tysiącami ciekawych miejsc na <b>całym świecie</b>";
+
+"content_by_component" = "Treść od: %s";
+
+"whatsnew_lp_title" = "Jeszcze więcej wrażeń";
+
+"whatsnew_lp_message" = "Zapoznaj się z przewodnikami Lonely Planet! Atrakcje, trasy tematyczne i wyjątkowe miejsca w 7000+ miastach.";
+
+"collections_title" = "Zbiory";
+
+"key_information_title" = "Kluczowe informacje";
+
+"mustsee_title" = "Musisz to zobaczyć";
+
+"see_lp_category" = "Atrakcje";
+
+"play_lp_category" = "Rozrywka";
+
+"shop_lp_category" = "Zakupy";
+
+"transport_lp_category" = "Transport";
+
+"sleep_lp_category" = "Noclegi";
+
+"general_lp_category" = "Najpopularniejsze";
+
+"drink_lp_category" = "Knajpy";
+
+"eat_lp_category" = "Jedzenie";
+
+"taxi_category_order" = "Order";
 
 
 /**********  Partners  **********/
@@ -4034,8 +4073,6 @@
 
 "type.highway.primary_link.tunnel" = "Ulica";
 
-"type.highway.proposed" = "Droga projektowana";
-
 "type.highway.raceway" = "Tor wyścigowy";
 
 "type.highway.residential" = "Ulica";
@@ -4438,6 +4475,8 @@
 
 "type.natural.spring" = "Źródło";
 
+"type.natural.strait" = "Cieśnina";
+
 "type.natural.tree" = "Drzewo";
 
 "type.natural.tree_row" = "Rząd drzew";
@@ -4655,8 +4694,6 @@
 "type.railway.preserved.bridge" = "railway-preserved-bridge";
 
 "type.railway.preserved.tunnel" = "railway-preserved-tunnel";
-
-"type.railway.proposed" = "railway-proposed";
 
 "type.railway.rail" = "Kolej";
 

@@ -984,10 +984,13 @@ Java_com_mapswithme_maps_Framework_nativeClearApiPoints(JNIEnv * env, jclass cla
   frm()->GetBookmarkManager().GetEditSession().ClearGroup(UserMark::Type::API);
 }
 
-JNIEXPORT jint JNICALL
+JNIEXPORT jobject JNICALL
 Java_com_mapswithme_maps_Framework_nativeParseAndSetApiUrl(JNIEnv * env, jclass clazz, jstring url)
 {
-  return static_cast<jint>(frm()->ParseAndSetApiURL(jni::ToNativeString(env, url)));
+  static jmethodID const resultConstructor = jni::GetConstructorID(env, g_parsingResultClazz, "(IZ)V");
+  auto const result = frm()->ParseAndSetApiURL(jni::ToNativeString(env, url));
+  return env->NewObject(g_parsingResultClazz, resultConstructor, static_cast<jint>(result.m_type),
+                        static_cast<jboolean>(result.m_isSuccess));
 }
 
 JNIEXPORT jobject JNICALL
@@ -1153,7 +1156,7 @@ Java_com_mapswithme_maps_Framework_nativeFormatAltitude(JNIEnv * env, jclass, jd
 JNIEXPORT jobject JNICALL
 Java_com_mapswithme_maps_Framework_nativeFormatSpeed(JNIEnv * env, jclass, jdouble speed)
 {
-  return jni::ToJavaString(env, measurement_utils::FormatSpeedWithDeviceUnits(speed));
+  return jni::ToJavaString(env, measurement_utils::FormatSpeed(speed));
 }
 
 JNIEXPORT jobject JNICALL
@@ -1372,14 +1375,17 @@ Java_com_mapswithme_maps_Framework_nativeGetRouteFollowingInfo(JNIEnv * env, jcl
     return nullptr;
 
   static jclass const klass = jni::GetGlobalClassRef(env, "com/mapswithme/maps/routing/RoutingInfo");
-  // Java signature : RoutingInfo(String distToTarget, String units, String distTurn, String turnSuffix, String currentStreet, String nextStreet,
-  //                              double completionPercent, int vehicleTurnOrdinal, int vehicleNextTurnOrdinal, int pedestrianTurnOrdinal,
-  //                              double pedestrianDirectionLat, double pedestrianDirectionLon, int exitNum, int totalTime, SingleLaneInfo[] lanes)
-  static jmethodID const ctorRouteInfoID = jni::GetConstructorID(env, klass,
-                                               "(Ljava/lang/String;Ljava/lang/String;"
-                                               "Ljava/lang/String;Ljava/lang/String;"
-                                               "Ljava/lang/String;Ljava/lang/String;DIIIDDII"
-                                               "[Lcom/mapswithme/maps/routing/SingleLaneInfo;ZZ)V");
+  // Java signature : RoutingInfo(String distToTarget, String units, String distTurn, String
+  //                              turnSuffix, String currentStreet, String nextStreet,
+  //                              double completionPercent, int vehicleTurnOrdinal, int
+  //                              vehicleNextTurnOrdinal, int pedestrianTurnOrdinal, int exitNum,
+  //                              int totalTime, SingleLaneInfo[] lanes)
+  static jmethodID const ctorRouteInfoID =
+      jni::GetConstructorID(env, klass,
+                            "(Ljava/lang/String;Ljava/lang/String;"
+                            "Ljava/lang/String;Ljava/lang/String;"
+                            "Ljava/lang/String;Ljava/lang/String;DIIIII"
+                            "[Lcom/mapswithme/maps/routing/SingleLaneInfo;ZZ)V");
 
   vector<routing::FollowingInfo::SingleLaneInfoClient> const & lanes = info.m_lanes;
   jobjectArray jLanes = nullptr;
@@ -1413,8 +1419,8 @@ Java_com_mapswithme_maps_Framework_nativeGetRouteFollowingInfo(JNIEnv * env, jcl
       klass, ctorRouteInfoID, jni::ToJavaString(env, info.m_distToTarget),
       jni::ToJavaString(env, info.m_targetUnitsSuffix), jni::ToJavaString(env, info.m_distToTurn),
       jni::ToJavaString(env, info.m_turnUnitsSuffix), jni::ToJavaString(env, info.m_sourceName),
-      jni::ToJavaString(env, info.m_displayedStreetName), info.m_completionPercent, info.m_turn, info.m_nextTurn, info.m_pedestrianTurn,
-      info.m_pedestrianDirectionPos.m_lat, info.m_pedestrianDirectionPos.m_lon, info.m_exitNum, info.m_time, jLanes,
+      jni::ToJavaString(env, info.m_displayedStreetName), info.m_completionPercent, info.m_turn,
+      info.m_nextTurn, info.m_pedestrianTurn, info.m_exitNum, info.m_time, jLanes,
       static_cast<jboolean>(isSpeedLimitExceeded), static_cast<jboolean>(shouldPlaySignal));
   ASSERT(result, (jni::DescribeException()));
   return result;
@@ -2098,6 +2104,31 @@ JNIEXPORT jstring JNICALL
 Java_com_mapswithme_maps_Framework_nativeGetMegafonCategoryBannerUrl(JNIEnv * env, jclass)
 {
   return jni::ToJavaString(env, ads::GetMegafonCategoryBannerUrl());
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_mapswithme_maps_Framework_nativeHasCitymobilCategoryBanner(JNIEnv * env, jclass)
+{
+  if (GetPlatform().ConnectionStatus() == Platform::EConnectionType::CONNECTION_NONE)
+    return static_cast<jboolean>(false);
+
+  auto const pos = frm()->GetCurrentPosition();
+  auto const banners = frm()->GetAdsEngine().GetSearchCategoryBanners(pos);
+
+  return static_cast<jboolean>(!banners.empty() &&
+                               banners.front().m_type == ads::Banner::Type::Citymobil);
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_mapswithme_maps_Framework_nativeGetCitymobilCategoryBannerUrl(JNIEnv * env, jclass)
+{
+  auto const pos = frm()->GetCurrentPosition();
+  auto const banners = frm()->GetAdsEngine().GetSearchCategoryBanners(pos);
+
+  if (banners.empty() || banners.front().m_type != ads::Banner::Type::Citymobil)
+    return jni::ToJavaString(env, "");
+
+  return jni::ToJavaString(env, banners.front().m_value);
 }
 
 JNIEXPORT void JNICALL

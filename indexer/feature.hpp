@@ -35,7 +35,8 @@ public:
   using GeometryOffsets = buffer_vector<uint32_t, feature::DataHeader::kMaxScalesCount>;
 
   FeatureType(feature::SharedLoadInfo const * loadInfo, std::vector<uint8_t> && buffer,
-              feature::MetadataIndex const * metadataIndex);
+              feature::MetadataIndex const * metadataIndex,
+              indexer::MetadataDeserializer * metadataDeserializer);
   FeatureType(osm::MapObject const & emo);
 
   feature::GeomType GetGeomType() const;
@@ -156,9 +157,11 @@ public:
   uint64_t GetPopulation();
   std::string GetRoadNumber();
 
-  std::string const & GetPostcode();
+  feature::Metadata const & GetMetadata();
 
-  feature::Metadata & GetMetadata();
+  // Gets single metadata string. Does not parse all metadata.
+  std::string GetMetadata(feature::Metadata::EType type);
+  bool HasMetadata(feature::Metadata::EType type);
 
   /// @name Statistic functions.
   //@{
@@ -196,11 +199,11 @@ private:
     bool m_points = false;
     bool m_triangles = false;
     bool m_metadata = false;
-    bool m_postcode = false;
+    bool m_metaIds = false;
 
     void Reset()
     {
-      m_types = m_common = m_header2 = m_points = m_triangles = m_metadata = m_postcode = false;
+      m_types = m_common = m_header2 = m_points = m_triangles = m_metadata = m_metaIds = false;
     }
   };
 
@@ -223,7 +226,7 @@ private:
   void ParseCommon();
   void ParseHeader2();
   void ParseMetadata();
-  void ParsePostcode();
+  void ParseMetaIds();
   void ParseGeometryAndTriangles(int scale);
 
   uint8_t m_header = 0;
@@ -231,7 +234,6 @@ private:
 
   FeatureID m_id;
   FeatureParamsBase m_params;
-  std::string m_postcode;
 
   m2::PointD m_center;
   m2::RectD m_limitRect;
@@ -242,12 +244,16 @@ private:
   using Points = buffer_vector<m2::PointD, kStaticBufferSize>;
   Points m_points, m_triangles;
   feature::Metadata m_metadata;
+  indexer::MetadataDeserializer::MetaIds m_metaIds;
 
   // Non-owning pointer to shared load info. SharedLoadInfo created once per FeaturesVector.
   feature::SharedLoadInfo const * m_loadInfo = nullptr;
   std::vector<uint8_t> m_data;
-  // Pointer to shared metadata index. Must be set for mwm format >= Format::v10
+
+  // Pointer to shared metadata index. Must be set for mwm format == Format::v10
   feature::MetadataIndex const * m_metadataIndex = nullptr;
+  // Pointer to shared metedata deserializer. Must be set for mwm format >= Format::v11
+  indexer::MetadataDeserializer * m_metadataDeserializer = nullptr;
 
   ParsedFlags m_parsed;
   Offsets m_offsets;

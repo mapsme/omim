@@ -3,6 +3,7 @@
 #include "generator/affiliation.hpp"
 
 #include "transit/transit_entities.hpp"
+#include "transit/transit_schedule.hpp"
 #include "transit/world_feed/color_picker.hpp"
 
 #include "geometry/mercator.hpp"
@@ -12,6 +13,7 @@
 
 #include <cstdint>
 #include <fstream>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -19,10 +21,10 @@
 #include <vector>
 
 #include "3party/just_gtfs/just_gtfs.h"
-#include "3party/opening_hours/opening_hours.hpp"
 
 namespace transit
 {
+static std::string const kDelimiter = "_";
 // Generates globally unique TransitIds mapped to the GTFS entities hashes.
 class IdGenerator
 {
@@ -73,28 +75,39 @@ struct LineData
   // Sequence of stops along the line from first to last.
   IdList m_stopIds;
 
-  // Transport intervals depending on the day timespans.
-  std::vector<LineInterval> m_intervals;
   // Monthdays and weekdays ranges on which the line is at service.
   // Exceptions in service schedule. Explicitly activates or disables service by dates.
-  osmoh::OpeningHours m_serviceDays;
+  // Transport intervals depending on the day timespans.
+  Schedule m_schedule;
 
   // Fields not intended to be exported to json.
   TransitId m_shapeId = 0;
   std::string m_gtfsTripId;
-  std::string m_gtfsServiceId;
+  std::unordered_set<std::string> m_gtfsServiceIds;
+};
+
+struct LineSegmentInRegion
+{
+  // Stops in the region.
+  IdList m_stopIds;
+  // Spline line id to its parent line id mapping.
+  std::optional<TransitId> m_splineParent = std::nullopt;
+  // Indexes of the line shape link may differ in different regions.
+  ShapeLink m_shapeLink;
 };
 
 struct Lines
 {
-  void Write(std::unordered_map<TransitId, IdList> const & ids, std::ofstream & stream) const;
+  void Write(std::unordered_map<TransitId, LineSegmentInRegion> const & ids,
+             std::ofstream & stream) const;
 
   std::unordered_map<TransitId, LineData> m_data;
 };
 
 struct LinesMetadata
 {
-  void Write(std::unordered_map<TransitId, IdList> const & ids, std::ofstream & stream) const;
+  void Write(std::unordered_map<TransitId, LineSegmentInRegion> const & linesInRegion,
+             std::ofstream & stream) const;
 
   // Line id to line additional data (e.g. for rendering).
   std::unordered_map<TransitId, LineSegmentsOrder> m_data;
@@ -174,8 +187,8 @@ using IdEdgeTransferSet = std::unordered_set<EdgeTransferId, EdgeTransferIdHashe
 struct EdgesTransfer
 {
   void Write(IdEdgeTransferSet const & ids, std::ofstream & stream) const;
-  // Key is pair of stops and value is weight (in seconds).
-  std::unordered_map<EdgeTransferId, size_t, EdgeTransferIdHasher> m_data;
+  // Key is pair of stops and value is |EdgeData|, containing weight (in seconds).
+  std::unordered_map<EdgeTransferId, EdgeData, EdgeTransferIdHasher> m_data;
 };
 
 struct TransferData
@@ -223,7 +236,6 @@ enum FieldIdx
 };
 
 using GtfsIdToHash = std::unordered_map<std::string, std::string>;
-using CalendarCache = std::unordered_map<std::string, osmoh::TRuleSequences>;
 
 struct StopsOnLines
 {
@@ -235,7 +247,8 @@ struct StopsOnLines
 };
 
 using IdsInRegion = std::unordered_map<std::string, IdSet>;
-using LineIdsInRegion = std::unordered_map<std::string, std::unordered_map<TransitId, IdList>>;
+using LinesInRegion =
+    std::unordered_map<std::string, std::unordered_map<TransitId, LineSegmentInRegion>>;
 using EdgeIdsInRegion = std::unordered_map<std::string, IdEdgeSet>;
 using EdgeTransferIdsInRegion = std::unordered_map<std::string, IdEdgeTransferSet>;
 
@@ -245,7 +258,7 @@ struct TransitByRegion
 {
   IdsInRegion m_networks;
   IdsInRegion m_routes;
-  LineIdsInRegion m_lines;
+  LinesInRegion m_lines;
   IdsInRegion m_shapes;
   IdsInRegion m_stops;
   EdgeIdsInRegion m_edges;
@@ -253,6 +266,9 @@ struct TransitByRegion
   IdsInRegion m_transfers;
   IdsInRegion m_gates;
 };
+
+// Pair of points representing corresponding edge endings.
+using EdgePoints = std::pair<m2::PointD, m2::PointD>;
 
 // Class for merging scattered GTFS feeds into one World feed with static ids.
 // The usage scenario consists of steps:
@@ -264,7 +280,7 @@ struct TransitByRegion
 class WorldFeed
 {
 public:
-  WorldFeed(IdGenerator & generator, ColorPicker & colorPicker,
+  WorldFeed(IdGenerator & generator, IdGenerator & generatorEdges, ColorPicker & colorPicker,
             feature::CountriesFilesAffiliation & mwmMatcher);
   // Transforms GTFS feed into the global feed.
   bool SetFeed(gtfs::Feed && feed);
@@ -289,7 +305,7 @@ private:
   // Deletes shapes which are sub-shapes and refreshes corresponding links in lines.
   void ModifyLinesAndShapes();
   // Gets service monthday open/closed ranges, weekdays and exceptions in schedule.
-  bool FillLinesSchedule();
+  void FillLinesSchedule();
   // Gets frequencies of trips from GTFS.
 
   // Adds shape with mercator points instead of WGS84 lat/lon.
@@ -305,6 +321,11 @@ private:
   bool UpdateStop(TransitId stopId, gtfs::StopTime const & stopTime, std::string const & stopHash,
                   TransitId lineId);
 
+  std::optional<TransitId> GetParentLineForSpline(TransitId lineId) const;
+  bool PrepareEdgesInRegion(std::string const & region);
+
+  TransitId GetSplineParent(TransitId lineId, std::string const & region) const;
+
   std::unordered_map<TransitId, std::vector<StopsOnLines>> GetStopsForShapeMatching();
 
   // Adds stops projections to shapes. Updates corresponding links to shapes.
@@ -318,16 +339,6 @@ private:
 
   bool ProjectStopsToShape(ShapesIter & itShape, StopsOnLines const & stopsOnLines,
                            std::unordered_map<TransitId, std::vector<size_t>> & stopsToIndexes);
-
-  // Extracts data from GTFS calendar for lines.
-  void GetCalendarDates(osmoh::TRuleSequences & rules, CalendarCache & cache,
-                        std::string const & serviceId);
-  // Extracts data from GTFS calendar dates for lines.
-  void GetCalendarDatesExceptions(osmoh::TRuleSequences & rules, CalendarCache & cache,
-                                  std::string const & serviceId);
-
-  LineIntervals GetFrequencies(std::unordered_map<std::string, LineIntervals> & cache,
-                               std::string const & tripId);
 
   // Splits data into regions.
   void SplitFeedIntoRegions();
@@ -368,11 +379,16 @@ private:
   Transfers m_transfers;
   Gates m_gates;
 
+  // Mapping of the edge to its points on the shape polyline.
+  std::unordered_map<EdgeId, std::vector<std::vector<m2::PointD>>, EdgeIdHasher> m_edgesOnShapes;
+
   // Ids of entities for json'izing, split by regions.
   TransitByRegion m_splitting;
 
   // Generator of ids, globally unique and constant between re-runs.
   IdGenerator & m_idGenerator;
+  // Generator of ids for edges only.
+  IdGenerator & m_idGeneratorEdges;
   // Color name picker of the nearest color for route RBG from our constant list of transfer colors.
   ColorPicker & m_colorPicker;
   // Mwm matcher for m2:Points representing stops and other entities.
@@ -402,15 +418,13 @@ private:
 template <typename... Values>
 auto BuildHash(Values... values)
 {
-  static std::string const delimiter = "_";
-
   size_t constexpr paramsCount = sizeof...(Values);
-  size_t const delimitersSize = (paramsCount - 1) * delimiter.size();
+  size_t const delimitersSize = (paramsCount - 1) * kDelimiter.size();
   size_t const totalSize = (delimitersSize + ... + values.size());
 
   std::string hash;
   hash.reserve(totalSize);
-  (hash.append(values + delimiter), ...);
+  (hash.append(values + kDelimiter), ...);
   hash.pop_back();
 
   return hash;

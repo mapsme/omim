@@ -1,6 +1,7 @@
 #pragma once
 
 #include "partners_api/ads/ads_utils.hpp"
+#include "partners_api/taxi_provider.hpp"
 
 #include "storage/storage_defines.hpp"
 
@@ -82,6 +83,28 @@ private:
   DISALLOW_COPY(SearchContainerBase);
 };
 
+class SearchCategoryContainerBase
+{
+public:
+  class Delegate
+  {
+  public:
+    virtual ~Delegate() = default;
+
+    virtual std::vector<taxi::Provider::Type> GetTaxiProvidersAtPos(m2::PointD const & pos) const = 0;
+  };
+
+  explicit SearchCategoryContainerBase(Delegate const & delegate);
+  virtual ~SearchCategoryContainerBase() = default;
+
+  virtual std::string GetBanner(std::optional<m2::PointD> const & userPos) const = 0;
+
+protected:
+  Delegate const & m_delegate;
+
+  DISALLOW_COPY(SearchCategoryContainerBase);
+};
+
 class DownloadOnMapContainer : protected WithSupportedLanguages,
                                protected WithSupportedCountries,
                                protected WithSupportedUserPos
@@ -108,8 +131,8 @@ protected:
   Delegate & m_delegate;
 
 private:
-  virtual bool HasBanner(storage::CountryId const & countryId, m2::PointD const & userPos,
-                         std::string const & userLanguage) const;
+  bool HasBanner(storage::CountryId const & countryId, std::optional<m2::PointD> const & userPos,
+                 std::string const & userLanguage) const;
   virtual std::string GetBannerInternal() const;
 
   DISALLOW_COPY(DownloadOnMapContainer);

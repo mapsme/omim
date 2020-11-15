@@ -270,8 +270,8 @@ protected:
     TEST_LESS(m_currStatus + 1, m_transitionList.size(), (m_countryFile));
     TEST_EQUAL(nexStatus, m_transitionList[m_currStatus + 1], (m_countryFile));
     ++m_currStatus;
-    if (m_transitionList[m_currStatus] == Status::EDownloading ||
-        m_transitionList[m_currStatus] == Status::EInQueue)
+    if (m_transitionList[m_currStatus] == Status::Downloading ||
+        m_transitionList[m_currStatus] == Status::InQueue)
     {
       LocalAndRemoteSize localAndRemoteSize = m_storage.CountrySizeInBytes(m_countryId);
       m_totalBytesToDownload = localAndRemoteSize.second;
@@ -279,16 +279,16 @@ protected:
   }
 
   virtual void OnCountryDownloadingProgress(CountryId const & countryId,
-                                            LocalAndRemoteSize const & progress)
+                                            downloader::Progress const & progress)
   {
     if (countryId != m_countryId)
       return;
 
     LOG(LINFO, (m_countryFile, "downloading progress:", progress));
 
-    TEST_GREATER(progress.first, static_cast<
-                 decltype(progress.first)>(m_bytesDownloaded), (m_countryFile));
-    m_bytesDownloaded = progress.first;
+    TEST_GREATER(progress.m_bytesDownloaded, static_cast<
+                 decltype(progress.m_bytesDownloaded)>(m_bytesDownloaded), (m_countryFile));
+    m_bytesDownloaded = progress.m_bytesDownloaded;
     TEST_LESS_OR_EQUAL(m_bytesDownloaded, m_totalBytesToDownload, (m_countryFile));
 
     LocalAndRemoteSize localAndRemoteSize = m_storage.CountrySizeInBytes(m_countryId);
@@ -315,7 +315,7 @@ public:
                                          TaskRunner & runner)
     : CountryDownloaderChecker(
           storage, countryId, MapFileType::Map,
-          vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::ENotDownloaded})
+          vector<Status>{Status::NotDownloaded, Status::InQueue, Status::Downloading, Status::NotDownloaded})
     , m_runner(runner)
   {
   }
@@ -323,12 +323,12 @@ public:
 protected:
   // CountryDownloaderChecker overrides:
   void OnCountryDownloadingProgress(CountryId const & countryId,
-                                    LocalAndRemoteSize const & progress) override
+                                    downloader::Progress const & progress) override
   {
     CountryDownloaderChecker::OnCountryDownloadingProgress(countryId, progress);
 
     // Cancel downloading when almost done.
-    if (progress.first + 2 * FakeMapFilesDownloader::kBlockSize >= progress.second)
+    if (progress.m_bytesDownloaded + 2 * FakeMapFilesDownloader::kBlockSize >= progress.m_bytesTotal)
     {
       m_runner.PostTask([&]() { m_storage.CancelDownloadNode(m_countryId); });
     }
@@ -345,7 +345,7 @@ unique_ptr<CountryDownloaderChecker> AbsentCountryDownloaderChecker(Storage & st
 {
   return make_unique<CountryDownloaderChecker>(
       storage, countryId, type,
-      vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::EOnDisk});
+      vector<Status>{Status::NotDownloaded, Status::InQueue, Status::Downloading, Status::OnDisk});
 }
 
 // Checks following state transitions:
@@ -356,7 +356,7 @@ unique_ptr<CountryDownloaderChecker> CancelledCountryDownloaderChecker(Storage &
 {
   return make_unique<CountryDownloaderChecker>(
       storage, countryId, type,
-      vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::ENotDownloaded});
+      vector<Status>{Status::NotDownloaded, Status::InQueue, Status::Downloading, Status::NotDownloaded});
 }
 
 class CountryStatusChecker
@@ -388,7 +388,7 @@ private:
   }
 
   void OnCountryDownloadingProgress(CountryId const & /* countryId */,
-                                    LocalAndRemoteSize const & /* progress */)
+                                    downloader::Progress const & /* progress */)
   {
     TEST(false, ("Unexpected country downloading progress."));
   }
@@ -430,7 +430,7 @@ public:
     if (countryId != m_countryId)
       return;
     Status const status = m_storage.CountryStatusEx(countryId);
-    if (status != Status::EDownloadFailed)
+    if (status != Status::DownloadFailed)
       return;
     lock_guard<mutex> lock(m_mu);
     m_finished = true;
@@ -439,7 +439,7 @@ public:
     testing::StopEventLoop();
   }
 
-  void OnProgress(CountryId const & /* countryId */, LocalAndRemoteSize const & /* progress */) {}
+  void OnProgress(CountryId const & /* countryId */, downloader::Progress const & /* progress */) {}
 
 private:
   Storage & m_storage;
@@ -551,21 +551,21 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   storage.DeleteCountry(countryId, MapFileType::Map);
   LocalFilePtr latestLocalFile = storage.GetLatestLocalFile(countryId);
   TEST(!latestLocalFile.get(), ("Country wasn't deleted from disk."));
-  TEST_EQUAL(Status::ENotDownloaded, storage.CountryStatusEx(countryId), ());
+  TEST_EQUAL(Status::NotDownloaded, storage.CountryStatusEx(countryId), ());
 
   LocalFilePtr localFileV1 = CreateDummyMapFile(countryFile, v1, 1024 /* size */);
   storage.RegisterAllLocalMaps(false /* enableDiffs */);
   latestLocalFile = storage.GetLatestLocalFile(countryId);
   TEST(latestLocalFile.get(), ("Created map file wasn't found by storage."));
   TEST_EQUAL(latestLocalFile->GetVersion(), localFileV1->GetVersion(), ());
-  TEST_EQUAL(Status::EOnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
+  TEST_EQUAL(Status::OnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
 
   LocalFilePtr localFileV2 = CreateDummyMapFile(countryFile, v2, 2048 /* size */);
   storage.RegisterAllLocalMaps(false /* enableDiffs */);
   latestLocalFile = storage.GetLatestLocalFile(countryId);
   TEST(latestLocalFile.get(), ("Created map file wasn't found by storage."));
   TEST_EQUAL(latestLocalFile->GetVersion(), localFileV2->GetVersion(), ());
-  TEST_EQUAL(Status::EOnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
+  TEST_EQUAL(Status::OnDiskOutOfDate, storage.CountryStatusEx(countryId), ());
 
   storage.DeleteCountry(countryId, MapFileType::Map);
 
@@ -575,7 +575,7 @@ UNIT_TEST(StorageTest_DeleteTwoVersionsOfTheSameCountry)
   localFileV2->SyncWithDisk();
   TEST(!localFileV2->HasFiles(), ());
 
-  TEST_EQUAL(Status::ENotDownloaded, storage.CountryStatusEx(countryId), ());
+  TEST_EQUAL(Status::NotDownloaded, storage.CountryStatusEx(countryId), ());
 }
 
 UNIT_CLASS_TEST(StorageTest, DeletePendingCountry)
@@ -770,12 +770,13 @@ UNIT_CLASS_TEST(StorageTest, DownloadedMap)
   {
     auto algeriaCentralChecker = make_unique<CountryDownloaderChecker>(
         storage, algeriaCentralCountryId, MapFileType::Map,
-        vector<Status>{Status::ENotDownloaded, Status::EDownloading, Status::EOnDisk});
+        vector<Status>{Status::NotDownloaded, Status::InQueue, Status::Downloading,
+                       Status::OnDisk});
 
     auto algeriaCoastChecker = make_unique<CountryDownloaderChecker>(
         storage, algeriaCoastCountryId, MapFileType::Map,
-        vector<Status>{Status::ENotDownloaded, Status::EInQueue, Status::EDownloading,
-                       Status::EOnDisk});
+        vector<Status>{Status::NotDownloaded, Status::InQueue, Status::Downloading,
+                       Status::OnDisk});
 
     algeriaCentralChecker->StartDownload();
     algeriaCoastChecker->StartDownload();
@@ -929,8 +930,8 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 1, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Countries", ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesDownloaded, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesTotal, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmCounter, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmSize, 0, ());
   TEST_EQUAL(nodeAttrs.m_downloadingMwmCounter, 0, ());
@@ -944,8 +945,8 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 1, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Countries", ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesDownloaded, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesTotal, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmCounter, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmSize, 0, ());
   TEST_EQUAL(nodeAttrs.m_downloadingMwmCounter, 0, ());
@@ -959,8 +960,8 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 1, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Algeria", ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesDownloaded, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesTotal, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmCounter, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmSize, 0, ());
   TEST_EQUAL(nodeAttrs.m_downloadingMwmCounter, 0, ());
@@ -974,8 +975,8 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_error, NodeErrorCode::NoError, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 1, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Countries", ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesDownloaded, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesTotal, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmCounter, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmSize, 0, ());
   TEST_EQUAL(nodeAttrs.m_downloadingMwmCounter, 0, ());
@@ -991,8 +992,8 @@ UNIT_TEST(StorageTest_GetNodeAttrsSingleMwm)
   TEST_EQUAL(nodeAttrs.m_parentInfo.size(), 2, ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[0].m_id, "Country1", ());
   TEST_EQUAL(nodeAttrs.m_parentInfo[1].m_id, "Country2", ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.first, 0, ());
-  TEST_EQUAL(nodeAttrs.m_downloadingProgress.second, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesDownloaded, 0, ());
+  TEST_EQUAL(nodeAttrs.m_downloadingProgress.m_bytesTotal, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmCounter, 0, ());
   TEST_EQUAL(nodeAttrs.m_localMwmSize, 0, ());
   TEST_EQUAL(nodeAttrs.m_downloadingMwmCounter, 0, ());
@@ -1063,11 +1064,11 @@ UNIT_TEST(StorageTest_GetUpdateInfoSingleMwm)
 UNIT_TEST(StorageTest_ParseStatus)
 {
   TEST_EQUAL(StatusAndError(NodeStatus::Undefined, NodeErrorCode::NoError),
-             ParseStatus(Status::EUndefined), ());
+             ParseStatus(Status::Undefined), ());
   TEST_EQUAL(StatusAndError(NodeStatus::Error, NodeErrorCode::NoInetConnection),
-             ParseStatus(Status::EDownloadFailed), ());
+             ParseStatus(Status::DownloadFailed), ());
   TEST_EQUAL(StatusAndError(NodeStatus::Downloading, NodeErrorCode::NoError),
-             ParseStatus(Status::EDownloading), ());
+             ParseStatus(Status::Downloading), ());
 }
 
 UNIT_TEST(StorageTest_ForEachInSubtree)
@@ -1313,8 +1314,8 @@ UNIT_TEST(StorageTest_GetOverallProgressSmokeTest)
   InitStorage(storage, runner);
 
   auto const currentProgress = storage.GetOverallProgress({"Abkhazia", "Algeria_Coast"});
-  TEST_EQUAL(currentProgress.first, 0, ());
-  TEST_EQUAL(currentProgress.second, 0, ());
+  TEST_EQUAL(currentProgress.m_bytesDownloaded, 0, ());
+  TEST_EQUAL(currentProgress.m_bytesTotal, 0, ());
 }
 
 UNIT_TEST(StorageTest_GetQueuedChildrenSmokeTest)
@@ -1475,7 +1476,7 @@ UNIT_CLASS_TEST(StorageTest, MultipleMaps)
 
   auto const onStatusChange = [&](CountryId const & id) {
     auto const status = storage.CountryStatusEx(id);
-    if (status != Status::EOnDisk)
+    if (status != Status::OnDisk)
       return;
 
     auto const it = find(children.cbegin(), children.cend(), id);
@@ -1486,7 +1487,7 @@ UNIT_CLASS_TEST(StorageTest, MultipleMaps)
   };
 
   auto const onProgress = [&](CountryId const & /* countryId */,
-                              LocalAndRemoteSize const & /* progress */) {};
+                              downloader::Progress const & /* progress */) {};
 
   auto const slot = storage.Subscribe(onStatusChange, onProgress);
   SCOPE_GUARD(cleanup, [&]() { storage.Unsubscribe(slot); });
@@ -1506,6 +1507,6 @@ UNIT_CLASS_TEST(StorageTest, MultipleMaps)
   }
 
   // Unfortunately, whole country was not downloaded.
-  TEST_EQUAL(storage.CountryStatusEx(nodeId), Status::ENotDownloaded, ());
+  TEST_EQUAL(storage.CountryStatusEx(nodeId), Status::NotDownloaded, ());
 }
 }  // namespace storage

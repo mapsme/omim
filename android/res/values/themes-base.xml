@@ -202,13 +202,14 @@
     <item name="chipBackgroundColor">@color/white_secondary</item>
     <item name="chipIconTintColor">@color/extended_green</item>
     <item name="chipTextColor">@color/bg_primary</item>
+    <item name="tintLonelyPlanetLogo">@color/tint_brand_lonely_planet</item>
   </style>
 
   <!-- Night theme -->
   <style name="MwmTheme.Night.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
     <item name="materialCalendarStyle">@style/Widget.MaterialComponents.MaterialCalendar</item>
-    <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen</item>
-    <item name="materialCalendarTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar</item>
+    <item name="materialCalendarFullscreenTheme">@style/MwmWidget.MaterialCalendar.Theme.FullScreen.Dark</item>
+    <item name="materialCalendarTheme">@style/MwmWidget.MaterialCalendar.Theme.Dark</item>
     <item name="android:listViewStyle">@style/MwmWidget.ListView</item>
     <item name="android:textViewStyle">@style/MwmWidget.TextView</item>
 
@@ -403,5 +404,6 @@
     <item name="chipBackgroundColor">@android:color/black</item>
     <item name="chipIconTintColor">@color/white_lightest</item>
     <item name="chipTextColor">@color/white_secondary</item>
+    <item name="tintLonelyPlanetLogo">@color/tint_brand_lonely_planet_night</item>
   </style>
 </resources>

@@ -10,6 +10,7 @@
 
 - (nonnull instancetype)initWithViewController:(nonnull UIViewController *)viewController;
 - (void)presentRateAlert;
+- (void)presentAuthErrorAlertWithRetryBlock:(nonnull MWMVoidBlock)retryBlock;
 - (void)presentPoint2PointAlertWithOkBlock:(nonnull MWMVoidBlock)okBlock needToRebuild:(BOOL)needToRebuild;
 - (void)presentRoutingDisclaimerAlertWithOkBlock:(nonnull nonnull MWMVoidBlock)block;
 - (void)presentDisabledLocationAlert;
@@ -42,6 +43,7 @@
 - (void)presentSearchNoResultsAlert;
 - (void)presentMobileInternetAlertWithBlock:(nonnull MWMMobileInternetAlertCompletionBlock)block;
 - (void)presentInfoAlert:(nonnull NSString *)title text:(nonnull NSString *)text;
+- (void)presentInfoAlert:(nonnull NSString *)title;
 - (void)presentCreateBookmarkCategoryAlertWithMaxCharacterNum:(NSUInteger)max
                                               minCharacterNum:(NSUInteger)min
                                                      callback:(nonnull MWMCheckStringBlock)callback;

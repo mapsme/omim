@@ -178,6 +178,8 @@
   <color name="bg_brand_booking_pressed">#FF1B549E</color>
   <color name="bg_brand_opentable">#FFDA3743</color>
   <color name="bg_brand_opentable_pressed">#FFFC5965</color>
+  <color name="tint_brand_lonely_planet">#004990</color>
+  <color name="tint_brand_lonely_planet_night">#B3FFFFFF</color>
 
   <!-- Banner colors -->
   <color name="bg_banner_color">#F2F5D4</color>
@@ -218,6 +220,7 @@
   <color name="sale_view_bg">#A335F4</color>
   <color name="sightseeing_subs_sale_view_bg">#E54E35</color>
   <color name="bg_sightseeing_subs">#F0FCFF</color>
+  <color name="bg_placeholder">#E2E2E2</color>
 
   <color name="notification">#82E510</color>
   <color name="yellow">#FFC800</color>
@@ -236,4 +239,6 @@
   <color name="city_color">#9B24B2</color>
   <color name="city_color_night">#9867FC</color>
   <color name="outdoor_color_night">#93BF39</color>
+
+  <color name="material_calendar_surface_dark">#929292</color>
 </resources>

@@ -216,7 +216,7 @@ private:
         mwmIds, ConvertResult<Vertex, Edge, Weight>(algorithm.FindPathBidirectional(params, routingResult)));
   }
 
-  void SetupAlgorithmMode(IndexGraphStarter & starter, bool guidesActive = false);
+  void SetupAlgorithmMode(IndexGraphStarter & starter, bool guidesActive = false) const;
   uint32_t ConnectTracksOnGuidesToOsm(std::vector<m2::PointD> const & checkpoints,
                                       WorldGraph & graph);
 
@@ -245,7 +245,7 @@ private:
   FeaturesRoadGraph m_roadGraph;
 
   std::shared_ptr<EdgeEstimator> m_estimator;
-  std::unique_ptr<IDirectionsEngine> m_directionsEngine;
+  std::unique_ptr<DirectionsEngine> m_directionsEngine;
   std::unique_ptr<SegmentedRoute> m_lastRoute;
   std::unique_ptr<FakeEdgesContainer> m_lastFakeEdges;
 

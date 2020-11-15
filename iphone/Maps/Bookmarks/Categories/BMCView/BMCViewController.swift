@@ -6,6 +6,8 @@ final class BMCViewController: MWMViewController {
     }
   }
 
+  private weak var coordinator: BookmarksCoordinator?
+
   @IBOutlet private weak var tableView: UITableView! {
     didSet {
       let cells = [
@@ -28,6 +30,15 @@ final class BMCViewController: MWMViewController {
 
   @IBOutlet private var actionsHeader: UIView!
   @IBOutlet private var notificationsHeader: BMCNotificationsHeader!
+
+  init(coordinator: BookmarksCoordinator?) {
+    super.init(nibName: nil, bundle: nil)
+    self.coordinator = coordinator
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -74,7 +85,7 @@ final class BMCViewController: MWMViewController {
     viewModel.shareCategoryFile(at: index) {
       switch $0 {
       case let .success(url):
-        let shareController = MWMActivityViewController.share(for: url,
+        let shareController = ActivityViewController.share(for: url,
                                                               message: L("share_bookmarks_email_body"))
         { [weak self] _, _, _, _ in
           self?.viewModel?.finishShareCategory()
@@ -104,15 +115,16 @@ final class BMCViewController: MWMViewController {
   }
 
   private func openCategory(category: BookmarkGroup) {
-    let bmViewController = BookmarksVC(category: category.categoryId)
-    bmViewController.delegate = self
+    let bmViewController = BookmarksListBuilder.build(markGroupId: category.categoryId,
+                                                      bookmarksCoordinator: coordinator,
+                                                      delegate: self)
     MapViewController.topViewController().navigationController?.pushViewController(bmViewController,
                                                                                    animated: true)
   }
 
   private func setCategoryVisible(_ visible: Bool, at index: Int) {
     let category = viewModel.category(at: index)
-    category.isVisible = visible
+    BookmarksManager.shared().setCategory(category.categoryId, isVisible: visible)
     if let categoriesHeader = tableView.headerView(forSection: viewModel.sectionIndex(section: .categories)) as? BMCCategoriesHeader {
       categoriesHeader.isShowAll = viewModel.areAllCategoriesHidden()
     }
@@ -303,8 +315,18 @@ extension BMCViewController: BMCPermissionsCellDelegate {
     switch permission {
     case .signup:
       viewModel.pendingPermission(isPending: true)
-      signup(anchor: anchor, source: .bookmarksBackup, onComplete: { [viewModel] success in
-        viewModel!.grant(permission: success ? .backup : nil)
+      signup(anchor: anchor, source: .bookmarksBackup, onComplete: { [weak self, viewModel] result in
+        if result == .succes {
+          viewModel!.grant(permission: .backup)
+        } else if result == .cancel {
+          viewModel?.pendingPermission(isPending: false)
+        } else if result == .error {
+          Statistics.logEvent(kStatBookmarksAuthRequestError)
+          viewModel?.pendingPermission(isPending: false)
+          MWMAlertViewController.activeAlert().presentAuthErrorAlert {
+            self?.permissionAction(permission: permission, anchor: anchor)
+          }
+        }
       })
     case .backup:
       viewModel.grant(permission: permission)
@@ -371,12 +393,8 @@ extension BMCViewController: CategorySettingsViewControllerDelegate {
   }
 }
 
-extension BMCViewController: BookmarksVCDelegate {
-  func bookmarksVCdidUpdateCategory(_ viewController: BookmarksVC) {
-    // for now we did necessary interface update in -viewWillAppear
-  }
-
-  func bookmarksVCdidDeleteCategory(_ viewController: BookmarksVC) {
+extension BMCViewController: BookmarksListDelegate {
+  func bookmarksListDidDeleteGroup() {
     guard let parentVC = parent else { return }
     navigationController?.popToViewController(parentVC, animated: true)
   }

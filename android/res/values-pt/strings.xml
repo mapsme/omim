@@ -826,7 +826,7 @@
 	<string name="error_enter_correct_zip_code">Introduza o código postal correto</string>
 	<!-- Place Page title for long tap -->
 	<string name="core_placepage_unknown_place">Local desconhecido</string>
-	<string name="editor_other_info">Enviou uma nota ao moderador OSM</string>
+	<string name="editor_other_info">Enviar nota aos editores OSM</string>
 	<string name="editor_detailed_description_hint">Comentário detalhado</string>
 	<string name="editor_detailed_description">As suas alterações sugeridas irão ser enviadas para a comunidade OpenStreetMap. Descreva os dados que não podem ser editados no MAPS.ME</string>
 	<string name="editor_more_about_osm">Mais sobre o OpenStreetMap</string>
@@ -1350,7 +1350,7 @@
 	<string name="guides">Guias</string>
 	<string name="guide_downloaded_title">O guia foi descarregado com sucesso</string>
 	<!-- as few symbols as possible -->
-	<string name="download_guides">Encontrar guias</string>
+	<string name="download_guides">Buscar guías</string>
 	<string name="guides_groups_cached">Descarregar guias</string>
 	<string name="subtitle_error_downloading_guide">O guia não foi descarregado</string>
 	<string name="error_already_downloaded_guide">Este guia já foi descarregado</string>
@@ -1714,7 +1714,8 @@
 	<string name="new_onboarding_step5.3_message">Faça o download e avalie percursos para passeios pela cidade e recreação com uma seleção gratuita do MAPS.ME!</string>
 	<string name="new_onboarding_step5.3_button">Download grátis</string>
 	<string name="new_onboarding_additional_steps_later_button">Agora não</string>
-	<string name="all_pass_subscription_header">SUBSCRIÇÃO PARA CATÁLOGO</string>
+	<string name="all_pass_subscription_header">Subscrição para</string>
+	<string name="all_pass_subscription_subheader">Catálogo de guias</string>
 	<!-- \n - for a break between lines. Max. 15 characters per 1 line. -->
 	<string name="all_pass_subscription_message_title">Mais de 30000\nguias\ne trilhas</string>
 	<!-- <b> & </b> tag to make a part of the line bold -->
@@ -1824,7 +1825,7 @@
 	<string name="guests_picker_rooms">Quartos</string>
 	<string name="guests_picker_adults">Adultos</string>
 	<string name="guests_picker_children_title">Crianças</string>
-	<string name="guests_picker_children_subtitle">1-16 anos</string>
+	<string name="guests_picker_children_subtitle">1-17 anos</string>
 	<string name="guests_picker_infants_title">Bebês</string>
 	<string name="guests_picker_infants_subtitle">0-12 meses</string>
 	<!-- as less symbols as possible -->
@@ -1838,8 +1839,27 @@
 	<string name="whatsnew_trial_title">Acesso gratuito às guias</string>
 	<string name="whatsnew_trial_message">Lançamos o período de teste gratuito da subscrição de 7 dias. Milhares de percursos pelo mundo inteiro, bem como o perfil interativo das alturas nas guias para férias ativas.</string>
 	<string name="whatsnew_trial_cta">Experimentar</string>
-	<string name="subscription_terms_guides_outdoor">O pagamento será efetuado da sua conta iTunes após a confirmação da compra. A subscrição será renovada automaticamente se a renovação automatica não será cancelada pelo menos 24 horas antes do final do período atual. O valor será descontado da sua conta pessoal de acordo com o seu tarifário de renovação durante 24 horas antes do final do período atual. Pode controlar a renovação automática ou desativá-la nas configurações da sua conta Apple ID a qualquer momento após a compra. Pode usar as guias descarregadas pela subscrição apenas durante o período da sua validade. 30 dias após o final do período da subscrição, todas as guias com todas as marcas serão excluídos automaticamente.\n* A subscrição com período de teste gratuito automaticamente se transforma em uma subscrição paga. Pode cancelar ou controlar a renovação automática da versão de teste gratuita nas configurações da sua conta pessoal após a compra. O cancelamento entrará em vigor 24 horas após o último dia do período da subscrição atual e você será transferido para uma assinatura gratuita. Atenção: qualquer parte não usada do período de teste gratuito será cancelada na compra da subscrição paga durante esse período.</string>
-	<string name="subscription_terms_android_outdoor">O pagamento será efetuado da sua conta Google Play após a confirmação da compra. A subscrição será renovada automaticamente se a renovação automatica não será cancelada pelo menos 24 horas antes do final do período atual. O valor será descontado da sua conta pessoal de acordo com o seu tarifário de renovação durante 24 horas antes do final do período atual. Pode controlar a renovação automática ou desativá-la nas configurações da sua conta a qualquer momento após a compra. Pode usar as guias descarregadas pela subscrição apenas durante o período da sua validade. 30 dias após o final do período da subscrição, todas as guias serão excluídos automaticamente.\n* A subscrição com período de teste gratuito automaticamente se transforma em uma subscrição paga. Pode cancelar ou controlar a renovação automática da versão de teste gratuita nas configurações da sua conta pessoal após a compra. O cancelamento entrará em vigor 24 horas após o último dia do período da subscrição atual e você será transferido para uma assinatura gratuita. Atenção: qualquer parte não usada do período de teste gratuito será cancelada na compra da subscrição paga durante esse período.</string>
+	<string name="subscription_terms_guides_outdoor">O pagamento será efetuado da sua conta iTunes após a confirmação da compra. A subscrição será renovada automaticamente se a renovação automatica não será cancelada pelo menos 24 horas antes do final do período atual. O valor será descontado da sua conta pessoal de acordo com o seu tarifário de renovação durante 24 horas antes do final do período atual. Pode controlar a renovação automática ou desativá-la nas configurações da sua conta Apple ID a qualquer momento após a compra. Pode usar as guias descarregadas pela subscrição apenas durante o período da sua validade. 7 dias após o final do período da subscrição, todas as guias com todas as marcas serão excluídos automaticamente.\n* A subscrição com período de teste gratuito automaticamente se transforma em uma subscrição paga. Pode cancelar ou controlar a renovação automática da versão de teste gratuita nas configurações da sua conta pessoal após a compra. O cancelamento entrará em vigor 24 horas após o último dia do período da subscrição atual e você será transferido para uma assinatura gratuita. Atenção: qualquer parte não usada do período de teste gratuito será cancelada na compra da subscrição paga durante esse período.</string>
+	<string name="subscription_terms_android_outdoor">O pagamento será efetuado da sua conta Google Play após a confirmação da compra. A subscrição será renovada automaticamente se a renovação automatica não será cancelada pelo menos 24 horas antes do final do período atual. O valor será descontado da sua conta pessoal de acordo com o seu tarifário de renovação durante 24 horas antes do final do período atual. Pode controlar a renovação automática ou desativá-la nas configurações da sua conta a qualquer momento após a compra. Pode usar as guias descarregadas pela subscrição apenas durante o período da sua validade. 7 dias após o final do período da subscrição, todas as guias serão excluídos automaticamente.\n* A subscrição com período de teste gratuito automaticamente se transforma em uma subscrição paga. Pode cancelar ou controlar a renovação automática da versão de teste gratuita nas configurações da sua conta pessoal após a compra. O cancelamento entrará em vigor 24 horas após o último dia do período da subscrição atual e você será transferido para uma assinatura gratuita. Atenção: qualquer parte não usada do período de teste gratuito será cancelada na compra da subscrição paga durante esse período.</string>
+	<string name="subscription_header">Subscrição para\n<b>Catálogo de guias</b></string>
+	<!-- Max. 20 characters per 1 line. -->
+	<string name="all_pass_subscription_message_title_4">Guias\nda Lonely Planet®</string>
+	<!-- <b> & </b> tag to make a part of the line bold -->
+	<string name="all_pass_subscription_message_subtitle_4">Ainda <b>mais emoções</b> com milhares de locais curiosos pelo <b>mundo inteiro</b></string>
+	<string name="content_by_component">Conteúdo de: %s</string>
+	<string name="whatsnew_lp_title">Ainda mais emoções</string>
+	<string name="whatsnew_lp_message">Conheça guias de Lonely Planet! Pontos turísticos, percursos temáticos e locais únicos em 7.000+ cidades.</string>
+	<string name="collections_title">Coleções</string>
+	<string name="key_information_title">Informações principais</string>
+	<string name="mustsee_title">Deve ver</string>
+	<string name="see_lp_category">Atrações</string>
+	<string name="play_lp_category">Lazer</string>
+	<string name="shop_lp_category">Compras</string>
+	<string name="transport_lp_category">Transporte</string>
+	<string name="sleep_lp_category">Pousada</string>
+	<string name="general_lp_category">Geral</string>
+	<string name="drink_lp_category">Bares</string>
+	<string name="eat_lp_category">Restaurantes</string>
 
 	<!-- SECTION: Types -->
 	<string name="type.aerialway.station">Estação de teleférico</string>
@@ -2219,6 +2239,7 @@
 	<string name="type.natural.pond">Lagoa</string>
 	<string name="type.natural.scrub">Mato</string>
 	<string name="type.natural.spring">Nascente</string>
+	<string name="type.natural.strait">Estreito</string>
 	<string name="type.natural.tree">Árvore</string>
 	<string name="type.natural.volcano">Vulcão</string>
 	<string name="type.natural.water">Água</string>

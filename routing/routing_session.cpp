@@ -28,8 +28,8 @@ int constexpr kOnRouteMissedCount = 10;
 // @TODO(vbykoianko) The distance should depend on the current speed.
 double constexpr kShowLanesDistInMeters = 500.;
 
-// @todo(kshalnev) The distance may depend on the current speed.
-double constexpr kShowPedestrianTurnInMeters = 5.;
+// @TODO The distance may depend on the current speed.
+double constexpr kShowPedestrianTurnInMeters = 20.0;
 
 double constexpr kRunawayDistanceSensitivityMeters = 0.01;
 
@@ -43,7 +43,7 @@ namespace routing
 void FormatDistance(double dist, string & value, string & suffix)
 {
   /// @todo Make better formatting of distance and units.
-  UNUSED_VALUE(measurement_utils::FormatDistance(dist, value));
+  value = measurement_utils::FormatDistance(dist);
 
   size_t const delim = value.find(' ');
   ASSERT(delim != string::npos, ());
@@ -290,6 +290,7 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
 
   m_turnNotificationsMgr.SetSpeedMetersPerSecond(info.m_speedMpS);
 
+  auto const formerIter = m_route->GetCurrentIteratorTurn();
   if (m_route->MoveIterator(info))
   {
     m_moveAwayCounter = 0;
@@ -315,6 +316,15 @@ SessionState RoutingSession::OnLocationPositionChanged(GpsInfo const & info)
 
     if (m_userCurrentPositionValid)
       m_lastGoodPosition = m_userCurrentPosition;
+
+    auto const curIter = m_route->GetCurrentIteratorTurn();
+    // If we are moving to the next segment after passing the turn
+    // it means the turn is changed. So the |m_onNewTurn| should be called.
+    if (formerIter && curIter && IsNormalTurn(*formerIter) &&
+        formerIter->m_index < curIter->m_index && m_onNewTurn)
+    {
+      m_onNewTurn();
+    }
 
     return m_state;
   }
@@ -415,12 +425,10 @@ void RoutingSession::GetRouteFollowingInfo(FollowingInfo & info) const
     info.m_lanes.clear();
   }
 
-  // Pedestrian info
-  m2::PointD pos;
-  m_route->GetCurrentDirectionPoint(pos);
-  info.m_pedestrianDirectionPos = mercator::ToLatLon(pos);
-  info.m_pedestrianTurn =
-      (distanceToTurnMeters < kShowPedestrianTurnInMeters) ? turn.m_pedestrianTurn : turns::PedestrianDirection::None;
+  // Pedestrian info.
+  info.m_pedestrianTurn = (distanceToTurnMeters < kShowPedestrianTurnInMeters)
+                              ? turn.m_pedestrianTurn
+                              : turns::PedestrianDirection::None;
 }
 
 double RoutingSession::GetCompletionPercent() const
@@ -664,6 +672,12 @@ void RoutingSession::SetChangeSessionStateCallback(
 {
   CHECK_THREAD_CHECKER(m_threadChecker, ());
   m_changeSessionStateCallback = changeSessionStateCallback;
+}
+
+void RoutingSession::SetOnNewTurnCallback(OnNewTurn const & onNewTurn)
+{
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+  m_onNewTurn = onNewTurn;
 }
 
 void RoutingSession::SetUserCurrentPosition(m2::PointD const & position)

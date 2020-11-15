@@ -247,7 +247,7 @@ bool InsertPostcodes(FeatureType & f, function<void(strings::UniString const &)>
   using namespace search;
 
   auto const & postBoxChecker = ftypes::IsPostBoxChecker::Instance();
-  string const postcode = f.GetPostcode();
+  string const postcode = f.GetMetadata(feature::Metadata::FMD_POSTCODE);
   vector<string> postcodes;
   if (!postcode.empty())
     postcodes.push_back(postcode);
@@ -332,17 +332,17 @@ public:
 
     if (ftypes::IsAirportChecker::Instance()(types))
     {
-      string const iata = f.GetMetadata().Get(feature::Metadata::FMD_AIRPORT_IATA);
+      string const iata = f.GetMetadata(feature::Metadata::FMD_AIRPORT_IATA);
       if (!iata.empty())
         inserter(StringUtf8Multilang::kDefaultCode, iata);
     }
 
     // Index operator to support "Sberbank ATM" for objects with amenity=atm and operator=Sberbank.
-    string const op = f.GetMetadata().Get(feature::Metadata::FMD_OPERATOR);
+    string const op = f.GetMetadata(feature::Metadata::FMD_OPERATOR);
     if (!op.empty())
       inserter(StringUtf8Multilang::kDefaultCode, op);
 
-    string const brand = f.GetMetadata().Get(feature::Metadata::FMD_BRAND);
+    string const brand = f.GetMetadata(feature::Metadata::FMD_BRAND);
     if (!brand.empty())
     {
       auto const & brands = indexer::GetDefaultBrands();
@@ -392,7 +392,7 @@ void ReadAddressData(string const & filename, vector<feature::AddressData> & add
   while (src.Size() > 0)
   {
     addrs.push_back({});
-    addrs.back().Deserialize(src);
+    addrs.back().DeserializeFromMwmTmp(src);
   }
 }
 

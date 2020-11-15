@@ -1,6 +1,7 @@
 #include "generator/feature_sorter.hpp"
 
 #include "generator/borders.hpp"
+#include "generator/boundary_postcodes_enricher.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/feature_generator.hpp"
 #include "generator/gen_mwm_info.hpp"
@@ -54,10 +55,11 @@ class FeaturesCollector2 : public FeaturesCollector
 public:
   static uint32_t constexpr kInvalidFeatureId = std::numeric_limits<uint32_t>::max();
 
-  FeaturesCollector2(string const & filename, DataHeader const & header,
-                     RegionData const & regionData, uint32_t versionDate)
+  FeaturesCollector2(string const & filename, string const & boundaryPostcodesFilename,
+                     DataHeader const & header, RegionData const & regionData, uint32_t versionDate)
     : FeaturesCollector(filename + FEATURES_FILE_TAG)
     , m_filename(filename)
+    , m_boundaryPostcodesEnricher(boundaryPostcodesFilename)
     , m_header(header)
     , m_regionData(regionData)
     , m_versionDate(versionDate)
@@ -69,7 +71,6 @@ public:
       m_trgFile.push_back(make_unique<TmpFile>(filename + TRIANGLE_FILE_TAG + postfix));
     }
 
-    m_metadataFile = make_unique<TmpFile>(filename + METADATA_FILE_TAG);
     m_addrFile = make_unique<FileWriter>(filename + TEMP_ADDR_FILENAME);
   }
 
@@ -138,17 +139,10 @@ public:
       finalizeFn(move(m_trgFile[i]), GetTagForIndex(TRIANGLE_FILE_TAG, i));
     }
 
-    finalizeFn(move(m_metadataFile), METADATA_FILE_TAG);
-
     {
       FilesContainerW writer(m_filename, FileWriter::OP_WRITE_EXISTING);
-      auto w = writer.GetWriter(METADATA_INDEX_FILE_TAG);
-
-      MetadataIndexBuilder metaIdxBuilder;
-      for (auto const & v : m_metadataOffset)
-        metaIdxBuilder.Put(v.first, v.second);
-
-      metaIdxBuilder.Freeze(*w);
+      auto w = writer.GetWriter(METADATA_FILE_TAG);
+      m_metadataBuilder.Freeze(*w);
     }
 
     if (m_header.GetType() == DataHeader::MapType::Country ||
@@ -246,15 +240,12 @@ public:
 
       featureId = WriteFeatureBase(buffer.m_buffer, fb);
 
-      fb.GetAddressData().Serialize(*m_addrFile);
+      fb.GetAddressData().SerializeForMwmTmp(*m_addrFile);
 
       if (!fb.GetMetadata().Empty())
       {
-        uint64_t const offset = m_metadataFile->Pos();
-        ASSERT_LESS_OR_EQUAL(offset, numeric_limits<uint32_t>::max(), ());
-
-        m_metadataOffset.emplace_back(featureId, static_cast<uint32_t>(offset));
-        fb.GetMetadata().Serialize(*m_metadataFile);
+        m_boundaryPostcodesEnricher.Enrich(fb);
+        m_metadataBuilder.Put(featureId, fb.GetMetadata());
       }
 
       if (fb.HasOsmIds())
@@ -311,11 +302,10 @@ private:
   unique_ptr<FileWriter> m_addrFile;
 
   // Temporary files for sections.
-  unique_ptr<TmpFile> m_metadataFile;
   TmpFiles m_geoFile, m_trgFile;
 
-  // Mapping from feature id to offset in file section with the correspondent metadata.
-  vector<pair<uint32_t, uint32_t>> m_metadataOffset;
+  generator::BoundaryPostcodesEnricher m_boundaryPostcodesEnricher;
+  indexer::MetadataBuilder m_metadataBuilder;
 
   DataHeader m_header;
   RegionData m_regionData;
@@ -369,7 +359,10 @@ bool GenerateFinalFeatures(feature::GenerateInfo const & info, string const & na
       // FeaturesCollector2 will create temporary file `dataFilePath + FEATURES_FILE_TAG`.
       // We cannot remove it in ~FeaturesCollector2(), we need to remove it in SCOPE_GUARD.
       SCOPE_GUARD(_, [&]() { Platform::RemoveFileIfExists(dataFilePath + FEATURES_FILE_TAG); });
-      FeaturesCollector2 collector(dataFilePath, header, regionData, info.m_versionDate);
+      auto const boundaryPostcodesFilename =
+          info.GetIntermediateFileName(BOUNDARY_POSTCODE_TMP_FILENAME);
+      FeaturesCollector2 collector(dataFilePath, boundaryPostcodesFilename, header, regionData,
+                                   info.m_versionDate);
 
       for (auto const & point : midPoints.GetVector())
       {

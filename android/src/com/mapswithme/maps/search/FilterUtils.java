@@ -15,6 +15,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.dialog.AlertDialog;
 import com.mapswithme.util.Utils;
+import com.mapswithme.util.statistics.Statistics;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,19 +24,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import static com.mapswithme.maps.search.BookingFilterParams.Room;
 
 public class FilterUtils
 {
   public static final int REQ_CODE_NO_NETWORK_CONNECTION_DIALOG = 301;
+  public static final String EXTRA_FILTER_PARAMS = "extra_filter_params";
   private static final int MAX_STAYING_DAYS = 30;
   private static final int MAX_CHECKIN_WINDOW_IN_DAYS = 365;
   private static final String DAY_OF_MONTH_PATTERN = "MMM d";
   private static final String NO_NETWORK_CONNECTION_DIALOG_TAG = "no_network_connection_dialog";
+  private static final int AGE_OF_CHILD = 7;
+  private static final int AGE_OF_INFANT = 1;
 
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({ RATING_ANY, RATING_GOOD, RATING_VERYGOOD, RATING_EXCELLENT })
@@ -288,17 +296,140 @@ public class FilterUtils
   @NonNull
   public static BookingFilterParams.Room[] toRooms(@Nullable RoomGuestCounts counts)
   {
-    // TODO: coming soon.
-    BookingFilterParams.Room[] rooms = new BookingFilterParams.Room[1];
-    rooms[0] = BookingFilterParams.Room.DEFAULT;
+    if (counts == null)
+    {
+      final Room[] rooms = new Room[1];
+      rooms[0] = Room.DEFAULT;
+      return rooms;
+    }
+
+    if (counts.getRooms() < 1)
+      throw new AssertionError("Room count must be greater than 1!");
+
+    if (counts.getAdults() < 1)
+      throw new AssertionError("Adults count must be greater than 1!");
+
+    if (counts.getRooms() == 1)
+    {
+      final Room[] rooms = new Room[1];
+      final int[] agesArray = toAgesArray(counts.getInfants(), counts.getChildren());
+      final Room room = new Room(counts.getAdults(), agesArray);
+      rooms[0] = room;
+      return rooms;
+    }
+
+    // Adult count must be not less than room count.
+    int roomCount = Math.min(counts.getAdults(), counts.getRooms());
+    final Room[] rooms = emptyRooms(roomCount);
+    for (int i = 0; i < counts.getAdults(); i++)
+    {
+      int roomIndex = i % roomCount;
+      rooms[roomIndex].incrementAdultsCount();
+    }
+
+    int[] agesArray = toAgesArray(counts.getInfants(), counts.getChildren());
+    for (int i = 0; i < agesArray.length; i++)
+    {
+      int roomIndex = i % roomCount;
+      rooms[roomIndex].addAge(agesArray[i]);
+    }
+
+    return rooms;
+  }
+
+  private static int[] toAgesArray(int infantCount, int childrenCount)
+  {
+    final int size = infantCount + childrenCount;
+    final int[] result = new int[size];
+    int i = 0;
+    for (; i < infantCount; i++)
+      result[i] = AGE_OF_INFANT;
+    for (; i < size; i++)
+      result[i] = AGE_OF_CHILD;
+    return result;
+  }
+
+  private static Room[] emptyRooms(int count)
+  {
+    Room[] rooms = new Room[count];
+    for (int i = 0; i < rooms.length; i++)
+      rooms[i] = new Room();
     return rooms;
   }
 
   @NonNull
-  public static RoomGuestCounts toCounts(@NonNull BookingFilterParams.Room... roms)
+  public static RoomGuestCounts toCounts(@NonNull BookingFilterParams.Room... rooms)
   {
-    // TODO: coming soon.
-    return new RoomGuestCounts(5, 5, 5,5);
+    final int roomsCount = rooms.length;
+    int adultsCount = 0;
+    int infantsCount = 0;
+    int childrenCount = 0;
+    for (Room room : rooms)
+    {
+      adultsCount += room.getAdultsCount();
+      int[] ageOfChildren = room.getAgeOfChildren();
+      if (ageOfChildren == null)
+        continue;
+      for (int age : ageOfChildren)
+      {
+        if (age == AGE_OF_INFANT)
+          infantsCount++;
+        else if (age == AGE_OF_CHILD)
+          childrenCount++;
+        else
+          throw new AssertionError("Unexpected age '" + age + "' detected!");
+      }
+    }
+
+    return new RoomGuestCounts(roomsCount, adultsCount, childrenCount, infantsCount);
+  }
+
+  public static void trackFiltersApplying(@Nullable SearchFilterController filterController)
+  {
+    if (filterController == null)
+      return;
+
+    HotelsFilter filter = filterController.getFilter();
+    BookingFilterParams params = filterController.getBookingFilterParams();
+    Statistics.INSTANCE.trackQuickFilterApply(Statistics.EventParam.HOTEL,
+                                              toAppliedFiltersString(filter, params));
+  }
+
+  @Nullable
+  public static String toAppliedFiltersString(@Nullable HotelsFilter filter,
+                                              @Nullable BookingFilterParams params)
+  {
+    final Map<String, String> map = new HashMap<>();
+    if (filter != null)
+    {
+      // TODO: parse filter parameters and put their in map here.
+    }
+
+    if (params != null)
+    {
+      map.put("date", params.getCheckinMillisec() + "," + params.getCheckoutMillisec());
+      RoomGuestCounts counts = toCounts(params.getRooms());
+      map.put("rooms", String.valueOf(counts.getRooms()));
+      map.put("adults", String.valueOf(counts.getAdults()));
+      map.put("children", String.valueOf(counts.getChildren()));
+      map.put("infants", String.valueOf(counts.getInfants()));
+    }
+
+    return map.isEmpty() ? null : map.toString();
+  }
+
+  @Nullable
+  public static BookingFilterParams createDefaultParams()
+  {
+    long checkinMillis = MaterialDatePicker.todayInUtcMilliseconds();
+    long checkoutMillis = getDayAfter(checkinMillis);
+    return BookingFilterParams.createParams(checkinMillis, checkoutMillis, toCounts(Room.DEFAULT));
+  }
+
+  @NonNull
+  public static String getHotelCategoryString(@NonNull Context context)
+  {
+    return context.getString(R.string.hotel);
   }
 
   public static class RoomGuestCounts
