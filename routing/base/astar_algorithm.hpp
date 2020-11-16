@@ -356,7 +356,7 @@ private:
       parent.insert_or_assign(to, from);
     }
 
-    void GetAdjacencyList(State const & state, std::vector<Edge> & adj)
+    void GetAdjacencyList(State const & state)
     {
       auto const realDistance = state.distance + pS - state.heuristic;
       astar::VertexData const data(state.vertex, realDistance);
@@ -380,8 +380,18 @@ private:
     ska::bytell_hash_map<Vertex, Weight> bestDistance;
     Parents parent;
     Vertex bestVertex;
-
     Weight pS;
+    // |adj| is a parameter which is filled by GetAdjacencyList(). |adj| and |stateV| are necessary
+    // because IndexGraphStarterJoints (derived from AStarGraph) is not ready for
+    // a repeated call of IndexGraphStarterJoints::GetEdgeList() with the same |vertexData| and
+    // |isOutgoing| parameters. On the other hand after a call of AStarGraph::GetEdgeList()
+    // it may be seen that it's time to stop two-thread route building in FindPathBidirectional(),
+    // but the result of the call AStarGraph::GetEdgeList() (|adj|) and
+    // the vertex which the method AStarGraph::GetEdgeList() is called for (|stateV|),
+    // are still necessary for each context to finish route building in one thread step.
+    // So they should be kept to continue route building correctly after two thread step.
+    std::vector<Edge> adj;
+    std::optional<State> stateV;
   };
 
   static void ReconstructPath(Vertex const & v,
@@ -606,11 +616,11 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
                            BidirectionalStepContext & oppositeContext,
                            std::atomic<bool> & exit) {
       LOG(LINFO, ("---FindPath-------wave---------------------------",
-                  context.forward ? "forward" : "backward"));
+                  context.forward ? "forward" : "backward", "queue size:", context.queue.size(), "exit:", exit.load()));
       size_t i = 0;
-      std::vector<Edge> adj;
       while (!context.queue.empty()  && !exit.load())
       {
+//        LOG(LINFO, ("---------", context.forward ? "forward" : "backward", "queue size:", context.queue.size()));
         // Note. In case of exception in copy c-tor |context.queue| structure is not damaged
         // because the routing is stopped.
         State const stateV = context.queue.top();
@@ -623,9 +633,12 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
                                          context.forward ? context.finalVertex : context.startVertex,
                                          context.forward, context.mtx);
 
-        context.GetAdjacencyList(stateV, adj);
+        context.GetAdjacencyList(stateV);
         auto const & pV = stateV.heuristic;
-        for (auto const & edge : adj)
+        std::vector<State> toQueue;
+        toQueue.reserve(context.adj.size());
+        bool ret = false;
+        for (auto const & edge : context.adj)
         {
           State stateW(edge.GetTarget(), kZeroDistance);
 
@@ -650,28 +663,50 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
             continue;
 
           stateW.heuristic = pW;
-          context.UpdateDistance(stateW);
-          context.UpdateParent(stateW.vertex, stateV.vertex);
+//          context.UpdateDistance(stateW);
+//          context.UpdateParent(stateW.vertex, stateV.vertex);
           ++i;
-          if (oppositeContext.GetDistance(stateW.vertex))
+          if (ret || oppositeContext.GetDistance(stateW.vertex))
           {
             LOG(LINFO, ("---FindPath-------wave end---------------------------",
                         context.forward ? "forward" : "backward", stateW.vertex, i));
-            exit.store(true);
-            return;  // The waves are intersected.
+//            context.queue.push(stateV);
+            ret = true;
+//            exit.store(true);
+//            return;  // The waves are intersected.
           }
+          toQueue.push_back(stateW);
 
-          if (stateW.vertex != (context.forward ? context.finalVertex : context.startVertex))
-            context.queue.push(stateW);
+//          if (stateW.vertex != (context.forward ? context.finalVertex : context.startVertex))
+//            context.queue.push(stateW);
+        }
+        if (ret)
+        {
+//          context.queue.push(stateV);
+          context.stateV = stateV;
+          exit.store(true);
+          LOG(LINFO, ("---FindPath-------wave end---------------------------",
+              context.forward ? "forward" : "backward", i));
+          return;
+        }
+        else
+        {
+          for (auto const & stateW : toQueue)
+          {
+            context.UpdateDistance(stateW);
+            context.UpdateParent(stateW.vertex, stateV.vertex);
+            if (stateW.vertex != (context.forward ? context.finalVertex : context.startVertex))
+              context.queue.push(stateW);
+          }
         }
       }
 
       exit.store(true);
       LOG(LINFO, ("----FindPath------wave end (empty)---------------------------",
-                  context.forward ? "forward" : "backward"));
+                  context.forward ? "forward" : "backward", i));
     };
 
-    std::atomic<bool> shouldExit;
+    std::atomic<bool> shouldExit = false;
     PeriodicPollCancellable periodicCancellable(params.m_cancellable);
 
     // Starting two wave in two threads.
@@ -682,7 +717,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
       wave(forward, backward, shouldExit);
       backwardWave.get();
     }
-    LOG(LINFO, ("-------FindPath-------Finished-----------------"));
+    LOG(LINFO, ("-------Two thread part of FindPath-------Finished-----------------"));
     ////////////////////////////////////////////////////////////////////////////////////////////////
     mtx.reset();
   }
@@ -709,16 +744,15 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     return Result::OK;
   };
 
-  std::vector<Edge> adj;
-
   // It is not necessary to check emptiness for both queues here
   // because if we have not found a path by the time one of the
   // queues is exhausted, we never will.
   uint32_t steps = 0;
   PeriodicPollCancellable periodicCancellable(params.m_cancellable);
 
-  while (!cur->queue.empty() && !nxt->queue.empty())
+  while (!(cur->queue.empty() && !cur->stateV) && !(nxt->queue.empty() && !nxt->stateV))
   {
+//    LOG(LINFO, ("---------cur is", cur->forward ? "forward" : "backward", "cur queue size:", cur->queue.size(), "next queue size:", nxt->queue.size()));
     ++steps;
 
     if (periodicCancellable.IsCancelled())
@@ -743,23 +777,33 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
       // several top states in a priority queue may have equal reduced path lengths and
       // different real path lengths.
 
+      LOG(LINFO, ("foundAnyPath == true. curTop + nxtTop =", curTop + nxtTop, "bestPathReducedLength - epsilon =", bestPathReducedLength - epsilon));
       if (curTop + nxtTop >= bestPathReducedLength - epsilon)
         return getResult();
     }
 
-    State const stateV = cur->queue.top();
-    cur->queue.pop();
+    // In case of two thread version it's necessary to process last edges got on two thread step.
+    // The information is kept in |cur->stateV| and |cur->adj|.
+    auto const firstStepAfterTwoThreads = useTwoThreads && cur->stateV;
+
+    State const stateV = firstStepAfterTwoThreads ? *cur->stateV : cur->queue.top();
+    if (firstStepAfterTwoThreads)
+      cur->stateV = std::nullopt;
+    else
+      cur->queue.pop();
 
     if (cur->ExistsStateWithBetterDistance(stateV))
       continue;
+    if (!firstStepAfterTwoThreads)
+    {
+      params.m_onVisitedVertexCallback(stateV.vertex,
+                                       cur->forward ? cur->finalVertex : cur->startVertex,
+                                       true /* forward */, mtx);
+      cur->GetAdjacencyList(stateV);
+    }
 
-    params.m_onVisitedVertexCallback(stateV.vertex,
-                                     cur->forward ? cur->finalVertex : cur->startVertex,
-                                     true /* forward */, mtx);
-
-    cur->GetAdjacencyList(stateV, adj);
     auto const & pV = stateV.heuristic;
-    for (auto const & edge : adj)
+    for (auto const & edge : cur->adj)
     {
       State stateW(edge.GetTarget(), kZeroDistance);
 
@@ -793,8 +837,10 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         // find the reduced length of the path's parts in the reduced forward and backward graphs.
         auto const curPathReducedLength = stateW.distance + distW;
         // No epsilon here: it is ok to overshoot slightly.
+        auto const connectible = graph.AreWavesConnectible(forwardParents, stateW.vertex, backwardParents);
+        LOG(LINFO, ("foundAnyPath =", foundAnyPath ? "true" : "false", "bestPathReducedLength =", bestPathReducedLength, "curPathReducedLength =", curPathReducedLength, "connectible =", connectible ? "true" : "false"));
         if ((!foundAnyPath || bestPathReducedLength > curPathReducedLength) &&
-            graph.AreWavesConnectible(forwardParents, stateW.vertex, backwardParents))
+            connectible)
         {
           bestPathReducedLength = curPathReducedLength;
 
