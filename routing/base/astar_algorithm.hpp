@@ -9,11 +9,11 @@
 #include "base/cancellable.hpp"
 #include "base/logging.hpp"
 #include "base/optional_lock_guard.hpp"
+#include "base/thread.hpp"
 
 #include <algorithm>
 #include <atomic>
 #include <functional>
-#include <future>
 #include <iostream>
 #include <map>
 #include <mutex>
@@ -726,10 +726,10 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     // Starting two wave in two threads.
     {
       base::ScopedTimerWithLog timer("Wave");
-      auto backwardWave = std::async(std::launch::async, wave, std::ref(backward),
-                                     std::ref(forward), std::ref(shouldExit));
+      threads::SimpleThread backwardWave(wave, std::ref(backward),
+                                         std::ref(forward), std::ref(shouldExit));
       wave(forward, backward, shouldExit);
-      backwardWave.get();
+      backwardWave.join();
     }
     LOG(LINFO, ("-------Two thread part of FindPath-------Finished-----------------"));
     ////////////////////////////////////////////////////////////////////////////////////////////////
