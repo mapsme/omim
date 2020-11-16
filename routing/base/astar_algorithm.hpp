@@ -295,6 +295,12 @@ private:
       graph.DropAStarParents();
     }
 
+    void Init(Vertex const & endVertex)
+    {
+      UpdateDistance(State(endVertex, kZeroDistance));
+      queue.push(State(endVertex, kZeroDistance, ConsistentHeuristic(endVertex)));
+    }
+
     Weight TopDistance() const
     {
       ASSERT(!queue.empty(), ());
@@ -356,7 +362,20 @@ private:
       parent.insert_or_assign(to, from);
     }
 
-    void GetAdjacencyList(State const & state)
+    void Update(State const & stateW, State const & stateV)
+    {
+      UpdateDistance(stateW);
+      UpdateParent(stateW.vertex, stateV.vertex);
+    }
+
+    void UpdateAndPushIfNotEnd(State const & stateW, State const & stateV)
+    {
+      Update(stateW, stateV);
+      if (stateW.vertex != GetEndVertex())
+        queue.push(stateW);
+    }
+
+    void FillAdjacencyList(State const & state)
     {
       auto const realDistance = state.distance + pS - state.heuristic;
       astar::VertexData const data(state.vertex, realDistance);
@@ -366,7 +385,19 @@ private:
         graph.GetIngoingEdgesList(data, adj);
     }
 
+    State GetState(bool takesCachedState)
+    {
+      State state = takesCachedState ? *stateV : queue.top();
+      if (takesCachedState)
+        stateV = std::nullopt;
+      else
+        queue.pop();
+      return state;
+    }
+
     Parents & GetParents() { return parent; }
+
+    Vertex const & GetEndVertex() const { return forward ? finalVertex : startVertex; }
 
     bool IsTwoThreadsReady() const { return mtx.has_value(); }
 
@@ -381,7 +412,7 @@ private:
     Parents parent;
     Vertex bestVertex;
     Weight pS;
-    // |adj| is a parameter which is filled by GetAdjacencyList(). |adj| and |stateV| are necessary
+    // |adj| is a parameter which is filled by FillAdjacencyList(). |adj| and |stateV| are necessary
     // because IndexGraphStarterJoints (derived from AStarGraph) is not ready for
     // a repeated call of IndexGraphStarterJoints::GetEdgeList() with the same |vertexData| and
     // |isOutgoing| parameters. On the other hand after a call of AStarGraph::GetEdgeList()
@@ -599,19 +630,12 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   auto bestPathReducedLength = kZeroDistance;
   auto bestPathRealLength = kZeroDistance;
 
-  forward.UpdateDistance(State(startVertex, kZeroDistance));
-  forward.queue.push(State(startVertex, kZeroDistance, forward.ConsistentHeuristic(startVertex)));
-
-  backward.UpdateDistance(State(finalVertex, kZeroDistance));
-  backward.queue.push(State(finalVertex, kZeroDistance, backward.ConsistentHeuristic(finalVertex)));
+  forward.Init(startVertex);
+  backward.Init(finalVertex);
 
   if (useTwoThreads)
   {
     mtx.emplace();
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    // @TODO The multithreading code below in wave lambda is used more or less the same line
-    // as one thread bidirectional version. Consider put in some functions and call them for
-    // one thread and two thread versions.
     auto wave = [&epsilon, &params](BidirectionalStepContext & context,
                            BidirectionalStepContext & oppositeContext,
                            std::atomic<bool> & exit) {
@@ -629,15 +653,21 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         if (context.ExistsStateWithBetterDistance(stateV))
           continue;
 
-        params.m_onVisitedVertexCallback(stateV.vertex,
-                                         context.forward ? context.finalVertex : context.startVertex,
-                                         context.forward, context.mtx);
+        params.m_onVisitedVertexCallback(stateV.vertex, context.GetEndVertex(), context.forward, context.mtx);
 
-        context.GetAdjacencyList(stateV);
+        context.FillAdjacencyList(stateV);
         auto const & pV = stateV.heuristic;
+
+        // To get outgoing or ingoing edges |context.FillAdjacencyList(stateV)| is called above.
+        // Then some of got edges is places to the queue, but one edge should be places only once.
+        // |toQueue| is needed to guaranty this in the monument of switching to one thread step.
+        // It means that if forward and backward waves intersects on some edge, two thread
+        // step should be stopped and this edge and edges after it according to the queue
+        // should be processed with one thread step below.
         std::vector<State> toQueue;
         toQueue.reserve(context.adj.size());
-        bool ret = false;
+        bool intersectsWithOtherWave = false;
+
         for (auto const & edge : context.adj)
         {
           State stateW(edge.GetTarget(), kZeroDistance);
@@ -663,26 +693,15 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
             continue;
 
           stateW.heuristic = pW;
-//          context.UpdateDistance(stateW);
-//          context.UpdateParent(stateW.vertex, stateV.vertex);
           ++i;
-          if (ret || oppositeContext.GetDistance(stateW.vertex))
-          {
-            LOG(LINFO, ("---FindPath-------wave end---------------------------",
-                        context.forward ? "forward" : "backward", stateW.vertex, i));
-//            context.queue.push(stateV);
-            ret = true;
-//            exit.store(true);
-//            return;  // The waves are intersected.
-          }
-          toQueue.push_back(stateW);
+          if (intersectsWithOtherWave || oppositeContext.GetDistance(stateW.vertex))
+            intersectsWithOtherWave = true;
 
-//          if (stateW.vertex != (context.forward ? context.finalVertex : context.startVertex))
-//            context.queue.push(stateW);
+          toQueue.push_back(stateW);
         }
-        if (ret)
+        if (intersectsWithOtherWave)
         {
-//          context.queue.push(stateV);
+          // |context.stateV| is set here and |context.adj| is already set.
           context.stateV = stateV;
           exit.store(true);
           LOG(LINFO, ("---FindPath-------wave end---------------------------",
@@ -692,12 +711,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         else
         {
           for (auto const & stateW : toQueue)
-          {
-            context.UpdateDistance(stateW);
-            context.UpdateParent(stateW.vertex, stateV.vertex);
-            if (stateW.vertex != (context.forward ? context.finalVertex : context.startVertex))
-              context.queue.push(stateW);
-          }
+            context.UpdateAndPushIfNotEnd(stateW, stateV);
         }
       }
 
@@ -750,6 +764,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   uint32_t steps = 0;
   PeriodicPollCancellable periodicCancellable(params.m_cancellable);
 
+  // One thread step.
+  // While both of contextses are ready to continue. It means
+  // each one has to have items in queue or some edges have come for two thread step.
   while (!(cur->queue.empty() && !cur->stateV) && !(nxt->queue.empty() && !nxt->stateV))
   {
 //    LOG(LINFO, ("---------cur is", cur->forward ? "forward" : "backward", "cur queue size:", cur->queue.size(), "next queue size:", nxt->queue.size()));
@@ -777,7 +794,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
       // several top states in a priority queue may have equal reduced path lengths and
       // different real path lengths.
 
-      LOG(LINFO, ("foundAnyPath == true. curTop + nxtTop =", curTop + nxtTop, "bestPathReducedLength - epsilon =", bestPathReducedLength - epsilon));
+//      LOG(LINFO, ("foundAnyPath == true. curTop + nxtTop =", curTop + nxtTop, "bestPathReducedLength - epsilon =", bestPathReducedLength - epsilon));
       if (curTop + nxtTop >= bestPathReducedLength - epsilon)
         return getResult();
     }
@@ -786,20 +803,14 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
     // The information is kept in |cur->stateV| and |cur->adj|.
     auto const firstStepAfterTwoThreads = useTwoThreads && cur->stateV;
 
-    State const stateV = firstStepAfterTwoThreads ? *cur->stateV : cur->queue.top();
-    if (firstStepAfterTwoThreads)
-      cur->stateV = std::nullopt;
-    else
-      cur->queue.pop();
+    State const stateV = cur->GetState(firstStepAfterTwoThreads);
 
     if (cur->ExistsStateWithBetterDistance(stateV))
       continue;
     if (!firstStepAfterTwoThreads)
     {
-      params.m_onVisitedVertexCallback(stateV.vertex,
-                                       cur->forward ? cur->finalVertex : cur->startVertex,
-                                       true /* forward */, mtx);
-      cur->GetAdjacencyList(stateV);
+      params.m_onVisitedVertexCallback(stateV.vertex, cur->GetEndVertex(), true /* forward */, mtx);
+      cur->FillAdjacencyList(stateV);
     }
 
     auto const & pV = stateV.heuristic;
@@ -827,8 +838,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         continue;
 
       stateW.heuristic = pW;
-      cur->UpdateDistance(stateW);
-      cur->UpdateParent(stateW.vertex, stateV.vertex);
+      cur->Update(stateW, stateV);
 
       if (auto op = nxt->GetDistance(stateW.vertex); op)
       {
@@ -838,7 +848,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         auto const curPathReducedLength = stateW.distance + distW;
         // No epsilon here: it is ok to overshoot slightly.
         auto const connectible = graph.AreWavesConnectible(forwardParents, stateW.vertex, backwardParents);
-        LOG(LINFO, ("foundAnyPath =", foundAnyPath ? "true" : "false", "bestPathReducedLength =", bestPathReducedLength, "curPathReducedLength =", curPathReducedLength, "connectible =", connectible ? "true" : "false"));
+//        LOG(LINFO, ("foundAnyPath =", foundAnyPath ? "true" : "false", "bestPathReducedLength =", bestPathReducedLength, "curPathReducedLength =", curPathReducedLength, "connectible =", connectible ? "true" : "false"));
         if ((!foundAnyPath || bestPathReducedLength > curPathReducedLength) &&
             connectible)
         {
@@ -854,7 +864,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         }
       }
 
-      if (stateW.vertex != (cur->forward ? cur->finalVertex : cur->startVertex))
+      if (stateW.vertex != cur->GetEndVertex())
         cur->queue.push(stateW);
     }
   }
