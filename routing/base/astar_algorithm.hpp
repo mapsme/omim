@@ -399,6 +399,8 @@ private:
 
     Vertex const & GetEndVertex() const { return forward ? finalVertex : startVertex; }
 
+    bool IsNextVertex() const {return !queue.empty() || stateV; }
+
     bool IsTwoThreadsReady() const { return mtx.has_value(); }
 
     std::optional<std::mutex> & mtx;
@@ -765,9 +767,7 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   PeriodicPollCancellable periodicCancellable(params.m_cancellable);
 
   // One thread step.
-  // While both of contextses are ready to continue. It means
-  // each one has to have items in queue or some edges have come for two thread step.
-  while (!(cur->queue.empty() && !cur->stateV) && !(nxt->queue.empty() && !nxt->stateV))
+  while (cur->IsNextVertex() && nxt->IsNextVertex())
   {
 //    LOG(LINFO, ("---------cur is", cur->forward ? "forward" : "backward", "cur queue size:", cur->queue.size(), "next queue size:", nxt->queue.size()));
     ++steps;
