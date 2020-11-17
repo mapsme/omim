@@ -226,6 +226,7 @@ public:
   template <typename P>
   Result FindPathBidirectional(P & params, RoutingResult<Vertex, Weight> & result) const;
 
+
   // Adjust route to the previous one.
   // Expects |params.m_checkLengthCallback| to check wave propagation limit.
   template <typename P>
@@ -434,6 +435,12 @@ private:
       Vertex const & v, Vertex const & w,
       typename BidirectionalStepContext::Parents const & parentV,
       typename BidirectionalStepContext::Parents const & parentW, std::vector<Vertex> & path);
+
+  template <typename P>
+  void FindPathBidirectionalTwoThreadStep(
+      Weight const & epsilon, P & params,
+      AStarAlgorithm<Vertex, Edge, Weight>::BidirectionalStepContext & forward,
+      AStarAlgorithm<Vertex, Edge, Weight>::BidirectionalStepContext & backward) const;
 };
 
 template <typename Vertex, typename Edge, typename Weight>
@@ -636,107 +643,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   backward.Init(finalVertex);
 
   if (useTwoThreads)
-  {
-    mtx.emplace();
-    auto wave = [&epsilon, &params](BidirectionalStepContext & context,
-                           BidirectionalStepContext & oppositeContext,
-                           std::atomic<bool> & exit) {
-      LOG(LINFO, ("---FindPath-------wave---------------------------",
-                  context.forward ? "forward" : "backward", "queue size:", context.queue.size(), "exit:", exit.load()));
-      size_t i = 0;
-      while (!context.queue.empty()  && !exit.load())
-      {
-//        LOG(LINFO, ("---------", context.forward ? "forward" : "backward", "queue size:", context.queue.size()));
-        // Note. In case of exception in copy c-tor |context.queue| structure is not damaged
-        // because the routing is stopped.
-        State const stateV = context.queue.top();
-        context.queue.pop();
+    FindPathBidirectionalTwoThreadStep(epsilon, params, forward, backward);
 
-        if (context.ExistsStateWithBetterDistance(stateV))
-          continue;
-
-        params.m_onVisitedVertexCallback(stateV.vertex, context.GetEndVertex(), context.forward, context.mtx);
-
-        context.FillAdjacencyList(stateV);
-        auto const & pV = stateV.heuristic;
-
-        // To get outgoing or ingoing edges |context.FillAdjacencyList(stateV)| is called above.
-        // Then some of got edges is places to the queue, but one edge should be places only once.
-        // |toQueue| is needed to guaranty this in the monument of switching to one thread step.
-        // It means that if forward and backward waves intersects on some edge, two thread
-        // step should be stopped and this edge and edges after it according to the queue
-        // should be processed with one thread step below.
-        std::vector<State> toQueue;
-        toQueue.reserve(context.adj.size());
-        bool intersectsWithOtherWave = false;
-
-        for (auto const & edge : context.adj)
-        {
-          State stateW(edge.GetTarget(), kZeroDistance);
-
-          if (stateV.vertex == stateW.vertex)
-            continue;
-
-          auto const weight = edge.GetWeight();
-          auto const pW = context.ConsistentHeuristic(stateW.vertex);
-          auto const reducedWeight = weight + pW - pV;
-
-          CHECK_GREATER_OR_EQUAL(
-              reducedWeight, -epsilon,
-              ("Invariant violated for:", "v =", stateV.vertex, "w =", stateW.vertex));
-
-          stateW.distance = stateV.distance + std::max(reducedWeight, kZeroDistance);
-
-          auto const fullLength = weight + stateV.distance + context.pS - pV;
-          if (!params.m_checkLengthCallback(fullLength, context.forward))
-            continue;
-
-          if (context.ExistsStateWithBetterDistance(stateW, epsilon))
-            continue;
-
-          stateW.heuristic = pW;
-          ++i;
-          if (intersectsWithOtherWave || oppositeContext.GetDistance(stateW.vertex))
-            intersectsWithOtherWave = true;
-
-          toQueue.push_back(stateW);
-        }
-        if (intersectsWithOtherWave)
-        {
-          // |context.stateV| is set here and |context.adj| is already set.
-          context.stateV = stateV;
-          exit.store(true);
-          LOG(LINFO, ("---FindPath-------wave end---------------------------",
-              context.forward ? "forward" : "backward", i));
-          return;
-        }
-        else
-        {
-          for (auto const & stateW : toQueue)
-            context.UpdateAndPushIfNotEnd(stateW, stateV);
-        }
-      }
-
-      exit.store(true);
-      LOG(LINFO, ("----FindPath------wave end (empty)---------------------------",
-                  context.forward ? "forward" : "backward", i));
-    };
-
-    std::atomic<bool> shouldExit = false;
-    PeriodicPollCancellable periodicCancellable(params.m_cancellable);
-
-    // Starting two wave in two threads.
-    {
-      base::ScopedTimerWithLog timer("Wave");
-      threads::SimpleThread backwardWave(wave, std::ref(backward),
-                                         std::ref(forward), std::ref(shouldExit));
-      wave(forward, backward, shouldExit);
-      backwardWave.join();
-    }
-    LOG(LINFO, ("-------Two thread part of FindPath-------Finished-----------------"));
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    mtx.reset();
-  }
   CHECK(!mtx.has_value(), ("Mutex should be destroyed."));
 
   // To use the search code both for backward and forward directions
@@ -769,7 +677,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   // One thread step.
   while (cur->IsNextVertex() && nxt->IsNextVertex())
   {
-//    LOG(LINFO, ("---------cur is", cur->forward ? "forward" : "backward", "cur queue size:", cur->queue.size(), "next queue size:", nxt->queue.size()));
     ++steps;
 
     if (periodicCancellable.IsCancelled())
@@ -793,8 +700,6 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
       // It would be a mistake to make a decision based on real path lengths because
       // several top states in a priority queue may have equal reduced path lengths and
       // different real path lengths.
-
-//      LOG(LINFO, ("foundAnyPath == true. curTop + nxtTop =", curTop + nxtTop, "bestPathReducedLength - epsilon =", bestPathReducedLength - epsilon));
       if (curTop + nxtTop >= bestPathReducedLength - epsilon)
         return getResult();
     }
@@ -847,10 +752,9 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
         // find the reduced length of the path's parts in the reduced forward and backward graphs.
         auto const curPathReducedLength = stateW.distance + distW;
         // No epsilon here: it is ok to overshoot slightly.
-        auto const connectible = graph.AreWavesConnectible(forwardParents, stateW.vertex, backwardParents);
-//        LOG(LINFO, ("foundAnyPath =", foundAnyPath ? "true" : "false", "bestPathReducedLength =", bestPathReducedLength, "curPathReducedLength =", curPathReducedLength, "connectible =", connectible ? "true" : "false"));
-        if ((!foundAnyPath || bestPathReducedLength > curPathReducedLength) &&
-            connectible)
+        auto const connectible = graph.AreWavesConnectible(forwardParents, stateW.vertex,
+                                                           backwardParents);
+        if ((!foundAnyPath || bestPathReducedLength > curPathReducedLength) && connectible)
         {
           bestPathReducedLength = curPathReducedLength;
 
@@ -1020,5 +924,112 @@ AStarAlgorithm<Vertex, Edge, Weight>::Context::ReconstructPath(Vertex const & v,
                                                                std::vector<Vertex> & path) const
 {
   AStarAlgorithm<Vertex, Edge, Weight>::ReconstructPath(v, m_parents, path);
+}
+
+template <typename Vertex, typename Edge, typename Weight>
+template <typename P>
+void AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectionalTwoThreadStep(
+    Weight const & epsilon, P & params,
+    AStarAlgorithm<Vertex, Edge, Weight>::BidirectionalStepContext & forward,
+    AStarAlgorithm<Vertex, Edge, Weight>::BidirectionalStepContext & backward) const
+{
+  CHECK(&*forward.mtx == &*backward.mtx,
+        ("forward and backward waves have to contain the same mutex."));
+  auto & mtx = forward.mtx;
+  mtx.emplace();
+  auto wave = [&epsilon, &params](BidirectionalStepContext & context,
+                                  BidirectionalStepContext & oppositeContext,
+                                  std::atomic<bool> & exit) {
+    LOG(LINFO, ("---FindPath-------wave---------------------------",
+        context.forward ? "forward" : "backward", "queue size:", context.queue.size(), "exit:", exit.load()));
+    size_t i = 0;
+    while (!context.queue.empty()  && !exit.load())
+    {
+      // Note. In case of exception in copy c-tor |context.queue| structure is not damaged
+      // because the routing is stopped.
+      State const stateV = context.queue.top();
+      context.queue.pop();
+
+      if (context.ExistsStateWithBetterDistance(stateV))
+        continue;
+
+      params.m_onVisitedVertexCallback(stateV.vertex, context.GetEndVertex(), context.forward, context.mtx);
+
+      context.FillAdjacencyList(stateV);
+      auto const & pV = stateV.heuristic;
+
+      // To get outgoing or ingoing edges |context.FillAdjacencyList(stateV)| is called above.
+      // Then some of got edges is places to the queue, but one edge should be places only once.
+      // |toQueue| is needed to guaranty this in the monument of switching to one thread step.
+      // It means that if forward and backward waves intersects on some edge, two thread
+      // step should be stopped and this edge and edges after it according to the queue
+      // should be processed with one thread step below.
+      std::vector<State> toQueue;
+      toQueue.reserve(context.adj.size());
+      bool intersectsWithOtherWave = false;
+
+      for (auto const & edge : context.adj)
+      {
+        State stateW(edge.GetTarget(), kZeroDistance);
+
+        if (stateV.vertex == stateW.vertex)
+          continue;
+
+        auto const weight = edge.GetWeight();
+        auto const pW = context.ConsistentHeuristic(stateW.vertex);
+        auto const reducedWeight = weight + pW - pV;
+
+        CHECK_GREATER_OR_EQUAL(
+            reducedWeight, -epsilon,
+            ("Invariant violated for:", "v =", stateV.vertex, "w =", stateW.vertex));
+
+        stateW.distance = stateV.distance + std::max(reducedWeight, kZeroDistance);
+
+        auto const fullLength = weight + stateV.distance + context.pS - pV;
+        if (!params.m_checkLengthCallback(fullLength, context.forward))
+          continue;
+
+        if (context.ExistsStateWithBetterDistance(stateW, epsilon))
+          continue;
+
+        stateW.heuristic = pW;
+        ++i;
+        if (intersectsWithOtherWave || oppositeContext.GetDistance(stateW.vertex))
+          intersectsWithOtherWave = true;
+
+        toQueue.push_back(stateW);
+      }
+      if (intersectsWithOtherWave)
+      {
+        // |context.stateV| is set here and |context.adj| is already set.
+        context.stateV = stateV;
+        exit.store(true);
+        LOG(LINFO, ("---FindPath-------wave end---------------------------",
+            context.forward ? "forward" : "backward", i));
+        return;
+      }
+      else
+      {
+        for (auto const & stateW : toQueue)
+          context.UpdateAndPushIfNotEnd(stateW, stateV);
+      }
+    }
+
+    LOG(LINFO, ("----FindPath------wave end---------------------------",
+        context.forward ? "forward" : "backward",
+        context.queue.empty() ? "queue is empty" : (exit.load() ? "Another wave is finished" : "STRANGE BEHAVIOR"), i));
+    exit.store(true);
+  };
+
+  std::atomic<bool> shouldExit = false;
+  PeriodicPollCancellable periodicCancellable(params.m_cancellable);
+
+  // Starting two wave in two threads.
+  threads::SimpleThread backwardWave(wave, std::ref(backward), std::ref(forward), std::ref(shouldExit));
+  wave(forward, backward, shouldExit);
+  backwardWave.join();
+
+  LOG(LINFO, ("-------Two thread part of FindPath-------Finished-----------------"));
+  mtx.reset();
 }
 }  // namespace routing
