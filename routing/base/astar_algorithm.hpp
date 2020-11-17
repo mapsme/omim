@@ -304,8 +304,9 @@ private:
 
     Weight TopDistance() const
     {
-      ASSERT(!queue.empty(), ());
-      return bestDistance.at(queue.top().vertex);
+      ASSERT(stateV || !queue.empty(),
+             ("Either stateV should have value or queue should have value(s)."));
+      return bestDistance.at(stateV ? stateV->vertex : queue.top().vertex);
     }
 
     // p_f(v) = 0.5*(π_f(v) - π_r(v))
@@ -386,10 +387,10 @@ private:
         graph.GetIngoingEdgesList(data, adj);
     }
 
-    State GetState(bool takesCachedState)
+    State TopAndPopState()
     {
-      State state = takesCachedState ? *stateV : queue.top();
-      if (takesCachedState)
+      State state = stateV ? *stateV : queue.top();
+      if (stateV)
         stateV = std::nullopt;
       else
         queue.pop();
@@ -424,6 +425,8 @@ private:
     // the vertex which the method AStarGraph::GetEdgeList() is called for (|stateV|),
     // are still necessary for each context to finish route building in one thread step.
     // So they should be kept to continue route building correctly after two thread step.
+    // If |stateV| has value it should be used instead of |queue.top()|. In that case
+    // |adj| is filled with outgoing or ingoing edges. If not, |queue.top()| should be used.
     std::vector<Edge> adj;
     std::optional<State> stateV;
   };
@@ -706,9 +709,10 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
 
     // In case of two thread version it's necessary to process last edges got on two thread step.
     // The information is kept in |cur->stateV| and |cur->adj|.
-    auto const firstStepAfterTwoThreads = useTwoThreads && cur->stateV;
+    // |cur->stateV| should be checked before call |cur->TopAndPopState()|.
+    auto const firstStepAfterTwoThreads = cur->stateV != std::nullopt;
 
-    State const stateV = cur->GetState(firstStepAfterTwoThreads);
+    State const stateV = cur->TopAndPopState();
 
     if (cur->ExistsStateWithBetterDistance(stateV))
       continue;
