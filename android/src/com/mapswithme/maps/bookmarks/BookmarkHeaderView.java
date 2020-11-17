@@ -73,7 +73,7 @@ public class BookmarkHeaderView extends LinearLayout
 
   public void setCategory(@NonNull BookmarkCategory category) {
     Context context = getContext();
-    if (!category.isMyCategory())
+    if (!category.isMyCategory() && category.getBookmarksCount() > 0)
     {
       String imageUrl = category.getImageUrl();
       if (TextUtils.isEmpty(imageUrl) || !ConnectionState.isConnected())
@@ -106,7 +106,7 @@ public class BookmarkHeaderView extends LinearLayout
     }
     else
     {
-      UiUtils.hide(findViewById(R.id.guide_info));
+      UiUtils.hide(this);
     }
   }
 }

@@ -344,13 +344,11 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
     boolean isEmptyRecycler = isEmpty() || isEmptySearchResults();
 
     showPlaceholder(isEmptyRecycler);
-    UiUtils.showIf(!isEmptyRecycler, getRecyclerView(), mFabViewOnMap, mDescriptionView);
     UiUtils.hideIf(getAdapter().isSearchResults(), mCollectionRecyclerView, mDescriptionView);
+    UiUtils.showIf(!isEmptyRecycler, getRecyclerView(), mFabViewOnMap, mDescriptionView);
 
     if (getCategoryOrThrow().isMyCategory())
-    {
       UiUtils.hide(mDescriptionView);
-    }
 
     requireActivity().invalidateOptionsMenu();
   }
