@@ -604,8 +604,6 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
 
   vector<Segment> startSegments;
   bool startSegmentIsAlmostCodirectionalDirection = false;
-  // @TODO |startSegments| and |finishSegments| may be found in two threads with the help of
-  // |graph| with two threads support.
   bool const foundStart =
       FindBestSegments(checkpoints.GetPointFrom(), startDirection, true /* isOutgoing */, *graph,
                        startSegments, startSegmentIsAlmostCodirectionalDirection);
