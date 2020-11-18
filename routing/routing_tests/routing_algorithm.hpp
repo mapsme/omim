@@ -42,14 +42,20 @@ public:
   void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
                             std::vector<Edge> & adj) override;
   double HeuristicCostEstimate(Vertex const & v, Vertex const & w, bool isOutgoing) override;
+  virtual bool IsTwoThreadsReady() const override { return m_twoThreadsReady; }
   // @}
 
   void GetEdgesList(Vertex const & vertex, bool /* isOutgoing */, std::vector<Edge> & adj);
+  /// \note If |twoThreadsRead| is equal to true it means class should be ready that methods
+  /// GetIngoingEdgesList(), GetOutgoingEdgesList() and HeuristicCostEstimate() are called
+  /// from two threads depending on |isOutgoing| parameter.
+  void SetTwoThreadsReady(bool twoThreadsRead) { m_twoThreadsReady = twoThreadsRead; }
 
 private:
   void GetAdjacencyList(Vertex v, std::vector<Edge> & adj) const;
 
   std::map<uint32_t, std::vector<Edge>> m_adjs;
+  bool m_twoThreadsReady = false;
 };
 
 class DirectedGraph

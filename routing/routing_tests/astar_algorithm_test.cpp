@@ -18,6 +18,14 @@ using namespace std;
 
 using Algorithm = AStarAlgorithm<uint32_t, SimpleEdge, double>;
 
+void TestOnRouteGeomAndDistance(
+    RoutingResult<unsigned /* Vertex */, double /* Weight */> const & actualRoute,
+    vector<unsigned> const & expectedRoute, double const & expectedDistance)
+{
+  TEST_EQUAL(expectedRoute, actualRoute.m_path, ());
+  TEST_ALMOST_EQUAL_ULPS(expectedDistance, actualRoute.m_distance, ());
+}
+
 void TestAStar(UndirectedGraph & graph, vector<unsigned> const & expectedRoute, double const & expectedDistance)
 {
   Algorithm algo;
@@ -25,16 +33,23 @@ void TestAStar(UndirectedGraph & graph, vector<unsigned> const & expectedRoute, 
   Algorithm::ParamsForTests<> params(graph, 0u /* startVertex */, 4u /* finishVertex */,
                                      nullptr /* prevRoute */);
 
+  // Algorithm::FindPath() testing.
   RoutingResult<unsigned /* Vertex */, double /* Weight */> actualRoute;
   TEST_EQUAL(Algorithm::Result::OK, algo.FindPath(params, actualRoute), ());
-  TEST_EQUAL(expectedRoute, actualRoute.m_path, ());
-  TEST_ALMOST_EQUAL_ULPS(expectedDistance, actualRoute.m_distance, ());
+  TestOnRouteGeomAndDistance(actualRoute, expectedRoute, expectedDistance);
 
+  // Algorithm::FindPathBidirectional() in one thread testing.
   actualRoute.m_path.clear();
   TEST_EQUAL(Algorithm::Result::OK,
              algo.FindPathBidirectional(params, actualRoute), ());
-  TEST_EQUAL(expectedRoute, actualRoute.m_path, ());
-  TEST_ALMOST_EQUAL_ULPS(expectedDistance, actualRoute.m_distance, ());
+  TestOnRouteGeomAndDistance(actualRoute, expectedRoute, expectedDistance);
+
+  // Algorithm::FindPathBidirectional() in two thread testing.
+  actualRoute.m_path.clear();
+  graph.SetTwoThreadsReady(true);
+  TEST_EQUAL(Algorithm::Result::OK,
+             algo.FindPathBidirectional(params, actualRoute), ());
+  TestOnRouteGeomAndDistance(actualRoute, expectedRoute, expectedDistance);
 }
 
 UNIT_TEST(AStarAlgorithm_Sample)

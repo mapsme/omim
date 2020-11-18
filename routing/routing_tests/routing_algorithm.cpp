@@ -18,7 +18,6 @@ namespace routing_test
 {
 UndirectedGraph::UndirectedGraph()
 {
-  CHECK(!IsTwoThreadsReady(), ());
 }
 
 void UndirectedGraph::AddEdge(Vertex u, Vertex v, Weight w)
