@@ -905,7 +905,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
 {
   base::Timer timer;
   TrafficStash::Guard guard(m_trafficStash);
-  auto graph = MakeWorldGraph(false /* isTwoThreadsReady */);
+  auto graph = MakeWorldGraph(false /* twoThreadsReady */);
   graph->SetMode(WorldGraphMode::NoLeaps);
 
   vector<Segment> startSegments;

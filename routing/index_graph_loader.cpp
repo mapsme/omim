@@ -34,7 +34,7 @@ using namespace std;
 class IndexGraphLoaderImpl final : public IndexGraphLoader
 {
 public:
-  IndexGraphLoaderImpl(VehicleType vehicleType, bool loadAltitudes, bool isTwoThreadsReady,
+  IndexGraphLoaderImpl(VehicleType vehicleType, bool loadAltitudes, bool twoThreadsReady,
                        shared_ptr<NumMwmIds> numMwmIds,
                        shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
                        shared_ptr<EdgeEstimator> estimator, DataSource & dataSource,
@@ -85,7 +85,7 @@ private:
 };
 
 IndexGraphLoaderImpl::IndexGraphLoaderImpl(
-    VehicleType vehicleType, bool loadAltitudes, bool isTwoThreadsReady, shared_ptr<NumMwmIds> numMwmIds,
+    VehicleType vehicleType, bool loadAltitudes, bool twoThreadsReady, shared_ptr<NumMwmIds> numMwmIds,
     shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
     shared_ptr<EdgeEstimator> estimator, DataSource & dataSource,
     RoutingOptions routingOptions)
@@ -95,7 +95,7 @@ IndexGraphLoaderImpl::IndexGraphLoaderImpl(
   , m_numMwmIds(move(numMwmIds))
   , m_vehicleModelFactory(move(vehicleModelFactory))
   , m_estimator(move(estimator))
-  , m_graphsMtx(isTwoThreadsReady ? std::make_optional<std::mutex>() : std::nullopt)
+  , m_graphsMtx(twoThreadsReady ? std::make_optional<std::mutex>() : std::nullopt)
   , m_avoidRoutingOptions(routingOptions)
 {
   CHECK(m_numMwmIds, ());
@@ -274,12 +274,12 @@ namespace routing
 {
 // static
 unique_ptr<IndexGraphLoader> IndexGraphLoader::Create(
-    VehicleType vehicleType, bool loadAltitudes, bool isTwoThreadsReady, shared_ptr<NumMwmIds> numMwmIds,
+    VehicleType vehicleType, bool loadAltitudes, bool twoThreadsReady, shared_ptr<NumMwmIds> numMwmIds,
     shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
     shared_ptr<EdgeEstimator> estimator, DataSource & dataSource,
     RoutingOptions routingOptions)
 {
-  return make_unique<IndexGraphLoaderImpl>(vehicleType, loadAltitudes, isTwoThreadsReady, numMwmIds,
+  return make_unique<IndexGraphLoaderImpl>(vehicleType, loadAltitudes, twoThreadsReady, numMwmIds,
                                            vehicleModelFactory, estimator, dataSource,
                                            routingOptions);
 }
