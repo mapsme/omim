@@ -131,8 +131,7 @@ private:
   std::unique_ptr<HierarchyEntryEnricher> m_enricher;
 };
 
-HierarchyLinker::Node::Ptrs BuildHierarchy(std::vector<feature::FeatureBuilder> && fbs,
-                                           GetMainTypeFn const & getMainType,
+HierarchyLinker::Node::Ptrs BuildHierarchy(std::vector<feature::FeatureBuilder> const & fbs,
                                            std::shared_ptr<FilterInterface> const & filter);
 
 // AddChildrenTo adds children to node of tree if fn returns not empty vector of HierarchyPlaces

@@ -31,6 +31,7 @@ public:
   bool Execute();
   std::vector<std::string> const & GetNames() const;
   std::shared_ptr<FeatureProcessorQueue> GetQueue();
+  std::shared_ptr<cache::IntermediateData> GetCache();
   void ForceReloadCache();
 
 private:

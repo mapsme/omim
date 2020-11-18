@@ -84,26 +84,27 @@ void ComplexFinalProcessor::Process()
       relationBuildingParts = RemoveRelationBuildingParts(fbs);
 
     // This case is second. We build a hierarchy using the geometry of objects and their nesting.
-    auto trees = hierarchy::BuildHierarchy(std::move(fbs), m_getMainType, m_filter);
+    auto trees = hierarchy::BuildHierarchy(fbs, m_filter);
 
-    // We remove tree roots with tag 'building:part'.
-    base::EraseIf(trees, [](auto const & node) {
-      static auto const & buildingPartChecker = ftypes::IsBuildingPartChecker::Instance();
-      return buildingPartChecker(node->GetData().GetTypes());
-    });
-
-    // We want to transform
-    // building
-    //        |_building-part
-    //                       |_building-part
-    // to
-    // building
-    //        |_building-part
-    //        |_building-part
-    hierarchy::FlattenBuildingParts(trees);
-    // In the end we add objects, which were saved by the collector.
     if (m_buildingToParts)
     {
+      // We remove tree roots with tag 'building:part'.
+      base::EraseIf(trees, [](auto const & node) {
+        static auto const & buildingPartChecker = ftypes::IsBuildingPartChecker::Instance();
+        return buildingPartChecker(node->GetData().GetTypes());
+      });
+
+      // We want to transform
+      // building
+      //        |_building-part
+      //                       |_building-part
+      // to
+      // building
+      //        |_building-part
+      //        |_building-part
+      hierarchy::FlattenBuildingParts(trees);
+
+      // In the end we add objects, which were saved by the collector.
       hierarchy::AddChildrenTo(trees, [&](auto const & compositeId) {
         auto const & ids = m_buildingToParts->GetBuildingPartsByOutlineId(compositeId);
         std::vector<hierarchy::HierarchyPlace> places;

@@ -3,6 +3,9 @@
 #include "indexer/feature_utils.hpp"
 #include "indexer/ftypes_matcher.hpp"
 
+#include "geometry/latlon.hpp"
+#include "geometry/mercator.hpp"
+
 #include "coding/string_utf8_multilang.hpp"
 
 #include "base/assert.hpp"
@@ -52,8 +55,9 @@ std::string DebugPrint(HierarchyEntry const & entry)
   ToJSONObject(*obj, "country", entry.m_country);
 
   auto center = base::NewJSONObject();
-  ToJSONObject(*center, "x", entry.m_center.x);
-  ToJSONObject(*center, "y", entry.m_center.y);
+  auto const latLon = mercator::ToLatLon(entry.m_center);
+  ToJSONObject(*center, "lat", latLon.m_lat);
+  ToJSONObject(*center, "lon", latLon.m_lon);
   ToJSONObject(*obj, "center", center);
   return DumpToString(obj);
 }
@@ -82,6 +86,12 @@ uint32_t GetMainType(FeatureParams::Types const & types)
   return it != std::cend(types) ? *it : ftype::GetEmptyValue();
 }
 
+bool mainTypeIsBuildingPart(FeatureParams::Types const & types)
+{
+  static auto const buildingPartType = classif().GetTypeByPath({"building:part"});
+  return GetMainType(types) == buildingPartType;
+}
+
 std::string GetName(StringUtf8Multilang const & str) { return GetRussianName(str); }
 
 std::string HierarchyEntryToCsvString(HierarchyEntry const & entry, char delim)
@@ -99,8 +109,9 @@ coding::CSVReader::Row HierarchyEntryToCsvRow(HierarchyEntry const & entry)
 
   row.emplace_back(parentId);
   row.emplace_back(strings::to_string(entry.m_depth));
-  row.emplace_back(strings::to_string_dac(entry.m_center.x, 7));
-  row.emplace_back(strings::to_string_dac(entry.m_center.y, 7));
+  auto const latLon = mercator::ToLatLon(entry.m_center);
+  row.emplace_back(strings::to_string_dac(latLon.m_lat, 7));
+  row.emplace_back(strings::to_string_dac(latLon.m_lon, 7));
   row.emplace_back(strings::to_string(classif().GetReadableObjectName(entry.m_type)));
   row.emplace_back(strings::to_string(entry.m_name));
   row.emplace_back(strings::to_string(entry.m_country));
@@ -114,8 +125,8 @@ HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row)
   auto const & id = row[0];
   auto const & parentId = row[1];
   auto const & depth = row[2];
-  auto const & x = row[3];
-  auto const & y = row[4];
+  auto const & lat = row[3];
+  auto const & lon = row[4];
   auto const & type = row[5];
   auto const & name = row[6];
   auto const & country = row[7];
@@ -126,8 +137,12 @@ HierarchyEntry HierarchyEntryFromCsvRow(coding::CSVReader::Row const & row)
     entry.m_parentId = CompositeId(parentId);
 
   VERIFY(strings::to_size_t(depth, entry.m_depth), (row));
-  VERIFY(strings::to_double(x, entry.m_center.x), (row));
-  VERIFY(strings::to_double(y, entry.m_center.y), (row));
+
+  ms::LatLon latLon;
+  VERIFY(strings::to_double(lat, latLon.m_lat), (row));
+  VERIFY(strings::to_double(lon, latLon.m_lon), (row));
+  entry.m_center = mercator::FromLatLon(latLon);
+
   entry.m_type = classif().GetTypeByReadableObjectName(type);
   entry.m_name = name;
   entry.m_country = country;

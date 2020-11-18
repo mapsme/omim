@@ -15,4 +15,14 @@ public:
 
   bool IsAccepted(feature::FeatureBuilder const & fb) const override;
 };
+
+// The filter will leave only elements for complexes.
+class FilterComplexPopularity : public FilterComplex
+{
+public:
+  // FilterInterface overrides:
+  std::shared_ptr<FilterInterface> Clone() const override;
+
+  bool IsAccepted(feature::FeatureBuilder const & fb) const override;
+};
 }  // namespace generator

@@ -22,7 +22,7 @@ class TranslatorComplex : public Translator
 public:
   explicit TranslatorComplex(std::shared_ptr<FeatureProcessorInterface> const & processor,
                              std::shared_ptr<cache::IntermediateData> const & cache,
-                             feature::GenerateInfo const & info);
+                             feature::GenerateInfo const & info, bool popularity = false);
 
   // TranslatorInterface overrides:
   void Preprocess(OsmElement & element) override;
