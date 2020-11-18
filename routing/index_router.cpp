@@ -367,7 +367,7 @@ bool IndexRouter::FindClosestProjectionToRoad(m2::PointD const & point,
 void IndexRouter::SetGuides(GuidesTracks && guides) { m_guides = GuidesConnections(guides); }
 
 RouterResultCode IndexRouter::CalculateRoute(Checkpoints const & checkpoints,
-                                             m2::PointD const & startDirection,
+                                             m2::PointD const & startDirection, bool useTwoThreads,
                                              bool adjustToPrevRoute,
                                              RouterDelegate const & delegate, Route & route)
 {
@@ -407,19 +407,7 @@ RouterResultCode IndexRouter::CalculateRoute(Checkpoints const & checkpoints,
       }
     }
 
-    RouterResultCode lastReturn = RouterResultCode::InternalError;
-    for (auto twoThreadsReady : {false, true, true, false})
-    {
-      LOG(LINFO, ("---------------------", twoThreadsReady ? "Two threads" : "One threads", "---------------------"));
-      // TODO |twoThreadsReady| is passed to DoCalculateRoute(), CalculateSubroute() and
-      // to CalculateSubrouteJointsMode() for test purposes only. It should be removed in
-      // these methods.
-      m_guides.Clear();
-      lastReturn = DoCalculateRoute(checkpoints, startDirection, delegate, twoThreadsReady, route);
-      LOG(LINFO, ("---------------------", twoThreadsReady ? "Two threads" : "One threads", "END---------------------"));
-    }
-//    return DoCalculateRoute(checkpoints, startDirection, delegate, false, route);
-    return lastReturn;
+    return DoCalculateRoute(checkpoints, startDirection, delegate, useTwoThreads, route);
   }
   catch (RootException const & e)
   {
@@ -565,7 +553,7 @@ void IndexRouter::AddGuidesOsmConnectionsToGraphStarter(size_t checkpointIdxFrom
 RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
                                                m2::PointD const & startDirection,
                                                RouterDelegate const & delegate,
-                                               bool twoThreadsReady, Route & route)
+                                               bool useTwoThreads, Route & route)
 {
   m_lastRoute.reset();
   // MwmId used for guides segments in RedressRoute().
@@ -598,7 +586,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     return RouterResultCode::NeedMoreMaps;
 
   TrafficStash::Guard guard(m_trafficStash);
-  unique_ptr<WorldGraph> graph = MakeWorldGraph(twoThreadsReady);
+  unique_ptr<WorldGraph> graph = MakeWorldGraph(useTwoThreads);
 
   vector<Segment> segments;
 

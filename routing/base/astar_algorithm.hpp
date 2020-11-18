@@ -222,10 +222,9 @@ public:
   /// If the decision is made to use two thread version it should be taken into account:
   /// - |isOutgoing| flag in each method specified which thread calls the method
   /// - All callbacks which are called from |wave| lambda such as |params.m_onVisitedVertexCallback|
-  ///   or |params.m_checkLengthCallback| should be ready for calling from two threads
+  ///   or |params.m_checkLengthCallback| should be ready for calling from two threads.
   template <typename P>
   Result FindPathBidirectional(P & params, RoutingResult<Vertex, Weight> & result) const;
-
 
   // Adjust route to the previous one.
   // Expects |params.m_checkLengthCallback| to check wave propagation limit.
@@ -630,6 +629,8 @@ AStarAlgorithm<Vertex, Edge, Weight>::FindPathBidirectional(P & params,
   auto const & startVertex = params.m_startVertex;
 
   auto const useTwoThreads = graph.IsTwoThreadsReady();
+  LOG(LINFO,
+      (useTwoThreads ? "Bidirectional A* in two threads." : "Bidirectional A* in one thread."));
   std::optional<std::mutex> mtx;
 
   BidirectionalStepContext forward(mtx, true /* forward */, startVertex, finalVertex, graph);

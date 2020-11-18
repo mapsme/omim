@@ -108,7 +108,7 @@ IRouterComponents & GetVehicleComponents(VehicleType vehicleType);
 
 TRouteResult CalculateRoute(IRouterComponents const & routerComponents,
                             m2::PointD const & startPoint, m2::PointD const & startDirection,
-                            m2::PointD const & finalPoint);
+                            m2::PointD const & finalPoint, bool useTwoThreads = false);
 
 TRouteResult CalculateRoute(IRouterComponents const & routerComponents,
                             Checkpoints const & checkpoints, GuidesTracks && guides);

@@ -302,7 +302,8 @@ RoutesBuilder::Processor::operator()(Params const & params)
     m_delegate->SetTimeout(params.m_timeoutSeconds);
     base::Timer timer;
     resultCode = m_router->CalculateRoute(params.m_checkpoints, m2::PointD::Zero(),
-                                          false /* adjustToPrevRoute */, *m_delegate, route);
+                                          false /* useTwoThreads */, false /* adjustToPrevRoute */,
+                                          *m_delegate, route);
 
     if (resultCode != RouterResultCode::NoError)
       break;

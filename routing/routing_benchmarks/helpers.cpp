@@ -154,9 +154,9 @@ void TestRouter(routing::IRouter & router, m2::PointD const & startPos,
   routing::RouterDelegate delegate;
   LOG(LINFO, ("Calculating routing ...", router.GetName()));
   base::Timer timer;
-  auto const resultCode = router.CalculateRoute(routing::Checkpoints(startPos, finalPos),
-                                                m2::PointD::Zero() /* startDirection */,
-                                                false /* adjust */, delegate, route);
+  auto const resultCode = router.CalculateRoute(
+      routing::Checkpoints(startPos, finalPos), m2::PointD::Zero() /* startDirection */,
+      false /* useTwoThreads */, false /* adjust */, delegate, route);
   double const elapsedSec = timer.ElapsedSeconds();
   TEST_EQUAL(routing::RouterResultCode::NoError, resultCode, ());
   TEST(route.IsValid(), ());

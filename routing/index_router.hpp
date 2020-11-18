@@ -97,8 +97,9 @@ public:
 
   void SetGuides(GuidesTracks && guides) override;
   RouterResultCode CalculateRoute(Checkpoints const & checkpoints,
-                                  m2::PointD const & startDirection, bool adjustToPrevRoute,
-                                  RouterDelegate const & delegate, Route & route) override;
+                                  m2::PointD const & startDirection, bool useTwoThreads,
+                                  bool adjustToPrevRoute, RouterDelegate const & delegate,
+                                  Route & route) override;
 
   bool FindClosestProjectionToRoad(m2::PointD const & point, m2::PointD const & direction,
                                    double radius, EdgeProj & proj) override;
@@ -122,7 +123,7 @@ private:
 
   RouterResultCode DoCalculateRoute(Checkpoints const & checkpoints,
                                     m2::PointD const & startDirection,
-                                    RouterDelegate const & delegate, bool twoThreadsReady,
+                                    RouterDelegate const & delegate, bool useTwoThreads,
                                     Route & route);
   RouterResultCode CalculateSubroute(Checkpoints const & checkpoints, size_t subrouteIdx,
                                      RouterDelegate const & delegate,

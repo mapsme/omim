@@ -153,12 +153,13 @@ IRouterComponents & GetVehicleComponents(VehicleType vehicleType)
 
 TRouteResult CalculateRoute(IRouterComponents const & routerComponents,
                             m2::PointD const & startPoint, m2::PointD const & startDirection,
-                            m2::PointD const & finalPoint)
+                            m2::PointD const & finalPoint, bool useTwoThreads /* = false */)
 {
   RouterDelegate delegate;
   shared_ptr<Route> route = make_shared<Route>("mapsme", 0 /* route id */);
   RouterResultCode result = routerComponents.GetRouter().CalculateRoute(
-      Checkpoints(startPoint, finalPoint), startDirection, false /* adjust */, delegate, *route);
+      Checkpoints(startPoint, finalPoint), startDirection, useTwoThreads, false /* adjust */,
+      delegate, *route);
   ASSERT(route, ());
   routerComponents.GetRouter().SetGuides({});
   return TRouteResult(route, result);
@@ -171,7 +172,8 @@ TRouteResult CalculateRoute(IRouterComponents const & routerComponents,
   shared_ptr<Route> route = make_shared<Route>("mapsme", 0 /* route id */);
   routerComponents.GetRouter().SetGuides(move(guides));
   RouterResultCode result = routerComponents.GetRouter().CalculateRoute(
-      checkpoints, m2::PointD::Zero() /* startDirection */, false /* adjust */, delegate, *route);
+      checkpoints, m2::PointD::Zero() /* startDirection */, false /* useTwoThreads */,
+      false /* adjust */, delegate, *route);
   ASSERT(route, ());
   routerComponents.GetRouter().SetGuides({});
   return TRouteResult(route, result);
