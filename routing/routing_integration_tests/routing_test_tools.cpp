@@ -236,10 +236,10 @@ void CalculateRouteAndTestRouteLength(IRouterComponents const & routerComponents
                                       m2::PointD const & startPoint,
                                       m2::PointD const & startDirection,
                                       m2::PointD const & finalPoint, double expectedRouteMeters,
-                                      double relativeError /* = 0.07 */)
+                                      double relativeError /* = 0.07 */, bool useTwoThreads /* = false */)
 {
   TRouteResult routeResult =
-      CalculateRoute(routerComponents, startPoint, startDirection, finalPoint);
+      CalculateRoute(routerComponents, startPoint, startDirection, finalPoint, useTwoThreads);
   RouterResultCode const result = routeResult.second;
   TEST_EQUAL(result, RouterResultCode::NoError, ());
   CHECK(routeResult.first, ());
