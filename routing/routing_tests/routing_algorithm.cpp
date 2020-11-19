@@ -214,7 +214,6 @@ TestAStarBidirectionalAlgo::Result TestAStarBidirectionalAlgo::CalculateRoute(
   Algorithm::Params<> params(roadGraph, startPos, finalPos, {} /* prevRoute */,
                              cancellable);
 
-  // TODO. Add two threads tests.
   Algorithm::Result const res = Algorithm().FindPathBidirectional(params, path);
   return Convert(res);
 }
