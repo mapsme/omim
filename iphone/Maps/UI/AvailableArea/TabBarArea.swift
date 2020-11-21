@@ -14,7 +14,7 @@ final class TabBarArea: AvailableArea {
   }
 
   override func notifyObserver() {
-    BottomTabBarViewController.updateAvailableArea(areaFrame)
+//    BottomTabBarViewController.updateAvailableArea(areaFrame)
   }
 }
 

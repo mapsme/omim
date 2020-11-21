@@ -6,7 +6,7 @@ class GuidesNavigationBarViewController: UIViewController {
   @IBOutlet var navigationBar: UINavigationBar!
   @IBOutlet var navigationBarItem: UINavigationItem!
 
-  @objc init(categoryId: MWMMarkGroupID) {
+  init(categoryId: MWMMarkGroupID) {
     category = BookmarksManager.shared().category(withId: categoryId)
     super.init(nibName: nil, bundle: nil)
   }
@@ -31,35 +31,6 @@ class GuidesNavigationBarViewController: UIViewController {
                                                            style: .plain,
                                                            target: self,
                                                            action: #selector(onCancelPessed))
-    refreshLayout(false)
-  }
-
-  @objc func configLayout() {
-    guard let superview = view.superview else {
-      fatalError()
-    }
-
-    NSLayoutConstraint.activate([
-      view.topAnchor.constraint(equalTo: superview.topAnchor),
-      view.leftAnchor.constraint(equalTo: superview.leftAnchor),
-      view.rightAnchor.constraint(equalTo: superview.rightAnchor)
-    ])
-  }
-
-  func refreshLayout(_ animated: Bool = true) {
-    DispatchQueue.main.async {
-      let availableArea = self.availableArea
-      self.view.alpha = min(1, availableArea.height / self.view.height)
-    }
-  }
-
-  class func updateAvailableArea(_ frame: CGRect) {
-    guard let controller = MWMMapViewControlsManager.manager()?.guidesNavigationBar,
-      !controller.availableArea.equalTo(frame) else {
-      return
-    }
-    controller.availableArea = frame
-    controller.refreshLayout()
   }
 
   @objc func onBackPressed(_ sender: Any) {

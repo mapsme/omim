@@ -4,44 +4,36 @@
 
 @implementation MWMEye
 
-+ (MWMTip)getTipType
-{
++ (MWMTipType)getTipType {
   auto tutorialType = GetFramework().GetTipsApi().GetTip();
-  return tutorialType ? (MWMTip)*tutorialType : MWMTipNone;
+  return tutorialType ? (MWMTipType)*tutorialType : MWMTipTypeNone;
 }
 
-+ (void)tipClickedWithType:(MWMTip)type event:(MWMTipEvent)event
-{
++ (void)tipClickedWithType:(MWMTipType)type event:(MWMTipEvent)event {
   eye::Eye::Event::TipClicked((eye::Tip::Type)type, (eye::Tip::Event)event);
 }
 
-+ (void)bookingFilterUsed
-{
++ (void)bookingFilterUsed {
   eye::Eye::Event::BookingFilterUsed();
 }
 
-+ (void)boomarksCatalogShown
-{
++ (void)boomarksCatalogShown {
   eye::Eye::Event::BoomarksCatalogShown();
 }
 
-+ (void)discoveryShown
-{
++ (void)discoveryShown {
   eye::Eye::Event::DiscoveryShown();
 }
 
-+ (void)discoveryItemClickedWithEvent:(MWMEyeDiscoveryEvent)event
-{
++ (void)discoveryItemClickedWithEvent:(MWMEyeDiscoveryEvent)event {
   eye::Eye::Event::DiscoveryItemClicked((eye::Discovery::Event)event);
 }
 
-+ (void)transitionToBookingWithPos:(CGPoint)pos
-{
++ (void)transitionToBookingWithPos:(CGPoint)pos {
    eye::Eye::Event::TransitionToBooking({pos.x, pos.y});
 }
 
-+ (void)promoAfterBookingShownWithCityId:(NSString *)cityId
-{
++ (void)promoAfterBookingShownWithCityId:(NSString *)cityId {
   eye::Eye::Event::PromoAfterBookingShown(cityId.UTF8String);
 }
 

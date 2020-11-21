@@ -79,7 +79,6 @@
 #import "MWMTextToSpeech.h"
 #import "MWMTextToSpeechObserver.h"
 #import "MWMTextView.h"
-#import "MWMTrafficButtonViewController.h"
 #import "MWMViewController.h"
 #import "MapViewController.h"
 #import "MapsAppDelegate.h"

@@ -44,7 +44,9 @@ NS_SWIFT_NAME(FrameworkHelper)
 + (void)showBookmark:(MWMMarkID)bookmarkId;
 + (void)showTrack:(MWMTrackID)trackId;
 + (void)updatePlacePageData;
-
++ (void)setPlacePageSelectedCallback:(MWMVoidBlock)selected
+                  deselectedCallback:(MWMBoolBlock)deselected
+                     updatedCallback:(MWMVoidBlock)updated;
 @end
 
 NS_ASSUME_NONNULL_END

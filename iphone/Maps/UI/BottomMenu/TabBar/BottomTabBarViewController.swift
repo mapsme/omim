@@ -1,12 +1,21 @@
 protocol BottomTabBarViewProtocol: class {
-  var presenter: BottomTabBarPresenterProtocol! { get set }
+//  var presenter: BottomTabBarPresenterProtocol! { get set }
   var isHidden: Bool { get }
   var isLayersBadgeHidden: Bool { get set }
   var isApplicationBadgeHidden: Bool { get set }
 }
 
-class BottomTabBarViewController: UIViewController {
-  var presenter: BottomTabBarPresenterProtocol!
+protocol BottomTabBarViewControllerDelegate: AnyObject {
+  func search()
+  func route()
+  func discovery()
+  func bookmarks()
+  func menu()
+}
+
+final class BottomTabBarViewController: UIViewController {
+//  var presenter: BottomTabBarPresenterProtocol!
+  var delegate: BottomTabBarViewControllerDelegate?
   
   @IBOutlet var searchButton: MWMButton!
   @IBOutlet var routeButton: MWMButton!
@@ -15,36 +24,40 @@ class BottomTabBarViewController: UIViewController {
   @IBOutlet var moreButton: MWMButton!
   @IBOutlet var downloadBadge: UIView!
   
-  private var avaliableArea = CGRect.zero
-  @objc var isHidden: Bool = false {
-    didSet {
-      updateFrame(animated: true)
-    }
-  }
+//  private var avaliableArea = CGRect.zero
+//  @objc var isHidden: Bool = false {
+//    didSet {
+//      updateFrame(animated: true)
+//    }
+//  }
+
   var isLayersBadgeHidden: Bool = true {
     didSet {
       updateBadge()
     }
   }
-  @objc var isApplicationBadgeHidden: Bool = true {
+
+  var isApplicationBadgeHidden: Bool = true {
     didSet {
       updateBadge()
     }
   }
+
   var tabBarView: BottomTabBarView {
     return view as! BottomTabBarView
   }
-  @objc static var controller: BottomTabBarViewController? {
-    return MWMMapViewControlsManager.manager()?.tabBarController
-  }
+
+//  @objc static var controller: BottomTabBarViewController? {
+//    return MWMMapViewControlsManager.manager()?.tabBarController
+//  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    presenter.configure()
+//    presenter.configure()
     updateBadge()
 
     MWMSearchManager.add(self)
-    MWMNavigationDashboardManager.add(self)
+//    MWMNavigationDashboardManager.add(self)
   }
   
   override func viewDidAppear(_ animated: Bool) {
@@ -53,80 +66,85 @@ class BottomTabBarViewController: UIViewController {
   
   deinit {
     MWMSearchManager.remove(self)
-    MWMNavigationDashboardManager.remove(self)
+//    MWMNavigationDashboardManager.remove(self)
   }
   
-  static func updateAvailableArea(_ frame: CGRect) {
-    BottomTabBarViewController.controller?.updateAvailableArea(frame)
-  }
+//  static func updateAvailableArea(_ frame: CGRect) {
+//    BottomTabBarViewController.controller?.updateAvailableArea(frame)
+//  }
   
   @IBAction func onSearchButtonPressed(_ sender: Any) {
-    presenter.onSearchButtonPressed()
+    delegate?.search()
+//    presenter.onSearchButtonPressed()
   }
   
   @IBAction func onPoint2PointButtonPressed(_ sender: Any) {
-    presenter.onPoint2PointButtonPressed()
+    delegate?.route()
+//    presenter.onPoint2PointButtonPressed()
   }
   
   @IBAction func onDiscoveryButtonPressed(_ sender: Any) {
-    presenter.onDiscoveryButtonPressed()
+    delegate?.discovery()
+//    presenter.onDiscoveryButtonPressed()
   }
   
   @IBAction func onBookmarksButtonPressed(_ sender: Any) {
-    presenter.onBookmarksButtonPressed()
+    delegate?.bookmarks()
+//    presenter.onBookmarksButtonPressed()
   }
   
   @IBAction func onMenuButtonPressed(_ sender: Any) {
-    presenter.onMenuButtonPressed()
+    delegate?.menu()
+//    presenter.onMenuButtonPressed()
   }
   
-  
-  private func updateAvailableArea(_ frame:CGRect) {
-    avaliableArea = frame
-    updateFrame(animated: false)
-    self.view.layoutIfNeeded()
-  }
-  
-  private func updateFrame(animated: Bool) {
-    if avaliableArea == .zero {
-      return
-    }
-    let newFrame = CGRect(x: avaliableArea.minX,
-                          y: isHidden ? avaliableArea.minY + avaliableArea.height : avaliableArea.minY,
-                          width: avaliableArea.width,
-                          height: avaliableArea.height)
-    let alpha:CGFloat = isHidden ? 0 : 1
-    if animated {
-      UIView.animate(withDuration: kDefaultAnimationDuration,
-                     delay: 0,
-                     options: [.beginFromCurrentState],
-                     animations: {
-                      self.view.frame = newFrame
-                      self.view.alpha = alpha
-      }, completion: nil)
-    } else {
-      self.view.frame = newFrame
-      self.view.alpha = alpha
-    }
-  }
+//
+//  private func updateAvailableArea(_ frame:CGRect) {
+//    avaliableArea = frame
+//    updateFrame(animated: false)
+//    self.view.layoutIfNeeded()
+//  }
+//
+//  private func updateFrame(animated: Bool) {
+//    if avaliableArea == .zero {
+//      return
+//    }
+//    let newFrame = CGRect(x: avaliableArea.minX,
+//                          y: isHidden ? avaliableArea.minY + avaliableArea.height : avaliableArea.minY,
+//                          width: avaliableArea.width,
+//                          height: avaliableArea.height)
+//    let alpha:CGFloat = isHidden ? 0 : 1
+//    if animated {
+//      UIView.animate(withDuration: kDefaultAnimationDuration,
+//                     delay: 0,
+//                     options: [.beginFromCurrentState],
+//                     animations: {
+//                      self.view.frame = newFrame
+//                      self.view.alpha = alpha
+//      }, completion: nil)
+//    } else {
+//      self.view.frame = newFrame
+//      self.view.alpha = alpha
+//    }
+//  }
   
   private func updateBadge() {
     downloadBadge.isHidden = isApplicationBadgeHidden && isLayersBadgeHidden
   }
 }
 
-extension BottomTabBarViewController: BottomTabBarViewProtocol {
-  
-}
-
+//extension BottomTabBarViewController: BottomTabBarViewProtocol {
+//
+//}
+//
 // MARK: - MWMNavigationDashboardObserver
 
-extension BottomTabBarViewController: MWMNavigationDashboardObserver {
-  func onNavigationDashboardStateChanged() {
-    let state = MWMNavigationDashboardManager.shared().state
-    self.isHidden = state != .hidden;
-  }
-}
+//extension BottomTabBarViewController: MWMNavigationDashboardObserver {
+//  func onNavigationDashboardStateChanged() {
+//    let state = MWMNavigationDashboardManager.shared().state
+//    self.isHidden = state != .hidden;
+//  }
+//}
 
 // MARK: - MWMSearchManagerObserver
 

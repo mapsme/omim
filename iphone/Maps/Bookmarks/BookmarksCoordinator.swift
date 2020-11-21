@@ -8,7 +8,7 @@ import UIKit
   }
 
   private weak var navigationController: UINavigationController?
-  private weak var controlsManager: MWMMapViewControlsManager?
+  weak var mapControlsViewController: MapControlsViewController?
   private weak var navigationManager: MWMNavigationDashboardManager?
   private var bookmarksControllers: [UIViewController]?
   private var state: BookmarksState = .closed {
@@ -18,10 +18,8 @@ import UIKit
   }
 
   @objc init(navigationController: UINavigationController,
-             controlsManager: MWMMapViewControlsManager,
              navigationManager: MWMNavigationDashboardManager) {
     self.navigationController = navigationController
-    self.controlsManager = controlsManager
     self.navigationManager = navigationManager
   }
 
@@ -59,11 +57,11 @@ import UIKit
       }, completion: nil)
       FrameworkHelper.deactivateMapSelection(notifyUI: true)
       self.bookmarksControllers = nil
-      controlsManager?.hideGuidesNavigationBar()
+      mapControlsViewController?.hideGuidesNavigationBar()
     case .closed:
       navigationController.popToRootViewController(animated: true)
       bookmarksControllers = nil
-      controlsManager?.hideGuidesNavigationBar()
+      mapControlsViewController?.hideGuidesNavigationBar()
     case let .hidden(categoryId):
       UIView.transition(with: self.navigationController!.view,
                         duration: kDefaultAnimationDuration,
@@ -73,7 +71,7 @@ import UIKit
       }, completion: nil)
       let isNavigation = navigationManager?.state != .hidden
       if isNavigation == false {
-        controlsManager?.showGuidesNavigationBar(categoryId)
+        mapControlsViewController?.showGuidesNavigationBar(categoryId)
       }
     }
   }
