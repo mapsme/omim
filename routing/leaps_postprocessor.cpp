@@ -103,7 +103,8 @@ void LeapsPostProcessor::Init()
   for (size_t i = 1; i < m_path.size(); ++i)
   {
     auto const & segment = m_path[i];
-    m_prefixSumETA[i] = m_prefixSumETA[i - 1] + m_starter.CalculateETAWithoutPenalty(segment);
+    m_prefixSumETA[i] = m_prefixSumETA[i - 1] +
+                        m_starter.CalculateETAWithoutPenalty(segment, true /* isOutgoing */);
 
     CHECK_EQUAL(m_segmentToIndex.count(segment), 0, ());
     m_segmentToIndex[segment] = i;
@@ -146,7 +147,8 @@ auto LeapsPostProcessor::CalculateIntervalsToRelax() -> std::set<PathInterval, P
   {
     std::map<Segment, SegmentData> segmentsData;
     auto const & segment = m_path[right];
-    segmentsData.emplace(segment, SegmentData(0, m_starter.CalculateETAWithoutPenalty(segment)));
+    segmentsData.emplace(segment, SegmentData(0, m_starter.CalculateETAWithoutPenalty(
+                                                     segment, true /* isOutgoing */)));
 
     FillIngoingPaths(segment, segmentsData);
 
@@ -192,7 +194,8 @@ void LeapsPostProcessor::FillIngoingPaths(
 
               auto & current = segmentsData[state.m_vertex];
               current.m_summaryETA =
-                  parent.m_summaryETA + m_starter.CalculateETAWithoutPenalty(state.m_vertex);
+                  parent.m_summaryETA +
+                  m_starter.CalculateETAWithoutPenalty(state.m_vertex, true /* isOutgoing */);
 
               current.m_steps = parent.m_steps + 1;
 

@@ -305,7 +305,7 @@ IndexRouter::IndexRouter(VehicleType vehicleType, bool loadAltitudes,
 
 unique_ptr<WorldGraph> IndexRouter::MakeSingleMwmWorldGraph()
 {
-  auto worldGraph = MakeWorldGraph();
+  auto worldGraph = MakeWorldGraph(false /* twoThreadsReady */);
   worldGraph->SetMode(WorldGraphMode::SingleMwm);
   return worldGraph;
 }
@@ -367,7 +367,7 @@ bool IndexRouter::FindClosestProjectionToRoad(m2::PointD const & point,
 void IndexRouter::SetGuides(GuidesTracks && guides) { m_guides = GuidesConnections(guides); }
 
 RouterResultCode IndexRouter::CalculateRoute(Checkpoints const & checkpoints,
-                                             m2::PointD const & startDirection,
+                                             m2::PointD const & startDirection, bool useTwoThreads,
                                              bool adjustToPrevRoute,
                                              RouterDelegate const & delegate, Route & route)
 {
@@ -407,7 +407,7 @@ RouterResultCode IndexRouter::CalculateRoute(Checkpoints const & checkpoints,
       }
     }
 
-    return DoCalculateRoute(checkpoints, startDirection, delegate, route);
+    return DoCalculateRoute(checkpoints, startDirection, delegate, useTwoThreads, route);
   }
   catch (RootException const & e)
   {
@@ -552,7 +552,8 @@ void IndexRouter::AddGuidesOsmConnectionsToGraphStarter(size_t checkpointIdxFrom
 
 RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
                                                m2::PointD const & startDirection,
-                                               RouterDelegate const & delegate, Route & route)
+                                               RouterDelegate const & delegate,
+                                               bool useTwoThreads, Route & route)
 {
   m_lastRoute.reset();
   // MwmId used for guides segments in RedressRoute().
@@ -585,7 +586,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     return RouterResultCode::NeedMoreMaps;
 
   TrafficStash::Guard guard(m_trafficStash);
-  unique_ptr<WorldGraph> graph = MakeWorldGraph();
+  unique_ptr<WorldGraph> graph = MakeWorldGraph(useTwoThreads);
 
   vector<Segment> segments;
 
@@ -630,7 +631,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
     // Stop building route if |finishCheckpoint| is not connected to OSM and is not connected to
     // the guides graph.
     if (!FindBestSegments(finishCheckpoint, m2::PointD::Zero() /* direction */,
-                          false /* isOutgoing */, *graph, finishSegments,
+                          true /* isOutgoing */, *graph, finishSegments,
                           dummy /* bestSegmentIsAlmostCodirectional */) &&
         finishFakeEnding.m_projections.empty())
     {
@@ -718,7 +719,7 @@ RouterResultCode IndexRouter::DoCalculateRoute(Checkpoints const & checkpoints,
   m_lastRoute = make_unique<SegmentedRoute>(checkpoints.GetStart(), checkpoints.GetFinish(),
                                             route.GetSubroutes());
   for (Segment const & segment : segments)
-    m_lastRoute->AddStep(segment, mercator::FromLatLon(starter->GetPoint(segment, true /* front */)));
+    m_lastRoute->AddStep(segment, mercator::FromLatLon(starter->GetPoint(segment, true /* front */, true /* isOutgoing */)));
 
   m_lastFakeEdges = make_unique<FakeEdgesContainer>(move(*starter));
 
@@ -800,8 +801,8 @@ RouterResultCode IndexRouter::CalculateSubrouteJointsMode(
       AStarLengthChecker(starter));
 
   RoutingResult<Vertex, Weight> routingResult;
-  RouterResultCode const result =
-      FindPath<Vertex, Edge, Weight>(params, {} /* mwmIds */, routingResult, WorldGraphMode::Joints);
+  RouterResultCode const result = FindPath<Vertex, Edge, Weight>(params,
+      {} /* mwmIds */, routingResult, WorldGraphMode::Joints);
 
   if (result != RouterResultCode::NoError)
     return result;
@@ -828,7 +829,8 @@ RouterResultCode IndexRouter::CalculateSubrouteNoLeapsMode(
   RoutingResult<Vertex, Weight> routingResult;
   set<NumMwmId> const mwmIds = starter.GetMwms();
   RouterResultCode const result =
-      FindPath<Vertex, Edge, Weight>(params, mwmIds, routingResult, WorldGraphMode::NoLeaps);
+      FindPath<Vertex, Edge, Weight>(params, mwmIds, routingResult,
+                                     WorldGraphMode::NoLeaps);
 
   if (result != RouterResultCode::NoError)
     return result;
@@ -863,7 +865,8 @@ RouterResultCode IndexRouter::CalculateSubrouteLeapsOnlyMode(
 
   RoutingResult<Vertex, Weight> routingResult;
   RouterResultCode const result =
-      FindPath<Vertex, Edge, Weight>(params, {} /* mwmIds */, routingResult, WorldGraphMode::LeapsOnly);
+      FindPath<Vertex, Edge, Weight>(params, {} /* mwmIds */,
+                                     routingResult, WorldGraphMode::LeapsOnly);
 
   progress->PushAndDropLastSubProgress();
 
@@ -890,7 +893,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
 {
   base::Timer timer;
   TrafficStash::Guard guard(m_trafficStash);
-  auto graph = MakeWorldGraph();
+  auto graph = MakeWorldGraph(false /* twoThreadsReady */);
   graph->SetMode(WorldGraphMode::NoLeaps);
 
   vector<Segment> startSegments;
@@ -922,7 +925,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   {
     auto const & step = steps[i];
     prevEdges.emplace_back(step.GetSegment(), starter.CalcSegmentWeight(step.GetSegment(),
-                           EdgeEstimator::Purpose::Weight));
+                           true /* isOutgoing */, EdgeEstimator::Purpose::Weight));
   }
 
   using Visitor = JunctionVisitor<IndexGraphStarter>;
@@ -981,7 +984,7 @@ RouterResultCode IndexRouter::AdjustRoute(Checkpoints const & checkpoints,
   return RouterResultCode::NoError;
 }
 
-unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph()
+unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph(bool twoThreadsReady)
 {
   RoutingOptions routingOptions;
   if (m_vehicleType == VehicleType::Car)
@@ -997,8 +1000,8 @@ unique_ptr<WorldGraph> IndexRouter::MakeWorldGraph()
 
   auto indexGraphLoader = IndexGraphLoader::Create(
       m_vehicleType == VehicleType::Transit ? VehicleType::Pedestrian : m_vehicleType,
-      m_loadAltitudes, m_numMwmIds, m_vehicleModelFactory, m_estimator, m_dataSource,
-      routingOptions);
+      m_loadAltitudes, twoThreadsReady, m_numMwmIds, m_vehicleModelFactory,
+      m_estimator, m_dataSource, routingOptions);
 
   if (m_vehicleType != VehicleType::Transit)
   {
@@ -1331,8 +1334,8 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
 
     maxStart = max(maxStart, start);
     auto const contribCoef = static_cast<double>(end - maxStart + 1) / (input.size());
-    auto const startPoint = starter.GetPoint(input[start], true /* front */);
-    auto const endPoint = starter.GetPoint(input[end], true /* front */);
+    auto const startPoint = starter.GetPoint(input[start], true /* front */, true /* isOutgoing */);
+    auto const endPoint = starter.GetPoint(input[end], true /* front */, true /* isOutgoing */);
     progress->AppendSubProgress({startPoint, endPoint, contribCoef});
 
     RouterResultCode resultCode = RouterResultCode::NoError;
@@ -1379,8 +1382,8 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
     }
 
     LOG(LINFO, ("Can not find path",
-      "from:", starter.GetPoint(input[start], input[start].IsForward()),
-      "to:", starter.GetPoint(input[end], input[end].IsForward())));
+      "from:", starter.GetPoint(input[start], input[start].IsForward(), true /* isOutgoing */),
+      "to:", starter.GetPoint(input[end], input[end].IsForward(), true /* isOutgoing */)));
 
     return false;
   };
@@ -1410,12 +1413,12 @@ RouterResultCode IndexRouter::ProcessLeapsJoints(vector<Segment> const & input,
 
     if (!tryBuildRoute(prev, next, WorldGraphMode::JointSingleMwm, routingResult))
     {
-      auto const prevPoint = starter.GetPoint(input[next], true);
+      auto const prevPoint = starter.GetPoint(input[next], true /* front */, true /* isOutgoing */);
       // |next + 1| - is the twin of |next|
       // |next + 2| - is the next exit.
       while (next + 2 < finishLeapStart && next != finishLeapStart)
       {
-        auto const point = starter.GetPoint(input[next + 2], true);
+        auto const point = starter.GetPoint(input[next + 2], true /* front */, true /* isOutgoing */);
         double const distBetweenExistsMeters = ms::DistanceOnEarth(point, prevPoint);
 
         static double constexpr kMinDistBetweenExitsM = 100000;  // 100 km
@@ -1474,7 +1477,7 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
   junctions.reserve(numPoints);
 
   for (size_t i = 0; i < numPoints; ++i)
-    junctions.emplace_back(starter.GetRouteJunction(segments, i).ToPointWithAltitude());
+    junctions.emplace_back(starter.GetRouteJunction(segments, i, true /* isOutgoing */).ToPointWithAltitude());
 
   IndexRoadGraph roadGraph(m_numMwmIds, starter, segments, junctions, m_dataSource);
   starter.GetGraph().SetMode(WorldGraphMode::NoLeaps);
@@ -1486,12 +1489,12 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
   times.emplace_back(static_cast<uint32_t>(0), 0.0);
 
   // Time at first route point - weight of first segment.
-  double time = starter.CalculateETAWithoutPenalty(segments.front());
+  double time = starter.CalculateETAWithoutPenalty(segments.front(), true /* isOutgoing */);
   times.emplace_back(static_cast<uint32_t>(1), time);
 
   for (size_t i = 1; i < segments.size(); ++i)
   {
-    time += starter.CalculateETA(segments[i - 1], segments[i]);
+    time += starter.CalculateETA(segments[i - 1], segments[i], true /* isOutgoing */);
     times.emplace_back(static_cast<uint32_t>(i + 1), time);
   }
 
@@ -1513,7 +1516,7 @@ RouterResultCode IndexRouter::RedressRoute(vector<Segment> const & segments,
     // to use them.
     if (m_vehicleType == VehicleType::Car)
     {
-      routeSegment.SetRoadTypes(starter.GetRoutingOptions(segment));
+      routeSegment.SetRoadTypes(starter.GetRoutingOptions(segment, true /* isOutgoing */));
       if (segment.IsRealSegment() &&
           !AreSpeedCamerasProhibited(m_numMwmIds->GetFile(segment.GetMwmId())))
       {

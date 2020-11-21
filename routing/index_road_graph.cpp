@@ -97,9 +97,11 @@ void IndexRoadGraph::GetRouteEdges(EdgeVector & edges) const
   for (Segment const & segment : m_segments)
   {
     auto const & junctionFrom =
-        m_starter.GetJunction(segment, false /* front */).ToPointWithAltitude();
+        m_starter.GetJunction(segment, false /* front */, true /* isOutgoing */)
+            .ToPointWithAltitude();
     auto const & junctionTo =
-        m_starter.GetJunction(segment, true /* front */).ToPointWithAltitude();
+        m_starter.GetJunction(segment, true /* front */, true /* isOutgoing */)
+            .ToPointWithAltitude();
 
     if (IndexGraphStarter::IsFakeSegment(segment) || TransitGraph::IsTransitSegment(segment))
     {
@@ -159,8 +161,8 @@ void IndexRoadGraph::GetEdges(geometry::PointWithAltitude const & junction, bool
 
     edges.push_back(Edge::MakeReal(
         FeatureID(mwmId, segment.GetFeatureId()), segment.IsForward(), segment.GetSegmentIdx(),
-        m_starter.GetJunction(segment, false /* front */).ToPointWithAltitude(),
-        m_starter.GetJunction(segment, true /* front */).ToPointWithAltitude()));
+        m_starter.GetJunction(segment, false /* front */, isOutgoing).ToPointWithAltitude(),
+        m_starter.GetJunction(segment, true /* front */, isOutgoing).ToPointWithAltitude()));
   }
 }
 

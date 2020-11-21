@@ -77,6 +77,11 @@ public:
               traffic::TrafficCache const & trafficCache, DataSource & dataSource);
 
   std::unique_ptr<WorldGraph> MakeSingleMwmWorldGraph();
+  /// @todo FindBestSegments() is called for start, finish and intermediate points of the route.
+  /// On a modern mobile device this method takes 200-300ms.
+  /// The most number of routes have no intermediate points. It's worth calling this method
+  /// for start on one thread and for finish and another one. It's not difficult to implement it
+  /// based on functionality which was developed for two-thread bidirectional A*.
   bool FindBestSegments(m2::PointD const & checkpoint, m2::PointD const & direction, bool isOutgoing,
                         WorldGraph & worldGraph, std::vector<Segment> & bestSegments);
   bool FindBestEdges(m2::PointD const & checkpoint,
@@ -92,8 +97,9 @@ public:
 
   void SetGuides(GuidesTracks && guides) override;
   RouterResultCode CalculateRoute(Checkpoints const & checkpoints,
-                                  m2::PointD const & startDirection, bool adjustToPrevRoute,
-                                  RouterDelegate const & delegate, Route & route) override;
+                                  m2::PointD const & startDirection, bool useTwoThreads,
+                                  bool adjustToPrevRoute, RouterDelegate const & delegate,
+                                  Route & route) override;
 
   bool FindClosestProjectionToRoad(m2::PointD const & point, m2::PointD const & direction,
                                    double radius, EdgeProj & proj) override;
@@ -117,7 +123,8 @@ private:
 
   RouterResultCode DoCalculateRoute(Checkpoints const & checkpoints,
                                     m2::PointD const & startDirection,
-                                    RouterDelegate const & delegate, Route & route);
+                                    RouterDelegate const & delegate, bool useTwoThreads,
+                                    Route & route);
   RouterResultCode CalculateSubroute(Checkpoints const & checkpoints, size_t subrouteIdx,
                                      RouterDelegate const & delegate,
                                      std::shared_ptr<AStarProgress> const & progress,
@@ -128,7 +135,7 @@ private:
                                m2::PointD const & startDirection,
                                RouterDelegate const & delegate, Route & route);
 
-  std::unique_ptr<WorldGraph> MakeWorldGraph();
+  std::unique_ptr<WorldGraph> MakeWorldGraph(bool twoThreadsReady);
 
   /// \brief Removes all roads from |roads| which goes to dead ends and all road which
   /// is not good according to |worldGraph|. For car routing there are roads with hwtag nocar as well.
@@ -207,13 +214,14 @@ private:
   }
 
   template <typename Vertex, typename Edge, typename Weight, typename AStarParams>
-  RouterResultCode FindPath(
-      AStarParams & params, std::set<NumMwmId> const & mwmIds,
-      RoutingResult<Vertex, Weight> & routingResult, WorldGraphMode mode) const
+  RouterResultCode FindPath(AStarParams & params, std::set<NumMwmId> const & mwmIds,
+                            RoutingResult<Vertex, Weight> & routingResult,
+                            WorldGraphMode mode) const
   {
     AStarAlgorithm<Vertex, Edge, Weight> algorithm;
     return ConvertTransitResult(
-        mwmIds, ConvertResult<Vertex, Edge, Weight>(algorithm.FindPathBidirectional(params, routingResult)));
+        mwmIds, ConvertResult<Vertex, Edge, Weight>(
+                    algorithm.FindPathBidirectional(params, routingResult)));
   }
 
   void SetupAlgorithmMode(IndexGraphStarter & starter, bool guidesActive = false) const;
@@ -242,6 +250,8 @@ private:
   std::shared_ptr<NumMwmIds> m_numMwmIds;
   std::shared_ptr<m4::Tree<NumMwmId>> m_numMwmTree;
   std::shared_ptr<TrafficStash> m_trafficStash;
+  // Note. |m_roadGraph| contains caches inside and is not ready for multithreading.
+  // So all calls of the methods of |m_roadGraph| should be synchronized.
   FeaturesRoadGraph m_roadGraph;
 
   std::shared_ptr<EdgeEstimator> m_estimator;

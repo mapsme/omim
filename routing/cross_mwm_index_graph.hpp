@@ -276,10 +276,12 @@ private:
     ReaderSourceFile src(reader);
     auto it = m_connectors.find(numMwmId);
     if (it == m_connectors.end())
+    {
       it = m_connectors
                .emplace(numMwmId, CrossMwmConnector<CrossMwmId>(
                                       numMwmId, connector::GetFeaturesOffset<CrossMwmId>()))
                .first;
+    }
 
     fn(m_vehicleType, it->second, src);
     return it->second;

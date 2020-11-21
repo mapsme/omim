@@ -108,14 +108,16 @@ public:
   }
 
   bool IsJoint(RoadPoint const & roadPoint) const;
-  bool IsJointOrEnd(Segment const & segment, bool fromStart);
+  bool IsJointOrEnd(Segment const & segment, bool fromStart, bool isOutgoing);
   void GetLastPointsForJoint(std::vector<Segment> const & children, bool isOutgoing,
                              std::vector<uint32_t> & lastPoints);
 
   WorldGraphMode GetMode() const;
-  ms::LatLon const & GetPoint(Segment const & segment, bool front)
+  ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing)
   {
-    return GetGeometry().GetRoad(segment.GetFeatureId()).GetPoint(segment.GetPointId(front));
+    return GetGeometry()
+        .GetRoad(segment.GetFeatureId(), isOutgoing)
+        .GetPoint(segment.GetPointId(front));
   }
 
   /// \brief Check, that we can go to |currentFeatureId|.
@@ -129,8 +131,11 @@ public:
 
   bool IsUTurnAndRestricted(Segment const & parent, Segment const & child, bool isOutgoing) const;
 
-  RouteWeight CalculateEdgeWeight(EdgeEstimator::Purpose purpose, bool isOutgoing,
-                                  Segment const & from, Segment const & to,
+  /// \note Despite the fact the method is not constant it still may be called from two
+  /// threads. One should call it with |isOutgoing| == true and another one with
+  /// |isOutgoing| == false.
+  RouteWeight CalculateEdgeWeight(EdgeEstimator::Purpose purpose,
+                                  Segment const & from, Segment const & to, bool isOutgoing,
                                   std::optional<RouteWeight const> const & prevWeight = std::nullopt);
 
   template <typename T>
@@ -164,14 +169,14 @@ private:
     bool m_isFerry;
   };
 
-  PenaltyData GetRoadPenaltyData(Segment const & segment);
+  PenaltyData GetRoadPenaltyData(Segment const & segment, bool isOutgoing);
 
   /// \brief Calculates penalties for moving from |u| to |v|.
   /// \param |prevWeight| uses for fetching access:conditional. In fact it is time when user
   /// will be at |u|. This time is based on start time of route building and weight of calculated
   /// path until |u|.
   RouteWeight GetPenalties(EdgeEstimator::Purpose purpose, Segment const & u, Segment const & v,
-                           std::optional<RouteWeight> const & prevWeight);
+                           bool isOutgoing, std::optional<RouteWeight> const & prevWeight);
 
   void GetSegmentCandidateForRoadPoint(RoadPoint const & rp, NumMwmId numMwmId,
                                        bool isOutgoing, std::vector<Segment> & children);

@@ -28,6 +28,8 @@
 
 #include "geometry/point2d.hpp"
 
+#include "base/assert.hpp"
+
 #include <algorithm>
 #include <cstdint>
 #include <ctime>
@@ -50,15 +52,19 @@ using AlgorithmForWorldGraph = AStarAlgorithm<Segment, SegmentEdge, RouteWeight>
 class WorldGraphForAStar : public AStarGraph<Segment, SegmentEdge, RouteWeight>
 {
 public:
-  explicit WorldGraphForAStar(std::unique_ptr<SingleVehicleWorldGraph> graph) : m_graph(std::move(graph)) {}
+  explicit WorldGraphForAStar(std::unique_ptr<SingleVehicleWorldGraph> graph)
+    : m_graph(std::move(graph))
+  {
+    CHECK(!IsTwoThreadsReady(), ());
+  }
   ~WorldGraphForAStar() override = default;
 
   // AStarGraph overrides:
   // @{
-  Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to) override
+  Weight HeuristicCostEstimate(Vertex const & from, Vertex const & to, bool isOutgoing) override
   {
-    return m_graph->HeuristicCostEstimate(m_graph->GetPoint(from, true /* front */),
-                                          m_graph->GetPoint(to, true /* front */));
+    return m_graph->HeuristicCostEstimate(m_graph->GetPoint(from, true /* front */, isOutgoing),
+                                          m_graph->GetPoint(to, true /* front */, isOutgoing));
   }
 
   void GetOutgoingEdgesList(astar::VertexData<Vertex, RouteWeight> const & vertexData,
@@ -119,7 +125,7 @@ public:
   // GeometryLoader overrides:
   ~ZeroGeometryLoader() override = default;
 
-  void Load(uint32_t featureId, routing::RoadGeometry & road) override;
+  void Load(uint32_t featureId, routing::RoadGeometry & road, bool isOutgoing) override;
 };
 
 class TestIndexGraphLoader final : public IndexGraphLoader
@@ -136,6 +142,8 @@ public:
   }
 
   void Clear() override;
+
+  bool IsTwoThreadsReady() const override { return false; }
 
   void AddGraph(NumMwmId mwmId, std::unique_ptr<IndexGraph> graph);
 

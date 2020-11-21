@@ -581,3 +581,13 @@ UNIT_TEST(NoTurnOnForkingRoad2)
 
   TEST_EQUAL(t[0].m_pedestrianTurn, PedestrianDirection::TurnRight, ());
 }
+
+// Test on two threads A* bidirectional routing.
+UNIT_TEST(RussiaMoscowTarusaTwoThreads)
+{
+  integration::CalculateRouteAndTestRouteLength(
+      integration::GetVehicleComponents(VehicleType::Pedestrian),
+      mercator::FromLatLon(55.85779, 37.40948), {0.0, 0.0},
+      mercator::FromLatLon(54.71961, 37.19449), 162575.0, 0.07 /* relativeError  */,
+      true /* useTwoThreads */);
+}

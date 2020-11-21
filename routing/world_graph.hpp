@@ -28,6 +28,20 @@
 
 namespace routing
 {
+/// \Note. About isOutgoing parameter.
+/// In routing in hundreds of method isOutgoing boolean flag is used. This flag have
+/// several meanings.
+/// - Originally this parameter was added to distinguish getting ingoing graph edges and
+///   outgoing graph edges. For example, if it's necessary to get outgoing edges
+///   GetEdgeList(..., true /* isOutgoing */, ...) should be called and to get ingoing
+///   graph edges GetEdgeList(..., false /* isOutgoing */, ...) should be called.
+/// - On the other hand getting ingoing edges (isOutgoing == false) only for backward wave
+///   in bidirectional A*. So it's possible to say that based on isOutgoing value
+///   it's possible to say which wave in bidirectional A* is used.
+/// - Then two-threads variant was implemented for bidirectional A*. A new thread is created
+///   for backward A* bidirectional wave in this case. So if isOutgoing == false
+///   that means the method is called from this additional thread.
+
 enum class WorldGraphMode
 {
   LeapsOnly,       // Mode for building a cross mwm route containing only leaps. In case of start and
@@ -65,12 +79,12 @@ public:
   // start to finish of the route.
   virtual bool CheckLength(RouteWeight const & weight, double startToFinishDistanceM) const = 0;
 
-  virtual LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) = 0;
-  virtual ms::LatLon const & GetPoint(Segment const & segment, bool front) = 0;
-  virtual bool IsOneWay(NumMwmId mwmId, uint32_t featureId) = 0;
+  virtual LatLonWithAltitude const & GetJunction(Segment const & segment, bool front, bool isOutgoing) = 0;
+  virtual ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) = 0;
+  virtual bool IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) = 0;
 
   // Checks whether feature is allowed for through passage.
-  virtual bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId) = 0;
+  virtual bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) = 0;
 
   // Clear memory used by loaded graphs.
   virtual void ClearCachedGraphs() = 0;
@@ -79,7 +93,7 @@ public:
 
   virtual RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to) = 0;
 
-  virtual RouteWeight CalcSegmentWeight(Segment const & segment,
+  virtual RouteWeight CalcSegmentWeight(Segment const & segment, bool isOutgoing,
                                         EdgeEstimator::Purpose purpose) = 0;
 
   virtual RouteWeight CalcLeapWeight(ms::LatLon const & from, ms::LatLon const & to) const = 0;
@@ -87,14 +101,14 @@ public:
   virtual RouteWeight CalcOffroadWeight(ms::LatLon const & from, ms::LatLon const & to,
                                         EdgeEstimator::Purpose purpose) const = 0;
 
-  virtual double CalculateETA(Segment const & from, Segment const & to) = 0;
-  virtual double CalculateETAWithoutPenalty(Segment const & segment) = 0;
+  virtual double CalculateETA(Segment const & from, Segment const & to, bool /* isOutgoing */) = 0;
+  virtual double CalculateETAWithoutPenalty(Segment const & segment, bool /* isOutgoing */) = 0;
 
   /// \returns transitions for mwm with id |numMwmId|.
   virtual std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter);
 
-  virtual bool IsRoutingOptionsGood(Segment const & /* segment */);
-  virtual RoutingOptions GetRoutingOptions(Segment const & /* segment */);
+  virtual bool IsRoutingOptionsGood(Segment const & /* segment */, bool /* isOutgoing */);
+  virtual RoutingOptions GetRoutingOptions(Segment const & /* segment */, bool /* isOutgoing */);
   virtual void SetRoutingOptions(RoutingOptions /* routingOptions */);
 
   virtual void SetAStarParents(bool forward, Parents<Segment> & parents);
@@ -107,6 +121,8 @@ public:
   virtual bool AreWavesConnectible(Parents<JointSegment> & forwardParents, JointSegment const & commonVertex,
                                    Parents<JointSegment> & backwardParents,
                                    std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter);
+
+  virtual bool IsTwoThreadsReady() const { return false; }
 
   /// \returns transit-specific information for segment. For nontransit segments returns nullptr.
   virtual std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) = 0;

@@ -78,9 +78,11 @@ namespace routing
 IsCrossroadChecker::Type IsCrossroadChecker::operator()(Segment const & current, Segment const & next) const
 {
   auto const currentSegmentFeatureId = current.GetFeatureId();
-  auto const currentSegmentHwType = m_geometry.GetRoad(currentSegmentFeatureId).GetHighwayType();
+  auto const currentSegmentHwType =
+      m_geometry.GetRoad(currentSegmentFeatureId, true /* isOutgoing */).GetHighwayType();
   auto const nextSegmentFeatureId = next.GetFeatureId();
-  auto const nextSegmentHwType = m_geometry.GetRoad(nextSegmentFeatureId).GetHighwayType();
+  auto const nextSegmentHwType =
+      m_geometry.GetRoad(nextSegmentFeatureId, true /* isOutgoing */).GetHighwayType();
   auto const currentRoadPoint = current.GetRoadPoint(true /* isFront */);
   auto const jointId = m_indexGraph.GetJointId(currentRoadPoint);
   if (jointId == Joint::kInvalidId)
@@ -121,7 +123,7 @@ IsCrossroadChecker::Type IsCrossroadChecker::operator()(Segment const & current,
     if (pointFeatureId == currentSegmentFeatureId || pointFeatureId == nextSegmentFeatureId)
       return;
 
-    auto const & roadGeometry = m_geometry.GetRoad(pointFeatureId);
+    auto const & roadGeometry = m_geometry.GetRoad(pointFeatureId, true /* isOutgoing */);
     auto const pointHwType = roadGeometry.GetHighwayType();
     if (currentSegmentHwType == pointHwType)
       return;

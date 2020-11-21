@@ -16,6 +16,10 @@
 
 namespace routing_test
 {
+UndirectedGraph::UndirectedGraph()
+{
+}
+
 void UndirectedGraph::AddEdge(Vertex u, Vertex v, Weight w)
 {
   m_adjs[u].emplace_back(v, w);
@@ -45,7 +49,7 @@ void UndirectedGraph::GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> con
   GetEdgesList(vertexData.m_vertex, true /* isOutgoing */, adj);
 }
 
-double UndirectedGraph::HeuristicCostEstimate(Vertex const & v, Vertex const & w)
+double UndirectedGraph::HeuristicCostEstimate(Vertex const & v, Vertex const & w, bool isOutgoing)
 {
   return 0.0;
 }
@@ -115,7 +119,9 @@ public:
 
   explicit RoadGraph(IRoadGraph const & roadGraph)
     : m_roadGraph(roadGraph), m_maxSpeedMPS(KMPH2MPS(roadGraph.GetMaxSpeedKMpH()))
-  {}
+  {
+    CHECK(!IsTwoThreadsReady(), ());
+  }
 
   void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
                             std::vector<Edge> & adj) override
@@ -157,7 +163,7 @@ public:
     }
   }
 
-  double HeuristicCostEstimate(Vertex const & v, Vertex const & w) override
+  double HeuristicCostEstimate(Vertex const & v, Vertex const & w, bool /* isOutgoing */) override
   {
     return TimeBetweenSec(v, w, m_maxSpeedMPS);
   }

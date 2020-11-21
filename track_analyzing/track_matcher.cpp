@@ -34,9 +34,11 @@ double DistanceToSegment(m2::PointD const & segmentBegin, m2::PointD const & seg
 
 double DistanceToSegment(Segment const & segment, m2::PointD const & point, IndexGraph & indexGraph)
 {
-  return DistanceToSegment(
-      mercator::FromLatLon(indexGraph.GetGeometry().GetPoint(segment.GetRoadPoint(false))),
-      mercator::FromLatLon(indexGraph.GetGeometry().GetPoint(segment.GetRoadPoint(true))), point);
+  return DistanceToSegment(mercator::FromLatLon(indexGraph.GetGeometry().GetPoint(
+                               segment.GetRoadPoint(false /* front */), true /* isOutgoing */)),
+                           mercator::FromLatLon(indexGraph.GetGeometry().GetPoint(
+                               segment.GetRoadPoint(true /* front */), true /* isOutgoing */)),
+                           point);
 }
 
 bool EdgesContain(vector<SegmentEdge> const & edges, Segment const & segment)
@@ -69,7 +71,7 @@ TrackMatcher::TrackMatcher(storage::Storage const & storage, NumMwmId mwmId,
   m_graph = make_unique<IndexGraph>(
       make_shared<Geometry>(GeometryLoader::Create(m_dataSource, handle, m_vehicleModel,
                                                    AttrLoader(m_dataSource, handle),
-                                                   false /* loadAltitudes */)),
+                                                   false /* loadAltitudes */, false /* twoThreadsReady */)),
       EdgeEstimator::Create(VehicleType::Car, *m_vehicleModel, nullptr /* trafficStash */));
 
   DeserializeIndexGraph(*handle.GetValue(), VehicleType::Car, *m_graph);

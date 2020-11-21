@@ -572,4 +572,15 @@ namespace
         integration::GetVehicleComponents(VehicleType::Car),
         mercator::FromLatLon(55.31103, 38.80954), {0., 0.}, mercator::FromLatLon(55.31155, 38.8217), 2489.8);
   }
+
+  // Test on two threads A* bidirectional routing.
+  UNIT_TEST(RussiaMoscowStStPetersburgTwoThreads)
+  {
+    auto & vehicleComponents = integration::GetVehicleComponents(VehicleType::Car);
+
+    integration::CalculateRouteAndTestRouteLength(
+        vehicleComponents, mercator::FromLatLon(55.74942, 37.62118), {0.0, 0.0},
+        mercator::FromLatLon(59.9394, 30.31492), 706503.0, 0.07 /* relativeError  */,
+        true /* useTwoThreads */);
+  }
 }  // namespace

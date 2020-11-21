@@ -16,10 +16,13 @@
 #include "coding/files_container.hpp"
 
 #include "base/assert.hpp"
+#include "base/optional_lock_guard.hpp"
 #include "base/timer.hpp"
 
 #include <algorithm>
 #include <map>
+#include <mutex>
+#include <optional>
 #include <unordered_map>
 #include <utility>
 
@@ -31,16 +34,26 @@ using namespace std;
 class IndexGraphLoaderImpl final : public IndexGraphLoader
 {
 public:
-  IndexGraphLoaderImpl(VehicleType vehicleType, bool loadAltitudes, shared_ptr<NumMwmIds> numMwmIds,
+  IndexGraphLoaderImpl(VehicleType vehicleType, bool loadAltitudes, bool twoThreadsReady,
+                       shared_ptr<NumMwmIds> numMwmIds,
                        shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
                        shared_ptr<EdgeEstimator> estimator, DataSource & dataSource,
                        RoutingOptions routingOptions = RoutingOptions());
 
+  /// |GetGeometry()| and |GetIndexGraph()| return a references to items in container |m_graphs|.
+  /// They may be called from different threads in case of two thread bidirectional A*.
+  /// The references they return are not constant but it's ok. The code should works with them
+  /// taking into account |isOutgoing| parameter. On the other hand these methods may add items to
+  /// |m_graphs| under a mutex. So it's possible that while one thread is working with a reference
+  /// returned by |GetGeometry()| or |GetIndexGraph()| the other thread is adding item to |m_graphs|
+  /// and the hash table is rehashing. Everything should work correctly because according
+  /// to the standard rehashing of std::unordered_map keeps references.
   // IndexGraphLoader overrides:
   Geometry & GetGeometry(NumMwmId numMwmId) override;
   IndexGraph & GetIndexGraph(NumMwmId numMwmId) override;
   vector<RouteSegment::SpeedCamera> GetSpeedCameraInfo(Segment const & segment) override;
   void Clear() override;
+  bool IsTwoThreadsReady() const override;
 
 private:
   struct GraphAttrs
@@ -59,6 +72,7 @@ private:
   shared_ptr<VehicleModelFactoryInterface> m_vehicleModelFactory;
   shared_ptr<EdgeEstimator> m_estimator;
 
+  optional<mutex> m_graphsMtx;
   unordered_map<NumMwmId, GraphAttrs> m_graphs;
 
   unordered_map<NumMwmId, map<SegmentCoord, vector<RouteSegment::SpeedCamera>>> m_cachedCameras;
@@ -71,7 +85,7 @@ private:
 };
 
 IndexGraphLoaderImpl::IndexGraphLoaderImpl(
-    VehicleType vehicleType, bool loadAltitudes, shared_ptr<NumMwmIds> numMwmIds,
+    VehicleType vehicleType, bool loadAltitudes, bool twoThreadsReady, shared_ptr<NumMwmIds> numMwmIds,
     shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
     shared_ptr<EdgeEstimator> estimator, DataSource & dataSource,
     RoutingOptions routingOptions)
@@ -81,6 +95,7 @@ IndexGraphLoaderImpl::IndexGraphLoaderImpl(
   , m_numMwmIds(move(numMwmIds))
   , m_vehicleModelFactory(move(vehicleModelFactory))
   , m_estimator(move(estimator))
+  , m_graphsMtx(twoThreadsReady ? std::make_optional<std::mutex>() : std::nullopt)
   , m_avoidRoutingOptions(routingOptions)
 {
   CHECK(m_numMwmIds, ());
@@ -90,6 +105,7 @@ IndexGraphLoaderImpl::IndexGraphLoaderImpl(
 
 Geometry & IndexGraphLoaderImpl::GetGeometry(NumMwmId numMwmId)
 {
+  base::OptionalLockGuard guard(m_graphsMtx);
   auto it = m_graphs.find(numMwmId);
   if (it != m_graphs.end())
     return *it->second.m_geometry;
@@ -99,6 +115,7 @@ Geometry & IndexGraphLoaderImpl::GetGeometry(NumMwmId numMwmId)
 
 IndexGraph & IndexGraphLoaderImpl::GetIndexGraph(NumMwmId numMwmId)
 {
+  base::OptionalLockGuard guard(m_graphsMtx);
   auto it = m_graphs.find(numMwmId);
   if (it != m_graphs.end())
   {
@@ -106,6 +123,8 @@ IndexGraph & IndexGraphLoaderImpl::GetIndexGraph(NumMwmId numMwmId)
                                    : *CreateIndexGraph(numMwmId, it->second).m_indexGraph;
   }
 
+  // Note. For the reason of putting CreateIndexGraph() under the |guard| please see
+  // a detailed comment in ConvertRestrictionsOnlyUTurnToNo() method.
   return *CreateIndexGraph(numMwmId, CreateGeometry(numMwmId)).m_indexGraph;
 }
 
@@ -195,8 +214,9 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateGeometry(NumMwmId
       m_vehicleModelFactory->GetVehicleModelForCountry(file.GetName());
 
   auto & graph = m_graphs[numMwmId];
-  graph.m_geometry = make_shared<Geometry>(GeometryLoader::Create(
-      m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle), m_loadAltitudes));
+  graph.m_geometry = make_shared<Geometry>(
+      GeometryLoader::Create(m_dataSource, handle, vehicleModel, AttrLoader(m_dataSource, handle),
+                             m_loadAltitudes, IsTwoThreadsReady()), IsTwoThreadsReady());
   return graph;
 }
 
@@ -219,7 +239,13 @@ IndexGraphLoaderImpl::GraphAttrs & IndexGraphLoaderImpl::CreateIndexGraph(
   return graph;
 }
 
-void IndexGraphLoaderImpl::Clear() { m_graphs.clear(); }
+void IndexGraphLoaderImpl::Clear()
+{
+  base::OptionalLockGuard guard(m_graphsMtx);
+  m_graphs.clear();
+}
+
+bool IndexGraphLoaderImpl::IsTwoThreadsReady() const { return m_graphsMtx.has_value(); }
 
 bool ReadRoadAccessFromMwm(MwmValue const & mwmValue, VehicleType vehicleType,
                            RoadAccess & roadAccess)
@@ -248,13 +274,14 @@ namespace routing
 {
 // static
 unique_ptr<IndexGraphLoader> IndexGraphLoader::Create(
-    VehicleType vehicleType, bool loadAltitudes, shared_ptr<NumMwmIds> numMwmIds,
+    VehicleType vehicleType, bool loadAltitudes, bool twoThreadsReady, shared_ptr<NumMwmIds> numMwmIds,
     shared_ptr<VehicleModelFactoryInterface> vehicleModelFactory,
     shared_ptr<EdgeEstimator> estimator, DataSource & dataSource,
     RoutingOptions routingOptions)
 {
-  return make_unique<IndexGraphLoaderImpl>(vehicleType, loadAltitudes, numMwmIds, vehicleModelFactory,
-                                           estimator, dataSource, routingOptions);
+  return make_unique<IndexGraphLoaderImpl>(vehicleType, loadAltitudes, twoThreadsReady, numMwmIds,
+                                           vehicleModelFactory, estimator, dataSource,
+                                           routingOptions);
 }
 
 void DeserializeIndexGraph(MwmValue const & mwmValue, VehicleType vehicleType, IndexGraph & graph)

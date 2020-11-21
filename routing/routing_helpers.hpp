@@ -84,14 +84,14 @@ bool CheckGraphConnectivity(Segment const & start, bool isOutgoing,
 struct AStarLengthChecker
 {
   explicit AStarLengthChecker(IndexGraphStarter & starter);
-  bool operator()(RouteWeight const & weight) const;
+  bool operator()(RouteWeight const & weight, bool isOutgoing) const;
   IndexGraphStarter & m_starter;
 };
 
 struct AdjustLengthChecker
 {
   explicit AdjustLengthChecker(IndexGraphStarter & starter);
-  bool operator()(RouteWeight const & weight) const;
+  bool operator()(RouteWeight const & weight, bool isOutgoing) const;
   IndexGraphStarter & m_starter;
 };
 }  // namespace routing

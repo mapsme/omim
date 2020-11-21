@@ -173,7 +173,7 @@ public:
   routing::Segment GetFinishSegment() const { return {}; }
   bool ConvertToReal(routing::Segment const & /* segment */) const { return false; }
   routing::RouteWeight HeuristicCostEstimate(routing::Segment const & /* from */,
-                                             ms::LatLon const & /* to */)
+                                             ms::LatLon const & /* to */, bool /* isOutgoing */)
   {
     CHECK(false, ("This method exists only for compatibility with IndexGraphStarterJoints"));
     return routing::GetAStarWeightZero<routing::RouteWeight>();
@@ -200,11 +200,12 @@ public:
   }
 
   routing::RouteWeight GetAStarWeightEpsilon() { return routing::RouteWeight(0.0); }
+  bool IsTwoThreadsReady() const { return false; }
   // @}
 
-  ms::LatLon const & GetPoint(routing::Segment const & s, bool forward)
+  ms::LatLon const & GetPoint(routing::Segment const & s, bool forward, bool isOutgoing)
   {
-    return m_graph.GetPoint(s, forward);
+    return m_graph.GetPoint(s, forward, isOutgoing);
   }
 
   void GetEdgesList(routing::Segment const & child, bool isOutgoing,
@@ -223,14 +224,14 @@ public:
                                *m_AStarParents);
   }
 
-  bool IsJoint(routing::Segment const & segment, bool fromStart) const
+  bool IsJoint(routing::Segment const & segment, bool fromStart, bool isOutgoing) const
   {
-    return IsJointOrEnd(segment, fromStart);
+    return IsJointOrEnd(segment, fromStart, isOutgoing);
   }
 
-  bool IsJointOrEnd(routing::Segment const & segment, bool fromStart) const
+  bool IsJointOrEnd(routing::Segment const & segment, bool fromStart, bool isOutgoing) const
   {
-    return m_graph.IsJointOrEnd(segment, fromStart);
+    return m_graph.IsJointOrEnd(segment, fromStart, isOutgoing);
   }
 
   template <typename Vertex>
@@ -256,7 +257,8 @@ public:
   {
   }
 
-  Weight HeuristicCostEstimate(Vertex const & /* from */, Vertex const & /* to */) override
+  Weight HeuristicCostEstimate(Vertex const & /* from */, Vertex const & /* to */,
+                               bool /* isOutgoing */) override
   {
     return routing::GetAStarWeightZero<Weight>();
   }

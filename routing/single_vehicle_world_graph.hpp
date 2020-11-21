@@ -21,6 +21,8 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <mutex>
+#include <optional>
 #include <vector>
 
 namespace routing
@@ -43,6 +45,8 @@ public:
                    bool useRoutingOptions, bool useAccessConditional,
                    std::vector<SegmentEdge> & edges) override;
 
+  /// \note This method may be called from two threads. One with |isOutgoing| == true
+  /// and another one with |isOutgoing| == false.
   void GetEdgeList(astar::VertexData<JointSegment, RouteWeight> const & parentVertexData,
                    Segment const & parent, bool isOutgoing, bool useAccessConditional,
                    std::vector<JointEdge> & jointEdges,
@@ -50,31 +54,36 @@ public:
 
   bool CheckLength(RouteWeight const &, double) const override { return true; }
 
-  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front) override;
-  ms::LatLon const & GetPoint(Segment const & segment, bool front) override;
+  LatLonWithAltitude const & GetJunction(Segment const & segment, bool front,
+                                         bool isOutgoing) override;
+  ms::LatLon const & GetPoint(Segment const & segment, bool front, bool isOutgoing) override;
 
-  bool IsOneWay(NumMwmId mwmId, uint32_t featureId) override;
-  bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId) override;
+  bool IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) override;
+  bool IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId, bool isOutgoing) override;
   void ClearCachedGraphs() override { m_loader->Clear(); }
 
   void SetMode(WorldGraphMode mode) override { m_mode = mode; }
   WorldGraphMode GetMode() const override { return m_mode; }
 
+  /// \note Despite the fact the method is not constant it does not change the state
+  // of SingleVehicleWorldGraph and may be called from different threads without
+  // synchronization.
   RouteWeight HeuristicCostEstimate(ms::LatLon const & from, ms::LatLon const & to) override;
 
-  RouteWeight CalcSegmentWeight(Segment const & segment, EdgeEstimator::Purpose purpose) override;
+  RouteWeight CalcSegmentWeight(Segment const & segment, bool isOutgoing,
+                                EdgeEstimator::Purpose purpose) override;
   RouteWeight CalcLeapWeight(ms::LatLon const & from, ms::LatLon const & to) const override;
   RouteWeight CalcOffroadWeight(ms::LatLon const & from, ms::LatLon const & to,
                                 EdgeEstimator::Purpose purpose) const override;
-  double CalculateETA(Segment const & from, Segment const & to) override;
-  double CalculateETAWithoutPenalty(Segment const & segment) override;
+  double CalculateETA(Segment const & from, Segment const & to, bool isOutgoing) override;
+  double CalculateETAWithoutPenalty(Segment const & segment, bool isOutgoing) override;
 
   std::vector<Segment> const & GetTransitions(NumMwmId numMwmId, bool isEnter) override;
 
   void SetRoutingOptions(RoutingOptions routingOptions) override { m_avoidRoutingOptions = routingOptions; }
   /// \returns true if feature, associated with segment satisfies users conditions.
-  bool IsRoutingOptionsGood(Segment const & segment) override;
-  RoutingOptions GetRoutingOptions(Segment const & segment) override;
+  bool IsRoutingOptionsGood(Segment const & segment, bool isOutgoing) override;
+  RoutingOptions GetRoutingOptions(Segment const & segment, bool isOutgoing) override;
 
   std::unique_ptr<TransitInfo> GetTransitInfo(Segment const & segment) override;
   std::vector<RouteSegment::SpeedCamera> GetSpeedCamInfo(Segment const & segment) override;
@@ -94,6 +103,7 @@ public:
   bool AreWavesConnectible(Parents<JointSegment> & forwardParents, JointSegment const & commonVertex,
                            Parents<JointSegment> & backwardParents,
                            std::function<uint32_t(JointSegment const &)> && fakeFeatureConverter) override;
+  bool IsTwoThreadsReady() const override { return m_loader->IsTwoThreadsReady(); }
   // @}
 
   // This method should be used for tests only
@@ -124,10 +134,15 @@ private:
   // WorldGraph overrides:
   void GetTwinsInner(Segment const & s, bool isOutgoing, std::vector<Segment> & twins) override;
 
-  RoadGeometry const & GetRoadGeometry(NumMwmId mwmId, uint32_t featureId);
+  RoadGeometry const & GetRoadGeometry(NumMwmId mwmId, uint32_t featureId, bool isOutgoing);
 
   std::unique_ptr<CrossMwmGraph> m_crossMwmGraph;
   std::unique_ptr<IndexGraphLoader> m_loader;
+  // This mutex synchronizes the access to cross mwm graph |m_crossMwmGraph|. For the time being
+  // the synchronization is done only for
+  // GetEdgeList(astar::VertexData<JointSegment, RouteWeight> const & ....).
+  // That means only for SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(...).
+  std::optional<std::mutex> m_crossMwmGraphMtx;
   std::shared_ptr<EdgeEstimator> m_estimator;
   RoutingOptions m_avoidRoutingOptions = RoutingOptions();
   WorldGraphMode m_mode = WorldGraphMode::NoLeaps;

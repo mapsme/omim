@@ -44,8 +44,8 @@ void TestAltitudeOfAllMwmFeatures(string const & countryId,
   TEST_EQUAL(regResult.second, MwmSet::RegResult::Success, ());
   TEST(regResult.first.IsAlive(), ());
 
-  unique_ptr<AltitudeLoader> altitudeLoader =
-      make_unique<AltitudeLoader>(dataSource, regResult.first /* mwmId */);
+  unique_ptr<AltitudeLoader> altitudeLoader = make_unique<AltitudeLoader>(
+      dataSource, regResult.first /* mwmId */, false /* twoThreadsReady */);
 
   ForEachFeature(country.GetPath(MapFileType::Map), [&](FeatureType & f, uint32_t const & id) {
     if (!routing::IsRoad(TypesHolder(f)))
@@ -56,7 +56,8 @@ void TestAltitudeOfAllMwmFeatures(string const & countryId,
     if (pointsCount == 0)
       return;
 
-    geometry::Altitudes altitudes = altitudeLoader->GetAltitudes(id, pointsCount);
+    geometry::Altitudes altitudes =
+        altitudeLoader->GetAltitudes(id, pointsCount, true /* isOutgoing */);
     TEST(!altitudes.empty(),
          ("Empty altitude vector. MWM:", countryId, ", feature id:", id, ", altitudes:", altitudes));
 

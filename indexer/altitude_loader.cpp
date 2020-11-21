@@ -33,10 +33,13 @@ void LoadAndMap(size_t dataSize, ReaderSource<FilesContainerR::TReader> & src, T
 
 namespace feature
 {
-AltitudeLoader::AltitudeLoader(DataSource const & dataSource, MwmSet::MwmId const & mwmId)
+AltitudeLoader::AltitudeLoader(DataSource const & dataSource, MwmSet::MwmId const & mwmId,
+                               bool twoThreadsReady)
   : m_handle(dataSource.GetMwmHandleById(mwmId))
+  , m_handleBwd(twoThreadsReady ? make_unique<MwmSet::MwmHandle>(dataSource.GetMwmHandleById(mwmId))
+                                : nullptr)
 {
-  if (!m_handle.IsAlive())
+  if (!m_handle.IsAlive() || (IsTwoThreadsReady() && !m_handleBwd->IsAlive()))
     return;
 
   auto const & mwmValue = *m_handle.GetValue();
@@ -58,6 +61,12 @@ AltitudeLoader::AltitudeLoader(DataSource const & dataSource, MwmSet::MwmId cons
     LoadAndMap(m_header.GetAltitudeAvailabilitySize(), src, m_altitudeAvailability,
                m_altitudeAvailabilityRegion);
     LoadAndMap(m_header.GetFeatureTableSize(), src, m_featureTable, m_featureTableRegion);
+
+    if (IsTwoThreadsReady())
+    {
+      m_readerBwd = make_unique<FilesContainerR::TReader>(
+          m_handleBwd->GetValue()->m_cont.GetReader(ALTITUDES_FILE_TAG));
+    }
   }
   catch (Reader::OpenException const & e)
   {
@@ -71,24 +80,36 @@ bool AltitudeLoader::HasAltitudes() const
   return m_reader != nullptr && m_header.m_minAltitude != geometry::kInvalidAltitude;
 }
 
-geometry::Altitudes const & AltitudeLoader::GetAltitudes(uint32_t featureId, size_t pointCount)
+geometry::Altitudes const & AltitudeLoader::GetAltitudes(uint32_t featureId, size_t pointCount,
+                                                         bool isOutgoing)
+{
+  // Note. The backward reader and cache should not be used in case of calling GetAltitudes()
+  // method from one thread.
+  auto isForward = IsTwoThreadsReady() ? isOutgoing : true;
+  return GetAltitudes(featureId, pointCount, isForward ? m_reader : m_readerBwd,
+                      isForward ? m_cache : m_cacheBwd);
+}
+
+geometry::Altitudes const & AltitudeLoader::AltitudeLoader::GetAltitudes(
+    uint32_t featureId, size_t pointCount, unique_ptr<FilesContainerR::TReader> & reader,
+    map<uint32_t, geometry::Altitudes> & cache) const
 {
   if (!HasAltitudes())
   {
     // There's no altitude section in mwm.
-    return m_cache
+    return cache
         .insert(
             make_pair(featureId, geometry::Altitudes(pointCount, geometry::kDefaultAltitudeMeters)))
         .first->second;
   }
 
-  auto const it = m_cache.find(featureId);
-  if (it != m_cache.end())
+  auto const it = cache.find(featureId);
+  if (it != cache.end())
     return it->second;
 
   if (!m_altitudeAvailability[featureId])
   {
-    return m_cache
+    return cache
         .insert(make_pair(featureId, geometry::Altitudes(pointCount, m_header.m_minAltitude)))
         .first->second;
   }
@@ -99,35 +120,35 @@ geometry::Altitudes const & AltitudeLoader::GetAltitudes(uint32_t featureId, siz
   CHECK_LESS_OR_EQUAL(offset, m_featureTable.size(), ("Feature Id", featureId, "of", m_countryFileName));
 
   uint64_t const altitudeInfoOffsetInSection = m_header.m_altitudesOffset + offset;
-  CHECK_LESS(altitudeInfoOffsetInSection, m_reader->Size(), ("Feature Id", featureId, "of", m_countryFileName));
+  CHECK_LESS(altitudeInfoOffsetInSection, reader->Size(), ("Feature Id", featureId, "of", m_countryFileName));
 
   try
   {
     Altitudes altitudes;
-    ReaderSource<FilesContainerR::TReader> src(*m_reader);
+    ReaderSource<FilesContainerR::TReader> src(*reader);
     src.Skip(altitudeInfoOffsetInSection);
     bool const isDeserialized = altitudes.Deserialize(m_header.m_minAltitude, pointCount,
                                                       m_countryFileName, featureId,  src);
 
     bool const allValid =
         isDeserialized &&
-        none_of(altitudes.m_altitudes.begin(), altitudes.m_altitudes.end(),
-                [](geometry::Altitude a) { return a == geometry::kInvalidAltitude; });
+            none_of(altitudes.m_altitudes.begin(), altitudes.m_altitudes.end(),
+                    [](geometry::Altitude a) { return a == geometry::kInvalidAltitude; });
     if (!allValid)
     {
-      LOG(LERROR, ("Only a part point of a feature has a valid altitdue. Altitudes: ", altitudes.m_altitudes,
-                   ". Feature Id", featureId, "of", m_countryFileName));
-      return m_cache
+      LOG(LERROR, ("Only a part point of a feature has a valid altitude. Altitudes: ", altitudes.m_altitudes,
+          ". Feature Id", featureId, "of", m_countryFileName));
+      return cache
           .insert(make_pair(featureId, geometry::Altitudes(pointCount, m_header.m_minAltitude)))
           .first->second;
     }
 
-    return m_cache.insert(make_pair(featureId, move(altitudes.m_altitudes))).first->second;
+    return cache.insert(make_pair(featureId, move(altitudes.m_altitudes))).first->second;
   }
   catch (Reader::OpenException const & e)
   {
     LOG(LERROR, ("Feature Id", featureId, "of", m_countryFileName, ". Error while getting altitude data:", e.Msg()));
-    return m_cache
+    return cache
         .insert(make_pair(featureId, geometry::Altitudes(pointCount, m_header.m_minAltitude)))
         .first->second;
   }

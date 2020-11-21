@@ -61,9 +61,9 @@ FakeEnding MakeFakeEnding(vector<Segment> const & segments, m2::PointD const & p
   {
     auto const & segment = segments[i];
 
-    bool const oneWay = graph.IsOneWay(segment.GetMwmId(), segment.GetFeatureId());
-    auto const & frontJunction = graph.GetJunction(segment, true /* front */);
-    auto const & backJunction = graph.GetJunction(segment, false /* front */);
+    bool const oneWay = graph.IsOneWay(segment.GetMwmId(), segment.GetFeatureId(), true /* isOutgoing */);
+    auto const & frontJunction = graph.GetJunction(segment, true /* front */, true /* isOutgoing */);
+    auto const & backJunction = graph.GetJunction(segment, false /* front */, true /* isOutgoing */);
     auto const & projectedJunction = CalcProjectionToSegment(backJunction, frontJunction, point);
 
     ending.m_projections.emplace_back(segment, oneWay, frontJunction, backJunction,
@@ -79,7 +79,7 @@ FakeEnding MakeFakeEnding(vector<Segment> const & segments, m2::PointD const & p
 
 FakeEnding MakeFakeEnding(Segment const & segment, m2::PointD const & point, IndexGraph & graph)
 {
-  auto const & road = graph.GetGeometry().GetRoad(segment.GetFeatureId());
+  auto const & road = graph.GetGeometry().GetRoad(segment.GetFeatureId(), true /* isOutgoing */);
   bool const oneWay = road.IsOneWay();
   auto const & frontJunction = road.GetJunction(segment.GetPointId(true /* front */));
   auto const & backJunction = road.GetJunction(segment.GetPointId(false /* front */));

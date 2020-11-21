@@ -79,8 +79,9 @@ public:
   /// @return ResultCode error code or NoError if route was initialised
   /// @see Cancellable
   virtual RouterResultCode CalculateRoute(Checkpoints const & checkpoints,
-                                          m2::PointD const & startDirection, bool adjust,
-                                          RouterDelegate const & delegate, Route & route) = 0;
+                                          m2::PointD const & startDirection, bool useTwoThreads,
+                                          bool adjust, RouterDelegate const & delegate,
+                                          Route & route) = 0;
 
   virtual bool FindClosestProjectionToRoad(m2::PointD const & point, m2::PointD const & direction,
                                            double radius, EdgeProj & proj) = 0;

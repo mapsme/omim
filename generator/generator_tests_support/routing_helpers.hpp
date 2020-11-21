@@ -31,7 +31,7 @@ class TestGeometryLoader : public GeometryLoader
 {
 public:
   // GeometryLoader overrides:
-  void Load(uint32_t featureId, routing::RoadGeometry & road) override;
+  void Load(uint32_t featureId, routing::RoadGeometry & road, bool isOutgoing) override;
 
   void AddRoad(uint32_t featureId, bool oneWay, float speed,
                routing::RoadGeometry::Points const & points);

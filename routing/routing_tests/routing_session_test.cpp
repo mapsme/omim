@@ -58,9 +58,8 @@ public:
   void ClearState() override {}
   void SetGuides(GuidesTracks && /* guides */) override {}
 
-  RouterResultCode CalculateRoute(Checkpoints const & /* checkpoints */,
-                                  m2::PointD const & /* startDirection */, bool /* adjust */,
-                                  RouterDelegate const & /* delegate */, Route & route) override
+  RouterResultCode CalculateRoute(Checkpoints const & /* checkpoints */, m2::PointD const & /* startDirection */, bool /* useTwoThreads */,
+                                  bool /* adjust */, RouterDelegate const & /* delegate */, Route & route) override
   {
     ++m_buildCount;
     route = m_route;
@@ -90,8 +89,9 @@ public:
   void SetGuides(GuidesTracks && /* guides */) override {}
 
   RouterResultCode CalculateRoute(Checkpoints const & /* checkpoints */,
-                                  m2::PointD const & /* startDirection */, bool /* adjust */,
-                                  RouterDelegate const & /* delegate */, Route & route) override
+                                  m2::PointD const & /* startDirection */, bool /* useTwoThreads */,
+                                  bool /* adjust */, RouterDelegate const & /* delegate */,
+                                  Route & route) override
   {
     TEST_LESS(m_returnCodesIdx, m_returnCodes.size(), ());
     route = Route(GetName(), m_route.begin(), m_route.end(), 0 /* route id */);

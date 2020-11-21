@@ -2,6 +2,8 @@
 
 #include "routing/base/astar_algorithm.hpp"
 
+#include "base/optional_lock_guard.hpp"
+
 #include <algorithm>
 #include <utility>
 
@@ -25,6 +27,8 @@ SingleVehicleWorldGraph::SingleVehicleWorldGraph(unique_ptr<CrossMwmGraph> cross
                                                  MwmHierarchyHandler && hierarchyHandler)
   : m_crossMwmGraph(move(crossMwmGraph))
   , m_loader(move(loader))
+  , m_crossMwmGraphMtx(m_loader->IsTwoThreadsReady() ? std::make_optional<std::mutex>()
+                                                     : std::nullopt)
   , m_estimator(move(estimator))
   , m_hierarchyHandler(std::move(hierarchyHandler))
 {
@@ -37,6 +41,10 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
                                                              vector<RouteWeight> & parentWeights,
                                                              bool isOutgoing)
 {
+  // Synchronization note. While building route with the help of two thread bidirectional A*
+  // SingleVehicleWorldGraph::CheckAndProcessTransitFeatures() may be called from two
+  // threads (depending on the value of |isOutgoing|). According to performance tests
+  // there's almost no performance leak after locking this mutex here.
   bool opposite = !isOutgoing;
   vector<JointEdge> newCrossMwmEdges;
 
@@ -48,20 +56,27 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
 
     NumMwmId const edgeMwmId = target.GetMwmId();
 
-    if (!m_crossMwmGraph->IsFeatureTransit(edgeMwmId, target.GetFeatureId()))
-      continue;
+    {
+      base::OptionalLockGuard guard(m_crossMwmGraphMtx);
+      if (!m_crossMwmGraph->IsFeatureTransit(edgeMwmId, target.GetFeatureId()))
+        continue;
+    }
 
     auto & currentIndexGraph = GetIndexGraph(mwmId);
 
     vector<Segment> twins;
-    m_crossMwmGraph->GetTwinFeature(target.GetSegment(true /* start */), isOutgoing, twins);
+    {
+      base::OptionalLockGuard guard(m_crossMwmGraphMtx);
+      m_crossMwmGraph->GetTwinFeature(target.GetSegment(true /* start */), isOutgoing, twins);
+    }
     for (auto const & twin : twins)
     {
       NumMwmId const twinMwmId = twin.GetMwmId();
 
       uint32_t const twinFeatureId = twin.GetFeatureId();
 
-      Segment const start(twinMwmId, twinFeatureId, target.GetSegmentId(!opposite), target.IsForward());
+      Segment const start(twinMwmId, twinFeatureId, target.GetSegmentId(!opposite),
+                          target.IsForward());
 
       auto & twinIndexGraph = GetIndexGraph(twinMwmId);
 
@@ -69,15 +84,17 @@ void SingleVehicleWorldGraph::CheckAndProcessTransitFeatures(Segment const & par
       twinIndexGraph.GetLastPointsForJoint({start}, isOutgoing, lastPoints);
       ASSERT_EQUAL(lastPoints.size(), 1, ());
 
-      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(parent,
-                                                                target.GetSegment(!opposite),
-                                                                isOutgoing, lastPoints.back()))
+      if (auto edge = currentIndexGraph.GetJointEdgeByLastPoint(
+              parent, target.GetSegment(!opposite), isOutgoing, lastPoints.back()))
       {
         newCrossMwmEdges.emplace_back(*edge);
         newCrossMwmEdges.back().GetTarget().SetFeatureId(twinFeatureId);
         newCrossMwmEdges.back().GetTarget().SetMwmId(twinMwmId);
-        newCrossMwmEdges.back().GetWeight() +=
-            m_hierarchyHandler.GetCrossBorderPenalty(mwmId, twinMwmId);
+        {
+          base::OptionalLockGuard guard(m_crossMwmGraphMtx);
+          newCrossMwmEdges.back().GetWeight() +=
+              m_hierarchyHandler.GetCrossBorderPenalty(mwmId, twinMwmId);
+        }
 
         parentWeights.emplace_back(parentWeights[i]);
       }
@@ -114,7 +131,7 @@ void SingleVehicleWorldGraph::GetEdgeList(
   if (!parent.IsRealSegment())
     return;
 
-  ASSERT(m_parentsForJoints.forward && m_parentsForJoints.backward,
+  ASSERT(isOutgoing ? m_parentsForJoints.forward : m_parentsForJoints.backward,
          ("m_parentsForJoints was not initialized in SingleVehicleWorldGraph."));
   auto & parents = isOutgoing ? *m_parentsForJoints.forward : *m_parentsForJoints.backward;
   auto & indexGraph = GetIndexGraph(parent.GetMwmId());
@@ -125,25 +142,26 @@ void SingleVehicleWorldGraph::GetEdgeList(
 }
 
 LatLonWithAltitude const & SingleVehicleWorldGraph::GetJunction(Segment const & segment,
-                                                                         bool front)
+                                                                bool front, bool isOutgoing)
 {
-  return GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId())
+  return GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing)
          .GetJunction(segment.GetPointId(front));
 }
 
-ms::LatLon const & SingleVehicleWorldGraph::GetPoint(Segment const & segment, bool front)
+ms::LatLon const & SingleVehicleWorldGraph::GetPoint(Segment const & segment, bool front,
+                                                     bool isOutgoing)
 {
-  return GetJunction(segment, front).GetLatLon();
+  return GetJunction(segment, front, isOutgoing).GetLatLon();
 }
 
-bool SingleVehicleWorldGraph::IsOneWay(NumMwmId mwmId, uint32_t featureId)
+bool SingleVehicleWorldGraph::IsOneWay(NumMwmId mwmId, uint32_t featureId, bool isOutgoing)
 {
-  return GetRoadGeometry(mwmId, featureId).IsOneWay();
+  return GetRoadGeometry(mwmId, featureId, isOutgoing).IsOneWay();
 }
 
-bool SingleVehicleWorldGraph::IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId)
+bool SingleVehicleWorldGraph::IsPassThroughAllowed(NumMwmId mwmId, uint32_t featureId, bool isOutgoing)
 {
-  return GetRoadGeometry(mwmId, featureId).IsPassThroughAllowed();
+  return GetRoadGeometry(mwmId, featureId, isOutgoing).IsPassThroughAllowed();
 }
 
 RouteWeight SingleVehicleWorldGraph::HeuristicCostEstimate(ms::LatLon const & from,
@@ -153,11 +171,11 @@ RouteWeight SingleVehicleWorldGraph::HeuristicCostEstimate(ms::LatLon const & fr
 }
 
 
-RouteWeight SingleVehicleWorldGraph::CalcSegmentWeight(Segment const & segment,
+RouteWeight SingleVehicleWorldGraph::CalcSegmentWeight(Segment const & segment, bool isOutgoing,
                                                        EdgeEstimator::Purpose purpose)
 {
   return RouteWeight(m_estimator->CalcSegmentWeight(
-      segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()), purpose));
+      segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing), purpose));
 }
 
 RouteWeight SingleVehicleWorldGraph::CalcLeapWeight(ms::LatLon const & from,
@@ -173,20 +191,21 @@ RouteWeight SingleVehicleWorldGraph::CalcOffroadWeight(ms::LatLon const & from,
   return RouteWeight(m_estimator->CalcOffroad(from, to, purpose));
 }
 
-double SingleVehicleWorldGraph::CalculateETA(Segment const & from, Segment const & to)
+double SingleVehicleWorldGraph::CalculateETA(Segment const & from, Segment const & to, bool isOutgoing)
 {
   if (from.GetMwmId() != to.GetMwmId())
-    return CalculateETAWithoutPenalty(to);
+    return CalculateETAWithoutPenalty(to, isOutgoing);
 
   auto & indexGraph = m_loader->GetIndexGraph(from.GetMwmId());
-  return indexGraph.CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, true /* isOutgoing */, from, to).GetWeight();
+  return indexGraph.CalculateEdgeWeight(EdgeEstimator::Purpose::ETA, from, to, isOutgoing)
+      .GetWeight();
 }
 
-double SingleVehicleWorldGraph::CalculateETAWithoutPenalty(Segment const & segment)
+double SingleVehicleWorldGraph::CalculateETAWithoutPenalty(Segment const & segment, bool isOutgoing)
 {
-  return m_estimator->CalcSegmentWeight(segment,
-                                        GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId()),
-                                        EdgeEstimator::Purpose::ETA);
+  return m_estimator->CalcSegmentWeight(
+      segment, GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing),
+      EdgeEstimator::Purpose::ETA);
 }
 
 vector<Segment> const & SingleVehicleWorldGraph::GetTransitions(NumMwmId numMwmId, bool isEnter)
@@ -202,9 +221,10 @@ vector<RouteSegment::SpeedCamera> SingleVehicleWorldGraph::GetSpeedCamInfo(Segme
   return m_loader->GetSpeedCameraInfo(segment);
 }
 
-RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId)
+RoadGeometry const & SingleVehicleWorldGraph::GetRoadGeometry(NumMwmId mwmId, uint32_t featureId,
+                                                              bool isOutgoing)
 {
-  return m_loader->GetGeometry(mwmId).GetRoad(featureId);
+  return m_loader->GetGeometry(mwmId).GetRoad(featureId, isOutgoing);
 }
 
 void SingleVehicleWorldGraph::GetTwinsInner(Segment const & segment, bool isOutgoing,
@@ -213,17 +233,17 @@ void SingleVehicleWorldGraph::GetTwinsInner(Segment const & segment, bool isOutg
   m_crossMwmGraph->GetTwins(segment, isOutgoing, twins);
 }
 
-bool SingleVehicleWorldGraph::IsRoutingOptionsGood(Segment const & segment)
+bool SingleVehicleWorldGraph::IsRoutingOptionsGood(Segment const & segment, bool isOutgoing)
 {
-  auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId());
+  auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing);
   return geometry.SuitableForOptions(m_avoidRoutingOptions);
 }
 
-RoutingOptions SingleVehicleWorldGraph::GetRoutingOptions(Segment const & segment)
+RoutingOptions SingleVehicleWorldGraph::GetRoutingOptions(Segment const & segment, bool isOutgoing)
 {
   ASSERT(segment.IsRealSegment(), ());
 
-  auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId());
+  auto const & geometry = GetRoadGeometry(segment.GetMwmId(), segment.GetFeatureId(), isOutgoing);
   return geometry.GetRoutingOptions();
 }
 

@@ -107,6 +107,11 @@ public:
   // Returns fake ending associated with checkpoint by its index |checkpointIdx|.
   FakeEnding GetFakeEnding(size_t checkpointIdx) const;
 
+  void Clear()
+  {
+    m_checkpointsFakeEndings.clear();
+  }
+
 private:
   // Fills |ConnectionToOsm| for checkpoints for its further attachment to the roads graph.
   void AddConnectionToOsm(size_t checkpointIdx, Segment const & real,

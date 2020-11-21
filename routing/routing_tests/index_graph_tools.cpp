@@ -8,7 +8,6 @@
 
 #include "transit/transit_version.hpp"
 
-#include "base/assert.hpp"
 #include "base/math.hpp"
 
 #include <unordered_map>
@@ -85,13 +84,15 @@ void NoUTurnRestrictionTest::TestRouteGeom(Segment const & start, Segment const 
                                                   nullptr /* prevRoute */);
 
   RoutingResult<Segment, RouteWeight> routingResult;
-  auto const resultCode = algorithm.FindPathBidirectional(params, routingResult);
+  auto const resultCode =
+      algorithm.FindPathBidirectional(params, routingResult);
 
   TEST_EQUAL(resultCode, expectedRouteResult, ());
   for (size_t i = 0; i < routingResult.m_path.size(); ++i)
   {
     static auto constexpr kEps = 1e-3;
-    auto const point = m_graph->GetWorldGraph().GetPoint(routingResult.m_path[i], true /* forward */);
+    auto const point = m_graph->GetWorldGraph().GetPoint(routingResult.m_path[i], true /* front */,
+                                                         true /* isOutgoing */);
     if (!base::AlmostEqualAbs(mercator::FromLatLon(point), expectedRouteGeom[i], kEps))
     {
       TEST(false, ("Coords missmated at index:", i, "expected:", expectedRouteGeom[i],
@@ -101,8 +102,10 @@ void NoUTurnRestrictionTest::TestRouteGeom(Segment const & start, Segment const 
 }
 
 // ZeroGeometryLoader ------------------------------------------------------------------------------
-void ZeroGeometryLoader::Load(uint32_t /* featureId */, routing::RoadGeometry & road)
+void ZeroGeometryLoader::Load(uint32_t /* featureId */, routing::RoadGeometry & road,
+                              bool isOutgoing)
 {
+  CHECK(isOutgoing, ("ZeroGeometryLoader() is not ready for two threads feature parsing."));
   // Any valid road will do.
   auto const points = routing::RoadGeometry::Points({{0.0, 0.0}, {0.0, 1.0}});
   road = RoadGeometry(true /* oneWay */, 1.0 /* weightSpeedKMpH */, 1.0 /* etaSpeedKMpH */, points);
@@ -275,7 +278,8 @@ bool TestIndexGraphTopology::FindPath(Vertex start, Vertex finish, double & path
   AlgorithmForWorldGraph::ParamsForTests<> params(graphForAStar, startSegment, finishSegment,
                                                   nullptr /* prevRoute */);
   RoutingResult<Segment, RouteWeight> routingResult;
-  auto const resultCode = algorithm.FindPathBidirectional(params, routingResult);
+  auto const resultCode =
+      algorithm.FindPathBidirectional(params, routingResult);
 
   // Check unidirectional AStar returns same result.
   {
@@ -420,7 +424,8 @@ unique_ptr<SingleVehicleWorldGraph> BuildWorldGraph(unique_ptr<TestGeometryLoade
   auto indexLoader = make_unique<TestIndexGraphLoader>();
   indexLoader->AddGraph(kTestNumMwmId, move(graph));
   return make_unique<SingleVehicleWorldGraph>(nullptr /* crossMwmGraph */, move(indexLoader),
-                                              estimator, MwmHierarchyHandler(nullptr, nullptr));
+                                              estimator,
+                                              MwmHierarchyHandler(nullptr, nullptr));
 }
 
 unique_ptr<IndexGraph> BuildIndexGraph(unique_ptr<TestGeometryLoader> geometryLoader,
@@ -437,7 +442,7 @@ unique_ptr<SingleVehicleWorldGraph> BuildWorldGraph(unique_ptr<ZeroGeometryLoade
                                                     vector<Joint> const & joints)
 {
   auto graph = make_unique<IndexGraph>(make_shared<Geometry>(move(geometryLoader)), estimator);
-  
+
   graph->Import(joints);
   auto indexLoader = make_unique<TestIndexGraphLoader>();
   indexLoader->AddGraph(kTestNumMwmId, move(graph));
@@ -479,7 +484,8 @@ AlgorithmForWorldGraph::Result CalculateRoute(IndexGraphStarter & starter, vecto
       starter, starter.GetStartSegment(), starter.GetFinishSegment(), nullptr /* prevRoute */,
       AStarLengthChecker(starter));
 
-  auto const resultCode = algorithm.FindPathBidirectional(params, routingResult);
+  auto const resultCode =
+      algorithm.FindPathBidirectional(params, routingResult);
 
   timeSec = routingResult.m_distance.GetWeight();
   roadPoints = routingResult.m_path;
@@ -518,13 +524,13 @@ void TestRouteGeometry(IndexGraphStarter & starter,
 
   for (auto const & routeSeg : routeSegs)
   {
-    auto const & ll = starter.GetPoint(routeSeg, false /* front */);
+    auto const & ll = starter.GetPoint(routeSeg, false /* front */, true /* isOutgoing */);
     // Note. In case of A* router all internal points of route are duplicated.
     // So it's necessary to exclude the duplicates.
     pushPoint(ll);
   }
 
-  pushPoint(starter.GetPoint(routeSegs.back(), false /* front */));
+  pushPoint(starter.GetPoint(routeSegs.back(), false /* front */, true /* isOutgoing */));
   TEST_EQUAL(geom.size(), expectedRouteGeom.size(), ("geom:", geom, "expectedRouteGeom:", expectedRouteGeom));
   for (size_t i = 0; i < geom.size(); ++i)
   {
@@ -582,8 +588,8 @@ void TestRestrictions(double expectedLength,
   double length = 0.0;
   for (auto const & segment : segments)
   {
-    auto const back = mercator::FromLatLon(starter.GetPoint(segment, false /* front */));
-    auto const front = mercator::FromLatLon(starter.GetPoint(segment, true /* front */));
+    auto const back = mercator::FromLatLon(starter.GetPoint(segment, false /* front */, true /* isOutgoing */));
+    auto const front = mercator::FromLatLon(starter.GetPoint(segment, true /* front */, true /* isOutgoing */));
 
     length += back.Length(front);
   }

@@ -13,10 +13,12 @@
 #include "geometry/latlon.hpp"
 
 #include "base/assert.hpp"
+#include "base/optional_lock_guard.hpp"
 
 #include <algorithm>
 #include <limits>
 #include <map>
+#include <mutex>
 #include <optional>
 #include <queue>
 #include <set>
@@ -30,7 +32,12 @@ template <typename Graph>
 class IndexGraphStarterJoints : public AStarGraph<JointSegment, JointEdge, RouteWeight>
 {
 public:
-  explicit IndexGraphStarterJoints(Graph & graph) : m_graph(graph) {}
+  /// \note This class may be used in two modes. For one thread A* and two threads A*.
+  /// To create an instance of the class with synchronization staff |graph.IsTwoThreadsReady()|
+  /// should return true. It means the class is ready for calls HeuristicCostEstimate(),
+  /// GetOutgoingEdgesList() and GetIngoingEdgesList() from two different threads.
+  explicit IndexGraphStarterJoints(Graph & graph);
+
   IndexGraphStarterJoints(Graph & graph,
                           Segment const & startSegment,
                           Segment const & endSegment);
@@ -40,13 +47,13 @@ public:
 
   void Init(Segment const & startSegment, Segment const & endSegment);
 
-  ms::LatLon const & GetPoint(JointSegment const & jointSegment, bool start);
+  ms::LatLon const & GetPoint(JointSegment const & jointSegment, bool start, bool isOutgoing);
   JointSegment const & GetStartJoint() const { return m_startJoint; }
   JointSegment const & GetFinishJoint() const { return m_endJoint; }
 
   // AStarGraph overridings
   // @{
-  RouteWeight HeuristicCostEstimate(Vertex const & from, Vertex const & to) override;
+  RouteWeight HeuristicCostEstimate(Vertex const & from, Vertex const & to, bool isOutgoing) override;
 
   void GetOutgoingEdgesList(astar::VertexData<Vertex, Weight> const & vertexData,
                             std::vector<Edge> & edges) override
@@ -93,6 +100,8 @@ public:
   }
 
   RouteWeight GetAStarWeightEpsilon() override { return m_graph.GetAStarWeightEpsilon(); }
+
+  bool IsTwoThreadsReady() const override { return m_graph.IsTwoThreadsReady(); }
   // @}
 
   WorldGraphMode GetMode() const { return m_graph.GetMode(); }
@@ -142,14 +151,14 @@ private:
 
   JointSegment CreateFakeJoint(Segment const & from, Segment const & to);
 
-  bool IsJoint(Segment const & segment, bool fromStart) const
+  bool IsJoint(Segment const & segment, bool fromStart, bool isOutgoing) const
   {
-    return m_graph.IsJoint(segment, fromStart);
+    return m_graph.IsJoint(segment, fromStart, isOutgoing);
   }
 
-  bool IsJointOrEnd(Segment const & segment, bool fromStart) const
+  bool IsJointOrEnd(Segment const & segment, bool fromStart, bool isOutgoing) const
   {
-    return m_graph.IsJointOrEnd(segment, fromStart);
+    return m_graph.IsJointOrEnd(segment, fromStart, isOutgoing);
   }
 
   bool FillEdgesAndParentsWeights(astar::VertexData<Vertex, Weight> const & vertexData,
@@ -163,7 +172,7 @@ private:
 
   /// \brief Makes BFS from |startSegment| in direction |fromStart| and find the closest segments
   /// which end RoadPoints are joints. Thus we build fake joint segments graph.
-  std::vector<JointEdge> FindFirstJoints(Segment const & startSegment, bool fromStart);
+  std::vector<JointEdge> FindFirstJoints(Segment const & startSegment, bool fromStart, bool isOutgoing);
 
   JointSegment CreateInvisibleJoint(Segment const & segment, bool start);
 
@@ -184,6 +193,9 @@ private:
   JointSegment m_startJoint;
   JointSegment m_endJoint;
 
+  // |m_startSegment| and |m_endSegment| are read from HeuristicCostEstimate() method
+  // but they may used from two threads concurrently because they are set only on initialization
+  // step and in Reset() method and then they are only read.
   Segment m_startSegment;
   Segment m_endSegment;
 
@@ -191,6 +203,10 @@ private:
   ms::LatLon m_endPoint;
 
   // See comments in |GetEdgeList()| about |m_savedWeight|.
+  // |m_savedWeight| is set on initialization step and in Rest() method so before routing.
+  // It is also wrote and read while A* execution. But it's not used concurrently
+  // because it's always used form backward wave. So in case of bidirectional A*
+  // it's used from additional thread only. No synchronization is needed.
   ska::bytell_hash_map<Vertex, Weight> m_savedWeight;
 
   // JointSegment consists of two segments of one feature.
@@ -209,8 +225,14 @@ private:
     std::vector<Segment> m_path;
   };
 
+  // |m_reconstructedFakeJointsMtx| is used for synchronization access to |m_reconstructedFakeJoints|
+  // while bidirectional A* is calculation the route in two threads mode.
+  std::optional<std::mutex> m_reconstructedFakeJointsMtx;
   std::map<JointSegment, ReconstructedPath> m_reconstructedFakeJoints;
 
+  // |m_startOutEdges| and |m_endOutEdges| are read from GetOutgoingEdgesList() and
+  // GetIngoingEdgesList() methods but they may be used from two threads concurrently because
+  // they are set only on initialization step and in Reset() method and then they are only read.
   // List of JointEdges that are outgoing from start.
   std::vector<JointEdge> m_startOutEdges;
   // List of incoming to finish.
@@ -221,18 +243,34 @@ private:
 };
 
 template <typename Graph>
-IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph,
-                                                        Segment const & startSegment,
+std::optional<std::mutex> GetOptionalMutex(Graph const & graph)
+{
+  return graph.IsTwoThreadsReady() ? std::make_optional<std::mutex>() : std::nullopt;
+}
+
+template <typename Graph>
+IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph)
+  : m_graph(graph)
+  , m_reconstructedFakeJointsMtx(GetOptionalMutex(graph))
+{
+}
+
+template <typename Graph>
+IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph, Segment const & startSegment,
                                                         Segment const & endSegment)
-  : m_graph(graph), m_startSegment(startSegment), m_endSegment(endSegment)
+  : m_graph(graph)
+  , m_startSegment(startSegment)
+  , m_endSegment(endSegment)
+  , m_reconstructedFakeJointsMtx(GetOptionalMutex(graph))
 {
   Init(m_startSegment, m_endSegment);
 }
 
 template <typename Graph>
-IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph,
-                                                        Segment const & startSegment)
-  : m_graph(graph), m_startSegment(startSegment)
+IndexGraphStarterJoints<Graph>::IndexGraphStarterJoints(Graph & graph, Segment const & startSegment)
+  : m_graph(graph)
+  , m_startSegment(startSegment)
+  , m_reconstructedFakeJointsMtx(GetOptionalMutex(graph))
 {
   InitEnding(startSegment, true /* start */);
 
@@ -259,7 +297,7 @@ void IndexGraphStarterJoints<Graph>::InitEnding(Segment const & ending, bool sta
   segment = ending;
 
   auto & point = start ? m_startPoint : m_endPoint;
-  point = m_graph.GetPoint(ending, true /* front */);
+  point = m_graph.GetPoint(ending, true /* front */, true /* isOutgoing */);
 
   auto & endingJoint = start ? m_startJoint : m_endJoint;
   if (IsRealSegment(ending))
@@ -272,10 +310,13 @@ void IndexGraphStarterJoints<Graph>::InitEnding(Segment const & ending, bool sta
     endingJoint = CreateFakeJoint(loopSegment, loopSegment);
   }
 
-  m_reconstructedFakeJoints[endingJoint] = ReconstructedPath({ending}, start);
+  {
+    base::OptionalLockGuard guard(m_reconstructedFakeJointsMtx);
+    m_reconstructedFakeJoints[endingJoint] = ReconstructedPath({ending}, start);
+  }
 
   auto & outEdges = start ? m_startOutEdges : m_endOutEdges;
-  outEdges = FindFirstJoints(ending, start);
+  outEdges = FindFirstJoints(ending, start, true /* isOutgoing */);
 
   if (!start)
   {
@@ -287,7 +328,8 @@ void IndexGraphStarterJoints<Graph>::InitEnding(Segment const & ending, bool sta
 
 template <typename Graph>
 RouteWeight IndexGraphStarterJoints<Graph>::HeuristicCostEstimate(JointSegment const & from,
-                                                                  JointSegment const & to)
+                                                                  JointSegment const & to,
+                                                                  bool isOutgoing)
 {
   ASSERT(to == m_startJoint || to == m_endJoint, ("Invariant violated."));
   bool toEnd = to == m_endJoint;
@@ -295,6 +337,7 @@ RouteWeight IndexGraphStarterJoints<Graph>::HeuristicCostEstimate(JointSegment c
   Segment fromSegment;
   if (from.IsFake() || IsInvisible(from))
   {
+    base::OptionalLockGuard guard(m_reconstructedFakeJointsMtx);
     ASSERT_NOT_EQUAL(m_reconstructedFakeJoints.count(from), 0, ());
     fromSegment = m_reconstructedFakeJoints[from].m_path.back();
   }
@@ -303,18 +346,18 @@ RouteWeight IndexGraphStarterJoints<Graph>::HeuristicCostEstimate(JointSegment c
     fromSegment = from.GetSegment(false /* start */);
   }
 
-  return toEnd ? m_graph.HeuristicCostEstimate(fromSegment, m_endPoint)
-               : m_graph.HeuristicCostEstimate(fromSegment, m_startPoint);
+  return toEnd ? m_graph.HeuristicCostEstimate(fromSegment, m_endPoint, isOutgoing)
+               : m_graph.HeuristicCostEstimate(fromSegment, m_startPoint, isOutgoing);
 }
 
 template <typename Graph>
 ms::LatLon const &
-IndexGraphStarterJoints<Graph>::GetPoint(JointSegment const & jointSegment, bool start)
+IndexGraphStarterJoints<Graph>::GetPoint(JointSegment const & jointSegment, bool start, bool isOutgoing)
 {
   Segment segment = jointSegment.IsFake() ? m_fakeJointSegments[jointSegment].GetSegment(start)
                                           : jointSegment.GetSegment(start);
 
-  return m_graph.GetPoint(segment, jointSegment.IsForward());
+  return m_graph.GetPoint(segment, jointSegment.IsForward(), isOutgoing);
 }
 
 template <typename Graph>
@@ -328,11 +371,15 @@ std::vector<Segment> IndexGraphStarterJoints<Graph>::ReconstructJoint(JointSegme
   // In case of a fake vertex we return its prebuilt path.
   if (joint.IsFake())
   {
-    auto const it = m_reconstructedFakeJoints.find(joint);
-    CHECK(it != m_reconstructedFakeJoints.cend(), ("Can not find such fake joint"));
+    std::vector<Segment> path;
+    {
+      base::OptionalLockGuard guard(m_reconstructedFakeJointsMtx);
+      auto const it = m_reconstructedFakeJoints.find(joint);
+      CHECK(it != m_reconstructedFakeJoints.cend(), ("Can not find such fake joint"));
 
-    auto path = it->second.m_path;
-    ASSERT(!path.empty(), ());
+      path = it->second.m_path;
+      ASSERT(!path.empty(), ());
+    }
     if (path.front() == m_startSegment && path.back() == m_endSegment)
       path.pop_back();
 
@@ -568,7 +615,7 @@ JointSegment IndexGraphStarterJoints<Graph>::CreateFakeJoint(Segment const & fro
 
 template <typename Graph>
 std::vector<JointEdge> IndexGraphStarterJoints<Graph>::FindFirstJoints(Segment const & startSegment,
-                                                                       bool fromStart)
+                                                                       bool fromStart, bool isOutgoing)
 {
   Segment const & endSegment = fromStart ? m_endSegment : m_startSegment;
 
@@ -609,6 +656,7 @@ std::vector<JointEdge> IndexGraphStarterJoints<Graph>::FindFirstJoints(Segment c
     result.emplace_back(fakeJoint, weight[beforeConvert]);
 
     std::vector<Segment> path = reconstructPath(beforeConvert, fromStart);
+    base::OptionalLockGuard guard(m_reconstructedFakeJointsMtx);
     m_reconstructedFakeJoints.emplace(fakeJoint,
                                       ReconstructedPath(std::move(path), fromStart));
   };
@@ -617,11 +665,11 @@ std::vector<JointEdge> IndexGraphStarterJoints<Graph>::FindFirstJoints(Segment c
   {
     CHECK(!IsRealSegment(fake), ());
 
-    bool const hasSameFront =
-        m_graph.GetPoint(fake, true /* front */) == m_graph.GetPoint(segment, true);
+    bool const hasSameFront = m_graph.GetPoint(fake, true /* front */, true /* isOutgoing */) ==
+                              m_graph.GetPoint(segment, true /* front */, true /* isOutgoing */);
 
-    bool const hasSameBack =
-        m_graph.GetPoint(fake, false /* front */) == m_graph.GetPoint(segment, false);
+    bool const hasSameBack = m_graph.GetPoint(fake, false /* front */, true /* isOutgoing */) ==
+                             m_graph.GetPoint(segment, false /* front */, true /* isOutgoing */);
 
     return (fromStart && hasSameFront) || (!fromStart && hasSameBack);
   };
@@ -635,7 +683,7 @@ std::vector<JointEdge> IndexGraphStarterJoints<Graph>::FindFirstJoints(Segment c
     // or it's the real one and its end (RoadPoint) is |Joint|.
     if (((!IsRealSegment(segment) && m_graph.ConvertToReal(segment) &&
           isEndOfSegment(beforeConvert, segment, fromStart)) || IsRealSegment(beforeConvert)) &&
-        IsJoint(segment, fromStart))
+        IsJoint(segment, fromStart, isOutgoing))
     {
       addFake(segment, beforeConvert);
       continue;

@@ -46,8 +46,9 @@ void ReEncodeOsmIdsToFeatureIdsMapping(std::string const & mappingContent, std::
 
 namespace routing
 {
-void TestGeometryLoader::Load(uint32_t featureId, RoadGeometry & road)
+void TestGeometryLoader::Load(uint32_t featureId, RoadGeometry & road, bool isOutgoing)
 {
+  CHECK(isOutgoing, ("TestGeometryLoader() is not ready for two threads feature parsing."));
   auto const it = m_roads.find(featureId);
   if (it == m_roads.cend())
     return;
@@ -98,7 +99,7 @@ std::unique_ptr<IndexGraph> BuildIndexGraph(std::unique_ptr<TestGeometryLoader> 
                                             std::vector<Joint> const & joints)
 {
   auto graph = std::make_unique<IndexGraph>(std::make_shared<Geometry>(std::move(geometryLoader)),
-                                       estimator);
+                                            estimator);
   graph->Import(joints);
   return graph;
 }
