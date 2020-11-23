@@ -13,6 +13,7 @@ import com.mapswithme.maps.R;
 import com.mapswithme.maps.adapter.OnItemClickListener;
 import com.mapswithme.maps.bookmarks.data.BookmarkCategory;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
+import com.mapswithme.util.UiUtils;
 import com.mapswithme.util.statistics.Statistics;
 
 import java.lang.annotation.Retention;
@@ -40,6 +41,8 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
   private int mSectionCount;
   private int mCollectionSectionIndex = SectionPosition.INVALID_POSITION;
   private int mCategorySectionIndex = SectionPosition.INVALID_POSITION;
+
+  private boolean mVisible;
 
   @Nullable
   private OnItemClickListener<BookmarkCategory> mClickListener;
@@ -217,6 +220,7 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
     collectionViewHolder.setOnClickListener(mClickListener);
     ToggleVisibilityClickListener listener = new ToggleVisibilityClickListener(collectionViewHolder);
     collectionViewHolder.setVisibilityListener(listener);
+    updateVisibility(collectionViewHolder.itemView);
   }
 
   private void bindSize(Holders.CollectionViewHolder holder, BookmarkCategory category)
@@ -237,6 +241,12 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
         mBookmarkCategory.getId(), compilationType);
     headerViewHolder.setAction(mMassOperationAction, visibility, compilationType,
                                mBookmarkCategory.getServerId());
+    updateVisibility(headerViewHolder.itemView);
+  }
+
+  private void updateVisibility(@NonNull View itemView)
+  {
+    UiUtils.showRecyclerItemView(mVisible, itemView);
   }
 
   @Override
@@ -266,6 +276,12 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
       mItemsCollection = BookmarkManager.INSTANCE.getChildrenCollections(mBookmarkCategory.getId());
     else
       mItemsCategory = BookmarkManager.INSTANCE.getChildrenCategories(mBookmarkCategory.getId());
+  }
+
+  void show(boolean visible)
+  {
+    mVisible = visible;
+    notifyDataSetChanged();
   }
 
   class MassOperationAction implements Holders.HeaderViewHolder.HeaderActionChildCategories
