@@ -1,7 +1,6 @@
 #import "MWMNavigationInfoView.h"
 #import "CLLocation+Mercator.h"
 #import "MWMButton.h"
-#import "MWMLocationHelpers.h"
 #import "MWMLocationManager.h"
 #import "MWMLocationObserver.h"
 #import "MWMMapViewControlsCommon.h"

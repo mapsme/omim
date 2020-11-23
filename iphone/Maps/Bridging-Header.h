@@ -43,7 +43,6 @@
 #import "MWMGeoTrackerCore.h"
 #import "MWMKeyboard.h"
 #import "MWMLocationManager.h"
-#import "MWMLocationModeListener.h"
 #import "MWMMapDownloaderButtonTableViewCell.h"
 #import "MWMMapDownloaderCellHeader.h"
 #import "MWMMapDownloaderLargeCountryTableViewCell.h"

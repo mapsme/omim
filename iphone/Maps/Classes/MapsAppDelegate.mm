@@ -222,7 +222,7 @@ using namespace osm_auth_ios;
   self.notificationManager.delegate = self;
   [UNUserNotificationCenter currentNotificationCenter].delegate = self.notificationManager;
 
-  if ([MWMFrameworkHelper isWiFiConnected]) {
+  if ([[MWMFrameworkHelper sharedHelper] isWiFiConnected]) {
     [[InAppPurchase bookmarksSubscriptionManager] validateWithCompletion:^(MWMValidationResult result, BOOL isTrial) {
       if (result == MWMValidationResultNotValid) {
         [[InAppPurchase bookmarksSubscriptionManager] setSubscriptionActive:NO isTrial:NO];

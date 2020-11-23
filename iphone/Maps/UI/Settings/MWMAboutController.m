@@ -41,7 +41,8 @@
     version = [NSString stringWithFormat:@"%@.%@", version, appInfo.buildNumber];
   self.versionLabel.text = [NSString stringWithFormat:L(@"version"), version];
 
-  self.dataVersionLabel.text = [NSString stringWithFormat:L(@"data_version"), [MWMFrameworkHelper dataVersion]];
+  self.dataVersionLabel.text = [NSString stringWithFormat:L(@"data_version"),
+                                [[MWMFrameworkHelper sharedHelper] dataVersion]];
 
   [self.crashlyticsCell configWithDelegate:self title:L(@"opt_out_fabric") isOn:![MWMSettings crashReportingDisabled]];
 }

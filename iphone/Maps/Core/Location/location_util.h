@@ -1,4 +1,5 @@
 #pragma once
+#include "platform/location.hpp"
 
 namespace location_util {
 

@@ -83,7 +83,7 @@
   [self.webView.trailingAnchor constraintEqualToAnchor:trailingAnchor].active = YES;
 
   self.webView.allowsLinkPreview = NO;
-  [self.webView setCustomUserAgent:[MWMFrameworkHelper userAgent]];
+  [self.webView setCustomUserAgent:[[MWMFrameworkHelper sharedHelper] userAgent]];
 
   [self performURLRequest];
 }
@@ -102,7 +102,8 @@
         }
 
         if (self.shouldAddAccessToken) {
-          NSString *authHeader = [NSString stringWithFormat:@"Bearer %@", [MWMFrameworkHelper userAccessToken]];
+          NSString *authHeader = [NSString stringWithFormat:@"Bearer %@",
+                                  [[MWMFrameworkHelper sharedHelper] userAccessToken]];
           [request setValue:authHeader forHTTPHeaderField:@"Authorization"];
         }
         if ([UIColor isNightMode]) {

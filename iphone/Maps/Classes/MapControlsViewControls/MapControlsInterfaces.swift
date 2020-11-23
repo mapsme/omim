@@ -8,6 +8,7 @@ protocol IMapControlsView: AnyObject {
   func showTutorialType(_ tutorialType: TipType)
   func hideTutorial()
   func showAfterBoooking(_ data: PromoAfterBookingData)
+  func setLocationButtonMode(_ mode: MyPositionMode)
 }
 
 protocol IMapControlsPresenter {
@@ -32,11 +33,13 @@ protocol IMapControlsPresenter {
 typealias MapObjectSelectedClosure = () -> Void
 typealias MapObjectDeselectedClosure = (Bool) -> Void
 typealias MapObjectUpdatedClosure = () -> Void
+typealias MyPositionModeChangedClosure = (MyPositionMode) -> Void
 
 protocol IMapControlsInteractor {
   func setPlacePageSelectedCallback(_ selected: @escaping MapObjectSelectedClosure,
                                     deselectedCallback: @escaping MapObjectDeselectedClosure,
                                     updatedCallback: @escaping MapObjectUpdatedClosure)
+  func setMyPositionModeCallback(_ callback: @escaping MyPositionModeChangedClosure)
   func zoomIn()
   func zoomOut()
   func switchMyPositionMode()

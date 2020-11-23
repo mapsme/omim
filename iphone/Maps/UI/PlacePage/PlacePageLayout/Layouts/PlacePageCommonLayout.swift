@@ -224,7 +224,7 @@ class PlacePageCommonLayout: NSObject, IPlacePageLayout {
 
     if placePageData.taxiProvider != .none &&
       !LocationManager.isLocationProhibited() &&
-      FrameworkHelper.isNetworkConnected() {
+        FrameworkHelper.shared().isNetworkConnected() {
         viewControllers.append(taxiViewController)
     }
 

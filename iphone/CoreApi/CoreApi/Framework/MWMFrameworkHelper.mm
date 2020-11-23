@@ -8,9 +8,53 @@
 #include "platform/local_country_file_utils.hpp"
 #include "platform/network_policy_ios.h"
 
+static MWMMyPositionMode mwmMyPositionMode(location::EMyPositionMode mode) {
+  switch (mode) {
+  case location::EMyPositionMode::PendingPosition: return MWMMyPositionModePendingPosition;
+  case location::EMyPositionMode::NotFollowNoPosition: return MWMMyPositionModeNotFollowNoPosition;
+  case location::EMyPositionMode::NotFollow: return MWMMyPositionModeNotFollow;
+  case location::EMyPositionMode::Follow: return MWMMyPositionModeFollow;
+  case location::EMyPositionMode::FollowAndRotate: return MWMMyPositionModeFollowAndRotate;
+  }
+}
+
+@interface MWMFrameworkHelper ()
+
+@property(strong, nonatomic) NSHashTable<id<MWMLocationModeListener>> *locationModeListeners;
+
+@end
+
 @implementation MWMFrameworkHelper
 
-+ (void)processFirstLaunch:(BOOL)hasLocation {
++ (MWMFrameworkHelper *)sharedHelper {
+  static MWMFrameworkHelper *sharedHelper;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    sharedHelper = [[MWMFrameworkHelper alloc] init];
+  });
+  return sharedHelper;
+}
+
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    _locationModeListeners = [NSHashTable weakObjectsHashTable];
+    Framework &f = GetFramework();
+    f.SetMyPositionModeListener([self](location::EMyPositionMode mode, bool routingActive) {
+      for (id<MWMLocationModeListener> listener in self.locationModeListeners) {
+        [listener processMyPositionStateModeEvent:mwmMyPositionMode(mode)];
+      }
+    });
+    f.SetMyPositionPendingTimeoutListener([self] {
+      for (id<MWMLocationModeListener> listener in self.locationModeListeners) {
+        [listener processMyPositionPendingTimeout];
+      }
+    });
+  }
+  return self;
+}
+
+- (void)processFirstLaunch:(BOOL)hasLocation {
   auto &f = GetFramework();
   if (!hasLocation)
     f.SwitchMyPositionNextMode();
@@ -18,7 +62,7 @@
     f.RunFirstLaunchAnimation();
 }
 
-+ (void)setVisibleViewport:(CGRect)rect scaleFactor:(CGFloat)scale {
+- (void)setVisibleViewport:(CGRect)rect scaleFactor:(CGFloat)scale {
   CGFloat const x0 = rect.origin.x * scale;
   CGFloat const y0 = rect.origin.y * scale;
   CGFloat const x1 = x0 + rect.size.width * scale;
@@ -26,7 +70,7 @@
   GetFramework().SetVisibleViewport(m2::RectD(x0, y0, x1, y1));
 }
 
-+ (void)setTheme:(MWMTheme)theme {
+- (void)setTheme:(MWMTheme)theme {
   auto &f = GetFramework();
 
   auto const style = f.GetMapStyle();
@@ -50,7 +94,7 @@
     f.SetMapStyle(newStyle);
 }
 
-+ (MWMDayTime)daytimeAtLocation:(CLLocation *)location {
+- (MWMDayTime)daytimeAtLocation:(CLLocation *)location {
   if (!location)
     return MWMDayTimeDay;
   DayTimeType dayTime =
@@ -65,31 +109,31 @@
   }
 }
 
-+ (void)createFramework {
+- (void)createFramework {
   UNUSED_VALUE(GetFramework());
 }
 
-+ (BOOL)canUseNetwork {
+- (BOOL)canUseNetwork {
   return network_policy::CanUseNetwork();
 }
 
-+ (BOOL)isNetworkConnected {
+- (BOOL)isNetworkConnected {
   return GetPlatform().ConnectionStatus() != Platform::EConnectionType::CONNECTION_NONE;
 }
 
-+ (BOOL)isWiFiConnected {
+- (BOOL)isWiFiConnected {
   return GetPlatform().ConnectionStatus() == Platform::EConnectionType::CONNECTION_WIFI;
 }
 
-+ (MWMMarkID)invalidBookmarkId {
+- (MWMMarkID)invalidBookmarkId {
   return kml::kInvalidMarkId;
 }
 
-+ (MWMMarkGroupID)invalidCategoryId {
+- (MWMMarkGroupID)invalidCategoryId {
   return kml::kInvalidMarkGroupId;
 }
 
-+ (NSArray<NSString *> *)obtainLastSearchQueries {
+- (NSArray<NSString *> *)obtainLastSearchQueries {
   NSMutableArray *result = [NSMutableArray array];
   auto const &queries = GetFramework().GetSearchAPI().GetLastSearchQueries();
   for (auto const &item : queries) {
@@ -100,7 +144,7 @@
 
 #pragma mark - Map Interaction
 
-+ (void)zoomMap:(MWMZoomMode)mode {
+- (void)zoomMap:(MWMZoomMode)mode {
   switch (mode) {
     case MWMZoomModeIn:
       GetFramework().Scale(Framework::SCALE_MAG, true);
@@ -111,49 +155,49 @@
   }
 }
 
-+ (void)moveMap:(UIOffset)offset {
+- (void)moveMap:(UIOffset)offset {
   GetFramework().Move(offset.horizontal, offset.vertical, true);
 }
 
-+ (void)deactivateMapSelection:(BOOL)notifyUI {
+- (void)deactivateMapSelection:(BOOL)notifyUI {
   GetFramework().DeactivateMapSelection(notifyUI);
 }
 
-+ (void)switchMyPositionMode {
+- (void)switchMyPositionMode {
   GetFramework().SwitchMyPositionNextMode();
 }
 
-+ (void)stopLocationFollow {
+- (void)stopLocationFollow {
   GetFramework().StopLocationFollow();
 }
 
-+ (void)rotateMap:(double)azimuth animated:(BOOL)isAnimated {
+- (void)rotateMap:(double)azimuth animated:(BOOL)isAnimated {
   GetFramework().Rotate(azimuth, isAnimated);
 }
 
-+ (void)updatePositionArrowOffset:(BOOL)useDefault offset:(int)offsetY {
+- (void)updatePositionArrowOffset:(BOOL)useDefault offset:(int)offsetY {
   GetFramework().UpdateMyPositionRoutingOffset(useDefault, offsetY);
 }
 
-+ (void)uploadUGC:(void (^)(UIBackgroundFetchResult))completionHandler {
+- (void)uploadUGC:(void (^)(UIBackgroundFetchResult))completionHandler {
   GetFramework().UploadUGC([completionHandler](bool isSuccessful) {
     completionHandler(isSuccessful ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultFailed);
   });
 }
 
-+ (NSString *)userAccessToken {
+- (NSString *)userAccessToken {
   return @(GetFramework().GetUser().GetAccessToken().c_str());
 }
 
-+ (NSString *)userAgent {
+- (NSString *)userAgent {
   return @(GetPlatform().GetAppUserAgent().Get().c_str());
 }
 
-+ (int64_t)dataVersion {
+- (int64_t)dataVersion {
   return GetFramework().GetCurrentDataVersion();
 }
 
-+ (void)searchInDownloader:(NSString *)query
+- (void)searchInDownloader:(NSString *)query
                inputLocale:(NSString *)locale
                 completion:(SearchInDownloaderCompletions)completion {
   storage::DownloaderSearchParams searchParams;
@@ -170,32 +214,40 @@
   GetFramework().GetSearchAPI().SearchInDownloader(searchParams);
 }
 
-+ (BOOL)canEditMap {
+- (BOOL)canEditMap {
   return GetFramework().CanEditMap();
 }
 
-+ (void)showOnMap:(MWMMarkGroupID)categoryId {
+- (void)showOnMap:(MWMMarkGroupID)categoryId {
   GetFramework().ShowBookmarkCategory(categoryId);
 }
 
-+ (void)showBookmark:(MWMMarkID)bookmarkId {
+- (void)showBookmark:(MWMMarkID)bookmarkId {
   GetFramework().ShowBookmark(bookmarkId);
 }
 
-+ (void)showTrack:(MWMTrackID)trackId {
+- (void)showTrack:(MWMTrackID)trackId {
   GetFramework().ShowTrack(trackId);
 }
 
-+ (void)updatePlacePageData {
+- (void)updatePlacePageData {
   GetFramework().UpdatePlacePageInfoForCurrentSelection();
 }
 
-+ (void)setPlacePageSelectedCallback:(MWMVoidBlock)selected
+- (void)setPlacePageSelectedCallback:(MWMVoidBlock)selected
                   deselectedCallback:(MWMBoolBlock)deselected
                      updatedCallback:(MWMVoidBlock)updated {
   GetFramework().SetPlacePageListeners([selected]() { selected(); },
                                        [deselected](bool switchFullScreen) { deselected(switchFullScreen); },
                                        [updated]() { updated(); });
+}
+
+- (void)addLocationModeListener:(id<MWMLocationModeListener>)listener {
+  [self.locationModeListeners addObject:listener];
+}
+
+- (void)removeLocationModeListener:(id<MWMLocationModeListener>)listener {
+  [self.locationModeListeners removeObject:listener];
 }
 
 @end

@@ -93,7 +93,7 @@ final class WelcomePageController: UIPageViewController {
     view.removeFromSuperview()
     removeFromParent()
     parentController.closePageController(self)
-    FrameworkHelper.processFirstLaunch(LocationManager.lastLocation() != nil)
+    FrameworkHelper.shared().processFirstLaunch(LocationManager.lastLocation() != nil)
   }
 
   @objc func show() {

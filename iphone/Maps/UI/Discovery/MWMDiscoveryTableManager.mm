@@ -280,7 +280,7 @@ using namespace discovery;
                canUseNetwork: self.canUseNetwork
                          tap:^{
                            __strong __typeof__(weakSelf) strongSelf = weakSelf;
-                           if (![MWMFrameworkHelper isNetworkConnected]) {
+                           if (![[MWMFrameworkHelper sharedHelper] isNetworkConnected]) {
                              NSURL * url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
                              UIApplication * app = UIApplication.sharedApplication;
                              if ([app canOpenURL:url])

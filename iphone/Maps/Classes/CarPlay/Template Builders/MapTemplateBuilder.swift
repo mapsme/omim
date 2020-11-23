@@ -18,7 +18,7 @@ final class MapTemplateBuilder {
     case endRoute
   }
   // MARK: - CPMapTemplate builders
-  class func buildBaseTemplate(positionMode: MWMMyPositionMode) -> CPMapTemplate {
+  class func buildBaseTemplate(positionMode: MyPositionMode) -> CPMapTemplate {
     let mapTemplate = CPMapTemplate()
     mapTemplate.hidesButtonsWithNavigationBar = false
     configureBaseUI(mapTemplate: mapTemplate)
@@ -61,12 +61,12 @@ final class MapTemplateBuilder {
       mapTemplate.showPanningInterface(animated: true)
     }
     let zoomInButton = buildMapButton(type: .zoomIn) { _ in
-      FrameworkHelper.zoomMap(.in)
+      FrameworkHelper.shared().zoomMap(.in)
       Alohalytics.logEvent(kStatCarplayZoom, with: [kStatIsZoomIn : true,
                                                     kStatIsPanActivated: false])
     }
     let zoomOutButton = buildMapButton(type: .zoomOut) { _ in
-      FrameworkHelper.zoomMap(.out)
+      FrameworkHelper.shared().zoomMap(.out)
       Alohalytics.logEvent(kStatCarplayZoom, with: [kStatIsZoomIn : false,
                                                     kStatIsPanActivated: false])
     }
@@ -82,12 +82,12 @@ final class MapTemplateBuilder {
   
   class func configurePanUI(mapTemplate: CPMapTemplate) {
     let zoomInButton = buildMapButton(type: .zoomIn) { _ in
-      FrameworkHelper.zoomMap(.in)
+      FrameworkHelper.shared().zoomMap(.in)
       Alohalytics.logEvent(kStatCarplayZoom, with: [kStatIsZoomIn : true,
                                                     kStatIsPanActivated: true])
     }
     let zoomOutButton = buildMapButton(type: .zoomOut) { _ in
-      FrameworkHelper.zoomMap(.out)
+      FrameworkHelper.shared().zoomMap(.out)
       Alohalytics.logEvent(kStatCarplayZoom, with: [kStatIsZoomIn : false,
                                                     kStatIsPanActivated: true])
     }
@@ -127,7 +127,7 @@ final class MapTemplateBuilder {
   
   class func setupRecenterButton(mapTemplate: CPMapTemplate) {
     let recenterButton = buildBarButton(type: .recenter) { _ in
-      FrameworkHelper.switchMyPositionMode()
+      FrameworkHelper.shared().switchMyPositionMode()
       Alohalytics.logEvent(kStatCarplayRecenter)
     }
     mapTemplate.leadingNavigationBarButtons = [recenterButton]

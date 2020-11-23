@@ -1161,7 +1161,6 @@
 		34845DAD1E1649F6003D55B9 /* DownloaderNoResultsEmbedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloaderNoResultsEmbedViewController.swift; sourceTree = "<group>"; };
 		34845DB11E165E24003D55B9 /* SearchNoResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchNoResultsViewController.swift; sourceTree = "<group>"; };
 		34845DB51E166084003D55B9 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
-		3486B5031E27948F0069C126 /* MWMMyPositionMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMMyPositionMode.h; sourceTree = "<group>"; };
 		3486B5051E27A4B50069C126 /* LocalNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalNotificationManager.h; sourceTree = "<group>"; };
 		3486B5061E27A4B50069C126 /* LocalNotificationManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = LocalNotificationManager.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		3486B50A1E27A4C50069C126 /* MWMPushNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMPushNotifications.h; sourceTree = "<group>"; };
@@ -1973,7 +1972,6 @@
 		CDCA278A2248F34C00167D87 /* MWMRoutingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMRoutingManager.h; sourceTree = "<group>"; };
 		CDCA278B2248F34C00167D87 /* MWMRoutingManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWMRoutingManager.mm; sourceTree = "<group>"; };
 		CDCA278C2248F34C00167D87 /* MWMRouterResultCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWMRouterResultCode.h; sourceTree = "<group>"; };
-		CDCA278F2248F3B800167D87 /* MWMLocationModeListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMLocationModeListener.h; sourceTree = "<group>"; };
 		CDE0F3AD225B8D45008BA5C3 /* MWMSpeedCameraManagerMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWMSpeedCameraManagerMode.h; sourceTree = "<group>"; };
 		EE026F0511D6AC0D00645242 /* classificator.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = classificator.txt; path = ../../data/classificator.txt; sourceTree = SOURCE_ROOT; };
 		EE164810135CEE49003B8A3E /* 06_code2000.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = 06_code2000.ttf; path = ../../data/06_code2000.ttf; sourceTree = SOURCE_ROOT; };
@@ -2637,7 +2635,6 @@
 				3404752D1E081A4600C92850 /* MWMLocationObserver.h */,
 				3404752E1E081A4600C92850 /* MWMLocationPredictor.h */,
 				3404752F1E081A4600C92850 /* MWMLocationPredictor.mm */,
-				3486B5031E27948F0069C126 /* MWMMyPositionMode.h */,
 				47F701EC238C2F8400D18E95 /* location_util.h */,
 			);
 			path = Location;
@@ -4350,7 +4347,6 @@
 		CDCA278D2248F34C00167D87 /* Location */ = {
 			isa = PBXGroup;
 			children = (
-				CDCA278F2248F3B800167D87 /* MWMLocationModeListener.h */,
 			);
 			path = Location;
 			sourceTree = "<group>";

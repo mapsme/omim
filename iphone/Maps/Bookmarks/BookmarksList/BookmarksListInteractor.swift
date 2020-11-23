@@ -89,15 +89,15 @@ extension BookmarksListInteractor: IBookmarksListInteractor {
   }
 
   func viewOnMap() {
-    FrameworkHelper.show(onMap: markGroupId)
+    FrameworkHelper.shared().show(onMap: markGroupId)
   }
 
   func viewBookmarkOnMap(_ bookmarkId: MWMMarkID) {
-    FrameworkHelper.showBookmark(bookmarkId)
+    FrameworkHelper.shared().showBookmark(bookmarkId)
   }
 
   func viewTrackOnMap(_ trackId: MWMTrackID) {
-    FrameworkHelper.showTrack(trackId)
+    FrameworkHelper.shared().showTrack(trackId)
   }
 
   func setGroup(_ groupId: MWMMarkGroupID, visible: Bool) {

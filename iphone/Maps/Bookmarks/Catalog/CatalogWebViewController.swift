@@ -65,7 +65,7 @@ final class CatalogWebViewController: WebViewController {
     super.init(url: catalogUrl, title: L("guides_catalogue_title"))!
     noInternetView = CatalogConnectionErrorView(frame: .zero, actionCallback: { [weak self] in
       guard let self = self else { return }
-      if !FrameworkHelper.isNetworkConnected() {
+      if !FrameworkHelper.shared().isNetworkConnected() {
         self.noInternetView.isHidden = false
         return
       }
@@ -110,7 +110,7 @@ final class CatalogWebViewController: WebViewController {
     progressBgView.widthAnchor.constraint(equalToConstant: 48).isActive = true
     progressBgView.heightAnchor.constraint(equalToConstant: 48).isActive = true
 
-    let connected = FrameworkHelper.isNetworkConnected()
+    let connected = FrameworkHelper.shared().isNetworkConnected()
     if !connected {
       Statistics.logEvent("Bookmarks_Downloaded_Catalogue_error",
                           withParameters: [kStatError: "no_internet"])
@@ -219,7 +219,7 @@ final class CatalogWebViewController: WebViewController {
 
   private func showOnMap(_ serverId: String) {
     let groupId = BookmarksManager.shared().getGroupId(serverId)
-    FrameworkHelper.show(onMap: groupId)
+    FrameworkHelper.shared().show(onMap: groupId)
     navigationController?.popToRootViewController(animated: true)
   }
 

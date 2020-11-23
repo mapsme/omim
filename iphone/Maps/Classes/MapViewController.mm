@@ -7,8 +7,6 @@
 #import "MWMEditorViewController.h"
 #import "MWMFrameworkListener.h"
 #import "MWMFrameworkObservers.h"
-#import "MWMLocationHelpers.h"
-#import "MWMLocationModeListener.h"
 #import "MWMMapDownloadDialog.h"
 #import "MWMMapViewControlsManager.h"
 #import "MWMNetworkPolicy+UI.h"
@@ -71,7 +69,8 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
                                  MWMWelcomePageControllerProtocol,
                                  MWMKeyboardObserver,
                                  RemoveAdsViewControllerDelegate,
-                                 MWMBookmarksObserver>
+                                 MWMBookmarksObserver,
+                                 MWMLocationModeListener>
 
 @property(nonatomic, readwrite) MWMMapViewControlsManager *controlsManager;
 
@@ -92,8 +91,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 @property(strong, nonatomic) IBOutlet UIImageView *carplayPlaceholderLogo;
 @property(strong, nonatomic) BookmarksCoordinator *bookmarksCoordinator;
 @property(strong, nonatomic) MapControlsViewController *mapControlsViewController;
-
-@property(strong, nonatomic) NSHashTable<id<MWMLocationModeListener>> *listeners;
 
 @property(nonatomic) BOOL needDeferFocusNotification;
 @property(nonatomic) BOOL deferredFocusValue;
@@ -399,16 +396,7 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 }
 
 - (void)initialize {
-  self.listeners = [NSHashTable<id<MWMLocationModeListener>> weakObjectsHashTable];
-  Framework &f = GetFramework();
-  // TODO: Review and improve this code.
-  f.SetMyPositionModeListener([self](location::EMyPositionMode mode, bool routingActive) {
-    // TODO: Two global listeners are subscribed to the same event from the core.
-    // Probably it's better to subscribe only wnen needed and usubscribe in other cases.
-    // May be better solution would be multiobservers support in the C++ core.
-    [self processMyPositionStateModeEvent:location_helpers::mwmMyPositionMode(mode)];
-  });
-  f.SetMyPositionPendingTimeoutListener([self] { [self processMyPositionPendingTimeout]; });
+  [[MWMFrameworkHelper sharedHelper] addLocationModeListener:self];
 
   [[MWMBookmarksManager sharedManager] addObserver:self];
   [[MWMBookmarksManager sharedManager] loadBookmarks];
@@ -419,14 +407,7 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 - (void)dealloc {
   [[MWMBookmarksManager sharedManager] removeObserver:self];
   [MWMFrameworkListener removeObserver:self];
-}
-
-- (void)addListener:(id<MWMLocationModeListener>)listener {
-  [self.listeners addObject:listener];
-}
-
-- (void)removeListener:(id<MWMLocationModeListener>)listener {
-  [self.listeners removeObject:listener];
+  [[MWMFrameworkHelper sharedHelper] removeLocationModeListener:self];
 }
 
 #pragma mark - Open controllers
@@ -553,14 +534,11 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   [self.navigationController presentViewController:removeAds animated:YES completion:nil];
 }
 
+#pragma mark - MWMLocationModeListener
+
 - (void)processMyPositionStateModeEvent:(MWMMyPositionMode)mode {
   self.currentPositionMode = mode;
   [MWMLocationManager setMyPositionMode:mode];
-  [[MWMSideButtons buttons] processMyPositionStateModeEvent:mode];
-  NSArray<id<MWMLocationModeListener>> *objects = self.listeners.allObjects;
-  for (id<MWMLocationModeListener> object in objects) {
-    [object processMyPositionStateModeEvent:mode];
-  }
   self.disableStandbyOnLocationStateMode = NO;
   switch (mode) {
     case MWMMyPositionModeNotFollowNoPosition:
@@ -584,10 +562,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 
 - (void)processMyPositionPendingTimeout {
   [MWMLocationManager stop];
-  NSArray<id<MWMLocationModeListener>> *objects = self.listeners.allObjects;
-  for (id<MWMLocationModeListener> object in objects) {
-    [object processMyPositionPendingTimeout];
-  }
   BOOL const isMapVisible = (self.navigationController.visibleViewController == self);
   if (isMapVisible && ![MWMLocationManager isLocationProhibited]) {
     if (self.welcomePageController) {
@@ -788,7 +762,7 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   [[self.mapView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor] setActive:YES];
   [[self.mapView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor] setActive:YES];
   self.controlsView.hidden = NO;
-  [MWMFrameworkHelper setVisibleViewport:self.view.bounds scaleFactor:self.view.contentScaleFactor];
+  [[MWMFrameworkHelper sharedHelper] setVisibleViewport:self.view.bounds scaleFactor:self.view.contentScaleFactor];
 }
 
 - (void)enableCarPlayRepresentation {

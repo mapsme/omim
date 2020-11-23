@@ -15,7 +15,8 @@ final class VisibleArea: AvailableArea {
         return
       }
     }
-    FrameworkHelper.setVisibleViewport(areaFrame, scaleFactor: MapViewController.shared()?.mapView.contentScaleFactor ?? 1)
+    FrameworkHelper.shared().setVisibleViewport(areaFrame,
+                                                scaleFactor: MapViewController.shared()?.mapView.contentScaleFactor ?? 1)
   }
 }
 

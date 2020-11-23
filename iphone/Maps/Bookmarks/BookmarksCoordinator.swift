@@ -55,7 +55,7 @@ import UIKit
                         animations: {
                           navigationController.setViewControllers(controllers, animated: false)
       }, completion: nil)
-      FrameworkHelper.deactivateMapSelection(notifyUI: true)
+      FrameworkHelper.shared().deactivateMapSelection(notifyUI: true)
       self.bookmarksControllers = nil
       mapControlsViewController?.hideGuidesNavigationBar()
     case .closed:

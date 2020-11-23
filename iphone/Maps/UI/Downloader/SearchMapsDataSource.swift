@@ -62,7 +62,7 @@ extension SearchMapsDataSource: IDownloaderDataSource {
   func search(_ query: String, locale: String, update: @escaping SearchCallback) {
     searchId += 1
     onUpdate = update
-    FrameworkHelper.search(inDownloader: query, inputLocale: locale) { [weak self, searchId] (results, finished) in
+    FrameworkHelper.shared().search(inDownloader: query, inputLocale: locale) { [weak self, searchId] (results, finished) in
       if searchId != self?.searchId {
         return
       }

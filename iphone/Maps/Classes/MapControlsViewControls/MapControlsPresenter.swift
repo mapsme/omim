@@ -75,9 +75,9 @@ extension MapControlsPresenter: IMapControlsPresenter {
       if isSearchHidden && isNavigationDashboardHidden {
         self.allButtonsVisible = !self.allButtonsVisible
       }
-    } updatedCallback: {
+    } updatedCallback: {}
 
-    }
+    interactor.setMyPositionModeCallback { [weak self] in self?.view.setLocationButtonMode($0) }
   }
   
   func zoomIn() {

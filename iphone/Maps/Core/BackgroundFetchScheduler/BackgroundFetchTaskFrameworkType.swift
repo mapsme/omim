@@ -5,7 +5,7 @@
   func create() {
     switch self {
     case .none: return
-    case .full: FrameworkHelper.createFramework()
+    case .full: FrameworkHelper.shared().createFramework()
     }
   }
 }

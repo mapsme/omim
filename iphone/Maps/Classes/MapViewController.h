@@ -1,6 +1,5 @@
 #import "MWMMapDownloaderMode.h"
 #import "MWMViewController.h"
-#import "MWMMyPositionMode.h"
 
 #import <CoreApi/MWMUTM.h>
 
@@ -9,14 +8,10 @@
 @class EAGLView;
 @class MWMMapDownloadDialog;
 @class BookmarksCoordinator;
-@protocol MWMLocationModeListener;
 
 @interface MapViewController : MWMViewController
 
 + (MapViewController *)sharedController;
-- (void)addListener:(id<MWMLocationModeListener>)listener;
-- (void)removeListener:(id<MWMLocationModeListener>)listener;
-
 // called when app is terminated by system
 - (void)onTerminate;
 - (void)onGetFocus:(BOOL)isOnFocus;

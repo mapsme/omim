@@ -1,4 +1,3 @@
-#import "MWMMyPositionMode.h"
 
 @interface MWMSideButtons : NSObject
 

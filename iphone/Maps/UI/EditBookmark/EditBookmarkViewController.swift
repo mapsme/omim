@@ -22,9 +22,9 @@ final class EditBookmarkViewController: MWMTableViewController {
   private var bookmarkTitle: String?
   private var bookmarkDescription: String?
   private var bookmarkGroupTitle: String?
-  private var bookmarkId = FrameworkHelper.invalidBookmarkId()
-  private var bookmarkGroupId = FrameworkHelper.invalidCategoryId()
-  private var newBookmarkGroupId = FrameworkHelper.invalidCategoryId()
+  private var bookmarkId = FrameworkHelper.shared().invalidBookmarkId()
+  private var bookmarkGroupId = FrameworkHelper.shared().invalidCategoryId()
+  private var newBookmarkGroupId = FrameworkHelper.shared().invalidCategoryId()
   private var bookmarkColor: BookmarkColor!
 
   override func viewDidLoad() {
@@ -135,7 +135,7 @@ final class EditBookmarkViewController: MWMTableViewController {
                                              title: bookmarkTitle ?? "",
                                              color: bookmarkColor,
                                              description: bookmarkDescription ?? "")
-    FrameworkHelper.updatePlacePageData()
+    FrameworkHelper.shared().updatePlacePageData()
     placePageData.updateBookmarkStatus()
     goBack()
   }
@@ -165,7 +165,7 @@ extension EditBookmarkViewController: MWMNoteCellDelegate {
 extension EditBookmarkViewController: MWMButtonCellDelegate {
   func cellDidPressButton(_ cell: UITableViewCell) {
     BookmarksManager.shared().deleteBookmark(bookmarkId)
-    FrameworkHelper.updatePlacePageData()
+    FrameworkHelper.shared().updatePlacePageData()
     placePageData.updateBookmarkStatus()
     goBack()
   }

@@ -26,7 +26,7 @@ static NSString * const kiOSEmail = @"ios@maps.me";
   self.title = L(@"help");
 
   NSString * html;
-  if ([MWMFrameworkHelper isNetworkConnected]) {
+  if ([[MWMFrameworkHelper sharedHelper] isNetworkConnected]) {
     NSURL *url = [NSURL URLWithString:@"https://support.maps.me"];
     self.aboutViewController = [[WebViewController alloc] initWithUrl:url title:nil];
   } else {

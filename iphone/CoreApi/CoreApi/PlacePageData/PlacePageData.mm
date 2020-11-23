@@ -242,7 +242,7 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
     api->GetPoiGallery(m_mercator,
                        locale,
                        m_rawTypes,
-                       [MWMFrameworkHelper isWiFiConnected],
+                       [[MWMFrameworkHelper sharedHelper] isWiFiConnected],
                        UTM::SightseeingsPlacepageGallery,
                        resultHandler,
                        errorHandler);

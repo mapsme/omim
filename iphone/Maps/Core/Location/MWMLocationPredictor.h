@@ -1,8 +1,4 @@
-#import "MWMMyPositionMode.h"
-
-#include "platform/location.hpp"
-
-using TPredictionBlock = void (^)(CLLocation *);
+typedef void (^TPredictionBlock)(CLLocation *);
 
 @interface MWMLocationPredictor : NSObject
 

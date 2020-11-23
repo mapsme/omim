@@ -18,7 +18,7 @@ final class MapControlsViewController: UIViewController {
   @IBOutlet var sideButtonsContainerView: UIView!
   @IBOutlet var sideButtonsVisibleConstraint: NSLayoutConstraint!
   @IBOutlet var sideButtonsHiddenConstraint: NSLayoutConstraint!
-
+  @IBOutlet var locationButton: UIButton!
 
   private var placePageViewController: PlacePageViewController?
   private var guidesGalleryViewController: GuidesGalleryViewController?
@@ -172,7 +172,7 @@ final class MapControlsViewController: UIViewController {
           self?.view.layoutIfNeeded()
         }
       } else {
-        FrameworkHelper.deactivateMapSelection(notifyUI: true)
+        FrameworkHelper.shared().deactivateMapSelection(notifyUI: true)
       }
     @unknown default:
       fatalError()
@@ -320,6 +320,23 @@ extension MapControlsViewController: IMapControlsView {
       self?.dismiss(animated: true)
     }
     present(alert, animated: true)
+  }
+
+  func setLocationButtonMode(_ mode: MyPositionMode) {
+    locationButton.imageView?.stopRotation()
+    switch mode {
+    case .pendingPosition:
+      locationButton.setStyleAndApply("ButtonPending")
+      locationButton.imageView?.startRotation()
+    case .notFollow, .notFollowNoPosition:
+      locationButton.setStyleAndApply("ButtonGetPosition")
+    case .follow:
+      locationButton.setStyleAndApply("ButtonFollow")
+    case .followAndRotate:
+      locationButton.setStyleAndApply("ButtonFollowAndRotate")
+    @unknown default:
+      fatalError()
+    }
   }
 }
 

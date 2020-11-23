@@ -53,7 +53,7 @@ final class BackgroundUGCUpload: BackgroundFetchTask {
   override var frameworkType: BackgroundFetchTaskFrameworkType { return .full }
 
   override fileprivate func fire() {
-    FrameworkHelper.uploadUGC(self.finish)
+    FrameworkHelper.shared().uploadUGC(self.finish)
   }
 
   override var description: String {

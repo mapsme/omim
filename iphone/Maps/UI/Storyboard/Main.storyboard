@@ -531,6 +531,7 @@
                         <outlet property="layersButtonContainerView" destination="RzA-47-HHo" id="5tp-Fs-zb6"/>
                         <outlet property="layersButtonHiddenConstraint" destination="aMb-cY-rCZ" id="dB1-2H-WIQ"/>
                         <outlet property="layersButtonVisibleConstraint" destination="aEw-lM-BOW" id="RFr-G3-bK9"/>
+                        <outlet property="locationButton" destination="LTG-KZ-RkP" id="gzd-Tl-JaE"/>
                         <outlet property="mapButtonsBottomConstraint" destination="rhr-qu-mXp" id="Aor-Dt-IHW"/>
                         <outlet property="mapButtonsView" destination="rmt-wm-kKH" id="gvk-gi-9sc"/>
                         <outlet property="placePageContainerView" destination="7dO-QM-FWR" id="GCm-re-gcy"/>

@@ -11,7 +11,7 @@ final class CarPlayService: NSObject {
   private var window: CPWindow?
   private var interfaceController: CPInterfaceController?
   private var sessionConfiguration: CPSessionConfiguration?
-  var currentPositionMode: MWMMyPositionMode = .pendingPosition
+  var currentPositionMode: MyPositionMode = .pendingPosition
   var isSpeedCamActivated: Bool {
     set {
       router?.updateSpeedCameraMode(newValue ? .always: .never)
@@ -54,7 +54,7 @@ final class CarPlayService: NSObject {
       router.restoreTripPreviewOnCarplay(beforeRootTemplateDidAppear: true)
     }
     ThemeManager.invalidate()
-    FrameworkHelper.updatePositionArrowOffset(false, offset: 5)
+    FrameworkHelper.shared().updatePositionArrowOffset(false, offset: 5)
   }
   
   @objc func destroy() {
@@ -62,7 +62,7 @@ final class CarPlayService: NSObject {
       carplayVC.removeMapView()
     }
     MapViewController.shared()?.disableCarPlayRepresentation()
-    MapViewController.shared()?.remove(self)
+    FrameworkHelper.shared().removeLocationModeListener(self)
     router?.removeListener(self)
     router?.unsubscribeFromEvents()
     router?.setupInitialSpeedCameraMode()
@@ -78,7 +78,7 @@ final class CarPlayService: NSObject {
     sessionConfiguration = nil
     interfaceController = nil
     ThemeManager.invalidate()
-    FrameworkHelper.updatePositionArrowOffset(true, offset: 0)
+    FrameworkHelper.shared().updatePositionArrowOffset(true, offset: 0)
   }
   
   @objc func interfaceStyle() -> UIUserInterfaceStyle {
@@ -98,15 +98,15 @@ final class CarPlayService: NSObject {
       currentPositionMode = mapVC.currentPositionMode
       mapVC.enableCarPlayRepresentation()
       carplayVC.addMapView(mapVC.mapView, mapButtonSafeAreaLayoutGuide: window.mapButtonSafeAreaLayoutGuide)
-      mapVC.add(self)
     }
+    FrameworkHelper.shared().addLocationModeListener(self)
   }
   
   private func applyBaseRootTemplate() {
     let mapTemplate = MapTemplateBuilder.buildBaseTemplate(positionMode: currentPositionMode)
     mapTemplate.mapDelegate = self
     interfaceController?.setRootTemplate(mapTemplate, animated: true)
-    FrameworkHelper.rotateMap(0.0, animated: false)
+    FrameworkHelper.shared().rotateMap(0.0, animated: false)
   }
   
   private func applyNavigationRootTemplate(trip: CPTrip, routeInfo: RouteInfo) {
@@ -177,7 +177,7 @@ final class CarPlayService: NSObject {
       MapTemplateBuilder.setupRecenterButton(mapTemplate: mapTemplate)
     }
     updateVisibleViewPortState(.default)
-    FrameworkHelper.rotateMap(0.0, animated: true)
+    FrameworkHelper.shared().rotateMap(0.0, animated: true)
   }
   
   func updateMapTemplateUIToTripFinished(_ trip: CPTrip) {
@@ -313,7 +313,7 @@ extension CarPlayService: CPMapTemplateDelegate {
   public func mapTemplateDidShowPanningInterface(_ mapTemplate: CPMapTemplate) {
     isUserPanMap = false
     MapTemplateBuilder.configurePanUI(mapTemplate: mapTemplate)
-    FrameworkHelper.stopLocationFollow()
+    FrameworkHelper.shared().stopLocationFollow()
   }
   
   public func mapTemplateDidDismissPanningInterface(_ mapTemplate: CPMapTemplate) {
@@ -323,7 +323,7 @@ extension CarPlayService: CPMapTemplateDelegate {
     } else {
       MapTemplateBuilder.configureBaseUI(mapTemplate: mapTemplate)
     }
-    FrameworkHelper.switchMyPositionMode()
+    FrameworkHelper.shared().switchMyPositionMode()
   }
   
   func mapTemplate(_ mapTemplate: CPMapTemplate, panEndedWith direction: CPMapTemplate.PanDirection) {
@@ -333,7 +333,7 @@ extension CarPlayService: CPMapTemplateDelegate {
     if direction.contains(.down) { offset.vertical += offsetStep }
     if direction.contains(.left) { offset.horizontal += offsetStep }
     if direction.contains(.right) { offset.horizontal -= offsetStep }
-    FrameworkHelper.moveMap(offset)
+    FrameworkHelper.shared().moveMap(offset)
     isUserPanMap = true
   }
   
@@ -344,7 +344,7 @@ extension CarPlayService: CPMapTemplateDelegate {
     if direction.contains(.down) { offset.vertical += offsetStep }
     if direction.contains(.left) { offset.horizontal += offsetStep }
     if direction.contains(.right) { offset.horizontal -= offsetStep }
-    FrameworkHelper.moveMap(offset)
+    FrameworkHelper.shared().moveMap(offset)
     isUserPanMap = true
   }
   
@@ -544,7 +544,7 @@ extension CarPlayService: CarPlayRouterListener {
 // MARK: - LocationModeListener implementation
 @available(iOS 12.0, *)
 extension CarPlayService: LocationModeListener {
-  func processMyPositionStateModeEvent(_ mode: MWMMyPositionMode) {
+  func processMyPositionStateModeEvent(_ mode: MyPositionMode) {
     currentPositionMode = mode
     guard let rootMapTemplate = rootMapTemplate,
       let info = rootMapTemplate.userInfo as? MapInfo,
@@ -726,7 +726,7 @@ extension CarPlayService {
       self.interfaceController?.dismissTemplate(animated: true)
     })
     let noAction = CPAlertAction(title: L("cancel"), style: .cancel, handler: { [unowned self] _ in
-      FrameworkHelper.rotateMap(0.0, animated: false)
+      FrameworkHelper.shared().rotateMap(0.0, animated: false)
       self.router?.completeRouteAndRemovePoints()
       self.interfaceController?.dismissTemplate(animated: true)
     })
