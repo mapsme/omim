@@ -63,15 +63,8 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
     public void onClick(View v)
     {
       BookmarkCategory category = mHolder.getEntity();
-      BookmarkManager.INSTANCE.toggleCategoryVisibility(category);
-
       int type = BookmarkManager.INSTANCE.getCompilationType(category.getId());
-      String compilationTypeString = type == BookmarkManager.CATEGORY ?
-                                     Statistics.ParamValue.CATEGORY :
-                                     Statistics.ParamValue.COLLECTION;
-      Statistics.INSTANCE.trackGuideVisibilityChange(
-          category.isVisible() ? Statistics.ParamValue.SHOW : Statistics.ParamValue.HIDE,
-          category.getServerId(), compilationTypeString);
+      BookmarkManager.INSTANCE.toggleCompilationVisibility(category, type);
 
       if (type == BookmarkManager.COLLECTION)
         notifyItemChanged(0);
