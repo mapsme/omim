@@ -67,9 +67,15 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
       BookmarkManager.INSTANCE.toggleCompilationVisibility(category, type);
 
       if (type == BookmarkManager.COLLECTION)
+      {
         notifyItemChanged(0);
+        mItemsCollection = BookmarkManager.INSTANCE.getChildrenCollections(mBookmarkCategory.getId());
+      }
       else if (mItemsCollection.size() > 0)
+      {
         notifyItemChanged(mItemsCollection.size() + 1);
+        mItemsCategory = BookmarkManager.INSTANCE.getChildrenCategories(mBookmarkCategory.getId());
+      }
       else
         notifyItemChanged(0);
     }
@@ -263,12 +269,10 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
     return itemCount;
   }
 
-  private void updateItemsByType(@BookmarkManager.CompilationType int compilationType)
+  private void updateAllItems()
   {
-    if (compilationType == BookmarkManager.COLLECTION)
-      mItemsCollection = BookmarkManager.INSTANCE.getChildrenCollections(mBookmarkCategory.getId());
-    else
-      mItemsCategory = BookmarkManager.INSTANCE.getChildrenCategories(mBookmarkCategory.getId());
+    mItemsCollection = BookmarkManager.INSTANCE.getChildrenCollections(mBookmarkCategory.getId());
+    mItemsCategory = BookmarkManager.INSTANCE.getChildrenCategories(mBookmarkCategory.getId());
   }
 
   void show(boolean visible)
@@ -284,7 +288,7 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
     {
       BookmarkManager.INSTANCE.setChildCategoriesVisibility(mBookmarkCategory.getId(),
                                                             compilationType, false);
-      updateItemsByType(compilationType);
+      updateAllItems();
       notifyDataSetChanged();
     }
 
@@ -293,7 +297,7 @@ public class BookmarkCollectionAdapter extends RecyclerView.Adapter<RecyclerView
     {
       BookmarkManager.INSTANCE.setChildCategoriesVisibility(mBookmarkCategory.getId(),
                                                             compilationType, true);
-      updateItemsByType(compilationType);
+      updateAllItems();
       notifyDataSetChanged();
     }
   }
