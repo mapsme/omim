@@ -65,6 +65,7 @@ NS_SWIFT_NAME(FrameworkHelper)
 
 - (void)addLocationModeListener:(id<MWMLocationModeListener>)listener NS_SWIFT_NAME(addLocationModeListener(_:));
 - (void)removeLocationModeListener:(id<MWMLocationModeListener>)listener NS_SWIFT_NAME(removeLocationModeListener(_:));
+- (void)setViewportCenter:(CLLocationCoordinate2D)center zoomLevel:(int)zoomLevelb;
 
 @end
 

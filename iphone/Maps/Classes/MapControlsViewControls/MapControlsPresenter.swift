@@ -8,6 +8,8 @@ final class MapControlsPresenter {
   private var tipType: TipType = .none
   private var afterBookingData: PromoAfterBookingData?
 
+  private var isPoint2PointSelected = false
+
   private var allButtonsVisible: Bool = true {
     didSet {
       layersButtonVisible = allButtonsVisible
@@ -97,7 +99,13 @@ extension MapControlsPresenter: IMapControlsPresenter {
   }
 
   func route() {
-
+    isPoint2PointSelected.toggle()
+    MWMRouter.enableAutoAddLastLocation(false)
+    if (isPoint2PointSelected) {
+      MWMMapViewControlsManager.manager().onRoutePrepare()
+    } else {
+      MWMRouter.stopRouting()
+    }
   }
 
   func discovery() {

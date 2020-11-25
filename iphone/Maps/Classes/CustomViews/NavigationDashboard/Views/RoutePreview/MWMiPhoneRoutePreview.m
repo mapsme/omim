@@ -54,18 +54,4 @@
   return MWMAvailableAreaAffectDirectionsTop;
 }
 
-#pragma mark - AvailableArea / SideButtonsArea
-
-- (MWMAvailableAreaAffectDirections)sideButtonsAreaAffectDirections
-{
-  return MWMAvailableAreaAffectDirectionsTop;
-}
-
-#pragma mark - AvailableArea / TrafficButtonArea
-
-- (MWMAvailableAreaAffectDirections)trafficButtonAreaAffectDirections
-{
-  return MWMAvailableAreaAffectDirectionsTop;
-}
-
 @end

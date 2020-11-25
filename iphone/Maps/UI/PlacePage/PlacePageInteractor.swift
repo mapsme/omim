@@ -1,5 +1,4 @@
 protocol PlacePageInteractorProtocol: class {
-  func updateTopBound(_ bound: CGFloat, duration: TimeInterval)
 }
 
 class PlacePageInteractor {
@@ -17,9 +16,6 @@ class PlacePageInteractor {
 }
 
 extension PlacePageInteractor: PlacePageInteractorProtocol {
-  func updateTopBound(_ bound: CGFloat, duration: TimeInterval) {
-    mapViewController?.setPlacePageTopBound(bound, duration: duration)
-  }
 }
 
 // MARK: - PlacePagePreviewViewControllerDelegate

@@ -33,9 +33,6 @@
 - (void)openDrivingOptions;
 
 - (void)showRemoveAds;
-- (void)setPlacePageTopBound:(CGFloat)bound duration:(double)duration;
-
-+ (void)setViewport:(double)lat lon:(double)lon zoomLevel:(int)zoomlevel;
 
 - (void)initialize;
 - (void)enableCarPlayRepresentation;

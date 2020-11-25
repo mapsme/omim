@@ -12,7 +12,8 @@ class DeepLinkSearchStrategy: IDeepLinkHandlerStrategy{
 
     // Set viewport only when cll parameter was provided in url.
     if (data.centerLat != 0.0 && data.centerLon != 0.0) {
-      MapViewController.setViewport(data.centerLat, lon: data.centerLon, zoomLevel: kSearchInViewportZoom)
+      FrameworkHelper.shared().setViewportCenter(CLLocationCoordinate2DMake(data.centerLat, data.centerLon),
+                                                 zoomLevel: kSearchInViewportZoom)
 
       // We need to update viewport for search api manually because of drape engine
       // will not notify subscribers when search view is shown.

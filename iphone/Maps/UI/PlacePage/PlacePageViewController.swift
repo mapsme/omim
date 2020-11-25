@@ -167,12 +167,6 @@ final class PlacePageScrollView: UIScrollView {
       }
     }
   }
-
-  func updateTopBound(_ bound: CGFloat, duration: TimeInterval) {
-    alternativeSizeClass(iPhone: {
-      presenter.updateTopBound(bound, duration: duration)
-    }, iPad: {})
-  }
 }
 
 extension PlacePageViewController: PlacePageViewProtocol {
@@ -231,9 +225,7 @@ extension PlacePageViewController: PlacePageViewProtocol {
       beginDragging = true
     }
     let scrollPosition = CGPoint(x: point.x, y: min(scrollView.contentSize.height - scrollView.height, point.y))
-    let bound = view.height + scrollPosition.y
     if animated {
-      updateTopBound(bound, duration: kDefaultAnimationDuration)
       UIView.animate(withDuration: kDefaultAnimationDuration, animations: { [weak scrollView] in
         scrollView?.contentOffset = scrollPosition
         self.layoutIfNeeded()
@@ -286,9 +278,6 @@ extension PlacePageViewController: UIScrollViewDelegate {
       rootViewController.dismissPlacePage()
     }
     onOffsetChanged(scrollView.contentOffset.y)
-
-    let bound = view.height + scrollView.contentOffset.y
-    updateTopBound(bound, duration: 0)
   }
 
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

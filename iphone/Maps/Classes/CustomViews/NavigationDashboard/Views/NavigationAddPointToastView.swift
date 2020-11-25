@@ -21,6 +21,4 @@ final class NavigationAddPointToastView: UIView {
   }
 
   override var widgetsAreaAffectDirections: MWMAvailableAreaAffectDirections { return .bottom }
-
-  override var sideButtonsAreaAffectDirections: MWMAvailableAreaAffectDirections { return .bottom }
 }

@@ -67,7 +67,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 @interface MapViewController () <MWMFrameworkDrapeObserver,
                                  MWMStorageObserver,
                                  MWMWelcomePageControllerProtocol,
-                                 MWMKeyboardObserver,
                                  RemoveAdsViewControllerDelegate,
                                  MWMBookmarksObserver,
                                  MWMLocationModeListener>
@@ -80,12 +79,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
 
 @property(nonatomic) BOOL skipForceTouch;
 
-@property(strong, nonatomic) IBOutlet NSLayoutConstraint *visibleAreaBottom;
-@property(strong, nonatomic) IBOutlet NSLayoutConstraint *visibleAreaKeyboard;
-@property(strong, nonatomic) IBOutlet NSLayoutConstraint *placePageAreaKeyboard;
-@property(strong, nonatomic) IBOutlet NSLayoutConstraint *sideButtonsAreaBottom;
-@property(strong, nonatomic) IBOutlet NSLayoutConstraint *sideButtonsAreaKeyboard;
-@property(strong, nonatomic) IBOutlet NSLayoutConstraint *guidesNavigationBarAreaBottom;
 @property(strong, nonatomic) IBOutlet NSLayoutConstraint *guidesVisibleConstraint;;
 @property(strong, nonatomic) IBOutlet NSLayoutConstraint *guidesHiddenConstraint;
 @property(strong, nonatomic) IBOutlet UIImageView *carplayPlaceholderLogo;
@@ -284,7 +277,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   [MWMRouter restoreRouteIfNeeded];
 
   self.view.clipsToBounds = YES;
-  [MWMKeyboard addObserver:self];
 
   self.mapControlsViewController = [MapControlsBuilder buildWithBookmarksCoordinator:self.bookmarksCoordinator];
   self.mapControlsViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -694,19 +686,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   }
 }
 
-#pragma mark - MWMKeyboard
-
-- (void)onKeyboardWillAnimate {
-  [self.view setNeedsLayout];
-}
-- (void)onKeyboardAnimation {
-  auto const kbHeight = [MWMKeyboard keyboardHeight];
-  self.sideButtonsAreaKeyboard.constant = kbHeight;
-  if (IPAD) {
-    self.visibleAreaKeyboard.constant = kbHeight;
-    self.placePageAreaKeyboard.constant = kbHeight;
-  }
-}
 #pragma mark - Properties
 
 - (MWMMapViewControlsManager *)controlsManager {
@@ -724,24 +703,6 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
   if (!_downloadDialog)
     _downloadDialog = [MWMMapDownloadDialog dialogForController:self];
   return _downloadDialog;
-}
-
-- (void)setPlacePageTopBound:(CGFloat)bound duration:(double)duration {
-  self.visibleAreaBottom.constant = bound;
-  self.sideButtonsAreaBottom.constant = bound;
-  self.guidesNavigationBarAreaBottom.constant = bound;
-  [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-    [self.view layoutIfNeeded];
-  } completion:nil];
-}
-
-+ (void)setViewport:(double)lat lon:(double)lon zoomLevel:(int)zoomLevel {
-  Framework &f = GetFramework();
-
-  f.StopLocationFollow();
-
-  auto const center = mercator::FromLatLon(lat, lon);
-  f.SetViewportCenter(center, zoomLevel, false);
 }
 
 - (BookmarksCoordinator *)bookmarksCoordinator {

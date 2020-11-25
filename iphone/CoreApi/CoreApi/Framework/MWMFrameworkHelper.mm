@@ -250,4 +250,11 @@ static MWMMyPositionMode mwmMyPositionMode(location::EMyPositionMode mode) {
   [self.locationModeListeners removeObject:listener];
 }
 
+- (void)setViewportCenter:(CLLocationCoordinate2D)center zoomLevel:(int)zoomLevel {
+  Framework &f = GetFramework();
+  f.StopLocationFollow();
+  f.SetViewportCenter(mercator::FromLatLon(center.latitude, center.longitude), zoomLevel, false);
+}
+
+
 @end

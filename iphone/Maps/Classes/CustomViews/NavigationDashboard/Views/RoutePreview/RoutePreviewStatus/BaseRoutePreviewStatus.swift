@@ -195,14 +195,6 @@ final class BaseRoutePreviewStatus: SolidTouchView {
     arriveLabel?.text = String(coreFormat: L("routing_arrive"), arguments: [info.arrival])
   }
 
-  override var sideButtonsAreaAffectDirections: MWMAvailableAreaAffectDirections {
-    return .bottom
-  }
-
-  override var visibleAreaAffectDirections: MWMAvailableAreaAffectDirections {
-    return .bottom
-  }
-
   override var widgetsAreaAffectDirections: MWMAvailableAreaAffectDirections {
     return .bottom
   }

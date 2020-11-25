@@ -279,10 +279,6 @@ final class NavigationControlView: SolidTouchView, MWMTextToSpeechObserver, MapO
     onTTSStatusUpdated()
   }
 
-  override var sideButtonsAreaAffectDirections: MWMAvailableAreaAffectDirections {
-    return .bottom
-  }
-
   override var widgetsAreaAffectDirections: MWMAvailableAreaAffectDirections {
     return alternative(iPhone: .bottom, iPad: [])
   }

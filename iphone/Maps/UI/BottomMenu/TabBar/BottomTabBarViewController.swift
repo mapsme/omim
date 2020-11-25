@@ -24,13 +24,6 @@ final class BottomTabBarViewController: UIViewController {
   @IBOutlet var moreButton: MWMButton!
   @IBOutlet var downloadBadge: UIView!
   
-//  private var avaliableArea = CGRect.zero
-//  @objc var isHidden: Bool = false {
-//    didSet {
-//      updateFrame(animated: true)
-//    }
-//  }
-
   var isLayersBadgeHidden: Bool = true {
     didSet {
       updateBadge()
@@ -43,14 +36,10 @@ final class BottomTabBarViewController: UIViewController {
     }
   }
 
-  var tabBarView: BottomTabBarView {
-    return view as! BottomTabBarView
-  }
-
-//  @objc static var controller: BottomTabBarViewController? {
-//    return MWMMapViewControlsManager.manager()?.tabBarController
+//  var tabBarView: BottomTabBarView {
+//    return view as! BottomTabBarView
 //  }
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
 //    presenter.configure()
@@ -68,10 +57,6 @@ final class BottomTabBarViewController: UIViewController {
     MWMSearchManager.remove(self)
 //    MWMNavigationDashboardManager.remove(self)
   }
-  
-//  static func updateAvailableArea(_ frame: CGRect) {
-//    BottomTabBarViewController.controller?.updateAvailableArea(frame)
-//  }
   
   @IBAction func onSearchButtonPressed(_ sender: Any) {
     delegate?.search()
@@ -97,36 +82,6 @@ final class BottomTabBarViewController: UIViewController {
     delegate?.menu()
 //    presenter.onMenuButtonPressed()
   }
-  
-//
-//  private func updateAvailableArea(_ frame:CGRect) {
-//    avaliableArea = frame
-//    updateFrame(animated: false)
-//    self.view.layoutIfNeeded()
-//  }
-//
-//  private func updateFrame(animated: Bool) {
-//    if avaliableArea == .zero {
-//      return
-//    }
-//    let newFrame = CGRect(x: avaliableArea.minX,
-//                          y: isHidden ? avaliableArea.minY + avaliableArea.height : avaliableArea.minY,
-//                          width: avaliableArea.width,
-//                          height: avaliableArea.height)
-//    let alpha:CGFloat = isHidden ? 0 : 1
-//    if animated {
-//      UIView.animate(withDuration: kDefaultAnimationDuration,
-//                     delay: 0,
-//                     options: [.beginFromCurrentState],
-//                     animations: {
-//                      self.view.frame = newFrame
-//                      self.view.alpha = alpha
-//      }, completion: nil)
-//    } else {
-//      self.view.frame = newFrame
-//      self.view.alpha = alpha
-//    }
-//  }
   
   private func updateBadge() {
     downloadBadge.isHidden = isApplicationBadgeHidden && isLayersBadgeHidden

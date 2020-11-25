@@ -14,15 +14,7 @@ final class SearchBar: SolidTouchView {
   @IBOutlet private var bookingGuestCountLabel: UILabel!
   @IBOutlet private var bookingDatesLabel: UILabel!
 
-  override var visibleAreaAffectDirections: MWMAvailableAreaAffectDirections { return alternative(iPhone: .top, iPad: .left) }
-
-  override var placePageAreaAffectDirections: MWMAvailableAreaAffectDirections { return alternative(iPhone: [], iPad: .left) }
-
   override var widgetsAreaAffectDirections: MWMAvailableAreaAffectDirections { return alternative(iPhone: [], iPad: .left) }
-
-  override var trafficButtonAreaAffectDirections: MWMAvailableAreaAffectDirections { return alternative(iPhone: .top, iPad: .left) }
-
-  override var tabBarAreaAffectDirections: MWMAvailableAreaAffectDirections { return alternative(iPhone: [], iPad: .left) }
 
   @objc var state: SearchBarState = .ready {
     didSet {

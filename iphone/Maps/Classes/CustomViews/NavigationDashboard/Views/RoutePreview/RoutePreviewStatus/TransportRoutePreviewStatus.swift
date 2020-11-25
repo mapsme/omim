@@ -91,14 +91,6 @@ final class TransportRoutePreviewStatus: SolidTouchView {
     updateHeight()
   }
 
-  override var sideButtonsAreaAffectDirections: MWMAvailableAreaAffectDirections {
-    return .bottom
-  }
-
-  override var visibleAreaAffectDirections: MWMAvailableAreaAffectDirections {
-    return .bottom
-  }
-
   override var widgetsAreaAffectDirections: MWMAvailableAreaAffectDirections {
     return .bottom
   }

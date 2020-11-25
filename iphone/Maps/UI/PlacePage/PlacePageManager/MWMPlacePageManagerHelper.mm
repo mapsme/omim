@@ -10,7 +10,6 @@
 
 @interface MWMPlacePageManager ()
 
-- (void)updateAvailableArea:(CGRect)frame;
 - (void)showUGCAddReview:(PlacePageData *)data rating:(UgcSummaryRatingType)value fromSource:(MWMUGCReviewSource)source;
 - (void)searchSimilar:(PlacePageData *)data;
 - (void)editPlace;
@@ -47,11 +46,6 @@
 @end
 
 @implementation MWMPlacePageManagerHelper
-
-+ (void)updateAvailableArea:(CGRect)frame
-{
-  [[MWMMapViewControlsManager manager].placePageManager updateAvailableArea:frame];
-}
 
 + (void)showUGCAddReview:(PlacePageData *)data rating:(UgcSummaryRatingType)value fromSource:(MWMUGCReviewSource)source {
   [[MWMMapViewControlsManager manager].placePageManager showUGCAddReview:data rating:value fromSource:source];

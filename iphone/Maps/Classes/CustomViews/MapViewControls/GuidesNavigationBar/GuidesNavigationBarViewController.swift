@@ -1,5 +1,4 @@
 class GuidesNavigationBarViewController: UIViewController {
-  private var availableArea = CGRect.zero
   private var mapViewController = MapViewController.shared()
   private var category: BookmarkGroup
 

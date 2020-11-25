@@ -52,37 +52,9 @@
   return MWMAvailableAreaAffectDirectionsLeft;
 }
 
-#pragma mark - AvailableArea / PlacePageArea
-
-- (MWMAvailableAreaAffectDirections)placePageAreaAffectDirections
-{
-  return MWMAvailableAreaAffectDirectionsLeft;
-}
-
 #pragma mark - AvailableArea / WidgetsArea
 
 - (MWMAvailableAreaAffectDirections)widgetsAreaAffectDirections
-{
-  return MWMAvailableAreaAffectDirectionsLeft;
-}
-
-#pragma mark - AvailableArea / SideButtonsArea
-
-- (MWMAvailableAreaAffectDirections)sideButtonsAreaAffectDirections
-{
-  return MWMAvailableAreaAffectDirectionsLeft;
-}
-
-#pragma mark - AvailableArea / TrafficButtonArea
-
-- (MWMAvailableAreaAffectDirections)trafficButtonAreaAffectDirections
-{
-  return MWMAvailableAreaAffectDirectionsLeft;
-}
-
-#pragma mark - AvailableArea / NavigationInfoArea
-
-- (MWMAvailableAreaAffectDirections)navigationInfoAreaAffectDirections
 {
   return MWMAvailableAreaAffectDirectionsLeft;
 }
