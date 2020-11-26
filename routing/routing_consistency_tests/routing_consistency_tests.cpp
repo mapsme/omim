@@ -14,7 +14,9 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
+#include <utility>
 
 #include "3party/gflags/src/gflags/gflags.h"
 
@@ -22,26 +24,49 @@ using namespace routing;
 using namespace std;
 using storage::CountryInfo;
 
-double constexpr kMinimumRouteDistanceM = 10000.;
+double constexpr kMinimumRouteDistanceM = 10000.0;
 double constexpr kRouteLengthAccuracy =  0.15;
 
 // Testing stub to make routing test tools linkable.
 static CommandLineOptions g_options;
 CommandLineOptions const & GetTestingOptions() {return g_options;}
 
+// @TODO Fix comment
+DEFINE_string(mode, "", "Routing consistency tests mode.\n"
+              "dist - builds route and compares with distance set in input_file. In that case "
+              "every line of input file should contain 5 numbers (doubles) separated by spaces: "
+              "<route length in meters> <start lat> <start lon> <finish lat> <finish lon>\n"
+              "two_threads - builds route with the help of two threads bidirectional A* and "
+              "compares with one thread bidirectional A*. In that case "
+              "every line of input file should contain 4 numbers (doubles) separated by spaces: "
+              "<start lat> <start lon> <finish lat> <finish lon>");
 DEFINE_string(input_file, "", "File with statistics output.");
 DEFINE_string(data_path, "../../data/", "Working directory, 'path_to_exe/../../data' if empty.");
 DEFINE_string(user_resource_path, "", "User defined resource path for classificator.txt and etc.");
 DEFINE_bool(verbose, false, "Output processed lines to log.");
-DEFINE_uint64(confidence, 5, "Maximum test count for each single mwm file.");
+DEFINE_uint64(confidence, 5, "Maximum test count for each single mwm file."
+              "Actual for dist mode only.");
 
 // Information about successful user routing.
 struct UserRoutingRecord
 {
   m2::PointD start;
   m2::PointD stop;
-  double distance;
+  double distanceM = 0.0;
 };
+
+double GetDouble(string const & incomingString, size_t & i)
+{
+  // Removes leading spaces.
+  while (i < incomingString.size() && incomingString[i] == ' ')
+  {
+    ++i;
+  };
+  auto end = incomingString.find(" ", i);
+  string number = incomingString.substr(i, end - i);
+  i = end;
+  return stod(number);
+}
 
 // Parsing value from statistics.
 double GetDouble(string const & incomingString, string const & key)
@@ -51,9 +76,7 @@ double GetDouble(string const & incomingString, string const & key)
     return 0;
   // Skip "key="
   it += key.size() + 1;
-  auto end = incomingString.find(" ", it);
-  string number = incomingString.substr(it, end - it);
-  return stod(number);
+  return GetDouble(incomingString, it);
 }
 
 // Decoding statistics line. Returns true if the incomeString is the valid record about
@@ -71,10 +94,23 @@ bool ParseUserString(string const & incomeString, UserRoutingRecord & result)
     return false;
 
   // Extract numbers from a record.
-  result.distance = GetDouble(incomeString, "distance");
+  result.distanceM = GetDouble(incomeString, "distance");
   result.start = mercator::FromLatLon(GetDouble(incomeString, "startLat"), GetDouble(incomeString, "startLon"));
   result.stop = mercator::FromLatLon(GetDouble(incomeString, "finalLat"), GetDouble(incomeString, "finalLon"));
   return true;
+}
+
+// Parsing a line with four numbers: <start lat> <start lon> <finish lat> <finish lon>.
+void ParseRouteLine(string const & incomeString, UserRoutingRecord & result)
+{
+  size_t i = 0;
+  auto startLat = GetDouble(incomeString, i);
+  auto startLon = GetDouble(incomeString, i);
+  result.start = mercator::FromLatLon(startLat, startLon);
+
+  auto finishLat = GetDouble(incomeString, i);
+  auto finishLon = GetDouble(incomeString, i);
+  result.stop = mercator::FromLatLon(finishLat, finishLon);
 }
 
 class RouteTester
@@ -93,12 +129,12 @@ public:
       LOG(LINFO, ("Can't build the route. Code:", result.second));
       return false;
     }
-    auto const delta = record.distance * kRouteLengthAccuracy;
+    auto const delta = record.distanceM * kRouteLengthAccuracy;
     auto const routeLength = result.first->GetTotalDistanceMeters();
-    if (abs(routeLength - record.distance) < delta)
+    if (abs(routeLength - record.distanceM) < delta)
       return true;
 
-    LOG(LINFO, ("Route has invalid length. Expected:", record.distance, "have:", routeLength));
+    LOG(LINFO, ("Route has invalid length. Expected:", record.distanceM, "have:", routeLength));
     return false;
   }
 
@@ -110,7 +146,7 @@ public:
     if (startCountry.m_name != finishCountry.m_name || startCountry.m_name.empty())
       return false;
 
-    if (record.distance < kMinimumRouteDistanceM)
+    if (record.distanceM < kMinimumRouteDistanceM)
       return false;
 
     if (m_checkedCountries[startCountry.m_name] > FLAGS_confidence)
@@ -153,7 +189,7 @@ private:
   map<string, size_t> m_errors;
 };
 
-void ReadInput(istream & stream, RouteTester & tester)
+void ReadInputDist(istream & stream, RouteTester & tester)
 {
   string line;
   while (stream.good())
@@ -175,6 +211,44 @@ void ReadInput(istream & stream, RouteTester & tester)
   tester.PrintStatistics();
 }
 
+void ReadInputTwoThreads(istream & stream)
+{
+  integration::IRouterComponents & components = integration::GetVehicleComponents(VehicleType::Car);
+  string line;
+  while (stream.good())
+  {
+    getline(stream, line);
+    if (line.empty())
+      continue;
+
+    UserRoutingRecord record;
+    ParseRouteLine(line, record);
+    LOG(LINFO, (record.start, record.stop));
+
+    vector<std::pair<std::shared_ptr<Route>, RouterResultCode>> result;
+    for (bool useTwoThreads : {false, true})
+    {
+      components.GetRouter().ClearState();
+      result.push_back(integration::CalculateRoute(
+          components, record.start, m2::PointD::Zero(), record.stop, useTwoThreads));
+    }
+    CHECK_EQUAL(result[0].second, result[1].second, (line));
+    if (result[0].second == RouterResultCode::NoError)
+    {
+//      CHECK_EQUAL(result[0].first->GetPoly().GetSize(), result[1].first->GetPoly().GetSize(),
+//                  (line));
+//      CHECK_EQUAL(result[0].first->GetTotalDistanceMeters(),
+//                  result[1].first->GetTotalDistanceMeters(), (line));
+      for (size_t i = 0; i < result[0].first->GetPoly().GetSize(); ++i)
+      {
+        CHECK_EQUAL(result[0].first->GetPoly().GetPoint(i), result[1].first->GetPoly().GetPoint(i),
+                    ("i:", i, line, mercator::ToLatLon(result[0].first->GetPoly().GetPoint(i)), mercator::ToLatLon(result[1].first->GetPoly().GetPoint(i)),
+                     "dist one thread:", result[0].first->GetTotalDistanceMeters(), "dist two threads:", result[1].first->GetTotalDistanceMeters()));
+      }
+    }
+  }
+}
+
 int main(int argc, char ** argv)
 {
   google::SetUsageMessage("Check mwm and routing files consistency. Calculating roads from a user statistics.");
@@ -186,9 +260,20 @@ int main(int argc, char ** argv)
   if (FLAGS_input_file.empty())
     return 1;
 
-  RouteTester tester;
   ifstream stream(FLAGS_input_file);
-  ReadInput(stream, tester);
+  if (FLAGS_mode == "dist")
+  {
+    RouteTester tester;
+    ReadInputDist(stream, tester);
+  }
+  else if (FLAGS_mode == "two_threads")
+  {
+    ReadInputTwoThreads(stream);
+  }
+  else
+  {
+    return 1;
+  }
 
   return 0;
 }
