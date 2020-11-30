@@ -2674,11 +2674,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
   {
     if (mFilterController != null)
       mFilterController.resetFilterAndParams();
+    closePlacePage();
   }
 
   @Override
   public void onSearchUpClick(@Nullable String query)
   {
+    closePlacePage();
     showSearch(query);
   }
 
