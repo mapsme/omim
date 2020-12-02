@@ -187,6 +187,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     mMediator = new ExternalLibrariesMediator(this);
     mMediator.initSensitiveDataToleranceLibraries();
     mMediator.initSensitiveDataStrictLibrariesAsync();
+    Statistics.INSTANCE.initialize(this);
     Statistics.INSTANCE.setMediator(mMediator);
 
     mPrefs = getSharedPreferences(getString(R.string.pref_file_name), MODE_PRIVATE);
@@ -254,9 +255,6 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
                        BuildConfig.BUILD_TYPE, UiUtils.isTablet());
 
     Config.setStatisticsEnabled(SharedPropertiesUtils.isStatisticsEnabled(this));
-
-    @SuppressWarnings("unused")
-    Statistics s = Statistics.INSTANCE;
 
     if (!isInstallationIdFound)
       mMediator.setInstallationIdToCrashlytics();
