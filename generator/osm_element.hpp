@@ -33,6 +33,11 @@ struct OsmElement
     Member(uint64_t ref, EntityType type, std::string const & role)
       : m_ref(ref), m_type(type), m_role(role) {}
 
+    Member(uint64_t ref, EntityType type, std::string && role)
+      : m_ref(ref), m_type(type), m_role(std::move(role))
+    {
+    }
+
     bool operator==(Member const & other) const
     {
       return m_ref == other.m_ref && m_type == other.m_type && m_role == other.m_role;
@@ -47,6 +52,9 @@ struct OsmElement
   {
     Tag() = default;
     Tag(std::string const & key, std::string const & value) : m_key(key), m_value(value) {}
+    Tag(std::string && key, std::string && value) : m_key(std::move(key)), m_value(std::move(value))
+    {
+    }
 
     bool operator==(Tag const & other) const
     {
@@ -118,9 +126,9 @@ struct OsmElement
   }
 
   void AddNd(uint64_t ref) { m_nodes.emplace_back(ref); }
-  void AddMember(uint64_t ref, EntityType type, std::string const & role)
+  void AddMember(uint64_t ref, EntityType type, std::string role)
   {
-    m_members.emplace_back(ref, type, role);
+    m_members.emplace_back(ref, type, std::move(role));
   }
 
   void AddTag(Tag const & tag);
