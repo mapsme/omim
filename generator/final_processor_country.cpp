@@ -44,8 +44,8 @@ CountryFinalProcessor::CountryFinalProcessor(std::string const & borderPath,
   , m_borderPath(borderPath)
   , m_temporaryMwmPath(temporaryMwmPath)
   , m_intermediateDir(intermediateDir)
-  , m_affiliations(
-        std::make_unique<CountriesFilesIndexAffiliation>(m_borderPath, haveBordersForWholeWorld))
+  , m_affiliations(feature::GetOrCreateAffiliation(feature::AffiliationType::Countries,
+                                                   m_borderPath, haveBordersForWholeWorld))
   , m_threadsCount(threadsCount)
 {
 }
@@ -322,7 +322,12 @@ void CountryFinalProcessor::ProcessCoastline()
   FeatureBuilderWriter<> collector(m_worldCoastsFilename);
   for (size_t i = 0; i < fbs.size(); ++i)
   {
-    fbs[i].AddName("default", strings::JoinStrings(affiliations[i], ';'));
+    std::vector<std::string> names;
+    names.reserve(affiliations[i].size());
+    for (auto const * affiliation : affiliations[i])
+      names.emplace_back(affiliation->GetName());
+
+    fbs[i].AddName("default", strings::JoinStrings(names, ';'));
     collector.Write(fbs[i]);
   }
 }

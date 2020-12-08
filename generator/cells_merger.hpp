@@ -5,10 +5,10 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <deque>
 #include <map>
 #include <optional>
 #include <utility>
-#include <vector>
 
 namespace generator
 {
@@ -49,9 +49,9 @@ private:
 class CellsMerger
 {
 public:
-  explicit CellsMerger(std::vector<m2::RectD> && cells);
+  explicit CellsMerger(std::deque<m2::RectD> && cells);
 
-  std::vector<m2::RectD> Merge();
+  std::deque<m2::RectD> Merge();
 
 private:
   bool Has(int32_t x, int32_t y) const;
@@ -73,6 +73,6 @@ private:
   int32_t m_maxY = 0;
 };
 
-std::vector<m2::RectD> MakeNet(double step, double minX, double minY, double maxX, double maxY);
+std::deque<m2::RectD> MakeNet(double step, double minX, double minY, double maxX, double maxY);
 }  // namespace cells_merger
 }  // namespace generator

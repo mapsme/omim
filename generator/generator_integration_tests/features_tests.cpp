@@ -378,7 +378,7 @@ public:
     TEST(rawGenerator.Execute(), ());
 
     TestGeneratedFile(cameraToWays, 0 /* fileSize */);
-    TestGeneratedFile(citiesAreas, 18601 /* fileSize */);
+    TestGeneratedFile(citiesAreas, 18313 /* fileSize */);
     TestGeneratedFile(maxSpeeds, 1301155 /* fileSize */);
     TestGeneratedFile(metalines, 287660 /* fileSize */);
     TestGeneratedFile(restrictions, 371110 /* fileSize */);

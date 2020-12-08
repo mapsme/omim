@@ -7,7 +7,7 @@
 
 namespace
 {
-double GetMinX(std::vector<m2::RectD> const & cells)
+double GetMinX(std::deque<m2::RectD> const & cells)
 {
   CHECK(!cells.empty(), ());
   auto const minElementX =
@@ -16,7 +16,7 @@ double GetMinX(std::vector<m2::RectD> const & cells)
   return minElementX->minX();
 }
 
-double GetMinY(std::vector<m2::RectD> const & cells)
+double GetMinY(std::deque<m2::RectD> const & cells)
 {
   CHECK(!cells.empty(), ());
   auto const minElementY =
@@ -33,7 +33,7 @@ namespace cells_merger
 // static
 CellWrapper const CellWrapper::kEmpty;
 
-CellsMerger::CellsMerger(std::vector<m2::RectD> && cells)
+CellsMerger::CellsMerger(std::deque<m2::RectD> && cells)
 {
   if (cells.empty())
     return;
@@ -50,10 +50,10 @@ CellsMerger::CellsMerger(std::vector<m2::RectD> && cells)
   }
 }
 
-std::vector<m2::RectD> CellsMerger::Merge()
+std::deque<m2::RectD> CellsMerger::Merge()
 {
   CalcSum();
-  std::vector<m2::RectD> cells;
+  std::deque<m2::RectD> cells;
   while (auto const max = FindMax())
     cells.emplace_back(Union(*max));
   return cells;
@@ -223,11 +223,11 @@ m2::RectD CellsMerger::Union(m2::PointI const & startXy)
   return cell1;
 }
 
-std::vector<m2::RectD> MakeNet(double step, double minX, double minY, double maxX, double maxY)
+std::deque<m2::RectD> MakeNet(double step, double minX, double minY, double maxX, double maxY)
 {
   CHECK_LESS(minX, maxX, ());
   CHECK_LESS(minY, maxY, ());
-  std::vector<m2::RectD> net;
+  std::deque<m2::RectD> net;
   auto xmin = minX;
   auto ymin = minY;
   auto x = xmin;

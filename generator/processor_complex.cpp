@@ -16,8 +16,8 @@ ProcessorComplex::ProcessorComplex(std::shared_ptr<FeatureProcessorQueue> const 
   , m_haveBordersForWholeWorld(haveBordersForWholeWorld)
 {
   m_processingChain = std::make_shared<PrepareFeatureLayer>();
-  auto affiliation = std::make_shared<feature::CountriesFilesIndexAffiliation>(
-      bordersPath, haveBordersForWholeWorld);
+  auto affiliation = feature::GetOrCreateAffiliation(feature::AffiliationType::Countries,
+                                                     bordersPath, haveBordersForWholeWorld);
   m_affiliationsLayer =
       std::make_shared<AffiliationsFeatureLayer<>>(kAffiliationsBufferSize, affiliation, m_queue);
   m_processingChain->Add(m_affiliationsLayer);

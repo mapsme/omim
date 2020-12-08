@@ -22,12 +22,12 @@ CrossMwmOsmWaysCollector::CrossMwmOsmWaysCollector(std::string intermediateDir,
                                                    bool haveBordersForWholeWorld)
   : m_intermediateDir(std::move(intermediateDir))
 {
-  m_affiliation =
-      std::make_shared<feature::CountriesFilesAffiliation>(targetDir, haveBordersForWholeWorld);
+  m_affiliation = feature::GetOrCreateAffiliation(feature::AffiliationType::Countries, targetDir,
+                                                  haveBordersForWholeWorld);
 }
 
 CrossMwmOsmWaysCollector::CrossMwmOsmWaysCollector(
-    std::string intermediateDir, std::shared_ptr<feature::CountriesFilesAffiliation> affiliation)
+    std::string intermediateDir, std::shared_ptr<feature::AffiliationInterface> affiliation)
   : m_intermediateDir(std::move(intermediateDir)), m_affiliation(std::move(affiliation))
 {
 }
@@ -41,10 +41,7 @@ std::shared_ptr<CollectorInterface> CrossMwmOsmWaysCollector::Clone(
 void CrossMwmOsmWaysCollector::CollectFeature(feature::FeatureBuilder const & fb,
                                               OsmElement const & element)
 {
-  if (element.m_type != OsmElement::EntityType::Way)
-    return;
-
-  if (!routing::IsRoad(fb.GetTypes()))
+  if (!element.IsWay() || !routing::IsRoad(fb.GetTypes()))
     return;
 
   auto const & affiliations = m_affiliation->GetAffiliations(fb);
@@ -52,19 +49,19 @@ void CrossMwmOsmWaysCollector::CollectFeature(feature::FeatureBuilder const & fb
     return;
 
   auto const & featurePoints = fb.GetOuterGeometry();
-  std::map<std::string, std::vector<bool>> featurePointsEntriesToMwm;
-  for (auto const & mwmName : affiliations)
-    featurePointsEntriesToMwm[mwmName] = std::vector<bool>(featurePoints.size(), false);
+  std::map<feature::CountryPolygonsPtr, std::vector<bool>> featurePointsEntriesToMwm;
+  for (auto const * affiliation : affiliations)
+    featurePointsEntriesToMwm[affiliation] = std::vector<bool>(featurePoints.size(), false);
 
   std::vector<size_t> pointsAffiliationsNumber(featurePoints.size());
   for (size_t pointNumber = 0; pointNumber < featurePoints.size(); ++pointNumber)
   {
     auto const & point = featurePoints[pointNumber];
     auto const & pointAffiliations = m_affiliation->GetAffiliations(point);
-    for (auto const & mwmName : pointAffiliations)
+    for (auto const * pointAffiliation : pointAffiliations)
     {
       // Skip mwms which are not present in the map: these are GetAffiliations() false positives.
-      auto it = featurePointsEntriesToMwm.find(mwmName);
+      auto it = featurePointsEntriesToMwm.find(pointAffiliation);
       if (it == featurePointsEntriesToMwm.end())
         continue;
       it->second[pointNumber] = true;
@@ -79,7 +76,7 @@ void CrossMwmOsmWaysCollector::CollectFeature(feature::FeatureBuilder const & fb
 
   for (auto const & item : featurePointsEntriesToMwm)
   {
-    auto const & mwmName = item.first;
+    auto const * affiliation = item.first;
     auto const & entries = item.second;
     std::vector<CrossMwmInfo::SegmentInfo> crossMwmSegments;
     bool prevPointIn = entries[0];
@@ -120,7 +117,7 @@ void CrossMwmOsmWaysCollector::CollectFeature(feature::FeatureBuilder const & fb
     if (crossMwmSegments.empty())
       return;
 
-    m_mwmToCrossMwmOsmIds[mwmName].emplace_back(element.m_id, std::move(crossMwmSegments));
+    m_mwmToCrossMwmOsmIds[affiliation].emplace_back(element.m_id, std::move(crossMwmSegments));
   }
 }
 
@@ -131,10 +128,10 @@ void CrossMwmOsmWaysCollector::Save()
 
   for (auto const & item : m_mwmToCrossMwmOsmIds)
   {
-    auto const & mwmName = item.first;
+    auto const * affiliation = item.first;
     auto const & waysInfo = item.second;
 
-    auto const & pathToCrossMwmOsmIds = base::JoinPath(crossMwmOsmWaysDir, mwmName);
+    auto const & pathToCrossMwmOsmIds = base::JoinPath(crossMwmOsmWaysDir, affiliation->GetName());
     std::ofstream output;
     output.exceptions(std::fstream::failbit | std::fstream::badbit);
     output.open(pathToCrossMwmOsmIds);
@@ -152,10 +149,10 @@ void CrossMwmOsmWaysCollector::MergeInto(CrossMwmOsmWaysCollector & collector) c
 {
   for (auto const & item : m_mwmToCrossMwmOsmIds)
   {
-    auto const & mwmName = item.first;
+    auto const * affiliation = item.first;
     auto const & osmIds = item.second;
 
-    auto & otherOsmIds = collector.m_mwmToCrossMwmOsmIds[mwmName];
+    auto & otherOsmIds = collector.m_mwmToCrossMwmOsmIds[affiliation];
     otherOsmIds.insert(otherOsmIds.end(), osmIds.cbegin(), osmIds.cend());
   }
 }

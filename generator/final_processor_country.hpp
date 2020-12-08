@@ -69,7 +69,7 @@ private:
   std::string m_routingCityBoundariesDumpPath;
   std::string m_hierarchySrcFilename;
 
-  std::unique_ptr<feature::AffiliationInterface> m_affiliations;
+  std::shared_ptr<feature::AffiliationInterface> m_affiliations;
 
   size_t m_threadsCount;
 };

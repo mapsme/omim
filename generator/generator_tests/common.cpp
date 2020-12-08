@@ -28,7 +28,8 @@ std::string GetFileName(std::string const & filename)
   return filename.empty() ? platform.TmpPathForFile() : platform.TmpPathForFile(filename);
 }
 
-bool MakeFakeBordersFile(std::string const & intemediatePath, std::string const & filename)
+bool MakeFakeBordersFile(std::string const & intemediatePath, std::string const & filename,
+                         std::vector<m2::PointD> const & points)
 {
   auto const borderPath = base::JoinPath(intemediatePath, BORDERS_DIR);
   auto & platform = GetPlatform();
@@ -36,9 +37,14 @@ bool MakeFakeBordersFile(std::string const & intemediatePath, std::string const 
   if (code != Platform::EError::ERR_OK && code != Platform::EError::ERR_FILE_ALREADY_EXISTS)
     return false;
 
-  std::vector<m2::PointD> points = {{-180.0, -90.0}, {180.0, -90.0}, {180.0, 90.0}, {-180.0, 90.0},
-                                    {-180.0, -90.0}};
   borders::DumpBorderToPolyFile(borderPath, filename, {m2::RegionD{points}});
   return true;
+}
+
+bool MakeFakeBordersFile(std::string const & intemediatePath, std::string const & filename)
+{
+  std::vector<m2::PointD> const points = {
+      {-180.0, -90.0}, {180.0, -90.0}, {180.0, 90.0}, {-180.0, 90.0}, {-180.0, -90.0}};
+  return MakeFakeBordersFile(intemediatePath, filename, points);
 }
 }  // namespace generator_tests

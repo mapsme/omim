@@ -180,7 +180,13 @@ void TestSpeedCameraSectionBuilding(string const & osmContent, CameraMap const &
 
   // Step 2. Generate binary file about cameras.
   {
-    CHECK(generator_tests::MakeFakeBordersFile(testDirFullPath, kTestMwm), ());
+    std::vector<m2::PointD> const points = {{30.146484374999996, 66.06263291952231},
+                                            {41.923828125, 66.06263291952231},
+                                            {41.923828125, 69.51145744782765},
+                                            {30.146484374999996, 69.51145744782765},
+                                            {30.146484374999996, 66.06263291952231}};
+
+    CHECK(generator_tests::MakeFakeBordersFile(testDirFullPath, kTestMwm, points), ());
     RawGenerator rawGenerator(genInfo);
     rawGenerator.ForceReloadCache();
     rawGenerator.GenerateCountries();

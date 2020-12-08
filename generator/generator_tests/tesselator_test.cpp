@@ -25,7 +25,7 @@ namespace
     }
   };
 
-  size_t RunTest(list<vector<P> > const & l)
+  size_t RunTest(tesselator::PolygonsT const & l)
   {
     tesselator::TrianglesInfo info;
     int const trianglesCount = tesselator::TesselateInterior(l, info);
@@ -38,7 +38,7 @@ namespace
 
   size_t RunTess(P const * arr, size_t count)
   {
-    list<vector<P> > l;
+    tesselator::PolygonsT l;
     l.push_back(vector<P>());
     l.back().assign(arr, arr + count);
 
@@ -58,7 +58,7 @@ UNIT_TEST(Tesselator_Odd)
 
   size_t const count = ARRAY_SIZE(arr);
 
-  list<vector<P> > l;
+  tesselator::PolygonsT l;
   l.push_back(vector<P>());
   l.back().assign(arr, arr + count);
   l.push_back(vector<P>());

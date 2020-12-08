@@ -76,6 +76,12 @@ public:
   }
 
   template <typename Do>
+  void ForEachInRect(m2::RectD const & rect, Do && fn) const
+  {
+    m_polygons.ForEachInRect(rect, std::forward<Do>(fn));
+  }
+
+  template <typename Do>
   void ForEachPolygon(Do && fn) const
   {
     m_polygons.ForEach(std::forward<Do>(fn));
