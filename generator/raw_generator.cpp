@@ -12,6 +12,7 @@
 #include "generator/translators_pool.hpp"
 
 #include "base/thread_pool_computational.hpp"
+#include "base/timer.hpp"
 
 #include "defines.hpp"
 
@@ -176,6 +177,15 @@ bool RawGenerator::GenerateFilteredFeatures()
   RawGeneratorWriter rawGeneratorWriter(m_queue, m_genInfo.m_tmpDir);
   rawGeneratorWriter.Run();
 
+  size_t const kLogFreqElements = 100 * m_threadsCount * m_chunkSize;
+  base::Timer timer(true /* start */);
+  uint64_t prevFilePos = 0;
+  double prevElapsedSeconds = 0.0;
+  size_t element_counter = 0;
+  size_t node_counter = 0;
+  size_t way_counter = 0;
+  size_t relation_counter = 0;
+
   size_t element_pos = 0;
   std::vector<OsmElement> elements(m_chunkSize);
   while (sourceProcessor->TryRead(elements[element_pos]))
@@ -183,7 +193,38 @@ bool RawGenerator::GenerateFilteredFeatures()
     if (++element_pos != m_chunkSize)
       continue;
 
+    for (auto const & e : elements)
+    {
+      if (e.IsNode())
+        ++node_counter;
+      else if (e.IsWay())
+        ++way_counter;
+      else if (e.IsRelation())
+        ++relation_counter;
+    }
+
     translators.Emit(std::move(elements));
+
+    element_counter += m_chunkSize;
+    if (element_counter % kLogFreqElements == 0)
+    {
+      auto const posKb = reader.Pos() / 1024.0;
+      auto const elapsedSeconds = timer.ElapsedSeconds();
+      auto const avgSpeedKbPerSec = posKb / elapsedSeconds;
+      auto const speedKbPerSec =
+          (reader.Pos() - prevFilePos) / (elapsedSeconds - prevElapsedSeconds) / 1024.0;
+
+      LOG(LINFO, ("Readed", element_counter, "elements [pos:", posKb,
+                  "kB, avg r:", avgSpeedKbPerSec, " kB/s, r:", speedKbPerSec,
+                  "kB/s [n:", node_counter, ", w:", way_counter, ", r:", relation_counter, "]]"));
+
+      prevFilePos = reader.Pos();
+      prevElapsedSeconds = elapsedSeconds;
+      node_counter = 0;
+      way_counter = 0;
+      relation_counter = 0;
+    }
+
     elements = std::vector<OsmElement>(m_chunkSize);
     element_pos = 0;
   }
