@@ -203,7 +203,8 @@ bool RawGenerator::GenerateFilteredFeatures()
         ++relation_counter;
     }
 
-    translators.Emit(std::move(elements));
+    translators.Emit(elements);
+    
 
     element_counter += m_chunkSize;
     if (element_counter % kLogFreqElements == 0)
@@ -225,7 +226,9 @@ bool RawGenerator::GenerateFilteredFeatures()
       relation_counter = 0;
     }
 
-    elements = std::vector<OsmElement>(m_chunkSize);
+    for (auto & e : elements)
+      e.Clear();
+
     element_pos = 0;
   }
   elements.resize(element_pos);
