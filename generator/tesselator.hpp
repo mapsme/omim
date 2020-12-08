@@ -14,7 +14,7 @@
 namespace tesselator
 {
   typedef std::vector<m2::PointD> PointsT;
-  typedef std::list<PointsT> PolygonsT;
+  typedef std::vector<PointsT> PolygonsT;
 
   struct Triangle
   {

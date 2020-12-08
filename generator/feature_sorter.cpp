@@ -255,8 +255,8 @@ public:
   }
 
 private:
-  using Points = vector<m2::PointD>;
-  using Polygons = list<Points>;
+  using Points = FeatureBuilder::PointSeq;
+  using Polygons = FeatureBuilder::Geometry;
 
   class TmpFile : public FileWriter
   {

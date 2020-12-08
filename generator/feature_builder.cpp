@@ -132,6 +132,12 @@ void FeatureBuilder::AddPoint(m2::PointD const & p)
   m_limitRect.Add(p);
 }
 
+void FeatureBuilder::SetOuterGeomery(PointSeq && geom)
+{
+  CalcRect(geom, m_limitRect);
+  m_polygons.front() = std::move(geom);
+}
+
 void FeatureBuilder::SetLinear(bool reverseGeometry)
 {
   m_params.SetGeomType(GeomType::Line);
@@ -149,23 +155,26 @@ void FeatureBuilder::SetHoles(FeatureBuilder::Geometry const & holes)
 {
   m_polygons.resize(1);
 
-  if (holes.empty()) return;
+  if (holes.empty())
+    return;
 
   PointSeq const & poly = GetOuterGeometry();
   m2::Region<m2::PointD> rgn(poly.begin(), poly.end());
-
   for (PointSeq const & points : holes)
   {
-    ASSERT ( !points.empty(), (*this) );
+    ASSERT(!points.empty(), (*this));
 
     size_t j = 0;
     size_t const count = points.size();
     for (; j < count; ++j)
+    {
       if (!rgn.Contains(points[j]))
         break;
+    }
 
     if (j == count)
       m_polygons.push_back(points);
+
   }
 }
 
@@ -532,6 +541,8 @@ void FeatureBuilder::DeserializeAccuratelyFromIntermediate(Buffer & data)
 void FeatureBuilder::AddOsmId(base::GeoObjectId id) { m_osmIds.push_back(id); }
 
 void FeatureBuilder::SetOsmId(base::GeoObjectId id) { m_osmIds.assign(1, id); }
+
+void FeatureBuilder::SetOsmIds(std::vector<base::GeoObjectId> && ids) { m_osmIds = std::move(ids); }
 
 base::GeoObjectId FeatureBuilder::GetFirstOsmId() const
 {
