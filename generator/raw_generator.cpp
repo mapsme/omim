@@ -18,6 +18,59 @@
 
 namespace generator
 {
+namespace
+{
+class Stats
+{
+public:
+  Stats(size_t logFreqElements) : m_timer(true /* start */), m_logFreqElements(logFreqElements) {}
+
+  void Log(std::vector<OsmElement> const & elements, uint64_t pos, bool print = false)
+  {
+    for (auto const & e : elements)
+    {
+      if (e.IsNode())
+        ++m_node_counter;
+      else if (e.IsWay())
+        ++m_way_counter;
+      else if (e.IsRelation())
+        ++m_relation_counter;
+    }
+
+    m_element_counter += elements.size();
+    if (!print && m_element_counter % m_logFreqElements != 0)
+      return;
+
+    auto static constexpr kBInMb = 1024.0 * 1024.0;
+    auto const posMb = pos / kBInMb;
+    auto const elapsedSeconds = m_timer.ElapsedSeconds();
+    auto const avgSpeedMbPerSec = posMb / elapsedSeconds;
+    auto const speedMbPerSec =
+        (pos - m_prevFilePos) / (elapsedSeconds - m_prevElapsedSeconds) / kBInMb;
+
+    LOG(LINFO, ("Readed", m_element_counter, "elements [pos:", posMb, "mB, avg r:",
+                avgSpeedMbPerSec, " mB/s, r:", speedMbPerSec, "mB/s [n:", m_node_counter,
+                ", w:", m_way_counter, ", r:", m_relation_counter, "]]"));
+
+    m_prevFilePos = pos;
+    m_prevElapsedSeconds = elapsedSeconds;
+    m_node_counter = 0;
+    m_way_counter = 0;
+    m_relation_counter = 0;
+  }
+
+private:
+  base::Timer m_timer;
+  size_t m_logFreqElements = 0;
+  uint64_t m_prevFilePos = 0;
+  double m_prevElapsedSeconds = 0.0;
+  size_t m_element_counter = 0;
+  size_t m_node_counter = 0;
+  size_t m_way_counter = 0;
+  size_t m_relation_counter = 0;
+};
+}  // namespace
+
 RawGenerator::RawGenerator(feature::GenerateInfo & genInfo, size_t threadsCount, size_t chunkSize)
   : m_genInfo(genInfo)
   , m_threadsCount(threadsCount)
@@ -177,14 +230,7 @@ bool RawGenerator::GenerateFilteredFeatures()
   RawGeneratorWriter rawGeneratorWriter(m_queue, m_genInfo.m_tmpDir);
   rawGeneratorWriter.Run();
 
-  size_t const kLogFreqElements = 100 * m_threadsCount * m_chunkSize;
-  base::Timer timer(true /* start */);
-  uint64_t prevFilePos = 0;
-  double prevElapsedSeconds = 0.0;
-  size_t element_counter = 0;
-  size_t node_counter = 0;
-  size_t way_counter = 0;
-  size_t relation_counter = 0;
+  Stats stats(100 * m_threadsCount * m_chunkSize /* logFreqElements */);
 
   size_t element_pos = 0;
   std::vector<OsmElement> elements(m_chunkSize);
@@ -193,45 +239,16 @@ bool RawGenerator::GenerateFilteredFeatures()
     if (++element_pos != m_chunkSize)
       continue;
 
-    for (auto const & e : elements)
-    {
-      if (e.IsNode())
-        ++node_counter;
-      else if (e.IsWay())
-        ++way_counter;
-      else if (e.IsRelation())
-        ++relation_counter;
-    }
-
+    stats.Log(elements, reader.Pos());
     translators.Emit(elements);
     
-
-    element_counter += m_chunkSize;
-    if (element_counter % kLogFreqElements == 0)
-    {
-      auto const posKb = reader.Pos() / 1024.0;
-      auto const elapsedSeconds = timer.ElapsedSeconds();
-      auto const avgSpeedKbPerSec = posKb / elapsedSeconds;
-      auto const speedKbPerSec =
-          (reader.Pos() - prevFilePos) / (elapsedSeconds - prevElapsedSeconds) / 1024.0;
-
-      LOG(LINFO, ("Readed", element_counter, "elements [pos:", posKb,
-                  "kB, avg r:", avgSpeedKbPerSec, " kB/s, r:", speedKbPerSec,
-                  "kB/s [n:", node_counter, ", w:", way_counter, ", r:", relation_counter, "]]"));
-
-      prevFilePos = reader.Pos();
-      prevElapsedSeconds = elapsedSeconds;
-      node_counter = 0;
-      way_counter = 0;
-      relation_counter = 0;
-    }
-
     for (auto & e : elements)
       e.Clear();
 
     element_pos = 0;
   }
   elements.resize(element_pos);
+  stats.Log(elements, reader.Pos(), true /* print */);
   translators.Emit(std::move(elements));
 
   LOG(LINFO, ("Input was processed."));
