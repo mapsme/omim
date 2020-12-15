@@ -1,11 +1,13 @@
 #pragma once
 
-#include "geometry/point2d.hpp"
-
 #include "coding/point_coding.hpp"
 #include "coding/tesselator_decl.hpp"
 #include "coding/varint.hpp"
 #include "coding/writer.hpp"
+
+#include "geometry/mercator.hpp"
+#include "geometry/point2d.hpp"
+#include "geometry/rect2d.hpp"
 
 #include "base/array_adapters.hpp"
 #include "base/assert.hpp"
@@ -107,12 +109,16 @@ public:
   GeometryCodingParams();
   GeometryCodingParams(uint8_t coordBits, m2::PointD const & pt);
   GeometryCodingParams(uint8_t coordBits, uint64_t basePointUint64);
+  GeometryCodingParams(uint8_t coordBits, m2::PointD const & pt, m2::RectD const & limitRect);
+  GeometryCodingParams(uint8_t coordBits, uint64_t basePointUint64, m2::RectD const & limitRect);
 
   m2::PointU GetBasePoint() const { return m_BasePoint; }
   uint64_t GetBasePointUint64() const { return m_BasePointUint64; }
   int64_t GetBasePointInt64() const { return static_cast<int64_t>(m_BasePointUint64); }
+  m2::RectD const & GetLimitRect() const { return m_limitRect; }
 
   void SetBasePoint(m2::PointD const & pt);
+  void SetLimitRect(m2::RectD const & rect) { m_limitRect = rect; };
 
   uint8_t GetCoordBits() const { return m_CoordBits; }
 
@@ -121,6 +127,10 @@ public:
   {
     WriteVarUint(writer, GetCoordBits());
     WriteVarUint(writer, m_BasePointUint64);
+    WriteVarUint(writer,
+                 PointUToUint64Obsolete(PointDToPointU(m_limitRect.LeftBottom(), kPointCoordBits)));
+    WriteVarUint(writer,
+                 PointUToUint64Obsolete(PointDToPointU(m_limitRect.RightTop(), kPointCoordBits)));
   }
 
   template <typename SourceT>
@@ -128,22 +138,27 @@ public:
   {
     uint32_t const coordBits = ReadVarUint<uint32_t>(src);
     ASSERT_LESS(coordBits, 32, ());
-    *this = GeometryCodingParams(coordBits, ReadVarUint<uint64_t>(src));
+    auto const basePoint = ReadVarUint<uint64_t>(src);
+    auto const leftBottom =
+        PointUToPointD(Uint64ToPointUObsolete(ReadVarUint<uint64_t>(src)), kPointCoordBits);
+    auto const rightTop =
+        PointUToPointD(Uint64ToPointUObsolete(ReadVarUint<uint64_t>(src)), kPointCoordBits);
+    *this = GeometryCodingParams(coordBits, basePoint, m2::RectD(leftBottom, rightTop));
   }
 
 private:
   uint64_t m_BasePointUint64;
   m2::PointU m_BasePoint;
   uint8_t m_CoordBits;
+  m2::RectD m_limitRect = mercator::Bounds::FullRect();
 };
 
 namespace pts
 {
 using PointsU = buffer_vector<m2::PointU, 32>;
 
-m2::PointU D2U(m2::PointD const & p, uint32_t coordBits);
-
-m2::PointD U2D(m2::PointU const & p, uint32_t coordBits);
+m2::PointU D2U(m2::PointD const & p, uint32_t coordBits, m2::RectD const & limitRect);
+m2::PointD U2D(m2::PointU const & p, uint32_t coordBits, m2::RectD const & limitRect);
 
 m2::PointU GetMaxPoint(GeometryCodingParams const & params);
 
@@ -186,15 +201,17 @@ void DecodeImpl(TDecodeFun fn, DeltasT const & deltas, GeometryCodingParams cons
     points.reserve(count);
   }
 
-  std::transform(upoints.begin(), upoints.begin() + adapt.size(), std::back_inserter(points),
-                 std::bind(&pts::U2D, std::placeholders::_1, params.GetCoordBits()));
+  std::transform(
+      upoints.begin(), upoints.begin() + adapt.size(), std::back_inserter(points),
+      std::bind(&pts::U2D, std::placeholders::_1, params.GetCoordBits(), params.GetLimitRect()));
 }
 
 template <class TSink>
 void SavePoint(TSink & sink, m2::PointD const & pt, GeometryCodingParams const & cp)
 {
-  WriteVarUint(sink, coding::EncodePointDeltaAsUint(PointDToPointU(pt, cp.GetCoordBits()),
-                                                    cp.GetBasePoint()));
+  WriteVarUint(
+      sink, coding::EncodePointDeltaAsUint(PointDToPointU(pt, cp.GetCoordBits(), cp.GetLimitRect()),
+                                           cp.GetBasePoint()));
 }
 
 template <class TSource>
@@ -202,7 +219,7 @@ m2::PointD LoadPoint(TSource & src, GeometryCodingParams const & cp)
 {
   m2::PointD const pt = PointUToPointD(
       coding::DecodePointDeltaFromUint(ReadVarUint<uint64_t>(src), cp.GetBasePoint()),
-      cp.GetCoordBits());
+      cp.GetCoordBits(), cp.GetLimitRect());
   return pt;
 }
 

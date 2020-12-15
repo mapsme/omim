@@ -48,6 +48,7 @@ bool CalculateMidPoints::operator()(m2::PointD const & p)
   m_midAll += p;
   ++m_locCount;
   ++m_allCount;
+  m_limitRect.Add(p);
   return true;
 }
 

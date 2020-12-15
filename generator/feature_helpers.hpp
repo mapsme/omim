@@ -1,14 +1,15 @@
 #pragma once
 
+#include "indexer/feature_data.hpp"
+#include "indexer/feature_visibility.hpp"
+#include "indexer/scales.hpp"
+
 #include "coding/geometry_coding.hpp"
 
 #include "geometry/parametrized_segment.hpp"
 #include "geometry/point2d.hpp"
+#include "geometry/rect2d.hpp"
 #include "geometry/simplification.hpp"
-
-#include "indexer/feature_data.hpp"
-#include "indexer/feature_visibility.hpp"
-#include "indexer/scales.hpp"
 
 #include "base/assert.hpp"
 #include "base/math.hpp"
@@ -37,6 +38,7 @@ public:
   bool operator()(m2::PointD const & p);
 
   m2::PointD GetCenter() const;
+  m2::RectD const & GetLimitRect() const { return m_limitRect; }
   std::vector<CellAndOffset> const & GetVector() const { return m_vec; }
 
   void Sort();
@@ -44,6 +46,7 @@ public:
 private:
   m2::PointD m_midLoc;
   m2::PointD m_midAll;
+  m2::RectD m_limitRect;
   size_t m_locCount = 0;
   size_t m_allCount = 0;
   uint8_t m_coordBits = serial::GeometryCodingParams().GetCoordBits();

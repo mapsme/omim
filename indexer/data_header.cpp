@@ -57,7 +57,7 @@ namespace feature
   {
     return serial::GeometryCodingParams(
         m_codingParams.GetCoordBits() - (m_scales.back() - m_scales[scaleIndex]) / 2,
-        m_codingParams.GetBasePointUint64());
+        m_codingParams.GetBasePointUint64(), m_codingParams.GetLimitRect());
   }
 
   m2::RectD const DataHeader::GetBounds() const

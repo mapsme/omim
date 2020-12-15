@@ -313,27 +313,44 @@ GeometryCodingParams::GeometryCodingParams(uint8_t coordBits, uint64_t basePoint
   m_BasePoint = Uint64ToPointUObsolete(m_BasePointUint64);
 }
 
+GeometryCodingParams::GeometryCodingParams(uint8_t coordBits, m2::PointD const & pt,
+                                           m2::RectD const & limitRect)
+  : m_CoordBits(coordBits), m_limitRect(limitRect)
+{
+  SetBasePoint(pt);
+}
+
+GeometryCodingParams::GeometryCodingParams(uint8_t coordBits, uint64_t basePointUint64,
+                                           m2::RectD const & limitRect)
+  : m_BasePointUint64(basePointUint64), m_CoordBits(coordBits), m_limitRect(limitRect)
+{
+  m_BasePoint = Uint64ToPointUObsolete(m_BasePointUint64);
+}
+
 void GeometryCodingParams::SetBasePoint(m2::PointD const & pt)
 {
-  m_BasePoint = PointDToPointU(pt, m_CoordBits);
+  m_BasePoint = PointDToPointU(pt, m_CoordBits, m_limitRect);
   m_BasePointUint64 = PointUToUint64Obsolete(m_BasePoint);
 }
 
 namespace pts
 {
-m2::PointU D2U(m2::PointD const & p, uint32_t coordBits) { return PointDToPointU(p, coordBits); }
-
-m2::PointD U2D(m2::PointU const & p, uint32_t coordBits)
+m2::PointU D2U(m2::PointD const & p, uint32_t coordBits, m2::RectD const & limitRect)
 {
-  m2::PointD const pt = PointUToPointD(p, coordBits);
-  ASSERT(mercator::Bounds::kMinX <= pt.x && pt.y <= mercator::Bounds::kMaxX, (p, pt, coordBits));
-  ASSERT(mercator::Bounds::kMinY <= pt.x && pt.y <= mercator::Bounds::kMaxY, (p, pt, coordBits));
+  return PointDToPointU(p, coordBits, limitRect);
+}
+
+m2::PointD U2D(m2::PointU const & p, uint32_t coordBits, m2::RectD const & limitRect)
+{
+  m2::PointD const pt = PointUToPointD(p, coordBits, limitRect);
+  ASSERT(limitRect.minX() <= pt.x && pt.x <= limitRect.maxX(), (p, pt, coordBits, limitRect));
+  ASSERT(limitRect.minY() <= pt.y && pt.y <= limitRect.maxY(), (p, pt, coordBits, limitRect));
   return pt;
 }
 
 m2::PointU GetMaxPoint(GeometryCodingParams const & params)
 {
-  return D2U(m2::PointD(mercator::Bounds::kMaxX, mercator::Bounds::kMaxY), params.GetCoordBits());
+  return D2U(params.GetLimitRect().RightTop(), params.GetCoordBits(), params.GetLimitRect());
 }
 
 m2::PointU GetBasePoint(GeometryCodingParams const & params) { return params.GetBasePoint(); }
@@ -348,7 +365,7 @@ void Encode(EncodeFunT fn, vector<m2::PointD> const & points, GeometryCodingPara
   upoints.reserve(count);
 
   transform(points.begin(), points.end(), back_inserter(upoints),
-            bind(&pts::D2U, placeholders::_1, params.GetCoordBits()));
+            bind(&pts::D2U, placeholders::_1, params.GetCoordBits(), params.GetLimitRect()));
 
   ASSERT(deltas.empty(), ());
   deltas.resize(count);

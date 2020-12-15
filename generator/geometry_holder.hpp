@@ -188,9 +188,10 @@ private:
 
     // points conversion
     tesselator::PointsInfo points;
-    m2::PointU (*D2U)(m2::PointD const &, uint8_t) = &PointDToPointU;
+    m2::PointU (*D2U)(m2::PointD const &, uint8_t, m2::RectD const &) = &PointDToPointU;
     info.GetPointsInfo(saver.GetBasePoint(), saver.GetMaxPoint(),
-                       std::bind(D2U, std::placeholders::_1, cp.GetCoordBits()), points);
+                       std::bind(D2U, std::placeholders::_1, cp.GetCoordBits(), cp.GetLimitRect()),
+                       points);
 
     // triangles processing (should be optimal)
     info.ProcessPortions(points, saver, true);

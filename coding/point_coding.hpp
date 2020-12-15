@@ -8,9 +8,7 @@
 
 uint8_t constexpr kPointCoordBits = 30;
 
-uint8_t constexpr kFeatureSorterPointCoordBits = 27;
-
-// The absolute precision of the point encoding in the mwm files.
+// The absolute precision of the point encoding in some mwm file sections.
 // If both x and y coordinates of two points lie within |kMwmPointAccuracy| of one
 // another we consider the points equal. In other words, |kMwmPointAccuracy| may
 // be used as the eps value for both x and y in Point::EqualDxDy, base::AlmostEqualAbs and such.
@@ -28,12 +26,8 @@ uint8_t constexpr kFeatureSorterPointCoordBits = 27;
 // 1 meter difference on the equator and we do not expect most OSM points to be mapped
 // with better precision.
 //
-// todo(@m) By this argument, it seems that 1e-6 is a better choice.
-//
-// Note. generator/feature_sorter.cpp uses |kFeatureSorterPointCoordBits|,
-// effectively overriding |kPointCoordBits|. Presumably it does so to guarantee a maximum of
-// 4 bytes in the varint encoding, (27+1 sign(?) bit) / 7 = 4.
-// todo(@m) Clarify how kPointCoordBits and kFeatureSorterPointCoordBits are related.
+// Note. Most of geometry inside features, geomX and trgX sections is saved with CoordBits which
+// depends on mwm size and guaranties kMwmPointAccuracy. See GetCoordBits(limitRect, accuracy).
 double constexpr kMwmPointAccuracy = 1e-5;
 
 uint32_t DoubleToUint32(double x, double min, double max, uint8_t coordBits);

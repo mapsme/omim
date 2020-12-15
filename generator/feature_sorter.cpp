@@ -338,12 +338,20 @@ bool GenerateFinalFeatures(feature::GenerateInfo const & info, string const & na
     DataHeader header;
 
     bool const isWorldOrWorldCoasts = (mapType != DataHeader::MapType::Country);
-    uint8_t coordBits = kFeatureSorterPointCoordBits;
+    auto limitRect = midPoints.GetLimitRect();
+    if (limitRect.IsEmptyInterior())
+      limitRect = mercator::Bounds::FullRect();
+    uint8_t coordBits = GetCoordBits(limitRect, kMwmPointAccuracy);
     if (isWorldOrWorldCoasts)
-      coordBits -= ((scales::GetUpperScale() - scales::GetUpperWorldScale()) / 2);
+    {
+      coordBits = GetCoordBits(
+          limitRect,
+          kMwmPointAccuracy * pow(2, (scales::GetUpperScale() - scales::GetUpperWorldScale()) / 2));
+    }
 
     header.SetType(static_cast<DataHeader::MapType>(mapType));
-    header.SetGeometryCodingParams(serial::GeometryCodingParams(coordBits, midPoints.GetCenter()));
+    header.SetGeometryCodingParams(
+        serial::GeometryCodingParams(coordBits, midPoints.GetCenter(), limitRect));
     if (isWorldOrWorldCoasts)
       header.SetScales(g_arrWorldScales);
     else
