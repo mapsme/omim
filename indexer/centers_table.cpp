@@ -30,7 +30,7 @@ void CentersTable::Header::Read(Reader & reader)
 {
   NonOwningReaderSource source(reader);
   m_version = static_cast<Version>(ReadPrimitiveFromSource<uint8_t>(source));
-  CHECK_EQUAL(static_cast<uint8_t>(m_version), static_cast<uint8_t>(Version::V1), ());
+  CHECK_EQUAL(static_cast<uint8_t>(m_version), static_cast<uint8_t>(Version::V2), ());
   m_geometryParamsOffset = ReadPrimitiveFromSource<uint32_t>(source);
   m_geometryParamsSize = ReadPrimitiveFromSource<uint32_t>(source);
   m_centersOffset = ReadPrimitiveFromSource<uint32_t>(source);
@@ -45,8 +45,8 @@ bool CentersTable::Get(uint32_t id, m2::PointD & center)
 
   if (m_version == Version::V0)
     center = PointUToPointD(pointu, m_codingParams.GetCoordBits());
-  else if (m_version == Version::V1)
-    center = PointUToPointD(pointu, m_codingParams.GetCoordBits(), m_limitRect);
+  else if (m_version >= Version::V1)
+    center = PointUToPointD(pointu, m_codingParams.GetCoordBits(), m_codingParams.GetLimitRect());
   else
     CHECK(false, ("Unknown CentersTable format."));
 
@@ -60,7 +60,7 @@ unique_ptr<CentersTable> CentersTable::LoadV0(Reader & reader,
 {
   auto table = make_unique<CentersTable>();
   table->m_version = Version::V0;
-  if (!table->Init(reader, codingParams, {} /* limitRect */))
+  if (!table->Init(reader, codingParams))
     return {};
   return table;
 }
@@ -68,10 +68,10 @@ unique_ptr<CentersTable> CentersTable::LoadV0(Reader & reader,
 unique_ptr<CentersTable> CentersTable::LoadV1(Reader & reader)
 {
   auto table = make_unique<CentersTable>();
-  table->m_version = Version::V1;
 
   Header header;
   header.Read(reader);
+  table->m_version = header.m_version;
 
   auto geometryParamsSubreader =
       reader.CreateSubReader(header.m_geometryParamsOffset, header.m_geometryParamsSize);
@@ -79,27 +79,34 @@ unique_ptr<CentersTable> CentersTable::LoadV1(Reader & reader)
     return {};
   NonOwningReaderSource geometryParamsSource(*geometryParamsSubreader);
   serial::GeometryCodingParams codingParams;
-  codingParams.Load(geometryParamsSource);
-  auto minX = ReadPrimitiveFromSource<uint32_t>(geometryParamsSource);
-  auto minY = ReadPrimitiveFromSource<uint32_t>(geometryParamsSource);
-  auto maxX = ReadPrimitiveFromSource<uint32_t>(geometryParamsSource);
-  auto maxY = ReadPrimitiveFromSource<uint32_t>(geometryParamsSource);
-  m2::RectD limitRect(PointUToPointD({minX, minY}, kPointCoordBits),
-                      PointUToPointD({maxX, maxY}, kPointCoordBits));
+  if (table->m_version == Version::V1)
+  {
+    codingParams.Load(geometryParamsSource, false /* haveLimitRect */);
+    auto minX = ReadPrimitiveFromSource<uint32_t>(geometryParamsSource);
+    auto minY = ReadPrimitiveFromSource<uint32_t>(geometryParamsSource);
+    auto maxX = ReadPrimitiveFromSource<uint32_t>(geometryParamsSource);
+    auto maxY = ReadPrimitiveFromSource<uint32_t>(geometryParamsSource);
+    m2::RectD limitRect(PointUToPointD({minX, minY}, kPointCoordBits),
+                        PointUToPointD({maxX, maxY}, kPointCoordBits));
+    codingParams.SetLimitRect(limitRect);
+  }
+  else
+  {
+    CHECK(table->m_version == Version::V2, ());
+    codingParams.Load(geometryParamsSource, true /* haveLimitRect */);
+  }
 
   table->m_centersSubreader = reader.CreateSubReader(header.m_centersOffset, header.m_centersSize);
   if (!table->m_centersSubreader)
     return {};
-  if (!table->Init(*(table->m_centersSubreader), codingParams, limitRect))
+  if (!table->Init(*(table->m_centersSubreader), codingParams))
     return {};
   return table;
 }
 
-bool CentersTable::Init(Reader & reader, serial::GeometryCodingParams const & codingParams,
-                        m2::RectD const & limitRect)
+bool CentersTable::Init(Reader & reader, serial::GeometryCodingParams const & codingParams)
 {
   m_codingParams = codingParams;
-  m_limitRect = limitRect;
   // Decodes block encoded by writeBlockCallback from CentersTableBuilder::Freeze.
   auto const readBlockCallback = [&](NonOwningReaderSource & source, uint32_t blockSize,
                                      vector<m2::PointU> & values) {
@@ -119,16 +126,10 @@ bool CentersTable::Init(Reader & reader, serial::GeometryCodingParams const & co
 }
 
 // CentersTableBuilder -----------------------------------------------------------------------------
-void CentersTableBuilder::SetGeometryParams(m2::RectD const & limitRect, double pointAccuracy)
-{
-  auto const coordBits = GetCoordBits(limitRect, pointAccuracy);
-  m_codingParams = serial::GeometryCodingParams(coordBits, limitRect.Center());
-  m_limitRect = limitRect;
-}
-
 void CentersTableBuilder::Put(uint32_t featureId, m2::PointD const & center)
 {
-  m_builder.Put(featureId, PointDToPointU(center, m_codingParams.GetCoordBits(), m_limitRect));
+  m_builder.Put(featureId, PointDToPointU(center, m_codingParams.GetCoordBits(),
+                                          m_codingParams.GetLimitRect()));
 }
 
 // Each center is encoded as delta from some prediction.
@@ -161,12 +162,6 @@ void CentersTableBuilder::Freeze(Writer & writer) const
 
   header.m_geometryParamsOffset = base::asserted_cast<uint32_t>(writer.Pos() - startOffset);
   m_codingParams.Save(writer);
-  auto leftBottom = PointDToPointU(m_limitRect.LeftBottom(), kPointCoordBits);
-  WriteToSink(writer, leftBottom.x);
-  WriteToSink(writer, leftBottom.y);
-  auto rightTop = PointDToPointU(m_limitRect.RightTop(), kPointCoordBits);
-  WriteToSink(writer, rightTop.x);
-  WriteToSink(writer, rightTop.y);
   header.m_geometryParamsSize =
       base::asserted_cast<uint32_t>(writer.Pos() - header.m_geometryParamsOffset - startOffset);
 
@@ -184,8 +179,7 @@ void CentersTableBuilder::Freeze(Writer & writer) const
   writer.Seek(endOffset);
 }
 
-void CentersTableBuilder::SetGeometryCodingParamsV0ForTests(
-    serial::GeometryCodingParams const & codingParams)
+void CentersTableBuilder::SetGeometryCodingParams(serial::GeometryCodingParams const & codingParams)
 {
   m_codingParams = codingParams;
 }

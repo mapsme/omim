@@ -46,7 +46,7 @@ UNIT_CLASS_TEST(CentersTableTest, Smoke)
     CentersTableBuilder builder;
     feature::DataHeader header(kMap);
 
-    builder.SetGeometryParams(header.GetBounds());
+    builder.SetGeometryCodingParams(header.GetDefGeometryCodingParams());
     fv.GetVector().ForEach(
         [&](FeatureType & ft, uint32_t id) { builder.Put(id, feature::GetCenter(ft)); });
 
@@ -84,7 +84,7 @@ UNIT_CLASS_TEST(CentersTableTest, SmokeV0)
   {
     CentersTableBuilder builder;
 
-    builder.SetGeometryCodingParamsV0ForTests(codingParams);
+    builder.SetGeometryCodingParams(codingParams);
     fv.GetVector().ForEach(
         [&](FeatureType & ft, uint32_t id) { builder.PutV0ForTests(id, feature::GetCenter(ft)); });
 
@@ -117,7 +117,9 @@ UNIT_CLASS_TEST(CentersTableTest, Subset)
   {
     CentersTableBuilder builder;
 
-    builder.SetGeometryParams({{0.0, 0.0}, {2.0, 2.0}});
+    m2::RectD rect({0.0, 0.0}, {2.0, 2.0});
+    serial::GeometryCodingParams params(GetCoordBits(rect, kMwmPointAccuracy), rect.Center(), rect);
+    builder.SetGeometryCodingParams(params);
     for (auto const & feature : features)
       builder.Put(feature.first, feature.second);
 

@@ -134,16 +134,23 @@ public:
   }
 
   template <typename SourceT>
-  void Load(SourceT & src)
+  void Load(SourceT & src, bool haveLimitRect)
   {
     uint32_t const coordBits = ReadVarUint<uint32_t>(src);
     ASSERT_LESS(coordBits, 32, ());
     auto const basePoint = ReadVarUint<uint64_t>(src);
-    auto const leftBottom =
-        PointUToPointD(Uint64ToPointUObsolete(ReadVarUint<uint64_t>(src)), kPointCoordBits);
-    auto const rightTop =
-        PointUToPointD(Uint64ToPointUObsolete(ReadVarUint<uint64_t>(src)), kPointCoordBits);
-    *this = GeometryCodingParams(coordBits, basePoint, m2::RectD(leftBottom, rightTop));
+    if (haveLimitRect)
+    {
+      auto const leftBottom =
+          PointUToPointD(Uint64ToPointUObsolete(ReadVarUint<uint64_t>(src)), kPointCoordBits);
+      auto const rightTop =
+          PointUToPointD(Uint64ToPointUObsolete(ReadVarUint<uint64_t>(src)), kPointCoordBits);
+      *this = GeometryCodingParams(coordBits, basePoint, m2::RectD(leftBottom, rightTop));
+    }
+    else
+    {
+      *this = GeometryCodingParams(coordBits, basePoint);
+    }
   }
 
 private:

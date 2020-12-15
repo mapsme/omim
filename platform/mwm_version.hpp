@@ -28,7 +28,8 @@ enum class Format
            // header, sdx section with header, dat section renamed to features, features section with
            // header).
   v11,     // September 2020 (compressed string storage for metadata).
-  lastFormat = v11
+  v12,     // December 2020 (coding params with limit rect).
+  lastFormat = v12
 };
 
 enum class MwmType

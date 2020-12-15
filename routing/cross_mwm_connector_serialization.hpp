@@ -400,7 +400,7 @@ private:
       m_sizeTransitions = ReadPrimitiveFromSource<decltype(m_sizeTransitions)>(src);
       m_granularity = ReadPrimitiveFromSource<decltype(m_granularity)>(src);
       if (m_version == kVersion0)
-        serial::GeometryCodingParams().Load(src);
+        serial::GeometryCodingParams().Load(src, false /* haveLimitRect */);
       m_bitsPerCrossMwmId = ReadPrimitiveFromSource<decltype(m_bitsPerCrossMwmId)>(src);
       m_bitsPerMask = ReadPrimitiveFromSource<decltype(m_bitsPerMask)>(src);
 

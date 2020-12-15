@@ -52,7 +52,7 @@ bool BuildCentersTableFromDataFile(std::string const & filename, bool forceRebui
       feature::DataHeader const header(rcont);
       FeaturesVector const features(rcont, header, table.get());
 
-      builder.SetGeometryParams(header.GetBounds());
+      builder.SetGeometryCodingParams(header.GetDefGeometryCodingParams());
       features.ForEach([&](FeatureType & ft, uint32_t featureId) {
         builder.Put(featureId, feature::GetCenter(ft));
       });

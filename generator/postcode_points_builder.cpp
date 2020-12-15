@@ -207,7 +207,7 @@ bool BuildPostcodePointsImpl(FilesContainerR & container, storage::CountryId con
   {
     search::CentersTableBuilder builder;
 
-    builder.SetGeometryParams(feature::DataHeader(container).GetBounds());
+    builder.SetGeometryCodingParams(feature::DataHeader(container).GetDefGeometryCodingParams());
     for (size_t i = 0; i < valueMapping.size(); ++i)
       builder.Put(base::asserted_cast<uint32_t>(i), valueMapping[i]);
 

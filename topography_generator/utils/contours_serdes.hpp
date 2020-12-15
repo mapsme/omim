@@ -94,7 +94,7 @@ private:
                           topography_generator::Contour & contour)
   {
     serial::GeometryCodingParams codingParams;
-    codingParams.Load(source);
+    codingParams.Load(source, true /* haveLimitRect */);
     std::vector<m2::PointD> points;
     serial::LoadOuterPath(source, codingParams, points);
     contour = std::move(points);

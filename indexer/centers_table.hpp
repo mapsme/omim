@@ -24,7 +24,8 @@ public:
   {
     V0 = 0,
     V1 = 1,
-    Latest = V1
+    V2 = 2,
+    Latest = V2
   };
 
   struct Header
@@ -32,7 +33,7 @@ public:
     template <typename Sink>
     void Serialize(Sink & sink) const
     {
-      CHECK_EQUAL(static_cast<uint8_t>(m_version), static_cast<uint8_t>(Version::V1), ());
+      CHECK_EQUAL(static_cast<uint8_t>(m_version), static_cast<uint8_t>(Version::V2), ());
       WriteToSink(sink, static_cast<uint8_t>(m_version));
       WriteToSink(sink, m_geometryParamsOffset);
       WriteToSink(sink, m_geometryParamsSize);
@@ -67,32 +68,28 @@ public:
 private:
   using Map = MapUint32ToValue<m2::PointU>;
 
-  bool Init(Reader & reader, serial::GeometryCodingParams const & codingParams,
-            m2::RectD const & limitRect);
+  bool Init(Reader & reader, serial::GeometryCodingParams const & codingParams);
 
   serial::GeometryCodingParams m_codingParams;
   std::unique_ptr<Map> m_map;
   std::unique_ptr<Reader> m_centersSubreader;
-  m2::RectD m_limitRect;
   Version m_version = Version::Latest;
 };
 
 class CentersTableBuilder
 {
 public:
-  void SetGeometryParams(m2::RectD const & limitRect, double pointAccuracy = kMwmPointAccuracy);
+  void SetGeometryCodingParams(serial::GeometryCodingParams const & codingParams);
   void Put(uint32_t featureId, m2::PointD const & center);
   void WriteBlock(Writer & w, std::vector<m2::PointU>::const_iterator begin,
                   std::vector<m2::PointU>::const_iterator end) const;
   void Freeze(Writer & writer) const;
 
-  void SetGeometryCodingParamsV0ForTests(serial::GeometryCodingParams const & codingParams);
   void PutV0ForTests(uint32_t featureId, m2::PointD const & center);
   void FreezeV0ForTests(Writer & writer) const;
 
 private:
   serial::GeometryCodingParams m_codingParams;
-  m2::RectD m_limitRect;
   MapUint32ToValueBuilder<m2::PointU> m_builder;
 };
 }  // namespace search

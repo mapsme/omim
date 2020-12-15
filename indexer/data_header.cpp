@@ -117,7 +117,7 @@ namespace feature
   void DataHeader::Load(ModelReaderPtr const & r, version::Format format)
   {
     ReaderSource<ModelReaderPtr> src(r);
-    m_codingParams.Load(src);
+    m_codingParams.Load(src, format >= version::Format::v12);
 
     m_bounds.first = ReadVarInt<int64_t>(src);
     m_bounds.second = ReadVarInt<int64_t>(src);
