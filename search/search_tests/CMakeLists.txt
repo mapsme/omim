@@ -6,6 +6,7 @@ set(
   SRC
   algos_tests.cpp
   bookmarks_processor_tests.cpp
+  countries_names_index_tests.cpp
   feature_offset_match_tests.cpp
   highlighting_tests.cpp
   house_detector_tests.cpp

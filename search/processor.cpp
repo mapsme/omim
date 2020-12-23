@@ -647,6 +647,9 @@ void Processor::Search(SearchParams const & params)
   SetQuery(params.m_query);
   SetViewport(viewport);
 
+  if (params.m_mode == Mode::Downloader)
+    SearchInDownloaderByCountryName(params);
+
   // Used to store the earliest available cancellation status:
   // if the search has been cancelled, we need to pinpoint the reason
   // for cancellation and a further call to CancellationStatus() may
@@ -833,6 +836,29 @@ void Processor::SearchBookmarks(bookmarks::GroupId const & groupId)
 
   // Emit finish marker to client.
   m_bookmarksProcessor.Finish(IsCancelled());
+}
+
+void Processor::SearchInDownloaderByCountryName(SearchParams const & params)
+{
+  // This index is heavy (several megabytes) but we expect that a small number of
+  // user sessions involves a search in downloader.
+  // Therefore, it is initialized lazily upon first request.
+  if (m_countriesNamesIndex == nullptr)
+    m_countriesNamesIndex = make_unique<CountriesNamesIndex>();
+
+  vector<storage::CountryId> countries;
+  auto trimmedQuery = params.m_query;
+  strings::Trim(trimmedQuery);
+  m_countriesNamesIndex->CollectMatchingCountries(trimmedQuery, countries);
+  size_t const kMaxResultsFromCountriesTree = 5;
+  if (countries.size() > kMaxResultsFromCountriesTree)
+    countries.resize(kMaxResultsFromCountriesTree);
+
+  for (auto const & country : countries)
+  {
+    m_emitter.AddResultNoChecks(Result(country, trimmedQuery /* matchedName */, false));
+    m_emitter.Emit();
+  }
 }
 
 void Processor::InitParams(QueryParams & params) const

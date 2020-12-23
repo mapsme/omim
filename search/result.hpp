@@ -5,9 +5,11 @@
 #include "search/ranking_info.hpp"
 #include "search/tracer.hpp"
 
-#include "indexer/feature_decl.hpp"
+#include "storage/storage_defines.hpp"
 
 #include "editor/yes_no_unknown.hpp"
+
+#include "indexer/feature_decl.hpp"
 
 #include "geometry/point2d.hpp"
 
@@ -38,7 +40,8 @@ public:
     LatLon,
     PureSuggest,
     SuggestFromFeature,
-    Postcode
+    Postcode,
+    DownloaderEntry
   };
 
   // Search results details. Considered valid if GetResultType() == Type::Feature.
@@ -89,6 +92,10 @@ public:
   // For Type::SuggestFromFeature.
   Result(Result const & res, std::string const & suggest);
 
+  // For Type::DownloaderEntry.
+  Result(storage::CountryId const & countryId, std::string const & matchedName,
+         bool /* to distinguish from Type::PureSuggest */);
+
   Type GetResultType() const { return m_resultType; }
 
   std::string const & GetString() const { return m_str; }
@@ -97,6 +104,7 @@ public:
   std::string const & GetAirportIata() const { return m_details.m_airportIata; }
   std::string const & GetBrand() const { return m_details.m_brand; }
   std::string const & GetRoadShields() const { return m_details.m_roadShields; }
+  storage::CountryId const & GetCountryId() const { return m_countryId; }
   float GetHotelRating() const { return m_details.m_hotelRating; }
   std::string const & GetHotelApproximatePricing() const
   {
@@ -169,6 +177,7 @@ private:
   uint32_t m_featureType = 0;
   std::string m_suggestionStr;
   buffer_vector<std::pair<uint16_t, uint16_t>, 4> m_hightlightRanges;
+  storage::CountryId m_countryId;
 
   RankingInfo m_info = {};
 

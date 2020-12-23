@@ -37,6 +37,8 @@ set(
   city_finder.cpp
   city_finder.hpp
   common.hpp
+  countries_names_index.cpp
+  countries_names_index.hpp
   cuisine_filter.cpp
   cuisine_filter.hpp
   displayed_categories.cpp

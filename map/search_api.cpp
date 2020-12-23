@@ -4,23 +4,27 @@
 #include "map/discovery/discovery_search_params.hpp"
 #include "map/everywhere_search_params.hpp"
 
-#include "partners_api/booking_api.hpp"
-
 #include "search/bookmarks/processor.hpp"
 #include "search/geometry_utils.hpp"
 #include "search/hotels_filter.hpp"
 #include "search/tracer.hpp"
 #include "search/utils.hpp"
 
+#include "partners_api/booking_api.hpp"
+
 #include "storage/downloader_search_params.hpp"
 
+#include "platform/platform.hpp"
 #include "platform/preferred_languages.hpp"
 #include "platform/safe_callback.hpp"
 
 #include "geometry/mercator.hpp"
 
 #include "base/checked_cast.hpp"
+#include "base/file_name_utils.hpp"
 #include "base/string_utils.hpp"
+
+#include "defines.hpp"
 
 #include <algorithm>
 #include <cmath>
