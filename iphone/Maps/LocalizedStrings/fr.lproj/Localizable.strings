@@ -3372,6 +3372,10 @@
 
 "sberbank_map_downloader_cta_button" = "Узнать больше";
 
+"licence_agreement_popup_message" = "Nous sommes heureux de vous informer que MAPS.ME fait desormais partie de la société MAPS.ME (Cyprus) Ltd et est gérée par cette dernière. Nous avons mis à jour nos <a href=\"%s\">Conditions générales d'utilisation, le Contrat de licence de l'utilisateur final</a>, ainsi que <a href=\"%s\">notre Politique de confidentialité</a> en raison du transfert de tous les droits et obligations de la société MAPS.ME à la société MAPS.ME (CYPRUS) LTD. En continuant à utiliser nos services, vous accepter ces <a href=\"%s\">Conditions générales d'utilisation</a> et notre<a href=\"%s\"> Politique de confidentialité</a>";
+
+"licenc_agreement_popup_title" = "MAPS.ME 2.0";
+
 
 /**********  Partners  **********/
 
