@@ -40,12 +40,16 @@ public:
     m_size = s.st_size;
 
     m_memory = static_cast<uint8_t *>(
-        mmap(0, static_cast<size_t>(m_size), PROT_READ, MAP_SHARED, m_fd, 0));
+        mmap(0, static_cast<size_t>(m_size), PROT_READ, MAP_PRIVATE, m_fd, 0));
     if (m_memory == MAP_FAILED)
     {
       close(m_fd);
       MYTHROW(OpenException, ("mmap failed for file", fileName));
     }
+
+    if (madvise(m_memory, s.st_size, MADV_RANDOM) != 0)
+      LOG(LWARNING, ("madvise error:", strerror(errno)));
+
 #endif
   }
 
