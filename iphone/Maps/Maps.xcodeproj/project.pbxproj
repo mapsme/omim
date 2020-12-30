@@ -559,6 +559,8 @@
 		991CE2DD2373145C009EB02A /* PromoAfterBookingCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991CE2DC2373145C009EB02A /* PromoAfterBookingCampaign.swift */; };
 		991FCA2023B0FF33009AD684 /* AdsStyleSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991FCA1F23B0FF33009AD684 /* AdsStyleSheet.swift */; };
 		991FCA2423B11E61009AD684 /* BookmarksStyleSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991FCA2323B11E61009AD684 /* BookmarksStyleSheet.swift */; };
+		9937397E2594BD3200B43CDF /* TermsUpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9937397C2594BD3200B43CDF /* TermsUpdateViewController.swift */; };
+		9937397F2594BD3200B43CDF /* TermsUpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9937397D2594BD3200B43CDF /* TermsUpdateViewController.xib */; };
 		993DF0B523F6B2EF00AC231A /* PlacePageElevationLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993DF0B423F6B2EF00AC231A /* PlacePageElevationLayout.swift */; };
 		993DF0C823F6BD0600AC231A /* ElevationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993DF0C323F6BD0600AC231A /* ElevationDetailsViewController.swift */; };
 		993DF0C923F6BD0600AC231A /* ElevationDetailsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993DF0C423F6BD0600AC231A /* ElevationDetailsBuilder.swift */; };
@@ -639,13 +641,13 @@
 		9959C75C24599CCD008FD4FD /* DirectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9959C75B24599CCC008FD4FD /* DirectionView.swift */; };
 		995F1613244F0AA50060631D /* BottomMenuLayersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995F1611244F0AA40060631D /* BottomMenuLayersCell.swift */; };
 		995F1614244F0AA50060631D /* BottomMenuLayersCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 995F1612244F0AA40060631D /* BottomMenuLayersCell.xib */; };
-		9977E69C247BFB510073780C /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9977E69B247BFB510073780C /* SearchTextField.swift */; };
-		996D108A24E3DBF2002DD0E2 /* BookmarksCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996D108924E3DBF2002DD0E2 /* BookmarksCoordinator.swift */; };
 		996D108124E14AEB002DD0E2 /* MultiPartnerBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996D107F24E14AEB002DD0E2 /* MultiPartnerBannerViewController.swift */; };
 		996D108224E14AEB002DD0E2 /* MultiPartnerBannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 996D108024E14AEB002DD0E2 /* MultiPartnerBannerViewController.xib */; };
 		996D108624E15FBE002DD0E2 /* DownloadBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996D108524E15FBE002DD0E2 /* DownloadBannerViewController.swift */; };
 		996D108824E16E6F002DD0E2 /* BookmarksBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996D108724E16E6F002DD0E2 /* BookmarksBannerViewController.swift */; };
+		996D108A24E3DBF2002DD0E2 /* BookmarksCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996D108924E3DBF2002DD0E2 /* BookmarksCoordinator.swift */; };
 		996F8C9F24E1420800498993 /* PartnerBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996F8C9E24E1420800498993 /* PartnerBannerViewModel.swift */; };
+		9977E69C247BFB510073780C /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9977E69B247BFB510073780C /* SearchTextField.swift */; };
 		9977E6A12480E1EE0073780C /* BottomMenuLayerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9977E6A02480E1EE0073780C /* BottomMenuLayerButton.swift */; };
 		9977E6A32480F9BF0073780C /* BottomMenuLayerButtonRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9977E6A22480F9BF0073780C /* BottomMenuLayerButtonRenderer.swift */; };
 		998927302449DE1500260CE2 /* TabBarArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9989272F2449DE1500260CE2 /* TabBarArea.swift */; };
@@ -1660,6 +1662,8 @@
 		991CE2DC2373145C009EB02A /* PromoAfterBookingCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromoAfterBookingCampaign.swift; sourceTree = "<group>"; };
 		991FCA1F23B0FF33009AD684 /* AdsStyleSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsStyleSheet.swift; sourceTree = "<group>"; };
 		991FCA2323B11E61009AD684 /* BookmarksStyleSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksStyleSheet.swift; sourceTree = "<group>"; };
+		9937397C2594BD3200B43CDF /* TermsUpdateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsUpdateViewController.swift; sourceTree = "<group>"; };
+		9937397D2594BD3200B43CDF /* TermsUpdateViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TermsUpdateViewController.xib; sourceTree = "<group>"; };
 		993DF0B423F6B2EF00AC231A /* PlacePageElevationLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacePageElevationLayout.swift; sourceTree = "<group>"; };
 		993DF0C323F6BD0600AC231A /* ElevationDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElevationDetailsViewController.swift; sourceTree = "<group>"; };
 		993DF0C423F6BD0600AC231A /* ElevationDetailsBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElevationDetailsBuilder.swift; sourceTree = "<group>"; };
@@ -1745,12 +1749,12 @@
 		995F1611244F0AA40060631D /* BottomMenuLayersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomMenuLayersCell.swift; sourceTree = "<group>"; };
 		995F1612244F0AA40060631D /* BottomMenuLayersCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomMenuLayersCell.xib; sourceTree = "<group>"; };
 		996D107F24E14AEB002DD0E2 /* MultiPartnerBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPartnerBannerViewController.swift; sourceTree = "<group>"; };
-		996D108924E3DBF2002DD0E2 /* BookmarksCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksCoordinator.swift; sourceTree = "<group>"; };
-		9977E69B247BFB510073780C /* SearchTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		996D108024E14AEB002DD0E2 /* MultiPartnerBannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MultiPartnerBannerViewController.xib; sourceTree = "<group>"; };
 		996D108524E15FBE002DD0E2 /* DownloadBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadBannerViewController.swift; sourceTree = "<group>"; };
 		996D108724E16E6F002DD0E2 /* BookmarksBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksBannerViewController.swift; sourceTree = "<group>"; };
+		996D108924E3DBF2002DD0E2 /* BookmarksCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksCoordinator.swift; sourceTree = "<group>"; };
 		996F8C9E24E1420800498993 /* PartnerBannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartnerBannerViewModel.swift; sourceTree = "<group>"; };
+		9977E69B247BFB510073780C /* SearchTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		9977E6A02480E1EE0073780C /* BottomMenuLayerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomMenuLayerButton.swift; sourceTree = "<group>"; };
 		9977E6A22480F9BF0073780C /* BottomMenuLayerButtonRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomMenuLayerButtonRenderer.swift; sourceTree = "<group>"; };
 		9989272F2449DE1500260CE2 /* TabBarArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarArea.swift; sourceTree = "<group>"; };
@@ -3076,6 +3080,7 @@
 		34943BB01E2620C600B14F84 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
+				9937397B2594BCD300B43CDF /* TermsUpdate */,
 				34943BB91E2626B200B14F84 /* WelcomePageController.swift */,
 				99CB34D1236B0C2A001D28AD /* WelcomeView */,
 				99CB34C6236B052B001D28AD /* DeepLinkInfo */,
@@ -3662,6 +3667,15 @@
 				991CE2BB2371D349009EB02A /* IABTest.swift */,
 			);
 			path = ABTests;
+			sourceTree = "<group>";
+		};
+		9937397B2594BCD300B43CDF /* TermsUpdate */ = {
+			isa = PBXGroup;
+			children = (
+				9937397C2594BD3200B43CDF /* TermsUpdateViewController.swift */,
+				9937397D2594BD3200B43CDF /* TermsUpdateViewController.xib */,
+			);
+			path = TermsUpdate;
 			sourceTree = "<group>";
 		};
 		993DF0C223F6BD0600AC231A /* ElevationDetails */ = {
@@ -5228,6 +5242,7 @@
 				F6E2FD681E097BA00083EBEC /* MWMMapDownloaderPlaceTableViewCell.xib in Resources */,
 				F6E2FD6E1E097BA00083EBEC /* MWMMapDownloaderSubplaceTableViewCell.xib in Resources */,
 				3477528B1F725002000D46A3 /* UGCAddReviewRatingCell.xib in Resources */,
+				9937397F2594BD3200B43CDF /* TermsUpdateViewController.xib in Resources */,
 				471C448D2322A7C800C307EC /* SubscriptionGoToCatalogViewController.xib in Resources */,
 				F6E2FD741E097BA00083EBEC /* MWMMapDownloaderTableViewCell.xib in Resources */,
 				349A13851DEC138C00C7DB60 /* MWMMobileInternetAlert.xib in Resources */,
@@ -5977,6 +5992,7 @@
 				33046832219C57180041F3A8 /* CategorySettingsViewController.swift in Sources */,
 				9917D17D2396793A00A7E06E /* PaidRoutesSubscriptionCampaign.swift in Sources */,
 				3404165C1E7C29AE00E2B6D6 /* PhotosInteractionAnimator.swift in Sources */,
+				9937397E2594BD3200B43CDF /* TermsUpdateViewController.swift in Sources */,
 				470B3630244E2DB400C0EA9E /* GuidesGalleryViewController.swift in Sources */,
 				993F550E237C622700545511 /* DeepLinkCataloguePathStrategy.swift in Sources */,
 				3404756E1E081A4600C92850 /* MWMSearch.mm in Sources */,

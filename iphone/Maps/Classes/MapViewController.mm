@@ -433,7 +433,15 @@ NSString *const kPP2BookmarkEditingSegue = @"PP2BookmarkEditing";
                                            object:nil];
   [self.welcomePageController show];
   if (!self.welcomePageController) {
-    [DeepLinkHandler.shared handleDeeplink];
+    if (WelcomeStorage.shouldShowTerms102) {
+      [self presentViewController:[[TermsUpdateViewController alloc] initWithNibName:nil bundle:nil]
+                         animated:YES
+                       completion:^{
+        [DeepLinkHandler.shared handleDeeplink];
+      }];
+    } else {
+      [DeepLinkHandler.shared handleDeeplink];
+    }
   }
 }
 
