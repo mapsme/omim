@@ -1,6 +1,6 @@
 #pragma once
 
-#include "storage/downloader_queue.hpp"
+#include "storage/downloader_queue_interface.hpp"
 #include "storage/queued_country.hpp"
 #include "storage/storage_defines.hpp"
 
