@@ -124,9 +124,10 @@ Platform::ChargingStatus Platform::GetChargingStatus()
   ASSERT(clazzBatteryState, ());
 
   static jmethodID const getChargingMethodId =
-      jni::GetStaticMethodID(env, clazzBatteryState, "getChargingStatus", "()I");
+      jni::GetStaticMethodID(env, clazzBatteryState, "getChargingStatus", "(Landroid/content/Context;)I");
+  jobject context = android::Platform::Instance().GetContext();
   return static_cast<Platform::ChargingStatus>(
-      env->CallStaticIntMethod(clazzBatteryState, getChargingMethodId));
+      env->CallStaticIntMethod(clazzBatteryState, getChargingMethodId, context));
 }
 
 uint8_t Platform::GetBatteryLevel()
@@ -140,9 +141,9 @@ uint8_t Platform::GetBatteryLevel()
   ASSERT(clazzBatteryState, ());
 
   static auto const getLevelMethodId =
-      jni::GetStaticMethodID(env, clazzBatteryState, "getLevel", "()I");
-
-  return static_cast<uint8_t>(env->CallStaticIntMethod(clazzBatteryState, getLevelMethodId));
+      jni::GetStaticMethodID(env, clazzBatteryState, "getLevel", "(Landroid/content/Context;)I");
+  jobject context = android::Platform::Instance().GetContext();
+  return static_cast<uint8_t>(env->CallStaticIntMethod(clazzBatteryState, getLevelMethodId, context));
 }
 
 void Platform::SetGuiThread(std::unique_ptr<base::TaskLoop> guiThread)
