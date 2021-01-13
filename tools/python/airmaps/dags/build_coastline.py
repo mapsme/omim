@@ -10,7 +10,6 @@ from airflow.utils.dates import days_ago
 from airmaps.instruments import settings
 from airmaps.instruments import storage
 from airmaps.instruments.utils import get_latest_filename
-from airmaps.instruments.utils import make_rm_build_task
 from airmaps.instruments.utils import put_current_date_in_filename
 from airmaps.instruments.utils import rm_build
 from maps_generator.generator import stages_declaration as sd
@@ -40,9 +39,7 @@ DAG = DAG(
 COASTLINE_STORAGE_PATH = f"{settings.STORAGE_PREFIX}/coasts"
 
 
-def publish_coastline(**kwargs):
-    build_name = kwargs["ti"].xcom_pull(key="build_name")
-    env = Env(build_name=build_name)
+def publish_coastline(env):
     for name in (f"{WORLD_COASTS_NAME}.geom", f"{WORLD_COASTS_NAME}.rawgeom"):
         coastline = put_current_date_in_filename(name)
         latest = get_latest_filename(name)
@@ -58,7 +55,6 @@ def publish_coastline(**kwargs):
 def build_coastline(**kwargs):
     env = Env()
     kwargs["ti"].xcom_push(key="build_name", value=env.build_name)
-
     run_generation(
         env,
         (
@@ -68,26 +64,13 @@ def build_coastline(**kwargs):
         ),
     )
     env.finish()
+    publish_coastline(env)
+    rm_build(env)
 
 
 BUILD_COASTLINE_TASK = PythonOperator(
     task_id="Build_coastline_task",
     provide_context=True,
     python_callable=build_coastline,
-    on_failure_callback=lambda ctx: rm_build(**ctx),
     dag=DAG,
 )
-
-
-PUBLISH_COASTLINE_TASK = PythonOperator(
-    task_id="Publish_coastline_task",
-    provide_context=True,
-    python_callable=publish_coastline,
-    dag=DAG,
-)
-
-
-RM_BUILD_TASK = make_rm_build_task(DAG)
-
-
-BUILD_COASTLINE_TASK >> PUBLISH_COASTLINE_TASK >> RM_BUILD_TASK

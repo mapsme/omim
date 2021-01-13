@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import AnyStr
 from typing import List
@@ -14,6 +15,8 @@ from maps_generator.generator.stages import get_stage_name
 from maps_generator.generator.stages import stages
 from maps_generator.generator.status import Status
 from maps_generator.generator.status import without_stat_ext
+
+logger = logging.getLogger("maps_generator")
 
 
 class Generation:
@@ -97,14 +100,6 @@ class Generation:
             or any(stage_name == get_stage_name(s) for s in stages.countries_stages)
         ):
             raise ContinueError(f"{stage_name} not in {', '.join(high_level_stages)}.")
-
-        if not os.path.exists(self.env.paths.status_path):
-            raise ContinueError(f"Status path {self.env.paths.status_path} not found.")
-
-        if not os.path.exists(self.env.paths.main_status_path):
-            raise ContinueError(
-                f"Status file {self.env.paths.main_status_path} not found."
-            )
 
         countries_statuses_paths = []
         countries = set(self.env.countries)

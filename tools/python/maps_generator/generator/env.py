@@ -20,7 +20,6 @@ from maps_generator.generator import settings
 from maps_generator.generator import status
 from maps_generator.generator.osmtools import build_osmtools
 from maps_generator.generator.stages import Stage
-from maps_generator.generator.status import Status
 from maps_generator.utils.file import find_executable
 from maps_generator.utils.file import is_executable
 from maps_generator.utils.file import make_symlink
@@ -118,7 +117,7 @@ class PathProvider:
     PathProvider is used for building paths for a maps generation.
     """
 
-    def __init__(self, build_path: AnyStr, build_name:AnyStr, mwm_version: AnyStr):
+    def __init__(self, build_path: AnyStr, build_name: AnyStr, mwm_version: AnyStr):
         self.build_path = build_path
         self.build_name = build_name
         self.mwm_version = mwm_version
@@ -573,5 +572,17 @@ class Env:
     def setup_osm2ft(self):
         for x in os.listdir(self.paths.osm2ft_path):
             p = os.path.join(self.paths.osm2ft_path, x)
-            if os.path.isfile(p) and x.endswith(".mwm.osm2ft"):
+            if (
+                os.path.isfile(p)
+                and x.endswith(".mwm.osm2ft")
+                and x.replace(".mwm.osm2ft", "") in self.countries
+            ):
                 shutil.move(p, os.path.join(self.paths.mwm_path, x))
+
+    def clean(self):
+        for p in (
+            self.paths.draft_path,
+            self.paths.generation_borders_path,
+        ):
+            logger.info(f"{p} will be removed.")
+            shutil.rmtree(p)
