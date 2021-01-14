@@ -69,11 +69,11 @@ public final class UiUtils
   }
 
   public static void linkifyView(@NonNull View view, @IdRes int id, @StringRes int stringId,
-                                 @NonNull String link)
+                                 @NonNull String... links)
   {
     TextView policyView = view.findViewById(id);
     Resources rs = policyView.getResources();
-    policyView.setText(Html.fromHtml(rs.getString(stringId, link)));
+    policyView.setText(Html.fromHtml(rs.getString(stringId, links)));
     policyView.setMovementMethod(LinkMovementMethod.getInstance());
   }
 

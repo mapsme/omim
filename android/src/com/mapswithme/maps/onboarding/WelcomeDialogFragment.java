@@ -274,7 +274,7 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
       return;
 
     trackStatisticEvent(Statistics.EventName.ONBOARDING_SCREEN_ACCEPT);
-
+    SharedPropertiesUtils.setShouldShowNewTermsDialog(requireContext(), false);
     if (mPolicyAgreementListener != null)
       mPolicyAgreementListener.onPolicyAgreementApplied();
     dismissAllowingStateLoss();
