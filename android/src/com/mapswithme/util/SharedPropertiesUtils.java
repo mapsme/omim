@@ -28,6 +28,7 @@ public final class SharedPropertiesUtils
   private static final String PREFS_SHOULD_SHOW_LAYER_TUTORIAL_TOAST = "ShouldShowLayerTutorialToast";
   private static final String PREFS_SHOULD_SHOW_HOW_TO_USE_GUIDES_LAYER_TOAST
       = "ShouldShowHowToUseGuidesLayerToast";
+  private static final String PREFS_SHOULD_SHOW_NEW_TERMS_DIALOG = "ShouldShowNewTermsDialog";
   private static final SharedPreferences PREFS
       = PreferenceManager.getDefaultSharedPreferences(MwmApplication.get());
 
@@ -166,6 +167,16 @@ public final class SharedPropertiesUtils
     boolean result = getBoolean(context, PREFS_SHOULD_SHOW_HOW_TO_USE_GUIDES_LAYER_TOAST, true);
     putBoolean(context, PREFS_SHOULD_SHOW_HOW_TO_USE_GUIDES_LAYER_TOAST, false);
     return result;
+  }
+
+  public static boolean shouldShowNewTermsDialog(@NonNull Context context)
+  {
+    return getBoolean(context, PREFS_SHOULD_SHOW_NEW_TERMS_DIALOG, true);
+  }
+
+  public static void setShouldShowNewTermsDialog(@NonNull Context context, boolean value)
+  {
+    putBoolean(context, PREFS_SHOULD_SHOW_NEW_TERMS_DIALOG, value);
   }
 
   public static void setLayerMarkerShownForLayerMode(@NonNull Context context, @NonNull Mode mode)

@@ -90,6 +90,7 @@ import com.mapswithme.maps.onboarding.IntroductionDialogFragment;
 import com.mapswithme.maps.onboarding.IntroductionScreenFactory;
 import com.mapswithme.maps.onboarding.OnboardingTip;
 import com.mapswithme.maps.onboarding.WelcomeDialogFragment;
+import com.mapswithme.maps.promo.NewTermsDialogFragment;
 import com.mapswithme.maps.promo.Promo;
 import com.mapswithme.maps.promo.PromoAfterBooking;
 import com.mapswithme.maps.promo.PromoBookingDialogFragment;
@@ -2534,8 +2535,20 @@ public class MwmActivity extends BaseMwmFragmentActivity
     return true;
   }
 
+  private boolean tryShowNewTermsDialog()
+  {
+    if (!SharedPropertiesUtils.shouldShowNewTermsDialog(this))
+      return false;
+
+    NewTermsDialogFragment.show(getSupportFragmentManager());
+    return true;
+  }
+
   private void tryToShowAdditionalViewOnTop()
   {
+    if (tryShowNewTermsDialog())
+      return;
+
     if (tryToShowPromoAfterBooking())
       return;
 
