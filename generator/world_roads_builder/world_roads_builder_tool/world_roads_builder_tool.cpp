@@ -44,8 +44,9 @@ int main(int argc, char ** argv)
 
   GetPlatform().SetResourceDir(FLAGS_path_resources);
 
-  feature::CountriesFilesAffiliation mwmMatcher(GetPlatform().ResourcesDir(),
-                                                false /* haveBordersForWholeWorld */);
+  auto const mwmMatcher = feature::GetOrCreateAffiliation(feature::AffiliationType::CountriesOld,
+                                                          GetPlatform().ResourcesDir(),
+                                                          false /* haveBordersForWholeWorld */);
 
   std::vector<std::string> const highwayTypes{"motorway", "trunk", "primary", "secondary",
                                               "tertiary"};

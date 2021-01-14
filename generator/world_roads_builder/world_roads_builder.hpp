@@ -47,7 +47,7 @@ struct RoadsFromOsm
 
 // Reads roads from |reader| and finds its mwms with |mwmMatcher|.
 RoadsFromOsm GetRoadsFromOsm(generator::SourceReader & reader,
-                             feature::CountriesFilesAffiliation const & mwmMatcher,
+                             std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher,
                              std::vector<std::string> const & highways);
 
 // Fills |graph| with new segments starting from |curSegmentId|. Segments are calculated from the
@@ -55,7 +55,7 @@ RoadsFromOsm GetRoadsFromOsm(generator::SourceReader & reader,
 bool FillCrossBorderGraph(CrossBorderGraph & graph, RegionSegmentId & curSegmentId,
                           std::vector<uint64_t> const & nodeIds,
                           std::unordered_map<uint64_t, ms::LatLon> const & nodes,
-                          feature::CountriesFilesAffiliation const & mwmMatcher,
+                          std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher,
                           std::unordered_map<std::string, routing::NumMwmId> const & regionToIdMap);
 
 // Dumps |graph| to |path|.

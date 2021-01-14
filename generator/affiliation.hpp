@@ -89,6 +89,7 @@ private:
 
 enum class AffiliationType
 {
+  CountriesOld,
   Countries,
   Single
 };
@@ -124,6 +125,9 @@ std::shared_ptr<AffiliationInterface> GetOrCreateAffiliation(AffiliationType typ
   std::shared_ptr<AffiliationInterface> a;
   switch (type)
   {
+  case AffiliationType::CountriesOld:
+    a = generator::create<CountriesFilesAffiliation>(std::forward<Args>(args)...);
+    break;
   case AffiliationType::Countries:
     a = generator::create<CountriesFilesIndexAffiliation>(std::forward<Args>(args)...);
     break;
