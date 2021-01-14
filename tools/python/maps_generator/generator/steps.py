@@ -14,7 +14,7 @@ from maps_generator.generator.env import Env
 from maps_generator.generator.env import PathProvider
 from maps_generator.generator.env import WORLDS_NAMES
 from maps_generator.generator.env import WORLD_NAME
-from maps_generator.generator.env import get_all_countries_list
+from maps_generator.generator.env import get_countries_list
 from maps_generator.generator.exceptions import ValidationError
 from maps_generator.generator.exceptions import wait_and_raise_if_fail
 from maps_generator.generator.gen_tool import run_gen_tool
@@ -113,7 +113,9 @@ def step_features(env: Env, **kwargs):
         kwargs.update({"generate_packed_borders": True})
     if any(x == WORLD_NAME for x in env.countries):
         kwargs.update({"generate_world": True})
-    if len(env.countries) == len(get_all_countries_list(PathProvider.borders_path())):
+    if len(set(env.countries) - WORLDS_NAMES) == len(
+        get_countries_list(PathProvider.borders_path())
+    ):
         kwargs.update({"have_borders_for_whole_world": True})
 
     run_gen_tool(
@@ -202,16 +204,18 @@ def step_cities_ids_world(env: Env, country: AnyStr, **kwargs):
 
 
 def step_prepare_routing_world(env: Env, country: AnyStr, **kwargs):
-    world_roads_builder_tool_with_args = [env.world_roads_builder_tool,
-                                          f"--path_roads_file={env.paths.planet_o5m}",
-                                          f"--path_resources={env.paths.user_resource_path}",
-                                          f"--path_res_file={env.paths.world_roads_path}"]
+    world_roads_builder_tool_with_args = [
+        env.world_roads_builder_tool,
+        f"--path_roads_file={env.paths.planet_o5m}",
+        f"--path_resources={env.paths.user_resource_path}",
+        f"--path_res_file={env.paths.world_roads_path}",
+    ]
     logger.info(f"Starting {world_roads_builder_tool_with_args}")
     sub_proc = subprocess.Popen(
         world_roads_builder_tool_with_args,
         stdout=env.get_subprocess_out(country),
         stderr=env.get_subprocess_out(country),
-        env=os.environ
+        env=os.environ,
     )
 
     wait_and_raise_if_fail(sub_proc)

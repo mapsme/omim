@@ -33,13 +33,18 @@ WORLD_COASTS_NAME = "WorldCoasts"
 WORLDS_NAMES = {WORLD_NAME, WORLD_COASTS_NAME}
 
 
-def get_all_countries_list(borders_path: AnyStr) -> List[AnyStr]:
-    """Returns all countries including World and WorldCoasts."""
+def get_countries_list(borders_path: AnyStr) -> List[AnyStr]:
+    """Returns all countries."""
     return [
         f.replace(".poly", "")
         for f in os.listdir(borders_path)
         if os.path.isfile(os.path.join(borders_path, f))
-    ] + list(WORLDS_NAMES)
+    ]
+
+
+def get_all_countries_list(borders_path: AnyStr) -> List[AnyStr]:
+    """Returns all countries including World and WorldCoasts."""
+    return get_countries_list(borders_path) + list(WORLDS_NAMES)
 
 
 def create_if_not_exist_path(path: AnyStr) -> bool:
