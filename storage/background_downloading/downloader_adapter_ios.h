@@ -2,8 +2,11 @@
 
 #import "storage/background_downloading/downloader_subscriber_adapter_ios.h"
 
-#include "storage/background_downloading/downloader_queue_ios.hpp"
+#include "storage/background_downloading/downloader_queue.hpp"
 #include "storage/map_files_downloader_with_ping.hpp"
+
+#include <cstdint>
+#include <optional>
 
 namespace storage
 {
@@ -27,7 +30,7 @@ private:
   void DownloadFromAnyUrl(CountryId const & countryId, std::string const & downloadPath,
                           std::vector<std::string> const & urls);
 
-  BackgroundDownloaderQueue m_queue;
+  BackgroundDownloaderQueue<std::optional<uint64_t>> m_queue;
   SubscriberAdapter * m_subscriberAdapter;
 };
 }  // namespace storage
