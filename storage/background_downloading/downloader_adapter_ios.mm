@@ -87,9 +87,9 @@ void BackgroundDownloaderAdapter::Download(QueuedCountry & queuedCountry)
   DownloadFromLastUrl(countryId, path, urls);
 }
 
-void BackgroundDownloaderAdapter::DownloadFromAnyUrl(CountryId const & countryId,
-                                                     std::string const & downloadPath,
-                                                     std::vector<std::string> const & urls)
+void BackgroundDownloaderAdapter::DownloadFromLastUrl(CountryId const & countryId,
+                                                      std::string const & downloadPath,
+                                                      std::vector<std::string> const & urls)
 {
   if (urls.empty())
     return;
@@ -103,7 +103,7 @@ void BackgroundDownloaderAdapter::DownloadFromAnyUrl(CountryId const & countryId
     if (status == downloader::DownloadStatus::Failed && urls.size() > 1)
     {
       urls.pop_back();
-      DownloadFromAnyUrl(countryId, downloadPath, urls);
+      DownloadFromLastUrl(countryId, downloadPath, urls);
     }
     else
     {
