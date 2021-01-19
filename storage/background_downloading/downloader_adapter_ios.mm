@@ -80,10 +80,11 @@ void BackgroundDownloaderAdapter::Download(QueuedCountry & queuedCountry)
 
   auto const countryId = queuedCountry.GetCountryId();
   auto const urls = MakeUrlList(queuedCountry.GetRelativeUrl());
+  auto const path = queuedCountry.GetFileDownloadPath();
   
   m_queue.Append(std::move(queuedCountry));
 
-  DownloadFromAnyUrl(countryId, queuedCountry.GetFileDownloadPath(), urls);
+  DownloadFromLastUrl(countryId, path, urls);
 }
 
 void BackgroundDownloaderAdapter::DownloadFromAnyUrl(CountryId const & countryId,
