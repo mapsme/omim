@@ -42,7 +42,7 @@ void BackgroundDownloaderAdapter::Remove(CountryId const & countryId)
     return;
 
   BackgroundDownloader * downloader = [BackgroundDownloader sharedBackgroundMapDownloader];
-  auto const taskIdentifier = m_queue.GetTaskIdByCountryId(countryId);
+  auto const taskIdentifier = m_queue.GetTaskInfoForCountryId(countryId);
   if (taskIdentifier)
     [downloader cancelTaskWithIdentifier:*taskIdentifier];
   m_queue.Remove(countryId);
@@ -124,7 +124,7 @@ void BackgroundDownloaderAdapter::DownloadFromAnyUrl(CountryId const & countryId
   BackgroundDownloader * downloader = [BackgroundDownloader sharedBackgroundMapDownloader];
   NSUInteger taskId = [downloader downloadWithUrl:url completion:onFinish progress:onProgress];
 
-  m_queue.SetTaskIdForCountryId(countryId, taskId);
+  m_queue.SetTaskInfoForCountryId(countryId, taskId);
 }
 
 std::unique_ptr<MapFilesDownloader> GetDownloader()
