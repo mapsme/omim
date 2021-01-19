@@ -1,5 +1,7 @@
 #include "testing/testing.hpp"
 
+#include "generator/affiliation.hpp"
+
 #include "transit/world_feed/subway_converter.hpp"
 #include "transit/world_feed/world_feed.hpp"
 
@@ -9,6 +11,7 @@
 #include "base/file_name_utils.hpp"
 
 #include <fstream>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -35,7 +38,9 @@ class SubwayConverterTests
 {
 public:
   SubwayConverterTests()
-    : m_mwmMatcher(GetTestingOptions().m_resourcePath, false /* haveBordersForWholeWorld */)
+    : m_mwmMatcher(feature::GetOrCreateAffiliation(feature::AffiliationType::CountriesOld,
+                                                   GetTestingOptions().m_resourcePath,
+                                                   false /* haveBordersForWholeWorld */))
   {
     auto const & options = GetTestingOptions();
     GetPlatform().SetResourceDir(options.m_resourcePath);
@@ -378,7 +383,7 @@ private:
   transit::IdGenerator m_generator;
   transit::IdGenerator m_generatorEdges;
   transit::ColorPicker m_colorPicker;
-  feature::CountriesFilesAffiliation m_mwmMatcher;
+  std::shared_ptr<feature::AffiliationInterface> m_mwmMatcher;
 };
 
 UNIT_CLASS_TEST(SubwayConverterTests, SubwayConverter_ParseInvalidJson) { ParseEmptySubway(); }
