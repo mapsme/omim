@@ -27,8 +27,8 @@ private:
   void Download(QueuedCountry & queuedCountry) override;
 
   // Trying to download mwm from different servers recursively.
-  void DownloadFromAnyUrl(CountryId const & countryId, std::string const & downloadPath,
-                          std::vector<std::string> const & urls);
+  void DownloadFromLastUrl(CountryId const & countryId, std::string const & downloadPath,
+                           std::vector<std::string> const & urls);
 
   BackgroundDownloaderQueue<std::optional<uint64_t>> m_queue;
   SubscriberAdapter * m_subscriberAdapter;
