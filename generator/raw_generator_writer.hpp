@@ -1,5 +1,6 @@
 #pragma once
 
+#include "generator/affiliation.hpp"
 #include "generator/feature_builder.hpp"
 #include "generator/features_processing_helpers.hpp"
 
@@ -20,7 +21,7 @@ public:
 
   void Run();
   void ShutdownAndJoin();
-  std::vector<std::string> GetNames();
+  std::vector<std::string> GetNames() const;
 
 private:
   using FeatureBuilderWriter =
@@ -31,6 +32,6 @@ private:
   std::thread m_thread;
   std::shared_ptr<FeatureProcessorQueue> m_queue;
   std::string m_path;
-  std::unordered_map<std::string, std::unique_ptr<FileWriter>> m_writers;
+  std::unordered_map<feature::CountryPolygonsPtr, std::unique_ptr<FileWriter>> m_writers;
 };
 }  // namespace generator

@@ -51,10 +51,11 @@ void WorldFinalProcessor::Process()
 
 void WorldFinalProcessor::ProcessCities()
 {
-  auto const affiliation = SingleAffiliation(WORLD_FILE_NAME);
+  auto const affiliation =
+      feature::GetOrCreateAffiliation(feature::AffiliationType::Single, WORLD_FILE_NAME);
   auto citiesHelper =
       m_citiesAreasTmpFilename.empty() ? PlaceHelper() : PlaceHelper(m_citiesAreasTmpFilename);
-  ProcessorCities processorCities(m_temporaryMwmPath, affiliation, citiesHelper);
+  ProcessorCities processorCities(m_temporaryMwmPath, *affiliation, citiesHelper);
   processorCities.SetPromoCatalog(m_citiesFilename);
   processorCities.Process();
 }

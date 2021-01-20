@@ -68,9 +68,9 @@ void OsmElement::AddTag(char const * key, char const * value)
   SKIP_KEY_BY_PREFIX("official_name");
 #undef SKIP_KEY_BY_PREFIX
 
-  std::string val{value};
-  strings::Trim(val);
-  m_tags.emplace_back(key, std::move(val));
+  std::string k(key);
+  std::string val(value);
+  m_tags.emplace_back(std::move(k), std::move(strings::Trim(val)));
 }
 
 void OsmElement::AddTag(std::string const & key, std::string const & value)

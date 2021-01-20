@@ -17,7 +17,6 @@
 #include <cmath>
 #include <iosfwd>
 #include <limits>
-#include <memory>
 #include <optional>
 #include <tuple>
 #include <utility>
@@ -48,7 +47,9 @@ template <class C, class ID, class S>
 transit::Regions AddToRegions(C & container, S const & splitter, ID const & id,
                               m2::PointD const & point)
 {
-  auto const & regions = splitter.GetAffiliations(point);
+  transit::Regions regions;
+  base::Transform(splitter->GetAffiliations(point), std::back_inserter(regions),
+                  [](auto const & a) { return a->GetName(); });
   CHECK_LESS_OR_EQUAL(
       regions.size(), 1,
       ("Point", mercator::ToLatLon(point), "belongs to multiple regions:", regions));
@@ -394,7 +395,8 @@ void StopData::UpdateTimetable(TransitId lineId, gtfs::StopTime const & stopTime
 }
 
 WorldFeed::WorldFeed(IdGenerator & generator, IdGenerator & generatorEdges,
-                     ColorPicker & colorPicker, feature::CountriesFilesAffiliation & mwmMatcher)
+                     ColorPicker & colorPicker,
+                     std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher)
   : m_idGenerator(generator)
   , m_idGeneratorEdges(generatorEdges)
   , m_colorPicker(colorPicker)

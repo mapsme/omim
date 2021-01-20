@@ -11,6 +11,8 @@
 #include "base/logging.hpp"
 #include "base/timer.hpp"
 
+#include <memory>
+
 #include "3party/gflags/src/gflags/gflags.h"
 
 DEFINE_string(
@@ -167,7 +169,7 @@ FeedStatus ReadFeed(gtfs::Feed & feed)
 // object and saves to the |FLAGS_path_json| path in the new transit line-by-line json format.
 bool ConvertFeeds(transit::IdGenerator & generator, transit::IdGenerator & generatorEdges,
                   transit::ColorPicker & colorPicker,
-                  feature::CountriesFilesAffiliation & mwmMatcher)
+                  std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher)
 {
   auto const gtfsFeeds = GetGtfsFeedsInDirectory(FLAGS_path_gtfs_feeds);
 
@@ -254,7 +256,8 @@ bool ConvertFeeds(transit::IdGenerator & generator, transit::IdGenerator & gener
 // to the |FLAGS_path_json| path in the new transit line-by-line json format.
 bool ConvertSubway(transit::IdGenerator & generator, transit::IdGenerator & generatorEdges,
                    transit::ColorPicker & colorPicker,
-                   feature::CountriesFilesAffiliation & mwmMatcher, bool overwrite)
+                   std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher,
+                   bool overwrite)
 {
   transit::WorldFeed globalFeed(generator, generatorEdges, colorPicker, mwmMatcher);
   transit::SubwayConverter converter(FLAGS_path_subway_json, globalFeed);
@@ -304,8 +307,9 @@ int main(int argc, char ** argv)
   GetPlatform().SetResourceDir(FLAGS_path_resources);
   transit::ColorPicker colorPicker;
 
-  feature::CountriesFilesAffiliation mwmMatcher(GetPlatform().ResourcesDir(),
-                                                false /* haveBordersForWholeWorld */);
+  auto const mwmMatcher = feature::GetOrCreateAffiliation(feature::AffiliationType::CountriesOld,
+                                                          GetPlatform().ResourcesDir(),
+                                                          false /* haveBordersForWholeWorld */);
 
   // We convert GTFS feeds to the json format suitable for generator_tool and save it to the
   // corresponding directory.

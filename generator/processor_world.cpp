@@ -15,7 +15,8 @@ ProcessorWorld::ProcessorWorld(std::shared_ptr<FeatureProcessorQueue> const & qu
   m_processingChain = std::make_shared<RepresentationLayer>();
   m_processingChain->Add(std::make_shared<PrepareFeatureLayer>());
   m_processingChain->Add(std::make_shared<WorldLayer>(popularityFilename));
-  auto affiliation = std::make_shared<feature::SingleAffiliation>(WORLD_FILE_NAME);
+  auto affiliation =
+      feature::GetOrCreateAffiliation(feature::AffiliationType::Single, WORLD_FILE_NAME);
   m_affiliationsLayer =
       std::make_shared<AffiliationsFeatureLayer<>>(kAffiliationsBufferSize, affiliation, m_queue);
   m_processingChain->Add(m_affiliationsLayer);

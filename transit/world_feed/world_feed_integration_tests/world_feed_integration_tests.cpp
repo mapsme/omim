@@ -13,6 +13,7 @@
 #include "base/string_utils.hpp"
 
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -29,7 +30,9 @@ class WorldFeedIntegrationTests
 {
 public:
   WorldFeedIntegrationTests()
-    : m_mwmMatcher(GetTestingOptions().m_resourcePath, false /* haveBordersForWholeWorld */)
+    : m_mwmMatcher(feature::GetOrCreateAffiliation(feature::AffiliationType::CountriesOld,
+                                                   GetTestingOptions().m_resourcePath,
+                                                   false /* haveBordersForWholeWorld */))
     , m_globalFeed(m_generator, m_generatorEdges, m_colorPicker, m_mwmMatcher)
   {
     auto const & options = GetTestingOptions();
@@ -138,7 +141,7 @@ private:
   IdGenerator m_generator;
   IdGenerator m_generatorEdges;
   transit::ColorPicker m_colorPicker;
-  feature::CountriesFilesAffiliation m_mwmMatcher;
+  std::shared_ptr<feature::AffiliationInterface> m_mwmMatcher;
   WorldFeed m_globalFeed;
 };
 

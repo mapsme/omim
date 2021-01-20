@@ -12,7 +12,7 @@ ProcessorSimple::ProcessorSimple(std::shared_ptr<FeatureProcessorQueue> const & 
   : m_name(name), m_queue(queue)
 {
   m_processingChain = std::make_shared<PreserializeLayer>();
-  auto affiliation = std::make_shared<feature::SingleAffiliation>(name);
+  auto affiliation = feature::GetOrCreateAffiliation(feature::AffiliationType::Single, name);
   m_affiliationsLayer =
       std::make_shared<AffiliationsFeatureLayer<feature::serialization_policy::MinSize>>(
           kAffiliationsBufferSize, affiliation, m_queue);

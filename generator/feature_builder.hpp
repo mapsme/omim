@@ -29,7 +29,7 @@ class FeatureBuilder
 {
 public:
   using PointSeq = std::vector<m2::PointD>;
-  using Geometry = std::list<PointSeq>;
+  using Geometry = std::vector<PointSeq>;
   using Buffer = std::vector<char>;
   using Offsets = std::vector<uint32_t>;
 
@@ -56,6 +56,7 @@ public:
 
   // To work with geometry.
   void AddPoint(m2::PointD const & p);
+  void SetOuterGeomery(PointSeq && geom);
   void SetHoles(Geometry const & holes);
   void AddPolygon(std::vector<m2::PointD> & poly);
   void ResetGeometry();
@@ -183,6 +184,7 @@ public:
   // To work with osm ids.
   void AddOsmId(base::GeoObjectId id);
   void SetOsmId(base::GeoObjectId id);
+  void SetOsmIds(std::vector<base::GeoObjectId> && ids);
   base::GeoObjectId GetFirstOsmId() const;
   base::GeoObjectId GetLastOsmId() const;
   // Returns an id of the most general element: node's one if there is no area or relation,

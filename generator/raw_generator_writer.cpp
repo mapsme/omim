@@ -33,14 +33,14 @@ void RawGeneratorWriter::Run()
   });
 }
 
-std::vector<std::string> RawGeneratorWriter::GetNames()
+std::vector<std::string> RawGeneratorWriter::GetNames() const
 {
   CHECK(!m_thread.joinable(), ());
 
   std::vector<std::string> names;
   names.reserve(m_writers.size());
   for (const auto & p : m_writers)
-    names.emplace_back(p.first);
+    names.emplace_back(p.first->GetName());
 
   return names;
 }
@@ -49,15 +49,13 @@ void RawGeneratorWriter::Write(std::vector<ProcessedData> const & vecChunks)
 {
   for (auto const & chunk : vecChunks)
   {
-    for (auto const & affiliation : chunk.m_affiliations)
+    for (auto const * affiliation : chunk.m_affiliations)
     {
-      if (affiliation.empty())
-        continue;
 
       auto writerIt = m_writers.find(affiliation);
       if (writerIt == std::cend(m_writers))
       {
-        auto path = base::JoinPath(m_path, affiliation + DATA_FILE_EXTENSION_TMP);
+        auto path = base::JoinPath(m_path, affiliation->GetName() + DATA_FILE_EXTENSION_TMP);
         auto writer = std::make_unique<FileWriter>(std::move(path));
         writerIt = m_writers.emplace(affiliation, std::move(writer)).first;
       }

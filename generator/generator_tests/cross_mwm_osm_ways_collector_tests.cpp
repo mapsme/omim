@@ -1,14 +1,16 @@
-#include "testing/testing.hpp"
-
 #include "generator/generator_tests/common.hpp"
+
+#include "testing/testing.hpp"
 
 #include "generator/collector_collection.hpp"
 #include "generator/collector_tag.hpp"
 #include "generator/cross_mwm_osm_ways_collector.hpp"
 
+#include "indexer/classificator_loader.cpp"
+
 #include "platform/platform.hpp"
 
-#include "indexer/classificator_loader.cpp"
+#include "coding/internal/file_data.hpp"
 
 #include "geometry/mercator.hpp"
 
@@ -49,15 +51,31 @@ public:
     auto const & intermediateDir = base::JoinPath(m_targetDir, kTmpDirName);
     UNUSED_VALUE(Platform::MkDir(intermediateDir));
     m_intermediateDir = intermediateDir;
+
+    m_bordersDir = base::JoinPath(m_targetDir, "borders");
+    m_bordersDir_ = base::JoinPath(m_targetDir, "borders_");
+    CHECK(base::RenameFileX(m_bordersDir, m_bordersDir_), (m_bordersDir, m_bordersDir_));
+    CHECK(Platform::MkDirChecked(m_bordersDir), (m_bordersDir));
+    for (auto const & polyFile : {"Romania_North_West.poly", "Hungary_Northern Great Plain.poly",
+                                  "Russia_Moscow.poly", "Russia_Moscow Oblast_West.poly"})
+    {
+      base::CopyFileX(base::JoinPath(m_bordersDir_, polyFile),
+                      base::JoinPath(m_bordersDir, polyFile));
+    }
   }
 
-  ~CrossMwmWayCollectorTest() { Platform::RmDirRecursively(m_intermediateDir); }
+  ~CrossMwmWayCollectorTest()
+  {
+    CHECK(Platform::RmDirRecursively(m_bordersDir), (m_bordersDir));
+    CHECK(base::RenameFileX(m_bordersDir_, m_bordersDir), (m_bordersDir_, m_bordersDir));
+    Platform::RmDirRecursively(m_intermediateDir);
+  }
 
   std::shared_ptr<CollectorCollection> InitCollection()
   {
     auto collection = std::make_shared<CollectorCollection>();
     collection->Append(std::make_shared<CrossMwmOsmWaysCollector>(
-        m_intermediateDir, m_targetDir, true /* haveBordersForWholeWorld */));
+        m_intermediateDir, m_targetDir, false /* haveBordersForWholeWorld */));
     return collection;
   }
 
@@ -115,6 +133,8 @@ private:
 
   std::string m_intermediateDir;
   std::string m_targetDir;
+  std::string m_bordersDir;
+  std::string m_bordersDir_;
 };
 
 feature::FeatureBuilder CreateFeatureBuilderFromOsmWay(uint64_t osmId,

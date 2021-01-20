@@ -62,10 +62,7 @@ public:
       DistanceToSegmentWithRectBounds distFn(rect);
       m2::RectD const boundRect = m2::Inflate(rect, distFn.GetEpsilon(), distFn.GetEpsilon());
 
-      using Points = vector<m2::PointD>;
-      using Polygons = list<Points>;
-
-      Polygons const & poly = fb.GetGeometry();
+      auto const & poly = fb.GetGeometry();
 
       // Check that all simplifications are inside bound rect.
       for (int level = 0; level <= upperScale; ++level)
@@ -74,7 +71,7 @@ public:
 
         for (auto const & rawPts : poly)
         {
-          Points pts;
+          FeatureBuilder::PointSeq pts;
           SimplifyPoints(distFn, level, rawPts, pts);
 
           LOG(LINFO, ("Simplified. Level =", level, "Points =", pts));

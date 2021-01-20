@@ -129,12 +129,12 @@ void FileReader::CheckPosAndSize(uint64_t pos, uint64_t size) const
   uint64_t const allSize1 = Size();
   bool const ret1 = (pos + size <= allSize1);
   if (!ret1)
-    MYTHROW(Reader::SizeException, (pos, size, allSize1));
+    MYTHROW(Reader::SizeException, (GetName(), pos, size, allSize1));
 
   uint64_t const allSize2 = m_fileData->Size();
   bool const ret2 = (m_offset + pos + size <= allSize2);
   if (!ret2)
-    MYTHROW(Reader::SizeException, (pos, size, allSize2));
+    MYTHROW(Reader::SizeException, (GetName(), pos, size, allSize2));
 }
 
 void FileReader::SetOffsetAndSize(uint64_t offset, uint64_t size)

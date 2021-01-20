@@ -131,19 +131,19 @@ void Sort(std::vector<FeatureBuilder> & fbs)
   });
 }
 
-std::vector<std::vector<std::string>> GetAffiliations(std::vector<FeatureBuilder> const & fbs,
-                                                      AffiliationInterface const & affiliation,
-                                                      size_t threadsCount)
+std::vector<std::vector<feature::CountryPolygonsPtr>> GetAffiliations(
+    std::vector<FeatureBuilder> const & fbs, AffiliationInterface const & affiliation,
+    size_t threadsCount)
 {
   ThreadPool pool(threadsCount);
-  std::vector<std::future<std::vector<std::string>>> futuresAffiliations;
+  std::vector<std::future<std::vector<feature::CountryPolygonsPtr>>> futuresAffiliations;
   for (auto const & fb : fbs)
   {
     auto result = pool.Submit([&]() { return affiliation.GetAffiliations(fb); });
     futuresAffiliations.emplace_back(std::move(result));
   }
 
-  std::vector<std::vector<std::string>> resultAffiliations;
+  std::vector<std::vector<feature::CountryPolygonsPtr>> resultAffiliations;
   resultAffiliations.reserve(futuresAffiliations.size());
   for (auto & f : futuresAffiliations)
     resultAffiliations.emplace_back(f.get());

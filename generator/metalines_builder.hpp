@@ -4,6 +4,9 @@
 #include "generator/feature_builder.hpp"
 #include "generator/osm_element.hpp"
 
+#include "coding/reader.hpp"
+#include "coding/writer.hpp"
+
 #include <cstdlib>
 #include <cstdint>
 #include <map>
@@ -37,7 +40,29 @@ public:
   uint64_t GetStart() const { return m_start; }
   uint64_t GetEnd() const { return m_end; }
 
+  template <typename T>
+  void Serialize(T & w)
+  {
+    WriteVarUint(w, m_start);
+    WriteVarUint(w, m_end);
+    w.Write(&m_oneway, sizeof(m_oneway));
+    rw::WriteVectorOfPOD(w, m_ways);
+  }
+
+  template <typename T>
+  static LineString Deserialize(T & r)
+  {
+    LineString ls;
+    ls.m_start = ReadVarUint<uint64_t>(r);
+    ls.m_end = ReadVarUint<uint64_t>(r);
+    r.Read(&ls.m_oneway, sizeof(m_oneway));
+    rw::ReadVectorOfPOD(r, ls.m_ways);
+    return ls;
+  }
+
 private:
+  LineString() = default;
+
   uint64_t m_start;
   uint64_t m_end;
   bool m_oneway;
@@ -74,13 +99,14 @@ public:
 
   /// Add a highway segment to the collection of metalines.
   void CollectFeature(FeatureBuilder const & feature, OsmElement const & element) override;
+  void Finish() override;
   void Save() override;
 
   void Merge(generator::CollectorInterface const & collector) override;
   void MergeInto(MetalinesBuilder & collector) const override;
 
 private:
-  std::unordered_multimap<size_t, std::shared_ptr<LineString>> m_data;
+  std::unique_ptr<FileWriter> m_writer;
 };
 
 // Read an intermediate file from MetalinesBuilder and convert it to an mwm section.

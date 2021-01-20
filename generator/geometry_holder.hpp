@@ -24,8 +24,8 @@ class GeometryHolder
 {
 public:
   using FileGetter = std::function<FileWriter &(int i)>;
-  using Points = std::vector<m2::PointD>;
-  using Polygons = std::list<Points>;
+  using Points = FeatureBuilder::PointSeq;
+  using Polygons = FeatureBuilder::Geometry;
 
   // For FeatureType serialization maxNumTriangles should be less than numeric_limits<uint8_t>::max
   // because FeatureType format uses uint8_t to encode the number of triangles.

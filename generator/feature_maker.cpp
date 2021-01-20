@@ -43,14 +43,18 @@ bool FeatureMakerSimple::BuildFromWay(OsmElement & p, FeatureBuilderParams const
 
   FeatureBuilder fb;
   m2::PointD pt;
+
+  FeatureBuilder::PointSeq geom;
+  geom.reserve(nodes.size());
   for (uint64_t ref : nodes)
   {
     if (!m_cache->GetNode(ref, pt.y, pt.x))
       return false;
 
-    fb.AddPoint(pt);
+    geom.emplace_back(pt);
   }
 
+  fb.SetOuterGeomery(std::move(geom));
   fb.SetOsmId(base::MakeOsmWay(p.m_id));
   fb.SetParams(params);
   if (fb.IsGeometryClosed())
@@ -69,15 +73,13 @@ bool FeatureMakerSimple::BuildFromRelation(OsmElement & p, FeatureBuilderParams 
   auto const & holesGeometry = helper.GetHoles();
   auto & outer = helper.GetOuter();
   auto const size = m_queue.size();
-  auto func = [&](FeatureBuilder::PointSeq const & pts, std::vector<uint64_t> const & ids)
-  {
+  auto func = [&](FeatureBuilder::PointSeq && pts, std::vector<uint64_t> && ids) {
     FeatureBuilder fb;
-    for (uint64_t id : ids)
-      fb.AddOsmId(base::MakeOsmWay(id));
-
-    for (auto const & pt : pts)
-      fb.AddPoint(pt);
-
+    std::vector<base::GeoObjectId> osmIds;
+    osmIds.reserve(ids.size());
+    base::Transform(ids, std::back_inserter(osmIds), base::MakeOsmWay);
+    fb.SetOsmIds(std::move(osmIds));
+    fb.SetOuterGeomery(std::move(pts));
     fb.AddOsmId(base::MakeOsmRelation(p.m_id));
     if (!fb.IsGeometryClosed())
       return;

@@ -59,7 +59,7 @@ void WriteSegmentToStream(RegionSegmentId const & segId, CrossBorderSegment cons
 namespace routing
 {
 RoadsFromOsm GetRoadsFromOsm(generator::SourceReader & reader,
-                             feature::CountriesFilesAffiliation const & mwmMatcher,
+                             std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher,
                              std::vector<std::string> const & highways)
 {
   RoadsFromOsm roadsFromOsm;
@@ -95,10 +95,10 @@ RoadsFromOsm GetRoadsFromOsm(generator::SourceReader & reader,
         CHECK(nodeIt != roadsFromOsm.m_nodes.end(), (nodeId));
 
         m2::PointD const & point = mercator::FromLatLon(nodeIt->second);
-        auto const & regions = mwmMatcher.GetAffiliations(point);
+        auto const & regions = mwmMatcher->GetAffiliations(point);
 
         for (auto const & region : regions)
-          wayData.m_regions.emplace(region);
+          wayData.m_regions.emplace(region->GetName());
       }
     }
   }
@@ -121,7 +121,7 @@ using CrossBorderIndexes = std::vector<size_t>;
 
 std::pair<NodePoints, CrossBorderIndexes> GetCrossBorderPoints(
     std::vector<uint64_t> const & nodeIds, std::unordered_map<uint64_t, ms::LatLon> const & nodes,
-    feature::CountriesFilesAffiliation const & mwmMatcher,
+    std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher,
     std::unordered_map<std::string, NumMwmId> const & regionToIdMap)
 {
   NodePoints nodePoints;
@@ -136,7 +136,7 @@ std::pair<NodePoints, CrossBorderIndexes> GetCrossBorderPoints(
     CHECK(itNodes != nodes.end(), (nodeId));
 
     m2::PointD const & curPoint = mercator::FromLatLon(itNodes->second);
-    auto const & regions = mwmMatcher.GetAffiliations(curPoint);
+    auto const & regions = mwmMatcher->GetAffiliations(curPoint);
 
     if (regions.size() > 1)
     {
@@ -151,10 +151,11 @@ std::pair<NodePoints, CrossBorderIndexes> GetCrossBorderPoints(
     }
 
     auto const & curRegion = regions[0];
-    auto const & curMwmId = regionToIdMap.at(curRegion);
+    auto const & currRegionName = curRegion->GetName();
+    auto const & curMwmId = regionToIdMap.at(currRegionName);
     nodePoints.emplace_back(curPoint, curMwmId);
 
-    if (curRegion != prevRegion)
+    if (currRegionName != prevRegion)
     {
       if (!prevRegion.empty())
       {
@@ -163,7 +164,7 @@ std::pair<NodePoints, CrossBorderIndexes> GetCrossBorderPoints(
         crossBorderIndexes.push_back(nodePoints.size() - 2);
       }
 
-      prevRegion = curRegion;
+      prevRegion = currRegionName;
     }
 
     prevPoint = curPoint;
@@ -207,7 +208,7 @@ std::optional<std::pair<m2::PointD, double>> GetPointInMwm(NodePoints const & po
 bool FillCrossBorderGraph(CrossBorderGraph & graph, RegionSegmentId & curSegmentId,
                           std::vector<uint64_t> const & nodeIds,
                           std::unordered_map<uint64_t, ms::LatLon> const & nodes,
-                          feature::CountriesFilesAffiliation const & mwmMatcher,
+                          std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher,
                           std::unordered_map<std::string, NumMwmId> const & regionToIdMap)
 {
   auto const & [nodePoints, crossBorderIndexes] =

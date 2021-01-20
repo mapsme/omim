@@ -12,6 +12,7 @@
 
 #include "base/assert.hpp"
 #include "base/file_name_utils.hpp"
+#include "base/stl_helpers.hpp"
 
 #include <fstream>
 #include <string>
@@ -92,13 +93,14 @@ private:
 const std::string AffiliationTests::kOne = "One";
 const std::string AffiliationTests::kTwo = "Two";
 
-bool Test(std::vector<std::string> && res, std::set<std::string> const & answ)
+bool Test(std::vector<feature::CountryPolygonsPtr> const & res, std::set<std::string> const & answ)
 {
   if (res.size() != answ.size())
     return false;
 
   std::set<std::string> r;
-  std::move(std::begin(res), std::end(res), std::inserter(r, std::begin(r)));
+  base::Transform(res, std::inserter(r, std::begin(r)),
+                  [](auto const * c) { return c->GetName(); });
   return r == answ;
 }
 

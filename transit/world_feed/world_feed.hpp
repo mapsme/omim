@@ -13,6 +13,7 @@
 
 #include <cstdint>
 #include <fstream>
+#include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -281,7 +282,7 @@ class WorldFeed
 {
 public:
   WorldFeed(IdGenerator & generator, IdGenerator & generatorEdges, ColorPicker & colorPicker,
-            feature::CountriesFilesAffiliation & mwmMatcher);
+            std::shared_ptr<feature::AffiliationInterface> const & mwmMatcher);
   // Transforms GTFS feed into the global feed.
   bool SetFeed(gtfs::Feed && feed);
 
@@ -392,7 +393,7 @@ private:
   // Color name picker of the nearest color for route RBG from our constant list of transfer colors.
   ColorPicker & m_colorPicker;
   // Mwm matcher for m2:Points representing stops and other entities.
-  feature::CountriesFilesAffiliation & m_affiliation;
+  std::shared_ptr<feature::AffiliationInterface> m_affiliation;
 
   // GTFS id -> entity hash mapping. Maps GTFS id string (unique only for current feed) to the
   // globally unique hash.
