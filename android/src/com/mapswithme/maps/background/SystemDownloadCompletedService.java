@@ -44,7 +44,10 @@ public class SystemDownloadCompletedService extends JobIntentService
       if (!cursor.moveToFirst())
         return;
 
-      BookmarksDownloadCompletedProcessor.process(getApplicationContext(), cursor);
+      if (MapDownloadCompletedProcessor.isSupported(cursor))
+        MapDownloadCompletedProcessor.process(getApplicationContext(), id, cursor);
+      else
+        BookmarksDownloadCompletedProcessor.process(getApplicationContext(), cursor);
     }
     finally
     {
