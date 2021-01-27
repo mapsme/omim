@@ -30,7 +30,7 @@ private:
   void DownloadFromLastUrl(CountryId const & countryId, std::string const & downloadPath,
                            std::vector<std::string> const & urls);
 
-  BackgroundDownloaderQueue<std::optional<uint64_t>> m_queue;
+  BackgroundDownloaderQueue<uint64_t> m_queue;
   SubscriberAdapter * m_subscriberAdapter;
 };
 }  // namespace storage

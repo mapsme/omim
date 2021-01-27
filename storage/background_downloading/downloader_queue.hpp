@@ -12,10 +12,12 @@
 
 namespace storage
 {
-template <typename TaskInfoType>
+template <typename TaskInfo>
 class BackgroundDownloaderQueue : public QueueInterface
 {
 public:
+  using ForEachTaskInfoTypeFunction = std::function<void(TaskInfo const & info)>;
+
   bool IsEmpty() const override
   {
     return m_queue.empty();
@@ -34,6 +36,15 @@ public:
     }
   }
 
+  void ForEachTaskInfo(ForEachTaskInfoTypeFunction const & fn) const
+  {
+    for (auto const & item : m_queue)
+    {
+      if (item.second.m_taskInfo)
+        fn(*item.second.m_taskInfo);
+    }
+  }
+
   void Append(QueuedCountry && country)
   {
     auto const countryId = country.GetCountryId();
@@ -41,15 +52,15 @@ public:
     result.first->second.m_queuedCountry.OnCountryInQueue();
   }
 
-  void SetTaskInfoForCountryId(CountryId const & countryId, TaskInfoType && taskInfo)
+  void SetTaskInfoForCountryId(CountryId const & countryId, TaskInfo const & taskInfo)
   {
     auto const it = m_queue.find(countryId);
     CHECK(it != m_queue.cend(), ());
 
-    it->second.m_taskInfo = std::move(taskInfo);
+    it->second.m_taskInfo = taskInfo;
   }
 
-  TaskInfoType const & GetTaskInfoForCountryId(CountryId const & countryId) const
+  std::optional<TaskInfo> GetTaskInfoForCountryId(CountryId const & countryId) const
   {
     auto const it = m_queue.find(countryId);
     if (it == m_queue.cend())
@@ -79,7 +90,7 @@ private:
     explicit TaskData(QueuedCountry && country) : m_queuedCountry(std::move(country)) {}
 
     QueuedCountry m_queuedCountry;
-    TaskInfoType m_taskInfo;
+    std::optional<TaskInfo> m_taskInfo;
   };
 
   std::unordered_map<CountryId, TaskData> m_queue;
