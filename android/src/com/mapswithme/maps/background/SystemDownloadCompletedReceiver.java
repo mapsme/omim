@@ -1,4 +1,4 @@
-package com.mapswithme.maps.bookmarks;
+package com.mapswithme.maps.background;
 
 import android.app.DownloadManager;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
-import com.mapswithme.maps.background.AbstractLogBroadcastReceiver;
 import com.mapswithme.maps.scheduling.JobIdMap;
 
 public class SystemDownloadCompletedReceiver extends AbstractLogBroadcastReceiver
