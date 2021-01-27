@@ -10,94 +10,54 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.JobIntentService;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.bookmarks.data.Error;
 import com.mapswithme.maps.bookmarks.data.Result;
 import com.mapswithme.maps.purchase.BookmarkPaymentDataParser;
 import com.mapswithme.maps.purchase.PaymentDataParser;
-import com.mapswithme.util.Utils;
 import com.mapswithme.util.concurrency.UiThread;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
 import com.mapswithme.util.statistics.PushwooshHelper;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-public class SystemDownloadCompletedService extends JobIntentService
+public class BookmarksDownloadCompletedProcessor
 {
   public final static String ACTION_DOWNLOAD_COMPLETED = "action_download_completed";
   public final static String EXTRA_DOWNLOAD_STATUS = "extra_download_status";
 
-  @Override
-  public void onCreate()
+  public static void process(@NonNull Context context, @NonNull Cursor cursor)
   {
-    super.onCreate();
-    MwmApplication app = (MwmApplication) getApplication();
-    if (app.arePlatformAndCoreInitialized())
-      return;
-    app.initCore();
-  }
-
-  @Override
-  protected void onHandleWork(@NonNull Intent intent)
-  {
-    DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-    if (manager == null)
-      throw new IllegalStateException("Failed to get a download manager");
-
-    final OperationStatus status = calculateStatus(manager, intent);
+    final OperationStatus status = processInternal(context, cursor);
     Logger logger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.BILLING);
-    String tag = SystemDownloadCompletedService.class.getSimpleName();
+    String tag = BookmarksDownloadCompletedProcessor.class.getSimpleName();
     logger.i(tag, "Download status: " + status);
-    UiThread.run(new SendStatusTask(getApplicationContext(), status));
+
+    UiThread.run(new BookmarkDownloadCompletedTask(context, status));
   }
 
   @NonNull
-  private OperationStatus calculateStatus(@NonNull DownloadManager manager, @NonNull Intent intent)
+  private static OperationStatus processInternal(@NonNull Context context, @NonNull Cursor cursor)
   {
     try
     {
-      return calculateStatusInternal(manager, intent);
+      if (isDownloadFailed(cursor))
+      {
+        Error error = new Error(getHttpStatus(cursor), getErrorMessage(cursor));
+        return new OperationStatus(null, error);
+      }
+
+      logToPushWoosh((Application) context, cursor);
+
+      Result result = new Result(getFilePath(cursor), getArchiveId(cursor));
+      return new OperationStatus(result, null);
     }
     catch (Exception e)
     {
       return new OperationStatus(null, new Error(e.getMessage()));
-    }
-  }
-
-  @NonNull
-  private OperationStatus calculateStatusInternal(
-      @NonNull DownloadManager manager, @NonNull Intent intent) throws IOException
-  {
-    Cursor cursor = null;
-    try
-    {
-      final long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-      DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
-      cursor = manager.query(query);
-      if (cursor.moveToFirst())
-      {
-
-        if (isDownloadFailed(cursor))
-        {
-          Error error = new Error(getHttpStatus(cursor), getErrorMessage(cursor));
-          return new OperationStatus(null, error);
-        }
-
-        logToPushWoosh((Application) getApplicationContext(), cursor);
-
-        Result result = new Result(getFilePath(cursor), getArchiveId(cursor));
-        return new OperationStatus(result, null);
-      }
-      throw new IOException("Failed to move the cursor at first row");
-    }
-    finally
-    {
-      Utils.closeSafely(cursor);
     }
   }
 
@@ -170,19 +130,19 @@ public class SystemDownloadCompletedService extends JobIntentService
       app.sendPushWooshTags("Bookmarks_Guides_paid_tier", new String[] {productId});
       app.sendPushWooshTags("Bookmarks_Guides_paid_title", new String[] {name});
       app.sendPushWooshTags("Bookmarks_Guides_paid_date",
-          new String[] {PushwooshHelper.nativeGetFormattedTimestamp()});
+                            new String[] {PushwooshHelper.nativeGetFormattedTimestamp()});
     }
   }
 
-  private static class SendStatusTask implements Runnable
+  private static class BookmarkDownloadCompletedTask implements Runnable
   {
     @NonNull
     private final Context mAppContext;
     @NonNull
     private final OperationStatus mStatus;
 
-    private SendStatusTask(@NonNull Context applicationContext,
-                           @NonNull OperationStatus status)
+    private BookmarkDownloadCompletedTask(@NonNull Context applicationContext,
+                                          @NonNull OperationStatus status)
     {
       mAppContext = applicationContext;
       mStatus = status;

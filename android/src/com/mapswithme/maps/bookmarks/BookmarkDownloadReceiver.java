@@ -36,7 +36,7 @@ public class BookmarkDownloadReceiver extends AbstractLogBroadcastReceiver imple
 
   public void register(@NonNull Application application)
   {
-    IntentFilter filter = new IntentFilter(SystemDownloadCompletedService.ACTION_DOWNLOAD_COMPLETED);
+    IntentFilter filter = new IntentFilter(BookmarksDownloadCompletedProcessor.ACTION_DOWNLOAD_COMPLETED);
     LocalBroadcastManager.getInstance(application).registerReceiver(this, filter);
   }
 
@@ -49,7 +49,7 @@ public class BookmarkDownloadReceiver extends AbstractLogBroadcastReceiver imple
   @Override
   protected String getAssertAction()
   {
-    return SystemDownloadCompletedService.ACTION_DOWNLOAD_COMPLETED;
+    return BookmarksDownloadCompletedProcessor.ACTION_DOWNLOAD_COMPLETED;
   }
 
   @Override
@@ -58,7 +58,7 @@ public class BookmarkDownloadReceiver extends AbstractLogBroadcastReceiver imple
     Logger logger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.BILLING);
     String tag = BookmarkDownloadReceiver.class.getSimpleName();
     OperationStatus status
-        = intent.getParcelableExtra(SystemDownloadCompletedService.EXTRA_DOWNLOAD_STATUS);
+        = intent.getParcelableExtra(BookmarksDownloadCompletedProcessor.EXTRA_DOWNLOAD_STATUS);
     Result result = status.getResult();
     if (status.isOk() && result != null && !TextUtils.isEmpty(result.getArchiveId())
         && !TextUtils.isEmpty(result.getFilePath()))
