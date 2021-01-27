@@ -18,6 +18,7 @@ import com.mapswithme.maps.background.Notifier;
 import com.mapswithme.maps.base.MediaPlayerWrapper;
 import com.mapswithme.maps.bookmarks.data.BookmarkManager;
 import com.mapswithme.maps.downloader.CountryItem;
+import com.mapswithme.maps.downloader.MapDownloadManager;
 import com.mapswithme.maps.downloader.MapManager;
 import com.mapswithme.maps.editor.Editor;
 import com.mapswithme.maps.geofence.GeofenceRegistry;
@@ -53,23 +54,27 @@ import java.util.List;
 
 public class MwmApplication extends Application implements AppBackgroundTracker.OnTransitionListener
 {
-  @SuppressWarnings("NullableProblems")
+  @SuppressWarnings("NotNullFieldNotInitialized")
   @NonNull
   private Logger mLogger;
   public final static String TAG = "MwmApplication";
 
   private AppBackgroundTracker mBackgroundTracker;
-  @SuppressWarnings("NullableProblems")
+  @SuppressWarnings("NotNullFieldNotInitialized")
   @NonNull
   private SubwayManager mSubwayManager;
 
-  @SuppressWarnings("NullableProblems")
+  @SuppressWarnings("NotNullFieldNotInitialized")
   @NonNull
   private IsolinesManager mIsolinesManager;
 
-  @SuppressWarnings("NullableProblems")
+  @SuppressWarnings("NotNullFieldNotInitialized")
   @NonNull
   private GuidesManager mGuidesManager;
+
+  @SuppressWarnings("NotNullFieldNotInitialized")
+  @NonNull
+  private MapDownloadManager mMapDownloadManager;
 
   private boolean mFrameworkInitialized;
   private boolean mPlatformInitialized;
@@ -168,6 +173,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     mSubwayManager = new SubwayManager(this);
     mIsolinesManager = new IsolinesManager(this);
     mGuidesManager = new GuidesManager(this);
+    mMapDownloadManager = new MapDownloadManager(this);
     mConnectivityListener = new ConnectivityJobScheduler(this);
     mConnectivityListener.listen();
 
@@ -402,6 +408,12 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   public GuidesManager getGuidesManager()
   {
     return mGuidesManager;
+  }
+
+  @NonNull
+  public MapDownloadManager getMapDownloadManager()
+  {
+    return mMapDownloadManager;
   }
 
   private class VisibleAppLaunchListener implements AppBackgroundTracker.OnVisibleAppLaunchListener
