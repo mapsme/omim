@@ -27,6 +27,7 @@ set(
   com/mapswithme/core/ScopedEnv.hpp
   com/mapswithme/core/ScopedLocalRef.hpp
   com/mapswithme/maps/discovery/Locals.hpp
+  com/mapswithme/maps/DownloaderAdapter.hpp
   com/mapswithme/maps/Framework.hpp
   com/mapswithme/maps/guides/Guides.hpp
   com/mapswithme/maps/promo/Promo.hpp
@@ -48,6 +49,7 @@ set(
   com/mapswithme/maps/discovery/DiscoveryManager.cpp
   com/mapswithme/maps/discovery/Locals.cpp
   com/mapswithme/maps/DisplayedCategories.cpp
+  com/mapswithme/maps/DownloaderAdapter.cpp
   com/mapswithme/maps/DownloadResourcesLegacyActivity.cpp
   com/mapswithme/maps/editor/Editor.cpp
   com/mapswithme/maps/editor/OpeningHours.cpp
