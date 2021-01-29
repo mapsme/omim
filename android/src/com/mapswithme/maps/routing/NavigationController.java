@@ -218,10 +218,11 @@ public class NavigationController implements Application.ActivityLifecycleCallba
     }
   }
 
-  public void start(MwmActivity parent){
+  public void start(@NonNull MwmActivity parent)
+  {
     parent.bindService(new Intent(parent, NavigationService.class),
-                         mServiceConnection,
-                         Context.BIND_AUTO_CREATE);
+                       mServiceConnection,
+                       Context.BIND_AUTO_CREATE);
     mBound = true;
     parent.startService(new Intent(parent, NavigationService.class));
   }

@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
@@ -91,6 +90,20 @@ public class NavigationService extends Service
 
       mNotificationManager.createNotificationChannel(mChannel);
     }
+  }
+
+  @Override
+  public void onDestroy()
+  {
+    super.onDestroy();
+    removeLocationUpdates();
+  }
+
+  @Override
+  public void onLowMemory()
+  {
+    super.onLowMemory();
+    mLogger.d(TAG, "onLowMemory()");
   }
 
   @Override
@@ -189,7 +202,7 @@ public class NavigationService extends Service
     return builder.build();
   }
 
-  public void removeLocationUpdates()
+  private void removeLocationUpdates()
   {
     mLogger.i(TAG, "Removing location updates");
     LocationHelper.INSTANCE.removeListener(mLocationListener);
@@ -201,6 +214,7 @@ public class NavigationService extends Service
     ActivityManager manager = (ActivityManager) context.getSystemService(
         Context.ACTIVITY_SERVICE);
     // TODO(@velichkomarija): replace getRunningServices().
+    // See issue https://github.com/android/location-samples/pull/243
     for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
     {
       if (getClass().getName().equals(service.service.getClassName()))
