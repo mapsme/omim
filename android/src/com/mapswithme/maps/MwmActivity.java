@@ -1053,7 +1053,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (!mIsTabletLayout && RoutingController.get().isPlanning())
       mRoutingPlanInplaceController.restoreState(savedInstanceState);
 
-    mNavigationController.onRestoreState(savedInstanceState);
+    mNavigationController.onRestoreState(savedInstanceState, this);
 
     if (mFilterController != null)
       mFilterController.onRestoreState(savedInstanceState);
@@ -1503,6 +1503,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (mOnmapDownloader != null)
       mOnmapDownloader.onPause();
     mPlacePageController.onActivityPaused(this);
+    mNavigationController.doForeground();
     super.onPause();
   }
 
@@ -2328,6 +2329,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
   public void onNavigationStarted()
   {
     ThemeSwitcher.INSTANCE.restart(isMapRendererActive());
+    mNavigationController.start(this);
   }
 
   @Override
@@ -2478,22 +2480,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
             mLocationErrorDialogAnnoying = true;
           }
         })
-        .setOnCancelListener(new DialogInterface.OnCancelListener()
-        {
-          @Override
-          public void onCancel(DialogInterface dialog)
-          {
-            mLocationErrorDialogAnnoying = true;
-          }
-        })
-        .setPositiveButton(R.string.connection_settings, new DialogInterface.OnClickListener()
-        {
-          @Override
-          public void onClick(DialogInterface dialog, int which)
-          {
-            startActivity(intent);
-          }
-        }).show();
+        .setOnCancelListener(dialog -> mLocationErrorDialogAnnoying = true)
+        .setPositiveButton(R.string.connection_settings, (dialog, which) -> startActivity(intent)).show();
   }
 
   @Override

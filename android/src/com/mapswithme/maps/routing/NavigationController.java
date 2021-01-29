@@ -2,11 +2,14 @@ package com.mapswithme.maps.routing;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -45,6 +48,7 @@ import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_BOOKMA
 public class NavigationController implements TrafficManager.TrafficCallback, View.OnClickListener
 {
   private static final String STATE_SHOW_TIME_LEFT = "ShowTimeLeft";
+  private static final String STATE_BOUND = "Bound";
 
   private final View mFrame;
   private final View mBottomFrame;
@@ -86,6 +90,30 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
   @NonNull
   private final MediaPlayer.OnCompletionListener mSpeedCamSignalCompletionListener;
 
+  @Nullable
+  private NavigationService mService = null;
+  private boolean mBound = false;
+  @NonNull
+  private final ServiceConnection mServiceConnection = new ServiceConnection()
+  {
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service)
+    {
+      NavigationService.LocalBinder binder = (NavigationService.LocalBinder) service;
+      mService = binder.getService();
+      mBound =  true;
+      doBackground();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name)
+    {
+      mService = null;
+      mBound = false;
+    }
+  };
+
+  // TODO (@velichkomarija) remove unnecessary casts.
   public NavigationController(Activity activity)
   {
     mFrame = activity.findViewById(R.id.navigation_frame);
@@ -107,7 +135,7 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
     mStreetFrame = topFrame.findViewById(R.id.street_frame);
     mNextStreet = (TextView) mStreetFrame.findViewById(R.id.street);
     View shadow = topFrame.findViewById(R.id.shadow_top);
-    UiUtils.show(shadow);
+    UiUtils.hide(shadow);
 
     UiUtils.extendViewWithStatusBar(mStreetFrame);
     UiUtils.extendViewMarginWithStatusBar(turnFrame);
@@ -142,6 +170,8 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
   {
     mNavMenu.onResume(null);
     mSearchWheel.onResume();
+    if (mBound)
+      doBackground();
   }
 
   private NavMenu createNavMenu()
@@ -185,6 +215,34 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
   {
     parent.refreshFade();
     mSearchWheel.reset();
+
+    if (mBound)
+    {
+      parent.unbindService(mServiceConnection);
+      mBound = false;
+      if (mService != null)
+        mService.stopSelf();
+    }
+  }
+
+  public void start(MwmActivity parent){
+    parent.bindService(new Intent(parent, NavigationService.class),
+                         mServiceConnection,
+                         Context.BIND_AUTO_CREATE);
+    mBound = true;
+    parent.startService(new Intent(parent, NavigationService.class));
+  }
+
+  public void doForeground()
+  {
+    if (mService != null)
+      mService.doForeground();
+  }
+
+  public void doBackground()
+  {
+    if (mService != null)
+      mService.stopForeground(true);
   }
 
   private void updateVehicle(RoutingInfo info)
@@ -372,12 +430,16 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
   public void onSaveState(@NonNull Bundle outState)
   {
     outState.putBoolean(STATE_SHOW_TIME_LEFT, mShowTimeLeft);
+    outState.putBoolean(STATE_BOUND, mBound);
     mSearchWheel.saveState(outState);
   }
 
-  public void onRestoreState(@NonNull Bundle savedInstanceState)
+  public void onRestoreState(@NonNull Bundle savedInstanceState, @NonNull MwmActivity parent)
   {
     mShowTimeLeft = savedInstanceState.getBoolean(STATE_SHOW_TIME_LEFT);
+    mBound = savedInstanceState.getBoolean(STATE_BOUND);
+    if (mBound)
+      start(parent);
     mSearchWheel.restoreState(savedInstanceState);
   }
 
