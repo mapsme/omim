@@ -45,7 +45,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.mapswithme.util.statistics.Statistics.EventName.ROUTING_BOOKMARKS_CLICK;
 
-public class NavigationController implements TrafficManager.TrafficCallback, View.OnClickListener
+public class NavigationController implements Application.ActivityLifecycleCallbacks,
+                                             TrafficManager.TrafficCallback, View.OnClickListener
 {
   private static final String STATE_SHOW_TIME_LEFT = "ShowTimeLeft";
   private static final String STATE_BOUND = "Bound";
@@ -164,14 +165,6 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
     bookmarkButton.setOnClickListener(this);
     Application app = (Application) bookmarkButton.getContext().getApplicationContext();
     mSpeedCamSignalCompletionListener = new CameraWarningSignalCompletionListener(app);
-  }
-
-  public void onResume()
-  {
-    mNavMenu.onResume(null);
-    mSearchWheel.onResume();
-    if (mBound)
-      doBackground();
   }
 
   private NavMenu createNavMenu()
@@ -427,7 +420,41 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
     return mNavMenu;
   }
 
-  public void onSaveState(@NonNull Bundle outState)
+  @Override
+  public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState)
+  {
+    // no op
+  }
+
+  @Override
+  public void onActivityStarted(@NonNull Activity activity)
+  {
+    // no op
+  }
+
+  @Override
+  public void onActivityResumed(@NonNull Activity activity)
+  {
+    mNavMenu.onResume(null);
+    mSearchWheel.onResume();
+    if (mBound)
+      doBackground();
+  }
+
+  @Override
+  public void onActivityPaused(Activity activity)
+  {
+    doForeground();
+  }
+
+  @Override
+  public void onActivityStopped(@NonNull Activity activity)
+  {
+    // no op
+  }
+
+  @Override
+  public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState)
   {
     outState.putBoolean(STATE_SHOW_TIME_LEFT, mShowTimeLeft);
     outState.putBoolean(STATE_BOUND, mBound);
@@ -441,6 +468,12 @@ public class NavigationController implements TrafficManager.TrafficCallback, Vie
     if (mBound)
       start(parent);
     mSearchWheel.restoreState(savedInstanceState);
+  }
+
+  @Override
+  public void onActivityDestroyed(@NonNull Activity activity)
+  {
+    // no op
   }
 
   @Override

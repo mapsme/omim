@@ -1012,7 +1012,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
         fragment.saveRoutingPanelState(outState);
     }
 
-    mNavigationController.onSaveState(outState);
+    mNavigationController.onActivitySaveInstanceState(this, outState);
 
     RoutingController.get().onSaveState();
     outState.putBoolean(EXTRA_LOCATION_DIALOG_IS_ANNOYING, mLocationErrorDialogAnnoying);
@@ -1459,7 +1459,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (mOnmapDownloader != null)
       mOnmapDownloader.onResume();
 
-    mNavigationController.onResume();
+    mNavigationController.onActivityResumed(this);
 
     if (mNavAnimationController != null)
       mNavAnimationController.onResume();
@@ -1503,7 +1503,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     if (mOnmapDownloader != null)
       mOnmapDownloader.onPause();
     mPlacePageController.onActivityPaused(this);
-    mNavigationController.doForeground();
+    mNavigationController.onActivityPaused(this);
     super.onPause();
   }
 
