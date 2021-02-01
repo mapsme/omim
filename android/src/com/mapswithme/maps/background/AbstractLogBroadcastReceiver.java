@@ -21,7 +21,13 @@ public abstract class AbstractLogBroadcastReceiver extends BroadcastReceiver
   @Override
   public final void onReceive(Context context, Intent intent)
   {
-    String action = intent != null ? intent.getAction() : null;
+    if (intent == null)
+    {
+      LOGGER.w(getTag(), "An intent with null intent detected");
+      return;
+    }
+
+    String action = intent.getAction();
     if (!TextUtils.equals(getAssertAction(), action))
     {
       LOGGER.w(getTag(), "An intent with wrong action detected: " + action);
