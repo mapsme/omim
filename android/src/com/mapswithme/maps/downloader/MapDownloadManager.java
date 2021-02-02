@@ -23,6 +23,8 @@ public class MapDownloadManager
   private DownloadManager mDownloadManager;
   @NonNull
   private Map<String, Long> mRestoredRequests;
+  @NonNull
+  private MapDownloadProgressTracker mProgressTracker;
 
   public MapDownloadManager(@NonNull Context context)
   {
@@ -34,6 +36,7 @@ public class MapDownloadManager
 
     mDownloadManager = downloadManager;
     mRestoredRequests = loadEnqueued();
+    mProgressTracker = new MapDownloadProgressTracker(context);
   }
 
   @NonNull
@@ -115,13 +118,32 @@ public class MapDownloadManager
       requestId = id;
     }
 
+    mProgressTracker.add(requestId);
+
     return requestId;
   }
 
   @MainThread
   public void remove(long requestId)
   {
+    mProgressTracker.remove(requestId);
     mDownloadManager.remove(requestId);
+  }
+
+  public void onDownloadFinished(boolean status, long id)
+  {
+    mProgressTracker.remove(id);
+    MapManager.nativeOnDownloadFinished(status, id);
+  }
+
+  public void startProgressTracking()
+  {
+    mProgressTracker.start();
+  }
+
+  public void stopProgressTracking()
+  {
+    mProgressTracker.stop();
   }
 
   @NonNull

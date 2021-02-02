@@ -13,7 +13,9 @@
 #include <unordered_map>
 #include <utility>
 
-static std::unordered_map<int64_t, std::function<void(bool status)>> g_completionHandlers;
+using Callbacks = std::pair<std::function<void(bool status)>,
+                            std::function<void(int64_t downloaded, int64_t total)>>;
+static std::unordered_map<int64_t, Callbacks> g_completionHandlers;
 
 namespace storage
 {
@@ -124,7 +126,7 @@ void BackgroundDownloaderAdapter::DownloadFromLastUrl(CountryId const & countryI
   m_queue.SetTaskInfoForCountryId(countryId, id);
 
   urls.pop_back();
-  g_completionHandlers.emplace(id, [this, countryId, downloadPath, urls = std::move(urls)](bool status) mutable
+  auto onFinish = [this, countryId, downloadPath, urls = std::move(urls)](bool status) mutable
   {
     CHECK_THREAD_CHECKER(m_threadChecker, (""));
 
@@ -142,7 +144,20 @@ void BackgroundDownloaderAdapter::DownloadFromLastUrl(CountryId const & countryI
       m_queue.Remove(countryId);
       country.OnDownloadFinished(downloader::DownloadStatus::Completed);
     }
-  });
+  };
+
+  auto onProgress = [this, countryId](int64_t bytesDownloaded, int64_t bytesTotal)
+  {
+    CHECK_THREAD_CHECKER(m_threadChecker, (""));
+
+    if (!m_queue.Contains(countryId))
+      return;
+
+    auto const & country = m_queue.GetCountryById(countryId);
+    country.OnDownloadProgress({bytesDownloaded, bytesTotal});
+  };
+
+  g_completionHandlers.emplace(id, Callbacks(onFinish, onProgress));
 }
 
 void BackgroundDownloaderAdapter::RemoveByRequestId(int64_t id)
@@ -159,12 +174,25 @@ std::unique_ptr<MapFilesDownloader> GetDownloader()
 
 extern "C" {
 JNIEXPORT void JNICALL
-Java_com_mapswithme_maps_downloader_MapManager_nativeOnDownloadFinished(JNIEnv * env, jclass, jboolean status, jlong id)
+Java_com_mapswithme_maps_downloader_MapManager_nativeOnDownloadFinished(JNIEnv *, jclass,
+                                                                        jboolean status, jlong id)
 {
   auto const it = g_completionHandlers.find(static_cast<int64_t>(id));
   if (it == g_completionHandlers.end())
     return;
 
-  it->second(static_cast<bool>(status));
+  it->second.first(static_cast<bool>(status));
+}
+
+JNIEXPORT void JNICALL
+Java_com_mapswithme_maps_downloader_MapManager_nativeOnDownloadProgress(JNIEnv *, jclass, jlong id,
+                                                                        jlong bytesDownloaded,
+                                                                        jlong bytesTotal)
+{
+  auto const it = g_completionHandlers.find(static_cast<int64_t>(id));
+  if (it == g_completionHandlers.end())
+    return;
+
+  it->second.second(static_cast<int64_t>(bytesDownloaded), static_cast<int64_t>(bytesTotal));
 }
 }  // extern "C"

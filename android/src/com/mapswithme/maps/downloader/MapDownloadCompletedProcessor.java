@@ -111,7 +111,8 @@ public class MapDownloadCompletedProcessor
       if (!application.arePlatformAndCoreInitialized())
         return;
 
-      MapManager.nativeOnDownloadFinished(mStatus, mId);
+      MapDownloadManager manager = MapDownloadManager.from(application);
+      manager.onDownloadFinished(mStatus, mId);
     }
   }
 }
