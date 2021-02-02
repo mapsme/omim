@@ -105,7 +105,7 @@ public class MapDownloadManager
     {
       DownloadManager.Request request = new DownloadManager
           .Request(uri)
-          .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+          .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
 
       requestId = mDownloadManager.enqueue(request);
     }
