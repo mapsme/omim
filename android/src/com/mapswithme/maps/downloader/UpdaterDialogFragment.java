@@ -274,6 +274,8 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
       return;
     }
 
+    MapDownloadManager.from(requireContext()).startProgressTracking();
+
     if (mAutoUpdate)
     {
       if (!MapManager.nativeIsDownloading())
@@ -312,6 +314,8 @@ public class UpdaterDialogFragment extends BaseMwmDialogFragment
 
     if (mStorageCallback != null)
       mStorageCallback.detach();
+
+    MapDownloadManager.from(requireContext()).stopProgressTracking();
   }
 
   @Override
