@@ -23,6 +23,11 @@ public:
     return m_queue.empty();
   }
 
+  size_t Count() const override
+  {
+    return m_queue.size();
+  }
+
   bool Contains(CountryId const & country) const override
   {
     return m_queue.find(country) != m_queue.cend();
