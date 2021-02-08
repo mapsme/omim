@@ -12,12 +12,17 @@ import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import com.mapswithme.maps.Framework;
 import com.mapswithme.maps.MwmActivity;
 import com.mapswithme.maps.R;
 import com.mapswithme.maps.location.LocationHelper;
 import com.mapswithme.maps.location.LocationListener;
+import com.mapswithme.maps.sound.TtsPlayer;
 import com.mapswithme.util.Utils;
 import com.mapswithme.util.log.Logger;
 import com.mapswithme.util.log.LoggerFactory;
@@ -27,10 +32,10 @@ import static androidx.core.app.NotificationCompat.*;
 public class NavigationService extends Service
 {
   private static final String TAG = NavigationService.class.getSimpleName();
-  public static final String PACKAGE_NAME = NavigationService.class.getPackage().getName()
-                                                                   .concat(".")
-                                                                   .concat(TAG.toLowerCase());
-  private static final String EXTRA_STOP_SERVICE = PACKAGE_NAME + "finish";
+  public static final String PACKAGE_NAME = NavigationService.class.getPackage().getName();
+  public static final String PACKAGE_NAME_WITH_SERVICE_NAME = PACKAGE_NAME.concat(".")
+                                                                          .concat(TAG.toLowerCase());
+  private static final String EXTRA_STOP_SERVICE = PACKAGE_NAME_WITH_SERVICE_NAME + "finish";
 
   private static final String CHANNEL_ID = "LOCATION_CHANNEL";
   private static final int NOTIFICATION_ID = 12345678;
@@ -39,6 +44,12 @@ public class NavigationService extends Service
   private final Logger mLogger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.LOCATION);
   @NonNull
   private final IBinder mBinder = new LocalBinder();
+  @SuppressWarnings("NotNullFieldNotInitialized")
+  @NonNull
+  private final StringBuilder mStringBuilderNavigationText = new StringBuilder();
+  @SuppressWarnings("NotNullFieldNotInitialized")
+  @NonNull
+  private RemoteViews remoteViews;
 
   @SuppressWarnings("NotNullFieldNotInitialized")
   @NonNull
@@ -53,10 +64,11 @@ public class NavigationService extends Service
     public void onLocationUpdated(Location location)
     {
       mLogger.d(TAG, "onLocationUpdated()");
-      LocationHelper.INSTANCE.onLocationUpdated(location);
+      RoutingInfo routingInfo = LocationHelper.INSTANCE.updateLocationAndGetRoutingInfo(location);
       if (serviceIsRunningInForeground(getApplicationContext()))
       {
         mNotificationManager.notify(NOTIFICATION_ID, getNotification());
+        updateNotification(routingInfo);
       }
     }
 
@@ -79,6 +91,7 @@ public class NavigationService extends Service
   public void onCreate()
   {
     mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    remoteViews = new RemoteViews(getPackageName(), R.layout.navigation_notification);
 
     // Android O requires a Notification Channel.
     if (Utils.isOreoOrLater())
@@ -173,6 +186,7 @@ public class NavigationService extends Service
     }
   }
 
+  @NonNull
   private Notification getNotification()
   {
     Intent stopSelf = new Intent(this, NavigationService.class);
@@ -186,20 +200,48 @@ public class NavigationService extends Service
                      new Intent(this, MwmActivity.class), 0);
 
     Builder builder = new Builder(this, CHANNEL_ID)
-        .addAction(R.drawable.ic_launcher_foreground, getString(R.string.search_show_on_map),
-                   activityPendingIntent)
-        .addAction(R.drawable.ic_cancel, getString(R.string.cancel),
+        .addAction(R.drawable.ic_cancel, getString(R.string.button_exit),
                    pStopSelf)
-        .setContentText("text")
+        .setContentIntent(activityPendingIntent)
         .setOngoing(true)
+        .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+        .setCustomContentView(remoteViews)
+        .setCustomHeadsUpContentView(remoteViews)
         .setPriority(Notification.PRIORITY_HIGH)
-        .setSmallIcon(R.mipmap.ic_launcher)
-        .setWhen(System.currentTimeMillis());
+        .setSmallIcon(R.drawable.pw_notification)
+        .setShowWhen(true);
 
     if (Utils.isOreoOrLater())
       builder.setChannelId(CHANNEL_ID);
 
+  //  updateNotification(RoutingController.get().getCachedRoutingInfo());
     return builder.build();
+  }
+
+  private void updateNotification(@Nullable RoutingInfo routingInfo)
+  {
+    final String[] turnNotifications = Framework.nativeGenerateNotifications();
+    if (turnNotifications != null)
+    {
+      mStringBuilderNavigationText.delete(0, mStringBuilderNavigationText.length());
+      for (String turnNotification : turnNotifications)
+        mStringBuilderNavigationText.append(turnNotification);
+    }
+    remoteViews.setTextViewText(R.id.navigation_text, mStringBuilderNavigationText.toString());
+
+    StringBuilder stringBuilderNavigationSecondaryText = new StringBuilder();
+    final RoutingController routingController = RoutingController.get();
+    stringBuilderNavigationSecondaryText
+        .append(routingController.getStartPoint().getName()).append(" - ")
+        .append(routingController.getEndPoint().getName());
+    if (routingInfo != null)
+    {
+      stringBuilderNavigationSecondaryText.append(": ").append(routingInfo.totalTimeInSeconds / 60)
+                                          .append(" ").append(getString(R.string.minute));
+      remoteViews.setImageViewResource(R.id.navigation_icon, routingInfo.carDirection.getTurnRes());
+    }
+    remoteViews.setTextViewText(R.id.navigation_secondary_text, stringBuilderNavigationSecondaryText
+        .toString());
   }
 
   private void removeLocationUpdates()

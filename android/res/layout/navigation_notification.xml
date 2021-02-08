@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal">
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+    <TextView
+      android:id="@+id/navigation_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="@string/robotoMedium"
+      android:textSize="14sp"
+      tools:text="Направляйтесь на северо-запад" />
+    <TextView
+      android:id="@+id/navigation_secondary_text"
+      android:fontFamily="@string/robotoRegular"
+      android:textSize="14sp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      tools:text="Москва - ETA: 12:44 " />
+  </LinearLayout>
+  <ImageView
+    android:id="@+id/navigation_icon"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="5"
+    android:minWidth="@dimen/nav_icon_size"
+    android:minHeight="@dimen/nav_icon_size"
+    android:tint="?android:textColorSecondary" />
+</LinearLayout>

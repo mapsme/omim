@@ -15,6 +15,7 @@ import com.mapswithme.maps.base.Initializable;
 import com.mapswithme.maps.bookmarks.data.FeatureId;
 import com.mapswithme.maps.bookmarks.data.MapObject;
 import com.mapswithme.maps.routing.RoutingController;
+import com.mapswithme.maps.routing.RoutingInfo;
 import com.mapswithme.util.Config;
 import com.mapswithme.util.Listeners;
 import com.mapswithme.util.LocationUtils;
@@ -199,6 +200,13 @@ public enum LocationHelper implements Initializable<Context>
     mSavedLocationTime = System.currentTimeMillis();
   }
 
+  @Nullable
+  public RoutingInfo updateLocationAndGetRoutingInfo(@NonNull Location location)
+  {
+    onLocationUpdated(location);
+    return Framework.nativeGetRouteFollowingInfo();
+  }
+
   /**
    * @return MapObject.MY_POSITION, null if location is not yet determined or "My position" button is switched off.
    */
@@ -314,7 +322,7 @@ public enum LocationHelper implements Initializable<Context>
 
   private void notifyMyPositionModeChanged(int newMode)
   {
-    mLogger.d(TAG, "notifyMyPositionModeChanged(): " + LocationState.nameOf(newMode) , new Throwable());
+//    mLogger.d(TAG, "notifyMyPositionModeChanged(): " + LocationState.nameOf(newMode) , new Throwable());
 
     if (mUiCallback != null)
       mUiCallback.onMyPositionModeChanged(newMode);
