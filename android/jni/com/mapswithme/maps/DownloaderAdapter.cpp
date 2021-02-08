@@ -31,12 +31,6 @@ BackgroundDownloaderAdapter::BackgroundDownloaderAdapter()
   m_downloadManagerRemove = env->GetMethodID(downloadManagerClazz, "remove","(J)V");
   m_downloadManagerEnqueue = env->GetMethodID(downloadManagerClazz, "enqueue", "(Ljava/lang/String;)J");
   jni::HandleJavaException(env);
-
-//
-//
-// TODO(a): add subscribers.
-//
-//
 }
 
 BackgroundDownloaderAdapter::~BackgroundDownloaderAdapter()
@@ -55,13 +49,22 @@ void BackgroundDownloaderAdapter::Remove(CountryId const & countryId)
   if (!m_queue.Contains(countryId))
     return;
 
+  auto needNotify = false;
+
   auto const id = m_queue.GetTaskInfoForCountryId(countryId);
   if (id)
   {
+    needNotify  = true;
     RemoveByRequestId(*id);
     g_completionHandlers.erase(*id);
   }
   m_queue.Remove(countryId);
+
+  if (needNotify)
+  {
+    for (auto const subscriber : m_subscribers)
+      subscriber->OnFinishDownloading();
+  }
 }
 
 void BackgroundDownloaderAdapter::Clear()
@@ -70,13 +73,21 @@ void BackgroundDownloaderAdapter::Clear()
 
   MapFilesDownloader::Clear();
 
- m_queue.ForEachTaskInfo([this](auto const id)
- {
+  auto needNotify = !m_queue.IsEmpty();
+
+  m_queue.ForEachTaskInfo([this](auto const id)
+  {
     RemoveByRequestId(id);
     g_completionHandlers.erase(id);
- });
+  });
 
   m_queue.Clear();
+
+  if (needNotify)
+  {
+    for (auto const subscriber : m_subscribers)
+      subscriber->OnFinishDownloading();
+  }
 };
 
 QueueInterface const & BackgroundDownloaderAdapter::GetQueue() const
@@ -109,6 +120,12 @@ void BackgroundDownloaderAdapter::Download(QueuedCountry & queuedCountry)
   auto const path = queuedCountry.GetFileDownloadPath();
 
   m_queue.Append(std::move(queuedCountry));
+
+  if (m_queue.Count() == 1)
+  {
+    for (auto const subscriber : m_subscribers)
+      subscriber->OnStartDownloading();
+  }
 
   DownloadFromLastUrl(countryId, path, std::move(urls));
 }
@@ -143,6 +160,11 @@ void BackgroundDownloaderAdapter::DownloadFromLastUrl(CountryId const & countryI
       auto const country = m_queue.GetCountryById(countryId);
       m_queue.Remove(countryId);
       country.OnDownloadFinished(downloader::DownloadStatus::Completed);
+      if (m_queue.IsEmpty())
+      {
+        for (auto const subscriber : m_subscribers)
+          subscriber->OnFinishDownloading();
+      }
     }
   };
 
