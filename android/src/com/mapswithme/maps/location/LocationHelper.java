@@ -200,13 +200,6 @@ public enum LocationHelper implements Initializable<Context>
     mSavedLocationTime = System.currentTimeMillis();
   }
 
-  @Nullable
-  public RoutingInfo updateLocationAndGetRoutingInfo(@NonNull Location location)
-  {
-    onLocationUpdated(location);
-    return Framework.nativeGetRouteFollowingInfo();
-  }
-
   /**
    * @return MapObject.MY_POSITION, null if location is not yet determined or "My position" button is switched off.
    */
@@ -322,7 +315,7 @@ public enum LocationHelper implements Initializable<Context>
 
   private void notifyMyPositionModeChanged(int newMode)
   {
-//    mLogger.d(TAG, "notifyMyPositionModeChanged(): " + LocationState.nameOf(newMode) , new Throwable());
+    mLogger.d(TAG, "notifyMyPositionModeChanged(): " + LocationState.nameOf(newMode), new Throwable());
 
     if (mUiCallback != null)
       mUiCallback.onMyPositionModeChanged(newMode);
@@ -604,7 +597,6 @@ public enum LocationHelper implements Initializable<Context>
 
     Utils.keepScreenOn(false, mUiCallback.getActivity().getWindow());
     mUiCallback = null;
-    stop();
   }
 
   @UiThread

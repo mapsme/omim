@@ -183,6 +183,7 @@ public class NavigationController implements Application.ActivityLifecycleCallba
                                              RoutingController.get().getLastRouterType(),
                                              TrafficManager.INSTANCE.isEnabled());
       RoutingController.get().cancel();
+      stop(parent);
       break;
     case SETTINGS:
       Statistics.INSTANCE.trackEvent(Statistics.EventName.ROUTING_SETTINGS);

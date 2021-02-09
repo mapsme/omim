@@ -1498,7 +1498,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   protected void onPause()
   {
-    TtsPlayer.INSTANCE.stop();
+    if (!RoutingController.get().isNavigating())
+      TtsPlayer.INSTANCE.stop();
     LikesManager.INSTANCE.cancelDialogs();
     if (mOnmapDownloader != null)
       mOnmapDownloader.onPause();
@@ -1531,6 +1532,8 @@ public class MwmActivity extends BaseMwmFragmentActivity
     Framework.nativeRemovePlacePageActivationListener();
     BookmarkManager.INSTANCE.removeLoadingListener(this);
     BookmarkManager.INSTANCE.removeCatalogListener(this);
+    LocationHelper.INSTANCE.detach(!isFinishing());
+    RoutingController.get().detach();
     mPlacePageController.onActivityStopped(this);
     MwmApplication.backgroundTracker(getActivity()).removeListener(this);
     IsolinesManager.from(getApplicationContext()).detach();
@@ -1608,8 +1611,6 @@ public class MwmActivity extends BaseMwmFragmentActivity
       mBookmarksAllSubscriptionController.destroy();
     if (mBookmarksSightsSubscriptionController != null)
       mBookmarksSightsSubscriptionController.destroy();
-    LocationHelper.INSTANCE.detach(!isFinishing());
-    RoutingController.get().detach();
     mNavigationController.destroy();
     mToggleMapLayerController.detachCore();
     TrafficManager.INSTANCE.detachAll();
@@ -2316,13 +2317,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
   @Override
   public void onNavigationCancelled()
   {
-    mNavigationController.stop(this);
     updateSearchBar();
     ThemeSwitcher.INSTANCE.restart(isMapRendererActive());
     if (mRoutingPlanInplaceController == null)
       return;
 
     mRoutingPlanInplaceController.hideDrivingOptionsView();
+    mNavigationController.stop(this);
   }
 
   @Override

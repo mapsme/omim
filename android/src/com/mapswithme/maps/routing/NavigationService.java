@@ -46,10 +46,10 @@ public class NavigationService extends Service
   private final IBinder mBinder = new LocalBinder();
   @SuppressWarnings("NotNullFieldNotInitialized")
   @NonNull
-  private final StringBuilder mStringBuilderNavigationText = new StringBuilder();
+  private String mNavigationText = "";
   @SuppressWarnings("NotNullFieldNotInitialized")
   @NonNull
-  private RemoteViews remoteViews;
+  private RemoteViews mRemoteViews;
 
   @SuppressWarnings("NotNullFieldNotInitialized")
   @NonNull
@@ -64,7 +64,7 @@ public class NavigationService extends Service
     public void onLocationUpdated(Location location)
     {
       mLogger.d(TAG, "onLocationUpdated()");
-      RoutingInfo routingInfo = LocationHelper.INSTANCE.updateLocationAndGetRoutingInfo(location);
+      RoutingInfo routingInfo = Framework.nativeGetRouteFollowingInfo();
       if (serviceIsRunningInForeground(getApplicationContext()))
       {
         mNotificationManager.notify(NOTIFICATION_ID, getNotification());
@@ -91,7 +91,7 @@ public class NavigationService extends Service
   public void onCreate()
   {
     mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-    remoteViews = new RemoteViews(getPackageName(), R.layout.navigation_notification);
+    mRemoteViews = new RemoteViews(getPackageName(), R.layout.navigation_notification);
 
     // Android O requires a Notification Channel.
     if (Utils.isOreoOrLater())
@@ -205,8 +205,8 @@ public class NavigationService extends Service
         .setContentIntent(activityPendingIntent)
         .setOngoing(true)
         .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-        .setCustomContentView(remoteViews)
-        .setCustomHeadsUpContentView(remoteViews)
+        .setCustomContentView(mRemoteViews)
+        .setCustomHeadsUpContentView(mRemoteViews)
         .setPriority(Notification.PRIORITY_HIGH)
         .setSmallIcon(R.drawable.pw_notification)
         .setShowWhen(true);
@@ -214,7 +214,6 @@ public class NavigationService extends Service
     if (Utils.isOreoOrLater())
       builder.setChannelId(CHANNEL_ID);
 
-  //  updateNotification(RoutingController.get().getCachedRoutingInfo());
     return builder.build();
   }
 
@@ -223,24 +222,25 @@ public class NavigationService extends Service
     final String[] turnNotifications = Framework.nativeGenerateNotifications();
     if (turnNotifications != null)
     {
-      mStringBuilderNavigationText.delete(0, mStringBuilderNavigationText.length());
-      for (String turnNotification : turnNotifications)
-        mStringBuilderNavigationText.append(turnNotification);
+      mNavigationText = Utils.fixCaseInString(turnNotifications[0]);
+      TtsPlayer.INSTANCE.playTurnNotifications(getApplicationContext(), turnNotifications);
     }
-    remoteViews.setTextViewText(R.id.navigation_text, mStringBuilderNavigationText.toString());
+    mRemoteViews.setTextViewText(R.id.navigation_text, mNavigationText);
 
     StringBuilder stringBuilderNavigationSecondaryText = new StringBuilder();
     final RoutingController routingController = RoutingController.get();
+    String routingArriveString = getString(R.string.routing_arrive);
     stringBuilderNavigationSecondaryText
-        .append(routingController.getStartPoint().getName()).append(" - ")
-        .append(routingController.getEndPoint().getName());
+        .append(String.format(routingArriveString, routingController.getEndPoint().getName()));
     if (routingInfo != null)
     {
-      stringBuilderNavigationSecondaryText.append(": ").append(routingInfo.totalTimeInSeconds / 60)
-                                          .append(" ").append(getString(R.string.minute));
-      remoteViews.setImageViewResource(R.id.navigation_icon, routingInfo.carDirection.getTurnRes());
+      stringBuilderNavigationSecondaryText
+          .append(": ")
+          .append(Utils.calculateFinishTime(routingInfo.totalTimeInSeconds));
+      mRemoteViews.setImageViewResource(R.id.navigation_icon, routingInfo.carDirection.getTurnRes());
+      mRemoteViews.setTextViewText(R.id.navigation_distance_text, routingInfo.distToTurn + " " + routingInfo.turnUnits);
     }
-    remoteViews.setTextViewText(R.id.navigation_secondary_text, stringBuilderNavigationSecondaryText
+    mRemoteViews.setTextViewText(R.id.navigation_secondary_text, stringBuilderNavigationSecondaryText
         .toString());
   }
 

@@ -8,30 +8,45 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
     android:layout_gravity="center"
+    android:layout_weight="1"
     android:orientation="vertical">
     <TextView
       android:id="@+id/navigation_text"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:fontFamily="@string/robotoMedium"
-      android:textSize="14sp"
+      android:textSize="@dimen/text_size_body_3"
       tools:text="Направляйтесь на северо-запад" />
     <TextView
       android:id="@+id/navigation_secondary_text"
-      android:fontFamily="@string/robotoRegular"
-      android:textSize="14sp"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:fontFamily="@string/robotoRegular"
+      android:textSize="@dimen/text_size_body_3"
       tools:text="Москва - ETA: 12:44 " />
   </LinearLayout>
-  <ImageView
-    android:id="@+id/navigation_icon"
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="5"
-    android:minWidth="@dimen/nav_icon_size"
-    android:minHeight="@dimen/nav_icon_size"
-    android:tint="?android:textColorSecondary" />
+    android:layout_weight="4"
+    android:orientation="vertical">
+    <ImageView
+      android:id="@+id/navigation_icon"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:minWidth="@dimen/nav_icon_size"
+      android:minHeight="@dimen/nav_icon_size"
+      android:tint="?android:textColorSecondary" />
+    <TextView
+      android:id="@+id/navigation_distance_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="@string/robotoMedium"
+      android:gravity="center"
+      android:textSize="@dimen/text_size_body_0"
+      android:textColor="?android:textColorSecondary"
+      tools:text="44m" />
+  </LinearLayout>
 </LinearLayout>
