@@ -10,8 +10,6 @@
 
 #include "std/target_os.hpp"
 
-#include <sstream>
-
 namespace
 {
 std::string const kDiffsPath = "diffs";
