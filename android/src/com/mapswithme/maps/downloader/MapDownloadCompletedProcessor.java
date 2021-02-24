@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.util.concurrency.UiThread;
 import com.mapswithme.util.log.Logger;
@@ -25,29 +26,31 @@ public class MapDownloadCompletedProcessor
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.DOWNLOADER);
   private static final String TAG = MapDownloadCompletedProcessor.class.getSimpleName();
 
-  public static boolean isSupported(@NonNull Cursor cursor)
-  {
-    String targetUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI));
-    String targetUriPath = Uri.parse(targetUri).getPath();
-
-    return !TextUtils.isEmpty(targetUriPath) && MapManager.nativeIsUrlSupported(targetUriPath);
-  }
-
-  public static void process(@NonNull Context context, long id, @NonNull Cursor cursor)
+  @WorkerThread
+  public static boolean process(@NonNull Context context, long id, @NonNull Cursor cursor)
   {
     try
     {
       String targetUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI));
+      String targetUriPath = Uri.parse(targetUri).getPath();
+
+      if (TextUtils.isEmpty(targetUriPath) || !MapManager.nativeIsUrlSupported(targetUriPath))
+        return false;
+
       int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
       String downloadedFileUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
 
       boolean result = processColumns(context, status, targetUri, downloadedFileUri);
       UiThread.run(new MapDownloadCompletedTask(context, result, id));
       LOGGER.d(TAG, "Processing for map downloading for request id " + id + " is finished.");
+
+      return true;
     }
     catch (Exception e)
     {
       LOGGER.e(TAG, "Failed to process map download for request id " + id + ". Exception ", e);
+
+      return false;
     }
   }
 
@@ -108,9 +111,6 @@ public class MapDownloadCompletedProcessor
     public void run()
     {
       MwmApplication application = MwmApplication.from(mAppContext);
-      if (!application.arePlatformAndCoreInitialized())
-        return;
-
       MapDownloadManager manager = MapDownloadManager.from(application);
       manager.onDownloadFinished(mStatus, mId);
     }

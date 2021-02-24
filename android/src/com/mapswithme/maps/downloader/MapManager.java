@@ -436,7 +436,8 @@ public final class MapManager
   public static native @Nullable String nativeGetSelectedCountry();
 
   public static native boolean nativeIsUrlSupported(@NonNull String url);
-  public static native @NonNull String nativeGetFilePathByUrl(@NonNull String url);
+  @NonNull
+  public static native String nativeGetFilePathByUrl(@NonNull String url);
 
   public static native void nativeOnDownloadFinished(boolean status, long id);
   public static native void nativeOnDownloadProgress(long id, long bytesDownloaded, long bytesTotal);
