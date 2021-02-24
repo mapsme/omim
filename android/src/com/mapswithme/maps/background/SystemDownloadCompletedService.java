@@ -1,6 +1,7 @@
 package com.mapswithme.maps.background;
 
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
@@ -13,6 +14,11 @@ import com.mapswithme.util.Utils;
 
 public class SystemDownloadCompletedService extends JobIntentService
 {
+  private interface DownloadProcessor
+  {
+    boolean process(@NonNull Context context, long id, @NonNull Cursor cursor);
+  }
+
   @Override
   public void onCreate()
   {
@@ -44,10 +50,16 @@ public class SystemDownloadCompletedService extends JobIntentService
       if (!cursor.moveToFirst())
         return;
 
-      if (MapDownloadCompletedProcessor.isSupported(cursor))
-        MapDownloadCompletedProcessor.process(getApplicationContext(), id, cursor);
-      else
-        BookmarksDownloadCompletedProcessor.process(getApplicationContext(), cursor);
+      final DownloadProcessor[] processors = {
+          MapDownloadCompletedProcessor::process,
+          BookmarksDownloadCompletedProcessor::process
+      };
+
+      for (DownloadProcessor processor : processors)
+      {
+        if (processor.process(getApplicationContext(), id, cursor))
+          break;
+      }
     }
     finally
     {

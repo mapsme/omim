@@ -35,14 +35,14 @@ BackgroundDownloaderAdapter::BackgroundDownloaderAdapter()
 
 BackgroundDownloaderAdapter::~BackgroundDownloaderAdapter()
 {
-  CHECK_THREAD_CHECKER(m_threadChecker, (""));
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
 
   g_completionHandlers.clear();
 }
 
 void BackgroundDownloaderAdapter::Remove(CountryId const & countryId)
 {
-  CHECK_THREAD_CHECKER(m_threadChecker, (""));
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
 
   MapFilesDownloader::Remove(countryId);
 
@@ -69,7 +69,7 @@ void BackgroundDownloaderAdapter::Remove(CountryId const & countryId)
 
 void BackgroundDownloaderAdapter::Clear()
 {
-  CHECK_THREAD_CHECKER(m_threadChecker, (""));
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
 
   MapFilesDownloader::Clear();
 
@@ -92,7 +92,7 @@ void BackgroundDownloaderAdapter::Clear()
 
 QueueInterface const & BackgroundDownloaderAdapter::GetQueue() const
 {
-  CHECK_THREAD_CHECKER(m_threadChecker, (""));
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
 
   if (m_queue.IsEmpty())
     return MapFilesDownloader::GetQueue();
@@ -102,7 +102,7 @@ QueueInterface const & BackgroundDownloaderAdapter::GetQueue() const
 
 void BackgroundDownloaderAdapter::Download(QueuedCountry & queuedCountry)
 {
-  CHECK_THREAD_CHECKER(m_threadChecker, (""));
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
 
   if (!IsDownloadingAllowed())
   {
@@ -134,18 +134,21 @@ void BackgroundDownloaderAdapter::DownloadFromLastUrl(CountryId const & countryI
                                                      std::string const & downloadPath,
                                                      std::vector<std::string> && urls)
 {
-  CHECK_THREAD_CHECKER(m_threadChecker, (""));
+  CHECK_THREAD_CHECKER(m_threadChecker, ());
+  ASSERT(!urls.empty(), ());
 
   auto env = jni::GetEnv();
   jni::TScopedLocalRef url(env, jni::ToJavaString(env, urls.back()));
   auto id = static_cast<int64_t>(env->CallLongMethod(*m_downloadManager, m_downloadManagerEnqueue, url.get()));
+
+  jni::HandleJavaException(env);
 
   m_queue.SetTaskInfoForCountryId(countryId, id);
 
   urls.pop_back();
   auto onFinish = [this, countryId, downloadPath, urls = std::move(urls)](bool status) mutable
   {
-    CHECK_THREAD_CHECKER(m_threadChecker, (""));
+    CHECK_THREAD_CHECKER(m_threadChecker, ());
 
     if (!m_queue.Contains(countryId))
       return;
@@ -159,7 +162,9 @@ void BackgroundDownloaderAdapter::DownloadFromLastUrl(CountryId const & countryI
     {
       auto const country = m_queue.GetCountryById(countryId);
       m_queue.Remove(countryId);
-      country.OnDownloadFinished(downloader::DownloadStatus::Completed);
+      country.OnDownloadFinished(status
+                                 ? downloader::DownloadStatus::Completed
+                                 : downloader::DownloadStatus::Failed);
       if (m_queue.IsEmpty())
       {
         for (auto const subscriber : m_subscribers)
@@ -170,7 +175,7 @@ void BackgroundDownloaderAdapter::DownloadFromLastUrl(CountryId const & countryI
 
   auto onProgress = [this, countryId](int64_t bytesDownloaded, int64_t bytesTotal)
   {
-    CHECK_THREAD_CHECKER(m_threadChecker, (""));
+    CHECK_THREAD_CHECKER(m_threadChecker, ());
 
     if (!m_queue.Contains(countryId))
       return;
@@ -186,6 +191,8 @@ void BackgroundDownloaderAdapter::RemoveByRequestId(int64_t id)
 {
   auto env = jni::GetEnv();
   env->CallVoidMethod(*m_downloadManager, m_downloadManagerRemove, static_cast<jlong>(id));
+
+  jni::HandleJavaException(env);
 }
 
 std::unique_ptr<MapFilesDownloader> GetDownloader()

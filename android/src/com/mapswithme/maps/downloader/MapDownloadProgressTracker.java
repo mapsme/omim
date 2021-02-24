@@ -21,9 +21,9 @@ public class MapDownloadProgressTracker
   private static final long PROGRESS_TRACKING_INTERVAL_MILLISECONDS = 1000;
 
   @NonNull
-  DownloadManager mDownloadManager;
+  private final DownloadManager mDownloadManager;
   @NonNull
-  private Set<Long> mTrackingIds = new HashSet<>();
+  private final Set<Long> mTrackingIds = new HashSet<>();
   private boolean mTrackingEnabled = false;
   private final Runnable mTrackingMethod = this::trackProgress;
 

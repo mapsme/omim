@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.util.Utils;
+import com.mapswithme.util.log.Logger;
+import com.mapswithme.util.log.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -19,9 +21,12 @@ import java.util.Map;
 
 public class MapDownloadManager
 {
+  private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.DOWNLOADER);
+  private static final String TAG = MapDownloadManager.class.getSimpleName();
+
   @NonNull
   private DownloadManager mDownloadManager;
-  @NonNull
+  @Nullable
   private Map<String, Long> mRestoredRequests;
   @NonNull
   private MapDownloadProgressTracker mProgressTracker;
@@ -35,15 +40,16 @@ public class MapDownloadManager
       throw new NullPointerException("Download manager is null, failed to create MapDownloadManager");
 
     mDownloadManager = downloadManager;
-    mRestoredRequests = loadEnqueued();
     mProgressTracker = new MapDownloadProgressTracker(context);
   }
 
   @NonNull
   private Map<String, Long> loadEnqueued()
   {
+    Map<String, Long> result = new HashMap<>();
     DownloadManager.Query query = new DownloadManager.Query();
-    query.setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING);
+    query.setFilterByStatus(DownloadManager.STATUS_PENDING | DownloadManager.STATUS_RUNNING |
+                            DownloadManager.STATUS_PAUSED | DownloadManager.STATUS_SUCCESSFUL);
     Cursor cursor = null;
     try
     {
@@ -51,11 +57,10 @@ public class MapDownloadManager
 
       cursor.moveToFirst();
       int count = cursor.getCount();
-      Map<String, Long> result = new HashMap<>();
 
       for (int i = 0; i < count; ++i)
       {
-        long id = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_ID));
+        long id = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_ID));
         String url = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI));
         String urlPath = getUrlPath(url);
 
@@ -64,13 +69,17 @@ public class MapDownloadManager
 
         cursor.moveToNext();
       }
-
-      return result;
+    }
+    catch (Exception e)
+    {
+      LOGGER.e(TAG, "Failed to load enqueued requests. Exception ", e);
     }
     finally
     {
       Utils.closeSafely(cursor);
     }
+
+    return result;
   }
 
   @Nullable
@@ -100,6 +109,9 @@ public class MapDownloadManager
     String uriPath = uri.getPath();
     if (uriPath == null)
       throw new AssertionError("The path must be not null");
+
+    if (mRestoredRequests == null)
+      mRestoredRequests = loadEnqueued();
 
     Long id = mRestoredRequests.get(uriPath);
     long requestId = 0;

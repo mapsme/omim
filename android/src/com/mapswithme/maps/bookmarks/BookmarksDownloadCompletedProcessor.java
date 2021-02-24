@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.mapswithme.maps.MwmApplication;
 import com.mapswithme.maps.bookmarks.data.Error;
@@ -26,39 +27,44 @@ import java.net.URLDecoder;
 
 public class BookmarksDownloadCompletedProcessor
 {
+  private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.DOWNLOADER);
+  private static final String TAG = BookmarksDownloadCompletedProcessor.class.getSimpleName();
+
   public final static String ACTION_DOWNLOAD_COMPLETED = "action_download_completed";
   public final static String EXTRA_DOWNLOAD_STATUS = "extra_download_status";
 
-  public static void process(@NonNull Context context, @NonNull Cursor cursor)
+  @WorkerThread
+  public static boolean process(@NonNull Context context, long id, @NonNull Cursor cursor)
   {
-    final OperationStatus status = processInternal(context, cursor);
-    Logger logger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.BILLING);
-    String tag = BookmarksDownloadCompletedProcessor.class.getSimpleName();
-    logger.i(tag, "Download status: " + status);
+    try
+    {
+      final OperationStatus status = processInternal(context, cursor);
+      LOGGER.i(TAG, "Download status: " + status);
 
-    UiThread.run(new BookmarkDownloadCompletedTask(context, status));
+      UiThread.run(new BookmarkDownloadCompletedTask(context, status));
+    }
+    catch (Exception e)
+    {
+      LOGGER.e(TAG, "Failed to process bookmark download for request id " + id + ". Exception ", e);
+      return false;
+    }
+
+    return true;
   }
 
   @NonNull
   private static OperationStatus processInternal(@NonNull Context context, @NonNull Cursor cursor)
   {
-    try
+    if (isDownloadFailed(cursor))
     {
-      if (isDownloadFailed(cursor))
-      {
-        Error error = new Error(getHttpStatus(cursor), getErrorMessage(cursor));
-        return new OperationStatus(null, error);
-      }
-
-      logToPushWoosh((Application) context, cursor);
-
-      Result result = new Result(getFilePath(cursor), getArchiveId(cursor));
-      return new OperationStatus(result, null);
+      Error error = new Error(getHttpStatus(cursor), getErrorMessage(cursor));
+      return new OperationStatus(null, error);
     }
-    catch (Exception e)
-    {
-      return new OperationStatus(null, new Error(e.getMessage()));
-    }
+
+    logToPushWoosh((Application) context, cursor);
+
+    Result result = new Result(getFilePath(cursor), getArchiveId(cursor));
+    return new OperationStatus(result, null);
   }
 
   private static boolean isDownloadFailed(@NonNull Cursor cursor)

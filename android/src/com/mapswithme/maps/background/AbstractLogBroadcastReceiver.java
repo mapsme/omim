@@ -23,7 +23,7 @@ public abstract class AbstractLogBroadcastReceiver extends BroadcastReceiver
   {
     if (intent == null)
     {
-      LOGGER.w(getTag(), "An intent with null intent detected");
+      LOGGER.w(getTag(), "A null intent detected");
       return;
     }
 
