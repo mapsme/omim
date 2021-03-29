@@ -10,16 +10,21 @@
 
 #include "3party/Alohalytics/src/alohalytics.h"
 
+#include <chrono>
+#include <map>
 #include <sstream>
 #include <utility>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace
 {
 auto constexpr kTimeoutInSeconds = 5.0;
 
-void DoPing(string const & url, size_t index, vector<string> & readyUrls)
+using ResponseTimeAndUrl = pair<int32_t, string>;
+
+void DoPing(string const & url, size_t index, vector<ResponseTimeAndUrl> & responseTimeAndUrls)
 {
   if (url.empty())
   {
@@ -30,9 +35,12 @@ void DoPing(string const & url, size_t index, vector<string> & readyUrls)
   platform::HttpClient request(url);
   request.SetHttpMethod("HEAD");
   request.SetTimeout(kTimeoutInSeconds);
+  auto begin = high_resolution_clock::now();
   if (request.RunHttpRequest() && !request.WasRedirected() && request.ErrorCode() == 200)
   {
-    readyUrls[index] = url;
+    auto end = high_resolution_clock::now();
+    auto responseTime = duration_cast<milliseconds>(end - begin).count();
+    responseTimeAndUrls[index] = {responseTime, url};
   }
   else
   {
@@ -56,19 +64,26 @@ namespace storage
 // static
 Pinger::Endpoints Pinger::ExcludeUnavailableEndpoints(Endpoints const & urls)
 {
+  using base::thread_pool::delayed::ThreadPool;
+
   auto const size = urls.size();
   CHECK_GREATER(size, 0, ());
 
-  vector<string> readyUrls(size);
+  vector<ResponseTimeAndUrl> responseTimeAndUrls(size);
   {
-    base::thread_pool::delayed::ThreadPool t(size);
+    ThreadPool t(size, ThreadPool::Exit::ExecPending);
     for (size_t i = 0; i < size; ++i)
-      t.Push([url = urls[i], &readyUrls, i] { DoPing(url, i, readyUrls); });
-
-    t.Shutdown(base::thread_pool::delayed::ThreadPool::Exit::ExecPending);
+      t.Push([url = urls[i], &responseTimeAndUrls, i] { DoPing(url, i, responseTimeAndUrls); });
   }
 
-  base::EraseIf(readyUrls, [](auto const & url) { return url.empty(); });
+  sort(responseTimeAndUrls.begin(), responseTimeAndUrls.end());
+
+  vector<string> readyUrls;
+  for (auto & [_, url] : responseTimeAndUrls)
+  {
+    readyUrls.push_back(move(url));
+  }
+
   SendStatistics(readyUrls.size());
   return readyUrls;
 }
