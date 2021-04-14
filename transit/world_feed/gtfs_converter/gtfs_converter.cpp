@@ -25,6 +25,8 @@ DEFINE_string(path_json, "", "Output directory for dumping json files");
 DEFINE_string(path_resources, "", "MAPS.ME resources directory");
 DEFINE_string(start_feed, "", "Optional. Feed directory from which the process continues");
 DEFINE_string(stop_feed, "", "Optional. Feed directory on which to stop the process");
+DEFINE_bool(generate_trivial_shapes, false,
+            "Optional. Generate trivial shapes for trips without shapes.");
 
 // Finds subdirectories with feeds.
 Platform::FilesList GetGtfsFeedsInDirectory(std::string const & path)
@@ -103,13 +105,13 @@ FeedStatus ReadFeed(gtfs::Feed & feed)
 {
   // First we read shapes. If there are no shapes in feed we do not need to read all the required
   // files - agencies, stops, etc.
-  if (auto res = feed.read_shapes(); res != gtfs::ResultCode::OK)
+  if (auto res = feed.read_shapes(); res != gtfs::ResultCode::OK && !FLAGS_generate_trivial_shapes)
   {
     LOG(LWARNING, ("Could not get shapes.", res.message));
     return FeedStatus::NO_SHAPES;
   }
 
-  if (feed.get_shapes().empty())
+  if (feed.get_shapes().empty() && !FLAGS_generate_trivial_shapes)
     return FeedStatus::NO_SHAPES;
 
   // We try to parse required for json files and return error in case of invalid file content.
@@ -220,7 +222,7 @@ bool ConvertFeeds(transit::IdGenerator & generator, transit::IdGenerator & gener
 
     transit::WorldFeed globalFeed(generator, generatorEdges, colorPicker, mwmMatcher);
 
-    if (!globalFeed.SetFeed(std::move(feed)))
+    if (!globalFeed.SetFeed(std::move(feed), FLAGS_generate_trivial_shapes))
     {
       LOG(LINFO, ("Error transforming feed for json representation."));
       ++feedsNotDumpedCount;

@@ -285,7 +285,7 @@ public:
   WorldFeed(IdGenerator & generator, IdGenerator & generatorEdges, ColorPicker & colorPicker,
             feature::CountriesFilesAffiliation & mwmMatcher);
   // Transforms GTFS feed into the global feed.
-  bool SetFeed(gtfs::Feed && feed);
+  bool SetFeed(gtfs::Feed && feed, bool generateTrivialShapes);
 
   // Dumps global feed to |world_feed_path|.
   bool Save(std::string const & worldFeedDir, bool overwrite);
@@ -302,8 +302,9 @@ private:
   bool FillNetworks();
   // Fills routes from GTFS routes data.
   bool FillRoutes();
-  // Fills lines and corresponding shapes from GTFS trips and shapes.
-  bool FillLinesAndShapes();
+  // Fills lines and corresponding shapes from GTFS trips and shapes. Iff |generateTrivialShapes| is
+  // set to true generates trivial shapes for trips without shape id.
+  bool FillLinesAndShapes(bool generateTrivialShapes);
   // Deletes shapes which are sub-shapes and refreshes corresponding links in lines.
   void ModifyLinesAndShapes();
   // Gets service monthday open/closed ranges, weekdays and exceptions in schedule.
