@@ -43,7 +43,7 @@ public:
   {
     gtfs::Feed feed(base::JoinPath(m_testPath, "minimalistic_feed"));
     TEST_EQUAL(feed.read_feed().code, gtfs::ResultCode::OK, ());
-    TEST(m_globalFeed.SetFeed(std::move(feed)), ());
+    TEST(m_globalFeed.SetFeed(std::move(feed), false /* generateTrivialShapes */), ());
 
     TEST_EQUAL(m_globalFeed.m_networks.m_data.size(), 1, ());
     TEST_EQUAL(m_globalFeed.m_routes.m_data.size(), 2, ());
@@ -59,7 +59,7 @@ public:
   {
     gtfs::Feed feed(base::JoinPath(m_testPath, "real_life_feed"));
     TEST_EQUAL(feed.read_feed().code, gtfs::ResultCode::OK, ());
-    TEST(m_globalFeed.SetFeed(std::move(feed)), ());
+    TEST(m_globalFeed.SetFeed(std::move(feed), false /* generateTrivialShapes */), ());
 
     TEST_EQUAL(m_globalFeed.m_networks.m_data.size(), 21, ());
     TEST_EQUAL(m_globalFeed.m_routes.m_data.size(), 87, ());
@@ -78,7 +78,7 @@ public:
   {
     gtfs::Feed feed(base::JoinPath(m_testPath, "feed_with_multiple_shape_projections"));
     TEST_EQUAL(feed.read_feed().code, gtfs::ResultCode::OK, ());
-    TEST(m_globalFeed.SetFeed(std::move(feed)), ());
+    TEST(m_globalFeed.SetFeed(std::move(feed), false /* generateTrivialShapes */), ());
 
     TEST_EQUAL(m_globalFeed.m_networks.m_data.size(), 1, ());
     TEST_EQUAL(m_globalFeed.m_routes.m_data.size(), 1, ());
@@ -96,14 +96,14 @@ public:
     gtfs::Feed feed(base::JoinPath(m_testPath, "feed_with_wrong_stops_order"));
     TEST_EQUAL(feed.read_feed().code, gtfs::ResultCode::OK, ());
     // Feed has wrong stops order (impossible for trip shape) and should be rejected.
-    TEST(!m_globalFeed.SetFeed(std::move(feed)), ());
+    TEST(!m_globalFeed.SetFeed(std::move(feed), false /* generateTrivialShapes */), ());
   }
 
   void ReadFeedWithBackwardOrder()
   {
     gtfs::Feed feed(base::JoinPath(m_testPath, "feed_with_backward_order"));
     TEST_EQUAL(feed.read_feed().code, gtfs::ResultCode::OK, ());
-    TEST(m_globalFeed.SetFeed(std::move(feed)), ());
+    TEST(m_globalFeed.SetFeed(std::move(feed), false /* generateTrivialShapes */), ());
 
     TEST_EQUAL(m_globalFeed.m_networks.m_data.size(), 1, ());
     TEST_EQUAL(m_globalFeed.m_routes.m_data.size(), 1, ());
@@ -124,7 +124,7 @@ public:
   {
     gtfs::Feed feed(base::JoinPath(m_testPath, "feed_long_itinerary"));
     TEST_EQUAL(feed.read_feed().code, gtfs::ResultCode::OK, ());
-    TEST(m_globalFeed.SetFeed(std::move(feed)), ());
+    TEST(m_globalFeed.SetFeed(std::move(feed), false /* generateTrivialShapes */), ());
 
     TEST_EQUAL(m_globalFeed.m_lines.m_data.size(), 1, ());
     TEST_EQUAL(m_globalFeed.m_stops.m_data.size(), 4, ());

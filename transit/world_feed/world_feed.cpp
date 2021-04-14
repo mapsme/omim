@@ -679,7 +679,7 @@ bool WorldFeed::FillStopsEdges()
   return !m_edges.m_data.empty();
 }
 
-bool WorldFeed::FillLinesAndShapes()
+bool WorldFeed::FillLinesAndShapes(bool generateTrivialShapes)
 {
   std::unordered_map<gtfs::Id, gtfs::Shape> shapes;
   for (const auto & shape : m_feed.get_shapes())
@@ -705,28 +705,48 @@ bool WorldFeed::FillLinesAndShapes()
               base::LessBy(&gtfs::StopTime::stop_sequence));
   }
 
+  size_t generatedId = 0;
+  std::unordered_map<std::string, std::string> generatedShapeIds;
   for (const auto & trip : m_feed.get_trips())
   {
+    bool generate = false;
+
     // We skip routes filtered on the route preparation stage.
     auto const itRoute = m_gtfsIdToHash[FieldIdx::RoutesIdx].find(trip.route_id);
     if (itRoute == m_gtfsIdToHash[FieldIdx::RoutesIdx].end())
       continue;
 
-    // Skip trips with corrupted shapes.
-    if (trip.shape_id.empty())
-      continue;
-
-    std::string const & routeHash = itRoute->second;
-
     std::string stopIds;
-
     for (auto const & stopTime : stopTimes[trip.trip_id])
       stopIds += stopTime.stop_id + kDelimiter;
 
-    std::string const & lineHash = BuildHash(routeHash, trip.shape_id, stopIds);
+    auto tripShapeId = trip.shape_id;
+    // Skip trips with corrupted shapes.
+    if (trip.shape_id.empty() && !generateTrivialShapes)
+      continue;
+
+    if (trip.shape_id.empty())
+    {
+      auto const it = generatedShapeIds.find(stopIds);
+      if (it != generatedShapeIds.end())
+      {
+        tripShapeId = it->second;
+      }
+      else
+      {
+        generate = true;
+        tripShapeId = "generated" + strings::to_string(generatedId);
+        generatedShapeIds[stopIds] = tripShapeId;
+        ++generatedId;
+      }
+    }
+
+    std::string const & routeHash = itRoute->second;
+
+    std::string const & lineHash = BuildHash(routeHash, tripShapeId, stopIds);
     auto const lineId = m_idGenerator.MakeId(lineHash);
 
-    auto [itShape, insertedShape] = m_gtfsIdToHash[ShapesIdx].emplace(trip.shape_id, "");
+    auto [itShape, insertedShape] = m_gtfsIdToHash[ShapesIdx].emplace(tripShapeId, "");
 
     // Skip invalid shape.
     if (!insertedShape && itShape->second.empty())
@@ -734,15 +754,39 @@ bool WorldFeed::FillLinesAndShapes()
 
     if (insertedShape)
     {
-      auto const & shapeItems = getShape(trip.shape_id);
-      // Skip trips with corrupted shapes.
-      if (shapeItems.size() < 2)
+      auto const & shapeItems = getShape(tripShapeId);
+      if (generate)
       {
-        LOG(LINFO, ("Invalid shape. Length:", shapeItems.size(), "Shape id", trip.shape_id));
+        gtfs::Shape shape;
+        size_t sequence = 1;
+        for (auto const & stopTime : stopTimes[trip.trip_id])
+        {
+          auto const stop = m_feed.get_stop(stopTime.stop_id);
+          if (!stop)
+            break;
+
+          gtfs::ShapePoint point;
+          point.shape_id = tripShapeId;
+          point.shape_pt_lat = stop->stop_lat;
+          point.shape_pt_lon = stop->stop_lon;
+          point.shape_pt_sequence = sequence;
+          ++sequence;
+          shape.push_back(point);
+        }
+        if (shape.size() != stopTimes[trip.trip_id].size())
+          continue;
+        AddShape(itShape, shape, lineId);
+      }
+      else if (shapeItems.size() < 2)
+      {
+        // Skip trips with corrupted shapes.
+        LOG(LINFO, ("Invalid shape. Length:", shapeItems.size(), "Shape id", tripShapeId));
         continue;
       }
-
-      AddShape(itShape, shapeItems, lineId);
+      else
+      {
+        AddShape(itShape, shapeItems, lineId);
+      }
     }
 
     auto [it, inserted] = m_lines.m_data.emplace(lineId, LineData());
@@ -1416,7 +1460,7 @@ bool WorldFeed::UpdateEdgeWeights()
   return true;
 }
 
-bool WorldFeed::SetFeed(gtfs::Feed && feed)
+bool WorldFeed::SetFeed(gtfs::Feed && feed, bool generateTrivialShapes)
 {
   m_feed = std::move(feed);
   m_gtfsIdToHash.resize(FieldIdx::IdxCount);
@@ -1442,7 +1486,7 @@ bool WorldFeed::SetFeed(gtfs::Feed && feed)
   }
   LOG(LINFO, ("Filled routes."));
 
-  if (!FillLinesAndShapes())
+  if (!FillLinesAndShapes(generateTrivialShapes))
   {
     LOG(LWARNING, ("Could not fill lines.", m_lines.m_data.size()));
     return false;
