@@ -74,6 +74,24 @@ public:
     TEST_EQUAL(m_globalFeed.m_edgesTransfers.m_data.size(), 0, ());
   }
 
+  void ReadRealLifeFeedWithoutShapes()
+  {
+    gtfs::Feed feed(base::JoinPath(m_testPath, "real_life_feed_without_shapes"));
+    TEST_EQUAL(feed.read_feed().code, gtfs::ResultCode::OK, ());
+    TEST(m_globalFeed.SetFeed(std::move(feed), true /* generateTrivialShapes */), ());
+    TEST_EQUAL(m_globalFeed.m_networks.m_data.size(), 21, ());
+    TEST_EQUAL(m_globalFeed.m_routes.m_data.size(), 87, ());
+    // All trips have unique service_id so each line corresponds to some trip.
+    TEST_EQUAL(m_globalFeed.m_lines.m_data.size(), 390, ());
+    TEST_EQUAL(m_globalFeed.m_stops.m_data.size(), 1008, ());
+    // 64 shapes contained in other shapes should be skipped.
+    TEST_EQUAL(m_globalFeed.m_shapes.m_data.size(), 286, ());
+    TEST_EQUAL(m_globalFeed.m_gates.m_data.size(), 0, ());
+    TEST_EQUAL(m_globalFeed.m_transfers.m_data.size(), 0, ());
+    TEST_EQUAL(m_globalFeed.m_edges.m_data.size(), 3977, ());
+    TEST_EQUAL(m_globalFeed.m_edgesTransfers.m_data.size(), 0, ());
+  }
+
   void ReadFeedWithMultipleShapeProjections()
   {
     gtfs::Feed feed(base::JoinPath(m_testPath, "feed_with_multiple_shape_projections"));
@@ -174,6 +192,11 @@ UNIT_CLASS_TEST(WorldFeedIntegrationTests, MinimalisticFeed)
 UNIT_CLASS_TEST(WorldFeedIntegrationTests, RealLifeFeed)
 {
   ReadRealLifeFeed();
+}
+
+UNIT_CLASS_TEST(WorldFeedIntegrationTests, RealLifeFeedWithoutShapes)
+{
+  ReadRealLifeFeedWithoutShapes();
 }
 
 UNIT_CLASS_TEST(WorldFeedIntegrationTests, FeedWithLongItinerary)
