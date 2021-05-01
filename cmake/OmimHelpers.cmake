@@ -273,74 +273,87 @@ function(add_pic_pch_target header pch_target_name
 endfunction()
 
 function(add_precompiled_headers header pch_target_name)
-  set(pch_flags_file "${CMAKE_BINARY_DIR}/${pch_target_name}_flags_file")
-  export_directory_flags("${pch_flags_file}")
-  set(compiler_flags "@${pch_flags_file}")
+  if(${CMAKE_VERSION} VERSION_LESS "3.16.7")
+    set(pch_flags_file "${CMAKE_BINARY_DIR}/${pch_target_name}_flags_file")
+    export_directory_flags("${pch_flags_file}")
+    set(compiler_flags "@${pch_flags_file}")
 
-  # CMAKE_CXX_STANDARD 17 flags:
-  set(c_standard_flags "-std=c++17")
-  get_filename_component(pch_file_name ${header} NAME)
+    # CMAKE_CXX_STANDARD 17 flags:
+    set(c_standard_flags "-std=c++17")
+    get_filename_component(pch_file_name ${header} NAME)
 
-  add_pic_pch_target(${header} ${pch_target_name} ${pch_file_name} lib "-fPIC")
-  add_pic_pch_target(${header} ${pch_target_name} ${pch_file_name} exe "-fPIE")
+    add_pic_pch_target(${header} ${pch_target_name} ${pch_file_name} lib "-fPIC")
+    add_pic_pch_target(${header} ${pch_target_name} ${pch_file_name} exe "-fPIE")
 
-  add_custom_target(
-    "${pch_target_name}"
-    COMMENT "Waiting for both lib and exe precompiled headers to build"
-    DEPENDS "${pch_target_name}_lib" "${pch_target_name}_exe"
-  )
-  set_target_properties(
-    ${pch_target_name}
-    PROPERTIES
-    PCH_NAME
-    "${pch_file_name}"
-  )
+    add_custom_target(
+      "${pch_target_name}"
+      COMMENT "Waiting for both lib and exe precompiled headers to build"
+      DEPENDS "${pch_target_name}_lib" "${pch_target_name}_exe"
+      )
+    set_target_properties(
+      ${pch_target_name}
+      PROPERTIES
+      PCH_NAME
+      "${pch_file_name}"
+      )
+  else()
+    message(STATUS "Use CMake embedded precompiled headers support")
+    set(OMIM_PCH_HEADER_NAME ${header} PARENT_SCOPE)
+  endif()
 endfunction()
 
 function(add_precompiled_headers_to_target target pch_target)
-  add_dependencies(${target} "${pch_target}")
-  get_property(sources TARGET ${target} PROPERTY SOURCES)
-  get_target_property(target_type ${target} TYPE)
-  get_target_property(pch_file_name ${pch_target} PCH_NAME)
+  if(${CMAKE_VERSION} VERSION_LESS "3.16.7")
+    add_dependencies(${target} "${pch_target}")
+    get_property(sources TARGET ${target} PROPERTY SOURCES)
+    get_target_property(target_type ${target} TYPE)
+    get_target_property(pch_file_name ${pch_target} PCH_NAME)
 
-  if (target_type STREQUAL "EXECUTABLE")
-    set(include_compiled_header_dir "${CMAKE_BINARY_DIR}/pch_exe")
-    # CMake automatically adds additional compile options after linking.
-    # For example '-fPIC' flag on skin_generator_tool, because it is linked to Qt libs.
-    # We force correct flag for executables.
-    set(additional_clang_flags "-fPIE")
-  endif()
-
-  if (target_type MATCHES "LIBRARY")
-    set(include_compiled_header_dir "${CMAKE_BINARY_DIR}/pch_lib")
-  endif()
-
-  # Force gcc first search gch header in pch_exe/pch_lib:
-  target_include_directories(
-    ${target}
-    BEFORE
-    PUBLIC
-    ${include_compiled_header_dir}
-  )
-
-  foreach(source ${sources})
-    if(source MATCHES \\.\(cc|cpp|h|hpp\)$)
-      if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set_source_files_properties(
-          ${source}
-          PROPERTIES
-          COMPILE_FLAGS
-          "${additional_clang_flags} -include-pch \
-${include_compiled_header_dir}/${pch_file_name}.${PCH_EXTENSION}"
-        )
-      endif()
-      if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        set_source_files_properties(
-          ${source}
-          PROPERTIES
-          COMPILE_FLAGS "-include ${pch_file_name}"
-        )
-      endif()
+    if (target_type STREQUAL "EXECUTABLE")
+      set(include_compiled_header_dir "${CMAKE_BINARY_DIR}/pch_exe")
+      # CMake automatically adds additional compile options after linking.
+      # For example '-fPIC' flag on skin_generator_tool, because it is linked to Qt libs.
+      # We force correct flag for executables.
+      set(additional_clang_flags "-fPIE")
     endif()
-  endforeach()
+
+    if (target_type MATCHES "LIBRARY")
+      set(include_compiled_header_dir "${CMAKE_BINARY_DIR}/pch_lib")
+    endif()
+
+    # Force gcc first search gch header in pch_exe/pch_lib:
+    target_include_directories(
+      ${target}
+      BEFORE
+      PUBLIC
+      ${include_compiled_header_dir}
+      )
+
+    foreach(source ${sources})
+      if(source MATCHES \\.\(cc|cpp|h|hpp\)$)
+        if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+          set_source_files_properties(
+            ${source}
+            PROPERTIES
+            COMPILE_FLAGS
+            "${additional_clang_flags} -include-pch \
+${include_compiled_header_dir}/${pch_file_name}.${PCH_EXTENSION}"
+            )
+        endif()
+        if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+          set_source_files_properties(
+            ${source}
+            PROPERTIES
+            COMPILE_FLAGS "-include ${pch_file_name}"
+            )
+        endif()
+      endif()
+    endforeach()
+  else()
+    if (target STREQUAL "desktop")
+      target_precompile_headers(${target} PRIVATE qt_precompiled_header.hpp)
+    else ()
+      target_precompile_headers(${target} PUBLIC ${OMIM_PCH_HEADER_NAME})
+    endif ()
+  endif()
 endfunction()
