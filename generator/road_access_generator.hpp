@@ -70,6 +70,8 @@ public:
                         bool ignoreBarrierWithoutAccess);
   void Merge(RoadAccessTagProcessor const & roadAccessTagProcessor);
 
+  bool IgnoreRoadAccessType(OsmElement const & elem, RoadAccess::Type accessType);
+
 private:
   VehicleType m_vehicleType;
 

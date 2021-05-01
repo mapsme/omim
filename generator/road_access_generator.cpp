@@ -163,6 +163,15 @@ set<OsmElement::Tag> const kHighwaysWhereIgnoreBarriersWithoutAccess = {
     {OsmElement::Tag("highway", "trunk_link")}
 };
 
+set<OsmElement::Tag> const kHighwaysWhereIgnoreAccessDestination = {
+  {OsmElement::Tag("highway", "motorway")},
+  {OsmElement::Tag("highway", "motorway_link")},
+  {OsmElement::Tag("highway", "primary")},
+  {OsmElement::Tag("highway", "primary_link")},
+  {OsmElement::Tag("highway", "trunk")},
+  {OsmElement::Tag("highway", "trunk_link")}
+};
+
 bool ParseRoadAccess(string const & roadAccessPath, OsmIdToFeatureIds const & osmIdToFeatureIds,
                      RoadAccessCollector::RoadAccessByVehicleType & roadAccessByVehicleType)
 {
@@ -396,7 +405,7 @@ string GetVehicleTypeForAccessConditional(string const & accessConditionalTag)
 {
   auto const pos = accessConditionalTag.find(":");
   CHECK_NOT_EQUAL(pos, string::npos, (accessConditionalTag));
-  
+
   string result(accessConditionalTag.begin(), accessConditionalTag.begin() + pos);
   return result;
 }
@@ -446,6 +455,18 @@ RoadAccessTagProcessor::RoadAccessTagProcessor(VehicleType vehicleType)
   }
 }
 
+bool RoadAccessTagProcessor::IgnoreRoadAccessType(OsmElement const & elem, RoadAccess::Type accessType) {
+  if (accessType == RoadAccess::Type::Destination)
+  {
+    for (auto const & tag : elem.m_tags)
+    {
+      if (kHighwaysWhereIgnoreAccessDestination.count(tag))
+        return true;
+    }
+  }
+  return false;
+}
+
 void RoadAccessTagProcessor::Process(OsmElement const & elem)
 {
   auto const getAccessType = [&](vector<TagMapping const *> const & mapping)
@@ -463,6 +484,9 @@ void RoadAccessTagProcessor::Process(OsmElement const & elem)
   if (auto op = getAccessType(m_accessMappings))
   {
     if (*op == RoadAccess::Type::Yes)
+      return;
+
+    if (IgnoreRoadAccessType(elem, *op))
       return;
 
     switch (elem.m_type)
