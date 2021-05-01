@@ -328,7 +328,7 @@ public:
 
 class IsBridgeChecker : public BaseChecker
 {
-  virtual bool IsMatched(uint32_t type) const override;
+  bool IsMatched(uint32_t type) const override;
 
   IsBridgeChecker();
 public:
@@ -337,7 +337,7 @@ public:
 
 class IsTunnelChecker : public BaseChecker
 {
-  virtual bool IsMatched(uint32_t type) const override;
+  bool IsMatched(uint32_t type) const override;
 
   IsTunnelChecker();
 public:
@@ -372,7 +372,7 @@ public:
 class IsHotelChecker : public BaseChecker
 {
 public:
-  enum class Type
+  enum class Type: unsigned
   {
     Hotel,
     Apartment,
@@ -424,7 +424,7 @@ public:
 class IsEatChecker : public BaseChecker
 {
 public:
-  enum class Type
+  enum class Type: uint32_t
   {
     Cafe,
     Bakery,
