@@ -1,0 +1,75 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Install ndk
+      run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;21.3.6528147" --sdk_root=${ANDROID_SDK_ROOT}
+   
+    - name: Update Submodules
+      run: git submodule update --init --recursive
+    
+    - name: Configure
+      run: ./configure.sh
+    - name: Fill fake params
+      run: | 
+        cat << EOF > android/google-services.json
+        {  
+        "project_info": {
+            "project_number": "xxxx",
+            "firebase_url": "xxxx",
+            "project_id": "xxxx",
+            "storage_bucket": "xxxx"
+          },
+        "client": [
+            {
+              "client_info": {
+              "mobilesdk_app_id": "xxxx",
+              "android_client_info": {
+                "package_name": "com.mapswithme.maps.pro.beta"
+              }
+            },
+            "oauth_client": [
+              {
+                "client_id": "xxxx",
+                "client_type": 3
+              }
+            ],
+            "api_key": [
+              {
+                "current_key": "xxxx"
+              }
+            ],
+            "services": {
+              "appinvite_service": {
+                "other_platform_oauth_client": [
+                  {
+                    "client_id": "xxxx",
+                    "client_type": 3
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "configuration_version": "1"
+        }
+        EOF
+    - name: Add CITYMOBIL_TOKEN var
+      run: echo '#define CITYMOBIL_TOKEN ""' >> private_default.h
+    - name: Build with Gradle
+      run: cd android && ./gradlew assembleWebBeta -Parm64
