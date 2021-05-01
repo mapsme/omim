@@ -210,6 +210,7 @@ private:
   RouterResultCode FindPath(AStarParams & params, std::set<NumMwmId> const & mwmIds,
                             RoutingResult<Vertex, Weight> & routingResult) const
   {
+    base::ScopedTimerWithLog timerWithLog("***FindPath***", base::ScopedTimerWithLog::Measure::Seconds);
     AStarAlgorithm<Vertex, Edge, Weight> algorithm;
     return ConvertTransitResult(
         mwmIds, ConvertResult<Vertex, Edge, Weight>(algorithm.FindPathBidirectional(params, routingResult)));

@@ -99,12 +99,12 @@ void GeometryLoaderImpl::Load(uint32_t featureId, RoadGeometry & road)
   feature->ParseGeometry(FeatureType::BEST_GEOMETRY);
 
   geometry::Altitudes const * altitudes = nullptr;
-  if (m_loadAltitudes)
-    altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature->GetPointsCount()));
+//  if (m_loadAltitudes)
+//    altitudes = &(m_altitudeLoader.GetAltitudes(featureId, feature->GetPointsCount()));
 
   road.Load(*m_vehicleModel, *feature, altitudes, m_attrLoader.m_cityRoads->IsCityRoad(featureId),
             m_attrLoader.m_maxspeeds->GetMaxspeed(featureId));
-  m_altitudeLoader.ClearCache();
+//  m_altitudeLoader.ClearCache();
 }
 
 // FileGeometryLoader ------------------------------------------------------------------------------
