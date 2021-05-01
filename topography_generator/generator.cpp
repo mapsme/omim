@@ -9,6 +9,8 @@
 
 #include "geometry/mercator.hpp"
 
+#include "coding/csv_reader.hpp"
+
 #include "base/scope_guard.hpp"
 #include "base/string_utils.hpp"
 #include "base/thread_pool_computational.hpp"
@@ -236,29 +238,153 @@ private:
   IsOnBorderFn m_isOnBorderFn;
 };
 
+struct TileWhitelist
+{
+  int lat, lon;
+  std::bitset<10 * 10> m_whitelist;
+
+  bool IsWhitelisted() const
+  {
+    return m_whitelist.count() == m_whitelist.size();
+  }
+
+  bool IsBlacklisted() const
+  {
+    return m_whitelist.count() == 0;
+  }
+
+  std::vector<m2::RectD> GetBlacklist() const
+  {
+    if (IsWhitelisted()) 
+      return {};
+    if (IsBlacklisted())
+      return {m2::RectD(lon, lat, lon + 1, lat + 1)};
+    std::vector<m2::RectD> blacklist;
+    for (size_t i = 0; i < m_whitelist.size(); ++i)
+    {
+      if (m_whitelist[i])
+        continue;
+      m2::RectD & rect = blacklist.emplace_back();
+      m2::PointD const leftBottom{0.1 * (lon * 10 + (i / 10)), 0.1 * (lat * 10 + (i % 10))};
+      rect.Add(leftBottom);
+      rect.Add(leftBottom + m2::PointD{0.1, 0.1});
+    }
+    return blacklist;
+  }
+
+  bool IsPointWhitlisted(m2::PointD point) const
+  {
+    auto const latLon = mercator::ToLatLon(point);
+    point.x = latLon.m_lon;
+    point.y = latLon.m_lat;
+    CHECK(m2::RectD(lon - kEps, lat - kEps, lon + 1 + kEps, lat + 1 + kEps).IsPointInside(point), (lat, lon, point));
+    point -= m2::PointD(lon, lat);
+    point.x = std::clamp(point.x, 0.0, 1.0 - kEps);
+    point.y = std::clamp(point.y, 0.0, 1.0 - kEps);
+    point *= 10.0;
+    size_t const x = std::floor(point.x);
+    size_t const y = std::floor(point.y);
+    CHECK_LESS(10 * x + y, m_whitelist.size(), (x, y, lat, lon, point));
+    return m_whitelist[10 * x + y];
+  }
+
+  std::vector<Contour> Filter(Contour const & contour) const
+  {
+    std::vector<Contour> contours(1);
+    for (m2::PointD const & point : contour)
+    {
+      if (IsPointWhitlisted(point))
+      {
+        contours.back().push_back(point);
+      }
+      else
+      {
+        if (contours.back().size() < 2)
+          contours.back().clear();
+        else
+          contours.emplace_back();
+      }
+    }
+    if (contours.back().size() < 2)
+      contours.pop_back();
+    return contours;
+  }
+};
+
+class TileWhitelistProvider
+{
+public:
+  explicit TileWhitelistProvider(std::string const & whitelistPath):
+    m_whitelistPath(whitelistPath)
+  {
+    if (whitelistPath.empty())
+    {
+      for (auto & lat : m_whitelist) 
+        for (auto & lon : lat) 
+          lon.flip();
+    }
+    else
+    {
+      using namespace coding;
+      CSVReader reader(whitelistPath);
+      auto readRow = [this] (CSVReader::Row const & row)
+      {
+        CHECK_EQUAL(row.size(), 2, ());
+        int lat = std::stod(row.front()) * 10.0;
+        CHECK(lat >= -900 && lat <= 899, (lat));
+        int lon = std::stod(row.back()) * 10.0;
+        CHECK(lon >= -1800 && lon <= 1800, (lon));
+
+        lat += 900;
+        lon += 1800;
+        lon %= 3600;
+        m_whitelist[lat / 10][lon / 10].set((lat % 10) + (lon % 10) * 10);
+      };
+      reader.ForEachRow(readRow);
+    }
+  }
+
+  TileWhitelist GetWhitelist(int lat, int lon) const
+  {
+    CHECK(lat >= -90 && lat <= 89, (lat));
+    CHECK(lon >= -180 && lon <= 179, (lon));
+    return {lat, lon, m_whitelist[lat + 90][lon + 180]};
+  }
+
+private:
+  std::string m_whitelistPath;
+  std::bitset<10 * 10> m_whitelist[180][360];
+};
+
 class TileIsolinesTask
 {
 public:
   TileIsolinesTask(int left, int bottom, int right, int top, std::string const & srtmDir,
-                   TileIsolinesParams const * params, bool forceRegenerate)
+                   TileWhitelistProvider const & tileWhitelistProvider, bool forceRegenerate)
     : m_strmDir(srtmDir)
     , m_srtmProvider(srtmDir)
-    , m_params(params)
+    , m_tileWhitelistProvider(tileWhitelistProvider)
     , m_forceRegenerate(forceRegenerate)
   {
-    CHECK(params != nullptr, ());
     Init(left, bottom, right, top);
   }
 
   TileIsolinesTask(int left, int bottom, int right, int top, std::string const & srtmDir,
-                   TileIsolinesProfileParams const * profileParams, bool forceRegenerate)
-    : m_strmDir(srtmDir)
-    , m_srtmProvider(srtmDir)
-    , m_profileParams(profileParams)
-    , m_forceRegenerate(forceRegenerate)
+                   TileWhitelistProvider const & tileWhitelistProvider, bool forceRegenerate,
+                   TileIsolinesParams const * params)
+    : TileIsolinesTask(left, bottom, right, top, srtmDir, tileWhitelistProvider, forceRegenerate)
+  {
+    CHECK(params != nullptr, ());
+    m_params = params;
+  }
+
+  TileIsolinesTask(int left, int bottom, int right, int top, std::string const & srtmDir,
+                   TileWhitelistProvider const & tileWhitelistProvider, bool forceRegenerate,
+                   TileIsolinesProfileParams const * profileParams)
+    : TileIsolinesTask(left, bottom, right, top, srtmDir, tileWhitelistProvider, forceRegenerate)
   {
     CHECK(profileParams != nullptr, ());
-    Init(left, bottom, right, top);
+    m_profileParams = profileParams;
   }
 
   void Do()
@@ -374,6 +500,9 @@ private:
                                 ValuesProvider<Altitude> & altProvider,
                                 Contours<Altitude> & contours)
   {
+    TileWhitelist tileWhitelist = m_tileWhitelistProvider.GetWhitelist(lat, lon);
+    if (tileWhitelist.IsBlacklisted())
+      return;
     auto const avoidSeam = lat == kAsterTilesLatTop || (lat == kAsterTilesLatBottom - 1);
     if (avoidSeam)
     {
@@ -394,6 +523,20 @@ private:
     else
     {
       GenerateContours(lat, lon, params, altProvider, contours);
+    }
+    if (!tileWhitelist.IsWhitelisted())
+    {
+      for (auto & [value, contours] : contours.m_contours)
+      {
+        UNUSED_VALUE(value);
+        std::vector<Contour> whitelistedContours;
+        for (Contour const & contour : contours) 
+        {
+          std::vector<Contour> c = tileWhitelist.Filter(contour);
+          whitelistedContours.insert(whitelistedContours.cend(), std::make_move_iterator(c.begin()), std::make_move_iterator(c.end()));
+        }
+        contours = std::move(whitelistedContours);
+      }
     }
   }
 
@@ -416,20 +559,20 @@ private:
   int m_top;
   std::string m_strmDir;
   SrtmProvider m_srtmProvider;
+  TileWhitelistProvider const & m_tileWhitelistProvider;
+  bool m_forceRegenerate;
   TileIsolinesParams const * m_params = nullptr;
   TileIsolinesProfileParams const * m_profileParams = nullptr;
-  bool m_forceRegenerate;
   std::string m_debugId;
 };
 
 template <typename ParamsType>
 void RunGenerateIsolinesTasks(int left, int bottom, int right, int top,
-                              std::string const & srtmPath, ParamsType const & params,
+                              std::string const & srtmPath, std::string const & whitelistPath,
+                              ParamsType const & params,
                               size_t threadsCount, size_t maxCachedTilesPerThread,
                               bool forceRegenerate)
 {
-  std::vector<std::unique_ptr<TileIsolinesTask>> tasks;
-
   CHECK_GREATER(right, left, ());
   CHECK_GREATER(top, bottom, ());
 
@@ -452,6 +595,8 @@ void RunGenerateIsolinesTasks(int left, int bottom, int right, int top,
     }
   }
 
+  TileWhitelistProvider tileWhitelistProvider(whitelistPath);
+
   base::thread_pool::computational::ThreadPool threadPool(threadsCount);
 
   for (int lat = bottom; lat < top; lat += tilesRowPerTask)
@@ -460,26 +605,29 @@ void RunGenerateIsolinesTasks(int left, int bottom, int right, int top,
     for (int lon = left; lon < right; lon += tilesColPerTask)
     {
       int const rightLon = std::min(lon + tilesColPerTask - 1, right - 1);
-      auto task = std::make_unique<TileIsolinesTask>(lon, lat, rightLon, topLat, srtmPath, &params,
-                                                     forceRegenerate);
+      auto task = std::make_unique<TileIsolinesTask>(lon, lat, rightLon, topLat, srtmPath,
+                                                     tileWhitelistProvider,
+                                                     forceRegenerate, &params);
       threadPool.SubmitWork([task = std::move(task)](){ task->Do(); });
     }
   }
 }
 }  // namespace
 
-Generator::Generator(std::string const & srtmPath, size_t threadsCount,
+Generator::Generator(std::string const & srtmPath, std::string const & whitelistPath,
+                     size_t threadsCount,
                      size_t maxCachedTilesPerThread, bool forceRegenerate)
   : m_threadsCount(threadsCount)
   , m_maxCachedTilesPerThread(maxCachedTilesPerThread)
   , m_srtmPath(srtmPath)
+  , m_whitelistPath(whitelistPath)
   , m_forceRegenerate(forceRegenerate)
 {}
 
 void Generator::GenerateIsolines(int left, int bottom, int right, int top,
                                  TileIsolinesParams const & params)
 {
-  RunGenerateIsolinesTasks(left, bottom, right, top, m_srtmPath, params,
+  RunGenerateIsolinesTasks(left, bottom, right, top, m_srtmPath, m_whitelistPath, params,
                            m_threadsCount, m_maxCachedTilesPerThread, m_forceRegenerate);
 }
 
@@ -488,7 +636,7 @@ void Generator::GenerateIsolines(int left, int bottom, int right, int top,
                                  std::string const & tilesProfilesDir)
 {
   TileIsolinesProfileParams params(m_profileToTileParams, tilesProfilesDir);
-  RunGenerateIsolinesTasks(left, bottom, right, top, m_srtmPath, params,
+  RunGenerateIsolinesTasks(left, bottom, right, top, m_srtmPath, m_whitelistPath, params,
                            m_threadsCount, m_maxCachedTilesPerThread, m_forceRegenerate);
 }
 
