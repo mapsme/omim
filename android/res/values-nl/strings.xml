@@ -1518,7 +1518,7 @@
 	<string name="driving_options_title">Omweginstellingen</string>
 	<string name="driving_options_subheader">Vermijden op elke route</string>
 	<string name="avoid_tolls">Tolwegen</string>
-	<string name="avoid_unpaved">Aardewegen</string>
+	<string name="avoid_unpaved">Aarden wegen</string>
 	<string name="avoid_ferry">Ferries</string>
 	<string name="avoid_motorways">Hoofdverkeerswegen</string>
 	<string name="unable_to_calc_alert_title">Kan route niet opbouwen</string>
@@ -1530,7 +1530,7 @@
 	<string name="ferry_crossing">Ferry</string>
 	<string name="operated_by">Gecontroleerd door \"%s\"</string>
 	<string name="avoid_toll_roads_placepage">Tolwegen vermijden</string>
-	<string name="avoid_unpaved_roads_placepage">Aardewegen vermijden</string>
+	<string name="avoid_unpaved_roads_placepage">Aarden wegen vermijden</string>
 	<string name="avoid_ferry_crossing_placepage">Ferries vermijden</string>
 	<string name="cached_guides_placeholder_subtitle">Klare reisgids op MAPS.ME bevatten geselecteerde plaatsen met foto\'s en beschrijvingen die op de kaart worden weergegeven en offline beschikbaar zijn.</string>
 	<string name="guides_catalogue_title">Reisgidscatalogus</string>
@@ -1551,7 +1551,7 @@
 	<string name="whats_new_auto_update_bydeeplink_message">Heerladt de kaarten op actuele informatie over objecten te krijgen!</string>
 	<string name="whats_new_auto_update_and_proceed_button_size">Bijwerken (%s) en verder gaan</string>
 	<string name="whatsnew_toll_unpaved_title">Bouw routen met inachtneming van alle soorten wegen</string>
-	<string name="whatsnew_toll_unpaved_message">Kies omwegen via tolwegen, aardewegen en ferries</string>
+	<string name="whatsnew_toll_unpaved_message">Kies omwegen via tolwegen, aarden wegen en ferries</string>
 	<string name="whatsnew_new_catalogue_title">Bijgewerkte cataloguspagina\'s</string>
 	<string name="whatsnew_new_catalogue_message">We hebben gedetailleerde informatie over partnerhandleidingen toegevoegd, zodat de routekeuze gemakkelijk en handig is</string>
 	<string name="purchase_please_wait_toast">Verlaat het scherm niet, alstublieft, voordat het aankoopproces is voltooid</string>
@@ -1616,7 +1616,7 @@
 	<string name="whatsnew_carnavi_fixes_for_android_title">Navigatie update</string>
 	<string name="whatsnew_carnavi_fixes_for_android_message">We hebben de aanleg van routes naar punten ver van de weggen verbeterd</string>
 	<string name="avoid_unpaved_carplay_1">Geen aardew.</string>
-	<string name="avoid_unpaved_carplay_2">Geen aardewegen</string>
+	<string name="avoid_unpaved_carplay_2">Geen aarden wegen</string>
 	<string name="avoid_ferry_carplay_1">Geen ferry\'s</string>
 	<string name="avoid_ferry_carplay_2">Geen ferry\'s</string>
 	<string name="avoid_tolls_carplay_1">Zonder tol</string>

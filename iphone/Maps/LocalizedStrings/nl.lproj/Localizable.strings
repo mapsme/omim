@@ -2740,7 +2740,7 @@
 
 "avoid_tolls" = "Tolwegen";
 
-"avoid_unpaved" = "Aardewegen";
+"avoid_unpaved" = "Aarden wegen";
 
 "avoid_ferry" = "Ferries";
 
@@ -2764,7 +2764,7 @@
 
 "avoid_toll_roads_placepage" = "Tolwegen vermijden";
 
-"avoid_unpaved_roads_placepage" = "Aardewegen vermijden";
+"avoid_unpaved_roads_placepage" = "Aarden wegen vermijden";
 
 "avoid_ferry_crossing_placepage" = "Ferries vermijden";
 
@@ -2798,7 +2798,7 @@
 
 "whatsnew_toll_unpaved_title" = "Bouw routen met inachtneming van alle soorten wegen";
 
-"whatsnew_toll_unpaved_message" = "Kies omwegen via tolwegen, aardewegen en ferries";
+"whatsnew_toll_unpaved_message" = "Kies omwegen via tolwegen, aarden wegen en ferries";
 
 "whatsnew_new_catalogue_title" = "Bijgewerkte cataloguspagina's";
 
@@ -2932,7 +2932,7 @@
 
 "avoid_unpaved_carplay_1" = "Geen aardew.";
 
-"avoid_unpaved_carplay_2" = "Geen aardewegen";
+"avoid_unpaved_carplay_2" = "Geen aarden wegen";
 
 "avoid_ferry_carplay_1" = "Geen ferry's";
 
