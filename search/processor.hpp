@@ -6,6 +6,7 @@
 #include "search/categories_set.hpp"
 #include "search/cities_boundaries_table.hpp"
 #include "search/common.hpp"
+#include "search/countries_names_index.hpp"
 #include "search/emitter.hpp"
 #include "search/geocoder.hpp"
 #include "search/pre_ranker.hpp"
@@ -87,6 +88,10 @@ public:
 
   void SearchBookmarks(bookmarks::GroupId const & groupId);
 
+  // Searches by the names of countries in countries.txt and their translations.
+  // Does not involve the *.mwm data at all.
+  void SearchInDownloaderByCountryName(SearchParams const & params);
+
   void InitParams(QueryParams & params) const;
 
   void InitGeocoder(Geocoder::Params & geocoderParams, SearchParams const & searchParams);
@@ -152,6 +157,8 @@ protected:
   storage::CountryInfoGetter const & m_infoGetter;
   using CountriesTrie = base::MemTrie<storage::CountryId, base::VectorValues<bool>>;
   CountriesTrie m_countriesTrie;
+
+  std::unique_ptr<search::CountriesNamesIndex> m_countriesNamesIndex;
 
   std::string m_region;
   std::string m_query;

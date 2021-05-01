@@ -53,6 +53,11 @@ Result::Result(Result const & res, string const & suggest)
   m_resultType = m_id.IsValid() ? Type::SuggestFromFeature : Type::PureSuggest;
 }
 
+Result::Result(storage::CountryId const & countryId, std::string const & matchedName, bool)
+  : m_resultType(Type::DownloaderEntry), m_str(matchedName), m_countryId(countryId)
+{
+}
+
 bool Result::IsSuggest() const
 {
   return m_resultType == Type::SuggestFromFeature || m_resultType == Type::PureSuggest;
@@ -161,6 +166,7 @@ string DebugPrint(Result::Type type)
   case Result::Type::PureSuggest: return "PureSuggest";
   case Result::Type::SuggestFromFeature: return "SuggestFromFeature";
   case Result::Type::Postcode: return "Postcode";
+  case Result::Type::DownloaderEntry: return "DownloaderEntry";
   }
 
   return "Unknown";

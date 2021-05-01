@@ -104,7 +104,7 @@ public:
   Node const * const FindFirst(CountryId const & key) const;
 
   /// \brief Find only leaves.
-  /// \note It's a termprary fucntion for compatablity with old countries.txt.
+  /// \note It's a temporary fucntion for compatablity with old countries.txt.
   /// When new countries.txt with unique ids will be added FindLeaf will be removed
   /// and Find will be used intead.
   /// @TODO(bykoianko) Remove this method on countries.txt update.

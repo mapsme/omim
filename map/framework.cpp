@@ -1707,6 +1707,10 @@ void Framework::SelectSearchResult(search::Result const & result, bool animation
     m_currentPlacePageInfo = {};
     ASSERT(false, ("Suggests should not be here."));
     return;
+  case Result::Type::DownloaderEntry:
+    m_currentPlacePageInfo = {};
+    ASSERT(false, ("Downloader entries should not be here."));
+    return;
   }
 
   m_currentPlacePageInfo = BuildPlacePageInfo(info);

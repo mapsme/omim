@@ -8,6 +8,7 @@ cp ../data/classificator.txt assets/
 cp ../data/colors.txt assets/
 cp ../data/copyright.html assets/
 cp ../data/countries.txt assets/
+cp ../data/countries_names.txt assets/
 cp ../data/drules_proto_dark.bin assets/
 cp ../data/drules_proto_clear.bin assets/
 cp ../data/drules_proto_vehicle_dark.bin assets/
