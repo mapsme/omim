@@ -2,26 +2,31 @@
 
   [type.aerialway]
     en = aerialway
+    hu = Drótkötélpályás felvonó
     ja = 索道
     pl = Transport linowy
 
   [type.aerialway.cable_car]
     en = aerialway-cable_car
+    hu = Nagykabinos felvonó
     ja = ロープウェイ
     pl = Kolej linowa
 
   [type.aerialway.chair_lift]
     en = aerialway-chair_lift
+    hu = Ülőlift
     ja = チェアリフト
     pl = Wyciąg krzesełkowy
 
   [type.aerialway.drag_lift]
     en = aerialway-drag_lift
+    hu = Sífelvonó
     ja = 牽引リフト
     pl = Wyciąg orczykowy
 
   [type.aerialway.gondola]
     en = aerialway-gondola
+    hu = Gondola
     ja = ゴンドラ
     pl = Gondola kolejki linowej
 
@@ -131,11 +136,13 @@
 
   [type.aeroway.apron]
     en = aeroway-apron
+    hu = Forgalmi előtér
     ja = エプロン
     pl = Płyta postojowa samolotów
 
   [type.aeroway.gate]
     en = aeroway-gate
+    hu = Repülőtéri kapu
     ja = 搭乗口
     pl = Wyjście lotniskowe
 
@@ -148,7 +155,7 @@
     fi = Helikopterialusta
     fr = Hélisurface
     de = Hubschrauberlandeplatz
-    hu = Helikopterleszálló
+    hu = Helikopter-leszállóhely
     id = Landasan helikopter
     it = Piattaforma per elicotteri
     ja = ヘリポート
@@ -171,16 +178,19 @@
 
   [type.aeroway.runway]
     en = aeroway-runway
+    hu = Kifutópálya
     ja = 滑走路
     pl = Droga startowa
 
   [type.aeroway.taxiway]
     en = aeroway-taxiway
+    hu = Gurulóút
     ja = 誘導路
     pl = Droga kołowania
 
   [type.aeroway.terminal]
     en = aeroway-terminal
+    hu = Repülőtéri terminál
     ja = 空港ターミナルビル
     pl = Terminal lotniskowy
 
@@ -194,7 +204,7 @@
     fi = Infrastruktuurikohteet
     fr = Objets d'infrastructure
     de = Infrastrukturobjekte
-    hu = Infrastruktúra
+    hu = Fontos vagy hasznos létesítmény
     id = Ruang berfasilitas
     it = Opera infrastrutturale
     ja = アメニティー
@@ -262,7 +272,7 @@
     fi = Pankkiautomaatti
     fr = GAB
     de = Geldautomat
-    hu = Pénzautomata
+    hu = Bankautomata
     it = Bancomat
     nb = Minibank
     pl = Bankomat
@@ -331,7 +341,7 @@
     fi = Piknikpaikat
     fr = Terrain de pique-nique
     de = Picknickplatz
-    hu = Piknikező hely
+    hu = Piknikezőhely
     id = Lokasi piknik
     it = Picnic
     ja = ピクニック
@@ -395,7 +405,7 @@
     fi = Polkupyöräpysäköinti
     fr = Parking à vélo
     de = Fahrradständer
-    hu = Kerékpárparkoló
+    hu = Kerékpártároló
     id = Parkir Sepeda
     it = Parcheggio biciclette
     ja = 駐輪場
@@ -544,7 +554,7 @@
     fi = Linja-autoasema
     fr = Gare routière
     de = Busbahnhof
-    hu = Buszpályaudvar
+    hu = Buszállomás
     id = Stasiun bus
     it = Autostazione
     ja = バスステーション
@@ -608,7 +618,7 @@
     fi = Autovuokraamo
     fr = Location de voitures
     de = Autoverleih
-    hu = Gépkocsi-kölcsönző
+    hu = Autókölcsönző
     id = Rental mobil
     it = Noleggio di automobili
     ja = レンタカー
@@ -639,7 +649,7 @@
     nl = Autodelen
     fi = Autojen yhteiskäyttö
     de = Carsharing
-    hu = Gépjármű megosztása
+    hu = Autómegosztás
     id = Berbagi mobil
     ja = カーシェアリング
     ko = 카 셰어링
@@ -726,7 +736,7 @@
     fi = Latausasema
     fr = Station de recharge
     de = Ladestation
-    hu = Töltő állomás
+    hu = Elektromos töltőállomás
     id = Pusat Pengisian Daya
     it = Stazione di ricarica
     ja = 充電ステーション
@@ -818,7 +828,7 @@
     fi = Klinikka
     fr = Clinique
     de = Klinik
-    hu = Klinika
+    hu = Rendelőintézet
     id = Klinik
     it = Clinica
     ja = クリニック
@@ -849,7 +859,7 @@
     nl = Hogeschool
     fr = Enseignement post-secondaire
     de = Hochschule
-    hu = Kollégium
+    hu = Főiskola
     id = Kampus
     it = Collegio
     ja = カレッジ
@@ -881,7 +891,7 @@
     fi = Monitoimitalo
     fr = Centre communautaire
     de = Bürgerhaus
-    hu = Közösségi központ
+    hu = Közösségi ház
     id = Pusat komunitas
     it = Centro ricreativo
     ja = コミュニティセンター
@@ -976,7 +986,7 @@
     fi = Lääkärin vastaanotto
     fr = Cabinet médical
     de = Arztpraxis
-    hu = Rendelő
+    hu = Orvos
     id = Praktik dokter
     it = Studio medico
     ja = 医院
@@ -1071,7 +1081,7 @@
     fi = Suurlähetystö
     fr = Ambassade
     de = Botschaft
-    hu = Nagykövetség
+    hu = Külképviselet (nagykövetség)
     id = Kedutaan
     it = Ambasciata
     ja = 大使館
@@ -1103,7 +1113,7 @@
     fi = Pikaruokala
     fr = Restauration rapide
     de = Fast-Food
-    hu = Gyorsétterem
+    hu = Büfé, gyorsétterem
     id = Cepat saji
     it = Fast food
     ja = ファストフード
@@ -1192,6 +1202,7 @@
   [type.amenity.food_court]
     en = Food court
     ru = Ресторанный дворик
+    hu = Étkezőtér
     ja = フードコート
     pl = Sekcja gastronomiczna
 
@@ -1269,7 +1280,7 @@
     fi = Hautausmaa
     fr = Cimetière
     de = Friedhof
-    hu = Temető
+    hu = Templom körüli temető
     id = Pemakaman
     it = Cimitero
     ja = 墓地
@@ -1301,7 +1312,7 @@
     fi = Hautausmaa
     fr = Cimetière
     de = Friedhof
-    hu = Temető
+    hu = Templom körüli temető
     id = Pemakaman
     it = Cimitero
     ja = キリスト教墓地
@@ -1361,7 +1372,7 @@
     fi = Metsästyspaikka
     fr = Mirador
     de = Hochsitz
-    hu = Vadászles
+    hu = Magasles
     id = Lokasi berburu
     it = Torre di caccio
     ja = 狩猟スタンド
@@ -1393,7 +1404,7 @@
     fi = Jäätelökioski
     fr = Stand de crème glacée
     de = Eisstand
-    hu = Fagylaltárus
+    hu = Fagylaltozó
     id = Kios Es Krim
     it = Chiosco gelati
     ja = アイスクリーム屋
@@ -1425,7 +1436,7 @@
     fi = Internetkahvila
     fr = Internet café
     de = Internetcafé
-    hu = Internet kávézó
+    hu = Internetkávézó
     id = Kafe Internet
     ja = インターネットカフェ
     ko = 인터넷 카페
@@ -1550,7 +1561,7 @@
     fi = Moottoripyörien pysäköinti
     fr = Parking moto
     de = Motorrad-Parkplatz
-    hu = Motorbicikli parkoló
+    hu = Motorkerékpár-parkoló
     id = Tempat Parkir Sepeda Motor
     it = Parcheggio moto
     ja = バイク駐輪場
@@ -1582,7 +1593,7 @@
     fi = Yökerho
     fr = Discothèque
     de = Nachtclub
-    hu = Éjszakai mulató
+    hu = Night club
     id = Kelab malam
     it = Night club
     ja = ナイトクラブ
@@ -1614,7 +1625,7 @@
     fi = Hoitokoti
     fr = Maison de retraite
     de = Pflegeheim
-    hu = Idősek otthona
+    hu = Ápolóotthon
     id = Panti Jompo
     it = Casa di riposo
     ja = 養護施設
@@ -1677,7 +1688,7 @@
     fi = Parkkipaikka
     fr = Stationnement
     de = Parkplatz
-    hu = Parkoló
+    hu = Fizetős parkoló
     id = Parkir
     it = Parcheggio
     ja = 駐車場
@@ -1709,7 +1720,7 @@
     fi = Parkkipaikka
     fr = Stationnement
     de = Parkhaus
-    hu = Parkoló
+    hu = Parkolóház
     id = Parkir
     it = Parcheggio
     ja = 駐車場
@@ -1741,7 +1752,7 @@
     fi = Parkkipaikka
     fr = Stationnement
     de = Parkplatz
-    hu = Parkoló
+    hu = Nem használható parkoló
     id = Parkir
     it = Parcheggio
     ja = 駐車場
@@ -1772,7 +1783,7 @@
     fi = Parkkipaikka
     fr = Stationnement
     de = P+R-Parkplatz
-    hu = Parkoló
+    hu = P+R parkoló
     id = Parkir
     it = Parcheggio
     ja = 駐車場
@@ -1804,7 +1815,7 @@
     fi = Parkkipaikka
     fr = Stationnement
     de = Parkplatz
-    hu = Parkoló
+    hu = Megtűrt parkoló
     id = Parkir
     it = Parcheggio
     ja = 駐車場
@@ -1836,7 +1847,7 @@
     fi = Parkkipaikka
     fr = Stationnement
     de = Parkplatz
-    hu = Parkoló
+    hu = Magánparkoló
     id = Parkir
     it = Parcheggio
     ja = 駐車場
@@ -1868,7 +1879,7 @@
     fi = Parkkipaikka
     fr = Stationnement
     de = Tiefgarage
-    hu = Parkoló
+    hu = Mélygarázs
     id = Parkir
     it = Parcheggio
     ja = 駐車場
@@ -1934,7 +1945,7 @@
     fi = Parkkipaikka
     fr = Parking
     de = Parkplatz
-    hu = Parkolóhely
+    hu = Megtűrt parkolóhely
     id = Tempat parkir
     it = Parcheggio
     ja = 駐車スペース
@@ -1968,7 +1979,7 @@
     fi = Parkkipaikka
     fr = Parking
     de = Parkplatz
-    hu = Parkolóhely
+    hu = Magánparkolóhely
     id = Tempat parkir
     it = Parcheggio
     ja = 駐車スペース
@@ -2036,7 +2047,7 @@
     fi = Maksupääte
     fr = Terminal de paiement
     de = Bezahlterminal
-    hu = Fizető terminál
+    hu = Fizetőterminál
     id = Terminal Pembayaran
     it = Terminale di pagamento
     ja = 決済端末
@@ -2100,7 +2111,7 @@
     fi = Uskonnollinen kohde
     fr = Lieu de culte
     de = Anbetungsstätte
-    hu = Templom
+    hu = Istentiszteleti hely
     id = Tempat ibadah
     it = Tempio
     ja = 礼拝
@@ -2131,7 +2142,7 @@
     nl = Tempel
     fi = Temppeli
     de = Tempel
-    hu = Templom
+    hu = Buddhista szentély
     id = Kuil
     it = Tempio
     ja = 寺院
@@ -2194,7 +2205,7 @@
     nl = Tempel
     fi = Temppeli
     de = Tempel
-    hu = Templom
+    hu = Hindu szentély
     id = Kuil
     it = Tempio
     ja = ヒンドゥー教寺院
@@ -2289,7 +2300,7 @@
     fi = Pyhäkkö
     fr = Sanctuaire
     de = Schrein
-    hu = Kegyhely
+    hu = Sintó szentély
     id = Kuil
     it = Santuario
     ja = 神社
@@ -2320,7 +2331,7 @@
     nl = Tempel
     fi = Temppeli
     de = Tempel
-    hu = Templom
+    hu = Taoista szentély
     id = Kuil
     it = Tempio
     ja = 道教寺院
@@ -2383,7 +2394,7 @@
     fi = Postilaatikko
     fr = Boîte aux lettres
     de = Briefkasten
-    hu = Levelesláda
+    hu = Postaláda
     id = Kotak pos
     it = Casella
     ja = 郵便ポスト
@@ -2442,6 +2453,7 @@
   [type.amenity.prison]
     en = Prison
     ru = Тюрьма
+    hu = Börtön
     ja = 刑務所
     pl = Więzienie
 
@@ -2509,7 +2521,7 @@
     fi = Kierrätyskeskus
     fr = Centre de recyclage
     de = Recyclinghof
-    hu = Újrahasznosító központ
+    hu = Hulladékudvar
     id = TPA
     it = Centro di riciclaggio
     ja = リサイクルセンター
@@ -2541,7 +2553,7 @@
     fi = Kierrätysjäteastia
     fr = Conteneur de recyclage
     de = Wertstoffcontainer
-    hu = Újrahasznosító tartály
+    hu = Szelektív hulladékgyűjtő
     id = Wadah daur ulang
     it = Contenitore per materiali riciclabili
     ja = リサイクルボックス
@@ -2574,7 +2586,7 @@
     fi = Myrkkyjäte
     fr = Déchets toxiques
     de = Giftmüll
-    hu = Mérgező hulladék
+    hu = Veszélyes hulladék
     id = Limbah beracun
     it = Rifiuti tossici
     ja = 有毒廃棄物
@@ -2607,7 +2619,7 @@
     fi = Vanhat vaatteet
     fr = Vêtement usagés
     de = Altkleider
-    hu = Régi ruhák
+    hu = Használt ruha
     id = Pakaian lama
     it = Vestiti usati
     ja = 古着
@@ -2640,7 +2652,7 @@
     fi = Lasipullot
     fr = Verre
     de = Glas
-    hu = Üveg palackok
+    hu = Üvegpalack
     id = Botol kaca
     it = Contenitori in vetro
     ja = ガラス瓶
@@ -2673,7 +2685,7 @@
     fi = Paperi- ja kartonkijäte
     fr = Papier usagé
     de = Papier
-    hu = Papír hulladék
+    hu = Papír
     id = Limbah kertas
     it = Rifiuti in carta e cartone
     ja = 紙くず
@@ -2706,7 +2718,7 @@
     fi = Muovijäte
     fr = Déchets plastiques
     de = Kunststoff
-    hu = Műanyag hulladék
+    hu = Műanyag
     id = Limbah plastik
     it = Rifiuti in plastica
     ja = プラスチックごみ
@@ -2739,7 +2751,7 @@
     fi = Muovipullot
     fr = Collecte de bouteilles en plastique
     de = Plastikflaschen
-    hu = Műanyag palackok
+    hu = Műanyagpalack
     id = Botol-botol plastik
     it = Bottiglie di plastica
     ja = ペットボトル
@@ -2805,7 +2817,7 @@
     fi = Kodinkonejäte
     fr = Déchets d'équipements électriques
     de = Elektroschrott
-    hu = Elektromos hulladék
+    hu = Elektromos készülék
     id = Limbah elektronik
     it = Rifiuti di apparecchiature elettriche ed elettroniche
     ja = 電子廃棄物
@@ -2894,7 +2906,7 @@
     fi = Turvapaikka
     fr = Refuge
     de = Schutzhütte
-    hu = Menedék
+    hu = Esőbeálló
     id = Tempat penampungan
     it = Riparo
     ja = 避難所
@@ -2926,7 +2938,7 @@
     fi = Suihku
     fr = Douche
     de = Dusche
-    hu = Tusoló
+    hu = Zuhany
     id = Pancuran
     it = Doccia
     ja = シャワー
@@ -2950,6 +2962,7 @@
 
   [type.amenity.speed_trap]
     en = amenity-speed_trap
+    hu = Traffipax
     pl = Kontrola radarowa
 
   [type.amenity.taxi]
@@ -2959,6 +2972,7 @@
     fi = Taksi
     id = Taksi
     ja = タクシー
+    hu = Taxiállomás
     ko = 택시
     nb = Drosje
     pl = Taksówka
@@ -3044,7 +3058,7 @@
     fi = WC
     fr = Toilettes
     de = Toilette
-    hu = Mosdó
+    hu = WC
     it = Toilette
     ja = トイレ
     ko = 화장실
@@ -3133,6 +3147,7 @@
     en = Vending machine
     ru = Торговый автомат
     ja = 自動販売機
+    hu = Árusító automata
     pl = Automat sprzedający
 
   [type.amenity.vending_machine.cigarettes]
@@ -3241,7 +3256,7 @@
     fi = Julkisen liikenteen lippuautomaatti
     fr = Distributeur de billets pour le transport en commun
     de = Fahrkartenautomat
-    hu = Automata jegykiadó tömegközlekedési eszközökhöz
+    hu = Tömegközlekedésijegy-automata
     id = Mesin penjual otomatis tiket transportasi umum
     it = Distributore automatico biglietti di trasporto
     ja = 公共交通機関の券売機
@@ -3307,7 +3322,7 @@
     fi = Roska-astia
     fr = Poubelle
     de = Abfalleimer
-    hu = Szemétkosár
+    hu = Szemeteskosár
     id = Kotak sampah
     it = Contenitore per rifiuti
     ja = ゴミ箱
@@ -3339,7 +3354,7 @@
     fi = Roska
     fr = Déchets
     de = Müllcontainer
-    hu = Szemét
+    hu = Hulladékkonténer
     id = Sampah
     it = Spazzatura
     ja = ゴミ
@@ -3396,6 +3411,7 @@
   [type.barrier]
     en = Barrier
     ru = Преграда
+    hu = Akadály
     ja = 障害物
     pl = Bariera
 
@@ -3408,7 +3424,7 @@
     nl = Blok
     fi = Este
     fr = Bloc
-    hu = Blokk
+    hu = Tömb
     id = Blok
     it = Blocco
     ja = ブロック
@@ -3440,7 +3456,7 @@
     fi = Tolppa
     fr = Pilier
     de = Poller
-    hu = Oszlop
+    hu = Terelőoszlop
     id = Pilar
     it = Pilastro
     ja = 柱
@@ -3472,7 +3488,7 @@
     fi = Rajavalvonta
     fr = Contrôle aux frontières
     de = Grenzkontrolle
-    hu = Határállomás
+    hu = Határátkelő
     id = Gerbang perbatasan
     it = Controllo di frontiera
     ja = 国境管理
@@ -3497,12 +3513,14 @@
   [type.barrier.city_wall]
     en = City wall
     ru = Городская стена
+    hu = Városfal
     ja = 城壁
     pl = Mur miejski
 
   [type.barrier.cycle_barrier]
     en = Cycle barrier
     ru = Ограждение, предотвращающее проезд велосипедов
+    hu = Kerékpárakadály
     ja = バリカー
     pl = Bariera rowerowa
 
@@ -3541,6 +3559,7 @@
   [type.barrier.fence]
     en = Fence
     ru = Забор
+    hu = Kerítés
     ja = フェンス
     pl = Płot
 
@@ -3579,6 +3598,7 @@
   [type.barrier.hedge]
     en = Hedge
     ru = Живая изгородь
+    hu = Sövény
     ja = 生垣
     pl = Żywopłot
 
@@ -3592,7 +3612,7 @@
     fi = Puomi
     fr = Barrière levante
     de = Schranke
-    hu = Sorompó
+    hu = Emelkedő sorompó
     id = Polisi tidur
     it = Barriera ferroviaria
     ja = ブームバリア
@@ -3617,6 +3637,7 @@
   [type.barrier.retaining_wall]
     en = Retaining wall
     ru = Стена, удерживающая от осыпания
+    hu = Támfal
     ja = 擁壁
     pl = Mur oporowy
 
@@ -3630,7 +3651,7 @@
     fi = Portaat
     fr = Échalier
     de = Zaunübertritt
-    hu = Átjáró
+    hu = Kerítésátjáró
     id = Undakan
     it = Scaletta per recinzioni
     ja = 回転扉
@@ -3687,17 +3708,20 @@
   [type.barrier.wall]
     en = Wall
     ru = Стена
+    hu = Fal
     ja = 壁
     pl = Mur
 
   [type.boundary]
     en = Boundary
     ru = Граница
+    hu = Határ
     ja = 境界線
     pl = Granica
 
   [type.boundary.administrative]
     en = boundary-administrative
+    hu = Közigazgatási határ
     ja = 行政境界
     pl = Granica administracyjna
 
@@ -3748,10 +3772,12 @@
 
   [type.boundary.administrative.municipality]
     en = boundary-administrative-municipality
+    hu = Településhatár
     pl = Granica gminy
 
   [type.boundary.administrative.nation]
     en = boundary-administrative-nation
+    hu = Országhatár
 
   [type.boundary.administrative.region]
     en = boundary-administrative-region
@@ -3759,6 +3785,7 @@
 
   [type.boundary.administrative.state]
     en = boundary-administrative-state
+    hu = Tartományhatár
     pl = Granica województwa
 
   [type.boundary.administrative.suburb]
@@ -3841,7 +3868,7 @@
     fi = Rakennus
     fr = Bâtiment
     de = Gebäude
-    hu = Épület
+    hu = Épület címe
     id = Gedung
     it = Edificio
     ja = 建物
@@ -3930,7 +3957,7 @@
     fi = Rautatieasema
     fr = Gare
     de = Bahnhof
-    hu = Vonatmegálló
+    hu = Vasútállomás-épület
     id = Rel kereta api
     it = Stazione ferroviaria
     ja = 鉄道駅
@@ -3954,6 +3981,7 @@
 
   [type.craft]
     en = craft
+    hu = Műhely
     ja = 工房
     pl = Rzemiosło
 
@@ -4094,7 +4122,7 @@
     fi = Ilmastointilaite
     fr = Climatiseur
     de = Heizung
-    hu = Hűtés-fűtés szerelő
+    hu = Fűtés-, szellőztetés- és légkondicionálás-szerelő
     it = Impianti HVAC
     ja = 冷暖房空調
     ko = 냉난방기
@@ -4123,7 +4151,7 @@
     fi = Metallimies
     fr = Métallo
     de = Schlosser
-    hu = Lakatos
+    hu = Fémiparos
     id = Tukang besi
     it = Fabbro
     ja = 金属工
@@ -4251,7 +4279,7 @@
     fi = Suutari
     fr = Cordonnier
     de = Schuhmacher
-    hu = Cipész
+    hu = Cipőkészítő
     id = Tukang sepatu
     it = Calzolaio
     ja = 靴修理
@@ -4439,7 +4467,7 @@
     fi = Aasialainen keittiö
     fr = Cuisine asiatique
     de = Asiatische Küche
-    hu = Ázsiai és közel-keleti konyha
+    hu = Ázsiai konyha
     id = Masakan asia
     it = Cucina asiatica
     ja = アジア料理
@@ -4563,7 +4591,7 @@
     fi = Grilli
     fr = Barbecue
     de = Grill
-    hu = Grill
+    hu = Barbecue
     id = Barbekyu
     it = Barbecue
     ja = バーベキュー
@@ -4625,7 +4653,7 @@
     fi = Naudanlihakulho
     fr = Donburi de bœuf
     de = Gyūdon
-    hu = Gyúdon
+    hu = Marhatál (beef bowl)
     id = Nasi daging sapi
     it = Gyūdon
     ja = 牛丼
@@ -4749,7 +4777,7 @@
     fi = Viinitaverna
     fr = Buschenschank
     de = Buschenschank
-    hu = Borozó
+    hu = Borkimérés
     id = Taverna anggur
     it = Osteria contadina
     ja = ブッシェンシャンク
@@ -4780,7 +4808,7 @@
     fi = Kakku
     fr = Gâteau
     de = Kuchen
-    hu = Torta
+    hu = Sütemény
     id = Kue
     it = Torte
     ja = ケーキ
@@ -4936,7 +4964,7 @@
     fi = Kreppi
     fr = Crêpe
     de = Crêpe
-    hu = Francia palacsinta
+    hu = Crêpe (francia palacsinta)
     id = Kue dadar
     it = Crêpes
     ja = クレープ
@@ -5060,7 +5088,7 @@
     fi = Lounaskahvila
     fr = Diner américain
     de = Diner
-    hu = Étkező
+    hu = Vacsora
     id = Makan malam
     it = Ristorantino
     ja = ダイナー
@@ -5184,7 +5212,7 @@
     fi = Hieno ravintola
     fr = Restaurant gastronomique
     de = Gehobene Küche
-    hu = Exkluzív étterem
+    hu = Csúcsgasztronómia
     id = Adiboga
     it = Ristorante elegante
     ja = 高級料理
@@ -5246,7 +5274,7 @@
     fi = Fish & chips
     fr = Fish and chips
     de = Fish and Chips
-    hu = Hal és sültkrumpli
+    hu = Hal és sültkrumpli (fish & chips)
     id = Ikan dan kentang goreng
     it = Fish and chips
     ja = フィッシュ・アンド・チップス
@@ -5463,7 +5491,7 @@
     fi = Viinitaverna
     fr = Heuriger
     de = Heuriger
-    hu = Heuriger
+    hu = Újbor (Heuriger)
     id = Taverna anggur
     it = Heuriger
     ja = ホイリゲ
@@ -5494,7 +5522,7 @@
     fi = Hotdog
     fr = Hot-dog
     de = Hotdog
-    hu = Hotdog
+    hu = Hot dog
     id = Hotdog
     it = Hot dog
     ja = ホットドッグ
@@ -5556,7 +5584,7 @@
     fi = Jäätelö
     fr = Crème glacée
     de = Eis
-    hu = Jégkrém
+    hu = Fagylalt
     id = Es_krim
     it = Gelateria
     ja = アイスクリーム
@@ -6114,7 +6142,7 @@
     fi = Nuudeli
     fr = Nouilles
     de = Nudeln
-    hu = Tészta
+    hu = Tészta (nudel)
     id = Bakmi
     it = Noodles
     ja = 麺類
@@ -6145,7 +6173,7 @@
     fi = Itämainen keittiö
     fr = Cuisine orientale
     de = Orientalische Küche
-    hu = Keleti konyha
+    hu = Távol-keleti konyha
     id = Masakan oriental
     it = Cucina orientale
     ja = 東洋料理
@@ -6207,7 +6235,7 @@
     fi = Pasta
     fr = Pâtes
     de = Pasta
-    hu = Tészta
+    hu = Tészta (pasta)
     id = Pasta
     it = Pasta
     ja = パスタ
@@ -6393,7 +6421,7 @@
     fi = Ramen
     fr = Râmen
     de = Ramen
-    hu = Rámen
+    hu = Ramen (japán)
     id = Ramen
     it = Ramen
     ja = ラーメン
@@ -6610,7 +6638,7 @@
     fi = Sobanuudeli
     fr = Soba
     de = Soba
-    hu = Soba
+    hu = Szo-ba (japán)
     id = Soba
     it = Soba
     ja = そば
@@ -6672,7 +6700,7 @@
     fi = Pihviravintola
     fr = Grillades
     de = Steakhaus
-    hu = Steak ház
+    hu = Steak house (marhaszelet)
     id = Restoran_steik
     it = Bisteccheria
     ja = ステーキハウス
@@ -6943,6 +6971,7 @@
 
   [type.emergency]
     en = emergency
+    hu = Vészhelyzeti infrastruktúra
     pl = Ratunkowe
 
   [type.emergency.defibrillator]
@@ -7016,7 +7045,7 @@
     fi = Hätäpuhelin
     fr = Téléphone d'urgence
     de = Notruftelefon
-    hu = Sürgősségi telefon
+    hu = Segélyhívó telefon
     id = Telepon darurat
     it = Telefono di emergenza
     ja = 緊急電話
@@ -7072,11 +7101,13 @@
 
   [type.highway]
     en = highway
+    hu = Út
     ja = 道路
     pl = Droga
 
   [type.highway.bridleway]
     en = highway-bridleway
+    hu = Lovaglóút
     ja = 馬道
     pl = Droga dla koni
 
@@ -7163,6 +7194,7 @@
 
   [type.highway.cycleway]
     en = highway-cycleway
+    hu = Kerékpárút
     ja = 自転車道
     pl = Droga rowerowa
 
@@ -7191,7 +7223,7 @@
     fi = Polku
     fr = Chemin
     de = Fußweg
-    hu = Ösvény
+    hu = Gyalogút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7223,7 +7255,7 @@
     fi = Polku
     fr = Chemin
     de = Fußweg
-    hu = Ösvény
+    hu = Gyalogút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7255,7 +7287,7 @@
     fi = Polku
     fr = Chemin
     de = Fußweg
-    hu = Ösvény
+    hu = Gyalogút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7287,7 +7319,7 @@
     fi = Polku
     fr = Chemin
     de = Fußweg
-    hu = Ösvény
+    hu = Gyalogoshíd
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7319,7 +7351,7 @@
     fi = Polku
     fr = Chemin
     de = Wanderweg
-    hu = Ösvény
+    hu = Gyalogút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7351,7 +7383,7 @@
     fi = Polku
     fr = Chemin
     de = Wanderweg
-    hu = Ösvény
+    hu = Gyalogút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7383,7 +7415,7 @@
     fi = Polku
     fr = Chemin
     de = Wanderweg
-    hu = Ösvény
+    hu = Gyalogút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7415,7 +7447,7 @@
     fi = Polku
     fr = Chemin
     de = Wanderweg
-    hu = Ösvény
+    hu = Gyalogút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7447,7 +7479,7 @@
     fi = Polku
     fr = Chemin
     de = Wanderweg
-    hu = Ösvény
+    hu = Gyalogút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7479,7 +7511,7 @@
     fi = Polku
     fr = Chemin
     de = Fußweg
-    hu = Ösvény
+    hu = Gyalogút (használata megtűrt)
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7511,7 +7543,7 @@
     fi = Polku
     fr = Chemin
     de = Fußgängertunnel
-    hu = Ösvény
+    hu = Gyalogos alagút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7543,7 +7575,7 @@
     fi = Kahluupaikka
     fr = Gué
     de = Furt
-    hu = Gázló
+    hu = Gyalogos gázló
     id = Menyeberang
     it = Guado
     ja = 浅瀬
@@ -7576,7 +7608,7 @@
     fi = Katu
     fr = Rue
     de = Spielstraße
-    hu = Utca
+    hu = Lakó-pihenő övezet
     id = Jalan
     it = Via
     ja = ストリート
@@ -7608,7 +7640,7 @@
     fi = Katu
     fr = Rue
     de = Spielstraße
-    hu = Utca
+    hu = Lakó-pihenő övezet
     id = Jalan
     it = Via
     ja = ストリート
@@ -7640,7 +7672,7 @@
     fi = Katu
     fr = Rue
     de = Spielstraßentunnel
-    hu = Utca
+    hu = Lakó-pihenő övezet
     id = Jalan
     it = Via
     ja = ストリート
@@ -7672,7 +7704,7 @@
     fi = Katu
     fr = Rue
     de = Autobahn
-    hu = Utca
+    hu = Autópálya
     id = Jalan
     it = Via
     ja = ストリート
@@ -7704,7 +7736,7 @@
     fi = Katu
     fr = Rue
     de = Autobahn
-    hu = Utca
+    hu = Autópályahíd
     id = Jalan
     it = Via
     ja = ストリート
@@ -7736,7 +7768,7 @@
     fi = Katu
     fr = Rue
     de = Autobahntunnel
-    hu = Utca
+    hu = Autópálya-alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -7798,7 +7830,7 @@
     fi = Katu
     fr = Rue
     de = Auffahrt
-    hu = Utca
+    hu = Autópálya fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -7830,7 +7862,7 @@
     fi = Katu
     fr = Rue
     de = Auffahrt
-    hu = Utca
+    hu = Autópálya fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -7862,7 +7894,7 @@
     fi = Katu
     fr = Rue
     de = Auffahrt
-    hu = Utca
+    hu = Autópálya fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -7926,7 +7958,7 @@
     fi = Polku
     fr = Chemin
     de = Weg
-    hu = Ösvény
+    hu = Alpesi túraút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -7990,7 +8022,7 @@
     fi = Polku
     fr = Chemin
     de = Weg
-    hu = Ösvény
+    hu = Gyalogoshíd
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -8022,7 +8054,7 @@
     fi = Polku
     fr = Chemin
     de = Weg
-    hu = Ösvény
+    hu = Nehéz alpesi túraút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -8054,7 +8086,7 @@
     fi = Polku
     fr = Chemin
     de = Weg
-    hu = Ösvény
+    hu = Nehéz túraút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -8086,7 +8118,7 @@
     fi = Polku
     fr = Chemin
     de = Weg
-    hu = Ösvény
+    hu = Nagyon nehéz alpesi túraút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -8118,7 +8150,7 @@
     fi = Polku
     fr = Chemin
     de = Weg
-    hu = Ösvény
+    hu = Turistaút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -8214,7 +8246,7 @@
     fi = Polku
     fr = Chemin
     de = Weg
-    hu = Ösvény
+    hu = Ösvény (használata megtűrt)
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -8246,7 +8278,7 @@
     fi = Polku
     fr = Chemin
     de = Weg
-    hu = Ösvény
+    hu = Gyalogos alagút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -8278,7 +8310,7 @@
     fi = Katu
     fr = Rue
     de = Fußgängerzone
-    hu = Utca
+    hu = Sétálóutca
     id = Jalan
     it = Via
     ja = ストリート
@@ -8310,7 +8342,7 @@
     fi = Katu
     fr = Rue
     de = Fußgängerzone
-    hu = Utca
+    hu = Sétálóutca
     id = Jalan
     it = Via
     ja = ストリート
@@ -8342,7 +8374,7 @@
     fi = Katu
     fr = Rue
     de = Fußgängerzone
-    hu = Utca
+    hu = Gyalogos híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -8374,7 +8406,7 @@
     fi = Katu
     fr = Rue
     de = Fußgängertunnel
-    hu = Utca
+    hu = Gyalogos alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -8406,7 +8438,7 @@
     fi = Katu
     fr = Rue
     de = Hauptstraße
-    hu = Utca
+    hu = Első- vagy másodrendű főút
     id = Jalan
     it = Via
     ja = ストリート
@@ -8438,7 +8470,7 @@
     fi = Katu
     fr = Rue
     de = Hauptstraße
-    hu = Utca
+    hu = Közúti híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -8470,7 +8502,7 @@
     fi = Katu
     fr = Rue
     de = Hauptstraßentunnel
-    hu = Utca
+    hu = Közúti alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -8502,7 +8534,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Főút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -8534,7 +8566,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Főút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -8566,7 +8598,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Főút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -8630,7 +8662,7 @@
     fi = Katu
     fr = Rue
     de = Wohnstraße
-    hu = Utca
+    hu = Lakóút
     id = Jalan
     it = Via
     ja = ストリート
@@ -8662,7 +8694,7 @@
     fi = Katu
     fr = Rue
     de = Wohnstraße
-    hu = Utca
+    hu = Lakóút
     id = Jalan
     it = Via
     ja = ストリート
@@ -8694,7 +8726,7 @@
     fi = Katu
     fr = Rue
     de = Wohnstraße
-    hu = Utca
+    hu = Közúti híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -8726,7 +8758,7 @@
     fi = Katu
     fr = Rue
     de = Wohnstraßentunnel
-    hu = Utca
+    hu = Közúti alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -8758,7 +8790,7 @@
     fi = Levähdyspaikka
     fr = Aire de repos
     de = Rastplatz
-    hu = Pihenőzóna
+    hu = Pihenőhely (benzinkút nélkül)
     id = Tempat istirahat
     it = Area di sosta
     ja = 休憩所
@@ -8821,7 +8853,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Közúti híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -8853,7 +8885,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Közúti alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -8885,7 +8917,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Összekötő út
     id = Jalan
     it = Via
     ja = ストリート
@@ -8917,7 +8949,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Közúti híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -8949,7 +8981,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Közúti alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -8981,7 +9013,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Összekötő út fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -9013,7 +9045,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Összekötő út fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -9045,7 +9077,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Összekötő út fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -9077,7 +9109,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Szervizút
     id = Jalan
     it = Via
     ja = ストリート
@@ -9109,7 +9141,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Szervizút
     id = Jalan
     it = Via
     ja = ストリート
@@ -9141,7 +9173,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Közúti híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -9173,7 +9205,7 @@
     fi = Katu
     fr = Rue
     de = Zufahrt
-    hu = Utca
+    hu = Kocsibehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -9205,7 +9237,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Parkolón belüli út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9237,7 +9269,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Közúti alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -9306,7 +9338,7 @@
     fi = Polku
     fr = Chemin
     de = Stufen
-    hu = Ösvény
+    hu = Lépcső
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -9338,7 +9370,7 @@
     fi = Polku
     fr = Chemin
     de = Stufen
-    hu = Ösvény
+    hu = Gyalogos híd
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -9370,7 +9402,7 @@
     fi = Polku
     fr = Chemin
     de = Stufen
-    hu = Ösvény
+    hu = Gyalogos alagút
     id = Jalur
     it = Sentiero
     ja = 歩道
@@ -9402,7 +9434,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Bekötőút
     id = Jalan
     it = Via
     ja = ストリート
@@ -9434,7 +9466,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Közúti híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -9466,7 +9498,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Közúti alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -9498,7 +9530,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Bekötőút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -9530,7 +9562,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Bekötőút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -9562,7 +9594,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Bekötőút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -9594,7 +9626,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Mezőgazdasági út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9626,7 +9658,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Mezőgazdasági út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9658,7 +9690,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Közúti híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -9690,7 +9722,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Burkolt mezőgazdasági út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9722,7 +9754,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Mezőgazdasági út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9754,7 +9786,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Mezőgazdasági út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9786,7 +9818,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Mezőgazdasági út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9818,7 +9850,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Mezőgazdasági út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9850,7 +9882,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Nem használható mezőgazdasági út
     id = Jalan
     it = Via
     ja = ストリート
@@ -9882,7 +9914,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Mezőgazdasági út (használata megtűrt)
     id = Jalan
     it = Via
     ja = ストリート
@@ -9914,7 +9946,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Közúti alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -9946,7 +9978,7 @@
     fi = Liikennevalot
     fr = Feux de circulation
     de = Verkehrsampel
-    hu = Közlekedési lámpák
+    hu = Jelzőlámpa
     id = Lampu lalu lintas
     it = Semaforo
     ja = 交通信号
@@ -9978,7 +10010,7 @@
     fi = Katu
     fr = Rue
     de = Schnellstraße
-    hu = Utca
+    hu = Autóút
     id = Jalan
     it = Via
     ja = ストリート
@@ -10010,7 +10042,7 @@
     fi = Katu
     fr = Rue
     de = Schnellstraße
-    hu = Utca
+    hu = Autóúthíd
     id = Jalan
     it = Via
     ja = ストリート
@@ -10042,7 +10074,7 @@
     fi = Katu
     fr = Rue
     de = Schnellstraßentunnel
-    hu = Utca
+    hu = Autóút-alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -10074,7 +10106,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Autóút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -10106,7 +10138,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Autóút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -10138,7 +10170,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Autóút fel- vagy lehajtó
     id = Jalan
     it = Via
     ja = ストリート
@@ -10170,7 +10202,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Egyéb közút
     id = Jalan
     it = Via
     ja = ストリート
@@ -10202,7 +10234,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Egyéb közút
     id = Jalan
     it = Via
     ja = ストリート
@@ -10234,7 +10266,7 @@
     fi = Katu
     fr = Rue
     de = Straße
-    hu = Utca
+    hu = Közúti híd
     id = Jalan
     it = Via
     ja = ストリート
@@ -10266,7 +10298,7 @@
     fi = Katu
     fr = Rue
     de = Straßentunnel
-    hu = Utca
+    hu = Közúti alagút
     id = Jalan
     it = Via
     ja = ストリート
@@ -10296,6 +10328,7 @@
 
   [type.historic]
     en = historic
+    hu = Történelmi objektum
     ja = 史跡
     pl = Historyczne
 
@@ -10309,7 +10342,7 @@
     fi = Arkeologinen kohde
     fr = Site archéologique
     de = Ausgrabungsstätte
-    hu = Ásatás
+    hu = Régészeti lelőhely
     id = Situs arkeologi
     it = Sito archeologico
     ja = 考古遺跡
@@ -10334,11 +10367,13 @@
   [type.historic.battlefield]
     en = Battlefield
     ru = Место исторического сражения
+    hu = Csatatér
     ja = 古戦場
     pl = Miejsce historycznej bitwy
 
   [type.historic.boundary_stone]
     en = historic-boundary_stone
+    hu = Történelmi határkő
     ja = 境界標
     pl = Historyczny kamień graniczny
 
@@ -10352,7 +10387,7 @@
     fi = Linna
     fr = Château
     de = Burg
-    hu = Kastély
+    hu = Vár
     id = Kastel
     it = Castello
     ja = 城
@@ -10384,7 +10419,7 @@
     fi = Linna
     fr = Château
     de = Burg
-    hu = Kastély
+    hu = Vár (közékori)
     id = Kastel
     it = Castello
     ja = 城
@@ -10440,11 +10475,13 @@
 
   [type.historic.citywalls]
     en = historic-citywalls
+    hu = Történelmi városfal
     ja = 歴史的な城壁
     pl = Historyczne mury miasta
 
   [type.historic.fort]
     en = historic-fort
+    hu = Történelmi erőd
     ja = 歴史的な要塞
     pl = Historyczny fort
 
@@ -10487,7 +10524,7 @@
     fi = Muistomerkki
     fr = Mémorial
     de = Denkmal
-    hu = Emlékmű
+    hu = Emléktábla
     id = Tugu peringatan
     it = Memoriale
     ja = 銘板
@@ -10516,7 +10553,7 @@
     fi = Muistomerkki
     fr = Mémorial
     de = Denkmal
-    hu = Emlékmű
+    hu = Szobor
     id = Tugu peringatan
     it = Memoriale
     ja = 彫刻
@@ -10545,7 +10582,7 @@
     fi = Muistomerkki
     fr = Mémorial
     de = Denkmal
-    hu = Emlékmű
+    hu = Szobor
     id = Tugu peringatan
     it = Memoriale
     ja = 塑像
@@ -10570,7 +10607,7 @@
     ar = صرح
     cs = Zajímavost
     fi = Monumentti
-    hu = Műemlék
+    hu = Monumentális emlékmű
     id = Monumen
     it = Monumento
     ja = 記念碑
@@ -10590,6 +10627,7 @@
 
   [type.historic.museum]
     en = historic-museum
+    hu = Történelmi múzeum
     ja = 歴史的なミュージアム
     pl = Muzeum historyczne
 
@@ -10603,7 +10641,7 @@
     fi = Rauniot
     fr = Ruines
     de = Ruinen
-    hu = Romok
+    hu = Rom
     id = Reruntuhan
     it = Rovine
     ja = 古跡
@@ -10635,7 +10673,7 @@
     fi = Nähtävyydet
     fr = Tourisme
     de = Schiff
-    hu = Túrizmus
+    hu = Történelmi hajó
     id = Pemandangan
     it = Turistico
     ja = 退役船
@@ -10667,7 +10705,7 @@
     fi = Nähtävyydet
     fr = Tourisme
     de = Grabstätte
-    hu = Túrizmus
+    hu = Történelmi sír
     id = Pemandangan
     it = Turistico
     ja = 墓
@@ -10691,11 +10729,13 @@
 
   [type.historic.wayside_cross]
     en = historic-wayside_cross
+    hu = Út menti kereszt
     ja = 歴史的な十字架
     pl = Krzyż przydrożny
 
   [type.historic.wayside_shrine]
     en = historic-wayside_shrine
+    hu = Út menti kegyhely
     ja = 歴史的な祠
     pl = Kapliczka przydrożna
 
@@ -10755,6 +10795,7 @@
     en = Internet
     ru = Интернет
     ar = واي فاي
+    hu = Internetcsatlakozás
     ja = インターネット
     ko = 인터넷
     th = อินเทอร์เน็ต
@@ -10766,22 +10807,26 @@
 
   [type.junction]
     en = junction
+    hu = Csomópont
     ja = 交差点
     pl = Skrzyżowanie
 
   [type.junction.roundabout]
     en = junction-roundabout
+    hu = Körforgalom
     ja = ラウンドアバウト
     pl = Rondo
 
   [type.landuse]
     en = landuse
+    hu = Területhasználat
     ja = 土地利用
     pl = Zagospodarowanie ziemi
 
   [type.landuse.allotments]
     en = Allotments
     ru = Земельные участки
+    hu = Kiskertek
     ja = 市民農園
     pl = Działki
 
@@ -10794,7 +10839,7 @@
     fi = Vesi
     fr = Eau
     de = Wasserfläche
-    hu = Víz
+    hu = Vízgyűjtő medence
     id = Air
     it = Bacino
     ja = 遊水地
@@ -10819,6 +10864,7 @@
   [type.landuse.brownfield]
     en = Brownfield
     ru = Земли для застройки
+    hu = Barnamezős terület
     ja = 再開発用地
     pl = Teren do zabudowy
 
@@ -10896,7 +10942,7 @@
     fi = Kirkon piha
     fr = Cour d'église
     de = Kirchenhof
-    hu = Templomtér
+    hu = Templomkert
     id = Halaman gereja
     it = Sagrato della chiesa
     ja = キリスト教教会付属地
@@ -10922,18 +10968,21 @@
 
   [type.landuse.commercial]
     en = landuse-commercial
+    hu = Üzleti terület
     ja = 商業用地
     pl = Teren handlu i usług
 
   [type.landuse.construction]
     en = Construction
     ru = Стройка
+    hu = Építkezés
     ja = 建設工事中
     pl = Teren budowy
 
   [type.landuse.farm]
     en = Farm
     ru = Ферма
+    hu = Tanya
     ja = 農地
     pl = Gospodarstwo rolne
 
@@ -10947,7 +10996,7 @@
     fi = Maatalousmaa
     fr = Terrains agricoles
     de = Agrarland
-    hu = Termőföld
+    hu = Mezőgazdasági terület
     id = Lahan pertanian
     it = Terreno agricolo
     ja = 農地
@@ -10974,6 +11023,7 @@
   [type.landuse.farmyard]
     en = Farmyard
     ru = Сельскохозяйственная земля
+    hu = Tanyaudvar
     ja = 農地
     pl = Obejście gospodarskie
 
@@ -11024,7 +11074,7 @@
     fi = Metsä
     fr = Forêt
     de = Nadelwald
-    hu = Erdő
+    hu = Fenyőerdő
     id = Hutan
     it = Foresta
     ja = 森林
@@ -11056,7 +11106,7 @@
     fi = Metsä
     fr = Forêt
     de = Laubwald
-    hu = Erdő
+    hu = Lombos erdő
     id = Hutan
     it = Foresta
     ja = 森林
@@ -11088,7 +11138,7 @@
     fi = Metsä
     fr = Forêt
     de = Mischwald
-    hu = Erdő
+    hu = Vegyes erdő
     id = Hutan
     it = Foresta
     ja = 森林
@@ -11113,6 +11163,7 @@
   [type.landuse.garages]
     en = Garages
     ru = Гаражи
+    hu = Garázssor
     ja = ガレージ
     pl = Garaże
 
@@ -11152,16 +11203,19 @@
 
   [type.landuse.greenfield]
     en = landuse-greenfield
+    hu = Zöldmezős terület
     ja = 建設予定地
     pl = Obszar pod zabudowę
 
   [type.landuse.greenhouse_horticulture]
     en = landuse-greenhouse_horticulture
+    hu = Üvegház
     ja = 温室栽培
 
   [type.landuse.industrial]
     en = Industrial land
     ru = Промзона
+    hu = Ipari terület
     ja = 工業用地
     pl = Obszar przemysłowy
 
@@ -11202,22 +11256,26 @@
   [type.landuse.meadow]
     en = Meadow
     ru = Луг
+    hu = Rét
     ja = 牧草地
     pl = Łąka
 
   [type.landuse.military]
     en = Military area
+    hu = Katonai terület
     ja = 軍用地
     pl = Teren wojskowy
 
   [type.landuse.orchard]
     en = Orchard
     ru = Сад
+    hu = Gyümölcsös
     ja = 果樹園
     pl = Sad
 
   [type.landuse.quarry]
     en = Quarry
+    hu = Külszíni fejtés
     ja = 採石場
     pl = Kamieniołom
 
@@ -11231,7 +11289,7 @@
     fi = Rautatierakennukset
     fr = Installations ferroviaires
     de = Eisenbahnanlagen
-    hu = Vasúti helyiségek
+    hu = Vasúti terület
     id = Stasiun kereta api
     it = Impianti ferroviari
     ja = 鉄道施設
@@ -11257,6 +11315,7 @@
 
   [type.landuse.recreation_ground]
     en = landuse-recreation_ground
+    hu = Szabadidőpark
     ja = レクリエーション
     pl = Tereny wypoczynkowe
 
@@ -11269,7 +11328,7 @@
     fi = Vesi
     fr = Eau
     de = Wasserfläche
-    hu = Víz
+    hu = Víztározó
     id = Air
     it = Bacino
     ja = 貯水池
@@ -11293,31 +11352,37 @@
 
   [type.landuse.residential]
     en = landuse-residential
+    hu = Lakóterület
     ja = 住宅地
     pl = Tereny zamieszkania
 
   [type.landuse.retail]
     en = landuse-retail
+    hu = Kiskereskedelmi terület
     ja = 小売店エリア
     pl = Obszar handlu
 
   [type.landuse.salt_pond]
     en = landuse-salt_pond
+    hu = Sólepárló medence
     ja = 塩田
     pl = Słone jezioro
 
   [type.landuse.village_green]
     en = landuse-village_green
+    hu = Faluközponti zöldterület
     ja = 村の中心
     pl = Nawsie
 
   [type.landuse.vineyard]
     en = Vineyard
+    hu = Szőlő
     ja = ブドウ園
     pl = Winnica
 
   [type.leisure]
     en = leisure
+    hu = Szabadidő
     ja = レジャー
     pl = Wypoczynek
 
@@ -11335,7 +11400,7 @@
     fi = Koirien ulkoilupaikka
     fr = Places autorisés pour promener les chiens
     de = Hundeauslauffläche
-    hu = Kutyás terület
+    hu = Kutyafuttató
     id = Area untuk anjing
     it = Area sgambamento cani
     ja = ドッグエリア
@@ -11369,7 +11434,7 @@
     fi = Kuntosali
     fr = Centre fitness
     de = Fitnessstudio
-    hu = Fitnesz-terem
+    hu = Edzőterem
     id = Pusat kebugaran
     it = Centro benessere
     ja = フィットネスセンター、ジム
@@ -11401,7 +11466,7 @@
     fi = Kuntokeskus
     fr = Station de fitness
     de = Fitnessstation
-    hu = Fitness állomás
+    hu = Fitneszpark
     id = Stasiun Kebugaran
     it = Centro fitness
     ja = フィットネスステーション
@@ -11489,6 +11554,7 @@
 
   [type.leisure.ice_rink]
     en = Ice rink
+    hu = Jégpálya
     ja = アイスリンク
     pl = Lodowisko
 
@@ -11499,6 +11565,7 @@
 
   [type.leisure.marina]
     en = Marina
+    hu = Kishajókikötő
     ja = マリーナ
 
   [type.leisure.nature_reserve]
@@ -11511,7 +11578,7 @@
     fi = Luonnonsuojelualue
     fr = Réserve naturelle
     de = Naturschutzgebiet
-    hu = Védett terület
+    hu = Természetvédelmi terület
     id = Cagar Alam
     it = Riserva
     ja = 自然保護区
@@ -11578,7 +11645,7 @@
     fi = Puisto
     fr = Parc
     de = Park
-    hu = Park
+    hu = Park (nem látogatható)
     id = Taman
     it = Parco
     ja = 公園
@@ -11612,7 +11679,7 @@
     fi = Puisto
     fr = Parc
     de = Park
-    hu = Park
+    hu = Park (használata megtűrt)
     id = Taman
     it = Parco
     ja = 公園
@@ -11646,7 +11713,7 @@
     fi = Puisto
     fr = Parc
     de = Park
-    hu = Park
+    hu = Park (magántulajdon)
     id = Taman
     it = Parco
     ja = 公園
@@ -11736,6 +11803,7 @@
 
   [type.leisure.recreation_ground]
     en = Recreation ground
+    hu = Szabadidőpark
     pl = Teren rekreacji
 
   [type.leisure.sauna]
@@ -11774,6 +11842,7 @@
 
   [type.leisure.slipway]
     en = leisure-slipway
+    hu = Sólya
     ja = スリップウェイ
     pl = Pochylnia
 
@@ -11819,7 +11888,7 @@
     fi = Kiipeilykeskus
     fr = Centre d'escalade
     de = Kletterzentrum
-    hu = Hegymászó központ
+    hu = Hegymászóközpont
     id = Pusat Peralatan Mendaki
     it = Centro di arrampicata
     ja = クライミングセンター
@@ -12000,6 +12069,7 @@
 
   [type.leisure.track]
     en = leisure-track
+    hu = Versenypálya
     ja = トラック
 
   [type.leisure.water_park]
@@ -12012,7 +12082,7 @@
     fi = Vesipuisto
     fr = Centre aquatique
     de = Aquapark
-    hu = Aquapark
+    hu = Élményfürdő, épített strand
     id = Taman air
     it = Parco acquatico
     ja = ウォーターパーク
@@ -12036,15 +12106,18 @@
 
   [type.man_made]
     en = man_made
+    hu = Építmény
     ja = 構造物
 
   [type.man_made.breakwater]
     en = man_made-breakwater
+    hu = Hullámtörő
     ja = 防波堤
     pl = Falochron
 
   [type.man_made.cairn]
     en = man_made-cairn
+    hu = Kőhalom (mesterséges)
     ja = ケルン
     pl = Kopiec
 
@@ -12081,6 +12154,7 @@
 
   [type.man_made.cutline]
     en = man_made-cutline
+    hu = Nyiladék
     ja = 森林の切れ目
     pl = Przecinka leśna
 
@@ -12118,16 +12192,19 @@
 
   [type.man_made.pier]
     en = man_made-pier
+    hu = Móló
     ja = 桟橋
     pl = Molo
 
   [type.man_made.pipeline]
     en = man_made-pipeline
+    hu = Csővezeték
     ja = パイプライン
     pl = Rurociąg
 
   [type.man_made.pipeline.overground]
     en = man_made-pipeline-overground
+    hu = Felszínen futó csővezeték
     ja = 地表のパイプライン
     pl = Rurociąg nad ziemią
 
@@ -12197,6 +12274,7 @@
 
   [type.man_made.wastewater_plant]
     en = man_made-wastewater_plant
+    hu = Szennyvízkezelő telep
     ja = 下水処理場
     pl = Oczyszczalnia ścieków
 
@@ -12274,7 +12352,7 @@
     fi = Kaivo
     fr = Puits à eau
     de = Brunnen
-    hu = Ivókút
+    hu = Kút
     id = Sumur air
     it = Pozzo d'acqua
     ja = 井戸
@@ -12330,6 +12408,7 @@
 
   [type.man_made.works]
     en = man_made-works
+    hu = Gyár
     ja = 工場
 
   [type.mapswithme]
@@ -12340,6 +12419,7 @@
 
   [type.military]
     en = military
+    hu = Katonai létesítmény
     ja = 軍事
     pl = Wojskowe
 
@@ -12349,6 +12429,7 @@
     ar = مأوى
     cs = Bunkr
     fi = Bunkkeri
+    hu = Bunker
     ja = 掩蔽壕
     ko = 벙커
     pl = Bunkier
@@ -12364,11 +12445,13 @@
 
   [type.natural]
     en = natural
+    hu = Természet
     ja = 自然
     pl = Natura
 
   [type.natural.bare_rock]
     en = Bare rock
+    hu = Csupasz szikla
     ja = 岩肌
     pl = Skała macierzysta
 
@@ -12413,7 +12496,7 @@
     fi = Ranta
     fr = Plage
     de = Strand
-    hu = Strand
+    hu = Természetes strand
     id = Pantai
     it = Spiaggia
     ja = ビーチ
@@ -12444,7 +12527,7 @@
     fi = Niemeke
     fr = Cap
     de = Kap
-    hu = Hegytető
+    hu = Fok
     id = Tanjung
     it = Capo
     ja = 岬
@@ -12478,7 +12561,7 @@
     fi = Luola
     fr = Cave
     de = Höhle
-    hu = Barlang
+    hu = Barlangbejárat
     id = Gua
     it = Grotta
     ja = 洞窟
@@ -12502,12 +12585,14 @@
 
   [type.natural.cliff]
     en = Cliff
+    hu = Sziklaszirt
     ja = 崖
     pl = Klif
 
   [type.natural.coastline]
     en = Coastline
     ru = Береговая линия
+    hu = Partvonal
     ja = 海岸線
     pl = Linia brzegowa
 
@@ -12589,7 +12674,7 @@
     fi = Pelto
     fr = Champ
     de = Grasland
-    hu = Mező
+    hu = Füves puszta
     id = Ladang
     it = Campo
     ja = 野原
@@ -12615,12 +12700,14 @@
 
   [type.natural.heath]
     en = Heath
+    hu = Fenyér
     ja = ヒース
     pl = Wrzosowisko
 
   [type.natural.hot_spring]
     en = Hot spring
     ru = Горячий источник
+    hu = Hőforrás
     ja = 温泉
     pl = Gorące źródło
 
@@ -12662,11 +12749,13 @@
 
   [type.natural.meadow]
     en = Meadow
+    hu = Rét
     ja = 牧草地
     pl = Łąka
 
   [type.natural.orchard]
     en = Orchard
+    hu = Gyümölcsös
     ja = 果樹園
     pl = Sad
 
@@ -12680,7 +12769,7 @@
     fi = Huippu
     fr = Sommet
     de = Berg
-    hu = Csúcs
+    hu = Hegycsúcs
     id = Puncak
     it = Monte
     ja = 山頂
@@ -12712,7 +12801,7 @@
     fi = Lampi
     fr = Étang
     de = Teich
-    hu = Tavacska
+    hu = Kis tó
     id = Kolam
     it = Stagno
     ja = 池
@@ -12736,11 +12825,13 @@
 
   [type.natural.rock]
     en = Rock
+    hu = Szikla
     ja = 岩
     pl = Skała
 
   [type.natural.salt_pond]
     en = Salt pond
+    hu = Sólepárló medence
     ja = 塩田
     pl = Słony staw
 
@@ -12754,7 +12845,7 @@
     fi = Tiheiköt
     fr = Fourré
     de = Dickicht
-    hu = Cserjés
+    hu = Bozót
     id = Semak
     it = Boscaglia
     ja = 雑木林
@@ -12878,11 +12969,13 @@
 
   [type.natural.tree_row]
     en = Tree row
+    hu = Fasor
     ja = 並木
     pl = Rząd drzew
 
   [type.natural.vineyard]
     en = Vineyard
+    hu = Szőlő
     ja = ブドウ園
     pl = Winnica
 
@@ -12959,7 +13052,7 @@
     fi = Suoperäinen seutu
     fr = Marais
     de = Moorgegend
-    hu = Vizes terület
+    hu = Vizenyős terület
     id = Area lahan basah
     it = Terreno paludoso
     ja = 湿地帯
@@ -12985,21 +13078,25 @@
 
   [type.natural.wetland.bog]
     en = Wetland
+    hu = Láp
     ja = 泥炭地
     pl = Torfowisko
 
   [type.natural.wetland.marsh]
     en = Wetland
+    hu = Mocsár
     ja = 沼地
     pl = Moczary
 
   [type.noexit]
     en = noexit
+    hu = Zsákutca
     ja = 行き止まり
     pl = Ślepy koniec drogi
 
   [type.noexit.motor_vehicle]
     en = noexit-motor_vehicle
+    hu = Gépjárműnek zsákutca
     ja = 行き止まり
     pl = Ślepy koniec drogi dla pojazdów mechanicznych
 
@@ -13013,7 +13110,7 @@
     fi = Toimisto
     fr = Bureau
     de = Büro
-    hu = Hivatal
+    hu = Iroda
     id = Kantor
     it = Ufficio
     ja = オフィス
@@ -13077,7 +13174,7 @@
     fi = Kiinteistönvälittäjä
     fr = Agent immobilier
     de = Immobilienmakler
-    hu = Ingatlanügynök
+    hu = Ingatlaniroda
     id = Agen ril estat
     it = Agenzia immobiliare
     ja = 不動産業者
@@ -13109,7 +13206,7 @@
     fi = Viranomaistoimito
     fr = Administration publique
     de = Regierungsstelle
-    hu = Állami iroda
+    hu = Kormányzati iroda
     id = Kantor pemerintah
     it = Ufficio governativo
     ja = 官庁
@@ -13141,7 +13238,7 @@
     fi = Vakuutuslaitos
     fr = Bureau d’assurance
     de = Versicherungsbüro
-    hu = Biztosító iroda
+    hu = Biztosító
     id = Kantor Asuransi
     it = Ufficio assicurazioni
     ja = 保険会社
@@ -13173,7 +13270,7 @@
     fi = Lakitoimisto
     fr = Cabinet d'avocat
     de = Anwaltsbüro
-    hu = Ügyvédi iroda
+    hu = Ügyvéd
     id = Kantor pengacara
     it = Studio legale
     ja = 弁護士事務所
@@ -13237,7 +13334,7 @@
     fi = Matkapuhelinoperaattori
     fr = Opérateur mobile
     de = Mobilbetreiber
-    hu = Mobilüzemeltető
+    hu = Távközlési cég irodája
     id = Operator seluler
     it = Operatore di telefonia mobile
     ja = 携帯電話事業者
@@ -13261,11 +13358,13 @@
 
   [type.olympics]
     en = olympics
+    hu = Olimpia
     ja = オリンピック
     pl = Olimpiada
 
   [type.olympics.attraction]
     en = olympics-attraction
+    hu = Olimpiai látnivaló
     ja = オリンピックアトラクション
     pl = Atrakcje olimpijskie
 
@@ -13279,15 +13378,18 @@
 
   [type.olympics.official_building]
     en = olympics-official_building
+    hu = Hivatalos olimpiai épület
     pl = Oficjalny budynek olimpijski
 
   [type.olympics.stadium]
     en = olympics-stadium
+    hu = Olimpiai stadion
     ja = オリンピックスタジアム
     pl = Stadion olimpijski
 
   [type.olympics.stadium_main]
     en = olympics-stadium_main
+    hu = Fő olimpiai stadion
     ja = オリンピックメインスタジアム
     pl = Główny stadion olimpijski
 
@@ -13319,6 +13421,7 @@
 
   [type.place]
     en = place
+    hu = Hely
     ja = 地名
     pl = Miejsce
 
@@ -13332,7 +13435,7 @@
     fi = Kaupunki
     fr = Ville
     de = Großstadt
-    hu = Város
+    hu = Nagyváros
     id = Kota
     it = Città
     ja = 市
@@ -13393,7 +13496,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Hauptstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13422,7 +13525,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Hauptstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13480,7 +13583,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Hauptstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13509,7 +13612,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Hauptstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13538,7 +13641,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Kreisstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13567,7 +13670,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Hauptstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13596,7 +13699,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Hauptstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13625,7 +13728,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Hauptstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13654,7 +13757,7 @@
     fi = Pääkaupunki
     fr = Capitale
     de = Hauptstadt
-    hu = Főváros
+    hu = Székhely
     id = Ibu kota
     it = Capitale
     ja = 首都
@@ -13744,7 +13847,7 @@
     fi = Lääni
     fr = Comté
     de = Kreis
-    hu = Kerület
+    hu = Megye
     id = Kabupaten
     it = Contea
     ja = 郡
@@ -13808,7 +13911,7 @@
     fi = Pieni kylä
     fr = Hameau
     de = Weiler
-    hu = Tanya
+    hu = Falucska
     id = Dusun
     it = Piccolo villaggio
     ja = 村
@@ -13872,7 +13975,7 @@
     fi = Saari
     fr = Île
     de = Insel
-    hu = Sziget
+    hu = Kis sziget
     id = Pulau
     it = Isola
     ja = 島
@@ -13896,6 +13999,7 @@
 
   [type.place.isolated_dwelling]
     en = place-isolated_dwelling
+    hu = Magyányos lakóhely
     ja = 小規模な村
     pl = Mała osada
 
@@ -13909,7 +14013,7 @@
     fi = Paikkakunta
     fr = Localité
     de = Örtlichkeit
-    hu = Falu
+    hu = Dűlő, lakatlan hely
     id = Wilayah
     it = Località
     ja = 地域
@@ -13933,6 +14037,7 @@
 
   [type.place.neighbourhood]
     en = Neighbourhood
+    hu = Környék
     ja = 地域
     pl = Sąsiedztwo
 
@@ -14024,6 +14129,7 @@
 
   [type.place.square]
     en = place-square
+    hu = Tér
     ja = 広場
     pl = Plac
 
@@ -14037,7 +14143,7 @@
     fi = Lääni
     fr = État
     de = Staat
-    hu = Állam
+    hu = Tartomány
     id = Negara bagian
     it = Provincia
     ja = 州
@@ -14069,7 +14175,7 @@
     fi = Lääni
     fr = État
     de = Staat
-    hu = Állam
+    hu = Szövetségi állam
     id = Negara bagian
     it = Provincia
     ja = 州
@@ -14101,7 +14207,7 @@
     fi = Esikaupunki
     fr = Banlieue
     de = Stadtteil
-    hu = Kerület
+    hu = Városrész
     id = Pinggiran kota
     it = Quartiere
     ja = 区
@@ -14133,7 +14239,7 @@
     fi = Kaupunki
     fr = Ville
     de = Stadt
-    hu = Város
+    hu = Kisváros
     id = Kota
     it = Città
     ja = 町
@@ -14188,19 +14294,23 @@
 
   [type.power]
     en = power
+    hu = Villamos energia
     ja = 電力
 
   [type.power.generator]
     en = power-generator
+    hu = Generátor
     ja = 発電機
 
   [type.power.line]
     en = power-line
+    hu = Légvezeték
     ja = 電力線
     pl = Linia wysokiego napięcia
 
   [type.power.line.underground]
     en = power-line-underground
+    hu = Földkábel
     ja = 地下電力線
     pl = Podziemna linia wysokiego napięcia
 
@@ -14243,6 +14353,7 @@
 
   [type.power.station]
     en = power-station
+    hu = Erőmű
     ja = 変電所
     pl = Elektrownia
 
@@ -14255,7 +14366,7 @@
     fi = Muuntoasema
     fr = Sous-station
     de = Umspannwerk
-    hu = Kapcsolószekrény
+    hu = Áramelosztó alállomás
     id = Stasiun bawah tanah
     it = Sottostazione elettrica
     ja = 変電所
@@ -14286,7 +14397,7 @@
     fi = Sähköpylväs
     fr = Poteau électrique
     de = Freileitungsmast
-    hu = Villanyoszlop
+    hu = Távvezetékoszlop
     id = Menara listrik
     it = Palo elettrico
     ja = 電柱
@@ -14325,45 +14436,55 @@
 
   [type.public_transport]
     en = public_transport
+    hu = Tömegközlekedés
     ja = 公共交通機関
     pl = Transport publiczny
 
   [type.public_transport.platform]
     en = public_transport-platform
+    hu = Tömegközlekedési peron
     ja = 公共交通機関のプラットホーム
     pl = Przystanek transportu publicznego
 
   [type.railway]
     en = railway
+    hu = Vasút
     ja = 鉄道
     pl = Kolej
 
   [type.railway.abandoned]
     en = railway-abandoned
+    hu = Elhagyott vasút
     ja = 廃線
 
   [type.railway.abandoned.bridge]
     en = railway-abandoned-bridge
+    hu = Elhagyott vasúti híd
     ja = 廃線(橋)
 
   [type.railway.abandoned.tunnel]
     en = railway-abandoned-tunnel
+    hu = Elhagyott vasúti alagút
     ja = 廃線(トンネル)
 
   [type.railway.construction]
     en = railway-construction
+    hu = Épülő vasútvonal
     ja = 建設中の鉄道
 
   [type.railway.crossing]
     en = railway-crossing
+    hu = Egymást metsző sínek
     ja = 歩行者用踏切
 
   [type.railway.disused]
     en = railway-disused
+    hu = Használaton kívüli vasút
     ja = 休止線
 
   [type.railway.funicular]
     en = railway-funicular
+    hu = Sikló
     ja = ケーブルカー
 
   [type.railway.funicular.bridge]
@@ -14384,7 +14505,7 @@
     fi = Rautatieasema
     fr = Gare
     de = Bahnhof
-    hu = Vonatmegálló
+    hu = Vasútállomás
     id = Rel kereta api
     it = Stazione ferroviaria
     ja = 鉄道駅
@@ -14451,14 +14572,17 @@
 
   [type.railway.light_rail]
     en = railway-light_rail
+    hu = HÉV
     ja = ライトレール
 
   [type.railway.light_rail.bridge]
     en = railway-light_rail-bridge
+    hu = Vasúti híd
     ja = ライトレール(橋)
 
   [type.railway.light_rail.tunnel]
     en = railway-light_rail-tunnel
+    hu = Vasúti alagút
     ja = ライトレール(トンネル)
 
   [type.railway.monorail]
@@ -14497,38 +14621,47 @@
 
   [type.railway.monorail.bridge]
     en = railway-monorail-bridge
+    hu = Vasúti híd
     ja = モノレール(橋)
 
   [type.railway.monorail.tunnel]
     en = railway-monorail-tunnel
+    hu = Vasúti alagút
     ja = モノレール(トンネル)
 
   [type.railway.narrow_gauge]
     en = railway-narrow_gauge
+    hu = Keskeny nyomtávú vasút
     ja = 狭軌鉄道
 
   [type.railway.narrow_gauge.bridge]
     en = railway-narrow_gauge-bridge
+    hu = Vasúti híd
     ja = 狭軌鉄道(橋)
 
   [type.railway.narrow_gauge.tunnel]
     en = railway-narrow_gauge-tunnel
+    hu = Vasúti alagút
     ja = ja = 狭軌鉄道(トンネル)
 
   [type.railway.platform]
     en = railway-platform
+    hu = Vasúti peron
     ja = プラットホーム
 
   [type.railway.preserved]
     en = railway-preserved
+    hu = Nosztalgia-vasútvonal
     ja = 保存鉄道
 
   [type.railway.preserved.bridge]
     en = railway-preserved-bridge
+    hu = Vasúti híd
     ja = 保存鉄道(橋)
 
   [type.railway.preserved.tunnel]
     en = railway-preserved-tunnel
+    hu = Vasúti alagút
     ja = 保存鉄道(トンネル)
 
   [type.railway.rail]
@@ -14567,6 +14700,7 @@
 
   [type.railway.rail.bridge]
     en = railway-rail-bridge
+    hu = Vasúti híd
     ja = 鉄道(橋)
 
   [type.railway.rail.motor_vehicle]
@@ -14575,34 +14709,42 @@
 
   [type.railway.rail.tunnel]
     en = railway-rail-tunnel
+    hu = Vasúti alagút
     ja = 鉄道(鉄道)
 
   [type.railway.razed]
     en = railway-razed
+    hu = Felszedett vasút
     ja = 撤去済の鉄道
 
   [type.railway.siding]
     en = railway-siding
+    hu = Mellékvágány
     ja = 側線
 
   [type.railway.siding.bridge]
     en = railway-siding-bridge
+    hu = Vasúti híd
     ja = 側線(橋)
 
   [type.railway.siding.tunnel]
     en = railway-siding-tunnel
+    hu = Vasúti alagút
     ja = 側線(トンネル)
 
   [type.railway.spur]
     en = railway-spur
+    hu = Iparvágán
     ja = 引き込み線
 
   [type.railway.spur.bridge]
     en = railway-spur-bridge
+    hu = Vasúti híd
     ja = 引き込み線(橋)
 
   [type.railway.spur.tunnel]
     en = railway-spur-tunnel
+    hu = Vasúti alagút
     ja = 引き込み線(トンネル)
 
   [type.railway.station]
@@ -14615,7 +14757,7 @@
     fi = Rautatieasema
     fr = Gare
     de = Bahnhof
-    hu = Vonatmegálló
+    hu = Vasútállomás
     id = Rel kereta api
     it = Stazione ferroviaria
     ja = 鉄道駅
@@ -14647,7 +14789,7 @@
     fi = Rautatieasema
     fr = Gare
     de = Bahnhof
-    hu = Vonatmegálló
+    hu = HÉV-állomás
     id = Rel kereta api
     it = Stazione ferroviaria
     ja = 鉄道駅
@@ -14679,7 +14821,7 @@
     fi = Rautatieasema
     fr = Gare
     de = Bahnhof
-    hu = Vonatmegálló
+    hu = Vasútállomás
     id = Rel kereta api
     it = Stazione ferroviaria
     ja = 鉄道駅
@@ -14711,7 +14853,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14743,7 +14885,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14775,7 +14917,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14807,7 +14949,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14839,7 +14981,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14871,7 +15013,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14903,7 +15045,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14935,7 +15077,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14967,7 +15109,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -14999,7 +15141,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15031,7 +15173,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15063,7 +15205,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15095,7 +15237,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15127,7 +15269,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15159,7 +15301,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15191,7 +15333,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15223,7 +15365,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15255,7 +15397,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15287,7 +15429,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15319,7 +15461,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15351,7 +15493,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15383,7 +15525,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15415,7 +15557,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15447,7 +15589,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15479,7 +15621,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metróállomás
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15503,16 +15645,17 @@
 
   [type.railway.subway]
     en = railway-subway
+    hu = Metró
 
   [type.railway.subway.blue]
     en = railway-subway-blue
-
+    
   [type.railway.subway.bridge]
     en = railway-subway-bridge
 
   [type.railway.subway.brown]
     en = railway-subway-brown
-
+    
   [type.railway.subway.darkgreen]
     en = railway-subway-darkgreen
 
@@ -15559,7 +15702,7 @@
     fi = Metron sisäänkäynti
     fr = Entrée du métro
     de = U-Bahn-Eingang
-    hu = Földalatti bejárat
+    hu = Metrólejáró
     id = Pintu masuk kereta bawah tanah
     it = Stazione metropolitana
     ja = 地下鉄入り口
@@ -15593,7 +15736,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15625,7 +15768,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15657,7 +15800,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15689,7 +15832,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15721,7 +15864,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15753,7 +15896,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15785,7 +15928,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15817,7 +15960,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15849,7 +15992,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15881,7 +16024,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15913,7 +16056,7 @@
     fi = Metro
     fr = Métro
     de = U-Bahn
-    hu = Földalatti
+    hu = Metrólejáró
     id = Stasiun bawah tanah
     it = Metrò
     ja = 地下鉄
@@ -15937,14 +16080,17 @@
 
   [type.railway.tram]
     en = railway-tram
+    hu = Villamos
     ja = トラム
 
   [type.railway.tram.bridge]
     en = railway-tram-bridge
+    hu = Villamoshíd
     ja = トラム(橋)
 
   [type.railway.tram.tunnel]
     en = railway-tram-tunnel
+    hu = Villamosalagút
     ja = トラム(トンネル)
 
   [type.railway.tram_stop]
@@ -15993,10 +16139,12 @@
 
   [type.route]
     en = route
+    hu = Útvonal
     ja = ルート
 
   [type.route.ferry]
     en = route-ferry
+    hu = Kompútvonal
     ja = フェリー航路
 
   [type.route.ferry.motor_vehicle]
@@ -16180,7 +16328,7 @@
     fi = Polkupyöräliike
     fr = Magasin de vélos
     de = Fahrradladen
-    hu = Kerékpár üzlet
+    hu = Kerékpárüzlet
     id = Toko sepeda
     it = Negozio di biciclette
     ja = 自転車屋
@@ -16302,7 +16450,7 @@
     fi = Autokauppa
     fr = Réparation auto
     de = Autohaus
-    hu = Gépkocsi bolt
+    hu = Autószalon
     id = Toko mobil
     it = Concessionaria
     ja = カーディーラー
@@ -16334,7 +16482,7 @@
     fi = Auton osat
     fr = Pièces de voiture
     de = Autoteile
-    hu = Autó alkatrészek
+    hu = Autóalkatrész-bolt
     id = Bagian mobil
     it = Ricambi auto
     ja = 車両部品
@@ -16366,7 +16514,7 @@
     fi = Autokorjaamo
     fr = Réparation d'automobiles
     de = Autowerkstatt
-    hu = Gépkocsi szervíz
+    hu = Autószerelő
     id = Bengkel mobil
     it = Riparazione auto
     ja = 自動車修理
@@ -16462,7 +16610,7 @@
     fi = Kauppa
     fr = Magasin
     de = Schokoladengeschäft
-    hu = Bolt
+    hu = Csokoládébolt
     id = Toko
     it = Negozio
     ja = チョコレート屋
@@ -16494,7 +16642,7 @@
     fi = Vaatekauppa
     fr = Boutique de vêtements
     de = Bekleidungsgeschäft
-    hu = Ruhabolt
+    hu = Ruházati bolt
     id = Toko baju
     it = Negozio di abbigliamento
     ja = 洋服
@@ -16526,7 +16674,7 @@
     fi = Kauppa
     fr = Magasin
     de = Kaffeegeschäft
-    hu = Bolt
+    hu = Kávébolt
     id = Toko
     it = Negozio
     ja = コーヒー屋
@@ -16558,7 +16706,7 @@
     fi = Tietokonekauppa
     fr = Magasin d'informatique
     de = Computergeschäft
-    hu = Számítógép üzlet
+    hu = Számítógépüzlet
     id = Toko komputer
     it = Negozio di computer
     ja = コンピュータショップ
@@ -16590,7 +16738,7 @@
     fi = Makeiskauppa
     fr = Pâtisserie
     de = Süßwarengeschäft
-    hu = Cukrászüzlet
+    hu = Édességbolt
     id = Penganan
     it = Pasticceria
     ja = 菓子類
@@ -16622,7 +16770,7 @@
     fi = Lähikauppa
     fr = Supérette
     de = Gemischtwarenladen
-    hu = Csemegebolt
+    hu = Kis élelmiszerbolt
     id = Mini market
     it = Minimarket
     ja = コンビニエンスストア
@@ -16653,7 +16801,7 @@
     fi = Painotalo
     fr = Boutique de photocopies
     de = Kopierladen
-    hu = Fénymásoló üzlet
+    hu = Fénymásoló
     id = Fotokopi
     it = Copisteria
     ja = コピーショップ
@@ -16685,7 +16833,7 @@
     fi = Kosmetiikka
     fr = Produits de beauté
     de = Kosmetik
-    hu = Kozmetikum
+    hu = Kozmetikai bolt
     id = Kosmetik
     it = Cosmetici
     ja = 化粧品
@@ -16717,7 +16865,7 @@
     fi = Tavaratalo
     fr = Grand magasin
     de = Kaufhaus
-    hu = Áruház
+    hu = Nagyáruház
     id = Toko serba ada
     it = Grandi magazzini
     ja = デパート
@@ -16749,7 +16897,7 @@
     fi = Rautakauppa
     fr = Quincaillerie
     de = Baumarkt
-    hu = Vaskereskedés
+    hu = Barkácsbolt
     id = Toko perangkat keras
     it = Ferramenta
     ja = 工具店
@@ -16781,7 +16929,7 @@
     fi = Kuivapesula
     fr = Nettoyage à sec
     de = Chemische Reinigung
-    hu = Ruhatisztító
+    hu = Vegytisztító
     id = Cuci Kering
     it = Lavaggio a secco
     ja = クリーニング屋
@@ -16813,7 +16961,7 @@
     fi = Elektroniikka
     fr = Magasin d'électroménager
     de = Elektronik
-    hu = Elektronika
+    hu = Szórakoztató elektronika
     id = Elektronik
     it = Negozio di elettronica
     ja = 電気店
@@ -16877,7 +17025,7 @@
     fi = Kauppa
     fr = Magasin
     de = Geschäft
-    hu = Bolt
+    hu = Méteráru
     id = Toko
     it = Negozio
     ja = 生地屋
@@ -16909,7 +17057,7 @@
     fi = Floristi
     fr = Fleuriste
     de = Florist
-    hu = Virágos
+    hu = Virágbolt
     id = Tukang bunga
     it = Fiorista
     ja = フローリスト/花屋
@@ -16941,7 +17089,7 @@
     fi = Hautaustoimisto
     fr = Pompes funèbres
     de = Bestattungsinstitut
-    hu = Temetkezési vállalkozó
+    hu = Temetkezési iroda
     id = Direktur Pemakaman
     it = Pompe funebri
     ja = 葬儀屋
@@ -16973,7 +17121,7 @@
     fi = Huonekalukauppa
     fr = Magasin de meubles
     de = Möbelgeschäft
-    hu = Bútoráruház
+    hu = Bútorbolt
     id = Toko mebel
     it = Negozio di mobili
     ja = 家具店
@@ -17005,7 +17153,7 @@
     fi = Taimitarha
     fr = Crèche
     de = Gärtnerei
-    hu = Faiskola
+    hu = Kertészet
     id = Penitipan anak
     it = Vivaio
     ja = ガーデンセンター
@@ -17069,7 +17217,7 @@
     fi = Vihanneskauppias
     fr = Primeur
     de = Gemüseladen
-    hu = Zöldséges
+    hu = Zöldség-gyümölcs
     id = Penjual sayuran
     it = Fruttivendolo
     ja = 八百屋
@@ -17133,7 +17281,7 @@
     fi = Rautakauppa
     fr = Quincaillerie
     de = Eisenwarengeschäft
-    hu = Vaskereskedés
+    hu = Vas-műszaki bolt
     id = Toko perangkat keras
     it = Ferramenta
     ja = 工具店
@@ -17165,7 +17313,7 @@
     fi = Korukauppa
     fr = Bijouterie
     de = Juweliergeschäft
-    hu = Ékszer
+    hu = Ékszerbolt
     id = Perhiasan
     it = Gioielleria
     ja = 宝石店
@@ -17254,7 +17402,7 @@
     fi = Ostoskeskus
     fr = Le centre commercial
     de = Einkaufszentrum
-    hu = A pláza
+    hu = Bevásárlóközpont
     it = Il centro commerciale
     ja = モール
     ko = 몰
@@ -17285,7 +17433,7 @@
     fi = Hierontahuone
     fr = Salon de massage
     de = Massagesalon
-    hu = Masszázs szalon
+    hu = Masszázsszalon
     id = Tempat Pijat
     it = Centro massaggi
     ja = マッサージ店
@@ -17317,7 +17465,7 @@
     fi = Elektroniikkakauppa
     fr = Magasin de téléphonie
     de = Handyladen
-    hu = Mobiltelefon üzlet
+    hu = Mobiltelefon-üzlet
     id = Toko telepon
     it = Negozio di telefonia mobile
     ja = 携帯ショップ
@@ -17349,7 +17497,7 @@
     fi = Kauppa
     fr = Magasin
     de = Geldverleiher
-    hu = Bolt
+    hu = Pénzkölcsönző
     id = Toko
     it = Negozio
     ja = 消費者金融
@@ -17381,7 +17529,7 @@
     fi = Moottoripyöräliike
     fr = Magasin de motos
     de = Motorradladen
-    hu = Motorkerékpár üzlet
+    hu = Motorkerékpár-üzlet
     id = Toko Sepeda Motor
     it = Negozio di moto
     ja = バイクショップ
@@ -17413,7 +17561,7 @@
     fi = Kauppa
     fr = Magasin
     de = Musikgeschäft
-    hu = Bolt
+    hu = Zenebolt
     id = Toko
     it = Negozio
     ja = CDショップ
@@ -17445,7 +17593,7 @@
     fi = Kauppa
     fr = Magasin
     de = Musikinstrumenteladen
-    hu = Bolt
+    hu = Hangszerbolt
     id = Toko
     it = Negozio
     ja = 楽器店
@@ -17509,7 +17657,7 @@
     fi = Optikko
     fr = Opticien
     de = Optiker
-    hu = Optika
+    hu = Látszerész
     id = Toko kacamata
     it = Ottico
     ja = 眼鏡店
@@ -17541,7 +17689,7 @@
     fi = Ulkoiluvarusteet
     fr = Matériel de loisirs de plein air
     de = Outdoor-Ausrüstung
-    hu = Kültéri felszerelés
+    hu = Túrafelszerelés-bolt
     id = Peralatan Outdoor
     it = Attrezzatura sportiva
     ja = アウトドア用品店
@@ -17605,7 +17753,7 @@
     fi = Eläinkauppa
     fr = Animalerie
     de = Tierhandlung
-    hu = Házikedvenc-üzlet
+    hu = Kisállat-kereskedés
     id = Toko hewan
     it = Negozio di animali
     ja = ペットショップ
@@ -17637,7 +17785,7 @@
     fi = Valokuvakauppa
     fr = Matériel de photographie
     de = Fotofachgeschäft
-    hu = Fénykép üzlet
+    hu = Fotósbolt
     id = Studio Foto
     it = Negozio di fotografia
     ja = 写真屋
@@ -17669,7 +17817,7 @@
     fi = Kalakauppias
     fr = Poissonnier
     de = Fischhändler
-    hu = Halüzlet
+    hu = Tengerihal-üzlet
     id = Penjual Ikan
     it = Pescivendolo
     ja = 魚屋
@@ -17733,7 +17881,7 @@
     fi = Urheilukauppa
     fr = Articles de sport
     de = Sportartikel
-    hu = Sporteszközök
+    hu = Sportfelszerelés-bolt
     id = Barang olahraga
     it = Negozio sportivo
     ja = スポーツ用品店
@@ -17765,7 +17913,7 @@
     fi = Kirjoitustarvikekauppa
     fr = Papeterie
     de = Schreibwarenladen
-    hu = Írószer bolt
+    hu = Papírbolt
     id = Toko Alat Tulis
     it = Cartoleria
     ja = 文房具店
@@ -17796,7 +17944,7 @@
     fi = Supermarketti
     fr = Supermarché
     de = Supermarkt
-    hu = Bevásárlóközpont
+    hu = Szupermarket
     it = Supermercato
     ja = スーパーマーケット
     ko = 슈퍼마켓
@@ -17824,7 +17972,7 @@
     fi = Tatuointiliike
     fr = Salon de tatouage
     de = Tattoo-Studio
-    hu = Tetováló szalon
+    hu = Tetoválószalon
     id = Tempat Tato
     it = Studio tatuaggi
     ja = タトゥースタジオ
@@ -17856,7 +18004,7 @@
     fi = Kauppa
     fr = Magasin
     de = Teegeschäft
-    hu = Bolt
+    hu = Teaüzlet
     id = Toko
     it = Negozio
     ja = 茶販売店
@@ -17888,7 +18036,7 @@
     fi = Lippumyymälä
     fr = Billetterie
     de = Fahrkartenschalter
-    hu = Jegyiroda
+    hu = Jegypénztár
     id = Tempat penjualan karcis
     it = Biglietteria
     ja = チケット売り場
@@ -17984,7 +18132,7 @@
     fi = Rengasliike
     fr = Magasin de pneus
     de = Reifen-Shop
-    hu = Gumi szaküzlet
+    hu = Autógumi-szaküzlet
     id = Toko Ban
     it = Gommista
     ja = タイヤ専門店
@@ -18016,7 +18164,7 @@
     fi = Halpakauppa
     fr = Bazar
     de = Billigladen
-    hu = Vegyeskereskedés
+    hu = 100 forintos bolt
     id = Toko Kelontong
     it = Negozio di accessori
     ja = 雑貨店
@@ -18082,7 +18230,7 @@
     fi = Videopelikauppa
     fr = Boutique de jeux vidéo
     de = Gameshop
-    hu = Videojáték bolt
+    hu = Videojátékbolt
     id = Toko permainan video
     it = Negozio di videogiochi
     ja = ゲームショップ
@@ -18116,7 +18264,7 @@
     fi = Alkoholimyymälä
     fr = Hors licence
     de = Wein- und Spirituosengeschäft
-    hu = Szeszesital-üzlet
+    hu = Borszaküzlet
     id = Toko anggur
     it = Negozio di alcolici
     ja = ワイン店
@@ -18140,13 +18288,16 @@
 
   [type.sponsored]
     en = sponsored
+    hu = támogatott
 
   [type.sponsored.booking]
     en = sponsored-booking
+    hu = Támogatott (Booking)
 
   [type.sponsored.holiday]
     en = Christmas or New Year Celebrations
     ru = Празднование Рождества или Нового года
+    hu = Karácsonyi vagy újévi ünnepségek
     el = Χριστούγεννα ή Ρεβεγιόν πρωτοχρονιάς
     pl = Obchody świąt Bożego Narodzenia lub Nowego Roku
 
@@ -18218,15 +18369,18 @@
 
   [type.sport]
     en = sport
+    hu = Sport
     ja = スポーツ
 
   [type.sport.american_football]
     en = sport-american_football
+    hu = Amerikai futball
     ja = アメリカンフットボール
     pl = Futbol amerykański
 
   [type.sport.archery]
     en = sport-archery
+    hu = Íjászat
     ja = アーチェリー
     pl = Łucznictwo sportowe
 
@@ -18266,10 +18420,12 @@
 
   [type.sport.australian_football]
     en = sport-australian_football
+    hu = Ausztrál futball
     ja = オーストラリアンフットボール
 
   [type.sport.baseball]
     en = sport-baseball
+    hu = Baseball
     ja = 野球
     pl = Baseball
 
@@ -18309,16 +18465,19 @@
 
   [type.sport.bowls]
     en = sport-bowls
+    hu = Gyepteke
     ja = ローンボウルズ
     pl = Kręgle
 
   [type.sport.cricket]
     en = sport-cricket
+    hu = Krikett
     ja = クリケット
     pl = Krykiet
 
   [type.sport.curling]
     en = sport-curling
+    hu = Curling
     ja = カーリング
 
   [type.sport.diving]
@@ -18366,43 +18525,52 @@
 
   [type.sport.golf]
     en = sport-golf
+    hu = Golf
     ja = ゴルフ
     pl = Golf
 
   [type.sport.gymnastics]
     en = sport-gymnastics
+    hu = Torna
     ja = 体操競技
     pl = Gimnastyka
 
   [type.sport.handball]
     en = sport-handball
+    hu = Kézilabda
     ja = ハンドボール
     pl = Piłka ręczna
 
   [type.sport.multi]
     en = sport-multi
+    hu = Több sport
     ja = 複数
 
   [type.sport.scuba_diving]
     en = sport-scuba_diving
+    hu = Palackos búvárkodás
     ja = スクーバダイビング
     pl = Nurkowanie
 
   [type.sport.shooting]
     en = sport-shooting
+    hu = Lövészet
     ja = 射撃競技
     pl = Strzelectwo sportowe
 
   [type.sport.skiing]
     en = sport-skiing
+    hu = Síelés
     ja = スキー
 
   [type.sport.soccer]
     en = sport-soccer
+    hu = Labdarúgás
     ja = サッカー
 
   [type.sport.swimming]
     en = sport-swimming
+    hu = Úszás
     ja = 水泳
     pl = Pływanie
 
@@ -18442,6 +18610,7 @@
 
   [type.tourism]
     en = tourism
+    hu = Turizmus
     ja = 観光
     pl = Turystyka
 
@@ -18455,7 +18624,7 @@
     fi = Vuorimajoitus
     fr = Hôtel de montagne
     de = Berghütte
-    hu = Hegyi menedék
+    hu = Menedékház (személyzettel)
     id = Penginapan di pegunungan
     it = Hotel di montagna
     ja = 山小屋
@@ -18486,7 +18655,7 @@
     fi = Loma-asunnot
     fr = Appart'hôtel
     de = Appartements
-    hu = Apartmanok
+    hu = Apartman
     id = Apartemen
     it = Residence
     ja = アパート
@@ -18518,7 +18687,7 @@
     fi = Taideteos
     fr = Œuvre
     de = Kunstwerk
-    hu = Szobor
+    hu = Műalkotás
     id = Pariwisata
     it = Opere d'arte
     ja = 芸術
@@ -18550,7 +18719,7 @@
     fi = Taideteos
     fr = Œuvre
     de = Kunstwerk
-    hu = Szobor
+    hu = Építészeti műalkotás
     id = Pariwisata
     it = Opere d'arte
     ja = 建築
@@ -18582,7 +18751,7 @@
     fi = Taideteos
     fr = Œuvre
     de = Gemälde
-    hu = Szobor
+    hu = Festmény
     id = Pariwisata
     it = Opere d'arte
     ja = 絵画
@@ -18614,7 +18783,7 @@
     fi = Taideteos
     fr = Œuvre
     de = Skulptur
-    hu = Szobor
+    hu = Absztrakt szobor
     id = Pariwisata
     it = Opere d'arte
     ja = 彫刻
@@ -18708,7 +18877,7 @@
     nl = Attractie
     fi = Nähtävyys
     de = Attraktion
-    hu = Látnivaló
+    hu = Állat
     id = Atraksi
     it = Attrattiva
     ja = 動物
@@ -18797,7 +18966,7 @@
     fi = Asuntovaunupaikka
     fr = Parc caravanier
     de = Wohnwagenstellplatz
-    hu = Karaván pihenő
+    hu = Lakókocsihely
     id = Lokasi perkemahan
     it = Area per campeggiatori
     ja = オートキャンプ場
@@ -18825,7 +18994,7 @@
     da = Hytte
     fi = Alppimaja
     de = Hütte
-    hu = Turistaház
+    hu = Nyaralóház
     ja = シャレー
     ko = 별장
     pl = Domek letniskowy
@@ -18853,7 +19022,7 @@
     fi = Nähtävyydet
     fr = Tourisme
     de = Gallerie
-    hu = Túrizmus
+    hu = Galéria
     id = Pemandangan
     it = Turistico
     ja = 美術館
@@ -18914,6 +19083,7 @@
     fi = Hostelli
     fr = Auberge de jeunesse
     de = Herberge
+    hu = Turistaszálló
     it = Ostello
     ja = ホステル
     ko = 호스텔
@@ -18960,7 +19130,7 @@
     fi = Turisti-informaatio
     fr = Informations touristiques
     de = Tourist-Information
-    hu = Túrista információ
+    hu = Turisztikai információ
     id = Informasi turis
     it = Informazione
     ja = インフォメーション
@@ -18992,7 +19162,7 @@
     fi = Informaatio
     fr = Panneau d'informations
     de = Informationstafel
-    hu = Információs tábla
+    hu = Tájékoztató tábla
     id = Papan informasi
     it = Tabellone informativo
     ja = 案内板
@@ -19024,7 +19194,7 @@
     fi = Turisti-informaatio
     fr = Informations touristiques
     de = Wegweiser
-    hu = Túrista információ
+    hu = Útirányjelző tábla
     id = Informasi turis
     it = Informazione
     ja = 道標
@@ -19056,7 +19226,7 @@
     fi = Turistikartta
     fr = Carte touristique
     de = Touristenkarte
-    hu = Turistatérkép
+    hu = Térkép
     id = Peta wisata
     it = Mappa turistica
     ja = 観光マップ
@@ -19088,7 +19258,7 @@
     fi = Turistitoimisto
     fr = Office de tourisme
     de = Fremdenverkehrsamt
-    hu = Idegenforgalmi iroda
+    hu = Tourinform iroda
     id = Kantor wisata
     it = Ufficio turistico
     ja = 観光案内所
@@ -19115,6 +19285,7 @@
     ru = Мотель
     ar = فندق رخيص
     fi = Motelli
+    hu = Motel
     ja = モーテル
     ko = 모텔
     nb = Motell
@@ -19163,7 +19334,7 @@
     fi = Piknikpaikat
     fr = Terrain de pique-nique
     de = Picknickplatz
-    hu = Piknikező hely
+    hu = Piknikezőhely
     id = Lokasi piknik
     it = Picnic
     ja = ピクニック場
@@ -19193,7 +19364,7 @@
     nl = Complex
     fi = Lomakohteet
     fr = Complexe touristique
-    hu = Resort hotel
+    hu = Üdülőhely
     id = Sanggraloka
     ja = リゾート
     ko = 리조트
