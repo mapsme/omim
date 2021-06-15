@@ -19,6 +19,7 @@
 #include <set>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 template <class DataFacadeT>
@@ -121,7 +122,7 @@ public:
 
     osrm::for_each_pair(phantom_node_pair_list, build_phantom_pairs);
 
-    vector<bool> uturns;
+    std::vector<bool> uturns;
     m_searchEngine->shortest_path(raw_route.segment_end_coordinates, uturns, raw_route);
     if (INVALID_EDGE_WEIGHT == raw_route.shortest_path_length)
     {
@@ -130,7 +131,7 @@ public:
     }
 
     // Get ids of ways used in path.
-    set<uint64_t> wayIds;
+    std::set<uint64_t> wayIds;
 
     for (auto i : osrm::irange<std::size_t>(0, raw_route.unpacked_path_segments.size()))
     {
@@ -147,7 +148,7 @@ public:
     // Format answer.
     osrm::json::Array json_array;
     json_array.values.assign(wayIds.begin(), wayIds.end());
-    reply.values["way_ids"] = move(json_array);
+    reply.values["way_ids"] = std::move(json_array);
 
     return 200;
   }

@@ -6,8 +6,5 @@
 
 namespace mapsme
 {
-
-
 void GenerateRoutingIndex(const std::string & fPath);
-
 }

@@ -92,7 +92,6 @@ file(GLOB AlgorithmTestsGlob unit_tests/algorithms/*.cpp)
 
 file(GLOB MapsMeSources mapsme/*.cpp)
 file(GLOB MapsMeHeaders mapsme/*.h)
-file(GLOB MapsMeGenerator "${OMIM_PATH}/storage/country.cpp" "${OMIM_PATH}/storage/country_decl.cpp" "${OMIM_PATH}/storage/country_info.cpp")
 
 set(
   OSRMSources
@@ -101,8 +100,15 @@ set(
   ${DatastructureGlob}
   ${AlgorithmGlob}
   ${HttpGlob}
-  ${MapsMeGenerator}
 )
+
+# Hacky but hey, all this time we've been compiling plugins by including them from a cpp-file bypassing cmake.
+# This can't be worse, can it?
+# Problem is our 2015 version of OSRM must be built with C++98, and MapsMePlugin compiles
+# files from omim/ (because this CMakeLists.txt is inherited from the OSRM project and is
+# not integrated in the omim cmake hierarchy). So MapsMePlugin must be built with C++11 or higher.
+# That's why we cannot move this line to the beginning of the file but everything works when it's here.
+set(CMAKE_CXX_STANDARD 17)
 
 add_library(COORDINATE OBJECT ${CoordinateGlob})
 add_library(GITDESCRIPTION OBJECT util/git_sha.cpp)
