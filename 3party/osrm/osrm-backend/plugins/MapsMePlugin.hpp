@@ -1,39 +1,42 @@
 #pragma once
 
-#include "../../../../base/string_utils.hpp"
-#include "../../../../coding/files_container.hpp"
-#include "../../../../coding/read_write_utils.hpp"
-#include "../../../../defines.hpp"
-#include "../../../../geometry/mercator.hpp"
-#include "../../../../geometry/region2d.hpp"
-#include "../../../../storage/country_decl.hpp"
-#include "../../../../storage/country_polygon.hpp"
-#include "plugin_base.hpp"
+#include "storage/country_decl.hpp"
 
-#include "../algorithms/object_encoder.hpp"
-#include "../data_structures/search_engine.hpp"
-#include "../data_structures/edge_based_node_data.hpp"
-#include "../descriptors/descriptor_base.hpp"
-#include "../descriptors/gpx_descriptor.hpp"
-#include "../descriptors/json_descriptor.hpp"
-#include "../util/integer_range.hpp"
-#include "../util/json_renderer.hpp"
-#include "../util/make_unique.hpp"
-#include "../util/simple_logger.hpp"
+#include "coding/files_container.hpp"
+#include "coding/read_write_utils.hpp"
+
+#include "geometry/region2d.hpp"
+
+#include "base/string_utils.hpp"
+
+#include "defines.hpp"
 
 #include <algorithm>
 #include <limits>
 #include <memory>
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
-using TMapRepr = pair<size_t, m2::PointD>;
+#include "3party/osrm/osrm-backend/algorithms/object_encoder.hpp"
+#include "3party/osrm/osrm-backend/data_structures/edge_based_node_data.hpp"
+#include "3party/osrm/osrm-backend/data_structures/search_engine.hpp"
+#include "3party/osrm/osrm-backend/descriptors/descriptor_base.hpp"
+#include "3party/osrm/osrm-backend/descriptors/gpx_descriptor.hpp"
+#include "3party/osrm/osrm-backend/descriptors/json_descriptor.hpp"
+#include "3party/osrm/osrm-backend/plugins/plugin_base.hpp"
+#include "3party/osrm/osrm-backend/util/integer_range.hpp"
+#include "3party/osrm/osrm-backend/util/json_renderer.hpp"
+#include "3party/osrm/osrm-backend/util/make_unique.hpp"
+#include "3party/osrm/osrm-backend/util/simple_logger.hpp"
+
+using TMapRepr = std::pair<size_t, m2::PointD>;
 
 class UsedMwmChecker
 {
 public:
-  static size_t constexpr kInvalidIndex = numeric_limits<size_t>::max();
+  static size_t constexpr kInvalidIndex = std::numeric_limits<size_t>::max();
 
   UsedMwmChecker() : m_lastUsedMwm(kInvalidIndex) {}
 
@@ -49,7 +52,7 @@ public:
     m_lastMwmPoints.push_back(pt);
   }
 
-  vector<TMapRepr> const & GetUsedMwms()
+  std::vector<TMapRepr> const & GetUsedMwms()
   {
     // Get point from the last mwm.
     CommitUsedPoints();
@@ -79,9 +82,9 @@ private:
     m_lastMwmPoints.clear();
   }
 
-  vector<TMapRepr> m_usedMwms;
+  std::vector<TMapRepr> m_usedMwms;
   size_t m_lastUsedMwm;
-  vector<m2::PointD> m_lastMwmPoints;
+  std::vector<m2::PointD> m_lastMwmPoints;
 };
 
 template <class DataFacadeT> class MapsMePlugin final : public BasePlugin
@@ -94,7 +97,7 @@ template <class DataFacadeT> class MapsMePlugin final : public BasePlugin
       public:
         size_t m_res;
 
-        GetByPoint(std::vector<std::vector<m2::RegionD>> const &regions, m2::PointD const &pt)
+        GetByPoint(std::vector<std::vector<m2::RegionD>> const & regions, m2::PointD const &pt)
             : m_pt(pt), m_regions(regions), m_res(-1)
         {
         }
@@ -103,13 +106,12 @@ template <class DataFacadeT> class MapsMePlugin final : public BasePlugin
         /// @return false If point is in country.
         bool operator()(size_t id)
         {
-            auto it =
-                find_if(m_regions[id].begin(), m_regions[id].end(), [&](m2::RegionD const &region)
-                        { return region.Contains(m_pt);});
-            if (it == m_regions[id].end())
-                    return true;
-            m_res = id;
-            return false;
+          auto it = std::find_if(m_regions[id].begin(), m_regions[id].end(),
+                                 [&](m2::RegionD const & region) { return region.Contains(m_pt); });
+          if (it == m_regions[id].end())
+            return true;
+          m_res = id;
+          return false;
         }
     };
 
@@ -133,21 +135,26 @@ public:
             uint32_t const count = ReadVarUint<uint32_t>(src);
             for (size_t j = 0; j < count; ++j)
             {
-                vector<m2::PointD> points;
+                std::vector<m2::PointD> points;
                 serial::LoadOuterPath(src, serial::GeometryCodingParams(), points);
 
-                m_regions[i].emplace_back(move(m2::RegionD(points.begin(), points.end())));
+                m_regions[i].emplace_back(std::move(m2::RegionD(points.begin(), points.end())));
             }
         }
         m_searchEngine = osrm::make_unique<SearchEngine<DataFacadeT>>(facade);
     }
 
-    template <class ToDo> void ForEachCountry(m2::PointD const &pt, ToDo &toDo) const
+    template <class ToDo>
+    void ForEachCountry(m2::PointD const & pt, ToDo & toDo) const
     {
-        for (size_t i = 0; i < m_countries.size(); ++i)
-            if (m_countries[i].m_rect.IsPointInside(pt))
-                if (!toDo(i))
-                    return;
+      for (size_t i = 0; i < m_countries.size(); ++i)
+      {
+        if (m_countries[i].m_rect.IsPointInside(pt))
+        {
+          if (!toDo(i))
+            return;
+        }
+      }
     }
 
     virtual ~MapsMePlugin() {}
@@ -196,12 +203,12 @@ public:
             return phantom_pair.first.component_id != 0;
         };
 
-        const bool every_phantom_is_in_tiny_cc =
+        bool const every_phantom_is_in_tiny_cc =
                 std::all_of(std::begin(phantom_node_pair_list), std::end(phantom_node_pair_list),
                             check_component_id_is_tiny);
 
         // are all phantoms from a tiny cc?
-        const auto component_id = phantom_node_pair_list.front().first.component_id;
+        auto const component_id = phantom_node_pair_list.front().first.component_id;
 
         auto check_component_id_is_equal = [component_id](const phantom_node_pair &phantom_pair)
         {
@@ -238,7 +245,7 @@ public:
 
         osrm::for_each_pair(phantom_node_pair_list, build_phantom_pairs);
 
-        vector<bool> uturns;
+        std::vector<bool> uturns;
         m_searchEngine->shortest_path(raw_route.segment_end_coordinates, uturns, raw_route);
         if (INVALID_EDGE_WEIGHT == raw_route.shortest_path_length)
         {
@@ -258,7 +265,7 @@ public:
                 if (data.m_segments.empty())
                     continue;
                 auto const & seg = data.m_segments.front();
-                m2::PointD pt = MercatorBounds::FromLatLon(seg.lat1, seg.lon1);
+                m2::PointD pt = FromLatLon(seg.lat1, seg.lon1);
                 GetByPoint doGet(m_regions, pt);
                 ForEachCountry(pt, doGet);
                 usedChecker.AddPoint(doGet.m_res, pt);
@@ -280,6 +287,17 @@ public:
     }
 
   private:
+    // Reimplementation of coding/mercator.hpp due to namespace clash with OSRM's mercator struct.
+    double ClampY(double d) { return base::Clamp(d, -180.0, 180.0); }
+    double LonToX(double lon) { return lon; }
+    double LatToY(double lat)
+    {
+      double const sinx = std::sin(base::DegToRad(base::Clamp(lat, -86.0, 86.0)));
+      double const res = base::RadToDeg(0.5 * log((1.0 + sinx) / (1.0 - sinx)));
+      return ClampY(res);
+    }
+    m2::PointD FromLatLon(double lat, double lon) { return m2::PointD(LonToX(lon), LatToY(lat)); }
+
     std::unique_ptr<SearchEngine<DataFacadeT>> m_searchEngine;
     std::vector<storage::CountryDef> m_countries;
     std::vector<std::vector<m2::RegionD>> m_regions;

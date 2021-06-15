@@ -3,6 +3,8 @@
 #include "../server/data_structures/internal_datafacade.hpp"
 
 #include <iostream>
+#include <utility>
+#include <vector>
 
 #include "../../../../base/bits.hpp"
 #include "../../../../base/logging.hpp"
@@ -17,6 +19,17 @@
 #include "../../../succinct/gamma_vector.hpp"
 #include "../../../succinct/rs_bit_vector.hpp"
 #include "../../../succinct/mapper.hpp"
+
+#define ROUTING_MATRIX_FILE_TAG "mercedes"
+#define ROUTING_EDGEDATA_FILE_TAG "daewoo"
+#define ROUTING_EDGEID_FILE_TAG "infinity"
+#define ROUTING_SHORTCUTS_FILE_TAG  "skoda"
+#define ROUTING_CROSS_CONTEXT_TAG "chrysler"
+
+#define ROUTING_FTSEG_FILE_TAG  "ftseg"
+#define ROUTING_NODEIND_TO_FTSEGIND_FILE_TAG  "node2ftseg"
+
+using namespace std;
 
 namespace
 {
@@ -73,8 +86,6 @@ string EdgeDataToString(EdgeOsrmT const & d)
      << d.second.backward << ", " << d.second.id << "]";
   return ss.str();
 }
-
-
 
 void GenerateRoutingIndex(const std::string & fPath)
 {
@@ -274,7 +285,7 @@ void GenerateRoutingIndex(const std::string & fPath)
   container.Open(path);
   typedef routing::OsrmDataFacade<QueryEdge::EdgeData> DataFacadeT;
   DataFacadeT facadeNew;
-  facadeNew.Load(container);
+  // facadeNew.Load(container);
 
   uint64_t edgesCount = facadeNew.GetNumberOfEdges() - copiedEdges + ignoredEdges;
   std::cout << "Check node count " << facade.GetNumberOfNodes() << " == " << facadeNew.GetNumberOfNodes() <<  "..." << std::endl;
@@ -403,5 +414,4 @@ void GenerateRoutingIndex(const std::string & fPath)
   }
   PrintStatus(!error);
 }
-
-}
+}  // namespace mapsme
