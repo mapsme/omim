@@ -12476,7 +12476,7 @@
     da = Hule
     nl = Grot
     fi = Luola
-    fr = Cave
+    fr = Grotte
     de = Höhle
     hu = Barlang
     id = Gua
