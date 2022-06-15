@@ -405,7 +405,7 @@ if True:
         def dedup_zooms(lst, item):
             if lst:
                 lst[-1] = lst[-1][:]
-                if lst[-1][0] == item[0] and lst[-1][3] in item[3] and lst[-1][4] == item[4] and lst[-1][2] >= item[2] and lst[-1][1] <= item[1]:
+                if lst[-1][0] == item[0] and lst[-1][3] == item[3] and lst[-1][4] == item[4] and lst[-1][2] >= item[2] and lst[-1][1] <= item[1]:
                     return lst
                 if lst[-1][0] == item[0] and lst[-1][3] == item[3] and lst[-1][4] == item[4] and lst[-1][2] == (item[1] - 1):
                     lst[-1][2] = item[2]
